@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FF1Randomizer", "FF1Randomizer\FF1Randomizer.csproj", "{B050ECC9-8CB8-4D8C-B6A9-04A1291276DE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B050ECC9-8CB8-4D8C-B6A9-04A1291276DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B050ECC9-8CB8-4D8C-B6A9-04A1291276DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B050ECC9-8CB8-4D8C-B6A9-04A1291276DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B050ECC9-8CB8-4D8C-B6A9-04A1291276DE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
