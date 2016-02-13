@@ -24,5 +24,11 @@ namespace FF1Randomizer
 		{
 			InitializeComponent();
 		}
+
+		private void ScaleFactorSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+		{
+			ScaleFactorSlider.Value = Math.Round(10*ScaleFactorSlider.Value)/10.0;
+			ScaleFactorLabel.Content = $"(1/{ScaleFactorSlider.Value})x - {ScaleFactorSlider.Value}x";
+		}
 	}
 }
