@@ -23,22 +23,26 @@ namespace FF1Randomizer
 	/// </summary>
 	public partial class MainWindow : Window
 	{
-		private NesRom _rom;
+		private string _filename;
+		private Blob _seed;
 
 		public MainWindow()
 		{
 			InitializeComponent();
+
+			GenerateSeed();
 		}
 
-		private void ScaleFactorSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+		private void GenerateSeed()
 		{
-			ScaleFactorSlider.Value = Math.Round(10*ScaleFactorSlider.Value)/10.0;
-			ScaleFactorLabel.Content = $"(1/{ScaleFactorSlider.Value})x - {ScaleFactorSlider.Value}x";
+			_seed = Blob.Random(4);
+
+			SeedTextBox.Text = _seed.ToHex();
 		}
 
 		private void RomButton_Click(object sender, RoutedEventArgs e)
 		{
-			var openFileDialog = new Microsoft.Win32.OpenFileDialog()
+			var openFileDialog = new OpenFileDialog
 			{
 				Filter = "NES ROM files (*.nes)|*.nes"
 			};
@@ -46,10 +50,61 @@ namespace FF1Randomizer
 			var result = openFileDialog.ShowDialog(this);
 			if (result == true)
 			{
-				_rom = new NesRom(openFileDialog.FileName);
+				var randomizer = new FF1Rom(openFileDialog.FileName);
+				if (randomizer.Validate())
+				{
+					MessageBox.Show("ROM appears to be valid.");
+				}
+				else
+				{
+					MessageBox.Show("ROM does not appear to be valid.  Proceed at your own risk.");
+				}
 
+				_filename = openFileDialog.FileName;
+				RomTextBox.Text = openFileDialog.SafeFileName;
 				GenerateButton.IsEnabled = true;
 			}
+		}
+
+		private void SeedButton_Click(object sender, RoutedEventArgs e)
+		{
+			GenerateSeed();
+		}
+
+		private void SeedTextBox_LostFocus(object sender, RoutedEventArgs e)
+		{
+			try
+			{
+				_seed = Blob.FromHex(SeedTextBox.Text);
+			}
+			catch (Exception)
+			{
+				MessageBox.Show("Invalid seed.  Seeds must be eight hexadecimal characters (0-9, A-F).  Generating new seed.");
+
+				GenerateSeed();
+			}
+		}
+
+		private void GenerateButton_Click(object sender, RoutedEventArgs e)
+		{
+			var rom = new FF1Rom(_filename);
+			var rng = new MT19337(BitConverter.ToUInt32(_seed, 0));
+
+			if (TreasuresCheckBox.IsChecked == true)
+			{
+				rom.ShuffleTreasures(rng);
+			}
+
+			var outputFilename = _filename.Substring(0, _filename.LastIndexOf(".")) + "_" + _seed.ToHex() + ".nes";
+			rom.Save(outputFilename);
+
+			MessageBox.Show("Done!");
+		}
+
+		private void ScaleFactorSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+		{
+			ScaleFactorSlider.Value = Math.Round(10 * ScaleFactorSlider.Value) / 10.0;
+			ScaleFactorLabel.Content = $"(1/{ScaleFactorSlider.Value})x - {ScaleFactorSlider.Value}x";
 		}
 	}
 }

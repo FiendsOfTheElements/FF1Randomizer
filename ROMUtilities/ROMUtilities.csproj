@@ -41,9 +41,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Blob.cs" />
+    <Compile Include="MT19337.cs" />
     <Compile Include="NesRom.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Rng.cs" />
     <Compile Include="Rom.cs" />
+    <Compile Include="ListOperations.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

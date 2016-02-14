@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 
 namespace ROMUtilities
 {
-    public sealed class NesRom : Rom
+    public abstract class NesRom : Rom
     {
 	    public NesRom(string filename)
 	    {
 		    Load(filename);
 	    }
 
-	    public override void Load(string filename)
+	    public sealed override void Load(string filename)
 	    {
 			using (var fs = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read))
 			{

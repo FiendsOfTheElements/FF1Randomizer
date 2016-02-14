@@ -29,6 +29,8 @@ namespace ROMUtilities
 			}
 		}
 
+		public abstract bool Validate();
+
 		public Blob Get(int index, int length)
 		{
 			return Data.SubBlob(index, length);
@@ -36,7 +38,7 @@ namespace ROMUtilities
 
 		public void Put(int index, Blob data)
 		{
-			Array.Copy(data, Data, data.Length);
+			Array.Copy(data, 0, Data, index, data.Length);
 		}
 	}
 }

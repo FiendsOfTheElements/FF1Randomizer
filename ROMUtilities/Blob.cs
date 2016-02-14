@@ -102,9 +102,10 @@ namespace ROMUtilities
 		public string ToBase64() => Convert.ToBase64String(_data);
 		public static Blob FromBase64(string value) => Convert.FromBase64String(value);
 
-		public string ToHex() => BitConverter.ToString(_data);
-		public static Blob FromHex(string value) =>
-			Enumerable.Range(0, value.Length/2).Select(x => Convert.ToByte(value.Substring(2*x, 2), 16)).ToArray();
+		public string ToHex() => BitConverter.ToString(_data).Replace("-", "");
+		public static Blob FromHex(string value) => Enumerable.Range(0, value.Length/2)
+			.Select(x => Convert.ToByte(value.Substring(2*x, 2), 16))
+			.ToArray();
 
 		public static Blob Concat(IEnumerable<Blob> values) => Concat(values.ToArray());
 		public static Blob Concat(params Blob[] values)
