@@ -11,8 +11,8 @@ namespace FF1Randomizer
 	public class FF1Rom : NesRom
 	{
 		public const int TreasureOffset = 0x3100;
-		public const int TreasureSize = 2;
-		public const int TreasureCount = 128;
+		public const int TreasureSize = 1;
+		public const int TreasureCount = 256;
 
 		public FF1Rom(string filename) : base(filename)
 		{}
@@ -25,16 +25,13 @@ namespace FF1Randomizer
 		public void ShuffleTreasures(MT19337 rng)
 		{
 			var treasureBlob = Get(TreasureOffset, TreasureSize*TreasureCount);
-			var treasures = Enumerable.Range(0, TreasureCount)
-				.Select(x => treasureBlob.SubBlob(x*TreasureSize, TreasureSize))
-				.ToList();
+			var treasures = treasureBlob.ToBytes().ToList();
 
 			treasures.Shuffle(rng);
 
 			// Need to insert sanity checks here
 
-			treasureBlob = Blob.Concat(treasures);
-
+			treasureBlob = treasures.ToArray();
 			Put(TreasureOffset, treasureBlob);
 		}
 	}
