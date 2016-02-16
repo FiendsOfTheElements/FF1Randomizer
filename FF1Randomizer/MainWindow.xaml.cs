@@ -103,8 +103,12 @@ namespace FF1Randomizer
 
 		private void ScaleFactorSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
 		{
-			ScaleFactorSlider.Value = Math.Round(10 * ScaleFactorSlider.Value) / 10.0;
-			ScaleFactorLabel.Content = $"(1/{ScaleFactorSlider.Value})x - {ScaleFactorSlider.Value}x";
+			ScaleFactorSlider.Value = Math.Round(ScaleFactorSlider.Value, 1);
+
+			var lower = Math.Round(100/ScaleFactorSlider.Value);
+			var upper = Math.Round(100*ScaleFactorSlider.Value);
+
+			ScaleFactorLabel.Content = $"{lower}% - {upper}%";
 		}
 	}
 }
