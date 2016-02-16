@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Blob.cs" />
+    <Compile Include="Graph.cs" />
     <Compile Include="MT19337.cs" />
     <Compile Include="NesRom.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

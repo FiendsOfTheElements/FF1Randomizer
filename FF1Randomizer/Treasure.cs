@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace FF1Randomizer
 {
-	public enum QuestTreasures
+	public enum QuestItems
 	{
-		Tnt = 0x03,
-		Crown = 0x1c,
-		Ruby = 0x3d,
-		Floater = 0x72,
-		Tail = 0x83,
-		Slab = 0xb4
+		Tnt = 0x06,
+		Crown = 0x02,
+		Ruby = 0x09,
+		Floater = 0x0b,
+		Tail = 0x0d,
+		Slab = 0x08
 	}
 
 	public static class TreasureConditions

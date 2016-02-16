@@ -21,18 +21,52 @@ namespace FF1Randomizer
 		{
 			return Get(0, 16) == Blob.FromHex("06400e890e890e401e400e400e400b42");
 		}
-		
+
 		public void ShuffleTreasures(MT19337 rng)
 		{
-			var treasureBlob = Get(TreasureOffset, TreasureSize*TreasureCount);
-			var treasures = treasureBlob.ToBytes().ToList();
+			DirectedGraph<byte> graph;
+			do
+			{
+				var treasureBlob = Get(TreasureOffset, TreasureSize*TreasureCount);
 
-			treasures.Shuffle(rng);
+				var usedIndices = Enumerable.Range(0, TreasureCount).Except(TreasureConditions.NotUsed).ToList();
+				var usedTreasures = usedIndices.Select(i => treasureBlob[i]).ToList();
 
-			// Need to insert sanity checks here
+				usedTreasures.Shuffle(rng);
 
-			treasureBlob = treasures.ToArray();
-			Put(TreasureOffset, treasureBlob);
+				for (int i = 0; i < usedIndices.Count; i++)
+				{
+					treasureBlob[usedIndices[i]] = usedTreasures[i];
+				}
+
+				Put(TreasureOffset, treasureBlob);
+
+				var blockages = new List<Tuple<byte, int, List<int>>>
+				{
+					Tuple.Create((byte)QuestItems.Crown,   Array.IndexOf(treasureBlob, (byte)QuestItems.Crown),   TreasureConditions.CrownBlocked),
+					Tuple.Create((byte)QuestItems.Tnt,     Array.IndexOf(treasureBlob, (byte)QuestItems.Tnt),     TreasureConditions.TntBlocked),
+					Tuple.Create((byte)QuestItems.Ruby,    Array.IndexOf(treasureBlob, (byte)QuestItems.Ruby),    TreasureConditions.RubyBlocked),
+					Tuple.Create((byte)QuestItems.Floater, Array.IndexOf(treasureBlob, (byte)QuestItems.Floater), TreasureConditions.FloaterBlocked),
+					Tuple.Create((byte)QuestItems.Slab,    Array.IndexOf(treasureBlob, (byte)QuestItems.Slab),    TreasureConditions.SlabBlocked)
+				};
+
+				graph = new DirectedGraph<byte>();
+				foreach (var blockage in blockages)
+				{
+					graph.AddNode(blockage.Item1);
+				}
+
+				foreach (var blocker in blockages)
+				{
+					foreach (var blockee in blockages)
+					{
+						if (blocker.Item3.Contains(blockee.Item2))
+						{
+							graph.AddEdge(blockee.Item1, blocker.Item1);
+						}
+					}
+				}
+			} while (graph.HasCycles());
 		}
 	}
 }
