@@ -86,6 +86,32 @@ namespace ROMUtilities
 			return new Blob(data);
 		}
 
+		public List<Blob> Split(byte separator)
+		{
+			var segments = new List<Blob>();
+			var copy = new Blob(ToBytes());
+			int index;
+			do
+			{
+				index = Array.IndexOf(copy, separator);
+				segments.Add(copy.SubBlob(0, index));
+				copy = copy.SubBlob(index + 1);
+			} while (index != -1);
+
+			return segments;
+		}
+
+		public List<Blob> Chunk(int size)
+		{
+			var chunks = Enumerable.Range(0, _data.Length/size).Select(i => SubBlob(i*size, size)).ToList();
+			if (_data.Length%size != 0)
+			{
+				chunks.Add(SubBlob(_data.Length - _data.Length%size));
+			}
+
+			return chunks;
+		}
+
 		//
 		// Factory
 		//

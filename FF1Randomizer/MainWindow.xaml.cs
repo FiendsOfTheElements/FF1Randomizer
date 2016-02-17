@@ -95,6 +95,11 @@ namespace FF1Randomizer
 				rom.ShuffleTreasures(rng);
 			}
 
+			if (ExpGoldBoostCheckBox.IsChecked == true)
+			{
+				rom.ExpGoldBoost(10);
+			}
+
 			var outputFilename = _filename.Substring(0, _filename.LastIndexOf(".")) + "_" + _seed.ToHex() + ".nes";
 			rom.Save(outputFilename);
 

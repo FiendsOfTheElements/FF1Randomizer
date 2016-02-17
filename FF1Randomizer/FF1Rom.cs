@@ -14,6 +14,10 @@ namespace FF1Randomizer
 		public const int TreasureSize = 1;
 		public const int TreasureCount = 256;
 
+		public const int EnemyOffset = 0x30520;
+		public const int EnemySize = 20;
+		public const int EnemyCount = 128;
+
 		public FF1Rom(string filename) : base(filename)
 		{}
 
@@ -67,6 +71,30 @@ namespace FF1Randomizer
 					}
 				}
 			} while (graph.HasCycles());
+		}
+
+		public void ExpGoldBoost(double factor)
+		{
+			var enemyBlob = Get(EnemyOffset, EnemySize*EnemyCount);
+			var enemies = enemyBlob.Chunk(EnemySize);
+
+			foreach (var enemy in enemies)
+			{
+				var exp = BitConverter.ToUInt16(enemy, 0);
+				var gold = BitConverter.ToUInt16(enemy, 2);
+
+				exp = (ushort)(exp*factor);
+				gold = (ushort)(gold*factor);
+
+				var expBytes = BitConverter.GetBytes(exp);
+				var goldBytes = BitConverter.GetBytes(gold);
+				Array.Copy(expBytes, 0, enemy, 0, 2);
+				Array.Copy(goldBytes, 0, enemy, 2, 2);
+			}
+
+			enemyBlob = Blob.Concat(enemies);
+
+			Put(EnemyOffset, enemyBlob);
 		}
 	}
 }
