@@ -45,11 +45,6 @@ namespace FF1Randomizer
 
 				Put(TreasureOffset, treasureBlob);
 
-				// This is wrong!  The RUBY blocks the CANOE, which blocks the AIRSHIP.
-				// The northern hemisphere is therefore blocked by both the RUBY and the FLOATER.
-				// The RUBY must be found by Earth Cave B3 or earlier.
-				// Also, RUBY blocks treasure in the Titan's Cave, Gurgu Volcano, Ice Cave, and Castle of Ordeals, in addition to Earth Cave B4.
-
 				var blockages = new List<Tuple<byte, int, List<int>>>
 				{
 					Tuple.Create((byte)QuestItems.Crown,   Array.IndexOf(treasureBlob, (byte)QuestItems.Crown),   TreasureConditions.CrownBlocked),
