@@ -33,6 +33,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="RomUtilities, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\RomUtilities.1.0.0\lib\net45\RomUtilities.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -48,15 +52,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FF1Randomizer\FF1Randomizer.csproj">
       <Project>{b050ecc9-8cb8-4d8c-b6a9-04a1291276de}</Project>
       <Name>FF1Randomizer</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ROMUtilities\ROMUtilities.csproj">
-      <Project>{ee2cc100-6af9-4c63-8c49-4dab661b6b79}</Project>
-      <Name>ROMUtilities</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

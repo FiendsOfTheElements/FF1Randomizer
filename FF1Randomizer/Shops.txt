@@ -1,0 +1,72 @@
+﻿Pointers at 0x38300, data at 0x3838e
+Empty
+Corneria Weapons
+Pravoka Weapons
+Elfland Weapons
+Melmond Weapons
+Crescent Lake Weapons
+Gaia Weapons
+Empty
+Empty
+Empty
+Empty
+Corneria Armor
+Pravoka Armor
+Elfland Armor
+Melmond Armor
+Crescent Lake Armor
+Gaia Armor
+Empty
+Empty
+Empty
+Empty
+Corneria White Magic L1
+Pravoka White Magic L2
+Elfland White Magic L3
+Melmond White Magic L5
+Crescent Lake White Magic L6
+Elfland White Magic L4
+Gaia White Magic L7
+Gaia White Magic L8
+Onrac White Magic L7
+Lefein White Magic L8
+Corneria Black Magic L1
+Pravoka Black Magic L2
+Elfland Black Magic L3
+Melmond Black Magic L5
+Crescent Lake Black Magic L6
+Elfland Black Magic L4
+Gaia Black Magic L7
+Gaia Black Magic L8
+Onrac Black Magic L7
+Lefein Black Magic L8
+Corneria 40G Clinic
+Elfland 200G Clinic
+Crescent Lake 400G Clinic
+Gaia 750G Clinic
+Onrac 750G Clinic
+Pravoka 80G Clinic
+Empty
+Empty
+Empty
+Empty
+Corneria 30G Inn
+Pravoka 50G Inn
+Elfland 100G Inn
+Melmond 100G Inn
+Crescent Lake 200G Inn
+Gaia 500G Inn
+Onrac 300G Inn
+Empty
+Empty
+Empty
+Corneria Items
+Pravoka Items
+Elfland Items
+Crescent Lake Items
+Gaia Items
+Onrac Items
+Empty
+Empty
+Empty
+Caravan

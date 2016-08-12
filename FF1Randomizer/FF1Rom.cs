@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using ROMUtilities;
+using RomUtilities;
 
 namespace FF1Randomizer
 {
@@ -71,6 +71,11 @@ namespace FF1Randomizer
 					}
 				}
 			} while (graph.HasCycles());
+		}
+
+		public void ShuffleShops()
+		{
+			
 		}
 
 		public void ExpGoldBoost(double factor)
