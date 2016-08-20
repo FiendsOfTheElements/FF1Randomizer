@@ -19,16 +19,17 @@
 					<Label x:Name="ShuffleLabel" Content="Shuffle" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.632,-0.423" FontWeight="Bold"/>
 					<CheckBox x:Name="TreasuresCheckBox" IsEnabled="True" IsChecked="True" Content="Treasures" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,36,0,0" ToolTip="Treasure chest contents will be shuffled.  Sanity checks are in place to ensure you can still finish the game."/>
 					<CheckBox x:Name="ShopsCheckBox" IsEnabled="True" IsChecked="True" Content="Shops" HorizontalAlignment="Left" Margin="10,56,0,0" VerticalAlignment="Top" ToolTip="Shop contents (other than magic) are shuffled."/>
-					<CheckBox x:Name="MagicCheckBox" IsEnabled="False" Content="Magic" HorizontalAlignment="Left" Margin="10,76,0,0" VerticalAlignment="Top" ToolTip="Magic spells have their levels shuffled.  A spell shuffled to magic level 1 will appear in the Magic Shop in Coneria."/>
-					<CheckBox x:Name="EnemySkillsCheckBox" IsEnabled="False" Content="Enemy Skills" HorizontalAlignment="Left" Margin="10,96,0,0" VerticalAlignment="Top" ToolTip="Enemy skills (such as SQUINT) are shuffled among enemies that use skills."/>
-					<CheckBox x:Name="EnemySpellsCheckBox" IsEnabled="False" Content="Enemy Spells" HorizontalAlignment="Left" Margin="10,116,0,0" VerticalAlignment="Top" ToolTip="Enemy spells are shuffled among enemies that use spells."/>
-					<CheckBox x:Name="EnemyStatusAttacksCheckBox" IsEnabled="False" Content="Enemy Status Attacks" HorizontalAlignment="Left" Margin="10,136,0,0" VerticalAlignment="Top" ToolTip="Status attacks such as stun, sleep, and death are shuffled."/>
+					<CheckBox x:Name="MagicShopsCheckBox" IsEnabled="True" IsChecked="True" Content="Magic Shops" HorizontalAlignment="Left" Margin="10,76,0,0" VerticalAlignment="Top" ToolTip="Magic shop contents are shuffled."/>
+					<CheckBox x:Name="MagicCheckBox" IsEnabled="False" Content="Magic Levels" HorizontalAlignment="Left" Margin="10,96,0,0" VerticalAlignment="Top" ToolTip="Magic spells have their levels shuffled.  A spell shuffled to magic level 1 will appear in the Magic Shop in Coneria."/>
+					<CheckBox x:Name="EnemySkillsCheckBox" IsEnabled="False" Content="Enemy Skills" HorizontalAlignment="Left" Margin="10,116,0,0" VerticalAlignment="Top" ToolTip="Enemy skills (such as SQUINT) are shuffled among enemies that use skills."/>
+					<CheckBox x:Name="EnemySpellsCheckBox" IsEnabled="False" Content="Enemy Spells" HorizontalAlignment="Left" Margin="10,136,0,0" VerticalAlignment="Top" ToolTip="Enemy spells are shuffled among enemies that use spells."/>
+					<CheckBox x:Name="EnemyStatusAttacksCheckBox" IsEnabled="False" Content="Enemy Status Attacks" HorizontalAlignment="Left" Margin="10,157,0,0" VerticalAlignment="Top" ToolTip="Status attacks such as stun, sleep, and death are shuffled."/>
 					<Label x:Name="ScaleLabel" Content="Scale:" HorizontalAlignment="Left" Margin="237,10,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
 					<Label x:Name="ScaleFactorLabel" Content="" HorizontalAlignment="Left" Margin="282,10,0,0" VerticalAlignment="Top"/>
 					<Slider x:Name="ScaleFactorSlider" HorizontalAlignment="Left" Margin="410,18,0,0" VerticalAlignment="Top" Maximum="5" Width="100" TickPlacement="BottomRight" ValueChanged="ScaleFactorSlider_ValueChanged" Minimum="2" ToolTip="For each value to be scaled, a random exponent is selected between -1 and +1.  The value is scaled by the scale factor raised to that power."/>
 					<CheckBox x:Name="PricesCheckBox" IsEnabled="False" Content="Prices" HorizontalAlignment="Left" Margin="237,36,0,0" VerticalAlignment="Top" ToolTip="Prices of items, weapons, armor, and magic are all scaled."/>
 					<CheckBox x:Name="EnemyStatsCheckBox" IsEnabled="False" Content="Enemy Stats" HorizontalAlignment="Left" Margin="237,56,0,0" VerticalAlignment="Top" ToolTip="Enemy stats are scaled: HP, attack power, # of hits, accuracy, critical %, defense, evade, magic defense, and morale."/>
-					<CheckBox x:Name="ExpGoldBoostCheckBox" Content="Exp/Gold Boost" HorizontalAlignment="Left" Margin="237,136,0,0" VerticalAlignment="Top" IsChecked="True"/>
+					<CheckBox x:Name="ExpGoldBoostCheckBox" Content="Exp/Gold Boost" HorizontalAlignment="Left" Margin="237,157,0,0" VerticalAlignment="Top" IsChecked="True"/>
 				</Grid>
 			</TabItem>
 			<TabItem Header="Bug Fixes">

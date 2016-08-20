@@ -93,7 +93,7 @@ namespace FF1Randomizer
 
 			if (ShopsCheckBox.IsChecked == true)
 			{
-				rom.ShuffleShops(rng);
+				rom.ShuffleShops(ShopsCheckBox.IsChecked ?? false, rng);
 			}
 
 			if (ExpGoldBoostCheckBox.IsChecked == true)
