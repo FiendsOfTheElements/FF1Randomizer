@@ -17,8 +17,8 @@
 			<TabItem Header="Randomizers">
 				<Grid>
 					<Label x:Name="ShuffleLabel" Content="Shuffle" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.632,-0.423" FontWeight="Bold"/>
-					<CheckBox x:Name="TreasuresCheckBox" Content="Treasures" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,36,0,0" ToolTip="Treasure chest contents will be shuffled.  Sanity checks are in place to ensure you can still finish the game." IsChecked="True"/>
-					<CheckBox x:Name="ShopsCheckBox" IsEnabled="False" Content="Shops" HorizontalAlignment="Left" Margin="10,56,0,0" VerticalAlignment="Top" ToolTip="Shop contents (other than magic) are shuffled."/>
+					<CheckBox x:Name="TreasuresCheckBox" IsEnabled="True" IsChecked="True" Content="Treasures" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,36,0,0" ToolTip="Treasure chest contents will be shuffled.  Sanity checks are in place to ensure you can still finish the game."/>
+					<CheckBox x:Name="ShopsCheckBox" IsEnabled="True" IsChecked="True" Content="Shops" HorizontalAlignment="Left" Margin="10,56,0,0" VerticalAlignment="Top" ToolTip="Shop contents (other than magic) are shuffled."/>
 					<CheckBox x:Name="MagicCheckBox" IsEnabled="False" Content="Magic" HorizontalAlignment="Left" Margin="10,76,0,0" VerticalAlignment="Top" ToolTip="Magic spells have their levels shuffled.  A spell shuffled to magic level 1 will appear in the Magic Shop in Coneria."/>
 					<CheckBox x:Name="EnemySkillsCheckBox" IsEnabled="False" Content="Enemy Skills" HorizontalAlignment="Left" Margin="10,96,0,0" VerticalAlignment="Top" ToolTip="Enemy skills (such as SQUINT) are shuffled among enemies that use skills."/>
 					<CheckBox x:Name="EnemySpellsCheckBox" IsEnabled="False" Content="Enemy Spells" HorizontalAlignment="Left" Margin="10,116,0,0" VerticalAlignment="Top" ToolTip="Enemy spells are shuffled among enemies that use spells."/>

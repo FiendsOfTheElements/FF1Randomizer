@@ -51,13 +51,9 @@ namespace FF1Randomizer
 			if (result == true)
 			{
 				var randomizer = new FF1Rom(openFileDialog.FileName);
-				if (randomizer.Validate())
+				if (!randomizer.Validate())
 				{
-					MessageBox.Show("ROM appears to be valid.");
-				}
-				else
-				{
-					MessageBox.Show("ROM does not appear to be valid.  Proceed at your own risk.");
+					MessageBox.Show("ROM does not appear to be valid.  Proceed at your own risk.", "Validation Error");
 				}
 
 				_filename = openFileDialog.FileName;
@@ -79,7 +75,7 @@ namespace FF1Randomizer
 			}
 			catch (Exception)
 			{
-				MessageBox.Show("Invalid seed.  Seeds must be eight hexadecimal characters (0-9, A-F).  Generating new seed.");
+				MessageBox.Show("Seeds must be eight hexadecimal characters (0-9, A-F).  Generating new seed.", "Invalid Seed");
 
 				GenerateSeed();
 			}
@@ -95,6 +91,11 @@ namespace FF1Randomizer
 				rom.ShuffleTreasures(rng);
 			}
 
+			if (ShopsCheckBox.IsChecked == true)
+			{
+				rom.ShuffleShops(rng);
+			}
+
 			if (ExpGoldBoostCheckBox.IsChecked == true)
 			{
 				rom.ExpGoldBoost(10);
@@ -103,7 +104,7 @@ namespace FF1Randomizer
 			var outputFilename = _filename.Substring(0, _filename.LastIndexOf(".")) + "_" + _seed.ToHex() + ".nes";
 			rom.Save(outputFilename);
 
-			MessageBox.Show("Done!");
+			MessageBox.Show($"Finished generating new ROM: {outputFilename}", "Done");
 		}
 
 		private void ScaleFactorSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)

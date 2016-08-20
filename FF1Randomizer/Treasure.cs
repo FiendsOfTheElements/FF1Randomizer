@@ -45,6 +45,10 @@ namespace FF1Randomizer
 
 		public static List<int> ToFR = Enumerable.Range(248, 7).ToList(); // Anything that blocks an ORB will also block these.
 		public static List<int> SlabBlocked = Enumerable.Range(196, 52).Concat(ToFR).ToList(); // Mirage Tower + Sky Castle + ToFR
+
+		// This actually isn't a big deal, because the BOTTLE is only found at item shops.  You can't get to
+		// the Sea Shrine or ToFR without the FLOATER anyway, and the FLOATER gives you access to every item
+		// shop in the game.
 		public static List<int> BottleBlocked = Enumerable.Range(149, 32).Concat(ToFR).ToList(); // Sea Shrine + ToFR
 	}
 }
