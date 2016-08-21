@@ -219,7 +219,7 @@ namespace FF1Randomizer
 			return shops;
 		}
 
-		public void ExpGoldBoost(double factor)
+		public void ExpGoldBoost(double bonus, double multiplier)
 		{
 			var enemyBlob = Get(EnemyOffset, EnemySize*EnemyCount);
 			var enemies = enemyBlob.Chunk(EnemySize);
@@ -229,8 +229,8 @@ namespace FF1Randomizer
 				var exp = BitConverter.ToUInt16(enemy, 0);
 				var gold = BitConverter.ToUInt16(enemy, 2);
 
-				exp = (ushort)Math.Min(exp*factor, 0x7FFF);
-				gold = (ushort)Math.Min(gold*factor, 0x7FFF);
+				exp = (ushort)Math.Min(bonus + exp*multiplier, 0x7FFF);
+				gold = (ushort)Math.Min(bonus + gold*multiplier, 0x7FFF);
 
 				var expBytes = BitConverter.GetBytes(exp);
 				var goldBytes = BitConverter.GetBytes(gold);

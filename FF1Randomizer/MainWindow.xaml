@@ -26,10 +26,13 @@
 					<CheckBox x:Name="EnemyStatusAttacksCheckBox" IsEnabled="False" Content="Enemy Status Attacks" HorizontalAlignment="Left" Margin="10,157,0,0" VerticalAlignment="Top" ToolTip="Status attacks such as stun, sleep, and death are shuffled."/>
 					<Label x:Name="ScaleLabel" Content="Scale:" HorizontalAlignment="Left" Margin="237,10,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
 					<Label x:Name="ScaleFactorLabel" Content="" HorizontalAlignment="Left" Margin="282,10,0,0" VerticalAlignment="Top"/>
-					<Slider x:Name="ScaleFactorSlider" HorizontalAlignment="Left" Margin="410,18,0,0" VerticalAlignment="Top" Maximum="5" Width="100" TickPlacement="BottomRight" ValueChanged="ScaleFactorSlider_ValueChanged" Minimum="2" ToolTip="For each value to be scaled, a random exponent is selected between -1 and +1.  The value is scaled by the scale factor raised to that power."/>
+					<Slider x:Name="ScaleFactorSlider" HorizontalAlignment="Left" Margin="410,18,0,0" VerticalAlignment="Top" Minimum="2" Maximum="5" Width="100" TickPlacement="BottomRight" TickFrequency="1" ValueChanged="ScaleFactorSlider_ValueChanged" ToolTip="For each value to be scaled, a random exponent is selected between -1 and +1.  The value is scaled by the scale factor raised to that power."/>
 					<CheckBox x:Name="PricesCheckBox" IsEnabled="False" Content="Prices" HorizontalAlignment="Left" Margin="237,36,0,0" VerticalAlignment="Top" ToolTip="Prices of items, weapons, armor, and magic are all scaled."/>
 					<CheckBox x:Name="EnemyStatsCheckBox" IsEnabled="False" Content="Enemy Stats" HorizontalAlignment="Left" Margin="237,56,0,0" VerticalAlignment="Top" ToolTip="Enemy stats are scaled: HP, attack power, # of hits, accuracy, critical %, defense, evade, magic defense, and morale."/>
-					<CheckBox x:Name="ExpGoldBoostCheckBox" Content="Exp/Gold Boost" HorizontalAlignment="Left" Margin="237,157,0,0" VerticalAlignment="Top" IsChecked="True"/>
+					<CheckBox x:Name="ExpGoldBoostCheckBox" Content="Exp/Gold Boost" HorizontalAlignment="Left" Margin="237,136,0,0" VerticalAlignment="Top" IsChecked="True"/>
+					<Label x:Name="ExpLabel" Content="" HorizontalAlignment="Left" Margin="237,156,0,0" VerticalAlignment="Top"/>
+					<Slider x:Name="ExpMultiplierSlider" HorizontalAlignment="Left" Margin="410,136,0,0" VerticalAlignment="Top" Width="100" Minimum="1" Maximum="5" TickPlacement="BottomRight" TickFrequency="1" ValueChanged="ExpMultiplierSlider_ValueChanged" ToolTip="Multiplies enemy exp and gold by this amount." Value="2"/>
+					<Slider x:Name="ExpBonusSlider" HorizontalAlignment="Left" Margin="410,165,0,0" VerticalAlignment="Top" Width="100" Minimum="0" Maximum="50" TickPlacement="BottomRight" TickFrequency="10" ValueChanged="ExpBonusSlider_ValueChanged" ToolTip="Adds this amount to enemy exp and gold." Value="10"/>
 				</Grid>
 			</TabItem>
 			<TabItem Header="Bug Fixes">

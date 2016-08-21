@@ -31,6 +31,9 @@ namespace FF1Randomizer
 			InitializeComponent();
 
 			GenerateSeed();
+
+			SetScaleFactorLabel();
+			SetExpLabel();
 		}
 
 		private void GenerateSeed()
@@ -103,7 +106,7 @@ namespace FF1Randomizer
 
 			if (ExpGoldBoostCheckBox.IsChecked == true)
 			{
-				rom.ExpGoldBoost(10);
+				rom.ExpGoldBoost(ExpBonusSlider.Value*10, ExpMultiplierSlider.Value);
 			}
 
 			var outputFilename = _filename.Substring(0, _filename.LastIndexOf(".")) + "_" + _seed.ToHex() + ".nes";
@@ -116,10 +119,37 @@ namespace FF1Randomizer
 		{
 			ScaleFactorSlider.Value = Math.Round(ScaleFactorSlider.Value, 1);
 
-			var lower = Math.Round(100/ScaleFactorSlider.Value);
-			var upper = Math.Round(100*ScaleFactorSlider.Value);
+			SetScaleFactorLabel();
+		}
+
+		private void ExpMultiplierSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+		{
+			ExpMultiplierSlider.Value = Math.Round(ExpMultiplierSlider.Value, 1);
+
+			SetExpLabel();
+		}
+
+		private void ExpBonusSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+		{
+			ExpBonusSlider.Value = Math.Round(ExpBonusSlider.Value);
+
+			SetExpLabel();
+		}
+
+		private void SetScaleFactorLabel()
+		{
+			var lower = Math.Round(100 / ScaleFactorSlider.Value);
+			var upper = Math.Round(100 * ScaleFactorSlider.Value);
 
 			ScaleFactorLabel.Content = $"{lower}% - {upper}%";
+		}
+
+		private void SetExpLabel()
+		{
+			if (ExpMultiplierSlider != null && ExpBonusSlider != null && ExpLabel != null)
+			{
+				ExpLabel.Content = $"{ExpMultiplierSlider.Value}x + {ExpBonusSlider.Value*10}";
+			}
 		}
 	}
 }
