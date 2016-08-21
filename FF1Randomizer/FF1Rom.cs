@@ -91,7 +91,7 @@ namespace FF1Randomizer
 			} while (graph.HasCycles());
 		}
 
-		public void ShuffleShops(bool shuffleMagicShops, MT19337 rng)
+		public void ShuffleShops(MT19337 rng)
 		{
 			var pointers = Get(ShopPointerOffset, ShopPointerCount*ShopPointerSize).ToUShorts();
 
@@ -101,11 +101,17 @@ namespace FF1Randomizer
 			ShuffleShopType(ShopType.Armor, pointers, rng);
 			ShuffleShopType(ShopType.Item, pointers, rng);
 
-			if (shuffleMagicShops)
-			{
-				ShuffleShopType(ShopType.White, pointers, rng);
-				ShuffleShopType(ShopType.Black, pointers, rng);
-			}
+			Put(ShopPointerOffset, Blob.FromUShorts(pointers));
+		}
+
+		public void ShuffleMagicShops(MT19337 rng)
+		{
+			var pointers = Get(ShopPointerOffset, ShopPointerCount * ShopPointerSize).ToUShorts();
+
+			RepackShops(pointers);
+
+			ShuffleShopType(ShopType.White, pointers, rng);
+			ShuffleShopType(ShopType.Black, pointers, rng);
 
 			Put(ShopPointerOffset, Blob.FromUShorts(pointers));
 		}
