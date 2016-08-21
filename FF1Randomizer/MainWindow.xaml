@@ -46,6 +46,6 @@
 				</Grid>
 			</TabItem>
 		</TabControl>
-		<Button x:Name="GenerateButton" Content="GENERATE" HorizontalAlignment="Stretch" Margin="228,10,10,0" VerticalAlignment="Top" Width="308" Height="103" FontSize="48" IsEnabled="False" Click="GenerateButton_Click"/>
+		<Button x:Name="GenerateButton" Content="GENERATE" HorizontalAlignment="Right" Margin="0,10,10,0" VerticalAlignment="Top" Width="307" Height="103" FontSize="48" IsEnabled="False" Click="GenerateButton_Click"/>
 	</Grid>
 </Window>
