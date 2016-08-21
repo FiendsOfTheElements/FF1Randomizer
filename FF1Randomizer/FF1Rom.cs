@@ -25,16 +25,18 @@ namespace FF1Randomizer
 		public const int ShopSectionSize = 10;
 		public const ushort ShopNullPointer = 0x838E;
 
-		private enum ShopType
-		{
-			Weapon = 0,
-			Armor = 10,
-			White = 20,
-			Black = 30,
-			Clinic = 40,
-			Inn = 50,
-			Item = 60
-		}
+		public const int MagicOffset = 0x301E0;
+		public const int MagicSize = 8;
+		public const int MagicCount = 64;
+		public const int MagicNamesOffset = 0x2BE03;
+		public const int MagicNameSize = 5;
+		public const int MagicTextPointersOffset = 0x304C0;
+		public const int MagicPermissionsOffset = 0x3AD18;
+		public const int MagicPermissionsSize = 8;
+		public const int MagicPermissionsCount = 12;
+		public const int MagicOutOfBattleOffset = 0x3AEFA;
+		public const int MagicOutOfBattleSize = 7;
+		public const int MagicOutOfBattleCount = 13;
 
 		public FF1Rom(string filename) : base(filename)
 		{}
@@ -89,6 +91,17 @@ namespace FF1Randomizer
 					}
 				}
 			} while (graph.HasCycles());
+		}
+
+		private enum ShopType
+		{
+			Weapon = 0,
+			Armor = 10,
+			White = 20,
+			Black = 30,
+			Clinic = 40,
+			Inn = 50,
+			Item = 60
 		}
 
 		public void ShuffleShops(MT19337 rng)
@@ -217,6 +230,104 @@ namespace FF1Randomizer
 			}
 
 			return shops;
+		}
+
+		private struct MagicSpell
+		{
+			public byte Index;
+			public Blob Data;
+			public Blob Name;
+			public byte TextPointer;
+		}
+
+		private readonly List<byte> _outOfBattleSpells = new List<byte> { 0, 16, 32, 48, 19, 51, 35, 24, 33, 56, 38, 40, 41 };
+
+		public void ShuffleMagicLevels(MT19337 rng)
+		{
+			var spells = Get(MagicOffset, MagicSize*MagicCount).Chunk(MagicSize);
+			var names = Get(MagicNamesOffset, MagicNameSize*MagicCount).Chunk(MagicNameSize);
+			var pointers = Get(MagicTextPointersOffset, MagicCount);
+
+			// First we have to un-interleave white and black spells.
+			var whiteSpells = new List<MagicSpell>();
+			var blackSpells = new List<MagicSpell>();
+
+			for (int i = 0; i < MagicCount; i++)
+			{
+				if ((i/4)%2 == 0)
+				{
+					whiteSpells.Add(new MagicSpell
+					{
+						Index = (byte)i,
+						Data = spells[i],
+						Name = names[i],
+						TextPointer = pointers[i]
+					});
+				}
+				else
+				{
+					blackSpells.Add(new MagicSpell
+					{
+						Index = (byte)i,
+						Data = spells[i],
+						Name = names[i],
+						TextPointer = pointers[i]
+					});
+				}
+			}
+
+			whiteSpells.Shuffle(rng);
+			blackSpells.Shuffle(rng);
+
+			// Now we re-interleave the spells.
+			var shuffledSpells = new List<MagicSpell>();
+			for (int i = 0; i < MagicCount; i++)
+			{
+				var sourceIndex = 4*(i/8) + i%4;
+				if ((i/4)%2 == 0)
+				{
+					shuffledSpells.Add(whiteSpells[sourceIndex]);
+				}
+				else
+				{
+					shuffledSpells.Add(blackSpells[sourceIndex]);
+				}
+			}
+
+			Put(MagicOffset, shuffledSpells.Select(spell => spell.Data).Aggregate((seed, next) => seed + next));
+			Put(MagicNamesOffset, shuffledSpells.Select(spell => spell.Name).Aggregate((seed, next) => seed + next));
+			Put(MagicTextPointersOffset, shuffledSpells.Select(spell => spell.TextPointer).ToArray());
+
+			// Shuffle the permissions the same way the spells were shuffled.
+			for (int c = 0; c < MagicPermissionsCount; c++)
+			{
+				var oldPermissions = Get(MagicPermissionsOffset + c*MagicPermissionsSize, MagicPermissionsSize);
+
+				var newPermissions = new byte[MagicPermissionsSize];
+				for (int i = 0; i < 8; i++)
+				{
+					for (int j = 0; j < 8; j++)
+					{
+						var oldIndex = shuffledSpells[8*i + j].Index;
+						var oldPermission = (oldPermissions[oldIndex/8] & (0x80 >> oldIndex%8)) >> (7 - oldIndex%8);
+						newPermissions[i] |= (byte)(oldPermission << (7 - j));
+					}
+				}
+
+				Put(MagicPermissionsOffset + c*MagicPermissionsSize, newPermissions);
+			}
+
+			// Fix the crazy out of battle spell system.
+			var outOfBattleSpellOffset = MagicOutOfBattleOffset;
+			for (int i = 0; i < MagicOutOfBattleCount; i++)
+			{
+				var oldSpellIndex = _outOfBattleSpells[i];
+				var newSpellIndex = shuffledSpells.FindIndex(spell => spell.Index == oldSpellIndex);
+
+				Put(outOfBattleSpellOffset, new [] { (byte)(newSpellIndex + 0xB0) });
+
+				outOfBattleSpellOffset += MagicOutOfBattleSize;
+			}
 		}
 
 		public void ExpGoldBoost(double bonus, double multiplier)

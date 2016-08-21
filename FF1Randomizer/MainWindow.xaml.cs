@@ -104,6 +104,11 @@ namespace FF1Randomizer
 				rom.ShuffleMagicShops(rng);
 			}
 
+			if (MagicLevelsCheckBox.IsChecked == true)
+			{
+				rom.ShuffleMagicLevels(rng);
+			}
+
 			if (ExpGoldBoostCheckBox.IsChecked == true)
 			{
 				rom.ExpGoldBoost(ExpBonusSlider.Value*10, ExpMultiplierSlider.Value);
