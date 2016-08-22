@@ -32,3 +32,9 @@ This option rearranges the order of spells in the ROM, changing their levels.
 * Conversely, things like CURE could become level 8 spells and nearly impossible to use.
 * You can enable this option with or without shuffling magic shops.  Shuffling levels but not shops is a fairly compelling way to play, since you'll have spell charges for the early spells and be able to buy them early, but you don't necessarily know what the spells are.
 * Permissions for each spell are retained, even if the spell becomes an earlier level.  Red Wizard can't use NUKE even if it's level 1.  Shuffling magic permissions may become a future feature.
+
+#### Exp/Gold Boost
+This option increases the amount of experience and gold given by enemies to speed up the game.
+* The bonus slider adds a fixed amount of exp/gold to every enemy.  This is useful to speed up the early game, which is especially grindy, without overpowering the party too much in the late game.
+* The multiplier slider multiplies enemies' exp/gold by the amount set.
+* Rewards are capped at 32767, the most the game can handle.
