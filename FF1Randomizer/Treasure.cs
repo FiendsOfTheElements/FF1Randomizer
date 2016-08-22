@@ -33,7 +33,9 @@ namespace FF1Randomizer
 			Enumerable.Range(13, 4).Concat( // Elfland
 			Enumerable.Range(17, 3).Concat( // Northwest Castle
 			Enumerable.Range(30, 3).Concat( // Marsh Cave
-			Enumerable.Range(35, 8)))))).ToList(); // Dwarf Cave
+			Enumerable.Range(35, 8).Concat( // Dwarf Cave
+			Enumerable.Range(248, 5).Concat( // ToFR
+				new [] { 165 }))))))).ToList(); // Sea Shrine
 
 		public static List<int> RubyBlocked =
 			Enumerable.Range(62, 8).Concat( // Earth Cave B4
