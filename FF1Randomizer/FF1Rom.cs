@@ -38,6 +38,18 @@ namespace FF1Randomizer
 		public const int MagicOutOfBattleSize = 7;
 		public const int MagicOutOfBattleCount = 13;
 
+		public const int AiOffset = 0x31020;
+		public const int AiSize = 16;
+		public const int AiCount = 44;
+
+		public const int WeaponOffset = 0x30000;
+		public const int WeaponSize = 8;
+		public const int WeaponCount = 40;
+
+		public const int ArmorOffset = 0x30140;
+		public const int ArmorSize = 4;
+		public const int ArmorCount = 40;
+
 		public FF1Rom(string filename) : base(filename)
 		{}
 
@@ -317,12 +329,53 @@ namespace FF1Randomizer
 				Put(MagicPermissionsOffset + c*MagicPermissionsSize, newPermissions);
 			}
 
+			// Map old indices to new indices.
+			var newIndices = new byte[MagicCount];
+			for (byte i = 0; i < MagicCount; i++)
+			{
+				newIndices[shuffledSpells[i].Index] = i;
+			}
+
+			// Fix enemy spell pointers to point to where the spells are now.
+			var ais = Get(AiOffset, AiSize*AiCount).Chunk(AiSize);
+			foreach (var ai in ais)
+			{
+				// Bytes 2-9 are magic spells.
+				for (int i = 2; i < 10; i++)
+				{
+					if (ai[i] != 0xFF)
+					{
+						ai[i] = newIndices[ai[i]];
+					}
+				}
+			}
+			Put(AiOffset, ais.SelectMany(ai => ai.ToBytes()).ToArray());
+
+			// Fix weapon and armor spell pointers to point to where the spells are now.
+			var weapons = Get(WeaponOffset, WeaponSize*WeaponCount).Chunk(WeaponSize);
+			foreach (var weapon in weapons)
+			{
+				if (weapon[3] != 0xFF)
+				{
+					weapon[3] = newIndices[weapon[3]];
+				}
+			}
+
+			var armors = Get(ArmorOffset, ArmorSize*ArmorCount).Chunk(ArmorSize);
+			foreach (var armor in armors)
+			{
+				if (armor[3] != 0xFF)
+				{
+					armor[3] = newIndices[armor[3]];
+				}
+			}
+
 			// Fix the crazy out of battle spell system.
 			var outOfBattleSpellOffset = MagicOutOfBattleOffset;
 			for (int i = 0; i < MagicOutOfBattleCount; i++)
 			{
 				var oldSpellIndex = _outOfBattleSpells[i];
-				var newSpellIndex = shuffledSpells.FindIndex(spell => spell.Index == oldSpellIndex);
+				var newSpellIndex = newIndices[oldSpellIndex];
 
 				Put(outOfBattleSpellOffset, new [] { (byte)(newSpellIndex + 0xB0) });
 

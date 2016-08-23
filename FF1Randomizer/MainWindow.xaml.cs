@@ -127,20 +127,6 @@ namespace FF1Randomizer
 			SetScaleFactorLabel();
 		}
 
-		private void ExpMultiplierSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-		{
-			ExpMultiplierSlider.Value = Math.Round(ExpMultiplierSlider.Value, 1);
-
-			SetExpLabel();
-		}
-
-		private void ExpBonusSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-		{
-			ExpBonusSlider.Value = Math.Round(ExpBonusSlider.Value);
-
-			SetExpLabel();
-		}
-
 		private void SetScaleFactorLabel()
 		{
 			var lower = Math.Round(100 / ScaleFactorSlider.Value);
@@ -149,11 +135,48 @@ namespace FF1Randomizer
 			ScaleFactorLabel.Content = $"{lower}% - {upper}%";
 		}
 
+		private void ExpMultiplierSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+		{
+			ExpMultiplierSlider.Value = Math.Round(ExpMultiplierSlider.Value, 1);
+
+			SetExpLabel();
+			SetFlagsText(sender, e);
+		}
+
+		private void ExpBonusSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+		{
+			ExpBonusSlider.Value = Math.Round(ExpBonusSlider.Value);
+
+			SetExpLabel();
+			SetFlagsText(sender, e);
+		}
+
 		private void SetExpLabel()
 		{
 			if (ExpMultiplierSlider != null && ExpBonusSlider != null && ExpLabel != null)
 			{
 				ExpLabel.Content = $"{ExpMultiplierSlider.Value}x + {ExpBonusSlider.Value*10}";
+			}
+		}
+
+		private void SetFlagsText(object sender, RoutedEventArgs e)
+		{
+			if (FlagsTextBox == null)
+			{
+				return;
+			}
+
+			FlagsTextBox.Text = "";
+
+			FlagsTextBox.Text += TreasuresCheckBox.IsChecked == true ? "T" : "t";
+			FlagsTextBox.Text += ShopsCheckBox.IsChecked == true ? "S" : "s";
+			FlagsTextBox.Text += MagicShopsCheckBox.IsChecked == true ? "M" : "m";
+			FlagsTextBox.Text += MagicLevelsCheckBox.IsChecked == true ? "L" : "l";
+
+			if (ExpGoldBoostCheckBox.IsChecked == true)
+			{
+				FlagsTextBox.Text += $"{10*ExpMultiplierSlider.Value:00}";
+				FlagsTextBox.Text += $"{ExpBonusSlider.Value:00}";
 			}
 		}
 	}
