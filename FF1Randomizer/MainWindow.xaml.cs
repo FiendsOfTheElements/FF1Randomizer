@@ -34,6 +34,7 @@ namespace FF1Randomizer
 
 			SetScaleFactorLabel();
 			SetExpLabel();
+			SetFlagsText(null, null);
 		}
 
 		private void GenerateSeed()
@@ -114,7 +115,8 @@ namespace FF1Randomizer
 				rom.ExpGoldBoost(ExpBonusSlider.Value*10, ExpMultiplierSlider.Value);
 			}
 
-			var outputFilename = _filename.Substring(0, _filename.LastIndexOf(".")) + "_" + _seed.ToHex() + ".nes";
+			var fileRoot = _filename.Substring(0, _filename.LastIndexOf("."));
+			var outputFilename = $"{fileRoot}_{FlagsTextBox.Text}_{_seed.ToHex()}.nes";
 			rom.Save(outputFilename);
 
 			MessageBox.Show($"Finished generating new ROM: {outputFilename}", "Done");
