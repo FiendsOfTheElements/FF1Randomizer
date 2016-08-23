@@ -185,10 +185,8 @@ namespace FF1Randomizer
 				newShops[i] = new List<byte>();
 				if (pointers[(int)shopType + i] != ShopNullPointer)
 				{
-					newShops[i].Add(allEntries[entry]);
+					newShops[i].Add(allEntries[entry++]);
 				}
-
-				entry++;
 			}
 
 			while (entry < allEntries.Count)
