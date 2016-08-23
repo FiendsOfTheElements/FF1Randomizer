@@ -73,6 +73,8 @@ namespace FF1Randomizer
 
 		private void SeedTextBox_LostFocus(object sender, RoutedEventArgs e)
 		{
+			SeedTextBox.Text = SeedTextBox.Text.Trim();
+
 			try
 			{
 				_seed = Blob.FromHex(SeedTextBox.Text);

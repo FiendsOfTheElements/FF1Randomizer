@@ -355,20 +355,22 @@ namespace FF1Randomizer
 			var weapons = Get(WeaponOffset, WeaponSize*WeaponCount).Chunk(WeaponSize);
 			foreach (var weapon in weapons)
 			{
-				if (weapon[3] != 0xFF)
+				if (weapon[3] != 0x00)
 				{
-					weapon[3] = newIndices[weapon[3]];
+					weapon[3] = (byte)(newIndices[weapon[3] - 1] + 1);
 				}
 			}
+			Put(WeaponOffset, weapons.SelectMany(weapon => weapon.ToBytes()).ToArray());
 
 			var armors = Get(ArmorOffset, ArmorSize*ArmorCount).Chunk(ArmorSize);
 			foreach (var armor in armors)
 			{
-				if (armor[3] != 0xFF)
+				if (armor[3] != 0x00)
 				{
-					armor[3] = newIndices[armor[3]];
+					armor[3] = (byte)(newIndices[armor[3] - 1] + 1);
 				}
 			}
+			Put(ArmorOffset, armors.SelectMany(armor => armor.ToBytes()).ToArray());
 
 			// Fix the crazy out of battle spell system.
 			var outOfBattleSpellOffset = MagicOutOfBattleOffset;
