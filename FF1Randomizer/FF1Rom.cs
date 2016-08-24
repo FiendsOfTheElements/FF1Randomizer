@@ -60,14 +60,12 @@ namespace FF1Randomizer
 
 		public void ShuffleTreasures(MT19337 rng)
 		{
-			DirectedGraph<byte> graph;
+			DirectedGraph<byte> graph = new DirectedGraph<byte>();
+			var treasureBlob = Get(TreasureOffset, TreasureSize * TreasureCount);
+			var usedIndices = Enumerable.Range(0, TreasureCount).Except(TreasureConditions.NotUsed).ToList();
+			var usedTreasures = usedIndices.Select(i => treasureBlob[i]).ToList();
 			do
 			{
-				var treasureBlob = Get(TreasureOffset, TreasureSize*TreasureCount);
-
-				var usedIndices = Enumerable.Range(0, TreasureCount).Except(TreasureConditions.NotUsed).ToList();
-				var usedTreasures = usedIndices.Select(i => treasureBlob[i]).ToList();
-
 				usedTreasures.Shuffle(rng);
 
 				for (int i = 0; i < usedIndices.Count; i++)
@@ -75,7 +73,15 @@ namespace FF1Randomizer
 					treasureBlob[usedIndices[i]] = usedTreasures[i];
 				}
 
-				Put(TreasureOffset, treasureBlob);
+				// ToFR is only exitable using WARP or EXIT, so we don't want these items showing up there.
+				// Especially not the TAIL, as that would make class change impossible.  And the CROWN being
+				// here could block a LOT of valuable loot if you don't have a WW or BW.
+				if (TreasureConditions.ToFR.Contains(Array.IndexOf(treasureBlob, QuestItems.Crown)) ||
+					TreasureConditions.ToFR.Contains(Array.IndexOf(treasureBlob, QuestItems.Tail)) ||
+					TreasureConditions.ToFR.Contains(Array.IndexOf(treasureBlob, QuestItems.Adamant)))
+				{
+					continue;
+				}
 
 				var blockages = new List<Tuple<byte, int, List<int>>>
 				{
@@ -103,6 +109,8 @@ namespace FF1Randomizer
 					}
 				}
 			} while (graph.HasCycles());
+
+			Put(TreasureOffset, treasureBlob);
 		}
 
 		private enum ShopType

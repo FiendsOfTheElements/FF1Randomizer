@@ -13,7 +13,8 @@ namespace FF1Randomizer
 		Ruby = 0x09,
 		Floater = 0x0b,
 		Tail = 0x0d,
-		Slab = 0x08
+		Slab = 0x08,
+		Adamant = 0x07
 	}
 
 	public static class TreasureConditions
@@ -23,6 +24,8 @@ namespace FF1Randomizer
 			Enumerable.Range(145, 4).Concat(
 			Enumerable.Range(187, 9).Concat(
 			Enumerable.Range(255, 1)))).ToList();
+
+		public static List<int> ToFR = Enumerable.Range(248, 7).ToList(); // Anything that blocks an ORB will also block these.
 
 		public static List<int> TntBlocked = Enumerable.Range(46, 210).Except(NotUsed).ToList(); // Most of the game.
 		public static List<int> FloaterBlocked = Enumerable.Range(132, 124).Except(NotUsed).ToList(); // Just the northern hemisphere.
@@ -35,7 +38,7 @@ namespace FF1Randomizer
 			Enumerable.Range(30, 3).Concat( // Marsh Cave
 			Enumerable.Range(35, 8).Concat( // Dwarf Cave
 			Enumerable.Range(123, 9).Concat( // Castle of Ordeals
-			Enumerable.Range(248, 5).Concat( // ToFR
+			Enumerable.Range(248, 5).Concat( // ToFR (all but first two)
 				new [] { 165 })))))))).ToList(); // Sea Shrine
 
 		public static List<int> RubyBlocked =
@@ -46,7 +49,6 @@ namespace FF1Randomizer
 			Enumerable.Range(123, 9).Concat( // Castle of Ordeals
 			FloaterBlocked))))).ToList(); // RUBY blocks CANOE, which blocks AIRSHIP.
 
-		public static List<int> ToFR = Enumerable.Range(248, 7).ToList(); // Anything that blocks an ORB will also block these.
 		public static List<int> SlabBlocked = Enumerable.Range(196, 52).Concat(ToFR).ToList(); // Mirage Tower + Sky Castle + ToFR
 
 		// This actually isn't a big deal, because the BOTTLE is only found at item shops.  You can't get to

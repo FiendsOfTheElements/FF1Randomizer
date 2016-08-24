@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FF1Randomizer"
         mc:Ignorable="d"
-        Title="FF1Randomizer 0.4.4" Height="397.727" Width="553.836">
+        Title="FF1Randomizer 0.4.5" Height="397.727" Width="553.836">
 	<Grid Margin="0,0,0,0">
 		<TextBox x:Name="RomTextBox" HorizontalAlignment="Left" Height="23" Margin="10,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" IsEnabled="False"/>
 		<Label x:Name="RomLabel" Content="Original ROM" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.228,0.141" FontWeight="Bold"/>
@@ -49,7 +49,7 @@
 				</Grid>
 			</TabItem>
 		</TabControl>
-		<Button x:Name="GenerateButton" Content="GENERATE" HorizontalAlignment="Right" Margin="0,10,10,0" VerticalAlignment="Top" Width="160" Height="49" FontSize="30" IsEnabled="False" Click="GenerateButton_Click"/>
+		<Button x:Name="GenerateButton" Content="Generate ROM" HorizontalAlignment="Right" Margin="0,10,10,0" VerticalAlignment="Top" Width="150" FontSize="20" IsEnabled="False" Click="GenerateButton_Click" Height="46"/>
 		<TextBox x:Name="FlagsTextBox" HorizontalAlignment="Left" Height="23" Margin="251,90,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
 		<Label x:Name="FlagsLabel" Content="Flags" HorizontalAlignment="Left" Margin="251,64,0,0" VerticalAlignment="Top" RenderTransformOrigin="-1.237,0.615" FontWeight="Bold"/>
 	</Grid>
