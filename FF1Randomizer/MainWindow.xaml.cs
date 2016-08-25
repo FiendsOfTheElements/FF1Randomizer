@@ -112,6 +112,11 @@ namespace FF1Randomizer
 				rom.ShuffleMagicLevels(rng);
 			}
 
+			if (EnemyStatsCheckBox.IsChecked == true)
+			{
+				rom.ScaleEnemyStats(ScaleFactorSlider.Value, rng);
+			}
+
 			if (ExpGoldBoostCheckBox.IsChecked == true)
 			{
 				rom.ExpGoldBoost(ExpBonusSlider.Value*10, ExpMultiplierSlider.Value);
@@ -129,6 +134,7 @@ namespace FF1Randomizer
 			ScaleFactorSlider.Value = Math.Round(ScaleFactorSlider.Value, 1);
 
 			SetScaleFactorLabel();
+			SetFlagsText(sender, e);
 		}
 
 		private void SetScaleFactorLabel()
@@ -177,8 +183,23 @@ namespace FF1Randomizer
 			FlagsTextBox.Text += MagicShopsCheckBox.IsChecked == true ? "M" : "m";
 			FlagsTextBox.Text += MagicLevelsCheckBox.IsChecked == true ? "L" : "l";
 
+			if (EnemyStatsCheckBox.IsChecked == true || PricesCheckBox.IsChecked == true)
+			{
+				if (EnemyStatsCheckBox.IsChecked == true)
+				{
+					FlagsTextBox.Text += "S";
+				}
+				if (PricesCheckBox.IsChecked == true)
+				{
+					FlagsTextBox.Text += "P";
+				}
+
+				FlagsTextBox.Text += $"{10*ScaleFactorSlider.Value:00}";
+			}
+
 			if (ExpGoldBoostCheckBox.IsChecked == true)
 			{
+				FlagsTextBox.Text += "B";
 				FlagsTextBox.Text += $"{10*ExpMultiplierSlider.Value:00}";
 				FlagsTextBox.Text += $"{ExpBonusSlider.Value:00}";
 			}

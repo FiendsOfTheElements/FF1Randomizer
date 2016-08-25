@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FF1Randomizer"
         mc:Ignorable="d"
-        Title="FF1Randomizer 0.4.5" Height="397.727" Width="553.836">
+        Title="FF1Randomizer 0.5.0" Height="397.727" Width="553.836">
 	<Grid Margin="0,0,0,0">
 		<TextBox x:Name="RomTextBox" HorizontalAlignment="Left" Height="23" Margin="10,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" IsEnabled="False"/>
 		<Label x:Name="RomLabel" Content="Original ROM" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.228,0.141" FontWeight="Bold"/>
@@ -24,12 +24,14 @@
 					<CheckBox x:Name="EnemySkillsCheckBox" IsEnabled="False" Content="Enemy Skills" HorizontalAlignment="Left" Margin="10,116,0,0" VerticalAlignment="Top" ToolTip="Enemy skills (such as SQUINT) are shuffled among enemies that use skills." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
 					<CheckBox x:Name="EnemySpellsCheckBox" IsEnabled="False" Content="Enemy Spells" HorizontalAlignment="Left" Margin="10,136,0,0" VerticalAlignment="Top" ToolTip="Enemy spells are shuffled among enemies that use spells." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
 					<CheckBox x:Name="EnemyStatusAttacksCheckBox" IsEnabled="False" Content="Enemy Status Attacks" HorizontalAlignment="Left" Margin="10,157,0,0" VerticalAlignment="Top" ToolTip="Status attacks such as stun, sleep, and death are shuffled." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+					
 					<Label x:Name="ScaleLabel" Content="Scale:" HorizontalAlignment="Left" Margin="237,10,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
 					<Label x:Name="ScaleFactorLabel" Content="" HorizontalAlignment="Left" Margin="282,10,0,0" VerticalAlignment="Top"/>
-					<Slider x:Name="ScaleFactorSlider" HorizontalAlignment="Left" Margin="410,18,0,0" VerticalAlignment="Top" Minimum="2" Maximum="5" Width="100" TickPlacement="BottomRight" TickFrequency="1" ValueChanged="ScaleFactorSlider_ValueChanged" ToolTip="For each value to be scaled, a random exponent is selected between -1 and +1.  The value is scaled by the scale factor raised to that power."/>
+					<Slider x:Name="ScaleFactorSlider" HorizontalAlignment="Left" Margin="410,18,0,0" VerticalAlignment="Top" Minimum="1.5" Maximum="5" Value="2" Width="100" TickPlacement="BottomRight" TickFrequency="0.5" ValueChanged="ScaleFactorSlider_ValueChanged" ToolTip="For each value to be scaled, a random exponent is selected between -1 and +1.  The value is scaled by the scale factor raised to that power."/>
 					<CheckBox x:Name="PricesCheckBox" IsEnabled="False" Content="Prices" HorizontalAlignment="Left" Margin="237,36,0,0" VerticalAlignment="Top" ToolTip="Prices of items, weapons, armor, and magic are all scaled." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
-					<CheckBox x:Name="EnemyStatsCheckBox" IsEnabled="False" Content="Enemy Stats" HorizontalAlignment="Left" Margin="237,56,0,0" VerticalAlignment="Top" ToolTip="Enemy stats are scaled: HP, attack power, # of hits, accuracy, critical %, defense, evade, magic defense, and morale." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+					<CheckBox x:Name="EnemyStatsCheckBox" IsEnabled="True" IsChecked="True" Content="Enemy Stats" HorizontalAlignment="Left" Margin="237,56,0,0" VerticalAlignment="Top" ToolTip="Enemy stats are scaled: HP, attack power, # of hits, accuracy, critical %, defense, evade, magic defense, and morale." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
 					<CheckBox x:Name="ExpGoldBoostCheckBox" Content="Exp/Gold Boost" HorizontalAlignment="Left" Margin="237,136,0,0" VerticalAlignment="Top" IsChecked="True"/>
+					
 					<Label x:Name="ExpLabel" Content="" HorizontalAlignment="Left" Margin="237,156,0,0" VerticalAlignment="Top"/>
 					<Slider x:Name="ExpMultiplierSlider" HorizontalAlignment="Left" Margin="410,136,0,0" VerticalAlignment="Top" Width="100" Minimum="1" Maximum="5" TickPlacement="BottomRight" TickFrequency="1" ValueChanged="ExpMultiplierSlider_ValueChanged" ToolTip="Multiplies enemy exp and gold by this amount." Value="2"/>
 					<Slider x:Name="ExpBonusSlider" HorizontalAlignment="Left" Margin="410,165,0,0" VerticalAlignment="Top" Width="100" Minimum="0" Maximum="50" TickPlacement="BottomRight" TickFrequency="10" ValueChanged="ExpBonusSlider_ValueChanged" ToolTip="Adds this amount to enemy exp and gold." Value="10"/>
@@ -50,7 +52,7 @@
 			</TabItem>
 		</TabControl>
 		<Button x:Name="GenerateButton" Content="Generate ROM" HorizontalAlignment="Right" Margin="0,10,10,0" VerticalAlignment="Top" Width="150" FontSize="20" IsEnabled="False" Click="GenerateButton_Click" Height="46"/>
-		<TextBox x:Name="FlagsTextBox" HorizontalAlignment="Left" Height="23" Margin="251,90,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+		<TextBox x:Name="FlagsTextBox" IsEnabled="False" HorizontalAlignment="Left" Height="23" Margin="251,90,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
 		<Label x:Name="FlagsLabel" Content="Flags" HorizontalAlignment="Left" Margin="251,64,0,0" VerticalAlignment="Top" RenderTransformOrigin="-1.237,0.615" FontWeight="Bold"/>
 	</Grid>
 </Window>

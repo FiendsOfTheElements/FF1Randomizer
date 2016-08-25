@@ -391,6 +391,34 @@ namespace FF1Randomizer
 			}
 		}
 
+		public void ScaleEnemyStats(double scale, MT19337 rng)
+		{
+			var enemies = Get(EnemyOffset, EnemySize*EnemyCount).Chunk(EnemySize);
+			foreach (var enemy in enemies)
+			{
+				var hp = BitConverter.ToUInt16(enemy, 4);
+				hp = (ushort)Math.Min(Scale(hp, scale, rng), 0x7FFF);
+				var hpBytes = BitConverter.GetBytes(hp);
+				Array.Copy(hpBytes, 0, enemy, 4, 2);
+
+				enemy[5] = (byte)Math.Min(Scale(enemy[5], scale, rng), 0xFF); // fear
+				enemy[7] = (byte)Math.Min(Scale(enemy[5], scale, rng), 0xFF); // evade
+				enemy[8] = (byte)Math.Min(Scale(enemy[5], scale, rng), 0xFF); // defense
+				enemy[9] = (byte)Math.Min(Scale(enemy[5], scale, rng), 0xFF); // hits
+				enemy[10] = (byte)Math.Min(Scale(enemy[5], scale, rng), 0xFF); // hit%
+				enemy[11] = (byte)Math.Min(Scale(enemy[5], scale, rng), 0xFF); // strength
+				enemy[12] = (byte)Math.Min(Scale(enemy[5], scale, rng), 0xFF); // critical%
+			}
+
+			Put(EnemyOffset, enemies.SelectMany(enemy => enemy.ToBytes()).ToArray());
+		}
+
+		private int Scale(int value, double scale, MT19337 rng)
+		{
+			var exponent = (double)rng.Next()/uint.MaxValue*2.0 - 1.0;
+			return (int)Math.Pow(scale, exponent)*value;
+		}
+
 		public void ExpGoldBoost(double bonus, double multiplier)
 		{
 			var enemyBlob = Get(EnemyOffset, EnemySize*EnemyCount);
