@@ -401,13 +401,13 @@ namespace FF1Randomizer
 				var hpBytes = BitConverter.GetBytes(hp);
 				Array.Copy(hpBytes, 0, enemy, 4, 2);
 
-				enemy[5] = (byte)Math.Min(Scale(enemy[5], scale, rng), 0xFF); // fear
-				enemy[7] = (byte)Math.Min(Scale(enemy[5], scale, rng), 0xFF); // evade
-				enemy[8] = (byte)Math.Min(Scale(enemy[5], scale, rng), 0xFF); // defense
-				enemy[9] = (byte)Math.Min(Scale(enemy[5], scale, rng), 0xFF); // hits
-				enemy[10] = (byte)Math.Min(Scale(enemy[5], scale, rng), 0xFF); // hit%
-				enemy[11] = (byte)Math.Min(Scale(enemy[5], scale, rng), 0xFF); // strength
-				enemy[12] = (byte)Math.Min(Scale(enemy[5], scale, rng), 0xFF); // critical%
+				enemy[6] = (byte)Math.Min(Scale(enemy[6], scale, rng), 0xFF); // fear
+				enemy[8] = (byte)Math.Min(Scale(enemy[8], scale, rng), 0xFF); // evade
+				enemy[9] = (byte)Math.Min(Scale(enemy[9], scale, rng), 0xFF); // defense
+				enemy[10] = (byte)Math.Min(Scale(enemy[10], scale, rng), 0xFF); // hits
+				enemy[11] = (byte)Math.Min(Scale(enemy[11], scale, rng), 0xFF); // hit%
+				enemy[12] = (byte)Math.Min(Scale(enemy[12], scale, rng), 0xFF); // strength
+				enemy[13] = (byte)Math.Min(Scale(enemy[13], scale, rng), 0xFF); // critical%
 			}
 
 			Put(EnemyOffset, enemies.SelectMany(enemy => enemy.ToBytes()).ToArray());

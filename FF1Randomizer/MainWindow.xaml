@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FF1Randomizer"
         mc:Ignorable="d"
-        Title="FF1Randomizer 0.5.0" Height="397.727" Width="553.836">
+        Title="FF1Randomizer 0.5.1" Height="397.727" Width="553.836">
 	<Grid Margin="0,0,0,0">
 		<TextBox x:Name="RomTextBox" HorizontalAlignment="Left" Height="23" Margin="10,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" IsEnabled="False"/>
 		<Label x:Name="RomLabel" Content="Original ROM" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.228,0.141" FontWeight="Bold"/>
@@ -30,7 +30,7 @@
 					<Slider x:Name="ScaleFactorSlider" HorizontalAlignment="Left" Margin="410,18,0,0" VerticalAlignment="Top" Minimum="1.5" Maximum="5" Value="2" Width="100" TickPlacement="BottomRight" TickFrequency="0.5" ValueChanged="ScaleFactorSlider_ValueChanged" ToolTip="For each value to be scaled, a random exponent is selected between -1 and +1.  The value is scaled by the scale factor raised to that power."/>
 					<CheckBox x:Name="PricesCheckBox" IsEnabled="False" Content="Prices" HorizontalAlignment="Left" Margin="237,36,0,0" VerticalAlignment="Top" ToolTip="Prices of items, weapons, armor, and magic are all scaled." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
 					<CheckBox x:Name="EnemyStatsCheckBox" IsEnabled="True" IsChecked="True" Content="Enemy Stats" HorizontalAlignment="Left" Margin="237,56,0,0" VerticalAlignment="Top" ToolTip="Enemy stats are scaled: HP, attack power, # of hits, accuracy, critical %, defense, evade, magic defense, and morale." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
-					<CheckBox x:Name="ExpGoldBoostCheckBox" Content="Exp/Gold Boost" HorizontalAlignment="Left" Margin="237,136,0,0" VerticalAlignment="Top" IsChecked="True"/>
+					<CheckBox x:Name="ExpGoldBoostCheckBox" Content="Exp/Gold Boost" HorizontalAlignment="Left" Margin="237,136,0,0" VerticalAlignment="Top" IsChecked="True" Checked="SetFlagsText" Unchecked="SetFlagsText"/>
 					
 					<Label x:Name="ExpLabel" Content="" HorizontalAlignment="Left" Margin="237,156,0,0" VerticalAlignment="Top"/>
 					<Slider x:Name="ExpMultiplierSlider" HorizontalAlignment="Left" Margin="410,136,0,0" VerticalAlignment="Top" Width="100" Minimum="1" Maximum="5" TickPlacement="BottomRight" TickFrequency="1" ValueChanged="ExpMultiplierSlider_ValueChanged" ToolTip="Multiplies enemy exp and gold by this amount." Value="2"/>
