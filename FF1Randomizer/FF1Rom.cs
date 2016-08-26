@@ -261,7 +261,7 @@ namespace FF1Randomizer
 
 		private readonly List<byte> _outOfBattleSpells = new List<byte> { 0, 16, 32, 48, 19, 51, 35, 24, 33, 56, 38, 40, 41 };
 
-		public void ShuffleMagicLevels(MT19337 rng)
+		public void ShuffleMagicLevels(MT19337 rng, bool keepPermissions)
 		{
 			var spells = Get(MagicOffset, MagicSize*MagicCount).Chunk(MagicSize);
 			var names = Get(MagicNamesOffset, MagicNameSize*MagicCount).Chunk(MagicNameSize);
@@ -317,23 +317,26 @@ namespace FF1Randomizer
 			Put(MagicNamesOffset, shuffledSpells.Select(spell => spell.Name).Aggregate((seed, next) => seed + next));
 			Put(MagicTextPointersOffset, shuffledSpells.Select(spell => spell.TextPointer).ToArray());
 
-			// Shuffle the permissions the same way the spells were shuffled.
-			for (int c = 0; c < MagicPermissionsCount; c++)
+			if (keepPermissions)
 			{
-				var oldPermissions = Get(MagicPermissionsOffset + c*MagicPermissionsSize, MagicPermissionsSize);
-
-				var newPermissions = new byte[MagicPermissionsSize];
-				for (int i = 0; i < 8; i++)
+				// Shuffle the permissions the same way the spells were shuffled.
+				for (int c = 0; c < MagicPermissionsCount; c++)
 				{
-					for (int j = 0; j < 8; j++)
-					{
-						var oldIndex = shuffledSpells[8*i + j].Index;
-						var oldPermission = (oldPermissions[oldIndex/8] & (0x80 >> oldIndex%8)) >> (7 - oldIndex%8);
-						newPermissions[i] |= (byte)(oldPermission << (7 - j));
-					}
-				}
+					var oldPermissions = Get(MagicPermissionsOffset + c*MagicPermissionsSize, MagicPermissionsSize);
 
-				Put(MagicPermissionsOffset + c*MagicPermissionsSize, newPermissions);
+					var newPermissions = new byte[MagicPermissionsSize];
+					for (int i = 0; i < 8; i++)
+					{
+						for (int j = 0; j < 8; j++)
+						{
+							var oldIndex = shuffledSpells[8*i + j].Index;
+							var oldPermission = (oldPermissions[oldIndex/8] & (0x80 >> oldIndex%8)) >> (7 - oldIndex%8);
+							newPermissions[i] |= (byte)(oldPermission << (7 - j));
+						}
+					}
+
+					Put(MagicPermissionsOffset + c*MagicPermissionsSize, newPermissions);
+				}
 			}
 
 			// Map old indices to new indices.

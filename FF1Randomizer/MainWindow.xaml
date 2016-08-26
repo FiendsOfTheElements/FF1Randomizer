@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FF1Randomizer"
         mc:Ignorable="d"
-        Title="FF1Randomizer 0.5.2" Height="397.727" Width="553.836">
+        Title="FF1Randomizer 0.5.3" Height="397.727" Width="553.836">
 	<Grid Margin="0,0,0,0">
 		<TextBox x:Name="RomTextBox" HorizontalAlignment="Left" Height="23" Margin="10,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" IsEnabled="False"/>
 		<Label x:Name="RomLabel" Content="Original ROM" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.228,0.141" FontWeight="Bold"/>
@@ -20,10 +20,11 @@
 					<CheckBox x:Name="TreasuresCheckBox" IsEnabled="True" IsChecked="True" Content="Treasures" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,36,0,0" ToolTip="Treasure chest contents will be shuffled.  Sanity checks are in place to ensure you can still finish the game." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
 					<CheckBox x:Name="ShopsCheckBox" IsEnabled="True" IsChecked="True" Content="Shops" HorizontalAlignment="Left" Margin="10,56,0,0" VerticalAlignment="Top" ToolTip="Shop contents (other than magic) are shuffled." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
 					<CheckBox x:Name="MagicShopsCheckBox" IsEnabled="True" IsChecked="True" Content="Magic Shops" HorizontalAlignment="Left" Margin="10,76,0,0" VerticalAlignment="Top" ToolTip="Magic shop contents are shuffled." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
-					<CheckBox x:Name="MagicLevelsCheckBox" IsEnabled="True" IsChecked="True" Content="Magic Levels" HorizontalAlignment="Left" Margin="10,96,0,0" VerticalAlignment="Top" ToolTip="Magic spells have their levels shuffled, but not their permissions.  NUKE might be L1, but only a Black Wizard can cast it." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
-					<CheckBox x:Name="EnemySkillsCheckBox" IsEnabled="False" Content="Enemy Skills" HorizontalAlignment="Left" Margin="10,116,0,0" VerticalAlignment="Top" ToolTip="Enemy skills (such as SQUINT) are shuffled among enemies that use skills." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
-					<CheckBox x:Name="EnemySpellsCheckBox" IsEnabled="False" Content="Enemy Spells" HorizontalAlignment="Left" Margin="10,136,0,0" VerticalAlignment="Top" ToolTip="Enemy spells are shuffled among enemies that use spells." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
-					<CheckBox x:Name="EnemyStatusAttacksCheckBox" IsEnabled="False" Content="Enemy Status Attacks" HorizontalAlignment="Left" Margin="10,157,0,0" VerticalAlignment="Top" ToolTip="Status attacks such as stun, sleep, and death are shuffled." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+					<CheckBox x:Name="MagicLevelsCheckBox" IsEnabled="True" IsChecked="True" Content="Magic Levels" HorizontalAlignment="Left" Margin="10,96,0,0" VerticalAlignment="Top" ToolTip="Magic spells have their levels shuffled." Checked="MagicLevelsCheckBox_OnChecked" Unchecked="MagicLevelsCheckBox_OnUnchecked"/>
+					<CheckBox x:Name="MagicPermissionsCheckBox" IsEnabled="True" IsChecked="True" Content="Keep Permissions" HorizontalAlignment="Left" Margin="24,116,0,0" VerticalAlignment="Top" ToolTip="Retain the permissions of spells, even if they're shuffled to lower levels." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+					<CheckBox x:Name="EnemySkillsCheckBox" IsEnabled="False" Content="Enemy Skills" HorizontalAlignment="Left" Margin="10,136,0,0" VerticalAlignment="Top" ToolTip="Enemy skills (such as SQUINT) are shuffled among enemies that use skills." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+					<CheckBox x:Name="EnemySpellsCheckBox" IsEnabled="False" Content="Enemy Spells" HorizontalAlignment="Left" Margin="10,156,0,0" VerticalAlignment="Top" ToolTip="Enemy spells are shuffled among enemies that use spells." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+					<CheckBox x:Name="EnemyStatusAttacksCheckBox" IsEnabled="False" Content="Enemy Status Attacks" HorizontalAlignment="Left" Margin="10,177,0,0" VerticalAlignment="Top" ToolTip="Status attacks such as stun, sleep, and death are shuffled." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
 					
 					<Label x:Name="ScaleLabel" Content="Scale:" HorizontalAlignment="Left" Margin="237,10,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
 					<Label x:Name="ScaleFactorLabel" Content="" HorizontalAlignment="Left" Margin="282,10,0,0" VerticalAlignment="Top"/>

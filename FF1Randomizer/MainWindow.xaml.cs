@@ -109,7 +109,7 @@ namespace FF1Randomizer
 
 			if (MagicLevelsCheckBox.IsChecked == true)
 			{
-				rom.ShuffleMagicLevels(rng);
+				rom.ShuffleMagicLevels(rng, MagicPermissionsCheckBox.IsChecked ?? false);
 			}
 
 			if (EnemyStatsCheckBox.IsChecked == true)
@@ -127,6 +127,26 @@ namespace FF1Randomizer
 			rom.Save(outputFilename);
 
 			MessageBox.Show($"Finished generating new ROM: {outputFilename}", "Done");
+		}
+
+		private void MagicLevelsCheckBox_OnChecked(object sender, RoutedEventArgs e)
+		{
+			if (MagicPermissionsCheckBox != null)
+			{
+				MagicPermissionsCheckBox.IsEnabled = true;
+			}
+
+			SetFlagsText(sender, e);
+		}
+
+		private void MagicLevelsCheckBox_OnUnchecked(object sender, RoutedEventArgs e)
+		{
+			if (MagicPermissionsCheckBox != null)
+			{
+				MagicPermissionsCheckBox.IsEnabled = false;
+			}
+
+			SetFlagsText(sender, e);
 		}
 
 		private void ScaleFactorSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -182,6 +202,7 @@ namespace FF1Randomizer
 			FlagsTextBox.Text += ShopsCheckBox.IsChecked == true ? "S" : "s";
 			FlagsTextBox.Text += MagicShopsCheckBox.IsChecked == true ? "M" : "m";
 			FlagsTextBox.Text += MagicLevelsCheckBox.IsChecked == true ? "L" : "l";
+			FlagsTextBox.Text += MagicPermissionsCheckBox.IsChecked == true ? "P" : "p";
 
 			if (EnemyStatsCheckBox.IsChecked == true || PricesCheckBox.IsChecked == true)
 			{
