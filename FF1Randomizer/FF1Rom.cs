@@ -404,26 +404,28 @@ namespace FF1Randomizer
 			foreach (var enemy in enemies)
 			{
 				var hp = BitConverter.ToUInt16(enemy, 4);
-				hp = (ushort)Min(Scale(hp, scale, rng), 0x7FFF);
+				hp = (ushort)Min(Scale(hp, scale, 1.0, rng), 0x7FFF);
 				var hpBytes = BitConverter.GetBytes(hp);
 				Array.Copy(hpBytes, 0, enemy, 4, 2);
 
-				// enemy[6] = (byte)Math.Min(Scale(enemy[6], scale, rng), 0xFF); // fear (disabled because it's too silly)
-				enemy[8] = (byte)Min(Scale(enemy[8], scale, rng), 0xFF); // evade
-				enemy[9] = (byte)Min(Scale(enemy[9], scale, rng), 0xFF); // defense
-				enemy[10] = (byte)Max(Min(Scale(enemy[10], scale, rng), 0xFF), 1); // hits
-				enemy[11] = (byte)Min(Scale(enemy[11], scale, rng), 0xFF); // hit%
-				enemy[12] = (byte)Min(Scale(enemy[12], scale, rng), 0xFF); // strength
-				enemy[13] = (byte)Min(Scale(enemy[13], scale, rng), 0xFF); // critical%
+				enemy[6] = (byte)Min(Scale(enemy[6], scale, 0.25, rng), 0xFF); // morale
+				enemy[8] = (byte)Min(Scale(enemy[8], scale, 1.0, rng), 0xFF); // evade
+				enemy[9] = (byte)Min(Scale(enemy[9], scale, 0.5, rng), 0xFF); // defense
+				enemy[10] = (byte)Max(Min(Scale(enemy[10], scale, 0.5, rng), 0xFF), 1); // hits
+				enemy[11] = (byte)Min(Scale(enemy[11], scale, 1.0, rng), 0xFF); // hit%
+				enemy[12] = (byte)Min(Scale(enemy[12], scale, 0.25, rng), 0xFF); // strength
+				enemy[13] = (byte)Min(Scale(enemy[13], scale, 0.5, rng), 0xFF); // critical%
 			}
 
 			Put(EnemyOffset, enemies.SelectMany(enemy => enemy.ToBytes()).ToArray());
 		}
 
-		private int Scale(int value, double scale, MT19337 rng)
+		private int Scale(int value, double scale, double adjustment, MT19337 rng)
 		{
 			var exponent = (double)rng.Next()/uint.MaxValue*2.0 - 1.0;
-			return (int)Round(Pow(scale, exponent)*value, MidpointRounding.AwayFromZero);
+			var adjustedScale = 1.0 + adjustment*(scale - 1.0);
+
+			return (int)Round(Pow(adjustedScale, exponent)*value, MidpointRounding.AwayFromZero);
 		}
 
 		public void ExpGoldBoost(double bonus, double multiplier)
