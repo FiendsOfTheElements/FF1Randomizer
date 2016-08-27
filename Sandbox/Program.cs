@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using FF1Randomizer;
+using RomUtilities;
 
 namespace Sandbox
 {
@@ -13,14 +14,23 @@ namespace Sandbox
 		{
 			var rom = new FF1Rom("E:/temp/FF1Randomizer/FF1.nes");
 
-			var shopPointerBlob = rom.Get(0x38300, 142);
-			var shopPointers = Enumerable.Range(0, 71).Select(i => shopPointerBlob.SubBlob(2*i, 2)).ToList();
-
-			var shopints = shopPointers.Select(p => BitConverter.ToUInt16(p, 0)).OrderBy(i => i).ToList();
-
-			shopints.ForEach(i => Console.WriteLine(i));
+			var rng = MT19337.New();
+			for (int i = 0; i < 100; i++)
+			{
+				rom.ShuffleTreasures(rng);
+				var treasures = rom.GetTreasures();
+				Console.WriteLine($"{treasures.IndexOf((byte)QuestItems.Floater):000} {treasures.IndexOf((byte)QuestItems.Ruby):000} {treasures.IndexOf((byte)QuestItems.Slab):000} ");
+			}
 
 			Console.ReadLine();
+		}
+	}
+
+	static class RomExtensions
+	{
+		public static Blob GetTreasures(this FF1Rom rom)
+		{
+			return rom.Get(FF1Rom.TreasureOffset, FF1Rom.TreasureSize*FF1Rom.TreasureCount);
 		}
 	}
 }

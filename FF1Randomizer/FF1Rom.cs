@@ -79,9 +79,9 @@ namespace FF1Randomizer
 				// Especially not the TAIL, as that would make class change impossible.  And the CROWN being
 				// here could block a LOT of valuable loot if you don't have a WW or BW.
 				tofrQuestItem =
-					TreasureConditions.ToFR.Contains(Array.IndexOf(treasureBlob, (byte)QuestItems.Crown)) ||
-					TreasureConditions.ToFR.Contains(Array.IndexOf(treasureBlob, (byte)QuestItems.Tail)) ||
-					TreasureConditions.ToFR.Contains(Array.IndexOf(treasureBlob, (byte)QuestItems.Adamant));
+					TreasureConditions.ToFR.Contains(treasureBlob.IndexOf((byte)QuestItems.Crown)) ||
+					TreasureConditions.ToFR.Contains(treasureBlob.IndexOf((byte)QuestItems.Tail)) ||
+					TreasureConditions.ToFR.Contains(treasureBlob.IndexOf((byte)QuestItems.Adamant));
 				if (tofrQuestItem)
 				{
 					continue;
@@ -89,11 +89,11 @@ namespace FF1Randomizer
 
 				var blockages = new List<Tuple<byte, int, List<int>>>
 				{
-					Tuple.Create((byte)QuestItems.Crown,   Array.IndexOf(treasureBlob, (byte)QuestItems.Crown),   TreasureConditions.CrownBlocked),
-					Tuple.Create((byte)QuestItems.Tnt,     Array.IndexOf(treasureBlob, (byte)QuestItems.Tnt),     TreasureConditions.TntBlocked),
-					Tuple.Create((byte)QuestItems.Ruby,    Array.IndexOf(treasureBlob, (byte)QuestItems.Ruby),    TreasureConditions.RubyBlocked),
-					Tuple.Create((byte)QuestItems.Floater, Array.IndexOf(treasureBlob, (byte)QuestItems.Floater), TreasureConditions.FloaterBlocked),
-					Tuple.Create((byte)QuestItems.Slab,    Array.IndexOf(treasureBlob, (byte)QuestItems.Slab),    TreasureConditions.SlabBlocked)
+					Tuple.Create((byte)QuestItems.Crown,   treasureBlob.IndexOf((byte)QuestItems.Crown),   TreasureConditions.CrownBlocked),
+					Tuple.Create((byte)QuestItems.Tnt,     treasureBlob.IndexOf((byte)QuestItems.Tnt),     TreasureConditions.TntBlocked),
+					Tuple.Create((byte)QuestItems.Ruby,    treasureBlob.IndexOf((byte)QuestItems.Ruby),    TreasureConditions.RubyBlocked),
+					Tuple.Create((byte)QuestItems.Floater, treasureBlob.IndexOf((byte)QuestItems.Floater), TreasureConditions.FloaterBlocked),
+					Tuple.Create((byte)QuestItems.Slab,    treasureBlob.IndexOf((byte)QuestItems.Slab),    TreasureConditions.SlabBlocked)
 				};
 
 				graph = new DirectedGraph<byte>();
