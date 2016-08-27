@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FF1Randomizer"
         mc:Ignorable="d"
-        Title="FF1Randomizer 0.5.3" Height="397.727" Width="553.836">
+        Title="FF1Randomizer 0.5.4" Height="397.727" Width="553.836">
 	<Grid Margin="0,0,0,0">
 		<TextBox x:Name="RomTextBox" HorizontalAlignment="Left" Height="23" Margin="10,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" IsEnabled="False"/>
 		<Label x:Name="RomLabel" Content="Original ROM" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.228,0.141" FontWeight="Bold"/>

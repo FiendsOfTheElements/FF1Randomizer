@@ -65,6 +65,7 @@ namespace FF1Randomizer
 			var treasureBlob = Get(TreasureOffset, TreasureSize * TreasureCount);
 			var usedIndices = Enumerable.Range(0, TreasureCount).Except(TreasureConditions.NotUsed).ToList();
 			var usedTreasures = usedIndices.Select(i => treasureBlob[i]).ToList();
+			bool tofrQuestItem;
 			do
 			{
 				usedTreasures.Shuffle(rng);
@@ -77,9 +78,11 @@ namespace FF1Randomizer
 				// ToFR is only exitable using WARP or EXIT, so we don't want these items showing up there.
 				// Especially not the TAIL, as that would make class change impossible.  And the CROWN being
 				// here could block a LOT of valuable loot if you don't have a WW or BW.
-				if (TreasureConditions.ToFR.Contains(Array.IndexOf(treasureBlob, QuestItems.Crown)) ||
-					TreasureConditions.ToFR.Contains(Array.IndexOf(treasureBlob, QuestItems.Tail)) ||
-					TreasureConditions.ToFR.Contains(Array.IndexOf(treasureBlob, QuestItems.Adamant)))
+				tofrQuestItem =
+					TreasureConditions.ToFR.Contains(Array.IndexOf(treasureBlob, (byte)QuestItems.Crown)) ||
+					TreasureConditions.ToFR.Contains(Array.IndexOf(treasureBlob, (byte)QuestItems.Tail)) ||
+					TreasureConditions.ToFR.Contains(Array.IndexOf(treasureBlob, (byte)QuestItems.Adamant));
+				if (tofrQuestItem)
 				{
 					continue;
 				}
@@ -109,7 +112,7 @@ namespace FF1Randomizer
 						}
 					}
 				}
-			} while (graph.HasCycles());
+			} while (tofrQuestItem || graph.HasCycles());
 
 			Put(TreasureOffset, treasureBlob);
 		}
