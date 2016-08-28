@@ -9,8 +9,12 @@ using static System.Math;
 
 namespace FF1Randomizer
 {
+	// ReSharper disable once InconsistentNaming
 	public class FF1Rom : NesRom
 	{
+		public const int CopyrightOffset1 = 0x384A8;
+		public const int CopyrightOffset2 = 0x384BA;
+
 		public const int TreasureOffset = 0x3100;
 		public const int TreasureSize = 1;
 		public const int TreasureCount = 256;
@@ -57,6 +61,15 @@ namespace FF1Randomizer
 		public override bool Validate()
 		{
 			return Get(0, 16) == Blob.FromHex("06400e890e890e401e400e400e400b42");
+		}
+
+		public void WriteSeedAndFlags(string seed, string flags)
+		{
+			var seedBytes = FF1Text.TextToBytes($"SEED   {seed}");
+			var flagBytes = FF1Text.TextToBytes($"     {flags}");
+
+			Put(CopyrightOffset1, seedBytes);
+			Put(CopyrightOffset2, flagBytes);
 		}
 
 		public void ShuffleTreasures(MT19337 rng)

@@ -122,8 +122,11 @@ namespace FF1Randomizer
 				rom.ExpGoldBoost(ExpBonusSlider.Value*10, ExpMultiplierSlider.Value);
 			}
 
+			var seedText = _seed.ToHex();
+			rom.WriteSeedAndFlags(seedText, FlagsTextBox.Text);
+
 			var fileRoot = _filename.Substring(0, _filename.LastIndexOf("."));
-			var outputFilename = $"{fileRoot}_{FlagsTextBox.Text}_{_seed.ToHex()}.nes";
+			var outputFilename = $"{fileRoot}_{FlagsTextBox.Text}_{seedText}.nes";
 			rom.Save(outputFilename);
 
 			MessageBox.Show($"Finished generating new ROM: {outputFilename}", "Done");
@@ -215,14 +218,42 @@ namespace FF1Randomizer
 					FlagsTextBox.Text += "P";
 				}
 
-				FlagsTextBox.Text += $"{10*ScaleFactorSlider.Value:00}";
+				FlagsTextBox.Text += SliderToBase64((int)(10*ScaleFactorSlider.Value));
 			}
 
 			if (ExpGoldBoostCheckBox.IsChecked == true)
 			{
 				FlagsTextBox.Text += "B";
-				FlagsTextBox.Text += $"{10*ExpMultiplierSlider.Value:00}";
-				FlagsTextBox.Text += $"{ExpBonusSlider.Value:00}";
+				FlagsTextBox.Text += SliderToBase64((int)(10*ExpMultiplierSlider.Value));
+				FlagsTextBox.Text += SliderToBase64((int)ExpBonusSlider.Value);
+			}
+		}
+
+		private char SliderToBase64(int value)
+		{
+			if (value < 0 || value > 63)
+			{
+				throw new ArgumentOutOfRangeException(nameof(value), value, "Value must be between 0 and 63.");
+			}
+			else if (value < 10)
+			{
+				return (char)('0' + value);
+			}
+			else if (value < 36)
+			{
+				return (char)('A' + value - 10);
+			}
+			else if (value < 62)
+			{
+				return (char)('a' + value - 36);
+			}
+			else if (value == 62)
+			{
+				return '!';
+			}
+			else
+			{
+				return '?';
 			}
 		}
 	}
