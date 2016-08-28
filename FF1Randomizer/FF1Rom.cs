@@ -55,6 +55,10 @@ namespace FF1Randomizer
 		public const int ArmorSize = 4;
 		public const int ArmorCount = 40;
 
+		public const int PriceOffset = 0x37C00;
+		public const int PriceSize = 2;
+		public const int PriceCount = 240;
+
 		public FF1Rom(string filename) : base(filename)
 		{}
 
@@ -66,10 +70,15 @@ namespace FF1Randomizer
 		public void WriteSeedAndFlags(string seed, string flags)
 		{
 			var seedBytes = FF1Text.TextToBytes($"SEED   {seed}");
-			var flagBytes = FF1Text.TextToBytes($"     {flags}");
+			var flagBytes = FF1Text.TextToBytes($"{flags}");
+			var padding = new byte[15 - flagBytes.Length];
+			for (int i = 0; i < padding.Length; i++)
+			{
+				padding[i] = 0xFF;
+			}
 
 			Put(CopyrightOffset1, seedBytes);
-			Put(CopyrightOffset2, flagBytes);
+			Put(CopyrightOffset2, flagBytes + padding);
 		}
 
 		public void ShuffleTreasures(MT19337 rng)
@@ -409,6 +418,21 @@ namespace FF1Randomizer
 
 				outOfBattleSpellOffset += MagicOutOfBattleSize;
 			}
+		}
+
+		public void ScalePrices(double scale, MT19337 rng)
+		{
+			var prices = Get(PriceOffset, PriceSize*PriceCount).Chunk(PriceSize);
+			foreach (var price in prices)
+			{
+				var priceValue = BitConverter.ToUInt16(price, 0);
+				priceValue = (ushort)Min(Scale(priceValue, scale, 1, rng), 0xFFFF);
+
+				var priceBytes = BitConverter.GetBytes(priceValue);
+				Array.Copy(priceBytes, 0, price, 0, 2);
+			}
+
+			Put(PriceOffset, prices.SelectMany(price => price.ToBytes()).ToArray());
 		}
 
 		public void ScaleEnemyStats(double scale, MT19337 rng)

@@ -33,9 +33,6 @@ namespace FF1Randomizer
 				BytesByText[sides[1]] = b;
 				TextByBytes[b] = sides[1];
 			}
-
-			BytesByText["\0"] = 0xFF;
-			TextByBytes[0xFF] = "\0";
 		}
 
 		public static string BytesToText(byte[] bytes)

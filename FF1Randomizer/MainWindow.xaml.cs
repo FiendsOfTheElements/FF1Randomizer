@@ -32,7 +32,8 @@ namespace FF1Randomizer
 
 			GenerateSeed();
 
-			SetScaleFactorLabel();
+			SetScaleFactorLabel(PriceScaleFactorSlider, PriceScaleFactorLabel);
+			SetScaleFactorLabel(EnemyScaleFactorSlider, EnemyScaleFactorLabel);
 			SetExpLabel();
 			SetFlagsText(null, null);
 		}
@@ -112,9 +113,14 @@ namespace FF1Randomizer
 				rom.ShuffleMagicLevels(rng, MagicPermissionsCheckBox.IsChecked ?? false);
 			}
 
+			if (PricesCheckBox.IsChecked == true)
+			{
+				rom.ScalePrices(PriceScaleFactorSlider.Value, rng);
+			}
+
 			if (EnemyStatsCheckBox.IsChecked == true)
 			{
-				rom.ScaleEnemyStats(ScaleFactorSlider.Value, rng);
+				rom.ScaleEnemyStats(EnemyScaleFactorSlider.Value, rng);
 			}
 
 			if (ExpGoldBoostCheckBox.IsChecked == true)
@@ -152,20 +158,28 @@ namespace FF1Randomizer
 			SetFlagsText(sender, e);
 		}
 
-		private void ScaleFactorSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+		private void PriceScaleFactorSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
 		{
-			ScaleFactorSlider.Value = Math.Round(ScaleFactorSlider.Value, 1);
+			PriceScaleFactorSlider.Value = Math.Round(PriceScaleFactorSlider.Value, 1);
 
-			SetScaleFactorLabel();
+			SetScaleFactorLabel(PriceScaleFactorSlider, PriceScaleFactorLabel);
 			SetFlagsText(sender, e);
 		}
 
-		private void SetScaleFactorLabel()
+		private void EnemyScaleFactorSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
 		{
-			var lower = Math.Round(100 / ScaleFactorSlider.Value);
-			var upper = Math.Round(100 * ScaleFactorSlider.Value);
+			EnemyScaleFactorSlider.Value = Math.Round(EnemyScaleFactorSlider.Value, 1);
 
-			ScaleFactorLabel.Content = $"{lower}% - {upper}%";
+			SetScaleFactorLabel(EnemyScaleFactorSlider, EnemyScaleFactorLabel);
+			SetFlagsText(sender, e);
+		}
+
+		private void SetScaleFactorLabel(Slider slider, Label label)
+		{
+			var lower = Math.Round(100 / slider.Value);
+			var upper = Math.Round(100 * slider.Value);
+
+			label.Content = $"{lower}% - {upper}%";
 		}
 
 		private void ExpMultiplierSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -207,18 +221,15 @@ namespace FF1Randomizer
 			FlagsTextBox.Text += MagicLevelsCheckBox.IsChecked == true ? "L" : "l";
 			FlagsTextBox.Text += MagicPermissionsCheckBox.IsChecked == true ? "P" : "p";
 
-			if (EnemyStatsCheckBox.IsChecked == true || PricesCheckBox.IsChecked == true)
+			if (PricesCheckBox.IsChecked == true)
 			{
-				if (EnemyStatsCheckBox.IsChecked == true)
-				{
-					FlagsTextBox.Text += "S";
-				}
-				if (PricesCheckBox.IsChecked == true)
-				{
-					FlagsTextBox.Text += "P";
-				}
-
-				FlagsTextBox.Text += SliderToBase64((int)(10*ScaleFactorSlider.Value));
+				FlagsTextBox.Text += "P";
+				FlagsTextBox.Text += SliderToBase64((int)(10 * PriceScaleFactorSlider.Value));
+			}
+			if (EnemyStatsCheckBox.IsChecked == true)
+			{
+				FlagsTextBox.Text += "S";
+				FlagsTextBox.Text += SliderToBase64((int)(10 * EnemyScaleFactorSlider.Value));
 			}
 
 			if (ExpGoldBoostCheckBox.IsChecked == true)
