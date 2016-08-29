@@ -73,7 +73,7 @@ namespace FF1Randomizer
 
 		public void WriteSeedAndFlags(string seed, string flags)
 		{
-			var seedBytes = FF1Text.TextToBytes($"SEED   {seed}");
+			var seedBytes = FF1Text.TextToBytes($"0.6.2  {seed}");
 			var flagBytes = FF1Text.TextToBytes($"{flags}");
 			var padding = new byte[15 - flagBytes.Length];
 			for (int i = 0; i < padding.Length; i++)
@@ -443,12 +443,15 @@ namespace FF1Randomizer
 
 			for (int i = (int)ShopType.Clinic; i < (int)ShopType.Inn + ShopSectionSize; i++)
 			{
-				var priceBytes = Get(ShopPointerBase + pointers[i], 2);
-				var price = BitConverter.ToUInt16(priceBytes, 0);
+				if (pointers[i] != ShopNullPointer)
+				{
+					var priceBytes = Get(ShopPointerBase + pointers[i], 2);
+					var price = BitConverter.ToUInt16(priceBytes, 0);
 
-				price = (ushort)Scale(price, scale, 1, rng);
-				priceBytes = BitConverter.GetBytes(price);
-				Put(ShopPointerBase + pointers[i], priceBytes);
+					price = (ushort)Scale(price, scale, 1, rng);
+					priceBytes = BitConverter.GetBytes(price);
+					Put(ShopPointerBase + pointers[i], priceBytes);
+				}
 			}
 		}
 
