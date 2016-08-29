@@ -71,9 +71,9 @@ namespace FF1Randomizer
 			return Get(0, 16) == Blob.FromHex("06400e890e890e401e400e400e400b42");
 		}
 
-		public void WriteSeedAndFlags(string seed, string flags)
+		public void WriteSeedAndFlags(string version, string seed, string flags)
 		{
-			var seedBytes = FF1Text.TextToBytes($"0.6.2  {seed}");
+			var seedBytes = FF1Text.TextToBytes($"{version}  {seed}");
 			var flagBytes = FF1Text.TextToBytes($"{flags}");
 			var padding = new byte[15 - flagBytes.Length];
 			for (int i = 0; i < padding.Length; i++)
@@ -296,36 +296,30 @@ namespace FF1Randomizer
 			var names = Get(MagicNamesOffset, MagicNameSize*MagicCount).Chunk(MagicNameSize);
 			var pointers = Get(MagicTextPointersOffset, MagicCount);
 
-			// First we have to un-interleave white and black spells.
-			var whiteSpells = new List<MagicSpell>();
-			var blackSpells = new List<MagicSpell>();
-
-			for (int i = 0; i < MagicCount; i++)
+			var magicSpells = spells.Select((spell, i) => new MagicSpell
 			{
-				if ((i/4)%2 == 0)
-				{
-					whiteSpells.Add(new MagicSpell
-					{
-						Index = (byte)i,
-						Data = spells[i],
-						Name = names[i],
-						TextPointer = pointers[i]
-					});
-				}
-				else
-				{
-					blackSpells.Add(new MagicSpell
-					{
-						Index = (byte)i,
-						Data = spells[i],
-						Name = names[i],
-						TextPointer = pointers[i]
-					});
-				}
-			}
+				Index = (byte)i,
+				Data = spell,
+				Name = names[i],
+				TextPointer = pointers[i]
+			}).ToList();
+
+			// First we have to un-interleave white and black spells.
+			var whiteSpells = magicSpells.Where((spell, i) => (i/4)%2 == 0).ToList();
+			var blackSpells = magicSpells.Where((spell, i) => (i/4)%2 == 1).ToList();
 
 			whiteSpells.Shuffle(rng);
-			blackSpells.Shuffle(rng);
+
+			const int warpIndex = 38;
+			bool warpBug;
+			do
+			{
+				blackSpells.Shuffle(rng);
+				var newWarpIndex = blackSpells.FindIndex(spell => spell.Index == warpIndex);
+
+				// If WARP is the last spell in its level, it won't work due to a bug in the original game.
+				warpBug = newWarpIndex%4 == 3;
+			} while (warpBug);
 
 			// Now we re-interleave the spells.
 			var shuffledSpells = new List<MagicSpell>();

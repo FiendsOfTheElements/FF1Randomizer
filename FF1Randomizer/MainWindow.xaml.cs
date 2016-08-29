@@ -26,9 +26,18 @@ namespace FF1Randomizer
 		private string _filename;
 		private Blob _seed;
 
+		public const string Version = "0.6.3";
+
+		private class MainWindowViewModel
+		{
+			public string WindowTitle => $"FF1 Randomizer {Version}";
+		}
+
 		public MainWindow()
 		{
 			InitializeComponent();
+
+			DataContext = new MainWindowViewModel();
 
 			GenerateSeed();
 
@@ -129,7 +138,7 @@ namespace FF1Randomizer
 			}
 
 			var seedText = _seed.ToHex();
-			rom.WriteSeedAndFlags(seedText, FlagsTextBox.Text);
+			rom.WriteSeedAndFlags(Version, seedText, FlagsTextBox.Text);
 
 			var fileRoot = _filename.Substring(0, _filename.LastIndexOf("."));
 			var outputFilename = $"{fileRoot}_{FlagsTextBox.Text}_{seedText}.nes";
