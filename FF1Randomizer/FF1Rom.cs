@@ -59,6 +59,10 @@ namespace FF1Randomizer
 		public const int PriceSize = 2;
 		public const int PriceCount = 240;
 
+		public const int SardaOffset = 0x393E9;
+		public const int SardaSize = 7;
+		public const int Nop = 0xEA;
+
 		public FF1Rom(string filename) : base(filename)
 		{}
 
@@ -433,6 +437,19 @@ namespace FF1Randomizer
 			}
 
 			Put(PriceOffset, prices.SelectMany(price => price.ToBytes()).ToArray());
+
+			var pointers = Get(ShopPointerOffset, ShopPointerCount * ShopPointerSize).ToUShorts();
+			RepackShops(pointers);
+
+			for (int i = (int)ShopType.Clinic; i < (int)ShopType.Inn + ShopSectionSize; i++)
+			{
+				var priceBytes = Get(ShopPointerBase + pointers[i], 2);
+				var price = BitConverter.ToUInt16(priceBytes, 0);
+
+				price = (ushort)Scale(price, scale, 1, rng);
+				priceBytes = BitConverter.GetBytes(price);
+				Put(ShopPointerBase + pointers[i], priceBytes);
+			}
 		}
 
 		public void ScaleEnemyStats(double scale, MT19337 rng)
