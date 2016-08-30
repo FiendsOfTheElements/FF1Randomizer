@@ -418,6 +418,33 @@ namespace FF1Randomizer
 			}
 		}
 
+		public void ShuffleEnemyStatusAttacks(MT19337 rng)
+		{
+			var oldEnemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
+			var newEnemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
+
+			oldEnemies.Shuffle(rng);
+
+			for (int i = 0; i < EnemyCount; i++)
+			{
+				newEnemies[i][14] = oldEnemies[i][14];
+				newEnemies[i][15] = oldEnemies[i][15];
+			}
+
+			Put(EnemyOffset, newEnemies.SelectMany(enemy => enemy.ToBytes()).ToArray());
+		}
+
+		public void EnableEarlyRod()
+		{
+			var nops = new byte[SardaSize];
+			for (int i = 0; i < nops.Length; i++)
+			{
+				nops[i] = Nop;
+			}
+
+			Put(SardaOffset, nops);
+		}
+
 		public void ScalePrices(double scale, MT19337 rng)
 		{
 			var prices = Get(PriceOffset, PriceSize*PriceCount).Chunk(PriceSize);

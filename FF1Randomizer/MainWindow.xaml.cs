@@ -26,7 +26,7 @@ namespace FF1Randomizer
 		private string _filename;
 		private Blob _seed;
 
-		public const string Version = "0.6.3";
+		public const string Version = "0.7.0";
 
 		private class MainWindowViewModel
 		{
@@ -122,17 +122,27 @@ namespace FF1Randomizer
 				rom.ShuffleMagicLevels(rng, MagicPermissionsCheckBox.IsChecked ?? false);
 			}
 
-			if (PricesCheckBox.IsChecked == true)
+			if (EnemyStatusAttacksCheckBox.IsChecked == true)
+			{
+				rom.ShuffleEnemyStatusAttacks(rng);
+			}
+
+			if (EarlyRodCheckBox.IsChecked == true)
+			{
+				rom.EnableEarlyRod();
+			}
+
+			if (PriceScaleFactorSlider.Value > 1)
 			{
 				rom.ScalePrices(PriceScaleFactorSlider.Value, rng);
 			}
 
-			if (EnemyStatsCheckBox.IsChecked == true)
+			if (EnemyScaleFactorSlider.Value > 1)
 			{
 				rom.ScaleEnemyStats(EnemyScaleFactorSlider.Value, rng);
 			}
 
-			if (ExpGoldBoostCheckBox.IsChecked == true)
+			if (ExpMultiplierSlider.Value > 1 || ExpBonusSlider.Value > 0)
 			{
 				rom.ExpGoldBoost(ExpBonusSlider.Value*10, ExpMultiplierSlider.Value);
 			}
@@ -209,15 +219,15 @@ namespace FF1Randomizer
 
 		private void SetExpLabel()
 		{
-			if (ExpMultiplierSlider != null && ExpBonusSlider != null && ExpLabel != null)
+			if (ExpMultiplierSlider != null && ExpBonusSlider != null && ExpScaleFactorLabel != null)
 			{
-				ExpLabel.Content = $"{ExpMultiplierSlider.Value}x + {ExpBonusSlider.Value*10}";
+				ExpScaleFactorLabel.Content = $"{ExpMultiplierSlider.Value}x + {ExpBonusSlider.Value*10}";
 			}
 		}
 
 		private void SetFlagsText(object sender, RoutedEventArgs e)
 		{
-			if (FlagsTextBox == null)
+			if (!IsInitialized || FlagsTextBox == null)
 			{
 				return;
 			}
@@ -229,24 +239,14 @@ namespace FF1Randomizer
 			FlagsTextBox.Text += MagicShopsCheckBox.IsChecked == true ? "M" : "m";
 			FlagsTextBox.Text += MagicLevelsCheckBox.IsChecked == true ? "L" : "l";
 			FlagsTextBox.Text += MagicPermissionsCheckBox.IsChecked == true ? "P" : "p";
+			FlagsTextBox.Text += EnemyStatusAttacksCheckBox.IsChecked == true ? "A" : "a";
 
-			if (PricesCheckBox.IsChecked == true)
-			{
-				FlagsTextBox.Text += "P";
-				FlagsTextBox.Text += SliderToBase64((int)(10 * PriceScaleFactorSlider.Value));
-			}
-			if (EnemyStatsCheckBox.IsChecked == true)
-			{
-				FlagsTextBox.Text += "S";
-				FlagsTextBox.Text += SliderToBase64((int)(10 * EnemyScaleFactorSlider.Value));
-			}
+			FlagsTextBox.Text += EarlyRodCheckBox.IsChecked == true ? "R" : "r";
 
-			if (ExpGoldBoostCheckBox.IsChecked == true)
-			{
-				FlagsTextBox.Text += "B";
-				FlagsTextBox.Text += SliderToBase64((int)(10*ExpMultiplierSlider.Value));
-				FlagsTextBox.Text += SliderToBase64((int)ExpBonusSlider.Value);
-			}
+			FlagsTextBox.Text += SliderToBase64((int)(10 * PriceScaleFactorSlider.Value));
+			FlagsTextBox.Text += SliderToBase64((int)(10 * EnemyScaleFactorSlider.Value));
+			FlagsTextBox.Text += SliderToBase64((int)(10*ExpMultiplierSlider.Value));
+			FlagsTextBox.Text += SliderToBase64((int)ExpBonusSlider.Value);
 		}
 
 		private char SliderToBase64(int value)

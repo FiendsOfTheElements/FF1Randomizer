@@ -13,49 +13,57 @@
 		<Label x:Name="SeedLabel" Content="Seed" HorizontalAlignment="Left" Margin="10,64,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
 		<TextBox x:Name="SeedTextBox" HorizontalAlignment="Left" Height="23" Margin="10,90,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" LostFocus="SeedTextBox_LostFocus"/>
 		<Button x:Name="SeedButton" Content="New Seed" HorizontalAlignment="Left" Margin="135,93,0,0" VerticalAlignment="Top" Width="75" Click="SeedButton_Click"/>
+		<Button x:Name="GenerateButton" Content="Generate ROM" HorizontalAlignment="Right" Margin="0,10,10,0" VerticalAlignment="Top" Width="150" FontSize="20" IsEnabled="False" Click="GenerateButton_Click" Height="46"/>
+		<TextBox x:Name="FlagsTextBox" IsReadOnly="True" HorizontalAlignment="Left" Height="23" Margin="251,90,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+		<Label x:Name="FlagsLabel" Content="Flags" HorizontalAlignment="Left" Margin="251,64,0,0" VerticalAlignment="Top" RenderTransformOrigin="-1.237,0.615" FontWeight="Bold"/>
 		<TabControl x:Name="tabControl" Margin="10,118,10,10">
-			<TabItem Header="Randomizers">
+			<TabItem Header="Shuffle">
 				<Grid>
-					<Label x:Name="ShuffleLabel" Content="Shuffle" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.632,-0.423" FontWeight="Bold"/>
-					<CheckBox x:Name="TreasuresCheckBox" IsEnabled="True" IsChecked="True" Content="Treasures" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,36,0,0" ToolTip="Treasure chest contents will be shuffled.  Sanity checks are in place to ensure you can still finish the game." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
-					<CheckBox x:Name="ShopsCheckBox" IsEnabled="True" IsChecked="True" Content="Shops" HorizontalAlignment="Left" Margin="10,56,0,0" VerticalAlignment="Top" ToolTip="Shop contents (other than magic) are shuffled." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
-					<CheckBox x:Name="MagicShopsCheckBox" IsEnabled="True" IsChecked="True" Content="Magic Shops" HorizontalAlignment="Left" Margin="10,76,0,0" VerticalAlignment="Top" ToolTip="Magic shop contents are shuffled." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
-					<CheckBox x:Name="MagicLevelsCheckBox" IsEnabled="True" IsChecked="True" Content="Magic Levels" HorizontalAlignment="Left" Margin="10,96,0,0" VerticalAlignment="Top" ToolTip="Magic spells have their levels shuffled." Checked="MagicLevelsCheckBox_OnChecked" Unchecked="MagicLevelsCheckBox_OnUnchecked"/>
-					<CheckBox x:Name="MagicPermissionsCheckBox" IsEnabled="True" IsChecked="True" Content="Keep Permissions" HorizontalAlignment="Left" Margin="24,116,0,0" VerticalAlignment="Top" ToolTip="Retain the permissions of spells, even if they're shuffled to lower levels." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
-					<CheckBox x:Name="EnemySkillsCheckBox" IsEnabled="False" Content="Enemy Skills" HorizontalAlignment="Left" Margin="10,136,0,0" VerticalAlignment="Top" ToolTip="Enemy skills (such as SQUINT) are shuffled among enemies that use skills." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
-					<CheckBox x:Name="EnemySpellsCheckBox" IsEnabled="False" Content="Enemy Spells" HorizontalAlignment="Left" Margin="10,156,0,0" VerticalAlignment="Top" ToolTip="Enemy spells are shuffled among enemies that use spells." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
-					<CheckBox x:Name="EnemyStatusAttacksCheckBox" IsEnabled="False" Content="Enemy Status Attacks" HorizontalAlignment="Left" Margin="10,177,0,0" VerticalAlignment="Top" ToolTip="Status attacks such as stun, sleep, and death are shuffled." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
-					
-					<Label x:Name="ScaleLabel" Content="Scale:" HorizontalAlignment="Left" Margin="237,10,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
-					<Label x:Name="PriceScaleFactorLabel" Content="" HorizontalAlignment="Left" Margin="329,25,0,0" VerticalAlignment="Top"/>
-					<Label x:Name="EnemyScaleFactorLabel" Content="" HorizontalAlignment="Left" Margin="329,54,0,0" VerticalAlignment="Top"/>
-					<Slider x:Name="PriceScaleFactorSlider" HorizontalAlignment="Left" Margin="410,27,0,0" VerticalAlignment="Top" Minimum="1.5" Maximum="5" Value="2" Width="100" TickPlacement="BottomRight" TickFrequency="0.5" ValueChanged="PriceScaleFactorSlider_ValueChanged" ToolTip="For each value to be scaled, a random exponent is selected between -1 and +1.  The value is scaled by the scale factor raised to that power."/>
-					<Slider x:Name="EnemyScaleFactorSlider" HorizontalAlignment="Left" Margin="410,56,0,0" VerticalAlignment="Top" Minimum="1.5" Maximum="5" Value="2" Width="100" TickPlacement="BottomRight" TickFrequency="0.5" ValueChanged="EnemyScaleFactorSlider_ValueChanged" ToolTip="For each value to be scaled, a random exponent is selected between -1 and +1.  The value is scaled by the scale factor raised to that power."/>
-					<CheckBox x:Name="PricesCheckBox" IsEnabled="True" IsChecked="True" Content="Prices" HorizontalAlignment="Left" Margin="237,36,0,0" VerticalAlignment="Top" ToolTip="Prices of items, weapons, armor, and magic are all scaled." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
-					<CheckBox x:Name="EnemyStatsCheckBox" IsEnabled="True" IsChecked="True" Content="Enemy Stats" HorizontalAlignment="Left" Margin="237,56,0,0" VerticalAlignment="Top" ToolTip="Enemy stats are scaled: HP, attack power, # of hits, accuracy, critical %, defense, evade, and magic defense." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
-					<CheckBox x:Name="ExpGoldBoostCheckBox" Content="Exp/Gold Boost" HorizontalAlignment="Left" Margin="237,136,0,0" VerticalAlignment="Top" IsChecked="True" Checked="SetFlagsText" Unchecked="SetFlagsText"/>
-					
-					<Label x:Name="ExpLabel" Content="" HorizontalAlignment="Left" Margin="237,156,0,0" VerticalAlignment="Top"/>
-					<Slider x:Name="ExpMultiplierSlider" HorizontalAlignment="Left" Margin="410,136,0,0" VerticalAlignment="Top" Width="100" Minimum="1" Maximum="5" TickPlacement="BottomRight" TickFrequency="1" ValueChanged="ExpMultiplierSlider_ValueChanged" ToolTip="Multiplies enemy exp and gold by this amount." Value="2"/>
-					<Slider x:Name="ExpBonusSlider" HorizontalAlignment="Left" Margin="410,165,0,0" VerticalAlignment="Top" Width="100" Minimum="0" Maximum="50" TickPlacement="BottomRight" TickFrequency="10" ValueChanged="ExpBonusSlider_ValueChanged" ToolTip="Adds this amount to enemy exp and gold (after the multiplier)." Value="10"/>
+					<CheckBox x:Name="TreasuresCheckBox" IsEnabled="True" IsChecked="True" Content="Treasures" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0" ToolTip="Treasure chest contents will be shuffled.  Sanity checks are in place to ensure you can still finish the game." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+					<CheckBox x:Name="ShopsCheckBox" IsEnabled="True" IsChecked="True" Content="Shops" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top" ToolTip="Shop contents (other than magic) are shuffled." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+					<CheckBox x:Name="MagicShopsCheckBox" IsEnabled="True" IsChecked="True" Content="Magic Shops" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top" ToolTip="Magic shop contents are shuffled." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+					<CheckBox x:Name="MagicLevelsCheckBox" IsEnabled="True" IsChecked="True" Content="Magic Levels" HorizontalAlignment="Left" Margin="10,70,0,0" VerticalAlignment="Top" ToolTip="Magic spells have their levels shuffled." Checked="MagicLevelsCheckBox_OnChecked" Unchecked="MagicLevelsCheckBox_OnUnchecked"/>
+					<CheckBox x:Name="MagicPermissionsCheckBox" IsEnabled="True" IsChecked="True" Content="Keep Permissions" HorizontalAlignment="Left" Margin="31,90,0,0" VerticalAlignment="Top" ToolTip="Retain the permissions of spells, even if they're shuffled to lower levels." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+
+					<CheckBox x:Name="EnemySkillsCheckBox" IsEnabled="False" Content="Enemy Skills" HorizontalAlignment="Left" Margin="265,10,0,0" VerticalAlignment="Top" ToolTip="Enemy skills (such as SQUINT) are shuffled among enemies that use skills." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+					<CheckBox x:Name="EnemySpellsCheckBox" IsEnabled="False" Content="Enemy Spells" HorizontalAlignment="Left" Margin="265,30,0,0" VerticalAlignment="Top" ToolTip="Enemy spells are shuffled among enemies that use spells." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+					<CheckBox x:Name="EnemyStatusAttacksCheckBox" IsEnabled="True" IsChecked="True" Content="Enemy Status Attacks" HorizontalAlignment="Left" Margin="265,50,0,0" VerticalAlignment="Top" ToolTip="Status attacks such as stun, sleep, and death are shuffled." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+				</Grid>
+			</TabItem>
+			<TabItem Header="Scale">
+				<Grid>
+					<Label x:Name="PricesLabel" Content="Prices:" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" ToolTip="Prices of items, weapons, armor, and magic are all scaled."/>
+					<Label x:Name="PriceScaleFactorLabel" Content="" HorizontalAlignment="Left" Margin="91,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="4.4,0.462"/>
+					<Slider x:Name="PriceScaleFactorSlider" HorizontalAlignment="Left" Margin="184,10,0,0" VerticalAlignment="Top" Minimum="1" Maximum="5" Value="2" Width="100" TickPlacement="BottomRight" TickFrequency="0.5" ValueChanged="PriceScaleFactorSlider_ValueChanged" ToolTip="For each value to be scaled, a random exponent is selected between -1 and +1.  The value is scaled by the scale factor raised to that power."/>
+
+					<Label x:Name="EnemyStatsLabel" Content="Enemy Stats:" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top" ToolTip="Enemy stats are scaled: HP, attack power, # of hits, accuracy, critical %, defense, evade, and magic defense."/>
+					<Label x:Name="EnemyScaleFactorLabel" Content="" HorizontalAlignment="Left" Margin="91,41,0,0" VerticalAlignment="Top"/>
+					<Slider x:Name="EnemyScaleFactorSlider" HorizontalAlignment="Left" Margin="184,39,0,0" VerticalAlignment="Top" Minimum="1" Maximum="5" Value="2" Width="100" TickPlacement="BottomRight" TickFrequency="0.5" ValueChanged="EnemyScaleFactorSlider_ValueChanged" ToolTip="For each value to be scaled, a random exponent is selected between -1 and +1.  The value is scaled by the scale factor raised to that power."/>
+
+					<Label x:Name="ExpGoldBoostLabel" Content="Exp/Gold Boost:" HorizontalAlignment="Left" Margin="10,112,0,0" VerticalAlignment="Top"/>
+					<Label x:Name="ExpScaleFactorLabel" Content="" HorizontalAlignment="Left" Margin="10,141,0,0" VerticalAlignment="Top"/>
+					<Slider x:Name="ExpMultiplierSlider" HorizontalAlignment="Left" Margin="184,112,0,0" VerticalAlignment="Top" Width="100" Minimum="1" Maximum="5" TickPlacement="BottomRight" TickFrequency="0.5" ValueChanged="ExpMultiplierSlider_ValueChanged" ToolTip="Multiplies enemy exp and gold by this amount." Value="2"/>
+					<Slider x:Name="ExpBonusSlider" HorizontalAlignment="Left" Margin="184,141,0,0" VerticalAlignment="Top" Width="100" Minimum="0" Maximum="50" TickPlacement="BottomRight" TickFrequency="5" ValueChanged="ExpBonusSlider_ValueChanged" ToolTip="Adds this amount to enemy exp and gold (after the multiplier)." Value="10"/>
+				</Grid>
+			</TabItem>
+			<TabItem Header="Conveniences">
+				<Grid>
+					<CheckBox x:Name="EarlyRodCheckBox" IsEnabled="True" IsChecked="True" Content="Early Rod" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" ToolTip="Sarda will give you the ROD before you kill the VAMPIRE." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+					<CheckBox x:Name="EarlyCanoeCheckBox" IsEnabled="False" Content="Early Canoe" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top" ToolTip="The sages will give you the CANOE before you kill LICH." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
 				</Grid>
 			</TabItem>
 			<TabItem Header="Bug Fixes">
 				<Grid>
-					<Label x:Name="FixLabel" Content="Fix" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0" FontWeight="Bold" />
-					<CheckBox x:Name="ElementalAndCategoryAttacksCheckBox" IsEnabled="False" Content="Elemental and Category Attacks" HorizontalAlignment="Left" Margin="10,36,0,0" VerticalAlignment="Top" ToolTip="Weapons with elemental or monster category properties will do more damage to enemies with the corresponding weaknesses."/>
-					<CheckBox x:Name="WeaponCriticalHitChanceCheckBox" IsEnabled="False" Content="Weapon Critical Hit Chance" HorizontalAlignment="Left" Margin="10,56,0,0" VerticalAlignment="Top" ToolTip="Weapons will use their critical hit % values instead of the index in the weapon table."/>
-					<CheckBox x:Name="BlackBeltAbsorbCheckBox" IsEnabled="False" Content="Black Belt Absorb" HorizontalAlignment="Left" Margin="10,76,0,0" VerticalAlignment="Top" ToolTip="Black Belt absorb will be calculated correctly after level up."/>
-					<CheckBox x:Name="ChanceToRunCheckBox" IsEnabled="False" Content="Chance to Run" HorizontalAlignment="Left" Margin="10,96,0,0" VerticalAlignment="Top" ToolTip="Chance to run will be based on level and luck."/>
-					<CheckBox x:Name="EnemyStatusAttacksCheckBox1" IsEnabled="False" Content="Enemy Status Attacks" HorizontalAlignment="Left" Margin="10,116,0,0" VerticalAlignment="Top" ToolTip="Enemy status attacks will respect immunity (e.g. ProRing) and won't apply to misses after the first hit."/>
-					<CheckBox x:Name="HouseMPRestorationCheckBox" IsEnabled="False" Content="House MP Restoration" HorizontalAlignment="Left" Margin="10,136,0,0" VerticalAlignment="Top" ToolTip="A HOUSE will restore MP before saving the game instead of after."/>
-					<CheckBox x:Name="EnemySpellsTargetingAlliesCheckBox" IsEnabled="False" Content="Enemy Spells Targeting Allies" HorizontalAlignment="Left" Margin="10,156,0,0" VerticalAlignment="Top" ToolTip="Enemy spells that target all allies will also hit the caster."/>
-					<CheckBox x:Name="EnemyProtectionSpellsCheckBox" IsEnabled="False" Content="Enemy Protection Spells" HorizontalAlignment="Left" Margin="10,176,0,0" VerticalAlignment="Top" ToolTip="Enemy protection spells (such as AFIR) will work."/>
+					<CheckBox x:Name="ElementalAndCategoryAttacksCheckBox" IsEnabled="False" Content="Elemental and Category Attacks" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" ToolTip="Weapons with elemental or monster category properties will do more damage to enemies with the corresponding weaknesses." Grid.ColumnSpan="3"/>
+					<CheckBox x:Name="WeaponCriticalHitChanceCheckBox" IsEnabled="False" Content="Weapon Critical Hit Chance" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top" ToolTip="Weapons will use their critical hit % values instead of the index in the weapon table." Grid.ColumnSpan="3"/>
+					<CheckBox x:Name="BlackBeltAbsorbCheckBox" IsEnabled="False" Content="Black Belt Absorb" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top" ToolTip="Black Belt absorb will be calculated correctly after level up." Grid.ColumnSpan="3"/>
+					<CheckBox x:Name="ChanceToRunCheckBox" IsEnabled="False" Content="Chance to Run" HorizontalAlignment="Left" Margin="10,70,0,0" VerticalAlignment="Top" ToolTip="Chance to run will be based on level and luck." Grid.ColumnSpan="3"/>
+					<CheckBox x:Name="EnemyStatusAttacksBugCheckBox" IsEnabled="False" Content="Enemy Status Attacks" HorizontalAlignment="Left" Margin="10,90,0,0" VerticalAlignment="Top" ToolTip="Enemy status attacks will respect immunity (e.g. ProRing) and won't apply to misses after the first hit." Grid.ColumnSpan="3"/>
+					<CheckBox x:Name="HouseMPRestorationCheckBox" IsEnabled="False" Content="House MP Restoration" HorizontalAlignment="Left" Margin="10,110,0,0" VerticalAlignment="Top" ToolTip="A HOUSE will restore MP before saving the game instead of after." Grid.ColumnSpan="3"/>
+					<CheckBox x:Name="EnemySpellsTargetingAlliesCheckBox" IsEnabled="False" Content="Enemy Spells Targeting Allies" HorizontalAlignment="Left" Margin="10,130,0,0" VerticalAlignment="Top" ToolTip="Enemy spells that target all allies will also hit the caster." Grid.ColumnSpan="3"/>
+					<CheckBox x:Name="EnemyProtectionSpellsCheckBox" IsEnabled="False" Content="Enemy Protection Spells" HorizontalAlignment="Left" Margin="10,150,0,0" VerticalAlignment="Top" ToolTip="Enemy protection spells (such as AFIR) will work." Grid.ColumnSpan="3"/>
 				</Grid>
 			</TabItem>
 		</TabControl>
-		<Button x:Name="GenerateButton" Content="Generate ROM" HorizontalAlignment="Right" Margin="0,10,10,0" VerticalAlignment="Top" Width="150" FontSize="20" IsEnabled="False" Click="GenerateButton_Click" Height="46"/>
-		<TextBox x:Name="FlagsTextBox" IsEnabled="False" HorizontalAlignment="Left" Height="23" Margin="251,90,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-		<Label x:Name="FlagsLabel" Content="Flags" HorizontalAlignment="Left" Margin="251,64,0,0" VerticalAlignment="Top" RenderTransformOrigin="-1.237,0.615" FontWeight="Bold"/>
 	</Grid>
 </Window>
