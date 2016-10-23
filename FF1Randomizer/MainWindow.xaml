@@ -25,8 +25,8 @@
 					<CheckBox x:Name="MagicLevelsCheckBox" IsEnabled="True" IsChecked="True" Content="Magic Levels" HorizontalAlignment="Left" Margin="10,70,0,0" VerticalAlignment="Top" ToolTip="Magic spells have their levels shuffled." Checked="MagicLevelsCheckBox_OnChecked" Unchecked="MagicLevelsCheckBox_OnUnchecked"/>
 					<CheckBox x:Name="MagicPermissionsCheckBox" IsEnabled="True" IsChecked="True" Content="Keep Permissions" HorizontalAlignment="Left" Margin="31,90,0,0" VerticalAlignment="Top" ToolTip="Retain the permissions of spells, even if they're shuffled to lower levels." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
 
-					<CheckBox x:Name="EnemySkillsCheckBox" IsEnabled="False" Content="Enemy Skills" HorizontalAlignment="Left" Margin="265,10,0,0" VerticalAlignment="Top" ToolTip="Enemy skills (such as SQUINT) are shuffled among enemies that use skills." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
-					<CheckBox x:Name="EnemySpellsCheckBox" IsEnabled="False" Content="Enemy Spells" HorizontalAlignment="Left" Margin="265,30,0,0" VerticalAlignment="Top" ToolTip="Enemy spells are shuffled among enemies that use spells." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+					<CheckBox x:Name="EnemyScriptsCheckBox" IsEnabled="True" IsChecked="True" Content="Enemy Scripts" HorizontalAlignment="Left" Margin="265,10,0,0" VerticalAlignment="Top" ToolTip="Enemy scripts are shuffled to different enemies." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+					<CheckBox x:Name="EnemySkillsSpellsCheckBox" IsEnabled="True" IsChecked="True" Content="Enemy Skills/Spells" HorizontalAlignment="Left" Margin="265,30,0,0" VerticalAlignment="Top" ToolTip="Enemy skills and spells are shuffled to other scripts." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
 					<CheckBox x:Name="EnemyStatusAttacksCheckBox" IsEnabled="True" IsChecked="True" Content="Enemy Status Attacks" HorizontalAlignment="Left" Margin="265,50,0,0" VerticalAlignment="Top" ToolTip="Status attacks such as stun, sleep, and death are shuffled." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
 				</Grid>
 			</TabItem>

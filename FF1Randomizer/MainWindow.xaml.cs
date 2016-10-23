@@ -26,7 +26,7 @@ namespace FF1Randomizer
 		private string _filename;
 		private Blob _seed;
 
-		public const string Version = "0.7.0";
+		public const string Version = "0.8.0";
 
 		private class MainWindowViewModel
 		{
@@ -120,6 +120,16 @@ namespace FF1Randomizer
 			if (MagicLevelsCheckBox.IsChecked == true)
 			{
 				rom.ShuffleMagicLevels(rng, MagicPermissionsCheckBox.IsChecked ?? false);
+			}
+
+			if (EnemyScriptsCheckBox.IsChecked == true)
+			{
+				rom.ShuffleEnemyScripts(rng);
+			}
+
+			if (EnemySkillsSpellsCheckBox.IsChecked == true)
+			{
+				rom.ShuffleEnemySkillsSpells(rng);
 			}
 
 			if (EnemyStatusAttacksCheckBox.IsChecked == true)
@@ -235,10 +245,12 @@ namespace FF1Randomizer
 			FlagsTextBox.Text = "";
 
 			FlagsTextBox.Text += TreasuresCheckBox.IsChecked == true ? "T" : "t";
-			FlagsTextBox.Text += ShopsCheckBox.IsChecked == true ? "S" : "s";
+			FlagsTextBox.Text += ShopsCheckBox.IsChecked == true ? "H" : "h";
 			FlagsTextBox.Text += MagicShopsCheckBox.IsChecked == true ? "M" : "m";
 			FlagsTextBox.Text += MagicLevelsCheckBox.IsChecked == true ? "L" : "l";
 			FlagsTextBox.Text += MagicPermissionsCheckBox.IsChecked == true ? "P" : "p";
+			FlagsTextBox.Text += EnemyScriptsCheckBox.IsChecked == true ? "C" : "c";
+			FlagsTextBox.Text += EnemySkillsSpellsCheckBox.IsChecked == true ? "S" : "s";
 			FlagsTextBox.Text += EnemyStatusAttacksCheckBox.IsChecked == true ? "A" : "a";
 
 			FlagsTextBox.Text += EarlyRodCheckBox.IsChecked == true ? "R" : "r";
