@@ -631,7 +631,7 @@ namespace FF1Randomizer
 				Array.Copy(hpBytes, 0, enemy, 4, 2);
 
 				enemy[6] = (byte)Min(Scale(enemy[6], scale, 0.25, rng), 0xFF); // morale
-				enemy[8] = (byte)Min(Scale(enemy[8], scale, 1.0, rng), 0xFF); // evade
+				enemy[8] = (byte)Min(Scale(enemy[8], scale, 1.0, rng), 0xFA); // evade clamped to 250
 				enemy[9] = (byte)Min(Scale(enemy[9], scale, 0.5, rng), 0xFF); // defense
 				enemy[10] = (byte)Max(Min(Scale(enemy[10], scale, 0.5, rng), 0xFF), 1); // hits
 				enemy[11] = (byte)Min(Scale(enemy[11], scale, 1.0, rng), 0xFF); // hit%
