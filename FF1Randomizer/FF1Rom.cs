@@ -59,9 +59,11 @@ namespace FF1Randomizer
 		public const int PriceSize = 2;
 		public const int PriceCount = 240;
 
+		public const int Nop = 0xEA;
 		public const int SardaOffset = 0x393E9;
 		public const int SardaSize = 7;
-		public const int Nop = 0xEA;
+		public const int PartyShuffleOffset = 0x312E0;
+		public const int PartyShuffleSize = 3;
 
 		public FF1Rom(string filename) : base(filename)
 		{}
@@ -587,6 +589,17 @@ namespace FF1Randomizer
 			}
 
 			Put(SardaOffset, nops);
+		}
+
+		public void DisablePartyShuffle()
+		{
+			var nops = new byte[PartyShuffleSize];
+			for (int i = 0; i < nops.Length; i++)
+			{
+				nops[i] = Nop;
+			}
+
+			Put(PartyShuffleOffset, nops);
 		}
 
 		public void ScalePrices(double scale, MT19337 rng)

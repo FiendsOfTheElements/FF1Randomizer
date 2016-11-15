@@ -26,7 +26,7 @@ namespace FF1Randomizer
 		private string _filename;
 		private Blob _seed;
 
-		public const string Version = "0.8.0";
+		public const string Version = "0.8.1";
 
 		private class MainWindowViewModel
 		{
@@ -254,6 +254,7 @@ namespace FF1Randomizer
 			FlagsTextBox.Text += EnemyStatusAttacksCheckBox.IsChecked == true ? "A" : "a";
 
 			FlagsTextBox.Text += EarlyRodCheckBox.IsChecked == true ? "R" : "r";
+			FlagsTextBox.Text += NoPartyShuffleCheckBox.IsChecked == true ? "F" : "f";
 
 			FlagsTextBox.Text += SliderToBase64((int)(10 * PriceScaleFactorSlider.Value));
 			FlagsTextBox.Text += SliderToBase64((int)(10 * EnemyScaleFactorSlider.Value));

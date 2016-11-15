@@ -50,6 +50,7 @@
 				<Grid>
 					<CheckBox x:Name="EarlyRodCheckBox" IsEnabled="True" IsChecked="True" Content="Early Rod" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" ToolTip="Sarda will give you the ROD before you kill the VAMPIRE." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
 					<CheckBox x:Name="EarlyCanoeCheckBox" IsEnabled="False" Content="Early Canoe" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top" ToolTip="The sages will give you the CANOE before you kill LICH." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+					<CheckBox x:Name="NoPartyShuffleCheckBox" IsEnabled="True" IsChecked="True" Content="No Party Shuffle" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top" ToolTip="Poisoned, petrified, and slain party members will not be shuffled to the back of the party." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
 				</Grid>
 			</TabItem>
 			<TabItem Header="Bug Fixes">
