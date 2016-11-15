@@ -598,8 +598,15 @@ namespace FF1Randomizer
 			{
 				nops[i] = Nop;
 			}
-
 			Put(PartyShuffleOffset, nops);
+
+			nops = new byte[2];
+			for (int i = 0; i < nops.Length; i++)
+			{
+				nops[i] = Nop;
+			}
+			Put(0x39A6B, nops);
+			Put(0x39A74, nops);
 		}
 
 		public void ScalePrices(double scale, MT19337 rng)

@@ -142,6 +142,11 @@ namespace FF1Randomizer
 				rom.EnableEarlyRod();
 			}
 
+			if (NoPartyShuffleCheckBox.IsChecked == true)
+			{
+				rom.DisablePartyShuffle();
+			}
+
 			if (PriceScaleFactorSlider.Value > 1)
 			{
 				rom.ScalePrices(PriceScaleFactorSlider.Value, rng);
