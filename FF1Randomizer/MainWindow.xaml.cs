@@ -26,7 +26,7 @@ namespace FF1Randomizer
 		private string _filename;
 		private Blob _seed;
 
-		public const string Version = "0.8.1";
+		public const string Version = "0.8.2";
 
 		private class MainWindowViewModel
 		{
@@ -39,12 +39,31 @@ namespace FF1Randomizer
 
 			DataContext = new MainWindowViewModel();
 
+			TryOpenSavedFilename();
 			GenerateSeed();
 
 			SetScaleFactorLabel(PriceScaleFactorSlider, PriceScaleFactorLabel);
 			SetScaleFactorLabel(EnemyScaleFactorSlider, EnemyScaleFactorLabel);
 			SetExpLabel();
 			SetFlagsText(null, null);
+		}
+
+		private void TryOpenSavedFilename()
+		{
+			if (String.IsNullOrEmpty(Properties.Settings.Default.RomFilename))
+			{
+				return;
+			}
+
+			if (!File.Exists(Properties.Settings.Default.RomFilename))
+			{
+				Properties.Settings.Default.RomFilename = null;
+				Properties.Settings.Default.Save();
+
+				return;
+			}
+
+			ValidateRom(Properties.Settings.Default.RomFilename);
 		}
 
 		private void GenerateSeed()
@@ -64,16 +83,25 @@ namespace FF1Randomizer
 			var result = openFileDialog.ShowDialog(this);
 			if (result == true)
 			{
-				var randomizer = new FF1Rom(openFileDialog.FileName);
-				if (!randomizer.Validate())
-				{
-					MessageBox.Show("ROM does not appear to be valid.  Proceed at your own risk.", "Validation Error");
-				}
+				ValidateRom(openFileDialog.FileName);
 
-				_filename = openFileDialog.FileName;
-				RomTextBox.Text = openFileDialog.SafeFileName;
-				GenerateButton.IsEnabled = true;
+				Properties.Settings.Default.RomFilename = _filename;
+				Properties.Settings.Default.Save();
 			}
+		}
+
+		private void ValidateRom(string filename)
+		{
+			var rom = new FF1Rom(filename);
+			if (!rom.Validate())
+			{
+				MessageBox.Show("ROM does not appear to be valid.  Proceed at your own risk.", "Validation Error");
+			}
+
+			_filename = filename;
+			var slashIndex = filename.LastIndexOfAny(new[] { '/', '\\' });
+			RomTextBox.Text = filename.Substring(slashIndex + 1);
+			GenerateButton.IsEnabled = true;
 		}
 
 		private void SeedButton_Click(object sender, RoutedEventArgs e)
