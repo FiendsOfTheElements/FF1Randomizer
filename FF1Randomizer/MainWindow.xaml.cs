@@ -26,7 +26,7 @@ namespace FF1Randomizer
 		private string _filename;
 		private Blob _seed;
 
-		public const string Version = "0.8.2";
+		public const string Version = "0.9.0";
 
 		private class MainWindowViewModel
 		{
@@ -132,7 +132,7 @@ namespace FF1Randomizer
 
 			if (TreasuresCheckBox.IsChecked == true)
 			{
-				rom.ShuffleTreasures(rng);
+				rom.ShuffleTreasures(rng, EarlyCanoeCheckBox.IsChecked == true);
 			}
 
 			if (ShopsCheckBox.IsChecked == true)
@@ -168,6 +168,11 @@ namespace FF1Randomizer
 			if (EarlyRodCheckBox.IsChecked == true)
 			{
 				rom.EnableEarlyRod();
+			}
+
+			if (EarlyCanoeCheckBox.IsChecked == true)
+			{
+				rom.EnableEarlyCanoe();
 			}
 
 			if (NoPartyShuffleCheckBox.IsChecked == true)
@@ -287,6 +292,7 @@ namespace FF1Randomizer
 			FlagsTextBox.Text += EnemyStatusAttacksCheckBox.IsChecked == true ? "A" : "a";
 
 			FlagsTextBox.Text += EarlyRodCheckBox.IsChecked == true ? "R" : "r";
+			FlagsTextBox.Text += EarlyCanoeCheckBox.IsChecked == true ? "N" : "n";
 			FlagsTextBox.Text += NoPartyShuffleCheckBox.IsChecked == true ? "F" : "f";
 
 			FlagsTextBox.Text += SliderToBase64((int)(10 * PriceScaleFactorSlider.Value));

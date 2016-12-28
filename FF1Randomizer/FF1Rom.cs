@@ -62,6 +62,8 @@ namespace FF1Randomizer
 		public const int Nop = 0xEA;
 		public const int SardaOffset = 0x393E9;
 		public const int SardaSize = 7;
+		public const int CanoeSageOffset = 0x39482;
+		public const int CanoeSageSize = 5;
 		public const int PartyShuffleOffset = 0x312E0;
 		public const int PartyShuffleSize = 3;
 
@@ -87,62 +89,76 @@ namespace FF1Randomizer
 			Put(CopyrightOffset2, flagBytes + padding);
 		}
 
-		public void ShuffleTreasures(MT19337 rng)
+		public void ShuffleTreasures(MT19337 rng, bool earlyCanoe)
 		{
-			DirectedGraph<byte> graph = new DirectedGraph<byte>();
 			var treasureBlob = Get(TreasureOffset, TreasureSize * TreasureCount);
-			var usedIndices = Enumerable.Range(0, TreasureCount).Except(TreasureConditions.NotUsed).ToList();
-			var usedTreasures = usedIndices.Select(i => treasureBlob[i]).ToList();
-			bool tofrQuestItem;
+			var usedTreasures = TreasureConditions.UsedIndices.Select(i => treasureBlob[i]).ToList();
+
 			do
 			{
 				usedTreasures.Shuffle(rng);
-
-				for (int i = 0; i < usedIndices.Count; i++)
+				for (int i = 0; i < TreasureConditions.UsedIndices.Count; i++)
 				{
-					treasureBlob[usedIndices[i]] = usedTreasures[i];
+					treasureBlob[TreasureConditions.UsedIndices[i]] = usedTreasures[i];
 				}
+			} while (!CheckSanity(treasureBlob, earlyCanoe));
 
-				// ToFR is only exitable using WARP or EXIT, so we don't want these items showing up there.
-				// Especially not the TAIL, as that would make class change impossible.  And the CROWN being
-				// here could block a LOT of valuable loot if you don't have a WW or BW.
-				tofrQuestItem =
-					TreasureConditions.ToFR.Contains(treasureBlob.IndexOf((byte)QuestItems.Crown)) ||
-					TreasureConditions.ToFR.Contains(treasureBlob.IndexOf((byte)QuestItems.Tail)) ||
-					TreasureConditions.ToFR.Contains(treasureBlob.IndexOf((byte)QuestItems.Adamant));
-				if (tofrQuestItem)
+			Put(TreasureOffset, treasureBlob);
+		}
+
+		private bool CheckSanity(Blob treasureBlob, bool earlyCanoe)
+		{
+			if (TreasureConditions.ToFR.Select(i => treasureBlob[i]).Intersect(TreasureConditions.AllQuestItems).Any())
+			{
+				return false;
+			}
+
+			var accessibleTreasures = new HashSet<int>(TreasureConditions.Beginning);
+			var questItems = new HashSet<byte>();
+			int lastCount;
+			do
+			{
+				lastCount = accessibleTreasures.Count;
+				questItems.UnionWith(accessibleTreasures.Select(i => treasureBlob[i]).Intersect(TreasureConditions.AllQuestItems));
+
+				if (questItems.Contains((byte)QuestItems.Crown))
 				{
-					continue;
+					accessibleTreasures.UnionWith(TreasureConditions.EarlyCrown);
 				}
-
-				var blockages = new List<Tuple<byte, int, List<int>>>
+				if (questItems.Contains((byte)QuestItems.Tnt))
 				{
-					Tuple.Create((byte)QuestItems.Crown,   treasureBlob.IndexOf((byte)QuestItems.Crown),   TreasureConditions.CrownBlocked),
-					Tuple.Create((byte)QuestItems.Tnt,     treasureBlob.IndexOf((byte)QuestItems.Tnt),     TreasureConditions.TntBlocked),
-					Tuple.Create((byte)QuestItems.Ruby,    treasureBlob.IndexOf((byte)QuestItems.Ruby),    TreasureConditions.RubyBlocked),
-					Tuple.Create((byte)QuestItems.Floater, treasureBlob.IndexOf((byte)QuestItems.Floater), TreasureConditions.FloaterBlocked),
-					Tuple.Create((byte)QuestItems.Slab,    treasureBlob.IndexOf((byte)QuestItems.Slab),    TreasureConditions.SlabBlocked)
-				};
+					accessibleTreasures.UnionWith(TreasureConditions.Tnt);
 
-				graph = new DirectedGraph<byte>();
-				foreach (var blockage in blockages)
-				{
-					graph.AddNode(blockage.Item1);
-				}
-
-				foreach (var blocker in blockages)
-				{
-					foreach (var blockee in blockages)
+					if (questItems.Contains((byte)QuestItems.Ruby) || earlyCanoe && questItems.Contains((byte)QuestItems.Floater))
 					{
-						if (blocker.Item3.Contains(blockee.Item2))
+						accessibleTreasures.UnionWith(TreasureConditions.Rod);
+					}
+					if (earlyCanoe || questItems.Contains((byte)QuestItems.Ruby))
+					{
+						accessibleTreasures.UnionWith(TreasureConditions.FireAndIce);
+
+						if (questItems.Contains((byte)QuestItems.Crown))
 						{
-							graph.AddEdge(blockee.Item1, blocker.Item1);
+							accessibleTreasures.UnionWith(TreasureConditions.Ordeals);
+						}
+						if (questItems.Contains((byte)QuestItems.Floater))
+						{
+							accessibleTreasures.UnionWith(TreasureConditions.Airship);
+
+							if (questItems.Contains((byte)QuestItems.Crown))
+							{
+								accessibleTreasures.UnionWith(TreasureConditions.LateCrown);
+							}
+							if (questItems.Contains((byte)QuestItems.Slab))
+							{
+								accessibleTreasures.UnionWith(TreasureConditions.Chime);
+							}
 						}
 					}
 				}
-			} while (tofrQuestItem || graph.HasCycles());
+			} while (accessibleTreasures.Count > lastCount && accessibleTreasures.Count < TreasureConditions.UsedIndices.Count - TreasureConditions.ToFR.Count);
 
-			Put(TreasureOffset, treasureBlob);
+			return accessibleTreasures.Count == TreasureConditions.UsedIndices.Count - TreasureConditions.ToFR.Count;
 		}
 
 		private enum ShopType
@@ -589,6 +605,17 @@ namespace FF1Randomizer
 			}
 
 			Put(SardaOffset, nops);
+		}
+
+		public void EnableEarlyCanoe()
+		{
+			var nops = new byte[CanoeSageSize];
+			for (int i = 0; i < nops.Length; i++)
+			{
+				nops[i] = Nop;
+			}
+
+			Put(CanoeSageOffset, nops);
 		}
 
 		public void DisablePartyShuffle()
