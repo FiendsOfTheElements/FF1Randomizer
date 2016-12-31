@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FF1Randomizer"
         mc:Ignorable="d"
-        Title="{Binding WindowTitle}" Height="397.727" Width="553.836">
+        Title="{Binding WindowTitle}" Height="400" Width="555">
 	<Grid Margin="0,0,0,0">
 		<TextBox x:Name="RomTextBox" HorizontalAlignment="Left" Height="23" Margin="10,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" IsEnabled="False"/>
 		<Label x:Name="RomLabel" Content="Original ROM" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.228,0.141" FontWeight="Bold"/>
@@ -14,10 +14,10 @@
 		<TextBox x:Name="SeedTextBox" HorizontalAlignment="Left" Height="23" Margin="10,90,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" LostFocus="SeedTextBox_LostFocus"/>
 		<Button x:Name="GenerateButton" Content="Generate ROM" HorizontalAlignment="Right" Margin="0,10,10,0" VerticalAlignment="Top" Width="150" FontSize="20" IsEnabled="False" Click="GenerateButton_Click" Height="46"/>
 		<TextBox x:Name="FlagsTextBox" IsReadOnly="True" HorizontalAlignment="Left" Height="23" Margin="135,90,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-		<Label x:Name="FlagsLabel" Content="Flags" HorizontalAlignment="Left" Margin="135,64,0,0" VerticalAlignment="Top" RenderTransformOrigin="-1.237,0.615" FontWeight="Bold"/>
+		<Label x:Name="FlagsLabel" Content="Flags" HorizontalAlignment="Left" Margin="135,64,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
 		<Button x:Name="CopyButton" Content="Copy" HorizontalAlignment="Left" Margin="260,90,0,0" VerticalAlignment="Top" Width="85" Height="23" Click="CopyButton_Click"/>
 		<Button x:Name="PasteButton" Content="Paste" HorizontalAlignment="Left" Margin="350,90,0,0" VerticalAlignment="Top" Width="85" Height="23" Click="PasteButton_Click"/>
-		<Button x:Name="SeedButton" Content="New Seed" HorizontalAlignment="Left" Margin="440,90,0,0" VerticalAlignment="Top" Width="96" Click="SeedButton_Click" Height="23"/>
+		<Button x:Name="SeedButton" Content="New Seed" HorizontalAlignment="Left" Margin="440,90,0,0" VerticalAlignment="Top" Width="90" Height="23" Click="SeedButton_Click"/>
 		<TabControl x:Name="tabControl" Margin="10,118,10,10">
 			<TabItem Header="Shuffle">
 				<Grid>
@@ -26,6 +26,7 @@
 					<CheckBox x:Name="MagicShopsCheckBox" IsEnabled="True" IsChecked="True" Content="Magic Shops" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top" ToolTip="Magic shop contents are shuffled." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
 					<CheckBox x:Name="MagicLevelsCheckBox" IsEnabled="True" IsChecked="True" Content="Magic Levels" HorizontalAlignment="Left" Margin="10,70,0,0" VerticalAlignment="Top" ToolTip="Magic spells have their levels shuffled." Checked="MagicLevelsCheckBox_OnChecked" Unchecked="MagicLevelsCheckBox_OnUnchecked"/>
 					<CheckBox x:Name="MagicPermissionsCheckBox" IsEnabled="True" IsChecked="True" Content="Keep Permissions" HorizontalAlignment="Left" Margin="31,90,0,0" VerticalAlignment="Top" ToolTip="Retain the permissions of spells, even if they're shuffled to lower levels." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+					<CheckBox x:Name="RngCheckBox" IsEnabled="True" IsChecked="True" Content="RNG Table" HorizontalAlignment="Left" Margin="10,130,0,0" VerticalAlignment="Top" ToolTip="Shuffle the RNG table so that encounters are more difficult to predict." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
 
 					<CheckBox x:Name="EnemyScriptsCheckBox" IsEnabled="True" IsChecked="True" Content="Enemy Scripts" HorizontalAlignment="Left" Margin="265,10,0,0" VerticalAlignment="Top" ToolTip="Enemy scripts are shuffled to different enemies." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
 					<CheckBox x:Name="EnemySkillsSpellsCheckBox" IsEnabled="True" IsChecked="True" Content="Enemy Skills/Spells" HorizontalAlignment="Left" Margin="265,30,0,0" VerticalAlignment="Top" ToolTip="Enemy skills and spells are shuffled to other scripts." Checked="SetFlagsText" Unchecked="SetFlagsText"/>

@@ -27,7 +27,7 @@ namespace FF1Randomizer
 		private string _filename;
 		private Blob _seed;
 
-		public const string Version = "0.9.1";
+		public const string Version = "0.9.2";
 
 		private class MainWindowViewModel
 		{
@@ -154,6 +154,11 @@ namespace FF1Randomizer
 			if (MagicLevelsCheckBox.IsChecked == true)
 			{
 				rom.ShuffleMagicLevels(rng, MagicPermissionsCheckBox.IsChecked ?? false);
+			}
+
+			if (RngCheckBox.IsChecked == true)
+			{
+				rom.ShuffleRng(rng);
 			}
 
 			if (EnemyScriptsCheckBox.IsChecked == true)
@@ -308,19 +313,20 @@ namespace FF1Randomizer
 				return;
 			}
 
-			var bits = new BitArray(11);
+			var bits = new BitArray(12);
 			bits[0] = TreasuresCheckBox.IsChecked == true;
 			bits[1] = ShopsCheckBox.IsChecked == true;
 			bits[2] = MagicShopsCheckBox.IsChecked == true;
 			bits[3] = MagicLevelsCheckBox.IsChecked == true;
 			bits[4] = MagicPermissionsCheckBox.IsChecked == true;
-			bits[5] = EnemyScriptsCheckBox.IsChecked == true;
-			bits[6] = EnemySkillsSpellsCheckBox.IsChecked == true;
-			bits[7] = EnemyStatusAttacksCheckBox.IsChecked == true;
+			bits[5] = RngCheckBox.IsChecked == true;
+			bits[6] = EnemyScriptsCheckBox.IsChecked == true;
+			bits[7] = EnemySkillsSpellsCheckBox.IsChecked == true;
+			bits[8] = EnemyStatusAttacksCheckBox.IsChecked == true;
 
-			bits[8] = EarlyRodCheckBox.IsChecked == true;
-			bits[9] = EarlyCanoeCheckBox.IsChecked == true;
-			bits[10] = NoPartyShuffleCheckBox.IsChecked == true;
+			bits[9] = EarlyRodCheckBox.IsChecked == true;
+			bits[10] = EarlyCanoeCheckBox.IsChecked == true;
+			bits[11] = NoPartyShuffleCheckBox.IsChecked == true;
 
 			var bytes = new byte[2];
 			bits.CopyTo(bytes, 0);
@@ -351,13 +357,14 @@ namespace FF1Randomizer
 			MagicShopsCheckBox.IsChecked = bits[2];
 			MagicLevelsCheckBox.IsChecked = bits[3];
 			MagicPermissionsCheckBox.IsChecked = bits[4];
-			EnemyScriptsCheckBox.IsChecked = bits[5];
-			EnemySkillsSpellsCheckBox.IsChecked = bits[6];
-			EnemyStatusAttacksCheckBox.IsChecked = bits[7];
+			RngCheckBox.IsChecked = bits[5];
+			EnemyScriptsCheckBox.IsChecked = bits[6];
+			EnemySkillsSpellsCheckBox.IsChecked = bits[7];
+			EnemyStatusAttacksCheckBox.IsChecked = bits[8];
 
-			EarlyRodCheckBox.IsChecked = bits[8];
-			EarlyCanoeCheckBox.IsChecked = bits[9];
-			NoPartyShuffleCheckBox.IsChecked = bits[10];
+			EarlyRodCheckBox.IsChecked = bits[9];
+			EarlyCanoeCheckBox.IsChecked = bits[10];
+			NoPartyShuffleCheckBox.IsChecked = bits[11];
 
 			PriceScaleFactorSlider.Value = Base64ToSlider(FlagsTextBox.Text[3])/10.0;
 			EnemyScaleFactorSlider.Value = Base64ToSlider(FlagsTextBox.Text[4])/10.0;

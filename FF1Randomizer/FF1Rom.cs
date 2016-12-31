@@ -43,6 +43,9 @@ namespace FF1Randomizer
 		public const int MagicOutOfBattleSize = 7;
 		public const int MagicOutOfBattleCount = 13;
 
+		public const int RngOffset = 0x3F100;
+		public const int RngSize = 256;
+
 		public const int ScriptOffset = 0x31020;
 		public const int ScriptSize = 16;
 		public const int ScriptCount = 44;
@@ -57,7 +60,8 @@ namespace FF1Randomizer
 
 		public const int PriceOffset = 0x37C00;
 		public const int PriceSize = 2;
-		public const int PriceCount = 240;
+		public const int PriceCount = 108;
+		public const int MagicPriceOffset = 0x37CB0;
 
 		public const int Nop = 0xEA;
 		public const int SardaOffset = 0x393E9;
@@ -436,6 +440,14 @@ namespace FF1Randomizer
 			}
 		}
 
+		public void ShuffleRng(MT19337 rng)
+		{
+			var rngTable = Get(RngOffset, RngSize).Chunk(1).ToList();
+			rngTable.Shuffle(rng);
+
+			Put(RngOffset, rngTable.SelectMany(blob => blob.ToBytes()).ToArray());
+		}
+
 		public void ShuffleEnemyScripts(MT19337 rng)
 		{
 			var oldEnemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
@@ -647,8 +659,18 @@ namespace FF1Randomizer
 				var priceBytes = BitConverter.GetBytes(priceValue);
 				Array.Copy(priceBytes, 0, price, 0, 2);
 			}
-
 			Put(PriceOffset, prices.SelectMany(price => price.ToBytes()).ToArray());
+
+			prices = Get(MagicPriceOffset, PriceSize*MagicCount).Chunk(PriceSize);
+			foreach (var price in prices)
+			{
+				var priceValue = BitConverter.ToUInt16(price, 0);
+				priceValue = (ushort)Min(Scale(priceValue, scale, 1, rng), 0xFFFF);
+
+				var priceBytes = BitConverter.GetBytes(priceValue);
+				Array.Copy(priceBytes, 0, price, 0, 2);
+			}
+			Put(MagicPriceOffset, prices.SelectMany(price => price.ToBytes()).ToArray());
 
 			var pointers = Get(ShopPointerOffset, ShopPointerCount * ShopPointerSize).ToUShorts();
 			RepackShops(pointers);
