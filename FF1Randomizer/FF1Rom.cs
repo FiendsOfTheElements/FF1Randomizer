@@ -86,7 +86,7 @@ namespace FF1Randomizer
 			}
 
 			Put(CopyrightOffset1, seedBytes);
-			Put(CopyrightOffset2, flagBytes + padding);
+			Put(CopyrightOffset2, padding + flagBytes);
 		}
 
 		public void ShuffleTreasures(MT19337 rng, bool earlyCanoe)

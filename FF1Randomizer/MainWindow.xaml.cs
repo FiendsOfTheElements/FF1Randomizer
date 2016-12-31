@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -26,7 +27,7 @@ namespace FF1Randomizer
 		private string _filename;
 		private Blob _seed;
 
-		public const string Version = "0.9.0";
+		public const string Version = "0.9.1";
 
 		private class MainWindowViewModel
 		{
@@ -113,6 +114,11 @@ namespace FF1Randomizer
 		{
 			SeedTextBox.Text = SeedTextBox.Text.Trim();
 
+			SetSeed();
+		}
+
+		private void SetSeed()
+		{
 			try
 			{
 				_seed = Blob.FromHex(SeedTextBox.Text);
@@ -241,6 +247,28 @@ namespace FF1Randomizer
 			SetFlagsText(sender, e);
 		}
 
+		private void CopyButton_Click(object sender, RoutedEventArgs e)
+		{
+			Clipboard.SetText(SeedTextBox.Text + "_" + FlagsTextBox.Text);
+		}
+
+		private void PasteButton_Click(object sender, RoutedEventArgs e)
+		{
+			var text = Clipboard.GetText();
+			var parts = text.Split('_');
+			if (parts.Length != 2 || parts[0].Length != 8 || parts[1].Length != 7)
+			{
+				MessageBox.Show("Format not recognized.  Paste should look like SSSSSSSS_FFFFFFF", "Invalid Format");
+
+				return;
+			}
+
+			SeedTextBox.Text = parts[0];
+			FlagsTextBox.Text = parts[1];
+			SetSeed();
+			DecodeFlagsText();
+		}
+
 		private void SetScaleFactorLabel(Slider slider, Label label)
 		{
 			var lower = Math.Round(100 / slider.Value);
@@ -280,25 +308,61 @@ namespace FF1Randomizer
 				return;
 			}
 
-			FlagsTextBox.Text = "";
+			var bits = new BitArray(11);
+			bits[0] = TreasuresCheckBox.IsChecked == true;
+			bits[1] = ShopsCheckBox.IsChecked == true;
+			bits[2] = MagicShopsCheckBox.IsChecked == true;
+			bits[3] = MagicLevelsCheckBox.IsChecked == true;
+			bits[4] = MagicPermissionsCheckBox.IsChecked == true;
+			bits[5] = EnemyScriptsCheckBox.IsChecked == true;
+			bits[6] = EnemySkillsSpellsCheckBox.IsChecked == true;
+			bits[7] = EnemyStatusAttacksCheckBox.IsChecked == true;
 
-			FlagsTextBox.Text += TreasuresCheckBox.IsChecked == true ? "T" : "t";
-			FlagsTextBox.Text += ShopsCheckBox.IsChecked == true ? "H" : "h";
-			FlagsTextBox.Text += MagicShopsCheckBox.IsChecked == true ? "M" : "m";
-			FlagsTextBox.Text += MagicLevelsCheckBox.IsChecked == true ? "L" : "l";
-			FlagsTextBox.Text += MagicPermissionsCheckBox.IsChecked == true ? "P" : "p";
-			FlagsTextBox.Text += EnemyScriptsCheckBox.IsChecked == true ? "C" : "c";
-			FlagsTextBox.Text += EnemySkillsSpellsCheckBox.IsChecked == true ? "S" : "s";
-			FlagsTextBox.Text += EnemyStatusAttacksCheckBox.IsChecked == true ? "A" : "a";
+			bits[8] = EarlyRodCheckBox.IsChecked == true;
+			bits[9] = EarlyCanoeCheckBox.IsChecked == true;
+			bits[10] = NoPartyShuffleCheckBox.IsChecked == true;
 
-			FlagsTextBox.Text += EarlyRodCheckBox.IsChecked == true ? "R" : "r";
-			FlagsTextBox.Text += EarlyCanoeCheckBox.IsChecked == true ? "N" : "n";
-			FlagsTextBox.Text += NoPartyShuffleCheckBox.IsChecked == true ? "F" : "f";
+			var bytes = new byte[2];
+			bits.CopyTo(bytes, 0);
 
-			FlagsTextBox.Text += SliderToBase64((int)(10 * PriceScaleFactorSlider.Value));
-			FlagsTextBox.Text += SliderToBase64((int)(10 * EnemyScaleFactorSlider.Value));
+			FlagsTextBox.Text = Convert.ToBase64String(bytes);
+			FlagsTextBox.Text = FlagsTextBox.Text.TrimEnd('=');
+			FlagsTextBox.Text = FlagsTextBox.Text.Replace('+', '!');
+			FlagsTextBox.Text = FlagsTextBox.Text.Replace('/', '%');
+
+			FlagsTextBox.Text += SliderToBase64((int)(10*PriceScaleFactorSlider.Value));
+			FlagsTextBox.Text += SliderToBase64((int)(10*EnemyScaleFactorSlider.Value));
 			FlagsTextBox.Text += SliderToBase64((int)(10*ExpMultiplierSlider.Value));
 			FlagsTextBox.Text += SliderToBase64((int)ExpBonusSlider.Value);
+		}
+
+		private void DecodeFlagsText()
+		{
+			var bitString = FlagsTextBox.Text.Substring(0, 3);
+			bitString += '=';
+			bitString = bitString.Replace('!', '+');
+			bitString = bitString.Replace('%', '/');
+
+			var bytes = Convert.FromBase64String(bitString);
+			var bits = new BitArray(bytes);
+
+			TreasuresCheckBox.IsChecked = bits[0];
+			ShopsCheckBox.IsChecked = bits[1];
+			MagicShopsCheckBox.IsChecked = bits[2];
+			MagicLevelsCheckBox.IsChecked = bits[3];
+			MagicPermissionsCheckBox.IsChecked = bits[4];
+			EnemyScriptsCheckBox.IsChecked = bits[5];
+			EnemySkillsSpellsCheckBox.IsChecked = bits[6];
+			EnemyStatusAttacksCheckBox.IsChecked = bits[7];
+
+			EarlyRodCheckBox.IsChecked = bits[8];
+			EarlyCanoeCheckBox.IsChecked = bits[9];
+			NoPartyShuffleCheckBox.IsChecked = bits[10];
+
+			PriceScaleFactorSlider.Value = Base64ToSlider(FlagsTextBox.Text[3])/10.0;
+			EnemyScaleFactorSlider.Value = Base64ToSlider(FlagsTextBox.Text[4])/10.0;
+			ExpMultiplierSlider.Value = Base64ToSlider(FlagsTextBox.Text[5])/10.0;
+			ExpBonusSlider.Value = Base64ToSlider(FlagsTextBox.Text[6]);
 		}
 
 		private char SliderToBase64(int value)
@@ -325,7 +389,31 @@ namespace FF1Randomizer
 			}
 			else
 			{
-				return '?';
+				return '%';
+			}
+		}
+
+		private int Base64ToSlider(char value)
+		{
+			if (value >= '0' && value <= '9')
+			{
+				return value - '0';
+			}
+			else if (value >= 'A' && value <= 'Z')
+			{
+				return value - 'A' + 10;
+			}
+			else if (value >= 'a' && value <= 'z')
+			{
+				return value - 'a' + 36;
+			}
+			else if (value == '!')
+			{
+				return 62;
+			}
+			else
+			{
+				return 63;
 			}
 		}
 	}
