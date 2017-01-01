@@ -61,7 +61,7 @@ namespace FF1Randomizer
 		public const int PriceOffset = 0x37C00;
 		public const int PriceSize = 2;
 		public const int PriceCount = 108;
-		public const int MagicPriceOffset = 0x37CB0;
+		public const int MagicPriceOffset = 0x37D60;
 
 		public const int Nop = 0xEA;
 		public const int SardaOffset = 0x393E9;

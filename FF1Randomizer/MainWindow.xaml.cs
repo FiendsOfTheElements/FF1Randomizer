@@ -27,7 +27,7 @@ namespace FF1Randomizer
 		private string _filename;
 		private Blob _seed;
 
-		public const string Version = "0.9.2";
+		public const string Version = "0.9.3";
 
 		private class MainWindowViewModel
 		{
@@ -269,9 +269,9 @@ namespace FF1Randomizer
 			}
 
 			SeedTextBox.Text = parts[0];
-			FlagsTextBox.Text = parts[1];
 			SetSeed();
-			DecodeFlagsText();
+
+			DecodeFlagsText(parts[1]);
 		}
 
 		private void SetScaleFactorLabel(Slider slider, Label label)
@@ -342,9 +342,9 @@ namespace FF1Randomizer
 			FlagsTextBox.Text += SliderToBase64((int)ExpBonusSlider.Value);
 		}
 
-		private void DecodeFlagsText()
+		private void DecodeFlagsText(string text)
 		{
-			var bitString = FlagsTextBox.Text.Substring(0, 3);
+			var bitString = text.Substring(0, 3);
 			bitString += '=';
 			bitString = bitString.Replace('!', '+');
 			bitString = bitString.Replace('%', '/');
@@ -366,10 +366,10 @@ namespace FF1Randomizer
 			EarlyCanoeCheckBox.IsChecked = bits[10];
 			NoPartyShuffleCheckBox.IsChecked = bits[11];
 
-			PriceScaleFactorSlider.Value = Base64ToSlider(FlagsTextBox.Text[3])/10.0;
-			EnemyScaleFactorSlider.Value = Base64ToSlider(FlagsTextBox.Text[4])/10.0;
-			ExpMultiplierSlider.Value = Base64ToSlider(FlagsTextBox.Text[5])/10.0;
-			ExpBonusSlider.Value = Base64ToSlider(FlagsTextBox.Text[6]);
+			PriceScaleFactorSlider.Value = Base64ToSlider(text[3])/10.0;
+			EnemyScaleFactorSlider.Value = Base64ToSlider(text[4])/10.0;
+			ExpMultiplierSlider.Value = Base64ToSlider(text[5])/10.0;
+			ExpBonusSlider.Value = Base64ToSlider(text[6]);
 		}
 
 		private char SliderToBase64(int value)
