@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using RomUtilities;
 
 namespace FF1Randomizer
 {
@@ -70,5 +71,84 @@ namespace FF1Randomizer
 		public static readonly List<int> Chime = Enumerable.Range(196, 52).ToList(); // Mirage Tower + Sky Castle
 
 		public static readonly List<int> ToFR = Enumerable.Range(248, 7).ToList(); // Anything that blocks an ORB will also block these.
+	}
+
+	public partial class FF1Rom : NesRom
+	{
+		public const int TreasureOffset = 0x3100;
+		public const int TreasureSize = 1;
+		public const int TreasureCount = 256;
+
+		public void ShuffleTreasures(MT19337 rng, bool earlyCanoe)
+		{
+			var treasureBlob = Get(TreasureOffset, TreasureSize * TreasureCount);
+			var usedTreasures = TreasureConditions.UsedIndices.Select(i => treasureBlob[i]).ToList();
+
+			do
+			{
+				usedTreasures.Shuffle(rng);
+				for (int i = 0; i < TreasureConditions.UsedIndices.Count; i++)
+				{
+					treasureBlob[TreasureConditions.UsedIndices[i]] = usedTreasures[i];
+				}
+			} while (!CheckSanity(treasureBlob, earlyCanoe));
+
+			Put(TreasureOffset, treasureBlob);
+		}
+
+		private bool CheckSanity(Blob treasureBlob, bool earlyCanoe)
+		{
+			if (TreasureConditions.ToFR.Select(i => treasureBlob[i]).Intersect(TreasureConditions.AllQuestItems).Any())
+			{
+				return false;
+			}
+
+			var accessibleTreasures = new HashSet<int>(TreasureConditions.Beginning);
+			var questItems = new HashSet<byte>();
+			int lastCount;
+			do
+			{
+				lastCount = accessibleTreasures.Count;
+				questItems.UnionWith(accessibleTreasures.Select(i => treasureBlob[i]).Intersect(TreasureConditions.AllQuestItems));
+
+				if (questItems.Contains((byte)QuestItems.Crown))
+				{
+					accessibleTreasures.UnionWith(TreasureConditions.EarlyCrown);
+				}
+				if (questItems.Contains((byte)QuestItems.Tnt))
+				{
+					accessibleTreasures.UnionWith(TreasureConditions.Tnt);
+
+					if (questItems.Contains((byte)QuestItems.Ruby) || earlyCanoe && questItems.Contains((byte)QuestItems.Floater))
+					{
+						accessibleTreasures.UnionWith(TreasureConditions.Rod);
+					}
+					if (earlyCanoe || questItems.Contains((byte)QuestItems.Ruby))
+					{
+						accessibleTreasures.UnionWith(TreasureConditions.FireAndIce);
+
+						if (questItems.Contains((byte)QuestItems.Crown))
+						{
+							accessibleTreasures.UnionWith(TreasureConditions.Ordeals);
+						}
+						if (questItems.Contains((byte)QuestItems.Floater))
+						{
+							accessibleTreasures.UnionWith(TreasureConditions.Airship);
+
+							if (questItems.Contains((byte)QuestItems.Crown))
+							{
+								accessibleTreasures.UnionWith(TreasureConditions.LateCrown);
+							}
+							if (questItems.Contains((byte)QuestItems.Slab))
+							{
+								accessibleTreasures.UnionWith(TreasureConditions.Chime);
+							}
+						}
+					}
+				}
+			} while (accessibleTreasures.Count > lastCount && accessibleTreasures.Count < TreasureConditions.UsedIndices.Count - TreasureConditions.ToFR.Count);
+
+			return accessibleTreasures.Count == TreasureConditions.UsedIndices.Count - TreasureConditions.ToFR.Count;
+		}
 	}
 }

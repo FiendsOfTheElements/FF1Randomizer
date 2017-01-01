@@ -1,0 +1,180 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using RomUtilities;
+
+namespace FF1Randomizer
+{
+	public partial class FF1Rom : NesRom
+	{
+		public const int EnemyOffset = 0x30520;
+		public const int EnemySize = 20;
+		public const int EnemyCount = 128;
+
+		public const int ScriptOffset = 0x31020;
+		public const int ScriptSize = 16;
+		public const int ScriptCount = 44;
+
+		public void ShuffleEnemyScripts(MT19337 rng)
+		{
+			var oldEnemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
+			var newEnemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
+
+			var normalOldEnemies = oldEnemies.Take(EnemyCount - 10).ToList(); // all but WarMECH, fiends, fiends revisited, and CHAOS
+			normalOldEnemies.Shuffle(rng);
+			for (int i = 0; i < EnemyCount - 10; i++)
+			{
+				newEnemies[i][7] = normalOldEnemies[i][7];
+			}
+
+			const int WarMech = 118;
+			const int Lich = 119;
+			const int Lich2 = 120;
+			const int Kary = 121;
+			const int Kary2 = 122;
+			const int Kraken = 123;
+			const int Kraken2 = 124;
+			const int Tiamat = 125;
+			const int Tiamat2 = 126;
+			const int Chaos = 127;
+			var oldBosses = new List<Blob>
+			{
+				oldEnemies[Lich],
+				oldEnemies[Kary],
+				oldEnemies[Kraken],
+				oldEnemies[Tiamat]
+			};
+			oldBosses.Shuffle(rng);
+
+			newEnemies[Lich][7] = oldBosses[0][7];
+			newEnemies[Kary][7] = oldBosses[1][7];
+			newEnemies[Kraken][7] = oldBosses[2][7];
+			newEnemies[Tiamat][7] = oldBosses[3][7];
+
+			var oldBigBosses = new List<Blob>
+			{
+				oldEnemies[WarMech],
+				oldEnemies[Lich2],
+				oldEnemies[Kary2],
+				oldEnemies[Kraken2],
+				oldEnemies[Tiamat2],
+				oldEnemies[Chaos]
+			};
+			oldBigBosses.Shuffle(rng);
+
+			newEnemies[WarMech][7] = oldBigBosses[0][7];
+			newEnemies[Lich2][7] = oldBigBosses[1][7];
+			newEnemies[Kary2][7] = oldBigBosses[2][7];
+			newEnemies[Kraken2][7] = oldBigBosses[3][7];
+			newEnemies[Tiamat2][7] = oldBigBosses[4][7];
+			newEnemies[Chaos][7] = oldBigBosses[5][7];
+
+			Put(EnemyOffset, newEnemies.SelectMany(enemy => enemy.ToBytes()).ToArray());
+		}
+
+		public void ShuffleEnemySkillsSpells(MT19337 rng)
+		{
+			var scriptBytes = Get(ScriptOffset, ScriptSize * ScriptCount).Chunk(ScriptSize);
+
+			var normalIndices = Enumerable.Range(0, 32).Concat(new[] { 33, 43 }).ToList();
+			var bossIndices = new List<int> { 34, 36, 38, 40 };
+			var bigBossIndices = new List<int> { 32, 35, 37, 39, 41, 42 };
+
+			ShuffleIndexedSkillsSpells(scriptBytes, normalIndices, rng);
+			ShuffleIndexedSkillsSpells(scriptBytes, bossIndices, rng);
+			ShuffleIndexedSkillsSpells(scriptBytes, bigBossIndices, rng);
+
+			Put(ScriptOffset, scriptBytes.SelectMany(script => script.ToBytes()).ToArray());
+		}
+
+		private void ShuffleIndexedSkillsSpells(List<Blob> scriptBytes, List<int> indices, MT19337 rng)
+		{
+			var scripts = indices.Select(i => scriptBytes[i]).ToList();
+
+			var spellBytes = scripts.SelectMany(script => script.SubBlob(2, 8).ToBytes()).Where(b => b != 0xFF).ToList();
+			var skillBytes = scripts.SelectMany(script => script.SubBlob(11, 4).ToBytes()).Where(b => b != 0xFF).ToList();
+			spellBytes.Shuffle(rng);
+			skillBytes.Shuffle(rng);
+
+			var spellBuckets = Bucketize(spellBytes, scripts.Count(script => script[0] != 0), 8, rng);
+			var skillBuckets = Bucketize(skillBytes, scripts.Count(script => script[1] != 0), 4, rng);
+
+			var spellChances = scripts.Select(script => script[0]).ToList();
+			var skillChances = scripts.Select(script => script[1]).ToList();
+			spellChances.Shuffle(rng);
+			skillChances.Shuffle(rng);
+
+			int spellBucketIndex = 0, skillBucketIndex = 0;
+			for (int i = 0; i < scripts.Count; i++)
+			{
+				var script = scriptBytes[indices[i]];
+				script[0] = spellChances[i];
+				script[1] = skillChances[i];
+
+				for (int j = 2; j < 16; j++)
+				{
+					script[j] = 0xFF;
+				}
+				if (spellChances[i] != 0)
+				{
+					for (int j = 0; j < spellBuckets[spellBucketIndex].Count; j++)
+					{
+						script[j + 2] = spellBuckets[spellBucketIndex][j];
+					}
+					spellBucketIndex++;
+				}
+				if (skillChances[i] != 0)
+				{
+					for (int j = 0; j < skillBuckets[skillBucketIndex].Count; j++)
+					{
+						script[j + 11] = skillBuckets[skillBucketIndex][j];
+					}
+					skillBucketIndex++;
+				}
+			}
+		}
+
+		private List<List<byte>> Bucketize(List<byte> bytes, int bucketCount, int bucketSize, MT19337 rng)
+		{
+			var buckets = new List<List<byte>>();
+			for (int i = 0; i < bucketCount; i++)
+			{
+				buckets.Add(new List<byte>());
+			}
+
+			int index = 0;
+			while (index < bucketCount)
+			{
+				buckets[index].Add(bytes[index++]);
+			}
+			while (index < bytes.Count)
+			{
+				var bucket = rng.Between(0, buckets.Count - 1);
+				if (buckets[bucket].Count < bucketSize)
+				{
+					buckets[bucket].Add(bytes[index++]);
+				}
+			}
+
+			return buckets;
+		}
+
+		public void ShuffleEnemyStatusAttacks(MT19337 rng)
+		{
+			var oldEnemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
+			var newEnemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
+
+			oldEnemies.Shuffle(rng);
+
+			for (int i = 0; i < EnemyCount; i++)
+			{
+				newEnemies[i][14] = oldEnemies[i][14];
+				newEnemies[i][15] = oldEnemies[i][15];
+			}
+
+			Put(EnemyOffset, newEnemies.SelectMany(enemy => enemy.ToBytes()).ToArray());
+		}
+	}
+}

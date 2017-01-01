@@ -252,6 +252,22 @@ namespace FF1Randomizer
 			SetFlagsText(sender, e);
 		}
 
+		private void ExpMultiplierSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+		{
+			ExpMultiplierSlider.Value = Math.Round(ExpMultiplierSlider.Value, 1);
+
+			SetExpLabel();
+			SetFlagsText(sender, e);
+		}
+
+		private void ExpBonusSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+		{
+			ExpBonusSlider.Value = Math.Round(ExpBonusSlider.Value);
+
+			SetExpLabel();
+			SetFlagsText(sender, e);
+		}
+
 		private void CopyButton_Click(object sender, RoutedEventArgs e)
 		{
 			Clipboard.SetText(SeedTextBox.Text + "_" + FlagsTextBox.Text);
@@ -280,22 +296,6 @@ namespace FF1Randomizer
 			var upper = Math.Round(100 * slider.Value);
 
 			label.Content = $"{lower}% - {upper}%";
-		}
-
-		private void ExpMultiplierSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-		{
-			ExpMultiplierSlider.Value = Math.Round(ExpMultiplierSlider.Value, 1);
-
-			SetExpLabel();
-			SetFlagsText(sender, e);
-		}
-
-		private void ExpBonusSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-		{
-			ExpBonusSlider.Value = Math.Round(ExpBonusSlider.Value);
-
-			SetExpLabel();
-			SetFlagsText(sender, e);
 		}
 
 		private void SetExpLabel()

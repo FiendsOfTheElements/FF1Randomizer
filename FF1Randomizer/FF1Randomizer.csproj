@@ -59,7 +59,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Enemies.cs" />
     <Compile Include="FF1Text.cs" />
+    <Compile Include="Hacks.cs" />
+    <Compile Include="Magic.cs" />
+    <Compile Include="Scale.cs" />
+    <Compile Include="Shops.cs" />
     <Compile Include="Treasure.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
