@@ -27,7 +27,7 @@ namespace FF1Randomizer
 		private string _filename;
 		private Blob _seed;
 
-		public const string Version = "0.9.3";
+		public const string Version = "0.9.4";
 
 		private class MainWindowViewModel
 		{
@@ -210,7 +210,7 @@ namespace FF1Randomizer
 			rom.WriteSeedAndFlags(Version, seedText, FlagsTextBox.Text);
 
 			var fileRoot = _filename.Substring(0, _filename.LastIndexOf("."));
-			var outputFilename = $"{fileRoot}_{FlagsTextBox.Text}_{seedText}.nes";
+			var outputFilename = $"{fileRoot}_{seedText}_{FlagsTextBox.Text}.nes";
 			rom.Save(outputFilename);
 
 			MessageBox.Show($"Finished generating new ROM: {outputFilename}", "Done");
