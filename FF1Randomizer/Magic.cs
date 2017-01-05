@@ -22,6 +22,9 @@ namespace FF1Randomizer
 		public const int MagicOutOfBattleSize = 7;
 		public const int MagicOutOfBattleCount = 13;
 
+		public const int ConfusedSpellIndexOffset = 0x3321E;
+		public const int FireSpellIndex = 4;
+
 		public const int WeaponOffset = 0x30000;
 		public const int WeaponSize = 8;
 		public const int WeaponCount = 40;
@@ -166,6 +169,10 @@ namespace FF1Randomizer
 
 				outOfBattleSpellOffset += MagicOutOfBattleSize;
 			}
+
+			// Confused enemies are supposed to cast FIRE, so figure out where FIRE ended up.
+			var newFireSpellIndex = shuffledSpells.FindIndex(spell => spell.Data == spells[FireSpellIndex]);
+			Put(ConfusedSpellIndexOffset, new [] { (byte)newFireSpellIndex });
 		}
 	}
 }
