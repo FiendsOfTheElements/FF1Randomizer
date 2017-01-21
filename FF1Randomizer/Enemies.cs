@@ -78,6 +78,13 @@ namespace FF1Randomizer
 		{
 			var scriptBytes = Get(ScriptOffset, ScriptSize * ScriptCount).Chunk(ScriptSize);
 
+			const int SandW = 8; // CRACK
+			const int IronGol = 28; // TOXIC
+			scriptBytes[SandW][13] = 0xFF;
+			scriptBytes[SandW][14] = 0xFF;
+			scriptBytes[IronGol][13] = 0xFF;
+			scriptBytes[IronGol][14] = 0xFF;
+
 			var normalIndices = Enumerable.Range(0, 32).Concat(new[] { 33, 43 }).ToList();
 			var bossIndices = new List<int> { 34, 36, 38, 40 };
 			var bigBossIndices = new List<int> { 32, 35, 37, 39, 41, 42 };
