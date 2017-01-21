@@ -27,7 +27,7 @@ namespace FF1Randomizer
 		private string _filename;
 		private Blob _seed;
 
-		public const string Version = "0.9.4";
+		public const string Version = "1.0.0";
 
 		private class MainWindowViewModel
 		{
@@ -422,6 +422,13 @@ namespace FF1Randomizer
 			{
 				return 63;
 			}
+		}
+
+		private void AboutButton_Click(object sender, RoutedEventArgs e)
+		{
+			var aboutWindow = new AboutWindow(Version) { Owner = this };
+
+			aboutWindow.ShowDialog();
 		}
 	}
 }
