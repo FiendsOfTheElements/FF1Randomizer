@@ -48,6 +48,7 @@ This option assigns enemy status attacks applied on hit (poison, dark, stun, sle
 * There will always be the same number of enemies that have a given status attack.
 * Status attacks may end up on enemies with more or fewer hits, making them more or less problematic.
 * This option is likely to "spread out" the status attacks, making certain groups of enemies less irritating (e.g. large groups of undead probably won't stunlock you anymore).  Of course, it could also give IMPs death touch, so beware.
+* If shops are also shuffled, the randomizer will ensure that PURE and SOFT potions are available in Corneria's item shop, since there would otherwise be no remedy for these ailments in the early game.
 
 ### Scale Tab
 This tab contains sliders that will multiply bits of game data by random values within a range determined by the slider.  The distribution of random multipliers is exponential.
