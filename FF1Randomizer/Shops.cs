@@ -27,7 +27,7 @@ namespace FF1Randomizer
 			Item = 60
 		}
 
-		public void ShuffleShops(MT19337 rng)
+		public void ShuffleShops(MT19337 rng, bool earlyAilments)
 		{
 			var pointers = Get(ShopPointerOffset, ShopPointerCount * ShopPointerSize).ToUShorts();
 
@@ -35,7 +35,10 @@ namespace FF1Randomizer
 
 			ShuffleShopType(ShopType.Weapon, pointers, rng);
 			ShuffleShopType(ShopType.Armor, pointers, rng);
-			ShuffleShopType(ShopType.Item, pointers, rng);
+			do
+			{
+				ShuffleShopType(ShopType.Item, pointers, rng);
+			} while (!earlyAilments || !AilmentsCovered(pointers));
 
 			Put(ShopPointerOffset, Blob.FromUShorts(pointers));
 		}
@@ -50,6 +53,15 @@ namespace FF1Randomizer
 			ShuffleShopType(ShopType.Black, pointers, rng);
 
 			Put(ShopPointerOffset, Blob.FromUShorts(pointers));
+		}
+
+		private bool AilmentsCovered(ushort[] pointers)
+		{
+			var shops = GetShops(ShopType.Item, pointers);
+
+			const byte Pure = 0x1A;
+			const byte Soft = 0x1B;
+			return shops[0].Contains(Pure) && shops[0].Contains(Soft);
 		}
 
 		private void RepackShops(ushort[] pointers)

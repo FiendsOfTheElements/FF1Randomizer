@@ -143,7 +143,7 @@ namespace FF1Randomizer
 
 			if (ShopsCheckBox.IsChecked == true)
 			{
-				rom.ShuffleShops(rng);
+				rom.ShuffleShops(rng, EnemyStatusAttacksCheckBox.IsChecked == true);
 			}
 
 			if (MagicShopsCheckBox.IsChecked == true)
