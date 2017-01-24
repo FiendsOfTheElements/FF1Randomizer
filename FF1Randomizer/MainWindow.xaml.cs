@@ -27,7 +27,7 @@ namespace FF1Randomizer
 		private string _filename;
 		private Blob _seed;
 
-		public const string Version = "1.0.0";
+		public const string Version = "1.0.2";
 
 		private class MainWindowViewModel
 		{
@@ -191,6 +191,11 @@ namespace FF1Randomizer
 				rom.DisablePartyShuffle();
 			}
 
+			if (SpeedHacksCheckBox.IsChecked == true)
+			{
+				rom.SpeedHacks();
+			}
+
 			if (PriceScaleFactorSlider.Value > 1)
 			{
 				rom.ScalePrices(PriceScaleFactorSlider.Value, rng);
@@ -313,7 +318,7 @@ namespace FF1Randomizer
 				return;
 			}
 
-			var bits = new BitArray(12);
+			var bits = new BitArray(13);
 			bits[0] = TreasuresCheckBox.IsChecked == true;
 			bits[1] = ShopsCheckBox.IsChecked == true;
 			bits[2] = MagicShopsCheckBox.IsChecked == true;
@@ -327,6 +332,7 @@ namespace FF1Randomizer
 			bits[9] = EarlyRodCheckBox.IsChecked == true;
 			bits[10] = EarlyCanoeCheckBox.IsChecked == true;
 			bits[11] = NoPartyShuffleCheckBox.IsChecked == true;
+			bits[12] = SpeedHacksCheckBox.IsChecked == true;
 
 			var bytes = new byte[2];
 			bits.CopyTo(bytes, 0);
@@ -365,6 +371,7 @@ namespace FF1Randomizer
 			EarlyRodCheckBox.IsChecked = bits[9];
 			EarlyCanoeCheckBox.IsChecked = bits[10];
 			NoPartyShuffleCheckBox.IsChecked = bits[11];
+			SpeedHacksCheckBox.IsChecked = bits[12];
 
 			PriceScaleFactorSlider.Value = Base64ToSlider(text[3])/10.0;
 			EnemyScaleFactorSlider.Value = Base64ToSlider(text[4])/10.0;

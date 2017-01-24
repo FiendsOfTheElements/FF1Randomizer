@@ -56,5 +56,24 @@ namespace FF1Randomizer
 			Put(0x39A6B, nops);
 			Put(0x39A74, nops);
 		}
+
+		public void SpeedHacks()
+		{
+			// Screen wipe
+			Data[0x3D6EE] = 0x08; // These two values must evenly divide 224 (0xE0), default are 2 and 4
+			Data[0x3D6F5] = 0x10;
+			Data[0x3D713] = 0x0A; // These two values must evenly divide 220 (0xDC), default are 2 and 4
+			Data[0x3D71A] = 0x14; // Don't ask me why they aren't the same, it's the number of scanlines to stop the loop at
+
+			// Dialogue boxes
+			Data[0x3D620] = 0x0B; // These two values must evenly divide 88 (0x58), the size of the dialogue box
+			Data[0x3D699] = 0x0B;
+
+			// Battle entry
+			Data[0x3D90A] = 0x11; // This can be just about anything, default is 0x41, sfx lasts for 0x20
+
+			// All kinds of palette cycling
+			Data[0x3D955] = 0x00; // This value is ANDed with a counter, 0x03 is default, 0x01 is double speed, 0x00 is quadruple
+		}
 	}
 }
