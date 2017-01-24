@@ -74,6 +74,14 @@ namespace FF1Randomizer
 
 			// All kinds of palette cycling
 			Data[0x3D955] = 0x00; // This value is ANDed with a counter, 0x03 is default, 0x01 is double speed, 0x00 is quadruple
+
+			// Battle
+			Data[0x31ECE] = 0x60; // Double character animation speed
+			Data[0x2DFB4] = 0x04; // Quadruple run speed
+
+			Data[0x33D4B] = 0x04; // Explosion effect count (big enemies), default 6
+			Data[0x33CCD] = 0x04; // Explosion effect count (small enemies), default 8
+			Data[0x33DAA] = 0x04; // Explosion effect count (mixed enemies), default 15
 		}
 	}
 }
