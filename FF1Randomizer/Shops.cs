@@ -38,7 +38,7 @@ namespace FF1Randomizer
 			do
 			{
 				ShuffleShopType(ShopType.Item, pointers, rng);
-			} while (!earlyAilments || !AilmentsCovered(pointers));
+			} while (earlyAilments && !AilmentsCovered(pointers));
 
 			Put(ShopPointerOffset, Blob.FromUShorts(pointers));
 		}
