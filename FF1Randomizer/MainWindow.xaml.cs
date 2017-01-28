@@ -27,7 +27,7 @@ namespace FF1Randomizer
 		private string _filename;
 		private Blob _seed;
 
-		public const string Version = "1.0.2";
+		public const string Version = "1.0.4";
 
 		private class MainWindowViewModel
 		{
