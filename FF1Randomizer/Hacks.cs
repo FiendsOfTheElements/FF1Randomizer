@@ -83,5 +83,10 @@ namespace FF1Randomizer
 			Data[0x33CCD] = 0x04; // Explosion effect count (small enemies), default 8
 			Data[0x33DAA] = 0x04; // Explosion effect count (mixed enemies), default 15
 		}
+
+		public void IdentifyTreasures()
+		{
+			Put(0x2B192, new byte[] { 0xC1, 0x01, 0x02, 0x00, 0x00, 0x00, 0x00 });
+		}
 	}
 }
