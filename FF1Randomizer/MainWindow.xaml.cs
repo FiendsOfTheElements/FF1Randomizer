@@ -27,7 +27,7 @@ namespace FF1Randomizer
 		private string _filename;
 		private Blob _seed;
 
-		public const string Version = "1.0.5";
+		public const string Version = "1.1.0";
 
 		private class MainWindowViewModel
 		{
@@ -136,6 +136,8 @@ namespace FF1Randomizer
 			var rom = new FF1Rom(_filename);
 			var rng = new MT19337(BitConverter.ToUInt32(_seed, 0));
 
+			rom.EasterEggs();
+
 			if (TreasuresCheckBox.IsChecked == true)
 			{
 				rom.ShuffleTreasures(rng, EarlyCanoeCheckBox.IsChecked == true);
@@ -193,12 +195,27 @@ namespace FF1Randomizer
 
 			if (SpeedHacksCheckBox.IsChecked == true)
 			{
-				rom.SpeedHacks();
+				rom.EnableSpeedHacks();
 			}
 
 			if (IdentifyTreasuresCheckBox.IsChecked == true)
 			{
-				rom.IdentifyTreasures();
+				rom.EnableIdentifyTreasures();
+			}
+
+			if (DashCheckBox.IsChecked == true)
+			{
+				rom.EnableDash();
+			}
+
+			if (BuyTenCheckBox.IsChecked == true)
+			{
+				rom.EnableBuyTen();
+			}
+
+			if (HouseMPRestorationCheckBox.IsChecked == true)
+			{
+				rom.FixHouse();
 			}
 
 			if (PriceScaleFactorSlider.Value > 1)
@@ -287,9 +304,9 @@ namespace FF1Randomizer
 		{
 			var text = Clipboard.GetText();
 			var parts = text.Split('_');
-			if (parts.Length != 2 || parts[0].Length != 8 || parts[1].Length != 7)
+			if (parts.Length != 2 || parts[0].Length != 8 || parts[1].Length != 8)
 			{
-				MessageBox.Show("Format not recognized.  Paste should look like SSSSSSSS_FFFFFFF", "Invalid Format");
+				MessageBox.Show("Format not recognized.  Paste should look like SSSSSSSS_FFFFFFFF", "Invalid Format");
 
 				return;
 			}
@@ -323,7 +340,7 @@ namespace FF1Randomizer
 				return;
 			}
 
-			var bits = new BitArray(14);
+			var bits = new BitArray(17);
 			bits[0] = TreasuresCheckBox.IsChecked == true;
 			bits[1] = ShopsCheckBox.IsChecked == true;
 			bits[2] = MagicShopsCheckBox.IsChecked == true;
@@ -339,8 +356,12 @@ namespace FF1Randomizer
 			bits[11] = NoPartyShuffleCheckBox.IsChecked == true;
 			bits[12] = SpeedHacksCheckBox.IsChecked == true;
 			bits[13] = IdentifyTreasuresCheckBox.IsChecked == true;
+			bits[14] = DashCheckBox.IsChecked == true;
+			bits[15] = BuyTenCheckBox.IsChecked == true;
 
-			var bytes = new byte[2];
+			bits[16] = HouseMPRestorationCheckBox.IsChecked == true;
+
+			var bytes = new byte[3];
 			bits.CopyTo(bytes, 0);
 
 			FlagsTextBox.Text = Convert.ToBase64String(bytes);
@@ -356,8 +377,7 @@ namespace FF1Randomizer
 
 		private void DecodeFlagsText(string text)
 		{
-			var bitString = text.Substring(0, 3);
-			bitString += '=';
+			var bitString = text.Substring(0, 4);
 			bitString = bitString.Replace('!', '+');
 			bitString = bitString.Replace('%', '/');
 
@@ -379,11 +399,15 @@ namespace FF1Randomizer
 			NoPartyShuffleCheckBox.IsChecked = bits[11];
 			SpeedHacksCheckBox.IsChecked = bits[12];
 			IdentifyTreasuresCheckBox.IsChecked = bits[13];
+			DashCheckBox.IsChecked = bits[14];
+			BuyTenCheckBox.IsChecked = bits[15];
 
-			PriceScaleFactorSlider.Value = Base64ToSlider(text[3])/10.0;
-			EnemyScaleFactorSlider.Value = Base64ToSlider(text[4])/10.0;
-			ExpMultiplierSlider.Value = Base64ToSlider(text[5])/10.0;
-			ExpBonusSlider.Value = Base64ToSlider(text[6]);
+			HouseMPRestorationCheckBox.IsChecked = bits[16];
+
+			PriceScaleFactorSlider.Value = Base64ToSlider(text[4])/10.0;
+			EnemyScaleFactorSlider.Value = Base64ToSlider(text[5])/10.0;
+			ExpMultiplierSlider.Value = Base64ToSlider(text[6])/10.0;
+			ExpBonusSlider.Value = Base64ToSlider(text[7]);
 		}
 
 		private char SliderToBase64(int value)

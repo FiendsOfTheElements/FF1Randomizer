@@ -65,6 +65,7 @@
     <Compile Include="AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="BugFixes.cs" />
     <Compile Include="Enemies.cs" />
     <Compile Include="FF1Text.cs" />
     <Compile Include="Hacks.cs" />
