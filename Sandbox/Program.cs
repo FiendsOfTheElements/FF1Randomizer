@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using FF1Randomizer;
+using FF1Lib;
 using RomUtilities;
 
 namespace Sandbox

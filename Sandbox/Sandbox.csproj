@@ -56,9 +56,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\FF1Randomizer\FF1Randomizer.csproj">
-      <Project>{b050ecc9-8cb8-4d8c-b6a9-04a1291276de}</Project>
-      <Name>FF1Randomizer</Name>
+    <ProjectReference Include="..\FF1Lib\FF1Lib.csproj">
+      <Project>{c5f0cf19-c775-4133-ae81-43606c73cb4b}</Project>
+      <Name>FF1Lib</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

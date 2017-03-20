@@ -7,7 +7,7 @@ using System.Windows;
 using RomUtilities;
 using static System.Math;
 
-namespace FF1Randomizer
+namespace FF1Lib
 {
 	// ReSharper disable once InconsistentNaming
 	public partial class FF1Rom : NesRom

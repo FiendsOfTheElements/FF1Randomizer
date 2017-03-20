@@ -136,14 +136,6 @@
     <Compile Include="AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="BugFixes.cs" />
-    <Compile Include="Enemies.cs" />
-    <Compile Include="FF1Text.cs" />
-    <Compile Include="Hacks.cs" />
-    <Compile Include="Magic.cs" />
-    <Compile Include="Scale.cs" />
-    <Compile Include="Shops.cs" />
-    <Compile Include="Treasure.cs" />
     <Page Include="AboutWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -156,7 +148,6 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="FF1Rom.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -181,9 +172,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <Content Include="DTETable.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -195,10 +183,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Treasures.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Shops.txt" />
+    <ProjectReference Include="..\FF1Lib\FF1Lib.csproj">
+      <Project>{c5f0cf19-c775-4133-ae81-43606c73cb4b}</Project>
+      <Name>FF1Lib</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

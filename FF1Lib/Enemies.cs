@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using RomUtilities;
 
-namespace FF1Randomizer
+namespace FF1Lib
 {
 	public partial class FF1Rom : NesRom
 	{

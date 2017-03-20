@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using RomUtilities;
 
-namespace FF1Randomizer
+namespace FF1Lib
 {
 	// ReSharper disable once InconsistentNaming
 	public static class FF1Text
