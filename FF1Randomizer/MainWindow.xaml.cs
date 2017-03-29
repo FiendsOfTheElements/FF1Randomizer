@@ -28,7 +28,7 @@ namespace FF1Randomizer
 		private string _filename;
 		private Blob _seed;
 
-		public const string Version = "1.1.0";
+		public const string Version = "1.2.0";
 
 		private class MainWindowViewModel
 		{
@@ -219,6 +219,11 @@ namespace FF1Randomizer
 				rom.FixHouse();
 			}
 
+            if (WeaponStatsCheckBox.IsChecked == true)
+            {
+                rom.FixWeaponStats();
+            }
+
 			if (PriceScaleFactorSlider.Value > 1)
 			{
 				rom.ScalePrices(PriceScaleFactorSlider.Value, rng);
@@ -341,7 +346,7 @@ namespace FF1Randomizer
 				return;
 			}
 
-			var bits = new BitArray(17);
+			var bits = new BitArray(18);
 			bits[0] = TreasuresCheckBox.IsChecked == true;
 			bits[1] = ShopsCheckBox.IsChecked == true;
 			bits[2] = MagicShopsCheckBox.IsChecked == true;
@@ -361,6 +366,7 @@ namespace FF1Randomizer
 			bits[15] = BuyTenCheckBox.IsChecked == true;
 
 			bits[16] = HouseMPRestorationCheckBox.IsChecked == true;
+            bits[17] = WeaponStatsCheckBox.IsChecked == true;
 
 			var bytes = new byte[3];
 			bits.CopyTo(bytes, 0);
@@ -404,6 +410,7 @@ namespace FF1Randomizer
 			BuyTenCheckBox.IsChecked = bits[15];
 
 			HouseMPRestorationCheckBox.IsChecked = bits[16];
+            WeaponStatsCheckBox.IsChecked = bits[17];
 
 			PriceScaleFactorSlider.Value = Base64ToSlider(text[4])/10.0;
 			EnemyScaleFactorSlider.Value = Base64ToSlider(text[5])/10.0;
