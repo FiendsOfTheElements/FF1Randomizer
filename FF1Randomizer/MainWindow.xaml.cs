@@ -320,7 +320,7 @@ namespace FF1Randomizer
 			SeedTextBox.Text = parts[0];
 			SetSeed();
 
-			DecodeFlagsText(parts[1]);
+			ApplyFlags(DecodeFlagsText(parts[1]));
 		}
 
 		private void SetScaleFactorLabel(Slider slider, Label label)
@@ -340,49 +340,113 @@ namespace FF1Randomizer
 		}
 
 		private void SetFlagsText(object sender, RoutedEventArgs e)
-		{
-			if (!IsInitialized || FlagsTextBox == null)
+        {
+            if (!IsInitialized || FlagsTextBox == null)
+            {
+                return;
+            }
+
+            FlagsTextBox.Text = EncodeFlagsText(new Flags
 			{
-				return;
-			}
+				Treasures = TreasuresCheckBox.IsChecked == true,
+				Shops = ShopsCheckBox.IsChecked == true,
+				MagicShops = MagicShopsCheckBox.IsChecked == true,
+				MagicLevels = MagicLevelsCheckBox.IsChecked == true,
+				MagicPermissions = MagicPermissionsCheckBox.IsChecked == true,
+				Rng = RngCheckBox.IsChecked == true,
+				EnemyScripts = EnemyScriptsCheckBox.IsChecked == true,
+				EnemySkillsSpells = EnemySkillsSpellsCheckBox.IsChecked == true,
+				EnemyStatusAttacks = EnemyStatusAttacksCheckBox.IsChecked == true,
 
-			var bits = new BitArray(18);
-			bits[0] = TreasuresCheckBox.IsChecked == true;
-			bits[1] = ShopsCheckBox.IsChecked == true;
-			bits[2] = MagicShopsCheckBox.IsChecked == true;
-			bits[3] = MagicLevelsCheckBox.IsChecked == true;
-			bits[4] = MagicPermissionsCheckBox.IsChecked == true;
-			bits[5] = RngCheckBox.IsChecked == true;
-			bits[6] = EnemyScriptsCheckBox.IsChecked == true;
-			bits[7] = EnemySkillsSpellsCheckBox.IsChecked == true;
-			bits[8] = EnemyStatusAttacksCheckBox.IsChecked == true;
+				EarlyRod = EarlyRodCheckBox.IsChecked == true,
+				EarlyCanoe = EarlyCanoeCheckBox.IsChecked == true,
+				NoPartyShuffle = NoPartyShuffleCheckBox.IsChecked == true,
+				SpeedHacks = SpeedHacksCheckBox.IsChecked == true,
+				IdentifyTreasures = IdentifyTreasuresCheckBox.IsChecked == true,
+				Dash = DashCheckBox.IsChecked == true,
+				BuyTen = BuyTenCheckBox.IsChecked == true,
 
-			bits[9] = EarlyRodCheckBox.IsChecked == true;
-			bits[10] = EarlyCanoeCheckBox.IsChecked == true;
-			bits[11] = NoPartyShuffleCheckBox.IsChecked == true;
-			bits[12] = SpeedHacksCheckBox.IsChecked == true;
-			bits[13] = IdentifyTreasuresCheckBox.IsChecked == true;
-			bits[14] = DashCheckBox.IsChecked == true;
-			bits[15] = BuyTenCheckBox.IsChecked == true;
+				HouseMPRestoration = HouseMPRestorationCheckBox.IsChecked == true,
+				WeaponStats = WeaponStatsCheckBox.IsChecked == true,
 
-			bits[16] = HouseMPRestorationCheckBox.IsChecked == true;
-            bits[17] = WeaponStatsCheckBox.IsChecked == true;
+				PriceScaleFactor = PriceScaleFactorSlider.Value,
+				EnemyScaleFactor = EnemyScaleFactorSlider.Value,
+				ExpMultiplier = ExpMultiplierSlider.Value,
+				ExpBonus = ExpBonusSlider.Value
+			});
+        }
 
-			var bytes = new byte[3];
-			bits.CopyTo(bytes, 0);
+		void ApplyFlags(Flags flags)
+		{
+			TreasuresCheckBox.IsChecked = flags.Treasures;
+			ShopsCheckBox.IsChecked = flags.Shops;
+			MagicShopsCheckBox.IsChecked = flags.MagicShops;
+			MagicLevelsCheckBox.IsChecked = flags.MagicLevels;
+			MagicPermissionsCheckBox.IsChecked = flags.MagicPermissions;
+			RngCheckBox.IsChecked = flags.Rng;
+			EnemyScriptsCheckBox.IsChecked = flags.EnemyScripts;
+			EnemySkillsSpellsCheckBox.IsChecked = flags.EnemySkillsSpells;
+			EnemyStatusAttacksCheckBox.IsChecked = flags.EnemyStatusAttacks;
 
-			FlagsTextBox.Text = Convert.ToBase64String(bytes);
-			FlagsTextBox.Text = FlagsTextBox.Text.TrimEnd('=');
-			FlagsTextBox.Text = FlagsTextBox.Text.Replace('+', '!');
-			FlagsTextBox.Text = FlagsTextBox.Text.Replace('/', '%');
+			EarlyRodCheckBox.IsChecked = flags.EarlyRod;
+			EarlyCanoeCheckBox.IsChecked = flags.EarlyCanoe;
+			NoPartyShuffleCheckBox.IsChecked = flags.NoPartyShuffle;
+			SpeedHacksCheckBox.IsChecked = flags.SpeedHacks;
+			IdentifyTreasuresCheckBox.IsChecked = flags.IdentifyTreasures;
+			DashCheckBox.IsChecked = flags.Dash;
+			BuyTenCheckBox.IsChecked = flags.BuyTen;
 
-			FlagsTextBox.Text += SliderToBase64((int)(10*PriceScaleFactorSlider.Value));
-			FlagsTextBox.Text += SliderToBase64((int)(10*EnemyScaleFactorSlider.Value));
-			FlagsTextBox.Text += SliderToBase64((int)(10*ExpMultiplierSlider.Value));
-			FlagsTextBox.Text += SliderToBase64((int)ExpBonusSlider.Value);
+			HouseMPRestorationCheckBox.IsChecked = flags.HouseMPRestoration;
+			WeaponStatsCheckBox.IsChecked = flags.WeaponStats;
+
+			PriceScaleFactorSlider.Value = flags.PriceScaleFactor;
+			EnemyScaleFactorSlider.Value = flags.EnemyScaleFactor;
+			ExpMultiplierSlider.Value = flags.ExpMultiplier;
+			ExpBonusSlider.Value = flags.ExpBonus;
 		}
 
-		private void DecodeFlagsText(string text)
+		private string EncodeFlagsText(Flags flags)
+        {
+            var bits = new BitArray(18);
+
+            bits[0] = flags.Treasures;
+            bits[1] = flags.Shops;
+            bits[2] = flags.MagicShops;
+            bits[3] = flags.MagicLevels;
+            bits[4] = flags.MagicPermissions;
+            bits[5] = flags.Rng;
+            bits[6] = flags.EnemyScripts;
+            bits[7] = flags.EnemySkillsSpells;
+            bits[8] = flags.EnemyStatusAttacks;
+
+            bits[9] = flags.EarlyRod;
+            bits[10] = flags.EarlyCanoe;
+            bits[11] = flags.NoPartyShuffle;
+            bits[12] = flags.SpeedHacks;
+            bits[13] = flags.IdentifyTreasures;
+            bits[14] = flags.Dash;
+            bits[15] = flags.BuyTen;
+
+            bits[16] = flags.HouseMPRestoration;
+            bits[17] = flags.WeaponStats;
+
+            var bytes = new byte[3];
+            bits.CopyTo(bytes, 0);
+
+            var text = Convert.ToBase64String(bytes);
+            text = text.TrimEnd('=');
+            text = text.Replace('+', '!');
+            text = text.Replace('/', '%');
+
+            text += SliderToBase64((int)(10 * flags.PriceScaleFactor));
+            text += SliderToBase64((int)(10 * flags.EnemyScaleFactor));
+            text += SliderToBase64((int)(10 * flags.ExpMultiplier));
+            text += SliderToBase64((int)flags.ExpBonus);
+
+            return text;
+        }
+
+        private Flags DecodeFlagsText(string text)
 		{
 			var bitString = text.Substring(0, 4);
 			bitString = bitString.Replace('!', '+');
@@ -391,31 +455,34 @@ namespace FF1Randomizer
 			var bytes = Convert.FromBase64String(bitString);
 			var bits = new BitArray(bytes);
 
-			TreasuresCheckBox.IsChecked = bits[0];
-			ShopsCheckBox.IsChecked = bits[1];
-			MagicShopsCheckBox.IsChecked = bits[2];
-			MagicLevelsCheckBox.IsChecked = bits[3];
-			MagicPermissionsCheckBox.IsChecked = bits[4];
-			RngCheckBox.IsChecked = bits[5];
-			EnemyScriptsCheckBox.IsChecked = bits[6];
-			EnemySkillsSpellsCheckBox.IsChecked = bits[7];
-			EnemyStatusAttacksCheckBox.IsChecked = bits[8];
+			return new Flags
+			{
+				Treasures = bits[0],
+				Shops = bits[1],
+				MagicShops = bits[2],
+				MagicLevels = bits[3],
+				MagicPermissions = bits[4],
+				Rng = bits[5],
+				EnemyScripts = bits[6],
+				EnemySkillsSpells = bits[7],
+				EnemyStatusAttacks = bits[8],
 
-			EarlyRodCheckBox.IsChecked = bits[9];
-			EarlyCanoeCheckBox.IsChecked = bits[10];
-			NoPartyShuffleCheckBox.IsChecked = bits[11];
-			SpeedHacksCheckBox.IsChecked = bits[12];
-			IdentifyTreasuresCheckBox.IsChecked = bits[13];
-			DashCheckBox.IsChecked = bits[14];
-			BuyTenCheckBox.IsChecked = bits[15];
+				EarlyRod = bits[9],
+				EarlyCanoe = bits[10],
+				NoPartyShuffle = bits[11],
+				SpeedHacks = bits[12],
+				IdentifyTreasures = bits[13],
+				Dash = bits[14],
+				BuyTen = bits[15],
 
-			HouseMPRestorationCheckBox.IsChecked = bits[16];
-            WeaponStatsCheckBox.IsChecked = bits[17];
+				HouseMPRestoration = bits[16],
+				WeaponStats = bits[17],
 
-			PriceScaleFactorSlider.Value = Base64ToSlider(text[4])/10.0;
-			EnemyScaleFactorSlider.Value = Base64ToSlider(text[5])/10.0;
-			ExpMultiplierSlider.Value = Base64ToSlider(text[6])/10.0;
-			ExpBonusSlider.Value = Base64ToSlider(text[7]);
+				PriceScaleFactor = Base64ToSlider(text[4]) / 10.0,
+				EnemyScaleFactor = Base64ToSlider(text[5]) / 10.0,
+				ExpMultiplier = Base64ToSlider(text[6]) / 10.0,
+				ExpBonus = Base64ToSlider(text[7])
+			};
 		}
 
 		private char SliderToBase64(int value)
