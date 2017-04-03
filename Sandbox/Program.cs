@@ -13,9 +13,9 @@ namespace Sandbox
 	{
 		static void Main(string[] args)
 		{
-			var test = FF1Text.TextToBytes("Some stuff");
+			var test = new BitArray(Blob.FromHex("FF"));
 
-			Console.WriteLine(test.ToHex());
+			Console.WriteLine(test);
 
 			Console.ReadLine();
 		}

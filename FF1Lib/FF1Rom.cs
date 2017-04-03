@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using RomUtilities;
 using static System.Math;
+using System.Collections;
 
 namespace FF1Lib
 {
@@ -20,6 +21,115 @@ namespace FF1Lib
 
 		public FF1Rom(string filename) : base(filename)
 		{}
+
+		public void Randomize(Blob seed, Flags flags, string version)
+		{
+			var rng = new MT19337(BitConverter.ToUInt32(seed, 0));
+
+			EasterEggs();
+
+			if (flags.Treasures)
+			{
+				ShuffleTreasures(rng, flags.EarlyCanoe);
+			}
+
+			if (flags.Shops)
+			{
+				ShuffleShops(rng, flags.EnemyStatusAttacks);
+			}
+
+			if (flags.MagicShops)
+			{
+				ShuffleMagicShops(rng);
+			}
+
+			if (flags.MagicLevels)
+			{
+				ShuffleMagicLevels(rng, flags.MagicPermissions);
+			}
+
+			if (flags.Rng)
+			{
+				ShuffleRng(rng);
+			}
+
+			if (flags.EnemyScripts)
+			{
+				ShuffleEnemyScripts(rng);
+			}
+
+			if (flags.EnemySkillsSpells)
+			{
+				ShuffleEnemySkillsSpells(rng);
+			}
+
+			if (flags.EnemyStatusAttacks)
+			{
+				ShuffleEnemyStatusAttacks(rng);
+			}
+
+			if (flags.EarlyRod)
+			{
+				EnableEarlyRod();
+			}
+
+			if (flags.EarlyCanoe)
+			{
+				EnableEarlyCanoe();
+			}
+
+			if (flags.NoPartyShuffle)
+			{
+				DisablePartyShuffle();
+			}
+
+			if (flags.SpeedHacks)
+			{
+				EnableSpeedHacks();
+			}
+
+			if (flags.IdentifyTreasures)
+			{
+				EnableIdentifyTreasures();
+			}
+
+			if (flags.Dash)
+			{
+				EnableDash();
+			}
+
+			if (flags.BuyTen)
+			{
+				EnableBuyTen();
+			}
+
+			if (flags.HouseMPRestoration)
+			{
+				FixHouse();
+			}
+
+			if (flags.WeaponStats)
+			{
+				FixWeaponStats();
+			}
+
+			if (flags.PriceScaleFactor > 1)
+			{
+				ScalePrices(flags.PriceScaleFactor, rng);
+			}
+
+			if (flags.EnemyScaleFactor > 1)
+			{
+				ScaleEnemyStats(flags.EnemyScaleFactor, rng);
+			}
+
+			if (flags.ExpMultiplier > 1 || flags.ExpBonus > 0)
+			{
+				ExpGoldBoost(flags.ExpBonus * 10, flags.ExpMultiplier);
+			}
+
+			WriteSeedAndFlags(version, seed.ToHex(), EncodeFlagsText(flags));
+		}
 
 		public override bool Validate()
 		{
@@ -70,6 +180,142 @@ namespace FF1Lib
 			enemyBlob = Blob.Concat(enemies);
 
 			Put(EnemyOffset, enemyBlob);
+		}
+
+		public static string EncodeFlagsText(Flags flags)
+		{
+			var bits = new BitArray(18);
+
+			bits[0] = flags.Treasures;
+			bits[1] = flags.Shops;
+			bits[2] = flags.MagicShops;
+			bits[3] = flags.MagicLevels;
+			bits[4] = flags.MagicPermissions;
+			bits[5] = flags.Rng;
+			bits[6] = flags.EnemyScripts;
+			bits[7] = flags.EnemySkillsSpells;
+			bits[8] = flags.EnemyStatusAttacks;
+
+			bits[9] = flags.EarlyRod;
+			bits[10] = flags.EarlyCanoe;
+			bits[11] = flags.NoPartyShuffle;
+			bits[12] = flags.SpeedHacks;
+			bits[13] = flags.IdentifyTreasures;
+			bits[14] = flags.Dash;
+			bits[15] = flags.BuyTen;
+
+			bits[16] = flags.HouseMPRestoration;
+			bits[17] = flags.WeaponStats;
+
+			var bytes = new byte[3];
+			// Freaking .NET Core doesn't have BitArray.CopyTo
+			for (int i = 0; i < bits.Length; i++)
+			{
+				bytes[i/8] |= (byte)((bits[i] ? 1 : 0) << (i%8));
+			}
+
+			var text = Convert.ToBase64String(bytes);
+			text = text.TrimEnd('=');
+			text = text.Replace('+', '!');
+			text = text.Replace('/', '%');
+
+			text += SliderToBase64((int)(10 * flags.PriceScaleFactor));
+			text += SliderToBase64((int)(10 * flags.EnemyScaleFactor));
+			text += SliderToBase64((int)(10 * flags.ExpMultiplier));
+			text += SliderToBase64((int)flags.ExpBonus);
+
+			return text;
+		}
+
+		public static Flags DecodeFlagsText(string text)
+		{
+			var bitString = text.Substring(0, 4);
+			bitString = bitString.Replace('!', '+');
+			bitString = bitString.Replace('%', '/');
+
+			var bytes = Convert.FromBase64String(bitString);
+			var bits = new BitArray(bytes);
+
+			return new Flags
+			{
+				Treasures = bits[0],
+				Shops = bits[1],
+				MagicShops = bits[2],
+				MagicLevels = bits[3],
+				MagicPermissions = bits[4],
+				Rng = bits[5],
+				EnemyScripts = bits[6],
+				EnemySkillsSpells = bits[7],
+				EnemyStatusAttacks = bits[8],
+
+				EarlyRod = bits[9],
+				EarlyCanoe = bits[10],
+				NoPartyShuffle = bits[11],
+				SpeedHacks = bits[12],
+				IdentifyTreasures = bits[13],
+				Dash = bits[14],
+				BuyTen = bits[15],
+
+				HouseMPRestoration = bits[16],
+				WeaponStats = bits[17],
+
+				PriceScaleFactor = Base64ToSlider(text[4]) / 10.0,
+				EnemyScaleFactor = Base64ToSlider(text[5]) / 10.0,
+				ExpMultiplier = Base64ToSlider(text[6]) / 10.0,
+				ExpBonus = Base64ToSlider(text[7])
+			};
+		}
+
+		private static char SliderToBase64(int value)
+		{
+			if (value < 0 || value > 63)
+			{
+				throw new ArgumentOutOfRangeException(nameof(value), value, "Value must be between 0 and 63.");
+			}
+			else if (value < 10)
+			{
+				return (char)('0' + value);
+			}
+			else if (value < 36)
+			{
+				return (char)('A' + value - 10);
+			}
+			else if (value < 62)
+			{
+				return (char)('a' + value - 36);
+			}
+			else if (value == 62)
+			{
+				return '!';
+			}
+			else
+			{
+				return '%';
+			}
+		}
+
+		private static int Base64ToSlider(char value)
+		{
+			if (value >= '0' && value <= '9')
+			{
+				return value - '0';
+			}
+			else if (value >= 'A' && value <= 'Z')
+			{
+				return value - 'A' + 10;
+			}
+			else if (value >= 'a' && value <= 'z')
+			{
+				return value - 'a' + 36;
+			}
+			else if (value == '!')
+			{
+				return 62;
+			}
+			else
+			{
+				return 63;
+			}
 		}
 	}
 }

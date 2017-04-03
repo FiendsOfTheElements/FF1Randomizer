@@ -135,115 +135,10 @@ namespace FF1Randomizer
 		private void GenerateButton_Click(object sender, RoutedEventArgs e)
 		{
 			var rom = new FF1Rom(_filename);
-			var rng = new MT19337(BitConverter.ToUInt32(_seed, 0));
-
-			rom.EasterEggs();
-
-			if (TreasuresCheckBox.IsChecked == true)
-			{
-				rom.ShuffleTreasures(rng, EarlyCanoeCheckBox.IsChecked == true);
-			}
-
-			if (ShopsCheckBox.IsChecked == true)
-			{
-				rom.ShuffleShops(rng, EnemyStatusAttacksCheckBox.IsChecked == true);
-			}
-
-			if (MagicShopsCheckBox.IsChecked == true)
-			{
-				rom.ShuffleMagicShops(rng);
-			}
-
-			if (MagicLevelsCheckBox.IsChecked == true)
-			{
-				rom.ShuffleMagicLevels(rng, MagicPermissionsCheckBox.IsChecked ?? false);
-			}
-
-			if (RngCheckBox.IsChecked == true)
-			{
-				rom.ShuffleRng(rng);
-			}
-
-			if (EnemyScriptsCheckBox.IsChecked == true)
-			{
-				rom.ShuffleEnemyScripts(rng);
-			}
-
-			if (EnemySkillsSpellsCheckBox.IsChecked == true)
-			{
-				rom.ShuffleEnemySkillsSpells(rng);
-			}
-
-			if (EnemyStatusAttacksCheckBox.IsChecked == true)
-			{
-				rom.ShuffleEnemyStatusAttacks(rng);
-			}
-
-			if (EarlyRodCheckBox.IsChecked == true)
-			{
-				rom.EnableEarlyRod();
-			}
-
-			if (EarlyCanoeCheckBox.IsChecked == true)
-			{
-				rom.EnableEarlyCanoe();
-			}
-
-			if (NoPartyShuffleCheckBox.IsChecked == true)
-			{
-				rom.DisablePartyShuffle();
-			}
-
-			if (SpeedHacksCheckBox.IsChecked == true)
-			{
-				rom.EnableSpeedHacks();
-			}
-
-			if (IdentifyTreasuresCheckBox.IsChecked == true)
-			{
-				rom.EnableIdentifyTreasures();
-			}
-
-			if (DashCheckBox.IsChecked == true)
-			{
-				rom.EnableDash();
-			}
-
-			if (BuyTenCheckBox.IsChecked == true)
-			{
-				rom.EnableBuyTen();
-			}
-
-			if (HouseMPRestorationCheckBox.IsChecked == true)
-			{
-				rom.FixHouse();
-			}
-
-            if (WeaponStatsCheckBox.IsChecked == true)
-            {
-                rom.FixWeaponStats();
-            }
-
-			if (PriceScaleFactorSlider.Value > 1)
-			{
-				rom.ScalePrices(PriceScaleFactorSlider.Value, rng);
-			}
-
-			if (EnemyScaleFactorSlider.Value > 1)
-			{
-				rom.ScaleEnemyStats(EnemyScaleFactorSlider.Value, rng);
-			}
-
-			if (ExpMultiplierSlider.Value > 1 || ExpBonusSlider.Value > 0)
-			{
-				rom.ExpGoldBoost(ExpBonusSlider.Value*10, ExpMultiplierSlider.Value);
-			}
-
-			var seedText = _seed.ToHex();
-			rom.WriteSeedAndFlags(Version, seedText, FlagsTextBox.Text);
+			rom.Randomize(_seed, FF1Rom.DecodeFlagsText(FlagsTextBox.Text), Version);
 
 			var fileRoot = _filename.Substring(0, _filename.LastIndexOf("."));
-			var outputFilename = $"{fileRoot}_{seedText}_{FlagsTextBox.Text}.nes";
+			var outputFilename = $"{fileRoot}_{_seed.ToHex()}_{FlagsTextBox.Text}.nes";
 			rom.Save(outputFilename);
 
 			MessageBox.Show($"Finished generating new ROM: {outputFilename}", "Done");
@@ -320,7 +215,7 @@ namespace FF1Randomizer
 			SeedTextBox.Text = parts[0];
 			SetSeed();
 
-			ApplyFlags(DecodeFlagsText(parts[1]));
+			ApplyFlags(FF1Rom.DecodeFlagsText(parts[1]));
 		}
 
 		private void SetScaleFactorLabel(Slider slider, Label label)
@@ -346,7 +241,7 @@ namespace FF1Randomizer
                 return;
             }
 
-            FlagsTextBox.Text = EncodeFlagsText(new Flags
+            FlagsTextBox.Text = FF1Rom.EncodeFlagsText(new Flags
 			{
 				Treasures = TreasuresCheckBox.IsChecked == true,
 				Shops = ShopsCheckBox.IsChecked == true,
@@ -403,138 +298,6 @@ namespace FF1Randomizer
 			EnemyScaleFactorSlider.Value = flags.EnemyScaleFactor;
 			ExpMultiplierSlider.Value = flags.ExpMultiplier;
 			ExpBonusSlider.Value = flags.ExpBonus;
-		}
-
-		private string EncodeFlagsText(Flags flags)
-        {
-            var bits = new BitArray(18);
-
-            bits[0] = flags.Treasures;
-            bits[1] = flags.Shops;
-            bits[2] = flags.MagicShops;
-            bits[3] = flags.MagicLevels;
-            bits[4] = flags.MagicPermissions;
-            bits[5] = flags.Rng;
-            bits[6] = flags.EnemyScripts;
-            bits[7] = flags.EnemySkillsSpells;
-            bits[8] = flags.EnemyStatusAttacks;
-
-            bits[9] = flags.EarlyRod;
-            bits[10] = flags.EarlyCanoe;
-            bits[11] = flags.NoPartyShuffle;
-            bits[12] = flags.SpeedHacks;
-            bits[13] = flags.IdentifyTreasures;
-            bits[14] = flags.Dash;
-            bits[15] = flags.BuyTen;
-
-            bits[16] = flags.HouseMPRestoration;
-            bits[17] = flags.WeaponStats;
-
-            var bytes = new byte[3];
-            bits.CopyTo(bytes, 0);
-
-            var text = Convert.ToBase64String(bytes);
-            text = text.TrimEnd('=');
-            text = text.Replace('+', '!');
-            text = text.Replace('/', '%');
-
-            text += SliderToBase64((int)(10 * flags.PriceScaleFactor));
-            text += SliderToBase64((int)(10 * flags.EnemyScaleFactor));
-            text += SliderToBase64((int)(10 * flags.ExpMultiplier));
-            text += SliderToBase64((int)flags.ExpBonus);
-
-            return text;
-        }
-
-        private Flags DecodeFlagsText(string text)
-		{
-			var bitString = text.Substring(0, 4);
-			bitString = bitString.Replace('!', '+');
-			bitString = bitString.Replace('%', '/');
-
-			var bytes = Convert.FromBase64String(bitString);
-			var bits = new BitArray(bytes);
-
-			return new Flags
-			{
-				Treasures = bits[0],
-				Shops = bits[1],
-				MagicShops = bits[2],
-				MagicLevels = bits[3],
-				MagicPermissions = bits[4],
-				Rng = bits[5],
-				EnemyScripts = bits[6],
-				EnemySkillsSpells = bits[7],
-				EnemyStatusAttacks = bits[8],
-
-				EarlyRod = bits[9],
-				EarlyCanoe = bits[10],
-				NoPartyShuffle = bits[11],
-				SpeedHacks = bits[12],
-				IdentifyTreasures = bits[13],
-				Dash = bits[14],
-				BuyTen = bits[15],
-
-				HouseMPRestoration = bits[16],
-				WeaponStats = bits[17],
-
-				PriceScaleFactor = Base64ToSlider(text[4]) / 10.0,
-				EnemyScaleFactor = Base64ToSlider(text[5]) / 10.0,
-				ExpMultiplier = Base64ToSlider(text[6]) / 10.0,
-				ExpBonus = Base64ToSlider(text[7])
-			};
-		}
-
-		private char SliderToBase64(int value)
-		{
-			if (value < 0 || value > 63)
-			{
-				throw new ArgumentOutOfRangeException(nameof(value), value, "Value must be between 0 and 63.");
-			}
-			else if (value < 10)
-			{
-				return (char)('0' + value);
-			}
-			else if (value < 36)
-			{
-				return (char)('A' + value - 10);
-			}
-			else if (value < 62)
-			{
-				return (char)('a' + value - 36);
-			}
-			else if (value == 62)
-			{
-				return '!';
-			}
-			else
-			{
-				return '%';
-			}
-		}
-
-		private int Base64ToSlider(char value)
-		{
-			if (value >= '0' && value <= '9')
-			{
-				return value - '0';
-			}
-			else if (value >= 'A' && value <= 'Z')
-			{
-				return value - 'A' + 10;
-			}
-			else if (value >= 'a' && value <= 'z')
-			{
-				return value - 'a' + 36;
-			}
-			else if (value == '!')
-			{
-				return 62;
-			}
-			else
-			{
-				return 63;
-			}
 		}
 
 		private void AboutButton_Click(object sender, RoutedEventArgs e)

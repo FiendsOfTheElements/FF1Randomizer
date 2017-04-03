@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FF1Randomizer
+namespace FF1Lib
 {
 	public class Flags
 	{
