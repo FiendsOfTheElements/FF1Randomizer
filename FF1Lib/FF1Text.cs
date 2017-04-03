@@ -20,7 +20,7 @@ namespace FF1Lib
 			BytesByText = new Dictionary<string, byte>();
 			TextByBytes = new string[256];
 
-			var lines = File.ReadAllLines("DTETable.txt");
+			var lines = File.ReadAllLines($"{AppContext.BaseDirectory}/DTETable.txt");
 			foreach (var line in lines)
 			{
 				var sides = line.Split('=');

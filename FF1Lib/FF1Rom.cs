@@ -13,6 +13,8 @@ namespace FF1Lib
 	// ReSharper disable once InconsistentNaming
 	public partial class FF1Rom : NesRom
 	{
+		public const string Version = "1.2.0";
+
 		public const int CopyrightOffset1 = 0x384A8;
 		public const int CopyrightOffset2 = 0x384BA;
 
@@ -22,7 +24,7 @@ namespace FF1Lib
 		public FF1Rom(string filename) : base(filename)
 		{}
 
-		public void Randomize(Blob seed, Flags flags, string version)
+		public void Randomize(Blob seed, Flags flags)
 		{
 			var rng = new MT19337(BitConverter.ToUInt32(seed, 0));
 
@@ -128,7 +130,7 @@ namespace FF1Lib
 				ExpGoldBoost(flags.ExpBonus * 10, flags.ExpMultiplier);
 			}
 
-			WriteSeedAndFlags(version, seed.ToHex(), EncodeFlagsText(flags));
+			WriteSeedAndFlags(Version, seed.ToHex(), EncodeFlagsText(flags));
 		}
 
 		public override bool Validate()

@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sandbox", "Sandbox\Sandbox.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FF1Lib", "FF1Lib\FF1Lib.csproj", "{C5F0CF19-C775-4133-AE81-43606C73CB4B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FF1R", "FF1R\FF1R.csproj", "{20C8C330-152B-406B-9A2C-378D2AA91001}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{C5F0CF19-C775-4133-AE81-43606C73CB4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C5F0CF19-C775-4133-AE81-43606C73CB4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C5F0CF19-C775-4133-AE81-43606C73CB4B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{20C8C330-152B-406B-9A2C-378D2AA91001}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{20C8C330-152B-406B-9A2C-378D2AA91001}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{20C8C330-152B-406B-9A2C-378D2AA91001}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{20C8C330-152B-406B-9A2C-378D2AA91001}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

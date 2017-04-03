@@ -28,11 +28,9 @@ namespace FF1Randomizer
 		private string _filename;
 		private Blob _seed;
 
-		public const string Version = "1.2.0";
-
 		private class MainWindowViewModel
 		{
-			public string WindowTitle => $"FF1 Randomizer {Version}";
+			public string WindowTitle => $"FF1 Randomizer {FF1Rom.Version}";
 		}
 
 		public MainWindow()
@@ -135,7 +133,7 @@ namespace FF1Randomizer
 		private void GenerateButton_Click(object sender, RoutedEventArgs e)
 		{
 			var rom = new FF1Rom(_filename);
-			rom.Randomize(_seed, FF1Rom.DecodeFlagsText(FlagsTextBox.Text), Version);
+			rom.Randomize(_seed, FF1Rom.DecodeFlagsText(FlagsTextBox.Text));
 
 			var fileRoot = _filename.Substring(0, _filename.LastIndexOf("."));
 			var outputFilename = $"{fileRoot}_{_seed.ToHex()}_{FlagsTextBox.Text}.nes";
@@ -302,7 +300,7 @@ namespace FF1Randomizer
 
 		private void AboutButton_Click(object sender, RoutedEventArgs e)
 		{
-			var aboutWindow = new AboutWindow(Version) { Owner = this };
+			var aboutWindow = new AboutWindow(FF1Rom.Version) { Owner = this };
 
 			aboutWindow.ShowDialog();
 		}
