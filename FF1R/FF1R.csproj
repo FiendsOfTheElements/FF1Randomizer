@@ -3,12 +3,17 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp1.1</TargetFramework>
-    <PostBuildEvent>rem "C:\Program Files\7-Zip\7z.exe" -ttar a "$(ProjectDir)$(TargetName).tar" "$(TargetDir)*"
-rem "C:\Program Files\7-Zip\7z.exe" -tgzip a "$(ProjectDir)$(TargetName).tar" "$(TargetDir)$(TargetName).tar"</PostBuildEvent>
+    <PostBuildEvent></PostBuildEvent>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    <TreatSpecificWarningsAsErrors />
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="RomUtilities" Version="1.4.1" />
+    <PackageReference Include="RomUtilities" Version="1.4.2" />
+    <PackageReference Include="System.ValueTuple" Version="4.3.0" />
   </ItemGroup>
 
   <ItemGroup>

@@ -13,11 +13,9 @@ namespace Sandbox
 	{
 		static void Main(string[] args)
 		{
-			var test = new BitArray(Blob.FromHex("FF"));
-
-			Console.WriteLine(test);
-
-			Console.ReadLine();
+			var rom = new FF1Rom("E:/OldHD/Emu/NES/ROMS/finalfantasy1.nes");
+			var rng = MT19337.New();
+			rom.ShuffleOrdeals(rng);
 		}
 	}
 }
