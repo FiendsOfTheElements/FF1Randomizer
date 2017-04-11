@@ -13,9 +13,10 @@ namespace Sandbox
 	{
 		static void Main(string[] args)
 		{
-			var rom = new FF1Rom("E:/OldHD/Emu/NES/ROMS/finalfantasy1.nes");
-			var rng = MT19337.New();
-			rom.ShuffleOrdeals(rng);
+			var rom = new FF1Rom("E:/OldHD/Emu/NES/ROMS/finalfantasy1test.nes");
+			var maps = rom.ReadMaps();
+			rom.WriteMaps(maps);
+			rom.Save("E:/OldHD/Emu/NES/ROMS/finalfantasy1test2.nes");
 		}
 	}
 }
