@@ -250,6 +250,7 @@ namespace FF1Randomizer
 				EnemyScripts = EnemyScriptsCheckBox.IsChecked == true,
 				EnemySkillsSpells = EnemySkillsSpellsCheckBox.IsChecked == true,
 				EnemyStatusAttacks = EnemyStatusAttacksCheckBox.IsChecked == true,
+				Ordeals = OrdealsCheckBox.IsChecked == true,
 
 				EarlyRod = EarlyRodCheckBox.IsChecked == true,
 				EarlyCanoe = EarlyCanoeCheckBox.IsChecked == true,
@@ -280,6 +281,7 @@ namespace FF1Randomizer
 			EnemyScriptsCheckBox.IsChecked = flags.EnemyScripts;
 			EnemySkillsSpellsCheckBox.IsChecked = flags.EnemySkillsSpells;
 			EnemyStatusAttacksCheckBox.IsChecked = flags.EnemyStatusAttacks;
+			OrdealsCheckBox.IsChecked = flags.Ordeals;
 
 			EarlyRodCheckBox.IsChecked = flags.EarlyRod;
 			EarlyCanoeCheckBox.IsChecked = flags.EarlyCanoe;

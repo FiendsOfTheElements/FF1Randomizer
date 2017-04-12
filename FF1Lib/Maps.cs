@@ -23,13 +23,9 @@ namespace FF1Lib
 	    {
 		    var maps = ReadMaps();
 
-		    var rooms = new List<OrdealsRoom>
+			// Here are all the teleporter rooms except the one you start in.
+			var rooms = new List<OrdealsRoom>
 		    {
-			    new OrdealsRoom
-				{
-				    Entrance = 0x4E,
-				    Teleporters = new List<(int, int)> { (0x10, 0x0F) }
-			    },
 			    new OrdealsRoom
 				{
 				    Entrance = 0x4C,
@@ -66,8 +62,72 @@ namespace FF1Lib
 				    Teleporters = new List<(int, int)> { (0x06, 0x08), (0x14, 0x0B), (0x14, 0x0D), (0x12, 0x10) }
 				}
 		    };
-			
-			//byte exit = 0x55;
+
+		    do
+		    {
+			    rooms.Shuffle(rng);
+		    } while (
+				rooms[0].Teleporters.Count == 4 ||
+			    rooms[5].Teleporters.Count == 4 ||
+			    rooms[6].Teleporters.Count == 4);
+
+			// The room you start in always remains the same, but we need to adjust where it teleports you to.
+			rooms.Insert(0, new OrdealsRoom
+		    {
+			    Entrance = 0x4E,
+			    Teleporters = new List<(int, int)> { (0x10, 0x0F) }
+		    });
+
+		    byte exit = 0x55;
+		    const int OrdealsMapIndex = 25;
+		    var map = maps[OrdealsMapIndex];
+		    for (int i = 0; i < rooms.Count; i++)
+		    {
+			    int teleporter = rng.Between(0, rooms[i].Teleporters.Count - 1);
+				var (x, y) = rooms[i].Teleporters[teleporter];
+				rooms[i].Teleporters.RemoveAt(teleporter);
+
+			    if (i < rooms.Count - 1)
+			    {
+				    map[y, x] = rooms[i + 1].Entrance;
+			    }
+			    else
+			    {
+				    map[y, x] = exit;
+			    }
+		    }
+
+		    for (int i = 0; i < rooms.Count; i++)
+		    {
+			    if (rooms[i].Teleporters.Count == 1)
+			    {
+				    var (x, y) = rooms[i].Teleporters[0];
+				    var backDestination = rng.Between(0, i);
+					map[y, x] = rooms[backDestination].Entrance;
+			    }
+				else if (rooms[i].Teleporters.Count == 3)
+			    {
+				    rooms[i].Teleporters.Shuffle(rng);
+
+					var (x, y) = rooms[i].Teleporters[0];
+				    var backDestination = rng.Between(0, i);
+					map[y, x] = rooms[backDestination].Entrance;
+
+				    (x, y) = rooms[i].Teleporters[1];
+				    var otherBackDestination = backDestination;
+				    while (otherBackDestination == backDestination)
+				    {
+					    otherBackDestination = rng.Between(0, i);
+					}
+				    map[y, x] = rooms[otherBackDestination].Entrance;
+
+				    (x, y) = rooms[i].Teleporters[2];
+				    var forwardDestination = rng.Between(i + 1, rooms.Count - 1);
+				    map[y, x] = rooms[forwardDestination].Entrance;
+			    }
+			}
+
+			WriteMaps(maps);
 	    }
 
 	    public List<Map> ReadMaps()

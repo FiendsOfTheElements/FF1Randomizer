@@ -79,7 +79,7 @@ namespace FF1Lib
 		public const int TreasureSize = 1;
 		public const int TreasureCount = 256;
 
-		public void ShuffleTreasures(MT19337 rng, bool earlyCanoe)
+		public void ShuffleTreasures(MT19337 rng, bool earlyCanoe, bool ordeals)
 		{
 			var treasureBlob = Get(TreasureOffset, TreasureSize * TreasureCount);
 			var usedTreasures = TreasureConditions.UsedIndices.Select(i => treasureBlob[i]).ToList();
@@ -87,6 +87,13 @@ namespace FF1Lib
 			do
 			{
 				usedTreasures.Shuffle(rng);
+				if (ordeals)
+				{
+					const int OrdealsTreasureLocation = 130; // Really 131, because 0 is unused, and usedTreasures doesn't include it.
+					var selectedTreasure = (byte)(rng.Between(0, 2) == 0 ? QuestItems.Floater : QuestItems.Slab);
+					var location = usedTreasures.IndexOf(selectedTreasure);
+					usedTreasures.Swap(location, OrdealsTreasureLocation);
+				}
 				for (int i = 0; i < TreasureConditions.UsedIndices.Count; i++)
 				{
 					treasureBlob[TreasureConditions.UsedIndices[i]] = usedTreasures[i];

@@ -17,6 +17,7 @@ namespace FF1Lib
 		public bool EnemyScripts;
 		public bool EnemySkillsSpells;
 		public bool EnemyStatusAttacks;
+		public bool Ordeals;
 
 		public bool EarlyRod;
 		public bool EarlyCanoe;

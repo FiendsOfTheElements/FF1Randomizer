@@ -13,7 +13,7 @@ namespace FF1Lib
 	// ReSharper disable once InconsistentNaming
 	public partial class FF1Rom : NesRom
 	{
-		public const string Version = "1.2.0";
+		public const string Version = "1.3.0";
 
 		public const int CopyrightOffset1 = 0x384A8;
 		public const int CopyrightOffset2 = 0x384BA;
@@ -32,7 +32,7 @@ namespace FF1Lib
 
 			if (flags.Treasures)
 			{
-				ShuffleTreasures(rng, flags.EarlyCanoe);
+				ShuffleTreasures(rng, flags.EarlyCanoe, flags.Ordeals);
 			}
 
 			if (flags.Shops)
@@ -68,6 +68,11 @@ namespace FF1Lib
 			if (flags.EnemyStatusAttacks)
 			{
 				ShuffleEnemyStatusAttacks(rng);
+			}
+
+			if (flags.Ordeals)
+			{
+				ShuffleOrdeals(rng);
 			}
 
 			if (flags.EarlyRod)
@@ -186,7 +191,7 @@ namespace FF1Lib
 
 		public static string EncodeFlagsText(Flags flags)
 		{
-			var bits = new BitArray(18);
+			var bits = new BitArray(19);
 
 			bits[0] = flags.Treasures;
 			bits[1] = flags.Shops;
@@ -197,17 +202,18 @@ namespace FF1Lib
 			bits[6] = flags.EnemyScripts;
 			bits[7] = flags.EnemySkillsSpells;
 			bits[8] = flags.EnemyStatusAttacks;
+			bits[9] = flags.Ordeals;
 
-			bits[9] = flags.EarlyRod;
-			bits[10] = flags.EarlyCanoe;
-			bits[11] = flags.NoPartyShuffle;
-			bits[12] = flags.SpeedHacks;
-			bits[13] = flags.IdentifyTreasures;
-			bits[14] = flags.Dash;
-			bits[15] = flags.BuyTen;
+			bits[10] = flags.EarlyRod;
+			bits[11] = flags.EarlyCanoe;
+			bits[12] = flags.NoPartyShuffle;
+			bits[13] = flags.SpeedHacks;
+			bits[14] = flags.IdentifyTreasures;
+			bits[15] = flags.Dash;
+			bits[16] = flags.BuyTen;
 
-			bits[16] = flags.HouseMPRestoration;
-			bits[17] = flags.WeaponStats;
+			bits[17] = flags.HouseMPRestoration;
+			bits[18] = flags.WeaponStats;
 
 			var bytes = new byte[3];
 			// Freaking .NET Core doesn't have BitArray.CopyTo
@@ -249,17 +255,18 @@ namespace FF1Lib
 				EnemyScripts = bits[6],
 				EnemySkillsSpells = bits[7],
 				EnemyStatusAttacks = bits[8],
+				Ordeals = bits[9],
 
-				EarlyRod = bits[9],
-				EarlyCanoe = bits[10],
-				NoPartyShuffle = bits[11],
-				SpeedHacks = bits[12],
-				IdentifyTreasures = bits[13],
-				Dash = bits[14],
-				BuyTen = bits[15],
+				EarlyRod = bits[10],
+				EarlyCanoe = bits[11],
+				NoPartyShuffle = bits[12],
+				SpeedHacks = bits[13],
+				IdentifyTreasures = bits[14],
+				Dash = bits[15],
+				BuyTen = bits[16],
 
-				HouseMPRestoration = bits[16],
-				WeaponStats = bits[17],
+				HouseMPRestoration = bits[17],
+				WeaponStats = bits[18],
 
 				PriceScaleFactor = Base64ToSlider(text[4]) / 10.0,
 				EnemyScaleFactor = Base64ToSlider(text[5]) / 10.0,

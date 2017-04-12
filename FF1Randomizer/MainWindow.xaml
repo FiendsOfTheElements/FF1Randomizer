@@ -27,11 +27,14 @@
 					<CheckBox x:Name="MagicShopsCheckBox" IsEnabled="True" IsChecked="True" Content="Magic Shops" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top" ToolTip="Magic shop contents are shuffled." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
 					<CheckBox x:Name="MagicLevelsCheckBox" IsEnabled="True" IsChecked="True" Content="Magic Levels" HorizontalAlignment="Left" Margin="10,70,0,0" VerticalAlignment="Top" ToolTip="Magic spells have their levels shuffled." Checked="MagicLevelsCheckBox_OnChecked" Unchecked="MagicLevelsCheckBox_OnUnchecked"/>
 					<CheckBox x:Name="MagicPermissionsCheckBox" IsEnabled="True" IsChecked="True" Content="Keep Permissions" HorizontalAlignment="Left" Margin="31,90,0,0" VerticalAlignment="Top" ToolTip="Retain the permissions of spells, even if they're shuffled to lower levels." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+
 					<CheckBox x:Name="RngCheckBox" IsEnabled="True" IsChecked="True" Content="RNG Table" HorizontalAlignment="Left" Margin="10,130,0,0" VerticalAlignment="Top" ToolTip="Shuffle the RNG table so that encounters are more difficult to predict." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
 
 					<CheckBox x:Name="EnemyScriptsCheckBox" IsEnabled="True" IsChecked="True" Content="Enemy Scripts" HorizontalAlignment="Left" Margin="265,10,0,0" VerticalAlignment="Top" ToolTip="Enemy scripts are shuffled to different enemies." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
 					<CheckBox x:Name="EnemySkillsSpellsCheckBox" IsEnabled="True" IsChecked="True" Content="Enemy Skills/Spells" HorizontalAlignment="Left" Margin="265,30,0,0" VerticalAlignment="Top" ToolTip="Enemy skills and spells are shuffled to other scripts." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
 					<CheckBox x:Name="EnemyStatusAttacksCheckBox" IsEnabled="True" IsChecked="True" Content="Enemy Status Attacks" HorizontalAlignment="Left" Margin="265,50,0,0" VerticalAlignment="Top" ToolTip="Status attacks such as stun, sleep, and death are shuffled." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+
+					<CheckBox x:Name="OrdealsCheckBox" IsEnabled="True" IsChecked="True" Content="Castle Ordeals" HorizontalAlignment="Left" Margin="265,90,0,0" VerticalAlignment="Top" ToolTip="Teleporters in Castle Ordeals are shuffled." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
 				</Grid>
 			</TabItem>
 			<TabItem Header="Scale">
