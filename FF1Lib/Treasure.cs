@@ -66,7 +66,7 @@ namespace FF1Lib
 			Enumerable.Range(149, 32).Except(new[] { 165 })).Concat( // Sea Shrine
 			Enumerable.Range(181, 6)).ToList(); // Waterfall
 
-		public static readonly List<int> LateCrown = new List<int> { 165 };
+		public static readonly List<int> LateCrown = new List<int> { 165 }; // Reverse-C room in Sea Shrine
 
 		public static readonly List<int> Chime = Enumerable.Range(196, 52).ToList(); // Mirage Tower + Sky Castle
 
@@ -102,12 +102,12 @@ namespace FF1Lib
 				{
 					treasureBlob[TreasureConditions.UsedIndices[i]] = usedTreasures[i];
 				}
-			} while (!CheckSanity(treasureBlob, earlyCanoe));
+			} while (!CheckSanity(treasureBlob, earlyCanoe, ordeals));
 
 			Put(TreasureOffset, treasureBlob);
 		}
 
-		private bool CheckSanity(Blob treasureBlob, bool earlyCanoe)
+		private bool CheckSanity(Blob treasureBlob, bool earlyCanoe, bool earlyOrdeals)
 		{
 			if (TreasureConditions.ToFR.Select(i => treasureBlob[i]).Intersect(TreasureConditions.AllQuestItems).Any())
 			{
@@ -138,7 +138,7 @@ namespace FF1Lib
 					{
 						accessibleTreasures.UnionWith(TreasureConditions.FireAndIce);
 
-						if (questItems.Contains((byte)QuestItems.Crown))
+						if (earlyOrdeals || questItems.Contains((byte)QuestItems.Crown))
 						{
 							accessibleTreasures.UnionWith(TreasureConditions.Ordeals);
 						}
