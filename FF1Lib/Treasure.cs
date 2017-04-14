@@ -90,8 +90,12 @@ namespace FF1Lib
 				if (ordeals)
 				{
 					const int OrdealsTreasureLocation = 130; // Really 131, because 0 is unused, and usedTreasures doesn't include it.
-					var selectedTreasure = (byte)(rng.Between(0, 2) == 0 ? QuestItems.Floater : QuestItems.Slab);
-					var location = usedTreasures.IndexOf(selectedTreasure);
+					var choice = rng.Between(0, 3);
+					var selectedTreasure = 
+						choice == 0 ? QuestItems.Floater :
+						choice == 1 ? QuestItems.Slab :
+						QuestItems.Crown;
+					var location = usedTreasures.IndexOf((byte)selectedTreasure);
 					usedTreasures.Swap(location, OrdealsTreasureLocation);
 				}
 				for (int i = 0; i < TreasureConditions.UsedIndices.Count; i++)

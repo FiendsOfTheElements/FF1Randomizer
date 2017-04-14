@@ -13,6 +13,10 @@ namespace FF1Lib
 	    public const int MapCount = 61;
 	    public const int MapDataOffset = 0x10080;
 
+	    public const int TilesetDataOffset = 0x00800;
+	    public const int TilesetDataSize = 2;
+	    public const int TilesetDataCount = 128;
+
 	    private struct OrdealsRoom
 	    {
 		    public byte Entrance;
@@ -63,13 +67,11 @@ namespace FF1Lib
 				}
 		    };
 
-		    do
+			// Shuffle the rooms, make sure the 4-pad room isn't the first room.
+			do
 		    {
 			    rooms.Shuffle(rng);
-		    } while (
-				rooms[0].Teleporters.Count == 4 ||
-			    rooms[5].Teleporters.Count == 4 ||
-			    rooms[6].Teleporters.Count == 4);
+		    } while (rooms[0].Teleporters.Count == 4);
 
 			// The room you start in always remains the same, but we need to adjust where it teleports you to.
 			rooms.Insert(0, new OrdealsRoom
@@ -78,7 +80,8 @@ namespace FF1Lib
 			    Teleporters = new List<(int, int)> { (0x10, 0x0F) }
 		    });
 
-		    byte exit = 0x55;
+			// First we choose a teleporter to link to the next room.
+			byte exit = 0x55;
 		    const int OrdealsMapIndex = 25;
 		    var map = maps[OrdealsMapIndex];
 		    for (int i = 0; i < rooms.Count; i++)
@@ -97,7 +100,8 @@ namespace FF1Lib
 			    }
 		    }
 
-		    for (int i = 0; i < rooms.Count; i++)
+			// Now we make all the other teleporters go to a random previous room, or the same room.
+			for (int i = 0; i < rooms.Count; i++)
 		    {
 			    if (rooms[i].Teleporters.Count == 1)
 			    {
@@ -105,6 +109,8 @@ namespace FF1Lib
 				    var backDestination = rng.Between(0, i);
 					map[y, x] = rooms[backDestination].Entrance;
 			    }
+				// Special rules for the 4-pad room: two teleporters go back, one goes to a totally random room,
+				// and none of the four teleporters can be the same.
 				else if (rooms[i].Teleporters.Count == 3)
 			    {
 				    rooms[i].Teleporters.Shuffle(rng);
@@ -122,15 +128,32 @@ namespace FF1Lib
 				    map[y, x] = rooms[otherBackDestination].Entrance;
 
 				    (x, y) = rooms[i].Teleporters[2];
-				    var forwardDestination = rng.Between(i + 1, rooms.Count - 1);
-				    map[y, x] = rooms[forwardDestination].Entrance;
+				    var randomDestination = backDestination;
+				    while (randomDestination == backDestination || randomDestination == otherBackDestination || randomDestination == i + 1)
+				    {
+					    randomDestination = rng.Between(0, rooms.Count - 1);
+				    }
+				    map[y, x] = rooms[randomDestination].Entrance;
 			    }
 			}
 
 			WriteMaps(maps);
+
+			// Remove CROWN requirement for Ordeals.
+			const int OrdealsTileset = 1;
+		    var ordealsTilesetOffset = TilesetDataOffset + OrdealsTileset * TilesetDataCount * TilesetDataSize;
+			var ordealsTilesetData = Get(ordealsTilesetOffset, TilesetDataCount * TilesetDataSize).ToUShorts();
+
+			// The 4 masked-out bits are special flags for a tile.  We wipe the flags for the two throne teleportation tiles,
+			// which normally indicate that the CROWN is required to use them.
+			const ushort specialMask = 0b11111111_11100001;
+		    ordealsTilesetData[0x61] &= specialMask;
+		    ordealsTilesetData[0x62] &= specialMask;
+
+			Put(ordealsTilesetOffset, Blob.FromUShorts(ordealsTilesetData));
 	    }
 
-	    public List<Map> ReadMaps()
+		public List<Map> ReadMaps()
 	    {
 		    var pointers = Get(MapPointerOffset, MapCount * MapPointerSize).ToUShorts();
 
