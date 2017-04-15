@@ -13,7 +13,10 @@ namespace FF1Lib
 	    public const int MapCount = 61;
 	    public const int MapDataOffset = 0x10080;
 
-	    public const int TilesetDataOffset = 0x00800;
+	    public const int TeleportOffset = 0x02D00;
+	    public const int TeleportCount = 64;
+
+		public const int TilesetDataOffset = 0x00800;
 	    public const int TilesetDataSize = 2;
 	    public const int TilesetDataCount = 128;
 
@@ -28,6 +31,9 @@ namespace FF1Lib
 		    var maps = ReadMaps();
 
 			// Here are all the teleporter rooms except the one you start in.
+			// The last one is not normally accessible in the game.  We'll rewrite the teleporter located in that
+			// room to go TO that room, and then shuffle it into one of the other locations so that you can go
+			// through that room.
 			var rooms = new List<OrdealsRoom>
 		    {
 			    new OrdealsRoom
@@ -64,6 +70,11 @@ namespace FF1Lib
 				{
 				    Entrance = 0x53,
 				    Teleporters = new List<(int, int)> { (0x06, 0x08), (0x14, 0x0B), (0x14, 0x0D), (0x12, 0x10) }
+				},
+				new OrdealsRoom
+				{
+					Entrance = 0x54, // Normally inaccessible
+					Teleporters = new List<(int, int)> { (0x08, 0x12) }
 				}
 		    };
 
@@ -138,6 +149,12 @@ namespace FF1Lib
 			}
 
 			WriteMaps(maps);
+
+			// Now let's rewrite that teleporter.  The X coordinates are packed together, followed by the Y coordinates,
+			// followed by the map indices.  Maybe we'll make a data structure for that someday soon.
+		    const byte LostTeleportIndex = 0x3C;
+		    Put(TeleportOffset + LostTeleportIndex, new byte[] { 0x10 });
+		    Put(TeleportOffset + TeleportCount + LostTeleportIndex, new byte[] { 0x12 });
 
 			// Remove CROWN requirement for Ordeals.
 			const int OrdealsTileset = 1;
