@@ -162,6 +162,34 @@ namespace FF1Randomizer
 			SetFlagsText(sender, e);
 		}
 
+		private void TreasuresCheckBox_OnChecked(object sender, RoutedEventArgs e)
+		{
+			if (IncentivizeIceCaveCheckBox != null)
+			{
+				IncentivizeIceCaveCheckBox.IsEnabled = true;
+			}
+			if (IncentivizeOrdealsCheckBox != null)
+			{
+				IncentivizeOrdealsCheckBox.IsEnabled = true;
+			}
+
+			SetFlagsText(sender, e);
+		}
+
+		private void TreasuresCheckBox_OnUnchecked(object sender, RoutedEventArgs e)
+		{
+			if (IncentivizeIceCaveCheckBox != null)
+			{
+				IncentivizeIceCaveCheckBox.IsEnabled = false;
+			}
+			if (IncentivizeOrdealsCheckBox != null)
+			{
+				IncentivizeOrdealsCheckBox.IsEnabled = false;
+			}
+
+			SetFlagsText(sender, e);
+		}
+
 		private void PriceScaleFactorSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
 		{
 			PriceScaleFactorSlider.Value = Math.Round(PriceScaleFactorSlider.Value, 1);
@@ -242,6 +270,8 @@ namespace FF1Randomizer
             FlagsTextBox.Text = FF1Rom.EncodeFlagsText(new Flags
 			{
 				Treasures = TreasuresCheckBox.IsChecked == true,
+				IncentivizeIceCave = IncentivizeIceCaveCheckBox.IsChecked == true,
+				IncentivizeOrdeals = IncentivizeOrdealsCheckBox.IsChecked == true,
 				Shops = ShopsCheckBox.IsChecked == true,
 				MagicShops = MagicShopsCheckBox.IsChecked == true,
 				MagicLevels = MagicLevelsCheckBox.IsChecked == true,
@@ -254,6 +284,7 @@ namespace FF1Randomizer
 
 				EarlyRod = EarlyRodCheckBox.IsChecked == true,
 				EarlyCanoe = EarlyCanoeCheckBox.IsChecked == true,
+				EarlyOrdeals = EarlyOrdealsCheckBox.IsChecked == true,
 				NoPartyShuffle = NoPartyShuffleCheckBox.IsChecked == true,
 				SpeedHacks = SpeedHacksCheckBox.IsChecked == true,
 				IdentifyTreasures = IdentifyTreasuresCheckBox.IsChecked == true,
@@ -273,6 +304,8 @@ namespace FF1Randomizer
 		void ApplyFlags(Flags flags)
 		{
 			TreasuresCheckBox.IsChecked = flags.Treasures;
+			IncentivizeIceCaveCheckBox.IsChecked = flags.IncentivizeIceCave;
+			IncentivizeOrdealsCheckBox.IsChecked = flags.IncentivizeOrdeals;
 			ShopsCheckBox.IsChecked = flags.Shops;
 			MagicShopsCheckBox.IsChecked = flags.MagicShops;
 			MagicLevelsCheckBox.IsChecked = flags.MagicLevels;
@@ -285,6 +318,7 @@ namespace FF1Randomizer
 
 			EarlyRodCheckBox.IsChecked = flags.EarlyRod;
 			EarlyCanoeCheckBox.IsChecked = flags.EarlyCanoe;
+			EarlyOrdealsCheckBox.IsChecked = flags.EarlyOrdeals;
 			NoPartyShuffleCheckBox.IsChecked = flags.NoPartyShuffle;
 			SpeedHacksCheckBox.IsChecked = flags.SpeedHacks;
 			IdentifyTreasuresCheckBox.IsChecked = flags.IdentifyTreasures;

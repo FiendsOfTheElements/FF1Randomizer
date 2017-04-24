@@ -15,7 +15,7 @@ namespace FF1Lib
 		Floater = 0x0b,
 		Tail = 0x0d,
 		Slab = 0x08,
-		Adamant = 0x07
+		Adamant = 0x07,
 	}
 
 	public static class TreasureConditions
@@ -79,7 +79,7 @@ namespace FF1Lib
 		public const int TreasureSize = 1;
 		public const int TreasureCount = 256;
 
-		public void ShuffleTreasures(MT19337 rng, bool earlyCanoe, bool ordeals)
+		public void ShuffleTreasures(MT19337 rng, bool earlyCanoe, bool earlyOrdeals, bool incentivizeIceCave, bool incentivizeOrdeals)
 		{
 			var treasureBlob = Get(TreasureOffset, TreasureSize * TreasureCount);
 			var usedTreasures = TreasureConditions.UsedIndices.Select(i => treasureBlob[i]).ToList();
@@ -87,22 +87,53 @@ namespace FF1Lib
 			do
 			{
 				usedTreasures.Shuffle(rng);
-				if (ordeals)
+				if (incentivizeIceCave || incentivizeOrdeals)
 				{
 					const int OrdealsTreasureLocation = 130; // Really 131, because 0 is unused, and usedTreasures doesn't include it.
-					var choice = rng.Between(0, 3);
-					var selectedTreasure = 
-						choice == 0 ? QuestItems.Floater :
-						choice == 1 ? QuestItems.Slab :
-						QuestItems.Crown;
-					var location = usedTreasures.IndexOf((byte)selectedTreasure);
-					usedTreasures.Swap(location, OrdealsTreasureLocation);
+					const int IceCaveTreasureLocation = 113; // Really 114
+					var incentiveTreasures = new List<byte>
+					{
+						(byte)QuestItems.Floater,
+						(byte)QuestItems.Slab,
+						(byte)QuestItems.Adamant,
+						(byte)QuestItems.Tail,
+						0x43, // Masmune
+						0x63 // Ribbon
+					};
+
+					if (incentivizeOrdeals)
+					{
+						if (earlyOrdeals)
+						{
+							incentiveTreasures.Add((byte)QuestItems.Crown);
+						}
+
+						var choice = rng.Between(0, incentiveTreasures.Count - 1);
+						var selectedTreasure = incentiveTreasures[choice];
+						incentiveTreasures.RemoveAt(choice);
+						var location = usedTreasures.IndexOf(selectedTreasure);
+						usedTreasures.Swap(location, OrdealsTreasureLocation);
+					}
+
+					if (incentivizeIceCave)
+					{
+						if (incentivizeOrdeals && !earlyOrdeals) // Don't add this twice!
+						{
+							incentiveTreasures.Add((byte)QuestItems.Crown);
+						}
+
+						var choice = rng.Between(0, incentiveTreasures.Count - 1);
+						var selectedTreasure = incentiveTreasures[choice];
+						incentiveTreasures.RemoveAt(choice);
+						var location = usedTreasures.IndexOf(selectedTreasure);
+						usedTreasures.Swap(location, IceCaveTreasureLocation);
+					}
 				}
 				for (int i = 0; i < TreasureConditions.UsedIndices.Count; i++)
 				{
 					treasureBlob[TreasureConditions.UsedIndices[i]] = usedTreasures[i];
 				}
-			} while (!CheckSanity(treasureBlob, earlyCanoe, ordeals));
+			} while (!CheckSanity(treasureBlob, earlyCanoe, earlyOrdeals));
 
 			Put(TreasureOffset, treasureBlob);
 		}

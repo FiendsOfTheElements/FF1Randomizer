@@ -9,6 +9,8 @@ namespace FF1Lib
 	public class Flags
 	{
 		public bool Treasures;
+		public bool IncentivizeIceCave;
+		public bool IncentivizeOrdeals;
 		public bool Shops;
 		public bool MagicShops;
 		public bool MagicLevels;
@@ -21,6 +23,7 @@ namespace FF1Lib
 
 		public bool EarlyRod;
 		public bool EarlyCanoe;
+		public bool EarlyOrdeals;
 		public bool NoPartyShuffle;
 		public bool SpeedHacks;
 		public bool IdentifyTreasures;

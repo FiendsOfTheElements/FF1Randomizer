@@ -13,7 +13,7 @@ namespace FF1Lib
 	// ReSharper disable once InconsistentNaming
 	public partial class FF1Rom : NesRom
 	{
-		public const string Version = "1.3.2";
+		public const string Version = "1.3.3";
 
 		public const int CopyrightOffset1 = 0x384A8;
 		public const int CopyrightOffset2 = 0x384BA;
@@ -32,7 +32,7 @@ namespace FF1Lib
 
 			if (flags.Treasures)
 			{
-				ShuffleTreasures(rng, flags.EarlyCanoe, flags.Ordeals);
+				ShuffleTreasures(rng, flags.EarlyCanoe, flags.EarlyOrdeals, flags.IncentivizeIceCave, flags.IncentivizeOrdeals);
 			}
 
 			if (flags.Shops)
@@ -191,29 +191,32 @@ namespace FF1Lib
 
 		public static string EncodeFlagsText(Flags flags)
 		{
-			var bits = new BitArray(19);
+			var bits = new BitArray(22);
 
 			bits[0] = flags.Treasures;
-			bits[1] = flags.Shops;
-			bits[2] = flags.MagicShops;
-			bits[3] = flags.MagicLevels;
-			bits[4] = flags.MagicPermissions;
-			bits[5] = flags.Rng;
-			bits[6] = flags.EnemyScripts;
-			bits[7] = flags.EnemySkillsSpells;
-			bits[8] = flags.EnemyStatusAttacks;
-			bits[9] = flags.Ordeals;
+			bits[1] = flags.IncentivizeIceCave;
+			bits[2] = flags.IncentivizeOrdeals;
+			bits[3] = flags.Shops;
+			bits[4] = flags.MagicShops;
+			bits[5] = flags.MagicLevels;
+			bits[6] = flags.MagicPermissions;
+			bits[7] = flags.Rng;
+			bits[8] = flags.EnemyScripts;
+			bits[9] = flags.EnemySkillsSpells;
+			bits[10] = flags.EnemyStatusAttacks;
+			bits[11] = flags.Ordeals;
 
-			bits[10] = flags.EarlyRod;
-			bits[11] = flags.EarlyCanoe;
-			bits[12] = flags.NoPartyShuffle;
-			bits[13] = flags.SpeedHacks;
-			bits[14] = flags.IdentifyTreasures;
-			bits[15] = flags.Dash;
-			bits[16] = flags.BuyTen;
+			bits[12] = flags.EarlyRod;
+			bits[13] = flags.EarlyCanoe;
+			bits[14] = flags.EarlyOrdeals;
+			bits[15] = flags.NoPartyShuffle;
+			bits[16] = flags.SpeedHacks;
+			bits[17] = flags.IdentifyTreasures;
+			bits[18] = flags.Dash;
+			bits[19] = flags.BuyTen;
 
-			bits[17] = flags.HouseMPRestoration;
-			bits[18] = flags.WeaponStats;
+			bits[20] = flags.HouseMPRestoration;
+			bits[21] = flags.WeaponStats;
 
 			var bytes = new byte[3];
 			// Freaking .NET Core doesn't have BitArray.CopyTo
@@ -247,26 +250,29 @@ namespace FF1Lib
 			return new Flags
 			{
 				Treasures = bits[0],
-				Shops = bits[1],
-				MagicShops = bits[2],
-				MagicLevels = bits[3],
-				MagicPermissions = bits[4],
-				Rng = bits[5],
-				EnemyScripts = bits[6],
-				EnemySkillsSpells = bits[7],
-				EnemyStatusAttacks = bits[8],
-				Ordeals = bits[9],
+				IncentivizeIceCave = bits[1],
+				IncentivizeOrdeals = bits[2],
+				Shops = bits[3],
+				MagicShops = bits[4],
+				MagicLevels = bits[5],
+				MagicPermissions = bits[6],
+				Rng = bits[7],
+				EnemyScripts = bits[8],
+				EnemySkillsSpells = bits[9],
+				EnemyStatusAttacks = bits[10],
+				Ordeals = bits[11],
 
-				EarlyRod = bits[10],
-				EarlyCanoe = bits[11],
-				NoPartyShuffle = bits[12],
-				SpeedHacks = bits[13],
-				IdentifyTreasures = bits[14],
-				Dash = bits[15],
-				BuyTen = bits[16],
+				EarlyRod = bits[12],
+				EarlyCanoe = bits[13],
+				EarlyOrdeals = bits[14],
+				NoPartyShuffle = bits[15],
+				SpeedHacks = bits[16],
+				IdentifyTreasures = bits[17],
+				Dash = bits[18],
+				BuyTen = bits[19],
 
-				HouseMPRestoration = bits[17],
-				WeaponStats = bits[18],
+				HouseMPRestoration = bits[20],
+				WeaponStats = bits[21],
 
 				PriceScaleFactor = Base64ToSlider(text[4]) / 10.0,
 				EnemyScaleFactor = Base64ToSlider(text[5]) / 10.0,
