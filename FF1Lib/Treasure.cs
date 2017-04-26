@@ -100,6 +100,10 @@ namespace FF1Lib
 						0x43, // Masmune
 						0x63 // Ribbon
 					};
+					if (earlyCanoe)
+					{
+						incentiveTreasures.Add((byte)QuestItems.Ruby);
+					}
 
 					if (incentivizeOrdeals)
 					{
