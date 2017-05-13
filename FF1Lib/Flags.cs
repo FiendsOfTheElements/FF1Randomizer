@@ -32,6 +32,8 @@ namespace FF1Lib
 
 		public bool HouseMPRestoration;
 		public bool WeaponStats;
+		public bool ChanceToRun;
+		public bool Spells;
 
 		public double EnemyScaleFactor;
 		public double PriceScaleFactor;

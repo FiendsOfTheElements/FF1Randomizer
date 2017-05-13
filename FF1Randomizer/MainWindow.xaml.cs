@@ -293,6 +293,8 @@ namespace FF1Randomizer
 
 				HouseMPRestoration = HouseMPRestorationCheckBox.IsChecked == true,
 				WeaponStats = WeaponStatsCheckBox.IsChecked == true,
+				ChanceToRun = ChanceToRunCheckBox.IsChecked == true,
+				Spells = SpellBugsCheckBox.IsChecked == true,
 
 				PriceScaleFactor = PriceScaleFactorSlider.Value,
 				EnemyScaleFactor = EnemyScaleFactorSlider.Value,
@@ -327,6 +329,8 @@ namespace FF1Randomizer
 
 			HouseMPRestorationCheckBox.IsChecked = flags.HouseMPRestoration;
 			WeaponStatsCheckBox.IsChecked = flags.WeaponStats;
+			ChanceToRunCheckBox.IsChecked = flags.ChanceToRun;
+			SpellBugsCheckBox.IsChecked = flags.Spells;
 
 			PriceScaleFactorSlider.Value = flags.PriceScaleFactor;
 			EnemyScaleFactorSlider.Value = flags.EnemyScaleFactor;

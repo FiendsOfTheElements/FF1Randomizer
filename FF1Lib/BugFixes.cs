@@ -25,5 +25,17 @@ namespace FF1Lib
             // Don't double BB crit
             Put(0x32DDD, new byte[] { 0xEA });
         }
+
+		public void FixChanceToRun()
+		{
+			Put(0x323EF, new byte[] { 0x82 });
+		}
+
+		public void FixSpells()
+		{
+			Put(0x33a4e, Blob.FromHex("F017EA")); // LOCK routine
+			Put(0x3029C, Blob.FromHex("0E")); // LOK2 spell effect
+			Put(0x302F9, Blob.FromHex("18")); // HEL2 effectivity
+		}
 	}
 }

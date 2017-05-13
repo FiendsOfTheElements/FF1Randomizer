@@ -13,7 +13,7 @@ namespace FF1Lib
 	// ReSharper disable once InconsistentNaming
 	public partial class FF1Rom : NesRom
 	{
-		public const string Version = "1.3.4";
+		public const string Version = "1.4.0";
 
 		public const int CopyrightOffset1 = 0x384A8;
 		public const int CopyrightOffset2 = 0x384BA;
@@ -29,6 +29,12 @@ namespace FF1Lib
 			var rng = new MT19337(BitConverter.ToUInt32(seed, 0));
 
 			EasterEggs();
+
+			// This has to be done before we shuffle spell levels.
+			if (flags.Spells)
+			{
+				FixSpells();
+			}
 
 			if (flags.Treasures)
 			{
@@ -120,6 +126,11 @@ namespace FF1Lib
 				FixWeaponStats();
 			}
 
+			if (flags.ChanceToRun)
+			{
+				FixChanceToRun();
+			}
+
 			if (flags.PriceScaleFactor > 1)
 			{
 				ScalePrices(flags.PriceScaleFactor, rng);
@@ -191,7 +202,7 @@ namespace FF1Lib
 
 		public static string EncodeFlagsText(Flags flags)
 		{
-			var bits = new BitArray(22);
+			var bits = new BitArray(24);
 
 			bits[0] = flags.Treasures;
 			bits[1] = flags.IncentivizeIceCave;
@@ -217,6 +228,8 @@ namespace FF1Lib
 
 			bits[20] = flags.HouseMPRestoration;
 			bits[21] = flags.WeaponStats;
+			bits[22] = flags.ChanceToRun;
+			bits[23] = flags.Spells;
 
 			var bytes = new byte[3];
 			// Freaking .NET Core doesn't have BitArray.CopyTo
@@ -273,6 +286,8 @@ namespace FF1Lib
 
 				HouseMPRestoration = bits[20],
 				WeaponStats = bits[21],
+				ChanceToRun = bits[22],
+				Spells = bits[23],
 
 				PriceScaleFactor = Base64ToSlider(text[4]) / 10.0,
 				EnemyScaleFactor = Base64ToSlider(text[5]) / 10.0,
