@@ -24,6 +24,12 @@ namespace FF1Lib
 
             // Don't double BB crit
             Put(0x32DDD, new byte[] { 0xEA });
+
+			// Fix player elemental and category defense
+			Put(0x325B0, Blob.FromHex("A9008D6D68A00E"));
+	        Put(0x325E8, Blob.FromHex("A9008D7668A00EA900"));
+	        Put(0x33618, Blob.FromHex("A900"));
+	        Put(0x33655, Blob.FromHex("A900"));
         }
 
 		public void FixChanceToRun()
@@ -31,11 +37,16 @@ namespace FF1Lib
 			Put(0x323EF, new byte[] { 0x82 });
 		}
 
-		public void FixSpells()
+		public void FixSpellBugs()
 		{
 			Put(0x33a4e, Blob.FromHex("F017EA")); // LOCK routine
 			Put(0x3029C, Blob.FromHex("0E")); // LOK2 spell effect
 			Put(0x302F9, Blob.FromHex("18")); // HEL2 effectivity
+		}
+
+		public void FixEnemyStatusAttackBug()
+		{
+			Put(0x32812, Blob.FromHex("DF")); // This is the craziest freaking patch ever, man.
 		}
 	}
 }

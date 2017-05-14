@@ -13,7 +13,7 @@ namespace FF1Lib
 	// ReSharper disable once InconsistentNaming
 	public partial class FF1Rom : NesRom
 	{
-		public const string Version = "1.4.0";
+		public const string Version = "1.4.1";
 
 		public const int CopyrightOffset1 = 0x384A8;
 		public const int CopyrightOffset2 = 0x384BA;
@@ -31,9 +31,9 @@ namespace FF1Lib
 			EasterEggs();
 
 			// This has to be done before we shuffle spell levels.
-			if (flags.Spells)
+			if (flags.SpellBugs)
 			{
-				FixSpells();
+				FixSpellBugs();
 			}
 
 			if (flags.Treasures)
@@ -131,6 +131,11 @@ namespace FF1Lib
 				FixChanceToRun();
 			}
 
+			if (flags.EnemyStatusAttackBug)
+			{
+				FixEnemyStatusAttackBug();
+			}
+
 			if (flags.PriceScaleFactor > 1)
 			{
 				ScalePrices(flags.PriceScaleFactor, rng);
@@ -202,7 +207,7 @@ namespace FF1Lib
 
 		public static string EncodeFlagsText(Flags flags)
 		{
-			var bits = new BitArray(24);
+			var bits = new BitArray(25);
 
 			bits[0] = flags.Treasures;
 			bits[1] = flags.IncentivizeIceCave;
@@ -229,9 +234,10 @@ namespace FF1Lib
 			bits[20] = flags.HouseMPRestoration;
 			bits[21] = flags.WeaponStats;
 			bits[22] = flags.ChanceToRun;
-			bits[23] = flags.Spells;
+			bits[23] = flags.SpellBugs;
+			bits[24] = flags.EnemyStatusAttackBug;
 
-			var bytes = new byte[3];
+			var bytes = new byte[4];
 			// Freaking .NET Core doesn't have BitArray.CopyTo
 			for (int i = 0; i < bits.Length; i++)
 			{
@@ -253,9 +259,10 @@ namespace FF1Lib
 
 		public static Flags DecodeFlagsText(string text)
 		{
-			var bitString = text.Substring(0, 4);
+			var bitString = text.Substring(0, 6);
 			bitString = bitString.Replace('!', '+');
 			bitString = bitString.Replace('%', '/');
+			bitString += "==";
 
 			var bytes = Convert.FromBase64String(bitString);
 			var bits = new BitArray(bytes);
@@ -287,12 +294,13 @@ namespace FF1Lib
 				HouseMPRestoration = bits[20],
 				WeaponStats = bits[21],
 				ChanceToRun = bits[22],
-				Spells = bits[23],
+				SpellBugs = bits[23],
+				EnemyStatusAttackBug = bits[24],
 
-				PriceScaleFactor = Base64ToSlider(text[4]) / 10.0,
-				EnemyScaleFactor = Base64ToSlider(text[5]) / 10.0,
-				ExpMultiplier = Base64ToSlider(text[6]) / 10.0,
-				ExpBonus = Base64ToSlider(text[7])
+				PriceScaleFactor = Base64ToSlider(text[6]) / 10.0,
+				EnemyScaleFactor = Base64ToSlider(text[7]) / 10.0,
+				ExpMultiplier = Base64ToSlider(text[8]) / 10.0,
+				ExpBonus = Base64ToSlider(text[9])
 			};
 		}
 

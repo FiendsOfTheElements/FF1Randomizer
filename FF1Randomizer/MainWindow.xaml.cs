@@ -231,9 +231,9 @@ namespace FF1Randomizer
 		{
 			var text = Clipboard.GetText();
 			var parts = text.Split('_');
-			if (parts.Length != 2 || parts[0].Length != 8 || parts[1].Length != 8)
+			if (parts.Length != 2 || parts[0].Length != 8 || parts[1].Length != 10)
 			{
-				MessageBox.Show("Format not recognized.  Paste should look like SSSSSSSS_FFFFFFFF", "Invalid Format");
+				MessageBox.Show("Format not recognized.  Paste should look like SSSSSSSS_FFFFFFFFFF", "Invalid Format");
 
 				return;
 			}
@@ -294,7 +294,8 @@ namespace FF1Randomizer
 				HouseMPRestoration = HouseMPRestorationCheckBox.IsChecked == true,
 				WeaponStats = WeaponStatsCheckBox.IsChecked == true,
 				ChanceToRun = ChanceToRunCheckBox.IsChecked == true,
-				Spells = SpellBugsCheckBox.IsChecked == true,
+				SpellBugs = SpellBugsCheckBox.IsChecked == true,
+				EnemyStatusAttackBug = EnemyStatusAttacksBugCheckBox.IsChecked == true,
 
 				PriceScaleFactor = PriceScaleFactorSlider.Value,
 				EnemyScaleFactor = EnemyScaleFactorSlider.Value,
@@ -330,7 +331,8 @@ namespace FF1Randomizer
 			HouseMPRestorationCheckBox.IsChecked = flags.HouseMPRestoration;
 			WeaponStatsCheckBox.IsChecked = flags.WeaponStats;
 			ChanceToRunCheckBox.IsChecked = flags.ChanceToRun;
-			SpellBugsCheckBox.IsChecked = flags.Spells;
+			SpellBugsCheckBox.IsChecked = flags.SpellBugs;
+			EnemyStatusAttacksBugCheckBox.IsChecked = flags.EnemyStatusAttackBug;
 
 			PriceScaleFactorSlider.Value = flags.PriceScaleFactor;
 			EnemyScaleFactorSlider.Value = flags.EnemyScaleFactor;
