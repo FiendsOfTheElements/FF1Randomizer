@@ -25,12 +25,23 @@ namespace FF1Lib
             // Don't double BB crit
             Put(0x32DDD, new byte[] { 0xEA });
 
+	        // Increase crit rate of all weapons
+	        var weapons = Get(WeaponOffset, WeaponSize * WeaponCount).Chunk(WeaponSize);
+	        foreach (var weapon in weapons)
+	        {
+		        weapon[2] *= 2;
+	        }
+	        Put(WeaponOffset, weapons.SelectMany(weapon => weapon.ToBytes()).ToArray());
+
+	        // Change damage bonus from +4 to +10
+	        Put(0x326F5, Blob.FromHex("0A"));
+
 			// Fix player elemental and category defense
 			Put(0x325B0, Blob.FromHex("A9008D6D68A00E"));
 	        Put(0x325E8, Blob.FromHex("A9008D7668A00EA900"));
 	        Put(0x33618, Blob.FromHex("A900"));
 	        Put(0x33655, Blob.FromHex("A900"));
-        }
+		}
 
 		public void FixChanceToRun()
 		{
