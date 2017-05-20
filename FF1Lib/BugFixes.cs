@@ -50,9 +50,23 @@ namespace FF1Lib
 
 		public void FixSpellBugs()
 		{
-			Put(0x33a4e, Blob.FromHex("F017EA")); // LOCK routine
+			Put(0x33A4E, Blob.FromHex("F017EA")); // LOCK routine
 			Put(0x3029C, Blob.FromHex("0E")); // LOK2 spell effect
 			Put(0x302F9, Blob.FromHex("18")); // HEL2 effectivity
+
+			// TMPR and SABR
+			// Remove jump to PrepareEnemyMagAttack
+			Put(0x334F4, Blob.FromHex("EAEAEA"));
+			// Replace PrepareEnemyMagAttack with loading defender strength and hit%
+			Put(0x33730, Blob.FromHex("A006B1908D7268A009B1908D8268A005B1908D846860"));
+			// Replace end of PreparePlayerMagAttack with saving defender strength and hit%
+			Put(0x3369E, Blob.FromHex("60A007AD85689190A009AD82689190A005AD8468919060"));
+			// Call new loading code from BtlMag_LoadPlayerDefenderStats
+			Put(0x33661, Blob.FromHex("2030B7EAEAEAEA"));
+			// Call new saving code from BtlMag_SavePlayerDefenderStats
+			Put(0x337C5, Blob.FromHex("209FB6EAEAEAEA"));
+			// SABR's hit% bonus
+			Put(0x30390, Blob.FromHex("0A"));
 		}
 
 		public void FixEnemyStatusAttackBug()
