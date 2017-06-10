@@ -55,7 +55,8 @@ namespace FF1Lib
 				Data = spell,
 				Name = names[i],
 				TextPointer = pointers[i]
-			}).ToList();
+			})
+			.ToList();
 
 			// First we have to un-interleave white and black spells.
 			var whiteSpells = magicSpells.Where((spell, i) => (i / 4) % 2 == 0).ToList();
@@ -172,7 +173,7 @@ namespace FF1Lib
 
 			// Confused enemies are supposed to cast FIRE, so figure out where FIRE ended up.
 			var newFireSpellIndex = shuffledSpells.FindIndex(spell => spell.Data == spells[FireSpellIndex]);
-			Put(ConfusedSpellIndexOffset, new [] { (byte)newFireSpellIndex });
+			Put(ConfusedSpellIndexOffset, new[] { (byte)newFireSpellIndex });
 		}
 	}
 }

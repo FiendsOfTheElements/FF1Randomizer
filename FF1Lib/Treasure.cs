@@ -35,7 +35,8 @@ namespace FF1Lib
 			Enumerable.Range(0, 1).Concat(
 			Enumerable.Range(145, 4)).Concat(
 			Enumerable.Range(187, 9)).Concat(
-			Enumerable.Range(255, 1)).ToList();
+			Enumerable.Range(255, 1))
+			.ToList();
 
 		public static readonly List<int> UsedIndices = Enumerable.Range(0, 256).Except(UnusedIndices).ToList(); // This maps a compacted list back to the game's array, skipping the unused slots.
 
@@ -43,7 +44,8 @@ namespace FF1Lib
 			Enumerable.Range(7, 3).Concat(
 			Enumerable.Range(20, 10)).Concat(
 			Enumerable.Range(33, 2)).Concat(
-			Enumerable.Range(43, 3)).ToList();
+			Enumerable.Range(43, 3))
+			.ToList();
 
 		public static readonly List<int> EarlyCrown =
 			Enumerable.Range(1, 6).Concat( // Coneria
@@ -51,7 +53,8 @@ namespace FF1Lib
 			Enumerable.Range(13, 4)).Concat( // Elfland
 			Enumerable.Range(17, 3)).Concat( // Northwest Castle
 			Enumerable.Range(30, 3)).Concat( // Marsh Cave
-			Enumerable.Range(35, 8)).ToList(); // Dwarf Cave
+			Enumerable.Range(35, 8)) // Dwarf Cave
+			.ToList();
 
 		public static readonly List<int> Tnt = Enumerable.Range(46, 16).ToList(); // Earth Cave B1-B3
 
@@ -64,7 +67,8 @@ namespace FF1Lib
 		public static readonly List<int> Airship =
 			Enumerable.Range(132, 13).Concat( // Cardia Islands
 			Enumerable.Range(149, 32).Except(new[] { 165 })).Concat( // Sea Shrine
-			Enumerable.Range(181, 6)).ToList(); // Waterfall
+			Enumerable.Range(181, 6)) // Waterfall
+			.ToList();
 
 		public static readonly List<int> LateCrown = new List<int> { 165 }; // Reverse-C room in Sea Shrine
 

@@ -15,32 +15,32 @@ namespace FF1Lib
 			Put(0x038816, Blob.FromHex("203B42A4AAACA6FF23A6B23223A7C0059C8A9F8EC5FFFFFFFFFFFFFF"));
 		}
 
-        public void FixWeaponStats()
-        {
-            // Move function pointer
-            Put(0x031322, new byte[] { 0xF2 });
-            // Move and rewrite function
-            Put(0x032CE1, Blob.FromHex("B18248C8B182488AA86891808868918060A9002006ADA9012006ADA9022006ADA9034C06AD8DB3682045A1A000B182A8B93CA0ACB36899A86BADB368A0009180A20220E1ACA00AA20420E1ACA021A20620E1ACA025A20720E1ACA023A20820E1ACA022A20920E1ACA020A20A20E1ACA024A20B20E1ACA901A00B9180A021B1824A4A4A4A4A186901A00C9180A900A00D9180C89180C89180A018B1823007C8C01CD0F7A900297FF02DE9002005AC85888689A002B188A00F9180A005B188A00D9180A004B188A00E9180"));
+		public void FixWeaponStats()
+		{
+			// Move function pointer
+			Put(0x031322, new byte[] { 0xF2 });
+			// Move and rewrite function
+			Put(0x032CE1, Blob.FromHex("B18248C8B182488AA86891808868918060A9002006ADA9012006ADA9022006ADA9034C06AD8DB3682045A1A000B182A8B93CA0ACB36899A86BADB368A0009180A20220E1ACA00AA20420E1ACA021A20620E1ACA025A20720E1ACA023A20820E1ACA022A20920E1ACA020A20A20E1ACA024A20B20E1ACA901A00B9180A021B1824A4A4A4A4A186901A00C9180A900A00D9180C89180C89180A018B1823007C8C01CD0F7A900297FF02DE9002005AC85888689A002B188A00F9180A005B188A00D9180A004B188A00E9180"));
 
-            // Don't double BB crit
-            Put(0x32DDD, new byte[] { 0xEA });
+			// Don't double BB crit
+			Put(0x32DDD, new byte[] { 0xEA });
 
-	        // Increase crit rate of all weapons
-	        var weapons = Get(WeaponOffset, WeaponSize * WeaponCount).Chunk(WeaponSize);
-	        foreach (var weapon in weapons)
-	        {
-		        weapon[2] *= 2;
-	        }
-	        Put(WeaponOffset, weapons.SelectMany(weapon => weapon.ToBytes()).ToArray());
+			// Increase crit rate of all weapons
+			var weapons = Get(WeaponOffset, WeaponSize * WeaponCount).Chunk(WeaponSize);
+			foreach (var weapon in weapons)
+			{
+				weapon[2] *= 2;
+			}
+			Put(WeaponOffset, weapons.SelectMany(weapon => weapon.ToBytes()).ToArray());
 
-	        // Change damage bonus from +4 to +10
-	        Put(0x326F5, Blob.FromHex("0A"));
+			// Change damage bonus from +4 to +10
+			Put(0x326F5, Blob.FromHex("0A"));
 
 			// Fix player elemental and category defense
 			Put(0x325B0, Blob.FromHex("A9008D6D68A00E"));
-	        Put(0x325E8, Blob.FromHex("A9008D7668A00EA900"));
-	        Put(0x33618, Blob.FromHex("A900"));
-	        Put(0x33655, Blob.FromHex("A900"));
+			Put(0x325E8, Blob.FromHex("A9008D7668A00EA900"));
+			Put(0x33618, Blob.FromHex("A900"));
+			Put(0x33655, Blob.FromHex("A900"));
 		}
 
 		public void FixChanceToRun()

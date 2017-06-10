@@ -81,9 +81,10 @@ namespace FF1Lib
 				ShuffleOrdeals(rng);
 			}
 
-      if (flags.EarlyOrdeals) {
-        EnableEarlyOrdeals();
-      }
+			if (flags.EarlyOrdeals)
+			{
+				EnableEarlyOrdeals();
+			}
 
 			if (flags.EarlyRod)
 			{
@@ -187,7 +188,7 @@ namespace FF1Lib
 
 		public void ExpGoldBoost(double bonus, double multiplier)
 		{
-			var enemyBlob = Get(EnemyOffset, EnemySize*EnemyCount);
+			var enemyBlob = Get(EnemyOffset, EnemySize * EnemyCount);
 			var enemies = enemyBlob.Chunk(EnemySize);
 
 			foreach (var enemy in enemies)
@@ -195,8 +196,8 @@ namespace FF1Lib
 				var exp = BitConverter.ToUInt16(enemy, 0);
 				var gold = BitConverter.ToUInt16(enemy, 2);
 
-				exp = (ushort)Min(bonus + exp*multiplier, 0x7FFF);
-				gold = (ushort)Min(bonus + gold*multiplier, 0x7FFF);
+				exp = (ushort)Min(bonus + exp * multiplier, 0x7FFF);
+				gold = (ushort)Min(bonus + gold * multiplier, 0x7FFF);
 
 				var expBytes = BitConverter.GetBytes(exp);
 				var goldBytes = BitConverter.GetBytes(gold);
@@ -245,7 +246,7 @@ namespace FF1Lib
 			// Freaking .NET Core doesn't have BitArray.CopyTo
 			for (int i = 0; i < bits.Length; i++)
 			{
-				bytes[i/8] |= (byte)((bits[i] ? 1 : 0) << (i%8));
+				bytes[i / 8] |= (byte)((bits[i] ? 1 : 0) << (i % 8));
 			}
 
 			var text = Convert.ToBase64String(bytes);
