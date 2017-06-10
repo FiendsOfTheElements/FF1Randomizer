@@ -81,6 +81,10 @@ namespace FF1Lib
 				ShuffleOrdeals(rng);
 			}
 
+      if (flags.EarlyOrdeals) {
+        EnableEarlyOrdeals();
+      }
+
 			if (flags.EarlyRod)
 			{
 				EnableEarlyRod();

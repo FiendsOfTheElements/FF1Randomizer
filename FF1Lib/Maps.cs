@@ -155,10 +155,12 @@ namespace FF1Lib
 		    const byte LostTeleportIndex = 0x3C;
 		    Put(TeleportOffset + LostTeleportIndex, new byte[] { 0x10 });
 		    Put(TeleportOffset + TeleportCount + LostTeleportIndex, new byte[] { 0x12 });
+	    }
 
-			// Remove CROWN requirement for Ordeals.
+    public void EnableEarlyOrdeals() {
+      // Remove CROWN requirement for Ordeals.
 			const int OrdealsTileset = 1;
-		    var ordealsTilesetOffset = TilesetDataOffset + OrdealsTileset * TilesetDataCount * TilesetDataSize;
+		  var ordealsTilesetOffset = TilesetDataOffset + OrdealsTileset * TilesetDataCount * TilesetDataSize;
 			var ordealsTilesetData = Get(ordealsTilesetOffset, TilesetDataCount * TilesetDataSize).ToUShorts();
 
 			// The 4 masked-out bits are special flags for a tile.  We wipe the flags for the two throne teleportation tiles,
@@ -168,7 +170,7 @@ namespace FF1Lib
 		    ordealsTilesetData[0x62] &= specialMask;
 
 			Put(ordealsTilesetOffset, Blob.FromUShorts(ordealsTilesetData));
-	    }
+    }
 
 		public List<Map> ReadMaps()
 	    {
