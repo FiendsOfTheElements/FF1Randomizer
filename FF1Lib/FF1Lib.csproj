@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard1.5</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard1.6|AnyCPU'">
@@ -21,8 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="RomUtilities" Version="1.4.1" />
-    <PackageReference Include="System.ValueTuple" Version="4.3.0" />
+    <PackageReference Include="RomUtilities" Version="2.0.0" />
   </ItemGroup>
 
 </Project>

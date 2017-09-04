@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp1.1</TargetFramework>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
     <PostBuildEvent></PostBuildEvent>
   </PropertyGroup>
 
@@ -12,8 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="RomUtilities" Version="1.4.2" />
-    <PackageReference Include="System.ValueTuple" Version="4.3.0" />
+    <PackageReference Include="RomUtilities" Version="2.0.0" />
   </ItemGroup>
 
   <ItemGroup>
