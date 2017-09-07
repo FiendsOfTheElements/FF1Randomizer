@@ -78,8 +78,9 @@ namespace FF1Lib
 		{
 			var scriptBytes = Get(ScriptOffset, ScriptSize * ScriptCount).Chunk(ScriptSize);
 
-			const int SandW = 8; // CRACK
-			const int IronGol = 28; // TOXIC
+			// Remove two instances each of CRACK and TOXIC since they're likely to get spread out to several enemies.
+			const int SandW = 7; // CRACK
+			const int IronGol = 27; // TOXIC
 			scriptBytes[SandW][13] = 0xFF;
 			scriptBytes[SandW][14] = 0xFF;
 			scriptBytes[IronGol][13] = 0xFF;
