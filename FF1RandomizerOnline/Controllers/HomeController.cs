@@ -8,12 +8,17 @@ namespace FF1RandomizerOnline.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index()
-        {
-            return View();
-        }
+	    public IActionResult Index()
+	    {
+		    return View();
+	    }
 
-        public IActionResult Error()
+		public IActionResult Randomize()
+	    {
+		    return View();
+	    }
+
+		public IActionResult Error()
         {
             return View();
         }
