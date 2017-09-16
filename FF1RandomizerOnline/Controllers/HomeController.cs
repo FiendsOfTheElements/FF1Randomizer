@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FF1RandomizerOnline.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FF1RandomizerOnline.Controllers
@@ -15,7 +16,7 @@ namespace FF1RandomizerOnline.Controllers
 
 		public IActionResult Randomize()
 	    {
-		    return View();
+		    return View(new RandomizeModel());
 	    }
 
 		public IActionResult Error()

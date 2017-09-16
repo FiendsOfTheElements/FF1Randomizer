@@ -17,21 +17,35 @@ textarea {
     max-width: 280px;
 }
 
-/* Carousel */
-.carousel-caption p {
-    font-size: 20px;
-    line-height: 1.4;
+.section {
+	margin-top: 15px;
 }
 
-/* Make .svg files in the carousel display properly in older browsers */
-.carousel-inner .item img[src$=".svg"] {
-    width: 100%;
+input[type=checkbox].indent {
+	margin-left: 20px;
 }
 
-/* Hide/rearrange for smaller screens */
-@media screen and (max-width: 767px) {
-    /* Hide captions */
-    .carousel-caption {
-        display: none;
-    }
+.tab-content {
+	background-color: #ddd;
+	padding-bottom: 10px;
+}
+
+.nav-pills > li.active > a {
+	background-color: #ddd;
+	color: #000;
+	border-radius: 4px 4px 0 0;
+}
+
+.nav-pills > li.active > a:focus, .nav-pills > li.active > a:hover {
+	background-color: #ddd;
+	color: #000;
+	border-radius: 4px 4px 0 0;
+}
+
+.nav-pills > li > a:hover {
+	border-radius: 4px 4px 0 0;
+}
+
+.nav-pills > li > a {
+	color: #000;
 }
