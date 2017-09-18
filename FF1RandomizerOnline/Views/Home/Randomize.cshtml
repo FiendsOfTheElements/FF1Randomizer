@@ -28,26 +28,69 @@
 		<li><a href="#conveniences" data-toggle="tab">Conveniences</a></li>
 		<li><a href="#bug-fixes" data-toggle="tab">Bug Fixes</a></li>
 	</ul>
-	<div class="container tab-content clearfix">
-		<div class="container section tab-pane active" id="shuffle">
-			<div class="row">
-				<input type="checkbox" asp-for="Flags.Treasures"/> <label asp-for="Flags.Treasures"></label>
+	<div class="tab-content clearfix" style="height: 350px">
+		<div class="section tab-pane active" id="shuffle">
+			<div class="col-xs-4">
+				<div class="checkbox-cell"><input type="checkbox" asp-for="Flags.Treasures" /> <label asp-for="Flags.Treasures"></label></div>
+				<div class="checkbox-cell"><input class="indent" type="checkbox" asp-for="Flags.IncentivizeIceCave" /> <label asp-for="Flags.IncentivizeIceCave">Incentivize Ice Cave</label></div>
+				<div class="checkbox-cell"><input class="indent" type="checkbox" asp-for="Flags.IncentivizeOrdeals" /> <label asp-for="Flags.IncentivizeOrdeals">Incentivize Ordeals</label></div>
+				<div class="checkbox-cell"></div>
+				<div class="checkbox-cell"><input type="checkbox" asp-for="Flags.Shops" /> <label asp-for="Flags.Shops"></label></div>
+				<div class="checkbox-cell"><input type="checkbox" asp-for="Flags.MagicShops" /> <label asp-for="Flags.MagicShops">Magic Shops</label></div>
+				<div class="checkbox-cell"><input type="checkbox" asp-for="Flags.MagicLevels" /> <label asp-for="Flags.MagicLevels">Magic Levels</label></div>
+				<div class="checkbox-cell"><input class="indent" type="checkbox" asp-for="Flags.MagicPermissions" /> <label asp-for="Flags.MagicPermissions">Keep Permissions</label></div>
+				<div class="checkbox-cell"></div>
+				<div class="checkbox-cell"><input type="checkbox" asp-for="Flags.Rng" /> <label asp-for="Flags.Rng">RNG Table</label><br /></div>
 			</div>
-			<div class="row">
-				<input class="indent" type="checkbox" asp-for="Flags.IncentivizeIceCave" /> <label asp-for="Flags.IncentivizeIceCave">Incentivize Ice Cave</label>
-			</div>
-			<div class="row">
-				<input class="indent" type="checkbox" asp-for="Flags.IncentivizeOrdeals" /> <label asp-for="Flags.IncentivizeOrdeals">Incentivize Ordeals</label>
+			<div class="col-xs-4">
+				<div class="checkbox-cell"><input type="checkbox" asp-for="Flags.EnemyScripts" /> <label asp-for="Flags.EnemyScripts">Enemy Scripts</label></div>
+				<div class="checkbox-cell"><input type="checkbox" asp-for="Flags.EnemySkillsSpells" /> <label asp-for="Flags.EnemySkillsSpells">Enemy Skills/Spells</label></div>
+				<div class="checkbox-cell"><input type="checkbox" asp-for="Flags.EnemyStatusAttacks" /> <label asp-for="Flags.EnemyStatusAttacks">Enemy Status Attacks</label></div>
+				<div class="checkbox-cell"></div>
+				<div class="checkbox-cell"><input type="checkbox" asp-for="Flags.Ordeals" /> <label asp-for="Flags.Ordeals">Castle Ordeals</label></div>
 			</div>
 		</div>
 		<div class="section tab-pane" id="scale">
-			Scale Tab
+			<div class="slider-cell">
+				<div class="col-xs-2"><label>Prices:</label></div>
+				<div class="col-xs-2"><label id="prices-display"></label></div>
+				<div class="col-xs-2"><input type="range" asp-for="Flags.PriceScaleFactor" min="1.0" max="5.0" step="0.1" /></div>
+			</div>
+			<div class="slider-cell">
+				<div class="col-xs-2"><label>Enemy Stats:</label></div>
+				<div class="col-xs-2"><label id="enemy-stats-display"></label></div>
+				<div class="col-xs-2"><input type="range" asp-for="Flags.EnemyScaleFactor" min="1.0" max="5.0" step="0.1"/></div>
+			</div>
+			<div class="slider-cell"></div>
+			<div class="slider-cell">
+				<div class="col-xs-4"><label>Exp/Gold Boost:</label></div>
+				<div class="col-xs-2"><input type="range" asp-for="Flags.ExpMultiplier" min="1.0" max="5.0" step="0.1"/></div>
+			</div>
+			<div class="slider-cell">
+				<div class="col-xs-4"><label id="exp-gold-display"></label></div>
+				<div class="col-xs-2"><input type="range" asp-for="Flags.ExpBonus" min="0" max="500" step="10"/></div>
+			</div>
 		</div>
 		<div class="section tab-pane" id="conveniences">
-			Conveniences Tab
+			<div class="col-xs-4">
+				<div class="checkbox-cell"><input type="checkbox" asp-for="Flags.EarlyRod" /> <label asp-for="Flags.EarlyRod">Early Rod</label></div>
+				<div class="checkbox-cell"><input type="checkbox" asp-for="Flags.EarlyCanoe" /> <label asp-for="Flags.EarlyCanoe">Early Canoe</label></div>
+				<div class="checkbox-cell"><input type="checkbox" asp-for="Flags.EarlyOrdeals" /> <label asp-for="Flags.EarlyRod">Early Ordeals</label></div>
+				<div class="checkbox-cell"><input type="checkbox" asp-for="Flags.NoPartyShuffle" /> <label asp-for="Flags.NoPartyShuffle">No Party Shuffle</label></div>
+				<div class="checkbox-cell"><input type="checkbox" asp-for="Flags.SpeedHacks" /> <label asp-for="Flags.SpeedHacks">Speed Hacks</label></div>
+				<div class="checkbox-cell"><input type="checkbox" asp-for="Flags.IdentifyTreasures" /> <label asp-for="Flags.IdentifyTreasures">Identify Treasures</label></div>
+				<div class="checkbox-cell"><input type="checkbox" asp-for="Flags.Dash" /> <label asp-for="Flags.Dash">Enable Dash</label></div>
+				<div class="checkbox-cell"><input type="checkbox" asp-for="Flags.BuyTen" /> <label asp-for="Flags.BuyTen">Buy 10 Items</label></div>
+			</div>
 		</div>
 		<div class="section tab-pane" id="bug-fixes">
-			Bug Fixes Tab
+			<div class="col-xs-4">
+				<div class="checkbox-cell"><input type="checkbox" asp-for="Flags.HouseMPRestoration" /> <label asp-for="Flags.HouseMPRestoration">House MP Restoration</label></div>
+				<div class="checkbox-cell"><input type="checkbox" asp-for="Flags.WeaponStats" /> <label asp-for="Flags.WeaponStats">Weapon Stats</label></div>
+				<div class="checkbox-cell"><input type="checkbox" asp-for="Flags.ChanceToRun" /> <label asp-for="Flags.ChanceToRun">Chance to Run</label></div>
+				<div class="checkbox-cell"><input type="checkbox" asp-for="Flags.SpellBugs" /> <label asp-for="Flags.SpellBugs">LOCK, LOK2, HEL2, TMPR, SABR</label></div>
+				<div class="checkbox-cell"><input type="checkbox" asp-for="Flags.EnemyStatusAttackBug" /> <label asp-for="Flags.EnemyStatusAttackBug">Enemy Status Attacks</label></div>
+			</div>
 		</div>
 	</div>
 	<input class="section btn btn-primary" type="submit" value="Randomize" />

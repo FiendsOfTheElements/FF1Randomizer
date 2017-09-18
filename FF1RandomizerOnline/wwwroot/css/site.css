@@ -49,3 +49,62 @@ input[type=checkbox].indent {
 .nav-pills > li > a {
 	color: #000;
 }
+
+.checkbox-cell {
+	height: 30px;
+	margin: 0;
+	padding: 0;
+}
+
+.slider-cell {
+	height: 45px;
+	margin: 0;
+	padding: 0;
+}
+
+input[type=range] {
+	-webkit-appearance: none;
+	background-color: #ddd;
+	cursor: pointer;
+}
+
+input[type=range]::-webkit-slider-runnable-track {
+	-webkit-appearance: none;
+	background-color: #fff;
+	border-radius: 3px;
+	height: 6px;
+	border: 1px solid #777;
+	margin-top: 5px;
+}
+
+input[type=range]::-webkit-slider-thumb {
+	-webkit-appearance: none;
+	height: 12px;
+	width: 12px;
+	border-radius: 6px;
+	border: 1px solid #000;
+	background-color: #fff;
+	margin-top: -3px;
+}
+
+input[type=range]::-ms-track {
+	background-color: #fff;
+	border-radius: 3px;
+	height: 6px;
+	border: 1px solid #777;
+}
+
+input[type=range]::-ms-thumb {
+	background-color: #fff;
+	margin-top: 3px;
+}
+
+input[type=range]::-moz-range-track {
+	background-color: #fff;
+	border: 1px solid #777;
+}
+
+input[type=range]::-moz-range-thumb {
+	background-color: #fff;
+	border: 1px solid #777;
+}
