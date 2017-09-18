@@ -12,7 +12,7 @@ namespace FF1Lib
 	// ReSharper disable once InconsistentNaming
 	public partial class FF1Rom : NesRom
 	{
-		public const string Version = "1.4.5";
+		public const string Version = "1.4.6";
 
 		public const int CopyrightOffset1 = 0x384A8;
 		public const int CopyrightOffset2 = 0x384BA;
@@ -314,17 +314,17 @@ namespace FF1Lib
 			{
 				throw new ArgumentOutOfRangeException(nameof(value), value, "Value must be between 0 and 63.");
 			}
-			else if (value < 10)
+			else if (value < 26)
 			{
-				return (char)('0' + value);
+				return (char)('A' + value);
 			}
-			else if (value < 36)
+			else if (value < 52)
 			{
-				return (char)('A' + value - 10);
+				return (char)('a' + value - 26);
 			}
 			else if (value < 62)
 			{
-				return (char)('a' + value - 36);
+				return (char)('0' + value - 52);
 			}
 			else if (value == 62)
 			{
@@ -338,17 +338,17 @@ namespace FF1Lib
 
 		private static int Base64ToSlider(char value)
 		{
-			if (value >= '0' && value <= '9')
+			if (value >= 'A' && value <= 'Z')
 			{
-				return value - '0';
-			}
-			else if (value >= 'A' && value <= 'Z')
-			{
-				return value - 'A' + 10;
+				return value - 'A';
 			}
 			else if (value >= 'a' && value <= 'z')
 			{
-				return value - 'a' + 36;
+				return value - 'a' + 26;
+			}
+			else if (value >= '0' && value <= '9')
+			{
+				return value - '0' + 52;
 			}
 			else if (value == '!')
 			{
