@@ -90,6 +90,10 @@ function setCallbacks() {
 	flags.oninput = function() {
 		if (validateFlags()) {
 			setFlags();
+
+			getPercentageCallback(document.getElementById("Flags_PriceScaleFactor"), "prices-display")();
+			getPercentageCallback(document.getElementById("Flags_EnemyScaleFactor"), "enemy-stats-display")();
+			expGoldBoostCallback();
 		}
 	};
 }
@@ -196,7 +200,6 @@ function setFlags() {
 }
 
 $(document).ready(function () {
-	newSeed();
 	setFlagsString();
 	setCallbacks();
 

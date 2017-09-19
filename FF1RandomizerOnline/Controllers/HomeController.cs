@@ -21,7 +21,46 @@ namespace FF1RandomizerOnline.Controllers
 	    [HttpGet]
 	    public IActionResult Randomize()
 	    {
-		    return View(new RandomizeViewModel());
+		    return View(new RandomizeViewModel
+		    {
+			    File = null,
+				Seed = Blob.Random(4).ToHex(),
+				Flags = new Flags
+				{
+					Treasures = true,
+					IncentivizeIceCave = true,
+					IncentivizeOrdeals = true,
+					Shops = true,
+					MagicShops = false,
+					MagicLevels = true,
+					MagicPermissions = false,
+					Rng = true,
+					EnemyScripts = true,
+					EnemySkillsSpells = true,
+					EnemyStatusAttacks = true,
+					Ordeals = true,
+
+					EarlyRod = true,
+					EarlyCanoe = true,
+					EarlyOrdeals = true,
+					NoPartyShuffle = true,
+					SpeedHacks = true,
+					IdentifyTreasures = true,
+					Dash = true,
+					BuyTen = true,
+
+					HouseMPRestoration = true,
+					WeaponStats = true,
+					ChanceToRun = true,
+					SpellBugs = true,
+					EnemyStatusAttackBug = true,
+
+					PriceScaleFactor = 2.0,
+					EnemyScaleFactor = 2.0,
+					ExpMultiplier = 2.0,
+					ExpBonus = 100
+				}
+			});
 	    }
 
 	    [HttpPost]
