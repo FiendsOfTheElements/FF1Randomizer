@@ -21,7 +21,13 @@ function validateFlags() {
 
 function newSeed() {
 	var seed = Math.floor((0xFFFFFFFF + 1) * Math.random());
-	document.getElementById("Seed").value = seed.toString(16).toUpperCase();
+	var seedString = seed.toString(16).toUpperCase();
+
+	if (seedString.length < 8) {
+		seedString = Array(8 - seedString.length + 1).join("0") + seedString;
+	}
+
+	document.getElementById("Seed").value = seedString;
 }
 
 var checkboxIds = [
