@@ -10,9 +10,12 @@ namespace FF1RandomizerOnline.Models
 {
     public class RandomizeViewModel
     {
+		[BindRequired]
 		public string Seed { get; set; }
-	    public Flags Flags { get; set; }
+		[BindRequired]
+		public Flags Flags { get; set; }
 
+	    [BindRequired]
 	    public IFormFile File { get; set; }
     }
 }

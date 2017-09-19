@@ -28,7 +28,12 @@ namespace FF1RandomizerOnline.Controllers
 		[ValidateAntiForgeryToken]
 	    public IActionResult Randomize(RandomizeViewModel viewModel)
 	    {
-		    if (viewModel.File.Length < 256 * 1024 || viewModel.File.Length > (256 + 8) * 1024)
+		    if (!ModelState.IsValid)
+		    {
+			    return View(viewModel);
+		    }
+
+			if (viewModel.File.Length < 256 * 1024 || viewModel.File.Length > (256 + 8) * 1024)
 		    {
 			    return BadRequest("Unexpected file length, FF1 ROM should be close to 256 kB.");
 		    }
