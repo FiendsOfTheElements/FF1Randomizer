@@ -85,7 +85,7 @@ function setCallbacks() {
 		if (validateFlags()) {
 			setFlags();
 		}
-	}
+	};
 }
 
 function setPercentageCallback(sliderId, labelId) {
@@ -96,9 +96,9 @@ function setPercentageCallback(sliderId, labelId) {
 function getPercentageCallback(slider, labelId) {
 	return function() {
 		var label = document.getElementById(labelId);
-		label.innerHTML = Math.round((1 / slider.value) * 100) + "% - " + Math.round(slider.value * 100) + "%";
+		label.innerHTML = Math.round(100 / slider.value) + "% - " + Math.round(slider.value * 100) + "%";
 		setFlagsString();
-	}
+	};
 }
 
 function expGoldBoostCallback() {

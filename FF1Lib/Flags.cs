@@ -8,37 +8,37 @@ namespace FF1Lib
 {
 	public class Flags
 	{
-		public bool Treasures;
-		public bool IncentivizeIceCave;
-		public bool IncentivizeOrdeals;
-		public bool Shops;
-		public bool MagicShops;
-		public bool MagicLevels;
-		public bool MagicPermissions;
-		public bool Rng;
-		public bool EnemyScripts;
-		public bool EnemySkillsSpells;
-		public bool EnemyStatusAttacks;
-		public bool Ordeals;
+		public bool Treasures { get; set; }
+		public bool IncentivizeIceCave { get; set; }
+		public bool IncentivizeOrdeals { get; set; }
+		public bool Shops { get; set; }
+		public bool MagicShops { get; set; }
+		public bool MagicLevels { get; set; }
+		public bool MagicPermissions { get; set; }
+		public bool Rng { get; set; }
+		public bool EnemyScripts { get; set; }
+		public bool EnemySkillsSpells { get; set; }
+		public bool EnemyStatusAttacks { get; set; }
+		public bool Ordeals { get; set; }
 
-		public bool EarlyRod;
-		public bool EarlyCanoe;
-		public bool EarlyOrdeals;
-		public bool NoPartyShuffle;
-		public bool SpeedHacks;
-		public bool IdentifyTreasures;
-		public bool Dash;
-		public bool BuyTen;
+		public bool EarlyRod { get; set; }
+		public bool EarlyCanoe { get; set; }
+		public bool EarlyOrdeals { get; set; }
+		public bool NoPartyShuffle { get; set; }
+		public bool SpeedHacks { get; set; }
+		public bool IdentifyTreasures { get; set; }
+		public bool Dash { get; set; }
+		public bool BuyTen { get; set; }
 
-		public bool HouseMPRestoration;
-		public bool WeaponStats;
-		public bool ChanceToRun;
-		public bool SpellBugs;
-		public bool EnemyStatusAttackBug;
+		public bool HouseMPRestoration { get; set; }
+		public bool WeaponStats { get; set; }
+		public bool ChanceToRun { get; set; }
+		public bool SpellBugs { get; set; }
+		public bool EnemyStatusAttackBug { get; set; }
 
-		public double EnemyScaleFactor;
-		public double PriceScaleFactor;
-		public double ExpMultiplier;
-		public double ExpBonus;
+		public double EnemyScaleFactor { get; set; }
+		public double PriceScaleFactor { get; set; }
+		public double ExpMultiplier { get; set; }
+		public double ExpBonus { get; set; }
 	}
 }

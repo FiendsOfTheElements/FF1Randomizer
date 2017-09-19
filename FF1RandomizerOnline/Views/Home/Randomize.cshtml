@@ -1,11 +1,11 @@
-﻿@model FF1RandomizerOnline.Models.RandomizeModel
+﻿@model FF1RandomizerOnline.Models.RandomizeViewModel
 
 @{
 	ViewData["Title"] = "FF1 Randomizer Online " + FF1Lib.FF1Rom.Version;
 }
 
 <h1>Coming Soon!</h1>
-<form enctype="multipart/form-data" asp-action="Randomize">
+<form id="RandomizeForm" method="post" enctype="multipart/form-data" asp-controller="Home" asp-action="Randomize">
 	<label>Upload ROM</label><br />
 	<label class="btn btn-default"><input type="file" asp-for="File" style="display: none"/>Browse</label>
 	@Html.ValidationSummary()

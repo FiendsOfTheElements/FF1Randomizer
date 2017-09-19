@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using RomUtilities;
 using static System.Math;
 using System.Collections;
+using System.IO;
 
 namespace FF1Lib
 {
@@ -21,6 +22,9 @@ namespace FF1Lib
 		public const int RngSize = 256;
 
 		public FF1Rom(string filename) : base(filename)
+		{}
+
+		public FF1Rom(Stream readStream) : base(readStream)
 		{}
 
 		public void Randomize(Blob seed, Flags flags)
@@ -152,7 +156,7 @@ namespace FF1Lib
 
 			if (flags.ExpMultiplier > 1 || flags.ExpBonus > 0)
 			{
-				ExpGoldBoost(flags.ExpBonus * 10, flags.ExpMultiplier);
+				ExpGoldBoost(flags.ExpBonus, flags.ExpMultiplier);
 			}
 
 			WriteSeedAndFlags(Version, seed.ToHex(), EncodeFlagsText(flags));
@@ -253,10 +257,10 @@ namespace FF1Lib
 			text = text.Replace('+', '!');
 			text = text.Replace('/', '%');
 
-			text += SliderToBase64((int)(10 * flags.PriceScaleFactor));
-			text += SliderToBase64((int)(10 * flags.EnemyScaleFactor));
-			text += SliderToBase64((int)(10 * flags.ExpMultiplier));
-			text += SliderToBase64((int)flags.ExpBonus);
+			text += SliderToBase64((int)(flags.PriceScaleFactor * 10.0));
+			text += SliderToBase64((int)(flags.EnemyScaleFactor * 10.0));
+			text += SliderToBase64((int)(flags.ExpMultiplier * 10.0));
+			text += SliderToBase64((int)(flags.ExpBonus / 10.0));
 
 			return text;
 		}
@@ -304,7 +308,7 @@ namespace FF1Lib
 				PriceScaleFactor = Base64ToSlider(text[6]) / 10.0,
 				EnemyScaleFactor = Base64ToSlider(text[7]) / 10.0,
 				ExpMultiplier = Base64ToSlider(text[8]) / 10.0,
-				ExpBonus = Base64ToSlider(text[9])
+				ExpBonus = Base64ToSlider(text[9]) * 10.0
 			};
 		}
 
