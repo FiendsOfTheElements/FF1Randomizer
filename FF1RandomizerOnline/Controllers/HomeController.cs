@@ -67,20 +67,20 @@ namespace FF1RandomizerOnline.Controllers
 		[ValidateAntiForgeryToken]
 	    public IActionResult Randomize(RandomizeViewModel viewModel)
 	    {
-		    if (!ModelState.IsValid)
-		    {
-			    return View(viewModel);
-		    }
-
 			if (viewModel.File.Length < 256 * 1024 || viewModel.File.Length > (256 + 8) * 1024)
 		    {
-			    return BadRequest("Unexpected file length, FF1 ROM should be close to 256 kB.");
+			    ModelState.AddModelError("File", "Unexpected file length, FF1 ROM should be close to 256 kB.");
 		    }
 
 		    var rom = new FF1Rom(viewModel.File.OpenReadStream());
 		    if (!rom.Validate())
 		    {
-			    return BadRequest("File does not appear to be a valid FF1 NES ROM.");
+			    ModelState.AddModelError("File", "File does not appear to be a valid FF1 NES ROM.");
+		    }
+
+		    if (!ModelState.IsValid)
+		    {
+			    return View(viewModel);
 		    }
 
 			rom.Randomize(Blob.FromHex(viewModel.Seed), viewModel.Flags);
