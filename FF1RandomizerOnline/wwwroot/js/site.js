@@ -96,6 +96,15 @@ function setCallbacks() {
 			expGoldBoostCallback();
 		}
 	};
+
+	var fileInput = document.getElementById("File");
+	fileInput.onchange = function() {
+		var fileLabel = document.getElementById("file-label");
+		var file = fileInput.files[0];
+		if (file) {
+			fileLabel.innerHTML = file.name;
+		}
+	}
 }
 
 function setPercentageCallback(sliderId, labelId) {
@@ -200,9 +209,9 @@ function setFlags() {
 }
 
 $(document).ready(function () {
-	setFlagsString();
 	setCallbacks();
 
+	setFlagsString();
 	getPercentageCallback(document.getElementById("Flags_PriceScaleFactor"), "prices-display")();
 	getPercentageCallback(document.getElementById("Flags_EnemyScaleFactor"), "enemy-stats-display")();
 	expGoldBoostCallback();

@@ -6,7 +6,7 @@
 
 <form id="RandomizeForm" method="post" enctype="multipart/form-data" asp-controller="Home" asp-action="Randomize">
 	<label class="section">Upload ROM</label><br />
-	<label class="btn btn-default"><input type="file" asp-for="File" style="display: none"/>Browse</label>
+	<label class="btn btn-default"><input type="file" accept=".nes" asp-for="File" style="display: none"/>Browse</label> <label for="File" id="file-label"></label>
 	@Html.ValidationSummary()
 	<div class="row">
 		<div class="col-xs-3"><label asp-for="Seed" />Seed</div>
