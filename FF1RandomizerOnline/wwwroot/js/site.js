@@ -1,4 +1,25 @@
-﻿function newSeed() {
+﻿function validateSeed() {
+	var seedInput = document.getElementById("Seed");
+	if (seedInput.value.match(/^[A-Fa-f0-9]{8}$/)) {
+		seedInput.parentElement.classList.remove("has-error");
+	} else {
+		seedInput.parentElement.classList.add("has-error");
+	}
+}
+
+function validateFlags() {
+	var flagsInput = document.getElementById("Flags");
+	var isValid = flagsInput.value.match(/^[A-Za-z0-9!%]{10}$/);
+	if (isValid) {
+		flagsInput.parentElement.classList.remove("has-error");
+	} else {
+		flagsInput.parentElement.classList.add("has-error");
+	}
+
+	return isValid;
+}
+
+function newSeed() {
 	var seed = Math.floor((0xFFFFFFFF + 1) * Math.random());
 	document.getElementById("Seed").value = seed.toString(16).toUpperCase();
 }
@@ -38,6 +59,9 @@ var sliderIds = [
 	"Flags_ExpBonus"
 ];
 
+// ! and % are printable in FF, + and / are not.
+var base64Chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!%";
+
 function setCallbacks() {
 	for (var i = 0; i < checkboxIds.length; i++) {
 		var checkbox = document.getElementById(checkboxIds[i]);
@@ -52,6 +76,16 @@ function setCallbacks() {
 	slider.onchange = expGoldBoostCallback;
 	slider = document.getElementById("Flags_ExpBonus");
 	slider.onchange = expGoldBoostCallback;
+
+	var seed = document.getElementById("Seed");
+	seed.oninput = validateSeed;
+
+	var flags = document.getElementById("Flags");
+	flags.oninput = function() {
+		if (validateFlags()) {
+			setFlags();
+		}
+	}
 }
 
 function setPercentageCallback(sliderId, labelId) {
@@ -85,8 +119,6 @@ function getFlagsString() {
 	}
 
 	var flagsString = "";
-	// ! and % are printable in FF, + and / are not.
-	var base64Chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!%";
 	var charBits;
 	charBits = (checkboxBits & 0x000000FC) >>>  2;
 	flagsString += base64Chars[charBits];
@@ -94,7 +126,7 @@ function getFlagsString() {
 	flagsString += base64Chars[charBits];
 	charBits = (checkboxBits & 0x00000F00) >>>  6 | (checkboxBits & 0x00C00000) >>> 22;
 	flagsString += base64Chars[charBits];
-	charBits = (checkboxBits & 0x00FC0000) >>> 18;
+	charBits = (checkboxBits & 0x003F0000) >>> 16;
 	flagsString += base64Chars[charBits];
 	charBits = (checkboxBits & 0xFC000000) >>> 26;
 	flagsString += base64Chars[charBits];
@@ -115,7 +147,46 @@ function getFlagsString() {
 }
 
 function setFlagsString() {
-	document.getElementById("Flags").value = getFlagsString();
+	var flags = document.getElementById("Flags");
+	flags.value = getFlagsString();
+	flags.parentElement.classList.remove("has-error");
+}
+
+function setFlags() {
+	var flags = document.getElementById("Flags");
+	var flagsString = flags.value;
+	var checkboxBits = 0, charBits;
+	charBits = base64Chars.indexOf(flagsString[0]);
+	checkboxBits |= charBits << 2;
+	charBits = base64Chars.indexOf(flagsString[1]);
+	checkboxBits |= (charBits & 0x30) >>> 4;
+	checkboxBits |= (charBits & 0x0F) << 12;
+	charBits = base64Chars.indexOf(flagsString[2]);
+	checkboxBits |= (charBits & 0x3C) << 6;
+	checkboxBits |= (charBits & 0x03) << 22;
+	charBits = base64Chars.indexOf(flagsString[3]);
+	checkboxBits |= charBits << 16;
+	charBits = base64Chars.indexOf(flagsString[4]);
+	checkboxBits |= charBits << 26;
+	charBits = base64Chars.indexOf(flagsString[5]);
+	checkboxBits |= (charBits & 0x30) << 20;
+
+	for (var i = 0; i < checkboxIds.length; i++) {
+		var checkbox = document.getElementById(checkboxIds[i]);
+		checkbox.checked = (checkboxBits & (1 << i)) !== 0;
+	}
+
+	var slider;
+	slider = document.getElementById("Flags_PriceScaleFactor");
+	slider.value = base64Chars.indexOf(flagsString[6]) / 10;
+	slider = document.getElementById("Flags_EnemyScaleFactor");
+	slider.value = base64Chars.indexOf(flagsString[7]) / 10;
+	slider = document.getElementById("Flags_ExpMultiplier");
+	slider.value = base64Chars.indexOf(flagsString[8]) / 10;
+	slider = document.getElementById("Flags_ExpBonus");
+	slider.value = base64Chars.indexOf(flagsString[9]) * 10;
+
+	flags.value = getFlagsString();
 }
 
 $(document).ready(function () {
