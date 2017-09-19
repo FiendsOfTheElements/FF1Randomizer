@@ -4,9 +4,8 @@
 	ViewData["Title"] = "FF1 Randomizer Online " + FF1Lib.FF1Rom.Version;
 }
 
-<h1>Coming Soon!</h1>
 <form id="RandomizeForm" method="post" enctype="multipart/form-data" asp-controller="Home" asp-action="Randomize">
-	<label>Upload ROM</label><br />
+	<label class="section">Upload ROM</label><br />
 	<label class="btn btn-default"><input type="file" asp-for="File" style="display: none"/>Browse</label>
 	@Html.ValidationSummary()
 	<div class="row">
