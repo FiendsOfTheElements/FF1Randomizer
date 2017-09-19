@@ -1,4 +1,9 @@
-﻿var checkboxIds = [
+﻿function newSeed() {
+	var seed = Math.floor((0xFFFFFFFF + 1) * Math.random());
+	document.getElementById("Seed").value = seed.toString(16).toUpperCase();
+}
+
+var checkboxIds = [
 	"Flags_Treasures",
 	"Flags_IncentivizeIceCave",
 	"Flags_IncentivizeOrdeals",
@@ -114,6 +119,7 @@ function setFlagsString() {
 }
 
 $(document).ready(function () {
+	newSeed();
 	setFlagsString();
 	setCallbacks();
 
