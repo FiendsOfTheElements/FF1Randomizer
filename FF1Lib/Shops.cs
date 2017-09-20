@@ -98,29 +98,50 @@ namespace FF1Lib
 		{
 			var shops = GetShops(shopType, pointers);
 
-			var allEntries = shops.SelectMany(list => list).ToList();
-			allEntries.Shuffle(rng);
-
-			var newShops = new List<byte>[ShopSectionSize];
-			var entry = 0;
-			for (int i = 0; i < ShopSectionSize; i++)
+			bool shopsBlocked;
+			List<byte>[] newShops;
+			do
 			{
-				newShops[i] = new List<byte>();
-				if (pointers[(int)shopType + i] != ShopNullPointer)
-				{
-					newShops[i].Add(allEntries[entry++]);
-				}
-			}
+				shopsBlocked = false;
+				newShops = new List<byte>[ShopSectionSize];
 
-			while (entry < allEntries.Count)
-			{
-				var tryShop = newShops[rng.Between(0, ShopSectionSize - 1)];
-				if (tryShop.Count > 0 && tryShop.Count < 5 && !tryShop.Contains(allEntries[entry]))
-				{
-					tryShop.Add(allEntries[entry++]);
-				}
-			}
+				var allEntries = shops.SelectMany(list => list).ToList();
+				allEntries.Shuffle(rng);
 
+				int entry = 0;
+				for (int i = 0; i < ShopSectionSize; i++)
+				{
+					newShops[i] = new List<byte>();
+					if (pointers[(int)shopType + i] != ShopNullPointer)
+					{
+						newShops[i].Add(allEntries[entry++]);
+					}
+				}
+
+				while (entry < allEntries.Count)
+				{
+					var eligibleShops = new List<int>();
+					for (int i = 0; i < newShops.Length; i++)
+					{
+						if (newShops[i].Count > 0 && newShops[i].Count < 5 && !newShops[i].Contains(allEntries[entry]))
+						{
+							eligibleShops.Add(i);
+						}
+					}
+
+					// We might be unable to place an item in any shop because they're all full, or they already have that item.  Start over.
+					if (eligibleShops.Count == 0)
+					{
+						shopsBlocked = true;
+						break;
+					}
+
+					int shopIndex = eligibleShops[rng.Between(0, eligibleShops.Count - 1)];
+					newShops[shopIndex].Add(allEntries[entry++]);
+				}
+			} while (shopsBlocked);
+
+			// Zero-terminate the new shops.
 			foreach (var newShop in newShops)
 			{
 				newShop.Add(0);
