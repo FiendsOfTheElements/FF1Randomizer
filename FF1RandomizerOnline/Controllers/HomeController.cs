@@ -65,7 +65,7 @@ namespace FF1RandomizerOnline.Controllers
 
 	    [HttpPost]
 		[ValidateAntiForgeryToken]
-	    public IActionResult Randomize(RandomizeViewModel viewModel)
+	    public async Task<IActionResult> Randomize(RandomizeViewModel viewModel)
 	    {
 			// Easier to just early return here and not have to verify viewModel.File != null repeatedly.
 			if (!ModelState.IsValid)
@@ -78,7 +78,7 @@ namespace FF1RandomizerOnline.Controllers
 				ModelState.AddModelError("File", "Unexpected file length, FF1 ROM should be close to 256 kB.");
 			}
 
-			var rom = new FF1Rom(viewModel.File.OpenReadStream());
+			var rom = await FF1Rom.CreateAsync(viewModel.File.OpenReadStream());
 			if (!rom.Validate())
 			{
 				ModelState.AddModelError("File", "File does not appear to be a valid FF1 NES ROM.");
@@ -101,7 +101,7 @@ namespace FF1RandomizerOnline.Controllers
 		    Response.ContentType = "application/octet-stream";
 			Response.Headers.Add("Content-Disposition", $"attachment; filename=\"{newFilename}\"");
 			
-			rom.Save(Response.Body);
+			await rom.SaveAsync(Response.Body);
 			Response.Body.Close();
 
 			return new EmptyResult();

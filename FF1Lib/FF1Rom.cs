@@ -27,6 +27,17 @@ namespace FF1Lib
 		public FF1Rom(Stream readStream) : base(readStream)
 		{}
 
+		private FF1Rom()
+		{}
+
+		public static async Task<FF1Rom> CreateAsync(Stream readStream)
+		{
+			var rom = new FF1Rom();
+			await rom.LoadAsync(readStream);
+
+			return rom;
+		}
+
 		public void Randomize(Blob seed, Flags flags)
 		{
 			var rng = new MT19337(BitConverter.ToUInt32(seed, 0));

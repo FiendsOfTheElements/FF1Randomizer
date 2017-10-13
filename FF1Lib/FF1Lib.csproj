@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="RomUtilities" Version="2.1.1" />
+    <PackageReference Include="RomUtilities" Version="2.2.0" />
   </ItemGroup>
 
 </Project>
