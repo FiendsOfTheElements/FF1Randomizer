@@ -1,10 +1,12 @@
 # FF1 Randomizer
 
+**The online version of the randomizer is now live!**  Check it out at http://finalfantasyrandomizer.com!  The Windows and command-line versions will still continue to be updated, in case your internet connection (or the server's!) is spotty.
+
 This is a randomizer for Final Fantasy 1 for the NES.  It currently operates on the US version of the ROM only.
 
 ## How it works
 
-The randomizer has several options, each with unique gameplay implications.  An explanation of what each option does, and some of the possible consequences is listed in each section.
+The randomizer has man options, each with unique gameplay implications.  An explanation of what each option does, and some of the possible consequences is listed in each section.
 
 ### Shuffle Tab
 This tab contains options for shuffling various bits of game data.  Shuffling means that all the same data will be in the ROM, but in a randomized order.
@@ -16,6 +18,14 @@ This option randomly shuffles the contents of all treasure chests in the game.  
 * Since treasures in the original game are roughly sorted in increasing order of "goodness", shuffling them is likely to grant better equipment to the player early in the game.  This can help or hurt the player, depending on whether the rewards are usable by the early classes.
 * Speaking of classes, the TAIL can be anywhere except the Temple of Fiends Revisited.  You may find it and the FLOATER early on, and be able to class change very early, or you may have to play almost the entire game without class change.
 * The TAIL and ADAMANT will never be in the Temple of Fiends Revisited.  Although these items are not necessary for game completion, they are deemed important enough to be accessible before the final dungeon.  In particular, the WARP and EXIT spells are not obtainable without the TAIL (if you don't shuffle magic permissions), and you can't leave ToFR without them.
+
+#### Incentives
+These options force an important item to be in their respective caves.
+* The EYE chest in the Ice Cave will contain the incentivized item.
+* The Zombie D chest in Castle Ordeals will contain the incentivized item.
+* The possible items that can appear in the incentivized chests are: FLOATER, SLAB, ADMANT, TAIL, Masmune, Ribbon.
+  - The RUBY is added to the list if Early Canoe is enabled.
+  - The CROWN is added to the list if Early Ordeals is enabled.
 
 #### Shops
 This option randomly shuffles the contents of each type of equipment and item shop in the game.
@@ -37,6 +47,9 @@ This option rearranges the order of spells in the ROM, changing their levels.
 * You can enable this option with or without shuffling magic shops.  Shuffling levels but not shops is a fairly compelling way to play, since you'll have spell charges for the early spells and be able to buy them early, but you don't necessarily know what the spells are.
 * By default, permissions for each spell are retained, even if the spell becomes an earlier level.  Red Wizard can't use NUKE even if it's level 1.  If "Keep Permissions" is unchecked, then spells will end up with whatever permissions are in the slot they get moved to.
 
+#### RNG Table
+This option randomizes the table of numbers that the game uses to generate pseudo-random values.  Shuffling these values means you will get enemy encounters in a different order.  This prevents using known routes to avoid certain encounters.
+
 #### Enemy Scripts, Skills, and Spells
 These options change enemy behavior during battle.
 * If scripts is checked, and skills/spells is unchecked, then the existing scripts will be reassigned to random enemies.  So an IMP may behave exactly like a MEDUSA, for example.
@@ -49,6 +62,17 @@ This option assigns enemy status attacks applied on hit (poison, dark, stun, sle
 * Status attacks may end up on enemies with more or fewer hits, making them more or less problematic.
 * This option is likely to "spread out" the status attacks, making certain groups of enemies less irritating (e.g. large groups of undead probably won't stunlock you anymore).  Of course, it could also give IMPs death touch, so beware.
 * If shops are also shuffled, the randomizer will ensure that PURE and SOFT potions are available in Corneria's item shop, since there would otherwise be no remedy for these ailments in the early game.
+
+#### Castle Ordeals
+This option randomizes the teleporters in Castle Ordeals.
+* The game arranges all the rooms in a random order, then picks one teleporter from each room to go to the next room.
+  - An extra room with a single teleporter has been added to the route.  The vanilla game skips this area.
+  - Three of the rooms have two teleporters.  The second teleporter in each of these rooms goes back to a previous room, or to the same room.
+  - One of the rooms has four teleporters, and no two of these will go to the same place.  Two of them will go backwards (or to the room you're currently in), one will go to the next room, and the fourth will go to a purely random room (possibly even skipping far ahead).
+* **CAUTION:** The original game has a bug that can cause a softlock if you enter too many teleporters or take too many staircases.  Enabling this option might cause you to get lost in the castle and end up reaching this limit.
+  - The softlock occurs somewhere around 30 teleports, and only happens when you enter the menu.
+  - It is strongly recommended that you save your game with a TENT, CABIN, or HOUSE before entering the castle.
+  - The WARP spell is very useful if you get sent too far back and are worried about softlocking.
 
 ### Scale Tab
 This tab contains sliders that will multiply bits of game data by random values within a range determined by the slider.  The distribution of random multipliers is exponential.
@@ -76,4 +100,24 @@ This option increases the amount of experience and gold given by enemies to spee
 This tab contains options to make the game play a bit faster.
 * Early Rod allows you to obtain the ROD from Sarda before killing the VAMPIRE in the Earth Cave.  Without this option, obtaining the RUBY early doesn't help you much (other than giving you access to the treasures in the Titan's Tunnel).
 * Early Canoe allows you to obtain the CANOE from Crescent Lake before killing LICH.  Without this option, obtaining the FLOATER early doesn't grant you use of the AIRSHIP until LICH is defeated, since you can't get to the Ryukahn Desert without the CANOE.
+* Early Ordeals allows you to enter Castle Ordeals without the CROWN.
 * No Party Shuffle prevents the game from reordering your party members when one of them is poisoned, petrified, or slain during battle.
+* Speed Hacks enables lots of things that speed up the gameplay, particularly battles and screen transitions.  This option also moves some NPCs out of your way, such as the bats in Earth Cave.
+* Identify Treasures lets you see what's in a treasure chest when your inventory is full.
+* Enable Dash allows you to walk at double speed by holding the B button.  Also, if you hold B while flying the airship, you will move slower, which can help you land accurately.
+* Buy 10 Items lets you buy 10 items at once from item shops, so you can stock up on 99 heal potions more quickly.
+
+### Bug Fixes Tab
+This tab contains options to fix some of the game's many bugs.
+* House MP Restoration makes the HOUSE restore your MP **before** saving the game, so that your MP is restored if you load the game.
+* Weapon Stats fixes the weapons so that they get the correct bonuses.
+  - Some weapons get a bonus against monster types (e.g. Were Sword)
+  - Some get a bonus against monsters weak to certain elements (e.g. Ice Sword)
+  - The critical hit rates of all weapons now use the originally intended values.  Because this is a significant nerf to late-game weapons, the critical rates for all weapons are doubled, and the Black Belt/Master's critical rate is halved.
+  - The bonus for the right element or monster type is +10 damage and +40 hit%.  The bonus is only applied once regardless of how many elements or monster types match.
+* Chance to Run fixes the run logic to be based purely on your character's level and luck stats (and not having anything to do with the status of other party members).  This is a significant boost to Thief, especially in the early game.
+* Various spells now work as originally intended.
+  - LOCK and LOK2 use the correct spell effect.
+  - HEL2 no longer functions like HEL3 in battle.
+  - TMPR and SABR both work, which is very important against late game bosses with high absorb, especially with large scale values for enemy stats.
+* Enemy status attacks now only get a chance to work for attacks that hit the player.
