@@ -16,6 +16,9 @@ namespace FF1Lib
 		public const int CanoeSageSize = 5;
 		public const int PartyShuffleOffset = 0x312E0;
 		public const int PartyShuffleSize = 3;
+		public const int MapSpriteOffset = 0x3400;
+		public const int MapSpriteSize = 3;
+		public const int MapSpriteCount = 16;
 
 		public void EnableEarlyRod()
 		{
@@ -82,6 +85,32 @@ namespace FF1Lib
 			Data[0x33D4B] = 0x04; // Explosion effect count (big enemies), default 6
 			Data[0x33CCD] = 0x04; // Explosion effect count (small enemies), default 8
 			Data[0x33DAA] = 0x04; // Explosion effect count (mixed enemies), default 15
+
+			// Default Response Rate 8 (0-based)
+			Data[0x384CB] = 0x07;
+
+			// Move NPCs out of the way.
+			MoveNpc( 0,  0, 0x11, 0x02, inRoom: false, stationary:  true); // North Coneria Soldier
+			MoveNpc( 0,  7, 0x1E, 0x0B, inRoom: false, stationary:  true); // East Coneria Guy
+			MoveNpc( 6, 13, 0x29, 0x1B, inRoom: false, stationary:  true); // Onrac Guy
+			MoveNpc(18,  1, 0x0C, 0x34, inRoom: false, stationary: false); // OoB Bat!
+			MoveNpc(30, 10, 0x09, 0x0B, inRoom:  true, stationary: false); // Earth Cave Bat B3
+			MoveNpc(30,  7, 0x11, 0x0B, inRoom: false, stationary: false); // Earth Cave Bat B3
+			MoveNpc(30,  8, 0x10, 0x0C, inRoom: false, stationary: false); // Earth Cave Bat B3
+			MoveNpc(30,  9, 0x09, 0x25, inRoom: false, stationary: false); // Earth Cave Bat B3
+			MoveNpc(32,  1, 0x22, 0x34, inRoom: false, stationary: false); // Earth Cave Bat B5
+		}
+
+		private void MoveNpc(int map, int npc, int x, int y, bool inRoom, bool stationary)
+		{
+			int offset = MapSpriteOffset + (map * MapSpriteCount + npc) * MapSpriteSize;
+
+			byte firstByte = (byte)x;
+			firstByte |= (byte)(inRoom ? 0x80 : 0x00);
+			firstByte |= (byte)(stationary ? 0x40 : 0x00);
+
+			Data[offset + 1] = firstByte;
+			Data[offset + 2] = (byte)y;
 		}
 
 		public void EnableIdentifyTreasures()
