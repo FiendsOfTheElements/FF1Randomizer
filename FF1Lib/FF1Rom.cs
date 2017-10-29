@@ -13,13 +13,19 @@ namespace FF1Lib
 	// ReSharper disable once InconsistentNaming
 	public partial class FF1Rom : NesRom
 	{
-		public const string Version = "1.4.7";
+		public const string Version = "1.4.8";
 
 		public const int CopyrightOffset1 = 0x384A8;
 		public const int CopyrightOffset2 = 0x384BA;
 
 		public const int RngOffset = 0x3F100;
 		public const int RngSize = 256;
+
+		public const int LevelRequirementsOffset = 0x2D000;
+		public const int LevelRequirementsSize = 2;
+		public const int LevelRequirementsCount = 49;
+
+		public const int StartingGoldOffset = 0x301C;
 
 		public FF1Rom(string filename) : base(filename)
 		{}
@@ -155,19 +161,12 @@ namespace FF1Lib
 				FixEnemyStatusAttackBug();
 			}
 
-			if (flags.PriceScaleFactor > 1)
-			{
-				ScalePrices(flags.PriceScaleFactor, rng);
-			}
+			ExpGoldBoost(flags.ExpBonus, flags.ExpMultiplier);
+			ScalePrices(flags.PriceScaleFactor, flags.ExpMultiplier, rng);
 
 			if (flags.EnemyScaleFactor > 1)
 			{
 				ScaleEnemyStats(flags.EnemyScaleFactor, rng);
-			}
-
-			if (flags.ExpMultiplier > 1 || flags.ExpBonus > 0)
-			{
-				ExpGoldBoost(flags.ExpBonus, flags.ExpMultiplier);
 			}
 
 			WriteSeedAndFlags(Version, seed.ToHex(), EncodeFlagsText(flags));
@@ -210,8 +209,8 @@ namespace FF1Lib
 				var exp = BitConverter.ToUInt16(enemy, 0);
 				var gold = BitConverter.ToUInt16(enemy, 2);
 
-				exp = (ushort)Min(bonus + exp * multiplier, 0x7FFF);
-				gold = (ushort)Min(bonus + gold * multiplier, 0x7FFF);
+				exp += (ushort)(bonus / multiplier);
+				gold += (ushort)(bonus / multiplier);
 
 				var expBytes = BitConverter.GetBytes(exp);
 				var goldBytes = BitConverter.GetBytes(gold);
@@ -222,6 +221,21 @@ namespace FF1Lib
 			enemyBlob = Blob.Concat(enemies);
 
 			Put(EnemyOffset, enemyBlob);
+
+			var levelRequirements = Get(LevelRequirementsOffset, LevelRequirementsSize * LevelRequirementsCount).ToUShorts();
+
+			for (int i = 0; i < levelRequirements.Length; i++)
+			{
+				levelRequirements[i] = (ushort)(levelRequirements[i] / multiplier);
+			}
+
+			Put(LevelRequirementsOffset, Blob.FromUShorts(levelRequirements));
+
+			var startingGold = BitConverter.ToUInt16(Get(StartingGoldOffset, 2), 0);
+
+			startingGold = (ushort)(startingGold / multiplier);
+
+			Put(StartingGoldOffset, BitConverter.GetBytes(startingGold));
 		}
 
 		public static string EncodeFlagsText(Flags flags)

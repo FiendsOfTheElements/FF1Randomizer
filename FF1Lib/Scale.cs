@@ -15,13 +15,15 @@ namespace FF1Lib
 		public const int PriceCount = 108;
 		public const int MagicPriceOffset = 0x37D60;
 
-		public void ScalePrices(double scale, MT19337 rng)
+		// Scale is the geometric scale factor used with RNG.  Multiplier is where we make everything cheaper
+		// instead of enemies giving more gold, so we don't overflow.
+		public void ScalePrices(double scale, double multiplier, MT19337 rng)
 		{
 			var prices = Get(PriceOffset, PriceSize * PriceCount).Chunk(PriceSize);
 			foreach (var price in prices)
 			{
 				var priceValue = BitConverter.ToUInt16(price, 0);
-				priceValue = (ushort)Min(Scale(priceValue, scale, 1, rng), 0xFFFF);
+				priceValue = (ushort)Min(Scale(priceValue / multiplier, scale, 1, rng), 0xFFFF);
 
 				var priceBytes = BitConverter.GetBytes(priceValue);
 				Array.Copy(priceBytes, 0, price, 0, 2);
@@ -32,7 +34,7 @@ namespace FF1Lib
 			foreach (var price in prices)
 			{
 				var priceValue = BitConverter.ToUInt16(price, 0);
-				priceValue = (ushort)Min(Scale(priceValue, scale, 1, rng), 0xFFFF);
+				priceValue = (ushort)Min(Scale(priceValue / multiplier, scale, 1, rng), 0xFFFF);
 
 				var priceBytes = BitConverter.GetBytes(priceValue);
 				Array.Copy(priceBytes, 0, price, 0, 2);
@@ -47,10 +49,10 @@ namespace FF1Lib
 				if (pointers[i] != ShopNullPointer)
 				{
 					var priceBytes = Get(ShopPointerBase + pointers[i], 2);
-					var price = BitConverter.ToUInt16(priceBytes, 0);
+					var priceValue = BitConverter.ToUInt16(priceBytes, 0);
 
-					price = (ushort)Scale(price, scale, 1, rng);
-					priceBytes = BitConverter.GetBytes(price);
+					priceValue = (ushort)Scale(priceValue / multiplier, scale, 1, rng);
+					priceBytes = BitConverter.GetBytes(priceValue);
 					Put(ShopPointerBase + pointers[i], priceBytes);
 				}
 			}
@@ -78,7 +80,7 @@ namespace FF1Lib
 			Put(EnemyOffset, enemies.SelectMany(enemy => enemy.ToBytes()).ToArray());
 		}
 
-		private int Scale(int value, double scale, double adjustment, MT19337 rng)
+		private int Scale(double value, double scale, double adjustment, MT19337 rng)
 		{
 			var exponent = (double)rng.Next() / uint.MaxValue * 2.0 - 1.0;
 			var adjustedScale = 1.0 + adjustment * (scale - 1.0);
