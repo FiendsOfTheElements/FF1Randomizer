@@ -22,7 +22,7 @@ namespace FF1Lib
 		public const int RngSize = 256;
 
 		public const int LevelRequirementsOffset = 0x2D000;
-		public const int LevelRequirementsSize = 2;
+		public const int LevelRequirementsSize = 3;
 		public const int LevelRequirementsCount = 49;
 
 		public const int StartingGoldOffset = 0x301C;
@@ -222,14 +222,20 @@ namespace FF1Lib
 
 			Put(EnemyOffset, enemyBlob);
 
-			var levelRequirements = Get(LevelRequirementsOffset, LevelRequirementsSize * LevelRequirementsCount).ToUShorts();
-
-			for (int i = 0; i < levelRequirements.Length; i++)
+			var levelRequirementsBlob = Get(LevelRequirementsOffset, LevelRequirementsSize * LevelRequirementsCount);
+			var levelRequirementsBytes = levelRequirementsBlob.Chunk(3).Select(threeBytes => new byte[] { threeBytes[0], threeBytes[1], threeBytes[2], 0 }).ToList();
+			for (int i = 0; i < LevelRequirementsCount; i++)
 			{
-				levelRequirements[i] = (ushort)(levelRequirements[i] / multiplier);
+				uint levelRequirement = (uint)(BitConverter.ToUInt32(levelRequirementsBytes[i], 0) / multiplier);
+				levelRequirementsBytes[i] = BitConverter.GetBytes(levelRequirement);
 			}
 
-			Put(LevelRequirementsOffset, Blob.FromUShorts(levelRequirements));
+			Put(LevelRequirementsOffset, Blob.Concat(levelRequirementsBytes.Select(bytes => (Blob)new byte[] { bytes[0], bytes[1], bytes[2] })));
+
+			// A dirty, ugly, evil piece of code that sets the level requirement for level 2, even though that's already defined in the above table.
+			byte firstLevelRequirement = Data[0x3C04B];
+			firstLevelRequirement = (byte)(firstLevelRequirement / multiplier);
+			Data[0x3C04B] = firstLevelRequirement;
 
 			var startingGold = BitConverter.ToUInt16(Get(StartingGoldOffset, 2), 0);
 

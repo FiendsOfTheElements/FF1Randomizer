@@ -52,7 +52,7 @@
 					<Label x:Name="ExpGoldBoostLabel" Content="Exp/Gold Boost:" HorizontalAlignment="Left" Margin="10,112,0,0" VerticalAlignment="Top"/>
 					<Label x:Name="ExpScaleFactorLabel" Content="" HorizontalAlignment="Left" Margin="10,141,0,0" VerticalAlignment="Top"/>
 					<Slider x:Name="ExpMultiplierSlider" HorizontalAlignment="Left" Margin="184,112,0,0" VerticalAlignment="Top" Width="100" Minimum="1" Maximum="5" TickPlacement="BottomRight" TickFrequency="0.5" ValueChanged="ExpMultiplierSlider_ValueChanged" ToolTip="Multiplies enemy exp and gold by this amount." Value="2"/>
-					<Slider x:Name="ExpBonusSlider" HorizontalAlignment="Left" Margin="184,141,0,0" VerticalAlignment="Top" Width="100" Minimum="0" Maximum="50" TickPlacement="BottomRight" TickFrequency="5" ValueChanged="ExpBonusSlider_ValueChanged" ToolTip="Adds this amount to enemy exp and gold (after the multiplier)." Value="10"/>
+					<Slider x:Name="ExpBonusSlider" HorizontalAlignment="Left" Margin="184,141,0,0" VerticalAlignment="Top" Width="100" Minimum="0" Maximum="500" TickPlacement="BottomRight" TickFrequency="50" ValueChanged="ExpBonusSlider_ValueChanged" ToolTip="Adds this amount to enemy exp and gold (after the multiplier)." Value="100" LargeChange="100" SmallChange="10"/>
 				</Grid>
 			</TabItem>
 			<TabItem Header="Conveniences">

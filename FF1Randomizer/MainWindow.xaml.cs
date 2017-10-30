@@ -216,7 +216,7 @@ namespace FF1Randomizer
 
 		private void ExpBonusSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
 		{
-			ExpBonusSlider.Value = Math.Round(ExpBonusSlider.Value);
+			ExpBonusSlider.Value = 10.0 * Math.Round(ExpBonusSlider.Value / 10.0);
 
 			SetExpLabel();
 			SetFlagsText(sender, e);
@@ -256,7 +256,7 @@ namespace FF1Randomizer
 		{
 			if (ExpMultiplierSlider != null && ExpBonusSlider != null && ExpScaleFactorLabel != null)
 			{
-				ExpScaleFactorLabel.Content = $"{ExpMultiplierSlider.Value}x + {ExpBonusSlider.Value*10}";
+				ExpScaleFactorLabel.Content = $"{ExpMultiplierSlider.Value}x + {ExpBonusSlider.Value}";
 			}
 		}
 
