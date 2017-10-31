@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.12
+VisualStudioVersion = 15.0.27004.2005
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FF1Lib", "FF1Lib\FF1Lib.csproj", "{C5F0CF19-C775-4133-AE81-43606C73CB4B}"
 EndProject
@@ -15,6 +15,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FF1Randomizer", "FF1Randomizer\FF1Randomizer.csproj", "{BEF4CF23-2F46-4A02-AE02-649299CDABD7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FF1RandomizerOnline", "FF1RandomizerOnline\FF1RandomizerOnline.csproj", "{597D1B94-E7BA-4798-B2E1-E45A0DC4B77C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sandbox", "Sandbox\Sandbox.csproj", "{137A7AAB-F962-4988-88E6-363CF49A702A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,6 +40,10 @@ Global
 		{597D1B94-E7BA-4798-B2E1-E45A0DC4B77C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{597D1B94-E7BA-4798-B2E1-E45A0DC4B77C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{597D1B94-E7BA-4798-B2E1-E45A0DC4B77C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{137A7AAB-F962-4988-88E6-363CF49A702A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{137A7AAB-F962-4988-88E6-363CF49A702A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{137A7AAB-F962-4988-88E6-363CF49A702A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{137A7AAB-F962-4988-88E6-363CF49A702A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
