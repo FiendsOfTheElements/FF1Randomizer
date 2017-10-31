@@ -41,7 +41,7 @@
 			</TabItem>
 			<TabItem Header="Scale">
 				<Grid>
-					<Label x:Name="PricesLabel" Content="Prices:" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" ToolTip="Prices of items, weapons, armor, and magic are all scaled."/>
+					<Label x:Name="PricesLabel" Content="Prices:" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" ToolTip="Prices of items, weapons, armor, and magic are all scaled, as well as your starting gold and gold chests."/>
 					<Label x:Name="PriceScaleFactorLabel" Content="" HorizontalAlignment="Left" Margin="91,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="4.4,0.462"/>
 					<Slider x:Name="PriceScaleFactorSlider" HorizontalAlignment="Left" Margin="184,10,0,0" VerticalAlignment="Top" Minimum="1" Maximum="5" Value="2" Width="100" TickPlacement="BottomRight" TickFrequency="0.5" ValueChanged="PriceScaleFactorSlider_ValueChanged" ToolTip="For each value to be scaled, a random exponent is selected between -1 and +1.  The value is scaled by the scale factor raised to that power."/>
 
