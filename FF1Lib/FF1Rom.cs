@@ -13,7 +13,7 @@ namespace FF1Lib
 	// ReSharper disable once InconsistentNaming
 	public partial class FF1Rom : NesRom
 	{
-		public const string Version = "1.4.8";
+		public const string Version = "1.4.9";
 
 		public const int CopyrightOffset1 = 0x384A8;
 		public const int CopyrightOffset2 = 0x384BA;
@@ -26,6 +26,14 @@ namespace FF1Lib
 		public const int LevelRequirementsCount = 49;
 
 		public const int StartingGoldOffset = 0x301C;
+
+		public const int ItemTextPointerOffset = 0x2B700;
+		public const int ItemTextPointerSize = 2;
+		public const int ItemTextPointerCount = 252;
+		public const int ItemTextPointerBase = 0x20000;
+		public const int ItemTextOffset = 0x2B900;
+		public const int GoldItemOffset = 108; // 108 items before gold chests
+		public const int GoldItemCount = 68;
 
 		public FF1Rom(string filename) : base(filename)
 		{}
@@ -161,8 +169,16 @@ namespace FF1Lib
 				FixEnemyStatusAttackBug();
 			}
 
+			var text = ReadText();
+			for (int i = 0; i < text.Length; i++)
+			{
+				text[i] = TrimEnd(text[i]);
+			}
+
 			ExpGoldBoost(flags.ExpBonus, flags.ExpMultiplier);
-			ScalePrices(flags.PriceScaleFactor, flags.ExpMultiplier, rng);
+			ScalePrices(flags.PriceScaleFactor, flags.ExpMultiplier, text, rng);
+
+			WriteText(text);
 
 			if (flags.EnemyScaleFactor > 1)
 			{
@@ -236,12 +252,57 @@ namespace FF1Lib
 			byte firstLevelRequirement = Data[0x3C04B];
 			firstLevelRequirement = (byte)(firstLevelRequirement / multiplier);
 			Data[0x3C04B] = firstLevelRequirement;
+		}
 
-			var startingGold = BitConverter.ToUInt16(Get(StartingGoldOffset, 2), 0);
+		public Blob[] ReadText()
+		{
+			var pointers = Get(ItemTextPointerOffset, ItemTextPointerSize * ItemTextPointerCount).ToUShorts().ToList();
 
-			startingGold = (ushort)(startingGold / multiplier);
+			var textBlobs = new Blob[ItemTextPointerCount];
+			for (int i = 0; i < pointers.Count; i++)
+			{
+				textBlobs[i] = ReadUntil(ItemTextPointerBase + pointers[i], 0x00);
+			}
 
-			Put(StartingGoldOffset, BitConverter.GetBytes(startingGold));
+			return textBlobs;
+		}
+
+		public void WriteText(Blob[] textBlobs)
+		{
+			int offset = ItemTextOffset;
+			var pointers = new ushort[textBlobs.Length];
+			for (int i = 0; i < textBlobs.Length; i++)
+			{
+				var blob = Blob.Concat(textBlobs[i], new byte[] { 0x00 });
+				Put(offset, blob);
+
+				pointers[i] = (ushort)(offset - ItemTextPointerBase);
+				offset += blob.Length;
+			}
+
+			Put(ItemTextPointerOffset, Blob.FromUShorts(pointers));
+		}
+
+		public Blob ReadUntil(int offset, byte delimiter)
+		{
+			var bytes = new List<byte>();
+			while (Data[offset] != delimiter && offset < Data.Length)
+			{
+				bytes.Add(Data[offset++]);
+			}
+
+			return bytes.ToArray();
+		}
+
+		private Blob TrimEnd(Blob toTrim)
+		{
+			int i = toTrim.Length;
+			while (i > 0 && toTrim[i - 1] == 0xFF)
+			{
+				i--;
+			}
+
+			return toTrim.SubBlob(0, i);
 		}
 
 		public static string EncodeFlagsText(Flags flags)

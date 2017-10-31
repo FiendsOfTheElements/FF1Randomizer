@@ -12,34 +12,23 @@ namespace FF1Lib
 	{
 		public const int PriceOffset = 0x37C00;
 		public const int PriceSize = 2;
-		public const int PriceCount = 108;
-		public const int MagicPriceOffset = 0x37D60;
+		public const int PriceCount = 240;
 
 		// Scale is the geometric scale factor used with RNG.  Multiplier is where we make everything cheaper
 		// instead of enemies giving more gold, so we don't overflow.
-		public void ScalePrices(double scale, double multiplier, MT19337 rng)
+		public void ScalePrices(double scale, double multiplier, Blob[] text, MT19337 rng)
 		{
-			var prices = Get(PriceOffset, PriceSize * PriceCount).Chunk(PriceSize);
-			foreach (var price in prices)
+			var prices = Get(PriceOffset, PriceSize * PriceCount).ToUShorts();
+			for (int i = 0; i < prices.Length; i++)
 			{
-				var priceValue = BitConverter.ToUInt16(price, 0);
-				priceValue = (ushort)Min(Scale(priceValue / multiplier, scale, 1, rng), 0xFFFF);
-
-				var priceBytes = BitConverter.GetBytes(priceValue);
-				Array.Copy(priceBytes, 0, price, 0, 2);
+				prices[i] = (ushort)Min(Scale(prices[i] / multiplier, scale, 1, rng), 0xFFFF);
 			}
-			Put(PriceOffset, prices.SelectMany(price => price.ToBytes()).ToArray());
+			Put(PriceOffset, Blob.FromUShorts(prices));
 
-			prices = Get(MagicPriceOffset, PriceSize * MagicCount).Chunk(PriceSize);
-			foreach (var price in prices)
+			for (int i = GoldItemOffset; i < GoldItemOffset + GoldItemCount; i++)
 			{
-				var priceValue = BitConverter.ToUInt16(price, 0);
-				priceValue = (ushort)Min(Scale(priceValue / multiplier, scale, 1, rng), 0xFFFF);
-
-				var priceBytes = BitConverter.GetBytes(priceValue);
-				Array.Copy(priceBytes, 0, price, 0, 2);
+				text[i] = FF1Text.TextToBytes(prices[i].ToString() + " G");
 			}
-			Put(MagicPriceOffset, prices.SelectMany(price => price.ToBytes()).ToArray());
 
 			var pointers = Get(ShopPointerOffset, ShopPointerCount * ShopPointerSize).ToUShorts();
 			RepackShops(pointers);
@@ -56,6 +45,12 @@ namespace FF1Lib
 					Put(ShopPointerBase + pointers[i], priceBytes);
 				}
 			}
+
+			var startingGold = BitConverter.ToUInt16(Get(StartingGoldOffset, 2), 0);
+
+			startingGold = (ushort)Min(Scale(startingGold / multiplier, scale, 1, rng), 0xFFFF);
+
+			Put(StartingGoldOffset, BitConverter.GetBytes(startingGold));
 		}
 
 		public void ScaleEnemyStats(double scale, MT19337 rng)
