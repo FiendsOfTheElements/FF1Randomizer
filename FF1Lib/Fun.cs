@@ -24,15 +24,15 @@ namespace FF1Lib
 		    enemyText[32] = FF1Text.TextToBytes("SeaSNEK", useDTE: false); // -1
 		    enemyText[40] = FF1Text.TextToBytes("iMAGE", useDTE: false);
 		    enemyText[56] = FF1Text.TextToBytes("EXPEDE", useDTE: false); // +2
-		    // enemyText[66] = FF1Text.TextToBytes("White D", useDTE: false);
-		    // enemyText[72] = FF1Text.TextToBytes("MtlSLIME", useDTE: false); // +3
+		    enemyText[66] = FF1Text.TextToBytes("White D", useDTE: false);
+		    enemyText[72] = FF1Text.TextToBytes("MtlSLIME", useDTE: false); // +3
 		    if (teamSteak)
 		    {
 			    enemyText[85] = FF1Text.TextToBytes("STEAK", useDTE: false); // +1
 		    }
 			enemyText[92] = FF1Text.TextToBytes("NACHO", useDTE: false); // -1
-		    // enemyText[106] = FF1Text.TextToBytes("Green D", useDTE: false); // +2
-		    // enemyText[111] = FF1Text.TextToBytes("OKAYMAN", useDTE: false); // +1
+		    enemyText[106] = FF1Text.TextToBytes("Green D", useDTE: false); // +2
+		    enemyText[111] = FF1Text.TextToBytes("OKAYMAN", useDTE: false); // +1
 
 		    var enemyTextPart1 = enemyText.Take(2).ToArray();
 		    var enemyTextPart2 = enemyText.Skip(2).ToArray();
