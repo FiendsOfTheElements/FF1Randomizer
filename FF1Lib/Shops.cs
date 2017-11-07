@@ -91,6 +91,7 @@ namespace FF1Lib
 				}
 			}
 
+			Put(ShopPointerOffset, Blob.FromUShorts(pointers));
 			Put(ShopPointerBase + pointers[0], allEntries.ToArray());
 		}
 

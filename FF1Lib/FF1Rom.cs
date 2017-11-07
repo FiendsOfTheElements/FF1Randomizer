@@ -12,7 +12,7 @@ namespace FF1Lib
 	// ReSharper disable once InconsistentNaming
 	public partial class FF1Rom : NesRom
 	{
-		public const string Version = "1.5.0";
+		public const string Version = "1.5.1";
 
 		public const int CopyrightOffset1 = 0x384A8;
 		public const int CopyrightOffset2 = 0x384BA;
@@ -180,7 +180,6 @@ namespace FF1Lib
 			ScalePrices(flags.PriceScaleFactor, flags.ExpMultiplier, itemText, rng);
 
 			WriteText(itemText, ItemTextPointerOffset, ItemTextPointerBase, ItemTextOffset);
-
 
 			if (flags.EnemyScaleFactor > 1)
 			{

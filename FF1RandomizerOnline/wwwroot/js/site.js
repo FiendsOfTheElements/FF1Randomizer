@@ -55,7 +55,8 @@ var checkboxIds = [
 	"Flags_WeaponStats",
 	"Flags_ChanceToRun",
 	"Flags_SpellBugs",
-	"Flags_EnemyStatusAttackBug"
+	"Flags_EnemyStatusAttackBug",
+	"Flags_FunEnemyNames"
 ];
 
 var sliderIds = [
@@ -73,6 +74,7 @@ function setCallbacks() {
 		var checkbox = document.getElementById(checkboxIds[i]);
 		checkbox.onchange = setFlagsString;
 	}
+	document.getElementById("Flags_TeamSteak").onchange = setFlagsString;
 
 	setPercentageCallback("Flags_PriceScaleFactor", "prices-display");
 	setPercentageCallback("Flags_EnemyScaleFactor", "enemy-stats-display");
@@ -136,6 +138,10 @@ function getFlagsString() {
 			checkboxBits |= 1 << i;
 		}
 	}
+	var select = document.getElementById("Flags_TeamSteak");
+	if (select.value === "True") {
+		checkboxBits |= 1 << checkboxIds.length;
+	}
 
 	var flagsString = "";
 	var charBits;
@@ -193,6 +199,12 @@ function setFlags() {
 	for (var i = 0; i < checkboxIds.length; i++) {
 		var checkbox = document.getElementById(checkboxIds[i]);
 		checkbox.checked = (checkboxBits & (1 << i)) !== 0;
+	}
+	var select = document.getElementById("Flags_TeamSteak");
+	if ((checkboxBits & (1 << checkboxIds.length)) !== 0) {
+		select.value = "True";
+	} else {
+		select.value = "False";
 	}
 
 	var slider;
