@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using RomUtilities;
-using static System.Math;
 using System.Collections;
 using System.IO;
 
@@ -13,7 +12,7 @@ namespace FF1Lib
 	// ReSharper disable once InconsistentNaming
 	public partial class FF1Rom : NesRom
 	{
-		public const string Version = "1.4.9";
+		public const string Version = "1.5.0";
 
 		public const int CopyrightOffset1 = 0x384A8;
 		public const int CopyrightOffset2 = 0x384BA;
@@ -27,11 +26,6 @@ namespace FF1Lib
 
 		public const int StartingGoldOffset = 0x301C;
 
-		public const int ItemTextPointerOffset = 0x2B700;
-		public const int ItemTextPointerSize = 2;
-		public const int ItemTextPointerCount = 252;
-		public const int ItemTextPointerBase = 0x20000;
-		public const int ItemTextOffset = 0x2B900;
 		public const int GoldItemOffset = 108; // 108 items before gold chests
 		public const int GoldItemCount = 68;
 
@@ -169,16 +163,24 @@ namespace FF1Lib
 				FixEnemyStatusAttackBug();
 			}
 
-			var text = ReadText();
-			for (int i = 0; i < text.Length; i++)
+			if (flags.FunEnemyNames)
 			{
-				text[i] = TrimEnd(text[i]);
+				FunEnemyNames(flags.TeamSteak);
 			}
 
-			ExpGoldBoost(flags.ExpBonus, flags.ExpMultiplier);
-			ScalePrices(flags.PriceScaleFactor, flags.ExpMultiplier, text, rng);
+			if (flags.TeamSteak)
+			{
+				TeamSteak();
+			}
 
-			WriteText(text);
+			var itemText = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
+			itemText[63] = FF1Text.TextToBytes("Ribbon ", useDTE: false);
+
+			ExpGoldBoost(flags.ExpBonus, flags.ExpMultiplier);
+			ScalePrices(flags.PriceScaleFactor, flags.ExpMultiplier, itemText, rng);
+
+			WriteText(itemText, ItemTextPointerOffset, ItemTextPointerBase, ItemTextOffset);
+
 
 			if (flags.EnemyScaleFactor > 1)
 			{
@@ -195,8 +197,8 @@ namespace FF1Lib
 
 		public void WriteSeedAndFlags(string version, string seed, string flags)
 		{
-			var seedBytes = FF1Text.TextToBytes($"{version}  {seed}");
-			var flagBytes = FF1Text.TextToBytes($"{flags}");
+			var seedBytes = FF1Text.TextToBytes($"{version}  {seed}", useDTE: false);
+			var flagBytes = FF1Text.TextToBytes($"{flags}", useDTE: false);
 			var padding = new byte[15 - flagBytes.Length];
 			for (int i = 0; i < padding.Length; i++)
 			{
@@ -254,60 +256,9 @@ namespace FF1Lib
 			Data[0x3C04B] = firstLevelRequirement;
 		}
 
-		public Blob[] ReadText()
-		{
-			var pointers = Get(ItemTextPointerOffset, ItemTextPointerSize * ItemTextPointerCount).ToUShorts().ToList();
-
-			var textBlobs = new Blob[ItemTextPointerCount];
-			for (int i = 0; i < pointers.Count; i++)
-			{
-				textBlobs[i] = ReadUntil(ItemTextPointerBase + pointers[i], 0x00);
-			}
-
-			return textBlobs;
-		}
-
-		public void WriteText(Blob[] textBlobs)
-		{
-			int offset = ItemTextOffset;
-			var pointers = new ushort[textBlobs.Length];
-			for (int i = 0; i < textBlobs.Length; i++)
-			{
-				var blob = Blob.Concat(textBlobs[i], new byte[] { 0x00 });
-				Put(offset, blob);
-
-				pointers[i] = (ushort)(offset - ItemTextPointerBase);
-				offset += blob.Length;
-			}
-
-			Put(ItemTextPointerOffset, Blob.FromUShorts(pointers));
-		}
-
-		public Blob ReadUntil(int offset, byte delimiter)
-		{
-			var bytes = new List<byte>();
-			while (Data[offset] != delimiter && offset < Data.Length)
-			{
-				bytes.Add(Data[offset++]);
-			}
-
-			return bytes.ToArray();
-		}
-
-		private Blob TrimEnd(Blob toTrim)
-		{
-			int i = toTrim.Length;
-			while (i > 0 && toTrim[i - 1] == 0xFF)
-			{
-				i--;
-			}
-
-			return toTrim.SubBlob(0, i);
-		}
-
 		public static string EncodeFlagsText(Flags flags)
 		{
-			var bits = new BitArray(25);
+			var bits = new BitArray(27);
 
 			bits[0] = flags.Treasures;
 			bits[1] = flags.IncentivizeIceCave;
@@ -337,12 +288,11 @@ namespace FF1Lib
 			bits[23] = flags.SpellBugs;
 			bits[24] = flags.EnemyStatusAttackBug;
 
+			bits[25] = flags.FunEnemyNames;
+			bits[26] = flags.TeamSteak;
+
 			var bytes = new byte[4];
-			// Freaking .NET Core doesn't have BitArray.CopyTo
-			for (int i = 0; i < bits.Length; i++)
-			{
-				bytes[i / 8] |= (byte)((bits[i] ? 1 : 0) << (i % 8));
-			}
+			bits.CopyTo(bytes, 0);
 
 			var text = Convert.ToBase64String(bytes);
 			text = text.TrimEnd('=');
@@ -396,6 +346,9 @@ namespace FF1Lib
 				ChanceToRun = bits[22],
 				SpellBugs = bits[23],
 				EnemyStatusAttackBug = bits[24],
+
+				FunEnemyNames = bits[25],
+				TeamSteak = bits[26],
 
 				PriceScaleFactor = Base64ToSlider(text[6]) / 10.0,
 				EnemyScaleFactor = Base64ToSlider(text[7]) / 10.0,

@@ -80,6 +80,15 @@
 					<CheckBox x:Name="BlackBeltAbsorbCheckBox" IsEnabled="False" Content="Black Belt Absorb" HorizontalAlignment="Left" Margin="10,150,0,0" VerticalAlignment="Top" ToolTip="Black Belt absorb will be calculated correctly after level up." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
 				</Grid>
 			</TabItem>
+			<TabItem Header="Fun %">
+				<Grid>
+					<CheckBox x:Name="FunEnemyNamesCheckBox" IsEnabled="True" IsChecked="True" Content="Fun Enemy Names" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" ToolTip="Replaces enemy names with funny ones." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+					<ComboBox x:Name="TeamTyroComboBox" Width="150" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="265,10,0,0" ToolTip="Save the TYROs, or save the STEAKs?" SelectionChanged="SetFlagsText" SelectedValuePath="Content">
+						<ComboBoxItem>Team TYRO</ComboBoxItem>
+						<ComboBoxItem IsSelected="True">Team STEAK</ComboBoxItem>
+					</ComboBox>
+				</Grid>
+			</TabItem>
 		</TabControl>
 	</Grid>
 </Window>

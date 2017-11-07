@@ -87,7 +87,9 @@ namespace FF1Lib
 			Data[0x33DAA] = 0x04; // Explosion effect count (mixed enemies), default 15
 
 			// Default Response Rate 8 (0-based)
-			Data[0x384CB] = 0x07;
+			Data[0x384CB] = 0x07; // Initialize respondrate to 7
+			Put(0x3A153, Blob.FromHex("4CF0BF")); // Replace reset respond rate with a JMP to...
+			Put(0x3BFF0, Blob.FromHex("A90785FA60")); // Set respondrate to 7
 
 			// Move NPCs out of the way.
 			MoveNpc( 0,  0, 0x11, 0x02, inRoom: false, stationary:  true); // North Coneria Soldier
@@ -96,8 +98,8 @@ namespace FF1Lib
 			MoveNpc( 6, 13, 0x29, 0x1B, inRoom: false, stationary:  true); // Onrac Guy
 			MoveNpc(18,  1, 0x0C, 0x34, inRoom: false, stationary: false); // OoB Bat!
 			MoveNpc(30, 10, 0x09, 0x0B, inRoom:  true, stationary: false); // Earth Cave Bat B3
-			MoveNpc(30,  7, 0x11, 0x0B, inRoom: false, stationary: false); // Earth Cave Bat B3
-			MoveNpc(30,  8, 0x10, 0x0C, inRoom: false, stationary: false); // Earth Cave Bat B3
+			MoveNpc(30,  7, 0x0B, 0x0B, inRoom: false, stationary: false); // Earth Cave Bat B3
+			MoveNpc(30,  8, 0x0A, 0x0C, inRoom: false, stationary: false); // Earth Cave Bat B3
 			MoveNpc(30,  9, 0x09, 0x25, inRoom: false, stationary: false); // Earth Cave Bat B3
 			MoveNpc(32,  1, 0x22, 0x34, inRoom: false, stationary: false); // Earth Cave Bat B5
 		}

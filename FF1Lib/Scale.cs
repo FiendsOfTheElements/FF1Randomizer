@@ -27,7 +27,7 @@ namespace FF1Lib
 
 			for (int i = GoldItemOffset; i < GoldItemOffset + GoldItemCount; i++)
 			{
-				text[i] = FF1Text.TextToBytes(prices[i].ToString() + " G");
+				text[i] = FF1Text.TextToBytes(prices[i].ToString() + "G");
 			}
 
 			var pointers = Get(ShopPointerOffset, ShopPointerCount * ShopPointerSize).ToUShorts();

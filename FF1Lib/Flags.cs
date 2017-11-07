@@ -36,6 +36,9 @@ namespace FF1Lib
 		public bool SpellBugs { get; set; }
 		public bool EnemyStatusAttackBug { get; set; }
 
+		public bool FunEnemyNames { get; set; }
+		public bool TeamSteak { get; set; }
+
 		public double EnemyScaleFactor { get; set; }
 		public double PriceScaleFactor { get; set; }
 		public double ExpMultiplier { get; set; }

@@ -22,6 +22,7 @@
 		<li><a href="#scale" data-toggle="tab">Scale</a></li>
 		<li><a href="#conveniences" data-toggle="tab">Conveniences</a></li>
 		<li><a href="#bug-fixes" data-toggle="tab">Bug Fixes</a></li>
+		<li><a href="#fun" data-toggle="tab">Fun %</a></li>
 	</ul>
 	<div class="tab-content clearfix" style="height: 350px">
 		<div class="section tab-pane active" id="shuffle">
@@ -85,6 +86,19 @@
 				<div class="checkbox-cell"><input type="checkbox" asp-for="Flags.ChanceToRun" /> <label asp-for="Flags.ChanceToRun">Chance to Run</label></div>
 				<div class="checkbox-cell"><input type="checkbox" asp-for="Flags.SpellBugs" /> <label asp-for="Flags.SpellBugs">LOCK, LOK2, HEL2, TMPR, SABR</label></div>
 				<div class="checkbox-cell"><input type="checkbox" asp-for="Flags.EnemyStatusAttackBug" /> <label asp-for="Flags.EnemyStatusAttackBug">Enemy Status Attacks</label></div>
+			</div>
+		</div>
+		<div class="section tab-pane" id="fun">
+			<div class="col-xs-4">
+				<div class="checkbox-cell"><input type="checkbox" asp-for="Flags.FunEnemyNames" /> <label asp-for="Flags.FunEnemyNames">Fun Enemy Names</label></div>
+			</div>
+			<div class="col-xs-4">
+				<div class="checkbox-cell">
+					<select asp-for="Flags.TeamSteak">
+						<option value="False">Team TYRO</option>
+						<option value="True">Team STEAK</option>
+					</select>
+				</div>
 			</div>
 		</div>
 	</div>

@@ -297,6 +297,9 @@ namespace FF1Randomizer
 				SpellBugs = SpellBugsCheckBox.IsChecked == true,
 				EnemyStatusAttackBug = EnemyStatusAttacksBugCheckBox.IsChecked == true,
 
+				FunEnemyNames = FunEnemyNamesCheckBox.IsChecked == true,
+				TeamSteak = TeamTyroComboBox.SelectedValue.ToString() == "Team STEAK",
+
 				PriceScaleFactor = PriceScaleFactorSlider.Value,
 				EnemyScaleFactor = EnemyScaleFactorSlider.Value,
 				ExpMultiplier = ExpMultiplierSlider.Value,
@@ -333,6 +336,9 @@ namespace FF1Randomizer
 			ChanceToRunCheckBox.IsChecked = flags.ChanceToRun;
 			SpellBugsCheckBox.IsChecked = flags.SpellBugs;
 			EnemyStatusAttacksBugCheckBox.IsChecked = flags.EnemyStatusAttackBug;
+
+			FunEnemyNamesCheckBox.IsChecked = flags.FunEnemyNames;
+			TeamTyroComboBox.SelectedValue = flags.TeamSteak ? "Team STEAK" : "Team TYRO";
 
 			PriceScaleFactorSlider.Value = flags.PriceScaleFactor;
 			EnemyScaleFactorSlider.Value = flags.EnemyScaleFactor;

@@ -55,6 +55,9 @@ namespace FF1RandomizerOnline.Controllers
 					SpellBugs = true,
 					EnemyStatusAttackBug = true,
 
+					FunEnemyNames = true,
+					TeamSteak = true,
+
 					PriceScaleFactor = 2.0,
 					EnemyScaleFactor = 2.0,
 					ExpMultiplier = 2.0,

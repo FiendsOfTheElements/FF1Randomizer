@@ -46,14 +46,14 @@ namespace FF1Lib
 			return builder.ToString();
 		}
 
-		public static Blob TextToBytes(string text)
+		public static Blob TextToBytes(string text, bool useDTE = true)
 		{
 			Blob bytes = new byte[text.Length];
 			int i = 0, j = 0;
 			while (i < text.Length - 1)
 			{
 				var twoChars = text.Substring(i, 2);
-				if (BytesByText.ContainsKey(twoChars))
+				if (useDTE && BytesByText.ContainsKey(twoChars))
 				{
 					bytes[j++] = BytesByText[twoChars];
 					i += 2;
