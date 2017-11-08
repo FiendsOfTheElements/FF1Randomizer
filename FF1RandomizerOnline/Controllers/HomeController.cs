@@ -56,6 +56,7 @@ namespace FF1RandomizerOnline.Controllers
 					EnemyStatusAttackBug = true,
 
 					FunEnemyNames = true,
+					PaletteSwap = true,
 					TeamSteak = true,
 
 					PriceScaleFactor = 2.0,

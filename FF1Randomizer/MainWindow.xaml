@@ -83,6 +83,7 @@
 			<TabItem Header="Fun %">
 				<Grid>
 					<CheckBox x:Name="FunEnemyNamesCheckBox" IsEnabled="True" IsChecked="True" Content="Fun Enemy Names" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" ToolTip="Replaces enemy names with funny ones." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+					<CheckBox x:Name="PaletteSwapCheckBox" IsEnabled="True" IsChecked="True" Content="Palette Swap" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top" ToolTip="Shuffles enemy palettes." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
 					<ComboBox x:Name="TeamTyroComboBox" Width="150" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="265,10,0,0" ToolTip="Save the TYROs, or save the STEAKs?" SelectionChanged="SetFlagsText" SelectedValuePath="Content">
 						<ComboBoxItem>Team TYRO</ComboBoxItem>
 						<ComboBoxItem IsSelected="True">Team STEAK</ComboBoxItem>

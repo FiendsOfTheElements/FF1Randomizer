@@ -56,7 +56,8 @@ var checkboxIds = [
 	"Flags_ChanceToRun",
 	"Flags_SpellBugs",
 	"Flags_EnemyStatusAttackBug",
-	"Flags_FunEnemyNames"
+	"Flags_FunEnemyNames",
+	"Flags_PaletteSwap"
 ];
 
 var sliderIds = [

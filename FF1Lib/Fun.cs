@@ -11,6 +11,10 @@ namespace FF1Lib
 	    public const int TyroPaletteOffset = 0x30FC5;
 	    public const int TyroSpriteOffset = 0x20560;
 
+	    public const int PaletteOffset = 0x30F20;
+	    public const int PaletteSize = 4;
+	    public const int PaletteCount = 64;
+
 	    public void FunEnemyNames(bool teamSteak)
 	    {
 		    var enemyText = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
@@ -29,15 +33,26 @@ namespace FF1Lib
 		    if (teamSteak)
 		    {
 			    enemyText[85] = FF1Text.TextToBytes("STEAK", useDTE: false); // +1
+			    enemyText[86] = FF1Text.TextToBytes("T.BONE", useDTE: false); // +1
 		    }
 			enemyText[92] = FF1Text.TextToBytes("NACHO", useDTE: false); // -1
 		    enemyText[106] = FF1Text.TextToBytes("Green D", useDTE: false); // +2
 		    enemyText[111] = FF1Text.TextToBytes("OKAYMAN", useDTE: false); // +1
 
-		    var enemyTextPart1 = enemyText.Take(2).ToArray();
+			// Moving IMP and GrIMP gives me another 10 bytes, for a total of 19 extra bytes, of which I'm using 16.
+			var enemyTextPart1 = enemyText.Take(2).ToArray();
 		    var enemyTextPart2 = enemyText.Skip(2).ToArray();
 		    WriteText(enemyTextPart1, EnemyTextPointerOffset, EnemyTextPointerBase, 0x2CFEC);
 		    WriteText(enemyTextPart2, EnemyTextPointerOffset + 4, EnemyTextPointerBase, EnemyTextOffset);
+	    }
+
+	    public void PaletteSwap(MT19337 rng)
+	    {
+		    var palettes = Get(PaletteOffset, PaletteSize * PaletteCount).Chunk(PaletteSize);
+
+			palettes.Shuffle(rng);
+
+			Put(PaletteOffset, Blob.Concat(palettes));
 	    }
 
 	    public void TeamSteak()

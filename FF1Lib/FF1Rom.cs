@@ -12,7 +12,7 @@ namespace FF1Lib
 	// ReSharper disable once InconsistentNaming
 	public partial class FF1Rom : NesRom
 	{
-		public const string Version = "1.5.2";
+		public const string Version = "1.5.3";
 
 		public const int CopyrightOffset1 = 0x384A8;
 		public const int CopyrightOffset2 = 0x384BA;
@@ -168,13 +168,8 @@ namespace FF1Lib
 				FunEnemyNames(flags.TeamSteak);
 			}
 
-			if (flags.TeamSteak)
-			{
-				TeamSteak();
-			}
-
 			var itemText = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
-			itemText[63] = FF1Text.TextToBytes("Ribbon ", useDTE: false);
+			itemText[99] = FF1Text.TextToBytes("Ribbon ", useDTE: false);
 
 			ExpGoldBoost(flags.ExpBonus, flags.ExpMultiplier);
 			ScalePrices(flags.PriceScaleFactor, flags.ExpMultiplier, itemText, rng);
@@ -184,6 +179,17 @@ namespace FF1Lib
 			if (flags.EnemyScaleFactor > 1)
 			{
 				ScaleEnemyStats(flags.EnemyScaleFactor, rng);
+			}
+
+			// We have to do "fun" stuff last because it alters the RNG state.
+			if (flags.PaletteSwap)
+			{
+				PaletteSwap(rng);
+			}
+
+			if (flags.TeamSteak)
+			{
+				TeamSteak();
 			}
 
 			WriteSeedAndFlags(Version, seed.ToHex(), EncodeFlagsText(flags));
@@ -257,7 +263,7 @@ namespace FF1Lib
 
 		public static string EncodeFlagsText(Flags flags)
 		{
-			var bits = new BitArray(27);
+			var bits = new BitArray(28);
 
 			bits[0] = flags.Treasures;
 			bits[1] = flags.IncentivizeIceCave;
@@ -288,7 +294,8 @@ namespace FF1Lib
 			bits[24] = flags.EnemyStatusAttackBug;
 
 			bits[25] = flags.FunEnemyNames;
-			bits[26] = flags.TeamSteak;
+			bits[26] = flags.PaletteSwap;
+			bits[27] = flags.TeamSteak;
 
 			var bytes = new byte[4];
 			bits.CopyTo(bytes, 0);
@@ -347,7 +354,8 @@ namespace FF1Lib
 				EnemyStatusAttackBug = bits[24],
 
 				FunEnemyNames = bits[25],
-				TeamSteak = bits[26],
+				PaletteSwap = bits[26],
+				TeamSteak = bits[27],
 
 				PriceScaleFactor = Base64ToSlider(text[6]) / 10.0,
 				EnemyScaleFactor = Base64ToSlider(text[7]) / 10.0,
