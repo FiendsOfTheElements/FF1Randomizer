@@ -12,7 +12,12 @@ namespace FF1Lib
 
         public void Put(ItemLocation itemToPut)
         {
-            Put(itemToPut.Address, new byte[] { (byte)(itemToPut.Item + ((itemToPut.IsTreasure || itemToPut.UpdatesVariable) ? 0 : Variables.ItemsBaseForNPC)) });
+            var npcItemOffset = ((!itemToPut.IsTreasure &&
+                                  !itemToPut.UpdatesVariable &&
+                                  itemToPut.Address != CaravanItemShop1.Address)
+                                 ? Variables.ItemsBaseForNPC
+                                 : 0);
+            Put(itemToPut.Address, new byte[] { (byte)(itemToPut.Item + npcItemOffset) });
         }
 
         public void RandomizeTreasures(MT19337 rng, MapDetails mapDetails, Flags flags)
