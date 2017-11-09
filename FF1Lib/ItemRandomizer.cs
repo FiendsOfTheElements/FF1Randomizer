@@ -124,7 +124,7 @@ namespace FF1Lib
                 {
                     var result = Items.AllQuestItems.Concat(incentiveItems).ToList();
                     foreach (var item in placedItems()) result.Remove(item);
-                    return result;
+                    return result.Distinct().ToList();
                 });
             var variableProgressionPool =
                 new Func<List<byte>>(() =>
