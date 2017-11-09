@@ -84,7 +84,7 @@ namespace FF1Lib
             {MapLocations.TitansTunnelA, CanalOrAirship},
             {MapLocations.TitansTunnelB, NormalTitanFedOrAirship},
             {MapLocations.SardasCave, NormalTitanFedOrAirship},
-            {MapLocations.CresentLake, x => ShipAndCanoe(x) || Canal(x)},
+            {MapLocations.CresentLake, x => Canal(x)}, // || ShipAndCanoe(x)}, CanoeSage was getting Canal too often
             {MapLocations.GurguVolcano, ShipAndCanoe},
             {MapLocations.IceCave, x => BridgeOrShip(x) && Canoe(x)},
             {MapLocations.CastleOrdeals, x => Airship(x) || (Canal(x) && Canoe(x))},
