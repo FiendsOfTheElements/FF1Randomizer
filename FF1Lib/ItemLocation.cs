@@ -19,6 +19,9 @@ namespace FF1Lib
         public readonly bool RequiresBlackOrb;
         public readonly bool RequiresLute;
         public readonly bool IsUnused;
+        public string SpoilerText =>
+        $"{Name}{string.Join("", Enumerable.Repeat(" ", Math.Max(1, 30 - Name.Length)).ToList())}" +
+        $"\t{(UpdatesVariable ? $"Visibility {Item}" : Items.TextLookup[Item])}";
         public ItemLocation(int address, string name, MapLocations mapLocation, byte item,
                             bool isTreasure = true, bool updatesVariable = false, bool requiresKey = false,
                             bool requiresRod = false, bool requiresOxyale = false,
