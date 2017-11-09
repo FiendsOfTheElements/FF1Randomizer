@@ -114,7 +114,6 @@ namespace FF1Lib
                                .Where(x => mapDetails.RequiredMapChanges.All(y => mapChangesAcquired.Contains(y)) ||
                                       (x == Items.Canoe && (mapChangesAcquired.Contains(MapChanges.Bridge) || mapChangesAcquired.Contains(MapChanges.Ship))) ||
                                       (x == Items.Floater && mapLocationsAvailable().Contains(MapLocations.AirshipLocation)) ||
-                                      (x == Items.Tnt && mapLocationsAvailable().Contains(MapLocations.CanalLocation)) ||
                                      IsItemProgression(mapLocationsAvailable(), placedItems(), x))
                                .ToList();
                     return result;
