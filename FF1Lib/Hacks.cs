@@ -72,6 +72,23 @@ namespace FF1Lib
         {
             var canalVisibilityAddress = newItemLocations.Single(x => x.UpdatesVariable && Get(x.Address, 1).ToBytes()[0] == Variables.CanalVis).Address;
             Put(canalVisibilityAddress - 1, new byte[] { 206 }); // Wherever we placed the canal, make sure to decrement the value instead of increment
+            // And, flip the check for already having given the item BNE = 208, BEQ = 240
+            var normals = new[] { 
+                ItemLocations.KingConeria.Address, ItemLocations.ElfPrince.Address, ItemLocations.CubeBot.Address,
+                ItemLocations.Princess.Address, ItemLocations.Fairy.Address, ItemLocations.Lefein.Address
+            };
+            if (normals.Contains(canalVisibilityAddress)) {
+                Put(canalVisibilityAddress - 6, new byte[] { 208 });
+                return;
+            }
+            if (canalVisibilityAddress == ItemLocations.Matoya.Address)
+                Put(canalVisibilityAddress - 21, new byte[] { 208 });
+            if (canalVisibilityAddress == ItemLocations.CanoeSage.Address)
+                Put(canalVisibilityAddress - 8, new byte[] { 240 });
+            if (canalVisibilityAddress == ItemLocations.Bikke.Address)
+                Put(canalVisibilityAddress - 3, new byte[] { 240 });
+            if (canalVisibilityAddress == ItemLocations.Sarda.Address)
+                Put(canalVisibilityAddress - 10, new byte[] { 240 });
         }
 
         // Not strictly required for npc quest item randomizing, but makes adamant much less sucky
