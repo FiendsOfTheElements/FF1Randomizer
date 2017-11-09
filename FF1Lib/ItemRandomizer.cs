@@ -24,6 +24,11 @@ namespace FF1Lib
             var incentiveLocations = new List<ItemLocation>();
             if (flags.IncentivizeIceCave) incentiveLocations.Add(IceCaveMajor);
             if (flags.IncentivizeOrdeals) incentiveLocations.Add(OrdealsMajor);
+            //if (flags.AdamantMasamune)
+            {
+                treasurePool.Remove(Items.Masamune);
+                treasurePool.Add(Items.Xcalber);
+            }
             var incentiveItems = treasurePool.Where(x => new List<byte> { Items.Masamune, Items.Ribbon, Items.Xcalber }.Contains(x)).ToList();
             var newItemLocations = RandomizeTreasures(rng, mapDetails, treasurePool, incentiveLocations, incentiveItems);
             FixCanal(newItemLocations);

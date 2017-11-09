@@ -74,6 +74,11 @@ namespace FF1Lib
             Put(canalVisibilityAddress - 1, new byte[] { 206 }); // Wherever we placed the canal, make sure to decrement the value instead of increment
         }
 
+        // Not strictly required for npc quest item randomizing, but makes adamant much less sucky
+        public void AdamantMasamune()
+        {
+            Put(ItemLocations.SmithWeapon.Address, new byte[] { 40 });
+        }
         // Not required for npc quest item randomizing, but it's nice to have
         // The king will no longer require the princess rescued to build the bridge (or give an item)
         // And, more importantly the cutscene on bridge will be skipped

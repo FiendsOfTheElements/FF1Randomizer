@@ -64,6 +64,11 @@ namespace FF1Lib
 				FixSpellBugs();
 			}
 
+            //if (flags.AdamantMasamune)
+            {
+                AdamantMasamune();
+            }
+
 			if (flags.Treasures)
 			{
 				ShuffleTreasures(rng, flags.EarlyCanoe, flags.EarlyOrdeals, flags.IncentivizeIceCave, flags.IncentivizeOrdeals);
