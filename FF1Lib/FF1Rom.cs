@@ -50,6 +50,12 @@ namespace FF1Lib
 		{
 			var rng = new MT19337(BitConverter.ToUInt32(seed, 0));
 
+            // If we change the map, this is the information needed to randomize quest items
+            var mapDetails = new MapDetails(
+                new List<byte> { Items.Lute, Items.Key, Items.Oxyale, Items.Cube, Items.Chime, Items.Rod },
+                new List<MapLocations> { MapLocations.TempleOfFiends, MapLocations.Onrac, MapLocations.MirageTower, MapLocations.EarthCave, MapLocations.GurguVolcano },
+                MapDetails.DefaultMapRequirements);
+
 			EasterEggs();
 
 			// This has to be done before we shuffle spell levels.
@@ -62,6 +68,11 @@ namespace FF1Lib
 			{
 				ShuffleTreasures(rng, flags.EarlyCanoe, flags.EarlyOrdeals, flags.IncentivizeIceCave, flags.IncentivizeOrdeals);
 			}
+
+            //if (flags.NPCs) 
+            {
+                RandomizeTreasures(rng, mapDetails, flags);
+            }
 
 			if (flags.Shops)
 			{
