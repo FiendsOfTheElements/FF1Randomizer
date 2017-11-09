@@ -9,9 +9,13 @@ namespace FF1Lib
 {
 	public partial class FF1Rom : NesRom
 	{
-		public const int Nop = 0xEA;
+        public const int Nop = 0xEA;
+        public const int KingRoutineStartOffset = 0x39297;
+        public const int SardaObjectVisibilityCheck = 0x393EA; // Normally checks vampire is visible, but could check any other object ID instead at this location
 		public const int SardaOffset = 0x393E9;
-		public const int SardaSize = 7;
+        public const int SardaSize = 7;
+        public const int CanoeMovementCheck = 0x3C5ED;
+        public const int CanoeSageGiveCanoe = 0x39488;
 		public const int CanoeSageOffset = 0x39482;
 		public const int CanoeSageSize = 5;
 		public const int PartyShuffleOffset = 0x312E0;
@@ -19,6 +23,56 @@ namespace FF1Lib
 		public const int MapSpriteOffset = 0x3400;
 		public const int MapSpriteSize = 3;
 		public const int MapSpriteCount = 16;
+
+        public const int CaravanFairyCheck = 0x3C4E5;
+        public const int NerrickOffset = 0x39297 + 198; // Nerrick can give an item in exchange for Tnt instead of the canal
+        //public const int BridgeSceneCheck = 0x3C2B7; // putting new byte[]{0xA9, 0x01, Nop} here will also skip the bridge scene, without the king building early
+
+        // Required for npc quest item randomizing
+        public void PermanentCaravan()
+        {
+            Put(CaravanFairyCheck, new byte[] { Nop, Nop, Nop, Nop, Nop, Nop, Nop });
+        }
+        // Required for npc quest item randomizing so that the canoe can be in a chest
+        public void CheckCanoeItemInsteadOfEventVar()
+        {
+            Put(CanoeMovementCheck, new byte[] { Items.Canoe + Variables.ItemsBaseForNPC });
+            Put(CanoeSageGiveCanoe, new byte[] { Items.Canoe + Variables.ItemsBaseForNPC });
+        }
+
+        // Required for npc quest item randomizing
+        private void MirrorNPCItemChecksFromTargetItem()
+        {
+            const int TalkRoutineBase = 0x39297;
+            Put(TalkRoutineBase + 11, Get(TalkRoutineBase + 21, 1)); // King
+            Put(TalkRoutineBase + 76, Get(TalkRoutineBase + 81, 1)); // Bikke
+            Put(TalkRoutineBase + 117, Get(TalkRoutineBase + 125, 1)); // Elf Doc Take
+            Put(TalkRoutineBase + 146, Get(TalkRoutineBase + 154, 1)); // Prince
+            Put(TalkRoutineBase + 188, Get(TalkRoutineBase + 196, 1)); // Nerrick Take
+            Put(TalkRoutineBase + 224, Get(TalkRoutineBase + 247, 1)); // Smith Take
+            Put(TalkRoutineBase + 258, Get(TalkRoutineBase + 281, 1)); // Matoya
+            Put(TalkRoutineBase + 266, Get(TalkRoutineBase + 284, 1)); // Matoya Take
+            Put(TalkRoutineBase + 302, Get(TalkRoutineBase + 310, 1)); // Unne Take
+            Put(TalkRoutineBase + 334, Get(TalkRoutineBase + 346, 1)); // Sarda
+            Put(TalkRoutineBase + 367, Get(TalkRoutineBase + 375, 1)); // Bahamut Take
+            Put(TalkRoutineBase + 418, Get(TalkRoutineBase + 426, 1)); // Robot
+            Put(TalkRoutineBase + 434, Get(TalkRoutineBase + 442, 1)); // Princess
+            Put(TalkRoutineBase + 450, Get(TalkRoutineBase + 458, 1)); // Fairy
+            Put(TalkRoutineBase + 466, Get(TalkRoutineBase + 474, 1)); // Titan Take
+            Put(TalkRoutineBase + 487, Get(TalkRoutineBase + 497, 1)); // Canoe Sage
+            Put(TalkRoutineBase + 776, Get(TalkRoutineBase + 784, 1)); // Lefein
+        }
+        // Required for npc quest item randomizing
+        public void NormalizeNerrick()
+        {
+            Put(NerrickOffset, new byte[] { Nop, Nop, 238 }); // Normally Nerrick sets a value to 0 instead we increment like the others
+        }
+        // Required for npc quest item randomizing along with NormalizeNerrick
+        public void FixCanal(IReadOnlyCollection<ItemLocation> newItemLocations)
+        {
+            var canalVisibilityAddress = newItemLocations.Single(x => x.UpdatesVariable && Get(x.Address, 1).ToBytes()[0] == Variables.CanalVis).Address;
+            Put(canalVisibilityAddress - 1, new byte[] { 206 }); // Wherever we placed the canal, make sure to decrement the value instead of increment
+        }
 
 		public void EnableEarlyRod()
 		{
