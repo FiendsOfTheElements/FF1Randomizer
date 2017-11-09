@@ -74,6 +74,14 @@ namespace FF1Lib
             Put(canalVisibilityAddress - 1, new byte[] { 206 }); // Wherever we placed the canal, make sure to decrement the value instead of increment
         }
 
+        // Not required for npc quest item randomizing, but it's nice to have
+        // The king will no longer require the princess rescued to build the bridge (or give an item)
+        // And, more importantly the cutscene on bridge will be skipped
+        public void FastBridge()
+        {
+            Put(KingRoutineStartOffset + 5, new byte[] { 0xA9, 0x80, 0x8D, Variables.BridgeScene }); // 169, 128, 141
+        }
+
 		public void EnableEarlyRod()
 		{
 			var nops = new byte[SardaSize];
@@ -83,6 +91,8 @@ namespace FF1Lib
 			}
 
 			Put(SardaOffset, nops);
+            // Alternatively, this will check if the titan was fed instead of the vampire dead (which makes more sense)
+            //Put(SardaObjectVisibilityCheck, new byte[] { ObjectIds.Titan });
 		}
 
 		public void EnableEarlyCanoe()

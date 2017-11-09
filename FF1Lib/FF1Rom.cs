@@ -129,6 +129,11 @@ namespace FF1Lib
 				EnableEarlyCanoe();
 			}
 
+            //if (flags.FastBridge)
+            {
+                FastBridge();
+            }
+
 			if (flags.NoPartyShuffle)
 			{
 				DisablePartyShuffle();
