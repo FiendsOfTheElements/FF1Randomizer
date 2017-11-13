@@ -98,8 +98,8 @@ namespace FF1Lib
 			MoveNpc( 6, 13, 0x29, 0x1B, inRoom: false, stationary:  true); // Onrac Guy
 			MoveNpc(18,  1, 0x0C, 0x34, inRoom: false, stationary: false); // OoB Bat!
 			MoveNpc(30, 10, 0x09, 0x0B, inRoom:  true, stationary: false); // Earth Cave Bat B3
-			MoveNpc(30,  7, 0x0B, 0x0B, inRoom: false, stationary: false); // Earth Cave Bat B3
-			MoveNpc(30,  8, 0x0A, 0x0C, inRoom: false, stationary: false); // Earth Cave Bat B3
+			MoveNpc(30,  7, 0x0B, 0x0B, inRoom:  true, stationary: false); // Earth Cave Bat B3
+			MoveNpc(30,  8, 0x0A, 0x0C, inRoom:  true, stationary: false); // Earth Cave Bat B3
 			MoveNpc(30,  9, 0x09, 0x25, inRoom: false, stationary: false); // Earth Cave Bat B3
 			MoveNpc(32,  1, 0x22, 0x34, inRoom: false, stationary: false); // Earth Cave Bat B5
 		}

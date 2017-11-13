@@ -88,6 +88,11 @@
 						<ComboBoxItem>Team TYRO</ComboBoxItem>
 						<ComboBoxItem IsSelected="True">Team STEAK</ComboBoxItem>
 					</ComboBox>
+					<ComboBox x:Name="MusicComboBox" Width="150" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="265,37,0,0" ToolTip="How much to shuffle the game's music." SelectionChanged="SetFlagsText" SelectedValuePath="Content">
+						<ComboBoxItem IsSelected="True">No Music Shuffle</ComboBoxItem>
+						<ComboBoxItem>Standard Music Shuffle</ComboBoxItem>
+						<ComboBoxItem>Nonsensical Music Shuffle</ComboBoxItem>
+					</ComboBox>
 				</Grid>
 			</TabItem>
 		</TabControl>

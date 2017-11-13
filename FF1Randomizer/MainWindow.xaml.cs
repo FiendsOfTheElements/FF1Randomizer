@@ -300,6 +300,10 @@ namespace FF1Randomizer
 				FunEnemyNames = FunEnemyNamesCheckBox.IsChecked == true,
 				PaletteSwap = PaletteSwapCheckBox.IsChecked == true,
 				TeamSteak = TeamTyroComboBox.SelectedValue.ToString() == "Team STEAK",
+				Music =
+					MusicComboBox.SelectedValue.ToString() == "Standard Music Shuffle" ? MusicShuffle.Standard :
+					MusicComboBox.SelectedValue.ToString() == "Nonsensical Music Shuffle" ? MusicShuffle.Nonsensical :
+					MusicShuffle.None,
 
 				PriceScaleFactor = PriceScaleFactorSlider.Value,
 				EnemyScaleFactor = EnemyScaleFactorSlider.Value,
@@ -341,6 +345,10 @@ namespace FF1Randomizer
 			FunEnemyNamesCheckBox.IsChecked = flags.FunEnemyNames;
 			PaletteSwapCheckBox.IsChecked = flags.PaletteSwap;
 			TeamTyroComboBox.SelectedValue = flags.TeamSteak ? "Team STEAK" : "Team TYRO";
+			MusicComboBox.SelectedValue =
+				flags.Music == MusicShuffle.Standard ? "Standard Music Shuffle" :
+				flags.Music == MusicShuffle.Nonsensical ? "Nonsensical Music Shuffle" :
+				"No Music Shuffle";
 
 			PriceScaleFactorSlider.Value = flags.PriceScaleFactor;
 			EnemyScaleFactorSlider.Value = flags.EnemyScaleFactor;

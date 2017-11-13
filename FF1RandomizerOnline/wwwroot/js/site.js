@@ -76,6 +76,7 @@ function setCallbacks() {
 		checkbox.onchange = setFlagsString;
 	}
 	document.getElementById("Flags_TeamSteak").onchange = setFlagsString;
+	document.getElementById("Flags_Music").onchange = setFlagsString;
 
 	setPercentageCallback("Flags_PriceScaleFactor", "prices-display");
 	setPercentageCallback("Flags_EnemyScaleFactor", "enemy-stats-display");
@@ -143,6 +144,12 @@ function getFlagsString() {
 	if (select.value === "True") {
 		checkboxBits |= 1 << checkboxIds.length;
 	}
+	select = document.getElementById("Flags_Music");
+	if (select.value === "Standard") {
+		checkboxBits |= 1 << (checkboxIds.length + 1);
+	} else if (select.value === "Nonsensical") {
+		checkboxBits |= 1 << (checkboxIds.length + 2);
+	}
 
 	var flagsString = "";
 	var charBits;
@@ -206,6 +213,14 @@ function setFlags() {
 		select.value = "True";
 	} else {
 		select.value = "False";
+	}
+	select = document.getElementById("Flags_Music");
+	if ((checkboxBits & (1 << (checkboxIds.length + 1))) !== 0) {
+		select.value = "Standard";
+	} else if ((checkboxBits & (1 << (checkboxIds.length + 2))) !== 0) {
+		select.value = "Nonsensical";
+	} else {
+		select.value = "None";
 	}
 
 	var slider;
