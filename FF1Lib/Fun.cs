@@ -114,7 +114,7 @@ namespace FF1Lib
 					//Shop
 					Data[0x3A351] = townTracks[2];
 					Data[0x3A56E] = townTracks[2];
-					Data[0x3A56E] = townTracks[2];
+					Data[0x3A597] = townTracks[2];
 
 					//Menu
 					Data[0x3ADB4] = townTracks[3];
@@ -169,7 +169,7 @@ namespace FF1Lib
 					//Shop
 					Data[0x3A351] = tracks[12];
 					Data[0x3A56E] = tracks[12];
-					Data[0x3A56E] = tracks[12];
+					Data[0x3A597] = tracks[12];
 
 					//Menu
 					Data[0x3ADB4] = tracks[13];
