@@ -186,6 +186,16 @@ namespace FF1Lib
 				ScaleEnemyStats(flags.EnemyScaleFactor, rng);
 			}
 
+            // This is a fun setting, but could be used in a race
+            if (flags.PartyRoulette)
+            {
+                PartyRoulette();
+            }
+
+            // This can be called with every seed, with zero forced it 
+            // just shuffles the default party without forcing any selections
+            PartyRandomize(rng, flags.MinimumForcedParty, flags.MaximumForcedParty);
+
 			// We have to do "fun" stuff last because it alters the RNG state.
 			if (flags.PaletteSwap)
 			{

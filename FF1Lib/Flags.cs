@@ -26,6 +26,7 @@ namespace FF1Lib
 		public bool EarlyOrdeals { get; set; }
 		public bool EarlyBridge { get; set; }
 		public bool NoPartyShuffle { get; set; }
+        public bool PartyRoulette { get; set; }
 		public bool SpeedHacks { get; set; }
 		public bool IdentifyTreasures { get; set; }
 		public bool Dash { get; set; }
@@ -35,7 +36,7 @@ namespace FF1Lib
 		public bool WeaponStats { get; set; }
 		public bool ChanceToRun { get; set; }
 		public bool SpellBugs { get; set; }
-		public bool EnemyStatusAttackBug { get; set; }
+        public bool EnemyStatusAttackBug { get; set; }
 
 		public bool FunEnemyNames { get; set; }
 		public bool PaletteSwap { get; set; }
@@ -43,6 +44,8 @@ namespace FF1Lib
 		public bool ShuffleLeader { get; set; }
 		public MusicShuffle Music { get; set; }
 
+        public int MinimumForcedParty { get; set; }
+        public int MaximumForcedParty { get; set; }
 		public double EnemyScaleFactor { get; set; }
 		public double PriceScaleFactor { get; set; }
 		public double ExpMultiplier { get; set; }
