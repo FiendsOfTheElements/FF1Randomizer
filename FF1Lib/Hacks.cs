@@ -45,11 +45,11 @@ namespace FF1Lib
         public void PartyRoulette()
         {
             // First, disable the 'B' button to prevent going back after roulette spin
-            Data[0x39C54 + 62] = 0xF7; // F7 here is really a relative jump value of -9
-            Data[0x39C54 + 71] = 0xF7;
-            Data[0x39C54 + 80] = 0xF7;
-            Data[0x39C54 + 105] = 0xEA;
-            Data[0x39C54 + 106] = 0xEA;
+            Data[0x39C92] = 0xF7; // F7 here is really a relative jump value of -9
+            Data[0x39C9B] = 0xF7;
+            Data[0x39CA4] = 0xF7;
+            Data[0x39CBD] = 0xEA;
+            Data[0x39CBE] = 0xEA;
 
             // Then skip the check for directionaly input and just constantly cycle class selection 0 through 5
             Put(0x39D25, Enumerable.Repeat((byte)0xEA, 14).ToArray());
