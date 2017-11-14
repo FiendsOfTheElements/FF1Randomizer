@@ -8,9 +8,9 @@ namespace Sandbox
     {
         static void Main(string[] args)
         {
-			var rom = new FF1MMC5Rom("ff1.nes");
-			rom.UpgradeToMMC5();
-			rom.Save("ff1mmc5.nes");
+			var rom = new FF1MapperRom("ff1.nes");
+			rom.UpgradeToMMC3();
+			rom.Save("ff1mmc3.nes");
 
 			Console.WriteLine("Done.");
 	        Console.ReadKey();
