@@ -55,7 +55,7 @@ namespace FF1Lib
             Put(0x39D25, Enumerable.Repeat((byte)0xEA, 14).ToArray());
         }
 
-        public void PartyRandomize(MT19337 rng, byte minimumForced, byte maximumForced)
+        public void PartyRandomize(MT19337 rng, int minimumForced, int maximumForced)
         {
             // Always randomize all 4 default members (but don't force if not needed)
             Data[0x3A0AE] = (byte)rng.Between(0, 5);
@@ -63,8 +63,10 @@ namespace FF1Lib
             Data[0x3A0CE] = (byte)rng.Between(0, 5);
             Data[0x3A0DE] = (byte)rng.Between(0, 5);
 
-            if (maximumForced <= 0 || minimumForced > 4) return;
-            var numberForced = maximumForced <= minimumForced ? minimumForced : rng.Between(minimumForced, maximumForced);
+            var numberForced = rng.Between(minimumForced, maximumForced);
+            if (maximumForced <= 0) return;
+            if (numberForced > maximumForced) numberForced = maximumForced;
+            if (numberForced < minimumForced) numberForced = minimumForced;
 
             Data[0x39D35] = 0xE0;
             Data[0x39D36] = (byte)(numberForced * 0x10);
