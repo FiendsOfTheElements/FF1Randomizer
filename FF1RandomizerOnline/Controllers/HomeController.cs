@@ -43,7 +43,8 @@ namespace FF1RandomizerOnline.Controllers
 					EarlyRod = true,
 					EarlyCanoe = true,
 					EarlyOrdeals = true,
-					EarlyBridge = true,
+                    EarlyBridge = true,
+                    PartyRoulette = false,
 					NoPartyShuffle = true,
 					SpeedHacks = true,
 					IdentifyTreasures = true,
@@ -62,6 +63,8 @@ namespace FF1RandomizerOnline.Controllers
 					ShuffleLeader = true,
 					Music = MusicShuffle.None,
 
+                    MinimumForcedParty = 0,
+                    MaximumForcedParty = 0,
 					PriceScaleFactor = 2.0,
 					EnemyScaleFactor = 2.0,
 					ExpMultiplier = 2.0,
