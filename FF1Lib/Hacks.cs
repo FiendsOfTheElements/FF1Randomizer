@@ -42,6 +42,46 @@ namespace FF1Lib
 			Put(CanoeSageOffset, nops);
 		}
 
+        public void PartyRoulette()
+        {
+            // First, disable the 'B' button to prevent going back after roulette spin
+            Data[0x39C54 + 62] = 0xF7; // F7 here is really a relative jump value of -9
+            Data[0x39C54 + 71] = 0xF7;
+            Data[0x39C54 + 80] = 0xF7;
+            Data[0x39C54 + 105] = 0xEA;
+            Data[0x39C54 + 106] = 0xEA;
+
+            // Then skip the check for directionaly input and just constantly cycle class selection 0 through 5
+            Put(0x39D25, Enumerable.Repeat((byte)0xEA, 14).ToArray());
+        }
+
+        public void PartyRandomize(MT19337 rng, byte minimumForced, byte maximumForced)
+        {
+            // Always randomize all 4 default members (but don't force if not needed)
+            Data[0x3A0AE] = (byte)rng.Between(0, 5);
+            Data[0x3A0BE] = (byte)rng.Between(0, 5);
+            Data[0x3A0CE] = (byte)rng.Between(0, 5);
+            Data[0x3A0DE] = (byte)rng.Between(0, 5);
+
+            if (maximumForced <= 0 || minimumForced > 4) return;
+            var numberForced = maximumForced <= minimumForced ? minimumForced : rng.Between(minimumForced, maximumForced);
+
+            Data[0x39D35] = 0xE0;
+            Data[0x39D36] = (byte)(numberForced * 0x10);
+            Put(0x39D37, Blob.FromHex("30DFFE0003BD0003E906D0039D0003A9018537"));
+            /* Starting at 0x39D35 (which is just after LDX char_index)
+             * CPX ____(numberForced * 0x10)____
+             * BMI @MainLoop
+             * INC ptygen_class, X
+             * LDA ptygen_class, X
+             * SBC #$06
+             * BNE :+
+             *   STA ptygen_class, X
+             * : LDA #$01
+             *   STA menustall
+             */
+        }
+
 		public void DisablePartyShuffle()
 		{
 			var nops = new byte[PartyShuffleSize];
