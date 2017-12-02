@@ -74,6 +74,13 @@ namespace FF1Lib
 				"00000000000000000000000000000000" + "01010101010000000000000000000000" + "fb9b9b9b98ff7f006767676767000000" + "6060606060c080008080808080000000" + "00000000000000000000000000000000" + "00000000000000000000000000000000"));
 	    }
 
+		public void ShuffleLeader(MT19337 rng)
+		{
+			byte leader = (byte)(rng.Between(0, 3) << 6);
+			Data[0x3D8BC] = leader;
+			Data[0x3E933] = leader;
+		}
+
 		public void ShuffleMusic(MusicShuffle mode, MT19337 rng)
 		{
 			switch (mode)
