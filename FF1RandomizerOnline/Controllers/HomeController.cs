@@ -43,6 +43,7 @@ namespace FF1RandomizerOnline.Controllers
 					EarlyRod = true,
 					EarlyCanoe = true,
 					EarlyOrdeals = true,
+					EarlyBridge = true,
 					NoPartyShuffle = true,
 					SpeedHacks = true,
 					IdentifyTreasures = true,

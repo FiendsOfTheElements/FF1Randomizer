@@ -118,6 +118,11 @@ namespace FF1Lib
 				EnableEarlyCanoe();
 			}
 
+			if (flags.EarlyBridge)
+			{
+				EnableEarlyBridge();
+			}
+
 			if (flags.NoPartyShuffle)
 			{
 				DisablePartyShuffle();
@@ -273,42 +278,46 @@ namespace FF1Lib
 
 		public static string EncodeFlagsText(Flags flags)
 		{
-			var bits = new BitArray(31);
+			var bits = new BitArray(32);
+			int i = 0;
 
-			bits[0] = flags.Treasures;
-			bits[1] = flags.IncentivizeIceCave;
-			bits[2] = flags.IncentivizeOrdeals;
-			bits[3] = flags.Shops;
-			bits[4] = flags.MagicShops;
-			bits[5] = flags.MagicLevels;
-			bits[6] = flags.MagicPermissions;
-			bits[7] = flags.Rng;
-			bits[8] = flags.EnemyScripts;
-			bits[9] = flags.EnemySkillsSpells;
-			bits[10] = flags.EnemyStatusAttacks;
-			bits[11] = flags.Ordeals;
+			bits[i++] = flags.Treasures;
+			bits[i++] = flags.IncentivizeIceCave;
+			bits[i++] = flags.IncentivizeOrdeals;
+			bits[i++] = flags.Shops;
+			bits[i++] = flags.MagicShops;
+			bits[i++] = flags.MagicLevels;
+			bits[i++] = flags.MagicPermissions;
+			bits[i++] = flags.Rng;
+			bits[i++] = flags.EnemyScripts;
+			bits[i++] = flags.EnemySkillsSpells;
+			bits[i++] = flags.EnemyStatusAttacks;
+			bits[i++] = flags.Ordeals;
 
-			bits[12] = flags.EarlyRod;
-			bits[13] = flags.EarlyCanoe;
-			bits[14] = flags.EarlyOrdeals;
-			bits[15] = flags.NoPartyShuffle;
-			bits[16] = flags.SpeedHacks;
-			bits[17] = flags.IdentifyTreasures;
-			bits[18] = flags.Dash;
-			bits[19] = flags.BuyTen;
+			bits[i++] = flags.EarlyRod;
+			bits[i++] = flags.EarlyCanoe;
+			bits[i++] = flags.EarlyOrdeals;
+			bits[i++] = flags.EarlyBridge;
+			bits[i++] = flags.NoPartyShuffle;
+			bits[i++] = flags.SpeedHacks;
+			bits[i++] = flags.IdentifyTreasures;
+			bits[i++] = flags.Dash;
+			bits[i++] = flags.BuyTen;
 
-			bits[20] = flags.HouseMPRestoration;
-			bits[21] = flags.WeaponStats;
-			bits[22] = flags.ChanceToRun;
-			bits[23] = flags.SpellBugs;
-			bits[24] = flags.EnemyStatusAttackBug;
+			bits[i++] = flags.HouseMPRestoration;
+			bits[i++] = flags.WeaponStats;
+			bits[i++] = flags.ChanceToRun;
+			bits[i++] = flags.SpellBugs;
+			bits[i++] = flags.EnemyStatusAttackBug;
 
-			bits[25] = flags.FunEnemyNames;
-			bits[26] = flags.PaletteSwap;
-			bits[27] = flags.TeamSteak;
-			bits[28] = flags.ShuffleLeader;
-			bits[29] = flags.Music == MusicShuffle.Standard;
-			bits[30] = flags.Music == MusicShuffle.Nonsensical;
+			bits[i++] = flags.FunEnemyNames;
+			bits[i++] = flags.PaletteSwap;
+			bits[i++] = flags.TeamSteak;
+			bits[i++] = flags.ShuffleLeader;
+			bits[i++] = flags.Music == MusicShuffle.Standard;
+			bits[i++] = flags.Music == MusicShuffle.Nonsensical;
+
+			System.Diagnostics.Debug.Assert(i == bits.Length, "Unused bits writing flags.");
 
 			var bytes = new byte[4];
 			bits.CopyTo(bytes, 0);
@@ -335,51 +344,57 @@ namespace FF1Lib
 
 			var bytes = Convert.FromBase64String(bitString);
 			var bits = new BitArray(bytes);
+			int i = 0;
 
-			return new Flags
-			{
-				Treasures = bits[0],
-				IncentivizeIceCave = bits[1],
-				IncentivizeOrdeals = bits[2],
-				Shops = bits[3],
-				MagicShops = bits[4],
-				MagicLevels = bits[5],
-				MagicPermissions = bits[6],
-				Rng = bits[7],
-				EnemyScripts = bits[8],
-				EnemySkillsSpells = bits[9],
-				EnemyStatusAttacks = bits[10],
-				Ordeals = bits[11],
+			Flags flags = new Flags();
+			flags.Treasures = bits[i++];
+			flags.IncentivizeIceCave = bits[i++];
+			flags.IncentivizeOrdeals = bits[i++];
+			flags.Shops = bits[i++];
+			flags.MagicShops = bits[i++];
+			flags.MagicLevels = bits[i++];
+			flags.MagicPermissions = bits[i++];
+			flags.Rng = bits[i++];
+			flags.EnemyScripts = bits[i++];
+			flags.EnemySkillsSpells = bits[i++];
+			flags.EnemyStatusAttacks = bits[i++];
+			flags.Ordeals = bits[i++];
 
-				EarlyRod = bits[12],
-				EarlyCanoe = bits[13],
-				EarlyOrdeals = bits[14],
-				NoPartyShuffle = bits[15],
-				SpeedHacks = bits[16],
-				IdentifyTreasures = bits[17],
-				Dash = bits[18],
-				BuyTen = bits[19],
+			flags.EarlyRod = bits[i++];
+			flags.EarlyCanoe = bits[i++];
+			flags.EarlyOrdeals = bits[i++];
+			flags.EarlyBridge = bits[i++];
+			flags.NoPartyShuffle = bits[i++];
+			flags.SpeedHacks = bits[i++];
+			flags.IdentifyTreasures = bits[i++];
+			flags.Dash = bits[i++];
+			flags.BuyTen = bits[i++];
 
-				HouseMPRestoration = bits[20],
-				WeaponStats = bits[21],
-				ChanceToRun = bits[22],
-				SpellBugs = bits[23],
-				EnemyStatusAttackBug = bits[24],
+			flags.HouseMPRestoration = bits[i++];
+			flags.WeaponStats = bits[i++];
+			flags.ChanceToRun = bits[i++];
+			flags.SpellBugs = bits[i++];
+			flags.EnemyStatusAttackBug = bits[i++];
 
-				FunEnemyNames = bits[25],
-				PaletteSwap = bits[26],
-				TeamSteak = bits[27],
-				ShuffleLeader = bits[28],
-				Music =
-					bits[29] ? MusicShuffle.Standard :
-					bits[30] ? MusicShuffle.Nonsensical :
-					MusicShuffle.None,
+			flags.FunEnemyNames = bits[i++];
+			flags.PaletteSwap = bits[i++];
+			flags.TeamSteak = bits[i++];
+			flags.ShuffleLeader = bits[i++];
 
-				PriceScaleFactor = Base64ToSlider(text[6]) / 10.0,
-				EnemyScaleFactor = Base64ToSlider(text[7]) / 10.0,
-				ExpMultiplier = Base64ToSlider(text[8]) / 10.0,
-				ExpBonus = Base64ToSlider(text[9]) * 10.0
-			};
+			flags.Music = bits[i] ? MusicShuffle.Standard :
+				bits[i+1] ? MusicShuffle.Nonsensical :
+				MusicShuffle.None;
+
+			// Increment after to avoid short circuit skip. This isn't really necessary right now
+			// but might be some day if the Music isn't the final bits in the future. Since there's
+			// no way to know how many bits we have here we can't assert like when we make the flags.
+			i += 2;
+
+			flags.PriceScaleFactor = Base64ToSlider(text[6]) / 10.0;
+			flags.EnemyScaleFactor = Base64ToSlider(text[7]) / 10.0;
+			flags.ExpMultiplier = Base64ToSlider(text[8]) / 10.0;
+			flags.ExpBonus = Base64ToSlider(text[9]) * 10.0;
+			return flags;
 		}
 
 		private static char SliderToBase64(int value)
