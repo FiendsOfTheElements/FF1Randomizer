@@ -10,7 +10,8 @@ namespace FF1Lib
 	{
 		None = 0,
 		Standard,
-		Nonsensical
+		Nonsensical,
+		MusicDisabled
 	}
 
     public partial class FF1Rom
@@ -202,6 +203,28 @@ namespace FF1Lib
 					Data[0x36E86] = tracks[rng.Between(0, tracks.Count - 1)]; //minigame
 					Data[0x27C0D] = tracks[rng.Between(0, tracks.Count - 1)]; //minimap
 
+					break;
+
+				case MusicShuffle.MusicDisabled:
+					//Set Sq1, Sq2, and Tri channels for crystal theme all point to the same music data
+					Put(0x34000, Blob.FromHex("C080C080C080"));
+					//Overwrite beginning of crystal theme with a song that initializes properly but plays no notes
+					Put(0x340C0, Blob.FromHex("FDF805E0D8C7D0C480"));
+
+					List<int> AllSongs = new List<int>
+					{
+						0x3C649, 0x3C6F9, 0x3C75A, 0x3C75B, 0x3C62D, 0x3C75D,
+						0x3C235, 0x3C761, 0x3CFC3, 0x3CFC4, 0x3CFC5, 0x3CFC6,
+						0x3CFC7, 0x3CFC8, 0x3CFC9, 0x3CFCA, 0x3A226, 0x3A351,
+						0x3A56E, 0x3A597, 0x3ADB4, 0x3B677, 0x3997F, 0x37804,
+						0x3784E, 0x31E44, 0x2DAF6, 0x2D9C1, 0x36E86, 0x27C0D
+					};
+					//Set all music playback calls to play the new empty song
+					foreach (int address in AllSongs)
+					{
+						Data[address] = 0x41;
+					}
+					
 					break;
 			}
 		}
