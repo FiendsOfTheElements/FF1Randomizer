@@ -158,5 +158,76 @@ namespace FF1Lib
 			Put(0x3C64D, setBridgeVis);
 			Put(0x3E3A6, setBridgeVis);
 		}
+
+		public void RollCredits()
+		{
+			// Wallpaper over the JSR to the NASIR CRC to circumvent their neolithic DRM.
+			Put(0x3CF34, Blob.FromHex("EAEAEA"));
+
+			// Actual Credits. Each string[] is a page. Each "" skips a line, duh.
+			// The lines have zero padding on all sides, and 16 usable characters in length.
+			// Don't worry about the inefficiency of spaces as they are all trimmed and the
+			// leading spaces are used to increment the PPU ptr precisely to save ROM space.
+			List<string[]> texts = new List <string[]>();
+			texts.Add(new string[] { "", "",
+				                     " Final Fantasy  ",
+				                     "", "",
+				                     "   Randomizer   ",
+			});
+			texts.Add(new string[] { "", "",
+				                     "   Programmed   ",
+				                     "       By       ",
+				                     "",
+				                     "E N T R O P E R "
+			});
+			texts.Add(new string[] { "",
+				                     "  Development   ",
+				                     "", "",
+				                     "  Entroper",
+									 "  MeridianBC",
+				                     "  Nitz",
+			});
+			texts.Add(new string[] { " Special Thanks ",
+									 "",
+									 "fcoughlin, Disch",
+									 "Paulygon, anomie",
+									 "Derangedsquirrel",
+									 "AstralEsper,    ",
+									 "",
+									 " The Entire FFR ",
+									 "    Community   ",
+			});
+			texts.Add(new string[] { "", "",
+									 "    AND YOU     ",
+									 "", "",
+									 "     GLHF!      ",
+			});
+
+			// Accumulate all our Credits pages before we set up the string pointer array.
+			List<Blob> pages = new List<Blob>();
+			foreach (string[] text in texts)
+			{
+				pages.Add(FF1Text.TextToCredits(text));
+			}
+
+			// Clobber the number of pages to render before we insert in the pointers.
+			Data[0x37873] = (byte)pages.Count();
+
+			// The first pointer is immediately after the pointer table.
+			List<ushort> ptrs = new List<ushort>();
+			ptrs.Add((ushort)(0xBB00 + pages.Count() * 2));
+
+			for (int i = 1; i < pages.Count(); ++i)
+			{
+				ptrs.Add((ushort)(ptrs.Last() + pages[i - 1].Length));
+			}
+
+			// Collect it into one blob and blit it.
+			pages.Insert(0, Blob.FromUShorts(ptrs.ToArray()));
+			Blob credits = Blob.Concat(pages);
+
+			System.Diagnostics.Debug.Assert(credits.Length <= 0x0100, "Credits too large!");
+			Put(0x37B00, credits);
+		}
 	}
 }
