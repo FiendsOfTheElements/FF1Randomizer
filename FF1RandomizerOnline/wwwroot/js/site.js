@@ -46,6 +46,7 @@ var checkboxIds = [
 	"Flags_EarlyRod",
 	"Flags_EarlyCanoe",
 	"Flags_EarlyOrdeals",
+	"Flags_EarlyBridge",
 	"Flags_NoPartyShuffle",
 	"Flags_SpeedHacks",
 	"Flags_IdentifyTreasures",

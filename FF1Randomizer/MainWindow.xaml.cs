@@ -285,6 +285,7 @@ namespace FF1Randomizer
 				EarlyRod = EarlyRodCheckBox.IsChecked == true,
 				EarlyCanoe = EarlyCanoeCheckBox.IsChecked == true,
 				EarlyOrdeals = EarlyOrdealsCheckBox.IsChecked == true,
+				EarlyBridge = EarlyBridgeCheckBox.IsChecked == true,
 				NoPartyShuffle = NoPartyShuffleCheckBox.IsChecked == true,
 				SpeedHacks = SpeedHacksCheckBox.IsChecked == true,
 				IdentifyTreasures = IdentifyTreasuresCheckBox.IsChecked == true,
@@ -331,6 +332,7 @@ namespace FF1Randomizer
 			EarlyRodCheckBox.IsChecked = flags.EarlyRod;
 			EarlyCanoeCheckBox.IsChecked = flags.EarlyCanoe;
 			EarlyOrdealsCheckBox.IsChecked = flags.EarlyOrdeals;
+			EarlyBridgeCheckBox.IsChecked = flags.EarlyBridge;
 			NoPartyShuffleCheckBox.IsChecked = flags.NoPartyShuffle;
 			SpeedHacksCheckBox.IsChecked = flags.SpeedHacks;
 			IdentifyTreasuresCheckBox.IsChecked = flags.IdentifyTreasures;

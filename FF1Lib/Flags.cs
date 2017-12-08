@@ -24,6 +24,7 @@ namespace FF1Lib
 		public bool EarlyRod { get; set; }
 		public bool EarlyCanoe { get; set; }
 		public bool EarlyOrdeals { get; set; }
+		public bool EarlyBridge { get; set; }
 		public bool NoPartyShuffle { get; set; }
 		public bool SpeedHacks { get; set; }
 		public bool IdentifyTreasures { get; set; }

@@ -148,5 +148,15 @@ namespace FF1Lib
 		{
 			Put(0x2ADDE, Blob.FromHex("91251A682CC18EB1B74DB32505C1BE9296991E2F1AB6A4A9A8BE05C1C1C1C1C1C19B929900"));
 		}
+
+		public void EnableEarlyBridge()
+		{
+			// Pass all bridge_vis checks. It's a mother beautiful bridge - and it's gonna be there.
+			Blob setBridgeVis = Blob.FromHex("A901EA");
+			Put(0x392A1, setBridgeVis);
+			Put(0x394D7, setBridgeVis);
+			Put(0x3C64D, setBridgeVis);
+			Put(0x3E3A6, setBridgeVis);
+		}
 	}
 }
