@@ -12,7 +12,7 @@ namespace FF1Lib
 	// ReSharper disable once InconsistentNaming
 	public partial class FF1Rom : NesRom
 	{
-		public const string Version = "1.5.4";
+		public const string Version = "1.5.5";
 
 		public const int CopyrightOffset1 = 0x384A8;
 		public const int CopyrightOffset2 = 0x384BA;
@@ -197,6 +197,11 @@ namespace FF1Lib
 				ShuffleMusic(flags.Music, rng);
 			}
 
+			if (flags.ShuffleLeader)
+			{
+				ShuffleLeader(rng);
+			}
+
 			WriteSeedAndFlags(Version, seed.ToHex(), EncodeFlagsText(flags));
 		}
 
@@ -268,7 +273,7 @@ namespace FF1Lib
 
 		public static string EncodeFlagsText(Flags flags)
 		{
-			var bits = new BitArray(30);
+			var bits = new BitArray(31);
 
 			bits[0] = flags.Treasures;
 			bits[1] = flags.IncentivizeIceCave;
@@ -301,8 +306,9 @@ namespace FF1Lib
 			bits[25] = flags.FunEnemyNames;
 			bits[26] = flags.PaletteSwap;
 			bits[27] = flags.TeamSteak;
-			bits[28] = flags.Music == MusicShuffle.Standard;
-			bits[29] = flags.Music == MusicShuffle.Nonsensical;
+			bits[28] = flags.ShuffleLeader;
+			bits[29] = flags.Music == MusicShuffle.Standard;
+			bits[30] = flags.Music == MusicShuffle.Nonsensical;
 
 			var bytes = new byte[4];
 			bits.CopyTo(bytes, 0);
@@ -363,9 +369,10 @@ namespace FF1Lib
 				FunEnemyNames = bits[25],
 				PaletteSwap = bits[26],
 				TeamSteak = bits[27],
+				ShuffleLeader = bits[28],
 				Music =
-					bits[28] ? MusicShuffle.Standard :
-					bits[29] ? MusicShuffle.Nonsensical :
+					bits[29] ? MusicShuffle.Standard :
+					bits[30] ? MusicShuffle.Nonsensical :
 					MusicShuffle.None,
 
 				PriceScaleFactor = Base64ToSlider(text[6]) / 10.0,

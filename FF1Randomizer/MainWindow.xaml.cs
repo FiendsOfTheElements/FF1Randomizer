@@ -300,6 +300,7 @@ namespace FF1Randomizer
 				FunEnemyNames = FunEnemyNamesCheckBox.IsChecked == true,
 				PaletteSwap = PaletteSwapCheckBox.IsChecked == true,
 				TeamSteak = TeamTyroComboBox.SelectedValue.ToString() == "Team STEAK",
+				ShuffleLeader = ShuffleLeaderCheckBox.IsChecked == true,
 				Music =
 					MusicComboBox.SelectedValue.ToString() == "Standard Music Shuffle" ? MusicShuffle.Standard :
 					MusicComboBox.SelectedValue.ToString() == "Nonsensical Music Shuffle" ? MusicShuffle.Nonsensical :
@@ -345,6 +346,7 @@ namespace FF1Randomizer
 			FunEnemyNamesCheckBox.IsChecked = flags.FunEnemyNames;
 			PaletteSwapCheckBox.IsChecked = flags.PaletteSwap;
 			TeamTyroComboBox.SelectedValue = flags.TeamSteak ? "Team STEAK" : "Team TYRO";
+			ShuffleLeaderCheckBox.IsChecked = flags.ShuffleLeader;
 			MusicComboBox.SelectedValue =
 				flags.Music == MusicShuffle.Standard ? "Standard Music Shuffle" :
 				flags.Music == MusicShuffle.Nonsensical ? "Nonsensical Music Shuffle" :
