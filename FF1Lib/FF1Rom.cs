@@ -384,16 +384,13 @@ namespace FF1Lib
 			flags.Music = bits[i] ? MusicShuffle.Standard :
 				bits[i+1] ? MusicShuffle.Nonsensical :
 				MusicShuffle.None;
-
-			// Increment after to avoid short circuit skip. This isn't really necessary right now
-			// but might be some day if the Music isn't the final bits in the future. Since there's
-			// no way to know how many bits we have here we can't assert like when we make the flags.
 			i += 2;
 
 			flags.PriceScaleFactor = Base64ToSlider(text[6]) / 10.0;
 			flags.EnemyScaleFactor = Base64ToSlider(text[7]) / 10.0;
 			flags.ExpMultiplier = Base64ToSlider(text[8]) / 10.0;
 			flags.ExpBonus = Base64ToSlider(text[9]) * 10.0;
+
 			return flags;
 		}
 

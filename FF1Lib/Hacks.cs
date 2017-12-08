@@ -86,7 +86,7 @@ namespace FF1Lib
 			Data[0x33CCD] = 0x04; // Explosion effect count (small enemies), default 8
 			Data[0x33DAA] = 0x04; // Explosion effect count (mixed enemies), default 15
 
-			//Gain multiple levels at once.  Also supresses stat increase messages as a side effect
+			// Gain multiple levels at once.  Also supresses stat increase messages as a side effect
 			Put(0x2DD82, Blob.FromHex("20579f48a5802907c907f008a58029f0690785806820019c4ce89b"));
 
 			// Default Response Rate 8 (0-based)
