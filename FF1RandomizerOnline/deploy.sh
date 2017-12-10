@@ -5,7 +5,7 @@ if [ $branch_name == 'dev' ]; then
 	docker build -t ff1randomizeronline:beta -f Dockerfile.beta .
 	docker stop ff1robeta
 	docker rm ff1robeta
-	docker run -d --name ff1robeta --network web-internal ff1randomizeronline:beta
+	docker run -d --name ff1robeta --network web-internal --env ASPNETCORE_ENVIRONMENT=development ff1randomizeronline:beta
 elif [ $branch_name == 'master' ]; then
 	dotnet publish -c Release
 	docker build -t ff1randomizeronline:latest .
