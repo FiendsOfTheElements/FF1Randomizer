@@ -382,8 +382,10 @@ namespace FF1Lib
 			flags.TeamSteak = bits[i++];
 			flags.ShuffleLeader = bits[i++];
 
-			flags.Music = bits[i] ? MusicShuffle.Standard :
-				bits[i+1] ? MusicShuffle.Nonsensical :
+			flags.Music =
+				bits[i] && !bits[i + 1] ? MusicShuffle.Standard :
+				!bits[i] && bits[i + 1] ? MusicShuffle.Nonsensical :
+				bits[i] && bits[i + 1] ? MusicShuffle.MusicDisabled :
 				MusicShuffle.None;
 			i += 2;
 
