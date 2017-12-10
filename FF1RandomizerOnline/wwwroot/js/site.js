@@ -152,7 +152,7 @@ function getFlagsString() {
 		checkboxBits |= 1 << (checkboxIds.length + 1);
 	} else if (select.value === "Nonsensical") {
 		checkboxBits |= 1 << (checkboxIds.length + 2);
-	} else if (select.value === "DisableMusic") {
+	} else if (select.value === "MusicDisabled") {
 		checkboxBits |= 1 << (checkboxIds.length + 1);
 		checkboxBits |= 1 << (checkboxIds.length + 2);		
 	}
@@ -229,7 +229,7 @@ function setFlags() {
 	} else if (!musicLow && musicHigh) {
 		select.value = "Nonsensical";
 	} else if (musicLow && musicHigh) {
-		select.value = "DisableMusic";
+		select.value = "MusicDisabled";
 	} else {
 		select.value = "None";
 	}
