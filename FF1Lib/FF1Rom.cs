@@ -51,6 +51,7 @@ namespace FF1Lib
 			var rng = new MT19337(BitConverter.ToUInt32(seed, 0));
 
 			EasterEggs();
+			RollCredits();
 
 			// This has to be done before we shuffle spell levels.
 			if (flags.SpellBugs)

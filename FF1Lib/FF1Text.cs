@@ -71,5 +71,36 @@ namespace FF1Lib
 
 			return bytes.SubBlob(0, i);
 		}
+
+		// This wraps TextToBytes for use with Credits pages.
+		public static Blob TextToCredits(string[] lines)
+		{
+			// Starting PPU addr immediately inside the box without any padding.
+			// Each line is 0x20 total characters.
+			ushort topLeftOfBox = 0x20A5;
+
+			List<Blob> buffers = new List<Blob>();
+			for (int i = 0; i < lines.Length; ++i)
+			{
+				string line = lines[i].Trim();
+				if (line == "")
+				{
+					continue;
+				}
+
+				int spaces = lines[i].Length - lines[i].TrimStart(' ').Length;
+				ushort[] ppuPtr = { (ushort)(topLeftOfBox + (0x20 * i) + spaces) };
+				buffers.Add(Blob.FromUShorts(ppuPtr));
+				buffers.Add(TextToBytes(line, false));
+				buffers.Add(Blob.FromHex("01"));
+			}
+
+			if (buffers.Count() != 0)
+			{
+				buffers.RemoveAt(buffers.Count() - 1);
+				buffers.Add(Blob.FromHex("00"));
+			}
+			return Blob.Concat(buffers);
+		}
 	}
 }
