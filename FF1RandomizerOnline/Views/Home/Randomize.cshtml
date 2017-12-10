@@ -1,9 +1,5 @@
 ﻿@model FF1RandomizerOnline.Models.RandomizeViewModel
 
-@{
-	ViewData["Title"] = "FF1 Randomizer Online " + FF1Lib.FF1Rom.Version;
-}
-
 <form id="RandomizeForm" method="post" enctype="multipart/form-data" asp-controller="Home" asp-action="Randomize">
 	<label class="section">Upload ROM</label><br />
 	<label class="btn btn-default"><input type="file" accept=".nes" asp-for="File" style="display: none"/>Browse</label> <label for="File" id="file-label"></label>
