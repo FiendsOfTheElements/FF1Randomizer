@@ -93,6 +93,7 @@
 						<ComboBoxItem IsSelected="True">No Music Shuffle</ComboBoxItem>
 						<ComboBoxItem>Standard Music Shuffle</ComboBoxItem>
 						<ComboBoxItem>Nonsensical Music Shuffle</ComboBoxItem>
+						<ComboBoxItem>Disable Music</ComboBoxItem>
 					</ComboBox>
 					<CheckBox x:Name="ShuffleLeaderCheckBox" IsEnabled="True" IsChecked="True" Content="Map Leader Shuffle" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top" ToolTip="Shuffles which position is shown when walking around." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
 				</Grid>

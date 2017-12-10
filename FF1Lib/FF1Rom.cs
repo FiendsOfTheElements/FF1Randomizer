@@ -315,8 +315,8 @@ namespace FF1Lib
 			bits[i++] = flags.PaletteSwap;
 			bits[i++] = flags.TeamSteak;
 			bits[i++] = flags.ShuffleLeader;
-			bits[i++] = flags.Music == MusicShuffle.Standard;
-			bits[i++] = flags.Music == MusicShuffle.Nonsensical;
+			bits[i++] = flags.Music == MusicShuffle.Standard || flags.Music == MusicShuffle.MusicDisabled;
+			bits[i++] = flags.Music == MusicShuffle.Nonsensical || flags.Music == MusicShuffle.MusicDisabled;
 
 			System.Diagnostics.Debug.Assert(i == bits.Length, "Unused bits writing flags.");
 
