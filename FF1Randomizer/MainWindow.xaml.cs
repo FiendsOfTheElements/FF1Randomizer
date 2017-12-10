@@ -305,6 +305,7 @@ namespace FF1Randomizer
 				Music =
 					MusicComboBox.SelectedValue.ToString() == "Standard Music Shuffle" ? MusicShuffle.Standard :
 					MusicComboBox.SelectedValue.ToString() == "Nonsensical Music Shuffle" ? MusicShuffle.Nonsensical :
+					MusicComboBox.SelectedValue.ToString() == "Disable Music" ? MusicShuffle.MusicDisabled :
 					MusicShuffle.None,
 
 				PriceScaleFactor = PriceScaleFactorSlider.Value,
@@ -352,6 +353,7 @@ namespace FF1Randomizer
 			MusicComboBox.SelectedValue =
 				flags.Music == MusicShuffle.Standard ? "Standard Music Shuffle" :
 				flags.Music == MusicShuffle.Nonsensical ? "Nonsensical Music Shuffle" :
+				flags.Music == MusicShuffle.MusicDisabled ? "Disable Music" :
 				"No Music Shuffle";
 
 			PriceScaleFactorSlider.Value = flags.PriceScaleFactor;

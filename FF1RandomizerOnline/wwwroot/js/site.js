@@ -146,11 +146,15 @@ function getFlagsString() {
 	if (select.value === "True") {
 		checkboxBits |= 1 << checkboxIds.length;
 	}
+
 	select = document.getElementById("Flags_Music");
 	if (select.value === "Standard") {
 		checkboxBits |= 1 << (checkboxIds.length + 1);
 	} else if (select.value === "Nonsensical") {
 		checkboxBits |= 1 << (checkboxIds.length + 2);
+	} else if (select.value === "MusicDisabled") {
+		checkboxBits |= 1 << (checkboxIds.length + 1);
+		checkboxBits |= 1 << (checkboxIds.length + 2);		
 	}
 
 	var flagsString = "";
@@ -216,11 +220,16 @@ function setFlags() {
 	} else {
 		select.value = "False";
 	}
+
 	select = document.getElementById("Flags_Music");
-	if ((checkboxBits & (1 << (checkboxIds.length + 1))) !== 0) {
+	var musicLow = (checkboxBits & (1 << (checkboxIds.length + 1))) !== 0;
+	var musicHigh = (checkboxBits & (1 << (checkboxIds.length + 2))) !== 0;
+	if (musicLow && !musicHigh) {
 		select.value = "Standard";
-	} else if ((checkboxBits & (1 << (checkboxIds.length + 2))) !== 0) {
+	} else if (!musicLow && musicHigh) {
 		select.value = "Nonsensical";
+	} else if (musicLow && musicHigh) {
+		select.value = "MusicDisabled";
 	} else {
 		select.value = "None";
 	}

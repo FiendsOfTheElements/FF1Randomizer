@@ -5,7 +5,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using FF1RandomizerOnline.Models;
 using FF1Lib;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Net.Http.Headers;
 using RomUtilities;
 
@@ -13,6 +15,21 @@ namespace FF1RandomizerOnline.Controllers
 {
     public class HomeController : Controller
     {
+	    private readonly IHostingEnvironment _environment;
+
+	    public HomeController(IHostingEnvironment environment)
+	    {
+		    _environment = environment;
+	    }
+
+	    public override void OnActionExecuting(ActionExecutingContext context)
+	    {
+		    base.OnActionExecuting(context);
+
+			var betaString = _environment.IsDevelopment() ? " Beta" : "";
+			ViewData["Title"] = "FF1 Randomizer Online " + FF1Rom.Version + betaString;
+	    }
+
 	    public IActionResult Index()
 	    {
 		    return View();

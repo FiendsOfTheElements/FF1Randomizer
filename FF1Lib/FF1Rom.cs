@@ -315,8 +315,8 @@ namespace FF1Lib
 			bits[i++] = flags.PaletteSwap;
 			bits[i++] = flags.TeamSteak;
 			bits[i++] = flags.ShuffleLeader;
-			bits[i++] = flags.Music == MusicShuffle.Standard;
-			bits[i++] = flags.Music == MusicShuffle.Nonsensical;
+			bits[i++] = flags.Music == MusicShuffle.Standard || flags.Music == MusicShuffle.MusicDisabled;
+			bits[i++] = flags.Music == MusicShuffle.Nonsensical || flags.Music == MusicShuffle.MusicDisabled;
 
 			System.Diagnostics.Debug.Assert(i == bits.Length, "Unused bits writing flags.");
 
@@ -382,8 +382,10 @@ namespace FF1Lib
 			flags.TeamSteak = bits[i++];
 			flags.ShuffleLeader = bits[i++];
 
-			flags.Music = bits[i] ? MusicShuffle.Standard :
-				bits[i+1] ? MusicShuffle.Nonsensical :
+			flags.Music =
+				bits[i] && !bits[i + 1] ? MusicShuffle.Standard :
+				!bits[i] && bits[i + 1] ? MusicShuffle.Nonsensical :
+				bits[i] && bits[i + 1] ? MusicShuffle.MusicDisabled :
 				MusicShuffle.None;
 			i += 2;
 
