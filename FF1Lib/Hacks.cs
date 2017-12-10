@@ -170,7 +170,7 @@ namespace FF1Lib
 			// leading spaces are used to increment the PPU ptr precisely to save ROM space.
 			List<string[]> texts = new List <string[]>();
 			texts.Add(new string[] { "", "",
-				                     " Final Fantasy  ",
+				                     " Final  Fantasy ",
 				                     "", "",
 				                     "   Randomizer   ",
 			});
@@ -185,22 +185,18 @@ namespace FF1Lib
 				                     "", "",
 				                     "  Entroper",
 									 "  MeridianBC",
-				                     "  Nitz",
+									 "  tartopan",
+				                     "  nitz",
 			});
 			texts.Add(new string[] { " Special Thanks ",
 									 "",
 									 "fcoughlin, Disch",
 									 "Paulygon, anomie",
 									 "Derangedsquirrel",
-									 "AstralEsper,    ",
+									 "AstralEsper, and",
 									 "",
 									 " The Entire FFR ",
 									 "    Community   ",
-			});
-			texts.Add(new string[] { "", "",
-									 "    AND YOU     ",
-									 "", "",
-									 "     GLHF!      ",
 			});
 
 			// Accumulate all our Credits pages before we set up the string pointer array.
