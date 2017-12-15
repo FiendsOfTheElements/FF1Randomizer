@@ -62,7 +62,6 @@ namespace FF1Lib
 
 			UpgradeToMMC3();
 			EasterEggs();
-			RollCredits();
 
 			// This has to be done before we shuffle spell levels.
 			if (flags.SpellBugs)
@@ -204,6 +203,8 @@ namespace FF1Lib
 			}
 
 			// We have to do "fun" stuff last because it alters the RNG state.
+			RollCredits(rng);
+
 			if (flags.PaletteSwap)
 			{
 				PaletteSwap(rng);
