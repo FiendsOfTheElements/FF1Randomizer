@@ -41,40 +41,34 @@
 				<div class="checkbox-cell"></div>
 				<div class="checkbox-cell"><input type="checkbox" asp-for="Flags.Ordeals" /> <label asp-for="Flags.Ordeals">Castle Ordeals</label></div>
                 <div class="checkbox-cell"></div>
-                <div class="checkbox-cell"><input type="checkbox" asp-for="Flags.PartyRoulette" /> <label asp-for="Flags.PartyRoulette">Party Roulette</label></div>
 			</div>
 		</div>
 		<div class="section tab-pane" id="scale">
 			<div class="slider-cell">
-				<div class="col-xs-2"><label>Prices:</label></div>
+				<div class="col-xs-3"><label>Prices:</label></div>
 				<div class="col-xs-2"><label id="prices-display"></label></div>
 				<div class="col-xs-2"><input type="range" asp-for="Flags.PriceScaleFactor" min="1.0" max="5.0" step="0.1" /></div>
 			</div>
 			<div class="slider-cell">
-				<div class="col-xs-2"><label>Enemy Stats:</label></div>
+				<div class="col-xs-3"><label>Enemy Stats:</label></div>
 				<div class="col-xs-2"><label id="enemy-stats-display"></label></div>
 				<div class="col-xs-2"><input type="range" asp-for="Flags.EnemyScaleFactor" min="1.0" max="5.0" step="0.1" /></div>
 			</div>
 			<div class="slider-cell"></div>
 			<div class="slider-cell">
-				<div class="col-xs-4"><label>Exp/Gold Boost:</label></div>
+				<div class="col-xs-5"><label>Exp/Gold Boost:</label></div>
 				<div class="col-xs-2"><input type="range" asp-for="Flags.ExpMultiplier" min="1.0" max="5.0" step="0.1" /></div>
 			</div>
 			<div class="slider-cell">
-				<div class="col-xs-4"><label id="exp-gold-display"></label></div>
+				<div class="col-xs-5"><label id="exp-gold-display"></label></div>
 				<div class="col-xs-2"><input type="range" asp-for="Flags.ExpBonus" min="0" max="500" step="10" /></div>
 			</div>
             <div class="slider-cell"></div>
-            <div class="slider-cell">
-                <div class="col-xs-2"><label>Min Forced Party:</label></div>
-                <div class="col-xs-2"><label id="min-forced"></label></div>
-                <div class="col-xs-2"><input type="range" asp-for="Flags.MinimumForcedParty" min="0" max="4" step="1" /></div>
-            </div>
-            <div class="slider-cell">
-                <div class="col-xs-2"><label>Max Forced Party:</label></div>
-                <div class="col-xs-2"><label id="max-forced"></label></div>
-                <div class="col-xs-2"><input type="range" asp-for="Flags.MaximumForcedParty" min="0" max="4" step="1" /></div>
-            </div>
+			<div class="slider-cell">
+				<div class="col-xs-3"><label>Forced Party Members:</label></div>
+				<div class="col-xs-2"><label id="forced-party-members-display"></label></div>
+				<div class="col-xs-2"><input type="range" asp-for="Flags.ForcedPartyMembers" min="0" max="4" step="1" /></div>
+			</div>
 		</div>
 		<div class="section tab-pane" id="conveniences">
 			<div class="col-xs-4">

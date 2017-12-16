@@ -42,47 +42,45 @@ namespace FF1Lib
 			Put(CanoeSageOffset, nops);
 		}
 
-        public void PartyRoulette()
-        {
-            // First, disable the 'B' button to prevent going back after roulette spin
-            Data[0x39C92] = 0xF7; // F7 here is really a relative jump value of -9
-            Data[0x39C9B] = 0xF7;
-            Data[0x39CA4] = 0xF7;
-            Data[0x39CBD] = 0xEA;
-            Data[0x39CBE] = 0xEA;
+		public void PartyRoulette()
+		{
+			// First, disable the 'B' button to prevent going back after roulette spin
+			Data[0x39C92] = 0xF7; // F7 here is really a relative jump value of -9
+			Data[0x39C9B] = 0xF7;
+			Data[0x39CA4] = 0xF7;
+			Data[0x39CBD] = 0xEA;
+			Data[0x39CBE] = 0xEA;
 
-            // Then skip the check for directionaly input and just constantly cycle class selection 0 through 5
-            Put(0x39D25, Enumerable.Repeat((byte)0xEA, 14).ToArray());
-        }
+			// Then skip the check for directionaly input and just constantly cycle class selection 0 through 5
+			Put(0x39D25, Enumerable.Repeat((byte)0xEA, 14).ToArray());
+		}
 
-        public void PartyRandomize(MT19337 rng, int minimumForced, int maximumForced)
-        {
-            // Always randomize all 4 default members (but don't force if not needed)
-            Data[0x3A0AE] = (byte)rng.Between(0, 5);
-            Data[0x3A0BE] = (byte)rng.Between(0, 5);
-            Data[0x3A0CE] = (byte)rng.Between(0, 5);
-            Data[0x3A0DE] = (byte)rng.Between(0, 5);
+		public void PartyRandomize(MT19337 rng, int numberForced)
+		{
+			// Always randomize all 4 default members (but don't force if not needed)
+			Data[0x3A0AE] = (byte)rng.Between(0, 5);
+			Data[0x3A0BE] = (byte)rng.Between(0, 5);
+			Data[0x3A0CE] = (byte)rng.Between(0, 5);
+			Data[0x3A0DE] = (byte)rng.Between(0, 5);
 
-            var numberForced = rng.Between(minimumForced, maximumForced);
-            if (maximumForced <= 0) return;
-            if (numberForced > maximumForced) numberForced = maximumForced;
-            if (numberForced < minimumForced) numberForced = minimumForced;
+			if (numberForced <= 0)
+				return;
 
-            Data[0x39D35] = 0xE0;
-            Data[0x39D36] = (byte)(numberForced * 0x10);
-            Put(0x39D37, Blob.FromHex("30DFFE0003BD0003E906D0039D0003A9018537"));
-            /* Starting at 0x39D35 (which is just after LDX char_index)
-             * CPX ____(numberForced * 0x10)____
-             * BMI @MainLoop
-             * INC ptygen_class, X
-             * LDA ptygen_class, X
-             * SBC #$06
-             * BNE :+
-             *   STA ptygen_class, X
-             * : LDA #$01
-             *   STA menustall
-             */
-        }
+			Data[0x39D35] = 0xE0;
+			Data[0x39D36] = (byte)(numberForced * 0x10);
+			Put(0x39D37, Blob.FromHex("30DFFE0003BD0003E906D0039D0003A9018537"));
+			/* Starting at 0x39D35 (which is just after LDX char_index)
+				* CPX ____(numberForced * 0x10)____
+				* BMI @MainLoop
+				* INC ptygen_class, X
+				* LDA ptygen_class, X
+				* SBC #$06
+				* BNE :+
+				*   STA ptygen_class, X
+				* : LDA #$01
+				*   STA menustall
+				*/
+		}
 
 		public void DisablePartyShuffle()
 		{
@@ -249,13 +247,13 @@ namespace FF1Lib
 			}
 
 			// Clobber the number of pages to render before we insert in the pointers.
-			Data[0x37873] = (byte)pages.Count();
+			Data[0x37873] = (byte)pages.Count;
 
 			// The first pointer is immediately after the pointer table.
 			List<ushort> ptrs = new List<ushort>();
-			ptrs.Add((ushort)(0xBB00 + pages.Count() * 2));
+			ptrs.Add((ushort)(0xBB00 + pages.Count * 2));
 
-			for (int i = 1; i < pages.Count(); ++i)
+			for (int i = 1; i < pages.Count; ++i)
 			{
 				ptrs.Add((ushort)(ptrs.Last() + pages[i - 1].Length));
 			}

@@ -12,7 +12,7 @@ namespace FF1Lib
 	// ReSharper disable once InconsistentNaming
 	public partial class FF1Rom : NesRom
 	{
-		public const string Version = "1.5.5";
+		public const string Version = "1.6.0";
 
 		public const int CopyrightOffset1 = 0x384A8;
 		public const int CopyrightOffset2 = 0x384BA;
@@ -187,15 +187,9 @@ namespace FF1Lib
 				ScaleEnemyStats(flags.EnemyScaleFactor, rng);
 			}
 
-            // This is a fun setting, but could be used in a race
-            if (flags.PartyRoulette)
-            {
-                PartyRoulette();
-            }
-
-            // This can be called with every seed, with zero forced it 
-            // just shuffles the default party without forcing any selections
-            PartyRandomize(rng, flags.MinimumForcedParty, flags.MaximumForcedParty);
+			// This can be called with every seed, with zero forced it 
+			// just shuffles the default party without forcing any selections
+			PartyRandomize(rng, flags.ForcedPartyMembers);
 
 			// We have to do "fun" stuff last because it alters the RNG state.
 			if (flags.PaletteSwap)
