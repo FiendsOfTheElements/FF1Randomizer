@@ -336,6 +336,7 @@ namespace FF1Lib
 			text += SliderToBase64((int)(flags.EnemyScaleFactor * 10.0));
 			text += SliderToBase64((int)(flags.ExpMultiplier * 10.0));
 			text += SliderToBase64((int)(flags.ExpBonus / 10.0));
+			text += SliderToBase64(flags.ForcedPartyMembers);
 
 			return text;
 		}
@@ -397,6 +398,7 @@ namespace FF1Lib
 			flags.EnemyScaleFactor = Base64ToSlider(text[7]) / 10.0;
 			flags.ExpMultiplier = Base64ToSlider(text[8]) / 10.0;
 			flags.ExpBonus = Base64ToSlider(text[9]) * 10.0;
+			flags.ForcedPartyMembers = Base64ToSlider(text[10]);
 
 			return flags;
 		}
