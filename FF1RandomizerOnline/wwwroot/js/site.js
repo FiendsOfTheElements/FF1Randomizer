@@ -192,6 +192,8 @@ function getFlagsString() {
 	flagsString += base64Chars[slider.value * 10];
 	slider = document.getElementById("Flags_ExpBonus");
 	flagsString += base64Chars[slider.value / 10];
+	slider = document.getElementById("Flags_ForcedPartyMembers");
+	flagsString += base64Chars[slider.value];
 
 	return flagsString;
 }
