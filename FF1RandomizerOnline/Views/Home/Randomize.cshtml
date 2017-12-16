@@ -40,6 +40,8 @@
 				<div class="checkbox-cell"><input type="checkbox" asp-for="Flags.EnemyStatusAttacks" /> <label asp-for="Flags.EnemyStatusAttacks">Enemy Status Attacks</label></div>
 				<div class="checkbox-cell"></div>
 				<div class="checkbox-cell"><input type="checkbox" asp-for="Flags.Ordeals" /> <label asp-for="Flags.Ordeals">Castle Ordeals</label></div>
+                <div class="checkbox-cell"></div>
+                <div class="checkbox-cell"><input type="checkbox" asp-for="Flags.PartyRoulette" /> <label asp-for="Flags.PartyRoulette">Party Roulette</label></div>
 			</div>
 		</div>
 		<div class="section tab-pane" id="scale">
@@ -62,6 +64,17 @@
 				<div class="col-xs-4"><label id="exp-gold-display"></label></div>
 				<div class="col-xs-2"><input type="range" asp-for="Flags.ExpBonus" min="0" max="500" step="10" /></div>
 			</div>
+            <div class="slider-cell"></div>
+            <div class="slider-cell">
+                <div class="col-xs-2"><label>Min Forced Party:</label></div>
+                <div class="col-xs-2"><label id="min-forced"></label></div>
+                <div class="col-xs-2"><input type="range" asp-for="Flags.MinimumForcedParty" min="0" max="4" step="1" /></div>
+            </div>
+            <div class="slider-cell">
+                <div class="col-xs-2"><label>Max Forced Party:</label></div>
+                <div class="col-xs-2"><label id="max-forced"></label></div>
+                <div class="col-xs-2"><input type="range" asp-for="Flags.MaximumForcedParty" min="0" max="4" step="1" /></div>
+            </div>
 		</div>
 		<div class="section tab-pane" id="conveniences">
 			<div class="col-xs-4">
