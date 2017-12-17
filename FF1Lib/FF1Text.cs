@@ -46,9 +46,9 @@ namespace FF1Lib
 			return builder.ToString();
 		}
 
-		public static Blob TextToBytes(string text, bool useDTE = true)
+		public static Blob TextToBytes(string text, bool useDTE = true, bool skipNullTerminator = false)
 		{
-			Blob bytes = new byte[text.Length];
+			Blob bytes = new byte[text.Length + 1];
 			int i = 0, j = 0;
 			while (i < text.Length - 1)
 			{
@@ -69,7 +69,7 @@ namespace FF1Lib
 				bytes[j++] = BytesByText[text[i++].ToString()];
 			}
 
-			return bytes.SubBlob(0, i);
+			return bytes.SubBlob(0, skipNullTerminator ? j : j + 1);
 		}
 
 		// This wraps TextToBytes for use with Credits pages.
@@ -91,7 +91,7 @@ namespace FF1Lib
 				int spaces = lines[i].Length - lines[i].TrimStart(' ').Length;
 				ushort[] ppuPtr = { (ushort)(topLeftOfBox + (0x20 * i) + spaces) };
 				buffers.Add(Blob.FromUShorts(ppuPtr));
-				buffers.Add(TextToBytes(line, false));
+				buffers.Add(TextToBytes(line, false, true));
 				buffers.Add(Blob.FromHex("01"));
 			}
 
