@@ -52,6 +52,7 @@ namespace FF1Lib
 		    {
 			    bytes.Add(Data[offset++]);
 		    }
+		    bytes.Add(delimiter);
 
 		    return bytes.ToArray();
 	    }

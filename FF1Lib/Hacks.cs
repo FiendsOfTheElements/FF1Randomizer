@@ -208,36 +208,50 @@ namespace FF1Lib
 			// The lines have zero padding on all sides, and 16 usable characters in length.
 			// Don't worry about the inefficiency of spaces as they are all trimmed and the
 			// leading spaces are used to increment the PPU ptr precisely to save ROM space.
-			List<string[]> texts = new List <string[]>();
-			texts.Add(new string[] { "", "",
-				                     " Final  Fantasy ",
-				                     "", "",
-				                     "   Randomizer   ",
-			});
-			texts.Add(new string[] { "", "",
-				                     "   Programmed   ",
-				                     "       By       ",
-				                     "",
-				                     "E N T R O P E R "
-			});
-			texts.Add(new string[] { "",
-				                     "  Development   ",
-				                     "", "",
-				                     "  Entroper",
-									 "  MeridianBC",
-									 "  tartopan",
-				                     "  nitz",
-			});
-			texts.Add(new string[] { " Special Thanks ",
-									 "",
-									 "fcoughlin, Disch",
-									 "Paulygon, anomie",
-									 "Derangedsquirrel",
-									 "AstralEsper, and",
-									 "",
-									 " The Entire FFR ",
-									 "    Community   ",
-			});
+			List<string[]> texts = new List<string[]>
+			{
+				new []
+				{
+					"",
+					"",
+					" Final  Fantasy ",
+					"",
+					"",
+					"   Randomizer   ",
+				},
+				new []
+				{
+					"",
+					"",
+					"   Programmed   ",
+					"       By       ",
+					"",
+					"E N T R O P E R "
+				},
+				new []
+				{
+					"",
+					"  Development   ",
+					"",
+					"",
+					"  Entroper",
+					"  MeridianBC",
+					"  tartopan",
+					"  nitz",
+				},
+				new []
+				{
+					" Special Thanks ",
+					"",
+					"fcoughlin, Disch",
+					"Paulygon, anomie",
+					"Derangedsquirrel",
+					"AstralEsper, and",
+					"",
+					" The Entire FFR ",
+					"    Community   ",
+				}
+			};
 
 			// Accumulate all our Credits pages before we set up the string pointer array.
 			List<Blob> pages = new List<Blob>();
@@ -250,8 +264,7 @@ namespace FF1Lib
 			Data[0x37873] = (byte)pages.Count;
 
 			// The first pointer is immediately after the pointer table.
-			List<ushort> ptrs = new List<ushort>();
-			ptrs.Add((ushort)(0xBB00 + pages.Count * 2));
+			List<ushort> ptrs = new List<ushort> { (ushort)(0xBB00 + pages.Count * 2) };
 
 			for (int i = 1; i < pages.Count; ++i)
 			{
