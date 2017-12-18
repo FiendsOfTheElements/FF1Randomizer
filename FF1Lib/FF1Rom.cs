@@ -187,9 +187,10 @@ namespace FF1Lib
 				ScaleEnemyStats(flags.EnemyScaleFactor, rng);
 			}
 
-			// This can be called with every seed, with zero forced it 
-			// just shuffles the default party without forcing any selections
-			PartyRandomize(rng, flags.ForcedPartyMembers);
+			if (flags.ForcedPartyMembers > 0)
+			{
+				PartyRandomize(rng, flags.ForcedPartyMembers);
+			}
 
 			// We have to do "fun" stuff last because it alters the RNG state.
 			if (flags.PaletteSwap)
