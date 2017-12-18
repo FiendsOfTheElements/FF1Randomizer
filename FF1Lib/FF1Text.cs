@@ -12,7 +12,7 @@ namespace FF1Lib
 	// ReSharper disable once InconsistentNaming
 	public static class FF1Text
 	{
-		public enum Terminator : byte
+		public enum Delimiter : byte
 		{
 			Null = 0x00,
 			Segment = 0x01,
@@ -53,7 +53,7 @@ namespace FF1Lib
 			return builder.ToString();
 		}
 
-		public static Blob TextToBytes(string text, bool useDTE = true, Terminator terminator = Terminator.Null)
+		public static Blob TextToBytes(string text, bool useDTE = true, Delimiter delimiter = Delimiter.Null)
 		{
 			Blob bytes = new byte[text.Length + 1];
 			int i = 0, j = 0;
@@ -76,7 +76,7 @@ namespace FF1Lib
 				bytes[j++] = BytesByText[text[i++].ToString()];
 			}
 
-			bytes[j++] = (byte)terminator;
+			bytes[j++] = (byte)delimiter;
 
 			return bytes.SubBlob(0, j);
 		}
@@ -100,13 +100,13 @@ namespace FF1Lib
 				int spaces = lines[i].Length - lines[i].TrimStart(' ').Length;
 				ushort[] ppuPtr = { (ushort)(topLeftOfBox + (0x20 * i) + spaces) };
 				buffers.Add(Blob.FromUShorts(ppuPtr));
-				buffers.Add(TextToBytes(line, useDTE: false, terminator: Terminator.Segment));
+				buffers.Add(TextToBytes(line, useDTE: false, delimiter: Delimiter.Segment));
 			}
 
 			if (buffers.Count != 0)
 			{
-				buffers.RemoveAt(buffers.Count - 1);
-				buffers.Add(Blob.FromHex("00"));
+				var lastBuffer = buffers[buffers.Count - 1];
+				lastBuffer[lastBuffer.Length - 1] = (byte)Delimiter.Null;
 			}
 
 			return Blob.Concat(buffers);
