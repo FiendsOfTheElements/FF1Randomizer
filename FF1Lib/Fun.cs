@@ -78,8 +78,8 @@ namespace FF1Lib
 		public void ShuffleLeader(MT19337 rng)
 		{
 			byte leader = (byte)(rng.Between(0, 3) << 6);
-			Data[0x3D8BC] = leader;
-			Data[0x3E933] = leader;
+			Data[0x7D8BC] = leader;
+			Data[0x7E933] = leader;
 		}
 
 		public void ShuffleMusic(MusicShuffle mode, MT19337 rng)
@@ -96,28 +96,28 @@ namespace FF1Lib
 					dungeonTracks.Shuffle(rng);
 
 					//Overworld
-					Data[0x3C649] = overworldTracks[0];
-					Data[0x3C6F9] = overworldTracks[0];
-					Data[0x3C75A] = overworldTracks[0];
-					Data[0x3C75B] = overworldTracks[0];
+					Data[0x7C649] = overworldTracks[0];
+					Data[0x7C6F9] = overworldTracks[0];
+					Data[0x7C75A] = overworldTracks[0];
+					Data[0x7C75B] = overworldTracks[0];
 
 					//Ship
-					Data[0x3C62D] = overworldTracks[1];
-					Data[0x3C75D] = overworldTracks[1];
+					Data[0x7C62D] = overworldTracks[1];
+					Data[0x7C75D] = overworldTracks[1];
 
 					//Airship
-					Data[0x3C235] = overworldTracks[2];
-					Data[0x3C761] = overworldTracks[2];
+					Data[0x7C235] = overworldTracks[2];
+					Data[0x7C761] = overworldTracks[2];
 
 					//Remove used songs from other pools
 					var usedTracks = overworldTracks.Take(3).ToList();
 					townTracks = townTracks.Except(usedTracks).ToList();
 
 					//Town
-					Data[0x3CFC3] = townTracks[0];
+					Data[0x7CFC3] = townTracks[0];
 
 					//Castle
-					Data[0x3CFC4] = townTracks[1];
+					Data[0x7CFC4] = townTracks[1];
 
 					//Shop
 					Data[0x3A351] = townTracks[2];
@@ -134,12 +134,12 @@ namespace FF1Lib
 					dungeonTracks = dungeonTracks.Except(usedTracks).ToList();
 
 					//Dungeons
-					Data[0x3CFC5] = dungeonTracks[0];
-					Data[0x3CFC6] = dungeonTracks[1];
-					Data[0x3CFC7] = dungeonTracks[2];
-					Data[0x3CFC8] = dungeonTracks[3];
-					Data[0x3CFC9] = dungeonTracks[4];
-					Data[0x3CFCA] = dungeonTracks[5];
+					Data[0x7CFC5] = dungeonTracks[0];
+					Data[0x7CFC6] = dungeonTracks[1];
+					Data[0x7CFC7] = dungeonTracks[2];
+					Data[0x7CFC8] = dungeonTracks[3];
+					Data[0x7CFC9] = dungeonTracks[4];
+					Data[0x7CFCA] = dungeonTracks[5];
 
 					break;
 
@@ -148,28 +148,28 @@ namespace FF1Lib
 					tracks.Shuffle(rng);
 
 					//Overworld
-					Data[0x3C649] = tracks[0];
-					Data[0x3C6F9] = tracks[0];
-					Data[0x3C75A] = tracks[0];
-					Data[0x3C75B] = tracks[0];
+					Data[0x7C649] = tracks[0];
+					Data[0x7C6F9] = tracks[0];
+					Data[0x7C75A] = tracks[0];
+					Data[0x7C75B] = tracks[0];
 
 					//Ship
-					Data[0x3C62D] = tracks[1];
-					Data[0x3C75D] = tracks[1];
+					Data[0x7C62D] = tracks[1];
+					Data[0x7C75D] = tracks[1];
 
 					//Airship
-					Data[0x3C235] = tracks[2];
-					Data[0x3C761] = tracks[2];
+					Data[0x7C235] = tracks[2];
+					Data[0x7C761] = tracks[2];
 
 					//Tilesets 1-8
-					Data[0x3CFC3] = tracks[3]; //Town
-					Data[0x3CFC4] = tracks[4]; //Castle
-					Data[0x3CFC5] = tracks[5];
-					Data[0x3CFC6] = tracks[6];
-					Data[0x3CFC7] = tracks[7];
-					Data[0x3CFC8] = tracks[8];
-					Data[0x3CFC9] = tracks[9];
-					Data[0x3CFCA] = tracks[10];
+					Data[0x7CFC3] = tracks[3]; //Town
+					Data[0x7CFC4] = tracks[4]; //Castle
+					Data[0x7CFC5] = tracks[5];
+					Data[0x7CFC6] = tracks[6];
+					Data[0x7CFC7] = tracks[7];
+					Data[0x7CFC8] = tracks[8];
+					Data[0x7CFC9] = tracks[9];
+					Data[0x7CFCA] = tracks[10];
 
 					//Title
 					Data[0x3A226] = tracks[11];
@@ -213,9 +213,9 @@ namespace FF1Lib
 
 					List<int> AllSongs = new List<int>
 					{
-						0x3C649, 0x3C6F9, 0x3C75A, 0x3C75B, 0x3C62D, 0x3C75D,
-						0x3C235, 0x3C761, 0x3CFC3, 0x3CFC4, 0x3CFC5, 0x3CFC6,
-						0x3CFC7, 0x3CFC8, 0x3CFC9, 0x3CFCA, 0x3A226, 0x3A351,
+						0x7C649, 0x7C6F9, 0x7C75A, 0x7C75B, 0x7C62D, 0x7C75D,
+						0x7C235, 0x7C761, 0x7CFC3, 0x7CFC4, 0x7CFC5, 0x7CFC6,
+						0x7CFC7, 0x7CFC8, 0x7CFC9, 0x7CFCA, 0x3A226, 0x3A351,
 						0x3A56E, 0x3A597, 0x3ADB4, 0x3B677, 0x3997F, 0x37804,
 						0x3784E, 0x31E44, 0x2DAF6, 0x2D9C1, 0x36E86, 0x27C0D
 					};
