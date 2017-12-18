@@ -36,11 +36,10 @@ namespace FF1Lib
 		    var pointers = new ushort[textBlobs.Length];
 		    for (int i = 0; i < textBlobs.Length; i++)
 		    {
-			    var blob = Blob.Concat(textBlobs[i], new byte[] { 0x00 });
-			    Put(offset, blob);
+			    Put(offset, textBlobs[i]);
 
 			    pointers[i] = (ushort)(offset - pointerBase);
-			    offset += blob.Length;
+			    offset += textBlobs[i].Length;
 		    }
 
 		    Put(pointerOffset, Blob.FromUShorts(pointers));

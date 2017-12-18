@@ -224,7 +224,7 @@ namespace FF1Lib
 		{
 			var seedBytes = FF1Text.TextToBytes($"{version}  {seed}", useDTE: false);
 			var flagBytes = FF1Text.TextToBytes($"{flags}", useDTE: false);
-			var padding = new byte[15 - flagBytes.Length];
+			var padding = new byte[16 - flagBytes.Length];
 			for (int i = 0; i < padding.Length; i++)
 			{
 				padding[i] = 0xFF;
