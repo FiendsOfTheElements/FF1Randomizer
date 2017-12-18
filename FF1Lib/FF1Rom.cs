@@ -17,14 +17,14 @@ namespace FF1Lib
 		public const int CopyrightOffset1 = 0x384A8;
 		public const int CopyrightOffset2 = 0x384BA;
 
-		public const int RngOffset = 0x3F100;
+		public const int RngOffset = 0x7F100;
 		public const int RngSize = 256;
 
 		public const int LevelRequirementsOffset = 0x2D000;
 		public const int LevelRequirementsSize = 3;
 		public const int LevelRequirementsCount = 49;
 
-		public const int StartingGoldOffset = 0x301C;
+		public const int StartingGoldOffset = 0x0301C;
 
 		public const int GoldItemOffset = 108; // 108 items before gold chests
 		public const int GoldItemCount = 68;
@@ -50,6 +50,7 @@ namespace FF1Lib
 		{
 			var rng = new MT19337(BitConverter.ToUInt32(seed, 0));
 
+			UpgradeToMMC3();
 			EasterEggs();
 			RollCredits();
 
@@ -220,6 +221,30 @@ namespace FF1Lib
 			return Get(0, 16) == Blob.FromHex("06400e890e890e401e400e400e400b42");
 		}
 
+		public void UpgradeToMMC3()
+		{
+			Header[4] = 32; // 32 pages of 16 kB
+			Header[6] = 0x43; // original is 0x13 where 1 = MMC1 and 4 = MMC3
+
+			// Expand ROM size, moving bank 0F to the end.
+			Blob newData = new byte[0x80000];
+			Array.Copy(Data, newData, 0x3C000);
+			Array.Copy(Data, 0x3C000, newData, 0x7C000, 0x4000);
+			Data = newData;
+
+			// Change bank swap code.
+			// We put this code at SwapPRG_L, so we don't have to move any of the "long" calls to it.
+			// We completely overwrite SetMMC1SwapMode, since we don't need it anymore, and partially overwrite the original SwapPRG.
+			Put(0x7FE03, Blob.FromHex("48a9068d0080680a8d018048a9078d00806869018d0180a90060"));
+
+			// Initialize MMC3
+			Put(0x7FE48, Blob.FromHex("8d00e0a9808d01a0a0008c00a08c00808c0180c88c0080c88c01808c0080c8c88c0180a9038d0080c88c0180a9048d00804c1dfea900"));
+			Put(0x7FE1D, Blob.FromHex("c88c0180a9058d0080c88c01804c7cfe"));
+
+			// Rewrite the lone place where SwapPRG was called directly and not through SwapPRG_L.
+			Data[0x7FE97] = 0x03;
+		}
+
 		public void WriteSeedAndFlags(string version, string seed, string flags)
 		{
 			var seedBytes = FF1Text.TextToBytes($"{version}  {seed}", useDTE: false);
@@ -276,9 +301,9 @@ namespace FF1Lib
 			Put(LevelRequirementsOffset, Blob.Concat(levelRequirementsBytes.Select(bytes => (Blob)new byte[] { bytes[0], bytes[1], bytes[2] })));
 
 			// A dirty, ugly, evil piece of code that sets the level requirement for level 2, even though that's already defined in the above table.
-			byte firstLevelRequirement = Data[0x3C04B];
+			byte firstLevelRequirement = Data[0x7C04B];
 			firstLevelRequirement = (byte)(firstLevelRequirement / multiplier);
-			Data[0x3C04B] = firstLevelRequirement;
+			Data[0x7C04B] = firstLevelRequirement;
 		}
 
 		public static string EncodeFlagsText(Flags flags)

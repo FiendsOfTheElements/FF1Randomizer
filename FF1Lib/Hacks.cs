@@ -16,7 +16,7 @@ namespace FF1Lib
 		public const int CanoeSageSize = 5;
 		public const int PartyShuffleOffset = 0x312E0;
 		public const int PartyShuffleSize = 3;
-		public const int MapSpriteOffset = 0x3400;
+		public const int MapSpriteOffset = 0x03400;
 		public const int MapSpriteSize = 3;
 		public const int MapSpriteCount = 16;
 
@@ -103,20 +103,20 @@ namespace FF1Lib
 		public void EnableSpeedHacks()
 		{
 			// Screen wipe
-			Data[0x3D6EE] = 0x08; // These two values must evenly divide 224 (0xE0), default are 2 and 4
-			Data[0x3D6F5] = 0x10;
-			Data[0x3D713] = 0x0A; // These two values must evenly divide 220 (0xDC), default are 2 and 4
-			Data[0x3D71A] = 0x14; // Don't ask me why they aren't the same, it's the number of scanlines to stop the loop at
+			Data[0x7D6EE] = 0x08; // These two values must evenly divide 224 (0xE0), default are 2 and 4
+			Data[0x7D6F5] = 0x10;
+			Data[0x7D713] = 0x0A; // These two values must evenly divide 220 (0xDC), default are 2 and 4
+			Data[0x7D71A] = 0x14; // Don't ask me why they aren't the same, it's the number of scanlines to stop the loop at
 
 			// Dialogue boxes
-			Data[0x3D620] = 0x0B; // These two values must evenly divide 88 (0x58), the size of the dialogue box
-			Data[0x3D699] = 0x0B;
+			Data[0x7D620] = 0x0B; // These two values must evenly divide 88 (0x58), the size of the dialogue box
+			Data[0x7D699] = 0x0B;
 
 			// Battle entry
-			Data[0x3D90A] = 0x11; // This can be just about anything, default is 0x41, sfx lasts for 0x20
+			Data[0x7D90A] = 0x11; // This can be just about anything, default is 0x41, sfx lasts for 0x20
 
 			// All kinds of palette cycling
-			Data[0x3D955] = 0x00; // This value is ANDed with a counter, 0x03 is default, 0x01 is double speed, 0x00 is quadruple
+			Data[0x7D955] = 0x00; // This value is ANDed with a counter, 0x03 is default, 0x01 is double speed, 0x00 is quadruple
 
 			// Battle
 			Data[0x31ECE] = 0x60; // Double character animation speed
@@ -166,7 +166,7 @@ namespace FF1Lib
 
 		public void EnableDash()
 		{
-			Put(0x03D077, Blob.FromHex("4A252DD002A54224205002A9044A6900853460"));
+			Put(0x7D077, Blob.FromHex("4A252DD002A54224205002A9044A6900853460"));
 		}
 
 		public void EnableBuyTen()
@@ -195,14 +195,14 @@ namespace FF1Lib
 			Blob setBridgeVis = Blob.FromHex("A901EA");
 			Put(0x392A1, setBridgeVis);
 			Put(0x394D7, setBridgeVis);
-			Put(0x3C64D, setBridgeVis);
-			Put(0x3E3A6, setBridgeVis);
+			Put(0x7C64D, setBridgeVis);
+			Put(0x7E3A6, setBridgeVis);
 		}
 
 		public void RollCredits()
 		{
 			// Wallpaper over the JSR to the NASIR CRC to circumvent their neolithic DRM.
-			Put(0x3CF34, Blob.FromHex("EAEAEA"));
+			Put(0x7CF34, Blob.FromHex("EAEAEA"));
 
 			// Actual Credits. Each string[] is a page. Each "" skips a line, duh.
 			// The lines have zero padding on all sides, and 16 usable characters in length.

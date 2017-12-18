@@ -79,7 +79,7 @@ namespace FF1Lib
 
 	public partial class FF1Rom : NesRom
 	{
-		public const int TreasureOffset = 0x3100;
+		public const int TreasureOffset = 0x03100;
 		public const int TreasureSize = 1;
 		public const int TreasureCount = 256;
 
