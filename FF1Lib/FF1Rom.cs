@@ -29,6 +29,16 @@ namespace FF1Lib
 		public const int GoldItemOffset = 108; // 108 items before gold chests
 		public const int GoldItemCount = 68;
 
+		public void PutInBank(int bank, int address, Blob data)
+		{
+			if ((address - 0x8000) + data.Length >= 0x4000)
+			{
+				throw new Exception("Data is too large to fit within its bank.");
+			}
+			int offset = (bank * 0x4000) + (address - 0x8000);
+			this.Put(offset, data);
+		}
+
 		public FF1Rom(string filename) : base(filename)
 		{}
 
