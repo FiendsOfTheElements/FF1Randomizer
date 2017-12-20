@@ -54,7 +54,7 @@ namespace Sandbox
 			Put(0x7FE1D, Blob.FromHex("c88c0180a9058d0080c88c01804c7cfe"));
 
 			// Rewrite the lone place where SwapPRG was called directly and not through SwapPRG_L.
-			Data[0x3FE97] = 0x03;
+			Data[0x7FE97] = 0x03;
 		}
 	}
 }

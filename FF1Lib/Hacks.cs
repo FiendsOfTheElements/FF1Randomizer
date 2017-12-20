@@ -16,7 +16,7 @@ namespace FF1Lib
 		public const int CanoeSageSize = 5;
 		public const int PartyShuffleOffset = 0x312E0;
 		public const int PartyShuffleSize = 3;
-		public const int MapSpriteOffset = 0x3400;
+		public const int MapSpriteOffset = 0x03400;
 		public const int MapSpriteSize = 3;
 		public const int MapSpriteCount = 16;
 
@@ -42,6 +42,46 @@ namespace FF1Lib
 			Put(CanoeSageOffset, nops);
 		}
 
+		public void PartyRoulette()
+		{
+			// First, disable the 'B' button to prevent going back after roulette spin
+			Data[0x39C92] = 0xF7; // F7 here is really a relative jump value of -9
+			Data[0x39C9B] = 0xF7;
+			Data[0x39CA4] = 0xF7;
+			Data[0x39CBD] = 0xEA;
+			Data[0x39CBE] = 0xEA;
+
+			// Then skip the check for directionaly input and just constantly cycle class selection 0 through 5
+			Put(0x39D25, Enumerable.Repeat((byte)0xEA, 14).ToArray());
+		}
+
+		public void PartyRandomize(MT19337 rng, int numberForced)
+		{
+			// Always randomize all 4 default members (but don't force if not needed)
+			Data[0x3A0AE] = (byte)rng.Between(0, 5);
+			Data[0x3A0BE] = (byte)rng.Between(0, 5);
+			Data[0x3A0CE] = (byte)rng.Between(0, 5);
+			Data[0x3A0DE] = (byte)rng.Between(0, 5);
+
+			if (numberForced <= 0)
+				return;
+
+			Data[0x39D35] = 0xE0;
+			Data[0x39D36] = (byte)(numberForced * 0x10);
+			Put(0x39D37, Blob.FromHex("30DFFE0003BD0003E906D0039D0003A9018537"));
+			/* Starting at 0x39D35 (which is just after LDX char_index)
+				* CPX ____(numberForced * 0x10)____
+				* BMI @MainLoop
+				* INC ptygen_class, X
+				* LDA ptygen_class, X
+				* SBC #$06
+				* BNE :+
+				*   STA ptygen_class, X
+				* : LDA #$01
+				*   STA menustall
+				*/
+		}
+
 		public void DisablePartyShuffle()
 		{
 			var nops = new byte[PartyShuffleSize];
@@ -63,20 +103,20 @@ namespace FF1Lib
 		public void EnableSpeedHacks()
 		{
 			// Screen wipe
-			Data[0x3D6EE] = 0x08; // These two values must evenly divide 224 (0xE0), default are 2 and 4
-			Data[0x3D6F5] = 0x10;
-			Data[0x3D713] = 0x0A; // These two values must evenly divide 220 (0xDC), default are 2 and 4
-			Data[0x3D71A] = 0x14; // Don't ask me why they aren't the same, it's the number of scanlines to stop the loop at
+			Data[0x7D6EE] = 0x08; // These two values must evenly divide 224 (0xE0), default are 2 and 4
+			Data[0x7D6F5] = 0x10;
+			Data[0x7D713] = 0x0A; // These two values must evenly divide 220 (0xDC), default are 2 and 4
+			Data[0x7D71A] = 0x14; // Don't ask me why they aren't the same, it's the number of scanlines to stop the loop at
 
 			// Dialogue boxes
-			Data[0x3D620] = 0x0B; // These two values must evenly divide 88 (0x58), the size of the dialogue box
-			Data[0x3D699] = 0x0B;
+			Data[0x7D620] = 0x0B; // These two values must evenly divide 88 (0x58), the size of the dialogue box
+			Data[0x7D699] = 0x0B;
 
 			// Battle entry
-			Data[0x3D90A] = 0x11; // This can be just about anything, default is 0x41, sfx lasts for 0x20
+			Data[0x7D90A] = 0x11; // This can be just about anything, default is 0x41, sfx lasts for 0x20
 
 			// All kinds of palette cycling
-			Data[0x3D955] = 0x00; // This value is ANDed with a counter, 0x03 is default, 0x01 is double speed, 0x00 is quadruple
+			Data[0x7D955] = 0x00; // This value is ANDed with a counter, 0x03 is default, 0x01 is double speed, 0x00 is quadruple
 
 			// Battle
 			Data[0x31ECE] = 0x60; // Double character animation speed
@@ -126,7 +166,7 @@ namespace FF1Lib
 
 		public void EnableDash()
 		{
-			Put(0x03D077, Blob.FromHex("4A252DD002A54224205002A9044A6900853460"));
+			Put(0x7D077, Blob.FromHex("4A252DD002A54224205002A9044A6900853460"));
 		}
 
 		public void EnableBuyTen()
@@ -155,49 +195,63 @@ namespace FF1Lib
 			Blob setBridgeVis = Blob.FromHex("A901EA");
 			Put(0x392A1, setBridgeVis);
 			Put(0x394D7, setBridgeVis);
-			Put(0x3C64D, setBridgeVis);
-			Put(0x3E3A6, setBridgeVis);
+			Put(0x7C64D, setBridgeVis);
+			Put(0x7E3A6, setBridgeVis);
 		}
 
 		public void RollCredits()
 		{
 			// Wallpaper over the JSR to the NASIR CRC to circumvent their neolithic DRM.
-			Put(0x3CF34, Blob.FromHex("EAEAEA"));
+			Put(0x7CF34, Blob.FromHex("EAEAEA"));
 
 			// Actual Credits. Each string[] is a page. Each "" skips a line, duh.
 			// The lines have zero padding on all sides, and 16 usable characters in length.
 			// Don't worry about the inefficiency of spaces as they are all trimmed and the
 			// leading spaces are used to increment the PPU ptr precisely to save ROM space.
-			List<string[]> texts = new List <string[]>();
-			texts.Add(new string[] { "", "",
-				                     " Final  Fantasy ",
-				                     "", "",
-				                     "   Randomizer   ",
-			});
-			texts.Add(new string[] { "", "",
-				                     "   Programmed   ",
-				                     "       By       ",
-				                     "",
-				                     "E N T R O P E R "
-			});
-			texts.Add(new string[] { "",
-				                     "  Development   ",
-				                     "", "",
-				                     "  Entroper",
-									 "  MeridianBC",
-									 "  tartopan",
-				                     "  nitz",
-			});
-			texts.Add(new string[] { " Special Thanks ",
-									 "",
-									 "fcoughlin, Disch",
-									 "Paulygon, anomie",
-									 "Derangedsquirrel",
-									 "AstralEsper, and",
-									 "",
-									 " The Entire FFR ",
-									 "    Community   ",
-			});
+			List<string[]> texts = new List<string[]>
+			{
+				new []
+				{
+					"",
+					"",
+					" Final  Fantasy ",
+					"",
+					"",
+					"   Randomizer   ",
+				},
+				new []
+				{
+					"",
+					"",
+					"   Programmed   ",
+					"       By       ",
+					"",
+					"E N T R O P E R "
+				},
+				new []
+				{
+					"",
+					"  Development   ",
+					"",
+					"",
+					"  Entroper",
+					"  MeridianBC",
+					"  tartopan",
+					"  nitz",
+				},
+				new []
+				{
+					" Special Thanks ",
+					"",
+					"fcoughlin, Disch",
+					"Paulygon, anomie",
+					"Derangedsquirrel",
+					"AstralEsper, and",
+					"",
+					" The Entire FFR ",
+					"    Community   ",
+				}
+			};
 
 			// Accumulate all our Credits pages before we set up the string pointer array.
 			List<Blob> pages = new List<Blob>();
@@ -207,13 +261,12 @@ namespace FF1Lib
 			}
 
 			// Clobber the number of pages to render before we insert in the pointers.
-			Data[0x37873] = (byte)pages.Count();
+			Data[0x37873] = (byte)pages.Count;
 
 			// The first pointer is immediately after the pointer table.
-			List<ushort> ptrs = new List<ushort>();
-			ptrs.Add((ushort)(0xBB00 + pages.Count() * 2));
+			List<ushort> ptrs = new List<ushort> { (ushort)(0xBB00 + pages.Count * 2) };
 
-			for (int i = 1; i < pages.Count(); ++i)
+			for (int i = 1; i < pages.Count; ++i)
 			{
 				ptrs.Add((ushort)(ptrs.Last() + pages[i - 1].Length));
 			}

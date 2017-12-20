@@ -45,6 +45,7 @@ namespace FF1Randomizer
 			SetScaleFactorLabel(PriceScaleFactorSlider, PriceScaleFactorLabel);
 			SetScaleFactorLabel(EnemyScaleFactorSlider, EnemyScaleFactorLabel);
 			SetExpLabel();
+			SetPartyLabel();
 			SetFlagsText(null, null);
 		}
 
@@ -222,6 +223,14 @@ namespace FF1Randomizer
 			SetFlagsText(sender, e);
 		}
 
+		private void PartyScaleFactorSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+		{
+			PartyScaleFactorSlider.Value = Math.Round(PartyScaleFactorSlider.Value);
+
+			SetPartyLabel();
+			SetFlagsText(sender, e);
+		}
+
 		private void CopyButton_Click(object sender, RoutedEventArgs e)
 		{
 			Clipboard.SetText(SeedTextBox.Text + "_" + FlagsTextBox.Text);
@@ -231,9 +240,9 @@ namespace FF1Randomizer
 		{
 			var text = Clipboard.GetText();
 			var parts = text.Split('_');
-			if (parts.Length != 2 || parts[0].Length != 8 || parts[1].Length != 10)
+			if (parts.Length != 2 || parts[0].Length != 8 || parts[1].Length != 11)
 			{
-				MessageBox.Show("Format not recognized.  Paste should look like SSSSSSSS_FFFFFFFFFF", "Invalid Format");
+				MessageBox.Show("Format not recognized.  Paste should look like SSSSSSSS_FFFFFFFFFFF", "Invalid Format");
 
 				return;
 			}
@@ -257,6 +266,14 @@ namespace FF1Randomizer
 			if (ExpMultiplierSlider != null && ExpBonusSlider != null && ExpScaleFactorLabel != null)
 			{
 				ExpScaleFactorLabel.Content = $"{ExpMultiplierSlider.Value}x + {ExpBonusSlider.Value}";
+			}
+		}
+
+		private void SetPartyLabel()
+		{
+			if (PartyScaleFactorSlider != null)
+			{
+				PartyScaleFactorLabel.Content = PartyScaleFactorSlider.Value;
 			}
 		}
 
@@ -308,10 +325,11 @@ namespace FF1Randomizer
 					MusicComboBox.SelectedValue.ToString() == "Disable Music" ? MusicShuffle.MusicDisabled :
 					MusicShuffle.None,
 
+				ForcedPartyMembers = (int)PartyScaleFactorSlider.Value,
 				PriceScaleFactor = PriceScaleFactorSlider.Value,
 				EnemyScaleFactor = EnemyScaleFactorSlider.Value,
 				ExpMultiplier = ExpMultiplierSlider.Value,
-				ExpBonus = ExpBonusSlider.Value
+				ExpBonus = (int)ExpBonusSlider.Value
 			});
         }
 
@@ -356,6 +374,7 @@ namespace FF1Randomizer
 				flags.Music == MusicShuffle.MusicDisabled ? "Disable Music" :
 				"No Music Shuffle";
 
+			PartyScaleFactorSlider.Value = flags.ForcedPartyMembers;
 			PriceScaleFactorSlider.Value = flags.PriceScaleFactor;
 			EnemyScaleFactorSlider.Value = flags.EnemyScaleFactor;
 			ExpMultiplierSlider.Value = flags.ExpMultiplier;

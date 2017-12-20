@@ -79,6 +79,7 @@ namespace FF1RandomizerOnline.Controllers
 					ShuffleLeader = true,
 					Music = MusicShuffle.None,
 
+					ForcedPartyMembers = 0,
 					PriceScaleFactor = 2.0,
 					EnemyScaleFactor = 2.0,
 					ExpMultiplier = 2.0,

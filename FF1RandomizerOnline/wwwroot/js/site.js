@@ -89,6 +89,9 @@ function setCallbacks() {
 	slider = document.getElementById("Flags_ExpBonus");
 	slider.onchange = expGoldBoostCallback;
 
+	slider = document.getElementById("Flags_ForcedPartyMembers");
+	slider.onchange = forcedPartyMembersCallback;
+
 	var seed = document.getElementById("Seed");
 	seed.oninput = validateSeed;
 
@@ -100,6 +103,7 @@ function setCallbacks() {
 			getPercentageCallback(document.getElementById("Flags_PriceScaleFactor"), "prices-display")();
 			getPercentageCallback(document.getElementById("Flags_EnemyScaleFactor"), "enemy-stats-display")();
 			expGoldBoostCallback();
+			forcedPartyMembersCallback();
 		}
 	};
 
@@ -110,7 +114,7 @@ function setCallbacks() {
 		if (file) {
 			fileLabel.innerHTML = file.name;
 		}
-	}
+	};
 }
 
 function setPercentageCallback(sliderId, labelId) {
@@ -131,6 +135,13 @@ function expGoldBoostCallback() {
 	var bonusSlider = document.getElementById("Flags_ExpBonus");
 	var label = document.getElementById("exp-gold-display");
 	label.innerHTML = multiplierSlider.value + "x + " + bonusSlider.value;
+	setFlagsString();
+}
+
+function forcedPartyMembersCallback() {
+	var slider = document.getElementById("Flags_ForcedPartyMembers");
+	var label = document.getElementById("forced-party-members-display");
+	label.innerHTML = slider.value;
 	setFlagsString();
 }
 
@@ -181,6 +192,8 @@ function getFlagsString() {
 	flagsString += base64Chars[slider.value * 10];
 	slider = document.getElementById("Flags_ExpBonus");
 	flagsString += base64Chars[slider.value / 10];
+	slider = document.getElementById("Flags_ForcedPartyMembers");
+	flagsString += base64Chars[slider.value];
 
 	return flagsString;
 }
@@ -254,4 +267,5 @@ $(document).ready(function () {
 	getPercentageCallback(document.getElementById("Flags_PriceScaleFactor"), "prices-display")();
 	getPercentageCallback(document.getElementById("Flags_EnemyScaleFactor"), "enemy-stats-display")();
 	expGoldBoostCallback();
+	forcedPartyMembersCallback();
 });

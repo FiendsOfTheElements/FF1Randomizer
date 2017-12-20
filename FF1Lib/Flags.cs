@@ -43,9 +43,10 @@ namespace FF1Lib
 		public bool ShuffleLeader { get; set; }
 		public MusicShuffle Music { get; set; }
 
+		public int ForcedPartyMembers { get; set; }
 		public double EnemyScaleFactor { get; set; }
 		public double PriceScaleFactor { get; set; }
 		public double ExpMultiplier { get; set; }
-		public double ExpBonus { get; set; }
+		public int ExpBonus { get; set; }
 	}
 }
