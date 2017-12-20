@@ -423,7 +423,7 @@ namespace FF1Lib
 			flags.PriceScaleFactor = Base64ToSlider(text[6]) / 10.0;
 			flags.EnemyScaleFactor = Base64ToSlider(text[7]) / 10.0;
 			flags.ExpMultiplier = Base64ToSlider(text[8]) / 10.0;
-			flags.ExpBonus = Base64ToSlider(text[9]) * 10.0;
+			flags.ExpBonus = (int)(Base64ToSlider(text[9]) * 10.0);
 			flags.ForcedPartyMembers = Base64ToSlider(text[10]);
 
 			return flags;

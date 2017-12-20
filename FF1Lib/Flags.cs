@@ -47,6 +47,6 @@ namespace FF1Lib
 		public double EnemyScaleFactor { get; set; }
 		public double PriceScaleFactor { get; set; }
 		public double ExpMultiplier { get; set; }
-		public double ExpBonus { get; set; }
+		public int ExpBonus { get; set; }
 	}
 }
