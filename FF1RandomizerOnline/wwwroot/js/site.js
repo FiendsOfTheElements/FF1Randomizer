@@ -9,7 +9,7 @@
 
 function validateFlags() {
 	var flagsInput = document.getElementById("Flags");
-	var isValid = flagsInput.value.match(/^[A-Za-z0-9!%]{10}$/);
+	var isValid = flagsInput.value.match(/^[A-Za-z0-9!%]{11}$/);
 	if (isValid) {
 		flagsInput.parentElement.classList.remove("has-error");
 	} else {
@@ -256,6 +256,8 @@ function setFlags() {
 	slider.value = base64Chars.indexOf(flagsString[8]) / 10;
 	slider = document.getElementById("Flags_ExpBonus");
 	slider.value = base64Chars.indexOf(flagsString[9]) * 10;
+	slider = document.getElementById("Flags_ForcedPartyMembers");
+	slider.value = base64Chars.indexOf(flagsString[10]);
 
 	flags.value = getFlagsString();
 }
