@@ -12,8 +12,9 @@ namespace FF1Lib
 	// ReSharper disable once InconsistentNaming
 	public static class FF1Text
 	{
-		public enum Delimiter : byte
+		public enum Delimiter
 		{
+			Empty = 0x100,
 			Null = 0x00,
 			Segment = 0x01,
 			Line = 0x05
@@ -76,7 +77,10 @@ namespace FF1Lib
 				bytes[j++] = BytesByText[text[i++].ToString()];
 			}
 
-			bytes[j++] = (byte)delimiter;
+			if (delimiter != Delimiter.Empty)
+			{
+				bytes[j++] = (byte)delimiter;
+			}
 
 			return bytes.SubBlob(0, j);
 		}
@@ -101,6 +105,24 @@ namespace FF1Lib
 				ushort[] ppuPtr = { (ushort)(topLeftOfBox + (0x20 * i) + spaces) };
 				buffers.Add(Blob.FromUShorts(ppuPtr));
 				buffers.Add(TextToBytes(line, useDTE: false, delimiter: Delimiter.Segment));
+			}
+
+			if (buffers.Count != 0)
+			{
+				var lastBuffer = buffers[buffers.Count - 1];
+				lastBuffer[lastBuffer.Length - 1] = (byte)Delimiter.Null;
+			}
+
+			return Blob.Concat(buffers);
+		}
+
+		// This wraps TextToBytes for use with Story pages (Before Credits and End of Game).
+		public static Blob TextToStory(string[] lines)
+		{
+			List<Blob> buffers = new List<Blob>();
+			for (int i = 0; i < lines.Length; ++i)
+			{
+				buffers.Add(TextToBytes(lines[i], useDTE: false, delimiter: Delimiter.Line));
 			}
 
 			if (buffers.Count != 0)

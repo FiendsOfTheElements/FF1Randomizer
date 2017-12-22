@@ -29,6 +29,16 @@ namespace FF1Lib
 		public const int GoldItemOffset = 108; // 108 items before gold chests
 		public const int GoldItemCount = 68;
 
+		public void PutInBank(int bank, int address, Blob data)
+		{
+			if ((address - 0x8000) + data.Length >= 0x4000)
+			{
+				throw new Exception("Data is too large to fit within its bank.");
+			}
+			int offset = (bank * 0x4000) + (address - 0x8000);
+			this.Put(offset, data);
+		}
+
 		public FF1Rom(string filename) : base(filename)
 		{}
 
@@ -52,7 +62,6 @@ namespace FF1Lib
 
 			UpgradeToMMC3();
 			EasterEggs();
-			RollCredits();
 
 			// This has to be done before we shuffle spell levels.
 			if (flags.SpellBugs)
@@ -194,6 +203,8 @@ namespace FF1Lib
 			}
 
 			// We have to do "fun" stuff last because it alters the RNG state.
+			RollCredits(rng);
+
 			if (flags.PaletteSwap)
 			{
 				PaletteSwap(rng);
@@ -215,6 +226,18 @@ namespace FF1Lib
 			}
 
 			WriteSeedAndFlags(Version, seed.ToHex(), EncodeFlagsText(flags));
+			ExtraTrackingAndInitCode();
+		}
+
+		private void ExtraTrackingAndInitCode()
+		{
+			//Encounter table emu/hardware fix + track hard/soft resets
+			PutInBank(0x0F, 0x8000, Blob.FromHex("A9008D00208D012085FEA90885FF85FDA51BC901D00160A901851BA94DC5F9F008A9FF85F585F685F7182088C8B049A94DC5F918F013ADA36469018DA364ADA46469008DA464189010ADA56469018DA564ADA66469008DA664A9008DFD64A200187D00647D00657D00667D0067E8D0F149FF8DFD6418900DA2A0A9009D00609D0064E8D0F760"));
+			Put(0x7C012, Blob.FromHex("A90F2003FE200080EAEAEAEAEAEAEAEA"));
+
+			//Pedometer
+			PutInBank(0x0F, 0x8100, Blob.FromHex("18A532D027A52D2901F006A550D01DF00398D018ADA06069018DA060ADA16069008DA160ADA26069008DA260A52F8530A9FF851860"));
+			Put(0x7D023, Blob.FromHex("A90F2003FE200081"));
 		}
 
 		public override bool Validate()
