@@ -344,9 +344,14 @@ namespace FF1Lib
 			bits[i++] = flags.FunEnemyNames;
 			bits[i++] = flags.PaletteSwap;
 			bits[i++] = flags.ShuffleLeader;
+
+			// Add new Checkbox bit flags here ///////////////////////////////
+
 			bits[i++] = flags.TeamSteak;
 			bits[i++] = flags.Music == MusicShuffle.Standard || flags.Music == MusicShuffle.MusicDisabled;
 			bits[i++] = flags.Music == MusicShuffle.Nonsensical || flags.Music == MusicShuffle.MusicDisabled;
+
+			// Add new non-checkbox bits here ////////////////////////////////
 
 			System.Diagnostics.Debug.Assert(i == bits.Length, "Unused bits writing flags.");
 
@@ -363,6 +368,8 @@ namespace FF1Lib
 			text += SliderToBase64((int)(flags.ExpMultiplier * 10.0));
 			text += SliderToBase64((int)(flags.ExpBonus / 10.0));
 			text += SliderToBase64(flags.ForcedPartyMembers);
+
+			// Add new slider bytes here /////////////////////////////////////
 
 			return text;
 		}
@@ -416,6 +423,9 @@ namespace FF1Lib
 			flags.FunEnemyNames = bits[i++];
 			flags.PaletteSwap = bits[i++];
 			flags.ShuffleLeader = bits[i++];
+
+			// Decode Checkbox bit flags here ////////////////////////////////
+
 			flags.TeamSteak = bits[i++];
 
 			flags.Music =
@@ -425,12 +435,16 @@ namespace FF1Lib
 				MusicShuffle.None;
 			i += 2;
 
+			// Decode non-checkbox bits here /////////////////////////////////
+
 			string sliders = sections[1];
 			flags.PriceScaleFactor = Base64ToSlider(sliders[0]) / 10.0;
 			flags.EnemyScaleFactor = Base64ToSlider(sliders[1]) / 10.0;
 			flags.ExpMultiplier = Base64ToSlider(sliders[2]) / 10.0;
 			flags.ExpBonus = (int)(Base64ToSlider(sliders[3]) * 10.0);
 			flags.ForcedPartyMembers = Base64ToSlider(sliders[4]);
+
+			// Decode slider bytes here //////////////////////////////////////
 
 			return flags;
 		}
