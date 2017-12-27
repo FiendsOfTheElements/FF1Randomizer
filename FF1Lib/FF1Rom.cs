@@ -12,7 +12,7 @@ namespace FF1Lib
 	// ReSharper disable once InconsistentNaming
 	public partial class FF1Rom : NesRom
 	{
-		public const string Version = "1.6.0";
+		public const string Version = "1.6.1";
 
 		public const int CopyrightOffset1 = 0x384A8;
 		public const int CopyrightOffset2 = 0x384BA;
@@ -343,10 +343,15 @@ namespace FF1Lib
 
 			bits[i++] = flags.FunEnemyNames;
 			bits[i++] = flags.PaletteSwap;
-			bits[i++] = flags.TeamSteak;
 			bits[i++] = flags.ShuffleLeader;
+
+			// Add new Checkbox bit flags here ///////////////////////////////
+
+			bits[i++] = flags.TeamSteak;
 			bits[i++] = flags.Music == MusicShuffle.Standard || flags.Music == MusicShuffle.MusicDisabled;
 			bits[i++] = flags.Music == MusicShuffle.Nonsensical || flags.Music == MusicShuffle.MusicDisabled;
+
+			// Add new non-checkbox bits here ////////////////////////////////
 
 			System.Diagnostics.Debug.Assert(i == bits.Length, "Unused bits writing flags.");
 
@@ -354,26 +359,33 @@ namespace FF1Lib
 			bits.CopyTo(bytes, 0);
 
 			var text = Convert.ToBase64String(bytes);
-			text = text.TrimEnd('=');
 			text = text.Replace('+', '!');
 			text = text.Replace('/', '%');
-
+			text = text.Replace('=', '.');
+			text += '-';
 			text += SliderToBase64((int)(flags.PriceScaleFactor * 10.0));
 			text += SliderToBase64((int)(flags.EnemyScaleFactor * 10.0));
 			text += SliderToBase64((int)(flags.ExpMultiplier * 10.0));
 			text += SliderToBase64((int)(flags.ExpBonus / 10.0));
 			text += SliderToBase64(flags.ForcedPartyMembers);
 
+			// Add new slider bytes here /////////////////////////////////////
+
 			return text;
 		}
 
 		public static Flags DecodeFlagsText(string text)
 		{
-			var bitString = text.Substring(0, 6);
-			bitString = bitString.Replace('!', '+');
-			bitString = bitString.Replace('%', '/');
-			bitString += "==";
+			string[] sections = text.Split('-');
+			if (sections.Length != 2)
+			{
+				throw new ArgumentException("Flags text improperly formatted.");
+			}
 
+			var bitString = sections[0];
+			bitString = bitString.Replace('.', '=');
+			bitString = bitString.Replace('!', '+');
+			bitString = bitString.Replace('%', '/');			
 			var bytes = Convert.FromBase64String(bitString);
 			var bits = new BitArray(bytes);
 			int i = 0;
@@ -410,8 +422,11 @@ namespace FF1Lib
 
 			flags.FunEnemyNames = bits[i++];
 			flags.PaletteSwap = bits[i++];
-			flags.TeamSteak = bits[i++];
 			flags.ShuffleLeader = bits[i++];
+
+			// Decode Checkbox bit flags here ////////////////////////////////
+
+			flags.TeamSteak = bits[i++];
 
 			flags.Music =
 				bits[i] && !bits[i + 1] ? MusicShuffle.Standard :
@@ -420,11 +435,16 @@ namespace FF1Lib
 				MusicShuffle.None;
 			i += 2;
 
-			flags.PriceScaleFactor = Base64ToSlider(text[6]) / 10.0;
-			flags.EnemyScaleFactor = Base64ToSlider(text[7]) / 10.0;
-			flags.ExpMultiplier = Base64ToSlider(text[8]) / 10.0;
-			flags.ExpBonus = (int)(Base64ToSlider(text[9]) * 10.0);
-			flags.ForcedPartyMembers = Base64ToSlider(text[10]);
+			// Decode non-checkbox bits here /////////////////////////////////
+
+			string sliders = sections[1];
+			flags.PriceScaleFactor = Base64ToSlider(sliders[0]) / 10.0;
+			flags.EnemyScaleFactor = Base64ToSlider(sliders[1]) / 10.0;
+			flags.ExpMultiplier = Base64ToSlider(sliders[2]) / 10.0;
+			flags.ExpBonus = (int)(Base64ToSlider(sliders[3]) * 10.0);
+			flags.ForcedPartyMembers = Base64ToSlider(sliders[4]);
+
+			// Decode slider bytes here //////////////////////////////////////
 
 			return flags;
 		}

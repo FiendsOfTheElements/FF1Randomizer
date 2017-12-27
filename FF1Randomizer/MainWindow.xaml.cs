@@ -240,17 +240,17 @@ namespace FF1Randomizer
 		{
 			var text = Clipboard.GetText();
 			var parts = text.Split('_');
-			if (parts.Length != 2 || parts[0].Length != 8 || parts[1].Length != 11)
-			{
-				MessageBox.Show("Format not recognized.  Paste should look like SSSSSSSS_FFFFFFFFFFF", "Invalid Format");
-
-				return;
-			}
 
 			SeedTextBox.Text = parts[0];
 			SetSeed();
 
-			ApplyFlags(FF1Rom.DecodeFlagsText(parts[1]));
+			try
+			{
+				ApplyFlags(FF1Rom.DecodeFlagsText(parts[1]));
+			} catch (Exception)
+			{
+				MessageBox.Show("Format not recognized.  Paste should look like SSSSSSSS_ASDF=-SSSSS", "Invalid Format");
+			}
 		}
 
 		private void SetScaleFactorLabel(Slider slider, Label label)
@@ -317,8 +317,8 @@ namespace FF1Randomizer
 
 				FunEnemyNames = FunEnemyNamesCheckBox.IsChecked == true,
 				PaletteSwap = PaletteSwapCheckBox.IsChecked == true,
-				TeamSteak = TeamTyroComboBox.SelectedValue.ToString() == "Team STEAK",
 				ShuffleLeader = ShuffleLeaderCheckBox.IsChecked == true,
+				TeamSteak = TeamTyroComboBox.SelectedValue.ToString() == "Team STEAK",
 				Music =
 					MusicComboBox.SelectedValue.ToString() == "Standard Music Shuffle" ? MusicShuffle.Standard :
 					MusicComboBox.SelectedValue.ToString() == "Nonsensical Music Shuffle" ? MusicShuffle.Nonsensical :
@@ -366,8 +366,8 @@ namespace FF1Randomizer
 
 			FunEnemyNamesCheckBox.IsChecked = flags.FunEnemyNames;
 			PaletteSwapCheckBox.IsChecked = flags.PaletteSwap;
-			TeamTyroComboBox.SelectedValue = flags.TeamSteak ? "Team STEAK" : "Team TYRO";
 			ShuffleLeaderCheckBox.IsChecked = flags.ShuffleLeader;
+			TeamTyroComboBox.SelectedValue = flags.TeamSteak ? "Team STEAK" : "Team TYRO";
 			MusicComboBox.SelectedValue =
 				flags.Music == MusicShuffle.Standard ? "Standard Music Shuffle" :
 				flags.Music == MusicShuffle.Nonsensical ? "Nonsensical Music Shuffle" :
