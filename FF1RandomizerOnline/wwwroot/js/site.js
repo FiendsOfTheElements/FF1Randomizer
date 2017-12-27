@@ -9,7 +9,12 @@
 
 function validateFlags() {
 	var flagsInput = document.getElementById("Flags");
-	var isValid = flagsInput.value.match(/^[A-Za-z0-9!%]{11}$/);
+
+	var sections = flagsInput.value.split('-');
+
+	var isValid = sections.length == 2
+		&& !!sections[0].match(/^[A-Za-z0-9!%\.]/)
+		&& !!sections[1].match(/[A-Za-z0-9!%]{5}$/);
 	if (isValid) {
 		flagsInput.parentElement.classList.remove("has-error");
 	} else {
@@ -69,7 +74,7 @@ var sliderIds = [
 	"Flags_ExpBonus"
 ];
 
-// ! and % are printable in FF, + and / are not.
+// Our Base64 Variant uses NES printable and Filename allowable characters. No + or /.
 var base64Chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!%";
 
 function setCallbacks() {
@@ -146,56 +151,65 @@ function forcedPartyMembersCallback() {
 }
 
 function getFlagsString() {
-	var checkboxBits = 0;
+	// We put all the information into an array of bools and work it into a tight base64 string later.
+	var flagBools = [];
 	for (var i = 0; i < checkboxIds.length; i++) {
 		var checkbox = document.getElementById(checkboxIds[i]);
-		if (checkbox.checked) {
-			checkboxBits |= 1 << i;
-		}
+		flagBools.push(!!checkbox.checked);
 	}
+
 	var select = document.getElementById("Flags_TeamSteak");
-	if (select.value === "True") {
-		checkboxBits |= 1 << checkboxIds.length;
-	}
+	flagBools.push(select.value === "True");
 
 	select = document.getElementById("Flags_Music");
-	if (select.value === "Standard") {
-		checkboxBits |= 1 << (checkboxIds.length + 1);
+	if (select.value === "None") {
+		flagBools.push(false);
+		flagBools.push(false);
+	} else if (select.value === "Standard") {
+		flagBools.push(true);
+		flagBools.push(false);
 	} else if (select.value === "Nonsensical") {
-		checkboxBits |= 1 << (checkboxIds.length + 2);
+		flagBools.push(false);
+		flagBools.push(true);
 	} else if (select.value === "MusicDisabled") {
-		checkboxBits |= 1 << (checkboxIds.length + 1);
-		checkboxBits |= 1 << (checkboxIds.length + 2);		
+		flagBools.push(true);
+		flagBools.push(true);
 	}
 
-	var flagsString = "";
-	var charBits;
-	charBits = (checkboxBits & 0x000000FC) >>>  2;
-	flagsString += base64Chars[charBits];
-	charBits = (checkboxBits & 0x00000003) <<   4 | (checkboxBits & 0x0000F000) >>> 12;
-	flagsString += base64Chars[charBits];
-	charBits = (checkboxBits & 0x00000F00) >>>  6 | (checkboxBits & 0x00C00000) >>> 22;
-	flagsString += base64Chars[charBits];
-	charBits = (checkboxBits & 0x003F0000) >>> 16;
-	flagsString += base64Chars[charBits];
-	charBits = (checkboxBits & 0xFC000000) >>> 26;
-	flagsString += base64Chars[charBits];
-	charBits = (checkboxBits & 0x03000000) >>> 20;
-	flagsString += base64Chars[charBits];
+	// Put the bool array into a uint8 array. We read beyond the
+	// end of flagBools here but it just gives undefineds which become 0s.
+	// If the order of the bits is odd it's because we match C#'s bits.CopyTo
+	var flagBytes = new Uint8Array(Math.ceil((flagBools.length + 0.0) / 8));
+	for (var i = 0; i < flagBytes.length; ++i) {
+		flagBytes[i] = (
+			((flagBools[i * 8 + 0] ? 0x01 : 0x00) << 0) |
+			((flagBools[i * 8 + 1] ? 0x01 : 0x00) << 1) |
+			((flagBools[i * 8 + 2] ? 0x01 : 0x00) << 2) |
+			((flagBools[i * 8 + 3] ? 0x01 : 0x00) << 3) |
+			((flagBools[i * 8 + 4] ? 0x01 : 0x00) << 4) |
+			((flagBools[i * 8 + 5] ? 0x01 : 0x00) << 5) |
+			((flagBools[i * 8 + 6] ? 0x01 : 0x00) << 6) |
+			((flagBools[i * 8 + 7] ? 0x01 : 0x00) << 7)
+		);
+	}
 
+	var flagsString = btoa(String.fromCharCode.apply(null, flagBytes));
+	flagsString = flagsString.replace(/\+/g, "!").replace(/\//g, "%").replace(/=/g, ".");
+
+	var sliderString = "";
 	var slider;
 	slider = document.getElementById("Flags_PriceScaleFactor");
-	flagsString += base64Chars[slider.value * 10];
+	sliderString += base64Chars[slider.value * 10];
 	slider = document.getElementById("Flags_EnemyScaleFactor");
-	flagsString += base64Chars[slider.value * 10];
+	sliderString += base64Chars[slider.value * 10];
 	slider = document.getElementById("Flags_ExpMultiplier");
-	flagsString += base64Chars[slider.value * 10];
+	sliderString += base64Chars[slider.value * 10];
 	slider = document.getElementById("Flags_ExpBonus");
-	flagsString += base64Chars[slider.value / 10];
+	sliderString += base64Chars[slider.value / 10];
 	slider = document.getElementById("Flags_ForcedPartyMembers");
-	flagsString += base64Chars[slider.value];
+	sliderString += base64Chars[slider.value];
 
-	return flagsString;
+	return flagsString + '-' + sliderString;
 }
 
 function setFlagsString() {
@@ -206,37 +220,38 @@ function setFlagsString() {
 
 function setFlags() {
 	var flags = document.getElementById("Flags");
-	var flagsString = flags.value;
-	var checkboxBits = 0, charBits;
-	charBits = base64Chars.indexOf(flagsString[0]);
-	checkboxBits |= charBits << 2;
-	charBits = base64Chars.indexOf(flagsString[1]);
-	checkboxBits |= (charBits & 0x30) >>> 4;
-	checkboxBits |= (charBits & 0x0F) << 12;
-	charBits = base64Chars.indexOf(flagsString[2]);
-	checkboxBits |= (charBits & 0x3C) << 6;
-	checkboxBits |= (charBits & 0x03) << 22;
-	charBits = base64Chars.indexOf(flagsString[3]);
-	checkboxBits |= charBits << 16;
-	charBits = base64Chars.indexOf(flagsString[4]);
-	checkboxBits |= charBits << 26;
-	charBits = base64Chars.indexOf(flagsString[5]);
-	checkboxBits |= (charBits & 0x30) << 20;
+	var sections = flags.value.split('-');
+
+	// Unpack the raw base64 string into an array of booleans
+	var raw = atob(sections[0].replace(/%/g, "/").replace(/!/g, "+").replace(/\./g, "="));
+	var bytes = new Uint8Array(new ArrayBuffer(raw.length));
+	var bits = [];
+	for (i = 0; i < raw.length; i++) {
+		bytes[i] = raw.charCodeAt(i);
+		bits.push(!!((bytes[i] >> 0) & 0x01));
+		bits.push(!!((bytes[i] >> 1) & 0x01));
+		bits.push(!!((bytes[i] >> 2) & 0x01));
+		bits.push(!!((bytes[i] >> 3) & 0x01));
+		bits.push(!!((bytes[i] >> 4) & 0x01));
+		bits.push(!!((bytes[i] >> 5) & 0x01));
+		bits.push(!!((bytes[i] >> 6) & 0x01));
+		bits.push(!!((bytes[i] >> 7) & 0x01));
+	}
 
 	for (var i = 0; i < checkboxIds.length; i++) {
 		var checkbox = document.getElementById(checkboxIds[i]);
-		checkbox.checked = (checkboxBits & (1 << i)) !== 0;
+		checkbox.checked = bits[i];
 	}
 	var select = document.getElementById("Flags_TeamSteak");
-	if ((checkboxBits & (1 << checkboxIds.length)) !== 0) {
+	if (bits[checkboxIds.length]) {
 		select.value = "True";
 	} else {
 		select.value = "False";
 	}
 
 	select = document.getElementById("Flags_Music");
-	var musicLow = (checkboxBits & (1 << (checkboxIds.length + 1))) !== 0;
-	var musicHigh = (checkboxBits & (1 << (checkboxIds.length + 2))) !== 0;
+	var musicLow = bits[checkboxIds.length + 1];
+	var musicHigh = bits[checkboxIds.length + 2];
 	if (musicLow && !musicHigh) {
 		select.value = "Standard";
 	} else if (!musicLow && musicHigh) {
@@ -247,17 +262,18 @@ function setFlags() {
 		select.value = "None";
 	}
 
+	var sliders = sections[1];
 	var slider;
 	slider = document.getElementById("Flags_PriceScaleFactor");
-	slider.value = base64Chars.indexOf(flagsString[6]) / 10;
+	slider.value = base64Chars.indexOf(sliders[0]) / 10;
 	slider = document.getElementById("Flags_EnemyScaleFactor");
-	slider.value = base64Chars.indexOf(flagsString[7]) / 10;
+	slider.value = base64Chars.indexOf(sliders[1]) / 10;
 	slider = document.getElementById("Flags_ExpMultiplier");
-	slider.value = base64Chars.indexOf(flagsString[8]) / 10;
+	slider.value = base64Chars.indexOf(sliders[2]) / 10;
 	slider = document.getElementById("Flags_ExpBonus");
-	slider.value = base64Chars.indexOf(flagsString[9]) * 10;
+	slider.value = base64Chars.indexOf(sliders[3]) * 10;
 	slider = document.getElementById("Flags_ForcedPartyMembers");
-	slider.value = base64Chars.indexOf(flagsString[10]);
+	slider.value = base64Chars.indexOf(sliders[4]);
 
 	flags.value = getFlagsString();
 }
