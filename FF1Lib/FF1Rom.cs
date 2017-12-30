@@ -12,7 +12,7 @@ namespace FF1Lib
 	// ReSharper disable once InconsistentNaming
 	public partial class FF1Rom : NesRom
 	{
-		public const string Version = "1.6.0";
+		public const string Version = "1.6.1";
 
 		public const int CopyrightOffset1 = 0x384A8;
 		public const int CopyrightOffset2 = 0x384BA;
@@ -343,8 +343,8 @@ namespace FF1Lib
 
 			bits[i++] = flags.FunEnemyNames;
 			bits[i++] = flags.PaletteSwap;
-			bits[i++] = flags.TeamSteak;
 			bits[i++] = flags.ShuffleLeader;
+			bits[i++] = flags.TeamSteak;
 			bits[i++] = flags.Music == MusicShuffle.Standard || flags.Music == MusicShuffle.MusicDisabled;
 			bits[i++] = flags.Music == MusicShuffle.Nonsensical || flags.Music == MusicShuffle.MusicDisabled;
 
@@ -410,8 +410,8 @@ namespace FF1Lib
 
 			flags.FunEnemyNames = bits[i++];
 			flags.PaletteSwap = bits[i++];
-			flags.TeamSteak = bits[i++];
 			flags.ShuffleLeader = bits[i++];
+			flags.TeamSteak = bits[i++];
 
 			flags.Music =
 				bits[i] && !bits[i + 1] ? MusicShuffle.Standard :
