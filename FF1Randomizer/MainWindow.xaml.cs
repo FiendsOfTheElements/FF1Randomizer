@@ -317,19 +317,19 @@ namespace FF1Randomizer
 
 				FunEnemyNames = FunEnemyNamesCheckBox.IsChecked == true,
 				PaletteSwap = PaletteSwapCheckBox.IsChecked == true,
-				TeamSteak = TeamTyroComboBox.SelectedValue.ToString() == "Team STEAK",
 				ShuffleLeader = ShuffleLeaderCheckBox.IsChecked == true,
+				TeamSteak = TeamTyroComboBox.SelectedValue.ToString() == "Team STEAK",
 				Music =
 					MusicComboBox.SelectedValue.ToString() == "Standard Music Shuffle" ? MusicShuffle.Standard :
 					MusicComboBox.SelectedValue.ToString() == "Nonsensical Music Shuffle" ? MusicShuffle.Nonsensical :
 					MusicComboBox.SelectedValue.ToString() == "Disable Music" ? MusicShuffle.MusicDisabled :
 					MusicShuffle.None,
 
-				ForcedPartyMembers = (int)PartyScaleFactorSlider.Value,
 				PriceScaleFactor = PriceScaleFactorSlider.Value,
 				EnemyScaleFactor = EnemyScaleFactorSlider.Value,
 				ExpMultiplier = ExpMultiplierSlider.Value,
-				ExpBonus = (int)ExpBonusSlider.Value
+				ExpBonus = (int)ExpBonusSlider.Value,
+				ForcedPartyMembers = (int)PartyScaleFactorSlider.Value
 			});
         }
 
@@ -366,19 +366,19 @@ namespace FF1Randomizer
 
 			FunEnemyNamesCheckBox.IsChecked = flags.FunEnemyNames;
 			PaletteSwapCheckBox.IsChecked = flags.PaletteSwap;
-			TeamTyroComboBox.SelectedValue = flags.TeamSteak ? "Team STEAK" : "Team TYRO";
 			ShuffleLeaderCheckBox.IsChecked = flags.ShuffleLeader;
+			TeamTyroComboBox.SelectedValue = flags.TeamSteak ? "Team STEAK" : "Team TYRO";
 			MusicComboBox.SelectedValue =
 				flags.Music == MusicShuffle.Standard ? "Standard Music Shuffle" :
 				flags.Music == MusicShuffle.Nonsensical ? "Nonsensical Music Shuffle" :
 				flags.Music == MusicShuffle.MusicDisabled ? "Disable Music" :
 				"No Music Shuffle";
 
-			PartyScaleFactorSlider.Value = flags.ForcedPartyMembers;
 			PriceScaleFactorSlider.Value = flags.PriceScaleFactor;
 			EnemyScaleFactorSlider.Value = flags.EnemyScaleFactor;
 			ExpMultiplierSlider.Value = flags.ExpMultiplier;
 			ExpBonusSlider.Value = flags.ExpBonus;
+			PartyScaleFactorSlider.Value = flags.ForcedPartyMembers;
 		}
 
 		private void AboutButton_Click(object sender, RoutedEventArgs e)
