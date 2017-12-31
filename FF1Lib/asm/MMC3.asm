@@ -45,6 +45,7 @@ SwapPRG:
 	; FF1 wants to map one.  The low bank index will be twice the requested
 	; index; e.g., if bank 3 is requested, we need to map banks 6 and 7.
 
+	STA $60FC ; save the bank being jumped to for LongJump routines
 	PHA       ; save the bank we want
 	LDA #$06
 	STA $8000 ; select R6
