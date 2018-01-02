@@ -12,7 +12,7 @@ namespace FF1Lib
 	// ReSharper disable once InconsistentNaming
 	public partial class FF1Rom : NesRom
 	{
-		public const string Version = "1.6.1";
+		public const string Version = "1.6.2";
 
 		public const int CopyrightOffset1 = 0x384A8;
 		public const int CopyrightOffset2 = 0x384BA;
@@ -53,20 +53,13 @@ namespace FF1Lib
 		}
 		private Blob CreateLongJumpTableEntry(byte bank, ushort addr)
 		{
-			List<byte> tmp = new List<byte>() { 0x20, 0xC8, 0xD7 }; //JSR $D7C8, beginning of each table entry
+			List<byte> tmp = new List<byte> { 0x20, 0xC8, 0xD7 }; // JSR $D7C8, beginning of each table entry
 
-			var addr_bytes = BitConverter.GetBytes(addr); //next add the address to jump to
-			if (!BitConverter.IsLittleEndian)
-			{
-				tmp.Add(addr_bytes[1]);
-				tmp.Add(addr_bytes[0]);
-			}
-			else
-			{
-				tmp.Add(addr_bytes[0]);
-				tmp.Add(addr_bytes[1]);
-			}
+			var addrBytes = BitConverter.GetBytes(addr); // next add the address to jump to
+			tmp.Add(addrBytes[0]);
+			tmp.Add(addrBytes[1]);
 			tmp.Add(bank); //finally, add the bank that the routine is located in
+
 			return tmp.ToArray();
 		}
 

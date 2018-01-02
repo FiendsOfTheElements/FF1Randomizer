@@ -7,7 +7,7 @@ namespace FF1Lib
 	public partial class FF1Rom : NesRom
 	{
 		// A fun list of initial victory pages. Classic mistranslations.
-		private static readonly List<string[]> victoryMessages = new List<string[]>
+		private static readonly List<string[]> VictoryMessages = new List<string[]>
 		{
 			new [] // Snow Brothers
 			{
@@ -17,37 +17,12 @@ namespace FF1Lib
 				"    Let's  Go",
 				"     Stage 2",
 			},
-			new [] // Bubble Bobble
-			{
-				"",
-				"Now it is the",
-				"beginning of a",
-				"fantastic story.",
-				"Let us make a",
-				"journey to the",
-				"cave of monster!",
-			},
 			new [] // Pro Wrestling
 			{
 				"",
 				"  Ranked No. 1",
 				"",
 				"A Winner Is You",
-			},
-			new [] // Unknown Game
-			{
-				"",
-				"   Game Over",
-				"",
-				"Return of Ganon",
-			},
-			new [] // Friday the 13th
-			{
-				"",
-				"  You And Your",
-				"Friends Are dead.",
-				"",
-				"   Game Over",
 			},
 			new [] // Ghostbusters
 			{
@@ -59,44 +34,85 @@ namespace FF1Lib
 				"justice of our",
 				"culture.",
 			},
-			new [] // Shadowgate
+			new [] // Castlevania
 			{
-				"",
-				"",
-				"It's a sad thing",
-				"that your adven-",
-				"tures have ended",
-				"here!!",
+				"YOU PLAYED THE",
+				"GREATEST ROLE",
+				"IN THIS STORY."
 			},
-			new [] // Bionic Commando
+			new [] // Bad Dudes
 			{
+				"HEY WARRIORS,",
+				"THANKS FOR",
+				"DEFEATING CHAOS.",
+				"LET'S GO FOR A",
+				"BURGER....",
+				"HA! HA! HA! HA!"
+			},
+			new [] // Metroid
+			{
+				"GREAT !!",
+				"YOU FULFILED",
+				"YOUR MISSION. IT",
+				"WILL REVIVE",
+				"PEACE IN SPACE.",
+				"BUT,IT MAY BE",
+				"INVADED BY THE",
+				"OTHER CHAOS.",
+				//"PRAY FOR A TRUE",
+				//"PEACE IN SPACE!"
+			},
+			new [] // Dragon Warrior
+			{
+				"And thus the",
+				"tale comes to an",
+				"end.... unless",
+				"Garland returns",
+				"again."
+			},
+			new [] // Guardian Legend
+			{
+				"MISSION",
+				"  COMPLETE.",
 				"",
-				"",
-				"Get the heck out",
-				"  of here, you",
-				"     nerd!",
+				"YOU ARE THE",
+				"  GREATEST",
+				"     PLAYER."
 			},
 			new [] // Zelda
 			{
+				"YOU ARE GREAT!",
+				"YOU HAVE AN",
+				"AMAZING WISDOM",
+				"AND POWER!",
 				"",
-				"",
-				"Pay me for the",
-				"  door repair",
-				"    charge.",
+				"END OF",
+				"\"FINAL FANTASY",
+				"1 RANDOMIZER\""
 			},
-			new [] // Zelda
+			new [] // Ghosts and Goblins
 			{
-				"",
-				"",
-				"What a horrible",
-				" night to have",
-				"   a curse.",
+				"CONGRATURATION",
+				"THIS STORY IS",
+				"HAPPY END.",
+				"THANK YOU."
 			},
+			new [] // Friday the 13th
+			{
+				"YOU HAVE FINALLY",
+				"MANAGED TO" +
+				"DEFEAT CHAOS....",
+				"BUT IS HE REALLY",
+				"DEAD? WE'RE NOT",
+				"TELLING!!",
+				"",
+				"END.."
+			}
 		};
 
 		// Story pages. The first set is before the credits.
 		// The second set is the ending cinematic with counters.
-		private static readonly List<string[]> bridgeStory = new List<string[]>
+		private static readonly List<string[]> BridgeStory = new List<string[]>
 		{
 			new []
 			{
@@ -129,16 +145,7 @@ namespace FF1Lib
 			},
 		};
 
-		private static string[] youWin = new []
-		{
-			"",
-			"   GAME  OVER",
-			"",
-			"",
-			"    YOU  WIN",
-		};
-
-		private static string[] thankYou = new []
+		private static readonly string[] ThankYou = new []
 		{
 			"",
 			"   Thank You",
@@ -159,7 +166,7 @@ namespace FF1Lib
 			Put(0x7DFA8, Blob.FromHex("A000A200B13EE63ED002E63F9510E8E003D0F18C1D608C1E60B111991C60C8C410D0F64C45DE"));
 
 			List<Blob> pages = new List<Blob>();
-			bridgeStory.ForEach(story => pages.Add(FF1Text.TextToStory(story)));
+			BridgeStory.ForEach(story => pages.Add(FF1Text.TextToStory(story)));
 
 			// An unused escape code from DrawComplexString is overridden allowing the following:
 			// 1010 XX ADDR, Where 1010 enters the escape sequence, the next byte the the size of
@@ -185,7 +192,7 @@ namespace FF1Lib
 				FF1Text.TextToBytes("", true, FF1Text.Delimiter.Line),
 				FF1Text.TextToBytes("Steps     ", true, FF1Text.Delimiter.Empty), Blob.FromHex("101003A0600405"),
 				FF1Text.TextToBytes("Resets    ", true, FF1Text.Delimiter.Empty), Blob.FromHex("101002A5640405"),
-				FF1Text.TextToBytes("Pwr Cycles", true, FF1Text.Delimiter.Empty), Blob.FromHex("101002A3640405"),
+				FF1Text.TextToBytes("Power off ", true, FF1Text.Delimiter.Empty), Blob.FromHex("101002A3640405"),
 				FF1Text.TextToBytes("Nthng Here", true, FF1Text.Delimiter.Empty), Blob.FromHex("101001B6600400"),
 			};
 
@@ -195,8 +202,8 @@ namespace FF1Lib
 				FF1Text.TextToBytes("", true, FF1Text.Delimiter.Line),
 				FF1Text.TextToBytes("Battles   ", true, FF1Text.Delimiter.Empty), Blob.FromHex("101002A7600405"),
 				FF1Text.TextToBytes("Ambushes  ", true, FF1Text.Delimiter.Empty), Blob.FromHex("101002A9600405"),
-				FF1Text.TextToBytes("Strk First", true, FF1Text.Delimiter.Empty), Blob.FromHex("101002AB600405"),
-				FF1Text.TextToBytes("Close Call", true, FF1Text.Delimiter.Empty), Blob.FromHex("101002AD600405"),
+				FF1Text.TextToBytes("Struck 1st", true, FF1Text.Delimiter.Empty), Blob.FromHex("101002AB600405"),
+				FF1Text.TextToBytes("Close call", true, FF1Text.Delimiter.Empty), Blob.FromHex("101002AD600405"),
 				FF1Text.TextToBytes("Perished  ", true, FF1Text.Delimiter.Empty), Blob.FromHex("101001B5640400"),
 			};
 
@@ -210,20 +217,17 @@ namespace FF1Lib
 				FF1Text.TextToBytes("        ",     true, FF1Text.Delimiter.Empty), Blob.FromHex("101003B26004919900"),
 			};
 
-			pages.Add(FF1Text.TextToStory(youWin));
+			pages.Add(FF1Text.TextToStory(VictoryMessages[rng.Between(0, VictoryMessages.Count - 1)]));
 			pages.Add(Blob.Concat(movementStats));
 			pages.Add(Blob.Concat(battleResults));
 			pages.Add(Blob.Concat(combatStats));
-			pages.Add(FF1Text.TextToStory(thankYou));
+			pages.Add(FF1Text.TextToStory(ThankYou));
 
-			// Add fun goodbye message
-			pages.Add(FF1Text.TextToStory(victoryMessages[rng.Between(0, victoryMessages.Count - 1)]));
-
-			Blob storyText = packageTextBlob(pages, 0xA800);
+			Blob storyText = PackageTextBlob(pages, 0xA800);
 			System.Diagnostics.Debug.Assert(storyText.Length <= 0x0500, "Story text too large!");
 
 			Put(0x36800, storyText);
-			Data[0x36E00] = (byte)(bridgeStory.Count);
+			Data[0x36E00] = (byte)(BridgeStory.Count);
 			Data[0x36E01] = (byte)(pages.Count - 1);
 		}
 
@@ -279,12 +283,12 @@ namespace FF1Lib
 			// Clobber the number of pages to render before we insert in the pointers.
 			Data[0x37873] = (byte)pages.Count;
 
-			Blob credits = packageTextBlob(pages, 0xBB00); 
+			Blob credits = PackageTextBlob(pages, 0xBB00); 
 			System.Diagnostics.Debug.Assert(credits.Length <= 0x0100, "Credits too large: " + credits.Length);
 			Put(0x37B00, credits);
 		}
 
-		private Blob packageTextBlob(List<Blob> pages, ushort baseAddr)
+		private Blob PackageTextBlob(List<Blob> pages, ushort baseAddr)
 		{
 			// The first pointer is immediately after the pointer table.
 			List<ushort> ptrs = new List<ushort> { (ushort)(baseAddr + pages.Count * 2) };
