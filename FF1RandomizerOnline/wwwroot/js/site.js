@@ -31,7 +31,7 @@ function importSeedFlags(e) {
 	document.getElementById("Flags").value = flags;
 	document.getElementById("Seed").value = seed;
 
-	OnFlagsChanged();
+	onFlagsChanged();
 }
 
 function newSeed() {
