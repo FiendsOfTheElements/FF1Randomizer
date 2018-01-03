@@ -30,6 +30,18 @@ function newSeed() {
 	document.getElementById("Seed").value = seedString;
 }
 
+function importSeedFlags() {
+	var str = prompt("Paste in a seed and flags string as given to you by our lord and master, crim_bot. (SEED_FLAGS)");
+	var seed;
+	var flags;
+
+	[seed, flags] = str.split("_", 2);
+
+	document.getElementById("Flags").value = flags;
+	document.getElementById("Seed").value = seed;
+	setFlags();
+}
+
 var checkboxIds = [
 	"Flags_Treasures",
 	"Flags_IncentivizeIceCave",
