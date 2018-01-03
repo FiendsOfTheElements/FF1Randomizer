@@ -5,14 +5,22 @@
 	<label class="btn btn-default"><input type="file" accept=".nes" asp-for="File" style="display: none"/>Browse</label> <label for="File" id="file-label"></label>
 	@Html.ValidationSummary()
 	<div class="row">
-		<div class="col-xs-3"><label asp-for="Seed" />Seed</div>
-		<div class="col-xs-3"><label for="Flags">Flags</label></div>
+		<div class="col-xs-5"><label asp-for="Seed" />Seed</div>
+		<div class="col-xs-5"><label for="Flags">Flags</label></div>
 	</div>
 	<div class="row">
-		<div class="col-xs-3"><input class="form-control" asp-for="Seed" type="text" /></div>
-		<div class="col-xs-3"><input class="form-control" id="Flags" type="text" /></div>
-		<div class="col-xs-3"><input class="btn btn-default" type="button" value="New Seed" onclick="newSeed();" /></div>
-		<div class="col-xs-3"><button class="btn btn-primary" onclick="importSeedFlags(); return false;">Import...</button></div>
+		<div class="col-xs-3">
+			<input class="form-control" asp-for="Seed" type="text" />
+		</div>
+		<div class="col-xs-2">
+			<input class="btn btn-default" type="button" value="New Seed" onclick="newSeed();" />
+		</div>
+		<div class="col-xs-3">
+			<input class="form-control" id="Flags" type="text" />
+		</div>
+		<div class="col-xs-2">
+			<button id="cmd-import" class="btn btn-default">Import...</button>
+		</div>
 	</div>
 	<ul class="section nav nav-pills">
 		<li class="active"><a href="#shuffle" data-toggle="tab">Shuffle</a></li>
