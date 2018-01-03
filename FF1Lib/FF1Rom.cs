@@ -254,7 +254,7 @@ namespace FF1Lib
 		}
 		private void ExtraTrackingAndInitCode()
 		{
-			//Expanded game init code, does several things:
+			// Expanded game init code, does several things:
 			//	- Encounter table emu/hardware fix
 			//	- track hard/soft resets
 			//	- initialize tracking variables if no game is saved
@@ -262,25 +262,25 @@ namespace FF1Lib
 			Put(0x7C012, Blob.FromHex("A90F2003FE200080EAEAEAEAEAEAEAEA"));
 
 
-			//Move controller handling out of bank 1F
-			//This bit of code is also altered to allow a hard reset using Up+A on controller 2
+			// Move controller handling out of bank 1F
+			// This bit of code is also altered to allow a hard reset using Up+A on controller 2
 			PutInBank(0x0F, 0x8200, Blob.FromHex("20108220008360"));
 			PutInBank(0x0F, 0x8210, Blob.FromHex("A9018D1640A9008D1640A208AD16402903C9012620AD17402903C901261ECAD0EBA51EC988F0016020A8FE20A8FE20A8FEA2FF9AA900851E9500CAD0FBA6004C12C0"));
 			PutInBank(0x0F, 0x8300, Blob.FromHex("A5202903F002A2038611A520290CF0058A090C8511A52045212511452185214520AA2910F00EA5202910F002E623A521491085218A2920F00EA5202920F002E622A521492085218A2940F00EA5202940F002E625A521494085218A2980F00EA5202980F002E624A5214980852160"));
 			PutInBank(0x1F, 0xD7C2, CreateLongJumpTableEntry(0x0F, 0x8200));
 
-			//Battles use 2 separate and independent controller handlers for a total of 3 (because why not), so we patch these to respond to Up+A also
+			// Battles use 2 separate and independent controller handlers for a total of 3 (because why not), so we patch these to respond to Up+A also
 			PutInBank(0x0F, 0x8580, Blob.FromHex("A0018C1640888C1640A008AD16404AB0014A6EB368AD17402903C901261E88D0EAA51EC988F004ADB3686020A8FE20A8FE20A8FEA2FF9AA900851E9500CAD0FBA6004C12C0"));
 			PutInBank(0x1F, 0xD828, CreateLongJumpTableEntry(0x0F, 0x8580));
 			PutInBank(0x0B, 0x9A06, Blob.FromHex("4C28D8"));
 			PutInBank(0x0C, 0x97C7, Blob.FromHex("2027F22028D82029ABADB36860"));
 
 
-			//Put LongJump routine 6 bytes after UpdateJoy used to be
+			// Put LongJump routine 6 bytes after UpdateJoy used to be
 			PutInBank(0x1F, 0xD7C8, Blob.FromHex("85E99885EA6885EB6885ECA001B1EB85EDC8B1EB85EEC8ADFC6085E8B1EB2003FEA9D748A9F548A5E9A4EA6CED0085E9A5E82003FEA5E960"));
-			//LongJump entries can start at 0xD800 and must stop before 0xD850 (at which point additional space will need to be freed to make room)
+			// LongJump entries can start at 0xD800 and must stop before 0xD850 (at which point additional space will need to be freed to make room)
 
-			/*Locations of tracked stats:
+			/* Locations of tracked stats:
 			 *	Steps:          $60A0 (24-bit)
 			 *	Hard Resets:    $64A3 (16-bit)
 			 *	Soft Resets:    $64A5 (16-bit)
@@ -294,35 +294,35 @@ namespace FF1Lib
 			 *	"Nothing Here":	$60B6 (8-bit)
 			*/
 
-			//Patches for various tracking variables follow:
-			//Pedometer
+			// Patches for various tracking variables follow:
+			// Pedometer
 			PutInBank(0x0F, 0x8100, Blob.FromHex("18A532D027A52D2901F006A550D01DF00398D018ADA06069018DA060ADA16069008DA160ADA26069008DA260A52F8530A9FF851860"));
 			Put(0x7D023, Blob.FromHex("A90F2003FE200081"));
-			//Count number of battles
+			// Count number of battles
 			PutInBank(0x0F, 0x8400, Blob.FromHex("18ADA76069018DA7609003EEA86020A8FE60"));
 			PutInBank(0x1F, 0xD800, CreateLongJumpTableEntry(0x0F, 0x8400));
 			PutInBank(0x1F, 0xF28D, Blob.FromHex("2000D8"));
-			//Ambushes / Strike First
+			// Ambushes / Strike First
 			PutInBank(0x0F, 0x8420, Blob.FromHex("AD5668C90B9015C95A901F18ADAB6069018DAB609014EEAC6018900E18ADA96069018DA9609003EEAA60AC5668AE576860"));
 			PutInBank(0x1F, 0xD806, CreateLongJumpTableEntry(0x0F, 0x8420));
 			Put(0x313FB, Blob.FromHex("eaeaea2006D8"));
-			//Runs
+			// Runs
 			PutInBank(0x0F, 0x8480, Blob.FromHex("AD5868F00E18ADAD6069018DAD609003EEAE60AD586860"));
 			PutInBank(0x1F, 0xD81C, CreateLongJumpTableEntry(0x0F, 0x8480));
 			Put(0x32418, Blob.FromHex("201CD8"));
-			//Physical Damage
+			// Physical Damage
 			PutInBank(0x0F, 0x84B0, Blob.FromHex("8E7D68AD8768F01DADB2606D82688DB260ADB3606D83688DB360ADB46069008DB46018901AADAF606D82688DAF60ADB0606D83688DB060ADB16069008DB160AE7D6860"));
 			PutInBank(0x1F, 0xD822, CreateLongJumpTableEntry(0x0F, 0x84B0));
 			Put(0x32968, Blob.FromHex("2022D8"));
-			//Magic Damage
+			// Magic Damage
 			PutInBank(0x0F, 0x8500, Blob.FromHex("AD8A6C2980F01CADB2606D58688DB260ADB3606D59688DB360ADB46069008DB460901AADAF606D58688DAF60ADB0606D59688DB060ADB16069008DB160A912A212A00160"));
 			PutInBank(0x1F, 0xD83A, CreateLongJumpTableEntry(0x0F, 0x8500));
 			PutInBank(0x0C, 0xB8ED, Blob.FromHex("203AD8eaeaea"));
-			//Party Wipes
+			// Party Wipes
 			PutInBank(0x0F, 0x85D0, Blob.FromHex("EEB564A9008DFD64A200187D00647D00657D00667D0067E8D0F149FF8DFD64A952854B60"));
 			PutInBank(0x1F, 0xD82E, CreateLongJumpTableEntry(0x0F, 0x85D0));
 			PutInBank(0x0B, 0x9AF5, Blob.FromHex("202ED8EAEA"));
-			//"Nothing Here"s
+			// "Nothing Here"s
 			PutInBank(0x0F, 0x8600, Blob.FromHex("EEB660A90060"));
 			PutInBank(0x1F, 0xD834, CreateLongJumpTableEntry(0x0F, 0x8600));
 			PutInBank(0x1F, 0xCBF3, Blob.FromHex("4C34D8"));
