@@ -109,7 +109,7 @@ function setCallbacks() {
 	seed.oninput = validateSeed;
 
 	var flags = document.getElementById("Flags");
-	flags.oninput = OnFlagsChanged;
+	flags.oninput = onFlagsChanged;
 
 	var fileInput = document.getElementById("File");
 	fileInput.onchange = function() {
@@ -121,7 +121,7 @@ function setCallbacks() {
 	};
 }
 
-function OnFlagsChanged() {
+function onFlagsChanged() {
 	if (validateFlags()) {
 		setFlags();
 
