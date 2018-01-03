@@ -19,9 +19,7 @@ function validateFlags() {
 	return isValid;
 }
 
-function importSeedFlags(e) {
-	e.preventDefault();
-
+function importSeedFlags() {
 	var str = prompt("Paste in a seed and flags string as given to you by our lord and master, crim_bot. (SEED_FLAGS)");
 	var seed;
 	var flags;
@@ -280,10 +278,6 @@ function setFlags() {
 }
 
 $(document).ready(function () {
-	document
-		.getElementById('cmd-import')
-		.addEventListener('click', importSeedFlags);
-
 	setCallbacks();
 
 	setFlagsString();
