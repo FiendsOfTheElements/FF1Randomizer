@@ -51,7 +51,7 @@ namespace FF1Lib
 			},
 			new [] // Metroid
 			{
-				"GREAT !!",
+				//"GREAT !!",
 				"YOU FULFILED",
 				"YOUR MISSION. IT",
 				"WILL REVIVE",
@@ -85,10 +85,9 @@ namespace FF1Lib
 				"YOU HAVE AN",
 				"AMAZING WISDOM",
 				"AND POWER!",
-				"",
 				"END OF",
-				"\"FINAL FANTASY",
-				"1 RANDOMIZER\""
+				"'FINAL FANTASY",
+				"1 RANDOMIZER'"
 			},
 			new [] // Ghosts and Goblins
 			{
@@ -105,7 +104,6 @@ namespace FF1Lib
 				"BUT IS HE REALLY",
 				"DEAD? WE'RE NOT",
 				"TELLING!!",
-				"",
 				"END.."
 			}
 		};
