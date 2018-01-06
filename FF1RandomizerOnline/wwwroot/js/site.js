@@ -19,6 +19,19 @@ function validateFlags() {
 	return isValid;
 }
 
+function importSeedFlags() {
+	var str = prompt("Paste in a seed and flags string as given to you by our lord and master, crim_bot. (SEED_FLAGS)");
+	var seed;
+	var flags;
+
+	[seed, flags] = str.split("_", 2);
+
+	document.getElementById("Flags").value = flags;
+	document.getElementById("Seed").value = seed;
+
+	onFlagsChanged();
+}
+
 function newSeed() {
 	var seed = Math.floor((0xFFFFFFFF + 1) * Math.random());
 	var seedString = seed.toString(16).toUpperCase();
@@ -96,16 +109,7 @@ function setCallbacks() {
 	seed.oninput = validateSeed;
 
 	var flags = document.getElementById("Flags");
-	flags.oninput = function() {
-		if (validateFlags()) {
-			setFlags();
-
-			getPercentageCallback(document.getElementById("Flags_PriceScaleFactor"), "prices-display")();
-			getPercentageCallback(document.getElementById("Flags_EnemyScaleFactor"), "enemy-stats-display")();
-			expGoldBoostCallback();
-			forcedPartyMembersCallback();
-		}
-	};
+	flags.oninput = onFlagsChanged;
 
 	var fileInput = document.getElementById("File");
 	fileInput.onchange = function() {
@@ -115,6 +119,17 @@ function setCallbacks() {
 			fileLabel.innerHTML = file.name;
 		}
 	};
+}
+
+function onFlagsChanged() {
+	if (validateFlags()) {
+		setFlags();
+
+		getPercentageCallback(document.getElementById("Flags_PriceScaleFactor"), "prices-display")();
+		getPercentageCallback(document.getElementById("Flags_EnemyScaleFactor"), "enemy-stats-display")();
+		expGoldBoostCallback();
+		forcedPartyMembersCallback();
+	}
 }
 
 function setPercentageCallback(sliderId, labelId) {

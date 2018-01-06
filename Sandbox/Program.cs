@@ -8,12 +8,8 @@ namespace Sandbox
     {
         static void Main(string[] args)
         {
-			var rom = new FF1MapperRom("ff1.nes");
-			rom.UpgradeToMMC3();
-			rom.Save("ff1mmc3.nes");
-
-			Console.WriteLine("Done.");
-	        Console.ReadKey();
+	        Console.WriteLine(FF1Text.BytesToText(Blob.FromHex("aba4b3b3a8b1b6")));
+			Console.ReadKey();
         }
     }
 }
