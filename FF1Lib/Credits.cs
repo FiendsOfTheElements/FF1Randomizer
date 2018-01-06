@@ -51,7 +51,7 @@ namespace FF1Lib
 			},
 			new [] // Metroid
 			{
-				//"GREAT !!",
+				"GREAT !!",
 				"YOU FULFILED",
 				"YOUR MISSION. IT",
 				"WILL REVIVE",
@@ -99,11 +99,12 @@ namespace FF1Lib
 			new [] // Friday the 13th
 			{
 				"YOU HAVE FINALLY",
-				"MANAGED TO" +
+				"MANAGED TO",
 				"DEFEAT CHAOS....",
 				"BUT IS HE REALLY",
 				"DEAD? WE'RE NOT",
 				"TELLING!!",
+				"",
 				"END.."
 			}
 		};
