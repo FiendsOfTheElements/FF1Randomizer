@@ -109,6 +109,8 @@ namespace FF1Lib
 		public bool EnemySkillsSpells { get; set; }
 		[FlagString(Character = 3, FlagBit = 8)]
 		public bool EnemyStatusAttacks { get; set; }
+		[FlagString(Character = 21, FlagBit = 2)]
+		public bool EnemyFormations { get; set; }
 		[FlagString(Character = 3, FlagBit = 32)]
 		public bool EasyMode { get; set; }
 
