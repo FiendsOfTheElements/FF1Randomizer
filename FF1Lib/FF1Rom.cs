@@ -259,6 +259,11 @@ namespace FF1Lib
 				FixEnemyStatusAttackBug();
 			}
 
+			if (flags.BlackBeltAbsorb)
+			{
+				FixBBAbsorbBug();
+			}
+
 			if (flags.FunEnemyNames)
 			{
 				FunEnemyNames(flags.TeamSteak);
@@ -309,8 +314,8 @@ namespace FF1Lib
 
 			WriteSeedAndFlags(Version, seed.ToHex(), Flags.EncodeFlagsText(flags));
 			ExtraTrackingAndInitCode();
-			
 		}
+
 		private void ExtraTrackingAndInitCode()
 		{
 			// Expanded game init code, does several things:
@@ -399,6 +404,9 @@ namespace FF1Lib
 
 			// Create a clone of IsOnBridge that checks the canal too.
 			PutInBank(0x0F, 0x8780, Blob.FromHex("AD0860F014A512CD0960D00DA513CD0A60D006A90085451860A512CD0D60D00DA513CD0E60D006A900854518603860"));
+
+			// BB Aborb fix.
+			PutInBank(0x0F, 0x8800, Blob.FromHex("A000B186C902F005C908F00160A018B186301BC8B1863016C8B1863011C8B186300CA026B1861869010AA0209186A01CB186301AC8B1863015C8B1863010C8B186300BA026B186186901A022918660"));
 		}
 
 		public override bool Validate()

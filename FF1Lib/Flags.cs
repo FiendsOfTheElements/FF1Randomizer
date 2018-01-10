@@ -161,6 +161,7 @@ namespace FF1Lib
 		public bool Dash { get; set; }
 		[FlagString(Character = CONVENIENCES, FlagBit = 8)]
 		public bool BuyTen { get; set; }
+
 		[FlagString(Character = CONVENIENCES, FlagBit = 16)]
 		public bool IdentifyTreasures { get; set; }
 		[FlagString(Character = CONVENIENCES, FlagBit = 32)]
