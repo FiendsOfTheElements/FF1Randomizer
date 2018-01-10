@@ -63,6 +63,7 @@ namespace FF1RandomizerOnline.Controllers
 					EnemyStatusAttacks = true,
 					EnemyFormationsUnrunnable = true,
 					EnemyFormationsSurprise = true,
+					EnemyFormationsFrequency = true,
 
 					OrdealsPillars = true,
 					TitansTrove = true,
@@ -168,7 +169,7 @@ namespace FF1RandomizerOnline.Controllers
 			var filename = viewModel.File.FileName;
 			var pathIndex = filename.LastIndexOfAny(new[] { '\\', '/' });
 			filename = pathIndex == -1 ? filename : filename.Substring(pathIndex + 1);
-			
+
 			var extensionIndex = filename.LastIndexOf('.');
 			var newFilename = extensionIndex == -1 ? filename : filename.Substring(0, extensionIndex);
 			newFilename = $"{newFilename}_{viewModel.Seed}_{Flags.EncodeFlagsText(viewModel.Flags)}.nes";
