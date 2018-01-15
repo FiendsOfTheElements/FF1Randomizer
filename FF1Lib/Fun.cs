@@ -228,5 +228,64 @@ namespace FF1Lib
 					break;
 			}
 		}
+
+		public void DynamicWindowColor()
+		{
+			// This is an overhaul of LoadBorderPalette_Blue that enhances it to JSR to
+			// DrawMapPalette first. That allows us to wrap that with a dynamic load of
+			// the bg color after it sets it to the default one.
+			/*
+				LoadBorderPalette_Dynamic:
+				JSR $D862 ; JSR to DrawMapPalette
+				LDY $60FB ; Load dynamic palette color to Y
+
+				LoadBorderPalette_Y:
+				LDA $60FC ; Back up current bank
+				PHA
+				LDA #$0F
+				JSR $FE03 ; SwapPRG_L
+				JSR $8700 ; Jump out to palette writing code. Dynamic Color in Y
+				PLA
+				JSR $FE03 ; SwapPRG_L
+				RTS
+			*/
+			Put(0x7EB29, Blob.FromHex("2062D8ACFB60ADFC6048A90F2003FE200087682003FE60"));
+
+			// The battle call site needs black not the dynamic color so we jump right to
+			// the operation after that when calling from battle init.
+			Put(0x7EB90, Blob.FromHex("A00F4C2FEB"));
+
+			// Modify two calls to DrawMapPalette to call our LoadBorderPalette_Dynamic which
+			// starts with a JSR to DrawMapPalette and then adds the dynamic menu color.
+			Put(0x7CF8F, Blob.FromHex("29EB"));
+			Put(0x7CF1C, Blob.FromHex("29EB"));
+
+			// Modify Existing calls to LoadBorderPalette_Blue up three bytes to where it starts
+			Put(0x7EAB7, Blob.FromHex("2CEB"));
+			Put(0x7EB58, Blob.FromHex("2CEB"));
+
+			// There are two unfinished bugs in the equipment menu that use palettes 1 and 2
+			// for no reason and need to use 3 now. They are all mirrors in vanilla.
+			Put(0x3BE53, Blob.FromHex("EAEAEAEAEAEAEAEAEAEA"));
+			Data[0x3BEF7] = 0x60;
+
+			// Finally we need to also make the lit orb palette dynamic so lit orbs bg matches.
+			// I copy the original code and add LDA/STA at the end for the bg color, and put
+			// it over some unused garbage at the bottom of Bank E @ [$BF3A :: 0x3BF4A]
+			/*
+				LDX #$0B ; Straight copy from EnterMainMenu
+				Loop:
+				  LDA $AD78, X
+				  STA $03C0, X
+				  DEX
+				  BPL Loop
+
+				LDA $60FB ; Newly added to load and set dynamic palette color for lit orb
+				STA $03C2
+				RTS
+			*/
+			Put(0x3BF3A, Blob.FromHex("A20BBD78AD9DC003CA10F7ADFB608DC2038DC60360"));
+			Put(0x3ADC2, Blob.FromHex("203ABFEAEAEAEAEAEAEAEA"));
+		}
 	}
 }
