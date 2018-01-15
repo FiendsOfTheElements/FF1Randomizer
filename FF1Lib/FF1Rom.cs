@@ -325,7 +325,7 @@ namespace FF1Lib
 			PutInBank(0x1F, 0xD82E, CreateLongJumpTableEntry(0x0F, 0x85D0));
 			PutInBank(0x0B, 0x9AF5, Blob.FromHex("202ED8EAEA"));
 			// "Nothing Here"s
-			PutInBank(0x0F, 0x8600, Blob.FromHex("EEB660A90060"));
+			PutInBank(0x0F, 0x8600, Blob.FromHex("A54429C2D005A545F00360A900EEB66060"));
 			PutInBank(0x1F, 0xD834, CreateLongJumpTableEntry(0x0F, 0x8600));
 			PutInBank(0x1F, 0xCBF3, Blob.FromHex("4C34D8"));
 
