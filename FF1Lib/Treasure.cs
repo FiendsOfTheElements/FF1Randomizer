@@ -259,7 +259,7 @@ namespace FF1Lib
             var replacementText =
                 "91A823" + // Here
                 "BF1BA4AE1A" + // , take 
-                "31C005" + // this\n
+                "1C3005" + // this\n
                 $"{controlCode}00";
             Put(0x28F35, Blob.FromHex(replacementText));
 
