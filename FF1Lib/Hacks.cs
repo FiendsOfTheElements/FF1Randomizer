@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using RomUtilities;
 
 namespace FF1Lib
@@ -20,7 +16,7 @@ namespace FF1Lib
 		public const int MapSpriteSize = 3;
 		public const int MapSpriteCount = 16;
 
-        public const int CaravanFairyCheck = 0x3C4E5;
+        public const int CaravanFairyCheck = 0x7C4E5;
         public const int CaravanFairyCheckSize = 7;
 
         // Required for npc quest item randomizing
@@ -32,7 +28,7 @@ namespace FF1Lib
         public void CheckCanoeItemInsteadOfEventVar()
         {
             // 1. Update BoardCanoe to check canoe item instead of variable
-            Data[0x3C5ED] = Items.Canoe + Variables.ItemsBaseForNPC;
+            Data[0x7C5ED] = Items.Canoe + Variables.ItemsBaseForNPC;
 
             // 2.a. Point the one NPC of Talk_ifcanoe to Talk_ifitem in lut_MapObjTalkJumpTbl
             Data[0x390D3 + 2 * 83] = 0xBA;

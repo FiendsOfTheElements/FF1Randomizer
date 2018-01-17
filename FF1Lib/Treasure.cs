@@ -217,7 +217,7 @@ namespace FF1Lib
                 "695A853E" +
                 "A982853F" +
                 "184C9ADB";
-            Put(0x3DBF8, Blob.FromHex(controlCode3));
+            Put(0x7DBF8, Blob.FromHex(controlCode3));
         /*
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ;;
@@ -485,7 +485,7 @@ namespace FF1Lib
             var openTreasureChest =
                 $"A9002003FEA645BD00B120{giveRewardRoutineAddress}" +
                 "B00AA445B9006209049900628A60"; // 27 bytes
-            Put(0x3DD78, Blob.FromHex(openTreasureChest));
+            Put(0x7DD78, Blob.FromHex(openTreasureChest));
             /*
             OpenTreasureChest:           ; (27 bytes)
                 LDA #BANK_TREASURE       ; swap to bank containing treasure chest info A900
@@ -518,7 +518,7 @@ namespace FF1Lib
                 "18E67DE67DA2F09004EEB760E88A60"; // 12 bytes
             var giveRewardRoutine =
                 $"{checkItem}{notItem}{openChest}";
-            Put(0x3DD93, Blob.FromHex(giveRewardRoutine));
+            Put(0x7DD93, Blob.FromHex(giveRewardRoutine));
             /*
             ;; $DD93
             ;; New jump point for NPC-only items:
