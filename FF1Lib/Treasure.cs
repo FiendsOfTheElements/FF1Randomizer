@@ -508,7 +508,7 @@ namespace FF1Lib
             // New "GiveReward" routine
             const string checkItem =
                 "85616920C93CB013AAC90CD005" +
-                "DE0060B002FE0060C936B0229023"; // 27 bytes
+                "DE0060B002FE0060C936B02A902B"; // 27 bytes
             const string notItem =
                 "A561C96C900920B9EC20EADD4CD6DD" +
                 "C944B0092034DDB007A9E59007" +
@@ -541,8 +541,8 @@ namespace FF1Lib
                   BCS @OpenChest           ; and open it B002
             :   INC unsram, X              ; otherwise give them one of this item FE0060
                 CMP #$36                   ; if >= item_qty_start then play regular jingle C936
-                BCS @ClearChest            ; B022
-                BCC @OpenChest             ; 9023
+                BCS @ClearChest            ; B02A
+                BCC @OpenChest             ; 902B
               @NotItem:                    ; (6 + 9 + 4 + 9 + 7 + 5 = 40 bytes)
                 LDA dlg_itemid             ; restore item id A561
                 CMP #$6C                   ; check if gold C96C
