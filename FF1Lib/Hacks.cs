@@ -20,6 +20,30 @@ namespace FF1Lib
 		public const int MapSpriteSize = 3;
 		public const int MapSpriteCount = 16;
 
+        public const int CaravanFairyCheck = 0x3C4E5;
+        public const int CaravanFairyCheckSize = 7;
+
+        // Required for npc quest item randomizing
+        public void PermanentCaravan()
+        {
+            Put(CaravanFairyCheck, Enumerable.Repeat((byte)Nop, CaravanFairyCheckSize).ToArray());
+        }
+        // Required for npc quest item randomizing so that the canoe can be in a chest
+        public void CheckCanoeItemInsteadOfEventVar()
+        {
+            // 1. Update BoardCanoe to check canoe item instead of variable
+            Data[0x3C5ED] = Items.Canoe + Variables.ItemsBaseForNPC;
+
+            // 2.a. Point the one NPC of Talk_ifcanoe to Talk_ifitem in lut_MapObjTalkJumpTbl
+            Data[0x390D3 + 2 * 83] = 0xBA;
+            Data[0x390D4 + 2 * 83] = 0x94;
+            // 2.b. and set the item checked by that npc in lut_MapObjTalkData
+            Data[0x395D5 + 4 * 83] = Items.Canoe;
+            // 3. and update the item in Talk_CanoeSage (unused in NPC item shuffle, but just in case that's turned off)
+            Data[0x3947E] = Items.Canoe + Variables.ItemsBaseForNPC;
+            Data[0x39488] = Items.Canoe + Variables.ItemsBaseForNPC;
+        }
+
 		public void EnableEarlyRod()
 		{
 			var nops = new byte[SardaSize];
