@@ -251,4 +251,54 @@
         public const byte BlackOrb = 202;
 
     }
+    // These aren't actual values from the game code, just placeholders
+    public enum MapLocations
+    {
+        StartingLocation,
+        ConeriaTown,
+        ConeriaCastle,
+        TempleOfFiends,
+        MatoyasCave,
+        Pravoka,
+        DwarfCave,
+        ElflandTown,
+        ElflandCastle,
+        NorthwestCastle,
+        MarshCave,
+        Melmond,
+        EarthCave,
+        TitansTunnelA,
+        TitansTunnelB,
+        SardasCave,
+        CresentLake,
+        GurguVolcano,
+        IceCave,
+        CastleOrdeals,
+        Cardia1,
+        Cardia2,
+        Cardia3,
+        Cardia4,
+        Cardia5,
+        Cardia6,
+        Caravan,
+        Gaia,
+        Onrac,
+        Waterfall,
+        Lefein,
+        MirageTower,
+        BridgeLocation,
+        ShipLocation,
+        CanalLocation,
+        AirshipLocation
+    }
+    public enum MapChanges
+    {
+        Bridge, // NPC Only
+        Ship, // NPC Only
+        Canal, // NPC Only. As a general rule we can assume the ship cannot require the canal
+        TitanFed,
+        Canoe,
+        Airship,
+        Chime
+    }
 }
