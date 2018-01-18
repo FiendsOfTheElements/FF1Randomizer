@@ -218,23 +218,7 @@ namespace FF1Lib
                 "A982853F" +
                 "184C9ADB";
             Put(0x7DBF8, Blob.FromHex(controlCode3));
-        /*
-        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-        ;;
-        ;;  Draw Dialogue String @PrintName $DBF8
-        ;;  unused code 3, 31 bytes of space available until @Code_Not03
-        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-            LDA dlg_itemid      ; get the item ID whose name we're to print A561
-            ADC #$20            ; Add 0x20 to account for the 'items' offset 6920
-            BCC :+              ; if it is set 901D
-              ASL A             ; 0A
-              ADC #$5A          ; Add 0x5A 695A
-              STA text_ptr      ; 853E
-              LDA #$82          ; A982
-              STA text_ptr+1    ; 853F
-                CLC             ; 18
-            JMP @Loop           ; and continue printing (to print the name, then quit) 4C9ADB
-         */
+            // See source: ~/asm/1F_DBF8_ControlCode3.asm
 
             // Use control code 3 instead of 2 for normal treasure
             Data[0x2B187] = 0x03;
@@ -283,38 +267,7 @@ namespace FF1Lib
             var itemTradeRoutineAddress = "6C93";
             // Put at Smith routine
             Put(0x3936C, Blob.FromHex(itemTradeNPCRoutine));
-         /*
-         ;; New method for npc item exchanges, can be placed at Talk_Smith
-         ;; Input:
-         ;;      tmp   = Required item index, if 0 then nothing is required
-         ;;      tmp+1 = Default text if we don't try to give the item
-         ;;      tmp+2 = Unused
-         ;;      tmp+3 = Item to give, if 0 then no item is given or taken
-         ;;      tmp+6 = object ID
-         ;; Output:
-         ;;      A          = Dialog ID to print
-         ;;      dlg_itemid = item ID to print in dialog (if applicable)
-         StandardNPCItemTrade:           ; (33 bytes)
-             LDA tmp                     ; check required item A510
-             ADC #$20                    ; offset for unsram checks 6920
-             TAX                         ; AA
-             LDA unsram, X               ; BD0060
-             BEQ @Default                ; F014
-               LDA tmp+3                 ; load item to give A513
-               BEQ @Default              ; if there's an item to give F010
-                 JSR GiveItem            ; give it 2094DD
-                 BCS @End                ; if we don't already have it (Can't hold text) B00D
-                 LDA tmp                 ; check required item A510
-                 ADC #$20                ; offset for unsram checks 6920
-                 TAX                     ; AA
-                 DEC unsram, X           ; DE0060 (take the item)
-                 LDA #$3A                ; The NPC generic item gift text A93A
-                 RTS                     ; 60
-         @Default:
-             LDA tmp+1                   ; otherwise print default text A511
-         @End:
-             RTS                         ; 60
-         */
+            // See source: ~/asm/0E_936C_StandardNPCItemTrade.asm
 
             // New routine for NPC items based on game event flag
             var eventFlagGiveNPCRoutine =
@@ -326,38 +279,9 @@ namespace FF1Lib
             var eventFlagRoutineAddress = "8695";
             // Put at CubeBotBad and overruns into Lefein
             Put(0x39586, Blob.FromHex(eventFlagGiveNPCRoutine));
+            // See source: ~/asm/0E_9586_StandardNPCItem.asm
             Put(lut_MapObjTalkJumpTblAddress + 2 * ObjectId.Lefein, Blob.FromHex(eventFlagRoutineAddress));
-         /*
-         ;; New method for npc item gifts, can be placed at Talk_CubeBotBad ($9586) and overrunning into Talk_Chime
-         ;; Input:
-         ;;      tmp   = Required game event flag index (if applicable)
-         ;;      tmp+1 = Flag to set (equivalent to marking treasure chest as open)
-         ;;      tmp+2 = Default text if we don't try to give the item
-         ;;      tmp+3 = Item to give, if 0 then no item is given or taken
-         ;;      tmp+6 = object ID
-         ;; Output:
-         ;;      A          = Dialog ID to print
-         ;;      dlg_itemid = item ID to print in dialog (if applicable)
-         StandardNPCItemGameEvent:       ; (35 bytes)
-             LDY tmp                     ; check required event flag A410
-             TYA                         ; 98
-             BEQ :+                      ; if it's zero jump ahead F005
-               JSR CheckGameEventFlag    ; 207990
-               BCC @Default              ; if not set, show default 9007
-         :   LDY tmp+6                   ; A416
-             JSR CheckGameEventFlag      ; Check this object's event flag 207990
-             BCC :+                      ; if it is set, 9003
-             @Default:
-               LDA tmp+2                 ; print default text A512
-               RTS                       ; 60
-         :   LDA tmp+3                   ; load item to give A513
-             JSR GiveItem                ; give item 2094DD
-             BCS :+                      ; if we don't already have it (Can't hold text) B007
-               LDY tmp+6                 ; A416
-               JSR SetGameEventFlag      ; 207F90
-               LDA #$3A                  ; The NPC generic item gift text A93A
-         :   RTS                         ; 60
-         */
+
             // *** Mandatory cases (Smith and Lefein)
             // Smith and Lefein are the only NPCs required to use new routines since theirs were overwritten
 
@@ -413,26 +337,7 @@ namespace FF1Lib
                 "B00FA007207392A97F" +
                 "20C590A93A60A51160";
             Put(0x39338, Blob.FromHex(newAstosRoutine));
-        /*
-        ;; Rewrite Astos $9338
-        ;;  [1] if you don't have the Crown
-            LDA item_crown              ; check required item AD2260
-            BEQ @Default                ; F016
-              LDA tmp+3                 ; load item to give A513
-              BEQ @Default              ; if there's an item to give F012
-                JSR GiveItem            ; give it 2094DD
-                BCS @End                ; if we don't already have it (Can't hold text) B00F
-                LDY #OBJID_ASTOS        ; A007
-                JSR HideMapObject       ; hide (kill) Astos' map object (this object) 207392
-                LDA #BTL_ASTOS          ; trigger battle with Astos A97D
-                JSR TalkBattle          ; 20C590
-                LDA #$3A                ; The NPC generic item gift text A93A
-                RTS                     ; 60
-        @Default:
-            LDA tmp+1                   ; otherwise print default text A511
-        @End:
-            RTS                         ; 60 
-        */
+            // See source: ~/asm/0E_9338_AstosAnyItem.asm
         }
 
         private void EnableBikkeAnyItem()
@@ -446,37 +351,7 @@ namespace FF1Lib
                 "A004207990B013A513F00F841020" + giveRewardRoutineAddress +
                 "B00AA410207F90A93A60A51260";
             Put(0x392D0, Blob.FromHex(newBikkeRoutine));
-        /*
-        ;; Rewrite Bikke  $92D0
-        ;;  [1] if haven't fought him yet
-        ;;  [2] if fought him but haven't taken his ship yet
-        ;;  [3] after you have the ship
-            LDY #OBJID_PIRATETERR_1      ; A03F
-            JSR IsObjectVisible          ; 209190
-            BCS @AlreadyFought           ; if we already have, skip ahead B00B
-              JSR ShowMapObject          ; and show a bunch of scaredy-cat townspeople that the pirates 20A490
-              LDA #BTL_BIKKE             ; then start a battle with Bikke (his pirates) A97E
-              JSR TalkBattle             ; 20C590
-              LDA tmp+1                  ; and print [1] A511
-              RTS                        ; 60
-          @AlreadyFought:                ; if we've already fought bikke...
-            LDY #OBJID_BIKKE             ; A004
-            JSR CheckGameEventFlag       ; check Bikke's event flag to see if we got item from him yet 207990
-            BCS @Default                 ; if we already have, skip ahead B013
-              LDA tmp+3                  ; load item to give A513
-              BEQ @Default               ; if there's an item to give F00F
-              STY tmp                    ; 8410
-              JSR GiveItem               ; give it 2094DD
-              BCS @End                   ; if we don't already have it (Can't hold text) B00A
-              LDY tmp                    ; A410
-              JSR SetGameEventFlag       ; otherwise, set event flag to mark him as done 207F90
-              LDA #$3A                   ; The NPC generic item gift text A93A
-              RTS                        ; 60
-          @Default:                      ; otherwise, if we have the ship already
-            LDA tmp+2                    ; just print [3] A512
-          @End:
-            RTS                          ; 60 
-        */
+            // See source: ~/asm/0E_92D0_BikkeAnyItem.asm
         }
 
         private void SplitOpenTreasureRoutine()
@@ -486,24 +361,7 @@ namespace FF1Lib
                 $"A9002003FEA645BD00B120{giveRewardRoutineAddress}" +
                 "B00AA445B9006209049900628A60"; // 27 bytes
             Put(0x7DD78, Blob.FromHex(openTreasureChest));
-            /*
-            OpenTreasureChest:           ; (27 bytes)
-                LDA #BANK_TREASURE       ; swap to bank containing treasure chest info A900
-                JSR SwapPRG_L            ; 2003FE
-
-                LDX tileprop+1           ; put chest index in X A645
-                LDA lut_Treasure, X      ; use it to get the contents of the chest BD00B1
-
-                JSR GiveReward            ; Jump to new sub routine 2094DD
-                BCS :+                   ; if 'C' is set jump ahead, otherwise mark the chest as open B00A
-                  LDY tileprop+1           ; get the ID of this chest A445
-                  LDA game_flags, Y        ; flip on the TCOPEN flag to mark this TC as open B90062
-                  ORA #GMFLG_TCOPEN        ; 0904
-                  STA game_flags, Y        ; 990062
-            :
-                TXA                        ; 8A
-                RTS                        ; 60 
-            */
+            // See source: ~/asm/1F_DD78_OpenTreasureChestRewrite.asm
 
             // New "GiveReward" routine
             const string checkItem =
@@ -519,63 +377,7 @@ namespace FF1Lib
             var giveRewardRoutine =
                 $"{checkItem}{notItem}{openChest}";
             Put(0x7DD93, Blob.FromHex(giveRewardRoutine));
-            /*
-            ;; $DD93
-            ;; New jump point for NPC-only items:
-            ;; IN:
-            ;;       'A' should be set to the item ID, 224-255 are special values for variables
-            ;; Result:
-            ;;       'C' set if can't carry any more, otherwise clear
-            ;;       'X' Dialog ID
-            ;;       'A' Also Dialog ID
-            GiveReward:                    ; (8 bytes)
-                STA dlg_itemid             ; record that as the item id so it can be printed in the dialogue box 8561
-                ADC #$20                   ; Add 0x20 to account for the 'items' offset 6920
-                CMP #$3C                   ; see if the ID is >= item_stop C93C
-                BCS @NotItem               ; B013
-              @Item:                       ; (5 + 15 + 7 bytes)
-                TAX                        ; put item ID in X AA
-                CMP #$0C                   ; then check for canal C90C
-                BNE :+                     ; If canal then D005
-                  DEC unsram, X            ; decrement DE0060
-                  BCS @OpenChest           ; and open it B002
-            :   INC unsram, X              ; otherwise give them one of this item FE0060
-                CMP #$36                   ; if >= item_qty_start then play regular jingle C936
-                BCS @ClearChest            ; B02A
-                BCC @OpenChest             ; 902B
-              @NotItem:                    ; (6 + 9 + 4 + 9 + 7 + 5 = 40 bytes)
-                LDA dlg_itemid             ; restore item id A561
-                CMP #$6C                   ; check if gold C96C
-                BCC :+                     ; Continue if gold 9009
-                 JSR LoadPrice             ; get the price of the item (the amount of gold in the chest) 20B9EC
-                 JSR AddGPToParty          ; add that price to the party's GP 20EADD
-                 JMP @ClearChest           ; then mark the chest as open, and exit 4CDEDD
-            :   CMP #$44                   ; >= 68 means it's armor C944
-                BCS :+                     ; B009
-                  JSR FindEmptyWeaponSlot  ; Find an available slot to place this weapon in 2034DD
-                  BCS @TooFull             ; if there are no available slots, jump to 'Too Full' message B007
-                  LDA #$E5                 ; convert to index where 1 is first weapon A9E5
-                  BCC @EquipmentGet        ; 9007
-                JSR FindEmptyArmorSlot     ; Find an empty slot to put this armor 2046DD
-                BCS @TooFull               ;  if there are no available slots, jump to 'Too Full' message B00C
-                LDA #$BD                   ; convert to index where 1 is first weapon/armor A9BD
-              @EquipmentGet:               ; 'A' should hold the equipment ID and 'X' the item slot
-                ADC dlg_itemid             ; 6561
-                STA ch_stats, X            ; add it to the previously found empty slot 9D0061
-              @ClearChest:                 ; Cleanup, set jingle and dialog id (12 bytes)
-                CLC                        ; 18
-              @OpenRegularChest:           ;  then continue on to mark the chest as open
-                INC dlgsfx                 ; set dlgsfx to play the TC jingle E67D
-              @OpenChest:                  ;
-                INC dlgsfx                 ; set dlgsfx to play the TC jingle E67D
-              @TooFull:                    ; jump here with C set to show "Can't Hold" text and no jingle
-                LDX #DLGID_TCGET           ; and select "In This chest you found..." text A2F0
-                BCC :+                     ; 9004
-                  INC $60B7                ; EEB760
-                  INX                      ; E8
-            :   TXA                        ; 8A
-                RTS                        ; 60 
-            */
+            // See source: ~/asm/1F_DD78_OpenTreasureChestRewrite.asm
         }
     }
 }
