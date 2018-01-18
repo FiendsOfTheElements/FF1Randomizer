@@ -6,15 +6,15 @@ namespace FF1Lib
 {
 	public static class TreasureConditions
 	{
-		public static readonly List<byte> AllQuestItems = new List<byte>
+		public static readonly List<Item> AllQuestItems = new List<Item>
 		{
-			Items.Tnt,
-			Items.Crown,
-			Items.Ruby,
-			Items.Floater,
-			Items.Tail,
-			Items.Slab,
-			Items.Adamant
+			Item.Tnt,
+			Item.Crown,
+			Item.Ruby,
+			Item.Floater,
+			Item.Tail,
+			Item.Slab,
+			Item.Adamant
 		};
 
 		public static readonly List<int> UnusedIndices =
@@ -75,7 +75,7 @@ namespace FF1Lib
 		public void ShuffleTreasures(MT19337 rng, bool earlyCanoe, bool earlyOrdeals, bool incentivizeIceCave, bool incentivizeOrdeals)
 		{
 			var treasureBlob = Get(TreasureOffset, TreasureSize * TreasureCount);
-			var usedTreasures = TreasureConditions.UsedIndices.Select(i => treasureBlob[i]).ToList();
+			var usedTreasures = TreasureConditions.UsedIndices.Select(i => (Item)treasureBlob[i]).ToList();
 
 			do
 			{
@@ -84,25 +84,25 @@ namespace FF1Lib
 				{
 					const int OrdealsTreasureLocation = 130; // Really 131, because 0 is unused, and usedTreasures doesn't include it.
 					const int IceCaveTreasureLocation = 113; // Really 114
-					var incentiveTreasures = new List<byte>
+					var incentiveTreasures = new List<Item>
 					{
-					    Items.Floater,
-						Items.Slab,
-						Items.Adamant,
-					    Items.Tail,
-						Items.Masamune, // Masmune
-						Items.Ribbon // Ribbon
+					    Item.Floater,
+						Item.Slab,
+						Item.Adamant,
+					    Item.Tail,
+						Item.Masamune,
+						Item.Ribbon
 					};
 					if (earlyCanoe)
 					{
-						incentiveTreasures.Add(Items.Ruby);
+						incentiveTreasures.Add(Item.Ruby);
 					}
 
 					if (incentivizeOrdeals)
 					{
 						if (earlyOrdeals)
 						{
-							incentiveTreasures.Add(Items.Crown);
+							incentiveTreasures.Add(Item.Crown);
 						}
 
 						var choice = rng.Between(0, incentiveTreasures.Count - 1);
@@ -116,7 +116,7 @@ namespace FF1Lib
 					{
 						if (incentivizeOrdeals && !earlyOrdeals) // Don't add this twice!
 						{
-							incentiveTreasures.Add(Items.Crown);
+							incentiveTreasures.Add(Item.Crown);
 						}
 
 						var choice = rng.Between(0, incentiveTreasures.Count - 1);
@@ -128,7 +128,7 @@ namespace FF1Lib
 				}
 				for (int i = 0; i < TreasureConditions.UsedIndices.Count; i++)
 				{
-					treasureBlob[TreasureConditions.UsedIndices[i]] = usedTreasures[i];
+					treasureBlob[TreasureConditions.UsedIndices[i]] = (byte)usedTreasures[i];
 				}
 			} while (!CheckSanity(treasureBlob, earlyCanoe, earlyOrdeals));
 
@@ -137,48 +137,48 @@ namespace FF1Lib
 
 		private bool CheckSanity(Blob treasureBlob, bool earlyCanoe, bool earlyOrdeals)
 		{
-			if (TreasureConditions.ToFR.Select(i => treasureBlob[i]).Intersect(TreasureConditions.AllQuestItems).Any())
+			if (TreasureConditions.ToFR.Select(i => (Item)treasureBlob[i]).Intersect(TreasureConditions.AllQuestItems).Any())
 			{
 				return false;
 			}
 
 			var accessibleTreasures = new HashSet<int>(TreasureConditions.Beginning);
-			var questItems = new HashSet<byte>();
+			var questItems = new HashSet<Item>();
 			int lastCount;
 			do
 			{
 				lastCount = accessibleTreasures.Count;
-				questItems.UnionWith(accessibleTreasures.Select(i => treasureBlob[i]).Intersect(TreasureConditions.AllQuestItems));
+				questItems.UnionWith(accessibleTreasures.Select(i => (Item)treasureBlob[i]).Intersect(TreasureConditions.AllQuestItems));
 
-				if (questItems.Contains(Items.Crown))
+				if (questItems.Contains(Item.Crown))
 				{
 					accessibleTreasures.UnionWith(TreasureConditions.EarlyCrown);
 				}
-				if (questItems.Contains(Items.Tnt))
+				if (questItems.Contains(Item.Tnt))
 				{
 					accessibleTreasures.UnionWith(TreasureConditions.Tnt);
 
-					if (questItems.Contains(Items.Ruby) || earlyCanoe && questItems.Contains(Items.Floater))
+					if (questItems.Contains(Item.Ruby) || earlyCanoe && questItems.Contains(Item.Floater))
 					{
 						accessibleTreasures.UnionWith(TreasureConditions.Rod);
 					}
-					if (earlyCanoe || questItems.Contains(Items.Ruby))
+					if (earlyCanoe || questItems.Contains(Item.Ruby))
 					{
 						accessibleTreasures.UnionWith(TreasureConditions.FireAndIce);
 
-						if (earlyOrdeals || questItems.Contains(Items.Crown))
+						if (earlyOrdeals || questItems.Contains(Item.Crown))
 						{
 							accessibleTreasures.UnionWith(TreasureConditions.Ordeals);
 						}
-						if (questItems.Contains(Items.Floater))
+						if (questItems.Contains(Item.Floater))
 						{
 							accessibleTreasures.UnionWith(TreasureConditions.Airship);
 
-							if (questItems.Contains(Items.Crown))
+							if (questItems.Contains(Item.Crown))
 							{
 								accessibleTreasures.UnionWith(TreasureConditions.LateCrown);
 							}
-							if (questItems.Contains(Items.Slab))
+							if (questItems.Contains(Item.Slab))
 							{
 								accessibleTreasures.UnionWith(TreasureConditions.Chime);
 							}
@@ -199,7 +199,7 @@ namespace FF1Lib
         /// EnableNPCsGiveAnyItem();
         /// 
         /// Then any item can be assigned to an NPC like this:
-        /// Data[ItemLocations.KingConeria.Address] = Items.Key;
+        /// Data[ItemLocations.KingConeria.Address] = (byte) Item.Key;
         /// </summary>
         public void EnableBridgeShipCanalAnywhere()
         {
@@ -249,7 +249,7 @@ namespace FF1Lib
         /// EnableNPCsGiveAnyItem();
         /// 
         /// Then any item can be assigned to an NPC like this:
-        /// Data[ItemLocations.KingConeria.Address] = Items.Key;
+        /// Data[ItemLocations.KingConeria.Address] = (byte) Item.Key;
         /// </summary>
         public void EnableNPCsGiveAnyItem(bool bridgeShipCanalAnywhereEnabled = true)
         {
@@ -326,7 +326,7 @@ namespace FF1Lib
             var eventFlagRoutineAddress = "8695";
             // Put at CubeBotBad and overruns into Lefein
             Put(0x39586, Blob.FromHex(eventFlagGiveNPCRoutine));
-            Put(lut_MapObjTalkJumpTblAddress + 2 * ObjectIds.Lefein, Blob.FromHex(eventFlagRoutineAddress));
+            Put(lut_MapObjTalkJumpTblAddress + 2 * ObjectId.Lefein, Blob.FromHex(eventFlagRoutineAddress));
          /*
          ;; New method for npc item gifts, can be placed at Talk_CubeBotBad ($9586) and overrunning into Talk_Chime
          ;; Input:
@@ -365,20 +365,20 @@ namespace FF1Lib
             // Update default text position from index 3 to index 2
             Data[ItemLocations.Lefein.Address - 1] = Data[ItemLocations.Lefein.Address];
             // set required item/event flag for trade
-            Data[ItemLocations.SmithWeapon.Address - 3] = Items.Adamant;
-            Data[ItemLocations.Lefein.Address - 3] = ObjectIds.Unne;
+            Data[ItemLocations.Smith.Address - 3] = (byte)Item.Adamant;
+            Data[ItemLocations.Lefein.Address - 3] = ObjectId.Unne;
             // *** End Mandatory cases
 
             // *** Handle special cases (Prince, King, Matoya, and Nerrick)
             // EnableKingAnyItem
             Data[ItemLocations.KingConeria.Address - 1] = Data[ItemLocations.KingConeria.Address];
-            Put(lut_MapObjTalkJumpTblAddress + 2 * ObjectIds.King, Blob.FromHex(eventFlagRoutineAddress));
+            Put(lut_MapObjTalkJumpTblAddress + 2 * ObjectId.King, Blob.FromHex(eventFlagRoutineAddress));
 
             EnableBikkeAnyItem();
 
             // EnableMatoyaAnyItem
-            Data[ItemLocations.Matoya.Address - 3] = Items.Crystal;
-            Put(lut_MapObjTalkJumpTblAddress + 2 * ObjectIds.Matoya, Blob.FromHex(itemTradeRoutineAddress));
+            Data[ItemLocations.Matoya.Address - 3] = (byte)Item.Crystal;
+            Put(lut_MapObjTalkJumpTblAddress + 2 * ObjectId.Matoya, Blob.FromHex(itemTradeRoutineAddress));
 
             EnableAstosAnyItem();
 
@@ -386,28 +386,28 @@ namespace FF1Lib
             // Update default text position from index 3 to index 2
             Data[ItemLocations.ElfPrince.Address - 1] = Data[ItemLocations.ElfPrince.Address];
             // Set the external flags to check
-            Data[ItemLocations.ElfPrince.Address - 3] = ObjectIds.ElfDoc;
+            Data[ItemLocations.ElfPrince.Address - 3] = ObjectId.ElfDoc;
             // And ElfDoc sets his own flag instead of prince's
-            Data[0x39302] = ObjectIds.ElfDoc;
-            Put(lut_MapObjTalkJumpTblAddress + 2 * ObjectIds.ElfPrince, Blob.FromHex(eventFlagRoutineAddress));
+            Data[0x39302] = ObjectId.ElfDoc;
+            Put(lut_MapObjTalkJumpTblAddress + 2 * ObjectId.ElfPrince, Blob.FromHex(eventFlagRoutineAddress));
 
             // EnableNerrickAnyItem
-            Data[ItemLocations.Nerrick.Address - 3] = Items.Tnt;
-            Put(lut_MapObjTalkJumpTblAddress + 2 * ObjectIds.Nerrick, Blob.FromHex(itemTradeRoutineAddress));
+            Data[ItemLocations.Nerrick.Address - 3] = (byte)Item.Tnt;
+            Put(lut_MapObjTalkJumpTblAddress + 2 * ObjectId.Nerrick, Blob.FromHex(itemTradeRoutineAddress));
             // *** End Special cases
 
             // *** Normal cases (Sarda, CubeBot, Princess, Fairy, CanoeSage)
-            Put(lut_MapObjTalkJumpTblAddress + 2 * ObjectIds.Sarda, Blob.FromHex(eventFlagRoutineAddress));
-            Put(lut_MapObjTalkJumpTblAddress + 2 * ObjectIds.CubeBot, Blob.FromHex(eventFlagRoutineAddress));
-            Put(lut_MapObjTalkJumpTblAddress + 2 * ObjectIds.Princess2, Blob.FromHex(eventFlagRoutineAddress));
-            Put(lut_MapObjTalkJumpTblAddress + 2 * ObjectIds.Fairy, Blob.FromHex(eventFlagRoutineAddress));
-            Put(lut_MapObjTalkJumpTblAddress + 2 * ObjectIds.CanoeSage, Blob.FromHex(eventFlagRoutineAddress)); 
+            Put(lut_MapObjTalkJumpTblAddress + 2 * ObjectId.Sarda, Blob.FromHex(eventFlagRoutineAddress));
+            Put(lut_MapObjTalkJumpTblAddress + 2 * ObjectId.CubeBot, Blob.FromHex(eventFlagRoutineAddress));
+            Put(lut_MapObjTalkJumpTblAddress + 2 * ObjectId.Princess2, Blob.FromHex(eventFlagRoutineAddress));
+            Put(lut_MapObjTalkJumpTblAddress + 2 * ObjectId.Fairy, Blob.FromHex(eventFlagRoutineAddress));
+            Put(lut_MapObjTalkJumpTblAddress + 2 * ObjectId.CanoeSage, Blob.FromHex(eventFlagRoutineAddress)); 
         }
 
         private void EnableAstosAnyItem()
         {
             // Set required item at index 0
-            Data[ItemLocations.Astos.Address - 3] = Items.Crown;
+            Data[ItemLocations.Astos.Address - 3] = (byte)Item.Crown;
             var newAstosRoutine =
                 "AD2260F016A513F01220" + giveRewardRoutineAddress +
                 "B00FA007207392A97F" +
