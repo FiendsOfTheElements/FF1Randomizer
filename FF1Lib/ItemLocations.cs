@@ -280,5 +280,16 @@ namespace FF1Lib
 
         public static ItemShopSlot CaravanItemShop1 =
             new ItemShopSlot(0x38461, nameof(CaravanItemShop1), MapLocation.Caravan, Item.Bottle);
+
+        public static StaticItemLocation LichReward = 
+            new StaticItemLocation(nameof(LichReward), MapLocation.EarthCave, Item.EarthOrb, AccessRequirement.Rod);
+        public static StaticItemLocation KaryReward =
+            new StaticItemLocation(nameof(KaryReward), MapLocation.GurguVolcano, Item.FireOrb);
+        public static StaticItemLocation KrakenReward =
+            new StaticItemLocation(nameof(KrakenReward), MapLocation.Onrac, Item.WaterOrb, AccessRequirement.Oxyale);
+        public static StaticItemLocation TiamatReward =
+            new StaticItemLocation(nameof(TiamatReward), MapLocation.MirageTower, Item.AirOrb, AccessRequirement.Cube);
+        public static StaticItemLocation ChaosReward =
+            new StaticItemLocation(nameof(ChaosReward), MapLocation.TempleOfFiends, Item.None, AccessRequirement.Key | AccessRequirement.BlackOrb | AccessRequirement.Lute );
     }
 }

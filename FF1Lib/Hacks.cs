@@ -24,7 +24,7 @@ namespace FF1Lib
         {
             Put(CaravanFairyCheck, Enumerable.Repeat((byte)Nop, CaravanFairyCheckSize).ToArray());
         }
-        // Required for npc quest item randomizing, allows the canoe can be in a chest
+        // Required for npc quest item randomizing, allows the canoe to be in a chest (but shows in inventory)
         public void CheckCanoeItemInsteadOfEventVar()
         {
             var unsramCanoe = (byte)(Item.Canoe + UnsramIndex.ItemsBaseForNPC);
@@ -40,7 +40,8 @@ namespace FF1Lib
             Data[0x3947E] = unsramCanoe;
             Data[0x39488] = unsramCanoe;
         }
-        // Required for npc quest item randomizing (but doesn't change anything if EnableNPCsGiveAnyItem isn't called)
+        // Required for npc quest item randomizing 
+        // Doesn't substantially change anything if EnableNPCsGiveAnyItem isn't called
         public void CleanupNPCRoutines() 
         {
             // Have ElfDoc set his own flag instead of the prince's so that 

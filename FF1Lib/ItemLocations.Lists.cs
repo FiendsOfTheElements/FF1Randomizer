@@ -78,8 +78,7 @@ namespace FF1Lib
             SkyPalace15, SkyPalace16, SkyPalace17, SkyPalace18, SkyPalace19,
             SkyPalaceMajor, SkyPalace21, SkyPalace22, SkyPalace23, SkyPalace24,
             SkyPalace25, SkyPalace26, SkyPalace27, SkyPalace28, SkyPalace29,
-            SkyPalace30, SkyPalace31, SkyPalace32, SkyPalace33, SkyPalace34 }
-            .AsReadOnly();
+            SkyPalace30, SkyPalace31, SkyPalace32, SkyPalace33, SkyPalace34 };
         public static readonly IReadOnlyCollection<IRewardSource> ToFR =
             new List<IRewardSource> { ToFRevisitedMajor, ToFRevisited2, ToFRevisited3,
             ToFRevisited4, ToFRevisited5, ToFRevisited6, ToFRevisited7};
@@ -94,7 +93,8 @@ namespace FF1Lib
 
         public static readonly IReadOnlyCollection<IRewardSource> AllNPCItemLocations =
             new List<IRewardSource> {
-            KingConeria, Princess, Matoya, Bikke, ElfPrince, Astos, Nerrick, Sarda, CanoeSage, CubeBot, Fairy, Lefein
+            KingConeria, Princess, Matoya, Bikke, ElfPrince, Astos, 
+            Nerrick, Sarda, CanoeSage, CubeBot, Fairy, Lefein
         };
 
         public static readonly IReadOnlyCollection<IRewardSource> AllShopItemLocations =
@@ -102,8 +102,13 @@ namespace FF1Lib
             CaravanItemShop1
         };
 
+        public static readonly IReadOnlyCollection<IRewardSource> AllOtherItemLocations =
+            new List<IRewardSource> {
+            LichReward, KaryReward, KrakenReward, TiamatReward, ChaosReward
+        };
+
         public static readonly IReadOnlyCollection<IRewardSource> AllNonTreasureItemLocations =
-            AllNPCItemLocations.Concat(AllShopItemLocations).ToList();
+            AllNPCItemLocations.Concat(AllShopItemLocations).Concat(AllOtherItemLocations).ToList();
 
         public static readonly IReadOnlyCollection<IRewardSource> AllQuestItemLocations =
             AllTreasures.Concat(AllNonTreasureItemLocations).Where(x => !x.IsUnused).ToList();

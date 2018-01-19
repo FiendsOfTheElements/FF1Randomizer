@@ -170,4 +170,12 @@ namespace FF1Lib
             base.Put(rom);
         }
     }
+
+    public class StaticItemLocation : RewardSourceBase
+    {
+        public StaticItemLocation(string name, MapLocation mapLocation, Item item,
+                             AccessRequirement accessRequirement = AccessRequirement.None)
+            : base (0x80000, name, mapLocation, item, accessRequirement) {}
+        public override void Put(FF1Rom rom) => throw new NotImplementedException();
+    }
 }
