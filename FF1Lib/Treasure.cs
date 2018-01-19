@@ -237,7 +237,7 @@ namespace FF1Lib
         /// </summary>
         public void EnableNPCsGiveAnyItem()
         {
-            // These 3 are safe to call even if NPC items aren't being shuffled
+            // These first 2 are safe to call even if NPC items aren't being shuffled
             SplitOpenTreasureRoutine();
             CleanupNPCRoutines();
 
@@ -272,7 +272,7 @@ namespace FF1Lib
             // See source: ~/asm/0E_9586_StandardNPCItem.asm
 
             // *** Only Smith is required to give an item since only his routine is overwritten
-            // so set the vanilla item here so he still gives it if nothing else changes
+            // so we set the vanilla item here so he still gives it if nothing else changes
             Data[ItemLocations.Smith.Address] = (byte)Item.Xcalber;
 
             // *** Handle special cases (Bikke and Astos)
