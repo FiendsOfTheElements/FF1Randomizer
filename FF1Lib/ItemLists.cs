@@ -46,6 +46,13 @@ namespace FF1Lib
             Item.EarthOrb, Item.FireOrb, Item.WaterOrb, Item.AirOrb
         };
 
+        public static readonly IReadOnlyCollection<Item> AllNonTreasureChestItems =
+            new List<Item> {
+            Item.Bridge, Item.Lute, Item.Herb, Item.Ship, Item.Key, 
+            Item.Crystal, Item.Rod, Item.Canoe, Item.Cube, Item.Bottle,
+            Item.Oxyale, Item.Chime, Item.Canal
+        };
+
         public static readonly IReadOnlyCollection<Item> AllQuestItems =
             Enum.GetValues(typeof(Item))
                 .Cast<Item>()
