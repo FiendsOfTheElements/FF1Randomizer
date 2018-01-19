@@ -41,23 +41,13 @@ namespace FF1Lib
             Data[0x39488] = unsramCanoe;
         }
         // Required for npc quest item randomizing (but doesn't change anything if EnableNPCsGiveAnyItem isn't called)
-        public void SetNPCFetchQuestRequirements()
-        {
-            // These simply set values in lut_MapObjTalkData which are unused in the original routines
-            Data[0x395F1] = (byte)Item.Crown;
-            Data[0x395FD] = (byte)Item.Crystal;
-            Data[0x395E9] = ObjectId.ElfDoc;
-            Data[0x395F5] = (byte)Item.Tnt;
-            Data[0x398C1] = ObjectId.Unne;
-            Data[0x395F9] = (byte)Item.Adamant;
-
-            // And here ElfDoc sets his own flag instead of the prince's so that 
-            // the prince can still set his own flag after giving a shuffled item
-            Data[0x39302] = ObjectId.ElfDoc;
-            Data[0x3931F] = ObjectId.ElfDoc;
-        }
         public void CleanupNPCRoutines() 
         {
+            // Have ElfDoc set his own flag instead of the prince's so that 
+            // the prince can still set his own flag after giving a shuffled item
+            Data[0x39302] = (byte)ObjectId.ElfDoc;
+            Data[0x3931F] = (byte)ObjectId.ElfDoc;
+
             // Convert Talk_ifcanoe into Talk_ifairship
             Data[0x39534] = UnsramIndex.AirshipVis;
             // Point Talk_ifairship person to old Talk_ifcanoe routine

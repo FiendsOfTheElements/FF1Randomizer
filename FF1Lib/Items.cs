@@ -2,6 +2,7 @@
 {
     public enum Item : byte
     {
+        None = 0,
         Lute = 1, // Hides an object
         Crown = 2, // Chest, trades for a quest item
         Crystal = 3, // Trades for a quest item
@@ -211,51 +212,53 @@
         public const byte ItemsBaseForNPC = 32;
     }
 
-    public static class ObjectId
+    public enum ObjectId : byte
     {
-        public const byte King = 1;
-        public const byte Garland = 2;
-        public const byte Princess1 = 3;
-        public const byte Bikke = 4;
-        public const byte ElfDoc = 5;
-        public const byte ElfPrince = 6;
-        public const byte Astos = 7;
-        public const byte Nerrick = 8;
-        public const byte Smith = 9;
-        public const byte Matoya = 10;
-        public const byte Unne = 11;
-        public const byte Vampire = 12;
-        public const byte Sarda = 13;
-        public const byte Bahamut = 14;
+        None = 0,
+        King = 1,
+        Garland = 2,
+        Princess1 = 3,
+        Bikke = 4,
+        ElfDoc = 5,
+        ElfPrince = 6,
+        Astos = 7,
+        Nerrick = 8,
+        Smith = 9,
+        Matoya = 10,
+        Unne = 11,
+        Vampire = 12,
+        Sarda = 13,
+        Bahamut = 14,
 
-        public const byte SubEngineer = 16;
-        public const byte CubeBot = 17;
-        public const byte Princess2 = 18;
-        public const byte Fairy = 19;
-        public const byte Titan = 20;
-        public const byte CanoeSage = 21;
-        public const byte RodPlate = 22;
-        public const byte LutePlate = 23;
+        SubEngineer = 16,
+        CubeBot = 17,
+        Princess2 = 18,
+        Fairy = 19,
+        Titan = 20,
+        CanoeSage = 21,
+        RodPlate = 22,
+        LutePlate = 23,
 
-        public const byte SkyWarrior1 = 58;
-        public const byte SkyWarrior2 = 59;
-        public const byte SkyWarrior3 = 60;
-        public const byte SkyWarrior4 = 61;
-        public const byte SkyWarrior5 = 62;
-        public const byte Pirate1 = 63;
-        public const byte Pirate2 = 64;
-        public const byte Pirate3 = 65;
+        SkyWarrior1 = 58,
+        SkyWarrior2 = 59,
+        SkyWarrior3 = 60,
+        SkyWarrior4 = 61,
+        SkyWarrior5 = 62,
+        Pirate1 = 63,
+        Pirate2 = 64,
+        Pirate3 = 65,
 
-        public const byte Bat = 87;
+        Bat = 87,
 
-        public const byte AirshipPerson = 113;
+        AirshipPerson = 113,
 
-        public const byte EarthFirePerson = 128;
+        EarthFirePerson = 128,
 
-        public const byte Lefein = 187;
+        Lefein = 187,
 
-        public const byte BlackOrb = 202;
+        BlackOrb = 202
     }
+
     // These aren't actual values from the game code, just placeholders
     public enum MapLocation
     {
