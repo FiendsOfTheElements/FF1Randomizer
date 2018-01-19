@@ -235,27 +235,20 @@ namespace FF1Lib
         /// Then any item can be assigned to an NPC like this:
         /// Data[ItemLocations.KingConeria.Address] = (byte) Item.Key;
         /// </summary>
-        public void EnableNPCsGiveAnyItem(bool bridgeShipCanalAnywhereEnabled = true)
+        public void EnableNPCsGiveAnyItem()
         {
+            // These 3 are safe to call even if NPC items aren't being shuffled
             SplitOpenTreasureRoutine();
-            var controlCode = bridgeShipCanalAnywhereEnabled ? "03" : "02";
+            SetNPCFetchQuestRequirements();
+            CleanupNPCRoutines();
+
             // Replace Don't be greedy text with NPC item text "Here, take this"
             var replacementText =
                 "91A823" + // Here
                 "BF1BA4AE1A" + // , take 
                 "1C3005" + // this\n
-                $"{controlCode}00";
+                $"0300";
             Put(0x28F35, Blob.FromHex(replacementText));
-
-            // When getting jump address from lut_MapObjTalkJumpTbl (starting 0x3902B), store
-            // it in tmp+4 & tmp+5 instead of tmp+6 & tmp+7 so that tmp+6
-            // will still have the mapobj_id (allowing optimizations in TalkRoutines)
-            Data[0x39063] = 0x14;
-            Data[0x39068] = 0x15;
-            Data[0x3906A] = 0x14;
-            Data[0x39070] = 0x14;
-            Data[0x39075] = 0x15;
-            Data[0x39077] = 0x14;
 
             // New routine for NPC item trades
             var itemTradeNPCRoutine =
@@ -264,7 +257,7 @@ namespace FF1Lib
                 "B00DA5106920AADE0060" +
                 "A93A60" +
                 "A51160";
-            var itemTradeRoutineAddress = "6C93";
+            var itemTradeRoutineAddress = Blob.FromHex("6C93");
             // Put at Smith routine
             Put(0x3936C, Blob.FromHex(itemTradeNPCRoutine));
             // See source: ~/asm/0E_936C_StandardNPCItemTrade.asm
@@ -276,65 +269,37 @@ namespace FF1Lib
                 "A51320" + giveRewardRoutineAddress +
                 "B007A416" +
                 "207F90A93A60";
-            var eventFlagRoutineAddress = "8695";
+            var eventFlagRoutineAddress = Blob.FromHex("6B95");
             // Put at CubeBotBad and overruns into Lefein
-            Put(0x39586, Blob.FromHex(eventFlagGiveNPCRoutine));
+            Put(0x3956B, Blob.FromHex(eventFlagGiveNPCRoutine));
             // See source: ~/asm/0E_9586_StandardNPCItem.asm
-            Put(lut_MapObjTalkJumpTblAddress + 2 * ObjectId.Lefein, Blob.FromHex(eventFlagRoutineAddress));
 
-            // *** Mandatory cases (Smith and Lefein)
-            // Smith and Lefein are the only NPCs required to use new routines since theirs were overwritten
+            // *** Only Smith is required to give an item since only his routine is overwritten
+            // so set the vanilla item here so he still gives it if nothing else changes
+            Data[ItemLocations.Smith.Address] = (byte)Item.Xcalber;
 
-            // updates to lut_MapObjTalkData
-            // Update default text position from index 3 to index 2
-            Data[ItemLocations.Lefein.Address - 1] = Data[ItemLocations.Lefein.Address];
-            // set required item/event flag for trade
-            Data[ItemLocations.Smith.Address - 3] = (byte)Item.Adamant;
-            Data[ItemLocations.Lefein.Address - 3] = ObjectId.Unne;
-            // *** End Mandatory cases
-
-            // *** Handle special cases (Prince, King, Matoya, and Nerrick)
-            // EnableKingAnyItem
-            Data[ItemLocations.KingConeria.Address - 1] = Data[ItemLocations.KingConeria.Address];
-            Put(lut_MapObjTalkJumpTblAddress + 2 * ObjectId.King, Blob.FromHex(eventFlagRoutineAddress));
-
+            // *** Handle special cases (Bikke and Astos)
             EnableBikkeAnyItem();
-
-            // EnableMatoyaAnyItem
-            Data[ItemLocations.Matoya.Address - 3] = (byte)Item.Crystal;
-            Put(lut_MapObjTalkJumpTblAddress + 2 * ObjectId.Matoya, Blob.FromHex(itemTradeRoutineAddress));
 
             EnableAstosAnyItem();
 
-            // EnableElfPrinceAnyItem
-            // Update default text position from index 3 to index 2
-            Data[ItemLocations.ElfPrince.Address - 1] = Data[ItemLocations.ElfPrince.Address];
-            // Set the external flags to check
-            Data[ItemLocations.ElfPrince.Address - 3] = ObjectId.ElfDoc;
-            // And ElfDoc sets his own flag instead of prince's
-            Data[0x39302] = ObjectId.ElfDoc;
-            Put(lut_MapObjTalkJumpTblAddress + 2 * ObjectId.ElfPrince, Blob.FromHex(eventFlagRoutineAddress));
-
-            // EnableNerrickAnyItem
-            Data[ItemLocations.Nerrick.Address - 3] = (byte)Item.Tnt;
-            Put(lut_MapObjTalkJumpTblAddress + 2 * ObjectId.Nerrick, Blob.FromHex(itemTradeRoutineAddress));
-            // *** End Special cases
-
-            // *** Normal cases (Sarda, CubeBot, Princess, Fairy, CanoeSage)
-            Put(lut_MapObjTalkJumpTblAddress + 2 * ObjectId.Sarda, Blob.FromHex(eventFlagRoutineAddress));
-            Put(lut_MapObjTalkJumpTblAddress + 2 * ObjectId.CubeBot, Blob.FromHex(eventFlagRoutineAddress));
-            Put(lut_MapObjTalkJumpTblAddress + 2 * ObjectId.Princess2, Blob.FromHex(eventFlagRoutineAddress));
-            Put(lut_MapObjTalkJumpTblAddress + 2 * ObjectId.Fairy, Blob.FromHex(eventFlagRoutineAddress));
-            Put(lut_MapObjTalkJumpTblAddress + 2 * ObjectId.CanoeSage, Blob.FromHex(eventFlagRoutineAddress)); 
+            // *** Normal cases (King, Prince, Matoya, Nerrick, Sarda, CubeBot, Princess, Fairy, CanoeSage)
+            Put(lut_MapObjTalkJumpTblAddress + 2 * ObjectId.King, eventFlagRoutineAddress);
+            Put(lut_MapObjTalkJumpTblAddress + 2 * ObjectId.ElfPrince, eventFlagRoutineAddress);
+            Put(lut_MapObjTalkJumpTblAddress + 2 * ObjectId.Matoya, itemTradeRoutineAddress);
+            Put(lut_MapObjTalkJumpTblAddress + 2 * ObjectId.Nerrick, itemTradeRoutineAddress);
+            Put(lut_MapObjTalkJumpTblAddress + 2 * ObjectId.Sarda, eventFlagRoutineAddress);
+            Put(lut_MapObjTalkJumpTblAddress + 2 * ObjectId.CubeBot, eventFlagRoutineAddress);
+            Put(lut_MapObjTalkJumpTblAddress + 2 * ObjectId.Princess2, eventFlagRoutineAddress);
+            Put(lut_MapObjTalkJumpTblAddress + 2 * ObjectId.Fairy, eventFlagRoutineAddress);
+            Put(lut_MapObjTalkJumpTblAddress + 2 * ObjectId.CanoeSage, eventFlagRoutineAddress); 
         }
 
         private void EnableAstosAnyItem()
         {
-            // Set required item at index 0
-            Data[ItemLocations.Astos.Address - 3] = (byte)Item.Crown;
             var newAstosRoutine =
                 "AD2260F016A513F01220" + giveRewardRoutineAddress +
-                "B00FA007207392A97F" +
+                "B00FA007207392A97D" +
                 "20C590A93A60A51160";
             Put(0x39338, Blob.FromHex(newAstosRoutine));
             // See source: ~/asm/0E_9338_AstosAnyItem.asm
@@ -342,11 +307,9 @@ namespace FF1Lib
 
         private void EnableBikkeAnyItem()
         {
-            // Move default text position from index 3 to index 2
-            Data[ItemLocations.Bikke.Address - 1] = Data[ItemLocations.Bikke.Address];
             var newBikkeRoutine =
                 "A03F209190B00B" +
-                "20A490A97F" +
+                "20A490A97E" +
                 "20C590A51160" +
                 "A004207990B013A513F00F841020" + giveRewardRoutineAddress +
                 "B00AA410207F90A93A60A51260";

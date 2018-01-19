@@ -248,6 +248,10 @@
 
         public const byte Bat = 87;
 
+        public const byte AirshipPerson = 113;
+
+        public const byte EarthFirePerson = 128;
+
         public const byte Lefein = 187;
 
         public const byte BlackOrb = 202;

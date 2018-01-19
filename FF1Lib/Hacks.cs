@@ -24,7 +24,7 @@ namespace FF1Lib
         {
             Put(CaravanFairyCheck, Enumerable.Repeat((byte)Nop, CaravanFairyCheckSize).ToArray());
         }
-        // Required for npc quest item randomizing so that the canoe can be in a chest
+        // Required for npc quest item randomizing, allows the canoe can be in a chest
         public void CheckCanoeItemInsteadOfEventVar()
         {
             var unsramCanoe = (byte)(Item.Canoe + UnsramIndex.ItemsBaseForNPC);
@@ -39,6 +39,69 @@ namespace FF1Lib
             // 3. and update the item in Talk_CanoeSage (unused in NPC item shuffle, but just in case that's turned off)
             Data[0x3947E] = unsramCanoe;
             Data[0x39488] = unsramCanoe;
+        }
+        // Required for npc quest item randomizing (but doesn't change anything if EnableNPCsGiveAnyItem isn't called)
+        public void SetNPCFetchQuestRequirements()
+        {
+            // These simply set values in lut_MapObjTalkData which are unused in the original routines
+            Data[0x395F1] = (byte)Item.Crown;
+            Data[0x395FD] = (byte)Item.Crystal;
+            Data[0x395E9] = ObjectId.ElfDoc;
+            Data[0x395F5] = (byte)Item.Tnt;
+            Data[0x398C1] = ObjectId.Unne;
+            Data[0x395F9] = (byte)Item.Adamant;
+
+            // And here ElfDoc sets his own flag instead of the prince's so that 
+            // the prince can still set his own flag after giving a shuffled item
+            Data[0x39302] = ObjectId.ElfDoc;
+            Data[0x3931F] = ObjectId.ElfDoc;
+        }
+        public void CleanupNPCRoutines() 
+        {
+            // Convert Talk_ifcanoe into Talk_ifairship
+            Data[0x39534] = UnsramIndex.AirshipVis;
+            // Point Talk_ifairship person to old Talk_ifcanoe routine
+            Data[0x391B5] = 0x33;
+            Data[0x391B6] = 0x95;
+
+            // Then we move Talk_earthfire to Talk_norm to clear space for 
+            // new item gift routine without overwriting Talk_chime
+            Data[0x391D3] = 0x92;
+            Data[0x391D4] = 0x94;
+
+            // Swap string pointer in index 2 and 3 for King, Bikke, Prince, and Lefein
+            var temp = Data[ItemLocations.KingConeria.Address];
+            Data[ItemLocations.KingConeria.Address] = Data[ItemLocations.KingConeria.Address - 1];
+            Data[ItemLocations.KingConeria.Address - 1] = temp;
+            temp = Data[ItemLocations.Bikke.Address];
+            Data[ItemLocations.Bikke.Address] = Data[ItemLocations.Bikke.Address - 1];
+            Data[ItemLocations.Bikke.Address - 1] = temp;
+            temp = Data[ItemLocations.ElfPrince.Address];
+            Data[ItemLocations.ElfPrince.Address] = Data[ItemLocations.ElfPrince.Address - 1];
+            Data[ItemLocations.ElfPrince.Address - 1] = temp;
+            temp = Data[ItemLocations.Lefein.Address];
+            Data[ItemLocations.Lefein.Address] = Data[ItemLocations.Lefein.Address - 1];
+            Data[ItemLocations.Lefein.Address - 1] = temp;
+
+            // And do the same swap in the vanilla routines so those still work if needed
+            Data[0x392A7] = 0x12;
+            Data[0x392AA] = 0x13;
+            Data[0x392FC] = 0x13;
+            Data[0x392FF] = 0x12;
+            Data[0x39326] = 0x12;
+            Data[0x3932E] = 0x13;
+            Data[0x3959C] = 0x12;
+            Data[0x395A4] = 0x13;
+
+            // When getting jump address from lut_MapObjTalkJumpTbl (starting 0x3902B), store
+            // it in tmp+4 & tmp+5 (unused normally) instead of tmp+6 & tmp+7 so that tmp+6
+            // will still have the mapobj_id (allowing optimizations in TalkRoutines)
+            Data[0x39063] = 0x14;
+            Data[0x39068] = 0x15;
+            Data[0x3906A] = 0x14;
+            Data[0x39070] = 0x14;
+            Data[0x39075] = 0x15;
+            Data[0x39077] = 0x14;
         }
 
 		public void EnableEarlyRod()
