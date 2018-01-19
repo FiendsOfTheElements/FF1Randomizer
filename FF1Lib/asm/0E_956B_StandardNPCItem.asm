@@ -1,4 +1,5 @@
-﻿ ;; New method for npc item gifts, can be placed at Talk_CubeBotBad ($9586) and overrunning into Talk_Chime
+﻿ ;; New method for npc item gifts, placed ad $956B, overwriting 
+ ;; Talk_ifairship, Talk_ifearthfire, and most of Talk_CubeBotBad
  ;; Input:
  ;;      tmp   = Required game event flag index (if applicable)
  ;;      tmp+1 = Flag to set (equivalent to marking treasure chest as open)
