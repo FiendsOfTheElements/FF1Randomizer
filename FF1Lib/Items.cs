@@ -1,4 +1,8 @@
-﻿namespace FF1Lib
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace FF1Lib
 {
     public enum Item : byte
     {
@@ -185,7 +189,7 @@
 
         // Additions for variables in chests
         Ship = 224,
-        Airship = 228,
+        //Airship = 228,
         Bridge = 232,
         Canal = 236
     }
@@ -299,14 +303,17 @@
         CanalLocation,
         AirshipLocation
     }
+    [Flags]
     public enum MapChange
     {
-        Bridge,
-        Ship,
-        Canal, // As a general rule we can assume the ship cannot require the canal
-        TitanFed,
-        Canoe,
-        Airship,
-        Chime
+        None = 0x00,
+        Bridge = 0x01,
+        Ship = 0x02,
+        Canal = 0x04, // As a general rule we can assume the ship cannot require the canal
+        TitanFed = 0x08,
+        Canoe = 0x10,
+        Airship = 0x20,
+        Chime = 0x40,
+        All = 0xFF
     }
 }
