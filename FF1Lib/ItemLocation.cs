@@ -7,14 +7,21 @@ namespace FF1Lib
     [Flags]
     public enum AccessRequirement
     {
-        None = 0x00,
-        Key = 0x01,
-        Rod = 0x02,
-        Oxyale = 0x04,
-        Cube = 0x08,
-        BlackOrb = 0x10,
-        Lute = 0x20,
-        All = 0xFF
+        None = 0x0000,
+        Key = 0x0001,
+        Rod = 0x0002,
+        Oxyale = 0x0004,
+        Cube = 0x0008,
+        BlackOrb = 0x0010,
+        Lute = 0x0020,
+        Crown = 0x0040,
+        Crystal = 0x0080,
+        Herb = 0x0100,
+        Tnt = 0x0200,
+        Adamant = 0x0400,
+        Slab = 0x0800,
+        Bottle = 0x1000,
+        All = 0xFFFF
     }
     public interface IRewardSource {
         int Address { get; }
@@ -173,9 +180,10 @@ namespace FF1Lib
 
     public class StaticItemLocation : RewardSourceBase
     {
+        private static int address = 0x80000;
         public StaticItemLocation(string name, MapLocation mapLocation, Item item,
                              AccessRequirement accessRequirement = AccessRequirement.None)
-            : base (0x80000, name, mapLocation, item, accessRequirement) {}
+            : base (address++, name, mapLocation, item, accessRequirement) {}
         public override void Put(FF1Rom rom) => throw new NotImplementedException();
     }
 }
