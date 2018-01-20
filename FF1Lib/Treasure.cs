@@ -1,6 +1,10 @@
-﻿using System.Collections.Generic;
+﻿
+using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Diagnostics;
 using RomUtilities;
+using System.Text;
 
 namespace FF1Lib
 {
@@ -73,64 +77,100 @@ namespace FF1Lib
         public const string giveRewardRoutineAddress = "93DD";
 
 		public void ShuffleTreasures(MT19337 rng, bool earlyCanoe, bool earlyOrdeals, bool incentivizeIceCave, bool incentivizeOrdeals)
-		{
-			var treasureBlob = Get(TreasureOffset, TreasureSize * TreasureCount);
-			var usedTreasures = TreasureConditions.UsedIndices.Select(i => (Item)treasureBlob[i]).ToList();
+        {
+            const int maxIterations = 10000;
+            var listStatItems = ItemLists.AllQuestItems;
+            var incentiveLocations = listStatItems.ToDictionary(x => x, x => new List<int>());
+            var treasureBlob = Get(TreasureOffset, TreasureSize * TreasureCount);
+            var sanityCounter = 0;
+            for (var iterations = 0; iterations < maxIterations; iterations++)
+            {
+    			var usedTreasures = TreasureConditions.UsedIndices.Select(i => (Item)treasureBlob[i]).ToList();
+                do
+                {
+                    sanityCounter++;
+                    usedTreasures.Shuffle(rng);
+                    if (incentivizeIceCave || incentivizeOrdeals)
+                    {
+                        const int OrdealsTreasureLocation = 130; // Really 131, because 0 is unused, and usedTreasures doesn't include it.
+                        const int IceCaveTreasureLocation = 113; // Really 114
+                        var incentiveTreasures = new List<Item>
+                        {
+                            Item.Floater,
+                            Item.Slab,
+                            Item.Adamant,
+                            Item.Tail,
+                            Item.Masamune,
+                            Item.Ribbon
+                        };
+                        if (earlyCanoe)
+                        {
+                            incentiveTreasures.Add(Item.Ruby);
+                        }
 
-			do
-			{
-				usedTreasures.Shuffle(rng);
-				if (incentivizeIceCave || incentivizeOrdeals)
-				{
-					const int OrdealsTreasureLocation = 130; // Really 131, because 0 is unused, and usedTreasures doesn't include it.
-					const int IceCaveTreasureLocation = 113; // Really 114
-					var incentiveTreasures = new List<Item>
-					{
-					    Item.Floater,
-						Item.Slab,
-						Item.Adamant,
-					    Item.Tail,
-						Item.Masamune,
-						Item.Ribbon
-					};
-					if (earlyCanoe)
-					{
-						incentiveTreasures.Add(Item.Ruby);
-					}
+                        if (incentivizeOrdeals)
+                        {
+                            if (earlyOrdeals)
+                            {
+                                incentiveTreasures.Add(Item.Crown);
+                            }
 
-					if (incentivizeOrdeals)
-					{
-						if (earlyOrdeals)
-						{
-							incentiveTreasures.Add(Item.Crown);
-						}
+                            var choice = rng.Between(0, incentiveTreasures.Count - 1);
+                            var selectedTreasure = incentiveTreasures[choice];
+                            incentiveTreasures.RemoveAt(choice);
+                            var location = usedTreasures.IndexOf(selectedTreasure);
+                            usedTreasures.Swap(location, OrdealsTreasureLocation);
+                        }
 
-						var choice = rng.Between(0, incentiveTreasures.Count - 1);
-						var selectedTreasure = incentiveTreasures[choice];
-						incentiveTreasures.RemoveAt(choice);
-						var location = usedTreasures.IndexOf(selectedTreasure);
-						usedTreasures.Swap(location, OrdealsTreasureLocation);
-					}
+                        if (incentivizeIceCave)
+                        {
+                            if (incentivizeOrdeals && !earlyOrdeals) // Don't add this twice!
+                            {
+                                incentiveTreasures.Add(Item.Crown);
+                            }
 
-					if (incentivizeIceCave)
-					{
-						if (incentivizeOrdeals && !earlyOrdeals) // Don't add this twice!
-						{
-							incentiveTreasures.Add(Item.Crown);
-						}
+                            var choice = rng.Between(0, incentiveTreasures.Count - 1);
+                            var selectedTreasure = incentiveTreasures[choice];
+                            incentiveTreasures.RemoveAt(choice);
+                            var location = usedTreasures.IndexOf(selectedTreasure);
+                            usedTreasures.Swap(location, IceCaveTreasureLocation);
+                        }
+                    }
+                    for (int i = 0; i < TreasureConditions.UsedIndices.Count; i++)
+                    {
+                        treasureBlob[TreasureConditions.UsedIndices[i]] = (byte)usedTreasures[i];
+                    }
+                } while (!CheckSanity(treasureBlob, earlyCanoe, earlyOrdeals));
+                var outputIndexes = treasureBlob.ToBytes().Select((x, i)=> new {item = x, address = 0x3100 + i}).ToLookup(x => x.item, x => x.address);
+                foreach(Item item in listStatItems)
+                {
+                    incentiveLocations[item].AddRange(outputIndexes[(byte)item].ToList());
+                }
 
-						var choice = rng.Between(0, incentiveTreasures.Count - 1);
-						var selectedTreasure = incentiveTreasures[choice];
-						incentiveTreasures.RemoveAt(choice);
-						var location = usedTreasures.IndexOf(selectedTreasure);
-						usedTreasures.Swap(location, IceCaveTreasureLocation);
-					}
-				}
-				for (int i = 0; i < TreasureConditions.UsedIndices.Count; i++)
-				{
-					treasureBlob[TreasureConditions.UsedIndices[i]] = (byte)usedTreasures[i];
-				}
-			} while (!CheckSanity(treasureBlob, earlyCanoe, earlyOrdeals));
+                treasureBlob = Get(TreasureOffset, TreasureSize * TreasureCount);
+            }
+            var sb = new StringBuilder();
+            sb.Append("Location         ");
+            foreach (Item item in listStatItems)
+            {
+                var name = Enum.GetName(typeof(Item), item);
+                name = $"{string.Join("", Enumerable.Repeat(" ", Math.Max(1, 9 - name.Length)))}{name}";
+                sb.Append(name.Substring(0, Math.Min(12, name.Length)));
+            }
+            sb.Append("\n");
+            foreach(var rewardSource in ItemLocations.AllQuestItemLocations){
+                sb.Append($"{rewardSource.Name}" +
+                          $"{string.Join("", Enumerable.Repeat(" ", Math.Max(1, 17 - rewardSource.Name.Length)))}");
+                foreach (Item item in listStatItems)
+                {
+                    var percentage = $"   {100.0*incentiveLocations[item].Count(x => x == rewardSource.Address)/maxIterations:g2}";
+                    percentage = $"{string.Join("", Enumerable.Repeat(" ", Math.Max(1, 9 - percentage.Length)))}{percentage}";
+                    sb.Append(percentage);
+                }
+                sb.Append("\n");
+            }
+            Debug.WriteLine(sb.ToString());
+            Debug.WriteLine($"Sanity Check Fails per run: {(double)sanityCounter/maxIterations}");
 
 			Put(TreasureOffset, treasureBlob);
 		}
