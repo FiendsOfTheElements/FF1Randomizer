@@ -86,7 +86,8 @@ namespace FF1Lib
 
 			UpgradeToMMC3();
 			EasterEggs();
-			DynamicWindowColor();
+            DynamicWindowColor();
+            PermanentCaravan();
 
 			// This has to be done before we shuffle spell levels.
 			if (flags.SpellBugs)
@@ -96,7 +97,7 @@ namespace FF1Lib
 
 			if (flags.Treasures)
 			{
-				ShuffleTreasures(rng, flags.EarlyCanoe, flags.EarlyOrdeals, flags.IncentivizeIceCave, flags.IncentivizeOrdeals);
+				ShuffleTreasures(rng, flags);
 			}
 
 			if (flags.Shops)

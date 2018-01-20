@@ -1,4 +1,6 @@
 ﻿
+using System.Collections.Generic;
+
 namespace FF1Lib
 {
     public static partial class ItemLocations
@@ -264,19 +266,19 @@ namespace FF1Lib
 
         public static MapObject KingConeria = new MapObject(ObjectId.King, MapLocation.ConeriaCastle, Item.Bridge);
         public static MapObject Princess = new MapObject(ObjectId.Princess2, MapLocation.ConeriaCastle, Item.Lute);
-        public static MapObject Matoya = new MapObject(ObjectId.Matoya, MapLocation.MatoyasCave, Item.Herb, requiredItemTrade: Item.Crystal);
+        public static MapObject Matoya = new MapObject(ObjectId.Matoya, MapLocation.MatoyasCave, Item.Herb, AccessRequirement.Crystal, requiredItemTrade: Item.Crystal);
         public static MapObject Bikke = new MapObject(ObjectId.Bikke, MapLocation.Pravoka, Item.Ship, useVanillaRoutineAddress:true);
         // Assumption is made that if you have access to the Elf Prince you also have access to the Elf Doc
-        public static MapObject ElfPrince = new MapObject(ObjectId.ElfPrince, MapLocation.ElflandCastle, Item.Key, requiredGameEventFlag: ObjectId.ElfDoc);
-        public static MapObject Astos = new MapObject(ObjectId.Astos, MapLocation.NorthwestCastle, Item.Crystal, useVanillaRoutineAddress: true);
+        public static MapObject ElfPrince = new MapObject(ObjectId.ElfPrince, MapLocation.ElflandCastle, Item.Key, AccessRequirement.Herb, ObjectId.ElfDoc);
+        public static MapObject Astos = new MapObject(ObjectId.Astos, MapLocation.NorthwestCastle, Item.Crystal, AccessRequirement.Crown, useVanillaRoutineAddress: true);
         public static MapObject Sarda = new MapObject(ObjectId.Sarda, MapLocation.SardasCave, Item.Rod);
         public static MapObject CanoeSage = new MapObject(ObjectId.CanoeSage, MapLocation.CresentLake, Item.Canoe);
         public static MapObject CubeBot =  new MapObject(ObjectId.CubeBot, MapLocation.Waterfall, Item.Cube);
-        public static MapObject Fairy =  new MapObject(ObjectId.Fairy, MapLocation.Gaia, Item.Oxyale);
+        public static MapObject Fairy =  new MapObject(ObjectId.Fairy, MapLocation.Gaia, Item.Oxyale, AccessRequirement.Bottle);
         // Assumption is made that if you have the slab and access to Lefein then you also have access to Unne
-        public static MapObject Lefein = new MapObject(ObjectId.Lefein, MapLocation.Lefein, Item.Chime, requiredGameEventFlag: ObjectId.Unne);
-        public static MapObject Nerrick = new MapObject(ObjectId.Nerrick, MapLocation.DwarfCave, Item.Canal, requiredItemTrade: Item.Tnt); 
-        public static MapObject Smith = new MapObject(ObjectId.Smith, MapLocation.DwarfCave, Item.Xcalber, requiredItemTrade: Item.Adamant); 
+        public static MapObject Lefein = new MapObject(ObjectId.Lefein, MapLocation.Lefein, Item.Chime, AccessRequirement.Slab, ObjectId.Unne);
+        public static MapObject Nerrick = new MapObject(ObjectId.Nerrick, MapLocation.DwarfCave, Item.Canal, AccessRequirement.Tnt, requiredItemTrade: Item.Tnt); 
+        public static MapObject Smith = new MapObject(ObjectId.Smith, MapLocation.DwarfCave, Item.Xcalber, AccessRequirement.Adamant, requiredItemTrade: Item.Adamant); 
 
         public static ItemShopSlot CaravanItemShop1 =
             new ItemShopSlot(0x38461, nameof(CaravanItemShop1), MapLocation.Caravan, Item.Bottle);
@@ -291,5 +293,50 @@ namespace FF1Lib
             new StaticItemLocation(nameof(TiamatReward), MapLocation.MirageTower, Item.AirOrb, AccessRequirement.Cube);
         public static StaticItemLocation ChaosReward =
             new StaticItemLocation(nameof(ChaosReward), MapLocation.TempleOfFiends, Item.None, AccessRequirement.Key | AccessRequirement.BlackOrb | AccessRequirement.Lute );
+
+        private const MapChange AirshipAndCanoe = MapChange.Airship | MapChange.Canoe;
+        private const MapChange CanalAndShip = MapChange.Canal | MapChange.Ship;
+        private const MapChange ShipAndCanoe = MapChange.Canoe | MapChange.Ship;
+        public static Dictionary<MapLocation, List<MapChange>> MapLocationRequirements =
+            new Dictionary<MapLocation, List<MapChange>>
+        {
+            {MapLocation.StartingLocation, new List<MapChange>{ MapChange.None }},
+            {MapLocation.ConeriaTown, new List<MapChange>{ MapChange.None }},
+            {MapLocation.ConeriaCastle, new List<MapChange>{ MapChange.None }},
+            {MapLocation.TempleOfFiends, new List<MapChange>{ MapChange.None }},
+            {MapLocation.MatoyasCave, new List<MapChange>{ MapChange.Bridge, MapChange.Ship, MapChange.Airship }},
+            {MapLocation.Pravoka, new List<MapChange>{ MapChange.Bridge, MapChange.Ship, MapChange.Airship }},
+            {MapLocation.DwarfCave, new List<MapChange>{ MapChange.Ship, MapChange.Airship }},
+            {MapLocation.ElflandTown, new List<MapChange>{ MapChange.Ship, MapChange.Airship }},
+            {MapLocation.ElflandCastle, new List<MapChange>{ MapChange.Ship, MapChange.Airship }},
+            {MapLocation.NorthwestCastle, new List<MapChange>{ MapChange.Ship, MapChange.Airship }},
+            {MapLocation.MarshCave, new List<MapChange>{ MapChange.Ship, MapChange.Airship }},
+            {MapLocation.Melmond, new List<MapChange>{ CanalAndShip, MapChange.Airship }},
+            {MapLocation.EarthCave, new List<MapChange>{ CanalAndShip, MapChange.Airship }},
+            {MapLocation.TitansTunnelA, new List<MapChange>{ CanalAndShip, MapChange.Airship }},
+            {MapLocation.TitansTunnelB, new List<MapChange>{ CanalAndShip | MapChange.TitanFed, MapChange.Airship }},
+            {MapLocation.SardasCave, new List<MapChange>{ CanalAndShip | MapChange.TitanFed, MapChange.Airship }},
+            {MapLocation.CresentLake, new List<MapChange>{ CanalAndShip, ShipAndCanoe, MapChange.Airship }},
+            {MapLocation.GurguVolcano, new List<MapChange>{ ShipAndCanoe, MapChange.Airship }},
+            {MapLocation.IceCave, new List<MapChange>{ MapChange.Bridge | MapChange.Canoe, MapChange.Ship | MapChange.Canoe, MapChange.Airship }},
+            {MapLocation.CastleOrdeals, new List<MapChange>{ CanalAndShip | MapChange.Canoe, AirshipAndCanoe }},
+            {MapLocation.Cardia1, new List<MapChange>{ MapChange.Airship }},
+            {MapLocation.Cardia2, new List<MapChange>{ MapChange.Airship }},
+            {MapLocation.Cardia3, new List<MapChange>{ MapChange.Airship }},
+            {MapLocation.Cardia4, new List<MapChange>{ MapChange.Airship }},
+            {MapLocation.Cardia5, new List<MapChange>{ MapChange.Airship }},
+            {MapLocation.Cardia6, new List<MapChange>{ MapChange.Airship }},
+            // Since caravan item can be placed in any item shop later in the logic, it could end up at Onrac
+            {MapLocation.Caravan, new List<MapChange>{ AirshipAndCanoe }}, 
+            {MapLocation.Gaia, new List<MapChange>{ MapChange.Airship }},
+            {MapLocation.Onrac, new List<MapChange>{ AirshipAndCanoe }},
+            {MapLocation.Waterfall, new List<MapChange>{ AirshipAndCanoe }},
+            {MapLocation.Lefein, new List<MapChange>{ MapChange.Airship }},
+            {MapLocation.MirageTower, new List<MapChange>{ MapChange.Chime | MapChange.Airship }},
+            {MapLocation.BridgeLocation, new List<MapChange>{ MapChange.None }},
+            {MapLocation.ShipLocation, new List<MapChange>{ MapChange.Bridge }},
+            {MapLocation.CanalLocation, new List<MapChange>{ MapChange.Ship }},
+            {MapLocation.AirshipLocation, new List<MapChange>{ ShipAndCanoe }}
+        };
     }
 }

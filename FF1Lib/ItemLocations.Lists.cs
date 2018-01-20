@@ -91,10 +91,21 @@ namespace FF1Lib
               .Concat(MirageTower).Concat(SkyPalace).Concat(ToFR)
               .ToList();
 
+        public static readonly IReadOnlyCollection<IRewardSource> ValidBridgeLocations =
+            new List<IRewardSource> {
+            KingConeria, Princess
+        }.Concat(Coneria).Concat(TempleOfFiends).ToList();
+
+        public static readonly IReadOnlyCollection<IRewardSource> ValidShipLocations =
+            new List<IRewardSource> {
+            KingConeria, Princess, Bikke, Matoya
+        }.Concat(Coneria).Concat(TempleOfFiends)
+         .Concat(MatoyasCave).Concat(IceCave).ToList();
+
         public static readonly IReadOnlyCollection<IRewardSource> AllNPCItemLocations =
             new List<IRewardSource> {
             KingConeria, Princess, Matoya, Bikke, ElfPrince, Astos, 
-            Nerrick, Sarda, CanoeSage, CubeBot, Fairy, Lefein
+            Nerrick, Smith, Sarda, CanoeSage, CubeBot, Fairy, Lefein
         };
 
         public static readonly IReadOnlyCollection<IRewardSource> AllShopItemLocations =
@@ -111,7 +122,7 @@ namespace FF1Lib
             AllNPCItemLocations.Concat(AllShopItemLocations).Concat(AllOtherItemLocations).ToList();
 
         public static readonly IReadOnlyCollection<IRewardSource> AllQuestItemLocations =
-            AllTreasures.Concat(AllNonTreasureItemLocations).Where(x => !x.IsUnused && x.Address < 0x80000).ToList();
+            AllTreasures.Concat(AllNonTreasureItemLocations).Where(x => !x.IsUnused).ToList();
 
     }
 }
