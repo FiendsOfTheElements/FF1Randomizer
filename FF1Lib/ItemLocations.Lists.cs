@@ -11,8 +11,8 @@ namespace FF1Lib
         public static readonly IReadOnlyCollection<IRewardSource> Coneria =
             new List<IRewardSource> { Coneria1, Coneria2, ConeriaMajor, Coneria4, Coneria5, Coneria6 };
         public static readonly IReadOnlyCollection<IRewardSource> TempleOfFiends =
-            new List<IRewardSource>{ TempleOfFiendsTopLeft1, TempleOfFiendsTopLeft2, TempleOfFiendsBottomLeft,
-            TempleOfFiendsBottomRight, TempleOfFiendsTopRight1, TempleOfFiendsTopRight2};
+            new List<IRewardSource>{ ToFTopLeft1, ToFTopLeft2, ToFBottomLeft,
+            ToFBottomRight, ToFTopRight1, ToFTopRight2};
         public static readonly IReadOnlyCollection<IRewardSource> MatoyasCave =
             new List<IRewardSource> { MatoyasCave1, MatoyasCave2, MatoyasCave3 };
         public static readonly IReadOnlyCollection<IRewardSource> Elfland =
@@ -35,14 +35,14 @@ namespace FF1Lib
             EarthCave20, EarthCave21, EarthCave22, EarthCave23, EarthCave24 };
         public static readonly IReadOnlyCollection<IRewardSource> TitansTunnel =
             new List<IRewardSource> { TitansTunnel1, TitansTunnel2, TitansTunnel3, TitansTunnel4 };
-        public static readonly IReadOnlyCollection<IRewardSource> GurguVolcano =
-            new List<IRewardSource> { GurguVolcano1, GurguVolcano2, GurguVolcano3, GurguVolcano4,
-            GurguVolcano5, GurguVolcano6, GurguVolcano7, GurguVolcano8, GurguVolcano9,
-            GurguVolcano10, GurguVolcano11, GurguVolcano12, GurguVolcano13, GurguVolcano14,
-            GurguVolcano15, GurguVolcano16, GurguVolcano17, GurguVolcano18, GurguVolcano19,
-            GurguVolcano20, GurguVolcano21, GurguVolcano22, GurguVolcano23, GurguVolcano24,
-            GurguVolcano25, GurguVolcano26, GurguVolcano27, GurguVolcano28, GurguVolcano29,
-            GurguVolcano30, GurguVolcano31, GurguVolcano32, GurguVolcanoMajor };
+        public static readonly IReadOnlyCollection<IRewardSource> Volcano =
+            new List<IRewardSource> { Volcano1, Volcano2, Volcano3, Volcano4,
+            Volcano5, Volcano6, Volcano7, Volcano8, Volcano9,
+            Volcano10, Volcano11, Volcano12, Volcano13, Volcano14,
+            Volcano15, Volcano16, Volcano17, Volcano18, Volcano19,
+            Volcano20, Volcano21, Volcano22, Volcano23, Volcano24,
+            Volcano25, Volcano26, Volcano27, Volcano28, Volcano29,
+            Volcano30, Volcano31, Volcano32, VolcanoMajor };
         public static readonly IReadOnlyCollection<IRewardSource> IceCave =
             new List<IRewardSource> { IceCave1, IceCave2, IceCave3, IceCave4,
             IceCave5, IceCave6, IceCave7, IceCaveMajor, IceCave9,
@@ -80,13 +80,13 @@ namespace FF1Lib
             SkyPalace25, SkyPalace26, SkyPalace27, SkyPalace28, SkyPalace29,
             SkyPalace30, SkyPalace31, SkyPalace32, SkyPalace33, SkyPalace34 };
         public static readonly IReadOnlyCollection<IRewardSource> ToFR =
-            new List<IRewardSource> { ToFRevisitedMajor, ToFRevisited2, ToFRevisited3,
+            new List<IRewardSource> { ToFRMasmune, ToFRevisited2, ToFRevisited3,
             ToFRevisited4, ToFRevisited5, ToFRevisited6, ToFRevisited7};
         public static readonly IReadOnlyCollection<IRewardSource> AllTreasures =
         Unused.Concat(Coneria).Concat(TempleOfFiends).Concat(MatoyasCave)
               .Concat(Elfland).Concat(MarshCave).Concat(NorthwestCastle)
               .Concat(DwarfCave).Concat(EarthCave).Concat(TitansTunnel)
-              .Concat(GurguVolcano).Concat(IceCave).Concat(Ordeals)
+              .Concat(Volcano).Concat(IceCave).Concat(Ordeals)
               .Concat(Cardia).Concat(SeaShrine).Concat(Waterfall)
               .Concat(MirageTower).Concat(SkyPalace).Concat(ToFR)
               .ToList();
@@ -111,7 +111,7 @@ namespace FF1Lib
             AllNPCItemLocations.Concat(AllShopItemLocations).Concat(AllOtherItemLocations).ToList();
 
         public static readonly IReadOnlyCollection<IRewardSource> AllQuestItemLocations =
-            AllTreasures.Concat(AllNonTreasureItemLocations).Where(x => !x.IsUnused).ToList();
+            AllTreasures.Concat(AllNonTreasureItemLocations).Where(x => !x.IsUnused && x.Address < 0x80000).ToList();
 
     }
 }
