@@ -79,8 +79,11 @@ namespace FF1Lib
         public void ShuffleTreasures(MT19337 rng, bool earlyCanoe, bool earlyOrdeals, bool incentivizeIceCave, bool incentivizeOrdeals)
         {
             const int maxIterations = 1;
+            // ################### THIS IS A VERY BAD HACK #####################
+            // only committed this because I have to leave for the day and needs to be removed
             if (incentivizeIceCave) TreasureConditions.UsedIndices.Remove(ItemLocations.IceCaveMajor.Address - 0x3100);
             if (incentivizeOrdeals) TreasureConditions.UsedIndices.Remove(ItemLocations.OrdealsMajor.Address - 0x3100);
+            // ############################# END HACK ##########################
             var listStatItems = ItemLists.AllQuestItems;
             var incentiveLocations = listStatItems.ToDictionary(x => x, x => new List<int>());
             var treasureBlob = Get(TreasureOffset, TreasureSize * TreasureCount);
