@@ -12,7 +12,7 @@ namespace FF1Lib
 	// ReSharper disable once InconsistentNaming
 	public partial class FF1Rom : NesRom
 	{
-		public const string Version = "1.6.2";
+		public const string Version = "1.6.3";
 
 		public const int CopyrightOffset1 = 0x384A8;
 		public const int CopyrightOffset2 = 0x384BA;
@@ -86,6 +86,7 @@ namespace FF1Lib
 
 			UpgradeToMMC3();
 			EasterEggs();
+			DynamicWindowColor();
 
 			// This has to be done before we shuffle spell levels.
 			if (flags.SpellBugs)
@@ -258,8 +259,9 @@ namespace FF1Lib
 			//	- Encounter table emu/hardware fix
 			//	- track hard/soft resets
 			//	- initialize tracking variables if no game is saved
-			PutInBank(0x0F, 0x8000, Blob.FromHex("A9008D00208D012085FEA90885FF85FDA51BC901D00160A901851BA94DC5F9F008A9FF85F585F685F7182088C8B049A94DC5F918F013ADA36469018DA364ADA46469008DA464189010ADA56469018DA564ADA66469008DA664A9008DFD64A200187D00647D00657D00667D0067E8D0F149FF8DFD6418900DA2A0A9009D00609D0064E8D0F760"));
+			PutInBank(0x0F, 0x8000, Blob.FromHex("A9008D00208D012085FEA90885FF85FDA51BC901D00160A901851BA94DC5F9F008A9FF85F585F685F7182088C8B049A94DC5F918F013ADA36469018DA364ADA46469008DA464189010ADA56469018DA564ADA66469008DA664A9008DFD64A200187D00647D00657D00667D0067E8D0F149FF8DFD64189010A2A0A9009D00609D0064E8D0F7EEFB64ADFB648DFB6060"));
 			Put(0x7C012, Blob.FromHex("A90F2003FE200080EAEAEAEAEAEAEAEA"));
+			Data[0x30FB] = 0x01;
 
 
 			// Move controller handling out of bank 1F
@@ -323,9 +325,16 @@ namespace FF1Lib
 			PutInBank(0x1F, 0xD82E, CreateLongJumpTableEntry(0x0F, 0x85D0));
 			PutInBank(0x0B, 0x9AF5, Blob.FromHex("202ED8EAEA"));
 			// "Nothing Here"s
-			PutInBank(0x0F, 0x8600, Blob.FromHex("EEB660A90060"));
+			PutInBank(0x0F, 0x8600, Blob.FromHex("A54429C2D005A545F00360A900EEB66060"));
 			PutInBank(0x1F, 0xD834, CreateLongJumpTableEntry(0x0F, 0x8600));
 			PutInBank(0x1F, 0xCBF3, Blob.FromHex("4C34D8"));
+
+			// Add select button handler on game start menu to change color
+			PutInBank(0x0F, 0x8610, Blob.FromHex("203CC4A662A9488540ADFB60D003EEFB60A522F019EEFB60ADFB60C90E3005A9018DFB60A90085222029EBA90060A90160"));
+			PutInBank(0x1F, 0xD840, CreateLongJumpTableEntry(0x0F, 0x8610));
+			Put(0x3A1B5, Blob.FromHex("2040D8D0034C56A1EA"));
+			// Move Most of LoadBorderPalette_Blue out of the way to do a dynamic version.
+			PutInBank(0x0F, 0x8700, Blob.FromHex("988DCE038DEE03A90F8DCC03A9008DCD03A9308DCF0360"));
 		}
 
 		public override bool Validate()

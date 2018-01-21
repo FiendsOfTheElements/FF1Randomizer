@@ -1,0 +1,84 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Security.Cryptography;
+using System.Text;
+using FF1Lib;
+
+namespace Sandbox
+{
+    public static class TreasureDistribution
+    {
+	    public static void Test()
+	    {
+		    var flags = new Flags
+		    {
+			    Treasures = true,
+			    IncentivizeIceCave = false,
+			    IncentivizeOrdeals = false,
+			    Shops = false,
+			    MagicShops = false,
+			    MagicLevels = false,
+			    MagicPermissions = false,
+			    Rng = false,
+			    EnemyScripts = false,
+			    EnemySkillsSpells = false,
+			    EnemyStatusAttacks = false,
+			    Ordeals = false,
+
+			    EarlyRod = true,
+			    EarlyCanoe = true,
+			    EarlyOrdeals = true,
+			    EarlyBridge = false,
+			    NoPartyShuffle = false,
+			    SpeedHacks = false,
+			    IdentifyTreasures = false,
+			    Dash = false,
+			    BuyTen = false,
+
+			    HouseMPRestoration = false,
+			    WeaponStats = false,
+			    ChanceToRun = false,
+			    SpellBugs = false,
+			    EnemyStatusAttackBug = false,
+
+			    FunEnemyNames = false,
+			    PaletteSwap = false,
+			    TeamSteak = false,
+			    ShuffleLeader = false,
+			    Music = MusicShuffle.None,
+
+			    ForcedPartyMembers = 0,
+			    PriceScaleFactor = 1.0,
+			    EnemyScaleFactor = 1.0,
+			    ExpMultiplier = 1.0,
+			    ExpBonus = 0
+		    };
+
+		    var filename = "ff1.nes";
+		    var memoryStream = new MemoryStream();
+		    using (var fs = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read))
+		    {
+				fs.CopyTo(memoryStream);
+		    }
+
+		    memoryStream.Seek(0, SeekOrigin.Begin);
+		    var rom = new FF1Rom(memoryStream);
+			for (int i = 0; i < 10000; i++)
+			{
+				var rng = RNGCryptoServiceProvider.Create();
+				var seed = new byte[8];
+				rng.GetBytes(seed);
+
+				rom.Randomize(seed, flags);
+
+				if (i % 1000 == 0)
+				{
+					Console.WriteLine($"Generated {i} seeds...");
+				}
+			}
+
+			Console.WriteLine("Test complete.");
+	    }
+	}
+}
