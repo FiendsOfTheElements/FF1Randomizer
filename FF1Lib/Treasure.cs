@@ -10,17 +10,6 @@ namespace FF1Lib
 {
     public static class TreasureConditions
     {
-        public static readonly List<Item> AllQuestItems = new List<Item>
-        {
-            Item.Tnt,
-            Item.Crown,
-            Item.Ruby,
-            Item.Floater,
-            Item.Tail,
-            Item.Slab,
-            Item.Adamant
-        };
-
         public static readonly List<int> UnusedIndices =
             Enumerable.Range(0, 1).Concat(
             Enumerable.Range(145, 4)).Concat(
@@ -29,42 +18,6 @@ namespace FF1Lib
             .ToList();
 
         public static readonly List<int> UsedIndices = Enumerable.Range(0, 256).Except(UnusedIndices).ToList(); // This maps a compacted list back to the game's array, skipping the unused slots.
-
-        public static readonly List<int> Beginning =
-            Enumerable.Range(7, 3).Concat(
-            Enumerable.Range(20, 10)).Concat(
-            Enumerable.Range(33, 2)).Concat(
-            Enumerable.Range(43, 3))
-            .ToList();
-
-        public static readonly List<int> EarlyCrown =
-            Enumerable.Range(1, 6).Concat( // Coneria
-            Enumerable.Range(10, 3)).Concat( // ToF east side
-            Enumerable.Range(13, 4)).Concat( // Elfland
-            Enumerable.Range(17, 3)).Concat( // Northwest Castle
-            Enumerable.Range(30, 3)).Concat( // Marsh Cave
-            Enumerable.Range(35, 8)) // Dwarf Cave
-            .ToList();
-
-        public static readonly List<int> Tnt = Enumerable.Range(46, 16).ToList(); // Earth Cave B1-B3
-
-        public static readonly List<int> Rod = Enumerable.Range(62, 12).ToList(); // Earth Cave B4, Titan's Tunnel
-
-        public static readonly List<int> FireAndIce = Enumerable.Range(74, 49).ToList();
-
-        public static readonly List<int> Ordeals = Enumerable.Range(123, 9).ToList();
-
-        public static readonly List<int> Airship =
-            Enumerable.Range(132, 13).Concat( // Cardia Islands
-            Enumerable.Range(149, 32).Except(new[] { 165 })).Concat( // Sea Shrine
-            Enumerable.Range(181, 6)) // Waterfall
-            .ToList();
-
-        public static readonly List<int> LateCrown = new List<int> { 165 }; // Reverse-C room in Sea Shrine
-
-        public static readonly List<int> Chime = Enumerable.Range(196, 52).ToList(); // Mirage Tower + Sky Castle
-
-        public static readonly List<int> ToFR = Enumerable.Range(248, 7).ToList(); // Anything that blocks an ORB will also block these.
     }
 
     public partial class FF1Rom : NesRom
@@ -76,39 +29,70 @@ namespace FF1Lib
         public const int lut_MapObjTalkJumpTblAddress = 0x390D3;
         public const string giveRewardRoutineAddress = "93DD";
 
-        private static void PrintStats(int maxIterations, Dictionary<Item, List<int>> incentiveLocations)
+        //******************************STATS***********************************
+        private static Dictionary<IReadOnlyCollection<IRewardSource>, string> 
+            incentiveLocationAreas = new Dictionary<IReadOnlyCollection<IRewardSource>, string>
+                {
+                    { ItemLocations.Coneria, nameof(ItemLocations.Coneria)},
+                    { ItemLocations.TempleOfFiends, nameof(ItemLocations.TempleOfFiends)},
+                    { ItemLocations.MatoyasCave, nameof(ItemLocations.MatoyasCave)},
+                    { ItemLocations.Elfland, nameof(ItemLocations.Elfland)},
+                    { ItemLocations.MarshCave, nameof(ItemLocations.MarshCave)},
+                    { ItemLocations.NorthwestCastle, nameof(ItemLocations.NorthwestCastle)},
+                    { ItemLocations.DwarfCave, nameof(ItemLocations.DwarfCave)},
+                    { ItemLocations.EarthCave, nameof(ItemLocations.EarthCave)},
+                    { ItemLocations.TitansTunnel, nameof(ItemLocations.TitansTunnel)},
+                    { ItemLocations.Volcano, nameof(ItemLocations.Volcano)},
+                    { ItemLocations.IceCave, nameof(ItemLocations.IceCave)},
+                    { ItemLocations.Ordeals, nameof(ItemLocations.Ordeals)},
+                    { ItemLocations.Cardia, nameof(ItemLocations.Cardia)},
+                    { ItemLocations.SeaShrine, nameof(ItemLocations.SeaShrine)},
+                    { ItemLocations.Waterfall, nameof(ItemLocations.Waterfall)},
+                    { ItemLocations.MirageTower, nameof(ItemLocations.MirageTower)},
+                    { ItemLocations.SkyPalace, nameof(ItemLocations.SkyPalace)},
+                    { ItemLocations.ToFR, nameof(ItemLocations.ToFR)}
+                };
+        private static string PrintStats(int maxIterations, Dictionary<Item, List<int>> incentiveLocations, Dictionary<Item, List<string>> incentiveZones)
         {
             var sb = new StringBuilder();
-            sb.Append("Location         ");
+            sb.Append("Location         ,");
             foreach (Item item in incentiveLocations.Keys)
             {
                 var name = Enum.GetName(typeof(Item), item);
-                name = $"{string.Join("", Enumerable.Repeat(" ", Math.Max(1, 9 - name.Length)))}{name}";
+                name = $"{string.Join("", Enumerable.Repeat(" ", Math.Max(1, 9 - name.Length)))}{name},";
                 sb.Append(name.Substring(0, Math.Min(12, name.Length)));
             }
             sb.Append("\n");
-            foreach (var rewardSource in ItemLocations.AllQuestItemLocations.Where(x => x.Address < 0x80000))
+            foreach (var rewardSource in ItemLocations.AllQuestItemLocations.Where(x => x.Address < 0x80000)) // && x.Address > 0x31FF))
             {
                 sb.Append($"{rewardSource.Name}" +
-                          $"{string.Join("", Enumerable.Repeat(" ", Math.Max(1, 17 - rewardSource.Name.Length)))}");
+                          $"{string.Join("", Enumerable.Repeat(" ", Math.Max(1, 17 - rewardSource.Name.Length)))},");
                 foreach (var itemPlacements in incentiveLocations.Values)
                 {
                     var percentage = $"   {100.0 * itemPlacements.Count(x => x == rewardSource.Address) / maxIterations:g2}";
-                    percentage = $"{string.Join("", Enumerable.Repeat(" ", Math.Max(1, 9 - percentage.Length)))}{percentage}";
+                    percentage = $"{string.Join("", Enumerable.Repeat(" ", Math.Max(1, 9 - percentage.Length)))}{percentage},";
                     sb.Append(percentage);
                 }
                 sb.Append("\n");
             }
-            Debug.WriteLine(sb.ToString());
+            foreach (var zoneName in incentiveLocationAreas.Values)
+            {
+                sb.Append($"{zoneName}" +
+                          $"{string.Join("", Enumerable.Repeat(" ", Math.Max(1, 17 - zoneName.Length)))},");
+                foreach (var itemPlacements in incentiveZones.Values)
+                {
+                    var percentage = $"   {100.0 * itemPlacements.Count(x => x == zoneName) / maxIterations:g2}";
+                    percentage = $"{string.Join("", Enumerable.Repeat(" ", Math.Max(1, 9 - percentage.Length)))}{percentage},";
+                    sb.Append(percentage);
+                }
+                sb.Append("\n");
+            }
+            return sb.ToString();
         }
+        //***************************END STATS**********************************
 
         public void ShuffleTreasures(MT19337 rng, ITreasureShuffleFlags flags)
         {
-            const int maxIterations = 1;
-            var sanityCounter = 0;
-            var forcedIceCount = 0;
-            var itemPlacementStats = ItemLists.AllQuestItems.ToDictionary(x => x, x => new List<int>());
-
             var forcedItems = ItemLocations.AllOtherItemLocations.ToList();
             if (!flags.ForceVanillaNPCs)
             {
@@ -145,28 +129,41 @@ namespace FF1Lib
 
             var treasureBlob = Get(TreasureOffset, TreasureSize * TreasureCount);
             var placedItems = new List<IRewardSource>();
-            for (var iterations = 0; iterations < maxIterations; iterations++)
+
+            //****************************STATS*********************************
+            long sanityCounter = 0;
+            const int maxIterations = 10000;
+            var forcedIceCount = 0;
+            var itemPlacementStats = ItemLists.AllQuestItems.ToDictionary(x => x, x => new List<int>());
+            itemPlacementStats[Item.Ribbon] = new List<int>();
+            var itemPlacementZones = ItemLists.AllQuestItems.ToDictionary(x => x, x => new List<string>());
+            itemPlacementZones[Item.Ribbon] = new List<string>();
+            long iterations = 0;
+            while (iterations < maxIterations)
             {
-                var treasurePool =
-                    TreasureConditions.UsedIndices.Select(x => (Item)treasureBlob[x]).ToList();
+            iterations++;
+            //*************************END STATS********************************
+            var treasurePool = TreasureConditions.UsedIndices.Select(x => (Item)treasureBlob[x]).ToList();
 
-                foreach (var startingIncentive in incentivePool)
+            foreach (var startingIncentive in incentivePool)
+            {
+                treasurePool.Remove(startingIncentive);
+            }
+            foreach (var placement in forcedItems)
+            {
+                treasurePool.Remove(placement.Item);
+            }
+            do
+            {
+                sanityCounter++;
+                // 1. (Re)Initialize lists inside of loop
+                placedItems = forcedItems.ToList();
+                var incentives = incentivePool.ToList();
+                incentives.Shuffle(rng);
+
+                if (!flags.ForceVanillaNPCs)
                 {
-                    treasurePool.Remove(startingIncentive);
-                }
-                foreach (var placement in forcedItems)
-                {
-                    treasurePool.Remove(placement.Item);
-                }
-                do
-                {
-                    sanityCounter++;
-                    // 1. (Re)Initialize lists inside of loop
-                    placedItems = forcedItems.ToList();
-                    var incentives = incentivePool.ToList();
-                    incentives.Shuffle(rng);
                     shipLocations.Shuffle(rng);
-
                     // 2. Place caravan item first because among incentive locations it has the smallest set of possible items
                     if (!placedItems.Any(x => x.Address == ItemLocations.CaravanItemShop1.Address))
                     {
@@ -208,83 +205,110 @@ namespace FF1Lib
                     // 4. Then place all incentive locations that don't have special logic (NPCs)
                     foreach (var npc in normalIncentiveNPCs.Where(x => !placedItems.Any(y => y.Address == x.Address)))
                     {
-                        if (incentives.Any()) 
+                        if (incentives.Any())
                         {
                             placedItems.Add(new MapObject(npc, incentives.SpliceRandom(rng)));
                         }
-                        else 
+                        else
                         {
                             placedItems.Add(new MapObject(npc, treasurePool.SpliceRandom(rng)));
                         }
                     }
+                }
 
-                    // 5. Then place remanining incentive locations with additional logic needed
-                    if (flags.IncentivizeIceCave)
+                // 5. Then place remanining incentive locations with additional logic needed
+                if (flags.IncentivizeIceCave)
+                {
+                    var itemPick = incentives.PickRandom(rng);
+                    if (!flags.AllowForcedEarlyIceCave && itemPick == Item.Ship)
                     {
-                        var itemPick = incentives.PickRandom(rng);
-                        if (!flags.AllowForcedEarlyIceCave && itemPick == Item.Ship)
-                        {
-                            itemPick = incentives.First(x => x != Item.Ship);
-                        }
-                        incentives.Remove(itemPick);
-                            
-                        placedItems.Add(new TreasureChest(ItemLocations.IceCaveMajor, itemPick));
+                        itemPick = incentives.First(x => x != Item.Ship);
                     }
+                    incentives.Remove(itemPick);
 
-                    if (flags.IncentivizeOrdeals)
+                    placedItems.Add(new TreasureChest(ItemLocations.IceCaveMajor, itemPick));
+                }
+
+                if (flags.IncentivizeOrdeals)
+                {
+                    var itemPick = incentives.PickRandom(rng);
+                    if (!flags.EarlyOrdeals && itemPick == Item.Crown)
                     {
-                        var itemPick = incentives.PickRandom(rng);
-                        if (!flags.EarlyOrdeals && itemPick == Item.Crown)
-                        {
-                            itemPick = incentives.First(x => x != Item.Crown);
-                        }
-                        incentives.Remove(itemPick);
-                            
-                        placedItems.Add(new TreasureChest(ItemLocations.OrdealsMajor, itemPick));
+                        itemPick = incentives.First(x => x != Item.Crown);
                     }
+                    incentives.Remove(itemPick);
 
-                    var treasureChestPoolForExtraIncentiveItems =
-                        ItemLocations.AllTreasures
-                                     .Where(x => !x.IsUnused && !placedItems.Any(y => y.Address == x.Address))
-                                     .ToList();
-                    // 7. Place remaining incentives
-                    foreach(var incentive in incentives)
-                    {
-                        placedItems.Add(new TreasureChest(treasureChestPoolForExtraIncentiveItems.SpliceRandom(rng), incentive));
-                    }
+                    placedItems.Add(new TreasureChest(ItemLocations.OrdealsMajor, itemPick));
+                }
 
-                    // 8. Check sanity and loop if needed
-                } while (!CheckSanity(placedItems, flags));
-
-
-                // 8. Place all remaining unincentivized treasures
-                var i = 0;
-                var treasureChestPool =
+                var treasureChestPoolForExtraIncentiveItems =
                     ItemLocations.AllTreasures
-                                 .Where(x => !x.IsUnused && !placedItems.Any(y => y.Address == x.Address))
+                                 .Where(x => !ItemLocations.ToFR.Any(y => y.Address == x.Address) &&
+                                        !x.IsUnused && !placedItems.Any(y => y.Address == x.Address))
                                  .ToList();
-                treasurePool.Shuffle(rng);
-                foreach (var remainingTreasure in treasureChestPool)
+                // 7. Place remaining incentives
+                foreach (var incentive in incentives)
                 {
-                    placedItems.Add(new TreasureChest(remainingTreasure, treasurePool[i]));
-                    i++;
+                    placedItems.Add(new TreasureChest(treasureChestPoolForExtraIncentiveItems.SpliceRandom(rng), incentive));
                 }
 
-                // Record placements in stats
-                var outputIndexes = placedItems.ToLookup(x => x.Item, x => x.Address);
-                foreach (Item item in itemPlacementStats.Keys)
-                {
-                    itemPlacementStats[item].AddRange(outputIndexes[item].ToList());
-                }
-                if (placedItems.Any(x => x.Address == ItemLocations.Matoya.Address && x.Item == Item.Ship) &&
-                    placedItems.Any(x => x.Item == Item.Crystal &&
-                                    x.Address >= ItemLocations.IceCave1.Address &&
-                                    x.Address <= ItemLocations.IceCaveMajor.Address))
-                    forcedIceCount++;
+                // 8. Check sanity and loop if needed
+            } while (!CheckSanity(placedItems, flags));
+
+
+            // 8. Place all remaining unincentivized treasures
+            var i = 0;
+            var treasureChestPool =
+                ItemLocations.AllTreasures
+                             .Where(x => !x.IsUnused && !placedItems.Any(y => y.Address == x.Address))
+                             .ToList();
+            treasurePool.Shuffle(rng);
+            foreach (var remainingTreasure in treasureChestPool)
+            {
+                placedItems.Add(new TreasureChest(remainingTreasure, treasurePool[i]));
+                i++;
             }
-            PrintStats(maxIterations, itemPlacementStats);
-            Debug.WriteLine($"Forced Early Ice Cave for Matoya Ship: {forcedIceCount} out of {maxIterations}");
+
+            //****************************STATS*********************************
+            var outputIndexes = placedItems.ToLookup(x => x.Item, x => x.Address);
+            foreach (Item item in itemPlacementStats.Keys)
+            {
+                itemPlacementStats[item].AddRange(outputIndexes[item].ToList());
+            }
+            var outputZones =
+                placedItems
+                    .ToLookup(x => x.Item,
+                              x => incentiveLocationAreas
+                                .Where(y => y.Key.Any(z => z.Address == x.Address))
+                              .Select(y => y.Value).SingleOrDefault());
+            foreach (Item item in itemPlacementZones.Keys)
+            {
+                if (!outputZones[item].Any()) continue;
+                itemPlacementZones[item].AddRange(outputZones[item]);
+            }
+            var matoyaShip = placedItems.Any(x => x.Address == ItemLocations.Matoya.Address && x.Item == Item.Ship);
+            var crystalIceCave = placedItems.Any(x => x.Item == Item.Crystal &&
+                                x.Address >= ItemLocations.IceCave1.Address &&
+                                                 x.Address <= ItemLocations.IceCaveMajor.Address);
+            var keyIceCave = placedItems.Any(x => x.Item == Item.Key &&
+                            x.Address >= ItemLocations.IceCave1.Address &&
+                                             x.Address <= ItemLocations.IceCaveMajor.Address);
+            var keyLockedCrystal = placedItems.Any(x => x.Item == Item.Crystal &&
+                                                   x.AccessRequirement.HasFlag(AccessRequirement.Key));
+            var keyLockedShip = placedItems.Any(x => x.Item == Item.Ship &&
+                                                x.AccessRequirement.HasFlag(AccessRequirement.Key));
+            if ((keyLockedShip && keyIceCave) ||
+                (matoyaShip && crystalIceCave) ||
+                (matoyaShip && keyLockedCrystal && keyIceCave))
+                forcedIceCount++;
+            }
+
+            if (iterations > 10) {
+                Debug.WriteLine(PrintStats(maxIterations, itemPlacementStats, itemPlacementZones));
+                Debug.WriteLine($"Forced Early Ice Cave for Ship: {forcedIceCount} out of {maxIterations}");
+            }
             Debug.WriteLine($"Sanity Check Fails per run: {(double)sanityCounter / maxIterations}");
+            //***********************END STATS**********************************
 
             // Output the results tothe ROM
             foreach (var item in placedItems.Where(x => !x.IsUnused && x.Address < 0x80000))
@@ -321,9 +345,9 @@ namespace FF1Lib
             while(!currentAccess.HasFlag(winTheGameAccess) || 
                   !currentMapLocations().Contains(winTheGameLocation))
             {
-                if (currentIteration > maxIterations) {
-                    Debug.WriteLine($"Sanity Check hit max iterations: {currentIteration}");
-                    return false;
+                if (currentIteration > maxIterations) 
+                {
+                    throw new InvalidOperationException($"Sanity Check hit max iterations: {currentIteration}");
                 }
                 currentIteration++;
                 var currentItems = currentItemLocations().Select(x => x.Item).ToList();
@@ -397,14 +421,12 @@ namespace FF1Lib
                     currentAccess |= AccessRequirement.Lute;
 
                 var newCount = currentItemLocations().Count();
-                if (newCount > accessibleLocationCount) {
-                    accessibleLocationCount = newCount;
-                    continue;
+                if (newCount <= accessibleLocationCount)
+                { 
+                    return false; 
                 }
-                //Debug.WriteLine($"Sanity Check failed due to no improvement from last iteration: {currentIteration}");
-                return false;
+                accessibleLocationCount = newCount;
             }
-            //Debug.WriteLine($"Sanity Check Success iterations: {currentIteration}");
             return true;
         }
 
