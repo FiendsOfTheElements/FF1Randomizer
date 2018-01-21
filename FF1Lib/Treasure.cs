@@ -100,7 +100,7 @@ namespace FF1Lib
                 }
                 sb.Append("\n");
             }
-            foreach (var zoneName in incentiveZones.Values.SelectMany(x => x).Distinct())
+            foreach (var zoneName in incentiveZones.Values.SelectMany(x => x).Where(x => !string.IsNullOrWhiteSpace(x)).Distinct())
             {
                 sb.Append($"{zoneName}" +
                           $"{string.Join("", Enumerable.Repeat(" ", Math.Max(1, 17 - zoneName.Length)))}");
@@ -121,7 +121,9 @@ namespace FF1Lib
             var sanityCounter = 0;
             var forcedIceCount = 0;
             var itemPlacementStats = ItemLists.AllQuestItems.ToDictionary(x => x, x => new List<int>());
+            itemPlacementStats[Item.Ribbon] = new List<int>();
             var itemPlacementZones = ItemLists.AllQuestItems.ToDictionary(x => x, x => new List<string>());
+            itemPlacementZones[Item.Ribbon] = new List<string>();
             var incentiveLocationAreas = new Dictionary<IReadOnlyCollection<IRewardSource>, string>
                 {
                     { ItemLocations.Coneria, nameof(ItemLocations.Coneria)},
@@ -281,7 +283,8 @@ namespace FF1Lib
 
                     var treasureChestPoolForExtraIncentiveItems =
                         ItemLocations.AllTreasures
-                                     .Where(x => !x.IsUnused && !placedItems.Any(y => y.Address == x.Address))
+                                     .Where(x => !ItemLocations.ToFR.Any(y => y.Address == x.Address) && 
+                                            !x.IsUnused && !placedItems.Any(y => y.Address == x.Address))
                                      .ToList();
                     // 7. Place remaining incentives
                     foreach(var incentive in incentives)
@@ -321,18 +324,28 @@ namespace FF1Lib
                                   .Select(y => y.Value).SingleOrDefault());
                 foreach (Item item in itemPlacementZones.Keys)
                 {
-                    if (outputZones[item].SingleOrDefault() == null) continue;
-                    itemPlacementZones[item].Add(outputZones[item].SingleOrDefault());
+                    if (!outputZones[item].Any()) continue;
+                    itemPlacementZones[item].AddRange(outputZones[item]);
                 }
-                if (placedItems.Any(x => x.Address == ItemLocations.Matoya.Address && x.Item == Item.Ship) &&
-                    placedItems.Any(x => x.Item == Item.Crystal &&
+                var matoyaShip = placedItems.Any(x => x.Address == ItemLocations.Matoya.Address && x.Item == Item.Ship);
+                var crystalIceCave = placedItems.Any(x => x.Item == Item.Crystal &&
                                     x.Address >= ItemLocations.IceCave1.Address &&
-                                    x.Address <= ItemLocations.IceCaveMajor.Address))
+                                                     x.Address <= ItemLocations.IceCaveMajor.Address);
+                var keyIceCave = placedItems.Any(x => x.Item == Item.Key &&
+                                x.Address >= ItemLocations.IceCave1.Address &&
+                                                 x.Address <= ItemLocations.IceCaveMajor.Address);
+                var keyLockedCrystal = placedItems.Any(x => x.Item == Item.Crystal && 
+                                                       x.AccessRequirement.HasFlag(AccessRequirement.Key));
+                var keyLockedShip = placedItems.Any(x => x.Item == Item.Ship && 
+                                                    x.AccessRequirement.HasFlag(AccessRequirement.Key));
+                if ((keyLockedShip && keyIceCave) || 
+                    (matoyaShip && crystalIceCave) || 
+                    (matoyaShip && keyLockedCrystal && keyIceCave))
                     forcedIceCount++;
             }
             if (iterations > 10) {
                 PrintStats(maxIterations, itemPlacementStats, itemPlacementZones);
-                Debug.WriteLine($"Forced Early Ice Cave for Matoya Ship: {forcedIceCount} out of {maxIterations}");
+                Debug.WriteLine($"Forced Early Ice Cave for Ship: {forcedIceCount} out of {maxIterations}");
             }
             Debug.WriteLine($"Sanity Check Fails per run: {(double)sanityCounter / maxIterations}");
 
