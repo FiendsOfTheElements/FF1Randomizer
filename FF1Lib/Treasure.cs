@@ -76,26 +76,25 @@ namespace FF1Lib
         public const int lut_MapObjTalkJumpTblAddress = 0x390D3;
         public const string giveRewardRoutineAddress = "93DD";
 
-        private static void PrintStats(int maxIterations, Dictionary<Item, List<int>> incentiveLocations, Dictionary<Item, List<string>> incentiveZones)
+        private static string PrintStats(int maxIterations, Dictionary<Item, List<int>> incentiveLocations, Dictionary<Item, List<string>> incentiveZones)
         {
             var sb = new StringBuilder();
-            sb.Append("Location         ");
+            sb.Append("Location         ,");
             foreach (Item item in incentiveLocations.Keys)
             {
                 var name = Enum.GetName(typeof(Item), item);
-                name = $"{string.Join("", Enumerable.Repeat(" ", Math.Max(1, 9 - name.Length)))}{name}";
+                name = $"{string.Join("", Enumerable.Repeat(" ", Math.Max(1, 9 - name.Length)))}{name},";
                 sb.Append(name.Substring(0, Math.Min(12, name.Length)));
             }
             sb.Append("\n");
-            foreach (var rewardSource in ItemLocations.AllQuestItemLocations
-                                                .Where(x => x.Address > 0x31FF && x.Address < 0x80000))
+            foreach (var rewardSource in ItemLocations.AllQuestItemLocations.Where(x => x.Address < 0x80000)) // && x.Address > 0x31FF))
             {
                 sb.Append($"{rewardSource.Name}" +
-                          $"{string.Join("", Enumerable.Repeat(" ", Math.Max(1, 17 - rewardSource.Name.Length)))}");
+                          $"{string.Join("", Enumerable.Repeat(" ", Math.Max(1, 17 - rewardSource.Name.Length)))},");
                 foreach (var itemPlacements in incentiveLocations.Values)
                 {
                     var percentage = $"   {100.0 * itemPlacements.Count(x => x == rewardSource.Address) / maxIterations:g2}";
-                    percentage = $"{string.Join("", Enumerable.Repeat(" ", Math.Max(1, 9 - percentage.Length)))}{percentage}";
+                    percentage = $"{string.Join("", Enumerable.Repeat(" ", Math.Max(1, 9 - percentage.Length)))}{percentage},";
                     sb.Append(percentage);
                 }
                 sb.Append("\n");
@@ -103,16 +102,16 @@ namespace FF1Lib
             foreach (var zoneName in incentiveZones.Values.SelectMany(x => x).Where(x => !string.IsNullOrWhiteSpace(x)).Distinct())
             {
                 sb.Append($"{zoneName}" +
-                          $"{string.Join("", Enumerable.Repeat(" ", Math.Max(1, 17 - zoneName.Length)))}");
+                          $"{string.Join("", Enumerable.Repeat(" ", Math.Max(1, 17 - zoneName.Length)))},");
                 foreach (var itemPlacements in incentiveZones.Values)
                 {
                     var percentage = $"   {100.0 * itemPlacements.Count(x => x == zoneName) / maxIterations:g2}";
-                    percentage = $"{string.Join("", Enumerable.Repeat(" ", Math.Max(1, 9 - percentage.Length)))}{percentage}";
+                    percentage = $"{string.Join("", Enumerable.Repeat(" ", Math.Max(1, 9 - percentage.Length)))}{percentage},";
                     sb.Append(percentage);
                 }
                 sb.Append("\n");
             }
-            Debug.WriteLine(sb.ToString());
+            return sb.ToString();
         }
 
         public void ShuffleTreasures(MT19337 rng, ITreasureShuffleFlags flags)
@@ -344,7 +343,7 @@ namespace FF1Lib
                     forcedIceCount++;
             }
             if (iterations > 10) {
-                PrintStats(maxIterations, itemPlacementStats, itemPlacementZones);
+                Debug.WriteLine(PrintStats(maxIterations, itemPlacementStats, itemPlacementZones));
                 Debug.WriteLine($"Forced Early Ice Cave for Ship: {forcedIceCount} out of {maxIterations}");
             }
             Debug.WriteLine($"Sanity Check Fails per run: {(double)sanityCounter / maxIterations}");
