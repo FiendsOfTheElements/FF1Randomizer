@@ -91,6 +91,17 @@ namespace FF1Lib
               .Concat(MirageTower).Concat(SkyPalace).Concat(ToFR)
               .ToList();
 
+        public static readonly IReadOnlyCollection<IRewardSource> ValidBridgeLocations =
+            new List<IRewardSource> {
+            KingConeria, Princess
+        }.Concat(Coneria).Concat(TempleOfFiends).ToList();
+
+        public static readonly IReadOnlyCollection<IRewardSource> ValidShipLocations =
+            new List<IRewardSource> {
+            KingConeria, Princess, Bikke, Matoya
+        }.Concat(Coneria).Concat(TempleOfFiends)
+         .Concat(MatoyasCave).Concat(IceCave).ToList();
+
         public static readonly IReadOnlyCollection<IRewardSource> AllNPCItemLocations =
             new List<IRewardSource> {
             KingConeria, Princess, Matoya, Bikke, ElfPrince, Astos, 

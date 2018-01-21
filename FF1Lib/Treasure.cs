@@ -76,101 +76,6 @@ namespace FF1Lib
         public const int lut_MapObjTalkJumpTblAddress = 0x390D3;
         public const string giveRewardRoutineAddress = "93DD";
 
-        public void ShuffleTreasures(MT19337 rng, bool earlyCanoe, bool earlyOrdeals, bool incentivizeIceCave, bool incentivizeOrdeals)
-        {
-            const int maxIterations = 1;
-            // ################### THIS IS A VERY BAD HACK #####################
-            // only committed this because I have to leave for the day and needs to be removed
-            if (incentivizeIceCave) TreasureConditions.UsedIndices.Remove(ItemLocations.IceCaveMajor.Address - 0x3100);
-            if (incentivizeOrdeals) TreasureConditions.UsedIndices.Remove(ItemLocations.OrdealsMajor.Address - 0x3100);
-            // ############################# END HACK ##########################
-            var listStatItems = ItemLists.AllQuestItems;
-            var incentiveLocations = listStatItems.ToDictionary(x => x, x => new List<int>());
-            var treasureBlob = Get(TreasureOffset, TreasureSize * TreasureCount);
-            var forcedItems = ItemLocations.AllOtherItemLocations; // ItemLocations.AllNonTreasureItemLocations;
-            var placedItems = new List<IRewardSource>();
-            var treasureArray = ItemLocations.AllTreasures.OrderBy(x => x.Address).ToList();
-            var treasurePool = TreasureConditions.UsedIndices.Select(x => (Item)treasureBlob[x]).ToList();
-            var usedTreasures = new List<Item>();
-            var sanityCounter = 0;
-            for (var iterations = 0; iterations < maxIterations; iterations++)
-            {
-                do
-                {
-                    sanityCounter++;
-                    placedItems = forcedItems.ToList();
-                    usedTreasures = treasurePool.ToList();
-                    var incentives =
-                        ItemLists.AllQuestItems
-                                 .Where(x => x < Item.Canoe && x != Item.Floater)
-                                 .Where(x => !placedItems.Any(y => y.Item == x))
-                                 .ToList();
-                    // Place caravan first because among incentive locations it has the smallest set of possible items
-                    if (!placedItems.Any(x => x.Address == ItemLocations.CaravanItemShop1.Address))
-                        placedItems.Add(new ItemShopSlot(ItemLocations.CaravanItemShop1, incentives.SpliceRandom(rng)));
-                    incentives =
-                        ItemLists.AllQuestItems.ToList();
-                    incentives.Add(Item.Xcalber);
-                    incentives.Add(Item.Masamune);
-                    incentives.Add(Item.Ribbon);
-                    incentives =
-                        incentives
-                            .Where(x => !placedItems.Any(y => y.Item == x))
-                            .ToList();
-
-                    foreach (var npc in ItemLocations.AllNPCItemLocations.Where(x => !placedItems.Any(y => y.Address == x.Address)))
-                    {
-                        placedItems.Add(new MapObject(npc, incentives.SpliceRandom(rng)));
-                    }
-
-                    if (incentivizeIceCave)
-                    {
-                        usedTreasures.Remove(Item.Floater);
-                        placedItems.Add(new TreasureChest(ItemLocations.IceCaveMajor, incentives.SpliceRandom(rng)));
-                    }
-
-                    if (incentivizeOrdeals)
-                    {
-                        usedTreasures.Remove(Item.Tail);
-                        if (!earlyOrdeals)
-                        {
-                            incentives.Remove(Item.Crown);
-                        }
-
-                        placedItems.Add(new TreasureChest(ItemLocations.OrdealsMajor, incentives.SpliceRandom(rng)));
-                    }
-                    foreach(var placement in placedItems)
-                    {
-                        usedTreasures.Remove(placement.Item);
-                    }
-                    foreach(var leftoverIncentive in incentives)
-                    {
-                        usedTreasures.Remove(leftoverIncentive);
-                        usedTreasures.Add(leftoverIncentive);
-                    }
-                    usedTreasures.Shuffle(rng);
-
-                    for (int i = 0; i < TreasureConditions.UsedIndices.Count; i++)
-                    {
-                        placedItems.Add(new TreasureChest(treasureArray[TreasureConditions.UsedIndices[i] - 1], usedTreasures[i]));
-                    }
-                } while (!CheckSanity(placedItems, earlyCanoe, earlyOrdeals));
-                var outputIndexes = placedItems.ToLookup(x => x.Item, x => x.Address);
-                foreach (Item item in listStatItems)
-                {
-                    incentiveLocations[item].AddRange(outputIndexes[item].ToList());
-                }
-            }
-            PrintStats(maxIterations, incentiveLocations);
-            Debug.WriteLine($"Sanity Check Fails per run: {(double)sanityCounter / maxIterations}");
-
-            foreach (var item in placedItems.Where(x => !x.IsUnused && x.Address < 0x80000))
-            {
-                Debug.WriteLine(item.SpoilerText);
-                item.Put(this);
-            }
-        }
-
         private static void PrintStats(int maxIterations, Dictionary<Item, List<int>> incentiveLocations)
         {
             var sb = new StringBuilder();
@@ -197,13 +102,205 @@ namespace FF1Lib
             Debug.WriteLine(sb.ToString());
         }
 
-        private bool CheckSanity(List<IRewardSource> treasureBlob, bool earlyCanoe, bool earlyOrdeals, bool earlyBridge = true)
+        public void ShuffleTreasures(MT19337 rng, ITreasureShuffleFlags flags)
+        {
+            const int maxIterations = 1;
+            var sanityCounter = 0;
+            var forcedIceCount = 0;
+            var itemPlacementStats = ItemLists.AllQuestItems.ToDictionary(x => x, x => new List<int>());
+
+            var forcedItems = ItemLocations.AllOtherItemLocations.ToList();
+            if (!flags.ForceVanillaNPCs)
+            {
+                CheckCanoeItemInsteadOfEventVar();
+                EnableBridgeShipCanalAnywhere();
+                EnableNPCsGiveAnyItem();
+            }
+            else
+            {
+                forcedItems = ItemLocations.AllNonTreasureItemLocations.ToList();
+            }
+            var normalIncentiveNPCs = 
+                ItemLocations.AllNPCItemLocations
+                             .Where(x => !forcedItems.Any(y => y.Address == x.Address))
+                             .ToList(); 
+            var incentivePool = ItemLists.AllQuestItems.ToList();
+            incentivePool.Add(Item.Xcalber);
+            incentivePool.Add(Item.Masamune);
+            incentivePool.Add(Item.Ribbon);
+            incentivePool.Remove(Item.Ship);
+            incentivePool = 
+                incentivePool
+                    .Where(x => !forcedItems.Any(y => y.Item == x))
+                    .ToList();
+
+            var shipLocations = 
+                ItemLocations.ValidShipLocations
+                             .Where(x => !forcedItems.Any(y => y.Address == x.Address))
+                             .ToList();
+            if (!flags.AllowForcedEarlyIceCave) 
+            {
+                shipLocations = shipLocations.Except(ItemLocations.IceCave).ToList();
+            }
+
+            var treasureBlob = Get(TreasureOffset, TreasureSize * TreasureCount);
+            var placedItems = new List<IRewardSource>();
+            for (var iterations = 0; iterations < maxIterations; iterations++)
+            {
+                var treasurePool =
+                    TreasureConditions.UsedIndices.Select(x => (Item)treasureBlob[x]).ToList();
+
+                foreach (var startingIncentive in incentivePool)
+                {
+                    treasurePool.Remove(startingIncentive);
+                }
+                foreach (var placement in forcedItems)
+                {
+                    treasurePool.Remove(placement.Item);
+                }
+                do
+                {
+                    sanityCounter++;
+                    // 1. (Re)Initialize lists inside of loop
+                    placedItems = forcedItems.ToList();
+                    var incentives = incentivePool.ToList();
+                    incentives.Shuffle(rng);
+                    shipLocations.Shuffle(rng);
+
+                    // 2. Place caravan item first because among incentive locations it has the smallest set of possible items
+                    if (!placedItems.Any(x => x.Address == ItemLocations.CaravanItemShop1.Address))
+                    {
+                        var itemPick = incentives.PickRandom(rng);
+                        if (itemPick == Item.Floater || itemPick >= Item.Canoe)
+                        {
+                            itemPick = incentives.First(x => x < Item.Canoe && x != Item.Floater);
+                        }
+                        incentives.Remove(itemPick);
+
+                        placedItems.Add(new ItemShopSlot(ItemLocations.CaravanItemShop1, itemPick));
+                    }
+
+                    // 3. Place Bridge and Ship next since the valid location lists are so small
+                    IRewardSource bridgePlacement = null;
+                    if (!flags.EarlyBridge)
+                    {
+                        incentives.Remove(Item.Bridge);
+                        bridgePlacement = ItemLocations.ValidBridgeLocations.ToList().PickRandom(rng);
+                        if (bridgePlacement is MapObject)
+                        {
+                            placedItems.Add(new MapObject(bridgePlacement, Item.Bridge));
+                        }
+                        else
+                        {
+                            placedItems.Add(new TreasureChest(bridgePlacement, Item.Bridge));
+                        }
+                    }
+                    var shipPlacement = shipLocations.First(x => x.Address != bridgePlacement?.Address);
+                    if (shipPlacement is MapObject)
+                    {
+                        placedItems.Add(new MapObject(shipPlacement, Item.Ship));
+                    }
+                    else
+                    {
+                        placedItems.Add(new TreasureChest(shipPlacement, Item.Ship));
+                    }
+
+                    // 4. Then place all incentive locations that don't have special logic (NPCs)
+                    foreach (var npc in normalIncentiveNPCs.Where(x => !placedItems.Any(y => y.Address == x.Address)))
+                    {
+                        if (incentives.Any()) 
+                        {
+                            placedItems.Add(new MapObject(npc, incentives.SpliceRandom(rng)));
+                        }
+                        else 
+                        {
+                            placedItems.Add(new MapObject(npc, treasurePool.SpliceRandom(rng)));
+                        }
+                    }
+
+                    // 5. Then place remanining incentive locations with additional logic needed
+                    if (flags.IncentivizeIceCave)
+                    {
+                        var itemPick = incentives.PickRandom(rng);
+                        if (!flags.AllowForcedEarlyIceCave && itemPick == Item.Ship)
+                        {
+                            itemPick = incentives.First(x => x != Item.Ship);
+                        }
+                        incentives.Remove(itemPick);
+                            
+                        placedItems.Add(new TreasureChest(ItemLocations.IceCaveMajor, itemPick));
+                    }
+
+                    if (flags.IncentivizeOrdeals)
+                    {
+                        var itemPick = incentives.PickRandom(rng);
+                        if (!flags.EarlyOrdeals && itemPick == Item.Crown)
+                        {
+                            itemPick = incentives.First(x => x != Item.Crown);
+                        }
+                        incentives.Remove(itemPick);
+                            
+                        placedItems.Add(new TreasureChest(ItemLocations.OrdealsMajor, itemPick));
+                    }
+
+                    var treasureChestPoolForExtraIncentiveItems =
+                        ItemLocations.AllTreasures
+                                     .Where(x => !x.IsUnused && !placedItems.Any(y => y.Address == x.Address))
+                                     .ToList();
+                    // 7. Place remaining incentives
+                    foreach(var incentive in incentives)
+                    {
+                        placedItems.Add(new TreasureChest(treasureChestPoolForExtraIncentiveItems.SpliceRandom(rng), incentive));
+                    }
+
+                    // 8. Check sanity and loop if needed
+                } while (!CheckSanity(placedItems, flags));
+
+
+                // 8. Place all remaining unincentivized treasures
+                var i = 0;
+                var treasureChestPool =
+                    ItemLocations.AllTreasures
+                                 .Where(x => !x.IsUnused && !placedItems.Any(y => y.Address == x.Address))
+                                 .ToList();
+                treasurePool.Shuffle(rng);
+                foreach (var remainingTreasure in treasureChestPool)
+                {
+                    placedItems.Add(new TreasureChest(remainingTreasure, treasurePool[i]));
+                    i++;
+                }
+
+                // Record placements in stats
+                var outputIndexes = placedItems.ToLookup(x => x.Item, x => x.Address);
+                foreach (Item item in itemPlacementStats.Keys)
+                {
+                    itemPlacementStats[item].AddRange(outputIndexes[item].ToList());
+                }
+                if (placedItems.Any(x => x.Address == ItemLocations.Matoya.Address && x.Item == Item.Ship) &&
+                    placedItems.Any(x => x.Item == Item.Crystal &&
+                                    x.Address >= ItemLocations.IceCave1.Address &&
+                                    x.Address <= ItemLocations.IceCaveMajor.Address))
+                    forcedIceCount++;
+            }
+            PrintStats(maxIterations, itemPlacementStats);
+            Debug.WriteLine($"Forced Early Ice Cave for Matoya Ship: {forcedIceCount} out of {maxIterations}");
+            Debug.WriteLine($"Sanity Check Fails per run: {(double)sanityCounter / maxIterations}");
+
+            // Output the results tothe ROM
+            foreach (var item in placedItems.Where(x => !x.IsUnused && x.Address < 0x80000))
+            {
+                Debug.WriteLine(item.SpoilerText);
+                item.Put(this);
+            }
+        }
+
+        private bool CheckSanity(List<IRewardSource> treasureBlob, ISanityCheckFlags flags)
         {
             const int maxIterations = 20;
             var currentIteration = 0;
             var currentAccess = AccessRequirement.None; 
             var currentMapChanges = MapChange.None;
-            if (earlyBridge)
+            if (flags.EarlyBridge)
                 currentMapChanges |= MapChange.Bridge;
 
             var allMapLocations = Enum.GetValues(typeof(MapLocation))
