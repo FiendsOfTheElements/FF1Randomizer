@@ -76,7 +76,7 @@ namespace FF1Lib
         public const int lut_MapObjTalkJumpTblAddress = 0x390D3;
         public const string giveRewardRoutineAddress = "93DD";
 
-        private static void PrintStats(int maxIterations, Dictionary<Item, List<int>> incentiveLocations)
+        private static void PrintStats(int maxIterations, Dictionary<Item, List<int>> incentiveLocations, Dictionary<Item, List<string>> incentiveZones)
         {
             var sb = new StringBuilder();
             sb.Append("Location         ");
@@ -87,13 +87,26 @@ namespace FF1Lib
                 sb.Append(name.Substring(0, Math.Min(12, name.Length)));
             }
             sb.Append("\n");
-            foreach (var rewardSource in ItemLocations.AllQuestItemLocations.Where(x => x.Address < 0x80000))
+            foreach (var rewardSource in ItemLocations.AllQuestItemLocations
+                                                .Where(x => x.Address > 0x31FF && x.Address < 0x80000))
             {
                 sb.Append($"{rewardSource.Name}" +
                           $"{string.Join("", Enumerable.Repeat(" ", Math.Max(1, 17 - rewardSource.Name.Length)))}");
                 foreach (var itemPlacements in incentiveLocations.Values)
                 {
                     var percentage = $"   {100.0 * itemPlacements.Count(x => x == rewardSource.Address) / maxIterations:g2}";
+                    percentage = $"{string.Join("", Enumerable.Repeat(" ", Math.Max(1, 9 - percentage.Length)))}{percentage}";
+                    sb.Append(percentage);
+                }
+                sb.Append("\n");
+            }
+            foreach (var zoneName in incentiveZones.Values.SelectMany(x => x).Distinct())
+            {
+                sb.Append($"{zoneName}" +
+                          $"{string.Join("", Enumerable.Repeat(" ", Math.Max(1, 17 - zoneName.Length)))}");
+                foreach (var itemPlacements in incentiveZones.Values)
+                {
+                    var percentage = $"   {100.0 * itemPlacements.Count(x => x == zoneName) / maxIterations:g2}";
                     percentage = $"{string.Join("", Enumerable.Repeat(" ", Math.Max(1, 9 - percentage.Length)))}{percentage}";
                     sb.Append(percentage);
                 }
@@ -108,6 +121,28 @@ namespace FF1Lib
             var sanityCounter = 0;
             var forcedIceCount = 0;
             var itemPlacementStats = ItemLists.AllQuestItems.ToDictionary(x => x, x => new List<int>());
+            var itemPlacementZones = ItemLists.AllQuestItems.ToDictionary(x => x, x => new List<string>());
+            var incentiveLocationAreas = new Dictionary<IReadOnlyCollection<IRewardSource>, string>
+                {
+                    { ItemLocations.Coneria, nameof(ItemLocations.Coneria)},
+                    { ItemLocations.TempleOfFiends, nameof(ItemLocations.TempleOfFiends)},
+                    { ItemLocations.MatoyasCave, nameof(ItemLocations.MatoyasCave)},
+                    { ItemLocations.Elfland, nameof(ItemLocations.Elfland)},
+                    { ItemLocations.MarshCave, nameof(ItemLocations.MarshCave)},
+                    { ItemLocations.NorthwestCastle, nameof(ItemLocations.NorthwestCastle)},
+                    { ItemLocations.DwarfCave, nameof(ItemLocations.DwarfCave)},
+                    { ItemLocations.EarthCave, nameof(ItemLocations.EarthCave)},
+                    { ItemLocations.TitansTunnel, nameof(ItemLocations.TitansTunnel)},
+                    { ItemLocations.Volcano, nameof(ItemLocations.Volcano)},
+                    { ItemLocations.IceCave, nameof(ItemLocations.IceCave)},
+                    { ItemLocations.Ordeals, nameof(ItemLocations.Ordeals)},
+                    { ItemLocations.Cardia, nameof(ItemLocations.Cardia)},
+                    { ItemLocations.SeaShrine, nameof(ItemLocations.SeaShrine)},
+                    { ItemLocations.Waterfall, nameof(ItemLocations.Waterfall)},
+                    { ItemLocations.MirageTower, nameof(ItemLocations.MirageTower)},
+                    { ItemLocations.SkyPalace, nameof(ItemLocations.SkyPalace)},
+                    { ItemLocations.ToFR, nameof(ItemLocations.ToFR)}
+                };
 
             var forcedItems = ItemLocations.AllOtherItemLocations.ToList();
             if (!flags.ForceVanillaNPCs)
@@ -145,7 +180,8 @@ namespace FF1Lib
 
             var treasureBlob = Get(TreasureOffset, TreasureSize * TreasureCount);
             var placedItems = new List<IRewardSource>();
-            for (var iterations = 0; iterations < maxIterations; iterations++)
+            var iterations = 0;
+            for (; iterations < maxIterations; iterations++)
             {
                 var treasurePool =
                     TreasureConditions.UsedIndices.Select(x => (Item)treasureBlob[x]).ToList();
@@ -271,10 +307,22 @@ namespace FF1Lib
                 }
 
                 // Record placements in stats
+
                 var outputIndexes = placedItems.ToLookup(x => x.Item, x => x.Address);
                 foreach (Item item in itemPlacementStats.Keys)
                 {
                     itemPlacementStats[item].AddRange(outputIndexes[item].ToList());
+                }
+                var outputZones =
+                    placedItems
+                        .ToLookup(x => x.Item,
+                                  x => incentiveLocationAreas
+                                    .Where(y => y.Key.Any(z => z.Address == x.Address))
+                                  .Select(y => y.Value).SingleOrDefault());
+                foreach (Item item in itemPlacementZones.Keys)
+                {
+                    if (outputZones[item].SingleOrDefault() == null) continue;
+                    itemPlacementZones[item].Add(outputZones[item].SingleOrDefault());
                 }
                 if (placedItems.Any(x => x.Address == ItemLocations.Matoya.Address && x.Item == Item.Ship) &&
                     placedItems.Any(x => x.Item == Item.Crystal &&
@@ -282,8 +330,10 @@ namespace FF1Lib
                                     x.Address <= ItemLocations.IceCaveMajor.Address))
                     forcedIceCount++;
             }
-            PrintStats(maxIterations, itemPlacementStats);
-            Debug.WriteLine($"Forced Early Ice Cave for Matoya Ship: {forcedIceCount} out of {maxIterations}");
+            if (iterations > 10) {
+                PrintStats(maxIterations, itemPlacementStats, itemPlacementZones);
+                Debug.WriteLine($"Forced Early Ice Cave for Matoya Ship: {forcedIceCount} out of {maxIterations}");
+            }
             Debug.WriteLine($"Sanity Check Fails per run: {(double)sanityCounter / maxIterations}");
 
             // Output the results tothe ROM
