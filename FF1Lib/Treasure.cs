@@ -75,7 +75,28 @@ namespace FF1Lib
 
         public const int lut_MapObjTalkJumpTblAddress = 0x390D3;
         public const string giveRewardRoutineAddress = "93DD";
-
+        private static Dictionary<IReadOnlyCollection<IRewardSource>, string> 
+            incentiveLocationAreas = new Dictionary<IReadOnlyCollection<IRewardSource>, string>
+                {
+                    { ItemLocations.Coneria, nameof(ItemLocations.Coneria)},
+                    { ItemLocations.TempleOfFiends, nameof(ItemLocations.TempleOfFiends)},
+                    { ItemLocations.MatoyasCave, nameof(ItemLocations.MatoyasCave)},
+                    { ItemLocations.Elfland, nameof(ItemLocations.Elfland)},
+                    { ItemLocations.MarshCave, nameof(ItemLocations.MarshCave)},
+                    { ItemLocations.NorthwestCastle, nameof(ItemLocations.NorthwestCastle)},
+                    { ItemLocations.DwarfCave, nameof(ItemLocations.DwarfCave)},
+                    { ItemLocations.EarthCave, nameof(ItemLocations.EarthCave)},
+                    { ItemLocations.TitansTunnel, nameof(ItemLocations.TitansTunnel)},
+                    { ItemLocations.Volcano, nameof(ItemLocations.Volcano)},
+                    { ItemLocations.IceCave, nameof(ItemLocations.IceCave)},
+                    { ItemLocations.Ordeals, nameof(ItemLocations.Ordeals)},
+                    { ItemLocations.Cardia, nameof(ItemLocations.Cardia)},
+                    { ItemLocations.SeaShrine, nameof(ItemLocations.SeaShrine)},
+                    { ItemLocations.Waterfall, nameof(ItemLocations.Waterfall)},
+                    { ItemLocations.MirageTower, nameof(ItemLocations.MirageTower)},
+                    { ItemLocations.SkyPalace, nameof(ItemLocations.SkyPalace)},
+                    { ItemLocations.ToFR, nameof(ItemLocations.ToFR)}
+                };
         private static string PrintStats(int maxIterations, Dictionary<Item, List<int>> incentiveLocations, Dictionary<Item, List<string>> incentiveZones)
         {
             var sb = new StringBuilder();
@@ -99,7 +120,7 @@ namespace FF1Lib
                 }
                 sb.Append("\n");
             }
-            foreach (var zoneName in incentiveZones.Values.SelectMany(x => x).Where(x => !string.IsNullOrWhiteSpace(x)).Distinct())
+            foreach (var zoneName in incentiveLocationAreas.Values)
             {
                 sb.Append($"{zoneName}" +
                           $"{string.Join("", Enumerable.Repeat(" ", Math.Max(1, 17 - zoneName.Length)))},");
@@ -117,33 +138,12 @@ namespace FF1Lib
         public void ShuffleTreasures(MT19337 rng, ITreasureShuffleFlags flags)
         {
             const int maxIterations = 1;
-            var sanityCounter = 0;
+            long sanityCounter = 0;
             var forcedIceCount = 0;
             var itemPlacementStats = ItemLists.AllQuestItems.ToDictionary(x => x, x => new List<int>());
             itemPlacementStats[Item.Ribbon] = new List<int>();
             var itemPlacementZones = ItemLists.AllQuestItems.ToDictionary(x => x, x => new List<string>());
             itemPlacementZones[Item.Ribbon] = new List<string>();
-            var incentiveLocationAreas = new Dictionary<IReadOnlyCollection<IRewardSource>, string>
-                {
-                    { ItemLocations.Coneria, nameof(ItemLocations.Coneria)},
-                    { ItemLocations.TempleOfFiends, nameof(ItemLocations.TempleOfFiends)},
-                    { ItemLocations.MatoyasCave, nameof(ItemLocations.MatoyasCave)},
-                    { ItemLocations.Elfland, nameof(ItemLocations.Elfland)},
-                    { ItemLocations.MarshCave, nameof(ItemLocations.MarshCave)},
-                    { ItemLocations.NorthwestCastle, nameof(ItemLocations.NorthwestCastle)},
-                    { ItemLocations.DwarfCave, nameof(ItemLocations.DwarfCave)},
-                    { ItemLocations.EarthCave, nameof(ItemLocations.EarthCave)},
-                    { ItemLocations.TitansTunnel, nameof(ItemLocations.TitansTunnel)},
-                    { ItemLocations.Volcano, nameof(ItemLocations.Volcano)},
-                    { ItemLocations.IceCave, nameof(ItemLocations.IceCave)},
-                    { ItemLocations.Ordeals, nameof(ItemLocations.Ordeals)},
-                    { ItemLocations.Cardia, nameof(ItemLocations.Cardia)},
-                    { ItemLocations.SeaShrine, nameof(ItemLocations.SeaShrine)},
-                    { ItemLocations.Waterfall, nameof(ItemLocations.Waterfall)},
-                    { ItemLocations.MirageTower, nameof(ItemLocations.MirageTower)},
-                    { ItemLocations.SkyPalace, nameof(ItemLocations.SkyPalace)},
-                    { ItemLocations.ToFR, nameof(ItemLocations.ToFR)}
-                };
 
             var forcedItems = ItemLocations.AllOtherItemLocations.ToList();
             if (!flags.ForceVanillaNPCs)
@@ -181,7 +181,7 @@ namespace FF1Lib
 
             var treasureBlob = Get(TreasureOffset, TreasureSize * TreasureCount);
             var placedItems = new List<IRewardSource>();
-            var iterations = 0;
+            long iterations = 0;
             for (; iterations < maxIterations; iterations++)
             {
                 var treasurePool =
