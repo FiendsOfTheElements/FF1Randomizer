@@ -326,6 +326,8 @@ namespace FF1Lib
             var currentMapChanges = MapChange.None;
             if (flags.EarlyBridge)
                 currentMapChanges |= MapChange.Bridge;
+            var canoeRequiresEarthOrb = flags.ForceVanillaNPCs && !flags.EarlyCanoe;
+            var rodRequiresEarthCave = flags.ForceVanillaNPCs && !flags.EarlyRod;
 
             var allMapLocations = Enum.GetValues(typeof(MapLocation))
                                       .Cast<MapLocation>().ToList();
@@ -369,7 +371,8 @@ namespace FF1Lib
                     currentItems.Contains(Item.Herb))
                     currentAccess |= AccessRequirement.Herb;
                 if (!currentMapChanges.HasFlag(MapChange.Canoe) &&
-                    currentItems.Contains(Item.Canoe))
+                    currentItems.Contains(Item.Canoe) && 
+                    (!canoeRequiresEarthOrb || currentItems.Contains(Item.EarthOrb)))
                     currentMapChanges |= MapChange.Canoe;
                 if (!currentMapChanges.HasFlag(MapChange.Ship) &&
                     currentItems.Contains(Item.Ship) &&
@@ -390,7 +393,8 @@ namespace FF1Lib
                     currentMapLocations().Contains(MapLocation.TitansTunnelA))
                     currentMapChanges |= MapChange.TitanFed;
                 if (!currentAccess.HasFlag(AccessRequirement.Rod) &&
-                    currentItems.Contains(Item.Rod))
+                    currentItems.Contains(Item.Rod) && 
+                   (!rodRequiresEarthCave || currentMapLocations().Contains(MapLocation.EarthCave)))
                     currentAccess |= AccessRequirement.Rod;
                 if (!currentAccess.HasFlag(AccessRequirement.Slab) &&
                     currentItems.Contains(Item.Slab))
