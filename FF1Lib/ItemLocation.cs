@@ -83,7 +83,13 @@ namespace FF1Lib
             : base(address, name, mapLocation, item, accessRequirement, isUnused) { }
 
         public TreasureChest(IRewardSource copyFromRewardSource, Item item)
-            : base(copyFromRewardSource, item) { }
+            : base(copyFromRewardSource, item) {}
+        
+        public TreasureChest(IRewardSource copyFromRewardSource, Item item, AccessRequirement access)
+            : base(copyFromRewardSource, item) 
+        {
+            AccessRequirement = access;
+        }
 
     }
     public class MapObject : RewardSourceBase

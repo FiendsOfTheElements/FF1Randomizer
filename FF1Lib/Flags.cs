@@ -8,16 +8,17 @@ namespace FF1Lib
 {
     public interface ISanityCheckFlags
     {
+        bool EarlyRod { get; }
         bool EarlyCanoe { get; }
         bool EarlyOrdeals { get; }
         bool EarlyBridge { get; }
+        bool ForceVanillaNPCs { get; }
     }
     public interface ITreasureShuffleFlags : ISanityCheckFlags
     {
         bool IncentivizeIceCave { get; }
         bool IncentivizeOrdeals { get; }
         bool AllowForcedEarlyIceCave { get; }
-        bool ForceVanillaNPCs { get; }
     }
     public class Flags : ITreasureShuffleFlags
 	{
