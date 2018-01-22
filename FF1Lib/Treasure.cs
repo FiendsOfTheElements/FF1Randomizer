@@ -328,6 +328,14 @@ namespace FF1Lib
                 currentMapChanges |= MapChange.Bridge;
             var canoeRequiresEarthOrb = flags.ForceVanillaNPCs && !flags.EarlyCanoe;
             var rodRequiresEarthCave = flags.ForceVanillaNPCs && !flags.EarlyRod;
+            if (flags.EarlyOrdeals)
+            {
+                treasureBlob =
+                    treasureBlob
+                        .Select(x => ((x as TreasureChest)?.AccessRequirement.HasFlag(AccessRequirement.Crown) ?? false)
+                                ? new TreasureChest(x, x.Item, x.AccessRequirement & ~AccessRequirement.Crown)
+                                : x).ToList();
+            }
 
             var allMapLocations = Enum.GetValues(typeof(MapLocation))
                                       .Cast<MapLocation>().ToList();
