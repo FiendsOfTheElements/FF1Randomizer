@@ -8,7 +8,8 @@ namespace Sandbox
     {
         static void Main(string[] args)
         {
-	        Console.WriteLine(FF1Text.BytesToText(Blob.FromHex("aba4b3b3a8b1b6")));
+	        TreasureDistribution.Test();
+
 			Console.ReadKey();
         }
     }

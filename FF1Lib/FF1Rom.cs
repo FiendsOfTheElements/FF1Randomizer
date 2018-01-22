@@ -12,7 +12,7 @@ namespace FF1Lib
 	// ReSharper disable once InconsistentNaming
 	public partial class FF1Rom : NesRom
 	{
-		public const string Version = "1.6.2";
+		public const string Version = "1.6.3";
 
 		public const int CopyrightOffset1 = 0x384A8;
 		public const int CopyrightOffset2 = 0x384BA;
@@ -330,8 +330,8 @@ namespace FF1Lib
 			PutInBank(0x1F, 0xCBF3, Blob.FromHex("4C34D8"));
 
 			// Add select button handler on game start menu to change color
-			PutInBank(0x0F, 0x8610, Blob.FromHex("203CC4A662A9488540ADFB60D003EEFB60A522F019EEFB60ADFB60C90E3005A9018DFB60A90085222029EBA90060A90160"));
-			PutInBank(0x1F, 0xD840, CreateLongJumpTableEntry(0x0F, 0x8610));
+			PutInBank(0x0F, 0x8620, Blob.FromHex("203CC4A662A9488540ADFB60D003EEFB60A522F019EEFB60ADFB60C90E3005A9018DFB60A90085222029EBA90060A90160"));
+			PutInBank(0x1F, 0xD840, CreateLongJumpTableEntry(0x0F, 0x8620));
 			Put(0x3A1B5, Blob.FromHex("2040D8D0034C56A1EA"));
 			// Move Most of LoadBorderPalette_Blue out of the way to do a dynamic version.
 			PutInBank(0x0F, 0x8700, Blob.FromHex("988DCE038DEE03A90F8DCC03A9008DCD03A9308DCF0360"));
