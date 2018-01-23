@@ -205,10 +205,10 @@ namespace FF1Lib
         {
             // Replace a long unused dialog string with text for game variables
             var gameVariableText =
-                $"{FF1Text.TextToBytes("SHIP").ToHex()}00000000" +
-                $"{FF1Text.TextToBytes("AIRSHIP").ToHex()}00" +
-                $"{FF1Text.TextToBytes("BRIDGE").ToHex()}0000" +
-                $"{FF1Text.TextToBytes("CANAL").ToHex()}000000";
+                "9C91929900000000" + // SHIP
+                "8A929B9C91929900" + // AIRSHIP
+                "8B9B928D908E0000" + // BRIDGE
+                "8C8A978A95000000";  // CANAL
             Put(0x2825C, Blob.FromHex(gameVariableText));
 
             // Add processing in control code 3 to check for variables
