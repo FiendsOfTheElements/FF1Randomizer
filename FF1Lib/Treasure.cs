@@ -129,7 +129,7 @@ namespace FF1Lib
 
             //****************************STATS*********************************
             long sanityCounter = 0;
-            const int maxIterations = 10000;
+            const int maxIterations = 1;
             var forcedIceCount = 0;
             var itemPlacementStats = ItemLists.AllQuestItems.ToDictionary(x => x, x => new List<int>());
             itemPlacementStats[Item.Ribbon] = new List<int>();
@@ -431,10 +431,10 @@ namespace FF1Lib
         {
             // Replace a long unused dialog string with text for game variables
             var gameVariableText =
-                $"{FF1Text.TextToBytes("SHIP").ToHex()}00000000" +
-                $"{FF1Text.TextToBytes("AIRSHIP").ToHex()}00" +
-                $"{FF1Text.TextToBytes("BRIDGE").ToHex()}0000" +
-                $"{FF1Text.TextToBytes("CANAL").ToHex()}000000";
+                "9C91929900000000" + // SHIP
+                "8A929B9C91929900" + // AIRSHIP
+                "8B9B928D98E00000" + // BRIDGE
+                "8C8A978A95000000";  // CANAL
             Put(0x2825C, Blob.FromHex(gameVariableText));
 
             // Add processing in control code 3 to check for variables
@@ -543,7 +543,7 @@ namespace FF1Lib
             // New "GiveReward" routine
             const string checkItem =
                 "85616920C93CB013AAC90CD005" +
-                "DE0060B002FE0060C936B02A902B"; // 27 bytes
+                "DE0060B003FE0060C936B02A902B"; // 27 bytes
             const string notItem =
                 "A561C96C900920B9EC20EADD4CD6DD" +
                 "C944B0092034DDB007A9E59007" +
