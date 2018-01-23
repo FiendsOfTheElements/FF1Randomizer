@@ -88,6 +88,31 @@ namespace FF1Lib
 			EasterEggs();
             DynamicWindowColor();
             PermanentCaravan();
+            var incentivePool = ItemLists.AllQuestItems.ToList();
+            incentivePool.Add(Item.Xcalber);
+            incentivePool.Add(Item.Masamune);
+            incentivePool.Add(Item.Ribbon);
+            incentivePool.Remove(Item.Ship);
+            var incentiveLocationPool = ItemLocations.AllNPCItemLocations.ToList();
+            if (flags.IncentivizeIceCave)
+            {
+                incentiveLocationPool.Add(ItemLocations.IceCaveMajor);
+            }
+            if (flags.IncentivizeOrdeals)
+            {
+                if (!flags.EarlyOrdeals)
+                {
+                    incentiveLocationPool.Add(ItemLocations.OrdealsMajor);
+                }
+                else
+                {
+                    incentiveLocationPool.Add(
+                        new TreasureChest(ItemLocations.OrdealsMajor, 
+                                          Item.Tail, 
+                                          ItemLocations.OrdealsMajor.AccessRequirement & ~AccessRequirement.Crown)); 
+                }
+            }
+
 
 			// This has to be done before we shuffle spell levels.
 			if (flags.SpellBugs)
@@ -97,7 +122,7 @@ namespace FF1Lib
 
 			if (flags.Treasures)
 			{
-				ShuffleTreasures(rng, flags);
+                ShuffleTreasures(rng, flags, incentiveLocationPool, incentivePool);
 			}
 
 			if (flags.Shops)
