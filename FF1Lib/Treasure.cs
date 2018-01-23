@@ -433,7 +433,7 @@ namespace FF1Lib
             var gameVariableText =
                 "9C91929900000000" + // SHIP
                 "8A929B9C91929900" + // AIRSHIP
-                "8B9B928D98E00000" + // BRIDGE
+                "8B9B928D908E0000" + // BRIDGE
                 "8C8A978A95000000";  // CANAL
             Put(0x2825C, Blob.FromHex(gameVariableText));
 
