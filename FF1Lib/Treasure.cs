@@ -317,7 +317,7 @@ namespace FF1Lib
             // New "GiveReward" routine
             const string checkItem =
                 "85616920C93CB013AAC90CD005" +
-                "DE0060B002FE0060C936B02A902B"; // 27 bytes
+                "DE0060B003FE0060C936B02A902B"; // 27 bytes
             const string notItem =
                 "A561C96C900920B9EC20EADD4CD6DD" +
                 "C944B0092034DDB007A9E59007" +
