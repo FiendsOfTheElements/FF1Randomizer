@@ -6,7 +6,21 @@ using System.Threading.Tasks;
 
 namespace FF1Lib
 {
-	public class Flags
+    public interface ISanityCheckFlags
+    {
+        bool EarlyRod { get; }
+        bool EarlyCanoe { get; }
+        bool EarlyOrdeals { get; }
+        bool EarlyBridge { get; }
+        bool ForceVanillaNPCs { get; }
+    }
+    public interface ITreasureShuffleFlags : ISanityCheckFlags
+    {
+        bool IncentivizeIceCave { get; }
+        bool IncentivizeOrdeals { get; }
+        bool AllowForcedEarlyIceCave { get; }
+    }
+    public class Flags : ITreasureShuffleFlags
 	{
 		public bool Treasures { get; set; }
 		public bool IncentivizeIceCave { get; set; }
@@ -48,5 +62,8 @@ namespace FF1Lib
 		public double PriceScaleFactor { get; set; }
 		public double ExpMultiplier { get; set; }
 		public int ExpBonus { get; set; }
-	}
+
+        public bool AllowForcedEarlyIceCave => false;
+        public bool ForceVanillaNPCs => false;
+    }
 }

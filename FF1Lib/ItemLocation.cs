@@ -7,14 +7,21 @@ namespace FF1Lib
     [Flags]
     public enum AccessRequirement
     {
-        None = 0x00,
-        Key = 0x01,
-        Rod = 0x02,
-        Oxyale = 0x04,
-        Cube = 0x08,
-        BlackOrb = 0x10,
-        Lute = 0x20,
-        All = 0xFF
+        None = 0x0000,
+        Key = 0x0001,
+        Rod = 0x0002,
+        Oxyale = 0x0004,
+        Cube = 0x0008,
+        BlackOrb = 0x0010,
+        Lute = 0x0020,
+        Crown = 0x0040,
+        Crystal = 0x0080,
+        Herb = 0x0100,
+        Tnt = 0x0200,
+        Adamant = 0x0400,
+        Slab = 0x0800,
+        Bottle = 0x1000,
+        All = 0xFFFF
     }
     public interface IRewardSource {
         int Address { get; }
@@ -76,7 +83,13 @@ namespace FF1Lib
             : base(address, name, mapLocation, item, accessRequirement, isUnused) { }
 
         public TreasureChest(IRewardSource copyFromRewardSource, Item item)
-            : base(copyFromRewardSource, item) { }
+            : base(copyFromRewardSource, item) {}
+        
+        public TreasureChest(IRewardSource copyFromRewardSource, Item item, AccessRequirement access)
+            : base(copyFromRewardSource, item) 
+        {
+            AccessRequirement = access;
+        }
 
     }
     public class MapObject : RewardSourceBase
@@ -88,7 +101,7 @@ namespace FF1Lib
         private const int _mapObjTalkJumpTblAddress = 0x390D3;
         private const int _mapObjTalkJumpTblDataSize = 2;
         private readonly Blob _eventFlagRoutineAddress = Blob.FromHex("6B95");
-        private readonly Blob _itemTradeRoutineAddress = Blob.FromHex("6C93");
+        private readonly Blob _itemTradeRoutineAddress = Blob.FromHex("5693");
 
         private readonly int _objectRoutineAddress;
         private readonly ObjectId _requiredGameEventFlag;
@@ -116,7 +129,7 @@ namespace FF1Lib
                     $"Attempted to Put invalid npc item placement: \n{SpoilerText}");
         }
 
-        public MapObject(IRewardSource copyFromRewardSource, Item item)
+        public MapObject(MapObject copyFromRewardSource, Item item)
             : base(copyFromRewardSource, item) 
         {
             var copyFromMapObject = copyFromRewardSource as MapObject;
@@ -175,7 +188,7 @@ namespace FF1Lib
     {
         public StaticItemLocation(string name, MapLocation mapLocation, Item item,
                              AccessRequirement accessRequirement = AccessRequirement.None)
-            : base (0x80000, name, mapLocation, item, accessRequirement) {}
+            : base(0x80000, name, mapLocation, item, accessRequirement) { }
         public override void Put(FF1Rom rom) => throw new NotImplementedException();
     }
 }

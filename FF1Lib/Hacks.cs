@@ -70,6 +70,9 @@ namespace FF1Lib
             temp = Data[ItemLocations.ElfPrince.Address];
             Data[ItemLocations.ElfPrince.Address] = Data[ItemLocations.ElfPrince.Address - 1];
             Data[ItemLocations.ElfPrince.Address - 1] = temp;
+            temp = Data[ItemLocations.CanoeSage.Address - 1];
+            Data[ItemLocations.CanoeSage.Address - 1] = Data[ItemLocations.CanoeSage.Address - 2];
+            Data[ItemLocations.CanoeSage.Address - 2] = temp;
             temp = Data[ItemLocations.Lefein.Address];
             Data[ItemLocations.Lefein.Address] = Data[ItemLocations.Lefein.Address - 1];
             Data[ItemLocations.Lefein.Address - 1] = temp;

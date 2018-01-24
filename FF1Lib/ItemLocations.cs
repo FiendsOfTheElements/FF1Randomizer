@@ -1,4 +1,6 @@
 ﻿
+using System.Collections.Generic;
+
 namespace FF1Lib
 {
     public static partial class ItemLocations
@@ -9,12 +11,12 @@ namespace FF1Lib
         public static TreasureChest Coneria4 = new TreasureChest(0x3104, nameof(Coneria4), MapLocation.ConeriaCastle, Item.IronSword, AccessRequirement.Key);
         public static TreasureChest Coneria5 = new TreasureChest(0x3105, nameof(Coneria5), MapLocation.ConeriaCastle, Item.Sabre, AccessRequirement.Key);
         public static TreasureChest Coneria6 = new TreasureChest(0x3106, nameof(Coneria6), MapLocation.ConeriaCastle, Item.SilverKnife, AccessRequirement.Key);
-        public static TreasureChest TempleOfFiendsTopLeft1 = new TreasureChest(0x3107, nameof(TempleOfFiendsTopLeft1), MapLocation.TempleOfFiends, Item.Cabin);
-        public static TreasureChest TempleOfFiendsTopLeft2 = new TreasureChest(0x3108, nameof(TempleOfFiendsTopLeft2), MapLocation.TempleOfFiends, Item.Heal);
-        public static TreasureChest TempleOfFiendsBottomLeft = new TreasureChest(0x3109, nameof(TempleOfFiendsBottomLeft), MapLocation.TempleOfFiends, Item.Cap);
-        public static TreasureChest TempleOfFiendsBottomRight = new TreasureChest(0x310A, nameof(TempleOfFiendsBottomRight), MapLocation.TempleOfFiends, Item.RuneSword, AccessRequirement.Key);
-        public static TreasureChest TempleOfFiendsTopRight1 = new TreasureChest(0x310B, nameof(TempleOfFiendsTopRight1), MapLocation.TempleOfFiends, Item.WereSword, AccessRequirement.Key);
-        public static TreasureChest TempleOfFiendsTopRight2 = new TreasureChest(0x310C, nameof(TempleOfFiendsTopRight2), MapLocation.TempleOfFiends, Item.Soft, AccessRequirement.Key);
+        public static TreasureChest ToFTopLeft1 = new TreasureChest(0x3107, nameof(ToFTopLeft1), MapLocation.TempleOfFiends, Item.Cabin);
+        public static TreasureChest ToFTopLeft2 = new TreasureChest(0x3108, nameof(ToFTopLeft2), MapLocation.TempleOfFiends, Item.Heal);
+        public static TreasureChest ToFBottomLeft = new TreasureChest(0x3109, nameof(ToFBottomLeft), MapLocation.TempleOfFiends, Item.Cap);
+        public static TreasureChest ToFBottomRight = new TreasureChest(0x310A, nameof(ToFBottomRight), MapLocation.TempleOfFiends, Item.RuneSword, AccessRequirement.Key);
+        public static TreasureChest ToFTopRight1 = new TreasureChest(0x310B, nameof(ToFTopRight1), MapLocation.TempleOfFiends, Item.WereSword, AccessRequirement.Key);
+        public static TreasureChest ToFTopRight2 = new TreasureChest(0x310C, nameof(ToFTopRight2), MapLocation.TempleOfFiends, Item.Soft, AccessRequirement.Key);
         public static TreasureChest Elfland1 = new TreasureChest(0x310D, nameof(Elfland1), MapLocation.ElflandCastle, Item.SilverHammer, AccessRequirement.Key);
         public static TreasureChest Elfland2 = new TreasureChest(0x310E, nameof(Elfland2), MapLocation.ElflandCastle, Item.Gold400, AccessRequirement.Key);
         public static TreasureChest Elfland3 = new TreasureChest(0x310F, nameof(Elfland3), MapLocation.ElflandCastle, Item.Gold330, AccessRequirement.Key);
@@ -78,39 +80,39 @@ namespace FF1Lib
         public static TreasureChest TitansTunnel3 = new TreasureChest(0x3148, nameof(TitansTunnel3), MapLocation.TitansTunnelB, Item.Gold620);
         public static TreasureChest TitansTunnel4 = new TreasureChest(0x3149, nameof(TitansTunnel4), MapLocation.TitansTunnelB, Item.GreatAxe);
         // Volcano has 3 extra empty treasure chests
-        public static TreasureChest GurguVolcano1 = new TreasureChest(0x314A, nameof(GurguVolcano1), MapLocation.GurguVolcano, Item.Heal);
-        public static TreasureChest GurguVolcano2 = new TreasureChest(0x314B, nameof(GurguVolcano2), MapLocation.GurguVolcano, Item.Cabin);
-        public static TreasureChest GurguVolcano3 = new TreasureChest(0x314C, nameof(GurguVolcano3), MapLocation.GurguVolcano, Item.Gold1975);
-        public static TreasureChest GurguVolcano4 = new TreasureChest(0x314D, nameof(GurguVolcano4), MapLocation.GurguVolcano, Item.Pure);
-        public static TreasureChest GurguVolcano5 = new TreasureChest(0x314E, nameof(GurguVolcano5), MapLocation.GurguVolcano, Item.Heal);
-        public static TreasureChest GurguVolcano6 = new TreasureChest(0x314F, nameof(GurguVolcano6), MapLocation.GurguVolcano, Item.Gold1455);
-        public static TreasureChest GurguVolcano7 = new TreasureChest(0x3150, nameof(GurguVolcano7), MapLocation.GurguVolcano, Item.SilverShield);
-        public static TreasureChest GurguVolcano8 = new TreasureChest(0x3151, nameof(GurguVolcano8), MapLocation.GurguVolcano, Item.Gold1520);
-        public static TreasureChest GurguVolcano9 = new TreasureChest(0x3152, nameof(GurguVolcano9), MapLocation.GurguVolcano, Item.SilverHelm);
-        public static TreasureChest GurguVolcano10 = new TreasureChest(0x3153, nameof(GurguVolcano10), MapLocation.GurguVolcano, Item.SilverGauntlets);
-        public static TreasureChest GurguVolcano11 = new TreasureChest(0x3154, nameof(GurguVolcano11), MapLocation.GurguVolcano, Item.Gold1760);
-        public static TreasureChest GurguVolcano12 = new TreasureChest(0x3155, nameof(GurguVolcano12), MapLocation.GurguVolcano, Item.SilverAxe);
-        public static TreasureChest GurguVolcano13 = new TreasureChest(0x3156, nameof(GurguVolcano13), MapLocation.GurguVolcano, Item.Gold795);
-        public static TreasureChest GurguVolcano14 = new TreasureChest(0x3157, nameof(GurguVolcano14), MapLocation.GurguVolcano, Item.Gold750);
-        public static TreasureChest GurguVolcano15 = new TreasureChest(0x3158, nameof(GurguVolcano15), MapLocation.GurguVolcano, Item.GiantSword);
-        public static TreasureChest GurguVolcano16 = new TreasureChest(0x3159, nameof(GurguVolcano16), MapLocation.GurguVolcano, Item.Gold4150);
-        public static TreasureChest GurguVolcano17 = new TreasureChest(0x315A, nameof(GurguVolcano17), MapLocation.GurguVolcano, Item.Gold1520);
-        public static TreasureChest GurguVolcano18 = new TreasureChest(0x315B, nameof(GurguVolcano18), MapLocation.GurguVolcano, Item.SilverHelm);
-        public static TreasureChest GurguVolcano19 = new TreasureChest(0x315C, nameof(GurguVolcano19), MapLocation.GurguVolcano, Item.Soft);
-        public static TreasureChest GurguVolcano20 = new TreasureChest(0x315D, nameof(GurguVolcano20), MapLocation.GurguVolcano, Item.Gold2750);
-        public static TreasureChest GurguVolcano21 = new TreasureChest(0x315E, nameof(GurguVolcano21), MapLocation.GurguVolcano, Item.Gold1760);
-        public static TreasureChest GurguVolcano22 = new TreasureChest(0x315F, nameof(GurguVolcano22), MapLocation.GurguVolcano, Item.WoodenRod);
-        public static TreasureChest GurguVolcano23 = new TreasureChest(0x3160, nameof(GurguVolcano23), MapLocation.GurguVolcano, Item.Gold1250);
-        public static TreasureChest GurguVolcano24 = new TreasureChest(0x3161, nameof(GurguVolcano24), MapLocation.GurguVolcano, Item.Gold10);
-        public static TreasureChest GurguVolcano25 = new TreasureChest(0x3162, nameof(GurguVolcano25), MapLocation.GurguVolcano, Item.Gold155);
-        public static TreasureChest GurguVolcano26 = new TreasureChest(0x3163, nameof(GurguVolcano26), MapLocation.GurguVolcano, Item.House);
-        public static TreasureChest GurguVolcano27 = new TreasureChest(0x3164, nameof(GurguVolcano27), MapLocation.GurguVolcano, Item.Gold2000);
-        public static TreasureChest GurguVolcano28 = new TreasureChest(0x3165, nameof(GurguVolcano28), MapLocation.GurguVolcano, Item.IceSword);
-        public static TreasureChest GurguVolcano29 = new TreasureChest(0x3166, nameof(GurguVolcano29), MapLocation.GurguVolcano, Item.Gold880);
-        public static TreasureChest GurguVolcano30 = new TreasureChest(0x3167, nameof(GurguVolcano30), MapLocation.GurguVolcano, Item.Pure);
-        public static TreasureChest GurguVolcano31 = new TreasureChest(0x3168, nameof(GurguVolcano31), MapLocation.GurguVolcano, Item.FlameShield);
-        public static TreasureChest GurguVolcano32 = new TreasureChest(0x3169, nameof(GurguVolcano32), MapLocation.GurguVolcano, Item.Gold7340);
-        public static TreasureChest GurguVolcanoMajor = new TreasureChest(0x316A, nameof(GurguVolcanoMajor), MapLocation.GurguVolcano, Item.FlameArmor);
+        public static TreasureChest Volcano1 = new TreasureChest(0x314A, nameof(Volcano1), MapLocation.GurguVolcano, Item.Heal);
+        public static TreasureChest Volcano2 = new TreasureChest(0x314B, nameof(Volcano2), MapLocation.GurguVolcano, Item.Cabin);
+        public static TreasureChest Volcano3 = new TreasureChest(0x314C, nameof(Volcano3), MapLocation.GurguVolcano, Item.Gold1975);
+        public static TreasureChest Volcano4 = new TreasureChest(0x314D, nameof(Volcano4), MapLocation.GurguVolcano, Item.Pure);
+        public static TreasureChest Volcano5 = new TreasureChest(0x314E, nameof(Volcano5), MapLocation.GurguVolcano, Item.Heal);
+        public static TreasureChest Volcano6 = new TreasureChest(0x314F, nameof(Volcano6), MapLocation.GurguVolcano, Item.Gold1455);
+        public static TreasureChest Volcano7 = new TreasureChest(0x3150, nameof(Volcano7), MapLocation.GurguVolcano, Item.SilverShield);
+        public static TreasureChest Volcano8 = new TreasureChest(0x3151, nameof(Volcano8), MapLocation.GurguVolcano, Item.Gold1520);
+        public static TreasureChest Volcano9 = new TreasureChest(0x3152, nameof(Volcano9), MapLocation.GurguVolcano, Item.SilverHelm);
+        public static TreasureChest Volcano10 = new TreasureChest(0x3153, nameof(Volcano10), MapLocation.GurguVolcano, Item.SilverGauntlets);
+        public static TreasureChest Volcano11 = new TreasureChest(0x3154, nameof(Volcano11), MapLocation.GurguVolcano, Item.Gold1760);
+        public static TreasureChest Volcano12 = new TreasureChest(0x3155, nameof(Volcano12), MapLocation.GurguVolcano, Item.SilverAxe);
+        public static TreasureChest Volcano13 = new TreasureChest(0x3156, nameof(Volcano13), MapLocation.GurguVolcano, Item.Gold795);
+        public static TreasureChest Volcano14 = new TreasureChest(0x3157, nameof(Volcano14), MapLocation.GurguVolcano, Item.Gold750);
+        public static TreasureChest Volcano15 = new TreasureChest(0x3158, nameof(Volcano15), MapLocation.GurguVolcano, Item.GiantSword);
+        public static TreasureChest Volcano16 = new TreasureChest(0x3159, nameof(Volcano16), MapLocation.GurguVolcano, Item.Gold4150);
+        public static TreasureChest Volcano17 = new TreasureChest(0x315A, nameof(Volcano17), MapLocation.GurguVolcano, Item.Gold1520);
+        public static TreasureChest Volcano18 = new TreasureChest(0x315B, nameof(Volcano18), MapLocation.GurguVolcano, Item.SilverHelm);
+        public static TreasureChest Volcano19 = new TreasureChest(0x315C, nameof(Volcano19), MapLocation.GurguVolcano, Item.Soft);
+        public static TreasureChest Volcano20 = new TreasureChest(0x315D, nameof(Volcano20), MapLocation.GurguVolcano, Item.Gold2750);
+        public static TreasureChest Volcano21 = new TreasureChest(0x315E, nameof(Volcano21), MapLocation.GurguVolcano, Item.Gold1760);
+        public static TreasureChest Volcano22 = new TreasureChest(0x315F, nameof(Volcano22), MapLocation.GurguVolcano, Item.WoodenRod);
+        public static TreasureChest Volcano23 = new TreasureChest(0x3160, nameof(Volcano23), MapLocation.GurguVolcano, Item.Gold1250);
+        public static TreasureChest Volcano24 = new TreasureChest(0x3161, nameof(Volcano24), MapLocation.GurguVolcano, Item.Gold10);
+        public static TreasureChest Volcano25 = new TreasureChest(0x3162, nameof(Volcano25), MapLocation.GurguVolcano, Item.Gold155);
+        public static TreasureChest Volcano26 = new TreasureChest(0x3163, nameof(Volcano26), MapLocation.GurguVolcano, Item.House);
+        public static TreasureChest Volcano27 = new TreasureChest(0x3164, nameof(Volcano27), MapLocation.GurguVolcano, Item.Gold2000);
+        public static TreasureChest Volcano28 = new TreasureChest(0x3165, nameof(Volcano28), MapLocation.GurguVolcano, Item.IceSword);
+        public static TreasureChest Volcano29 = new TreasureChest(0x3166, nameof(Volcano29), MapLocation.GurguVolcano, Item.Gold880);
+        public static TreasureChest Volcano30 = new TreasureChest(0x3167, nameof(Volcano30), MapLocation.GurguVolcano, Item.Pure);
+        public static TreasureChest Volcano31 = new TreasureChest(0x3168, nameof(Volcano31), MapLocation.GurguVolcano, Item.FlameShield);
+        public static TreasureChest Volcano32 = new TreasureChest(0x3169, nameof(Volcano32), MapLocation.GurguVolcano, Item.Gold7340);
+        public static TreasureChest VolcanoMajor = new TreasureChest(0x316A, nameof(VolcanoMajor), MapLocation.GurguVolcano, Item.FlameArmor);
         public static TreasureChest IceCave1 = new TreasureChest(0x316B, nameof(IceCave1), MapLocation.IceCave, Item.Heal);
         public static TreasureChest IceCave2 = new TreasureChest(0x316C, nameof(IceCave2), MapLocation.IceCave, Item.Gold10000);
         public static TreasureChest IceCave3 = new TreasureChest(0x316D, nameof(IceCave3), MapLocation.IceCave, Item.Gold9500);
@@ -128,15 +130,15 @@ namespace FF1Lib
         public static TreasureChest IceCave15 = new TreasureChest(0x3179, nameof(IceCave15), MapLocation.IceCave, Item.SilverGauntlets);
         public static TreasureChest IceCave16 = new TreasureChest(0x317A, nameof(IceCave16), MapLocation.IceCave, Item.IceArmor);
         // Ordeals has 1 extra empty treasure chest
-        public static TreasureChest Ordeals1 = new TreasureChest(0x317B, nameof(Ordeals1), MapLocation.CastleOrdeals, Item.ZeusGauntlets);
-        public static TreasureChest Ordeals2 = new TreasureChest(0x317C, nameof(Ordeals2), MapLocation.CastleOrdeals, Item.House);
-        public static TreasureChest Ordeals3 = new TreasureChest(0x317D, nameof(Ordeals3), MapLocation.CastleOrdeals, Item.Gold1455);
-        public static TreasureChest Ordeals4 = new TreasureChest(0x317E, nameof(Ordeals4), MapLocation.CastleOrdeals, Item.Gold7340);
-        public static TreasureChest Ordeals5 = new TreasureChest(0x317F, nameof(Ordeals5), MapLocation.CastleOrdeals, Item.Gold);
-        public static TreasureChest Ordeals6 = new TreasureChest(0x3180, nameof(Ordeals6), MapLocation.CastleOrdeals, Item.IceSword);
-        public static TreasureChest Ordeals7 = new TreasureChest(0x3181, nameof(Ordeals7), MapLocation.CastleOrdeals, Item.IronGauntlets);
-        public static TreasureChest Ordeals8 = new TreasureChest(0x3182, nameof(Ordeals8), MapLocation.CastleOrdeals, Item.HealRod);
-        public static TreasureChest OrdealsMajor = new TreasureChest(0x3183, nameof(OrdealsMajor), MapLocation.CastleOrdeals, Item.Tail);
+        public static TreasureChest Ordeals1 = new TreasureChest(0x317B, nameof(Ordeals1), MapLocation.CastleOrdeals, Item.ZeusGauntlets, AccessRequirement.Crown);
+        public static TreasureChest Ordeals2 = new TreasureChest(0x317C, nameof(Ordeals2), MapLocation.CastleOrdeals, Item.House, AccessRequirement.Crown);
+        public static TreasureChest Ordeals3 = new TreasureChest(0x317D, nameof(Ordeals3), MapLocation.CastleOrdeals, Item.Gold1455, AccessRequirement.Crown);
+        public static TreasureChest Ordeals4 = new TreasureChest(0x317E, nameof(Ordeals4), MapLocation.CastleOrdeals, Item.Gold7340, AccessRequirement.Crown);
+        public static TreasureChest Ordeals5 = new TreasureChest(0x317F, nameof(Ordeals5), MapLocation.CastleOrdeals, Item.Gold, AccessRequirement.Crown);
+        public static TreasureChest Ordeals6 = new TreasureChest(0x3180, nameof(Ordeals6), MapLocation.CastleOrdeals, Item.IceSword, AccessRequirement.Crown);
+        public static TreasureChest Ordeals7 = new TreasureChest(0x3181, nameof(Ordeals7), MapLocation.CastleOrdeals, Item.IronGauntlets, AccessRequirement.Crown);
+        public static TreasureChest Ordeals8 = new TreasureChest(0x3182, nameof(Ordeals8), MapLocation.CastleOrdeals, Item.HealRod, AccessRequirement.Crown);
+        public static TreasureChest OrdealsMajor = new TreasureChest(0x3183, nameof(OrdealsMajor), MapLocation.CastleOrdeals, Item.Tail, AccessRequirement.Crown);
         public static TreasureChest Cardia1 = new TreasureChest(0x3184, nameof(Cardia1), MapLocation.Cardia1, Item.Gold1455);
         public static TreasureChest Cardia2 = new TreasureChest(0x3185, nameof(Cardia2), MapLocation.Cardia1, Item.Gold2000);
         public static TreasureChest Cardia3 = new TreasureChest(0x3186, nameof(Cardia3), MapLocation.Cardia1, Item.Gold2750);
@@ -253,7 +255,7 @@ namespace FF1Lib
         public static TreasureChest SkyPalace32 = new TreasureChest(0x31F5, nameof(SkyPalace32), MapLocation.MirageTower, Item.Heal, AccessRequirement.Cube);
         public static TreasureChest SkyPalace33 = new TreasureChest(0x31F6, nameof(SkyPalace33), MapLocation.MirageTower, Item.ProRing, AccessRequirement.Cube);
         public static TreasureChest SkyPalace34 = new TreasureChest(0x31F7, nameof(SkyPalace34), MapLocation.MirageTower, Item.Gold5450, AccessRequirement.Cube);
-        public static TreasureChest ToFRevisitedMajor = new TreasureChest(0x31F8, nameof(ToFRevisitedMajor), MapLocation.TempleOfFiends, Item.Xcalber, AccessRequirement.Key | AccessRequirement.BlackOrb | AccessRequirement.Lute);
+        public static TreasureChest ToFRMasmune = new TreasureChest(0x31F8, nameof(ToFRMasmune), MapLocation.TempleOfFiends, Item.Xcalber, AccessRequirement.Key | AccessRequirement.BlackOrb | AccessRequirement.Lute);
         public static TreasureChest ToFRevisited2 = new TreasureChest(0x31F9, nameof(ToFRevisited2), MapLocation.TempleOfFiends, Item.Gold26000, AccessRequirement.Key | AccessRequirement.BlackOrb | AccessRequirement.Lute);
         public static TreasureChest ToFRevisited3 = new TreasureChest(0x31FA, nameof(ToFRevisited3), MapLocation.TempleOfFiends, Item.Katana, AccessRequirement.Key | AccessRequirement.BlackOrb | AccessRequirement.Lute );
         public static TreasureChest ToFRevisited4 = new TreasureChest(0x31FB, nameof(ToFRevisited4), MapLocation.TempleOfFiends, Item.ProRing, AccessRequirement.Key | AccessRequirement.BlackOrb | AccessRequirement.Lute);
@@ -264,19 +266,19 @@ namespace FF1Lib
 
         public static MapObject KingConeria = new MapObject(ObjectId.King, MapLocation.ConeriaCastle, Item.Bridge);
         public static MapObject Princess = new MapObject(ObjectId.Princess2, MapLocation.ConeriaCastle, Item.Lute);
-        public static MapObject Matoya = new MapObject(ObjectId.Matoya, MapLocation.MatoyasCave, Item.Herb, requiredItemTrade: Item.Crystal);
+        public static MapObject Matoya = new MapObject(ObjectId.Matoya, MapLocation.MatoyasCave, Item.Herb, AccessRequirement.Crystal, requiredItemTrade: Item.Crystal);
         public static MapObject Bikke = new MapObject(ObjectId.Bikke, MapLocation.Pravoka, Item.Ship, useVanillaRoutineAddress:true);
         // Assumption is made that if you have access to the Elf Prince you also have access to the Elf Doc
-        public static MapObject ElfPrince = new MapObject(ObjectId.ElfPrince, MapLocation.ElflandCastle, Item.Key, requiredGameEventFlag: ObjectId.ElfDoc);
-        public static MapObject Astos = new MapObject(ObjectId.Astos, MapLocation.NorthwestCastle, Item.Crystal, useVanillaRoutineAddress: true);
-        public static MapObject Sarda = new MapObject(ObjectId.Sarda, MapLocation.SardasCave, Item.Rod);
-        public static MapObject CanoeSage = new MapObject(ObjectId.CanoeSage, MapLocation.CresentLake, Item.Canoe);
+        public static MapObject ElfPrince = new MapObject(ObjectId.ElfPrince, MapLocation.ElflandCastle, Item.Key, AccessRequirement.Herb, ObjectId.ElfDoc);
+        public static MapObject Astos = new MapObject(ObjectId.Astos, MapLocation.NorthwestCastle, Item.Crystal, AccessRequirement.Crown, useVanillaRoutineAddress: true);
+        public static MapObject Sarda = new MapObject(ObjectId.Sarda, MapLocation.SardasCave, Item.Rod, requiredGameEventFlag:ObjectId.Vampire);
+        public static MapObject CanoeSage = new MapObject(ObjectId.CanoeSage, MapLocation.CresentLake, Item.Canoe, requiredItemTrade:Item.EarthOrb);
         public static MapObject CubeBot =  new MapObject(ObjectId.CubeBot, MapLocation.Waterfall, Item.Cube);
-        public static MapObject Fairy =  new MapObject(ObjectId.Fairy, MapLocation.Gaia, Item.Oxyale);
+        public static MapObject Fairy =  new MapObject(ObjectId.Fairy, MapLocation.Gaia, Item.Oxyale, AccessRequirement.Bottle);
         // Assumption is made that if you have the slab and access to Lefein then you also have access to Unne
-        public static MapObject Lefein = new MapObject(ObjectId.Lefein, MapLocation.Lefein, Item.Chime, requiredGameEventFlag: ObjectId.Unne);
-        public static MapObject Nerrick = new MapObject(ObjectId.Nerrick, MapLocation.DwarfCave, Item.Canal, requiredItemTrade: Item.Tnt); 
-        public static MapObject Smith = new MapObject(ObjectId.Smith, MapLocation.DwarfCave, Item.Xcalber, requiredItemTrade: Item.Adamant); 
+        public static MapObject Lefein = new MapObject(ObjectId.Lefein, MapLocation.Lefein, Item.Chime, AccessRequirement.Slab, ObjectId.Unne);
+        public static MapObject Nerrick = new MapObject(ObjectId.Nerrick, MapLocation.DwarfCave, Item.Canal, AccessRequirement.Tnt, requiredItemTrade: Item.Tnt); 
+        public static MapObject Smith = new MapObject(ObjectId.Smith, MapLocation.DwarfCave, Item.Xcalber, AccessRequirement.Adamant, requiredItemTrade: Item.Adamant); 
 
         public static ItemShopSlot CaravanItemShop1 =
             new ItemShopSlot(0x38461, nameof(CaravanItemShop1), MapLocation.Caravan, Item.Bottle);
@@ -291,5 +293,50 @@ namespace FF1Lib
             new StaticItemLocation(nameof(TiamatReward), MapLocation.MirageTower, Item.AirOrb, AccessRequirement.Cube);
         public static StaticItemLocation ChaosReward =
             new StaticItemLocation(nameof(ChaosReward), MapLocation.TempleOfFiends, Item.None, AccessRequirement.Key | AccessRequirement.BlackOrb | AccessRequirement.Lute );
+
+        private const MapChange AirshipAndCanoe = MapChange.Airship | MapChange.Canoe;
+        private const MapChange CanalAndShip = MapChange.Canal | MapChange.Ship;
+        private const MapChange ShipAndCanoe = MapChange.Canoe | MapChange.Ship;
+        public static Dictionary<MapLocation, List<MapChange>> MapLocationRequirements =
+            new Dictionary<MapLocation, List<MapChange>>
+        {
+            {MapLocation.StartingLocation, new List<MapChange>{ MapChange.None }},
+            {MapLocation.ConeriaTown, new List<MapChange>{ MapChange.None }},
+            {MapLocation.ConeriaCastle, new List<MapChange>{ MapChange.None }},
+            {MapLocation.TempleOfFiends, new List<MapChange>{ MapChange.None }},
+            {MapLocation.MatoyasCave, new List<MapChange>{ MapChange.Bridge, MapChange.Ship, MapChange.Airship }},
+            {MapLocation.Pravoka, new List<MapChange>{ MapChange.Bridge, MapChange.Ship, MapChange.Airship }},
+            {MapLocation.DwarfCave, new List<MapChange>{ MapChange.Ship, MapChange.Airship }},
+            {MapLocation.ElflandTown, new List<MapChange>{ MapChange.Ship, MapChange.Airship }},
+            {MapLocation.ElflandCastle, new List<MapChange>{ MapChange.Ship, MapChange.Airship }},
+            {MapLocation.NorthwestCastle, new List<MapChange>{ MapChange.Ship, MapChange.Airship }},
+            {MapLocation.MarshCave, new List<MapChange>{ MapChange.Ship, MapChange.Airship }},
+            {MapLocation.Melmond, new List<MapChange>{ CanalAndShip, MapChange.Airship }},
+            {MapLocation.EarthCave, new List<MapChange>{ CanalAndShip, MapChange.Airship }},
+            {MapLocation.TitansTunnelA, new List<MapChange>{ CanalAndShip, MapChange.Airship }},
+            {MapLocation.TitansTunnelB, new List<MapChange>{ CanalAndShip | MapChange.TitanFed, MapChange.Airship }},
+            {MapLocation.SardasCave, new List<MapChange>{ CanalAndShip | MapChange.TitanFed, MapChange.Airship }},
+            {MapLocation.CresentLake, new List<MapChange>{ CanalAndShip, ShipAndCanoe, MapChange.Airship }},
+            {MapLocation.GurguVolcano, new List<MapChange>{ ShipAndCanoe, MapChange.Airship }},
+            {MapLocation.IceCave, new List<MapChange>{ MapChange.Bridge | MapChange.Canoe, MapChange.Ship | MapChange.Canoe, MapChange.Airship }},
+            {MapLocation.CastleOrdeals, new List<MapChange>{ CanalAndShip | MapChange.Canoe, AirshipAndCanoe }},
+            {MapLocation.Cardia1, new List<MapChange>{ MapChange.Airship }},
+            {MapLocation.Cardia2, new List<MapChange>{ MapChange.Airship }},
+            {MapLocation.Cardia3, new List<MapChange>{ MapChange.Airship }},
+            {MapLocation.Cardia4, new List<MapChange>{ MapChange.Airship }},
+            {MapLocation.Cardia5, new List<MapChange>{ MapChange.Airship }},
+            {MapLocation.Cardia6, new List<MapChange>{ MapChange.Airship }},
+            // Since caravan item can be placed in any item shop later in the logic, it could end up at Onrac
+            {MapLocation.Caravan, new List<MapChange>{ AirshipAndCanoe }}, 
+            {MapLocation.Gaia, new List<MapChange>{ MapChange.Airship }},
+            {MapLocation.Onrac, new List<MapChange>{ AirshipAndCanoe }},
+            {MapLocation.Waterfall, new List<MapChange>{ AirshipAndCanoe }},
+            {MapLocation.Lefein, new List<MapChange>{ MapChange.Airship }},
+            {MapLocation.MirageTower, new List<MapChange>{ MapChange.Chime | MapChange.Airship }},
+            {MapLocation.BridgeLocation, new List<MapChange>{ MapChange.None }},
+            {MapLocation.ShipLocation, new List<MapChange>{ MapChange.Bridge }},
+            {MapLocation.CanalLocation, new List<MapChange>{ MapChange.Ship }},
+            {MapLocation.AirshipLocation, new List<MapChange>{ ShipAndCanoe }}
+        };
     }
 }
