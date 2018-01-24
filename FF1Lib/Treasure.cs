@@ -1,34 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using RomUtilities;
 
 namespace FF1Lib
 {
-	public enum QuestItems
-	{
-		Tnt = 0x06,
-		Crown = 0x02,
-		Ruby = 0x09,
-		Floater = 0x0b,
-		Tail = 0x0d,
-		Slab = 0x08,
-		Adamant = 0x07,
-	}
-
 	public static class TreasureConditions
 	{
-		public static readonly List<byte> AllQuestItems = new List<byte>
+		public static readonly List<Item> AllQuestItems = new List<Item>
 		{
-			(byte)QuestItems.Tnt,
-			(byte)QuestItems.Crown,
-			(byte)QuestItems.Ruby,
-			(byte)QuestItems.Floater,
-			(byte)QuestItems.Tail,
-			(byte)QuestItems.Slab,
-			(byte)QuestItems.Adamant
+			Item.Tnt,
+			Item.Crown,
+			Item.Ruby,
+			Item.Floater,
+			Item.Tail,
+			Item.Slab,
+			Item.Adamant
 		};
 
 		public static readonly List<int> UnusedIndices =
@@ -76,17 +62,60 @@ namespace FF1Lib
 
 		public static readonly List<int> ToFR = Enumerable.Range(248, 7).ToList(); // Anything that blocks an ORB will also block these.
 	}
+    public interface IIncentives
+    {
+        IEnumerable<IRewardSource> IncentiveLocations { get; }
+        IEnumerable<Item> IncentiveItems { get; }
+    }
+    public class IncentiveData : IIncentives
+    {
+        public IncentiveData(IIncentiveFlags flags)
+        {
+            var incentivePool = ItemLists.AllQuestItems.ToList();
+            incentivePool.Add(Item.Xcalber);
+            incentivePool.Add(Item.Masamune);
+            incentivePool.Add(Item.Ribbon);
+            incentivePool.Remove(Item.Ship);
+            IncentiveItems = incentivePool;
+            var incentiveLocationPool = ItemLocations.AllNPCItemLocations.ToList();
+            if (flags.IncentivizeIceCave)
+            {
+                incentiveLocationPool.Add(ItemLocations.IceCaveMajor);
+            }
+            if (flags.IncentivizeOrdeals)
+            {
+                if (!flags.EarlyOrdeals)
+                {
+                    incentiveLocationPool.Add(ItemLocations.OrdealsMajor);
+                }
+                else
+                {
+                    incentiveLocationPool.Add(
+                        new TreasureChest(ItemLocations.OrdealsMajor,
+                                          Item.Tail,
+                                          ItemLocations.OrdealsMajor.AccessRequirement & ~AccessRequirement.Crown));
+                }
+            }
+            IncentiveLocations = incentiveLocationPool;
+        }
 
+        public IEnumerable<IRewardSource> IncentiveLocations { get; }
+        public IEnumerable<Item> IncentiveItems { get; }
+
+    }
 	public partial class FF1Rom : NesRom
 	{
 		public const int TreasureOffset = 0x03100;
 		public const int TreasureSize = 1;
 		public const int TreasureCount = 256;
 
+        public const int lut_MapObjTalkJumpTblAddress = 0x390D3;
+        public const string giveRewardRoutineAddress = "93DD";
+
 		public void ShuffleTreasures(MT19337 rng, bool earlyCanoe, bool earlyOrdeals, bool incentivizeIceCave, bool incentivizeOrdeals)
 		{
 			var treasureBlob = Get(TreasureOffset, TreasureSize * TreasureCount);
-			var usedTreasures = TreasureConditions.UsedIndices.Select(i => treasureBlob[i]).ToList();
+			var usedTreasures = TreasureConditions.UsedIndices.Select(i => (Item)treasureBlob[i]).ToList();
 
 			do
 			{
@@ -95,25 +124,25 @@ namespace FF1Lib
 				{
 					const int OrdealsTreasureLocation = 130; // Really 131, because 0 is unused, and usedTreasures doesn't include it.
 					const int IceCaveTreasureLocation = 113; // Really 114
-					var incentiveTreasures = new List<byte>
+					var incentiveTreasures = new List<Item>
 					{
-						(byte)QuestItems.Floater,
-						(byte)QuestItems.Slab,
-						(byte)QuestItems.Adamant,
-						(byte)QuestItems.Tail,
-						0x43, // Masmune
-						0x63 // Ribbon
+					    Item.Floater,
+						Item.Slab,
+						Item.Adamant,
+					    Item.Tail,
+						Item.Masamune,
+						Item.Ribbon
 					};
 					if (earlyCanoe)
 					{
-						incentiveTreasures.Add((byte)QuestItems.Ruby);
+						incentiveTreasures.Add(Item.Ruby);
 					}
 
 					if (incentivizeOrdeals)
 					{
 						if (earlyOrdeals)
 						{
-							incentiveTreasures.Add((byte)QuestItems.Crown);
+							incentiveTreasures.Add(Item.Crown);
 						}
 
 						var choice = rng.Between(0, incentiveTreasures.Count - 1);
@@ -127,7 +156,7 @@ namespace FF1Lib
 					{
 						if (incentivizeOrdeals && !earlyOrdeals) // Don't add this twice!
 						{
-							incentiveTreasures.Add((byte)QuestItems.Crown);
+							incentiveTreasures.Add(Item.Crown);
 						}
 
 						var choice = rng.Between(0, incentiveTreasures.Count - 1);
@@ -139,7 +168,7 @@ namespace FF1Lib
 				}
 				for (int i = 0; i < TreasureConditions.UsedIndices.Count; i++)
 				{
-					treasureBlob[TreasureConditions.UsedIndices[i]] = usedTreasures[i];
+					treasureBlob[TreasureConditions.UsedIndices[i]] = (byte)usedTreasures[i];
 				}
 			} while (!CheckSanity(treasureBlob, earlyCanoe, earlyOrdeals));
 
@@ -148,48 +177,48 @@ namespace FF1Lib
 
 		private bool CheckSanity(Blob treasureBlob, bool earlyCanoe, bool earlyOrdeals)
 		{
-			if (TreasureConditions.ToFR.Select(i => treasureBlob[i]).Intersect(TreasureConditions.AllQuestItems).Any())
+			if (TreasureConditions.ToFR.Select(i => (Item)treasureBlob[i]).Intersect(TreasureConditions.AllQuestItems).Any())
 			{
 				return false;
 			}
 
 			var accessibleTreasures = new HashSet<int>(TreasureConditions.Beginning);
-			var questItems = new HashSet<byte>();
+			var questItems = new HashSet<Item>();
 			int lastCount;
 			do
 			{
 				lastCount = accessibleTreasures.Count;
-				questItems.UnionWith(accessibleTreasures.Select(i => treasureBlob[i]).Intersect(TreasureConditions.AllQuestItems));
+				questItems.UnionWith(accessibleTreasures.Select(i => (Item)treasureBlob[i]).Intersect(TreasureConditions.AllQuestItems));
 
-				if (questItems.Contains((byte)QuestItems.Crown))
+				if (questItems.Contains(Item.Crown))
 				{
 					accessibleTreasures.UnionWith(TreasureConditions.EarlyCrown);
 				}
-				if (questItems.Contains((byte)QuestItems.Tnt))
+				if (questItems.Contains(Item.Tnt))
 				{
 					accessibleTreasures.UnionWith(TreasureConditions.Tnt);
 
-					if (questItems.Contains((byte)QuestItems.Ruby) || earlyCanoe && questItems.Contains((byte)QuestItems.Floater))
+					if (questItems.Contains(Item.Ruby) || earlyCanoe && questItems.Contains(Item.Floater))
 					{
 						accessibleTreasures.UnionWith(TreasureConditions.Rod);
 					}
-					if (earlyCanoe || questItems.Contains((byte)QuestItems.Ruby))
+					if (earlyCanoe || questItems.Contains(Item.Ruby))
 					{
 						accessibleTreasures.UnionWith(TreasureConditions.FireAndIce);
 
-						if (earlyOrdeals || questItems.Contains((byte)QuestItems.Crown))
+						if (earlyOrdeals || questItems.Contains(Item.Crown))
 						{
 							accessibleTreasures.UnionWith(TreasureConditions.Ordeals);
 						}
-						if (questItems.Contains((byte)QuestItems.Floater))
+						if (questItems.Contains(Item.Floater))
 						{
 							accessibleTreasures.UnionWith(TreasureConditions.Airship);
 
-							if (questItems.Contains((byte)QuestItems.Crown))
+							if (questItems.Contains(Item.Crown))
 							{
 								accessibleTreasures.UnionWith(TreasureConditions.LateCrown);
 							}
-							if (questItems.Contains((byte)QuestItems.Slab))
+							if (questItems.Contains(Item.Slab))
 							{
 								accessibleTreasures.UnionWith(TreasureConditions.Chime);
 							}
@@ -200,5 +229,146 @@ namespace FF1Lib
 
 			return accessibleTreasures.Count == TreasureConditions.UsedIndices.Count - TreasureConditions.ToFR.Count;
 		}
-	}
+
+        /// <summary>
+        /// Start of NPC item shuffle should call the following 4 methods:
+        /// 
+        /// PermanentCaravan();
+        /// CheckCanoeItemInsteadOfEventVar();
+        /// EnableBridgeShipCanalAnywhere();
+        /// EnableNPCsGiveAnyItem();
+        /// 
+        /// Then any item can be assigned to an NPC like this:
+        /// new MapObject(ItemLocations.KingConeria, Item.Key).Put(this);
+        /// </summary>
+        public void EnableBridgeShipCanalAnywhere()
+        {
+            // Replace a long unused dialog string with text for game variables
+            var gameVariableText =
+                "9C91929900000000" + // SHIP
+                "8A929B9C91929900" + // AIRSHIP
+                "8B9B928D908E0000" + // BRIDGE
+                "8C8A978A95000000";  // CANAL
+            Put(0x2825C, Blob.FromHex(gameVariableText));
+
+            // Add processing in control code 3 to check for variables
+            var controlCode3 =
+                "A5616920901D0A" +
+                "695A853E" +
+                "A982853F" +
+                "184C9ADB";
+            Put(0x7DBF8, Blob.FromHex(controlCode3));
+            // See source: ~/asm/1F_DBF8_ControlCode3.asm
+
+            // Use control code 3 instead of 2 for normal treasure
+            Data[0x2B187] = 0x03;
+        }
+
+        /// <summary>
+        /// Start of NPC item shuffle should call the following 4 methods:
+        /// 
+        /// PermanentCaravan();
+        /// CheckCanoeItemInsteadOfEventVar();
+        /// EnableBridgeShipCanalAnywhere();
+        /// EnableNPCsGiveAnyItem();
+        /// 
+        /// Then any item can be assigned to an NPC like this:
+        /// new MapObject(ItemLocations.KingConeria, Item.Key).Put(this);
+        /// </summary>
+        public void EnableNPCsGiveAnyItem()
+        {
+            // These first 2 are safe to call even if NPC items aren't being shuffled
+            SplitOpenTreasureRoutine();
+            CleanupNPCRoutines();
+
+            // Replace Don't be greedy text with NPC item text "Here, take this"
+            var replacementText =
+                "91A823" + // Here
+                "BF1BA4AE1A" + // , take 
+                "1C3005" + // this\n
+                $"0300";
+            Put(0x28F35, Blob.FromHex(replacementText));
+
+            // New routine for NPC item trades
+            var itemTradeNPCRoutine =
+                "A5106920AABD0060F014" +
+                "A513F01020" + giveRewardRoutineAddress +
+                "B00DA5106920AADE0060" +
+                "A93A60" +
+                "A51160";
+            // Put at Smith routine
+            Put(0x3936C, Blob.FromHex(itemTradeNPCRoutine));
+            // See source: ~/asm/0E_936C_StandardNPCItemTrade.asm
+
+            // New routine for NPC items based on game event flag
+            var eventFlagGiveNPCRoutine =
+                "A41098F0052079909007" +
+                "A4162079909003A51260" +
+                "A51320" + giveRewardRoutineAddress +
+                "B007A416" +
+                "207F90A93A60";
+            // Put at Talk_ifairship, overrunning Talk_ifearthfire and most of Talk_CubeBotBad
+            Put(0x3956B, Blob.FromHex(eventFlagGiveNPCRoutine));
+            // See source: ~/asm/0E_9586_StandardNPCItem.asm
+
+            // *** Only Smith is required to give an item since only his routine is overwritten
+            // so we set the vanilla item here so he still gives it if nothing else changes
+            Data[ItemLocations.Smith.Address] = (byte)Item.Xcalber;
+
+            // *** Handle special cases (Bikke and Astos)
+            EnableBikkeAnyItem();
+
+            EnableAstosAnyItem();
+        }
+
+        private void EnableAstosAnyItem()
+        {
+            Data[ItemLocations.Astos.Address] = (byte)Item.Crystal;
+            var newAstosRoutine =
+                "AD2260F016A513F01220" + giveRewardRoutineAddress +
+                "B00FA007207392A97D" +
+                "20C590A93A60A51160";
+            Put(0x39338, Blob.FromHex(newAstosRoutine));
+            // See source: ~/asm/0E_9338_AstosAnyItem.asm
+        }
+
+        private void EnableBikkeAnyItem()
+        {
+            Data[ItemLocations.Bikke.Address] = (byte)Item.Ship;
+            var newBikkeRoutine =
+                "A03F209190B00B" +
+                "20A490A97E" +
+                "20C590A51160" +
+                "A004207990B013A513F00F841020" + giveRewardRoutineAddress +
+                "B00AA410207F90A93A60A51260";
+            Put(0x392D0, Blob.FromHex(newBikkeRoutine));
+            // See source: ~/asm/0E_92D0_BikkeAnyItem.asm
+        }
+
+        private void SplitOpenTreasureRoutine()
+        {
+            // Replace "OpenTreasureChest" routine
+            var openTreasureChest =
+                $"A9002003FEA645BD00B120{giveRewardRoutineAddress}" +
+                "B00AA445B9006209049900628A60"; // 27 bytes
+            Put(0x7DD78, Blob.FromHex(openTreasureChest));
+            // See source: ~/asm/1F_DD78_OpenTreasureChestRewrite.asm
+
+            // New "GiveReward" routine
+            const string checkItem =
+                "85616920C93CB013AAC90CD005" +
+                "DE0060B003FE0060C936B02A902B"; // 27 bytes
+            const string notItem =
+                "A561C96C900920B9EC20EADD4CD6DD" +
+                "C944B0092034DDB007A9E59007" +
+                "2046DDB00CA9BD" +
+                "65619D0061"; // 40 bytes
+            const string openChest =
+                "18E67DE67DA2F09004EEB760E88A60"; // 12 bytes
+            var giveRewardRoutine =
+                $"{checkItem}{notItem}{openChest}";
+            Put(0x7DD93, Blob.FromHex(giveRewardRoutine));
+            // See source: ~/asm/1F_DD78_OpenTreasureChestRewrite.asm
+        }
+    }
 }
