@@ -101,7 +101,7 @@ namespace FF1Lib
         private const int _mapObjTalkJumpTblAddress = 0x390D3;
         private const int _mapObjTalkJumpTblDataSize = 2;
         private readonly Blob _eventFlagRoutineAddress = Blob.FromHex("6B95");
-        private readonly Blob _itemTradeRoutineAddress = Blob.FromHex("6C93");
+        private readonly Blob _itemTradeRoutineAddress = Blob.FromHex("5693");
 
         private readonly int _objectRoutineAddress;
         private readonly ObjectId _requiredGameEventFlag;
@@ -129,7 +129,7 @@ namespace FF1Lib
                     $"Attempted to Put invalid npc item placement: \n{SpoilerText}");
         }
 
-        public MapObject(IRewardSource copyFromRewardSource, Item item)
+        public MapObject(MapObject copyFromRewardSource, Item item)
             : base(copyFromRewardSource, item) 
         {
             var copyFromMapObject = copyFromRewardSource as MapObject;

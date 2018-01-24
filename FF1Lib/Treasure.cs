@@ -96,20 +96,37 @@ namespace FF1Lib
                                      IEnumerable<Item> incentiveItems)
         {
             var forcedItems = ItemLocations.AllOtherItemLocations.ToList();
+            var incentiveLocationPool =
+                incentiveLocations
+                             .Where(x => !forcedItems.Any(y => y.Address == x.Address))
+                             .ToList();
             if (!flags.ForceVanillaNPCs)
             {
                 CheckCanoeItemInsteadOfEventVar();
                 EnableBridgeShipCanalAnywhere();
                 EnableNPCsGiveAnyItem();
+                // This extends Vampire's routine to set a flag for Sarda, but it also clobers Sarda's routine
+                if (!flags.EarlyRod && !forcedItems.Any(x => x.Address == ItemLocations.Sarda.Address))
+                {
+                    Put(0x393E1, Blob.FromHex("207F90A51160"));
+                }
+                else
+                {
+                    incentiveLocationPool =
+                        incentiveLocationPool
+                            .Select(x => x.Address == ItemLocations.Sarda.Address
+                                    ? new MapObject(ObjectId.Sarda, MapLocation.SardasCave, Item.Rod)
+                                    : x).ToList();
+                }
             }
             else
             {
                 forcedItems = ItemLocations.AllNonTreasureItemLocations.ToList();
+                incentiveLocationPool = 
+                    incentiveLocations
+                                 .Where(x => !forcedItems.Any(y => y.Address == x.Address))
+                                 .ToList(); 
             }
-            var incentiveLocationPool = 
-                incentiveLocations
-                             .Where(x => !forcedItems.Any(y => y.Address == x.Address))
-                             .ToList(); 
             var incentivePool = 
                 incentiveItems
                     .Where(x => !forcedItems.Any(y => y.Item == x))
@@ -290,7 +307,7 @@ namespace FF1Lib
         {
             if (copyFromSource is MapObject)
             {
-                return new MapObject(copyFromSource, newItem);
+                return new MapObject(copyFromSource as MapObject, newItem);
             }
             else
             {
@@ -477,14 +494,14 @@ namespace FF1Lib
 
             // New routine for NPC item trades
             var itemTradeNPCRoutine =
-                "A5106920AABD0060F014" +
-                "A513F01020" + giveRewardRoutineAddress +
-                "B00DA5106920AADE0060" +
-                "A93A60" +
+                "A416207990B027A5106920AABD0060F01D" +
+                "A513F01920" + giveRewardRoutineAddress +
+                "B016A5106920C931B004AADE0060" +
+                "A416207F90A93A60" +
                 "A51160";
-            // Put at Smith routine
-            Put(0x3936C, Blob.FromHex(itemTradeNPCRoutine));
-            // See source: ~/asm/0E_936C_StandardNPCItemTrade.asm
+            // Put at Nerrick routine
+            Put(0x39356, Blob.FromHex(itemTradeNPCRoutine));
+            // See source: ~/asm/0E_9356_StandardNPCItemTrade.asm
 
             // New routine for NPC items based on game event flag
             var eventFlagGiveNPCRoutine =
@@ -495,10 +512,12 @@ namespace FF1Lib
                 "207F90A93A60";
             // Put at Talk_ifairship, overrunning Talk_ifearthfire and most of Talk_CubeBotBad
             Put(0x3956B, Blob.FromHex(eventFlagGiveNPCRoutine));
-            // See source: ~/asm/0E_9586_StandardNPCItem.asm
+            // See source: ~/asm/0E_956B_StandardNPCItem.asm
 
-            // *** Only Smith is required to give an item since only his routine is overwritten
-            // so we set the vanilla item here so he still gives it if nothing else changes
+            // *** Only Nerrick and Smith and required to give an item since 
+            // those routines are overwritten so we set the vanilla item here 
+            // so he still gives it if nothing else changes
+            Data[ItemLocations.Nerrick.Address] = (byte)Item.Canal;
             Data[ItemLocations.Smith.Address] = (byte)Item.Xcalber;
 
             // *** Handle special cases (Bikke and Astos)
