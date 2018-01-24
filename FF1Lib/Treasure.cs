@@ -62,7 +62,47 @@ namespace FF1Lib
 
 		public static readonly List<int> ToFR = Enumerable.Range(248, 7).ToList(); // Anything that blocks an ORB will also block these.
 	}
+    public interface IIncentives
+    {
+        IEnumerable<IRewardSource> IncentiveLocations { get; }
+        IEnumerable<Item> IncentiveItems { get; }
+    }
+    public class IncentiveData : IIncentives
+    {
+        public IncentiveData(IIncentiveFlags flags)
+        {
+            var incentivePool = ItemLists.AllQuestItems.ToList();
+            incentivePool.Add(Item.Xcalber);
+            incentivePool.Add(Item.Masamune);
+            incentivePool.Add(Item.Ribbon);
+            incentivePool.Remove(Item.Ship);
+            IncentiveItems = incentivePool;
+            var incentiveLocationPool = ItemLocations.AllNPCItemLocations.ToList();
+            if (flags.IncentivizeIceCave)
+            {
+                incentiveLocationPool.Add(ItemLocations.IceCaveMajor);
+            }
+            if (flags.IncentivizeOrdeals)
+            {
+                if (!flags.EarlyOrdeals)
+                {
+                    incentiveLocationPool.Add(ItemLocations.OrdealsMajor);
+                }
+                else
+                {
+                    incentiveLocationPool.Add(
+                        new TreasureChest(ItemLocations.OrdealsMajor,
+                                          Item.Tail,
+                                          ItemLocations.OrdealsMajor.AccessRequirement & ~AccessRequirement.Crown));
+                }
+            }
+            IncentiveLocations = incentiveLocationPool;
+        }
 
+        public IEnumerable<IRewardSource> IncentiveLocations { get; }
+        public IEnumerable<Item> IncentiveItems { get; }
+
+    }
 	public partial class FF1Rom : NesRom
 	{
 		public const int TreasureOffset = 0x03100;
