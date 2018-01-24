@@ -6,6 +6,12 @@ using System.Threading.Tasks;
 
 namespace FF1Lib
 {
+    public interface IIncentiveFlags
+    {
+        bool IncentivizeIceCave { get; }
+        bool IncentivizeOrdeals { get; }
+        bool EarlyOrdeals { get; }
+    }
     public interface ISanityCheckFlags
     {
         bool EarlyRod { get; }
@@ -16,11 +22,9 @@ namespace FF1Lib
     }
     public interface ITreasureShuffleFlags : ISanityCheckFlags
     {
-        bool IncentivizeIceCave { get; }
-        bool IncentivizeOrdeals { get; }
         bool AllowForcedEarlyIceCave { get; }
     }
-    public class Flags : ITreasureShuffleFlags
+    public class Flags : ITreasureShuffleFlags, IIncentiveFlags
 	{
 		public bool Treasures { get; set; }
 		public bool IncentivizeIceCave { get; set; }

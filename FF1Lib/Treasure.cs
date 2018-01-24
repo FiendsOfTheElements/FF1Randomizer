@@ -19,7 +19,47 @@ namespace FF1Lib
 
         public static readonly List<int> UsedIndices = Enumerable.Range(0, 256).Except(UnusedIndices).ToList(); // This maps a compacted list back to the game's array, skipping the unused slots.
     }
+    public interface IIncentives 
+    {
+        IEnumerable<IRewardSource> IncentiveLocations { get; }
+        IEnumerable<Item> IncentiveItems { get; }
+    }
+    public class IncentiveData : IIncentives
+    {
+        public IncentiveData(IIncentiveFlags flags)
+        {
+            var incentivePool = ItemLists.AllQuestItems.ToList();
+            incentivePool.Add(Item.Xcalber);
+            incentivePool.Add(Item.Masamune);
+            incentivePool.Add(Item.Ribbon);
+            incentivePool.Remove(Item.Ship);
+            IncentiveItems = incentivePool;
+            var incentiveLocationPool = ItemLocations.AllNPCItemLocations.ToList();
+            if (flags.IncentivizeIceCave)
+            {
+                incentiveLocationPool.Add(ItemLocations.IceCaveMajor);
+            }
+            if (flags.IncentivizeOrdeals)
+            {
+                if (!flags.EarlyOrdeals)
+                {
+                    incentiveLocationPool.Add(ItemLocations.OrdealsMajor);
+                }
+                else
+                {
+                    incentiveLocationPool.Add(
+                        new TreasureChest(ItemLocations.OrdealsMajor,
+                                          Item.Tail,
+                                          ItemLocations.OrdealsMajor.AccessRequirement & ~AccessRequirement.Crown));
+                }
+            }
+            IncentiveLocations = incentiveLocationPool;
+        }
 
+        public IEnumerable<IRewardSource> IncentiveLocations { get; }
+        public IEnumerable<Item> IncentiveItems { get; }
+        
+    }
     public partial class FF1Rom : NesRom
     {
         public const int TreasureOffset = 0x03100;
@@ -91,13 +131,11 @@ namespace FF1Lib
         }
         //***************************END STATS**********************************
 
-        public void ShuffleTreasures(MT19337 rng, ITreasureShuffleFlags flags, 
-                                     IEnumerable<IRewardSource> incentiveLocations, 
-                                     IEnumerable<Item> incentiveItems)
+        public void ShuffleTreasures(MT19337 rng, ITreasureShuffleFlags flags, IIncentives incentivesData)
         {
             var forcedItems = ItemLocations.AllOtherItemLocations.ToList();
             var incentiveLocationPool =
-                incentiveLocations
+                incentivesData.IncentiveLocations
                              .Where(x => !forcedItems.Any(y => y.Address == x.Address))
                              .ToList();
             if (!flags.ForceVanillaNPCs)
@@ -123,12 +161,12 @@ namespace FF1Lib
             {
                 forcedItems = ItemLocations.AllNonTreasureItemLocations.ToList();
                 incentiveLocationPool = 
-                    incentiveLocations
+                    incentivesData.IncentiveLocations
                                  .Where(x => !forcedItems.Any(y => y.Address == x.Address))
                                  .ToList(); 
             }
             var incentivePool = 
-                incentiveItems
+                incentivesData.IncentiveItems
                     .Where(x => !forcedItems.Any(y => y.Item == x))
                     .ToList();
 
