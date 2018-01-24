@@ -170,12 +170,12 @@ namespace FF1Lib
 				EnableEarlyOrdeals();
 			}
 
-			if (flags.EarlyRod)
+			if (flags.EarlyRod && flags.ForceVanillaNPCs)
 			{
 				EnableEarlyRod();
 			}
 
-			if (flags.EarlyCanoe)
+			if (flags.EarlyCanoe && flags.ForceVanillaNPCs)
 			{
 				EnableEarlyCanoe();
 			}
