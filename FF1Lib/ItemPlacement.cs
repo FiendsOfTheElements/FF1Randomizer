@@ -73,7 +73,7 @@ namespace FF1Lib
                     if (!placedItems.Any(x => x.Address == ItemLocations.CaravanItemShop1.Address))
                     {
                         var itemPick =
-                                incentives.Where(x => x < Item.Canoe && x != Item.Floater)
+                                incentives.Where(x => x <= Item.Oxyale && x != Item.Floater)
                                           .ToList().PickRandom(rng);
                         incentives.Remove(itemPick);
 
