@@ -172,7 +172,7 @@ namespace FF1Lib
         public static TreasureChest SeaShrine14 = new TreasureChest(0x31A2, nameof(SeaShrine14), MapLocation.Onrac, Item.Gold110, AccessRequirement.Oxyale);
         public static TreasureChest SeaShrine15 = new TreasureChest(0x31A3, nameof(SeaShrine15), MapLocation.Onrac, Item.LightAxe, AccessRequirement.Oxyale);
         public static TreasureChest SeaShrine16 = new TreasureChest(0x31A4, nameof(SeaShrine16), MapLocation.Onrac, Item.OpalArmor, AccessRequirement.Oxyale);
-        public static TreasureChest SeaShrine17 = new TreasureChest(0x31A5, nameof(SeaShrine17), MapLocation.Onrac, Item.Gold20, AccessRequirement.Key | AccessRequirement.Oxyale);
+        public static TreasureChest SeaShrineLocked = new TreasureChest(0x31A5, nameof(SeaShrineLocked), MapLocation.Onrac, Item.Gold20, AccessRequirement.Key | AccessRequirement.Oxyale);
         public static TreasureChest SeaShrine18 = new TreasureChest(0x31A6, nameof(SeaShrine18), MapLocation.Onrac, Item.MageRod, AccessRequirement.Oxyale);
         public static TreasureChest SeaShrine19 = new TreasureChest(0x31A7, nameof(SeaShrine19), MapLocation.Onrac, Item.Gold12350, AccessRequirement.Oxyale);
         public static TreasureChest SeaShrine20 = new TreasureChest(0x31A8, nameof(SeaShrine20), MapLocation.Onrac, Item.Gold9000, AccessRequirement.Oxyale);

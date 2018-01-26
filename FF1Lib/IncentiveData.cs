@@ -26,6 +26,10 @@ namespace FF1Lib
             {
                 incentiveLocationPool.Add(ItemLocations.MarshCaveMajor);
             }
+            if (flags.IncentivizeSeaShrine)
+            {
+                incentiveLocationPool.Add(ItemLocations.SeaShrineLocked);
+            }
             if (flags.IncentivizeConeria)
             {
                 incentiveLocationPool.Add(ItemLocations.ConeriaMajor);

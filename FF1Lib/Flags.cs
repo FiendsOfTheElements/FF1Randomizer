@@ -8,6 +8,7 @@
         bool IncentivizeConeria { get; }
         bool IncentivizeMarsh { get; }
         bool IncentivizeEarth { get; }
+        bool IncentivizeSeaShrine { get; }
         bool EarlyRod { get; }
         bool ForceVanillaNPCs { get; }
         bool EarlyCanoe { get; }
@@ -61,6 +62,7 @@
         public bool AllowIceShip => false;
         public bool ForceVanillaNPCs => false;
         public bool IncentivizeVolcano => false;
+        public bool IncentivizeSeaShrine => false;
         public bool IncentivizeConeria => false;
         public bool IncentivizeMarsh => false;
         public bool IncentivizeEarth => false;

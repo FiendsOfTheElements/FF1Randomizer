@@ -59,7 +59,7 @@ namespace FF1Lib
             new List<IRewardSource> { SeaShrine1, SeaShrine2, SeaShrine3, SeaShrine4,
             SeaShrine5, SeaShrine6, SeaShrine7, SeaShrine8, SeaShrine9,
             SeaShrine10, SeaShrine11, SeaShrine12, SeaShrine13, SeaShrine14,
-            SeaShrine15, SeaShrine16, SeaShrine17, SeaShrine18, SeaShrine19,
+            SeaShrine15, SeaShrine16, SeaShrineLocked, SeaShrine18, SeaShrine19,
             SeaShrine20, SeaShrine21, SeaShrine22, SeaShrine23, SeaShrine24,
             SeaShrine25, SeaShrine26, SeaShrine27, SeaShrine28, SeaShrine29,
             SeaShrine30, SeaShrine31, SeaShrineMajor };
