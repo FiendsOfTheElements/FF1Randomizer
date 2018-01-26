@@ -21,7 +21,7 @@ namespace FF1Lib
 			var canoeObsoletesBridge = flags.MapCanalBridge && flags.MapConeriaDwarves;
 			var canoeObsoletesShip = flags.MapCanalBridge ? (flags.MapConeriaDwarves || flags.MapVolcanoIceRiver) : (flags.MapConeriaDwarves && flags.MapVolcanoIceRiver);
 			var incentiveLocationPool = incentivesData.IncentiveLocations.ToList();
-			var incentivePool = incentivesData.IncentiveItems.ToList();
+			var incentivePool = incentivesData.IncentiveItems.Where(x => allTreasures.Contains(x)).ToList();
 			var forcedItems = incentivesData.ForcedItemPlacements.ToList();
 			var keyLocations = incentivesData.KeyLocations.ToList();
 			var canoeLocations = incentivesData.CanoeLocations.ToList();
@@ -34,6 +34,7 @@ namespace FF1Lib
 			var unincentivizedQuestItems =
 				ItemLists.AllQuestItems
 					.Where(x => !incentivePool.Contains(x) &&
+								allTreasures.Contains(x) &&
 								!forcedItems.Any(y => y.Item == x))
 								.ToList();
 
@@ -51,7 +52,13 @@ namespace FF1Lib
 			{
 				treasurePool.Remove(questItem);
 			}
+
 			var itemShopItem = Item.Bottle;
+
+			while (treasurePool.Remove(Item.Shard))
+			{
+				unincentivizedQuestItems.Add(Item.Shard);
+			}
 			do
 			{
 				sanityCounter++;
@@ -163,7 +170,7 @@ namespace FF1Lib
 				}
 
 				// 7. Check sanity and loop if needed
-			} while (!CheckSanity(placedItems, mapLocationRequirements, flags.OnlyRequireGameIsBeatable));
+			} while (!CheckSanity(placedItems, mapLocationRequirements, flags));
 
 			// 8. Place all remaining unincentivized treasures or incentivized non-quest items that weren't placed
 			var i = 0;
@@ -209,11 +216,16 @@ namespace FF1Lib
 
 		public static bool CheckSanity(List<IRewardSource> treasurePlacements,
 										Dictionary<MapLocation, List<MapChange>> mapLocationRequirements,
-										bool onlyRequireGameIsBeatable)
+										IVictoryConditionFlags victoryConditions)
 		{
 			const int maxIterations = 20;
 			var currentIteration = 0;
 			var currentAccess = AccessRequirement.None;
+			if (victoryConditions.ShardHunt)
+			{
+				currentAccess |= AccessRequirement.Lute;
+			}
+
 			var currentMapChanges = MapChange.None;
 
 			Func<IEnumerable<MapLocation>> currentMapLocations =
@@ -234,7 +246,7 @@ namespace FF1Lib
 			var requiredAccess = AccessRequirement.All;
 			var requiredMapChanges = new List<MapChange> { MapChange.All };
 
-			if (onlyRequireGameIsBeatable)
+			if (victoryConditions.OnlyRequireGameIsBeatable)
 			{
 				var winTheGameAccess = ItemLocations.ChaosReward.AccessRequirement;
 				var winTheGameLocation = ItemLocations.ChaosReward.MapLocation;

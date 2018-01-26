@@ -39,7 +39,11 @@ namespace FF1Lib
 		public bool RandomLoot { get; set; } // Planned 2.x feature - random non-quest-item treasures
 		
 		[FlagString(Character = ALT_GAME_MODE, FlagBit = 1)]
-		public bool OrbHunt { get; set; } // Planned 2.1 or 2.2 features - shard hunt
+		public bool ShardHunt { get; set; }
+		[FlagString(Character = ALT_GAME_MODE, FlagBit = 2)]
+		public bool ExtraShards { get; set; }
+		[FlagString(Character = ALT_GAME_MODE, FlagBit = 4)]
+		public bool TransformFinalFormation { get; set; }
 
 		[FlagString(Character = MAGIC, FlagBit = 1)]
 		public bool MagicShops { get; set; }

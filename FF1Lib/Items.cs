@@ -23,12 +23,12 @@ namespace FF1Lib
 		Cube = 14, // Unlocks single entrance
 		Bottle = 15, // Shop, shows an object
 		Oxyale = 16, // Hides an object
-
+		EarthOrb = 17, // Relocated from vanilla so the Shard can be contiguous with other counted items.
 		FireOrb = 18,
 		WaterOrb = 19,
 		AirOrb = 20,
-		EarthOrb = 21,
 
+		Shard = 21, // This Enum is only correct once ShiftEarthOrbDown() is called.
 		Tent = 22,
 		Cabin = 23,
 		House = 24,

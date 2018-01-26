@@ -35,7 +35,7 @@ GiveReward:                    ; (8 bytes)
       DEC unsram, X            ; decrement DE0060
       BCS @OpenChest           ; and open it B003
 :   INC unsram, X              ; otherwise give them one of this item FE0060
-    CMP #$36                   ; if >= item_qty_start then play regular jingle C936
+    CMP #$31                   ; if >= item_canoe (shard) then play regular jingle C936
     BCS @ClearChest            ; B02A
     BCC @OpenChest             ; 902B
   @NotItem:                    ; (6 + 9 + 4 + 9 + 7 + 5 = 40 bytes)
@@ -69,4 +69,4 @@ GiveReward:                    ; (8 bytes)
       INC $60B7                ; EEB760
       INX                      ; E8
 :   TXA                        ; 8A
-    RTS                        ; 60 
+    RTS                        ; 60
