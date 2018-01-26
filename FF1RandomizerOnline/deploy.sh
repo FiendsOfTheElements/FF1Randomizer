@@ -6,6 +6,12 @@ if [ $branch_name == 'dev' ]; then
 	docker stop ff1robeta
 	docker rm ff1robeta
 	docker run -d --name ff1robeta --network web-internal --env ASPNETCORE_ENVIRONMENT=development ff1randomizeronline:beta
+elif [ $branch_name == 'npc-item-shuffle' ]; then
+	dotnet publish -c Debug
+	docker build -t ff1randomizeronline:npc -f Dockerfile.beta .
+	docker stop ff1ronpc
+	docker rm ff1ronpc
+	docker run -d --name ff1ronpc --network web-internal --env ASPNETCORE_ENVIRONMENT=development ff1randomizeronline:npc
 elif [ $branch_name == 'master' ]; then
 	dotnet publish -c Release
 	docker build -t ff1randomizeronline:latest .
