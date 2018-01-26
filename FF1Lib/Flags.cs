@@ -4,12 +4,16 @@
     {
         bool IncentivizeOrdeals { get; }
         bool IncentivizeIceCave { get; }
+        bool IncentivizeVolcano { get; }
+        bool IncentivizeConeria { get; }
+        bool IncentivizeMarsh { get; }
+        bool IncentivizeEarth { get; }
         bool EarlyRod { get; }
         bool ForceVanillaNPCs { get; }
         bool EarlyCanoe { get; }
         bool EarlyOrdeals { get; }
         bool EarlyBridge { get; }
-        bool AllowForcedEarlyIceCave { get; }
+        bool AllowIceShip { get; }
     }
     public class Flags : ITreasureShuffleFlags
 	{
@@ -54,7 +58,11 @@
 		public double ExpMultiplier { get; set; }
 		public int ExpBonus { get; set; }
 
-        public bool AllowForcedEarlyIceCave => false;
+        public bool AllowIceShip => false;
         public bool ForceVanillaNPCs => false;
+        public bool IncentivizeVolcano => false;
+        public bool IncentivizeConeria => false;
+        public bool IncentivizeMarsh => false;
+        public bool IncentivizeEarth => false;
     }
 }

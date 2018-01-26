@@ -18,7 +18,7 @@ namespace FF1Lib
                 ItemLocations.ValidShipLocations
                              .Where(x => !forcedItems.Any(y => y.Address == x.Address))
                              .ToList();
-            if (!flags.AllowForcedEarlyIceCave)
+            if (!flags.AllowIceShip)
             {
                 shipLocations = shipLocations.Except(ItemLocations.IceCave).ToList();
             }
