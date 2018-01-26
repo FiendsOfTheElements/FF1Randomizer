@@ -14,6 +14,22 @@ namespace FF1Lib
             incentivePool.Remove(Item.Ship);
             IncentiveItems = incentivePool;
             var incentiveLocationPool = ItemLocations.AllNPCItemLocations.ToList();
+            if (flags.IncentivizeVolcano)
+            {
+                incentiveLocationPool.Add(ItemLocations.VolcanoMajor);
+            }
+            if (flags.IncentivizeEarth)
+            {
+                incentiveLocationPool.Add(ItemLocations.EarthCaveMajor);
+            }
+            if (flags.IncentivizeMarsh)
+            {
+                incentiveLocationPool.Add(ItemLocations.MarshCaveMajor);
+            }
+            if (flags.IncentivizeConeria)
+            {
+                incentiveLocationPool.Add(ItemLocations.ConeriaMajor);
+            }
             if (flags.IncentivizeIceCave)
             {
                 incentiveLocationPool.Add(ItemLocations.IceCaveMajor);
@@ -32,13 +48,24 @@ namespace FF1Lib
                                           ItemLocations.OrdealsMajor.AccessRequirement & ~AccessRequirement.Crown));
                 }
             }
-            if (flags.EarlyRod && !flags.ForceVanillaNPCs)
+            if (!flags.ForceVanillaNPCs)
             {
-                incentiveLocationPool =
-                    incentiveLocationPool
-                        .Select(x => x.Address == ItemLocations.Sarda.Address
-                                ? new MapObject(ObjectId.Sarda, MapLocation.SardasCave, Item.Rod)
-                                : x).ToList();
+                if (flags.EarlyCanoe)
+                {
+                    incentiveLocationPool =
+                            incentiveLocationPool
+                                .Select(x => x.Address == ItemLocations.CanoeSage.Address
+                                        ? new MapObject(ObjectId.CanoeSage, MapLocation.CresentLake, Item.Canoe)
+                                        : x).ToList();
+                }
+                if (flags.EarlyRod)
+                {
+                    incentiveLocationPool =
+                        incentiveLocationPool
+                            .Select(x => x.Address == ItemLocations.Sarda.Address
+                                    ? new MapObject(ObjectId.Sarda, MapLocation.SardasCave, Item.Rod)
+                                    : x).ToList();
+                }
             }
             IncentiveLocations = incentiveLocationPool;
         }

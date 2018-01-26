@@ -27,7 +27,6 @@ namespace FF1Lib
             var forcedItems = ItemLocations.AllOtherItemLocations.ToList();
             if (!flags.ForceVanillaNPCs)
             {
-                CheckCanoeItemInsteadOfEventVar();
                 EnableBridgeShipCanalAnywhere();
                 EnableNPCsGiveAnyItem();
                 // This extends Vampire's routine to set a flag for Sarda, but it also clobers Sarda's routine
@@ -72,7 +71,9 @@ namespace FF1Lib
                 "9C91929900000000" + // SHIP
                 "8A929B9C91929900" + // AIRSHIP
                 "8B9B928D908E0000" + // BRIDGE
-                "8C8A978A95000000";  // CANAL
+                "8C8A978A95000000" + // CANAL
+                "00000000" +
+                "8C8A97988E00"; // CANOE
             Put(0x2825C, Blob.FromHex(gameVariableText));
 
             // Add processing in control code 3 to check for variables

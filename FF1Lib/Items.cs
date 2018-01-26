@@ -23,7 +23,6 @@ namespace FF1Lib
         Cube = 14, // Unlocks single entrance
         Bottle = 15, // Shop, shows an object
         Oxyale = 16, // Hides an object
-        Canoe = 17, // Replace HasCanoe
 
         FireOrb = 18,
         WaterOrb = 19,
@@ -191,7 +190,8 @@ namespace FF1Lib
         Ship = 224,
         //Airship = 228,
         Bridge = 232,
-        Canal = 236
+        Canal = 236,
+        Canoe = 242
     }
     public static class UnsramIndex
     {

@@ -24,22 +24,6 @@ namespace FF1Lib
         {
             Put(CaravanFairyCheck, Enumerable.Repeat((byte)Nop, CaravanFairyCheckSize).ToArray());
         }
-        // Required for npc quest item randomizing, allows the canoe to be in a chest (but shows in inventory)
-        public void CheckCanoeItemInsteadOfEventVar()
-        {
-            var unsramCanoe = (byte)(Item.Canoe + UnsramIndex.ItemsBaseForNPC);
-            // 1. Update BoardCanoe to check canoe item instead of variable
-            Data[0x7C5ED] = unsramCanoe;
-
-            // 2.a. Point the one NPC of Talk_ifcanoe to Talk_ifitem in lut_MapObjTalkJumpTbl
-            Data[0x390D3 + 2 * 83] = 0xBA;
-            Data[0x390D4 + 2 * 83] = 0x94;
-            // 2.b. and set the item checked by that npc in lut_MapObjTalkData
-            Data[0x395D5 + 4 * 83] = (byte)Item.Canoe;
-            // 3. and update the item in Talk_CanoeSage (unused in NPC item shuffle, but just in case that's turned off)
-            Data[0x3947E] = unsramCanoe;
-            Data[0x39488] = unsramCanoe;
-        }
         // Required for npc quest item randomizing 
         // Doesn't substantially change anything if EnableNPCsGiveAnyItem isn't called
         public void CleanupNPCRoutines() 
