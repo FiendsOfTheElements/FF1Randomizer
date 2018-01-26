@@ -108,10 +108,13 @@ namespace FF1Lib
         private readonly Item _requiredItemTrade;
         private readonly bool _useVanillaRoutineAddress;
 
+        public MapLocation SecondLocation { get; protected set; } = MapLocation.StartingLocation;
+
         public MapObject(ObjectId objectId, MapLocation mapLocation, Item item,
                          AccessRequirement accessRequirement = AccessRequirement.None,
                          ObjectId requiredGameEventFlag = ObjectId.None,
                          Item requiredItemTrade = Item.None,
+                         MapLocation requiredSecondLocation = MapLocation.StartingLocation,
                         bool useVanillaRoutineAddress = false)
             : base(_mapObjectTalkDataAddress + _giftItemIndex + 
                    _mapObjectTalkDataSize * (byte)objectId,
@@ -124,6 +127,7 @@ namespace FF1Lib
             _requiredGameEventFlag = requiredGameEventFlag;
             _requiredItemTrade = requiredItemTrade;
             _useVanillaRoutineAddress = useVanillaRoutineAddress;
+            SecondLocation = requiredSecondLocation;
             if (_requiredGameEventFlag != ObjectId.None && _requiredItemTrade != Item.None)
                 throw new InvalidOperationException(
                     $"Attempted to Put invalid npc item placement: \n{SpoilerText}");

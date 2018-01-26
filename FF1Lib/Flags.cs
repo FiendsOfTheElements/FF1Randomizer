@@ -1,30 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FF1Lib
+﻿namespace FF1Lib
 {
-    public interface IIncentiveFlags
+    public interface ITreasureShuffleFlags
     {
-        bool IncentivizeIceCave { get; }
         bool IncentivizeOrdeals { get; }
-        bool EarlyOrdeals { get; }
-    }
-    public interface ISanityCheckFlags
-    {
+        bool IncentivizeIceCave { get; }
         bool EarlyRod { get; }
+        bool ForceVanillaNPCs { get; }
         bool EarlyCanoe { get; }
         bool EarlyOrdeals { get; }
         bool EarlyBridge { get; }
-        bool ForceVanillaNPCs { get; }
-    }
-    public interface ITreasureShuffleFlags : ISanityCheckFlags
-    {
         bool AllowForcedEarlyIceCave { get; }
     }
-    public class Flags : ITreasureShuffleFlags, IIncentiveFlags
+    public class Flags : ITreasureShuffleFlags
 	{
 		public bool Treasures { get; set; }
 		public bool IncentivizeIceCave { get; set; }
