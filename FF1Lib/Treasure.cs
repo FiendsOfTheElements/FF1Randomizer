@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Diagnostics;
 using RomUtilities;
 
 namespace FF1Lib
@@ -48,7 +47,7 @@ namespace FF1Lib
             // Output the results tothe ROM
             foreach (var item in placedItems.Where(x => !x.IsUnused && x.Address < 0x80000))
             {
-                Debug.WriteLine(item.SpoilerText);
+                //Debug.WriteLine(item.SpoilerText);
                 item.Put(this);
             }
         }
