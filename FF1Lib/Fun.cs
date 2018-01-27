@@ -287,5 +287,79 @@ namespace FF1Lib
 			Put(0x3BF3A, Blob.FromHex("A20BBD78AD9DC003CA10F7ADFB608DC2038DC60360"));
 			Put(0x3ADC2, Blob.FromHex("203ABFEAEAEAEAEAEAEAEA"));
 		}
+
+		public void SetBattleUI(bool useDynamicWindowColor)
+		{
+			// If changing the window color in the battle scene we need to ensure that
+			// $FF tile remains opaque like in the menu screen. That battle init code
+			// overwrites it with transparent so we skip that code here.
+			if (useDynamicWindowColor)
+			{
+				Put(0x7F369, Blob.FromHex("EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
+				Put(0x7EB90, Blob.FromHex("4C29EB"));
+			}
+
+			// Don't draw big battle boxes around the enemies and party.
+			// Instead draw one box in the lower right corner around the player stats.
+			Put(0x7F2E4, Blob.FromHex("A9198538A912A206A00A20E2F3EAEAEAEAEAEAEAEAEAEAEAEAEA"));
+
+			// The bottom row of these boxes is occluded by the Command Menu and enemy list so
+			// there is code to redraw it whenever it would be exposed that we early return to skip.
+			Data[0x7F62D] = 0x60;
+
+			// Skip drawing player boxes
+			Put(0x7F2FB, Blob.FromHex("EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
+
+			// Edit lut for where to draw character status
+			Put(0x32B21, Blob.FromHex("7A22BA22FA223A23"));
+
+			// Move character sprites and character picker cursor pointer LUT
+			byte xCoord = 0xD8;
+			Data[0x31741] = xCoord;
+			Data[0x3197D] = xCoord;                // overwrite hardcoded when stoned
+			Data[0x31952] = (byte)(xCoord - 0x08); // 8px to the left when dead.
+			for (int i = 0; i < 16; i += 2)
+			{
+				Data[0x31F85 + i] = (byte)(xCoord - 0x10);
+			}
+
+			// Start backdrop rows two tiles left and one upward. This matches FF2/3
+			Data[0x7F34B] = 0x20;
+			Data[0x7F352] = 0x40;
+			Data[0x7F359] = 0x60;
+			Data[0x7F360] = 0x80;
+
+			// Adjust backdrop to draw in sets of 8 tiles so it appears to keep repeating.
+			Put(0x7F38C, Blob.FromHex("A008849B20A0F320A0F320A0F3EAEAEAEA"));
+
+			// Shorten the DrawStatus section to print only name or status, not both. Just one line.
+			/* ASM Snippet
+				LDY #$01        ; Need a one offset into
+				LDA ($82), Y    ; btl_ob_charstat_ptr + 1 is status
+				AND #$FE        ; Ignore dead bit - we'd rather print name
+				CMP #$0         ; emtpy byte means print name
+				BEQ skip
+				LDY #$09        ; otherwise load 9 to print status string
+				skip:
+				JSR $AAFC       ; JSR DrawStatusRow
+			*/
+			Put(0x32AB0, Blob.FromHex("A001B18229FEC900F002A00920FCAAEAEAEAEAEA"));
+
+			// Overwrite the upper portion of the default attribute table to all bg palette
+			Put(0x7F400, Blob.FromHex("0000000000000000"));
+			Put(0x7F408, Blob.FromHex("0000000000000000"));
+
+			// Fix NT bits inside the drawing sequence of mixed enemies for expanded backdrop.
+			// Before it would reset the palette to greyscale because it used to be borders.
+			Data[0x2E6C9] = 0x70;
+			Data[0x2E6CD] = 0xB0;
+
+			// Fix NT bits inside chaostsa.bin and fiendtsa.bin
+			Data[0x2D4C8] = 0xB0;
+			for (int i = 0; i < 0x0140; i += 0x50)
+			{
+				Data[0x2D320 + i] = 0x00;
+			}
+		}
 	}
 }

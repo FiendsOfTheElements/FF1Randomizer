@@ -45,7 +45,7 @@ namespace Sandbox
 			    FunEnemyNames = false,
 			    PaletteSwap = false,
 			    TeamSteak = false,
-			    ShuffleLeader = false,
+			    ModernBattlefield = false,
 			    Music = MusicShuffle.None,
 
 			    ForcedPartyMembers = 0,

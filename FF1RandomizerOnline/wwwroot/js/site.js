@@ -72,7 +72,7 @@ var checkboxIds = [
 	"Flags_EnemyStatusAttackBug",
 	"Flags_FunEnemyNames",
 	"Flags_PaletteSwap",
-	"Flags_ShuffleLeader"
+	"Flags_ModernBattlefield"
 ];
 
 var sliderIds = [

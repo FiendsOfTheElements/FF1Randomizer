@@ -40,7 +40,7 @@ namespace FF1Lib
 		public bool FunEnemyNames { get; set; }
 		public bool PaletteSwap { get; set; }
 		public bool TeamSteak { get; set; }
-		public bool ShuffleLeader { get; set; }
+		public bool ModernBattlefield { get; set; }
 		public MusicShuffle Music { get; set; }
 
 		public int ForcedPartyMembers { get; set; }
