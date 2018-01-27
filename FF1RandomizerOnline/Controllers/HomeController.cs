@@ -76,7 +76,7 @@ namespace FF1RandomizerOnline.Controllers
 					FunEnemyNames = true,
 					PaletteSwap = true,
 					TeamSteak = true,
-					ShuffleLeader = true,
+					ModernBattlefield = true,
 					Music = MusicShuffle.None,
 
 					ForcedPartyMembers = 0,
