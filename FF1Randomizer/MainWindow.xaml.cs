@@ -317,7 +317,7 @@ namespace FF1Randomizer
 
 				FunEnemyNames = FunEnemyNamesCheckBox.IsChecked == true,
 				PaletteSwap = PaletteSwapCheckBox.IsChecked == true,
-				ShuffleLeader = ShuffleLeaderCheckBox.IsChecked == true,
+				ModernBattlefield = ModernBattlefieldCheckBox.IsChecked == true,
 				TeamSteak = TeamTyroComboBox.SelectedValue.ToString() == "Team STEAK",
 				Music =
 					MusicComboBox.SelectedValue.ToString() == "Standard Music Shuffle" ? MusicShuffle.Standard :
@@ -366,7 +366,7 @@ namespace FF1Randomizer
 
 			FunEnemyNamesCheckBox.IsChecked = flags.FunEnemyNames;
 			PaletteSwapCheckBox.IsChecked = flags.PaletteSwap;
-			ShuffleLeaderCheckBox.IsChecked = flags.ShuffleLeader;
+			ModernBattlefieldCheckBox.IsChecked = flags.ModernBattlefield;
 			TeamTyroComboBox.SelectedValue = flags.TeamSteak ? "Team STEAK" : "Team TYRO";
 			MusicComboBox.SelectedValue =
 				flags.Music == MusicShuffle.Standard ? "Standard Music Shuffle" :

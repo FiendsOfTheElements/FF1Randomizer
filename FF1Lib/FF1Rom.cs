@@ -89,6 +89,10 @@ namespace FF1Lib
             DynamicWindowColor();
             PermanentCaravan();
             var incentivesData = new IncentiveData(flags);
+			if (flags.ModernBattlefield)
+			{
+				SetBattleUI(true);
+			}
 
 			// This has to be done before we shuffle spell levels.
 			if (flags.SpellBugs)
@@ -245,11 +249,6 @@ namespace FF1Lib
 			if (flags.Music != MusicShuffle.None)
 			{
 				ShuffleMusic(flags.Music, rng);
-			}
-
-			if (flags.ShuffleLeader)
-			{
-				ShuffleLeader(rng);
 			}
 
 			WriteSeedAndFlags(Version, seed.ToHex(), EncodeFlagsText(flags));
@@ -465,7 +464,7 @@ namespace FF1Lib
 
 			bits[i++] = flags.FunEnemyNames;
 			bits[i++] = flags.PaletteSwap;
-			bits[i++] = flags.ShuffleLeader;
+			bits[i++] = flags.ModernBattlefield;
 			bits[i++] = flags.TeamSteak;
 			bits[i++] = flags.Music == MusicShuffle.Standard || flags.Music == MusicShuffle.MusicDisabled;
 			bits[i++] = flags.Music == MusicShuffle.Nonsensical || flags.Music == MusicShuffle.MusicDisabled;
@@ -532,7 +531,7 @@ namespace FF1Lib
 
 			flags.FunEnemyNames = bits[i++];
 			flags.PaletteSwap = bits[i++];
-			flags.ShuffleLeader = bits[i++];
+			flags.ModernBattlefield = bits[i++];
 			flags.TeamSteak = bits[i++];
 
 			flags.Music =
