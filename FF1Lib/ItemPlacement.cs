@@ -172,13 +172,16 @@ namespace FF1Lib
             var winTheGameAccess = ItemLocations.ChaosReward.AccessRequirement;
             var winTheGameLocation = ItemLocations.ChaosReward.MapLocation;
             var accessibleLocationCount = currentItemLocations().Count();
-            var requireCrown = !flags.EarlyOrdeals;
-            var requireTitanFed = flags.TitansTrove;
+            var requiredAccess = winTheGameAccess;
+            if (!flags.EarlyOrdeals)
+                requiredAccess |= AccessRequirement.Crown;
+            var requiredMapChanges = MapChange.None;
+            if (flags.TitansTrove)
+                requiredMapChanges |= MapChange.TitanFed;
 
-            while ((!currentAccess.HasFlag(winTheGameAccess) ||
-                    !currentMapLocations().Contains(winTheGameLocation)) &&
-                   (!requireCrown || currentAccess.HasFlag(AccessRequirement.Crown)) &&
-                   (!requireTitanFed || currentMapChanges.HasFlag(MapChange.TitanFed)))
+            while (!currentAccess.HasFlag(requiredAccess) ||
+                   !currentMapChanges.HasFlag(requiredMapChanges) ||
+                   !currentMapLocations().Contains(winTheGameLocation))
             {
                 if (currentIteration > maxIterations)
                 {
