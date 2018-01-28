@@ -150,10 +150,19 @@ namespace FF1Lib
         private void EnableAstosAnyItem()
         {
             Data[ItemLocations.Astos.Address] = (byte)Item.Crystal;
+            var newText =
+                "571E92BFC1" + // tis I, 
+                "8A37B2B6BFC1" + // Astos, 
+                "5F585F3CAAC4C405" + // all along!!\n
+                "92BE4EC1B7A4AE1A1C39" +// I'll take that
+                "C18C9B98A097C1222705" + //  CROWN and\n 
+                "56B8BE4E4FB54B1C1A0305" + // you'll pry the \n___
+                "A94DB0424BA6B2AF27A72B27413BB6C400!"; // from my cold dead hands!
+            Put(0x285EF, Blob.FromHex(newText));
             var newAstosRoutine =
                 "AD2260F016A513F01220" + giveRewardRoutineAddress +
                 "B00FA007207392A97D" +
-                "20C590A93A60A51160";
+                "20C590A51260A51160";
             Put(0x39338, Blob.FromHex(newAstosRoutine));
             // See source: ~/asm/0E_9338_AstosAnyItem.asm
         }
