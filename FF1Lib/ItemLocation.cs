@@ -193,7 +193,11 @@ namespace FF1Lib
         private static int address = 0x80000;
         public StaticItemLocation(string name, MapLocation mapLocation, Item item,
                              AccessRequirement accessRequirement = AccessRequirement.None)
-            : base (address++, name, mapLocation, item, accessRequirement) {}
+            : base (address++, name, mapLocation, item, accessRequirement) 
+        {
+            if (address >= int.MaxValue)
+                address = 0x80000;
+        }
         public override void Put(FF1Rom rom) => throw new NotImplementedException();
     }
 }

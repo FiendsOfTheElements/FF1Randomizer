@@ -14,6 +14,7 @@
         bool EarlyCanoe { get; }
         bool EarlyOrdeals { get; }
         bool EarlyBridge { get; }
+        bool TitansTrove { get; }
         bool AllowIceShip { get; }
     }
     public class Flags : ITreasureShuffleFlags
@@ -60,6 +61,7 @@
 		public int ExpBonus { get; set; }
 
         public bool AllowIceShip => false;
+        public bool TitansTrove => false;
         public bool ForceVanillaNPCs => false;
         public bool IncentivizeVolcano => false;
         public bool IncentivizeSeaShrine => false;

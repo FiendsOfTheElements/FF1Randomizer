@@ -147,9 +147,6 @@ namespace FF1Lib
 
         private static bool CheckSanity(List<IRewardSource> treasurePlacements, ITreasureShuffleFlags flags)
         {
-            if (!flags.EarlyOrdeals &&
-                treasurePlacements.Any(x => x.Item == Item.Crown && ItemLocations.Ordeals.Any(y => y.Address == x.Address)))
-                return false;
             const int maxIterations = 20;
             var currentIteration = 0;
             var currentAccess = AccessRequirement.None;
@@ -175,9 +172,13 @@ namespace FF1Lib
             var winTheGameAccess = ItemLocations.ChaosReward.AccessRequirement;
             var winTheGameLocation = ItemLocations.ChaosReward.MapLocation;
             var accessibleLocationCount = currentItemLocations().Count();
+            var requireCrown = !flags.EarlyOrdeals;
+            var requireTitanFed = flags.TitansTrove;
 
-            while (!currentAccess.HasFlag(winTheGameAccess) ||
-                  !currentMapLocations().Contains(winTheGameLocation))
+            while ((!currentAccess.HasFlag(winTheGameAccess) ||
+                    !currentMapLocations().Contains(winTheGameLocation)) &&
+                   (!requireCrown || currentAccess.HasFlag(AccessRequirement.Crown)) &&
+                   (!requireTitanFed || currentMapChanges.HasFlag(MapChange.TitanFed)))
             {
                 if (currentIteration > maxIterations)
                 {
@@ -261,6 +262,7 @@ namespace FF1Lib
                 }
                 accessibleLocationCount = newCount;
             }
+
             return true;
         }
     }
