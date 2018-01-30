@@ -145,7 +145,7 @@ namespace FF1Lib
             }
         }
 
-        private static bool CheckSanity(List<IRewardSource> treasurePlacements, ITreasureShuffleFlags flags)
+        public static bool CheckSanity(List<IRewardSource> treasurePlacements, ITreasureShuffleFlags flags)
         {
             const int maxIterations = 20;
             var currentIteration = 0;

@@ -20,7 +20,12 @@ namespace Sandbox
 
             var placedItems = new List<IRewardSource>();
             var treasurePool = ItemLocations.AllTreasures.Where(x => !x.IsUnused).Select(x => x.Item).ToList();
-
+            var requirementChecks = ItemLists.AllQuestItems.ToDictionary(x => x, x => 0);
+            requirementChecks[Item.Ribbon] = 0;
+            var requirementsToCheck = new List<Item> {
+                Item.Crown, Item.Crystal, Item.Herb, Item.Tnt,
+                Item.Adamant, Item.Slab, Item.Ruby, Item.Bottle, Item.Canal
+            };
             const int maxIterations = 10000;
             var forcedIceCount = 0;
             var itemPlacementStats = ItemLists.AllQuestItems.ToDictionary(x => x, x => new List<int>());
@@ -64,11 +69,17 @@ namespace Sandbox
                     (matoyaShip && crystalIceCave) ||
                     (matoyaShip && keyLockedCrystal && keyIceCave))
                     forcedIceCount++;
+
+                foreach (Item item in requirementsToCheck)
+                {
+                    if (!ItemPlacement.CheckSanity(placedItems.Where(x => x.Item != item).ToList(), flags))
+                        requirementChecks[item]++;
+                }
             }
 
             if (iterations > 10)
             {
-                Debug.WriteLine(PrintStats(maxIterations, itemPlacementStats, itemPlacementZones));
+                Debug.WriteLine(PrintStats(maxIterations, itemPlacementStats, itemPlacementZones, requirementChecks));
                 Debug.WriteLine($"Forced Early Ice Cave for Ship: {forcedIceCount} out of {maxIterations}");
             }
         }
@@ -94,7 +105,7 @@ namespace Sandbox
                     { ItemLocations.SkyPalace, nameof(ItemLocations.SkyPalace)},
                     { ItemLocations.ToFR, nameof(ItemLocations.ToFR)}
                 };
-        private static string PrintStats(int maxIterations, Dictionary<Item, List<int>> incentiveLocations, Dictionary<Item, List<string>> incentiveZones)
+        private static string PrintStats(int maxIterations, Dictionary<Item, List<int>> incentiveLocations, Dictionary<Item, List<string>> incentiveZones, Dictionary<Item, int> requirements)
         {
             var sb = new StringBuilder();
             sb.Append("Location         ,");
@@ -129,6 +140,14 @@ namespace Sandbox
                 }
                 sb.Append("\n");
             }
+            sb.Append($"Required         ,");
+            foreach (var requiredCount in requirements.Values)
+            {
+                var percentage = $"   {100.0 * requiredCount / maxIterations:g2}";
+                percentage = $"{string.Join("", Enumerable.Repeat(" ", Math.Max(1, 9 - percentage.Length)))}{percentage},";
+                sb.Append(percentage);
+            }
+            sb.Append("\n");
             return sb.ToString();
         }
     }
