@@ -164,16 +164,6 @@ namespace FF1Lib
             if (flags.Treasures)
             {
                 var placements = ShuffleTreasures(rng, flags, incentivesData, shopItemLocation);
-                var shopItemMap = 
-                    placements.FirstOrDefault(x => x is ItemShopSlot && 
-                                              (x.Item == Item.Key || x.Item == Item.Crystal))?
-                              .MapLocation;
-                if (shopItemMap == MapLocation.ConeriaTown || shopItemMap == MapLocation.Pravoka)
-                {
-                    var bottlePrice = Get(0x37C1E, 2).ToUShorts();
-                    bottlePrice[0] = (ushort)(bottlePrice[0] / 6);
-                    Put(0x37C1E, Blob.FromUShorts(bottlePrice));
-                }
             }
 
 			if (flags.NoPartyShuffle)
