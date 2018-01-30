@@ -21,7 +21,7 @@ namespace FF1Lib
 
         public static readonly List<int> UsedTreasureIndices = Enumerable.Range(0, 256).Except(UnusedTreasureIndices).ToList(); // This maps a compacted list back to the game's array, skipping the unused slots.
     
-        public void ShuffleTreasures(MT19337 rng, ITreasureShuffleFlags flags, IncentiveData incentivesData)
+        public void ShuffleTreasures(MT19337 rng, ITreasureShuffleFlags flags, IncentiveData incentivesData, ItemShopSlot caravanItemLocation)
         {
             var forcedItems = ItemLocations.AllOtherItemLocations.ToList();
             if (!flags.ForceVanillaNPCs)
@@ -42,7 +42,7 @@ namespace FF1Lib
             var treasureBlob = Get(TreasureOffset, TreasureSize * TreasureCount);
             var treasurePool = UsedTreasureIndices.Select(x => (Item)treasureBlob[x]).ToList();
 
-            var placedItems = ItemPlacement.PlaceSaneItems(rng, flags, incentivesData, forcedItems, treasurePool);
+            var placedItems = ItemPlacement.PlaceSaneItems(rng, flags, incentivesData, forcedItems, treasurePool, caravanItemLocation);
 
             // Output the results tothe ROM
             foreach (var item in placedItems.Where(x => !x.IsUnused && x.Address < 0x80000))

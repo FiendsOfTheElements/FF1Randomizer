@@ -11,7 +11,8 @@ namespace FF1Lib
                                                          ITreasureShuffleFlags flags,
                                                          IncentiveData incentivesData,
                                                          List<IRewardSource> forcedItems,
-                                                         List<Item> allTreasures)
+                                                         List<Item> allTreasures,
+                                                         ItemShopSlot caravanItemLocation)
         {
             long sanityCounter = 0;
             var shipLocations =
@@ -73,11 +74,11 @@ namespace FF1Lib
                     if (!placedItems.Any(x => x.Address == ItemLocations.CaravanItemShop1.Address))
                     {
                         var itemPick =
-                                incentives.Where(x => x <= Item.Oxyale && x != Item.Floater)
+                                incentives.Where(x => x <= Item.Oxyale)
                                           .ToList().PickRandom(rng);
                         incentives.Remove(itemPick);
 
-                        placedItems.Add(new ItemShopSlot(ItemLocations.CaravanItemShop1, itemPick));
+                        placedItems.Add(new ItemShopSlot(caravanItemLocation, itemPick));
                     }
 
                     // 3. Place Bridge and Ship next since the valid location lists are so small

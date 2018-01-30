@@ -18,11 +18,17 @@ namespace FF1Lib
 		// instead of enemies giving more gold, so we don't overflow.
 		public void ScalePrices(double scale, double multiplier, Blob[] text, MT19337 rng)
 		{
-			var prices = Get(PriceOffset, PriceSize * PriceCount).ToUShorts();
+            var prices = Get(PriceOffset, PriceSize * PriceCount).ToUShorts();
 			for (int i = 0; i < prices.Length; i++)
 			{
 				prices[i] = (ushort)Min(Scale(prices[i] / multiplier, scale, 1, rng), 0xFFFF);
-			}
+            }
+            var questItemPrice = prices[(int)Item.Bottle];
+            for (var i = 0; i < (int)Item.Tent; i++)
+            {
+                prices[i] = questItemPrice;
+            }
+
 			Put(PriceOffset, Blob.FromUShorts(prices));
 
 			for (int i = GoldItemOffset; i < GoldItemOffset + GoldItemCount; i++)

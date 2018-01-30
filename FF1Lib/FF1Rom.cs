@@ -89,6 +89,7 @@ namespace FF1Lib
             DynamicWindowColor();
             PermanentCaravan();
             var incentivesData = new IncentiveData(flags);
+            var shopItemLocation = ItemLocations.CaravanItemShop1;
 			if (flags.ModernBattlefield)
 			{
 				SetBattleUI(true);
@@ -100,14 +101,9 @@ namespace FF1Lib
 				FixSpellBugs();
 			}
 
-			if (flags.Treasures)
-			{
-                ShuffleTreasures(rng, flags, incentivesData);
-			}
-
 			if (flags.Shops)
 			{
-				ShuffleShops(rng, flags.EnemyStatusAttacks);
+				shopItemLocation = ShuffleShops(rng, flags.EnemyStatusAttacks);
 			}
 
 			if (flags.MagicShops)
@@ -164,6 +160,11 @@ namespace FF1Lib
 			{
 				EnableEarlyBridge();
 			}
+
+            if (flags.Treasures)
+            {
+                ShuffleTreasures(rng, flags, incentivesData, shopItemLocation);
+            }
 
 			if (flags.NoPartyShuffle)
 			{

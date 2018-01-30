@@ -36,7 +36,7 @@ namespace Sandbox
             while (iterations < maxIterations)
             {
                 iterations++;
-                placedItems = ItemPlacement.PlaceSaneItems(rng, flags, incentivesData, forcedItems, treasurePool);
+                placedItems = ItemPlacement.PlaceSaneItems(rng, flags, incentivesData, forcedItems, treasurePool, ItemLocations.CaravanItemShop1);
 
                 var outputIndexes = placedItems.ToLookup(x => x.Item, x => x.Address);
                 foreach (Item item in itemPlacementStats.Keys)
