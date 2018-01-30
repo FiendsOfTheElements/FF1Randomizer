@@ -10,6 +10,17 @@ namespace Sandbox
 {
     public static class ItemDistribution
     {
+        private static List<MapLocation> ItemShops =
+            new List<MapLocation>
+            {
+                MapLocation.ConeriaTown,
+                MapLocation.Pravoka,
+                MapLocation.ElflandTown,
+                MapLocation.CresentLake,
+                MapLocation.Onrac,
+                MapLocation.Gaia,
+                MapLocation.Caravan
+            };
         public static void RunStats(MT19337 rng, ITreasureShuffleFlags flags, IncentiveData incentivesData)
         {
             var forcedItems = ItemLocations.AllOtherItemLocations.ToList();
@@ -36,8 +47,18 @@ namespace Sandbox
             while (iterations < maxIterations)
             {
                 iterations++;
-                placedItems = ItemPlacement.PlaceSaneItems(rng, flags, incentivesData, forcedItems, treasurePool, ItemLocations.CaravanItemShop1);
-
+                // When Enemy Status Shuffle is turned on Coneria is reduced to 11% chance with other shops spliting the remaining 89%
+                var shopTownSelected = ItemShops.PickRandom(rng);
+                var itemShopItem = new ItemShopSlot(ItemLocations.CaravanItemShop1.Address,
+                                                    $"{Enum.GetName(typeof(MapLocation), shopTownSelected)}Shop",
+                                                    shopTownSelected,
+                                                    Item.Bottle);
+                placedItems = ItemPlacement.PlaceSaneItems(rng,
+                                                           flags,
+                                                           incentivesData,
+                                                           forcedItems,
+                                                           treasurePool,
+                                                           itemShopItem);
                 var outputIndexes = placedItems.ToLookup(x => x.Item, x => x.Address);
                 foreach (Item item in itemPlacementStats.Keys)
                 {
