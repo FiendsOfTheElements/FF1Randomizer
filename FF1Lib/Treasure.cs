@@ -21,7 +21,7 @@ namespace FF1Lib
 
         public static readonly List<int> UsedTreasureIndices = Enumerable.Range(0, 256).Except(UnusedTreasureIndices).ToList(); // This maps a compacted list back to the game's array, skipping the unused slots.
     
-        public void ShuffleTreasures(MT19337 rng, ITreasureShuffleFlags flags, IncentiveData incentivesData, ItemShopSlot caravanItemLocation)
+        public List<IRewardSource> ShuffleTreasures(MT19337 rng, ITreasureShuffleFlags flags, IncentiveData incentivesData, ItemShopSlot caravanItemLocation)
         {
             var forcedItems = ItemLocations.AllOtherItemLocations.ToList();
             if (!flags.ForceVanillaNPCs)
@@ -50,6 +50,7 @@ namespace FF1Lib
                 //Debug.WriteLine(item.SpoilerText);
                 item.Put(this);
             }
+            return placedItems;
         }
 
         /// <summary>
