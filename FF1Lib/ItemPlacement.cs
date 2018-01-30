@@ -15,14 +15,6 @@ namespace FF1Lib
                                                          ItemShopSlot caravanItemLocation)
         {
             long sanityCounter = 0;
-            var shipLocations =
-                ItemLocations.ValidShipLocations
-                             .Where(x => !forcedItems.Any(y => y.Address == x.Address))
-                             .ToList();
-            if (!flags.AllowIceShip)
-            {
-                shipLocations = shipLocations.Except(ItemLocations.IceCave).ToList();
-            }
             var incentiveLocationPool =
                 incentivesData.IncentiveLocations
                              .Where(x => !forcedItems.Any(y => y.Address == x.Address))
@@ -31,6 +23,31 @@ namespace FF1Lib
                 incentivesData.IncentiveItems
                     .Where(x => !forcedItems.Any(y => y.Item == x))
                     .ToList();
+            var bridgeLocations = ItemLocations.ValidBridgeLocations.ToList();
+            foreach (var incentiveBridgeLocation in incentiveLocationPool.Where(x => bridgeLocations.Any(y => y.Address == x.Address)).ToList())
+            {
+                bridgeLocations.Add(incentiveBridgeLocation);
+                bridgeLocations.Add(incentiveBridgeLocation);
+                bridgeLocations.Add(incentiveBridgeLocation);
+            }
+            bridgeLocations = bridgeLocations
+                             .Where(x => !forcedItems.Any(y => y.Address == x.Address))
+                             .ToList();
+            var shipLocations = ItemLocations.ValidShipLocations.ToList();
+            if (flags.AllowIceShip)
+            {
+                shipLocations = shipLocations.Concat(ItemLocations.IceCave).ToList();
+            }
+            foreach(var incentiveShipLocation in incentiveLocationPool.Where(x => shipLocations.Any(y => y.Address == x.Address)).ToList())
+            {
+                shipLocations.Add(incentiveShipLocation);
+                shipLocations.Add(incentiveShipLocation);
+                shipLocations.Add(incentiveShipLocation);
+                shipLocations.Add(incentiveShipLocation);
+            }
+            shipLocations = shipLocations
+                             .Where(x => !forcedItems.Any(y => y.Address == x.Address))
+                             .ToList();
             var treasurePool = allTreasures.ToList();
 
             List<IRewardSource> placedItems;
@@ -82,17 +99,12 @@ namespace FF1Lib
                     }
 
                     // 3. Place Bridge and Ship next since the valid location lists are so small
-                    IRewardSource bridgePlacement = null;
-                    if (!flags.EarlyBridge)
-                    {
-                        bridgePlacement =
-                                ItemLocations.ValidBridgeLocations.ToList().PickRandom(rng);
-                        incentives.Remove(Item.Bridge);
-                        placedItems.Add(NewItemPlacement(bridgePlacement, Item.Bridge));
-                    }
+                    IRewardSource bridgePlacement = bridgeLocations.PickRandom(rng);
+                    placedItems.Add(NewItemPlacement(bridgePlacement, Item.Bridge));
+
                     var shipPlacement =
                             shipLocations
-                                .Where(x => x.Address != bridgePlacement?.Address)
+                                .Where(x => x.Address != bridgePlacement.Address)
                                 .ToList().PickRandom(rng);
                     placedItems.Add(NewItemPlacement(shipPlacement, Item.Ship));
                 }
@@ -152,8 +164,6 @@ namespace FF1Lib
             var currentIteration = 0;
             var currentAccess = AccessRequirement.None;
             var currentMapChanges = MapChange.None;
-            if (flags.EarlyBridge)
-                currentMapChanges |= MapChange.Bridge;
             var allMapLocations = Enum.GetValues(typeof(MapLocation))
                                       .Cast<MapLocation>().ToList();
             Func<IEnumerable<MapLocation>> currentMapLocations =

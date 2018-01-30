@@ -59,17 +59,16 @@ namespace Sandbox
                                                            forcedItems,
                                                            treasurePool,
                                                            itemShopItem);
-                var outputIndexes = placedItems.ToLookup(x => x.Item, x => x.Address);
+
+                var outputIndexes = placedItems.ToLookup(x => x.Item, x => x);
                 foreach (Item item in itemPlacementStats.Keys)
                 {
-                    itemPlacementStats[item].AddRange(outputIndexes[item].ToList());
+                    itemPlacementStats[item].AddRange(outputIndexes[item].Select(x => x.Address).ToList());
                 }
                 var outputZones =
                     placedItems
                         .ToLookup(x => x.Item,
-                                  x => incentiveLocationAreas
-                                    .Where(y => y.Key.Any(z => z.Address == x.Address))
-                                  .Select(y => y.Value).SingleOrDefault());
+                                  x => Enum.GetName(typeof(MapLocation), x.MapLocation));
                 foreach (Item item in itemPlacementZones.Keys)
                 {
                     if (!outputZones[item].Any()) continue;
@@ -104,28 +103,7 @@ namespace Sandbox
                 Debug.WriteLine($"Forced Early Ice Cave for Ship: {forcedIceCount} out of {maxIterations}");
             }
         }
-        private static Dictionary<IReadOnlyCollection<IRewardSource>, string>
-            incentiveLocationAreas = new Dictionary<IReadOnlyCollection<IRewardSource>, string>
-                {
-                    { ItemLocations.Coneria, nameof(ItemLocations.Coneria)},
-                    { ItemLocations.TempleOfFiends, nameof(ItemLocations.TempleOfFiends)},
-                    { ItemLocations.MatoyasCave, nameof(ItemLocations.MatoyasCave)},
-                    { ItemLocations.Elfland, nameof(ItemLocations.Elfland)},
-                    { ItemLocations.MarshCave, nameof(ItemLocations.MarshCave)},
-                    { ItemLocations.NorthwestCastle, nameof(ItemLocations.NorthwestCastle)},
-                    { ItemLocations.DwarfCave, nameof(ItemLocations.DwarfCave)},
-                    { ItemLocations.EarthCave, nameof(ItemLocations.EarthCave)},
-                    { ItemLocations.TitansTunnel, nameof(ItemLocations.TitansTunnel)},
-                    { ItemLocations.Volcano, nameof(ItemLocations.Volcano)},
-                    { ItemLocations.IceCave, nameof(ItemLocations.IceCave)},
-                    { ItemLocations.Ordeals, nameof(ItemLocations.Ordeals)},
-                    { ItemLocations.Cardia, nameof(ItemLocations.Cardia)},
-                    { ItemLocations.SeaShrine, nameof(ItemLocations.SeaShrine)},
-                    { ItemLocations.Waterfall, nameof(ItemLocations.Waterfall)},
-                    { ItemLocations.MirageTower, nameof(ItemLocations.MirageTower)},
-                    { ItemLocations.SkyPalace, nameof(ItemLocations.SkyPalace)},
-                    { ItemLocations.ToFR, nameof(ItemLocations.ToFR)}
-                };
+
         private static string PrintStats(int maxIterations, Dictionary<Item, List<int>> incentiveLocations, Dictionary<Item, List<string>> incentiveZones, Dictionary<Item, int> requirements)
         {
             var sb = new StringBuilder();
@@ -149,7 +127,7 @@ namespace Sandbox
                 }
                 sb.Append("\n");
             }
-            foreach (var zoneName in incentiveLocationAreas.Values)
+            foreach (var zoneName in Enum.GetNames(typeof(MapLocation)))
             {
                 sb.Append($"{zoneName}" +
                           $"{string.Join("", Enumerable.Repeat(" ", Math.Max(1, 17 - zoneName.Length)))},");

@@ -93,14 +93,15 @@ namespace FF1Lib
 
         public static readonly IReadOnlyCollection<IRewardSource> ValidBridgeLocations =
             new List<IRewardSource> {
-            KingConeria, Princess
-        }.Concat(Coneria).Concat(TempleOfFiends).ToList();
+            KingConeria, Princess, 
+            ToFTopLeft1, ToFTopLeft2, ToFBottomLeft
+        };
 
         public static readonly IReadOnlyCollection<IRewardSource> ValidShipLocations =
             new List<IRewardSource> {
-            KingConeria, Princess, Bikke, Matoya
-        }.Concat(Coneria).Concat(TempleOfFiends)
-         .Concat(MatoyasCave).Concat(IceCave).ToList();
+            KingConeria, Princess, Bikke, Matoya, 
+            ToFTopLeft1, ToFTopLeft2, ToFBottomLeft
+        }.Concat(MatoyasCave).ToList();
 
         public static readonly IReadOnlyCollection<IRewardSource> AllNPCItemLocations =
             new List<IRewardSource> {

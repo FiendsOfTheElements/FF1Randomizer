@@ -11,6 +11,7 @@ namespace FF1Lib
             incentivePool.Add(Item.Xcalber);
             incentivePool.Add(Item.Masamune);
             incentivePool.Add(Item.Ribbon);
+            incentivePool.Remove(Item.Bridge);
             incentivePool.Remove(Item.Ship);
             IncentiveItems = incentivePool;
             var incentiveLocationPool = ItemLocations.AllNPCItemLocations.ToList();
