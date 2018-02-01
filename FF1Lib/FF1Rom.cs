@@ -330,7 +330,7 @@ namespace FF1Lib
 			PutInBank(0x1F, 0xCBF3, Blob.FromHex("4C34D8"));
 
 			// Add select button handler on game start menu to change color
-			PutInBank(0x0F, 0x8620, Blob.FromHex("203CC4A662A9488540ADFB60D003EEFB60A522F019EEFB60ADFB60C90E3005A9018DFB60A90085222029EBA90060A90160"));
+			PutInBank(0x0F, 0x8620, Blob.FromHex("203CC4A662A9488540ADFB60D003EEFB60A522F022EEFB60ADFB60C90D300EF007A9018DFB60D005A90F8DFB60A90085222029EBA90060A90160"));
 			PutInBank(0x1F, 0xD840, CreateLongJumpTableEntry(0x0F, 0x8620));
 			Put(0x3A1B5, Blob.FromHex("2040D8D0034C56A1EA"));
 			// Move Most of LoadBorderPalette_Blue out of the way to do a dynamic version.
