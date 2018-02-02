@@ -64,13 +64,13 @@ namespace FF1Lib
 		}
 
 		public FF1Rom(string filename) : base(filename)
-		{}
+		{ }
 
 		public FF1Rom(Stream readStream) : base(readStream)
-		{}
+		{ }
 
 		private FF1Rom()
-		{}
+		{ }
 
 		public static async Task<FF1Rom> CreateAsync(Stream readStream)
 		{
@@ -86,14 +86,21 @@ namespace FF1Lib
 
 			UpgradeToMMC3();
 			EasterEggs();
-            DynamicWindowColor();
-            PermanentCaravan();
-            var incentivesData = new IncentiveData(flags);
-            var shopItemLocation = ItemLocations.CaravanItemShop1;
+			DynamicWindowColor();
+			PermanentCaravan();
+			var incentivesData = new IncentiveData(flags);
+			var shopItemLocation = ItemLocations.CaravanItemShop1;
 			if (flags.ModernBattlefield)
 			{
 				SetBattleUI(true);
 			}
+
+			var map = new OverworldMap();
+			var compresedMap = map.GetCompressedMapRows(this);
+			var decompressedMap = map.DecompressMapRows(compresedMap);
+			var editedMap = map.ApplyMapEdits(decompressedMap, map.CanalSoftLockMountain.Concat(map.ConeriaToDwarves).ToList());
+			var recompressedMap = map.CompressMapRows(editedMap);
+			//map.PutCompressedMapRows(this, recompressedMap);
 
 			// This has to be done before we shuffle spell levels.
 			if (flags.SpellBugs)
@@ -161,10 +168,10 @@ namespace FF1Lib
 				EnableEarlyBridge();
 			}
 
-            if (flags.Treasures)
-            {
-                var placements = ShuffleTreasures(rng, flags, incentivesData, shopItemLocation);
-            }
+			if (flags.Treasures)
+			{
+				var placements = ShuffleTreasures(rng, flags, incentivesData, shopItemLocation);
+			}
 
 			if (flags.NoPartyShuffle)
 			{
