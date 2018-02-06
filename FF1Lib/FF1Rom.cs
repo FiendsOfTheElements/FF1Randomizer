@@ -92,6 +92,7 @@ namespace FF1Lib
 			{
 				SetBattleUI(true);
 			}
+			EnableUnrunnableHelper();
 
 			// This has to be done before we shuffle spell levels.
 			if (flags.SpellBugs)
@@ -335,6 +336,9 @@ namespace FF1Lib
 			Put(0x3A1B5, Blob.FromHex("2040D8D0034C56A1EA"));
 			// Move Most of LoadBorderPalette_Blue out of the way to do a dynamic version.
 			PutInBank(0x0F, 0x8700, Blob.FromHex("988DCE038DEE03A90F8DCC03A9008DCD03A9308DCF0360"));
+
+			// Move DrawCommandMenu out of Bank F so we can add no Escape to it
+			PutInBank(0x0F,0x8740, Blob.FromHex("A000A200B91BFA9D9E6AE8C01BD015AD916D2901F00EA9139D9E6AE8C8A9F79D9E6AE8C8E005D0052090F6A200C8C01ED0D260"));
 		}
 
 		public override bool Validate()
