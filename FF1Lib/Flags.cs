@@ -1,23 +1,23 @@
 ﻿namespace FF1Lib
 {
-    public interface ITreasureShuffleFlags
-    {
-        bool IncentivizeOrdeals { get; }
-        bool IncentivizeIceCave { get; }
-        bool IncentivizeVolcano { get; }
-        bool IncentivizeConeria { get; }
-        bool IncentivizeMarsh { get; }
-        bool IncentivizeEarth { get; }
-        bool IncentivizeSeaShrine { get; }
-        bool EarlyRod { get; }
-        bool ForceVanillaNPCs { get; }
-        bool EarlyCanoe { get; }
-        bool EarlyOrdeals { get; }
-        bool EarlyBridge { get; }
-        bool TitansTrove { get; }
-        bool AllowIceShip { get; }
-    }
-    public class Flags : ITreasureShuffleFlags
+	public interface ITreasureShuffleFlags
+	{
+		bool IncentivizeOrdeals { get; }
+		bool IncentivizeIceCave { get; }
+		bool IncentivizeVolcano { get; }
+		bool IncentivizeConeria { get; }
+		bool IncentivizeMarsh { get; }
+		bool IncentivizeEarth { get; }
+		bool IncentivizeSeaShrine { get; }
+		bool EarlyRod { get; }
+		bool NPCItems { get; }
+		bool EarlyCanoe { get; }
+		bool EarlyOrdeals { get; }
+		bool EarlyBridge { get; }
+		bool TitansTrove { get; }
+		bool AllowIceShip { get; }
+	}
+	public class Flags : ITreasureShuffleFlags
 	{
 		public bool Treasures { get; set; }
 		public bool IncentivizeIceCave { get; set; }
@@ -60,13 +60,15 @@
 		public double ExpMultiplier { get; set; }
 		public int ExpBonus { get; set; }
 
-        public bool AllowIceShip => false;
-        public bool TitansTrove => false;
-        public bool ForceVanillaNPCs => false;
-        public bool IncentivizeVolcano => false;
-        public bool IncentivizeSeaShrine => false;
-        public bool IncentivizeConeria => false;
-        public bool IncentivizeMarsh => false;
-        public bool IncentivizeEarth => false;
-    }
+		public bool MapConeriaDwarves => true;
+		public bool MapVolcanoIceRiver => true;
+		public bool AllowIceShip => false;
+		public bool TitansTrove => false;
+		public bool NPCItems => true;
+		public bool IncentivizeVolcano => false;
+		public bool IncentivizeSeaShrine => false;
+		public bool IncentivizeConeria => false;
+		public bool IncentivizeMarsh => false;
+		public bool IncentivizeEarth => false;
+	}
 }

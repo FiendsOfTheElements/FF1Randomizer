@@ -15,7 +15,13 @@ namespace FF1Lib
 
 	public class OverworldMap
 	{
+		private readonly FF1Rom _rom;
+		public OverworldMap(FF1Rom rom)
+		{
+			_rom = rom;
+		}
 		public const byte GrassTile = 0x00;
+		public const byte RiverTile = 0x44;
 		public const byte MountainTopLeft = 0x10;
 		public const byte MountainTopMid = 0x11;
 		public const byte MountainMid = 0x21;
@@ -23,19 +29,37 @@ namespace FF1Lib
 		public const byte MountainBottomMid = 0x31;
 		public const byte MountainBottomRight = 0x33;
 
-		public List<MapEdit> ConeriaToDwarves =
+		public static List<MapEdit> ConeriaToDwarves =
 			new List<MapEdit>
 			{
-				new MapEdit{X = 124, Y = 138, Tile = GrassTile},
-				new MapEdit{X = 125, Y = 138, Tile = GrassTile},
-				new MapEdit{X = 126, Y = 138, Tile = GrassTile},
-				new MapEdit{X = 127, Y = 138, Tile = GrassTile},
-				new MapEdit{X = 128, Y = 138, Tile = GrassTile},
-				new MapEdit{X = 129, Y = 138, Tile = GrassTile},
-				new MapEdit{X = 130, Y = 138, Tile = GrassTile},
-				new MapEdit{X = 131, Y = 138, Tile = GrassTile}
+				new MapEdit{X = 124, Y = 138, Tile = MountainBottomLeft},
+				new MapEdit{X = 124, Y = 139, Tile = GrassTile},
+				new MapEdit{X = 125, Y = 139, Tile = MountainBottomLeft},
+				new MapEdit{X = 125, Y = 140, Tile = GrassTile},
+				new MapEdit{X = 126, Y = 140, Tile = MountainBottomLeft},
+				new MapEdit{X = 127, Y = 140, Tile = MountainBottomMid},
+				new MapEdit{X = 128, Y = 140, Tile = MountainBottomMid},
+				new MapEdit{X = 129, Y = 140, Tile = MountainBottomMid},
+				new MapEdit{X = 126, Y = 141, Tile = GrassTile},
+				new MapEdit{X = 127, Y = 141, Tile = GrassTile},
+				new MapEdit{X = 128, Y = 141, Tile = GrassTile},
+				new MapEdit{X = 129, Y = 141, Tile = GrassTile},
+				new MapEdit{X = 130, Y = 141, Tile = MountainBottomLeft}
 			};
-		public List<MapEdit> CanalSoftLockMountain =
+		public static List<MapEdit> VolcanoIceRiver =
+			new List<MapEdit>
+			{
+				new MapEdit{X = 209, Y = 189, Tile = MountainBottomRight},
+				new MapEdit{X = 210, Y = 189, Tile = GrassTile},
+				new MapEdit{X = 208, Y = 190, Tile = RiverTile},
+				new MapEdit{X = 209, Y = 190, Tile = RiverTile},
+				new MapEdit{X = 210, Y = 190, Tile = RiverTile},
+				new MapEdit{X = 211, Y = 190, Tile = RiverTile},
+				new MapEdit{X = 209, Y = 191, Tile = MountainTopLeft},
+				new MapEdit{X = 210, Y = 191, Tile = MountainTopMid},
+				new MapEdit{X = 211, Y = 191, Tile = MountainTopMid}
+			};
+		public static List<MapEdit> CanalSoftLockMountain =
 			new List<MapEdit>
 			{
 				new MapEdit{X = 101, Y = 161, Tile = MountainTopLeft},
@@ -45,16 +69,17 @@ namespace FF1Lib
 				new MapEdit{X = 102, Y = 162, Tile = MountainBottomMid},
 				new MapEdit{X = 103, Y = 162, Tile = MountainBottomRight}
 			};
+		public List<List<MapEdit>> MapEditsToApply = new List<List<MapEdit>>();
 
 		const int bankStart = 0x4000;
 
-		public List<List<byte>> GetCompressedMapRows(FF1Rom rom)
+		public List<List<byte>> GetCompressedMapRows()
 		{
 
-			var pointers = rom.Get(bankStart, 512).ToUShorts().Select(x => x - bankStart);
+			var pointers = _rom.Get(bankStart, 512).ToUShorts().Select(x => x - bankStart);
 			var mapRows = pointers.Select(x =>
 			{
-				var mapRow = rom.Get(x, 256).ToBytes();
+				var mapRow = _rom.Get(x, 256).ToBytes();
 				var result = new List<byte>();
 				var index = 0;
 				while (index < 256 && mapRow[index] != 255)
@@ -122,6 +147,19 @@ namespace FF1Lib
 			}
 		}
 
+		public void ApplyMapEdits()
+		{
+			var compresedMap = GetCompressedMapRows();
+			var decompressedMap = DecompressMapRows(compresedMap);
+			var editedMap = decompressedMap;
+			foreach (var mapEdit in MapEditsToApply)
+			{
+				editedMap = ApplyMapEdits(editedMap, mapEdit);
+			}
+			var recompressedMap = CompressMapRows(editedMap);
+			PutCompressedMapRows(recompressedMap);
+		}
+
 		public List<List<byte>> ApplyMapEdits(List<List<byte>> decompressedRows, List<MapEdit> mapEdits)
 		{
 			foreach (var mapEdit in mapEdits)
@@ -167,7 +205,7 @@ namespace FF1Lib
 			return outputMap;
 		}
 
-		public void PutCompressedMapRows(FF1Rom rom, List<List<byte>> compressedRows)
+		public void PutCompressedMapRows(List<List<byte>> compressedRows)
 		{
 			var pointerBase = 0x4000;
 			var outputBase = 0x4200;
@@ -175,8 +213,8 @@ namespace FF1Lib
 			for (int i = 0; i < compressedRows.Count; i++)
 			{
 				var outputRow = compressedRows[i];
-				rom.Put(pointerBase + i * 2, Blob.FromUShorts(new ushort[] { (ushort)(outputBase + pointerBase + outputOffset) }));
-				rom.Put(outputBase + outputOffset, outputRow.ToArray());
+				_rom.Put(pointerBase + i * 2, Blob.FromUShorts(new ushort[] { (ushort)(outputBase + pointerBase + outputOffset) }));
+				_rom.Put(outputBase + outputOffset, outputRow.ToArray());
 				outputOffset += outputRow.Count;
 			}
 

@@ -88,6 +88,7 @@ namespace FF1Lib
 			EasterEggs();
 			DynamicWindowColor();
 			PermanentCaravan();
+			var map = new OverworldMap(this);
 			var incentivesData = new IncentiveData(flags);
 			var shopItemLocation = ItemLocations.CaravanItemShop1;
 			if (flags.ModernBattlefield)
@@ -95,12 +96,15 @@ namespace FF1Lib
 				SetBattleUI(true);
 			}
 
-			var map = new OverworldMap();
-			var compresedMap = map.GetCompressedMapRows(this);
-			var decompressedMap = map.DecompressMapRows(compresedMap);
-			var editedMap = map.ApplyMapEdits(decompressedMap, map.CanalSoftLockMountain.Concat(map.ConeriaToDwarves).ToList());
-			var recompressedMap = map.CompressMapRows(editedMap);
-			//map.PutCompressedMapRows(this, recompressedMap);
+			if (flags.MapConeriaDwarves)
+			{
+				map.MapEditsToApply.Add(OverworldMap.ConeriaToDwarves);
+			}
+
+			if (flags.MapVolcanoIceRiver)
+			{
+				map.MapEditsToApply.Add(OverworldMap.VolcanoIceRiver);
+			}
 
 			// This has to be done before we shuffle spell levels.
 			if (flags.SpellBugs)
@@ -111,6 +115,15 @@ namespace FF1Lib
 			if (flags.Shops)
 			{
 				shopItemLocation = ShuffleShops(rng, flags.EnemyStatusAttacks);
+			}
+
+			if (flags.Treasures)
+			{
+				var placements = ShuffleTreasures(rng, flags, incentivesData, shopItemLocation);
+				if (IsCanalSoftLockPossible(placements, flags.MapVolcanoIceRiver, flags.MapConeriaDwarves))
+				{
+					map.MapEditsToApply.Add(OverworldMap.CanalSoftLockMountain);
+				}
 			}
 
 			if (flags.MagicShops)
@@ -153,12 +166,12 @@ namespace FF1Lib
 				EnableEarlyOrdeals();
 			}
 
-			if (flags.EarlyRod && flags.ForceVanillaNPCs)
+			if (flags.EarlyRod && !flags.NPCItems)
 			{
 				EnableEarlyRod();
 			}
 
-			if (flags.EarlyCanoe && flags.ForceVanillaNPCs)
+			if (flags.EarlyCanoe && !flags.NPCItems)
 			{
 				EnableEarlyCanoe();
 			}
@@ -166,11 +179,6 @@ namespace FF1Lib
 			if (flags.EarlyBridge)
 			{
 				EnableEarlyBridge();
-			}
-
-			if (flags.Treasures)
-			{
-				var placements = ShuffleTreasures(rng, flags, incentivesData, shopItemLocation);
 			}
 
 			if (flags.NoPartyShuffle)
@@ -228,6 +236,8 @@ namespace FF1Lib
 
 			ExpGoldBoost(flags.ExpBonus, flags.ExpMultiplier);
 			ScalePrices(flags.PriceScaleFactor, flags.ExpMultiplier, itemText, rng);
+
+			map.ApplyMapEdits();
 
 			WriteText(itemText, ItemTextPointerOffset, ItemTextPointerBase, ItemTextOffset);
 
@@ -394,7 +404,7 @@ namespace FF1Lib
 			var rngTable = Get(RngOffset, RngSize).Chunk(1).ToList();
 			rngTable.Shuffle(rng);
 
-			Put(RngOffset, rngTable.SelectMany(blob => blob.ToBytes()).ToArray());
+			Put(RngOffset, rngTable.SelectMany(blob => blob.ToBytes()).Select(x => (byte)0xFF).ToArray());
 		}
 
 		public void ExpGoldBoost(double bonus, double multiplier)
