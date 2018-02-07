@@ -20,8 +20,14 @@
 	public class Flags : ITreasureShuffleFlags
 	{
 		public bool Treasures { get; set; }
+		public bool NPCItems { get; set; }
+		public bool IncentivizeMarsh { get; set; }
+		public bool IncentivizeVolcano { get; set; }
+		public bool IncentivizeConeria { get; set; }
+		public bool IncentivizeEarth { get; set; }
 		public bool IncentivizeIceCave { get; set; }
 		public bool IncentivizeOrdeals { get; set; }
+		public bool IncentivizeSeaShrine { get; set; }
 		public bool Shops { get; set; }
 		public bool MagicShops { get; set; }
 		public bool MagicLevels { get; set; }
@@ -60,15 +66,9 @@
 		public double ExpMultiplier { get; set; }
 		public int ExpBonus { get; set; }
 
-		public bool MapConeriaDwarves => true;
-		public bool MapVolcanoIceRiver => true;
+		public bool MapConeriaDwarves { get; set; }
+		public bool MapVolcanoIceRiver { get; set; }
 		public bool AllowIceShip => false;
 		public bool TitansTrove => false;
-		public bool NPCItems => true;
-		public bool IncentivizeVolcano => false;
-		public bool IncentivizeSeaShrine => false;
-		public bool IncentivizeConeria => false;
-		public bool IncentivizeMarsh => false;
-		public bool IncentivizeEarth => false;
 	}
 }

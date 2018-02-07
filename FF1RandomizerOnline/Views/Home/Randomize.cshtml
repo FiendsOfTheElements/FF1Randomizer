@@ -11,11 +11,13 @@
 	<div class="row">
 		<div class="col-xs-3"><input class="form-control" asp-for="Seed" type="text" /></div>
 		<div class="col-xs-2"><input class="btn btn-default" type="button" value="New Seed" onclick="newSeed();" /></div>
-		<div class="col-xs-3"><input class="form-control" id="Flags" type="text" /></div>
+		<div class="col-xs-3"><input class="form-control" id="Flags" type="text" disabled /></div>
 		<div class="col-xs-2"><input class="btn btn-default" type="button" value="Import..." onclick="importSeedFlags();" /></div>
 	</div>
 	<ul class="section nav nav-pills">
 		<li class="active"><a href="#shuffle" data-toggle="tab">Shuffle</a></li>
+        <li><a href="#incentives" data-toggle="tab">Incentives</a></li>
+        <li><a href="#map" data-toggle="tab">Map</a></li>
 		<li><a href="#scale" data-toggle="tab">Scale</a></li>
 		<li><a href="#conveniences" data-toggle="tab">Conveniences</a></li>
 		<li><a href="#bug-fixes" data-toggle="tab">Bug Fixes</a></li>
@@ -25,8 +27,7 @@
 		<div class="section tab-pane active" id="shuffle">
 			<div class="col-xs-4">
 				<div class="checkbox-cell"><input type="checkbox" asp-for="Flags.Treasures" /> <label asp-for="Flags.Treasures"></label></div>
-				<div class="checkbox-cell"><input class="indent" type="checkbox" asp-for="Flags.IncentivizeIceCave" /> <label asp-for="Flags.IncentivizeIceCave">Incentivize Ice Cave</label></div>
-				<div class="checkbox-cell"><input class="indent" type="checkbox" asp-for="Flags.IncentivizeOrdeals" /> <label asp-for="Flags.IncentivizeOrdeals">Incentivize Ordeals</label></div>
+				<div class="checkbox-cell"><input class="indent" type="checkbox" asp-for="Flags.NPCItems" /> <label asp-for="Flags.NPCItems">NPC Items</label></div>
 				<div class="checkbox-cell"></div>
 				<div class="checkbox-cell"><input type="checkbox" asp-for="Flags.Shops" /> <label asp-for="Flags.Shops"></label></div>
 				<div class="checkbox-cell"><input type="checkbox" asp-for="Flags.MagicShops" /> <label asp-for="Flags.MagicShops">Magic Shops</label></div>
@@ -44,6 +45,23 @@
                 <div class="checkbox-cell"></div>
 			</div>
 		</div>
+        <div class="section tab-pane" id="incentives">
+            <div class="col-xs-4">
+                <div class="checkbox-cell"><input type="checkbox" asp-for="Flags.IncentivizeMarsh" /> <label asp-for="Flags.IncentivizeMarsh">Marsh Cave</label></div>
+                <div class="checkbox-cell"><input type="checkbox" asp-for="Flags.IncentivizeVolcano" /> <label asp-for="Flags.IncentivizeVolcano">Volcano (Red D Chest)</label></div>
+                <div class="checkbox-cell"><input type="checkbox" asp-for="Flags.IncentivizeConeria" /> <label asp-for="Flags.IncentivizeConeria">Coneria (TNT Chest)</label></div>
+                <div class="checkbox-cell"><input type="checkbox" asp-for="Flags.IncentivizeEarth" /> <label asp-for="Flags.IncentivizeEarth">Earth Cave</label></div>
+                <div class="checkbox-cell"><input type="checkbox" asp-for="Flags.IncentivizeIceCave" /> <label asp-for="Flags.IncentivizeIceCave">Ice Cave</label></div>
+                <div class="checkbox-cell"><input type="checkbox" asp-for="Flags.IncentivizeOrdeals" /> <label asp-for="Flags.IncentivizeOrdeals">Ordeals</label></div>
+                <div class="checkbox-cell"><input type="checkbox" asp-for="Flags.IncentivizeSeaShrine" /> <label asp-for="Flags.IncentivizeSeaShrine">Sea Shrine (TFC)</label></div>
+            </div>
+        </div>
+        <div class="section tab-pane" id="map">
+            <div class="col-xs-4">
+                <div class="checkbox-cell"><input type="checkbox" asp-for="Flags.MapConeriaDwarves" /> <label asp-for="Flags.MapConeriaDwarves">Coneria to Dwarves</label></div>
+                <div class="checkbox-cell"><input type="checkbox" asp-for="Flags.MapVolcanoIceRiver" /> <label asp-for="Flags.MapVolcanoIceRiver">Volcano and Ice River</label></div>
+            </div>
+        </div>
 		<div class="section tab-pane" id="scale">
 			<div class="slider-cell">
 				<div class="col-xs-3"><label>Prices:</label></div>
