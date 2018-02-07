@@ -43,7 +43,30 @@ namespace FF1Lib
 			var treasureBlob = Get(TreasureOffset, TreasureSize * TreasureCount);
 			var treasurePool = UsedTreasureIndices.Select(x => (Item)treasureBlob[x]).ToList();
 
-			var placedItems = ItemPlacement.PlaceSaneItems(rng, flags, incentivesData, forcedItems, treasurePool, caravanItemLocation);
+			var mapLocationRequirements = ItemLocations.MapLocationRequirements.ToDictionary(x => x.Key, x => x.Value);
+			if (flags.MapVolcanoIceRiver)
+			{
+				mapLocationRequirements[MapLocation.GurguVolcano].Add(MapChange.Bridge | MapChange.Canoe);
+				mapLocationRequirements[MapLocation.CresentLake].Add(MapChange.Bridge | MapChange.Canoe);
+				mapLocationRequirements[MapLocation.ElflandTown].Add(MapChange.Bridge | MapChange.Canoe);
+				mapLocationRequirements[MapLocation.ElflandCastle].Add(MapChange.Bridge | MapChange.Canoe);
+				mapLocationRequirements[MapLocation.NorthwestCastle].Add(MapChange.Bridge | MapChange.Canoe);
+				mapLocationRequirements[MapLocation.MarshCave].Add(MapChange.Bridge | MapChange.Canoe);
+				mapLocationRequirements[MapLocation.DwarfCave].Add(MapChange.Bridge | MapChange.Canoe);
+			}
+			if (flags.MapConeriaDwarves)
+			{
+				mapLocationRequirements[MapLocation.DwarfCave] = new List<MapChange> { MapChange.None };
+			}
+
+			var placedItems =
+				ItemPlacement.PlaceSaneItems(rng,
+											flags,
+											incentivesData,
+											forcedItems,
+											treasurePool,
+											caravanItemLocation,
+											mapLocationRequirements);
 
 			// Output the results tothe ROM
 			foreach (var item in placedItems.Where(x => !x.IsUnused && x.Address < 0x80000))

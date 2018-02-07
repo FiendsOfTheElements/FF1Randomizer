@@ -16,6 +16,9 @@
 		bool EarlyBridge { get; }
 		bool TitansTrove { get; }
 		bool AllowIceShip { get; }
+
+		bool MapConeriaDwarves { get; }
+		bool MapVolcanoIceRiver { get; }
 	}
 	public class Flags : ITreasureShuffleFlags
 	{

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using RomUtilities;
 
@@ -8,11 +9,12 @@ namespace FF1Lib
 	public static class ItemPlacement
 	{
 		public static List<IRewardSource> PlaceSaneItems(MT19337 rng,
-														 ITreasureShuffleFlags flags,
-														 IncentiveData incentivesData,
-														 List<IRewardSource> forcedItems,
-														 List<Item> allTreasures,
-														 ItemShopSlot caravanItemLocation)
+														ITreasureShuffleFlags flags,
+														IncentiveData incentivesData,
+														List<IRewardSource> forcedItems,
+														List<Item> allTreasures,
+														ItemShopSlot caravanItemLocation,
+														Dictionary<MapLocation, List<MapChange>> mapLocationRequirements)
 		{
 			long sanityCounter = 0;
 			var incentiveLocationPool =
@@ -23,7 +25,14 @@ namespace FF1Lib
 				incentivesData.IncentiveItems
 					.Where(x => !forcedItems.Any(y => y.Item == x))
 					.ToList();
-			var bridgeLocations = ItemLocations.ValidBridgeLocations.ToList();
+
+			var allMapLocations = Enum.GetValues(typeof(MapLocation))
+									  .Cast<MapLocation>().ToList();
+			var startingMapLocations = allMapLocations.Where(x => mapLocationRequirements[x].Any(y => y == MapChange.None));
+			var bridgeLocations =
+				ItemLocations.AllQuestItemLocations
+					.Where(x => x.AccessRequirement == AccessRequirement.None &&
+								startingMapLocations.Contains(x.MapLocation)).ToList();
 			foreach (var incentiveBridgeLocation in incentiveLocationPool.Where(x => bridgeLocations.Any(y => y.Address == x.Address)).ToList())
 			{
 				bridgeLocations.Add(incentiveBridgeLocation);
@@ -33,7 +42,12 @@ namespace FF1Lib
 			bridgeLocations = bridgeLocations
 							 .Where(x => !forcedItems.Any(y => y.Address == x.Address))
 							 .ToList();
-			var shipLocations = ItemLocations.ValidShipLocations.ToList();
+			var validShipMapLocations =
+				allMapLocations.Where(x => mapLocationRequirements[x].Any(y => MapChange.Bridge.HasFlag(y)));
+			var shipLocations =
+				ItemLocations.AllQuestItemLocations
+					.Where(x => AccessRequirement.Crystal.HasFlag(x.AccessRequirement) &&
+								validShipMapLocations.Contains(x.MapLocation)).ToList();
 			if (flags.AllowIceShip)
 			{
 				shipLocations = shipLocations.Concat(ItemLocations.IceCave).ToList();
@@ -127,7 +141,7 @@ namespace FF1Lib
 				}
 
 				// 6. Check sanity and loop if needed
-			} while (!CheckSanity(placedItems, flags));
+			} while (!CheckSanity(placedItems, flags, mapLocationRequirements));
 
 			// 7. Place all remaining unincentivized treasures
 			var i = 0;
@@ -158,7 +172,9 @@ namespace FF1Lib
 			}
 		}
 
-		public static bool CheckSanity(List<IRewardSource> treasurePlacements, ITreasureShuffleFlags flags)
+		public static bool CheckSanity(List<IRewardSource> treasurePlacements,
+										ITreasureShuffleFlags flags,
+										Dictionary<MapLocation, List<MapChange>> mapLocationRequirements)
 		{
 			const int maxIterations = 20;
 			var currentIteration = 0;
@@ -168,7 +184,7 @@ namespace FF1Lib
 									  .Cast<MapLocation>().ToList();
 			Func<IEnumerable<MapLocation>> currentMapLocations =
 				() => allMapLocations
-					.Where(x => ItemLocations.MapLocationRequirements[x]
+					.Where(x => mapLocationRequirements[x]
 						   .Any(y => currentMapChanges.HasFlag(y)));
 			Func<IEnumerable<IRewardSource>> currentItemLocations =
 				() => treasurePlacements
