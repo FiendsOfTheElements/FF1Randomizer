@@ -11,7 +11,7 @@
 	<div class="row">
 		<div class="col-xs-3"><input class="form-control" asp-for="Seed" type="text" /></div>
 		<div class="col-xs-2"><input class="btn btn-default" type="button" value="New Seed" onclick="newSeed();" /></div>
-		<div class="col-xs-3"><input class="form-control" id="Flags" type="text" disabled /></div>
+		<div class="col-xs-3"><input class="form-control" id="Flags" type="text" disabled="disabled" /></div>
 		<div class="col-xs-2"><input class="btn btn-default" type="button" value="Import..." onclick="importSeedFlags();" /></div>
 	</div>
 	<ul class="section nav nav-pills">
@@ -27,7 +27,7 @@
 		<div class="section tab-pane active" id="shuffle">
 			<div class="col-xs-4">
 				<div class="checkbox-cell"><input type="checkbox" asp-for="Flags.Treasures" /> <label asp-for="Flags.Treasures"></label></div>
-				<div class="checkbox-cell"><input class="indent" type="checkbox" asp-for="Flags.NPCItems" /> <label asp-for="Flags.NPCItems">NPC Items</label></div>
+				<div class="checkbox-cell"><input class="indent" type="checkbox" asp-for="Flags.NPCItems" disabled="disabled" /> <label asp-for="Flags.NPCItems">NPC Items</label></div>
 				<div class="checkbox-cell"></div>
 				<div class="checkbox-cell"><input type="checkbox" asp-for="Flags.Shops" /> <label asp-for="Flags.Shops"></label></div>
 				<div class="checkbox-cell"><input type="checkbox" asp-for="Flags.MagicShops" /> <label asp-for="Flags.MagicShops">Magic Shops</label></div>
