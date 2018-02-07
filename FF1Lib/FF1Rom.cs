@@ -404,7 +404,7 @@ namespace FF1Lib
 			var rngTable = Get(RngOffset, RngSize).Chunk(1).ToList();
 			rngTable.Shuffle(rng);
 
-			Put(RngOffset, rngTable.SelectMany(blob => blob.ToBytes()).Select(x => (byte)0xFF).ToArray());
+			Put(RngOffset, rngTable.SelectMany(blob => blob.ToBytes()).ToArray());
 		}
 
 		public void ExpGoldBoost(double bonus, double multiplier)
