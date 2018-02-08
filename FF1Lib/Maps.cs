@@ -173,6 +173,12 @@ namespace FF1Lib
 			Put(ordealsTilesetOffset, Blob.FromUShorts(ordealsTilesetData));
 		}
 
+		public void EnableTitansTrove()
+        {
+	        Put(0x03F41, Blob.FromHex("4408"));       // Move the Titan
+			Put(0x1ABC3, Blob.FromHex("3FBE03C104")); // Tweak the tunnel
+        }
+
 		public List<Map> ReadMaps()
 		{
 			var pointers = Get(MapPointerOffset, MapCount * MapPointerSize).ToUShorts();

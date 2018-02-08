@@ -62,6 +62,11 @@ namespace FF1Lib
 			{
 				mapLocationRequirements[MapLocation.DwarfCave] = new List<MapChange> { MapChange.None };
 			}
+			if (flags.MapTitansTrove)
+			{
+				mapLocationRequirements[MapLocation.TitansTrove] = new List<MapChange> {
+					MapChange.Canal | MapChange.Ship | MapChange.TitanFed, MapChange.Airship | MapChange.TitanFed };
+			}
 
 			var placedItems =
 				ItemPlacement.PlaceSaneItems(rng,

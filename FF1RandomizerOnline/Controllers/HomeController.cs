@@ -138,7 +138,8 @@ namespace FF1RandomizerOnline.Controllers
 					ExpBonus = 100,
 
 					MapConeriaDwarves = true,
-					MapVolcanoIceRiver = true
+					MapVolcanoIceRiver = true,
+					MapTitansTrove = true
 				}
 			});
 		}

@@ -106,6 +106,11 @@ namespace FF1Lib
 				map.MapEditsToApply.Add(OverworldMap.VolcanoIceRiver);
 			}
 
+			if (flags.MapTitansTrove)
+			{
+				EnableTitansTrove();
+			}
+
 			// This has to be done before we shuffle spell levels.
 			if (flags.SpellBugs)
 			{
