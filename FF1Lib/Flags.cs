@@ -17,11 +17,11 @@
 		bool EarlyCanoe { get; }
 		bool EarlyOrdeals { get; }
 		bool EarlyBridge { get; }
-		bool TitansTrove { get; }
 		bool AllowIceShip { get; }
 
 		bool MapConeriaDwarves { get; }
 		bool MapVolcanoIceRiver { get; }
+		bool MapTitansTrove { get; }
 	}
 	public class Flags : ITreasureShuffleFlags, IIncentiveFlags
 	{
@@ -74,7 +74,7 @@
 
 		public bool MapConeriaDwarves { get; set; }
 		public bool MapVolcanoIceRiver { get; set; }
+		public bool MapTitansTrove { get; set; }
 		public bool AllowIceShip => false;
-		public bool TitansTrove => false;
 	}
 }

@@ -75,10 +75,10 @@ namespace FF1Lib
         public static TreasureChest EarthCave22 = new TreasureChest(0x3143, nameof(EarthCave22), MapLocation.EarthCave, Item.WoodenRod, AccessRequirement.Rod);
         public static TreasureChest EarthCave23 = new TreasureChest(0x3144, nameof(EarthCave23), MapLocation.EarthCave, Item.Gold3400, AccessRequirement.Rod);
         public static TreasureChest EarthCave24 = new TreasureChest(0x3145, nameof(EarthCave24), MapLocation.EarthCave, Item.Gold1455, AccessRequirement.Rod);
-        public static TreasureChest TitansTunnel1 = new TreasureChest(0x3146, nameof(TitansTunnel1), MapLocation.TitansTunnelB, Item.SilverHelm);
-        public static TreasureChest TitansTunnel2 = new TreasureChest(0x3147, nameof(TitansTunnel2), MapLocation.TitansTunnelB, Item.Gold450);
-        public static TreasureChest TitansTunnel3 = new TreasureChest(0x3148, nameof(TitansTunnel3), MapLocation.TitansTunnelB, Item.Gold620);
-        public static TreasureChest TitansTunnel4 = new TreasureChest(0x3149, nameof(TitansTunnel4), MapLocation.TitansTunnelB, Item.GreatAxe);
+        public static TreasureChest TitansTunnel1 = new TreasureChest(0x3146, nameof(TitansTunnel1), MapLocation.TitansTrove, Item.SilverHelm);
+        public static TreasureChest TitansTunnel2 = new TreasureChest(0x3147, nameof(TitansTunnel2), MapLocation.TitansTrove, Item.Gold450);
+        public static TreasureChest TitansTunnel3 = new TreasureChest(0x3148, nameof(TitansTunnel3), MapLocation.TitansTrove, Item.Gold620);
+        public static TreasureChest TitansTunnel4 = new TreasureChest(0x3149, nameof(TitansTunnel4), MapLocation.TitansTrove, Item.GreatAxe);
         // Volcano has 3 extra empty treasure chests
         public static TreasureChest Volcano1 = new TreasureChest(0x314A, nameof(Volcano1), MapLocation.GurguVolcano, Item.Heal);
         public static TreasureChest Volcano2 = new TreasureChest(0x314B, nameof(Volcano2), MapLocation.GurguVolcano, Item.Cabin);
@@ -313,8 +313,9 @@ namespace FF1Lib
             {MapLocation.MarshCave, new List<MapChange>{ MapChange.Ship, MapChange.Airship }},
             {MapLocation.Melmond, new List<MapChange>{ CanalAndShip, MapChange.Airship }},
             {MapLocation.EarthCave, new List<MapChange>{ CanalAndShip, MapChange.Airship }},
-            {MapLocation.TitansTunnelA, new List<MapChange>{ CanalAndShip, MapChange.Airship }},
-            {MapLocation.TitansTunnelB, new List<MapChange>{ CanalAndShip | MapChange.TitanFed, MapChange.Airship }},
+            {MapLocation.TitansTunnelEast, new List<MapChange>{ CanalAndShip, MapChange.Airship }},
+            {MapLocation.TitansTunnelWest, new List<MapChange>{ CanalAndShip | MapChange.TitanFed, MapChange.Airship }},
+			{MapLocation.TitansTrove, new List<MapChange>{ CanalAndShip | MapChange.TitanFed, MapChange.Airship }},
             {MapLocation.SardasCave, new List<MapChange>{ CanalAndShip | MapChange.TitanFed, MapChange.Airship }},
             {MapLocation.CresentLake, new List<MapChange>{ CanalAndShip, ShipAndCanoe, MapChange.Airship }},
             {MapLocation.GurguVolcano, new List<MapChange>{ ShipAndCanoe, MapChange.Airship }},
