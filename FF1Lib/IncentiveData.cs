@@ -105,9 +105,9 @@ namespace FF1Lib
 			{
 				incentivePool.Add(Item.Ribbon);
 			}
-			if (flags.IncentivizeRibbon3)
+			if (flags.IncentivizePowerGauntlet)
 			{
-				incentivePool.Add(Item.Ribbon);
+				incentivePool.Add(Item.PowerGauntlets);
 			}
 			if (flags.IncentivizeWhiteShirt)
 			{

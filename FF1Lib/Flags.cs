@@ -47,7 +47,7 @@
 		bool IncentivizeOxyale { get; }
 		bool IncentivizeCanoe { get; }
 		bool IncentivizeRibbon2 { get; }
-		bool IncentivizeRibbon3 { get; }
+		bool IncentivizePowerGauntlet { get; }
 		bool IncentivizeWhiteShirt { get; }
 		bool IncentivizeBlackShirt { get; }
 		bool IncentivizeOpal { get; }
@@ -162,7 +162,7 @@
 		public bool IncentivizeMasamune { get; set; }
 		public bool IncentivizeRibbon { get; set; }
 		public bool IncentivizeRibbon2 { get; set; }
-		public bool IncentivizeRibbon3 { get; set; }
+		public bool IncentivizePowerGauntlet { get; set; }
 		public bool IncentivizeWhiteShirt { get; set; }
 		public bool IncentivizeBlackShirt { get; set; }
 		public bool IncentivizeOpal { get; set; }
