@@ -58,7 +58,8 @@ namespace Sandbox
 														   incentivesData,
 														   forcedItems,
 														   treasurePool,
-														   itemShopItem);
+														   itemShopItem,
+														   ItemLocations.MapLocationRequirements);
 
 				var outputIndexes = placedItems.ToLookup(x => x.Item, x => x);
 				foreach (Item item in itemPlacementStats.Keys)
@@ -92,7 +93,7 @@ namespace Sandbox
 
 				foreach (Item item in requirementsToCheck)
 				{
-					if (!ItemPlacement.CheckSanity(placedItems.Where(x => x.Item != item).ToList(), flags))
+					if (!ItemPlacement.CheckSanity(placedItems.Where(x => x.Item != item).ToList(), flags, ItemLocations.MapLocationRequirements))
 						requirementChecks[item]++;
 				}
 			}
