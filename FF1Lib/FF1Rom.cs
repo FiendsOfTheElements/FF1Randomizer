@@ -211,6 +211,11 @@ namespace FF1Lib
 				EnableBuyTen();
 			}
 
+			if (flags.EasyMode)
+			{
+				EnableEasyMode();
+			}
+
 			if (flags.HouseMPRestoration)
 			{
 				FixHouse();
