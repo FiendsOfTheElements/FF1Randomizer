@@ -71,14 +71,14 @@ namespace FF1Lib
 			var treasurePool = allTreasures.ToList();
 
 			List<IRewardSource> placedItems;
-			var treasureChestPool =
-				ItemLocations.AllTreasures
+			var itemLocationPool =
+				ItemLocations.AllTreasures.Concat(ItemLocations.AllNPCItemLocations)
 						  .Where(x => !x.IsUnused && !forcedItems.Any(y => y.Address == x.Address))
 						  .ToList();
 			if (flags.EarlyOrdeals)
 			{
-				treasureChestPool =
-					treasureChestPool
+				itemLocationPool =
+					itemLocationPool
 						.Select(x => ((x as TreasureChest)?.AccessRequirement.HasFlag(AccessRequirement.Crown) ?? false)
 								? new TreasureChest(x, x.Item, x.AccessRequirement & ~AccessRequirement.Crown)
 								: x).ToList();
@@ -105,6 +105,12 @@ namespace FF1Lib
 								: x).ToList();
 			}
 
+			var unincentivizedQuestItems =
+				ItemLists.AllQuestItems
+					.Where(x => !incentivePool.Contains(x) &&
+								x != Item.Ship && x != Item.Bridge && x != Item.Bottle &&
+								!forcedItems.Any(y => y.Item == x));
+
 			foreach (var incentive in incentivePool)
 			{
 				treasurePool.Remove(incentive);
@@ -112,6 +118,10 @@ namespace FF1Lib
 			foreach (var placement in forcedItems)
 			{
 				treasurePool.Remove(placement.Item);
+			}
+			foreach (var questItem in unincentivizedQuestItems)
+			{
+				treasurePool.Remove(questItem);
 			}
 			do
 			{
@@ -126,9 +136,18 @@ namespace FF1Lib
 					// 2. Place caravan item first because among incentive locations it has the smallest set of possible items
 					if (!placedItems.Any(x => x.Address == ItemLocations.CaravanItemShop1.Address))
 					{
-						var itemPick =
-								incentives.Where(x => x <= Item.Oxyale)
-										  .ToList().PickRandom(rng);
+						var itemPick = Item.Bottle;
+						var validShopIncentives = incentives
+							.Where(x => x > Item.None && x <= Item.Soft)
+							.ToList();
+						if (validShopIncentives.Any())
+						{
+							itemPick = validShopIncentives.PickRandom(rng);
+						}
+						else if (placedItems.Any(x => x.Item == Item.Bottle))
+						{
+							itemPick = ItemLists.AllConsumables.ToList().PickRandom(rng);
+						}
 						incentives.Remove(itemPick);
 
 						placedItems.Add(new ItemShopSlot(caravanItemLocation, itemPick));
@@ -151,30 +170,39 @@ namespace FF1Lib
 					placedItems.Add(NewItemPlacement(incentiveLocation, incentives.SpliceRandom(rng)));
 				}
 
-				// 5. Then place remanining incentive items in any other chest
-				var treasureChestPoolForExtraIncentiveItems =
-					treasureChestPool
+				// 5. Then place remanining incentive items and unincentivized quest items in any other chest before ToFR
+				var leftoverItems = incentives.Concat(unincentivizedQuestItems).ToList();
+				var leftoverItemLocations =
+					itemLocationPool
 						 .Where(x => !ItemLocations.ToFR.Any(y => y.Address == x.Address) &&
 								!x.IsUnused && !placedItems.Any(y => y.Address == x.Address))
 						 .ToList();
-				foreach (var incentive in incentives)
+				foreach (var leftoverItem in leftoverItems)
 				{
-					placedItems.Add(new TreasureChest(treasureChestPoolForExtraIncentiveItems.SpliceRandom(rng), incentive));
+					placedItems.Add(NewItemPlacement(leftoverItemLocations.SpliceRandom(rng), leftoverItem));
 				}
 
 				// 6. Check sanity and loop if needed
 			} while (!CheckSanity(placedItems, flags, mapLocationRequirements));
 
-			// 7. Place all remaining unincentivized treasures
+			// 7. Place all remaining unincentivized treasures or incentivized non-quest items that weren't placed
 			var i = 0;
-			treasureChestPool =
-				treasureChestPool
+			itemLocationPool =
+				itemLocationPool
 					 .Where(x => !x.IsUnused && !placedItems.Any(y => y.Address == x.Address))
 					.ToList();
-			treasurePool.Shuffle(rng);
-			foreach (var remainingTreasure in treasureChestPool)
+			foreach (var placedItem in placedItems)
 			{
-				placedItems.Add(new TreasureChest(remainingTreasure, treasurePool[i]));
+				incentivePool.Remove(placedItem.Item);
+			}
+			foreach (var unplacedIncentive in incentivePool)
+			{
+				treasurePool.Add(unplacedIncentive);
+			}
+			treasurePool.Shuffle(rng);
+			foreach (var remainingTreasure in itemLocationPool)
+			{
+				placedItems.Add(NewItemPlacement(remainingTreasure, treasurePool[i]));
 				i++;
 			}
 
@@ -225,7 +253,7 @@ namespace FF1Lib
 			if (!flags.EarlyOrdeals)
 				requiredAccess |= AccessRequirement.Crown;
 			var requiredMapChanges = MapChange.None;
-			if (flags.TitansTrove)
+			if (flags.MapTitansTrove)
 				requiredMapChanges |= MapChange.TitanFed;
 
 			while (!currentAccess.HasFlag(requiredAccess) ||
