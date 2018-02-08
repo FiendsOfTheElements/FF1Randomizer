@@ -256,7 +256,6 @@ namespace FF1Lib
 			if (flags.MapTitansTrove)
 				requiredMapChanges |= MapChange.TitanFed;
 
-
 			while (!currentAccess.HasFlag(requiredAccess) ||
 				   !currentMapChanges.HasFlag(requiredMapChanges) ||
 				   !currentMapLocations().Contains(winTheGameLocation))
