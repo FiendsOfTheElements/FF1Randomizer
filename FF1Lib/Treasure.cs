@@ -64,7 +64,7 @@ namespace FF1Lib
 			}
 			if (flags.MapTitansTrove)
 			{
-				mapLocationRequirements[MapLocation.TitansTrove] = new List<MapChange> {
+				mapLocationRequirements[MapLocation.TitansTunnelWest] = new List<MapChange> {
 					MapChange.Canal | MapChange.Ship | MapChange.TitanFed, MapChange.Airship | MapChange.TitanFed };
 			}
 
