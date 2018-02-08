@@ -136,6 +136,7 @@ namespace FF1RandomizerOnline.Controllers
 					EnemyScaleFactor = 2.0,
 					ExpMultiplier = 2.0,
 					ExpBonus = 100,
+					EasyMode = false,
 
 					MapConeriaDwarves = true,
 					MapVolcanoIceRiver = true,

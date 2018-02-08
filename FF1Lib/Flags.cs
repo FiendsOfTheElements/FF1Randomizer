@@ -115,6 +115,7 @@
 		public bool MapVolcanoIceRiver { get; set; }
 		public bool MapTitansTrove { get; set; }
 		public bool AllowIceShip => false;
+		public bool EasyMode { get; set; }
 
 		public bool IncentivizeKingConeria { get; set; }
 		public bool IncentivizePrincess { get; set; }
