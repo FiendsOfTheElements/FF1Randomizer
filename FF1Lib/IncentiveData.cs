@@ -5,14 +5,12 @@ namespace FF1Lib
 {
 	public class IncentiveData
 	{
-		public IncentiveData(ITreasureShuffleFlags flags)
+		public IncentiveData(IIncentiveFlags flags)
 		{
 			var incentivePool = ItemLists.AllQuestItems.ToList();
 			incentivePool.Add(Item.Xcalber);
 			incentivePool.Add(Item.Masamune);
 			incentivePool.Add(Item.Ribbon);
-			incentivePool.Remove(Item.Bridge);
-			incentivePool.Remove(Item.Ship);
 			IncentiveItems = incentivePool;
 			var incentiveLocationPool = ItemLocations.AllNPCItemLocations.ToList();
 			if (flags.IncentivizeVolcano)
@@ -41,36 +39,7 @@ namespace FF1Lib
 			}
 			if (flags.IncentivizeOrdeals)
 			{
-				if (!flags.EarlyOrdeals)
-				{
-					incentiveLocationPool.Add(ItemLocations.OrdealsMajor);
-				}
-				else
-				{
-					incentiveLocationPool.Add(
-						new TreasureChest(ItemLocations.OrdealsMajor,
-										  Item.Tail,
-										  ItemLocations.OrdealsMajor.AccessRequirement & ~AccessRequirement.Crown));
-				}
-			}
-			if (flags.NPCItems)
-			{
-				if (flags.EarlyCanoe)
-				{
-					incentiveLocationPool =
-							incentiveLocationPool
-								.Select(x => x.Address == ItemLocations.CanoeSage.Address
-										? new MapObject(ObjectId.CanoeSage, MapLocation.CresentLake, Item.Canoe)
-										: x).ToList();
-				}
-				if (flags.EarlyRod)
-				{
-					incentiveLocationPool =
-						incentiveLocationPool
-							.Select(x => x.Address == ItemLocations.Sarda.Address
-									? new MapObject(ObjectId.Sarda, MapLocation.SardasCave, Item.Rod)
-									: x).ToList();
-				}
+				incentiveLocationPool.Add(ItemLocations.OrdealsMajor);
 			}
 			IncentiveLocations = incentiveLocationPool;
 		}

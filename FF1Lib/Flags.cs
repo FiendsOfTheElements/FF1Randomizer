@@ -1,6 +1,6 @@
 ﻿namespace FF1Lib
 {
-	public interface ITreasureShuffleFlags
+	public interface IIncentiveFlags
 	{
 		bool IncentivizeOrdeals { get; }
 		bool IncentivizeIceCave { get; }
@@ -9,6 +9,9 @@
 		bool IncentivizeMarsh { get; }
 		bool IncentivizeEarth { get; }
 		bool IncentivizeSeaShrine { get; }
+	}
+	public interface ITreasureShuffleFlags
+	{
 		bool EarlyRod { get; }
 		bool NPCItems { get; }
 		bool EarlyCanoe { get; }
@@ -20,7 +23,7 @@
 		bool MapConeriaDwarves { get; }
 		bool MapVolcanoIceRiver { get; }
 	}
-	public class Flags : ITreasureShuffleFlags
+	public class Flags : ITreasureShuffleFlags, IIncentiveFlags
 	{
 		public bool Treasures { get; set; }
 		public bool NPCItems { get; set; }

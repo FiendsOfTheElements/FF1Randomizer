@@ -33,11 +33,14 @@ namespace FF1Lib
 				ItemLocations.AllQuestItemLocations
 					.Where(x => x.AccessRequirement == AccessRequirement.None &&
 								startingMapLocations.Contains(x.MapLocation)).ToList();
-			foreach (var incentiveBridgeLocation in incentiveLocationPool.Where(x => bridgeLocations.Any(y => y.Address == x.Address)).ToList())
+			if (incentivePool.Remove(Item.Bridge))
 			{
-				bridgeLocations.Add(incentiveBridgeLocation);
-				bridgeLocations.Add(incentiveBridgeLocation);
-				bridgeLocations.Add(incentiveBridgeLocation);
+				foreach (var incentiveBridgeLocation in incentiveLocationPool.Where(x => bridgeLocations.Any(y => y.Address == x.Address)).ToList())
+				{
+					bridgeLocations.Add(incentiveBridgeLocation);
+					bridgeLocations.Add(incentiveBridgeLocation);
+					bridgeLocations.Add(incentiveBridgeLocation);
+				}
 			}
 			bridgeLocations = bridgeLocations
 							 .Where(x => !forcedItems.Any(y => y.Address == x.Address))
@@ -52,12 +55,15 @@ namespace FF1Lib
 			{
 				shipLocations = shipLocations.Concat(ItemLocations.IceCave).ToList();
 			}
-			foreach (var incentiveShipLocation in incentiveLocationPool.Where(x => shipLocations.Any(y => y.Address == x.Address)).ToList())
+			if (incentivePool.Remove(Item.Ship))
 			{
-				shipLocations.Add(incentiveShipLocation);
-				shipLocations.Add(incentiveShipLocation);
-				shipLocations.Add(incentiveShipLocation);
-				shipLocations.Add(incentiveShipLocation);
+				foreach (var incentiveShipLocation in incentiveLocationPool.Where(x => shipLocations.Any(y => y.Address == x.Address)).ToList())
+				{
+					shipLocations.Add(incentiveShipLocation);
+					shipLocations.Add(incentiveShipLocation);
+					shipLocations.Add(incentiveShipLocation);
+					shipLocations.Add(incentiveShipLocation);
+				}
 			}
 			shipLocations = shipLocations
 							 .Where(x => !forcedItems.Any(y => y.Address == x.Address))
@@ -81,6 +87,22 @@ namespace FF1Lib
 						.Select(x => ((x as TreasureChest)?.AccessRequirement.HasFlag(AccessRequirement.Crown) ?? false)
 							? new TreasureChest(x, x.Item, x.AccessRequirement & ~AccessRequirement.Crown)
 							: x).ToList();
+			}
+			if (flags.EarlyCanoe)
+			{
+				incentiveLocationPool =
+						incentiveLocationPool
+							.Select(x => x.Address == ItemLocations.CanoeSage.Address
+									? new MapObject(ObjectId.CanoeSage, MapLocation.CresentLake, x.Item)
+									: x).ToList();
+			}
+			if (flags.EarlyRod)
+			{
+				incentiveLocationPool =
+					incentiveLocationPool
+						.Select(x => x.Address == ItemLocations.Sarda.Address
+								? new MapObject(ObjectId.Sarda, MapLocation.SardasCave, x.Item)
+								: x).ToList();
 			}
 
 			foreach (var incentive in incentivePool)
