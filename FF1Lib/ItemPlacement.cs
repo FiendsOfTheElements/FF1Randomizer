@@ -302,7 +302,7 @@ namespace FF1Lib
 					currentMapChanges |= MapChange.Canal;
 				if (!currentMapChanges.HasFlag(MapChange.TitanFed) &&
 					currentItems.Contains(Item.Ruby) &&
-					currentMapLocations().Contains(MapLocation.TitansTunnelA))
+					currentMapLocations().Contains(MapLocation.TitansTunnelEast))
 					currentMapChanges |= MapChange.TitanFed;
 				if (!currentAccess.HasFlag(AccessRequirement.Rod) &&
 					currentItems.Contains(Item.Rod))
