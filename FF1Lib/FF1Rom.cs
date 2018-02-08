@@ -122,7 +122,7 @@ namespace FF1Lib
 				shopItemLocation = ShuffleShops(rng, flags.EnemyStatusAttacks);
 			}
 
-			if (flags.Treasures)
+			if (flags.Treasures || flags.NPCItems)
 			{
 				var placements = ShuffleTreasures(rng, flags, incentivesData, shopItemLocation);
 				if (IsCanalSoftLockPossible(placements, flags.MapVolcanoIceRiver, flags.MapConeriaDwarves))

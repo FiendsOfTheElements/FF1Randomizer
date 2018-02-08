@@ -34,6 +34,10 @@ namespace FF1Lib
 				{
 					Put(0x393E1, Blob.FromHex("207F90A51160"));
 				}
+				if (!flags.Treasures)
+				{
+					forcedItems.AddRange(ItemLocations.AllTreasures);
+				}
 			}
 			else
 			{
@@ -74,7 +78,7 @@ namespace FF1Lib
 											mapLocationRequirements);
 
 			// Output the results tothe ROM
-			foreach (var item in placedItems.Where(x => !x.IsUnused && x.Address < 0x80000))
+			foreach (var item in placedItems.Where(x => !x.IsUnused && x.Address < 0x80000 && !forcedItems.Any(y => y.Address == x.Address)))
 			{
 				//Debug.WriteLine(item.SpoilerText);
 				item.Put(this);
