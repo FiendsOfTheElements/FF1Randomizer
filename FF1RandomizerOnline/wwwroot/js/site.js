@@ -45,8 +45,8 @@ function newSeed() {
 
 var checkboxIds = [
 	"Flags_Treasures",
-	"Flags_IncentivizeIceCave",
-	"Flags_IncentivizeOrdeals",
+	"Flags_incentivizeIceCave",
+	"Flags_incentivizeOrdeals",
 	"Flags_Shops",
 	"Flags_MagicShops",
 	"Flags_MagicLevels",
@@ -276,7 +276,7 @@ function setFlags() {
 
 	flags.value = getFlagsString();
 }
-
+/*
 $(document).ready(function () {
 	setCallbacks();
 
@@ -285,4 +285,157 @@ $(document).ready(function () {
 	getPercentageCallback(document.getElementById("Flags_EnemyScaleFactor"), "enemy-stats-display")();
 	expGoldBoostCallback();
 	forcedPartyMembersCallback();
+});*/
+
+function bitProperty(flagChunk, flagIndex) {
+    var charBit = Math.pow(2, flagIndex);
+    return {
+        get: function() { return (this.flagChunks[flagChunk] & charBit) > 0; },
+        set: function() { 
+            Vue.set(this.flagChunks, flagChunk, this.flagChunks[flagChunk] ^ charBit); 
+        }
+    };
+}
+function chunk (arr, len) {
+
+  var chunks = [],
+      i = 0,
+      n = arr.length;
+
+  while (i < n) {
+    chunks.push(arr.slice(i, i += len));
+  }
+
+  return chunks;
+}
+var FLAG_BITS_PER_CHAR = 6;
+var FLAG_CHARS_PER_CHUNK = 8;
+var FLAG_BITS_PER_CHUNK = FLAG_BITS_PER_CHAR * FLAG_CHARS_PER_CHUNK;
+var index = 0;
+var app = new Vue({
+  el: '#vueScope',
+  data: {
+    flagChunks: [0]
+  },
+  computed: {
+    flagsInput: {
+        get: function () {
+            var flagsString = "";
+            for(var i = 0; i < this.flagChunks.length; i++)
+            {
+                var flagChunk = this.flagChunks[i];
+                var charMask = 0x3F;
+                for(var j = 0; j < FLAG_CHARS_PER_CHUNK; j++)
+                {
+                    var charValue = (flagChunk & charMask) >>> (j * FLAG_BITS_PER_CHAR);
+                    flagsString += base64Chars[charValue];
+                    charMask = charMask << FLAG_BITS_PER_CHAR;
+                }
+            }
+            return flagsString;
+        },
+        set: function(newValue) {
+            var newFlagChunks = chunk(newValue.split(''), FLAG_CHARS_PER_CHUNK);
+            while(newFlagChunks[newFlagChunks.length - 1]
+                    .filter(function(x){return x==="A"}).length === 
+                    newFlagChunks[newFlagChunks.length - 1].length) 
+                    newFlagChunks.pop();
+            var newChunks = [];
+            for(var i = 0; i < newFlagChunks.length; i++)
+            {
+                var flagChunk = newFlagChunks[i];
+                newChunks[i] = 0;
+                for(var j = 0; j < flagChunk.length; j ++)
+                {
+                    newChunks[i] += base64Chars.indexOf(flagChunk[j]) << (FLAG_BITS_PER_CHAR * j);
+                }
+            }
+            this.flagChunks = newChunks;
+        }
+    },
+    treasures: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    npcItems: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    shops: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    magicShops: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    magicLevels: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    magicPermissions: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    rng: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    enemyScripts: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    enemySkillsSpells: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    enemyStatusAttacks: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    
+    earlyRod: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    earlyCanoe: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    earlyOrdeals: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    earlyBridge: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    noPartyShuffle: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    speedHacks: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    identifyTreasures: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    dash: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    buyTen: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    houseMPRestoration: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    weaponStats: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    chanceToRun: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    spellBugs: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    enemyStatusAttackBug: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    funEnemyNames: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    paletteSwap: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    modernBattleField: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    
+    mapOrdeals: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    mapTitansTrove: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    mapConeriaDwarves: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    mapVolcanoIceRiver: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    
+    incentivizeMarsh: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    incentivizeConeria: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    incentivizeEarth: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    incentivizeIceCave: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    incentivizeOrdeals: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    incentivizeCrown: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    incentivizeTnt: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    incentivizeRuby: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    incentivizeFloater: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    incentivizeTail: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    incentivizeSlab: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    incentivizeAdamant: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    incentivizeSeaShrine: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    incentivizeVolcano: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    incentivizeMasamune: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    incentivizeRibbon: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    incentivizeRibbon2: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    incentivizePowerGauntlet: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    incentivizeWhiteShirt: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    incentivizeBlackShirt: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    incentivizeOpal: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    incentivize65K: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    incentivizeBad: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    incentivizeKingConeria: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    incentivizePrincess: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    incentivizeBikke: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    incentivizeAstos: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    incentivizeMatoya: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    incentivizeElfPrince: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    incentivizeNerrick: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    incentivizeSarda: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    incentivizeCanoeSage: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    incentivizeFairy: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    incentivizeLefein: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    incentivizeCubeBot: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    incentivizeSmith: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    incentivizeBridge: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    incentivizeLute: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    incentivizeShip: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    incentivizeCrystal: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    incentivizeHerb: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    incentivizeKey: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    incentivizeCanal: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    incentivizeRod: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    incentivizeCanoe: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    incentivizeOxyale: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    incentivizeChime: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    incentivizeCube: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    incentivizeXcalber: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++),
+    incentivizeBottle: bitProperty(Math.floor(index / FLAG_BITS_PER_CHUNK), index++)
+  }
 });
