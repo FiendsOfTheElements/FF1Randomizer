@@ -51,7 +51,7 @@ namespace FF1Lib
 			Item.Bridge, Item.Ship, Item.Canoe, Item.Canal,
 			Item.Lute, Item.Crystal, Item.Herb, Item.Key,
 			Item.Rod, Item.Cube, Item.Bottle, Item.Oxyale,
-			Item.Chime
+			Item.Chime, Item.Xcalber
 		};
 
 		public static readonly IReadOnlyCollection<Item> AllQuestItems =
