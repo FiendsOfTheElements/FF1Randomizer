@@ -141,12 +141,12 @@ var app = new Vue({
     
     music: {
         get: function() {
-            var values = ["Standard", "Nonsensical", "MusicDisabled", "None"];
+            var values = ["None", "Standard", "Nonsensical", "MusicDisabled"];
             if (this.flagString.length <= 20) return 0;
             return values[base64Chars.indexOf(this.flagString[20])];
         },
         set: function(newValue) {
-            var values = ["Standard", "Nonsensical", "MusicDisabled", "None"];
+            var values = ["None", "Standard", "Nonsensical", "MusicDisabled"];
             var newIndex = values.indexOf(newValue);
             var newChar = base64Chars[newIndex];
             this.flagString = this.flagString.substr(0,flagCharIndex) + newChar + this.flagString.substr(flagCharIndex+1);
