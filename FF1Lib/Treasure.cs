@@ -45,7 +45,8 @@ namespace FF1Lib
 			}
 
 			var treasureBlob = Get(TreasureOffset, TreasureSize * TreasureCount);
-			var treasurePool = UsedTreasureIndices.Select(x => (Item)treasureBlob[x]).ToList();
+			var treasurePool = UsedTreasureIndices.Select(x => (Item)treasureBlob[x])
+							.Concat(ItemLists.AllNonTreasureChestItems).ToList();
 
 			var mapLocationRequirements = ItemLocations.MapLocationRequirements.ToDictionary(x => x.Key, x => x.Value);
 			if (flags.MapVolcanoIceRiver)
