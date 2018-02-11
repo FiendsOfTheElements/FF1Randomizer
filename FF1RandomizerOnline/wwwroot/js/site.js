@@ -90,10 +90,27 @@ function sixBitProperty(flagCharIndex, multiplier) {
         }
     }
 }
+function dropdownProperty(flagCharIndex, dropdownValues) {
+    return {
+        get: function() {
+            if (this.flagString.length <= flagCharIndex) return dropdownValues[0];
+            return dropdownValues[base64Chars.indexOf(this.flagString[flagCharIndex]) % dropdownValues.length];
+        },
+        set: function(newValue) {
+            while(this.flagString.length <= flagCharIndex)
+                this.flagString += base64Chars[0];
+            var startingIndex = base64Chars.indexOf(this.flagString[flagCharIndex]);
+            startingIndex = startingIndex - (startingIndex % dropdownValues.length);
+            var newIndex = dropdownValues.indexOf(newValue);
+            var newChar = base64Chars[newIndex + startingIndex];
+            this.flagString = this.flagString.substr(0,flagCharIndex) + newChar + this.flagString.substr(flagCharIndex+1);
+        }
+    }
+}
 var app = new Vue({
   el: '#vueScope',
   data: {
-    flagString: "HPBPP0vMg%%%%CUUoUAAADDPf"// document.getElementById('Flags').value
+    flagString: "HPBPP0vMg%%%%CUUUKAAADYPf"// document.getElementById('Flags').value
   },
   computed: {
     flagsInput: {
@@ -126,39 +143,19 @@ var app = new Vue({
     
     
     priceScaleFactor: sixBitProperty(14, 0.1),
-    displayPriceScale: function () { 
-        var slider = this.priceScaleFactor;
-        return Math.round(100 / slider) + "% - " + Math.round(slider * 100) + "%"
-    },
     enemyScaleFactor: sixBitProperty(15, 0.1),
-    displayEnemyScale: function () { 
-        var slider = this.enemyScaleFactor;
-        return Math.round(100 / slider) + "% - " + Math.round(slider * 100) + "%"
-    },
     expMultiplier: sixBitProperty(16, 0.1),
     expBonus: sixBitProperty(17, 10),
     forcedPartyMembers: sixBitProperty(18, 1),
     
-    music: {
-        get: function() {
-            var values = ["None", "Standard", "Nonsensical", "MusicDisabled"];
-            if (this.flagString.length <= 20) return 0;
-            return values[base64Chars.indexOf(this.flagString[20])];
-        },
-        set: function(newValue) {
-            var values = ["None", "Standard", "Nonsensical", "MusicDisabled"];
-            var newIndex = values.indexOf(newValue);
-            var newChar = base64Chars[newIndex];
-            this.flagString = this.flagString.substr(0,flagCharIndex) + newChar + this.flagString.substr(flagCharIndex+1);
-        }
-    },
     identifyTreasures: bitProperty(21, 1),
     modernBattlefield: bitProperty(21, 2),
     
     // fun
-    funEnemyNames: bitProperty(22, 1),
-    paletteSwap: bitProperty(22, 2),
-    teamSteak: bitProperty(22, 4),
+    music: dropdownProperty(22, ["None", "Standard", "Nonsensical", "MusicDisabled"]),
+    funEnemyNames: bitProperty(22, 8),
+    paletteSwap: bitProperty(22, 16),
+    teamSteak: bitProperty(22, 32),
     
     // speed hacks
     speedHacks: bitProperty(23, 1),

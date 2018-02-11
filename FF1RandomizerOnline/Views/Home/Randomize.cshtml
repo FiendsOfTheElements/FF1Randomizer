@@ -121,12 +121,12 @@
 		<div class="section tab-pane" id="scale">
 			<div class="slider-cell">
 				<div class="col-xs-3"><label>Prices:</label></div>
-				<div class="col-xs-2"><label id="prices-display">{{displayPriceScale}}</label></div>
+				<div class="col-xs-2"><label id="prices-display">{{Math.round(100 / priceScaleFactor)}}% - {{Math.round(priceScaleFactor * 100)}}%</label></div>
 				<div class="col-xs-2"><input v-model="priceScaleFactor" type="range" asp-for="Flags.PriceScaleFactor" min="1.0" max="5.0" step="0.1" /></div>
 			</div>
 			<div class="slider-cell">
 				<div class="col-xs-3"><label>Enemy Stats:</label></div>
-				<div class="col-xs-2"><label id="enemy-stats-display">{{displayEnemyScale}}</label></div>
+				<div class="col-xs-2"><label id="enemy-stats-display">{{Math.round(100 / enemyScaleFactor)}}% - {{Math.round(enemyScaleFactor * 100)}}%</label></div>
 				<div class="col-xs-2"><input v-model="enemyScaleFactor" type="range" asp-for="Flags.EnemyScaleFactor" min="1.0" max="5.0" step="0.1" /></div>
 			</div>
 			<div class="slider-cell"></div>
