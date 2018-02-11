@@ -11,7 +11,7 @@
 
 function validateFlags() {
 	var flagsInput = document.getElementById("Flags");
-	var isValid = flagsInput.value.match(/^[A-Za-z0-9!%]{24}$/);
+	var isValid = flagsInput.value.match(/^[A-Za-z0-9!%]{21}$/);
 	if (isValid) {
 		flagsInput.parentElement.classList.remove("has-error");
 	} else {
@@ -110,7 +110,7 @@ function dropdownProperty(flagCharIndex, dropdownValues) {
 var app = new Vue({
   el: '#vueScope',
   data: {
-    flagString: "HPBPP0vMg%%%%CUUUKAAADYPf"// document.getElementById('Flags').value
+    flagString: "HPBPPSf%%7%%!A%fUUUNB"// document.getElementById('Flags').value
   },
   computed: {
     flagsInput: {
@@ -141,91 +141,92 @@ var app = new Vue({
     enemyStatusAttacks: bitProperty(3, 8),
     easyMode: bitProperty(3, 32),
     
-    
-    priceScaleFactor: sixBitProperty(14, 0.1),
-    enemyScaleFactor: sixBitProperty(15, 0.1),
-    expMultiplier: sixBitProperty(16, 0.1),
-    expBonus: sixBitProperty(17, 10),
-    forcedPartyMembers: sixBitProperty(18, 1),
-    
-    identifyTreasures: bitProperty(21, 1),
-    modernBattlefield: bitProperty(21, 2),
-    
-    // fun
-    music: dropdownProperty(22, ["None", "Standard", "Nonsensical", "MusicDisabled"]),
-    funEnemyNames: bitProperty(22, 8),
-    paletteSwap: bitProperty(22, 16),
-    teamSteak: bitProperty(22, 32),
-    
-    // speed hacks
-    speedHacks: bitProperty(23, 1),
-    noPartyShuffle: bitProperty(23, 2),
-    dash: bitProperty(23, 4),
-    buyTen: bitProperty(23, 8),
-    
-    // bug fixes
-    houseMPRestoration: bitProperty(24, 1),
-    weaponStats: bitProperty(24, 2),
-    chanceToRun: bitProperty(24, 4),
-    spellBugs: bitProperty(24, 8),
-    enemyStatusAttackBug: bitProperty(24, 16),
-    
     // map
     mapOrdeals: bitProperty(4, 1),
     mapTitansTrove: bitProperty(4, 2),
     mapConeriaDwarves: bitProperty(4, 4),
     mapVolcanoIceRiver: bitProperty(4, 8),
     
+    priceScaleFactor: sixBitProperty(16, 0.1),
+    enemyScaleFactor: sixBitProperty(17, 0.1),
+    expMultiplier: sixBitProperty(18, 0.1),
+    expBonus: sixBitProperty(19, 10),
+    forcedPartyMembers: sixBitProperty(20, 1),
+    
+    // conveniences
+    speedHacks: bitProperty(14, 1),
+    noPartyShuffle: bitProperty(14, 2),
+    dash: bitProperty(14, 4),
+    buyTen: bitProperty(14, 8),
+    identifyTreasures: bitProperty(14, 16),
+    modernBattlefield: bitProperty(14, 32),
+    
+    // bug fixes
+    houseMPRestoration: bitProperty(15, 1),
+    weaponStats: bitProperty(15, 2),
+    chanceToRun: bitProperty(15, 4),
+    spellBugs: bitProperty(15, 8),
+    enemyStatusAttackBug: bitProperty(15, 16),
+    
     // incentives
     incentivizeMarsh: bitProperty(5, 1),
-    incentivizeConeria: bitProperty(5, 2),
-    incentivizeEarth: bitProperty(5, 4),
+    incentivizeEarth: bitProperty(5, 2),
+    incentivizeVolcano: bitProperty(5, 4),
     incentivizeIceCave: bitProperty(5, 8),
     incentivizeOrdeals: bitProperty(5, 16),
-    incentivizeCrown: bitProperty(5, 32),
-    incentivizeTnt: bitProperty(6, 1),
+    incentivizeSeaShrine: bitProperty(5, 32),
+    
+    incentivizeCrown: bitProperty(6, 1),
     incentivizeRuby: bitProperty(6, 2),
-    incentivizeFloater: bitProperty(6, 4),
-    incentivizeTail: bitProperty(6, 8),
-    incentivizeSlab: bitProperty(6, 16),
-    incentivizeAdamant: bitProperty(6, 32),
-    incentivizeSeaShrine: bitProperty(7, 1),
-    incentivizeVolcano: bitProperty(7, 2),
-    incentivizeMasamune: bitProperty(7, 4),
-    incentivizeRibbon: bitProperty(7, 8),
-    incentivizeRibbon2: bitProperty(7, 16),
-    incentivizePowerGauntlet: bitProperty(7, 32),
-    incentivizeWhiteShirt: bitProperty(8, 1),
-    incentivizeBlackShirt: bitProperty(8, 2),
-    incentivizeOpal: bitProperty(8, 4),
-    incentivize65K: bitProperty(8, 8),
-    incentivizeBad: bitProperty(8, 16),
-    incentivizeKingConeria: bitProperty(8, 32),
-    incentivizePrincess: bitProperty(9, 1),
-    incentivizeBikke: bitProperty(9, 2),
-    incentivizeAstos: bitProperty(9, 4),
-    incentivizeMatoya: bitProperty(9, 8),
-    incentivizeElfPrince: bitProperty(9, 16),
-    incentivizeNerrick: bitProperty(9, 32),
-    incentivizeSarda: bitProperty(10, 1),
-    incentivizeCanoeSage: bitProperty(10, 2),
-    incentivizeFairy: bitProperty(10, 4),
-    incentivizeLefein: bitProperty(10, 8),
-    incentivizeCubeBot: bitProperty(10, 16),
-    incentivizeSmith: bitProperty(10, 32),
-    incentivizeBridge: bitProperty(11, 1),
-    incentivizeLute: bitProperty(11, 2),
-    incentivizeShip: bitProperty(11, 4),
-    incentivizeCrystal: bitProperty(11, 8),
-    incentivizeHerb: bitProperty(11, 16),
-    incentivizeKey: bitProperty(11, 32),
-    incentivizeCanal: bitProperty(12, 1),
-    incentivizeRod: bitProperty(12, 2),
-    incentivizeCanoe: bitProperty(12, 4),
-    incentivizeOxyale: bitProperty(12, 8),
-    incentivizeChime: bitProperty(12, 16),
-    incentivizeCube: bitProperty(12, 32),
-    incentivizeXcalber: bitProperty(13, 1),
-    incentivizeBottle: bitProperty(13, 2)
+    incentivizeTnt: bitProperty(6, 4),
+    incentivizeFloater: bitProperty(6, 8),
+    incentivizeTail: bitProperty(6, 16),
+    incentivizeSlab: bitProperty(6, 32),
+    
+    incentivizeKingConeria: bitProperty(7, 1),
+    incentivizePrincess: bitProperty(7, 2),
+    incentivizeBikke: bitProperty(7, 4),
+    incentivizeAstos: bitProperty(7, 8),
+    incentivizeMatoya: bitProperty(7, 16),
+    incentivizeElfPrince: bitProperty(7, 32),
+    
+    incentivizeNerrick: bitProperty(8, 1),
+    incentivizeSarda: bitProperty(8, 2),
+    incentivizeCanoeSage: bitProperty(8, 4),
+    incentivizeFairy: bitProperty(8, 8),
+    incentivizeLefein: bitProperty(8, 16),
+    incentivizeCubeBot: bitProperty(8, 32),
+    
+    incentivizeSmith: bitProperty(9, 1),
+    //incentivizeCaravan: bitProperty(9, 2),
+    incentivizeConeria: bitProperty(9, 4),
+    
+    incentivizeBridge: bitProperty(10, 1),
+    incentivizeLute: bitProperty(10, 2),
+    incentivizeShip: bitProperty(10, 4),
+    incentivizeCrystal: bitProperty(10, 8),
+    incentivizeHerb: bitProperty(10, 16),
+    incentivizeKey: bitProperty(10, 32),
+    
+    incentivizeCanal: bitProperty(11, 1),
+    incentivizeRod: bitProperty(11, 2),
+    incentivizeCanoe: bitProperty(11, 4),
+    incentivizeOxyale: bitProperty(11, 8),
+    incentivizeChime: bitProperty(11, 16),
+    incentivizeCube: bitProperty(11, 32),
+    
+    incentivizeXcalber: bitProperty(12, 1),
+    incentivizeBottle: bitProperty(12, 2),
+    incentivizeAdamant: bitProperty(12, 4),
+    incentivizeMasamune: bitProperty(12, 8),
+    incentivizeRibbon: bitProperty(12, 16),
+    incentivizeRibbon2: bitProperty(12, 32),
+    
+    incentivizePowerGauntlet: bitProperty(13, 1),
+    incentivizeWhiteShirt: bitProperty(13, 2),
+    incentivizeBlackShirt: bitProperty(13, 4),
+    incentivizeOpal: bitProperty(13, 8),
+    incentivize65K: bitProperty(13, 16),
+    incentivizeBad: bitProperty(13, 32)
   }
 });

@@ -33,14 +33,13 @@
 				<div class="checkbox-cell"><input v-model="magicShops" type="checkbox" asp-for="Flags.MagicShops" /> <label asp-for="Flags.MagicShops">Magic Shops</label></div>
 				<div class="checkbox-cell"><input v-model="magicLevels" type="checkbox" asp-for="Flags.MagicLevels" /> <label asp-for="Flags.MagicLevels">Magic Levels</label></div>
 				<div class="checkbox-cell"><input v-model="magicPermissions" class="indent" type="checkbox" asp-for="Flags.MagicPermissions" /> <label asp-for="Flags.MagicPermissions">Keep Permissions</label></div>
-				<div class="checkbox-cell"></div>
-				<div class="checkbox-cell"><input v-model="rng" type="checkbox" asp-for="Flags.Rng" /> <label asp-for="Flags.Rng">RNG Table</label><br /></div>
 			</div>
 			<div class="col-xs-4">
 				<div class="checkbox-cell"><input v-model="enemyScripts" type="checkbox" asp-for="Flags.EnemyScripts" /> <label asp-for="Flags.EnemyScripts">Enemy Scripts</label></div>
 				<div class="checkbox-cell"><input v-model="enemySkillsSpells" type="checkbox" asp-for="Flags.EnemySkillsSpells" /> <label asp-for="Flags.EnemySkillsSpells">Enemy Skills/Spells</label></div>
 				<div class="checkbox-cell"><input v-model="enemyStatusAttacks" type="checkbox" asp-for="Flags.EnemyStatusAttacks" /> <label asp-for="Flags.EnemyStatusAttacks">Enemy Status Attacks</label></div>
-				<div class="checkbox-cell"></div>
+                <div class="checkbox-cell"></div>
+                <div class="checkbox-cell"><input v-model="rng" type="checkbox" asp-for="Flags.Rng" /> <label asp-for="Flags.Rng">RNG Table</label><br /></div>
 			</div>
 		</div>
         <div class="section tab-pane" id="incentives">
@@ -154,12 +153,16 @@
 				<div class="checkbox-cell"><input v-model="earlyCanoe" type="checkbox" asp-for="Flags.EarlyCanoe" /> <label asp-for="Flags.EarlyCanoe">Early Canoe</label></div>
 				<div class="checkbox-cell"><input v-model="earlyOrdeals" type="checkbox" asp-for="Flags.EarlyOrdeals" /> <label asp-for="Flags.EarlyOrdeals">Early Ordeals</label></div>
 				<div class="checkbox-cell"><input v-model="earlyBridge" type="checkbox" asp-for="Flags.EarlyBridge" /> <label asp-for="Flags.EarlyBridge">Early Bridge</label></div>
+                <div class="checkbox-cell"></div>
 				<div class="checkbox-cell"><input v-model="noPartyShuffle" type="checkbox" asp-for="Flags.NoPartyShuffle" /> <label asp-for="Flags.NoPartyShuffle">No Party Shuffle</label></div>
 				<div class="checkbox-cell"><input v-model="speedHacks" type="checkbox" asp-for="Flags.SpeedHacks" /> <label asp-for="Flags.SpeedHacks">Speed Hacks</label></div>
-				<div class="checkbox-cell"><input v-model="identifyTreasures" type="checkbox" asp-for="Flags.IdentifyTreasures" /> <label asp-for="Flags.IdentifyTreasures">Identify Treasures</label></div>
 				<div class="checkbox-cell"><input v-model="dash" type="checkbox" asp-for="Flags.Dash" /> <label asp-for="Flags.Dash">Enable Dash</label></div>
 				<div class="checkbox-cell"><input v-model="buyTen" type="checkbox" asp-for="Flags.BuyTen" /> <label asp-for="Flags.BuyTen">Buy 10 Items</label></div>
-			</div>
+            </div>
+            <div class="col-xs-4">
+                <div class="checkbox-cell"><input v-model="identifyTreasures" type="checkbox" asp-for="Flags.IdentifyTreasures" /> <label asp-for="Flags.IdentifyTreasures">Identify Treasures</label></div>
+                <div class="checkbox-cell"><input v-model="modernBattlefield" type="checkbox" asp-for="Flags.ModernBattlefield" /> <label asp-for="Flags.ModernBattlefield">Modern Battlefield</label></div>
+            </div>
 		</div>
 		<div class="section tab-pane" id="bug-fixes">
 			<div class="col-xs-4">
@@ -172,19 +175,18 @@
 		</div>
 		<div class="section tab-pane" id="fun">
 			<div class="col-xs-4">
-				<div class="checkbox-cell"><input v-model="funEnemyNames" type="checkbox" asp-for="Flags.FunEnemyNames" /> <label asp-for="Flags.FunEnemyNames">Fun Enemy Names</label></div>
-				<div class="checkbox-cell"><input v-model="paletteSwap" type="checkbox" asp-for="Flags.PaletteSwap" /> <label asp-for="Flags.PaletteSwap">Palette Swap</label></div>
-                <div class="checkbox-cell"><input v-model="modernBattlefield" type="checkbox" asp-for="Flags.ModernBattlefield" /> <label asp-for="Flags.ModernBattlefield">Modern Battlefield</label></div>
+				<div class="checkbox-cell"><input type="checkbox" asp-for="Flags.FunEnemyNames" /> <label asp-for="Flags.FunEnemyNames">Fun Enemy Names</label></div>
+				<div class="checkbox-cell"><input type="checkbox" asp-for="Flags.PaletteSwap" /> <label asp-for="Flags.PaletteSwap">Palette Swap</label></div>
 			</div>
 			<div class="col-xs-4">
 				<div class="checkbox-cell">
-					<select v-model="teamSteak" asp-for="Flags.TeamSteak">
+					<select asp-for="Flags.TeamSteak">
 						<option value="false">Team TYRO</option>
 						<option value="true">Team STEAK</option>
 					</select>
 				</div>
 				<div class="checkbox-cell">
-					<select v-model="music" asp-for="Flags.Music">
+					<select asp-for="Flags.Music">
 						<option value="None">No Music Shuffle</option>
 						<option value="Standard">Standard Music Shuffle</option>
 						<option value="Nonsensical">Nonsensical Music Shuffle</option>
