@@ -51,10 +51,6 @@ namespace FF1Lib
 				ItemLocations.AllQuestItemLocations
 					.Where(x => AccessRequirement.Crystal.HasFlag(x.AccessRequirement) &&
 								validShipMapLocations.Contains(x.MapLocation)).ToList();
-			if (flags.AllowIceShip)
-			{
-				shipLocations = shipLocations.Concat(ItemLocations.IceCave).ToList();
-			}
 			if (incentivePool.Remove(Item.Ship))
 			{
 				foreach (var incentiveShipLocation in incentiveLocationPool.Where(x => shipLocations.Any(y => y.Address == x.Address)).ToList())
