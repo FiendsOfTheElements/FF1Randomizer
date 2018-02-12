@@ -267,6 +267,11 @@ namespace FF1Lib
 		[FlagString(Character = 13, FlagBit = 32)]
 		public bool IncentivizeBad { get; set; }
 
+		public string GetString()
+		{
+			return "HPBPPSf%%7%%!A%fUUUNB";
+		}
+
 		public static Dictionary<string, FlagStringAttribute> GetFlagStringAttributes()
 		{
 			var allProps =

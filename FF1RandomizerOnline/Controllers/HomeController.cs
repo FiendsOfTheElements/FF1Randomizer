@@ -38,7 +38,7 @@ namespace FF1RandomizerOnline.Controllers
 		[HttpGet]
 		public IActionResult Randomize()
 		{
-			return View(new RandomizeViewModel
+			var vm = new RandomizeViewModel
 			{
 				File = null,
 				Seed = Blob.Random(4).ToHex(),
@@ -142,7 +142,10 @@ namespace FF1RandomizerOnline.Controllers
 					MapVolcanoIceRiver = true,
 					MapTitansTrove = true
 				}
-			});
+			};
+			vm.FlagsInput = vm.Flags.GetString();
+
+			return View(vm);
 		}
 
 		[HttpPost]

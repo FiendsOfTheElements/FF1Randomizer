@@ -13,7 +13,7 @@
 	<div class="row">
 		<div class="col-xs-3"><input class="form-control" asp-for="Seed" type="text" oninput="validateSeed();" /></div>
 		<div class="col-xs-2"><input class="btn btn-default" type="button" value="New Seed" onclick="newSeed();" /></div>
-		<div class="col-xs-3"><input class="form-control" id="Flags" type="text" v-model="FlagsInput" /></div>
+		<div class="col-xs-3"><input class="form-control" v-model="FlagsInput" type="text" asp-for="FlagsInput" id="Flags" /></div>
 		<div class="col-xs-2"><input class="btn btn-default" type="button" value="Import..." onclick="importSeedFlags();" /></div>
 	</div>
 	<ul class="section nav nav-pills">

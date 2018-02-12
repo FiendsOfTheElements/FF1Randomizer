@@ -72,7 +72,7 @@ computedPropertyArray.FlagsInput = {
 var app = new Vue({
   el: '#vueScope',
   data: {
-    flagString: "HPBPPSf%%7%%!A%fUUUNB"// document.getElementById('Flags').value
+    flagString: document.getElementById('Flags').value
   },
   computed: computedPropertyArray
 });
