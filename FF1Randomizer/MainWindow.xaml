@@ -99,7 +99,7 @@
 						<ComboBoxItem>Nonsensical Music Shuffle</ComboBoxItem>
 						<ComboBoxItem>Disable Music</ComboBoxItem>
 					</ComboBox>
-					<CheckBox x:Name="ShuffleLeaderCheckBox" IsEnabled="True" IsChecked="True" Content="Map Leader Shuffle" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top" ToolTip="Shuffles which position is shown when walking around." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+					<CheckBox x:Name="ModernBattlefieldCheckBox" IsEnabled="True" IsChecked="True" Content="Modern Battlefield" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top" ToolTip="Battlefield layout inspired by subsequent Final Fantasy games." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
 				</Grid>
 			</TabItem>
 		</TabControl>
