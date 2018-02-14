@@ -65,6 +65,8 @@ namespace FF1Lib
 							 .Where(x => !forcedItems.Any(y => y.Address == x.Address))
 							 .ToList();
 			var treasurePool = allTreasures.ToList();
+			treasurePool.Remove(Item.Bridge);
+			treasurePool.Remove(Item.Ship);
 
 			List<IRewardSource> placedItems;
 			var itemLocationPool =
@@ -86,6 +88,11 @@ namespace FF1Lib
 			}
 			if (flags.EarlyCanoe)
 			{
+				itemLocationPool =
+						itemLocationPool
+							.Select(x => x.Address == ItemLocations.CanoeSage.Address
+									? new MapObject(ObjectId.CanoeSage, MapLocation.CresentLake, x.Item)
+									: x).ToList();
 				incentiveLocationPool =
 						incentiveLocationPool
 							.Select(x => x.Address == ItemLocations.CanoeSage.Address
@@ -94,6 +101,11 @@ namespace FF1Lib
 			}
 			if (flags.EarlyRod)
 			{
+				itemLocationPool =
+					itemLocationPool
+						.Select(x => x.Address == ItemLocations.Sarda.Address
+								? new MapObject(ObjectId.Sarda, MapLocation.SardasCave, x.Item)
+								: x).ToList();
 				incentiveLocationPool =
 					incentiveLocationPool
 						.Select(x => x.Address == ItemLocations.Sarda.Address
@@ -139,12 +151,16 @@ namespace FF1Lib
 						if (validShopIncentives.Any())
 						{
 							itemPick = validShopIncentives.PickRandom(rng);
+							incentives.Remove(itemPick);
 						}
 						else if (placedItems.Any(x => x.Item == Item.Bottle))
 						{
 							itemPick = ItemLists.AllConsumables.ToList().PickRandom(rng);
 						}
-						incentives.Remove(itemPick);
+						else
+						{
+							treasurePool.Remove(Item.Bottle);
+						}
 
 						placedItems.Add(new ItemShopSlot(caravanItemLocation, itemPick));
 					}
