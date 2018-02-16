@@ -237,7 +237,7 @@ namespace FF1Lib
 			var newAstosRoutine =
 				"AD2260F016A513F01220" + giveRewardRoutineAddress +
 				"B00FA007207392A97D" +
-				"20C590A51260A51160";
+				"20C590A93A60A51160";
 			Put(0x39338, Blob.FromHex(newAstosRoutine));
 			// See source: ~/asm/0E_9338_AstosAnyItem.asm
 		}

@@ -9,7 +9,7 @@
         JSR HideMapObject       ; hide (kill) Astos' map object (this object) 207392
         LDA #BTL_ASTOS          ; trigger battle with Astos A97D
         JSR TalkBattle          ; 20C590
-        LDA tmp+2               ; The NPC generic item gift text A512
+        LDA #$3A                ; The NPC generic item gift text A93A
         RTS                     ; 60
 @Default:
     LDA tmp+1                   ; otherwise print default text A511
