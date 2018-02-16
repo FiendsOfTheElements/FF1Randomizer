@@ -179,11 +179,13 @@ namespace FF1Lib
 				// 4. Then place all incentive locations that don't have special logic
 				foreach (var incentiveLocation in incentiveLocationPool.Where(x => !placedItems.Any(y => y.Address == x.Address)))
 				{
+					if (!incentives.Any()) break;
 					placedItems.Add(NewItemPlacement(incentiveLocation, incentives.SpliceRandom(rng)));
 				}
 
 				// 5. Then place remanining incentive items and unincentivized quest items in any other chest before ToFR
 				var leftoverItems = incentives.Concat(unincentivizedQuestItems).ToList();
+				leftoverItems.Shuffle(rng);
 				var leftoverItemLocations =
 					itemLocationPool
 						 .Where(x => !ItemLocations.ToFR.Any(y => y.Address == x.Address) &&
@@ -250,8 +252,7 @@ namespace FF1Lib
 						   .Any(y => currentMapChanges.HasFlag(y)));
 			Func<IEnumerable<IRewardSource>> currentItemLocations =
 				() => treasurePlacements
-						   .Where(x =>
-						   {
+						   .Where(x => {
 							   var locations = currentMapLocations().ToList();
 							   return locations.Contains(x.MapLocation) &&
 										currentAccess.HasFlag(x.AccessRequirement) &&
