@@ -69,10 +69,18 @@ computedPropertyArray.FlagsInput = {
         }
     };
 
+var initalFlagString = document.getElementById('Flags').value;
+var defaultIncentives = initalFlagString.substring(5, 14);
 var app = new Vue({
   el: '#vueScope',
   data: {
-    flagString: document.getElementById('Flags').value
+    flagString: initalFlagString
+  },
+  methods: {
+    incentivePreset: function(presetString) {
+        var newIncentives = presetString.length !== defaultIncentives.length ? defaultIncentives : presetString;
+        this.flagString = [this.flagString.substring(0, 5), newIncentives, this.flagString.substring(14)].join('');
+    }
   },
   computed: computedPropertyArray
 });

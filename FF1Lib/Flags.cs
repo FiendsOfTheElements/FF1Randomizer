@@ -126,8 +126,6 @@ namespace FF1Lib
 		public bool BuyTen { get; set; }
 		[FlagString(Character = 14, FlagBit = 16)]
 		public bool IdentifyTreasures { get; set; }
-		[FlagString(Character = 14, FlagBit = 32)]
-		public bool ModernBattlefield { get; set; }
 
 		[FlagString(Character = 15, FlagBit = 1)]
 		public bool HouseMPRestoration { get; set; }
@@ -140,6 +138,7 @@ namespace FF1Lib
 		[FlagString(Character = 15, FlagBit = 16)]
 		public bool EnemyStatusAttackBug { get; set; }
 
+		public bool ModernBattlefield { get; set; }
 		public bool FunEnemyNames { get; set; }
 		public bool PaletteSwap { get; set; }
 		public bool TeamSteak { get; set; }
@@ -269,7 +268,7 @@ namespace FF1Lib
 
 		public string GetString()
 		{
-			return "HPBPPSf%%7%%!A%fUUUNB";
+			return "HPBPP35P27n%MPffUUUNB";
 		}
 
 		public static Dictionary<string, FlagStringAttribute> GetFlagStringAttributes()
