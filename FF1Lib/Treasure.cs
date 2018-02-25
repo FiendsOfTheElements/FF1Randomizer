@@ -64,7 +64,7 @@ namespace FF1Lib
 		{
 			var canoeLocation = itemPlacements.First(x => x.Item == Item.Canoe).MapLocation;
 			var canalLocation = itemPlacements.First(x => x.Item == Item.Canal).MapLocation;
-			var earlyLocations =
+			var earlyCanoeLocations = 
 				new List<MapLocation> {
 					MapLocation.ConeriaTown,
 					MapLocation.ConeriaCastle,
@@ -72,14 +72,17 @@ namespace FF1Lib
 					MapLocation.DwarfCave,
 					MapLocation.MatoyasCave,
 					MapLocation.Pravoka,
-					MapLocation.IceCave,
-					MapLocation.GurguVolcano,
-					MapLocation.CresentLake,
 					MapLocation.ElflandTown,
 					MapLocation.ElflandCastle,
 					MapLocation.NorthwestCastle,
 					MapLocation.MarshCave
 				};
+			var earlyCanoe = earlyCanoeLocations.Contains(canoeLocation);
+			if (!earlyCanoe) return false;
+			var earlyLocations = earlyCanoeLocations.ToList();
+			earlyLocations.Add(MapLocation.CresentLake);
+			earlyLocations.Add(MapLocation.IceCave);
+			earlyLocations.Add(MapLocation.GurguVolcano);
 			var earlyCanal = earlyLocations.Contains(canalLocation);
 			if (!earlyCanal) return false;
 			if (coneriaDwarves)
@@ -96,8 +99,18 @@ namespace FF1Lib
 				if (veryEarlyCanoe && !veryEarlyCanal) return true;
 				return !volcanoIce;
 			}
+			if (volcanoIce) return true;
+			var uneditedMapCanalSafeLocations = 
+					new List<MapLocation> {
+						MapLocation.ConeriaTown,
+						MapLocation.ConeriaCastle,
+						MapLocation.TempleOfFiends,
+						MapLocation.MatoyasCave,
+						MapLocation.Pravoka,
+						MapLocation.IceCave
+					};
 
-			return true;
+			return !uneditedMapCanalSafeLocations.Contains(canalLocation);
 		}
 
 		/// <summary>
