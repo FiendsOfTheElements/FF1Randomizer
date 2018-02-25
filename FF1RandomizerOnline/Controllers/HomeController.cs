@@ -92,7 +92,7 @@ namespace FF1RandomizerOnline.Controllers
 					IncentivizeRibbon2 = false,
 					IncentivizePowerGauntlet = true,
 					IncentivizeWhiteShirt = true,
-					IncentivizeBlackShirt = true,
+					IncentivizeBlackShirt = false,
 					IncentivizeOpal = true,
 					Incentivize65K = false,
 					IncentivizeBad = false,
