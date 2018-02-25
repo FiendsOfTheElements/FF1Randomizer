@@ -134,6 +134,7 @@ namespace FF1Lib
 			do
 			{
 				sanityCounter++;
+				if (sanityCounter > 10000) throw new InvalidOperationException("Invalid flag set");
 				// 1. (Re)Initialize lists inside of loop
 				placedItems = forcedItems.ToList();
 				var incentives = incentivePool.ToList();
