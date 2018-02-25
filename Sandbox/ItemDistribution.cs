@@ -56,7 +56,6 @@ namespace Sandbox
 				placedItems = ItemPlacement.PlaceSaneItems(rng,
 														   flags,
 														   incentivesData,
-														   forcedItems,
 														   treasurePool,
 														   itemShopItem,
 														   ItemLocations.MapLocationRequirements);

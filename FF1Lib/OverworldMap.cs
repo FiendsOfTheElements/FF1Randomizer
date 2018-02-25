@@ -16,10 +16,36 @@ namespace FF1Lib
 	public class OverworldMap
 	{
 		private readonly FF1Rom _rom;
-		public OverworldMap(FF1Rom rom)
+		public OverworldMap(FF1Rom rom, IMapEditFlags flags)
 		{
 			_rom = rom;
+			var mapLocationRequirements = ItemLocations.MapLocationRequirements.ToDictionary(x => x.Key, x => x.Value);
+
+			if (flags.MapVolcanoIceRiver)
+			{
+				MapEditsToApply.Add(VolcanoIceRiver);
+				mapLocationRequirements[MapLocation.GurguVolcano].Add(MapChange.Bridge | MapChange.Canoe);
+				mapLocationRequirements[MapLocation.CresentLake].Add(MapChange.Bridge | MapChange.Canoe);
+				mapLocationRequirements[MapLocation.ElflandTown].Add(MapChange.Bridge | MapChange.Canoe);
+				mapLocationRequirements[MapLocation.ElflandCastle].Add(MapChange.Bridge | MapChange.Canoe);
+				mapLocationRequirements[MapLocation.NorthwestCastle].Add(MapChange.Bridge | MapChange.Canoe);
+				mapLocationRequirements[MapLocation.MarshCave].Add(MapChange.Bridge | MapChange.Canoe);
+				mapLocationRequirements[MapLocation.DwarfCave].Add(MapChange.Bridge | MapChange.Canoe);
+			}
+			if (flags.MapConeriaDwarves)
+			{
+				MapEditsToApply.Add(ConeriaToDwarves);
+				mapLocationRequirements[MapLocation.DwarfCave] = new List<MapChange> { MapChange.None };
+			}
+			if (flags.MapTitansTrove)
+			{
+				mapLocationRequirements[MapLocation.TitansTunnelWest] = new List<MapChange> {
+					MapChange.Canal | MapChange.Ship | MapChange.TitanFed, MapChange.Airship | MapChange.TitanFed };
+			}
+			MapLocationRequirements = mapLocationRequirements;
 		}
+		public Dictionary<MapLocation, List<MapChange>> MapLocationRequirements;
+		
 		public const byte GrassTile = 0x00;
 		public const byte RiverTile = 0x44;
 		public const byte MountainTopLeft = 0x10;

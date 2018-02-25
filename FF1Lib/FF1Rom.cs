@@ -89,22 +89,12 @@ namespace FF1Lib
 			EasterEggs();
 			DynamicWindowColor();
 			PermanentCaravan();
-			var map = new OverworldMap(this);
-			var incentivesData = new IncentiveData(flags);
+			var map = new OverworldMap(this, flags);
 			var shopItemLocation = ItemLocations.CaravanItemShop1;
+			
 			if (flags.ModernBattlefield)
 			{
 				SetBattleUI(true);
-			}
-
-			if (flags.MapConeriaDwarves)
-			{
-				map.MapEditsToApply.Add(OverworldMap.ConeriaToDwarves);
-			}
-
-			if (flags.MapVolcanoIceRiver)
-			{
-				map.MapEditsToApply.Add(OverworldMap.VolcanoIceRiver);
 			}
 
 			if (flags.MapTitansTrove)
@@ -125,7 +115,8 @@ namespace FF1Lib
 
 			if (flags.Treasures || flags.NPCItems)
 			{
-				var placements = ShuffleTreasures(rng, flags, incentivesData, shopItemLocation);
+				var incentivesData = new IncentiveData(flags, map.MapLocationRequirements);
+				var placements = ShuffleTreasures(rng, flags, incentivesData, shopItemLocation, map.MapLocationRequirements);
 				if (IsCanalSoftLockPossible(placements, flags.MapVolcanoIceRiver, flags.MapConeriaDwarves))
 				{
 					map.MapEditsToApply.Add(OverworldMap.CanalSoftLockMountain);

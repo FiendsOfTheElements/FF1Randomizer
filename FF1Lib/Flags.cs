@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace FF1Lib
 {
-	public interface IIncentiveFlags
+	public interface IIncentiveFlags : IItemShuffleFlags
 	{
 		bool IncentivizeKingConeria { get; }
 		bool IncentivizePrincess { get; }
@@ -59,18 +59,22 @@ namespace FF1Lib
 		bool Incentivize65K { get; }
 		bool IncentivizeBad { get; }
 	}
-	public interface ITreasureShuffleFlags
+	public interface IItemShuffleFlags 
 	{
 		bool Treasures { get; }
 		bool NPCItems { get; }
 		bool EarlyRod { get; }
 		bool EarlyCanoe { get; }
 		bool EarlyOrdeals { get; }
-		bool EarlyBridge { get; }
-
+	}
+	public interface IMapEditFlags 
+	{
 		bool MapConeriaDwarves { get; }
 		bool MapVolcanoIceRiver { get; }
 		bool MapTitansTrove { get; }
+	}
+	public interface ITreasureShuffleFlags : IItemShuffleFlags, IMapEditFlags
+	{
 	}
 	public class Flags : ITreasureShuffleFlags, IIncentiveFlags
 	{

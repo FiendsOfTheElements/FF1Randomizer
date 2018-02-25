@@ -1,12 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace FF1Lib
 {
 	public class IncentiveData
 	{
-		public IncentiveData(IIncentiveFlags flags)
+		public IncentiveData(IIncentiveFlags flags,
+							Dictionary<MapLocation, List<MapChange>> mapLocationRequirements)
 		{
+			var forcedItemPlacements = ItemLocations.AllOtherItemLocations.ToList();
+			if (!flags.NPCItems) forcedItemPlacements.AddRange(ItemLocations.AllNonTreasureItemLocations);
+			if (!flags.Treasures) forcedItemPlacements.AddRange(ItemLocations.AllTreasures);
 			var incentivePool = new List<Item>();
 			if (flags.IncentivizeBridge)
 			{
@@ -129,7 +134,6 @@ namespace FF1Lib
 			{
 				incentivePool.Add(Item.Cloth);
 			}
-			IncentiveItems = incentivePool;
 
 			var incentiveLocationPool = new List<IRewardSource>();
 			if (flags.IncentivizeKingConeria)
@@ -212,9 +216,107 @@ namespace FF1Lib
 			{
 				incentiveLocationPool.Add(ItemLocations.OrdealsMajor);
 			}
-			IncentiveLocations = incentiveLocationPool;
+			var itemLocationPool =
+				ItemLocations.AllTreasures.Concat(ItemLocations.AllNPCItemLocations)
+						  .Where(x => !x.IsUnused && !forcedItemPlacements.Any(y => y.Address == x.Address))
+						  .ToList();
+			if (flags.EarlyOrdeals)
+			{
+				itemLocationPool =
+					itemLocationPool
+						.Select(x => ((x as TreasureChest)?.AccessRequirement.HasFlag(AccessRequirement.Crown) ?? false)
+								? new TreasureChest(x, x.Item, x.AccessRequirement & ~AccessRequirement.Crown)
+								: x).ToList();
+				incentiveLocationPool =
+					incentiveLocationPool
+						.Select(x => ((x as TreasureChest)?.AccessRequirement.HasFlag(AccessRequirement.Crown) ?? false)
+							? new TreasureChest(x, x.Item, x.AccessRequirement & ~AccessRequirement.Crown)
+							: x).ToList();
+			}
+			if (flags.EarlyCanoe)
+			{
+				itemLocationPool =
+						itemLocationPool
+							.Select(x => x.Address == ItemLocations.CanoeSage.Address
+									? new MapObject(ObjectId.CanoeSage, MapLocation.CresentLake, x.Item)
+									: x).ToList();
+				incentiveLocationPool =
+						incentiveLocationPool
+							.Select(x => x.Address == ItemLocations.CanoeSage.Address
+									? new MapObject(ObjectId.CanoeSage, MapLocation.CresentLake, x.Item)
+									: x).ToList();
+			}
+			if (flags.EarlyRod)
+			{
+				itemLocationPool =
+					itemLocationPool
+						.Select(x => x.Address == ItemLocations.Sarda.Address
+								? new MapObject(ObjectId.Sarda, MapLocation.SardasCave, x.Item)
+								: x).ToList();
+				incentiveLocationPool =
+					incentiveLocationPool
+						.Select(x => x.Address == ItemLocations.Sarda.Address
+								? new MapObject(ObjectId.Sarda, MapLocation.SardasCave, x.Item)
+								: x).ToList();
+			}
+			
+			var allMapLocations = Enum.GetValues(typeof(MapLocation))
+									  .Cast<MapLocation>().ToList();
+			var startingMapLocations = allMapLocations.Where(x => mapLocationRequirements[x].Any(y => y == MapChange.None));
+			var bridgeLocations =
+				ItemLocations.AllQuestItemLocations
+					.Where(x => x.AccessRequirement == AccessRequirement.None &&
+								startingMapLocations.Contains(x.MapLocation)).ToList();
+			if (incentivePool.Remove(Item.Bridge))
+			{
+				foreach (var incentiveBridgeLocation in incentiveLocationPool.Where(x => bridgeLocations.Any(y => y.Address == x.Address)).ToList())
+				{
+					bridgeLocations.Add(incentiveBridgeLocation);
+					bridgeLocations.Add(incentiveBridgeLocation);
+					bridgeLocations.Add(incentiveBridgeLocation);
+				}
+			}
+							 
+			var validShipMapLocations =
+				allMapLocations.Where(x => mapLocationRequirements[x].Any(y => MapChange.Bridge.HasFlag(y)));
+			var shipLocations =
+				ItemLocations.AllQuestItemLocations
+					.Where(x => AccessRequirement.Crystal.HasFlag(x.AccessRequirement) &&
+								validShipMapLocations.Contains(x.MapLocation)).ToList();
+			if (incentivePool.Remove(Item.Ship))
+			{
+				foreach (var incentiveShipLocation in incentiveLocationPool.Where(x => shipLocations.Any(y => y.Address == x.Address)).ToList())
+				{
+					shipLocations.Add(incentiveShipLocation);
+					shipLocations.Add(incentiveShipLocation);
+					shipLocations.Add(incentiveShipLocation);
+					shipLocations.Add(incentiveShipLocation);
+				}
+			}
+			
+			
+			foreach(var item in forcedItemPlacements.Select(x => x.Item))
+			{
+				incentivePool.Remove(item);
+			}
+			ForcedItemPlacements = forcedItemPlacements.ToList();
+			IncentiveItems = incentivePool.ToList();
+			BridgeLocations = bridgeLocations
+							 .Where(x => !forcedItemPlacements.Any(y => y.Address == x.Address))
+							 .ToList();
+			ShipLocations = shipLocations
+							 .Where(x => !forcedItemPlacements.Any(y => y.Address == x.Address))
+							 .ToList();
+			IncentiveLocations = incentiveLocationPool
+							 .Where(x => !forcedItemPlacements.Any(y => y.Address == x.Address))
+							 .ToList();
+			AllValidItemLocations = itemLocationPool.ToList();
 		}
 
+		public IEnumerable<IRewardSource> BridgeLocations { get; }
+		public IEnumerable<IRewardSource> ShipLocations { get; }
+		public IEnumerable<IRewardSource> ForcedItemPlacements { get; }
+		public IEnumerable<IRewardSource> AllValidItemLocations { get; }
 		public IEnumerable<IRewardSource> IncentiveLocations { get; }
 		public IEnumerable<Item> IncentiveItems { get; }
 

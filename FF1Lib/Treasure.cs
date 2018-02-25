@@ -22,9 +22,12 @@ namespace FF1Lib
 
 		public static readonly List<int> UsedTreasureIndices = Enumerable.Range(0, 256).Except(UnusedTreasureIndices).ToList(); // This maps a compacted list back to the game's array, skipping the unused slots.
 
-		public List<IRewardSource> ShuffleTreasures(MT19337 rng, ITreasureShuffleFlags flags, IncentiveData incentivesData, ItemShopSlot caravanItemLocation)
+		public List<IRewardSource> ShuffleTreasures(MT19337 rng, 
+													ITreasureShuffleFlags flags, 
+													IncentiveData incentivesData, 
+													ItemShopSlot caravanItemLocation,
+													Dictionary<MapLocation, List<MapChange>> mapLocationRequirements)
 		{
-			var forcedItems = ItemLocations.AllOtherItemLocations.ToList();
 			if (flags.NPCItems)
 			{
 				EnableBridgeShipCanalAnywhere();
@@ -34,52 +37,22 @@ namespace FF1Lib
 				{
 					Put(0x393E1, Blob.FromHex("207F90A51160"));
 				}
-				if (!flags.Treasures)
-				{
-					forcedItems.AddRange(ItemLocations.AllTreasures);
-				}
-			}
-			else
-			{
-				forcedItems = ItemLocations.AllNonTreasureItemLocations.ToList();
 			}
 
 			var treasureBlob = Get(TreasureOffset, TreasureSize * TreasureCount);
 			var treasurePool = UsedTreasureIndices.Select(x => (Item)treasureBlob[x])
 							.Concat(ItemLists.AllNonTreasureChestItems).ToList();
 
-			var mapLocationRequirements = ItemLocations.MapLocationRequirements.ToDictionary(x => x.Key, x => x.Value);
-			if (flags.MapVolcanoIceRiver)
-			{
-				mapLocationRequirements[MapLocation.GurguVolcano].Add(MapChange.Bridge | MapChange.Canoe);
-				mapLocationRequirements[MapLocation.CresentLake].Add(MapChange.Bridge | MapChange.Canoe);
-				mapLocationRequirements[MapLocation.ElflandTown].Add(MapChange.Bridge | MapChange.Canoe);
-				mapLocationRequirements[MapLocation.ElflandCastle].Add(MapChange.Bridge | MapChange.Canoe);
-				mapLocationRequirements[MapLocation.NorthwestCastle].Add(MapChange.Bridge | MapChange.Canoe);
-				mapLocationRequirements[MapLocation.MarshCave].Add(MapChange.Bridge | MapChange.Canoe);
-				mapLocationRequirements[MapLocation.DwarfCave].Add(MapChange.Bridge | MapChange.Canoe);
-			}
-			if (flags.MapConeriaDwarves)
-			{
-				mapLocationRequirements[MapLocation.DwarfCave] = new List<MapChange> { MapChange.None };
-			}
-			if (flags.MapTitansTrove)
-			{
-				mapLocationRequirements[MapLocation.TitansTunnelWest] = new List<MapChange> {
-					MapChange.Canal | MapChange.Ship | MapChange.TitanFed, MapChange.Airship | MapChange.TitanFed };
-			}
-
 			var placedItems =
 				ItemPlacement.PlaceSaneItems(rng,
 											flags,
 											incentivesData,
-											forcedItems,
 											treasurePool,
 											caravanItemLocation,
 											mapLocationRequirements);
 
 			// Output the results tothe ROM
-			foreach (var item in placedItems.Where(x => !x.IsUnused && x.Address < 0x80000 && !forcedItems.Any(y => y.Address == x.Address)))
+			foreach (var item in placedItems.Where(x => !x.IsUnused && x.Address < 0x80000 && !incentivesData.ForcedItemPlacements.Any(y => y.Address == x.Address)))
 			{
 				//Debug.WriteLine(item.SpoilerText);
 				item.Put(this);
