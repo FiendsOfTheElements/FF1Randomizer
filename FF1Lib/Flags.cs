@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -266,11 +267,6 @@ namespace FF1Lib
 		[FlagString(Character = 13, FlagBit = 32)]
 		public bool IncentivizeBad { get; set; }
 
-		public string GetString()
-		{
-			return "HPBPP35P27n%MPffUUUNB";
-		}
-
 		public static Dictionary<string, FlagStringAttribute> GetFlagStringAttributes()
 		{
 			var allProps =
@@ -280,6 +276,65 @@ namespace FF1Lib
 				.ToDictionary(x => x.Name,
 							x => x.GetCustomAttributes(typeof(FlagStringAttribute), false)
 								.FirstOrDefault() as FlagStringAttribute);
+		}
+
+		public string GetString()
+		{
+			return EncodeFlagsText(this);
+		}
+
+		// ! and % are printable in FF, + and / are not.
+		private const string base64CharString = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!%";
+		public static string EncodeFlagsText(Flags flags)
+		{
+			var base64Chars = base64CharString.ToCharArray();
+			var flagAttributes = GetFlagStringAttributes().GroupBy(x => x.Value.Character).OrderBy(x => x.Key);
+			var result = "";
+
+			foreach (var flagCharacterPropertyGroup in flagAttributes)
+			{
+				var flagCharacterIndex = 0;
+				foreach (var flagProperty in flagCharacterPropertyGroup)
+				{
+					var flagsPropertyValue = typeof(Flags).GetProperty(flagProperty.Key).GetValue(flags, null);
+					if (flagProperty.Value.FlagBit > 0)
+					{
+						if ((flagsPropertyValue as bool?).GetValueOrDefault())
+							flagCharacterIndex += flagProperty.Value.FlagBit;
+						continue;
+					}
+					flagCharacterIndex += Convert.ToInt32((Convert.ToDouble(flagsPropertyValue) / flagProperty.Value.Multiplier));
+				}
+				flagCharacterIndex = flagCharacterIndex % 64;
+				result += base64Chars[flagCharacterIndex];
+			}
+			return result;
+		}
+
+		public static Flags DecodeFlagsText(string text)
+		{
+			var inputCharacters = text.ToCharArray();
+			var flagAttributes = GetFlagStringAttributes().GroupBy(x => x.Value.Character).ToDictionary(x => x.Key, x => x.ToList());
+			var result = new Flags();
+			var index = 0;
+			foreach (var inputChar in inputCharacters)
+			{
+				var charFlagValue = base64CharString.IndexOf(inputChar);
+				var flagAttributesForChar = flagAttributes[index];
+				if (flagAttributesForChar.Any(x => x.Value.FlagBit < 1))
+				{
+					var multiplierAttribute = flagAttributesForChar.First(x => x.Value.FlagBit < 1);
+					var outputValue = charFlagValue * multiplierAttribute.Value.Multiplier;
+					typeof(Flags).GetProperty(multiplierAttribute.Key).SetValue(result, outputValue);
+					continue;
+				}
+				foreach (var flagAttribute in flagAttributesForChar)
+				{
+					var outputValue = (charFlagValue & flagAttribute.Value.FlagBit) > 0;
+					typeof(Flags).GetProperty(flagAttribute.Key).SetValue(result, outputValue);
+				}
+			}
+			return result;
 		}
 	}
 

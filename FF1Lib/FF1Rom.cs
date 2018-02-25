@@ -12,7 +12,7 @@ namespace FF1Lib
 	// ReSharper disable once InconsistentNaming
 	public partial class FF1Rom : NesRom
 	{
-		public const string Version = "2.0.0 NPC Shuffle";
+		public const string Version = "2.0.0";
 
 		public const int CopyrightOffset1 = 0x384A8;
 		public const int CopyrightOffset2 = 0x384BA;
@@ -279,7 +279,7 @@ namespace FF1Lib
 				ShuffleMusic(flags.Music, rng);
 			}
 
-			WriteSeedAndFlags(Version, seed.ToHex(), EncodeFlagsText(flags));
+			WriteSeedAndFlags(Version, seed.ToHex(), Flags.EncodeFlagsText(flags));
 			ExtraTrackingAndInitCode();
 		}
 		private void ExtraTrackingAndInitCode()
@@ -398,7 +398,13 @@ namespace FF1Lib
 		public void WriteSeedAndFlags(string version, string seed, string flags)
 		{
 			var seedBytes = FF1Text.TextToBytes($"{version}  {seed}", useDTE: false);
-			var flagBytes = FF1Text.TextToBytes($"{flags}", useDTE: false);
+			var flagHashText = Convert.ToBase64String(BitConverter.GetBytes(flags.GetHashCode()));
+			flagHashText = flagHashText.TrimEnd('=');
+			flagHashText = flagHashText.Replace('+', '!');
+			flagHashText = flagHashText.Replace('/', '%');
+
+			var flagBytes = FF1Text.TextToBytes($"{flagHashText}", useDTE: false);
+			flagBytes = flagBytes.SubBlob(0, Math.Min(15, flagBytes.Length));
 			var padding = new byte[16 - flagBytes.Length];
 			for (int i = 0; i < padding.Length; i++)
 			{
@@ -454,180 +460,6 @@ namespace FF1Lib
 			byte firstLevelRequirement = Data[0x7C04B];
 			firstLevelRequirement = (byte)(firstLevelRequirement / multiplier);
 			Data[0x7C04B] = firstLevelRequirement;
-		}
-
-		public static string EncodeFlagsText(Flags flags)
-		{
-			var bits = new BitArray(32);
-			int i = 0;
-
-			bits[i++] = flags.Treasures;
-			bits[i++] = flags.IncentivizeIceCave;
-			bits[i++] = flags.IncentivizeOrdeals;
-			bits[i++] = flags.Shops;
-			bits[i++] = flags.MagicShops;
-			bits[i++] = flags.MagicLevels;
-			bits[i++] = flags.MagicPermissions;
-			bits[i++] = flags.Rng;
-			bits[i++] = flags.EnemyScripts;
-			bits[i++] = flags.EnemySkillsSpells;
-			bits[i++] = flags.EnemyStatusAttacks;
-			bits[i++] = flags.Ordeals;
-
-			bits[i++] = flags.EarlyRod;
-			bits[i++] = flags.EarlyCanoe;
-			bits[i++] = flags.EarlyOrdeals;
-			bits[i++] = flags.EarlyBridge;
-			bits[i++] = flags.NoPartyShuffle;
-			bits[i++] = flags.SpeedHacks;
-			bits[i++] = flags.IdentifyTreasures;
-			bits[i++] = flags.Dash;
-			bits[i++] = flags.BuyTen;
-
-			bits[i++] = flags.HouseMPRestoration;
-			bits[i++] = flags.WeaponStats;
-			bits[i++] = flags.ChanceToRun;
-			bits[i++] = flags.SpellBugs;
-			bits[i++] = flags.EnemyStatusAttackBug;
-
-			bits[i++] = flags.FunEnemyNames;
-			bits[i++] = flags.PaletteSwap;
-			bits[i++] = flags.ModernBattlefield;
-			bits[i++] = flags.TeamSteak;
-			bits[i++] = flags.Music == MusicShuffle.Standard || flags.Music == MusicShuffle.MusicDisabled;
-			bits[i++] = flags.Music == MusicShuffle.Nonsensical || flags.Music == MusicShuffle.MusicDisabled;
-
-			System.Diagnostics.Debug.Assert(i == bits.Length, "Unused bits writing flags.");
-
-			var bytes = new byte[4];
-			bits.CopyTo(bytes, 0);
-
-			var text = Convert.ToBase64String(bytes);
-			text = text.TrimEnd('=');
-			text = text.Replace('+', '!');
-			text = text.Replace('/', '%');
-
-			text += SliderToBase64((int)(flags.PriceScaleFactor * 10.0));
-			text += SliderToBase64((int)(flags.EnemyScaleFactor * 10.0));
-			text += SliderToBase64((int)(flags.ExpMultiplier * 10.0));
-			text += SliderToBase64((int)(flags.ExpBonus / 10.0));
-			text += SliderToBase64(flags.ForcedPartyMembers);
-
-			return text;
-		}
-
-		public static Flags DecodeFlagsText(string text)
-		{
-			var bitString = text.Substring(0, 6);
-			bitString = bitString.Replace('!', '+');
-			bitString = bitString.Replace('%', '/');
-			bitString += "==";
-
-			var bytes = Convert.FromBase64String(bitString);
-			var bits = new BitArray(bytes);
-			int i = 0;
-
-			Flags flags = new Flags();
-			flags.Treasures = bits[i++];
-			flags.IncentivizeIceCave = bits[i++];
-			flags.IncentivizeOrdeals = bits[i++];
-			flags.Shops = bits[i++];
-			flags.MagicShops = bits[i++];
-			flags.MagicLevels = bits[i++];
-			flags.MagicPermissions = bits[i++];
-			flags.Rng = bits[i++];
-			flags.EnemyScripts = bits[i++];
-			flags.EnemySkillsSpells = bits[i++];
-			flags.EnemyStatusAttacks = bits[i++];
-			flags.Ordeals = bits[i++];
-
-			flags.EarlyRod = bits[i++];
-			flags.EarlyCanoe = bits[i++];
-			flags.EarlyOrdeals = bits[i++];
-			flags.EarlyBridge = bits[i++];
-			flags.NoPartyShuffle = bits[i++];
-			flags.SpeedHacks = bits[i++];
-			flags.IdentifyTreasures = bits[i++];
-			flags.Dash = bits[i++];
-			flags.BuyTen = bits[i++];
-
-			flags.HouseMPRestoration = bits[i++];
-			flags.WeaponStats = bits[i++];
-			flags.ChanceToRun = bits[i++];
-			flags.SpellBugs = bits[i++];
-			flags.EnemyStatusAttackBug = bits[i++];
-
-			flags.FunEnemyNames = bits[i++];
-			flags.PaletteSwap = bits[i++];
-			flags.ModernBattlefield = bits[i++];
-			flags.TeamSteak = bits[i++];
-
-			flags.Music =
-				bits[i] && !bits[i + 1] ? MusicShuffle.Standard :
-				!bits[i] && bits[i + 1] ? MusicShuffle.Nonsensical :
-				bits[i] && bits[i + 1] ? MusicShuffle.MusicDisabled :
-				MusicShuffle.None;
-			i += 2;
-
-			flags.PriceScaleFactor = Base64ToSlider(text[6]) / 10.0;
-			flags.EnemyScaleFactor = Base64ToSlider(text[7]) / 10.0;
-			flags.ExpMultiplier = Base64ToSlider(text[8]) / 10.0;
-			flags.ExpBonus = (int)(Base64ToSlider(text[9]) * 10.0);
-			flags.ForcedPartyMembers = Base64ToSlider(text[10]);
-
-			return flags;
-		}
-
-		private static char SliderToBase64(int value)
-		{
-			if (value < 0 || value > 63)
-			{
-				throw new ArgumentOutOfRangeException(nameof(value), value, "Value must be between 0 and 63.");
-			}
-			else if (value < 26)
-			{
-				return (char)('A' + value);
-			}
-			else if (value < 52)
-			{
-				return (char)('a' + value - 26);
-			}
-			else if (value < 62)
-			{
-				return (char)('0' + value - 52);
-			}
-			else if (value == 62)
-			{
-				return '!';
-			}
-			else
-			{
-				return '%';
-			}
-		}
-
-		private static int Base64ToSlider(char value)
-		{
-			if (value >= 'A' && value <= 'Z')
-			{
-				return value - 'A';
-			}
-			else if (value >= 'a' && value <= 'z')
-			{
-				return value - 'a' + 26;
-			}
-			else if (value >= '0' && value <= '9')
-			{
-				return value - '0' + 52;
-			}
-			else if (value == '!')
-			{
-				return 62;
-			}
-			else
-			{
-				return 63;
-			}
 		}
 	}
 }

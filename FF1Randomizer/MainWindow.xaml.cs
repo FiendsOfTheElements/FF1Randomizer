@@ -76,8 +76,7 @@ namespace FF1Randomizer
 
 		private void RomButton_Click(object sender, RoutedEventArgs e)
 		{
-			var openFileDialog = new OpenFileDialog
-			{
+			var openFileDialog = new OpenFileDialog {
 				Filter = "NES ROM files (*.nes)|*.nes"
 			};
 
@@ -134,7 +133,7 @@ namespace FF1Randomizer
 		private void GenerateButton_Click(object sender, RoutedEventArgs e)
 		{
 			var rom = new FF1Rom(_filename);
-			rom.Randomize(_seed, FF1Rom.DecodeFlagsText(FlagsTextBox.Text));
+			rom.Randomize(_seed, Flags.DecodeFlagsText(FlagsTextBox.Text));
 
 			var fileRoot = _filename.Substring(0, _filename.LastIndexOf("."));
 			var outputFilename = $"{fileRoot}_{_seed.ToHex()}_{FlagsTextBox.Text}.nes";
@@ -250,7 +249,7 @@ namespace FF1Randomizer
 			SeedTextBox.Text = parts[0];
 			SetSeed();
 
-			ApplyFlags(FF1Rom.DecodeFlagsText(parts[1]));
+			ApplyFlags(Flags.DecodeFlagsText(parts[1]));
 		}
 
 		private void SetScaleFactorLabel(Slider slider, Label label)
@@ -278,14 +277,13 @@ namespace FF1Randomizer
 		}
 
 		private void SetFlagsText(object sender, RoutedEventArgs e)
-        {
-            if (!IsInitialized || FlagsTextBox == null)
-            {
-                return;
-            }
-
-            FlagsTextBox.Text = FF1Rom.EncodeFlagsText(new Flags
+		{
+			if (!IsInitialized || FlagsTextBox == null)
 			{
+				return;
+			}
+
+			FlagsTextBox.Text = Flags.EncodeFlagsText(new Flags {
 				Treasures = TreasuresCheckBox.IsChecked == true,
 				IncentivizeIceCave = IncentivizeIceCaveCheckBox.IsChecked == true,
 				IncentivizeOrdeals = IncentivizeOrdealsCheckBox.IsChecked == true,
@@ -331,7 +329,7 @@ namespace FF1Randomizer
 				ExpBonus = (int)ExpBonusSlider.Value,
 				ForcedPartyMembers = (int)PartyScaleFactorSlider.Value
 			});
-        }
+		}
 
 		void ApplyFlags(Flags flags)
 		{

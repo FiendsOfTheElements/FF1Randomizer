@@ -38,64 +38,62 @@ namespace FF1RandomizerOnline.Controllers
 		[HttpGet]
 		public IActionResult Randomize()
 		{
-			var vm = new RandomizeViewModel
-			{
+			var vm = new RandomizeViewModel {
 				File = null,
 				Seed = Blob.Random(4).ToHex(),
-				Flags = new Flags
-				{
+				Flags = new Flags {
 					Treasures = true,
 					NPCItems = true,
 
 					IncentivizeKingConeria = true,
 					IncentivizePrincess = true,
-					IncentivizeMatoya = true,
+					IncentivizeMatoya = false,
 					IncentivizeBikke = true,
-					IncentivizeElfPrince = true,
+					IncentivizeElfPrince = false,
 					IncentivizeAstos = true,
-					IncentivizeNerrick = true,
+					IncentivizeNerrick = false,
 					IncentivizeSmith = true,
 					IncentivizeSarda = true,
 					IncentivizeCanoeSage = true,
 					IncentivizeCubeBot = true,
-					IncentivizeFairy = true,
+					IncentivizeFairy = false,
 					IncentivizeLefein = true,
-					IncentivizeMarsh = false,
+					IncentivizeMarsh = true,
 					IncentivizeVolcano = true,
 					IncentivizeConeria = false,
 					IncentivizeEarth = true,
 					IncentivizeIceCave = false,
 					IncentivizeOrdeals = true,
-					IncentivizeSeaShrine = false,
+					IncentivizeSeaShrine = true,
 
 					IncentivizeBridge = true,
 					IncentivizeLute = true,
 					IncentivizeShip = true,
 					IncentivizeCrown = true,
-					IncentivizeCrystal = true,
-					IncentivizeHerb = true,
+					IncentivizeCrystal = false,
+					IncentivizeHerb = false,
 					IncentivizeKey = true,
-					IncentivizeTnt = true,
+					IncentivizeTnt = false,
 					IncentivizeCanal = true,
 					IncentivizeRuby = true,
 					IncentivizeRod = true,
 					IncentivizeCanoe = true,
 					IncentivizeFloater = true,
 					IncentivizeTail = true,
-					IncentivizeBottle = true,
+					IncentivizeBottle = false,
 					IncentivizeOxyale = true,
-					IncentivizeSlab = false,
+					IncentivizeSlab = true,
 					IncentivizeChime = true,
 					IncentivizeCube = true,
 					IncentivizeAdamant = true,
 					IncentivizeXcalber = false,
 					IncentivizeMasamune = true,
-					IncentivizeRibbon = true,
+					IncentivizeRibbon = false,
 					IncentivizeRibbon2 = false,
-					IncentivizePowerGauntlet = false,
+					IncentivizePowerGauntlet = true,
 					IncentivizeWhiteShirt = true,
-					IncentivizeBlackShirt = false,
-					IncentivizeOpal = false,
+					IncentivizeBlackShirt = true,
+					IncentivizeOpal = true,
 					Incentivize65K = false,
 					IncentivizeBad = false,
 
@@ -107,7 +105,6 @@ namespace FF1RandomizerOnline.Controllers
 					EnemyScripts = true,
 					EnemySkillsSpells = true,
 					EnemyStatusAttacks = true,
-					Ordeals = true,
 
 					EarlyRod = true,
 					EarlyCanoe = true,
@@ -131,13 +128,14 @@ namespace FF1RandomizerOnline.Controllers
 					ModernBattlefield = true,
 					Music = MusicShuffle.None,
 
-					ForcedPartyMembers = 0,
-					PriceScaleFactor = 2.0,
-					EnemyScaleFactor = 2.0,
-					ExpMultiplier = 2.0,
+					ForcedPartyMembers = 1,
+					PriceScaleFactor = 3.0,
+					EnemyScaleFactor = 1.5,
+					ExpMultiplier = 3.0,
 					ExpBonus = 100,
 					EasyMode = false,
 
+					Ordeals = true,
 					MapConeriaDwarves = true,
 					MapVolcanoIceRiver = true,
 					MapTitansTrove = true
@@ -179,7 +177,7 @@ namespace FF1RandomizerOnline.Controllers
 			var filename = viewModel.File.FileName;
 			var extensionIndex = filename.LastIndexOf('.');
 			var newFilename = extensionIndex == -1 ? filename : filename.Substring(0, extensionIndex);
-			newFilename = $"{newFilename}_{viewModel.Seed}_{FF1Rom.EncodeFlagsText(viewModel.Flags)}.nes";
+			newFilename = $"{newFilename}_{viewModel.Seed}_{Flags.EncodeFlagsText(viewModel.Flags)}.nes";
 
 			Response.StatusCode = 200;
 			Response.ContentLength = rom.TotalLength;
