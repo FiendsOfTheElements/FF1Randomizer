@@ -32,29 +32,42 @@ namespace FF1Lib
 
 	    public void WriteText(Blob[] textBlobs, int pointerOffset, int pointerBase, int textOffset)
 	    {
-		    int offset = textOffset;
-		    var pointers = new ushort[textBlobs.Length];
-		    for (int i = 0; i < textBlobs.Length; i++)
-		    {
-			    Put(offset, textBlobs[i]);
+		    WriteText(textBlobs, pointerOffset, pointerBase, textOffset, new List<int>());
+	    }
 
-			    pointers[i] = (ushort)(offset - pointerBase);
-			    offset += textBlobs[i].Length;
-		    }
+	    public void WriteText(Blob[] textBlobs, int pointerOffset, int pointerBase, int textOffset, List<int> skipThese)
+	    {
+			int offset = textOffset;
+			var pointers = new ushort[textBlobs.Length];
+			for (int i = 0; i < textBlobs.Length; i++)
+			{
+				if (skipThese.Contains(i))
+				{
+					// Don't write a blob, and point to the null-terminator at the end of the previous string.
+					pointers[i] = (ushort)(offset - pointerBase - 1);
+				}
+				else
+				{
+					Put(offset, textBlobs[i]);
 
-		    Put(pointerOffset, Blob.FromUShorts(pointers));
+					pointers[i] = (ushort)(offset - pointerBase);
+					offset += textBlobs[i].Length;
+				}
+			}
+
+			Put(pointerOffset, Blob.FromUShorts(pointers));
 	    }
 
 	    public Blob ReadUntil(int offset, byte delimiter)
 	    {
-		    var bytes = new List<byte>();
-		    while (Data[offset] != delimiter && offset < Data.Length)
-		    {
-			    bytes.Add(Data[offset++]);
-		    }
-		    bytes.Add(delimiter);
+			var bytes = new List<byte>();
+			while (Data[offset] != delimiter && offset < Data.Length)
+			{
+				bytes.Add(Data[offset++]);
+			}
+			bytes.Add(delimiter);
 
-		    return bytes.ToArray();
+			return bytes.ToArray();
 	    }
-    }
+	}
 }

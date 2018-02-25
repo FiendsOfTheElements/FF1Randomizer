@@ -299,28 +299,60 @@ namespace FF1Lib
 				Put(0x7EB90, Blob.FromHex("4C29EB"));
 			}
 
-			// Don't draw big battle boxes around the enemies and party.
-			// Instead draw one box in the lower right corner around the player stats.
-			Put(0x7F2E4, Blob.FromHex("A9198538A912A206A00A20E2F3EAEAEAEAEAEAEAEAEAEAEAEAEA"));
+			// Don't draw big battle boxes around the enemies, party, and individual stats.
+			// Instead draw one box in the lower right corner around the new player stats.
+			Put(0x7F2E4, Blob.FromHex("A9198538A913A206A00A20E2F3EAEAEAEAEAEAEAEAEAEAEAEAEA"));
+			Put(0x7F2FB, Blob.FromHex("EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
 
-			// The bottom row of these boxes is occluded by the Command Menu and enemy list so
+			// The bottom row of these boxes was occluded by the Command Menu and enemy list so
 			// there is code to redraw it whenever it would be exposed that we early return to skip.
 			Data[0x7F62D] = 0x60;
 
-			// Skip drawing player boxes
-			Put(0x7F2FB, Blob.FromHex("EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
+			// To match later games and make better use of screen real estate we move all the bottom
+			// boxes down a tile. This requires rewriting most of the battle box and text positioning
+			// LUTs. They are largely formatted in a HeaderByte, X, Y, W, H system.
+			// lut_EnemyRosterBox      HDXXYYWWHH
+			Put(0x7F9E4, Blob.FromHex("0001010B0A"));
+
+			//                           BOX      TEXT
+			// lut_CombatBoxes:        HDXXYYWWHHHDXXYY
+			Put(0x7F9E9, Blob.FromHex("0001010A04010202" + // attacker name
+				                      "000B010C04010C02" + // their attack("FROST", "2Hits!" etc)
+									  "0001040A04010205" + // defender name
+									  "000B040B04010C05" + // damage
+									  "0001071804010208"));// bottom message("Terminated", "Critical Hit", etc)
+
+			// lut_BattleCommandBox    HDXXYYWWHH
+			Put(0x7FA1B, Blob.FromHex("000C010D0A"));
+
+			// lut for Command Text    HDXXYYTPTR
+			Put(0x7FA20, Blob.FromHex("010E0239FA" + // FIGHT
+									  "010E043EFA" + // MAGIC
+									  "010E0643FA" + // DRINK
+									  "010E0848FA" + // ITEM
+									  "0114024DFA"));// RUN
 
 			// Edit lut for where to draw character status
-			Put(0x32B21, Blob.FromHex("7A22BA22FA223A23"));
+			Put(0x32B21, Blob.FromHex("9A22DA221A235A23"));
 
-			// Move character sprites and character picker cursor pointer LUT
+			// Move character sprites to the right edge and space them a little apart
 			byte xCoord = 0xD8;
 			Data[0x31741] = xCoord;
 			Data[0x3197D] = xCoord;                // overwrite hardcoded when stoned
 			Data[0x31952] = (byte)(xCoord - 0x08); // 8px to the left when dead.
-			for (int i = 0; i < 16; i += 2)
+
+			byte yCoord = 0x2B;
+			for (int i = 0; i < 4; ++i)
 			{
-				Data[0x31F85 + i] = (byte)(xCoord - 0x10);
+				Data[0x3174F + (i * 5)] = (byte)(yCoord + (i * 28));
+			}
+
+			// Update Several 16 Byte LUTS related to cursors
+			for (int i = 0; i < 8; ++i)
+			{
+				Data[0x31F85 + i * 2] = (byte)(xCoord - 0x10);            // X Coord of Character targeting cursor
+				Data[0x31F86 + i * 2] = (byte)(yCoord + 4 + (i * 0x1C));  // Y Coord of Character targeting cursor
+				Data[0x31F76 + i * 2] = (byte)(0xA7 + (Math.Min(i, 4) % 4 * 0x10)); // Y Coord of Command Menu cursor (last four are identical)
 			}
 
 			// Start backdrop rows two tiles left and one upward. This matches FF2/3

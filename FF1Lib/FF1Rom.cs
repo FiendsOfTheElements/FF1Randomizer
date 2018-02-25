@@ -28,6 +28,7 @@ namespace FF1Lib
 
 		public const int GoldItemOffset = 108; // 108 items before gold chests
 		public const int GoldItemCount = 68;
+		public static readonly List<int> UnusedGoldItems = new List<int> { 110, 111, 112, 113, 114, 116, 120, 121, 122, 124, 125, 127, 132, 158, 165, 166, 167, 168, 170, 171, 172 };
 
 		public void PutInBank(int bank, int address, Blob data)
 		{
@@ -249,7 +250,7 @@ namespace FF1Lib
 
 			map.ApplyMapEdits();
 
-			WriteText(itemText, ItemTextPointerOffset, ItemTextPointerBase, ItemTextOffset);
+			WriteText(itemText, ItemTextPointerOffset, ItemTextPointerBase, ItemTextOffset, UnusedGoldItems);
 
 			if (flags.EnemyScaleFactor > 1)
 			{
@@ -359,7 +360,7 @@ namespace FF1Lib
 			PutInBank(0x1F, 0xCBF3, Blob.FromHex("4C34D8"));
 
 			// Add select button handler on game start menu to change color
-			PutInBank(0x0F, 0x8620, Blob.FromHex("203CC4A662A9488540ADFB60D003EEFB60A522F019EEFB60ADFB60C90E3005A9018DFB60A90085222029EBA90060A90160"));
+			PutInBank(0x0F, 0x8620, Blob.FromHex("203CC4A662A9488540ADFB60D003EEFB60A522F022EEFB60ADFB60C90D300EF007A9018DFB60D005A90F8DFB60A90085222029EBA90060A90160"));
 			PutInBank(0x1F, 0xD840, CreateLongJumpTableEntry(0x0F, 0x8620));
 			Put(0x3A1B5, Blob.FromHex("2040D8D0034C56A1EA"));
 			// Move Most of LoadBorderPalette_Blue out of the way to do a dynamic version.
