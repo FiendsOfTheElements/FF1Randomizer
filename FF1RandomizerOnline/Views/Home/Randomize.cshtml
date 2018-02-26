@@ -55,8 +55,10 @@
 				<div class="checkbox-cell"><input v-model="EnemyScripts" type="checkbox" asp-for="Flags.EnemyScripts" /> <label asp-for="Flags.EnemyScripts">Enemy Scripts <b v-if="EnemyScripts" title="Risks 9 Pirates with THUNDER, etc. blocking early progression" style="color:orange">⚠</b></label></div>
 				<div class="checkbox-cell"><input v-model="EnemySkillsSpells" type="checkbox" asp-for="Flags.EnemySkillsSpells" /> <label asp-for="Flags.EnemySkillsSpells">Enemy Skills/Spells</label></div>
 				<div class="checkbox-cell"><input v-model="EnemyStatusAttacks" type="checkbox" asp-for="Flags.EnemyStatusAttacks" /> <label asp-for="Flags.EnemyStatusAttacks">Enemy Status Attacks</label></div>
-                <div class="checkbox-cell"></div>
-                <div class="checkbox-cell"><input v-model="Rng" type="checkbox" asp-for="Flags.Rng" /> <label asp-for="Flags.Rng">RNG Table</label><br /></div>
+				<div class="checkbox-cell"><input v-model="EnemyFormationsUnrunnable" type="checkbox" asp-for="Flags.EnemyFormationsUnrunnable" /> <label asp-for="Flags.EnemyFormationsUnrunnable">Enemy Unrunnable Formations</label></div>
+				<div class="checkbox-cell"><input v-model="EnemyFormationsSurprise" type="checkbox" asp-for="Flags.EnemyFormationsSurprise" /> <label asp-for="Flags.EnemyFormationsSurprise">Enemy Surprise Bonus</label></div>
+				<div class="checkbox-cell"></div>
+				<div class="checkbox-cell"><input v-model="Rng" type="checkbox" asp-for="Flags.Rng" /> <label asp-for="Flags.Rng">RNG Table</label><br /></div>
 			</div>
 		</div>
         <div class="section tab-pane col-xs-12" id="treasures">
@@ -159,12 +161,13 @@
 				<div class="checkbox-cell"><input v-model="IdentifyTreasures" type="checkbox" asp-for="Flags.IdentifyTreasures" /> <label asp-for="Flags.IdentifyTreasures">Identify Treasures</label></div>
 				<div class="checkbox-cell"><input v-model="Dash" type="checkbox" asp-for="Flags.Dash" /> <label asp-for="Flags.Dash">Enable Dash</label></div>
 				<div class="checkbox-cell"><input v-model="BuyTen" type="checkbox" asp-for="Flags.BuyTen" /> <label asp-for="Flags.BuyTen">Buy 10 Items</label></div>
+				<div class="checkbox-cell" title="The RUN command becomes WAIT when battles are unrunnable."><input v-model="WaitWhenUnrunnable" type="checkbox" asp-for="Flags.WaitWhenUnrunnable" /> <label asp-for="Flags.WaitWhenUnrunnable">Change Unrunnable RUN to WAIT</label></div>
 			</div>
 			<div class="col-xs-4">
 				<div class="checkbox-cell" title="The Airship is available at the start of the game"><input v-model="FreeAirship" type="checkbox" asp-for="Flags.FreeAirship" /> <label asp-for="Flags.FreeAirship">Free Airship</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.0.0</a>)</small></div>
 				<div class="checkbox-cell" title="The Bridge is available at the start of the game"><input v-model="FreeBridge" type="checkbox" asp-for="Flags.FreeBridge" /> <label asp-for="Flags.FreeBridge">Free Bridge</label></div>
 				<div class="checkbox-cell" title="Begin the game with all orbs already lit."><input v-model="FreeOrbs" type="checkbox" asp-for="Flags.FreeOrbs" /> <label asp-for="Flags.FreeOrbs">Free Orbs</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.0.0</a>)</small></div>
-				<div class="checkbox-cell" title="Encounter rate cut to 20% and all Enemy HP cut to 10% (after any randomizations)"><input v-model="EasyMode" type="checkbox" asp-for="Flags.EasyMode" /> <label asp-for="Flags.EasyMode">Easy Mode</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.0.0</a>)</small></div>
+            	<div class="checkbox-cell" title="Encounter rate cut to 20% and all Enemy HP cut to 10% (after any randomizations)"><input v-model="EasyMode" type="checkbox" asp-for="Flags.EasyMode" /> <label asp-for="Flags.EasyMode">Easy Mode</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.0.0</a>)</small></div>
 			</div>
 		</div>
 		<div class="section tab-pane" id="bug-fixes">

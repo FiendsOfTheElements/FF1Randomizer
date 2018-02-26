@@ -51,11 +51,11 @@ namespace FF1Lib
 		[FlagString(Character = ENCOUNTERS, FlagBit = 1)]
 		public bool Rng { get; set; }
 		[FlagString(Character = ENCOUNTERS, FlagBit = 2)]
-		public bool EnemyFormationsFrequency { get; set; } // Planned 2.1 feature
+		public bool EnemyFormationsFrequency { get; set; }
 		[FlagString(Character = ENCOUNTERS, FlagBit = 4)]
-		public bool EnemyFormationsUnrunnable { get; set; } // Planned 2.1 feature
+		public bool EnemyFormationsUnrunnable { get; set; }
 		[FlagString(Character = ENCOUNTERS, FlagBit = 8)]
-		public bool EnemyFormationsSurprise { get; set; } // Planned 2.1 feature
+		public bool EnemyFormationsSurprise { get; set; }
 		
 		[FlagString(Character = BATTLES, FlagBit = 1)]
 		public bool EnemyScripts { get; set; }
