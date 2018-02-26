@@ -105,6 +105,8 @@ namespace FF1RandomizerOnline.Controllers
 					EnemyScripts = true,
 					EnemySkillsSpells = true,
 					EnemyStatusAttacks = true,
+					EnemyFormationsUnrunnable = true,
+					EnemyFormationsSurprise = true,
 
 					EarlyRod = true,
 					EarlyCanoe = true,
@@ -115,6 +117,7 @@ namespace FF1RandomizerOnline.Controllers
 					IdentifyTreasures = true,
 					Dash = true,
 					BuyTen = true,
+					WaitWhenUnrunnable = true,
 
 					HouseMPRestoration = true,
 					WeaponStats = true,

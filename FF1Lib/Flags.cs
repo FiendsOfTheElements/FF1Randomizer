@@ -100,6 +100,8 @@ namespace FF1Lib
 		public bool MagicLevels { get; set; }
 		[FlagString(Character = 2, FlagBit = 4)]
 		public bool MagicPermissions { get; set; }
+		[FlagString(Character = 2, FlagBit = 8)]
+		public bool EnemyFormationsSurprise { get; set; }
 
 		[FlagString(Character = 3, FlagBit = 1)]
 		public bool Rng { get; set; }
@@ -109,6 +111,8 @@ namespace FF1Lib
 		public bool EnemySkillsSpells { get; set; }
 		[FlagString(Character = 3, FlagBit = 8)]
 		public bool EnemyStatusAttacks { get; set; }
+		[FlagString(Character = 3, FlagBit = 16)]
+		public bool EnemyFormationsUnrunnable { get; set; }
 		[FlagString(Character = 3, FlagBit = 32)]
 		public bool EasyMode { get; set; }
 
@@ -142,6 +146,8 @@ namespace FF1Lib
 		public bool SpellBugs { get; set; }
 		[FlagString(Character = 15, FlagBit = 16)]
 		public bool EnemyStatusAttackBug { get; set; }
+		[FlagString(Character = 15, FlagBit = 32)]
+		public bool WaitWhenUnrunnable { get; set; }
 
 		public bool ModernBattlefield { get; set; }
 		public bool FunEnemyNames { get; set; }
