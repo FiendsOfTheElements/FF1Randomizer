@@ -21,19 +21,6 @@ function validateFlags() {
 	return isValid;
 }
 
-function importSeedFlags() {
-	var str = prompt("Paste in a seed and flags string as given to you by our lord and master, crim_bot. (SEED_FLAGS)");
-	var seed;
-	var flags;
-
-	[seed, flags] = str.split("_", 2);
-
-	document.getElementById("Flags").value = flags;
-	document.getElementById("Seed").value = seed;
-
-	onFlagsChanged();
-}
-
 function newSeed() {
 	var seed = Math.floor((0xFFFFFFFF + 1) * Math.random());
 	var seedString = seed.toString(16).toUpperCase();
@@ -82,6 +69,16 @@ var app = new Vue({
     incentivePreset: function(presetString) {
         var newIncentives = presetString.length !== defaultIncentives.length ? defaultIncentives : presetString;
         this.flagString = [this.flagString.substring(0, START_INCENTIVES), newIncentives, this.flagString.substring(END_INCENTIVES)].join('');
+    },
+    importSeedFlags: function () {
+        var str = prompt("Paste in a seed and flags string as given to you by our lord and master, crim_bot. (SEED_FLAGS)");
+        var seed;
+        var flags;
+    
+        [seed, flags] = str.split("_", 2);
+    
+        this.flagString = flags;
+        document.getElementById("Seed").value = seed;
     }
   },
   computed: computedPropertyArray
