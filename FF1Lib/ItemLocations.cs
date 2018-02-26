@@ -297,8 +297,8 @@ namespace FF1Lib
 		private const MapChange AirshipAndCanoe = MapChange.Airship | MapChange.Canoe;
 		private const MapChange CanalAndShip = MapChange.Canal | MapChange.Ship;
 		private const MapChange ShipAndCanoe = MapChange.Canoe | MapChange.Ship;
-		public static Dictionary<MapLocation, List<MapChange>> MapLocationRequirements =
-			new Dictionary<MapLocation, List<MapChange>>
+		public static Dictionary<MapLocation, IEnumerable<MapChange>> MapLocationRequirements =
+			new Dictionary<MapLocation, IEnumerable<MapChange>>
 		{
 			{MapLocation.StartingLocation, new List<MapChange>{ MapChange.None }},
 			{MapLocation.ConeriaTown, new List<MapChange>{ MapChange.None }},

@@ -43,6 +43,7 @@ namespace Sandbox
 			itemPlacementStats[Item.Ribbon] = new List<int>();
 			var itemPlacementZones = ItemLists.AllQuestItems.ToDictionary(x => x, x => new List<string>());
 			itemPlacementZones[Item.Ribbon] = new List<string>();
+			var mapLocationRequirements = ItemLocations.MapLocationRequirements.ToDictionary(x => x.Key, x => x.Value.ToList());
 			long iterations = 0;
 			while (iterations < maxIterations)
 			{
@@ -58,7 +59,7 @@ namespace Sandbox
 														   incentivesData,
 														   treasurePool,
 														   itemShopItem,
-														   ItemLocations.MapLocationRequirements);
+														   mapLocationRequirements);
 
 				var outputIndexes = placedItems.ToLookup(x => x.Item, x => x);
 				foreach (Item item in itemPlacementStats.Keys)
@@ -92,7 +93,7 @@ namespace Sandbox
 
 				foreach (Item item in requirementsToCheck)
 				{
-					if (!ItemPlacement.CheckSanity(placedItems.Where(x => x.Item != item).ToList(), flags, ItemLocations.MapLocationRequirements))
+					if (!ItemPlacement.CheckSanity(placedItems.Where(x => x.Item != item).ToList(), flags, mapLocationRequirements))
 						requirementChecks[item]++;
 				}
 			}

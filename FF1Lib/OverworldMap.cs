@@ -19,7 +19,7 @@ namespace FF1Lib
 		public OverworldMap(FF1Rom rom, IMapEditFlags flags)
 		{
 			_rom = rom;
-			var mapLocationRequirements = ItemLocations.MapLocationRequirements.ToDictionary(x => x.Key, x => x.Value);
+			var mapLocationRequirements = ItemLocations.MapLocationRequirements.ToDictionary(x => x.Key, x => x.Value.ToList());
 
 			if (flags.MapVolcanoIceRiver)
 			{
