@@ -73,5 +73,11 @@ namespace FF1Lib
 		{
 			Put(0x32812, Blob.FromHex("DF")); // This is the craziest freaking patch ever, man.
 		}
+
+		public void FixEnmeyAOESpells()
+		{
+			// Remove comparison and branch on equal which skips the caster when casting aoe spells
+			Put(0x33568, Blob.FromHex("EAEAEAEAEAEAEAEA"));
+		}
 	}
 }
