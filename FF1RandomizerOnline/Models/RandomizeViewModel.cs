@@ -9,8 +9,8 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace FF1RandomizerOnline.Models
 {
-    public class RandomizeViewModel
-    {
+	public class RandomizeViewModel
+	{
 		[BindRequired]
 		[RegularExpression("^[A-Fa-f0-9]{8}$")]
 		public string Seed { get; set; }
@@ -18,7 +18,10 @@ namespace FF1RandomizerOnline.Models
 		[BindRequired]
 		public Flags Flags { get; set; }
 
-	    [BindRequired]
-	    public IFormFile File { get; set; }
-    }
+		[BindRequired]
+		public string FlagsInput { get; set; }
+
+		[BindRequired]
+		public IFormFile File { get; set; }
+	}
 }

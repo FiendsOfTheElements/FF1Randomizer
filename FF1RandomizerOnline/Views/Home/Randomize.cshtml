@@ -1,109 +1,242 @@
-﻿@model FF1RandomizerOnline.Models.RandomizeViewModel
+﻿@using FF1Lib
+@model FF1RandomizerOnline.Models.RandomizeViewModel
 
 <form id="RandomizeForm" method="post" enctype="multipart/form-data" asp-controller="Home" asp-action="Randomize">
+  <div id="vueScope">
 	<label class="section">Upload ROM</label><br />
-	<label class="btn btn-default"><input type="file" accept=".nes" asp-for="File" style="display: none"/>Browse</label> <label for="File" id="file-label"></label>
+	<label class="btn btn-default"><input type="file" accept=".nes" asp-for="File" style="display: none" onchange="setFileName();"/>Browse</label> <label for="File" id="file-label"></label>
 	@Html.ValidationSummary()
 	<div class="row">
-		<div class="col-xs-5"><label asp-for="Seed" />Seed</div>
-		<div class="col-xs-5"><label for="Flags">Flags</label></div>
-	</div>
-	<div class="row">
-		<div class="col-xs-3"><input class="form-control" asp-for="Seed" type="text" /></div>
-		<div class="col-xs-2"><input class="btn btn-default" type="button" value="New Seed" onclick="newSeed();" /></div>
-		<div class="col-xs-3"><input class="form-control" id="Flags" type="text" /></div>
-		<div class="col-xs-2"><input class="btn btn-default" type="button" value="Import..." onclick="importSeedFlags();" /></div>
+		<div class="col-xs-12 col-md-5">
+            <div class="row"><div class="col-xs-12"><label asp-for="Seed" />Seed</div></div>
+            <div class="row">
+                <div class="col-xs-7"><input class="form-control" asp-for="Seed" type="text" oninput="validateSeed();" /></div>
+		        <div class="col-xs-5"><input class="btn btn-default" type="button" value="New Seed" onclick="newSeed();" /></div>
+            </div>
+        </div>
+		<div class="col-xs-12 col-md-7">
+            <div class="row"><div class="col-xs-12"><label for="Flags">Flags</label></div></div>
+            <div class="row">
+                <div class="col-xs-7"><input class="form-control" v-model="FlagsInput" type="text" asp-for="FlagsInput" id="Flags" /></div>
+		        <div class="col-xs-4"><input class="btn btn-default" type="button" value="Import..." v-on:click="importSeedFlags();" /></div>
+            </div>
+        </div>
 	</div>
 	<ul class="section nav nav-pills">
 		<li class="active"><a href="#shuffle" data-toggle="tab">Shuffle</a></li>
+        <li><a href="#incentives" data-toggle="tab">Incentives</a></li>
+        <li><a href="#map" data-toggle="tab">Map</a></li>
 		<li><a href="#scale" data-toggle="tab">Scale</a></li>
-		<li><a href="#conveniences" data-toggle="tab">Conveniences</a></li>
+        <li><a href="#conveniences" data-toggle="tab">Conveniences</a></li>
 		<li><a href="#bug-fixes" data-toggle="tab">Bug Fixes</a></li>
 		<li><a href="#fun" data-toggle="tab">Fun %</a></li>
 	</ul>
-	<div class="tab-content clearfix" style="height: 350px">
+	<div class="tab-content clearfix" style="height: 400px">
 		<div class="section tab-pane active" id="shuffle">
 			<div class="col-xs-4">
-				<div class="checkbox-cell"><input type="checkbox" asp-for="Flags.Treasures" /> <label asp-for="Flags.Treasures"></label></div>
-				<div class="checkbox-cell"><input class="indent" type="checkbox" asp-for="Flags.IncentivizeIceCave" /> <label asp-for="Flags.IncentivizeIceCave">Incentivize Ice Cave</label></div>
-				<div class="checkbox-cell"><input class="indent" type="checkbox" asp-for="Flags.IncentivizeOrdeals" /> <label asp-for="Flags.IncentivizeOrdeals">Incentivize Ordeals</label></div>
+				<div class="checkbox-cell"><input v-model="Treasures" type="checkbox" asp-for="Flags.Treasures" /> <label asp-for="Flags.Treasures"></label></div>
+				<div class="checkbox-cell"><input v-model="NPCItems" type="checkbox" asp-for="Flags.NPCItems" /> <label asp-for="Flags.NPCItems">NPC Items</label></div>
 				<div class="checkbox-cell"></div>
-				<div class="checkbox-cell"><input type="checkbox" asp-for="Flags.Shops" /> <label asp-for="Flags.Shops"></label></div>
-				<div class="checkbox-cell"><input type="checkbox" asp-for="Flags.MagicShops" /> <label asp-for="Flags.MagicShops">Magic Shops</label></div>
-				<div class="checkbox-cell"><input type="checkbox" asp-for="Flags.MagicLevels" /> <label asp-for="Flags.MagicLevels">Magic Levels</label></div>
-				<div class="checkbox-cell"><input class="indent" type="checkbox" asp-for="Flags.MagicPermissions" /> <label asp-for="Flags.MagicPermissions">Keep Permissions</label></div>
-				<div class="checkbox-cell"></div>
-				<div class="checkbox-cell"><input type="checkbox" asp-for="Flags.Rng" /> <label asp-for="Flags.Rng">RNG Table</label><br /></div>
+				<div class="checkbox-cell"><input v-model="Shops" type="checkbox" asp-for="Flags.Shops" /> <label asp-for="Flags.Shops"></label></div>
+				<div class="checkbox-cell"><input v-model="MagicShops" type="checkbox" asp-for="Flags.MagicShops" /> <label asp-for="Flags.MagicShops">Magic Shops</label></div>
+				<div class="checkbox-cell"><input v-model="MagicLevels" type="checkbox" asp-for="Flags.MagicLevels" /> <label asp-for="Flags.MagicLevels">Magic Levels</label></div>
+				<div class="checkbox-cell"><input v-model="MagicPermissions" class="indent" type="checkbox" asp-for="Flags.MagicPermissions" /> <label asp-for="Flags.MagicPermissions">Keep Permissions</label></div>
 			</div>
 			<div class="col-xs-4">
-				<div class="checkbox-cell"><input type="checkbox" asp-for="Flags.EnemyScripts" /> <label asp-for="Flags.EnemyScripts">Enemy Scripts</label></div>
-				<div class="checkbox-cell"><input type="checkbox" asp-for="Flags.EnemySkillsSpells" /> <label asp-for="Flags.EnemySkillsSpells">Enemy Skills/Spells</label></div>
-				<div class="checkbox-cell"><input type="checkbox" asp-for="Flags.EnemyStatusAttacks" /> <label asp-for="Flags.EnemyStatusAttacks">Enemy Status Attacks</label></div>
-				<div class="checkbox-cell"></div>
-				<div class="checkbox-cell"><input type="checkbox" asp-for="Flags.Ordeals" /> <label asp-for="Flags.Ordeals">Castle Ordeals</label></div>
+				<div class="checkbox-cell"><input v-model="EnemyScripts" type="checkbox" asp-for="Flags.EnemyScripts" /> <label asp-for="Flags.EnemyScripts">Enemy Scripts</label></div>
+				<div class="checkbox-cell"><input v-model="EnemySkillsSpells" type="checkbox" asp-for="Flags.EnemySkillsSpells" /> <label asp-for="Flags.EnemySkillsSpells">Enemy Skills/Spells</label></div>
+				<div class="checkbox-cell"><input v-model="EnemyStatusAttacks" type="checkbox" asp-for="Flags.EnemyStatusAttacks" /> <label asp-for="Flags.EnemyStatusAttacks">Enemy Status Attacks</label></div>
                 <div class="checkbox-cell"></div>
+                <div class="checkbox-cell"><input v-model="Rng" type="checkbox" asp-for="Flags.Rng" /> <label asp-for="Flags.Rng">RNG Table</label><br /></div>
 			</div>
 		</div>
+        <div class="section tab-pane col-xs-12" id="incentives">
+            <div class="col-xs-12 col-md-7">
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-danger" v-on:click.prevent="incentivePreset('AAAAAAAAA')">None</button>
+                    <button type="button" class="btn btn-warning" v-on:click.prevent="incentivePreset('JIHEAnMIA')">Almost None</button>
+                    <button type="button" class="btn btn-success" v-on:click.prevent="incentivePreset('')">Default</button>
+                    <button type="button" class="btn btn-warning" v-on:click.prevent="incentivePreset('%9%%7%%!P')">Almost All</button>
+                    <button type="button" class="btn btn-danger" v-on:click.prevent="incentivePreset('%%%%%%%%%')">All</button>
+                </div>
+                <br>
+                <br>
+                <div>
+                    <button type="button" class="btn btn-info" v-on:click.prevent="incentivePreset('LIHmAn!AA')">Required Only</button>
+                    <button type="button" class="btn btn-info" v-on:click.prevent="incentivePreset('3YHmAn%IP')">No Fetch Quests</button>
+                    <button type="button" class="btn btn-info" v-on:click.prevent="incentivePreset('35P2Bn%MP')">Some Fetch Quests</button>
+                    <button type="button" class="btn btn-info" v-on:click.prevent="incentivePreset('Z7P2Bn%MD')">No Fiend Dungeons</button>
+                </div>
+                <br>
+                <br>
+                <div>
+                NOTE: Each preset option will set ALL values on all four incentives sub-tabs: Treasure, NPC, Progression, and Other. Review the tabs for the details of the incentive set.
+                </div>
+            </div>
+            <div class="col-xs-12 col-md-5" style="background-color: #999;">
+                <ul class="section nav nav-pills">
+                    <li><a href="#treasures" data-toggle="tab">Treasure</a></li>
+                    <li><a href="#npcs" data-toggle="tab">NPC</a></li>
+                    <li class="active"><a href="#progression" data-toggle="tab">Progression</a></li>
+                    <li><a href="#other" data-toggle="tab">Other</a></li>
+                </ul>
+                <div class="tab-content clearfix" style="height: 270px; margin-bottom: 15px;">
+                    <div class="section tab-pane" id="treasures">
+                        <div class="col-xs-6">
+                            <div class="checkbox-cell"><input v-model="IncentivizeMarsh" type="checkbox" asp-for="Flags.IncentivizeMarsh" /> <label asp-for="Flags.IncentivizeMarsh">Marsh Cave</label></div>
+                            <div class="checkbox-cell"><input v-model="IncentivizeConeria" type="checkbox" asp-for="Flags.IncentivizeConeria" /> <label asp-for="Flags.IncentivizeConeria">Coneria</label></div>
+                            <div class="checkbox-cell"><input v-model="IncentivizeEarth" type="checkbox" asp-for="Flags.IncentivizeEarth" /> <label asp-for="Flags.IncentivizeEarth">Earth Cave</label></div>
+                            <div class="checkbox-cell"><input v-model="IncentivizeIceCave" type="checkbox" asp-for="Flags.IncentivizeIceCave" /> <label asp-for="Flags.IncentivizeIceCave">Ice Cave</label></div>
+                            <div class="checkbox-cell"><input v-model="IncentivizeOrdeals" type="checkbox" asp-for="Flags.IncentivizeOrdeals" /> <label asp-for="Flags.IncentivizeOrdeals">Ordeals</label></div>
+                        </div>
+                        <div class="col-xs-6">
+                            <div class="checkbox-cell"><input v-model="IncentivizeSeaShrine" type="checkbox" asp-for="Flags.IncentivizeSeaShrine" /> <label asp-for="Flags.IncentivizeSeaShrine">Sea Shrine (TFC)</label></div>
+                            <div class="checkbox-cell"><input v-model="IncentivizeVolcano" type="checkbox" asp-for="Flags.IncentivizeVolcano" /> <label asp-for="Flags.IncentivizeVolcano">Volcano (Red D)</label></div> 
+                        </div>
+                    </div>
+                    <div class="section tab-pane" id="npcs">
+                        <div class="col-xs-6">
+                            <div class="checkbox-cell"><input v-model="IncentivizeKingConeria" type="checkbox" asp-for="Flags.IncentivizeKingConeria" /> <label asp-for="Flags.IncentivizeKingConeria">King</label></div>
+                            <div class="checkbox-cell"><input v-model="IncentivizePrincess" type="checkbox" asp-for="Flags.IncentivizePrincess" /> <label asp-for="Flags.IncentivizePrincess">Princess</label></div>
+                            <div class="checkbox-cell"><input v-model="IncentivizeBikke" type="checkbox" asp-for="Flags.IncentivizeBikke" /> <label asp-for="Flags.IncentivizeBikke">Bikke</label></div>
+                            <div class="checkbox-cell"><input v-model="IncentivizeSarda" type="checkbox" asp-for="Flags.IncentivizeSarda" /> <label asp-for="Flags.IncentivizeSarda">Sarda</label></div>
+                            <div class="checkbox-cell"><input v-model="IncentivizeCanoeSage" type="checkbox" asp-for="Flags.IncentivizeCanoeSage" /> <label asp-for="Flags.IncentivizeCanoeSage">Sage</label></div>
+                            <div class="checkbox-cell"><input v-model="IncentivizeCubeBot" type="checkbox" asp-for="Flags.IncentivizeCubeBot" /> <label asp-for="Flags.IncentivizeCubeBot">Robot</label></div>
+                            <div class="checkbox-cell"><input type="checkbox" id="caravanPlaceholder" checked="checked" disabled="disabled" /> <label for="caravanPlaceholder">Caravan</label></div>
+                        </div>
+                        <div class="col-xs-6">
+                            <div class="checkbox-cell"><input v-model="IncentivizeAstos" type="checkbox" asp-for="Flags.IncentivizeAstos" /> <label asp-for="Flags.IncentivizeAstos">Astos</label></div>
+                            <div class="checkbox-cell"><input v-model="IncentivizeMatoya" type="checkbox" asp-for="Flags.IncentivizeMatoya" /> <label asp-for="Flags.IncentivizeMatoya">Matoya</label></div>
+                            <div class="checkbox-cell"><input v-model="IncentivizeElfPrince" type="checkbox" asp-for="Flags.IncentivizeElfPrince" /> <label asp-for="Flags.IncentivizeElfPrince">Elf Prince</label></div>
+                            <div class="checkbox-cell"><input v-model="IncentivizeNerrick" type="checkbox" asp-for="Flags.IncentivizeNerrick" /> <label asp-for="Flags.IncentivizeNerrick">Nerrick</label></div>
+                            <div class="checkbox-cell"><input v-model="IncentivizeFairy" type="checkbox" asp-for="Flags.IncentivizeFairy" /> <label asp-for="Flags.IncentivizeFairy">Fairy</label></div>
+                            <div class="checkbox-cell"><input v-model="IncentivizeLefein" type="checkbox" asp-for="Flags.IncentivizeLefein" /> <label asp-for="Flags.IncentivizeLefein">Lefein</label></div>
+                            <div class="checkbox-cell"><input v-model="IncentivizeSmith" type="checkbox" asp-for="Flags.IncentivizeSmith" /> <label asp-for="Flags.IncentivizeSmith">Smith</label></div>
+                        </div>
+                    </div>
+                    <div class="section tab-pane active" id="progression">
+                        <div class="col-xs-4">
+                            <div class="checkbox-cell"><input v-model="IncentivizeLute" type="checkbox" asp-for="Flags.IncentivizeLute" /> <label asp-for="Flags.IncentivizeLute">Lute</label></div>
+                            <div class="checkbox-cell"><input v-model="IncentivizeFloater" type="checkbox" asp-for="Flags.IncentivizeFloater" /> <label asp-for="Flags.IncentivizeFloater">Floater</label></div>
+                            <div class="checkbox-cell"><input v-model="IncentivizeKey" type="checkbox" asp-for="Flags.IncentivizeKey" /> <label asp-for="Flags.IncentivizeKey">Key</label></div>
+                            <div class="checkbox-cell"><input v-model="IncentivizeRod" type="checkbox" asp-for="Flags.IncentivizeRod" /> <label asp-for="Flags.IncentivizeRod">Rod</label></div>
+                            <div class="checkbox-cell"><input v-model="IncentivizeOxyale" type="checkbox" asp-for="Flags.IncentivizeOxyale" /> <label asp-for="Flags.IncentivizeOxyale">Oxyale</label></div>
+                            <div class="checkbox-cell"><input v-model="IncentivizeChime" type="checkbox" asp-for="Flags.IncentivizeChime" /> <label asp-for="Flags.IncentivizeChime">Chime</label></div>
+                            <div class="checkbox-cell"><input v-model="IncentivizeCube" type="checkbox" asp-for="Flags.IncentivizeCube" /> <label asp-for="Flags.IncentivizeCube">Cube</label></div>
+                        </div>
+                        <div class="col-xs-4">
+                            <div class="checkbox-cell"><input v-model="IncentivizeCrown" type="checkbox" asp-for="Flags.IncentivizeCrown" /> <label asp-for="Flags.IncentivizeCrown">Crown</label></div>
+                            <div class="checkbox-cell"><input v-model="IncentivizeCrystal" type="checkbox" asp-for="Flags.IncentivizeCrystal" /> <label asp-for="Flags.IncentivizeCrystal">Crystal</label></div>
+                            <div class="checkbox-cell"><input v-model="IncentivizeHerb" type="checkbox" asp-for="Flags.IncentivizeHerb" /> <label asp-for="Flags.IncentivizeHerb">Herb</label></div>
+                            <div class="checkbox-cell"><input v-model="IncentivizeTnt" type="checkbox" asp-for="Flags.IncentivizeTnt" /> <label asp-for="Flags.IncentivizeTnt">TNT</label></div>
+                            <div class="checkbox-cell"><input v-model="IncentivizeRuby" type="checkbox" asp-for="Flags.IncentivizeRuby" /> <label asp-for="Flags.IncentivizeRuby">Ruby</label></div>
+                            <div class="checkbox-cell"><input v-model="IncentivizeSlab" type="checkbox" asp-for="Flags.IncentivizeSlab" /> <label asp-for="Flags.IncentivizeSlab">Slab</label></div>
+                            <div class="checkbox-cell"><input v-model="IncentivizeAdamant" type="checkbox" asp-for="Flags.IncentivizeAdamant" /> <label asp-for="Flags.IncentivizeAdamant">Adamant</label></div>
+                            <div class="checkbox-cell"><input v-model="IncentivizeBottle" type="checkbox" asp-for="Flags.IncentivizeBottle" /> <label asp-for="Flags.IncentivizeBottle">Bottle</label></div>
+                        </div>
+                        <div class="col-xs-4">
+                            <div class="checkbox-cell"><input v-model="IncentivizeBridge" type="checkbox" asp-for="Flags.IncentivizeBridge" /> <label asp-for="Flags.IncentivizeBridge">Bridge</label></div>
+                            <div class="checkbox-cell"><input v-model="IncentivizeShip" type="checkbox" asp-for="Flags.IncentivizeShip" /> <label asp-for="Flags.IncentivizeShip">Ship</label></div>
+                            <div class="checkbox-cell"><input v-model="IncentivizeCanal" type="checkbox" asp-for="Flags.IncentivizeCanal" /> <label asp-for="Flags.IncentivizeCanal">Canal</label></div>
+                            <div class="checkbox-cell"><input v-model="IncentivizeCanoe" type="checkbox" asp-for="Flags.IncentivizeCanoe" /> <label asp-for="Flags.IncentivizeCanoe">Canoe</label></div>
+                        </div>
+                    </div>
+                    <div class="section tab-pane" id="other">
+                        <div class="col-xs-6">
+                            <div class="checkbox-cell"><input v-model="IncentivizeXcalber" type="checkbox" asp-for="Flags.IncentivizeXcalber" /> <label asp-for="Flags.IncentivizeXcalber">Xcalber</label></div>
+                            <div class="checkbox-cell"><input v-model="IncentivizeMasamune" type="checkbox" asp-for="Flags.IncentivizeMasamune" /> <label asp-for="Flags.IncentivizeMasamune">Masamune</label></div>
+                            <div class="checkbox-cell"><input v-model="IncentivizeRibbon" type="checkbox" asp-for="Flags.IncentivizeRibbon" /> <label asp-for="Flags.IncentivizeRibbon">Ribbon</label></div>
+                            <div class="checkbox-cell"><input v-model="IncentivizeRibbon2" type="checkbox" asp-for="Flags.IncentivizeRibbon2" /> <label asp-for="Flags.IncentivizeRibbon2">Ribbon</label></div>
+                            <div class="checkbox-cell"><input v-model="IncentivizePowerGauntlet" type="checkbox" asp-for="Flags.IncentivizePowerGauntlet" /> <label asp-for="Flags.IncentivizePowerGauntlet">Power Gauntlet</label></div>
+                            <div class="checkbox-cell"><input v-model="IncentivizeWhiteShirt" type="checkbox" asp-for="Flags.IncentivizeWhiteShirt" /> <label asp-for="Flags.IncentivizeWhiteShirt">White Shirt</label></div>
+                            <div class="checkbox-cell"><input v-model="IncentivizeBlackShirt" type="checkbox" asp-for="Flags.IncentivizeBlackShirt" /> <label asp-for="Flags.IncentivizeBlackShirt">Black Shirt</label></div>
+                            <div class="checkbox-cell"><input v-model="IncentivizeOpal" type="checkbox" asp-for="Flags.IncentivizeOpal" /> <label asp-for="Flags.IncentivizeOpal">Opal</label></div>
+                        </div>
+                        <div class="col-xs-6">
+                            <div class="checkbox-cell"><input v-model="IncentivizeTail" type="checkbox" asp-for="Flags.IncentivizeTail" /> <label asp-for="Flags.IncentivizeTail">Tail</label></div>
+                            <div class="checkbox-cell"></div>
+                            <div class="checkbox-cell"><input v-model="Incentivize65K" type="checkbox" asp-for="Flags.Incentivize65K" /> <label asp-for="Flags.Incentivize65K">65000 G</label></div>
+                            <div class="checkbox-cell"><input v-model="IncentivizeBad" type="checkbox" asp-for="Flags.IncentivizeBad" /> <label asp-for="Flags.IncentivizeBad">Junk Item</label></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="section tab-pane" id="map">
+            <div class="col-xs-4">
+                <div class="checkbox-cell"><input v-model="Ordeals" type="checkbox" asp-for="Flags.Ordeals" /> <label asp-for="Flags.Ordeals">Castle Ordeals Pillars</label></div>
+                <div class="checkbox-cell"><input v-model="MapTitansTrove" type="checkbox" asp-for="Flags.MapTitansTrove" /> <label asp-for="Flags.MapTitansTrove">Titan's Trove</label></div>
+                <div class="checkbox-cell"></div>
+                <div class="checkbox-cell"><input v-model="MapConeriaDwarves" type="checkbox" asp-for="Flags.MapConeriaDwarves" /> <label asp-for="Flags.MapConeriaDwarves">Coneria to Dwarves</label></div>
+                <div class="checkbox-cell"><input v-model="MapVolcanoIceRiver" type="checkbox" asp-for="Flags.MapVolcanoIceRiver" /> <label asp-for="Flags.MapVolcanoIceRiver">Volcano and Ice River</label></div>
+            </div>
+        </div>
 		<div class="section tab-pane" id="scale">
 			<div class="slider-cell">
 				<div class="col-xs-3"><label>Prices:</label></div>
-				<div class="col-xs-2"><label id="prices-display"></label></div>
-				<div class="col-xs-2"><input type="range" asp-for="Flags.PriceScaleFactor" min="1.0" max="5.0" step="0.1" /></div>
+				<div class="col-xs-2"><label id="prices-display">{{Math.round(100 / PriceScaleFactor)}}% - {{Math.round(PriceScaleFactor * 100)}}%</label></div>
+				<div class="col-xs-2"><input v-model="PriceScaleFactor" type="range" asp-for="Flags.PriceScaleFactor" min="1.0" max="5.0" step="0.1" /></div>
 			</div>
 			<div class="slider-cell">
 				<div class="col-xs-3"><label>Enemy Stats:</label></div>
-				<div class="col-xs-2"><label id="enemy-stats-display"></label></div>
-				<div class="col-xs-2"><input type="range" asp-for="Flags.EnemyScaleFactor" min="1.0" max="5.0" step="0.1" /></div>
+				<div class="col-xs-2"><label id="enemy-stats-display">{{Math.round(100 / EnemyScaleFactor)}}% - {{Math.round(EnemyScaleFactor * 100)}}%</label></div>
+				<div class="col-xs-2"><input v-model="EnemyScaleFactor" type="range" asp-for="Flags.EnemyScaleFactor" min="1.0" max="5.0" step="0.1" /></div>
 			</div>
 			<div class="slider-cell"></div>
 			<div class="slider-cell">
 				<div class="col-xs-5"><label>Exp/Gold Boost:</label></div>
-				<div class="col-xs-2"><input type="range" asp-for="Flags.ExpMultiplier" min="1.0" max="5.0" step="0.1" /></div>
+				<div class="col-xs-2"><input v-model="ExpMultiplier" type="range" asp-for="Flags.ExpMultiplier" min="1.0" max="5.0" step="0.1" /></div>
 			</div>
 			<div class="slider-cell">
-				<div class="col-xs-5"><label id="exp-gold-display"></label></div>
-				<div class="col-xs-2"><input type="range" asp-for="Flags.ExpBonus" min="0" max="500" step="10" /></div>
+				<div class="col-xs-5"><label id="exp-gold-display">{{ExpMultiplier.toPrecision(2)}}x + {{ExpBonus}}</label></div>
+				<div class="col-xs-2"><input v-model="ExpBonus" type="range" asp-for="Flags.ExpBonus" min="0" max="500" step="10" /></div>
 			</div>
             <div class="slider-cell"></div>
 			<div class="slider-cell">
 				<div class="col-xs-3"><label>Forced Party Members:</label></div>
-				<div class="col-xs-2"><label id="forced-party-members-display"></label></div>
-				<div class="col-xs-2"><input type="range" asp-for="Flags.ForcedPartyMembers" min="0" max="4" step="1" /></div>
+				<div class="col-xs-2"><label id="forced-party-members-display">{{ForcedPartyMembers}}</label></div>
+				<div class="col-xs-2"><input v-model="ForcedPartyMembers" type="range" asp-for="Flags.ForcedPartyMembers" min="0" max="4" step="1" /></div>
 			</div>
+            <div class="col-xs-4">
+                <div class="checkbox-cell"><input v-model="EasyMode" type="checkbox" asp-for="Flags.EasyMode" /> <label asp-for="Flags.EasyMode">Easy Mode</label></div>
+            </div>
 		</div>
 		<div class="section tab-pane" id="conveniences">
 			<div class="col-xs-4">
-				<div class="checkbox-cell"><input type="checkbox" asp-for="Flags.EarlyRod" /> <label asp-for="Flags.EarlyRod">Early Rod</label></div>
-				<div class="checkbox-cell"><input type="checkbox" asp-for="Flags.EarlyCanoe" /> <label asp-for="Flags.EarlyCanoe">Early Canoe</label></div>
-				<div class="checkbox-cell"><input type="checkbox" asp-for="Flags.EarlyOrdeals" /> <label asp-for="Flags.EarlyOrdeals">Early Ordeals</label></div>
-				<div class="checkbox-cell"><input type="checkbox" asp-for="Flags.EarlyBridge" /> <label asp-for="Flags.EarlyBridge">Early Bridge</label></div>
-				<div class="checkbox-cell"><input type="checkbox" asp-for="Flags.NoPartyShuffle" /> <label asp-for="Flags.NoPartyShuffle">No Party Shuffle</label></div>
-				<div class="checkbox-cell"><input type="checkbox" asp-for="Flags.SpeedHacks" /> <label asp-for="Flags.SpeedHacks">Speed Hacks</label></div>
-				<div class="checkbox-cell"><input type="checkbox" asp-for="Flags.IdentifyTreasures" /> <label asp-for="Flags.IdentifyTreasures">Identify Treasures</label></div>
-				<div class="checkbox-cell"><input type="checkbox" asp-for="Flags.Dash" /> <label asp-for="Flags.Dash">Enable Dash</label></div>
-				<div class="checkbox-cell"><input type="checkbox" asp-for="Flags.BuyTen" /> <label asp-for="Flags.BuyTen">Buy 10 Items</label></div>
-			</div>
+				<div class="checkbox-cell"><input v-model="EarlyRod" type="checkbox" asp-for="Flags.EarlyRod" /> <label asp-for="Flags.EarlyRod">Early Rod</label></div>
+				<div class="checkbox-cell"><input v-model="EarlyCanoe" type="checkbox" asp-for="Flags.EarlyCanoe" /> <label asp-for="Flags.EarlyCanoe">Early Canoe</label></div>
+				<div class="checkbox-cell"><input v-model="EarlyOrdeals" type="checkbox" asp-for="Flags.EarlyOrdeals" /> <label asp-for="Flags.EarlyOrdeals">Early Ordeals</label></div>
+				<div class="checkbox-cell"><input v-model="EarlyBridge" type="checkbox" asp-for="Flags.EarlyBridge" /> <label asp-for="Flags.EarlyBridge">Early Bridge</label></div>
+                <div class="checkbox-cell"></div>
+				<div class="checkbox-cell"><input v-model="NoPartyShuffle" type="checkbox" asp-for="Flags.NoPartyShuffle" /> <label asp-for="Flags.NoPartyShuffle">No Party Shuffle</label></div>
+				<div class="checkbox-cell"><input v-model="SpeedHacks" type="checkbox" asp-for="Flags.SpeedHacks" /> <label asp-for="Flags.SpeedHacks">Speed Hacks</label></div>
+				<div class="checkbox-cell"><input v-model="Dash" type="checkbox" asp-for="Flags.Dash" /> <label asp-for="Flags.Dash">Enable Dash</label></div>
+				<div class="checkbox-cell"><input v-model="BuyTen" type="checkbox" asp-for="Flags.BuyTen" /> <label asp-for="Flags.BuyTen">Buy 10 Items</label></div>
+            </div>
+            <div class="col-xs-4">
+                <div class="checkbox-cell"><input v-model="IdentifyTreasures" type="checkbox" asp-for="Flags.IdentifyTreasures" /> <label asp-for="Flags.IdentifyTreasures">Identify Treasures</label></div>
+            </div>
 		</div>
 		<div class="section tab-pane" id="bug-fixes">
 			<div class="col-xs-4">
-				<div class="checkbox-cell"><input type="checkbox" asp-for="Flags.HouseMPRestoration" /> <label asp-for="Flags.HouseMPRestoration">House MP Restoration</label></div>
-				<div class="checkbox-cell"><input type="checkbox" asp-for="Flags.WeaponStats" /> <label asp-for="Flags.WeaponStats">Weapon Stats</label></div>
-				<div class="checkbox-cell"><input type="checkbox" asp-for="Flags.ChanceToRun" /> <label asp-for="Flags.ChanceToRun">Chance to Run</label></div>
-				<div class="checkbox-cell"><input type="checkbox" asp-for="Flags.SpellBugs" /> <label asp-for="Flags.SpellBugs">LOCK, LOK2, HEL2, TMPR, SABR</label></div>
-				<div class="checkbox-cell"><input type="checkbox" asp-for="Flags.EnemyStatusAttackBug" /> <label asp-for="Flags.EnemyStatusAttackBug">Enemy Status Attacks</label></div>
+				<div class="checkbox-cell"><input v-model="HouseMPRestoration" type="checkbox" asp-for="Flags.HouseMPRestoration" /> <label asp-for="Flags.HouseMPRestoration">House MP Restoration</label></div>
+				<div class="checkbox-cell"><input v-model="WeaponStats" type="checkbox" asp-for="Flags.WeaponStats" /> <label asp-for="Flags.WeaponStats">Weapon Stats</label></div>
+				<div class="checkbox-cell"><input v-model="ChanceToRun" type="checkbox" asp-for="Flags.ChanceToRun" /> <label asp-for="Flags.ChanceToRun">Chance to Run</label></div>
+				<div class="checkbox-cell"><input v-model="SpellBugs" type="checkbox" asp-for="Flags.SpellBugs" /> <label asp-for="Flags.SpellBugs">LOCK, LOK2, HEL2, TMPR, SABR</label></div>
+				<div class="checkbox-cell"><input v-model="EnemyStatusAttackBug" type="checkbox" asp-for="Flags.EnemyStatusAttackBug" /> <label asp-for="Flags.EnemyStatusAttackBug">Enemy Status Attacks</label></div>
 			</div>
 		</div>
 		<div class="section tab-pane" id="fun">
 			<div class="col-xs-4">
+                <div class="checkbox-cell"><input type="checkbox" asp-for="Flags.ModernBattlefield" /> <label asp-for="Flags.ModernBattlefield">Modern Battlefield</label></div>
 				<div class="checkbox-cell"><input type="checkbox" asp-for="Flags.FunEnemyNames" /> <label asp-for="Flags.FunEnemyNames">Fun Enemy Names</label></div>
 				<div class="checkbox-cell"><input type="checkbox" asp-for="Flags.PaletteSwap" /> <label asp-for="Flags.PaletteSwap">Palette Swap</label></div>
-                <div class="checkbox-cell"><input type="checkbox" asp-for="Flags.ModernBattlefield" /> <label asp-for="Flags.ModernBattlefield">Modern Battlefield</label></div>
 			</div>
 			<div class="col-xs-4">
 				<div class="checkbox-cell">
 					<select asp-for="Flags.TeamSteak">
-						<option value="False">Team TYRO</option>
-						<option value="True">Team STEAK</option>
+						<option value="false">Team TYRO</option>
+						<option value="true">Team STEAK</option>
 					</select>
 				</div>
 				<div class="checkbox-cell">
@@ -118,4 +251,13 @@
 		</div>
 	</div>
 	<input class="section btn btn-primary" type="submit" value="Randomize" />
+  </div>
 </form>
+<script>
+var vueModelData = {};
+var flagData = {};
+@foreach(var kvp in Flags.GetFlagStringAttributes())
+{
+@Html.Raw($"vueModelData.{kvp.Key} = {kvp.Value.ToVueComputedPropertyString()};")
+}
+</script>

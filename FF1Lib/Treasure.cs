@@ -1,204 +1,270 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using RomUtilities;
 
 namespace FF1Lib
 {
-	public enum QuestItems
-	{
-		Tnt = 0x06,
-		Crown = 0x02,
-		Ruby = 0x09,
-		Floater = 0x0b,
-		Tail = 0x0d,
-		Slab = 0x08,
-		Adamant = 0x07,
-	}
-
-	public static class TreasureConditions
-	{
-		public static readonly List<byte> AllQuestItems = new List<byte>
-		{
-			(byte)QuestItems.Tnt,
-			(byte)QuestItems.Crown,
-			(byte)QuestItems.Ruby,
-			(byte)QuestItems.Floater,
-			(byte)QuestItems.Tail,
-			(byte)QuestItems.Slab,
-			(byte)QuestItems.Adamant
-		};
-
-		public static readonly List<int> UnusedIndices =
-			Enumerable.Range(0, 1).Concat(
-			Enumerable.Range(145, 4)).Concat(
-			Enumerable.Range(187, 9)).Concat(
-			Enumerable.Range(255, 1))
-			.ToList();
-
-		public static readonly List<int> UsedIndices = Enumerable.Range(0, 256).Except(UnusedIndices).ToList(); // This maps a compacted list back to the game's array, skipping the unused slots.
-
-		public static readonly List<int> Beginning =
-			Enumerable.Range(7, 3).Concat(
-			Enumerable.Range(20, 10)).Concat(
-			Enumerable.Range(33, 2)).Concat(
-			Enumerable.Range(43, 3))
-			.ToList();
-
-		public static readonly List<int> EarlyCrown =
-			Enumerable.Range(1, 6).Concat( // Coneria
-			Enumerable.Range(10, 3)).Concat( // ToF east side
-			Enumerable.Range(13, 4)).Concat( // Elfland
-			Enumerable.Range(17, 3)).Concat( // Northwest Castle
-			Enumerable.Range(30, 3)).Concat( // Marsh Cave
-			Enumerable.Range(35, 8)) // Dwarf Cave
-			.ToList();
-
-		public static readonly List<int> Tnt = Enumerable.Range(46, 16).ToList(); // Earth Cave B1-B3
-
-		public static readonly List<int> Rod = Enumerable.Range(62, 12).ToList(); // Earth Cave B4, Titan's Tunnel
-
-		public static readonly List<int> FireAndIce = Enumerable.Range(74, 49).ToList();
-
-		public static readonly List<int> Ordeals = Enumerable.Range(123, 9).ToList();
-
-		public static readonly List<int> Airship =
-			Enumerable.Range(132, 13).Concat( // Cardia Islands
-			Enumerable.Range(149, 32).Except(new[] { 165 })).Concat( // Sea Shrine
-			Enumerable.Range(181, 6)) // Waterfall
-			.ToList();
-
-		public static readonly List<int> LateCrown = new List<int> { 165 }; // Reverse-C room in Sea Shrine
-
-		public static readonly List<int> Chime = Enumerable.Range(196, 52).ToList(); // Mirage Tower + Sky Castle
-
-		public static readonly List<int> ToFR = Enumerable.Range(248, 7).ToList(); // Anything that blocks an ORB will also block these.
-	}
-
 	public partial class FF1Rom : NesRom
 	{
 		public const int TreasureOffset = 0x03100;
 		public const int TreasureSize = 1;
 		public const int TreasureCount = 256;
 
-		public void ShuffleTreasures(MT19337 rng, bool earlyCanoe, bool earlyOrdeals, bool incentivizeIceCave, bool incentivizeOrdeals)
+		public const int lut_MapObjTalkJumpTblAddress = 0x390D3;
+		public const string giveRewardRoutineAddress = "93DD";
+		public static readonly List<int> UnusedTreasureIndices =
+			Enumerable.Range(0, 1).Concat(
+			Enumerable.Range(145, 4)).Concat(
+			Enumerable.Range(187, 9)).Concat(
+			Enumerable.Range(255, 1))
+			.ToList();
+
+		public static readonly List<int> UsedTreasureIndices = Enumerable.Range(0, 256).Except(UnusedTreasureIndices).ToList(); // This maps a compacted list back to the game's array, skipping the unused slots.
+
+		public List<IRewardSource> ShuffleTreasures(MT19337 rng, 
+													ITreasureShuffleFlags flags, 
+													IncentiveData incentivesData, 
+													ItemShopSlot caravanItemLocation,
+													Dictionary<MapLocation, List<MapChange>> mapLocationRequirements)
 		{
-			var treasureBlob = Get(TreasureOffset, TreasureSize * TreasureCount);
-			var usedTreasures = TreasureConditions.UsedIndices.Select(i => treasureBlob[i]).ToList();
-
-			do
+			if (flags.NPCItems)
 			{
-				usedTreasures.Shuffle(rng);
-				if (incentivizeIceCave || incentivizeOrdeals)
+				EnableBridgeShipCanalAnywhere();
+				EnableNPCsGiveAnyItem();
+				// This extends Vampire's routine to set a flag for Sarda, but it also clobers Sarda's routine
+				if (!flags.EarlyRod)
 				{
-					const int OrdealsTreasureLocation = 130; // Really 131, because 0 is unused, and usedTreasures doesn't include it.
-					const int IceCaveTreasureLocation = 113; // Really 114
-					var incentiveTreasures = new List<byte>
-					{
-						(byte)QuestItems.Floater,
-						(byte)QuestItems.Slab,
-						(byte)QuestItems.Adamant,
-						(byte)QuestItems.Tail,
-						0x43, // Masmune
-						0x63 // Ribbon
-					};
-					if (earlyCanoe)
-					{
-						incentiveTreasures.Add((byte)QuestItems.Ruby);
-					}
-
-					if (incentivizeOrdeals)
-					{
-						if (earlyOrdeals)
-						{
-							incentiveTreasures.Add((byte)QuestItems.Crown);
-						}
-
-						var choice = rng.Between(0, incentiveTreasures.Count - 1);
-						var selectedTreasure = incentiveTreasures[choice];
-						incentiveTreasures.RemoveAt(choice);
-						var location = usedTreasures.IndexOf(selectedTreasure);
-						usedTreasures.Swap(location, OrdealsTreasureLocation);
-					}
-
-					if (incentivizeIceCave)
-					{
-						if (incentivizeOrdeals && !earlyOrdeals) // Don't add this twice!
-						{
-							incentiveTreasures.Add((byte)QuestItems.Crown);
-						}
-
-						var choice = rng.Between(0, incentiveTreasures.Count - 1);
-						var selectedTreasure = incentiveTreasures[choice];
-						incentiveTreasures.RemoveAt(choice);
-						var location = usedTreasures.IndexOf(selectedTreasure);
-						usedTreasures.Swap(location, IceCaveTreasureLocation);
-					}
+					Put(0x393E1, Blob.FromHex("207F90A51160"));
 				}
-				for (int i = 0; i < TreasureConditions.UsedIndices.Count; i++)
-				{
-					treasureBlob[TreasureConditions.UsedIndices[i]] = usedTreasures[i];
-				}
-			} while (!CheckSanity(treasureBlob, earlyCanoe, earlyOrdeals));
-
-			Put(TreasureOffset, treasureBlob);
-		}
-
-		private bool CheckSanity(Blob treasureBlob, bool earlyCanoe, bool earlyOrdeals)
-		{
-			if (TreasureConditions.ToFR.Select(i => treasureBlob[i]).Intersect(TreasureConditions.AllQuestItems).Any())
-			{
-				return false;
 			}
 
-			var accessibleTreasures = new HashSet<int>(TreasureConditions.Beginning);
-			var questItems = new HashSet<byte>();
-			int lastCount;
-			do
+			var treasureBlob = Get(TreasureOffset, TreasureSize * TreasureCount);
+			var treasurePool = UsedTreasureIndices.Select(x => (Item)treasureBlob[x])
+							.Concat(ItemLists.AllNonTreasureChestItems).ToList();
+
+			var placedItems =
+				ItemPlacement.PlaceSaneItems(rng,
+											flags,
+											incentivesData,
+											treasurePool,
+											caravanItemLocation,
+											mapLocationRequirements);
+
+			// Output the results tothe ROM
+			foreach (var item in placedItems.Where(x => !x.IsUnused && x.Address < 0x80000 && !incentivesData.ForcedItemPlacements.Any(y => y.Address == x.Address)))
 			{
-				lastCount = accessibleTreasures.Count;
-				questItems.UnionWith(accessibleTreasures.Select(i => treasureBlob[i]).Intersect(TreasureConditions.AllQuestItems));
+				//Debug.WriteLine(item.SpoilerText);
+				item.Put(this);
+			}
+			return placedItems;
+		}
 
-				if (questItems.Contains((byte)QuestItems.Crown))
-				{
-					accessibleTreasures.UnionWith(TreasureConditions.EarlyCrown);
-				}
-				if (questItems.Contains((byte)QuestItems.Tnt))
-				{
-					accessibleTreasures.UnionWith(TreasureConditions.Tnt);
+		public bool IsCanalSoftLockPossible(List<IRewardSource> itemPlacements, bool volcanoIce, bool coneriaDwarves)
+		{
+			var canoeLocation = itemPlacements.First(x => x.Item == Item.Canoe).MapLocation;
+			var canalLocation = itemPlacements.First(x => x.Item == Item.Canal).MapLocation;
+			var earlyCanoeLocations = 
+				new List<MapLocation> {
+					MapLocation.ConeriaTown,
+					MapLocation.ConeriaCastle,
+					MapLocation.TempleOfFiends,
+					MapLocation.DwarfCave,
+					MapLocation.MatoyasCave,
+					MapLocation.Pravoka,
+					MapLocation.ElflandTown,
+					MapLocation.ElflandCastle,
+					MapLocation.NorthwestCastle,
+					MapLocation.MarshCave
+				};
+			var earlyCanoe = earlyCanoeLocations.Contains(canoeLocation);
+			if (!earlyCanoe) return false;
+			var earlyLocations = earlyCanoeLocations.ToList();
+			earlyLocations.Add(MapLocation.CresentLake);
+			earlyLocations.Add(MapLocation.IceCave);
+			earlyLocations.Add(MapLocation.GurguVolcano);
+			var earlyCanal = earlyLocations.Contains(canalLocation);
+			if (!earlyCanal) return false;
+			if (coneriaDwarves)
+			{
+				var veryEarlyLocations =
+					new List<MapLocation> {
+						MapLocation.ConeriaTown,
+						MapLocation.ConeriaCastle,
+						MapLocation.TempleOfFiends,
+						MapLocation.DwarfCave
+					};
+				var veryEarlyCanoe = veryEarlyLocations.Contains(canoeLocation);
+				var veryEarlyCanal = veryEarlyLocations.Contains(canalLocation);
+				if (veryEarlyCanoe && !veryEarlyCanal) return true;
+				return !volcanoIce;
+			}
+			if (volcanoIce) return true;
+			var uneditedMapCanalSafeLocations = 
+					new List<MapLocation> {
+						MapLocation.ConeriaTown,
+						MapLocation.ConeriaCastle,
+						MapLocation.TempleOfFiends,
+						MapLocation.MatoyasCave,
+						MapLocation.Pravoka,
+						MapLocation.IceCave
+					};
 
-					if (questItems.Contains((byte)QuestItems.Ruby) || earlyCanoe && questItems.Contains((byte)QuestItems.Floater))
-					{
-						accessibleTreasures.UnionWith(TreasureConditions.Rod);
-					}
-					if (earlyCanoe || questItems.Contains((byte)QuestItems.Ruby))
-					{
-						accessibleTreasures.UnionWith(TreasureConditions.FireAndIce);
+			return !uneditedMapCanalSafeLocations.Contains(canalLocation);
+		}
 
-						if (earlyOrdeals || questItems.Contains((byte)QuestItems.Crown))
-						{
-							accessibleTreasures.UnionWith(TreasureConditions.Ordeals);
-						}
-						if (questItems.Contains((byte)QuestItems.Floater))
-						{
-							accessibleTreasures.UnionWith(TreasureConditions.Airship);
+		/// <summary>
+		/// Start of NPC item shuffle should call the following 4 methods:
+		/// 
+		/// PermanentCaravan();
+		/// CheckCanoeItemInsteadOfEventVar();
+		/// EnableBridgeShipCanalAnywhere();
+		/// EnableNPCsGiveAnyItem();
+		/// 
+		/// Then any item can be assigned to an NPC like this:
+		/// new MapObject(ItemLocations.KingConeria, Item.Key).Put(this);
+		/// </summary>
+		public void EnableBridgeShipCanalAnywhere()
+		{
+			// Replace a long unused dialog string with text for game variables
+			var gameVariableText =
+				"9C91929900000000" + // SHIP
+				"8A929B9C91929900" + // AIRSHIP
+				"8B9B928D908E0000" + // BRIDGE
+				"8C8A978A95000000" + // CANAL
+				"00000000" +
+				"8C8A97988E00"; // CANOE
+			Put(0x2825C, Blob.FromHex(gameVariableText));
 
-							if (questItems.Contains((byte)QuestItems.Crown))
-							{
-								accessibleTreasures.UnionWith(TreasureConditions.LateCrown);
-							}
-							if (questItems.Contains((byte)QuestItems.Slab))
-							{
-								accessibleTreasures.UnionWith(TreasureConditions.Chime);
-							}
-						}
-					}
-				}
-			} while (accessibleTreasures.Count > lastCount && accessibleTreasures.Count < TreasureConditions.UsedIndices.Count - TreasureConditions.ToFR.Count);
+			// Add processing in control code 3 to check for variables
+			var controlCode3 =
+				"A5616920901D0A" +
+				"695A853E" +
+				"A982853F" +
+				"184C9ADB";
+			Put(0x7DBF8, Blob.FromHex(controlCode3));
+			// See source: ~/asm/1F_DBF8_ControlCode3.asm
 
-			return accessibleTreasures.Count == TreasureConditions.UsedIndices.Count - TreasureConditions.ToFR.Count;
+			// Use control code 3 instead of 2 for normal treasure
+			Data[0x2B187] = 0x03;
+		}
+
+		/// <summary>
+		/// Start of NPC item shuffle should call the following 4 methods:
+		/// 
+		/// PermanentCaravan();
+		/// CheckCanoeItemInsteadOfEventVar();
+		/// EnableBridgeShipCanalAnywhere();
+		/// EnableNPCsGiveAnyItem();
+		/// 
+		/// Then any item can be assigned to an NPC like this:
+		/// new MapObject(ItemLocations.KingConeria, Item.Key).Put(this);
+		/// </summary>
+		public void EnableNPCsGiveAnyItem()
+		{
+			// These first 2 are safe to call even if NPC items aren't being shuffled
+			SplitOpenTreasureRoutine();
+			CleanupNPCRoutines();
+
+			// Replace Don't be greedy text with NPC item text "Here, take this"
+			var replacementText =
+				"91A823" + // Here
+				"BF1BA4AE1A" + // , take 
+				"1C3005" + // this\n
+				$"0300";
+			Put(0x28F35, Blob.FromHex(replacementText));
+
+			// New routine for NPC item trades
+			var itemTradeNPCRoutine =
+				"A416207990B027A5106920AABD0060F01D" +
+				"A513F01920" + giveRewardRoutineAddress +
+				"B016A5106920C931B004AADE0060" +
+				"A416207F90A93A60" +
+				"A51160";
+			// Put at Nerrick routine
+			Put(0x39356, Blob.FromHex(itemTradeNPCRoutine));
+			// See source: ~/asm/0E_9356_StandardNPCItemTrade.asm
+
+			// New routine for NPC items based on game event flag
+			var eventFlagGiveNPCRoutine =
+				"A41098F0052079909007" +
+				"A4162079909003A51260" +
+				"A51320" + giveRewardRoutineAddress +
+				"B007A416" +
+				"207F90A93A60";
+			// Put at Talk_ifairship, overrunning Talk_ifearthfire and most of Talk_CubeBotBad
+			Put(0x3956B, Blob.FromHex(eventFlagGiveNPCRoutine));
+			// See source: ~/asm/0E_956B_StandardNPCItem.asm
+
+			// *** Only Nerrick and Smith and required to give an item since 
+			// those routines are overwritten so we set the vanilla item here 
+			// so he still gives it if nothing else changes
+			Data[ItemLocations.Nerrick.Address] = (byte)Item.Canal;
+			Data[ItemLocations.Smith.Address] = (byte)Item.Xcalber;
+
+			// *** Handle special cases (Bikke and Astos)
+			EnableBikkeAnyItem();
+
+			EnableAstosAnyItem();
+		}
+
+		private void EnableAstosAnyItem()
+		{
+			Data[ItemLocations.Astos.Address] = (byte)Item.Crystal;
+			var newText =
+				"571E92BFC1" + // tis I, 
+				"8A37B2B6BFC1" + // Astos, 
+				"5F585F3CAAC4C405" + // all along!!\n
+				"92BE4EC1B7A4AE1A1C39" +// I'll take that
+				"C18C9B98A097C1222705" + //  CROWN and\n 
+				"56B8BE4E4FB54B1C1A0305" + // you'll pry the \n___
+				"A94DB0424BA6B2AF27A72B27413BB6C400!"; // from my cold dead hands!
+			Put(0x285EF, Blob.FromHex(newText));
+			var newAstosRoutine =
+				"AD2260F016A513F01220" + giveRewardRoutineAddress +
+				"B00FA007207392A97D" +
+				"20C590A93A60A51160";
+			Put(0x39338, Blob.FromHex(newAstosRoutine));
+			// See source: ~/asm/0E_9338_AstosAnyItem.asm
+		}
+
+		private void EnableBikkeAnyItem()
+		{
+			Data[ItemLocations.Bikke.Address] = (byte)Item.Ship;
+			var newBikkeRoutine =
+				"A03F209190B00B" +
+				"20A490A97E" +
+				"20C590A51160" +
+				"A004207990B013A513F00F841020" + giveRewardRoutineAddress +
+				"B00AA410207F90A93A60A51260";
+			Put(0x392D0, Blob.FromHex(newBikkeRoutine));
+			// See source: ~/asm/0E_92D0_BikkeAnyItem.asm
+		}
+
+		private void SplitOpenTreasureRoutine()
+		{
+			// Replace "OpenTreasureChest" routine
+			var openTreasureChest =
+				$"A9002003FEA645BD00B120{giveRewardRoutineAddress}" +
+				"B00AA445B9006209049900628A60"; // 27 bytes
+			Put(0x7DD78, Blob.FromHex(openTreasureChest));
+			// See source: ~/asm/1F_DD78_OpenTreasureChestRewrite.asm
+
+			// New "GiveReward" routine
+			const string checkItem =
+				"85616920C93CB013AAC90CD005" +
+				"DE0060B003FE0060C936B02A902B"; // 27 bytes
+			const string notItem =
+				"A561C96C900920B9EC20EADD4CD6DD" +
+				"C944B0092034DDB007A9E59007" +
+				"2046DDB00CA9BD" +
+				"65619D0061"; // 40 bytes
+			const string openChest =
+				"18E67DE67DA2F09004EEB760E88A60"; // 12 bytes
+			var giveRewardRoutine =
+				$"{checkItem}{notItem}{openChest}";
+			Put(0x7DD93, Blob.FromHex(giveRewardRoutine));
+			// See source: ~/asm/1F_DD78_OpenTreasureChestRewrite.asm
 		}
 	}
 }
