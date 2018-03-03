@@ -218,6 +218,15 @@ namespace FF1Lib
 		public bool IncentivizeCaravan { get; set; }
 		[FlagString(Character = 9, FlagBit = 4)]
 		public bool IncentivizeConeria { get; set; }
+		// The incentive presets overwrite the substring for incentives, including
+		// these 3 flags so to keep the preset functionality working properly marking
+		// these as reserved
+		[FlagString(Character = 9, FlagBit = 8)]
+		public bool ReservedForLaterIncentive1 { get; set; }
+		[FlagString(Character = 9, FlagBit = 16)]
+		public bool ReservedForLaterIncentive2 { get; set; }
+		[FlagString(Character = 9, FlagBit = 32)]
+		public bool ReservedForLaterIncentive3 { get; set; }
 
 		[FlagString(Character = 10, FlagBit = 1)]
 		public bool IncentivizeBridge { get; set; }
