@@ -108,6 +108,11 @@ namespace FF1Lib
 				FixSpellBugs();
 			}
 
+			if (flags.EnemySpellsTargetingAllies)
+			{
+				FixEnmeyAOESpells();
+			}
+
 			if (flags.Shops)
 			{
 				shopItemLocation = ShuffleShops(rng, flags.EnemyStatusAttacks);
