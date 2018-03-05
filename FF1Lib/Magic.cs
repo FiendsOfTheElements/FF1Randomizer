@@ -63,17 +63,7 @@ namespace FF1Lib
 			var blackSpells = magicSpells.Where((spell, i) => (i / 4) % 2 == 1).ToList();
 
 			whiteSpells.Shuffle(rng);
-
-			const int warpIndex = 38;
-			bool warpBug;
-			do
-			{
-				blackSpells.Shuffle(rng);
-				var newWarpIndex = blackSpells.FindIndex(spell => spell.Index == warpIndex);
-
-				// If WARP is the last spell in its level, it won't work due to a bug in the original game.
-				warpBug = newWarpIndex % 4 == 3;
-			} while (warpBug);
+			blackSpells.Shuffle(rng);
 
 			// Now we re-interleave the spells.
 			var shuffledSpells = new List<MagicSpell>();
