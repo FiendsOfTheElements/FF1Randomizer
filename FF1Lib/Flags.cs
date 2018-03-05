@@ -196,7 +196,6 @@ namespace FF1Lib
 		[FlagString(Character = 21, Multiplier = 1)]
 		public int ForcedPartyMembers { get; set; }
 		
-		
 		public bool ModernBattlefield { get; set; }
 		public bool FunEnemyNames { get; set; }
 		public bool PaletteSwap { get; set; }

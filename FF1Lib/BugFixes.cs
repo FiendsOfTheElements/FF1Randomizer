@@ -79,5 +79,18 @@ namespace FF1Lib
 			PutInBank(0x0B, 0x9966, Blob.FromHex("2046D860"));
 			PutInBank(0x1F, 0xD846, CreateLongJumpTableEntry(0x0F, 0x8800));
 		}
+
+		public void FixEnemyElementalResistances()
+		{
+			// make XFER and other elemental resistance changing spells affect enemies
+			// Replace second copy of low bye for hp with elemental resistance
+			Put(0x32FE1, Blob.FromHex("13"));
+			// Switch to reading elemental resistance from ROM to RAM and make room for the extra byte
+			Put(0x3370A, Blob.FromHex("A012B1908D7768A009B1908D7E68B1928D7F68C8B1908D8568C8B1908D82684CFABB00000000"));
+			// add JSR to new routine for the extra room
+			Put(0x3378C, Blob.FromHex("20B5B6"));
+			// move 3 byes from previous subroutine and save elemental resistance of the enemy
+			Put(0x336B5, Blob.FromHex("C89190AD7768A01291906000000000000000")); // extra room at the end for new code
+		}
 	}
 }
