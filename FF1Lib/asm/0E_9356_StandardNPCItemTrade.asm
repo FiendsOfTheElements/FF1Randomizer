@@ -17,14 +17,14 @@
      LDA tmp                     ; check required item A510
      ADC #$20                    ; offset for unsram checks 6920
      TAX                         ; AA
+     STX tmp+7                   ; 8617
      LDA unsram, X               ; BD0060
-     BEQ @Default                ; F01D
+     BEQ @Default                ; F01B
        LDA tmp+3                 ; load item to give A513
-       BEQ @Default              ; if there's an item to give F019
+       BEQ @Default              ; if there's an item to give F017
          JSR GiveItem            ; give it 2094DD
-         BCS @End                ; if we don't already have it (Can't hold text) B016
-         LDA tmp                 ; check required item A510
-         ADC #$20                ; offset for unsram checks 6920
+         BCS @End                ; if we don't already have it (Can't hold text) B014
+         LDA tmp+7               ; check required item A517
          CMP #$31                ; if >= item_canoe then skip ahead C931
          BCS :+                  ; B004
          TAX                     ; AA

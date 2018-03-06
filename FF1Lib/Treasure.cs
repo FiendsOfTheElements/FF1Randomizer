@@ -176,9 +176,9 @@ namespace FF1Lib
 
 			// New routine for NPC item trades
 			var itemTradeNPCRoutine =
-				"A416207990B027A5106920AABD0060F01D" +
-				"A513F01920" + giveRewardRoutineAddress +
-				"B016A5106920C931B004AADE0060" +
+				"A416207990B027A5106920AA8617BD0060F01B" +
+				"A513F01720" + giveRewardRoutineAddress +
+				"B014A517C931B004AADE0060" +
 				"A416207F90A93A60" +
 				"A51160";
 			// Put at Nerrick routine
@@ -236,7 +236,7 @@ namespace FF1Lib
 				"20A490A97E" +
 				"20C590A51160" +
 				"A004207990B013A513F00F841020" + giveRewardRoutineAddress +
-				"B00AA410207F90A93A60A51260";
+				"B00AA004207F90A93A60A51260";
 			Put(0x392D0, Blob.FromHex(newBikkeRoutine));
 			// See source: ~/asm/0E_92D0_BikkeAnyItem.asm
 		}

@@ -13,10 +13,10 @@
     BCS @Default                 ; if we already have, skip ahead B013
       LDA tmp+3                  ; load item to give A513
       BEQ @Default               ; if there's an item to give F00F
-      STY tmp                    ; 8410
+      STY tmp                    ; 8410 (this is no longer needed because we just load #OBJID_BIKKE again but adjusting jumps is a pain)
       JSR GiveItem               ; give it 2094DD
       BCS @End                   ; if we don't already have it (Can't hold text) B00A
-      LDY tmp                    ; A410
+      LDY #OBJID_BIKKE           ; A004
       JSR SetGameEventFlag       ; otherwise, set event flag to mark him as done 207F90
       LDA #$3A                   ; The NPC generic item gift text A93A
       RTS                        ; 60
