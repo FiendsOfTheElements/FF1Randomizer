@@ -110,7 +110,7 @@ namespace FF1Lib
 
 			if (flags.EnemySpellsTargetingAllies)
 			{
-				FixEnmeyAOESpells();
+				FixEnemyAOESpells();
 			}
 
 			if (flags.Shops)
