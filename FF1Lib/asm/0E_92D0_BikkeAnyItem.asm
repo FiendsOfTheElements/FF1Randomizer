@@ -16,7 +16,7 @@
       STY tmp                    ; 8410
       JSR GiveItem               ; give it 2094DD
       BCS @End                   ; if we don't already have it (Can't hold text) B00A
-      LDY tmp                    ; A410
+      LDY #OBJID_BIKKE           ; A004
       JSR SetGameEventFlag       ; otherwise, set event flag to mark him as done 207F90
       LDA #$3A                   ; The NPC generic item gift text A93A
       RTS                        ; 60

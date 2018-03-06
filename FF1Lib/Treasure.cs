@@ -236,7 +236,7 @@ namespace FF1Lib
 				"20A490A97E" +
 				"20C590A51160" +
 				"A004207990B013A513F00F841020" + giveRewardRoutineAddress +
-				"B00AA410207F90A93A60A51260";
+				"B00AA004207F90A93A60A51260";
 			Put(0x392D0, Blob.FromHex(newBikkeRoutine));
 			// See source: ~/asm/0E_92D0_BikkeAnyItem.asm
 		}
