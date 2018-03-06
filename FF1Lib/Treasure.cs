@@ -176,9 +176,9 @@ namespace FF1Lib
 
 			// New routine for NPC item trades
 			var itemTradeNPCRoutine =
-				"A416207990B027A5106920AABD0060F01D" +
-				"A513F01920" + giveRewardRoutineAddress +
-				"B016A5106920C931B004AADE0060" +
+				"A416207990B027A5106920AA8617BD0060F01B" +
+				"A513F01720" + giveRewardRoutineAddress +
+				"B014A517C931B004AADE0060" +
 				"A416207F90A93A60" +
 				"A51160";
 			// Put at Nerrick routine
