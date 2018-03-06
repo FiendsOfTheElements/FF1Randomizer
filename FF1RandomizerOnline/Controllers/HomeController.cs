@@ -105,6 +105,7 @@ namespace FF1RandomizerOnline.Controllers
 					EnemyScripts = true,
 					EnemySkillsSpells = true,
 					EnemyStatusAttacks = true,
+					EnemyFormations = false,
 
 					EarlyRod = true,
 					EarlyCanoe = true,

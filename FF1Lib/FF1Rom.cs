@@ -153,6 +153,11 @@ namespace FF1Lib
 				ShuffleEnemyStatusAttacks(rng);
 			}
 
+			if (flags.EnemyFormations)
+			{
+				ShuffleEnemyFormations(rng);
+			}
+
 			if (flags.Ordeals)
 			{
 				ShuffleOrdeals(rng);
@@ -273,6 +278,7 @@ namespace FF1Lib
 
 			WriteSeedAndFlags(Version, seed.ToHex(), Flags.EncodeFlagsText(flags));
 			ExtraTrackingAndInitCode();
+			
 		}
 		private void ExtraTrackingAndInitCode()
 		{
