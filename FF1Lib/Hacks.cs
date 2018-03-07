@@ -273,14 +273,32 @@ namespace FF1Lib
 
 		public void EnableEarlyBridge()
 		{
-			// Pass all bridge_vis checks. It's a mother beautiful bridge - and it's gonna be there.
-			Blob setBridgeVis = Blob.FromHex("A901EA");
-			Put(0x392A1, setBridgeVis);
-			Put(0x394D7, setBridgeVis);
-			Put(0x7C64D, setBridgeVis);
-			Put(0x7E3A6, setBridgeVis);
+			// Set the default bridge_vis byte on game start to true. It's a mother beautiful bridge - and it's gonna be there.
+			Data[0x3008] = 0x01;
 		}
 
+		public void EnableCanalBridge()
+		{
+			// Inline edit to draw the isthmus or the bridge, but never the open canal anymore.
+			// See 0F_8780_IsOnEitherBridge for this and the IsOnBridge replacement called from below.
+			Put(0x7E3BB, Blob.FromHex("A266A0A420DFE3B0E1A908AE0C60F002A910"));
 
+			/**
+			 *  A slight wrinkle from normal cross page jump in that we need to preserve the status register,
+			 *  since the carry bit is what's used to determine if you're on a bridge or canal, of course.
+			 *
+			    LDA $60FC
+				PHA
+				LDA #$0F
+				JSR $FE03 ;SwapPRG_L
+				JSR $8780
+				PLA
+				PHP
+				JSR $FE03 ;SwapPRG_L
+				PLP
+				RTS
+			**/
+			Put(0x7C64D, Blob.FromHex("ADFC6048A90F2003FE20808768082003FE2860"));
+		}
 	}
 }

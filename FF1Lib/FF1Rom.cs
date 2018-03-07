@@ -253,6 +253,8 @@ namespace FF1Lib
 				PartyRandomize(rng, flags.ForcedPartyMembers);
 			}
 
+			EnableCanalBridge();
+
 			// We have to do "fun" stuff last because it alters the RNG state.
 			RollCredits(rng);
 
@@ -356,6 +358,9 @@ namespace FF1Lib
 			Put(0x3A1B5, Blob.FromHex("2040D8D0034C56A1EA"));
 			// Move Most of LoadBorderPalette_Blue out of the way to do a dynamic version.
 			PutInBank(0x0F, 0x8700, Blob.FromHex("988DCE038DEE03A90F8DCC03A9008DCD03A9308DCF0360"));
+
+			// Create a clone of IsOnBridge that checks the canal too.
+			PutInBank(0x0F, 0x8780, Blob.FromHex("AD0860F014A512CD0960D00DA513CD0A60D006A90085451860A512CD0D60D00DA513CD0E60D006A900854518603860"));
 		}
 
 		public override bool Validate()
