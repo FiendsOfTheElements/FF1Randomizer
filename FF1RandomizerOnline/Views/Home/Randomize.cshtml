@@ -52,6 +52,7 @@
 				<div class="checkbox-cell"><input v-model="MagicShops" type="checkbox" asp-for="Flags.MagicShops" /> <label asp-for="Flags.MagicShops">Magic Shops</label></div>
 				<div class="checkbox-cell"><input v-model="MagicLevels" type="checkbox" asp-for="Flags.MagicLevels" /> <label asp-for="Flags.MagicLevels">Magic Levels</label></div>
 				<div class="checkbox-cell"><input v-model="MagicPermissions" :disabled="!MagicLevels" class="indent" type="checkbox" asp-for="Flags.MagicPermissions" /> <label :style="!MagicLevels ? { color: 'grey'} : {}" asp-for="Flags.MagicPermissions">Keep Permissions</label></div>
+				<div class="checkbox-cell"><input v-model="ItemMagic" type="checkbox" asp-for="Flags.ItemMagic" /> <label asp-for="Flags.ItemMagic">Item Magic</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.2.0</a>)</small></div>
 			</div>
 			<div class="col-xs-4">
 				<div class="checkbox-cell"><input v-model="EnemyScripts" type="checkbox" asp-for="Flags.EnemyScripts" /> <label asp-for="Flags.EnemyScripts">Enemy Scripts</label></div>

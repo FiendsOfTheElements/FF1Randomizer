@@ -55,6 +55,7 @@ namespace FF1RandomizerOnline.Controllers
 					MagicShops = false,
 					MagicLevels = true,
 					MagicPermissions = false,
+					ItemMagic = false,
 					
 					Rng = true,
 					

@@ -115,6 +115,11 @@ namespace FF1Lib
 				FixEnemyAOESpells();
 			}
 
+			if (flags.ItemMagic)
+			{
+				ShuffleItemMagic(rng);
+			}
+
 			if (flags.Shops)
 			{
 				var excludeItemsFromRandomShops = flags.Treasures
@@ -463,7 +468,7 @@ namespace FF1Lib
 			// 15 bytes starting at 0xC8A4 in bank 1F, ROM offset: 7C8B4
 			// This removes the routine that give a reward for beating the minigame, no need for a reward without the minigame 
 			PutInBank(0x1F, 0xC8A4, Blob.FromHex("EAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
-			// 28 byte sstarting at 0xCFCB in bank 1F, ROM offset: 7CFDB
+			// 28 byte starting at 0xCFCB in bank 1F, ROM offset: 7CFDB
 			// This removes the AssertNasirCRC routine, which we were skipping anyways, no point in keeping uncalled routines
 			PutInBank(0x1F, 0xCFCB, Blob.FromHex("EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
 		}

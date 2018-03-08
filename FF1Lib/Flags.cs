@@ -51,6 +51,8 @@ namespace FF1Lib
 		public bool MagicLevels { get; set; }
 		[FlagString(Character = MAGIC, FlagBit = 4)]
 		public bool MagicPermissions { get; set; }
+		[FlagString(Character = MAGIC, FlagBit = 8)]
+		public bool ItemMagic { get; set; }
 
 		[FlagString(Character = ENCOUNTERS, FlagBit = 1)]
 		public bool Rng { get; set; }
