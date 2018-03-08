@@ -228,6 +228,11 @@ namespace FF1Lib
 				FixEnemyStatusAttackBug();
 			}
 
+			if (flags.EnemyElementalResistancesBug)
+			{
+				FixEnemyElementalResistances();
+			}
+
 			if (flags.FunEnemyNames)
 			{
 				FunEnemyNames(flags.TeamSteak);

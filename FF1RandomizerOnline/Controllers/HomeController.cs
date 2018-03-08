@@ -121,6 +121,7 @@ namespace FF1RandomizerOnline.Controllers
 					ChanceToRun = true,
 					SpellBugs = true,
 					EnemyStatusAttackBug = true,
+					EnemyElementalResistancesBug = true,
 
 					FunEnemyNames = true,
 					PaletteSwap = true,

@@ -143,6 +143,9 @@ namespace FF1Lib
 		[FlagString(Character = 15, FlagBit = 16)]
 		public bool EnemyStatusAttackBug { get; set; }
 
+		[FlagString(Character = 21, FlagBit = 8)]
+		public bool EnemyElementalResistancesBug { get; set; }
+
 		public bool ModernBattlefield { get; set; }
 		public bool FunEnemyNames { get; set; }
 		public bool PaletteSwap { get; set; }
