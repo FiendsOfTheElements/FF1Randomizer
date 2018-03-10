@@ -281,6 +281,22 @@ namespace FF1Lib
 			Put(0x7E3A6, setBridgeVis);
 		}
 
+		public void ChangeUnrunnableRunToWait()
+		{
+			// See Unrunnable.asm
+			// Replace DrawCommandMenu with a cross page jump to a replacement that swaps RUN for WAIT if the battle is unrunnable.
+			// The last 5 bytes here are the null terminated WAIT string (stashed in some leftover space of the original subroutine)
+			Put(0x7F700, Blob.FromHex("ADFC6048A90F2003FE204087682003FE4C48F6A08A929D00"));
 
+			// Replace some useless code with a special handler for unrunnables that prints a different message.
+			// We then update the unrunnable branch to point here instead of the generic Can't Run handler
+			// See Disch's comments here: Battle_PlayerTryRun  [$A3D8 :: 0x323E8]
+			Put(0x32409, Blob.FromHex("189005A9064C07AAEAEAEAEAEAEAEA"));
+			Data[0x323EB] = 0x20; // new delta to special unrunnable message handler
+
+			// The above code uses battle message $06 which is the unused Sight Recovered string
+			// Let's overwrite that string with something more appropriate for the WAIT command
+			Put(0x2CC71, FF1Text.TextToBytes("Waiting", false));
+		}
 	}
 }

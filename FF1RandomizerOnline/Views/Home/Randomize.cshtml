@@ -46,8 +46,10 @@
 				<div class="checkbox-cell"><input v-model="EnemyScripts" type="checkbox" asp-for="Flags.EnemyScripts" /> <label asp-for="Flags.EnemyScripts">Enemy Scripts</label></div>
 				<div class="checkbox-cell"><input v-model="EnemySkillsSpells" type="checkbox" asp-for="Flags.EnemySkillsSpells" /> <label asp-for="Flags.EnemySkillsSpells">Enemy Skills/Spells</label></div>
 				<div class="checkbox-cell"><input v-model="EnemyStatusAttacks" type="checkbox" asp-for="Flags.EnemyStatusAttacks" /> <label asp-for="Flags.EnemyStatusAttacks">Enemy Status Attacks</label></div>
-                <div class="checkbox-cell"></div>
-                <div class="checkbox-cell"><input v-model="Rng" type="checkbox" asp-for="Flags.Rng" /> <label asp-for="Flags.Rng">RNG Table</label><br /></div>
+				<div class="checkbox-cell"><input v-model="EnemyFormationsUnrunnable" type="checkbox" asp-for="Flags.EnemyFormationsUnrunnable" /> <label asp-for="Flags.EnemyFormationsUnrunnable">Enemy Unrunnable Formations</label></div>
+				<div class="checkbox-cell"><input v-model="EnemyFormationsSurprise" type="checkbox" asp-for="Flags.EnemyFormationsSurprise" /> <label asp-for="Flags.EnemyFormationsSurprise">Enemy Surprise Bonus</label></div>
+				<div class="checkbox-cell"></div>
+				<div class="checkbox-cell"><input v-model="Rng" type="checkbox" asp-for="Flags.Rng" /> <label asp-for="Flags.Rng">RNG Table</label><br /></div>
 			</div>
 		</div>
         <div class="section tab-pane col-xs-12" id="incentives">
@@ -213,9 +215,10 @@
 				<div class="checkbox-cell"><input v-model="Dash" type="checkbox" asp-for="Flags.Dash" /> <label asp-for="Flags.Dash">Enable Dash</label></div>
 				<div class="checkbox-cell"><input v-model="BuyTen" type="checkbox" asp-for="Flags.BuyTen" /> <label asp-for="Flags.BuyTen">Buy 10 Items</label></div>
             </div>
-            <div class="col-xs-4">
-                <div class="checkbox-cell"><input v-model="IdentifyTreasures" type="checkbox" asp-for="Flags.IdentifyTreasures" /> <label asp-for="Flags.IdentifyTreasures">Identify Treasures</label></div>
-            </div>
+			<div class="col-xs-4">
+				<div class="checkbox-cell"><input v-model="IdentifyTreasures" type="checkbox" asp-for="Flags.IdentifyTreasures" /> <label asp-for="Flags.IdentifyTreasures">Identify Treasures</label></div>
+				<div class="checkbox-cell"><input v-model="WaitWhenUnrunnable" type="checkbox" asp-for="Flags.WaitWhenUnrunnable" /> <label asp-for="Flags.WaitWhenUnrunnable">Change Unrunnable RUN to WAIT</label></div>
+			</div>
 		</div>
 		<div class="section tab-pane" id="bug-fixes">
 			<div class="col-xs-4">
