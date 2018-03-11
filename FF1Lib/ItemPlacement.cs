@@ -28,7 +28,7 @@ namespace FF1Lib
 			var unincentivizedQuestItems =
 				ItemLists.AllQuestItems
 					.Where(x => !incentivePool.Contains(x) &&
-								x != Item.Ship && x != Item.Bridge && x != Item.Bottle &&
+								x != Item.Ship && x != Item.Bridge && 
 								!forcedItems.Any(y => y.Item == x));
 
 			var treasurePool = allTreasures.ToList();
@@ -47,6 +47,7 @@ namespace FF1Lib
 			{
 				treasurePool.Remove(questItem);
 			}
+			var itemShopItem = Item.Bottle;
 			do
 			{
 				sanityCounter++;
@@ -61,27 +62,22 @@ namespace FF1Lib
 					// 2. Place caravan item first because among incentive locations it has the smallest set of possible items
 					if (!placedItems.Any(x => x.Address == ItemLocations.CaravanItemShop1.Address))
 					{
-						var itemPick = Item.Bottle;
 						var validShopIncentives = incentives
 							.Where(x => x > Item.None && x <= Item.Soft)
 							.ToList();
-						if (validShopIncentives.Any())
+						if (validShopIncentives.Any() && incentiveLocationPool.Any(x => x.Address == ItemLocations.CaravanItemShop1.Address))
 						{
-							itemPick = validShopIncentives.PickRandom(rng);
-							incentives.Remove(itemPick);
+							itemShopItem = validShopIncentives.PickRandom(rng);
+							incentives.Remove(itemShopItem);
 						}
-						else if (placedItems.Any(x => x.Item == Item.Bottle))
+						else 
 						{
-							itemPick = ItemLists.AllConsumables.ToList().PickRandom(rng);
-						}
-						else
-						{
-							treasurePool.Remove(Item.Bottle);
+							itemShopItem = treasurePool.Where(x => x > Item.None && x <= Item.Soft).ToList().PickRandom(rng);
 						}
 
-						placedItems.Add(new ItemShopSlot(caravanItemLocation, itemPick));
+						placedItems.Add(new ItemShopSlot(caravanItemLocation, itemShopItem));
 					}
-
+					
 					// 3. Place Bridge and Ship next since the valid location lists are so small
 					IRewardSource bridgePlacement = bridgeLocations.PickRandom(rng);
 					placedItems.Add(NewItemPlacement(bridgePlacement, Item.Bridge));
@@ -94,7 +90,8 @@ namespace FF1Lib
 				}
 
 				// 4. Then place all incentive locations that don't have special logic
-				foreach (var incentiveLocation in incentiveLocationPool.Where(x => !placedItems.Any(y => y.Address == x.Address)))
+				var incentiveLocations = incentiveLocationPool.Where(x => !placedItems.Any(y => y.Address == x.Address) && x.Address != ItemLocations.CaravanItemShop1.Address);
+				foreach (var incentiveLocation in incentiveLocations)
 				{
 					if (!incentives.Any()) break;
 					placedItems.Add(NewItemPlacement(incentiveLocation, incentives.SpliceRandom(rng)));
@@ -102,6 +99,7 @@ namespace FF1Lib
 
 				// 5. Then place remanining incentive items and unincentivized quest items in any other chest before ToFR
 				var leftoverItems = incentives.Concat(unincentivizedQuestItems).ToList();
+				leftoverItems.Remove(itemShopItem);
 				leftoverItems.Shuffle(rng);
 				var leftoverItemLocations =
 					itemLocationPool
@@ -130,6 +128,7 @@ namespace FF1Lib
 			{
 				treasurePool.Add(unplacedIncentive);
 			}
+			treasurePool.Remove(itemShopItem);
 			treasurePool.Shuffle(rng);
 			foreach (var remainingTreasure in itemLocationPool)
 			{

@@ -20,6 +20,7 @@ namespace FF1Lib
 		bool IncentivizeCubeBot { get; }
 		bool IncentivizeFairy { get; }
 		bool IncentivizeLefein { get; }
+		bool IncentivizeCaravan { get; }
 		bool IncentivizeOrdeals { get; }
 		bool IncentivizeIceCave { get; }
 		bool IncentivizeVolcano { get; }

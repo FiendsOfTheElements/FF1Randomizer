@@ -216,6 +216,10 @@ namespace FF1Lib
 			{
 				incentiveLocationPool.Add(ItemLocations.OrdealsMajor);
 			}
+			if (flags.IncentivizeCaravan)
+			{
+				incentiveLocationPool.Add(ItemLocations.CaravanItemShop1);
+			}
 			var itemLocationPool =
 				ItemLocations.AllTreasures.Concat(ItemLocations.AllNPCItemLocations)
 						  .Where(x => !x.IsUnused && !forcedItemPlacements.Any(y => y.Address == x.Address))
