@@ -30,12 +30,29 @@ namespace FF1Lib
 				mapLocationRequirements[MapLocation.ElflandCastle].Add(MapChange.Bridge | MapChange.Canoe);
 				mapLocationRequirements[MapLocation.NorthwestCastle].Add(MapChange.Bridge | MapChange.Canoe);
 				mapLocationRequirements[MapLocation.MarshCave].Add(MapChange.Bridge | MapChange.Canoe);
-				mapLocationRequirements[MapLocation.DwarfCave].Add(MapChange.Bridge | MapChange.Canoe);
+				if(flags.MapCanalBridge)
+					mapLocationRequirements[MapLocation.DwarfCave].Add(MapChange.Bridge | MapChange.Canoe);
 			}
 			if (flags.MapConeriaDwarves)
 			{
 				MapEditsToApply.Add(ConeriaToDwarves);
-				mapLocationRequirements[MapLocation.DwarfCave] = new List<MapChange> { MapChange.None };
+				mapLocationRequirements[MapLocation.DwarfCave].Add(MapChange.None);
+				if(flags.MapCanalBridge)
+				{
+					mapLocationRequirements[MapLocation.GurguVolcano].Add(MapChange.Canoe);
+					mapLocationRequirements[MapLocation.CresentLake].Add(MapChange.Canoe);
+					mapLocationRequirements[MapLocation.ElflandTown].Add(MapChange.Canoe);
+					mapLocationRequirements[MapLocation.ElflandCastle].Add(MapChange.Canoe);
+					mapLocationRequirements[MapLocation.NorthwestCastle].Add(MapChange.Canoe);
+					mapLocationRequirements[MapLocation.MarshCave].Add(MapChange.Canoe);
+					if (flags.MapVolcanoIceRiver)
+					{
+						mapLocationRequirements[MapLocation.IceCave].Add(MapChange.Canoe);
+						mapLocationRequirements[MapLocation.Pravoka].Add(MapChange.Canoe);
+						mapLocationRequirements[MapLocation.MatoyasCave].Add(MapChange.Canoe);
+						mapLocationRequirements[MapLocation.ShipLocation].Add(MapChange.Canoe);
+					}
+				}
 			}
 			
 			var softlockPrevented1 = !flags.NPCItems;
