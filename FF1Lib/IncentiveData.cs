@@ -233,7 +233,7 @@ namespace FF1Lib
 							? new TreasureChest(x, x.Item, x.AccessRequirement & ~AccessRequirement.Crown)
 							: x).ToList();
 			}
-			if (flags.EarlyCanoe)
+			if (flags.EarlySage)
 			{
 				itemLocationPool =
 						itemLocationPool
@@ -246,7 +246,7 @@ namespace FF1Lib
 									? new MapObject(ObjectId.CanoeSage, MapLocation.CresentLake, x.Item)
 									: x).ToList();
 			}
-			if (flags.EarlyRod)
+			if (flags.EarlySarda)
 			{
 				itemLocationPool =
 					itemLocationPool

@@ -37,7 +37,16 @@ namespace FF1Lib
 				MapEditsToApply.Add(ConeriaToDwarves);
 				mapLocationRequirements[MapLocation.DwarfCave] = new List<MapChange> { MapChange.None };
 			}
-			if (flags.MapTitansTrove)
+			
+			var softlockPrevented1 = !flags.NPCItems;
+			var softlockPrevented2 = flags.MapCanalBridge;
+			var softlockPrevented3 = flags.MapFreeBridge && flags.MapConeriaDwarves && flags.MapVolcanoIceRiver;
+			var isCanalSoftlockPrevented = softlockPrevented1 || softlockPrevented2 || softlockPrevented3;
+			if (!isCanalSoftlockPrevented)
+			{
+				MapEditsToApply.Add(CanalSoftLockMountain);
+			}
+			if (flags.TitansTrove)
 			{
 				mapLocationRequirements[MapLocation.TitansTunnelWest] = new List<MapChange> {
 					MapChange.Canal | MapChange.Ship | MapChange.TitanFed, MapChange.Airship | MapChange.TitanFed };

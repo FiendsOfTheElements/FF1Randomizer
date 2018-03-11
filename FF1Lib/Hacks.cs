@@ -83,7 +83,7 @@ namespace FF1Lib
 			Data[0x39077] = 0x14;
 		}
 
-		public void EnableEarlyRod()
+		public void EnableEarlySarda()
 		{
 			var nops = new byte[SardaSize];
 			for (int i = 0; i < nops.Length; i++)
@@ -94,7 +94,7 @@ namespace FF1Lib
 			Put(SardaOffset, nops);
 		}
 
-		public void EnableEarlyCanoe()
+		public void EnableEarlySage()
 		{
 			var nops = new byte[CanoeSageSize];
 			for (int i = 0; i < nops.Length; i++)
@@ -271,7 +271,15 @@ namespace FF1Lib
 			Put(0x2ADDE, Blob.FromHex("91251A682CC18EB1B74DB32505C1BE9296991E2F1AB6A4A9A8BE05C1C1C1C1C1C19B929900"));
 		}
 
-		public void EnableEarlyBridge()
+		/// <summary>
+		/// Unused method, but this would allow a non-npc shuffle king to build bridge without rescuing princess
+		/// </summary>
+		public void EnableEarlyKing()
+		{
+			Data[0x390D5] = 0xA1;
+		}
+		
+		public void EnableFreeBridge()
 		{
 			// Set the default bridge_vis byte on game start to true. It's a mother beautiful bridge - and it's gonna be there.
 			Data[0x3008] = 0x01;

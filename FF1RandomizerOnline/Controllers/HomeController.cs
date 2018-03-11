@@ -106,10 +106,9 @@ namespace FF1RandomizerOnline.Controllers
 					EnemySkillsSpells = true,
 					EnemyStatusAttacks = true,
 
-					EarlyRod = true,
-					EarlyCanoe = true,
+					EarlySarda = true,
+					EarlySage = true,
 					EarlyOrdeals = true,
-					EarlyBridge = true,
 					NoPartyShuffle = true,
 					SpeedHacks = true,
 					IdentifyTreasures = true,
@@ -136,9 +135,12 @@ namespace FF1RandomizerOnline.Controllers
 					EasyMode = false,
 
 					Ordeals = true,
+					TitansTrove = true,
+					MapNorthernDocks = false,
+					MapFreeBridge = false,
 					MapConeriaDwarves = true,
-					MapVolcanoIceRiver = true,
-					MapTitansTrove = true
+					MapVolcanoIceRiver = false,
+					MapCanalBridge = true
 				}
 			};
 			vm.FlagsInput = vm.Flags.GetString();

@@ -97,7 +97,7 @@ namespace FF1Lib
 				SetBattleUI(true);
 			}
 
-			if (flags.MapTitansTrove)
+			if (flags.TitansTrove)
 			{
 				EnableTitansTrove();
 			}
@@ -116,11 +116,7 @@ namespace FF1Lib
 			if (flags.Treasures || flags.NPCItems)
 			{
 				var incentivesData = new IncentiveData(flags, map.MapLocationRequirements);
-				var placements = ShuffleTreasures(rng, flags, incentivesData, shopItemLocation, map.MapLocationRequirements);
-				if (IsCanalSoftLockPossible(placements, flags.MapVolcanoIceRiver, flags.MapConeriaDwarves))
-				{
-					map.MapEditsToApply.Add(OverworldMap.CanalSoftLockMountain);
-				}
+				ShuffleTreasures(rng, flags, incentivesData, shopItemLocation, map.MapLocationRequirements);
 			}
 
 			if (flags.MagicShops)
@@ -163,19 +159,19 @@ namespace FF1Lib
 				EnableEarlyOrdeals();
 			}
 
-			if (flags.EarlyRod && !flags.NPCItems)
+			if (flags.EarlySarda && !flags.NPCItems)
 			{
-				EnableEarlyRod();
+				EnableEarlySarda();
 			}
 
-			if (flags.EarlyCanoe && !flags.NPCItems)
+			if (flags.EarlySage && !flags.NPCItems)
 			{
-				EnableEarlyCanoe();
+				EnableEarlySage();
 			}
-
-			if (flags.EarlyBridge)
+			
+			if (flags.MapFreeBridge)
 			{
-				EnableEarlyBridge();
+				EnableFreeBridge();
 			}
 
 			if (flags.NoPartyShuffle)

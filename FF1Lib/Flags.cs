@@ -63,17 +63,19 @@ namespace FF1Lib
 	{
 		bool Treasures { get; }
 		bool NPCItems { get; }
-		bool EarlyRod { get; }
-		bool EarlyCanoe { get; }
+		bool EarlySarda { get; }
+		bool EarlySage { get; }
 		bool EarlyOrdeals { get; }
 	}
-	public interface IMapEditFlags 
+	public interface IMapEditFlags : IItemShuffleFlags
 	{
+		bool MapCanalBridge { get; }
+		bool MapFreeBridge { get; }
 		bool MapConeriaDwarves { get; }
 		bool MapVolcanoIceRiver { get; }
-		bool MapTitansTrove { get; }
+		bool TitansTrove { get; }
 	}
-	public interface ITreasureShuffleFlags : IItemShuffleFlags, IMapEditFlags
+	public interface ITreasureShuffleFlags : IMapEditFlags
 	{
 	}
 	public class Flags : ITreasureShuffleFlags, IIncentiveFlags
@@ -86,13 +88,15 @@ namespace FF1Lib
 		public bool Shops { get; set; }
 
 		[FlagString(Character = 1, FlagBit = 1)]
-		public bool EarlyRod { get; set; }
+		public bool EarlySarda { get; set; }
 		[FlagString(Character = 1, FlagBit = 2)]
-		public bool EarlyCanoe { get; set; }
+		public bool EarlySage { get; set; }
 		[FlagString(Character = 1, FlagBit = 4)]
 		public bool EarlyOrdeals { get; set; }
 		[FlagString(Character = 1, FlagBit = 8)]
-		public bool EarlyBridge { get; set; }
+		public bool Ordeals { get; set; }
+		[FlagString(Character = 1, FlagBit = 16)]
+		public bool TitansTrove { get; set; }
 
 		[FlagString(Character = 2, FlagBit = 1)]
 		public bool MagicShops { get; set; }
@@ -113,13 +117,17 @@ namespace FF1Lib
 		public bool EasyMode { get; set; }
 
 		[FlagString(Character = 4, FlagBit = 1)]
-		public bool Ordeals { get; set; }
+		public bool ReservedForLaterOverworldMapEdit { get; set; }
 		[FlagString(Character = 4, FlagBit = 2)]
-		public bool MapTitansTrove { get; set; }
+		public bool MapNorthernDocks { get; set; }
 		[FlagString(Character = 4, FlagBit = 4)]
-		public bool MapConeriaDwarves { get; set; }
+		public bool MapFreeBridge { get; set; }
 		[FlagString(Character = 4, FlagBit = 8)]
+		public bool MapConeriaDwarves { get; set; }
+		[FlagString(Character = 4, FlagBit = 16)]
 		public bool MapVolcanoIceRiver { get; set; }
+		[FlagString(Character = 4, FlagBit = 32)]
+		public bool MapCanalBridge { get; set; }
 
 		[FlagString(Character = 14, FlagBit = 1)]
 		public bool SpeedHacks { get; set; }

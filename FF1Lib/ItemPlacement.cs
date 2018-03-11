@@ -183,8 +183,10 @@ namespace FF1Lib
 			if (!flags.EarlyOrdeals)
 				requiredAccess |= AccessRequirement.Crown;
 			var requiredMapChanges = MapChange.None;
-			if (flags.MapTitansTrove)
+			if (flags.TitansTrove)
 				requiredMapChanges |= MapChange.TitanFed;
+			if (flags.MapFreeBridge)
+				requiredMapChanges |= MapChange.Bridge;
 
 			while (!currentAccess.HasFlag(requiredAccess) ||
 				   !currentMapChanges.HasFlag(requiredMapChanges) ||
