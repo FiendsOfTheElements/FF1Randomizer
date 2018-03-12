@@ -70,6 +70,7 @@ namespace FF1Lib
 	}
 	public interface IMapEditFlags : IItemShuffleFlags
 	{
+		bool MapNorthernDocks{ get; }
 		bool MapCanalBridge { get; }
 		bool MapFreeBridge { get; }
 		bool MapConeriaDwarves { get; }
