@@ -80,6 +80,7 @@ namespace FF1Lib
 	}
 	public interface ITreasureShuffleFlags : IMapEditFlags
 	{
+		bool OnlyRequireGameIsBeatable { get; }
 	}
 	public class Flags : ITreasureShuffleFlags, IIncentiveFlags
 	{
@@ -170,6 +171,11 @@ namespace FF1Lib
 		public int ExpBonus { get; set; }
 		[FlagString(Character = 20, Multiplier = 1)]
 		public int ForcedPartyMembers { get; set; }
+		[FlagString(Character = 21, Multiplier = 1)]
+		public int ReservedForForcedPartyMembersExpansion { get; set; }
+		
+		[FlagString(Character = 22, FlagBit = 1)]
+		public bool OnlyRequireGameIsBeatable { get; set; }
 
 		[FlagString(Character = 5, FlagBit = 1)]
 		public bool IncentivizeMarsh { get; set; }

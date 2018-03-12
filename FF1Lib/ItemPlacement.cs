@@ -166,6 +166,11 @@ namespace FF1Lib
 			var currentIteration = 0;
 			var currentAccess = AccessRequirement.None;
 			var currentMapChanges = MapChange.None;
+			if (flags.MapFreeBridge)
+				currentMapChanges |= MapChange.Bridge;
+			if (flags.MapFreeAirship)
+				currentMapChanges |= MapChange.Airship;
+			
 			var allMapLocations = Enum.GetValues(typeof(MapLocation))
 									  .Cast<MapLocation>().ToList();
 			Func<IEnumerable<MapLocation>> currentMapLocations =
@@ -184,19 +189,27 @@ namespace FF1Lib
 			var winTheGameAccess = ItemLocations.ChaosReward.AccessRequirement;
 			var winTheGameLocation = ItemLocations.ChaosReward.MapLocation;
 			var accessibleLocationCount = currentItemLocations().Count();
-			var requiredAccess = winTheGameAccess;
-			if (!flags.EarlyOrdeals)
-				requiredAccess |= AccessRequirement.Crown;
-			var requiredMapChanges = MapChange.None;
-			if (flags.TitansTrove)
-				requiredMapChanges |= MapChange.TitanFed;
-			if (flags.MapFreeBridge)
-				requiredMapChanges |= MapChange.Bridge;
-			if (flags.MapFreeAirship)
-				requiredMapChanges |= MapChange.Airship;
+			var requiredAccess = AccessRequirement.All;
+			var requiredMapChanges = new List<MapChange> { MapChange.All };
+			
+			if (flags.OnlyRequireGameIsBeatable)
+			{
+				requiredAccess = winTheGameAccess;
+				requiredMapChanges = mapLocationRequirements[winTheGameLocation];
+				// If we still want to prevent unobtainable items based on other flags:
+				//if (!flags.EarlyOrdeals)
+				//	requiredAccess |= AccessRequirement.Crown;
+				//if (flags.TitansTrove)
+				//{
+				//	for (int i = 0; i < requiredMapChanges.Count; i++)
+				//	{
+				//		requiredMapChanges[i] |= MapChange.TitanFed;
+				//	}
+				//}
+			}
 
 			while (!currentAccess.HasFlag(requiredAccess) ||
-				   !currentMapChanges.HasFlag(requiredMapChanges) ||
+				   !requiredMapChanges.Any(x => currentMapChanges.HasFlag(x)) ||
 				   !currentMapLocations().Contains(winTheGameLocation))
 			{
 				if (currentIteration > maxIterations)
