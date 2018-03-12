@@ -70,6 +70,7 @@ namespace FF1Lib
 	}
 	public interface IMapEditFlags : IItemShuffleFlags
 	{
+		bool MapFreeAirship { get; }
 		bool MapNorthernDocks{ get; }
 		bool MapCanalBridge { get; }
 		bool MapFreeBridge { get; }
@@ -119,9 +120,9 @@ namespace FF1Lib
 		public bool EasyMode { get; set; }
 
 		[FlagString(Character = 4, FlagBit = 1)]
-		public bool ReservedForLaterOverworldMapEdit { get; set; }
-		[FlagString(Character = 4, FlagBit = 2)]
 		public bool MapNorthernDocks { get; set; }
+		[FlagString(Character = 4, FlagBit = 2)]
+		public bool MapFreeAirship { get; set; }
 		[FlagString(Character = 4, FlagBit = 4)]
 		public bool MapFreeBridge { get; set; }
 		[FlagString(Character = 4, FlagBit = 8)]

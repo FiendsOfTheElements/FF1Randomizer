@@ -8,6 +8,7 @@ namespace FF1Lib
 {
 	public static class ItemPlacement
 	{
+		private const Item ReplacementItem = Item.Cabin;
 		public static List<IRewardSource> PlaceSaneItems(MT19337 rng,
 														ITreasureShuffleFlags flags,
 														IncentiveData incentivesData,
@@ -29,7 +30,8 @@ namespace FF1Lib
 				ItemLists.AllQuestItems
 					.Where(x => !incentivePool.Contains(x) &&
 								x != Item.Ship && x != Item.Bridge && 
-								!forcedItems.Any(y => y.Item == x));
+								!forcedItems.Any(y => y.Item == x))
+								.ToList();
 
 			var treasurePool = allTreasures.ToList();
 			treasurePool.Remove(Item.Bridge);
@@ -46,6 +48,10 @@ namespace FF1Lib
 			foreach (var questItem in unincentivizedQuestItems)
 			{
 				treasurePool.Remove(questItem);
+			}
+			if (flags.MapFreeAirship) {
+				if(unincentivizedQuestItems.Remove(Item.Floater))
+					treasurePool.Add(ReplacementItem);
 			}
 			var itemShopItem = Item.Bottle;
 			do
@@ -80,7 +86,7 @@ namespace FF1Lib
 					
 					// 3. Place Bridge and Ship next since the valid location lists are so small
 					IRewardSource bridgePlacement = bridgeLocations.PickRandom(rng);
-					placedItems.Add(NewItemPlacement(bridgePlacement, Item.Bridge));
+					placedItems.Add(NewItemPlacement(bridgePlacement, flags.MapFreeBridge ? ReplacementItem : Item.Bridge));
 
 					var shipPlacement =
 							shipLocations
@@ -186,6 +192,8 @@ namespace FF1Lib
 				requiredMapChanges |= MapChange.TitanFed;
 			if (flags.MapFreeBridge)
 				requiredMapChanges |= MapChange.Bridge;
+			if (flags.MapFreeAirship)
+				requiredMapChanges |= MapChange.Airship;
 
 			while (!currentAccess.HasFlag(requiredAccess) ||
 				   !currentMapChanges.HasFlag(requiredMapChanges) ||
