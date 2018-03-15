@@ -390,12 +390,15 @@ namespace FF1Lib
 		public void WriteSeedAndFlags(string version, string seed, string flags)
 		{
 			var seedBytes = FF1Text.TextToBytes($"{version}  {seed}", useDTE: false);
-			var flagHashText = Convert.ToBase64String(BitConverter.GetBytes(flags.GetHashCode()));
-			flagHashText = flagHashText.TrimEnd('=');
-			flagHashText = flagHashText.Replace('+', '!');
-			flagHashText = flagHashText.Replace('/', '%');
 
-			var flagBytes = FF1Text.TextToBytes($"{flagHashText}", useDTE: false);
+			// Generate an MD5 hash from all three inputs so that it changes iff the version,
+			// seed, or flags change. This way two identical hashes indicate two identical ROMs.
+			// Then we convert the hash to a hex string and peel off the first 8 digits. 4 bytes
+			// of randomness gives us less than a billionth of a chance of collisions.
+			System.Security.Cryptography.MD5 md5 = System.Security.Cryptography.MD5.Create();
+			var inputBytes = Encoding.ASCII.GetBytes(version + seed + flags);
+			var flagHashText = string.Concat(Array.ConvertAll(md5.ComputeHash(inputBytes), b => b.ToString("X2")));
+			var flagBytes = FF1Text.HexStringToSymbols(flagHashText.Substring(0, 8));
 			flagBytes = flagBytes.SubBlob(0, Math.Min(15, flagBytes.Length));
 			var padding = new byte[16 - flagBytes.Length];
 			for (int i = 0; i < padding.Length; i++)

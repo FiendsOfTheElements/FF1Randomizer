@@ -23,6 +23,26 @@ namespace FF1Lib
 		private static readonly Dictionary<string, byte> BytesByText;
 		private static readonly string[] TextByBytes;
 
+		private static readonly Dictionary<char, byte> SymbolsByText = new Dictionary<char, byte>
+		{
+			{ '0', 0xD4 },
+			{ '1', 0xD5 },
+			{ '2', 0xD6 },
+			{ '3', 0xD7 },
+			{ '4', 0xD8 },
+			{ '5', 0xD9 },
+			{ '6', 0xDA },
+			{ '7', 0xDB },
+			{ '8', 0xDC },
+			{ '9', 0xDD },
+			{ 'A', 0xDE },
+			{ 'B', 0xDF },
+			{ 'C', 0xE0 },
+			{ 'D', 0xE1 },
+			{ 'E', 0xC2 },
+			{ 'F', 0xC3 },
+		};
+
 		static FF1Text()
 		{
 			BytesByText = new Dictionary<string, byte>();
@@ -132,6 +152,16 @@ namespace FF1Lib
 			}
 
 			return Blob.Concat(buffers);
+		}
+
+		public static Blob HexStringToSymbols(string hexStr, Delimiter delimiter = Delimiter.Null)
+		{
+			var bytes = hexStr.ToList().Select(digit => SymbolsByText[digit]).ToList();
+			if (delimiter != Delimiter.Empty)
+			{
+				bytes.Add((byte)delimiter);
+			}
+			return bytes.ToArray();
 		}
 	}
 }
