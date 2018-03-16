@@ -314,6 +314,6 @@ namespace FF1Lib
 		Canoe = 0x10,
 		Airship = 0x20,
 		Chime = 0x40,
-		All = 0xFF
+		All = 0x7F
 	}
 }

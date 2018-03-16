@@ -97,7 +97,7 @@ namespace FF1Lib
 				SetBattleUI(true);
 			}
 
-			if (flags.MapTitansTrove)
+			if (flags.TitansTrove)
 			{
 				EnableTitansTrove();
 			}
@@ -116,11 +116,7 @@ namespace FF1Lib
 			if (flags.Treasures || flags.NPCItems)
 			{
 				var incentivesData = new IncentiveData(flags, map.MapLocationRequirements);
-				var placements = ShuffleTreasures(rng, flags, incentivesData, shopItemLocation, map.MapLocationRequirements);
-				if (IsCanalSoftLockPossible(placements, flags.MapVolcanoIceRiver, flags.MapConeriaDwarves))
-				{
-					map.MapEditsToApply.Add(OverworldMap.CanalSoftLockMountain);
-				}
+				ShuffleTreasures(rng, flags, incentivesData, shopItemLocation, map.MapLocationRequirements);
 			}
 
 			if (flags.MagicShops)
@@ -163,19 +159,19 @@ namespace FF1Lib
 				EnableEarlyOrdeals();
 			}
 
-			if (flags.EarlyRod && !flags.NPCItems)
+			if (flags.EarlySarda && !flags.NPCItems)
 			{
-				EnableEarlyRod();
+				EnableEarlySarda();
 			}
 
-			if (flags.EarlyCanoe && !flags.NPCItems)
+			if (flags.EarlySage && !flags.NPCItems)
 			{
-				EnableEarlyCanoe();
+				EnableEarlySage();
 			}
-
-			if (flags.EarlyBridge)
+			
+			if (flags.MapFreeBridge)
 			{
-				EnableEarlyBridge();
+				EnableFreeBridge();
 			}
 
 			if (flags.NoPartyShuffle)
@@ -252,6 +248,8 @@ namespace FF1Lib
 			{
 				PartyRandomize(rng, flags.ForcedPartyMembers);
 			}
+
+			EnableCanalBridge();
 
 			// We have to do "fun" stuff last because it alters the RNG state.
 			RollCredits(rng);
@@ -356,6 +354,9 @@ namespace FF1Lib
 			Put(0x3A1B5, Blob.FromHex("2040D8D0034C56A1EA"));
 			// Move Most of LoadBorderPalette_Blue out of the way to do a dynamic version.
 			PutInBank(0x0F, 0x8700, Blob.FromHex("988DCE038DEE03A90F8DCC03A9008DCD03A9308DCF0360"));
+
+			// Create a clone of IsOnBridge that checks the canal too.
+			PutInBank(0x0F, 0x8780, Blob.FromHex("AD0860F014A512CD0960D00DA513CD0A60D006A90085451860A512CD0D60D00DA513CD0E60D006A900854518603860"));
 		}
 
 		public override bool Validate()

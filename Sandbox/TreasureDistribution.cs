@@ -26,10 +26,9 @@ namespace Sandbox
 			    EnemyStatusAttacks = false,
 			    Ordeals = false,
 
-			    EarlyRod = true,
-			    EarlyCanoe = true,
+			    EarlySarda = true,
+			    EarlySage = true,
 			    EarlyOrdeals = true,
-			    EarlyBridge = false,
 			    NoPartyShuffle = false,
 			    SpeedHacks = false,
 			    IdentifyTreasures = false,

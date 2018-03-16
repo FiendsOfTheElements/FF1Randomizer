@@ -8,6 +8,7 @@ namespace FF1Lib
 {
 	public static class ItemPlacement
 	{
+		private const Item ReplacementItem = Item.Cabin;
 		public static List<IRewardSource> PlaceSaneItems(MT19337 rng,
 														ITreasureShuffleFlags flags,
 														IncentiveData incentivesData,
@@ -28,8 +29,9 @@ namespace FF1Lib
 			var unincentivizedQuestItems =
 				ItemLists.AllQuestItems
 					.Where(x => !incentivePool.Contains(x) &&
-								x != Item.Ship && x != Item.Bridge && x != Item.Bottle &&
-								!forcedItems.Any(y => y.Item == x));
+								x != Item.Ship && x != Item.Bridge && 
+								!forcedItems.Any(y => y.Item == x))
+								.ToList();
 
 			var treasurePool = allTreasures.ToList();
 			treasurePool.Remove(Item.Bridge);
@@ -47,6 +49,11 @@ namespace FF1Lib
 			{
 				treasurePool.Remove(questItem);
 			}
+			if (flags.MapFreeAirship) {
+				if(unincentivizedQuestItems.Remove(Item.Floater))
+					treasurePool.Add(ReplacementItem);
+			}
+			var itemShopItem = Item.Bottle;
 			do
 			{
 				sanityCounter++;
@@ -61,30 +68,25 @@ namespace FF1Lib
 					// 2. Place caravan item first because among incentive locations it has the smallest set of possible items
 					if (!placedItems.Any(x => x.Address == ItemLocations.CaravanItemShop1.Address))
 					{
-						var itemPick = Item.Bottle;
 						var validShopIncentives = incentives
 							.Where(x => x > Item.None && x <= Item.Soft)
 							.ToList();
-						if (validShopIncentives.Any())
+						if (validShopIncentives.Any() && incentiveLocationPool.Any(x => x.Address == ItemLocations.CaravanItemShop1.Address))
 						{
-							itemPick = validShopIncentives.PickRandom(rng);
-							incentives.Remove(itemPick);
+							itemShopItem = validShopIncentives.PickRandom(rng);
+							incentives.Remove(itemShopItem);
 						}
-						else if (placedItems.Any(x => x.Item == Item.Bottle))
+						else 
 						{
-							itemPick = ItemLists.AllConsumables.ToList().PickRandom(rng);
-						}
-						else
-						{
-							treasurePool.Remove(Item.Bottle);
+							itemShopItem = treasurePool.Where(x => x > Item.None && x <= Item.Soft).ToList().PickRandom(rng);
 						}
 
-						placedItems.Add(new ItemShopSlot(caravanItemLocation, itemPick));
+						placedItems.Add(new ItemShopSlot(caravanItemLocation, itemShopItem));
 					}
-
+					
 					// 3. Place Bridge and Ship next since the valid location lists are so small
 					IRewardSource bridgePlacement = bridgeLocations.PickRandom(rng);
-					placedItems.Add(NewItemPlacement(bridgePlacement, Item.Bridge));
+					placedItems.Add(NewItemPlacement(bridgePlacement, flags.MapFreeBridge ? ReplacementItem : Item.Bridge));
 
 					var shipPlacement =
 							shipLocations
@@ -94,7 +96,8 @@ namespace FF1Lib
 				}
 
 				// 4. Then place all incentive locations that don't have special logic
-				foreach (var incentiveLocation in incentiveLocationPool.Where(x => !placedItems.Any(y => y.Address == x.Address)))
+				var incentiveLocations = incentiveLocationPool.Where(x => !placedItems.Any(y => y.Address == x.Address) && x.Address != ItemLocations.CaravanItemShop1.Address);
+				foreach (var incentiveLocation in incentiveLocations)
 				{
 					if (!incentives.Any()) break;
 					placedItems.Add(NewItemPlacement(incentiveLocation, incentives.SpliceRandom(rng)));
@@ -102,6 +105,7 @@ namespace FF1Lib
 
 				// 5. Then place remanining incentive items and unincentivized quest items in any other chest before ToFR
 				var leftoverItems = incentives.Concat(unincentivizedQuestItems).ToList();
+				leftoverItems.Remove(itemShopItem);
 				leftoverItems.Shuffle(rng);
 				var leftoverItemLocations =
 					itemLocationPool
@@ -130,6 +134,7 @@ namespace FF1Lib
 			{
 				treasurePool.Add(unplacedIncentive);
 			}
+			treasurePool.Remove(itemShopItem);
 			treasurePool.Shuffle(rng);
 			foreach (var remainingTreasure in itemLocationPool)
 			{
@@ -161,6 +166,11 @@ namespace FF1Lib
 			var currentIteration = 0;
 			var currentAccess = AccessRequirement.None;
 			var currentMapChanges = MapChange.None;
+			if (flags.MapFreeBridge)
+				currentMapChanges |= MapChange.Bridge;
+			if (flags.MapFreeAirship)
+				currentMapChanges |= MapChange.Airship;
+			
 			var allMapLocations = Enum.GetValues(typeof(MapLocation))
 									  .Cast<MapLocation>().ToList();
 			Func<IEnumerable<MapLocation>> currentMapLocations =
@@ -179,15 +189,27 @@ namespace FF1Lib
 			var winTheGameAccess = ItemLocations.ChaosReward.AccessRequirement;
 			var winTheGameLocation = ItemLocations.ChaosReward.MapLocation;
 			var accessibleLocationCount = currentItemLocations().Count();
-			var requiredAccess = winTheGameAccess;
-			if (!flags.EarlyOrdeals)
-				requiredAccess |= AccessRequirement.Crown;
-			var requiredMapChanges = MapChange.None;
-			if (flags.MapTitansTrove)
-				requiredMapChanges |= MapChange.TitanFed;
+			var requiredAccess = AccessRequirement.All;
+			var requiredMapChanges = new List<MapChange> { MapChange.All };
+			
+			if (flags.OnlyRequireGameIsBeatable)
+			{
+				requiredAccess = winTheGameAccess;
+				requiredMapChanges = mapLocationRequirements[winTheGameLocation];
+				// If we still want to prevent unobtainable items based on other flags:
+				//if (!flags.EarlyOrdeals)
+				//	requiredAccess |= AccessRequirement.Crown;
+				//if (flags.TitansTrove)
+				//{
+				//	for (int i = 0; i < requiredMapChanges.Count; i++)
+				//	{
+				//		requiredMapChanges[i] |= MapChange.TitanFed;
+				//	}
+				//}
+			}
 
 			while (!currentAccess.HasFlag(requiredAccess) ||
-				   !currentMapChanges.HasFlag(requiredMapChanges) ||
+				   !requiredMapChanges.Any(x => currentMapChanges.HasFlag(x)) ||
 				   !currentMapLocations().Contains(winTheGameLocation))
 			{
 				if (currentIteration > maxIterations)

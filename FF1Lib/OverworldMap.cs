@@ -21,6 +21,14 @@ namespace FF1Lib
 			_rom = rom;
 			var mapLocationRequirements = ItemLocations.MapLocationRequirements.ToDictionary(x => x.Key, x => x.Value.ToList());
 
+			if (flags.MapNorthernDocks)
+			{
+				MapEditsToApply.Add(NorthernDocks);
+				mapLocationRequirements[MapLocation.Onrac].Add(MapChange.Ship | MapChange.Canal);
+				mapLocationRequirements[MapLocation.Caravan].Add(MapChange.Ship | MapChange.Canal | MapChange.Canoe);
+				mapLocationRequirements[MapLocation.Waterfall].Add(MapChange.Ship | MapChange.Canal | MapChange.Canoe);
+				mapLocationRequirements[MapLocation.MirageTower].Add(MapChange.Ship | MapChange.Canal | MapChange.Chime);
+			}
 			if (flags.MapVolcanoIceRiver)
 			{
 				MapEditsToApply.Add(VolcanoIceRiver);
@@ -30,14 +38,40 @@ namespace FF1Lib
 				mapLocationRequirements[MapLocation.ElflandCastle].Add(MapChange.Bridge | MapChange.Canoe);
 				mapLocationRequirements[MapLocation.NorthwestCastle].Add(MapChange.Bridge | MapChange.Canoe);
 				mapLocationRequirements[MapLocation.MarshCave].Add(MapChange.Bridge | MapChange.Canoe);
-				mapLocationRequirements[MapLocation.DwarfCave].Add(MapChange.Bridge | MapChange.Canoe);
+				if(flags.MapCanalBridge)
+					mapLocationRequirements[MapLocation.DwarfCave].Add(MapChange.Bridge | MapChange.Canoe);
 			}
 			if (flags.MapConeriaDwarves)
 			{
 				MapEditsToApply.Add(ConeriaToDwarves);
-				mapLocationRequirements[MapLocation.DwarfCave] = new List<MapChange> { MapChange.None };
+				mapLocationRequirements[MapLocation.DwarfCave].Add(MapChange.None);
+				if(flags.MapCanalBridge)
+				{
+					mapLocationRequirements[MapLocation.GurguVolcano].Add(MapChange.Canoe);
+					mapLocationRequirements[MapLocation.CresentLake].Add(MapChange.Canoe);
+					mapLocationRequirements[MapLocation.ElflandTown].Add(MapChange.Canoe);
+					mapLocationRequirements[MapLocation.ElflandCastle].Add(MapChange.Canoe);
+					mapLocationRequirements[MapLocation.NorthwestCastle].Add(MapChange.Canoe);
+					mapLocationRequirements[MapLocation.MarshCave].Add(MapChange.Canoe);
+					if (flags.MapVolcanoIceRiver)
+					{
+						mapLocationRequirements[MapLocation.IceCave].Add(MapChange.Canoe);
+						mapLocationRequirements[MapLocation.Pravoka].Add(MapChange.Canoe);
+						mapLocationRequirements[MapLocation.MatoyasCave].Add(MapChange.Canoe);
+						mapLocationRequirements[MapLocation.ShipLocation].Add(MapChange.Canoe);
+					}
+				}
 			}
-			if (flags.MapTitansTrove)
+			
+			var softlockPrevented1 = !flags.NPCItems;
+			var softlockPrevented2 = flags.MapCanalBridge;
+			var softlockPrevented3 = flags.MapFreeBridge && flags.MapConeriaDwarves && flags.MapVolcanoIceRiver;
+			var isCanalSoftlockPrevented = softlockPrevented1 || softlockPrevented2 || softlockPrevented3;
+			if (!isCanalSoftlockPrevented)
+			{
+				MapEditsToApply.Add(CanalSoftLockMountain);
+			}
+			if (flags.TitansTrove)
 			{
 				mapLocationRequirements[MapLocation.TitansTunnelWest] = new List<MapChange> {
 					MapChange.Canal | MapChange.Ship | MapChange.TitanFed, MapChange.Airship | MapChange.TitanFed };
@@ -47,6 +81,8 @@ namespace FF1Lib
 		public Dictionary<MapLocation, List<MapChange>> MapLocationRequirements;
 		
 		public const byte GrassTile = 0x00;
+		public const byte GrassBottomRightCoast = 0x06;
+		public const byte OceanTile = 0x17;
 		public const byte RiverTile = 0x44;
 		public const byte MountainTopLeft = 0x10;
 		public const byte MountainTopMid = 0x11;
@@ -54,7 +90,26 @@ namespace FF1Lib
 		public const byte MountainBottomLeft = 0x30;
 		public const byte MountainBottomMid = 0x31;
 		public const byte MountainBottomRight = 0x33;
+		public const byte ForestMid = 0x14;
+		public const byte ForestBottomMid = 0x24;
+		public const byte ForestBottomRight = 0x25;
+		public const byte ForestBottomLeft = 0x23;
+		public const byte DockBottomMid = 0x78;
+		public const byte DockRightMid = 0x1F;
 
+		public static List<MapEdit> NorthernDocks =
+			new List<MapEdit>
+			{
+				new MapEdit{X = 50, Y = 78, Tile = ForestBottomRight},
+				new MapEdit{X = 51, Y = 78, Tile = DockBottomMid},
+				new MapEdit{X = 52, Y = 78, Tile = DockBottomMid},
+				new MapEdit{X = 51, Y = 77, Tile = ForestBottomMid},
+				new MapEdit{X = 52, Y = 77, Tile = ForestBottomMid},
+				new MapEdit{X = 51, Y = 79, Tile = OceanTile},
+				new MapEdit{X = 52, Y = 79, Tile = OceanTile},
+				new MapEdit{X = 208, Y = 90, Tile = DockBottomMid},
+				new MapEdit{X = 209, Y = 90, Tile = DockBottomMid}
+			};
 		public static List<MapEdit> ConeriaToDwarves =
 			new List<MapEdit>
 			{

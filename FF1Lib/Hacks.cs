@@ -83,7 +83,7 @@ namespace FF1Lib
 			Data[0x39077] = 0x14;
 		}
 
-		public void EnableEarlyRod()
+		public void EnableEarlySarda()
 		{
 			var nops = new byte[SardaSize];
 			for (int i = 0; i < nops.Length; i++)
@@ -94,7 +94,7 @@ namespace FF1Lib
 			Put(SardaOffset, nops);
 		}
 
-		public void EnableEarlyCanoe()
+		public void EnableEarlySage()
 		{
 			var nops = new byte[CanoeSageSize];
 			for (int i = 0; i < nops.Length; i++)
@@ -271,16 +271,61 @@ namespace FF1Lib
 			Put(0x2ADDE, Blob.FromHex("91251A682CC18EB1B74DB32505C1BE9296991E2F1AB6A4A9A8BE05C1C1C1C1C1C19B929900"));
 		}
 
-		public void EnableEarlyBridge()
+		/// <summary>
+		/// Unused method, but this would allow a non-npc shuffle king to build bridge without rescuing princess
+		/// </summary>
+		public void EnableEarlyKing()
 		{
-			// Pass all bridge_vis checks. It's a mother beautiful bridge - and it's gonna be there.
-			Blob setBridgeVis = Blob.FromHex("A901EA");
-			Put(0x392A1, setBridgeVis);
-			Put(0x394D7, setBridgeVis);
-			Put(0x7C64D, setBridgeVis);
-			Put(0x7E3A6, setBridgeVis);
+			Data[0x390D5] = 0xA1;
+		}
+		
+		public void EnableFreeBridge()
+		{
+			// Set the default bridge_vis byte on game start to true. It's a mother beautiful bridge - and it's gonna be there.
+			Data[0x3008] = 0x01;
+		}
+		
+		public void EnableFreeShip()
+		{
+			Data[0x3000] = 1;
+			Data[0x3001] = 152;
+			Data[0x3002] = 169;
+		}
+		
+		public void EnableFreeAirship()
+		{
+			Data[0x3004] = 1;
+			Data[0x3005] = 153;
+			Data[0x3006] = 165;
+		}
+		
+		public void EnableFreeCanal()
+		{
+			Data[0x300C] = 0;
 		}
 
+		public void EnableCanalBridge()
+		{
+			// Inline edit to draw the isthmus or the bridge, but never the open canal anymore.
+			// See 0F_8780_IsOnEitherBridge for this and the IsOnBridge replacement called from below.
+			Put(0x7E3BB, Blob.FromHex("A266A0A420DFE3B0E1A908AE0C60F002A910"));
 
+			/**
+			 *  A slight wrinkle from normal cross page jump in that we need to preserve the status register,
+			 *  since the carry bit is what's used to determine if you're on a bridge or canal, of course.
+			 *
+			    LDA $60FC
+				PHA
+				LDA #$0F
+				JSR $FE03 ;SwapPRG_L
+				JSR $8780
+				PLA
+				PHP
+				JSR $FE03 ;SwapPRG_L
+				PLP
+				RTS
+			**/
+			Put(0x7C64D, Blob.FromHex("ADFC6048A90F2003FE20808768082003FE2860"));
+		}
 	}
 }

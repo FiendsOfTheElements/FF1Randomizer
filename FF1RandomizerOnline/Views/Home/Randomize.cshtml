@@ -54,18 +54,17 @@
             <div class="col-xs-12 col-md-7">
                 <div class="btn-group" role="group">
                     <button type="button" class="btn btn-danger" v-on:click.prevent="incentivePreset('AAAAAAAAA')">None</button>
-                    <button type="button" class="btn btn-warning" v-on:click.prevent="incentivePreset('JIHEAnMIA')">Almost None</button>
+                    <button type="button" class="btn btn-warning" v-on:click.prevent="incentivePreset('ZIHECi!AA')">Almost None</button>
                     <button type="button" class="btn btn-success" v-on:click.prevent="incentivePreset('')">Default</button>
-                    <button type="button" class="btn btn-warning" v-on:click.prevent="incentivePreset('%9%%7%%!P')">Almost All</button>
+                    <button type="button" class="btn btn-warning" v-on:click.prevent="incentivePreset('%%%%%!%OB')">Almost All</button>
                     <button type="button" class="btn btn-danger" v-on:click.prevent="incentivePreset('%%%%%%%%%')">All</button>
                 </div>
                 <br>
                 <br>
                 <div>
-                    <button type="button" class="btn btn-info" v-on:click.prevent="incentivePreset('LIHmAn!AA')">Required Only</button>
-                    <button type="button" class="btn btn-info" v-on:click.prevent="incentivePreset('3YHmAn%IP')">No Fetch Quests</button>
-                    <button type="button" class="btn btn-info" v-on:click.prevent="incentivePreset('35P2Bn%MP')">Some Fetch Quests</button>
-                    <button type="button" class="btn btn-info" v-on:click.prevent="incentivePreset('Z7P2Bn%MD')">No Fiend Dungeons</button>
+                    <button type="button" class="btn btn-info" v-on:click.prevent="incentivePreset('%YHmGn%IB')">No Fetch Quests</button>
+                    <button type="button" class="btn btn-info" v-on:click.prevent="incentivePreset('%5P2Hn%MB')">Some Fetch Quests</button>
+                    <button type="button" class="btn btn-info" v-on:click.prevent="incentivePreset('Z5P2Hi!MB')">No Fiend Dungeons</button>
                 </div>
                 <br>
                 <br>
@@ -102,7 +101,7 @@
                             <div class="checkbox-cell"><input v-model="IncentivizeSarda" type="checkbox" asp-for="Flags.IncentivizeSarda" /> <label asp-for="Flags.IncentivizeSarda">Sarda</label></div>
                             <div class="checkbox-cell"><input v-model="IncentivizeCanoeSage" type="checkbox" asp-for="Flags.IncentivizeCanoeSage" /> <label asp-for="Flags.IncentivizeCanoeSage">Sage</label></div>
                             <div class="checkbox-cell"><input v-model="IncentivizeCubeBot" type="checkbox" asp-for="Flags.IncentivizeCubeBot" /> <label asp-for="Flags.IncentivizeCubeBot">Robot</label></div>
-                            <div class="checkbox-cell"><input type="checkbox" id="caravanPlaceholder" checked="checked" disabled="disabled" /> <label for="caravanPlaceholder">Caravan</label></div>
+                            <div class="checkbox-cell"><input v-model="IncentivizeCaravan" type="checkbox" asp-for="Flags.IncentivizeCaravan" /> <label asp-for="Flags.IncentivizeCaravan">Caravan</label></div>
                         </div>
                         <div class="col-xs-6">
                             <div class="checkbox-cell"><input v-model="IncentivizeAstos" type="checkbox" asp-for="Flags.IncentivizeAstos" /> <label asp-for="Flags.IncentivizeAstos">Astos</label></div>
@@ -163,12 +162,19 @@
             </div>
         </div>
         <div class="section tab-pane" id="map">
-            <div class="col-xs-4">
+            <div class="col-xs-12 col-sm-4">
                 <div class="checkbox-cell"><input v-model="Ordeals" type="checkbox" asp-for="Flags.Ordeals" /> <label asp-for="Flags.Ordeals">Castle Ordeals Pillars</label></div>
-                <div class="checkbox-cell"><input v-model="MapTitansTrove" type="checkbox" asp-for="Flags.MapTitansTrove" /> <label asp-for="Flags.MapTitansTrove">Titan's Trove</label></div>
+                <div class="checkbox-cell"><input v-model="TitansTrove" type="checkbox" asp-for="Flags.TitansTrove" /> <label asp-for="Flags.TitansTrove">Titan's Trove</label></div>
                 <div class="checkbox-cell"></div>
+                <div class="checkbox-cell"><input v-model="MapFreeBridge" type="checkbox" asp-for="Flags.MapFreeBridge" /> <label asp-for="Flags.MapFreeBridge">Free Bridge</label></div>
                 <div class="checkbox-cell"><input v-model="MapConeriaDwarves" type="checkbox" asp-for="Flags.MapConeriaDwarves" /> <label asp-for="Flags.MapConeriaDwarves">Coneria to Dwarves</label></div>
                 <div class="checkbox-cell"><input v-model="MapVolcanoIceRiver" type="checkbox" asp-for="Flags.MapVolcanoIceRiver" /> <label asp-for="Flags.MapVolcanoIceRiver">Volcano and Ice River</label></div>
+                <div class="checkbox-cell"></div>
+                <div class="checkbox-cell"><input v-model="MapCanalBridge" type="checkbox" asp-for="Flags.MapCanalBridge" /> <label asp-for="Flags.MapCanalBridge">Bridge Replaces Canal</label></div>
+            </div>
+            <div class="col-xs-12 col-sm-6">
+                NOTE: If NPC item shuffle is turned on, a mountain will prevent walking across the canal and getting softlocked. The mountain will be removed if you select other options to prevent soft locks: 
+                either "Bridge Replaces Canal" or the combination of "Free Bridge", "Coneria to Dwarves", and "Volcano and Ice River".
             </div>
         </div>
 		<div class="section tab-pane" id="scale">
@@ -203,10 +209,9 @@
 		</div>
 		<div class="section tab-pane" id="conveniences">
 			<div class="col-xs-4">
-				<div class="checkbox-cell"><input v-model="EarlyRod" type="checkbox" asp-for="Flags.EarlyRod" /> <label asp-for="Flags.EarlyRod">Early Rod</label></div>
-				<div class="checkbox-cell"><input v-model="EarlyCanoe" type="checkbox" asp-for="Flags.EarlyCanoe" /> <label asp-for="Flags.EarlyCanoe">Early Canoe</label></div>
+				<div class="checkbox-cell"><input v-model="EarlySarda" type="checkbox" asp-for="Flags.EarlySarda" /> <label asp-for="Flags.EarlySarda">Early Sarda Item</label></div>
+				<div class="checkbox-cell"><input v-model="EarlySage" type="checkbox" asp-for="Flags.EarlySage" /> <label asp-for="Flags.EarlySage">Early Sage Item</label></div>
 				<div class="checkbox-cell"><input v-model="EarlyOrdeals" type="checkbox" asp-for="Flags.EarlyOrdeals" /> <label asp-for="Flags.EarlyOrdeals">Early Ordeals</label></div>
-				<div class="checkbox-cell"><input v-model="EarlyBridge" type="checkbox" asp-for="Flags.EarlyBridge" /> <label asp-for="Flags.EarlyBridge">Early Bridge</label></div>
                 <div class="checkbox-cell"></div>
 				<div class="checkbox-cell"><input v-model="NoPartyShuffle" type="checkbox" asp-for="Flags.NoPartyShuffle" /> <label asp-for="Flags.NoPartyShuffle">No Party Shuffle</label></div>
 				<div class="checkbox-cell"><input v-model="SpeedHacks" type="checkbox" asp-for="Flags.SpeedHacks" /> <label asp-for="Flags.SpeedHacks">Speed Hacks</label></div>

@@ -21,7 +21,7 @@ namespace FF1Lib
         Adamant = 0x0400,
         Slab = 0x0800,
         Bottle = 0x1000,
-        All = 0xFFFF
+        All = 0x1FFF
     }
     public interface IRewardSource {
         int Address { get; }

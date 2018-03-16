@@ -33,7 +33,7 @@ namespace FF1Lib
 				EnableBridgeShipCanalAnywhere();
 				EnableNPCsGiveAnyItem();
 				// This extends Vampire's routine to set a flag for Sarda, but it also clobers Sarda's routine
-				if (!flags.EarlyRod)
+				if (!flags.EarlySarda)
 				{
 					Put(0x393E1, Blob.FromHex("207F90A51160"));
 				}
@@ -58,59 +58,6 @@ namespace FF1Lib
 				item.Put(this);
 			}
 			return placedItems;
-		}
-
-		public bool IsCanalSoftLockPossible(List<IRewardSource> itemPlacements, bool volcanoIce, bool coneriaDwarves)
-		{
-			var canoeLocation = itemPlacements.First(x => x.Item == Item.Canoe).MapLocation;
-			var canalLocation = itemPlacements.First(x => x.Item == Item.Canal).MapLocation;
-			var earlyCanoeLocations = 
-				new List<MapLocation> {
-					MapLocation.ConeriaTown,
-					MapLocation.ConeriaCastle,
-					MapLocation.TempleOfFiends,
-					MapLocation.DwarfCave,
-					MapLocation.MatoyasCave,
-					MapLocation.Pravoka,
-					MapLocation.ElflandTown,
-					MapLocation.ElflandCastle,
-					MapLocation.NorthwestCastle,
-					MapLocation.MarshCave
-				};
-			var earlyCanoe = earlyCanoeLocations.Contains(canoeLocation);
-			if (!earlyCanoe) return false;
-			var earlyLocations = earlyCanoeLocations.ToList();
-			earlyLocations.Add(MapLocation.CresentLake);
-			earlyLocations.Add(MapLocation.IceCave);
-			earlyLocations.Add(MapLocation.GurguVolcano);
-			var earlyCanal = earlyLocations.Contains(canalLocation);
-			if (!earlyCanal) return false;
-			if (coneriaDwarves)
-			{
-				var veryEarlyLocations =
-					new List<MapLocation> {
-						MapLocation.ConeriaTown,
-						MapLocation.ConeriaCastle,
-						MapLocation.TempleOfFiends,
-						MapLocation.DwarfCave
-					};
-				var veryEarlyCanoe = veryEarlyLocations.Contains(canoeLocation);
-				var veryEarlyCanal = veryEarlyLocations.Contains(canalLocation);
-				if (veryEarlyCanoe && !veryEarlyCanal) return true;
-				return !volcanoIce;
-			}
-			if (volcanoIce) return true;
-			var uneditedMapCanalSafeLocations = 
-					new List<MapLocation> {
-						MapLocation.ConeriaTown,
-						MapLocation.ConeriaCastle,
-						MapLocation.TempleOfFiends,
-						MapLocation.MatoyasCave,
-						MapLocation.Pravoka,
-						MapLocation.IceCave
-					};
-
-			return !uneditedMapCanalSafeLocations.Contains(canalLocation);
 		}
 
 		/// <summary>
