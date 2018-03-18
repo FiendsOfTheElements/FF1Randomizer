@@ -393,8 +393,8 @@ namespace FF1Lib
 			var seedBytes = FF1Text.TextToBytes($"{version}  {seed}", useDTE: false);
 			var flagHashText = Convert.ToBase64String(BitConverter.GetBytes(flags.GetHashCode()));
 			flagHashText = flagHashText.TrimEnd('=');
-			flagHashText = flagHashText.Replace('+', '!');
-			flagHashText = flagHashText.Replace('/', '%');
+			flagHashText = flagHashText.Replace('+', '-');
+			flagHashText = flagHashText.Replace('/', '!');
 
 			var flagBytes = FF1Text.TextToBytes($"{flagHashText}", useDTE: false);
 			flagBytes = flagBytes.SubBlob(0, Math.Min(15, flagBytes.Length));

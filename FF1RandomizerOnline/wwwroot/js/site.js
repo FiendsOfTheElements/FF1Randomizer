@@ -11,7 +11,7 @@
 
 function validateFlags() {
 	var flagsInput = document.getElementById("Flags");
-	var isValid = flagsInput.value.match(/^[A-Za-z0-9!%]{23}$/);
+	var isValid = flagsInput.value.match(/^[A-Za-z0-9!-]{23}$/);
 	if (isValid) {
 		flagsInput.parentElement.classList.remove("has-error");
 	} else {
@@ -42,8 +42,8 @@ function setFileName() {
     return true;
 }
 
-// ! and % are printable in FF, + and / are not.
-var base64Chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!%";
+// - and ! are printable in FF, + and / are not.
+var base64Chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-!";
 
 var computedPropertyArray = vueModelData;
 computedPropertyArray.FlagsInput = {

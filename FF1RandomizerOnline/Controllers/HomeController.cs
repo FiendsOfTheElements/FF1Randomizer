@@ -178,6 +178,9 @@ namespace FF1RandomizerOnline.Controllers
 			rom.Randomize(Blob.FromHex(viewModel.Seed), viewModel.Flags);
 
 			var filename = viewModel.File.FileName;
+			var pathIndex = filename.LastIndexOfAny(new[] { '\\', '/' });
+			filename = pathIndex == -1 ? filename : filename.Substring(pathIndex + 1);
+			
 			var extensionIndex = filename.LastIndexOf('.');
 			var newFilename = extensionIndex == -1 ? filename : filename.Substring(0, extensionIndex);
 			newFilename = $"{newFilename}_{viewModel.Seed}_{Flags.EncodeFlagsText(viewModel.Flags)}.nes";

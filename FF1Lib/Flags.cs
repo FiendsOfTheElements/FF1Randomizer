@@ -314,7 +314,7 @@ namespace FF1Lib
 		}
 
 		// ! and % are printable in FF, + and / are not.
-		private const string base64CharString = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!%";
+		private const string base64CharString = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-!";
 		public static string EncodeFlagsText(Flags flags)
 		{
 			var base64Chars = base64CharString.ToCharArray();
