@@ -412,6 +412,9 @@ namespace FF1Lib
 
 			// BB Aborb fix.
 			PutInBank(0x0F, 0x8800, Blob.FromHex("A000B186C902F005C908F00160A018B186301BC8B1863016C8B1863011C8B186300CA026B1861869010AA0209186A01CB186301AC8B1863015C8B1863010C8B186300BA026B186186901A022918660"));
+
+			// Copyright overhaul, see 0F_8960_DrawSeedAndFlags.asm
+			PutInBank(0x0F, 0x8960, Blob.FromHex("A9238D0620A9208D0620A200BD00898D0720E8E060D0F560"));
 		}
 
 		public override bool Validate()
@@ -445,22 +448,19 @@ namespace FF1Lib
 
 		public void WriteSeedAndFlags(string version, string seed, string flags)
 		{
-			var seedBytes = FF1Text.TextToBytes($"{version}  {seed}", useDTE: false);
-			var flagHashText = Convert.ToBase64String(BitConverter.GetBytes(flags.GetHashCode()));
-			flagHashText = flagHashText.TrimEnd('=');
-			flagHashText = flagHashText.Replace('+', '-');
-			flagHashText = flagHashText.Replace('/', '!');
+			// Replace most of the old copyright string printing with a JSR to a LongJump
+			Put(0x38486, Blob.FromHex("20FCFE60"));
 
-			var flagBytes = FF1Text.TextToBytes($"{flagHashText}", useDTE: false);
-			flagBytes = flagBytes.SubBlob(0, Math.Min(15, flagBytes.Length));
-			var padding = new byte[16 - flagBytes.Length];
-			for (int i = 0; i < padding.Length; i++)
+			// DrawSeedAndFlags LongJump
+			PutInBank(0x1F, 0xFEFC, CreateLongJumpTableEntry(0x0F, 0x8960));
+
+			// Put the new string data in a known location.
+			PutInBank(0x0F, 0x8900, Blob.Concat(new Blob[]
 			{
-				padding[i] = 0xFF;
-			}
-
-			Put(CopyrightOffset1, seedBytes);
-			Put(CopyrightOffset2, padding + flagBytes);
+				FF1Text.TextToCopyrightLine("Final Fantasy Randomizer " + version),
+				FF1Text.TextToCopyrightLine("Seed  " + seed),
+				FF1Text.TextToCopyrightLine(flags),
+			}));
 		}
 
 		public void ShuffleRng(MT19337 rng)
