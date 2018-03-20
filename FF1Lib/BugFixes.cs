@@ -92,5 +92,11 @@ namespace FF1Lib
 			// move 3 byes from previous subroutine and save elemental resistance of the enemy
 			Put(0x336B5, Blob.FromHex("C89190AD7768A01291906000000000000000")); // extra room at the end for new code
 		}
+
+		public void FixEnemyAOESpells()
+		{
+			// Remove comparison and branch on equal which skips the caster when casting aoe spells
+			Put(0x33568, Blob.FromHex("EAEAEAEAEAEAEAEA"));
+		}
 	}
 }
