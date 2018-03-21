@@ -35,8 +35,8 @@
 		<div class="section tab-pane active" id="shuffle">
 			<div class="col-xs-4">
 				<div class="checkbox-cell"><input v-model="Treasures" type="checkbox" asp-for="Flags.Treasures" /> <label asp-for="Flags.Treasures"></label></div>
-				<div class="checkbox-cell"><input v-model="NPCItems" type="checkbox" asp-for="Flags.NPCItems" /> <label asp-for="Flags.NPCItems">NPC Items (all non-fetch npcs + caravan)</label></div>
-                <div class="checkbox-cell"><input v-model="NPCFetchItems" type="checkbox" asp-for="Flags.NPCFetchItems" /> <label asp-for="Flags.NPCFetchItems">Fetch Quests (Crown Chain, Dwarves, Lefein)</label></div>
+				<div class="checkbox-cell"><input v-model="NPCItems" type="checkbox" asp-for="Flags.NPCItems" /> <label asp-for="Flags.NPCItems">Free NPC Items</label></div>
+                <div class="checkbox-cell"><input v-model="NPCFetchItems" type="checkbox" asp-for="Flags.NPCFetchItems" /> <label asp-for="Flags.NPCFetchItems">Fetch Quests (Crown, Dwarves, Lefein)</label></div>
 				<div class="checkbox-cell"></div>
 				<div class="checkbox-cell"><input v-model="Shops" type="checkbox" asp-for="Flags.Shops" /> <label asp-for="Flags.Shops"></label></div>
 				<div class="checkbox-cell"><input v-model="MagicShops" type="checkbox" asp-for="Flags.MagicShops" /> <label asp-for="Flags.MagicShops">Magic Shops</label></div>
@@ -55,17 +55,17 @@
             <div class="col-xs-12 col-md-7">
                 <div class="btn-group" role="group">
                     <button type="button" class="btn btn-danger" v-on:click.prevent="incentivePreset('AAAAAAAAA')">None</button>
-                    <button type="button" class="btn btn-warning" v-on:click.prevent="incentivePreset('ZIHECi!AA')">Almost None</button>
+                    <button type="button" class="btn btn-warning" v-on:click.prevent="incentivePreset('ZIHECi-AA')">Almost None</button>
                     <button type="button" class="btn btn-success" v-on:click.prevent="incentivePreset('')">Default</button>
-                    <button type="button" class="btn btn-warning" v-on:click.prevent="incentivePreset('%%%%%!%OB')">Almost All</button>
-                    <button type="button" class="btn btn-danger" v-on:click.prevent="incentivePreset('%%%%%%%%%')">All</button>
+                    <button type="button" class="btn btn-warning" v-on:click.prevent="incentivePreset('!!!!!-!OB')">Almost All</button>
+                    <button type="button" class="btn btn-danger" v-on:click.prevent="incentivePreset('!!!!!!!!!')">All</button>
                 </div>
                 <br>
                 <br>
                 <div>
-                    <button type="button" class="btn btn-info" v-on:click.prevent="incentivePreset('%YHmGn%IB')">No Fetch Quests</button>
-                    <button type="button" class="btn btn-info" v-on:click.prevent="incentivePreset('%5P2Hn%MB')">Some Fetch Quests</button>
-                    <button type="button" class="btn btn-info" v-on:click.prevent="incentivePreset('Z5P2Hi!MB')">No Fiend Dungeons</button>
+                    <button type="button" class="btn btn-info" v-on:click.prevent="incentivePreset('!YHmGn!IB')" v-if="NPCFetchItems">No Fetch Quests</button>
+                    <button type="button" class="btn btn-info" v-on:click.prevent="incentivePreset('!5P2Hn!MB')" v-if="NPCFetchItems">Some Fetch Quests</button>
+                    <button type="button" class="btn btn-info" v-on:click.prevent="incentivePreset('Z5P2Hi-MB')">No Fiend Dungeons</button>
                 </div>
                 <br>
                 <br>
@@ -178,7 +178,7 @@
                 <div class="checkbox-cell"><input v-model="MapFreeBridge" type="checkbox" asp-for="Flags.MapFreeBridge" /> <label asp-for="Flags.MapFreeBridge">Free Bridge</label></div>
                 <div class="checkbox-cell"></div>
             </div>
-            <div class="col-xs-12 col-sm-6">
+            <div class="col-xs-12 col-sm-6" v-if="NPCItems && !(MapCanalBridge || (MapFreeBridge && MapConeriaDwarves && MapVolcanoIceRiver))">
                 NOTE: If NPC item shuffle is turned on, a mountain will prevent walking across the canal and getting softlocked. The mountain will be removed if you select other options to prevent soft locks: 
                 either "Bridge Replaces Canal" or the combination of "Coneria to Dwarves", "Volcano and Ice River", and "Free Bridge".
             </div>

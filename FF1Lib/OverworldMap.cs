@@ -38,6 +38,7 @@ namespace FF1Lib
 				mapLocationRequirements[MapLocation.ElflandCastle].Add(MapChange.Bridge | MapChange.Canoe);
 				mapLocationRequirements[MapLocation.NorthwestCastle].Add(MapChange.Bridge | MapChange.Canoe);
 				mapLocationRequirements[MapLocation.MarshCave].Add(MapChange.Bridge | MapChange.Canoe);
+				mapLocationRequirements[MapLocation.AirshipLocation].Add(MapChange.Bridge | MapChange.Canoe);
 				if(flags.MapCanalBridge)
 					mapLocationRequirements[MapLocation.DwarfCave].Add(MapChange.Bridge | MapChange.Canoe);
 			}
@@ -53,6 +54,7 @@ namespace FF1Lib
 					mapLocationRequirements[MapLocation.ElflandCastle].Add(MapChange.Canoe);
 					mapLocationRequirements[MapLocation.NorthwestCastle].Add(MapChange.Canoe);
 					mapLocationRequirements[MapLocation.MarshCave].Add(MapChange.Canoe);
+					mapLocationRequirements[MapLocation.AirshipLocation].Add(MapChange.Canoe);
 					if (flags.MapVolcanoIceRiver)
 					{
 						mapLocationRequirements[MapLocation.IceCave].Add(MapChange.Canoe);

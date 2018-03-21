@@ -115,7 +115,7 @@ namespace FF1Lib
 
 			if (flags.Treasures || flags.NPCItems || flags.NPCFetchItems)
 			{
-				var incentivesData = new IncentiveData(flags, map.MapLocationRequirements);
+				var incentivesData = new IncentiveData(rng, flags, map.MapLocationRequirements);
 				ShuffleTreasures(rng, flags, incentivesData, shopItemLocation, map.MapLocationRequirements);
 			}
 

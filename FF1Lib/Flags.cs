@@ -68,15 +68,15 @@ namespace FF1Lib
 		bool EarlySarda { get; }
 		bool EarlySage { get; }
 		bool EarlyOrdeals { get; }
+		bool MapCanalBridge { get; }
+		bool MapConeriaDwarves { get; }
+		bool MapVolcanoIceRiver { get; }
 	}
 	public interface IMapEditFlags : IItemShuffleFlags
 	{
 		bool MapFreeAirship { get; }
 		bool MapNorthernDocks{ get; }
-		bool MapCanalBridge { get; }
 		bool MapFreeBridge { get; }
-		bool MapConeriaDwarves { get; }
-		bool MapVolcanoIceRiver { get; }
 		bool TitansTrove { get; }
 	}
 	public interface ITreasureShuffleFlags : IMapEditFlags

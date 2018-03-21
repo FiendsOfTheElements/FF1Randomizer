@@ -28,7 +28,8 @@ namespace FF1Lib
 													ItemShopSlot caravanItemLocation,
 													Dictionary<MapLocation, List<MapChange>> mapLocationRequirements)
 		{
-			if (flags.NPCItems || flags.NPCFetchItems)
+			var vanillaNPCs = !flags.NPCItems && !flags.NPCFetchItems;
+			if (!vanillaNPCs)
 			{
 				EnableBridgeShipCanalAnywhere();
 				EnableNPCsGiveAnyItem();
@@ -52,7 +53,7 @@ namespace FF1Lib
 											mapLocationRequirements);
 
 			// Output the results tothe ROM
-			foreach (var item in placedItems.Where(x => !x.IsUnused && x.Address < 0x80000 && !incentivesData.ForcedItemPlacements.Any(y => y.Address == x.Address)))
+			foreach (var item in placedItems.Where(x => !x.IsUnused && x.Address < 0x80000 && (!vanillaNPCs || x is TreasureChest)))
 			{
 				//Debug.WriteLine(item.SpoilerText);
 				item.Put(this);
