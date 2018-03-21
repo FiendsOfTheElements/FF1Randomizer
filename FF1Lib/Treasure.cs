@@ -28,7 +28,7 @@ namespace FF1Lib
 													ItemShopSlot caravanItemLocation,
 													Dictionary<MapLocation, List<MapChange>> mapLocationRequirements)
 		{
-			if (flags.NPCItems)
+			if (flags.NPCItems || flags.NPCFetchItems)
 			{
 				EnableBridgeShipCanalAnywhere();
 				EnableNPCsGiveAnyItem();

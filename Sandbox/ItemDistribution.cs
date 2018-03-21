@@ -24,10 +24,8 @@ namespace Sandbox
 		public static void RunStats(MT19337 rng, ITreasureShuffleFlags flags, IncentiveData incentivesData)
 		{
 			var forcedItems = ItemLocations.AllOtherItemLocations.ToList();
-			if (!flags.NPCItems)
-			{
-				forcedItems = ItemLocations.AllNonTreasureItemLocations.ToList();
-			}
+			if (!flags.NPCItems) forcedItems.AddRange(ItemLocations.AllNPCFreeItemLocations);
+			if (!flags.NPCFetchItems) forcedItems.AddRange(ItemLocations.AllNPCFetchItemLocations);
 
 			var placedItems = new List<IRewardSource>();
 			var treasurePool = ItemLocations.AllTreasures.Where(x => !x.IsUnused).Select(x => x.Item).ToList();

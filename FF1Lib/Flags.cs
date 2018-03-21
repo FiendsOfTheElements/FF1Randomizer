@@ -64,6 +64,7 @@ namespace FF1Lib
 	{
 		bool Treasures { get; }
 		bool NPCItems { get; }
+		bool NPCFetchItems { get; }
 		bool EarlySarda { get; }
 		bool EarlySage { get; }
 		bool EarlyOrdeals { get; }
@@ -85,11 +86,13 @@ namespace FF1Lib
 	public class Flags : ITreasureShuffleFlags, IIncentiveFlags
 	{
 		[FlagString(Character = 0, FlagBit = 1)]
-		public bool Treasures { get; set; }
-		[FlagString(Character = 0, FlagBit = 2)]
-		public bool NPCItems { get; set; }
-		[FlagString(Character = 0, FlagBit = 4)]
 		public bool Shops { get; set; }
+		[FlagString(Character = 0, FlagBit = 2)]
+		public bool Treasures { get; set; }
+		[FlagString(Character = 0, FlagBit = 4)]
+		public bool NPCItems { get; set; }
+		[FlagString(Character = 0, FlagBit = 8)]
+		public bool NPCFetchItems { get; set; }
 
 		[FlagString(Character = 1, FlagBit = 1)]
 		public bool EarlySarda { get; set; }

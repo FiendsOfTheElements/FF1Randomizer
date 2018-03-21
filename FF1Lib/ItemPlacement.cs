@@ -78,7 +78,7 @@ namespace FF1Lib
 						}
 						else 
 						{
-							itemShopItem = treasurePool.Where(x => x > Item.None && x <= Item.Soft).ToList().PickRandom(rng);
+							itemShopItem = treasurePool.Concat(unincentivizedQuestItems).Where(x => x > Item.None && x <= Item.Soft).ToList().PickRandom(rng);
 						}
 
 						placedItems.Add(new ItemShopSlot(caravanItemLocation, itemShopItem));

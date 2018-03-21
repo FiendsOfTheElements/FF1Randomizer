@@ -113,7 +113,7 @@ namespace FF1Lib
 				shopItemLocation = ShuffleShops(rng, flags.EnemyStatusAttacks);
 			}
 
-			if (flags.Treasures || flags.NPCItems)
+			if (flags.Treasures || flags.NPCItems || flags.NPCFetchItems)
 			{
 				var incentivesData = new IncentiveData(flags, map.MapLocationRequirements);
 				ShuffleTreasures(rng, flags, incentivesData, shopItemLocation, map.MapLocationRequirements);
@@ -174,6 +174,11 @@ namespace FF1Lib
 				EnableFreeBridge();
 			}
 
+			if (flags.MapFreeAirship)
+			{
+				EnableFreeAirship();
+			}
+			
 			if (flags.NoPartyShuffle)
 			{
 				DisablePartyShuffle();

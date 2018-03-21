@@ -10,7 +10,8 @@ namespace FF1Lib
 							Dictionary<MapLocation, List<MapChange>> mapLocationRequirements)
 		{
 			var forcedItemPlacements = ItemLocations.AllOtherItemLocations.ToList();
-			if (!flags.NPCItems) forcedItemPlacements.AddRange(ItemLocations.AllNonTreasureItemLocations);
+			if (!flags.NPCItems) forcedItemPlacements.AddRange(ItemLocations.AllNPCFreeItemLocations);
+			if (!flags.NPCFetchItems) forcedItemPlacements.AddRange(ItemLocations.AllNPCFetchItemLocations);
 			if (!flags.Treasures) forcedItemPlacements.AddRange(ItemLocations.AllTreasures);
 			var incentivePool = new List<Item>();
 			if (flags.IncentivizeBridge)
