@@ -254,7 +254,10 @@ namespace FF1Lib
 				PartyRandomize(rng, flags.ForcedPartyMembers);
 			}
 
-			EnableCanalBridge();
+			if (flags.MapCanalBridge)
+			{
+				EnableCanalBridge();
+			}
 
 			// We have to do "fun" stuff last because it alters the RNG state.
 			RollCredits(rng);
