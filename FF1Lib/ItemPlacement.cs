@@ -8,9 +8,8 @@ namespace FF1Lib
 {
 	public static class ItemPlacement
 	{
-		private const Item ReplacementItem = Item.Cabin;
 		public static List<IRewardSource> PlaceSaneItems(MT19337 rng,
-														ITreasureShuffleFlags flags,
+														IItemPlacementFlags flags,
 														IncentiveData incentivesData,
 														List<Item> allTreasures,
 														ItemShopSlot caravanItemLocation,
@@ -19,7 +18,7 @@ namespace FF1Lib
 			long sanityCounter = 0;
 			List<IRewardSource> placedItems;
 			
-			var canObsoleteBridge = flags.MapConeriaDwarves && flags.MapCanalBridge;
+			var canObsoleteBridge = flags.MapCanalBridge && flags.MapConeriaDwarves;
 			var canObsoleteShip = flags.MapCanalBridge ? (flags.MapConeriaDwarves || flags.MapVolcanoIceRiver) : (flags.MapConeriaDwarves && flags.MapVolcanoIceRiver);
 			var incentiveLocationPool = incentivesData.IncentiveLocations.ToList();
 			var incentivePool = incentivesData.IncentiveItems.ToList();
@@ -89,7 +88,7 @@ namespace FF1Lib
 					}
 					if (incentives.Remove(Item.Canoe) || nonincentives.Remove(Item.Canoe))
 					{
-						placedItems.Add(NewItemPlacement(canoeLocations.PickRandom(rng), Item.Canoe));
+						placedItems.Add(NewItemPlacement(canoeLocations.Where(x => !placedItems.Any(y => y.Address == x.Address)).ToList().PickRandom(rng), Item.Canoe));
 					}
 					
 					var startingCanoeAvailable = placedItems.Any(x => x.Item == Item.Canoe && startingMapLocations.Contains(x.MapLocation));
@@ -162,7 +161,7 @@ namespace FF1Lib
 				}
 
 				// 7. Check sanity and loop if needed
-			} while (!CheckSanity(placedItems, flags, mapLocationRequirements));
+			} while (!CheckSanity(placedItems, mapLocationRequirements, flags.OnlyRequireGameIsBeatable));
 
 			// 8. Place all remaining unincentivized treasures or incentivized non-quest items that weren't placed
 			var i = 0;
@@ -184,14 +183,6 @@ namespace FF1Lib
 			{
 				placedItems.Add(NewItemPlacement(remainingTreasure, treasurePool[i]));
 				i++;
-			}
-			if (flags.MapFreeBridge)
-			{
-				placedItems = placedItems.Select(x => x.Item != Item.Bridge ? x : NewItemPlacement(x, ReplacementItem)).ToList();
-			}
-			if (flags.MapFreeAirship)
-			{
-				placedItems = placedItems.Select(x => x.Item != Item.Floater ? x : NewItemPlacement(x, ReplacementItem)).ToList();
 			}
 
 			//Debug.WriteLine($"Sanity Check Fails: {sanityCounter}");
@@ -215,24 +206,18 @@ namespace FF1Lib
 		}
 
 		public static bool CheckSanity(List<IRewardSource> treasurePlacements,
-										ITreasureShuffleFlags flags,
-										Dictionary<MapLocation, List<MapChange>> mapLocationRequirements)
+										Dictionary<MapLocation, List<MapChange>> mapLocationRequirements,
+										bool onlyRequireGameIsBeatable)
 		{
 			const int maxIterations = 20;
 			var currentIteration = 0;
 			var currentAccess = AccessRequirement.None;
 			var currentMapChanges = MapChange.None;
-			if (flags.MapFreeBridge)
-				currentMapChanges |= MapChange.Bridge;
-			if (flags.MapFreeAirship)
-				currentMapChanges |= MapChange.Airship;
 			
-			var allMapLocations = Enum.GetValues(typeof(MapLocation))
-									  .Cast<MapLocation>().ToList();
 			Func<IEnumerable<MapLocation>> currentMapLocations =
-				() => allMapLocations
-					.Where(x => mapLocationRequirements[x]
-						   .Any(y => currentMapChanges.HasFlag(y)));
+				() => mapLocationRequirements
+					.Where(x => x.Value
+						   .Any(y => currentMapChanges.HasFlag(y))).Select(x => x.Key);
 			Func<IEnumerable<IRewardSource>> currentItemLocations =
 				() => treasurePlacements
 						   .Where(x => {
@@ -242,31 +227,20 @@ namespace FF1Lib
 											   (!(x is MapObject) || locations.Contains(((MapObject)x).SecondLocation));
 						   });
 
-			var winTheGameAccess = ItemLocations.ChaosReward.AccessRequirement;
-			var winTheGameLocation = ItemLocations.ChaosReward.MapLocation;
 			var accessibleLocationCount = currentItemLocations().Count();
 			var requiredAccess = AccessRequirement.All;
 			var requiredMapChanges = new List<MapChange> { MapChange.All };
 			
-			if (flags.OnlyRequireGameIsBeatable)
+			if (onlyRequireGameIsBeatable)
 			{
+				var winTheGameAccess = ItemLocations.ChaosReward.AccessRequirement;
+				var winTheGameLocation = ItemLocations.ChaosReward.MapLocation;
 				requiredAccess = winTheGameAccess;
 				requiredMapChanges = mapLocationRequirements[winTheGameLocation];
-				// If we still want to prevent unobtainable items based on other flags:
-				//if (!flags.EarlyOrdeals)
-				//	requiredAccess |= AccessRequirement.Crown;
-				//if (flags.TitansTrove)
-				//{
-				//	for (int i = 0; i < requiredMapChanges.Count; i++)
-				//	{
-				//		requiredMapChanges[i] |= MapChange.TitanFed;
-				//	}
-				//}
 			}
 
 			while (!currentAccess.HasFlag(requiredAccess) ||
-				   !requiredMapChanges.Any(x => currentMapChanges.HasFlag(x)) ||
-				   !currentMapLocations().Contains(winTheGameLocation))
+				   !requiredMapChanges.Any(x => currentMapChanges.HasFlag(x)))
 			{
 				if (currentIteration > maxIterations)
 				{

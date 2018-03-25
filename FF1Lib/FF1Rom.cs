@@ -149,12 +149,12 @@ namespace FF1Lib
 				ShuffleEnemyStatusAttacks(rng);
 			}
 
-			if (flags.Ordeals)
+			if (flags.OrdealsPillars)
 			{
 				ShuffleOrdeals(rng);
 			}
 
-			if (flags.EarlyOrdeals)
+			if (flags.CrownlessOrdeals)
 			{
 				EnableEarlyOrdeals();
 			}
@@ -169,12 +169,12 @@ namespace FF1Lib
 				EnableEarlySage();
 			}
 			
-			if (flags.MapFreeBridge)
+			if (flags.FreeBridge)
 			{
 				EnableFreeBridge();
 			}
 
-			if (flags.MapFreeAirship)
+			if (flags.FreeAirship)
 			{
 				EnableFreeAirship();
 			}

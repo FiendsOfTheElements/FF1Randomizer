@@ -22,7 +22,7 @@ namespace Sandbox
 				MapLocation.Caravan
 			};
 		public static void RunStats(MT19337 rng, 
-									ITreasureShuffleFlags flags, 
+									IItemPlacementFlags flags, 
 									IncentiveData incentivesData, 
 									ItemShopSlot caravanItemLocation,
 									Dictionary<MapLocation, List<MapChange>> mapLocationRequirements)
@@ -93,15 +93,9 @@ namespace Sandbox
 					(matoyaShip && keyLockedCrystal && keyIceCave))
 					forcedIceCount++;
 
-				var requirementFlags = new Flags
-				{
-					MapFreeBridge = flags.MapFreeBridge,
-					MapFreeAirship = flags.MapFreeAirship,
-					OnlyRequireGameIsBeatable = true
-				};
 				foreach (Item item in requirementsToCheck)
 				{
-					if (!ItemPlacement.CheckSanity(placedItems.Where(x => x.Item != item).ToList(), requirementFlags, mapLocationRequirements))
+					if (!ItemPlacement.CheckSanity(placedItems.Where(x => x.Item != item).ToList(), mapLocationRequirements, true))
 						requirementChecks[item]++;
 				}
 				

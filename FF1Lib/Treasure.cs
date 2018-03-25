@@ -7,6 +7,8 @@ namespace FF1Lib
 {
 	public partial class FF1Rom : NesRom
 	{
+		private const Item ReplacementItem = Item.Cabin;
+		
 		public const int TreasureOffset = 0x03100;
 		public const int TreasureSize = 1;
 		public const int TreasureCount = 256;
@@ -23,7 +25,7 @@ namespace FF1Lib
 		public static readonly List<int> UsedTreasureIndices = Enumerable.Range(0, 256).Except(UnusedTreasureIndices).ToList(); // This maps a compacted list back to the game's array, skipping the unused slots.
 
 		public List<IRewardSource> ShuffleTreasures(MT19337 rng, 
-													ITreasureShuffleFlags flags, 
+													IItemPlacementFlags flags, 
 													IncentiveData incentivesData, 
 													ItemShopSlot caravanItemLocation,
 													Dictionary<MapLocation, List<MapChange>> mapLocationRequirements)
@@ -52,6 +54,15 @@ namespace FF1Lib
 											caravanItemLocation,
 											mapLocationRequirements);
 
+			if (flags.FreeBridge)
+			{
+				placedItems = placedItems.Select(x => x.Item != Item.Bridge ? x : ItemPlacement.NewItemPlacement(x, ReplacementItem)).ToList();
+			}
+			if (flags.FreeAirship)
+			{
+				placedItems = placedItems.Select(x => x.Item != Item.Floater ? x : ItemPlacement.NewItemPlacement(x, ReplacementItem)).ToList();
+			}
+			
 			// Output the results tothe ROM
 			foreach (var item in placedItems.Where(x => !x.IsUnused && x.Address < 0x80000 && (!vanillaNPCs || x is TreasureChest)))
 			{

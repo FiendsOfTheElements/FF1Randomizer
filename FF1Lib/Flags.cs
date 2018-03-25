@@ -1,304 +1,255 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace FF1Lib
 {
-	public interface IIncentiveFlags : IItemShuffleFlags
+	public class Flags : IIncentiveFlags, IMapEditFlags
 	{
-		bool IncentivizeKingConeria { get; }
-		bool IncentivizePrincess { get; }
-		bool IncentivizeMatoya { get; }
-		bool IncentivizeBikke { get; }
-		bool IncentivizeElfPrince { get; }
-		bool IncentivizeAstos { get; }
-		bool IncentivizeNerrick { get; }
-		bool IncentivizeSmith { get; }
-		bool IncentivizeSarda { get; }
-		bool IncentivizeCanoeSage { get; }
-		bool IncentivizeCubeBot { get; }
-		bool IncentivizeFairy { get; }
-		bool IncentivizeLefein { get; }
-		bool IncentivizeCaravan { get; }
-		bool IncentivizeOrdeals { get; }
-		bool IncentivizeIceCave { get; }
-		bool IncentivizeVolcano { get; }
-		bool IncentivizeConeria { get; }
-		bool IncentivizeMarsh { get; }
-		bool IncentivizeEarth { get; }
-		bool IncentivizeSeaShrine { get; }
-
-		bool IncentivizeXcalber { get; }
-		bool IncentivizeMasamune { get; }
-		bool IncentivizeRibbon { get; }
-		bool IncentivizeBridge { get; }
-		bool IncentivizeShip { get; }
-		bool IncentivizeCanal { get; }
-		bool IncentivizeLute { get; }
-		bool IncentivizeCrown { get; }
-		bool IncentivizeCrystal { get; }
-		bool IncentivizeHerb { get; }
-		bool IncentivizeKey { get; }
-		bool IncentivizeTnt { get; }
-		bool IncentivizeAdamant { get; }
-		bool IncentivizeSlab { get; }
-		bool IncentivizeRuby { get; }
-		bool IncentivizeRod { get; }
-		bool IncentivizeFloater { get; }
-		bool IncentivizeChime { get; }
-		bool IncentivizeTail { get; }
-		bool IncentivizeCube { get; }
-		bool IncentivizeBottle { get; }
-		bool IncentivizeOxyale { get; }
-		bool IncentivizeCanoe { get; }
-		bool IncentivizeRibbon2 { get; }
-		bool IncentivizePowerGauntlet { get; }
-		bool IncentivizeWhiteShirt { get; }
-		bool IncentivizeBlackShirt { get; }
-		bool IncentivizeOpal { get; }
-		bool Incentivize65K { get; }
-		bool IncentivizeBad { get; }
-	}
-	public interface IItemShuffleFlags 
-	{
-		bool Treasures { get; }
-		bool NPCItems { get; }
-		bool NPCFetchItems { get; }
-		bool EarlySarda { get; }
-		bool EarlySage { get; }
-		bool EarlyOrdeals { get; }
-		bool MapCanalBridge { get; }
-		bool MapConeriaDwarves { get; }
-		bool MapVolcanoIceRiver { get; }
-	}
-	public interface IMapEditFlags : IItemShuffleFlags
-	{
-		bool MapFreeAirship { get; }
-		bool MapNorthernDocks{ get; }
-		bool MapFreeBridge { get; }
-		bool TitansTrove { get; }
-	}
-	public interface ITreasureShuffleFlags : IMapEditFlags
-	{
-		bool OnlyRequireGameIsBeatable { get; }
-	}
-	public class Flags : ITreasureShuffleFlags, IIncentiveFlags
-	{
-		[FlagString(Character = 0, FlagBit = 1)]
+		// Character Groupings
+		private const int ITEMS = 0;
+		private const int ALT_GAME_MODE = 1;
+		private const int MAGIC = 2;
+		private const int ENCOUNTERS = 3;
+		private const int BATTLES = 4;
+		private const int STANDARD_MAPS = 5;
+		private const int OVERWORLD_MAP = 6;
+		private const int INCENTIVES_MAIN = 7;
+		private const int INCENTIVES_CHESTS1 = 8;
+		private const int INCENTIVES_CHESTS2 = 9;
+		private const int INCENTIVES_ITEMS1 = 10;
+		private const int INCENTIVES_ITEMS2 = 11;
+		private const int ITEM_REQUIREMENTS = 12;
+		private const int FILTHY_CASUALS = 13;
+		private const int CONVENIENCES = 14;
+		private const int BUG_FIXES = 15;
+		private const int ENEMY_BUG_FIXES = 16;
+		
+		[FlagString(Character = ITEMS, FlagBit = 1)]
 		public bool Shops { get; set; }
-		[FlagString(Character = 0, FlagBit = 2)]
+		[FlagString(Character = ITEMS, FlagBit = 2)]
 		public bool Treasures { get; set; }
-		[FlagString(Character = 0, FlagBit = 4)]
+		[FlagString(Character = ITEMS, FlagBit = 4)]
 		public bool NPCItems { get; set; }
-		[FlagString(Character = 0, FlagBit = 8)]
+		[FlagString(Character = ITEMS, FlagBit = 8)]
 		public bool NPCFetchItems { get; set; }
+		[FlagString(Character = ITEMS, FlagBit = 16)]
+		public bool RandomWares { get; set; } // Planned 2.x feature - random weapons and armor in shops
+		[FlagString(Character = ITEMS, FlagBit = 32)]
+		public bool RandomLoot { get; set; } // Planned 2.x feature - random non-quest-item treasures
+		
+		[FlagString(Character = ALT_GAME_MODE, FlagBit = 1)]
+		public bool OrbHunt { get; set; } // Planned 2.1 or 2.2 features - shard hunt
 
-		[FlagString(Character = 1, FlagBit = 1)]
-		public bool EarlySarda { get; set; }
-		[FlagString(Character = 1, FlagBit = 2)]
-		public bool EarlySage { get; set; }
-		[FlagString(Character = 1, FlagBit = 4)]
-		public bool EarlyOrdeals { get; set; }
-		[FlagString(Character = 1, FlagBit = 8)]
-		public bool Ordeals { get; set; }
-		[FlagString(Character = 1, FlagBit = 16)]
-		public bool TitansTrove { get; set; }
-
-		[FlagString(Character = 2, FlagBit = 1)]
+		[FlagString(Character = MAGIC, FlagBit = 1)]
 		public bool MagicShops { get; set; }
-		[FlagString(Character = 2, FlagBit = 2)]
+		[FlagString(Character = MAGIC, FlagBit = 2)]
 		public bool MagicLevels { get; set; }
-		[FlagString(Character = 2, FlagBit = 4)]
+		[FlagString(Character = MAGIC, FlagBit = 4)]
 		public bool MagicPermissions { get; set; }
 
-		[FlagString(Character = 3, FlagBit = 1)]
+		[FlagString(Character = ENCOUNTERS, FlagBit = 1)]
 		public bool Rng { get; set; }
-		[FlagString(Character = 3, FlagBit = 2)]
+		[FlagString(Character = ENCOUNTERS, FlagBit = 2)]
+		public bool EnemyFormationsFrequency { get; set; } // Planned 2.1 feature
+		[FlagString(Character = ENCOUNTERS, FlagBit = 4)]
+		public bool EnemyFormationsUnrunnable { get; set; } // Planned 2.1 feature
+		[FlagString(Character = ENCOUNTERS, FlagBit = 8)]
+		public bool EnemyFormationsSurprise { get; set; } // Planned 2.1 feature
+		
+		[FlagString(Character = BATTLES, FlagBit = 1)]
 		public bool EnemyScripts { get; set; }
-		[FlagString(Character = 3, FlagBit = 4)]
+		[FlagString(Character = BATTLES, FlagBit = 2)]
 		public bool EnemySkillsSpells { get; set; }
-		[FlagString(Character = 3, FlagBit = 8)]
+		[FlagString(Character = BATTLES, FlagBit = 4)]
 		public bool EnemyStatusAttacks { get; set; }
-		[FlagString(Character = 3, FlagBit = 32)]
-		public bool EasyMode { get; set; }
 
-		[FlagString(Character = 4, FlagBit = 1)]
-		public bool MapNorthernDocks { get; set; }
-		[FlagString(Character = 4, FlagBit = 2)]
-		public bool MapFreeAirship { get; set; }
-		[FlagString(Character = 4, FlagBit = 4)]
-		public bool MapFreeBridge { get; set; }
-		[FlagString(Character = 4, FlagBit = 8)]
-		public bool MapConeriaDwarves { get; set; }
-		[FlagString(Character = 4, FlagBit = 16)]
-		public bool MapVolcanoIceRiver { get; set; }
-		[FlagString(Character = 4, FlagBit = 32)]
+		[FlagString(Character = STANDARD_MAPS, FlagBit = 1)]
+		public bool OrdealsPillars { get; set; }
+		[FlagString(Character = STANDARD_MAPS, FlagBit = 2)]
+		public bool TitansTrove { get; set; }
+		[FlagString(Character = STANDARD_MAPS, FlagBit = 4)]
+		public bool CrownlessOrdeals { get; set; }
+		[FlagString(Character = STANDARD_MAPS, FlagBit = 8)]
+		public bool Entrances { get; set; } // Planned x.x feature - non-town entrance shuffle
+		[FlagString(Character = STANDARD_MAPS, FlagBit = 16)]
+		public bool Towns { get; set; } // Planned x.x feature - town entrance shuffle
+		[FlagString(Character = STANDARD_MAPS, FlagBit = 32)]
+		public bool Floors { get; set; } // Planned x.x feature - interior floors shuffle
+
+		[FlagString(Character = OVERWORLD_MAP, FlagBit = 1)]
 		public bool MapCanalBridge { get; set; }
+		[FlagString(Character = OVERWORLD_MAP, FlagBit = 2)]
+		public bool MapOpenProgression { get; set; }
+		
+		[FlagString(Character = INCENTIVES_MAIN, FlagBit = 1)]
+		public bool IncentivizeFreeNPCs { get; set; }
+		[FlagString(Character = INCENTIVES_MAIN, FlagBit = 2)]
+		public bool IncentivizeFetchNPCs { get; set; }
+		[FlagString(Character = INCENTIVES_MAIN, FlagBit = 4)]
+		public bool IncentivizeTreasureQuestItems { get; set; }
+		[FlagString(Character = INCENTIVES_MAIN, FlagBit = 8)]
+		public bool IncentivizeFreeNPCItems { get; set; }
+		[FlagString(Character = INCENTIVES_MAIN, FlagBit = 16)]
+		public bool IncentivizeMainFetchItems { get; set; }
+		[FlagString(Character = INCENTIVES_MAIN, FlagBit = 32)]
+		public bool IncentivizeOtherFetchNPCItems { get; set; }
+		
+		[FlagString(Character = INCENTIVES_CHESTS1, FlagBit = 1)]
+		public bool IncentivizeMarsh { get; set; }
+		[FlagString(Character = INCENTIVES_CHESTS1, FlagBit = 2)]
+		public bool IncentivizeEarth { get; set; }
+		[FlagString(Character = INCENTIVES_CHESTS1, FlagBit = 4)]
+		public bool IncentivizeVolcano { get; set; }
+		[FlagString(Character = INCENTIVES_CHESTS1, FlagBit = 8)]
+		public bool IncentivizeIceCave { get; set; }
+		[FlagString(Character = INCENTIVES_CHESTS1, FlagBit = 16)]
+		public bool IncentivizeOrdeals { get; set; }
+		[FlagString(Character = INCENTIVES_CHESTS1, FlagBit = 32)]
+		public bool IncentivizeSeaShrine { get; set; }
+		
+		[FlagString(Character = INCENTIVES_CHESTS2, FlagBit = 1)]
+		public bool IncentivizeConeria { get; set; }
+		[FlagString(Character = INCENTIVES_CHESTS2, FlagBit = 2)]
+		public bool IncentivizeMarshKeyLocked { get; set; }
+		[FlagString(Character = INCENTIVES_CHESTS2, FlagBit = 4)]
+		public bool IncentivizeSkyPalace { get; set; }
+		
+		[FlagString(Character = INCENTIVES_ITEMS1, FlagBit = 1)]
+		public bool IncentivizeMasamune { get; set; }
+		[FlagString(Character = INCENTIVES_ITEMS1, FlagBit = 2)]
+		public bool IncentivizeOpal { get; set; }
+		[FlagString(Character = INCENTIVES_ITEMS1, FlagBit = 4)]
+		public bool IncentivizeRibbon { get; set; }
+		[FlagString(Character = INCENTIVES_ITEMS1, FlagBit = 8)]
+		public bool IncentivizeRibbon2 { get; set; }
+		[FlagString(Character = INCENTIVES_ITEMS1, FlagBit = 16)]
+		public bool Incentivize65K { get; set; }
+		[FlagString(Character = INCENTIVES_ITEMS1, FlagBit = 32)]
+		public bool IncentivizeBad { get; set; }
 
-		[FlagString(Character = 14, FlagBit = 1)]
+		[FlagString(Character = INCENTIVES_ITEMS2, FlagBit = 1)]
+		public bool IncentivizeDefCastArmor { get; set; }
+		[FlagString(Character = INCENTIVES_ITEMS2, FlagBit = 2)]
+		public bool IncentivizeOffCastArmor { get; set; }
+		[FlagString(Character = INCENTIVES_ITEMS2, FlagBit = 4)]
+		public bool IncentivizeOtherCastArmor { get; set; }
+		[FlagString(Character = INCENTIVES_ITEMS2, FlagBit = 8)]
+		public bool IncentivizeDefCastWeapon { get; set; }
+		[FlagString(Character = INCENTIVES_ITEMS2, FlagBit = 16)]
+		public bool IncentivizeOffCastWeapon { get; set; }
+		[FlagString(Character = INCENTIVES_ITEMS2, FlagBit = 32)]
+		public bool IncentivizeOtherCastWeapon { get; set; }
+		
+		[FlagString(Character = ITEM_REQUIREMENTS, FlagBit = 1)]
+		public bool EarlySarda { get; set; }
+		[FlagString(Character = ITEM_REQUIREMENTS, FlagBit = 2)]
+		public bool EarlySage { get; set; }
+		[FlagString(Character = ITEM_REQUIREMENTS, FlagBit = 32)]
+		public bool OnlyRequireGameIsBeatable { get; set; }
+		
+		[FlagString(Character = FILTHY_CASUALS, FlagBit = 1)]
+		public bool FreeBridge { get; set; }
+		[FlagString(Character = FILTHY_CASUALS, FlagBit = 2)]
+		public bool FreeAirship { get; set; }
+		[FlagString(Character = FILTHY_CASUALS, FlagBit = 32)]
+		public bool EasyMode { get; set; }
+		
+		[FlagString(Character = CONVENIENCES, FlagBit = 1)]
 		public bool SpeedHacks { get; set; }
-		[FlagString(Character = 14, FlagBit = 2)]
+		[FlagString(Character = CONVENIENCES, FlagBit = 2)]
 		public bool NoPartyShuffle { get; set; }
-		[FlagString(Character = 14, FlagBit = 4)]
+		[FlagString(Character = CONVENIENCES, FlagBit = 4)]
 		public bool Dash { get; set; }
-		[FlagString(Character = 14, FlagBit = 8)]
+		[FlagString(Character = CONVENIENCES, FlagBit = 8)]
 		public bool BuyTen { get; set; }
-		[FlagString(Character = 14, FlagBit = 16)]
+		[FlagString(Character = CONVENIENCES, FlagBit = 16)]
 		public bool IdentifyTreasures { get; set; }
+		[FlagString(Character = CONVENIENCES, FlagBit = 32)]
+		public bool WaitWhenUnrunnable { get; set; }
 
-		[FlagString(Character = 15, FlagBit = 1)]
+		[FlagString(Character = BUG_FIXES, FlagBit = 1)]
 		public bool HouseMPRestoration { get; set; }
-		[FlagString(Character = 15, FlagBit = 2)]
+		[FlagString(Character = BUG_FIXES, FlagBit = 2)]
 		public bool WeaponStats { get; set; }
-		[FlagString(Character = 15, FlagBit = 4)]
+		[FlagString(Character = BUG_FIXES, FlagBit = 4)]
 		public bool ChanceToRun { get; set; }
-		[FlagString(Character = 15, FlagBit = 8)]
+		[FlagString(Character = BUG_FIXES, FlagBit = 8)]
 		public bool SpellBugs { get; set; }
-		[FlagString(Character = 15, FlagBit = 16)]
+		[FlagString(Character = BUG_FIXES, FlagBit = 16)]
+		public bool BlackBeltAbsorb { get; set; } // Planned 2.1 feature
+		
+		[FlagString(Character = ENEMY_BUG_FIXES, FlagBit = 1)]
 		public bool EnemyStatusAttackBug { get; set; }
+		[FlagString(Character = ENEMY_BUG_FIXES, FlagBit = 2)]
+		public bool EnemySpellsTargetingAllies { get; set; }// Planned 2.1 feature
+		[FlagString(Character = ENEMY_BUG_FIXES, FlagBit = 4)]
+		public bool EnemyElementalResistancesBug { get; set; }// Planned 2.1 feature
 
+		[FlagString(Character = 17, Multiplier = 0.1)]
+		public double EnemyScaleFactor { get; set; }
+		[FlagString(Character = 18, Multiplier = 0.1)]
+		public double PriceScaleFactor { get; set; }
+		[FlagString(Character = 19, Multiplier = 0.1)]
+		public double ExpMultiplier { get; set; }
+		[FlagString(Character = 20, Multiplier = 10)]
+		public int ExpBonus { get; set; }
+		[FlagString(Character = 21, Multiplier = 1)]
+		public int ForcedPartyMembers { get; set; }
+		
+		
 		public bool ModernBattlefield { get; set; }
 		public bool FunEnemyNames { get; set; }
 		public bool PaletteSwap { get; set; }
 		public bool TeamSteak { get; set; }
 		public MusicShuffle Music { get; set; }
-
-		[FlagString(Character = 16, Multiplier = 0.1)]
-		public double EnemyScaleFactor { get; set; }
-		[FlagString(Character = 17, Multiplier = 0.1)]
-		public double PriceScaleFactor { get; set; }
-		[FlagString(Character = 18, Multiplier = 0.1)]
-		public double ExpMultiplier { get; set; }
-		[FlagString(Character = 19, Multiplier = 10)]
-		public int ExpBonus { get; set; }
-		[FlagString(Character = 20, Multiplier = 1)]
-		public int ForcedPartyMembers { get; set; }
-		[FlagString(Character = 21, Multiplier = 1)]
-		public int ReservedForForcedPartyMembersExpansion { get; set; }
+				
 		
-		[FlagString(Character = 22, FlagBit = 1)]
-		public bool OnlyRequireGameIsBeatable { get; set; }
+		public bool MapOnracDock => MapOpenProgression;
+		public bool MapMirageDock => MapOpenProgression;
+		public bool MapConeriaDwarves => MapOpenProgression;
+		public bool MapVolcanoIceRiver => MapOpenProgression;
+		
+		public bool IncentivizeCrown => IncentivizeTreasureQuestItems;
+		public bool IncentivizeRuby => IncentivizeTreasureQuestItems;
+		public bool IncentivizeTnt => IncentivizeTreasureQuestItems && (!NPCFetchItems || IncentivizeOtherFetchNPCItems || !IncentivizeMainFetchItems);
+		public bool IncentivizeFloater => IncentivizeTreasureQuestItems;
+		public bool IncentivizeSlab => IncentivizeTreasureQuestItems && (!NPCFetchItems || IncentivizeOtherFetchNPCItems || !IncentivizeMainFetchItems);
+		public bool IncentivizeTail => IncentivizeTreasureQuestItems;
+		public bool IncentivizeAdamant => IncentivizeTreasureQuestItems && (!NPCFetchItems || IncentivizeOtherFetchNPCItems || !IncentivizeMainFetchItems);
 
-		[FlagString(Character = 5, FlagBit = 1)]
-		public bool IncentivizeMarsh { get; set; }
-		[FlagString(Character = 5, FlagBit = 2)]
-		public bool IncentivizeEarth { get; set; }
-		[FlagString(Character = 5, FlagBit = 4)]
-		public bool IncentivizeVolcano { get; set; }
-		[FlagString(Character = 5, FlagBit = 8)]
-		public bool IncentivizeIceCave { get; set; }
-		[FlagString(Character = 5, FlagBit = 16)]
-		public bool IncentivizeOrdeals { get; set; }
-		[FlagString(Character = 5, FlagBit = 32)]
-		public bool IncentivizeSeaShrine { get; set; }
+		public bool IncentivizeBridge => IncentivizeFreeNPCItems;
+		public bool IncentivizeLute => IncentivizeFreeNPCItems;
+		public bool IncentivizeShip => IncentivizeFreeNPCItems;
+		public bool IncentivizeRod => IncentivizeFreeNPCItems;
+		public bool IncentivizeCanoe => IncentivizeFreeNPCItems;
+		public bool IncentivizeOxyale => IncentivizeFreeNPCItems;
+		public bool IncentivizeCube => IncentivizeFreeNPCItems;
+		public bool IncentivizeBottle => IncentivizeFreeNPCItems;
+		
+		public bool IncentivizeCrystal => IncentivizeOtherFetchNPCItems;
+		public bool IncentivizeHerb => IncentivizeOtherFetchNPCItems;
+		public bool IncentivizeKey => IncentivizeMainFetchItems;
+		public bool IncentivizeCanal => IncentivizeMainFetchItems;
+		public bool IncentivizeChime => IncentivizeMainFetchItems;
+		public bool IncentivizeXcalber => IncentivizeOtherFetchNPCItems;
+		
+		public bool IncentivizeKingConeria => IncentivizeFreeNPCs;
+		public bool IncentivizePrincess => IncentivizeFreeNPCs;
+		public bool IncentivizeBikke => IncentivizeFreeNPCs;
+		public bool IncentivizeSarda => IncentivizeFreeNPCs;
+		public bool IncentivizeCanoeSage => IncentivizeFreeNPCs;
+		public bool IncentivizeCaravan => IncentivizeFreeNPCs;
+		public bool IncentivizeFairy => IncentivizeFreeNPCs;
 
-		[FlagString(Character = 6, FlagBit = 1)]
-		public bool IncentivizeCrown { get; set; }
-		[FlagString(Character = 6, FlagBit = 2)]
-		public bool IncentivizeRuby { get; set; }
-		[FlagString(Character = 6, FlagBit = 4)]
-		public bool IncentivizeTnt { get; set; }
-		[FlagString(Character = 6, FlagBit = 8)]
-		public bool IncentivizeFloater { get; set; }
-		[FlagString(Character = 6, FlagBit = 16)]
-		public bool IncentivizeTail { get; set; }
-		[FlagString(Character = 6, FlagBit = 32)]
-		public bool IncentivizeSlab { get; set; }
-
-		[FlagString(Character = 7, FlagBit = 1)]
-		public bool IncentivizeKingConeria { get; set; }
-		[FlagString(Character = 7, FlagBit = 2)]
-		public bool IncentivizePrincess { get; set; }
-		[FlagString(Character = 7, FlagBit = 4)]
-		public bool IncentivizeBikke { get; set; }
-		[FlagString(Character = 7, FlagBit = 8)]
-		public bool IncentivizeAstos { get; set; }
-		[FlagString(Character = 7, FlagBit = 16)]
-		public bool IncentivizeMatoya { get; set; }
-		[FlagString(Character = 7, FlagBit = 32)]
-		public bool IncentivizeElfPrince { get; set; }
-
-		[FlagString(Character = 8, FlagBit = 1)]
-		public bool IncentivizeNerrick { get; set; }
-		[FlagString(Character = 8, FlagBit = 2)]
-		public bool IncentivizeSarda { get; set; }
-		[FlagString(Character = 8, FlagBit = 4)]
-		public bool IncentivizeCanoeSage { get; set; }
-		[FlagString(Character = 8, FlagBit = 8)]
-		public bool IncentivizeFairy { get; set; }
-		[FlagString(Character = 8, FlagBit = 16)]
-		public bool IncentivizeLefein { get; set; }
-		[FlagString(Character = 8, FlagBit = 32)]
-		public bool IncentivizeCubeBot { get; set; }
-
-		[FlagString(Character = 9, FlagBit = 1)]
-		public bool IncentivizeSmith { get; set; }
-		[FlagString(Character = 9, FlagBit = 2)]
-		public bool IncentivizeCaravan { get; set; }
-		[FlagString(Character = 9, FlagBit = 4)]
-		public bool IncentivizeConeria { get; set; }
-		// The incentive presets overwrite the substring for incentives, including
-		// these 3 flags so to keep the preset functionality working properly marking
-		// these as reserved
-		[FlagString(Character = 9, FlagBit = 8)]
-		public bool ReservedForLaterIncentive1 { get; set; }
-		[FlagString(Character = 9, FlagBit = 16)]
-		public bool ReservedForLaterIncentive2 { get; set; }
-		[FlagString(Character = 9, FlagBit = 32)]
-		public bool ReservedForLaterIncentive3 { get; set; }
-
-		[FlagString(Character = 10, FlagBit = 1)]
-		public bool IncentivizeBridge { get; set; }
-		[FlagString(Character = 10, FlagBit = 2)]
-		public bool IncentivizeLute { get; set; }
-		[FlagString(Character = 10, FlagBit = 4)]
-		public bool IncentivizeShip { get; set; }
-		[FlagString(Character = 10, FlagBit = 8)]
-		public bool IncentivizeCrystal { get; set; }
-		[FlagString(Character = 10, FlagBit = 16)]
-		public bool IncentivizeHerb { get; set; }
-		[FlagString(Character = 10, FlagBit = 32)]
-		public bool IncentivizeKey { get; set; }
-
-		[FlagString(Character = 11, FlagBit = 1)]
-		public bool IncentivizeCanal { get; set; }
-		[FlagString(Character = 11, FlagBit = 2)]
-		public bool IncentivizeRod { get; set; }
-		[FlagString(Character = 11, FlagBit = 4)]
-		public bool IncentivizeCanoe { get; set; }
-		[FlagString(Character = 11, FlagBit = 8)]
-		public bool IncentivizeOxyale { get; set; }
-		[FlagString(Character = 11, FlagBit = 16)]
-		public bool IncentivizeChime { get; set; }
-		[FlagString(Character = 11, FlagBit = 32)]
-		public bool IncentivizeCube { get; set; }
-
-		[FlagString(Character = 12, FlagBit = 1)]
-		public bool IncentivizeXcalber { get; set; }
-		[FlagString(Character = 12, FlagBit = 2)]
-		public bool IncentivizeBottle { get; set; }
-		[FlagString(Character = 12, FlagBit = 4)]
-		public bool IncentivizeAdamant { get; set; }
-		[FlagString(Character = 12, FlagBit = 8)]
-		public bool IncentivizeMasamune { get; set; }
-		[FlagString(Character = 12, FlagBit = 16)]
-		public bool IncentivizeRibbon { get; set; }
-		[FlagString(Character = 12, FlagBit = 32)]
-		public bool IncentivizeRibbon2 { get; set; }
-
-		[FlagString(Character = 13, FlagBit = 1)]
-		public bool IncentivizePowerGauntlet { get; set; }
-		[FlagString(Character = 13, FlagBit = 2)]
-		public bool IncentivizeWhiteShirt { get; set; }
-		[FlagString(Character = 13, FlagBit = 4)]
-		public bool IncentivizeBlackShirt { get; set; }
-		[FlagString(Character = 13, FlagBit = 8)]
-		public bool IncentivizeOpal { get; set; }
-		[FlagString(Character = 13, FlagBit = 16)]
-		public bool Incentivize65K { get; set; }
-		[FlagString(Character = 13, FlagBit = 32)]
-		public bool IncentivizeBad { get; set; }
+		public bool IncentivizeAstos => IncentivizeFetchNPCs;
+		public bool IncentivizeMatoya => IncentivizeFetchNPCs;
+		public bool IncentivizeElfPrince => IncentivizeFetchNPCs;
+		public bool IncentivizeNerrick => IncentivizeFetchNPCs;
+		public bool IncentivizeLefein => IncentivizeFetchNPCs;
+		public bool IncentivizeCubeBot => IncentivizeFetchNPCs;
+		public bool IncentivizeSmith => IncentivizeFetchNPCs;
+		
 
 		public static Dictionary<string, FlagStringAttribute> GetFlagStringAttributes()
 		{

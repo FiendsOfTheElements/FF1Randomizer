@@ -113,18 +113,6 @@ namespace FF1Lib
 			{
 				incentivePool.Add(Item.Ribbon);
 			}
-			if (flags.IncentivizePowerGauntlet)
-			{
-				incentivePool.Add(Item.PowerGauntlets);
-			}
-			if (flags.IncentivizeWhiteShirt)
-			{
-				incentivePool.Add(Item.WhiteShirt);
-			}
-			if (flags.IncentivizeBlackShirt)
-			{
-				incentivePool.Add(Item.BlackShirt);
-			}
 			if (flags.IncentivizeOpal)
 			{
 				incentivePool.Add(Item.Opal);
@@ -136,6 +124,30 @@ namespace FF1Lib
 			if (flags.IncentivizeBad)
 			{
 				incentivePool.Add(Item.Cloth);
+			}
+			if (flags.IncentivizeDefCastArmor)
+			{
+				incentivePool.Add(Item.WhiteShirt);
+			}
+			if (flags.IncentivizeOffCastArmor)
+			{
+				incentivePool.Add(Item.BlackShirt);
+			}
+			if (flags.IncentivizeOtherCastArmor)
+			{
+				incentivePool.Add(Item.PowerGauntlets);
+			}
+			if (flags.IncentivizeDefCastWeapon)
+			{
+				incentivePool.Add(Item.Defense);
+			}
+			if (flags.IncentivizeOffCastWeapon)
+			{
+				incentivePool.Add(Item.ThorHammer);
+			}
+			if (flags.IncentivizeOtherCastWeapon)
+			{
+				incentivePool.Add(Item.BaneSword);
 			}
 
 			var incentiveLocationPool = new List<IRewardSource>();
@@ -203,6 +215,14 @@ namespace FF1Lib
 			{
 				incentiveLocationPool.Add(ItemLocations.MarshCaveMajor);
 			}
+			if (flags.IncentivizeMarshKeyLocked)
+			{
+				incentiveLocationPool.Add(ItemLocations.MarshCave13);
+			}
+			if (flags.IncentivizeSkyPalace)
+			{
+				incentiveLocationPool.Add(ItemLocations.SkyPalace10);
+			}
 			if (flags.IncentivizeSeaShrine)
 			{
 				incentiveLocationPool.Add(ItemLocations.SeaShrineLocked);
@@ -227,7 +247,7 @@ namespace FF1Lib
 				ItemLocations.AllTreasures.Concat(ItemLocations.AllNPCItemLocations)
 						  .Where(x => !x.IsUnused && !forcedItemPlacements.Any(y => y.Address == x.Address))
 						  .ToList();
-			if (flags.EarlyOrdeals)
+			if (flags.CrownlessOrdeals)
 			{
 				itemLocationPool =
 					itemLocationPool

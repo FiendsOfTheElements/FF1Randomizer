@@ -11,7 +11,7 @@
 
 function validateFlags() {
 	var flagsInput = document.getElementById("Flags");
-	var isValid = flagsInput.value.match(/^[A-Za-z0-9!-]{23}$/);
+	var isValid = flagsInput.value.match(/^[A-Za-z0-9!-]{22}$/);
 	if (isValid) {
 		flagsInput.parentElement.classList.remove("has-error");
 	} else {
@@ -56,20 +56,13 @@ computedPropertyArray.FlagsInput = {
         }
     };
 
-var START_INCENTIVES = 5;
-var END_INCENTIVES = 14;
 var initalFlagString = document.getElementById('Flags').value;
-var defaultIncentives = initalFlagString.substring(START_INCENTIVES, END_INCENTIVES);
 var app = new Vue({
   el: '#vueScope',
   data: {
     flagString: initalFlagString
   },
   methods: {
-    incentivePreset: function(presetString) {
-        var newIncentives = presetString.length !== defaultIncentives.length ? defaultIncentives : presetString;
-        this.flagString = [this.flagString.substring(0, START_INCENTIVES), newIncentives, this.flagString.substring(END_INCENTIVES)].join('');
-    },
     importSeedFlags: function () {
         var str = prompt("Paste in a seed and flags string as given to you by our lord and master, crim_bot. (SEED_FLAGS)");
         var seed;
