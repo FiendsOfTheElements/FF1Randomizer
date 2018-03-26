@@ -419,6 +419,14 @@ namespace FF1Lib
 
 			// Copyright overhaul, see 0F_8960_DrawSeedAndFlags.asm
 			PutInBank(0x0F, 0x8960, Blob.FromHex("A9238D0620A9208D0620A200BD00898D0720E8E060D0F560"));
+
+			// Fast Battle Boxes
+			PutInBank(0x0F, 0x8A00, Blob.FromHex("A940858AA922858BA91E8588A969858960"));
+			PutInBank(0x0F, 0x8A20, Blob.FromHex($"A9{BattleBoxDrawInRows}8DB96820A1F420E8F4A5881869208588A58969008589A58A186920858AA58B6900858BCEB968D0DE60"));
+
+			// Fast Battle Boxes Undraw (Similar... yet different!)
+			PutInBank(0x0F, 0x8A80, Blob.FromHex("A9A0858AA923858BA97E8588A96A858960"));
+			PutInBank(0x0F, 0x8AA0, Blob.FromHex($"A9{BattleBoxUndrawRows}8DB96820A1F420E8F4A58838E9208588A589E9008589A58A38E920858AA58BE900858BCEB968D0DE60"));
 		}
 
 		public override bool Validate()

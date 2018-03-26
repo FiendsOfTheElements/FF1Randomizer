@@ -20,6 +20,12 @@ namespace FF1Lib
 		public const int CaravanFairyCheck = 0x7C4E5;
 		public const int CaravanFairyCheckSize = 7;
 
+		public const string BattleBoxDrawInFrames = "06"; // Half normal (Must divide 12)
+		public const string BattleBoxDrawInRows = "02";
+
+		public const string BattleBoxUndrawFrames = "04"; // 2/3 normal (Must  divide 12)
+		public const string BattleBoxUndrawRows = "03";
+
 		// Required for npc quest item randomizing
 		public void PermanentCaravan()
 		{
@@ -188,6 +194,11 @@ namespace FF1Lib
 			Data[0x33D4B] = 0x04; // Explosion effect count (big enemies), default 6
 			Data[0x33CCD] = 0x04; // Explosion effect count (small enemies), default 8
 			Data[0x33DAA] = 0x04; // Explosion effect count (mixed enemies), default 15
+
+			// Draw and Undraw Battle Boxes faster
+			Put(0x2DA12, Blob.FromHex("3020181008040201")); // More practical Respond Rates
+			Put(0x7F4AA, Blob.FromHex($"ADFC6048A90F2003FE20008AA9{BattleBoxDrawInFrames}8517A90F2003FE20208A2085F4C617D0F1682003FE60"));
+			Put(0x7F4FF, Blob.FromHex($"ADFC6048A90F2003FE20808AA9{BattleBoxUndrawFrames}8517A90F2003FE20A08A2085F4C617D0F1682003FE60"));
 
 			// Gain multiple levels at once.  Also supresses stat increase messages as a side effect
 			Put(0x2DD82, Blob.FromHex("20789f20579f48a5802907c907f008a58029f0690785806820019c4ce89b"));
