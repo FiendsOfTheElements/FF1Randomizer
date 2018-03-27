@@ -176,14 +176,14 @@ namespace FF1Lib
 		[FlagString(Character = BUG_FIXES, FlagBit = 8)]
 		public bool SpellBugs { get; set; }
 		[FlagString(Character = BUG_FIXES, FlagBit = 16)]
-		public bool BlackBeltAbsorb { get; set; } // Planned 2.1 feature
+		public bool BlackBeltAbsorb { get; set; }
 		
 		[FlagString(Character = ENEMY_BUG_FIXES, FlagBit = 1)]
 		public bool EnemyStatusAttackBug { get; set; }
 		[FlagString(Character = ENEMY_BUG_FIXES, FlagBit = 2)]
-		public bool EnemySpellsTargetingAllies { get; set; }// Planned 2.1 feature
+		public bool EnemySpellsTargetingAllies { get; set; }
 		[FlagString(Character = ENEMY_BUG_FIXES, FlagBit = 4)]
-		public bool EnemyElementalResistancesBug { get; set; }// Planned 2.1 feature
+		public bool EnemyElementalResistancesBug { get; set; }
 
 		[FlagString(Character = 17, Multiplier = 0.1)]
 		public double EnemyScaleFactor { get; set; }
