@@ -280,8 +280,7 @@ namespace FF1Lib
 			}
 
 			var itemText = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
-			itemText[99] = FF1Text.TextToBytes("Ribbon ", useDTE: false);
-
+			FixVanillaRibbon(itemText);
 			ExpGoldBoost(flags.ExpBonus, flags.ExpMultiplier);
 			ScalePrices(flags.PriceScaleFactor, flags.ExpMultiplier, itemText, rng);
 

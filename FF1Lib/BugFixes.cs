@@ -98,5 +98,13 @@ namespace FF1Lib
 			// Remove comparison and branch on equal which skips the caster when casting aoe spells
 			Put(0x33568, Blob.FromHex("EAEAEAEAEAEAEAEA"));
 		}
+
+		public void FixVanillaRibbon(Blob[] texts)
+		{
+			if (texts[(int)Item.Ribbon].Length > 8)
+			{
+				texts[(int)Item.Ribbon][7] = 0x00;
+			}
+		}
 	}
 }
