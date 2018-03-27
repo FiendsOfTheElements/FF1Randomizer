@@ -35,7 +35,7 @@
 		<div class="section tab-pane active" id="shuffle">
 			<div class="col-xs-4">
 				<div class="checkbox-cell"><input v-model="Treasures" type="checkbox" asp-for="Flags.Treasures" /> <label asp-for="Flags.Treasures"></label></div>
-				<div class="checkbox-cell" title="Bridge, Lute, Ship, Rod, Canoe, Cube, Bottle, Oxyale"><input v-model="NPCItems" type="checkbox" asp-for="Flags.NPCItems" /> <label asp-for="Flags.NPCItems">Free NPC Items</label></div>
+				<div class="checkbox-cell" title="Bridge, Lute, Ship, Rod, Canoe, Cube, Bottle, Oxyale"><input v-model="NPCItems" type="checkbox" asp-for="Flags.NPCItems" /> <label asp-for="Flags.NPCItems">NPC Items</label></div>
                 <div class="checkbox-cell" v-if="Treasures && NPCItems" title="King, Princess, Bikke, Sarda, Sage, Robot, Caravan, Fairy"><input class="indent" v-model="IncentivizeFreeNPCs" type="checkbox" asp-for="Flags.IncentivizeFreeNPCs" /> <label asp-for="Flags.IncentivizeFreeNPCs">Incentivize NPCs</label></div>
                 <div class="checkbox-cell" title="Crystal, Herb, Key, Canal, Chime, Xcalber"><input v-model="NPCFetchItems" type="checkbox" asp-for="Flags.NPCFetchItems" /> <label asp-for="Flags.NPCFetchItems">Fetch Quests</label></div>
                 <div class="checkbox-cell" v-if="Treasures && NPCFetchItems" title="Astos, Matoya, Prince, Dwarves, Lefein"><input class="indent" v-model="IncentivizeFetchNPCs" type="checkbox" asp-for="Flags.IncentivizeFetchNPCs" /> <label asp-for="Flags.IncentivizeFetchNPCs">Incentivize NPCs</label></div>
@@ -54,7 +54,7 @@
 			</div>
 		</div>
         <div class="section tab-pane col-xs-12" id="incentives" v-if="Treasures">
-            <div class="col-xs-3">
+            <div class="col-xs-3" style="border-right:1px solid black">
                 <h4>Item Locations</h4>
                 <div class="col-xs-12">
                     <div class="checkbox-cell"><input v-model="IncentivizeMarsh" type="checkbox" asp-for="Flags.IncentivizeMarsh" /> <label asp-for="Flags.IncentivizeMarsh">Marsh Cave</label></div>
@@ -69,15 +69,18 @@
                     <div class="checkbox-cell"><input v-model="IncentivizeSkyPalace" type="checkbox" asp-for="Flags.IncentivizeSkyPalace" /> <label asp-for="Flags.IncentivizeSkyPalace">Sky Palace (Bane Sword)</label></div>
                 </div>
             </div>
-            <div class="col-xs-9" style="border-left:1px solid black">
-                <h4>Items</h4>
-                <div class="col-xs-4">
+            <div class="col-xs-3">
+                <h4>Quest Items</h4>
+                <div class="col-xs-12">
                     <div class="checkbox-cell" title="Crown, TNT, Slab, Adamant, Ruby, Floater, Tail"><input v-model="IncentivizeTreasureQuestItems" type="checkbox" asp-for="Flags.IncentivizeTreasureQuestItems" /> <label asp-for="Flags.IncentivizeTreasureQuestItems">Treasure Quest Items</label></div>
-                    <div class="checkbox-cell" v-if="NPCItems" title="Bridge, Lute, Ship, Rod, Canoe, Cube, Bottle, Oxyale"><input v-model="IncentivizeFreeNPCItems" type="checkbox" asp-for="Flags.IncentivizeFreeNPCItems" /> <label asp-for="Flags.IncentivizeFreeNPCItems">Free NPC Items</label></div>
+                    <div class="checkbox-cell" v-if="NPCItems" title="Bridge, Lute, Ship, Rod, Canoe, Cube, Bottle, Oxyale"><input v-model="IncentivizeFreeNPCItems" type="checkbox" asp-for="Flags.IncentivizeFreeNPCItems" /> <label asp-for="Flags.IncentivizeFreeNPCItems">NPC Items</label></div>
                     <div class="checkbox-cell" v-if="NPCFetchItems" title="Adds Key, Canal, Chime - Removes TNT, Slab, Adamant if present"><input v-model="IncentivizeMainFetchItems" type="checkbox" asp-for="Flags.IncentivizeMainFetchItems" /> <label asp-for="Flags.IncentivizeMainFetchItems">Main Fetch Items</label></div>
                     <div class="checkbox-cell" v-if="NPCFetchItems" title="Crystal, Herb, Xcalber - Adds back TNT, Slab, Adamant if removed by Main Fetch Items"><input v-model="IncentivizeOtherFetchNPCItems" type="checkbox" asp-for="Flags.IncentivizeOtherFetchNPCItems" /> <label asp-for="Flags.IncentivizeOtherFetchNPCItems">More Fetch Items</label></div>
                 </div>
-                <div class="col-xs-4">
+            </div>
+            <div class="col-xs-6" style="border-left:1px solid black">
+                <h4>Items</h4>
+                <div class="col-xs-6">
                     <div class="checkbox-cell"><input v-model="IncentivizeDefCastArmor" type="checkbox" asp-for="Flags.IncentivizeDefCastArmor" /> <label asp-for="Flags.IncentivizeDefCastArmor">White Shirt</label></div>
                     <div class="checkbox-cell"><input v-model="IncentivizeOffCastArmor" type="checkbox" asp-for="Flags.IncentivizeOffCastArmor" /> <label asp-for="Flags.IncentivizeOffCastArmor">Black Shirt</label></div>
                     <div class="checkbox-cell"><input v-model="IncentivizeOtherCastArmor" type="checkbox" asp-for="Flags.IncentivizeOtherCastArmor" /> <label asp-for="Flags.IncentivizeOtherCastArmor">Power Gauntlet</label></div>
@@ -85,7 +88,7 @@
                     <div class="checkbox-cell"><input v-model="IncentivizeOffCastWeapon" type="checkbox" asp-for="Flags.IncentivizeOffCastWeapon" /> <label asp-for="Flags.IncentivizeOffCastWeapon">Thor Hammer</label></div>
                     <div class="checkbox-cell"><input v-model="IncentivizeOtherCastWeapon" type="checkbox" asp-for="Flags.IncentivizeOtherCastWeapon" /> <label asp-for="Flags.IncentivizeOtherCastWeapon">Bane Sword</label></div>
                 </div>
-                <div class="col-xs-4">
+                <div class="col-xs-6">
                     <div class="checkbox-cell"><input v-model="IncentivizeMasamune" type="checkbox" asp-for="Flags.IncentivizeMasamune" /> <label asp-for="Flags.IncentivizeMasamune">Masamune</label></div>
                     <div class="checkbox-cell"><input v-model="IncentivizeOpal" type="checkbox" asp-for="Flags.IncentivizeOpal" /> <label asp-for="Flags.IncentivizeOpal">Opal</label></div>
                     <div class="checkbox-cell"><input v-model="IncentivizeRibbon" type="checkbox" asp-for="Flags.IncentivizeRibbon" /> <label asp-for="Flags.IncentivizeRibbon">Ribbon</label></div>
@@ -152,7 +155,7 @@
 				<div class="checkbox-cell"><input v-model="BuyTen" type="checkbox" asp-for="Flags.BuyTen" /> <label asp-for="Flags.BuyTen">Buy 10 Items</label></div>
             </div>
             <div class="col-xs-4">
-                <div class="checkbox-cell"><input v-model="FreeAirship" type="checkbox" asp-for="Flags.FreeAirship" /> <label asp-for="Flags.FreeAirship">Free Airship</label></div>
+                <div class="checkbox-cell"><input v-model="FreeAirship" type="checkbox" asp-for="Flags.FreeAirship" /> <label asp-for="Flags.FreeAirship">Free Stargazer</label></div>
                 <div class="checkbox-cell"><input v-model="FreeBridge" type="checkbox" asp-for="Flags.FreeBridge" /> <label asp-for="Flags.FreeBridge">Free Bridge</label></div>
                 <div class="checkbox-cell"><input v-model="EasyMode" type="checkbox" asp-for="Flags.EasyMode" /> <label asp-for="Flags.EasyMode">Easy Mode</label></div>
             </div>
