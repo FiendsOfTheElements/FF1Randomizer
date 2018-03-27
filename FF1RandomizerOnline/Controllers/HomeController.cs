@@ -34,6 +34,11 @@ namespace FF1RandomizerOnline.Controllers
 		{
 			return View();
 		}
+		
+		public IActionResult WhatsNew()
+		{
+			return View();
+		}
 
 		[HttpGet]
 		public IActionResult Randomize()
