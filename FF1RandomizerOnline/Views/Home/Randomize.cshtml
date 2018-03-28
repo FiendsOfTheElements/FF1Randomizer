@@ -35,9 +35,9 @@
 		<div class="section tab-pane active" id="shuffle">
 			<div class="col-xs-4">
 				<div class="checkbox-cell"><input v-model="Treasures" type="checkbox" asp-for="Flags.Treasures" /> <label asp-for="Flags.Treasures"></label></div>
-				<div class="checkbox-cell" title="Bridge, Lute, Ship, Rod, Canoe, Cube, Bottle, Oxyale"><input v-model="NPCItems" type="checkbox" asp-for="Flags.NPCItems" /> <label asp-for="Flags.NPCItems">NPC Items</label></div>
+				<div class="checkbox-cell" title="Bridge, Lute, Ship, Rod, Canoe, Cube, Bottle, Oxyale"><input v-model="NPCItems" type="checkbox" asp-for="Flags.NPCItems" /> <label asp-for="Flags.NPCItems">NPC Items</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.0.0</a>)</small></div>
                 <div class="checkbox-cell" v-if="Treasures && NPCItems" title="King, Princess, Bikke, Sarda, Sage, Robot, Caravan, Fairy"><input class="indent" v-model="IncentivizeFreeNPCs" type="checkbox" asp-for="Flags.IncentivizeFreeNPCs" /> <label asp-for="Flags.IncentivizeFreeNPCs">Incentivize NPCs</label></div>
-                <div class="checkbox-cell" title="Crystal, Herb, Key, Canal, Chime, Xcalber"><input v-model="NPCFetchItems" type="checkbox" asp-for="Flags.NPCFetchItems" /> <label asp-for="Flags.NPCFetchItems">Fetch Quests</label></div>
+                <div class="checkbox-cell" title="Crystal, Herb, Key, Canal, Chime, Xcalber"><input v-model="NPCFetchItems" type="checkbox" asp-for="Flags.NPCFetchItems" /> <label asp-for="Flags.NPCFetchItems">Fetch Quests</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.0.0</a>)</small></div>
                 <div class="checkbox-cell" v-if="Treasures && NPCFetchItems" title="Astos, Matoya, Prince, Dwarves, Lefein"><input class="indent" v-model="IncentivizeFetchNPCs" type="checkbox" asp-for="Flags.IncentivizeFetchNPCs" /> <label asp-for="Flags.IncentivizeFetchNPCs">Incentivize NPCs</label></div>
 				<div class="checkbox-cell"></div>
 				<div class="checkbox-cell"><input v-model="Shops" type="checkbox" asp-for="Flags.Shops" /> <label asp-for="Flags.Shops"></label></div>
@@ -70,7 +70,7 @@
                 </div>
             </div>
             <div class="col-xs-3">
-                <h4>Quest Items</h4>
+                <h4>Quest Items <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.0.0</a>)</small></h4>
                 <div class="col-xs-12">
                     <div class="checkbox-cell" title="Crown, TNT, Slab, Adamant, Ruby, Floater, Tail"><input v-model="IncentivizeTreasureQuestItems" type="checkbox" asp-for="Flags.IncentivizeTreasureQuestItems" /> <label asp-for="Flags.IncentivizeTreasureQuestItems">Treasure Quest Items</label></div>
                     <div class="checkbox-cell" v-if="NPCItems" title="Bridge, Lute, Ship, Rod, Canoe, Cube, Bottle, Oxyale"><input v-model="IncentivizeFreeNPCItems" type="checkbox" asp-for="Flags.IncentivizeFreeNPCItems" /> <label asp-for="Flags.IncentivizeFreeNPCItems">NPC Items</label></div>
@@ -101,16 +101,10 @@
         <div class="section tab-pane" id="map">
             <div class="col-xs-12 col-sm-4">
                 <div class="checkbox-cell"><input v-model="OrdealsPillars" type="checkbox" asp-for="Flags.OrdealsPillars" /> <label asp-for="Flags.OrdealsPillars">Castle Ordeals Pillars</label></div>
+                <div class="checkbox-cell"></div>
                 <div class="checkbox-cell"><input v-model="TitansTrove" type="checkbox" asp-for="Flags.TitansTrove" /> <label asp-for="Flags.TitansTrove">Titan's Trove</label></div>
                 <div class="checkbox-cell"></div>
-                <div class="checkbox-cell"><input v-model="MapOpenProgression" type="checkbox" asp-for="Flags.MapOpenProgression" /> <label asp-for="Flags.MapOpenProgression">Open Progression</label></div>
-            </div>
-            <div class="col-xs-12 col-sm-6">
-                <div class="checkbox-cell"><input v-model="MapCanalBridge" type="checkbox" asp-for="Flags.MapCanalBridge" /> <label asp-for="Flags.MapCanalBridge">Bridge Replaces Canal</label></div>
-            </div>
-            <div class="col-xs-12 col-sm-6" v-if="NPCItems && !(MapCanalBridge || (MapFreeBridge && MapOpenProgression))">
-                NOTE: If NPC item shuffle is turned on, a mountain will prevent walking across the canal and getting softlocked. The mountain will be removed if you select other options to prevent soft locks: 
-                either "Bridge Replaces Canal" or the combination of "Open Progression" and "Free Bridge".
+                <div class="checkbox-cell"><input v-model="MapOpenProgression" type="checkbox" asp-for="Flags.MapOpenProgression" /> <label asp-for="Flags.MapOpenProgression">Open Progression</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.0.0</a>)</small></div>
             </div>
         </div>
 		<div class="section tab-pane" id="scale">
@@ -155,9 +149,9 @@
 				<div class="checkbox-cell"><input v-model="BuyTen" type="checkbox" asp-for="Flags.BuyTen" /> <label asp-for="Flags.BuyTen">Buy 10 Items</label></div>
             </div>
             <div class="col-xs-4">
-                <div class="checkbox-cell"><input v-model="FreeAirship" type="checkbox" asp-for="Flags.FreeAirship" /> <label asp-for="Flags.FreeAirship">Free Stargazer</label></div>
+                <div class="checkbox-cell"><input v-model="FreeAirship" type="checkbox" asp-for="Flags.FreeAirship" /> <label asp-for="Flags.FreeAirship">Free Stargazer</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.0.0</a>)</small></div>
                 <div class="checkbox-cell"><input v-model="FreeBridge" type="checkbox" asp-for="Flags.FreeBridge" /> <label asp-for="Flags.FreeBridge">Free Bridge</label></div>
-                <div class="checkbox-cell"><input v-model="EasyMode" type="checkbox" asp-for="Flags.EasyMode" /> <label asp-for="Flags.EasyMode">Easy Mode</label></div>
+                <div class="checkbox-cell"><input v-model="EasyMode" type="checkbox" asp-for="Flags.EasyMode" /> <label asp-for="Flags.EasyMode">Easy Mode</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.0.0</a>)</small></div>
             </div>
 		</div>
 		<div class="section tab-pane" id="bug-fixes">

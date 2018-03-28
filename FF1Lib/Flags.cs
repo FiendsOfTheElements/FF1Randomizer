@@ -78,8 +78,6 @@ namespace FF1Lib
 		public bool Floors { get; set; } // Planned x.x feature - interior floors shuffle
 
 		[FlagString(Character = OVERWORLD_MAP, FlagBit = 1)]
-		public bool MapCanalBridge { get; set; }
-		[FlagString(Character = OVERWORLD_MAP, FlagBit = 2)]
 		public bool MapOpenProgression { get; set; }
 		
 		[FlagString(Character = INCENTIVES_MAIN, FlagBit = 1)]
@@ -203,8 +201,9 @@ namespace FF1Lib
 		public bool PaletteSwap { get; set; }
 		public bool TeamSteak { get; set; }
 		public MusicShuffle Music { get; set; }
-				
-		
+
+
+		public bool MapCanalBridge => NPCItems || NPCFetchItems;
 		public bool MapOnracDock => MapOpenProgression;
 		public bool MapMirageDock => MapOpenProgression;
 		public bool MapConeriaDwarves => MapOpenProgression;

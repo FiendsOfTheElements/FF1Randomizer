@@ -69,7 +69,6 @@ namespace FF1RandomizerOnline.Controllers
 					CrownlessOrdeals = true,
 					
 					MapOpenProgression = true,
-					MapCanalBridge = true,
 					
 					IncentivizeTreasureQuestItems = true,
 					IncentivizeFreeNPCItems = true,

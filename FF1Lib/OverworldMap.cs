@@ -69,14 +69,6 @@ namespace FF1Lib
 				}
 			}
 			
-			var softlockPrevented1 = !flags.NPCItems;
-			var softlockPrevented2 = flags.MapCanalBridge;
-			var softlockPrevented3 = flags.FreeBridge && flags.MapConeriaDwarves && flags.MapVolcanoIceRiver;
-			var isCanalSoftlockPrevented = softlockPrevented1 || softlockPrevented2 || softlockPrevented3;
-			if (!isCanalSoftlockPrevented)
-			{
-				MapEditsToApply.Add(CanalSoftLockMountain);
-			}
 			if (flags.TitansTrove)
 			{
 				mapLocationRequirements[MapLocation.TitansTunnelWest] = new List<MapChange> {
