@@ -249,6 +249,11 @@ namespace FF1Lib
 						  .ToList();
 			if (flags.CrownlessOrdeals)
 			{
+				forcedItemPlacements =
+					forcedItemPlacements
+						.Select(x => ((x as TreasureChest)?.AccessRequirement.HasFlag(AccessRequirement.Crown) ?? false)
+								? new TreasureChest(x, x.Item, x.AccessRequirement & ~AccessRequirement.Crown)
+								: x).ToList();
 				itemLocationPool =
 					itemLocationPool
 						.Select(x => ((x as TreasureChest)?.AccessRequirement.HasFlag(AccessRequirement.Crown) ?? false)
@@ -262,6 +267,11 @@ namespace FF1Lib
 			}
 			if (flags.EarlySage)
 			{
+				forcedItemPlacements =
+						forcedItemPlacements
+							.Select(x => x.Address == ItemLocations.CanoeSage.Address
+									? new MapObject(ObjectId.CanoeSage, MapLocation.CresentLake, x.Item)
+									: x).ToList();
 				itemLocationPool =
 						itemLocationPool
 							.Select(x => x.Address == ItemLocations.CanoeSage.Address
@@ -275,6 +285,11 @@ namespace FF1Lib
 			}
 			if (flags.EarlySarda)
 			{
+				forcedItemPlacements =
+					forcedItemPlacements
+						.Select(x => x.Address == ItemLocations.Sarda.Address
+								? new MapObject(ObjectId.Sarda, MapLocation.SardasCave, x.Item)
+								: x).ToList();
 				itemLocationPool =
 					itemLocationPool
 						.Select(x => x.Address == ItemLocations.Sarda.Address
