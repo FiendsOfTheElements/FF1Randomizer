@@ -113,9 +113,9 @@ namespace FF1Lib
 				shopItemLocation = ShuffleShops(rng, flags.EnemyStatusAttacks);
 			}
 
-			if (flags.Treasures || flags.NPCItems)
+			if (flags.Treasures || flags.NPCItems || flags.NPCFetchItems)
 			{
-				var incentivesData = new IncentiveData(flags, map.MapLocationRequirements);
+				var incentivesData = new IncentiveData(rng, flags, map.MapLocationRequirements);
 				ShuffleTreasures(rng, flags, incentivesData, shopItemLocation, map.MapLocationRequirements);
 			}
 
@@ -149,12 +149,12 @@ namespace FF1Lib
 				ShuffleEnemyStatusAttacks(rng);
 			}
 
-			if (flags.Ordeals)
+			if (flags.OrdealsPillars)
 			{
 				ShuffleOrdeals(rng);
 			}
 
-			if (flags.EarlyOrdeals)
+			if (flags.CrownlessOrdeals)
 			{
 				EnableEarlyOrdeals();
 			}
@@ -169,11 +169,16 @@ namespace FF1Lib
 				EnableEarlySage();
 			}
 			
-			if (flags.MapFreeBridge)
+			if (flags.FreeBridge)
 			{
 				EnableFreeBridge();
 			}
 
+			if (flags.FreeAirship)
+			{
+				EnableFreeAirship();
+			}
+			
 			if (flags.NoPartyShuffle)
 			{
 				DisablePartyShuffle();
@@ -249,7 +254,10 @@ namespace FF1Lib
 				PartyRandomize(rng, flags.ForcedPartyMembers);
 			}
 
-			EnableCanalBridge();
+			if (flags.MapCanalBridge)
+			{
+				EnableCanalBridge();
+			}
 
 			// We have to do "fun" stuff last because it alters the RNG state.
 			RollCredits(rng);

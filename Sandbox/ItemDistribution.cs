@@ -21,30 +21,30 @@ namespace Sandbox
 				MapLocation.Gaia,
 				MapLocation.Caravan
 			};
-		public static void RunStats(MT19337 rng, ITreasureShuffleFlags flags, IncentiveData incentivesData)
+		public static void RunStats(MT19337 rng, 
+									IItemPlacementFlags flags, 
+									IncentiveData incentivesData, 
+									ItemShopSlot caravanItemLocation,
+									Dictionary<MapLocation, List<MapChange>> mapLocationRequirements)
 		{
-			var forcedItems = ItemLocations.AllOtherItemLocations.ToList();
-			if (!flags.NPCItems)
-			{
-				forcedItems = ItemLocations.AllNonTreasureItemLocations.ToList();
-			}
-
 			var placedItems = new List<IRewardSource>();
-			var treasurePool = ItemLocations.AllTreasures.Where(x => !x.IsUnused).Select(x => x.Item).ToList();
+			var treasurePool = ItemLocations.AllTreasures.Where(x => !x.IsUnused).Select(x => x.Item)
+								.Concat(ItemLists.AllNonTreasureChestItems).ToList();
 			var requirementChecks = ItemLists.AllQuestItems.ToDictionary(x => x, x => 0);
 			requirementChecks[Item.Ribbon] = 0;
 			var requirementsToCheck = new List<Item> {
 				Item.Crown, Item.Crystal, Item.Herb, Item.Tnt,
-				Item.Adamant, Item.Slab, Item.Ruby, Item.Bottle, Item.Canal
+				Item.Adamant, Item.Slab, Item.Ruby, Item.Bottle, 
+				Item.Floater, Item.Ship, Item.Bridge, Item.Canal
 			};
-			const int maxIterations = 10000;
+			const int maxIterations = 255;
 			var forcedIceCount = 0;
 			var itemPlacementStats = ItemLists.AllQuestItems.ToDictionary(x => x, x => new List<int>());
 			itemPlacementStats[Item.Ribbon] = new List<int>();
 			var itemPlacementZones = ItemLists.AllQuestItems.ToDictionary(x => x, x => new List<string>());
 			itemPlacementZones[Item.Ribbon] = new List<string>();
-			var mapLocationRequirements = ItemLocations.MapLocationRequirements.ToDictionary(x => x.Key, x => x.Value.ToList());
 			long iterations = 0;
+			var timeElapsed = new Stopwatch();
 			while (iterations < maxIterations)
 			{
 				iterations++;
@@ -54,12 +54,14 @@ namespace Sandbox
 													$"{Enum.GetName(typeof(MapLocation), shopTownSelected)}Shop",
 													shopTownSelected,
 													Item.Bottle);
+				timeElapsed.Start();
 				placedItems = ItemPlacement.PlaceSaneItems(rng,
 														   flags,
 														   incentivesData,
 														   treasurePool,
 														   itemShopItem,
 														   mapLocationRequirements);
+				timeElapsed.Stop();
 
 				var outputIndexes = placedItems.ToLookup(x => x.Item, x => x);
 				foreach (Item item in itemPlacementStats.Keys)
@@ -93,15 +95,17 @@ namespace Sandbox
 
 				foreach (Item item in requirementsToCheck)
 				{
-					if (!ItemPlacement.CheckSanity(placedItems.Where(x => x.Item != item).ToList(), flags, mapLocationRequirements))
+					if (!ItemPlacement.CheckSanity(placedItems.Where(x => x.Item != item).ToList(), mapLocationRequirements, true))
 						requirementChecks[item]++;
 				}
+				
 			}
 
 			if (iterations > 10)
 			{
 				Debug.WriteLine(PrintStats(maxIterations, itemPlacementStats, itemPlacementZones, requirementChecks));
 				Debug.WriteLine($"Forced Early Ice Cave for Ship: {forcedIceCount} out of {maxIterations}");
+				Debug.WriteLine($"Time per iteration: {1.0 * timeElapsed.ElapsedMilliseconds / iterations}");
 			}
 		}
 
@@ -128,18 +132,23 @@ namespace Sandbox
 				}
 				sb.Append("\n");
 			}
-			foreach (var zoneName in Enum.GetNames(typeof(MapLocation)))
+			sb.Append("\n");
+			foreach (MapLocation zone in Enum.GetValues(typeof(MapLocation)))
 			{
+				var zoneName = Enum.GetName(typeof(MapLocation), zone);
+				var locationCount = ItemLocations.AllQuestItemLocations.Count(x => x.Address < 0x80000 && x.MapLocation == zone);
+				if (locationCount <= 0) continue;
 				sb.Append($"{zoneName}" +
 						  $"{string.Join("", Enumerable.Repeat(" ", Math.Max(1, 17 - zoneName.Length)))},");
 				foreach (var itemPlacements in incentiveZones.Values)
 				{
-					var percentage = $"   {100.0 * itemPlacements.Count(x => x == zoneName) / maxIterations:g2}";
+					var percentage = $"   {100.0 * (itemPlacements.Count(x => x == zoneName) / locationCount) / maxIterations:g2}";
 					percentage = $"{string.Join("", Enumerable.Repeat(" ", Math.Max(1, 9 - percentage.Length)))}{percentage},";
 					sb.Append(percentage);
 				}
 				sb.Append("\n");
 			}
+			sb.Append("\n");
 			sb.Append($"Required         ,");
 			foreach (var requiredCount in requirements.Values)
 			{
@@ -147,6 +156,7 @@ namespace Sandbox
 				percentage = $"{string.Join("", Enumerable.Repeat(" ", Math.Max(1, 9 - percentage.Length)))}{percentage},";
 				sb.Append(percentage);
 			}
+			sb.Append("\n");
 			sb.Append("\n");
 			return sb.ToString();
 		}

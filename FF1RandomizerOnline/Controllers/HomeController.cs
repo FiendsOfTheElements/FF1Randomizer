@@ -34,6 +34,11 @@ namespace FF1RandomizerOnline.Controllers
 		{
 			return View();
 		}
+		
+		public IActionResult WhatsNew()
+		{
+			return View();
+		}
 
 		[HttpGet]
 		public IActionResult Randomize()
@@ -44,72 +49,63 @@ namespace FF1RandomizerOnline.Controllers
 				Flags = new Flags {
 					Treasures = true,
 					NPCItems = true,
+					IncentivizeFreeNPCs = true,
+					NPCFetchItems = false,
+					IncentivizeFetchNPCs = true,
+					
+					Shops = true,
+					MagicShops = false,
+					MagicLevels = true,
+					MagicPermissions = false,
+					
+					Rng = true,
+					
+					EnemyScripts = true,
+					EnemySkillsSpells = true,
+					EnemyStatusAttacks = true,
 
-					IncentivizeKingConeria = true,
-					IncentivizePrincess = true,
-					IncentivizeMatoya = false,
-					IncentivizeBikke = true,
-					IncentivizeElfPrince = false,
-					IncentivizeAstos = true,
-					IncentivizeNerrick = true,
-					IncentivizeSmith = false,
-					IncentivizeSarda = true,
-					IncentivizeCanoeSage = true,
-					IncentivizeCubeBot = true,
-					IncentivizeFairy = false,
-					IncentivizeLefein = true,
-					IncentivizeCaravan = true,
+					OrdealsPillars = true,
+					TitansTrove = true,
+					CrownlessOrdeals = true,
+					
+					MapOpenProgression = true,
+					
+					IncentivizeTreasureQuestItems = true,
+					IncentivizeFreeNPCItems = true,
+					IncentivizeMainFetchItems = true,
+					IncentivizeOtherFetchNPCItems = false,
+					
 					IncentivizeMarsh = true,
+					IncentivizeMarshKeyLocked = false,
 					IncentivizeVolcano = true,
 					IncentivizeConeria = false,
 					IncentivizeEarth = true,
 					IncentivizeIceCave = true,
 					IncentivizeOrdeals = true,
 					IncentivizeSeaShrine = true,
+					IncentivizeSkyPalace = false,
 
-					IncentivizeBridge = false,
-					IncentivizeLute = true,
-					IncentivizeShip = false,
-					IncentivizeCrown = true,
-					IncentivizeCrystal = false,
-					IncentivizeHerb = false,
-					IncentivizeKey = true,
-					IncentivizeTnt = true,
-					IncentivizeCanal = false,
-					IncentivizeRuby = true,
-					IncentivizeRod = true,
-					IncentivizeCanoe = true,
-					IncentivizeFloater = true,
-					IncentivizeTail = true,
-					IncentivizeBottle = false,
-					IncentivizeOxyale = true,
-					IncentivizeSlab = true,
-					IncentivizeChime = true,
-					IncentivizeCube = true,
-					IncentivizeAdamant = false,
-					IncentivizeXcalber = false,
 					IncentivizeMasamune = true,
+					IncentivizeOpal = false,
 					IncentivizeRibbon = false,
 					IncentivizeRibbon2 = false,
-					IncentivizePowerGauntlet = true,
-					IncentivizeWhiteShirt = true,
-					IncentivizeBlackShirt = false,
-					IncentivizeOpal = false,
 					Incentivize65K = false,
 					IncentivizeBad = false,
 
-					Shops = true,
-					MagicShops = false,
-					MagicLevels = true,
-					MagicPermissions = false,
-					Rng = true,
-					EnemyScripts = true,
-					EnemySkillsSpells = true,
-					EnemyStatusAttacks = true,
+					IncentivizeDefCastArmor = true,
+					IncentivizeOffCastArmor = false,
+					IncentivizeOtherCastArmor = true,
+					IncentivizeDefCastWeapon = false,
+					IncentivizeOffCastWeapon = false,
+					IncentivizeOtherCastWeapon = false,
 
 					EarlySarda = true,
 					EarlySage = true,
-					EarlyOrdeals = true,
+					
+					FreeBridge = false,
+					FreeAirship = false,
+					EasyMode = false,
+					
 					NoPartyShuffle = true,
 					SpeedHacks = true,
 					IdentifyTreasures = true,
@@ -122,26 +118,17 @@ namespace FF1RandomizerOnline.Controllers
 					SpellBugs = true,
 					EnemyStatusAttackBug = true,
 
-					FunEnemyNames = true,
-					PaletteSwap = true,
-					TeamSteak = true,
-					ModernBattlefield = true,
-					Music = MusicShuffle.None,
-
 					ForcedPartyMembers = 1,
 					PriceScaleFactor = 3.0,
 					EnemyScaleFactor = 1.5,
 					ExpMultiplier = 3.0,
 					ExpBonus = 100,
-					EasyMode = false,
 
-					Ordeals = true,
-					TitansTrove = true,
-					MapNorthernDocks = false,
-					MapFreeBridge = false,
-					MapConeriaDwarves = true,
-					MapVolcanoIceRiver = false,
-					MapCanalBridge = true
+					FunEnemyNames = true,
+					PaletteSwap = true,
+					TeamSteak = true,
+					ModernBattlefield = true,
+					Music = MusicShuffle.None
 				}
 			};
 			vm.FlagsInput = vm.Flags.GetString();

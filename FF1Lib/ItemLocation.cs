@@ -107,7 +107,7 @@ namespace FF1Lib
         private readonly ObjectId _requiredGameEventFlag;
         private readonly Item _requiredItemTrade;
         private readonly bool _useVanillaRoutineAddress;
-
+        
         public MapLocation SecondLocation { get; protected set; } = MapLocation.StartingLocation;
 
         public MapObject(ObjectId objectId, MapLocation mapLocation, Item item,

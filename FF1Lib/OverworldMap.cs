@@ -21,12 +21,16 @@ namespace FF1Lib
 			_rom = rom;
 			var mapLocationRequirements = ItemLocations.MapLocationRequirements.ToDictionary(x => x.Key, x => x.Value.ToList());
 
-			if (flags.MapNorthernDocks)
+			if (flags.MapOnracDock)
 			{
-				MapEditsToApply.Add(NorthernDocks);
+				MapEditsToApply.Add(OnracDock);
 				mapLocationRequirements[MapLocation.Onrac].Add(MapChange.Ship | MapChange.Canal);
 				mapLocationRequirements[MapLocation.Caravan].Add(MapChange.Ship | MapChange.Canal | MapChange.Canoe);
 				mapLocationRequirements[MapLocation.Waterfall].Add(MapChange.Ship | MapChange.Canal | MapChange.Canoe);
+			}
+			if (flags.MapMirageDock)
+			{
+				MapEditsToApply.Add(MirageDock);
 				mapLocationRequirements[MapLocation.MirageTower].Add(MapChange.Ship | MapChange.Canal | MapChange.Chime);
 			}
 			if (flags.MapVolcanoIceRiver)
@@ -38,6 +42,7 @@ namespace FF1Lib
 				mapLocationRequirements[MapLocation.ElflandCastle].Add(MapChange.Bridge | MapChange.Canoe);
 				mapLocationRequirements[MapLocation.NorthwestCastle].Add(MapChange.Bridge | MapChange.Canoe);
 				mapLocationRequirements[MapLocation.MarshCave].Add(MapChange.Bridge | MapChange.Canoe);
+				mapLocationRequirements[MapLocation.AirshipLocation].Add(MapChange.Bridge | MapChange.Canoe);
 				if(flags.MapCanalBridge)
 					mapLocationRequirements[MapLocation.DwarfCave].Add(MapChange.Bridge | MapChange.Canoe);
 			}
@@ -53,6 +58,7 @@ namespace FF1Lib
 					mapLocationRequirements[MapLocation.ElflandCastle].Add(MapChange.Canoe);
 					mapLocationRequirements[MapLocation.NorthwestCastle].Add(MapChange.Canoe);
 					mapLocationRequirements[MapLocation.MarshCave].Add(MapChange.Canoe);
+					mapLocationRequirements[MapLocation.AirshipLocation].Add(MapChange.Canoe);
 					if (flags.MapVolcanoIceRiver)
 					{
 						mapLocationRequirements[MapLocation.IceCave].Add(MapChange.Canoe);
@@ -63,14 +69,6 @@ namespace FF1Lib
 				}
 			}
 			
-			var softlockPrevented1 = !flags.NPCItems;
-			var softlockPrevented2 = flags.MapCanalBridge;
-			var softlockPrevented3 = flags.MapFreeBridge && flags.MapConeriaDwarves && flags.MapVolcanoIceRiver;
-			var isCanalSoftlockPrevented = softlockPrevented1 || softlockPrevented2 || softlockPrevented3;
-			if (!isCanalSoftlockPrevented)
-			{
-				MapEditsToApply.Add(CanalSoftLockMountain);
-			}
 			if (flags.TitansTrove)
 			{
 				mapLocationRequirements[MapLocation.TitansTunnelWest] = new List<MapChange> {
@@ -97,7 +95,7 @@ namespace FF1Lib
 		public const byte DockBottomMid = 0x78;
 		public const byte DockRightMid = 0x1F;
 
-		public static List<MapEdit> NorthernDocks =
+		public static List<MapEdit> OnracDock =
 			new List<MapEdit>
 			{
 				new MapEdit{X = 50, Y = 78, Tile = ForestBottomRight},
@@ -106,7 +104,11 @@ namespace FF1Lib
 				new MapEdit{X = 51, Y = 77, Tile = ForestBottomMid},
 				new MapEdit{X = 52, Y = 77, Tile = ForestBottomMid},
 				new MapEdit{X = 51, Y = 79, Tile = OceanTile},
-				new MapEdit{X = 52, Y = 79, Tile = OceanTile},
+				new MapEdit{X = 52, Y = 79, Tile = OceanTile}
+			};
+		public static List<MapEdit> MirageDock =
+			new List<MapEdit>
+			{
 				new MapEdit{X = 208, Y = 90, Tile = DockBottomMid},
 				new MapEdit{X = 209, Y = 90, Tile = DockBottomMid}
 			};

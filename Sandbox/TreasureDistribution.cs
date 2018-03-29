@@ -24,11 +24,11 @@ namespace Sandbox
 			    EnemyScripts = false,
 			    EnemySkillsSpells = false,
 			    EnemyStatusAttacks = false,
-			    Ordeals = false,
+			    OrdealsPillars = false,
 
 			    EarlySarda = true,
 			    EarlySage = true,
-			    EarlyOrdeals = true,
+			    CrownlessOrdeals = true,
 			    NoPartyShuffle = false,
 			    SpeedHacks = false,
 			    IdentifyTreasures = false,
