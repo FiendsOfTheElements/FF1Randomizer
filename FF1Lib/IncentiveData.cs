@@ -221,11 +221,11 @@ namespace FF1Lib
 			}
 			if (flags.IncentivizeSkyPalace)
 			{
-				incentiveLocationPool.Add(ItemLocations.SkyPalace10);
+				incentiveLocationPool.Add(ItemLocations.SkyPalaceMajor);
 			}
 			if (flags.IncentivizeSeaShrine)
 			{
-				incentiveLocationPool.Add(ItemLocations.SeaShrineLocked);
+				incentiveLocationPool.Add(ItemLocations.SeaShrineMajor);
 			}
 			if (flags.IncentivizeConeria)
 			{
