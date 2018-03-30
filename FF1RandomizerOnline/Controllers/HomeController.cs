@@ -49,9 +49,7 @@ namespace FF1RandomizerOnline.Controllers
 				Flags = new Flags {
 					Treasures = true,
 					NPCItems = true,
-					IncentivizeFreeNPCs = true,
 					NPCFetchItems = false,
-					IncentivizeFetchNPCs = true,
 					
 					Shops = true,
 					MagicShops = false,
@@ -60,15 +58,17 @@ namespace FF1RandomizerOnline.Controllers
 					
 					Rng = true,
 					
-					EnemyScripts = true,
+					EnemyScripts = false,
 					EnemySkillsSpells = true,
 					EnemyStatusAttacks = true,
 
 					OrdealsPillars = true,
 					TitansTrove = true,
-					CrownlessOrdeals = true,
 					
-					MapOpenProgression = true,
+					MapOpenProgression = false,
+					
+					IncentivizeFreeNPCs = true,
+					IncentivizeFetchNPCs = false,
 					
 					IncentivizeTreasureQuestItems = true,
 					IncentivizeFreeNPCItems = true,
@@ -77,12 +77,12 @@ namespace FF1RandomizerOnline.Controllers
 					
 					IncentivizeMarsh = true,
 					IncentivizeMarshKeyLocked = false,
-					IncentivizeVolcano = true,
-					IncentivizeConeria = false,
+					IncentivizeVolcano = false,
+					IncentivizeConeria = true,
 					IncentivizeEarth = true,
 					IncentivizeIceCave = true,
 					IncentivizeOrdeals = true,
-					IncentivizeSeaShrine = true,
+					IncentivizeSeaShrine = false,
 					IncentivizeSkyPalace = false,
 
 					IncentivizeMasamune = true,
@@ -92,15 +92,16 @@ namespace FF1RandomizerOnline.Controllers
 					Incentivize65K = false,
 					IncentivizeBad = false,
 
-					IncentivizeDefCastArmor = true,
+					IncentivizeDefCastArmor = false,
 					IncentivizeOffCastArmor = false,
-					IncentivizeOtherCastArmor = true,
+					IncentivizeOtherCastArmor = false,
 					IncentivizeDefCastWeapon = false,
 					IncentivizeOffCastWeapon = false,
 					IncentivizeOtherCastWeapon = false,
 
 					EarlySarda = true,
 					EarlySage = true,
+					CrownlessOrdeals = true,
 					
 					FreeBridge = false,
 					FreeAirship = false,
@@ -118,16 +119,16 @@ namespace FF1RandomizerOnline.Controllers
 					SpellBugs = true,
 					EnemyStatusAttackBug = true,
 
-					ForcedPartyMembers = 1,
+					ForcedPartyMembers = 0,
 					PriceScaleFactor = 3.0,
 					EnemyScaleFactor = 1.5,
 					ExpMultiplier = 3.0,
-					ExpBonus = 100,
+					ExpBonus = 300,
 
-					FunEnemyNames = true,
-					PaletteSwap = true,
-					TeamSteak = true,
-					ModernBattlefield = true,
+					FunEnemyNames = false,
+					PaletteSwap = false,
+					TeamSteak = false,
+					ModernBattlefield = false,
 					Music = MusicShuffle.None
 				}
 			};

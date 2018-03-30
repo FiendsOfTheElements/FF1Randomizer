@@ -93,12 +93,12 @@ namespace FF1Lib
 
 		public static readonly IReadOnlyCollection<IRewardSource> AllNPCFreeItemLocations =
 			new List<IRewardSource> {
-			KingConeria, Princess, Bikke, Sarda, CanoeSage, CubeBot, Fairy, CaravanItemShop1
+			KingConeria, Princess, Bikke, Sarda, CanoeSage, CubeBot, CaravanItemShop1
 		};
 
 		public static readonly IReadOnlyCollection<IRewardSource> AllNPCFetchItemLocations =
 			new List<IRewardSource> {
-			Matoya, ElfPrince, Astos, Nerrick, Smith, Lefein
+			Matoya, ElfPrince, Astos, Nerrick, Smith, Fairy, Lefein
 		};
 
 		public static readonly IReadOnlyCollection<IRewardSource> ValidBridgeLocations =
