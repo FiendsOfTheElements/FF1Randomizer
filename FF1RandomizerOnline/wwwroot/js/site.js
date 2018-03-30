@@ -72,7 +72,21 @@ var app = new Vue({
     
         this.flagString = flags;
         document.getElementById("Seed").value = seed;
+    },
+    /* Debug methods as of 2.0, not very maintainable if incentive options change */
+    getCountIncentivizedItems: function() {
+        return this.IncentivizeMasamune + this.IncentivizeOpal + this.IncentivizeRibbon + 
+            this.IncentivizeDefCastArmor + this.IncentivizeOtherCastArmor + this.IncentivizeDefCastWeapon + this.IncentivizeOffCastWeapon + 
+            this.IncentivizeFreeNPCItems * 6 + (this.IncentivizeMainFetchItems && this.NPCFetchItems) * 4 + this.IncentivizeTreasureQuestItems * 3 + 
+            this.IncentivizeOtherFetchNPCItems + (!this.NPCFetchItems || this.IncentivizeFetchNPCs || this.IncentivizeOtherFetchNPCItems) * 5 + 
+            (this.IncentivizeOtherFetchNPCItems || (this.IncentivizeMainFetchItems && this.IncentivizeFetchNPCs)) * 2;
+    },
+    getCountIncentivizedLocations: function() {
+        return this.IncentivizeIceCave + this.IncentivizeOrdeals + this.IncentivizeMarsh + this.IncentivizeEarth + 
+            this.IncentivizeVolcano + this.IncentivizeSeaShrine + this.IncentivizeSkyPalace + this.IncentivizeConeria + 
+            this.IncentivizeMarshKeyLocked + 7 * (this.IncentivizeFreeNPCs * this.NPCItems + this.IncentivizeFetchNPCs * this.NPCFetchItems);
     }
+    /* End Debug Methods */
   },
   computed: computedPropertyArray
 });

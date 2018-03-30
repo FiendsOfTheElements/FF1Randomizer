@@ -209,28 +209,30 @@ namespace FF1Lib
 		public bool MapConeriaDwarves => MapOpenProgression;
 		public bool MapVolcanoIceRiver => MapOpenProgression;
 		
-		public bool IncentivizeCrown => IncentivizeTreasureQuestItems;
-		public bool IncentivizeRuby => IncentivizeTreasureQuestItems;
-		public bool IncentivizeTnt => IncentivizeTreasureQuestItems && (!NPCFetchItems || IncentivizeOtherFetchNPCItems || !IncentivizeMainFetchItems);
 		public bool IncentivizeFloater => IncentivizeTreasureQuestItems;
-		public bool IncentivizeSlab => IncentivizeTreasureQuestItems && (!NPCFetchItems || IncentivizeOtherFetchNPCItems || !IncentivizeMainFetchItems);
 		public bool IncentivizeTail => IncentivizeTreasureQuestItems;
-		public bool IncentivizeAdamant => IncentivizeTreasureQuestItems && (!NPCFetchItems || IncentivizeOtherFetchNPCItems || !IncentivizeMainFetchItems);
+		
+		public bool IncentivizeRuby => IncentivizeTreasureQuestItems && (TitansTrove || IncentivizeOtherFetchNPCItems);
+		public bool IncentivizeCrown => IncentivizeTreasureQuestItems && (!NPCFetchItems || IncentivizeAstos || IncentivizeOtherFetchNPCItems);
+		public bool IncentivizeTnt => IncentivizeTreasureQuestItems && (!NPCFetchItems || IncentivizeNerrick || IncentivizeOtherFetchNPCItems);
+		public bool IncentivizeSlab => IncentivizeTreasureQuestItems && (!NPCFetchItems || IncentivizeLefein || IncentivizeOtherFetchNPCItems);
+		public bool IncentivizeAdamant => IncentivizeTreasureQuestItems && (!NPCFetchItems || IncentivizeSmith || IncentivizeOtherFetchNPCItems);
+		
+		public bool IncentivizeBottle => IncentivizeFreeNPCItems && (!NPCFetchItems || IncentivizeFairy || IncentivizeOtherFetchNPCItems);
 
 		public bool IncentivizeBridge => IncentivizeFreeNPCItems;
 		public bool IncentivizeLute => IncentivizeFreeNPCItems;
 		public bool IncentivizeShip => IncentivizeFreeNPCItems;
 		public bool IncentivizeRod => IncentivizeFreeNPCItems;
 		public bool IncentivizeCanoe => IncentivizeFreeNPCItems;
-		public bool IncentivizeOxyale => IncentivizeFreeNPCItems;
 		public bool IncentivizeCube => IncentivizeFreeNPCItems;
-		public bool IncentivizeBottle => IncentivizeFreeNPCItems;
 		
 		public bool IncentivizeCrystal => IncentivizeOtherFetchNPCItems;
 		public bool IncentivizeHerb => IncentivizeOtherFetchNPCItems;
 		public bool IncentivizeKey => IncentivizeMainFetchItems;
 		public bool IncentivizeCanal => IncentivizeMainFetchItems;
 		public bool IncentivizeChime => IncentivizeMainFetchItems;
+		public bool IncentivizeOxyale => IncentivizeMainFetchItems;
 		public bool IncentivizeXcalber => IncentivizeOtherFetchNPCItems;
 		
 		public bool IncentivizeKingConeria => IncentivizeFreeNPCs;
@@ -239,14 +241,14 @@ namespace FF1Lib
 		public bool IncentivizeSarda => IncentivizeFreeNPCs;
 		public bool IncentivizeCanoeSage => IncentivizeFreeNPCs;
 		public bool IncentivizeCaravan => IncentivizeFreeNPCs;
-		public bool IncentivizeFairy => IncentivizeFreeNPCs;
-
+		public bool IncentivizeCubeBot => IncentivizeFreeNPCs;
+		
+		public bool IncentivizeFairy => IncentivizeFetchNPCs;
 		public bool IncentivizeAstos => IncentivizeFetchNPCs;
 		public bool IncentivizeMatoya => IncentivizeFetchNPCs;
 		public bool IncentivizeElfPrince => IncentivizeFetchNPCs;
 		public bool IncentivizeNerrick => IncentivizeFetchNPCs;
 		public bool IncentivizeLefein => IncentivizeFetchNPCs;
-		public bool IncentivizeCubeBot => IncentivizeFetchNPCs;
 		public bool IncentivizeSmith => IncentivizeFetchNPCs;
 		
 
