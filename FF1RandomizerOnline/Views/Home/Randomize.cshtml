@@ -22,7 +22,15 @@
             </div>
         </div>
 	</div>
-    <div class="col-xs-12">
+    <br/>
+    <div class="row">
+        <div class="col-xs-12">
+            Presets:
+            <a v-on:click.prevent="preset('DACBHFAdYAFADAfPBWoWAA')">League Stage 8 (No NPC Shuffle)</a>,
+            <a v-on:click.prevent="preset('HACBAEAV7FFADBfPBNZoPA')">Beginner</a>,
+            <a v-on:click.prevent="preset('')">Defaults</a>,
+            <a v-on:click.prevent="preset('HADBHHBV!HBVDAfPBPyeKD')">Normal NPC Shuffle</a>
+        </div>
     </div>
 	<ul class="section nav nav-pills">
 		<li class="active"><a href="#shuffle" data-toggle="tab">Shuffle</a></li>

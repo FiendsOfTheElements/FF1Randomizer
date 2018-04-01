@@ -73,6 +73,9 @@ var app = new Vue({
         this.flagString = flags;
         document.getElementById("Seed").value = seed;
     },
+    preset: function(presetString) {
+        this.flagString = presetString.length !== initalFlagString.length ? initalFlagString : presetString;
+    },
     /* Debug methods as of 2.0, not very maintainable if incentive options change */
     getCountIncentivizedItems: function() {
         return this.IncentivizeMasamune + this.IncentivizeOpal + this.IncentivizeRibbon + 
