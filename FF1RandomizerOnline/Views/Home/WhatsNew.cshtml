@@ -19,12 +19,12 @@ options the 'Incentives' tab:
 <ul>
 <li><b>Main NPC Items:</b> This adds Bridge, Lute, Ship, Rod, Canoe, Cube, Bottle
 to the pool of items to be shuffled. The NPCs giving those items could have any 
-other treasure instead. (Excluding Caravan which is limited to items that show 
-up on the Inventory screen)
+other shuffled treasure instead. (Excluding Caravan which is limited to items that 
+show up on the Inventory screen)
 </li>
 <li><b>Fetch Quest Rewards:</b> This adds Crystal, Herb, Key, Canal, Xcalber, Oxyale, 
 and Chime to the pool of items to be shuffled. The NPCs giving those items could have 
-any other treasure instead.
+any other shuffled treasure instead.
 </li>
 </ul>
 </li>
@@ -69,50 +69,43 @@ This more than triples the chance that RUBY is required (but it's still pretty r
 
 <li><h3>Incentives</h3>
 There is a new tab 'Incentives' available if Treasure shuffle is turned on. Of 
-the many new options here, the 6 most important ones are related to NPCs and quest items:
+the many new options here, the 4 most important ones are related to NPCs and quest 
+items. 
 <ul>
 <li><b>Item Locations:</b> These options incentivize locations in the game or groups of NPCs.
 <ul><li><b>Main NPCs:</b> 
 This incentivizes King, Princess, Bikke, Sarda, Sage, Robot, and Carvan Item Shop Slot. 
 Those NPCs will be treated the same as incentivized teasure chests and will prefer 
 to draw an item from the incentivized item pool if possible. Note that the Caravan 
-item will still be shuffled with Shop shuffle too.</li>
+item will still be shuffled by the Shop shuffle too.</li>
 <li><b>Fetch Quest NPCs:</b> 
 This incentivizes Astos, Matoya, Prince, Nerrick, Smith, Fairy, and Lefein. Those 
 NPCs will be treated the same as incentivized teasure chests and will prefer 
 to draw an item from the incentivized item pool if possible. If you want to turn 
-this option on, it's recommend that you turn off the 'Main Fetch Items' option (see 
-below). If you have both this and the 'Main Fetch Items' incentivized it tends to 
+this option on, it's recommend that you leave the 'Fetch Items' option turned off 
+(see below). If you have both this and the 'Fetch Items' incentivized it tends to 
 result in a long fetch quest kind of like the Crown -> Canal chain in the vanilla 
 early game -- except it's random -- so it's just a lot of back and forth to get 
 just 1 item in the end.</li>
 </ul>
 </li>
-<li><b>Quest Items:</b>
+<li><b>Quest Items:</b> In earlier randomizer versions the incentive item pool included
+Required Items, Fetch Items, Tail, Masamune, and Ribbon. However, most of the Required
+Items could not be shuffled and Ruby was not included if Early Sage was turned on.
 <ul>
-<li><b>Treasure Items:</b>
-This includes Crown, TNT, Slab, Adamant, Ruby, Floater, Tail. In v1.6.4 this group 
-plus Masamune and Ribbon was the incentive pool. In 2.0.0, Ruby is removed from the 
-pool if Titan's Trove is turned off. If 'Fetch Quest Rewards' shuffle is turned on 
-then Crown, TNT, Slab, and Adamant incentives are instead controlled by the two 
-'Fetch Items' options below.</li>
-<li><b>Main NPC Items:</b>
-This includes all of the items in the 'Main NPC Items' shuffle group - Bridge, Lute, 
-Ship, Rod, Canoe, Cube, and Bottle. If 'Fetch Quest Rewards' shuffle is turned on 
-then Bottle is instead controlled by the two options below.</li>
-<li><b>Main Fetch Items:</b>
-This includes the items in the 'Fetch Quest Rewards' shuffle group which are 
-typically required (Key, Canal, Oxyale, and Chime). Additionally, Crown, TNT, 
-Bottle, Slab, and Adamant are added to the incentive pool if the 'Fetch Quest NPCs'
-Incentive Location group is turned on.</li>
-<li><b>More Fetch Items:</b>
-This adds Xcalber and the remaining fetch quest items *even if those NPCs are 
-not incentivized* which means they are often not required in NPC shuffle. This 
-includes Crown, Crystal, Herb, TNT, Bottle, Slab, and Adamant. This option is really 
-only for those players that want all of the quest items or Xcalber to be incentivized. 
-You've been warned now - Use this option at your own risk.</li>
+<li><b>Required Items:</b>
+This includes Bridge, Lute, Ship, Key, Canal, Rod, Canoe, Floater, Cube, Oxyale, 
+Chime. If 'Fetch Quest Rewards' shuffle is turned off then Crown, TNT, and Slab 
+are used as incentives in place of the items the ultimately lead to: Key, Canal, 
+and Chime.</li>
+<li><b>Fetch Items:</b>
+This includes Crown, Crystal, Herb, TNT, Ruby, Bottle, Slab, Adamant even if they
+are not required.</li>
 </ul>
 </li>
+<li>Keep in mind that each incentive option with a group of items or locations 
+will list all of the items or locations incentivized but if some of those items 
+or locations are not shuffled then it will be ignored by the randomizer.</li>
 </ul>
 </li>
 </ul>
@@ -196,7 +189,7 @@ to get back to your Ship.
 <li>
 <b>I've played a few NPC shuffle seeds and it feels like I have to check every 
 treasure chest in the game. Is my luck terrible?</b>
-<br/>Make sure that you have the 'Main NPC Items' option checked on the Incentives 
+<br/>Make sure that you have the 'Required Items' option checked on the Incentives 
 tab and try to make sure that you don't have a lot more Items incentivized than 
 there are Item Locations to put them. Any incentivized item that doens't make it 
 into an incentivized location ends up in a random chest somewhere. If 4 or more 

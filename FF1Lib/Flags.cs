@@ -85,13 +85,11 @@ namespace FF1Lib
 		[FlagString(Character = INCENTIVES_MAIN, FlagBit = 2)]
 		public bool IncentivizeFetchNPCs { get; set; }
 		[FlagString(Character = INCENTIVES_MAIN, FlagBit = 4)]
-		public bool IncentivizeTreasureQuestItems { get; set; }
+		public bool IncentivizeRequiredItems { get; set; }
 		[FlagString(Character = INCENTIVES_MAIN, FlagBit = 8)]
-		public bool IncentivizeFreeNPCItems { get; set; }
+		public bool IncentivizeFetchItems { get; set; }
 		[FlagString(Character = INCENTIVES_MAIN, FlagBit = 16)]
-		public bool IncentivizeMainFetchItems { get; set; }
-		[FlagString(Character = INCENTIVES_MAIN, FlagBit = 32)]
-		public bool IncentivizeOtherFetchNPCItems { get; set; }
+		public bool IncentivizeTail { get; set; }
 		
 		[FlagString(Character = INCENTIVES_CHESTS1, FlagBit = 1)]
 		public bool IncentivizeMarsh { get; set; }
@@ -209,31 +207,28 @@ namespace FF1Lib
 		public bool MapConeriaDwarves => MapOpenProgression;
 		public bool MapVolcanoIceRiver => MapOpenProgression;
 		
-		public bool IncentivizeFloater => IncentivizeTreasureQuestItems;
-		public bool IncentivizeTail => IncentivizeTreasureQuestItems;
-		
-		public bool IncentivizeRuby => IncentivizeTreasureQuestItems && (TitansTrove || IncentivizeOtherFetchNPCItems);
-		public bool IncentivizeCrown => IncentivizeTreasureQuestItems && (!NPCFetchItems || IncentivizeAstos || IncentivizeOtherFetchNPCItems);
-		public bool IncentivizeTnt => IncentivizeTreasureQuestItems && (!NPCFetchItems || IncentivizeNerrick || IncentivizeOtherFetchNPCItems);
-		public bool IncentivizeSlab => IncentivizeTreasureQuestItems && (!NPCFetchItems || IncentivizeLefein || IncentivizeOtherFetchNPCItems);
-		public bool IncentivizeAdamant => IncentivizeTreasureQuestItems && (!NPCFetchItems || IncentivizeSmith || IncentivizeOtherFetchNPCItems);
-		
-		public bool IncentivizeBottle => IncentivizeFreeNPCItems && (!NPCFetchItems || IncentivizeFairy || IncentivizeOtherFetchNPCItems);
+		public bool IncentivizeAdamant => IncentivizeFetchItems;
+		public bool IncentivizeRuby => (IncentivizeRequiredItems && !EarlySage && !NPCItems) || IncentivizeFetchItems;
+		public bool IncentivizeCrown => (IncentivizeRequiredItems && !NPCFetchItems) || IncentivizeFetchItems;
+		public bool IncentivizeTnt => (IncentivizeRequiredItems && !NPCFetchItems) || IncentivizeFetchItems;
+		public bool IncentivizeSlab => (IncentivizeRequiredItems && !NPCFetchItems) || IncentivizeFetchItems;
+		public bool IncentivizeBottle => (IncentivizeRequiredItems && !NPCFetchItems) || IncentivizeFetchItems;
 
-		public bool IncentivizeBridge => IncentivizeFreeNPCItems;
-		public bool IncentivizeLute => IncentivizeFreeNPCItems;
-		public bool IncentivizeShip => IncentivizeFreeNPCItems;
-		public bool IncentivizeRod => IncentivizeFreeNPCItems;
-		public bool IncentivizeCanoe => IncentivizeFreeNPCItems;
-		public bool IncentivizeCube => IncentivizeFreeNPCItems;
+		public bool IncentivizeFloater => IncentivizeRequiredItems;
+		public bool IncentivizeBridge => IncentivizeRequiredItems;
+		public bool IncentivizeLute => IncentivizeRequiredItems;
+		public bool IncentivizeShip => IncentivizeRequiredItems;
+		public bool IncentivizeRod => IncentivizeRequiredItems;
+		public bool IncentivizeCanoe => IncentivizeRequiredItems;
+		public bool IncentivizeCube => IncentivizeRequiredItems;
 		
-		public bool IncentivizeCrystal => IncentivizeOtherFetchNPCItems;
-		public bool IncentivizeHerb => IncentivizeOtherFetchNPCItems;
-		public bool IncentivizeKey => IncentivizeMainFetchItems;
-		public bool IncentivizeCanal => IncentivizeMainFetchItems;
-		public bool IncentivizeChime => IncentivizeMainFetchItems;
-		public bool IncentivizeOxyale => IncentivizeMainFetchItems;
-		public bool IncentivizeXcalber => IncentivizeOtherFetchNPCItems;
+		public bool IncentivizeCrystal => IncentivizeFetchItems;
+		public bool IncentivizeHerb => IncentivizeFetchItems;
+		public bool IncentivizeKey => IncentivizeRequiredItems;
+		public bool IncentivizeCanal => IncentivizeRequiredItems;
+		public bool IncentivizeChime => IncentivizeRequiredItems;
+		public bool IncentivizeOxyale => IncentivizeRequiredItems;
+		public bool IncentivizeXcalber => false;
 		
 		public bool IncentivizeKingConeria => IncentivizeFreeNPCs;
 		public bool IncentivizePrincess => IncentivizeFreeNPCs;

@@ -70,10 +70,8 @@ namespace FF1RandomizerOnline.Controllers
 					IncentivizeFreeNPCs = true,
 					IncentivizeFetchNPCs = false,
 					
-					IncentivizeTreasureQuestItems = true,
-					IncentivizeFreeNPCItems = true,
-					IncentivizeMainFetchItems = true,
-					IncentivizeOtherFetchNPCItems = false,
+					IncentivizeRequiredItems = true,
+					IncentivizeFetchItems = false,
 					
 					IncentivizeMarsh = true,
 					IncentivizeMarshKeyLocked = false,
@@ -85,6 +83,7 @@ namespace FF1RandomizerOnline.Controllers
 					IncentivizeSeaShrine = false,
 					IncentivizeSkyPalace = false,
 
+					IncentivizeTail = true,
 					IncentivizeMasamune = true,
 					IncentivizeOpal = false,
 					IncentivizeRibbon = false,
