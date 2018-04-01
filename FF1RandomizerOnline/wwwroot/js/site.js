@@ -76,10 +76,13 @@ var app = new Vue({
     /* Debug methods as of 2.0, not very maintainable if incentive options change */
     getCountIncentivizedItems: function() {
         return this.IncentivizeMasamune + this.IncentivizeOpal + this.IncentivizeRibbon + 
-            this.IncentivizeDefCastArmor + this.IncentivizeOtherCastArmor + this.IncentivizeDefCastWeapon + this.IncentivizeOffCastWeapon + 
-            this.IncentivizeFreeNPCItems * 6 + (this.IncentivizeMainFetchItems && this.NPCFetchItems) * 4 + this.IncentivizeTreasureQuestItems * 3 + 
-            this.IncentivizeOtherFetchNPCItems + (!this.NPCFetchItems || this.IncentivizeFetchNPCs || this.IncentivizeOtherFetchNPCItems) * 5 + 
-            (this.IncentivizeOtherFetchNPCItems || (this.IncentivizeMainFetchItems && this.IncentivizeFetchNPCs)) * 2;
+            this.IncentivizeDefCastArmor + this.IncentivizeOtherCastArmor + 
+            this.IncentivizeDefCastWeapon + this.IncentivizeOffCastWeapon + 
+            this.IncentivizeFetchItems * 2 + this.IncentivizeRequiredItems * 4 + this.IncentivizeNonRequiredItems + 
+            (this.IncentivizeRequiredItems && this.IncentivizeFreeNPCs) * 7 + 
+            (!this.NPCFetchItems && this.IncentivizeNonRequiredItems) * 2 +
+            ((!this.IncentivizeRequiredItems || this.NPCFetchItems) && IncentivizeFetchItems) * 3 +
+            ((!this.IncentivizeNonRequiredItems || this.NPCFetchItems)  && IncentivizeFetchItems) * 2;
     },
     getCountIncentivizedLocations: function() {
         return this.IncentivizeIceCave + this.IncentivizeOrdeals + this.IncentivizeMarsh + this.IncentivizeEarth + 

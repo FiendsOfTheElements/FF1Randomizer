@@ -22,6 +22,8 @@
             </div>
         </div>
 	</div>
+    <div class="col-xs-12">
+    </div>
 	<ul class="section nav nav-pills">
 		<li class="active"><a href="#shuffle" data-toggle="tab">Shuffle</a></li>
         <li><a href="#incentives" data-toggle="tab" v-if="Treasures">Incentives</a></li>
@@ -31,68 +33,71 @@
 		<li><a href="#bug-fixes" data-toggle="tab">Bug Fixes</a></li>
 		<li><a href="#fun" data-toggle="tab">Fun %</a></li>
 	</ul>
-	<div class="tab-content clearfix" style="height: 400px">
+	<div class="tab-content clearfix" style="height: 500px">
 		<div class="section tab-pane active" id="shuffle">
 			<div class="col-xs-4">
-				<div class="checkbox-cell" title="If unchecked, forces vanilla Treasure Chests"><input v-model="Treasures" type="checkbox" asp-for="Flags.Treasures" /> <label asp-for="Flags.Treasures"></label></div>
-				<div class="checkbox-cell" title="If unchecked, forces vanilla Bridge, Lute, Ship, Rod, Canoe, Cube, Bottle"><input v-model="NPCItems" type="checkbox" asp-for="Flags.NPCItems" /> <label asp-for="Flags.NPCItems">Main NPC Items</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.0.0</a>)</small></div>
+                <div class="checkbox-cell" title="If unchecked, forces vanilla Treasure Chests"><input v-model="Treasures" type="checkbox" asp-for="Flags.Treasures" /> <label asp-for="Flags.Treasures"></label></div>
+                <div class="checkbox-cell" title="If unchecked, forces vanilla Bridge, Lute, Ship, Rod, Canoe, Cube, Bottle"><input v-model="NPCItems" type="checkbox" asp-for="Flags.NPCItems" /> <label asp-for="Flags.NPCItems">Main NPC Items</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.0.0</a>)</small></div>
                 <div class="checkbox-cell" title="If unchecked, forces vanilla Crystal, Herb, Key, Canal, Oxyale, Chime, Xcalber"><input v-model="NPCFetchItems" type="checkbox" asp-for="Flags.NPCFetchItems" /> <label asp-for="Flags.NPCFetchItems">Fetch Quest Rewards</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.0.0</a>)</small></div>
-				<div class="checkbox-cell"></div>
-				<div class="checkbox-cell"><input v-model="Shops" type="checkbox" asp-for="Flags.Shops" /> <label asp-for="Flags.Shops"></label></div>
+                <div class="checkbox-cell"></div>
+                <div class="checkbox-cell"><input v-model="Shops" type="checkbox" asp-for="Flags.Shops" /> <label asp-for="Flags.Shops"></label></div>
 				<div class="checkbox-cell"><input v-model="MagicShops" type="checkbox" asp-for="Flags.MagicShops" /> <label asp-for="Flags.MagicShops">Magic Shops <b v-if="MagicPermissions && MagicShops" title="Can severly limit access to spells" style="color:orange">⚠</b></label></div>
 				<div class="checkbox-cell"><input v-model="MagicLevels" type="checkbox" asp-for="Flags.MagicLevels" /> <label asp-for="Flags.MagicLevels">Magic Levels</label></div>
 				<div class="checkbox-cell" v-if="MagicLevels"><input v-model="MagicPermissions" class="indent" type="checkbox" asp-for="Flags.MagicPermissions" /> <label asp-for="Flags.MagicPermissions">Keep Permissions <b v-if="MagicPermissions && MagicShops" title="Can severly limit access to spells" style="color:orange">⚠</b></label></div>
 			</div>
 			<div class="col-xs-4">
-				<div class="checkbox-cell"><input v-model="EnemyScripts" type="checkbox" asp-for="Flags.EnemyScripts" /> <label asp-for="Flags.EnemyScripts">Enemy Scripts <b v-if="EnemyScripts && !(OpenProgression && NPCItems)" title="Risks 9 Pirates with THUNDER, etc. blocking early progression" style="color:orange">⚠</b></label></div>
-				<div class="checkbox-cell"><input v-model="EnemySkillsSpells" type="checkbox" asp-for="Flags.EnemySkillsSpells" /> <label asp-for="Flags.EnemySkillsSpells">Enemy Skills/Spells</label></div>
+				<div class="checkbox-cell"><input v-model="EnemyScripts" type="checkbox" asp-for="Flags.EnemyScripts" /> <label asp-for="Flags.EnemyScripts">Enemy Scripts <b v-if="EnemyScripts && EnemySkillsSpells && !(OpenProgression && NPCItems)" title="Risks 9 Pirates with THUNDER, etc. blocking early progression" style="color:orange">⚠</b></label></div>
+				<div class="checkbox-cell"><input v-model="EnemySkillsSpells" type="checkbox" asp-for="Flags.EnemySkillsSpells" /> <label asp-for="Flags.EnemySkillsSpells">Enemy Skills/Spells <b v-if="EnemyScripts && EnemySkillsSpells && !(OpenProgression && NPCItems)" title="Risks 9 Pirates with THUNDER, etc. blocking early progression" style="color:orange">⚠</b></label></div>
 				<div class="checkbox-cell"><input v-model="EnemyStatusAttacks" type="checkbox" asp-for="Flags.EnemyStatusAttacks" /> <label asp-for="Flags.EnemyStatusAttacks">Enemy Status Attacks</label></div>
                 <div class="checkbox-cell"></div>
                 <div class="checkbox-cell"><input v-model="Rng" type="checkbox" asp-for="Flags.Rng" /> <label asp-for="Flags.Rng">RNG Table</label><br /></div>
 			</div>
 		</div>
         <div class="section tab-pane col-xs-12" id="incentives" v-if="Treasures">
-            <div class="col-xs-6" style="border-right:1px solid black">
+            <div class="col-xs-4" style="border-right: 1px solid black;">
                 <h4>Item Locations <small>(Mostly <a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.0.0</a>)</small></h4>
-                <div class="col-xs-6">
-                    <div class="checkbox-cell" v-if="NPCItems" title="King, Princess, Bikke, Sarda, Sage, Robot, Caravan"><input v-model="IncentivizeFreeNPCs" type="checkbox" asp-for="Flags.IncentivizeFreeNPCs" /> <label asp-for="Flags.IncentivizeFreeNPCs">Main NPCs</label></div>
-                    <div class="checkbox-cell" v-if="NPCFetchItems" title="Astos, Matoya, Prince, Dwarves, Lefein, Fairy"><input v-model="IncentivizeFetchNPCs" type="checkbox" asp-for="Flags.IncentivizeFetchNPCs" /> <label asp-for="Flags.IncentivizeFetchNPCs">Fetch Quest NPCs <b v-if="IncentivizeFetchNPCs && (IncentivizeMainFetchItems || IncentivizeOtherFetchNPCItems)" title="Ultimate Fetch quest simulator incoming" style="color:orange">⚠</b></label></div>
-                    <div class="checkbox-cell"></div>
+                <div class="col-xs-12">
+                    <div class="checkbox-cell" v-if="NPCItems || NPCFetchItems" title="King, Princess, Bikke, Sarda, Sage, Robot, Caravan"><input v-model="IncentivizeFreeNPCs" type="checkbox" asp-for="Flags.IncentivizeFreeNPCs" /> <label asp-for="Flags.IncentivizeFreeNPCs">Main NPCs <b v-if="IncentivizeFreeNPCs && !NPCItems" title="Incentivizing without shuffle doesn't do anything" style="color:blue"> !</b></label></div>
+                    <div class="checkbox-cell" v-if="NPCItems || NPCFetchItems" title="Astos, Matoya, Prince, Dwarves, Lefein, Fairy"><input v-model="IncentivizeFetchNPCs" type="checkbox" asp-for="Flags.IncentivizeFetchNPCs" /> <label asp-for="Flags.IncentivizeFetchNPCs">Fetch Quest NPCs <b v-if="IncentivizeFetchNPCs && !NPCFetchItems" title="Incentivizing without shuffle doesn't do anything" style="color:blue"> !</b></label></div>
+                    <div class="checkbox-cell" v-if="NPCItems || NPCFetchItems"></div>
                     <div class="checkbox-cell" title="Floater chest"><input v-model="IncentivizeIceCave" type="checkbox" asp-for="Flags.IncentivizeIceCave" /> <label asp-for="Flags.IncentivizeIceCave">Ice Cave</label></div>
                     <div class="checkbox-cell" title="Tail chest"><input v-model="IncentivizeOrdeals" type="checkbox" asp-for="Flags.IncentivizeOrdeals" /> <label asp-for="Flags.IncentivizeOrdeals">Ordeals</label></div>
                     <div class="checkbox-cell" title="Crown chest"><input v-model="IncentivizeMarsh" type="checkbox" asp-for="Flags.IncentivizeMarsh" /> <label asp-for="Flags.IncentivizeMarsh">Marsh Cave</label></div>
-                </div>
-                <div class="col-xs-6">
+                    <div class="checkbox-cell"></div>
                     <div class="checkbox-cell" title="Ruby chest (behind Vampire)"><input v-model="IncentivizeEarth" type="checkbox" asp-for="Flags.IncentivizeEarth" /> <label asp-for="Flags.IncentivizeEarth">Earth Cave</label></div>
                     <div class="checkbox-cell" title="Last Floor West (Red D)"><input v-model="IncentivizeVolcano" type="checkbox" asp-for="Flags.IncentivizeVolcano" /> <label asp-for="Flags.IncentivizeVolcano">Volcano</label></div> 
                     <div class="checkbox-cell" title="Slab chest"><input v-model="IncentivizeSeaShrine" type="checkbox" asp-for="Flags.IncentivizeSeaShrine" /> <label asp-for="Flags.IncentivizeSeaShrine">Sea Shrine</label></div>
                     <div class="checkbox-cell" title="Adamant chest"><input v-model="IncentivizeSkyPalace" type="checkbox" asp-for="Flags.IncentivizeSkyPalace" /> <label asp-for="Flags.IncentivizeSkyPalace">Sky Palace</label></div>
+                    <div class="checkbox-cell"></div>
                     <div class="checkbox-cell" title="TNT chest"><input v-model="IncentivizeConeria" type="checkbox" asp-for="Flags.IncentivizeConeria" /> <label asp-for="Flags.IncentivizeConeria">Coneria (locked)</label></div>
                     <div class="checkbox-cell" title="Bottom Floor South East"><input v-model="IncentivizeMarshKeyLocked" type="checkbox" asp-for="Flags.IncentivizeMarshKeyLocked" /> <label asp-for="Flags.IncentivizeMarshKeyLocked">Marsh (locked)</label></div>
                 </div>
 <!--                <div class="col-xs-12">{{getCountIncentivizedLocations()}} Locations Incentivized<br/>{{getCountIncentivizedItems()}} Items</div>-->
             </div>
-            <div class="col-xs-3">
-                <h4>Quest Items <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.0.0</a>)</small></h4>
-                <div class="col-xs-12">
-                    <div class="checkbox-cell" title="Floater, Tail, AND Ruby if Titans Trove is on AND Crown, TNT, Slab, Adamant if the NPCs wanting those items are unshuffled"><input v-model="IncentivizeTreasureQuestItems" type="checkbox" asp-for="Flags.IncentivizeTreasureQuestItems" /> <label asp-for="Flags.IncentivizeTreasureQuestItems">Treasure Items</label></div>
-                    <div class="checkbox-cell" v-if="NPCItems" title="Bridge, Lute, Ship, Rod, Canoe, Cube AND Bottle if Fairy is incentivized or unshuffled"><input v-model="IncentivizeFreeNPCItems" type="checkbox" asp-for="Flags.IncentivizeFreeNPCItems" /> <label asp-for="Flags.IncentivizeFreeNPCItems">Main NPC Items</label></div>
-                    <div class="checkbox-cell" v-if="NPCFetchItems" title="Key, Canal, Oxyale, Chime AND Crown, Crystal, Herb, TNT, Slab, Adamant if the NPCs wanting those items are incentivized"><input v-model="IncentivizeMainFetchItems" type="checkbox" asp-for="Flags.IncentivizeMainFetchItems" /> <label asp-for="Flags.IncentivizeMainFetchItems">Main Fetch Items</label></div>
-                    <div class="checkbox-cell" v-if="NPCFetchItems" title="Xcalber AND Crown, Crystal, Herb, TNT, Slab, Adamant, Bottle even if those NPCs are not incentivized"><input v-model="IncentivizeOtherFetchNPCItems" type="checkbox" asp-for="Flags.IncentivizeOtherFetchNPCItems" /> <label asp-for="Flags.IncentivizeOtherFetchNPCItems">More Fetch Items <b v-if="IncentivizeOtherFetchNPCItems" title="Just NOT RECOMMENDED for most players in most flagsets" style="color:orange">⚠⚠</b></label></div>
-                </div>
-            </div>
-            <div class="col-xs-3" style="border-left:1px solid black">
+            <div class="col-xs-6">
                 <h4>Items <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.0.0</a>)</small></h4>
                 <div class="col-xs-12">
+                    <div class="checkbox-cell">
+                        <input v-model="IncentivizeRequiredItems" type="checkbox" asp-for="Flags.IncentivizeRequiredItems" /> 
+                        <label asp-for="Flags.IncentivizeRequiredItems" title="Bridge, Lute, Ship, Key, Canal, Rod, Canoe, Floater, Cube, Oxyale, Chime">
+                            Required Items
+                            <b v-if="IncentivizeRequiredItems && !IncentivizeFetchItems && !NPCFetchItems" title="Incentivizing Crown, TNT, Slab instead Key, Canal, Chime" style="color:blue"> !</b>
+                            <b v-if="IncentivizeRequiredItems && !IncentivizeFetchItems && !NPCFetchItems && NPCItems" title="Incentivizing Bottle instead of Oxyale" style="color:blue"> !</b>
+                            <b v-if="IncentivizeRequiredItems && !IncentivizeFetchItems && !NPCItems && !EarlySage" title="Incentivizing Ruby as Required due to Early Sage turned off" style="color:blue"> !</b>
+                        </label>
+                    </div>
+                    <div class="checkbox-cell" title="Crown, Crystal, Herb, TNT, Ruby, Bottle, Slab, Adamant"><input v-model="IncentivizeFetchItems" type="checkbox" asp-for="Flags.IncentivizeFetchItems" /> <label asp-for="Flags.IncentivizeFetchItems">Fetch Items</label></div>
+                    <div class="checkbox-cell"><input v-model="IncentivizeTail" type="checkbox" asp-for="Flags.IncentivizeTail" /> <label asp-for="Flags.IncentivizeTail">Tail</label></div>
+                    <div class="checkbox-cell"></div>
                     <div class="checkbox-cell"><input v-model="IncentivizeMasamune" type="checkbox" asp-for="Flags.IncentivizeMasamune" /> <label asp-for="Flags.IncentivizeMasamune">Masamune</label></div>
-                    <div class="checkbox-cell"><input v-model="IncentivizeOpal" type="checkbox" asp-for="Flags.IncentivizeOpal" /> <label asp-for="Flags.IncentivizeOpal">Opal Bracelet</label></div>
                     <div class="checkbox-cell"><input v-model="IncentivizeRibbon" type="checkbox" asp-for="Flags.IncentivizeRibbon" /> <label asp-for="Flags.IncentivizeRibbon">Ribbon</label></div>
+                    <div class="checkbox-cell"><input v-model="IncentivizeOpal" type="checkbox" asp-for="Flags.IncentivizeOpal" /> <label asp-for="Flags.IncentivizeOpal">Opal Bracelet</label></div>
                     <div class="checkbox-cell"></div>
                     <div class="checkbox-cell"><input v-model="IncentivizeDefCastArmor" type="checkbox" asp-for="Flags.IncentivizeDefCastArmor" /> <label asp-for="Flags.IncentivizeDefCastArmor">White Shirt</label></div>
-<!--                    <div class="checkbox-cell"><input v-model="IncentivizeOffCastArmor" type="checkbox" asp-for="Flags.IncentivizeOffCastArmor" /> <label asp-for="Flags.IncentivizeOffCastArmor">Black Shirt</label></div>-->
                     <div class="checkbox-cell"><input v-model="IncentivizeOtherCastArmor" type="checkbox" asp-for="Flags.IncentivizeOtherCastArmor" /> <label asp-for="Flags.IncentivizeOtherCastArmor">Power Gauntlet</label></div>
                     <div class="checkbox-cell"><input v-model="IncentivizeDefCastWeapon" type="checkbox" asp-for="Flags.IncentivizeDefCastWeapon" /> <label asp-for="Flags.IncentivizeDefCastWeapon">Defense</label></div>
                     <div class="checkbox-cell"><input v-model="IncentivizeOffCastWeapon" type="checkbox" asp-for="Flags.IncentivizeOffCastWeapon" /> <label asp-for="Flags.IncentivizeOffCastWeapon">Thor Hammer</label></div>
+<!--                    <div class="checkbox-cell"><input v-model="IncentivizeOffCastArmor" type="checkbox" asp-for="Flags.IncentivizeOffCastArmor" /> <label asp-for="Flags.IncentivizeOffCastArmor">Black Shirt</label></div>-->
 <!--                    <div class="checkbox-cell"><input v-model="IncentivizeOtherCastWeapon" type="checkbox" asp-for="Flags.IncentivizeOtherCastWeapon" /> <label asp-for="Flags.IncentivizeOtherCastWeapon">Bane Sword</label></div>-->
 <!--                    <div class="checkbox-cell"><input v-model="IncentivizeRibbon2" type="checkbox" asp-for="Flags.IncentivizeRibbon2" /> <label asp-for="Flags.IncentivizeRibbon2">Ribbon</label></div>-->
 <!--                    <div class="checkbox-cell"><input v-model="Incentivize65K" type="checkbox" asp-for="Flags.Incentivize65K" /> <label asp-for="Flags.Incentivize65K">65000 G</label></div>-->
