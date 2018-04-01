@@ -47,6 +47,7 @@
 		<div class="section tab-pane active" id="shuffle">
 			<div class="col-xs-4">
                 <div class="checkbox-cell"><input v-model="Shops" type="checkbox" asp-for="Flags.Shops" /> <label asp-for="Flags.Shops"></label></div>
+                <div class="checkbox-cell" title="All weapons and armor for sale are instead replaced with random items of that type"><input class="indent" v-model="RandomWares" v-if="Shops" type="checkbox" asp-for="Flags.RandomWares" /> <label asp-for="Flags.RandomWares">Random Weapons and Armor</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.1.0</a>)</small></div>
 				<div class="checkbox-cell"><input v-model="MagicShops" type="checkbox" asp-for="Flags.MagicShops" /> <label asp-for="Flags.MagicShops">Magic Shops</label></div>
 				<div class="checkbox-cell"><input v-model="MagicLevels" type="checkbox" asp-for="Flags.MagicLevels" /> <label asp-for="Flags.MagicLevels">Magic Levels</label></div>
 				<div class="checkbox-cell"><input v-model="MagicPermissions" :disabled="!MagicLevels" class="indent" type="checkbox" asp-for="Flags.MagicPermissions" /> <label :style="!MagicLevels ? { color: 'grey'} : {}" asp-for="Flags.MagicPermissions">Keep Permissions</label></div>
@@ -55,9 +56,9 @@
 				<div class="checkbox-cell"><input v-model="EnemyScripts" type="checkbox" asp-for="Flags.EnemyScripts" /> <label asp-for="Flags.EnemyScripts">Enemy Scripts <b v-if="EnemyScripts" title="Risks 9 Pirates with THUNDER, etc. blocking early progression" style="color:orange">⚠</b></label></div>
 				<div class="checkbox-cell"><input v-model="EnemySkillsSpells" type="checkbox" asp-for="Flags.EnemySkillsSpells" /> <label asp-for="Flags.EnemySkillsSpells">Enemy Skills/Spells</label></div>
 				<div class="checkbox-cell"><input v-model="EnemyStatusAttacks" type="checkbox" asp-for="Flags.EnemyStatusAttacks" /> <label asp-for="Flags.EnemyStatusAttacks">Enemy Status Attacks</label></div>
-				<div class="checkbox-cell"><input v-model="EnemyFormationsUnrunnable" type="checkbox" asp-for="Flags.EnemyFormationsUnrunnable" /> <label asp-for="Flags.EnemyFormationsUnrunnable">Enemy Unrunnable Formations</label></div>
-				<div class="checkbox-cell"><input v-model="EnemyFormationsSurprise" type="checkbox" asp-for="Flags.EnemyFormationsSurprise" /> <label asp-for="Flags.EnemyFormationsSurprise">Enemy Surprise Bonus</label></div>
-				<div class="checkbox-cell"><input v-model="EnemyFormationsFrequency" type="checkbox" asp-for="Flags.EnemyFormationsFrequency" /> <label asp-for="Flags.EnemyFormationsFrequency">Enemy Formations Frequency</label></div>
+				<div class="checkbox-cell"><input v-model="EnemyFormationsUnrunnable" type="checkbox" asp-for="Flags.EnemyFormationsUnrunnable" /> <label asp-for="Flags.EnemyFormationsUnrunnable">Enemy Unrunnable Formations</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.1.0</a>)</small></div>
+				<div class="checkbox-cell"><input v-model="EnemyFormationsSurprise" type="checkbox" asp-for="Flags.EnemyFormationsSurprise" /> <label asp-for="Flags.EnemyFormationsSurprise">Enemy Surprise Bonus</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.1.0</a>)</small></div>
+				<div class="checkbox-cell"><input v-model="EnemyFormationsFrequency" type="checkbox" asp-for="Flags.EnemyFormationsFrequency" /> <label asp-for="Flags.EnemyFormationsFrequency">Enemy Formations Frequency</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.1.0</a>)</small></div>
 				<div class="checkbox-cell"></div>
 				<div class="checkbox-cell"><input v-model="Rng" type="checkbox" asp-for="Flags.Rng" /> <label asp-for="Flags.Rng">RNG Table</label><br /></div>
 			</div>
@@ -179,9 +180,9 @@
 				<div class="checkbox-cell"><input v-model="ChanceToRun" type="checkbox" asp-for="Flags.ChanceToRun" /> <label asp-for="Flags.ChanceToRun">Chance to Run</label></div>
 				<div class="checkbox-cell"><input v-model="SpellBugs" type="checkbox" asp-for="Flags.SpellBugs" /> <label asp-for="Flags.SpellBugs">LOCK, LOK2, HEL2, TMPR, SABR</label></div>
 				<div class="checkbox-cell"><input v-model="EnemyStatusAttackBug" type="checkbox" asp-for="Flags.EnemyStatusAttackBug" /> <label asp-for="Flags.EnemyStatusAttackBug">Enemy Status Attacks</label></div>
-				<div class="checkbox-cell"><input v-model="BlackBeltAbsorb" type="checkbox" asp-for="Flags.BlackBeltAbsorb" /> <label asp-for="Flags.BlackBeltAbsorb">Black Belt &amp; Master Absorb Calculation</label></div>
-				<div class="checkbox-cell"><input v-model="EnemyElementalResistancesBug" type="checkbox" asp-for="Flags.EnemyElementalResistancesBug" /> <label asp-for="Flags.EnemyElementalResistancesBug">Enemy Elemental Resistances</label></div>
-				<div class="checkbox-cell"><input v-model="EnemySpellsTargetingAllies" type="checkbox" asp-for="Flags.EnemySpellsTargetingAllies" /> <label asp-for="Flags.EnemySpellsTargetingAllies">Enemy Spells Targeting Allies</label></div>
+				<div class="checkbox-cell"><input v-model="BlackBeltAbsorb" type="checkbox" asp-for="Flags.BlackBeltAbsorb" /> <label asp-for="Flags.BlackBeltAbsorb">Black Belt &amp; Master Absorb Calculation</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.1.0</a>)</small></div>
+				<div class="checkbox-cell"><input v-model="EnemyElementalResistancesBug" type="checkbox" asp-for="Flags.EnemyElementalResistancesBug" /> <label asp-for="Flags.EnemyElementalResistancesBug">Enemy Elemental Resistances</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.1.0</a>)</small></div>
+				<div class="checkbox-cell"><input v-model="EnemySpellsTargetingAllies" type="checkbox" asp-for="Flags.EnemySpellsTargetingAllies" /> <label asp-for="Flags.EnemySpellsTargetingAllies">Enemy Spells Targeting Allies</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.1.0</a>)</small></div>
 			</div>
 		</div>
 		<div class="section tab-pane" id="fun">

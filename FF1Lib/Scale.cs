@@ -28,6 +28,9 @@ namespace FF1Lib
             {
                 prices[i] = questItemPrice;
             }
+			prices[(int)Item.WhiteShirt] = (ushort)(questItemPrice / 2);
+			prices[(int)Item.BlackShirt] = (ushort)(questItemPrice / 2);
+			prices[(int)Item.Ribbon] = questItemPrice;
             // Crystal can block Ship in early game where 50000 G would be too expensive
             prices[(int)Item.Crystal] = (ushort)(prices[(int)Item.Crystal] / 8);
 

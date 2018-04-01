@@ -32,14 +32,14 @@ namespace FF1Lib
 			Item = 60
 		}
 
-		public ItemShopSlot ShuffleShops(MT19337 rng, bool earlyAilments)
+		public ItemShopSlot ShuffleShops(MT19337 rng, bool earlyAilments, bool randomizeWeaponsAndArmor)
 		{
 			var pointers = Get(ShopPointerOffset, ShopPointerCount * ShopPointerSize).ToUShorts();
 
 			RepackShops(pointers);
 
-			ShuffleShopType(ShopType.Weapon, pointers, rng);
-			ShuffleShopType(ShopType.Armor, pointers, rng);
+			ShuffleShopType(ShopType.Weapon, pointers, rng, randomizeWeaponsAndArmor);
+			ShuffleShopType(ShopType.Armor, pointers, rng, randomizeWeaponsAndArmor);
             ItemShopSlot result = null;
 			do
 			{
@@ -104,7 +104,7 @@ namespace FF1Lib
 			Put(ShopPointerBase + pointers[0], allEntries.ToArray());
 		}
 
-		private ItemShopSlot ShuffleShopType(ShopType shopType, ushort[] pointers, MT19337 rng)
+		private ItemShopSlot ShuffleShopType(ShopType shopType, ushort[] pointers, MT19337 rng, bool randomize = false)
 		{
 			var shops = GetShops(shopType, pointers);
 
@@ -151,6 +151,19 @@ namespace FF1Lib
 				}
 			} while (shopsBlocked);
 
+			if (randomize)
+			{
+				if (shopType == ShopType.Weapon || shopType == ShopType.Armor) {
+					// Shuffle up a byte array of random weapons or armor and assign them in place of the existing items.
+					var baseIndex = shopType == ShopType.Armor ? Item.Cloth : Item.WoodenNunchucks;
+					var indeces = Enumerable.Range((int)baseIndex, 40).Select(i => (byte)i).ToList();
+
+					for (int i = 0; i < newShops.Length; i++)
+					{
+						newShops[i] = newShops[i].Select(x => indeces.SpliceRandom(rng)).ToList();
+					}
+				}
+			}
 			// Zero-terminate the new shops.
 			foreach (var newShop in newShops)
 			{
