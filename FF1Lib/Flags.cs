@@ -85,11 +85,9 @@ namespace FF1Lib
 		[FlagString(Character = INCENTIVES_MAIN, FlagBit = 2)]
 		public bool IncentivizeFetchNPCs { get; set; }
 		[FlagString(Character = INCENTIVES_MAIN, FlagBit = 4)]
-		public bool IncentivizeRequiredItems { get; set; }
+		public bool IncentivizeTail { get; set; }
 		[FlagString(Character = INCENTIVES_MAIN, FlagBit = 8)]
 		public bool IncentivizeFetchItems { get; set; }
-		[FlagString(Character = INCENTIVES_MAIN, FlagBit = 16)]
-		public bool IncentivizeTail { get; set; }
 		
 		[FlagString(Character = INCENTIVES_CHESTS1, FlagBit = 1)]
 		public bool IncentivizeMarsh { get; set; }
@@ -208,26 +206,26 @@ namespace FF1Lib
 		public bool MapVolcanoIceRiver => MapOpenProgression;
 		
 		public bool IncentivizeAdamant => IncentivizeFetchItems;
-		public bool IncentivizeRuby => (IncentivizeRequiredItems && !EarlySage && !NPCItems) || IncentivizeFetchItems;
-		public bool IncentivizeCrown => (IncentivizeRequiredItems && !NPCFetchItems) || IncentivizeFetchItems;
-		public bool IncentivizeTnt => (IncentivizeRequiredItems && !NPCFetchItems) || IncentivizeFetchItems;
-		public bool IncentivizeSlab => (IncentivizeRequiredItems && !NPCFetchItems) || IncentivizeFetchItems;
-		public bool IncentivizeBottle => (IncentivizeRequiredItems && !NPCFetchItems) || IncentivizeFetchItems;
+		public bool IncentivizeRuby => (!EarlySage && !NPCItems) || IncentivizeFetchItems;
+		public bool IncentivizeCrown => !NPCFetchItems || IncentivizeFetchItems;
+		public bool IncentivizeTnt => (!NPCFetchItems && !NPCItems) || IncentivizeFetchItems; // If Canoe and Fetch Quests are unshuffled then TNT is required
+		public bool IncentivizeSlab => !NPCFetchItems || IncentivizeFetchItems;
+		public bool IncentivizeBottle => !NPCFetchItems || IncentivizeFetchItems;
 
-		public bool IncentivizeFloater => IncentivizeRequiredItems;
-		public bool IncentivizeBridge => IncentivizeRequiredItems;
-		public bool IncentivizeLute => IncentivizeRequiredItems;
-		public bool IncentivizeShip => IncentivizeRequiredItems;
-		public bool IncentivizeRod => IncentivizeRequiredItems;
-		public bool IncentivizeCanoe => IncentivizeRequiredItems;
-		public bool IncentivizeCube => IncentivizeRequiredItems;
+		public bool IncentivizeFloater => true;
+		public bool IncentivizeBridge => !MapOpenProgression || IncentivizeFetchItems;
+		public bool IncentivizeLute => true;
+		public bool IncentivizeShip => !MapOpenProgression || IncentivizeFetchItems;
+		public bool IncentivizeRod => true;
+		public bool IncentivizeCanoe => true;
+		public bool IncentivizeCube => true;
 		
 		public bool IncentivizeCrystal => IncentivizeFetchItems;
 		public bool IncentivizeHerb => IncentivizeFetchItems;
-		public bool IncentivizeKey => IncentivizeRequiredItems;
-		public bool IncentivizeCanal => IncentivizeRequiredItems;
-		public bool IncentivizeChime => IncentivizeRequiredItems;
-		public bool IncentivizeOxyale => IncentivizeRequiredItems;
+		public bool IncentivizeKey => true;
+		public bool IncentivizeCanal => !NPCItems || IncentivizeFetchItems; // If Canoe is unshuffled then Canal is Required
+		public bool IncentivizeChime => true;
+		public bool IncentivizeOxyale => true;
 		public bool IncentivizeXcalber => false;
 		
 		public bool IncentivizeKingConeria => IncentivizeFreeNPCs;

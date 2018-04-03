@@ -69,8 +69,6 @@ namespace FF1RandomizerOnline.Controllers
 					
 					IncentivizeFreeNPCs = true,
 					IncentivizeFetchNPCs = false,
-					
-					IncentivizeRequiredItems = true,
 					IncentivizeFetchItems = false,
 					
 					IncentivizeMarsh = true,
