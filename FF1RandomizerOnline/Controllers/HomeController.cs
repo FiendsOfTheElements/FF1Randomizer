@@ -83,8 +83,8 @@ namespace FF1RandomizerOnline.Controllers
 
 					IncentivizeTail = true,
 					IncentivizeMasamune = true,
-					IncentivizeOpal = false,
-					IncentivizeRibbon = false,
+					IncentivizeOpal = true,
+					IncentivizeRibbon = true,
 					IncentivizeRibbon2 = false,
 					Incentivize65K = false,
 					IncentivizeBad = false,
@@ -119,8 +119,8 @@ namespace FF1RandomizerOnline.Controllers
 					ForcedPartyMembers = 0,
 					PriceScaleFactor = 3.0,
 					EnemyScaleFactor = 1.5,
-					ExpMultiplier = 3.0,
-					ExpBonus = 300,
+					ExpMultiplier = 2.5,
+					ExpBonus = 250,
 
 					FunEnemyNames = false,
 					PaletteSwap = false,

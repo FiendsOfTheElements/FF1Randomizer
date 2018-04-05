@@ -24,13 +24,15 @@
 	</div>
     <br/>
     <div class="row">
-        <div class="col-xs-12">
-            Presets:
-            <a v-on:click.prevent="preset('DACBHFAEYAFADAfPBWoWAA')">League Stage 8 (No NPC Shuffle)</a>,
-            <a v-on:click.prevent="preset('HACBAEAF7FFADBfPBNZoPA')">Beginner</a>,
-            <a v-on:click.prevent="preset('')">Defaults</a>,
-            <a v-on:click.prevent="preset('HADBHHBF7BBVDAfPBPyeKD')">Normal NPC Shuffle</a>
-        </div>
+		<div class="col-xs-12">
+			Presets:
+			<a v-on:click.prevent="preset('DACBHFAMYAFADAfPBWoWAA')">League Stage 8 (No NPC Shuffle)</a>,
+			<a v-on:click.prevent="preset('AAAAAAAAAAAAAAfPBKKPPA')">Improved Vanilla</a>,
+			<a v-on:click.prevent="preset('HACBAEAF7FFADBfPBNUeeA')">Beginner</a>,
+			<a v-on:click.prevent="preset('HACBGHANbBHADAfPBPeZZA')">Defaults</a>,
+			<a v-on:click.prevent="preset('HADBHHBF7BBVDAfPBPeZUA')">Normal NPC Shuffle</a>
+			<a v-on:click.prevent="preset('PADBHHBP!HHdDAfPBPoUUA')">Full NPC Shuffle</a>
+		</div>
     </div>
 	<ul class="section nav nav-pills">
 		<li class="active"><a href="#shuffle" data-toggle="tab">Shuffle</a></li>
@@ -93,7 +95,7 @@
                     </div>
                     <br/>
                     <div class="checkbox-cell"><input v-model="IncentivizeTail" :disabled="!Treasures" type="checkbox" asp-for="Flags.IncentivizeTail" /> <label asp-for="Flags.IncentivizeTail">Tail</label></div>
-                    <div class="checkbox-cell" title="Any other non-required quest items that are shuffled such as Ruby or Adamant"><input v-model="IncentivizeFetchItems" type="checkbox" asp-for="Flags.IncentivizeFetchItems" /> <label asp-for="Flags.IncentivizeFetchItems">Other Quest Items</label></div>
+                    <div class="checkbox-cell" title="Any other non-required quest items that are shuffled such as Ruby or Adamant"><input v-model="IncentivizeFetchItems" :disabled="!Treasures" type="checkbox" asp-for="Flags.IncentivizeFetchItems" /> <label asp-for="Flags.IncentivizeFetchItems">Other Quest Items</label></div>
                     <div class="checkbox-cell"></div>
                     <div class="checkbox-cell"><input v-model="IncentivizeMasamune" :disabled="!Treasures" type="checkbox" asp-for="Flags.IncentivizeMasamune" /> <label asp-for="Flags.IncentivizeMasamune">Masamune</label></div>
                     <div class="checkbox-cell"><input v-model="IncentivizeRibbon" :disabled="!Treasures" type="checkbox" asp-for="Flags.IncentivizeRibbon" /> <label asp-for="Flags.IncentivizeRibbon">Ribbon</label></div>
