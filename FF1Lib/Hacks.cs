@@ -203,7 +203,7 @@ namespace FF1Lib
 			MoveNpc(0, 7, 0x1E, 0x0B, inRoom: false, stationary: true); // East Coneria Guy
 			MoveNpc(2, 0, 0x27, 0x18, inRoom: false, stationary: true); // Efland Entrance Elf
 			MoveNpc(6, 13, 0x29, 0x1B, inRoom: false, stationary: true); // Onrac Guy
-			MoveNpc(18, 1, 0x0C, 0x34, inRoom: false, stationary: false); // OoB Bat!
+			//MoveNpc(18, 1, 0x0C, 0x34, inRoom: false, stationary: false); // OoB Bat!
 			MoveNpc(30, 10, 0x09, 0x0B, inRoom: true, stationary: false); // Earth Cave Bat B3
 			MoveNpc(30, 7, 0x0B, 0x0B, inRoom: true, stationary: false); // Earth Cave Bat B3
 			MoveNpc(30, 8, 0x0A, 0x0C, inRoom: true, stationary: false); // Earth Cave Bat B3
