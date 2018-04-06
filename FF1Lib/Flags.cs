@@ -71,15 +71,17 @@ namespace FF1Lib
 		[FlagString(Character = STANDARD_MAPS, FlagBit = 4)]
 		public bool CrownlessOrdeals { get; set; }
 		[FlagString(Character = STANDARD_MAPS, FlagBit = 8)]
-		public bool Entrances { get; set; } // Planned x.x feature - non-town entrance shuffle
-		[FlagString(Character = STANDARD_MAPS, FlagBit = 16)]
-		public bool Towns { get; set; } // Planned x.x feature - town entrance shuffle
+		public bool KeylessToFR { get; set; }
 		[FlagString(Character = STANDARD_MAPS, FlagBit = 32)]
 		public bool Floors { get; set; } // Planned x.x feature - interior floors shuffle
 
 		[FlagString(Character = OVERWORLD_MAP, FlagBit = 1)]
 		public bool MapOpenProgression { get; set; }
-		
+		[FlagString(Character = STANDARD_MAPS, FlagBit = 2)]
+		public bool Entrances { get; set; } // Planned x.x feature - non-town entrance shuffle
+		[FlagString(Character = STANDARD_MAPS, FlagBit = 4)]
+		public bool Towns { get; set; } // Planned x.x feature - town entrance shuffle
+
 		[FlagString(Character = INCENTIVES_MAIN, FlagBit = 1)]
 		public bool IncentivizeFreeNPCs { get; set; }
 		[FlagString(Character = INCENTIVES_MAIN, FlagBit = 2)]
@@ -146,6 +148,8 @@ namespace FF1Lib
 		public bool FreeBridge { get; set; }
 		[FlagString(Character = FILTHY_CASUALS, FlagBit = 2)]
 		public bool FreeAirship { get; set; }
+		[FlagString(Character = FILTHY_CASUALS, FlagBit = 4)]
+		public bool FreeOrbs { get; set; }
 		[FlagString(Character = FILTHY_CASUALS, FlagBit = 32)]
 		public bool EasyMode { get; set; }
 		

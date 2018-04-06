@@ -327,5 +327,20 @@ namespace FF1Lib
 			**/
 			Put(0x7C64D, Blob.FromHex("ADFC6048A90F2003FE20808768082003FE2860"));
 		}
+
+		public void EnableKeylessToFR()
+		{
+			// Overwrite Keylocked door in ToFR 2nd Floor with normal door tile.
+			Data[0x1997B] = 0x36;
+		}
+
+		public void EnableFreeOrbs()
+		{
+			const int initItemOffset = 0x3020;
+			Data[initItemOffset + (int)Item.EarthOrb] = 0x01;
+			Data[initItemOffset + (int)Item.FireOrb] = 0x01;
+			Data[initItemOffset + (int)Item.WaterOrb] = 0x01;
+			Data[initItemOffset + (int)Item.AirOrb] = 0x01;
+		}
 	}
 }

@@ -159,6 +159,11 @@ namespace FF1Lib
 				EnableEarlyOrdeals();
 			}
 
+			if (flags.KeylessToFR)
+			{
+				EnableKeylessToFR();
+			}
+
 			if (flags.EarlySarda && !flags.NPCItems)
 			{
 				EnableEarlySarda();
@@ -177,6 +182,11 @@ namespace FF1Lib
 			if (flags.FreeAirship)
 			{
 				EnableFreeAirship();
+			}
+
+			if (flags.FreeOrbs)
+			{
+				EnableFreeOrbs();
 			}
 			
 			if (flags.NoPartyShuffle)
