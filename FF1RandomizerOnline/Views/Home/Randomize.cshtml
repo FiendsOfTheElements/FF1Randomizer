@@ -109,13 +109,15 @@
             </div>
         </div>
         <div class="section tab-pane" id="map">
-            <div class="col-xs-12 col-sm-4">
-                <div class="checkbox-cell"><input v-model="OrdealsPillars" type="checkbox" asp-for="Flags.OrdealsPillars" /> <label asp-for="Flags.OrdealsPillars">Castle Ordeals Pillars</label></div>
-                <div class="checkbox-cell"></div>
-                <div class="checkbox-cell"><input v-model="TitansTrove" type="checkbox" asp-for="Flags.TitansTrove" /> <label asp-for="Flags.TitansTrove">Titan's Trove</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.0.0</a>)</small></div>
-                <div class="checkbox-cell"></div>
-                <div class="checkbox-cell"><input v-model="MapOpenProgression" type="checkbox" asp-for="Flags.MapOpenProgression" /> <label asp-for="Flags.MapOpenProgression">Open Progression</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.0.0</a>)</small></div>
-            </div>
+			<div class="col-xs-12 col-sm-4">
+				<div class="checkbox-cell" title="Unlock the door in Temple of Fiends Revisted 2F, removing the need for the KEY."><input v-model="KeylessToFR" type="checkbox" asp-for="Flags.KeylessToFR" /> <label asp-for="Flags.KeylessToFR">Unlock Temple of Fiends Revisited 2F</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.0.0</a>)</small></div>
+				<div class="checkbox-cell"></div>
+				<div class="checkbox-cell"><input v-model="OrdealsPillars" type="checkbox" asp-for="Flags.OrdealsPillars" /> <label asp-for="Flags.OrdealsPillars">Castle Ordeals Pillars</label></div>
+				<div class="checkbox-cell"></div>
+				<div class="checkbox-cell"><input v-model="TitansTrove" type="checkbox" asp-for="Flags.TitansTrove" /> <label asp-for="Flags.TitansTrove">Titan's Trove</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.0.0</a>)</small></div>
+				<div class="checkbox-cell"></div>
+				<div class="checkbox-cell"><input v-model="MapOpenProgression" type="checkbox" asp-for="Flags.MapOpenProgression" /> <label asp-for="Flags.MapOpenProgression">Open Progression</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.0.0</a>)</small></div>
+			</div>
         </div>
 		<div class="section tab-pane" id="scale">
 			<div class="slider-cell">
@@ -151,18 +153,19 @@
 				<div class="checkbox-cell" title="Sarda will give you an item without requiring Vampire dead"><input v-model="EarlySarda" type="checkbox" asp-for="Flags.EarlySarda" /> <label asp-for="Flags.EarlySarda">Early Sarda Item</label></div>
 				<div class="checkbox-cell" title="Sage in Cresent Lake will give you an item without requiring Lich dead"><input v-model="EarlySage" type="checkbox" asp-for="Flags.EarlySage" /> <label asp-for="Flags.EarlySage">Early Sage Item</label></div>
 				<div class="checkbox-cell" title="Ordeals can be entered without the Crown"><input v-model="CrownlessOrdeals" type="checkbox" asp-for="Flags.CrownlessOrdeals" /> <label asp-for="Flags.CrownlessOrdeals">Early Ordeals</label></div>
-                <div class="checkbox-cell"></div>
+				<div class="checkbox-cell"></div>
 				<div class="checkbox-cell"><input v-model="NoPartyShuffle" type="checkbox" asp-for="Flags.NoPartyShuffle" /> <label asp-for="Flags.NoPartyShuffle">No Party Shuffle</label></div>
 				<div class="checkbox-cell"><input v-model="SpeedHacks" type="checkbox" asp-for="Flags.SpeedHacks" /> <label asp-for="Flags.SpeedHacks">Speed Hacks</label></div>
-                <div class="checkbox-cell"><input v-model="IdentifyTreasures" type="checkbox" asp-for="Flags.IdentifyTreasures" /> <label asp-for="Flags.IdentifyTreasures">Identify Treasures</label></div>
+				<div class="checkbox-cell"><input v-model="IdentifyTreasures" type="checkbox" asp-for="Flags.IdentifyTreasures" /> <label asp-for="Flags.IdentifyTreasures">Identify Treasures</label></div>
 				<div class="checkbox-cell"><input v-model="Dash" type="checkbox" asp-for="Flags.Dash" /> <label asp-for="Flags.Dash">Enable Dash</label></div>
 				<div class="checkbox-cell"><input v-model="BuyTen" type="checkbox" asp-for="Flags.BuyTen" /> <label asp-for="Flags.BuyTen">Buy 10 Items</label></div>
-            </div>
-            <div class="col-xs-4">
-                <div class="checkbox-cell" title="The Airship is available at the start of the game"><input v-model="FreeAirship" type="checkbox" asp-for="Flags.FreeAirship" /> <label asp-for="Flags.FreeAirship">Free Airship</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.0.0</a>)</small></div>
-                <div class="checkbox-cell" title="The Bridge is available at the start of the game"><input v-model="FreeBridge" type="checkbox" asp-for="Flags.FreeBridge" /> <label asp-for="Flags.FreeBridge">Free Bridge</label></div>
-                <div class="checkbox-cell" title="Encounter rate cut to 20% and all Enemy HP cut to 10% (after any randomizations)"><input v-model="EasyMode" type="checkbox" asp-for="Flags.EasyMode" /> <label asp-for="Flags.EasyMode">Easy Mode</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.0.0</a>)</small></div>
-            </div>
+			</div>
+			<div class="col-xs-4">
+				<div class="checkbox-cell" title="The Airship is available at the start of the game"><input v-model="FreeAirship" type="checkbox" asp-for="Flags.FreeAirship" /> <label asp-for="Flags.FreeAirship">Free Airship</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.0.0</a>)</small></div>
+				<div class="checkbox-cell" title="The Bridge is available at the start of the game"><input v-model="FreeBridge" type="checkbox" asp-for="Flags.FreeBridge" /> <label asp-for="Flags.FreeBridge">Free Bridge</label></div>
+				<div class="checkbox-cell" title="Begin the game with all orbs already lit."><input v-model="FreeOrbs" type="checkbox" asp-for="Flags.FreeOrbs" /> <label asp-for="Flags.FreeOrbs">Free Orbs</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.0.0</a>)</small></div>
+				<div class="checkbox-cell" title="Encounter rate cut to 20% and all Enemy HP cut to 10% (after any randomizations)"><input v-model="EasyMode" type="checkbox" asp-for="Flags.EasyMode" /> <label asp-for="Flags.EasyMode">Easy Mode</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.0.0</a>)</small></div>
+			</div>
 		</div>
 		<div class="section tab-pane" id="bug-fixes">
 			<div class="col-xs-4">
