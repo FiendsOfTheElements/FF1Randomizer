@@ -11,21 +11,17 @@ The randomizer has man options, each with unique gameplay implications.  An expl
 ### Shuffle Tab
 This tab contains options for shuffling various bits of game data.  Shuffling means that all the same data will be in the ROM, but in a randomized order.
 
-#### Treasures  
-This option randomly shuffles the contents of all treasure chests in the game.  There are several implications to this:
-* Important quest items, like the CROWN, FLOATER, etc. can be relocated.  The randomizer will do a sanity check to ensure that it is possible to complete the game.
+#### Treasures & NPC Items
+This option randomly shuffles the contents of all treasure chests and/or NPC item gifts in the game.  There are several implications to this:
+* Important quest items, like the SLAB, FLOATER, SHIP etc. can be relocated.  The randomizer will do a sanity check to ensure that it is possible to complete the game.
 * Some quest items are not actually useful until certain game events have been completed.  For example, if you find the RUBY early, you may think you can go straight to Sarda and get the ROD.  Sarda, however, will not grant you the ROD until you have killed the VAMPIRE (who is usually guarding the chest containing the RUBY).  Similarly, the sages will not grant you the CANOE until you have defeated LICH, making an early FLOATER all but useless since you can't reach Ryukahn Desert.  Enable the Early Rod or Early Canoe options to fix these issues.
 * Since treasures in the original game are roughly sorted in increasing order of "goodness", shuffling them is likely to grant better equipment to the player early in the game.  This can help or hurt the player, depending on whether the rewards are usable by the early classes.
 * Speaking of classes, the TAIL can be anywhere except the Temple of Fiends Revisited.  You may find it and the FLOATER early on, and be able to class change very early, or you may have to play almost the entire game without class change.
 * The TAIL and ADAMANT will never be in the Temple of Fiends Revisited.  Although these items are not necessary for game completion, they are deemed important enough to be accessible before the final dungeon.  In particular, the WARP and EXIT spells are not obtainable without the TAIL (if you don't shuffle magic permissions), and you can't leave ToFR without them.
-
-#### Incentives
-These options force an important item to be in their respective caves.
-* The EYE chest in the Ice Cave will contain the incentivized item.
-* The Zombie D chest in Castle Ordeals will contain the incentivized item.
-* The possible items that can appear in the incentivized chests are: FLOATER, SLAB, ADMANT, TAIL, Masmune, Ribbon.
-  - The RUBY is added to the list if Early Canoe is enabled.
-  - The CROWN is added to the list if Early Ordeals is enabled.
+* The SHIP and BRIDGE cannot be directly in key-locked chests. The SHIP cannot be directly placed in Ice Cave even if you get an early CANOE making Ice Cave accessible, however, it is possible (<1%) for Matoya to have the SHIP and her CRYSTAL to be in the Ice Cave. If you incentivize Ice Cave please be aware that this increases the chance of that happening to about ~3%.
+* It is possible to walk across the CANAL before it is blown up, which is particularly relevant if you have an early CANOE. The randomizer will automatically extend the nearby mountains to prevent you from walking across if a softlock is possible. Some additional map edit options on the Map tab will further reduce the chances of the softlock (reducing the chance of extended mountains).
+* NPC Item Shuffle drastically alters the items that are required to beat the game. Fetch quest items, CROWN, CRYSTAL, HERB, TNT, BOTTLE, and SLAB are not necessarily required, and it is possible that ADAMANT is a required item if the Dwarf Smith gives a required item.
+* NPC Item Shuffle does not change Unne's role in translating the SLAB (aka. the longest fetch quest ever). Likewise, the Elf Doctor wakes the Prince in exchange for the HERB, and the Dragon still gives Class Change for the TAIL.
 
 #### Shops
 This option randomly shuffles the contents of each type of equipment and item shop in the game.
@@ -63,6 +59,21 @@ This option assigns enemy status attacks applied on hit (poison, dark, stun, sle
 * This option is likely to "spread out" the status attacks, making certain groups of enemies less irritating (e.g. large groups of undead probably won't stunlock you anymore).  Of course, it could also give IMPs death touch, so beware.
 * If shops are also shuffled, the randomizer will ensure that PURE and SOFT potions are available in Corneria's item shop, since there would otherwise be no remedy for these ailments in the early game.
 
+### Incentives Tab
+These options force an important item to be in their respective locations.
+* The CROWN chest in Marsh Cave will contain the incentivized item.
+* The TNT chest in Coneria will contain the incentivized item.
+* The RUBY chest in Earth Cave will contain the incentivized item.
+* The EYE chest in the Ice Cave will contain the incentivized item.
+* The Zombie D chest in Castle Ordeals will contain the incentivized item.
+* The Key-Locked chest in Sea Shrine will contain the incentivized item.
+* The Red D chest in Volcano will contain the incentivized item.
+* The possible items that can appear in the incentivized chests are also adjustable on the Incentives tab.
+* The Junk Item option will add a junk item (Cloth or similar) to the incentivized item pool.
+* If Treasures or NPC items are turned off on the Shuffle tab, the Incentives options for corresponding items or locations will have no impact.
+
+### Map Tab
+
 #### Castle Ordeals
 This option randomizes the teleporters in Castle Ordeals.
 * The game arranges all the rooms in a random order, then picks one teleporter from each room to go to the next room.
@@ -74,8 +85,20 @@ This option randomizes the teleporters in Castle Ordeals.
   - It is strongly recommended that you save your game with a TENT, CABIN, or HOUSE before entering the castle.
   - The WARP spell is very useful if you get sent too far back and are worried about softlocking.
 
+#### Titan's Trove
+The Titan has moved down a few tiles so that he now blocks access to the 4 treasure chests in his tunnel. This increases the chance that RUBY is required.
+
+#### Coneria to Dwarves
+A pathway has been opened to walk to Dwarf Cave from the starting area. In NPC item shuffle where the CANOE can be shuffled to very early locations this allows for some substantially different routing in the early game. With this flag, it is possible that SHIP is not required to beat the game.
+
+#### Volcano and Ice River
+The rivers giving access to Volcano and Ice Cave have been combined. In NPC item shuffle where the CANOE can be shuffled to very early locations this allows for some substantially different routing in the early game. Combined with "Coneria to Dwarves", it means that the CANOE gives access to all early game locations normally accessible with the SHIP prior to CANAL, plus Volcano and Cresent Lake. With this flag, it is possible that SHIP is not required to beat the game.
+
 ### Scale Tab
 This tab contains sliders that will multiply bits of game data by random values within a range determined by the slider.  The distribution of random multipliers is exponential.
+
+#### Easy Mode
+Sometimes seeds with certain flags take a long time to complete. This option should make things a bit quicker by reducing enemy HP to 10% (after considering the randomized scaled HP), and by reducing the overall frequency of random encounters.
 
 #### Prices
 This slider randomly adjusts prices of equipment, items, and spells higher and lower.
@@ -107,6 +130,7 @@ This tab contains options to make the game play a bit faster.
 * Identify Treasures lets you see what's in a treasure chest when your inventory is full.
 * Enable Dash allows you to walk at double speed by holding the B button.  Also, if you hold B while flying the airship, you will move slower, which can help you land accurately.
 * Buy 10 Items lets you buy 10 items at once from item shops, so you can stock up on 99 heal potions more quickly.
+* Modern battlefield shows a battle UI similar to later games in the FF series.
 
 ### Bug Fixes Tab
 This tab contains options to fix some of the game's many bugs.
@@ -122,3 +146,6 @@ This tab contains options to fix some of the game's many bugs.
   - HEL2 no longer functions like HEL3 in battle.
   - TMPR and SABR both work, which is very important against late game bosses with high absorb, especially with large scale values for enemy stats.
 * Enemy status attacks now only get a chance to work for attacks that hit the player.
+
+### Fun % Tab
+This tab contains options that are not included in the Flags String. For competitive play, these options can safely be selected per the player's individual preference. Similarly, but not shown on this tab, a new feature is available to change the menu's background color by pressing `select` while on the start menu in game.

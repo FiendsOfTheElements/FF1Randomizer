@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using RomUtilities;
 
 namespace FF1Lib
@@ -20,7 +17,73 @@ namespace FF1Lib
 		public const int MapSpriteSize = 3;
 		public const int MapSpriteCount = 16;
 
-		public void EnableEarlyRod()
+		public const int CaravanFairyCheck = 0x7C4E5;
+		public const int CaravanFairyCheckSize = 7;
+
+		// Required for npc quest item randomizing
+		public void PermanentCaravan()
+		{
+			Put(CaravanFairyCheck, Enumerable.Repeat((byte)Nop, CaravanFairyCheckSize).ToArray());
+		}
+		// Required for npc quest item randomizing 
+		// Doesn't substantially change anything if EnableNPCsGiveAnyItem isn't called
+		public void CleanupNPCRoutines()
+		{
+			// Have ElfDoc set his own flag instead of the prince's so that 
+			// the prince can still set his own flag after giving a shuffled item
+			Data[0x39302] = (byte)ObjectId.ElfDoc;
+			Data[0x3931F] = (byte)ObjectId.ElfDoc;
+
+			// Convert Talk_ifcanoe into Talk_ifairship
+			Data[0x39534] = UnsramIndex.AirshipVis;
+			// Point Talk_ifairship person to old Talk_ifcanoe routine
+			Data[0x391B5] = 0x33;
+			Data[0x391B6] = 0x95;
+
+			// Then we move Talk_earthfire to Talk_norm to clear space for 
+			// new item gift routine without overwriting Talk_chime
+			Data[0x391D3] = 0x92;
+			Data[0x391D4] = 0x94;
+
+			// Swap string pointer in index 2 and 3 for King, Bikke, Prince, and Lefein
+			var temp = Data[ItemLocations.KingConeria.Address];
+			Data[ItemLocations.KingConeria.Address] = Data[ItemLocations.KingConeria.Address - 1];
+			Data[ItemLocations.KingConeria.Address - 1] = temp;
+			temp = Data[ItemLocations.Bikke.Address];
+			Data[ItemLocations.Bikke.Address] = Data[ItemLocations.Bikke.Address - 1];
+			Data[ItemLocations.Bikke.Address - 1] = temp;
+			temp = Data[ItemLocations.ElfPrince.Address];
+			Data[ItemLocations.ElfPrince.Address] = Data[ItemLocations.ElfPrince.Address - 1];
+			Data[ItemLocations.ElfPrince.Address - 1] = temp;
+			temp = Data[ItemLocations.CanoeSage.Address - 1];
+			Data[ItemLocations.CanoeSage.Address - 1] = Data[ItemLocations.CanoeSage.Address - 2];
+			Data[ItemLocations.CanoeSage.Address - 2] = temp;
+			temp = Data[ItemLocations.Lefein.Address];
+			Data[ItemLocations.Lefein.Address] = Data[ItemLocations.Lefein.Address - 1];
+			Data[ItemLocations.Lefein.Address - 1] = temp;
+
+			// And do the same swap in the vanilla routines so those still work if needed
+			Data[0x392A7] = 0x12;
+			Data[0x392AA] = 0x13;
+			Data[0x392FC] = 0x13;
+			Data[0x392FF] = 0x12;
+			Data[0x39326] = 0x12;
+			Data[0x3932E] = 0x13;
+			Data[0x3959C] = 0x12;
+			Data[0x395A4] = 0x13;
+
+			// When getting jump address from lut_MapObjTalkJumpTbl (starting 0x3902B), store
+			// it in tmp+4 & tmp+5 (unused normally) instead of tmp+6 & tmp+7 so that tmp+6
+			// will still have the mapobj_id (allowing optimizations in TalkRoutines)
+			Data[0x39063] = 0x14;
+			Data[0x39068] = 0x15;
+			Data[0x3906A] = 0x14;
+			Data[0x39070] = 0x14;
+			Data[0x39075] = 0x15;
+			Data[0x39077] = 0x14;
+		}
+
+		public void EnableEarlySarda()
 		{
 			var nops = new byte[SardaSize];
 			for (int i = 0; i < nops.Length; i++)
@@ -31,7 +94,7 @@ namespace FF1Lib
 			Put(SardaOffset, nops);
 		}
 
-		public void EnableEarlyCanoe()
+		public void EnableEarlySage()
 		{
 			var nops = new byte[CanoeSageSize];
 			for (int i = 0; i < nops.Length; i++)
@@ -135,17 +198,17 @@ namespace FF1Lib
 			Put(0x3BFF0, Blob.FromHex("A90785FA60")); // Set respondrate to 7
 
 			// Move NPCs out of the way.
-			MoveNpc( 0,  0, 0x11, 0x02, inRoom: false, stationary:  true); // North Coneria Soldier
-			MoveNpc( 0,  4, 0x12, 0x14, inRoom: false, stationary:  true); // South Coneria Gal
-			MoveNpc( 0,  7, 0x1E, 0x0B, inRoom: false, stationary:  true); // East Coneria Guy
-			MoveNpc( 2,  0, 0x27, 0x18, inRoom: false, stationary:  true); // Efland Entrance Elf
-			MoveNpc( 6, 13, 0x29, 0x1B, inRoom: false, stationary:  true); // Onrac Guy
-			MoveNpc(18,  1, 0x0C, 0x34, inRoom: false, stationary: false); // OoB Bat!
-			MoveNpc(30, 10, 0x09, 0x0B, inRoom:  true, stationary: false); // Earth Cave Bat B3
-			MoveNpc(30,  7, 0x0B, 0x0B, inRoom:  true, stationary: false); // Earth Cave Bat B3
-			MoveNpc(30,  8, 0x0A, 0x0C, inRoom:  true, stationary: false); // Earth Cave Bat B3
-			MoveNpc(30,  9, 0x09, 0x25, inRoom: false, stationary: false); // Earth Cave Bat B3
-			MoveNpc(32,  1, 0x22, 0x34, inRoom: false, stationary: false); // Earth Cave Bat B5
+			MoveNpc(0, 0, 0x11, 0x02, inRoom: false, stationary: true); // North Coneria Soldier
+			MoveNpc(0, 4, 0x12, 0x14, inRoom: false, stationary: true); // South Coneria Gal
+			MoveNpc(0, 7, 0x1E, 0x0B, inRoom: false, stationary: true); // East Coneria Guy
+			MoveNpc(2, 0, 0x27, 0x18, inRoom: false, stationary: true); // Efland Entrance Elf
+			MoveNpc(6, 13, 0x29, 0x1B, inRoom: false, stationary: true); // Onrac Guy
+			//MoveNpc(18, 1, 0x0C, 0x34, inRoom: false, stationary: false); // OoB Bat!
+			MoveNpc(30, 10, 0x09, 0x0B, inRoom: true, stationary: false); // Earth Cave Bat B3
+			MoveNpc(30, 7, 0x0B, 0x0B, inRoom: true, stationary: false); // Earth Cave Bat B3
+			MoveNpc(30, 8, 0x0A, 0x0C, inRoom: true, stationary: false); // Earth Cave Bat B3
+			MoveNpc(30, 9, 0x09, 0x25, inRoom: false, stationary: false); // Earth Cave Bat B3
+			MoveNpc(32, 1, 0x22, 0x34, inRoom: false, stationary: false); // Earth Cave Bat B5
 		}
 
 		private void MoveNpc(int map, int npc, int x, int y, bool inRoom, bool stationary)
@@ -185,21 +248,99 @@ namespace FF1Lib
 			Put(0x3AACB, Blob.FromHex("18A202B5106A95109D0D03CA10F5"));
 		}
 
+		private void EnableEasyMode()
+		{
+			var newRng = Get(RngOffset, RngSize).ToBytes()
+				.Select(x => (byte)Math.Min(240, x * 5))
+				.ToArray();
+			Put(RngOffset, newRng);
+			var enemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
+			foreach (var enemy in enemies)
+			{
+				var hp = BitConverter.ToUInt16(enemy, 4);
+				hp = (ushort)(hp * 0.1);
+				var hpBytes = BitConverter.GetBytes(hp);
+				Array.Copy(hpBytes, 0, enemy, 4, 2);
+			}
+
+			Put(EnemyOffset, enemies.SelectMany(enemy => enemy.ToBytes()).ToArray());
+		}
+
 		public void EasterEggs()
 		{
 			Put(0x2ADDE, Blob.FromHex("91251A682CC18EB1B74DB32505C1BE9296991E2F1AB6A4A9A8BE05C1C1C1C1C1C19B929900"));
 		}
 
-		public void EnableEarlyBridge()
+		/// <summary>
+		/// Unused method, but this would allow a non-npc shuffle king to build bridge without rescuing princess
+		/// </summary>
+		public void EnableEarlyKing()
 		{
-			// Pass all bridge_vis checks. It's a mother beautiful bridge - and it's gonna be there.
-			Blob setBridgeVis = Blob.FromHex("A901EA");
-			Put(0x392A1, setBridgeVis);
-			Put(0x394D7, setBridgeVis);
-			Put(0x7C64D, setBridgeVis);
-			Put(0x7E3A6, setBridgeVis);
+			Data[0x390D5] = 0xA1;
+		}
+		
+		public void EnableFreeBridge()
+		{
+			// Set the default bridge_vis byte on game start to true. It's a mother beautiful bridge - and it's gonna be there.
+			Data[0x3008] = 0x01;
+		}
+		
+		public void EnableFreeShip()
+		{
+			Data[0x3000] = 1;
+			Data[0x3001] = 152;
+			Data[0x3002] = 169;
+		}
+		
+		public void EnableFreeAirship()
+		{
+			Data[0x3004] = 1;
+			Data[0x3005] = 153;
+			Data[0x3006] = 165;
+		}
+		
+		public void EnableFreeCanal()
+		{
+			Data[0x300C] = 0;
 		}
 
+		public void EnableCanalBridge()
+		{
+			// Inline edit to draw the isthmus or the bridge, but never the open canal anymore.
+			// See 0F_8780_IsOnEitherBridge for this and the IsOnBridge replacement called from below.
+			Put(0x7E3BB, Blob.FromHex("A266A0A420DFE3B0E1A908AE0C60F002A910"));
 
+			/**
+			 *  A slight wrinkle from normal cross page jump in that we need to preserve the status register,
+			 *  since the carry bit is what's used to determine if you're on a bridge or canal, of course.
+			 *
+			    LDA $60FC
+				PHA
+				LDA #$0F
+				JSR $FE03 ;SwapPRG_L
+				JSR $8780
+				PLA
+				PHP
+				JSR $FE03 ;SwapPRG_L
+				PLP
+				RTS
+			**/
+			Put(0x7C64D, Blob.FromHex("ADFC6048A90F2003FE20808768082003FE2860"));
+		}
+
+		public void EnableKeylessToFR()
+		{
+			// Overwrite Keylocked door in ToFR 2nd Floor with normal door tile.
+			Data[0x1997B] = 0x36;
+		}
+
+		public void EnableFreeOrbs()
+		{
+			const int initItemOffset = 0x3020;
+			Data[initItemOffset + (int)Item.EarthOrb] = 0x01;
+			Data[initItemOffset + (int)Item.FireOrb] = 0x01;
+			Data[initItemOffset + (int)Item.WaterOrb] = 0x01;
+			Data[initItemOffset + (int)Item.AirOrb] = 0x01;
+		}
 	}
 }

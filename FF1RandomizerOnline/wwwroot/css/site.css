@@ -14,7 +14,7 @@
 input,
 select,
 textarea {
-    max-width: 280px;
+    max-width: 340px;
 }
 
 .section {
@@ -107,4 +107,8 @@ input[type=range]::-moz-range-track {
 input[type=range]::-moz-range-thumb {
 	background-color: #fff;
 	border: 1px solid #777;
+}
+
+a:hover {
+	cursor: pointer;
 }

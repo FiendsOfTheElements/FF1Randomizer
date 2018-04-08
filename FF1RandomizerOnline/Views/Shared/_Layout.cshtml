@@ -31,6 +31,7 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li><a asp-area="" asp-controller="Home" asp-action="Randomize">Randomize</a></li>
+                    <li><a asp-area="" asp-controller="Home" asp-action="WhatsNew">What's New</a></li>
                     <li><a href="https://github.com/Entroper/FF1Randomizer/blob/master/README.md">About</a></li>
 	                <li><a href="https://github.com/Entroper/FF1Randomizer/releases">Download</a></li>
 	                <li><a href="https://github.com/Entroper/FF1Randomizer/issues">Report a Bug</a></li>
@@ -45,6 +46,7 @@
     <environment names="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="~/lib/vue/dist/vue.js"></script>
         <script src="~/js/site.js" asp-append-version="true"></script>
     </environment>
     <environment names="Staging,Production">
@@ -60,6 +62,7 @@
                 crossorigin="anonymous"
                 integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa">
         </script>
+        <script src="~/lib/vue/dist/vue.min.js"></script>
         <script src="~/js/site.min.js" asp-append-version="true"></script>
     </environment>
 
