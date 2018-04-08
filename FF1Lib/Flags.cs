@@ -51,11 +51,11 @@ namespace FF1Lib
 		[FlagString(Character = ENCOUNTERS, FlagBit = 1)]
 		public bool Rng { get; set; }
 		[FlagString(Character = ENCOUNTERS, FlagBit = 2)]
-		public bool EnemyFormationsFrequency { get; set; } // Planned 2.1 feature
+		public bool EnemyFormationsFrequency { get; set; }
 		[FlagString(Character = ENCOUNTERS, FlagBit = 4)]
-		public bool EnemyFormationsUnrunnable { get; set; } // Planned 2.1 feature
+		public bool EnemyFormationsUnrunnable { get; set; }
 		[FlagString(Character = ENCOUNTERS, FlagBit = 8)]
-		public bool EnemyFormationsSurprise { get; set; } // Planned 2.1 feature
+		public bool EnemyFormationsSurprise { get; set; }
 		
 		[FlagString(Character = BATTLES, FlagBit = 1)]
 		public bool EnemyScripts { get; set; }
@@ -161,6 +161,7 @@ namespace FF1Lib
 		public bool Dash { get; set; }
 		[FlagString(Character = CONVENIENCES, FlagBit = 8)]
 		public bool BuyTen { get; set; }
+
 		[FlagString(Character = CONVENIENCES, FlagBit = 16)]
 		public bool IdentifyTreasures { get; set; }
 		[FlagString(Character = CONVENIENCES, FlagBit = 32)]
@@ -175,14 +176,14 @@ namespace FF1Lib
 		[FlagString(Character = BUG_FIXES, FlagBit = 8)]
 		public bool SpellBugs { get; set; }
 		[FlagString(Character = BUG_FIXES, FlagBit = 16)]
-		public bool BlackBeltAbsorb { get; set; } // Planned 2.1 feature
+		public bool BlackBeltAbsorb { get; set; }
 		
 		[FlagString(Character = ENEMY_BUG_FIXES, FlagBit = 1)]
 		public bool EnemyStatusAttackBug { get; set; }
 		[FlagString(Character = ENEMY_BUG_FIXES, FlagBit = 2)]
-		public bool EnemySpellsTargetingAllies { get; set; }// Planned 2.1 feature
+		public bool EnemySpellsTargetingAllies { get; set; }
 		[FlagString(Character = ENEMY_BUG_FIXES, FlagBit = 4)]
-		public bool EnemyElementalResistancesBug { get; set; }// Planned 2.1 feature
+		public bool EnemyElementalResistancesBug { get; set; }
 
 		[FlagString(Character = 17, Multiplier = 0.1)]
 		public double EnemyScaleFactor { get; set; }
@@ -194,7 +195,6 @@ namespace FF1Lib
 		public int ExpBonus { get; set; }
 		[FlagString(Character = 21, Multiplier = 1)]
 		public int ForcedPartyMembers { get; set; }
-		
 		
 		public bool ModernBattlefield { get; set; }
 		public bool FunEnemyNames { get; set; }

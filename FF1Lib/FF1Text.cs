@@ -133,5 +133,19 @@ namespace FF1Lib
 
 			return Blob.Concat(buffers);
 		}
+
+		// Returns a centered, whitespace padded line of 32 characters
+		public static Blob TextToCopyrightLine(string text)
+		{
+			if (text.Length > 32)
+			{
+				throw new ArgumentOutOfRangeException();
+			}
+
+			var flagLeft = new string(' ', (int)Math.Ceiling((32 - text.Length) / 2.0));
+			var flagRight = new string(' ', (int)Math.Floor((32 - text.Length) / 2.0));
+
+			return TextToBytes(flagLeft + text + flagRight, false, Delimiter.Empty);
+		}
 	}
 }

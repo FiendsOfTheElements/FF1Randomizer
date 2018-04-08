@@ -129,6 +129,18 @@ namespace FF1Lib
 				"  MeridianBC",
 				"  tartopan",
 				"  nitz",
+				"  Septimus",
+			},
+			new []
+			{
+				"  Community",
+				"",
+				"  Czardia",
+				"  Edgeworth",
+				"  ichbinmiah",
+				"  Taralyn",
+				"  Trinton",
+				"  xIceBlue",
 			},
 			new []
 			{
@@ -137,7 +149,7 @@ namespace FF1Lib
 				"jkoper, Kababesh",
 				"DarkwingDuck.sda",
 				"Miaut, Ayntlerz ",
-				"czardia,gameboy9",
+				"gameboy9, sbq92 ",
 				"EunosXX, Jaylow7",
 				"  theCubeMiser",
 				"  Beefucurry",
