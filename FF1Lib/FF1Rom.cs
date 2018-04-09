@@ -140,7 +140,7 @@ namespace FF1Lib
 
 			if (flags.EnemyScripts)
 			{
-				ShuffleEnemyScripts(rng);
+				ShuffleEnemyScripts(rng, flags.AllowUnsafePirates);
 			}
 
 			if (flags.EnemySkillsSpells)
@@ -150,7 +150,7 @@ namespace FF1Lib
 
 			if (flags.EnemyStatusAttacks)
 			{
-				ShuffleEnemyStatusAttacks(rng);
+				ShuffleEnemyStatusAttacks(rng, flags.AllowUnsafePirates);
 			}
 
 			if (flags.EnemyFormationsUnrunnable)

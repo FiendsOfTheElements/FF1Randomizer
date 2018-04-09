@@ -63,6 +63,8 @@ namespace FF1Lib
 		public bool EnemySkillsSpells { get; set; }
 		[FlagString(Character = BATTLES, FlagBit = 4)]
 		public bool EnemyStatusAttacks { get; set; }
+		[FlagString(Character = BATTLES, FlagBit = 8)]
+		public bool AllowUnsafePirates { get; set; }
 
 		[FlagString(Character = STANDARD_MAPS, FlagBit = 1)]
 		public bool OrdealsPillars { get; set; }

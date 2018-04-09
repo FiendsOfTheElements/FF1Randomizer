@@ -53,7 +53,8 @@
 				<div class="checkbox-cell"><input v-model="MagicPermissions" :disabled="!MagicLevels" class="indent" type="checkbox" asp-for="Flags.MagicPermissions" /> <label :style="!MagicLevels ? { color: 'grey'} : {}" asp-for="Flags.MagicPermissions">Keep Permissions</label></div>
 			</div>
 			<div class="col-xs-4">
-				<div class="checkbox-cell"><input v-model="EnemyScripts" type="checkbox" asp-for="Flags.EnemyScripts" /> <label asp-for="Flags.EnemyScripts">Enemy Scripts <b v-if="EnemyScripts" title="Risks 9 Pirates with THUNDER, etc. blocking early progression" style="color:orange">⚠</b></label></div>
+				<div class="checkbox-cell"><input v-model="EnemyScripts" type="checkbox" asp-for="Flags.EnemyScripts" /> <label asp-for="Flags.EnemyScripts">Enemy Scripts</label></div>
+				<div class="checkbox-cell"><input v-model="AllowUnsafePirates" :disabled="!EnemyScripts" class="indent" type="checkbox" asp-for="Flags.AllowUnsafePirates" /> <label :style="!EnemyScripts ? { color: 'grey'} : {}" asp-for="Flags.AllowUnsafePirates">Allow Unsafe Pirates <b v-if="AllowUnsafePirates" title="Risks 9 Pirates with THUNDER, etc. blocking early progression" style="color:orange">⚠</b></label></div>
 				<div class="checkbox-cell"><input v-model="EnemySkillsSpells" type="checkbox" asp-for="Flags.EnemySkillsSpells" /> <label asp-for="Flags.EnemySkillsSpells">Enemy Skills/Spells</label></div>
 				<div class="checkbox-cell"><input v-model="EnemyStatusAttacks" type="checkbox" asp-for="Flags.EnemyStatusAttacks" /> <label asp-for="Flags.EnemyStatusAttacks">Enemy Status Attacks</label></div>
 				<div class="checkbox-cell"><input v-model="EnemyFormationsUnrunnable" type="checkbox" asp-for="Flags.EnemyFormationsUnrunnable" /> <label asp-for="Flags.EnemyFormationsUnrunnable">Enemy Unrunnable Formations</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.1.0</a>)</small></div>
