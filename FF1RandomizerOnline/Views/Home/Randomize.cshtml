@@ -170,7 +170,8 @@
 				<div class="checkbox-cell" title="The Airship is available at the start of the game"><input v-model="FreeAirship" type="checkbox" asp-for="Flags.FreeAirship" /> <label asp-for="Flags.FreeAirship">Free Airship</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.0.0</a>)</small></div>
 				<div class="checkbox-cell" title="The Bridge is available at the start of the game"><input v-model="FreeBridge" type="checkbox" asp-for="Flags.FreeBridge" /> <label asp-for="Flags.FreeBridge">Free Bridge</label></div>
 				<div class="checkbox-cell" title="Begin the game with all orbs already lit."><input v-model="FreeOrbs" type="checkbox" asp-for="Flags.FreeOrbs" /> <label asp-for="Flags.FreeOrbs">Free Orbs</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.0.0</a>)</small></div>
-            	<div class="checkbox-cell" title="Encounter rate cut to 20% and all Enemy HP cut to 10% (after any randomizations)"><input v-model="EasyMode" type="checkbox" asp-for="Flags.EasyMode" /> <label asp-for="Flags.EasyMode">Easy Mode</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.0.0</a>)</small></div>
+				<div class="checkbox-cell" title="Begin the game with 400GP"><input v-model="VanillaStartingGold" type="checkbox" asp-for="Flags.VanillaStartingGold" /> <label asp-for="Flags.VanillaStartingGold">Force Default Starting GP</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.1.0</a>)</small></div>
+				<div class="checkbox-cell" title="Encounter rate cut to 20% and all Enemy HP cut to 10% (after any randomizations)"><input v-model="EasyMode" type="checkbox" asp-for="Flags.EasyMode" /> <label asp-for="Flags.EasyMode">Easy Mode</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.0.0</a>)</small></div>
 			</div>
 		</div>
 		<div class="section tab-pane" id="bug-fixes">

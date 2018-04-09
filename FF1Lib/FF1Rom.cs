@@ -286,7 +286,7 @@ namespace FF1Lib
 			var itemText = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
 			FixVanillaRibbon(itemText);
 			ExpGoldBoost(flags.ExpBonus, flags.ExpMultiplier);
-			ScalePrices(flags.PriceScaleFactor, flags.ExpMultiplier, itemText, rng);
+			ScalePrices(flags.PriceScaleFactor, flags.ExpMultiplier, flags.VanillaStartingGold, itemText, rng);
 
 			overworldMap.ApplyMapEdits();
 			WriteMaps(maps);

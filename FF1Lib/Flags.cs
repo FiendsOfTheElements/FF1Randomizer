@@ -152,6 +152,8 @@ namespace FF1Lib
 		public bool FreeAirship { get; set; }
 		[FlagString(Character = FILTHY_CASUALS, FlagBit = 4)]
 		public bool FreeOrbs { get; set; }
+		[FlagString(Character = FILTHY_CASUALS, FlagBit = 8)]
+		public bool VanillaStartingGold { get; set; }
 		[FlagString(Character = FILTHY_CASUALS, FlagBit = 32)]
 		public bool EasyMode { get; set; }
 		
