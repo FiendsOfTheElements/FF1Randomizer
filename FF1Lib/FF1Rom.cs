@@ -97,7 +97,7 @@ namespace FF1Lib
 
 			if (flags.TitansTrove)
 			{
-				EnableTitansTrove();
+				EnableTitansTrove(maps);
 			}
 
 			// This has to be done before we shuffle spell levels.
