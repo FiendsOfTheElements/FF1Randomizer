@@ -66,6 +66,7 @@ namespace FF1RandomizerOnline.Controllers
 					EnemyFormationsFrequency = true,
 
 					OrdealsPillars = true,
+					SkyCastle4FTeleporters = true,
 					TitansTrove = true,
 					
 					MapOpenProgression = false,

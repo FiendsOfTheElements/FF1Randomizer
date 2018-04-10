@@ -67,10 +67,12 @@ namespace FF1Lib
 		[FlagString(Character = STANDARD_MAPS, FlagBit = 1)]
 		public bool OrdealsPillars { get; set; }
 		[FlagString(Character = STANDARD_MAPS, FlagBit = 2)]
-		public bool TitansTrove { get; set; }
+		public bool SkyCastle4FTeleporters { get; set; }
 		[FlagString(Character = STANDARD_MAPS, FlagBit = 4)]
-		public bool CrownlessOrdeals { get; set; }
+		public bool TitansTrove { get; set; }
 		[FlagString(Character = STANDARD_MAPS, FlagBit = 8)]
+		public bool CrownlessOrdeals { get; set; }
+		[FlagString(Character = STANDARD_MAPS, FlagBit = 16)]
 		public bool KeylessToFR { get; set; }
 		[FlagString(Character = STANDARD_MAPS, FlagBit = 32)]
 		public bool Floors { get; set; } // Planned x.x feature - interior floors shuffle
