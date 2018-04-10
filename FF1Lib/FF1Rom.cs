@@ -86,7 +86,8 @@ namespace FF1Lib
 			EasterEggs();
 			DynamicWindowColor();
 			PermanentCaravan();
-			var map = new OverworldMap(this, flags);
+			var overworldMap = new OverworldMap(this, flags);
+			var maps = ReadMaps();
 			var shopItemLocation = ItemLocations.CaravanItemShop1;
 			
 			if (flags.ModernBattlefield)
@@ -117,8 +118,8 @@ namespace FF1Lib
 
 			if (flags.Treasures || flags.NPCItems || flags.NPCFetchItems)
 			{
-				var incentivesData = new IncentiveData(rng, flags, map.MapLocationRequirements);
-				ShuffleTreasures(rng, flags, incentivesData, shopItemLocation, map.MapLocationRequirements);
+				var incentivesData = new IncentiveData(rng, flags, overworldMap.MapLocationRequirements);
+				ShuffleTreasures(rng, flags, incentivesData, shopItemLocation, overworldMap.MapLocationRequirements);
 			}
 
 			if (flags.MagicShops)
@@ -168,7 +169,12 @@ namespace FF1Lib
 
 			if (flags.OrdealsPillars)
 			{
-				ShuffleOrdeals(rng);
+				ShuffleOrdeals(rng, maps);
+			}
+
+			if (flags.SkyCastle4FTeleporters)
+			{
+				ShuffleSkyCastle4F(rng, maps);
 			}
 
 			if (flags.CrownlessOrdeals)
@@ -281,7 +287,8 @@ namespace FF1Lib
 			ExpGoldBoost(flags.ExpBonus, flags.ExpMultiplier);
 			ScalePrices(flags.PriceScaleFactor, flags.ExpMultiplier, itemText, rng);
 
-			map.ApplyMapEdits();
+			overworldMap.ApplyMapEdits();
+			WriteMaps(maps);
 
 			WriteText(itemText, ItemTextPointerOffset, ItemTextPointerBase, ItemTextOffset, UnusedGoldItems);
 

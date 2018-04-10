@@ -26,10 +26,8 @@ namespace FF1Lib
 			public List<(int, int)> Teleporters;
 		}
 
-		public void ShuffleOrdeals(MT19337 rng)
+		public void ShuffleOrdeals(MT19337 rng, List<Map> maps)
 		{
-			var maps = ReadMaps();
-
 			// Here are all the teleporter rooms except the one you start in.
 			// The last one is not normally accessible in the game.  We'll rewrite the teleporter located in that
 			// room to go TO that room, and then shuffle it into one of the other locations so that you can go
@@ -148,13 +146,66 @@ namespace FF1Lib
 				}
 			}
 
-			WriteMaps(maps);
-
 			// Now let's rewrite that teleporter.  The X coordinates are packed together, followed by the Y coordinates,
 			// followed by the map indices.  Maybe we'll make a data structure for that someday soon.
 			const byte LostTeleportIndex = 0x3C;
 			Put(TeleportOffset + LostTeleportIndex, new byte[] { 0x10 });
 			Put(TeleportOffset + TeleportCount + LostTeleportIndex, new byte[] { 0x12 });
+		}
+
+		struct Coords
+		{
+			public int x;
+			public int y;
+		}
+
+		public void ShuffleSkyCastle4F(MT19337 rng, List<Map> maps)
+		{
+			var map = maps[50]; // 4F
+
+			Coords downTeleporter = new Coords
+			{
+				x = 0x03,
+				y = 0x03
+			};
+			Coords upTeleporter = new Coords
+			{
+				x = 0x23,
+				y = 0x23
+			};
+
+			var dest = GetSkyCastleFloorTile(rng, map);
+			SwapTiles(map, upTeleporter, dest);
+			dest = GetSkyCastleFloorTile(rng, map);
+			SwapTiles(map, downTeleporter, dest);
+
+			const byte TeleportIndex3FTo4F = 0x2E;
+			Put(TeleportOffset + TeleportIndex3FTo4F, new [] { (byte)dest.x });
+			Put(TeleportOffset + TeleportCount + TeleportIndex3FTo4F, new [] { (byte)dest.y });
+		}
+
+		private Coords GetSkyCastleFloorTile(MT19337 rng, Map map)
+		{
+			int x, y;
+			do
+			{
+				x = rng.Between(0, 64);
+				y = rng.Between(0, 64);
+
+			} while (map[y, x] != 0x4B);
+
+			return new Coords
+			{
+				x = x,
+				y = y
+			};
+		}
+
+		private void SwapTiles(Map map, Coords src, Coords dest)
+		{
+			byte temp = map[dest.y, dest.x];
+			map[dest.y, dest.x] = map[src.y, src.x];
+			map[src.y, src.x] = temp;
 		}
 
 		public void EnableEarlyOrdeals()
