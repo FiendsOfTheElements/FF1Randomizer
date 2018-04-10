@@ -224,10 +224,10 @@ namespace FF1Lib
 			Put(ordealsTilesetOffset, Blob.FromUShorts(ordealsTilesetData));
 		}
 
-		public void EnableTitansTrove()
+		public void EnableTitansTrove(List<Map> maps)
         {
-	        Put(0x03F41, Blob.FromHex("4408"));       // Move the Titan
-			Put(0x1ABC3, Blob.FromHex("3FBE03C104")); // Tweak the tunnel
+			MoveNpc(60, 0, 4, 8, inRoom: false, stationary: true); // Move the Titan
+			maps[60][9, 3] = 0x3F; // Block the tunnel
         }
 
 		public List<Map> ReadMaps()
