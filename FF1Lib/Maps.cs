@@ -189,8 +189,8 @@ namespace FF1Lib
 			int x, y;
 			do
 			{
-				x = rng.Between(0, 64);
-				y = rng.Between(0, 64);
+				x = rng.Between(0, 63);
+				y = rng.Between(0, 63);
 
 			} while (map[y, x] != 0x4B);
 
