@@ -12,7 +12,7 @@ namespace FF1Lib
         Rod = 0x0002,
         Oxyale = 0x0004,
         Cube = 0x0008,
-        BlackOrb = 0x0010,
+        Bottle = 0x0010,
         Lute = 0x0020,
         Crown = 0x0040,
         Crystal = 0x0080,
@@ -20,8 +20,12 @@ namespace FF1Lib
         Tnt = 0x0200,
         Adamant = 0x0400,
         Slab = 0x0800,
-        Bottle = 0x1000,
-        All = 0x1FFF
+        EarthOrb = 0x1000, 
+        FireOrb = 0x2000, 
+        WaterOrb = 0x4000, 
+        AirOrb = 0x8000, 
+        BlackOrb = 0xF000,
+        All = 0xFFFF
     }
     public interface IRewardSource {
         int Address { get; }

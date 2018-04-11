@@ -311,9 +311,18 @@ namespace FF1Lib
 				if (!currentAccess.HasFlag(AccessRequirement.Cube) &&
 					currentItems.Contains(Item.Cube))
 					currentAccess |= AccessRequirement.Cube;
-				if (!currentAccess.HasFlag(AccessRequirement.BlackOrb) &&
-					ItemLists.AllOrbs.All(y => currentItems.Contains(y)))
-					currentAccess |= AccessRequirement.BlackOrb;
+				if (!currentAccess.HasFlag(AccessRequirement.EarthOrb) &&
+					currentItems.Contains(Item.EarthOrb))
+					currentAccess |= AccessRequirement.EarthOrb;
+				if (!currentAccess.HasFlag(AccessRequirement.FireOrb) &&
+					currentItems.Contains(Item.FireOrb))
+					currentAccess |= AccessRequirement.FireOrb;
+				if (!currentAccess.HasFlag(AccessRequirement.WaterOrb) &&
+					currentItems.Contains(Item.WaterOrb))
+					currentAccess |= AccessRequirement.WaterOrb;
+				if (!currentAccess.HasFlag(AccessRequirement.AirOrb) &&
+					currentItems.Contains(Item.AirOrb))
+					currentAccess |= AccessRequirement.AirOrb;
 				if (!currentAccess.HasFlag(AccessRequirement.Lute) &&
 					currentItems.Contains(Item.Lute))
 					currentAccess |= AccessRequirement.Lute;
