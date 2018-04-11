@@ -195,7 +195,7 @@ namespace FF1Lib
 		public double ExpMultiplier { get; set; }
 		[FlagString(Character = 20, Multiplier = 10)]
 		public double ExpBonus { get; set; }
-		[FlagString(Character = 21)]
+		[FlagString(Character = 21, Multiplier = 1)]
 		public int ForcedPartyMembers { get; set; }
 
 		public bool ModernBattlefield { get; set; }
@@ -287,7 +287,7 @@ namespace FF1Lib
 							flagCharacterIndex += flagProperty.Value.FlagBit;
 						continue;
 					}
-					if (flagProperty.Value.Multiplier == 0)
+					if (flagProperty.Value.Multiplier == 1)
 					{
 						flagCharacterIndex += Convert.ToInt32(flagsPropertyValue);
 					}
@@ -316,7 +316,7 @@ namespace FF1Lib
 				{
 					var multiplierAttribute = flagAttributesForChar.First(x => x.Value.FlagBit < 1);
 
-					if (multiplierAttribute.Value.Multiplier == 0)
+					if (multiplierAttribute.Value.Multiplier == 1)
 					{
 						var outputValue = charFlagValue;
 						typeof(Flags).GetProperty(multiplierAttribute.Key).SetValue(result, outputValue);
@@ -353,22 +353,11 @@ namespace FF1Lib
 				$"var toggled = (base64Chars.indexOf(this.flagString.charAt({Character}))) ^ {FlagBit};" +
 				$"this.flagString = this.flagString.substr(0,{Character}) + base64Chars[toggled] + this.flagString.substr({Character + 1});}}}}";
 
-			if (Multiplier == 0)
-			{
-				return $"{{get:function (){{ if (this.flagString.length <= {Character}) return 0; " +
-				$"return base64Chars.indexOf(this.flagString[{Character}]);}}," +
-				$"set:function(newValue){{while(this.flagString.length <= {Character})this.flagString += base64Chars[0];" +
-				$"var scaledValue = (newValue / {Multiplier}).toFixed() % base64Chars.length;" +
-				$"this.flagString = this.flagString.substr(0,{Character}) + base64Chars[scaledValue] + this.flagString.substr({Character + 1});}} }}";
-			}
-			else
-			{
-				return $"{{get:function (){{ if (this.flagString.length <= {Character}) return 0; " +
-				$"return base64Chars.indexOf(this.flagString[{Character}]) * {Multiplier};}}," +
-				$"set:function(newValue){{while(this.flagString.length <= {Character})this.flagString += base64Chars[0];" +
-				$"var scaledValue = (newValue / {Multiplier}).toFixed() % base64Chars.length;" +
-				$"this.flagString = this.flagString.substr(0,{Character}) + base64Chars[scaledValue] + this.flagString.substr({Character + 1});}} }}";
-			}
+			return $"{{get:function (){{ if (this.flagString.length <= {Character}) return 0; " +
+			$"return base64Chars.indexOf(this.flagString[{Character}]) * {Multiplier};}}," +
+			$"set:function(newValue){{while(this.flagString.length <= {Character})this.flagString += base64Chars[0];" +
+			$"var scaledValue = (newValue / {Multiplier}).toFixed() % base64Chars.length;" +
+			$"this.flagString = this.flagString.substr(0,{Character}) + base64Chars[scaledValue] + this.flagString.substr({Character + 1});}} }}";
 		}
 	}
 }
