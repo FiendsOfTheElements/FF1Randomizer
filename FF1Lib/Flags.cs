@@ -304,12 +304,12 @@ namespace FF1Lib
 			foreach (var inputChar in inputCharacters)
 			{
 				var charFlagValue = base64CharString.IndexOf(inputChar);
-				var flagAttributesForChar = flagAttributes[index];
+				var flagAttributesForChar = flagAttributes[index++];
 				if (flagAttributesForChar.Any(x => x.Value.FlagBit < 1))
 				{
 					var multiplierAttribute = flagAttributesForChar.First(x => x.Value.FlagBit < 1);
 					var outputValue = charFlagValue * multiplierAttribute.Value.Multiplier;
-					typeof(Flags).GetProperty(multiplierAttribute.Key).SetValue(result, outputValue);
+					typeof(Flags).GetProperty(multiplierAttribute.Key).SetValue(result, (int)outputValue);
 					continue;
 				}
 				foreach (var flagAttribute in flagAttributesForChar)
