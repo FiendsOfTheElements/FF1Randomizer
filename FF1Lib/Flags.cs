@@ -24,7 +24,6 @@ namespace FF1Lib
 		private const int CONVENIENCES = 14;
 		private const int BUG_FIXES = 15;
 		private const int ENEMY_BUG_FIXES = 16;
-		private const int FUN_PERCENT = 22;
 		
 		[FlagString(Character = ITEMS, FlagBit = 1)]
 		public bool Shops { get; set; }
@@ -199,15 +198,10 @@ namespace FF1Lib
 		[FlagString(Character = 21)]
 		public int ForcedPartyMembers { get; set; }
 
-		[FlagString(Character = FUN_PERCENT, FlagBit = 1)]
 		public bool ModernBattlefield { get; set; }
-		[FlagString(Character = FUN_PERCENT, FlagBit = 2)]
 		public bool FunEnemyNames { get; set; }
-		[FlagString(Character = FUN_PERCENT, FlagBit = 4)]
 		public bool PaletteSwap { get; set; }
-		[FlagString(Character = FUN_PERCENT, FlagBit = 8)]
 		public bool TeamSteak { get; set; }
-		[FlagString(Character = 23)]
 		public MusicShuffle Music { get; set; }
 
 

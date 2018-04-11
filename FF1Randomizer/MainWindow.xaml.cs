@@ -27,6 +27,7 @@ namespace FF1Randomizer
 	{
 		private string _filename;
 		private Blob _seed;
+		private Flags _flags;
 
 		private class MainWindowViewModel
 		{
@@ -133,7 +134,7 @@ namespace FF1Randomizer
 		private void GenerateButton_Click(object sender, RoutedEventArgs e)
 		{
 			var rom = new FF1Rom(_filename);
-			rom.Randomize(_seed, Flags.DecodeFlagsText(FlagsTextBox.Text));
+			rom.Randomize(_seed, _flags);
 
 			var fileRoot = _filename.Substring(0, _filename.LastIndexOf("."));
 			var outputFilename = $"{fileRoot}_{_seed.ToHex()}_{FlagsTextBox.Text}.nes";
@@ -495,7 +496,8 @@ namespace FF1Randomizer
 				return;
 			}
 
-			FlagsTextBox.Text = Flags.EncodeFlagsText(new Flags {
+
+			_flags = new Flags {
 				Treasures = TreasuresCheckBox.IsChecked == true,
 				NPCItems = NPCItemsCheckBox.IsChecked == true,
 				NPCFetchItems = NPCFetchItemsCheckBox.IsChecked == true,
@@ -574,7 +576,9 @@ namespace FF1Randomizer
 				ExpMultiplier = ExpMultiplierSlider.Value,
 				ExpBonus = (int)ExpBonusSlider.Value,
 				ForcedPartyMembers = (int)PartyScaleFactorSlider.Value
-			});
+			};
+
+			FlagsTextBox.Text = Flags.EncodeFlagsText(_flags);
 		}
 
 		void ApplyFlags(Flags flags)
