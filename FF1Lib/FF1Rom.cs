@@ -129,6 +129,7 @@ namespace FF1Lib
 
 			if (flags.MagicLevels)
 			{
+				FixWarpBug(); // The warp bug only needs to be fixed if the magic levels are being shuffled
 				ShuffleMagicLevels(rng, flags.MagicPermissions);
 			}
 
