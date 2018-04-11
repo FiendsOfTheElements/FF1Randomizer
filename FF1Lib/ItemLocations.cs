@@ -272,7 +272,7 @@ namespace FF1Lib
 		public static MapObject ElfPrince = new MapObject(ObjectId.ElfPrince, MapLocation.ElflandCastle, Item.Key, AccessRequirement.Herb, ObjectId.ElfDoc);
 		public static MapObject Astos = new MapObject(ObjectId.Astos, MapLocation.NorthwestCastle, Item.Crystal, AccessRequirement.Crown, useVanillaRoutineAddress: true);
 		public static MapObject Sarda = new MapObject(ObjectId.Sarda, MapLocation.SardasCave, Item.Rod, requiredGameEventFlag: ObjectId.Vampire, requiredSecondLocation: MapLocation.EarthCave);
-		public static MapObject CanoeSage = new MapObject(ObjectId.CanoeSage, MapLocation.CresentLake, Item.Canoe, requiredItemTrade: Item.EarthOrb);
+		public static MapObject CanoeSage = new MapObject(ObjectId.CanoeSage, MapLocation.CresentLake, Item.Canoe, AccessRequirement.EarthOrb, requiredItemTrade: Item.EarthOrb);
 		public static MapObject CubeBot = new MapObject(ObjectId.CubeBot, MapLocation.Waterfall, Item.Cube);
 		public static MapObject Fairy = new MapObject(ObjectId.Fairy, MapLocation.Gaia, Item.Oxyale, AccessRequirement.Bottle);
 		// Assumption is made that if you have the slab and access to Lefein then you also have access to Unne
