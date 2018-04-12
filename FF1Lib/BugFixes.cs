@@ -106,9 +106,12 @@ namespace FF1Lib
 
 		public void FixVanillaRibbon(Blob[] texts)
 		{
-			if (texts[(int)Item.Ribbon].Length > 8)
+			var ribbonBlob = texts[(int)Item.Ribbon];
+			if (ribbonBlob.Length > 8)
 			{
-				texts[(int)Item.Ribbon][7] = 0x00;
+				ribbonBlob = ribbonBlob.SubBlob(0, 8);
+				ribbonBlob[7] = 0x00;
+				texts[(int)Item.Ribbon] = ribbonBlob;
 			}
 		}
 	}
