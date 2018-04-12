@@ -382,7 +382,7 @@ namespace FF1Lib
 
 			// The above code uses battle message $06 which is the unused Sight Recovered string
 			// Let's overwrite that string with something more appropriate for the WAIT command
-			Put(0x2CC71, FF1Text.TextToBytes("Waiting", false));
+			Put(0x2CC71, FF1Text.TextToBytes("W A I T", false));
 		}
 	}
 }
