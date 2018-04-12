@@ -183,9 +183,9 @@ namespace FF1Lib
 				EnableEarlyOrdeals();
 			}
 
-			if (flags.KeylessToFR)
+			if (flags.ChaosRush)
 			{
-				EnableKeylessToFR();
+				EnableChaosRush();
 			}
 
 			if (flags.EarlySarda && !flags.NPCItems)

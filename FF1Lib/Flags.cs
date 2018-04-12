@@ -75,7 +75,7 @@ namespace FF1Lib
 		[FlagString(Character = STANDARD_MAPS, FlagBit = 8)]
 		public bool CrownlessOrdeals { get; set; }
 		[FlagString(Character = STANDARD_MAPS, FlagBit = 16)]
-		public bool KeylessToFR { get; set; }
+		public bool ChaosRush { get; set; }
 		[FlagString(Character = STANDARD_MAPS, FlagBit = 32)]
 		public bool Floors { get; set; } // Planned x.x feature - interior floors shuffle
 

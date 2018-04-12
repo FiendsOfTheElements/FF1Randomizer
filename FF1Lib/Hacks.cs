@@ -339,23 +339,13 @@ namespace FF1Lib
 			Put(0x7C64D, Blob.FromHex("ADFC6048A90F2003FE20808768082003FE2860"));
 		}
 
-		public void EnableKeylessToFR()
+		public void EnableChaosRush()
 		{
-			// Overwrite Keylocked door in ToFR 2nd Floor with normal door tile.
-			Data[0x1997B] = 0x36;
-			Data[0x1A0E0] = 0x36;
-			Data[0x1A3CD] = 0x36;
-			Data[0x1A3D1] = 0x36;
-			Data[0x1A3DC] = 0x36;
-			Data[0x1A3E0] = 0x36;
-			Data[0x1A41E] = 0x36;
-			Data[0x1A44D] = 0x36;
-			Data[0x1A45B] = 0x36;
-			Data[0x1A510] = 0x36;
-			Data[0x1A517] = 0x36;
-			Data[0x1A51E] = 0x36;
-			Data[0x1A58F] = 0x36;
-			Data[0x1A59A] = 0x36;
+			// Overwrite Keylocked door in ToFR tileset with normal door.
+			Put(0x0F76, Blob.FromHex("0300"));
+
+			// Start with Lute
+			Data[0x3020 + (int)Item.Lute] = 0x01;
 		}
 
 		public void EnableFreeOrbs()
