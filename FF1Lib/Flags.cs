@@ -196,7 +196,7 @@ namespace FF1Lib
 		[FlagString(Character = 20, Multiplier = 10)]
 		public double ExpBonus { get; set; }
 		[FlagString(Character = 21, Multiplier = 1)]
-		public int ForcedPartyMembers { get; set; }
+		public double ForcedPartyMembers { get; set; }
 
 		public bool ModernBattlefield { get; set; }
 		public bool FunEnemyNames { get; set; }
@@ -287,14 +287,7 @@ namespace FF1Lib
 							flagCharacterIndex += flagProperty.Value.FlagBit;
 						continue;
 					}
-					if (flagProperty.Value.Multiplier == 1)
-					{
-						flagCharacterIndex += Convert.ToInt32(flagsPropertyValue);
-					}
-					else
-					{
-						flagCharacterIndex += Convert.ToInt32((Convert.ToDouble(flagsPropertyValue) / flagProperty.Value.Multiplier));
-					}
+					flagCharacterIndex += Convert.ToInt32((Convert.ToDouble(flagsPropertyValue) / flagProperty.Value.Multiplier));
 				}
 				flagCharacterIndex = flagCharacterIndex % 64;
 				result += base64Chars[flagCharacterIndex];
@@ -316,16 +309,8 @@ namespace FF1Lib
 				{
 					var multiplierAttribute = flagAttributesForChar.First(x => x.Value.FlagBit < 1);
 
-					if (multiplierAttribute.Value.Multiplier == 1)
-					{
-						var outputValue = charFlagValue;
-						typeof(Flags).GetProperty(multiplierAttribute.Key).SetValue(result, outputValue);
-					}
-					else
-					{
-						var outputValue = charFlagValue * multiplierAttribute.Value.Multiplier;
-						typeof(Flags).GetProperty(multiplierAttribute.Key).SetValue(result, outputValue);
-					}
+					var outputValue = charFlagValue * multiplierAttribute.Value.Multiplier;
+					typeof(Flags).GetProperty(multiplierAttribute.Key).SetValue(result, outputValue);
 					continue;
 				}
 				foreach (var flagAttribute in flagAttributesForChar)
