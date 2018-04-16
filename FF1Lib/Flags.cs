@@ -63,6 +63,8 @@ namespace FF1Lib
 		public bool EnemySkillsSpells { get; set; }
 		[FlagString(Character = BATTLES, FlagBit = 4)]
 		public bool EnemyStatusAttacks { get; set; }
+		[FlagString(Character = BATTLES, FlagBit = 8)]
+		public bool AllowUnsafePirates { get; set; }
 
 		[FlagString(Character = STANDARD_MAPS, FlagBit = 1)]
 		public bool OrdealsPillars { get; set; }
@@ -73,7 +75,7 @@ namespace FF1Lib
 		[FlagString(Character = STANDARD_MAPS, FlagBit = 8)]
 		public bool CrownlessOrdeals { get; set; }
 		[FlagString(Character = STANDARD_MAPS, FlagBit = 16)]
-		public bool KeylessToFR { get; set; }
+		public bool ChaosRush { get; set; }
 		[FlagString(Character = STANDARD_MAPS, FlagBit = 32)]
 		public bool Floors { get; set; } // Planned x.x feature - interior floors shuffle
 
@@ -152,6 +154,8 @@ namespace FF1Lib
 		public bool FreeAirship { get; set; }
 		[FlagString(Character = FILTHY_CASUALS, FlagBit = 4)]
 		public bool FreeOrbs { get; set; }
+		[FlagString(Character = FILTHY_CASUALS, FlagBit = 8)]
+		public bool VanillaStartingGold { get; set; }
 		[FlagString(Character = FILTHY_CASUALS, FlagBit = 32)]
 		public bool EasyMode { get; set; }
 		

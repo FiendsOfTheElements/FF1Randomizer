@@ -113,7 +113,7 @@ namespace FF1Lib
 
 			if (flags.Shops)
 			{
-				shopItemLocation = ShuffleShops(rng, flags.EnemyStatusAttacks);
+				shopItemLocation = ShuffleShops(rng, flags.EnemyStatusAttacks, flags.RandomWares);
 			}
 
 			if (flags.Treasures || flags.NPCItems || flags.NPCFetchItems)
@@ -140,7 +140,7 @@ namespace FF1Lib
 
 			if (flags.EnemyScripts)
 			{
-				ShuffleEnemyScripts(rng);
+				ShuffleEnemyScripts(rng, flags.AllowUnsafePirates);
 			}
 
 			if (flags.EnemySkillsSpells)
@@ -150,7 +150,7 @@ namespace FF1Lib
 
 			if (flags.EnemyStatusAttacks)
 			{
-				ShuffleEnemyStatusAttacks(rng);
+				ShuffleEnemyStatusAttacks(rng, flags.AllowUnsafePirates);
 			}
 
 			if (flags.EnemyFormationsUnrunnable)
@@ -183,9 +183,9 @@ namespace FF1Lib
 				EnableEarlyOrdeals();
 			}
 
-			if (flags.KeylessToFR)
+			if (flags.ChaosRush)
 			{
-				EnableKeylessToFR();
+				EnableChaosRush();
 			}
 
 			if (flags.EarlySarda && !flags.NPCItems)
@@ -286,7 +286,7 @@ namespace FF1Lib
 			var itemText = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
 			FixVanillaRibbon(itemText);
 			ExpGoldBoost(flags.ExpBonus, flags.ExpMultiplier);
-			ScalePrices(flags.PriceScaleFactor, flags.ExpMultiplier, itemText, rng);
+			ScalePrices(flags.PriceScaleFactor, flags.ExpMultiplier, flags.VanillaStartingGold, itemText, rng);
 
 			overworldMap.ApplyMapEdits();
 			WriteMaps(maps);
