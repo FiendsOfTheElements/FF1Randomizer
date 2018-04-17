@@ -164,6 +164,7 @@ namespace FF1Lib
 
 					for (int i = 0; i < newShops.Length; i++)
 					{
+						if (!indeces.Any()) break;
 						newShops[i] = newShops[i].Select(x => indeces.SpliceRandom(rng)).ToList();
 					}
 				}
