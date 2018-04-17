@@ -17,8 +17,8 @@ namespace FF1Lib
 		public const ushort ShopNullPointer = 0x838E;
         private List<MapLocation> ShopMapLocationsByIndex = new List<MapLocation>{
                 MapLocation.ConeriaTown, MapLocation.Pravoka, MapLocation.ElflandTown,
-                MapLocation.CresentLake, MapLocation.Onrac, MapLocation.Gaia,
-                MapLocation.Onrac, MapLocation.Onrac, MapLocation.Onrac,
+                MapLocation.CresentLake, MapLocation.Gaia, MapLocation.Onrac,
+                MapLocation.Gaia, MapLocation.Gaia, MapLocation.Gaia,
                 MapLocation.Caravan
             };
 		private enum ShopType
