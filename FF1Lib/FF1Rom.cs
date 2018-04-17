@@ -88,6 +88,7 @@ namespace FF1Lib
 			PermanentCaravan();
 			var overworldMap = new OverworldMap(this, flags);
 			var maps = ReadMaps();
+			var incentivesData = new IncentiveData(rng, flags, overworldMap.MapLocationRequirements);
 			var shopItemLocation = ItemLocations.CaravanItemShop1;
 			
 			if (flags.ModernBattlefield)
@@ -113,12 +114,14 @@ namespace FF1Lib
 
 			if (flags.Shops)
 			{
-				shopItemLocation = ShuffleShops(rng, flags.EnemyStatusAttacks, flags.RandomWares);
+				var excludeItemsFromRandomShops = flags.Treasures
+					? incentivesData.ForcedItemPlacements.Select(x => x.Item).Concat(incentivesData.IncentiveItems).ToList()
+					: new List<Item>();
+				shopItemLocation = ShuffleShops(rng, flags.EnemyStatusAttacks, flags.RandomWares, excludeItemsFromRandomShops);
 			}
 
 			if (flags.Treasures || flags.NPCItems || flags.NPCFetchItems)
 			{
-				var incentivesData = new IncentiveData(rng, flags, overworldMap.MapLocationRequirements);
 				ShuffleTreasures(rng, flags, incentivesData, shopItemLocation, overworldMap.MapLocationRequirements);
 			}
 
