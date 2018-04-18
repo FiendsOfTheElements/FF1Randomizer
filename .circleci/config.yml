@@ -25,7 +25,16 @@ jobs:
       - run:
           name: docker
           command: |
-            cd FF1RandomizerOnline && \
-            docker login -u $DOCKER_USER -p $DOCKER_PASS && \
-            docker build -t entroper/finalfantasyrandomizer:beta -f Dockerfile.beta . && \
-            docker push entroper/finalfantasyrandomizer:beta
+            cd FF1RandomizerOnline
+            if [$CIRCLE_BRANCH == 'dev']; then
+              docker login -u $DOCKER_USER -p $DOCKER_PASS
+              docker build -t entroper/finalfantasyrandomizer:beta -f Dockerfile.beta .
+              docker push entroper/finalfantasyrandomizer:beta
+            elif [$CIRCLE_BRANCH == 'master']; then
+              docker login -u $DOCKER_USER -p $DOCKER_PASS
+              docker build -t entroper/finalfantasyrandomizer:beta -f Dockerfile.beta .
+              docker push entroper/finalfantasyrandomizer:beta
+            fi
+      - run:
+          name: deploy
+          command: ssh circle@finalfantasyrandomizer.com './deployff1r.sh'
