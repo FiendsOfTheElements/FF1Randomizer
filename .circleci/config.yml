@@ -25,19 +25,21 @@ jobs:
       - run:
           name: docker
           command: |
-            cd FF1RandomizerOnline
-            if [$CIRCLE_BRANCH == 'dev']; then
-              docker login -u $DOCKER_USER -p $DOCKER_PASS
-              docker build -t entroper/finalfantasyrandomizer:beta -f Dockerfile.beta .
+            cd FF1RandomizerOnline && \
+            if [ "${CIRCLE_BRANCH}" == "dev" ]; then
+              docker login -u $DOCKER_USER -p $DOCKER_PASS && \
+              docker build -t entroper/finalfantasyrandomizer:beta -f Dockerfile.beta . && \
               docker push entroper/finalfantasyrandomizer:beta
-            elif [$CIRCLE_BRANCH == 'master']; then
-              docker login -u $DOCKER_USER -p $DOCKER_PASS
-              docker build -t entroper/finalfantasyrandomizer:beta -f Dockerfile.beta .
-              docker push entroper/finalfantasyrandomizer:beta
+            elif [ "${CIRCLE_BRANCH}" == "master" ]; then
+              docker login -u $DOCKER_USER -p $DOCKER_PASS && \
+              docker build -t entroper/finalfantasyrandomizer:latest -f Dockerfile . && \
+              docker push entroper/finalfantasyrandomizer:latest
             fi
       - run:
           name: deploy
           command: |
-            mkdir -p ~/.ssh
-            cp .ssh/known_hosts ~/.ssh/known_hosts
-            ssh circle@finalfantasyrandomizer.com './deployff1r.sh'
+            if [ "${CIRCLE_BRANCH}" == "dev" ] || [ "${CIRCLE_BRANCH}" == "master" ]; then
+              mkdir -p ~/.ssh && \
+              cp .ssh/known_hosts ~/.ssh/known_hosts && \
+              ssh circle@finalfantasyrandomizer.com './deployff1r.sh ${CIRCLE_BRANCH}'
+            fi
