@@ -37,4 +37,7 @@ jobs:
             fi
       - run:
           name: deploy
-          command: ssh circle@finalfantasyrandomizer.com './deployff1r.sh'
+          command: |
+            mkdir -p ~/.ssh
+            cp .ssh/known_hosts ~/.ssh/known_hosts
+            ssh circle@finalfantasyrandomizer.com './deployff1r.sh'
