@@ -41,5 +41,5 @@ jobs:
             if [ "${CIRCLE_BRANCH}" == "dev" ] || [ "${CIRCLE_BRANCH}" == "master" ]; then
               mkdir -p ~/.ssh && \
               cp .ssh/known_hosts ~/.ssh/known_hosts && \
-              ssh circle@finalfantasyrandomizer.com './deployff1r.sh $CIRCLE_BRANCH'
+              ssh circle@finalfantasyrandomizer.com "./deployff1r.sh $CIRCLE_BRANCH"
             fi
