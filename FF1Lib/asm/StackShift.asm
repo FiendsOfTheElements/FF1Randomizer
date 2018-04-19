@@ -7,7 +7,7 @@
 
 ShiftStack:
 	TSX            ; get the stack pointer
-	CPX #$30        ; see if it's getting dangerously high (< $20)
+	CPX #$30       ; see if it's getting dangerously high (< $20)
 	BCS PushAndJumpBack
 	TXA
 	STA $0110      ; save it to a spot above the stack
