@@ -11,7 +11,7 @@
 
 function validateFlags() {
 	var flagsInput = document.getElementById("Flags");
-	var isValid = flagsInput.value.match(/^[A-Za-z0-9!-]{22}$/);
+	var isValid = flagsInput.value.match(/^[A-Za-z0-9!-]{23}$/);
 	if (isValid) {
 		flagsInput.parentElement.classList.remove("has-error");
 	} else {

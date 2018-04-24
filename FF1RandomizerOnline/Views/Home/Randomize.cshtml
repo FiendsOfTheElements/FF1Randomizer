@@ -115,14 +115,25 @@
 			</div>
 		</div>
 		<div class="section tab-pane" id="goal">
-			<div class="col-xs-12">
-				<div class="checkbox-cell" title="Enable access to CHAOS without the Mystic KEY and start with the LUTE."><input v-model="ChaosRush" :disabled="ShardHunt" type="checkbox" asp-for="Flags.ChaosRush" /> <label :style="ShardHunt ? { color: 'grey'} : {}"  asp-for="Flags.ChaosRush">CHAOS Rush</label></div>
-				<div class="checkbox-cell" title="Begin the game with all orbs already lit."><input v-model="FreeOrbs" :disabled="ShardHunt" type="checkbox" asp-for="Flags.FreeOrbs" /> <label :style="ShardHunt ? { color: 'grey'} : {}"  asp-for="Flags.FreeOrbs">Free Orbs</label></div>
-				<div class="checkbox-cell"></div>
-				<div class="checkbox-cell" title="Shard Hunt alternate gameplay mode. Collect 16 SHARDs to activate the BLACK ORB."><input v-model="ShardHunt" :disabled="ChaosRush" type="checkbox" asp-for="Flags.ShardHunt" /> <label :style="ChaosRush ? { color: 'grey'} : {}" asp-for="Flags.ShardHunt">Shard Hunt</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.2.0</a>)</small></div>
-				<div class="checkbox-cell" title="A larger hunt for the hardcore hunter. You will now need between 24 and 30 shards."><input v-model="ExtraShards" :disabled="ChaosRush || !ShardHunt" type="checkbox" asp-for="Flags.ExtraShards" /> <label class="indent" :style="(ChaosRush || !ShardHunt) ? { color: 'grey'} : {}" asp-for="Flags.ExtraShards">Extra Shards</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.2.0</a>)</small></div>
-				<div class="checkbox-cell"></div>
-				<div class="checkbox-cell" title="Replace the Final Battle against Chaos with a different challenge."><input v-model="TransformFinalFormation" type="checkbox" asp-for="Flags.TransformFinalFormation" /> <label class="indent" asp-for="Flags.TransformFinalFormation">Alternate Final Boss <b v-if="ChaosRush && TransformFinalFormation" title="Beware - losing one of these alternate final battles at the end of a long ToFR can be rage inducing." style="color:orange">⚠</b></label></div>
+			<div class="col-xs-4" :style="ShardHunt ? { color: 'grey'} : {}">
+				<div class="col-xs-12">
+					<h4>Quick Races</h4>
+					<div class="checkbox-cell" title="Enable access to CHAOS without the Mystic KEY and start with the LUTE."><input v-model="ChaosRush" :disabled="ShardHunt" type="checkbox" asp-for="Flags.ChaosRush" /> <label :style="ShardHunt ? { color: 'grey'} : {}" asp-for="Flags.ChaosRush">CHAOS Rush</label></div>
+					<div class="checkbox-cell" title="Begin the game with all orbs already lit."><input v-model="FreeOrbs" :disabled="ShardHunt" type="checkbox" asp-for="Flags.FreeOrbs" /> <label :style="ShardHunt ? { color: 'grey'} : {}" asp-for="Flags.FreeOrbs">Free Orbs</label></div>
+				</div>
+			</div>
+			<div class="col-xs-4" style="border-left: 1px solid black;" :style="ChaosRush ? { color: 'grey'} : {}">
+				<div class="col-xs-12">
+					<h4>Shard Hunt</h4>
+					<div class="checkbox-cell" title="Shard Hunt alternate gameplay mode. Collect 16 SHARDs to activate the BLACK ORB."><input v-model="ShardHunt" :disabled="ChaosRush" type="checkbox" asp-for="Flags.ShardHunt" /> <label :style="ChaosRush ? { color: 'grey'} : {}" asp-for="Flags.ShardHunt">Shard Hunt</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.2.0</a>)</small></div>
+					<div class="checkbox-cell" title="A larger hunt for the hardcore hunter. You will now need between 24 and 30 shards."><input v-model="ExtraShards" :disabled="ChaosRush || !ShardHunt" type="checkbox" asp-for="Flags.ExtraShards" /> <label class="indent" :style="(ChaosRush || !ShardHunt) ? { color: 'grey'} : {}" asp-for="Flags.ExtraShards">Extra Shards</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.2.0</a>)</small></div>
+				</div>
+			</div>
+			<div class="col-xs-4" style="border-left: 1px solid black;">
+				<div class="col-xs-12">
+					<h4>Extra Challenges</h4>
+					<div class="checkbox-cell" title="Replace the Final Battle against Chaos with a different challenge."><input v-model="TransformFinalFormation" type="checkbox" asp-for="Flags.TransformFinalFormation" /> <label class="indent" asp-for="Flags.TransformFinalFormation">Alternate Final Boss <b v-if="ChaosRush && TransformFinalFormation" title="Beware - losing one of these alternate final battles at the end of a long ToFR can be rage inducing." style="color:orange">⚠</b></label></div>
+				</div>
 			</div>
 		</div>
 		<div class="section tab-pane" id="map">
