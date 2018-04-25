@@ -374,11 +374,12 @@ namespace FF1Lib
 			 *	Damage Taken:   $60B2 (24-bit)
 			 *	Perished:		$64B5 (8-bit)
 			 *	"Nothing Here":	$60B6 (8-bit)
+			 *	Chests Open     $60B7 (8-bit)
 			*/
 
 			// Patches for various tracking variables follow:
-			// Pedometer
-			PutInBank(0x0F, 0x8100, Blob.FromHex("18A532D027A52D2901F006A550D01DF00398D018ADA06069018DA060ADA16069008DA160ADA26069008DA260A52F8530A9FF851860"));
+			// Pedometer + chests opened
+			PutInBank(0x0F, 0x8100, Blob.FromHex("18A532D027A52D2901F006A550D01DF00398D018ADA06069018DA060ADA16069008DA160ADA26069008DA260A52F8530A9FF8518A200A000BD00622904F001C8E8D0F5988DB7606060"));
 			Put(0x7D023, Blob.FromHex("A90F2003FE200081"));
 			// Count number of battles
 			PutInBank(0x0F, 0x8400, Blob.FromHex("18ADA76069018DA7609003EEA86020A8FE60"));
