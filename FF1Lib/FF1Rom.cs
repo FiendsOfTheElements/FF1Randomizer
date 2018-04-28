@@ -12,7 +12,7 @@ namespace FF1Lib
 	// ReSharper disable once InconsistentNaming
 	public partial class FF1Rom : NesRom
 	{
-		public const string Version = "2.1.0";
+		public const string Version = "2.2.0";
 
 		public const int RngOffset = 0x7F100;
 		public const int RngSize = 256;
@@ -83,14 +83,17 @@ namespace FF1Lib
 			var rng = new MT19337(BitConverter.ToUInt32(seed, 0));
 
 			UpgradeToMMC3();
+			MakeSpaceIn1F();
 			EasterEggs();
 			DynamicWindowColor();
 			PermanentCaravan();
+			ShiftEarthOrbDown();
+
 			var overworldMap = new OverworldMap(this, flags);
 			var maps = ReadMaps();
 			var incentivesData = new IncentiveData(rng, flags, overworldMap.MapLocationRequirements);
 			var shopItemLocation = ItemLocations.CaravanItemShop1;
-			
+
 			if (flags.ModernBattlefield)
 			{
 				SetBattleUI(true);
@@ -112,6 +115,11 @@ namespace FF1Lib
 				FixEnemyAOESpells();
 			}
 
+			if (flags.ItemMagic)
+			{
+				ShuffleItemMagic(rng);
+			}
+
 			if (flags.Shops)
 			{
 				var excludeItemsFromRandomShops = flags.Treasures
@@ -123,6 +131,16 @@ namespace FF1Lib
 			if (flags.Treasures || flags.NPCItems || flags.NPCFetchItems)
 			{
 				ShuffleTreasures(rng, flags, incentivesData, shopItemLocation, overworldMap.MapLocationRequirements);
+			}
+
+			if (flags.Treasures && flags.ShardHunt && !flags.ChaosRush)
+			{
+				EnableShardHunt(rng, flags.ExtraShards ? rng.Between(24, 30) : 16, maps);
+			}
+
+			if (flags.TransformFinalFormation)
+			{
+				TransformFinalFormation((FinalFormation)rng.Between(0, Enum.GetValues(typeof(FinalFormation)).Length - 1));
 			}
 
 			if (flags.MagicShops)
@@ -440,6 +458,19 @@ namespace FF1Lib
 			// Softlock fix
 			Put(0x7C956, Blob.FromHex("A90F2003FE4C008B"));
 			PutInBank(0x0F, 0x8B00, Blob.FromHex("BAE030B01E8A8D1001A9F4AAA9FBA8BD0001990001CA88E010D0F4AD1001186907AA9AA52948A52A48A50D48A54848A549484C65C9"));
+		}
+
+		public void MakeSpaceIn1F()
+		{
+			// 54 bytes starting at 0xC265 in bank 1F, ROM offset: 7C275
+			// This removes the code for the minigame on the ship, and moves the prior code around too
+			PutInBank(0x1F, 0xC244, Blob.FromHex("F003C6476020C2D7A520290FD049A524F00EA9008524A542C908F074C901F0B160EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
+			// 15 bytes starting at 0xC8A4 in bank 1F, ROM offset: 7C8B4
+			// This removes the routine that give a reward for beating the minigame, no need for a reward without the minigame 
+			PutInBank(0x1F, 0xC8A4, Blob.FromHex("EAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
+			// 28 byte starting at 0xCFCB in bank 1F, ROM offset: 7CFDB
+			// This removes the AssertNasirCRC routine, which we were skipping anyways, no point in keeping uncalled routines
+			PutInBank(0x1F, 0xCFCB, Blob.FromHex("EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
 		}
 
 		public override bool Validate()
