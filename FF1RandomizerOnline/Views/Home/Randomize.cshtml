@@ -121,7 +121,7 @@
 					<h4>Quick Races</h4>
 					<div>
 						<br />
-						No time for a long race? How about we cut to the chase! Engage Chaos Rush mode to begin with the ToFR doors unlocked and the LUTE in your position. Add Free Orbs and you can enter ToFR as soon as Garland is out of the way!
+						No time for a long race? Chaos Rush combined with Free Orbs lets you begin the game with the Temple of Fiends Revisited completely unlocked!
 						<br />&nbsp;
 					</div>
 					<div class="checkbox-cell" title="Enable access to CHAOS without the Mystic KEY and start with the LUTE."><input v-model="ChaosRush" :disabled="ShardHunt" type="checkbox" asp-for="Flags.ChaosRush" /> <label :style="ShardHunt ? { color: 'grey'} : {}" asp-for="Flags.ChaosRush">CHAOS Rush</label></div>
@@ -133,7 +133,7 @@
 					<h4>Treasure Hunt</h4>
 					<div>
 						<br />
-						A new adventure! Instead of lighting the four orbs to activate the BLACK ORB, the Light Warriors must seek out and collect a random treasure item instead. Learn more at <a asp-area="" asp-controller="Home" asp-action="WhatsNew">What's New 2.2.0</a>.
+						A new adventure! Instead of lighting the four orbs to activate the BLACK ORB, the Light Warriors must seek out and collect several of a random treasure item. Learn more at <a asp-area="" asp-controller="Home" asp-action="WhatsNew">What's New 2.2.0</a>.
 						<br />&nbsp;
 					</div>
 					<div class="checkbox-cell" title="Treasure Hunt alternate gameplay mode. Collect 16 of a random Treasure Item to activate the BLACK ORB."><input v-model="ShardHunt" :disabled="ChaosRush" type="checkbox" asp-for="Flags.ShardHunt" /> <label :style="ChaosRush ? { color: 'grey'} : {}" asp-for="Flags.ShardHunt">Treasure Hunt</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.2.0</a>)</small></div>
@@ -148,7 +148,7 @@
 					<h4>Extra Challenges</h4>
 					<div>
 						<br />
-						This mode picks one of four optional new final bosses to replace the legendary Chaos! Take heed though; they can be more than a match for all but the mightiest Warriors.
+						Randomly pick one of four new final bosses to replace the legendary Chaos! Take heed though; they can be more than a match for all but the mightiest Warriors.
 						<br />&nbsp;
 					</div>
 					<div class="checkbox-cell" title="Replace the Final Battle against Chaos with a different challenge."><input v-model="TransformFinalFormation" type="checkbox" asp-for="Flags.TransformFinalFormation" /> <label class="indent" asp-for="Flags.TransformFinalFormation">Alternate Final Boss <b v-if="ChaosRush && TransformFinalFormation" title="Beware - losing one of these alternate final battles at the end of a long ToFR can be rage inducing." style="color:orange">⚠</b></label></div>
