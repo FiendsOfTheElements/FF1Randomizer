@@ -12,7 +12,7 @@ LDY #1       ; Orb addr offset
 BNE Continue ; Always
 
 Water:
-LDX #3
+LDX #4
 LDY #2
 BNE Continue ; Always
 

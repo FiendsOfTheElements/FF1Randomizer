@@ -17,7 +17,7 @@ namespace FF1Lib
 			// shuffle the earth orb orbs down 4 location to make the code simpler throughout FFR.
 			// Getting free shards for killing fiends is an interesting semi-incentive and adds an edge to this game.
 			// See OF_CE12_ShardRewards.asm
-			Put(0x7CE12, Blob.FromHex("A202A000F010A202A001D00AA203A002D004A204A003B93160D00FA901993160188A6D35608D3560E66C1860"));
+			Put(0x7CE12, Blob.FromHex("A202A000F010A202A001D00AA204A002D004A204A003B93160D00FA901993160188A6D35608D3560E66C1860"));
 			Put(0x7CDB9, Blob.FromHex("12CE18CE1ECE24CE")); // Orb handling jump table.
 
 			// Now anyplace that refers to orb_earth in the assembly outside of the above code
