@@ -10,8 +10,12 @@ jobs:
       - run:
           name: compile
           command: |
-            cd FF1RandomizerOnline && \
-            dotnet publish -c Debug
+            cd FF1RandomizerOnline
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              dotnet publish -c Release
+            else
+              dotnet publish -c Debug
+            fi
 
       - setup_remote_docker
       - run:
