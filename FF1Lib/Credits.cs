@@ -129,6 +129,18 @@ namespace FF1Lib
 				"  MeridianBC",
 				"  tartopan",
 				"  nitz",
+				"  Septimus",
+			},
+			new []
+			{
+				"  Community",
+				"",
+				"  Czardia",
+				"  Edgeworth",
+				"  ichbinmiah",
+				"  Taralyn",
+				"  Trinton",
+				"  xIceBlue",
 			},
 			new []
 			{
@@ -137,7 +149,7 @@ namespace FF1Lib
 				"jkoper, Kababesh",
 				"DarkwingDuck.sda",
 				"Miaut, Ayntlerz ",
-				"czardia,gameboy9",
+				"gameboy9, sbq92 ",
 				"EunosXX, Jaylow7",
 				"  theCubeMiser",
 				"  Beefucurry",
@@ -192,7 +204,9 @@ namespace FF1Lib
 				FF1Text.TextToBytes("Steps     ", true, FF1Text.Delimiter.Empty), Blob.FromHex("101003A0600405"),
 				FF1Text.TextToBytes("Resets    ", true, FF1Text.Delimiter.Empty), Blob.FromHex("101002A5640405"),
 				FF1Text.TextToBytes("Power off ", true, FF1Text.Delimiter.Empty), Blob.FromHex("101002A3640405"),
-				FF1Text.TextToBytes("Nthng Here", true, FF1Text.Delimiter.Empty), Blob.FromHex("101001B6600400"),
+				FF1Text.TextToBytes("Nthng Here", true, FF1Text.Delimiter.Empty), Blob.FromHex("101001B6600405"),
+				FF1Text.TextToBytes("Chests Opened", true, FF1Text.Delimiter.Line),
+				Blob.FromHex("FFFFFF101001B76004"), FF1Text.TextToBytes(" of 241", true, FF1Text.Delimiter.Null),
 			};
 
 			Blob[] battleResults =

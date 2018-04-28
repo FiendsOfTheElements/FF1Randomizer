@@ -64,7 +64,6 @@ namespace FF1Lib
 						mapLocationRequirements[MapLocation.IceCave].Add(MapChange.Canoe);
 						mapLocationRequirements[MapLocation.Pravoka].Add(MapChange.Canoe);
 						mapLocationRequirements[MapLocation.MatoyasCave].Add(MapChange.Canoe);
-						mapLocationRequirements[MapLocation.ShipLocation].Add(MapChange.Canoe);
 					}
 				}
 			}

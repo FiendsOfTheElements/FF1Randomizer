@@ -20,6 +20,12 @@ namespace FF1Lib
 		public const int CaravanFairyCheck = 0x7C4E5;
 		public const int CaravanFairyCheckSize = 7;
 
+		public const string BattleBoxDrawInFrames = "06"; // Half normal (Must divide 12)
+		public const string BattleBoxDrawInRows = "02";
+
+		public const string BattleBoxUndrawFrames = "04"; // 2/3 normal (Must  divide 12)
+		public const string BattleBoxUndrawRows = "03";
+
 		// Required for npc quest item randomizing
 		public void PermanentCaravan()
 		{
@@ -189,6 +195,11 @@ namespace FF1Lib
 			Data[0x33CCD] = 0x04; // Explosion effect count (small enemies), default 8
 			Data[0x33DAA] = 0x04; // Explosion effect count (mixed enemies), default 15
 
+			// Draw and Undraw Battle Boxes faster
+			Put(0x2DA12, Blob.FromHex("3020181008040201")); // More practical Respond Rates
+			Put(0x7F4AA, Blob.FromHex($"ADFC6048A90F2003FE20008AA9{BattleBoxDrawInFrames}8517A90F2003FE20208A2085F4C617D0F1682003FE60"));
+			Put(0x7F4FF, Blob.FromHex($"ADFC6048A90F2003FE20808AA9{BattleBoxUndrawFrames}8517A90F2003FE20A08A2085F4C617D0F1682003FE60"));
+
 			// Gain multiple levels at once.  Also supresses stat increase messages as a side effect
 			Put(0x2DD82, Blob.FromHex("20789f20579f48a5802907c907f008a58029f0690785806820019c4ce89b"));
 
@@ -328,23 +339,13 @@ namespace FF1Lib
 			Put(0x7C64D, Blob.FromHex("ADFC6048A90F2003FE20808768082003FE2860"));
 		}
 
-		public void EnableKeylessToFR()
+		public void EnableChaosRush()
 		{
-			// Overwrite Keylocked door in ToFR 2nd Floor with normal door tile.
-			Data[0x1997B] = 0x36;
-			Data[0x1A0E0] = 0x36;
-			Data[0x1A3CD] = 0x36;
-			Data[0x1A3D1] = 0x36;
-			Data[0x1A3DC] = 0x36;
-			Data[0x1A3E0] = 0x36;
-			Data[0x1A41E] = 0x36;
-			Data[0x1A44D] = 0x36;
-			Data[0x1A45B] = 0x36;
-			Data[0x1A510] = 0x36;
-			Data[0x1A517] = 0x36;
-			Data[0x1A51E] = 0x36;
-			Data[0x1A58F] = 0x36;
-			Data[0x1A59A] = 0x36;
+			// Overwrite Keylocked door in ToFR tileset with normal door.
+			Put(0x0F76, Blob.FromHex("0300"));
+
+			// Start with Lute
+			Data[0x3020 + (int)Item.Lute] = 0x01;
 		}
 
 		public void EnableFreeOrbs()
@@ -354,6 +355,24 @@ namespace FF1Lib
 			Data[initItemOffset + (int)Item.FireOrb] = 0x01;
 			Data[initItemOffset + (int)Item.WaterOrb] = 0x01;
 			Data[initItemOffset + (int)Item.AirOrb] = 0x01;
+		}
+
+		public void ChangeUnrunnableRunToWait()
+		{
+			// See Unrunnable.asm
+			// Replace DrawCommandMenu with a cross page jump to a replacement that swaps RUN for WAIT if the battle is unrunnable.
+			// The last 5 bytes here are the null terminated WAIT string (stashed in some leftover space of the original subroutine)
+			Put(0x7F700, Blob.FromHex("ADFC6048A90F2003FE204087682003FE4C48F6A08A929D00"));
+
+			// Replace some useless code with a special handler for unrunnables that prints a different message.
+			// We then update the unrunnable branch to point here instead of the generic Can't Run handler
+			// See Disch's comments here: Battle_PlayerTryRun  [$A3D8 :: 0x323E8]
+			Put(0x32409, Blob.FromHex("189005A9064C07AAEAEAEAEAEAEAEA"));
+			Data[0x323EB] = 0x20; // new delta to special unrunnable message handler
+
+			// The above code uses battle message $06 which is the unused Sight Recovered string
+			// Let's overwrite that string with something more appropriate for the WAIT command
+			Put(0x2CC71, FF1Text.TextToBytes("W A I T", false));
 		}
 	}
 }

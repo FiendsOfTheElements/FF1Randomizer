@@ -17,7 +17,43 @@ namespace FF1Lib
 		public const int ScriptSize = 16;
 		public const int ScriptCount = 44;
 
-		public void ShuffleEnemyScripts(MT19337 rng)
+		public const int FormationFrequencyOffset = 0x2C000;
+		public const int FormationFrequencySize = 8;
+		public const int FormationFrequencyCount = 128;
+
+		public void ShuffleEnemyFormations(MT19337 rng)
+		{
+			//intra-zone shuffle, does not change which formations are in zomes.
+			var oldFormations = Get(FormationFrequencyOffset, FormationFrequencySize * FormationFrequencyCount).Chunk(FormationFrequencySize);
+			var newFormations = Get(FormationFrequencyOffset, FormationFrequencySize * FormationFrequencyCount).Chunk(FormationFrequencySize);
+			Blob WarMech = new byte[]{ 0x56 };
+
+			for (int i = 0; i < FormationFrequencyCount; i++)
+			{
+				
+				var lowFormations = oldFormations[i].Chunk(4)[0].Chunk(1); // shuffle the first 4 formations first
+				lowFormations.Shuffle(rng);
+				newFormations[i][0] = lowFormations[0][0];
+				newFormations[i][1] = lowFormations[1][0];
+				newFormations[i][2] = lowFormations[2][0];
+				newFormations[i][3] = lowFormations[3][0];
+
+
+				var shuffleFormations = newFormations[i].SubBlob(1, 6).Chunk(1); // get formations 2-8
+				shuffleFormations.Shuffle(rng);
+				if (shuffleFormations.Contains(WarMech)) //preserve WarMech's formation 7 status
+				{
+					shuffleFormations.Swap(shuffleFormations.IndexOf(WarMech), 4);
+				}
+				for (int j = 2; j < 8; j++)
+				{
+					newFormations[i][j] = shuffleFormations[j - 2][0];
+				}
+				
+			}
+			Put(FormationFrequencyOffset, newFormations.SelectMany(formation => formation.ToBytes()).ToArray());
+		}
+		public void ShuffleEnemyScripts(MT19337 rng, bool AllowUnsafePirates)
 		{
 			var oldEnemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
 			var newEnemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
@@ -29,6 +65,7 @@ namespace FF1Lib
 				newEnemies[i][7] = normalOldEnemies[i][7];
 			}
 
+			const int Pirate = 15;
 			const int WarMech = 118;
 			const int Lich = 119;
 			const int Lich2 = 120;
@@ -70,6 +107,16 @@ namespace FF1Lib
 			newEnemies[Kraken2][7] = oldBigBosses[3][7];
 			newEnemies[Tiamat2][7] = oldBigBosses[4][7];
 			newEnemies[Chaos][7] = oldBigBosses[5][7];
+
+			if (!AllowUnsafePirates)
+			{
+				if (newEnemies[Pirate][7] < 0xFF)
+				{
+					int swapEnemy = newEnemies.IndexOf(newEnemies.First((enemy) => enemy[7] == 0xFF));
+					newEnemies[swapEnemy][7] = newEnemies[Pirate][7];
+					newEnemies[Pirate][7] = 0xFF;
+				}
+			}
 
 			Put(EnemyOffset, newEnemies.SelectMany(enemy => enemy.ToBytes()).ToArray());
 		}
@@ -169,7 +216,7 @@ namespace FF1Lib
 			return buckets;
 		}
 
-		public void ShuffleEnemyStatusAttacks(MT19337 rng)
+		public void ShuffleEnemyStatusAttacks(MT19337 rng, bool AllowUnsafePirates)
 		{
 			var oldEnemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
 			var newEnemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
@@ -178,6 +225,13 @@ namespace FF1Lib
 
 			for (int i = 0; i < EnemyCount; i++)
 			{
+				if (!AllowUnsafePirates)
+				{
+					if (i == 15) //pirates
+					{
+						continue;
+					}
+				}
 				newEnemies[i][14] = oldEnemies[i][14];
 				newEnemies[i][15] = oldEnemies[i][15];
 			}

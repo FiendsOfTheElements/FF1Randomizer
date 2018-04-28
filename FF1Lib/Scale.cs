@@ -16,7 +16,7 @@ namespace FF1Lib
 
 		// Scale is the geometric scale factor used with RNG.  Multiplier is where we make everything cheaper
 		// instead of enemies giving more gold, so we don't overflow.
-		public void ScalePrices(double scale, double multiplier, Blob[] text, MT19337 rng)
+		public void ScalePrices(double scale, double multiplier, bool VanillaStartingGold, Blob[] text, MT19337 rng)
 		{
             var prices = Get(PriceOffset, PriceSize * PriceCount).ToUShorts();
 			for (int i = 0; i < prices.Length; i++)
@@ -28,6 +28,9 @@ namespace FF1Lib
             {
                 prices[i] = questItemPrice;
             }
+			prices[(int)Item.WhiteShirt] = (ushort)(questItemPrice / 2);
+			prices[(int)Item.BlackShirt] = (ushort)(questItemPrice / 2);
+			prices[(int)Item.Ribbon] = questItemPrice;
             // Crystal can block Ship in early game where 50000 G would be too expensive
             prices[(int)Item.Crystal] = (ushort)(prices[(int)Item.Crystal] / 8);
 
@@ -53,12 +56,15 @@ namespace FF1Lib
 					Put(ShopPointerBase + pointers[i], priceBytes);
 				}
 			}
+			if (!VanillaStartingGold)
+			{
+				var startingGold = BitConverter.ToUInt16(Get(StartingGoldOffset, 2), 0);
 
-			var startingGold = BitConverter.ToUInt16(Get(StartingGoldOffset, 2), 0);
+				startingGold = (ushort)Min(Scale(startingGold / multiplier, scale, 1, rng), 0xFFFF);
 
-			startingGold = (ushort)Min(Scale(startingGold / multiplier, scale, 1, rng), 0xFFFF);
-
-			Put(StartingGoldOffset, BitConverter.GetBytes(startingGold));
+				Put(StartingGoldOffset, BitConverter.GetBytes(startingGold));
+			}
+			
 		}
 
 		public void ScaleEnemyStats(double scale, MT19337 rng)

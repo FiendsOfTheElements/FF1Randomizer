@@ -8,7 +8,7 @@ namespace FF1Lib
 	public partial class FF1Rom : NesRom
 	{
 		private const Item ReplacementItem = Item.Cabin;
-		
+
 		public const int TreasureOffset = 0x03100;
 		public const int TreasureSize = 1;
 		public const int TreasureCount = 256;
@@ -24,9 +24,9 @@ namespace FF1Lib
 
 		public static readonly List<int> UsedTreasureIndices = Enumerable.Range(0, 256).Except(UnusedTreasureIndices).ToList(); // This maps a compacted list back to the game's array, skipping the unused slots.
 
-		public List<IRewardSource> ShuffleTreasures(MT19337 rng, 
-													IItemPlacementFlags flags, 
-													IncentiveData incentivesData, 
+		public List<IRewardSource> ShuffleTreasures(MT19337 rng,
+													IItemPlacementFlags flags,
+													IncentiveData incentivesData,
 													ItemShopSlot caravanItemLocation,
 													Dictionary<MapLocation, List<MapChange>> mapLocationRequirements)
 		{
@@ -62,13 +62,15 @@ namespace FF1Lib
 			{
 				placedItems = placedItems.Select(x => x.Item != Item.Floater ? x : ItemPlacement.NewItemPlacement(x, ReplacementItem)).ToList();
 			}
-			
-			// Output the results tothe ROM
+
+			// Output the results to the ROM
 			foreach (var item in placedItems.Where(x => !x.IsUnused && x.Address < 0x80000 && (!vanillaNPCs || x is TreasureChest)))
 			{
 				//Debug.WriteLine(item.SpoilerText);
 				item.Put(this);
 			}
+
+			MoveShipToRewardSource(placedItems.Find(reward => reward.Item == Item.Ship));
 			return placedItems;
 		}
 
@@ -224,6 +226,17 @@ namespace FF1Lib
 				$"{checkItem}{notItem}{openChest}";
 			Put(0x7DD93, Blob.FromHex(giveRewardRoutine));
 			// See source: ~/asm/1F_DD78_OpenTreasureChestRewrite.asm
+		}
+
+		private void MoveShipToRewardSource(IRewardSource source)
+		{
+			Blob location = null;
+			if (!ItemLocations.ShipLocations.TryGetValue(source.MapLocation, out location))
+			{
+				location = Dock.Coneria;
+			}
+
+			Put(0x3000 + UnsramIndex.ShipX, location);
 		}
 	}
 }

@@ -316,4 +316,13 @@ namespace FF1Lib
 		Chime = 0x40,
 		All = 0x7F
 	}
+
+	public static class Dock
+	{
+		public static byte[] Coneria = new byte[] { 0x98, 0xA9 };
+		public static byte[] DwarfCave = new byte[] { 0x79, 0x8B };
+		public static byte[] MatoyasCave = new byte[] { 0x9E, 0x8E };
+		public static byte[] Pravoka = new byte[] { 0xD2, 0x99 };
+		public static byte[] Elfland = new byte[] { 0x8D, 0xD3 };
+	};
 }

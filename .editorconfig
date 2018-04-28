@@ -9,11 +9,14 @@ indent_size = 4
 indent_style = tab
 end_of_line = crlf
 
-[*.{config,csproj}]
+[*.{config,csproj,yml,yaml}]
 indent_size = 2
 indent_style = space
 
 [*.{js,cshtml}]
 indent_size = 4
 indent_style = tab
+end_of_line = lf
+
+[*.{sh}]
 end_of_line = lf
