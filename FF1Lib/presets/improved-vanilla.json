@@ -1,0 +1,109 @@
+﻿{
+	"Name": "Improved Vanilla",
+
+	"Flags": {
+
+		"Shops": false,
+		"Treasures": false,
+		"NPCItems": false,
+		"NPCFetchItems": false,
+		"RandomWares": false,
+		"RandomLoot": false,
+
+		"ShardHunt": false,
+		"ExtraShards": false,
+		"TransformFinalFormation": false,
+
+		"MagicShops": false,
+		"MagicLevels": false,
+		"MagicPermissions": false,
+		"ItemMagic": false,
+
+		"Rng": false,
+		"EnemyFormationsFrequency": false,
+		"EnemyFormationsUnrunnable": false,
+		"EnemyFormationsSurprise": false,
+
+		"EnemyScripts": false,
+		"EnemySkillsSpells": false,
+		"EnemyStatusAttacks": false,
+		"AllowUnsafePirates": false,
+
+		"OrdealsPillars": false,
+		"SkyCastle4FTeleporters": false,
+		"TitansTrove": false,
+		"CrownlessOrdeals": false,
+		"ChaosRush": false,
+		"Floors": false,
+
+		"MapOpenProgression": false,
+		"Entrances": false,
+		"Towns": false,
+
+		"IncentivizeFreeNPCs": false,
+		"IncentivizeFetchNPCs": false,
+		"IncentivizeTail": false,
+		"IncentivizeFetchItems": false,
+
+		"IncentivizeMarsh": false,
+		"IncentivizeEarth": false,
+		"IncentivizeVolcano": false,
+		"IncentivizeIceCave": false,
+		"IncentivizeOrdeals": false,
+		"IncentivizeSeaShrine": false,
+
+		"IncentivizeConeria": false,
+		"IncentivizeMarshKeyLocked": false,
+		"IncentivizeSkyPalace": false,
+
+		"IncentivizeMasamune": false,
+		"IncentivizeOpal": false,
+		"IncentivizeRibbon": false,
+		"IncentivizeRibbon2": false,
+		"Incentivize65K": false,
+		"IncentivizeBad": false,
+
+		"IncentivizeDefCastArmor": false,
+		"IncentivizeOffCastArmor": false,
+		"IncentivizeOtherCastArmor": false,
+		"IncentivizeDefCastWeapon": false,
+		"IncentivizeOffCastWeapon": false,
+		"IncentivizeOtherCastWeapon": false,
+
+		"EarlySarda": false,
+		"EarlySage": false,
+		"OnlyRequireGameIsBeatable": false,
+
+		"FreeBridge": false,
+		"FreeAirship": false,
+		"FreeOrbs": false,
+		"VanillaStartingGold": false,
+		"EasyMode": false,
+
+		"SpeedHacks": true,
+		"NoPartyShuffle": true,
+		"Dash": true,
+		"BuyTen": true,
+
+		"IdentifyTreasures": true,
+		"WaitWhenUnrunnable": true,
+
+		"HouseMPRestoration": true,
+		"WeaponStats": true,
+		"ChanceToRun": true,
+		"SpellBugs": true,
+		"BlackBeltAbsorb": true,
+
+		"EnemyStatusAttackBug": true,
+		"EnemySpellsTargetingAllies": true,
+		"EnemyElementalResistancesBug": true,
+
+		"EnemyScaleFactor": 1.0,
+		"PriceScaleFactor": 1.0,
+		"ExpMultiplier": 1.5,
+		"ExpBonus": 150,
+		"ForcedPartyMembers": 0
+
+	}
+
+}
