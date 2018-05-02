@@ -66,14 +66,13 @@
 		bool MapMirageDock{ get; }
 		bool TitansTrove { get; }
 	}
-	public interface IItemPlacementFlags : IItemShuffleFlags
+	public interface IItemPlacementFlags : IItemShuffleFlags, IVictoryConditionFlags
 	{
 		bool FreeBridge { get; }
 		bool FreeAirship { get; }
 		bool MapCanalBridge { get; }
 		bool MapConeriaDwarves { get; }
 		bool MapVolcanoIceRiver { get; }
-		bool OnlyRequireGameIsBeatable { get; }
 	}
 	public interface IItemShuffleFlags 
 	{
@@ -83,5 +82,10 @@
 		bool EarlySarda { get; }
 		bool EarlySage { get; }
 		bool CrownlessOrdeals { get; }
+	}
+	public interface IVictoryConditionFlags
+	{
+		bool OnlyRequireGameIsBeatable { get; }
+		bool ShardHunt { get; }
 	}
 }

@@ -39,7 +39,11 @@ namespace FF1Lib
 		public bool RandomLoot { get; set; } // Planned 2.x feature - random non-quest-item treasures
 		
 		[FlagString(Character = ALT_GAME_MODE, FlagBit = 1)]
-		public bool OrbHunt { get; set; } // Planned 2.1 or 2.2 features - shard hunt
+		public bool ShardHunt { get; set; }
+		[FlagString(Character = ALT_GAME_MODE, FlagBit = 2)]
+		public bool ExtraShards { get; set; }
+		[FlagString(Character = ALT_GAME_MODE, FlagBit = 4)]
+		public bool TransformFinalFormation { get; set; }
 
 		[FlagString(Character = MAGIC, FlagBit = 1)]
 		public bool MagicShops { get; set; }
@@ -47,6 +51,8 @@ namespace FF1Lib
 		public bool MagicLevels { get; set; }
 		[FlagString(Character = MAGIC, FlagBit = 4)]
 		public bool MagicPermissions { get; set; }
+		[FlagString(Character = MAGIC, FlagBit = 8)]
+		public bool ItemMagic { get; set; }
 
 		[FlagString(Character = ENCOUNTERS, FlagBit = 1)]
 		public bool Rng { get; set; }
@@ -63,6 +69,8 @@ namespace FF1Lib
 		public bool EnemySkillsSpells { get; set; }
 		[FlagString(Character = BATTLES, FlagBit = 4)]
 		public bool EnemyStatusAttacks { get; set; }
+		[FlagString(Character = BATTLES, FlagBit = 8)]
+		public bool AllowUnsafePirates { get; set; }
 
 		[FlagString(Character = STANDARD_MAPS, FlagBit = 1)]
 		public bool OrdealsPillars { get; set; }
@@ -73,7 +81,7 @@ namespace FF1Lib
 		[FlagString(Character = STANDARD_MAPS, FlagBit = 8)]
 		public bool CrownlessOrdeals { get; set; }
 		[FlagString(Character = STANDARD_MAPS, FlagBit = 16)]
-		public bool KeylessToFR { get; set; }
+		public bool ChaosRush { get; set; }
 		[FlagString(Character = STANDARD_MAPS, FlagBit = 32)]
 		public bool Floors { get; set; } // Planned x.x feature - interior floors shuffle
 
@@ -152,6 +160,8 @@ namespace FF1Lib
 		public bool FreeAirship { get; set; }
 		[FlagString(Character = FILTHY_CASUALS, FlagBit = 4)]
 		public bool FreeOrbs { get; set; }
+		[FlagString(Character = FILTHY_CASUALS, FlagBit = 8)]
+		public bool VanillaStartingGold { get; set; }
 		[FlagString(Character = FILTHY_CASUALS, FlagBit = 32)]
 		public bool EasyMode { get; set; }
 		

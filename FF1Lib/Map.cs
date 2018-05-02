@@ -18,6 +18,18 @@ namespace FF1Lib
 			set => _map[y, x] = value;
 		}
 
+		public void Put(int y, int x, RomUtilities.Blob[] rows)
+		{
+			Array.ForEach(rows, blob =>
+			{
+				for (int i = 0; i < blob.Length; ++i)
+				{
+					this[y, x + i] = blob[i];
+				}
+				++y;
+			});
+		}
+
 		public Map(byte[] data)
 		{
 			_map = new byte[RowCount, RowLength];

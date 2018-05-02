@@ -122,7 +122,7 @@ namespace FF1Lib
 			List<Blob> buffers = new List<Blob>();
 			for (int i = 0; i < lines.Length; ++i)
 			{
-				buffers.Add(TextToBytes(lines[i], useDTE: false, delimiter: Delimiter.Line));
+				buffers.Add(TextToBytes(lines[i], useDTE: true, delimiter: Delimiter.Line));
 			}
 
 			if (buffers.Count != 0)

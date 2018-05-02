@@ -12,7 +12,7 @@ namespace FF1Lib
 	// ReSharper disable once InconsistentNaming
 	public partial class FF1Rom : NesRom
 	{
-		public const string Version = "2.1.0";
+		public const string Version = "2.2.0";
 
 		public const int RngOffset = 0x7F100;
 		public const int RngSize = 256;
@@ -83,13 +83,17 @@ namespace FF1Lib
 			var rng = new MT19337(BitConverter.ToUInt32(seed, 0));
 
 			UpgradeToMMC3();
+			MakeSpaceIn1F();
 			EasterEggs();
 			DynamicWindowColor();
 			PermanentCaravan();
+			ShiftEarthOrbDown();
+
 			var overworldMap = new OverworldMap(this, flags);
 			var maps = ReadMaps();
+			var incentivesData = new IncentiveData(rng, flags, overworldMap.MapLocationRequirements);
 			var shopItemLocation = ItemLocations.CaravanItemShop1;
-			
+
 			if (flags.ModernBattlefield)
 			{
 				SetBattleUI(true);
@@ -97,7 +101,7 @@ namespace FF1Lib
 
 			if (flags.TitansTrove)
 			{
-				EnableTitansTrove();
+				EnableTitansTrove(maps);
 			}
 
 			// This has to be done before we shuffle spell levels.
@@ -111,15 +115,32 @@ namespace FF1Lib
 				FixEnemyAOESpells();
 			}
 
+			if (flags.ItemMagic)
+			{
+				ShuffleItemMagic(rng);
+			}
+
 			if (flags.Shops)
 			{
-				shopItemLocation = ShuffleShops(rng, flags.EnemyStatusAttacks);
+				var excludeItemsFromRandomShops = flags.Treasures
+					? incentivesData.ForcedItemPlacements.Select(x => x.Item).Concat(incentivesData.IncentiveItems).ToList()
+					: new List<Item>();
+				shopItemLocation = ShuffleShops(rng, flags.EnemyStatusAttacks, flags.RandomWares, excludeItemsFromRandomShops);
 			}
 
 			if (flags.Treasures || flags.NPCItems || flags.NPCFetchItems)
 			{
-				var incentivesData = new IncentiveData(rng, flags, overworldMap.MapLocationRequirements);
 				ShuffleTreasures(rng, flags, incentivesData, shopItemLocation, overworldMap.MapLocationRequirements);
+			}
+
+			if (flags.Treasures && flags.ShardHunt && !flags.ChaosRush)
+			{
+				EnableShardHunt(rng, flags.ExtraShards ? rng.Between(24, 30) : 16, maps);
+			}
+
+			if (flags.TransformFinalFormation)
+			{
+				TransformFinalFormation((FinalFormation)rng.Between(0, Enum.GetValues(typeof(FinalFormation)).Length - 1));
 			}
 
 			if (flags.MagicShops)
@@ -129,6 +150,7 @@ namespace FF1Lib
 
 			if (flags.MagicLevels)
 			{
+				FixWarpBug(); // The warp bug only needs to be fixed if the magic levels are being shuffled
 				ShuffleMagicLevels(rng, flags.MagicPermissions);
 			}
 
@@ -139,7 +161,7 @@ namespace FF1Lib
 
 			if (flags.EnemyScripts)
 			{
-				ShuffleEnemyScripts(rng);
+				ShuffleEnemyScripts(rng, flags.AllowUnsafePirates);
 			}
 
 			if (flags.EnemySkillsSpells)
@@ -149,7 +171,7 @@ namespace FF1Lib
 
 			if (flags.EnemyStatusAttacks)
 			{
-				ShuffleEnemyStatusAttacks(rng);
+				ShuffleEnemyStatusAttacks(rng, flags.AllowUnsafePirates);
 			}
 
 			if (flags.EnemyFormationsUnrunnable)
@@ -182,9 +204,9 @@ namespace FF1Lib
 				EnableEarlyOrdeals();
 			}
 
-			if (flags.KeylessToFR)
+			if (flags.ChaosRush)
 			{
-				EnableKeylessToFR();
+				EnableChaosRush();
 			}
 
 			if (flags.EarlySarda && !flags.NPCItems)
@@ -285,7 +307,7 @@ namespace FF1Lib
 			var itemText = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
 			FixVanillaRibbon(itemText);
 			ExpGoldBoost(flags.ExpBonus, flags.ExpMultiplier);
-			ScalePrices(flags.PriceScaleFactor, flags.ExpMultiplier, itemText, rng);
+			ScalePrices(flags.PriceScaleFactor, flags.ExpMultiplier, flags.VanillaStartingGold, itemText, rng);
 
 			overworldMap.ApplyMapEdits();
 			WriteMaps(maps);
@@ -370,11 +392,12 @@ namespace FF1Lib
 			 *	Damage Taken:   $60B2 (24-bit)
 			 *	Perished:		$64B5 (8-bit)
 			 *	"Nothing Here":	$60B6 (8-bit)
+			 *	Chests Open     $60B7 (8-bit)
 			*/
 
 			// Patches for various tracking variables follow:
-			// Pedometer
-			PutInBank(0x0F, 0x8100, Blob.FromHex("18A532D027A52D2901F006A550D01DF00398D018ADA06069018DA060ADA16069008DA160ADA26069008DA260A52F8530A9FF851860"));
+			// Pedometer + chests opened
+			PutInBank(0x0F, 0x8100, Blob.FromHex("18A532D027A52D2901F006A550D01DF00398D018ADA06069018DA060ADA16069008DA160ADA26069008DA260A52F8530A9FF8518A200A000BD00622904F001C8E8D0F5988DB7606060"));
 			Put(0x7D023, Blob.FromHex("A90F2003FE200081"));
 			// Count number of battles
 			PutInBank(0x0F, 0x8400, Blob.FromHex("18ADA76069018DA7609003EEA86020A8FE60"));
@@ -418,7 +441,7 @@ namespace FF1Lib
 			// Create a clone of IsOnBridge that checks the canal too.
 			PutInBank(0x0F, 0x8780, Blob.FromHex("AD0860F014A512CD0960D00DA513CD0A60D006A90085451860A512CD0D60D00DA513CD0E60D006A900854518603860"));
 
-			// BB Aborb fix.
+			// BB Absorb fix.
 			PutInBank(0x0F, 0x8800, Blob.FromHex("A000B186C902F005C908F00160A018B186301BC8B1863016C8B1863011C8B186300CA026B1861869010AA0209186A01CB186301AC8B1863015C8B1863010C8B186300BA026B186186901A022918660"));
 
 			// Copyright overhaul, see 0F_8960_DrawSeedAndFlags.asm
@@ -431,6 +454,23 @@ namespace FF1Lib
 			// Fast Battle Boxes Undraw (Similar... yet different!)
 			PutInBank(0x0F, 0x8A80, Blob.FromHex("A9A0858AA923858BA97E8588A96A858960"));
 			PutInBank(0x0F, 0x8AA0, Blob.FromHex($"A9{BattleBoxUndrawRows}8DB96820A1F420E8F4A58838E9208588A589E9008589A58A38E920858AA58BE900858BCEB968D0DE60"));
+
+			// Softlock fix
+			Put(0x7C956, Blob.FromHex("A90F2003FE4C008B"));
+			PutInBank(0x0F, 0x8B00, Blob.FromHex("BAE030B01E8A8D1001A9F4AAA9FBA8BD0001990001CA88E010D0F4AD1001186907AA9AA52948A52A48A50D48A54848A549484C65C9"));
+		}
+
+		public void MakeSpaceIn1F()
+		{
+			// 54 bytes starting at 0xC265 in bank 1F, ROM offset: 7C275
+			// This removes the code for the minigame on the ship, and moves the prior code around too
+			PutInBank(0x1F, 0xC244, Blob.FromHex("F003C6476020C2D7A520290FD049A524F00EA9008524A542C908F074C901F0B160EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
+			// 15 bytes starting at 0xC8A4 in bank 1F, ROM offset: 7C8B4
+			// This removes the routine that give a reward for beating the minigame, no need for a reward without the minigame 
+			PutInBank(0x1F, 0xC8A4, Blob.FromHex("EAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
+			// 28 byte starting at 0xCFCB in bank 1F, ROM offset: 7CFDB
+			// This removes the AssertNasirCRC routine, which we were skipping anyways, no point in keeping uncalled routines
+			PutInBank(0x1F, 0xCFCB, Blob.FromHex("EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
 		}
 
 		public override bool Validate()
