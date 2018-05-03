@@ -133,15 +133,16 @@ namespace FF1Lib
 			RedMage = 3,
 			WhiteMage = 4,
 			BlackMage = 5,
+			None = -1,
 		}
 
-		public void PartyRandomize(MT19337 rng, Flags flags)
+		public void PartyComposition(MT19337 rng, Flags flags)
 		{
 			// Always randomize all 4 default members
 			Data[0x3A0AE] = (byte)rng.Between(0, 5);
-			Data[0x3A0BE] = (byte)rng.Between(0, 5);
-			Data[0x3A0CE] = (byte)rng.Between(0, 5);
-			Data[0x3A0DE] = (byte)rng.Between(0, 5);
+			Data[0x3A0BE] = (byte)(rng.Between(0, 6) - 1);
+			Data[0x3A0CE] = (byte)(rng.Between(0, 6) - 1);
+			Data[0x3A0DE] = (byte)(rng.Between(0, 6) - 1);
 
 			int forced = 0;
 
@@ -166,6 +167,7 @@ namespace FF1Lib
 			if (flags.RED_MAGE2) options.Add(FF1Class.RedMage);
 			if (flags.WHITE_MAGE2) options.Add(FF1Class.WhiteMage);
 			if (flags.BLACK_MAGE2) options.Add(FF1Class.BlackMage);
+			if (flags.NONE_CLASS2) options.Add(FF1Class.None);
 			if (options.Any())
 			{
 				Data[0x3A0AE + 0x10 * forced++] = (byte)options.PickRandom(rng);
@@ -178,6 +180,7 @@ namespace FF1Lib
 			if (flags.RED_MAGE3) options.Add(FF1Class.RedMage);
 			if (flags.WHITE_MAGE3) options.Add(FF1Class.WhiteMage);
 			if (flags.BLACK_MAGE3) options.Add(FF1Class.BlackMage);
+			if (flags.NONE_CLASS3) options.Add(FF1Class.None);
 			if (options.Any())
 			{
 				Data[0x3A0AE + 0x10 * forced++] = (byte)options.PickRandom(rng);
@@ -190,18 +193,16 @@ namespace FF1Lib
 			if (flags.RED_MAGE4) options.Add(FF1Class.RedMage);
 			if (flags.WHITE_MAGE4) options.Add(FF1Class.WhiteMage);
 			if (flags.BLACK_MAGE4) options.Add(FF1Class.BlackMage);
+			if (flags.NONE_CLASS4) options.Add(FF1Class.None);
 			if (options.Any())
 			{
 				Data[0x3A0AE + 0x10 * forced++] = (byte)options.PickRandom(rng);
 				options.Clear();
 			}
 
-			if (forced <= 0)
-				return;
-
 			Data[0x39D35] = 0xE0;
 			Data[0x39D36] = (byte)(forced * 0x10);
-			Put(0x39D37, Blob.FromHex("30DFFE0003BD0003E906D0039D0003A9018537"));
+			Put(0x39D37, Blob.FromHex("30DFFE0003BD0003E907D0039D0003A9018537"));
 			/* Starting at 0x39D35 (which is just after LDX char_index)
 				* CPX ____(numberForced * 0x10)____
 				* BMI @MainLoop
@@ -213,8 +214,41 @@ namespace FF1Lib
 				* : LDA #$01
 				*   STA menustall
 				*/
-		}
 
+			// allow slots 2-4 to have none, slot 1 cannot
+			PutInBank(0x0E, 0xB81C, Blob.FromHex("E000F005C9FFF00760C9FFD005A9009D0003A90160"));
+			PutInBank(0x0E, 0x9D41, Blob.FromHex("201CB8EAEAEAEA"));
+
+			// Name Drawing for None
+			PutInBank(0x0E, 0x9ED9, Blob.FromHex("2071C2"));
+			PutInBank(0x1F, 0xC271, CreateLongJumpTableEntry(0x0F, 0x8B70));
+			PutInBank(0x0F, 0x8B70, Blob.FromHex("18C9FFD016A9828D3E00A98B8D3F004C9F8B97B2B1A8FFFFFFFF0069F08D5F00A9028D5E00A95E8D3E00A9008D3F00A90F8D57008D58008A482036DE68AA60"));
+			PutInBank(0x0E, 0x9EDC, Get(0x39EF7, 0x2F));
+
+			// Load stats for None
+			PutInBank(0x1F, 0xC783, Blob.FromHex("20B0B0C931F053EA"));
+			PutInBank(0x00, 0xB0B0, Blob.FromHex("BD0061C9FFD013A9019D0161A9009D07619D08619D0961A931600A0A0A0AA860"));
+
+			//clinic stuff
+			PutInBank(0x0E, 0xA6F3, Blob.FromHex("203E9B"));
+			PutInBank(0x0E, 0x9B3E, Blob.FromHex("BD0061C9FFD00568684C16A7BD016160"));
+
+			// curing ailments out of battle, allow the waste of things in battle
+			PutInBank(0x0E, 0xB388, Blob.FromHex("2077C2"));
+			PutInBank(0x1F, 0xC277, CreateLongJumpTableEntry(0x0F, 0x8BB0));
+			PutInBank(0x0F, 0x8BB0, Blob.FromHex("A5626A6A6A29C0AABD0061C9FFD003A90060BD016160"));
+
+			// done in ShufflePromotions()
+			// PutInBank(0x0E, 0x95AE, Blob.FromHex("A000986A6A6AAABD0061C9FFF0099AAABD3E9BBA9D0061C8C004D0E6EE560060"));
+
+			// Battle sprite
+			PutInBank(0x1F, 0xEB1E, Blob.FromHex("2080B9EAEAEAEAEA"));
+			PutInBank(0x09, 0xB980, Blob.FromHex("A202C9FFF0070A1869908511606868A000A9008D0720C8D0FACAD0F760"));
+
+			// MapMan for Nones
+			PutInBank(0x1F, 0xE92E, Blob.FromHex("20608FEAEAEAEA"));
+			PutInBank(0x02, 0x8F60, Blob.FromHex("A9008510AD0061C9FFF00160A92560"));
+		}
 		public void DisablePartyShuffle()
 		{
 			var nops = new byte[PartyShuffleSize];
@@ -439,6 +473,25 @@ namespace FF1Lib
 			// The above code uses battle message $06 which is the unused Sight Recovered string
 			// Let's overwrite that string with something more appropriate for the WAIT command
 			Put(0x2CC71, FF1Text.TextToBytes("W A I T", false));
+		}
+
+		public void ShufflePromotions(MT19337 rng, bool shuffle)
+		{
+			// Prevent Knights and Ninjas from gaining charges if they start with more than 4 already.
+			Data[0x2CD9F] = 0x30; // Changes a BNE to a BMI
+
+			// Replace the following with a 6 byte LUT of the promoted classes out of order
+			List<byte> promotedClasses = Enumerable.Range(6, 6).ToList().Select(value => (byte)value).ToList();
+			if (shuffle)
+			{
+				promotedClasses.Shuffle(rng);
+			}
+			PutInBank(0x0E, 0xB831, promotedClasses.ToArray());
+
+			// Change DoClassChange to read from the LUT instead of adding 6.
+			// The load from the lut is smaller than CLC and ADC #06 so the method is edited in place.
+			Put(0x395AE, Blob.FromHex("A000986A6A6AAABD0061C9FFF00B8614AABD31B8A6149D0061C8C004D0E4EE560060"));
+  
 		}
 
 		public void ImproveTurnOrderRandomization(MT19337 rng)

@@ -187,6 +187,7 @@ namespace FF1Lib
 		[FlagString(Character = ITEM_REQUIREMENTS, FlagBit = 32)]
 		public bool OnlyRequireGameIsBeatable { get; set; }
 
+
 		[FlagString(Character = FILTHY_CASUALS, FlagBit = 1)]
 		public bool FreeBridge { get; set; }
 		[FlagString(Character = FILTHY_CASUALS, FlagBit = 2)]
@@ -310,7 +311,7 @@ namespace FF1Lib
 		public bool BLACK_MAGE4 { get; set; }
 
 		[FlagString(Character = PARTY_EXTRA, FlagBit = 1)]
-		public bool NONE_CLASS2 { get; set; }
+		public bool NONE_CLASS2 { get; set; } 
 		[FlagString(Character = PARTY_EXTRA, FlagBit = 2)]
 		public bool NONE_CLASS3 { get; set; }
 		[FlagString(Character = PARTY_EXTRA, FlagBit = 4)]

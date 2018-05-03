@@ -1,26 +1,28 @@
 ﻿define lut_promotion $9586
 define dlgflg_reentermap $56
-define ch_class0 $6100
-define ch_class1 $6140
-define ch_class2 $6180
-define ch_class3 $61C0
 
 DoClassChange:
-	LDX ch_class0
-	LDA lut_promotion, X
-	STA ch_class0
+LDY #$00
 
-	LDX ch_class1
-	LDA lut_promotion, X
-	STA ch_class1
+loop:
+TYA
+ROR A                ; 1 becomes 40, 2 -> 80, 3 -> C0
+ROR A
+ROR A
+TAX
+LDA $6100,X          ; 6100,6140,6180,61C0
+CMP #$FF
+BEQ skip
+TAX
+STX $14
+LDA lut_promotion,X
+LDX $14
+STA $6100,X
 
-	LDX ch_class2
-	LDA lut_promotion, X
-	STA ch_class2
+skip:
+INY                   ; increment counter to go through all the party members
+CPY #$04
+BNE loop
 
-	LDX ch_class3
-	LDA lut_promotion, X
-	STA ch_class3
-
-	INC dlgflg_reentermap  ; set flag to redraw party
-	RTS
+INC dlgflg_reentermap6
+RTS         

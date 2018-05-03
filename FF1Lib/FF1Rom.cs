@@ -85,7 +85,7 @@ namespace FF1Lib
 			var rng = new MT19337(BitConverter.ToUInt32(seed, 0));
 
 			UpgradeToMMC3();
-			MakeSpaceIn1F();
+			MakeSpace();
 			EasterEggs();
 			DynamicWindowColor();
 			PermanentCaravan();
@@ -387,8 +387,8 @@ namespace FF1Lib
 			{
 				ScaleBossStats(flags.BossScaleFactor, flags.WrapStatOverflow, flags.IncludeMorale, rng);
 			}
-
-			PartyRandomize(rng, flags);
+			
+			PartyComposition(rng, flags);
 
 			if (flags.MapCanalBridge)
 			{
@@ -534,7 +534,7 @@ namespace FF1Lib
 			PutInBank(0x0F, 0x92A0, Blob.FromHex("AD6B68C901F01EA2019D3A6BA9118D3A6BA900E89D3A6BA0FFC8E8B990929D3A6BD0F6F00EA2FFA0FFC8E8B980929D3A6BD0F6A23AA06BA904201CF7EEF86A60"));
 		}
 
-		public void MakeSpaceIn1F()
+		public void MakeSpace()
 		{
 			// 54 bytes starting at 0xC265 in bank 1F, ROM offset: 7C275
 			// This removes the code for the minigame on the ship, and moves the prior code around too
@@ -545,6 +545,11 @@ namespace FF1Lib
 			// 28 byte starting at 0xCFCB in bank 1F, ROM offset: 7CFDB
 			// This removes the AssertNasirCRC routine, which we were skipping anyways, no point in keeping uncalled routines
 			PutInBank(0x1F, 0xCFCB, Blob.FromHex("EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
+
+			// Used by ShufflePromotions() and AllowNone()
+			PutInBank(0x0E, 0xB816, Blob.FromHex("206BC24C95EC"));
+			PutInBank(0x1F, 0xC26B, CreateLongJumpTableEntry(0x0F, 0x8B40));
+			PutInBank(0x0F, 0x8B40, Blob.FromHex("A562851029030A851118651165110A0A0A1869508540A5100A0A29F0186928854160"));
 		}
 
 		public override bool Validate()
