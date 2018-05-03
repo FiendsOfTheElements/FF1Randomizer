@@ -71,14 +71,24 @@
 					<CheckBox x:Name="IncentivizeOffCastWeaponCheckBox" IsEnabled="True" IsChecked="True" Content="Incentivize Thor Hammer" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="370,150,0,0" ToolTip="Thor Hammer" Checked="SetFlagsText" Unchecked="SetFlagsText"/>
 				</Grid>
 			</TabItem>
+			<TabItem Header="Quick Races">
+				<CheckBox x:Name="ChaosRushCheckBox" IsEnabled="True" IsChecked="True" Content="CHAOS Rush" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0" ToolTip="Enable access to CHAOS without the Mystic KEY and start with the LUTE." Checked="ChaosRushCheckBox_OnChecked" Unchecked="ChaosRushCheckBox_OnUnchecked"/>
+			</TabItem>
+			<TabItem Header="Treasure Hunt">
+				<Grid>
+					<CheckBox x:Name="ShardHuntCheckBox" IsEnabled="True" IsChecked="True" Content="Treasure Hunt" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0" ToolTip="Treasure Hunt alternate gameplay mode. Collect 16 of a random Treasure Item to activate the BLACK ORB." Checked="ShardHuntCheckBox_OnChecked" Unchecked="ShardHuntCheckBox_OnUnchecked"/>
+					<CheckBox x:Name="ExtraShardsCheckBox" IsEnabled="True" IsChecked="True" Content="Extra Treasure" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,30,0,0" ToolTip="A larger hunt for the hardcore hunter. You will now need between 24 and 30 of the Treasure Item." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+				</Grid>
+			</TabItem>
+			<TabItem Header="Extra Challenges">
+				<CheckBox x:Name="TransformFinalFormationCheckBox" IsEnabled="True" IsChecked="True" Content="Alternate Final Boss" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0" ToolTip="Replace the Final Battle against Chaos with a different challenge." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+			</TabItem>
 			<TabItem Header="Map">
 				<Grid>
-					<CheckBox x:Name="KeylessToFRCheckBox" IsEnabled="True" IsChecked="True" Content="Unlock Temple of Fiends Revisited 2F" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0" ToolTip="Unlock the door in Temple of Fiends Revisted 2F, removing the need for the KEY." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
-					
-					<CheckBox x:Name="OrdealsPillarsCheckBox" IsEnabled="True" IsChecked="True" Content="Castle Ordeals" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,50,0,0" ToolTip="Teleporters in Castle Ordeals are shuffled." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
-					<CheckBox x:Name="SkyCastle4FTeleportersCheckBox" IsEnabled="True" IsChecked="True" Content="Sky Castle 4F Teleporters" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,70,0,0" ToolTip="Sky Castle 4F Teleporters" Checked="SetFlagsText" Unchecked="SetFlagsText"/>
-					<CheckBox x:Name="TitansTroveCheckBox" IsEnabled="True" IsChecked="True" Content="Titan's Trove" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,110,0,0" ToolTip="Titan's Trove" Checked="SetFlagsText" Unchecked="SetFlagsText"/>
-					<CheckBox x:Name="MapOpenProgressionCheckBox" IsEnabled="True" IsChecked="True" Content="Open Progression" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,130,0,0" ToolTip="Open Progression" Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+					<CheckBox x:Name="OrdealsPillarsCheckBox" IsEnabled="True" IsChecked="True" Content="Castle Ordeals" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0" ToolTip="Teleporters in Castle Ordeals are shuffled." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+					<CheckBox x:Name="SkyCastle4FTeleportersCheckBox" IsEnabled="True" IsChecked="True" Content="Sky Castle 4F Teleporters" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,30,0,0" ToolTip="Sky Castle 4F Teleporters" Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+					<CheckBox x:Name="TitansTroveCheckBox" IsEnabled="True" IsChecked="True" Content="Titan's Trove" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,70,0,0" ToolTip="Titan's Trove" Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+					<CheckBox x:Name="MapOpenProgressionCheckBox" IsEnabled="True" IsChecked="True" Content="Open Progression" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,90,0,0" ToolTip="Open Progression" Checked="SetFlagsText" Unchecked="SetFlagsText"/>
 				</Grid>
 			</TabItem>
 			<TabItem Header="Scale">

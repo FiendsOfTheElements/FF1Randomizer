@@ -448,6 +448,56 @@ namespace FF1Randomizer
 			Clipboard.SetText(SeedTextBox.Text + "_" + FlagsTextBox.Text);
 		}
 
+		private void ChaosRushCheckBox_OnChecked(object sender, RoutedEventArgs e)
+		{
+			if (ShardHuntCheckBox != null)
+			{
+				ShardHuntCheckBox.IsEnabled = true;
+			}
+
+			if (ExtraShardsCheckBox != null)
+			{
+				ExtraShardsCheckBox.IsEnabled = (ShardHuntCheckBox != null && ShardHuntCheckBox.IsEnabled && ShardHuntCheckBox.IsChecked.Value);
+			}
+
+			SetFlagsText(sender, e);
+		}
+
+		private void ChaosRushCheckBox_OnUnchecked(object sender, RoutedEventArgs e)
+		{
+			if (ShardHuntCheckBox != null)
+			{
+				ShardHuntCheckBox.IsEnabled = false;
+			}
+
+			if (ExtraShardsCheckBox != null)
+			{
+				ExtraShardsCheckBox.IsEnabled = false;
+			}
+
+			SetFlagsText(sender, e);
+		}
+
+		private void ShardHuntCheckBox_OnChecked(object sender, RoutedEventArgs e)
+		{
+			if (ExtraShardsCheckBox != null)
+			{
+				ExtraShardsCheckBox.IsEnabled = true;
+			}
+
+			SetFlagsText(sender, e);
+		}
+
+		private void ShardHuntCheckBox_OnUnchecked(object sender, RoutedEventArgs e)
+		{
+			if (ExtraShardsCheckBox != null)
+			{
+				ExtraShardsCheckBox.IsEnabled = false;
+			}
+
+			SetFlagsText(sender, e);
+		}
+
 		private void PasteButton_Click(object sender, RoutedEventArgs e)
 		{
 			var text = Clipboard.GetText();
@@ -522,6 +572,9 @@ namespace FF1Randomizer
 				IncentivizeDefCastWeapon = IncentivizeDefCastWeaponCheckBox.IsChecked == true,
 				IncentivizeOffCastWeapon = IncentivizeOffCastWeaponCheckBox.IsChecked == true,
 				Shops = ShopsCheckBox.IsChecked == true,
+				ShardHunt = ShardHuntCheckBox.IsChecked == true,
+				ExtraShards = ExtraShardsCheckBox.IsChecked == true,
+				TransformFinalFormation = TransformFinalFormationCheckBox.IsChecked == true,
 				MagicShops = MagicShopsCheckBox.IsChecked == true,
 				MagicLevels = MagicLevelsCheckBox.IsChecked == true,
 				MagicPermissions = MagicPermissionsCheckBox.IsChecked == true,
@@ -535,7 +588,7 @@ namespace FF1Randomizer
 				OrdealsPillars = OrdealsPillarsCheckBox.IsChecked == true,
 				SkyCastle4FTeleporters = SkyCastle4FTeleportersCheckBox.IsChecked == true,
 				TitansTrove = TitansTroveCheckBox.IsChecked == true,
-				KeylessToFR = KeylessToFRCheckBox.IsChecked == true,
+				ChaosRush = ChaosRushCheckBox.IsChecked == true,
 				MapOpenProgression = MapOpenProgressionCheckBox.IsChecked == true,
 
 				EarlySarda = EarlySardaCheckBox.IsChecked == true,
@@ -607,6 +660,9 @@ namespace FF1Randomizer
 			IncentivizeDefCastWeaponCheckBox.IsChecked = flags.IncentivizeDefCastWeapon;
 			IncentivizeOffCastWeaponCheckBox.IsChecked = flags.IncentivizeOffCastWeapon;
 			ShopsCheckBox.IsChecked = flags.Shops;
+			ShardHuntCheckBox.IsChecked = flags.ShardHunt;
+			ExtraShardsCheckBox.IsChecked = flags.ExtraShards;
+			TransformFinalFormationCheckBox.IsChecked = flags.TransformFinalFormation;
 			MagicShopsCheckBox.IsChecked = flags.MagicShops;
 			MagicLevelsCheckBox.IsChecked = flags.MagicLevels;
 			MagicPermissionsCheckBox.IsChecked = flags.MagicPermissions;
@@ -620,7 +676,7 @@ namespace FF1Randomizer
 			OrdealsPillarsCheckBox.IsChecked = flags.OrdealsPillars;
 			SkyCastle4FTeleportersCheckBox.IsChecked = flags.SkyCastle4FTeleporters;
 			TitansTroveCheckBox.IsChecked = flags.TitansTrove;
-			KeylessToFRCheckBox.IsChecked = flags.KeylessToFR;
+			ChaosRushCheckBox.IsChecked = flags.ChaosRush;
 			MapOpenProgressionCheckBox.IsChecked = flags.MapOpenProgression;
 
 			EarlySardaCheckBox.IsChecked = flags.EarlySarda;
