@@ -226,29 +226,37 @@ namespace FF1Lib
 			PutInBank(0x0E, 0x9EDC, Get(0x39EF7, 0x2F));
 
 			// Load stats for None
-			PutInBank(0x1F, 0xC783, Blob.FromHex("20B0B0C931F053EA"));
-			PutInBank(0x00, 0xB0B0, Blob.FromHex("BD0061C9FFD013A9019D0161A9009D07619D08619D0961A931600A0A0A0AA860"));
+			PutInBank(0x1F, 0xC783, Blob.FromHex("2080B3C931F053EA"));
+			PutInBank(0x00, 0xB380, Blob.FromHex("BD0061C9FFD013A9019D0161A9009D07619D08619D0961A931600A0A0A0AA860"));
 
 			//clinic stuff
 			PutInBank(0x0E, 0xA6F3, Blob.FromHex("203E9B"));
 			PutInBank(0x0E, 0x9B3E, Blob.FromHex("BD0061C9FFD00568684C16A7BD016160"));
 
 			// curing ailments out of battle, allow the waste of things in battle
-			PutInBank(0x0E, 0xB388, Blob.FromHex("2077C2"));
+			PutInBank(0x0E, 0xB388, Blob.FromHex("2077C2EAEAEAEAEAEAEAEA"));
 			PutInBank(0x1F, 0xC277, CreateLongJumpTableEntry(0x0F, 0x8BB0));
 			PutInBank(0x0F, 0x8BB0, Blob.FromHex("A5626A6A6A29C0AABD0061C9FFD003A90060BD016160"));
 
-			// done in ShufflePromotions()
-			// PutInBank(0x0E, 0x95AE, Blob.FromHex("A000986A6A6AAABD0061C9FFF0099AAABD3E9BBA9D0061C8C004D0E6EE560060"));
-
-			// Battle sprite
-			PutInBank(0x1F, 0xEB1E, Blob.FromHex("2080B9EAEAEAEAEA"));
-			PutInBank(0x09, 0xB980, Blob.FromHex("A202C9FFF0070A1869908511606868A000A9008D0720C8D0FACAD0F760"));
+			// Better Battle sprite, in 0C_9910_DrawCharacter.asm
+			PutInBank(0x0F, 0x8BD0, Blob.FromHex("A86A6A6AAABD0061C9FFF00898AABDA86B8DB36860"));
+			PutInBank(0x0C, 0x9910, Blob.FromHex("20A4C8C9FFD001608A0A0AA8"));
+			PutInBank(0x1F, 0xC8A4, CreateLongJumpTableEntry(0x0F, 0x8BD0));
 
 			// MapMan for Nones
 			PutInBank(0x1F, 0xE92E, Blob.FromHex("20608FEAEAEAEA"));
 			PutInBank(0x02, 0x8F60, Blob.FromHex("A9008510AD0061C9FFF00160A92560"));
+
+			// Draw Complex String extension for class FF
+			PutInBank(0x1F, 0xC27D, Blob.FromHex("C9FFF0041869F060203EE0A997853EA9C2853F2045DE4C4EE0EA973CA800"));
+			PutInBank(0x1F, 0xDF0C, Blob.FromHex("207DC2"));
+
+			// Skip targeting None with aoe spells
+			PutInBank(0x0C, 0xB453, Blob.FromHex("20AAC8C9FFF015EA"));
+			PutInBank(0x1F, 0xC8AA, CreateLongJumpTableEntry(0x0F, 0x8BF0));
+			PutInBank(0x0F, 0x8BF0, Blob.FromHex("ADCE6BAA6A6A6AA8B90061C9FFF0068A09808D8A6C60"));
 		}
+
 		public void DisablePartyShuffle()
 		{
 			var nops = new byte[PartyShuffleSize];
