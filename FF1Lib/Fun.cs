@@ -368,14 +368,14 @@ namespace FF1Lib
 			/* ASM Snippet
 				LDY #$01        ; Need a one offset into
 				LDA ($82), Y    ; btl_ob_charstat_ptr + 1 is status
-				AND #$FE        ; Ignore dead bit - we'd rather print name
-				CMP #$0         ; emtpy byte means print name
-				BEQ skip
+				LSR             ; Shift dead bit to carry
+				BCS skip        ; If dead print name
+				BEQ skip        ; If healthy print name
 				LDY #$09        ; otherwise load 9 to print status string
 				skip:
 				JSR $AAFC       ; JSR DrawStatusRow
 			*/
-			Put(0x32AB0, Blob.FromHex("A001B18229FEC900F002A00920FCAAEAEAEAEAEA"));
+			Put(0x32AB0, Blob.FromHex("A001B1824AB004F002A00920FCAAEAEAEAEAEAEA"));
 
 			// Overwrite the upper portion of the default attribute table to all bg palette
 			Put(0x7F400, Blob.FromHex("0000000000000000"));
