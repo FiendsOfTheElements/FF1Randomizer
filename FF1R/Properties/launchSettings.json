@@ -2,7 +2,8 @@
   "profiles": {
     "FF1R": {
       "commandName": "Project",
-      "commandLineArgs": "E:/OldHD/Emu/NES/roms/finalfantasy1.nes 21B52DD4_%%8DKKKA"
+      "commandLineArgs": "ff1.nes -i 07FFC8E9_PADBHHBP!HHbDA!fHPoUUA",
+      "workingDirectory": "$(OutDir)"
     }
   }
 }

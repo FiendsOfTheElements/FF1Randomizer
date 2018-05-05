@@ -21,10 +21,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="RomUtilities" Version="2.2.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="presets\beginner.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="presets\default.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -35,9 +39,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="presets\full-npc.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="presets\beginner.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

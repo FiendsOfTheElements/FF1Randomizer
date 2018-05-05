@@ -10,6 +10,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F74A70F8-A938-4587-B083-8DC615B98D23}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		.gitignore = .gitignore
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FF1Randomizer", "FF1Randomizer\FF1Randomizer.csproj", "{BEF4CF23-2F46-4A02-AE02-649299CDABD7}"

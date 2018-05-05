@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
 
 namespace FF1Lib
 {
@@ -314,12 +315,13 @@ namespace FF1Lib
 			foreach (var inputChar in inputCharacters)
 			{
 				var charFlagValue = base64CharString.IndexOf(inputChar);
-				var flagAttributesForChar = flagAttributes[index];
+				var flagAttributesForChar = flagAttributes[index++];
 				if (flagAttributesForChar.Any(x => x.Value.FlagBit < 1))
 				{
 					var multiplierAttribute = flagAttributesForChar.First(x => x.Value.FlagBit < 1);
 					var outputValue = charFlagValue * multiplierAttribute.Value.Multiplier;
-					typeof(Flags).GetProperty(multiplierAttribute.Key).SetValue(result, outputValue);
+					var property = typeof(Flags).GetProperty(multiplierAttribute.Key);
+					property.SetValue(result, Convert.ChangeType(outputValue, property.PropertyType));
 					continue;
 				}
 				foreach (var flagAttribute in flagAttributesForChar)
@@ -330,6 +332,14 @@ namespace FF1Lib
 			}
 			return result;
 		}
+
+		class Preset
+		{
+			public string Name { get; set; }
+			public Flags Flags { get; set; }
+		}
+
+		public static Flags FromJson(string json) => JsonConvert.DeserializeObject<Preset>(json).Flags;
 	}
 
 	public class FlagStringAttribute : Attribute
