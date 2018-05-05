@@ -27,6 +27,7 @@ namespace FF1Randomizer
 	{
 		private string _filename;
 		private Blob _seed;
+		private Flags _flags;
 
 		private class MainWindowViewModel
 		{
@@ -133,7 +134,7 @@ namespace FF1Randomizer
 		private void GenerateButton_Click(object sender, RoutedEventArgs e)
 		{
 			var rom = new FF1Rom(_filename);
-			rom.Randomize(_seed, Flags.DecodeFlagsText(FlagsTextBox.Text));
+			rom.Randomize(_seed, _flags);
 
 			var fileRoot = _filename.Substring(0, _filename.LastIndexOf("."));
 			var outputFilename = $"{fileRoot}_{_seed.ToHex()}_{FlagsTextBox.Text}.nes";
@@ -172,6 +173,92 @@ namespace FF1Randomizer
 			{
 				IncentivizeOrdealsCheckBox.IsEnabled = true;
 			}
+			if(IncentivizeMarshCheckBox != null)
+			{
+				IncentivizeMarshCheckBox.IsEnabled = true;
+			}
+			if (IncentivizeEarthCheckBox != null)
+			{
+				IncentivizeEarthCheckBox.IsEnabled = true;
+			}
+			if (IncentivizeVolcanoCheckBox != null)
+			{
+				IncentivizeVolcanoCheckBox.IsEnabled = true;
+			}
+			if (IncentivizeSeaShrineCheckBox != null)
+			{
+				IncentivizeSeaShrineCheckBox.IsEnabled = true;
+			}
+			if (IncentivizeSkyPalaceCheckBox != null)
+			{
+				IncentivizeSkyPalaceCheckBox.IsEnabled = true;
+			}
+			if (IncentivizeConeriaCheckBox != null)
+			{
+				IncentivizeConeriaCheckBox.IsEnabled = true;
+			}
+			if (IncentivizeMarshKeyLockedCheckBox != null)
+			{
+				IncentivizeMarshKeyLockedCheckBox.IsEnabled = true;
+			}
+			if (IncentivizeTailCheckBox != null)
+			{
+				IncentivizeTailCheckBox.IsEnabled = true;
+			}
+			if (IncentivizeFetchItemsCheckBox != null)
+			{
+				IncentivizeFetchItemsCheckBox.IsEnabled = true;
+			}
+			if (IncentivizeMasamuneCheckBox != null)
+			{
+				IncentivizeMasamuneCheckBox.IsEnabled = true;
+			}
+			if (IncentivizeRibbonCheckBox != null)
+			{
+				IncentivizeRibbonCheckBox.IsEnabled = true;
+			}
+			if (IncentivizeOpalCheckBox != null)
+			{
+				IncentivizeOpalCheckBox.IsEnabled = true;
+			}
+			if (IncentivizeDefCastArmorCheckBox != null)
+			{
+				IncentivizeDefCastArmorCheckBox.IsEnabled = true;
+			}
+			if (IncentivizeOtherCastArmorCheckBox != null)
+			{
+				IncentivizeOtherCastArmorCheckBox.IsEnabled = true;
+			}
+			if (IncentivizeDefCastWeaponCheckBox != null)
+			{
+				IncentivizeDefCastWeaponCheckBox.IsEnabled = true;
+			}
+			if (IncentivizeOffCastWeaponCheckBox != null)
+			{
+				IncentivizeOffCastWeaponCheckBox.IsEnabled = true;
+			}
+			if (IncentivizeFreeNPCsCheckBox != null)
+			{
+				if (NPCItemsCheckBox != null)
+				{
+					IncentivizeFreeNPCsCheckBox.IsEnabled = NPCItemsCheckBox.IsEnabled;
+				}
+				else
+				{
+					IncentivizeFreeNPCsCheckBox.IsEnabled = false;
+				}
+			}
+			if (IncentivizeFetchNPCsCheckBox != null)
+			{
+				if (NPCFetchItemsCheckBox != null)
+				{
+					IncentivizeFetchNPCsCheckBox.IsEnabled = NPCFetchItemsCheckBox.IsEnabled;
+				}
+				else
+				{
+					IncentivizeFetchNPCsCheckBox.IsEnabled = false;
+				}
+			}
 
 			SetFlagsText(sender, e);
 		}
@@ -185,6 +272,132 @@ namespace FF1Randomizer
 			if (IncentivizeOrdealsCheckBox != null)
 			{
 				IncentivizeOrdealsCheckBox.IsEnabled = false;
+			}
+			if (IncentivizeMarshCheckBox != null)
+			{
+				IncentivizeMarshCheckBox.IsEnabled = false;
+			}
+			if (IncentivizeEarthCheckBox != null)
+			{
+				IncentivizeEarthCheckBox.IsEnabled = false;
+			}
+			if (IncentivizeVolcanoCheckBox != null)
+			{
+				IncentivizeVolcanoCheckBox.IsEnabled = false;
+			}
+			if (IncentivizeSeaShrineCheckBox != null)
+			{
+				IncentivizeSeaShrineCheckBox.IsEnabled = false;
+			}
+			if (IncentivizeSkyPalaceCheckBox != null)
+			{
+				IncentivizeSkyPalaceCheckBox.IsEnabled = false;
+			}
+			if (IncentivizeConeriaCheckBox != null)
+			{
+				IncentivizeConeriaCheckBox.IsEnabled = false;
+			}
+			if (IncentivizeMarshKeyLockedCheckBox != null)
+			{
+				IncentivizeMarshKeyLockedCheckBox.IsEnabled = false;
+			}
+			if (IncentivizeTailCheckBox != null)
+			{
+				IncentivizeTailCheckBox.IsEnabled = false;
+			}
+			if (IncentivizeFetchItemsCheckBox != null)
+			{
+				IncentivizeFetchItemsCheckBox.IsEnabled = false;
+			}
+			if (IncentivizeMasamuneCheckBox != null)
+			{
+				IncentivizeMasamuneCheckBox.IsEnabled = false;
+			}
+			if (IncentivizeRibbonCheckBox != null)
+			{
+				IncentivizeRibbonCheckBox.IsEnabled = false;
+			}
+			if (IncentivizeOpalCheckBox != null)
+			{
+				IncentivizeOpalCheckBox.IsEnabled = false;
+			}
+			if (IncentivizeDefCastArmorCheckBox != null)
+			{
+				IncentivizeDefCastArmorCheckBox.IsEnabled = false;
+			}
+			if (IncentivizeOtherCastArmorCheckBox != null)
+			{
+				IncentivizeOtherCastArmorCheckBox.IsEnabled = false;
+			}
+			if (IncentivizeDefCastWeaponCheckBox != null)
+			{
+				IncentivizeDefCastWeaponCheckBox.IsEnabled = false;
+			}
+			if (IncentivizeOffCastWeaponCheckBox != null)
+			{
+				IncentivizeOffCastWeaponCheckBox.IsEnabled = false;
+			}
+			if (IncentivizeFreeNPCsCheckBox != null)
+			{
+				IncentivizeFreeNPCsCheckBox.IsEnabled = false;
+			}
+			if (IncentivizeFetchNPCsCheckBox != null)
+			{
+				IncentivizeFetchNPCsCheckBox.IsEnabled = false;
+			}
+
+			SetFlagsText(sender, e);
+		}
+
+		private void NPCItemsCheckBox_OnChecked(object sender, RoutedEventArgs e)
+		{
+			if (IncentivizeFreeNPCsCheckBox != null)
+			{
+				if (TreasuresCheckBox != null)
+				{
+					IncentivizeFreeNPCsCheckBox.IsEnabled = TreasuresCheckBox.IsEnabled;
+				}
+				else
+				{
+					IncentivizeFreeNPCsCheckBox.IsEnabled = false;
+				}
+			}
+
+			SetFlagsText(sender, e);
+		}
+
+		private void NPCItemsCheckBox_OnUnchecked(object sender, RoutedEventArgs e)
+		{
+			if (IncentivizeFreeNPCsCheckBox != null)
+			{
+				IncentivizeFreeNPCsCheckBox.IsEnabled = false;
+			}
+
+			SetFlagsText(sender, e);
+		}
+
+		private void NPCFetchItemsCheckBox_OnChecked(object sender, RoutedEventArgs e)
+		{
+			if (IncentivizeFetchNPCsCheckBox != null)
+			{
+				if (TreasuresCheckBox != null)
+				{
+					IncentivizeFetchNPCsCheckBox.IsEnabled = TreasuresCheckBox.IsEnabled;
+				}
+				else
+				{
+					IncentivizeFetchNPCsCheckBox.IsEnabled = false;
+				}
+			}
+
+			SetFlagsText(sender, e);
+		}
+
+		private void NPCFetchItemsCheckBox_OnUnchecked(object sender, RoutedEventArgs e)
+		{
+			if (IncentivizeFetchNPCsCheckBox != null)
+			{
+				IncentivizeFetchNPCsCheckBox.IsEnabled = false;
 			}
 
 			SetFlagsText(sender, e);
@@ -235,6 +448,56 @@ namespace FF1Randomizer
 			Clipboard.SetText(SeedTextBox.Text + "_" + FlagsTextBox.Text);
 		}
 
+		private void ChaosRushCheckBox_OnChecked(object sender, RoutedEventArgs e)
+		{
+			if (ShardHuntCheckBox != null)
+			{
+				ShardHuntCheckBox.IsEnabled = true;
+			}
+
+			if (ExtraShardsCheckBox != null)
+			{
+				ExtraShardsCheckBox.IsEnabled = (ShardHuntCheckBox != null && ShardHuntCheckBox.IsEnabled && ShardHuntCheckBox.IsChecked.Value);
+			}
+
+			SetFlagsText(sender, e);
+		}
+
+		private void ChaosRushCheckBox_OnUnchecked(object sender, RoutedEventArgs e)
+		{
+			if (ShardHuntCheckBox != null)
+			{
+				ShardHuntCheckBox.IsEnabled = false;
+			}
+
+			if (ExtraShardsCheckBox != null)
+			{
+				ExtraShardsCheckBox.IsEnabled = false;
+			}
+
+			SetFlagsText(sender, e);
+		}
+
+		private void ShardHuntCheckBox_OnChecked(object sender, RoutedEventArgs e)
+		{
+			if (ExtraShardsCheckBox != null)
+			{
+				ExtraShardsCheckBox.IsEnabled = true;
+			}
+
+			SetFlagsText(sender, e);
+		}
+
+		private void ShardHuntCheckBox_OnUnchecked(object sender, RoutedEventArgs e)
+		{
+			if (ExtraShardsCheckBox != null)
+			{
+				ExtraShardsCheckBox.IsEnabled = false;
+			}
+
+			SetFlagsText(sender, e);
+		}
+
 		private void PasteButton_Click(object sender, RoutedEventArgs e)
 		{
 			var text = Clipboard.GetText();
@@ -283,11 +546,35 @@ namespace FF1Randomizer
 				return;
 			}
 
-			FlagsTextBox.Text = Flags.EncodeFlagsText(new Flags {
+
+			_flags = new Flags {
 				Treasures = TreasuresCheckBox.IsChecked == true,
+				NPCItems = NPCItemsCheckBox.IsChecked == true,
+				NPCFetchItems = NPCFetchItemsCheckBox.IsChecked == true,
+				IncentivizeFreeNPCs = IncentivizeFreeNPCsCheckBox.IsChecked == true,
+				IncentivizeFetchNPCs = IncentivizeFetchNPCsCheckBox.IsChecked == true,
 				IncentivizeIceCave = IncentivizeIceCaveCheckBox.IsChecked == true,
 				IncentivizeOrdeals = IncentivizeOrdealsCheckBox.IsChecked == true,
+				IncentivizeMarsh = IncentivizeMarshCheckBox.IsChecked == true,
+				IncentivizeEarth = IncentivizeEarthCheckBox.IsChecked == true,
+				IncentivizeVolcano = IncentivizeVolcanoCheckBox.IsChecked == true,
+				IncentivizeSeaShrine = IncentivizeSeaShrineCheckBox.IsChecked == true,
+				IncentivizeSkyPalace = IncentivizeSkyPalaceCheckBox.IsChecked == true,
+				IncentivizeConeria = IncentivizeConeriaCheckBox.IsChecked == true,
+				IncentivizeMarshKeyLocked = IncentivizeMarshKeyLockedCheckBox.IsChecked == true,
+				IncentivizeTail = IncentivizeTailCheckBox.IsChecked == true,
+				IncentivizeFetchItems = IncentivizeFetchItemsCheckBox.IsChecked == true,
+				IncentivizeMasamune = IncentivizeMasamuneCheckBox.IsChecked == true,
+				IncentivizeRibbon = IncentivizeRibbonCheckBox.IsChecked == true,
+				IncentivizeOpal = IncentivizeOpalCheckBox.IsChecked == true,
+				IncentivizeDefCastArmor = IncentivizeDefCastArmorCheckBox.IsChecked == true,
+				IncentivizeOtherCastArmor = IncentivizeOtherCastArmorCheckBox.IsChecked == true,
+				IncentivizeDefCastWeapon = IncentivizeDefCastWeaponCheckBox.IsChecked == true,
+				IncentivizeOffCastWeapon = IncentivizeOffCastWeaponCheckBox.IsChecked == true,
 				Shops = ShopsCheckBox.IsChecked == true,
+				ShardHunt = ShardHuntCheckBox.IsChecked == true,
+				ExtraShards = ExtraShardsCheckBox.IsChecked == true,
+				TransformFinalFormation = TransformFinalFormationCheckBox.IsChecked == true,
 				MagicShops = MagicShopsCheckBox.IsChecked == true,
 				MagicLevels = MagicLevelsCheckBox.IsChecked == true,
 				MagicPermissions = MagicPermissionsCheckBox.IsChecked == true,
@@ -295,23 +582,37 @@ namespace FF1Randomizer
 				EnemyScripts = EnemyScriptsCheckBox.IsChecked == true,
 				EnemySkillsSpells = EnemySkillsSpellsCheckBox.IsChecked == true,
 				EnemyStatusAttacks = EnemyStatusAttacksCheckBox.IsChecked == true,
-				Ordeals = OrdealsCheckBox.IsChecked == true,
+				EnemyFormationsUnrunnable = EnemyFormationsUnrunnableCheckBox.IsChecked == true,
+				EnemyFormationsSurprise = EnemyFormationsSurpriseCheckBox.IsChecked == true,
+				EnemyFormationsFrequency = EnemyFormationsFrequencyCheckBox.IsChecked == true,
+				OrdealsPillars = OrdealsPillarsCheckBox.IsChecked == true,
+				SkyCastle4FTeleporters = SkyCastle4FTeleportersCheckBox.IsChecked == true,
+				TitansTrove = TitansTroveCheckBox.IsChecked == true,
+				ChaosRush = ChaosRushCheckBox.IsChecked == true,
+				MapOpenProgression = MapOpenProgressionCheckBox.IsChecked == true,
 
-				EarlyRod = EarlyRodCheckBox.IsChecked == true,
-				EarlyCanoe = EarlyCanoeCheckBox.IsChecked == true,
-				EarlyOrdeals = EarlyOrdealsCheckBox.IsChecked == true,
-				EarlyBridge = EarlyBridgeCheckBox.IsChecked == true,
+				EarlySarda = EarlySardaCheckBox.IsChecked == true,
+				EarlySage = EarlySageCheckBox.IsChecked == true,
+				CrownlessOrdeals = CrownlessOrdealsCheckBox.IsChecked == true,
+				FreeAirship = FreeAirshipCheckBox.IsChecked == true,
+				FreeBridge = FreeBridgeCheckBox.IsChecked == true,
+				FreeOrbs = FreeOrbsCheckBox.IsChecked == true,
+				EasyMode = EasyModeCheckBox.IsChecked == true,
 				NoPartyShuffle = NoPartyShuffleCheckBox.IsChecked == true,
 				SpeedHacks = SpeedHacksCheckBox.IsChecked == true,
 				IdentifyTreasures = IdentifyTreasuresCheckBox.IsChecked == true,
 				Dash = DashCheckBox.IsChecked == true,
 				BuyTen = BuyTenCheckBox.IsChecked == true,
+				WaitWhenUnrunnable = WaitWhenUnrunnableCheckBox.IsChecked == true,
 
 				HouseMPRestoration = HouseMPRestorationCheckBox.IsChecked == true,
 				WeaponStats = WeaponStatsCheckBox.IsChecked == true,
 				ChanceToRun = ChanceToRunCheckBox.IsChecked == true,
 				SpellBugs = SpellBugsCheckBox.IsChecked == true,
-				EnemyStatusAttackBug = EnemyStatusAttacksBugCheckBox.IsChecked == true,
+				EnemyStatusAttackBug = EnemyStatusAttackBugCheckBox.IsChecked == true,
+				BlackBeltAbsorb = BlackBeltAbsorbCheckBox.IsChecked == true,
+				EnemySpellsTargetingAllies = EnemySpellsTargetingAlliesCheckBox.IsChecked == true,
+				EnemyElementalResistancesBug = EnemyElementalResistancesBugCheckBox.IsChecked == true,
 
 				FunEnemyNames = FunEnemyNamesCheckBox.IsChecked == true,
 				PaletteSwap = PaletteSwapCheckBox.IsChecked == true,
@@ -328,15 +629,40 @@ namespace FF1Randomizer
 				ExpMultiplier = ExpMultiplierSlider.Value,
 				ExpBonus = (int)ExpBonusSlider.Value,
 				ForcedPartyMembers = (int)PartyScaleFactorSlider.Value
-			});
+			};
+
+			FlagsTextBox.Text = Flags.EncodeFlagsText(_flags);
 		}
 
 		void ApplyFlags(Flags flags)
 		{
 			TreasuresCheckBox.IsChecked = flags.Treasures;
+			NPCItemsCheckBox.IsChecked = flags.NPCItems;
+			NPCFetchItemsCheckBox.IsChecked = flags.NPCFetchItems;
+			IncentivizeFreeNPCsCheckBox.IsChecked = flags.IncentivizeFreeNPCs;
+			IncentivizeFetchNPCsCheckBox.IsChecked = flags.IncentivizeFetchNPCs;
 			IncentivizeIceCaveCheckBox.IsChecked = flags.IncentivizeIceCave;
 			IncentivizeOrdealsCheckBox.IsChecked = flags.IncentivizeOrdeals;
+			IncentivizeMarshCheckBox.IsChecked = flags.IncentivizeMarsh;
+			IncentivizeEarthCheckBox.IsChecked = flags.IncentivizeEarth;
+			IncentivizeVolcanoCheckBox.IsChecked = flags.IncentivizeVolcano;
+			IncentivizeSeaShrineCheckBox.IsChecked = flags.IncentivizeSeaShrine;
+			IncentivizeSkyPalaceCheckBox.IsChecked = flags.IncentivizeSkyPalace;
+			IncentivizeConeriaCheckBox.IsChecked = flags.IncentivizeConeria;
+			IncentivizeMarshKeyLockedCheckBox.IsChecked = flags.IncentivizeMarshKeyLocked;
+			IncentivizeTailCheckBox.IsChecked = flags.IncentivizeTail;
+			IncentivizeFetchItemsCheckBox.IsChecked = flags.IncentivizeFetchItems;
+			IncentivizeMasamuneCheckBox.IsChecked = flags.IncentivizeMasamune;
+			IncentivizeRibbonCheckBox.IsChecked = flags.IncentivizeRibbon;
+			IncentivizeOpalCheckBox.IsChecked = flags.IncentivizeOpal;
+			IncentivizeDefCastArmorCheckBox.IsChecked = flags.IncentivizeDefCastArmor;
+			IncentivizeOtherCastArmorCheckBox.IsChecked = flags.IncentivizeOtherCastArmor;
+			IncentivizeDefCastWeaponCheckBox.IsChecked = flags.IncentivizeDefCastWeapon;
+			IncentivizeOffCastWeaponCheckBox.IsChecked = flags.IncentivizeOffCastWeapon;
 			ShopsCheckBox.IsChecked = flags.Shops;
+			ShardHuntCheckBox.IsChecked = flags.ShardHunt;
+			ExtraShardsCheckBox.IsChecked = flags.ExtraShards;
+			TransformFinalFormationCheckBox.IsChecked = flags.TransformFinalFormation;
 			MagicShopsCheckBox.IsChecked = flags.MagicShops;
 			MagicLevelsCheckBox.IsChecked = flags.MagicLevels;
 			MagicPermissionsCheckBox.IsChecked = flags.MagicPermissions;
@@ -344,23 +670,37 @@ namespace FF1Randomizer
 			EnemyScriptsCheckBox.IsChecked = flags.EnemyScripts;
 			EnemySkillsSpellsCheckBox.IsChecked = flags.EnemySkillsSpells;
 			EnemyStatusAttacksCheckBox.IsChecked = flags.EnemyStatusAttacks;
-			OrdealsCheckBox.IsChecked = flags.Ordeals;
+			EnemyFormationsUnrunnableCheckBox.IsChecked = flags.EnemyFormationsUnrunnable;
+			EnemyFormationsSurpriseCheckBox.IsChecked = flags.EnemyFormationsSurprise;
+			EnemyFormationsFrequencyCheckBox.IsChecked = flags.EnemyFormationsFrequency;
+			OrdealsPillarsCheckBox.IsChecked = flags.OrdealsPillars;
+			SkyCastle4FTeleportersCheckBox.IsChecked = flags.SkyCastle4FTeleporters;
+			TitansTroveCheckBox.IsChecked = flags.TitansTrove;
+			ChaosRushCheckBox.IsChecked = flags.ChaosRush;
+			MapOpenProgressionCheckBox.IsChecked = flags.MapOpenProgression;
 
-			EarlyRodCheckBox.IsChecked = flags.EarlyRod;
-			EarlyCanoeCheckBox.IsChecked = flags.EarlyCanoe;
-			EarlyOrdealsCheckBox.IsChecked = flags.EarlyOrdeals;
-			EarlyBridgeCheckBox.IsChecked = flags.EarlyBridge;
+			EarlySardaCheckBox.IsChecked = flags.EarlySarda;
+			EarlySageCheckBox.IsChecked = flags.EarlySage;
+			CrownlessOrdealsCheckBox.IsChecked = flags.CrownlessOrdeals;
+			FreeAirshipCheckBox.IsChecked = flags.FreeAirship;
+			FreeBridgeCheckBox.IsChecked = flags.FreeBridge;
+			FreeOrbsCheckBox.IsChecked = flags.FreeOrbs;
+			EasyModeCheckBox.IsChecked = flags.EasyMode;
 			NoPartyShuffleCheckBox.IsChecked = flags.NoPartyShuffle;
 			SpeedHacksCheckBox.IsChecked = flags.SpeedHacks;
 			IdentifyTreasuresCheckBox.IsChecked = flags.IdentifyTreasures;
 			DashCheckBox.IsChecked = flags.Dash;
 			BuyTenCheckBox.IsChecked = flags.BuyTen;
+			WaitWhenUnrunnableCheckBox.IsChecked = flags.WaitWhenUnrunnable;
 
 			HouseMPRestorationCheckBox.IsChecked = flags.HouseMPRestoration;
 			WeaponStatsCheckBox.IsChecked = flags.WeaponStats;
 			ChanceToRunCheckBox.IsChecked = flags.ChanceToRun;
 			SpellBugsCheckBox.IsChecked = flags.SpellBugs;
-			EnemyStatusAttacksBugCheckBox.IsChecked = flags.EnemyStatusAttackBug;
+			EnemyStatusAttackBugCheckBox.IsChecked = flags.EnemyStatusAttackBug;
+			BlackBeltAbsorbCheckBox.IsChecked = flags.BlackBeltAbsorb;
+			EnemySpellsTargetingAlliesCheckBox.IsChecked = flags.EnemySpellsTargetingAllies;
+			EnemyElementalResistancesBugCheckBox.IsChecked = flags.EnemyElementalResistancesBug;
 
 			FunEnemyNamesCheckBox.IsChecked = flags.FunEnemyNames;
 			PaletteSwapCheckBox.IsChecked = flags.PaletteSwap;

@@ -205,10 +205,10 @@ namespace FF1Lib
 		[FlagString(Character = 19, Multiplier = 0.1)]
 		public double ExpMultiplier { get; set; }
 		[FlagString(Character = 20, Multiplier = 10)]
-		public int ExpBonus { get; set; }
+		public double ExpBonus { get; set; }
 		[FlagString(Character = 21, Multiplier = 1)]
-		public int ForcedPartyMembers { get; set; }
-		
+		public double ForcedPartyMembers { get; set; }
+
 		public bool ModernBattlefield { get; set; }
 		public bool FunEnemyNames { get; set; }
 		public bool PaletteSwap { get; set; }
@@ -319,6 +319,7 @@ namespace FF1Lib
 				if (flagAttributesForChar.Any(x => x.Value.FlagBit < 1))
 				{
 					var multiplierAttribute = flagAttributesForChar.First(x => x.Value.FlagBit < 1);
+
 					var outputValue = charFlagValue * multiplierAttribute.Value.Multiplier;
 					var property = typeof(Flags).GetProperty(multiplierAttribute.Key);
 					property.SetValue(result, Convert.ChangeType(outputValue, property.PropertyType));
@@ -362,7 +363,6 @@ namespace FF1Lib
 			$"set:function(newValue){{while(this.flagString.length <= {Character})this.flagString += base64Chars[0];" +
 			$"var scaledValue = (newValue / {Multiplier}).toFixed() % base64Chars.length;" +
 			$"this.flagString = this.flagString.substr(0,{Character}) + base64Chars[scaledValue] + this.flagString.substr({Character + 1});}} }}";
-
 		}
 	}
 }

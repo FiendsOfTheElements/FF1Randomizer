@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FF1Randomizer"
         mc:Ignorable="d"
-        Title="{Binding WindowTitle}" Height="400" Width="555">
+        Title="{Binding WindowTitle}" Height="400" Width="646">
 	<Grid Margin="0,0,0,0">
 		<TextBox x:Name="RomTextBox" HorizontalAlignment="Left" Height="23" Margin="10,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" IsEnabled="False"/>
 		<Label x:Name="RomLabel" Content="Original ROM" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.228,0.141" FontWeight="Bold"/>
@@ -14,29 +14,81 @@
 		<TextBox x:Name="SeedTextBox" HorizontalAlignment="Left" Height="23" Margin="10,90,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" LostFocus="SeedTextBox_LostFocus"/>
 		<Button x:Name="GenerateButton" Content="Generate ROM" HorizontalAlignment="Right" Margin="0,10,10,0" VerticalAlignment="Top" Width="150" FontSize="20" IsEnabled="False" Click="GenerateButton_Click" Height="46"/>
 		<Button x:Name="AboutButton" Content="About FF1 Randomizer" HorizontalAlignment="Right" Margin="0,61,10,0" VerticalAlignment="Top" Width="150" Height="24" Click="AboutButton_Click"/>
-		<TextBox x:Name="FlagsTextBox" IsReadOnly="True" HorizontalAlignment="Left" Height="23" Margin="135,90,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+		<TextBox x:Name="FlagsTextBox" IsReadOnly="True" HorizontalAlignment="Left" Height="23" Margin="135,90,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="200"/>
 		<Label x:Name="FlagsLabel" Content="Flags" HorizontalAlignment="Left" Margin="135,64,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
-		<Button x:Name="CopyButton" Content="Copy" HorizontalAlignment="Left" Margin="260,90,0,0" VerticalAlignment="Top" Width="85" Height="23" Click="CopyButton_Click"/>
-		<Button x:Name="PasteButton" Content="Paste" HorizontalAlignment="Left" Margin="350,90,0,0" VerticalAlignment="Top" Width="85" Height="23" Click="PasteButton_Click"/>
-		<Button x:Name="SeedButton" Content="New Seed" HorizontalAlignment="Left" Margin="440,90,0,0" VerticalAlignment="Top" Width="89" Height="23" Click="SeedButton_Click"/>
+		<Button x:Name="CopyButton" Content="Copy" HorizontalAlignment="Left" Margin="340,90,0,0" VerticalAlignment="Top" Width="85" Height="23" Click="CopyButton_Click"/>
+		<Button x:Name="PasteButton" Content="Paste" HorizontalAlignment="Left" Margin="430,90,0,0" VerticalAlignment="Top" Width="85" Height="23" Click="PasteButton_Click"/>
+		<Button x:Name="SeedButton" Content="New Seed" HorizontalAlignment="Left" Margin="520,90,0,0" VerticalAlignment="Top" Width="89" Height="23" Click="SeedButton_Click"/>
 		<TabControl x:Name="tabControl" Margin="10,118,10,10">
 			<TabItem Header="Shuffle">
 				<Grid>
-					<CheckBox x:Name="TreasuresCheckBox" IsEnabled="True" IsChecked="True" Content="Treasures" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0" ToolTip="Treasure chest contents will be shuffled.  Sanity checks are in place to ensure you can still finish the game." Checked="TreasuresCheckBox_OnChecked" Unchecked="TreasuresCheckBox_OnUnchecked"/>
-					<CheckBox x:Name="IncentivizeIceCaveCheckBox" IsEnabled="True" IsChecked="True" Content="Incentivize Ice Cave" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="31,30,0,0" ToolTip="An important treasure will be found in the Ice Cave, guarded by the EYE." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
-					<CheckBox x:Name="IncentivizeOrdealsCheckBox" IsEnabled="True" IsChecked="True" Content="Incentivize Ordeals" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="31,50,0,0" ToolTip="An important treasure will be found in Castle Ordeals, guarded by Zombie Dragons." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
-					<CheckBox x:Name="ShopsCheckBox" IsEnabled="True" IsChecked="True" Content="Shops" HorizontalAlignment="Left" Margin="10,70,0,0" VerticalAlignment="Top" ToolTip="Shop contents (other than magic) are shuffled." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
-					<CheckBox x:Name="MagicShopsCheckBox" IsEnabled="True" IsChecked="False" Content="Magic Shops" HorizontalAlignment="Left" Margin="10,90,0,0" VerticalAlignment="Top" ToolTip="Magic shop contents are shuffled." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
-					<CheckBox x:Name="MagicLevelsCheckBox" IsEnabled="True" IsChecked="True" Content="Magic Levels" HorizontalAlignment="Left" Margin="10,110,0,0" VerticalAlignment="Top" ToolTip="Magic spells have their levels shuffled." Checked="MagicLevelsCheckBox_OnChecked" Unchecked="MagicLevelsCheckBox_OnUnchecked"/>
-					<CheckBox x:Name="MagicPermissionsCheckBox" IsEnabled="True" IsChecked="False" Content="Keep Permissions" HorizontalAlignment="Left" Margin="31,130,0,0" VerticalAlignment="Top" ToolTip="Retain the permissions of spells, even if they're shuffled to lower levels." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+					<CheckBox x:Name="ShopsCheckBox" IsEnabled="True" IsChecked="True" Content="Shops" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" ToolTip="Shop contents (other than magic) are shuffled." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+					<CheckBox x:Name="MagicShopsCheckBox" IsEnabled="True" IsChecked="False" Content="Magic Shops" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top" ToolTip="Magic shop contents are shuffled." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+					<CheckBox x:Name="MagicLevelsCheckBox" IsEnabled="True" IsChecked="True" Content="Magic Levels" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top" ToolTip="Magic spells have their levels shuffled." Checked="MagicLevelsCheckBox_OnChecked" Unchecked="MagicLevelsCheckBox_OnUnchecked"/>
+					<CheckBox x:Name="MagicPermissionsCheckBox" IsEnabled="True" IsChecked="False" Content="Keep Permissions" HorizontalAlignment="Left" Margin="31,70,0,0" VerticalAlignment="Top" ToolTip="Retain the permissions of spells, even if they're shuffled to lower levels." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
 
-					<CheckBox x:Name="RngCheckBox" IsEnabled="True" IsChecked="True" Content="RNG Table" HorizontalAlignment="Left" Margin="10,170,0,0" VerticalAlignment="Top" ToolTip="Shuffle the RNG table so that encounters are more difficult to predict." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+					<CheckBox x:Name="RngCheckBox" IsEnabled="True" IsChecked="True" Content="RNG Table" HorizontalAlignment="Left" Margin="10,110,0,0" VerticalAlignment="Top" ToolTip="Shuffle the RNG table so that encounters are more difficult to predict." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
 
 					<CheckBox x:Name="EnemyScriptsCheckBox" IsEnabled="True" IsChecked="True" Content="Enemy Scripts" HorizontalAlignment="Left" Margin="265,10,0,0" VerticalAlignment="Top" ToolTip="Enemy scripts are shuffled to different enemies." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
 					<CheckBox x:Name="EnemySkillsSpellsCheckBox" IsEnabled="True" IsChecked="True" Content="Enemy Skills/Spells" HorizontalAlignment="Left" Margin="265,30,0,0" VerticalAlignment="Top" ToolTip="Enemy skills and spells are shuffled to other scripts." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
 					<CheckBox x:Name="EnemyStatusAttacksCheckBox" IsEnabled="True" IsChecked="True" Content="Enemy Status Attacks" HorizontalAlignment="Left" Margin="265,50,0,0" VerticalAlignment="Top" ToolTip="Status attacks such as stun, sleep, and death are shuffled." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+					<CheckBox x:Name="EnemyFormationsUnrunnableCheckBox" IsEnabled="True" IsChecked="True" Content="Enemy Unrunnable Formations" HorizontalAlignment="Left" Margin="265,70,0,0" VerticalAlignment="Top" ToolTip="Enemy Unrunnable Formations" Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+					<CheckBox x:Name="EnemyFormationsSurpriseCheckBox" IsEnabled="True" IsChecked="True" Content="Enemy Surprise Bonus" HorizontalAlignment="Left" Margin="265,90,0,0" VerticalAlignment="Top" ToolTip="Enemy Surprise Bonus" Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+					<CheckBox x:Name="EnemyFormationsFrequencyCheckBox" IsEnabled="True" IsChecked="True" Content="Enemy Formations Frequency" HorizontalAlignment="Left" Margin="265,110,0,0" VerticalAlignment="Top" ToolTip="Enemy Formations Frequency" Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+				</Grid>
+			</TabItem>
+			<TabItem Header="Treasures">
+				<Grid>
+					<CheckBox x:Name="TreasuresCheckBox" IsEnabled="True" IsChecked="True" Content="Treasures" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0" ToolTip="If unchecked, forces vanilla Treasure Chests" Checked="TreasuresCheckBox_OnChecked" Unchecked="TreasuresCheckBox_OnUnchecked"/>
+					<CheckBox x:Name="NPCItemsCheckBox" IsEnabled="True" IsChecked="True" Content="Main NPC Items" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,30,0,0" ToolTip="If unchecked, forces vanilla Bridge, Lute, Ship, Rod, Canoe, Cube, Bottle" Checked="NPCItemsCheckBox_OnChecked" Unchecked="NPCItemsCheckBox_OnUnchecked"/>
+					<CheckBox x:Name="NPCFetchItemsCheckBox" IsEnabled="True" IsChecked="True" Content="Fetch Quest Rewards" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,50,0,0" ToolTip="If unchecked, forces vanilla Crystal, Herb, Key, Canal, Oxyale, Chime, Xcalber" Checked="NPCFetchItemsCheckBox_OnChecked" Unchecked="NPCFetchItemsCheckBox_OnUnchecked"/>
 
-					<CheckBox x:Name="OrdealsCheckBox" IsEnabled="True" IsChecked="True" Content="Castle Ordeals" HorizontalAlignment="Left" Margin="265,90,0,0" VerticalAlignment="Top" ToolTip="Teleporters in Castle Ordeals are shuffled." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+					<CheckBox x:Name="IncentivizeFreeNPCsCheckBox" IsEnabled="True" IsChecked="True" Content="Incentivize Main NPCs" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,90,0,0" ToolTip="King, Princess, Bikke, Sarda, Sage, Robot, Caravan" Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+					<CheckBox x:Name="IncentivizeFetchNPCsCheckBox" IsEnabled="True" IsChecked="True" Content="Incentivize Fetch Quest NPCs" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,110,0,0" ToolTip="Astos, Matoya, Prince, Dwarves, Lefein, Fairy" Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+
+					<CheckBox x:Name="IncentivizeIceCaveCheckBox" IsEnabled="True" IsChecked="True" Content="Incentivize Ice Cave" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,150,0,0" ToolTip="Floater chest" Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+					<CheckBox x:Name="IncentivizeOrdealsCheckBox" IsEnabled="True" IsChecked="True" Content="Incentivize Ordeals" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,170,0,0" ToolTip="Tail chest" Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+					<CheckBox x:Name="IncentivizeMarshCheckBox" IsEnabled="True" IsChecked="True" Content="Incentivize Marsh Cave" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,190,0,0" ToolTip="Crown chest" Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+
+					<CheckBox x:Name="IncentivizeEarthCheckBox" IsEnabled="True" IsChecked="True" Content="Incentivize Earth Cave" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="190,10,0,0" ToolTip="Ruby chest (behind Vampire)" Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+					<CheckBox x:Name="IncentivizeVolcanoCheckBox" IsEnabled="True" IsChecked="True" Content="Incentivize Volcano" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="190,30,0,0" ToolTip="Last Floor West (Red D)" Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+					<CheckBox x:Name="IncentivizeSeaShrineCheckBox" IsEnabled="True" IsChecked="True" Content="Incentivize Sea Shrine" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="190,50,0,0" ToolTip="Slab chest" Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+					<CheckBox x:Name="IncentivizeSkyPalaceCheckBox" IsEnabled="True" IsChecked="True" Content="Incentivize Sky Palace" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="190,70,0,0" ToolTip="Adamant chest" Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+
+					<CheckBox x:Name="IncentivizeConeriaCheckBox" IsEnabled="True" IsChecked="True" Content="Incentivize Coneria (locked)" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="190,110,0,0" ToolTip="TNT chest" Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+					<CheckBox x:Name="IncentivizeMarshKeyLockedCheckBox" IsEnabled="True" IsChecked="True" Content="Incentivize Marsh (locked)" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="190,130,0,0" ToolTip="Bottom Floor South East" Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+
+					<CheckBox x:Name="IncentivizeTailCheckBox" IsEnabled="True" IsChecked="True" Content="Incentivize Tail" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="190,170,0,0" ToolTip="Tail" Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+					<CheckBox x:Name="IncentivizeFetchItemsCheckBox" IsEnabled="True" IsChecked="True" Content="Incentivize Other Quest Items" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="190,190,0,0" ToolTip="Any other non-required quest items that are shuffled such as Ruby or Adamant" Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+
+					<CheckBox x:Name="IncentivizeMasamuneCheckBox" IsEnabled="True" IsChecked="True" Content="Incentivize Masamune" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="370,10,0,0" ToolTip="Masamune" Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+					<CheckBox x:Name="IncentivizeRibbonCheckBox" IsEnabled="True" IsChecked="True" Content="Incentivize Ribbon" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="370,30,0,0" ToolTip="Ribbon" Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+					<CheckBox x:Name="IncentivizeOpalCheckBox" IsEnabled="True" IsChecked="True" Content="Incentivize Opal Bracelet" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="370,50,0,0" ToolTip="Opal Bracelet" Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+
+					<CheckBox x:Name="IncentivizeDefCastArmorCheckBox" IsEnabled="True" IsChecked="True" Content="Incentivize White Shirt" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="370,90,0,0" ToolTip=">White Shirt" Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+					<CheckBox x:Name="IncentivizeOtherCastArmorCheckBox" IsEnabled="True" IsChecked="True" Content="Incentivize Power Gauntlet" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="370,110,0,0" ToolTip="Power Gauntlet" Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+					<CheckBox x:Name="IncentivizeDefCastWeaponCheckBox" IsEnabled="True" IsChecked="True" Content="Incentivize Defense" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="370,130,0,0" ToolTip="Defense" Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+					<CheckBox x:Name="IncentivizeOffCastWeaponCheckBox" IsEnabled="True" IsChecked="True" Content="Incentivize Thor Hammer" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="370,150,0,0" ToolTip="Thor Hammer" Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+				</Grid>
+			</TabItem>
+			<TabItem Header="Quick Races">
+				<CheckBox x:Name="ChaosRushCheckBox" IsEnabled="True" IsChecked="True" Content="CHAOS Rush" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0" ToolTip="Enable access to CHAOS without the Mystic KEY and start with the LUTE." Checked="ChaosRushCheckBox_OnChecked" Unchecked="ChaosRushCheckBox_OnUnchecked"/>
+			</TabItem>
+			<TabItem Header="Treasure Hunt">
+				<Grid>
+					<CheckBox x:Name="ShardHuntCheckBox" IsEnabled="True" IsChecked="True" Content="Treasure Hunt" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0" ToolTip="Treasure Hunt alternate gameplay mode. Collect 16 of a random Treasure Item to activate the BLACK ORB." Checked="ShardHuntCheckBox_OnChecked" Unchecked="ShardHuntCheckBox_OnUnchecked"/>
+					<CheckBox x:Name="ExtraShardsCheckBox" IsEnabled="True" IsChecked="True" Content="Extra Treasure" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,30,0,0" ToolTip="A larger hunt for the hardcore hunter. You will now need between 24 and 30 of the Treasure Item." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+				</Grid>
+			</TabItem>
+			<TabItem Header="Extra Challenges">
+				<CheckBox x:Name="TransformFinalFormationCheckBox" IsEnabled="True" IsChecked="True" Content="Alternate Final Boss" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0" ToolTip="Replace the Final Battle against Chaos with a different challenge." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+			</TabItem>
+			<TabItem Header="Map">
+				<Grid>
+					<CheckBox x:Name="OrdealsPillarsCheckBox" IsEnabled="True" IsChecked="True" Content="Castle Ordeals" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0" ToolTip="Teleporters in Castle Ordeals are shuffled." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+					<CheckBox x:Name="SkyCastle4FTeleportersCheckBox" IsEnabled="True" IsChecked="True" Content="Sky Castle 4F Teleporters" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,30,0,0" ToolTip="Sky Castle 4F Teleporters" Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+					<CheckBox x:Name="TitansTroveCheckBox" IsEnabled="True" IsChecked="True" Content="Titan's Trove" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,70,0,0" ToolTip="Titan's Trove" Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+					<CheckBox x:Name="MapOpenProgressionCheckBox" IsEnabled="True" IsChecked="True" Content="Open Progression" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,90,0,0" ToolTip="Open Progression" Checked="SetFlagsText" Unchecked="SetFlagsText"/>
 				</Grid>
 			</TabItem>
 			<TabItem Header="Scale">
@@ -61,15 +113,20 @@
 			</TabItem>
 			<TabItem Header="Conveniences">
 				<Grid>
-					<CheckBox x:Name="EarlyRodCheckBox" IsEnabled="True" IsChecked="True" Content="Early Rod" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" ToolTip="Sarda will give you the ROD before you kill the VAMPIRE." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
-					<CheckBox x:Name="EarlyCanoeCheckBox" IsEnabled="True" IsChecked="True" Content="Early Canoe" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top" ToolTip="The sages will give you the CANOE before you kill LICH." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
-					<CheckBox x:Name="EarlyOrdealsCheckBox" IsEnabled="True" IsChecked="True" Content="Early Ordeals" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top" ToolTip="You will be allowed access to Castle Ordeals without the CROWN." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
-					<CheckBox x:Name="EarlyBridgeCheckBox" IsEnabled="True" IsChecked="True" Content="Early Bridge" HorizontalAlignment="Left" Margin="10,70,0,0" VerticalAlignment="Top" ToolTip="The bridge is built to start the game." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
-					<CheckBox x:Name="NoPartyShuffleCheckBox" IsEnabled="True" IsChecked="True" Content="No Party Shuffle" HorizontalAlignment="Left" Margin="10,90,0,0" VerticalAlignment="Top" ToolTip="Poisoned, petrified, and slain party members will not be shuffled to the back of the party." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
-					<CheckBox x:Name="SpeedHacksCheckBox" IsEnabled="True" IsChecked="True" Content="Speed Hacks" HorizontalAlignment="Left" Margin="10,110,0,0" VerticalAlignment="Top" ToolTip="Various code hacks to speed up the game." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
-					<CheckBox x:Name="IdentifyTreasuresCheckBox" IsEnabled="True" IsChecked="True" Content="Identify Treasures" HorizontalAlignment="Left" Margin="10,130,0,0" VerticalAlignment="Top" ToolTip="Tells you what's in the box when you can't carry anymore." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
-					<CheckBox x:Name="DashCheckBox" IsEnabled="True" IsChecked="True" Content="Enable Dash" HorizontalAlignment="Left" Margin="10,150,0,0" VerticalAlignment="Top" ToolTip="Enables walking faster when the B button is held." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
-					<CheckBox x:Name="BuyTenCheckBox" IsEnabled="True" IsChecked="True" Content="Buy 10 Items" HorizontalAlignment="Left" Margin="10,170,0,0" VerticalAlignment="Top" ToolTip="Allows buying 10 items at once in item shops." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+					<CheckBox x:Name="EarlySardaCheckBox" IsEnabled="True" IsChecked="True" Content="Early Sarda Item" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" ToolTip="Sarda will give you an item without requiring Vampire dead" Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+					<CheckBox x:Name="EarlySageCheckBox" IsEnabled="True" IsChecked="True" Content="Early Sage Item" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top" ToolTip="Sage in Cresent Lake will give you an item without requiring Lich dead" Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+					<CheckBox x:Name="CrownlessOrdealsCheckBox" IsEnabled="True" IsChecked="True" Content="Early Ordeals" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top" ToolTip="You will be allowed access to Castle Ordeals without the CROWN." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+					<CheckBox x:Name="NoPartyShuffleCheckBox" IsEnabled="True" IsChecked="True" Content="No Party Shuffle" HorizontalAlignment="Left" Margin="10,70,0,0" VerticalAlignment="Top" ToolTip="Poisoned, petrified, and slain party members will not be shuffled to the back of the party." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+					<CheckBox x:Name="SpeedHacksCheckBox" IsEnabled="True" IsChecked="True" Content="Speed Hacks" HorizontalAlignment="Left" Margin="10,90,0,0" VerticalAlignment="Top" ToolTip="Various code hacks to speed up the game." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+					<CheckBox x:Name="IdentifyTreasuresCheckBox" IsEnabled="True" IsChecked="True" Content="Identify Treasures" HorizontalAlignment="Left" Margin="10,110,0,0" VerticalAlignment="Top" ToolTip="Tells you what's in the box when you can't carry anymore." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+					<CheckBox x:Name="DashCheckBox" IsEnabled="True" IsChecked="True" Content="Enable Dash" HorizontalAlignment="Left" Margin="10,130,0,0" VerticalAlignment="Top" ToolTip="Enables walking faster when the B button is held." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+					<CheckBox x:Name="BuyTenCheckBox" IsEnabled="True" IsChecked="True" Content="Buy 10 Items" HorizontalAlignment="Left" Margin="10,150,0,0" VerticalAlignment="Top" ToolTip="Allows buying 10 items at once in item shops." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+					<CheckBox x:Name="WaitWhenUnrunnableCheckBox" IsEnabled="True" IsChecked="True" Content="Change Unrunnable RUN to WAIT" HorizontalAlignment="Left" Margin="10,170,0,0" VerticalAlignment="Top" ToolTip="The RUN command becomes WAIT when battles are unrunnable." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+
+					<CheckBox x:Name="FreeAirshipCheckBox" IsEnabled="True" IsChecked="True" Content="Free Airship" HorizontalAlignment="Left" Margin="256,10,0,0" VerticalAlignment="Top" ToolTip="The Airship is available at the start of the game" Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+					<CheckBox x:Name="FreeBridgeCheckBox" IsEnabled="True" IsChecked="True" Content="Free Bridge" HorizontalAlignment="Left" Margin="256,30,0,0" VerticalAlignment="Top" ToolTip="The Bridge is available at the start of the game" Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+					<CheckBox x:Name="FreeOrbsCheckBox" IsEnabled="True" IsChecked="True" Content="Free Orbs" HorizontalAlignment="Left" Margin="256,50,0,0" VerticalAlignment="Top" ToolTip="Begin the game with all orbs already lit." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+					<CheckBox x:Name="EasyModeCheckBox" IsEnabled="True" IsChecked="True" Content="Easy Mode" HorizontalAlignment="Left" Margin="256,70,0,0" VerticalAlignment="Top" ToolTip="Encounter rate cut to 20% and all Enemy HP cut to 10% (after any randomizations)" Checked="SetFlagsText" Unchecked="SetFlagsText"/>
 				</Grid>
 			</TabItem>
 			<TabItem Header="Bug Fixes">
@@ -79,10 +136,10 @@
 					<CheckBox x:Name="WeaponStatsCheckBox" IsEnabled="True" IsChecked="True" Content="Weapon Stats" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top" ToolTip="Weapons with elemental or monster category properties will do more damage to enemies with the corresponding weaknesses, and will have the correct critical hit rate.  Black Belts' critical hit rate is halved to be balanced with lower weapon critical hit rates." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
 					<CheckBox x:Name="ChanceToRunCheckBox" IsEnabled="True" IsChecked="True" Content="Chance to Run" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top" ToolTip="Chance to run will be based on level and luck." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
 					<CheckBox x:Name="SpellBugsCheckBox" IsEnabled="True" IsChecked="True" Content="LOCK, LOK2, HEL2, TMPR, SABR" HorizontalAlignment="Left" Margin="10,70,0,0" VerticalAlignment="Top" ToolTip="LOCK, LOK2, HEL2, TMPR, and SABR will function correctly." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
-					<CheckBox x:Name="EnemyStatusAttacksBugCheckBox" IsEnabled="True" IsChecked="True" Content="Enemy Status Attacks" HorizontalAlignment="Left" Margin="10,90,0,0" VerticalAlignment="Top" ToolTip="Enemy status attacks won't apply to misses after the first hit." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
-					<CheckBox x:Name="EnemySpellsTargetingAlliesCheckBox" IsEnabled="False" Content="Enemy Spells Targeting Allies" HorizontalAlignment="Left" Margin="10,110,0,0" VerticalAlignment="Top" ToolTip="Enemy spells that target all allies will also hit the caster." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
-					<CheckBox x:Name="EnemyProtectionSpellsCheckBox" IsEnabled="False" Content="Enemy Protection Spells" HorizontalAlignment="Left" Margin="10,130,0,0" VerticalAlignment="Top" ToolTip="Enemy protection spells (such as AFIR) will work." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
-					<CheckBox x:Name="BlackBeltAbsorbCheckBox" IsEnabled="False" Content="Black Belt Absorb" HorizontalAlignment="Left" Margin="10,150,0,0" VerticalAlignment="Top" ToolTip="Black Belt absorb will be calculated correctly after level up." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+					<CheckBox x:Name="EnemyStatusAttackBugCheckBox" IsEnabled="True" IsChecked="True" Content="Enemy Status Attacks" HorizontalAlignment="Left" Margin="10,90,0,0" VerticalAlignment="Top" ToolTip="Enemy status attacks won't apply to misses after the first hit." Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+					<CheckBox x:Name="BlackBeltAbsorbCheckBox" IsEnabled="True" IsChecked="True" Content="Black Belt &amp; Master Absorb Calculation" HorizontalAlignment="Left" Margin="10,110,0,0" VerticalAlignment="Top" ToolTip="Black Belt &amp; Master Absorb Calculation" Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+					<CheckBox x:Name="EnemyElementalResistancesBugCheckBox" IsEnabled="True" IsChecked="True" Content="Enemy Elemental Resistances" HorizontalAlignment="Left" Margin="10,130,0,0" VerticalAlignment="Top" ToolTip="Enemy Elemental Resistances" Checked="SetFlagsText" Unchecked="SetFlagsText"/>
+					<CheckBox x:Name="EnemySpellsTargetingAlliesCheckBox" IsEnabled="True" IsChecked="True" Content="Enemy Spells Targeting Allies" HorizontalAlignment="Left" Margin="10,150,0,0" VerticalAlignment="Top" ToolTip="Enemy Spells Targeting Allies" Checked="SetFlagsText" Unchecked="SetFlagsText"/>
 				</Grid>
 			</TabItem>
 			<TabItem Header="Fun %">

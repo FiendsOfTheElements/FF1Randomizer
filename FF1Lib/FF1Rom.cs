@@ -321,7 +321,7 @@ namespace FF1Lib
 
 			if (flags.ForcedPartyMembers > 0)
 			{
-				PartyRandomize(rng, flags.ForcedPartyMembers);
+				PartyRandomize(rng, Convert.ToInt32(flags.ForcedPartyMembers));
 			}
 
 			if (flags.MapCanalBridge)
