@@ -205,9 +205,9 @@ namespace FF1Lib
 		[FlagString(Character = 19, Multiplier = 0.1)]
 		public double ExpMultiplier { get; set; }
 		[FlagString(Character = 20, Multiplier = 10)]
-		public double ExpBonus { get; set; }
+		public int ExpBonus { get; set; }
 		[FlagString(Character = 21, Multiplier = 1)]
-		public double ForcedPartyMembers { get; set; }
+		public int ForcedPartyMembers { get; set; }
 
 		public bool ModernBattlefield { get; set; }
 		public bool FunEnemyNames { get; set; }
