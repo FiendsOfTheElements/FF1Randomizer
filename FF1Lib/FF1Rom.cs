@@ -294,6 +294,11 @@ namespace FF1Lib
 				FixBBAbsorbBug();
 			}
 
+			if (flags.ImproveTurnOrderRandomization)
+			{
+				ImproveTurnOrderRandomization(rng);
+			}
+
 			if (flags.EnemyElementalResistancesBug)
 			{
 				FixEnemyElementalResistances();

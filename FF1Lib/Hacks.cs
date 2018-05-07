@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using RomUtilities;
 
@@ -373,6 +374,17 @@ namespace FF1Lib
 			// The above code uses battle message $06 which is the unused Sight Recovered string
 			// Let's overwrite that string with something more appropriate for the WAIT command
 			Put(0x2CC71, FF1Text.TextToBytes("W A I T", false));
+		}
+
+		public void ImproveTurnOrderRandomization(MT19337 rng)
+		{
+			// Shuffle the initial bias so enemies are no longer always at the start initially.
+			List<byte> turnOrder = new List<byte> { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x80, 0x81, 0x82, 0x83 };
+			turnOrder.Shuffle(rng);
+			Put(0x3215C, turnOrder.ToArray());
+
+			// Bump shuffle iterations from 16 to 64
+			Data[0x3217B] = 0x41;
 		}
 	}
 }
