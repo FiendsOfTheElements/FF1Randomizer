@@ -241,7 +241,7 @@ namespace FF1Lib
 
 		public void EnableDash()
 		{
-			Put(0x7D077, Blob.FromHex("4A252DD002A54224205002A9044A6900853460"));
+			Put(0x7D077, Blob.FromHex("A5424A69004A69000A242050014A853460"));
 		}
 
 		public void EnableBuyTen()
