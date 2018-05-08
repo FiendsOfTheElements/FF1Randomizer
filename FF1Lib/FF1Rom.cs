@@ -259,7 +259,7 @@ namespace FF1Lib
 				EnableBuyTen();
 			}
 
-			if (flags.EnemyFormationsUnrunnable || flags.WaitWhenUnrunnable)
+			if (flags.WaitWhenUnrunnable)
 			{
 				ChangeUnrunnableRunToWait();
 			}
