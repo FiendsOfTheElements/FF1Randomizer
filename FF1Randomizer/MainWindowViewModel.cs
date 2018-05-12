@@ -781,11 +781,51 @@ namespace FF1Randomizer
 				}
 			}
 
-			public double EnemyScaleFactor { get; set; }
-			public double PriceScaleFactor { get; set; }
-			public double ExpMultiplier { get; set; }
-			public int ExpBonus { get; set; }
-			public int ForcedPartyMembers { get; set; }
+			public double EnemyScaleFactor
+			{
+				get => Flags.EnemyScaleFactor;
+				set
+				{
+					Flags.EnemyScaleFactor = value;
+					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EnemyScaleFactor"));
+				}
+			}
+			public double PriceScaleFactor
+			{
+				get => Flags.PriceScaleFactor;
+				set
+				{
+					Flags.PriceScaleFactor = value;
+					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("PriceScaleFactor"));
+				}
+			}
+			public double ExpMultiplier
+			{
+				get => Flags.ExpMultiplier;
+				set
+				{
+					Flags.ExpMultiplier = value;
+					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ExpMultiplier"));
+				}
+			}
+			public int ExpBonus
+			{
+				get => Flags.ExpBonus;
+				set
+				{
+					Flags.ExpBonus = value;
+					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ExpBonus"));
+				}
+			}
+			public int ForcedPartyMembers
+			{
+				get => Flags.ForcedPartyMembers;
+				set
+				{
+					Flags.ForcedPartyMembers = value;
+					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ForcedPartyMembers"));
+				}
+			}
 
 			public bool ModernBattlefield
 			{

@@ -113,21 +113,21 @@
 			<TabItem Header="Scale">
 				<Grid>
 					<Label x:Name="PricesLabel" Content="Prices:" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" ToolTip="Prices of items, weapons, armor, and magic are all scaled, as well as your starting gold and gold chests."/>
-					<Label x:Name="PriceScaleFactorLabel" Content="" HorizontalAlignment="Left" Margin="91,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="4.4,0.462"/>
-					<Slider x:Name="PriceScaleFactorSlider" HorizontalAlignment="Left" Margin="184,10,0,0" VerticalAlignment="Top" Minimum="1" Maximum="5" Value="2" Width="100" TickPlacement="BottomRight" TickFrequency="0.5" ToolTip="For each value to be scaled, a random exponent is selected between -1 and +1.  The value is scaled by the scale factor raised to that power."/>
+					<Label x:Name="PriceScaleFactorLabel" HorizontalAlignment="Left" Margin="91,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="4.4,0.462"/>
+					<Slider x:Name="PriceScaleFactorSlider" Value="{Binding Flags.PriceScaleFactor}" HorizontalAlignment="Left" Margin="184,10,0,0" VerticalAlignment="Top" Minimum="1" Maximum="5" Width="100" TickPlacement="BottomRight" TickFrequency="0.5" SmallChange="0.1" LargeChange="0.5" ToolTip="For each value to be scaled, a random exponent is selected between -1 and +1.  The value is scaled by the scale factor raised to that power." ValueChanged="PriceScaleFactorSlider_ValueChanged"/>
 
 					<Label x:Name="EnemyStatsLabel" Content="Enemy Stats:" HorizontalAlignment="Left" Margin="10,40,0,0" VerticalAlignment="Top" ToolTip="Enemy stats are scaled: HP, attack power, # of hits, accuracy, critical %, defense, evade, and magic defense."/>
 					<Label x:Name="EnemyScaleFactorLabel" Content="" HorizontalAlignment="Left" Margin="91,40,0,0" VerticalAlignment="Top"/>
-					<Slider x:Name="EnemyScaleFactorSlider" HorizontalAlignment="Left" Margin="184,40,0,0" VerticalAlignment="Top" Minimum="1" Maximum="5" Value="2" Width="100" TickPlacement="BottomRight" TickFrequency="0.5" ToolTip="For each value to be scaled, a random exponent is selected between -1 and +1.  The value is scaled by the scale factor raised to that power."/>
+					<Slider x:Name="EnemyScaleFactorSlider" Value="{Binding Flags.EnemyScaleFactor}" HorizontalAlignment="Left" Margin="184,40,0,0" VerticalAlignment="Top" Minimum="1" Maximum="5" Width="100" TickPlacement="BottomRight" TickFrequency="0.5" ToolTip="For each value to be scaled, a random exponent is selected between -1 and +1.  The value is scaled by the scale factor raised to that power." ValueChanged="EnemyScaleFactorSlider_ValueChanged"/>
 
 					<Label x:Name="ExpGoldBoostLabel" Content="Exp/Gold Boost:" HorizontalAlignment="Left" Margin="10,85,0,0" VerticalAlignment="Top"/>
 					<Label x:Name="ExpScaleFactorLabel" Content="" HorizontalAlignment="Left" Margin="10,115,0,0" VerticalAlignment="Top"/>
-					<Slider x:Name="ExpMultiplierSlider" HorizontalAlignment="Left" Margin="184,85,0,0" VerticalAlignment="Top" Width="100" Minimum="1" Maximum="5" TickPlacement="BottomRight" TickFrequency="0.5" ToolTip="Multiplies enemy exp and gold by this amount." Value="2"/>
-					<Slider x:Name="ExpBonusSlider" HorizontalAlignment="Left" Margin="184,115,0,0" VerticalAlignment="Top" Width="100" Minimum="0" Maximum="500" TickPlacement="BottomRight" TickFrequency="50" ToolTip="Adds this amount to enemy exp and gold (after the multiplier)." Value="100" LargeChange="100" SmallChange="10"/>
+					<Slider x:Name="ExpMultiplierSlider" Value="{Binding Flags.ExpMultiplier}" HorizontalAlignment="Left" Margin="184,85,0,0" VerticalAlignment="Top" Width="100" Minimum="1" Maximum="5" TickPlacement="BottomRight" TickFrequency="0.5" ToolTip="Multiplies enemy exp and gold by this amount." ValueChanged="ExpMultiplierSlider_ValueChanged"/>
+					<Slider x:Name="ExpBonusSlider" Value="{Binding Flags.ExpBonus}" HorizontalAlignment="Left" Margin="184,115,0,0" VerticalAlignment="Top" Width="100" Minimum="0" Maximum="500" TickPlacement="BottomRight" TickFrequency="50" LargeChange="50" SmallChange="10" ToolTip="Adds this amount to enemy exp and gold (after the multiplier)." ValueChanged="ExpBonusSlider_ValueChanged"/>
 
 					<Label x:Name="ForcedPartyMembersLabel" Content="Forced Party Members:" HorizontalAlignment="Left" Margin="10,160,0,0" VerticalAlignment="Top" ToolTip="This number of party members will be chosen for you at the start of a new game."/>
-					<Label x:Name="PartyScaleFactorLabel" Content="" HorizontalAlignment="Left" Margin="145,160,0,0" VerticalAlignment="Top"/>
-					<Slider x:Name="PartyScaleFactorSlider" HorizontalAlignment="Left" Margin="184,160,0,0" VerticalAlignment="Top" Minimum="0" Maximum="4" Value="0" Width="100" TickPlacement="BottomRight" TickFrequency="1"/>
+					<Label x:Name="PartyScaleFactorLabel" Content="{Binding ElementName=PartyScaleFactorSlider, Path=Value}" HorizontalAlignment="Left" Margin="145,160,0,0" VerticalAlignment="Top"/>
+					<Slider x:Name="PartyScaleFactorSlider" Value="{Binding Flags.ForcedPartyMembers}" HorizontalAlignment="Left" Margin="184,160,0,0" VerticalAlignment="Top" Minimum="0" Maximum="4" Width="100" TickPlacement="BottomRight" TickFrequency="1" IsSnapToTickEnabled="True" SmallChange="1" LargeChange="1"/>
 				</Grid>
 			</TabItem>
 			<TabItem Header="Conveniences">

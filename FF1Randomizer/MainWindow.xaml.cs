@@ -42,7 +42,6 @@ namespace FF1Randomizer
 			SetScaleFactorLabel(PriceScaleFactorSlider, PriceScaleFactorLabel);
 			SetScaleFactorLabel(EnemyScaleFactorSlider, EnemyScaleFactorLabel);
 			SetExpLabel();
-			SetPartyLabel();
 		}
 
 		private void TryOpenSavedFilename()
@@ -151,19 +150,35 @@ namespace FF1Randomizer
 			}
 		}
 
-		private void SetPartyLabel()
-		{
-			if (PartyScaleFactorSlider != null)
-			{
-				PartyScaleFactorLabel.Content = PartyScaleFactorSlider.Value;
-			}
-		}
-
 		private void AboutButton_Click(object sender, RoutedEventArgs e)
 		{
 			var aboutWindow = new AboutWindow(FF1Rom.Version) { Owner = this };
 
 			aboutWindow.ShowDialog();
+		}
+
+		private void PriceScaleFactorSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+		{
+			((Slider)sender).Value = Math.Round(e.NewValue, 1);
+			SetScaleFactorLabel(PriceScaleFactorSlider, PriceScaleFactorLabel);
+		}
+
+		private void EnemyScaleFactorSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+		{
+			((Slider)sender).Value = Math.Round(e.NewValue, 1);
+			SetScaleFactorLabel(EnemyScaleFactorSlider, EnemyScaleFactorLabel);
+		}
+
+		private void ExpMultiplierSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+		{
+			((Slider)sender).Value = Math.Round(e.NewValue, 1);
+			SetExpLabel();
+		}
+
+		private void ExpBonusSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+		{
+			((Slider)sender).Value = Math.Round(e.NewValue/10.0)*10.0;
+			SetExpLabel();
 		}
 	}
 }
