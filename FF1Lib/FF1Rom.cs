@@ -458,6 +458,10 @@ namespace FF1Lib
 			// Softlock fix
 			Put(0x7C956, Blob.FromHex("A90F2003FE4C008B"));
 			PutInBank(0x0F, 0x8B00, Blob.FromHex("BAE030B01E8A8D1001A9F4AAA9FBA8BD0001990001CA88E010D0F4AD1001186907AA9AA52948A52A48A50D48A54848A549484C65C9"));
+
+			// Change INT to MDEF in the Status screen
+			Put(0x388F5, Blob.FromHex("968D8E8F"));
+			Data[0x38DED] = 0x25;
 		}
 
 		public void MakeSpaceIn1F()
