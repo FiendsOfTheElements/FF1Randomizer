@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
 
 namespace FF1RandomizerOnline
@@ -48,6 +50,18 @@ namespace FF1RandomizerOnline
             }
 
             app.UseStaticFiles();
+
+			// Terrible hack.
+			var presetsDirectory = Path.Combine(Directory.GetCurrentDirectory(), "presets");
+			if (!Directory.Exists(presetsDirectory))
+			{
+				presetsDirectory = Path.Combine(Directory.GetCurrentDirectory(), "../FF1Lib/presets");
+			}
+			app.UseStaticFiles(new StaticFileOptions()
+			{
+				FileProvider = new PhysicalFileProvider(presetsDirectory),
+				RequestPath = "/presets"
+			});
 
             app.UseMvc(routes =>
             {
