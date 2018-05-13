@@ -863,8 +863,16 @@ namespace FF1Randomizer
 					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TeamSteak"));
 				}
 			}
-			public MusicShuffle Music { get; set; }
-		}
+			public MusicShuffle Music
+			{
+				get => Flags.Music;
+				set
+				{
+					Flags.Music = value;
+					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Music"));
+				}
+	}
+}
 	}
 
 	public class FlagsToStringConverter : IValueConverter

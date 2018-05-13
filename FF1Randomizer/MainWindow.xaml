@@ -166,15 +166,15 @@
 					<CheckBox x:Name="FunEnemyNamesCheckBox" IsChecked="{Binding Flags.FunEnemyNames}" Content="Fun Enemy Names" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" ToolTip="Replaces enemy names with funny ones."/>
 					<CheckBox x:Name="PaletteSwapCheckBox" IsChecked="{Binding Flags.PaletteSwap}" Content="Palette Swap" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top" ToolTip="Shuffles enemy palettes."/>
 					<CheckBox x:Name="ModernBattlefieldCheckBox" IsChecked="{Binding Flags.ModernBattlefield}" Content="Modern Battlefield" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top" ToolTip="Battlefield layout inspired by subsequent Final Fantasy games."/>
-					<ComboBox x:Name="TeamTyroComboBox" Width="150" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="265,10,0,0" ToolTip="Save the TYROs, or save the STEAKs?" SelectedValuePath="Content">
-						<ComboBoxItem>Team TYRO</ComboBoxItem>
-						<ComboBoxItem IsSelected="True">Team STEAK</ComboBoxItem>
+					<ComboBox x:Name="TeamTyroComboBox" SelectedValue="{Binding Flags.TeamSteak}" Width="150" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="265,10,0,0" ToolTip="Save the TYROs, or save the STEAKs?" SelectedValuePath="Tag">
+						<ComboBoxItem Tag="False">Team TYRO</ComboBoxItem>
+						<ComboBoxItem Tag="True">Team STEAK</ComboBoxItem>
 					</ComboBox>
-					<ComboBox x:Name="MusicComboBox" Width="150" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="265,37,0,0" ToolTip="How much to shuffle the game's music." SelectedValuePath="Content">
-						<ComboBoxItem IsSelected="True">No Music Shuffle</ComboBoxItem>
-						<ComboBoxItem>Standard Music Shuffle</ComboBoxItem>
-						<ComboBoxItem>Nonsensical Music Shuffle</ComboBoxItem>
-						<ComboBoxItem>Disable Music</ComboBoxItem>
+					<ComboBox x:Name="MusicComboBox" SelectedValue="{Binding Flags.Music}" Width="150" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="265,37,0,0" ToolTip="How much to shuffle the game's music." SelectedValuePath="Tag">
+						<ComboBoxItem Tag="None">No Music Shuffle</ComboBoxItem>
+						<ComboBoxItem Tag="Standard">Standard Music Shuffle</ComboBoxItem>
+						<ComboBoxItem Tag="Nonsensical">Nonsensical Music Shuffle</ComboBoxItem>
+						<ComboBoxItem Tag="MusicDisabled">Disable Music</ComboBoxItem>
 					</ComboBox>
 				</Grid>
 			</TabItem>
