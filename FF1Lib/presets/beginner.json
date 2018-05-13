@@ -96,7 +96,8 @@
 
 		"EnemyStatusAttackBug": true,
 		"EnemySpellsTargetingAllies": true,
-		"EnemyElementalResistancesBug": true,
+    "EnemyElementalResistancesBug": true,
+    "ImproveTurnOrderRandomization":  true,
 
 		"EnemyScaleFactor": 1.3,
 		"PriceScaleFactor": 2.0,

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FF1Randomizer"
         mc:Ignorable="d"
-        Title="{Binding WindowTitle}" Height="450" Width="646">
+        Title="{Binding WindowTitle}" Height="505" Width="646">
 	<Window.Resources>
 		<local:FlagsToStringConverter x:Key="FlagsToStringConverter"/>
 	</Window.Resources>
@@ -33,8 +33,9 @@
 					<CheckBox x:Name="MagicShopsCheckBox" IsChecked="{Binding Flags.MagicShops}" Content="Magic Shops" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top" ToolTip="Magic shop contents are shuffled."/>
 					<CheckBox x:Name="MagicLevelsCheckBox" IsChecked="{Binding Flags.MagicLevels}" Content="Magic Levels" HorizontalAlignment="Left" Margin="10,70,0,0" VerticalAlignment="Top" ToolTip="Magic spells have their levels shuffled."/>
 					<CheckBox x:Name="MagicPermissionsCheckBox" IsChecked="{Binding Flags.MagicPermissions}" IsEnabled="{Binding Flags.MagicLevels}" Content="Keep Permissions" HorizontalAlignment="Left" Margin="31,90,0,0" VerticalAlignment="Top" ToolTip="Retain the permissions of spells, even if they're shuffled to lower levels."/>
+					<CheckBox x:Name="ItemMagicCheckBox" IsChecked="{Binding Flags.ItemMagic}" Content="Item Magic" HorizontalAlignment="Left" Margin="10,110,0,0" VerticalAlignment="Top" ToolTip="Magic items have randomly assigned spells."/>
 
-					<CheckBox x:Name="RngCheckBox" IsChecked="{Binding Flags.Rng}" Content="RNG Table" HorizontalAlignment="Left" Margin="10,130,0,0" VerticalAlignment="Top" ToolTip="Shuffle the RNG table so that encounters are more difficult to predict."/>
+					<CheckBox x:Name="RngCheckBox" IsChecked="{Binding Flags.Rng}" Content="RNG Table" HorizontalAlignment="Left" Margin="10,150,0,0" VerticalAlignment="Top" ToolTip="Shuffle the RNG table so that encounters are more difficult to predict."/>
 
 					<CheckBox x:Name="EnemyScriptsCheckBox" IsChecked="{Binding Flags.EnemyScripts}" Content="Enemy Scripts" HorizontalAlignment="Left" Margin="265,10,0,0" VerticalAlignment="Top" ToolTip="Enemy scripts are shuffled to different enemies."/>
 					<CheckBox x:Name="AllowUnsafePiratesCheckBox" IsChecked="{Binding Flags.AllowUnsafePirates}" IsEnabled="{Binding Flags.EnemyScripts}" Content="Allow Unsafe Pirates" HorizontalAlignment="Left" Margin="286,30,0,0" VerticalAlignment="Top" ToolTip="Enemy scripts are shuffled to different enemies."/>
@@ -162,6 +163,7 @@
 					<CheckBox x:Name="BlackBeltAbsorbCheckBox" IsChecked="{Binding Flags.BlackBeltAbsorb}" Content="Black Belt &amp; Master Absorb Calculation" HorizontalAlignment="Left" Margin="10,110,0,0" VerticalAlignment="Top" ToolTip="Black Belt &amp; Master Absorb Calculation"/>
 					<CheckBox x:Name="EnemyElementalResistancesBugCheckBox" IsChecked="{Binding Flags.EnemyElementalResistancesBug}" Content="Enemy Elemental Resistances" HorizontalAlignment="Left" Margin="10,130,0,0" VerticalAlignment="Top" ToolTip="Enemy Elemental Resistances"/>
 					<CheckBox x:Name="EnemySpellsTargetingAlliesCheckBox" IsChecked="{Binding Flags.EnemySpellsTargetingAllies}" Content="Enemy Spells Targeting Allies" HorizontalAlignment="Left" Margin="10,150,0,0" VerticalAlignment="Top" ToolTip="Enemy Spells Targeting Allies"/>
+					<CheckBox x:Name="ImproveTurnOrderRandomizationCheckBox" IsChecked="{Binding Flags.ImproveTurnOrderRandomization}" Content="Improve Turn Order Randomization" HorizontalAlignment="Left" Margin="10,170,0,0" VerticalAlignment="Top" ToolTip="Improve Turn Order Randomization"/>
 				</Grid>
 			</TabItem>
 			<TabItem Header="Fun %">

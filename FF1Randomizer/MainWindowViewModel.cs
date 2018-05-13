@@ -805,6 +805,15 @@ namespace FF1Randomizer
 					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EnemyElementalResistancesBug"));
 				}
 			}
+			public bool ImproveTurnOrderRandomization
+			{
+				get => Flags.ImproveTurnOrderRandomization;
+				set
+				{
+					Flags.ImproveTurnOrderRandomization = value;
+					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ImproveTurnOrderRandomization"));
+				}
+			}
 
 			public double EnemyScaleFactor
 			{
