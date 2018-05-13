@@ -28,16 +28,16 @@
 		<TabControl x:Name="tabControl" Margin="10,118,10,10">
 			<TabItem Header="Shuffle">
 				<Grid>
-					<CheckBox x:Name="ShopsCheckBox" IsChecked="{Binding Mode=TwoWay, Path=Flags.Shops}" Content="Shops" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" ToolTip="Shop contents (other than magic) are shuffled."/>
-					<CheckBox x:Name="RandomWaresCheckBox" IsChecked="{Binding Flags.RandomWares}" Content="Random Weapons and Armor" HorizontalAlignment="Left" Margin="31,30,0,0" VerticalAlignment="Top" ToolTip="Shop contents (other than magic) are shuffled."/>
+					<CheckBox x:Name="ShopsCheckBox" IsChecked="{Binding Flags.Shops}" Content="Shops" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" ToolTip="Shop contents (other than magic) are shuffled."/>
+					<CheckBox x:Name="RandomWaresCheckBox" IsChecked="{Binding Flags.RandomWares}" IsEnabled="{Binding Flags.Shops}" Content="Random Weapons and Armor" HorizontalAlignment="Left" Margin="31,30,0,0" VerticalAlignment="Top" ToolTip="Shop contents (other than magic) are shuffled."/>
 					<CheckBox x:Name="MagicShopsCheckBox" IsChecked="{Binding Flags.MagicShops}" Content="Magic Shops" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top" ToolTip="Magic shop contents are shuffled."/>
 					<CheckBox x:Name="MagicLevelsCheckBox" IsChecked="{Binding Flags.MagicLevels}" Content="Magic Levels" HorizontalAlignment="Left" Margin="10,70,0,0" VerticalAlignment="Top" ToolTip="Magic spells have their levels shuffled."/>
-					<CheckBox x:Name="MagicPermissionsCheckBox" IsChecked="{Binding Flags.MagicPermissions}" Content="Keep Permissions" HorizontalAlignment="Left" Margin="31,90,0,0" VerticalAlignment="Top" ToolTip="Retain the permissions of spells, even if they're shuffled to lower levels."/>
+					<CheckBox x:Name="MagicPermissionsCheckBox" IsChecked="{Binding Flags.MagicPermissions}" IsEnabled="{Binding Flags.MagicLevels}" Content="Keep Permissions" HorizontalAlignment="Left" Margin="31,90,0,0" VerticalAlignment="Top" ToolTip="Retain the permissions of spells, even if they're shuffled to lower levels."/>
 
 					<CheckBox x:Name="RngCheckBox" IsChecked="{Binding Flags.Rng}" Content="RNG Table" HorizontalAlignment="Left" Margin="10,130,0,0" VerticalAlignment="Top" ToolTip="Shuffle the RNG table so that encounters are more difficult to predict."/>
 
 					<CheckBox x:Name="EnemyScriptsCheckBox" IsChecked="{Binding Flags.EnemyScripts}" Content="Enemy Scripts" HorizontalAlignment="Left" Margin="265,10,0,0" VerticalAlignment="Top" ToolTip="Enemy scripts are shuffled to different enemies."/>
-					<CheckBox x:Name="AllowUnsafePiratesCheckBox" IsChecked="{Binding Flags.AllowUnsafePirates}" Content="Enemy Scripts" HorizontalAlignment="Left" Margin="286,30,0,0" VerticalAlignment="Top" ToolTip="Enemy scripts are shuffled to different enemies."/>
+					<CheckBox x:Name="AllowUnsafePiratesCheckBox" IsChecked="{Binding Flags.AllowUnsafePirates}" IsEnabled="{Binding Flags.EnemyScripts}" Content="Allow Unsafe Pirates" HorizontalAlignment="Left" Margin="286,30,0,0" VerticalAlignment="Top" ToolTip="Enemy scripts are shuffled to different enemies."/>
 					<CheckBox x:Name="EnemySkillsSpellsCheckBox" IsChecked="{Binding Flags.EnemySkillsSpells}" Content="Enemy Skills/Spells" HorizontalAlignment="Left" Margin="265,50,0,0" VerticalAlignment="Top" ToolTip="Enemy skills and spells are shuffled to other scripts."/>
 					<CheckBox x:Name="EnemyStatusAttacksCheckBox" IsChecked="{Binding Flags.EnemyStatusAttacks}" Content="Enemy Status Attacks" HorizontalAlignment="Left" Margin="265,70,0,0" VerticalAlignment="Top" ToolTip="Status attacks such as stun, sleep, and death are shuffled."/>
 					<CheckBox x:Name="EnemyFormationsUnrunnableCheckBox" IsChecked="{Binding Flags.EnemyFormationsUnrunnable}" Content="Enemy Unrunnable Formations" HorizontalAlignment="Left" Margin="265,90,0,0" VerticalAlignment="Top" ToolTip="Enemy Unrunnable Formations"/>
@@ -50,39 +50,39 @@
 					<Grid>
 						<Label Margin="5,5,0,0" FontWeight="Bold">Item Shuffle</Label>
 						<CheckBox x:Name="TreasuresCheckBox" IsChecked="{Binding Flags.Treasures}" Content="Treasures" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,30,0,0" ToolTip="If unchecked, forces vanilla Treasure Chests"/>
-						<CheckBox x:Name="NPCItemsCheckBox" IsChecked="{Binding Flags.NPCItems}" Content="Main NPC Items" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,50,0,0" ToolTip="If unchecked, forces vanilla Bridge, Lute, Ship, Rod, Canoe, Cube, Bottle"/>
-						<CheckBox x:Name="NPCFetchItemsCheckBox" IsChecked="{Binding Flags.NPCFetchItems}" Content="Fetch Quest Rewards" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,70,0,0" ToolTip="If unchecked, forces vanilla Crystal, Herb, Key, Canal, Oxyale, Chime, Xcalber"/>
+						<CheckBox x:Name="NPCItemsCheckBox" IsChecked="{Binding Flags.NPCItems}" IsEnabled="{Binding Flags.Treasures}" Content="Main NPC Items" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,50,0,0" ToolTip="If unchecked, forces vanilla Bridge, Lute, Ship, Rod, Canoe, Cube, Bottle"/>
+						<CheckBox x:Name="NPCFetchItemsCheckBox" IsChecked="{Binding Flags.NPCFetchItems}" IsEnabled="{Binding Flags.Treasures}" Content="Fetch Quest Rewards" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,70,0,0" ToolTip="If unchecked, forces vanilla Crystal, Herb, Key, Canal, Oxyale, Chime, Xcalber"/>
 					</Grid>
 					<Grid>
 						<Label Margin="5,5,0,0" FontWeight="Bold">Incentivized Items</Label>
-						<CheckBox x:Name="IncentivizeFreeNPCsCheckBox" IsChecked="{Binding Flags.IncentivizeFreeNPCs}" Content="Main NPCs" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,30,0,0" ToolTip="King, Princess, Bikke, Sarda, Sage, Robot, Caravan"/>
-						<CheckBox x:Name="IncentivizeFetchNPCsCheckBox" IsChecked="{Binding Flags.IncentivizeFetchNPCs}" Content="Fetch Quest NPCs" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,50,0,0" ToolTip="Astos, Matoya, Prince, Dwarves, Lefein, Fairy"/>
+						<CheckBox x:Name="IncentivizeFreeNPCsCheckBox" IsChecked="{Binding Flags.IncentivizeFreeNPCs}" IsEnabled="{Binding Flags.IncentivizeFreeNPCsEnabled}" Content="Main NPCs" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,30,0,0" ToolTip="King, Princess, Bikke, Sarda, Sage, Robot, Caravan"/>
+						<CheckBox x:Name="IncentivizeFetchNPCsCheckBox" IsChecked="{Binding Flags.IncentivizeFetchNPCs}" IsEnabled="{Binding Flags.IncentivizeFetchNPCsEnabled}" Content="Fetch Quest NPCs" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,50,0,0" ToolTip="Astos, Matoya, Prince, Dwarves, Lefein, Fairy"/>
 
-						<CheckBox x:Name="IncentivizeIceCaveCheckBox" IsChecked="{Binding Flags.IncentivizeIceCave}" Content="Ice Cave" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,90,0,0" ToolTip="Floater chest"/>
-						<CheckBox x:Name="IncentivizeOrdealsCheckBox" IsChecked="{Binding Flags.IncentivizeOrdeals}" Content="Ordeals" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,110,0,0" ToolTip="Tail chest"/>
-						<CheckBox x:Name="IncentivizeMarshCheckBox" IsChecked="{Binding Flags.IncentivizeMarsh}" Content="Marsh Cave" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,130,0,0" ToolTip="Crown chest"/>
+						<CheckBox x:Name="IncentivizeIceCaveCheckBox" IsChecked="{Binding Flags.IncentivizeIceCave}" IsEnabled="{Binding Flags.Treasures}" Content="Ice Cave" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,90,0,0" ToolTip="Floater chest"/>
+						<CheckBox x:Name="IncentivizeOrdealsCheckBox" IsChecked="{Binding Flags.IncentivizeOrdeals}" IsEnabled="{Binding Flags.Treasures}" Content="Ordeals" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,110,0,0" ToolTip="Tail chest"/>
+						<CheckBox x:Name="IncentivizeMarshCheckBox" IsChecked="{Binding Flags.IncentivizeMarsh}" IsEnabled="{Binding Flags.Treasures}" Content="Marsh Cave" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,130,0,0" ToolTip="Crown chest"/>
 
-						<CheckBox x:Name="IncentivizeEarthCheckBox" IsChecked="{Binding Flags.IncentivizeEarth}" Content="Earth Cave" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,170,0,0" ToolTip="Ruby chest (behind Vampire)"/>
-						<CheckBox x:Name="IncentivizeVolcanoCheckBox" IsChecked="{Binding Flags.IncentivizeVolcano}" Content="Volcano" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,190,0,0" ToolTip="Last Floor West (Red D)"/>
-						<CheckBox x:Name="IncentivizeSeaShrineCheckBox" IsChecked="{Binding Flags.IncentivizeSeaShrine}" Content="Sea Shrine" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,210,0,0" ToolTip="Slab chest"/>
-						<CheckBox x:Name="IncentivizeSkyPalaceCheckBox" IsChecked="{Binding Flags.IncentivizeSkyPalace}" Content="Sky Palace" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,230,0,0" ToolTip="Adamant chest"/>
+						<CheckBox x:Name="IncentivizeEarthCheckBox" IsChecked="{Binding Flags.IncentivizeEarth}" IsEnabled="{Binding Flags.Treasures}" Content="Earth Cave" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,170,0,0" ToolTip="Ruby chest (behind Vampire)"/>
+						<CheckBox x:Name="IncentivizeVolcanoCheckBox" IsChecked="{Binding Flags.IncentivizeVolcano}" IsEnabled="{Binding Flags.Treasures}" Content="Volcano" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,190,0,0" ToolTip="Last Floor West (Red D)"/>
+						<CheckBox x:Name="IncentivizeSeaShrineCheckBox" IsChecked="{Binding Flags.IncentivizeSeaShrine}" IsEnabled="{Binding Flags.Treasures}" Content="Sea Shrine" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,210,0,0" ToolTip="Slab chest"/>
+						<CheckBox x:Name="IncentivizeSkyPalaceCheckBox" IsChecked="{Binding Flags.IncentivizeSkyPalace}" IsEnabled="{Binding Flags.Treasures}" Content="Sky Palace" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,230,0,0" ToolTip="Adamant chest"/>
 
-						<CheckBox x:Name="IncentivizeConeriaCheckBox" IsChecked="{Binding Flags.IncentivizeConeria}" Content="Coneria (locked)" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,270,0,0" ToolTip="TNT chest"/>
-						<CheckBox x:Name="IncentivizeMarshKeyLockedCheckBox" IsChecked="{Binding Flags.IncentivizeMarshKeyLocked}" Content="Marsh (locked)" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,290,0,0" ToolTip="Bottom Floor South East"/>
+						<CheckBox x:Name="IncentivizeConeriaCheckBox" IsChecked="{Binding Flags.IncentivizeConeria}" IsEnabled="{Binding Flags.Treasures}" Content="Coneria (locked)" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,270,0,0" ToolTip="TNT chest"/>
+						<CheckBox x:Name="IncentivizeMarshKeyLockedCheckBox" IsChecked="{Binding Flags.IncentivizeMarshKeyLocked}" IsEnabled="{Binding Flags.Treasures}" Content="Marsh (locked)" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,290,0,0" ToolTip="Bottom Floor South East"/>
 					</Grid>
 					<Grid>
 						<Label Margin="5,5,0,0" FontWeight="Bold">Incentivized Locations</Label>
-						<CheckBox x:Name="IncentivizeTailCheckBox" IsChecked="{Binding Flags.IncentivizeTail}" Content="Tail" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,30,0,0" ToolTip="Tail"/>
-						<CheckBox x:Name="IncentivizeFetchItemsCheckBox" IsChecked="{Binding Flags.IncentivizeFetchItems}" Content="Other Quest Items" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,50,0,0" ToolTip="Any other non-required quest items that are shuffled such as Ruby or Adamant"/>
+						<CheckBox x:Name="IncentivizeTailCheckBox" IsChecked="{Binding Flags.IncentivizeTail}" IsEnabled="{Binding Flags.Treasures}" Content="Tail" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,30,0,0" ToolTip="Tail"/>
+						<CheckBox x:Name="IncentivizeFetchItemsCheckBox" IsChecked="{Binding Flags.IncentivizeFetchItems}" IsEnabled="{Binding Flags.Treasures}" Content="Other Quest Items" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,50,0,0" ToolTip="Any other non-required quest items that are shuffled such as Ruby or Adamant"/>
 
-						<CheckBox x:Name="IncentivizeMasamuneCheckBox" IsChecked="{Binding Flags.IncentivizeMasamune}" Content="Masamune" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,90,0,0" ToolTip="Masamune"/>
-						<CheckBox x:Name="IncentivizeRibbonCheckBox" IsChecked="{Binding Flags.IncentivizeRibbon}" Content="Ribbon" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,110,0,0" ToolTip="Ribbon"/>
-						<CheckBox x:Name="IncentivizeOpalCheckBox" IsChecked="{Binding Flags.IncentivizeOpal}" Content="Opal Bracelet" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,130,0,0" ToolTip="Opal Bracelet"/>
+						<CheckBox x:Name="IncentivizeMasamuneCheckBox" IsChecked="{Binding Flags.IncentivizeMasamune}" IsEnabled="{Binding Flags.Treasures}" Content="Masamune" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,90,0,0" ToolTip="Masamune"/>
+						<CheckBox x:Name="IncentivizeRibbonCheckBox" IsChecked="{Binding Flags.IncentivizeRibbon}" IsEnabled="{Binding Flags.Treasures}" Content="Ribbon" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,110,0,0" ToolTip="Ribbon"/>
+						<CheckBox x:Name="IncentivizeOpalCheckBox" IsChecked="{Binding Flags.IncentivizeOpal}" IsEnabled="{Binding Flags.Treasures}" Content="Opal Bracelet" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,130,0,0" ToolTip="Opal Bracelet"/>
 
-						<CheckBox x:Name="IncentivizeDefCastArmorCheckBox" IsChecked="{Binding Flags.IncentivizeDefCastArmor}" Content="White Shirt" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,170,0,0" ToolTip=">White Shirt"/>
-						<CheckBox x:Name="IncentivizeOtherCastArmorCheckBox" IsChecked="{Binding Flags.IncentivizeOtherCastArmor}" Content="Power Gauntlet" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,190,0,0" ToolTip="Power Gauntlet"/>
-						<CheckBox x:Name="IncentivizeDefCastWeaponCheckBox" IsChecked="{Binding Flags.IncentivizeDefCastWeapon}" Content="Defense" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,210,0,0" ToolTip="Defense"/>
-						<CheckBox x:Name="IncentivizeOffCastWeaponCheckBox" IsChecked="{Binding Flags.IncentivizeOffCastWeapon}" Content="Thor Hammer" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,230,0,0" ToolTip="Thor Hammer"/>
+						<CheckBox x:Name="IncentivizeDefCastArmorCheckBox" IsChecked="{Binding Flags.IncentivizeDefCastArmor}" IsEnabled="{Binding Flags.Treasures}" Content="White Shirt" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,170,0,0" ToolTip=">White Shirt"/>
+						<CheckBox x:Name="IncentivizeOtherCastArmorCheckBox" IsChecked="{Binding Flags.IncentivizeOtherCastArmor}" IsEnabled="{Binding Flags.Treasures}" Content="Power Gauntlet" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,190,0,0" ToolTip="Power Gauntlet"/>
+						<CheckBox x:Name="IncentivizeDefCastWeaponCheckBox" IsChecked="{Binding Flags.IncentivizeDefCastWeapon}" IsEnabled="{Binding Flags.Treasures}" Content="Defense" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,210,0,0" ToolTip="Defense"/>
+						<CheckBox x:Name="IncentivizeOffCastWeaponCheckBox" IsChecked="{Binding Flags.IncentivizeOffCastWeapon}" IsEnabled="{Binding Flags.Treasures}" Content="Thor Hammer" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,230,0,0" ToolTip="Thor Hammer"/>
 					</Grid>
 				</StackPanel>
 			</TabItem>
@@ -90,13 +90,13 @@
 				<StackPanel Orientation="Horizontal">
 					<Grid>
 						<Label Margin="5,5,0,0" FontWeight="Bold">Quick Races</Label>
-						<CheckBox x:Name="ChaosRushCheckBox" IsChecked="{Binding Flags.ChaosRush}" Content="CHAOS Rush" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,30,0,0" ToolTip="Enable access to CHAOS without the Mystic KEY and start with the LUTE."/>
-						<CheckBox x:Name="FreeOrbsCheckBox" IsChecked="{Binding Flags.FreeOrbs}" Content="Free Orbs" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,50,0,0" ToolTip="Enable access to CHAOS without the Mystic KEY and start with the LUTE."/>
+						<CheckBox x:Name="ChaosRushCheckBox" IsChecked="{Binding Flags.ChaosRush}" IsEnabled="{Binding Flags.ChaosRushEnabled}" Content="CHAOS Rush" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,30,0,0" ToolTip="Enable access to CHAOS without the Mystic KEY and start with the LUTE."/>
+						<CheckBox x:Name="FreeOrbsCheckBox" IsChecked="{Binding Flags.FreeOrbs}" IsEnabled="{Binding Flags.FreeOrbsEnabled}" Content="Free Orbs" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,50,0,0" ToolTip="Enable access to CHAOS without the Mystic KEY and start with the LUTE."/>
 					</Grid>
 					<Grid>
 						<Label Margin="5,5,0,0" FontWeight="Bold">Treasure Hunt</Label>
-						<CheckBox x:Name="ShardHuntCheckBox" IsChecked="{Binding Flags.ShardHunt}" Content="Treasure Hunt" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,30,0,0" ToolTip="Treasure Hunt alternate gameplay mode. Collect 16 of a random Treasure Item to activate the BLACK ORB."/>
-						<CheckBox x:Name="ExtraShardsCheckBox" IsChecked="{Binding Flags.ExtraShards}" Content="Extra Treasure" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,50,0,0" ToolTip="A larger hunt for the hardcore hunter. You will now need between 24 and 30 of the Treasure Item."/>
+						<CheckBox x:Name="ShardHuntCheckBox" IsChecked="{Binding Flags.ShardHunt}" IsEnabled="{Binding Flags.ShardHuntEnabled}" Content="Treasure Hunt" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,30,0,0" ToolTip="Treasure Hunt alternate gameplay mode. Collect 16 of a random Treasure Item to activate the BLACK ORB."/>
+						<CheckBox x:Name="ExtraShardsCheckBox" IsChecked="{Binding Flags.ExtraShards}" IsEnabled="{Binding Flags.ExtraShardsEnabled}" Content="Extra Treasure" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,50,0,0" ToolTip="A larger hunt for the hardcore hunter. You will now need between 24 and 30 of the Treasure Item."/>
 					</Grid>
 					<Grid>
 						<Label Margin="5,5,0,0" FontWeight="Bold">Extra Challenges</Label>

@@ -143,6 +143,9 @@ namespace FF1Randomizer
 					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ShardHunt"));
 				}
 			}
+
+			public bool ShardHuntEnabled => !ChaosRush;
+
 			public bool ExtraShards
 			{
 				get => Flags.ExtraShards;
@@ -152,6 +155,9 @@ namespace FF1Randomizer
 					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ExtraShards"));
 				}
 			}
+
+			public bool ExtraShardsEnabled => ShardHunt && !ChaosRush;
+
 			public bool TransformFinalFormation
 			{
 				get => Flags.TransformFinalFormation;
@@ -318,6 +324,9 @@ namespace FF1Randomizer
 					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ChaosRush"));
 				}
 			}
+
+			public bool ChaosRushEnabled => !ShardHunt;
+
 			public bool Floors
 			{
 				get => Flags.Floors;
@@ -374,6 +383,10 @@ namespace FF1Randomizer
 					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeFetchNPCs"));
 				}
 			}
+
+			public bool IncentivizeFreeNPCsEnabled => Treasures && NPCItems;
+			public bool IncentivizeFetchNPCsEnabled => Treasures && NPCFetchItems;
+
 			public bool IncentivizeTail
 			{
 				get => Flags.IncentivizeTail;
@@ -641,6 +654,9 @@ namespace FF1Randomizer
 					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeOrbs"));
 				}
 			}
+
+			public bool FreeOrbsEnabled => !ShardHunt;
+
 			public bool VanillaStartingGold
 			{
 				get => Flags.VanillaStartingGold;
