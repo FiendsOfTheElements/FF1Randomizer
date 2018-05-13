@@ -26,11 +26,12 @@
     <div class="row">
 		<div class="col-xs-12">
 			Presets:
+			<a v-on:click.prevent="preset('Default')">Defaults</a>,
 			<a v-on:click.prevent="preset('Improved Vanilla')">Improved Vanilla</a>,
 			<a v-on:click.prevent="preset('Beginner')">Beginner</a>,
-			<a v-on:click.prevent="preset('Default')">Defaults</a>,
 			<a v-on:click.prevent="preset('Normal NPC')">Normal NPC Shuffle</a>,
-			<a v-on:click.prevent="preset('Full NPC')">Full NPC Shuffle</a>
+			<a v-on:click.prevent="preset('Full NPC')">Full NPC Shuffle</a>,
+			<a v-on:click.prevent="preset('Tournament')">Tournament (Swiss Rounds)</a>
 		</div>
     </div>
 	<ul class="section nav nav-pills">

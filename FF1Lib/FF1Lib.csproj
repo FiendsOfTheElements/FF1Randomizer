@@ -20,6 +20,7 @@
     <None Remove="presets\full-npc.json" />
     <None Remove="presets\improved-vanilla.json" />
     <None Remove="presets\normal-npc.json" />
+    <None Remove="presets\tournament.json" />
   </ItemGroup>
 
   <ItemGroup>
@@ -39,6 +40,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="presets\normal-npc.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="presets\tournament.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

@@ -4,6 +4,7 @@ loadPresetFile("default.json");
 loadPresetFile("full-npc.json");
 loadPresetFile("improved-vanilla.json");
 loadPresetFile("normal-npc.json");
+loadPresetFile("tournament.json");
 
 function loadPresetFile(filename) {
 	$.getJSON("/presets/" + filename, (preset) => {
