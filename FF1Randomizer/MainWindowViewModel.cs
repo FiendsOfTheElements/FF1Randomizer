@@ -68,7 +68,16 @@ namespace FF1Randomizer
 			public event PropertyChangedEventHandler PropertyChanged;
 
 			// At least this trick saves us from having to declare backing fields, and having to write a conversion from ViewModelFlags to Flags.
-			public Flags Flags;
+			private Flags _flags;
+			public Flags Flags
+			{
+				get => _flags;
+				set
+				{
+					_flags = value;
+					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Flags"));
+				}
+			}
 
 			public bool Shops
 			{

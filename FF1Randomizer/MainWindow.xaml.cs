@@ -123,9 +123,9 @@ namespace FF1Randomizer
 		{
 			var text = Clipboard.GetText();
 			var parts = text.Split('_');
-			if (parts.Length != 2 || parts[0].Length != 8 || parts[1].Length != 11)
+			if (parts.Length != 2 || parts[0].Length != 8 || parts[1].Length != 22)
 			{
-				MessageBox.Show("Format not recognized.  Paste should look like SSSSSSSS_FFFFFFFFFFF", "Invalid Format");
+				MessageBox.Show("Format not recognized.  Paste should look like SSSSSSSS_FFFFFFFFFFFFFFFFFFFFFF", "Invalid Format");
 
 				return;
 			}
@@ -179,6 +179,21 @@ namespace FF1Randomizer
 		{
 			((Slider)sender).Value = Math.Round(e.NewValue/10.0)*10.0;
 			SetExpLabel();
+		}
+
+		private void LoadPreset(object sender, RoutedEventArgs e)
+		{
+			var openFileDialog = new OpenFileDialog
+			{
+				Filter = "JSON files (*.json)|*.json",
+				InitialDirectory = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "presets"),
+			};
+
+			var result = openFileDialog.ShowDialog(this);
+			if (result == true)
+			{
+				_model.Flags.Flags = Flags.FromJson(File.ReadAllText(openFileDialog.FileName));
+			}
 		}
 	}
 }

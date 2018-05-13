@@ -19,6 +19,9 @@
 		<Button x:Name="AboutButton" Content="About FF1 Randomizer" HorizontalAlignment="Right" Margin="0,61,10,0" VerticalAlignment="Top" Width="150" Height="24" Click="AboutButton_Click"/>
 		<TextBox x:Name="FlagsTextBox" Text="{Binding Path=Flags, Converter={StaticResource FlagsToStringConverter}}" IsReadOnly="True" HorizontalAlignment="Left" Height="23" Margin="135,90,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="200"/>
 		<Label x:Name="FlagsLabel" Content="Flags" HorizontalAlignment="Left" Margin="135,64,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
+		<Label x:Name="PresetLabel" HorizontalAlignment="Left" Margin="250,64,0,0" VerticalAlignment="Top">
+			<Hyperlink Click="LoadPreset">Load Preset...</Hyperlink>
+		</Label>
 		<Button x:Name="CopyButton" Content="Copy" HorizontalAlignment="Left" Margin="340,90,0,0" VerticalAlignment="Top" Width="85" Height="23" Click="CopyButton_Click"/>
 		<Button x:Name="PasteButton" Content="Paste" HorizontalAlignment="Left" Margin="430,90,0,0" VerticalAlignment="Top" Width="85" Height="23" Click="PasteButton_Click"/>
 		<Button x:Name="SeedButton" Content="New Seed" HorizontalAlignment="Left" Margin="520,90,0,0" VerticalAlignment="Top" Width="89" Height="23" Click="SeedButton_Click"/>
