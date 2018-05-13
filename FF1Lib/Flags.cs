@@ -197,6 +197,8 @@ namespace FF1Lib
 		public bool EnemySpellsTargetingAllies { get; set; }
 		[FlagString(Character = ENEMY_BUG_FIXES, FlagBit = 4)]
 		public bool EnemyElementalResistancesBug { get; set; }
+		[FlagString(Character = ENEMY_BUG_FIXES, FlagBit = 8)]
+		public bool ImproveTurnOrderRandomization { get; set; }
 
 		[FlagString(Character = 17, Multiplier = 0.1)]
 		public double EnemyScaleFactor { get; set; }

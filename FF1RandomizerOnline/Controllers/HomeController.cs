@@ -114,7 +114,7 @@ namespace FF1RandomizerOnline.Controllers
 					IdentifyTreasures = true,
 					Dash = true,
 					BuyTen = true,
-					WaitWhenUnrunnable = false,
+					WaitWhenUnrunnable = true,
 
 					HouseMPRestoration = true,
 					WeaponStats = true,
@@ -124,6 +124,7 @@ namespace FF1RandomizerOnline.Controllers
 					BlackBeltAbsorb = true,
 					EnemyElementalResistancesBug = true,
 					EnemySpellsTargetingAllies = true,
+					ImproveTurnOrderRandomization = true,
 
 					ForcedPartyMembers = 0,
 					PriceScaleFactor = 3.0,

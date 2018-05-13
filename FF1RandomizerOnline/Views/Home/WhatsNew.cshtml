@@ -32,6 +32,27 @@
 			find items such as a LOCK Staff or DARK Sword.
 		</li>
 	</ul>
+	<h2>Minor Features &amp; Other Changes</h2>
+	<ul>
+		<li>
+			Improved Turn Order Randomization shuffles the initial turn order bias so that the enemies and
+			allies are initially mixed together. Then each turn the number of random swaps is increased
+			from 16 to 64, thus increasing the entropy that determines each turn's order in battle. The
+			end result is that the party is more likely to strike sooner each turn and that on average
+			the enemies will act later than they would without this enabled, making the game somewhat easier.
+		</li>
+		<li>
+			Enable Dash is now reversed. Running is the default speed now; holding B will slow to half pace.
+			This is now possible on foot and in the canoe, as well as on board the ship and airship.
+		</li>
+		<li>
+			Change Unrunnable RUN -> WAIT now defaults to <b>enabled.</b> However it has been changed
+			so that <i>it can be disabled even when Unrunnable Formations are shuffled!</i>
+			This harrowing mode does in fact mean there will no way to know if an encounter is unrunnable
+			or if your luck is simply bad. Feel free to disable it in combination with Unrunnable Shuffle
+			if you wish to know the stress of never being sure if you can possibly run away.
+		</li>
+	</ul>
 	<hr />
 	<h1>Version 2.1.0</h1>
 	<h2>Major Features</h2>
@@ -46,7 +67,8 @@
 			<b>Change Unrunnable RUN -> WAIT:</b> complements the above by replacing the RUN
 			command with WAIT when the battle is unrunnable. It is automatically enabled when
 			Unrunnable Formations Shuffle is on, but it can also be turned on to learn the
-			standard unrunnable formations for a beginner.
+			standard unrunnable formations for a beginner. <b>Updated in 2.2 so that it
+			can now be disabled even with Unrunnable Shuffle!</b>
 		</li>
 		<li>
 			<b>Surprise Bonus Shuffle:</b>The bonus that some enemy formations like Phantoms and

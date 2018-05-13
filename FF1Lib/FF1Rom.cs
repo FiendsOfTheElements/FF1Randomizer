@@ -259,7 +259,7 @@ namespace FF1Lib
 				EnableBuyTen();
 			}
 
-			if (flags.EnemyFormationsUnrunnable || flags.WaitWhenUnrunnable)
+			if (flags.WaitWhenUnrunnable)
 			{
 				ChangeUnrunnableRunToWait();
 			}
@@ -292,6 +292,11 @@ namespace FF1Lib
 			if (flags.BlackBeltAbsorb)
 			{
 				FixBBAbsorbBug();
+			}
+
+			if (flags.ImproveTurnOrderRandomization)
+			{
+				ImproveTurnOrderRandomization(rng);
 			}
 
 			if (flags.EnemyElementalResistancesBug)
