@@ -275,11 +275,6 @@ namespace FF1Lib
 								.FirstOrDefault() as FlagStringAttribute);
 		}
 
-		public string GetString()
-		{
-			return EncodeFlagsText(this);
-		}
-
 		// ! and % are printable in FF, + and / are not.
 		private const string base64CharString = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-!";
 		public static string EncodeFlagsText(Flags flags)
@@ -336,7 +331,7 @@ namespace FF1Lib
 			return result;
 		}
 
-		class Preset
+		private class Preset
 		{
 			public string Name { get; set; }
 			public Flags Flags { get; set; }

@@ -139,7 +139,7 @@ namespace FF1RandomizerOnline.Controllers
 					Music = MusicShuffle.None
 				}
 			};
-			vm.FlagsInput = vm.Flags.GetString();
+			vm.FlagsInput = Flags.EncodeFlagsText(vm.Flags);
 
 			return View(vm);
 		}
