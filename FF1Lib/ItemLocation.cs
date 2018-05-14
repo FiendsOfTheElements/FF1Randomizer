@@ -148,6 +148,7 @@ namespace FF1Lib
             _requiredGameEventFlag = copyFromMapObject._requiredGameEventFlag;
             _requiredItemTrade = copyFromMapObject._requiredItemTrade;
             _useVanillaRoutineAddress = copyFromMapObject._useVanillaRoutineAddress;
+			SecondLocation = copyFromMapObject.SecondLocation;
             if (_requiredGameEventFlag != ObjectId.None && _requiredItemTrade != Item.None)
                 throw new InvalidOperationException(
                     $"Attempted to Put invalid npc item placement: \n{SpoilerText}");

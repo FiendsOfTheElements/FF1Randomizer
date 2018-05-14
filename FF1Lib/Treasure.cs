@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using RomUtilities;
@@ -29,7 +30,9 @@ namespace FF1Lib
 													IItemPlacementFlags flags,
 													IncentiveData incentivesData,
 													ItemShopSlot caravanItemLocation,
-													Dictionary<MapLocation, List<MapChange>> mapLocationRequirements)
+													Dictionary<MapLocation, List<MapChange>> mapLocationRequirements,
+													Dictionary<MapLocation, Tuple<MapLocation, AccessRequirement>> mapLocationFloorRequirements,
+													Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullFloorRequirements)
 		{
 			var vanillaNPCs = !flags.NPCItems && !flags.NPCFetchItems;
 			if (!vanillaNPCs)
@@ -60,7 +63,9 @@ namespace FF1Lib
 											incentivesData,
 											treasurePool,
 											caravanItemLocation,
-											mapLocationRequirements);
+											mapLocationRequirements,
+											mapLocationFloorRequirements,
+											fullFloorRequirements);
 
 			if (flags.FreeBridge)
 			{
@@ -229,7 +234,7 @@ namespace FF1Lib
 				"2046DDB00CA9BD" +
 				"65619D0061"; // 40 bytes
 			const string openChest =
-				"18E67DE67DA2F09004EEB760E88A60"; // 12 bytes
+				"18E67DE67DA2F09004EEB960E88A60"; // 12 bytes
 			var giveRewardRoutine =
 				$"{checkItem}{notItem}{openChest}";
 			Put(0x7DD93, Blob.FromHex(giveRewardRoutine));
@@ -239,7 +244,7 @@ namespace FF1Lib
 		private void MoveShipToRewardSource(IRewardSource source)
 		{
 			Blob location = null;
-			if (!ItemLocations.ShipLocations.TryGetValue(source.MapLocation, out location))
+			//if (!ItemLocations.ShipLocations.TryGetValue(source.MapLocation, out location))
 			{
 				location = Dock.Coneria;
 			}

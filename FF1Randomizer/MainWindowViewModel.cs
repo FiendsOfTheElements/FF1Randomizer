@@ -667,13 +667,13 @@ namespace FF1Randomizer
 
 			public bool FreeOrbsEnabled => !ShardHunt;
 
-			public bool VanillaStartingGold
+			public bool StartingGold
 			{
-				get => Flags.VanillaStartingGold;
+				get => Flags.StartingGold;
 				set
 				{
-					Flags.VanillaStartingGold = value;
-					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("VanillaStartingGold"));
+					Flags.StartingGold = value;
+					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("StartingGold"));
 				}
 			}
 			public bool EasyMode
