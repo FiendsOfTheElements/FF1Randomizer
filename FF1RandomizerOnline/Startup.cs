@@ -52,12 +52,8 @@ namespace FF1RandomizerOnline
             app.UseStaticFiles();
 
 			// Terrible hack.  This allows the presets to work in the debugger.
-			var presetsDirectory = Path.Combine(Directory.GetCurrentDirectory(), "presets");
-			if (!Directory.Exists(presetsDirectory))
-			{
-				presetsDirectory = Path.Combine(Directory.GetCurrentDirectory(), "../FF1Lib/presets");
-			}
-			app.UseStaticFiles(new StaticFileOptions()
+			var presetsDirectory = GetPresetsDirectory();
+	        app.UseStaticFiles(new StaticFileOptions
 			{
 				FileProvider = new PhysicalFileProvider(presetsDirectory),
 				RequestPath = "/presets"
@@ -70,5 +66,16 @@ namespace FF1RandomizerOnline
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
         }
+
+	    public static string GetPresetsDirectory()
+	    {
+		    var presetsDirectory = Path.Combine(Directory.GetCurrentDirectory(), "presets");
+		    if (!Directory.Exists(presetsDirectory))
+		    {
+			    presetsDirectory = Path.Combine(Directory.GetCurrentDirectory(), "../FF1Lib/presets");
+		    }
+
+		    return presetsDirectory;
+	    }
     }
 }
