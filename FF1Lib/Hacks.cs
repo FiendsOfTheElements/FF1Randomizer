@@ -250,10 +250,7 @@ namespace FF1Lib
 
 		private void EnableEasyMode()
 		{
-			var newRng = Get(RngOffset, RngSize).ToBytes()
-				.Select(x => (byte)Math.Min(240, x * 5))
-				.ToArray();
-			Put(RngOffset, newRng);
+			ScaleEncounterRate(0.20);
 			var enemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
 			foreach (var enemy in enemies)
 			{

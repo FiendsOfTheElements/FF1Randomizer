@@ -196,6 +196,8 @@ namespace FF1Lib
 				Damage Taken:   $60B2 (24-bit)
 				Perished:       $64B5 (8-bit)
 				"Nothing Here": $60B6 (8-bit)
+				Chests Opened:  $60B7 (8-bit)
+				Can't Hold:     $60B9 (8-bit)
 			*/
 			Blob[] movementStats =
 			{
@@ -205,6 +207,7 @@ namespace FF1Lib
 				FF1Text.TextToBytes("Resets    ", true, FF1Text.Delimiter.Empty), Blob.FromHex("101002A5640405"),
 				FF1Text.TextToBytes("Power off ", true, FF1Text.Delimiter.Empty), Blob.FromHex("101002A3640405"),
 				FF1Text.TextToBytes("Nthng Here", true, FF1Text.Delimiter.Empty), Blob.FromHex("101001B6600405"),
+				FF1Text.TextToBytes("Can't Hold", true, FF1Text.Delimiter.Empty), Blob.FromHex("101001B9600405"),
 				FF1Text.TextToBytes("Chests Opened", true, FF1Text.Delimiter.Line),
 				Blob.FromHex("FFFFFF101001B76004"), FF1Text.TextToBytes(" of 241", true, FF1Text.Delimiter.Null),
 			};

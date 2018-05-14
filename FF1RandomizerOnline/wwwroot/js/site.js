@@ -1,4 +1,5 @@
 ﻿var presets = [];
+loadPresetFile("alpha-debug.json");
 loadPresetFile("beginner.json");
 loadPresetFile("default.json");
 loadPresetFile("full-npc.json");
@@ -25,7 +26,7 @@ function validateSeed() {
 
 function validateFlags() {
 	var flagsInput = document.getElementById("Flags");
-	var isValid = flagsInput.value.match(/^[A-Za-z0-9!-]{22}$/);
+	var isValid = flagsInput.value.match(/^[A-Za-z0-9!-]{24}$/);
 	if (isValid) {
 		flagsInput.parentElement.classList.remove("has-error");
 	} else {
