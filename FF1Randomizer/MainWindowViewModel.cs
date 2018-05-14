@@ -8,7 +8,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
 using FF1Lib;
-using RomUtilities;
 
 namespace FF1Randomizer
 {
