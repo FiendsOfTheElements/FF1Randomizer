@@ -288,16 +288,14 @@ namespace FF1Lib
 			Put(0x3ADC2, Blob.FromHex("203ABFEAEAEAEAEAEAEAEA"));
 		}
 
-		public void SetBattleUI(bool useDynamicWindowColor)
+		public void EnableModernBattlefield()
 		{
-			// If changing the window color in the battle scene we need to ensure that
+			// Since we're changing the window color in the battle scene we need to ensure that
 			// $FF tile remains opaque like in the menu screen. That battle init code
-			// overwrites it with transparent so we skip that code here.
-			if (useDynamicWindowColor)
-			{
-				Put(0x7F369, Blob.FromHex("EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
-				Put(0x7EB90, Blob.FromHex("4C29EB"));
-			}
+			// overwrites it with transparent so we skip that code here. Since this is fast
+			// enough we end up saving a frame we add a wait for VBlank to take the same total time.
+			Put(0x7F369, Blob.FromHex("2000FEEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
+			Put(0x7EB90, Blob.FromHex("4C29EB"));
 
 			// Don't draw big battle boxes around the enemies, party, and individual stats.
 			// Instead draw one box in the lower right corner around the new player stats.
