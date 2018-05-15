@@ -96,7 +96,7 @@ namespace FF1Lib
 
 			if (flags.ModernBattlefield)
 			{
-				SetBattleUI(true);
+				EnableModernBattlefield();
 			}
 
 			if (flags.TitansTrove)
