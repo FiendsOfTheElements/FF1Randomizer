@@ -383,8 +383,8 @@ namespace FF1Lib
 			turnOrder.Shuffle(rng);
 			Put(0x3215C, turnOrder.ToArray());
 
-			// Bump shuffle iterations from 16 to 64
-			Data[0x3217B] = 0x41;
+			// Rewrite turn order shuffle to Fisher-Yates.
+			Put(0x3217A, Blob.FromHex("A90C8D8E68A900AE8E68205DAEA8AE8E68EAEAEAEAEAEA"));
 		}
 	}
 }
