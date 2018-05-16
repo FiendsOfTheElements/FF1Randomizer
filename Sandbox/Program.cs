@@ -8,7 +8,9 @@ namespace Sandbox
     {
         static void Main(string[] args)
         {
-	        TurnOrder.TurnOrderTest();
+	        TurnOrder.TurnOrderTestVanilla();
+			TurnOrder.TurnOrderTestImproved();
+			TurnOrder.TurnOrderTestFisherYates();
         }
-    }
+	}
 }
