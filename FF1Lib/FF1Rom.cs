@@ -135,7 +135,7 @@ namespace FF1Lib
 
 			if (flags.Treasures && flags.ShardHunt && !flags.ChaosRush)
 			{
-				EnableShardHunt(rng, flags.ExtraShards ? rng.Between(24, 30) : 16, maps);
+				EnableShardHunt(rng, flags.ExtraShards ? rng.Between(24, 30) : 16, maps, flags.NPCItems);
 			}
 
 			if (flags.TransformFinalFormation)

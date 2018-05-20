@@ -42,11 +42,18 @@ namespace FF1Lib
 			Data[0x7EF45] = 0x11; // Skip over orbs and shards when printing the item menu
 		}
 
-		public void EnableShardHunt(MT19337 rng, int goal, List<Map> maps)
+		public void EnableShardHunt(MT19337 rng, int goal, List<Map> maps, bool npcShuffleEnabled)
 		{
 			if (goal < 1 || goal > 30)
 			{
 				throw new ArgumentOutOfRangeException();
+			}
+
+			if (!npcShuffleEnabled)
+			{
+				// NPC Shuffle fixes OpenTreasureChest to not play the fanfare for Shards differently
+				System.Diagnostics.Debug.Assert(Data[0x7DDA0] == (byte)Item.Tent);
+				Data[0x7DDA0] = (byte)Item.Shard;
 			}
 
 			var shardName = new List<string>
