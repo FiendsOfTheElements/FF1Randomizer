@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -25,19 +26,15 @@ namespace FF1Randomizer
 	/// </summary>
 	public partial class MainWindow : Window
 	{
-		private string _filename;
-		private Blob _seed;
-
-		private class MainWindowViewModel
-		{
-			public string WindowTitle => $"FF1 Randomizer {FF1Rom.Version}";
-		}
+		private readonly MainWindowViewModel _model;
 
 		public MainWindow()
 		{
 			InitializeComponent();
 
-			DataContext = new MainWindowViewModel();
+			_model = new MainWindowViewModel();
+			_model.Flags.Flags = Flags.FromJson(File.ReadAllText("presets/default.json"));
+			DataContext = _model;
 
 			TryOpenSavedFilename();
 			GenerateSeed();
@@ -45,8 +42,6 @@ namespace FF1Randomizer
 			SetScaleFactorLabel(PriceScaleFactorSlider, PriceScaleFactorLabel);
 			SetScaleFactorLabel(EnemyScaleFactorSlider, EnemyScaleFactorLabel);
 			SetExpLabel();
-			SetPartyLabel();
-			SetFlagsText(null, null);
 		}
 
 		private void TryOpenSavedFilename()
@@ -69,9 +64,7 @@ namespace FF1Randomizer
 
 		private void GenerateSeed()
 		{
-			_seed = Blob.Random(4);
-
-			SeedTextBox.Text = _seed.ToHex();
+			_model.Seed = Blob.Random(4).ToHex();
 		}
 
 		private void RomButton_Click(object sender, RoutedEventArgs e)
@@ -85,7 +78,7 @@ namespace FF1Randomizer
 			{
 				ValidateRom(openFileDialog.FileName);
 
-				Properties.Settings.Default.RomFilename = _filename;
+				Properties.Settings.Default.RomFilename = _model.Filename;
 				Properties.Settings.Default.Save();
 			}
 		}
@@ -98,7 +91,7 @@ namespace FF1Randomizer
 				MessageBox.Show("ROM does not appear to be valid.  Proceed at your own risk.", "Validation Error");
 			}
 
-			_filename = filename;
+			_model.Filename = filename;
 			var slashIndex = filename.LastIndexOfAny(new[] { '/', '\\' });
 			RomTextBox.Text = filename.Substring(slashIndex + 1);
 			GenerateButton.IsEnabled = true;
@@ -109,125 +102,16 @@ namespace FF1Randomizer
 			GenerateSeed();
 		}
 
-		private void SeedTextBox_LostFocus(object sender, RoutedEventArgs e)
-		{
-			SeedTextBox.Text = SeedTextBox.Text.Trim();
-
-			SetSeed();
-		}
-
-		private void SetSeed()
-		{
-			try
-			{
-				_seed = Blob.FromHex(SeedTextBox.Text);
-			}
-			catch (Exception)
-			{
-				MessageBox.Show("Seeds must be eight hexadecimal characters (0-9, A-F).  Generating new seed.", "Invalid Seed");
-
-				GenerateSeed();
-			}
-		}
-
 		private void GenerateButton_Click(object sender, RoutedEventArgs e)
 		{
-			var rom = new FF1Rom(_filename);
-			rom.Randomize(_seed, Flags.DecodeFlagsText(FlagsTextBox.Text));
+			var rom = new FF1Rom(_model.Filename);
+			rom.Randomize(Blob.FromHex(_model.Seed), _model.Flags.Flags);
 
-			var fileRoot = _filename.Substring(0, _filename.LastIndexOf("."));
-			var outputFilename = $"{fileRoot}_{_seed.ToHex()}_{FlagsTextBox.Text}.nes";
+			var fileRoot = _model.Filename.Substring(0, _model.Filename.LastIndexOf("."));
+			var outputFilename = $"{fileRoot}_{_model.Seed}_{FlagsTextBox.Text}.nes";
 			rom.Save(outputFilename);
 
 			MessageBox.Show($"Finished generating new ROM: {outputFilename}", "Done");
-		}
-
-		private void MagicLevelsCheckBox_OnChecked(object sender, RoutedEventArgs e)
-		{
-			if (MagicPermissionsCheckBox != null)
-			{
-				MagicPermissionsCheckBox.IsEnabled = true;
-			}
-
-			SetFlagsText(sender, e);
-		}
-
-		private void MagicLevelsCheckBox_OnUnchecked(object sender, RoutedEventArgs e)
-		{
-			if (MagicPermissionsCheckBox != null)
-			{
-				MagicPermissionsCheckBox.IsEnabled = false;
-			}
-
-			SetFlagsText(sender, e);
-		}
-
-		private void TreasuresCheckBox_OnChecked(object sender, RoutedEventArgs e)
-		{
-			if (IncentivizeIceCaveCheckBox != null)
-			{
-				IncentivizeIceCaveCheckBox.IsEnabled = true;
-			}
-			if (IncentivizeOrdealsCheckBox != null)
-			{
-				IncentivizeOrdealsCheckBox.IsEnabled = true;
-			}
-
-			SetFlagsText(sender, e);
-		}
-
-		private void TreasuresCheckBox_OnUnchecked(object sender, RoutedEventArgs e)
-		{
-			if (IncentivizeIceCaveCheckBox != null)
-			{
-				IncentivizeIceCaveCheckBox.IsEnabled = false;
-			}
-			if (IncentivizeOrdealsCheckBox != null)
-			{
-				IncentivizeOrdealsCheckBox.IsEnabled = false;
-			}
-
-			SetFlagsText(sender, e);
-		}
-
-		private void PriceScaleFactorSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-		{
-			PriceScaleFactorSlider.Value = Math.Round(PriceScaleFactorSlider.Value, 1);
-
-			SetScaleFactorLabel(PriceScaleFactorSlider, PriceScaleFactorLabel);
-			SetFlagsText(sender, e);
-		}
-
-		private void EnemyScaleFactorSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-		{
-			EnemyScaleFactorSlider.Value = Math.Round(EnemyScaleFactorSlider.Value, 1);
-
-			SetScaleFactorLabel(EnemyScaleFactorSlider, EnemyScaleFactorLabel);
-			SetFlagsText(sender, e);
-		}
-
-		private void ExpMultiplierSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-		{
-			ExpMultiplierSlider.Value = Math.Round(ExpMultiplierSlider.Value, 1);
-
-			SetExpLabel();
-			SetFlagsText(sender, e);
-		}
-
-		private void ExpBonusSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-		{
-			ExpBonusSlider.Value = 10.0 * Math.Round(ExpBonusSlider.Value / 10.0);
-
-			SetExpLabel();
-			SetFlagsText(sender, e);
-		}
-
-		private void PartyScaleFactorSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-		{
-			PartyScaleFactorSlider.Value = Math.Round(PartyScaleFactorSlider.Value);
-
-			SetPartyLabel();
-			SetFlagsText(sender, e);
 		}
 
 		private void CopyButton_Click(object sender, RoutedEventArgs e)
@@ -239,17 +123,15 @@ namespace FF1Randomizer
 		{
 			var text = Clipboard.GetText();
 			var parts = text.Split('_');
-			if (parts.Length != 2 || parts[0].Length != 8 || parts[1].Length != 11)
+			if (parts.Length != 2 || parts[0].Length != 8 || parts[1].Length != 22)
 			{
-				MessageBox.Show("Format not recognized.  Paste should look like SSSSSSSS_FFFFFFFFFFF", "Invalid Format");
+				MessageBox.Show("Format not recognized.  Paste should look like SSSSSSSS_FFFFFFFFFFFFFFFFFFFFFF", "Invalid Format");
 
 				return;
 			}
 
-			SeedTextBox.Text = parts[0];
-			SetSeed();
-
-			ApplyFlags(Flags.DecodeFlagsText(parts[1]));
+			_model.Seed = parts[0];
+			_model.Flags.Flags = Flags.DecodeFlagsText(parts[1]);
 		}
 
 		private void SetScaleFactorLabel(Slider slider, Label label)
@@ -268,122 +150,50 @@ namespace FF1Randomizer
 			}
 		}
 
-		private void SetPartyLabel()
-		{
-			if (PartyScaleFactorSlider != null)
-			{
-				PartyScaleFactorLabel.Content = PartyScaleFactorSlider.Value;
-			}
-		}
-
-		private void SetFlagsText(object sender, RoutedEventArgs e)
-		{
-			if (!IsInitialized || FlagsTextBox == null)
-			{
-				return;
-			}
-
-			FlagsTextBox.Text = Flags.EncodeFlagsText(new Flags {
-				Treasures = TreasuresCheckBox.IsChecked == true,
-				IncentivizeIceCave = IncentivizeIceCaveCheckBox.IsChecked == true,
-				IncentivizeOrdeals = IncentivizeOrdealsCheckBox.IsChecked == true,
-				Shops = ShopsCheckBox.IsChecked == true,
-				MagicShops = MagicShopsCheckBox.IsChecked == true,
-				MagicLevels = MagicLevelsCheckBox.IsChecked == true,
-				MagicPermissions = MagicPermissionsCheckBox.IsChecked == true,
-				Rng = RngCheckBox.IsChecked == true,
-				EnemyScripts = EnemyScriptsCheckBox.IsChecked == true,
-				EnemySkillsSpells = EnemySkillsSpellsCheckBox.IsChecked == true,
-				EnemyStatusAttacks = EnemyStatusAttacksCheckBox.IsChecked == true,
-				Ordeals = OrdealsCheckBox.IsChecked == true,
-
-				EarlyRod = EarlyRodCheckBox.IsChecked == true,
-				EarlyCanoe = EarlyCanoeCheckBox.IsChecked == true,
-				EarlyOrdeals = EarlyOrdealsCheckBox.IsChecked == true,
-				EarlyBridge = EarlyBridgeCheckBox.IsChecked == true,
-				NoPartyShuffle = NoPartyShuffleCheckBox.IsChecked == true,
-				SpeedHacks = SpeedHacksCheckBox.IsChecked == true,
-				IdentifyTreasures = IdentifyTreasuresCheckBox.IsChecked == true,
-				Dash = DashCheckBox.IsChecked == true,
-				BuyTen = BuyTenCheckBox.IsChecked == true,
-
-				HouseMPRestoration = HouseMPRestorationCheckBox.IsChecked == true,
-				WeaponStats = WeaponStatsCheckBox.IsChecked == true,
-				ChanceToRun = ChanceToRunCheckBox.IsChecked == true,
-				SpellBugs = SpellBugsCheckBox.IsChecked == true,
-				EnemyStatusAttackBug = EnemyStatusAttacksBugCheckBox.IsChecked == true,
-
-				FunEnemyNames = FunEnemyNamesCheckBox.IsChecked == true,
-				PaletteSwap = PaletteSwapCheckBox.IsChecked == true,
-				ModernBattlefield = ModernBattlefieldCheckBox.IsChecked == true,
-				TeamSteak = TeamTyroComboBox.SelectedValue.ToString() == "Team STEAK",
-				Music =
-					MusicComboBox.SelectedValue.ToString() == "Standard Music Shuffle" ? MusicShuffle.Standard :
-					MusicComboBox.SelectedValue.ToString() == "Nonsensical Music Shuffle" ? MusicShuffle.Nonsensical :
-					MusicComboBox.SelectedValue.ToString() == "Disable Music" ? MusicShuffle.MusicDisabled :
-					MusicShuffle.None,
-
-				PriceScaleFactor = PriceScaleFactorSlider.Value,
-				EnemyScaleFactor = EnemyScaleFactorSlider.Value,
-				ExpMultiplier = ExpMultiplierSlider.Value,
-				ExpBonus = (int)ExpBonusSlider.Value,
-				ForcedPartyMembers = (int)PartyScaleFactorSlider.Value
-			});
-		}
-
-		void ApplyFlags(Flags flags)
-		{
-			TreasuresCheckBox.IsChecked = flags.Treasures;
-			IncentivizeIceCaveCheckBox.IsChecked = flags.IncentivizeIceCave;
-			IncentivizeOrdealsCheckBox.IsChecked = flags.IncentivizeOrdeals;
-			ShopsCheckBox.IsChecked = flags.Shops;
-			MagicShopsCheckBox.IsChecked = flags.MagicShops;
-			MagicLevelsCheckBox.IsChecked = flags.MagicLevels;
-			MagicPermissionsCheckBox.IsChecked = flags.MagicPermissions;
-			RngCheckBox.IsChecked = flags.Rng;
-			EnemyScriptsCheckBox.IsChecked = flags.EnemyScripts;
-			EnemySkillsSpellsCheckBox.IsChecked = flags.EnemySkillsSpells;
-			EnemyStatusAttacksCheckBox.IsChecked = flags.EnemyStatusAttacks;
-			OrdealsCheckBox.IsChecked = flags.Ordeals;
-
-			EarlyRodCheckBox.IsChecked = flags.EarlyRod;
-			EarlyCanoeCheckBox.IsChecked = flags.EarlyCanoe;
-			EarlyOrdealsCheckBox.IsChecked = flags.EarlyOrdeals;
-			EarlyBridgeCheckBox.IsChecked = flags.EarlyBridge;
-			NoPartyShuffleCheckBox.IsChecked = flags.NoPartyShuffle;
-			SpeedHacksCheckBox.IsChecked = flags.SpeedHacks;
-			IdentifyTreasuresCheckBox.IsChecked = flags.IdentifyTreasures;
-			DashCheckBox.IsChecked = flags.Dash;
-			BuyTenCheckBox.IsChecked = flags.BuyTen;
-
-			HouseMPRestorationCheckBox.IsChecked = flags.HouseMPRestoration;
-			WeaponStatsCheckBox.IsChecked = flags.WeaponStats;
-			ChanceToRunCheckBox.IsChecked = flags.ChanceToRun;
-			SpellBugsCheckBox.IsChecked = flags.SpellBugs;
-			EnemyStatusAttacksBugCheckBox.IsChecked = flags.EnemyStatusAttackBug;
-
-			FunEnemyNamesCheckBox.IsChecked = flags.FunEnemyNames;
-			PaletteSwapCheckBox.IsChecked = flags.PaletteSwap;
-			ModernBattlefieldCheckBox.IsChecked = flags.ModernBattlefield;
-			TeamTyroComboBox.SelectedValue = flags.TeamSteak ? "Team STEAK" : "Team TYRO";
-			MusicComboBox.SelectedValue =
-				flags.Music == MusicShuffle.Standard ? "Standard Music Shuffle" :
-				flags.Music == MusicShuffle.Nonsensical ? "Nonsensical Music Shuffle" :
-				flags.Music == MusicShuffle.MusicDisabled ? "Disable Music" :
-				"No Music Shuffle";
-
-			PriceScaleFactorSlider.Value = flags.PriceScaleFactor;
-			EnemyScaleFactorSlider.Value = flags.EnemyScaleFactor;
-			ExpMultiplierSlider.Value = flags.ExpMultiplier;
-			ExpBonusSlider.Value = flags.ExpBonus;
-			PartyScaleFactorSlider.Value = flags.ForcedPartyMembers;
-		}
-
 		private void AboutButton_Click(object sender, RoutedEventArgs e)
 		{
 			var aboutWindow = new AboutWindow(FF1Rom.Version) { Owner = this };
 
 			aboutWindow.ShowDialog();
+		}
+
+		private void PriceScaleFactorSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+		{
+			((Slider)sender).Value = Math.Round(e.NewValue, 1);
+			SetScaleFactorLabel(PriceScaleFactorSlider, PriceScaleFactorLabel);
+		}
+
+		private void EnemyScaleFactorSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+		{
+			((Slider)sender).Value = Math.Round(e.NewValue, 1);
+			SetScaleFactorLabel(EnemyScaleFactorSlider, EnemyScaleFactorLabel);
+		}
+
+		private void ExpMultiplierSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+		{
+			((Slider)sender).Value = Math.Round(e.NewValue, 1);
+			SetExpLabel();
+		}
+
+		private void ExpBonusSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+		{
+			((Slider)sender).Value = Math.Round(e.NewValue/10.0)*10.0;
+			SetExpLabel();
+		}
+
+		private void LoadPreset(object sender, RoutedEventArgs e)
+		{
+			var openFileDialog = new OpenFileDialog
+			{
+				Filter = "JSON files (*.json)|*.json",
+				InitialDirectory = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "presets"),
+			};
+
+			var result = openFileDialog.ShowDialog(this);
+			if (result == true)
+			{
+				_model.Flags.Flags = Flags.FromJson(File.ReadAllText(openFileDialog.FileName));
+			}
 		}
 	}
 }

@@ -288,16 +288,14 @@ namespace FF1Lib
 			Put(0x3ADC2, Blob.FromHex("203ABFEAEAEAEAEAEAEAEA"));
 		}
 
-		public void SetBattleUI(bool useDynamicWindowColor)
+		public void EnableModernBattlefield()
 		{
-			// If changing the window color in the battle scene we need to ensure that
+			// Since we're changing the window color in the battle scene we need to ensure that
 			// $FF tile remains opaque like in the menu screen. That battle init code
-			// overwrites it with transparent so we skip that code here.
-			if (useDynamicWindowColor)
-			{
-				Put(0x7F369, Blob.FromHex("EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
-				Put(0x7EB90, Blob.FromHex("4C29EB"));
-			}
+			// overwrites it with transparent so we skip that code here. Since this is fast
+			// enough we end up saving a frame we add a wait for VBlank to take the same total time.
+			Put(0x7F369, Blob.FromHex("2000FEEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
+			Put(0x7EB90, Blob.FromHex("4C29EB"));
 
 			// Don't draw big battle boxes around the enemies, party, and individual stats.
 			// Instead draw one box in the lower right corner around the new player stats.
@@ -368,14 +366,14 @@ namespace FF1Lib
 			/* ASM Snippet
 				LDY #$01        ; Need a one offset into
 				LDA ($82), Y    ; btl_ob_charstat_ptr + 1 is status
-				AND #$FE        ; Ignore dead bit - we'd rather print name
-				CMP #$0         ; emtpy byte means print name
-				BEQ skip
+				LSR             ; Shift dead bit to carry
+				BCS skip        ; If dead print name
+				BEQ skip        ; If healthy print name
 				LDY #$09        ; otherwise load 9 to print status string
 				skip:
 				JSR $AAFC       ; JSR DrawStatusRow
 			*/
-			Put(0x32AB0, Blob.FromHex("A001B18229FEC900F002A00920FCAAEAEAEAEAEA"));
+			Put(0x32AB0, Blob.FromHex("A001B1824AB004F002A00920FCAAEAEAEAEAEAEA"));
 
 			// Overwrite the upper portion of the default attribute table to all bg palette
 			Put(0x7F400, Blob.FromHex("0000000000000000"));

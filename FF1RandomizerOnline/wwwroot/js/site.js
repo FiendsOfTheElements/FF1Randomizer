@@ -1,4 +1,18 @@
-﻿function validateSeed() {
+﻿var presets = [];
+loadPresetFile("beginner.json");
+loadPresetFile("default.json");
+loadPresetFile("full-npc.json");
+loadPresetFile("improved-vanilla.json");
+loadPresetFile("normal-npc.json");
+loadPresetFile("tournament.json");
+
+function loadPresetFile(filename) {
+	$.getJSON("/presets/" + filename, (preset) => {
+		presets.push(preset);
+	});
+}
+
+function validateSeed() {
 	var seedInput = document.getElementById("Seed");
     var isValid = seedInput.value.match(/^[A-Fa-f0-9]{8}$/)
 	if (isValid) {
@@ -64,17 +78,27 @@ var app = new Vue({
   },
   methods: {
     importSeedFlags: function () {
-        var str = prompt("Paste in a seed and flags string as given to you by our lord and master, crim_bot. (SEED_FLAGS)");
-        var seed;
-        var flags;
+        var seed = document.getElementById("Seed").value;
+        var flags = document.getElementById("Flags").value;
+        var str = prompt("Press Ctrl+C to copy to clipboard or paste in a SEED_FLAGS string and click OK to save changes.", seed + "_" + flags);
     
-        [seed, flags] = str.split("_", 2);
-    
-        this.flagString = flags;
-        document.getElementById("Seed").value = seed;
+		if (str) {
+			[seed, flags] = str.split("_", 2);
+
+			this.flagString = flags;
+			document.getElementById("Seed").value = seed;
+		}
     },
-    preset: function(presetString) {
-        this.flagString = presetString.length !== initalFlagString.length ? initalFlagString : presetString;
+    preset: function(presetName) {
+		let presetFlags = presets.find((preset) => preset.Name === presetName).Flags;
+		for (var key in presetFlags) {
+			if (this[key] !== true && this[key] !== false) {
+				this[key] = presetFlags[key];
+			}
+			else if (this[key] && !presetFlags[key] || !this[key] && presetFlags[key]) {
+				this[key] = presetFlags[key];
+			}
+		}
     },
     /* Debug methods as of 2.0, not very maintainable if incentive options change */
     getCountIncentivizedItems: function() {

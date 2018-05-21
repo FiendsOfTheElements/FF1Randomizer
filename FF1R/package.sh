@@ -1,4 +1,4 @@
-#~/bin/bash
+#!/bin/bash
 
 rm bin/Release/netcoreapp2.0/publish/*
 dotnet restore

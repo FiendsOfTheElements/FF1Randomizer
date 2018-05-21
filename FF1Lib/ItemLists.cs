@@ -78,6 +78,13 @@ namespace FF1Lib
 				.Where(x => x >= Item.Gold10 && x <= Item.Gold65000)
 				.ToList();
 
+		public static readonly IReadOnlyCollection<Item> AllMagicItem =
+			new List<Item> {
+			Item.WhiteShirt, Item.BlackShirt, Item.HealHelm, Item.ZeusGauntlets,
+			Item.PowerGauntlets, Item.LightAxe, Item.HealRod, Item.MageRod,
+			Item.Defense, Item.WizardRod, Item.ThorHammer, Item.BaneSword
+			};
+
 		public static readonly Dictionary<byte, string> TextLookup =
 			Enum.GetValues(typeof(Item))
 				.Cast<byte>()

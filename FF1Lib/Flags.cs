@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
 
 namespace FF1Lib
 {
@@ -39,7 +40,11 @@ namespace FF1Lib
 		public bool RandomLoot { get; set; } // Planned 2.x feature - random non-quest-item treasures
 		
 		[FlagString(Character = ALT_GAME_MODE, FlagBit = 1)]
-		public bool OrbHunt { get; set; } // Planned 2.1 or 2.2 features - shard hunt
+		public bool ShardHunt { get; set; }
+		[FlagString(Character = ALT_GAME_MODE, FlagBit = 2)]
+		public bool ExtraShards { get; set; }
+		[FlagString(Character = ALT_GAME_MODE, FlagBit = 4)]
+		public bool TransformFinalFormation { get; set; }
 
 		[FlagString(Character = MAGIC, FlagBit = 1)]
 		public bool MagicShops { get; set; }
@@ -47,6 +52,8 @@ namespace FF1Lib
 		public bool MagicLevels { get; set; }
 		[FlagString(Character = MAGIC, FlagBit = 4)]
 		public bool MagicPermissions { get; set; }
+		[FlagString(Character = MAGIC, FlagBit = 8)]
+		public bool ItemMagic { get; set; }
 
 		[FlagString(Character = ENCOUNTERS, FlagBit = 1)]
 		public bool Rng { get; set; }
@@ -190,6 +197,8 @@ namespace FF1Lib
 		public bool EnemySpellsTargetingAllies { get; set; }
 		[FlagString(Character = ENEMY_BUG_FIXES, FlagBit = 4)]
 		public bool EnemyElementalResistancesBug { get; set; }
+		[FlagString(Character = ENEMY_BUG_FIXES, FlagBit = 8)]
+		public bool ImproveTurnOrderRandomization { get; set; }
 
 		[FlagString(Character = 17, Multiplier = 0.1)]
 		public double EnemyScaleFactor { get; set; }
@@ -201,7 +210,7 @@ namespace FF1Lib
 		public int ExpBonus { get; set; }
 		[FlagString(Character = 21, Multiplier = 1)]
 		public int ForcedPartyMembers { get; set; }
-		
+
 		public bool ModernBattlefield { get; set; }
 		public bool FunEnemyNames { get; set; }
 		public bool PaletteSwap { get; set; }
@@ -266,11 +275,6 @@ namespace FF1Lib
 								.FirstOrDefault() as FlagStringAttribute);
 		}
 
-		public string GetString()
-		{
-			return EncodeFlagsText(this);
-		}
-
 		// ! and % are printable in FF, + and / are not.
 		private const string base64CharString = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-!";
 		public static string EncodeFlagsText(Flags flags)
@@ -308,12 +312,14 @@ namespace FF1Lib
 			foreach (var inputChar in inputCharacters)
 			{
 				var charFlagValue = base64CharString.IndexOf(inputChar);
-				var flagAttributesForChar = flagAttributes[index];
+				var flagAttributesForChar = flagAttributes[index++];
 				if (flagAttributesForChar.Any(x => x.Value.FlagBit < 1))
 				{
 					var multiplierAttribute = flagAttributesForChar.First(x => x.Value.FlagBit < 1);
+
 					var outputValue = charFlagValue * multiplierAttribute.Value.Multiplier;
-					typeof(Flags).GetProperty(multiplierAttribute.Key).SetValue(result, outputValue);
+					var property = typeof(Flags).GetProperty(multiplierAttribute.Key);
+					property.SetValue(result, Convert.ChangeType(outputValue, property.PropertyType));
 					continue;
 				}
 				foreach (var flagAttribute in flagAttributesForChar)
@@ -324,6 +330,14 @@ namespace FF1Lib
 			}
 			return result;
 		}
+
+		private class Preset
+		{
+			public string Name { get; set; }
+			public Flags Flags { get; set; }
+		}
+
+		public static Flags FromJson(string json) => JsonConvert.DeserializeObject<Preset>(json).Flags;
 	}
 
 	public class FlagStringAttribute : Attribute
@@ -346,7 +360,6 @@ namespace FF1Lib
 			$"set:function(newValue){{while(this.flagString.length <= {Character})this.flagString += base64Chars[0];" +
 			$"var scaledValue = (newValue / {Multiplier}).toFixed() % base64Chars.length;" +
 			$"this.flagString = this.flagString.substr(0,{Character}) + base64Chars[scaledValue] + this.flagString.substr({Character + 1});}} }}";
-
 		}
 	}
 }
