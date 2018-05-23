@@ -234,6 +234,8 @@ namespace FF1Lib
 		Sarda = 13,
 		Bahamut = 14,
 
+		WarMECH = 15, // This is for WarMECH NPC.  Unused in the original (seems to be a copy of BlackOrb).
+
 		SubEngineer = 16,
 		CubeBot = 17,
 		Princess2 = 18,

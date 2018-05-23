@@ -126,14 +126,29 @@
 				</Grid>
 			</TabItem>
 			<TabItem Header="Map">
-				<StackPanel>
-					<CheckBox x:Name="OrdealsPillarsCheckBox" IsChecked="{Binding Flags.OrdealsPillars}" Content="Castle Ordeals" ToolTip="Teleporters in Castle Ordeals are shuffled."/>
-					<CheckBox x:Name="SkyCastle4FTeleportersCheckBox" IsChecked="{Binding Flags.SkyCastle4FTeleporters}" Content="Sky Castle 4F Teleporters" ToolTip="Sky Castle 4F Teleporters"/>
-					<Label Margin="5,5,0,0"/>
-					<CheckBox x:Name="TitansTroveCheckBox" IsChecked="{Binding Flags.TitansTrove}" Content="Titan's Trove" ToolTip="Titan's Trove"/>
-					<Label Margin="5,5,0,0"/>
-					<CheckBox x:Name="MapOpenProgressionCheckBox" IsChecked="{Binding Flags.MapOpenProgression}" Content="Open Progression" ToolTip="Open Progression"/>
-				</StackPanel>
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition/>
+						<ColumnDefinition/>
+					</Grid.ColumnDefinitions>
+					<StackPanel Grid.Column="0">
+						<CheckBox x:Name="OrdealsPillarsCheckBox" IsChecked="{Binding Flags.OrdealsPillars}" Content="Castle Ordeals" ToolTip="Teleporters in Castle Ordeals are shuffled."/>
+						<CheckBox x:Name="SkyCastle4FTeleportersCheckBox" IsChecked="{Binding Flags.SkyCastle4FTeleporters}" Content="Sky Castle 4F Teleporters" ToolTip="Sky Castle 4F Teleporters"/>
+						<Label Margin="5,5,0,0"/>
+						<CheckBox x:Name="TitansTroveCheckBox" IsChecked="{Binding Flags.TitansTrove}" Content="Titan's Trove" ToolTip="Titan's Trove"/>
+						<Label Margin="5,5,0,0"/>
+						<CheckBox x:Name="MapOpenProgressionCheckBox" IsChecked="{Binding Flags.MapOpenProgression}" Content="Open Progression" ToolTip="Open Progression"/>
+					</StackPanel>
+					<StackPanel Grid.Column="1">
+						<Label Margin="5,5,0,0" FontWeight="Bold">WarMECH Mode:</Label>
+						<ComboBox x:Name="WarMECHModeComboBox" SelectedValue="{Binding Flags.WarMECHMode}" Width="150" HorizontalAlignment="Left" Margin="10,0,0,0" ToolTip="How do you like your WarMECH?" SelectedValuePath="Tag">
+							<ComboBoxItem Tag="Vanilla">Vanilla</ComboBoxItem>
+							<ComboBoxItem Tag="Wandering4F">Patrolling</ComboBoxItem>
+							<ComboBoxItem Tag="Aggro4F">Aggro</ComboBoxItem>
+							<ComboBoxItem Tag="BridgeOfDestiny">Required</ComboBoxItem>
+						</ComboBox>
+					</StackPanel>
+				</Grid>
 			</TabItem>
 			<TabItem Header="Scale">
 				<Grid>

@@ -287,6 +287,17 @@ namespace FF1Randomizer
 					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("OrdealsPillars"));
 				}
 			}
+
+			public WarMECHMode WarMECHMode
+			{
+				get => Flags.WarMECHMode;
+				set
+				{
+					Flags.WarMECHMode = value;
+					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("WarMECHMode"));
+				}
+			}
+
 			public bool SkyCastle4FTeleporters
 			{
 				get => Flags.SkyCastle4FTeleporters;
