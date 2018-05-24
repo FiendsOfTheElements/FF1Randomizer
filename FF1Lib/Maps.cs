@@ -310,6 +310,7 @@ namespace FF1Lib
 			var dialogueStrings = new List<Blob>
 			{
 				FF1Text.TextToBytes("I. aM. WarMECH."),
+				Blob.Concat(FF1Text.TextToBytes("I think you ought to know,"), new byte[] { 0x05 }, FF1Text.TextToBytes("I'm feeling very depressed.")),
 				FF1Text.TextToBytes("Bite my shiny metal ass!"),
 				Blob.Concat(FF1Text.TextToBytes("Put down your weapons."), new byte[] { 0x05 }, FF1Text.TextToBytes("You have 15 seconds to comply.")),
 				// Blob.Concat(FF1Text.TextToBytes("I'm sorry "), new byte[] { 0x03 }, FF1Text.TextToBytes(","), new byte[] { 0x05 }, FF1Text.TextToBytes("I'm afraid I can't do that.")),
