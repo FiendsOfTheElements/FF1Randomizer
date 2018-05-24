@@ -307,7 +307,17 @@ namespace FF1Lib
 			Put(MapObjJumpTableOffset + (byte)ObjectId.WarMECH * JumpTablePointerSize, Blob.FromUShorts(new[] { TalkFight }));
 
 			// Change the dialogue.
-			dialogueText[UnusedTextPointer] = FF1Text.TextToBytes("I. aM. WarMECH.");
+			var dialogueStrings = new List<Blob>
+			{
+				FF1Text.TextToBytes("I. aM. WarMECH."),
+				FF1Text.TextToBytes("Bite my shiny metal ass!"),
+				Blob.Concat(FF1Text.TextToBytes("Put down your weapons."), new byte[] { 0x05 }, FF1Text.TextToBytes("You have 15 seconds to comply.")),
+				Blob.Concat(FF1Text.TextToBytes("I'm sorry "), new byte[] { 0x03, 0x00, 0x00, 0x00 }, FF1Text.TextToBytes(","), new byte[] { 0x05 }, FF1Text.TextToBytes("I'm afraid I can't do that.")),
+				FF1Text.TextToBytes("rEsIsTaNcE iS fUtIlE."),
+				FF1Text.TextToBytes("Hasta la vista, baby."),
+				Blob.Concat(FF1Text.TextToBytes("Bring back life form."), new byte[] { 0x05 }, FF1Text.TextToBytes("Priority one."), new byte[] { 0x05 }, FF1Text.TextToBytes("All other priorities rescinded."))
+			};
+			dialogueText[UnusedTextPointer] = dialogueStrings.PickRandom(rng);
 
 			if (mode == WarMECHMode.BridgeOfDestiny)
 			{
