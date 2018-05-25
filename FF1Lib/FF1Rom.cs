@@ -316,7 +316,10 @@ namespace FF1Lib
 			ScalePrices(flags.PriceScaleFactor, flags.ExpMultiplier, flags.VanillaStartingGold, itemText, rng);
 
 
-			WarMECHNpc(WarMECHMode.BridgeOfDestiny, rng, maps, dialogueText);
+			if (flags.WarMECHMode != WarMECHMode.Vanilla)
+			{
+				WarMECHNpc(flags.WarMECHMode, rng, maps, dialogueText);
+			}
 
 			overworldMap.ApplyMapEdits();
 			WriteMaps(maps);
