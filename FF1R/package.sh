@@ -1,6 +1,6 @@
 #!/bin/bash
 
-rm bin/Release/netcoreapp2.0/publish/*
+rm -rf bin/Release/netcoreapp2.0/publish
 dotnet restore
 dotnet publish -c Release
 pushd bin/Release/netcoreapp2.0/publish

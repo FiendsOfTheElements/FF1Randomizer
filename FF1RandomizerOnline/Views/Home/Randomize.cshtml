@@ -163,13 +163,24 @@
 				</div>
 			</div>
 			<div class="section tab-pane" id="map">
-				<div class="col-xs-12 col-sm-4">
+				<div class="col-xs-4">
 					<div class="checkbox-cell"><input v-model="OrdealsPillars" type="checkbox" asp-for="Flags.OrdealsPillars" /> <label asp-for="Flags.OrdealsPillars">Castle Ordeals Pillars</label></div>
 					<div class="checkbox-cell"><input v-model="SkyCastle4FTeleporters" type="checkbox" asp-for="Flags.SkyCastle4FTeleporters" /> <label asp-for="Flags.SkyCastle4FTeleporters">Sky Castle 4F Teleporters</label></div>
 					<div class="checkbox-cell"></div>
 					<div class="checkbox-cell"><input v-model="TitansTrove" type="checkbox" asp-for="Flags.TitansTrove" /> <label asp-for="Flags.TitansTrove">Titan's Trove</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.0.0</a>)</small></div>
 					<div class="checkbox-cell"></div>
 					<div class="checkbox-cell"><input v-model="MapOpenProgression" type="checkbox" asp-for="Flags.MapOpenProgression" /> <label asp-for="Flags.MapOpenProgression">Open Progression</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.0.0</a>)</small></div>
+				</div>
+				<div class="col-xs-4">
+					<div class="checkbox-cell"><label asp-for="Flags.WarMECHMode">WarMECH Mode:</label></div>
+					<div class="checkbox-cell">
+						<select v-model="WarMECHMode" asp-for="Flags.WarMECHMode">
+							<option value="0">Vanilla</option>
+							<option value="1">Patrolling</option>
+							<option value="2">Aggro</option>
+							<option value="3">Required</option>
+						</select>
+					</div>
 				</div>
 			</div>
 			<div class="section tab-pane" id="scale">
@@ -249,10 +260,10 @@
 					</div>
 					<div class="checkbox-cell">
 						<select asp-for="Flags.Music">
-							<option value="None">No Music Shuffle</option>
-							<option value="Standard">Standard Music Shuffle</option>
-							<option value="Nonsensical">Nonsensical Music Shuffle</option>
-							<option value="MusicDisabled">Disable Music</option>
+							<option value="0">No Music Shuffle</option>
+							<option value="1">Standard Music Shuffle</option>
+							<option value="2">Nonsensical Music Shuffle</option>
+							<option value="3">Disable Music</option>
 						</select>
 					</div>
 				</div>

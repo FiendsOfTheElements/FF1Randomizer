@@ -19,4 +19,10 @@
     <ProjectReference Include="..\FF1Lib\FF1Lib.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="README.md">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

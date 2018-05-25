@@ -6,6 +6,79 @@ using RomUtilities;
 
 namespace FF1Lib
 {
+	public enum MapId : byte
+	{
+		Coneria = 0,
+		Pravoka,
+		Elfland,
+		Melmond,
+		CrescentLake,
+		Gaia,
+		Onrac,
+		Lefein,
+		ConeriaCastle1F,
+		ElflandCastle,
+		NorthwestCastle,
+		CastleOfOrdeals1F,
+		TempleOfFiends,
+		EarthCaveB1,
+		GurguVolcanoB1,
+		IceCaveB1,
+		Cardia,
+		BahamutsRoomB1,
+		Waterfall,
+		DwarfCave,
+		MatoyasCave,
+		SardasCave,
+		MarshCaveB1,
+		MirageTower1F,
+		ConeriaCastle2F,
+		CastleOfOrdeals2F,
+		CastleOfOrdeals3F,
+		MarshCaveB2,
+		MarshCaveB3,
+		EarthCaveB2,
+		EarthCaveB3,
+		EarthCaveB4,
+		EarthCaveB5,
+		GurguVolcanoB2,
+		GurguVolcanoB3,
+		GurguVolcanoB4,
+		GurguVolcanoB5,
+		IceCaveB2,
+		IceCaveB3,
+		BahamutsRoomB2,
+		MirageTower2F,
+		MirageTower3F,
+		SeaShrineB5,
+		SeaShrineB4,
+		SeaShrineB3,
+		SeaShrineB2,
+		SeaShrineB1,
+		SkyPalace1F,
+		SkyPalace2F,
+		SkyPalace3F,
+		SkyPalace4F,
+		SkyPalace5F,
+		TempleOfFiendsRevisited1F,
+		TempleOfFiendsRevisited2F,
+		TempleOfFiendsRevisited3F,
+		TempleOfFiendsRevisitedEarth,
+		TempleOfFiendsRevisitedFire,
+		TempleOfFiendsRevisitedWater,
+		TempleOfFiendsRevisitedAir,
+		TempleOfFiendsRevisitedChaos,
+		TitansTunnel
+	}
+
+	public enum WarMECHMode
+	{
+		Vanilla,
+		Wandering4F,
+		Aggro4F,
+		BridgeOfDestiny
+	}
+
 	public partial class FF1Rom : NesRom
 	{
 		public const int MapPointerOffset = 0x10000;
@@ -19,6 +92,15 @@ namespace FF1Lib
 		public const int TilesetDataOffset = 0x00800;
 		public const int TilesetDataSize = 2;
 		public const int TilesetDataCount = 128;
+
+		public const int MapObjJumpTableOffset = 0x390D3;
+		public const int JumpTablePointerSize = 2;
+		public const int MapObjOffset = 0x395D5;
+		public const int MapObjGfxOffset = 0x02E00;
+		public const int MapObjSize = 4;
+		public const int MapObjCount = 0xD0;
+
+		const ushort TalkFight = 0x94AA;
 
 		private struct OrdealsRoom
 		{
@@ -91,8 +173,7 @@ namespace FF1Lib
 
 			// First we choose a teleporter to link to the next room.
 			byte exit = 0x55;
-			const int OrdealsMapIndex = 25;
-			var map = maps[OrdealsMapIndex];
+			var map = maps[(byte)MapId.CastleOfOrdeals2F];
 			for (int i = 0; i < rooms.Count; i++)
 			{
 				int teleporter = rng.Between(0, rooms[i].Teleporters.Count - 1);
@@ -153,26 +234,12 @@ namespace FF1Lib
 			Put(TeleportOffset + TeleportCount + LostTeleportIndex, new byte[] { 0x12 });
 		}
 
-		struct Coords
-		{
-			public int x;
-			public int y;
-		}
-
 		public void ShuffleSkyCastle4F(MT19337 rng, List<Map> maps)
 		{
-			var map = maps[50]; // 4F
+			var map = maps[(byte)MapId.SkyPalace4F];
 
-			Coords downTeleporter = new Coords
-			{
-				x = 0x03,
-				y = 0x03
-			};
-			Coords upTeleporter = new Coords
-			{
-				x = 0x23,
-				y = 0x23
-			};
+			var downTeleporter = (x: 0x03, y: 0x03);
+			var upTeleporter = (x: 0x23, y: 0x23);
 
 			var dest = GetSkyCastleFloorTile(rng, map);
 			SwapTiles(map, upTeleporter, dest);
@@ -184,7 +251,7 @@ namespace FF1Lib
 			Put(TeleportOffset + TeleportCount + TeleportIndex3FTo4F, new [] { (byte)dest.y });
 		}
 
-		private Coords GetSkyCastleFloorTile(MT19337 rng, Map map)
+		private (int x, int y) GetSkyCastleFloorTile(MT19337 rng, Map map)
 		{
 			int x, y;
 			do
@@ -194,14 +261,10 @@ namespace FF1Lib
 
 			} while (map[y, x] != 0x4B);
 
-			return new Coords
-			{
-				x = x,
-				y = y
-			};
+			return (x, y);
 		}
 
-		private void SwapTiles(Map map, Coords src, Coords dest)
+		private void SwapTiles(Map map, (int x, int y) src, (int x, int y) dest)
 		{
 			byte temp = map[dest.y, dest.x];
 			map[dest.y, dest.x] = map[src.y, src.x];
@@ -226,9 +289,84 @@ namespace FF1Lib
 
 		public void EnableTitansTrove(List<Map> maps)
         {
-			MoveNpc(60, 0, 4, 8, inRoom: false, stationary: true); // Move the Titan
-			maps[60][9, 3] = 0x3F; // Block the tunnel
+			MoveNpc(MapId.TitansTunnel, 0, 4, 8, inRoom: false, stationary: true); // Move the Titan
+			maps[(byte)MapId.TitansTunnel][9, 3] = 0x3F; // Block the tunnel
         }
+
+		public void WarMECHNpc(WarMECHMode mode, MT19337 rng, List<Map> maps, Blob[] dialogueText)
+		{
+			const byte UnusedTextPointer = 0xF7;
+			const byte WarMECHEncounter = 0x56;
+			const byte RobotGfx = 0x15;
+
+			// Set up the map object.
+			Put(MapObjOffset + (byte)ObjectId.WarMECH * MapObjSize, new [] { (byte)ObjectId.WarMECH, UnusedTextPointer, (byte)0x00, WarMECHEncounter });
+			Data[MapObjGfxOffset + (byte)ObjectId.WarMECH] = RobotGfx;
+
+			// Set the action when you talk to WarMECH.
+			Put(MapObjJumpTableOffset + (byte)ObjectId.WarMECH * JumpTablePointerSize, Blob.FromUShorts(new[] { TalkFight }));
+
+			// Change the dialogue.
+			var dialogueStrings = new List<Blob>
+			{
+				FF1Text.TextToBytes("I. aM. WarMECH."),
+				Blob.Concat(FF1Text.TextToBytes("I think you ought to know,"), new byte[] { 0x05 }, FF1Text.TextToBytes("I'm feeling very depressed.")),
+				FF1Text.TextToBytes("Bite my shiny metal ass!"),
+				Blob.Concat(FF1Text.TextToBytes("Put down your weapons."), new byte[] { 0x05 }, FF1Text.TextToBytes("You have 15 seconds to comply.")),
+				// Blob.Concat(FF1Text.TextToBytes("I'm sorry "), new byte[] { 0x03 }, FF1Text.TextToBytes(","), new byte[] { 0x05 }, FF1Text.TextToBytes("I'm afraid I can't do that.")),
+				FF1Text.TextToBytes("rEsIsTaNcE iS fUtIlE."),
+				FF1Text.TextToBytes("Hasta la vista, baby."),
+				Blob.Concat(FF1Text.TextToBytes("Bring back life form."), new byte[] { 0x05 }, FF1Text.TextToBytes("Priority one."), new byte[] { 0x05 }, FF1Text.TextToBytes("All other priorities rescinded."))
+			};
+			dialogueText[UnusedTextPointer] = dialogueStrings.PickRandom(rng);
+
+			if (mode == WarMECHMode.BridgeOfDestiny)
+			{
+				// Can't use mapNpcIndex 0, that's the Wind ORB.
+				SetNpc(MapId.SkyPalace5F, 1, ObjectId.WarMECH, 0x07, 0x0E, inRoom: false, stationary: true);
+
+				Data[0x029AB] = 0x14; // we can only change one color without messing up the Wind ORB.
+
+				// Get rid of random WarMECH encounters.  Group 8 is now also group 7.
+				var formationOffset = FormationFrequencyOffset + FormationFrequencySize * (64 + (byte)MapId.SkyPalace5F);
+				var formations = Get(formationOffset, FormationFrequencySize);
+				formations[6] = formations[7];
+				Put(formationOffset, formations);
+			}
+			else if (mode == WarMECHMode.Wandering4F || mode == WarMECHMode.Aggro4F)
+			{
+				var (x, y) = GetSkyCastleFloorTile(rng, maps[(byte)MapId.SkyPalace4F]);
+				SetNpc(MapId.SkyPalace4F, 0, ObjectId.WarMECH, x, y, inRoom: false, stationary: false);
+
+				// We can change all the colors here.
+				Put(0x02978, Blob.FromHex("0F0F18140F0F1714"));
+			}
+		}
+
+		private void MoveNpc(MapId mapId, int mapNpcIndex, int x, int y, bool inRoom, bool stationary)
+		{
+			int offset = MapSpriteOffset + ((byte)mapId * MapSpriteCount + mapNpcIndex) * MapSpriteSize;
+
+			byte firstByte = (byte)x;
+			firstByte |= (byte)(inRoom ? 0x80 : 0x00);
+			firstByte |= (byte)(stationary ? 0x40 : 0x00);
+
+			Data[offset + 1] = firstByte;
+			Data[offset + 2] = (byte)y;
+		}
+
+		private void SetNpc(MapId mapId, int mapNpcIndex, ObjectId mapObjId, int x, int y, bool inRoom, bool stationary)
+		{
+			int offset = MapSpriteOffset + ((byte)mapId * MapSpriteCount + mapNpcIndex) * MapSpriteSize;
+
+			byte firstByte = (byte)x;
+			firstByte |= (byte)(inRoom ? 0x80 : 0x00);
+			firstByte |= (byte)(stationary ? 0x40 : 0x00);
+
+			Data[offset] = (byte)mapObjId;
+			Data[offset + 1] = firstByte;
+			Data[offset + 2] = (byte)y;
+		}
 
 		public List<Map> ReadMaps()
 		{

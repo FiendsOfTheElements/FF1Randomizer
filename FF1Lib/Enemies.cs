@@ -23,7 +23,7 @@ namespace FF1Lib
 
 		public void ShuffleEnemyFormations(MT19337 rng)
 		{
-			//intra-zone shuffle, does not change which formations are in zomes.
+			// intra-zone shuffle, does not change which formations are in zomes.
 			var oldFormations = Get(FormationFrequencyOffset, FormationFrequencySize * FormationFrequencyCount).Chunk(FormationFrequencySize);
 			var newFormations = Get(FormationFrequencyOffset, FormationFrequencySize * FormationFrequencyCount).Chunk(FormationFrequencySize);
 			Blob WarMech = new byte[]{ 0x56 };
@@ -38,7 +38,6 @@ namespace FF1Lib
 				newFormations[i][2] = lowFormations[2][0];
 				newFormations[i][3] = lowFormations[3][0];
 
-
 				var shuffleFormations = newFormations[i].SubBlob(1, 6).Chunk(1); // get formations 2-8
 				shuffleFormations.Shuffle(rng);
 				if (shuffleFormations.Contains(WarMech)) //preserve WarMech's formation 7 status
@@ -51,6 +50,7 @@ namespace FF1Lib
 				}
 				
 			}
+
 			Put(FormationFrequencyOffset, newFormations.SelectMany(formation => formation.ToBytes()).ToArray());
 		}
 		public void ShuffleEnemyScripts(MT19337 rng, bool AllowUnsafePirates)

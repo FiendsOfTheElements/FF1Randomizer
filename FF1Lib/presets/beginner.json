@@ -13,6 +13,7 @@
 		"ShardHunt": false,
 		"ExtraShards": false,
 		"TransformFinalFormation": false,
+		"ChaosRush": false,
 
 		"MagicShops": false,
 		"MagicLevels": true,
@@ -29,11 +30,10 @@
 		"EnemyStatusAttacks": false,
 		"AllowUnsafePirates": false,
 
+		"WarMECHMode": "Vanilla",
 		"OrdealsPillars": false,
 		"SkyCastle4FTeleporters": false,
 		"TitansTrove": true,
-		"CrownlessOrdeals": true,
-		"ChaosRush": false,
 		"Floors": false,
 
 		"MapOpenProgression": false,
@@ -72,6 +72,7 @@
 
 		"EarlySarda": true,
 		"EarlySage": true,
+		"CrownlessOrdeals": true,
 		"OnlyRequireGameIsBeatable": false,
 
 		"FreeBridge": true,

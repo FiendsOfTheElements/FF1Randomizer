@@ -12,7 +12,7 @@ namespace FF1Lib
 	// ReSharper disable once InconsistentNaming
 	public partial class FF1Rom : NesRom
 	{
-		public const string Version = "2.2.1";
+		public const string Version = "2.3.0";
 
 		public const int RngOffset = 0x7F100;
 		public const int RngSize = 256;
@@ -310,14 +310,22 @@ namespace FF1Lib
 			}
 
 			var itemText = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
+			var dialogueText = ReadText(DialogueTextPointerOffset, DialogueTextPointerBase, DialogueTextPointerCount);
 			FixVanillaRibbon(itemText);
 			ExpGoldBoost(flags.ExpBonus, flags.ExpMultiplier);
 			ScalePrices(flags.PriceScaleFactor, flags.ExpMultiplier, flags.VanillaStartingGold, itemText, rng);
+
+
+			if (flags.WarMECHMode != WarMECHMode.Vanilla)
+			{
+				WarMECHNpc(flags.WarMECHMode, rng, maps, dialogueText);
+			}
 
 			overworldMap.ApplyMapEdits();
 			WriteMaps(maps);
 
 			WriteText(itemText, ItemTextPointerOffset, ItemTextPointerBase, ItemTextOffset, UnusedGoldItems);
+			WriteText(dialogueText, DialogueTextPointerOffset, DialogueTextPointerBase, DialogueTextOffset);
 
 			if (flags.EnemyScaleFactor > 1)
 			{
