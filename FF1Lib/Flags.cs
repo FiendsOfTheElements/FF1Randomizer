@@ -324,8 +324,16 @@ namespace FF1Lib
 				}
 				foreach (var flagAttribute in flagAttributesForChar)
 				{
-					var outputValue = (charFlagValue & flagAttribute.Value.FlagBit) > 0;
-					typeof(Flags).GetProperty(flagAttribute.Key).SetValue(result, outputValue);
+					var property = typeof(Flags).GetProperty(flagAttribute.Key);
+					var outputValue = charFlagValue & flagAttribute.Value.FlagBit;
+					if (property.PropertyType == typeof(bool))
+					{
+						property.SetValue(result, outputValue > 0);
+					}
+					else
+					{
+						property.SetValue(result, outputValue);
+					}
 				}
 			}
 			return result;
