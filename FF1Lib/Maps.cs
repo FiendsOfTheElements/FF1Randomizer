@@ -293,7 +293,7 @@ namespace FF1Lib
 			maps[(byte)MapId.TitansTunnel][9, 3] = 0x3F; // Block the tunnel
         }
 
-		public void WarMECHNpc(WarMECHMode mode, MT19337 rng, List<Map> maps, Blob[] dialogueText)
+		public void WarMECHNpc(WarMECHMode mode, MT19337 rng, List<Map> maps)
 		{
 			const byte UnusedTextPointer = 0xF7;
 			const byte WarMECHEncounter = 0x56;
@@ -318,7 +318,16 @@ namespace FF1Lib
 				FF1Text.TextToBytes("Hasta la vista, baby."),
 				Blob.Concat(FF1Text.TextToBytes("Bring back life form."), new byte[] { 0x05 }, FF1Text.TextToBytes("Priority one."), new byte[] { 0x05 }, FF1Text.TextToBytes("All other priorities rescinded."))
 			};
-			dialogueText[UnusedTextPointer] = dialogueStrings.PickRandom(rng);
+			ushort freeTextSpacePointer = 0xB487;
+			int pointerTarget = 0x20000 + freeTextSpacePointer;
+			Put(pointerTarget, dialogueStrings.PickRandom(rng));
+			Put(DialogueTextPointerOffset + 2 * UnusedTextPointer, Blob.FromUShorts(new [] { freeTextSpacePointer }));
+
+			// Get rid of random WarMECH encounters.  Group 8 is now also group 7.
+			var formationOffset = FormationFrequencyOffset + FormationFrequencySize * (64 + (byte)MapId.SkyPalace5F);
+			var formations = Get(formationOffset, FormationFrequencySize);
+			formations[6] = formations[7];
+			Put(formationOffset, formations);
 
 			if (mode == WarMECHMode.BridgeOfDestiny)
 			{
@@ -326,12 +335,6 @@ namespace FF1Lib
 				SetNpc(MapId.SkyPalace5F, 1, ObjectId.WarMECH, 0x07, 0x0E, inRoom: false, stationary: true);
 
 				Data[0x029AB] = 0x14; // we can only change one color without messing up the Wind ORB.
-
-				// Get rid of random WarMECH encounters.  Group 8 is now also group 7.
-				var formationOffset = FormationFrequencyOffset + FormationFrequencySize * (64 + (byte)MapId.SkyPalace5F);
-				var formations = Get(formationOffset, FormationFrequencySize);
-				formations[6] = formations[7];
-				Put(formationOffset, formations);
 			}
 			else if (mode == WarMECHMode.Wandering4F || mode == WarMECHMode.Aggro4F)
 			{
