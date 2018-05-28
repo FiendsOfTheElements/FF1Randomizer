@@ -29,7 +29,7 @@ jobs:
     steps:
       - setup_remote_docker
       - attach_workspace:
-          at: ~
+          at: ~/ff1randomizer
       - run:
           name: docker
           command: |
@@ -43,7 +43,7 @@ jobs:
     steps:
       - setup_remote_docker
       - attach_workspace:
-          at: ~
+          at: ~/ff1randomizer
       - run:
           name: docker
           command: |
@@ -57,7 +57,7 @@ jobs:
     steps:
       - setup_remote_docker
       - attach_workspace:
-          at: ~
+          at: ~/ff1randomizer
       - run:
           name: docker
           command: |
