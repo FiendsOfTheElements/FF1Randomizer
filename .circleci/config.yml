@@ -69,6 +69,8 @@ jobs:
   deploy_production:
     <<: *defaults
     steps:
+      - attach_workspace:
+          at: ~/ff1randomizer
       - run:
           name: deploy
           command: |
@@ -79,6 +81,8 @@ jobs:
   deploy_beta:
     <<: *defaults
     steps:
+      - attach_workspace:
+          at: ~/ff1randomizer
       - run:
           name: deploy
           command: |
@@ -89,6 +93,8 @@ jobs:
   deploy_alpha:
     <<: *defaults
     steps:
+      - attach_workspace:
+          at: ~/ff1randomizer
       - run:
           name: deploy
           command: |
