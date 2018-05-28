@@ -77,6 +77,28 @@ jobs:
             cp .ssh/known_hosts ~/.ssh/known_hosts && \
             ssh circle@finalfantasyrandomizer.com "./deployff1r.sh master"
 
+  deploy_beta:
+    <<: *defaults
+    steps:
+      - checkout
+      - run:
+          name: deploy
+          command: |
+            mkdir -p ~/.ssh && \
+            cp .ssh/known_hosts ~/.ssh/known_hosts && \
+            ssh circle@finalfantasyrandomizer.com "./deployff1r.sh beta"
+
+  deploy_alpha:
+    <<: *defaults
+    steps:
+      - checkout
+      - run:
+          name: deploy
+          command: |
+            mkdir -p ~/.ssh && \
+            cp .ssh/known_hosts ~/.ssh/known_hosts && \
+            ssh circle@finalfantasyrandomizer.com "./deployff1r.sh alpha"
+
 workflows:
   version: 2
   main:
