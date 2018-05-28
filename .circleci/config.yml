@@ -1,3 +1,8 @@
+defaults: &defaults
+  working_directory: ~/ff1randomizer
+  docker:
+    - image: circleci/slim-base
+
 version: 2
 jobs:
   build:
@@ -20,7 +25,7 @@ jobs:
           paths: FF1RandomizerOnline
 
   dockerize_production:
-    working_directory: ~/ff1randomizer
+    <<: *defaults
     steps:
       - setup_remote_docker
       - run: &docker_client
@@ -42,7 +47,7 @@ jobs:
             docker push entroper/finalfantasyrandomizer:latest
 
   dockerize_beta:
-    working_directory: ~/ff1randomizer
+    <<: *defaults
     steps:
       - setup_remote_docker
       - run: *docker_client
@@ -55,7 +60,7 @@ jobs:
             docker push entroper/finalfantasyrandomizer:beta
 
   dockerize_alpha:
-    working_directory: ~/ff1randomizer
+    <<: *defaults
     steps:
       - setup_remote_docker
       - run: *docker_client
@@ -68,7 +73,7 @@ jobs:
             docker push entroper/finalfantasyrandomizer:beta
 
   deploy_production:
-    working_directory: ~/ff1randomizer
+    <<: *defaults
     steps:
       - run:
           name: deploy
@@ -78,7 +83,7 @@ jobs:
             ssh circle@finalfantasyrandomizer.com "./deployff1r.sh master"
 
   deploy_beta:
-    working_directory: ~/ff1randomizer
+    <<: *defaults
     steps:
       - run:
           name: deploy
@@ -88,7 +93,7 @@ jobs:
             ssh circle@finalfantasyrandomizer.com "./deployff1r.sh beta"
 
   deploy_alpha:
-    working_directory: ~/ff1randomizer
+    <<: *defaults
     steps:
       - run:
           name: deploy
