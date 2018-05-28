@@ -66,7 +66,7 @@ jobs:
             docker build -t entroper/finalfantasyrandomizer:alpha -f Dockerfile.debug . && \
             docker push entroper/finalfantasyrandomizer:beta
 
-  deploy_production:
+  deploy:
     <<: *defaults
     steps:
       - checkout
@@ -76,28 +76,6 @@ jobs:
             mkdir -p ~/.ssh && \
             cp .ssh/known_hosts ~/.ssh/known_hosts && \
             ssh circle@finalfantasyrandomizer.com "./deployff1r.sh master"
-
-  deploy_beta:
-    <<: *defaults
-    steps:
-      - checkout
-      - run:
-          name: deploy
-          command: |
-            mkdir -p ~/.ssh && \
-            cp .ssh/known_hosts ~/.ssh/known_hosts && \
-            ssh circle@finalfantasyrandomizer.com "./deployff1r.sh beta"
-
-  deploy_alpha:
-    <<: *defaults
-    steps:
-      - checkout
-      - run:
-          name: deploy
-          command: |
-            mkdir -p ~/.ssh && \
-            cp .ssh/known_hosts ~/.ssh/known_hosts && \
-            ssh circle@finalfantasyrandomizer.com "./deployff1r.sh alpha"
 
 workflows:
   version: 2
@@ -121,8 +99,6 @@ workflows:
             - build
           filters:
             branches:
-              ignore: /.*/
-            tags:
               only: alpha
       - deploy_production:
           requires:
@@ -141,6 +117,4 @@ workflows:
             - dockerize_alpha
           filters:
             branches:
-              ignore: /.*/
-            tags:
               only: alpha
