@@ -64,7 +64,7 @@ jobs:
             cd FF1RandomizerOnline && \
             docker login -u $DOCKER_USER -p $DOCKER_PASS && \
             docker build -t entroper/finalfantasyrandomizer:alpha -f Dockerfile.debug . && \
-            docker push entroper/finalfantasyrandomizer:beta
+            docker push entroper/finalfantasyrandomizer:alpha
 
   deploy:
     <<: *defaults
