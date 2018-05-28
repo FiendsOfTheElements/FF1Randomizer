@@ -1,7 +1,7 @@
 defaults: &defaults
   working_directory: ~/ff1randomizer
   docker:
-    - image: circleci/slim-base
+    - image: circleci/node:8
 
 version: 2
 jobs:
