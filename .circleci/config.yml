@@ -123,6 +123,8 @@ workflows:
           requires:
             - build
           filters:
+            branches:
+              ignore: /.*/
             tags:
               only: alpha
       - deploy_production:
@@ -141,5 +143,7 @@ workflows:
           requires:
             - dockerize_alpha
           filters:
+            branches:
+              ignore: /.*/
             tags:
               only: alpha
