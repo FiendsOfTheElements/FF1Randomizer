@@ -6,9 +6,8 @@ jobs:
       - image: microsoft/aspnetcore-build:2.0
     steps:
       - checkout
-
       - run:
-          name: compile
+          name: publish
           command: |
             cd FF1RandomizerOnline
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
@@ -16,9 +15,15 @@ jobs:
             else
               dotnet publish -c Debug
             fi
+      - persist_to_workspace:
+          root: ~/ff1randomizer
+          paths: FF1RandomizerOnline
 
+  dockerize_production:
+    working_directory: ~/ff1randomizer
+    steps:
       - setup_remote_docker
-      - run:
+      - run: &docker_client
           name: Install Docker client
           command: |
             set -x
@@ -26,24 +31,110 @@ jobs:
             curl -L -o /tmp/docker-$VER.tgz https://download.docker.com/linux/static/stable/x86_64/docker-$VER.tgz
             tar -xz -C /tmp -f /tmp/docker-$VER.tgz
             mv /tmp/docker/* /usr/bin
+      - attach_workspace:
+          at: FF1RandomizerOnline
       - run:
           name: docker
           command: |
             cd FF1RandomizerOnline && \
-            if [ "${CIRCLE_BRANCH}" == "dev" ]; then
-              docker login -u $DOCKER_USER -p $DOCKER_PASS && \
-              docker build -t entroper/finalfantasyrandomizer:beta -f Dockerfile.beta . && \
-              docker push entroper/finalfantasyrandomizer:beta
-            elif [ "${CIRCLE_BRANCH}" == "master" ]; then
-              docker login -u $DOCKER_USER -p $DOCKER_PASS && \
-              docker build -t entroper/finalfantasyrandomizer:latest -f Dockerfile . && \
-              docker push entroper/finalfantasyrandomizer:latest
-            fi
+            docker login -u $DOCKER_USER -p $DOCKER_PASS && \
+            docker build -t entroper/finalfantasyrandomizer:latest -f Dockerfile . && \
+            docker push entroper/finalfantasyrandomizer:latest
+
+  dockerize_beta:
+    working_directory: ~/ff1randomizer
+    steps:
+      - setup_remote_docker
+      - run: *docker_client
+      - run:
+          name: docker
+          command: |
+            cd FF1RandomizerOnline && \
+            docker login -u $DOCKER_USER -p $DOCKER_PASS && \
+            docker build -t entroper/finalfantasyrandomizer:beta -f Dockerfile.debug . && \
+            docker push entroper/finalfantasyrandomizer:beta
+
+  dockerize_alpha:
+    working_directory: ~/ff1randomizer
+    steps:
+      - setup_remote_docker
+      - run: *docker_client
+      - run:
+          name: docker
+          command: |
+            cd FF1RandomizerOnline && \
+            docker login -u $DOCKER_USER -p $DOCKER_PASS && \
+            docker build -t entroper/finalfantasyrandomizer:alpha -f Dockerfile.debug . && \
+            docker push entroper/finalfantasyrandomizer:beta
+
+  deploy_production:
+    working_directory: ~/ff1randomizer
+    steps:
       - run:
           name: deploy
           command: |
-            if [ "${CIRCLE_BRANCH}" == "dev" ] || [ "${CIRCLE_BRANCH}" == "master" ]; then
-              mkdir -p ~/.ssh && \
-              cp .ssh/known_hosts ~/.ssh/known_hosts && \
-              ssh circle@finalfantasyrandomizer.com "./deployff1r.sh $CIRCLE_BRANCH"
-            fi
+            mkdir -p ~/.ssh && \
+            cp .ssh/known_hosts ~/.ssh/known_hosts && \
+            ssh circle@finalfantasyrandomizer.com "./deployff1r.sh master"
+
+  deploy_beta:
+    working_directory: ~/ff1randomizer
+    steps:
+      - run:
+          name: deploy
+          command: |
+            mkdir -p ~/.ssh && \
+            cp .ssh/known_hosts ~/.ssh/known_hosts && \
+            ssh circle@finalfantasyrandomizer.com "./deployff1r.sh beta"
+
+  deploy_alpha:
+    working_directory: ~/ff1randomizer
+    steps:
+      - run:
+          name: deploy
+          command: |
+            mkdir -p ~/.ssh && \
+            cp .ssh/known_hosts ~/.ssh/known_hosts && \
+            ssh circle@finalfantasyrandomizer.com "./deployff1r.sh alpha"
+
+workflows:
+  version: 2
+  main:
+    jobs:
+      - build
+      - dockerize_production:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
+      - dockerize_beta:
+          requires:
+            - build
+          filters:
+            branches:
+              only: dev
+      - dockerize_alpha:
+          requires:
+            - build
+          filters:
+            tags:
+              only: alpha
+      - deploy_production:
+          requires:
+            - dockerize_production
+          filters:
+            branches:
+              only: master
+      - deploy_beta:
+          requires:
+            - dockerize_beta
+          filters:
+            branches:
+              only: dev
+      - deploy_alpha:
+          requires:
+            - dockerize_alpha
+          filters:
+            tags:
+              only: alpha
