@@ -104,6 +104,7 @@
 		"PriceScaleFactor": 1.0,
 		"ExpMultiplier": 1.5,
 		"ExpBonus": 150,
+    "EncounterRate": 1.0,
 		"ForcedPartyMembers": 0
 
 	}

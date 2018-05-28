@@ -243,12 +243,12 @@ namespace FF1Lib
 
 			var dest = GetSkyCastleFloorTile(rng, map);
 			SwapTiles(map, upTeleporter, dest);
-			dest = GetSkyCastleFloorTile(rng, map);
-			SwapTiles(map, downTeleporter, dest);
+			//dest = GetSkyCastleFloorTile(rng, map);
+			//SwapTiles(map, downTeleporter, dest);
 
-			const byte TeleportIndex3FTo4F = 0x2E;
-			Put(TeleportOffset + TeleportIndex3FTo4F, new [] { (byte)dest.x });
-			Put(TeleportOffset + TeleportCount + TeleportIndex3FTo4F, new [] { (byte)dest.y });
+			//const byte TeleportIndex3FTo4F = 0x2E;
+			//Put(TeleportOffset + TeleportIndex3FTo4F, new [] { (byte)dest.x });
+			//Put(TeleportOffset + TeleportCount + TeleportIndex3FTo4F, new [] { (byte)dest.y });
 		}
 
 		private (int x, int y) GetSkyCastleFloorTile(MT19337 rng, Map map)
