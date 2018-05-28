@@ -42,6 +42,8 @@ jobs:
     <<: *defaults
     steps:
       - setup_remote_docker
+      - attach_workspace:
+          at: FF1RandomizerOnline
       - run:
           name: docker
           command: |
@@ -54,6 +56,8 @@ jobs:
     <<: *defaults
     steps:
       - setup_remote_docker
+      - attach_workspace:
+          at: FF1RandomizerOnline
       - run:
           name: docker
           command: |
