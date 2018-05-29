@@ -104,6 +104,7 @@
 		"PriceScaleFactor": 3.0,
 		"ExpMultiplier": 2.5,
 		"ExpBonus": 250,
+    "ProgressiveScaleMode": 0,
 		"ForcedPartyMembers": 0
 
 	}
