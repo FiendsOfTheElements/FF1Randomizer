@@ -104,7 +104,7 @@
     "ExpMultiplier": 4.0,
     "ExpBonus": 400,
     "ProgressiveScaleMode": 1,
-    "EncounterRate": 0.31,
+    "EncounterRate": 8.0,
     "ForcedPartyMembers": 2
 
   }

@@ -1,4 +1,5 @@
 ﻿{
+<<<<<<< HEAD
   "Name": "Beginner",
 
   "Flags": {
@@ -105,6 +106,7 @@
     "ExpMultiplier": 3.0,
     "ExpBonus": 300,
     "ProgressiveScaleMode": 6,
+    "EncounterRate": 16.0,
     "ForcedPartyMembers": 0
 
   }
