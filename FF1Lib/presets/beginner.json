@@ -1,6 +1,10 @@
 ﻿{
 <<<<<<< HEAD
+<<<<<<< HEAD
   "Name": "Beginner",
+=======
+	"Name": "Beginner",
+>>>>>>> Separated overworld encounter rate from dungeon encounter rate
 
   "Flags": {
 
@@ -105,8 +109,9 @@
     "PriceScaleFactor": 2.0,
     "ExpMultiplier": 3.0,
     "ExpBonus": 300,
-    "ProgressiveScaleMode": 6,
-    "EncounterRate": 16.0,
+    "ProgressiveScaleMode": 0,
+    "EncounterRate": 30.0,
+    "DungeonEncounterRate": 30.0,
     "ForcedPartyMembers": 0
 
   }

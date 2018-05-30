@@ -345,7 +345,7 @@ namespace FF1Lib
 			FixVanillaRibbon(itemText);
 			ExpGoldBoost(flags.ExpBonus, flags.ExpMultiplier);
 			ScalePrices(flags, itemText, rng);
-			ScaleEncounterRate(flags.EncounterRate / 16.0);
+			ScaleEncounterRate(flags.EncounterRate / 30.0, flags.DungeonEncounterRate / 30.0);
 
 
 			if (flags.WarMECHMode != WarMECHMode.Vanilla)
@@ -590,19 +590,19 @@ namespace FF1Lib
 			Put(RngOffset, rngTable.SelectMany(blob => blob.ToBytes()).ToArray());
 		}
 
-		private void ScaleEncounterRate(double multiplier)
+		private void ScaleEncounterRate(double multiplier, double dungeonMultiplier)
 		{
-			if (multiplier == 0)
+			if (multiplier == 0 || dungeonMultiplier == 0)
 			{
-				PutInBank(0x1F, 0xC50E, Blob.FromHex("EAEA"));
-				PutInBank(0x1F, 0xCDCC, Blob.FromHex("1860"));
+				if (multiplier == 0) PutInBank(0x1F, 0xC50E, Blob.FromHex("EAEA"));
+				if (dungeonMultiplier == 0) PutInBank(0x1F, 0xCDCC, Blob.FromHex("1860"));
 			}
 			else
 			{
 				var newThreats = Get(ThreatLevelsOffset, ThreatLevelsSize).ToBytes();
 				byte[] extraThreats = new byte[] { Data[OverworldThreatLevelOffset], Data[OceanThreatLevelOffset] };
 
-				newThreats = newThreats.Select(x => (byte)Math.Ceiling(x * multiplier))
+				newThreats = newThreats.Select(x => (byte)Math.Ceiling(x * dungeonMultiplier))
 					.ToArray();
 				extraThreats = extraThreats.Select(x => (byte)Math.Ceiling(x * multiplier))
 					.ToArray();

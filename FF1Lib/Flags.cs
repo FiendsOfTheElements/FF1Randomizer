@@ -220,6 +220,8 @@ namespace FF1Lib
 		public int ExpBonus { get; set; }
 		[FlagString(Character = 22, Multiplier = 1)]
 		public double EncounterRate { get; set; }
+		[FlagString(Character = 25, Multiplier = 1)]
+		public double DungeonEncounterRate { get; set; }
 		[FlagString(Character = 23, Multiplier = 1)]
 		public int ForcedPartyMembers { get; set; }
 

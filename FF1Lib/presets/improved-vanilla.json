@@ -1,5 +1,9 @@
 ﻿{
+<<<<<<< HEAD
   "Name": "Improved Vanilla",
+=======
+	"Name": "Improved Vanilla",
+>>>>>>> Separated overworld encounter rate from dungeon encounter rate
 
   "Flags": {
 
@@ -105,7 +109,8 @@
     "ExpMultiplier": 1.5,
     "ExpBonus": 150,
     "ProgressiveScaleMode": 0,
-    "EncounterRate": 16.0,
+    "EncounterRate": 30.0,
+    "DungeonEncounterRate": 30.0,
     "ForcedPartyMembers": 0
 
   }
