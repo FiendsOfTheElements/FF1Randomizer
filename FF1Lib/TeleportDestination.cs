@@ -4,15 +4,32 @@ using System.Linq;
 
 namespace FF1Lib
 {
+	public enum CoordinateLocale
+	{
+		Overworld,
+		Standard,
+		StandardInRoom,
+	}
 	public struct Coordinate
 	{
 		private readonly short _identityValue;
 		public readonly byte X;
 		public readonly byte Y;
-		public Coordinate(byte x, byte y)
+		public Coordinate(byte x, byte y, CoordinateLocale context)
 		{
 			X = x;
 			Y = y;
+
+			if (context > CoordinateLocale.Overworld)
+			{
+				Y |= 0x80;
+
+				if (context == CoordinateLocale.StandardInRoom)
+				{
+					X |= 0x80;
+				}
+			}
+
 			_identityValue = (short)(x * 256 + y);
 		}
 	}
