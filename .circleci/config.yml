@@ -17,8 +17,10 @@ jobs:
             cd FF1RandomizerOnline
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
               dotnet publish -c Release
+              git rev-parse HEAD > bin/Release/netcoreapp2.0/publish/version.txt
             else
               dotnet publish -c Debug
+              git rev-parse HEAD > bin/Debug/netcoreapp2.0/publish/version.txt
             fi
       - persist_to_workspace:
           root: ~/ff1randomizer
