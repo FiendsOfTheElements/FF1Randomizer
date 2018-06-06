@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using RomUtilities;
 using System.Collections;
 using System.IO;
+using System.Security.Cryptography;
 
 namespace FF1Lib
 {
@@ -526,6 +527,18 @@ namespace FF1Lib
 
 			// DrawSeedAndFlags LongJump
 			PutInBank(0x1F, 0xFEFC, CreateLongJumpTableEntry(0x0F, 0x8960));
+
+			var sha = File.Exists("version.txt") ? File.ReadAllText("version.txt").Trim() : "development";
+			if (sha == "development")
+			{
+				// Put a message on the title screen that makes it very clear this is NOT a recognized version.
+			}
+			else
+			{
+				var hasher = SHA256.Create();
+				var hash = hasher.ComputeHash(Encoding.ASCII.GetBytes($"{seed}_{flags}_{sha}"));
+				// Put the hash (or part of it, or some sprites based on it or something) on the title screen.
+			}
 
 			// Put the new string data in a known location.
 			PutInBank(0x0F, 0x8900, Blob.Concat(new Blob[]
