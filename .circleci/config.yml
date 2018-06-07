@@ -86,7 +86,7 @@ jobs:
           command: |
             mkdir -p ~/.ssh && \
             cp .ssh/known_hosts ~/.ssh/known_hosts && \
-            ssh circle@finalfantasyrandomizer.com "./deployff1r.sh beta"
+            ssh circle@finalfantasyrandomizer.com "./deployff1r.sh dev"
 
   deploy_alpha:
     <<: *defaults
