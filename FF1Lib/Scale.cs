@@ -8,6 +8,18 @@ using static System.Math;
 
 namespace FF1Lib
 {
+	public enum ProgressiveScaleMode
+	{
+		Disabled,
+		FiftyPercentAt12,
+		FiftyPercentAt15,
+		DoubledAt12,
+		DoubledAt15,
+		Progressive5Percent,
+		Progressive10Percent,
+		Progressive20Percent,
+	}
+
 	public partial class FF1Rom : NesRom
 	{
 		public const int PriceOffset = 0x37C00;
@@ -98,6 +110,46 @@ namespace FF1Lib
 			double adjustedScale = 1.0 + adjustment * (scale - 1.0);
 
 			return (int)Round(Pow(adjustedScale, exponent) * value, MidpointRounding.AwayFromZero);
+		}
+
+		public void SetProgressiveScaleMode(ProgressiveScaleMode mode)
+		{
+			byte ScaleFactor = 1;   // Bonus given by progressive scaling in 1/n form (ScaleFactor = 5 means bonus is + 1/5 per item)
+			byte Threshold = 0;		// Number of key items required for bonus.  Set this to 0 for progressive mode (every key item increases bonus)
+			switch (mode)
+			{
+				case ProgressiveScaleMode.Disabled:
+					return;
+				case ProgressiveScaleMode.DoubledAt12:
+					Threshold = 12;
+					break;
+				case ProgressiveScaleMode.DoubledAt15:
+					Threshold = 15;
+					break;
+				case ProgressiveScaleMode.FiftyPercentAt12:
+					Threshold = 12;
+					ScaleFactor = 2;
+					break;
+				case ProgressiveScaleMode.FiftyPercentAt15:
+					Threshold = 15;
+					ScaleFactor = 2;
+					break;
+				case ProgressiveScaleMode.Progressive5Percent:
+					ScaleFactor = 20;
+					break;
+				case ProgressiveScaleMode.Progressive10Percent:
+					ScaleFactor = 10;
+					break;
+				case ProgressiveScaleMode.Progressive20Percent:
+					ScaleFactor = 5;
+					break;
+			}
+
+			//Progressive/Threshold scaling
+			string HexBlob = $"200090ADB860D009A91C8580A960858160A9{ScaleFactor:X2}8516A9{Threshold:X2}8514F00EADB860C51490E6A9018515189005ADB8608515AD78688510AD79688511A516851220C090A515AAAD786865108D7868AD796865118D7968C9A7900AA90F8D7868A9A78D7968CAD0DF18AD76688510AD77688511A516851220C090A515AAAD766865108D7668AD776865118D7768C9A7900AA90F8D7668A9A78D7768CAD0DFAD76688588AD77688589A91C8580A960858160";
+			PutInBank(0x0F, 0x9100, Blob.FromHex(HexBlob));
+			//Inject into end-of-battle code
+			PutInBank(0x0B, 0x9B4D, Blob.FromHex("20CBCFEAEAEAEAEA"));
 		}
 
 	}
