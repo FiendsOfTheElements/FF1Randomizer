@@ -23,6 +23,7 @@
     "EnemyFormationsFrequency": true,
     "EnemyFormationsUnrunnable": true,
     "EnemyFormationsSurprise": true,
+    "EnemyTrapTiles": true,
 
     "EnemyScripts": true,
     "EnemySkillsSpells": true,

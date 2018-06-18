@@ -92,6 +92,7 @@ namespace FF1Lib
 		public const int TilesetDataOffset = 0x00800;
 		public const int TilesetDataSize = 2;
 		public const int TilesetDataCount = 128;
+		public const int TilesetCount = 8;
 
 		public const int MapObjJumpTableOffset = 0x390D3;
 		public const int JumpTablePointerSize = 2;
@@ -101,6 +102,25 @@ namespace FF1Lib
 		public const int MapObjCount = 0xD0;
 
 		const ushort TalkFight = 0x94AA;
+
+		public void ShuffleTrapTiles(MT19337 rng)
+		{
+			Func<RomUtilities.Blob, bool> IsValidTrapTile = (tuple) => tuple[0] == 0x0A && tuple[1] > 0 && tuple[1] < 0x72; // Don't shuffle in Bosses
+
+			var tilesets = Get(TilesetDataOffset, TilesetDataCount * TilesetDataSize * TilesetCount).Chunk(TilesetDataSize).ToList();
+			var traps = tilesets.Where(IsValidTrapTile).ToList();
+			var encounters = traps.Select(trap => trap[1]).ToList();
+
+			tilesets.ForEach(tile =>
+			{
+				if (IsValidTrapTile(tile))
+				{
+					tile[1] = encounters.SpliceRandom(rng);
+				}
+			});
+
+			Put(TilesetDataOffset, tilesets.SelectMany(tileset => tileset.ToBytes()).ToArray());
+		}
 
 		private struct OrdealsRoom
 		{

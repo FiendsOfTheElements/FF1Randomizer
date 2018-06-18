@@ -220,6 +220,11 @@ namespace FF1Lib
 				ShuffleEnemyFormations(rng);
 			}
 
+			if (flags.EnemyTrapTiles)
+			{
+				ShuffleTrapTiles(rng);
+			}
+
 			if (flags.OrdealsPillars)
 			{
 				ShuffleOrdeals(rng, maps);
