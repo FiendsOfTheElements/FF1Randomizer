@@ -222,7 +222,7 @@ namespace FF1Lib
 
 			if (flags.EnemyTrapTiles)
 			{
-				ShuffleTrapTiles(rng);
+				ShuffleTrapTiles(rng, flags.RandomTrapFormations);
 			}
 
 			if (flags.OrdealsPillars)

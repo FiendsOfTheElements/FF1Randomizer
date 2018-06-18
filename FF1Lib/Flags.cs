@@ -69,6 +69,8 @@ namespace FF1Lib
 		public bool EnemyFormationsSurprise { get; set; }
 		[FlagString(Character = ENCOUNTERS, FlagBit = 16)]
 		public bool EnemyTrapTiles { get; set; }
+		[FlagString(Character = ENCOUNTERS, FlagBit = 32)]
+		public bool RandomTrapFormations { get; set; }
 
 		[FlagString(Character = BATTLES, FlagBit = 1)]
 		public bool EnemyScripts { get; set; }

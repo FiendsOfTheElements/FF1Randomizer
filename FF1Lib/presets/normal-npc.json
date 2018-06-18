@@ -29,6 +29,7 @@
     "EnemyFormationsUnrunnable": false,
     "EnemyFormationsSurprise": false,
     "EnemyTrapTiles": false,
+    "RandomTrapFormations": false,
 
     "EnemyScripts": true,
     "EnemySkillsSpells": true,

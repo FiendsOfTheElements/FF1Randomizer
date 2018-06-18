@@ -101,21 +101,42 @@ namespace FF1Lib
 		public const int MapObjSize = 4;
 		public const int MapObjCount = 0xD0;
 
+		public const int FirstBossEncounterIndex = 0x73;
+
 		const ushort TalkFight = 0x94AA;
 
-		public void ShuffleTrapTiles(MT19337 rng)
+		public void ShuffleTrapTiles(MT19337 rng, bool randomize)
 		{
-			Func<RomUtilities.Blob, bool> IsValidTrapTile = (tuple) => tuple[0] == 0x0A && tuple[1] > 0 && tuple[1] < 0x72; // Don't shuffle in Bosses
+			// This is magic BNE code that enables formation 1 trap tiles but we have to change
+			// all the 0x0A 0x80 into 0x0A 0x00 and use 0x00 for random encounters instead of 0x80.
+			Data[0x7CDC5] = 0xD0;
+
+			bool IsBattleTile(Blob tuple) => tuple[0] == 0x0A;
+			bool IsValidTrapTile(Blob tuple) => IsBattleTile(tuple) && tuple[1] > 0 && tuple[1] < FirstBossEncounterIndex;
 
 			var tilesets = Get(TilesetDataOffset, TilesetDataCount * TilesetDataSize * TilesetCount).Chunk(TilesetDataSize).ToList();
-			var traps = tilesets.Where(IsValidTrapTile).ToList();
-			var encounters = traps.Select(trap => trap[1]).ToList();
+			List<byte> encounters;
+
+			if (randomize)
+			{
+				encounters = Enumerable.Range(128, FirstBossEncounterIndex).Select(value => (byte)value).ToList();
+				encounters.Add(0xFF); // IronGOL
+			}
+			else
+			{
+				var traps = tilesets.Where(IsValidTrapTile).ToList();
+				encounters = traps.Select(trap => trap[1]).ToList();
+			} 
 
 			tilesets.ForEach(tile =>
 			{
 				if (IsValidTrapTile(tile))
 				{
 					tile[1] = encounters.SpliceRandom(rng);
+				}
+				else if (IsBattleTile(tile))
+				{
+					tile[1] = 0x00;
 				}
 			});
 
