@@ -245,6 +245,7 @@ namespace FF1Lib
 		public bool MapMirageDock => MapOpenProgression;
 		public bool MapConeriaDwarves => MapOpenProgression;
 		public bool MapVolcanoIceRiver => MapOpenProgression;
+		public bool MapDwarvesNorthwest => MapOpenProgression;
 
 		public bool IncentivizeAdamant => IncentivizeFetchItems;
 		public bool IncentivizeRuby => (!EarlySage && !NPCItems) || IncentivizeFetchItems;

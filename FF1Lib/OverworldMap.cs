@@ -65,12 +65,19 @@ namespace FF1Lib
 				mapLocationRequirements[MapLocation.DwarfCave].Add(MapChange.None);
 				if (flags.MapCanalBridge)
 				{
+					MapChange dwarvesToNorthwest = MapChange.Canoe;
+					if (flags.MapDwarvesNorthwest)
+					{
+						MapEditsToApply.Add(DwarvesNorthwestGrass);
+						dwarvesToNorthwest = MapChange.None;
+					}
+					mapLocationRequirements[MapLocation.Elfland].Add(dwarvesToNorthwest);
+					mapLocationRequirements[MapLocation.ElflandCastle].Add(dwarvesToNorthwest);
+					mapLocationRequirements[MapLocation.NorthwestCastle].Add(dwarvesToNorthwest);
+					mapLocationRequirements[MapLocation.MarshCave1].Add(dwarvesToNorthwest);
+
 					mapLocationRequirements[MapLocation.GurguVolcano1].Add(MapChange.Canoe);
 					mapLocationRequirements[MapLocation.CrescentLake].Add(MapChange.Canoe);
-					mapLocationRequirements[MapLocation.Elfland].Add(MapChange.Canoe);
-					mapLocationRequirements[MapLocation.ElflandCastle].Add(MapChange.Canoe);
-					mapLocationRequirements[MapLocation.NorthwestCastle].Add(MapChange.Canoe);
-					mapLocationRequirements[MapLocation.MarshCave1].Add(MapChange.Canoe);
 					mapLocationRequirements[MapLocation.AirshipLocation].Add(MapChange.Canoe);
 					if (flags.MapVolcanoIceRiver)
 					{
@@ -586,6 +593,7 @@ namespace FF1Lib
 		public const byte ForestBottomLeft = 0x23;
 		public const byte DockBottomMid = 0x78;
 		public const byte DockRightMid = 0x1F;
+		public const byte CoastLeft = 0x16;
 
 		public static List<MapEdit> OnracDock =
 			new List<MapEdit>
@@ -643,6 +651,13 @@ namespace FF1Lib
 				new MapEdit{X = 101, Y = 162, Tile = MountainBottomLeft},
 				new MapEdit{X = 102, Y = 162, Tile = MountainBottomMid},
 				new MapEdit{X = 103, Y = 162, Tile = MountainBottomRight}
+			};
+		public static List<MapEdit> DwarvesNorthwestGrass =
+			new List<MapEdit>
+			{
+				new MapEdit{X = 104, Y = 171, Tile = GrassTile},
+				new MapEdit{X = 105, Y = 171, Tile = GrassTile},
+				new MapEdit{X = 106, Y = 171, Tile = CoastLeft}
 			};
 		public static Dictionary<OverworldTeleportIndex, Palette> OverworldToPalette =
 			new Dictionary<OverworldTeleportIndex, Palette>

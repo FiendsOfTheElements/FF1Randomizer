@@ -73,6 +73,7 @@
 		bool MapCanalBridge { get; }
 		bool MapConeriaDwarves { get; }
 		bool MapVolcanoIceRiver { get; }
+		bool MapDwarvesNorthwest { get; }
 	}
 	public interface IItemShuffleFlags
 	{
