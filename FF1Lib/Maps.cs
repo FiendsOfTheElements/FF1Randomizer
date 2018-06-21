@@ -112,7 +112,8 @@ namespace FF1Lib
 			Data[0x7CDC5] = 0xD0;
 
 			bool IsBattleTile(Blob tuple) => tuple[0] == 0x0A;
-			bool IsValidTrapTile(Blob tuple) => IsBattleTile(tuple) && tuple[1] > 0 && tuple[1] < FirstBossEncounterIndex;
+			bool IsRandomBattleTile(Blob tuple) => IsBattleTile(tuple) && (tuple[1] & 0x80) != 0x00;
+			bool IsNonBossTrapTile(Blob tuple) => IsBattleTile(tuple) && tuple[1] > 0 && tuple[1] < FirstBossEncounterIndex;
 
 			var tilesets = Get(TilesetDataOffset, TilesetDataCount * TilesetDataSize * TilesetCount).Chunk(TilesetDataSize).ToList();
 			List<byte> encounters;
@@ -124,17 +125,17 @@ namespace FF1Lib
 			}
 			else
 			{
-				var traps = tilesets.Where(IsValidTrapTile).ToList();
+				var traps = tilesets.Where(IsNonBossTrapTile).ToList();
 				encounters = traps.Select(trap => trap[1]).ToList();
 			} 
 
 			tilesets.ForEach(tile =>
 			{
-				if (IsValidTrapTile(tile))
+				if (IsNonBossTrapTile(tile))
 				{
 					tile[1] = encounters.SpliceRandom(rng);
 				}
-				else if (IsBattleTile(tile))
+				else if (IsRandomBattleTile(tile))
 				{
 					tile[1] = 0x00;
 				}
