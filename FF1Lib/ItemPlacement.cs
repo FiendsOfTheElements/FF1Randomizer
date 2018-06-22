@@ -310,14 +310,15 @@ namespace FF1Lib
 					return fullLocationRequirements.Where(x => x.Value.Item1.Any(y => currentMapChanges.HasFlag(y) && currentAccess.HasFlag(x.Value.Item2))).Select(x => x.Key);
 				};
 			Func<IEnumerable<IRewardSource>> currentItemLocations =
-				() => treasurePlacements
-						   .Where(x =>
-						   {
-							   var locations = currentMapLocations().ToList();
-							   return locations.Contains(x.MapLocation) &&
-										currentAccess.HasFlag(x.AccessRequirement) &&
-									   locations.Contains((x as MapObject)?.SecondLocation ?? MapLocation.StartingLocation);
-						   });
+				() =>
+				{
+					var locations = currentMapLocations().ToList();
+					return treasurePlacements.Where(x =>
+					{
+						return locations.Contains(x.MapLocation) && currentAccess.HasFlag(x.AccessRequirement) &&
+							locations.Contains((x as MapObject)?.SecondLocation ?? MapLocation.StartingLocation);
+					});
+				};
 
 			var accessibleLocationCount = currentItemLocations().Count();
 			var requiredAccess = AccessRequirement.All;
