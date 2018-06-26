@@ -147,7 +147,7 @@ namespace FF1Lib
 		public Item ShardHuntTreasureSelector(Item item)
 		{
 			// The following pile of trash, plus Gold chests from 20 to 400 inclusive amount to precisely 32 chests.
-			List<Item> trash = new List<Item> { Item.Lute, Item.Heal, Item.Pure, Item.SmallKnife,
+			List<Item> trash = new List<Item> { Item.Heal, Item.Pure, Item.SmallKnife, Item.LargeKnife,
 				Item.WoodenRod, Item.Cloth, Item.WoodenShield, Item.Cap, Item.WoodenHelm, Item.Gloves };
 
 			return (trash.Contains(item) || item >= Item.Gold20 && item <= Item.Gold350) ? Item.Shard : item;

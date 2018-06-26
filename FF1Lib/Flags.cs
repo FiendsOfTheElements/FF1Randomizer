@@ -256,9 +256,9 @@ namespace FF1Lib
 		public bool IncentivizeSlab => !NPCFetchItems || IncentivizeFetchItems;
 		public bool IncentivizeBottle => !NPCFetchItems || IncentivizeFetchItems;
 
-		public bool IncentivizeFloater => true;
+		public bool IncentivizeFloater => !FreeAirship;
 		public bool IncentivizeBridge => false;
-		public bool IncentivizeLute => true;
+		public bool IncentivizeLute => !ShortToFR;
 		public bool IncentivizeShip => !MapOpenProgression || IncentivizeFetchItems;
 		public bool IncentivizeRod => true;
 		public bool IncentivizeCanoe => true;

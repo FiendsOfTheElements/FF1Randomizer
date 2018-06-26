@@ -75,6 +75,10 @@ namespace FF1Lib
 			{
 				placedItems = placedItems.Select(x => x.Item != Item.Floater ? x : ItemPlacement.NewItemPlacement(x, ReplacementItem)).ToList();
 			}
+			if (flags.ShortToFR)
+			{
+				placedItems = placedItems.Select(x => x.Item != Item.Lute ? x : ItemPlacement.NewItemPlacement(x, ReplacementItem)).ToList();
+			}
 
 			// Output the results to the ROM
 			foreach (var item in placedItems.Where(x => !x.IsUnused && x.Address < 0x80000 && (!vanillaNPCs || x is TreasureChest)))

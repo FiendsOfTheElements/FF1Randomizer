@@ -105,5 +105,6 @@
 	{
 		bool OnlyRequireGameIsBeatable { get; }
 		bool ShardHunt { get; }
+		bool ShortToFR { get; }
 	}
 }

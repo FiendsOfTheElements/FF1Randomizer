@@ -276,7 +276,7 @@ namespace FF1Lib
 			const int maxIterations = 20;
 			var currentIteration = 0;
 			var currentAccess = AccessRequirement.None;
-			if (victoryConditions.ShardHunt)
+			if (victoryConditions.ShortToFR)
 			{
 				currentAccess |= AccessRequirement.Lute;
 			}
