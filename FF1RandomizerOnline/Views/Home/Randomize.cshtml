@@ -146,7 +146,7 @@
 			<div class="section tab-pane" id="goal">
 				<div class="col-xs-4" :style="ShardHunt ? { color: 'grey'} : {}">
 					<div class="col-xs-12">
-						<h4>Quick Races</h4>
+						<h4>Chaos Rush</h4>
 						<div>
 							<br />
 							No time for a long race? Chaos Rush combined with Free Orbs lets you begin the game with the Temple of Fiends Revisited completely unlocked!
@@ -173,15 +173,19 @@
 				</div>
 				<div class="col-xs-4" style="border-left: 1px solid black;">
 					<div class="col-xs-12">
-						<h4>Extra Challenges</h4>
+						<h4>Temple of Fiends</h4>
 						<div>
 							<br />
 							Randomly pick one of four new final bosses to replace the legendary Chaos! Take heed though; they can be more than a match for all but the mightiest Warriors.
 							<br />&nbsp;
 						</div>
 						<div class="checkbox-cell" title="Replace the Final Battle against Chaos with a different challenge."><input v-model="TransformFinalFormation" type="checkbox" asp-for="Flags.TransformFinalFormation" /> <label class="indent" asp-for="Flags.TransformFinalFormation">Alternate Final Boss <b v-if="ChaosRush && TransformFinalFormation" title="Beware - losing one of these alternate final battles at the end of a long ToFR can be rage inducing." style="color:orange">⚠</b></label></div>
-						<br />&nbsp;
-						<br />&nbsp;
+						<div>
+							<br />
+							Jump straight from the Black Orb to the Final Battle!
+							<br />&nbsp;
+						</div>
+						<div class="checkbox-cell" title="Black Orb teleports to the final floor. You will begin with the LUTE if you wish to fill the air with beautiful music."><input v-model="ShortToFR" type="checkbox" asp-for="Flags.ShortToFR" /> <label class="indent" asp-for="Flags.ShortToFR">Shorten ToFR</label></div>
 						<br />&nbsp;
 						<br />&nbsp;
 					</div>

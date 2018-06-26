@@ -14,6 +14,7 @@
     "ExtraShards": false,
     "TransformFinalFormation": false,
     "ChaosRush": false,
+    "ShortToFR": false,
 
     "MagicShops": false,
     "MagicLevels": true,

@@ -49,6 +49,8 @@ namespace FF1Lib
 		public bool TransformFinalFormation { get; set; }
 		[FlagString(Character = ALT_GAME_MODE, FlagBit = 8)]
 		public bool ChaosRush { get; set; }
+		[FlagString(Character = ALT_GAME_MODE, FlagBit = 16)]
+		public bool ShortToFR { get; set; }
 
 		[FlagString(Character = MAGIC, FlagBit = 1)]
 		public bool MagicShops { get; set; }

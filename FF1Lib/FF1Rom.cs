@@ -127,9 +127,14 @@ namespace FF1Lib
 				ShuffleItemMagic(rng);
 			}
 
+			if (flags.ShortToFR)
+			{
+				ShortenToFR(maps);
+			}
+
 			if (flags.Treasures && flags.ShardHunt && !flags.ChaosRush)
 			{
-				EnableShardHunt(rng, flags.ExtraShards ? rng.Between(24, 30) : 16, maps, flags.NPCItems);
+				EnableShardHunt(rng, flags.ExtraShards ? rng.Between(24, 30) : 16, flags.NPCItems);
 			}
 
 			if (flags.TransformFinalFormation)

@@ -14,7 +14,7 @@
     "ExtraShards": false,
     "TransformFinalFormation": false,
 
-    "MagicShops": true,
+    "MagicShops": false,
     "MagicLevels": true,
     "MagicPermissions": false,
     "ItemMagic": true,
@@ -36,6 +36,7 @@
     "TitansTrove": true,
     "CrownlessOrdeals": true,
     "ChaosRush": false,
+    "ShortToFR": false,
     "Floors": true,
 
     "MapOpenProgression": true,
