@@ -45,7 +45,6 @@ namespace FF1Lib
 		public void ShortenToFR(List<Map> maps)
 		{
 			// Black Orb tile Warp destination change straight to an edit Chaos floor with all the ToFR Chests.
-			Put(0x7CDB3, Blob.FromHex("08CE"));
 			Data[0x00D80] = 0x80; // Map edits
 			Data[0x02D01] = 0x0F;
 			Data[0x02D41] = 0x03;
@@ -117,6 +116,7 @@ namespace FF1Lib
 
 			// Black Orb Override to check for shards rather than ORBs.
 			Put(0x39502, Blob.FromHex($"AD3560C9{hexCount}300CA0CA209690E67DE67DA51160A51260"));
+			Put(0x7CDB3, Blob.FromHex("08CE"));
 
 			// A little narrative overhaul.
 			Blob intro = FF1Text.TextToStory(new string[]
