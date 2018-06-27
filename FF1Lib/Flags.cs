@@ -91,6 +91,8 @@ namespace FF1Lib
 		public bool SkyCastle4FTeleporters { get; set; }
 		[FlagString(Character = STANDARD_MAPS, FlagBit = 16)]
 		public bool TitansTrove { get; set; }
+		[FlagString(Character = STANDARD_MAPS, FlagBit = 32)]
+		public bool ConfusedOldMen { get; set; }
 
 		[FlagString(Character = OVERWORLD_MAP, FlagBit = 1)]
 		public bool MapOpenProgression { get; set; }

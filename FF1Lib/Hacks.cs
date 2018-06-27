@@ -223,6 +223,18 @@ namespace FF1Lib
 			MoveNpc(MapId.EarthCaveB5, 1, 0x22, 0x34, inRoom: false, stationary: false); // Earth Cave Bat B5
 		}
 
+		public void EnableConfusedOldMen(MT19337 rng)
+		{
+			List<(byte, byte)> coords = new List<(byte, byte)> {
+				( 0x2A, 0x0A ), ( 0x28, 0x0B ), ( 0x26, 0x0B ), ( 0x24, 0x0A ), ( 0x23, 0x08 ), ( 0x23, 0x06 ),
+				( 0x24, 0x04 ), ( 0x26, 0x03 ), ( 0x28, 0x03 ), ( 0x28, 0x04 ), ( 0x2B, 0x06 ), ( 0x2B, 0x08 )
+			};
+			coords.Shuffle(rng);
+
+			List<int> sages = Enumerable.Range(0, 12).ToList(); // But the 12th Sage is actually id 12, not 11.
+			sages.ForEach(sage => MoveNpc(MapId.CrescentLake, sage < 11 ? sage : 12, coords[sage].Item1, coords[sage].Item2, inRoom: false, stationary: false));
+		}
+
 		public void EnableIdentifyTreasures()
 		{
 			Put(0x2B192, Blob.FromHex("C1010200000000"));

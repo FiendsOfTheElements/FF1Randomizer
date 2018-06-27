@@ -240,6 +240,11 @@ namespace FF1Lib
 				ShuffleSkyCastle4F(rng, maps);
 			}
 
+			if (flags.ConfusedOldMen)
+			{
+				EnableConfusedOldMen(rng);
+			}
+
 			if (flags.CrownlessOrdeals)
 			{
 				EnableEarlyOrdeals();
