@@ -67,14 +67,8 @@
 		<div class="tab-content clearfix" style="height: 500px">
 			<div class="section tab-pane active" id="shuffle">
 				<div class="col-xs-4">
-					<div class="checkbox-cell"><input v-model="Entrances" type="checkbox" asp-for="Flags.Entrances" /> <label asp-for="Flags.Entrances"></label></div>
-					<div class="checkbox-cell"><input v-model="Towns" type="checkbox" asp-for="Flags.Towns" /> <label asp-for="Flags.Towns"></label></div>
-					<div class="checkbox-cell"><input v-model="Floors" type="checkbox" asp-for="Flags.Floors" /> <label asp-for="Flags.Floors"></label></div>
-					<div class="checkbox-cell" title="Floor shuffle allows unimportant final floors to mismatch from entrance, this allows ALL final floors to mismatch.">
-						<input disabled="disabled" class="indent" v-model="AllowFloorMismatch" type="checkbox" asp-for="Flags.AllowFloorMismatch" /> <label :style="!Floors ? { color: 'grey'} : {}" asp-for="Flags.AllowFloorMismatch">Allow Last Floor Mismatch</label>
-					</div>
 					<div class="checkbox-cell"><input v-model="Shops" type="checkbox" asp-for="Flags.Shops" /> <label asp-for="Flags.Shops"></label></div>
-					<div class="checkbox-cell" title="All weapons and armor for sale are instead replaced with random items of that type"><input class="indent" v-model="RandomWares" :disabled="!Shops" type="checkbox" asp-for="Flags.RandomWares" /> <label :style="!Shops ? { color: 'grey'} : {}" asp-for="Flags.RandomWares">Random Weapons and Armor</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.1.0</a>)</small></div>
+					<div class="checkbox-cell" title="All weapons and armor for sale are instead replaced with random items of that type"><input class="indent" v-model="RandomWares" :disabled="!Shops" type="checkbox" asp-for="Flags.RandomWares" /> <label :style="!Shops ? { color: 'grey'} : {}" asp-for="Flags.RandomWares">Random Weapons and Armor</label></div>
 					<div class="checkbox-cell"><input v-model="MagicShops" type="checkbox" asp-for="Flags.MagicShops" /> <label asp-for="Flags.MagicShops">Magic Shops</label></div>
 					<div class="checkbox-cell"><input v-model="MagicLevels" type="checkbox" asp-for="Flags.MagicLevels" /> <label asp-for="Flags.MagicLevels">Magic Levels</label></div>
 					<div class="checkbox-cell"><input v-model="MagicPermissions" :disabled="!MagicLevels" class="indent" type="checkbox" asp-for="Flags.MagicPermissions" /> <label :style="!MagicLevels ? { color: 'grey'} : {}" asp-for="Flags.MagicPermissions">Keep Permissions</label></div>
@@ -85,10 +79,10 @@
 					<div class="checkbox-cell"><input v-model="AllowUnsafePirates" :disabled="!EnemyScripts" class="indent" type="checkbox" asp-for="Flags.AllowUnsafePirates" /> <label :style="!EnemyScripts ? { color: 'grey'} : {}" asp-for="Flags.AllowUnsafePirates">Allow Unsafe Pirates <b v-if="AllowUnsafePirates" title="Risks 9 Pirates with THUNDER, etc. blocking early progression" style="color:orange">⚠</b></label></div>
 					<div class="checkbox-cell"><input v-model="EnemySkillsSpells" type="checkbox" asp-for="Flags.EnemySkillsSpells" /> <label asp-for="Flags.EnemySkillsSpells">Enemy Skills/Spells</label></div>
 					<div class="checkbox-cell"><input v-model="EnemyStatusAttacks" type="checkbox" asp-for="Flags.EnemyStatusAttacks" /> <label asp-for="Flags.EnemyStatusAttacks">Enemy Status Attacks</label></div>
-					<div class="checkbox-cell"><input v-model="EnemyFormationsUnrunnable" type="checkbox" asp-for="Flags.EnemyFormationsUnrunnable" /> <label asp-for="Flags.EnemyFormationsUnrunnable">Enemy Unrunnable Formations <b v-if="!WaitWhenUnrunnable" title="Without Change Unrunnable RUN -> WAIT convenience you will have no indication if an encounter is unrunnable." style="color:orange">⚠</b></label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.1.0</a>)</small></div>
-					<div class="checkbox-cell"><input v-model="EnemyFormationsSurprise" type="checkbox" asp-for="Flags.EnemyFormationsSurprise" /> <label asp-for="Flags.EnemyFormationsSurprise">Enemy Surprise Bonus</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.1.0</a>)</small></div>
-					<div class="checkbox-cell"><input v-model="EnemyFormationsFrequency" type="checkbox" asp-for="Flags.EnemyFormationsFrequency" /> <label asp-for="Flags.EnemyFormationsFrequency">Enemy Formations Frequency</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.1.0</a>)</small></div>
-					<div class="checkbox-cell"><input v-model="EnemyTrapTiles" type="checkbox" asp-for="Flags.EnemyTrapTiles" /> <label asp-for="Flags.EnemyTrapTiles">Enemy Forced Encounter Tiles</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.X.0</a>)</small></div>
+					<div class="checkbox-cell"><input v-model="EnemyFormationsUnrunnable" type="checkbox" asp-for="Flags.EnemyFormationsUnrunnable" /> <label asp-for="Flags.EnemyFormationsUnrunnable">Enemy Unrunnable Formations <b v-if="!WaitWhenUnrunnable" title="Without Change Unrunnable RUN -> WAIT convenience you will have no indication if an encounter is unrunnable." style="color:orange">⚠</b></label></div>
+					<div class="checkbox-cell"><input v-model="EnemyFormationsSurprise" type="checkbox" asp-for="Flags.EnemyFormationsSurprise" /> <label asp-for="Flags.EnemyFormationsSurprise">Enemy Surprise Bonus</label></div>
+					<div class="checkbox-cell"><input v-model="EnemyFormationsFrequency" type="checkbox" asp-for="Flags.EnemyFormationsFrequency" /> <label asp-for="Flags.EnemyFormationsFrequency">Enemy Formations Frequency</label></div>
+					<div class="checkbox-cell"><input v-model="EnemyTrapTiles" type="checkbox" asp-for="Flags.EnemyTrapTiles" /> <label asp-for="Flags.EnemyTrapTiles">Enemy Forced Encounter Tiles</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">New!</a>)</small></div>
 					<div class="checkbox-cell"><input v-model="RandomTrapFormations" :disabled="!EnemyTrapTiles" class="indent" type="checkbox" asp-for="Flags.RandomTrapFormations" /> <label :style="!EnemyTrapTiles ? { color: 'grey'} : {}" asp-for="Flags.RandomTrapFormations">Use Random Formations</label></div>
 					<div class="checkbox-cell"></div>
 					<div class="checkbox-cell"><input v-model="Rng" type="checkbox" asp-for="Flags.Rng" /> <label asp-for="Flags.Rng">RNG Table</label><br /></div>
@@ -99,12 +93,12 @@
 					<h4>Items Shuffle</h4>
 					<div class="col-xs-12">
 						<div class="checkbox-cell" title="If unchecked, forces vanilla Treasure Chests"><input v-model="Treasures" type="checkbox" asp-for="Flags.Treasures" /> <label asp-for="Flags.Treasures"></label></div>
-						<div class="checkbox-cell" title="If unchecked, forces vanilla Bridge, Lute, Ship, Rod, Canoe, Cube, Bottle"><input v-model="NPCItems" type="checkbox" asp-for="Flags.NPCItems" /> <label asp-for="Flags.NPCItems">Main NPC Items</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.0.0</a>)</small></div>
-						<div class="checkbox-cell" title="If unchecked, forces vanilla Crystal, Herb, Key, Canal, Oxyale, Chime, Xcalber"><input v-model="NPCFetchItems" type="checkbox" asp-for="Flags.NPCFetchItems" /> <label asp-for="Flags.NPCFetchItems">Fetch Quest Rewards</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.0.0</a>)</small></div>
+						<div class="checkbox-cell" title="If unchecked, forces vanilla Bridge, Lute, Ship, Rod, Canoe, Cube, Bottle"><input v-model="NPCItems" type="checkbox" asp-for="Flags.NPCItems" /> <label asp-for="Flags.NPCItems">Main NPC Items</label></div>
+						<div class="checkbox-cell" title="If unchecked, forces vanilla Crystal, Herb, Key, Canal, Oxyale, Chime, Xcalber"><input v-model="NPCFetchItems" type="checkbox" asp-for="Flags.NPCFetchItems" /> <label asp-for="Flags.NPCFetchItems">Fetch Quest Rewards</label></div>
 					</div>
 				</div>
 				<div class="col-xs-4" style="border-left: 1px solid black;" :style="!Treasures ? { color: 'grey'} : {}">
-					<h4>Incentivized Locations <small>(Mostly <a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.0.0</a>)</small></h4>
+					<h4>Incentivized Locations</h4>
 					<div class="col-xs-12">
 						<div class="checkbox-cell" title="King, Princess, Bikke, Sarda, Sage, Robot, Caravan"><input v-model="IncentivizeFreeNPCs" :disabled="!NPCItems || !Treasures" type="checkbox" asp-for="Flags.IncentivizeFreeNPCs" /> <label :style="!NPCItems ? { color: 'grey'} : {}" asp-for="Flags.IncentivizeFreeNPCs">Main NPCs</label></div>
 						<div class="checkbox-cell" title="Astos, Matoya, Prince, Dwarves, Lefein, Fairy"><input v-model="IncentivizeFetchNPCs" :disabled="!NPCFetchItems || !Treasures" type="checkbox" asp-for="Flags.IncentivizeFetchNPCs" /> <label :style="!NPCFetchItems ? { color: 'grey'} : {}" asp-for="Flags.IncentivizeFetchNPCs">Fetch Quest NPCs</label></div>
@@ -123,7 +117,7 @@
 					</div>
 				</div>
 				<div class="col-xs-4" style="border-left: 1px solid black;" :style="!Treasures ? { color: 'grey'} : {}">
-					<h4>Incentivized Items <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.0.0</a>)</small></h4>
+					<h4>Incentivized Items</h4>
 					<div class="col-xs-12">
 						<div>
 							Any Required Item being Shuffled will be included in the incentive pool by default. Add additional items below:
@@ -185,7 +179,7 @@
 							Jump straight from the Black Orb to the Final Battle!
 							<br />&nbsp;
 						</div>
-						<div class="checkbox-cell" title="Black Orb teleports to the final floor. You will begin with the LUTE if you wish to fill the air with beautiful music."><input v-model="ShortToFR" type="checkbox" asp-for="Flags.ShortToFR" /> <label class="indent" asp-for="Flags.ShortToFR">Shorten ToFR</label></div>
+						<div class="checkbox-cell" title="Black Orb teleports to the final floor. You will begin with the LUTE if you wish to fill the air with beautiful music."><input v-model="ShortToFR" type="checkbox" asp-for="Flags.ShortToFR" /> <label class="indent" asp-for="Flags.ShortToFR">Shorten ToFR</label><small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">New!</a>)</small></div>
 						<br />&nbsp;
 						<br />&nbsp;
 					</div>
@@ -193,21 +187,56 @@
 			</div>
 			<div class="section tab-pane" id="map">
 				<div class="col-xs-4">
-					<div class="checkbox-cell"><input v-model="OrdealsPillars" type="checkbox" asp-for="Flags.OrdealsPillars" /> <label asp-for="Flags.OrdealsPillars">Castle Ordeals Pillars</label></div>
-					<div class="checkbox-cell"><input v-model="SkyCastle4FTeleporters" type="checkbox" asp-for="Flags.SkyCastle4FTeleporters" /> <label asp-for="Flags.SkyCastle4FTeleporters">Sky Castle 4F Teleporters</label></div>
-					<div class="checkbox-cell"></div>
-					<div class="checkbox-cell"><input v-model="TitansTrove" type="checkbox" asp-for="Flags.TitansTrove" /> <label asp-for="Flags.TitansTrove">Titan's Trove</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.0.0</a>)</small></div>
-					<div class="checkbox-cell"></div>
-					<div class="checkbox-cell"><input v-model="MapOpenProgression" type="checkbox" asp-for="Flags.MapOpenProgression" /> <label asp-for="Flags.MapOpenProgression">Open Progression</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.0.0</a>)</small></div>
+					<div class="col-xs-12">
+						<h4>Entrance Shuffle <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">New!</a>)</small></h4>
+						<div>
+							<br />
+							Try shuffling dungeon entrances, floors, and towns to create a completely new world to explore!
+							<br />&nbsp;
+						</div>
+						<div class="checkbox-cell"><input v-model="Entrances" type="checkbox" asp-for="Flags.Entrances" /> <label asp-for="Flags.Entrances"></label></div>
+						<div class="checkbox-cell"><input v-model="Towns" type="checkbox" asp-for="Flags.Towns" /> <label asp-for="Flags.Towns"></label></div>
+						<div class="checkbox-cell"><input v-model="Floors" type="checkbox" asp-for="Flags.Floors" /> <label asp-for="Flags.Floors"></label></div>
+						<div class="checkbox-cell" title="Floor shuffle allows unimportant final floors to mismatch from entrance, this allows ALL final floors to mismatch.">
+							<input disabled="disabled" class="indent" v-model="AllowFloorMismatch" type="checkbox" asp-for="Flags.AllowFloorMismatch" /> <label :style="!Floors ? { color: 'grey'} : {}" asp-for="Flags.AllowFloorMismatch">Allow Last Floor Mismatch</label>
+						</div>
+					</div>
 				</div>
-				<div class="col-xs-4">
-					<div class="checkbox-cell"><label asp-for="Flags.WarMECHMode">WarMECH Mode:</label></div>
-					<div class="checkbox-cell">
-						<select v-model="WarMECHMode" asp-for="Flags.WarMECHMode">
-							<option value="0">Vanilla</option>
-							<option value="1">Patrolling</option>
-							<option value="3">Required</option>
-						</select>
+				<div class="col-xs-4" style="border-left: 1px solid black;">
+					<div class="col-xs-12">
+						<h4>Classic Edits</h4>
+						<div>
+							<br />
+							Classic Final Fantasy Randomizer map edits.
+							<br />&nbsp;
+						</div>
+						<div class="checkbox-cell"><input v-model="OrdealsPillars" type="checkbox" asp-for="Flags.OrdealsPillars" /> <label asp-for="Flags.OrdealsPillars">Castle Ordeals Pillars</label></div>
+						<div class="checkbox-cell"><input v-model="SkyCastle4FTeleporters" type="checkbox" asp-for="Flags.SkyCastle4FTeleporters" /> <label asp-for="Flags.SkyCastle4FTeleporters">Sky Castle 4F Teleporters</label></div>
+						<div class="checkbox-cell"><input v-model="TitansTrove" type="checkbox" asp-for="Flags.TitansTrove" /> <label asp-for="Flags.TitansTrove">Titan's Trove</label></div>
+						<div class="checkbox-cell"></div>
+						<div class="checkbox-cell"><input v-model="MapOpenProgression" type="checkbox" asp-for="Flags.MapOpenProgression" /> <label asp-for="Flags.MapOpenProgression">Open Progression</label></div>
+					</div>
+				</div>
+				<div class="col-xs-4" style="border-left: 1px solid black;">
+					<div class="col-xs-12">
+						<h4>WarMECH</h4>
+						<div>
+							<br />
+							Encounter 7 not enough WarMECH for you? Try a patrolling or required WarMECH instead.
+							<br />&nbsp;
+						</div>
+						<div class="checkbox-cell"><label asp-for="Flags.WarMECHMode">WarMECH Mode:</label></div>
+						<div class="checkbox-cell">
+							<select v-model="WarMECHMode" asp-for="Flags.WarMECHMode">
+								<option value="0">Vanilla</option>
+								<option value="1">Patrolling</option>
+								<option value="3">Required</option>
+							</select>
+						</div>
+						<br />
+						<br />
+						<br />
+						<br />
 					</div>
 				</div>
 			</div>
@@ -287,9 +316,9 @@
 					<div class="checkbox-cell" title="The RUN command becomes WAIT when battles are unrunnable."><input v-model="WaitWhenUnrunnable" type="checkbox" asp-for="Flags.WaitWhenUnrunnable" /> <label asp-for="Flags.WaitWhenUnrunnable">Change Unrunnable RUN to WAIT</label></div>
 				</div>
 				<div class="col-xs-4">
-					<div class="checkbox-cell" title="The Airship is available at the start of the game"><input v-model="FreeAirship" type="checkbox" asp-for="Flags.FreeAirship" /> <label asp-for="Flags.FreeAirship">Free Airship</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.0.0</a>)</small></div>
+					<div class="checkbox-cell" title="The Airship is available at the start of the game"><input v-model="FreeAirship" type="checkbox" asp-for="Flags.FreeAirship" /> <label asp-for="Flags.FreeAirship">Free Airship</label></div>
 					<div class="checkbox-cell" title="The Bridge is available at the start of the game"><input v-model="FreeBridge" type="checkbox" asp-for="Flags.FreeBridge" /> <label asp-for="Flags.FreeBridge">Free Bridge</label></div>
-					<div class="checkbox-cell" title="Encounter rate cut to 20% and all Enemy HP cut to 10% (after any randomizations)"><input v-model="EasyMode" type="checkbox" asp-for="Flags.EasyMode" /> <label asp-for="Flags.EasyMode">Easy Mode</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.0.0</a>)</small></div>
+					<div class="checkbox-cell" title="Encounter rate cut to 20% and all Enemy HP cut to 10% (after any randomizations)"><input v-model="EasyMode" type="checkbox" asp-for="Flags.EasyMode" /> <label asp-for="Flags.EasyMode">Easy Mode</label></div>
 				</div>
 			</div>
 			<div class="section tab-pane" id="bug-fixes">
@@ -299,10 +328,10 @@
 					<div class="checkbox-cell"><input v-model="ChanceToRun" type="checkbox" asp-for="Flags.ChanceToRun" /> <label asp-for="Flags.ChanceToRun">Chance to Run</label></div>
 					<div class="checkbox-cell"><input v-model="SpellBugs" type="checkbox" asp-for="Flags.SpellBugs" /> <label asp-for="Flags.SpellBugs">LOCK, LOK2, HEL2, TMPR, SABR</label></div>
 					<div class="checkbox-cell"><input v-model="EnemyStatusAttackBug" type="checkbox" asp-for="Flags.EnemyStatusAttackBug" /> <label asp-for="Flags.EnemyStatusAttackBug">Enemy Status Attacks</label></div>
-					<div class="checkbox-cell"><input v-model="BlackBeltAbsorb" type="checkbox" asp-for="Flags.BlackBeltAbsorb" /> <label asp-for="Flags.BlackBeltAbsorb">Black Belt &amp; Master Absorb Calculation</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.1.0</a>)</small></div>
-					<div class="checkbox-cell"><input v-model="EnemyElementalResistancesBug" type="checkbox" asp-for="Flags.EnemyElementalResistancesBug" /> <label asp-for="Flags.EnemyElementalResistancesBug">Enemy Elemental Resistances</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.1.0</a>)</small></div>
-					<div class="checkbox-cell"><input v-model="EnemySpellsTargetingAllies" type="checkbox" asp-for="Flags.EnemySpellsTargetingAllies" /> <label asp-for="Flags.EnemySpellsTargetingAllies">Enemy Spells Targeting Allies</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.1.0</a>)</small></div>
-					<div class="checkbox-cell"><input v-model="ImproveTurnOrderRandomization" type="checkbox" asp-for="Flags.ImproveTurnOrderRandomization" /> <label asp-for="Flags.ImproveTurnOrderRandomization">Improve Turn Order Randomization</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.2.0</a>)</small></div>
+					<div class="checkbox-cell"><input v-model="BlackBeltAbsorb" type="checkbox" asp-for="Flags.BlackBeltAbsorb" /> <label asp-for="Flags.BlackBeltAbsorb">Black Belt &amp; Master Absorb Calculation</label></div>
+					<div class="checkbox-cell"><input v-model="EnemyElementalResistancesBug" type="checkbox" asp-for="Flags.EnemyElementalResistancesBug" /> <label asp-for="Flags.EnemyElementalResistancesBug">Enemy Elemental Resistances</label></div>
+					<div class="checkbox-cell"><input v-model="EnemySpellsTargetingAllies" type="checkbox" asp-for="Flags.EnemySpellsTargetingAllies" /> <label asp-for="Flags.EnemySpellsTargetingAllies">Enemy Spells Targeting Allies</label></div>
+					<div class="checkbox-cell"><input v-model="ImproveTurnOrderRandomization" type="checkbox" asp-for="Flags.ImproveTurnOrderRandomization" /> <label asp-for="Flags.ImproveTurnOrderRandomization">Improve Turn Order Randomization</label></div>
 				</div>
 			</div>
 			<div class="section tab-pane" id="fun">
