@@ -331,6 +331,8 @@ namespace FF1Lib
 
 			if (mode == WarMECHMode.BridgeOfDestiny)
 			{
+				MakeWarMECHUnrunnable();
+
 				// Can't use mapNpcIndex 0, that's the Wind ORB.
 				SetNpc(MapId.SkyPalace5F, 1, ObjectId.WarMECH, 0x07, 0x0E, inRoom: false, stationary: true);
 
