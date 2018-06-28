@@ -6,7 +6,7 @@ This is a randomizer for Final Fantasy 1 for the NES.  It currently operates on 
 
 ## How it works
 
-The randomizer has man options, each with unique gameplay implications.  An explanation of what each option does, and some of the possible consequences is listed in each section.
+The randomizer has many options, each with unique gameplay implications.  An explanation of what each option does, and some of the possible consequences is listed in each section.
 
 ### Shuffle Tab
 This tab contains options for shuffling various bits of game data.  Shuffling means that all the same data will be in the ROM, but in a randomized order.
