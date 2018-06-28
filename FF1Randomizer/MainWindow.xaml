@@ -144,7 +144,6 @@
 						<ComboBox x:Name="WarMECHModeComboBox" SelectedValue="{Binding Flags.WarMECHMode}" Width="150" HorizontalAlignment="Left" Margin="10,0,0,0" ToolTip="How do you like your WarMECH?" SelectedValuePath="Tag">
 							<ComboBoxItem Tag="Vanilla">Vanilla</ComboBoxItem>
 							<ComboBoxItem Tag="Wandering4F">Patrolling</ComboBoxItem>
-							<ComboBoxItem Tag="Aggro4F">Aggro</ComboBoxItem>
 							<ComboBoxItem Tag="BridgeOfDestiny">Required</ComboBoxItem>
 						</ComboBox>
 					</StackPanel>

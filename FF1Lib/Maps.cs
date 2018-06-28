@@ -316,6 +316,7 @@ namespace FF1Lib
 				// Blob.Concat(FF1Text.TextToBytes("I'm sorry "), new byte[] { 0x03 }, FF1Text.TextToBytes(","), new byte[] { 0x05 }, FF1Text.TextToBytes("I'm afraid I can't do that.")),
 				FF1Text.TextToBytes("rEsIsTaNcE iS fUtIlE."),
 				FF1Text.TextToBytes("Hasta la vista, baby."),
+				FF1Text.TextToBytes("NoOo DiSaSsEmBlE!"),
 				Blob.Concat(FF1Text.TextToBytes("Bring back life form."), new byte[] { 0x05 }, FF1Text.TextToBytes("Priority one."), new byte[] { 0x05 }, FF1Text.TextToBytes("All other priorities rescinded."))
 			};
 			ushort freeTextSpacePointer = 0xB487;
@@ -329,10 +330,10 @@ namespace FF1Lib
 			formations[6] = formations[7];
 			Put(formationOffset, formations);
 
+			MakeWarMECHUnrunnable();
+
 			if (mode == WarMECHMode.BridgeOfDestiny)
 			{
-				MakeWarMECHUnrunnable();
-
 				// Can't use mapNpcIndex 0, that's the Wind ORB.
 				SetNpc(MapId.SkyPalace5F, 1, ObjectId.WarMECH, 0x07, 0x0E, inRoom: false, stationary: true);
 
