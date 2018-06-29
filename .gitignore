@@ -237,3 +237,7 @@ _Pvt_Extensions
 
 # ROM files -- never check these in
 *.nes
+
+# Archives
+*.zip
+*.tar.gz

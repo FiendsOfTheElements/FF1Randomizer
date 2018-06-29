@@ -12,7 +12,7 @@ DrawSeedAndFlags:
 		STA $2007
 
 		INX
-		CPX #96   ; 96 bytes is three full lines of PPU tiles
+		CPX #$80   ; $80 bytes is three full lines of PPU tiles
 		BNE CharLoop
 
 	RTS

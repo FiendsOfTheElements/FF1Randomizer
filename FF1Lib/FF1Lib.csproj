@@ -21,6 +21,7 @@
     <None Remove="presets\improved-vanilla.json" />
     <None Remove="presets\normal-npc.json" />
     <None Remove="presets\tournament.json" />
+    <None Remove="version.txt" />
   </ItemGroup>
 
   <ItemGroup>
@@ -43,6 +44,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="presets\tournament.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="version.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
