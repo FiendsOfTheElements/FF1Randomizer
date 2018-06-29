@@ -548,7 +548,7 @@ namespace FF1Lib
 				var hasher = SHA256.Create();
 				hash = hasher.ComputeHash(Encoding.ASCII.GetBytes($"{seed}_{flags}_{sha}"));
 
-				var hashpart = BitConverter.ToInt64(hash, 0);
+				var hashpart = BitConverter.ToUInt64(hash, 0);
 				hash = Blob.FromHex("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
 				for (int i = 13; i < 19; i++)
 				{
