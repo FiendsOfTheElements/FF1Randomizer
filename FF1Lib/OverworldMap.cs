@@ -222,6 +222,8 @@ namespace FF1Lib
 
 		public void ShuffleEntrancesAndFloors(MT19337 rng, IFloorShuffleFlags flags)
 		{
+			OverriddenOverworldLocations = new Dictionary<MapLocation, OverworldTeleportIndex>();
+
 			// Disable the Princess Warp back to Castle Coneria
 			_rom.Put(0x392CA, Blob.FromHex("EAEAEA"));
 
@@ -314,7 +316,7 @@ namespace FF1Lib
 				shuffledExits = new Dictionary<ExitTeleportIndex, Coordinate>();
 				var teleports = new List<TeleportIndex>();
 
-				// Main Floor Shuffle Loop
+				// Overworld to First Floor Shuffle Loop
 				var shuffleMaps = maps.ToList();
 				while (shuffleMaps.Any())
 				{
@@ -322,6 +324,7 @@ namespace FF1Lib
 					var owti = shuffleMaps.SpliceRandom(rng);
 					var destination = placedMaps.ContainsKey(owti) ? placedMaps[owti] : destinations[i++];
 					shuffled[owti] = destination;
+					OverriddenOverworldLocations[destination.Destination] = owti;
 
 					if (destination.Exit != ExitTeleportIndex.None)
 					{
@@ -329,7 +332,7 @@ namespace FF1Lib
 						shuffledExits.Add(destination.Exit, TeleportShuffle.OverworldCoordinates[owti]);
 					}
 
-					// If this destination has continuting teleports we recurse the handle them now.
+					// If this destination has continuting teleports we loop and handle them now.
 					teleports.AddRange(destination.Teleports);
 					while (teleports.Any())
 					{
@@ -338,6 +341,7 @@ namespace FF1Lib
 						var floor = placedFloors.ContainsKey(teleport) ? placedFloors[teleport] : destinations[shuffledOverworldCount + j++];
 						teleports.AddRange(floor.Teleports); // Keep looping until a dead end.
 						shuffledFloors[teleport] = floor;
+						OverriddenOverworldLocations[floor.Destination] = owti;
 						if (floor.Exit != ExitTeleportIndex.None)
 						{
 							// Exiting floors like Fiend Orb Teleporters need to be updated to new OW coords.
@@ -584,6 +588,7 @@ namespace FF1Lib
 		public Dictionary<MapLocation, List<MapChange>> MapLocationRequirements;
 		public Dictionary<MapLocation, Tuple<MapLocation, AccessRequirement>> FloorLocationRequirements;
 		public Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> FullLocationRequirements;
+		public Dictionary<MapLocation, OverworldTeleportIndex> OverriddenOverworldLocations;
 
 		public const byte GrassTile = 0x00;
 		public const byte GrassBottomRightCoast = 0x06;

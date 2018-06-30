@@ -7,7 +7,6 @@
 			<li>This website is updated literally anytime with no agenda or stability guarantees.</li>
 			<li>Features may appear and disappear as different developers work and refine the flags for them.</li>
 			<li>Entrance &amp; Floor seeds should generate in under 10 seconds but they are still slower than before.</li>
-			<li>Ship is always in coneria dock right now</li>
 			<li>Open Progression now removes a river between dwarves and NW Castle. You can walk all the way from Coneria to Elfland now!</li>
 			<li>New checkbox planned for allowing last floors to mismatch - right now they will always mismatch if floors are shuffled.</li>
 		</ul>
@@ -195,7 +194,7 @@
 							<br />&nbsp;
 						</div>
 						<div class="checkbox-cell" title="Shuffle All Non-Town Entrances"><input v-model="Entrances" type="checkbox" asp-for="Flags.Entrances" /> <label asp-for="Flags.Entrances"></label></div>
-						<div disabled="!Entrances" title="Also shuffle all the floors amongst them!"><input class="indent" v-model="Floors" type="checkbox" asp-for="Flags.Floors" /> <label asp-for="Flags.Floors">Floors<b v-if="Floors" title="Prepare yourself for potentially large, sprawling, maze-like dungeons!" style="color:orange">⚠</b></label></div>
+						<div title="Also shuffle all the floors amongst them!"><input :disabled="!Entrances" class="indent" v-model="Floors" type="checkbox" asp-for="Flags.Floors" /> <label :style="!Entrances ? { color: 'grey'} : {}" asp-for="Flags.Floors">Floors <b v-if="Floors" title="Prepare yourself for potentially large, sprawling, maze-like dungeons!" style="color:orange">⚠</b></label></div>
 						<div class="checkbox-cell" title="Add Town Entrances to the Entrance Shuffle."><input v-model="Towns" type="checkbox" asp-for="Flags.Towns" /> <label asp-for="Flags.Towns"></label></div>
 					</div>
 				</div>

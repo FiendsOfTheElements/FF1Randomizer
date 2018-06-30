@@ -30,10 +30,13 @@ namespace FF1Lib
 													IItemPlacementFlags flags,
 													IncentiveData incentivesData,
 													ItemShopSlot caravanItemLocation,
-													Dictionary<MapLocation, List<MapChange>> mapLocationRequirements,
-													Dictionary<MapLocation, Tuple<MapLocation, AccessRequirement>> mapLocationFloorRequirements,
-													Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullFloorRequirements)
+                                                    OverworldMap overworldMap)
 		{
+			Dictionary<MapLocation, List<MapChange>> mapLocationRequirements = overworldMap.MapLocationRequirements;
+			Dictionary<MapLocation, Tuple<MapLocation, AccessRequirement>> mapLocationFloorRequirements = overworldMap.FloorLocationRequirements;
+			Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullFloorRequirements = overworldMap.FullLocationRequirements;
+			Dictionary<MapLocation, OverworldTeleportIndex> overridenOverworld = overworldMap.OverriddenOverworldLocations;
+
 			var vanillaNPCs = !flags.NPCItems && !flags.NPCFetchItems;
 			if (!vanillaNPCs)
 			{
@@ -87,7 +90,13 @@ namespace FF1Lib
 				item.Put(this);
 			}
 
-			MoveShipToRewardSource(placedItems.Find(reward => reward.Item == Item.Ship));
+            // Move the ship someplace closer to where it really ends up.
+            MapLocation shipLocation = placedItems.Find(reward => reward.Item == Item.Ship).MapLocation;
+            if (overridenOverworld != null && overridenOverworld.TryGetValue(shipLocation, out var overworldIndex))
+			{
+				shipLocation = TeleportShuffle.OverworldMapLocations.TryGetValue(overworldIndex, out var vanillaShipLocation) ? vanillaShipLocation : shipLocation;
+			}
+			MoveShipToRewardSource(shipLocation);
 			return placedItems;
 		}
 
@@ -245,12 +254,17 @@ namespace FF1Lib
 			// See source: ~/asm/1F_DD78_OpenTreasureChestRewrite.asm
 		}
 
-		private void MoveShipToRewardSource(IRewardSource source)
+		private void MoveShipToRewardSource(MapLocation vanillaMapLocation)
 		{
 			Blob location = null;
-			//if (!ItemLocations.ShipLocations.TryGetValue(source.MapLocation, out location))
+			if (!ItemLocations.ShipLocations.TryGetValue(vanillaMapLocation, out location))
 			{
 				location = Dock.Coneria;
+			    Console.WriteLine($"Ship at {vanillaMapLocation} defaults to Coneria.");
+			}
+            else
+			{
+			    Console.WriteLine($"Ship at {vanillaMapLocation}.");
 			}
 
 			Put(0x3000 + UnsramIndex.ShipX, location);

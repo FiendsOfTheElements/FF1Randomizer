@@ -165,7 +165,7 @@ namespace FF1Lib
 
 					if (flags.Treasures || flags.NPCItems || flags.NPCFetchItems)
 					{
-						ShuffleTreasures(rng, flags, incentivesData, shopItemLocation, overworldMap.MapLocationRequirements, overworldMap.FloorLocationRequirements, overworldMap.FullLocationRequirements);
+						ShuffleTreasures(rng, flags, incentivesData, shopItemLocation, overworldMap);
 					}
 					break;
 				}
