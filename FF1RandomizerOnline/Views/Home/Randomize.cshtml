@@ -194,14 +194,14 @@
 							Try shuffling dungeon entrances, floors, and towns to create a completely new world to explore!
 							<br />&nbsp;
 						</div>
-						<div class="checkbox-cell"><input v-model="Entrances" title="Shuffle All Non-Town Entrances" type="checkbox" asp-for="Flags.Entrances" /> <label asp-for="Flags.Entrances"></label></div>
-						<div><input disabled="!Entrances" class="indent" title="Also shuffle all the floors amongst them!" v-model="Floors" type="checkbox" asp-for="Flags.Floors" /> <label asp-for="Flags.Floors">Floors<b v-if="Floors" title="Prepare yourself for potentially large, sprawling, maze-like dungeons!" style="color:orange">⚠</b></label></div>
-						<div class="checkbox-cell"><input v-model="Towns" type="checkbox" title="Add Town Entrances to the Entrance Shuffle." asp-for="Flags.Towns" /> <label asp-for="Flags.Towns"></label></div>
+						<div class="checkbox-cell" title="Shuffle All Non-Town Entrances"><input v-model="Entrances" type="checkbox" asp-for="Flags.Entrances" /> <label asp-for="Flags.Entrances"></label></div>
+						<div disabled="!Entrances" title="Also shuffle all the floors amongst them!"><input class="indent" v-model="Floors" type="checkbox" asp-for="Flags.Floors" /> <label asp-for="Flags.Floors">Floors<b v-if="Floors" title="Prepare yourself for potentially large, sprawling, maze-like dungeons!" style="color:orange">⚠</b></label></div>
+						<div class="checkbox-cell" title="Add Town Entrances to the Entrance Shuffle."><input v-model="Towns" type="checkbox" asp-for="Flags.Towns" /> <label asp-for="Flags.Towns"></label></div>
 					</div>
 				</div>
 				<div class="col-xs-4" style="border-left: 1px solid black;">
 					<div class="col-xs-12">
-						<h4>Classic Edits</h4>
+						<h4>Fixed Map Edits</h4>
 						<div>
 							<br />
 							Classic Final Fantasy Randomizer map edits.

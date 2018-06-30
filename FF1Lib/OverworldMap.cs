@@ -157,40 +157,48 @@ namespace FF1Lib
 			return palettes;
 		}
 
-		public void PutPalette(OverworldTeleportIndex source, TeleportDestination destination)
+		public void PutPalette(OverworldTeleportIndex source, MapIndex index)
 		{
-			if (!destination.OwnsPalette)
-			{
-				return;
-			}
-
 			var palette = OverworldToPalette[source];
 
-			if (destination.Index <= MapIndex.Lefein) // Towns
+			if (index <= MapIndex.Lefein) // Towns
 			{
 				// Towns are given arbitrary palettes to help provide color when dungeons take their place.
 				// But if a town ends up in place of another town, the default palette is appropriate.
 				if (source < OverworldTeleportIndex.Coneria || source > OverworldTeleportIndex.Lefein)
 				{
-					Console.WriteLine($"Tinting {destination.Index} {palette}.");
-					_rom.Put(MapPaletteOffset + (int)destination.Index * MapPaletteSize + 1, _palettes[palette].SubBlob(9, 2));
-					_rom.Put(MapPaletteOffset + (int)destination.Index * MapPaletteSize + 6, _palettes[palette].SubBlob(9, 1));
-					_rom.Put(MapPaletteOffset + (int)destination.Index * MapPaletteSize + 33, _palettes[palette].SubBlob(9, 2));
-					_rom.Put(MapPaletteOffset + (int)destination.Index * MapPaletteSize + 38, _palettes[palette].SubBlob(9, 1));
+					_rom.Put(MapPaletteOffset + (int)index * MapPaletteSize + 1, _palettes[palette].SubBlob(9, 2));
+					_rom.Put(MapPaletteOffset + (int)index * MapPaletteSize + 6, _palettes[palette].SubBlob(9, 1));
+					_rom.Put(MapPaletteOffset + (int)index * MapPaletteSize + 33, _palettes[palette].SubBlob(9, 2));
+					_rom.Put(MapPaletteOffset + (int)index * MapPaletteSize + 38, _palettes[palette].SubBlob(9, 1));
 				}
 			}
-			else if (destination.Index < MapIndex.EarthCaveB1) // Castles - just tint the lawns.
+			else if (index < MapIndex.EarthCaveB1) // Castles - just tint the lawns.
 			{
-				_rom.Put(MapPaletteOffset + (int)destination.Index * MapPaletteSize + 8, _palettes[palette].SubBlob(8, 8));
-				_rom.Put(MapPaletteOffset + (int)destination.Index * MapPaletteSize + 40, _palettes[palette].SubBlob(40, 8));
+				_rom.Put(MapPaletteOffset + (int)index * MapPaletteSize + 8, _palettes[palette].SubBlob(8, 8));
+				_rom.Put(MapPaletteOffset + (int)index * MapPaletteSize + 40, _palettes[palette].SubBlob(40, 8));
 			}
 			else // Dungeons
 			{
-				_rom.Put(MapPaletteOffset + (int)destination.Index * MapPaletteSize, _palettes[palette].SubBlob(0, 16));
+				_rom.Put(MapPaletteOffset + (int)index * MapPaletteSize, _palettes[palette].SubBlob(0, 16));
 
 				// Some maps have greyscale objects (Chests / Pillars) that look wrong when tinted (usually brown).
-				var index = FixedObjectPaletteDestinations.Contains(destination.Index) ? 36 : 32;
-				_rom.Put(MapPaletteOffset + (int)destination.Index * MapPaletteSize + index, _palettes[palette].SubBlob(index, 48 - index));
+				var paletteIndex = FixedObjectPaletteDestinations.Contains(index) ? 36 : 32;
+				_rom.Put(MapPaletteOffset + (int)index * MapPaletteSize + paletteIndex, _palettes[palette].SubBlob(paletteIndex, 48 - paletteIndex));
+			}
+		}
+
+        void UpdatePalettes(OverworldTeleportIndex oti, TeleportDestination teleport)
+		{
+            if (teleport.OwnsPalette)
+			{
+				var mapIndex = teleport.Index;
+				PutPalette(oti, mapIndex);
+
+                if (ContinuedMapIndexForPalettes.TryGetValue(mapIndex, out var list))
+				{
+					list.ForEach(map => PutPalette(oti, map));
+				}
 			}
 		}
 
@@ -200,7 +208,7 @@ namespace FF1Lib
 			_rom[teleportEntranceYOffset + (byte)index] = teleport.CoordinateY;
 			_rom[teleportEntranceMapIndexOffset + (byte)index] = (byte)teleport.Index;
 
-			PutPalette(index, teleport);
+			UpdatePalettes(index, teleport);
 		}
 
 		public void PutStandardTeleport(TeleportIndex index, TeleportDestination teleport, OverworldTeleportIndex overworldEntryPoint)
@@ -209,7 +217,7 @@ namespace FF1Lib
 			_rom[teleportYOffset + (byte)index] = teleport.CoordinateY;
 			_rom[teleportMapIndexOffset + (byte)index] = (byte)teleport.Index;
 
-			PutPalette(overworldEntryPoint, teleport);
+			UpdatePalettes(overworldEntryPoint, teleport);
 		}
 
 		public void ShuffleEntrancesAndFloors(MT19337 rng, IFloorShuffleFlags flags)
@@ -694,6 +702,15 @@ namespace FF1Lib
 				{OverworldTeleportIndex.TitansTunnelWest,   Palette.DarkBlue},
 				{OverworldTeleportIndex.Unused1,            Palette.Greyscale},
 				{OverworldTeleportIndex.Unused2,            Palette.Greyscale},
+			};
+		public static Dictionary<MapIndex, List<MapIndex>> ContinuedMapIndexForPalettes = 
+            new Dictionary<MapIndex, List<MapIndex>>
+		    {
+				{ MapIndex.ConeriaCastle1F, new List<MapIndex>{ MapIndex.ConeriaCastle2F } },
+				{ MapIndex.CastleOrdeals1F, new List<MapIndex> { MapIndex.CastleOrdeals2F, MapIndex.CastleOrdeals3F } },
+				{ MapIndex.TempleOfFiends, new List<MapIndex> { MapIndex.TempleOfFiends1F, MapIndex.TempleOfFiends2F,
+					MapIndex.TempleOfFiends3F, MapIndex.TempleOfFiendsEarth, MapIndex.TempleOfFiendsFire,
+					MapIndex.TempleOfFiendsWater, MapIndex.TempleOfFiendsAir, MapIndex.TempleOfFiendsChaos } }
 			};
 
 		public enum Palette
