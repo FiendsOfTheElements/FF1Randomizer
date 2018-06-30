@@ -1,9 +1,5 @@
 ﻿{
-<<<<<<< HEAD
   "Name": "Improved Vanilla",
-=======
-	"Name": "Improved Vanilla",
->>>>>>> Separated overworld encounter rate from dungeon encounter rate
 
   "Flags": {
 

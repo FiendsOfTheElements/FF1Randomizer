@@ -1,9 +1,5 @@
 ﻿{
-<<<<<<< HEAD
   "Name": "Default",
-=======
-	"Name": "Default",
->>>>>>> Separated overworld encounter rate from dungeon encounter rate
 
   "Flags": {
 
@@ -119,5 +115,4 @@
 
   }
 
-  }
 }

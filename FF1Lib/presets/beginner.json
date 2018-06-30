@@ -1,10 +1,5 @@
 ﻿{
-<<<<<<< HEAD
-<<<<<<< HEAD
   "Name": "Beginner",
-=======
-	"Name": "Beginner",
->>>>>>> Separated overworld encounter rate from dungeon encounter rate
 
   "Flags": {
 

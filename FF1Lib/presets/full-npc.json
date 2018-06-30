@@ -1,9 +1,5 @@
 ﻿{
-<<<<<<< HEAD
   "Name": "Full NPC",
-=======
-	"Name": "Full NPC",
->>>>>>> Separated overworld encounter rate from dungeon encounter rate
 
   "Flags": {
 
