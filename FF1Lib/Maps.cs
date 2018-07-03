@@ -278,19 +278,11 @@ namespace FF1Lib
 
 		public void ShuffleSkyCastle4F(MT19337 rng, List<Map> maps)
 		{
+		    // Don't shuffle the return teleporter as Floor and Entrance shuffle might want to edit it.	
 			var map = maps[(byte)MapId.SkyPalace4F];
-
-			var downTeleporter = (x: 0x03, y: 0x03);
 			var upTeleporter = (x: 0x23, y: 0x23);
-
 			var dest = GetSkyCastleFloorTile(rng, map);
 			SwapTiles(map, upTeleporter, dest);
-			//dest = GetSkyCastleFloorTile(rng, map);
-			//SwapTiles(map, downTeleporter, dest);
-
-			//const byte TeleportIndex3FTo4F = 0x2E;
-			//Put(TeleportOffset + TeleportIndex3FTo4F, new [] { (byte)dest.x });
-			//Put(TeleportOffset + TeleportCount + TeleportIndex3FTo4F, new [] { (byte)dest.y });
 		}
 
 		private (int x, int y) GetSkyCastleFloorTile(MT19337 rng, Map map)

@@ -26,7 +26,14 @@ namespace FF1Lib
 		private const int BUG_FIXES = 15;
 		private const int ENEMY_BUG_FIXES = 16;
 		private const int SCALE = 17;
+		private const int ENEMY_SCALE_FACTOR = 18;
+		private const int PRICE_SCALE_FACTOR = 19;
+		private const int EXP_MULTIPLIER = 20;
+		private const int EXP_BONUS = 21;
+		private const int ENCOUNTER_RATE = 22;
+		private const int FORCED_PARTY_MEMBERS = 23;
 		private const int PROGRESSIVE_SCALE = 24;
+		private const int DUNGEON_ENCOUNTER_RATE = 25;
 
 		[FlagString(Character = ITEMS, FlagBit = 1)]
 		public bool Shops { get; set; }
@@ -97,9 +104,9 @@ namespace FF1Lib
 		[FlagString(Character = OVERWORLD_MAP, FlagBit = 1)]
 		public bool MapOpenProgression { get; set; }
 		[FlagString(Character = OVERWORLD_MAP, FlagBit = 2)]
-		public bool Entrances { get; set; } // Planned x.x feature - non-town entrance shuffle
+		public bool Entrances { get; set; }
 		[FlagString(Character = OVERWORLD_MAP, FlagBit = 4)]
-		public bool Towns { get; set; } // Planned x.x feature - town entrance shuffle
+		public bool Towns { get; set; }
 		[FlagString(Character = OVERWORLD_MAP, FlagBit = 8)]
 		public bool Floors { get; set; }
 		[FlagString(Character = OVERWORLD_MAP, FlagBit = 16)]
@@ -218,21 +225,20 @@ namespace FF1Lib
 		[FlagString(Character = SCALE, FlagBit = 4)]
 		public bool WrapPriceOverflow { get; set; } // planned 2.x feature
 
-		[FlagString(Character = 18, Multiplier = 0.1)]
+		[FlagString(Character = ENEMY_SCALE_FACTOR, Multiplier = 0.1)]
 		public double EnemyScaleFactor { get; set; }
-		[FlagString(Character = 19, Multiplier = 0.1)]
+		[FlagString(Character = PRICE_SCALE_FACTOR, Multiplier = 0.1)]
 		public double PriceScaleFactor { get; set; }
-		[FlagString(Character = 20, Multiplier = 0.1)]
+		[FlagString(Character = EXP_MULTIPLIER, Multiplier = 0.1)]
 		public double ExpMultiplier { get; set; }
-		[FlagString(Character = 21, Multiplier = 10)]
+		[FlagString(Character = EXP_BONUS, Multiplier = 10)]
 		public int ExpBonus { get; set; }
-		[FlagString(Character = 22, Multiplier = 1)]
+		[FlagString(Character = ENCOUNTER_RATE, Multiplier = 1)]
 		public double EncounterRate { get; set; }
-		[FlagString(Character = 25, Multiplier = 1)]
+		[FlagString(Character = DUNGEON_ENCOUNTER_RATE, Multiplier = 1)]
 		public double DungeonEncounterRate { get; set; }
-		[FlagString(Character = 23, Multiplier = 1)]
+		[FlagString(Character = FORCED_PARTY_MEMBERS, Multiplier = 1)]
 		public int ForcedPartyMembers { get; set; }
-
 		[FlagString(Character = PROGRESSIVE_SCALE, FlagBit = 7)]
 		public ProgressiveScaleMode ProgressiveScaleMode { get; set; }
 
