@@ -177,8 +177,6 @@ namespace FF1Lib
 				}
 			}
 
-			overworldMap.dump();
-
 			if (flags.MagicShops)
 			{
 				ShuffleMagicShops(rng);
