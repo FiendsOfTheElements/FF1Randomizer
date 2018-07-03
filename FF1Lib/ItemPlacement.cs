@@ -8,8 +8,10 @@ namespace FF1Lib
 {
 	public class InsaneException : Exception
 	{
-
+		public InsaneException(string message)
+			: base(message) { }
 	}
+
 	public static class ItemPlacement
 	{
 		public static List<IRewardSource> PlaceSaneItems(MT19337 rng,
@@ -69,7 +71,7 @@ namespace FF1Lib
 			do
 			{
 				sanityCounter++;
-				if (sanityCounter > 500) throw new InsaneException();
+				if (sanityCounter > 500) throw new InsaneException("Sanity Counter exceeds 500 iterations!");
 				// 1. (Re)Initialize lists inside of loop
 				placedItems = forcedItems.ToList();
 				var incentives = incentivePool.ToList();

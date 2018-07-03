@@ -305,7 +305,7 @@ namespace FF1Lib
 			{
 				sanity++;
 				if (sanity > 500)
-					throw new InsaneException();
+					throw new InsaneException("Overworld Map Shuffle sanity exceeds 500 iterations.");
 				var i = 0; // overworld entrance destination counter
 				var j = 0; // underworld floor destination counter
 
@@ -488,8 +488,7 @@ namespace FF1Lib
 				{
 					if (cycleFinder.Contains(location))
 					{
-						Console.WriteLine("Floor requirement cycle???");
-						throw new InsaneException();
+						throw new InsaneException($"Floor requirement cycle for: {location}");
 					}
 
 					cycleFinder.Add(location);
@@ -503,8 +502,7 @@ namespace FF1Lib
 				}
 				else
 				{
-					Console.WriteLine("Floors missing????");
-					throw new InsaneException();
+					throw new InsaneException($"Orphaned unreachable floor: {location}?");
 				}
 			}
 		}
