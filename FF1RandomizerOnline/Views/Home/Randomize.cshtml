@@ -71,7 +71,7 @@
 					<div class="checkbox-cell"><input v-model="MagicShops" type="checkbox" asp-for="Flags.MagicShops" /> <label asp-for="Flags.MagicShops">Magic Shops</label></div>
 					<div class="checkbox-cell"><input v-model="MagicLevels" type="checkbox" asp-for="Flags.MagicLevels" /> <label asp-for="Flags.MagicLevels">Magic Levels</label></div>
 					<div class="checkbox-cell"><input v-model="MagicPermissions" :disabled="!MagicLevels" class="indent" type="checkbox" asp-for="Flags.MagicPermissions" /> <label :style="!MagicLevels ? { color: 'grey'} : {}" asp-for="Flags.MagicPermissions">Keep Permissions</label></div>
-					<div class="checkbox-cell"><input v-model="ItemMagic" type="checkbox" asp-for="Flags.ItemMagic" /> <label asp-for="Flags.ItemMagic">Item Magic</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.2.0</a>)</small></div>
+					<div class="checkbox-cell"><input v-model="ItemMagic" type="checkbox" asp-for="Flags.ItemMagic" /> <label asp-for="Flags.ItemMagic">Item Magic</label></div>
 				</div>
 				<div class="col-xs-4">
 					<div class="checkbox-cell"><input v-model="EnemyScripts" type="checkbox" asp-for="Flags.EnemyScripts" /> <label asp-for="Flags.EnemyScripts">Enemy Scripts</label></div>
@@ -154,11 +154,11 @@
 						<h4>Treasure Hunt</h4>
 						<div>
 							<br />
-							A new adventure! Instead of lighting the four orbs to activate the BLACK ORB, the Light Warriors must seek out and collect several of a random treasure item. Learn more at <a asp-area="" asp-controller="Home" asp-action="WhatsNew">What's New 2.2.0</a>.
+							A new adventure! Instead of lighting the four orbs to activate the BLACK ORB, the Light Warriors must seek out and collect several of a random treasure item.
 							<br />&nbsp;
 						</div>
-						<div class="checkbox-cell" title="Treasure Hunt alternate gameplay mode. Collect 16 of a random Treasure Item to activate the BLACK ORB."><input v-model="ShardHunt" :disabled="ChaosRush" type="checkbox" asp-for="Flags.ShardHunt" /> <label :style="ChaosRush ? { color: 'grey'} : {}" asp-for="Flags.ShardHunt">Treasure Hunt</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.2.0</a>)</small></div>
-						<div class="checkbox-cell" title="A larger hunt for the hardcore hunter. You will now need between 24 and 30 of the Treasure Item."><input v-model="ExtraShards" :disabled="ChaosRush || !ShardHunt" type="checkbox" asp-for="Flags.ExtraShards" /> <label class="indent" :style="(ChaosRush || !ShardHunt) ? { color: 'grey'} : {}" asp-for="Flags.ExtraShards">Extra Treasure</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">2.2.0</a>)</small></div>
+						<div class="checkbox-cell" title="Treasure Hunt alternate gameplay mode. Collect 16 of a random Treasure Item to activate the BLACK ORB."><input v-model="ShardHunt" :disabled="ChaosRush" type="checkbox" asp-for="Flags.ShardHunt" /> <label :style="ChaosRush ? { color: 'grey'} : {}" asp-for="Flags.ShardHunt">Treasure Hunt</label></div>
+						<div class="checkbox-cell" title="A larger hunt for the hardcore hunter. You will now need between 24 and 30 of the Treasure Item."><input v-model="ExtraShards" :disabled="ChaosRush || !ShardHunt" type="checkbox" asp-for="Flags.ExtraShards" /> <label class="indent" :style="(ChaosRush || !ShardHunt) ? { color: 'grey'} : {}" asp-for="Flags.ExtraShards">Extra Treasure</label></div>
 						<br />&nbsp;
 						<br />&nbsp;
 						<br />&nbsp;
@@ -178,7 +178,7 @@
 							Jump straight from the Black Orb to the Final Battle!
 							<br />&nbsp;
 						</div>
-						<div class="checkbox-cell" title="Black Orb teleports to the final floor. You will begin with the LUTE if you wish to fill the air with beautiful music."><input v-model="ShortToFR" type="checkbox" asp-for="Flags.ShortToFR" /> <label class="indent" asp-for="Flags.ShortToFR">Shorten ToFR</label><small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">New!</a>)</small></div>
+						<div class="checkbox-cell" title="Black Orb teleports to the final floor. You will begin with the LUTE if you wish to fill the air with beautiful music."><input v-model="ShortToFR" type="checkbox" asp-for="Flags.ShortToFR" /> <label class="indent" asp-for="Flags.ShortToFR">Shorten ToFR</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">New!</a>)</small></div>
 						<br />&nbsp;
 						<br />&nbsp;
 					</div>
