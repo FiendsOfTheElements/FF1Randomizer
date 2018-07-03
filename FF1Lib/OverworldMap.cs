@@ -526,56 +526,25 @@ namespace FF1Lib
 		public bool CheckEntranceSanity(IEnumerable<KeyValuePair<OverworldTeleportIndex, TeleportDestination>> shuffledEntrances,
 										bool allowUnsafe = false)
 		{
-			var starterDestinations = new List<MapLocation> {
-				MapLocation.TempleOfFiends1, MapLocation.Cardia6, MapLocation.Cardia4,
-				MapLocation.Cardia2, MapLocation.MatoyasCave, MapLocation.DwarfCave,
-				MapLocation.SeaShrineMermaids
-			};
-			var townsWithShops = new List<MapLocation> {
-				MapLocation.Coneria
-				//, MapLocation.Pravoka, MapLocation.Elfland, MapLocation.CresentLake, MapLocation.Gaia
-			};
-			var safeLocations = new List<MapLocation> {
-				MapLocation.IceCave3, MapLocation.GurguVolcano4, MapLocation.GurguVolcano5,
-				MapLocation.SeaShrine5, MapLocation.SeaShrine6,
-				MapLocation.BahamutCave1, MapLocation.BahamutCave2,
-				MapLocation.ElflandCastle, MapLocation.NorthwestCastle, MapLocation.ConeriaCastle1,
-				MapLocation.SardasCave, MapLocation.Cardia1, MapLocation.Cardia5,
-				MapLocation.Pravoka, MapLocation.Elfland, MapLocation.Melmond,
-				MapLocation.CrescentLake, MapLocation.Gaia, MapLocation.Onrac, MapLocation.Lefein
-
-			}.Concat(starterDestinations).Concat(townsWithShops).ToList();
-			var connectedLocations = new List<OverworldTeleportIndex> {
-				OverworldTeleportIndex.ConeriaCastle1, OverworldTeleportIndex.Coneria, OverworldTeleportIndex.TempleOfFiends1,
-				OverworldTeleportIndex.MatoyasCave, OverworldTeleportIndex.Pravoka,
-				OverworldTeleportIndex.ElflandCastle, OverworldTeleportIndex.Elfland, OverworldTeleportIndex.NorthwestCastle, OverworldTeleportIndex.MarshCave1,
-				OverworldTeleportIndex.Melmond, OverworldTeleportIndex.EarthCave1, OverworldTeleportIndex.TitansTunnelEast,
-				OverworldTeleportIndex.SardasCave, OverworldTeleportIndex.TitansTunnelWest,
-				OverworldTeleportIndex.Cardia1, OverworldTeleportIndex.BahamutCave1,
-				OverworldTeleportIndex.GurguVolcano1, OverworldTeleportIndex.IceCave1,
-				OverworldTeleportIndex.Onrac
-			};
-			var startingLocations = new List<OverworldTeleportIndex> {
-				OverworldTeleportIndex.ConeriaCastle1, OverworldTeleportIndex.TempleOfFiends1
-			};
-			var townStart =
-				shuffledEntrances.Any(x => x.Key == OverworldTeleportIndex.Coneria && townsWithShops.Contains(x.Value.Destination));
+			var coneria = shuffledEntrances.Any(x => x.Key == OverworldTeleportIndex.Coneria && x.Value.Destination == MapLocation.Coneria);
 			var starterLocation =
-				shuffledEntrances.Any(x => startingLocations.Contains(x.Key) && starterDestinations.Contains(x.Value.Destination));
+				shuffledEntrances.Any(x => StartingLocations.Contains(x.Key) && StarterDestinations.Contains(x.Value.Destination));
 			var dangerLocationAtConeriaCastle =
-				!shuffledEntrances.Any(x => x.Key == OverworldTeleportIndex.ConeriaCastle1 && safeLocations.Contains(x.Value.Destination));
+				!shuffledEntrances.Any(x => x.Key == OverworldTeleportIndex.ConeriaCastle1 && SafeLocations.Contains(x.Value.Destination));
 			var dangerLocationAtToF =
-				!shuffledEntrances.Any(x => x.Key == OverworldTeleportIndex.TempleOfFiends1 && safeLocations.Contains(x.Value.Destination));
+				!shuffledEntrances.Any(x => x.Key == OverworldTeleportIndex.TempleOfFiends1 && SafeLocations.Contains(x.Value.Destination));
 			var dangerLocationAtDwarf =
-				!shuffledEntrances.Any(x => x.Key == OverworldTeleportIndex.DwarfCave && safeLocations.Contains(x.Value.Destination));
+				!shuffledEntrances.Any(x => x.Key == OverworldTeleportIndex.DwarfCave && SafeLocations.Contains(x.Value.Destination));
 			var dangerLocationAtMatoya =
-				!shuffledEntrances.Any(x => x.Key == OverworldTeleportIndex.MatoyasCave && safeLocations.Contains(x.Value.Destination));
+				!shuffledEntrances.Any(x => x.Key == OverworldTeleportIndex.MatoyasCave && SafeLocations.Contains(x.Value.Destination));
 			var titansConnections =
-				shuffledEntrances.Any(x => x.Value.Destination == MapLocation.TitansTunnelEast && connectedLocations.Contains(x.Key)) &&
-				shuffledEntrances.Any(x => x.Value.Destination == MapLocation.TitansTunnelWest && connectedLocations.Contains(x.Key));
-			var dangerDanger = dangerLocationAtConeriaCastle || dangerLocationAtToF || dangerLocationAtDwarf || dangerLocationAtMatoya;
+				shuffledEntrances.Any(x => x.Value.Destination == MapLocation.TitansTunnelEast && ConnectedLocations.Contains(x.Key)) &&
+				shuffledEntrances.Any(x => x.Value.Destination == MapLocation.TitansTunnelWest && ConnectedLocations.Contains(x.Key));
 
-			return townStart && starterLocation && titansConnections && (allowUnsafe || !dangerDanger);
+			var dangerCount = new List<bool> { dangerLocationAtConeriaCastle, dangerLocationAtToF, dangerLocationAtDwarf, dangerLocationAtMatoya }.Where(x => !x).Count();
+			_log.Add($"Entrance sanity has {dangerCount} early dangers. Only 1 allowed.");
+
+			return coneria && starterLocation && titansConnections && (allowUnsafe || (dangerCount <= 1));
 		}
 
 		public void dump()
@@ -714,6 +683,35 @@ namespace FF1Lib
 				{ MapIndex.TempleOfFiends, new List<MapIndex> { MapIndex.TempleOfFiends1F, MapIndex.TempleOfFiends2F,
 					MapIndex.TempleOfFiends3F, MapIndex.TempleOfFiendsEarth, MapIndex.TempleOfFiendsFire,
 					MapIndex.TempleOfFiendsWater, MapIndex.TempleOfFiendsAir, MapIndex.TempleOfFiendsChaos } }
+			};
+
+		private static readonly List<MapLocation> StarterDestinations = new List<MapLocation> {
+				MapLocation.TempleOfFiends1, MapLocation.Cardia6, MapLocation.Cardia4,
+				MapLocation.Cardia2, MapLocation.MatoyasCave, MapLocation.DwarfCave,
+				MapLocation.SeaShrineMermaids
+			};
+		private static readonly List<MapLocation> SafeLocations = new List<MapLocation> {
+				MapLocation.IceCave3, MapLocation.GurguVolcano4, MapLocation.GurguVolcano5,
+				MapLocation.SeaShrine5, MapLocation.SeaShrine6,
+				MapLocation.BahamutCave1, MapLocation.BahamutCave2,
+				MapLocation.ElflandCastle, MapLocation.NorthwestCastle, MapLocation.ConeriaCastle1,
+				MapLocation.SardasCave, MapLocation.Cardia1, MapLocation.Cardia5,
+				MapLocation.Coneria, MapLocation.Pravoka, MapLocation.Elfland, MapLocation.Melmond,
+				MapLocation.CrescentLake, MapLocation.Gaia, MapLocation.Onrac, MapLocation.Lefein
+
+			}.Concat(StarterDestinations).Distinct().ToList();
+		private static readonly List<OverworldTeleportIndex> ConnectedLocations = new List<OverworldTeleportIndex> {
+				OverworldTeleportIndex.ConeriaCastle1, OverworldTeleportIndex.Coneria, OverworldTeleportIndex.TempleOfFiends1,
+				OverworldTeleportIndex.MatoyasCave, OverworldTeleportIndex.Pravoka,
+				OverworldTeleportIndex.ElflandCastle, OverworldTeleportIndex.Elfland, OverworldTeleportIndex.NorthwestCastle, OverworldTeleportIndex.MarshCave1,
+				OverworldTeleportIndex.Melmond, OverworldTeleportIndex.EarthCave1, OverworldTeleportIndex.TitansTunnelEast,
+				OverworldTeleportIndex.SardasCave, OverworldTeleportIndex.TitansTunnelWest,
+				OverworldTeleportIndex.Cardia1, OverworldTeleportIndex.BahamutCave1,
+				OverworldTeleportIndex.GurguVolcano1, OverworldTeleportIndex.IceCave1,
+				OverworldTeleportIndex.Onrac
+			};
+		private static readonly List<OverworldTeleportIndex> StartingLocations = new List<OverworldTeleportIndex> {
+				OverworldTeleportIndex.ConeriaCastle1, OverworldTeleportIndex.TempleOfFiends1
 			};
 
 		public enum Palette
