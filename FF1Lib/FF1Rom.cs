@@ -163,7 +163,7 @@ namespace FF1Lib
 						shopItemLocation = ShuffleShops(rng, flags.EnemyStatusAttacks, flags.RandomWares, excludeItemsFromRandomShops);
 					}
 
-					if (flags.Treasures || flags.NPCItems || flags.NPCFetchItems)
+					if (flags.Treasures)
 					{
 						ShuffleTreasures(rng, flags, incentivesData, shopItemLocation, overworldMap);
 					}

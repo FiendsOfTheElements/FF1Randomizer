@@ -189,11 +189,12 @@
 						<div>
 							<br />
 							Try shuffling dungeon entrances, floors, and towns to create a completely new world to explore!
+							<b v-if="!NPCItems">Requires Treasure Shuffle and NPC Item Shuffle</b>
 							<br />&nbsp;
 						</div>
-						<div class="checkbox-cell" title="Shuffle All Non-Town Entrances"><input v-model="Entrances" type="checkbox" asp-for="Flags.Entrances" /> <label asp-for="Flags.Entrances"></label></div>
+						<div class="checkbox-cell" title="Shuffle All Non-Town Entrances"><input v-model="Entrances" :disabled="!NPCItems" type="checkbox" asp-for="Flags.Entrances" /> <label :style="!NPCItems ? { color: 'grey'} : {}" asp-for="Flags.Entrances"></label></div>
 						<div title="Also shuffle all the floors amongst them!"><input :disabled="!Entrances" class="indent" v-model="Floors" type="checkbox" asp-for="Flags.Floors" /> <label :style="!Entrances ? { color: 'grey'} : {}" asp-for="Flags.Floors">Floors <b v-if="Floors" title="Prepare yourself for potentially large, sprawling, maze-like dungeons!" style="color:orange">⚠</b></label></div>
-						<div class="checkbox-cell" title="Add Town Entrances to the Entrance Shuffle."><input v-model="Towns" type="checkbox" asp-for="Flags.Towns" /> <label asp-for="Flags.Towns"></label></div>
+						<div class="checkbox-cell" title="Add Town Entrances to the Entrance Shuffle."><input v-model="Towns" :disabled="!NPCItems "type="checkbox" asp-for="Flags.Towns" /> <label :style="!NPCItems ? { color: 'grey'} : {}" asp-for="Flags.Towns"></label></div>
 					</div>
 				</div>
 				<div class="col-xs-4" style="border-left: 1px solid black;">
@@ -275,13 +276,13 @@
 					<div class="slider-cell"></div>
 					<div class="slider-cell">
 						<div class="col-xs-9"><label>Overworld Encounter Rate:</label></div>
-						<div class="col-xs-9"><label id="encounter-rate-display">{{(EncounterRate/30.00).toFixed(2)}}x</label></div>
 						<div class="col-xs-3"><input v-model="EncounterRate" type="range" asp-for="Flags.EncounterRate" min="0" max="45" step="1" /></div>
+						<div class="col-xs-9"><label id="encounter-rate-display">{{(EncounterRate/30.00).toFixed(2)}}x</label></div>
 					</div>
 					<div class="slider-cell">
 						<div class="col-xs-9"><label>Dungeon Encounter Rate:</label></div>
-						<div class="col-xs-9"><label id="encounter-rate-display">{{(DungeonEncounterRate/30.00).toFixed(2)}}x</label></div>
 						<div class="col-xs-3"><input v-model="DungeonEncounterRate" type="range" asp-for="Flags.DungeonEncounterRate" min="0" max="45" step="1" /></div>
+						<div class="col-xs-9"><label id="encounter-rate-display">{{(DungeonEncounterRate/30.00).toFixed(2)}}x</label></div>
 					</div>
 					<div class="slider-cell"></div>
 					<div class="slider-cell">

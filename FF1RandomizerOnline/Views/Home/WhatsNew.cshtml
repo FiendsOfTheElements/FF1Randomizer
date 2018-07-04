@@ -3,9 +3,9 @@
 	<h2>Major Features</h2>
 	<ul>
 		<li>
-			<h3>Entrance Shuffle!</h3>
+			<h3>Entrance Shuffle</h3>
 			Entrance randomization adds a whole new level of exploration. It breaks down into Entrance,
-			Floor, and Town Shuffling.
+			Floor, and Town Shuffling. All forms of Entrance Shuffling Require NPC Item Shuffle to be enabled.
 			<ul>
 				<li>
 					<b>Entrances</b> connect any entrance to any dungeon. For example, the Temple of Fiends
@@ -52,6 +52,47 @@
 				</li>
 			</ul>
 		</li>
+		<li>
+			<h3>Encounter Rate</h3>
+			Two sliders are available to independently scale the encounter rates of the overworld and in dungeons.
+			The rates can be scaled from 0, meaning no random encounters whatsoever, to 150% of normal. Even without
+			random encounters all the forced encounter tiles and boss fights will occur as normal.
+		</li>
+		<li>
+			<h3>EXP/Gold Progressive Scaling</h3>
+			Another Exp and Gold scaling mechanism has been added. Rather than a flat bonus, this option provides one
+			that will grow over time as key items are found. These are the key items: <br />
+<pre style="display: inline-block;">
+LUTE        CROWN       CRYSTAL
+HERB        KEY         TNT
+ADAMANT     SLAB        RUBY
+ROD         FLOATER     CHIME
+TAIL        CUBE        BOTTLE
+OXYALE      SHIP        CANOE
+AIRSHIP     BRIDGE      CANAL
+</pre>
+			<p>It is important to note that this scaling is applied at the end of each battle and is recalculated
+			each time, thus applying its bonus appropriate as it changes. It stacks with the standard EXP / Gold bonus.</p>
+			These are the modes:
+			<ul>
+				<li>Disabled</li>
+				<li>Increased to 150% at 12 Key Items</li>
+				<li>Increased to 150% at 15 Key Items</li>
+				<li>Increased to 200% at 12 Key Items</li>
+				<li>Increased to 200% at 15 Key Items</li>
+				<li>Increased by 5% per Key Item</li>
+				<li>Increased by 10% per Key Item</li>
+				<li>Increased by 20% per Key Item</li>
+			</ul>
+		</li>
+		<li>
+			<h3>Trap Tile Shuffle</h3>
+			<b>Enemy Forced Encounter Tiles</b> are now shuffled. In this mode all of the standard trap formations are preserved
+			and shuffled amongst the trap tiles. For example, the Wizard trap tile in Marsh could now be the Eye trap tile
+			from the Ice Cave, and so on. If <b>Use Random Formations</b> is also checked, trap tiles will now be any random
+			Formation 2 encounter from the standard encounter table. Formation 2 encounters are a lot less common in the
+			standard FF1 game, and this option creates a lot of variety and potential grinding locations with rarer enemy groups.
+		</li>
 	</ul>
 	<h2>Minor Features &amp; Other Changes</h2>
 	<ul>
@@ -59,8 +100,14 @@
 			Open Progression now also removes a length of river so you can walk all the way from Coneria
 			to Elfland without the aid of a canoe. 
 			<div>
-				<img src="~/images/OpenProgressionRiver.png" style="margin: 0 auto; width: 512px;" />
+				<img src="~/images/OpenProgressionRiver.png" style="margin: 0 auto; width: 256px; display: block;" />
 			</div>
+		</li>
+		<li>
+			<b>Shorten ToFR</b> has been extracted from the Treasure Hunt mode. Treasure Hunt no longer defaults to
+			the short jump to the Chaos final floor. However, by enabling it, both Treasure Hunt mode and the normal
+			game mode can be accelerated with the quick jump to Chaos. Since the LUTE is no longer useful in this mode
+			it is given to the party for free at the outset to play beautiful music at thier whim.
 		</li>
 	</ul>
 	<h1>Version 2.2.0</h1>
