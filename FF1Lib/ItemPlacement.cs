@@ -191,13 +191,13 @@ namespace FF1Lib
 				// 7. Check sanity and loop if needed
 			} while (!CheckSanity(placedItems, mapLocationRequirements, mapLocationFloorRequirements, fullLocationRequirements, flags));
 
-			placedItems.Where(item => item.Item != Item.Shard).ToList().ForEach(item =>
+			var sorted = placedItems.Where(item => item.Item != Item.Shard).ToList();
+			sorted.Sort((IRewardSource lhs, IRewardSource rhs) => lhs.Item.ToString().CompareTo(rhs.Item.ToString()));
+			sorted.ForEach(item =>
 			{
 				if (fullLocationRequirements.TryGetValue(item.MapLocation, out var flr))
 				{
-					var itemName = Enum.GetName(typeof(Item), item.Item);
-					var locName = Enum.GetName(typeof(MapLocation), item.MapLocation);
-					var label = $"{itemName} in {locName}, needs: ".PadRight(36);
+					var label = $"{item.Item} in {item.MapLocation}, needs: ".PadRight(36);
 					Console.WriteLine($"{label}[{String.Join(" OR ", flr.Item1.Select(mapChange => mapChange.ToString()).ToArray())}] AND {flr.Item2.ToString()}");
 				}
 			});

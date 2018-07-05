@@ -211,6 +211,7 @@
 						<div class="checkbox-cell" title="Yoga in the park!"><input v-model="ConfusedOldMen" type="checkbox" asp-for="Flags.ConfusedOldMen" /> <label asp-for="Flags.ConfusedOldMen">Confused Old Men</label></div>
 						<div class="checkbox-cell"></div>
 						<div class="checkbox-cell"><input v-model="MapOpenProgression" type="checkbox" asp-for="Flags.MapOpenProgression" /> <label asp-for="Flags.MapOpenProgression">Open Progression</label></div>
+						<div class="checkbox-cell"><input v-model="MapAirshipDock" type="checkbox" :disabled="!MapOpenProgression" asp-for="Flags.MapAirshipDock" /> <label :style="!MapOpenProgression ? { color: 'grey'} : {}" asp-for="Flags.MapAirshipDock">Airship Desert Dock</label></div>
 					</div>
 				</div>
 				<div class="col-xs-4" style="border-left: 1px solid black;">

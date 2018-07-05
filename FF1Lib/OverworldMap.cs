@@ -44,7 +44,11 @@ namespace FF1Lib
 			{
 				MapEditsToApply.Add(MirageDock);
 				mapLocationRequirements[MapLocation.MirageTower1].Add(MapChange.Ship | MapChange.Canal | MapChange.Chime);
-				//mapLocationRequirements[MapLocation.Lefein].Add(MapChange.Ship | MapChange.Canal | MapChange.Chime);
+			}
+			if (flags.MapAirshipDock)
+			{
+				MapEditsToApply.Add(AirshipDock);
+				mapLocationRequirements[MapLocation.AirshipLocation].Add(MapChange.Ship | MapChange.Canal);
 			}
 			if (flags.MapVolcanoIceRiver)
 			{
@@ -590,7 +594,17 @@ namespace FF1Lib
 			new List<MapEdit>
 			{
 				new MapEdit{X = 208, Y = 90, Tile = DockBottomMid},
-				new MapEdit{X = 209, Y = 90, Tile = DockBottomMid}
+				new MapEdit{X = 209, Y = 90, Tile = DockBottomMid},
+				new MapEdit{X = 208, Y = 91, Tile = OceanTile},
+				new MapEdit{X = 209, Y = 91, Tile = OceanTile}
+			};
+		public static List<MapEdit> AirshipDock =
+			new List<MapEdit>
+			{
+				new MapEdit{X = 216, Y = 244, Tile = DockBottomMid},
+				new MapEdit{X = 217, Y = 244, Tile = DockBottomMid},
+				new MapEdit{X = 216, Y = 245, Tile = OceanTile},
+				new MapEdit{X = 217, Y = 245, Tile = OceanTile}
 			};
 		public static List<MapEdit> ConeriaToDwarves =
 			new List<MapEdit>

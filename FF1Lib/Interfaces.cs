@@ -62,6 +62,7 @@
 	}
 	public interface IMapEditFlags : IItemPlacementFlags
 	{
+		bool MapAirshipDock { get; }
 		bool MapOnracDock { get; }
 		bool MapMirageDock { get; }
 		bool TitansTrove { get; }

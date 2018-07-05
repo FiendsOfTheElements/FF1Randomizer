@@ -111,6 +111,8 @@ namespace FF1Lib
 		public bool Floors { get; set; }
 		[FlagString(Character = OVERWORLD_MAP, FlagBit = 16)]
 		public bool AllowFloorMismatch { get; set; }
+		[FlagString(Character = OVERWORLD_MAP, FlagBit = 32)]
+		public bool MapAirshipDock { get; set; }
 
 		[FlagString(Character = INCENTIVES_MAIN, FlagBit = 1)]
 		public bool IncentivizeFreeNPCs { get; set; }
