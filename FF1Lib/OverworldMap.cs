@@ -545,7 +545,7 @@ namespace FF1Lib
 				shuffledEntrances.Any(x => x.Value.Destination == MapLocation.TitansTunnelEast && ConnectedLocations.Contains(x.Key)) &&
 				shuffledEntrances.Any(x => x.Value.Destination == MapLocation.TitansTunnelWest && ConnectedLocations.Contains(x.Key));
 
-			var dangerCount = new List<bool> { dangerLocationAtConeriaCastle, dangerLocationAtToF, dangerLocationAtDwarf, dangerLocationAtMatoya }.Where(x => !x).Count();
+			var dangerCount = new List<bool> { dangerLocationAtConeriaCastle, dangerLocationAtToF, dangerLocationAtDwarf, dangerLocationAtMatoya }.Where(x => x).Count();
 			_log.Add($"Entrance sanity has {dangerCount} early dangers. Only 1 allowed.");
 
 			return coneria && starterLocation && titansConnections && (allowUnsafe || (dangerCount <= 1));
