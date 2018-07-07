@@ -41,7 +41,7 @@
     "Floors": true,
 
     "MapOpenProgression": true,
-    "MapAirshipDock": true,
+    "MapOpenProgressionExtended": true,
     "Entrances": true,
     "Towns": true,
 

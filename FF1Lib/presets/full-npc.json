@@ -37,12 +37,12 @@
     "OrdealsPillars": true,
     "SkyCastle4FTeleporters": true,
     "TitansTrove": true,
-    "ConfusedOldMen": false,
-    "Floors": false,
+    "ConfusedOldMen": true,
 
     "MapOpenProgression": true,
-    "MapAirshipDock": false,
+    "MapOpenProgressionExtended": true,
     "Entrances": false,
+    "Floors": false,
     "Towns": false,
 
     "IncentivizeFreeNPCs": true,

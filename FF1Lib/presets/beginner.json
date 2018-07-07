@@ -41,7 +41,7 @@
     "Floors": false,
 
     "MapOpenProgression": false,
-    "MapAirshipDock": false,
+    "MapOpenProgressionExtended": false,
     "Entrances": false,
     "Towns": false,
 

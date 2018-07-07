@@ -36,6 +36,7 @@
     "Floors": false,
 
     "MapOpenProgression": true,
+    "MapOpenProgressionExtended": false,
     "Entrances": false,
     "Towns": false,
 
