@@ -6,13 +6,14 @@ using System.Threading.Tasks;
 using RomUtilities;
 using System.Collections;
 using System.IO;
+using System.Security.Cryptography;
 
 namespace FF1Lib
 {
 	// ReSharper disable once InconsistentNaming
 	public partial class FF1Rom : NesRom
 	{
-		public const string Version = "2.2.1";
+		public const string Version = "2.3.0";
 
 		public const int RngOffset = 0x7F100;
 		public const int RngSize = 256;
@@ -310,14 +311,22 @@ namespace FF1Lib
 			}
 
 			var itemText = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
+			// var dialogueText = ReadText(DialogueTextPointerOffset, DialogueTextPointerBase, DialogueTextPointerCount);
 			FixVanillaRibbon(itemText);
 			ExpGoldBoost(flags.ExpBonus, flags.ExpMultiplier);
 			ScalePrices(flags.PriceScaleFactor, flags.ExpMultiplier, flags.VanillaStartingGold, itemText, rng);
+
+
+			if (flags.WarMECHMode != WarMECHMode.Vanilla)
+			{
+				WarMECHNpc(flags.WarMECHMode, rng, maps);
+			}
 
 			overworldMap.ApplyMapEdits();
 			WriteMaps(maps);
 
 			WriteText(itemText, ItemTextPointerOffset, ItemTextPointerBase, ItemTextOffset, UnusedGoldItems);
+			// WriteText(dialogueText, DialogueTextPointerOffset, DialogueTextPointerBase, DialogueTextOffset);
 
 			if (flags.EnemyScaleFactor > 1)
 			{
@@ -333,6 +342,8 @@ namespace FF1Lib
 			{
 				EnableCanalBridge();
 			}
+
+			SetProgressiveScaleMode(flags.ProgressiveScaleMode);
 
 			// We have to do "fun" stuff last because it alters the RNG state.
 			RollCredits(rng);
@@ -450,7 +461,7 @@ namespace FF1Lib
 			PutInBank(0x0F, 0x8800, Blob.FromHex("A000B186C902F005C908F00160A018B186301BC8B1863016C8B1863011C8B186300CA026B1861869010AA0209186A01CB186301AC8B1863015C8B1863010C8B186300BA026B186186901A022918660"));
 
 			// Copyright overhaul, see 0F_8960_DrawSeedAndFlags.asm
-			PutInBank(0x0F, 0x8960, Blob.FromHex("A9238D0620A9208D0620A200BD00898D0720E8E060D0F560"));
+			PutInBank(0x0F, 0x8980, Blob.FromHex("A9238D0620A9208D0620A200BD00898D0720E8E080D0F560"));
 
 			// Fast Battle Boxes
 			PutInBank(0x0F, 0x8A00, Blob.FromHex("A940858AA922858BA91E8588A969858960"));
@@ -467,6 +478,13 @@ namespace FF1Lib
 			// Change INT to MDEF in the Status screen
 			Put(0x388F5, Blob.FromHex("968D8E8F"));
 			Data[0x38DED] = 0x25;
+
+			//Key Items + Progressive Scaling
+			PutInBank(0x0F, 0x9000, Blob.FromHex("A200AD2160F001E8AD2260F001E8AD2560F001E8AD2A60F001E8AD2B60F001E8AD2C60F001E8AD2E60F001E8AD3060F001E8AD0060F001E8AD1260F001E8AD0460F001E8AD0860F001E8AD0C60D001E8AD2360D007AD0A622902F001E8AD2460D007AD05622902F001E8AD2660D007AD08622902F001E8AD2760D007AD09622902F001E8AD2860D007AD0B622902F001E8AD2960D007AD14622901D001E8AD2D60D007AD0E622902F001E8AD2F60D007AD13622903F001E88EB86060"));
+			PutInBank(0x1F, 0xCFCB, CreateLongJumpTableEntry(0x0F, 0x9100));
+			//Division routine
+			PutInBank(0x0F, 0x90C0, Blob.FromHex("8A48A9008513A210261026112613A513C5129004E512851326102611CAD0EDA513851268AA60"));
+			// Progressive scaling also writes to 0x9100 approaching 200 bytes, begin next Put at 0x9200.
 		}
 
 		public void MakeSpaceIn1F()
@@ -517,15 +535,35 @@ namespace FF1Lib
 			Put(0x38486, Blob.FromHex("20FCFE60"));
 
 			// DrawSeedAndFlags LongJump
-			PutInBank(0x1F, 0xFEFC, CreateLongJumpTableEntry(0x0F, 0x8960));
+			PutInBank(0x1F, 0xFEFC, CreateLongJumpTableEntry(0x0F, 0x8980));
+
+			var sha = File.Exists("version.txt") ? File.ReadAllText("version.txt").Trim() : "development";
+			Blob hash;
+			if (sha == "development")
+			{
+				hash = FF1Text.TextToCopyrightLine("DEVELOPMENT VERSION");
+			}
+			else
+			{
+				var hasher = SHA256.Create();
+				hash = hasher.ComputeHash(Encoding.ASCII.GetBytes($"{seed}_{flags}_{sha}"));
+
+				var hashpart = BitConverter.ToUInt64(hash, 0);
+				hash = Blob.FromHex("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
+				for (int i = 13; i < 19; i++)
+				{
+					// 0xD4 through 0xDF are good symbols to use.
+					hash[i] = (byte)(0xD4 + hashpart % 12);
+					hashpart /= 12;
+				}
+			}
 
 			// Put the new string data in a known location.
-			PutInBank(0x0F, 0x8900, Blob.Concat(new Blob[]
-			{
+			PutInBank(0x0F, 0x8900, Blob.Concat(
 				FF1Text.TextToCopyrightLine("Final Fantasy Randomizer " + version),
 				FF1Text.TextToCopyrightLine("Seed  " + seed),
 				FF1Text.TextToCopyrightLine(flags),
-			}));
+				hash));
 		}
 
 		public void ShuffleRng(MT19337 rng)

@@ -1,5 +1,5 @@
 ﻿{
-	"Name": "Improved Vanilla",
+  "Name": "Improved Vanilla",
 
   "Flags": {
 
@@ -13,6 +13,7 @@
     "ShardHunt": false,
     "ExtraShards": false,
     "TransformFinalFormation": false,
+    "ChaosRush": false,
 
     "MagicShops": false,
     "MagicLevels": false,
@@ -29,11 +30,10 @@
     "EnemyStatusAttacks": false,
     "AllowUnsafePirates": false,
 
+    "WarMECHMode": "Vanilla",
     "OrdealsPillars": false,
     "SkyCastle4FTeleporters": false,
     "TitansTrove": false,
-    "CrownlessOrdeals": false,
-    "ChaosRush": false,
     "Floors": false,
 
     "MapOpenProgression": false,
@@ -72,6 +72,7 @@
 
     "EarlySarda": false,
     "EarlySage": false,
+    "CrownlessOrdeals": false,
     "OnlyRequireGameIsBeatable": false,
 
     "FreeBridge": false,
@@ -103,6 +104,7 @@
     "PriceScaleFactor": 1.0,
     "ExpMultiplier": 1.5,
     "ExpBonus": 150,
+    "ProgressiveScaleMode": 0,
     "ForcedPartyMembers": 0
 
   }

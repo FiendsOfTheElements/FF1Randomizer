@@ -1,5 +1,5 @@
 ﻿{
-	"Name": "Default",
+  "Name": "Default",
 
   "Flags": {
 
@@ -13,6 +13,7 @@
     "ShardHunt": false,
     "ExtraShards": false,
     "TransformFinalFormation": false,
+    "ChaosRush": false,
 
     "MagicShops": false,
     "MagicLevels": true,
@@ -29,11 +30,10 @@
     "EnemyStatusAttacks": true,
     "AllowUnsafePirates": false,
 
+    "WarMECHMode": "Wandering4F",
     "OrdealsPillars": true,
     "SkyCastle4FTeleporters": true,
     "TitansTrove": true,
-    "CrownlessOrdeals": true,
-    "ChaosRush": false,
     "Floors": false,
 
     "MapOpenProgression": false,
@@ -72,6 +72,7 @@
 
     "EarlySarda": true,
     "EarlySage": true,
+    "CrownlessOrdeals": true,
     "OnlyRequireGameIsBeatable": false,
 
     "FreeBridge": false,
@@ -103,6 +104,7 @@
     "PriceScaleFactor": 3.0,
     "ExpMultiplier": 2.5,
     "ExpBonus": 250,
+    "ProgressiveScaleMode": 0,
     "ForcedPartyMembers": 0
 
   }

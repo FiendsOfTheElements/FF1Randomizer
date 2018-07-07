@@ -1,3 +1,8 @@
+defaults: &defaults
+  working_directory: ~/ff1randomizer
+  docker:
+    - image: circleci/node:8
+
 version: 2
 jobs:
   build:
@@ -6,44 +11,134 @@ jobs:
       - image: microsoft/aspnetcore-build:2.0
     steps:
       - checkout
-
       - run:
-          name: compile
+          name: publish
           command: |
             cd FF1RandomizerOnline
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
               dotnet publish -c Release
+              git rev-parse HEAD > bin/Release/netcoreapp2.0/publish/version.txt
             else
               dotnet publish -c Debug
+              git rev-parse HEAD > bin/Debug/netcoreapp2.0/publish/version.txt
             fi
+      - persist_to_workspace:
+          root: ~/ff1randomizer
+          paths: FF1RandomizerOnline
 
+  dockerize_production:
+    <<: *defaults
+    steps:
       - setup_remote_docker
-      - run:
-          name: Install Docker client
-          command: |
-            set -x
-            VER="17.03.0-ce"
-            curl -L -o /tmp/docker-$VER.tgz https://download.docker.com/linux/static/stable/x86_64/docker-$VER.tgz
-            tar -xz -C /tmp -f /tmp/docker-$VER.tgz
-            mv /tmp/docker/* /usr/bin
+      - attach_workspace:
+          at: ~/ff1randomizer
       - run:
           name: docker
           command: |
             cd FF1RandomizerOnline && \
-            if [ "${CIRCLE_BRANCH}" == "dev" ]; then
-              docker login -u $DOCKER_USER -p $DOCKER_PASS && \
-              docker build -t entroper/finalfantasyrandomizer:beta -f Dockerfile.beta . && \
-              docker push entroper/finalfantasyrandomizer:beta
-            elif [ "${CIRCLE_BRANCH}" == "master" ]; then
-              docker login -u $DOCKER_USER -p $DOCKER_PASS && \
-              docker build -t entroper/finalfantasyrandomizer:latest -f Dockerfile . && \
-              docker push entroper/finalfantasyrandomizer:latest
-            fi
+            docker login -u $DOCKER_USER -p $DOCKER_PASS && \
+            docker build -t entroper/finalfantasyrandomizer:latest -f Dockerfile . && \
+            docker push entroper/finalfantasyrandomizer:latest
+
+  dockerize_beta:
+    <<: *defaults
+    steps:
+      - setup_remote_docker
+      - attach_workspace:
+          at: ~/ff1randomizer
+      - run:
+          name: docker
+          command: |
+            cd FF1RandomizerOnline && \
+            docker login -u $DOCKER_USER -p $DOCKER_PASS && \
+            docker build -t entroper/finalfantasyrandomizer:beta -f Dockerfile.debug . && \
+            docker push entroper/finalfantasyrandomizer:beta
+
+  dockerize_alpha:
+    <<: *defaults
+    steps:
+      - setup_remote_docker
+      - attach_workspace:
+          at: ~/ff1randomizer
+      - run:
+          name: docker
+          command: |
+            cd FF1RandomizerOnline && \
+            docker login -u $DOCKER_USER -p $DOCKER_PASS && \
+            docker build -t entroper/finalfantasyrandomizer:alpha -f Dockerfile.debug . && \
+            docker push entroper/finalfantasyrandomizer:alpha
+
+  deploy:
+    <<: *defaults
+    steps:
+      - checkout
       - run:
           name: deploy
           command: |
-            if [ "${CIRCLE_BRANCH}" == "dev" ] || [ "${CIRCLE_BRANCH}" == "master" ]; then
-              mkdir -p ~/.ssh && \
-              cp .ssh/known_hosts ~/.ssh/known_hosts && \
-              ssh circle@finalfantasyrandomizer.com "./deployff1r.sh $CIRCLE_BRANCH"
-            fi
+            mkdir -p ~/.ssh && \
+            cp .ssh/known_hosts ~/.ssh/known_hosts && \
+            ssh circle@finalfantasyrandomizer.com "./deployff1r.sh master"
+
+  deploy_beta:
+    <<: *defaults
+    steps:
+      - checkout
+      - run:
+          name: deploy
+          command: |
+            mkdir -p ~/.ssh && \
+            cp .ssh/known_hosts ~/.ssh/known_hosts && \
+            ssh circle@finalfantasyrandomizer.com "./deployff1r.sh dev"
+
+  deploy_alpha:
+    <<: *defaults
+    steps:
+      - checkout
+      - run:
+          name: deploy
+          command: |
+            mkdir -p ~/.ssh && \
+            cp .ssh/known_hosts ~/.ssh/known_hosts && \
+            ssh circle@finalfantasyrandomizer.com "./deployff1r.sh alpha"
+
+workflows:
+  version: 2
+  main:
+    jobs:
+      - build
+      - dockerize_production:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
+      - dockerize_beta:
+          requires:
+            - build
+          filters:
+            branches:
+              only: dev
+      - dockerize_alpha:
+          requires:
+            - build
+          filters:
+            branches:
+              only: alpha
+      - deploy_production:
+          requires:
+            - dockerize_production
+          filters:
+            branches:
+              only: master
+      - deploy_beta:
+          requires:
+            - dockerize_beta
+          filters:
+            branches:
+              only: dev
+      - deploy_alpha:
+          requires:
+            - dockerize_alpha
+          filters:
+            branches:
+              only: alpha

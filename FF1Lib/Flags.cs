@@ -25,7 +25,8 @@ namespace FF1Lib
 		private const int CONVENIENCES = 14;
 		private const int BUG_FIXES = 15;
 		private const int ENEMY_BUG_FIXES = 16;
-		
+		private const int PROGRESSIVE_SCALE = 24;
+
 		[FlagString(Character = ITEMS, FlagBit = 1)]
 		public bool Shops { get; set; }
 		[FlagString(Character = ITEMS, FlagBit = 2)]
@@ -45,6 +46,8 @@ namespace FF1Lib
 		public bool ExtraShards { get; set; }
 		[FlagString(Character = ALT_GAME_MODE, FlagBit = 4)]
 		public bool TransformFinalFormation { get; set; }
+		[FlagString(Character = ALT_GAME_MODE, FlagBit = 16)]
+		public bool ChaosRush { get; set; }
 
 		[FlagString(Character = MAGIC, FlagBit = 1)]
 		public bool MagicShops { get; set; }
@@ -73,24 +76,22 @@ namespace FF1Lib
 		[FlagString(Character = BATTLES, FlagBit = 8)]
 		public bool AllowUnsafePirates { get; set; }
 
-		[FlagString(Character = STANDARD_MAPS, FlagBit = 1)]
-		public bool OrdealsPillars { get; set; }
-		[FlagString(Character = STANDARD_MAPS, FlagBit = 2)]
-		public bool SkyCastle4FTeleporters { get; set; }
+		[FlagString(Character = STANDARD_MAPS, FlagBit = 3)]
+		public WarMECHMode WarMECHMode { get; set; }
 		[FlagString(Character = STANDARD_MAPS, FlagBit = 4)]
-		public bool TitansTrove { get; set; }
+		public bool OrdealsPillars { get; set; }
 		[FlagString(Character = STANDARD_MAPS, FlagBit = 8)]
-		public bool CrownlessOrdeals { get; set; }
+		public bool SkyCastle4FTeleporters { get; set; }
 		[FlagString(Character = STANDARD_MAPS, FlagBit = 16)]
-		public bool ChaosRush { get; set; }
+		public bool TitansTrove { get; set; }
 		[FlagString(Character = STANDARD_MAPS, FlagBit = 32)]
 		public bool Floors { get; set; } // Planned x.x feature - interior floors shuffle
 
 		[FlagString(Character = OVERWORLD_MAP, FlagBit = 1)]
 		public bool MapOpenProgression { get; set; }
-		[FlagString(Character = STANDARD_MAPS, FlagBit = 2)]
+		[FlagString(Character = OVERWORLD_MAP, FlagBit = 2)]
 		public bool Entrances { get; set; } // Planned x.x feature - non-town entrance shuffle
-		[FlagString(Character = STANDARD_MAPS, FlagBit = 4)]
+		[FlagString(Character = OVERWORLD_MAP, FlagBit = 4)]
 		public bool Towns { get; set; } // Planned x.x feature - town entrance shuffle
 
 		[FlagString(Character = INCENTIVES_MAIN, FlagBit = 1)]
@@ -152,6 +153,8 @@ namespace FF1Lib
 		public bool EarlySarda { get; set; }
 		[FlagString(Character = ITEM_REQUIREMENTS, FlagBit = 2)]
 		public bool EarlySage { get; set; }
+		[FlagString(Character = ITEM_REQUIREMENTS, FlagBit = 4)]
+		public bool CrownlessOrdeals { get; set; }
 		[FlagString(Character = ITEM_REQUIREMENTS, FlagBit = 32)]
 		public bool OnlyRequireGameIsBeatable { get; set; }
 		
@@ -210,6 +213,9 @@ namespace FF1Lib
 		public int ExpBonus { get; set; }
 		[FlagString(Character = 21, Multiplier = 1)]
 		public int ForcedPartyMembers { get; set; }
+
+		[FlagString(Character = PROGRESSIVE_SCALE, FlagBit = 7)]
+		public ProgressiveScaleMode ProgressiveScaleMode { get; set; }
 
 		public bool ModernBattlefield { get; set; }
 		public bool FunEnemyNames { get; set; }
@@ -293,6 +299,8 @@ namespace FF1Lib
 					{
 						if ((flagsPropertyValue as bool?).GetValueOrDefault())
 							flagCharacterIndex += flagProperty.Value.FlagBit;
+						else if (flagsPropertyValue is Enum)
+							flagCharacterIndex += (int)flagsPropertyValue;
 						continue;
 					}
 					flagCharacterIndex += Convert.ToInt32((Convert.ToDouble(flagsPropertyValue) / flagProperty.Value.Multiplier));
@@ -356,18 +364,51 @@ namespace FF1Lib
 
 		public string ToVueComputedPropertyString()
 		{
-			if (FlagBit > 0)
-				return $"{{get:function(){{if(this.flagString.length <= {Character}) return false;" +
-				$"return (base64Chars.indexOf(this.flagString.charAt({Character})) & {FlagBit}) > 0; }}, " +
-				$"set:function(){{while(this.flagString.length <= {Character})this.flagString += base64Chars[0];" +
-				$"var toggled = (base64Chars.indexOf(this.flagString.charAt({Character}))) ^ {FlagBit};" +
-				$"this.flagString = this.flagString.substr(0,{Character}) + base64Chars[toggled] + this.flagString.substr({Character + 1});}}}}";
-
-			return $"{{get:function (){{ if (this.flagString.length <= {Character}) return 0; " +
-			$"return base64Chars.indexOf(this.flagString[{Character}]) * {Multiplier};}}," +
-			$"set:function(newValue){{while(this.flagString.length <= {Character})this.flagString += base64Chars[0];" +
-			$"var scaledValue = (newValue / {Multiplier}).toFixed() % base64Chars.length;" +
-			$"this.flagString = this.flagString.substr(0,{Character}) + base64Chars[scaledValue] + this.flagString.substr({Character + 1});}} }}";
+			if (FlagBit == 1 || FlagBit == 2 || FlagBit == 4 || FlagBit == 8 || FlagBit == 16 || FlagBit == 32)
+			{
+				return
+					$"{{\n" +
+					$"  get: function() {{\n" +
+					$"    if(this.flagString.length <= {Character}) return false;\n" +
+					$"    return (base64Chars.indexOf(this.flagString.charAt({Character})) & {FlagBit}) > 0;\n" +
+					$"  }},\n" +
+					$"  set: function() {{\n" +
+					$"    while(this.flagString.length <= {Character})this.flagString += base64Chars[0];\n" +
+					$"    var toggled = (base64Chars.indexOf(this.flagString.charAt({Character}))) ^ {FlagBit};\n" +
+					$"    this.flagString = this.flagString.substr(0,{Character}) + base64Chars[toggled] + this.flagString.substr({Character + 1});\n" +
+					$"  }}\n" +
+					$"}}\n";
+			}
+			else if (FlagBit > 0)
+			{
+				return
+					$"{{\n" +
+					$"  get: function () {{\n" +
+					$"    if (this.flagString.length <= {Character}) return 0;\n" +
+					$"    return base64Chars.indexOf(this.flagString[{Character}]) & {FlagBit};\n" +
+					$"  }},\n" +
+					$"  set: function(newValue) {{\n" +
+					$"    while(this.flagString.length <= {Character})this.flagString += base64Chars[0];\n" +
+					$"    var combinedValue = base64Chars.indexOf(this.flagString.charAt({Character})) & {63 - FlagBit} | newValue;\n" +
+					$"    this.flagString = this.flagString.substr(0,{Character}) + base64Chars[combinedValue] + this.flagString.substr({Character + 1});\n" +
+					$"  }}\n" +
+					$"}}\n";
+			}
+			else
+			{
+				return
+					$"{{\n" +
+					$"  get: function () {{\n" +
+					$"    if (this.flagString.length <= {Character}) return 0;\n" +
+					$"    return base64Chars.indexOf(this.flagString[{Character}]) * {Multiplier};\n" +
+					$"  }},\n" +
+					$"  set: function(newValue) {{\n" +
+					$"    while(this.flagString.length <= {Character})this.flagString += base64Chars[0];\n" +
+					$"    var scaledValue = (newValue / {Multiplier}).toFixed() % base64Chars.length;\n" +
+					$"    this.flagString = this.flagString.substr(0,{Character}) + base64Chars[scaledValue] + this.flagString.substr({Character + 1});\n" +
+					$"  }}\n" +
+					$"}}\n";
+			}
 		}
 	}
 }

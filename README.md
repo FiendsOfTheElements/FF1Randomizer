@@ -57,7 +57,7 @@ This option assigns enemy status attacks applied on hit (poison, dark, stun, sle
 * There will always be the same number of enemies that have a given status attack.
 * Status attacks may end up on enemies with more or fewer hits, making them more or less problematic.
 * This option is likely to "spread out" the status attacks, making certain groups of enemies less irritating (e.g. large groups of undead probably won't stunlock you anymore).  Of course, it could also give IMPs death touch, so beware.
-* If shops are also shuffled, the randomizer will ensure that PURE and SOFT potions are available in Corneria's item shop, since there would otherwise be no remedy for these ailments in the early game.
+* If shops are also shuffled, the randomizer will ensure that PURE and SOFT potions are available in Coneria's item shop, since there would otherwise be no remedy for these ailments in the early game.
 
 ### Incentives Tab
 These options force an important item to be in their respective locations.
@@ -92,7 +92,7 @@ The Titan has moved down a few tiles so that he now blocks access to the 4 treas
 A pathway has been opened to walk to Dwarf Cave from the starting area. In NPC item shuffle where the CANOE can be shuffled to very early locations this allows for some substantially different routing in the early game. With this flag, it is possible that SHIP is not required to beat the game.
 
 #### Volcano and Ice River
-The rivers giving access to Volcano and Ice Cave have been combined. In NPC item shuffle where the CANOE can be shuffled to very early locations this allows for some substantially different routing in the early game. Combined with "Coneria to Dwarves", it means that the CANOE gives access to all early game locations normally accessible with the SHIP prior to CANAL, plus Volcano and Cresent Lake. With this flag, it is possible that SHIP is not required to beat the game.
+The rivers giving access to Volcano and Ice Cave have been combined. In NPC item shuffle where the CANOE can be shuffled to very early locations this allows for some substantially different routing in the early game. Combined with "Coneria to Dwarves", it means that the CANOE gives access to all early game locations normally accessible with the SHIP prior to CANAL, plus Volcano and Crescent Lake. With this flag, it is possible that SHIP is not required to beat the game.
 
 ### Scale Tab
 This tab contains sliders that will multiply bits of game data by random values within a range determined by the slider.  The distribution of random multipliers is exponential.
@@ -117,7 +117,7 @@ This slider randomly adjusts enemy stats higher and lower.
 This option reduces the amount of experience required to gain levels, and lowers all prices.
 * Previous versions of the randomizer (prior to 1.4.8) increased the experience and gold rewards given by enemies.  This was found to overflow in late game battles, so the approach was changed.
 * The top slider changes the experience and gold multiplier.  Level requirements, prices, and your initial gold amount will be divided by the multiplier, so a 3x multiplier means you will gain levels 3x faster, and items will be 3x cheaper.  Your starting gold will also be 3x less to account for cheaper prices.
-* The bottom slider adds a fixed amount of experience and gold reward to enemies.  This bonus is divided by the multiplier, so 1x + 500 would add 500 exp/gold to each enemy, whereas 5x + 500 would add 100 exp/gold to each enemy (but requirements and prices will be 5x lower, so it's essentially the same).  This is useful to speed up the early game, which is especially grindy, without overpowering the party too much in the late game.
+* The bottom slider adds a fixed amount of experience and gold reward to enemies.  This bonus is divided by the multiplier, so 1x + 500 would add 500 exp/gold to each enemy, whereas 5x + 500 would add 100 exp/gold to each enemy (but requirements and prices will be 5x lower, so it's essentially the same).  This is useful to speed up the early game, which can require a lot of grinding, without overpowering the party too much in the late game.
 * There is no randomization for this option, requirements, prices, and rewards are scaled by exactly the amount indicated.  There is of course a separate option to randomize prices.
 
 ### Conveniences Tab

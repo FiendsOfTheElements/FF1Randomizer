@@ -17,6 +17,11 @@ namespace FF1Lib
 	    public const int EnemyTextPointerBase = 0x24000;
 	    public const int EnemyTextOffset = 0x2D5E0;
 
+	    public const int DialogueTextPointerOffset = 0x28000;
+	    public const int DialogueTextPointerCount = 256;
+	    public const int DialogueTextPointerBase = 0x20000;
+	    public const int DialogueTextOffset = 0x28200;
+
 		public Blob[] ReadText(int pointerOffset, int pointerBase, int count)
 	    {
 		    var pointers = Get(pointerOffset, 2 * count).ToUShorts().ToList();

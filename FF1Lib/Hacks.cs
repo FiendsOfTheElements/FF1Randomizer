@@ -210,29 +210,17 @@ namespace FF1Lib
 			Put(0x3BFF0, Blob.FromHex("A90785FA60")); // Set respondrate to 7
 
 			// Move NPCs out of the way.
-			MoveNpc(0, 0, 0x11, 0x02, inRoom: false, stationary: true); // North Coneria Soldier
-			MoveNpc(0, 4, 0x12, 0x14, inRoom: false, stationary: true); // South Coneria Gal
-			MoveNpc(0, 7, 0x1E, 0x0B, inRoom: false, stationary: true); // East Coneria Guy
-			MoveNpc(2, 0, 0x27, 0x18, inRoom: false, stationary: true); // Efland Entrance Elf
-			MoveNpc(6, 13, 0x29, 0x1B, inRoom: false, stationary: true); // Onrac Guy
-			//MoveNpc(18, 1, 0x0C, 0x34, inRoom: false, stationary: false); // OoB Bat!
-			MoveNpc(30, 10, 0x09, 0x0B, inRoom: true, stationary: false); // Earth Cave Bat B3
-			MoveNpc(30, 7, 0x0B, 0x0B, inRoom: true, stationary: false); // Earth Cave Bat B3
-			MoveNpc(30, 8, 0x0A, 0x0C, inRoom: true, stationary: false); // Earth Cave Bat B3
-			MoveNpc(30, 9, 0x09, 0x25, inRoom: false, stationary: false); // Earth Cave Bat B3
-			MoveNpc(32, 1, 0x22, 0x34, inRoom: false, stationary: false); // Earth Cave Bat B5
-		}
-
-		private void MoveNpc(int map, int npc, int x, int y, bool inRoom, bool stationary)
-		{
-			int offset = MapSpriteOffset + (map * MapSpriteCount + npc) * MapSpriteSize;
-
-			byte firstByte = (byte)x;
-			firstByte |= (byte)(inRoom ? 0x80 : 0x00);
-			firstByte |= (byte)(stationary ? 0x40 : 0x00);
-
-			Data[offset + 1] = firstByte;
-			Data[offset + 2] = (byte)y;
+			MoveNpc(MapId.Coneria, 0, 0x11, 0x02, inRoom: false, stationary: true); // North Coneria Soldier
+			MoveNpc(MapId.Coneria, 4, 0x12, 0x14, inRoom: false, stationary: true); // South Coneria Gal
+			MoveNpc(MapId.Coneria, 7, 0x1E, 0x0B, inRoom: false, stationary: true); // East Coneria Guy
+			MoveNpc(MapId.Elfland, 0, 0x27, 0x18, inRoom: false, stationary: true); // Efland Entrance Elf
+			MoveNpc(MapId.Onrac, 13, 0x29, 0x1B, inRoom: false, stationary: true); // Onrac Guy
+			//MoveNpc(MapId.Waterfall, 1, 0x0C, 0x34, inRoom: false, stationary: false); // OoB Bat!
+			MoveNpc(MapId.EarthCaveB3, 10, 0x09, 0x0B, inRoom: true, stationary: false); // Earth Cave Bat B3
+			MoveNpc(MapId.EarthCaveB3, 7, 0x0B, 0x0B, inRoom: true, stationary: false); // Earth Cave Bat B3
+			MoveNpc(MapId.EarthCaveB3, 8, 0x0A, 0x0C, inRoom: true, stationary: false); // Earth Cave Bat B3
+			MoveNpc(MapId.EarthCaveB3, 9, 0x09, 0x25, inRoom: false, stationary: false); // Earth Cave Bat B3
+			MoveNpc(MapId.EarthCaveB5, 1, 0x22, 0x34, inRoom: false, stationary: false); // Earth Cave Bat B5
 		}
 
 		public void EnableIdentifyTreasures()

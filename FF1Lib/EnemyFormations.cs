@@ -22,6 +22,7 @@ namespace FF1Lib
 		private const int BossFormationCount = 13;        // Lichx2, Karyx2, Krakenx2, Tiamatx2, Chaos, Vampire, Astos, Pirates, Garland
 		private const int VanillaUnrunnableCount = 13;    // 13 of the Vanilla normal formations are unrunnable.
 		private const int ChaosFormationIndex = 123;      // Index of Chaos battle that preceeds The End
+		private const int WarMECHFormationIndex = 86;
 
 		// Formation Data Offsets ripped straight from Disch's variables.inc
 		private const byte TypeOffset = 0x00;             // battle type (high 4 bits)
@@ -61,6 +62,14 @@ namespace FF1Lib
 
 			formations = formations.Zip(chances, (formation, chance) => { formation[SurpriseOffset] = chance; return formation; }).ToList();
 			Put(FormationsOffset, formations.SelectMany(formation => formation.ToBytes()).ToArray());
+		}
+
+		public void MakeWarMECHUnrunnable()
+		{
+			// This needs to be called after ShuffleUnrunnable, otherwise it will shuffle away this unrunnability.
+			Blob warMECHFormation = Get(FormationsOffset + FormationSize * WarMECHFormationIndex, FormationSize);
+			warMECHFormation[UnrunnableOffset] |= 0x01;
+			Put(FormationsOffset + FormationSize * WarMECHFormationIndex, warMECHFormation);
 		}
 
 		public void TransformFinalFormation(FinalFormation formation)
