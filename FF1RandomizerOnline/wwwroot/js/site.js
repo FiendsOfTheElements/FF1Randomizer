@@ -5,6 +5,10 @@ loadPresetFile("full-npc.json");
 loadPresetFile("improved-vanilla.json");
 loadPresetFile("normal-npc.json");
 loadPresetFile("tournament.json");
+loadPresetFile("ro16.json");
+loadPresetFile("ro8.json");
+loadPresetFile("semifinals.json");
+loadPresetFile("finals.json");
 
 function loadPresetFile(filename) {
 	$.getJSON("/presets/" + filename, (preset) => {
@@ -92,7 +96,14 @@ var app = new Vue({
     preset: function(presetName) {
 		let presetFlags = presets.find((preset) => preset.Name === presetName).Flags;
 		for (var key in presetFlags) {
-			if (this[key] !== true && this[key] !== false) {
+			if (key == "WarMECHMode") {
+				var mode = presetFlags[key];
+				this.WarMECHMode =
+					mode == "Vanilla"         ? 0 :
+					mode == "Wandering4F"     ? 1 :
+					mode == "BridgeOfDestiny" ? 3 : 0;
+			}
+			else if (this[key] !== true && this[key] !== false) {
 				this[key] = presetFlags[key];
 			}
 			else if (this[key] && !presetFlags[key] || !this[key] && presetFlags[key]) {
