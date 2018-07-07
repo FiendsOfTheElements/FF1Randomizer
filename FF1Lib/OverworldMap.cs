@@ -694,6 +694,7 @@ namespace FF1Lib
 		    {
 				{ MapIndex.ConeriaCastle1F, new List<MapIndex>{ MapIndex.ConeriaCastle2F } },
 				{ MapIndex.CastleOrdeals1F, new List<MapIndex> { MapIndex.CastleOrdeals2F, MapIndex.CastleOrdeals3F } },
+				{ MapIndex.IceCaveB2, new List<MapIndex>{ MapIndex.IceCaveB3 } },
 				{ MapIndex.TempleOfFiends, new List<MapIndex> { MapIndex.TempleOfFiends1F, MapIndex.TempleOfFiends2F,
 					MapIndex.TempleOfFiends3F, MapIndex.TempleOfFiendsEarth, MapIndex.TempleOfFiendsFire,
 					MapIndex.TempleOfFiendsWater, MapIndex.TempleOfFiendsAir, MapIndex.TempleOfFiendsChaos } }

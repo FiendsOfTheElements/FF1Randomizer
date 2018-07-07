@@ -53,8 +53,8 @@ namespace FF1Lib
 	{
 		public static readonly IReadOnlyCollection<MapLocation> UnpalettableLocations = new List<MapLocation>
 		{
-			MapLocation.GurguVolcano3, MapLocation.GurguVolcano4, MapLocation.IceCave3,
-			MapLocation.IceCavePitRoom, MapLocation.IceCaveBackExit, MapLocation.Cardia1, MapLocation.Cardia2,
+			MapLocation.GurguVolcano3, MapLocation.GurguVolcano4, MapLocation.IceCave2, MapLocation.IceCave3,
+			MapLocation.IceCaveBackExit, MapLocation.Cardia1, MapLocation.Cardia2,
 			MapLocation.Cardia4, MapLocation.Cardia5, MapLocation.MarshCaveTop, MapLocation.SeaShrine4,
 			MapLocation.SeaShrine5, MapLocation.SeaShrine6, MapLocation.SeaShrine7, MapLocation.TempleOfFiends1Room1,
 			MapLocation.TempleOfFiends1Room2, MapLocation.TempleOfFiends1Room3, MapLocation.TempleOfFiends1Room4,
