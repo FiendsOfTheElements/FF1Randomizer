@@ -285,44 +285,20 @@ namespace FF1Lib
 
 			var currentMapChanges = MapChange.None;
 
-			Func<IEnumerable<MapLocation>> currentMapLocationsOLD =
-				() =>
+			IEnumerable<MapLocation> currentMapLocations()
+			{
+				return fullLocationRequirements.Where(x => x.Value.Item1.Any(y => currentMapChanges.HasFlag(y) && currentAccess.HasFlag(x.Value.Item2))).Select(x => x.Key);
+			}
+			IEnumerable<IRewardSource> currentItemLocations()
+			{
+				var locations = currentMapLocations().ToList();
+				return treasurePlacements.Where(x =>
 				{
-					var worldMap = mapLocationRequirements
-						.Where(x => x.Value.Any(y => currentMapChanges.HasFlag(y))).Select(x => x.Key);
-					var standardMaps =
-						new HashSet<MapLocation>(mapLocationFloorRequirements
-							.Where(x => currentAccess.HasFlag(x.Value.Item2) &&
-									worldMap.Contains(x.Value.Item1)).Select(x => x.Key));
-					var count = 0;
-					while (standardMaps.Count > count)
-					{
-						count = standardMaps.Count;
-						foreach (var kvp in mapLocationFloorRequirements)
-						{
-							if (currentAccess.HasFlag(kvp.Value.Item2) && standardMaps.Contains(kvp.Value.Item1))
-								standardMaps.Add(kvp.Key);
-						}
-					}
-					return worldMap.Concat(standardMaps.ToList());
-				};
-			Func<IEnumerable<MapLocation>> currentMapLocations =
-				() =>
-				{
-					return fullLocationRequirements.Where(x => x.Value.Item1.Any(y => currentMapChanges.HasFlag(y) && currentAccess.HasFlag(x.Value.Item2))).Select(x => x.Key);
-				};
-			Func<IEnumerable<IRewardSource>> currentItemLocations =
-				() =>
-				{
-					var locations = currentMapLocations().ToList();
-					return treasurePlacements.Where(x =>
-					{
-						return locations.Contains(x.MapLocation) && currentAccess.HasFlag(x.AccessRequirement) &&
-							locations.Contains((x as MapObject)?.SecondLocation ?? MapLocation.StartingLocation);
-					});
-				};
+					return locations.Contains(x.MapLocation) && currentAccess.HasFlag(x.AccessRequirement) &&
+						locations.Contains((x as MapObject)?.SecondLocation ?? MapLocation.StartingLocation);
+				});
+			}
 
-			var accessibleLocationCount = currentItemLocations().Count();
 			var requiredAccess = AccessRequirement.All;
 			var requiredMapChanges = new List<MapChange> { MapChange.All };
 
@@ -334,6 +310,7 @@ namespace FF1Lib
 				requiredMapChanges = mapLocationRequirements[winTheGameLocation];
 			}
 
+			var accessibleLocationCount = 0;
 			while (!currentAccess.HasFlag(requiredAccess) ||
 				   !requiredMapChanges.Any(x => currentMapChanges.HasFlag(x)))
 			{
@@ -341,8 +318,15 @@ namespace FF1Lib
 				{
 					throw new InvalidOperationException($"Sanity Check hit max iterations: {currentIteration}");
 				}
+
 				currentIteration++;
-				var currentItems = currentItemLocations().Select(x => x.Item).ToList();
+				var accessibleLocations = currentItemLocations();
+				var currentItems = accessibleLocations.Select(x => x.Item).ToList();
+				if (accessibleLocations.Count() <= accessibleLocationCount)
+				{
+					return false;
+				}
+				accessibleLocationCount = accessibleLocations.Count();
 
 				if (!currentAccess.HasFlag(AccessRequirement.Key) &&
 					currentItems.Contains(Item.Key))
@@ -419,12 +403,7 @@ namespace FF1Lib
 					currentItems.Contains(Item.Lute))
 					currentAccess |= AccessRequirement.Lute;
 
-				var newCount = currentItemLocations().Count();
-				if (newCount <= accessibleLocationCount)
-				{
-					return false;
-				}
-				accessibleLocationCount = newCount;
+
 			}
 
 			return true;
