@@ -66,9 +66,7 @@ namespace FF1Lib
 											incentivesData,
 											treasurePool,
 											caravanItemLocation,
-											mapLocationRequirements,
-											mapLocationFloorRequirements,
-											fullFloorRequirements);
+											overworldMap);
 
 			if (flags.FreeBridge)
 			{

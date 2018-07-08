@@ -224,9 +224,23 @@ namespace FF1Lib
 			UpdatePalettes(overworldEntryPoint, teleport);
 		}
 
+		public void UpdateOverworldOverride(MapLocation location, OverworldTeleportIndex owti)
+		{
+			OverriddenOverworldLocations[location] = owti;
+			if (ConnectedMapLocations.TryGetValue(location, out var subLocations))
+			{
+				subLocations.ForEach(sublocation => OverriddenOverworldLocations[sublocation] = owti);
+			}
+		}
+
 		public void ShuffleEntrancesAndFloors(MT19337 rng, IFloorShuffleFlags flags)
 		{
-			OverriddenOverworldLocations = new Dictionary<MapLocation, OverworldTeleportIndex>();
+			OverriddenOverworldLocations = new Dictionary<MapLocation, OverworldTeleportIndex>
+			{
+				[MapLocation.StartingLocation] = OverworldTeleportIndex.Coneria,
+				[MapLocation.AirshipLocation] = OverworldTeleportIndex.Elfland,
+				[MapLocation.Caravan] = OverworldTeleportIndex.Onrac
+			};
 
 			// Disable the Princess Warp back to Castle Coneria
 			_rom.Put(0x392CA, Blob.FromHex("EAEAEA"));
@@ -328,7 +342,7 @@ namespace FF1Lib
 					var owti = shuffleMaps.SpliceRandom(rng);
 					var destination = placedMaps.ContainsKey(owti) ? placedMaps[owti] : destinations[i++];
 					shuffled[owti] = destination;
-					OverriddenOverworldLocations[destination.Destination] = owti;
+					UpdateOverworldOverride(destination.Destination, owti);
 
 					if (destination.Exit != ExitTeleportIndex.None)
 					{
@@ -345,7 +359,7 @@ namespace FF1Lib
 						var floor = placedFloors.ContainsKey(teleport) ? placedFloors[teleport] : destinations[shuffledOverworldCount + j++];
 						teleports.AddRange(floor.Teleports); // Keep looping until a dead end.
 						shuffledFloors[teleport] = floor;
-						OverriddenOverworldLocations[floor.Destination] = owti;
+						UpdateOverworldOverride(floor.Destination, owti);
 						if (floor.Exit != ExitTeleportIndex.None)
 						{
 							// Exiting floors like Fiend Orb Teleporters need to be updated to new OW coords.
@@ -692,12 +706,28 @@ namespace FF1Lib
 		public static Dictionary<MapIndex, List<MapIndex>> ContinuedMapIndexForPalettes = 
             new Dictionary<MapIndex, List<MapIndex>>
 		    {
-				{ MapIndex.ConeriaCastle1F, new List<MapIndex>{ MapIndex.ConeriaCastle2F } },
+				{ MapIndex.ConeriaCastle1F, new List<MapIndex> { MapIndex.ConeriaCastle2F } },
 				{ MapIndex.CastleOrdeals1F, new List<MapIndex> { MapIndex.CastleOrdeals2F, MapIndex.CastleOrdeals3F } },
-				{ MapIndex.IceCaveB2, new List<MapIndex>{ MapIndex.IceCaveB3 } },
+				{ MapIndex.IceCaveB2, new List<MapIndex> { MapIndex.IceCaveB3 } },
 				{ MapIndex.TempleOfFiends, new List<MapIndex> { MapIndex.TempleOfFiends1F, MapIndex.TempleOfFiends2F,
 					MapIndex.TempleOfFiends3F, MapIndex.TempleOfFiendsEarth, MapIndex.TempleOfFiendsFire,
 					MapIndex.TempleOfFiendsWater, MapIndex.TempleOfFiendsAir, MapIndex.TempleOfFiendsChaos } }
+			};
+		public static Dictionary<MapLocation, List<MapLocation>> ConnectedMapLocations =
+            new Dictionary<MapLocation, List<MapLocation>>
+		    {
+				{ MapLocation.ConeriaCastle1, new List<MapLocation> { MapLocation.ConeriaCastle2, MapLocation.ConeriaCastleRoom1, MapLocation.ConeriaCastleRoom2 } },
+				{ MapLocation.ElflandCastle, new List<MapLocation> { MapLocation.ElflandCastleRoom1 } },
+				{ MapLocation.NorthwestCastle, new List<MapLocation> { MapLocation.NorthwestCastleRoom2 } },
+				{ MapLocation.CastleOrdeals1, new List<MapLocation> { MapLocation.CastleOrdealsMaze, MapLocation.CastleOrdealsTop } },
+				{ MapLocation.IceCavePitRoom, new List<MapLocation> { MapLocation.IceCave5, MapLocation.IceCaveBackExit, MapLocation.IceCaveFloater } },
+				{ MapLocation.DwarfCave, new List<MapLocation> { MapLocation.DwarfCaveRoom3 } },
+				{ MapLocation.MarshCaveBottom, new List<MapLocation> { MapLocation.MarshCaveBottomRoom13, MapLocation.MarshCaveBottomRoom14, MapLocation.MarshCaveBottomRoom16 } },
+				{ MapLocation.SeaShrine2, new List<MapLocation> { MapLocation.SeaShrine2Room2 } },
+				{ MapLocation.TempleOfFiends1, new List<MapLocation> { MapLocation.TempleOfFiends1Room1, MapLocation.TempleOfFiends1Room2,
+					MapLocation.TempleOfFiends1Room3, MapLocation.TempleOfFiends1Room4, MapLocation.TempleOfFiends2, MapLocation.TempleOfFiends3,
+					MapLocation.TempleOfFiendsPhantom, MapLocation.TempleOfFiendsEarth, MapLocation.TempleOfFiendsFire,
+					MapLocation.TempleOfFiendsWater, MapLocation.TempleOfFiendsAir, MapLocation.TempleOfFiendsChaos } }
 			};
 
 		private static readonly List<MapLocation> StarterDestinations = new List<MapLocation> {

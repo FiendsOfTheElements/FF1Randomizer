@@ -19,10 +19,13 @@ namespace FF1Lib
 														IncentiveData incentivesData,
 														List<Item> allTreasures,
 														ItemShopSlot caravanItemLocation,
-														Dictionary<MapLocation, List<MapChange>> mapLocationRequirements,
-														Dictionary<MapLocation, Tuple<MapLocation, AccessRequirement>> mapLocationFloorRequirements,
-														Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullLocationRequirements)
+														OverworldMap overworldMap)
 		{
+			Dictionary<MapLocation, List<MapChange>> mapLocationRequirements = overworldMap.MapLocationRequirements;
+			Dictionary<MapLocation, Tuple<MapLocation, AccessRequirement>> mapLocationFloorRequirements = overworldMap.FloorLocationRequirements;
+			Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullLocationRequirements = overworldMap.FullLocationRequirements;
+			Dictionary<MapLocation, OverworldTeleportIndex> overridenOverworld = overworldMap.OverriddenOverworldLocations;
+
 			long sanityCounter = 0;
 			List<IRewardSource> placedItems;
 
@@ -197,8 +200,17 @@ namespace FF1Lib
 			{
 				if (fullLocationRequirements.TryGetValue(item.MapLocation, out var flr))
 				{
-					var label = $"{item.Item} in {item.MapLocation}, needs: ".PadRight(36);
-					Console.WriteLine($"{label}[{String.Join(" OR ", flr.Item1.Select(mapChange => mapChange.ToString()).ToArray())}] AND {flr.Item2.ToString()}");
+					var overworldLocation = item.MapLocation.ToString();
+					if (overridenOverworld != null && overridenOverworld.TryGetValue(item.MapLocation, out var overriden))
+					{
+						overworldLocation = overriden.ToString();
+					}
+
+					var itemStr = item.Item.ToString().PadRight(9);
+					var locStr = $"{item.MapLocation} ({overworldLocation})".PadRight(40);
+					var changes = $"[ {String.Join(" | ", flr.Item1.Select(mapChange => mapChange.ToString()).ToArray())} ]";
+					var reqs = flr.Item2.ToString().CompareTo("None") == 0 ? "" : $" AND {flr.Item2.ToString()}";
+					Console.WriteLine($"{itemStr}{locStr}{changes}{reqs}");
 				}
 			});
 
