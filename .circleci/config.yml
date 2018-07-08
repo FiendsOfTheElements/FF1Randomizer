@@ -68,7 +68,7 @@ jobs:
             docker build -t entroper/finalfantasyrandomizer:alpha -f Dockerfile.debug . && \
             docker push entroper/finalfantasyrandomizer:alpha
 
-  deploy:
+  deploy_production:
     <<: *defaults
     steps:
       - checkout
