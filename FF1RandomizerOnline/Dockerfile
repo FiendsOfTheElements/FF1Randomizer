@@ -1,4 +1,4 @@
-FROM microsoft/aspnetcore:2.0
+FROM microsoft/dotnet:2.1-aspnetcore-runtime
 WORKDIR /app
-COPY bin/Release/netcoreapp2.0/publish .
+COPY bin/Release/netcoreapp2.1/publish .
 ENTRYPOINT ["dotnet", "FF1RandomizerOnline.dll"]
