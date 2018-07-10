@@ -1,5 +1,5 @@
 ﻿var presets = [];
-loadPresetFile("alpha-debug.json");
+loadPresetFile("debug.json");
 loadPresetFile("beginner.json");
 loadPresetFile("default.json");
 loadPresetFile("full-npc.json");

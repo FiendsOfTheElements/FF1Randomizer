@@ -25,10 +25,11 @@ namespace Sandbox
 									IItemPlacementFlags flags, 
 									IncentiveData incentivesData, 
 									ItemShopSlot caravanItemLocation,
-									Dictionary<MapLocation, List<MapChange>> mapLocationRequirements,
-									Dictionary<MapLocation, Tuple<MapLocation, AccessRequirement>> mapLocationFloorRequirements,
-									Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullLocationRequirements)
+									OverworldMap overworldMap)
 		{
+			Dictionary<MapLocation, List<MapChange>> mapLocationRequirements = overworldMap.MapLocationRequirements;
+			Dictionary<MapLocation, Tuple<MapLocation, AccessRequirement>> mapLocationFloorRequirements = overworldMap.FloorLocationRequirements;
+			Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullLocationRequirements = overworldMap.FullLocationRequirements;
 			var placedItems = new List<IRewardSource>();
 			var treasurePool = ItemLocations.AllTreasures.Where(x => !x.IsUnused).Select(x => x.Item)
 								.Concat(ItemLists.AllNonTreasureChestItems).ToList();
@@ -62,9 +63,7 @@ namespace Sandbox
 														   incentivesData,
 														   treasurePool,
 														   itemShopItem,
-														   mapLocationRequirements,
-														   mapLocationFloorRequirements,
-														   fullLocationRequirements);
+														   overworldMap);
 				timeElapsed.Stop();
 
 				var outputIndexes = placedItems.ToLookup(x => x.Item, x => x);

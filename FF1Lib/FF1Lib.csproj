@@ -15,7 +15,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="presets\alpha-debug.json" />
+    <None Remove="presets\debug.json" />
     <None Remove="presets\beginner.json" />
     <None Remove="presets\default.json" />
     <None Remove="presets\finals.json" />
@@ -33,7 +33,7 @@
     <Content Include="DTETable.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="presets\alpha-debug.json">
+    <Content Include="presets\debug.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="presets\beginner.json">

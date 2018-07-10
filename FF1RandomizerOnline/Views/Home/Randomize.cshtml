@@ -1,14 +1,7 @@
 ﻿@using FF1Lib
 @model FF1RandomizerOnline.Models.RandomizeViewModel
 <form id="RandomizeForm" method="post" enctype="multipart/form-data" asp-controller="Home" asp-action="Randomize">
-	<h4>
-		<b>WELCOME TO FFR ALPHA - Good luck! You'll Need it!</b>
-		<ul>
-			<li>This website is updated literally anytime with no agenda or stability guarantees.</li>
-			<li>Features may appear and disappear as different developers work and refine the flags for them.</li>
-			<li>Open Progression now removes a river between dwarves and NW Castle. You can walk all the way from Coneria to Elfland now!</li>
-		</ul>
-	</h4>
+	@Html.Raw(ViewData["BuildMeta"])
 	<div id="vueScope">
 		<label class="section">Upload ROM</label><br />
 		<label class="btn btn-default"><input type="file" accept=".nes" asp-for="File" style="display: none" onchange="setFileName();" />Browse</label> <label for="File" id="file-label"></label>
@@ -37,7 +30,7 @@
 		<div class="row">
 			<div class="col-xs-12">
 				Presets:
-				<a v-on:click.prevent="preset('ALPHA DEBUG')">ALPHA DEBUG</a>,
+				@Html.Raw(ViewData["DebugOnlyPreset"])
 				<a v-on:click.prevent="preset('Default')">Defaults</a>,
 				<a v-on:click.prevent="preset('Improved Vanilla')">Improved Vanilla</a>,
 				<a v-on:click.prevent="preset('Beginner')">Beginner</a>,
