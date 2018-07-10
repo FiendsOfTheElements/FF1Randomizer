@@ -8,7 +8,7 @@ jobs:
   build:
     working_directory: ~/ff1randomizer
     docker:
-      - image: microsoft/aspnetcore-build:2.0
+      - image: microsoft/dotnet:2.1-sdk
     steps:
       - checkout
       - run:
@@ -17,10 +17,10 @@ jobs:
             cd FF1RandomizerOnline
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
               dotnet publish -c Release
-              git rev-parse HEAD > bin/Release/netcoreapp2.0/publish/version.txt
+              git rev-parse HEAD > bin/Release/netcoreapp2.1/publish/version.txt
             else
               dotnet publish -c Debug
-              git rev-parse HEAD > bin/Debug/netcoreapp2.0/publish/version.txt
+              git rev-parse HEAD > bin/Debug/netcoreapp2.1/publish/version.txt
             fi
       - persist_to_workspace:
           root: ~/ff1randomizer
