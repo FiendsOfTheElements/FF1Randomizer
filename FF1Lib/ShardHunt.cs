@@ -42,7 +42,7 @@ namespace FF1Lib
 			Data[0x7EF45] = 0x11; // Skip over orbs and shards when printing the item menu
 		}
 
-		public void ShortenToFR(List<Map> maps)
+		public void ShortenToFR(List<Map> maps, bool includeRefightTiles, MT19337 rng)
 		{
 			// Black Orb tile Warp destination change straight to an edit Chaos floor with all the ToFR Chests.
 			Data[0x00D80] = 0x80; // Map edits
@@ -54,7 +54,7 @@ namespace FF1Lib
 			Data[0x03021] = 0x01;
 
 			// ToFR Map Hack
-			Blob[] landingArea =
+			List<Blob> landingArea = new List<Blob>
 			{
 				Blob.FromHex("3F3F000101010101023F3F"),
 				Blob.FromHex("3F00045D5E5F606104023F"),
@@ -66,7 +66,14 @@ namespace FF1Lib
 				Blob.FromHex("3131303030363030303131"),
 				Blob.FromHex("31383831383A3831383831"),
 			};
-			maps[59].Put(0x00, 0x0A, landingArea);
+
+			if (includeRefightTiles)
+			{
+				var battles = new List<byte> { 0x57, 0x58, 0x59, 0x5A };
+				battles.Shuffle(rng);
+				landingArea.Add(Blob.FromHex($"31{battles[0]:X2}3131{battles[1]:X2}31{battles[2]:X2}3131{battles[3]:X2}31"));
+			}
+			maps[59].Put(0x00, 0x0A, landingArea.ToArray());
 		}
 
 		public void EnableShardHunt(MT19337 rng, int goal, bool npcShuffleEnabled)

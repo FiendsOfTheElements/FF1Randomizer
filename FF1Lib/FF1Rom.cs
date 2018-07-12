@@ -129,7 +129,7 @@ namespace FF1Lib
 
 			if (flags.ShortToFR)
 			{
-				ShortenToFR(maps);
+				ShortenToFR(maps, flags.PreserveFiendRefights, rng);
 			}
 
 			if (flags.Treasures && flags.ShardHunt && !flags.ChaosRush)

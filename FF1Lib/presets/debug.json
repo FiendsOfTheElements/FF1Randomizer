@@ -38,6 +38,7 @@
 		"CrownlessOrdeals": true,
 		"ChaosRush": false,
 		"ShortToFR": false,
+		"PreserveFiendRefights": false,
 		"Floors": true,
 
 		"MapOpenProgression": true,

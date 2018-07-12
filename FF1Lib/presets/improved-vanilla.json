@@ -15,6 +15,7 @@
 		"TransformFinalFormation": false,
 		"ChaosRush": false,
 		"ShortToFR": false,
+		"PreserveFiendRefights": false,
 
 		"MagicShops": false,
 		"MagicLevels": false,

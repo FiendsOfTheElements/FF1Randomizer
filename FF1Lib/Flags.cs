@@ -58,6 +58,8 @@ namespace FF1Lib
 		public bool ChaosRush { get; set; }
 		[FlagString(Character = ALT_GAME_MODE, FlagBit = 16)]
 		public bool ShortToFR { get; set; }
+		[FlagString(Character = ALT_GAME_MODE, FlagBit = 32)]
+		public bool PreserveFiendRefights { get; set; }
 
 		[FlagString(Character = MAGIC, FlagBit = 1)]
 		public bool MagicShops { get; set; }
