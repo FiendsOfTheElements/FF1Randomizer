@@ -209,6 +209,10 @@ namespace FF1Lib
 			Put(0x3A153, Blob.FromHex("4CF0BF")); // Replace reset respond rate with a JMP to...
 			Put(0x3BFF0, Blob.FromHex("A90785FA60")); // Set respondrate to 7
 
+			// Faster Lineup Modifications
+			var animationOffsets = new List<int> { 0x39AA0, 0x39AB4, 0x39B10, 0x39B17, 0x39B20, 0x39B27 };
+			animationOffsets.ForEach(addr => Data[addr] = 0x04);
+
 			// Move NPCs out of the way.
 			MoveNpc(MapId.Coneria, 0, 0x11, 0x02, inRoom: false, stationary: true); // North Coneria Soldier
 			MoveNpc(MapId.Coneria, 4, 0x12, 0x14, inRoom: false, stationary: true); // South Coneria Gal
