@@ -21,6 +21,23 @@ namespace FF1Lib
 		public const int FormationFrequencySize = 8;
 		public const int FormationFrequencyCount = 128;
 
+		public abstract class Enemy
+		{
+			public const int Pirate = 15;
+			public const int Garland = 105;
+			public const int Astos = 113;
+			public const int WarMech = 118;
+			public const int Lich = 119;
+			public const int Lich2 = 120;
+			public const int Kary = 121;
+			public const int Kary2 = 122;
+			public const int Kraken = 123;
+			public const int Kraken2 = 124;
+			public const int Tiamat = 125;
+			public const int Tiamat2 = 126;
+			public const int Chaos = 127;
+		}
+
 		public void ShuffleEnemyFormations(MT19337 rng)
 		{
 			// intra-zone shuffle, does not change which formations are in zomes.
@@ -65,56 +82,45 @@ namespace FF1Lib
 				newEnemies[i][7] = normalOldEnemies[i][7];
 			}
 
-			const int Pirate = 15;
-			const int WarMech = 118;
-			const int Lich = 119;
-			const int Lich2 = 120;
-			const int Kary = 121;
-			const int Kary2 = 122;
-			const int Kraken = 123;
-			const int Kraken2 = 124;
-			const int Tiamat = 125;
-			const int Tiamat2 = 126;
-			const int Chaos = 127;
 			var oldBosses = new List<Blob>
 			{
-				oldEnemies[Lich],
-				oldEnemies[Kary],
-				oldEnemies[Kraken],
-				oldEnemies[Tiamat]
+				oldEnemies[Enemy.Lich],
+				oldEnemies[Enemy.Kary],
+				oldEnemies[Enemy.Kraken],
+				oldEnemies[Enemy.Tiamat]
 			};
 			oldBosses.Shuffle(rng);
 
-			newEnemies[Lich][7] = oldBosses[0][7];
-			newEnemies[Kary][7] = oldBosses[1][7];
-			newEnemies[Kraken][7] = oldBosses[2][7];
-			newEnemies[Tiamat][7] = oldBosses[3][7];
+			newEnemies[Enemy.Lich][7] = oldBosses[0][7];
+			newEnemies[Enemy.Kary][7] = oldBosses[1][7];
+			newEnemies[Enemy.Kraken][7] = oldBosses[2][7];
+			newEnemies[Enemy.Tiamat][7] = oldBosses[3][7];
 
 			var oldBigBosses = new List<Blob>
 			{
-				oldEnemies[WarMech],
-				oldEnemies[Lich2],
-				oldEnemies[Kary2],
-				oldEnemies[Kraken2],
-				oldEnemies[Tiamat2],
-				oldEnemies[Chaos]
+				oldEnemies[Enemy.WarMech],
+				oldEnemies[Enemy.Lich2],
+				oldEnemies[Enemy.Kary2],
+				oldEnemies[Enemy.Kraken2],
+				oldEnemies[Enemy.Tiamat2],
+				oldEnemies[Enemy.Chaos]
 			};
 			oldBigBosses.Shuffle(rng);
 
-			newEnemies[WarMech][7] = oldBigBosses[0][7];
-			newEnemies[Lich2][7] = oldBigBosses[1][7];
-			newEnemies[Kary2][7] = oldBigBosses[2][7];
-			newEnemies[Kraken2][7] = oldBigBosses[3][7];
-			newEnemies[Tiamat2][7] = oldBigBosses[4][7];
-			newEnemies[Chaos][7] = oldBigBosses[5][7];
+			newEnemies[Enemy.WarMech][7] = oldBigBosses[0][7];
+			newEnemies[Enemy.Lich2][7] = oldBigBosses[1][7];
+			newEnemies[Enemy.Kary2][7] = oldBigBosses[2][7];
+			newEnemies[Enemy.Kraken2][7] = oldBigBosses[3][7];
+			newEnemies[Enemy.Tiamat2][7] = oldBigBosses[4][7];
+			newEnemies[Enemy.Chaos][7] = oldBigBosses[5][7];
 
 			if (!AllowUnsafePirates)
 			{
-				if (newEnemies[Pirate][7] < 0xFF)
+				if (newEnemies[Enemy.Pirate][7] < 0xFF)
 				{
 					int swapEnemy = newEnemies.IndexOf(newEnemies.First((enemy) => enemy[7] == 0xFF));
-					newEnemies[swapEnemy][7] = newEnemies[Pirate][7];
-					newEnemies[Pirate][7] = 0xFF;
+					newEnemies[swapEnemy][7] = newEnemies[Enemy.Pirate][7];
+					newEnemies[Enemy.Pirate][7] = 0xFF;
 				}
 			}
 

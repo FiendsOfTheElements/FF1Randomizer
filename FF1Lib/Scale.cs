@@ -22,6 +22,11 @@ namespace FF1Lib
 
 	public partial class FF1Rom : NesRom
 	{
+		public static readonly List<int> Bosses = new List<int> { Enemy.Garland, Enemy.Astos, Enemy.WarMech,
+			Enemy.Lich, Enemy.Lich2, Enemy.Kary, Enemy.Kary2, Enemy.Kraken, Enemy.Kraken2, Enemy.Tiamat, Enemy.Tiamat2, Enemy.Chaos };
+
+		public static readonly List<int> NonBossEnemies = Enumerable.Range(0, EnemyCount).Where(x => !Bosses.Contains(x)).ToList();
+
 		public const int PriceOffset = 0x37C00;
 		public const int PriceSize = 2;
 		public const int PriceCount = 240;
@@ -84,7 +89,12 @@ namespace FF1Lib
 
 		public void ScaleEnemyStats(double scale, bool wrapOverflow, MT19337 rng)
 		{
-			Enumerable.Range(0, EnemyCount).ToList().ForEach(index => ScaleSingleEnemyStats(index, scale, wrapOverflow, rng));
+			NonBossEnemies.ForEach(index => ScaleSingleEnemyStats(index, scale, wrapOverflow, rng));
+		}
+
+		public void ScaleBossStats(double scale, bool wrapOverflow, MT19337 rng)
+		{
+			Bosses.ForEach(index => ScaleSingleEnemyStats(index, scale, wrapOverflow, rng));
 		}
 
 		public void ScaleSingleEnemyStats(int index, double scale, bool wrapOverflow = false, MT19337 rng = null)
