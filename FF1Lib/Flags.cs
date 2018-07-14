@@ -34,6 +34,7 @@ namespace FF1Lib
 		private const int FORCED_PARTY_MEMBERS = 23;
 		private const int PROGRESSIVE_SCALE = 24;
 		private const int DUNGEON_ENCOUNTER_RATE = 25;
+		private const int BOSS_SCALE_FACTOR = 26;
 
 		[FlagString(Character = ITEMS, FlagBit = 1)]
 		public bool Shops { get; set; }
@@ -231,6 +232,8 @@ namespace FF1Lib
 
 		[FlagString(Character = ENEMY_SCALE_FACTOR, Multiplier = 0.1)]
 		public double EnemyScaleFactor { get; set; }
+		[FlagString(Character = BOSS_SCALE_FACTOR, Multiplier = 0.1)]
+		public double BossScaleFactor { get; set; }
 		[FlagString(Character = PRICE_SCALE_FACTOR, Multiplier = 0.1)]
 		public double PriceScaleFactor { get; set; }
 		[FlagString(Character = EXP_MULTIPLIER, Multiplier = 0.1)]

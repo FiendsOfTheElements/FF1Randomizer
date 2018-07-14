@@ -377,6 +377,11 @@ namespace FF1Lib
 				ScaleEnemyStats(flags.EnemyScaleFactor, flags.WrapStatOverflow, rng);
 			}
 
+			if (flags.BossScaleFactor > 1)
+			{
+				ScaleBossStats(flags.BossScaleFactor, flags.WrapStatOverflow, rng);
+			}
+
 			if (flags.ForcedPartyMembers > 0)
 			{
 				PartyRandomize(rng, flags.ForcedPartyMembers);

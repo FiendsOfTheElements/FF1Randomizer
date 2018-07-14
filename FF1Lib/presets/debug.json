@@ -106,6 +106,7 @@
 		"ImproveTurnOrderRandomization": true,
 
 		"EnemyScaleFactor": 1.5,
+		"BossScaleFactor": 1.5,
 		"PriceScaleFactor": 4.0,
 		"ExpMultiplier": 4.0,
 		"ExpBonus": 400,

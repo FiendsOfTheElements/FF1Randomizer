@@ -84,7 +84,31 @@ namespace FF1Lib
 
 		public void ScaleEnemyStats(double scale, bool wrapOverflow, MT19337 rng)
 		{
-			Enumerable.Range(0, EnemyCount).ToList().ForEach(index => ScaleSingleEnemyStats(index, scale, wrapOverflow, rng));
+			const int WarMech = 118;
+			const int Lich = 119;
+			const int Kary = 121;
+			const int Kraken = 123;
+			const int Tiamat = 125;
+
+			var enemyIds = Enumerable.Range(0, WarMech).ToList();
+			enemyIds.Add(Lich);
+			enemyIds.Add(Kary);
+			enemyIds.Add(Kraken);
+			enemyIds.Add(Tiamat);
+
+			enemyIds.ForEach(index => ScaleSingleEnemyStats(index, scale, wrapOverflow, rng));
+		}
+
+		public void ScaleBossStats(double scale, bool wrapOverflow, MT19337 rng)
+		{
+			const int WarMech = 118;
+			const int Lich2 = 120;
+			const int Kary2 = 122;
+			const int Tiamat2 = 126;
+			const int Chaos = 127;
+
+			var enemyIds = new List<int> { WarMech, Lich2, Kary2, Tiamat2, Chaos };
+			enemyIds.ForEach(index => ScaleSingleEnemyStats(index, scale, wrapOverflow, rng));
 		}
 
 		public void ScaleSingleEnemyStats(int index, double scale, bool wrapOverflow = false, MT19337 rng = null)
