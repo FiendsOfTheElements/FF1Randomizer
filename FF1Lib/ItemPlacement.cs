@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using RomUtilities;
@@ -59,6 +60,10 @@ namespace FF1Lib
 			{
 				unincentivizedQuestItems.Add(Item.Shard);
 			}
+
+			// Cache the final unincentivized pool so we can reset it each iteration of the loop.
+			IReadOnlyCollection<Item> cachedTreasurePool = new ReadOnlyCollection<Item>(treasurePool.ToList());
+
 			do
 			{
 				sanityCounter++;
@@ -67,6 +72,7 @@ namespace FF1Lib
 				placedItems = forcedItems.ToList();
 				var incentives = incentivePool.ToList();
 				var nonincentives = unincentivizedQuestItems.ToList();
+				treasurePool = cachedTreasurePool.ToList();
 				incentives.Shuffle(rng);
 				nonincentives.Shuffle(rng);
 
@@ -83,8 +89,11 @@ namespace FF1Lib
 					}
 					else
 					{
-						itemShopItem = treasurePool.Concat(nonincentives).Where(x => x > Item.None && x <= Item.Soft).ToList().PickRandom(rng);
-						nonincentives.Remove(itemShopItem);
+						itemShopItem = treasurePool.Concat(nonincentives).Where(x => x > Item.None && x <= Item.Soft && x != Item.Shard).ToList().PickRandom(rng);
+						if (!nonincentives.Remove(itemShopItem))
+						{
+							treasurePool.Remove(itemShopItem);
+						}
 					}
 					placedItems.Add(new ItemShopSlot(caravanItemLocation, itemShopItem));
 
@@ -157,7 +166,6 @@ namespace FF1Lib
 
 				// 6. Then place remanining incentive items and unincentivized quest items in any other chest before ToFR
 				var leftoverItems = incentives.Concat(nonincentives).ToList();
-				leftoverItems.Remove(itemShopItem);
 				leftoverItems.Shuffle(rng);
 				var leftoverItemLocations =
 					itemLocationPool
@@ -173,28 +181,19 @@ namespace FF1Lib
 			} while (!CheckSanity(placedItems, mapLocationRequirements, flags));
 
 			// 8. Place all remaining unincentivized treasures or incentivized non-quest items that weren't placed
-			var i = 0;
-			itemLocationPool =
-				itemLocationPool
-					 .Where(x => !x.IsUnused && !placedItems.Any(y => y.Address == x.Address))
-					.ToList();
+			itemLocationPool = itemLocationPool.Where(x => !x.IsUnused && !placedItems.Any(y => y.Address == x.Address)).ToList();
 			foreach (var placedItem in placedItems)
 			{
 				incentivePool.Remove(placedItem.Item);
 			}
-			foreach (var unplacedIncentive in incentivePool)
-			{
-				treasurePool.Add(unplacedIncentive);
-			}
+			treasurePool.AddRange(incentivePool);
+
+			Debug.Assert(treasurePool.Count() == itemLocationPool.Count());
 			treasurePool.Shuffle(rng);
 			itemLocationPool.Shuffle(rng);
-			foreach (var remainingTreasure in itemLocationPool)
-			{
-				placedItems.Add(NewItemPlacement(remainingTreasure, treasurePool[i]));
-				i++;
-			}
 
-			//Debug.WriteLine($"Sanity Check Fails: {sanityCounter}");
+			var leftovers = treasurePool.Zip(itemLocationPool, (treasure, location) => NewItemPlacement(location, treasure));
+			placedItems.AddRange(leftovers);
 			return placedItems;
 		}
 
