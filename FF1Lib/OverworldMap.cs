@@ -438,7 +438,7 @@ namespace FF1Lib
 			MapLocationRequirements = newRequirements.Where(x => x.Value.MapChanges != null).ToDictionary(x => x.Key, x => x.Value.MapChanges.ToList());
 			FloorLocationRequirements = newRequirements.Where(x => x.Value.MapChanges == null).ToDictionary(x => x.Key, x => x.Value.TeleportLocation);
 
-			if (flags.Verbose)
+			/* EXTREME LOGGING ///////////////////////////////////////////////////////////////////////////////////
 			{
 				dump();
 
@@ -471,6 +471,7 @@ namespace FF1Lib
 					return true;
 				});
 			}
+			/////////////////////////////////////////////////////////////////////////////////////////////////////*/
 
 			// Titan's Tunnel adjustments. The Titan Fed requirement implies access to one side of the tunnel,
 			// so it is sufficient to say feeding the titan will grant access to all walkable and canoeable nodes

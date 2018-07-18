@@ -100,7 +100,6 @@
 		bool Floors { get; }
 		bool AllowFloorMismatch { get; }
 		bool AllowStartAreaDanager { get; }
-		bool Verbose { get; }
 	}
 	public interface IVictoryConditionFlags
 	{

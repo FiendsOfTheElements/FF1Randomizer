@@ -304,8 +304,6 @@ namespace FF1Lib
 		public bool IncentivizeLefein => IncentivizeFetchNPCs;
 		public bool IncentivizeSmith => IncentivizeFetchNPCs;
 
-		public bool Verbose => false;
-
 		public static Dictionary<string, FlagStringAttribute> GetFlagStringAttributes()
 		{
 			var allProps =
