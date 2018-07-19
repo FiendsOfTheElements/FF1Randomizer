@@ -31,6 +31,11 @@ namespace FF1Lib
 		public const int PriceSize = 2;
 		public const int PriceCount = 240;
 
+		public const int ThreatLevelsOffset = 0x2CC00;
+		public const int ThreatLevelsSize = 64;
+		public const int OverworldThreatLevelOffset = 0x7C4FE;
+		public const int OceanThreatLevelOffset = 0x7C506;
+
 		// Scale is the geometric scale factor used with RNG.  Multiplier is where we make everything cheaper
 		// instead of enemies giving more gold, so we don't overflow.
 		public void ScalePrices(IScaleFlags flags, Blob[] text, MT19337 rng)
@@ -181,5 +186,69 @@ namespace FF1Lib
 			PutInBank(0x0B, 0x9B4D, Blob.FromHex("20CBCFEAEAEAEAEA"));
 		}
 
+		private void ScaleEncounterRate(double overworldMultiplier, double dungeonMultiplier)
+		{
+			if (overworldMultiplier == 0)
+			{
+				PutInBank(0x1F, 0xC50E, Blob.FromHex("EAEA"));
+			}
+			else
+			{
+				byte[] threats = new byte[] { Data[OverworldThreatLevelOffset], Data[OceanThreatLevelOffset] };
+				threats = threats.Select(x => (byte)Math.Ceiling(x * overworldMultiplier)) .ToArray();
+				Data[OverworldThreatLevelOffset] = threats[0];
+				Data[OceanThreatLevelOffset] = threats[1];
+			}
+
+			if (dungeonMultiplier == 0)
+			{
+				PutInBank(0x1F, 0xCDCC, Blob.FromHex("1860"));
+			}
+			else
+			{
+				var threats = Get(ThreatLevelsOffset, ThreatLevelsSize).ToBytes();
+				threats = threats.Select(x => (byte)Math.Ceiling(x * dungeonMultiplier)) .ToArray();
+				Put(ThreatLevelsOffset, threats);
+			}
+		}
+
+		public void ExpGoldBoost(double bonus, double multiplier)
+		{
+			var enemyBlob = Get(EnemyOffset, EnemySize * EnemyCount);
+			var enemies = enemyBlob.Chunk(EnemySize);
+
+			foreach (var enemy in enemies)
+			{
+				var exp = BitConverter.ToUInt16(enemy, 0);
+				var gold = BitConverter.ToUInt16(enemy, 2);
+
+				exp += (ushort)(bonus / multiplier);
+				gold += (ushort)(bonus / multiplier);
+
+				var expBytes = BitConverter.GetBytes(exp);
+				var goldBytes = BitConverter.GetBytes(gold);
+				Array.Copy(expBytes, 0, enemy, 0, 2);
+				Array.Copy(goldBytes, 0, enemy, 2, 2);
+			}
+
+			enemyBlob = Blob.Concat(enemies);
+
+			Put(EnemyOffset, enemyBlob);
+
+			var levelRequirementsBlob = Get(LevelRequirementsOffset, LevelRequirementsSize * LevelRequirementsCount);
+			var levelRequirementsBytes = levelRequirementsBlob.Chunk(3).Select(threeBytes => new byte[] { threeBytes[0], threeBytes[1], threeBytes[2], 0 }).ToList();
+			for (int i = 0; i < LevelRequirementsCount; i++)
+			{
+				uint levelRequirement = (uint)(BitConverter.ToUInt32(levelRequirementsBytes[i], 0) / multiplier);
+				levelRequirementsBytes[i] = BitConverter.GetBytes(levelRequirement);
+			}
+
+			Put(LevelRequirementsOffset, Blob.Concat(levelRequirementsBytes.Select(bytes => (Blob)new byte[] { bytes[0], bytes[1], bytes[2] })));
+
+			// A dirty, ugly, evil piece of code that sets the level requirement for level 2, even though that's already defined in the above table.
+			byte firstLevelRequirement = Data[0x7C04B];
+			firstLevelRequirement = (byte)(firstLevelRequirement / multiplier);
+			Data[0x7C04B] = firstLevelRequirement;
+		}
 	}
 }
