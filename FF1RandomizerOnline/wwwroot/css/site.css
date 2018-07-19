@@ -112,3 +112,10 @@ input[type=range]::-moz-range-thumb {
 a:hover {
 	cursor: pointer;
 }
+
+img {
+    margin: 2px;
+    padding: 6px;
+    background: rgb(200, 200, 200);
+    border-radius: 4px;
+}
