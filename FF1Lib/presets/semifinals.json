@@ -86,6 +86,7 @@
 		"NoPartyShuffle": true,
 		"Dash": true,
 		"BuyTen": true,
+		"EnableCritNumberDisplay": false,
 
 		"IdentifyTreasures": true,
 		"WaitWhenUnrunnable": true,

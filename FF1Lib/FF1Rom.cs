@@ -302,6 +302,11 @@ namespace FF1Lib
 				ChangeUnrunnableRunToWait();
 			}
 
+			if (flags.EnableCritNumberDisplay)
+			{
+				EnableCritNumberDisplay();
+			}
+
 			if (flags.EasyMode)
 			{
 				EnableEasyMode();
