@@ -393,10 +393,6 @@ namespace FF1Lib
 			// Overwrite the normal critical hit handler by calling ours instead
 			PutInBank(0x0C, 0xA94B, Blob.FromHex("206BC2EAEA"));
 			PutInBank(0x1F, 0xC26B, CreateLongJumpTableEntry(0x0F, 0x9295));
-			// We need to have the actual string somewhere - I don't think it's possible to hijack the existing one because it's in the wrong bank
-			PutInBank(0x0F, 0x9280, FF1Text.TextToBytes("critical hits!", false));
-			// If there's only one crit, call the normal critical hit display, otherwise do this SUPER COOL one
-			PutInBank(0x0F, 0x9295, Blob.FromHex("AD6B68C901F02EA2019D3A6BA9118D3A6BE8A9009D3A6BE8A9BB9D3A6BE8A9FF9D3A6BE8A000B980929D3A6BE8C8C00FD0F44CDC92A90F8D3A6BA92C8D3B6BA9008D3C6BEEF86AA23AA06BA904201CF7EEF86A60"));
 		}
 	}
 }
