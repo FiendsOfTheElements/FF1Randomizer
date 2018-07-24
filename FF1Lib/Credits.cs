@@ -128,8 +128,9 @@ namespace FF1Lib
 				"  Entroper",
 				"  MeridianBC",
 				"  tartopan",
-				"  nitz",
+				"  nitz, artea",
 				"  Septimus",
+				"  splitpunched",
 			},
 			new []
 			{
