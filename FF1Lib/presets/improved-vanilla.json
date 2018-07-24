@@ -14,6 +14,8 @@
 		"ExtraShards": false,
 		"TransformFinalFormation": false,
 		"ChaosRush": false,
+		"ShortToFR": false,
+		"PreserveFiendRefights": false,
 
 		"MagicShops": false,
 		"MagicLevels": false,
@@ -24,6 +26,8 @@
 		"EnemyFormationsFrequency": false,
 		"EnemyFormationsUnrunnable": false,
 		"EnemyFormationsSurprise": false,
+		"EnemyTrapTiles": false,
+		"RandomTrapFormations": false,
 
 		"EnemyScripts": false,
 		"EnemySkillsSpells": false,
@@ -34,9 +38,11 @@
 		"OrdealsPillars": false,
 		"SkyCastle4FTeleporters": false,
 		"TitansTrove": false,
+		"ConfusedOldMen": false,
 		"Floors": false,
 
 		"MapOpenProgression": false,
+		"MapOpenProgressionExtended": false,
 		"Entrances": false,
 		"Towns": false,
 
@@ -85,6 +91,7 @@
 		"NoPartyShuffle": true,
 		"Dash": true,
 		"BuyTen": true,
+		"EnableCritNumberDisplay": true,
 
 		"IdentifyTreasures": true,
 		"WaitWhenUnrunnable": true,
@@ -101,10 +108,13 @@
 		"ImproveTurnOrderRandomization": true,
 
 		"EnemyScaleFactor": 1.0,
+		"BossScaleFactor": 1.0,
 		"PriceScaleFactor": 1.0,
 		"ExpMultiplier": 1.5,
 		"ExpBonus": 150,
 		"ProgressiveScaleMode": 0,
+		"EncounterRate": 30.0,
+		"DungeonEncounterRate": 30.0,
 		"ForcedPartyMembers": 0
 
 	}

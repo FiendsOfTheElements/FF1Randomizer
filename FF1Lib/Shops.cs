@@ -16,8 +16,8 @@ namespace FF1Lib
 		public const int ShopSectionSize = 10;
 		public const ushort ShopNullPointer = 0x838E;
         private List<MapLocation> ShopMapLocationsByIndex = new List<MapLocation>{
-                MapLocation.ConeriaTown, MapLocation.Pravoka, MapLocation.ElflandTown,
-                MapLocation.CresentLake, MapLocation.Gaia, MapLocation.Onrac,
+                MapLocation.Coneria, MapLocation.Pravoka, MapLocation.Elfland,
+                MapLocation.CrescentLake, MapLocation.Gaia, MapLocation.Onrac,
                 MapLocation.Gaia, MapLocation.Gaia, MapLocation.Gaia,
                 MapLocation.Caravan
             };

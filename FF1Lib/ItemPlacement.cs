@@ -7,6 +7,12 @@ using RomUtilities;
 
 namespace FF1Lib
 {
+	public class InsaneException : Exception
+	{
+		public InsaneException(string message)
+			: base(message) { }
+	}
+
 	public static class ItemPlacement
 	{
 		public static List<IRewardSource> PlaceSaneItems(MT19337 rng,
@@ -14,8 +20,13 @@ namespace FF1Lib
 														IncentiveData incentivesData,
 														List<Item> allTreasures,
 														ItemShopSlot caravanItemLocation,
-														Dictionary<MapLocation, List<MapChange>> mapLocationRequirements)
+														OverworldMap overworldMap)
 		{
+			Dictionary<MapLocation, List<MapChange>> mapLocationRequirements = overworldMap.MapLocationRequirements;
+			Dictionary<MapLocation, Tuple<MapLocation, AccessRequirement>> mapLocationFloorRequirements = overworldMap.FloorLocationRequirements;
+			Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullLocationRequirements = overworldMap.FullLocationRequirements;
+			Dictionary<MapLocation, OverworldTeleportIndex> overridenOverworld = overworldMap.OverriddenOverworldLocations;
+
 			long sanityCounter = 0;
 			List<IRewardSource> placedItems;
 
@@ -29,8 +40,9 @@ namespace FF1Lib
 			var bridgeLocations = incentivesData.BridgeLocations.ToList();
 			var shipLocations = incentivesData.ShipLocations.ToList();
 			var itemLocationPool = incentivesData.AllValidItemLocations.ToList();
-			var startingMapLocations = mapLocationRequirements.Where(x => x.Value.Any(y => y == MapChange.None)).Select(x => x.Key);
-			var earlyMapLocations = mapLocationRequirements.Where(x => x.Value.Any(y => MapChange.Bridge.HasFlag(y))).Select(x => x.Key);
+			var startingPotentialAccess = AccessRequirement.Key | AccessRequirement.Tnt | AccessRequirement.Adamant;
+			var startingMapLocations = AccessibleMapLocations(startingPotentialAccess, MapChange.None, mapLocationRequirements, mapLocationFloorRequirements, fullLocationRequirements);
+			var earlyMapLocations = AccessibleMapLocations(startingPotentialAccess | AccessRequirement.Crystal, MapChange.Bridge, mapLocationRequirements, mapLocationFloorRequirements, fullLocationRequirements);
 
 			var unincentivizedQuestItems =
 				ItemLists.AllQuestItems
@@ -67,7 +79,7 @@ namespace FF1Lib
 			do
 			{
 				sanityCounter++;
-				if (sanityCounter > 10000) throw new InvalidOperationException("Invalid flag set");
+				if (sanityCounter > 500) throw new InsaneException("Sanity Counter exceeds 500 iterations!");
 				// 1. (Re)Initialize lists inside of loop
 				placedItems = forcedItems.ToList();
 				var incentives = incentivePool.ToList();
@@ -107,9 +119,15 @@ namespace FF1Lib
 						placedItems.Add(NewItemPlacement(canoeLocations.Where(x => !placedItems.Any(y => y.Address == x.Address)).ToList().PickRandom(rng), Item.Canoe));
 					}
 
-					var startingCanoeAvailable = placedItems.Any(x => x.Item == Item.Canoe && startingMapLocations.Contains(x.MapLocation));
-					var earlyCanoeAvailable = placedItems.Any(x => x.Item == Item.Canoe && earlyMapLocations.Contains(x.MapLocation));
-					var earlyKeyAvailable = placedItems.Any(x => x.Item == Item.Key && earlyMapLocations.Contains(x.MapLocation));
+					var startingCanoeAvailable =
+						placedItems.Any(x => x.Item == Item.Canoe && startingMapLocations.Contains(x.MapLocation) &&
+							startingMapLocations.Contains((x as MapObject)?.SecondLocation ?? MapLocation.StartingLocation));
+					var earlyCanoeAvailable =
+						placedItems.Any(x => x.Item == Item.Canoe && earlyMapLocations.Contains(x.MapLocation) &&
+							earlyMapLocations.Contains((x as MapObject)?.SecondLocation ?? MapLocation.StartingLocation));
+					var earlyKeyAvailable =
+						placedItems.Any(x => x.Item == Item.Key && earlyMapLocations.Contains(x.MapLocation) &&
+							earlyMapLocations.Contains((x as MapObject)?.SecondLocation ?? MapLocation.StartingLocation));
 
 					// 4. Place Bridge and Ship next since the valid location lists are so small, unless canoe is available and map edits are applied
 					if (!earlyCanoeAvailable || !canoeObsoletesShip)
@@ -131,11 +149,15 @@ namespace FF1Lib
 						placedItems.Add(NewItemPlacement(remainingShipLocations.PickRandom(rng), Item.Ship));
 					}
 
-					var startingShipAvailable = placedItems.Any(x => x.Item == Item.Ship && startingMapLocations.Contains(x.MapLocation));
+					var startingShipAvailable =
+						placedItems.Any(x => x.Item == Item.Ship && startingMapLocations.Contains(x.MapLocation) &&
+							startingMapLocations.Contains((x as MapObject)?.SecondLocation ?? MapLocation.StartingLocation));
 
 					if (!(startingCanoeAvailable && canoeObsoletesBridge) && !startingShipAvailable)
 					{
-						var startingKeyAvailable = earlyKeyAvailable && placedItems.Any(x => x.Item == Item.Key && startingMapLocations.Contains(x.MapLocation));
+						var startingKeyAvailable =
+							earlyKeyAvailable && placedItems.Any(x => x.Item == Item.Key && startingMapLocations.Contains(x.MapLocation) &&
+								startingMapLocations.Contains((x as MapObject)?.SecondLocation ?? MapLocation.StartingLocation));
 
 						var remainingBridgeLocations =
 							bridgeLocations
@@ -178,7 +200,32 @@ namespace FF1Lib
 				}
 
 				// 7. Check sanity and loop if needed
-			} while (!CheckSanity(placedItems, mapLocationRequirements, flags));
+			} while (!CheckSanity(placedItems, mapLocationRequirements, mapLocationFloorRequirements, fullLocationRequirements, flags));
+
+			if (Debugger.IsAttached)
+			{
+				Console.WriteLine($"ItemPlacement::PlaceSaneItems required {sanityCounter} iterations.");
+
+				var sorted = placedItems.Where(item => item.Item != Item.Shard).ToList();
+				sorted.Sort((IRewardSource lhs, IRewardSource rhs) => lhs.Item.ToString().CompareTo(rhs.Item.ToString()));
+				sorted.ForEach(item =>
+				{
+					if (fullLocationRequirements.TryGetValue(item.MapLocation, out var flr))
+					{
+						var overworldLocation = item.MapLocation.ToString();
+						if (overridenOverworld != null && overridenOverworld.TryGetValue(item.MapLocation, out var overriden))
+						{
+							overworldLocation = overriden.ToString();
+						}
+
+						var itemStr = item.Item.ToString().PadRight(9);
+						var locStr = $"{item.MapLocation} ({overworldLocation})".PadRight(40);
+						var changes = $"[ {String.Join(" | ", flr.Item1.Select(mapChange => mapChange.ToString()).ToArray())} ]";
+						var reqs = flr.Item2.ToString().CompareTo("None") == 0 ? "" : $" AND {flr.Item2.ToString()}";
+						Console.WriteLine($"{itemStr}{locStr}{changes}{reqs}");
+					}
+				});
+			}
 
 			// 8. Place all remaining unincentivized treasures or incentivized non-quest items that weren't placed
 			itemLocationPool = itemLocationPool.Where(x => !x.IsUnused && !placedItems.Any(y => y.Address == x.Address)).ToList();
@@ -213,35 +260,61 @@ namespace FF1Lib
 			}
 		}
 
+		public static IEnumerable<MapLocation> AccessibleMapLocations(
+										AccessRequirement currentAccess,
+										MapChange currentMapChanges,
+										Dictionary<MapLocation, List<MapChange>> mapLocationRequirements,
+										Dictionary<MapLocation, Tuple<MapLocation, AccessRequirement>> mapLocationFloorRequirements,
+										Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullLocationRequirements)
+		{
+			var worldMap = mapLocationRequirements
+				.Where(x => x.Value.Any(y => currentMapChanges.HasFlag(y))).Select(x => x.Key);
+			var standardMaps =
+				new HashSet<MapLocation>(mapLocationFloorRequirements
+					.Where(x => currentAccess.HasFlag(x.Value.Item2) &&
+							worldMap.Contains(x.Value.Item1)).Select(x => x.Key));
+			var count = 0;
+			while (standardMaps.Count > count)
+			{
+				count = standardMaps.Count;
+				foreach (var kvp in mapLocationFloorRequirements)
+				{
+					if (currentAccess.HasFlag(kvp.Value.Item2) && standardMaps.Contains(kvp.Value.Item1))
+						standardMaps.Add(kvp.Key);
+				}
+			}
+			return worldMap.Concat(standardMaps.ToList());
+		}
 		public static bool CheckSanity(List<IRewardSource> treasurePlacements,
 										Dictionary<MapLocation, List<MapChange>> mapLocationRequirements,
+										Dictionary<MapLocation, Tuple<MapLocation, AccessRequirement>> mapLocationFloorRequirements,
+										Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullLocationRequirements,
 										IVictoryConditionFlags victoryConditions)
 		{
 			const int maxIterations = 20;
 			var currentIteration = 0;
 			var currentAccess = AccessRequirement.None;
-			if (victoryConditions.ShardHunt)
+			if (victoryConditions.ShortToFR)
 			{
 				currentAccess |= AccessRequirement.Lute;
 			}
 
 			var currentMapChanges = MapChange.None;
 
-			Func<IEnumerable<MapLocation>> currentMapLocations =
-				() => mapLocationRequirements
-					.Where(x => x.Value
-						   .Any(y => currentMapChanges.HasFlag(y))).Select(x => x.Key);
-			Func<IEnumerable<IRewardSource>> currentItemLocations =
-				() => treasurePlacements
-						   .Where(x =>
-						   {
-							   var locations = currentMapLocations().ToList();
-							   return locations.Contains(x.MapLocation) &&
-										currentAccess.HasFlag(x.AccessRequirement) &&
-											   (!(x is MapObject) || locations.Contains(((MapObject)x).SecondLocation));
-						   });
+			IEnumerable<MapLocation> currentMapLocations()
+			{
+				return fullLocationRequirements.Where(x => x.Value.Item1.Any(y => currentMapChanges.HasFlag(y) && currentAccess.HasFlag(x.Value.Item2))).Select(x => x.Key);
+			}
+			IEnumerable<IRewardSource> currentItemLocations()
+			{
+				var locations = currentMapLocations().ToList();
+				return treasurePlacements.Where(x =>
+				{
+					return locations.Contains(x.MapLocation) && currentAccess.HasFlag(x.AccessRequirement) &&
+						locations.Contains((x as MapObject)?.SecondLocation ?? MapLocation.StartingLocation);
+				});
+			}
 
-			var accessibleLocationCount = currentItemLocations().Count();
 			var requiredAccess = AccessRequirement.All;
 			var requiredMapChanges = new List<MapChange> { MapChange.All };
 
@@ -253,6 +326,7 @@ namespace FF1Lib
 				requiredMapChanges = mapLocationRequirements[winTheGameLocation];
 			}
 
+			var accessibleLocationCount = 0;
 			while (!currentAccess.HasFlag(requiredAccess) ||
 				   !requiredMapChanges.Any(x => currentMapChanges.HasFlag(x)))
 			{
@@ -260,15 +334,21 @@ namespace FF1Lib
 				{
 					throw new InvalidOperationException($"Sanity Check hit max iterations: {currentIteration}");
 				}
+
 				currentIteration++;
-				var currentItems = currentItemLocations().Select(x => x.Item).ToList();
+				var accessibleLocations = currentItemLocations();
+				var currentItems = accessibleLocations.Select(x => x.Item).ToList();
+				if (accessibleLocations.Count() <= accessibleLocationCount)
+				{
+					return false;
+				}
+				accessibleLocationCount = accessibleLocations.Count();
 
 				if (!currentAccess.HasFlag(AccessRequirement.Key) &&
 					currentItems.Contains(Item.Key))
 					currentAccess |= AccessRequirement.Key;
 				if (!currentMapChanges.HasFlag(MapChange.Bridge) &&
-					currentItems.Contains(Item.Bridge) &&
-					currentMapLocations().Contains(MapLocation.BridgeLocation))
+					currentItems.Contains(Item.Bridge))
 					currentMapChanges |= MapChange.Bridge;
 				if (!currentAccess.HasFlag(AccessRequirement.Crown) &&
 					currentItems.Contains(Item.Crown))
@@ -297,7 +377,8 @@ namespace FF1Lib
 					currentMapChanges |= MapChange.Canal;
 				if (!currentMapChanges.HasFlag(MapChange.TitanFed) &&
 					currentItems.Contains(Item.Ruby) &&
-					currentMapLocations().Contains(MapLocation.TitansTunnelEast))
+					(currentMapLocations().Contains(MapLocation.TitansTunnelEast) ||
+					currentMapLocations().Contains(MapLocation.TitansTunnelWest)))
 					currentMapChanges |= MapChange.TitanFed;
 				if (!currentAccess.HasFlag(AccessRequirement.Rod) &&
 					currentItems.Contains(Item.Rod))
@@ -306,7 +387,7 @@ namespace FF1Lib
 					currentItems.Contains(Item.Slab))
 					currentAccess |= AccessRequirement.Slab;
 				if (!currentMapChanges.HasFlag(MapChange.Airship) &&
-					(currentItems.Contains(Item.Floater)) && // || currentItems.Contains(Item.Airship)) &&
+					(currentItems.Contains(Item.Floater)) &&
 					currentMapLocations().Contains(MapLocation.AirshipLocation))
 					currentMapChanges |= MapChange.Airship;
 
@@ -338,12 +419,7 @@ namespace FF1Lib
 					currentItems.Contains(Item.Lute))
 					currentAccess |= AccessRequirement.Lute;
 
-				var newCount = currentItemLocations().Count();
-				if (newCount <= accessibleLocationCount)
-				{
-					return false;
-				}
-				accessibleLocationCount = newCount;
+
 			}
 
 			return true;

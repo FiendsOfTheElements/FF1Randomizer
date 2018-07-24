@@ -1,5 +1,5 @@
 ﻿{
-	"Name": "ALPHA DEBUG",
+	"Name": "DEBUG",
 
 	"Flags": {
 
@@ -14,7 +14,7 @@
 		"ExtraShards": false,
 		"TransformFinalFormation": false,
 
-		"MagicShops": true,
+		"MagicShops": false,
 		"MagicLevels": true,
 		"MagicPermissions": false,
 		"ItemMagic": true,
@@ -23,6 +23,8 @@
 		"EnemyFormationsFrequency": true,
 		"EnemyFormationsUnrunnable": true,
 		"EnemyFormationsSurprise": true,
+		"EnemyTrapTiles": true,
+		"RandomTrapFormations": true,
 
 		"EnemyScripts": true,
 		"EnemySkillsSpells": true,
@@ -32,11 +34,15 @@
 		"OrdealsPillars": true,
 		"SkyCastle4FTeleporters": true,
 		"TitansTrove": true,
+		"ConfusedOldMen": true,
 		"CrownlessOrdeals": true,
 		"ChaosRush": false,
+		"ShortToFR": false,
+		"PreserveFiendRefights": false,
 		"Floors": true,
 
 		"MapOpenProgression": true,
+		"MapOpenProgressionExtended": true,
 		"Entrances": true,
 		"Towns": true,
 
@@ -84,6 +90,7 @@
 		"NoPartyShuffle": true,
 		"Dash": true,
 		"BuyTen": true,
+		"EnableCritNumberDisplay": true,
 
 		"IdentifyTreasures": true,
 		"WaitWhenUnrunnable": true,
@@ -100,11 +107,13 @@
 		"ImproveTurnOrderRandomization": true,
 
 		"EnemyScaleFactor": 1.5,
+		"BossScaleFactor": 1.5,
 		"PriceScaleFactor": 4.0,
 		"ExpMultiplier": 4.0,
 		"ExpBonus": 400,
 		"ProgressiveScaleMode": 1,
-		"EncounterRate": 8.0,
+		"EncounterRate": 15.0,
+		"DungeonEncounterRate": 15.0,
 		"ForcedPartyMembers": 2
 
 	}

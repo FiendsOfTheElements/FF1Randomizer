@@ -92,6 +92,7 @@ namespace FF1Lib
 		public const int TilesetDataOffset = 0x00800;
 		public const int TilesetDataSize = 2;
 		public const int TilesetDataCount = 128;
+		public const int TilesetCount = 8;
 
 		public const int MapObjJumpTableOffset = 0x390D3;
 		public const int JumpTablePointerSize = 2;
@@ -100,7 +101,48 @@ namespace FF1Lib
 		public const int MapObjSize = 4;
 		public const int MapObjCount = 0xD0;
 
+		public const int FirstBossEncounterIndex = 0x73;
+
 		const ushort TalkFight = 0x94AA;
+
+		public void ShuffleTrapTiles(MT19337 rng, bool randomize)
+		{
+			// This is magic BNE code that enables formation 1 trap tiles but we have to change
+			// all the 0x0A 0x80 into 0x0A 0x00 and use 0x00 for random encounters instead of 0x80.
+			Data[0x7CDC5] = 0xD0;
+
+			bool IsBattleTile(Blob tuple) => tuple[0] == 0x0A;
+			bool IsRandomBattleTile(Blob tuple) => IsBattleTile(tuple) && (tuple[1] & 0x80) != 0x00;
+			bool IsNonBossTrapTile(Blob tuple) => IsBattleTile(tuple) && tuple[1] > 0 && tuple[1] < FirstBossEncounterIndex;
+
+			var tilesets = Get(TilesetDataOffset, TilesetDataCount * TilesetDataSize * TilesetCount).Chunk(TilesetDataSize).ToList();
+			List<byte> encounters;
+
+			if (randomize)
+			{
+				encounters = Enumerable.Range(128, FirstBossEncounterIndex).Select(value => (byte)value).ToList();
+				encounters.Add(0xFF); // IronGOL
+			}
+			else
+			{
+				var traps = tilesets.Where(IsNonBossTrapTile).ToList();
+				encounters = traps.Select(trap => trap[1]).ToList();
+			} 
+
+			tilesets.ForEach(tile =>
+			{
+				if (IsNonBossTrapTile(tile))
+				{
+					tile[1] = encounters.SpliceRandom(rng);
+				}
+				else if (IsRandomBattleTile(tile))
+				{
+					tile[1] = 0x00;
+				}
+			});
+
+			Put(TilesetDataOffset, tilesets.SelectMany(tileset => tileset.ToBytes()).ToArray());
+		}
 
 		private struct OrdealsRoom
 		{
@@ -236,19 +278,11 @@ namespace FF1Lib
 
 		public void ShuffleSkyCastle4F(MT19337 rng, List<Map> maps)
 		{
+		    // Don't shuffle the return teleporter as Floor and Entrance shuffle might want to edit it.	
 			var map = maps[(byte)MapId.SkyPalace4F];
-
-			var downTeleporter = (x: 0x03, y: 0x03);
 			var upTeleporter = (x: 0x23, y: 0x23);
-
 			var dest = GetSkyCastleFloorTile(rng, map);
 			SwapTiles(map, upTeleporter, dest);
-			dest = GetSkyCastleFloorTile(rng, map);
-			SwapTiles(map, downTeleporter, dest);
-
-			const byte TeleportIndex3FTo4F = 0x2E;
-			Put(TeleportOffset + TeleportIndex3FTo4F, new [] { (byte)dest.x });
-			Put(TeleportOffset + TeleportCount + TeleportIndex3FTo4F, new [] { (byte)dest.y });
 		}
 
 		private (int x, int y) GetSkyCastleFloorTile(MT19337 rng, Map map)

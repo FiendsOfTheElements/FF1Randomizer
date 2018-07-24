@@ -13,7 +13,7 @@ namespace FF1Lib
 	// ReSharper disable once InconsistentNaming
 	public partial class FF1Rom : NesRom
 	{
-		public const string Version = "2.3.1";
+		public const string Version = "2.4.0";
 
 		public const int RngOffset = 0x7F100;
 		public const int RngSize = 256;
@@ -90,9 +90,9 @@ namespace FF1Lib
 			PermanentCaravan();
 			ShiftEarthOrbDown();
 
-			var overworldMap = new OverworldMap(this, flags);
+			var palettes = OverworldMap.GeneratePalettes(Get(OverworldMap.MapPaletteOffset, MapCount * OverworldMap.MapPaletteSize).Chunk(OverworldMap.MapPaletteSize));
+			var overworldMap = new OverworldMap(this, flags, palettes);
 			var maps = ReadMaps();
-			var incentivesData = new IncentiveData(rng, flags, overworldMap.MapLocationRequirements);
 			var shopItemLocation = ItemLocations.CaravanItemShop1;
 
 			if (flags.ModernBattlefield)
@@ -121,27 +121,54 @@ namespace FF1Lib
 				ShuffleItemMagic(rng);
 			}
 
-			if (flags.Shops)
+			if (flags.ShortToFR)
 			{
-				var excludeItemsFromRandomShops = flags.Treasures
-					? incentivesData.ForcedItemPlacements.Select(x => x.Item).Concat(incentivesData.IncentiveItems).ToList()
-					: new List<Item>();
-				shopItemLocation = ShuffleShops(rng, flags.EnemyStatusAttacks, flags.RandomWares, excludeItemsFromRandomShops);
-			}
-
-			if (flags.Treasures || flags.NPCItems || flags.NPCFetchItems)
-			{
-				ShuffleTreasures(rng, flags, incentivesData, shopItemLocation, overworldMap.MapLocationRequirements);
+				ShortenToFR(maps, flags.PreserveFiendRefights, rng);
 			}
 
 			if (flags.Treasures && flags.ShardHunt && !flags.ChaosRush)
 			{
-				EnableShardHunt(rng, flags.ExtraShards ? rng.Between(24, 30) : 16, maps, flags.NPCItems);
+				EnableShardHunt(rng, flags.ExtraShards ? rng.Between(24, 30) : 16, flags.NPCItems);
 			}
 
 			if (flags.TransformFinalFormation)
 			{
 				TransformFinalFormation((FinalFormation)rng.Between(0, Enum.GetValues(typeof(FinalFormation)).Length - 1));
+			}
+
+			var maxRetries = 500;
+			for (var i = 0; i < maxRetries; i++)
+			{
+				try
+				{
+					overworldMap = new OverworldMap(this, flags, palettes);
+					if ((flags.Entrances || flags.Floors || flags.Towns) && flags.Treasures && flags.NPCItems)
+					{
+						overworldMap.ShuffleEntrancesAndFloors(rng, flags);
+					}
+
+					var incentivesData = new IncentiveData(rng, flags, overworldMap.MapLocationRequirements, overworldMap.FloorLocationRequirements, overworldMap.FullLocationRequirements);
+
+					if (flags.Shops)
+					{
+						var excludeItemsFromRandomShops = flags.Treasures
+							? incentivesData.ForcedItemPlacements.Select(x => x.Item).Concat(incentivesData.IncentiveItems).ToList()
+							: new List<Item>();
+						shopItemLocation = ShuffleShops(rng, flags.EnemyStatusAttacks, flags.RandomWares, excludeItemsFromRandomShops);
+					}
+
+					if (flags.Treasures)
+					{
+						ShuffleTreasures(rng, flags, incentivesData, shopItemLocation, overworldMap);
+					}
+					break;
+				}
+				catch (InsaneException)
+				{
+					Console.WriteLine("Insane seed. Retrying");
+					if (maxRetries > (i + 1)) continue;
+					throw new InvalidOperationException("Failed Sanity Check too many times");
+				}
 			}
 
 			if (flags.MagicShops)
@@ -190,6 +217,11 @@ namespace FF1Lib
 				ShuffleEnemyFormations(rng);
 			}
 
+			if (flags.EnemyTrapTiles)
+			{
+				ShuffleTrapTiles(rng, flags.RandomTrapFormations);
+			}
+
 			if (flags.OrdealsPillars)
 			{
 				ShuffleOrdeals(rng, maps);
@@ -198,6 +230,11 @@ namespace FF1Lib
 			if (flags.SkyCastle4FTeleporters)
 			{
 				ShuffleSkyCastle4F(rng, maps);
+			}
+
+			if (flags.ConfusedOldMen)
+			{
+				EnableConfusedOldMen(rng);
 			}
 
 			if (flags.CrownlessOrdeals)
@@ -219,7 +256,7 @@ namespace FF1Lib
 			{
 				EnableEarlySage();
 			}
-			
+
 			if (flags.FreeBridge)
 			{
 				EnableFreeBridge();
@@ -234,7 +271,7 @@ namespace FF1Lib
 			{
 				EnableFreeOrbs();
 			}
-			
+
 			if (flags.NoPartyShuffle)
 			{
 				DisablePartyShuffle();
@@ -263,6 +300,11 @@ namespace FF1Lib
 			if (flags.WaitWhenUnrunnable)
 			{
 				ChangeUnrunnableRunToWait();
+			}
+
+			if (flags.EnableCritNumberDisplay)
+			{
+				EnableCritNumberDisplay();
 			}
 
 			if (flags.EasyMode)
@@ -314,7 +356,8 @@ namespace FF1Lib
 			// var dialogueText = ReadText(DialogueTextPointerOffset, DialogueTextPointerBase, DialogueTextPointerCount);
 			FixVanillaRibbon(itemText);
 			ExpGoldBoost(flags.ExpBonus, flags.ExpMultiplier);
-			ScalePrices(flags.PriceScaleFactor, flags.ExpMultiplier, flags.VanillaStartingGold, itemText, rng);
+			ScalePrices(flags, itemText, rng);
+			ScaleEncounterRate(flags.EncounterRate / 30.0, flags.DungeonEncounterRate / 30.0);
 
 
 			if (flags.WarMECHMode != WarMECHMode.Vanilla)
@@ -330,7 +373,12 @@ namespace FF1Lib
 
 			if (flags.EnemyScaleFactor > 1)
 			{
-				ScaleEnemyStats(flags.EnemyScaleFactor, rng);
+				ScaleEnemyStats(flags.EnemyScaleFactor, flags.WrapStatOverflow, rng);
+			}
+
+			if (flags.BossScaleFactor > 1)
+			{
+				ScaleBossStats(flags.BossScaleFactor, flags.WrapStatOverflow, rng);
 			}
 
 			if (flags.ForcedPartyMembers > 0)
@@ -395,21 +443,6 @@ namespace FF1Lib
 			// Put LongJump routine 6 bytes after UpdateJoy used to be
 			PutInBank(0x1F, 0xD7C8, Blob.FromHex("85E99885EA6885EB6885ECA001B1EB85EDC8B1EB85EEC8ADFC6085E8B1EB2003FEA9D748A9F548A5E9A4EA6CED0085E9A5E82003FEA5E960"));
 			// LongJump entries can start at 0xD800 and must stop before 0xD850 (at which point additional space will need to be freed to make room)
-
-			/* Locations of tracked stats:
-			 *	Steps:          $60A0 (24-bit)
-			 *	Hard Resets:    $64A3 (16-bit)
-			 *	Soft Resets:    $64A5 (16-bit)
-			 *	Battles:        $60A7 (16-bit)
-			 *	Ambushes:       $60A9 (16-bit)
-			 *	Strike Firsts:  $60AB (16-bit)
-			 *	Close Calls...: $60AD (16-bit)
-			 *	Damage Dealt:   $60AF (24-bit)
-			 *	Damage Taken:   $60B2 (24-bit)
-			 *	Perished:		$64B5 (8-bit)
-			 *	"Nothing Here":	$60B6 (8-bit)
-			 *	Chests Open     $60B7 (8-bit)
-			*/
 
 			// Patches for various tracking variables follow:
 			// Pedometer + chests opened
@@ -485,6 +518,15 @@ namespace FF1Lib
 			//Division routine
 			PutInBank(0x0F, 0x90C0, Blob.FromHex("8A48A9008513A210261026112613A513C5129004E512851326102611CAD0EDA513851268AA60"));
 			// Progressive scaling also writes to 0x9100 approaching 200 bytes, begin next Put at 0x9200.
+
+			// Replace Overworld to Floor and Floor to Floor teleport code to JSR out to 0x9200 to set X / Y AND inroom from unused high bit of X.
+			PutInBank(0x1F, 0xC1E2, Blob.FromHex("A9002003FEA545293FAABD00AC8510BD20AC8511BD40AC8548AABDC0AC8549A90F2003FE200092EAEAEAEAEAEA"));
+			PutInBank(0x1F, 0xC968, Blob.FromHex("A9002003FEA645BD00AD8510BD40AD8511BD80AD8548AABDC0AC8549A90F2003FE200092EAEA"));
+			PutInBank(0x0F, 0x9200, Blob.FromHex("A200A5100A9002A2814A38E907293F8529A5110A9002860D4A38E907293F852A60"));
+
+			// Critical hit display for number of hits
+			PutInBank(0x0F, 0x9280, FF1Text.TextToBytes("critical hits!", false));
+			PutInBank(0x0F, 0x9295, Blob.FromHex("AD6B68C901F02EA2019D3A6BA9118D3A6BE8A9009D3A6BE8A9BB9D3A6BE8A9FF9D3A6BE8A000B980929D3A6BE8C8C00FD0F44CDC92A90F8D3A6BA92C8D3B6BA9008D3C6BEEF86AA23AA06BA904201CF7EEF86A60"));
 		}
 
 		public void MakeSpaceIn1F()
@@ -574,43 +616,5 @@ namespace FF1Lib
 			Put(RngOffset, rngTable.SelectMany(blob => blob.ToBytes()).ToArray());
 		}
 
-		public void ExpGoldBoost(double bonus, double multiplier)
-		{
-			var enemyBlob = Get(EnemyOffset, EnemySize * EnemyCount);
-			var enemies = enemyBlob.Chunk(EnemySize);
-
-			foreach (var enemy in enemies)
-			{
-				var exp = BitConverter.ToUInt16(enemy, 0);
-				var gold = BitConverter.ToUInt16(enemy, 2);
-
-				exp += (ushort)(bonus / multiplier);
-				gold += (ushort)(bonus / multiplier);
-
-				var expBytes = BitConverter.GetBytes(exp);
-				var goldBytes = BitConverter.GetBytes(gold);
-				Array.Copy(expBytes, 0, enemy, 0, 2);
-				Array.Copy(goldBytes, 0, enemy, 2, 2);
-			}
-
-			enemyBlob = Blob.Concat(enemies);
-
-			Put(EnemyOffset, enemyBlob);
-
-			var levelRequirementsBlob = Get(LevelRequirementsOffset, LevelRequirementsSize * LevelRequirementsCount);
-			var levelRequirementsBytes = levelRequirementsBlob.Chunk(3).Select(threeBytes => new byte[] { threeBytes[0], threeBytes[1], threeBytes[2], 0 }).ToList();
-			for (int i = 0; i < LevelRequirementsCount; i++)
-			{
-				uint levelRequirement = (uint)(BitConverter.ToUInt32(levelRequirementsBytes[i], 0) / multiplier);
-				levelRequirementsBytes[i] = BitConverter.GetBytes(levelRequirement);
-			}
-
-			Put(LevelRequirementsOffset, Blob.Concat(levelRequirementsBytes.Select(bytes => (Blob)new byte[] { bytes[0], bytes[1], bytes[2] })));
-
-			// A dirty, ugly, evil piece of code that sets the level requirement for level 2, even though that's already defined in the above table.
-			byte firstLevelRequirement = Data[0x7C04B];
-			firstLevelRequirement = (byte)(firstLevelRequirement / multiplier);
-			Data[0x7C04B] = firstLevelRequirement;
-		}
 	}
 }

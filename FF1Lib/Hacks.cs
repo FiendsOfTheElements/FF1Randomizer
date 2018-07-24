@@ -209,6 +209,10 @@ namespace FF1Lib
 			Put(0x3A153, Blob.FromHex("4CF0BF")); // Replace reset respond rate with a JMP to...
 			Put(0x3BFF0, Blob.FromHex("A90785FA60")); // Set respondrate to 7
 
+			// Faster Lineup Modifications
+			var animationOffsets = new List<int> { 0x39AA0, 0x39AB4, 0x39B10, 0x39B17, 0x39B20, 0x39B27 };
+			animationOffsets.ForEach(addr => Data[addr] = 0x04);
+
 			// Move NPCs out of the way.
 			MoveNpc(MapId.Coneria, 0, 0x11, 0x02, inRoom: false, stationary: true); // North Coneria Soldier
 			MoveNpc(MapId.Coneria, 4, 0x12, 0x14, inRoom: false, stationary: true); // South Coneria Gal
@@ -221,6 +225,18 @@ namespace FF1Lib
 			MoveNpc(MapId.EarthCaveB3, 8, 0x0A, 0x0C, inRoom: true, stationary: false); // Earth Cave Bat B3
 			MoveNpc(MapId.EarthCaveB3, 9, 0x09, 0x25, inRoom: false, stationary: false); // Earth Cave Bat B3
 			MoveNpc(MapId.EarthCaveB5, 1, 0x22, 0x34, inRoom: false, stationary: false); // Earth Cave Bat B5
+		}
+
+		public void EnableConfusedOldMen(MT19337 rng)
+		{
+			List<(byte, byte)> coords = new List<(byte, byte)> {
+				( 0x2A, 0x0A ), ( 0x28, 0x0B ), ( 0x26, 0x0B ), ( 0x24, 0x0A ), ( 0x23, 0x08 ), ( 0x23, 0x06 ),
+				( 0x24, 0x04 ), ( 0x26, 0x03 ), ( 0x28, 0x03 ), ( 0x28, 0x04 ), ( 0x2B, 0x06 ), ( 0x2B, 0x08 )
+			};
+			coords.Shuffle(rng);
+
+			List<int> sages = Enumerable.Range(0, 12).ToList(); // But the 12th Sage is actually id 12, not 11.
+			sages.ForEach(sage => MoveNpc(MapId.CrescentLake, sage < 11 ? sage : 12, coords[sage].Item1, coords[sage].Item2, inRoom: false, stationary: false));
 		}
 
 		public void EnableIdentifyTreasures()
@@ -239,7 +255,7 @@ namespace FF1Lib
 			Put(0x38248, Blob.FromHex("8BB8BC018BB8BCFF8180018EBB5B00"));
 			Put(0x3A8E4, Blob.FromHex("A903203BAAA9122026AAA90485634C07A9A903203BAAA91F2026AAA90385634C07A9EA"));
 			Put(0x3A32C, Blob.FromHex("71A471A4"));
-			Put(0x3A45A, Blob.FromHex("2066A420EADD20EFA74CB9A3A202BD0D039510CA10F860A909D002A925205BAAA5664A900920B1A8B0EC0662900520F5A8B0E3A562F0054A90DCA909856AA90D205BAA2057A8B0D82076AAA66AF017861318A200A003BD0D0375109D0D03E888D0F4C613D0EB2068AA20C2A8B0ADA562D0A9208CAA9005A9104C77A4AE0C03BD206038656AC9649005A90C4C77A49D206020F3A4A9134C77A4A200A00338BD1C60FD0D039D1C60E888D0F34CEFA7"));
+			Put(0x3A45A, Blob.FromHex("2066A420EADD20EFA74CB9A3A202BD0D039510CA10F860A909D002A925205BAAA5664A9009EAEAEAEAEAEAEAEAEA20F5A8B0E3A562F0054A90DCA909856AA90D205BAA2057A8B0D82076AAA66AF017861318A200A003BD0D0375109D0D03E888D0F4C613D0EB2068AA20C2A8B0ADA562D0A9208CAA9005A9104C77A4AE0C03BD206038656AC9649005A90C4C77A49D206020F3A4A9134C77A4A200A00338BD1C60FD0D039D1C60E888D0F34CEFA7"));
 			Put(0x3AA65, Blob.FromHex("2076AAA90E205BAA2066A4208E8E4C32AAA662BD00038D0C0320B9ECA202B5109D0D03CA10F860A202BD0D03DD1C60D004CA10F51860"));
 			Put(0x3A390, Blob.FromHex("208CAA"));
 			Put(0x3A3E0, Blob.FromHex("208CAA"));
@@ -250,10 +266,7 @@ namespace FF1Lib
 
 		private void EnableEasyMode()
 		{
-			var newRng = Get(RngOffset, RngSize).ToBytes()
-				.Select(x => (byte)Math.Min(240, x * 5))
-				.ToArray();
-			Put(RngOffset, newRng);
+			ScaleEncounterRate(0.20, 0.20);
 			var enemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
 			foreach (var enemy in enemies)
 			{
@@ -373,6 +386,13 @@ namespace FF1Lib
 
 			// Rewrite turn order shuffle to Fisher-Yates.
 			Put(0x3217A, Blob.FromHex("A90C8D8E68A900AE8E68205DAEA8AE8E68EAEAEAEAEAEA"));
+		}
+
+		public void EnableCritNumberDisplay()
+		{
+			// Overwrite the normal critical hit handler by calling ours instead
+			PutInBank(0x0C, 0xA94B, Blob.FromHex("206BC2EAEA"));
+			PutInBank(0x1F, 0xC26B, CreateLongJumpTableEntry(0x0F, 0x9295));
 		}
 	}
 }

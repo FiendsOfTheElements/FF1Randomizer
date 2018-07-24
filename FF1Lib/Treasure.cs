@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using RomUtilities;
@@ -29,8 +30,13 @@ namespace FF1Lib
 													IItemPlacementFlags flags,
 													IncentiveData incentivesData,
 													ItemShopSlot caravanItemLocation,
-													Dictionary<MapLocation, List<MapChange>> mapLocationRequirements)
+                                                    OverworldMap overworldMap)
 		{
+			Dictionary<MapLocation, List<MapChange>> mapLocationRequirements = overworldMap.MapLocationRequirements;
+			Dictionary<MapLocation, Tuple<MapLocation, AccessRequirement>> mapLocationFloorRequirements = overworldMap.FloorLocationRequirements;
+			Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullFloorRequirements = overworldMap.FullLocationRequirements;
+			Dictionary<MapLocation, OverworldTeleportIndex> overridenOverworld = overworldMap.OverriddenOverworldLocations;
+
 			var vanillaNPCs = !flags.NPCItems && !flags.NPCFetchItems;
 			if (!vanillaNPCs)
 			{
@@ -60,7 +66,7 @@ namespace FF1Lib
 											incentivesData,
 											treasurePool,
 											caravanItemLocation,
-											mapLocationRequirements);
+											overworldMap);
 
 			if (flags.FreeBridge)
 			{
@@ -70,6 +76,10 @@ namespace FF1Lib
 			{
 				placedItems = placedItems.Select(x => x.Item != Item.Floater ? x : ItemPlacement.NewItemPlacement(x, ReplacementItem)).ToList();
 			}
+			if (flags.ShortToFR)
+			{
+				placedItems = placedItems.Select(x => x.Item != Item.Lute ? x : ItemPlacement.NewItemPlacement(x, ReplacementItem)).ToList();
+			}
 
 			// Output the results to the ROM
 			foreach (var item in placedItems.Where(x => !x.IsUnused && x.Address < 0x80000 && (!vanillaNPCs || x is TreasureChest)))
@@ -78,7 +88,13 @@ namespace FF1Lib
 				item.Put(this);
 			}
 
-			MoveShipToRewardSource(placedItems.Find(reward => reward.Item == Item.Ship));
+            // Move the ship someplace closer to where it really ends up.
+            MapLocation shipLocation = placedItems.Find(reward => reward.Item == Item.Ship).MapLocation;
+            if (overridenOverworld != null && overridenOverworld.TryGetValue(shipLocation, out var overworldIndex))
+			{
+				shipLocation = TeleportShuffle.OverworldMapLocations.TryGetValue(overworldIndex, out var vanillaShipLocation) ? vanillaShipLocation : shipLocation;
+			}
+			MoveShipToRewardSource(shipLocation);
 			return placedItems;
 		}
 
@@ -229,19 +245,24 @@ namespace FF1Lib
 				"2046DDB00CA9BD" +
 				"65619D0061"; // 40 bytes
 			const string openChest =
-				"18E67DE67DA2F09004EEB760E88A60"; // 12 bytes
+				"18E67DE67DA2F09004EEB960E88A60"; // 12 bytes
 			var giveRewardRoutine =
 				$"{checkItem}{notItem}{openChest}";
 			Put(0x7DD93, Blob.FromHex(giveRewardRoutine));
 			// See source: ~/asm/1F_DD78_OpenTreasureChestRewrite.asm
 		}
 
-		private void MoveShipToRewardSource(IRewardSource source)
+		private void MoveShipToRewardSource(MapLocation vanillaMapLocation)
 		{
 			Blob location = null;
-			if (!ItemLocations.ShipLocations.TryGetValue(source.MapLocation, out location))
+			if (!ItemLocations.ShipLocations.TryGetValue(vanillaMapLocation, out location))
 			{
 				location = Dock.Coneria;
+			    Console.WriteLine($"Ship at {vanillaMapLocation} defaults to Coneria.");
+			}
+            else
+			{
+			    Console.WriteLine($"Ship at {vanillaMapLocation}.");
 			}
 
 			Put(0x3000 + UnsramIndex.ShipX, location);

@@ -15,6 +15,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="presets\debug.json" />
     <None Remove="presets\beginner.json" />
     <None Remove="presets\default.json" />
     <None Remove="presets\finals.json" />
@@ -30,6 +31,9 @@
 
   <ItemGroup>
     <Content Include="DTETable.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="presets\debug.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="presets\beginner.json">

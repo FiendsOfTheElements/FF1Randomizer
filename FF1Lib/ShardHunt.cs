@@ -42,7 +42,41 @@ namespace FF1Lib
 			Data[0x7EF45] = 0x11; // Skip over orbs and shards when printing the item menu
 		}
 
-		public void EnableShardHunt(MT19337 rng, int goal, List<Map> maps, bool npcShuffleEnabled)
+		public void ShortenToFR(List<Map> maps, bool includeRefightTiles, MT19337 rng)
+		{
+			// Black Orb tile Warp destination change straight to an edit Chaos floor with all the ToFR Chests.
+			Data[0x00D80] = 0x80; // Map edits
+			Data[0x02D01] = 0x0F;
+			Data[0x02D41] = 0x03;
+			Data[0x02D81] = 0x3B;
+
+			// Free, useless LUTE, for completeness sake.
+			Data[0x03021] = 0x01;
+
+			// ToFR Map Hack
+			List<Blob> landingArea = new List<Blob>
+			{
+				Blob.FromHex("3F3F000101010101023F3F"),
+				Blob.FromHex("3F00045D5E5F606104023F"),
+				Blob.FromHex("0004620404040404630402"),
+				Blob.FromHex("0304040404040404040405"),
+				Blob.FromHex("0604040404040404040408"),
+				Blob.FromHex("3006040410041104040830"),
+				Blob.FromHex("3130060707070707083031"),
+				Blob.FromHex("3131303030363030303131"),
+				Blob.FromHex("31383831383A3831383831"),
+			};
+
+			if (includeRefightTiles)
+			{
+				var battles = new List<byte> { 0x57, 0x58, 0x59, 0x5A };
+				battles.Shuffle(rng);
+				landingArea.Add(Blob.FromHex($"31{battles[0]:X2}3131{battles[1]:X2}31{battles[2]:X2}3131{battles[3]:X2}31"));
+			}
+			maps[59].Put(0x00, 0x0A, landingArea.ToArray());
+		}
+
+		public void EnableShardHunt(MT19337 rng, int goal, bool npcShuffleEnabled)
 		{
 			if (goal < 1 || goal > 30)
 			{
@@ -87,30 +121,9 @@ namespace FF1Lib
 			// Fancy shard drawing code, see 0E_B8D7_DrawShardBox.asm
 			Put(0x3B87D, Blob.FromHex($"A9{ppuLowByte}8511A977A00048AD0220A9208D0620A51118692085118D0620900DAD0220A9218D0620A9038D062068A200CC3560D002A976C0{hexCount}D001608D0720C8E8E006D0EB1890C3"));
 
-			// Black Orb Override to jump to the final floor. This allows us to give out some last minute loot and
-			// and make the repeated attempts the final battle strategy take a little longer due to some walking.
+			// Black Orb Override to check for shards rather than ORBs.
 			Put(0x39502, Blob.FromHex($"AD3560C9{hexCount}300CA0CA209690E67DE67DA51160A51260"));
-
 			Put(0x7CDB3, Blob.FromHex("08CE"));
-			Data[0x00D80] = 0x80; // Map edits
-			Data[0x02D01] = 0x0F;
-			Data[0x02D41] = 0x03;
-			Data[0x02D81] = 0x3B;
-
-			// ToFR Map Hack
-			Blob[] landingArea =
-			{
-				Blob.FromHex("3F3F000101010101023F3F"),
-				Blob.FromHex("3F00045D5E5F606104023F"),
-				Blob.FromHex("0004620404040404630402"),
-				Blob.FromHex("0304040404040404040405"),
-				Blob.FromHex("0604040404040404040408"),
-				Blob.FromHex("3006040410041104040830"),
-				Blob.FromHex("3130060707070707083031"),
-				Blob.FromHex("3131303030363030303131"),
-				Blob.FromHex("31383831383A3831383831"),
-			};
-			maps[59].Put(0x00, 0x0A, landingArea);
 
 			// A little narrative overhaul.
 			Blob intro = FF1Text.TextToStory(new string[]
@@ -141,7 +154,7 @@ namespace FF1Lib
 		public Item ShardHuntTreasureSelector(Item item)
 		{
 			// The following pile of trash, plus Gold chests from 20 to 400 inclusive amount to precisely 32 chests.
-			List<Item> trash = new List<Item> { Item.Lute, Item.Heal, Item.Pure, Item.SmallKnife,
+			List<Item> trash = new List<Item> { Item.Heal, Item.Pure, Item.SmallKnife, Item.LargeKnife,
 				Item.WoodenRod, Item.Cloth, Item.WoodenShield, Item.Cap, Item.WoodenHelm, Item.Gloves };
 
 			return (trash.Contains(item) || item >= Item.Gold20 && item <= Item.Gold350) ? Item.Shard : item;
