@@ -387,5 +387,12 @@ namespace FF1Lib
 			// Rewrite turn order shuffle to Fisher-Yates.
 			Put(0x3217A, Blob.FromHex("A90C8D8E68A900AE8E68205DAEA8AE8E68EAEAEAEAEAEA"));
 		}
+
+		public void EnableCritNumberDisplay()
+		{
+			// Overwrite the normal critical hit handler by calling ours instead
+			PutInBank(0x0C, 0xA94B, Blob.FromHex("206BC2EAEA"));
+			PutInBank(0x1F, 0xC26B, CreateLongJumpTableEntry(0x0F, 0x9295));
+		}
 	}
 }
