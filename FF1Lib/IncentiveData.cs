@@ -332,12 +332,9 @@ namespace FF1Lib
 				var everythingButCanoe = ~MapChange.Canoe;
 				var everythingButOrbs = ~AccessRequirement.BlackOrb;
 				var startingPotentialAccess = AccessRequirement.Key | AccessRequirement.Tnt | AccessRequirement.Adamant;
-				var startingMapLocations =
-					ItemPlacement.AccessibleMapLocations(startingPotentialAccess, MapChange.None, mapLocationRequirements, mapLocationFloorRequirements, fullLocationRequirements);
-				var validShipMapLocations =
-					ItemPlacement.AccessibleMapLocations(startingPotentialAccess | AccessRequirement.Crystal, MapChange.Bridge, mapLocationRequirements, mapLocationFloorRequirements, fullLocationRequirements);
-				var validCanoeMapLocations =
-					ItemPlacement.AccessibleMapLocations(everythingButOrbs, everythingButCanoe, mapLocationRequirements, mapLocationFloorRequirements, fullLocationRequirements);
+				var startingMapLocations = ItemPlacement.AccessibleMapLocations(startingPotentialAccess, MapChange.None, fullLocationRequirements);
+				var validShipMapLocations = ItemPlacement.AccessibleMapLocations(startingPotentialAccess | AccessRequirement.Crystal, MapChange.Bridge, fullLocationRequirements);
+				var validCanoeMapLocations = ItemPlacement.AccessibleMapLocations(everythingButOrbs, everythingButCanoe, fullLocationRequirements);
 
 				validBridgeLocations =
 					itemLocationPool.Where(x => startingMapLocations.Contains(x.MapLocation) &&
