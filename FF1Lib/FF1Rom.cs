@@ -16,6 +16,7 @@ namespace FF1Lib
 		public const string Version = "2.4.0";
 
 		public const int RngOffset = 0x7F100;
+		public const int BattleRngOffset = 0x7FCF1;
 		public const int RngSize = 256;
 
 		public const int LevelRequirementsOffset = 0x2D000;
@@ -615,6 +616,11 @@ namespace FF1Lib
 			rngTable.Shuffle(rng);
 
 			Put(RngOffset, rngTable.SelectMany(blob => blob.ToBytes()).ToArray());
+
+			var battleRng = Get(BattleRngOffset, RngSize).Chunk(1).ToList();
+			battleRng.Shuffle(rng);
+
+			Put(BattleRngOffset, battleRng.SelectMany(blob => blob.ToBytes()).ToArray());
 		}
 
 	}
