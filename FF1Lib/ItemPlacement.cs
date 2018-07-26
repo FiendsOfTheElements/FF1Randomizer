@@ -41,8 +41,14 @@ namespace FF1Lib
 			var shipLocations = incentivesData.ShipLocations.ToList();
 			var itemLocationPool = incentivesData.AllValidItemLocations.ToList();
 			var startingPotentialAccess = AccessRequirement.Key | AccessRequirement.Tnt | AccessRequirement.Adamant;
-			var startingMapLocations = AccessibleMapLocations(startingPotentialAccess, MapChange.None, mapLocationRequirements, mapLocationFloorRequirements, fullLocationRequirements);
-			var earlyMapLocations = AccessibleMapLocations(startingPotentialAccess | AccessRequirement.Crystal, MapChange.Bridge, mapLocationRequirements, mapLocationFloorRequirements, fullLocationRequirements);
+			if (overworldMap.OverriddenOverworldLocations != null)
+			{
+				// Entrance shuffle makes reasoning about early access difficult, but just about any early
+				// item could provide progression so we should entertain all possibilities.
+				startingPotentialAccess = AccessRequirement.AllExceptEnding;
+			}
+			var startingMapLocations = AccessibleMapLocations(startingPotentialAccess, MapChange.None, fullLocationRequirements);
+			var earlyMapLocations = AccessibleMapLocations(startingPotentialAccess | AccessRequirement.Crystal, MapChange.Bridge, fullLocationRequirements);
 
 			var unincentivizedQuestItems =
 				ItemLists.AllQuestItems
@@ -263,28 +269,11 @@ namespace FF1Lib
 		public static IEnumerable<MapLocation> AccessibleMapLocations(
 										AccessRequirement currentAccess,
 										MapChange currentMapChanges,
-										Dictionary<MapLocation, List<MapChange>> mapLocationRequirements,
-										Dictionary<MapLocation, Tuple<MapLocation, AccessRequirement>> mapLocationFloorRequirements,
 										Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullLocationRequirements)
 		{
-			var worldMap = mapLocationRequirements
-				.Where(x => x.Value.Any(y => currentMapChanges.HasFlag(y))).Select(x => x.Key);
-			var standardMaps =
-				new HashSet<MapLocation>(mapLocationFloorRequirements
-					.Where(x => currentAccess.HasFlag(x.Value.Item2) &&
-							worldMap.Contains(x.Value.Item1)).Select(x => x.Key));
-			var count = 0;
-			while (standardMaps.Count > count)
-			{
-				count = standardMaps.Count;
-				foreach (var kvp in mapLocationFloorRequirements)
-				{
-					if (currentAccess.HasFlag(kvp.Value.Item2) && standardMaps.Contains(kvp.Value.Item1))
-						standardMaps.Add(kvp.Key);
-				}
-			}
-			return worldMap.Concat(standardMaps.ToList());
+			return fullLocationRequirements.Where(x => x.Value.Item1.Any(y => currentMapChanges.HasFlag(y) && currentAccess.HasFlag(x.Value.Item2))).Select(x => x.Key);
 		}
+
 		public static bool CheckSanity(List<IRewardSource> treasurePlacements,
 										Dictionary<MapLocation, List<MapChange>> mapLocationRequirements,
 										Dictionary<MapLocation, Tuple<MapLocation, AccessRequirement>> mapLocationFloorRequirements,

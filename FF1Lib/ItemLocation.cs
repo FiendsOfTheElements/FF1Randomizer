@@ -25,6 +25,7 @@ namespace FF1Lib
         WaterOrb = 0x4000, 
         AirOrb = 0x8000, 
         BlackOrb = 0xF000,
+		AllExceptEnding = 0x0FFF,
         All = 0xFFFF
     }
     public interface IRewardSource {
