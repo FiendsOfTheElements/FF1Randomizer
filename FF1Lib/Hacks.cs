@@ -392,7 +392,7 @@ namespace FF1Lib
 		{
 			// Overwrite the normal critical hit handler by calling ours instead
 			PutInBank(0x0C, 0xA94B, Blob.FromHex("206BC2EAEA"));
-			PutInBank(0x1F, 0xC26B, CreateLongJumpTableEntry(0x0F, 0x9295));
+			PutInBank(0x1F, 0xC26B, CreateLongJumpTableEntry(0x0F, 0x92A0));
 		}
 	}
 }
