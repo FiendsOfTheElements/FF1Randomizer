@@ -40,13 +40,7 @@ namespace FF1Lib
 			var bridgeLocations = incentivesData.BridgeLocations.ToList();
 			var shipLocations = incentivesData.ShipLocations.ToList();
 			var itemLocationPool = incentivesData.AllValidItemLocations.ToList();
-			var startingPotentialAccess = AccessRequirement.Key | AccessRequirement.Tnt | AccessRequirement.Adamant;
-			if (overworldMap.OverriddenOverworldLocations != null)
-			{
-				// Entrance shuffle makes reasoning about early access difficult, but just about any early
-				// item could provide progression so we should entertain all possibilities.
-				startingPotentialAccess = AccessRequirement.AllExceptEnding;
-			}
+			var startingPotentialAccess = overworldMap.StartingPotentialAccess;
 			var startingMapLocations = AccessibleMapLocations(startingPotentialAccess, MapChange.None, fullLocationRequirements);
 			var earlyMapLocations = AccessibleMapLocations(startingPotentialAccess | AccessRequirement.Crystal, MapChange.Bridge, fullLocationRequirements);
 

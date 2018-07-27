@@ -103,6 +103,7 @@ namespace FF1Lib
 				floorLocationRequirements[MapLocation.CastleOrdealsMaze] = new Tuple<MapLocation, AccessRequirement>(MapLocation.CastleOrdeals1, AccessRequirement.None);
 			}
 
+			StartingPotentialAccess = AccessRequirement.Key | AccessRequirement.Tnt | AccessRequirement.Adamant;
 			MapLocationRequirements = mapLocationRequirements;
 			FloorLocationRequirements = floorLocationRequirements;
 			UpdateFullLocationRequirements();
@@ -437,6 +438,7 @@ namespace FF1Lib
 							  x => x.Value);
 
 			// Segregate out the simple mapping into Entrances and Floors
+			StartingPotentialAccess = AccessRequirement.AllExceptEnding;
 			MapLocationRequirements = newRequirements.Where(x => x.Value.MapChanges != null).ToDictionary(x => x.Key, x => x.Value.MapChanges.ToList());
 			FloorLocationRequirements = newRequirements.Where(x => x.Value.MapChanges == null).ToDictionary(x => x.Key, x => x.Value.TeleportLocation);
 
@@ -577,6 +579,7 @@ namespace FF1Lib
 		public Dictionary<MapLocation, Tuple<MapLocation, AccessRequirement>> FloorLocationRequirements;
 		public Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> FullLocationRequirements;
 		public Dictionary<MapLocation, OverworldTeleportIndex> OverriddenOverworldLocations;
+		public AccessRequirement StartingPotentialAccess;
 
 		public const byte GrassTile = 0x00;
 		public const byte GrassBottomRightCoast = 0x06;

@@ -148,7 +148,7 @@ namespace FF1Lib
 						overworldMap.ShuffleEntrancesAndFloors(rng, flags);
 					}
 
-					var incentivesData = new IncentiveData(rng, flags, overworldMap.MapLocationRequirements, overworldMap.FloorLocationRequirements, overworldMap.FullLocationRequirements);
+					var incentivesData = new IncentiveData(rng, flags, overworldMap);
 
 					if (flags.Shops)
 					{
