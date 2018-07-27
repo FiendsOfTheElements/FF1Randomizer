@@ -86,7 +86,7 @@ namespace FF1Lib
 		public static List<TeleportDestination> NonTownForcedTopFloors =>
 		 	new List<TeleportDestination>
 			{
-				TitansTunnelEast, TitansTunnelWest, ConeriaCastle1, CastleOrdeals1
+				TitansTunnelEast, TitansTunnelWest, ConeriaCastle1, CastleOrdeals1, TempleOfFiends
 			};
 		public static List<TeleportDestination> TownTeleports =>
 		 	new List<TeleportDestination>
@@ -98,7 +98,7 @@ namespace FF1Lib
 		public static List<TeleportDestination> FreePlacementFloors =>
 			 new List<TeleportDestination>
 			{
-				ElflandCastle, NorthwestCastle, TempleOfFiends,
+				ElflandCastle, NorthwestCastle,
 				DwarfCave, MatoyasCave, SardasCave, Cardia1, Cardia2, BahamutCave1, BahamutsRoom, Cardia4, Cardia5, Cardia6,
 				IceCave1, IceCave2, IceCave3, IceCavePitRoom,
 				Waterfall,

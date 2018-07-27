@@ -298,11 +298,13 @@ namespace FF1Lib
 
 			// Grab a list of floors we haven't placed yet that can be shuffled. i.e. not including bottom of ice cave or ordeals.
 			var destinations = TeleportShuffle.FreePlacementFloors.Where(x => !placedDestinations.Contains(x.Destination)).ToList();
+			destinations.Shuffle(rng);
 
 			// Set aside a number of dead ends to accomodate all the extra branches that come about from forking floors.
 			// We need to ensure that at least this many dead ends come after the forks to avoid loose ends.
-			var extraForks = destinations.Where(x => x.Teleports.Count() > 1).SelectMany(x => x.Teleports.Skip(1)).Count();
-			if (destinations.Any()) extraForks++;
+			int extraForks = destinations.Where(x => x.Teleports.Count() > 1).SelectMany(x => x.Teleports.Skip(1)).Count();
+			extraForks += destinations.Any() ? 1 : 0;
+
 			var minimumDeadEndsAtEnd = new List<TeleportDestination>();
 			for (var i = 0; i < extraForks; i++)
 			{
