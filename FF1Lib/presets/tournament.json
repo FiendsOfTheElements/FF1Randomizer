@@ -39,6 +39,7 @@
 		"TitansTrove": false,
 		"ConfusedOldMen": false,
 		"Floors": false,
+		"AllowDeepCastles": false,
 
 		"MapOpenProgression": true,
 		"MapOpenProgressionExtended": false,

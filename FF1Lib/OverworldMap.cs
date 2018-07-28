@@ -298,26 +298,38 @@ namespace FF1Lib
 			var shuffledOverworldCount = maps.Count(x => !placedMaps.ContainsKey(x));
 
 			// Grab a list of floors we haven't placed yet that can be shuffled. i.e. not including bottom of ice cave or ordeals.
-			var destinations = TeleportShuffle.FreePlacementFloors.Where(x => !placedDestinations.Contains(x.Destination)).ToList();
-			destinations.Shuffle(rng);
+			var topfloors = TeleportShuffle.ForcedTopFloors.Where(x => !placedDestinations.Contains(x.Destination)).ToList();
+			var subfloors = TeleportShuffle.FreePlacementFloors.Where(x => !placedDestinations.Contains(x.Destination)).ToList();
+
+			// Deep "castles" for now just allows a deep ToFR but with refactoring could include others.
+			// Ordeals is a candidate but it would require map edits - it has an EXIT not a WARP due to its internal teleports.
+			if (flags.Floors && flags.AllowDeepCastles)
+			{
+				topfloors = topfloors.Where(floor => floor.Destination != TeleportShuffle.TempleOfFiends.Destination).ToList();
+				subfloors.Add(TeleportShuffle.TempleOfFiends);
+			}
+
+			topfloors.Shuffle(rng);
+			subfloors.Shuffle(rng);
 
 			// Set aside a number of dead ends to accomodate all the extra branches that come about from forking floors.
 			// We need to ensure that at least this many dead ends come after the forks to avoid loose ends.
-			int extraForks = destinations.Where(x => x.Teleports.Count() > 1).SelectMany(x => x.Teleports.Skip(1)).Count();
-			extraForks += destinations.Any() ? 1 : 0;
+			int extraForks = subfloors.Where(x => x.Teleports.Count() > 1).SelectMany(x => x.Teleports.Skip(1)).Count();
+			extraForks += subfloors.Any() ? 1 : 0;
 
 			var minimumDeadEndsAtEnd = new List<TeleportDestination>();
 			for (var i = 0; i < extraForks; i++)
 			{
-				var firstIndexOfDeadEnd = destinations.TakeWhile(x => x.Teleports.Any()).Count();
-				minimumDeadEndsAtEnd.Add(destinations[firstIndexOfDeadEnd]);
-				destinations.RemoveAt(firstIndexOfDeadEnd);
+				var firstIndexOfDeadEnd = subfloors.TakeWhile(x => x.Teleports.Any()).Count();
+				minimumDeadEndsAtEnd.Add(subfloors[firstIndexOfDeadEnd]);
+				subfloors.RemoveAt(firstIndexOfDeadEnd);
 			}
 
-			// Shuffle the destinations and keep the ones that aren't already placed, and then bolt-on the held over dead ends from above.
+			// Shuffle again now that we've removed some to be placed at the end. Maybe unnecessary.
+			subfloors.Shuffle(rng);
+
 			// This will be the initial dataset from which we attempt to create a workable overworld and dungeon floor shuffling.
-			destinations.Shuffle(rng);
-			destinations = TeleportShuffle.ForcedTopFloors.Where(x => !placedDestinations.Contains(x.Destination)).Concat(destinations).Concat(minimumDeadEndsAtEnd).ToList();
+			var destinations = topfloors.Concat(subfloors).Concat(minimumDeadEndsAtEnd).ToList();
 			var sanity = 0;
 			Dictionary<OverworldTeleportIndex, TeleportDestination> shuffled;
 			Dictionary<TeleportIndex, TeleportDestination> shuffledFloors;

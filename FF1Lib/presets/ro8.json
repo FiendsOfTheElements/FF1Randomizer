@@ -35,6 +35,7 @@
 		"SkyCastle4FTeleporters": false,
 		"TitansTrove": true,
 		"Floors": false,
+		"AllowDeepCastles": false,
 
 		"MapOpenProgression": true,
 		"MapOpenProgressionExtended": false,

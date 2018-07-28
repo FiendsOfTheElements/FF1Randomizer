@@ -93,10 +93,11 @@ namespace FF1Lib
 			{
 				Coneria, Pravoka, Elfland, Melmond, CrescentLake, Gaia, Onrac, Lefein
 			};
+
 		public static List<TeleportDestination> ForcedTopFloors =>
-		 	TownTeleports.Concat(NonTownForcedTopFloors).ToList();
+			TownTeleports.Concat(NonTownForcedTopFloors).ToList();
 		public static List<TeleportDestination> FreePlacementFloors =>
-			 new List<TeleportDestination>
+			new List<TeleportDestination>
 			{
 				ElflandCastle, NorthwestCastle,
 				DwarfCave, MatoyasCave, SardasCave, Cardia1, Cardia2, BahamutCave1, BahamutsRoom, Cardia4, Cardia5, Cardia6,
@@ -110,7 +111,7 @@ namespace FF1Lib
 				SkyPalace1, SkyPalace2, SkyPalace3, SkyPalaceMaze, SkyPalaceTiamat
 			};
 		public static List<TeleportDestination> FloorTeleports =>
-		 	ForcedTopFloors.Concat(FreePlacementFloors).ToList();
+			ForcedTopFloors.Concat(FreePlacementFloors).ToList();
 
 		public static Dictionary<OverworldTeleportIndex, Coordinate> OverworldCoordinates =>
 			new Dictionary<OverworldTeleportIndex, Coordinate>

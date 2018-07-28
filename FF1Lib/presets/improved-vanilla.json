@@ -45,6 +45,7 @@
 		"MapOpenProgressionExtended": false,
 		"Entrances": false,
 		"Towns": false,
+		"AllowDeepCastles": false,
 
 		"IncentivizeFreeNPCs": false,
 		"IncentivizeFetchNPCs": false,

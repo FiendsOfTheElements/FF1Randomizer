@@ -98,7 +98,7 @@
 		bool Entrances { get; }
 		bool Towns { get; }
 		bool Floors { get; }
-		bool AllowFloorMismatch { get; }
+		bool AllowDeepCastles { get; }
 		bool AllowStartAreaDanager { get; }
 	}
 	public interface IVictoryConditionFlags

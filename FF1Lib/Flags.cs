@@ -113,7 +113,7 @@ namespace FF1Lib
 		[FlagString(Character = OVERWORLD_MAP, FlagBit = 8)]
 		public bool Floors { get; set; }
 		[FlagString(Character = OVERWORLD_MAP, FlagBit = 16)]
-		public bool AllowFloorMismatch { get; set; }
+		public bool AllowDeepCastles { get; set; }
 		[FlagString(Character = OVERWORLD_MAP, FlagBit = 32)]
 		public bool MapOpenProgressionExtended { get; set; }
 
