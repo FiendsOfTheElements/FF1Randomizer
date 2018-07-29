@@ -30,14 +30,13 @@ namespace FF1Lib
 			List<Blob> spellNames = Get(SpellNamesOffset, SpellNamesSize * SpellNamesCount).Chunk(SpellNamesSize);
 			var Spells = spellNames.Select((blob, i) => new MagicSpell // creat a list of all spells 
 			{
-				Data = Blob.FromInts(new int[1] { i + 1 }), // spells are 1 based
+				Data = null,
 				Index = (byte)i,
 				Name = FF1Text.TextToBytes(FF1Text.BytesToText(blob).PadRight(6), false, FF1Text.Delimiter.Empty),
 			}).ToList();
 
 			Spells.RemoveAll(spell => SpellsToRemove.Contains(spell.Index)); // Remove the spells specified in SpellsToRemove
 			Spells.Shuffle(rng); // Shuffle all spells remaining, then assign to each item that can cast a spell
-
 			foreach (var item in Spells.Zip(ItemLists.AllMagicItem, (s, i) => new { Spell = s, Item = i }))
 			{
 				WriteItemSpellData(item.Spell, item.Item);
@@ -47,15 +46,22 @@ namespace FF1Lib
 		private void WriteItemSpellData(MagicSpell Spell, Item item)
 		{
 			// Set the spell an item casts
-			var output = Spell.Data.ToHex().Remove(2);
 			var offset = WeaponOffset + 0x8 * Math.Min((byte)item - WeaponStart, ArmorStart - WeaponStart) + 0x4 * Math.Max(0, (byte)item - ArmorStart) + MagicBitOffset;
-			Put(offset, Blob.FromHex(output));
+			Data[offset] = (byte)(Spell.Index + 1);
 
-			// if the item is the Defense, overwrite the last character in the name, otherwise, keep the icon there.
-			Debug.Assert(Spell.Name.Length == 6);
-			output = Spell.Name.ToHex() + (item == Item.Defense ? "FF" : "");
+			// Setup the text of the item's name to include the spell name.
 			offset = GearTextOffset + ((byte)item > (byte)Item.Ribbon ? 1 : 0) + GearTextSize * ((byte)item - WeaponStart);
-			Put(offset, Blob.FromHex(output));
+			if (Get(offset, 1)[0] > 200)
+			{
+				offset++; // If the first byte is in the icon range, bump the pointer to overwrite after it.
+			}
+			else if (Get(offset + 6, 1)[0] <= 200)
+			{
+				Data[offset + 6] = 0xFF; // Erase final non-icon characters from name.
+			}
+
+			Debug.Assert(Spell.Name.Length == 6);
+			Put(offset, Spell.Name);
 		}
 
 		public void CastableItemTargeting()
