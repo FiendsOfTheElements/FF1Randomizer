@@ -362,7 +362,10 @@ namespace FF1Lib
 					currentItems.Contains(Item.Ruby) &&
 					(currentMapLocations().Contains(MapLocation.TitansTunnelEast) ||
 					currentMapLocations().Contains(MapLocation.TitansTunnelWest)))
+				{
 					currentMapChanges |= MapChange.TitanFed;
+					currentAccess |= AccessRequirement.Ruby;
+				}
 				if (!currentAccess.HasFlag(AccessRequirement.Rod) &&
 					currentItems.Contains(Item.Rod))
 					currentAccess |= AccessRequirement.Rod;

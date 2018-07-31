@@ -20,13 +20,14 @@ namespace FF1Lib
 		Tnt = 0x0200,
 		Adamant = 0x0400,
 		Slab = 0x0800,
-		EarthOrb = 0x1000,
-		FireOrb = 0x2000,
-		WaterOrb = 0x4000,
-		AirOrb = 0x8000,
-		BlackOrb = 0xF000,
-		AllExceptEnding = 0x0FFF,
-		All = 0xFFFF
+		Ruby = 0x1000,
+		EarthOrb = 0x10000,
+		FireOrb = 0x20000,
+		WaterOrb = 0x40000,
+		AirOrb = 0x80000,
+		BlackOrb = 0xF0000,
+		AllExceptEnding = 0x00001FFF,
+		All = 0x000F1FFF
 	}
 	public interface IRewardSource
 	{
