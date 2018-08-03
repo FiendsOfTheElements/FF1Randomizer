@@ -17,6 +17,25 @@ namespace FF1Lib
 	{
 		private readonly FF1Rom _rom;
 		private readonly Dictionary<Palette, Blob> _palettes;
+		private Dictionary<WalkableRegion, List<OverworldTeleportIndex>> _walkableNodes;
+		private Dictionary<CanoeableRegion, List<OverworldTeleportIndex>> _canoeableNodes;
+
+		private enum WalkableRegion
+		{
+			ConeriaRegion = 0,
+			ElflandRegion = 1,
+			PravokaRegion = 2,
+			MelmondRegion = 3,
+			SardaRegion = 4,
+			BahamutRegion = 5,
+		}
+
+		private enum CanoeableRegion
+		{
+			ElflandRegion = 0,
+			PravokaRegion = 1,
+			OnracRegion = 2,
+		}
 
 		private List<string> _log;
 
@@ -32,6 +51,23 @@ namespace FF1Lib
 
 			var mapLocationRequirements = ItemLocations.MapLocationRequirements.ToDictionary(x => x.Key, x => x.Value.ToList());
 			var floorLocationRequirements = ItemLocations.MapLocationFloorRequirements.ToDictionary(x => x.Key, x => x.Value);
+
+			_walkableNodes = new Dictionary<WalkableRegion, List<OverworldTeleportIndex>> {
+				{ WalkableRegion.ConeriaRegion, new List<OverworldTeleportIndex>{OverworldTeleportIndex.ConeriaCastle1, OverworldTeleportIndex.Coneria, OverworldTeleportIndex.TempleOfFiends1} },
+				{ WalkableRegion.ElflandRegion, new List<OverworldTeleportIndex>{OverworldTeleportIndex.ElflandCastle, OverworldTeleportIndex.Elfland, OverworldTeleportIndex.NorthwestCastle, OverworldTeleportIndex.MarshCave1} },
+				{ WalkableRegion.PravokaRegion, new List<OverworldTeleportIndex>{OverworldTeleportIndex.MatoyasCave, OverworldTeleportIndex.Pravoka} },
+				{ WalkableRegion.MelmondRegion, new List<OverworldTeleportIndex>{OverworldTeleportIndex.Melmond, OverworldTeleportIndex.EarthCave1, OverworldTeleportIndex.TitansTunnelEast} },
+				{ WalkableRegion.SardaRegion, new List<OverworldTeleportIndex>{OverworldTeleportIndex.SardasCave, OverworldTeleportIndex.TitansTunnelWest} },
+				{ WalkableRegion.BahamutRegion, new List<OverworldTeleportIndex>{OverworldTeleportIndex.Cardia1, OverworldTeleportIndex.BahamutCave1 } }
+			};
+
+			_canoeableNodes = new Dictionary<CanoeableRegion, List<OverworldTeleportIndex>> {
+				{ CanoeableRegion.ElflandRegion, new List<OverworldTeleportIndex>{
+					OverworldTeleportIndex.ElflandCastle, OverworldTeleportIndex.Elfland, OverworldTeleportIndex.NorthwestCastle, OverworldTeleportIndex.MarshCave1,
+					OverworldTeleportIndex.CrescentLake, OverworldTeleportIndex.GurguVolcano1} },
+				{ CanoeableRegion.PravokaRegion, new List<OverworldTeleportIndex>{OverworldTeleportIndex.MatoyasCave, OverworldTeleportIndex.Pravoka, OverworldTeleportIndex.IceCave1} },
+				{ CanoeableRegion.OnracRegion, new List<OverworldTeleportIndex>{OverworldTeleportIndex.Onrac, OverworldTeleportIndex.Waterfall} }
+			};
 
 			if (flags.MapOnracDock)
 			{
@@ -61,12 +97,20 @@ namespace FF1Lib
 				mapLocationRequirements[MapLocation.MarshCave1].Add(MapChange.Bridge | MapChange.Canoe);
 				mapLocationRequirements[MapLocation.AirshipLocation].Add(MapChange.Bridge | MapChange.Canoe);
 				if (flags.MapCanalBridge)
+				{
 					mapLocationRequirements[MapLocation.DwarfCave].Add(MapChange.Bridge | MapChange.Canoe);
+					_canoeableNodes[CanoeableRegion.ElflandRegion].Add(OverworldTeleportIndex.DwarfCave);
+				}
+
+				_canoeableNodes[CanoeableRegion.ElflandRegion].AddRange(_canoeableNodes[CanoeableRegion.PravokaRegion]);
+				_canoeableNodes[CanoeableRegion.PravokaRegion].Clear();
 			}
 			if (flags.MapConeriaDwarves)
 			{
 				MapEditsToApply.Add(ConeriaToDwarves);
 				mapLocationRequirements[MapLocation.DwarfCave].Add(MapChange.None);
+				_walkableNodes[WalkableRegion.ConeriaRegion].Add(OverworldTeleportIndex.DwarfCave);
+
 				if (flags.MapCanalBridge)
 				{
 					MapChange dwarvesToNorthwest = MapChange.Canoe;
@@ -74,6 +118,9 @@ namespace FF1Lib
 					{
 						MapEditsToApply.Add(DwarvesNorthwestGrass);
 						dwarvesToNorthwest = MapChange.None;
+
+						_walkableNodes[WalkableRegion.ConeriaRegion].AddRange(_walkableNodes[WalkableRegion.ElflandRegion]);
+						_walkableNodes[WalkableRegion.ElflandRegion].Clear();
 					}
 					mapLocationRequirements[MapLocation.Elfland].Add(dwarvesToNorthwest);
 					mapLocationRequirements[MapLocation.ElflandCastle].Add(dwarvesToNorthwest);
@@ -365,7 +412,7 @@ namespace FF1Lib
 						shuffledExits.Add(destination.Exit, TeleportShuffle.OverworldCoordinates[owti]);
 					}
 
-					// If this destination has continuting teleports we loop and handle them now.
+					// If this destination has continuing teleports we loop and handle them now.
 					teleports.AddRange(destination.Teleports);
 					while (teleports.Any())
 					{
@@ -416,27 +463,14 @@ namespace FF1Lib
 			// Grab a list of all distinct destinations, and also create a couple lists of lists -
 			// All the contiguous walkable regions, and all the contiguous canoeable regions. Perhaps this belongs in another file?
 			var allTeleportLocations = shuffled.Select(x => x.Value.Destination).Concat(shuffledFloors.Select(x => x.Value.Destination)).Distinct().ToList();
-			var walkableNodes = new List<List<OverworldTeleportIndex>> {
-				new List<OverworldTeleportIndex>{OverworldTeleportIndex.ConeriaCastle1, OverworldTeleportIndex.Coneria, OverworldTeleportIndex.TempleOfFiends1},
-				new List<OverworldTeleportIndex>{OverworldTeleportIndex.MatoyasCave, OverworldTeleportIndex.Pravoka},
-				new List<OverworldTeleportIndex>{OverworldTeleportIndex.ElflandCastle, OverworldTeleportIndex.Elfland, OverworldTeleportIndex.NorthwestCastle, OverworldTeleportIndex.MarshCave1},
-				new List<OverworldTeleportIndex>{OverworldTeleportIndex.Melmond, OverworldTeleportIndex.EarthCave1, OverworldTeleportIndex.TitansTunnelEast},
-				new List<OverworldTeleportIndex>{OverworldTeleportIndex.SardasCave, OverworldTeleportIndex.TitansTunnelWest},
-				new List<OverworldTeleportIndex>{OverworldTeleportIndex.Cardia1, OverworldTeleportIndex.BahamutCave1}
-			};
-			var canoeableNodes = new List<List<OverworldTeleportIndex>> {
-				new List<OverworldTeleportIndex>{OverworldTeleportIndex.MatoyasCave, OverworldTeleportIndex.Pravoka, OverworldTeleportIndex.IceCave1},
-				new List<OverworldTeleportIndex>{
-				OverworldTeleportIndex.ElflandCastle, OverworldTeleportIndex.Elfland, OverworldTeleportIndex.NorthwestCastle, OverworldTeleportIndex.MarshCave1,
-				OverworldTeleportIndex.CrescentLake, OverworldTeleportIndex.GurguVolcano1, OverworldTeleportIndex.DwarfCave},
-				new List<OverworldTeleportIndex>{OverworldTeleportIndex.Onrac, OverworldTeleportIndex.Waterfall}
-			};
 
 			// Find out what two entrances the titan's tunnel now connects, and create new lists of MapLocations thusly connected.
 			var titanEast = shuffled.Single(x => x.Value.Destination == MapLocation.TitansTunnelEast);
 			var titanWest = shuffled.Single(x => x.Value.Destination == MapLocation.TitansTunnelWest);
-			var titanWalkLocations = walkableNodes.Where(x => x.Contains(titanEast.Key) || x.Contains(titanWest.Key)).SelectMany(x => x).Distinct().Select(x => shuffled[x].Destination);
-			var titanCanoeLocations = canoeableNodes.Where(x => x.Contains(titanEast.Key) || x.Contains(titanWest.Key)).SelectMany(x => x).Distinct().Select(x => shuffled[x].Destination);
+			_log.Add($"{titanWest.Key} is TitansTunnelWest and connects to {titanEast.Key}");
+
+			var titanWalkLocations = _walkableNodes.Values.Where(x => x.Contains(titanEast.Key) || x.Contains(titanWest.Key)).SelectMany(x => x).Distinct().Select(x => shuffled[x].Destination);
+			var titanCanoeLocations = _canoeableNodes.Values.Where(x => x.Contains(titanEast.Key) || x.Contains(titanWest.Key)).SelectMany(x => x).Distinct().Select(x => shuffled[x].Destination);
 
 			// Put together a nice final mapping of MapLocations to requirements, in the shuffled map world.
 			var standardMapLookup = TeleportShuffle.StandardMapLocations;
