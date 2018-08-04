@@ -32,8 +32,6 @@ namespace FF1Lib
 													ItemShopSlot caravanItemLocation,
                                                     OverworldMap overworldMap)
 		{
-			Dictionary<MapLocation, List<MapChange>> mapLocationRequirements = overworldMap.MapLocationRequirements;
-			Dictionary<MapLocation, Tuple<MapLocation, AccessRequirement>> mapLocationFloorRequirements = overworldMap.FloorLocationRequirements;
 			Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullFloorRequirements = overworldMap.FullLocationRequirements;
 			Dictionary<MapLocation, OverworldTeleportIndex> overridenOverworld = overworldMap.OverriddenOverworldLocations;
 

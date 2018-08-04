@@ -22,8 +22,6 @@ namespace FF1Lib
 														ItemShopSlot caravanItemLocation,
 														OverworldMap overworldMap)
 		{
-			Dictionary<MapLocation, List<MapChange>> mapLocationRequirements = overworldMap.MapLocationRequirements;
-			Dictionary<MapLocation, Tuple<MapLocation, AccessRequirement>> mapLocationFloorRequirements = overworldMap.FloorLocationRequirements;
 			Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullLocationRequirements = overworldMap.FullLocationRequirements;
 			Dictionary<MapLocation, OverworldTeleportIndex> overridenOverworld = overworldMap.OverriddenOverworldLocations;
 
@@ -200,7 +198,7 @@ namespace FF1Lib
 				}
 
 				// 7. Check sanity and loop if needed
-			} while (!CheckSanity(placedItems, mapLocationRequirements, mapLocationFloorRequirements, fullLocationRequirements, flags));
+			} while (!CheckSanity(placedItems, fullLocationRequirements, flags));
 
 			if (Debugger.IsAttached)
 			{
@@ -269,8 +267,6 @@ namespace FF1Lib
 		}
 
 		public static bool CheckSanity(List<IRewardSource> treasurePlacements,
-										Dictionary<MapLocation, List<MapChange>> mapLocationRequirements,
-										Dictionary<MapLocation, Tuple<MapLocation, AccessRequirement>> mapLocationFloorRequirements,
 										Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullLocationRequirements,
 										IVictoryConditionFlags victoryConditions)
 		{
@@ -306,7 +302,7 @@ namespace FF1Lib
 				var winTheGameAccess = ItemLocations.ChaosReward.AccessRequirement;
 				var winTheGameLocation = ItemLocations.ChaosReward.MapLocation;
 				requiredAccess = winTheGameAccess;
-				requiredMapChanges = mapLocationRequirements[winTheGameLocation];
+				requiredMapChanges = fullLocationRequirements[winTheGameLocation].Item1;
 			}
 
 			var accessibleLocationCount = 0;

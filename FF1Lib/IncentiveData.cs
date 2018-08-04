@@ -9,8 +9,6 @@ namespace FF1Lib
 	{
 		public IncentiveData(MT19337 rng, IIncentiveFlags flags, OverworldMap map)
 		{
-			Dictionary<MapLocation, List<MapChange>> mapLocationRequirements = map.MapLocationRequirements;
-			Dictionary<MapLocation, Tuple<MapLocation, AccessRequirement>> mapLocationFloorRequirements = map.FloorLocationRequirements;
 			Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullLocationRequirements = map.FullLocationRequirements;
 			var forcedItemPlacements = ItemLocations.AllOtherItemLocations.ToList();
 			if (!flags.NPCItems) forcedItemPlacements.AddRange(ItemLocations.AllNPCFreeItemLocations);

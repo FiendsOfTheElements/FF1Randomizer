@@ -19,6 +19,8 @@ namespace FF1Lib
 		private readonly Dictionary<Palette, Blob> _palettes;
 		private Dictionary<WalkableRegion, List<OverworldTeleportIndex>> _walkableNodes;
 		private Dictionary<CanoeableRegion, List<OverworldTeleportIndex>> _canoeableNodes;
+		private Dictionary<MapLocation, List<MapChange>> MapLocationRequirements;
+		private Dictionary<MapLocation, Tuple<MapLocation, AccessRequirement>> FloorLocationRequirements;
 
 		private enum WalkableRegion
 		{
@@ -621,8 +623,6 @@ namespace FF1Lib
 			_log.ForEach(Console.WriteLine);
 		}
 
-		public Dictionary<MapLocation, List<MapChange>> MapLocationRequirements;
-		public Dictionary<MapLocation, Tuple<MapLocation, AccessRequirement>> FloorLocationRequirements;
 		public Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> FullLocationRequirements;
 		public Dictionary<MapLocation, OverworldTeleportIndex> OverriddenOverworldLocations;
 		public AccessRequirement StartingPotentialAccess;
