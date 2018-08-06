@@ -462,8 +462,6 @@ namespace FF1Lib
 			}
 
 			// Now it's time to update all the requirements for treasure sanity checking.
-			// Grab a list of all distinct destinations, and also create a couple lists of lists -
-			// All the contiguous walkable regions, and all the contiguous canoeable regions. Perhaps this belongs in another file?
 			var allTeleportLocations = shuffled.Select(x => x.Value.Destination).Concat(shuffledFloors.Select(x => x.Value.Destination)).Distinct().ToList();
 
 			// Find out what two entrances the titan's tunnel now connects, and create new lists of MapLocations thusly connected.
@@ -490,9 +488,12 @@ namespace FF1Lib
 			MapLocationRequirements = newRequirements.Where(x => x.Value.MapChanges != null).ToDictionary(x => x.Key, x => x.Value.MapChanges.ToList());
 			FloorLocationRequirements = newRequirements.Where(x => x.Value.MapChanges == null).ToDictionary(x => x.Key, x => x.Value.TeleportLocation);
 
-			/* EXTREME LOGGING ///////////////////////////////////////////////////////////////////////////////////
+			if (Debugger.IsAttached)
 			{
 				dump();
+			}
+			/* EXTREME LOGGING ///////////////////////////////////////////////////////////////////////////////////
+			{
 
 				Console.WriteLine("ALL TELEPORT LOCATIONS:");
 				Console.WriteLine(String.Join(", ", allTeleportLocations.ToArray()));
