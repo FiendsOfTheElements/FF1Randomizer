@@ -351,6 +351,12 @@ namespace FF1Lib
 			var subfloors = TeleportShuffle.FreePlacementFloors.Where(x => !placedDestinations.Contains(x.Destination)).ToList();
 			var deadEnds = new List<TeleportDestination>();
 
+			if (flags.ShortToFR)
+			{
+				subfloors.AddRange(TeleportShuffle.FreeToFRFloors);
+			}
+
+
 			topfloors.Shuffle(rng);
 			subfloors.Shuffle(rng);
 
@@ -759,9 +765,9 @@ namespace FF1Lib
 				{ MapIndex.ConeriaCastle1F, new List<MapIndex> { MapIndex.ConeriaCastle2F } },
 				{ MapIndex.CastleOrdeals1F, new List<MapIndex> { MapIndex.CastleOrdeals2F, MapIndex.CastleOrdeals3F } },
 				{ MapIndex.IceCaveB2, new List<MapIndex> { MapIndex.IceCaveB3 } },
-				{ MapIndex.TempleOfFiends, new List<MapIndex> { MapIndex.TempleOfFiends1F, MapIndex.TempleOfFiends2F,
-					MapIndex.TempleOfFiends3F, MapIndex.TempleOfFiendsEarth, MapIndex.TempleOfFiendsFire,
-					MapIndex.TempleOfFiendsWater, MapIndex.TempleOfFiendsAir, MapIndex.TempleOfFiendsChaos } }
+				{ MapIndex.TempleOfFiends, new List<MapIndex> { MapIndex.TempleOfFiendsRevisited1F, MapIndex.TempleOfFiendsRevisited2F,
+					MapIndex.TempleOfFiendsRevisited3F, MapIndex.TempleOfFiendsRevisitedEarth, MapIndex.TempleOfFiendsRevisitedFire,
+					MapIndex.TempleOfFiendsRevisitedWater, MapIndex.TempleOfFiendsRevisitedAir, MapIndex.TempleOfFiendsRevisitedChaos } }
 			};
 		public static Dictionary<MapLocation, List<MapLocation>> ConnectedMapLocations =
             new Dictionary<MapLocation, List<MapLocation>>
@@ -776,9 +782,9 @@ namespace FF1Lib
 				{ MapLocation.SeaShrine2, new List<MapLocation> { MapLocation.SeaShrine2Room2 } },
 				{ MapLocation.TitansTunnelWest, new List<MapLocation> { MapLocation.TitansTunnelRoom } },
 				{ MapLocation.TempleOfFiends1, new List<MapLocation> { MapLocation.TempleOfFiends1Room1, MapLocation.TempleOfFiends1Room2,
-					MapLocation.TempleOfFiends1Room3, MapLocation.TempleOfFiends1Room4, MapLocation.TempleOfFiends2, MapLocation.TempleOfFiends3,
-					MapLocation.TempleOfFiendsPhantom, MapLocation.TempleOfFiendsEarth, MapLocation.TempleOfFiendsFire,
-					MapLocation.TempleOfFiendsWater, MapLocation.TempleOfFiendsAir, MapLocation.TempleOfFiendsChaos } }
+					MapLocation.TempleOfFiends1Room3, MapLocation.TempleOfFiends1Room4, MapLocation.TempleOfFiendsRevisited1, MapLocation.TempleOfFiendsRevisited2,
+					MapLocation.TempleOfFiendsRevisitedPhantom, MapLocation.TempleOfFiendsRevisitedEarth, MapLocation.TempleOfFiendsRevisitedFire,
+					MapLocation.TempleOfFiendsRevisitedWater, MapLocation.TempleOfFiendsRevisitedAir, MapLocation.TempleOfFiendsRevisitedChaos } }
 			};
 
 		private static readonly List<MapLocation> StarterDestinations = new List<MapLocation> {

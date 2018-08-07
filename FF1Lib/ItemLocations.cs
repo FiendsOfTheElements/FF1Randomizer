@@ -256,13 +256,13 @@ namespace FF1Lib
 		public static TreasureChest SkyPalace32 = new TreasureChest(0x31F5, nameof(SkyPalace32), MapLocation.SkyPalace3, Item.Heal);
 		public static TreasureChest SkyPalace33 = new TreasureChest(0x31F6, nameof(SkyPalace33), MapLocation.SkyPalace3, Item.ProRing);
 		public static TreasureChest SkyPalace34 = new TreasureChest(0x31F7, nameof(SkyPalace34), MapLocation.SkyPalace3, Item.Gold5450);
-		public static TreasureChest ToFRMasmune = new TreasureChest(0x31F8, nameof(ToFRMasmune), MapLocation.TempleOfFiendsAir, Item.Masamune);
-		public static TreasureChest ToFRevisited2 = new TreasureChest(0x31F9, nameof(ToFRevisited2), MapLocation.TempleOfFiendsFire, Item.Gold26000);
-		public static TreasureChest ToFRevisited3 = new TreasureChest(0x31FA, nameof(ToFRevisited3), MapLocation.TempleOfFiendsFire, Item.Katana);
-		public static TreasureChest ToFRevisited4 = new TreasureChest(0x31FB, nameof(ToFRevisited4), MapLocation.TempleOfFiendsFire, Item.ProRing);
-		public static TreasureChest ToFRevisited5 = new TreasureChest(0x31FC, nameof(ToFRevisited5), MapLocation.TempleOfFiendsFire, Item.ProCape);
-		public static TreasureChest ToFRevisited6 = new TreasureChest(0x31FD, nameof(ToFRevisited6), MapLocation.TempleOfFiendsPhantom, Item.Gold45000);
-		public static TreasureChest ToFRevisited7 = new TreasureChest(0x31FE, nameof(ToFRevisited7), MapLocation.TempleOfFiendsPhantom, Item.Gold65000);
+		public static TreasureChest ToFRMasmune = new TreasureChest(0x31F8, nameof(ToFRMasmune), MapLocation.TempleOfFiendsRevisitedAir, Item.Masamune);
+		public static TreasureChest ToFRevisited2 = new TreasureChest(0x31F9, nameof(ToFRevisited2), MapLocation.TempleOfFiendsRevisitedFire, Item.Gold26000);
+		public static TreasureChest ToFRevisited3 = new TreasureChest(0x31FA, nameof(ToFRevisited3), MapLocation.TempleOfFiendsRevisitedFire, Item.Katana);
+		public static TreasureChest ToFRevisited4 = new TreasureChest(0x31FB, nameof(ToFRevisited4), MapLocation.TempleOfFiendsRevisitedFire, Item.ProRing);
+		public static TreasureChest ToFRevisited5 = new TreasureChest(0x31FC, nameof(ToFRevisited5), MapLocation.TempleOfFiendsRevisitedFire, Item.ProCape);
+		public static TreasureChest ToFRevisited6 = new TreasureChest(0x31FD, nameof(ToFRevisited6), MapLocation.TempleOfFiendsRevisitedPhantom, Item.Gold45000);
+		public static TreasureChest ToFRevisited7 = new TreasureChest(0x31FE, nameof(ToFRevisited7), MapLocation.TempleOfFiendsRevisitedPhantom, Item.Gold65000);
 		public static TreasureChest Unused15 = new TreasureChest(0x31FF, nameof(Unused15), 0, 0, isUnused: true);
 
 		public static MapObject KingConeria = new MapObject(ObjectId.King, MapLocation.ConeriaCastle2, Item.Bridge);
@@ -293,7 +293,7 @@ namespace FF1Lib
 		public static StaticItemLocation TiamatReward =
 			new StaticItemLocation(nameof(TiamatReward), MapLocation.SkyPalaceTiamat, Item.AirOrb);
 		public static StaticItemLocation ChaosReward =
-			new StaticItemLocation(nameof(ChaosReward), MapLocation.TempleOfFiendsChaos, Item.None);
+			new StaticItemLocation(nameof(ChaosReward), MapLocation.TempleOfFiendsRevisitedChaos, Item.None);
 
 		private const MapChange AirshipAndCanoe = MapChange.Airship | MapChange.Canoe;
 		private const MapChange CanalAndShip = MapChange.Canal | MapChange.Ship;
@@ -390,14 +390,17 @@ namespace FF1Lib
 			{MapLocation.SeaShrine7, new Tuple<MapLocation, AccessRequirement>(MapLocation.SeaShrine6, AccessRequirement.None)},
 			{MapLocation.SeaShrine8, new Tuple<MapLocation, AccessRequirement>(MapLocation.SeaShrine7, AccessRequirement.None)},
 			{MapLocation.SeaShrineKraken, new Tuple<MapLocation, AccessRequirement>(MapLocation.SeaShrine8, AccessRequirement.None)},
-			{MapLocation.TempleOfFiends2, new Tuple<MapLocation, AccessRequirement>(MapLocation.TempleOfFiends1, AccessRequirement.BlackOrb)},
-			{MapLocation.TempleOfFiends3, new Tuple<MapLocation, AccessRequirement>(MapLocation.TempleOfFiends2, AccessRequirement.None)},
-			{MapLocation.TempleOfFiendsPhantom, new Tuple<MapLocation, AccessRequirement>(MapLocation.TempleOfFiends3, AccessRequirement.None)},
-			{MapLocation.TempleOfFiendsEarth, new Tuple<MapLocation, AccessRequirement>(MapLocation.TempleOfFiendsPhantom, AccessRequirement.Lute)},
-			{MapLocation.TempleOfFiendsFire, new Tuple<MapLocation, AccessRequirement>(MapLocation.TempleOfFiendsEarth, AccessRequirement.Key)},
-			{MapLocation.TempleOfFiendsWater, new Tuple<MapLocation, AccessRequirement>(MapLocation.TempleOfFiendsFire, AccessRequirement.Key)},
-			{MapLocation.TempleOfFiendsAir, new Tuple<MapLocation, AccessRequirement>(MapLocation.TempleOfFiendsWater, AccessRequirement.Key)},
-			{MapLocation.TempleOfFiendsChaos, new Tuple<MapLocation, AccessRequirement>(MapLocation.TempleOfFiendsAir, AccessRequirement.Key)},
+			{MapLocation.TempleOfFiendsRevisited1, new Tuple<MapLocation, AccessRequirement>(MapLocation.TempleOfFiends1, AccessRequirement.BlackOrb)},
+			{MapLocation.TempleOfFiendsRevisited2, new Tuple<MapLocation, AccessRequirement>(MapLocation.TempleOfFiendsRevisited1, AccessRequirement.None)},
+			{MapLocation.TempleOfFiendsRevisitedPhantom, new Tuple<MapLocation, AccessRequirement>(MapLocation.TempleOfFiendsRevisited2, AccessRequirement.None)},
+			{MapLocation.TempleOfFiendsRevisited4, new Tuple<MapLocation, AccessRequirement>(MapLocation.TempleOfFiendsRevisitedPhantom, AccessRequirement.Lute)},
+			{MapLocation.TempleOfFiendsRevisited5, new Tuple<MapLocation, AccessRequirement>(MapLocation.TempleOfFiendsRevisited4, AccessRequirement.Key)},
+			{MapLocation.TempleOfFiendsRevisitedEarth, new Tuple<MapLocation, AccessRequirement>(MapLocation.TempleOfFiendsRevisited5, AccessRequirement.Key)},
+			{MapLocation.TempleOfFiendsRevisitedEarthDeadEnd, new Tuple<MapLocation, AccessRequirement>(MapLocation.TempleOfFiendsRevisited1, AccessRequirement.None)},
+			{MapLocation.TempleOfFiendsRevisitedFire, new Tuple<MapLocation, AccessRequirement>(MapLocation.TempleOfFiendsRevisitedEarth, AccessRequirement.Key)},
+			{MapLocation.TempleOfFiendsRevisitedWater, new Tuple<MapLocation, AccessRequirement>(MapLocation.TempleOfFiendsRevisitedFire, AccessRequirement.Key)},
+			{MapLocation.TempleOfFiendsRevisitedAir, new Tuple<MapLocation, AccessRequirement>(MapLocation.TempleOfFiendsRevisitedWater, AccessRequirement.Key)},
+			{MapLocation.TempleOfFiendsRevisitedChaos, new Tuple<MapLocation, AccessRequirement>(MapLocation.TempleOfFiendsRevisitedAir, AccessRequirement.Key)},
 			{MapLocation.TitansTunnelRoom, new Tuple<MapLocation, AccessRequirement>(MapLocation.TitansTunnelWest, AccessRequirement.None)},
 		};
 

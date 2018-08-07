@@ -20,7 +20,7 @@ namespace FF1Lib
 		public static TeleportDestination CastleOrdeals1 => new TeleportDestination(MapLocation.CastleOrdeals1, MapIndex.CastleOrdeals1F, new Coordinate(12, 21, CoordinateLocale.Standard), ExitTeleportIndex.ExitCastleOrdeals);
 		public static TeleportDestination CastleOrdealsMaze => new TeleportDestination(MapLocation.CastleOrdealsMaze, MapIndex.CastleOrdeals2F, new Coordinate(12, 12, CoordinateLocale.Standard), TeleportIndex.CastleOrdealsTop);
 		public static TeleportDestination CastleOrdealsTop => new TeleportDestination(MapLocation.CastleOrdealsTop, MapIndex.CastleOrdeals3F, new Coordinate(22, 22, CoordinateLocale.Standard), TeleportIndex.CastleOrdealsBack);
-		public static TeleportDestination TempleOfFiends => new TeleportDestination(MapLocation.TempleOfFiends1, MapIndex.TempleOfFiends, new Coordinate(20, 30, CoordinateLocale.Standard));
+		public static TeleportDestination TempleOfFiends => new TeleportDestination(MapLocation.TempleOfFiends1, MapIndex.TempleOfFiends, new Coordinate(20, 30, CoordinateLocale.Standard), TeleportIndex.TimeWarp);
 		public static TeleportDestination DwarfCave => new TeleportDestination(MapLocation.DwarfCave, MapIndex.DwarfCave, new Coordinate(22, 11, CoordinateLocale.Standard));
 		public static TeleportDestination MatoyasCave => new TeleportDestination(MapLocation.MatoyasCave, MapIndex.MatoyasCave, new Coordinate(15, 11, CoordinateLocale.Standard));
 		public static TeleportDestination SardasCave => new TeleportDestination(MapLocation.SardasCave, MapIndex.SardasCave, new Coordinate(18, 13, CoordinateLocale.Standard));
@@ -71,6 +71,19 @@ namespace FF1Lib
 		public static TeleportDestination SkyPalace3 => new TeleportDestination(MapLocation.SkyPalace3, MapIndex.SkyPalace3F, new Coordinate(24, 23, CoordinateLocale.Standard), TeleportIndex.SkyPalaceMaze);
 		public static TeleportDestination SkyPalaceMaze => new TeleportDestination(MapLocation.SkyPalaceMaze, MapIndex.SkyPalace4F, new Coordinate(3, 3, CoordinateLocale.Standard), TeleportIndex.SkyPalaceTiamat);
 		public static TeleportDestination SkyPalaceTiamat => new TeleportDestination(MapLocation.SkyPalaceTiamat, MapIndex.SkyPalace5F, new Coordinate(7, 54, CoordinateLocale.Standard), ExitTeleportIndex.ExitSkyPalace);
+
+		public static TeleportDestination TempleOfFiendsRevisited1 => new TeleportDestination(MapLocation.TempleOfFiendsRevisited1, MapIndex.TempleOfFiendsRevisited1F, new Coordinate(20, 17, CoordinateLocale.StandardInRoom), new List<TeleportIndex> { TeleportIndex.TempleOfFiendsRevisitedEarthDeadEnd, TeleportIndex.TempleOfFiendsRevisited2 });
+		public static TeleportDestination TempleOfFiendsRevisited2 => new TeleportDestination(MapLocation.TempleOfFiendsRevisited2, MapIndex.TempleOfFiendsRevisited2F, new Coordinate(16, 15, CoordinateLocale.Standard), TeleportIndex.TempleOfFiendsRevisitedPhantom);
+		public static TeleportDestination TempleOfFiendsRevisitedPhantom => new TeleportDestination(MapLocation.TempleOfFiendsRevisitedPhantom, MapIndex.TempleOfFiendsRevisited3F, new Coordinate(1, 1, CoordinateLocale.Standard), TeleportIndex.TempleOfFiendsRevisited4);
+		public static TeleportDestination TempleOfFiendsRevisited4 => new TeleportDestination(MapLocation.TempleOfFiendsRevisited4, MapIndex.TempleOfFiendsRevisited3F, new Coordinate(20, 18, CoordinateLocale.StandardInRoom), TeleportIndex.TempleOfFiendsRevisited5);
+		public static TeleportDestination TempleOfFiendsRevisited5 => new TeleportDestination(MapLocation.TempleOfFiendsRevisited5, MapIndex.TempleOfFiendsRevisited3F, new Coordinate(40, 1, CoordinateLocale.Standard), TeleportIndex.TempleOfFiendsRevisitedEarth);
+		public static TeleportDestination TempleOfFiendsRevisitedEarth => new TeleportDestination(MapLocation.TempleOfFiendsRevisitedEarth, MapIndex.TempleOfFiendsRevisitedEarth, new Coordinate(3, 32, CoordinateLocale.Standard), TeleportIndex.TempleOfFiendsRevisitedFire);
+		public static TeleportDestination TempleOfFiendsRevisitedEarthEnd => new TeleportDestination(MapLocation.TempleOfFiendsRevisitedEarthDeadEnd, MapIndex.TempleOfFiendsRevisitedEarth, new Coordinate(20, 27, CoordinateLocale.StandardInRoom));
+		public static TeleportDestination TempleOfFiendsRevisitedFire => new TeleportDestination(MapLocation.TempleOfFiendsRevisitedFire, MapIndex.TempleOfFiendsRevisitedFire, new Coordinate(13, 21, CoordinateLocale.Standard), TeleportIndex.TempleOfFiendsRevisitedWater);
+		public static TeleportDestination TempleOfFiendsRevisitedWater => new TeleportDestination(MapLocation.TempleOfFiendsRevisitedWater, MapIndex.TempleOfFiendsRevisitedWater, new Coordinate(1, 1, CoordinateLocale.Standard), TeleportIndex.TempleOfFiendsRevisitedAir);
+		public static TeleportDestination TempleOfFiendsRevisitedAir => new TeleportDestination(MapLocation.TempleOfFiendsRevisitedAir, MapIndex.TempleOfFiendsRevisitedAir, new Coordinate(1, 4, CoordinateLocale.Standard), TeleportIndex.TempleOfFiendsRevisitedChaos);
+		public static TeleportDestination TempleOfFiendsRevisitedChaos => new TeleportDestination(MapLocation.TempleOfFiendsRevisitedChaos, MapIndex.TempleOfFiendsRevisitedChaos, new Coordinate(15, 7, CoordinateLocale.Standard));
+
 		public static List<MapIndex> InRoomMaps = new List<MapIndex> { MapIndex.SkyPalace1F, MapIndex.MarshCaveB3, MapIndex.CastleOrdeals2F };
 		public static Dictionary<TeleportIndex, AccessRequirement> TeleportRestrictions =
 			new Dictionary<TeleportIndex, AccessRequirement>
@@ -79,8 +92,8 @@ namespace FF1Lib
 				{TeleportIndex.SkyPalace1, AccessRequirement.Cube},
 				{TeleportIndex.SeaShrine1, AccessRequirement.Oxyale},
 				{TeleportIndex.EarthCave4, AccessRequirement.Rod},
-				{TeleportIndex.TempleOfFiends2, AccessRequirement.BlackOrb}, // needs to be verified
-				{TeleportIndex.TempleOfFiends4, AccessRequirement.Lute} // needs to be verified
+				{TeleportIndex.TimeWarp, AccessRequirement.BlackOrb}, // needs to be verified
+				{TeleportIndex.TempleOfFiendsRevisited4, AccessRequirement.Lute} // needs to be verified
 			};
 
 		public static List<TeleportDestination> NonTownForcedTopFloors =>
@@ -112,6 +125,13 @@ namespace FF1Lib
 			};
 		public static List<TeleportDestination> FloorTeleports =>
 			ForcedTopFloors.Concat(FreePlacementFloors).ToList();
+		public static List<TeleportDestination> FreeToFRFloors =
+			new List<TeleportDestination>
+			{
+				TempleOfFiendsRevisited1, TempleOfFiendsRevisitedEarthEnd, TempleOfFiendsRevisited2, TempleOfFiendsRevisitedPhantom,
+				TempleOfFiendsRevisited4, TempleOfFiendsRevisited5, TempleOfFiendsRevisitedEarth, TempleOfFiendsRevisitedFire,
+				TempleOfFiendsRevisitedWater, TempleOfFiendsRevisitedAir, TempleOfFiendsRevisitedChaos
+			};
 
 		public static Dictionary<OverworldTeleportIndex, Coordinate> OverworldCoordinates =>
 			new Dictionary<OverworldTeleportIndex, Coordinate>
@@ -185,7 +205,7 @@ namespace FF1Lib
 			new Dictionary<TeleportIndex, MapLocation>
 			{
 				{TeleportIndex.ConeriaCastle2, MapLocation.ConeriaCastle2},
-				{TeleportIndex.TempleOfFiends2, MapLocation.TempleOfFiends2},
+				{TeleportIndex.TimeWarp, MapLocation.TempleOfFiendsRevisited1},
 				{TeleportIndex.MarshCaveTop, MapLocation.MarshCaveTop},
 				{TeleportIndex.MarshCave3, MapLocation.MarshCave3},
 				{TeleportIndex.MarshCaveBottom, MapLocation.MarshCaveBottom},
@@ -221,7 +241,17 @@ namespace FF1Lib
 				{TeleportIndex.SkyPalace2, MapLocation.SkyPalace2},
 				{TeleportIndex.SkyPalace3, MapLocation.SkyPalace3},
 				{TeleportIndex.SkyPalaceMaze, MapLocation.SkyPalaceMaze},
-				{TeleportIndex.SkyPalaceTiamat, MapLocation.SkyPalaceTiamat}
+				{TeleportIndex.SkyPalaceTiamat, MapLocation.SkyPalaceTiamat},
+				{TeleportIndex.TempleOfFiendsRevisitedEarthDeadEnd, MapLocation.TempleOfFiendsRevisitedEarthDeadEnd},
+				{TeleportIndex.TempleOfFiendsRevisited2, MapLocation.TempleOfFiendsRevisited2},
+				{TeleportIndex.TempleOfFiendsRevisitedPhantom, MapLocation.TempleOfFiendsRevisitedPhantom},
+				{TeleportIndex.TempleOfFiendsRevisited4, MapLocation.TempleOfFiendsRevisited4},
+				{TeleportIndex.TempleOfFiendsRevisited5, MapLocation.TempleOfFiendsRevisited5},
+				{TeleportIndex.TempleOfFiendsRevisitedEarth, MapLocation.TempleOfFiendsRevisitedEarth},
+				{TeleportIndex.TempleOfFiendsRevisitedFire, MapLocation.TempleOfFiendsRevisitedFire},
+				{TeleportIndex.TempleOfFiendsRevisitedWater, MapLocation.TempleOfFiendsRevisitedWater},
+				{TeleportIndex.TempleOfFiendsRevisitedAir, MapLocation.TempleOfFiendsRevisitedAir},
+				{TeleportIndex.TempleOfFiendsRevisitedChaos, MapLocation.TempleOfFiendsRevisitedChaos},
 			};
 		public static Dictionary<OverworldTeleportIndex, TeleportDestination> VanillaOverworldTeleports =>
 			new Dictionary<OverworldTeleportIndex, TeleportDestination>
@@ -261,7 +291,7 @@ namespace FF1Lib
 			new Dictionary<TeleportIndex, TeleportDestination>
 			{
 				{TeleportIndex.ConeriaCastle2, ConeriaCastle2},
-				//{TeleportIndex.TempleOfFiends2, TempleOfFiends2},
+				{TeleportIndex.TimeWarp, TempleOfFiendsRevisited1},
 				{TeleportIndex.MarshCaveTop, MarshCaveTop},
 				{TeleportIndex.MarshCave3, MarshCave3},
 				{TeleportIndex.MarshCaveBottom, MarshCaveBottom},
