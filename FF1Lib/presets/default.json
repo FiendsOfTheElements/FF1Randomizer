@@ -38,7 +38,8 @@
 		"OrdealsPillars": true,
 		"SkyCastle4FTeleporters": true,
 		"TitansTrove": true,
-		"ConfusedOldMen": false,
+		"ConfusedOldMen": true,
+		"AllowUnsafeMelmond": true,
 		"Floors": false,
 		"AllowDeepCastles": false,
 

@@ -213,6 +213,12 @@ namespace FF1Lib
 				ShuffleSurpriseBonus(rng);
 			}
 
+			// Put this before other encounter / trap tile edits.
+			if (flags.AllowUnsafeMelmond)
+			{
+				EnableMelmondGhetto();
+			}
+
 			if (flags.EnemyFormationsFrequency)
 			{
 				ShuffleEnemyFormations(rng);

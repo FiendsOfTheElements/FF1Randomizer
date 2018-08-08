@@ -39,6 +39,7 @@
 		"SkyCastle4FTeleporters": false,
 		"TitansTrove": false,
 		"ConfusedOldMen": false,
+		"AllowUnsafeMelmond": false,
 		"Floors": false,
 
 		"MapOpenProgression": false,

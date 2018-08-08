@@ -204,6 +204,7 @@
 						<div class="checkbox-cell"><input v-model="SkyCastle4FTeleporters" type="checkbox" asp-for="Flags.SkyCastle4FTeleporters" /> <label asp-for="Flags.SkyCastle4FTeleporters">Sky Castle 4F Teleporters</label></div>
 						<div class="checkbox-cell"><input v-model="TitansTrove" type="checkbox" asp-for="Flags.TitansTrove" /> <label asp-for="Flags.TitansTrove">Titan's Trove</label></div>
 						<div class="checkbox-cell" title="Yoga in the park!"><input v-model="ConfusedOldMen" type="checkbox" asp-for="Flags.ConfusedOldMen" /> <label asp-for="Flags.ConfusedOldMen">Confused Old Men</label></div>
+						<div class="checkbox-cell" title="This is my kinda town!"><input v-model="AllowUnsafeMelmond" type="checkbox" asp-for="Flags.AllowUnsafeMelmond" /> <label asp-for="Flags.AllowUnsafeMelmond">Zozo Melmond</label></div>
 						<div class="checkbox-cell"></div>
 						<div class="checkbox-cell"><input v-model="MapOpenProgression" type="checkbox" asp-for="Flags.MapOpenProgression" /> <label asp-for="Flags.MapOpenProgression">Open Progression</label></div>
 						<div class="checkbox-cell"><input v-model="MapOpenProgressionExtended" type="checkbox" :disabled="!MapOpenProgression" asp-for="Flags.MapOpenProgressionExtended" /> <label :style="!MapOpenProgression ? { color: 'grey'} : {}" asp-for="Flags.MapOpenProgressionExtended">Extended Open Progression</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">New!</a>)</small></div>

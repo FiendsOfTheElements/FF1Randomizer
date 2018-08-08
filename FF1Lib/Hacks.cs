@@ -395,5 +395,18 @@ namespace FF1Lib
 			PutInBank(0x0C, 0xA94B, Blob.FromHex("206BC2EAEA"));
 			PutInBank(0x1F, 0xC26B, CreateLongJumpTableEntry(0x0F, 0x92A0));
 		}
+
+		public void EnableMelmondGhetto()
+		{
+			// Set town desert tile to random encounters.
+			// If enabled, trap tile shuffle will change that second byte to 0x00 afterward.
+			Data[0x00864] = 0x0A;
+			Data[0x00865] = 0x80;
+
+			// Give Melmond Desert backdrop
+			Data[0x0334D] = (byte)Backdrop.Desert;
+
+			Put(0x2C218, Blob.FromHex("0F0F8F2CACAC7E7C"));
+		}
 	}
 }
