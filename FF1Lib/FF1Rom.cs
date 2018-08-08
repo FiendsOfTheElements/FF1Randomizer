@@ -16,6 +16,7 @@ namespace FF1Lib
 		public const string Version = "2.4.0";
 
 		public const int RngOffset = 0x7F100;
+		public const int BattleRngOffset = 0x7FCF1;
 		public const int RngSize = 256;
 
 		public const int LevelRequirementsOffset = 0x2D000;
@@ -147,7 +148,7 @@ namespace FF1Lib
 						overworldMap.ShuffleEntrancesAndFloors(rng, flags);
 					}
 
-					var incentivesData = new IncentiveData(rng, flags, overworldMap.MapLocationRequirements, overworldMap.FloorLocationRequirements, overworldMap.FullLocationRequirements);
+					var incentivesData = new IncentiveData(rng, flags, overworldMap);
 
 					if (flags.Shops)
 					{
@@ -373,12 +374,12 @@ namespace FF1Lib
 
 			if (flags.EnemyScaleFactor > 1)
 			{
-				ScaleEnemyStats(flags.EnemyScaleFactor, flags.WrapStatOverflow, rng);
+				ScaleEnemyStats(flags.EnemyScaleFactor, flags.WrapStatOverflow, flags.IncludeMorale, rng);
 			}
 
 			if (flags.BossScaleFactor > 1)
 			{
-				ScaleBossStats(flags.BossScaleFactor, flags.WrapStatOverflow, rng);
+				ScaleBossStats(flags.BossScaleFactor, flags.WrapStatOverflow, flags.IncludeMorale, rng);
 			}
 
 			if (flags.ForcedPartyMembers > 0)
@@ -525,8 +526,9 @@ namespace FF1Lib
 			PutInBank(0x0F, 0x9200, Blob.FromHex("A200A5100A9002A2814A38E907293F8529A5110A9002860D4A38E907293F852A60"));
 
 			// Critical hit display for number of hits
-			PutInBank(0x0F, 0x9280, FF1Text.TextToBytes("critical hits!", false));
-			PutInBank(0x0F, 0x9295, Blob.FromHex("AD6B68C901F02EA2019D3A6BA9118D3A6BE8A9009D3A6BE8A9BB9D3A6BE8A9FF9D3A6BE8A000B980929D3A6BE8C8C00FD0F44CDC92A90F8D3A6BA92C8D3B6BA9008D3C6BEEF86AA23AA06BA904201CF7EEF86A60"));
+			PutInBank(0x0F, 0x9280, FF1Text.TextToBytes("Critical hit!!", false));
+			PutInBank(0x0F, 0x9290, FF1Text.TextToBytes(" Critical hits!", false));
+			PutInBank(0x0F, 0x92A0, Blob.FromHex("AD6B68C901F01EA2019D3A6BA9118D3A6BA900E89D3A6BA0FFC8E8B990929D3A6BD0F6F00EA2FFA0FFC8E8B980929D3A6BD0F6A23AA06BA904201CF7EEF86A60"));
 		}
 
 		public void MakeSpaceIn1F()
@@ -614,6 +616,11 @@ namespace FF1Lib
 			rngTable.Shuffle(rng);
 
 			Put(RngOffset, rngTable.SelectMany(blob => blob.ToBytes()).ToArray());
+
+			var battleRng = Get(BattleRngOffset, RngSize).Chunk(1).ToList();
+			battleRng.Shuffle(rng);
+
+			Put(BattleRngOffset, battleRng.SelectMany(blob => blob.ToBytes()).ToArray());
 		}
 
 	}

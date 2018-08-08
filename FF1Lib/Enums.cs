@@ -160,6 +160,7 @@ namespace FF1Lib
 		TempleOfFiendsChaos,
 		TitansTunnelEast,
 		TitansTunnelWest,
+		TitansTunnelRoom,
 	}
 	public enum ExitTeleportIndex : byte
 	{

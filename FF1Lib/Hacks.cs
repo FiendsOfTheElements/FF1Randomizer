@@ -219,6 +219,7 @@ namespace FF1Lib
 			MoveNpc(MapId.Coneria, 7, 0x1E, 0x0B, inRoom: false, stationary: true); // East Coneria Guy
 			MoveNpc(MapId.Elfland, 0, 0x27, 0x18, inRoom: false, stationary: true); // Efland Entrance Elf
 			MoveNpc(MapId.Onrac, 13, 0x29, 0x1B, inRoom: false, stationary: true); // Onrac Guy
+			MoveNpc(MapId.Lefein, 3, 0x21, 0x07, inRoom: false, stationary: true); // Lefein Guy
 			//MoveNpc(MapId.Waterfall, 1, 0x0C, 0x34, inRoom: false, stationary: false); // OoB Bat!
 			MoveNpc(MapId.EarthCaveB3, 10, 0x09, 0x0B, inRoom: true, stationary: false); // Earth Cave Bat B3
 			MoveNpc(MapId.EarthCaveB3, 7, 0x0B, 0x0B, inRoom: true, stationary: false); // Earth Cave Bat B3
@@ -392,7 +393,7 @@ namespace FF1Lib
 		{
 			// Overwrite the normal critical hit handler by calling ours instead
 			PutInBank(0x0C, 0xA94B, Blob.FromHex("206BC2EAEA"));
-			PutInBank(0x1F, 0xC26B, CreateLongJumpTableEntry(0x0F, 0x9295));
+			PutInBank(0x1F, 0xC26B, CreateLongJumpTableEntry(0x0F, 0x92A0));
 		}
 	}
 }

@@ -27,8 +27,6 @@ namespace Sandbox
 									ItemShopSlot caravanItemLocation,
 									OverworldMap overworldMap)
 		{
-			Dictionary<MapLocation, List<MapChange>> mapLocationRequirements = overworldMap.MapLocationRequirements;
-			Dictionary<MapLocation, Tuple<MapLocation, AccessRequirement>> mapLocationFloorRequirements = overworldMap.FloorLocationRequirements;
 			Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullLocationRequirements = overworldMap.FullLocationRequirements;
 			var placedItems = new List<IRewardSource>();
 			var treasurePool = ItemLocations.AllTreasures.Where(x => !x.IsUnused).Select(x => x.Item)
@@ -98,7 +96,7 @@ namespace Sandbox
 
 				foreach (Item item in requirementsToCheck)
 				{
-					if (!ItemPlacement.CheckSanity(placedItems.Where(x => x.Item != item).ToList(), mapLocationRequirements, mapLocationFloorRequirements, fullLocationRequirements, new Flags{OnlyRequireGameIsBeatable =true}))
+					if (!ItemPlacement.CheckSanity(placedItems.Where(x => x.Item != item).ToList(), fullLocationRequirements, new Flags{OnlyRequireGameIsBeatable =true}))
 						requirementChecks[item]++;
 				}
 				

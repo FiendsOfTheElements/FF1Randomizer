@@ -76,10 +76,10 @@ namespace FF1Lib
 		public static TreasureChest EarthCave22 = new TreasureChest(0x3143, nameof(EarthCave22), MapLocation.EarthCave4, Item.WoodenRod);
 		public static TreasureChest EarthCave23 = new TreasureChest(0x3144, nameof(EarthCave23), MapLocation.EarthCave4, Item.Gold3400);
 		public static TreasureChest EarthCave24 = new TreasureChest(0x3145, nameof(EarthCave24), MapLocation.EarthCave4, Item.Gold1455);
-		public static TreasureChest TitansTunnel1 = new TreasureChest(0x3146, nameof(TitansTunnel1), MapLocation.TitansTunnelWest, Item.SilverHelm);
-		public static TreasureChest TitansTunnel2 = new TreasureChest(0x3147, nameof(TitansTunnel2), MapLocation.TitansTunnelWest, Item.Gold450);
-		public static TreasureChest TitansTunnel3 = new TreasureChest(0x3148, nameof(TitansTunnel3), MapLocation.TitansTunnelWest, Item.Gold620);
-		public static TreasureChest TitansTunnel4 = new TreasureChest(0x3149, nameof(TitansTunnel4), MapLocation.TitansTunnelWest, Item.GreatAxe);
+		public static TreasureChest TitansTunnel1 = new TreasureChest(0x3146, nameof(TitansTunnel1), MapLocation.TitansTunnelRoom, Item.SilverHelm);
+		public static TreasureChest TitansTunnel2 = new TreasureChest(0x3147, nameof(TitansTunnel2), MapLocation.TitansTunnelRoom, Item.Gold450);
+		public static TreasureChest TitansTunnel3 = new TreasureChest(0x3148, nameof(TitansTunnel3), MapLocation.TitansTunnelRoom, Item.Gold620);
+		public static TreasureChest TitansTunnel4 = new TreasureChest(0x3149, nameof(TitansTunnel4), MapLocation.TitansTunnelRoom, Item.GreatAxe);
 		// Volcano has 3 extra empty treasure chests
 		public static TreasureChest Volcano1 = new TreasureChest(0x314A, nameof(Volcano1), MapLocation.GurguVolcano2, Item.Heal);
 		public static TreasureChest Volcano2 = new TreasureChest(0x314B, nameof(Volcano2), MapLocation.GurguVolcano2, Item.Cabin);
@@ -398,6 +398,7 @@ namespace FF1Lib
 			{MapLocation.TempleOfFiendsWater, new Tuple<MapLocation, AccessRequirement>(MapLocation.TempleOfFiendsFire, AccessRequirement.Key)},
 			{MapLocation.TempleOfFiendsAir, new Tuple<MapLocation, AccessRequirement>(MapLocation.TempleOfFiendsWater, AccessRequirement.Key)},
 			{MapLocation.TempleOfFiendsChaos, new Tuple<MapLocation, AccessRequirement>(MapLocation.TempleOfFiendsAir, AccessRequirement.Key)},
+			{MapLocation.TitansTunnelRoom, new Tuple<MapLocation, AccessRequirement>(MapLocation.TitansTunnelWest, AccessRequirement.None)},
 		};
 
 		public static Dictionary<MapLocation, RomUtilities.Blob> ShipLocations = new Dictionary<MapLocation, RomUtilities.Blob>

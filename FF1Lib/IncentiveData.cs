@@ -7,12 +7,9 @@ namespace FF1Lib
 {
 	public class IncentiveData
 	{
-		public IncentiveData(MT19337 rng,
-							IIncentiveFlags flags,
-							Dictionary<MapLocation, List<MapChange>> mapLocationRequirements,
-							Dictionary<MapLocation, Tuple<MapLocation, AccessRequirement>> mapLocationFloorRequirements,
-							Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullLocationRequirements)
+		public IncentiveData(MT19337 rng, IIncentiveFlags flags, OverworldMap map)
 		{
+			Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullLocationRequirements = map.FullLocationRequirements;
 			var forcedItemPlacements = ItemLocations.AllOtherItemLocations.ToList();
 			if (!flags.NPCItems) forcedItemPlacements.AddRange(ItemLocations.AllNPCFreeItemLocations);
 			if (!flags.NPCFetchItems) forcedItemPlacements.AddRange(ItemLocations.AllNPCFetchItemLocations);
@@ -331,13 +328,10 @@ namespace FF1Lib
 			{
 				var everythingButCanoe = ~MapChange.Canoe;
 				var everythingButOrbs = ~AccessRequirement.BlackOrb;
-				var startingPotentialAccess = AccessRequirement.Key | AccessRequirement.Tnt | AccessRequirement.Adamant;
-				var startingMapLocations =
-					ItemPlacement.AccessibleMapLocations(startingPotentialAccess, MapChange.None, mapLocationRequirements, mapLocationFloorRequirements, fullLocationRequirements);
-				var validShipMapLocations =
-					ItemPlacement.AccessibleMapLocations(startingPotentialAccess | AccessRequirement.Crystal, MapChange.Bridge, mapLocationRequirements, mapLocationFloorRequirements, fullLocationRequirements);
-				var validCanoeMapLocations =
-					ItemPlacement.AccessibleMapLocations(everythingButOrbs, everythingButCanoe, mapLocationRequirements, mapLocationFloorRequirements, fullLocationRequirements);
+				var startingPotentialAccess = map.StartingPotentialAccess;
+				var startingMapLocations = ItemPlacement.AccessibleMapLocations(startingPotentialAccess, MapChange.None, fullLocationRequirements);
+				var validShipMapLocations = ItemPlacement.AccessibleMapLocations(startingPotentialAccess | AccessRequirement.Crystal, MapChange.Bridge, fullLocationRequirements);
+				var validCanoeMapLocations = ItemPlacement.AccessibleMapLocations(everythingButOrbs, everythingButCanoe, fullLocationRequirements);
 
 				validBridgeLocations =
 					itemLocationPool.Where(x => startingMapLocations.Contains(x.MapLocation) &&

@@ -17,6 +17,27 @@ namespace FF1Lib
 	{
 		private readonly FF1Rom _rom;
 		private readonly Dictionary<Palette, Blob> _palettes;
+		private Dictionary<WalkableRegion, List<OverworldTeleportIndex>> _walkableNodes;
+		private Dictionary<CanoeableRegion, List<OverworldTeleportIndex>> _canoeableNodes;
+		private Dictionary<MapLocation, List<MapChange>> MapLocationRequirements;
+		private Dictionary<MapLocation, Tuple<MapLocation, AccessRequirement>> FloorLocationRequirements;
+
+		private enum WalkableRegion
+		{
+			ConeriaRegion = 0,
+			ElflandRegion = 1,
+			PravokaRegion = 2,
+			MelmondRegion = 3,
+			SardaRegion = 4,
+			BahamutRegion = 5,
+		}
+
+		private enum CanoeableRegion
+		{
+			ElflandRegion = 0,
+			PravokaRegion = 1,
+			OnracRegion = 2,
+		}
 
 		private List<string> _log;
 
@@ -32,6 +53,23 @@ namespace FF1Lib
 
 			var mapLocationRequirements = ItemLocations.MapLocationRequirements.ToDictionary(x => x.Key, x => x.Value.ToList());
 			var floorLocationRequirements = ItemLocations.MapLocationFloorRequirements.ToDictionary(x => x.Key, x => x.Value);
+
+			_walkableNodes = new Dictionary<WalkableRegion, List<OverworldTeleportIndex>> {
+				{ WalkableRegion.ConeriaRegion, new List<OverworldTeleportIndex>{OverworldTeleportIndex.ConeriaCastle1, OverworldTeleportIndex.Coneria, OverworldTeleportIndex.TempleOfFiends1} },
+				{ WalkableRegion.ElflandRegion, new List<OverworldTeleportIndex>{OverworldTeleportIndex.ElflandCastle, OverworldTeleportIndex.Elfland, OverworldTeleportIndex.NorthwestCastle, OverworldTeleportIndex.MarshCave1} },
+				{ WalkableRegion.PravokaRegion, new List<OverworldTeleportIndex>{OverworldTeleportIndex.MatoyasCave, OverworldTeleportIndex.Pravoka} },
+				{ WalkableRegion.MelmondRegion, new List<OverworldTeleportIndex>{OverworldTeleportIndex.Melmond, OverworldTeleportIndex.EarthCave1, OverworldTeleportIndex.TitansTunnelEast} },
+				{ WalkableRegion.SardaRegion, new List<OverworldTeleportIndex>{OverworldTeleportIndex.SardasCave, OverworldTeleportIndex.TitansTunnelWest} },
+				{ WalkableRegion.BahamutRegion, new List<OverworldTeleportIndex>{OverworldTeleportIndex.Cardia1, OverworldTeleportIndex.BahamutCave1 } }
+			};
+
+			_canoeableNodes = new Dictionary<CanoeableRegion, List<OverworldTeleportIndex>> {
+				{ CanoeableRegion.ElflandRegion, new List<OverworldTeleportIndex>{
+					OverworldTeleportIndex.ElflandCastle, OverworldTeleportIndex.Elfland, OverworldTeleportIndex.NorthwestCastle, OverworldTeleportIndex.MarshCave1,
+					OverworldTeleportIndex.CrescentLake, OverworldTeleportIndex.GurguVolcano1} },
+				{ CanoeableRegion.PravokaRegion, new List<OverworldTeleportIndex>{OverworldTeleportIndex.MatoyasCave, OverworldTeleportIndex.Pravoka, OverworldTeleportIndex.IceCave1} },
+				{ CanoeableRegion.OnracRegion, new List<OverworldTeleportIndex>{OverworldTeleportIndex.Onrac, OverworldTeleportIndex.Waterfall} }
+			};
 
 			if (flags.MapOnracDock)
 			{
@@ -61,12 +99,20 @@ namespace FF1Lib
 				mapLocationRequirements[MapLocation.MarshCave1].Add(MapChange.Bridge | MapChange.Canoe);
 				mapLocationRequirements[MapLocation.AirshipLocation].Add(MapChange.Bridge | MapChange.Canoe);
 				if (flags.MapCanalBridge)
+				{
 					mapLocationRequirements[MapLocation.DwarfCave].Add(MapChange.Bridge | MapChange.Canoe);
+					_canoeableNodes[CanoeableRegion.ElflandRegion].Add(OverworldTeleportIndex.DwarfCave);
+				}
+
+				_canoeableNodes[CanoeableRegion.ElflandRegion].AddRange(_canoeableNodes[CanoeableRegion.PravokaRegion]);
+				_canoeableNodes[CanoeableRegion.PravokaRegion].Clear();
 			}
 			if (flags.MapConeriaDwarves)
 			{
 				MapEditsToApply.Add(ConeriaToDwarves);
 				mapLocationRequirements[MapLocation.DwarfCave].Add(MapChange.None);
+				_walkableNodes[WalkableRegion.ConeriaRegion].Add(OverworldTeleportIndex.DwarfCave);
+
 				if (flags.MapCanalBridge)
 				{
 					MapChange dwarvesToNorthwest = MapChange.Canoe;
@@ -74,6 +120,9 @@ namespace FF1Lib
 					{
 						MapEditsToApply.Add(DwarvesNorthwestGrass);
 						dwarvesToNorthwest = MapChange.None;
+
+						_walkableNodes[WalkableRegion.ConeriaRegion].AddRange(_walkableNodes[WalkableRegion.ElflandRegion]);
+						_walkableNodes[WalkableRegion.ElflandRegion].Clear();
 					}
 					mapLocationRequirements[MapLocation.Elfland].Add(dwarvesToNorthwest);
 					mapLocationRequirements[MapLocation.ElflandCastle].Add(dwarvesToNorthwest);
@@ -94,8 +143,8 @@ namespace FF1Lib
 
 			if (flags.TitansTrove)
 			{
-				mapLocationRequirements[MapLocation.TitansTunnelWest] = new List<MapChange> {
-					MapChange.Canal | MapChange.Ship | MapChange.TitanFed, MapChange.Airship | MapChange.TitanFed };
+				floorLocationRequirements[MapLocation.TitansTunnelRoom] =
+					new Tuple<MapLocation, AccessRequirement>(MapLocation.TitansTunnelWest, AccessRequirement.Ruby);
 			}
 
 			if (flags.CrownlessOrdeals)
@@ -103,6 +152,7 @@ namespace FF1Lib
 				floorLocationRequirements[MapLocation.CastleOrdealsMaze] = new Tuple<MapLocation, AccessRequirement>(MapLocation.CastleOrdeals1, AccessRequirement.None);
 			}
 
+			StartingPotentialAccess = AccessRequirement.Key | AccessRequirement.Tnt | AccessRequirement.Adamant;
 			MapLocationRequirements = mapLocationRequirements;
 			FloorLocationRequirements = floorLocationRequirements;
 			UpdateFullLocationRequirements();
@@ -297,24 +347,38 @@ namespace FF1Lib
 			var shuffledOverworldCount = maps.Count(x => !placedMaps.ContainsKey(x));
 
 			// Grab a list of floors we haven't placed yet that can be shuffled. i.e. not including bottom of ice cave or ordeals.
-			var destinations = TeleportShuffle.FreePlacementFloors.Where(x => !placedDestinations.Contains(x.Destination)).ToList();
+			var topfloors = TeleportShuffle.ForcedTopFloors.Where(x => !placedDestinations.Contains(x.Destination)).ToList();
+			var subfloors = TeleportShuffle.FreePlacementFloors.Where(x => !placedDestinations.Contains(x.Destination)).ToList();
+			var deadEnds = new List<TeleportDestination>();
+
+			topfloors.Shuffle(rng);
+			subfloors.Shuffle(rng);
 
 			// Set aside a number of dead ends to accomodate all the extra branches that come about from forking floors.
 			// We need to ensure that at least this many dead ends come after the forks to avoid loose ends.
-			var extraForks = destinations.Where(x => x.Teleports.Count() > 1).SelectMany(x => x.Teleports.Skip(1)).Count();
-			if (destinations.Any()) extraForks++;
-			var minimumDeadEndsAtEnd = new List<TeleportDestination>();
+			int extraForks = subfloors.Where(x => x.Teleports.Count() > 1).SelectMany(x => x.Teleports.Skip(1)).Count();
+			extraForks += subfloors.Any() ? 1 : 0;
 			for (var i = 0; i < extraForks; i++)
 			{
-				var firstIndexOfDeadEnd = destinations.TakeWhile(x => x.Teleports.Any()).Count();
-				minimumDeadEndsAtEnd.Add(destinations[firstIndexOfDeadEnd]);
-				destinations.RemoveAt(firstIndexOfDeadEnd);
+				var firstIndexOfDeadEnd = subfloors.TakeWhile(x => x.Teleports.Any()).Count();
+				deadEnds.Add(subfloors[firstIndexOfDeadEnd]);
+				subfloors.RemoveAt(firstIndexOfDeadEnd);
 			}
 
-			// Shuffle the destinations and keep the ones that aren't already placed, and then bolt-on the held over dead ends from above.
+			// Deep "castles" for now just allows a deep ToFR but with refactoring could include others.
+			// Ordeals is a candidate but it would require map edits - it has an EXIT not a WARP due to its internal teleports.
+			if (flags.Floors && flags.AllowDeepCastles)
+			{
+				topfloors = topfloors.Where(floor => floor.Destination != TeleportShuffle.TempleOfFiends.Destination).ToList();
+				deadEnds.Add(TeleportShuffle.TempleOfFiends);
+			}
+
+			// Shuffle again now that we've removed some to be placed at the end. Maybe unnecessary.
+			subfloors.Shuffle(rng);
+			deadEnds.Shuffle(rng);
+
 			// This will be the initial dataset from which we attempt to create a workable overworld and dungeon floor shuffling.
-			destinations.Shuffle(rng);
-			destinations = TeleportShuffle.ForcedTopFloors.Where(x => !placedDestinations.Contains(x.Destination)).Concat(destinations).Concat(minimumDeadEndsAtEnd).ToList();
+			var destinations = topfloors.Concat(subfloors).Concat(deadEnds).ToList();
 			var sanity = 0;
 			Dictionary<OverworldTeleportIndex, TeleportDestination> shuffled;
 			Dictionary<TeleportIndex, TeleportDestination> shuffledFloors;
@@ -350,7 +414,7 @@ namespace FF1Lib
 						shuffledExits.Add(destination.Exit, TeleportShuffle.OverworldCoordinates[owti]);
 					}
 
-					// If this destination has continuting teleports we loop and handle them now.
+					// If this destination has continuing teleports we loop and handle them now.
 					teleports.AddRange(destination.Teleports);
 					while (teleports.Any())
 					{
@@ -398,30 +462,15 @@ namespace FF1Lib
 			}
 
 			// Now it's time to update all the requirements for treasure sanity checking.
-			// Grab a list of all distinct destinations, and also create a couple lists of lists -
-			// All the contiguous walkable regions, and all the contiguous canoeable regions. Perhaps this belongs in another file?
 			var allTeleportLocations = shuffled.Select(x => x.Value.Destination).Concat(shuffledFloors.Select(x => x.Value.Destination)).Distinct().ToList();
-			var walkableNodes = new List<List<OverworldTeleportIndex>> {
-				new List<OverworldTeleportIndex>{OverworldTeleportIndex.ConeriaCastle1, OverworldTeleportIndex.Coneria, OverworldTeleportIndex.TempleOfFiends1},
-				new List<OverworldTeleportIndex>{OverworldTeleportIndex.MatoyasCave, OverworldTeleportIndex.Pravoka},
-				new List<OverworldTeleportIndex>{OverworldTeleportIndex.ElflandCastle, OverworldTeleportIndex.Elfland, OverworldTeleportIndex.NorthwestCastle, OverworldTeleportIndex.MarshCave1},
-				new List<OverworldTeleportIndex>{OverworldTeleportIndex.Melmond, OverworldTeleportIndex.EarthCave1, OverworldTeleportIndex.TitansTunnelEast},
-				new List<OverworldTeleportIndex>{OverworldTeleportIndex.SardasCave, OverworldTeleportIndex.TitansTunnelWest},
-				new List<OverworldTeleportIndex>{OverworldTeleportIndex.Cardia1, OverworldTeleportIndex.BahamutCave1}
-			};
-			var canoeableNodes = new List<List<OverworldTeleportIndex>> {
-				new List<OverworldTeleportIndex>{OverworldTeleportIndex.MatoyasCave, OverworldTeleportIndex.Pravoka, OverworldTeleportIndex.IceCave1},
-				new List<OverworldTeleportIndex>{
-				OverworldTeleportIndex.ElflandCastle, OverworldTeleportIndex.Elfland, OverworldTeleportIndex.NorthwestCastle, OverworldTeleportIndex.MarshCave1,
-				OverworldTeleportIndex.CrescentLake, OverworldTeleportIndex.GurguVolcano1, OverworldTeleportIndex.DwarfCave},
-				new List<OverworldTeleportIndex>{OverworldTeleportIndex.Onrac, OverworldTeleportIndex.Waterfall}
-			};
 
 			// Find out what two entrances the titan's tunnel now connects, and create new lists of MapLocations thusly connected.
 			var titanEast = shuffled.Single(x => x.Value.Destination == MapLocation.TitansTunnelEast);
 			var titanWest = shuffled.Single(x => x.Value.Destination == MapLocation.TitansTunnelWest);
-			var titanWalkLocations = walkableNodes.Where(x => x.Contains(titanEast.Key) || x.Contains(titanWest.Key)).SelectMany(x => x).Distinct().Select(x => shuffled[x].Destination);
-			var titanCanoeLocations = canoeableNodes.Where(x => x.Contains(titanEast.Key) || x.Contains(titanWest.Key)).SelectMany(x => x).Distinct().Select(x => shuffled[x].Destination);
+			_log.Add($"{titanWest.Key} is TitansTunnelWest and connects to {titanEast.Key}");
+
+			var titanWalkLocations = _walkableNodes.Values.Where(x => x.Contains(titanEast.Key) || x.Contains(titanWest.Key)).SelectMany(x => x).Distinct().Select(x => shuffled[x].Destination);
+			var titanCanoeLocations = _canoeableNodes.Values.Where(x => x.Contains(titanEast.Key) || x.Contains(titanWest.Key)).SelectMany(x => x).Distinct().Select(x => shuffled[x].Destination);
 
 			// Put together a nice final mapping of MapLocations to requirements, in the shuffled map world.
 			var standardMapLookup = TeleportShuffle.StandardMapLocations;
@@ -435,12 +484,16 @@ namespace FF1Lib
 							  x => x.Value);
 
 			// Segregate out the simple mapping into Entrances and Floors
+			StartingPotentialAccess = AccessRequirement.AllExceptEnding;
 			MapLocationRequirements = newRequirements.Where(x => x.Value.MapChanges != null).ToDictionary(x => x.Key, x => x.Value.MapChanges.ToList());
 			FloorLocationRequirements = newRequirements.Where(x => x.Value.MapChanges == null).ToDictionary(x => x.Key, x => x.Value.TeleportLocation);
 
-			/* EXTREME LOGGING ///////////////////////////////////////////////////////////////////////////////////
+			if (Debugger.IsAttached)
 			{
 				dump();
+			}
+			/* EXTREME LOGGING ///////////////////////////////////////////////////////////////////////////////////
+			{
 
 				Console.WriteLine("ALL TELEPORT LOCATIONS:");
 				Console.WriteLine(String.Join(", ", allTeleportLocations.ToArray()));
@@ -571,10 +624,9 @@ namespace FF1Lib
 			_log.ForEach(Console.WriteLine);
 		}
 
-		public Dictionary<MapLocation, List<MapChange>> MapLocationRequirements;
-		public Dictionary<MapLocation, Tuple<MapLocation, AccessRequirement>> FloorLocationRequirements;
 		public Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> FullLocationRequirements;
 		public Dictionary<MapLocation, OverworldTeleportIndex> OverriddenOverworldLocations;
+		public AccessRequirement StartingPotentialAccess;
 
 		public const byte GrassTile = 0x00;
 		public const byte GrassBottomRightCoast = 0x06;
@@ -725,6 +777,7 @@ namespace FF1Lib
 				{ MapLocation.DwarfCave, new List<MapLocation> { MapLocation.DwarfCaveRoom3 } },
 				{ MapLocation.MarshCaveBottom, new List<MapLocation> { MapLocation.MarshCaveBottomRoom13, MapLocation.MarshCaveBottomRoom14, MapLocation.MarshCaveBottomRoom16 } },
 				{ MapLocation.SeaShrine2, new List<MapLocation> { MapLocation.SeaShrine2Room2 } },
+				{ MapLocation.TitansTunnelWest, new List<MapLocation> { MapLocation.TitansTunnelRoom } },
 				{ MapLocation.TempleOfFiends1, new List<MapLocation> { MapLocation.TempleOfFiends1Room1, MapLocation.TempleOfFiends1Room2,
 					MapLocation.TempleOfFiends1Room3, MapLocation.TempleOfFiends1Room4, MapLocation.TempleOfFiends2, MapLocation.TempleOfFiends3,
 					MapLocation.TempleOfFiendsPhantom, MapLocation.TempleOfFiendsEarth, MapLocation.TempleOfFiendsFire,

@@ -40,6 +40,7 @@
 		"TitansTrove": true,
 		"ConfusedOldMen": false,
 		"Floors": false,
+		"AllowDeepCastles": false,
 
 		"MapOpenProgression": false,
 		"MapOpenProgressionExtended": false,
@@ -84,7 +85,10 @@
 		"FreeBridge": true,
 		"FreeAirship": false,
 		"FreeOrbs": false,
-		"VanillaStartingGold": false,
+		"StartingGold": false,
+		"WrapStatOverflow": false,
+		"WrapPriceOverflow": false,
+		"IncludeMorale": false,
 		"EasyMode": false,
 
 		"SpeedHacks": true,
