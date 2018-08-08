@@ -374,12 +374,12 @@ namespace FF1Lib
 
 			if (flags.EnemyScaleFactor > 1)
 			{
-				ScaleEnemyStats(flags.EnemyScaleFactor, flags.WrapStatOverflow, rng);
+				ScaleEnemyStats(flags.EnemyScaleFactor, flags.WrapStatOverflow, flags.IncludeMorale, rng);
 			}
 
 			if (flags.BossScaleFactor > 1)
 			{
-				ScaleBossStats(flags.BossScaleFactor, flags.WrapStatOverflow, rng);
+				ScaleBossStats(flags.BossScaleFactor, flags.WrapStatOverflow, flags.IncludeMorale, rng);
 			}
 
 			if (flags.ForcedPartyMembers > 0)

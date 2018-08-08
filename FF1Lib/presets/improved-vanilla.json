@@ -85,7 +85,10 @@
 		"FreeBridge": false,
 		"FreeAirship": false,
 		"FreeOrbs": false,
-		"VanillaStartingGold": false,
+		"StartingGold": false,
+		"WrapStatOverflow": false,
+		"WrapPriceOverflow": false,
+		"IncludeMorale": false,
 		"EasyMode": false,
 
 		"SpeedHacks": true,

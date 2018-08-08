@@ -92,17 +92,17 @@ namespace FF1Lib
 			
 		}
 
-		public void ScaleEnemyStats(double scale, bool wrapOverflow, MT19337 rng)
+		public void ScaleEnemyStats(double scale, bool wrapOverflow, bool includeMorale, MT19337 rng)
 		{
-			NonBossEnemies.ForEach(index => ScaleSingleEnemyStats(index, scale, wrapOverflow, rng));
+			NonBossEnemies.ForEach(index => ScaleSingleEnemyStats(index, scale, wrapOverflow, includeMorale, rng));
 		}
 
-		public void ScaleBossStats(double scale, bool wrapOverflow, MT19337 rng)
+		public void ScaleBossStats(double scale, bool wrapOverflow, bool includeMorale, MT19337 rng)
 		{
-			Bosses.ForEach(index => ScaleSingleEnemyStats(index, scale, wrapOverflow, rng));
+			Bosses.ForEach(index => ScaleSingleEnemyStats(index, scale, wrapOverflow, includeMorale, rng));
 		}
 
-		public void ScaleSingleEnemyStats(int index, double scale, bool wrapOverflow = false, MT19337 rng = null)
+		public void ScaleSingleEnemyStats(int index, double scale, bool wrapOverflow, bool includeMorale, MT19337 rng)
 		{
 			var enemy = Get(EnemyOffset + index * EnemySize, EnemySize);
 
@@ -111,7 +111,7 @@ namespace FF1Lib
 			var hpBytes = BitConverter.GetBytes(hp);
 			Array.Copy(hpBytes, 0, enemy, 4, 2);
 
-			var newMorale = Scale(enemy[6], scale, 0.25, rng);
+			var newMorale = includeMorale ? Scale(enemy[6], scale, 0.25, rng) : enemy[6];
 			var newEvade = Scale(enemy[8], scale, 1.0, rng);
 			var newDefense = Scale(enemy[9], scale, 0.5, rng);
 			var newHits = Scale(enemy[10], scale, 0.5, rng);

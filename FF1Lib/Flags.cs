@@ -228,9 +228,11 @@ namespace FF1Lib
 		[FlagString(Character = SCALE, FlagBit = 1)]
 		public bool StartingGold { get; set; }
 		[FlagString(Character = SCALE, FlagBit = 2)]
-		public bool WrapStatOverflow { get; set; } // planned 2.x feature
+		public bool WrapStatOverflow { get; set; }
 		[FlagString(Character = SCALE, FlagBit = 4)]
-		public bool WrapPriceOverflow { get; set; } // planned 2.x feature
+		public bool WrapPriceOverflow { get; set; }
+		[FlagString(Character = SCALE, FlagBit = 8)]
+		public bool IncludeMorale { get; set; }
 
 		[FlagString(Character = ENEMY_SCALE_FACTOR, Multiplier = 0.1)]
 		public double EnemyScaleFactor { get; set; }
