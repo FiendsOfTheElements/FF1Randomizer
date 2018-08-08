@@ -51,10 +51,13 @@ namespace FF1Lib
 			var offset = WeaponOffset + 0x8 * Math.Min((byte)item - WeaponStart, ArmorStart - WeaponStart) + 0x4 * Math.Max(0, (byte)item - ArmorStart) + MagicBitOffset;
 			Put(offset, Blob.FromHex(output));
 
-			// if the item is the Defense, overwrite the last character in the name, otherwise, keep the icon there.
+			// if the item is the Defense, __we still don't hardcode things!!__ >:(
 			Debug.Assert(Spell.Name.Length == 6);
-			output = Spell.Name.ToHex() + (item == Item.Defense ? "FF" : "");
 			offset = GearTextOffset + ((byte)item > (byte)Item.Ribbon ? 1 : 0) + GearTextSize * ((byte)item - WeaponStart);
+			var firstIcon = Get(offset, 1).ToHex(); // There is absolutely a nicer way to do this
+			var lastIcon = Get(offset, 7).ToHex(); // so if someone would like to fix that, that's cool
+			output = ((Convert.ToInt32(firstIcon, 16) > 200) == true ? firstIcon : "") + Spell.Name.ToHex();
+			if (output.Length == 6) { output += ((Convert.ToInt32(lastIcon, 16) > 200) == true ? lastIcon : "FF"); }
 			Put(offset, Blob.FromHex(output));
 		}
 
