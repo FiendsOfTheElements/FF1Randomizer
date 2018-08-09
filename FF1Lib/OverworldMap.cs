@@ -437,9 +437,7 @@ namespace FF1Lib
 			foreach (var map in shuffled.OrderBy(x => x.Key))
 			{
 				PutOverworldTeleport(map.Key, map.Value);
-				var name = Enum.GetName(typeof(OverworldTeleportIndex), map.Key);
-				name += string.Join("", Enumerable.Repeat(" ", Math.Max(1, 30 - name.Length)).ToList());
-				_log.Add($"{name}{map.Value.SpoilerText}");
+				_log.Add($"{map.Key.ToString().PadRight(30)}{map.Value.SpoilerText}");
 				var teleports = map.Value.Teleports.ToList();
 
 				while (teleports.Any())
@@ -448,9 +446,7 @@ namespace FF1Lib
 					var innerMap = shuffledFloors[teleport];
 					teleports.AddRange(innerMap.Teleports);
 					PutStandardTeleport(teleport, innerMap, map.Key);
-					var innerName = Enum.GetName(typeof(TeleportIndex), teleport);
-					innerName += string.Join("", Enumerable.Repeat(" ", Math.Max(1, 30 - innerName.Length)).ToList());
-					_log.Add($"\t{innerName}{innerMap.SpoilerText.Trim()} ({Enum.GetName(typeof(Palette), OverworldToPalette[map.Key])} tint)");
+					_log.Add($"\t{teleport.ToString().PadRight(30)}{innerMap.SpoilerText.Trim()} ({OverworldToPalette[map.Key]} tint)");
 				}
 			}
 
