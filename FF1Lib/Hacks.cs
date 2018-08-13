@@ -125,19 +125,82 @@ namespace FF1Lib
 			Put(0x39D25, Enumerable.Repeat((byte)0xEA, 14).ToArray());
 		}
 
-		public void PartyRandomize(MT19337 rng, int numberForced)
+		private enum FF1Class
 		{
-			// Always randomize all 4 default members (but don't force if not needed)
+			Fighter = 0,
+			Thief = 1,
+			BlackBelt = 2,
+			RedMage = 3,
+			WhiteMage = 4,
+			BlackMage = 5,
+		}
+
+		public void PartyRandomize(MT19337 rng, Flags flags)
+		{
+			// Always randomize all 4 default members
 			Data[0x3A0AE] = (byte)rng.Between(0, 5);
 			Data[0x3A0BE] = (byte)rng.Between(0, 5);
 			Data[0x3A0CE] = (byte)rng.Between(0, 5);
 			Data[0x3A0DE] = (byte)rng.Between(0, 5);
 
-			if (numberForced <= 0)
+			int forced = 0;
+
+			List<FF1Class> options = new List<FF1Class>();
+
+			// Do each slot - so ugly!
+			if (flags.FIGHTER1) options.Add(FF1Class.Fighter);
+			if (flags.THIEF1) options.Add(FF1Class.Thief);
+			if (flags.BLACK_BELT1) options.Add(FF1Class.BlackBelt);
+			if (flags.RED_MAGE1) options.Add(FF1Class.RedMage);
+			if (flags.WHITE_MAGE1) options.Add(FF1Class.WhiteMage);
+			if (flags.BLACK_MAGE1) options.Add(FF1Class.BlackMage);
+			if (options.Any())
+			{
+				Data[0x3A0AE + 0x10 * forced++] = (byte)options.PickRandom(rng);
+				options.Clear();
+			}
+
+			if (flags.FIGHTER2) options.Add(FF1Class.Fighter);
+			if (flags.THIEF2) options.Add(FF1Class.Thief);
+			if (flags.BLACK_BELT2) options.Add(FF1Class.BlackBelt);
+			if (flags.RED_MAGE2) options.Add(FF1Class.RedMage);
+			if (flags.WHITE_MAGE2) options.Add(FF1Class.WhiteMage);
+			if (flags.BLACK_MAGE2) options.Add(FF1Class.BlackMage);
+			if (options.Any())
+			{
+				Data[0x3A0AE + 0x10 * forced++] = (byte)options.PickRandom(rng);
+				options.Clear();
+			}
+
+			if (flags.FIGHTER3) options.Add(FF1Class.Fighter);
+			if (flags.THIEF3) options.Add(FF1Class.Thief);
+			if (flags.BLACK_BELT3) options.Add(FF1Class.BlackBelt);
+			if (flags.RED_MAGE3) options.Add(FF1Class.RedMage);
+			if (flags.WHITE_MAGE3) options.Add(FF1Class.WhiteMage);
+			if (flags.BLACK_MAGE3) options.Add(FF1Class.BlackMage);
+			if (options.Any())
+			{
+				Data[0x3A0AE + 0x10 * forced++] = (byte)options.PickRandom(rng);
+				options.Clear();
+			}
+
+			if (flags.FIGHTER4) options.Add(FF1Class.Fighter);
+			if (flags.THIEF4) options.Add(FF1Class.Thief);
+			if (flags.BLACK_BELT4) options.Add(FF1Class.BlackBelt);
+			if (flags.RED_MAGE4) options.Add(FF1Class.RedMage);
+			if (flags.WHITE_MAGE4) options.Add(FF1Class.WhiteMage);
+			if (flags.BLACK_MAGE4) options.Add(FF1Class.BlackMage);
+			if (options.Any())
+			{
+				Data[0x3A0AE + 0x10 * forced++] = (byte)options.PickRandom(rng);
+				options.Clear();
+			}
+
+			if (forced <= 0)
 				return;
 
 			Data[0x39D35] = 0xE0;
-			Data[0x39D36] = (byte)(numberForced * 0x10);
+			Data[0x39D36] = (byte)(forced * 0x10);
 			Put(0x39D37, Blob.FromHex("30DFFE0003BD0003E906D0039D0003A9018537"));
 			/* Starting at 0x39D35 (which is just after LDX char_index)
 				* CPX ____(numberForced * 0x10)____

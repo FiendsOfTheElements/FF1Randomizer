@@ -31,10 +31,13 @@ namespace FF1Lib
 		private const int EXP_MULTIPLIER = 20;
 		private const int EXP_BONUS = 21;
 		private const int ENCOUNTER_RATE = 22;
-		private const int FORCED_PARTY_MEMBERS = 23;
+		private const int PARTY_1 = 23;
 		private const int PROGRESSIVE_SCALE = 24;
 		private const int DUNGEON_ENCOUNTER_RATE = 25;
 		private const int BOSS_SCALE_FACTOR = 26;
+		private const int PARTY_2 = 27;
+		private const int PARTY_3 = 28;
+		private const int PARTY_4 = 29;
 
 		[FlagString(Character = ITEMS, FlagBit = 1)]
 		public bool Shops { get; set; }
@@ -250,10 +253,60 @@ namespace FF1Lib
 		public double EncounterRate { get; set; }
 		[FlagString(Character = DUNGEON_ENCOUNTER_RATE, Multiplier = 1)]
 		public double DungeonEncounterRate { get; set; }
-		[FlagString(Character = FORCED_PARTY_MEMBERS, Multiplier = 1)]
-		public int ForcedPartyMembers { get; set; }
 		[FlagString(Character = PROGRESSIVE_SCALE, FlagBit = 7)]
 		public ProgressiveScaleMode ProgressiveScaleMode { get; set; }
+
+		[FlagString(Character = PARTY_1, FlagBit = 1)]
+		public bool FIGHTER1 { get; set; }
+		[FlagString(Character = PARTY_1, FlagBit = 2)]
+		public bool THIEF1 { get; set; }
+		[FlagString(Character = PARTY_1, FlagBit = 4)]
+		public bool BLACK_BELT1 { get; set; }
+		[FlagString(Character = PARTY_1, FlagBit = 8)]
+		public bool RED_MAGE1 { get; set; }
+		[FlagString(Character = PARTY_1, FlagBit = 16)]
+		public bool WHITE_MAGE1 { get; set; }
+		[FlagString(Character = PARTY_1, FlagBit = 32)]
+		public bool BLACK_MAGE1 { get; set; }
+
+		[FlagString(Character = PARTY_2, FlagBit = 1)]
+		public bool FIGHTER2 { get; set; }
+		[FlagString(Character = PARTY_2, FlagBit = 2)]
+		public bool THIEF2 { get; set; }
+		[FlagString(Character = PARTY_2, FlagBit = 4)]
+		public bool BLACK_BELT2 { get; set; }
+		[FlagString(Character = PARTY_2, FlagBit = 8)]
+		public bool RED_MAGE2 { get; set; }
+		[FlagString(Character = PARTY_2, FlagBit = 16)]
+		public bool WHITE_MAGE2 { get; set; }
+		[FlagString(Character = PARTY_2, FlagBit = 32)]
+		public bool BLACK_MAGE2 { get; set; }
+
+		[FlagString(Character = PARTY_3, FlagBit = 1)]
+		public bool FIGHTER3 { get; set; }
+		[FlagString(Character = PARTY_3, FlagBit = 2)]
+		public bool THIEF3 { get; set; }
+		[FlagString(Character = PARTY_3, FlagBit = 4)]
+		public bool BLACK_BELT3 { get; set; }
+		[FlagString(Character = PARTY_3, FlagBit = 8)]
+		public bool RED_MAGE3 { get; set; }
+		[FlagString(Character = PARTY_3, FlagBit = 16)]
+		public bool WHITE_MAGE3 { get; set; }
+		[FlagString(Character = PARTY_3, FlagBit = 32)]
+		public bool BLACK_MAGE3 { get; set; }
+
+		[FlagString(Character = PARTY_4, FlagBit = 1)]
+		public bool FIGHTER4 { get; set; }
+		[FlagString(Character = PARTY_4, FlagBit = 2)]
+		public bool THIEF4 { get; set; }
+		[FlagString(Character = PARTY_4, FlagBit = 4)]
+		public bool BLACK_BELT4 { get; set; }
+		[FlagString(Character = PARTY_4, FlagBit = 8)]
+		public bool RED_MAGE4 { get; set; }
+		[FlagString(Character = PARTY_4, FlagBit = 16)]
+		public bool WHITE_MAGE4 { get; set; }
+		[FlagString(Character = PARTY_4, FlagBit = 32)]
+		public bool BLACK_MAGE4 { get; set; }
 
 		public bool ModernBattlefield { get; set; }
 		public bool FunEnemyNames { get; set; }

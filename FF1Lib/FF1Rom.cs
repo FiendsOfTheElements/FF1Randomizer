@@ -388,10 +388,7 @@ namespace FF1Lib
 				ScaleBossStats(flags.BossScaleFactor, flags.WrapStatOverflow, flags.IncludeMorale, rng);
 			}
 
-			if (flags.ForcedPartyMembers > 0)
-			{
-				PartyRandomize(rng, flags.ForcedPartyMembers);
-			}
+			PartyRandomize(rng, flags);
 
 			if (flags.MapCanalBridge)
 			{

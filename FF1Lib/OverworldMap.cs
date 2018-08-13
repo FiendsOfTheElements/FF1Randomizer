@@ -468,6 +468,11 @@ namespace FF1Lib
 			var titanWalkLocations = _walkableNodes.Values.Where(x => x.Contains(titanEast.Key) || x.Contains(titanWest.Key)).SelectMany(x => x).Distinct().Select(x => shuffled[x].Destination);
 			var titanCanoeLocations = _canoeableNodes.Values.Where(x => x.Contains(titanEast.Key) || x.Contains(titanWest.Key)).SelectMany(x => x).Distinct().Select(x => shuffled[x].Destination);
 
+			if (Debugger.IsAttached)
+			{
+				Dump();
+			}
+
 			// Put together a nice final mapping of MapLocations to requirements, in the shuffled map world.
 			var standardMapLookup = TeleportShuffle.StandardMapLocations;
 			var destinationsByLocation = shuffled.ToDictionary(x => ItemLocations.OverworldToMapLocation[x.Key], x => x.Value);
@@ -484,10 +489,6 @@ namespace FF1Lib
 			MapLocationRequirements = newRequirements.Where(x => x.Value.MapChanges != null).ToDictionary(x => x.Key, x => x.Value.MapChanges.ToList());
 			FloorLocationRequirements = newRequirements.Where(x => x.Value.MapChanges == null).ToDictionary(x => x.Key, x => x.Value.TeleportLocation);
 
-			if (Debugger.IsAttached)
-			{
-				dump();
-			}
 			/* EXTREME LOGGING ///////////////////////////////////////////////////////////////////////////////////
 			{
 
@@ -615,7 +616,7 @@ namespace FF1Lib
 			return coneria && starterLocation && titansConnections && (allowUnsafe || (dangerCount <= 1));
 		}
 
-		public void dump()
+		public void Dump()
 		{
 			_log.ForEach(Console.WriteLine);
 		}
