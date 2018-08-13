@@ -98,7 +98,6 @@
 		bool Entrances { get; }
 		bool Towns { get; }
 		bool Floors { get; }
-		bool ShortToFR { get; }
 		bool AllowDeepCastles { get; }
 		bool AllowStartAreaDanager { get; }
 	}
