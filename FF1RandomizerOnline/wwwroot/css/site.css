@@ -120,46 +120,42 @@ img {
     border-radius: 4px;
 }
 
-#fighter {
+.icon {
+    background: url(../images/classes.png);
     width: 44px;
     height: 72px;
-    background: url(../images/classes.png) 0 0;
+}
+
+.icon:hover {
+    background-position-y: 72px;
+}
+
+#fighter {
+    background-position-x: 0;
 }
 
 #thief {
-    width: 44px;
-    height: 72px;
-    background: url(../images/classes.png) -48px 0;
+    background-position-x: -48px;
 }
 
 #blackbelt {
-    width: 44px;
-    height: 72px;
-    background: url(../images/classes.png) -96px 0;
+    background-position-x: -96px;
 }
 
 #redmage {
-    width: 44px;
-    height: 72px;
-    background: url(../images/classes.png) -144px 0;
+    background-position-x: -144px;
 }
 
 #whitemage {
-    width: 44px;
-    height: 72px;
-    background: url(../images/classes.png) -192px 0;
+    background-position-x: -192px;
 }
 
 #blackmage {
-    width: 44px;
-    height: 72px;
-    background: url(../images/classes.png) -240px 0;
+    background-position-x: -240px;
 }
 
 #empty {
-    width: 44px;
-    height: 72px;
-    background: url(../images/classes.png) -240px 0;
+    background-position-x: -240px;
     filter: brightness(0%) blur(1px);
 }
 

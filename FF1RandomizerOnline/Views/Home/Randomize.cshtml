@@ -307,23 +307,23 @@
 						<table>
 						<tr>
 							<td><h4>Permitted Classes</h4></td>
-							<td><div id="fighter"/></td>
-							<td><div id="thief"/></td>
-							<td><div id="blackbelt"/></td>
-							<td><div id="redmage"/></td>
-							<td><div id="whitemage"/></td>
-							<td><div id="blackmage"/></td>
-							<td><div id="empty" title="Forced Empty"/></td>
+							<td><div id="fighter" class="icon" /></td>
+							<td><div id="thief" class="icon" /></td>
+							<td><div id="blackbelt" class="icon" /></td>
+							<td><div id="redmage" class="icon" /></td>
+							<td><div id="whitemage" class="icon" /></td>
+							<td><div id="blackmage" class="icon" /></td>
+							<td><div id="empty" class="icon" title="Forced Empty" /></td>
 						</tr>
 						<tr class="odd">
 							<td>Member 1</td>
-							<td asp-for="Flags.FIGHTER1"><input v-model="FIGHTER1" type="checkbox" asp-for="Flags.FIGHTER1" /></td>
+							<td><input v-model="FIGHTER1" type="checkbox" asp-for="Flags.FIGHTER1" /></td>
 							<td><input v-model="THIEF1" type="checkbox" asp-for="Flags.THIEF1" /></td>
 							<td><input v-model="BLACK_BELT1" type="checkbox" asp-for="Flags.BLACK_BELT1" /></td>
 							<td><input v-model="RED_MAGE1" type="checkbox" asp-for="Flags.RED_MAGE1" /></td>
 							<td><input v-model="WHITE_MAGE1" type="checkbox" asp-for="Flags.WHITE_MAGE1" /></td>
 							<td><input v-model="BLACK_MAGE1" type="checkbox" asp-for="Flags.BLACK_MAGE1" /></td>
-							<td><input type="checkbox" :disabled="true" tite="Member 1 must not be empty."/></td>
+							<td><input type="checkbox" :disabled="true" title="Member 1 must not be empty."/></td>
 						</tr>
 						<tr>
 							<td>Member 2</td>
