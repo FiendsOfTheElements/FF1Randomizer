@@ -164,6 +164,15 @@ img {
 }
 
 td {
-    padding: 8px;
+    padding: 12px;
     text-align: center;
+}
+
+td input[type=checkbox] {
+    transform: scale(1.5);
+}
+
+
+tr.odd {
+    background: rgba(0, 0, 0, 0.05);
 }

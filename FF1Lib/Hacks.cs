@@ -145,8 +145,15 @@ namespace FF1Lib
 			Data[0x3A0DE] = (byte)(rng.Between(0, 6) - 1);
 
 			int forced = 0;
-
 			List<FF1Class> options = new List<FF1Class>();
+			void updateCharacterFromOptions()
+			{ 
+				if (options.Any())
+				{
+					Data[0x3A0AE + 0x10 * forced++] = (byte)options.PickRandom(rng);
+					options.Clear();
+				}
+			}
 
 			// Do each slot - so ugly!
 			if (flags.FIGHTER1) options.Add(FF1Class.Fighter);
@@ -155,11 +162,7 @@ namespace FF1Lib
 			if (flags.RED_MAGE1) options.Add(FF1Class.RedMage);
 			if (flags.WHITE_MAGE1) options.Add(FF1Class.WhiteMage);
 			if (flags.BLACK_MAGE1) options.Add(FF1Class.BlackMage);
-			if (options.Any())
-			{
-				Data[0x3A0AE + 0x10 * forced++] = (byte)options.PickRandom(rng);
-				options.Clear();
-			}
+			updateCharacterFromOptions();
 
 			if (flags.FIGHTER2) options.Add(FF1Class.Fighter);
 			if (flags.THIEF2) options.Add(FF1Class.Thief);
@@ -168,11 +171,7 @@ namespace FF1Lib
 			if (flags.WHITE_MAGE2) options.Add(FF1Class.WhiteMage);
 			if (flags.BLACK_MAGE2) options.Add(FF1Class.BlackMage);
 			if (flags.NONE_CLASS2) options.Add(FF1Class.None);
-			if (options.Any())
-			{
-				Data[0x3A0AE + 0x10 * forced++] = (byte)options.PickRandom(rng);
-				options.Clear();
-			}
+			updateCharacterFromOptions();
 
 			if (flags.FIGHTER3) options.Add(FF1Class.Fighter);
 			if (flags.THIEF3) options.Add(FF1Class.Thief);
@@ -181,11 +180,7 @@ namespace FF1Lib
 			if (flags.WHITE_MAGE3) options.Add(FF1Class.WhiteMage);
 			if (flags.BLACK_MAGE3) options.Add(FF1Class.BlackMage);
 			if (flags.NONE_CLASS3) options.Add(FF1Class.None);
-			if (options.Any())
-			{
-				Data[0x3A0AE + 0x10 * forced++] = (byte)options.PickRandom(rng);
-				options.Clear();
-			}
+			updateCharacterFromOptions();
 
 			if (flags.FIGHTER4) options.Add(FF1Class.Fighter);
 			if (flags.THIEF4) options.Add(FF1Class.Thief);
@@ -194,15 +189,10 @@ namespace FF1Lib
 			if (flags.WHITE_MAGE4) options.Add(FF1Class.WhiteMage);
 			if (flags.BLACK_MAGE4) options.Add(FF1Class.BlackMage);
 			if (flags.NONE_CLASS4) options.Add(FF1Class.None);
-			if (options.Any())
-			{
-				Data[0x3A0AE + 0x10 * forced++] = (byte)options.PickRandom(rng);
-				options.Clear();
-			}
+			updateCharacterFromOptions();
 
-			Data[0x39D35] = 0xE0;
-			Data[0x39D36] = (byte)(forced * 0x10);
-			Put(0x39D37, Blob.FromHex("30DFFE0003BD0003E907D0039D0003A9018537"));
+			// Class select picker updates
+			Put(0x39D35, Blob.FromHex($"E0{forced * 0x10:X2}30DFFE0003BD0003E907D0039D0003A9018537"));
 			/* Starting at 0x39D35 (which is just after LDX char_index)
 				* CPX ____(numberForced * 0x10)____
 				* BMI @MainLoop
