@@ -516,8 +516,8 @@ namespace FF1Lib
 		public void EnableCritNumberDisplay()
 		{
 			// Overwrite the normal critical hit handler by calling ours instead
-			PutInBank(0x0C, 0xA94B, Blob.FromHex("206BC2EAEA"));
-			PutInBank(0x1F, 0xC26B, CreateLongJumpTableEntry(0x0F, 0x92A0));
+			PutInBank(0x0C, 0xA94B, Blob.FromHex("20D1CFEAEA"));
+			PutInBank(0x1F, 0xCFD1, CreateLongJumpTableEntry(0x0F, 0x92A0));
 		}
 
 		public void EnableMelmondGhetto()
