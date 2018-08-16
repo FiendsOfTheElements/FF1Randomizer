@@ -246,26 +246,7 @@ namespace FF1Lib
 			PutInBank(0x1F, 0xC8AA, CreateLongJumpTableEntry(0x0F, 0x8BF0));
 			PutInBank(0x0F, 0x8BF0, Blob.FromHex("ADCE6BAA6A6A6AA8B90061C9FFF0068A09808D8A6C60"));
 
-			// Rewrite class promotion to not promote NONEs
-			/*
-			    define ch_class $6100
-				define lut_ptr $95D0
-				define dlgflg_reentermap $56
-				LDX #3 ; Reverse counter
-				DoClass:
-				  LDY lut_ptr, X   ; four byte lut of 0xC0, 0x80, 0x40, 0x00
-				  LDA ch_class, Y  ; $6100 + above offset
-				  BMI Skip         ; 0xFF is NONE class (only negative class)
-				  CLC              ; Otherwise just add 6
-				  ADC #6
-				  STA ch_class, Y
-				  Skip:
-					DEX            ; Decrement our index from 3 to 0 and repeat
-					BPL DoClass
-
-				INC dlgflg_reentermap
-				RTS
-			*/
+			// Rewrite class promotion to not promote NONEs, See 0E_95AE_DoClassChange.asm
 			PutInBank(0x0E, 0x95AE, Blob.FromHex("A203BCD095B900613006186906990061CA10EFE65660"));
 			PutInBank(0x0E, 0x95D0, Blob.FromHex("C0804000")); // lut used by the above code
 		}
@@ -494,25 +475,6 @@ namespace FF1Lib
 			// The above code uses battle message $06 which is the unused Sight Recovered string
 			// Let's overwrite that string with something more appropriate for the WAIT command
 			Put(0x2CC71, FF1Text.TextToBytes("W A I T", false));
-		}
-
-		public void ShufflePromotions(MT19337 rng, bool shuffle)
-		{
-			// Prevent Knights and Ninjas from gaining charges if they start with more than 4 already.
-			Data[0x2CD9F] = 0x30; // Changes a BNE to a BMI
-
-			// Replace the following with a 6 byte LUT of the promoted classes out of order
-			List<byte> promotedClasses = Enumerable.Range(6, 6).ToList().Select(value => (byte)value).ToList();
-			if (shuffle)
-			{
-				promotedClasses.Shuffle(rng);
-			}
-			PutInBank(0x0E, 0xB831, promotedClasses.ToArray());
-
-			// Change DoClassChange to read from the LUT instead of adding 6.
-			// The load from the lut is smaller than CLC and ADC #06 so the method is edited in place.
-			Put(0x395AE, Blob.FromHex("A000986A6A6AAABD0061C9FFF00B8614AABD31B8A6149D0061C8C004D0E4EE560060"));
-  
 		}
 
 		public void ImproveTurnOrderRandomization(MT19337 rng)

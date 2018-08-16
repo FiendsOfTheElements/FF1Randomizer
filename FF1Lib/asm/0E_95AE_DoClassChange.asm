@@ -1,28 +1,22 @@
-﻿define lut_promotion $9586
+﻿define ch_class $6100
+define lut_ptr $95D0
 define dlgflg_reentermap $56
 
-DoClassChange:
-LDY #$00
+LDX #3 ; Reverse counter
 
-loop:
-TYA
-ROR A                ; 1 becomes 40, 2 -> 80, 3 -> C0
-ROR A
-ROR A
-TAX
-LDA $6100,X          ; 6100,6140,6180,61C0
-CMP #$FF
-BEQ skip
-TAX
-STX $14
-LDA lut_promotion,X
-LDX $14
-STA $6100,X
+DoClass:
+  LDY lut_ptr, X   ; four byte lut of 0xC0, 0x80, 0x40, 0x00
+  LDA ch_class, Y  ; $6100 + above offset
+  BMI Skip         ; 0xFF is NONE class (only negative class)
+  CLC              ; Otherwise just add 6
+  ADC #6
+  STA ch_class, Y
+  Skip:
+	DEX            ; Decrement our index from 3 to 0 and repeat
+	BPL DoClass
 
-skip:
-INY                   ; increment counter to go through all the party members
-CPY #$04
-BNE loop
+INC dlgflg_reentermap
+RTS
 
-INC dlgflg_reentermap6
-RTS         
+; Install this LUT at lut_ptr
+.BYTE $C0, $80, $40, $00
