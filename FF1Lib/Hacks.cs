@@ -245,6 +245,29 @@ namespace FF1Lib
 			PutInBank(0x0C, 0xB453, Blob.FromHex("20AAC8C9FFF015EA"));
 			PutInBank(0x1F, 0xC8AA, CreateLongJumpTableEntry(0x0F, 0x8BF0));
 			PutInBank(0x0F, 0x8BF0, Blob.FromHex("ADCE6BAA6A6A6AA8B90061C9FFF0068A09808D8A6C60"));
+
+			// Rewrite class promotion to not promote NONEs
+			/*
+			    define ch_class $6100
+				define lut_ptr $95D0
+				define dlgflg_reentermap $56
+				LDX #3 ; Reverse counter
+				DoClass:
+				  LDY lut_ptr, X   ; four byte lut of 0xC0, 0x80, 0x40, 0x00
+				  LDA ch_class, Y  ; $6100 + above offset
+				  BMI Skip         ; 0xFF is NONE class (only negative class)
+				  CLC              ; Otherwise just add 6
+				  ADC #6
+				  STA ch_class, Y
+				  Skip:
+					DEX            ; Decrement our index from 3 to 0 and repeat
+					BPL DoClass
+
+				INC dlgflg_reentermap
+				RTS
+			*/
+			PutInBank(0x0E, 0x95AE, Blob.FromHex("A203BCD095B900613006186906990061CA10EFE65660"));
+			PutInBank(0x0E, 0x95D0, Blob.FromHex("C0804000")); // lut used by the above code
 		}
 
 		public void DisablePartyShuffle()
