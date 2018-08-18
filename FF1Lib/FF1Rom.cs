@@ -357,7 +357,7 @@ namespace FF1Lib
 			// var dialogueText = ReadText(DialogueTextPointerOffset, DialogueTextPointerBase, DialogueTextPointerCount);
 			FixVanillaRibbon(itemText);
 			ExpGoldBoost(flags.ExpBonus, flags.ExpMultiplier);
-			ScalePrices(flags, itemText, rng);
+			ScalePrices(flags, itemText, rng, shopItemLocation);
 			ScaleEncounterRate(flags.EncounterRate / 30.0, flags.DungeonEncounterRate / 30.0);
 
 
