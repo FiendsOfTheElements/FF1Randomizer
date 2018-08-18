@@ -38,7 +38,7 @@ namespace FF1Lib
 
 		// Scale is the geometric scale factor used with RNG.  Multiplier is where we make everything cheaper
 		// instead of enemies giving more gold, so we don't overflow.
-		public void ScalePrices(IScaleFlags flags, Blob[] text, MT19337 rng)
+		public void ScalePrices(IScaleFlags flags, Blob[] text, MT19337 rng, ItemShopSlot shopItemLocation)
 		{
 			var scale = flags.PriceScaleFactor;
 			var multiplier = flags.ExpMultiplier;
@@ -48,17 +48,28 @@ namespace FF1Lib
 				var newPrice = Scale(prices[i] / multiplier, scale, 1, rng);
 				prices[i] = (ushort) (flags.WrapPriceOverflow ? ((newPrice - 1) % 0xFFFF) + 1 : Min(newPrice, 0xFFFF));
             }
-            var questItemPrice = prices[(int)Item.Bottle];
-            for (var i = 0; i < (int)Item.Tent; i++)
-            {
-                prices[i] = questItemPrice;
-            }
+			var questItemPrice = prices[(int)Item.Bottle];
+
+			// do this before the item location check fucks everything to shit
 			prices[(int)Item.WhiteShirt] = (ushort)(questItemPrice / 2);
 			prices[(int)Item.BlackShirt] = (ushort)(questItemPrice / 2);
 			prices[(int)Item.Ribbon] = questItemPrice;
-            // Crystal can block Ship in early game where 50000 G would be too expensive
-            prices[(int)Item.Crystal] = (ushort)(prices[(int)Item.Crystal] / 8);
 
+			// this way we cannot possibly mess up what it's doing here. probably.
+			var itemShopFactor = new Dictionary<MapLocation, int>() {
+				{ MapLocation.Coneria, 8 },
+				{ MapLocation.Pravoka, 2 }
+			};
+			var divisor = new int();
+			if (itemShopFactor.TryGetValue(shopItemLocation.MapLocation, out divisor))
+			{
+				questItemPrice = (ushort)(prices[(int)Item.Bottle] / divisor);
+			}
+			Console.WriteLine(questItemPrice);
+			for (var i = 0; i < (int)Item.Tent; i++)
+            {
+                prices[i] = questItemPrice;
+            }
 			Put(PriceOffset, Blob.FromUShorts(prices));
 
 			for (int i = GoldItemOffset; i < GoldItemOffset + GoldItemCount; i++)
