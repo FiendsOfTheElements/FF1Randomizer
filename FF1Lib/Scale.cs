@@ -49,13 +49,11 @@ namespace FF1Lib
 				prices[i] = (ushort) (flags.WrapPriceOverflow ? ((newPrice - 1) % 0xFFFF) + 1 : Min(newPrice, 0xFFFF));
             }
 			var questItemPrice = prices[(int)Item.Bottle];
-
-			// do this before the item location check fucks everything to shit
+			// If we don't do this before checking for the item shop location factor, Ribbons and Shirts will end up being really cheap
+			// This realistically doesn't matter without Shop Wares shuffle on because nobody wants to sell Ribbons/Shirts, but if it is...
 			prices[(int)Item.WhiteShirt] = (ushort)(questItemPrice / 2);
 			prices[(int)Item.BlackShirt] = (ushort)(questItemPrice / 2);
 			prices[(int)Item.Ribbon] = questItemPrice;
-
-			// this way we cannot possibly mess up what it's doing here. probably.
 			var itemShopFactor = new Dictionary<MapLocation, int>() {
 				{ MapLocation.Coneria, 8 },
 				{ MapLocation.Pravoka, 2 }
@@ -65,7 +63,6 @@ namespace FF1Lib
 			{
 				questItemPrice = (ushort)(prices[(int)Item.Bottle] / divisor);
 			}
-			Console.WriteLine(questItemPrice);
 			for (var i = 0; i < (int)Item.Tent; i++)
             {
                 prices[i] = questItemPrice;
