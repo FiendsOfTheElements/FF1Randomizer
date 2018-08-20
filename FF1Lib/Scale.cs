@@ -58,15 +58,14 @@ namespace FF1Lib
 				{ MapLocation.Coneria, 8 },
 				{ MapLocation.Pravoka, 2 }
 			};
-			var divisor = new int();
-			if (itemShopFactor.TryGetValue(shopItemLocation.MapLocation, out divisor))
+			if (itemShopFactor.TryGetValue(shopItemLocation.MapLocation, out int divisor))
 			{
 				questItemPrice = (ushort)(prices[(int)Item.Bottle] / divisor);
 			}
 			for (var i = 0; i < (int)Item.Tent; i++)
-            {
+			{
                 prices[i] = questItemPrice;
-            }
+			}
 			Put(PriceOffset, Blob.FromUShorts(prices));
 
 			for (int i = GoldItemOffset; i < GoldItemOffset + GoldItemCount; i++)
