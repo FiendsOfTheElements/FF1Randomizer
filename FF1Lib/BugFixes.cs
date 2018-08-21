@@ -72,6 +72,8 @@ namespace FF1Lib
 			Put(0x337C5, Blob.FromHex("209FB6EAEAEAEA"));
 			// SABR's hit% bonus
 			Put(0x30390, Blob.FromHex("0A"));
+
+			TameExitAndWarpBoss();
 		}
 
 		public void FixEnemyStatusAttackBug()
@@ -110,6 +112,27 @@ namespace FF1Lib
 			{
 				texts[(int)Item.Ribbon][7] = 0x00;
 			}
+		}
+
+		public void TameExitAndWarpBoss()
+		{
+			// Move part of DrawNameInputScreen into bank 0Ffor room to tame exit and warp boss
+			PutInBank(0x0F, 0x9230, Get(0x39FB0, 0x41));
+			PutInBank(0x0F, 0x9271, Blob.FromHex("60")); // Add an RTS to get back to bank 0x0E
+
+			Put(0x39d69, Blob.FromHex("EE")); // change an address so it points to the cross bank jump code
+
+			// See ExitBoss.asm for this
+			Put(0x39FB0, Blob.FromHex("205DB6AD2400D012AD2500F0F32084AD6868A9008D25004C97AE2084ADA9008D2400AE6500DE00636000000000000000000000000000000000000000000020D7CF"));
+			PutInBank(0x1F, 0xCFD7, CreateLongJumpTableEntry(0x0F, 0x9230));
+
+			Put(0x3B0D6, Blob.FromHex("EAEAEAEAEA20B09F")); // Warp
+			Put(0x38A77, Blob.FromHex("A02FB3315EAE36B1A8FFA9AFB2B2B50599B8B6ABFF8BFFB7B2FFA4A5B2B5B7")); // Text
+			Put(0x38B5A, Blob.FromHex("A0A4B5B3FFA5A4A6AEFFB2B1A805A9AFB2B2B5C099B8B6ABFF8BFFB7B2FFA4A5B2B5B700FFFFFFFFFFFFFF"));
+
+			Put(0x3B0F7, Blob.FromHex("EAEAEAEAEA20B09F")); // Exit
+			Put(0x38AB3, Blob.FromHex("95B237C5FF972E5D4B26B7C5FF9EB61A1C3005B6B3A84E1B2EA8BB5BC40599B8B6ABFF8BFF2820A53521")); // Text
+			Put(0x38BAA, Blob.FromHex("95B2B6B7C5FF97B2FFBAA4BCFFB2B8B7C5059EB6A8FFB7ABACB605B6B3A8AFAFFFB7B2FFA8BBACB7C4FF99B8B6ABFF8BFFB7B2FFA4A5B2B5B7"));
 		}
 	}
 }
