@@ -187,7 +187,6 @@ namespace FF1Lib
 		[FlagString(Character = ITEM_REQUIREMENTS, FlagBit = 32)]
 		public bool OnlyRequireGameIsBeatable { get; set; }
 
-
 		[FlagString(Character = FILTHY_CASUALS, FlagBit = 1)]
 		public bool FreeBridge { get; set; }
 		[FlagString(Character = FILTHY_CASUALS, FlagBit = 2)]
