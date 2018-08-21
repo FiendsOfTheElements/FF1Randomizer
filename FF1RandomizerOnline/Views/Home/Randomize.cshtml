@@ -393,25 +393,45 @@
 				</div>
 			</div>
 			<div class="section tab-pane" id="fun">
-				<div class="col-xs-4">
-					<div class="checkbox-cell"><input type="checkbox" asp-for="Flags.FunEnemyNames" /> <label asp-for="Flags.FunEnemyNames">Fun Enemy Names</label></div>
-					<div class="checkbox-cell"><input type="checkbox" asp-for="Flags.PaletteSwap" /> <label asp-for="Flags.PaletteSwap">Palette Swap</label></div>
-					<div class="checkbox-cell"><input type="checkbox" asp-for="Flags.ModernBattlefield" /> <label asp-for="Flags.ModernBattlefield">Modern Battlefield</label></div>
-				</div>
-				<div class="col-xs-4">
-					<div class="checkbox-cell">
-						<select asp-for="Flags.TeamSteak">
-							<option value="false">Team TYRO</option>
-							<option value="true">Team STEAK</option>
-						</select>
+				<div class="col-xs-12">
+					<div class="col-xs-8">
+						<h4>Fun % Flags</h4>
+						Fun flags are not part of the standard flags string since they do not impact gameplay. The buttons
+						at the bottom can be used to store your preferred fun % settings within your browser so that they
+						will be automatically restored each time you visit the site.
 					</div>
-					<div class="checkbox-cell">
-						<select asp-for="Flags.Music">
-							<option value="0">No Music Shuffle</option>
-							<option value="1">Standard Music Shuffle</option>
-							<option value="2">Nonsensical Music Shuffle</option>
-							<option value="3">Disable Music</option>
-						</select>
+				</div>
+				<div class="col-xs-12">&nbsp;</div>
+				<div class="col-xs-12">
+					<div class="col-xs-4">
+						<div class="checkbox-cell"><input v-model="fun.FunEnemyNames" type="checkbox" asp-for="Flags.FunEnemyNames" /> <label asp-for="Flags.FunEnemyNames">Fun Enemy Names</label></div>
+						<div class="checkbox-cell"><input v-model="fun.PaletteSwap" type="checkbox" asp-for="Flags.PaletteSwap" /> <label asp-for="Flags.PaletteSwap">Palette Swap</label></div>
+						<div class="checkbox-cell"><input v-model="fun.ModernBattlefield" type="checkbox" asp-for="Flags.ModernBattlefield" /> <label asp-for="Flags.ModernBattlefield">Modern Battlefield</label></div>
+					</div>
+					<div class="col-xs-4">
+						<div class="checkbox-cell">
+							<select v-model="fun.TeamSteak" asp-for="Flags.TeamSteak">
+								<option value="false">Team TYRO</option>
+								<option value="true">Team STEAK</option>
+							</select>
+						</div>
+						<div class="checkbox-cell">
+							<select v-model="fun.MusicShuffle" asp-for="Flags.Music">
+								<option value="0">No Music Shuffle</option>
+								<option value="1">Standard Music Shuffle</option>
+								<option value="2">Nonsensical Music Shuffle</option>
+								<option value="3">Disable Music</option>
+							</select>
+						</div>
+					</div>
+					<div class="col-xs-12">&nbsp;</div>
+					<div class="col-xs-12">
+						<button v-on:click.prevent="saveFun">Save Preferences</button>
+						<button v-on:click.prevent="clearFun">Clear Preferences</button>
+					</div>
+					<div class="col-xs-12">&nbsp;</div>
+					<div class="col-xs-12">
+						<p>{{ funKeyMessage }}</p>
 					</div>
 				</div>
 			</div>
@@ -426,4 +446,5 @@ var flagData = {};
 {
 @Html.Raw($"vueModelData.{kvp.Key} = {kvp.Value.ToVueComputedPropertyString()};")
 }
+
 </script>
