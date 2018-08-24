@@ -8,6 +8,7 @@
 		"NPCItems": true,
 		"NPCFetchItems": true,
 		"RandomWares": true,
+		"RandomWaresIncludesSpecialGear": false,
 		"RandomLoot": false,
 
 		"ShardHunt": false,

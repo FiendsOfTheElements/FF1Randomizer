@@ -152,9 +152,17 @@ namespace FF1Lib
 
 					if (flags.Shops)
 					{
-						var excludeItemsFromRandomShops = flags.Treasures
-							? incentivesData.ForcedItemPlacements.Select(x => x.Item).Concat(incentivesData.IncentiveItems).ToList()
-							: new List<Item>();
+						var excludeItemsFromRandomShops = new List<Item>();
+						if (flags.Treasures)
+						{
+							excludeItemsFromRandomShops = incentivesData.ForcedItemPlacements.Select(x => x.Item).Concat(incentivesData.IncentiveItems).ToList();
+						}
+
+						if (!flags.RandomWaresIncludesSpecialGear)
+						{
+							excludeItemsFromRandomShops.AddRange(ItemLists.SpecialGear);
+						}
+
 						shopItemLocation = ShuffleShops(rng, flags.EnemyStatusAttacks, flags.RandomWares, excludeItemsFromRandomShops);
 					}
 
@@ -387,7 +395,7 @@ namespace FF1Lib
 			{
 				ScaleBossStats(flags.BossScaleFactor, flags.WrapStatOverflow, flags.IncludeMorale, rng);
 			}
-			
+
 			PartyComposition(rng, flags);
 
 			if (flags.MapCanalBridge)

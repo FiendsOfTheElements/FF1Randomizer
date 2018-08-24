@@ -72,6 +72,14 @@ namespace FF1Lib
 				.Where(x => x >= Item.Cloth && x <= Item.ProRing)
 				.ToList();
 
+		public static readonly IReadOnlyCollection<Item> SpecialGear =
+			new List<Item> {
+				Item.LightAxe, Item.ThorHammer, Item.Defense, Item.WizardRod, Item.MageRod, Item.BaneSword,
+				Item.Xcalber, Item.SunSword, Item.Masamune, Item.Katana, Item.Vorpal, Item.HealRod,
+				Item.HealHelm, Item.WhiteShirt, Item.BlackShirt, Item.PowerGauntlets, Item.ZeusGauntlets,
+				Item.DragonArmor, Item.AegisShield, Item.Ribbon,
+			};
+
 		public static readonly IReadOnlyCollection<Item> AllGoldTreasure =
 			Enum.GetValues(typeof(Item))
 				.Cast<Item>()
