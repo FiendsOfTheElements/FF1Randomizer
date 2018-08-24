@@ -38,27 +38,34 @@ namespace FF1Lib
 
 		// Scale is the geometric scale factor used with RNG.  Multiplier is where we make everything cheaper
 		// instead of enemies giving more gold, so we don't overflow.
-		public void ScalePrices(IScaleFlags flags, Blob[] text, MT19337 rng)
+		public void ScalePrices(IScaleFlags flags, Blob[] text, MT19337 rng, ItemShopSlot shopItemLocation)
 		{
 			var scale = flags.PriceScaleFactor;
 			var multiplier = flags.ExpMultiplier;
-            var prices = Get(PriceOffset, PriceSize * PriceCount).ToUShorts();
+			var prices = Get(PriceOffset, PriceSize * PriceCount).ToUShorts();
 			for (int i = 0; i < prices.Length; i++)
 			{
 				var newPrice = Scale(prices[i] / multiplier, scale, 1, rng);
-				prices[i] = (ushort) (flags.WrapPriceOverflow ? ((newPrice - 1) % 0xFFFF) + 1 : Min(newPrice, 0xFFFF));
-            }
-            var questItemPrice = prices[(int)Item.Bottle];
-            for (var i = 0; i < (int)Item.Tent; i++)
-            {
-                prices[i] = questItemPrice;
-            }
+				prices[i] = (ushort)(flags.WrapPriceOverflow ? ((newPrice - 1) % 0xFFFF) + 1 : Min(newPrice, 0xFFFF));
+			}
+			var questItemPrice = prices[(int)Item.Bottle];
+			// If we don't do this before checking for the item shop location factor, Ribbons and Shirts will end up being really cheap
+			// This realistically doesn't matter without Shop Wares shuffle on because nobody wants to sell Ribbons/Shirts, but if it is...
 			prices[(int)Item.WhiteShirt] = (ushort)(questItemPrice / 2);
 			prices[(int)Item.BlackShirt] = (ushort)(questItemPrice / 2);
 			prices[(int)Item.Ribbon] = questItemPrice;
-            // Crystal can block Ship in early game where 50000 G would be too expensive
-            prices[(int)Item.Crystal] = (ushort)(prices[(int)Item.Crystal] / 8);
-
+			var itemShopFactor = new Dictionary<MapLocation, int>() {
+				{ MapLocation.Coneria, 8 },
+				{ MapLocation.Pravoka, 2 }
+			};
+			if (itemShopFactor.TryGetValue(shopItemLocation.MapLocation, out int divisor))
+			{
+				questItemPrice = (ushort)(prices[(int)Item.Bottle] / divisor);
+			}
+			for (var i = 0; i < (int)Item.Tent; i++)
+			{
+				prices[i] = questItemPrice;
+			}
 			Put(PriceOffset, Blob.FromUShorts(prices));
 
 			for (int i = GoldItemOffset; i < GoldItemOffset + GoldItemCount; i++)
@@ -89,7 +96,7 @@ namespace FF1Lib
 
 				Put(StartingGoldOffset, BitConverter.GetBytes(startingGold));
 			}
-			
+
 		}
 
 		public void ScaleEnemyStats(double scale, bool wrapOverflow, bool includeMorale, MT19337 rng)
@@ -149,7 +156,7 @@ namespace FF1Lib
 		public void SetProgressiveScaleMode(ProgressiveScaleMode mode)
 		{
 			byte ScaleFactor = 1;   // Bonus given by progressive scaling in 1/n form (ScaleFactor = 5 means bonus is + 1/5 per item)
-			byte Threshold = 0;		// Number of key items required for bonus.  Set this to 0 for progressive mode (every key item increases bonus)
+			byte Threshold = 0;     // Number of key items required for bonus.  Set this to 0 for progressive mode (every key item increases bonus)
 			switch (mode)
 			{
 				case ProgressiveScaleMode.Disabled:
@@ -195,7 +202,7 @@ namespace FF1Lib
 			else
 			{
 				byte[] threats = new byte[] { Data[OverworldThreatLevelOffset], Data[OceanThreatLevelOffset] };
-				threats = threats.Select(x => (byte)Math.Ceiling(x * overworldMultiplier)) .ToArray();
+				threats = threats.Select(x => (byte)Math.Ceiling(x * overworldMultiplier)).ToArray();
 				Data[OverworldThreatLevelOffset] = threats[0];
 				Data[OceanThreatLevelOffset] = threats[1];
 			}
@@ -207,7 +214,7 @@ namespace FF1Lib
 			else
 			{
 				var threats = Get(ThreatLevelsOffset, ThreatLevelsSize).ToBytes();
-				threats = threats.Select(x => (byte)Math.Ceiling(x * dungeonMultiplier)) .ToArray();
+				threats = threats.Select(x => (byte)Math.Ceiling(x * dungeonMultiplier)).ToArray();
 				Put(ThreatLevelsOffset, threats);
 			}
 		}
