@@ -74,6 +74,10 @@ namespace FF1Lib
 			Put(0x30390, Blob.FromHex("0A"));
 
 			TameExitAndWarpBoss();
+
+			// Cure 4 fix, see 0E_AF7C_Cure4.asm
+			Put(0x3AF8F, Blob.FromHex("2AC902F026A564C900F0062061B54CACAFBD0D619D0B61BD0C619D0A612000B4A665DE00632013B64C97AE2026DB4C7CAF0000000000000000000000002000B4A92B202BB9A9008D64004C7CAF"));
+			Put(0x3AF13, Blob.FromHex("CC")); // update address for Cure4 routine
 		}
 
 		public void FixEnemyStatusAttackBug()
@@ -122,7 +126,7 @@ namespace FF1Lib
 
 			Put(0x39d69, Blob.FromHex("EE")); // change an address so it points to the cross bank jump code
 
-			// See ExitBoss.asm for this
+			// See 0E_9FB0_ExitBoss.asm for this
 			Put(0x39FB0, Blob.FromHex("205DB6AD2400D012AD2500F0F32084AD6868A9008D25004C97AE2084ADA9008D2400AE6500DE00636000000000000000000000000000000000000000000020D7CF"));
 			PutInBank(0x1F, 0xCFD7, CreateLongJumpTableEntry(0x0F, 0x9230));
 
