@@ -550,6 +550,140 @@ namespace FF1Lib
 			PutInBank(0x0E, 0xB816, Blob.FromHex("206BC24C95EC"));
 			PutInBank(0x1F, 0xC26B, CreateLongJumpTableEntry(0x0F, 0x8B40));
 			PutInBank(0x0F, 0x8B40, Blob.FromHex("A562851029030A851118651165110A0A0A1869508540A5100A0A29F0186928854160"));
+
+			// thing in bank 1F for switching to bank 1E when needed
+			PutInBank(0x1F, 0xCFD7, Blob.FromHex("2067E92099EBA91E4C03FE"));
+			PutInBank(0x1F, 0xC0AD, Blob.FromHex("1E2003FE200080"));
+			PutInBank(0x1F, 0xEADF, Blob.FromHex("D7CF"));
+
+			// Moving code and adding new stuff, look in 1E.asm
+			// Updating addresses, there are a lot
+			// Adresses used below
+			Blob Bank1E = Blob.FromHex("1E");
+			Blob PtyGen_DrawBoxes = Blob.FromHex("6C82");
+			Blob PtyGen_DrawText = Blob.FromHex("9882");
+			Blob TurnMenuScreenOn_ClearOAM = Blob.FromHex("5B85");
+			Blob DoPartyGen_OnCharacter = Blob.FromHex("C180");
+			Blob PtyGen_DrawScreen = Blob.FromHex("A480");
+			Blob PtyGen_DrawChars = Blob.FromHex("4A83");
+			Blob MenuWaitForBtn_SFX = Blob.FromHex("1A85");
+			Blob ClearNT = Blob.FromHex("8485");
+			Blob DrawNameInputScreen = Blob.FromHex("AC83");
+			Blob CharName_Frame = Blob.FromHex("2A82");
+			Blob MainLoop_in_DoNameInput = Blob.FromHex("5E81");
+			Blob lut_NameInputRowStart = Blob.FromHex("8406");
+			Blob lut_NameInput = Blob.FromHex("840D");
+			Blob skip_lut_NameInput_Load = Blob.FromHex("E581");
+			Blob NameInput_DrawName = Blob.FromHex("7983");
+			Blob PlaySFX_MenuSel = Blob.FromHex("EB84");
+			Blob PlaySFX_MenuMove = Blob.FromHex("0485");
+			Blob Box = Blob.FromHex("7F82");
+			Blob DrawOne_Text = Blob.FromHex("A782");
+			Blob Call_DrawComplexString = Blob.FromHex("E482");
+			Blob DrawOne_Chars = Blob.FromHex("5B83");
+			Blob MenuFrame = Blob.FromHex("2C85");
+			Blob PtyGen_Joy = Blob.FromHex("4C82");
+			Blob CharName_DrawCursor = Blob.FromHex("3183");
+
+
+			// NewGamePartyGeneration
+			PutInBank(0x1E, 0x8000, Get(0x39C54, 0xC1));
+			PutInBank(0x1E, 0x8021, Blob.FromHex("AA84"));
+			PutInBank(0x1E, 0x8032, DoPartyGen_OnCharacter);
+			PutInBank(0x1E, 0x803B, DoPartyGen_OnCharacter);
+			PutInBank(0x1E, 0x8044, DoPartyGen_OnCharacter);
+			PutInBank(0x1E, 0x804D, DoPartyGen_OnCharacter);
+			PutInBank(0x1E, 0x8052, PtyGen_DrawScreen);
+			PutInBank(0x1E, 0x8058, PtyGen_DrawChars);
+			PutInBank(0x1E, 0x8063, MenuWaitForBtn_SFX);
+			PutInBank(0x1E, 0x8073, Blob.FromHex("8180A210208180A220208180"));
+
+			// PtyGen_DrawScreen
+			PutInBank(0x1E, 0x80B6, ClearNT);
+			PutInBank(0x1E, 0x80B9, PtyGen_DrawBoxes);
+			PutInBank(0x1E, 0x80BC, PtyGen_DrawText);
+			PutInBank(0x1E, 0x80BF, TurnMenuScreenOn_ClearOAM);
+
+			// DoPartyGen_OnCharacter
+			PutInBank(0x1E, 0x80C1, Blob.FromHex("AE67008A4A4A4A4AA8B928818D9000A980EA8D910020A480200F82AD2400D04BAD2500F0023860AD2000290FCD6100F0E78D6100C900F0E0186E910090066E91006E9100AE6700FE0003BD0003E906C9FFD0039D0003AD90002C9100F0DA8D370020A8824CD980"));
+
+			// lut_AllowedClasses, defaults to all but None and the anything for the rest
+			PutInBank(0x1E, 0x8128, Blob.FromHex("7D7F7F7F"));
+
+			// DoNameInput
+			PutInBank(0x1E, 0x812C, Get(0x39D50, 0xE3));
+			PutInBank(0x1E, 0x8142, ClearNT);
+			PutInBank(0x1E, 0x8145, DrawNameInputScreen);
+			PutInBank(0x1E, 0x8158, TurnMenuScreenOn_ClearOAM);
+			PutInBank(0x1E, 0x815F, CharName_Frame);
+			PutInBank(0x1E, 0x8188, MainLoop_in_DoNameInput);
+			PutInBank(0x1E, 0x8197, MainLoop_in_DoNameInput);
+			PutInBank(0x1E, 0x81A6, MainLoop_in_DoNameInput);
+			PutInBank(0x1E, 0x81B5, MainLoop_in_DoNameInput);
+			PutInBank(0x1E, 0x81D3, Blob.FromHex("06841865640AAA9006BD0D854CE581BD0D8485"));
+			PutInBank(0x1E, 0x81FD, NameInput_DrawName);
+			PutInBank(0x1E, 0x820B, MainLoop_in_DoNameInput);
+
+			// PtyGen_Frame
+			PutInBank(0x1E, 0x820F, Get(0x39E33, 0x99));
+			PutInBank(0x1E, 0x8213, Blob.FromHex("4A83202283"));
+			PutInBank(0x1E, 0x8221, Bank1E);
+			PutInBank(0x1E, 0x8228, PtyGen_Joy);
+
+			// CharName_Frame
+			PutInBank(0x1E, 0x822E, CharName_DrawCursor);
+			PutInBank(0x1E, 0x8246, Bank1E);
+
+			// PtyGen_Joy
+			PutInBank(0x1E, 0x825C, PlaySFX_MenuSel);
+			PutInBank(0x1E, 0x8269, PlaySFX_MenuMove);
+
+			// PtyGen_DrawBoxes
+			PutInBank(0x1E, 0x8271, Box);
+
+			// PtyGen_DrawText
+			PutInBank(0x1E, 0x829C, DrawOne_Text);
+
+			// PtyGen_DrawOneText
+			PutInBank(0x1E, 0x82A8, Blob.FromHex("BD0803853ABD0903853BBD000318C9FFD016A9C78D3E00A9828D3F004CE48297B2B1A8FFFFFFFF0069F08D5F00A9028D5E00A95E8D3E00A9008D3F00A91E8D57008D58008A482036DE68AABD0203855CBD0303855DBD0403855EBD0503855FBD0603853ABD0703853BA95C853EA900853FA91E855785584C36DE"));
+
+			// PtyGen_DrawCursor
+			PutInBank(0x1E, 0x8322, Get(0x39F26, 0x1C8));
+
+			// PtyGen_DrawChars
+			PutInBank(0x1E, 0x834D, DrawOne_Chars);
+			PutInBank(0x1E, 0x8352, DrawOne_Chars);
+			PutInBank(0x1E, 0x8357, DrawOne_Chars);
+
+			// NameInput_DrawName
+			PutInBank(0x1E, 0x8398, Bank1E);
+
+			// DrawNameInputScreen
+			PutInBank(0x1E, 0x83EE, Blob.FromHex("0D853EA984"));
+			PutInBank(0x1E, 0x83FE, Bank1E);
+
+			// PlaySFX_MenuSel
+			PutInBank(0x1E, 0x84EB, Get(0x3AD84, 0x2F));
+
+			// MenuWaitForBtn_SFX
+			PutInBank(0x1E, 0x851A, Get(0x3B613, 0x12));
+			PutInBank(0x1E, 0x851B, MenuFrame);
+			PutInBank(0x1E, 0x852A, PlaySFX_MenuSel);
+
+			// MenuFrame
+			PutInBank(0x1E, 0x852C, Get(0x3B65D, 0x2F));
+			PutInBank(0x1E, 0x854A, Bank1E);
+
+			// TurnMenuScreenOn_ClearOAM
+			PutInBank(0x1E, 0x855B, Get(0x3B780, 0x29));
+			PutInBank(0x1E, 0x857E, Bank1E);
+
+			// ClearNT
+			PutInBank(0x1E, 0x8584, Get(0x39C02, 0x2C));
+
+			// Overwrite free space with NOPs so its easier to find
+			PutInBank(0x0E, 0x9C54, Enumerable.Repeat((byte)0xEA, 0x49A).ToArray());
+			
 		}
 
 		public override bool Validate()
