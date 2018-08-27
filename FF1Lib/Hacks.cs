@@ -150,7 +150,7 @@ namespace FF1Lib
 
 		public void PartyComposition(MT19337 rng, Flags flags)
 		{
-
+			bool forced = false;
 			List<byte> Chars = new List<byte> { 0b0000_0000, 0b0000_0000, 0b0000_0000, 0b0000_0000 };
 			int count = 0;
 			List<FF1Class> options = new List<FF1Class>();
@@ -158,6 +158,12 @@ namespace FF1Lib
 			{
 				if (options.Any())
 				{
+					if (forced) {
+						FF1Class forcedclass = options.PickRandom(rng);
+						options.Clear();
+						options.Add(forcedclass);
+					}
+
 					foreach(FF1Class option in options)
 					{
 						Chars[count] = (byte)(Chars[count] | Classes[(int)option]);
@@ -181,6 +187,7 @@ namespace FF1Lib
 			if (flags.RED_MAGE1) options.Add(FF1Class.RedMage);
 			if (flags.WHITE_MAGE1) options.Add(FF1Class.WhiteMage);
 			if (flags.BLACK_MAGE1) options.Add(FF1Class.BlackMage);
+			forced = flags.FORCED1;
 			updateCharacterFromOptions();
 
 			if (flags.FIGHTER2) options.Add(FF1Class.Fighter);
@@ -190,6 +197,7 @@ namespace FF1Lib
 			if (flags.WHITE_MAGE2) options.Add(FF1Class.WhiteMage);
 			if (flags.BLACK_MAGE2) options.Add(FF1Class.BlackMage);
 			if (flags.NONE_CLASS2) options.Add(FF1Class.None);
+			forced = flags.FORCED2;
 			updateCharacterFromOptions();
 
 			if (flags.FIGHTER3) options.Add(FF1Class.Fighter);
@@ -199,6 +207,7 @@ namespace FF1Lib
 			if (flags.WHITE_MAGE3) options.Add(FF1Class.WhiteMage);
 			if (flags.BLACK_MAGE3) options.Add(FF1Class.BlackMage);
 			if (flags.NONE_CLASS3) options.Add(FF1Class.None);
+			forced = flags.FORCED3;
 			updateCharacterFromOptions();
 
 			if (flags.FIGHTER4) options.Add(FF1Class.Fighter);
@@ -208,6 +217,7 @@ namespace FF1Lib
 			if (flags.WHITE_MAGE4) options.Add(FF1Class.WhiteMage);
 			if (flags.BLACK_MAGE4) options.Add(FF1Class.BlackMage);
 			if (flags.NONE_CLASS4) options.Add(FF1Class.None);
+			forced = flags.FORCED4;
 			updateCharacterFromOptions();
 
 			// Load stats for None
