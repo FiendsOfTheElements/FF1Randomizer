@@ -133,24 +133,49 @@ namespace FF1Lib
 			RedMage = 3,
 			WhiteMage = 4,
 			BlackMage = 5,
-			None = -1,
+			None = 6,
+		}
+
+		// Fi, Th, Bb, Rm, Wm, Bm, None, yes, in that order, even though it looks wrong
+		private readonly List<byte> Classes = new List<byte> {0b0000_0001,
+				0b0100_0000, 0b0010_0000, 0b0001_0000,
+				0b0000_1000, 0b0000_0100, 0b0000_0010};
+
+
+		private byte Rotate7bitNum(byte num, int times)
+		{
+			num = (byte)(((num >> times)|(num << (7-times)))&0x7F);
+			return num;
 		}
 
 		public void PartyComposition(MT19337 rng, Flags flags)
 		{
-			// Always randomize all 4 default members
-			Data[0x3A0AE] = (byte)rng.Between(0, 5);
-			Data[0x3A0BE] = (byte)(rng.Between(0, 6) - 1);
-			Data[0x3A0CE] = (byte)(rng.Between(0, 6) - 1);
-			Data[0x3A0DE] = (byte)(rng.Between(0, 6) - 1);
-
-			int forced = 0;
+			bool forced = false;
+			List<byte> Chars = new List<byte> { 0b0000_0000, 0b0000_0000, 0b0000_0000, 0b0000_0000 };
+			int count = 0;
 			List<FF1Class> options = new List<FF1Class>();
 			void updateCharacterFromOptions()
-			{ 
+			{
 				if (options.Any())
 				{
-					Data[0x3A0AE + 0x10 * forced++] = (byte)options.PickRandom(rng);
+					if (forced) {
+						FF1Class forcedclass = options.PickRandom(rng);
+						options.Clear();
+						options.Add(forcedclass);
+					}
+
+					foreach(FF1Class option in options)
+					{
+						Chars[count] = (byte)(Chars[count] | Classes[(int)option]);
+					}
+					// set default member
+					byte defaultclass = (byte)options.PickRandom(rng);
+					// set the byte that allows which classes you can pick correctly, must be rotated right the correct amount
+					Chars[count] = Rotate7bitNum(Chars[count], (defaultclass == 7 ? 0 : 7 - defaultclass));
+					// set the byte for default class and the byte for allowed classes
+					Data[0x784AA + count * 0x10] = (defaultclass == 6 ? (byte)0xFF : defaultclass);
+					Data[0x78128 + count] = Chars[count];
+					count++;
 					options.Clear();
 				}
 			}
@@ -162,6 +187,7 @@ namespace FF1Lib
 			if (flags.RED_MAGE1) options.Add(FF1Class.RedMage);
 			if (flags.WHITE_MAGE1) options.Add(FF1Class.WhiteMage);
 			if (flags.BLACK_MAGE1) options.Add(FF1Class.BlackMage);
+			forced = flags.FORCED1;
 			updateCharacterFromOptions();
 
 			if (flags.FIGHTER2) options.Add(FF1Class.Fighter);
@@ -171,6 +197,7 @@ namespace FF1Lib
 			if (flags.WHITE_MAGE2) options.Add(FF1Class.WhiteMage);
 			if (flags.BLACK_MAGE2) options.Add(FF1Class.BlackMage);
 			if (flags.NONE_CLASS2) options.Add(FF1Class.None);
+			forced = flags.FORCED2;
 			updateCharacterFromOptions();
 
 			if (flags.FIGHTER3) options.Add(FF1Class.Fighter);
@@ -180,6 +207,7 @@ namespace FF1Lib
 			if (flags.WHITE_MAGE3) options.Add(FF1Class.WhiteMage);
 			if (flags.BLACK_MAGE3) options.Add(FF1Class.BlackMage);
 			if (flags.NONE_CLASS3) options.Add(FF1Class.None);
+			forced = flags.FORCED3;
 			updateCharacterFromOptions();
 
 			if (flags.FIGHTER4) options.Add(FF1Class.Fighter);
@@ -189,31 +217,8 @@ namespace FF1Lib
 			if (flags.WHITE_MAGE4) options.Add(FF1Class.WhiteMage);
 			if (flags.BLACK_MAGE4) options.Add(FF1Class.BlackMage);
 			if (flags.NONE_CLASS4) options.Add(FF1Class.None);
+			forced = flags.FORCED4;
 			updateCharacterFromOptions();
-
-			// Class select picker updates
-			Put(0x39D35, Blob.FromHex($"E0{forced * 0x10:X2}30DFFE0003BD0003E907D0039D0003A9018537"));
-			/* Starting at 0x39D35 (which is just after LDX char_index)
-				* CPX ____(numberForced * 0x10)____
-				* BMI @MainLoop
-				* INC ptygen_class, X
-				* LDA ptygen_class, X
-				* SBC #$06
-				* BNE :+
-				*   STA ptygen_class, X
-				* : LDA #$01
-				*   STA menustall
-				*/
-
-			// allow slots 2-4 to have none, slot 1 cannot
-			PutInBank(0x0E, 0xB81C, Blob.FromHex("E000F005C9FFF00760C9FFD005A9009D0003A90160"));
-			PutInBank(0x0E, 0x9D41, Blob.FromHex("201CB8EAEAEAEA"));
-
-			// Name Drawing for None
-			PutInBank(0x0E, 0x9ED9, Blob.FromHex("2071C2"));
-			PutInBank(0x1F, 0xC271, CreateLongJumpTableEntry(0x0F, 0x8B70));
-			PutInBank(0x0F, 0x8B70, Blob.FromHex("18C9FFD016A9828D3E00A98B8D3F004C9F8B97B2B1A8FFFFFFFF0069F08D5F00A9028D5E00A95E8D3E00A9008D3F00A90F8D57008D58008A482036DE68AA60"));
-			PutInBank(0x0E, 0x9EDC, Get(0x39EF7, 0x2F));
 
 			// Load stats for None
 			PutInBank(0x1F, 0xC783, Blob.FromHex("2080B3C931F053EA"));

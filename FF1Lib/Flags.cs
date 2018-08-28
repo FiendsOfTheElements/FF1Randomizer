@@ -39,6 +39,8 @@ namespace FF1Lib
 		private const int PARTY_3 = 28;
 		private const int PARTY_4 = 29;
 		private const int PARTY_EXTRA = 30;
+		private const int PARTY_EXTRA2 = 31;
+
 
 		[FlagString(Character = ITEMS, FlagBit = 1)]
 		public bool Shops { get; set; }
@@ -317,6 +319,15 @@ namespace FF1Lib
 		public bool NONE_CLASS3 { get; set; }
 		[FlagString(Character = PARTY_EXTRA, FlagBit = 4)]
 		public bool NONE_CLASS4 { get; set; }
+		[FlagString(Character = PARTY_EXTRA, FlagBit = 8)]
+		public bool FORCED1 { get; set; }
+		[FlagString(Character = PARTY_EXTRA, FlagBit = 16)]
+		public bool FORCED2 { get; set; }
+		[FlagString(Character = PARTY_EXTRA, FlagBit = 32)]
+		public bool FORCED3 { get; set; }
+
+		[FlagString(Character = PARTY_EXTRA2, FlagBit = 1)]
+		public bool FORCED4 { get; set; }
 
 		public bool ModernBattlefield { get; set; }
 		public bool FunEnemyNames { get; set; }
