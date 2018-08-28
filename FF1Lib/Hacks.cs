@@ -512,5 +512,13 @@ namespace FF1Lib
 
 			Put(0x2C218, Blob.FromHex("0F0F8F2CACAC7E7C"));
 		}
+
+		public void NoDanMode()
+		{
+			// Instead of looping through the 'check to see if characters are alive' thing, just set it to 4 and then remove the loop.
+			// EA EA EA EA EA EA (sports)
+			Put(0x2DED6, Blob.FromHex("A204A004EAEAEAEAEAEAEAEAEAEAEAEAEA"));
+
+		}
 	}
 }

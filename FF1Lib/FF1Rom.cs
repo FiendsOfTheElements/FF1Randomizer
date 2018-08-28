@@ -403,6 +403,11 @@ namespace FF1Lib
 				EnableCanalBridge();
 			}
 
+			if (flags.NoDanMode)
+			{
+				NoDanMode();
+			}
+
 			SetProgressiveScaleMode(flags.ProgressiveScaleMode);
 
 			// We have to do "fun" stuff last because it alters the RNG state.

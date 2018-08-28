@@ -243,6 +243,8 @@ namespace FF1Lib
 		public bool IncludeMorale { get; set; }
 		[FlagString(Character = SCALE, FlagBit = 16)]
 		public bool RandomWaresIncludesSpecialGear { get; set; }
+		[FlagString(Character = SCALE, FlagBit = 32)]
+		public bool NoDanMode { get; set; }
 
 		[FlagString(Character = ENEMY_SCALE_FACTOR, Multiplier = 0.1)]
 		public double EnemyScaleFactor { get; set; }
