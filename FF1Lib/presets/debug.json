@@ -91,6 +91,7 @@
 		"WrapPriceOverflow": false,
 		"IncludeMorale": false,
 		"EasyMode": false,
+		"NoDanMode": true,
 
 		"SpeedHacks": true,
 		"NoPartyShuffle": true,
