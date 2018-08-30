@@ -37,7 +37,7 @@ computedPropertyArray.FlagsInput = {
 	},
 	set: function (newValue) {
 		this.flagString = newValue;
-		this.flagError = !newValue.match(/^[A-Za-z0-9!-]{31}$/);
+		this.flagError = !newValue.match(/^[A-Za-z0-9!-]{32}$/);
 	}
 };
 computedPropertyArray.SeedInput = {
