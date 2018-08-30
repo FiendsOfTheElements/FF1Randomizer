@@ -124,8 +124,8 @@ var app = new Vue({
 			if (str) {
 				var [seed, flags] = str.split("_", 2);
 
-				document.getElementById("Seed").value = seed;
-				document.getElementById("Flags").value = flags;
+				this.SeedInput = seed;
+				this.FlagsInput = flags;
 			}
 		},
 		preset: function (presetName) {
