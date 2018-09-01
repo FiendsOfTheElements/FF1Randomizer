@@ -8,11 +8,15 @@
 		"NPCItems": true,
 		"NPCFetchItems": true,
 		"RandomWares": true,
+		"RandomWaresIncludesSpecialGear": false,
 		"RandomLoot": false,
 
 		"ShardHunt": false,
 		"ExtraShards": false,
 		"TransformFinalFormation": false,
+		"ChaosRush": false,
+		"ShortToFR": false,
+		"PreserveFiendRefights": false,
 
 		"MagicShops": false,
 		"MagicLevels": true,
@@ -31,14 +35,11 @@
 		"EnemyStatusAttacks": true,
 		"AllowUnsafePirates": true,
 
+		"WarMECHMode": "Wandering4F",
 		"OrdealsPillars": true,
 		"SkyCastle4FTeleporters": true,
 		"TitansTrove": true,
 		"ConfusedOldMen": true,
-		"CrownlessOrdeals": true,
-		"ChaosRush": false,
-		"ShortToFR": false,
-		"PreserveFiendRefights": false,
 		"Floors": true,
 		"AllowDeepCastles": true,
 
@@ -79,6 +80,7 @@
 
 		"EarlySarda": true,
 		"EarlySage": true,
+		"CrownlessOrdeals": true,
 		"OnlyRequireGameIsBeatable": false,
 
 		"FreeBridge": false,

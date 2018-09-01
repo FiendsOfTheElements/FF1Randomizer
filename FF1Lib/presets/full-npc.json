@@ -8,6 +8,7 @@
 		"NPCItems": true,
 		"NPCFetchItems": true,
 		"RandomWares": false,
+		"RandomWaresIncludesSpecialGear": false,
 		"RandomLoot": false,
 
 		"ShardHunt": false,
@@ -39,12 +40,12 @@
 		"SkyCastle4FTeleporters": true,
 		"TitansTrove": true,
 		"ConfusedOldMen": true,
+		"Floors": false,
+		"AllowDeepCastles": false,
 
 		"MapOpenProgression": true,
 		"MapOpenProgressionExtended": true,
 		"Entrances": false,
-		"Floors": false,
-		"AllowDeepCastles": false,
 		"Towns": false,
 
 		"IncentivizeFreeNPCs": true,

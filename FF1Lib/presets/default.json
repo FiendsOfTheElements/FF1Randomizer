@@ -8,6 +8,7 @@
 		"NPCItems": true,
 		"NPCFetchItems": false,
 		"RandomWares": false,
+		"RandomWaresIncludesSpecialGear": false,
 		"RandomLoot": false,
 
 		"ShardHunt": false,
@@ -38,7 +39,7 @@
 		"OrdealsPillars": true,
 		"SkyCastle4FTeleporters": true,
 		"TitansTrove": true,
-		"ConfusedOldMen": false,
+		"ConfusedOldMen": true,
 		"Floors": false,
 		"AllowDeepCastles": false,
 
