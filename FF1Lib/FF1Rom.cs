@@ -371,7 +371,7 @@ namespace FF1Lib
 			// var dialogueText = ReadText(DialogueTextPointerOffset, DialogueTextPointerBase, DialogueTextPointerCount);
 			FixVanillaRibbon(itemText);
 			ExpGoldBoost(flags.ExpBonus, flags.ExpMultiplier);
-			ScalePrices(flags, itemText, rng, shopItemLocation);
+			ScalePrices(flags, itemText, rng, false, shopItemLocation);
 			ScaleEncounterRate(flags.EncounterRate / 30.0, flags.DungeonEncounterRate / 30.0);
 
 
@@ -388,12 +388,12 @@ namespace FF1Lib
 
 			if (flags.EnemyScaleFactor > 1)
 			{
-				ScaleEnemyStats(flags.EnemyScaleFactor, flags.WrapStatOverflow, flags.IncludeMorale, rng);
+				ScaleEnemyStats(flags.EnemyScaleFactor, flags.WrapStatOverflow, flags.IncludeMorale, rng, flags.ClampMinimumStatScale);
 			}
 
 			if (flags.BossScaleFactor > 1)
 			{
-				ScaleBossStats(flags.BossScaleFactor, flags.WrapStatOverflow, flags.IncludeMorale, rng);
+				ScaleBossStats(flags.BossScaleFactor, flags.WrapStatOverflow, flags.IncludeMorale, rng, flags.ClampMinimumStatScale);
 			}
 
 			PartyComposition(rng, flags);

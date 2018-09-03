@@ -100,6 +100,8 @@ namespace FF1Lib
 		public bool AllowUnsafePirates { get; set; }
 		[FlagString(Character = BATTLES, FlagBit = 16)]
 		public bool AllowUnsafeMelmond { get; set; }
+		[FlagString(Character = BATTLES, FlagBit = 32)]
+		public bool ClampMinimumStatScale { get; set; }
 
 		[FlagString(Character = STANDARD_MAPS, FlagBit = 3)]
 		public WarMECHMode WarMECHMode { get; set; }

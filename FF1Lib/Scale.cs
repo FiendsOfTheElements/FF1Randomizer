@@ -38,14 +38,14 @@ namespace FF1Lib
 
 		// Scale is the geometric scale factor used with RNG.  Multiplier is where we make everything cheaper
 		// instead of enemies giving more gold, so we don't overflow.
-		public void ScalePrices(IScaleFlags flags, Blob[] text, MT19337 rng, ItemShopSlot shopItemLocation)
+		public void ScalePrices(IScaleFlags flags, Blob[] text, MT19337 rng, bool increaseOnly, ItemShopSlot shopItemLocation)
 		{
 			var scale = flags.PriceScaleFactor;
 			var multiplier = flags.ExpMultiplier;
             var prices = Get(PriceOffset, PriceSize * PriceCount).ToUShorts();
 			for (int i = 0; i < prices.Length; i++)
 			{
-				var newPrice = Scale(prices[i] / multiplier, scale, 1, rng);
+				var newPrice = Scale(prices[i] / multiplier, scale, 1, rng, increaseOnly);
 				prices[i] = (ushort) (flags.WrapPriceOverflow ? ((newPrice - 1) % 0xFFFF) + 1 : Min(newPrice, 0xFFFF));
             }
 			var questItemPrice = prices[(int)Item.Bottle];
@@ -83,7 +83,7 @@ namespace FF1Lib
 					var priceBytes = Get(ShopPointerBase + pointers[i], 2);
 					var priceValue = BitConverter.ToUInt16(priceBytes, 0);
 
-					priceValue = (ushort)Scale(priceValue / multiplier, scale, 1, rng);
+					priceValue = (ushort)Scale(priceValue / multiplier, scale, 1, rng, increaseOnly);
 					priceBytes = BitConverter.GetBytes(priceValue);
 					Put(ShopPointerBase + pointers[i], priceBytes);
 				}
@@ -92,39 +92,39 @@ namespace FF1Lib
 			{
 				var startingGold = BitConverter.ToUInt16(Get(StartingGoldOffset, 2), 0);
 
-				startingGold = (ushort)Min(Scale(startingGold / multiplier, scale, 1, rng), 0xFFFF);
+				startingGold = (ushort)Min(Scale(startingGold / multiplier, scale, 1, rng, increaseOnly), 0xFFFF);
 
 				Put(StartingGoldOffset, BitConverter.GetBytes(startingGold));
 			}
 			
 		}
 
-		public void ScaleEnemyStats(double scale, bool wrapOverflow, bool includeMorale, MT19337 rng)
+		public void ScaleEnemyStats(double scale, bool wrapOverflow, bool includeMorale, MT19337 rng, bool increaseOnly)
 		{
-			NonBossEnemies.ForEach(index => ScaleSingleEnemyStats(index, scale, wrapOverflow, includeMorale, rng));
+			NonBossEnemies.ForEach(index => ScaleSingleEnemyStats(index, scale, wrapOverflow, includeMorale, rng, increaseOnly));
 		}
 
-		public void ScaleBossStats(double scale, bool wrapOverflow, bool includeMorale, MT19337 rng)
+		public void ScaleBossStats(double scale, bool wrapOverflow, bool includeMorale, MT19337 rng, bool increaseOnly)
 		{
-			Bosses.ForEach(index => ScaleSingleEnemyStats(index, scale, wrapOverflow, includeMorale, rng));
+			Bosses.ForEach(index => ScaleSingleEnemyStats(index, scale, wrapOverflow, includeMorale, rng, increaseOnly));
 		}
 
-		public void ScaleSingleEnemyStats(int index, double scale, bool wrapOverflow, bool includeMorale, MT19337 rng)
+		public void ScaleSingleEnemyStats(int index, double scale, bool wrapOverflow, bool includeMorale, MT19337 rng, bool increaseOnly)
 		{
 			var enemy = Get(EnemyOffset + index * EnemySize, EnemySize);
 
 			var hp = BitConverter.ToUInt16(enemy, 4);
-			hp = (ushort)Min(Scale(hp, scale, 1.0, rng), 0x7FFF);
+			hp = (ushort)Min(Scale(hp, scale, 1.0, rng, increaseOnly), 0x7FFF);
 			var hpBytes = BitConverter.GetBytes(hp);
 			Array.Copy(hpBytes, 0, enemy, 4, 2);
 
-			var newMorale = includeMorale ? Scale(enemy[6], scale, 0.25, rng) : enemy[6];
-			var newEvade = Scale(enemy[8], scale, 1.0, rng);
-			var newDefense = Scale(enemy[9], scale, 0.5, rng);
-			var newHits = Scale(enemy[10], scale, 0.5, rng);
-			var newHitPercent = Scale(enemy[11], scale, 1.0, rng);
-			var newStrength = Scale(enemy[12], scale, 0.25, rng);
-			var newCrit = Scale(enemy[13], scale, 0.5, rng);
+			var newMorale = includeMorale ? Scale(enemy[6], scale, 0.25, rng, increaseOnly) : enemy[6];
+			var newEvade = Scale(enemy[8], scale, 1.0, rng, increaseOnly);
+			var newDefense = Scale(enemy[9], scale, 0.5, rng, increaseOnly);
+			var newHits = Scale(enemy[10], scale, 0.5, rng, increaseOnly);
+			var newHitPercent = Scale(enemy[11], scale, 1.0, rng, increaseOnly);
+			var newStrength = Scale(enemy[12], scale, 0.25, rng, increaseOnly);
+			var newCrit = Scale(enemy[13], scale, 0.5, rng, increaseOnly);
 			if (wrapOverflow)
 			{
 				newEvade = ((newEvade - 1) % 0xFF) + 1;
@@ -145,11 +145,15 @@ namespace FF1Lib
 			Put(EnemyOffset + index * EnemySize, enemy);
 		}
 
-		private int Scale(double value, double scale, double adjustment, MT19337 rng = null)
+		private int Scale(double value, double scale, double adjustment, MT19337 rng, bool increaseOnly)
 		{
-			double exponent = rng == null ? 1.0 : (double)rng.Next() / uint.MaxValue * 2.0 - 1.0;
+			double exponent = 1.0;
+			if (rng != null)
+			{
+				exponent = (double)rng.Next() / uint.MaxValue;
+				exponent = increaseOnly ? exponent : exponent * 2.0 - 1.0;
+			}
 			double adjustedScale = 1.0 + adjustment * (scale - 1.0);
-
 			return (int)Round(Pow(adjustedScale, exponent) * value, MidpointRounding.AwayFromZero);
 		}
 
