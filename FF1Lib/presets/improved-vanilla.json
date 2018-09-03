@@ -8,6 +8,7 @@
 		"NPCItems": false,
 		"NPCFetchItems": false,
 		"RandomWares": false,
+		"RandomWaresIncludesSpecialGear": false,
 		"RandomLoot": false,
 
 		"ShardHunt": false,
@@ -40,12 +41,12 @@
 		"TitansTrove": false,
 		"ConfusedOldMen": false,
 		"Floors": false,
+		"AllowDeepCastles": false,
 
 		"MapOpenProgression": false,
 		"MapOpenProgressionExtended": false,
 		"Entrances": false,
 		"Towns": false,
-		"AllowDeepCastles": false,
 
 		"IncentivizeFreeNPCs": false,
 		"IncentivizeFetchNPCs": false,

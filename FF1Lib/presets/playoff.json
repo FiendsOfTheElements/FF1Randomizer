@@ -1,13 +1,14 @@
 ﻿{
-	"Name": "Tournament",
+	"Name": "Playoff Style",
 
 	"Flags": {
 
 		"Shops": true,
 		"Treasures": true,
 		"NPCItems": true,
-		"NPCFetchItems": false,
+		"NPCFetchItems": true,
 		"RandomWares": false,
+		"RandomWaresIncludesSpecialGear": false,
 		"RandomLoot": false,
 
 		"ShardHunt": false,
@@ -15,6 +16,7 @@
 		"TransformFinalFormation": false,
 		"ChaosRush": false,
 		"ShortToFR": false,
+		"PreserveFiendRefights": false,
 
 		"MagicShops": false,
 		"MagicLevels": true,
@@ -36,7 +38,7 @@
 		"WarMECHMode": "Vanilla",
 		"OrdealsPillars": true,
 		"SkyCastle4FTeleporters": false,
-		"TitansTrove": false,
+		"TitansTrove": true,
 		"ConfusedOldMen": false,
 		"Floors": false,
 		"AllowDeepCastles": false,
@@ -47,9 +49,9 @@
 		"Towns": false,
 
 		"IncentivizeFreeNPCs": true,
-		"IncentivizeFetchNPCs": false,
+		"IncentivizeFetchNPCs": true,
 		"IncentivizeTail": true,
-		"IncentivizeFetchItems": false,
+		"IncentivizeFetchItems": true,
 
 		"IncentivizeMarsh": false,
 		"IncentivizeEarth": false,
@@ -94,7 +96,7 @@
 		"NoPartyShuffle": true,
 		"Dash": true,
 		"BuyTen": true,
-		"EnableCritNumberDisplay": false,
+		"EnableCritNumberDisplay": true,
 
 		"IdentifyTreasures": true,
 		"WaitWhenUnrunnable": true,
@@ -108,16 +110,17 @@
 		"EnemyStatusAttackBug": true,
 		"EnemySpellsTargetingAllies": true,
 		"EnemyElementalResistancesBug": true,
-		"ImproveTurnOrderRandomization": false,
+		"ImproveTurnOrderRandomization": true,
 
-		"EnemyScaleFactor": 1.5,
+		"EnemyScaleFactor": 2.0,
+		"BossScaleFactor": 2.0,
 		"PriceScaleFactor": 4.0,
 		"ExpMultiplier": 2.4,
 		"ExpBonus": 80,
 		"ProgressiveScaleMode": 0,
 		"EncounterRate": 30.0,
 		"DungeonEncounterRate": 30.0,
-		"ForcedPartyMembers": 1
+		"ForcedPartyMembers": 2
 
 	}
 

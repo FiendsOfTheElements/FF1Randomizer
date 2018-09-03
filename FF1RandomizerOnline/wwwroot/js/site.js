@@ -1,54 +1,16 @@
 ﻿var presets = [];
+loadPresetFile("default.json");
 loadPresetFile("debug.json");
 loadPresetFile("beginner.json");
-loadPresetFile("default.json");
 loadPresetFile("full-npc.json");
 loadPresetFile("improved-vanilla.json");
-loadPresetFile("normal-npc.json");
-loadPresetFile("tournament.json");
-loadPresetFile("ro16.json");
-loadPresetFile("ro8.json");
-loadPresetFile("semifinals.json");
-loadPresetFile("finals.json");
+loadPresetFile("swiss.json");
+loadPresetFile("playoff.json");
 
 function loadPresetFile(filename) {
 	$.getJSON("/presets/" + filename, (preset) => {
 		presets.push(preset);
 	});
-}
-
-function validateSeed() {
-	var seedInput = document.getElementById("Seed");
-	var isValid = seedInput.value.match(/^[A-Fa-f0-9]{8}$/)
-	if (isValid) {
-		seedInput.parentElement.classList.remove("has-error");
-	} else {
-		seedInput.parentElement.classList.add("has-error");
-	}
-	return isValid;
-}
-
-function validateFlags() {
-	var flagsInput = document.getElementById("Flags");
-	var isValid = flagsInput.value.match(/^[A-Za-z0-9!-]{27}$/);
-	if (isValid) {
-		flagsInput.parentElement.classList.remove("has-error");
-	} else {
-		flagsInput.parentElement.classList.add("has-error");
-	}
-
-	return isValid;
-}
-
-function newSeed() {
-	var seed = Math.floor((0xFFFFFFFF + 1) * Math.random());
-	var seedString = seed.toString(16).toUpperCase();
-
-	if (seedString.length < 8) {
-		seedString = Array(8 - seedString.length + 1).join("0") + seedString;
-	}
-	document.getElementById("Seed").value = seedString;
-	return false;
 }
 
 function setFileName() {
@@ -70,10 +32,20 @@ computedPropertyArray.FlagsInput = {
 		return this.flagString;
 	},
 	set: function (newValue) {
-		if (!validateFlags()) return;
 		this.flagString = newValue;
+		this.flagError = !newValue.match(/^[A-Za-z0-9!-]{27}$/);
 	}
 };
+computedPropertyArray.SeedInput = {
+	get: function () {
+		return this.seedString;
+	},
+	set: function (newValue) {
+		this.seedString = newValue;
+		this.seedError = !newValue.match(/^[A-Fa-f0-9]{8}$/)
+	}
+};
+
 var funKey = 'fun_flags';
 var defaultFun = {
 	ModernBattlefield: false,
@@ -83,14 +55,16 @@ var defaultFun = {
 	MusicShuffle: '0',
 };
 
-var initalFlagString = document.getElementById('Flags').value;
-
 var app = new Vue({
 	el: '#vueScope',
 	data: {
-		flagString: initalFlagString,
+		flagString: document.getElementById('Flags').value,
+		flagError: false,
+		seedString: '',
+		seedError: false,
 		fun: defaultFun,
 		funKeyMessage: '',
+		queryString: new URLSearchParams(document.location.search),
 	},
 	mounted: function () {
 		this.$nextTick(function () {
@@ -99,7 +73,24 @@ var app = new Vue({
 				this.fun = obj;
 				this.funKeyMessage = 'Your saved Fun % flags have been automatically restored.';
 			}
+
+			this.seedString = this.queryString.get('s');
+			if (!this.seedString) {
+				this.newSeed();
+			}
+
+			if (this.queryString.has('f')) {
+				this.flagString = this.queryString.get('f');
+			}
 		});
+	},
+	watch: {
+		flagString: function () {
+			this.updateHistory();
+		},
+		seedString: function () {
+			this.updateHistory();
+		},
 	},
 	methods: {
 		saveFun: function () {
@@ -110,16 +101,27 @@ var app = new Vue({
 			localStorage.removeItem(funKey);
 			this.funKeyMessage = 'Preferences Cleared.';
 		},
+		updateHistory: function () {
+			var href = document.location.href;
+			if (href.indexOf('?') > 0) {
+				href = href.substr(0, href.indexOf('?'));
+			}
+
+			this.queryString.set('s', this.seedString);
+			this.queryString.set('f', this.flagString);
+			history.replaceState({}, '', href + '?' + this.queryString.toString())
+		},
+		newSeed: function () {
+			var seed = Math.floor((0xFFFFFFFF + 1) * Math.random());
+			this.seedString = seed.toString(16).toUpperCase().padStart(8, '0');
+		},
 		importSeedFlags: function () {
-			var seed = document.getElementById("Seed").value;
-			var flags = document.getElementById("Flags").value;
-			var str = prompt("Press Ctrl+C to copy to clipboard or paste in a SEED_FLAGS string and click OK to save changes.", seed + "_" + flags);
-
+			var str = prompt("Press Ctrl+C to copy to clipboard or paste in a SEED_FLAGS string and click OK to save changes.", this.seedString + "_" + this.flagString);
 			if (str) {
-				[seed, flags] = str.split("_", 2);
+				var [seed, flags] = str.split("_", 2);
 
-				this.flagString = flags;
-				document.getElementById("Seed").value = seed;
+				this.SeedInput = seed;
+				this.FlagsInput = flags;
 			}
 		},
 		preset: function (presetName) {

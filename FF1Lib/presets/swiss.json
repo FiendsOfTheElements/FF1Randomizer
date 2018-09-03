@@ -1,19 +1,22 @@
-﻿ {
-	"Name": "Round of 8",
+﻿{
+	"Name": "Swiss Style",
 
 	"Flags": {
 
 		"Shops": true,
 		"Treasures": true,
 		"NPCItems": true,
-		"NPCFetchItems": true,
+		"NPCFetchItems": false,
 		"RandomWares": false,
+		"RandomWaresIncludesSpecialGear": false,
 		"RandomLoot": false,
 
 		"ShardHunt": false,
 		"ExtraShards": false,
 		"TransformFinalFormation": false,
 		"ChaosRush": false,
+		"ShortToFR": false,
+		"PreserveFiendRefights": false,
 
 		"MagicShops": false,
 		"MagicLevels": true,
@@ -24,6 +27,8 @@
 		"EnemyFormationsFrequency": true,
 		"EnemyFormationsUnrunnable": true,
 		"EnemyFormationsSurprise": true,
+		"EnemyTrapTiles": false,
+		"RandomTrapFormations": false,
 
 		"EnemyScripts": true,
 		"EnemySkillsSpells": true,
@@ -33,7 +38,9 @@
 		"WarMECHMode": "Vanilla",
 		"OrdealsPillars": true,
 		"SkyCastle4FTeleporters": false,
-		"TitansTrove": true,
+		"TitansTrove": false,
+		"ConfusedOldMen": false,
+		"AllowUnsafeMelmond": false,
 		"Floors": false,
 		"AllowDeepCastles": false,
 
@@ -43,9 +50,9 @@
 		"Towns": false,
 
 		"IncentivizeFreeNPCs": true,
-		"IncentivizeFetchNPCs": true,
+		"IncentivizeFetchNPCs": false,
 		"IncentivizeTail": true,
-		"IncentivizeFetchItems": true,
+		"IncentivizeFetchItems": false,
 
 		"IncentivizeMarsh": false,
 		"IncentivizeEarth": false,
@@ -90,7 +97,7 @@
 		"NoPartyShuffle": true,
 		"Dash": true,
 		"BuyTen": true,
-		"EnableCritNumberDisplay": false,
+		"EnableCritNumberDisplay": true,
 
 		"IdentifyTreasures": true,
 		"WaitWhenUnrunnable": true,
@@ -111,9 +118,10 @@
 		"ExpMultiplier": 2.4,
 		"ExpBonus": 80,
 		"ProgressiveScaleMode": 0,
-		"ForcedPartyMembers": 2
+		"EncounterRate": 30.0,
+		"DungeonEncounterRate": 30.0,
+		"ForcedPartyMembers": 1
 
 	}
 
 }
-
