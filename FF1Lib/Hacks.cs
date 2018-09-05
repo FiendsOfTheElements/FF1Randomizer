@@ -530,5 +530,44 @@ namespace FF1Lib
 			Put(0x2DED6, Blob.FromHex("A204A004EAEAEAEAEAEAEAEAEAEAEAEAEA"));
 
 		}
+
+		public void ShuffleWeaponPermissions(MT19337 rng)
+		{
+			const int WeaponPermissionsOffset = 0x3BF50;
+			ShuffleGearPermissions(rng, WeaponPermissionsOffset);
+		}
+
+		public void ShuffleArmorPermissions(MT19337 rng)
+		{
+			const int ArmorPermissionsOffset = 0x3BFA0;
+			ShuffleGearPermissions(rng, ArmorPermissionsOffset);
+		}
+
+		public void ShuffleGearPermissions(MT19337 rng, int offset)
+		{
+			const int PermissionsSize = 2;
+			const int PermissionsCount = 40;
+
+			// lut_ClassEquipBit: ;  FT   TH   BB   RM   WM   BM      KN   NJ   MA   RW   WW   BW
+			// .WORD               $800,$400,$200,$100,$080,$040,   $020,$010,$008,$004,$002,$001
+			var mask = 0x0820; // Fighter/Knight class bit lut. Each class is a shift of this.
+			var order = Enumerable.Range(0, 6).ToList();
+			order.Shuffle(rng);
+
+			var oldPermissions = Get(offset, PermissionsSize * PermissionsCount).ToUShorts();
+			var newPermissions = oldPermissions.Select(item =>
+			{
+				UInt16 shuffled = 0x0000;
+				for (int i = 0; i < 6; ++i)
+				{
+					// Shift the mask into each class's slot, then AND with vanilla permission.
+					// Shift left to vanilla fighter, shift right into new permission.
+					shuffled |= (ushort)(((item & (mask >> i)) << i) >> order[i]);
+				}
+				return shuffled;
+			});
+
+			Put(offset, Blob.FromUShorts(newPermissions.ToArray()));
+		}
 	}
 }

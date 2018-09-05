@@ -191,6 +191,16 @@ namespace FF1Lib
 				ShuffleMagicLevels(rng, flags.MagicPermissions);
 			}
 
+			if (flags.WeaponPermissions)
+			{
+				ShuffleWeaponPermissions(rng);
+			}
+
+			if (flags.ArmorPermissions)
+			{
+				ShuffleArmorPermissions(rng);
+			}
+
 			if (flags.Rng)
 			{
 				ShuffleRng(rng);

@@ -332,6 +332,10 @@ namespace FF1Lib
 
 		[FlagString(Character = PARTY_EXTRA2, FlagBit = 1)]
 		public bool FORCED4 { get; set; }
+		[FlagString(Character = PARTY_EXTRA2, FlagBit = 2)]
+		public bool WeaponPermissions { get; set; }
+		[FlagString(Character = PARTY_EXTRA2, FlagBit = 4)]
+		public bool ArmorPermissions { get; set; }
 
 		public bool ModernBattlefield { get; set; }
 		public bool FunEnemyNames { get; set; }
