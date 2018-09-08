@@ -113,6 +113,7 @@ namespace Inline6502
 		///   JMP $8044
 		///  ");
 		/// </example>
+		/// <exception cref="AssemblyError">if something goes wrong.</exception>
 		public static byte[] assemble(int origin, string name, string asm)
 		{
 			if (origin < 0 || origin > 0xFFFF)
