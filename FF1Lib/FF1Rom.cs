@@ -521,7 +521,7 @@ namespace FF1Lib
 			PutInBank(0x0F, 0x8800, Blob.FromHex("A000B186C902F005C908F00160A018B186301BC8B1863016C8B1863011C8B186300CA026B1861869010AA0209186A01CB186301AC8B1863015C8B1863010C8B186300BA026B186186901A022918660"));
 
 			// Copyright overhaul, see 0F_8960_DrawSeedAndFlags.asm
-			PutInBank(0x0F, 0x8980, Blob.FromHex("A9238D0620A9208D0620A200BD00898D0720E8E080D0F560"));
+			PutInBank(0x0F, 0x8980, Blob.FromHex("A9238D0620A9208D0620A200BD00898D0720E8E060D0F560"));
 
 			// Fast Battle Boxes
 			PutInBank(0x0F, 0x8A00, Blob.FromHex("A940858AA922858BA91E8588A969858960"));
@@ -748,30 +748,22 @@ namespace FF1Lib
 
 			var sha = File.Exists("version.txt") ? File.ReadAllText("version.txt").Trim() : "development";
 			Blob hash;
-			if (sha == "development")
-			{
-				hash = FF1Text.TextToCopyrightLine("DEVELOPMENT VERSION");
-			}
-			else
-			{
-				var hasher = SHA256.Create();
-				hash = hasher.ComputeHash(Encoding.ASCII.GetBytes($"{seed}_{flags}_{sha}"));
+			var hasher = SHA256.Create();
+			hash = hasher.ComputeHash(Encoding.ASCII.GetBytes($"{seed}_{flags}_{sha}"));
 
-				var hashpart = BitConverter.ToUInt64(hash, 0);
-				hash = Blob.FromHex("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
-				for (int i = 13; i < 19; i++)
-				{
-					// 0xD4 through 0xDF are good symbols to use.
-					hash[i] = (byte)(0xD4 + hashpart % 12);
-					hashpart /= 12;
-				}
+			var hashpart = BitConverter.ToUInt64(hash, 0);
+			hash = Blob.FromHex("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
+			for (int i = 8; i < 24; i += 2)
+			{
+				// 0xD4 through 0xDF are good symbols to use.
+				hash[i] = (byte)(0xD4 + hashpart % 12);
+				hashpart /= 12;
 			}
 
 			// Put the new string data in a known location.
 			PutInBank(0x0F, 0x8900, Blob.Concat(
 				FF1Text.TextToCopyrightLine("Final Fantasy Randomizer " + version),
-				FF1Text.TextToCopyrightLine("Seed  " + seed),
-				FF1Text.TextToCopyrightLine(flags),
+				FF1Text.TextToCopyrightLine((sha == "development" ? "DEVELOPMENT BUILD " : "Seed  ") + seed),
 				hash));
 		}
 
