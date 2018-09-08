@@ -40,6 +40,7 @@ namespace FF1Lib
 		private const int PARTY_4 = 29;
 		private const int PARTY_EXTRA = 30;
 		private const int PARTY_EXTRA2 = 31;
+		private const int SCALE_CLAMPING = 32;
 
 
 		[FlagString(Character = ITEMS, FlagBit = 1)]
@@ -100,8 +101,6 @@ namespace FF1Lib
 		public bool AllowUnsafePirates { get; set; }
 		[FlagString(Character = BATTLES, FlagBit = 16)]
 		public bool AllowUnsafeMelmond { get; set; }
-		[FlagString(Character = BATTLES, FlagBit = 32)]
-		public bool ClampMinimumStatScale { get; set; }
 
 		[FlagString(Character = STANDARD_MAPS, FlagBit = 3)]
 		public WarMECHMode WarMECHMode { get; set; }
@@ -318,7 +317,7 @@ namespace FF1Lib
 		public bool BLACK_MAGE4 { get; set; }
 
 		[FlagString(Character = PARTY_EXTRA, FlagBit = 1)]
-		public bool NONE_CLASS2 { get; set; } 
+		public bool NONE_CLASS2 { get; set; }
 		[FlagString(Character = PARTY_EXTRA, FlagBit = 2)]
 		public bool NONE_CLASS3 { get; set; }
 		[FlagString(Character = PARTY_EXTRA, FlagBit = 4)]
@@ -336,6 +335,13 @@ namespace FF1Lib
 		public bool WeaponPermissions { get; set; }
 		[FlagString(Character = PARTY_EXTRA2, FlagBit = 4)]
 		public bool ArmorPermissions { get; set; }
+
+		[FlagString(Character = SCALE_CLAMPING, FlagBit = 1)]
+		public bool ClampMinimumStatScale { get; set; }
+		[FlagString(Character = SCALE_CLAMPING, FlagBit = 2)]
+		public bool ClampMinimumBossStatScale { get; set; }
+		[FlagString(Character = SCALE_CLAMPING, FlagBit = 4)]
+		public bool ClampMinimumPriceScale { get; set; }
 
 		public bool ModernBattlefield { get; set; }
 		public bool FunEnemyNames { get; set; }

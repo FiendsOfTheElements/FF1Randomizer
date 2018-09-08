@@ -117,6 +117,8 @@
 		"ImproveTurnOrderRandomization": true,
 
 		"ClampMinimumStatScale": false,
+		"ClampMinimumBossStatScale": false,
+		"ClampMinimumPriceScale": false,
 		"EnemyScaleFactor": 2.0,
 		"BossScaleFactor": 2.0,
 		"PriceScaleFactor": 4.0,

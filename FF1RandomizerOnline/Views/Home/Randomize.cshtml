@@ -236,17 +236,17 @@
 				<div class="col-xs-9">
 					<div class="slider-cell">
 						<div class="col-xs-6"><label>Prices:</label></div>
-						<div class="col-xs-3"><label id="prices-display">{{Math.round(100 / PriceScaleFactor)}}% - {{Math.round(PriceScaleFactor * 100)}}%</label></div>
+						<div class="col-xs-3" title="Clamp Minimum to 100%"><input v-model="ClampMinimumPriceScale" type="checkbox" asp-for="Flags.ClampMinimumPriceScale" /> <label asp-for="Flags.ClampMinimumPriceScale" id="prices-display">{{ClampMinimumPriceScale ? 100 : Math.round(100 / PriceScaleFactor)}}% - {{Math.round(PriceScaleFactor * 100)}}%</label></div>
 						<div class="col-xs-3"><input v-model="PriceScaleFactor" type="range" asp-for="Flags.PriceScaleFactor" min="1.0" max="5.0" step="0.1" /></div>
 					</div>
 					<div class="slider-cell">
 						<div class="col-xs-6"><label>Enemy Stats:</label></div>
-						<div class="col-xs-3"><label id="enemy-stats-display">{{ClampMinimumStatScale ? 100 : Math.round(100 / EnemyScaleFactor)}}% - {{Math.round(EnemyScaleFactor * 100)}}% <b style="color:orange">{{EnemyScaleFactor > 2.4 ? (!WrapStatOverflow && EnemyScaleFactor >= 3.2) ? EnemyScaleFactor >= 4 ? "¯\\_(ツ)_/¯" : "⚠⚠" : "⚠" : ""}}</b></label></div>
+						<div class="col-xs-3" title="Clamp Minimum to 100%"><input v-model="ClampMinimumStatScale" type="checkbox" asp-for="Flags.ClampMinimumStatScale" /> <label  asp-for="Flags.ClampMinimumStatScale" id="enemy-stats-display">{{ClampMinimumStatScale ? 100 : Math.round(100 / EnemyScaleFactor)}}% - {{Math.round(EnemyScaleFactor * 100)}}% <b style="color:orange">{{EnemyScaleFactor > 2.4 ? (!WrapStatOverflow && EnemyScaleFactor >= 3.2) ? EnemyScaleFactor >= 4 ? "¯\\_(ツ)_/¯" : "⚠⚠" : "⚠" : ""}}</b></label></div>
 						<div class="col-xs-3"><input v-model="EnemyScaleFactor" type="range" asp-for="Flags.EnemyScaleFactor" min="1.0" max="5.0" step="0.1" /></div>
 					</div>
 					<div class="slider-cell">
 						<div class="col-xs-6"><label>Boss Stats:</label></div>
-						<div class="col-xs-3"><label id="boss-stats-display">{{ClampMinimumStatScale ? 100 : Math.round(100 / BossScaleFactor)}}% - {{Math.round(BossScaleFactor * 100)}}% <b style="color:orange">{{BossScaleFactor > 2.4 ? (!WrapStatOverflow && BossScaleFactor >= 3.2) ? BossScaleFactor >= 4 ? "¯\\_(ツ)_/¯" : "⚠⚠" : "⚠" : ""}}</b></label></div>
+						<div class="col-xs-3" title="Clamp Minimum to 100%"><input v-model="ClampMinimumBossStatScale" type="checkbox" asp-for="Flags.ClampMinimumBossStatScale" /> <label asp-for="Flags.ClampMinimumBossStatScale" id="boss-stats-display">{{ClampMinimumBossStatScale ? 100 : Math.round(100 / BossScaleFactor)}}% - {{Math.round(BossScaleFactor * 100)}}% <b style="color:orange">{{BossScaleFactor > 2.4 ? (!WrapStatOverflow && BossScaleFactor >= 3.2) ? BossScaleFactor >= 4 ? "¯\\_(ツ)_/¯" : "⚠⚠" : "⚠" : ""}}</b></label></div>
 						<div class="col-xs-3"><input v-model="BossScaleFactor" type="range" asp-for="Flags.BossScaleFactor" min="1.0" max="5.0" step="0.1" /></div>
 					</div>
 					<div class="slider-cell"></div>
@@ -293,7 +293,6 @@
 					<div class="slider-cell" title="Include Morale in scaling. Uncheck to force vanilla morale for all enemies."><input v-model="IncludeMorale" type="checkbox" asp-for="Flags.IncludeMorale" /> <label asp-for="Flags.IncludeMorale">Include Morale</label></div>
 					<div class="slider-cell" title="Scale Initial Gold with Prices and Gold scaling"><input v-model="StartingGold" type="checkbox" asp-for="Flags.StartingGold" /> <label asp-for="Flags.StartingGold">Starting Gold</label></div>
 					<div class="slider-cell" title="EXP is not divided among living party members, but is static"><input v-model="NoDanMode" type="checkbox" asp-for="Flags.NoDanMode" /> <label asp-for="Flags.NoDanMode">Static EXP Distribution</label></div>
-					<div class="slider-cell" title="Clamp minimum stat scaling at 100% so enemies are guaranteed never to be easier than vanilla."><input v-model="ClampMinimumStatScale" type="checkbox" asp-for="Flags.ClampMinimumStatScale" /> <label asp-for="Flags.ClampMinimumStatScale">Clamp Minimum Stats at 100%</label></div>
 					<div class="slider-cell"></div>
 				</div>
 			</div>
