@@ -5,24 +5,24 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <PostBuildEvent></PostBuildEvent>
   </PropertyGroup>
-
+  
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
     <TreatSpecificWarningsAsErrors />
   </PropertyGroup>
-
+  
   <ItemGroup>
     <PackageReference Include="RomUtilities" Version="2.2.0" />
   </ItemGroup>
-
+  
   <ItemGroup>
     <ProjectReference Include="..\FF1Lib\FF1Lib.csproj" />
   </ItemGroup>
-
+  
   <ItemGroup>
     <None Update="README.md">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-
+  
 </Project>

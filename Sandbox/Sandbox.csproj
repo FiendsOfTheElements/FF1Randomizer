@@ -1,13 +1,12 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
-
+  
   <ItemGroup>
     <ProjectReference Include="..\FF1Lib\FF1Lib.csproj" />
-    <ProjectReference Include="..\Inline6502\Inline6502.csproj" />
   </ItemGroup>
-
+  
 </Project>

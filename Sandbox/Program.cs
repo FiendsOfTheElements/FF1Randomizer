@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 using System.Security.Cryptography;
 using FF1Lib;
-using FF1Lib.Procgen;
-using RomUtilities;
 
 namespace Sandbox
 {

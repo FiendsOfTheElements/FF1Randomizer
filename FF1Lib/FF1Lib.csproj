@@ -13,7 +13,7 @@
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
     <TreatSpecificWarningsAsErrors />
   </PropertyGroup>
-
+  
   <ItemGroup>
     <None Remove="presets\debug.json" />
     <None Remove="presets\beginner.json" />
@@ -28,7 +28,7 @@
     <None Remove="presets\tournament.json" />
     <None Remove="version.txt" />
   </ItemGroup>
-
+  
   <ItemGroup>
     <Content Include="DTETable.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -58,10 +58,11 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-
+  
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    <PackageReference Include="Patcher6502" Version="0.1.0.3" />
     <PackageReference Include="RomUtilities" Version="2.2.0" />
   </ItemGroup>
-
+  
 </Project>
