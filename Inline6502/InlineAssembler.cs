@@ -108,7 +108,7 @@ namespace Inline6502
 		/// <param name="name">A human-readable reference, e.g. a subroutine name.</param>
 		/// <param name="asm">the 6502 asm source, including newline characters.</param>
 		/// <example>
-		/// var newBytes = assemble(0x8000, "FixTheThing", @"
+		/// var newBytes = InlineAssembler.assemble(0x8000, "FixTheThing", @"
 		///   LDA $30
 		///   JMP $8044
 		///  ");
