@@ -251,15 +251,16 @@
 					</div>
 					<div class="slider-cell"></div>
 					<div class="slider-cell">
-						<div class="col-xs-9"><label>Exp/Gold Boost:</label></div>
+						<div class="col-xs-6"><label>Exp / Gold Scaled Boost:</label></div>
+						<div class="col-xs-3"><label id="exp-gold-display">{{ExpMultiplier.toPrecision(2)}}x + {{ExpBonus}}</label></div>
 						<div class="col-xs-3"><input v-model="ExpMultiplier" type="range" asp-for="Flags.ExpMultiplier" min="1.0" max="5.0" step="0.1" /></div>
 					</div>
 					<div class="slider-cell">
-						<div class="col-xs-9"><label id="exp-gold-display">{{ExpMultiplier.toPrecision(2)}}x + {{ExpBonus}}</label></div>
+						<div class="col-xs-9"><label>Fixed:</label></div>
 						<div class="col-xs-3"><input v-model="ExpBonus" type="range" asp-for="Flags.ExpBonus" min="0" max="500" step="10" /></div>
 					</div>
 					<div class="checkbox-cell">
-						<div class="col-xs-9"><label>EXP/Gold Progressive Scaling:</label></div>
+						<div class="col-xs-9"><label>Progressive:</label></div>
 						<div class="col-xs-3">
 							<select v-model="ProgressiveScaleMode" asp-for="Flags.ProgressiveScaleMode">
 								<option value="0">Disabled</option>
@@ -272,18 +273,17 @@
 								<option value="7">Increased by 20% per Key Item</option>
 							</select>
 						</div>
-						<div class="col-xs-9"><label>(Stacks with Exp/Gold Boost!)</label></div>
 					</div>
 					<div class="slider-cell"></div>
 					<div class="slider-cell">
-						<div class="col-xs-9"><label>Overworld Encounter Rate:</label></div>
+						<div class="col-xs-6"><label>Overworld Encounter Rate:</label></div>
+						<div class="col-xs-3"><label id="encounter-rate-display">{{(EncounterRate/30.00).toFixed(2)}}x</label></div>
 						<div class="col-xs-3"><input v-model="EncounterRate" type="range" asp-for="Flags.EncounterRate" min="0" max="45" step="1" /></div>
-						<div class="col-xs-9"><label id="encounter-rate-display">{{(EncounterRate/30.00).toFixed(2)}}x</label></div>
 					</div>
 					<div class="slider-cell">
-						<div class="col-xs-9"><label>Dungeon Encounter Rate:</label></div>
+						<div class="col-xs-6"><label>Dungeon Encounter Rate:</label></div>
+						<div class="col-xs-3"><label id="encounter-rate-display">{{(DungeonEncounterRate/30.00).toFixed(2)}}x</label></div>
 						<div class="col-xs-3"><input v-model="DungeonEncounterRate" type="range" asp-for="Flags.DungeonEncounterRate" min="0" max="45" step="1" /></div>
-						<div class="col-xs-9"><label id="encounter-rate-display">{{(DungeonEncounterRate/30.00).toFixed(2)}}x</label></div>
 					</div>
 					<div class="slider-cell"></div>
 				</div>
@@ -291,7 +291,7 @@
 					<div class="slider-cell" title="Instead of capping, allow overflow values to start over at one"><input v-model="WrapPriceOverflow" type="checkbox" asp-for="Flags.WrapPriceOverflow" /> <label asp-for="Flags.WrapPriceOverflow">Restart overflow at 1</label></div>
 					<div class="slider-cell" title="Instead of capping, allow overflow values to start over at one"><input v-model="WrapStatOverflow" type="checkbox" asp-for="Flags.WrapStatOverflow" /> <label asp-for="Flags.WrapStatOverflow">Restart overflow at 1</label></div>
 					<div class="slider-cell" title="Include Morale in scaling. Uncheck to force vanilla morale for all enemies."><input v-model="IncludeMorale" type="checkbox" asp-for="Flags.IncludeMorale" /> <label asp-for="Flags.IncludeMorale">Include Morale</label></div>
-					<div class="slider-cell" title="Scale Initial Gold with Prices and Gold scaling"><input v-model="StartingGold" type="checkbox" asp-for="Flags.StartingGold" /> <label asp-for="Flags.StartingGold">Starting Gold</label></div>
+					<div class="slider-cell" title="Scale Initial Gold with Prices and Gold scaling"><input v-model="StartingGold" type="checkbox" asp-for="Flags.StartingGold" /> <label asp-for="Flags.StartingGold">Include Starting Gold</label></div>
 					<div class="slider-cell" title="EXP is not divided among living party members, but is static"><input v-model="NoDanMode" type="checkbox" asp-for="Flags.NoDanMode" /> <label asp-for="Flags.NoDanMode">Static EXP Distribution</label></div>
 					<div class="slider-cell"></div>
 				</div>
