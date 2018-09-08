@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\FF1Lib\FF1Lib.csproj" />
+    <ProjectReference Include="..\Inline6502\Inline6502.csproj" />
   </ItemGroup>
 
 </Project>

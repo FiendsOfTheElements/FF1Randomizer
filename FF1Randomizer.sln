@@ -24,6 +24,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".circleci", ".circleci", "{
 		.circleci\config.yml = .circleci\config.yml
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetAsm", "DotNetAsm\DotNetAsm.csproj", "{AF1ED085-0D63-4DFD-AE98-612921D1F5EC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Inline6502", "Inline6502\Inline6502.csproj", "{801D6E7E-74B7-4DA0-B866-C0D7FD474F43}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,6 +54,14 @@ Global
 		{137A7AAB-F962-4988-88E6-363CF49A702A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{137A7AAB-F962-4988-88E6-363CF49A702A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{137A7AAB-F962-4988-88E6-363CF49A702A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF1ED085-0D63-4DFD-AE98-612921D1F5EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF1ED085-0D63-4DFD-AE98-612921D1F5EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF1ED085-0D63-4DFD-AE98-612921D1F5EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF1ED085-0D63-4DFD-AE98-612921D1F5EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{801D6E7E-74B7-4DA0-B866-C0D7FD474F43}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{801D6E7E-74B7-4DA0-B866-C0D7FD474F43}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{801D6E7E-74B7-4DA0-B866-C0D7FD474F43}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{801D6E7E-74B7-4DA0-B866-C0D7FD474F43}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

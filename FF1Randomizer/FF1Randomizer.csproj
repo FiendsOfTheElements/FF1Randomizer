@@ -116,5 +116,8 @@
   <ItemGroup>
     <Resource Include="WarMECH.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="RomUtilities" Version="2.2.0" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

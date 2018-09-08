@@ -1,0 +1,134 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{AF1ED085-0D63-4DFD-AE98-612921D1F5EC}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>DotNetAsm</RootNamespace>
+    <AssemblyName>DotNetAsm</AssemblyName>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ReleaseVersion>1.15.1</ReleaseVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AsmCommandLineOptions.cs" />
+    <Compile Include="AssemblerBase.cs" />
+    <Compile Include="AssemblyController.cs" />
+    <Compile Include="BinaryFile.cs" />
+    <Compile Include="Compilation.cs" />
+    <Compile Include="ConditionHandler.cs" />
+    <Compile Include="Disassembler.cs" />
+    <Compile Include="AsmEncoding.cs" />
+    <Compile Include="ErrorLog.cs" />
+    <Compile Include="ErrorStrings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ErrorStrings.resx</DependentUpon>
+    </Compile>
+    <Compile Include="ExtensionMethods.cs" />
+    <Compile Include="ForNextHandler.cs" />
+    <Compile Include="IAssemblyController.cs" />
+    <Compile Include="IBlockHandler.cs" />
+    <Compile Include="IEvaluator.cs" />
+    <Compile Include="ILineAssembler.cs" />
+    <Compile Include="ILineDisassembler.cs" />
+    <Compile Include="Macro.cs" />
+    <Compile Include="MacroHandler.cs" />
+    <Compile Include="Misc.cs" />
+    <Compile Include="MiscAssembler.cs" />
+    <Compile Include="Instruction.cs" />
+    <Compile Include="Preprocessor.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PseudoAssembler.cs" />
+    <Compile Include="RepetitionHandler.cs" />
+    <Compile Include="ReservedWords.cs" />
+    <Compile Include="Evaluator.cs" />
+    <Compile Include="Patterns.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Patterns.resx</DependentUpon>
+    </Compile>
+    <Compile Include="SourceLine.cs" />
+    <Compile Include="StringAssemblerBase.cs" />
+    <Compile Include="ScopeBlockHandler.cs" />
+    <Compile Include="SymbolCollectionBase.cs" />
+    <Compile Include="LabelCollection.cs" />
+    <Compile Include="System.CommandLine\System\CommandLine\Argument.cs" />
+    <Compile Include="System.CommandLine\System\CommandLine\ArgumentCommand.cs" />
+    <Compile Include="System.CommandLine\System\CommandLine\ArgumentCommand_1.cs" />
+    <Compile Include="System.CommandLine\System\CommandLine\ArgumentLexer.cs" />
+    <Compile Include="System.CommandLine\System\CommandLine\ArgumentList_1.cs" />
+    <Compile Include="System.CommandLine\System\CommandLine\ArgumentParser.cs" />
+    <Compile Include="System.CommandLine\System\CommandLine\ArgumentSyntax.cs" />
+    <Compile Include="System.CommandLine\System\CommandLine\ArgumentSyntaxException.cs" />
+    <Compile Include="System.CommandLine\System\CommandLine\ArgumentSyntax_Definers.cs" />
+    <Compile Include="System.CommandLine\System\CommandLine\ArgumentToken.cs" />
+    <Compile Include="System.CommandLine\System\CommandLine\Argument_1.cs" />
+    <Compile Include="System.CommandLine\System\CommandLine\Enumerable.cs" />
+    <Compile Include="System.CommandLine\System\CommandLine\HelpTextGenerator.cs" />
+    <Compile Include="System.CommandLine\System\Strings.Designer.cs" />
+    <Compile Include="VariableCollection.cs" />
+    <Compile Include="CpuChangedEvent.cs" />
+    <Compile Include="ConstStrings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ConstStrings.resx</DependentUpon>
+    </Compile>
+    <Compile Include="ISymbolManager.cs" />
+    <Compile Include="SymbolManager.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="ErrorStrings.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>ErrorStrings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Patterns.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Patterns.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConstStrings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ConstStrings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="System.CommandLine\System\Strings.resx" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
