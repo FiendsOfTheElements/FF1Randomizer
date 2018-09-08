@@ -10,6 +10,8 @@
 		"RandomWares": false,
 		"RandomWaresIncludesSpecialGear": false,
 		"RandomLoot": false,
+		"WeaponPermissions": false,
+		"ArmorPermissions": false,
 
 		"ShardHunt": false,
 		"ExtraShards": false,
@@ -41,13 +43,13 @@
 		"TitansTrove": false,
 		"ConfusedOldMen": false,
 		"AllowUnsafeMelmond": false,
-		"Floors": false,
 
 		"MapOpenProgression": false,
 		"MapOpenProgressionExtended": false,
 		"Entrances": false,
-		"Towns": false,
+		"Floors": false,
 		"AllowDeepCastles": false,
+		"Towns": false,
 
 		"IncentivizeFreeNPCs": false,
 		"IncentivizeFetchNPCs": false,
@@ -114,6 +116,7 @@
 		"EnemyElementalResistancesBug": true,
 		"ImproveTurnOrderRandomization": true,
 
+		"ClampMinimumStatScale": false,
 		"EnemyScaleFactor": 1.0,
 		"BossScaleFactor": 1.0,
 		"PriceScaleFactor": 1.0,

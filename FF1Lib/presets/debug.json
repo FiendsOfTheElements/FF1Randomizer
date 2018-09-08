@@ -10,10 +10,15 @@
 		"RandomWares": true,
 		"RandomWaresIncludesSpecialGear": false,
 		"RandomLoot": false,
+		"WeaponPermissions": true,
+		"ArmorPermissions": true,
 
 		"ShardHunt": false,
 		"ExtraShards": false,
 		"TransformFinalFormation": false,
+		"ChaosRush": false,
+		"ShortToFR": false,
+		"PreserveFiendRefights": false,
 
 		"MagicShops": false,
 		"MagicLevels": true,
@@ -32,21 +37,18 @@
 		"EnemyStatusAttacks": true,
 		"AllowUnsafePirates": true,
 
+		"WarMECHMode": "Wandering4F",
 		"OrdealsPillars": true,
 		"SkyCastle4FTeleporters": true,
 		"TitansTrove": true,
 		"ConfusedOldMen": true,
 		"AllowUnsafeMelmond": true,
-		"CrownlessOrdeals": true,
-		"ChaosRush": false,
-		"ShortToFR": false,
-		"PreserveFiendRefights": false,
-		"Floors": true,
-		"AllowDeepCastles": true,
 
 		"MapOpenProgression": true,
 		"MapOpenProgressionExtended": true,
 		"Entrances": true,
+		"Floors": true,
+		"AllowDeepCastles": true,
 		"Towns": true,
 
 		"IncentivizeFreeNPCs": true,
@@ -81,6 +83,7 @@
 
 		"EarlySarda": true,
 		"EarlySage": true,
+		"CrownlessOrdeals": true,
 		"OnlyRequireGameIsBeatable": false,
 
 		"FreeBridge": false,
@@ -113,6 +116,7 @@
 		"EnemyElementalResistancesBug": true,
 		"ImproveTurnOrderRandomization": true,
 
+		"ClampMinimumStatScale": true,
 		"EnemyScaleFactor": 1.5,
 		"BossScaleFactor": 1.5,
 		"PriceScaleFactor": 4.0,

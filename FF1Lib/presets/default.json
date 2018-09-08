@@ -10,6 +10,8 @@
 		"RandomWares": false,
 		"RandomWaresIncludesSpecialGear": false,
 		"RandomLoot": false,
+		"WeaponPermissions": false,
+		"ArmorPermissions": false,
 
 		"ShardHunt": false,
 		"ExtraShards": false,
@@ -40,13 +42,13 @@
 		"SkyCastle4FTeleporters": true,
 		"TitansTrove": true,
 		"ConfusedOldMen": true,
-		"AllowUnsafeMelmond": true,
-		"Floors": false,
-		"AllowDeepCastles": false,
+		"AllowUnsafeMelmond": false,
 
 		"MapOpenProgression": false,
 		"MapOpenProgressionExtended": false,
 		"Entrances": false,
+		"Floors": false,
+		"AllowDeepCastles": false,
 		"Towns": false,
 
 		"IncentivizeFreeNPCs": true,
@@ -114,6 +116,7 @@
 		"EnemyElementalResistancesBug": true,
 		"ImproveTurnOrderRandomization": true,
 
+		"ClampMinimumStatScale": false,
 		"EnemyScaleFactor": 1.5,
 		"BossScaleFactor": 1.5,
 		"PriceScaleFactor": 3.0,

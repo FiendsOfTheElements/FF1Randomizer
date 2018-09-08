@@ -4,12 +4,8 @@ loadPresetFile("debug.json");
 loadPresetFile("beginner.json");
 loadPresetFile("full-npc.json");
 loadPresetFile("improved-vanilla.json");
-loadPresetFile("normal-npc.json");
-loadPresetFile("tournament.json");
-loadPresetFile("ro16.json");
-loadPresetFile("ro8.json");
-loadPresetFile("semifinals.json");
-loadPresetFile("finals.json");
+loadPresetFile("swiss.json");
+loadPresetFile("playoff.json");
 
 function loadPresetFile(filename) {
 	$.getJSON("/presets/" + filename, (preset) => {
@@ -37,7 +33,7 @@ computedPropertyArray.FlagsInput = {
 	},
 	set: function (newValue) {
 		this.flagString = newValue;
-		this.flagError = !newValue.match(/^[A-Za-z0-9!-]{32}$/);
+		this.flagError = !newValue.match(/^[A-Za-z0-9!-]{32,}$/);
 	}
 };
 computedPropertyArray.SeedInput = {

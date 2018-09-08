@@ -110,6 +110,10 @@ namespace FF1Lib
 					finalBattle[PalettesOffset + 0] = 0x03;
 					finalBattle[PalettesOffset + 1] = 0x17;
 					finalBattle[PaletteAsignmentOffset] = 0x41; // Palette Assignment in top nibble, 1 in bottom for unrunnable.
+
+					// Scale up the Fundead enemies if we end up with them. They're too weak otherwise.
+					ScaleSingleEnemyStats(0x78, 1.4, false, false, null, false);
+					ScaleSingleEnemyStats(0x33, 1.2, false, false, null, false);
 					break;
 				case FinalFormation.TimeLoop:
 					finalBattle[TypeOffset] = 0x0B;         // 9Small + Garland pattern

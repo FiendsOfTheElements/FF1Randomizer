@@ -145,10 +145,6 @@ namespace FF1Lib
 			Put(0x28CF8, FF1Text.TextToBytes($"Ah, the Light Warriors!\n\nSo you have collected\nthe {shardName}S and restored\nthe BLACK ORB."));
 			Put(0x28D57, FF1Text.TextToBytes("Thus you've travelled\n2000 years into the past\nto try to stop me?\n\nStep forward then,\nto your peril!"));
 			Put(0x28DAF, FF1Text.TextToBytes("Oh, Light Warriors!\nSuch arrogant bravery.\n\nLet us see whom history\nremembers. En Garde!"));
-
-			// Scale up the Fundead enemies in case we end up with them. They're too weak otherwise.
-			ScaleSingleEnemyStats(0x78, 1.4, false, false, null, false);
-			ScaleSingleEnemyStats(0x33, 1.4, false, false, null, false);
 		}
 
 		public Item ShardHuntTreasureSelector(Item item)
