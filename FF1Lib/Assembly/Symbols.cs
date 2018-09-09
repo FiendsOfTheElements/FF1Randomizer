@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Reflection;
+using System.Linq;
 
 namespace FF1Lib.Assembly
 {
@@ -13,6 +14,77 @@ namespace FF1Lib.Assembly
 	/// </summary>
 	static class Symbols
 	{
+		/// <summary>
+		/// Provide dictionary versions of the contents of Symbols.Labels, Symbols.Constants, and Symbols.Variables.
+		/// </summary>
+		static class AsDictionaries
+		{
+			private static Dictionary<string, TValue> _staticFieldsDictionaryForType<TValue>(Type containingType)
+			{
+				return containingType.GetFields(BindingFlags.Static).ToDictionary(field => field.Name, field => (TValue) field.GetValue(null));
+			}
+
+			private static void _setStaticFieldsInType<TValue>(Type containingType, Dictionary<string, TValue> dictionary)
+			{
+				dictionary.ToList().ForEach(entry => containingType.GetField(entry.Key).SetValue(null, entry.Value));
+			}
+
+			public static Dictionary<String, BA> Labels
+			{
+				get
+				{
+					return _staticFieldsDictionaryForType<BA>(typeof(Symbols.Labels));
+				}
+				set
+				{
+					_setStaticFieldsInType(typeof(Symbols.Labels), value);
+				}
+			}
+
+			public static Dictionary<String, int> Constants
+			{
+				get
+				{
+					return _staticFieldsDictionaryForType<int>(typeof(Symbols.Constants));
+				}
+				set
+				{
+					_setStaticFieldsInType(typeof(Symbols.Constants), value);
+				}
+			}
+
+			public static Dictionary<String, int> Variables
+			{
+				get
+				{
+					return _staticFieldsDictionaryForType<int>(typeof(Symbols.Variables));
+				}
+				set
+				{
+					_setStaticFieldsInType(typeof(Symbols.Constants), value);
+				}
+			}
+
+			/// <summary>
+			/// All symbols. NOTE: Label values are transformed into ints using BA.MMC3RomLocation().
+			/// </summary>
+			public static Dictionary<String, int> All
+			{
+				get
+				{
+					var everything = new Dictionary<String, int>();
+
+					// this is apparently a good and fast way to combine dictionaries, even if it looks a little stupid.
+					AsDictionaries.Constants.ToList().ForEach(x => everything.Add(x.Key, x.Value));
+					AsDictionaries.Variables.ToList().ForEach(x => everything.Add(x.Key, x.Value));
+					AsDictionaries.Labels.ToList().ForEach(x => everything.Add(x.Key, x.Value.MMC3RomLocation()));
+
+					return everything;
+				}
+			}
+
+		}
+
 		static class Labels
 		{
 			public static BA DoNextRow                           = new BA(0x01, 0xBF8F);
