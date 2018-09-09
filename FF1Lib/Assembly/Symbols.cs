@@ -12,16 +12,17 @@ namespace FF1Lib.Assembly
 	///
 	/// They should be updated at run-time when things change.
 	/// </summary>
-	static class Symbols
+	public static class Symbols
 	{
 		/// <summary>
 		/// Provide dictionary versions of the contents of Symbols.Labels, Symbols.Constants, and Symbols.Variables.
 		/// </summary>
-		static class AsDictionaries
+		public static class AsDictionaries
 		{
 			private static Dictionary<string, TValue> _staticFieldsDictionaryForType<TValue>(Type containingType)
 			{
-				return containingType.GetFields(BindingFlags.Static).ToDictionary(field => field.Name, field => (TValue) field.GetValue(null));
+				IList<FieldInfo> list = containingType.GetFields();
+				return list.ToDictionary(field => field.Name, field => (TValue) field.GetValue(null));
 			}
 
 			private static void _setStaticFieldsInType<TValue>(Type containingType, Dictionary<string, TValue> dictionary)
@@ -65,8 +66,33 @@ namespace FF1Lib.Assembly
 				}
 			}
 
+			public static Dictionary<String, int> VariablesAndConstants
+			{
+				get
+				{
+					var both = new Dictionary<String, int>();
+
+					// this is apparently a good and fast way to combine dictionaries, even if it looks a little stupid.
+					AsDictionaries.Constants.ToList().ForEach(x => both.Add(x.Key, x.Value));
+					AsDictionaries.Variables.ToList().ForEach(x => both.Add(x.Key, x.Value));
+
+					return both;
+				}
+			}
+
 			/// <summary>
-			/// All symbols. NOTE: Label values are transformed into ints using BA.MMC3RomLocation().
+			/// Labels mapped to their jump locations, dropping bank information.
+			/// </summary>
+			public static Dictionary<String, int> LabelsWithRunAddresses
+			{
+				get
+				{
+					return AsDictionaries.Labels.ToDictionary(item => item.Key, item => item.Value.addr);
+				}
+			}
+
+			/// <summary>
+			/// All symbols. NOTE: Label values are transformed into ints using BA.addr.
 			/// </summary>
 			public static Dictionary<String, int> All
 			{
@@ -77,7 +103,7 @@ namespace FF1Lib.Assembly
 					// this is apparently a good and fast way to combine dictionaries, even if it looks a little stupid.
 					AsDictionaries.Constants.ToList().ForEach(x => everything.Add(x.Key, x.Value));
 					AsDictionaries.Variables.ToList().ForEach(x => everything.Add(x.Key, x.Value));
-					AsDictionaries.Labels.ToList().ForEach(x => everything.Add(x.Key, x.Value.MMC3RomLocation()));
+					AsDictionaries.Labels.ToList().ForEach(x => everything.Add(x.Key, x.Value.addr));
 
 					return everything;
 				}
@@ -85,7 +111,7 @@ namespace FF1Lib.Assembly
 
 		}
 
-		static class Labels
+		public static class Labels
 		{
 			public static BA DoNextRow                           = new BA(0x01, 0xBF8F);
 			public static BA MinimapDecompress                   = new BA(0x01, 0xBF40);
@@ -1281,7 +1307,7 @@ namespace FF1Lib.Assembly
 			public static BA GameStart_L                         = new BA(0x0F, 0xC000);
 		}
 
-		static class Constants
+		public static class Constants
 		{
 			// some of these probably don't need to be here...
 
@@ -1782,7 +1808,7 @@ namespace FF1Lib.Assembly
 
 		}
 
-		static class Variables
+		public static class Variables
 		{
 			public static int story_dropinput      = 0x07;         
 			public static int inroom               = 0x0D;         //  bit 7 is the actual inroom flag.  $x1=entering room, $x2=entering locked room (different sprite vis), $x5=exiting room, $x6=exiting locked room

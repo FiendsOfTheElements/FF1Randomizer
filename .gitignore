@@ -241,3 +241,6 @@ _Pvt_Extensions
 # Archives
 *.zip
 *.tar.gz
+
+# IDEA files (Rider IDE, Pycharm, etc)
+.idea/

@@ -61,7 +61,7 @@
   
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
-    <PackageReference Include="Patcher6502" Version="0.1.0.3" />
+    <PackageReference Include="Patcher6502" Version="0.2.0" />
     <PackageReference Include="RomUtilities" Version="2.2.0" />
   </ItemGroup>
   
