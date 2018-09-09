@@ -1710,7 +1710,7 @@ namespace FF1Lib.Assembly
 
 		}
 
-		static class VariableLocations
+		static class Variables
 		{
 			public static int story_dropinput      = 0x07;         
 			public static int inroom               = 0x0D;         //  bit 7 is the actual inroom flag.  $x1=entering room, $x2=entering locked room (different sprite vis), $x5=exiting room, $x6=exiting locked room
