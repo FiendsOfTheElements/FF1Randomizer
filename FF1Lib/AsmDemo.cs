@@ -27,7 +27,7 @@ namespace FF1Lib
 ";
 			BA bank_and_address = Symbols.Labels.EnterMainMenu;
 			string human_readable_name = "EnterMainMenu duplicate";
-			byte[] result = Assembler.Assemble(origin_address, human_readable_name, src);
+			byte[] result = Assembler.Assemble(bank_and_address, human_readable_name, src);
 
 			// this is all you have to do. The rest of the code below is just printing hex and comparing.
 
