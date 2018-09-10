@@ -11,7 +11,7 @@ namespace FF1Lib.Assembly
 	};
 
 	/// <summary>
-	/// Bank and run) Address.
+	/// Bank and (run) Address.
 	/// </summary>
 	public struct BA
 	{
