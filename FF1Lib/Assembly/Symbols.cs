@@ -6,7 +6,7 @@ using System.Linq;
 namespace FF1Lib.Assembly
 {
 	/// <summary>
-	/// Labels, variables, and constants in FF1.
+	/// Labels, variables, and constants in FF1, and various related functions.
 	///
 	/// At compile-time, this should all refer to vanilla values.
 	///
@@ -14,6 +14,41 @@ namespace FF1Lib.Assembly
 	/// </summary>
 	public static class Symbols
 	{
+		public static class Calculate
+		{
+			/// <summary>
+			/// The size of space available between the provided label and the next (global) label,
+			/// including the provided label but not the next. (If last label, it's until the
+			/// end of the bank.)
+			/// 
+			/// This might be the size of the code, it might not be. Use with discretion.
+			/// </summary>
+			public static int SpaceToNextLabel(string label)
+			{
+				var thisLabelBA = Symbols.AsDictionaries.Labels[label];
+				var listInBank = Symbols.AsLists.LabelsInAddressOrderForBank(thisLabelBA.bank);
+
+				var thisLabelIndex = listInBank.FindIndex(entry => entry.Key == label);
+				if (thisLabelIndex == listInBank.Count - 1)
+					return BA.TopOfBank(thisLabelBA.bank) - thisLabelBA.addr;
+
+				else
+					return listInBank[thisLabelIndex + 1].Value.addr - thisLabelBA.addr;  
+			}
+		}
+
+		public static class AsLists
+		{
+			public static List<KeyValuePair<string,BA>> LabelsInAddressOrderForBank(int bank)
+			{
+				IList<FieldInfo> fieldsList = typeof(Symbols.Labels).GetFields();
+				var labels = fieldsList
+					.Where(field => ((BA)field.GetValue(null)).bank == bank)
+					.ToDictionary(field => field.Name, field => (BA)field.GetValue(null));
+				return labels.OrderBy(entry => entry.Value.addr).ToList();
+			}
+		}
+
 		/// <summary>
 		/// Provide dictionary versions of the contents of Symbols.Labels, Symbols.Constants, and Symbols.Variables.
 		/// </summary>
@@ -113,6 +148,7 @@ namespace FF1Lib.Assembly
 
 		public static class Labels
 		{
+			// Don't add any fields to this class unless they are symbols. It will break AsDictionaries/AsLists.
 			public static BA DoNextRow                           = new BA(0x01, 0xBF8F);
 			public static BA MinimapDecompress                   = new BA(0x01, 0xBF40);
 			public static BA lut_MinimapBGPal                    = new BA(0x09, 0xBF20);
@@ -1305,13 +1341,14 @@ namespace FF1Lib.Assembly
 			public static BA PlaySFX_Error                       = new BA(0x0F, 0xDB26);
 			public static BA DoOverworld                         = new BA(0x0F, 0xC0CB);
 			public static BA GameStart_L                         = new BA(0x0F, 0xC000);
+			// Don't add any fields to this class unless they are symbols. It will break AsDictionaries/AsLists.
 		}
 
 		public static class Constants
 		{
 			// some of these probably don't need to be here...
+			// Don't add any fields to this class unless they are symbols. It will break AsDictionaries/AsLists.
 
-			
 			// ----------------
 			//  directions for facing and keys
 
@@ -1805,11 +1842,12 @@ namespace FF1Lib.Assembly
 
 
 			public static int lut_ClassStartingStats = 0xB040;     //  BANK_STARTINGSTATS
-
+			// Don't add any fields to this class unless they are symbols. It will break AsDictionaries/AsLists.
 		}
 
 		public static class Variables
 		{
+			// Don't add any fields to this class unless they are symbols. It will break AsDictionaries/AsLists.
 			public static int story_dropinput      = 0x07;         
 			public static int inroom               = 0x0D;         //  bit 7 is the actual inroom flag.  $x1=entering room, $x2=entering locked room (different sprite vis), $x5=exiting room, $x6=exiting locked room
 			public static int doorppuaddr          = 0x0E;         //  2 bytes, PPU address of door drawing work
@@ -2616,7 +2654,8 @@ namespace FF1Lib.Assembly
 
 			public static int mm_decorchr          = 0x7000;       //  $300 bytes -- should be on page bound, shared
 			public static int mm_titlechr          = 0x7300;       //  $280 bytes -- should be on page bound, shared
+			// Don't add any fields to this class unless they are symbols. It will break AsDictionaries/AsLists.
 		}
-		
+
 	}
 }

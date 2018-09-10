@@ -4,11 +4,23 @@ using System.Text;
 
 namespace FF1Lib.Assembly
 {
+	public enum MemoryMode
+	{
+		MMC1 = 1,
+		MMC3 = 3
+	};
+
 	/// <summary>
-	/// Bank and Address.
+	/// Bank and run) Address.
 	/// </summary>
 	public struct BA
 	{
+		// apparently I can put statics in a struct???
+		/// <summary>
+		/// Adjusts last bank based on mapper in use. Change this when the ROM changes.
+		/// </summary>
+		public static MemoryMode memoryMode = MemoryMode.MMC1;
+
 		// these should be ushorts of course, but it makes everything annoying (casts everywhere)
 		public int bank;
 		public int addr;
@@ -18,27 +30,38 @@ namespace FF1Lib.Assembly
 			this.addr = addr;
 		}
 
-		public int MMC3RomLocation()
+		public int ToRomLocation()
 		{
-			return bank * 0x4000 + (addr - (bank == 0x1F ? 0xC000 : 0x8000));
+			return bank * 0x4000 + (addr - (bank == LastBank() ? 0xC000 : 0x8000));
 		}
 
-		public static BA FromMMC1RomLocation(int romOffset)
+		public static int TopOfBank(int bank)
 		{
-			return _fromRomLocation(0x0F, romOffset);
+			if (bank == LastBank())
+				return 0xFFFF;
+			else
+				return 0xBFFF;
 		}
 
-		public static BA FromMMC3RomLocation(int romOffset)
+		public static int LastBank()
 		{
-			return _fromRomLocation(0x1F, romOffset);
+			switch (memoryMode)
+			{
+				case MemoryMode.MMC1:
+					return 0x0F;
+				case MemoryMode.MMC3:
+					return 0x1F;
+				default:
+					throw new Exception("weird memoryMode value");
+			}
 		}
 
-		private static BA _fromRomLocation(int lastBank, int romOffset)
+		public static BA FromRomLocation(int romOffset)
 		{
 			int bank, addr;
 			if (romOffset >= 0x7C000)
 			{
-				bank = lastBank;
+				bank = LastBank();
 				addr = romOffset - (0x7C000 - 0xC000);
 			}
 			else

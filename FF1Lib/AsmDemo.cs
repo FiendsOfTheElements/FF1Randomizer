@@ -14,11 +14,9 @@ namespace FF1Lib
 ; EnterMainMenu:      ;; commented so it doesn't complain about redefined labels
     LDA #$51
     STA music_track     ; set music track $51 (menu music)
-
     LDA #0
     STA $2001           ; turn off the PPU (we need to do some drawing)     
     STA $4015           ; and silence the APU.  Music sill start next time MusicPlay is called.
-
     JSR LoadMenuCHRPal        ; load menu related CHR and palettes
     LDX #$0B
   @Loop:                      ; load a few other main menu related palettes
@@ -27,7 +25,9 @@ namespace FF1Lib
       DEX
       BPL @Loop               ; loop until X wraps ($0C colors copied)
 ";
-			byte[] result = Assembler.Assemble(Symbols.Labels.EnterMainMenu, "EnterMainMenu", src);
+			BA bank_and_address = Symbols.Labels.EnterMainMenu;
+			string human_readable_name = "EnterMainMenu duplicate";
+			byte[] result = Assembler.Assemble(origin_address, human_readable_name, src);
 
 			// this is all you have to do. The rest of the code below is just printing hex and comparing.
 
@@ -38,7 +38,9 @@ namespace FF1Lib
 			Console.WriteLine("result:");
 			Console.WriteLine(result_hex);
 
-			byte[] from_actual_rom = Get(0x3ADB3, result.Length);
+			var rom_address = bank_and_address.ToRomLocation();
+			var size_guess = Symbols.Calculate.SpaceToNextLabel("EnterMainMenu");
+			byte[] from_actual_rom = Get(rom_address, size_guess);
 			string rom_hex = BitConverter.ToString(from_actual_rom).Replace("-", string.Empty);
 			Console.WriteLine("from rom:");
 			Console.WriteLine(rom_hex);
