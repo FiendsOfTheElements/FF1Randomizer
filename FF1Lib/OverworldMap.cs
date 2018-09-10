@@ -586,9 +586,9 @@ namespace FF1Lib
 			backdrops[0x32] = (byte)Backdrop.SeaShrine; // Matoya's Cave
 			backdrops[0x3A] = (byte)Backdrop.MarshCave; // Sarda's Cave
 			backdrops[0x4A] = (byte)Backdrop.IceCave; // Pravoka
-			backdrops[0x4C] = (byte)Backdrop.Forest; // Elfland
-			backdrops[0x4D] = (byte)Backdrop.Desert; // Melmond
-			backdrops[0x4E] = (byte)Backdrop.River; // Crescent Lake
+			backdrops[0x4C] = (byte)Backdrop.SeaShrine; // Elfland
+			backdrops[0x4D] = (byte)Backdrop.Volcano; // Melmond
+			backdrops[0x4E] = (byte)Backdrop.Marsh; // Crescent Lake
 			backdrops[0x5A] = (byte)Backdrop.EarthCave; // Gaia
 			backdrops[0x6C] = (byte)Backdrop.Waterfall; // Bahamut's Room
 			backdrops[0x6D] = (byte)Backdrop.Tower; // Lefein
