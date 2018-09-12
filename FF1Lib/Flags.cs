@@ -41,7 +41,7 @@ namespace FF1Lib
 		private const int PARTY_EXTRA = 30;
 		private const int PARTY_EXTRA2 = 31;
 		private const int SCALE_CLAMPING = 32;
-
+		private const int MIN_PRICE_SCALE = 33;
 
 		[FlagString(Character = ITEMS, FlagBit = 1)]
 		public bool Shops { get; set; }
@@ -253,6 +253,8 @@ namespace FF1Lib
 		public double BossScaleFactor { get; set; }
 		[FlagString(Character = PRICE_SCALE_FACTOR, Multiplier = 0.1)]
 		public double PriceScaleFactor { get; set; }
+		[FlagString(Character = MIN_PRICE_SCALE, Multiplier = 0.1)]
+		public double PriceScaleFactor1 { get; set; }
 		[FlagString(Character = EXP_MULTIPLIER, Multiplier = 0.1)]
 		public double ExpMultiplier { get; set; }
 		[FlagString(Character = EXP_BONUS, Multiplier = 10)]
@@ -342,6 +344,8 @@ namespace FF1Lib
 		public bool ClampMinimumBossStatScale { get; set; }
 		[FlagString(Character = SCALE_CLAMPING, FlagBit = 4)]
 		public bool ClampMinimumPriceScale { get; set; }
+		[FlagString(Character = SCALE_CLAMPING, FlagBit = 8)]
+		public bool ExperimentalFloorGeneration { get; set; }
 
 		public bool ModernBattlefield { get; set; }
 		public bool FunEnemyNames { get; set; }

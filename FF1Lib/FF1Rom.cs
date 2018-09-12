@@ -91,10 +91,25 @@ namespace FF1Lib
 			PermanentCaravan();
 			ShiftEarthOrbDown();
 
+			TeleportShuffle teleporters = new TeleportShuffle();
 			var palettes = OverworldMap.GeneratePalettes(Get(OverworldMap.MapPaletteOffset, MapCount * OverworldMap.MapPaletteSize).Chunk(OverworldMap.MapPaletteSize));
-			var overworldMap = new OverworldMap(this, flags, palettes);
+			var overworldMap = new OverworldMap(this, flags, palettes, teleporters);
 			var maps = ReadMaps();
 			var shopItemLocation = ItemLocations.CaravanItemShop1;
+
+			if (flags.ExperimentalFloorGeneration)
+			{
+				MapGenerator generator = new MapGenerator();
+				generator.Generate(rng, Tile.WaterfallRandomEncounters);
+				teleporters.Waterfall.SetEntrance(generator.Entrance);
+				overworldMap.PutOverworldTeleport(OverworldTeleportIndex.Waterfall, teleporters.Waterfall);
+
+				maps[(int)MapId.Waterfall] = generator.Map;
+
+				var roboCoord = generator.GetNPCCoordinate(rng);
+				MoveNpc(MapId.Waterfall, 0, roboCoord.Item1, roboCoord.Item2, false, false);
+				Console.WriteLine($"Moved robot to {roboCoord.Item1},{roboCoord.Item2}.");
+			}
 
 			if (flags.ModernBattlefield)
 			{
@@ -142,7 +157,7 @@ namespace FF1Lib
 			{
 				try
 				{
-					overworldMap = new OverworldMap(this, flags, palettes);
+					overworldMap = new OverworldMap(this, flags, palettes, teleporters);
 					if ((flags.Entrances || flags.Floors || flags.Towns) && flags.Treasures && flags.NPCItems)
 					{
 						overworldMap.ShuffleEntrancesAndFloors(rng, flags);
@@ -168,7 +183,7 @@ namespace FF1Lib
 
 					if (flags.Treasures)
 					{
-						ShuffleTreasures(rng, flags, incentivesData, shopItemLocation, overworldMap);
+						ShuffleTreasures(rng, flags, incentivesData, shopItemLocation, overworldMap, teleporters);
 					}
 					break;
 				}

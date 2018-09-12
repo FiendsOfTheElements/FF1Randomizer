@@ -30,7 +30,8 @@ namespace FF1Lib
 													IItemPlacementFlags flags,
 													IncentiveData incentivesData,
 													ItemShopSlot caravanItemLocation,
-                                                    OverworldMap overworldMap)
+                                                    OverworldMap overworldMap,
+													TeleportShuffle teleporters)
 		{
 			Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullFloorRequirements = overworldMap.FullLocationRequirements;
 			Dictionary<MapLocation, OverworldTeleportIndex> overridenOverworld = overworldMap.OverriddenOverworldLocations;
@@ -90,7 +91,7 @@ namespace FF1Lib
             MapLocation shipLocation = placedItems.Find(reward => reward.Item == Item.Ship).MapLocation;
             if (overridenOverworld != null && overridenOverworld.TryGetValue(shipLocation, out var overworldIndex))
 			{
-				shipLocation = TeleportShuffle.OverworldMapLocations.TryGetValue(overworldIndex, out var vanillaShipLocation) ? vanillaShipLocation : shipLocation;
+				shipLocation = teleporters.OverworldMapLocations.TryGetValue(overworldIndex, out var vanillaShipLocation) ? vanillaShipLocation : shipLocation;
 			}
 			MoveShipToRewardSource(shipLocation);
 			return placedItems;

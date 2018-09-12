@@ -71,6 +71,29 @@ namespace FF1Lib
 		TitansTunnel
 	}
 
+	public enum Tile
+	{
+		RoomBackLeft = 0x00,
+		RoomBackCenter = 0x01,
+		RoomBackRight = 0x02,
+		RoomLeft = 0x03,
+		RoomCenter = 0x04,
+		RoomRight = 0x05,
+		RoomFrontLeft = 0x06,
+		RoomFrontCenter = 0x07,
+		RoomFrontRight = 0x08,
+		Ladder = 0x09,
+		LadderHole = 0x0A,
+		WarpUp = 0x18,
+		FloorSafe = 0x31,
+		Impassable = 0x3D,
+		Door = 0x36,
+		Doorway = 0x3A,
+		Lava = 0x39,
+		WaterfallRandomEncounters = 0x49
+
+	}
+
 	public enum WarMECHMode
 	{
 		Vanilla,

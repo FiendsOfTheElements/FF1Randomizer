@@ -30,6 +30,22 @@ namespace FF1Lib
 			});
 		}
 
+		public List<RomUtilities.Blob> Get(int y, int x, int width, int height)
+		{
+			List<RomUtilities.Blob> rows = new List<RomUtilities.Blob>();
+			for (int i = y; i < y + height; ++i)
+			{
+				var row = new List<byte>();
+				for (int j = x; j < x + width; ++j)
+				{
+					row.Add(_map[i, j]);
+				}
+				rows.Add(row.ToArray());
+			}
+
+			return rows;
+		}
+
 		public Map(byte[] data)
 		{
 			_map = new byte[RowCount, RowLength];
@@ -67,6 +83,31 @@ namespace FF1Lib
 					}
 				}
 			}
+		}
+
+		public Map(byte fill)
+		{
+			_map = new byte[RowCount, RowLength];
+			for (int y = 0; y < RowCount; ++y)
+			{
+				for (int x = 0; x < RowLength; ++x)
+				{
+					_map[y, x] = fill;
+				}
+			}
+		}
+
+		public Map Clone()
+		{
+			Map map = new Map(0);
+			for (int y = 0; y < RowCount; ++y)
+			{
+				for (int x = 0; x < RowLength; ++x)
+				{
+					map[y, x] = _map[y, x];
+				}
+			}
+			return map;
 		}
 
 		public byte[] GetCompressedData()
