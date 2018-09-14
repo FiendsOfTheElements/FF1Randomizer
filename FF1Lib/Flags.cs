@@ -41,6 +41,7 @@ namespace FF1Lib
 		private const int PARTY_EXTRA = 30;
 		private const int PARTY_EXTRA2 = 31;
 		private const int SCALE_CLAMPING = 32;
+		private const int PROCEDURAL_GENERATION = 33;
 		private const int MIN_PRICE_SCALE = 33;
 
 		[FlagString(Character = ITEMS, FlagBit = 1)]
@@ -344,8 +345,11 @@ namespace FF1Lib
 		public bool ClampMinimumBossStatScale { get; set; }
 		[FlagString(Character = SCALE_CLAMPING, FlagBit = 4)]
 		public bool ClampMinimumPriceScale { get; set; }
-		[FlagString(Character = SCALE_CLAMPING, FlagBit = 8)]
+
+		[FlagString(Character = PROCEDURAL_GENERATION, FlagBit = 1)]
 		public bool ExperimentalFloorGeneration { get; set; }
+		[FlagString(Character = PROCEDURAL_GENERATION, FlagBit = 2)]
+		public bool WaterfallEngine { get; set; }
 
 		public bool ModernBattlefield { get; set; }
 		public bool FunEnemyNames { get; set; }

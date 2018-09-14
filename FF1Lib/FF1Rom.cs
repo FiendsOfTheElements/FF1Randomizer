@@ -110,8 +110,8 @@ namespace FF1Lib
 				};
 
 				MapGenerator generator = new MapGenerator();
-				//CompleteMap waterfall = generator.Generate(rng, MapGeneratorStrategy.Cellular, reqs);
-				CompleteMap waterfall = generator.Generate(rng, MapGeneratorStrategy.WaterfallClone, reqs);
+				MapGeneratorStrategy strategy = flags.WaterfallEngine ? MapGeneratorStrategy.WaterfallClone : MapGeneratorStrategy.Cellular;
+				CompleteMap waterfall = generator.Generate(rng, strategy, reqs);
 
 				teleporters.Waterfall.SetEntrance(waterfall.Entrance);
 				overworldMap.PutOverworldTeleport(OverworldTeleportIndex.Waterfall, teleporters.Waterfall);
