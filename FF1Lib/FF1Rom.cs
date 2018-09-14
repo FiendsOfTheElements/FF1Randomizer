@@ -259,9 +259,9 @@ namespace FF1Lib
 				EnableMelmondGhetto();
 			}
 
-			if (flags.EnemyFormationsFrequency)
+			if (flags.FormationShuffleMode != FormationShuffleModeEnum.None)
 			{
-				ShuffleEnemyFormations(rng);
+				ShuffleEnemyFormations(rng, flags.FormationShuffleMode);
 			}
 
 			if (flags.EnemyTrapTiles)

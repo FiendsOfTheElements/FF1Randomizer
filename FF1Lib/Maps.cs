@@ -384,8 +384,8 @@ namespace FF1Lib
 			Put(DialogueTextPointerOffset + 2 * UnusedTextPointer, Blob.FromUShorts(new [] { freeTextSpacePointer }));
 
 			// Get rid of random WarMECH encounters.  Group 8 is now also group 7.
-			var formationOffset = FormationFrequencyOffset + FormationFrequencySize * (64 + (byte)MapId.SkyPalace5F);
-			var formations = Get(formationOffset, FormationFrequencySize);
+			var formationOffset = ZoneFormationsOffset + ZoneFormationsSize * (64 + (byte)MapId.SkyPalace5F);
+			var formations = Get(formationOffset, ZoneFormationsSize);
 			formations[6] = formations[7];
 			Put(formationOffset, formations);
 

@@ -42,7 +42,8 @@ namespace FF1Lib
 		private const int PARTY_EXTRA2 = 31;
 		private const int SCALE_CLAMPING = 32;
 		private const int PROCEDURAL_GENERATION = 33;
-		private const int MIN_PRICE_SCALE = 33;
+		private const int FORMATION = 34;
+
 
 		[FlagString(Character = ITEMS, FlagBit = 1)]
 		public bool Shops { get; set; }
@@ -81,8 +82,6 @@ namespace FF1Lib
 
 		[FlagString(Character = ENCOUNTERS, FlagBit = 1)]
 		public bool Rng { get; set; }
-		[FlagString(Character = ENCOUNTERS, FlagBit = 2)]
-		public bool EnemyFormationsFrequency { get; set; }
 		[FlagString(Character = ENCOUNTERS, FlagBit = 4)]
 		public bool EnemyFormationsUnrunnable { get; set; }
 		[FlagString(Character = ENCOUNTERS, FlagBit = 8)]
@@ -254,8 +253,6 @@ namespace FF1Lib
 		public double BossScaleFactor { get; set; }
 		[FlagString(Character = PRICE_SCALE_FACTOR, Multiplier = 0.1)]
 		public double PriceScaleFactor { get; set; }
-		[FlagString(Character = MIN_PRICE_SCALE, Multiplier = 0.1)]
-		public double PriceScaleFactor1 { get; set; }
 		[FlagString(Character = EXP_MULTIPLIER, Multiplier = 0.1)]
 		public double ExpMultiplier { get; set; }
 		[FlagString(Character = EXP_BONUS, Multiplier = 10)]
@@ -350,6 +347,9 @@ namespace FF1Lib
 		public bool ExperimentalFloorGeneration { get; set; }
 		[FlagString(Character = PROCEDURAL_GENERATION, FlagBit = 2)]
 		public bool WaterfallEngine { get; set; }
+
+		[FlagString(Character = FORMATION, FlagBit = 3)]
+		public FormationShuffleModeEnum FormationShuffleMode { get; set; }
 
 		public bool ModernBattlefield { get; set; }
 		public bool FunEnemyNames { get; set; }
