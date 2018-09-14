@@ -85,11 +85,13 @@ namespace FF1Lib
 		Ladder = 0x09,
 		LadderHole = 0x0A,
 		WarpUp = 0x18,
+		InsideWall = 0x30,
 		FloorSafe = 0x31,
 		Impassable = 0x3D,
 		Door = 0x36,
 		Doorway = 0x3A,
 		Lava = 0x39,
+		WaterfallInside = 0x46,
 		WaterfallRandomEncounters = 0x49
 
 	}
