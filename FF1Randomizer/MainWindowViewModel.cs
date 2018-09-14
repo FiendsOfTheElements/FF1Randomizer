@@ -861,7 +861,7 @@ namespace FF1Randomizer
 					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ExpBonus"));
 				}
 			}
-			public int ForcedPartyMembers
+			/*public int ForcedPartyMembers
 			{
 				get => Flags.ForcedPartyMembers;
 				set
@@ -869,7 +869,7 @@ namespace FF1Randomizer
 					Flags.ForcedPartyMembers = value;
 					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ForcedPartyMembers"));
 				}
-			}
+			}*/
 
 			public bool ModernBattlefield
 			{
