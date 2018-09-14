@@ -6,74 +6,125 @@ using System.Text;
 
 namespace FF1Lib
 {
-	class MapGenerator
+	public class CompleteMap
+	{
+		public Map Map;
+		public Coordinate Entrance;
+		public MapRequirements Requirements;
+	}
+
+	public struct MapRequirements
+	{
+		public const int Width = Map.RowLength;
+		public const int Height = Map.RowCount;
+
+		public MapId MapId;
+		public Tile Floor;
+
+		public IEnumerable<byte> Treasures;
+		public IEnumerable<int> NPCs;
+
+		public FF1Rom Rom;
+	}
+
+	public enum MapGeneratorStrategy
+	{
+		Cellular
+	}
+
+	public class MapGenerator
+	{
+		public CompleteMap Generate(MT19337 rng, MapGeneratorStrategy strategy, MapRequirements reqs)
+		{
+			return GetStrategy(strategy).Generate(rng, reqs);
+		}
+
+		private IMapGeneratorEngine GetStrategy(MapGeneratorStrategy strategy)
+		{
+			switch (strategy)
+			{
+				case MapGeneratorStrategy.Cellular:
+					return new CellularGenerator();
+				default:
+					return null;
+			}
+		}
+	}
+
+	interface IMapGeneratorEngine
+	{
+		CompleteMap Generate(MT19337 rng, MapRequirements reqs);
+	}
+
+	class CellularGenerator : IMapGeneratorEngine
 	{
 		public double InitialAliveChance { get; set; }
 		public int BirthLimit = 4;
 		public int DeathLimit = 3;
 		public int Steps = 5;
 
-		public int Width { get; set; }
-		public int Height { get; set; }
-
-		public Tile Floor { get; private set; }
-
-		public Map Map { get; protected set; }
-		public Coordinate Entrance { get; protected set; }
-
-		public MapGenerator()
+		public CellularGenerator()
 		{
 			InitialAliveChance = 0.4;
-			Width = 64;
-			Height = 64;
-			Floor = Tile.FloorSafe;
 		}
 
-		public void Generate(MT19337 rng, Tile floor)
+		public CompleteMap Generate(MT19337 rng, MapRequirements reqs)
 		{
-			Floor = floor;
-			Map map = null;
 			int sanity = 0;
-			while(true)
+			while (true)
 			{
 				if (++sanity == 500)
 					throw new InsaneException("Failed to generate map!");
 
-				map = new Map((byte)Tile.Lava);
-				var room = GenerateRoom(rng, 8, 3);
+				CompleteMap complete = new CompleteMap
+				{
+					Map = new Map((byte)Tile.Lava)
+				};
 
-				map.Put(10, 10, room.ToArray());
-				InitializeMap(rng, map);
+				var room = GenerateTreasureRoom(rng, reqs.Treasures.ToList());
+
+				complete.Map.Put(0, 0, room.ToArray());
+				InitializeMap(rng, complete.Map);
 
 				for (int i = 0; i < Steps; ++i)
 				{
-					map = DoSimulationStep(map);
+					complete.Map = DoSimulationStep(complete.Map);
 				}
 
-				byte x = (byte)rng.Between(0, Width - 1);
-				byte y = (byte)rng.Between(0, Height - 1);
+				byte x = (byte)rng.Between(0, MapRequirements.Width - 1);
+				byte y = (byte)rng.Between(0, MapRequirements.Height - 1);
 
-				map[y, x] = (byte)Tile.WarpUp;
-				var results = FloodFill(map, new List<(int, int)> { (x, y) }, new List<Tile> { Tile.Doorway, Tile.WarpUp, Floor }, new List<Tile> { Tile.Lava }, Floor);
+				complete.Map[y, x] = (byte)Tile.WarpUp;
+				var results = FloodFill(complete.Map, new List<(int, int)> { (x, y) }, new List<Tile> { Tile.Doorway, Tile.WarpUp, reqs.Floor }, new List<Tile> { Tile.Lava }, reqs.Floor);
 
-				Console.WriteLine($"FloorGen Results: Floor:{results[Floor]}, Doorways:{results[Tile.Doorway]}, Warps:{results[Tile.WarpUp]}");
+				Console.WriteLine($"FloorGen Results: Floor:{results[reqs.Floor]}, Doorways:{results[Tile.Doorway]}, Warps:{results[Tile.WarpUp]}");
 
-				if (results[Floor] > 1000 || results[Tile.Doorway] > 1)
+				if (results[reqs.Floor] > 1000 && results[Tile.Doorway] == 1)
 				{
-					Entrance = new Coordinate(x, y, CoordinateLocale.Standard);
-					break;
+					reqs.NPCs.ToList().ForEach(npc =>
+					{
+						while (true)
+						{
+							int x0 = rng.Between(0, MapRequirements.Width - 1);
+							int y0 = rng.Between(0, MapRequirements.Height - 1);
+							if (complete.Map[y0, x0] == (byte)reqs.Floor)
+							{
+								reqs.Rom.MoveNpc(reqs.MapId, npc, x0, y0, false, false);
+								break;
+							}
+						}
+					});
+
+					complete.Entrance = new Coordinate(x, y, CoordinateLocale.Standard);
+					return complete;
 				}
-
-			} while (false);
-
-			Map = map;
+			}
 		}
 
-		private List<Blob> GenerateRoom(MT19337 rng, int interiorWidth, int interiorHeight)
+		private List<Blob> GenerateTreasureRoom(MT19337 rng, List<byte> treasures)
 		{
-
-			int width = interiorWidth + 2;
-			int height = interiorHeight + 2;
+			int width = treasures.Count() + 2;
+			int height = 5;
 
 			Blob top = Enumerable.Repeat(Tile.RoomBackCenter, width).Select(x => (byte)x).ToArray();
 			top[0] = (byte)Tile.RoomBackLeft;
@@ -100,12 +151,12 @@ namespace FF1Lib
 			List<Blob> room = new List<Blob> { top, treasureArea };
 
 			// Chests
-			for (int i = 1; i < 7; ++i)
+			for (int i = 0; i < treasures.Count(); ++i)
 			{
-				room.Last()[i] = (byte)(0x78 + i);
+				room.Last()[i + 1] = treasures[i];
 			}
 
-			for (int i = 1; i < interiorHeight; ++i)
+			for (int i = 1; i < height - 2; ++i)
 			{
 				room.Add(middle);
 			}
@@ -115,20 +166,21 @@ namespace FF1Lib
 			return room;
 		}
 
-		public (int, int) GetNPCCoordinate(MT19337 rng)
+		private void InitializeMap(MT19337 rng, Map map)
 		{
-			while (true)
+			for (int x = 0; x < Map.RowLength; x++)
 			{
-				int x = rng.Between(0, Width - 1);
-				int y = rng.Between(0, Height - 1);
-				if (Map[y, x] == (byte)Floor)
+				for (int y = 0; y < Map.RowCount; y++)
 				{
-					return (x, y);
+					if (map[y, x] == (byte)Tile.Lava && ((double)rng.Next() / uint.MaxValue < InitialAliveChance))
+					{
+						map[y, x] = (byte)Tile.Impassable;
+					}
 				}
 			}
 		}
 
-		private Dictionary<Tile, int> FloodFill(Map map, List<( int, int)> coords, IEnumerable<Tile> counts, IEnumerable<Tile> finds, Tile replace)
+		private Dictionary<Tile, int> FloodFill(Map map, List<(int, int)> coords, IEnumerable<Tile> counts, IEnumerable<Tile> finds, Tile replace)
 		{
 			Dictionary<Tile, int> results = counts.ToDictionary(tile => tile, tile => 0);
 			FloodFill(results, map, coords, counts, finds, replace);
@@ -137,6 +189,9 @@ namespace FF1Lib
 
 		private void FloodFill(Dictionary<Tile, int> results, Map map, List<(int, int)> coords, IEnumerable<Tile> counts, IEnumerable<Tile> finds, Tile replace)
 		{
+			const int Width = Map.RowLength;
+			const int Height = Map.RowCount;
+
 			for (int i = 0; i < coords.Count(); ++i)
 			{
 				int x = coords[i].Item1;
@@ -164,28 +219,14 @@ namespace FF1Lib
 			}
 		}
 
-		private void InitializeMap(MT19337 rng, Map map)
-		{
-			for (int x = 0; x < Width; x++)
-			{
-				for (int y = 0; y < Height; y++)
-				{
-					if (map[y, x] == (byte)Tile.Lava && ((double)rng.Next() / uint.MaxValue < InitialAliveChance))
-					{
-						map[y, x] = (byte)Tile.Impassable;
-					}
-				}
-			}
-		}
-
 		private Map DoSimulationStep(Map old)
 		{
 			Map map = old.Clone();
 			// Loop over each row and column of the map
 
-			for (int x = 0; x < Width; x++)
+			for (int x = 0; x < MapRequirements.Width; x++)
 			{
-				for (int y = 0; y < Height; y++)
+				for (int y = 0; y < MapRequirements.Height; y++)
 				{
 					int nbs = CountAliveNeighbours(old, x, y);
 					//The new value is based on our simulation rules
@@ -231,7 +272,7 @@ namespace FF1Lib
 				{
 					if (i == 0 && j == 0) continue;
 
-					if (map[(y + j + Height) % Height, (x + i + Width) % Width] == (byte)Tile.Impassable)
+					if (map[(y + j + MapRequirements.Height) % MapRequirements.Height, (x + i + MapRequirements.Width) % MapRequirements.Width] == (byte)Tile.Impassable)
 					{
 						count = count + 1;
 					}

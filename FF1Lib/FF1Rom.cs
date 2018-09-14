@@ -99,16 +99,22 @@ namespace FF1Lib
 
 			if (flags.ExperimentalFloorGeneration)
 			{
+				MapRequirements reqs = new MapRequirements
+				{
+					MapId = MapId.Waterfall,
+					Floor = Tile.WaterfallRandomEncounters,
+					Treasures = new List<byte> { 0x79, 0x7A, 0x7B, 0x7C, 0x7D, 0x7E },
+					NPCs = Enumerable.Range(0, 11),
+
+					Rom = this,
+				};
+
 				MapGenerator generator = new MapGenerator();
-				generator.Generate(rng, Tile.WaterfallRandomEncounters);
-				teleporters.Waterfall.SetEntrance(generator.Entrance);
+				CompleteMap waterfall = generator.Generate(rng, MapGeneratorStrategy.Cellular, reqs);
+
+				teleporters.Waterfall.SetEntrance(waterfall.Entrance);
 				overworldMap.PutOverworldTeleport(OverworldTeleportIndex.Waterfall, teleporters.Waterfall);
-
-				maps[(int)MapId.Waterfall] = generator.Map;
-
-				var roboCoord = generator.GetNPCCoordinate(rng);
-				MoveNpc(MapId.Waterfall, 0, roboCoord.Item1, roboCoord.Item2, false, false);
-				Console.WriteLine($"Moved robot to {roboCoord.Item1},{roboCoord.Item2}.");
+				maps[(int)MapId.Waterfall] = waterfall.Map;
 			}
 
 			if (flags.ModernBattlefield)
