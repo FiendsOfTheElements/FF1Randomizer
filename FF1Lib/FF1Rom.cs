@@ -102,10 +102,6 @@ namespace FF1Lib
 				MapRequirements reqs = new MapRequirements
 				{
 					MapId = MapId.Waterfall,
-					Floor = Tile.WaterfallRandomEncounters,
-					Treasures = new List<byte> { 0x79, 0x7A, 0x7B, 0x7C, 0x7D, 0x7E },
-					NPCs = Enumerable.Range(0, 11),
-
 					Rom = this,
 				};
 
@@ -113,6 +109,7 @@ namespace FF1Lib
 				MapGeneratorStrategy strategy = flags.WaterfallEngine ? MapGeneratorStrategy.WaterfallClone : MapGeneratorStrategy.Cellular;
 				CompleteMap waterfall = generator.Generate(rng, strategy, reqs);
 
+				// Should add more into the reqs so that this can be done inside the generator.
 				teleporters.Waterfall.SetEntrance(waterfall.Entrance);
 				overworldMap.PutOverworldTeleport(OverworldTeleportIndex.Waterfall, teleporters.Waterfall);
 				maps[(int)MapId.Waterfall] = waterfall.Map;
@@ -259,9 +256,9 @@ namespace FF1Lib
 				EnableMelmondGhetto();
 			}
 
-			if (flags.EnemyFormationsFrequency)
+			if (flags.FormationShuffleMode != FormationShuffleModeEnum.None)
 			{
-				ShuffleEnemyFormations(rng);
+				ShuffleEnemyFormations(rng, flags.FormationShuffleMode);
 			}
 
 			if (flags.EnemyTrapTiles)
