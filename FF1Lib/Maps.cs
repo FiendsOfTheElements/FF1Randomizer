@@ -104,6 +104,14 @@ namespace FF1Lib
 		BridgeOfDestiny
 	}
 
+	public struct NPC
+	{
+		public int Index;
+		public (int x, int y) Coord;
+		public bool InRoom;
+		public bool Stationary;
+	}
+
 	public partial class FF1Rom : NesRom
 	{
 		public const int MapPointerOffset = 0x10000;
@@ -152,7 +160,7 @@ namespace FF1Lib
 			{
 				var traps = tilesets.Where(IsNonBossTrapTile).ToList();
 				encounters = traps.Select(trap => trap[1]).ToList();
-			} 
+			}
 
 			tilesets.ForEach(tile =>
 			{
@@ -303,7 +311,7 @@ namespace FF1Lib
 
 		public void ShuffleSkyCastle4F(MT19337 rng, List<Map> maps)
 		{
-		    // Don't shuffle the return teleporter as Floor and Entrance shuffle might want to edit it.	
+			// Don't shuffle the return teleporter as Floor and Entrance shuffle might want to edit it.	
 			var map = maps[(byte)MapId.SkyPalace4F];
 			var upTeleporter = (x: 0x23, y: 0x23);
 			var dest = GetSkyCastleFloorTile(rng, map);
@@ -347,10 +355,10 @@ namespace FF1Lib
 		}
 
 		public void EnableTitansTrove(List<Map> maps)
-        {
+		{
 			MoveNpc(MapId.TitansTunnel, 0, 4, 8, inRoom: false, stationary: true); // Move the Titan
 			maps[(byte)MapId.TitansTunnel][9, 3] = 0x3F; // Block the tunnel
-        }
+		}
 
 		public void WarMECHNpc(WarMECHMode mode, MT19337 rng, List<Map> maps)
 		{
@@ -359,7 +367,7 @@ namespace FF1Lib
 			const byte RobotGfx = 0x15;
 
 			// Set up the map object.
-			Put(MapObjOffset + (byte)ObjectId.WarMECH * MapObjSize, new [] { (byte)ObjectId.WarMECH, UnusedTextPointer, (byte)0x00, WarMECHEncounter });
+			Put(MapObjOffset + (byte)ObjectId.WarMECH * MapObjSize, new[] { (byte)ObjectId.WarMECH, UnusedTextPointer, (byte)0x00, WarMECHEncounter });
 			Data[MapObjGfxOffset + (byte)ObjectId.WarMECH] = RobotGfx;
 
 			// Set the action when you talk to WarMECH.
@@ -381,11 +389,11 @@ namespace FF1Lib
 			ushort freeTextSpacePointer = 0xB487;
 			int pointerTarget = 0x20000 + freeTextSpacePointer;
 			Put(pointerTarget, dialogueStrings.PickRandom(rng));
-			Put(DialogueTextPointerOffset + 2 * UnusedTextPointer, Blob.FromUShorts(new [] { freeTextSpacePointer }));
+			Put(DialogueTextPointerOffset + 2 * UnusedTextPointer, Blob.FromUShorts(new[] { freeTextSpacePointer }));
 
 			// Get rid of random WarMECH encounters.  Group 8 is now also group 7.
-			var formationOffset = FormationFrequencyOffset + FormationFrequencySize * (64 + (byte)MapId.SkyPalace5F);
-			var formations = Get(formationOffset, FormationFrequencySize);
+			var formationOffset = ZoneFormationsOffset + ZoneFormationsSize * (64 + (byte)MapId.SkyPalace5F);
+			var formations = Get(formationOffset, ZoneFormationsSize);
 			formations[6] = formations[7];
 			Put(formationOffset, formations);
 
@@ -406,6 +414,11 @@ namespace FF1Lib
 				// We can change all the colors here.
 				Put(0x02978, Blob.FromHex("0F0F18140F0F1714"));
 			}
+		}
+
+		public void MoveNpc(MapId mapId, NPC npc)
+		{
+			MoveNpc(mapId, npc.Index, npc.Coord.x, npc.Coord.y, npc.InRoom, npc.Stationary);
 		}
 
 		public void MoveNpc(MapId mapId, int mapNpcIndex, int x, int y, bool inRoom, bool stationary)

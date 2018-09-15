@@ -26,7 +26,7 @@
 		"ItemMagic": false,
 
 		"Rng": true,
-		"EnemyFormationsFrequency": false,
+		"FormationShuffleMode": 0,
 		"EnemyFormationsUnrunnable": false,
 		"EnemyFormationsSurprise": false,
 		"EnemyTrapTiles": false,
@@ -100,7 +100,7 @@
 		"NoPartyShuffle": true,
 		"Dash": true,
 		"BuyTen": true,
-		"EnableCritNumberDisplay":  true,			
+		"EnableCritNumberDisplay": true,
 
 		"IdentifyTreasures": true,
 		"WaitWhenUnrunnable": true,
