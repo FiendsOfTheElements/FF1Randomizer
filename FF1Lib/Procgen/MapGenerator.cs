@@ -61,6 +61,9 @@ namespace FF1Lib.Procgen
 
 				IMapGeneratorEngine engine = GetEngine(strategy);
 				map = engine.Generate(rng, reqs);
+
+				// add the reqs we used
+				map.Requirements = reqs;
 			}
 			else
 			{

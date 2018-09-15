@@ -42,7 +42,6 @@ namespace FF1Lib.Procgen
 			StringBuilder sb = new StringBuilder(MapRequirements.Height * MapRequirements.Width);
 
 			int y, x;
-			char c;
 			var otherCharMap = new Dictionary<int, char>();
 			var seenValues = new HashSet<int>();
 
