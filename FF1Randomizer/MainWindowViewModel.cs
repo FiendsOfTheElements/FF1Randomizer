@@ -213,15 +213,6 @@ namespace FF1Randomizer
 					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Rng"));
 				}
 			}
-			public bool EnemyFormationsFrequency
-			{
-				get => Flags.EnemyFormationsFrequency;
-				set
-				{
-					Flags.EnemyFormationsFrequency = value;
-					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EnemyFormationsFrequency"));
-				}
-			}
 			public bool EnemyFormationsUnrunnable
 			{
 				get => Flags.EnemyFormationsUnrunnable;

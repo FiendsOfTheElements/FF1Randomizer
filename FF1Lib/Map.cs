@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RomUtilities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,32 +19,11 @@ namespace FF1Lib
 			set => _map[y, x] = value;
 		}
 
-		public void Put(int y, int x, RomUtilities.Blob[] rows)
+		// The coordinate version of the accessor has the params in the normal order.
+		public byte this[(int x, int y) coord]
 		{
-			Array.ForEach(rows, blob =>
-			{
-				for (int i = 0; i < blob.Length; ++i)
-				{
-					this[y, x + i] = blob[i];
-				}
-				++y;
-			});
-		}
-
-		public List<RomUtilities.Blob> Get(int y, int x, int width, int height)
-		{
-			List<RomUtilities.Blob> rows = new List<RomUtilities.Blob>();
-			for (int i = y; i < y + height; ++i)
-			{
-				var row = new List<byte>();
-				for (int j = x; j < x + width; ++j)
-				{
-					row.Add(_map[i, j]);
-				}
-				rows.Add(row.ToArray());
-			}
-
-			return rows;
+			get => this[coord.y, coord.x];
+			set => this[coord.y, coord.x] = value;
 		}
 
 		public Map(byte[] data)
@@ -108,6 +88,62 @@ namespace FF1Lib
 				}
 			}
 			return map;
+		}
+
+		public void Put((int x, int y) coord, Blob[] blobs)
+		{
+			for (int i = 0; i < blobs.Length; ++i)
+			{
+				for (int j = 0; j < blobs[i].Length; ++j)
+				{
+					this[coord.y + i, coord.x + j] = blobs[i][j];
+				}
+			}
+		}
+
+		public void Put((int x, int y) coord, byte[,] rows)
+		{
+			for (int i = 0; i < rows.GetLength(0); ++i)
+			{
+				for (int j = 0; j < rows.GetLength(1); ++j)
+				{
+					this[coord.y + i, coord.x + j] = rows[i, j];
+				}
+			}
+		}
+
+		public void Fill((int x, int y) coord, (int w, int h) size, Tile fill)
+		{
+			Fill(coord, size, (byte)fill);
+		}
+
+		public void Fill((int x, int y) coord, (int w, int h) size, byte fill)
+		{
+			for (int i = coord.x; i < coord.x + size.w; ++ i)
+			{
+				for (int j = coord.y; j < coord.y + size.h; ++j)
+				{
+					this[j, i] = fill;
+				}
+			}
+		}
+
+		public void Flood((int x, int y) coord, Func<(int, int), byte, bool> cb)
+		{
+			List<(int x, int y)> coords = new List<(int x, int y)> { coord };
+			for (int i = 0; i < coords.Count(); ++i)
+			{
+				(int x, int y) = coords[i];
+
+				// Recurse if our callback returns true.
+				if (cb(coords[i], _map[y, x]))
+				{
+					if (!coords.Contains(((RowLength + x - 1) % RowLength, y))) { coords.Add(((RowLength + x - 1) % RowLength, y)); }
+					if (!coords.Contains(((RowLength + x + 1) % RowLength, y))) { coords.Add(((RowLength + x + 1) % RowLength, y)); }
+					if (!coords.Contains((x, (RowCount + y - 1) % RowCount))) { coords.Add((x, (RowCount + y - 1) % RowCount)); }
+					if (!coords.Contains((x, (RowCount + y + 1) % RowCount))) { coords.Add((x, (RowCount + y + 1) % RowCount)); }
+				}
+			}
 		}
 
 		public byte[] GetCompressedData()
