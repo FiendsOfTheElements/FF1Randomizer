@@ -47,7 +47,6 @@ namespace Sandbox
 			    ModernBattlefield = false,
 			    Music = MusicShuffle.None,
 
-			    ForcedPartyMembers = 0,
 			    PriceScaleFactor = 1.0,
 			    EnemyScaleFactor = 1.0,
 			    ExpMultiplier = 1.0,

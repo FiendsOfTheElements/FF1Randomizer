@@ -1,12 +1,13 @@
 ﻿using RomUtilities;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
 namespace FF1Lib
 {
-	public class Map
+	public class Map : IEnumerable<MapElement>
 	{
 		public const int RowLength = 64;
 		public const int RowCount = 64;
@@ -179,5 +180,51 @@ namespace FF1Lib
 
 			return compressedData.ToArray();
 		}
+
+		/// <summary>
+		/// Enumerates the MapElements in this Map. Writing to a MapElement's Value will set the value in this Map.
+		/// </summary>
+		public IEnumerator<MapElement> GetEnumerator()
+		{
+			for (int y = 0; y < RowCount; y++)
+			{
+				for (int x = 0; x < RowLength; x++)
+				{
+					yield return new MapElement(this, x, y, _map[y, x]);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Enumerates the MapElements in this Map. Writing to a MapElement's Value will set the value in this Map.
+		/// </summary>
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			return GetEnumerator();
+		}
+	}
+
+	/// <summary>
+	/// Represents an element of an instantiated Map. Setting Value of a MapElement will set the value in the Map.
+	/// </summary>
+	public class MapElement
+	{
+		public readonly Map Map;
+		public readonly int X, Y;
+
+		public byte Value
+		{
+			get { return Value; }
+			set { Map[(X, Y)] = Value = value; }
+		}
+		
+		public MapElement(Map map, int x, int y, byte value)
+		{
+			Map = map;
+			X = x;
+			Y = y;
+			Value = value;
+		}
+
 	}
 }
