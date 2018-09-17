@@ -7,6 +7,7 @@ using RomUtilities;
 using System.Collections;
 using System.IO;
 using System.Security.Cryptography;
+using FF1Lib.Procgen;
 
 namespace FF1Lib
 {

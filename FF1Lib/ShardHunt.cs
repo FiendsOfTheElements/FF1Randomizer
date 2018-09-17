@@ -73,7 +73,7 @@ namespace FF1Lib
 				battles.Shuffle(rng);
 				landingArea.Add(Blob.FromHex($"31{battles[0]:X2}3131{battles[1]:X2}31{battles[2]:X2}3131{battles[3]:X2}31"));
 			}
-			maps[59].Put((0x00, 0x0A), landingArea.ToArray());
+			maps[(int)MapId.TempleOfFiendsRevisitedChaos].Put((0x0A, 0x00), landingArea.ToArray());
 		}
 
 		public void EnableShardHunt(MT19337 rng, int goal, bool npcShuffleEnabled)
