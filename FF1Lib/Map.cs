@@ -146,6 +146,37 @@ namespace FF1Lib
 			}
 		}
 
+		public byte[,] GetSection((int x, int y) start, (int x, int y) size)
+		{
+			byte[,] section = new byte[size.x, size.y];
+			for (int x = 0; x < size.x; x++)
+			{
+				for (int y = 0; y < size.y; y++)
+				{
+					section[x, y] = this[start.y + y, start.x + x];
+				}
+			}
+			return section;
+		}
+
+		public bool Filter(Dictionary<byte[,], byte[,]> filter, (int x, int y) filterSize)
+		{
+			var rVal = false;
+			for (int x = 0; x < Map.RowLength - filterSize.x; x++)
+			{
+				for (int y = 0; y < Map.RowCount - filterSize.y; y++)
+				{
+					byte[,] section = GetSection((x, y), filterSize);
+					if (filter.ContainsKey(section))
+					{
+						Put((x, y), filter[section]);
+						rVal = true;
+					}
+				}
+			}
+			return rVal;
+		}
+
 		public byte[] GetCompressedData()
 		{
 			var compressedData = new List<byte>();
