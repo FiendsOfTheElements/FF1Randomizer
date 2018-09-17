@@ -79,21 +79,18 @@ namespace FF1Lib.Procgen
 
 		private void FloodFill(Dictionary<Tile, int> results, Map map, (int, int) inCoord, IEnumerable<Tile> counts, IEnumerable<Tile> finds, Tile replace)
 		{
-			map.Flood(inCoord, ((int x, int y) coord, byte t) =>
+			map.Flood(inCoord, element =>
 			{
-				Tile tile = (Tile)t;
-
 				// Update if desired
-				if (finds.Contains(tile))
+				if (finds.Contains(element.Tile))
 				{
-					tile = replace;
-					map[coord] = (byte)tile;
+					element.Tile = replace;
 				}
 
 				// Accumulate results and recurse if this is a counter tile.
-				if (counts.Contains(tile))
+				if (counts.Contains(element.Tile))
 				{
-					results[tile]++;
+					results[element.Tile]++;
 					return true;
 				}
 

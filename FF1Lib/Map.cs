@@ -129,7 +129,7 @@ namespace FF1Lib
 			}
 		}
 
-		public void Flood((int x, int y) coord, Func<(int, int), byte, bool> cb)
+		public void Flood((int x, int y) coord, Func<MapElement, bool> action)
 		{
 			List<(int x, int y)> coords = new List<(int x, int y)> { coord };
 			for (int i = 0; i < coords.Count(); ++i)
@@ -137,7 +137,7 @@ namespace FF1Lib
 				(int x, int y) = coords[i];
 
 				// Recurse if our callback returns true.
-				if (cb(coords[i], _map[y, x]))
+				if (action(new MapElement(this, x, y, _map[y, x])))
 				{
 					if (!coords.Contains(((RowLength + x - 1) % RowLength, y))) { coords.Add(((RowLength + x - 1) % RowLength, y)); }
 					if (!coords.Contains(((RowLength + x + 1) % RowLength, y))) { coords.Add(((RowLength + x + 1) % RowLength, y)); }
@@ -245,8 +245,14 @@ namespace FF1Lib
 
 		public byte Value
 		{
-			get { return Value; }
-			set { Map[(X, Y)] = Value = value; }
+			get { return Map[Y, X]; }
+			set { Map[Y, X] = value; }
+		}
+
+		public Tile Tile
+		{
+			get { return (Tile)Map[Y, X]; }
+			set { Map[Y, X] = (byte)value; }
 		}
 		
 		public MapElement(Map map, int x, int y, byte value)
@@ -254,7 +260,6 @@ namespace FF1Lib
 			Map = map;
 			X = x;
 			Y = y;
-			Value = value;
 		}
 
 	}
