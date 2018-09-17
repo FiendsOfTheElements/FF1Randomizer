@@ -21,10 +21,10 @@ namespace FF1Lib
 		}
 
 		// The coordinate version of the accessor has the params in the normal order.
-		public byte this[(int x, int y) coord]
+		public MapElement this[(int x, int y) coord]
 		{
-			get => this[coord.y, coord.x];
-			set => this[coord.y, coord.x] = value;
+			get => new MapElement(this, coord.x, coord.y, this[coord.y, coord.x]);
+			set => this[coord.y, coord.x] = value.Value;
 		}
 
 		public Map(byte[] data)
@@ -261,6 +261,14 @@ namespace FF1Lib
 		}
 	}
 
+	public enum Direction
+	{
+		Up,
+		Down,
+		Left,
+		Right,
+	};
+
 	/// <summary>
 	/// Represents an element of an instantiated Map. Setting Value of a MapElement will set the value in the Map.
 	/// </summary>
@@ -286,6 +294,35 @@ namespace FF1Lib
 			Map = map;
 			X = x;
 			Y = y;
+		}
+
+		public (int x, int y) Coord => (X, Y);
+
+		public MapElement Neighbor(Direction direction)
+		{
+			int x = direction == Direction.Left ? ((Map.RowLength + X - 1) % Map.RowLength)
+				: direction == Direction.Right ? ((X + 1) % Map.RowLength)
+				: X;
+			int y = direction == Direction.Up ? ((Map.RowCount + Y - 1) % Map.RowCount)
+				: direction == Direction.Down ? ((Y + 1) % Map.RowCount)
+				: Y;
+			return new MapElement(Map, x, y, Map[y, x]);
+		}
+
+		public MapElement Up() { return Neighbor(Direction.Up); }
+		public MapElement Down() { return Neighbor(Direction.Down); }
+		public MapElement Left() { return Neighbor(Direction.Left); }
+		public MapElement Right() { return Neighbor(Direction.Right); }
+
+		/// <summary>
+		/// Enumerates the MapElements in this Map. Writing to a MapElement's Value will set the value in this Map.
+		/// </summary>
+		public IEnumerable<MapElement> Surrounding()
+		{
+			var up = Up();
+			var down = Down();
+
+			return new List<MapElement> { up.Left(), up, up.Right(), Left(), Right(), down.Left(), down, down.Right() };
 		}
 	}
 }

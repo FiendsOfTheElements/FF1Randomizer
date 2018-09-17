@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FF1Lib.procgen;
 using RomUtilities;
 
 namespace FF1Lib.Procgen
@@ -14,9 +16,14 @@ namespace FF1Lib.Procgen
 
 		public MapId MapId;
 		public Tile Floor;
+		public Tile InRoomFloor;
+		public Tile OutOfBounds;
+		public Tile Barrier;
 
-		public IEnumerable<RoomSpec> Rooms; // Precisely fixed rooms and npcs.
-		public IEnumerable<byte> Treasures; // Random extra chests requested in random rooms.
+		public IEnumerable<RoomSpec> Rooms; // Precisely fixed rooms and npcs. RENAME THIS TO REGIONS THEY CAN BE ANYTHING REALLY
+		public IEnumerable<byte> Objects;   // In room items like chests and decorations. They ought to always be reachable on foot.
+		public IEnumerable<byte> Portals;   // Warps, Teleports, Exits that should be considered traverseable and must be reachable.
+		public IEnumerable<byte> Traps;     // Trap tiles assumed to be in rooms.
 		public IEnumerable<int> FreeNPCs;   // Random extra NPCs outside of rooms. (Coords can be ignored)
 
 		public FF1Rom Rom;
@@ -25,7 +32,8 @@ namespace FF1Lib.Procgen
 	public enum MapGeneratorStrategy
 	{
 		Cellular,
-		WaterfallClone
+		WaterfallClone,
+		Square,
 	}
 
 	public interface IMapGeneratorEngine
@@ -42,7 +50,7 @@ namespace FF1Lib.Procgen
 			if (reqs.MapId == MapId.Waterfall)
 			{
 				reqs.Floor = Tile.WaterfallRandomEncounters;
-				reqs.Treasures = new List<byte> { };
+				reqs.InRoomFloor = Tile.WaterfallInside;
 				reqs.FreeNPCs = Enumerable.Range(1, 10);
 				reqs.Rooms = new List<RoomSpec>
 				{
@@ -58,6 +66,43 @@ namespace FF1Lib.Procgen
 						NPCs = new List<NPC> { new NPC { Index = 0, Coord = (5, 2), InRoom = true, Stationary = false } },
 					}
 				};
+				reqs.Portals = new byte[] { (byte)Tile.WarpUp };
+
+				IMapGeneratorEngine engine = GetEngine(strategy);
+				map = engine.Generate(rng, reqs);
+
+				// add the reqs we used
+				map.Requirements = reqs;
+			}
+			else if (reqs.MapId == MapId.EarthCaveB1)
+			{
+				reqs.Floor = Tile.EarthCaveRandomEncounters;
+				reqs.InRoomFloor = Tile.EarthCaveInside;
+				reqs.OutOfBounds = Tile.EarthCaveOOB;
+				reqs.Barrier = Tile.EarthCaveRockA;
+				reqs.FreeNPCs = new int[] { };
+				reqs.Rooms = new List<RoomSpec> { };
+				reqs.Portals = new byte[] { (byte)Tile.WarpUp, 0x24 };
+				reqs.Objects = Enumerable.Range(0x42, 5).Select(x => (byte)x);
+				reqs.Traps = Enumerable.Repeat(0x1D, 3).Select(x => (byte)x);
+
+				IMapGeneratorEngine engine = GetEngine(strategy);
+				map = engine.Generate(rng, reqs);
+
+				// add the reqs we used
+				map.Requirements = reqs;
+			}
+			else if (reqs.MapId == MapId.EarthCaveB2)
+			{
+				reqs.Floor = Tile.EarthCaveRandomEncounters;
+				reqs.InRoomFloor = Tile.EarthCaveInside;
+				reqs.OutOfBounds = Tile.EarthCaveOOB;
+				reqs.Barrier = Tile.EarthCaveRockA;
+				reqs.FreeNPCs = Enumerable.Range(0, 13);
+				reqs.Rooms = new List<RoomSpec> { };
+				reqs.Portals = new byte[] { (byte)Tile.WarpUp, 0x25 };
+				reqs.Objects = Enumerable.Range(0x47, 6).Select(x => (byte)x);
+				reqs.Traps = Enumerable.Range(0x1D, 1).Select(x => (byte)x);
 
 				IMapGeneratorEngine engine = GetEngine(strategy);
 				map = engine.Generate(rng, reqs);
@@ -71,23 +116,18 @@ namespace FF1Lib.Procgen
 			}
 
 			// Free NPC placement doesn't require the engine
+			var locations = map.Map.Where(element => element.Tile == reqs.Floor).ToList();
 			reqs.FreeNPCs.ToList().ForEach(npc =>
 			{
-				for (int sanity = 0; sanity < 1000; ++sanity)
-				{
-					int x = rng.Between(0, MapRequirements.Width - 1);
-					int y = rng.Between(0, MapRequirements.Height - 1);
-					if (map.Map[y, x] == (byte)reqs.Floor)
-					{
-						reqs.Rom.MoveNpc(reqs.MapId, npc, x, y, false, false);
-						return;
-					}
-				}
-				throw new InsaneException("Couln't find a home for an npc.");
+				var location = locations.SpliceRandom(rng);
+				reqs.Rom.MoveNpc(reqs.MapId, npc, location.X, location.Y, false, false);
 			});
-#if DEBUG
-			Console.Write(map.AsText());
-#endif
+
+			if (Debugger.IsAttached)
+			{
+				Console.Write(map.AsText());
+			}
+
 			return map;
 		}
 
@@ -99,6 +139,8 @@ namespace FF1Lib.Procgen
 					return new CellularGenerator();
 				case MapGeneratorStrategy.WaterfallClone:
 					return new WaterfallEngine();
+				case MapGeneratorStrategy.Square:
+					return new RectilinearGenerator();
 				default:
 					return null;
 			}

@@ -98,6 +98,11 @@ namespace FF1Lib
 			var maps = ReadMaps();
 			var shopItemLocation = ItemLocations.CaravanItemShop1;
 
+			/*
+			flags.FreeAirship = true;
+			flags.ExperimentalFloorGeneration = true;
+			flags.DungeonEncounterRate = 0;
+			*/
 			if (flags.ExperimentalFloorGeneration)
 			{
 				MapRequirements reqs = new MapRequirements
@@ -107,13 +112,41 @@ namespace FF1Lib
 				};
 
 				MapGenerator generator = new MapGenerator();
-				MapGeneratorStrategy strategy = flags.WaterfallEngine ? MapGeneratorStrategy.WaterfallClone : MapGeneratorStrategy.Cellular;
+				MapGeneratorStrategy strategy = MapGeneratorStrategy.WaterfallClone;
 				CompleteMap waterfall = generator.Generate(rng, strategy, reqs);
 
 				// Should add more into the reqs so that this can be done inside the generator.
 				teleporters.Waterfall.SetEntrance(waterfall.Entrance);
 				overworldMap.PutOverworldTeleport(OverworldTeleportIndex.Waterfall, teleporters.Waterfall);
 				maps[(int)MapId.Waterfall] = waterfall.Map;
+
+				reqs = new MapRequirements
+				{
+					MapId = MapId.EarthCaveB1,
+					Rom = this,
+				};
+
+				strategy = MapGeneratorStrategy.Square;
+				var earthB1 = generator.Generate(rng, strategy, reqs);
+
+				// Should add more into the reqs so that this can be done inside the generator.
+				teleporters.EarthCave1.SetEntrance(earthB1.Entrance);
+				overworldMap.PutOverworldTeleport(OverworldTeleportIndex.EarthCave1, teleporters.EarthCave1);
+				maps[(int)MapId.EarthCaveB1] = earthB1.Map;
+
+				reqs = new MapRequirements
+				{
+					MapId = MapId.EarthCaveB2,
+					Rom = this,
+				};
+
+				strategy = MapGeneratorStrategy.Square;
+				var earthB2 = generator.Generate(rng, strategy, reqs);
+
+				// Should add more into the reqs so that this can be done inside the generator.
+				teleporters.EarthCave2.SetEntrance(earthB2.Entrance);
+				overworldMap.PutStandardTeleport(TeleportIndex.EarthCave2, teleporters.EarthCave2, OverworldTeleportIndex.EarthCave1);
+				maps[(int)MapId.EarthCaveB2] = earthB2.Map;
 			}
 
 			if (flags.ModernBattlefield)
@@ -726,7 +759,7 @@ namespace FF1Lib
 
 			// Overwrite free space with NOPs so its easier to find
 			PutInBank(0x0E, 0x9C54, Enumerable.Repeat((byte)0xEA, 0x49A).ToArray());
-			
+
 		}
 
 		public override bool Validate()

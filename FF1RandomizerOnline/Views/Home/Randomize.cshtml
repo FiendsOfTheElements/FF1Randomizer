@@ -197,7 +197,6 @@
 						<div title="Ensures ToFR is buried instead of forced to ground level."><input :disabled="!Entrances || !Floors" class="indent" v-model="AllowDeepCastles" type="checkbox" asp-for="Flags.AllowDeepCastles" /> <label :style="(!Entrances || !Floors) ? { color: 'grey'} : {}" asp-for="Flags.AllowDeepCastles">Deep ToFR <b v-if="AllowDeepCastles" title="It is now possible for the entirety of ToFR to begin several floors down a massive dungeon. Be warned!" style="color:orange">⚠</b></label></div>
 						<div class="checkbox-cell" title="Add Town Entrances to the Entrance Shuffle."><input v-model="Towns" :disabled="!NPCItems "type="checkbox" asp-for="Flags.Towns" /> <label :style="!NPCItems ? { color: 'grey'} : {}" asp-for="Flags.Towns"></label></div>
 						<div class="checkbox-cell" title="Experimental Procedural Floor Generation"><input v-model="ExperimentalFloorGeneration" type="checkbox" asp-for="Flags.ExperimentalFloorGeneration" /> <label asp-for="Flags.ExperimentalFloorGeneration">Experimental Procedural Generation</label></div>
-						<div class="checkbox-cell" title="An Alternate new engine for waterfall."><input class="indent" v-model="WaterfallEngine" type="checkbox" asp-for="Flags.WaterfallEngine" /> <label asp-for="Flags.WaterfallEngine">Alternate Waterfall Engine</label></div>
 					</div>
 				</div>
 				<div class="col-xs-4" style="border-left: 1px solid black;">

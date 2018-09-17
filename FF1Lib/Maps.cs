@@ -85,15 +85,24 @@ namespace FF1Lib
 		Ladder = 0x09,
 		LadderHole = 0x0A,
 		WarpUp = 0x18,
+		EarthCaveInside = 0x2E,
 		InsideWall = 0x30,
 		FloorSafe = 0x31,
+		HallwayLeft = 0x32,
+		HallwayRight = 0x33,
+		WallLeft = 0x34,
+		WallRight = 0x35,
 		Impassable = 0x3D,
 		Door = 0x36,
+		EarthCaveOOB = 0x38,
 		Doorway = 0x3A,
 		Lava = 0x39,
+		EarthCaveRockA = 0x3E,
+		EarthCaveRockB = 0x3F,
+		MarshCaveOOB = 0x3F,
+		EarthCaveRandomEncounters = 0x41,
 		WaterfallInside = 0x46,
 		WaterfallRandomEncounters = 0x49
-
 	}
 
 	public enum WarMECHMode
