@@ -360,16 +360,15 @@ namespace FF1Lib.Procgen
 		{
 			int[,] dist = new int[Map.RowCount, Map.RowLength];
 			dist[start.x, start.y] = 1;
-			map.Flood(start, ((int x, int y) coord, byte t) =>
+			map.Flood(start, element =>
 			{
-				Tile tile = (Tile)t;
-				if (live.Contains(tile))
+				if (live.Contains(element.Tile))
 				{
 					int minDistance = Map.RowCount * Map.RowLength + 1;
-					int upDistance = dist[coord.x, (Map.RowCount + coord.y - 1) % Map.RowCount];
-					int downDistance = dist[coord.x, (Map.RowCount + coord.y + 1) % Map.RowCount];
-					int rightDistance = dist[(Map.RowLength + coord.x + 1) % Map.RowLength, coord.y];
-					int leftDistance = dist[(Map.RowLength + coord.x - 1) % Map.RowLength, coord.y];
+					int upDistance = dist[element.X, (Map.RowCount + element.Y - 1) % Map.RowCount];
+					int downDistance = dist[element.X, (Map.RowCount + element.Y + 1) % Map.RowCount];
+					int rightDistance = dist[(Map.RowLength + element.X + 1) % Map.RowLength, element.Y];
+					int leftDistance = dist[(Map.RowLength + element.X - 1) % Map.RowLength, element.Y];
 					bool updated = false;
 
 					if (upDistance > 0 && upDistance < minDistance)
@@ -394,7 +393,7 @@ namespace FF1Lib.Procgen
 					}
 					if (updated)
 					{
-						dist[coord.x, coord.y] = minDistance;
+						dist[element.X, element.Y] = minDistance;
 					}
 					return true;
 				}
@@ -409,15 +408,14 @@ namespace FF1Lib.Procgen
 		private Dictionary<Tile, bool> FloodFillReachable(Map map, (int x, int y) start, IEnumerable<Tile> live, IEnumerable<Tile> targets)
 		{
 			Dictionary<Tile, bool> results = targets.ToDictionary(tile => tile, tile => false);
-			map.Flood(start, ((int x, int y) coord, byte t) =>
+			map.Flood(start, element =>
 			{
-				Tile tile = (Tile)t;
-				if (targets.Contains(tile))
+				if (targets.Contains(element.Tile))
 				{
-					results[tile] = true;
+					results[element.Tile] = true;
 					return true;
 				}
-				if (live.Contains(tile))
+				if (live.Contains(element.Tile))
 				{
 					return true;
 				}

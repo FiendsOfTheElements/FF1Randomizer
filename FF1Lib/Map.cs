@@ -212,6 +212,32 @@ namespace FF1Lib
 			return compressedData.ToArray();
 		}
 
+		//Return a random map element
+		public MapElement GetRandomElement(MT19337 rng)
+		{
+			var newX = rng.Between(0, Map.RowLength - 1);
+			var newY = rng.Between(0, Map.RowCount - 1);
+			return new MapElement(this, newX, newY, _map[newY, newX]);
+		}
+
+		//Return a random element such that its value equals target
+		public MapElement GetRandomElement(MT19337 rng, byte target)
+		{
+			MapElement element = null;
+			do
+			{
+				element = GetRandomElement(rng);
+			} while (element.Value != target);
+			return element;
+		}
+
+		//Return a random element such that its value equals target's byte value
+		public MapElement GetRandomElement(MT19337 rng, Tile target)
+		{
+			byte tempTarget = (byte)target;
+			return GetRandomElement(rng, tempTarget);
+		}
+
 		/// <summary>
 		/// Enumerates the MapElements in this Map. Writing to a MapElement's Value will set the value in this Map.
 		/// </summary>
@@ -261,6 +287,5 @@ namespace FF1Lib
 			X = x;
 			Y = y;
 		}
-
 	}
 }
