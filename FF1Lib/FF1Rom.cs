@@ -466,7 +466,7 @@ namespace FF1Lib
 				EnableCanalBridge();
 			}
 
-			if (flags.NoDanMode)
+			if (flags.NoDanMode && false)
 			{
 				NoDanMode();
 			}
