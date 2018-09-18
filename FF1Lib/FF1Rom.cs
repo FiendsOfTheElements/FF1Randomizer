@@ -1,13 +1,12 @@
-﻿using System;
+﻿using FF1Lib.Procgen;
+using RomUtilities;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-using RomUtilities;
-using System.Collections;
-using System.IO;
-using System.Security.Cryptography;
-using FF1Lib.Procgen;
 
 namespace FF1Lib
 {

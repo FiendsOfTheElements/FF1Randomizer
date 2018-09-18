@@ -3,16 +3,15 @@ using RomUtilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace FF1Lib.procgen
 {
 	class RectilinearGenerator : IMapGeneratorEngine
 	{
-		private byte SentinelDead = 0xFE;
-		private byte SentinelAlive = 0xFF;
+		private readonly byte SentinelDead = 0xFE;
+		private readonly byte SentinelAlive = 0xFF;
 
-		private int LocalMax = 48;
+		private readonly int LocalMax = 48;
 
 		public CompleteMap Generate(MT19337 rng, MapRequirements reqs)
 		{
@@ -25,9 +24,7 @@ namespace FF1Lib.procgen
 					Requirements = reqs,
 				};
 
-				PlaceRoomsAndChests(rng, complete, reqs);
-
-				int hallwayCount = rng.Between(18, 20) * 2;
+				int hallwayCount = rng.Between(24, 30);
 				for (int i = 0; i < hallwayCount; ++i)
 				{
 					var dimensions = (rng.Between(2, 8) * 2 + 1, rng.Between(2, 5) * 2 + 1);
@@ -51,7 +48,18 @@ namespace FF1Lib.procgen
 					}
 				}
 
-				var locations = complete.Map.Where(element => element.Tile == reqs.Floor && element.Surrounding().All(el => el.Tile == reqs.Floor)).ToList();
+				var locations = complete.Map.Where(element => element.Tile == reqs.Floor).ToList();
+				Dictionary<Tile, List<MapElement>> results = null;
+
+				var start = locations.SpliceRandom(rng);
+				results = FloodFill(complete.Map, start.Coord, new List<Tile> { reqs.Floor, Tile.WarpUp, Tile.Doorway });
+				if (results[reqs.Floor].Count() < 500)
+				{
+					continue;
+				}
+
+				// All these locations are reachable so we don't need to sanity that we can reach these portals.
+				locations = results[reqs.Floor].Where(element => element.Surrounding().All(el => el.Tile == reqs.Floor)).ToList();
 				MapElement entrance = null;
 				reqs.Portals.ToList().ForEach(portal =>
 				{
@@ -65,9 +73,13 @@ namespace FF1Lib.procgen
 					}
 				});
 
-				var results = FloodFill(complete.Map, entrance.Coord, new List<Tile> { reqs.Floor, Tile.WarpUp, Tile.Doorway });
+				// Place rooms once we have a viable floorplan, and then we'll check again after.
+				PlaceRoomsAndChests(rng, complete, results[reqs.Floor].Select(el => el.Up()).Where(el => el.Tile == Tile.InsideWall).ToList(), reqs);
+
+				results = FloodFill(complete.Map, entrance.Coord, new List<Tile> { reqs.Floor, Tile.WarpUp, Tile.Doorway });
 				if (results[reqs.Floor].Count() < 500 || results[Tile.Doorway].Count() < 3)
 				{
+					Console.WriteLine("Failing due to invalid room placement.");
 					continue;
 				}
 
@@ -84,106 +96,80 @@ namespace FF1Lib.procgen
 			throw new InsaneException("Couldn't finish room in 500 tries.");
 		}
 
-		private void PlaceRoomsAndChests(MT19337 rng, CompleteMap complete, MapRequirements reqs)
+		private byte[,] CreateEmptyRoom((int w, int h) dimensions, int doorX)
+		{
+			if (dimensions.w < 3 || dimensions.h < 3)
+				throw new ArgumentOutOfRangeException();
+
+
+			byte[,] room = new byte[dimensions.h, dimensions.w];
+			for (int y = 1; y < dimensions.h - 2; ++y)
+			{
+				for (int x = 1; x < dimensions.w - 1; ++x)
+				{
+					room[y, x] = (byte)Tile.RoomCenter;
+				}
+			}
+			for (int x = 1; x < dimensions.w - 1; ++x)
+			{
+				room[0, x] = (byte)Tile.RoomBackCenter;
+				room[dimensions.h - 2, x] = (byte)Tile.RoomFrontCenter;
+				room[dimensions.h - 1, x] = (byte)Tile.InsideWall;
+			}
+			for (int y = 1; y < dimensions.h - 1; ++y)
+			{
+				room[y, 0] = (byte)Tile.RoomLeft;
+				room[y, dimensions.w - 1] = (byte)Tile.RoomRight;
+			}
+			room[0, 0] = (byte)Tile.RoomBackLeft;
+			room[0, dimensions.w - 1] = (byte)Tile.RoomBackRight;
+			room[dimensions.h - 2, 0] = (byte)Tile.RoomFrontLeft;
+			room[dimensions.h - 2, dimensions.w - 1] = (byte)Tile.RoomFrontRight;
+			room[dimensions.h - 1, 0] = (byte)Tile.InsideWall;
+			room[dimensions.h - 1, dimensions.w - 1] = (byte)Tile.InsideWall;
+
+			room[dimensions.h - 1, doorX] = (byte)Tile.Door;
+
+			return room;
+		}
+
+		private void PlaceRoomsAndChests(MT19337 rng, CompleteMap complete, List<MapElement> possibilties, MapRequirements reqs)
 		{
 			int sanity = 0;
 			while (++sanity < 100)
 			{
 				var rooms = complete.Map;
 				int roomCount = rng.Between(2, 4);
-				(int, int)[] positions = { (rng.Between(0, 8) * 2, rng.Between(0, 6) * 2), (rng.Between(0, 8) * 2, rng.Between(8, 12) * 2),
-										   (rng.Between(16, 24) * 2, rng.Between(0, 12) * 2) };
-				for (int i = 0; i < positions.Length; ++i)
-				{
-					var dimensions = (rng.Between(4, 6) * 2 + 1, rng.Between(2, 3) * 2);
-					rooms.Fill(positions[i], dimensions, SentinelDead);
-				}
 
-				var clone = rooms.Clone();
-				foreach (var el in clone.Where(el => el.Value == SentinelDead))
+				var positions = new List<MapElement>();
+				var potentialEntrances = possibilties.Where(el => el.Left().Tile == Tile.InsideWall && el.Right().Tile == Tile.InsideWall
+					&& el.Down().Tile == reqs.Floor && el.Tile == Tile.InsideWall).ToList();
+				while (potentialEntrances.Any())
 				{
-					var roomTile = rooms[el.Coord];
-					if (el.Left().Value == SentinelAlive)
+					var potential = potentialEntrances.SpliceRandom(rng);
+					if (!positions.Any(pos => Math.Abs(pos.X - potential.X) < 12 || Math.Abs(pos.Y - potential.Y) < 12))
 					{
-						if (el.Up().Value == SentinelAlive)
-						{
-							roomTile.Tile = Tile.RoomBackLeft;
-						}
-						else if (el.Down().Value == SentinelAlive)
-						{
-							roomTile.Tile = Tile.RoomFrontLeft;
-							roomTile.Down().Tile = Tile.InsideWall;
-						}
-						else
-						{
-							roomTile.Tile = Tile.RoomLeft;
-						}
-					}
-					else if (el.Right().Value == SentinelAlive)
-					{
-						if (el.Up().Value == SentinelAlive)
-						{
-							roomTile.Tile = Tile.RoomBackRight;
-						}
-						else if (el.Down().Value == SentinelAlive)
-						{
-							roomTile.Tile = Tile.RoomFrontRight;
-							roomTile.Down().Tile = Tile.InsideWall;
-						}
-						else
-						{
-							roomTile.Tile = Tile.RoomRight;
-						}
-					}
-					else if (el.Up().Value == SentinelAlive)
-					{
-						roomTile.Tile = Tile.RoomBackCenter;
-					}
-					else if (el.Down().Value == SentinelAlive)
-					{
-						roomTile.Tile = Tile.RoomFrontCenter;
-						roomTile.Down().Tile = Tile.InsideWall;
-					}
-					else
-					{
-						roomTile.Tile = Tile.RoomCenter;
+						positions.Add(potential);
 					}
 				}
 
-				// Carve out a door to all the accessible room tiles.
-				var roomTiles = rooms.Where(el => el.Tile == Tile.RoomCenter);
-				var doorways = new List<MapElement> { };
-
-				foreach (var innerTile in roomTiles)
+				for (int i = 0; i < 4 && i < positions.Count(); ++i)
 				{
-					var results = FloodFill(rooms, innerTile.Coord, new List<Tile> { Tile.RoomCenter, Tile.RoomFrontCenter, Tile.Door });
-					if (results[Tile.Door].Any())
-					{
-						continue;
-					}
+					var dimensions = (w: rng.Between(4, 6) * 2 + 1, h: rng.Between(2, 3) * 2 + 1);
+					int doorX = rng.Between(0, (dimensions.w - 2) / 2) * 2 + 1;
+					byte[,] room = CreateEmptyRoom(dimensions, doorX);
 
-					var potentialDoorways = results[Tile.RoomFrontCenter].Where(tile => tile.X % 2 == 1).ToList();
-					if (potentialDoorways.Any())
-					{
-						var entryway = potentialDoorways.SpliceRandom(rng);
-						var door = entryway.Down();
-						var doorway = door.Down();
+					var roomTarget = (positions[i].X - doorX, positions[i].Y - dimensions.h + 1);
+					rooms.Put(roomTarget, room);
+				}
 
-						System.Diagnostics.Debug.Assert(door.Tile == Tile.InsideWall);
-
-						if (doorway.Value != SentinelAlive)
-						{
-							continue;
-						}
-
-						door.Tile = Tile.Door;
-						doorway.Tile = Tile.Doorway;
-						doorways.Add(doorway);
-					}
+				foreach (var door in rooms.Where(el => el.Tile == Tile.Door))
+				{
+					door.Down().Tile = Tile.Doorway;
 				}
 
 				// Place chests now
-				var chestLocations = roomTiles.Where(el => el.Up().Tile == Tile.RoomBackCenter).ToList();
+				var chestLocations = rooms.Where(el => el.Up().Tile == Tile.RoomBackCenter).ToList();
 				var trapLocations = new List<MapElement>();
 				if (reqs.Objects.Count() > chestLocations.Count())
 				{

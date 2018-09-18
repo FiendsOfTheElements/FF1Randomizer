@@ -1,11 +1,9 @@
-﻿using System;
+﻿using FF1Lib.procgen;
+using RomUtilities;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FF1Lib.procgen;
-using RomUtilities;
 
 namespace FF1Lib.Procgen
 {

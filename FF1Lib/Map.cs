@@ -16,8 +16,8 @@ namespace FF1Lib
 
 		public byte this[int y, int x]
 		{
-			get => _map[y, x];
-			set => _map[y, x] = value;
+			get => _map[(RowCount + y) % RowCount, (RowLength + x) % RowLength];
+			set => _map[(RowCount + y) % RowCount, (RowLength + x) % RowLength] = value;
 		}
 
 		// The coordinate version of the accessor has the params in the normal order.
