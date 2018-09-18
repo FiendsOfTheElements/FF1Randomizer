@@ -197,7 +197,7 @@ namespace FF1Lib.procgen
 					trapLocations.Add(location.Down());
 				}
 
-				trapLocations.AddRange(roomTiles.Where(el => el.Down().Tile == Tile.Door));
+				trapLocations.AddRange(rooms.Where(el => el.Down().Tile == Tile.Door));
 				foreach (byte trap in reqs.Traps)
 				{
 					var location = trapLocations.SpliceRandom(rng);
