@@ -14,12 +14,12 @@ namespace Sandbox
 		{
 			MapRequirements reqs = new MapRequirements
 			{
-				MapId = MapId.Waterfall,
+				MapId = MapId.EarthCaveB1,
 				Rom = rom,
 			};
 
 			MapGenerator generator = new MapGenerator();
-			MapGeneratorStrategy strategy = MapGeneratorStrategy.WaterfallClone;
+			MapGeneratorStrategy strategy = MapGeneratorStrategy.BSPTree;
 
 
 			while (true)
@@ -28,8 +28,9 @@ namespace Sandbox
 				csharpRNG.GetBytes(seed);
 				MT19337 rng = new MT19337(BitConverter.ToUInt32(seed, 0));
 				CompleteMap waterfall = generator.Generate(rng, strategy, reqs);
-				Console.WriteLine("Press a key to generate another one (CTRL-C to quit)...");
-				Console.ReadLine();
+				Console.WriteLine("Press a key to generate another one (X to quit)...");
+				if (Console.ReadKey().Key == ConsoleKey.X)
+					break;
 			}
 		}
 	}
