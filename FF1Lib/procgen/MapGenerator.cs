@@ -34,18 +34,24 @@ namespace FF1Lib.Procgen
 		Cellular,
 		WaterfallClone,
 		Square,
+		BSPTree
 	}
 
 	public interface IMapGeneratorEngine
 	{
+		/// <summary>
+		/// Makes a map! Returns null if generation failed for some reason.
+		/// </summary>
 		CompleteMap Generate(MT19337 rng, MapRequirements reqs);
 	}
 
 	public class MapGenerator
 	{
+		private const int MAX_MAP_ITERATIONS = 50;
+
 		public CompleteMap Generate(MT19337 rng, MapGeneratorStrategy strategy, MapRequirements reqs)
 		{
-			CompleteMap map;
+			CompleteMap map = null;
 
 			if (reqs.MapId == MapId.Waterfall)
 			{
@@ -69,7 +75,17 @@ namespace FF1Lib.Procgen
 				reqs.Portals = new byte[] { (byte)Tile.WarpUp };
 
 				IMapGeneratorEngine engine = GetEngine(strategy);
-				map = engine.Generate(rng, reqs);
+				int iterations = 0;
+				while (iterations < MAX_MAP_ITERATIONS && map == null)
+				{
+					Console.WriteLine($"Generating {reqs.MapId} - iteration #{iterations}");
+					map = engine.Generate(rng, reqs);
+				}
+
+				if (map == null)
+				{
+					throw new InsaneException($"Couldn't generate map using {strategy} after maximum {iterations} iterations.");
+				}
 
 				// add the reqs we used
 				map.Requirements = reqs;
@@ -141,6 +157,8 @@ namespace FF1Lib.Procgen
 					return new WaterfallEngine();
 				case MapGeneratorStrategy.Square:
 					return new RectilinearGenerator();
+				case MapGeneratorStrategy.BSPTree:
+					return new BSPTreeEngine();
 				default:
 					return null;
 			}
