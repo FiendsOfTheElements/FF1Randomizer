@@ -479,5 +479,6 @@ namespace FF1Lib
 				Put(MapPointerOffset + pointers[i], data[i]);
 			}
 		}
+
 	}
 }

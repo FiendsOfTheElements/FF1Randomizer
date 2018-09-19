@@ -200,6 +200,11 @@ namespace FF1Lib
 						overworldMap.ShuffleEntrancesAndFloors(rng, flags);
 					}
 
+					if (flags.ShuffleObjectiveNPCs)
+					{
+						overworldMap.ShuffleObjectiveNPCs(rng);
+					}
+
 					var incentivesData = new IncentiveData(rng, flags, overworldMap);
 
 					if (flags.Shops)

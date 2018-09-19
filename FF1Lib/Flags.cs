@@ -187,6 +187,8 @@ namespace FF1Lib
 		public bool EarlySage { get; set; }
 		[FlagString(Character = ITEM_REQUIREMENTS, FlagBit = 4)]
 		public bool CrownlessOrdeals { get; set; }
+		[FlagString(Character = ITEM_REQUIREMENTS, FlagBit = 8)]
+		public bool ShuffleObjectiveNPCs { get; set; }
 		[FlagString(Character = ITEM_REQUIREMENTS, FlagBit = 32)]
 		public bool OnlyRequireGameIsBeatable { get; set; }
 

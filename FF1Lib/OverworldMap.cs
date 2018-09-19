@@ -21,6 +21,7 @@ namespace FF1Lib
 		private Dictionary<CanoeableRegion, List<OverworldTeleportIndex>> _canoeableNodes;
 		private Dictionary<MapLocation, List<MapChange>> MapLocationRequirements;
 		private Dictionary<MapLocation, Tuple<MapLocation, AccessRequirement>> FloorLocationRequirements;
+
 		private TeleportShuffle _teleporters;
 
 		private enum WalkableRegion
@@ -153,6 +154,13 @@ namespace FF1Lib
 			{
 				floorLocationRequirements[MapLocation.CastleOrdealsMaze] = new Tuple<MapLocation, AccessRequirement>(MapLocation.CastleOrdeals1, AccessRequirement.None);
 			}
+
+			ObjectiveNPCs = new Dictionary<ObjectId, MapLocation>
+			{
+				{ ObjectId.Bahamut, MapLocation.BahamutCave2 },
+				{ ObjectId.Unne, MapLocation.Melmond },
+				{ ObjectId.ElfDoc, MapLocation.ElflandCastle },
+			};
 
 			StartingPotentialAccess = AccessRequirement.Key | AccessRequirement.Tnt | AccessRequirement.Adamant;
 			MapLocationRequirements = mapLocationRequirements;
@@ -625,6 +633,7 @@ namespace FF1Lib
 
 		public Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> FullLocationRequirements;
 		public Dictionary<MapLocation, OverworldTeleportIndex> OverriddenOverworldLocations;
+		public Dictionary<ObjectId, MapLocation> ObjectiveNPCs;
 		public AccessRequirement StartingPotentialAccess;
 
 		public const byte GrassTile = 0x00;
@@ -994,6 +1003,41 @@ namespace FF1Lib
 
 			if (outputOffset > 0x4000)
 				throw new InvalidOperationException("Modified map was too large to recompress and fit into a single bank.");
+		}
+
+		public void ShuffleObjectiveNPCs(MT19337 rng)
+		{
+			List<MapLocation> locations = new List<MapLocation> { MapLocation.BahamutCave2, MapLocation.Melmond, MapLocation.ElflandCastle };
+
+			MapLocation bahamutLocation = locations.SpliceRandom(rng);
+			ObjectiveNPCs[ObjectId.Bahamut] = bahamutLocation;
+			if (bahamutLocation == MapLocation.Melmond)
+			{
+				_rom.SetNpc(MapId.Melmond, 0, ObjectId.Bahamut, 0x1B, 0x0C, false, true);
+			} else if (bahamutLocation == MapLocation.ElflandCastle)
+			{
+				_rom.SetNpc(MapId.ElflandCastle, 0, ObjectId.Bahamut, 0x06, 0x07, true, true);
+			}
+
+			MapLocation unneLocation = locations.SpliceRandom(rng);
+			ObjectiveNPCs[ObjectId.Unne] = unneLocation;
+			if (unneLocation == MapLocation.BahamutCave2)
+			{
+				_rom.SetNpc(MapId.BahamutsRoomB2, 0, ObjectId.Unne, 0x14, 0x07, true, false);
+			} else if (unneLocation == MapLocation.ElflandCastle)
+			{
+				_rom.SetNpc(MapId.ElflandCastle, 0, ObjectId.Unne, 0x10, 0x0B, false, false);
+			}
+
+			MapLocation elfDoctorLocation = locations.Single();
+			ObjectiveNPCs[ObjectId.ElfDoc] = elfDoctorLocation;
+			if (elfDoctorLocation == MapLocation.BahamutCave2)
+			{
+				_rom.SetNpc(MapId.BahamutsRoomB2, 0, ObjectId.ElfDoc, 0x14, 0x09, true, true);
+			} else if (elfDoctorLocation == MapLocation.Melmond)
+			{
+				_rom.SetNpc(MapId.Melmond, 0, ObjectId.ElfDoc, 0x1b, 0x0C, false, false);
+			}
 		}
 	}
 }
