@@ -289,6 +289,12 @@ namespace FF1Lib
 				EnableMelmondGhetto();
 			}
 
+			// After unrunnable shuffle and before formation shuffle. Perfect!
+			if (flags.WarMECHMode != WarMECHMode.Vanilla)
+			{
+				WarMECHNpc(flags.WarMECHMode, rng, maps);
+			}
+
 			if (flags.FormationShuffleMode != FormationShuffleModeEnum.None)
 			{
 				ShuffleEnemyFormations(rng, flags.FormationShuffleMode);
@@ -435,12 +441,6 @@ namespace FF1Lib
 			ExpGoldBoost(flags.ExpBonus, flags.ExpMultiplier);
 			ScalePrices(flags, itemText, rng, flags.ClampMinimumPriceScale, shopItemLocation);
 			ScaleEncounterRate(flags.EncounterRate / 30.0, flags.DungeonEncounterRate / 30.0);
-
-
-			if (flags.WarMECHMode != WarMECHMode.Vanilla)
-			{
-				WarMECHNpc(flags.WarMECHMode, rng, maps);
-			}
 
 			overworldMap.ApplyMapEdits();
 			WriteMaps(maps);
