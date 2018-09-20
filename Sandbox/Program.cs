@@ -1,6 +1,11 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Security.Cryptography;
 using FF1Lib;
+using FF1Lib.Procgen;
+using RomUtilities;
 
 namespace Sandbox
 {
@@ -13,18 +18,10 @@ namespace Sandbox
         {
 			var filename = "ff1.nes";
 			var fs = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read);
-			var rom = new FF1Rom(fs);
-
 
 			rom = new FF1Rom(fs);
 			csharpRNG = RNGCryptoServiceProvider.Create();
-
-	        // asm
-	        //rom.UpgradeToMMC3();
-	        //rom.DemoPatchAssembler();
-
-			// mapgen
-	        //TestMapGen.Run(rom, csharpRNG);
+	        TestMapGen.Run(rom, csharpRNG);
         }
 	}
 }
