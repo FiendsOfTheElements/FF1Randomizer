@@ -53,6 +53,8 @@
 						<CheckBox x:Name="EnemyFormationsUnrunnableCheckBox" IsChecked="{Binding Flags.EnemyFormationsUnrunnable}" Content="Enemy Unrunnable Formations" ToolTip="Enemy Unrunnable Formations"/>
 						<CheckBox x:Name="EnemyFormationsSurpriseCheckBox" IsChecked="{Binding Flags.EnemyFormationsSurprise}" Content="Enemy Surprise Bonus" ToolTip="Enemy Surprise Bonus"/>
 						<CheckBox x:Name="EnemyFormationsFrequencyCheckBox" IsChecked="{Binding Flags.EnemyFormationsFrequency}" Content="Enemy Formations Frequency" ToolTip="Enemy Formations Frequency"/>
+						<CheckBox x:Name="EnemyTrapTilesCheckBox" IsChecked="{Binding Flags.EnemyTrapTiles}" Content="Enemy Forced Encounter Tiles" ToolTip="Shuffle trap tile battles amongst one another."/>
+						<CheckBox x:Name="RandomTrapFormationsCheckBox" IsChecked="{Binding Flags.RandomTrapFormations}" IsEnabled="{Binding Flags.EnemyTrapTiles}" Content="Use Random Formations" ToolTip="Trap battles are instead selected at random from formation 2 battles." Margin="30,5,0,0"/>
 					</StackPanel>
 				</Grid>
 			</TabItem>
@@ -122,6 +124,8 @@
 					<StackPanel Orientation="Vertical" Grid.Column="2">
 						<Label Margin="5,5,0,0" FontWeight="Bold">Extra Challenges</Label>
 						<CheckBox x:Name="TransformFinalFormationCheckBox" IsChecked="{Binding Flags.TransformFinalFormation}" Content="Alternate Final Boss" ToolTip="Replace the Final Battle against Chaos with a different challenge."/>
+						<CheckBox x:Name="ShortenToFRCheckBox" IsChecked="{Binding Flags.ShortToFR}" Content="Shorten ToFR" ToolTip="Squash ToFR down into its final floor with all treasures."/>
+						<CheckBox x:Name="PreserveFiendRefightsCheckBox" IsEnabled="{Binding Flags.ShortToFR}" IsChecked="{Binding Flags.PreserveFiendRefights}" Content="Preserve Fiend Tiles" ToolTip="Add four fiend tiles to the shortened ToFR."/>
 					</StackPanel>
 				</Grid>
 			</TabItem>
@@ -130,16 +134,27 @@
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition/>
 						<ColumnDefinition/>
+						<ColumnDefinition/>
 					</Grid.ColumnDefinitions>
 					<StackPanel Grid.Column="0">
-						<CheckBox x:Name="OrdealsPillarsCheckBox" IsChecked="{Binding Flags.OrdealsPillars}" Content="Castle Ordeals" ToolTip="Teleporters in Castle Ordeals are shuffled."/>
-						<CheckBox x:Name="SkyCastle4FTeleportersCheckBox" IsChecked="{Binding Flags.SkyCastle4FTeleporters}" Content="Sky Castle 4F Teleporters" ToolTip="Sky Castle 4F Teleporters"/>
+						<Label Margin="5,5,0,0" FontWeight="Bold">Entrance Shuffle</Label>
+						<CheckBox x:Name="EntrancesCheckBox" IsChecked="{Binding Flags.Entrances}" Content="Entrances" ToolTip="Overworld entrances now lead to random dungeons."/>
+						<CheckBox x:Name="FloorsCheckBox" IsEnabled="{Binding Flags.Entrances}" IsChecked="{Binding Flags.Floors}" Content="Floors" ToolTip="All rooms are shuffled up into new sequences, intermixed across the entrances." Margin="30,5,0,0"/>
+						<CheckBox x:Name="DeepToFRCheckBox" IsEnabled="{Binding Flags.DeepCastlesPossible}" IsChecked="{Binding Flags.AllowDeepCastles}" Content="Deep ToFR" ToolTip="Instead of being at ground level, the Temple of Fiends can now be at the bottom of a dungeon." Margin="30,5,0,0"/>
 						<Label Margin="5,5,0,0"/>
-						<CheckBox x:Name="TitansTroveCheckBox" IsChecked="{Binding Flags.TitansTrove}" Content="Titan's Trove" ToolTip="Titan's Trove"/>
-						<Label Margin="5,5,0,0"/>
-						<CheckBox x:Name="MapOpenProgressionCheckBox" IsChecked="{Binding Flags.MapOpenProgression}" Content="Open Progression" ToolTip="Open Progression"/>
+						<CheckBox x:Name="TownsCheckBox" IsChecked="{Binding Flags.Towns}" Content="Towns" ToolTip="Add town entrances into the entrance shuffle."/>
 					</StackPanel>
 					<StackPanel Grid.Column="1">
+						<Label Margin="5,5,0,0" FontWeight="Bold">Map Edits</Label>
+						<CheckBox x:Name="OrdealsPillarsCheckBox" IsChecked="{Binding Flags.OrdealsPillars}" Content="Castle Ordeals" ToolTip="Teleporters in Castle Ordeals are shuffled."/>
+						<CheckBox x:Name="SkyCastle4FTeleportersCheckBox" IsChecked="{Binding Flags.SkyCastle4FTeleporters}" Content="Sky Castle 4F Teleporters" ToolTip="Sky Castle 4F Teleporters"/>
+						<CheckBox x:Name="TitansTroveCheckBox" IsChecked="{Binding Flags.TitansTrove}" Content="Titan's Trove" ToolTip="Titan's Trove"/>
+						<CheckBox x:Name="ConfusedOldMenCheckBox" IsChecked="{Binding Flags.ConfusedOldMen}" Content="Confused Old Men" ToolTip="Yoga in the park!"/>
+						<Label Margin="5,5,0,0"/>
+						<CheckBox x:Name="MapOpenProgressionCheckBox" IsChecked="{Binding Flags.MapOpenProgression}" Content="Open Progression" ToolTip="Open Progression"/>
+						<CheckBox x:Name="MapExtendedOpenProgressionCheckBox" IsEnabled="{Binding Flags.MapOpenProgression}" IsChecked="{Binding Flags.MapOpenProgressionExtended}" Content="Extended Open Progression" ToolTip="Extended Open Progression"/>
+					</StackPanel>
+					<StackPanel Grid.Column="2">
 						<Label Margin="5,5,0,0" FontWeight="Bold">WarMECH Mode:</Label>
 						<ComboBox x:Name="WarMECHModeComboBox" SelectedValue="{Binding Flags.WarMECHMode}" Width="150" HorizontalAlignment="Left" Margin="10,0,0,0" ToolTip="How do you like your WarMECH?" SelectedValuePath="Tag">
 							<ComboBoxItem Tag="Vanilla">Vanilla</ComboBoxItem>
@@ -151,22 +166,63 @@
 			</TabItem>
 			<TabItem Header="Scale">
 				<Grid>
-					<Label x:Name="PricesLabel" Content="Prices:" Margin="10,10,0,0" ToolTip="Prices of items, weapons, armor, and magic are all scaled, as well as your starting gold and gold chests."/>
-					<Label x:Name="PriceScaleFactorLabel" Margin="91,10,0,0"/>
-					<Slider x:Name="PriceScaleFactorSlider" Value="{Binding Flags.PriceScaleFactor}" HorizontalAlignment="Left" Margin="210,10,0,0" VerticalAlignment="Top" Minimum="1" Maximum="5" Width="100" TickPlacement="BottomRight" TickFrequency="0.5" SmallChange="0.1" LargeChange="0.5" ToolTip="For each value to be scaled, a random exponent is selected between -1 and +1.  The value is scaled by the scale factor raised to that power." ValueChanged="PriceScaleFactorSlider_ValueChanged"/>
-
-					<Label x:Name="EnemyStatsLabel" Content="Enemy Stats:" HorizontalAlignment="Left" Margin="10,40,0,0" VerticalAlignment="Top" ToolTip="Enemy stats are scaled: HP, attack power, # of hits, accuracy, critical %, defense, evade, and magic defense."/>
-					<Label x:Name="EnemyScaleFactorLabel" Content="" HorizontalAlignment="Left" Margin="91,40,0,0" VerticalAlignment="Top"/>
-					<Slider x:Name="EnemyScaleFactorSlider" Value="{Binding Flags.EnemyScaleFactor}" HorizontalAlignment="Left" Margin="210,40,0,0" VerticalAlignment="Top" Minimum="1" Maximum="5" Width="100" TickPlacement="BottomRight" TickFrequency="0.5" ToolTip="For each value to be scaled, a random exponent is selected between -1 and +1.  The value is scaled by the scale factor raised to that power." ValueChanged="EnemyScaleFactorSlider_ValueChanged"/>
-
-					<Label x:Name="ExpGoldBoostLabel" Content="Exp/Gold Boost:" HorizontalAlignment="Left" Margin="10,85,0,0" VerticalAlignment="Top"/>
-					<Label x:Name="ExpScaleFactorLabel" Content="" HorizontalAlignment="Left" Margin="10,115,0,0" VerticalAlignment="Top"/>
-					<Slider x:Name="ExpMultiplierSlider" Value="{Binding Flags.ExpMultiplier}" HorizontalAlignment="Left" Margin="210,85,0,0" VerticalAlignment="Top" Width="100" Minimum="1" Maximum="5" TickPlacement="BottomRight" TickFrequency="0.5" ToolTip="Multiplies enemy exp and gold by this amount." ValueChanged="ExpMultiplierSlider_ValueChanged"/>
-					<Slider x:Name="ExpBonusSlider" Value="{Binding Flags.ExpBonus}" HorizontalAlignment="Left" Margin="210,115,0,0" VerticalAlignment="Top" Width="100" Minimum="0" Maximum="500" TickPlacement="BottomRight" TickFrequency="50" LargeChange="50" SmallChange="10" ToolTip="Adds this amount to enemy exp and gold (after the multiplier)." ValueChanged="ExpBonusSlider_ValueChanged"/>
-
-					<Label x:Name="ForcedPartyMembersLabel" Content="Forced Party Members:" HorizontalAlignment="Left" Margin="10,160,0,0" VerticalAlignment="Top" ToolTip="This number of party members will be chosen for you at the start of a new game."/>
-					<Label x:Name="PartyScaleFactorLabel" Content="{Binding ElementName=PartyScaleFactorSlider, Path=Value}" HorizontalAlignment="Left" Margin="145,160,0,0" VerticalAlignment="Top"/>
-					<Slider x:Name="PartyScaleFactorSlider" Value="{Binding Flags.ForcedPartyMembers}" HorizontalAlignment="Left" Margin="210,160,0,0" VerticalAlignment="Top" Minimum="0" Maximum="4" Width="100" TickPlacement="BottomRight" TickFrequency="1" IsSnapToTickEnabled="True" SmallChange="1" LargeChange="1"/>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition/>
+						<ColumnDefinition/>
+						<ColumnDefinition/>
+						<ColumnDefinition/>
+					</Grid.ColumnDefinitions>
+					<StackPanel Grid.Column="0">
+						<Label MinHeight="26" x:Name="PricesLabel" Content="Prices:" ToolTip="Prices of items, weapons, armor, and magic are all scaled, as well as your starting gold and gold chests."/>
+						<Label MinHeight="26" x:Name="EnemyStatsLabel" Content="Enemy Stats:" HorizontalAlignment="Left" VerticalAlignment="Top" ToolTip="Enemy stats are scaled: HP, attack power, # of hits, accuracy, critical %, defense, evade, and magic defense."/>
+						<Label MinHeight="26" x:Name="BossStatsLabel" Content="Boss Stats:" HorizontalAlignment="Left" VerticalAlignment="Top" ToolTip="Boss stats are scaled: HP, attack power, # of hits, accuracy, critical %, defense, evade, and magic defense."/>
+						<Label MinHeight="26" x:Name="ExpGoldBoostLabel" Content="Exp/Gold Boost:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+						<Label MinHeight="26" Content=""/>
+						<Label MinHeight="26" x:Name="ProgressiveScaleLabel" Content="Progressive Scale:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+						<Label MinHeight="26" x:Name="OverworldEncounterRateLabel" Content="Overworld Encounter Rate:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+						<Label MinHeight="26" x:Name="DungeonEncounterRateLabel" Content="Dungeon Encounter Rate:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+						<Label MinHeight="26" Content=""/>
+						<Label MinHeight="26" x:Name="ForcedPartyMembersLabel" Content="Forced Party Members:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+					</StackPanel>
+					<StackPanel Grid.Column="1">
+						<Label MinHeight="26" x:Name="PriceScaleFactorLabel" />
+						<Label MinHeight="26" x:Name="EnemyScaleFactorLabel" Content="" HorizontalAlignment="Left"  VerticalAlignment="Top"/>
+						<Label MinHeight="26" x:Name="BossScaleFactorLabel" Content="" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+						<Label MinHeight="26" x:Name="ExpScaleFactorLabel" Content="" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+						<Label MinHeight="26" Content=""/>
+						<Label MinHeight="26" Content=""/>
+						<Label MinHeight="26" x:Name="EncounterRateFactorLabel" Content="" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+						<Label MinHeight="26" x:Name="DungeonEncounterRateFactorLabel" Content="" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+						<Label MinHeight="26" Content=""/>
+						<Label MinHeight="26" x:Name="PartyScaleFactorLabel" Content="{Binding ElementName=PartyScaleFactorSlider, Path=Value}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+					</StackPanel>
+					<StackPanel Grid.Column="2">
+						<Slider MinHeight="20" x:Name="PriceScaleFactorSlider" Value="{Binding Flags.PriceScaleFactor}" HorizontalAlignment="Left" VerticalAlignment="Top" Minimum="1" Maximum="5" Width="100" TickPlacement="BottomRight" TickFrequency="0.5" SmallChange="0.1" LargeChange="0.5" ToolTip="For each value to be scaled, a random exponent is selected between -1 and +1.  The value is scaled by the scale factor raised to that power." ValueChanged="PriceScaleFactorSlider_ValueChanged"/>
+						<Slider MinHeight="20" x:Name="EnemyScaleFactorSlider" Value="{Binding Flags.EnemyScaleFactor}" HorizontalAlignment="Left"  VerticalAlignment="Top" Minimum="1" Maximum="5" Width="100" TickPlacement="BottomRight" TickFrequency="0.5" ToolTip="For each value to be scaled, a random exponent is selected between -1 and +1.  The value is scaled by the scale factor raised to that power." ValueChanged="EnemyScaleFactorSlider_ValueChanged"/>
+						<Slider MinHeight="20" x:Name="BossScaleFactorSlider" Value="{Binding Flags.BossScaleFactor}" HorizontalAlignment="Left" VerticalAlignment="Top" Minimum="1" Maximum="5" Width="100" TickPlacement="BottomRight" TickFrequency="0.5" ToolTip="For each value to be scaled, a random exponent is selected between -1 and +1.  The value is scaled by the scale factor raised to that power." ValueChanged="BossScaleFactorSlider_ValueChanged"/>
+						<Slider MinHeight="20" x:Name="ExpMultiplierSlider" Value="{Binding Flags.ExpMultiplier}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Minimum="1" Maximum="5" TickPlacement="BottomRight" TickFrequency="0.5" ToolTip="Multiplies enemy exp and gold by this amount." ValueChanged="ExpMultiplierSlider_ValueChanged"/>
+						<Slider MinHeight="20" x:Name="ExpBonusSlider" Value="{Binding Flags.ExpBonus}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Minimum="0" Maximum="500" TickPlacement="BottomRight" TickFrequency="50" LargeChange="50" SmallChange="10" ToolTip="Adds this amount to enemy exp and gold (after the multiplier)." ValueChanged="ExpBonusSlider_ValueChanged"/>
+						<ComboBox MinHeight="26" x:Name="ProgressiveScaleComboBox" SelectedValue="{Binding Flags.ProgressiveScaleMode}" Width="150" HorizontalAlignment="Left" ToolTip="How do you like your WarMECH?" SelectedValuePath="Tag">
+							<ComboBoxItem Content="Disabled" Tag="Disabled"/>
+							<ComboBoxItem Content="150% at 12" Tag="FiftyPercentAt12"/>
+							<ComboBoxItem Content="150% at 15" Tag="FiftyPercentAt15"/>
+							<ComboBoxItem Content="200% at 12" Tag="DoubledAt12"/>
+							<ComboBoxItem Content="200% at 15" Tag="DoubledAt15"/>
+							<ComboBoxItem Content="5% Per Key Item" Tag="Progressive5Percent"/>
+							<ComboBoxItem Content="10% Per Key Item" Tag="Progressive10Percent"/>
+							<ComboBoxItem Content="20% Per Key Item" Tag="Progressive20Percent"/>
+						</ComboBox>
+						<Slider MinHeight="20" x:Name="EncounterRateSlider" Value="{Binding Flags.EncounterRate}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Minimum="0" Maximum="45" TickPlacement="BottomRight" TickFrequency="5" LargeChange="1" SmallChange="1" ValueChanged="EncounterRate_ValueChanged"/>
+						<Slider MinHeight="20" x:Name="DungeonEncounterRateSlider" Value="{Binding Flags.DungeonEncounterRate}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Minimum="0" Maximum="45" TickPlacement="BottomRight" TickFrequency="5" LargeChange="1" SmallChange="1" ValueChanged="DungeonEncounterRate_ValueChanged"/>
+						<Label MinHeight="26" Content=""/>
+						<Slider MinHeight="20" x:Name="PartyScaleFactorSlider" Value="{Binding Flags.ForcedPartyMembers}" HorizontalAlignment="Left" VerticalAlignment="Top" Minimum="0" Maximum="4" Width="100" TickPlacement="BottomRight" TickFrequency="1" IsSnapToTickEnabled="True" SmallChange="1" LargeChange="1"/>
+					</StackPanel>
+					<StackPanel Grid.Column="3">
+						<CheckBox x:Name="PricesScaleOverflowCheckBox" IsChecked="{Binding Flags.WrapPriceOverflow}" Content="Restart Overflow at 1"/>
+						<CheckBox x:Name="EnemyStatScaleOverflowCheckBox" IsChecked="{Binding Flags.WrapStatOverflow}" Content="Restart Overflow at 1" />
+						<CheckBox x:Name="IncludeMoraleCheckBox" IsChecked="{Binding Flags.IncludeMorale}" Content="Include Morale" />
+						<CheckBox x:Name="VanillaStartingGoldCheckBox" IsChecked="{Binding Flags.StartingGold}" Content="Starting Gold" ToolTip="The Bridge is available at the start of the game" Width="296.667"/>
+					</StackPanel>
 				</Grid>
 			</TabItem>
 			<TabItem Header="Conveniences">
@@ -190,7 +246,6 @@
 					<StackPanel Orientation="Vertical" Grid.Column="1">
 						<CheckBox x:Name="FreeAirshipCheckBox" IsChecked="{Binding Flags.FreeAirship}" Content="Free Airship" ToolTip="The Airship is available at the start of the game"/>
 						<CheckBox x:Name="FreeBridgeCheckBox" IsChecked="{Binding Flags.FreeBridge}" Content="Free Bridge" ToolTip="The Bridge is available at the start of the game"/>
-						<CheckBox x:Name="VanillaStartingGoldCheckBox" IsChecked="{Binding Flags.VanillaStartingGold}" Content="Force Default Starting GP" ToolTip="The Bridge is available at the start of the game"/>
 						<CheckBox x:Name="EasyModeCheckBox" IsChecked="{Binding Flags.EasyMode}" Content="Easy Mode" ToolTip="Encounter rate cut to 20% and all Enemy HP cut to 10% (after any randomizations)"/>
 					</StackPanel>
 				</Grid>
