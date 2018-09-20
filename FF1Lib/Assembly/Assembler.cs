@@ -15,7 +15,7 @@ namespace FF1Lib.Assembly
 		{
 			PatchAssembler assembler = new PatchAssembler();
 
-			return assembler.Assemble(origin.addr, name, src, variables: Symbols.AsDictionaries.VariablesAndConstants, labels: Symbols.AsDictionaries.LabelsWithRunAddresses);
+			return assembler.Assemble(origin.Addr, name, src, variables: Symbols.AsDictionaries.VariablesAndConstants, labels: Symbols.AsDictionaries.LabelsWithRunAddresses);
 		}
 
 	}

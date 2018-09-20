@@ -19,33 +19,30 @@ namespace FF1Lib.Assembly
 		/// <summary>
 		/// Adjusts last bank based on mapper in use. Change this when the ROM changes.
 		/// </summary>
-		public static MemoryMode memoryMode = MemoryMode.MMC1;
+		public static MemoryMode MemoryMode = MemoryMode.MMC1;
 
 		// these should be ushorts of course, but it makes everything annoying (casts everywhere)
-		public int bank;
-		public int addr;
+		public readonly int Bank;
+		public readonly int Addr;
 		public BA(int bank, int addr)
 		{
-			this.bank = bank;
-			this.addr = addr;
+			Bank = bank;
+			Addr = addr;
 		}
 
 		public int ToRomLocation()
 		{
-			return bank * 0x4000 + (addr - (bank == LastBank() ? 0xC000 : 0x8000));
+			return Bank * 0x4000 + (Addr - (Bank == LastBank() ? 0xC000 : 0x8000));
 		}
 
 		public static int TopOfBank(int bank)
 		{
-			if (bank == LastBank())
-				return 0xFFFF;
-			else
-				return 0xBFFF;
+			return bank == LastBank() ? 0xFFFF : 0xBFFF;
 		}
 
 		public static int LastBank()
 		{
-			switch (memoryMode)
+			switch (MemoryMode)
 			{
 				case MemoryMode.MMC1:
 					return 0x0F;

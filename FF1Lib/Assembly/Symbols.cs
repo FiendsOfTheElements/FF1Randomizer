@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
 
+// ReSharper disable InconsistentNaming
+// ReSharper disable IdentifierTypo
+// ReSharper disable UnusedMember.Global
+// ReSharper disable MemberCanBePrivate.Global
+
 namespace FF1Lib.Assembly
 {
 	/// <summary>
@@ -26,14 +31,14 @@ namespace FF1Lib.Assembly
 			public static int SpaceToNextLabel(string label)
 			{
 				var thisLabelBA = Symbols.AsDictionaries.Labels[label];
-				var listInBank = Symbols.AsLists.LabelsInAddressOrderForBank(thisLabelBA.bank);
+				var listInBank = Symbols.AsLists.LabelsInAddressOrderForBank(thisLabelBA.Bank);
 
 				var thisLabelIndex = listInBank.FindIndex(entry => entry.Key == label);
 				if (thisLabelIndex == listInBank.Count - 1)
-					return BA.TopOfBank(thisLabelBA.bank) - thisLabelBA.addr;
+					return BA.TopOfBank(thisLabelBA.Bank) - thisLabelBA.Addr;
 
 				else
-					return listInBank[thisLabelIndex + 1].Value.addr - thisLabelBA.addr;  
+					return listInBank[thisLabelIndex + 1].Value.Addr - thisLabelBA.Addr;  
 			}
 		}
 
@@ -43,9 +48,9 @@ namespace FF1Lib.Assembly
 			{
 				IList<FieldInfo> fieldsList = typeof(Symbols.Labels).GetFields();
 				var labels = fieldsList
-					.Where(field => ((BA)field.GetValue(null)).bank == bank)
+					.Where(field => ((BA)field.GetValue(null)).Bank == bank)
 					.ToDictionary(field => field.Name, field => (BA)field.GetValue(null));
-				return labels.OrderBy(entry => entry.Value.addr).ToList();
+				return labels.OrderBy(entry => entry.Value.Addr).ToList();
 			}
 		}
 
@@ -65,47 +70,29 @@ namespace FF1Lib.Assembly
 				dictionary.ToList().ForEach(entry => containingType.GetField(entry.Key).SetValue(null, entry.Value));
 			}
 
-			public static Dictionary<String, BA> Labels
+			public static Dictionary<string, BA> Labels
 			{
-				get
-				{
-					return _staticFieldsDictionaryForType<BA>(typeof(Symbols.Labels));
-				}
-				set
-				{
-					_setStaticFieldsInType(typeof(Symbols.Labels), value);
-				}
+				get => _staticFieldsDictionaryForType<BA>(typeof(Symbols.Labels));
+				set => _setStaticFieldsInType(typeof(Symbols.Labels), value);
 			}
 
-			public static Dictionary<String, int> Constants
+			public static Dictionary<string, int> Constants
 			{
-				get
-				{
-					return _staticFieldsDictionaryForType<int>(typeof(Symbols.Constants));
-				}
-				set
-				{
-					_setStaticFieldsInType(typeof(Symbols.Constants), value);
-				}
+				get => _staticFieldsDictionaryForType<int>(typeof(Symbols.Constants));
+				set => _setStaticFieldsInType(typeof(Symbols.Constants), value);
 			}
 
-			public static Dictionary<String, int> Variables
+			public static Dictionary<string, int> Variables
 			{
-				get
-				{
-					return _staticFieldsDictionaryForType<int>(typeof(Symbols.Variables));
-				}
-				set
-				{
-					_setStaticFieldsInType(typeof(Symbols.Constants), value);
-				}
+				get => _staticFieldsDictionaryForType<int>(typeof(Symbols.Variables));
+				set => _setStaticFieldsInType(typeof(Symbols.Constants), value);
 			}
 
-			public static Dictionary<String, int> VariablesAndConstants
+			public static Dictionary<string, int> VariablesAndConstants
 			{
 				get
 				{
-					var both = new Dictionary<String, int>();
+					var both = new Dictionary<string, int>();
 
 					// this is apparently a good and fast way to combine dictionaries, even if it looks a little stupid.
 					AsDictionaries.Constants.ToList().ForEach(x => both.Add(x.Key, x.Value));
@@ -118,27 +105,27 @@ namespace FF1Lib.Assembly
 			/// <summary>
 			/// Labels mapped to their jump locations, dropping bank information.
 			/// </summary>
-			public static Dictionary<String, int> LabelsWithRunAddresses
+			public static Dictionary<string, int> LabelsWithRunAddresses
 			{
 				get
 				{
-					return AsDictionaries.Labels.ToDictionary(item => item.Key, item => item.Value.addr);
+					return AsDictionaries.Labels.ToDictionary(item => item.Key, item => item.Value.Addr);
 				}
 			}
 
 			/// <summary>
 			/// All symbols. NOTE: Label values are transformed into ints using BA.addr.
 			/// </summary>
-			public static Dictionary<String, int> All
+			public static Dictionary<string, int> All
 			{
 				get
 				{
-					var everything = new Dictionary<String, int>();
+					var everything = new Dictionary<string, int>();
 
 					// this is apparently a good and fast way to combine dictionaries, even if it looks a little stupid.
 					AsDictionaries.Constants.ToList().ForEach(x => everything.Add(x.Key, x.Value));
 					AsDictionaries.Variables.ToList().ForEach(x => everything.Add(x.Key, x.Value));
-					AsDictionaries.Labels.ToList().ForEach(x => everything.Add(x.Key, x.Value.addr));
+					AsDictionaries.Labels.ToList().ForEach(x => everything.Add(x.Key, x.Value.Addr));
 
 					return everything;
 				}
@@ -148,6 +135,7 @@ namespace FF1Lib.Assembly
 
 		public static class Labels
 		{
+
 			// Don't add any fields to this class unless they are symbols. It will break AsDictionaries/AsLists.
 			public static BA DoNextRow                           = new BA(0x01, 0xBF8F);
 			public static BA MinimapDecompress                   = new BA(0x01, 0xBF40);

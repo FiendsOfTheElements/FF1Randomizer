@@ -784,8 +784,10 @@ namespace FF1Lib
 			Data = newData;
 
 			// Update symbol info
-			BA.memoryMode = MemoryMode.MMC3;
-			Symbols.AsDictionaries.Labels = Symbols.AsDictionaries.Labels.Where(entry => entry.Value.bank == 0x0F).ToDictionary(entry => entry.Key, entry => new BA(0x1F, entry.Value.addr));
+			BA.MemoryMode = MemoryMode.MMC3;
+
+			// Change all 0F labels to be in 1F.
+			Symbols.AsDictionaries.Labels = Symbols.AsDictionaries.Labels.Where(entry => entry.Value.Bank == 0x0F).ToDictionary(entry => entry.Key, entry => new BA(0x1F, entry.Value.Addr));
 
 			// Change bank swap code.
 			// We put this code at SwapPRG_L, so we don't have to move any of the "long" calls to it.
