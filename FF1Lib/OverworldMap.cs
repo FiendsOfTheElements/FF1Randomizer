@@ -821,6 +821,20 @@ namespace FF1Lib
 				OverworldTeleportIndex.ConeriaCastle1, OverworldTeleportIndex.TempleOfFiends1
 			};
 
+		private static readonly Dictionary<MapLocation, (int x, int y)> ObjectiveNPCPositions = new Dictionary<MapLocation, (int x, int y)>
+		{
+			{ MapLocation.BahamutCave2, (0x15, 0x03) },
+			{ MapLocation.Melmond, (0x1A, 0x01) },
+			{ MapLocation.ElflandCastle, (0x09, 0x05) },
+		};
+
+		private static readonly Dictionary<MapLocation, MapId> ObjectiveNPCMapIds = new Dictionary<MapLocation, MapId>
+		{
+			{ MapLocation.BahamutCave2, MapId.BahamutsRoomB2 },
+			{ MapLocation.Melmond, MapId.Melmond },
+			{ MapLocation.ElflandCastle, MapId.ElflandCastle },
+		};
+
 		public enum Palette
 		{
 			Town = 0,
@@ -1007,36 +1021,19 @@ namespace FF1Lib
 
 		public void ShuffleObjectiveNPCs(MT19337 rng)
 		{
-			List<MapLocation> locations = new List<MapLocation> { MapLocation.BahamutCave2, MapLocation.Melmond, MapLocation.ElflandCastle };
+			var locations = ObjectiveNPCs.Values.ToList();
+			foreach(var npc in ObjectiveNPCs.Keys.ToList())
+			{
+				var location = locations.SpliceRandom(rng);
+				ObjectiveNPCs[npc] = location;
 
-			MapLocation bahamutLocation = locations.SpliceRandom(rng);
-			ObjectiveNPCs[ObjectId.Bahamut] = bahamutLocation;
-			if (bahamutLocation == MapLocation.Melmond)
-			{
-				_rom.SetNpc(MapId.Melmond, 0, ObjectId.Bahamut, 0x1B, 0x0C, false, true);
-			} else if (bahamutLocation == MapLocation.ElflandCastle)
-			{
-				_rom.SetNpc(MapId.ElflandCastle, 0, ObjectId.Bahamut, 0x06, 0x07, true, true);
-			}
+				var (x, y) = ObjectiveNPCPositions[location];
+				y += (location == MapLocation.ElflandCastle && npc == ObjectId.Bahamut) ? 1 : 0;
 
-			MapLocation unneLocation = locations.SpliceRandom(rng);
-			ObjectiveNPCs[ObjectId.Unne] = unneLocation;
-			if (unneLocation == MapLocation.BahamutCave2)
-			{
-				_rom.SetNpc(MapId.BahamutsRoomB2, 0, ObjectId.Unne, 0x14, 0x07, true, false);
-			} else if (unneLocation == MapLocation.ElflandCastle)
-			{
-				_rom.SetNpc(MapId.ElflandCastle, 0, ObjectId.Unne, 0x10, 0x0B, false, false);
-			}
+				var inRoom = location != MapLocation.Melmond;
+				var stationary = npc == ObjectId.Bahamut || (npc == ObjectId.ElfDoc && location == MapLocation.ElflandCastle);
 
-			MapLocation elfDoctorLocation = locations.Single();
-			ObjectiveNPCs[ObjectId.ElfDoc] = elfDoctorLocation;
-			if (elfDoctorLocation == MapLocation.BahamutCave2)
-			{
-				_rom.SetNpc(MapId.BahamutsRoomB2, 0, ObjectId.ElfDoc, 0x14, 0x09, true, true);
-			} else if (elfDoctorLocation == MapLocation.Melmond)
-			{
-				_rom.SetNpc(MapId.Melmond, 0, ObjectId.ElfDoc, 0x1b, 0x0C, false, false);
+				_rom.SetNpc(ObjectiveNPCMapIds[location], 0, npc, x, y, inRoom, stationary);
 			}
 		}
 	}

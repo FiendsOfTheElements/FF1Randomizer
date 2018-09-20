@@ -301,11 +301,6 @@ namespace FF1Lib
 								: x).ToList();
 			}
 
-			if (map.ObjectiveNPCs[ObjectId.Unne] != MapLocation.Melmond)
-			{
-
-			}
-
 			MapLocation elfDoctorLocation = map.ObjectiveNPCs[ObjectId.ElfDoc];
 			if (elfDoctorLocation != MapLocation.ElflandCastle)
 			{
@@ -326,7 +321,7 @@ namespace FF1Lib
 								: x).ToList();
 			}
 
-			MapLocation unneLocation = map.ObjectiveNPCs[ObjectId.ElfDoc];
+			MapLocation unneLocation = map.ObjectiveNPCs[ObjectId.Unne];
 			if (unneLocation != MapLocation.Melmond)
 			{
 				forcedItemPlacements =
