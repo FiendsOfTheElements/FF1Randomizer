@@ -246,15 +246,16 @@
 					</div>
 					<div class="slider-cell"></div>
 					<div class="slider-cell">
-						<div class="col-xs-9"><label>Exp/Gold Boost:</label></div>
+						<div class="col-xs-6"><label>Exp/Gold Boost:</label></div>
+						<div class="col-xs-3"><label id="exp-gold-display">{{ExpMultiplier.toPrecision(2)}}x + {{ExpBonus}}</label></div>
 						<div class="col-xs-3"><input v-model="ExpMultiplier" type="range" asp-for="Flags.ExpMultiplier" min="1.0" max="5.0" step="0.1" /></div>
 					</div>
 					<div class="slider-cell">
-						<div class="col-xs-9"><label id="exp-gold-display">{{ExpMultiplier.toPrecision(2)}}x + {{ExpBonus}}</label></div>
+						<div class="col-xs-9">&nbsp;</div>
 						<div class="col-xs-3"><input v-model="ExpBonus" type="range" asp-for="Flags.ExpBonus" min="0" max="500" step="10" /></div>
 					</div>
-					<div class="checkbox-cell">
-						<div class="col-xs-9"><label>EXP/Gold Progressive Scaling:</label></div>
+					<div class="slider-cell">
+						<div class="col-xs-9"><label>Exp/Gold Progressive Scaling:</label></div>
 						<div class="col-xs-3">
 							<select v-model="ProgressiveScaleMode" asp-for="Flags.ProgressiveScaleMode">
 								<option value="0">Disabled</option>
@@ -267,18 +268,17 @@
 								<option value="7">Increased by 20% per Key Item</option>
 							</select>
 						</div>
-						<div class="col-xs-9"><label>(Stacks with Exp/Gold Boost!)</label></div>
 					</div>
 					<div class="slider-cell"></div>
 					<div class="slider-cell">
-						<div class="col-xs-9"><label>Overworld Encounter Rate:</label></div>
+						<div class="col-xs-6"><label>Overworld Encounter Rate:</label></div>
+						<div class="col-xs-3"><label id="encounter-rate-display">{{(EncounterRate/30.00).toFixed(2)}}x</label></div>
 						<div class="col-xs-3"><input v-model="EncounterRate" type="range" asp-for="Flags.EncounterRate" min="0" max="45" step="1" /></div>
-						<div class="col-xs-9"><label id="encounter-rate-display">{{(EncounterRate/30.00).toFixed(2)}}x</label></div>
 					</div>
 					<div class="slider-cell">
-						<div class="col-xs-9"><label>Dungeon Encounter Rate:</label></div>
+						<div class="col-xs-6"><label>Dungeon Encounter Rate:</label></div>
+						<div class="col-xs-3"><label id="encounter-rate-display">{{(DungeonEncounterRate/30.00).toFixed(2)}}x</label></div>
 						<div class="col-xs-3"><input v-model="DungeonEncounterRate" type="range" asp-for="Flags.DungeonEncounterRate" min="0" max="45" step="1" /></div>
-						<div class="col-xs-9"><label id="encounter-rate-display">{{(DungeonEncounterRate/30.00).toFixed(2)}}x</label></div>
 					</div>
 					<div class="slider-cell"></div>
 					<div class="slider-cell">
