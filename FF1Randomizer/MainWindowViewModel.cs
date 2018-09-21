@@ -166,6 +166,24 @@ namespace FF1Randomizer
 					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TransformFinalFormation"));
 				}
 			}
+			public bool ShortToFR
+			{
+				get => Flags.ShortToFR;
+				set
+				{
+					Flags.ShortToFR = value;
+					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ShortToFR"));
+				}
+			}
+			public bool PreserveFiendRefights
+			{
+				get => Flags.PreserveFiendRefights;
+				set
+				{
+					Flags.PreserveFiendRefights = value;
+					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("PreserveFiendRefights"));
+				}
+			}
 
 			public bool MagicShops
 			{
@@ -268,6 +286,24 @@ namespace FF1Randomizer
 					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AllowUnsafePirates"));
 				}
 			}
+			public bool EnemyTrapTiles
+			{
+				get => Flags.EnemyTrapTiles;
+				set
+				{
+					Flags.EnemyTrapTiles = value;
+					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EnemyTrapTiles"));
+				}
+			}
+			public bool RandomTrapFormations
+			{
+				get => Flags.RandomTrapFormations;
+				set
+				{
+					Flags.RandomTrapFormations = value;
+					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomTrapFormations"));
+				}
+			}
 
 			public bool OrdealsPillars
 			{
@@ -307,6 +343,15 @@ namespace FF1Randomizer
 					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TitansTrove"));
 				}
 			}
+			public bool ConfusedOldMen
+			{
+				get => Flags.ConfusedOldMen;
+				set
+				{
+					Flags.ConfusedOldMen = value;
+					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ConfusedOldMen"));
+				}
+			}
 			public bool CrownlessOrdeals
 			{
 				get => Flags.CrownlessOrdeals;
@@ -328,6 +373,8 @@ namespace FF1Randomizer
 
 			public bool ChaosRushEnabled => !ShardHunt;
 
+			public bool DeepCastlesPossible => Entrances && Floors;
+
 			public bool Floors
 			{
 				get => Flags.Floors;
@@ -336,7 +383,16 @@ namespace FF1Randomizer
 					Flags.Floors = value;
 					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Floors"));
 				}
-			} // Planned x.x feature - interior floors shuffle
+			}
+			public bool AllowDeepCastles
+			{
+				get => Flags.AllowDeepCastles;
+				set
+				{
+					Flags.AllowDeepCastles = value;
+					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AllowDeepCastles"));
+				}
+			}
 
 			public bool MapOpenProgression
 			{
@@ -345,6 +401,15 @@ namespace FF1Randomizer
 				{
 					Flags.MapOpenProgression = value;
 					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MapOpenProgression"));
+				}
+			}
+			public bool MapOpenProgressionExtended
+			{
+				get => Flags.MapOpenProgressionExtended;
+				set
+				{
+					Flags.MapOpenProgressionExtended = value;
+					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MapOpenProgressionExtended"));
 				}
 			}
 			public bool Entrances
@@ -825,6 +890,15 @@ namespace FF1Randomizer
 					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EnemyScaleFactor"));
 				}
 			}
+			public double BossScaleFactor
+			{
+				get => Flags.BossScaleFactor;
+				set
+				{
+					Flags.BossScaleFactor = value;
+					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BossScaleFactor"));
+				}
+			}
 			public double PriceScaleFactor
 			{
 				get => Flags.PriceScaleFactor;
@@ -834,6 +908,61 @@ namespace FF1Randomizer
 					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("PriceScaleFactor"));
 				}
 			}
+			public bool WrapPriceOverflow
+			{
+				get => Flags.WrapPriceOverflow;
+				set
+				{
+					Flags.WrapPriceOverflow = value;
+					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("WrapPriceOverflow"));
+				}
+			}
+			public bool WrapStatOverflow
+			{
+				get => Flags.WrapStatOverflow;
+				set
+				{
+					Flags.WrapStatOverflow = value;
+					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("WrapStatOverflow"));
+				}
+			}
+			public bool IncludeMorale
+			{
+				get => Flags.IncludeMorale;
+				set
+				{
+					Flags.IncludeMorale = value;
+					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncludeMorale"));
+				}
+			}
+			public ProgressiveScaleMode ProgressiveScaleMode
+			{
+				get => Flags.ProgressiveScaleMode;
+				set
+				{
+					Flags.ProgressiveScaleMode = value;
+					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ProgressiveScaleMode"));
+				}
+			}
+			public double EncounterRate
+			{
+				get => Flags.EncounterRate;
+				set
+				{
+					Flags.EncounterRate = value;
+					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EncounterRate"));
+				}
+			}
+			public double DungeonEncounterRate
+			{
+				get => Flags.DungeonEncounterRate;
+				set
+				{
+					Flags.DungeonEncounterRate = value;
+					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DungeonEncounterRate"));
+				}
+			}
+
 			public double ExpMultiplier
 			{
 				get => Flags.ExpMultiplier;

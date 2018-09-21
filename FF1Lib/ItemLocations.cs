@@ -435,6 +435,8 @@ namespace FF1Lib
 			{MapLocation.GurguVolcano3, Dock.Elfland},
 			{MapLocation.GurguVolcano4, Dock.Elfland},
 			{MapLocation.GurguVolcano5, Dock.Elfland},
+			{MapLocation.GurguVolcano6, Dock.Elfland},
+			{MapLocation.GurguVolcanoKary, Dock.Elfland},
 		};
 		public static Dictionary<OverworldTeleportIndex, MapLocation> OverworldToMapLocation = new Dictionary<OverworldTeleportIndex, MapLocation>
 		{
