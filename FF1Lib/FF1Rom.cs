@@ -467,6 +467,9 @@ namespace FF1Lib
 
 			PartyComposition(rng, flags);
 
+			PubReplaceClinic(rng);
+
+
 			if (flags.MapCanalBridge)
 			{
 				EnableCanalBridge();
