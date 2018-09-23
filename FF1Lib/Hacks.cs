@@ -279,6 +279,11 @@ namespace FF1Lib
 			PutInBank(0x0E, 0x9CE9, Blob.FromHex("188A69188510A9618511A007B110297F911088D0F7A900A0089110C8C00ED0F960"));
 
 			PutInBank(0x1F, 0xC271, CreateLongJumpTableEntry(0x00, 0xC783));
+
+			Data[0x101A] = 0x13;
+			Data[0x109A] = 0x13;
+			Data[0x111A] = 0x76;
+			Data[0x119A] = 0x77;
 		}
 
 		public void DisablePartyShuffle()
