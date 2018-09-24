@@ -184,9 +184,9 @@ namespace FF1Lib
 					// set the byte for default class and the byte for allowed classes
 					Data[0x784AA + count * 0x10] = (defaultclass == 6 ? (byte)0xFF : defaultclass);
 					Data[0x78128 + count] = Chars[count];
-					count++;
 					options.Clear();
 				}
+				count++;
 			}
 
 			// Do each slot - so ugly!
