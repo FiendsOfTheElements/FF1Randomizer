@@ -21,6 +21,7 @@ namespace FF1Lib
 		private Dictionary<CanoeableRegion, List<OverworldTeleportIndex>> _canoeableNodes;
 		private Dictionary<MapLocation, List<MapChange>> MapLocationRequirements;
 		private Dictionary<MapLocation, Tuple<MapLocation, AccessRequirement>> FloorLocationRequirements;
+
 		private TeleportShuffle _teleporters;
 
 		private enum WalkableRegion
@@ -153,6 +154,13 @@ namespace FF1Lib
 			{
 				floorLocationRequirements[MapLocation.CastleOrdealsMaze] = new Tuple<MapLocation, AccessRequirement>(MapLocation.CastleOrdeals1, AccessRequirement.None);
 			}
+
+			ObjectiveNPCs = new Dictionary<ObjectId, MapLocation>
+			{
+				{ ObjectId.Bahamut, MapLocation.BahamutCave2 },
+				{ ObjectId.Unne, MapLocation.Melmond },
+				{ ObjectId.ElfDoc, MapLocation.ElflandCastle },
+			};
 
 			StartingPotentialAccess = AccessRequirement.Key | AccessRequirement.Tnt | AccessRequirement.Adamant;
 			MapLocationRequirements = mapLocationRequirements;
@@ -625,6 +633,7 @@ namespace FF1Lib
 
 		public Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> FullLocationRequirements;
 		public Dictionary<MapLocation, OverworldTeleportIndex> OverriddenOverworldLocations;
+		public Dictionary<ObjectId, MapLocation> ObjectiveNPCs;
 		public AccessRequirement StartingPotentialAccess;
 
 		public const byte GrassTile = 0x00;
@@ -812,6 +821,20 @@ namespace FF1Lib
 				OverworldTeleportIndex.ConeriaCastle1, OverworldTeleportIndex.TempleOfFiends1
 			};
 
+		private static readonly Dictionary<MapLocation, (int x, int y)> ObjectiveNPCPositions = new Dictionary<MapLocation, (int x, int y)>
+		{
+			{ MapLocation.BahamutCave2, (0x15, 0x03) },
+			{ MapLocation.Melmond, (0x1A, 0x01) },
+			{ MapLocation.ElflandCastle, (0x09, 0x05) },
+		};
+
+		private static readonly Dictionary<MapLocation, MapId> ObjectiveNPCMapIds = new Dictionary<MapLocation, MapId>
+		{
+			{ MapLocation.BahamutCave2, MapId.BahamutsRoomB2 },
+			{ MapLocation.Melmond, MapId.Melmond },
+			{ MapLocation.ElflandCastle, MapId.ElflandCastle },
+		};
+
 		public enum Palette
 		{
 			Town = 0,
@@ -994,6 +1017,24 @@ namespace FF1Lib
 
 			if (outputOffset > 0x4000)
 				throw new InvalidOperationException("Modified map was too large to recompress and fit into a single bank.");
+		}
+
+		public void ShuffleObjectiveNPCs(MT19337 rng)
+		{
+			var locations = ObjectiveNPCs.Values.ToList();
+			foreach(var npc in ObjectiveNPCs.Keys.ToList())
+			{
+				var location = locations.SpliceRandom(rng);
+				ObjectiveNPCs[npc] = location;
+
+				var (x, y) = ObjectiveNPCPositions[location];
+				y += (location == MapLocation.ElflandCastle && npc == ObjectId.Bahamut) ? 1 : 0;
+
+				var inRoom = location != MapLocation.Melmond;
+				var stationary = npc == ObjectId.Bahamut || (npc == ObjectId.ElfDoc && location == MapLocation.ElflandCastle);
+
+				_rom.SetNpc(ObjectiveNPCMapIds[location], 0, npc, x, y, inRoom, stationary);
+			}
 		}
 	}
 }

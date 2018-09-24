@@ -301,6 +301,46 @@ namespace FF1Lib
 								: x).ToList();
 			}
 
+			MapLocation elfDoctorLocation = map.ObjectiveNPCs[ObjectId.ElfDoc];
+			if (elfDoctorLocation != MapLocation.ElflandCastle)
+			{
+				forcedItemPlacements =
+					forcedItemPlacements
+						.Select(x => x.Address == ItemLocations.ElfPrince.Address
+								? new MapObject(ObjectId.ElfPrince, MapLocation.ElflandCastle, x.Item, AccessRequirement.Herb, ObjectId.ElfDoc, requiredSecondLocation: elfDoctorLocation)
+								: x).ToList();
+				itemLocationPool =
+					itemLocationPool
+						.Select(x => x.Address == ItemLocations.ElfPrince.Address
+								? new MapObject(ObjectId.ElfPrince, MapLocation.ElflandCastle, x.Item, AccessRequirement.Herb, ObjectId.ElfDoc, requiredSecondLocation: elfDoctorLocation)
+								: x).ToList();
+				incentiveLocationPool =
+					incentiveLocationPool
+						.Select(x => x.Address == ItemLocations.ElfPrince.Address
+								? new MapObject(ObjectId.ElfPrince, MapLocation.ElflandCastle, x.Item, AccessRequirement.Herb, ObjectId.ElfDoc, requiredSecondLocation: elfDoctorLocation)
+								: x).ToList();
+			}
+
+			MapLocation unneLocation = map.ObjectiveNPCs[ObjectId.Unne];
+			if (unneLocation != MapLocation.Melmond)
+			{
+				forcedItemPlacements =
+					forcedItemPlacements
+						.Select(x => x.Address == ItemLocations.Lefein.Address
+								? new MapObject(ObjectId.Lefein, MapLocation.Lefein, x.Item, AccessRequirement.Slab, ObjectId.Unne, requiredSecondLocation: unneLocation)
+								: x).ToList();
+				itemLocationPool =
+					itemLocationPool
+						.Select(x => x.Address == ItemLocations.Lefein.Address
+								? new MapObject(ObjectId.Lefein, MapLocation.Lefein, x.Item, AccessRequirement.Slab, ObjectId.Unne, requiredSecondLocation: unneLocation)
+								: x).ToList();
+				incentiveLocationPool =
+					incentiveLocationPool
+						.Select(x => x.Address == ItemLocations.Lefein.Address
+								? new MapObject(ObjectId.Lefein, MapLocation.Lefein, x.Item, AccessRequirement.Slab, ObjectId.Unne, requiredSecondLocation: unneLocation)
+								: x).ToList();
+			}
+
 			foreach (var item in forcedItemPlacements.Select(x => x.Item))
 			{
 				incentivePool.Remove(item);

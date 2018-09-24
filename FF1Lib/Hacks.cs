@@ -184,9 +184,9 @@ namespace FF1Lib
 					// set the byte for default class and the byte for allowed classes
 					Data[0x784AA + count * 0x10] = (defaultclass == 6 ? (byte)0xFF : defaultclass);
 					Data[0x78128 + count] = Chars[count];
-					count++;
 					options.Clear();
 				}
+				count++;
 			}
 
 			// Do each slot - so ugly!
@@ -340,6 +340,7 @@ namespace FF1Lib
 			MoveNpc(MapId.EarthCaveB3, 8, 0x0A, 0x0C, inRoom: true, stationary: false); // Earth Cave Bat B3
 			MoveNpc(MapId.EarthCaveB3, 9, 0x09, 0x25, inRoom: false, stationary: false); // Earth Cave Bat B3
 			MoveNpc(MapId.EarthCaveB5, 1, 0x22, 0x34, inRoom: false, stationary: false); // Earth Cave Bat B5
+			MoveNpc(MapId.ConeriaCastle1F, 5, 0x07, 0x0F, inRoom: false, stationary: true); // Coneria Ghost Lady
 		}
 
 		public void EnableConfusedOldMen(MT19337 rng)
