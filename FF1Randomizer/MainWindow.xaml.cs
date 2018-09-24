@@ -123,7 +123,7 @@ namespace FF1Randomizer
 		{
 			var text = Clipboard.GetText();
 			var parts = text.Split('_');
-			if (parts.Length != 2 || parts[0].Length != 8 || parts[1].Length != 22)
+			if (parts.Length != 2 || parts[0].Length != 8 || parts[1].Length != 27)
 			{
 				MessageBox.Show("Format not recognized.  Paste should look like SSSSSSSS_FFFFFFFFFFFFFFFFFFFFFF", "Invalid Format");
 
@@ -169,6 +169,12 @@ namespace FF1Randomizer
 			SetScaleFactorLabel(EnemyScaleFactorSlider, EnemyScaleFactorLabel);
 		}
 
+		private void BossScaleFactorSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+		{
+			((Slider)sender).Value = Math.Round(e.NewValue, 1);
+			SetScaleFactorLabel(BossScaleFactorSlider, BossScaleFactorLabel);
+		}
+
 		private void ExpMultiplierSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
 		{
 			((Slider)sender).Value = Math.Round(e.NewValue, 1);
@@ -179,6 +185,16 @@ namespace FF1Randomizer
 		{
 			((Slider)sender).Value = Math.Round(e.NewValue/10.0)*10.0;
 			SetExpLabel();
+		}
+		private void EncounterRate_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+		{
+			((Slider)sender).Value = Math.Round(e.NewValue);
+			EncounterRateFactorLabel.Content = $"{Math.Round(EncounterRateSlider.Value / 30.0, 2)}x";
+		}
+		private void DungeonEncounterRate_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+		{
+			((Slider)sender).Value = Math.Round(e.NewValue);
+			DungeonEncounterRateFactorLabel.Content = $"{Math.Round(DungeonEncounterRateSlider.Value / 30.0, 2)}x";
 		}
 
 		private void LoadPreset(object sender, RoutedEventArgs e)

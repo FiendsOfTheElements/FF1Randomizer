@@ -9,36 +9,6 @@
 	<Grid>
 		<Button x:Name="OkButton" Content="Thanks!" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Width="75" Click="OkButton_Click"/>
 		<TextBlock x:Name="VersionTextBlock" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="40" FontSize="14"/>
-		<TextBlock x:Name="ThanksTextBlock" HorizontalAlignment="Left" Margin="10,55,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="529" Width="372">
-			Special thanks to the following, without whom this project would not have been possible:<LineBreak />
-			<LineBreak/>
-			fcoughlin, for Zelda Randomizer<LineBreak/>
-			<LineBreak/>
-			Disch, Paulygon, and others, for FFHackster<LineBreak/>
-			<LineBreak/>
-			anomie, Deranged_squirrel_fighter, and AstralEsper, for sourcing existing ROM hacks<LineBreak/>
-			<LineBreak/>
-			MeridianBC, for development<LineBreak/>
-			<LineBreak/>
-			For playtesting, feedback, and community:<LineBreak/>
-			jkoper<LineBreak/>
-			Darkwing_Duck_sda<LineBreak/>
-			Kababesh<LineBreak/>
-			Miaut<LineBreak/>
-			czardia<LineBreak/>
-			Ayntlerz<LineBreak/>
-			EunosXX<LineBreak/>
-			Jaylow7<LineBreak/>
-			gameboy9<LineBreak/>
-			Beefucurry<LineBreak/>
-			Xarnax42<LineBreak/>
-			TristalMTG<LineBreak/>
-			PanzerDave<LineBreak/>
-			Ategenos<LineBreak/>
-			Buffalax<LineBreak/>
-			theCubeMiser<LineBreak/>
-			crimson_avix<LineBreak/>
-			xIceblue<LineBreak/>
-		</TextBlock>
-	</Grid>
+        <TextBlock x:Name="ThanksTextBlock" HorizontalAlignment="Left" Margin="10,55,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="529" Width="372"><Run Text="Special thanks to the following, without whom this project would not have been possible:"/><LineBreak/><LineBreak/><Run Text="Zelda Randomizer"/><Run Text=":"/><LineBreak/><Run Text="fcoughlin"/><LineBreak/><LineBreak/><Run Text="FFHackster"/><Run Text=":"/><LineBreak/><Run Text="Disch, Paulygon, and others"/><LineBreak/><LineBreak/><Run Text="Sourcing E"/><Run Text="xisting ROM hacks"/><LineBreak/><Run Text="anomie, Deranged_squirrel_fighter, and AstralEsper"/><LineBreak/><LineBreak/><Run Text="D"/><Run Text="evelopment"/><Run Text=":"/><LineBreak/><Run Text="MeridianBC"/><LineBreak/><Run Text="tartopan"/><LineBreak/><Run Text="nitz"/><LineBreak/><Run Text="septimus"/><LineBreak/><LineBreak/><Run Text="For playtesting, feedback, and community:"/><LineBreak/><Run Text="jkoper"/><LineBreak/><Run Text="Darkwing_Duck_sda"/><LineBreak/><Run Text="Kababesh"/><LineBreak/><Run Text="Miaut"/><LineBreak/><Run Text="czardia"/><LineBreak/><Run Text="Ayntlerz"/><LineBreak/><Run Text="EunosXX"/><LineBreak/><Run Text="Jaylow7"/><LineBreak/><Run Text="gameboy9"/><LineBreak/><Run Text="Beefucurry"/><LineBreak/><Run Text="Xarnax42"/><LineBreak/><Run Text="TristalMTG"/><LineBreak/><Run Text="PanzerDave"/><LineBreak/><Run Text="Ategenos"/><LineBreak/><Run Text="Buffalax"/><LineBreak/><Run Text="theCubeMiser"/><LineBreak/><Run Text="crimson_avix"/><LineBreak/><Run Text="xIceblue"/><LineBreak/></TextBlock>
+    </Grid>
 </Window>
