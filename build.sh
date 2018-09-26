@@ -13,10 +13,10 @@ git rev-parse HEAD > version.txt
 popd
 
 pushd FF1R
-rm -rf bin/Release/netcoreapp2.0/publish
+rm -rf bin/Release/netcoreapp2.1/publish
 dotnet restore
 dotnet publish -c Release
-cd bin/Release/netcoreapp2.0/publish
+cd bin/Release/netcoreapp2.1/publish
 git rev-parse HEAD > version.txt
 tar czf ff1r.tar.gz *
 mv ff1r.tar.gz ../../../../..
