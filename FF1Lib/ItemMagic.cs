@@ -13,29 +13,47 @@ namespace FF1Lib
 		public const int GearTextOffset = 0x2B9BD;
 		public const int GearTextSize = 8;
 		private const int MagicBitOffset = 0x3;
-		private int WeaponStart = (byte)ItemLists.AllWeapons.ElementAt(0);
-		private int ArmourStart = (byte)ItemLists.AllArmor.ElementAt(0);
+		private const int SpellNamesOffset = 0x2BE03;
+		private const int SpellNamesSize = 5;
+		private const int SpellNamesCount = 64;
 
-		private List<String> SpellNames = new List<String> {  // must be 7 characters long each, add spaces if needed, can rename items with each spell by changing this
-			"CURE  ", "HARM  ", "FOG   ", "RUSE  ", "FIRE  ", "SLEP  ", "LOCK  ", "LIT   ", "LAMP  ", "MUTE  ", "ALIT  ",
-			"INVS  ", "ICE   ", "DARK  ", "TMPR  ", "SLOW  ", "CUR2  ", "HRM2  ", "AFIR  ", "HEAL  ", "FIR2  ", "HOLD  ",
-			"LIT2  ", "LOK2  ", "PURE  ", "FEAR  ", "AICE  ", "AMUT  ", "SLP2  ", "FAST  ", "CONF  ", "ICE2  ", "CUR3  ",
-			"LIFE  ", "HRM3  ", "HEL2  ", "FIR3  ", "BANE  ", "WARP  ", "SLO2  ", "SOFT  ", "EXIT  ", "FOG2  ", "INV2  ",
-			"LIT3  ", "RUB   ", "QAKE  ", "STUN  ", "CUR4  ", "HRM4  ", "ARUB  ", "HEL3  ", "ICE3  ", "BRAK  ", "SABR  ",
-			"BLND  ", "LIF2  ", "FADE  ", "WALL  ", "XFER  ", "NUKE  ", "STOP  ", "ZAP   ", "XXXX  "};
+		private int WeaponStart = (byte)ItemLists.AllWeapons.ElementAt(0);
+		private int ArmorStart = (byte)ItemLists.AllArmor.ElementAt(0);
 
 		// Remove all out of battle only spells
-		private readonly List<byte> SpellsToRemove = new List<byte> {38, 40, 41, 33, 56 }; // Warp, Soft, Exit, Life, Life 2
+		private readonly List<byte> SpellsToRemove = new List<byte> { 38, 40, 41, 33, 56 }; // Warp, Soft, Exit, Life, Life 2
+
+		public void ShuffleItemMagic(MT19337 rng)
+		{
+			CastableItemTargeting(); // make items able to target a single enemy or party member
+
+			List<Blob> spellNames = Get(SpellNamesOffset, SpellNamesSize * SpellNamesCount).Chunk(SpellNamesSize);
+			var Spells = spellNames.Select((blob, i) => new MagicSpell // creat a list of all spells 
+			{
+				Data = Blob.FromInts(new int[1] { i + 1 }), // spells are 1 based
+				Index = (byte)i,
+				Name = FF1Text.TextToBytes(FF1Text.BytesToText(blob).PadRight(6), false, FF1Text.Delimiter.Empty),
+			}).ToList();
+
+			Spells.RemoveAll(spell => SpellsToRemove.Contains(spell.Index)); // Remove the spells specified in SpellsToRemove
+			Spells.Shuffle(rng); // Shuffle all spells remaining, then assign to each item that can cast a spell
+
+			foreach (var item in Spells.Zip(ItemLists.AllMagicItem, (s, i) => new { Spell = s, Item = i }))
+			{
+				WriteItemSpellData(item.Spell, item.Item);
+			}
+		}
 
 		private void WriteItemSpellData(MagicSpell Spell, Item item)
 		{
 			// Set the spell an item casts
 			var output = Spell.Data.ToHex().Remove(2);
-			var offset = WeaponOffset + 0x8 * Math.Min((byte)item - WeaponStart,ArmourStart - WeaponStart) + 0x4 * Math.Max(0, (byte)item - ArmourStart) + MagicBitOffset;
+			var offset = WeaponOffset + 0x8 * Math.Min((byte)item - WeaponStart, ArmorStart - WeaponStart) + 0x4 * Math.Max(0, (byte)item - ArmorStart) + MagicBitOffset;
 			Put(offset, Blob.FromHex(output));
 
 			// if the item is the Defense, overwrite the last character in the name, otherwise, keep the icon there.
-			output = Spell.Name.ToHex().Remove(12) + (item == Item.Defense ? "FF" : "");
+			Debug.Assert(Spell.Name.Length == 6);
+			output = Spell.Name.ToHex() + (item == Item.Defense ? "FF" : "");
 			offset = GearTextOffset + ((byte)item > (byte)Item.Ribbon ? 1 : 0) + GearTextSize * ((byte)item - WeaponStart);
 			Put(offset, Blob.FromHex(output));
 		}
@@ -74,27 +92,6 @@ namespace FF1Lib
 			PutInBank(0x0F, 0x8AD0, Blob.FromHex("85808681C0FFD008A9D68580A9968581A91060"));
 		}
 
-		public void ShuffleItemMagic(MT19337 rng)
-		{
-			CastableItemTargeting(); // make items able to target a single enemy or party member
 
-			// Reusing MagicSpell from Magic.cs
-			List<byte> SpellIndex = new List<byte>();
-			var Spells = SpellNames.Select((text, i) => new MagicSpell // creat a list of all spells 
-			{
-				Data = Blob.FromInts(new int[1] { i+1 }), // spells are 1 based
-				Index = (byte)i,
-				Name = FF1Text.TextToBytes(text),
-			}).ToList();
-
-			Spells.RemoveAll(spell => SpellsToRemove.Contains(spell.Index)); // Remove the spells specified in SpellsToRemove
-			Spells.Shuffle(rng); // Shuffle all spells remaining, then assign to each item that can cast a spell
-
-			foreach (var item in Spells.Zip(ItemLists.AllMagicItem, (s, i) => new { Spell = s, Item = i }))
-			{
-				WriteItemSpellData(item.Spell, item.Item);
-			}
-
-		}
 	}
 }

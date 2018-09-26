@@ -7,10 +7,9 @@ namespace FF1Lib
 {
 	public class IncentiveData
 	{
-		public IncentiveData(MT19337 rng, 
-							IIncentiveFlags flags,
-							Dictionary<MapLocation, List<MapChange>> mapLocationRequirements)
+		public IncentiveData(MT19337 rng, IIncentiveFlags flags, OverworldMap map)
 		{
+			Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullLocationRequirements = map.FullLocationRequirements;
 			var forcedItemPlacements = ItemLocations.AllOtherItemLocations.ToList();
 			if (!flags.NPCItems) forcedItemPlacements.AddRange(ItemLocations.AllNPCFreeItemLocations);
 			if (!flags.NPCFetchItems) forcedItemPlacements.AddRange(ItemLocations.AllNPCFetchItemLocations);
@@ -270,17 +269,17 @@ namespace FF1Lib
 				forcedItemPlacements =
 						forcedItemPlacements
 							.Select(x => x.Address == ItemLocations.CanoeSage.Address
-									? new MapObject(ObjectId.CanoeSage, MapLocation.CresentLake, x.Item)
+									? new MapObject(ObjectId.CanoeSage, MapLocation.CrescentLake, x.Item)
 									: x).ToList();
 				itemLocationPool =
 						itemLocationPool
 							.Select(x => x.Address == ItemLocations.CanoeSage.Address
-									? new MapObject(ObjectId.CanoeSage, MapLocation.CresentLake, x.Item)
+									? new MapObject(ObjectId.CanoeSage, MapLocation.CrescentLake, x.Item)
 									: x).ToList();
 				incentiveLocationPool =
 						incentiveLocationPool
 							.Select(x => x.Address == ItemLocations.CanoeSage.Address
-									? new MapObject(ObjectId.CanoeSage, MapLocation.CresentLake, x.Item)
+									? new MapObject(ObjectId.CanoeSage, MapLocation.CrescentLake, x.Item)
 									: x).ToList();
 			}
 			if (flags.EarlySarda)
@@ -302,11 +301,11 @@ namespace FF1Lib
 								: x).ToList();
 			}
 
-			foreach(var item in forcedItemPlacements.Select(x => x.Item))
+			foreach (var item in forcedItemPlacements.Select(x => x.Item))
 			{
 				incentivePool.Remove(item);
 			}
-			
+
 			var validKeyLocations = new List<IRewardSource> { ItemLocations.ElfPrince };
 			var validBridgeLocations = new List<IRewardSource> { ItemLocations.KingConeria };
 			var validShipLocations = new List<IRewardSource> { ItemLocations.Bikke };
@@ -324,17 +323,26 @@ namespace FF1Lib
 					validKeyLocations = validKeyLocations.Where(x => !incentiveLocationPool.Any(y => y.Address == x.Address)).ToList();
 				}
 			}
-			
+
 			if (flags.NPCItems)
 			{
 				var everythingButCanoe = ~MapChange.Canoe;
-				var startingMapLocations = mapLocationRequirements.Where(x => x.Value.Any(y => y == MapChange.None)).Select(x => x.Key);
-				var validShipMapLocations = mapLocationRequirements.Where(x => x.Value.Any(y => MapChange.Bridge.HasFlag(y))).Select(x => x.Key);
-				var validCanoeMapLocations = mapLocationRequirements.Where(x => x.Value.Any(y => everythingButCanoe.HasFlag(y))).Select(x => x.Key);
-				validBridgeLocations = itemLocationPool.Where(x => startingMapLocations.Contains(x.MapLocation)).ToList();
-				validShipLocations = itemLocationPool.Where(x => validShipMapLocations.Contains(x.MapLocation)).ToList();
-				validCanoeLocations = itemLocationPool.Where(x => validCanoeMapLocations.Contains(x.MapLocation)).ToList();
-	
+				var everythingButOrbs = ~AccessRequirement.BlackOrb;
+				var startingPotentialAccess = map.StartingPotentialAccess;
+				var startingMapLocations = ItemPlacement.AccessibleMapLocations(startingPotentialAccess, MapChange.None, fullLocationRequirements);
+				var validShipMapLocations = ItemPlacement.AccessibleMapLocations(startingPotentialAccess | AccessRequirement.Crystal, MapChange.Bridge, fullLocationRequirements);
+				var validCanoeMapLocations = ItemPlacement.AccessibleMapLocations(everythingButOrbs, everythingButCanoe, fullLocationRequirements);
+
+				validBridgeLocations =
+					itemLocationPool.Where(x => startingMapLocations.Contains(x.MapLocation) &&
+						startingMapLocations.Contains((x as MapObject)?.SecondLocation ?? MapLocation.StartingLocation)).ToList();
+				validShipLocations =
+					itemLocationPool.Where(x => validShipMapLocations.Contains(x.MapLocation) &&
+						validShipMapLocations.Contains((x as MapObject)?.SecondLocation ?? MapLocation.StartingLocation)).ToList();
+				validCanoeLocations =
+					itemLocationPool.Where(x => validCanoeMapLocations.Contains(x.MapLocation) &&
+						validCanoeMapLocations.Contains((x as MapObject)?.SecondLocation ?? MapLocation.StartingLocation)).ToList();
+
 				var canoePlacementRank = rng.Between(1, incentivePool.Count);
 				var validCanoeIncentives = validCanoeLocations.Where(x => incentiveLocationPool.Any(y => y.Address == x.Address)).ToList();
 				if (incentivePool.Contains(Item.Canoe) && canoePlacementRank <= incentiveLocationPool.Count &&
@@ -347,7 +355,7 @@ namespace FF1Lib
 					validCanoeLocations = validCanoeLocations.Where(x => !incentiveLocationPool.Any(y => y.Address == x.Address)).ToList();
 				}
 			}
-			
+
 			ForcedItemPlacements = forcedItemPlacements.ToList();
 			IncentiveItems = incentivePool.ToList();
 

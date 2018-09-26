@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace FF1Lib
 {
-	public class Flags : IIncentiveFlags, IMapEditFlags
+	public class Flags : IIncentiveFlags, IMapEditFlags, IScaleFlags, IFloorShuffleFlags
 	{
 		// Character Groupings
 		private const int ITEMS = 0;
@@ -25,7 +25,16 @@ namespace FF1Lib
 		private const int CONVENIENCES = 14;
 		private const int BUG_FIXES = 15;
 		private const int ENEMY_BUG_FIXES = 16;
+		private const int SCALE = 17;
+		private const int ENEMY_SCALE_FACTOR = 18;
+		private const int PRICE_SCALE_FACTOR = 19;
+		private const int EXP_MULTIPLIER = 20;
+		private const int EXP_BONUS = 21;
+		private const int ENCOUNTER_RATE = 22;
+		private const int FORCED_PARTY_MEMBERS = 23;
 		private const int PROGRESSIVE_SCALE = 24;
+		private const int DUNGEON_ENCOUNTER_RATE = 25;
+		private const int BOSS_SCALE_FACTOR = 26;
 
 		[FlagString(Character = ITEMS, FlagBit = 1)]
 		public bool Shops { get; set; }
@@ -39,15 +48,19 @@ namespace FF1Lib
 		public bool RandomWares { get; set; } // Planned 2.x feature - random weapons and armor in shops
 		[FlagString(Character = ITEMS, FlagBit = 32)]
 		public bool RandomLoot { get; set; } // Planned 2.x feature - random non-quest-item treasures
-		
+
 		[FlagString(Character = ALT_GAME_MODE, FlagBit = 1)]
 		public bool ShardHunt { get; set; }
 		[FlagString(Character = ALT_GAME_MODE, FlagBit = 2)]
 		public bool ExtraShards { get; set; }
 		[FlagString(Character = ALT_GAME_MODE, FlagBit = 4)]
 		public bool TransformFinalFormation { get; set; }
-		[FlagString(Character = ALT_GAME_MODE, FlagBit = 16)]
+		[FlagString(Character = ALT_GAME_MODE, FlagBit = 8)]
 		public bool ChaosRush { get; set; }
+		[FlagString(Character = ALT_GAME_MODE, FlagBit = 16)]
+		public bool ShortToFR { get; set; }
+		[FlagString(Character = ALT_GAME_MODE, FlagBit = 32)]
+		public bool PreserveFiendRefights { get; set; }
 
 		[FlagString(Character = MAGIC, FlagBit = 1)]
 		public bool MagicShops { get; set; }
@@ -66,7 +79,11 @@ namespace FF1Lib
 		public bool EnemyFormationsUnrunnable { get; set; }
 		[FlagString(Character = ENCOUNTERS, FlagBit = 8)]
 		public bool EnemyFormationsSurprise { get; set; }
-		
+		[FlagString(Character = ENCOUNTERS, FlagBit = 16)]
+		public bool EnemyTrapTiles { get; set; }
+		[FlagString(Character = ENCOUNTERS, FlagBit = 32)]
+		public bool RandomTrapFormations { get; set; }
+
 		[FlagString(Character = BATTLES, FlagBit = 1)]
 		public bool EnemyScripts { get; set; }
 		[FlagString(Character = BATTLES, FlagBit = 2)]
@@ -85,14 +102,20 @@ namespace FF1Lib
 		[FlagString(Character = STANDARD_MAPS, FlagBit = 16)]
 		public bool TitansTrove { get; set; }
 		[FlagString(Character = STANDARD_MAPS, FlagBit = 32)]
-		public bool Floors { get; set; } // Planned x.x feature - interior floors shuffle
+		public bool ConfusedOldMen { get; set; }
 
 		[FlagString(Character = OVERWORLD_MAP, FlagBit = 1)]
 		public bool MapOpenProgression { get; set; }
 		[FlagString(Character = OVERWORLD_MAP, FlagBit = 2)]
-		public bool Entrances { get; set; } // Planned x.x feature - non-town entrance shuffle
+		public bool Entrances { get; set; }
 		[FlagString(Character = OVERWORLD_MAP, FlagBit = 4)]
-		public bool Towns { get; set; } // Planned x.x feature - town entrance shuffle
+		public bool Towns { get; set; }
+		[FlagString(Character = OVERWORLD_MAP, FlagBit = 8)]
+		public bool Floors { get; set; }
+		[FlagString(Character = OVERWORLD_MAP, FlagBit = 16)]
+		public bool AllowDeepCastles { get; set; }
+		[FlagString(Character = OVERWORLD_MAP, FlagBit = 32)]
+		public bool MapOpenProgressionExtended { get; set; }
 
 		[FlagString(Character = INCENTIVES_MAIN, FlagBit = 1)]
 		public bool IncentivizeFreeNPCs { get; set; }
@@ -102,7 +125,7 @@ namespace FF1Lib
 		public bool IncentivizeTail { get; set; }
 		[FlagString(Character = INCENTIVES_MAIN, FlagBit = 8)]
 		public bool IncentivizeFetchItems { get; set; }
-		
+
 		[FlagString(Character = INCENTIVES_CHESTS1, FlagBit = 1)]
 		public bool IncentivizeMarsh { get; set; }
 		[FlagString(Character = INCENTIVES_CHESTS1, FlagBit = 2)]
@@ -115,14 +138,14 @@ namespace FF1Lib
 		public bool IncentivizeOrdeals { get; set; }
 		[FlagString(Character = INCENTIVES_CHESTS1, FlagBit = 32)]
 		public bool IncentivizeSeaShrine { get; set; }
-		
+
 		[FlagString(Character = INCENTIVES_CHESTS2, FlagBit = 1)]
 		public bool IncentivizeConeria { get; set; }
 		[FlagString(Character = INCENTIVES_CHESTS2, FlagBit = 2)]
 		public bool IncentivizeMarshKeyLocked { get; set; }
 		[FlagString(Character = INCENTIVES_CHESTS2, FlagBit = 4)]
 		public bool IncentivizeSkyPalace { get; set; }
-		
+
 		[FlagString(Character = INCENTIVES_ITEMS1, FlagBit = 1)]
 		public bool IncentivizeMasamune { get; set; }
 		[FlagString(Character = INCENTIVES_ITEMS1, FlagBit = 2)]
@@ -148,7 +171,7 @@ namespace FF1Lib
 		public bool IncentivizeOffCastWeapon { get; set; }
 		[FlagString(Character = INCENTIVES_ITEMS2, FlagBit = 32)]
 		public bool IncentivizeOtherCastWeapon { get; set; }
-		
+
 		[FlagString(Character = ITEM_REQUIREMENTS, FlagBit = 1)]
 		public bool EarlySarda { get; set; }
 		[FlagString(Character = ITEM_REQUIREMENTS, FlagBit = 2)]
@@ -157,7 +180,7 @@ namespace FF1Lib
 		public bool CrownlessOrdeals { get; set; }
 		[FlagString(Character = ITEM_REQUIREMENTS, FlagBit = 32)]
 		public bool OnlyRequireGameIsBeatable { get; set; }
-		
+
 		[FlagString(Character = FILTHY_CASUALS, FlagBit = 1)]
 		public bool FreeBridge { get; set; }
 		[FlagString(Character = FILTHY_CASUALS, FlagBit = 2)]
@@ -165,10 +188,10 @@ namespace FF1Lib
 		[FlagString(Character = FILTHY_CASUALS, FlagBit = 4)]
 		public bool FreeOrbs { get; set; }
 		[FlagString(Character = FILTHY_CASUALS, FlagBit = 8)]
-		public bool VanillaStartingGold { get; set; }
+		public bool EnableCritNumberDisplay { get; set; }
 		[FlagString(Character = FILTHY_CASUALS, FlagBit = 32)]
 		public bool EasyMode { get; set; }
-		
+
 		[FlagString(Character = CONVENIENCES, FlagBit = 1)]
 		public bool SpeedHacks { get; set; }
 		[FlagString(Character = CONVENIENCES, FlagBit = 2)]
@@ -177,7 +200,6 @@ namespace FF1Lib
 		public bool Dash { get; set; }
 		[FlagString(Character = CONVENIENCES, FlagBit = 8)]
 		public bool BuyTen { get; set; }
-
 		[FlagString(Character = CONVENIENCES, FlagBit = 16)]
 		public bool IdentifyTreasures { get; set; }
 		[FlagString(Character = CONVENIENCES, FlagBit = 32)]
@@ -193,7 +215,7 @@ namespace FF1Lib
 		public bool SpellBugs { get; set; }
 		[FlagString(Character = BUG_FIXES, FlagBit = 16)]
 		public bool BlackBeltAbsorb { get; set; }
-		
+
 		[FlagString(Character = ENEMY_BUG_FIXES, FlagBit = 1)]
 		public bool EnemyStatusAttackBug { get; set; }
 		[FlagString(Character = ENEMY_BUG_FIXES, FlagBit = 2)]
@@ -203,17 +225,31 @@ namespace FF1Lib
 		[FlagString(Character = ENEMY_BUG_FIXES, FlagBit = 8)]
 		public bool ImproveTurnOrderRandomization { get; set; }
 
-		[FlagString(Character = 17, Multiplier = 0.1)]
-		public double EnemyScaleFactor { get; set; }
-		[FlagString(Character = 18, Multiplier = 0.1)]
-		public double PriceScaleFactor { get; set; }
-		[FlagString(Character = 19, Multiplier = 0.1)]
-		public double ExpMultiplier { get; set; }
-		[FlagString(Character = 20, Multiplier = 10)]
-		public int ExpBonus { get; set; }
-		[FlagString(Character = 21, Multiplier = 1)]
-		public int ForcedPartyMembers { get; set; }
+		[FlagString(Character = SCALE, FlagBit = 1)]
+		public bool StartingGold { get; set; }
+		[FlagString(Character = SCALE, FlagBit = 2)]
+		public bool WrapStatOverflow { get; set; }
+		[FlagString(Character = SCALE, FlagBit = 4)]
+		public bool WrapPriceOverflow { get; set; }
+		[FlagString(Character = SCALE, FlagBit = 8)]
+		public bool IncludeMorale { get; set; }
 
+		[FlagString(Character = ENEMY_SCALE_FACTOR, Multiplier = 0.1)]
+		public double EnemyScaleFactor { get; set; }
+		[FlagString(Character = BOSS_SCALE_FACTOR, Multiplier = 0.1)]
+		public double BossScaleFactor { get; set; }
+		[FlagString(Character = PRICE_SCALE_FACTOR, Multiplier = 0.1)]
+		public double PriceScaleFactor { get; set; }
+		[FlagString(Character = EXP_MULTIPLIER, Multiplier = 0.1)]
+		public double ExpMultiplier { get; set; }
+		[FlagString(Character = EXP_BONUS, Multiplier = 10)]
+		public int ExpBonus { get; set; }
+		[FlagString(Character = ENCOUNTER_RATE, Multiplier = 1)]
+		public double EncounterRate { get; set; }
+		[FlagString(Character = DUNGEON_ENCOUNTER_RATE, Multiplier = 1)]
+		public double DungeonEncounterRate { get; set; }
+		[FlagString(Character = FORCED_PARTY_MEMBERS, Multiplier = 1)]
+		public int ForcedPartyMembers { get; set; }
 		[FlagString(Character = PROGRESSIVE_SCALE, FlagBit = 7)]
 		public ProgressiveScaleMode ProgressiveScaleMode { get; set; }
 
@@ -223,13 +259,16 @@ namespace FF1Lib
 		public bool TeamSteak { get; set; }
 		public MusicShuffle Music { get; set; }
 
+		public bool AllowStartAreaDanager { get; set; } = false;
 
 		public bool MapCanalBridge => NPCItems || NPCFetchItems;
 		public bool MapOnracDock => MapOpenProgression;
 		public bool MapMirageDock => MapOpenProgression;
 		public bool MapConeriaDwarves => MapOpenProgression;
 		public bool MapVolcanoIceRiver => MapOpenProgression;
-		
+		public bool MapDwarvesNorthwest => MapOpenProgressionExtended;
+		public bool MapAirshipDock => MapOpenProgressionExtended;
+
 		public bool IncentivizeAdamant => IncentivizeFetchItems;
 		public bool IncentivizeRuby => (!EarlySage && !NPCItems) || IncentivizeFetchItems;
 		public bool IncentivizeCrown => !NPCFetchItems || IncentivizeFetchItems;
@@ -237,14 +276,14 @@ namespace FF1Lib
 		public bool IncentivizeSlab => !NPCFetchItems || IncentivizeFetchItems;
 		public bool IncentivizeBottle => !NPCFetchItems || IncentivizeFetchItems;
 
-		public bool IncentivizeFloater => true;
-		public bool IncentivizeBridge => !MapOpenProgression || IncentivizeFetchItems;
-		public bool IncentivizeLute => true;
+		public bool IncentivizeFloater => !FreeAirship;
+		public bool IncentivizeBridge => false;
+		public bool IncentivizeLute => !ShortToFR;
 		public bool IncentivizeShip => !MapOpenProgression || IncentivizeFetchItems;
 		public bool IncentivizeRod => true;
 		public bool IncentivizeCanoe => true;
 		public bool IncentivizeCube => true;
-		
+
 		public bool IncentivizeCrystal => IncentivizeFetchItems;
 		public bool IncentivizeHerb => IncentivizeFetchItems;
 		public bool IncentivizeKey => true;
@@ -252,7 +291,7 @@ namespace FF1Lib
 		public bool IncentivizeChime => true;
 		public bool IncentivizeOxyale => true;
 		public bool IncentivizeXcalber => false;
-		
+
 		public bool IncentivizeKingConeria => IncentivizeFreeNPCs;
 		public bool IncentivizePrincess => IncentivizeFreeNPCs;
 		public bool IncentivizeBikke => IncentivizeFreeNPCs;
@@ -260,7 +299,7 @@ namespace FF1Lib
 		public bool IncentivizeCanoeSage => IncentivizeFreeNPCs;
 		public bool IncentivizeCaravan => IncentivizeFreeNPCs;
 		public bool IncentivizeCubeBot => IncentivizeFreeNPCs;
-		
+
 		public bool IncentivizeFairy => IncentivizeFetchNPCs;
 		public bool IncentivizeAstos => IncentivizeFetchNPCs;
 		public bool IncentivizeMatoya => IncentivizeFetchNPCs;
@@ -268,7 +307,6 @@ namespace FF1Lib
 		public bool IncentivizeNerrick => IncentivizeFetchNPCs;
 		public bool IncentivizeLefein => IncentivizeFetchNPCs;
 		public bool IncentivizeSmith => IncentivizeFetchNPCs;
-		
 
 		public static Dictionary<string, FlagStringAttribute> GetFlagStringAttributes()
 		{

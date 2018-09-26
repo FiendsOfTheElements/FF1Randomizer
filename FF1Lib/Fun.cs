@@ -349,7 +349,7 @@ namespace FF1Lib
 			for (int i = 0; i < 8; ++i)
 			{
 				Data[0x31F85 + i * 2] = (byte)(xCoord - 0x10);            // X Coord of Character targeting cursor
-				Data[0x31F86 + i * 2] = (byte)(yCoord + 4 + (i * 0x1C));  // Y Coord of Character targeting cursor
+				Data[0x31F86 + i * 2] = (byte)(yCoord + 4 + ((i % 4) * 0x1C));  // Y Coord of Character targeting cursor
 				Data[0x31F76 + i * 2] = (byte)(0xA7 + (Math.Min(i, 4) % 4 * 0x10)); // Y Coord of Command Menu cursor (last four are identical)
 			}
 

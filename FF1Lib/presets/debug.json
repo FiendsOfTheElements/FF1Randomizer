@@ -1,58 +1,66 @@
 ﻿{
-	"Name": "Normal NPC",
+	"Name": "DEBUG",
 
 	"Flags": {
 
 		"Shops": true,
 		"Treasures": true,
 		"NPCItems": true,
-		"NPCFetchItems": false,
-		"RandomWares": false,
+		"NPCFetchItems": true,
+		"RandomWares": true,
+		"RandomWaresIncludesSpecialGear": false,
 		"RandomLoot": false,
 
 		"ShardHunt": false,
 		"ExtraShards": false,
 		"TransformFinalFormation": false,
 		"ChaosRush": false,
+		"ShortToFR": false,
+		"PreserveFiendRefights": false,
 
-		"MagicShops": true,
+		"MagicShops": false,
 		"MagicLevels": true,
 		"MagicPermissions": false,
-		"ItemMagic": false,
+		"ItemMagic": true,
 
 		"Rng": true,
-		"EnemyFormationsFrequency": false,
-		"EnemyFormationsUnrunnable": false,
-		"EnemyFormationsSurprise": false,
+		"EnemyFormationsFrequency": true,
+		"EnemyFormationsUnrunnable": true,
+		"EnemyFormationsSurprise": true,
+		"EnemyTrapTiles": true,
+		"RandomTrapFormations": true,
 
 		"EnemyScripts": true,
 		"EnemySkillsSpells": true,
 		"EnemyStatusAttacks": true,
-		"AllowUnsafePirates": false,
+		"AllowUnsafePirates": true,
 
 		"WarMECHMode": "Wandering4F",
 		"OrdealsPillars": true,
 		"SkyCastle4FTeleporters": true,
 		"TitansTrove": true,
-		"Floors": false,
+		"ConfusedOldMen": true,
+		"Floors": true,
+		"AllowDeepCastles": true,
 
 		"MapOpenProgression": true,
-		"Entrances": false,
-		"Towns": false,
+		"MapOpenProgressionExtended": true,
+		"Entrances": true,
+		"Towns": true,
 
 		"IncentivizeFreeNPCs": true,
 		"IncentivizeFetchNPCs": false,
-		"IncentivizeTail": true,
+		"IncentivizeTail": false,
 		"IncentivizeFetchItems": false,
 
-		"IncentivizeMarsh": true,
-		"IncentivizeEarth": true,
+		"IncentivizeMarsh": false,
+		"IncentivizeEarth": false,
 		"IncentivizeVolcano": false,
-		"IncentivizeIceCave": true,
-		"IncentivizeOrdeals": true,
-		"IncentivizeSeaShrine": true,
+		"IncentivizeIceCave": false,
+		"IncentivizeOrdeals": false,
+		"IncentivizeSeaShrine": false,
 
-		"IncentivizeConeria": true,
+		"IncentivizeConeria": false,
 		"IncentivizeMarshKeyLocked": false,
 		"IncentivizeSkyPalace": false,
 
@@ -63,11 +71,11 @@
 		"Incentivize65K": false,
 		"IncentivizeBad": false,
 
-		"IncentivizeDefCastArmor": true,
-		"IncentivizeOffCastArmor": true,
+		"IncentivizeDefCastArmor": false,
+		"IncentivizeOffCastArmor": false,
 		"IncentivizeOtherCastArmor": false,
 		"IncentivizeDefCastWeapon": false,
-		"IncentivizeOffCastWeapon": true,
+		"IncentivizeOffCastWeapon": false,
 		"IncentivizeOtherCastWeapon": false,
 
 		"EarlySarda": true,
@@ -78,13 +86,17 @@
 		"FreeBridge": false,
 		"FreeAirship": false,
 		"FreeOrbs": false,
-		"VanillaStartingGold": false,
+		"StartingGold": false,
+		"WrapStatOverflow": false,
+		"WrapPriceOverflow": false,
+		"IncludeMorale": false,
 		"EasyMode": false,
 
 		"SpeedHacks": true,
 		"NoPartyShuffle": true,
 		"Dash": true,
 		"BuyTen": true,
+		"EnableCritNumberDisplay": true,
 
 		"IdentifyTreasures": true,
 		"WaitWhenUnrunnable": true,
@@ -101,11 +113,14 @@
 		"ImproveTurnOrderRandomization": true,
 
 		"EnemyScaleFactor": 1.5,
-		"PriceScaleFactor": 3.0,
-		"ExpMultiplier": 2.5,
-		"ExpBonus": 200,
-		"ProgressiveScaleMode": 0,
-		"ForcedPartyMembers": 0
+		"BossScaleFactor": 1.5,
+		"PriceScaleFactor": 4.0,
+		"ExpMultiplier": 4.0,
+		"ExpBonus": 400,
+		"ProgressiveScaleMode": 1,
+		"EncounterRate": 15.0,
+		"DungeonEncounterRate": 15.0,
+		"ForcedPartyMembers": 2
 
 	}
 

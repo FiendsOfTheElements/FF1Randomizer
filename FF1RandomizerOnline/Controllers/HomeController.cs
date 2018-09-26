@@ -28,6 +28,19 @@ namespace FF1RandomizerOnline.Controllers
 
 			var betaString = _environment.IsDevelopment() ? " Beta" : "";
 			ViewData["Title"] = "FF1 Randomizer Online " + FF1Rom.Version + betaString;
+			ViewData["DebugOnlyPreset"] = _environment.IsDevelopment() ? "<a v-on:click.prevent=\"preset('DEBUG')\">DEBUG</a>," : "";
+
+			// Make this alpha only, maybe?
+			ViewData["BuildMeta"] = _environment.IsDevelopment() ?
+				@"<h4>
+					<b>WELCOME TO FFR DEVELOPMENT BUILDS - Good luck! You'll Need it!</b>
+					<ul>
+						<li>If you're surprised to see this message, perhaps you wanted <a href=""http://finalfantasyrandomizer.com"">http://finalfantasyrandomizer.com</a>.</li>
+						<li>FFR development websites can be updated literally anytime with no agenda or stability guarantees.</li>
+						<li>Features may appear and disappear as different developers work and refine the flags for them.</li>
+					</ul>
+				</h4>" : "";
+
 		}
 
 		public IActionResult Index()

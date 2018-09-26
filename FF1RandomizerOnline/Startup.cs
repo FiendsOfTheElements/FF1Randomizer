@@ -42,7 +42,6 @@ namespace FF1RandomizerOnline
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseBrowserLink();
             }
             else
             {

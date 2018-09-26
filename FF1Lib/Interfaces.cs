@@ -62,8 +62,9 @@
 	}
 	public interface IMapEditFlags : IItemPlacementFlags
 	{
-		bool MapOnracDock{ get; }
-		bool MapMirageDock{ get; }
+		bool MapAirshipDock { get; }
+		bool MapOnracDock { get; }
+		bool MapMirageDock { get; }
 		bool TitansTrove { get; }
 	}
 	public interface IItemPlacementFlags : IItemShuffleFlags, IVictoryConditionFlags
@@ -73,8 +74,9 @@
 		bool MapCanalBridge { get; }
 		bool MapConeriaDwarves { get; }
 		bool MapVolcanoIceRiver { get; }
+		bool MapDwarvesNorthwest { get; }
 	}
-	public interface IItemShuffleFlags 
+	public interface IItemShuffleFlags
 	{
 		bool Treasures { get; }
 		bool NPCItems { get; }
@@ -83,9 +85,26 @@
 		bool EarlySage { get; }
 		bool CrownlessOrdeals { get; }
 	}
+	public interface IScaleFlags
+	{
+		bool StartingGold { get; }
+		bool WrapPriceOverflow { get; }
+		bool WrapStatOverflow { get; }
+		double ExpMultiplier { get; }
+		double PriceScaleFactor { get; }
+	}
+	public interface IFloorShuffleFlags
+	{
+		bool Entrances { get; }
+		bool Towns { get; }
+		bool Floors { get; }
+		bool AllowDeepCastles { get; }
+		bool AllowStartAreaDanager { get; }
+	}
 	public interface IVictoryConditionFlags
 	{
 		bool OnlyRequireGameIsBeatable { get; }
 		bool ShardHunt { get; }
+		bool ShortToFR { get; }
 	}
 }

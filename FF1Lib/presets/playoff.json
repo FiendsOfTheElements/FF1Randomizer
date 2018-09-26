@@ -1,5 +1,5 @@
 ﻿{
-	"Name": "Finals",
+	"Name": "Playoff Style",
 
 	"Flags": {
 
@@ -8,12 +8,15 @@
 		"NPCItems": true,
 		"NPCFetchItems": true,
 		"RandomWares": false,
+		"RandomWaresIncludesSpecialGear": false,
 		"RandomLoot": false,
 
 		"ShardHunt": false,
 		"ExtraShards": false,
 		"TransformFinalFormation": false,
 		"ChaosRush": false,
+		"ShortToFR": false,
+		"PreserveFiendRefights": false,
 
 		"MagicShops": false,
 		"MagicLevels": true,
@@ -24,6 +27,8 @@
 		"EnemyFormationsFrequency": true,
 		"EnemyFormationsUnrunnable": true,
 		"EnemyFormationsSurprise": true,
+		"EnemyTrapTiles": false,
+		"RandomTrapFormations": false,
 
 		"EnemyScripts": true,
 		"EnemySkillsSpells": true,
@@ -32,11 +37,14 @@
 
 		"WarMECHMode": "Vanilla",
 		"OrdealsPillars": true,
-		"SkyCastle4FTeleporters": true,
+		"SkyCastle4FTeleporters": false,
 		"TitansTrove": true,
+		"ConfusedOldMen": false,
 		"Floors": false,
+		"AllowDeepCastles": false,
 
 		"MapOpenProgression": true,
+		"MapOpenProgressionExtended": false,
 		"Entrances": false,
 		"Towns": false,
 
@@ -78,13 +86,17 @@
 		"FreeBridge": false,
 		"FreeAirship": false,
 		"FreeOrbs": false,
-		"VanillaStartingGold": false,
+		"StartingGold": false,
+		"WrapStatOverflow": false,
+		"WrapPriceOverflow": false,
+		"IncludeMorale": false,
 		"EasyMode": false,
 
 		"SpeedHacks": true,
 		"NoPartyShuffle": true,
 		"Dash": true,
 		"BuyTen": true,
+		"EnableCritNumberDisplay": true,
 
 		"IdentifyTreasures": true,
 		"WaitWhenUnrunnable": true,
@@ -101,10 +113,13 @@
 		"ImproveTurnOrderRandomization": true,
 
 		"EnemyScaleFactor": 2.0,
+		"BossScaleFactor": 2.0,
 		"PriceScaleFactor": 4.0,
 		"ExpMultiplier": 2.4,
 		"ExpBonus": 80,
 		"ProgressiveScaleMode": 0,
+		"EncounterRate": 30.0,
+		"DungeonEncounterRate": 30.0,
 		"ForcedPartyMembers": 2
 
 	}

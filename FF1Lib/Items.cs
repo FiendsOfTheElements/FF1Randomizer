@@ -264,47 +264,6 @@ namespace FF1Lib
 
 		BlackOrb = 202
 	}
-
-	// These aren't actual values from the game code, just placeholders
-	public enum MapLocation
-	{
-		StartingLocation,
-		ConeriaTown,
-		ConeriaCastle,
-		TempleOfFiends,
-		MatoyasCave,
-		Pravoka,
-		DwarfCave,
-		ElflandTown,
-		ElflandCastle,
-		NorthwestCastle,
-		MarshCave,
-		Melmond,
-		EarthCave,
-		TitansTunnelEast,
-		TitansTunnelWest,
-		SardasCave,
-		CresentLake,
-		GurguVolcano,
-		IceCave,
-		CastleOrdeals,
-		Cardia1,
-		Cardia2,
-		Cardia3,
-		Cardia4,
-		Cardia5,
-		Cardia6,
-		Caravan,
-		Gaia,
-		Onrac,
-		Waterfall,
-		Lefein,
-		MirageTower,
-		BridgeLocation,
-		ShipLocation,
-		CanalLocation,
-		AirshipLocation
-	}
 	[Flags]
 	public enum MapChange
 	{
