@@ -240,9 +240,36 @@ namespace FF1Lib
 			treasurePool.Shuffle(rng);
 			itemLocationPool.Shuffle(rng);
 
+			if (flags.RandomTreasures)
+			{
+				treasurePool = treasurePool.Select(treasure => GenerateItem(rng)).ToList();
+			}
+
 			var leftovers = treasurePool.Zip(itemLocationPool, (treasure, location) => NewItemPlacement(location, treasure));
 			placedItems.AddRange(leftovers);
 			return placedItems;
+		}
+
+		public static Item GenerateItem(MT19337 rng)
+		{
+			const int ItemThreshold = 15;
+			const int WeaponThreshold = ItemThreshold + 25;
+			const int ArmorThreshold = WeaponThreshold + 25;
+			var type = rng.Between(0, 99);
+			if (type < ItemThreshold)
+			{
+				return (Item)rng.Between((int)Item.Heal, (int)Item.Soft);
+			} else if (type < WeaponThreshold)
+			{
+				return (Item)rng.Between((int)Item.WoodenNunchucks, (int)Item.Masamune);
+			} else if (type < ArmorThreshold)
+			{
+				return (Item)rng.Between((int)Item.Cloth, (int)Item.ProRing);
+			} else
+			{
+				return (Item)rng.Between((int)Item.Gold10, (int)Item.Gold65000);
+			}
+
 		}
 
 		public static IRewardSource NewItemPlacement(IRewardSource copyFromSource, Item newItem)

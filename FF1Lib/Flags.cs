@@ -134,6 +134,8 @@ namespace FF1Lib
 		public bool IncentivizeTail { get; set; }
 		[FlagString(Character = INCENTIVES_MAIN, FlagBit = 8)]
 		public bool IncentivizeFetchItems { get; set; }
+		[FlagString(Character = INCENTIVES_MAIN, FlagBit = 16)]
+		public bool RandomTreasures { get; set; }
 
 		[FlagString(Character = INCENTIVES_CHESTS1, FlagBit = 1)]
 		public bool IncentivizeMarsh { get; set; }
