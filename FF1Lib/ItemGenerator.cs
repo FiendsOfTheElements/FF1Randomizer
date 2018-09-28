@@ -34,36 +34,28 @@ namespace FF1Lib
 				Item.ZeusGauntlets, Item.OpalGauntlets, Item.ProRing,
 			};
 
-		private List<Item> _pool;
+		private List<Item> _items, _weapons, _armor, _gold;
 
 		public ItemGenerator(IItemPlacementFlags flags, IncentiveData incentives, List<Item> treasurePool)
 		{
-			List<Item> items = new List<Item>(ItemLists.AllConsumables);
-			List<Item> gold = new List<Item>(ItemLists.AllGoldTreasure).Where(g => treasurePool.Contains(g)).ToList();
-
-			List<Item> weapons = WeaponPool;
-			List<Item> armor = WeaponPool;
-			armor.Add(Item.ProCape);
-			armor.Add(Item.Ribbon);
-
-			// Type:          Random Chance:    Vanilla Chance:
-			// Consumable     0.143             0.153...
-			// Weapon         0.143             0.150...
-			// Armor          0.286             0.218...
-			// Gold           0.429             0.479...
-			_pool = new List<Item>();
-			_pool.AddRange(items);
-			_pool.AddRange(weapons);
-			_pool.AddRange(armor);
-			_pool.AddRange(armor);
-			_pool.AddRange(gold);
-			_pool.AddRange(gold);
-			_pool.AddRange(gold);
+			_items = ItemLists.AllConsumables.ToList();
+			_gold = new List<Item>(ItemLists.AllGoldTreasure).Where(g => treasurePool.Contains(g)).ToList();
+			_weapons = WeaponPool;
+			_armor = ArmorPool;
+			_armor.Add(Item.ProCape);
+			_armor.Add(Item.Ribbon);
 		}
 
 		public Item GenerateItem(MT19337 rng)
 		{
-			return _pool.PickRandom(rng);
+			// Type:          Vanilla Chance:  Random Chance:
+			// Consumable      36 / 234         32 / 234
+			// Weapon          35 / 234         32 / 234
+			// Armor           51 / 234         64 / 234
+			// Gold           112 / 234        106 / 234
+			int dart = rng.Between(0, 233);
+			var pool = dart < 32 ? _items : dart < 64 ? _weapons : dart < 128 ? _armor : _gold;
+			return pool.PickRandom(rng);
 		}
 
 	}
