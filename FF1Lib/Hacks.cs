@@ -574,11 +574,7 @@ namespace FF1Lib
 		public void EnableCardiaTreasures(MT19337 rng, Map cardia)
 		{
 			// Assign items to the chests.
-			var locations = ItemLocations.CardiaBonusItemLocations.Select(location => ItemPlacement.NewItemPlacement(location, ItemPlacement.GenerateItem(rng)));
-			foreach(var reward in locations)
-			{
-				reward.Put(this);
-			}
+			// Incomplete.
 
 			// Put the chests in Cardia
 			var room = Map.CreateEmptyRoom((3, 4), 1);

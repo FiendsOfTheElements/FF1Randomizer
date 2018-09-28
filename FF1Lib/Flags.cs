@@ -54,9 +54,9 @@ namespace FF1Lib
 		[FlagString(Character = ITEMS, FlagBit = 8)]
 		public bool NPCFetchItems { get; set; }
 		[FlagString(Character = ITEMS, FlagBit = 16)]
-		public bool RandomWares { get; set; } // Planned 2.x feature - random weapons and armor in shops
+		public bool RandomWares { get; set; }
 		[FlagString(Character = ITEMS, FlagBit = 32)]
-		public bool RandomLoot { get; set; } // Planned 2.x feature - random non-quest-item treasures
+		public bool RandomLoot { get; set; }
 
 		[FlagString(Character = ALT_GAME_MODE, FlagBit = 1)]
 		public bool ShardHunt { get; set; }
@@ -134,8 +134,6 @@ namespace FF1Lib
 		public bool IncentivizeTail { get; set; }
 		[FlagString(Character = INCENTIVES_MAIN, FlagBit = 8)]
 		public bool IncentivizeFetchItems { get; set; }
-		[FlagString(Character = INCENTIVES_MAIN, FlagBit = 16)]
-		public bool RandomTreasures { get; set; }
 
 		[FlagString(Character = INCENTIVES_CHESTS1, FlagBit = 1)]
 		public bool IncentivizeMarsh { get; set; }

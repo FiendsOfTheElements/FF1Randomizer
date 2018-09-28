@@ -75,7 +75,8 @@
 		bool MapConeriaDwarves { get; }
 		bool MapVolcanoIceRiver { get; }
 		bool MapDwarvesNorthwest { get; }
-		bool RandomTreasures { get; }
+		bool RandomWares { get; }
+		bool RandomLoot { get; }
 	}
 	public interface IItemShuffleFlags
 	{
