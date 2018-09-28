@@ -143,8 +143,7 @@ namespace FF1Lib
 		public MapObject(MapObject copyFromRewardSource, Item item)
 			: base(copyFromRewardSource, item)
 		{
-			var copyFromMapObject = copyFromRewardSource as MapObject;
-			if (copyFromMapObject == null)
+			if (!(copyFromRewardSource is MapObject copyFromMapObject))
 				return;
 
 			_objectRoutineAddress = copyFromMapObject._objectRoutineAddress;

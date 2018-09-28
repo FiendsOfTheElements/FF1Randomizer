@@ -8,7 +8,6 @@ namespace FF1Lib.procgen
 {
 	class RectilinearGenerator : IMapGeneratorEngine
 	{
-		private readonly byte SentinelDead = 0xFE;
 		private readonly byte SentinelAlive = 0xFF;
 
 		private readonly int LocalMax = 48;

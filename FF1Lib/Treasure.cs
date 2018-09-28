@@ -253,15 +253,14 @@ namespace FF1Lib
 
 		private void MoveShipToRewardSource(MapLocation vanillaMapLocation)
 		{
-			Blob location = null;
-			if (!ItemLocations.ShipLocations.TryGetValue(vanillaMapLocation, out location))
+			if (!ItemLocations.ShipLocations.TryGetValue(vanillaMapLocation, out Blob location))
 			{
 				location = Dock.Coneria;
-			    Console.WriteLine($"Ship at {vanillaMapLocation} defaults to Coneria.");
+				Console.WriteLine($"Ship at {vanillaMapLocation} defaults to Coneria.");
 			}
-            else
+			else
 			{
-			    Console.WriteLine($"Ship at {vanillaMapLocation}.");
+				Console.WriteLine($"Ship at {vanillaMapLocation}.");
 			}
 
 			Put(0x3000 + UnsramIndex.ShipX, location);
