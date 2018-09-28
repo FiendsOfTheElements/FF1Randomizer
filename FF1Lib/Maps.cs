@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using RomUtilities;
+using static FF1Lib.FF1Text;
 
 namespace FF1Lib
 {
@@ -385,15 +386,15 @@ namespace FF1Lib
 			// Change the dialogue.
 			var dialogueStrings = new List<Blob>
 			{
-				FF1Text.TextToBytes("I. aM. WarMECH."),
-				Blob.Concat(FF1Text.TextToBytes("I think you ought to know,"), new byte[] { 0x05 }, FF1Text.TextToBytes("I'm feeling very depressed.")),
-				FF1Text.TextToBytes("Bite my shiny metal ass!"),
-				Blob.Concat(FF1Text.TextToBytes("Put down your weapons."), new byte[] { 0x05 }, FF1Text.TextToBytes("You have 15 seconds to comply.")),
-				// Blob.Concat(FF1Text.TextToBytes("I'm sorry "), new byte[] { 0x03 }, FF1Text.TextToBytes(","), new byte[] { 0x05 }, FF1Text.TextToBytes("I'm afraid I can't do that.")),
-				FF1Text.TextToBytes("rEsIsTaNcE iS fUtIlE."),
-				FF1Text.TextToBytes("Hasta la vista, baby."),
-				FF1Text.TextToBytes("NoOo DiSaSsEmBlE!"),
-				Blob.Concat(FF1Text.TextToBytes("Bring back life form."), new byte[] { 0x05 }, FF1Text.TextToBytes("Priority one."), new byte[] { 0x05 }, FF1Text.TextToBytes("All other priorities rescinded."))
+				TextToBytes("I. aM. WarMECH."),
+				Blob.Concat(TextToBytes("I think you ought to know,", delimiter: Delimiter.Line), TextToBytes("I'm feeling very depressed.")),
+				TextToBytes("Bite my shiny metal ass!"),
+				Blob.Concat(TextToBytes("Put down your weapons.", delimiter: Delimiter.Line), TextToBytes("You have 15 seconds to comply.")),
+				// Blob.Concat(TextToBytes("I'm sorry "), new byte[] { 0x03 }, TextToBytes(",", delimiter: Delimiter.Line), TextToBytes("I'm afraid I can't do that.")),
+				TextToBytes("rEsIsTaNcE iS fUtIlE."),
+				TextToBytes("Hasta la vista, baby."),
+				TextToBytes("NoOo DiSaSsEmBlE!"),
+				Blob.Concat(TextToBytes("Bring back life form.", delimiter: Delimiter.Line), TextToBytes("Priority one.", delimiter: Delimiter.Line), TextToBytes("All other priorities rescinded."))
 			};
 			ushort freeTextSpacePointer = 0xB487;
 			int pointerTarget = 0x20000 + freeTextSpacePointer;
