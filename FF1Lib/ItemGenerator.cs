@@ -38,10 +38,11 @@ namespace FF1Lib
 
 		public ItemGenerator(IItemPlacementFlags flags, IncentiveData incentives, List<Item> treasurePool)
 		{
+			// Make sure we copy all the input lists so we don't modify anything static.
 			_items = ItemLists.AllConsumables.ToList();
 			_gold = new List<Item>(ItemLists.AllGoldTreasure).Where(g => treasurePool.Contains(g)).ToList();
-			_weapons = WeaponPool;
-			_armor = ArmorPool;
+			_weapons = WeaponPool.ToList();
+			_armor = ArmorPool.ToList();
 			_armor.Add(Item.ProCape);
 			_armor.Add(Item.Ribbon);
 		}
