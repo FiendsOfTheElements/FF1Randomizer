@@ -155,7 +155,7 @@ namespace FF1Lib
 						var excludeItemsFromRandomShops = flags.Treasures
 							? incentivesData.ForcedItemPlacements.Select(x => x.Item).Concat(incentivesData.IncentiveItems).ToList()
 							: new List<Item>();
-						shopItemLocation = ShuffleShops(rng, flags.EnemyStatusAttacks, flags.RandomWares, excludeItemsFromRandomShops);
+						shopItemLocation = ShuffleShops(rng, flags.ImmediatePureAndSoftRequired, flags.RandomWares, excludeItemsFromRandomShops);
 					}
 
 					if (flags.Treasures)

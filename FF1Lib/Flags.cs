@@ -308,6 +308,8 @@ namespace FF1Lib
 		public bool IncentivizeLefein => IncentivizeFetchNPCs;
 		public bool IncentivizeSmith => IncentivizeFetchNPCs;
 
+		public bool ImmediatePureAndSoftRequired => EnemyStatusAttacks || Entrances || MapOpenProgression;
+
 		public static Dictionary<string, FlagStringAttribute> GetFlagStringAttributes()
 		{
 			var allProps =
