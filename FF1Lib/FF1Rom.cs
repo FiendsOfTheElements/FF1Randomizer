@@ -220,7 +220,7 @@ namespace FF1Lib
 							excludeItemsFromRandomShops.AddRange(ItemLists.SpecialGear);
 						}
 
-						shopItemLocation = ShuffleShops(rng, flags.EnemyStatusAttacks, flags.RandomWares, excludeItemsFromRandomShops);
+						shopItemLocation = ShuffleShops(rng, flags.ImmediatePureAndSoftRequired, flags.RandomWares, excludeItemsFromRandomShops);
 					}
 
 					if (flags.Treasures)
