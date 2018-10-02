@@ -39,7 +39,7 @@
 
 		"WarMECHMode": "Wandering4F",
 		"OrdealsPillars": true,
-		"SkyCastle4FTeleporters": true,
+		"SkyCastle4FTeleporters": false,
 		"TitansTrove": true,
 		"ConfusedOldMen": true,
 		"AllowUnsafeMelmond": false,

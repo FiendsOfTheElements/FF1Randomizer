@@ -9,7 +9,7 @@
 		"NPCFetchItems": true,
 		"RandomWares": true,
 		"RandomWaresIncludesSpecialGear": false,
-		"RandomLoot": false,
+		"RandomLoot": true,
 		"WeaponPermissions": true,
 		"ArmorPermissions": true,
 
@@ -39,7 +39,7 @@
 
 		"WarMECHMode": "Wandering4F",
 		"OrdealsPillars": true,
-		"SkyCastle4FTeleporters": true,
+		"SkyCastle4FTeleporters": false,
 		"TitansTrove": true,
 		"ConfusedOldMen": true,
 		"AllowUnsafeMelmond": true,
@@ -84,6 +84,7 @@
 		"EarlySarda": true,
 		"EarlySage": true,
 		"CrownlessOrdeals": true,
+		"ShuffleObjectiveNPCs": true,
 		"OnlyRequireGameIsBeatable": false,
 
 		"FreeBridge": false,

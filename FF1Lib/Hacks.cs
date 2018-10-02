@@ -570,5 +570,21 @@ namespace FF1Lib
 
 			Put(offset, Blob.FromUShorts(newPermissions.ToArray()));
 		}
+
+		public void EnableCardiaTreasures(MT19337 rng, Map cardia)
+		{
+			// Assign items to the chests.
+			// Incomplete.
+
+			// Put the chests in Cardia
+			var room = Map.CreateEmptyRoom((3, 4), 1);
+			room[1, 1] = 0x75;
+			cardia.Put((0x2A, 0x07), room);
+			cardia[0x0B, 0x2B] = (byte)Tile.Doorway;
+
+			room[1, 1] = 0x76;
+			cardia.Put((0x26, 0x1C), room);
+			cardia[0x20, 0x27] = (byte)Tile.Doorway;
+		}
 	}
 }

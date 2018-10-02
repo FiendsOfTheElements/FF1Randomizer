@@ -240,6 +240,12 @@ namespace FF1Lib
 			treasurePool.Shuffle(rng);
 			itemLocationPool.Shuffle(rng);
 
+			if (flags.RandomLoot)
+			{
+				ItemGenerator generator = new ItemGenerator(flags, incentivesData, treasurePool);
+				treasurePool = treasurePool.Select(treasure => generator.GenerateItem(rng)).ToList();
+			}
+
 			var leftovers = treasurePool.Zip(itemLocationPool, (treasure, location) => NewItemPlacement(location, treasure));
 			placedItems.AddRange(leftovers);
 			return placedItems;

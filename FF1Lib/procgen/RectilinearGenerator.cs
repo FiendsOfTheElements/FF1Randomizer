@@ -8,7 +8,6 @@ namespace FF1Lib.procgen
 {
 	class RectilinearGenerator : IMapGeneratorEngine
 	{
-		private readonly byte SentinelDead = 0xFE;
 		private readonly byte SentinelAlive = 0xFF;
 
 		private readonly int LocalMax = 48;
@@ -74,10 +73,12 @@ namespace FF1Lib.procgen
 				});
 
 				// Place rooms once we have a viable floorplan, and then we'll check again after.
-				PlaceRoomsAndChests(rng, complete, results[reqs.Floor].Select(el => el.Up()).Where(el => el.Tile == Tile.InsideWall).ToList(), reqs);
+				Dictionary<Tile, int> requiredTiles = reqs.Portals.ToDictionary(portal => (Tile)portal, portal => 1);
+				requiredTiles[Tile.Doorway] = PlaceRoomsAndChests(rng, complete, results[reqs.Floor].Select(el => el.Up()).Where(el => el.Tile == Tile.InsideWall).ToList(), reqs);
+				requiredTiles[reqs.Floor] = 500;
 
-				results = FloodFill(complete.Map, entrance.Coord, new List<Tile> { reqs.Floor, Tile.WarpUp, Tile.Doorway });
-				if (results[reqs.Floor].Count() < 500 || results[Tile.Doorway].Count() < 3)
+				results = FloodFill(complete.Map, entrance.Coord, requiredTiles.Keys);
+				if (requiredTiles.Any(tileReq => tileReq.Value > results[tileReq.Key].Count))
 				{
 					Console.WriteLine("Failing due to invalid room placement.");
 					continue;
@@ -133,13 +134,13 @@ namespace FF1Lib.procgen
 			return room;
 		}
 
-		private void PlaceRoomsAndChests(MT19337 rng, CompleteMap complete, List<MapElement> possibilties, MapRequirements reqs)
+		private int PlaceRoomsAndChests(MT19337 rng, CompleteMap complete, List<MapElement> possibilties, MapRequirements reqs)
 		{
 			int sanity = 0;
 			while (++sanity < 100)
 			{
 				var rooms = complete.Map;
-				int roomCount = rng.Between(2, 4);
+				var roomsAdded = 0;
 
 				var positions = new List<MapElement>();
 				var potentialEntrances = possibilties.Where(el => el.Left().Tile == Tile.InsideWall && el.Right().Tile == Tile.InsideWall
@@ -161,6 +162,7 @@ namespace FF1Lib.procgen
 
 					var roomTarget = (positions[i].X - doorX, positions[i].Y - dimensions.h + 1);
 					rooms.Put(roomTarget, room);
+					++roomsAdded;
 				}
 
 				foreach (var door in rooms.Where(el => el.Tile == Tile.Door))
@@ -192,7 +194,7 @@ namespace FF1Lib.procgen
 
 
 				complete.Map = rooms;
-				return;
+				return roomsAdded;
 			}
 			throw new InsaneException("Couldn't place rooms.");
 		}

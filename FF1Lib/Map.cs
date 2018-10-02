@@ -178,6 +178,43 @@ namespace FF1Lib
 			return rVal;
 		}
 
+		public static byte[,] CreateEmptyRoom((int w, int h) dimensions, int doorX)
+		{
+			if (dimensions.w < 3 || dimensions.h < 3)
+				throw new ArgumentOutOfRangeException();
+
+
+			byte[,] room = new byte[dimensions.h, dimensions.w];
+			for (int y = 1; y < dimensions.h - 2; ++y)
+			{
+				for (int x = 1; x < dimensions.w - 1; ++x)
+				{
+					room[y, x] = (byte)Tile.RoomCenter;
+				}
+			}
+			for (int x = 1; x < dimensions.w - 1; ++x)
+			{
+				room[0, x] = (byte)Tile.RoomBackCenter;
+				room[dimensions.h - 2, x] = (byte)Tile.RoomFrontCenter;
+				room[dimensions.h - 1, x] = (byte)Tile.InsideWall;
+			}
+			for (int y = 1; y < dimensions.h - 1; ++y)
+			{
+				room[y, 0] = (byte)Tile.RoomLeft;
+				room[y, dimensions.w - 1] = (byte)Tile.RoomRight;
+			}
+			room[0, 0] = (byte)Tile.RoomBackLeft;
+			room[0, dimensions.w - 1] = (byte)Tile.RoomBackRight;
+			room[dimensions.h - 2, 0] = (byte)Tile.RoomFrontLeft;
+			room[dimensions.h - 2, dimensions.w - 1] = (byte)Tile.RoomFrontRight;
+			room[dimensions.h - 1, 0] = (byte)Tile.InsideWall;
+			room[dimensions.h - 1, dimensions.w - 1] = (byte)Tile.InsideWall;
+
+			room[dimensions.h - 1, doorX] = (byte)Tile.Door;
+
+			return room;
+		}
+
 		public byte[] GetCompressedData()
 		{
 			var compressedData = new List<byte>();

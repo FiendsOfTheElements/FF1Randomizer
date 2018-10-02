@@ -54,9 +54,9 @@ namespace FF1Lib
 		[FlagString(Character = ITEMS, FlagBit = 8)]
 		public bool NPCFetchItems { get; set; }
 		[FlagString(Character = ITEMS, FlagBit = 16)]
-		public bool RandomWares { get; set; } // Planned 2.x feature - random weapons and armor in shops
+		public bool RandomWares { get; set; }
 		[FlagString(Character = ITEMS, FlagBit = 32)]
-		public bool RandomLoot { get; set; } // Planned 2.x feature - random non-quest-item treasures
+		public bool RandomLoot { get; set; }
 
 		[FlagString(Character = ALT_GAME_MODE, FlagBit = 1)]
 		public bool ShardHunt { get; set; }
@@ -405,6 +405,8 @@ namespace FF1Lib
 		public bool IncentivizeNerrick => IncentivizeFetchNPCs;
 		public bool IncentivizeLefein => IncentivizeFetchNPCs;
 		public bool IncentivizeSmith => IncentivizeFetchNPCs;
+
+		public bool ImmediatePureAndSoftRequired => EnemyStatusAttacks || Entrances || MapOpenProgression;
 
 		public static Dictionary<string, FlagStringAttribute> GetFlagStringAttributes()
 		{
