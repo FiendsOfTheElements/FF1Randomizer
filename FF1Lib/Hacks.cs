@@ -523,7 +523,7 @@ namespace FF1Lib
 		{
 			// Instead of looping through the 'check to see if characters are alive' thing, just set it to 4 and then remove the loop.
 			// EA EA EA EA EA EA (sports)
-			Put(0x2DED6, Blob.FromHex("A204A004EAEAEAEAEAEAEAEAEAEAEAEAEA"));
+			Put(0x2DEC6, Blob.FromHex("A204A004EAEAEAEAEAEAEAEAEAEAEAEAEA"));
 			
 		}
 

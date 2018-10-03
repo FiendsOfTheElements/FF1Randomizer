@@ -470,7 +470,7 @@ namespace FF1Lib
 				EnableCanalBridge();
 			}
 
-			if (flags.NoDanMode && false)
+			if (flags.NoDanMode)
 			{
 				NoDanMode();
 			}
@@ -658,7 +658,7 @@ namespace FF1Lib
 			Blob PlaySFX_MenuSel = Blob.FromHex("EB84");
 			Blob PlaySFX_MenuMove = Blob.FromHex("0485");
 			Blob Box = Blob.FromHex("7F82");
-			Blob DrawOne_Text = Blob.FromHex("B082");
+			Blob DrawOne_Text = Blob.FromHex("AF82");
 			Blob Call_DrawComplexString = Blob.FromHex("E482");
 			Blob DrawOne_Chars = Blob.FromHex("5B83");
 			Blob MenuFrame = Blob.FromHex("2C85");
@@ -685,7 +685,7 @@ namespace FF1Lib
 			PutInBank(0x1E, 0x80BF, TurnMenuScreenOn_ClearOAM);
 
 			// DoPartyGen_OnCharacter
-			PutInBank(0x1E, 0x80C1, Blob.FromHex("A6678A4A4A4A4AA8B91081859020A480200F82A524D054A525F0023860A520290FC561F0EB8561C900F0E5A667BD0003186901C906D002A9FF9D0003A8C8B914812490F0E8A901853720A8824CD180"));
+			PutInBank(0x1E, 0x80C1, Blob.FromHex("A6678A4A4A4A4AA8B91081859020A480200F82A524D054A525F0023860A520290FC561F0EB8561C900F0E5A667BD0003186901C906D002A9FF9D0003A8C8B914812490F0E8A901853720B0824CD180"));
 
 			// lut_AllowedClasses, defaults to all but None and the anything for the rest
 			PutInBank(0x1E, 0x8110, Blob.FromHex("FDFFFFFF"));
