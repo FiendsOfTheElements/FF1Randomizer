@@ -242,8 +242,9 @@ namespace FF1Lib
 
 			if (flags.RandomLoot)
 			{
-				ItemGenerator generator = new ItemGenerator(flags, incentivesData, treasurePool);
+				ItemGenerator generator = new ItemGenerator(flags.WorldWealth, treasurePool);
 				treasurePool = treasurePool.Select(treasure => generator.GenerateItem(rng)).ToList();
+				generator.Dump();
 			}
 
 			var leftovers = treasurePool.Zip(itemLocationPool, (treasure, location) => NewItemPlacement(location, treasure));

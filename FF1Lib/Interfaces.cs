@@ -77,6 +77,7 @@
 		bool MapDwarvesNorthwest { get; }
 		bool RandomWares { get; }
 		bool RandomLoot { get; }
+		WorldWealth WorldWealth { get; }
 	}
 	public interface IItemShuffleFlags
 	{

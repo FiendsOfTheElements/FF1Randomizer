@@ -6,57 +6,89 @@ using System.Text;
 
 namespace FF1Lib
 {
+	public enum WorldWealth
+	{
+		High,
+		Normal,
+		Low,
+		Impoverished,
+	}
+
 	public class ItemGenerator
 	{
-		// Similar to vanilla, but without duplicates, and with CatClaw
-		private static readonly List<Item> WeaponPool =
-			new List<Item> {
-				Item.ShortSword, Item.LargeKnife, Item.Sabre, Item.LongSword,
-				Item.GreatAxe, Item.Falchon, Item.SilverKnife, Item.SilverHammer,
-				Item.SilverAxe, Item.FlameSword, Item.IceSword, Item.DragonSword,
-				Item.GiantSword, Item.SunSword, Item.CoralSword, Item.WereSword,
-				Item.RuneSword, Item.PowerRod, Item.LightAxe, Item.HealRod,
-				Item.MageRod, Item.Defense, Item.WizardRod, Item.Vorpal,
-				Item.CatClaw, Item.ThorHammer, Item.BaneSword, Item.Katana,
-				Item.Xcalber, Item.Masamune, Item.IronStaff,
-			};
+		// Type:          Vanilla Chance:  Vanilla Percent:
+		// Weapon          35 / 234        15
+		// Armor           51 / 234        22
+		// Consumable      36 / 234        15
+		// Gold           112 / 234        48
+		private static readonly List<int>[] Percentages = {
+			new List<int> { 10, 25, 15, 10, 40 },
+			new List<int> {  7, 15, 18, 15, 45 },
+			new List<int> {  4, 10, 25, 20, 41 },
+			new List<int> {  1,  9, 40, 25, 25 },
+		};
 
-		// Similar to vanilla, but without duplicates or wood, and with Buckler
-		private static readonly List<Item> ArmorPool =
-			new List<Item> {
-				Item.Cloth, Item.IronArmor, Item.FlameArmor, Item.IceArmor,
-				Item.OpalArmor, Item.DragonArmor, Item.Copper, Item.Silver,
-				Item.Gold, Item.Opal, Item.WhiteShirt, Item.BlackShirt,
-				Item.IronShield, Item.SilverShield, Item.FlameShield, Item.IceShield,
-				Item.OpalShield, Item.AegisShield, Item.Buckler, Item.ProCape,
-				Item.Cap, Item.IronHelm, Item.SilverHelm, Item.OpalHelm,
-				Item.HealHelm, Item.Ribbon, Item.IronGauntlets, Item.SilverGauntlets,
-				Item.ZeusGauntlets, Item.OpalGauntlets, Item.ProRing,
-			};
+		private enum Tier
+		{
+			Legendary,
+			Rare,
+			Common,
+			Consumable,
+			Gold
+		}
 
-		private List<Item> _items, _weapons, _armor, _gold;
+		private List<List<Item>> _tiers = new List<List<Item>>();
+		private List<int> _percentages;
+		private Dictionary<Tier, int> _results;
 
-		public ItemGenerator(IItemPlacementFlags flags, IncentiveData incentives, List<Item> treasurePool)
+		public ItemGenerator(WorldWealth wealth, List<Item> treasurePool)
 		{
 			// Make sure we copy all the input lists so we don't modify anything static.
-			_items = ItemLists.AllConsumables.ToList();
-			_gold = new List<Item>(ItemLists.AllGoldTreasure).Where(g => treasurePool.Contains(g)).ToList();
-			_weapons = WeaponPool.ToList();
-			_armor = ArmorPool.ToList();
-			_armor.Add(Item.ProCape);
-			_armor.Add(Item.Ribbon);
+			_tiers.Add(ItemLists.LegendaryTier.ToList());
+
+			List<Item> rares = ItemLists.RareTier.ToList();
+			rares.AddRange(treasurePool.Where(x => x >= Item.Gold20000 && x <= Item.Gold65000));
+			_tiers.Add(rares);
+
+			_tiers.Add(ItemLists.CommonTier.ToList());
+
+			_tiers.Add(ItemLists.AllConsumables.ToList());
+
+			_tiers.Add(treasurePool.Where(x => x >= Item.Gold10 && x < Item.Gold20000).ToList());
+
+			_percentages = Percentages[(int)wealth];
+
+			_results = new Dictionary<Tier, int>()
+			{
+				{Tier.Legendary, 0},
+				{Tier.Rare, 0},
+				{Tier.Common, 0},
+				{Tier.Consumable, 0},
+				{Tier.Gold, 0},
+			};
+
+			System.Diagnostics.Debug.Assert(_tiers.Count == _percentages.Count);
 		}
 
 		public Item GenerateItem(MT19337 rng)
 		{
-			// Type:          Vanilla Chance:  Random Chance:
-			// Consumable      36 / 234         32 / 234
-			// Weapon          35 / 234         32 / 234
-			// Armor           51 / 234         64 / 234
-			// Gold           112 / 234        106 / 234
-			int dart = rng.Between(0, 233);
-			var pool = dart < 32 ? _items : dart < 64 ? _weapons : dart < 128 ? _armor : _gold;
-			return pool.PickRandom(rng);
+			int dart = rng.Between(1, 100);
+			for (int i = 0; i < _tiers.Count; ++i)
+			{
+				dart -= _percentages[i];
+				if (dart <= 0)
+				{
+					_results[(Tier)i]++;
+					return _tiers[i].PickRandom(rng);
+				}
+			}
+
+			throw new InsaneException("No tier for item.");
+		}
+
+		public void Dump()
+		{
+			Console.WriteLine($"Generated Tiers: Legendary[{_results[Tier.Legendary]}] Rare[{_results[Tier.Rare]}] Common[{_results[Tier.Common]}] Items[{_results[Tier.Consumable]}] Gold[{ _results[Tier.Gold]}]");
 		}
 
 	}

@@ -43,6 +43,7 @@ namespace FF1Lib
 		private const int SCALE_CLAMPING = 32;
 		private const int PROCEDURAL_GENERATION = 33;
 		private const int FORMATION = 34;
+		private const int WEALTH = 35;
 
 
 		[FlagString(Character = ITEMS, FlagBit = 1)]
@@ -350,6 +351,9 @@ namespace FF1Lib
 
 		[FlagString(Character = FORMATION, FlagBit = 3)]
 		public FormationShuffleModeEnum FormationShuffleMode { get; set; }
+
+		[FlagString(Character = WEALTH, FlagBit = 3)]
+		public WorldWealth WorldWealth { get; set; }
 
 		public bool ModernBattlefield { get; set; }
 		public bool FunEnemyNames { get; set; }
