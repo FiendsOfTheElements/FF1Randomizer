@@ -137,17 +137,16 @@ namespace FF1Lib
 		}
 
 		private readonly List<byte> AllowedClassBitmasks = new List<byte> {
-			/*  .byte $02       ;value for FF, class None.
-             * lut_ClassMask:
-             *       ;0=FI,1=TH,  BB,  RM,  WM,  BM
-             *   .byte $80, $40, $20, $10, $08, $04
+			/*   lut_ClassMask:
+             *       ;0=FI,1=TH,  BB,  RM,  WM,  BM, None
+             *   .byte $80, $40, $20, $10, $08, $04, $02
 			 */
 			          0x80,0x40,0x20,0x10,0x08,0x04,0x02};
 
 		void updateCharacterFromOptions(int slotNumber, bool forced, IList<FF1Class> options, MT19337 rng)
 		{
 			const int lut_PtyGenBuf = 0x784AA;       // offset for party generation buffer LUT
-			const int lut_AllowedClasses = 0x78128;  // offset for allowed classes per slot LUT
+			const int lut_AllowedClasses = 0x78110;  // offset for allowed classes per slot LUT
 
 			var i = slotNumber - 1;
 

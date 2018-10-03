@@ -154,12 +154,6 @@ PtyGen_DrawScreen:
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-; bits to check in lut_AllowedClasses.
-; look up using class id.
-  .byte $02       ;value for FF, class None.
-lut_ClassMask:
-      ;0=FI,1=TH,  BB,  RM,  WM,  BM
-  .byte $80, $40, $20, $10, $08, $04
 
 DoPartyGen_OnCharacter:
   @allowedmask = btltmp
@@ -208,8 +202,12 @@ DoPartyGen_OnCharacter:
           LDA #$FF
       : STA ptygen_class, X
         TAY
+		INY                       ; since the indicies are off by 1 to accomidate for class 0xFF
         LDA lut_ClassMask,Y
-        BIT @allowedmask           ; Z = allowedmask & bit for this class.
+        CPY #$FF
+        BNE :+
+          LDA #$02
+      : BIT @allowedmask           ; Z = allowedmask & bit for this class.
         BEQ @retry                 ; retry if disallowed.
 
       LDA #$01
@@ -236,9 +234,23 @@ DoPartyGen_OnCharacter:
 lut_AllowedClasses:
 .BYTE %11111101, %11111111, %11111111, %11111111
 
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;  DoNameInput  [around $812C :: 0x7813C]
+;;  lut_ClassMask  [$8128 :: 0x78138] 
+;;   bits to check in lut_AllowedClasses.
+;;   look up using class id, None is handeled separately 
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+lut_ClassMask:
+      ;0=FI,1=TH,  BB,  RM,  WM,  BM
+  .byte $80, $40, $20, $10, $08, $04
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;;  DoNameInput  [$812C :: 0x7813C]
 ;;   identical to original
 ;;
 ;;    Does the name input screen.  Draw the screen, gets the name, etc, etc.
@@ -409,7 +421,7 @@ DoNameInput:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;  PtyGen_Frame  [around $820F :: 0x7821F]
+;;  PtyGen_Frame  [$820F :: 0x7821F]
 ;;    identical to original
 ;;
 ;;    Does the typical frame stuff for the Party Gen screen
@@ -436,7 +448,7 @@ PtyGen_Frame:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;  CharName_Frame  [around $822A :: 0x7823A]
+;;  CharName_Frame  [$822A :: 0x7823A]
 ;;   identical to original
 ;;
 ;;    Does typical frame stuff for the Character naming screen
@@ -465,7 +477,7 @@ CharName_Frame:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;  PtyGen_Joy  [around $824C :: 0x7825C]
+;;  PtyGen_Joy  [$824C :: 0x7825C]
 ;;   identical to original
 ;;
 ;;    Updates Joypad data and plays button related sound effects for the Party
@@ -497,7 +509,7 @@ PtyGen_Joy:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;  PtyGen_DrawBoxes  [around $826C :: 0x7827C]
+;;  PtyGen_DrawBoxes  [$826C :: 0x7827C]
 ;;   identical to original
 ;;
 ;;    Draws the 4 boxes for the Party Generation screen
@@ -540,7 +552,7 @@ PtyGen_DrawBoxes:
 
 str_classNone:
      .BYTE $97, $3C, $A8, $FF, $FF, $FF, $FF, $00             ; "None   "
-
+	 97B2B1A8FFFFFFFF00
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -651,6 +663,7 @@ PtyGen_DrawOneText:
     STA ret_bank
 
     JMP DrawComplexString   ; then draw another complex string -- and exit!
+
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
