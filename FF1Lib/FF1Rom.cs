@@ -102,6 +102,7 @@ namespace FF1Lib
 			flags.ExperimentalFloorGeneration = true;
 			flags.DungeonEncounterRate = 0;
 			*/
+			/*
 			if (flags.ExperimentalFloorGeneration)
 			{
 				MapRequirements reqs = new MapRequirements
@@ -147,6 +148,7 @@ namespace FF1Lib
 				overworldMap.PutStandardTeleport(TeleportIndex.EarthCave2, teleporters.EarthCave2, OverworldTeleportIndex.EarthCave1);
 				maps[(int)MapId.EarthCaveB2] = earthB2.Map;
 			}
+			*/
 
 			if (flags.ModernBattlefield)
 			{
@@ -248,12 +250,12 @@ namespace FF1Lib
 				ShuffleMagicLevels(rng, flags.MagicPermissions);
 			}
 
-			if (flags.WeaponPermissions)
+			if (flags.WeaponPermissions && false)
 			{
 				ShuffleWeaponPermissions(rng);
 			}
 
-			if (flags.ArmorPermissions)
+			if (flags.ArmorPermissions && false)
 			{
 				ShuffleArmorPermissions(rng);
 			}
