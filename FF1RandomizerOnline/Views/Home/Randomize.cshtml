@@ -154,7 +154,7 @@
 							<br />&nbsp;
 						</div>
 						<div class="checkbox-cell" title="Treasure Hunt alternate gameplay mode. Collect 16 of a random Treasure Item to activate the BLACK ORB."><input v-model="ShardHunt" :disabled="ChaosRush" type="checkbox" asp-for="Flags.ShardHunt" /> <label :style="ChaosRush ? { color: 'grey'} : {}" asp-for="Flags.ShardHunt">Treasure Hunt</label></div>
-						<div class="checkbox-cell" title="A larger hunt for the hardcore hunter. You will now need between 24 and 30 of the Treasure Item."><input v-model="ExtraShards" :disabled="ChaosRush || !ShardHunt" type="checkbox" asp-for="Flags.ExtraShards" /> <label class="indent" :style="(ChaosRush || !ShardHunt) ? { color: 'grey'} : {}" asp-for="Flags.ExtraShards">Extra Treasure</label></div>
+						<div class="checkbox-cell" title="A larger hunt for the hardcore hunter. You will now need between 24 and 30 of the Treasure Item."><input v-model="ExtraShards" :disabled="ChaosRush || !ShardHunt" type="checkbox" asp-for="Flags.ExtraShards" /> <label :style="(ChaosRush || !ShardHunt) ? { color: 'grey'} : {}" asp-for="Flags.ExtraShards">Extra Treasure</label></div>
 						<br />&nbsp;
 						<br />&nbsp;
 						<br />&nbsp;
@@ -168,14 +168,14 @@
 							Randomly pick one of four new final bosses to replace the legendary Chaos! Take heed though; they can be more than a match for all but the mightiest Warriors.
 							<br />&nbsp;
 						</div>
-						<div class="checkbox-cell" title="Replace the Final Battle against Chaos with a different challenge."><input v-model="TransformFinalFormation" type="checkbox" asp-for="Flags.TransformFinalFormation" /> <label class="indent" asp-for="Flags.TransformFinalFormation">Alternate Final Boss <b v-if="ChaosRush && TransformFinalFormation" title="Beware - losing one of these alternate final battles at the end of a long ToFR can be rage inducing." style="color:orange">⚠</b></label></div>
+						<div class="checkbox-cell" title="Replace the Final Battle against Chaos with a different challenge."><input v-model="TransformFinalFormation" type="checkbox" asp-for="Flags.TransformFinalFormation" /> <label asp-for="Flags.TransformFinalFormation">Alternate Final Boss <b v-if="ChaosRush && TransformFinalFormation" title="Beware - losing one of these alternate final battles at the end of a long ToFR can be rage inducing." style="color:orange">⚠</b></label></div>
 						<div>
 							<br />
 							Jump straight from the Black Orb to the Final Battle! You may choose to keep the fiend refight tiles - two on each side of the path to Chaos.
 							<br />&nbsp;
 						</div>
-						<div class="checkbox-cell" title="Black Orb teleports to the final floor. You will begin with the LUTE if you wish to fill the air with beautiful music."><input v-model="ShortToFR" type="checkbox" asp-for="Flags.ShortToFR" /> <label class="indent" asp-for="Flags.ShortToFR">Shorten ToFR</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">New!</a>)</small></div>
-						<div class="checkbox-cell" title="Keep the fiend refight tiles split between the two avenues on the final floor."><input :disabled="!ShortToFR" v-model="PreserveFiendRefights" type="checkbox" asp-for="Flags.PreserveFiendRefights" /> <label :style="!ShortToFR ? { color: 'grey'} : {}" class="indent" asp-for="Flags.PreserveFiendRefights">Include Fiend Tiles</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">New!</a>)</small></div>
+						<div class="checkbox-cell" title="Black Orb teleports to the final floor. You will begin with the LUTE if you wish to fill the air with beautiful music."><input v-model="ShortToFR" type="checkbox" asp-for="Flags.ShortToFR" /> <label asp-for="Flags.ShortToFR">Shorten ToFR</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">New!</a>)</small></div>
+						<div class="checkbox-cell" title="Keep the fiend refight tiles split between the two avenues on the final floor."><input :disabled="!ShortToFR" v-model="PreserveFiendRefights" type="checkbox" asp-for="Flags.PreserveFiendRefights" /> <label :style="!ShortToFR ? { color: 'grey'} : {}" asp-for="Flags.PreserveFiendRefights">Include Fiend Tiles</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">New!</a>)</small></div>
 						<br />&nbsp;
 						<br />&nbsp;
 					</div>
