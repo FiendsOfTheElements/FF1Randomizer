@@ -465,8 +465,10 @@ namespace FF1Lib
 
 			PartyComposition(rng, flags);
 
-			PubReplaceClinic(rng);
-
+			if (flags.RecruitmentMode)
+			{
+				PubReplaceClinic(rng);
+			}
 
 			if (flags.MapCanalBridge)
 			{

@@ -12,6 +12,7 @@
 		"RandomLoot": true,
 		"WeaponPermissions": true,
 		"ArmorPermissions": true,
+		"RecruitmentMode": true,
 
 		"ShardHunt": false,
 		"ExtraShards": false,
