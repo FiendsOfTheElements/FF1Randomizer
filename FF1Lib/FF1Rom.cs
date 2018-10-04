@@ -222,7 +222,7 @@ namespace FF1Lib
 							excludeItemsFromRandomShops.AddRange(ItemLists.SpecialGear);
 						}
 
-						shopItemLocation = ShuffleShops(rng, flags.ImmediatePureAndSoftRequired, flags.RandomWares, excludeItemsFromRandomShops);
+						shopItemLocation = ShuffleShops(rng, flags.ImmediatePureAndSoftRequired, flags.RandomWares, excludeItemsFromRandomShops, flags.WorldWealth);
 					}
 
 					if (flags.Treasures)
