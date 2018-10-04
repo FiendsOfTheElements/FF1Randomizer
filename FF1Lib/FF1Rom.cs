@@ -13,7 +13,7 @@ namespace FF1Lib
 	// ReSharper disable once InconsistentNaming
 	public partial class FF1Rom : NesRom
 	{
-		public const string Version = "2.4.0";
+		public const string Version = "2.5.0";
 
 		public const int RngOffset = 0x7F100;
 		public const int BattleRngOffset = 0x7FCF1;
