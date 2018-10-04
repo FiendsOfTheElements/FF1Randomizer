@@ -320,7 +320,6 @@
 			<div class="section tab-pane" id="party">
 				<div class="col-xs-12">
 					<h4>Party Composition (Any entire rows left unchecked default to free selection)</h4>
-					<div class="col-xs-12">&nbsp; </div>
 					<div class="col-xs-12">
 						<table>
 						<tr>
@@ -379,6 +378,14 @@
 							<td><input v-model="NONE_CLASS4" type="checkbox" asp-for="Flags.NONE_CLASS4" /></td>
 						</tr>
 						</table>
+						<div class="col-xs-12">&nbsp; </div>
+					</div>
+				</div>
+				<div class="col-xs-12">
+					<h4>Tavern Recruitment</h4>
+					<div class="col-xs-12">
+						<p>Enable Tavern Recruitment to unlock the ability to build a party as you go!</p>
+						<div class="slider-cell" title="Clinics are now PUBs with Light Warriors for Hire!"><input v-model="RecruitmentMode" type="checkbox" asp-for="Flags.RecruitmentMode" /> <label asp-for="Flags.RecruitmentMode">Tavern Recruitment Mode</label></div>
 					</div>
 				</div>
 			</div>

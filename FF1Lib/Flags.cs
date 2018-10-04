@@ -338,6 +338,8 @@ namespace FF1Lib
 		public bool WeaponPermissions { get; set; }
 		[FlagString(Character = PARTY_EXTRA2, FlagBit = 4)]
 		public bool ArmorPermissions { get; set; }
+		[FlagString(Character = PARTY_EXTRA2, FlagBit = 8)]
+		public bool RecruitmentMode { get; set; }
 
 		[FlagString(Character = SCALE_CLAMPING, FlagBit = 1)]
 		public bool ClampMinimumStatScale { get; set; }
