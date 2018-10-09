@@ -16,23 +16,34 @@ namespace FF1Lib
 
 	public class ItemGenerator
 	{
-		// Type:          Vanilla Chance:  Vanilla Percent:
+		// Type:          Vanilla Count:
+		// Unique (Masa)       1
+		// Legendary Weapon    4
+		// Legendary Armor    12
+		// Rare Weapon        17
+		// Rare Armor         16
+		// Common Weapon      35 - 1 - 4 - 17 = 13
+		// Common Armor       51 - 12 - 16    = 23
 		// Weapon          35 / 234        15
 		// Armor           51 / 234        22
 		// Consumable      36 / 234        15
 		// Gold           112 / 234        48
 		private static readonly List<int>[] Ratios = {
-			new List<int> { 10, 25, 15, 10, 40 },
-			new List<int> {  7, 15, 18, 15, 45 },
-			new List<int> {  4, 10, 25, 20, 41 },
-			new List<int> {  1,  9, 40, 25, 25 },
+			new List<int> {  1,  6, 18, 20, 20,  8, 15, 20,  90 },
+			new List<int> {  1,  4, 12, 17, 16, 13, 23, 36, 112 },
+			new List<int> {  1,  3,  9, 12, 12, 20, 35, 36, 105 },
+			new List<int> {  0,  2,  8, 12, 12, 25, 40, 36, 100 },
 		};
 
 		private enum Tier
 		{
-			Legendary,
-			Rare,
-			Common,
+			Unique,
+			LegendaryWeapon,
+			LegendaryArmor,
+			RareWeapon,
+			RareArmor,
+			CommonWeapon,
+			CommonArmor,
 			Consumable,
 			Gold
 		}
@@ -47,9 +58,13 @@ namespace FF1Lib
 			// Make sure we copy all the input lists so we don't modify anything static.
 			List<List<Item>> tiers = new List<List<Item>>
 			{
-				ItemLists.LegendaryTier.Where(item => treasurePool.Remove(item)).ToList(),
-				ItemLists.RareTier.Where(item => treasurePool.Remove(item)).ToList(),
-				ItemLists.CommonTier.Where(item => treasurePool.Remove(item)).ToList(),
+				ItemLists.UberTier.Where(item => treasurePool.Remove(item)).ToList(),
+				ItemLists.LegendaryWeaponTier.Where(item => treasurePool.Remove(item)).ToList(),
+				ItemLists.LegendaryArmorTier.Where(item => treasurePool.Remove(item)).ToList(),
+				ItemLists.RareWeaponTier.Where(item => treasurePool.Remove(item)).ToList(),
+				ItemLists.RareArmorTier.Where(item => treasurePool.Remove(item)).ToList(),
+				ItemLists.CommonWeaponTier.Where(item => treasurePool.Remove(item)).ToList(),
+				ItemLists.CommonArmorTier.Where(item => treasurePool.Remove(item)).ToList(),
 				ItemLists.AllConsumables.Where(item => treasurePool.Remove(item)).ToList(),
 				treasurePool.Where(x => x >= Item.Gold10 && x <= Item.Gold65000).ToList(),
 			};

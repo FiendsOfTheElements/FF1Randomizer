@@ -18,27 +18,40 @@ namespace FF1Lib
 			Item.Slab, Item.Chime, Item.Bottle, Item.Ruby
 		};
 
-		public static readonly IReadOnlyCollection<Item> LegendaryTier =
+		public static readonly IReadOnlyCollection<Item> UberTier =
 		new List<Item> {
-			Item.Vorpal, Item.Katana, Item.Xcalber, Item.Masamune,
-			Item.OpalArmor, Item.DragonArmor, Item.Opal, Item.OpalShield,
-			Item.AegisShield, Item.OpalHelm, Item.Ribbon, Item.Ribbon,
-			Item.OpalGauntlets,
+			Item.Masamune,
 		};
 
-		public static readonly IReadOnlyCollection<Item> RareTier =
+		public static readonly IReadOnlyCollection<Item> LegendaryWeaponTier =
+		new List<Item> {
+			Item.Vorpal, Item.Katana, Item.Xcalber,
+		};
+
+		public static readonly IReadOnlyCollection<Item> LegendaryArmorTier =
+		new List<Item> {
+			Item.OpalArmor, Item.DragonArmor, Item.Opal, Item.OpalShield,
+			Item.OpalShield, Item.AegisShield, Item.OpalHelm, Item.Ribbon,
+			Item.Ribbon, Item.Ribbon, Item.OpalGauntlets, Item.OpalGauntlets,
+		};
+
+		public static readonly IReadOnlyCollection<Item> RareWeaponTier =
 		new List<Item> {
 			Item.FlameSword, Item.IceSword, Item.DragonSword, Item.GiantSword,
 			Item.SunSword, Item.CoralSword, Item.WereSword, Item.RuneSword,
 			Item.LightAxe, Item.HealRod, Item.MageRod, Item.Defense, 
 			Item.WizardRod, Item.CatClaw, Item.ThorHammer, Item.BaneSword,
-			Item.SteelArmor, Item.FlameArmor, Item.IceArmor, Item.Gold,
-			Item.WhiteShirt, Item.BlackShirt, Item.FlameShield, Item.IceShield,
-			Item.ProCape, Item.HealHelm, Item.ZeusGauntlets, Item.PowerGauntlets,
-			Item.ProRing, 
 		};
 
-		public static readonly IReadOnlyCollection<Item> CommonTier =
+		public static readonly IReadOnlyCollection<Item> RareArmorTier =
+		new List<Item> {
+			Item.SteelArmor, Item.FlameArmor, Item.IceArmor, Item.Gold,
+			Item.WhiteShirt, Item.BlackShirt, Item.FlameShield, Item.IceShield,
+			Item.ProCape, Item.ProCape, Item.HealHelm,
+			Item.ZeusGauntlets, Item.PowerGauntlets, Item.ProRing, Item.ProRing,
+		};
+
+		public static readonly IReadOnlyCollection<Item> CommonWeaponTier =
 		new List<Item>
 		{
 			Item.WoodenNunchucks, Item.SmallKnife, Item.WoodenRod,
@@ -46,6 +59,11 @@ namespace FF1Lib
 			Item.Scimitar, Item.IronNunchucks, Item.LargeKnife, Item.IronStaff,
 			Item.Sabre, Item.LongSword, Item.GreatAxe, Item.Falchon, Item.SilverKnife,
 			Item.SilverSword, Item.SilverHammer, Item.SilverAxe, Item.PowerRod,
+		};
+
+		public static readonly IReadOnlyCollection<Item> CommonArmorTier =
+		new List<Item>
+		{
 			Item.Cloth, Item.WoodenArmor, Item.ChainArmor, Item.IronArmor, Item.SilverArmor,
 			Item.Copper, Item.Silver, Item.WoodenShield, Item.IronShield, Item.SilverShield,
 			Item.Buckler, Item.Cap, Item.WoodenHelm, Item.IronHelm, Item.SilverHelm,

@@ -245,7 +245,8 @@ namespace FF1Lib
 				// We want to leave out anything incentivized (and thus already placed), but
 				// add all the other stuff that you can't find in vanilla.
 				var randomTreasure = treasurePool.ToList();
-				randomTreasure.AddRange(ItemLists.CommonTier);
+				randomTreasure.AddRange(ItemLists.CommonWeaponTier);
+				randomTreasure.AddRange(ItemLists.CommonArmorTier);
 				randomTreasure.Add(Item.CatClaw);
 				randomTreasure.Add(Item.SteelArmor);
 
