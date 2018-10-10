@@ -1,0 +1,56 @@
+﻿@addTagHelper *, BlazorStrap
+@page "/Randomize"
+
+<div>
+	<BlazorNav IsTabs>
+		<BlazorNavLink onclick="@ActivateShuffle" IsActive="@(activeTab == "Shuffle")">Shuffle</BlazorNavLink>
+		<BlazorNavLink onclick="@ActivateTreasures" IsActive="@(activeTab == "Treasures")">Treasures</BlazorNavLink>
+	</BlazorNav>
+	<TabContent>
+		<TabPane IsOpen="@(activeTab == "Shuffle")">
+			<div class="col-xs-4">
+				<div class="checkbox-cell"><input type="checkbox" id="shopsCheckbox" /> <label for="shopsCheckbox">Shops</label></div>
+			</div>
+			<div class="col-xs-4">
+				<div class="checkbox-cell"><input type="checkbox" id="enemyScriptsCheckbox" /> <label for="enemyScriptsCheckbox">Enemy Scripts</label></div>
+			</div>
+		</TabPane>
+		<TabPane IsOpen="@(activeTab == "Treasures")">
+			<div class="col-xs-4">
+				<h4></h4>
+				<div class="col-xs-12">
+					<div class="checkbox-cell" title="If unchecked, forces vanilla Treasure Chests"><input v-model="Treasures" type="checkbox" asp-for="Flags.Treasures" /><label asp-for="Flags.Treasures"></label></div>
+				</div>
+			</div>
+			<div class="col-xs-4" style="border-left: 1px solid black;" :style="!Treasures ? { color: 'grey'} : {}">
+				<h4></h4>
+				<div class="col-xs-12">
+				</div>
+			</div>
+			<div class="col-xs-4" style="border-left: 1px solid black;" :style="!Treasures ? { color: 'grey'} : {}">
+				<h4></h4>
+				<div class="col-xs-12">
+				</div>
+			</div>
+		</TabPane>
+	</TabContent>
+</div>
+
+@functions
+{
+
+	private string activeTab = "Shuffle";
+
+	void ActivateShuffle(UIMouseEventArgs e)
+	{
+		activeTab = "Shuffle";
+		StateHasChanged();
+	}
+
+	void ActivateTreasures(UIMouseEventArgs e)
+	{
+		activeTab = "Treasures";
+		StateHasChanged();
+	}
+
+}
