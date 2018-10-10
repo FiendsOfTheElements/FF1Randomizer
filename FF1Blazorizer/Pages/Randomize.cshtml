@@ -1,43 +1,26 @@
 ﻿@addTagHelper *, BlazorStrap
 @page "/Randomize"
+@using FF1Lib
 
 <div>
+	<input type="text" value="@Flags.EncodeFlagsText(MyFlags.Flags)"/>
 	<BlazorNav IsTabs>
 		<BlazorNavLink onclick="@ActivateShuffle" IsActive="@(activeTab == "Shuffle")">Shuffle</BlazorNavLink>
 		<BlazorNavLink onclick="@ActivateTreasures" IsActive="@(activeTab == "Treasures")">Treasures</BlazorNavLink>
 	</BlazorNav>
 	<TabContent>
 		<TabPane IsOpen="@(activeTab == "Shuffle")">
-			<div class="col-xs-4">
-				<div class="checkbox-cell"><input type="checkbox" id="shopsCheckbox" /> <label for="shopsCheckbox">Shops</label></div>
-			</div>
-			<div class="col-xs-4">
-				<div class="checkbox-cell"><input type="checkbox" id="enemyScriptsCheckbox" /> <label for="enemyScriptsCheckbox">Enemy Scripts</label></div>
-			</div>
+			<CheckBox Id="shopsCheckbox" bind-Value="@MyFlags.Shops">Shops</CheckBox>
+			<CheckBox Id="enemyScriptsCheckbox" bind-Value="@MyFlags.EnemyScripts">Enemy Scripts</CheckBox>
 		</TabPane>
 		<TabPane IsOpen="@(activeTab == "Treasures")">
-			<div class="col-xs-4">
-				<h4></h4>
-				<div class="col-xs-12">
-					<div class="checkbox-cell" title="If unchecked, forces vanilla Treasure Chests"><input v-model="Treasures" type="checkbox" asp-for="Flags.Treasures" /><label asp-for="Flags.Treasures"></label></div>
-				</div>
-			</div>
-			<div class="col-xs-4" style="border-left: 1px solid black;" :style="!Treasures ? { color: 'grey'} : {}">
-				<h4></h4>
-				<div class="col-xs-12">
-				</div>
-			</div>
-			<div class="col-xs-4" style="border-left: 1px solid black;" :style="!Treasures ? { color: 'grey'} : {}">
-				<h4></h4>
-				<div class="col-xs-12">
-				</div>
-			</div>
 		</TabPane>
 	</TabContent>
 </div>
 
 @functions
 {
+	private ViewModelFlags MyFlags { get; set; }
 
 	private string activeTab = "Shuffle";
 
@@ -51,6 +34,12 @@
 	{
 		activeTab = "Treasures";
 		StateHasChanged();
+	}
+
+	protected override void OnInit()
+	{
+		MyFlags = new ViewModelFlags();
+		MyFlags.PropertyChanged += (sender, args) => StateHasChanged();
 	}
 
 }

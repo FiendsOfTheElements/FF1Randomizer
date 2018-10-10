@@ -1,0 +1,24 @@
+﻿<div class="col-xs-4">
+	<div class="checkbox-cell"><input type="checkbox" id="@Id" onchange="@onchange"/> <label for="@Id">@ChildContent</label></div>
+</div>
+
+@functions
+{
+	[Parameter]
+	private bool Value { get; set; }
+	[Parameter]
+	private Action<bool> ValueChanged { get; set; }
+
+	void onchange(UIChangeEventArgs e)
+	{
+		Value = (bool)e.Value;
+		ValueChanged(Value);
+	}
+
+	[Parameter]
+	private string Id { get; set; }
+
+	[Parameter]
+	private RenderFragment ChildContent { get; set; }
+
+}

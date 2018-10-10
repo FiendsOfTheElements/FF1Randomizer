@@ -80,7 +80,7 @@ namespace FF1Lib
 				Flags.RandomWares = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomWares"));
 			}
-		}// Planned 2.x feature - random weapons and armor in shops
+		} // Planned 2.x feature - random weapons and armor in shops
 		public bool RandomLoot
 		{
 			get => Flags.RandomLoot;
