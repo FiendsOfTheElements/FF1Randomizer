@@ -482,6 +482,11 @@ namespace FF1Lib
 			// We have to do "fun" stuff last because it alters the RNG state.
 			RollCredits(rng);
 
+			if (flags.ThirdBattlePalette)
+			{
+				UseVariablePaletteForCursorAndStone();
+			}
+
 			if (flags.PaletteSwap)
 			{
 				PaletteSwap(rng);
@@ -614,6 +619,10 @@ namespace FF1Lib
 			PutInBank(0x0F, 0x9280, FF1Text.TextToBytes("Critical hit!!", false));
 			PutInBank(0x0F, 0x9290, FF1Text.TextToBytes(" Critical hits!", false));
 			PutInBank(0x0F, 0x92A0, Blob.FromHex("AD6B68C901F01EA2019D3A6BA9118D3A6BA900E89D3A6BA0FFC8E8B990929D3A6BD0F6F00EA2FFA0FFC8E8B980929D3A6BD0F6A23AA06BA904201CF7EEF86A60"));
+
+			// Enable 3 palettes in battle
+			PutInBank(0x1F, 0xFDF1, CreateLongJumpTableEntry(0x0F, 0x9380));
+			PutInBank(0x0F, 0x9380, Blob.FromHex("ADD16A2910F00BA020B9336D99866B88D0F7ADD16A290F8DD16A20A1F4AD0220A9028D1440A93F8D0620A9008D0620A000B9876B8D0720C8C020D0F5A93F8D0620A9008D06208D06208D062060"));
 		}
 
 		public void MakeSpace()
@@ -624,7 +633,7 @@ namespace FF1Lib
 			// 15 bytes starting at 0xC8A4 in bank 1F, ROM offset: 7C8B4
 			// This removes the routine that give a reward for beating the minigame, no need for a reward without the minigame 
 			PutInBank(0x1F, 0xC8A4, Blob.FromHex("EAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
-			// 28 byte starting at 0xCFCB in bank 1F, ROM offset: 7CFDB
+			// 28 byte starting at 0xCFCB in bank 1F, ROM offset: 7CFE1
 			// This removes the AssertNasirCRC routine, which we were skipping anyways, no point in keeping uncalled routines
 			PutInBank(0x1F, 0xCFCB, Blob.FromHex("EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
 

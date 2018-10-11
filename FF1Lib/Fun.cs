@@ -391,5 +391,40 @@ namespace FF1Lib
 				Data[0x2D320 + i] = 0x00;
 			}
 		}
+
+		public void UseVariablePaletteForCursorAndStone()
+		{
+			// The masamune uses the same palette as the cursor and stone characters
+			// so we can free up a whole palette if we reset the varies palette to
+			// the masmune palette after every swing and magic annimation. The only
+			// drawback is that stoned characters will flash with attacks and magic.
+
+			// Change UpdateVariablePalette to edit Palette 3
+			Data[0x32B35] = 0xA4;
+			Data[0x32B3B] = 0xA5;
+			Data[0x32B41] = 0xA6;
+			Data[0x32B46] = 0xA3;
+			Data[0x32B4E] = 0xA6;
+
+			// Make magic use palette 3
+			Data[0x318F0] = 0x03;
+
+			// Make sparks use palette 3
+			Data[0x33E47] = 0x03;
+
+			// Weapon palettes are embedded in this lut with their coordinates.
+			Put(0x3202C, Blob.FromHex("0001020303030303"));
+			Put(0x32034, Blob.FromHex("0100030243434343"));
+
+			// Increase loop variable to do 12 colors when fading sprites in and out for inn animation.
+			Data[0x7FF23] = 12;
+			Data[0x7FF43] = 12;
+			Data[0x7FF65] = 12;
+
+			// Enable this feature by rewriting the JSR BattleFrame inside UpdateSprites_BattleFrame
+			Put(0x31904, Blob.FromHex("20F1FD207CA060"));
+		}
 	}
+
+
 }
