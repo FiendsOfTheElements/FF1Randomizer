@@ -121,3 +121,19 @@ app {
         display: block;
     }
 }
+
+/* Bootstrap */
+.container {
+	margin-left: 0;
+	margin-right: 0;
+	margin-top: 15px;
+}
+
+/* FFR */
+.checkbox-cell {
+
+	height: 30px;
+	margin: 0;
+	padding: 0;
+
+}

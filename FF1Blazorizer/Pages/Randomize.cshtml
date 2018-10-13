@@ -3,15 +3,20 @@
 @using FF1Lib
 
 <div>
-	<input type="text" value="@Flags.EncodeFlagsText(MyFlags.Flags)"/>
+	<div><input type="text" value="@Flags.EncodeFlagsText(MyFlags.Flags)" /></div>
+	<br/>
 	<BlazorNav IsTabs>
 		<BlazorNavLink onclick="@ActivateShuffle" IsActive="@(activeTab == "Shuffle")">Shuffle</BlazorNavLink>
 		<BlazorNavLink onclick="@ActivateTreasures" IsActive="@(activeTab == "Treasures")">Treasures</BlazorNavLink>
 	</BlazorNav>
 	<TabContent>
 		<TabPane IsOpen="@(activeTab == "Shuffle")">
-			<CheckBox Id="shopsCheckbox" bind-Value="@MyFlags.Shops">Shops</CheckBox>
-			<CheckBox Id="enemyScriptsCheckbox" bind-Value="@MyFlags.EnemyScripts">Enemy Scripts</CheckBox>
+			<div class="container">
+				<div class="row">
+					<CheckBox Id="shopsCheckbox" bind-Value="@MyFlags.Shops">Shops</CheckBox>
+					<CheckBox Id="enemyScriptsCheckbox" bind-Value="@MyFlags.EnemyScripts">Enemy Scripts</CheckBox>
+				</div>
+			</div>
 		</TabPane>
 		<TabPane IsOpen="@(activeTab == "Treasures")">
 		</TabPane>
