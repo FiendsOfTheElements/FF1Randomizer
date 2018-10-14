@@ -357,6 +357,7 @@ namespace FF1Lib
 
 		public bool ModernBattlefield { get; set; }
 		public bool ThirdBattlePalette { get; set; }
+		public bool DisableDamageTileFlicker { get; set; }
 		public bool FunEnemyNames { get; set; }
 		public bool PaletteSwap { get; set; }
 		public bool TeamSteak { get; set; }

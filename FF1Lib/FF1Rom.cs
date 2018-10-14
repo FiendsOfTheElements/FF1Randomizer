@@ -482,6 +482,11 @@ namespace FF1Lib
 			// We have to do "fun" stuff last because it alters the RNG state.
 			RollCredits(rng);
 
+			if (flags.DisableDamageTileFlicker)
+			{
+				DisableDamageTileFlicker();
+			}
+
 			if (flags.ThirdBattlePalette)
 			{
 				UseVariablePaletteForCursorAndStone();

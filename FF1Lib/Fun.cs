@@ -424,6 +424,11 @@ namespace FF1Lib
 			// Enable this feature by rewriting the JSR BattleFrame inside UpdateSprites_BattleFrame
 			Put(0x31904, Blob.FromHex("20F1FD207CA060"));
 		}
+
+		public void DisableDamageTileFlicker()
+		{
+			Data[0x7C7E2] = 0xA9;
+		}
 	}
 
 
