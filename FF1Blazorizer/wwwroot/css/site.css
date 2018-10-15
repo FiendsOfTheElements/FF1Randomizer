@@ -137,3 +137,9 @@ app {
 	padding: 0;
 
 }
+
+input[type="checkbox"].indent {
+
+	margin-left: 20px;
+
+}

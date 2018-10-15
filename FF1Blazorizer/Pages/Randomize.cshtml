@@ -3,7 +3,7 @@
 @using FF1Lib
 
 <div>
-	<div><input type="text" value="@Flags.EncodeFlagsText(MyFlags.Flags)" /></div>
+	<div><input type="text" class="form-control" value="@Flags.EncodeFlagsText(MyFlags.Flags)"/></div>
 	<br/>
 	<BlazorNav IsTabs>
 		<BlazorNavLink onclick="@ActivateShuffle" IsActive="@(activeTab == "Shuffle")">Shuffle</BlazorNavLink>
@@ -13,8 +13,27 @@
 		<TabPane IsOpen="@(activeTab == "Shuffle")">
 			<div class="container">
 				<div class="row">
-					<CheckBox Id="shopsCheckbox" bind-Value="@MyFlags.Shops">Shops</CheckBox>
-					<CheckBox Id="enemyScriptsCheckbox" bind-Value="@MyFlags.EnemyScripts">Enemy Scripts</CheckBox>
+					<div class="col-4">
+						<CheckBox Id="shopsCheckBox" bind-Value="@MyFlags.Shops">Shops</CheckBox>
+						<CheckBox Indent="true" Id="randomWaresCheckBox" bind-Value="@MyFlags.RandomWares">Random Weapons and Armor</CheckBox>
+						<CheckBox Id="magicShopsCheckBox" bind-Value="@MyFlags.MagicShops">Magic Shops</CheckBox>
+						<CheckBox Id="magicLevelsCheckBox" bind-Value="@MyFlags.MagicLevels">Magic Levels</CheckBox>
+						<CheckBox Indent="true" Id="magicPermissionsCheckBox" bind-Value="@MyFlags.MagicPermissions">Keep Permissions</CheckBox>
+						<CheckBox Id="itemMagicCheckBox" bind-Value="@MyFlags.ItemMagic">Item Magic</CheckBox>
+						<div class="checkbox-cell"></div>
+						<CheckBox Id="rngCheckBox" bind-Value="@MyFlags.Rng">RNG Table</CheckBox>
+					</div>
+					<div class="col-4">
+						<CheckBox Id="enemyScriptsCheckBox" bind-Value="@MyFlags.EnemyScripts">Enemy Scripts</CheckBox>
+						<CheckBox Indent="true" Id="allowUnsafePiratesCheckBox" bind-Value="@MyFlags.AllowUnsafePirates">Allow Unsafe Pirates</CheckBox>
+						<CheckBox Id="enemySkillsSpellsCheckBox" bind-Value="@MyFlags.EnemySkillsSpells">Enemy Skills/Spells</CheckBox>
+						<CheckBox Id="enemyStatusAttacksCheckBox" bind-Value="@MyFlags.EnemyStatusAttacks">Enemy Status Attacks</CheckBox>
+						<CheckBox Id="enemyFormationsUnrunnableCheckBox" bind-Value="@MyFlags.EnemyFormationsUnrunnable">Enemy Unrunnable Formations</CheckBox>
+						<CheckBox Id="enemyFormationsSurpriseCheckBox" bind-Value="@MyFlags.EnemyFormationsSurprise">Enemy Surprise Bonus</CheckBox>
+						<div class="checkbox-cell">Formation Shuffle Mode</div>
+						<CheckBox Id="enemyTrapTilesCheckBox" bind-Value="@MyFlags.EnemyTrapTiles">Enemy Forced Encounter Tiles</CheckBox>
+						<CheckBox Id="randomTrapFormationsCheckBox" bind-Value="@MyFlags.RandomTrapFormations">Use Random Formations</CheckBox>
+					</div>
 				</div>
 			</div>
 		</TabPane>
