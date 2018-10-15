@@ -38,6 +38,48 @@
 			</div>
 		</TabPane>
 		<TabPane IsOpen="@(activeTab == "Treasures")">
+			<div class="container">
+				<div class="row">
+					<div class="col-4">
+						<h4>Items Shuffle</h4>
+						<CheckBox Id="treasuresCheckBox" bind-Value="@MyFlags.Treasures">Treasures</CheckBox>
+						<CheckBox Id="npcItemsCheckBox" bind-Value="@MyFlags.NPCItems">Main NPC Items</CheckBox>
+						<CheckBox Id="npcFetchItemsCheckBox" bind-Value="@MyFlags.NPCFetchItems">Fetch Quest Rewards</CheckBox>
+					</div>
+					<div class="col-4">
+						<h4>Incentivized Locations</h4>
+						<CheckBox Id="incentivizeFreeNPCsCheckBox" bind-Value="@MyFlags.IncentivizeFreeNPCs">Main NPCs</CheckBox>
+						<CheckBox Id="incentivizeFreeNPCsCheckBox" bind-Value="@MyFlags.IncentivizeFetchNPCs">Fetch Quest NPCs</CheckBox>
+						<div class="checkbox-cell"></div>
+						<CheckBox Id="incentivizeIceCaveCheckBox" bind-Value="@MyFlags.IncentivizeIceCave">Ice Cave</CheckBox>
+						<CheckBox Id="incentivizeOrdealsCheckBox" bind-Value="@MyFlags.IncentivizeOrdeals">Ordeals</CheckBox>
+						<CheckBox Id="incentivizeMarshCheckBox" bind-Value="@MyFlags.IncentivizeMarsh">Marsh Cave</CheckBox>
+						<div class="checkbox-cell"></div>
+						<CheckBox Id="incentivizeEarthCheckBox" bind-Value="@MyFlags.IncentivizeEarth">Earth Cave</CheckBox>
+						<CheckBox Id="incentivizeVolcanoCheckBox" bind-Value="@MyFlags.IncentivizeVolcano">Volcano</CheckBox>
+						<CheckBox Id="incentivizeSeaShrineCheckBox" bind-Value="@MyFlags.IncentivizeSeaShrine">Sea Shrine</CheckBox>
+						<CheckBox Id="incentivizeSkyPalaceCheckBox" bind-Value="@MyFlags.IncentivizeSkyPalace">Sky Palace</CheckBox>
+						<div class="checkbox-cell"></div>
+						<CheckBox Id="incentivizeConeriaCheckBox" bind-Value="@MyFlags.IncentivizeConeria">Coneria (locked)</CheckBox>
+						<CheckBox Id="incentivizeMarshKeyLockedCheckBox" bind-Value="@MyFlags.IncentivizeMarshKeyLocked">Marsh (locked)</CheckBox>
+					</div>
+					<div class="col-4">
+						<h4>Incentivized Items</h4>
+						<p>Any Required Item being Shuffled will be included in the incentive pool by default. Add additional items below:</p>
+						<CheckBox Id="incentivizeTailCheckBox" bind-Value="@MyFlags.IncentivizeTail">Tail</CheckBox>
+						<CheckBox Id="incentivizeFetchItemsCheckBox" bind-Value="@MyFlags.IncentivizeFetchItems">Other Quest Items</CheckBox>
+						<div class="checkbox-cell"></div>
+						<CheckBox Id="incentivizeMasamuneCheckBox" bind-Value="@MyFlags.IncentivizeMasamune">Masamune</CheckBox>
+						<CheckBox Id="incentivizeRibbonCheckBox" bind-Value="@MyFlags.IncentivizeRibbon">Ribbon</CheckBox>
+						<CheckBox Id="incentivizeOpalCheckBox" bind-Value="@MyFlags.IncentivizeOpal">Opal Bracelet</CheckBox>
+						<div class="checkbox-cell"></div>
+						<CheckBox Id="incentivizeDefCastArmorCheckBox" bind-Value="@MyFlags.IncentivizeDefCastArmor">White Shirt</CheckBox>
+						<CheckBox Id="incentivizeOfffCastArmorCheckBox" bind-Value="@MyFlags.IncentivizeOffCastArmor">Power Gauntlet</CheckBox>
+						<CheckBox Id="incentivizeDefCastWeaponCheckBox" bind-Value="@MyFlags.IncentivizeDefCastArmor">Defense</CheckBox>
+						<CheckBox Id="incentivizeOffCastWeaponCheckBox" bind-Value="@MyFlags.IncentivizeOffCastWeapon">Thor Hammer</CheckBox>
+					</div>
+				</div>
+			</div>
 		</TabPane>
 	</TabContent>
 </div>
