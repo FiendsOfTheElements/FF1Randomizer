@@ -12,6 +12,7 @@ namespace FF1Lib
 		Normal,
 		Low,
 		Impoverished,
+		Melmond,
 	}
 
 	public class ItemGenerator
@@ -31,8 +32,9 @@ namespace FF1Lib
 		private static readonly List<int>[] Ratios = {
 			new List<int> {  1,  6, 18, 20, 20,  8, 15, 20,  90 },
 			new List<int> {  1,  4, 12, 17, 16, 13, 23, 36, 112 },
-			new List<int> {  1,  3,  9, 12, 12, 20, 35, 36, 105 },
-			new List<int> {  0,  2,  8, 12, 12, 25, 40, 36, 100 },
+			new List<int> {  1,  3, 10, 14, 13, 17, 28, 36, 112 },
+			new List<int> {  1,  3,  9, 12, 12, 19, 30, 36, 112 },
+			new List<int> {  0,  2,  8, 12, 12, 25, 35, 36, 100 },
 		};
 
 		private enum Tier
@@ -71,6 +73,7 @@ namespace FF1Lib
 
 			List<int> ratios = Ratios[(int)wealth];
 			System.Diagnostics.Debug.Assert(tiers.Count == ratios.Count);
+			System.Diagnostics.Debug.Assert(Enum.GetValues(typeof(WorldWealth)).Length == Ratios.Length);
 
 			// Now populate the comined pool with a weighted average of all those above lists.
 			_pool = new List<List<Item>>();

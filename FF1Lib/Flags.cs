@@ -352,7 +352,7 @@ namespace FF1Lib
 		[FlagString(Character = FORMATION, FlagBit = 3)]
 		public FormationShuffleModeEnum FormationShuffleMode { get; set; }
 
-		[FlagString(Character = WEALTH, FlagBit = 3)]
+		[FlagString(Character = WEALTH, FlagBit = 7)]
 		public WorldWealth WorldWealth { get; set; }
 
 		public bool ModernBattlefield { get; set; }
