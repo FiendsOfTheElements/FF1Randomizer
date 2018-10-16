@@ -1,4 +1,4 @@
-﻿<div class="checkbox-cell"><input type="checkbox" class="@Class" id="@Id" onchange="@onchange" disabled="@(!IsEnabled)" /> <label for="@Id">@ChildContent</label></div>
+﻿<div class="checkbox-cell"><input type="checkbox" class="@IndentClass" id="@Id" onchange="@onchange" disabled="@(!IsEnabled)" /> <label for="@Id" class="@DisabledClass">@ChildContent</label></div>
 
 @functions
 {
@@ -14,10 +14,11 @@
 
 	[Parameter]
 	private bool Indent { get; set; }
-	private string Class => Indent ? "indent" : "";
+	private string IndentClass => Indent ? "indent" : "";
 
 	[Parameter]
 	private bool IsEnabled { get; set; } = true;
+	private string DisabledClass => IsEnabled ? "" : "disabled";
 
 	[Parameter]
 	private string Id { get; set; }

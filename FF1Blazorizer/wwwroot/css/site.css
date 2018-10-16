@@ -143,3 +143,7 @@ input[type="checkbox"].indent {
 	margin-left: 20px;
 
 }
+
+label.disabled {
+	color: grey;
+}
