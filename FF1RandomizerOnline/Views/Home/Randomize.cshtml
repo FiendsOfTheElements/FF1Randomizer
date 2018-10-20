@@ -67,7 +67,7 @@
 					<div class="checkbox-cell"><input v-model="EnemySkillsSpells" type="checkbox" asp-for="Flags.EnemySkillsSpells" /> <label asp-for="Flags.EnemySkillsSpells">Enemy Skills/Spells</label></div>
 					<div class="checkbox-cell"><input v-model="EnemyStatusAttacks" type="checkbox" asp-for="Flags.EnemyStatusAttacks" /> <label asp-for="Flags.EnemyStatusAttacks">Enemy Status Attacks</label></div>
 					<div class="checkbox-cell"><input v-model="EnemyFormationsUnrunnable" type="checkbox" asp-for="Flags.EnemyFormationsUnrunnable" /> <label asp-for="Flags.EnemyFormationsUnrunnable">Enemy Unrunnable Formations <b v-if="!WaitWhenUnrunnable" title="Without Change Unrunnable RUN -> WAIT convenience you will have no indication if an encounter is unrunnable." style="color:orange">⚠</b></label></div>
-					<div class="checkbox-cell"><input v-model="EnemyFormationsSurprise" type="checkbox" asp-for="Flags.EnemyFormationsSurprise" /> <label asp-for="Flags.EnemyFormationsSurprise">Enemy Surprise Bonus</label></div>
+					<div class="checkbox-cell"><input v-model="EnemyFormationsSurprise" type="checkbox" asp-for="Flags.EnemyFormationsSurprise" /> <label asp-for="Flags.EnemyFormationsSurprise">Enemy Strike First Chance</label></div>
 					<div class="checkbox-cell">
 						<select v-model="FormationShuffleMode" asp-for="Flags.FormationShuffleMode">
 							<option value="0">Don't Shuffle Encounters</option>
