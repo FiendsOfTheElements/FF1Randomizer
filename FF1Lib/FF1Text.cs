@@ -61,7 +61,7 @@ namespace FF1Lib
 			while (i < text.Length - 1)
 			{
 				var twoChars = text.Substring(i, 2);
-				if (useDTE && BytesByText.ContainsKey(twoChars))
+				if (BytesByText.ContainsKey(twoChars) && (useDTE || twoChars[0] == '@'))
 				{
 					bytes[j++] = BytesByText[twoChars];
 					i += 2;

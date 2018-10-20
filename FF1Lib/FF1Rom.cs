@@ -441,8 +441,8 @@ namespace FF1Lib
 			}
 
 			var itemText = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
-			// var dialogueText = ReadText(DialogueTextPointerOffset, DialogueTextPointerBase, DialogueTextPointerCount);
-			FixVanillaRibbon(itemText);
+			itemText[(int)Item.Ribbon].Trim();
+
 			ExpGoldBoost(flags.ExpBonus, flags.ExpMultiplier);
 			ScalePrices(flags, itemText, rng, flags.ClampMinimumPriceScale, shopItemLocation);
 			ScaleEncounterRate(flags.EncounterRate / 30.0, flags.DungeonEncounterRate / 30.0);
@@ -451,7 +451,6 @@ namespace FF1Lib
 			WriteMaps(maps);
 
 			WriteText(itemText, ItemTextPointerOffset, ItemTextPointerBase, ItemTextOffset, UnusedGoldItems);
-			// WriteText(dialogueText, DialogueTextPointerOffset, DialogueTextPointerBase, DialogueTextOffset);
 
 			if (flags.EnemyScaleFactor > 1)
 			{

@@ -111,14 +111,6 @@ namespace FF1Lib
 			Put(0x33568, Blob.FromHex("EAEAEAEAEAEAEAEA"));
 		}
 
-		public void FixVanillaRibbon(Blob[] texts)
-		{
-			if (texts[(int)Item.Ribbon].Length > 8)
-			{
-				texts[(int)Item.Ribbon][7] = 0x00;
-			}
-		}
-
 		public void TameExitAndWarpBoss()
 		{
 			// See 0E_9C54_ExitBoss.asm for this

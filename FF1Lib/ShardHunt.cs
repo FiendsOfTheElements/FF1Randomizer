@@ -1,8 +1,6 @@
-﻿using System;
+﻿using RomUtilities;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using RomUtilities;
 
 namespace FF1Lib
 {
@@ -76,6 +74,11 @@ namespace FF1Lib
 			maps[(int)MapId.TempleOfFiendsRevisitedChaos].Put((0x0A, 0x00), landingArea.ToArray());
 		}
 
+		private static readonly List<string> ShardNames = new List<string>
+		{
+			"SHARD", "JEWEL", "PIECE", "CHUNK", "PRISM", "STONE", "SLICE", "WEDGE", "BIGGS", "SLIVR", "ORBLT", "ESPER", "FORCE",
+		};
+
 		public void EnableShardHunt(MT19337 rng, int goal, bool npcShuffleEnabled)
 		{
 			if (goal < 1 || goal > 30)
@@ -90,26 +93,12 @@ namespace FF1Lib
 				Data[0x7DDA0] = (byte)Item.Shard;
 			}
 
-			var shardName = new List<string>
-			{
-				"SHARD",
-				"JEWEL",
-				"PIECE",
-				"CHUNK",
-				"PRISM",
-				"STONE",
-				"SLICE",
-				"WEDGE",
-				"BIGGS",
-				"SLIVR",
-				"ORBLT",
-				"ESPER",
-				"FORCE",
-			}.PickRandom(rng);
+			string shardName = ShardNames.PickRandom(rng);
 
 			// Replace unused CANOE string and EarthOrb pointer with whatever we're calling the scavenged item.
-			Put(0x2B981, FF1Text.TextToBytes($"{shardName}  ", false, FF1Text.Delimiter.Null));
-			Data[0x2B72A] = 0x81;
+			var texts = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
+			texts[(int)Item.Shard] = $"{shardName}  ";
+			WriteText(texts, ItemTextPointerOffset, ItemTextPointerBase, ItemTextOffset);
 
 			// Replace the upper two tiles of the unlit orb with an empty and found shard.
 			// These are at tile address $76 and $77 respectively.
