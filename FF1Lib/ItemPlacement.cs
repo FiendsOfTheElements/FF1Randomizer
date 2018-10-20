@@ -151,7 +151,7 @@ namespace FF1Lib
 						placedItems.Any(x => x.Item == Item.Ship && startingMapLocations.Contains(x.MapLocation) &&
 							startingMapLocations.Contains((x as MapObject)?.SecondLocation ?? MapLocation.StartingLocation));
 
-					if (!(startingCanoeAvailable && canoeObsoletesBridge) && !startingShipAvailable)
+					if (!(startingCanoeAvailable && canoeObsoletesBridge) && !startingShipAvailable && !flags.FreeBridge)
 					{
 						var startingKeyAvailable =
 							earlyKeyAvailable && placedItems.Any(x => x.Item == Item.Key && startingMapLocations.Contains(x.MapLocation) &&
