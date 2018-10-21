@@ -25,6 +25,10 @@ input[type=checkbox].indent {
 	margin-left: 20px;
 }
 
+input[type=range] {
+    display: inline-block;
+}
+
 .tab-content {
 	background-color: #ddd;
 	padding-bottom: 10px;
@@ -51,13 +55,13 @@ input[type=checkbox].indent {
 }
 
 .checkbox-cell {
-	height: 30px;
+	min-height: 30px;
 	margin: 0;
 	padding: 0;
 }
 
 .slider-cell {
-	height: 35px;
+	min-height: 35px;
 	margin: 0;
 	padding: 0;
 }

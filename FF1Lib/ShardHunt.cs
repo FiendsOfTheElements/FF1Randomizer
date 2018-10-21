@@ -98,6 +98,7 @@ namespace FF1Lib
 			// Replace unused CANOE string and EarthOrb pointer with whatever we're calling the scavenged item.
 			var texts = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
 			texts[(int)Item.Shard] = $"{shardName}  ";
+			texts[(int)Item.EarthOrb] = $"{shardName}  ";
 			WriteText(texts, ItemTextPointerOffset, ItemTextPointerBase, ItemTextOffset);
 
 			// Replace the upper two tiles of the unlit orb with an empty and found shard.
