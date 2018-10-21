@@ -160,7 +160,7 @@ namespace FF1Lib
 				else
 				{
 					forcedclass = (FF1Class)(Enum.GetValues(typeof(FF1Class))).
-						GetValue(rng.Between(0, slotNumber == 1 ? 6 : 7));
+						GetValue(rng.Between(0, slotNumber == 1 ? 5 : 6));
 				}
 				options.Clear();
 				options.Add(forcedclass);
