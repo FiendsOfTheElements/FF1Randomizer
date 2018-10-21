@@ -6,57 +6,99 @@ using System.Text;
 
 namespace FF1Lib
 {
+	public enum WorldWealth
+	{
+		High,
+		Normal,
+		Low,
+		Impoverished,
+		Melmond,
+	}
+
 	public class ItemGenerator
 	{
-		// Similar to vanilla, but without duplicates, and with CatClaw
-		private static readonly List<Item> WeaponPool =
-			new List<Item> {
-				Item.ShortSword, Item.LargeKnife, Item.Sabre, Item.LongSword,
-				Item.GreatAxe, Item.Falchon, Item.SilverKnife, Item.SilverHammer,
-				Item.SilverAxe, Item.FlameSword, Item.IceSword, Item.DragonSword,
-				Item.GiantSword, Item.SunSword, Item.CoralSword, Item.WereSword,
-				Item.RuneSword, Item.PowerRod, Item.LightAxe, Item.HealRod,
-				Item.MageRod, Item.Defense, Item.WizardRod, Item.Vorpal,
-				Item.CatClaw, Item.ThorHammer, Item.BaneSword, Item.Katana,
-				Item.Xcalber, Item.Masamune, Item.IronStaff,
-			};
+		// Type:          Vanilla Count:
+		// Unique (Masa)       1
+		// Legendary Weapon    4
+		// Legendary Armor    12
+		// Rare Weapon        17
+		// Rare Armor         16
+		// Common Weapon      35 - 1 - 4 - 17 = 13
+		// Common Armor       51 - 12 - 16    = 23
+		// Weapon          35 / 234        15
+		// Armor           51 / 234        22
+		// Consumable      36 / 234        15
+		// Gold           112 / 234        48
+		private static readonly List<int>[] Ratios = {
+			new List<int> {  1,  6, 18, 20, 20,  8, 15, 20,  90 },
+			new List<int> {  1,  4, 12, 17, 16, 13, 23, 36, 112 },
+			new List<int> {  1,  3, 10, 14, 13, 17, 28, 36, 112 },
+			new List<int> {  1,  3,  9, 12, 12, 19, 30, 36, 112 },
+			new List<int> {  0,  2,  8, 12, 12, 25, 35, 36, 100 },
+		};
 
-		// Similar to vanilla, but without duplicates or wood, and with Buckler
-		private static readonly List<Item> ArmorPool =
-			new List<Item> {
-				Item.Cloth, Item.IronArmor, Item.FlameArmor, Item.IceArmor,
-				Item.OpalArmor, Item.DragonArmor, Item.Copper, Item.Silver,
-				Item.Gold, Item.Opal, Item.WhiteShirt, Item.BlackShirt,
-				Item.IronShield, Item.SilverShield, Item.FlameShield, Item.IceShield,
-				Item.OpalShield, Item.AegisShield, Item.Buckler, Item.ProCape,
-				Item.Cap, Item.IronHelm, Item.SilverHelm, Item.OpalHelm,
-				Item.HealHelm, Item.Ribbon, Item.IronGauntlets, Item.SilverGauntlets,
-				Item.ZeusGauntlets, Item.OpalGauntlets, Item.ProRing,
-			};
-
-		private List<Item> _items, _weapons, _armor, _gold;
-
-		public ItemGenerator(IItemPlacementFlags flags, IncentiveData incentives, List<Item> treasurePool)
+		private enum Tier
 		{
-			// Make sure we copy all the input lists so we don't modify anything static.
-			_items = ItemLists.AllConsumables.ToList();
-			_gold = new List<Item>(ItemLists.AllGoldTreasure).Where(g => treasurePool.Contains(g)).ToList();
-			_weapons = WeaponPool.ToList();
-			_armor = ArmorPool.ToList();
-			_armor.Add(Item.ProCape);
-			_armor.Add(Item.Ribbon);
+			Unique,
+			LegendaryWeapon,
+			LegendaryArmor,
+			RareWeapon,
+			RareArmor,
+			CommonWeapon,
+			CommonArmor,
+			Consumable,
+			Gold
 		}
 
-		public Item GenerateItem(MT19337 rng)
+		private List<List<Item>> _pool;
+
+		public ItemGenerator(List<Item> seedPool, WorldWealth wealth)
 		{
-			// Type:          Vanilla Chance:  Random Chance:
-			// Consumable      36 / 234         32 / 234
-			// Weapon          35 / 234         32 / 234
-			// Armor           51 / 234         64 / 234
-			// Gold           112 / 234        106 / 234
-			int dart = rng.Between(0, 233);
-			var pool = dart < 32 ? _items : dart < 64 ? _weapons : dart < 128 ? _armor : _gold;
-			return pool.PickRandom(rng);
+			// Make a copy
+			var treasurePool = seedPool.ToList();
+
+			// Make sure we copy all the input lists so we don't modify anything static.
+			List<List<Item>> tiers = new List<List<Item>>
+			{
+				ItemLists.UberTier.Where(item => treasurePool.Remove(item)).ToList(),
+				ItemLists.LegendaryWeaponTier.Where(item => treasurePool.Remove(item)).ToList(),
+				ItemLists.LegendaryArmorTier.Where(item => treasurePool.Remove(item)).ToList(),
+				ItemLists.RareWeaponTier.Where(item => treasurePool.Remove(item)).ToList(),
+				ItemLists.RareArmorTier.Where(item => treasurePool.Remove(item)).ToList(),
+				ItemLists.CommonWeaponTier.Where(item => treasurePool.Remove(item)).ToList(),
+				ItemLists.CommonArmorTier.Where(item => treasurePool.Remove(item)).ToList(),
+				ItemLists.AllConsumables.Where(item => treasurePool.Remove(item)).ToList(),
+				treasurePool.Where(x => x >= Item.Gold10 && x <= Item.Gold65000).ToList(),
+			};
+
+			List<int> ratios = Ratios[(int)wealth];
+			System.Diagnostics.Debug.Assert(tiers.Count == ratios.Count);
+			System.Diagnostics.Debug.Assert(Enum.GetValues(typeof(WorldWealth)).Length == Ratios.Length);
+
+			// Now populate the comined pool with a weighted average of all those above lists.
+			_pool = new List<List<Item>>();
+			for (int i = 0; i < ratios.Count(); ++i)
+			{
+				for (int j = 0; j < ratios[i]; ++j)
+				{
+					if (tiers[i].Any())
+						_pool.Add(tiers[i]);
+				}
+			}
+
+		}
+
+		public Item GetItem(MT19337 rng)
+		{
+			return _pool.PickRandom(rng).PickRandom(rng);
+		}
+
+		public Item SpliceItem(MT19337 rng)
+		{
+			Item item = GetItem(rng);
+			_pool.ForEach(pool => pool.RemoveAll(i => i == item));
+			_pool.RemoveAll(pool => !pool.Any());
+			return item;
 		}
 
 	}

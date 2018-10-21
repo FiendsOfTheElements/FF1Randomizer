@@ -387,14 +387,14 @@ namespace FF1Lib
 			var dialogueStrings = new List<Blob>
 			{
 				TextToBytes("I. aM. WarMECH."),
-				Blob.Concat(TextToBytes("I think you ought to know,", delimiter: Delimiter.Line), TextToBytes("I'm feeling very depressed.")),
+				Blob.Concat(TextToBytes("I think you ought to", delimiter: Delimiter.Line), TextToBytes("know, I'm feeling very", delimiter: Delimiter.Line), TextToBytes("depressed.")),
 				TextToBytes("Bite my shiny metal ass!"),
-				Blob.Concat(TextToBytes("Put down your weapons.", delimiter: Delimiter.Line), TextToBytes("You have 15 seconds to comply.")),
+				Blob.Concat(TextToBytes("Put down your weapons.", delimiter: Delimiter.Line), TextToBytes("You have 15 seconds to", delimiter: Delimiter.Line), TextToBytes("comply.")),
 				// Blob.Concat(TextToBytes("I'm sorry "), new byte[] { 0x03 }, TextToBytes(",", delimiter: Delimiter.Line), TextToBytes("I'm afraid I can't do that.")),
 				TextToBytes("rEsIsTaNcE iS fUtIlE."),
 				TextToBytes("Hasta la vista, baby."),
 				TextToBytes("NoOo DiSaSsEmBlE!"),
-				Blob.Concat(TextToBytes("Bring back life form.", delimiter: Delimiter.Line), TextToBytes("Priority one.", delimiter: Delimiter.Line), TextToBytes("All other priorities rescinded."))
+				Blob.Concat(TextToBytes("Bring back life form.", delimiter: Delimiter.Line), TextToBytes("Priority one.", delimiter: Delimiter.Line), TextToBytes("All other priorities", delimiter: Delimiter.Line), TextToBytes("rescinded."))
 			};
 			ushort freeTextSpacePointer = 0xB487;
 			int pointerTarget = 0x20000 + freeTextSpacePointer;

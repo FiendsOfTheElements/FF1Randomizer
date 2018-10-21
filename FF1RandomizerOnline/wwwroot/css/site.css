@@ -172,3 +172,7 @@ td input[type=checkbox] {
 tr.odd {
     background: rgba(0, 0, 0, 0.05);
 }
+
+.indent {
+	margin-left: 20px;
+}

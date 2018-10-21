@@ -32,11 +32,11 @@ namespace FF1Lib
 		{
 			Put(CaravanFairyCheck, Enumerable.Repeat((byte)Nop, CaravanFairyCheckSize).ToArray());
 		}
-		// Required for npc quest item randomizing 
+		// Required for npc quest item randomizing
 		// Doesn't substantially change anything if EnableNPCsGiveAnyItem isn't called
 		public void CleanupNPCRoutines()
 		{
-			// Have ElfDoc set his own flag instead of the prince's so that 
+			// Have ElfDoc set his own flag instead of the prince's so that
 			// the prince can still set his own flag after giving a shuffled item
 			Data[0x39302] = (byte)ObjectId.ElfDoc;
 			Data[0x3931F] = (byte)ObjectId.ElfDoc;
@@ -47,7 +47,7 @@ namespace FF1Lib
 			Data[0x391B5] = 0x33;
 			Data[0x391B6] = 0x95;
 
-			// Then we move Talk_earthfire to Talk_norm to clear space for 
+			// Then we move Talk_earthfire to Talk_norm to clear space for
 			// new item gift routine without overwriting Talk_chime
 			Data[0x391D3] = 0x92;
 			Data[0x391D4] = 0x94;
@@ -136,58 +136,58 @@ namespace FF1Lib
 			None = 6,
 		}
 
-		// Fi, Th, Bb, Rm, Wm, Bm, None, yes, in that order, even though it looks wrong
-		private readonly List<byte> Classes = new List<byte> {0b0000_0001,
-				0b0100_0000, 0b0010_0000, 0b0001_0000,
-				0b0000_1000, 0b0000_0100, 0b0000_0010};
+		private readonly List<byte> AllowedClassBitmasks = new List<byte> {
+			/*   lut_ClassMask:
+             *       ;0=FI,1=TH,  BB,  RM,  WM,  BM, None
+             *   .byte $80, $40, $20, $10, $08, $04, $02
+			 */
+			          0x80,0x40,0x20,0x10,0x08,0x04,0x02};
 
-
-		private byte Rotate7bitNum(byte num, int times)
+		void updateCharacterFromOptions(int slotNumber, bool forced, IList<FF1Class> options, MT19337 rng)
 		{
-			num = (byte)(((num >> times)|(num << (7-times)))&0x7F);
-			return num;
+			const int lut_PtyGenBuf = 0x784AA;       // offset for party generation buffer LUT
+			const int lut_AllowedClasses = 0x78110;  // offset for allowed classes per slot LUT
+
+			var i = slotNumber - 1;
+
+			if (forced) // if forced
+			{
+				FF1Class forcedclass;
+				if (options.Any())
+				{
+					forcedclass = options.PickRandom(rng);
+				}
+				else
+				{
+					forcedclass = (FF1Class)(Enum.GetValues(typeof(FF1Class))).
+						GetValue(rng.Between(0, slotNumber == 1 ? 6 : 7));
+				}
+				options.Clear();
+				options.Add(forcedclass);
+			}
+
+			// don't make any changes if there's nothing to do
+			if (!options.Any()) return;
+
+			byte allowedFlags = 0b0000_0000;
+			foreach(FF1Class option in options)
+			{
+				allowedFlags |= AllowedClassBitmasks[(int)option];
+			}
+
+			// set default member
+			byte defaultclass = (byte)options.PickRandom(rng);
+			Data[lut_PtyGenBuf + i * 0x10] = defaultclass == 6 ? (byte)0xFF : defaultclass;
+
+			// set allowed classes
+			Data[lut_AllowedClasses + i] = allowedFlags;
+
+			options.Clear();
 		}
 
 		public void PartyComposition(MT19337 rng, Flags flags)
 		{
-			List<bool> slotinfo = new List<bool> { false, true }; // {forced, firstslot}
-			List<byte> Chars = new List<byte> { 0b0000_0000, 0b0000_0000, 0b0000_0000, 0b0000_0000 };
-			int count = 0;
-			List<FF1Class> options = new List<FF1Class>();
-			FF1Class forcedclass;
-			void updateCharacterFromOptions()
-			{
-				if (slotinfo[0]) // if forced
-				{
-					if (options.Any())
-					{
-						forcedclass = options.PickRandom(rng);
-					}
-					else
-					{
-						forcedclass = (FF1Class)(Enum.GetValues(typeof(FF1Class))).GetValue(rng.Between(0, (slotinfo[1] ? 6 : 7)));
-					}
-					options.Clear();
-					options.Add(forcedclass);
-				}
-
-				if (options.Any())
-				{
-					foreach(FF1Class option in options)
-					{
-						Chars[count] = (byte)(Chars[count] | Classes[(int)option]);
-					}
-					// set default member
-					byte defaultclass = (byte)options.PickRandom(rng);
-					// set the byte that allows which classes you can pick correctly, must be rotated right the correct amount
-					Chars[count] = Rotate7bitNum(Chars[count], (defaultclass == 7 ? 0 : 7 - defaultclass));
-					// set the byte for default class and the byte for allowed classes
-					Data[0x784AA + count * 0x10] = (defaultclass == 6 ? (byte)0xFF : defaultclass);
-					Data[0x78128 + count] = Chars[count];
-					options.Clear();
-				}
-				count++;
-			}
+			var options = new List<FF1Class>();
 
 			// Do each slot - so ugly!
 			if (flags.FIGHTER1) options.Add(FF1Class.Fighter);
@@ -196,8 +196,7 @@ namespace FF1Lib
 			if (flags.RED_MAGE1) options.Add(FF1Class.RedMage);
 			if (flags.WHITE_MAGE1) options.Add(FF1Class.WhiteMage);
 			if (flags.BLACK_MAGE1) options.Add(FF1Class.BlackMage);
-			slotinfo[0] = flags.FORCED1;
-			updateCharacterFromOptions();
+			updateCharacterFromOptions(1, flags.FORCED1, options, rng);
 
 			if (flags.FIGHTER2) options.Add(FF1Class.Fighter);
 			if (flags.THIEF2) options.Add(FF1Class.Thief);
@@ -206,9 +205,7 @@ namespace FF1Lib
 			if (flags.WHITE_MAGE2) options.Add(FF1Class.WhiteMage);
 			if (flags.BLACK_MAGE2) options.Add(FF1Class.BlackMage);
 			if (flags.NONE_CLASS2) options.Add(FF1Class.None);
-			slotinfo[0] = flags.FORCED2;
-			slotinfo[1] = false; // None is now allowed
-			updateCharacterFromOptions();
+			updateCharacterFromOptions(2, flags.FORCED2, options, rng);
 
 			if (flags.FIGHTER3) options.Add(FF1Class.Fighter);
 			if (flags.THIEF3) options.Add(FF1Class.Thief);
@@ -217,8 +214,7 @@ namespace FF1Lib
 			if (flags.WHITE_MAGE3) options.Add(FF1Class.WhiteMage);
 			if (flags.BLACK_MAGE3) options.Add(FF1Class.BlackMage);
 			if (flags.NONE_CLASS3) options.Add(FF1Class.None);
-			slotinfo[0] = flags.FORCED3;
-			updateCharacterFromOptions();
+			updateCharacterFromOptions(3, flags.FORCED3, options, rng);
 
 			if (flags.FIGHTER4) options.Add(FF1Class.Fighter);
 			if (flags.THIEF4) options.Add(FF1Class.Thief);
@@ -227,8 +223,7 @@ namespace FF1Lib
 			if (flags.WHITE_MAGE4) options.Add(FF1Class.WhiteMage);
 			if (flags.BLACK_MAGE4) options.Add(FF1Class.BlackMage);
 			if (flags.NONE_CLASS4) options.Add(FF1Class.None);
-			slotinfo[0] = flags.FORCED4;
-			updateCharacterFromOptions();
+			updateCharacterFromOptions(4, flags.FORCED4, options, rng);
 
 			// Load stats for None
 			PutInBank(0x1F, 0xC783, Blob.FromHex("2080B3C931F053EA"));
@@ -264,6 +259,31 @@ namespace FF1Lib
 			// Rewrite class promotion to not promote NONEs, See 0E_95AE_DoClassChange.asm
 			PutInBank(0x0E, 0x95AE, Blob.FromHex("A203BCD095B900613006186906990061CA10EFE65660"));
 			PutInBank(0x0E, 0x95D0, Blob.FromHex("C0804000")); // lut used by the above code
+		}
+
+		public void PubReplaceClinic(MT19337 rng)
+		{
+			List<byte> pub_lut = new List<byte> { 0x0, 0x1, 0x2, 0x3, 0x4, 0x5 };
+			pub_lut.Shuffle(rng);
+			pub_lut.Insert(3, 0x0);
+			Put(0x38066, Blob.FromHex("9D8A9F8E9B97")); // Replaces "CLINIC" with "TAVERN"
+			// EnterClinic
+			PutInBank(0x0E, 0xA5A1, Blob.FromHex("60A90085248525205BAAA0FFC8B91DA7991003D0F7A902991003C8A648BD7CA669F0991003C8A905991003C8A9C5991003C8A900991003A9108D3E00A9038D3F002032AA20D7A6A5628D0C03B0B2209BAA20C2A8B0ABA562D0A72089A6AD0C03186D0C036D0C03AABD10036A6A6A29C0AA188A690A8510A96185118A8512A9638513A000A90091109112C8C00A30F7C040D0F59D266120E99CA448B97CA69D00612071C28A48A00E20799068AA900918BD006169069D0061A900852485259D01618D0120200CE92078A7A921205BAA2043A7A5240525F0F74CA2A500010200030405000000000000"));
+			PutInBank(0x0E, 0xA67C, pub_lut.ToArray());
+			// ClinicBuildNameString
+			PutInBank(0x0E, 0xA6DD, Blob.FromHex("EDA6A910853EA903853F2032AA4C07A9A000A20086638A2A2A2A29036910991003A900991103A90199120398186903A8E6638A186940AAD0DDA900991003386091ACB5A8FFA40500"));
+			// Moved routine
+			PutInBank(0x0E, 0xA3F8, Blob.FromHex("7D9C"));
+			PutInBank(0x0E, 0x9C7D, Blob.FromHex("A5626A6A6A29C08D0A03A666D01EA018AE0A03BD1861F032C8BD1961F02CC8BD1A61F026C8BD1B61F0203860A01CAE0A03BD1C61F025C8BD1D61F01FC8BD1E61F019C8BD1F61F013386098186D0A03AAAD0C0338E91B9D0061186098186D0A03AAAD0C0338E9439D00611860"));
+			// New routine that unequips all gear and sets all substats to zero
+			PutInBank(0x0E, 0x9CE9, Blob.FromHex("188A69188510A9618511A007B110297F91108810F7A900A0089110C8C00ED0F960"));
+
+			PutInBank(0x1F, 0xC271, CreateLongJumpTableEntry(0x00, 0xC783));
+
+			Data[0x101A] = 0x13;
+			Data[0x109A] = 0x13;
+			Data[0x111A] = 0x76;
+			Data[0x119A] = 0x77;
 		}
 
 		public void DisablePartyShuffle()
@@ -407,27 +427,27 @@ namespace FF1Lib
 		{
 			Data[0x390D5] = 0xA1;
 		}
-		
+
 		public void EnableFreeBridge()
 		{
 			// Set the default bridge_vis byte on game start to true. It's a mother beautiful bridge - and it's gonna be there.
 			Data[0x3008] = 0x01;
 		}
-		
+
 		public void EnableFreeShip()
 		{
 			Data[0x3000] = 1;
 			Data[0x3001] = 152;
 			Data[0x3002] = 169;
 		}
-		
+
 		public void EnableFreeAirship()
 		{
 			Data[0x3004] = 1;
 			Data[0x3005] = 153;
 			Data[0x3006] = 165;
 		}
-		
+
 		public void EnableFreeCanal()
 		{
 			Data[0x300C] = 0;
@@ -528,8 +548,8 @@ namespace FF1Lib
 		{
 			// Instead of looping through the 'check to see if characters are alive' thing, just set it to 4 and then remove the loop.
 			// EA EA EA EA EA EA (sports)
-			Put(0x2DED6, Blob.FromHex("A204A004EAEAEAEAEAEAEAEAEAEAEAEAEA"));
-
+			Put(0x2DEC6, Blob.FromHex("A204A004EAEAEAEAEAEAEAEAEAEAEAEAEA"));
+			
 		}
 
 		public void ShuffleWeaponPermissions(MT19337 rng)

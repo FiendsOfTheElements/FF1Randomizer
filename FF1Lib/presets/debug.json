@@ -12,6 +12,7 @@
 		"RandomLoot": true,
 		"WeaponPermissions": true,
 		"ArmorPermissions": true,
+		"RecruitmentMode": true,
 
 		"ShardHunt": false,
 		"ExtraShards": false,
@@ -128,7 +129,8 @@
 		"ProgressiveScaleMode": 1,
 		"EncounterRate": 15.0,
 		"DungeonEncounterRate": 15.0,
-		"ForcedPartyMembers": 2
+		"ForcedPartyMembers": 2,
+		"WorldWealth": 0
 
 	}
 

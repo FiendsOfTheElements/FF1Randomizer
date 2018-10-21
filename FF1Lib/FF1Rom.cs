@@ -13,7 +13,7 @@ namespace FF1Lib
 	// ReSharper disable once InconsistentNaming
 	public partial class FF1Rom : NesRom
 	{
-		public const string Version = "2.4.0";
+		public const string Version = "2.5.0";
 
 		public const int RngOffset = 0x7F100;
 		public const int BattleRngOffset = 0x7FCF1;
@@ -220,7 +220,7 @@ namespace FF1Lib
 							excludeItemsFromRandomShops.AddRange(ItemLists.SpecialGear);
 						}
 
-						shopItemLocation = ShuffleShops(rng, flags.ImmediatePureAndSoftRequired, flags.RandomWares, excludeItemsFromRandomShops);
+						shopItemLocation = ShuffleShops(rng, flags.ImmediatePureAndSoftRequired, flags.RandomWares, excludeItemsFromRandomShops, flags.WorldWealth);
 					}
 
 					if (flags.Treasures)
@@ -465,12 +465,17 @@ namespace FF1Lib
 
 			PartyComposition(rng, flags);
 
+			if (flags.RecruitmentMode)
+			{
+				PubReplaceClinic(rng);
+			}
+
 			if (flags.MapCanalBridge)
 			{
 				EnableCanalBridge();
 			}
 
-			if (flags.NoDanMode && false)
+			if (flags.NoDanMode)
 			{
 				NoDanMode();
 			}
@@ -479,6 +484,16 @@ namespace FF1Lib
 
 			// We have to do "fun" stuff last because it alters the RNG state.
 			RollCredits(rng);
+
+			if (flags.DisableDamageTileFlicker)
+			{
+				DisableDamageTileFlicker();
+			}
+
+			if (flags.ThirdBattlePalette)
+			{
+				UseVariablePaletteForCursorAndStone();
+			}
 
 			if (flags.PaletteSwap)
 			{
@@ -612,6 +627,10 @@ namespace FF1Lib
 			PutInBank(0x0F, 0x9280, FF1Text.TextToBytes("Critical hit!!", false));
 			PutInBank(0x0F, 0x9290, FF1Text.TextToBytes(" Critical hits!", false));
 			PutInBank(0x0F, 0x92A0, Blob.FromHex("AD6B68C901F01EA2019D3A6BA9118D3A6BA900E89D3A6BA0FFC8E8B990929D3A6BD0F6F00EA2FFA0FFC8E8B980929D3A6BD0F6A23AA06BA904201CF7EEF86A60"));
+
+			// Enable 3 palettes in battle
+			PutInBank(0x1F, 0xFDF1, CreateLongJumpTableEntry(0x0F, 0x9380));
+			PutInBank(0x0F, 0x9380, Blob.FromHex("ADD16A2910F00BA020B9336D99866B88D0F7ADD16A290F8DD16A20A1F4AD0220A9028D1440A93F8D0620A9008D0620A000B9876B8D0720C8C020D0F5A93F8D0620A9008D06208D06208D062060"));
 		}
 
 		public void MakeSpace()
@@ -622,7 +641,7 @@ namespace FF1Lib
 			// 15 bytes starting at 0xC8A4 in bank 1F, ROM offset: 7C8B4
 			// This removes the routine that give a reward for beating the minigame, no need for a reward without the minigame 
 			PutInBank(0x1F, 0xC8A4, Blob.FromHex("EAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
-			// 28 byte starting at 0xCFCB in bank 1F, ROM offset: 7CFDB
+			// 28 byte starting at 0xCFCB in bank 1F, ROM offset: 7CFE1
 			// This removes the AssertNasirCRC routine, which we were skipping anyways, no point in keeping uncalled routines
 			PutInBank(0x1F, 0xCFCB, Blob.FromHex("EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
 
@@ -641,7 +660,7 @@ namespace FF1Lib
 			// Adresses used below
 			Blob Bank1E = Blob.FromHex("1E");
 			Blob PtyGen_DrawBoxes = Blob.FromHex("6C82");
-			Blob PtyGen_DrawText = Blob.FromHex("9882");
+			Blob PtyGen_DrawText = Blob.FromHex("A082");
 			Blob TurnMenuScreenOn_ClearOAM = Blob.FromHex("5B85");
 			Blob DoPartyGen_OnCharacter = Blob.FromHex("C180");
 			Blob PtyGen_DrawScreen = Blob.FromHex("A480");
@@ -658,7 +677,7 @@ namespace FF1Lib
 			Blob PlaySFX_MenuSel = Blob.FromHex("EB84");
 			Blob PlaySFX_MenuMove = Blob.FromHex("0485");
 			Blob Box = Blob.FromHex("7F82");
-			Blob DrawOne_Text = Blob.FromHex("A782");
+			Blob DrawOne_Text = Blob.FromHex("AF82");
 			Blob Call_DrawComplexString = Blob.FromHex("E482");
 			Blob DrawOne_Chars = Blob.FromHex("5B83");
 			Blob MenuFrame = Blob.FromHex("2C85");
@@ -685,10 +704,13 @@ namespace FF1Lib
 			PutInBank(0x1E, 0x80BF, TurnMenuScreenOn_ClearOAM);
 
 			// DoPartyGen_OnCharacter
-			PutInBank(0x1E, 0x80C1, Blob.FromHex("AE67008A4A4A4A4AA8B928818D9000A980EA8D910020A480200F82AD2400D04BAD2500F0023860AD2000290FCD6100F0E78D6100C900F0E0186E910090066E91006E9100AE6700FE0003BD0003E906C9FFD0039D0003AD90002C9100F0DA8D370020A8824CD980"));
+			PutInBank(0x1E, 0x80C1, Blob.FromHex("A6678A4A4A4A4AA8B91081859020A480200F82A524D054A525F0023860A520290FC561F0EB8561C900F0E5A667BD0003186901C906D002A9FF9D0003A8C8B914812490F0E8A901853720B0824CD180"));
 
 			// lut_AllowedClasses, defaults to all but None and the anything for the rest
-			PutInBank(0x1E, 0x8128, Blob.FromHex("7D7F7F7F"));
+			PutInBank(0x1E, 0x8110, Blob.FromHex("FDFFFFFF"));
+
+			// lut_ClassMask, 0=None, 1=FI,2=TH,  BB,  RM,  WM,  BM
+			PutInBank(0x1E, 0x8114, Blob.FromHex("02804020100804"));
 
 			// DoNameInput
 			PutInBank(0x1E, 0x812C, Get(0x39D50, 0xE3));
@@ -705,7 +727,7 @@ namespace FF1Lib
 			PutInBank(0x1E, 0x820B, MainLoop_in_DoNameInput);
 
 			// PtyGen_Frame
-			PutInBank(0x1E, 0x820F, Get(0x39E33, 0x99));
+			PutInBank(0x1E, 0x820F, Get(0x39E33, 0x89));
 			PutInBank(0x1E, 0x8213, Blob.FromHex("4A83202283"));
 			PutInBank(0x1E, 0x8221, Bank1E);
 			PutInBank(0x1E, 0x8228, PtyGen_Joy);
@@ -721,11 +743,15 @@ namespace FF1Lib
 			// PtyGen_DrawBoxes
 			PutInBank(0x1E, 0x8271, Box);
 
+			// str_classNone
+			PutInBank(0x1E, 0x8298, Blob.FromHex("973CA8FFFFFFFF00"));
+
 			// PtyGen_DrawText
-			PutInBank(0x1E, 0x829C, DrawOne_Text);
+			PutInBank(0x1E, 0x82A0, Get(0x39EBC, 0x10));
+			PutInBank(0x1E, 0x82A4, DrawOne_Text);
 
 			// PtyGen_DrawOneText
-			PutInBank(0x1E, 0x82A8, Blob.FromHex("BD0803853ABD0903853BBD000318C9FFD016A9C78D3E00A9828D3F004CE48297B2B1A8FFFFFFFF0069F08D5F00A9028D5E00A95E8D3E00A9008D3F00A91E8D57008D58008A482036DE68AABD0203855CBD0303855DBD0403855EBD0503855FBD0603853ABD0703853BA95C853EA900853FA91E855785584C36DE"));
+			PutInBank(0x1E, 0x82B0, Blob.FromHex("BD0803853ABD0903853BBD000318C9FFD00DA9988D3E00A9828D3F004CE38269F08D5F00A9028D5E00A95E8D3E00A9008D3F00A91E8D57008D58008A482036DE68AABD0203855CBD0303855DBD0403855EBD0503855FBD0603853ABD0703853BA95C853EA900853FA91E855785584C36DE"));
 
 			// PtyGen_DrawCursor
 			PutInBank(0x1E, 0x8322, Get(0x39F26, 0x1C8));
