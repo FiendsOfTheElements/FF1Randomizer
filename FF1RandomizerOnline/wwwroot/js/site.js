@@ -144,14 +144,51 @@ var app = new Vue({
 		},
 		/* Debug methods as of 2.0, not very maintainable if incentive options change */
 		getCountIncentivizedItems: function () {
-			return this.IncentivizeMasamune + this.IncentivizeOpal + this.IncentivizeRibbon +
-				this.IncentivizeDefCastArmor + this.IncentivizeOtherCastArmor +
-				this.IncentivizeDefCastWeapon + this.IncentivizeOffCastWeapon +
-				this.IncentivizeFetchItems * 2 + this.IncentivizeRequiredItems * 4 + this.IncentivizeNonRequiredItems +
-				(this.IncentivizeRequiredItems && this.IncentivizeFreeNPCs) * 7 +
-				(!this.NPCFetchItems && this.IncentivizeNonRequiredItems) * 2 +
-				((!this.IncentivizeRequiredItems || this.NPCFetchItems) && IncentivizeFetchItems) * 3 +
-				((!this.IncentivizeNonRequiredItems || this.NPCFetchItems) && IncentivizeFetchItems) * 2;
+			var incentiveItemCount = 0;
+			//First, handle all of the single item toggles
+			incentiveItemCount += 1 * this.IncentivizeMasamune;
+			incentiveItemCount += 1 * this.IncentivizeOpal;
+			incentiveItemCount += 1 * this.IncentivizeRibbon;
+			incentiveItemCount += 1 * this.IncentivizeDefCastArmor;
+			incentiveItemCount += 1 * this.IncentivizeOtherCastArmor;
+			incentiveItemCount += 1 * this.IncentivizeDefCastWeapon;
+			incentiveItemCount += 1 * this.IncentivizeOffCastWeapon;
+			incentiveItemCount += 1 * this.IncentivizeTail;
+			
+			//Lute is an incentive is Chaos rush is off and we shuffle main NPCS
+			incentiveItemCount += 1 * (!this.ChaosRush && this.NPCItems);
+
+			//Floater is an incentive if we don't have a free airship
+			incentiveItemCount += 1 * !this.FreeAirship;
+
+			//If we shuffle Fetch Quest Items, we incentivize Key, Chime and Oxyale
+			incentiveItemCount += 3 * this.NPCFetchItems;
+
+			//If we shuffle Main NPC items, we incentivize Rod, Canoe and Cube
+			incentiveItemCount += 3 * this.NPCItems;
+
+			//If we shuffle extra unrequired fetch items, we incentivize Adamant, Crystal, Herb
+			incentiveItemCount += 3 * this.IncentivizeFetchItems;
+
+			//Now to the ugly checks: First, the logic for Crown and Slab
+			incentiveItemCount += 2 * (!this.NPCFetchItems || this.IncentivizeFetchItems);
+
+			//Bottle
+			incentiveItemCount += 1 * ((!this.NPCFetchItems || this.IncentivizeFetchItems) && this.NPCItems);
+
+			//Canal
+			incentiveItemCount += 1 * (!this.NPCItems || this.IncentivizeFetchItems);
+
+			//Ship
+			incentiveItemCount += 1 * ((!this.MapOpenProgression || this.IncentivizeFetchItems) && this.NPCItems);
+
+			//TNT
+			incentiveItemCount += 1 * ((!this.NPCFetchItems && !this.NPCItems) || this.IncentivizeFetchItems);
+
+			//Ruby
+			incentiveItemCount += 1 * ((!this.EarlySage && !this.NPCItems) || this.IncentivizeFetchItems);
+
+			return incentiveItemCount;
 		},
 		getCountIncentivizedLocations: function () {
 			return this.IncentivizeIceCave + this.IncentivizeOrdeals + this.IncentivizeMarsh + this.IncentivizeEarth +

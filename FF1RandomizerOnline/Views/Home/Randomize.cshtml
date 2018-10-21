@@ -88,6 +88,7 @@
 				<div class="col-xs-4">
 					<h4>Items Shuffle</h4>
 					<div class="col-xs-12">
+						<div class="checkbox-cell" title="Number of Incentive Items"> <b>Estimated Loose Incentive Items = {{getCountIncentivizedItems() - getCountIncentivizedLocations()}} </b></div>
 						<div class="checkbox-cell" title="If unchecked, forces vanilla Treasure Chests"><input v-model="Treasures" type="checkbox" asp-for="Flags.Treasures" /> <label asp-for="Flags.Treasures"></label></div>
 						<div class="checkbox-cell" title="If checked, randomizes the contents of all non-progression, non-incentivized items, weapons, and gear."><input class="indent" :disabled="!Treasures" v-model="RandomLoot" type="checkbox" asp-for="Flags.RandomLoot" /> <label :style="!Treasures ? { color: 'grey'} : {}" asp-for="Flags.RandomLoot">Randomize Treasures</label></div>
 						<div class="checkbox-cell" :style="!Treasures ? { color: 'grey'} : {}">
@@ -109,7 +110,7 @@
 				<div class="col-xs-4" style="border-left: 1px solid black;" :style="!Treasures ? { color: 'grey'} : {}">
 					<h4>Incentivized Locations</h4>
 					<div class="col-xs-12">
-						<div class="checkbox-cell" title="Number of Incentive Locations"> <b>Number of Incentive Locations = {{7 * (NPCItems && IncentivizeFreeNPCs) + 7 * (NPCFetchItems && IncentivizeFetchNPCs) + IncentivizeIceCave + IncentivizeOrdeals + IncentivizeMarsh + IncentivizeEarth + IncentivizeVolcano + IncentivizeSeaShrine + IncentivizeSkyPalace + IncentivizeConeria + IncentivizeMarshKeyLocked}} </b></div>
+						<div class="checkbox-cell" title="Number of Incentive Locations"> <b>Number of Incentive Locations = {{getCountIncentivizedLocations()}} </b></div>
 						<div class="checkbox-cell" title="King, Princess, Bikke, Sarda, Sage, Robot, Caravan"><input v-model="IncentivizeFreeNPCs" :disabled="!NPCItems || !Treasures" type="checkbox" asp-for="Flags.IncentivizeFreeNPCs" /> <label :style="!NPCItems ? { color: 'grey'} : {}" asp-for="Flags.IncentivizeFreeNPCs">Main NPCs</label></div>
 						<div class="checkbox-cell" title="Astos, Matoya, Prince, Dwarves, Lefein, Fairy"><input v-model="IncentivizeFetchNPCs" :disabled="!NPCFetchItems || !Treasures" type="checkbox" asp-for="Flags.IncentivizeFetchNPCs" /> <label :style="!NPCFetchItems ? { color: 'grey'} : {}" asp-for="Flags.IncentivizeFetchNPCs">Fetch Quest NPCs</label></div>
 						<div class="checkbox-cell"></div>
@@ -133,7 +134,7 @@
 							Any Required Item being Shuffled will be included in the incentive pool by default. Add additional items below:
 						</div>
 						<br />
-						<div class="checkbox-cell" title="Number of Incentive Items"> <b>Number of Incentive Items = {{IncentivizeMasamune + IncentivizeTail + IncentivizeRibbon + IncentivizeOpal + IncentivizeDefCastArmor + IncentivizeOtherCastArmor + IncentivizeDefCastWeapon + IncentivizeOffCastWeapon + 3 * (NPCItems + NPCFetchItems + IncentivizeFetchItems) + (!ChaosRush && NPCItems) + (!FreeAirship) + ((!NPCFetchItems || IncentivizeFetchItems) && NPCItems) + 2 * (!NPCFetchItems || IncentivizeFetchItems) + (!NPCItems || IncentivizeFetchItems) + ((!MapOpenProgression || IncentivizeFetchItems) && NPCItems) + ((!NPCFetchItems && !NPCItems) || IncentivizeFetchItems) + ((!EarlySage && !NPCItems) || IncentivizeFetchItems)}} </b></div>
+						<div class="checkbox-cell" title="Number of Incentive Items"> <b>Number of Incentive Items = {{getCountIncentivizedItems()}} </b></div>
 						<div class="checkbox-cell"><input v-model="IncentivizeTail" :disabled="!Treasures" type="checkbox" asp-for="Flags.IncentivizeTail" /> <label asp-for="Flags.IncentivizeTail">Tail</label></div>
 						<div class="checkbox-cell" title="Other non-required quest items that are shuffled such as Ruby, Adamant, Crystal, TNT, Herb, etc."><input v-model="IncentivizeFetchItems" :disabled="!Treasures" type="checkbox" asp-for="Flags.IncentivizeFetchItems" /> <label asp-for="Flags.IncentivizeFetchItems">Other Quest Items</label></div>
 						<div class="checkbox-cell"></div>
