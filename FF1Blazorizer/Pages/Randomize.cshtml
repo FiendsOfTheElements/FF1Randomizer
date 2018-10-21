@@ -6,8 +6,15 @@
 	<div><input type="text" class="form-control" value="@Flags.EncodeFlagsText(MyFlags.Flags)"/></div>
 	<br/>
 	<BlazorNav IsTabs>
-		<BlazorNavLink onclick="@ActivateShuffle" IsActive="@(activeTab == "Shuffle")">Shuffle</BlazorNavLink>
-		<BlazorNavLink onclick="@ActivateTreasures" IsActive="@(activeTab == "Treasures")">Treasures</BlazorNavLink>
+		<BlazorNavLink onclick="@(() => ActivateTab("Shuffle"))" IsActive="@(activeTab == "Shuffle")">Shuffle</BlazorNavLink>
+		<BlazorNavLink onclick="@(() => ActivateTab("Treasures"))" IsActive="@(activeTab == "Treasures")">Treasures</BlazorNavLink>
+		<BlazorNavLink onclick="@(() => ActivateTab("Goal"))" IsActive="@(activeTab == "Goal")">Goal</BlazorNavLink>
+		<BlazorNavLink onclick="@(() => ActivateTab("Map"))" IsActive="@(activeTab == "Map")">Map</BlazorNavLink>
+		<BlazorNavLink onclick="@(() => ActivateTab("Scale"))" IsActive="@(activeTab == "Scale")">Scale</BlazorNavLink>
+		<BlazorNavLink onclick="@(() => ActivateTab("Party"))" IsActive="@(activeTab == "Party")">Party</BlazorNavLink>
+		<BlazorNavLink onclick="@(() => ActivateTab("Conveniences"))" IsActive="@(activeTab == "Conveniences")">Conveniences</BlazorNavLink>
+		<BlazorNavLink onclick="@(() => ActivateTab("Bug Fixes"))" IsActive="@(activeTab == "Bug Fixes")">Bug Fixes</BlazorNavLink>
+		<BlazorNavLink onclick="@(() => ActivateTab("Fun %"))" IsActive="@(activeTab == "Fun %")">Fun %</BlazorNavLink>
 	</BlazorNav>
 	<TabContent>
 		<TabPane IsOpen="@(activeTab == "Shuffle")">
@@ -81,6 +88,80 @@
 				</div>
 			</div>
 		</TabPane>
+		<TabPane IsOpen="@(activeTab == "Goal")">
+			<div class="container">
+				<div class="row">
+					<div class="col-4">
+						<h4>Chaos Rush</h4>
+						<p>No time for a long race? Chaos Rush combined with Free Orbs lets you begin the game with the Temple of Fiends Revisited completely unlocked!</p>
+						<CheckBox Id="chaosRushCheckBox" IsEnabled="@MyFlags.ChaosRushEnabled" bind-Value="@MyFlags.ChaosRush">CHAOS Rush</CheckBox>
+						<CheckBox Id="freeOrbsCheckBox" IsEnabled="@MyFlags.FreeOrbsEnabled" bind-Value="@MyFlags.FreeOrbs">Free Orbs</CheckBox>
+					</div>
+					<div class="col-4">
+						<h4>Treasure Hunt</h4>
+						<p>A new adventure! Instead of lighting the four orbs to activate the BLACK ORB, the Light Warriors must seek out and collect several of a random treasure item.</p>
+						<CheckBox Id="shardHuntCheckBox" IsEnabled="@MyFlags.ShardHuntEnabled" bind-Value="@MyFlags.ShardHunt">Treasure Hunt</CheckBox>
+						<CheckBox Id="extraShardsCheckBox" IsEnabled="@MyFlags.ExtraShardsEnabled" bind-Value="@MyFlags.ExtraShards">Extra Treasure</CheckBox>
+					</div>
+					<div class="col-4">
+						<h4>Temple of Fiends</h4>
+						<p>Randomly pick one of four new final bosses to replace the legendary Chaos! Take heed though; they can be more than a match for all but the mightiest Warriors.</p>
+						<CheckBox Id="transformFinalFormationCheckBox" bind-Value="@MyFlags.TransformFinalFormation">Alternate Final Boss</CheckBox>
+						<p>Jump straight from the Black Orb to the Final Battle! You may choose to keep the fiend refight tiles - two on each side of the path to Chaos.</p>
+						<CheckBox Id="shortToFRCheckBox" bind-Value="@MyFlags.ShortToFR">Shorten ToFR</CheckBox>
+						<CheckBox Id="preserveFiendRefightsCheckBox" IsEnabled="@MyFlags.ShortToFR" bind-Value="@MyFlags.PreserveFiendRefights">Include Fiend Tiles</CheckBox>
+					</div>
+				</div>
+			</div>
+		</TabPane>
+		<TabPane IsOpen="@(activeTab == "Map")">
+			<div class="container">
+				<div class="row">
+					<div class="col-4">
+					</div>
+				</div>
+			</div>
+		</TabPane>
+		<TabPane IsOpen="@(activeTab == "Scale")">
+			<div class="container">
+				<div class="row">
+					<div class="col-4">
+					</div>
+				</div>
+			</div>
+		</TabPane>
+		<TabPane IsOpen="@(activeTab == "Party")">
+			<div class="container">
+				<div class="row">
+					<div class="col-4">
+					</div>
+				</div>
+			</div>
+		</TabPane>
+		<TabPane IsOpen="@(activeTab == "Conveniences")">
+			<div class="container">
+				<div class="row">
+					<div class="col-4">
+					</div>
+				</div>
+			</div>
+		</TabPane>
+		<TabPane IsOpen="@(activeTab == "Bug Fixes")">
+			<div class="container">
+				<div class="row">
+					<div class="col-4">
+					</div>
+				</div>
+			</div>
+		</TabPane>
+		<TabPane IsOpen="@(activeTab == "Fun %")">
+			<div class="container">
+				<div class="row">
+					<div class="col-4">
+					</div>
+				</div>
+			</div>
+		</TabPane>
 	</TabContent>
 </div>
 
@@ -90,15 +171,9 @@
 
 	private string activeTab = "Shuffle";
 
-	void ActivateShuffle(UIMouseEventArgs e)
+	void ActivateTab(string tab)
 	{
-		activeTab = "Shuffle";
-		StateHasChanged();
-	}
-
-	void ActivateTreasures(UIMouseEventArgs e)
-	{
-		activeTab = "Treasures";
+		activeTab = tab;
 		StateHasChanged();
 	}
 
