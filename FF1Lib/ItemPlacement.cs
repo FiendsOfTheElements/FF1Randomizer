@@ -1,9 +1,9 @@
-﻿using System;
+﻿using RomUtilities;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
-using RomUtilities;
 
 namespace FF1Lib
 {
@@ -22,6 +22,11 @@ namespace FF1Lib
 														ItemShopSlot caravanItemLocation,
 														OverworldMap overworldMap)
 		{
+			if (!flags.AllowObsoleteVehicles)
+			{
+				return PlaceSaneItems2(rng, flags, incentivesData, allTreasures, caravanItemLocation, overworldMap);
+			}
+
 			Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullLocationRequirements = overworldMap.FullLocationRequirements;
 			Dictionary<MapLocation, OverworldTeleportIndex> overridenOverworld = overworldMap.OverriddenOverworldLocations;
 
@@ -198,7 +203,218 @@ namespace FF1Lib
 				}
 
 				// 7. Check sanity and loop if needed
-			} while (!CheckSanity(placedItems, fullLocationRequirements, flags));
+			} while (!CheckSanity(placedItems, fullLocationRequirements, flags).Item1);
+
+			if (Debugger.IsAttached)
+			{
+				Console.WriteLine($"ItemPlacement::PlaceSaneItems required {sanityCounter} iterations.");
+				Console.WriteLine("");
+				Console.WriteLine("Item     Entrance  ->  Floor  ->  Source                   Requirements");
+				Console.WriteLine("------------------------------------------------------------------------------------------");
+
+				var sorted = placedItems.Where(item => item.Item != Item.Shard).ToList();
+				sorted.Sort((IRewardSource lhs, IRewardSource rhs) => lhs.Item.ToString().CompareTo(rhs.Item.ToString()));
+				sorted.ForEach(item =>
+				{
+					if (fullLocationRequirements.TryGetValue(item.MapLocation, out var flr))
+					{
+						var overworldLocation = item.MapLocation.ToString();
+						if (overridenOverworld != null && overridenOverworld.TryGetValue(item.MapLocation, out var overriden))
+						{
+							overworldLocation = overriden.ToString();
+						}
+
+						var itemStr = item.Item.ToString().PadRight(9);
+						var locStr = $"{overworldLocation} -> {item.MapLocation} -> {item.Name} ".PadRight(50);
+						var changes = $"{String.Join(" | ", flr.Item1.Select(mapChange => mapChange.ToString()).ToArray())}";
+						var reqs = flr.Item2.ToString().CompareTo("None") == 0 ? "" : $" AND {flr.Item2.ToString()}";
+						Console.WriteLine($"{itemStr}{locStr}{changes}{reqs}");
+					}
+				});
+			}
+
+			// 8. Place all remaining unincentivized treasures or incentivized non-quest items that weren't placed
+			itemLocationPool = itemLocationPool.Where(x => !x.IsUnused && !placedItems.Any(y => y.Address == x.Address)).ToList();
+			foreach (var placedItem in placedItems)
+			{
+				incentivePool.Remove(placedItem.Item);
+			}
+			treasurePool.AddRange(incentivePool);
+
+			Debug.Assert(treasurePool.Count() == itemLocationPool.Count());
+			treasurePool.Shuffle(rng);
+			itemLocationPool.Shuffle(rng);
+
+			if (flags.RandomLoot)
+			{
+				// We want to leave out anything incentivized (and thus already placed), but
+				// add all the other stuff that you can't find in vanilla.
+				var randomTreasure = treasurePool.ToList();
+				randomTreasure.AddRange(ItemLists.CommonWeaponTier);
+				randomTreasure.AddRange(ItemLists.CommonArmorTier);
+				randomTreasure.Add(Item.CatClaw);
+				randomTreasure.Add(Item.SteelArmor);
+
+				ItemGenerator generator = new ItemGenerator(randomTreasure, flags.WorldWealth);
+				treasurePool = treasurePool.Select(treasure => generator.GetItem(rng)).ToList();
+			}
+
+			var leftovers = treasurePool.Zip(itemLocationPool, (treasure, location) => NewItemPlacement(location, treasure));
+			placedItems.AddRange(leftovers);
+			return placedItems;
+		}
+
+		public static List<IRewardSource> PlaceSaneItems2(MT19337 rng,
+																IItemPlacementFlags flags,
+																IncentiveData incentivesData,
+																List<Item> allTreasures,
+																ItemShopSlot caravanItemLocation,
+																OverworldMap overworldMap)
+		{
+			Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullLocationRequirements = overworldMap.FullLocationRequirements;
+			Dictionary<MapLocation, OverworldTeleportIndex> overridenOverworld = overworldMap.OverriddenOverworldLocations;
+
+			long sanityCounter = 0;
+			List<IRewardSource> placedItems;
+
+			var incentiveLocationPool = incentivesData.IncentiveLocations.ToList();
+			var incentivePool = incentivesData.IncentiveItems.Where(x => allTreasures.Contains(x)).ToList();
+			var forcedItems = incentivesData.ForcedItemPlacements.ToList();
+			var itemLocationPool = incentivesData.AllValidItemLocations.ToList();
+			var startingPotentialAccess = overworldMap.StartingPotentialAccess;
+
+			var unincentivizedQuestItems =
+				ItemLists.AllQuestItems
+					.Where(x => !incentivePool.Contains(x) &&
+								allTreasures.Contains(x) &&
+								!forcedItems.Any(y => y.Item == x))
+								.ToList();
+
+			var treasurePool = allTreasures.ToList();
+
+			foreach (var incentive in incentivePool)
+			{
+				treasurePool.Remove(incentive);
+			}
+			foreach (var placement in forcedItems)
+			{
+				treasurePool.Remove(placement.Item);
+			}
+			foreach (var questItem in unincentivizedQuestItems)
+			{
+				treasurePool.Remove(questItem);
+			}
+
+			var itemShopItem = Item.Bottle;
+
+			while (treasurePool.Remove(Item.Shard))
+			{
+				unincentivizedQuestItems.Add(Item.Shard);
+			}
+
+			// Cache the final unincentivized pool so we can reset it each iteration of the loop.
+			IReadOnlyCollection<Item> cachedTreasurePool = new ReadOnlyCollection<Item>(treasurePool.ToList());
+
+			do
+			{
+				sanityCounter++;
+				if (sanityCounter > 500) throw new InsaneException("Sanity Counter exceeds 500 iterations!");
+				// 1. (Re)Initialize lists inside of loop
+				placedItems = forcedItems.ToList();
+				var incentives = incentivePool.ToList();
+				var nonincentives = unincentivizedQuestItems.ToList();
+				treasurePool = cachedTreasurePool.ToList();
+				incentives.Shuffle(rng);
+				nonincentives.Shuffle(rng);
+
+				if (flags.NPCItems)
+				{
+					/// 2. Place caravan item first because among incentive locations it has the smallest set of possible items
+					var validShopIncentives = incentives.Where(x => x > Item.None && x <= Item.Soft).ToList();
+					if (validShopIncentives.Any() && incentiveLocationPool.Any(x => x.Address == ItemLocations.CaravanItemShop1.Address))
+					{
+						itemShopItem = validShopIncentives.PickRandom(rng);
+						incentives.Remove(itemShopItem);
+					}
+					else
+					{
+						itemShopItem = treasurePool.Concat(nonincentives).Where(x => x > Item.None && x <= Item.Soft && x != Item.Shard).ToList().PickRandom(rng);
+						if (!nonincentives.Remove(itemShopItem))
+						{
+							treasurePool.Remove(itemShopItem);
+						}
+					}
+					placedItems.Add(new ItemShopSlot(caravanItemLocation, itemShopItem));
+
+					// We will plcae these items in this very order so that we can ensure the bridge is early, and we don't need the floater to find the ship.
+					List<Item> importantItems = new List<Item> { Item.Key, Item.Bridge, Item.Canoe, Item.Ship, Item.Canal };
+
+					List<Item> progressionItems = Enumerable.Range((int)Item.Lute, 16).Select(x => (Item)x).ToList();
+					progressionItems.Shuffle(rng);
+					importantItems.AddRange(progressionItems);
+
+
+					// Anywhere items can get placed anywhere in the game. Everything else will only be placed where we can reach at this point.
+					List<Item> anywhereItems = new List<Item> { Item.Key, Item.Canoe, Item.Floater };
+
+					foreach (var item in importantItems)
+					{
+						if (placedItems.Any(x => x.Item == item))
+							continue;
+
+						var currentMapLocations = CheckSanity(placedItems, fullLocationRequirements, flags).Item2;
+						var rewardSources = new List<IRewardSource>();
+
+						if (incentives.Remove(item))
+						{
+							rewardSources = incentiveLocationPool.Where(x => !placedItems.Any(y => y.Address == x.Address)
+								&& x.Address != ItemLocations.CaravanItemShop1.Address
+								&& (anywhereItems.Contains(item) || currentMapLocations.Contains(x.MapLocation))).ToList();
+						}
+						else if (nonincentives.Remove(item))
+						{
+							rewardSources = itemLocationPool.Where(x => !placedItems.Any(y => y.Address == x.Address)
+								&& x.Address != ItemLocations.CaravanItemShop1.Address
+								&& (anywhereItems.Contains(item) || currentMapLocations.Contains(x.MapLocation))).ToList();
+						}
+
+						if (rewardSources.Any())
+						{
+							placedItems.Add(NewItemPlacement(rewardSources.PickRandom(rng), item));
+						}
+						else
+						{
+							Console.WriteLine($"No incentive source for {item}.");
+							nonincentives.Add(item);
+						}
+
+					}
+				}
+
+				// 5. Then place all incentive locations that don't have special logic
+				var incentiveLocations = incentiveLocationPool.Where(x => !placedItems.Any(y => y.Address == x.Address) && x.Address != ItemLocations.CaravanItemShop1.Address).ToList();
+				incentiveLocations.Shuffle(rng);
+				foreach (var incentiveLocation in incentiveLocations)
+				{
+					if (!incentives.Any()) break;
+					placedItems.Add(NewItemPlacement(incentiveLocation, incentives.SpliceRandom(rng)));
+				}
+
+				// 6. Then place remanining incentive items and unincentivized quest items in any other chest before ToFR
+				var leftoverItems = incentives.Concat(nonincentives).ToList();
+				leftoverItems.Shuffle(rng);
+				var leftoverItemLocations =
+					itemLocationPool
+						 .Where(x => !ItemLocations.ToFR.Any(y => y.Address == x.Address) &&
+								!x.IsUnused && !placedItems.Any(y => y.Address == x.Address))
+						 .ToList();
+				foreach (var leftoverItem in leftoverItems)
+				{
+					placedItems.Add(NewItemPlacement(leftoverItemLocations.SpliceRandom(rng), leftoverItem));
+				}
+
+				// 7. Check sanity and loop if needed
+			} while (!CheckSanity(placedItems, fullLocationRequirements, flags).Item1);
 
 			if (Debugger.IsAttached)
 			{
@@ -283,9 +499,10 @@ namespace FF1Lib
 			return fullLocationRequirements.Where(x => x.Value.Item1.Any(y => currentMapChanges.HasFlag(y) && currentAccess.HasFlag(x.Value.Item2))).Select(x => x.Key);
 		}
 
-		public static bool CheckSanity(List<IRewardSource> treasurePlacements,
+		public static (bool, List<MapLocation>) CheckSanity(List<IRewardSource> treasurePlacements,
 										Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullLocationRequirements,
 										IVictoryConditionFlags victoryConditions)
+
 		{
 			const int maxIterations = 20;
 			var currentIteration = 0;
@@ -336,7 +553,7 @@ namespace FF1Lib
 				var currentItems = accessibleLocations.Select(x => x.Item).ToList();
 				if (accessibleLocations.Count() <= accessibleLocationCount)
 				{
-					return false;
+					return (false, currentMapLocations().ToList());
 				}
 				accessibleLocationCount = accessibleLocations.Count();
 
@@ -421,7 +638,7 @@ namespace FF1Lib
 
 			}
 
-			return true;
+			return (true, currentMapLocations().ToList());
 		}
 	}
 }

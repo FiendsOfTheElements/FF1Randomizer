@@ -23,6 +23,7 @@
 		bool IncentivizeMarsh { get; }
 		bool IncentivizeMarshKeyLocked { get; }
 		bool IncentivizeSkyPalace { get; }
+		bool IncentivizeTitansTrove { get; }
 		bool IncentivizeEarth { get; }
 		bool IncentivizeSeaShrine { get; }
 
@@ -69,8 +70,10 @@
 	}
 	public interface IItemPlacementFlags : IItemShuffleFlags, IVictoryConditionFlags
 	{
+		bool AllowObsoleteVehicles { get; }
 		bool FreeBridge { get; }
 		bool FreeAirship { get; }
+		bool FreeCanal { get; }
 		bool MapCanalBridge { get; }
 		bool MapConeriaDwarves { get; }
 		bool MapVolcanoIceRiver { get; }

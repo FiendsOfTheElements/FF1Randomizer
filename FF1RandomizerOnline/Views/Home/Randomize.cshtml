@@ -103,6 +103,7 @@
 							</span>
 						</div>
 						<div class="checkbox-cell" title="If unchecked, forces vanilla Bridge, Lute, Ship, Rod, Canoe, Cube, Bottle"><input v-model="NPCItems" type="checkbox" asp-for="Flags.NPCItems" /> <label asp-for="Flags.NPCItems">Main NPC Items</label></div>
+						<div class="checkbox-cell" title="If unchecked, forces the Bridge, Ship, and Canal to be located in the initial continent."><input :disabled="!Treasures || !NPCItems" class="indent" v-model="AllowObsoleteVehicles" type="checkbox" asp-for="Flags.AllowObsoleteVehicles" /> <label asp-for="Flags.AllowObsoleteVehicles">Allow Obsolete Progression</label></div>
 						<div class="checkbox-cell" title="If unchecked, forces vanilla Crystal, Herb, Key, Canal, Oxyale, Chime, Xcalber"><input v-model="NPCFetchItems" type="checkbox" asp-for="Flags.NPCFetchItems" /> <label asp-for="Flags.NPCFetchItems">Fetch Quest Rewards</label></div>
 						<div class="checkbox-cell" title="Shuffle the locations of Bahamut, Dr. Unne, and the Elf Doctor."><input v-model="ShuffleObjectiveNPCs" type="checkbox" asp-for="Flags.ShuffleObjectiveNPCs" /> <label asp-for="Flags.ShuffleObjectiveNPCs">Objective NPCs</label></div>
 					</div>
@@ -117,11 +118,11 @@
 						<div class="checkbox-cell" title="Floater chest"><input v-model="IncentivizeIceCave" :disabled="!Treasures" type="checkbox" asp-for="Flags.IncentivizeIceCave" /> <label asp-for="Flags.IncentivizeIceCave">Ice Cave</label></div>
 						<div class="checkbox-cell" title="Tail chest"><input v-model="IncentivizeOrdeals" :disabled="!Treasures" type="checkbox" asp-for="Flags.IncentivizeOrdeals" /> <label asp-for="Flags.IncentivizeOrdeals">Ordeals</label></div>
 						<div class="checkbox-cell" title="Crown chest"><input v-model="IncentivizeMarsh" :disabled="!Treasures" type="checkbox" asp-for="Flags.IncentivizeMarsh" /> <label asp-for="Flags.IncentivizeMarsh">Marsh Cave</label></div>
-						<div class="checkbox-cell"></div>
 						<div class="checkbox-cell" title="Ruby chest (behind Vampire)"><input v-model="IncentivizeEarth" :disabled="!Treasures" type="checkbox" asp-for="Flags.IncentivizeEarth" /> <label asp-for="Flags.IncentivizeEarth">Earth Cave</label></div>
 						<div class="checkbox-cell" title="Last Floor West (Red D)"><input v-model="IncentivizeVolcano" :disabled="!Treasures" type="checkbox" asp-for="Flags.IncentivizeVolcano" /> <label asp-for="Flags.IncentivizeVolcano">Volcano</label></div>
 						<div class="checkbox-cell" title="Slab chest"><input v-model="IncentivizeSeaShrine" :disabled="!Treasures" type="checkbox" asp-for="Flags.IncentivizeSeaShrine" /> <label asp-for="Flags.IncentivizeSeaShrine">Sea Shrine</label></div>
 						<div class="checkbox-cell" title="Adamant chest"><input v-model="IncentivizeSkyPalace" :disabled="!Treasures" type="checkbox" asp-for="Flags.IncentivizeSkyPalace" /> <label asp-for="Flags.IncentivizeSkyPalace">Sky Palace</label></div>
+						<div class="checkbox-cell" title="Titan's Trove Right"><input v-model="IncentivizeTitansTrove" :disabled="!Treasures" type="checkbox" asp-for="Flags.IncentivizeTitansTrove" /> <label asp-for="Flags.IncentivizeTitansTrove">Titan's Trove</label></div>
 						<div class="checkbox-cell"></div>
 						<div class="checkbox-cell" title="TNT chest"><input v-model="IncentivizeConeria" :disabled="!Treasures" type="checkbox" asp-for="Flags.IncentivizeConeria" /> <label asp-for="Flags.IncentivizeConeria">Coneria (locked)</label></div>
 						<div class="checkbox-cell" title="Bottom Floor South East"><input v-model="IncentivizeMarshKeyLocked" :disabled="!Treasures" type="checkbox" asp-for="Flags.IncentivizeMarshKeyLocked" /> <label asp-for="Flags.IncentivizeMarshKeyLocked">Marsh (locked)</label></div>
@@ -130,13 +131,11 @@
 				<div class="col-md-4" style="border-left: 1px solid black;" :style="!Treasures ? { color: 'grey'} : {}">
 					<h4>Incentivized Items</h4>
 					<div class="col-xs-12">
-						<div>
-							Any Required Item being Shuffled will be included in the incentive pool by default. Add additional items below:
-						</div>
-						<br />
 						<div class="checkbox-cell" title="Number of Incentive Items"> <b>Number of Incentive Items = {{getCountIncentivizedItems()}} </b></div>
+						<div> Any Required Item being Shuffled will be included by default.  </div> <br />
 						<div class="checkbox-cell"><input v-model="IncentivizeTail" :disabled="!Treasures" type="checkbox" asp-for="Flags.IncentivizeTail" /> <label asp-for="Flags.IncentivizeTail">Tail</label></div>
 						<div class="checkbox-cell" title="Other non-required quest items that are shuffled such as Ruby, Adamant, Crystal, TNT, Herb, etc."><input v-model="IncentivizeFetchItems" :disabled="!Treasures" type="checkbox" asp-for="Flags.IncentivizeFetchItems" /> <label asp-for="Flags.IncentivizeFetchItems">Other Quest Items</label></div>
+						<div class="checkbox-cell" title="Guarantee Ship and Canal if they're shuffled."><input v-model="IncentivizeShipAndCanal" :disabled="!Treasures" type="checkbox" asp-for="Flags.IncentivizeShipAndCanal" /> <label asp-for="Flags.IncentivizeShipAndCanal">Ship and Canal</label></div>
 						<div class="checkbox-cell"></div>
 						<div class="checkbox-cell"><input v-model="IncentivizeMasamune" :disabled="!Treasures" type="checkbox" asp-for="Flags.IncentivizeMasamune" /> <label asp-for="Flags.IncentivizeMasamune">Masamune</label></div>
 						<div class="checkbox-cell"><input v-model="IncentivizeRibbon" :disabled="!Treasures" type="checkbox" asp-for="Flags.IncentivizeRibbon" /> <label asp-for="Flags.IncentivizeRibbon">Ribbon</label></div>
@@ -409,6 +408,7 @@
 				<div class="col-md-4">
 					<div class="checkbox-cell" title="The Airship is available at the start of the game"><input v-model="FreeAirship" type="checkbox" asp-for="Flags.FreeAirship" /> <label asp-for="Flags.FreeAirship">Free Airship</label></div>
 					<div class="checkbox-cell" title="The Bridge is available at the start of the game"><input v-model="FreeBridge" type="checkbox" asp-for="Flags.FreeBridge" /> <label asp-for="Flags.FreeBridge">Free Bridge</label></div>
+					<div class="checkbox-cell" title="The Canal is available at the start of the game"><input v-model="FreeCanal" type="checkbox" asp-for="Flags.FreeCanal" /> <label asp-for="Flags.FreeCanal">Free Canal</label></div>
 					<div class="checkbox-cell" title="Encounter rate cut to 20% and all Enemy HP cut to 10% (after any randomizations)"><input v-model="EasyMode" type="checkbox" asp-for="Flags.EasyMode" /> <label asp-for="Flags.EasyMode">Easy Mode</label></div>
 				</div>
 			</div>

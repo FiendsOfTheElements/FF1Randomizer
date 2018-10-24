@@ -111,6 +111,7 @@
 		"ChanceToRun": true,
 		"SpellBugs": true,
 		"BlackBeltAbsorb": true,
+		"BlackBeltMDEF": true,
 
 		"EnemyStatusAttackBug": true,
 		"EnemySpellsTargetingAllies": true,
