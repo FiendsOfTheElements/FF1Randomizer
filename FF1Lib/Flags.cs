@@ -227,6 +227,8 @@ namespace FF1Lib
 		public bool SpellBugs { get; set; }
 		[FlagString(Character = BUG_FIXES, FlagBit = 16)]
 		public bool BlackBeltAbsorb { get; set; }
+		[FlagString(Character = BUG_FIXES, FlagBit = 32)]
+		public bool BlackBeltMDEF { get; set; }
 
 		[FlagString(Character = ENEMY_BUG_FIXES, FlagBit = 1)]
 		public bool EnemyStatusAttackBug { get; set; }

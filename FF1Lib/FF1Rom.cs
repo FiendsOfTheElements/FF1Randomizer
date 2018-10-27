@@ -425,6 +425,11 @@ namespace FF1Lib
 				FixBBAbsorbBug();
 			}
 
+			if (flags.BlackBeltMDEF)
+			{
+				RemakeStyleMasterMDEF();
+			}
+
 			if (flags.ImproveTurnOrderRandomization)
 			{
 				ImproveTurnOrderRandomization(rng);

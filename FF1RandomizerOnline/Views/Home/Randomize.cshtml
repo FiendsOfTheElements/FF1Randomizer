@@ -413,13 +413,14 @@
 				</div>
 			</div>
 			<div class="section tab-pane" id="bug-fixes">
-				<div class="col-md-4">
+				<div class="col-md-6">
 					<div class="checkbox-cell"><input v-model="HouseMPRestoration" type="checkbox" asp-for="Flags.HouseMPRestoration" /> <label asp-for="Flags.HouseMPRestoration">House MP Restoration</label></div>
 					<div class="checkbox-cell"><input v-model="WeaponStats" type="checkbox" asp-for="Flags.WeaponStats" /> <label asp-for="Flags.WeaponStats">Weapon Stats</label></div>
 					<div class="checkbox-cell"><input v-model="ChanceToRun" type="checkbox" asp-for="Flags.ChanceToRun" /> <label asp-for="Flags.ChanceToRun">Chance to Run</label></div>
 					<div class="checkbox-cell" title="Fixes LOCK, LOK2, HEL2, TMPR, SABR, CUR4 out of battle, and permit canceling of EXIT and WARP."><input v-model="SpellBugs" type="checkbox" asp-for="Flags.SpellBugs" /> <label asp-for="Flags.SpellBugs">Spell Fixes</label></div>
 					<div class="checkbox-cell"><input v-model="EnemyStatusAttackBug" type="checkbox" asp-for="Flags.EnemyStatusAttackBug" /> <label asp-for="Flags.EnemyStatusAttackBug">Enemy Status Attacks</label></div>
 					<div class="checkbox-cell"><input v-model="BlackBeltAbsorb" type="checkbox" asp-for="Flags.BlackBeltAbsorb" /> <label asp-for="Flags.BlackBeltAbsorb">Black Belt &amp; Master Absorb Calculation</label></div>
+					<div class="checkbox-cell" title="Change BB to +3 and Master to +4 to match several of the FF1 remakes."><input v-model="BlackBeltMDEF" type="checkbox" asp-for="Flags.BlackBeltMDEF" /> <label asp-for="Flags.BlackBeltMDEF">Black Belt &amp; Master MDEF Growth</label></div>
 					<div class="checkbox-cell"><input v-model="EnemyElementalResistancesBug" type="checkbox" asp-for="Flags.EnemyElementalResistancesBug" /> <label asp-for="Flags.EnemyElementalResistancesBug">Enemy Elemental Resistances</label></div>
 					<div class="checkbox-cell"><input v-model="EnemySpellsTargetingAllies" type="checkbox" asp-for="Flags.EnemySpellsTargetingAllies" /> <label asp-for="Flags.EnemySpellsTargetingAllies">Enemy Spells Targeting Allies</label></div>
 					<div class="checkbox-cell"><input v-model="ImproveTurnOrderRandomization" type="checkbox" asp-for="Flags.ImproveTurnOrderRandomization" /> <label asp-for="Flags.ImproveTurnOrderRandomization">Improve Turn Order Randomization</label></div>
