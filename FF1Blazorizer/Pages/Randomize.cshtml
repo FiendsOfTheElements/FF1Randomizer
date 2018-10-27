@@ -118,6 +118,28 @@
 			<div class="container">
 				<div class="row">
 					<div class="col-4">
+						<h4>Entrance Shuffle</h4>
+						<p>Try shuffling dungeon entrances, floors, and towns to create a completely new world to explore!</p>
+						<CheckBox Id="entrancesCheckBox" bind-Value="@MyFlags.Entrances">Entrances</CheckBox>
+						<CheckBox Indent Id="floorsCheckBox" IsEnabled="@MyFlags.Entrances" bind-Value="@MyFlags.Floors">Floors</CheckBox>
+						<CheckBox Indent Id="allowDeepCastlesCheckBox" IsEnabled="@MyFlags.Entrances" bind-Value="@MyFlags.AllowDeepCastles">Deep ToFR</CheckBox>
+						<CheckBox Id="townsCheckBox" bind-Value="@MyFlags.Towns">Towns</CheckBox>
+					</div>
+					<div class="col-4">
+						<h4>Fixed Map Edits</h4>
+						<p>Classic Final Fantasy Randomizer map edits.</p>
+						<CheckBox Id="ordealsPillarsCheckBox" bind-Value="@MyFlags.OrdealsPillars">Castle Ordeals Pillars</CheckBox>
+						<CheckBox Id="skyCastle4FTeleportersCheckBox" bind-Value="@MyFlags.SkyCastle4FTeleporters">Sky Castle 4F Teleporters</CheckBox>
+						<CheckBox Id="titansTroveCheckBox" bind-Value="@MyFlags.TitansTrove">Titan's Trove</CheckBox>
+						<CheckBox Id="confusedOldMenCheckBox" bind-Value="@MyFlags.ConfusedOldMen">Confused Old Men</CheckBox>
+						<div class="checkbox-cell"></div>
+						<CheckBox Id="mapOpenProgressionCheckBox" bind-Value="@MyFlags.MapOpenProgression">Open Progression</CheckBox>
+						<CheckBox Id="mapOpenProgressionExtendedCheckBox" IsEnabled="@MyFlags.MapOpenProgression" bind-Value="@MyFlags.MapOpenProgressionExtended">Extended Open Progression</CheckBox>
+					</div>
+					<div class="col-4">
+						<h4>WarMECH</h4>
+						<p>Encounter 7 not enough WarMECH for you? Try a patrolling or required WarMECH instead.</p>
+						<div class="checkbox-cell">WarMECH Mode</div>
 					</div>
 				</div>
 			</div>
@@ -126,6 +148,7 @@
 			<div class="container">
 				<div class="row">
 					<div class="col-4">
+						<h4>"Sliders"</h4>
 					</div>
 				</div>
 			</div>
@@ -134,6 +157,7 @@
 			<div class="container">
 				<div class="row">
 					<div class="col-4">
+						<h4>This is like a whole thing.</h4>
 					</div>
 				</div>
 			</div>
@@ -142,6 +166,21 @@
 			<div class="container">
 				<div class="row">
 					<div class="col-4">
+						<CheckBox Id="earlySardaCheckBox" bind-Value="@MyFlags.EarlySarda">Early Sarda Item</CheckBox>
+						<CheckBox Id="earlySageCheckBox" bind-Value="@MyFlags.EarlySage">Early Sage Item</CheckBox>
+						<CheckBox Id="crownlessOrdealsCheckBox" bind-Value="@MyFlags.CrownlessOrdeals">Early Ordeals</CheckBox>
+						<div class="checkbox-cell"></div>
+						<CheckBox Id="noPartyShuffleCheckBox" bind-Value="@MyFlags.NoPartyShuffle">No Party Shuffle</CheckBox>
+						<CheckBox Id="speedHacksCheckBox" bind-Value="@MyFlags.SpeedHacks">Speed Hacks</CheckBox>
+						<CheckBox Id="identifyTreasuresCheckBox" bind-Value="@MyFlags.IdentifyTreasures">Identify Treasures</CheckBox>
+						<CheckBox Id="dashCheckBox" bind-Value="@MyFlags.Dash">Enable Dash</CheckBox>
+						<CheckBox Id="buyTenCheckBox" bind-Value="@MyFlags.BuyTen">Buy 10 Items</CheckBox>
+						<CheckBox Id="waitWhenUnrunnableCheckBox" bind-Value="@MyFlags.WaitWhenUnrunnable">Change Unrunnable RUN to WAIT</CheckBox>
+					</div>
+					<div class="col-4">
+						<CheckBox Id="freeAirshipCheckBox" bind-Value="@MyFlags.FreeAirship">Free Airship</CheckBox>
+						<CheckBox Id="freeBridgeCheckBox" bind-Value="@MyFlags.FreeBridge">Free Bridge</CheckBox>
+						<CheckBox Id="easyModeCheckBox" bind-Value="@MyFlags.EasyMode">Easy Mode</CheckBox>
 					</div>
 				</div>
 			</div>
@@ -150,6 +189,15 @@
 			<div class="container">
 				<div class="row">
 					<div class="col-4">
+						<CheckBox Id="houseMPRestorationCheckBox" bind-Value="@MyFlags.HouseMPRestoration">House MP Restoration</CheckBox>
+						<CheckBox Id="weaponStatsCheckBox" bind-Value="@MyFlags.WeaponStats">Weapon Stats</CheckBox>
+						<CheckBox Id="chanceToRunCheckBox" bind-Value="@MyFlags.ChanceToRun">Chance to Run</CheckBox>
+						<CheckBox Id="spellBugsCheckBox" bind-Value="@MyFlags.SpellBugs">Spell Fixes</CheckBox>
+						<CheckBox Id="enemyStatusAttackBugCheckBox" bind-Value="@MyFlags.EnemyStatusAttackBug">Enemy Status Attacks</CheckBox>
+						<CheckBox Id="blackBeltAbsorbCheckBox" bind-Value="@MyFlags.BlackBeltAbsorb">Black Belt & Master Absorb Calculation</CheckBox>
+						<CheckBox Id="enemyElementalResistancesCheckBox" bind-Value="@MyFlags.EnemyElementalResistancesBug">Enemy Elemental Resistances</CheckBox>
+						<CheckBox Id="enemySpellsTargetingAlliesCheckBox" bind-Value="@MyFlags.EnemySpellsTargetingAllies">Enemy Spells Targeting Allies</CheckBox>
+						<CheckBox Id="improveTurnOrderRandomizationCheckBox" bind-Value="@MyFlags.ImproveTurnOrderRandomization">Improve Turn Order Randomization</CheckBox>
 					</div>
 				</div>
 			</div>
@@ -157,8 +205,18 @@
 		<TabPane IsOpen="@(activeTab == "Fun %")">
 			<div class="container">
 				<div class="row">
+					<h4>Fun % Flags</h4>
+					<p>Fun flags are not part of the standard flags string since they do not impact gameplay. The buttons at the bottom can be used to store your preferred fun % settings within your browser so that they will be automatically restored each time you visit the site.</p>
 					<div class="col-4">
+						<CheckBox Id="funEnemyNamesCheckBox" bind-Value="@MyFlags.FunEnemyNames">Fun Enemy Names</CheckBox>
+						<CheckBox Id="paletteSwapCheckBox" bind-Value="@MyFlags.PaletteSwap">Palette Swap</CheckBox>
+						<CheckBox Id="modernBattlefieldCheckBox" bind-Value="@MyFlags.ModernBattlefield">Modern Battlefield</CheckBox>
 					</div>
+					<div class="col-4">
+						<div class="checkbox-cell">Team TYRO</div>
+						<div class="checkbox-cell">Music Shuffle</div>
+					</div>
+					<button>lol save preferences</button>
 				</div>
 			</div>
 		</TabPane>
