@@ -39,7 +39,7 @@
 						<CheckBox Id="enemyFormationsSurpriseCheckBox" bind-Value="@MyFlags.EnemyFormationsSurprise">Enemy Surprise Bonus</CheckBox>
 						<div class="checkbox-cell">Formation Shuffle Mode</div>
 						<CheckBox Id="enemyTrapTilesCheckBox" bind-Value="@MyFlags.EnemyTrapTiles">Enemy Forced Encounter Tiles</CheckBox>
-						<CheckBox Id="randomTrapFormationsCheckBox" bind-Value="@MyFlags.RandomTrapFormations">Use Random Formations</CheckBox>
+						<CheckBox Indent Id="randomTrapFormationsCheckBox" IsEnabled="@MyFlags.EnemyTrapTiles" bind-Value="@MyFlags.RandomTrapFormations">Use Random Formations</CheckBox>
 					</div>
 				</div>
 			</div>
@@ -50,8 +50,11 @@
 					<div class="col-4">
 						<h4>Items Shuffle</h4>
 						<CheckBox Id="treasuresCheckBox" bind-Value="@MyFlags.Treasures">Treasures</CheckBox>
+						<CheckBox Id="randomLootCheckBox" bind-Value="@MyFlags.RandomLoot">Randomize Treasures</CheckBox>
+						<div class="checkbox-cell">Random Wealth:</div>
 						<CheckBox Id="npcItemsCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.NPCItems">Main NPC Items</CheckBox>
 						<CheckBox Id="npcFetchItemsCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.NPCFetchItems">Fetch Quest Rewards</CheckBox>
+						<CheckBox Id="shuffleObjectiveNPCsCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.ShuffleObjectiveNPCs">Objective NPCs</CheckBox>
 					</div>
 					<div class="col-4">
 						<h4>Incentivized Locations</h4>
@@ -176,6 +179,7 @@
 						<CheckBox Id="dashCheckBox" bind-Value="@MyFlags.Dash">Enable Dash</CheckBox>
 						<CheckBox Id="buyTenCheckBox" bind-Value="@MyFlags.BuyTen">Buy 10 Items</CheckBox>
 						<CheckBox Id="waitWhenUnrunnableCheckBox" bind-Value="@MyFlags.WaitWhenUnrunnable">Change Unrunnable RUN to WAIT</CheckBox>
+						<CheckBox Id="enableCritNumberDisplayCheckBox" bind-Value="@MyFlags.EnableCritNumberDisplay">Critical Hit Count Display</CheckBox>
 					</div>
 					<div class="col-4">
 						<CheckBox Id="freeAirshipCheckBox" bind-Value="@MyFlags.FreeAirship">Free Airship</CheckBox>
@@ -211,10 +215,12 @@
 						<CheckBox Id="funEnemyNamesCheckBox" bind-Value="@MyFlags.FunEnemyNames">Fun Enemy Names</CheckBox>
 						<CheckBox Id="paletteSwapCheckBox" bind-Value="@MyFlags.PaletteSwap">Palette Swap</CheckBox>
 						<CheckBox Id="modernBattlefieldCheckBox" bind-Value="@MyFlags.ModernBattlefield">Modern Battlefield</CheckBox>
+						<CheckBox Id="thirdBattlePaletteCheckBox" bind-Value="@MyFlags.ThirdBattlePalette">Three Battle Palettes</CheckBox>
 					</div>
 					<div class="col-4">
 						<div class="checkbox-cell">Team TYRO</div>
 						<div class="checkbox-cell">Music Shuffle</div>
+						<CheckBox Id="disableDamageTileFlickerCheckBox" bind-Value="@MyFlags.DisableDamageTileFlicker">Disable Damage Tile Flicker</CheckBox>
 					</div>
 					<button>lol save preferences</button>
 				</div>
