@@ -91,6 +91,15 @@ namespace FF1Lib
 			}
 		} // Planned 2.x feature - random non-quest-item treasures
 
+		public FormationShuffleModeEnum FormationShuffleMode
+		{
+			get => Flags.FormationShuffleMode;
+			set
+			{
+				Flags.FormationShuffleMode = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FormationShuffleMode"));
+			}
+		}
 		public WorldWealth WorldWealth
 		{
 			get => Flags.WorldWealth;

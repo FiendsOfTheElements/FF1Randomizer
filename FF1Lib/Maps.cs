@@ -109,9 +109,8 @@ namespace FF1Lib
 	public enum WarMECHMode
 	{
 		Vanilla,
-		Wandering4F,
-		Aggro4F,
-		BridgeOfDestiny
+		Patrolling,
+		Required
 	}
 
 	public struct NPC
@@ -409,14 +408,14 @@ namespace FF1Lib
 
 			MakeWarMECHUnrunnable();
 
-			if (mode == WarMECHMode.BridgeOfDestiny)
+			if (mode == WarMECHMode.Required)
 			{
 				// Can't use mapNpcIndex 0, that's the Wind ORB.
 				SetNpc(MapId.SkyPalace5F, 1, ObjectId.WarMECH, 0x07, 0x0E, inRoom: false, stationary: true);
 
 				Data[0x029AB] = 0x14; // we can only change one color without messing up the Wind ORB.
 			}
-			else if (mode == WarMECHMode.Wandering4F || mode == WarMECHMode.Aggro4F)
+			else if (mode == WarMECHMode.Patrolling)
 			{
 				var (x, y) = GetSkyCastleFloorTile(rng, maps[(byte)MapId.SkyPalace4F]);
 				SetNpc(MapId.SkyPalace4F, 0, ObjectId.WarMECH, x, y, inRoom: false, stationary: false);

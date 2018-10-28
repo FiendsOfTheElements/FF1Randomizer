@@ -37,7 +37,7 @@
 						<CheckBox Id="enemyStatusAttacksCheckBox" bind-Value="@MyFlags.EnemyStatusAttacks">Enemy Status Attacks</CheckBox>
 						<CheckBox Id="enemyFormationsUnrunnableCheckBox" bind-Value="@MyFlags.EnemyFormationsUnrunnable">Enemy Unrunnable Formations</CheckBox>
 						<CheckBox Id="enemyFormationsSurpriseCheckBox" bind-Value="@MyFlags.EnemyFormationsSurprise">Enemy Surprise Bonus</CheckBox>
-						<div class="checkbox-cell">Formation Shuffle Mode</div>
+						<EnumDropDown TItem="FormationShuffleModeEnum" bind-Value="@MyFlags.FormationShuffleMode"></EnumDropDown>
 						<CheckBox Id="enemyTrapTilesCheckBox" bind-Value="@MyFlags.EnemyTrapTiles">Enemy Forced Encounter Tiles</CheckBox>
 						<CheckBox Indent Id="randomTrapFormationsCheckBox" IsEnabled="@MyFlags.EnemyTrapTiles" bind-Value="@MyFlags.RandomTrapFormations">Use Random Formations</CheckBox>
 					</div>
@@ -50,8 +50,8 @@
 					<div class="col-4">
 						<h4>Items Shuffle</h4>
 						<CheckBox Id="treasuresCheckBox" bind-Value="@MyFlags.Treasures">Treasures</CheckBox>
-						<CheckBox Id="randomLootCheckBox" bind-Value="@MyFlags.RandomLoot">Randomize Treasures</CheckBox>
-						<div class="checkbox-cell">Random Wealth:</div>
+						<CheckBox Indent Id="randomLootCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.RandomLoot">Randomize Treasures</CheckBox>
+						<EnumDropDown Indent TItem="WorldWealth" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.WorldWealth">Random Wealth: </EnumDropDown>
 						<CheckBox Id="npcItemsCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.NPCItems">Main NPC Items</CheckBox>
 						<CheckBox Id="npcFetchItemsCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.NPCFetchItems">Fetch Quest Rewards</CheckBox>
 						<CheckBox Id="shuffleObjectiveNPCsCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.ShuffleObjectiveNPCs">Objective NPCs</CheckBox>
@@ -142,7 +142,7 @@
 					<div class="col-4">
 						<h4>WarMECH</h4>
 						<p>Encounter 7 not enough WarMECH for you? Try a patrolling or required WarMECH instead.</p>
-						<div class="checkbox-cell">WarMECH Mode</div>
+						<EnumDropDown TItem="WarMECHMode" bind-Value="@MyFlags.WarMECHMode">WarMECH Mode: </EnumDropDown>
 					</div>
 				</div>
 			</div>
@@ -218,8 +218,8 @@
 						<CheckBox Id="thirdBattlePaletteCheckBox" bind-Value="@MyFlags.ThirdBattlePalette">Three Battle Palettes</CheckBox>
 					</div>
 					<div class="col-4">
-						<div class="checkbox-cell">Team TYRO</div>
-						<div class="checkbox-cell">Music Shuffle</div>
+						<CheckBox Id="teamSteakCheckBox" bind-Value="@MyFlags.TeamSteak">Team STEAK</CheckBox>
+						<EnumDropDown TItem="MusicShuffle" bind-Value="@MyFlags.Music"></EnumDropDown>
 						<CheckBox Id="disableDamageTileFlickerCheckBox" bind-Value="@MyFlags.DisableDamageTileFlicker">Disable Damage Tile Flicker</CheckBox>
 					</div>
 					<button>lol save preferences</button>
