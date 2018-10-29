@@ -177,10 +177,10 @@ var app = new Vue({
 			incentiveItemCount += 1 * ((!this.NPCFetchItems || this.IncentivizeFetchItems) && this.NPCItems);
 
 			//Canal
-			incentiveItemCount += 1 * (!this.NPCItems || this.IncentivizeFetchItems);
+			incentiveItemCount += 1 * (this.NPCItems && this.NPCFetchItems && this.IncentivizeShipAndCanal);
 
 			//Ship
-			incentiveItemCount += 1 * ((!this.MapOpenProgression || this.IncentivizeFetchItems) && this.NPCItems);
+			incentiveItemCount += 1 * (this.IncentivizeShipAndCanal && this.NPCItems);
 
 			//TNT
 			incentiveItemCount += 1 * ((!this.NPCFetchItems && !this.NPCItems) || this.IncentivizeFetchItems);

@@ -362,20 +362,24 @@ namespace FF1Lib
 						if (placedItems.Any(x => x.Item == item))
 							continue;
 
-						var currentMapLocations = CheckSanity(placedItems, fullLocationRequirements, flags).Item2;
+						var sanity = CheckSanity(placedItems, fullLocationRequirements, flags);
+						var currentMapLocations = sanity.Item2;
+						var currentAccess = sanity.Item3;
 						var rewardSources = new List<IRewardSource>();
 
 						if (incentives.Remove(item))
 						{
 							rewardSources = incentiveLocationPool.Where(x => !placedItems.Any(y => y.Address == x.Address)
 								&& x.Address != ItemLocations.CaravanItemShop1.Address
-								&& (anywhereItems.Contains(item) || currentMapLocations.Contains(x.MapLocation))).ToList();
+								&& (anywhereItems.Contains(item) || IsRewardSourceAccessible(x, currentAccess, currentMapLocations)))
+								.ToList();
 						}
 						else if (nonincentives.Remove(item))
 						{
 							rewardSources = itemLocationPool.Where(x => !placedItems.Any(y => y.Address == x.Address)
 								&& x.Address != ItemLocations.CaravanItemShop1.Address
-								&& (anywhereItems.Contains(item) || currentMapLocations.Contains(x.MapLocation))).ToList();
+								&& (anywhereItems.Contains(item) || IsRewardSourceAccessible(x, currentAccess, currentMapLocations)))
+								.ToList();
 						}
 
 						if (rewardSources.Any())
@@ -491,6 +495,12 @@ namespace FF1Lib
 			}
 		}
 
+		public static bool IsRewardSourceAccessible(IRewardSource source, AccessRequirement currentAccess, List<MapLocation> locations)
+		{
+			return locations.Contains(source.MapLocation) && currentAccess.HasFlag(source.AccessRequirement) &&
+					locations.Contains((source as MapObject)?.SecondLocation ?? MapLocation.StartingLocation);
+		}
+
 		public static IEnumerable<MapLocation> AccessibleMapLocations(
 										AccessRequirement currentAccess,
 										MapChange currentMapChanges,
@@ -499,7 +509,7 @@ namespace FF1Lib
 			return fullLocationRequirements.Where(x => x.Value.Item1.Any(y => currentMapChanges.HasFlag(y) && currentAccess.HasFlag(x.Value.Item2))).Select(x => x.Key);
 		}
 
-		public static (bool, List<MapLocation>) CheckSanity(List<IRewardSource> treasurePlacements,
+		public static (bool, List<MapLocation>, AccessRequirement) CheckSanity(List<IRewardSource> treasurePlacements,
 										Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullLocationRequirements,
 										IVictoryConditionFlags victoryConditions)
 
@@ -553,7 +563,7 @@ namespace FF1Lib
 				var currentItems = accessibleLocations.Select(x => x.Item).ToList();
 				if (accessibleLocations.Count() <= accessibleLocationCount)
 				{
-					return (false, currentMapLocations().ToList());
+					return (false, currentMapLocations().ToList(), currentAccess);
 				}
 				accessibleLocationCount = accessibleLocations.Count();
 
@@ -638,7 +648,7 @@ namespace FF1Lib
 
 			}
 
-			return (true, currentMapLocations().ToList());
+			return (true, currentMapLocations().ToList(), currentAccess);
 		}
 	}
 }
