@@ -203,7 +203,7 @@ namespace FF1Lib
 				}
 
 				// 7. Check sanity and loop if needed
-			} while (!CheckSanity(placedItems, fullLocationRequirements, flags).Item1);
+			} while (!CheckSanity(placedItems, fullLocationRequirements, flags).Complete);
 
 			if (Debugger.IsAttached)
 			{
@@ -329,7 +329,7 @@ namespace FF1Lib
 
 				if (flags.NPCItems)
 				{
-					/// 2. Place caravan item first because among incentive locations it has the smallest set of possible items
+					// Identify but don't place caravan item first because among incentive locations it has the smallest set of possible items
 					var validShopIncentives = incentives.Where(x => x > Item.None && x <= Item.Soft).ToList();
 					if (validShopIncentives.Any() && incentiveLocationPool.Any(x => x.Address == ItemLocations.CaravanItemShop1.Address))
 					{
@@ -344,55 +344,57 @@ namespace FF1Lib
 							treasurePool.Remove(itemShopItem);
 						}
 					}
-					placedItems.Add(new ItemShopSlot(caravanItemLocation, itemShopItem));
 
-					// We will plcae these items in this very order so that we can ensure the bridge is early, and we don't need the floater to find the ship.
-					List<Item> importantItems = new List<Item> { Item.Key, Item.Bridge, Item.Canoe, Item.Ship, Item.Canal };
+					// unrestricted items can get placed anywhere in the game. Everything else will only be placed where we can reach at this point.
+					List<Item> unrestricted = new List<Item> { Item.Key, Item.Canoe, Item.Floater };
 
-					List<Item> progressionItems = Enumerable.Range((int)Item.Lute, 16).Select(x => (Item)x).ToList();
-					progressionItems.Shuffle(rng);
-					importantItems.AddRange(progressionItems);
+					// We will place these items in this very order so that we can ensure the bridge is early, and we don't need the floater to find the ship.
+					List<Item> fixedPlacements = new List<Item> { Item.Key, Item.Bridge, Item.Canoe };
+					List<Item> nextPlacements = new List<Item> { Item.Ship, Item.Canal };
+					List<Item> lastPlacements = new List<Item> { Item.Lute, Item.Crown, Item.Crystal, Item.Herb, Item.Tnt, Item.Adamant,
+						Item.Slab, Item.Ruby, Item.Rod, Item.Chime, Item.Tail, Item.Cube, Item.Bottle, Item.Oxyale };
 
+					nextPlacements.Shuffle(rng);
+					lastPlacements.Shuffle(rng);
+					var allPlacements = fixedPlacements.Concat(nextPlacements).Concat(lastPlacements);
 
-					// Anywhere items can get placed anywhere in the game. Everything else will only be placed where we can reach at this point.
-					List<Item> anywhereItems = new List<Item> { Item.Key, Item.Canoe, Item.Floater };
-
-					foreach (var item in importantItems)
+					foreach (var item in allPlacements)
 					{
+						if (item == itemShopItem)
+						{
+							placedItems.Add(new ItemShopSlot(caravanItemLocation, itemShopItem));
+							itemShopItem = Item.None;
+						}
+
 						if (placedItems.Any(x => x.Item == item))
 							continue;
 
-						var sanity = CheckSanity(placedItems, fullLocationRequirements, flags);
-						var currentMapLocations = sanity.Item2;
-						var currentAccess = sanity.Item3;
-						var rewardSources = new List<IRewardSource>();
+						var (_, mapLocations, requirements) = CheckSanity(placedItems, fullLocationRequirements, flags);
+						var isIncentive = incentives.Contains(item);
+						var locationPool = isIncentive ? incentiveLocationPool : itemLocationPool;
+						var itemPool = isIncentive ? incentives : nonincentives;
 
-						if (incentives.Remove(item))
-						{
-							rewardSources = incentiveLocationPool.Where(x => !placedItems.Any(y => y.Address == x.Address)
-								&& x.Address != ItemLocations.CaravanItemShop1.Address
-								&& (anywhereItems.Contains(item) || IsRewardSourceAccessible(x, currentAccess, currentMapLocations)))
-								.ToList();
-						}
-						else if (nonincentives.Remove(item))
-						{
-							rewardSources = itemLocationPool.Where(x => !placedItems.Any(y => y.Address == x.Address)
-								&& x.Address != ItemLocations.CaravanItemShop1.Address
-								&& (anywhereItems.Contains(item) || IsRewardSourceAccessible(x, currentAccess, currentMapLocations)))
-								.ToList();
-						}
+						System.Diagnostics.Debug.Assert(itemPool.Contains(item));
 
+						// Can we find a home for this item at this point in the exploration?
+						var rewardSources = locationPool.Where(x => !placedItems.Any(y => y.Address == x.Address)
+							&& x.Address != ItemLocations.CaravanItemShop1.Address
+							&& (unrestricted.Contains(item) || IsRewardSourceAccessible(x, requirements, mapLocations)))
+							.ToList();
+
+						// If we can great, if not, we'll revisit after we get through everything.
 						if (rewardSources.Any())
 						{
+							itemPool.Remove(item);
 							placedItems.Add(NewItemPlacement(rewardSources.PickRandom(rng), item));
 						}
-						else
-						{
-							Console.WriteLine($"No incentive source for {item}.");
-							nonincentives.Add(item);
-						}
-
 					}
+				}
+
+				// This is a junk item that didn't get placed in the above loop.
+				if (itemShopItem != Item.None)
+				{
+					placedItems.Add(new ItemShopSlot(caravanItemLocation, itemShopItem));
 				}
 
 				// 5. Then place all incentive locations that don't have special logic
@@ -509,7 +511,7 @@ namespace FF1Lib
 			return fullLocationRequirements.Where(x => x.Value.Item1.Any(y => currentMapChanges.HasFlag(y) && currentAccess.HasFlag(x.Value.Item2))).Select(x => x.Key);
 		}
 
-		public static (bool, List<MapLocation>, AccessRequirement) CheckSanity(List<IRewardSource> treasurePlacements,
+		public static (bool Complete, List<MapLocation> MapLocations, AccessRequirement Requirements) CheckSanity(List<IRewardSource> treasurePlacements,
 										Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullLocationRequirements,
 										IVictoryConditionFlags victoryConditions)
 
