@@ -150,9 +150,13 @@
 		<TabPane IsOpen="@(activeTab == "Scale")">
 			<div class="container">
 				<div class="row">
-					<div class="col-4">
-						<h4>"Sliders"</h4>
+					<div class="col-6">
+
 					</div>
+					<div class="col-3">
+						<label>@Math.Round(100.0/MyFlags.PriceScaleFactor).ToString()% - @Math.Round(100.0*MyFlags.PriceScaleFactor).ToString()%</label>
+					</div>
+					<Slider bind-Value="@MyFlags.PriceScaleFactor" Min="1" Max="5" Step="0.1"></Slider>
 				</div>
 			</div>
 		</TabPane>
