@@ -995,12 +995,12 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ExpMultiplier"));
 			}
 		}
-		public int ExpBonus
+		public double ExpBonus
 		{
 			get => Flags.ExpBonus;
 			set
 			{
-				Flags.ExpBonus = value;
+				Flags.ExpBonus = (int)value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ExpBonus"));
 			}
 		}

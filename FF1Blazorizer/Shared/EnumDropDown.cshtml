@@ -2,7 +2,7 @@
 
 <div class="checkbox-cell @DisabledClass">
 	<span class="@IndentClass @DisabledClass">@ChildContent</span>
-	<select onchange="@onchange" disabled="@(!IsEnabled)">
+	<select value="@Value" onchange="@onchange" disabled="@(!IsEnabled)">
 		@foreach (var value in Enum.GetValues(typeof(TItem)))
 		{
 			<option value="@value">@(((Enum)value).ToName())</option>

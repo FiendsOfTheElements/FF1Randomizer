@@ -146,6 +146,12 @@ h4 {
 	font-weight: bold;
 }
 
+.slider-cell {
+	height: 35px;
+	margin: 0;
+	padding: 0;
+}
+
 .indent {
 	margin-left: 20px;
 }

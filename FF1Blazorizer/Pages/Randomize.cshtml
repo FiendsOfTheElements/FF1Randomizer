@@ -149,15 +149,47 @@
 		</TabPane>
 		<TabPane IsOpen="@(activeTab == "Scale")">
 			<div class="container">
+				<ClampedSlider Min="1" Max="5" Step="0.1" bind-Clamp="@MyFlags.ClampMinimumPriceScale" bind-Scale="@MyFlags.PriceScaleFactor">Prices:</ClampedSlider>
+				<ClampedSlider Min="1" Max="5" Step="0.1" bind-Clamp="@MyFlags.ClampMinimumStatScale" bind-Scale="@MyFlags.EnemyScaleFactor">Enemy Stats:</ClampedSlider>
+				<ClampedSlider Min="1" Max="5" Step="0.1" bind-Clamp="@MyFlags.ClampMinimumBossStatScale" bind-Scale="@MyFlags.BossScaleFactor">Boss Stats:</ClampedSlider>
+				<div class="slider-cell"></div>
 				<div class="row">
 					<div class="col-6">
-						<label>Prices:</label>
+						<label>Exp/Gold Boost:</label>
 					</div>
 					<div class="col-3">
-						<input type="checkbox" bind="@MyFlags.ClampMinimumPriceScale"/>
-						<label>@Math.Round(100.0 / (MyFlags.ClampMinimumPriceScale ? 1.0 : MyFlags.PriceScaleFactor)).ToString()% - @Math.Round(100.0 * MyFlags.PriceScaleFactor).ToString()%</label>
+						<label>@Math.Round(@MyFlags.ExpMultiplier, 1).ToString("F1")x + @MyFlags.ExpBonus</label>
 					</div>
-					<Slider bind-Value="@MyFlags.PriceScaleFactor" Min="1" Max="5" Step="0.1"></Slider>
+					<Slider bind-Value="@MyFlags.ExpMultiplier" Min="1" Max="5" Step="0.1"></Slider>
+				</div>
+				<div class="row">
+					<div class="col-9"></div>
+					<Slider bind-Value="@MyFlags.ExpBonus" Min="0" Max="500" Step="10"></Slider>
+				</div>
+				<div class="row">
+					<div class="col-9"><label>Exp/Gold Progressive Scaling:</label></div>
+					<div class="col-3">
+						<EnumDropDown TItem="ProgressiveScaleMode" bind-Value="@MyFlags.ProgressiveScaleMode"></EnumDropDown>
+					</div>
+				</div>
+				<div class="slider-cell"></div>
+				<div class="row">
+					<div class="col-6">
+						<label>Overworld Encounter Rate:</label>
+					</div>
+					<div class="col-3">
+						<label>@Math.Round(@MyFlags.EncounterRate / 30.0, 2).ToString("F2")x</label>
+					</div>
+					<Slider bind-Value="@MyFlags.EncounterRate" Min="0" Max="45" Step="1"></Slider>
+				</div>
+				<div class="row">
+					<div class="col-6">
+						<label>Dungeon Encounter Rate:</label>
+					</div>
+					<div class="col-3">
+						<label>@Math.Round(@MyFlags.DungeonEncounterRate / 30.0, 2).ToString("F2")x</label>
+					</div>
+					<Slider bind-Value="@MyFlags.DungeonEncounterRate" Min="0" Max="45" Step="1"></Slider>
 				</div>
 			</div>
 		</TabPane>
