@@ -419,6 +419,7 @@ namespace FF1Lib
 			{MapLocation.IceCaveFloater, Dock.Pravoka},
 			{MapLocation.IceCavePitRoom, Dock.Pravoka},
 			{MapLocation.ElflandCastle, Dock.Elfland},
+			{MapLocation.ElflandCastleRoom1, Dock.Elfland},
 			{MapLocation.Elfland, Dock.Elfland},
 			{MapLocation.MarshCave1, Dock.Elfland},
 			{MapLocation.MarshCaveTop, Dock.Elfland},
