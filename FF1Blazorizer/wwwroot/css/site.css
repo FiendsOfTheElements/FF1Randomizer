@@ -153,3 +153,7 @@ h4 {
 .disabled {
 	color: grey;
 }
+
+.container label {
+	font-weight: bold;
+}

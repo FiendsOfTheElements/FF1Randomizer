@@ -151,10 +151,11 @@
 			<div class="container">
 				<div class="row">
 					<div class="col-6">
-
+						<label>Prices:</label>
 					</div>
 					<div class="col-3">
-						<label>@Math.Round(100.0/MyFlags.PriceScaleFactor).ToString()% - @Math.Round(100.0*MyFlags.PriceScaleFactor).ToString()%</label>
+						<input type="checkbox" bind="@MyFlags.ClampMinimumPriceScale"/>
+						<label>@Math.Round(100.0 / (MyFlags.ClampMinimumPriceScale ? 1.0 : MyFlags.PriceScaleFactor)).ToString()% - @Math.Round(100.0 * MyFlags.PriceScaleFactor).ToString()%</label>
 					</div>
 					<Slider bind-Value="@MyFlags.PriceScaleFactor" Min="1" Max="5" Step="0.1"></Slider>
 				</div>

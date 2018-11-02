@@ -939,6 +939,34 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ProgressiveScaleMode"));
 			}
 		}
+		public bool ClampMinimumStatScale
+		{
+			get => Flags.ClampMinimumStatScale;
+			set
+			{
+				Flags.ClampMinimumStatScale = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ClampMinimumStatScale"));
+			}
+		}
+		public bool ClampMinimumBossStatScale
+		{
+			get => Flags.ClampMinimumBossStatScale;
+			set
+			{
+				Flags.ClampMinimumBossStatScale = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ClampMinimumBossStatScale"));
+			}
+		}
+		public bool ClampMinimumPriceScale
+		{
+			get => Flags.ClampMinimumPriceScale;
+			set
+			{
+				Flags.ClampMinimumPriceScale = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ClampMinimumPriceScale"));
+			}
+		}
+
 		public double EncounterRate
 		{
 			get => Flags.EncounterRate;
