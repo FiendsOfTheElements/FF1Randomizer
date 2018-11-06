@@ -45,6 +45,12 @@ namespace FF1Lib
 			public IReadOnlyCollection<Item> AllTreasures;
 		}
 
+		protected struct ItemPlacementResult
+		{
+			public List<IRewardSource> PlacedItems;
+			public List<Item> RemainingTreasures;
+		}
+
 		protected int _sanityCounter = 0;
 		protected IItemPlacementFlags _flags;
 		protected IncentiveData _incentivesData;
@@ -52,7 +58,7 @@ namespace FF1Lib
 		protected ItemShopSlot _caravanItemLocation;
 		protected OverworldMap _overworldMap;
 
-		protected abstract List<IRewardSource> DoSanePlacement(MT19337 rng, ItemPlacementContext ctx);
+		protected abstract ItemPlacementResult DoSanePlacement(MT19337 rng, ItemPlacementContext ctx);
 
 		public List<IRewardSource> PlaceSaneItems(MT19337 rng)
 		{
@@ -93,7 +99,9 @@ namespace FF1Lib
 				AllTreasures = treasurePool.ToList(),
 			};
 
-			List<IRewardSource> placedItems = DoSanePlacement(rng, ctx);
+			ItemPlacementResult result = DoSanePlacement(rng, ctx);
+			var placedItems = result.PlacedItems;
+			treasurePool = result.RemainingTreasures;
 
 			if (_flags.FreeBridge)
 			{
@@ -377,7 +385,7 @@ namespace FF1Lib
 
 	public class RandomItemPlacement : ItemPlacement
 	{
-		protected override List<IRewardSource> DoSanePlacement(MT19337 rng, ItemPlacementContext ctx)
+		protected override ItemPlacementResult DoSanePlacement(MT19337 rng, ItemPlacementContext ctx)
 		{
 			var itemLocationPool = _incentivesData.AllValidItemLocations.ToList();
 			var incentiveLocationPool = _incentivesData.IncentiveLocations.ToList();
@@ -513,13 +521,13 @@ namespace FF1Lib
 				// 7. Check sanity and loop if needed
 			} while (!CheckSanity(placedItems, fullLocationRequirements, _flags).Complete);
 
-			return placedItems;
+			return new ItemPlacementResult { PlacedItems = placedItems, RemainingTreasures = treasurePool };
 		}
 	}
 
 	public class GuidedItemPlacement : ItemPlacement
 	{
-		protected override List<IRewardSource> DoSanePlacement(MT19337 rng, ItemPlacementContext ctx)
+		protected override ItemPlacementResult DoSanePlacement(MT19337 rng, ItemPlacementContext ctx)
 		{
 			_sanityCounter = 0;
 			var itemLocationPool = _incentivesData.AllValidItemLocations.ToList();
@@ -543,6 +551,11 @@ namespace FF1Lib
 				treasurePool = ctx.AllTreasures.ToList();
 				incentives.Shuffle(rng);
 				nonincentives.Shuffle(rng);
+
+				while (incentives.Count() > incentiveLocationPool.Count())
+				{
+					nonincentives.Add(incentives.SpliceRandom(rng));
+				}
 
 				if (_flags.NPCItems)
 				{
@@ -626,7 +639,7 @@ namespace FF1Lib
 				// 7. Check sanity and loop if needed
 			} while (!CheckSanity(placedItems, fullLocationRequirements, _flags).Complete);
 
-			return placedItems;
+			return new ItemPlacementResult { PlacedItems = placedItems, RemainingTreasures = treasurePool };
 		}
 	}
 }
