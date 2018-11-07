@@ -242,6 +242,10 @@ namespace FF1Lib
 			{
 				incentiveLocationPool.Add(ItemLocations.CaravanItemShop1);
 			}
+			if (flags.IncentivizeTitansTrove)
+			{
+				incentiveLocationPool.Add(ItemLocations.TitansTunnel1);
+			}
 			var itemLocationPool =
 				ItemLocations.AllTreasures.Concat(ItemLocations.AllNPCItemLocations)
 						  .Where(x => !x.IsUnused && !forcedItemPlacements.Any(y => y.Address == x.Address))
