@@ -530,8 +530,9 @@ namespace FF1Lib
 		protected override ItemPlacementResult DoSanePlacement(MT19337 rng, ItemPlacementContext ctx)
 		{
 			_sanityCounter = 0;
-			var itemLocationPool = _incentivesData.AllValidItemLocations.ToList();
 			var incentiveLocationPool = _incentivesData.IncentiveLocations.ToList();
+			var preBlackOrbLocationPool = _incentivesData.AllValidPreBlackOrbItemLocations.ToList();
+			var preBlackOrbUnincentivizedLocationPool = preBlackOrbLocationPool.Where(x => !incentiveLocationPool.Any(y => y.Address == x.Address)).ToList();
 
 			Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullLocationRequirements = _overworldMap.FullLocationRequirements;
 			Dictionary<MapLocation, OverworldTeleportIndex> overridenOverworld = _overworldMap.OverriddenOverworldLocations;
@@ -568,7 +569,7 @@ namespace FF1Lib
 					// We will place these items in this very order so that we can ensure the bridge is early, and we don't need the floater to find the ship.
 					List<Item> fixedPlacements = new List<Item> { Item.Key, Item.Bridge, Item.Canoe };
 					List<Item> nextPlacements = new List<Item> { Item.Ship, Item.Canal };
-					List<Item> lastPlacements = new List<Item> { Item.Lute, Item.Crown, Item.Crystal, Item.Herb, Item.Tnt, Item.Adamant,
+					List<Item> lastPlacements = new List<Item> { Item.Floater, Item.Lute, Item.Crown, Item.Crystal, Item.Herb, Item.Tnt, Item.Adamant,
 						Item.Slab, Item.Ruby, Item.Rod, Item.Chime, Item.Tail, Item.Cube, Item.Bottle, Item.Oxyale };
 
 					nextPlacements.Shuffle(rng);
@@ -588,7 +589,7 @@ namespace FF1Lib
 
 						var (_, mapLocations, requirements) = CheckSanity(placedItems, fullLocationRequirements, _flags);
 						var isIncentive = incentives.Contains(item);
-						var locationPool = isIncentive ? incentiveLocationPool : itemLocationPool;
+						var locationPool = isIncentive ? incentiveLocationPool : preBlackOrbUnincentivizedLocationPool;
 						var itemPool = isIncentive ? incentives : nonincentives;
 
 						System.Diagnostics.Debug.Assert(itemPool.Contains(item));
@@ -626,11 +627,7 @@ namespace FF1Lib
 				// 6. Then place remanining incentive items and unincentivized quest items in any other chest before ToFR
 				var leftoverItems = incentives.Concat(nonincentives).ToList();
 				leftoverItems.Shuffle(rng);
-				var leftoverItemLocations =
-					itemLocationPool
-						 .Where(x => !ItemLocations.ToFR.Any(y => y.Address == x.Address) &&
-								!x.IsUnused && !placedItems.Any(y => y.Address == x.Address))
-						 .ToList();
+				var leftoverItemLocations = preBlackOrbLocationPool.Where(x => !placedItems.Any(y => y.Address == x.Address)).ToList();
 				foreach (var leftoverItem in leftoverItems)
 				{
 					placedItems.Add(NewItemPlacement(leftoverItemLocations.SpliceRandom(rng), leftoverItem));

@@ -354,6 +354,8 @@ namespace FF1Lib
 			var validBridgeLocations = new List<IRewardSource> { ItemLocations.KingConeria };
 			var validShipLocations = new List<IRewardSource> { ItemLocations.Bikke };
 			var validCanoeLocations = new List<IRewardSource> { ItemLocations.CanoeSage };
+			var everythingButOrbs = ~AccessRequirement.BlackOrb;
+
 			if (flags.NPCFetchItems)
 			{
 				var validKeyMapLocations = ItemPlacement.AccessibleMapLocations(~(AccessRequirement.BlackOrb | AccessRequirement.Key), MapChange.All, fullLocationRequirements);
@@ -373,7 +375,6 @@ namespace FF1Lib
 			if (flags.NPCItems)
 			{
 				var everythingButCanoe = ~MapChange.Canoe;
-				var everythingButOrbs = ~AccessRequirement.BlackOrb;
 				var startingPotentialAccess = map.StartingPotentialAccess;
 				var startingMapLocations = ItemPlacement.AccessibleMapLocations(startingPotentialAccess, MapChange.None, fullLocationRequirements);
 				var validShipMapLocations = ItemPlacement.AccessibleMapLocations(startingPotentialAccess | AccessRequirement.Crystal, MapChange.Bridge, fullLocationRequirements);
@@ -402,6 +403,8 @@ namespace FF1Lib
 				}
 			}
 
+			var nonEndgameMapLocations = ItemPlacement.AccessibleMapLocations(~AccessRequirement.BlackOrb, MapChange.All, fullLocationRequirements);
+
 			ForcedItemPlacements = forcedItemPlacements.ToList();
 			IncentiveItems = incentivePool.ToList();
 
@@ -420,7 +423,11 @@ namespace FF1Lib
 			IncentiveLocations = incentiveLocationPool
 							 .Where(x => !forcedItemPlacements.Any(y => y.Address == x.Address))
 							 .ToList();
+
 			AllValidItemLocations = itemLocationPool.ToList();
+			AllValidPreBlackOrbItemLocations = AllValidItemLocations
+							 .Where(x => nonEndgameMapLocations.Contains(x.MapLocation) && nonEndgameMapLocations.Contains((x as MapObject)?.SecondLocation ?? MapLocation.StartingLocation))
+							 .ToList();
 		}
 
 		public IEnumerable<IRewardSource> BridgeLocations { get; }
@@ -429,6 +436,7 @@ namespace FF1Lib
 		public IEnumerable<IRewardSource> CanoeLocations { get; }
 		public IEnumerable<IRewardSource> ForcedItemPlacements { get; }
 		public IEnumerable<IRewardSource> AllValidItemLocations { get; }
+		public IEnumerable<IRewardSource> AllValidPreBlackOrbItemLocations { get; }
 		public IEnumerable<IRewardSource> IncentiveLocations { get; }
 		public IEnumerable<Item> IncentiveItems { get; }
 
