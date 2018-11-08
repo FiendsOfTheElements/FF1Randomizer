@@ -22,7 +22,7 @@
 
     public RandomizerSettings(string seed, string flags)
       : this(
-        String.IsNullOrEmpty(seed) ? Blob.Random(4) : Blob.FromHex(seed),
+        String.IsNullOrEmpty(seed) ? Blob.Random(4) : Blob.FromHex(seed.Substring(0, 8)),
         Flags.DecodeFlagsText(flags)
       ) { }
 
@@ -77,6 +77,7 @@
 
     [Option(Description = "File path for the generated ROM",
         ShortName = "o")]
+    [LegalFilePath]
     public string OutFile { get; }
 
     [Option(Description = "8 Character Hexadecimal string to use as a seed",
@@ -106,10 +107,17 @@
         return;
       }
 
-      var settings = String.IsNullOrEmpty(Import)
-        ? new RandomizerSettings(Seed, FlagString)
-        : RandomizerSettings.FromImportString(Import);
-
+      RandomizerSettings settings;
+      try {
+        settings = String.IsNullOrEmpty(Import)
+          ? new RandomizerSettings(Seed, FlagString)
+          : RandomizerSettings.FromImportString(Import);
+      } catch {
+        Console.WriteLine("Ensure that you are using an 8 character ");
+        Console.WriteLine("hexadecimal string as a seed and a valid");
+        Console.WriteLine("base64 encoded set of flags.");
+        return;
+      }
 
       var outFile = String.IsNullOrEmpty(OutFile)
         ? GenerateDefaultFilename(RomPath, settings)
@@ -119,7 +127,11 @@
 			rom.Randomize(settings.Seed, settings.Flags);
 			rom.Save(outFile);
 
-      if (Verbose) Console.WriteLine(outFile);
+      if (Verbose) {
+        Console.WriteLine($"Seed: {settings.Seed.ToHex()}");
+        Console.WriteLine($"Flags: {Flags.EncodeFlagsText(settings.Flags)}");
+        Console.WriteLine($"ROM created at: {outFile}");
+      }
     }
 
     string GenerateDefaultFilename(string rom, RandomizerSettings settings)
