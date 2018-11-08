@@ -80,6 +80,8 @@ namespace FF1Lib
 		public bool MagicPermissions { get; set; }
 		[FlagString(Character = MAGIC, FlagBit = 8)]
 		public bool ItemMagic { get; set; }
+		[FlagString(Character = MAGIC, FlagBit = 16)]
+		public bool RebalanceSpells { get; set; }
 
 		[FlagString(Character = ENCOUNTERS, FlagBit = 1)]
 		public bool Rng { get; set; }
