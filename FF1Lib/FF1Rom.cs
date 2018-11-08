@@ -164,6 +164,11 @@ namespace FF1Lib
 				FixSpellBugs();
 			}
 
+			if (flags.RebalanceSpells)
+			{
+				RebalanceSpells();
+			}
+
 			if (flags.EnemySpellsTargetingAllies)
 			{
 				FixEnemyAOESpells();
