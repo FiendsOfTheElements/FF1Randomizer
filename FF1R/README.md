@@ -1,6 +1,6 @@
 # NAME
 
-ff1r - Command line version of the [Final Fantasy Randomizer]
+FF1R - Command line version of the [Final Fantasy Randomizer]
 
 
 # SYNOPSIS
@@ -45,7 +45,7 @@ FF1R generate ~/ff1.nes --preset "FFR League S2R6"
 
 # DESCRIPTION
 
-`ff1r` is a command-line tool that is run through the .NET Core 
+`FF1R` is a command-line tool that is run through the .NET Core 
 runtime (`dotnet`) that allows you to generate a randomized 
 Final Fantasy (NES) ROM, identical to the ones created by the 
 desktop client or web version.

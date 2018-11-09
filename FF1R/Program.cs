@@ -1,33 +1,34 @@
 ﻿namespace FF1R
 {
-  using System;
-  using McMaster.Extensions.CommandLineUtils;
+	using System;
+	using McMaster.Extensions.CommandLineUtils;
 
-  using FFR.Common;
+	using FFR.Common;
 
-  [Command(Name = "ff1r", Description = "Final Fantasy Randomizer"),
-    Subcommand("presets", typeof(Commands.Presets)),
-    Subcommand("generate", typeof(Commands.Generate))]
-  class Program
-  {
-    readonly VersionInfo version = new VersionInfo(0, 1);
+	[Command(Name = "ff1r", Description = "Final Fantasy Randomizer"),
+		Subcommand("presets", typeof(Commands.Presets)),
+		Subcommand("generate", typeof(Commands.Generate))]
 
-    [Option("--version", Description = "Show version")]
-    public bool Version { get; }
+	class Program
+	{
+		readonly VersionInfo version = new VersionInfo(0, 1);
 
-    public static int Main(string[] args)
-      => CommandLineApplication.Execute<Program>(args);
+		[Option("--version", Description = "Show version")]
+		public bool Version { get; }
 
-    int OnExecute(CommandLineApplication app, IConsole console)
-    {
-      if (Version) {
-        console.WriteLine($"{version}");
-        return 0;
-      }
+		public static int Main(string[] args)
+			=> CommandLineApplication.Execute<Program>(args);
 
-      console.WriteLine("You must specify a subcommand.");
-      app.ShowHelp();
-      return 1;
-    }
-  }
+		int OnExecute(CommandLineApplication app, IConsole console)
+		{
+			if (Version) {
+				console.WriteLine($"{version}");
+				return 0;
+			}
+
+			console.WriteLine("You must specify a subcommand.");
+			app.ShowHelp();
+			return 1;
+		}
+	}
 }
