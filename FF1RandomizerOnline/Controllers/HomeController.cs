@@ -35,7 +35,7 @@ namespace FF1RandomizerOnline.Controllers
 				@"<h4>
 					<b>WELCOME TO FFR DEVELOPMENT BUILDS - Good luck! You'll Need it!</b>
 					<ul>
-						<li>If you're surprised to see this message, perhaps you wanted <a href=""http://finalfantasyrandomizer.com"">http://finalfantasyrandomizer.com</a>.</li>
+						<li style=""color: red; font-weight:bold"">DO NOT USE THIS SITE FOR LEAGUE RACES. USE THE PRODUCTION SITE HERE: <a href=""http://finalfantasyrandomizer.com"">http://finalfantasyrandomizer.com</a>.</li>
 						<li>FFR development websites can be updated literally anytime with no agenda or stability guarantees.</li>
 						<li>Features may appear and disappear as different developers work and refine the flags for them.</li>
 					</ul>

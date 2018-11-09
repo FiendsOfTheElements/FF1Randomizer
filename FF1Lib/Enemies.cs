@@ -7,6 +7,13 @@ using RomUtilities;
 
 namespace FF1Lib
 {
+	public enum FormationShuffleModeEnum
+	{
+		None = 0,
+		Intrazone,
+		InterZone,
+		Randomize
+	}
 	public partial class FF1Rom : NesRom
 	{
 		public const int EnemyOffset = 0x30520;
@@ -17,9 +24,9 @@ namespace FF1Lib
 		public const int ScriptSize = 16;
 		public const int ScriptCount = 44;
 
-		public const int FormationFrequencyOffset = 0x2C000;
-		public const int FormationFrequencySize = 8;
-		public const int FormationFrequencyCount = 128;
+		public const int ZoneFormationsOffset = 0x2C000;
+		public const int ZoneFormationsSize = 8;
+		public const int ZoneCount = 128;
 
 		public abstract class Enemy
 		{
@@ -37,38 +44,95 @@ namespace FF1Lib
 			public const int Tiamat2 = 126;
 			public const int Chaos = 127;
 		}
+		public byte[] StartingZones = { 0x1B, 0x1C, 0x24, 0x2C };
 
-		public void ShuffleEnemyFormations(MT19337 rng)
+		public void ShuffleEnemyFormations(MT19337 rng, FormationShuffleModeEnum shuffleMode)
 		{
-			// intra-zone shuffle, does not change which formations are in zomes.
-			var oldFormations = Get(FormationFrequencyOffset, FormationFrequencySize * FormationFrequencyCount).Chunk(FormationFrequencySize);
-			var newFormations = Get(FormationFrequencyOffset, FormationFrequencySize * FormationFrequencyCount).Chunk(FormationFrequencySize);
-			Blob WarMech = new byte[]{ 0x56 };
 
-			for (int i = 0; i < FormationFrequencyCount; i++)
+			if (shuffleMode == FormationShuffleModeEnum.Intrazone)
 			{
-				
-				var lowFormations = oldFormations[i].Chunk(4)[0].Chunk(1); // shuffle the first 4 formations first
-				lowFormations.Shuffle(rng);
-				newFormations[i][0] = lowFormations[0][0];
-				newFormations[i][1] = lowFormations[1][0];
-				newFormations[i][2] = lowFormations[2][0];
-				newFormations[i][3] = lowFormations[3][0];
+				// intra-zone shuffle, does not change which formations are in zomes.
+				var oldFormations = Get(ZoneFormationsOffset, ZoneFormationsSize * ZoneCount).Chunk(ZoneFormationsSize);
+				var newFormations = Get(ZoneFormationsOffset, ZoneFormationsSize * ZoneCount).Chunk(ZoneFormationsSize);
 
-				var shuffleFormations = newFormations[i].SubBlob(1, 6).Chunk(1); // get formations 2-8
-				shuffleFormations.Shuffle(rng);
-				if (shuffleFormations.Contains(WarMech)) //preserve WarMech's formation 7 status
+				for (int i = 0; i < ZoneCount; i++)
 				{
-					shuffleFormations.Swap(shuffleFormations.IndexOf(WarMech), 4);
+
+					var lowFormations = oldFormations[i].Chunk(4)[0].Chunk(1); // shuffle the first 4 formations first
+					lowFormations.Shuffle(rng);
+					newFormations[i][0] = lowFormations[0][0];
+					newFormations[i][1] = lowFormations[1][0];
+					newFormations[i][2] = lowFormations[2][0];
+					newFormations[i][3] = lowFormations[3][0];
+
+					var shuffleFormations = newFormations[i].SubBlob(1, 6).Chunk(1); // get formations 2-8
+					shuffleFormations.Shuffle(rng);
+					for (int j = 2; j < 8; j++)
+					{
+						newFormations[i][j] = shuffleFormations[j - 2][0];
+					}
+
 				}
-				for (int j = 2; j < 8; j++)
+
+				Put(ZoneFormationsOffset, newFormations.SelectMany(formation => formation.ToBytes()).ToArray());
+			}
+			if (shuffleMode == FormationShuffleModeEnum.InterZone)
+			{
+				// Inter-zone shuffle
+				// Get all encounters from zones not surrounding starting area
+				List<Blob> newFormations = new List<Blob>();
+				SortedSet<byte> exclusionZones = new SortedSet<byte>();
+				exclusionZones.UnionWith(StartingZones);
+
+				for (byte i = 0; i < ZoneCount; i++)
 				{
-					newFormations[i][j] = shuffleFormations[j - 2][0];
+					if (StartingZones.Contains(i))
+					{
+						continue;
+					}
+					var zone = Get(ZoneFormationsOffset + (i * ZoneFormationsSize), ZoneFormationsSize);
+					if (zone.ToLongs()[0] == 0)
+					{
+						//some unused overworld zones are zero filled so we catch them here to not pollute the formations list
+						exclusionZones.Add(i);
+					}
+					else
+					{
+						newFormations.AddRange(zone.Chunk(1));
+					}
 				}
-				
+
+				newFormations.Shuffle(rng);
+				// after shuffling, put original starting zones in so only one write is required
+				foreach (byte i in exclusionZones)
+				{
+					var startZone = Get(ZoneFormationsOffset + (i * ZoneFormationsSize), ZoneFormationsSize).Chunk(1);
+					newFormations.InsertRange(i * ZoneFormationsSize, startZone);
+				}
+				Put(ZoneFormationsOffset, newFormations.SelectMany(formation => formation.ToBytes()).ToArray());
 			}
 
-			Put(FormationFrequencyOffset, newFormations.SelectMany(formation => formation.ToBytes()).ToArray());
+			if (shuffleMode == FormationShuffleModeEnum.Randomize)
+			{
+				// no-pants mode
+				var oldFormations = Get(ZoneFormationsOffset, ZoneFormationsSize * ZoneCount).Chunk(ZoneFormationsSize);
+				var newFormations = Get(ZoneFormationsOffset, ZoneFormationsSize * ZoneCount).Chunk(ZoneFormationsSize);
+				var allowableEncounters = Enumerable.Range(0, 256).ToList();
+				var unallowableEncounters = new List<int>() { 0x73, 0x74, 0x75, 0x76, 0x77, 0x78, 0x79, 0x7A, 0x7B, 0x7C, 0x7D, 0x7E, 0x7F, 0xF3, 0xF4, 0xF5, 0xF6, 0xF7, 0xF8, 0xF9, 0xFA, 0xFB, 0xFC, 0xFD };
+				allowableEncounters.RemoveAll(x => unallowableEncounters.Contains(x));
+				for (byte i = 0; i < ZoneCount; i++)
+				{
+					if (StartingZones.Contains(i))
+					{
+						continue;
+					}
+					for (int j = 0; j < ZoneFormationsSize; j++)
+					{
+						newFormations[i][j] = (byte)allowableEncounters.PickRandom(rng);
+					}
+				}
+				Put(ZoneFormationsOffset, newFormations.SelectMany(formation => formation.ToBytes()).ToArray());
+			}
 		}
 		public void ShuffleEnemyScripts(MT19337 rng, bool AllowUnsafePirates)
 		{

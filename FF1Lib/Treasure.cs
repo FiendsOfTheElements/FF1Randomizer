@@ -30,7 +30,8 @@ namespace FF1Lib
 													IItemPlacementFlags flags,
 													IncentiveData incentivesData,
 													ItemShopSlot caravanItemLocation,
-                                                    OverworldMap overworldMap)
+                                                    OverworldMap overworldMap,
+													TeleportShuffle teleporters)
 		{
 			Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullFloorRequirements = overworldMap.FullLocationRequirements;
 			Dictionary<MapLocation, OverworldTeleportIndex> overridenOverworld = overworldMap.OverriddenOverworldLocations;
@@ -90,7 +91,7 @@ namespace FF1Lib
             MapLocation shipLocation = placedItems.Find(reward => reward.Item == Item.Ship).MapLocation;
             if (overridenOverworld != null && overridenOverworld.TryGetValue(shipLocation, out var overworldIndex))
 			{
-				shipLocation = TeleportShuffle.OverworldMapLocations.TryGetValue(overworldIndex, out var vanillaShipLocation) ? vanillaShipLocation : shipLocation;
+				shipLocation = teleporters.OverworldMapLocations.TryGetValue(overworldIndex, out var vanillaShipLocation) ? vanillaShipLocation : shipLocation;
 			}
 			MoveShipToRewardSource(shipLocation);
 			return placedItems;
@@ -252,15 +253,14 @@ namespace FF1Lib
 
 		private void MoveShipToRewardSource(MapLocation vanillaMapLocation)
 		{
-			Blob location = null;
-			if (!ItemLocations.ShipLocations.TryGetValue(vanillaMapLocation, out location))
+			if (!ItemLocations.ShipLocations.TryGetValue(vanillaMapLocation, out Blob location))
 			{
 				location = Dock.Coneria;
-			    Console.WriteLine($"Ship at {vanillaMapLocation} defaults to Coneria.");
+				Console.WriteLine($"Ship at {vanillaMapLocation} defaults to Coneria.");
 			}
-            else
+			else
 			{
-			    Console.WriteLine($"Ship at {vanillaMapLocation}.");
+				Console.WriteLine($"Ship at {vanillaMapLocation}.");
 			}
 
 			Put(0x3000 + UnsramIndex.ShipX, location);

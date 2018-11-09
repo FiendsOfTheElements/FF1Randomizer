@@ -32,11 +32,11 @@ namespace FF1Lib
 		{
 			Put(CaravanFairyCheck, Enumerable.Repeat((byte)Nop, CaravanFairyCheckSize).ToArray());
 		}
-		// Required for npc quest item randomizing 
+		// Required for npc quest item randomizing
 		// Doesn't substantially change anything if EnableNPCsGiveAnyItem isn't called
 		public void CleanupNPCRoutines()
 		{
-			// Have ElfDoc set his own flag instead of the prince's so that 
+			// Have ElfDoc set his own flag instead of the prince's so that
 			// the prince can still set his own flag after giving a shuffled item
 			Data[0x39302] = (byte)ObjectId.ElfDoc;
 			Data[0x3931F] = (byte)ObjectId.ElfDoc;
@@ -47,7 +47,7 @@ namespace FF1Lib
 			Data[0x391B5] = 0x33;
 			Data[0x391B6] = 0x95;
 
-			// Then we move Talk_earthfire to Talk_norm to clear space for 
+			// Then we move Talk_earthfire to Talk_norm to clear space for
 			// new item gift routine without overwriting Talk_chime
 			Data[0x391D3] = 0x92;
 			Data[0x391D4] = 0x94;
@@ -125,31 +125,140 @@ namespace FF1Lib
 			Put(0x39D25, Enumerable.Repeat((byte)0xEA, 14).ToArray());
 		}
 
-		public void PartyRandomize(MT19337 rng, int numberForced)
+		private enum FF1Class
 		{
-			// Always randomize all 4 default members (but don't force if not needed)
-			Data[0x3A0AE] = (byte)rng.Between(0, 5);
-			Data[0x3A0BE] = (byte)rng.Between(0, 5);
-			Data[0x3A0CE] = (byte)rng.Between(0, 5);
-			Data[0x3A0DE] = (byte)rng.Between(0, 5);
+			Fighter = 0,
+			Thief = 1,
+			BlackBelt = 2,
+			RedMage = 3,
+			WhiteMage = 4,
+			BlackMage = 5,
+			None = 6,
+		}
 
-			if (numberForced <= 0)
-				return;
+		private readonly List<byte> AllowedClassBitmasks = new List<byte> {
+			/*   lut_ClassMask:
+             *       ;0=FI,1=TH,  BB,  RM,  WM,  BM, None
+             *   .byte $80, $40, $20, $10, $08, $04, $02
+			 */
+			          0x80,0x40,0x20,0x10,0x08,0x04,0x02};
 
-			Data[0x39D35] = 0xE0;
-			Data[0x39D36] = (byte)(numberForced * 0x10);
-			Put(0x39D37, Blob.FromHex("30DFFE0003BD0003E906D0039D0003A9018537"));
-			/* Starting at 0x39D35 (which is just after LDX char_index)
-				* CPX ____(numberForced * 0x10)____
-				* BMI @MainLoop
-				* INC ptygen_class, X
-				* LDA ptygen_class, X
-				* SBC #$06
-				* BNE :+
-				*   STA ptygen_class, X
-				* : LDA #$01
-				*   STA menustall
-				*/
+		void updateCharacterFromOptions(int slotNumber, bool forced, IList<FF1Class> options, MT19337 rng)
+		{
+			const int lut_PtyGenBuf = 0x784AA;       // offset for party generation buffer LUT
+			const int lut_AllowedClasses = 0x78110;  // offset for allowed classes per slot LUT
+
+			var i = slotNumber - 1;
+
+			if (forced) // if forced
+			{
+				FF1Class forcedclass;
+				if (options.Any())
+				{
+					forcedclass = options.PickRandom(rng);
+				}
+				else
+				{
+					forcedclass = (FF1Class)(Enum.GetValues(typeof(FF1Class))).
+						GetValue(rng.Between(0, slotNumber == 1 ? 5 : 6));
+				}
+				options.Clear();
+				options.Add(forcedclass);
+			}
+
+			// don't make any changes if there's nothing to do
+			if (!options.Any()) return;
+
+			byte allowedFlags = 0b0000_0000;
+			foreach(FF1Class option in options)
+			{
+				allowedFlags |= AllowedClassBitmasks[(int)option];
+			}
+
+			// set default member
+			byte defaultclass = (byte)options.PickRandom(rng);
+			Data[lut_PtyGenBuf + i * 0x10] = defaultclass == 6 ? (byte)0xFF : defaultclass;
+
+			// set allowed classes
+			Data[lut_AllowedClasses + i] = allowedFlags;
+
+			options.Clear();
+		}
+
+		public void PartyComposition(MT19337 rng, Flags flags)
+		{
+			var options = new List<FF1Class>();
+
+			// Do each slot - so ugly!
+			if (flags.FIGHTER1) options.Add(FF1Class.Fighter);
+			if (flags.THIEF1) options.Add(FF1Class.Thief);
+			if (flags.BLACK_BELT1) options.Add(FF1Class.BlackBelt);
+			if (flags.RED_MAGE1) options.Add(FF1Class.RedMage);
+			if (flags.WHITE_MAGE1) options.Add(FF1Class.WhiteMage);
+			if (flags.BLACK_MAGE1) options.Add(FF1Class.BlackMage);
+			updateCharacterFromOptions(1, flags.FORCED1, options, rng);
+
+			if (flags.FIGHTER2) options.Add(FF1Class.Fighter);
+			if (flags.THIEF2) options.Add(FF1Class.Thief);
+			if (flags.BLACK_BELT2) options.Add(FF1Class.BlackBelt);
+			if (flags.RED_MAGE2) options.Add(FF1Class.RedMage);
+			if (flags.WHITE_MAGE2) options.Add(FF1Class.WhiteMage);
+			if (flags.BLACK_MAGE2) options.Add(FF1Class.BlackMage);
+			if (flags.NONE_CLASS2) options.Add(FF1Class.None);
+			updateCharacterFromOptions(2, flags.FORCED2, options, rng);
+
+			if (flags.FIGHTER3) options.Add(FF1Class.Fighter);
+			if (flags.THIEF3) options.Add(FF1Class.Thief);
+			if (flags.BLACK_BELT3) options.Add(FF1Class.BlackBelt);
+			if (flags.RED_MAGE3) options.Add(FF1Class.RedMage);
+			if (flags.WHITE_MAGE3) options.Add(FF1Class.WhiteMage);
+			if (flags.BLACK_MAGE3) options.Add(FF1Class.BlackMage);
+			if (flags.NONE_CLASS3) options.Add(FF1Class.None);
+			updateCharacterFromOptions(3, flags.FORCED3, options, rng);
+
+			if (flags.FIGHTER4) options.Add(FF1Class.Fighter);
+			if (flags.THIEF4) options.Add(FF1Class.Thief);
+			if (flags.BLACK_BELT4) options.Add(FF1Class.BlackBelt);
+			if (flags.RED_MAGE4) options.Add(FF1Class.RedMage);
+			if (flags.WHITE_MAGE4) options.Add(FF1Class.WhiteMage);
+			if (flags.BLACK_MAGE4) options.Add(FF1Class.BlackMage);
+			if (flags.NONE_CLASS4) options.Add(FF1Class.None);
+			updateCharacterFromOptions(4, flags.FORCED4, options, rng);
+
+			// Load stats for None
+			PutInBank(0x1F, 0xC783, Blob.FromHex("2080B3C931F053EA"));
+			PutInBank(0x00, 0xB380, Blob.FromHex("BD0061C9FFD013A9019D0161A9009D07619D08619D0961A931600A0A0A0AA860"));
+
+			//clinic stuff
+			PutInBank(0x0E, 0xA6F3, Blob.FromHex("203E9B"));
+			PutInBank(0x0E, 0x9B3E, Blob.FromHex("BD0061C9FFD00568684C16A7BD016160"));
+
+			// curing ailments out of battle, allow the waste of things in battle
+			PutInBank(0x0E, 0xB388, Blob.FromHex("2077C2EAEAEAEAEAEAEAEA"));
+			PutInBank(0x1F, 0xC277, CreateLongJumpTableEntry(0x0F, 0x8BB0));
+			PutInBank(0x0F, 0x8BB0, Blob.FromHex("A5626A6A6A29C0AABD0061C9FFD003A90060BD016160"));
+
+			// Better Battle sprite, in 0C_9910_DrawCharacter.asm
+			PutInBank(0x0F, 0x8BD0, Blob.FromHex("A86A6A6AAABD0061C9FFF00898AABDA86B8DB36860"));
+			PutInBank(0x0C, 0x9910, Blob.FromHex("20A4C8C9FFD001608A0A0AA8"));
+			PutInBank(0x1F, 0xC8A4, CreateLongJumpTableEntry(0x0F, 0x8BD0));
+
+			// MapMan for Nones
+			PutInBank(0x1F, 0xE92E, Blob.FromHex("20608FEAEAEAEA"));
+			PutInBank(0x02, 0x8F60, Blob.FromHex("A9008510AD0061C9FFF00160A92560"));
+
+			// Draw Complex String extension for class FF
+			PutInBank(0x1F, 0xC27D, Blob.FromHex("C9FFF0041869F060203EE0A997853EA9C2853F2045DE4C4EE0EA973CA800"));
+			PutInBank(0x1F, 0xDF0C, Blob.FromHex("207DC2"));
+
+			// Skip targeting None with aoe spells
+			PutInBank(0x0C, 0xB453, Blob.FromHex("20AAC8C9FFF015EA"));
+			PutInBank(0x1F, 0xC8AA, CreateLongJumpTableEntry(0x0F, 0x8BF0));
+			PutInBank(0x0F, 0x8BF0, Blob.FromHex("ADCE6BAA6A6A6AA8B90061C9FFF0068A09808D8A6C60"));
+
+			// Rewrite class promotion to not promote NONEs, See 0E_95AE_DoClassChange.asm
+			PutInBank(0x0E, 0x95AE, Blob.FromHex("A203BCD095B900613006186906990061CA10EFE65660"));
+			PutInBank(0x0E, 0x95D0, Blob.FromHex("C0804000")); // lut used by the above code
 		}
 
 		public void DisablePartyShuffle()
@@ -226,6 +335,7 @@ namespace FF1Lib
 			MoveNpc(MapId.EarthCaveB3, 8, 0x0A, 0x0C, inRoom: true, stationary: false); // Earth Cave Bat B3
 			MoveNpc(MapId.EarthCaveB3, 9, 0x09, 0x25, inRoom: false, stationary: false); // Earth Cave Bat B3
 			MoveNpc(MapId.EarthCaveB5, 1, 0x22, 0x34, inRoom: false, stationary: false); // Earth Cave Bat B5
+			MoveNpc(MapId.ConeriaCastle1F, 5, 0x07, 0x0F, inRoom: false, stationary: true); // Coneria Ghost Lady
 		}
 
 		public void EnableConfusedOldMen(MT19337 rng)
@@ -292,27 +402,27 @@ namespace FF1Lib
 		{
 			Data[0x390D5] = 0xA1;
 		}
-		
+
 		public void EnableFreeBridge()
 		{
 			// Set the default bridge_vis byte on game start to true. It's a mother beautiful bridge - and it's gonna be there.
 			Data[0x3008] = 0x01;
 		}
-		
+
 		public void EnableFreeShip()
 		{
 			Data[0x3000] = 1;
 			Data[0x3001] = 152;
 			Data[0x3002] = 169;
 		}
-		
+
 		public void EnableFreeAirship()
 		{
 			Data[0x3004] = 1;
 			Data[0x3005] = 153;
 			Data[0x3006] = 165;
 		}
-		
+
 		public void EnableFreeCanal()
 		{
 			Data[0x300C] = 0;
@@ -392,8 +502,84 @@ namespace FF1Lib
 		public void EnableCritNumberDisplay()
 		{
 			// Overwrite the normal critical hit handler by calling ours instead
-			PutInBank(0x0C, 0xA94B, Blob.FromHex("206BC2EAEA"));
-			PutInBank(0x1F, 0xC26B, CreateLongJumpTableEntry(0x0F, 0x92A0));
+			PutInBank(0x0C, 0xA94B, Blob.FromHex("20D1CFEAEA"));
+			PutInBank(0x1F, 0xCFD1, CreateLongJumpTableEntry(0x0F, 0x92A0));
+		}
+
+		public void EnableMelmondGhetto()
+		{
+			// Set town desert tile to random encounters.
+			// If enabled, trap tile shuffle will change that second byte to 0x00 afterward.
+			Data[0x00864] = 0x0A;
+			Data[0x00865] = 0x80;
+
+			// Give Melmond Desert backdrop
+			Data[0x0334D] = (byte)Backdrop.Desert;
+
+			Put(0x2C218, Blob.FromHex("0F0F8F2CACAC7E7C"));
+		}
+
+		public void NoDanMode()
+		{
+			// Instead of looping through the 'check to see if characters are alive' thing, just set it to 4 and then remove the loop.
+			// EA EA EA EA EA EA (sports)
+			Put(0x2DEC6, Blob.FromHex("A204A004EAEAEAEAEAEAEAEAEAEAEAEAEA"));
+			
+		}
+
+		public void ShuffleWeaponPermissions(MT19337 rng)
+		{
+			const int WeaponPermissionsOffset = 0x3BF50;
+			ShuffleGearPermissions(rng, WeaponPermissionsOffset);
+		}
+
+		public void ShuffleArmorPermissions(MT19337 rng)
+		{
+			const int ArmorPermissionsOffset = 0x3BFA0;
+			ShuffleGearPermissions(rng, ArmorPermissionsOffset);
+		}
+
+		public void ShuffleGearPermissions(MT19337 rng, int offset)
+		{
+			const int PermissionsSize = 2;
+			const int PermissionsCount = 40;
+
+			// lut_ClassEquipBit: ;  FT   TH   BB   RM   WM   BM      KN   NJ   MA   RW   WW   BW
+			// .WORD               $800,$400,$200,$100,$080,$040,   $020,$010,$008,$004,$002,$001
+			var mask = 0x0820; // Fighter/Knight class bit lut. Each class is a shift of this.
+			var order = Enumerable.Range(0, 6).ToList();
+			order.Shuffle(rng);
+
+			var oldPermissions = Get(offset, PermissionsSize * PermissionsCount).ToUShorts();
+			var newPermissions = oldPermissions.Select(item =>
+			{
+				UInt16 shuffled = 0x0000;
+				for (int i = 0; i < 6; ++i)
+				{
+					// Shift the mask into each class's slot, then AND with vanilla permission.
+					// Shift left to vanilla fighter, shift right into new permission.
+					shuffled |= (ushort)(((item & (mask >> i)) << i) >> order[i]);
+				}
+				return shuffled;
+			});
+
+			Put(offset, Blob.FromUShorts(newPermissions.ToArray()));
+		}
+
+		public void EnableCardiaTreasures(MT19337 rng, Map cardia)
+		{
+			// Assign items to the chests.
+			// Incomplete.
+
+			// Put the chests in Cardia
+			var room = Map.CreateEmptyRoom((3, 4), 1);
+			room[1, 1] = 0x75;
+			cardia.Put((0x2A, 0x07), room);
+			cardia[0x0B, 0x2B] = (byte)Tile.Doorway;
+
+			room[1, 1] = 0x76;
+			cardia.Put((0x26, 0x1C), room);
+			cardia[0x20, 0x27] = (byte)Tile.Doorway;
 		}
 	}
 }

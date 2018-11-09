@@ -66,8 +66,8 @@ namespace FF1Lib
 	{
 		public readonly MapLocation Destination;
 		public readonly MapIndex Index;
-		public readonly byte CoordinateX;
-		public readonly byte CoordinateY;
+		public byte CoordinateX { get; private set; }
+		public byte CoordinateY { get; private set; }
 		public readonly IEnumerable<TeleportIndex> Teleports;
 		public readonly ExitTeleportIndex Exit;
 		public string SpoilerText =>
@@ -90,6 +90,11 @@ namespace FF1Lib
 		public TeleportDestination(MapLocation destination, MapIndex index, Coordinate coordinates, ExitTeleportIndex exit)
 			: this(destination, index, coordinates, exits: exit)
 		{
+		}
+		public void SetEntrance(Coordinate coordinate)
+		{
+			CoordinateX = coordinate.X;
+			CoordinateY = coordinate.Y;
 		}
 	}
 }

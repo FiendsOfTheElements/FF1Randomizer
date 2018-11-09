@@ -31,10 +31,20 @@ namespace FF1Lib
 		private const int EXP_MULTIPLIER = 20;
 		private const int EXP_BONUS = 21;
 		private const int ENCOUNTER_RATE = 22;
-		private const int FORCED_PARTY_MEMBERS = 23;
+		private const int PARTY_1 = 23;
 		private const int PROGRESSIVE_SCALE = 24;
 		private const int DUNGEON_ENCOUNTER_RATE = 25;
 		private const int BOSS_SCALE_FACTOR = 26;
+		private const int PARTY_2 = 27;
+		private const int PARTY_3 = 28;
+		private const int PARTY_4 = 29;
+		private const int PARTY_EXTRA = 30;
+		private const int PARTY_EXTRA2 = 31;
+		private const int SCALE_CLAMPING = 32;
+		private const int PROCEDURAL_GENERATION = 33;
+		private const int FORMATION = 34;
+		private const int WEALTH = 35;
+
 
 		[FlagString(Character = ITEMS, FlagBit = 1)]
 		public bool Shops { get; set; }
@@ -45,9 +55,9 @@ namespace FF1Lib
 		[FlagString(Character = ITEMS, FlagBit = 8)]
 		public bool NPCFetchItems { get; set; }
 		[FlagString(Character = ITEMS, FlagBit = 16)]
-		public bool RandomWares { get; set; } // Planned 2.x feature - random weapons and armor in shops
+		public bool RandomWares { get; set; }
 		[FlagString(Character = ITEMS, FlagBit = 32)]
-		public bool RandomLoot { get; set; } // Planned 2.x feature - random non-quest-item treasures
+		public bool RandomLoot { get; set; }
 
 		[FlagString(Character = ALT_GAME_MODE, FlagBit = 1)]
 		public bool ShardHunt { get; set; }
@@ -73,8 +83,6 @@ namespace FF1Lib
 
 		[FlagString(Character = ENCOUNTERS, FlagBit = 1)]
 		public bool Rng { get; set; }
-		[FlagString(Character = ENCOUNTERS, FlagBit = 2)]
-		public bool EnemyFormationsFrequency { get; set; }
 		[FlagString(Character = ENCOUNTERS, FlagBit = 4)]
 		public bool EnemyFormationsUnrunnable { get; set; }
 		[FlagString(Character = ENCOUNTERS, FlagBit = 8)]
@@ -92,6 +100,8 @@ namespace FF1Lib
 		public bool EnemyStatusAttacks { get; set; }
 		[FlagString(Character = BATTLES, FlagBit = 8)]
 		public bool AllowUnsafePirates { get; set; }
+		[FlagString(Character = BATTLES, FlagBit = 16)]
+		public bool AllowUnsafeMelmond { get; set; }
 
 		[FlagString(Character = STANDARD_MAPS, FlagBit = 3)]
 		public WarMECHMode WarMECHMode { get; set; }
@@ -178,6 +188,8 @@ namespace FF1Lib
 		public bool EarlySage { get; set; }
 		[FlagString(Character = ITEM_REQUIREMENTS, FlagBit = 4)]
 		public bool CrownlessOrdeals { get; set; }
+		[FlagString(Character = ITEM_REQUIREMENTS, FlagBit = 8)]
+		public bool ShuffleObjectiveNPCs { get; set; }
 		[FlagString(Character = ITEM_REQUIREMENTS, FlagBit = 32)]
 		public bool OnlyRequireGameIsBeatable { get; set; }
 
@@ -233,6 +245,10 @@ namespace FF1Lib
 		public bool WrapPriceOverflow { get; set; }
 		[FlagString(Character = SCALE, FlagBit = 8)]
 		public bool IncludeMorale { get; set; }
+		[FlagString(Character = SCALE, FlagBit = 16)]
+		public bool RandomWaresIncludesSpecialGear { get; set; }
+		[FlagString(Character = SCALE, FlagBit = 32)]
+		public bool NoDanMode { get; set; }
 
 		[FlagString(Character = ENEMY_SCALE_FACTOR, Multiplier = 0.1)]
 		public double EnemyScaleFactor { get; set; }
@@ -248,12 +264,100 @@ namespace FF1Lib
 		public double EncounterRate { get; set; }
 		[FlagString(Character = DUNGEON_ENCOUNTER_RATE, Multiplier = 1)]
 		public double DungeonEncounterRate { get; set; }
-		[FlagString(Character = FORCED_PARTY_MEMBERS, Multiplier = 1)]
-		public int ForcedPartyMembers { get; set; }
 		[FlagString(Character = PROGRESSIVE_SCALE, FlagBit = 7)]
 		public ProgressiveScaleMode ProgressiveScaleMode { get; set; }
 
+		[FlagString(Character = PARTY_1, FlagBit = 1)]
+		public bool FIGHTER1 { get; set; }
+		[FlagString(Character = PARTY_1, FlagBit = 2)]
+		public bool THIEF1 { get; set; }
+		[FlagString(Character = PARTY_1, FlagBit = 4)]
+		public bool BLACK_BELT1 { get; set; }
+		[FlagString(Character = PARTY_1, FlagBit = 8)]
+		public bool RED_MAGE1 { get; set; }
+		[FlagString(Character = PARTY_1, FlagBit = 16)]
+		public bool WHITE_MAGE1 { get; set; }
+		[FlagString(Character = PARTY_1, FlagBit = 32)]
+		public bool BLACK_MAGE1 { get; set; }
+
+		[FlagString(Character = PARTY_2, FlagBit = 1)]
+		public bool FIGHTER2 { get; set; }
+		[FlagString(Character = PARTY_2, FlagBit = 2)]
+		public bool THIEF2 { get; set; }
+		[FlagString(Character = PARTY_2, FlagBit = 4)]
+		public bool BLACK_BELT2 { get; set; }
+		[FlagString(Character = PARTY_2, FlagBit = 8)]
+		public bool RED_MAGE2 { get; set; }
+		[FlagString(Character = PARTY_2, FlagBit = 16)]
+		public bool WHITE_MAGE2 { get; set; }
+		[FlagString(Character = PARTY_2, FlagBit = 32)]
+		public bool BLACK_MAGE2 { get; set; }
+
+		[FlagString(Character = PARTY_3, FlagBit = 1)]
+		public bool FIGHTER3 { get; set; }
+		[FlagString(Character = PARTY_3, FlagBit = 2)]
+		public bool THIEF3 { get; set; }
+		[FlagString(Character = PARTY_3, FlagBit = 4)]
+		public bool BLACK_BELT3 { get; set; }
+		[FlagString(Character = PARTY_3, FlagBit = 8)]
+		public bool RED_MAGE3 { get; set; }
+		[FlagString(Character = PARTY_3, FlagBit = 16)]
+		public bool WHITE_MAGE3 { get; set; }
+		[FlagString(Character = PARTY_3, FlagBit = 32)]
+		public bool BLACK_MAGE3 { get; set; }
+
+		[FlagString(Character = PARTY_4, FlagBit = 1)]
+		public bool FIGHTER4 { get; set; }
+		[FlagString(Character = PARTY_4, FlagBit = 2)]
+		public bool THIEF4 { get; set; }
+		[FlagString(Character = PARTY_4, FlagBit = 4)]
+		public bool BLACK_BELT4 { get; set; }
+		[FlagString(Character = PARTY_4, FlagBit = 8)]
+		public bool RED_MAGE4 { get; set; }
+		[FlagString(Character = PARTY_4, FlagBit = 16)]
+		public bool WHITE_MAGE4 { get; set; }
+		[FlagString(Character = PARTY_4, FlagBit = 32)]
+		public bool BLACK_MAGE4 { get; set; }
+
+		[FlagString(Character = PARTY_EXTRA, FlagBit = 1)]
+		public bool NONE_CLASS2 { get; set; }
+		[FlagString(Character = PARTY_EXTRA, FlagBit = 2)]
+		public bool NONE_CLASS3 { get; set; }
+		[FlagString(Character = PARTY_EXTRA, FlagBit = 4)]
+		public bool NONE_CLASS4 { get; set; }
+		[FlagString(Character = PARTY_EXTRA, FlagBit = 8)]
+		public bool FORCED1 { get; set; }
+		[FlagString(Character = PARTY_EXTRA, FlagBit = 16)]
+		public bool FORCED2 { get; set; }
+		[FlagString(Character = PARTY_EXTRA, FlagBit = 32)]
+		public bool FORCED3 { get; set; }
+
+		[FlagString(Character = PARTY_EXTRA2, FlagBit = 1)]
+		public bool FORCED4 { get; set; }
+		[FlagString(Character = PARTY_EXTRA2, FlagBit = 2)]
+		public bool WeaponPermissions { get; set; }
+		[FlagString(Character = PARTY_EXTRA2, FlagBit = 4)]
+		public bool ArmorPermissions { get; set; }
+
+		[FlagString(Character = SCALE_CLAMPING, FlagBit = 1)]
+		public bool ClampMinimumStatScale { get; set; }
+		[FlagString(Character = SCALE_CLAMPING, FlagBit = 2)]
+		public bool ClampMinimumBossStatScale { get; set; }
+		[FlagString(Character = SCALE_CLAMPING, FlagBit = 4)]
+		public bool ClampMinimumPriceScale { get; set; }
+
+		[FlagString(Character = PROCEDURAL_GENERATION, FlagBit = 1)]
+		public bool ExperimentalFloorGeneration { get; set; }
+
+		[FlagString(Character = FORMATION, FlagBit = 3)]
+		public FormationShuffleModeEnum FormationShuffleMode { get; set; }
+
+		[FlagString(Character = WEALTH, FlagBit = 7)]
+		public WorldWealth WorldWealth { get; set; }
+
 		public bool ModernBattlefield { get; set; }
+		public bool ThirdBattlePalette { get; set; }
+		public bool DisableDamageTileFlicker { get; set; }
 		public bool FunEnemyNames { get; set; }
 		public bool PaletteSwap { get; set; }
 		public bool TeamSteak { get; set; }
@@ -307,6 +411,8 @@ namespace FF1Lib
 		public bool IncentivizeNerrick => IncentivizeFetchNPCs;
 		public bool IncentivizeLefein => IncentivizeFetchNPCs;
 		public bool IncentivizeSmith => IncentivizeFetchNPCs;
+
+		public bool ImmediatePureAndSoftRequired => EnemyStatusAttacks || Entrances || MapOpenProgression;
 
 		public static Dictionary<string, FlagStringAttribute> GetFlagStringAttributes()
 		{

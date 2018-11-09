@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using RomUtilities;
+using static FF1Lib.FF1Text;
 
 namespace FF1Lib
 {
@@ -71,12 +72,54 @@ namespace FF1Lib
 		TitansTunnel
 	}
 
+	public enum Tile
+	{
+		RoomBackLeft = 0x00,
+		RoomBackCenter = 0x01,
+		RoomBackRight = 0x02,
+		RoomLeft = 0x03,
+		RoomCenter = 0x04,
+		RoomRight = 0x05,
+		RoomFrontLeft = 0x06,
+		RoomFrontCenter = 0x07,
+		RoomFrontRight = 0x08,
+		Ladder = 0x09,
+		LadderHole = 0x0A,
+		WarpUp = 0x18,
+		EarthCaveInside = 0x2E,
+		InsideWall = 0x30,
+		FloorSafe = 0x31,
+		HallwayLeft = 0x32,
+		HallwayRight = 0x33,
+		WallLeft = 0x34,
+		WallRight = 0x35,
+		Impassable = 0x3D,
+		Door = 0x36,
+		EarthCaveOOB = 0x38,
+		Doorway = 0x3A,
+		Lava = 0x39,
+		EarthCaveRockA = 0x3E,
+		EarthCaveRockB = 0x3F,
+		MarshCaveOOB = 0x3F,
+		EarthCaveRandomEncounters = 0x41,
+		WaterfallInside = 0x46,
+		WaterfallRandomEncounters = 0x49
+	}
+
 	public enum WarMECHMode
 	{
 		Vanilla,
 		Wandering4F,
 		Aggro4F,
 		BridgeOfDestiny
+	}
+
+	public struct NPC
+	{
+		public int Index;
+		public (int x, int y) Coord;
+		public bool InRoom;
+		public bool Stationary;
 	}
 
 	public partial class FF1Rom : NesRom
@@ -127,7 +170,7 @@ namespace FF1Lib
 			{
 				var traps = tilesets.Where(IsNonBossTrapTile).ToList();
 				encounters = traps.Select(trap => trap[1]).ToList();
-			} 
+			}
 
 			tilesets.ForEach(tile =>
 			{
@@ -278,7 +321,7 @@ namespace FF1Lib
 
 		public void ShuffleSkyCastle4F(MT19337 rng, List<Map> maps)
 		{
-		    // Don't shuffle the return teleporter as Floor and Entrance shuffle might want to edit it.	
+			// Don't shuffle the return teleporter as Floor and Entrance shuffle might want to edit it.	
 			var map = maps[(byte)MapId.SkyPalace4F];
 			var upTeleporter = (x: 0x23, y: 0x23);
 			var dest = GetSkyCastleFloorTile(rng, map);
@@ -322,10 +365,10 @@ namespace FF1Lib
 		}
 
 		public void EnableTitansTrove(List<Map> maps)
-        {
+		{
 			MoveNpc(MapId.TitansTunnel, 0, 4, 8, inRoom: false, stationary: true); // Move the Titan
 			maps[(byte)MapId.TitansTunnel][9, 3] = 0x3F; // Block the tunnel
-        }
+		}
 
 		public void WarMECHNpc(WarMECHMode mode, MT19337 rng, List<Map> maps)
 		{
@@ -334,7 +377,7 @@ namespace FF1Lib
 			const byte RobotGfx = 0x15;
 
 			// Set up the map object.
-			Put(MapObjOffset + (byte)ObjectId.WarMECH * MapObjSize, new [] { (byte)ObjectId.WarMECH, UnusedTextPointer, (byte)0x00, WarMECHEncounter });
+			Put(MapObjOffset + (byte)ObjectId.WarMECH * MapObjSize, new[] { (byte)ObjectId.WarMECH, UnusedTextPointer, (byte)0x00, WarMECHEncounter });
 			Data[MapObjGfxOffset + (byte)ObjectId.WarMECH] = RobotGfx;
 
 			// Set the action when you talk to WarMECH.
@@ -343,24 +386,24 @@ namespace FF1Lib
 			// Change the dialogue.
 			var dialogueStrings = new List<Blob>
 			{
-				FF1Text.TextToBytes("I. aM. WarMECH."),
-				Blob.Concat(FF1Text.TextToBytes("I think you ought to know,"), new byte[] { 0x05 }, FF1Text.TextToBytes("I'm feeling very depressed.")),
-				FF1Text.TextToBytes("Bite my shiny metal ass!"),
-				Blob.Concat(FF1Text.TextToBytes("Put down your weapons."), new byte[] { 0x05 }, FF1Text.TextToBytes("You have 15 seconds to comply.")),
-				// Blob.Concat(FF1Text.TextToBytes("I'm sorry "), new byte[] { 0x03 }, FF1Text.TextToBytes(","), new byte[] { 0x05 }, FF1Text.TextToBytes("I'm afraid I can't do that.")),
-				FF1Text.TextToBytes("rEsIsTaNcE iS fUtIlE."),
-				FF1Text.TextToBytes("Hasta la vista, baby."),
-				FF1Text.TextToBytes("NoOo DiSaSsEmBlE!"),
-				Blob.Concat(FF1Text.TextToBytes("Bring back life form."), new byte[] { 0x05 }, FF1Text.TextToBytes("Priority one."), new byte[] { 0x05 }, FF1Text.TextToBytes("All other priorities rescinded."))
+				TextToBytes("I. aM. WarMECH."),
+				Blob.Concat(TextToBytes("I think you ought to", delimiter: Delimiter.Line), TextToBytes("know, I'm feeling very", delimiter: Delimiter.Line), TextToBytes("depressed.")),
+				TextToBytes("Bite my shiny metal ass!"),
+				Blob.Concat(TextToBytes("Put down your weapons.", delimiter: Delimiter.Line), TextToBytes("You have 15 seconds to", delimiter: Delimiter.Line), TextToBytes("comply.")),
+				// Blob.Concat(TextToBytes("I'm sorry "), new byte[] { 0x03 }, TextToBytes(",", delimiter: Delimiter.Line), TextToBytes("I'm afraid I can't do that.")),
+				TextToBytes("rEsIsTaNcE iS fUtIlE."),
+				TextToBytes("Hasta la vista, baby."),
+				TextToBytes("NoOo DiSaSsEmBlE!"),
+				Blob.Concat(TextToBytes("Bring back life form.", delimiter: Delimiter.Line), TextToBytes("Priority one.", delimiter: Delimiter.Line), TextToBytes("All other priorities", delimiter: Delimiter.Line), TextToBytes("rescinded."))
 			};
 			ushort freeTextSpacePointer = 0xB487;
 			int pointerTarget = 0x20000 + freeTextSpacePointer;
 			Put(pointerTarget, dialogueStrings.PickRandom(rng));
-			Put(DialogueTextPointerOffset + 2 * UnusedTextPointer, Blob.FromUShorts(new [] { freeTextSpacePointer }));
+			Put(DialogueTextPointerOffset + 2 * UnusedTextPointer, Blob.FromUShorts(new[] { freeTextSpacePointer }));
 
 			// Get rid of random WarMECH encounters.  Group 8 is now also group 7.
-			var formationOffset = FormationFrequencyOffset + FormationFrequencySize * (64 + (byte)MapId.SkyPalace5F);
-			var formations = Get(formationOffset, FormationFrequencySize);
+			var formationOffset = ZoneFormationsOffset + ZoneFormationsSize * (64 + (byte)MapId.SkyPalace5F);
+			var formations = Get(formationOffset, ZoneFormationsSize);
 			formations[6] = formations[7];
 			Put(formationOffset, formations);
 
@@ -383,7 +426,12 @@ namespace FF1Lib
 			}
 		}
 
-		private void MoveNpc(MapId mapId, int mapNpcIndex, int x, int y, bool inRoom, bool stationary)
+		public void MoveNpc(MapId mapId, NPC npc)
+		{
+			MoveNpc(mapId, npc.Index, npc.Coord.x, npc.Coord.y, npc.InRoom, npc.Stationary);
+		}
+
+		public void MoveNpc(MapId mapId, int mapNpcIndex, int x, int y, bool inRoom, bool stationary)
 		{
 			int offset = MapSpriteOffset + ((byte)mapId * MapSpriteCount + mapNpcIndex) * MapSpriteSize;
 
@@ -395,7 +443,7 @@ namespace FF1Lib
 			Data[offset + 2] = (byte)y;
 		}
 
-		private void SetNpc(MapId mapId, int mapNpcIndex, ObjectId mapObjId, int x, int y, bool inRoom, bool stationary)
+		public void SetNpc(MapId mapId, int mapNpcIndex, ObjectId mapObjId, int x, int y, bool inRoom, bool stationary)
 		{
 			int offset = MapSpriteOffset + ((byte)mapId * MapSpriteCount + mapNpcIndex) * MapSpriteSize;
 
@@ -432,5 +480,6 @@ namespace FF1Lib
 				Put(MapPointerOffset + pointers[i], data[i]);
 			}
 		}
+
 	}
 }

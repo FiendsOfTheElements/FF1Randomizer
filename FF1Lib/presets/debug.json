@@ -9,7 +9,9 @@
 		"NPCFetchItems": true,
 		"RandomWares": true,
 		"RandomWaresIncludesSpecialGear": false,
-		"RandomLoot": false,
+		"RandomLoot": true,
+		"WeaponPermissions": true,
+		"ArmorPermissions": true,
 
 		"ShardHunt": false,
 		"ExtraShards": false,
@@ -24,7 +26,7 @@
 		"ItemMagic": true,
 
 		"Rng": true,
-		"EnemyFormationsFrequency": true,
+		"FormationShuffleMode": 1,
 		"EnemyFormationsUnrunnable": true,
 		"EnemyFormationsSurprise": true,
 		"EnemyTrapTiles": true,
@@ -37,15 +39,16 @@
 
 		"WarMECHMode": "Wandering4F",
 		"OrdealsPillars": true,
-		"SkyCastle4FTeleporters": true,
+		"SkyCastle4FTeleporters": false,
 		"TitansTrove": true,
 		"ConfusedOldMen": true,
-		"Floors": true,
-		"AllowDeepCastles": true,
+		"AllowUnsafeMelmond": true,
 
 		"MapOpenProgression": true,
 		"MapOpenProgressionExtended": true,
 		"Entrances": true,
+		"Floors": true,
+		"AllowDeepCastles": true,
 		"Towns": true,
 
 		"IncentivizeFreeNPCs": true,
@@ -81,6 +84,7 @@
 		"EarlySarda": true,
 		"EarlySage": true,
 		"CrownlessOrdeals": true,
+		"ShuffleObjectiveNPCs": true,
 		"OnlyRequireGameIsBeatable": false,
 
 		"FreeBridge": false,
@@ -91,6 +95,7 @@
 		"WrapPriceOverflow": false,
 		"IncludeMorale": false,
 		"EasyMode": false,
+		"NoDanMode": true,
 
 		"SpeedHacks": true,
 		"NoPartyShuffle": true,
@@ -112,6 +117,9 @@
 		"EnemyElementalResistancesBug": true,
 		"ImproveTurnOrderRandomization": true,
 
+		"ClampMinimumStatScale": true,
+		"ClampMinimumBossStatScale": true,
+		"ClampMinimumPriceScale": true,
 		"EnemyScaleFactor": 1.5,
 		"BossScaleFactor": 1.5,
 		"PriceScaleFactor": 4.0,
@@ -120,7 +128,8 @@
 		"ProgressiveScaleMode": 1,
 		"EncounterRate": 15.0,
 		"DungeonEncounterRate": 15.0,
-		"ForcedPartyMembers": 2
+		"ForcedPartyMembers": 2,
+		"WorldWealth": 0
 
 	}
 

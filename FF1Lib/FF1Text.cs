@@ -139,7 +139,8 @@ namespace FF1Lib
 		{
 			if (text.Length > 32)
 			{
-				throw new ArgumentOutOfRangeException();
+				text = text.Substring(0, 32);
+				//throw new ArgumentOutOfRangeException();
 			}
 
 			var flagLeft = new string(' ', (int)Math.Ceiling((32 - text.Length) / 2.0));
