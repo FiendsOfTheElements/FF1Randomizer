@@ -22,6 +22,9 @@
     public RandomizerSettings(Flags flags)
       : this(Blob.Random(4), flags) { }
 
+    public RandomizerSettings(string seed, Flags flags)
+      : this(SettingsUtils.ConvertSeed(seed), flags) { }
+
     public RandomizerSettings(Blob seed, Flags flags)
     {
       Seed = seed;
@@ -31,7 +34,7 @@
     public RandomizerSettings(string seed, string flags)
       : this(
         SettingsUtils.ConvertSeed(seed),
-        Flags.DecodeFlagsText(flags)
+        SettingsUtils.ConvertFlags(flags)
       ) { }
 
     public static RandomizerSettings FromImportString(string import)
@@ -55,6 +58,13 @@
       return String.IsNullOrEmpty(maybeHex)
         ? Blob.Random(4)
         : Blob.FromHex(maybeHex.Substring(0, 8));
+    }
+
+    public static Flags ConvertFlags(string maybeFlags)
+    {
+      return String.IsNullOrEmpty(maybeFlags)
+        ? new Flags()
+        : Flags.DecodeFlagsText(maybeFlags);
     }
   }
 }
