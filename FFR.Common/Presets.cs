@@ -27,7 +27,7 @@ namespace FFR.Common
       Flags = flags;
     }
 
-    public string ToJson()
+    public string ToJSON()
     {
       return Preset.Marshal(this);
     }
@@ -103,10 +103,12 @@ namespace FFR.Common
     public static void Add(string name, Flags flags)
     {
       var preset = new Preset(name, flags);
-      var file = GetFilePath(preset.Name);
 
-      Directory.CreateDirectory(System.IO.Path.GetDirectoryName(file));
-      File.WriteAllText(file, preset.ToJson());
+      UserSettings.WriteFile(
+        $"{preset.Name.ToSlug()}.json",
+        preset.ToJSON(),
+        "presets"
+      );
     }
 
     /// <summary>
@@ -122,10 +124,7 @@ namespace FFR.Common
     /// </summary>
     public static void Remove(string name)
     {
-      var path = GetFilePath(name);
-
-      if (File.Exists(path))
-        File.Delete(path);
+      UserSettings.RemoveFile($"{name.ToSlug()}.json", "presets");
     }
 
     /// <summary>
@@ -134,7 +133,7 @@ namespace FFR.Common
     public static IEnumerable<string> List()
     {
       return Directory
-        .EnumerateFiles(DirectoryPath, "*.json")
+        .EnumerateFiles(UserSettings.GetFilePath("presets"), "*.json")
         .Select(i => Path.GetFileNameWithoutExtension(i));
     }
 
@@ -143,25 +142,8 @@ namespace FFR.Common
     /// </summary>
     public static Preset Load(string name)
     {
-      var path = GetFilePath(name);
-
-      if (!File.Exists(path))
-          throw new FileNotFoundException(path);
-
-      return Preset.Unmarshal(File.ReadAllText(path));
+      var json = UserSettings.ReadFile($"{name.ToSlug()}.json", "presets");
+      return Preset.Unmarshal(json);
     }
-
-    static string GetFilePath(Preset preset)
-    {
-      return GetFilePath(preset.Name);
-    }
-
-    static string GetFilePath(string name)
-    {
-      return System.IO.Path.Combine(DirectoryPath, $"{name.ToSlug()}.json");
-    }
-
-    static string DirectoryPath
-      => UserSettings.GetFilePath("presets");
   }
 }
