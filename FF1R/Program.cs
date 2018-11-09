@@ -10,6 +10,8 @@
   [Command(Name = "FF1R", Description = "Final Fantasy (NES) Randomizer")]
 	class Program
 	{
+    readonly VersionInfo version = new VersionInfo(0, 1);
+
     public static int Main(string[] args)
       => CommandLineApplication.Execute<Program>(args);
 
