@@ -8,8 +8,8 @@ namespace FFR.Common.Tests
 	public class PresetTests
 	{
 		[Theory]
-		[InlineData("I shouldn't exist, really", "HACBG9ANbBHAHI!fPAPeZZeAAeP")]
-		[InlineData("League 6 Test", "PAC!P3hP4EBQHJ!fPAVoYAeAFeV")]
+		[InlineData("I shouldn't exist, really", "!AK9f1!BAABAPI!fPgPoooPABPPAAAAGHABA")]
+		[InlineData("Swiss Style Test", "HACNHEBFYAAAHI!fPAPoYIeAAePAAAAAAABB")]
 		public void SavingAndLoadingCustom(string name, string flags)
 		{
 			Presets.Add(name, flags);
