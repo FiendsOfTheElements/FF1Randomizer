@@ -5,69 +5,11 @@
   using RomUtilities;
 
   using FF1Lib;
-
-  /// <summary>
-  /// Represents a set of randomization settings to supply
-  /// to ROM generation.
-  /// </summary>
-  struct RandomizerSettings {
-    public Blob Seed { get; }
-    public Flags Flags { get; }
-
-    public RandomizerSettings(Blob seed, Flags flags)
-    {
-      Seed = seed;
-      Flags = flags;
-    }
-
-    public RandomizerSettings(string seed, string flags)
-      : this(
-        String.IsNullOrEmpty(seed) ? Blob.Random(4) : Blob.FromHex(seed.Substring(0, 8)),
-        Flags.DecodeFlagsText(flags)
-      ) { }
-
-    public static RandomizerSettings FromImportString(string import)
-    {
-      var seed = import.Substring(0, 8);
-      var flags = import.Substring(9);
-
-      return new RandomizerSettings(seed, flags);
-    }
-  }
-
-  /// <summary>
-  /// Represents versioning information for a module or program.
-  /// </summary>
-  struct VersionInfo {
-    public int Major { get; }
-    public int Minor { get; }
-    public int Revision { get; }
-    public string Tag { get; }
-
-    public VersionInfo(int major, int minor = 0, int revision = 0, string tag = null)
-    {
-      Major = major;
-      Minor = minor;
-      Revision = revision;
-      Tag = tag;
-    }
-
-    public override string ToString()
-    {
-      var semantics = $"{Major}.{Minor}.{Revision}";
-
-      return string.IsNullOrEmpty(Tag)
-        ? semantics
-        : $"{semantics}-{Tag}";
-    }
-  }
-
+  using FFR.Common;
 
   [Command(Name = "FF1R", Description = "Final Fantasy (NES) Randomizer")]
 	class Program
 	{
-    readonly VersionInfo version = new VersionInfo(0, 1);
-
     public static int Main(string[] args)
       => CommandLineApplication.Execute<Program>(args);
 
@@ -92,6 +34,10 @@
       ShortName = "i")]
     public string Import { get; }
 
+    [Option("--presets", Description = "List available presets",
+      ShortName = "l")]
+    public bool ListPresets { get; }
+
     [Option(Description = "Enable verbose output",
         ShortName = "v")]
     public bool Verbose { get; }
@@ -99,12 +45,17 @@
     [Option("--version", Description = "Show version")]
     public bool Version { get; }
 
-
-    void OnExecute()
+    int OnExecute(IConsole console)
     {
       if (Version) {
-        Console.WriteLine(version);
-        return;
+        console.WriteLine(version);
+        return 0;
+      }
+
+      if (ListPresets) {
+        foreach(var name in Presets.List())
+          console.WriteLine(name);
+        return 0;
       }
 
       RandomizerSettings settings;
@@ -113,33 +64,33 @@
           ? new RandomizerSettings(Seed, FlagString)
           : RandomizerSettings.FromImportString(Import);
       } catch {
-        Console.WriteLine("Ensure that you are using an 8 character ");
-        Console.WriteLine("hexadecimal string as a seed and a valid");
-        Console.WriteLine("base64 encoded set of flags.");
-        return;
+        console.WriteLine("Ensure that you are using an 8 character ");
+        console.WriteLine("hexadecimal string as a seed and a valid");
+        console.WriteLine("base64 encoded set of flags.");
+        return 1;
       }
 
       var outFile = String.IsNullOrEmpty(OutFile)
         ? GenerateDefaultFilename(RomPath, settings)
         : OutFile;
-
-			var rom = new FF1Rom(RomPath);
-			rom.Randomize(settings.Seed, settings.Flags);
-			rom.Save(outFile);
+      
+      var rom = new FF1Rom(RomPath);
+      rom.Randomize(settings.Seed, settings.Flags);
+      rom.Save(outFile);
 
       if (Verbose) {
-        Console.WriteLine($"Seed: {settings.Seed.ToHex()}");
-        Console.WriteLine($"Flags: {Flags.EncodeFlagsText(settings.Flags)}");
-        Console.WriteLine($"ROM created at: {outFile}");
+        console.WriteLine($"Seed: {settings.Seed.ToHex()}");
+        console.WriteLine($"Flags: {Flags.EncodeFlagsText(settings.Flags)}");
+        console.WriteLine($"ROM created at: {outFile}");
       }
+
+      return 0;
     }
 
     string GenerateDefaultFilename(string rom, RandomizerSettings settings)
     {
 			var baseName = rom.Substring(0, rom.LastIndexOf(".", StringComparison.InvariantCulture));
-			return $"{baseName}_" +
-        $"{settings.Seed.ToHex()}_" +
-        $"{Flags.EncodeFlagsText(settings.Flags)}.nes";
+			return $"{baseName}_{settings.SeedString}_{settings.FlagString}.nes";
     }
   }
 }

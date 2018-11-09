@@ -24,6 +24,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".circleci", ".circleci", "{
 		.circleci\config.yml = .circleci\config.yml
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FFR.Common", "FFR.Common\FFR.Common.csproj", "{9C1D0EB1-A5E1-408E-B569-478C20B64088}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FFR.Common.Tests", "FFR.Common.Tests\FFR.Common.Tests.csproj", "{93FA510C-CC5D-4B74-A341-7CFE18357EF1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,6 +54,18 @@ Global
 		{137A7AAB-F962-4988-88E6-363CF49A702A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{137A7AAB-F962-4988-88E6-363CF49A702A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{137A7AAB-F962-4988-88E6-363CF49A702A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{453D06E6-BAE2-4D5A-921E-2E7E96D45B1D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{453D06E6-BAE2-4D5A-921E-2E7E96D45B1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{453D06E6-BAE2-4D5A-921E-2E7E96D45B1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{453D06E6-BAE2-4D5A-921E-2E7E96D45B1D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C1D0EB1-A5E1-408E-B569-478C20B64088}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C1D0EB1-A5E1-408E-B569-478C20B64088}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C1D0EB1-A5E1-408E-B569-478C20B64088}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C1D0EB1-A5E1-408E-B569-478C20B64088}.Release|Any CPU.Build.0 = Release|Any CPU
+		{93FA510C-CC5D-4B74-A341-7CFE18357EF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93FA510C-CC5D-4B74-A341-7CFE18357EF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93FA510C-CC5D-4B74-A341-7CFE18357EF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93FA510C-CC5D-4B74-A341-7CFE18357EF1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

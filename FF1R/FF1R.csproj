@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\FF1Lib\FF1Lib.csproj" />
+    <ProjectReference Include="..\FFR.Common\FFR.Common.csproj" />
   </ItemGroup>
 
   <ItemGroup>
