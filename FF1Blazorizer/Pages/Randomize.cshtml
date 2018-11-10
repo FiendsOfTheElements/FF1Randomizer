@@ -271,7 +271,8 @@
 
 @functions
 {
-	private FF1Rom Rom;
+	private byte[] _fileData;
+	private FF1Rom _rom;
 
 	private ViewModelFlags MyFlags { get; set; } = new ViewModelFlags();
 
@@ -291,25 +292,25 @@
 	async Task OnFileChanged(UIChangeEventArgs e)
 	{
 		var encoded = await JSRuntime.Current.InvokeAsync<string>("handleFileSelect", "fileInput");
-		var data = Convert.FromBase64String(encoded);
-
-		using (var stream = new MemoryStream(data))
-		{
-			Rom = new FF1Rom(stream);
-		}
+		_fileData = Convert.FromBase64String(encoded);
 	}
 
 	void OnRandomize(UIMouseEventArgs e)
 	{
-		if (Rom == null)
+		if (_fileData == null)
 			return;
 
-		Rom.Randomize(Blob.FromHex("DEADBEEF"), MyFlags.Flags);
+		using (var stream = new MemoryStream(_fileData))
+		{
+			_rom = new FF1Rom(stream);
+		}
+
+		_rom.Randomize(Blob.FromHex("DEADBEEF"), MyFlags.Flags);
 
 		var data = new byte[512*1024 + 16];
 		using (var stream = new MemoryStream(data, true))
 		{
-			Rom.Save(stream);
+			_rom.Save(stream);
 		}
 
 		var encoded = Convert.ToBase64String(data);

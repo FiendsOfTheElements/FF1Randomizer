@@ -13,7 +13,7 @@
 		reader.onerror = () => {
 			reader.abort();
 			reject(new DOMException("Error reading file"));
-		}
+		};
 
 		reader.readAsDataURL(file);
 
