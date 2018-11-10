@@ -1,8 +1,10 @@
 ﻿@addTagHelper *, BlazorStrap
 @page "/Randomize"
+@using System.IO
 @using FF1Lib
 
 <div>
+	<div><input type="file" id="fileInput" onchange="@OnFileChanged"/></div>
 	<div><input type="text" class="form-control" value="@Flags.EncodeFlagsText(MyFlags.Flags)"/></div>
 	<br/>
 	<BlazorNav IsTabs>
@@ -268,6 +270,8 @@
 
 @functions
 {
+	private FF1Rom Rom;
+
 	private ViewModelFlags MyFlags { get; set; } = new ViewModelFlags();
 
 	private string activeTab = "Shuffle";
@@ -281,6 +285,18 @@
 	protected override void OnInit()
 	{
 		MyFlags.PropertyChanged += (sender, args) => StateHasChanged();
+	}
+
+	async Task OnFileChanged(UIChangeEventArgs e)
+	{
+		var encoded = await JSRuntime.Current.InvokeAsync<string>("handleFileSelect", "fileInput");
+		Console.WriteLine(encoded);
+		var data = Convert.FromBase64String(encoded);
+
+		using (var stream = new MemoryStream(data))
+		{
+			Rom = new FF1Rom(stream);
+		}
 	}
 
 }
