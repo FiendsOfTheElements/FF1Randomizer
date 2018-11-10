@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,13 +11,21 @@ namespace FF1Lib
 {
 	public enum ProgressiveScaleMode
 	{
+		[Description("Disabled")]
 		Disabled,
+		[Description("Increased to 150% at 12 Key Items")]
 		FiftyPercentAt12,
+		[Description("Increased to 150% at 15 Key Items")]
 		FiftyPercentAt15,
+		[Description("Increased to 200% at 12 Key Items")]
 		DoubledAt12,
+		[Description("Increased to 200% at 15 Key Items")]
 		DoubledAt15,
+		[Description("Increased by 5% Per Key Item")]
 		Progressive5Percent,
+		[Description("Increased by 10% Per Key Item")]
 		Progressive10Percent,
+		[Description("Increased by 20% Per Key Item")]
 		Progressive20Percent,
 	}
 

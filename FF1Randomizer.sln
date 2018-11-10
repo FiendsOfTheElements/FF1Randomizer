@@ -24,6 +24,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".circleci", ".circleci", "{
 		.circleci\config.yml = .circleci\config.yml
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FF1Blazorizer", "FF1Blazorizer\FF1Blazorizer.csproj", "{43BF489E-8125-430E-8AA2-5BD850CB2567}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,6 +52,10 @@ Global
 		{137A7AAB-F962-4988-88E6-363CF49A702A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{137A7AAB-F962-4988-88E6-363CF49A702A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{137A7AAB-F962-4988-88E6-363CF49A702A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{43BF489E-8125-430E-8AA2-5BD850CB2567}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{43BF489E-8125-430E-8AA2-5BD850CB2567}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{43BF489E-8125-430E-8AA2-5BD850CB2567}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{43BF489E-8125-430E-8AA2-5BD850CB2567}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

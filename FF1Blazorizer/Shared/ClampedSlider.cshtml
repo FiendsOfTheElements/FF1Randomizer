@@ -1,0 +1,40 @@
+﻿<div class="row">
+	<div class="col-6">
+		<label>@ChildContent</label>
+	</div>
+	<div class="col-3">
+		<input type="checkbox" value="@Clamp" onchange="@onClampChanged"/>
+		<label>@Math.Round(100.0 / (Clamp ? 1.0 : Scale)).ToString()% - @Math.Round(100.0 * Scale).ToString()%</label>
+	</div>
+	<Slider Value="@Scale" ValueChanged="@ScaleChanged" Min="@Min" Max="@Max" Step="@Step"></Slider>
+</div>
+
+@functions
+{
+
+	[Parameter]
+	private bool Clamp { get; set; }
+	[Parameter]
+	Action<bool> ClampChanged { get; set; }
+	private void onClampChanged(UIChangeEventArgs e)
+	{
+		Clamp = (bool)e.Value;
+		ClampChanged(Clamp);
+	}
+
+	[Parameter]
+	private double Scale { get; set; }
+	[Parameter]
+	Action<double> ScaleChanged { get; set; }
+
+	[Parameter]
+	private double Min { get; set; }
+	[Parameter]
+	private double Max { get; set; }
+	[Parameter]
+	private double Step { get; set; }
+
+	[Parameter]
+	private RenderFragment ChildContent { get; set; }
+
+}

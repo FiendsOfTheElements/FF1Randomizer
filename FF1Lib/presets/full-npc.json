@@ -37,7 +37,7 @@
 		"EnemyStatusAttacks": true,
 		"AllowUnsafePirates": false,
 
-		"WarMECHMode": "Wandering4F",
+		"WarMECHMode": "Patrolling",
 		"OrdealsPillars": true,
 		"SkyCastle4FTeleporters": true,
 		"TitansTrove": true,

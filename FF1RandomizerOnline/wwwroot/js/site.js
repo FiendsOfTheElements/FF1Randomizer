@@ -131,8 +131,8 @@ var app = new Vue({
 					var mode = presetFlags[key];
 					this.WarMECHMode =
 						mode == "Vanilla" ? 0 :
-							mode == "Wandering4F" ? 1 :
-								mode == "BridgeOfDestiny" ? 3 : 0;
+							mode == "Patrolling" ? 1 :
+								mode == "Required" ? 3 : 0;
 				}
 				else if (this[key] !== true && this[key] !== false) {
 					this[key] = presetFlags[key];
