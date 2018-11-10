@@ -3,6 +3,7 @@
 @using System.IO
 @using FF1Lib
 @using RomUtilities
+@inject HttpClient Http
 
 <div>
 	<div><input type="file" id="fileInput" onchange="@OnFileChanged"/></div>
@@ -284,9 +285,14 @@
 		StateHasChanged();
 	}
 
-	protected override void OnInit()
+	protected override async Task OnInitAsync()
 	{
 		MyFlags.PropertyChanged += (sender, args) => StateHasChanged();
+
+		var defaultJson = await Http.GetStringAsync("presets/default.json");
+		Console.WriteLine(defaultJson);
+
+		MyFlags.Flags = Microsoft.JSInterop.Json.Deserialize<Flags.Preset>(defaultJson).Flags;
 	}
 
 	async Task OnFileChanged(UIChangeEventArgs e)

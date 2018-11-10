@@ -19,4 +19,13 @@
     <ProjectReference Include="..\FF1Lib\FF1Lib.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="wwwroot\presets\default.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Copy SourceFiles="$(OutDir)version.txt" DestinationFolder="$(OutDir)dist" />
+  </Target>
+
 </Project>
