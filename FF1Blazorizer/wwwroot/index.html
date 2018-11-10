@@ -10,33 +10,7 @@
 </head>
 <body>
 	<app>Loading...</app>
-
 	<script src="_framework/blazor.webassembly.js"></script>
-<script>
-
-	function handleFileSelect(inputId) {
-
-		var input = document.getElementById(inputId);
-		var file = input.files[0];
-		var reader = new FileReader();
-
-		return new Promise((resolve, reject) => {
-
-			reader.onload = e => {
-				let encoded = e.target.result.split(',')[1];
-				resolve(encoded);
-			};
-			reader.onerror = () => {
-				reader.abort();
-				reject(new DOMException("Error reading file"));
-			} 
-
-			reader.readAsDataURL(file);
-
-		});
-
-	}
-
-</script>
+	<script src="js/site.js"></script>
 </body>
 </html>

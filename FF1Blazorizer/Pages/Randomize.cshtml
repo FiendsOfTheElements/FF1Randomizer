@@ -2,11 +2,12 @@
 @page "/Randomize"
 @using System.IO
 @using FF1Lib
+@using RomUtilities
 
 <div>
 	<div><input type="file" id="fileInput" onchange="@OnFileChanged"/></div>
-	<div><input type="text" class="form-control" value="@Flags.EncodeFlagsText(MyFlags.Flags)"/></div>
-	<br/>
+	<button onclick="@OnRandomize">Randomize</button><br/>
+	<div><input type="text" class="form-control" value="@Flags.EncodeFlagsText(MyFlags.Flags)"/></div><br/>
 	<BlazorNav IsTabs>
 		<BlazorNavLink onclick="@(() => ActivateTab("Shuffle"))" IsActive="@(activeTab == "Shuffle")">Shuffle</BlazorNavLink>
 		<BlazorNavLink onclick="@(() => ActivateTab("Treasures"))" IsActive="@(activeTab == "Treasures")">Treasures</BlazorNavLink>
@@ -290,7 +291,6 @@
 	async Task OnFileChanged(UIChangeEventArgs e)
 	{
 		var encoded = await JSRuntime.Current.InvokeAsync<string>("handleFileSelect", "fileInput");
-		Console.WriteLine(encoded);
 		var data = Convert.FromBase64String(encoded);
 
 		using (var stream = new MemoryStream(data))
@@ -299,4 +299,21 @@
 		}
 	}
 
+	void OnRandomize(UIMouseEventArgs e)
+	{
+		if (Rom == null)
+			return;
+
+		Rom.Randomize(Blob.FromHex("DEADBEEF"), MyFlags.Flags);
+
+		var data = new byte[512*1024 + 16];
+		using (var stream = new MemoryStream(data, true))
+		{
+			Rom.Save(stream);
+		}
+
+		var encoded = Convert.ToBase64String(data);
+
+		JSRuntime.Current.InvokeAsync<object>("downloadROM", "ff1randomized.nes", encoded);
+	}
 }
