@@ -290,8 +290,6 @@
 		MyFlags.PropertyChanged += (sender, args) => StateHasChanged();
 
 		var defaultJson = await Http.GetStringAsync("presets/default.json");
-		Console.WriteLine(defaultJson);
-
 		MyFlags.Flags = Microsoft.JSInterop.Json.Deserialize<Flags.Preset>(defaultJson).Flags;
 	}
 

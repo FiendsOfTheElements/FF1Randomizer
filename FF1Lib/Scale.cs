@@ -163,7 +163,7 @@ namespace FF1Lib
 				exponent = increaseOnly ? exponent : exponent * 2.0 - 1.0;
 			}
 			double adjustedScale = 1.0 + adjustment * (scale - 1.0);
-			return (int)Round(Pow(adjustedScale, exponent) * value, MidpointRounding.AwayFromZero);
+			return (int)Round(Pow(adjustedScale, exponent) * value);
 		}
 
 		public void SetProgressiveScaleMode(ProgressiveScaleMode mode)
