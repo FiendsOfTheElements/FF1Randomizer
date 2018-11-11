@@ -7,6 +7,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using FF1Lib.Assembly;
 
 namespace FF1Lib
 {
@@ -816,6 +817,12 @@ namespace FF1Lib
 			Array.Copy(Data, newData, 0x3C000);
 			Array.Copy(Data, 0x3C000, newData, 0x7C000, 0x4000);
 			Data = newData;
+
+			// Update symbol info
+			BA.MemoryMode = MemoryMode.MMC3;
+
+			// Change all 0F labels to be in 1F.
+			Symbols.AsDictionaries.Labels = Symbols.AsDictionaries.Labels.Where(entry => entry.Value.Bank == 0x0F).ToDictionary(entry => entry.Key, entry => new BA(0x1F, entry.Value.Addr));
 
 			// Change bank swap code.
 			// We put this code at SwapPRG_L, so we don't have to move any of the "long" calls to it.
