@@ -89,7 +89,7 @@
 						<div class="checkbox-cell"></div>
 						<CheckBox Id="incentivizeDefCastArmorCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.IncentivizeDefCastArmor">White Shirt</CheckBox>
 						<CheckBox Id="incentivizeOffCastArmorCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.IncentivizeOffCastArmor">Power Gauntlet</CheckBox>
-						<CheckBox Id="incentivizeDefCastWeaponCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.IncentivizeDefCastArmor">Defense</CheckBox>
+						<CheckBox Id="incentivizeDefCastWeaponCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.IncentivizeDefCastWeapon">Defense</CheckBox>
 						<CheckBox Id="incentivizeOffCastWeaponCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.IncentivizeOffCastWeapon">Thor Hammer</CheckBox>
 					</div>
 				</div>
@@ -287,6 +287,7 @@
 
 	protected override async Task OnInitAsync()
 	{
+		
 		MyFlags.PropertyChanged += (sender, args) => StateHasChanged();
 
 		var defaultJson = await Http.GetStringAsync("presets/default.json");
