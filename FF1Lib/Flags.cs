@@ -491,7 +491,7 @@ namespace FF1Lib
 			return result;
 		}
 
-		private class Preset
+		public class Preset
 		{
 			public string Name { get; set; }
 			public Flags Flags { get; set; }
