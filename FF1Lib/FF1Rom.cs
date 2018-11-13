@@ -366,6 +366,11 @@ namespace FF1Lib
 				EnableFreeOrbs();
 			}
 
+			if (flags.FreeCanal)
+			{
+				EnableFreeCanal();
+			}
+
 			if (flags.NoPartyShuffle)
 			{
 				DisablePartyShuffle();
