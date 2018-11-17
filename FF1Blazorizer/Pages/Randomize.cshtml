@@ -1,14 +1,14 @@
 ﻿@addTagHelper *, BlazorStrap
 @page "/Randomize"
 @using System.IO
-@using FF1Lib
 @using RomUtilities
+@using FF1Lib
 @inject HttpClient Http
 
 <div>
-	<div><input type="file" id="fileInput" onchange="@OnFileChanged"/></div>
-	<button onclick="@OnRandomize">Randomize</button><br/>
-	<div><input type="text" class="form-control" value="@Flags.EncodeFlagsText(MyFlags.Flags)"/></div><br/>
+	<div><input type="file" id="fileInput" onchange="@OnFileChanged" /></div>
+	<button onclick="@OnRandomize">Randomize</button><br />
+	<div><input type="text" class="form-control" value="@Flags.EncodeFlagsText(MyFlags.Flags)" /></div><br />
 	<BlazorNav IsTabs>
 		<BlazorNavLink onclick="@(() => ActivateTab("Shuffle"))" IsActive="@(activeTab == "Shuffle")">Shuffle</BlazorNavLink>
 		<BlazorNavLink onclick="@(() => ActivateTab("Treasures"))" IsActive="@(activeTab == "Treasures")">Treasures</BlazorNavLink>
@@ -275,7 +275,7 @@
 	private byte[] _fileData;
 	private FF1Rom _rom;
 
-	private ViewModelFlags MyFlags { get; set; } = new ViewModelFlags();
+	private FF1Lib.ViewModelFlags MyFlags { get; set; } = new FF1Lib.ViewModelFlags();
 
 	private string activeTab = "Shuffle";
 
@@ -287,7 +287,6 @@
 
 	protected override async Task OnInitAsync()
 	{
-		
 		MyFlags.PropertyChanged += (sender, args) => StateHasChanged();
 
 		var defaultJson = await Http.GetStringAsync("presets/default.json");
@@ -312,7 +311,7 @@
 
 		_rom.Randomize(Blob.FromHex("DEADBEEF"), MyFlags.Flags);
 
-		var data = new byte[512*1024 + 16];
+		var data = new byte[512 * 1024 + 16];
 		using (var stream = new MemoryStream(data, true))
 		{
 			_rom.Save(stream);
