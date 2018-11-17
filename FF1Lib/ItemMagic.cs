@@ -20,25 +20,20 @@ namespace FF1Lib
 		private int WeaponStart = (byte)ItemLists.AllWeapons.ElementAt(0);
 		private int ArmorStart = (byte)ItemLists.AllArmor.ElementAt(0);
 
-		// Remove all out of battle only spells
-		private readonly List<byte> SpellsToRemove = new List<byte> { 38, 40, 41, 33, 56 }; // Warp, Soft, Exit, Life, Life 2
-
 		public void ShuffleItemMagic(MT19337 rng)
 		{
 			//CastableItemTargeting(); // make items able to target a single enemy or party member
 
-			List<Blob> spellNames = Get(SpellNamesOffset, SpellNamesSize * SpellNamesCount).Chunk(SpellNamesSize);
-			var Spells = spellNames.Select((blob, i) => new MagicSpell // creat a list of all spells 
-			{
-				Data = null,
-				Index = (byte)i,
-				Name = FF1Text.TextToBytes(FF1Text.BytesToText(blob).PadRight(6), false, FF1Text.Delimiter.Empty),
-			}).ToList();
+			var Spells = GetSpells();
 
-			Spells.RemoveAll(spell => SpellsToRemove.Contains(spell.Index)); // Remove the spells specified in SpellsToRemove
+			// Remove out of battle only spells (spells where the effect is 0)
+			Spells.RemoveAll(spell => spell.Data[4] == 0);
+
+			//Spells.RemoveAll(spell => SpellsToRemove.Contains(spell.Index)); // Remove the spells specified in SpellsToRemove
 			Spells.Shuffle(rng); // Shuffle all spells remaining, then assign to each item that can cast a spell
 			foreach (var item in Spells.Zip(ItemLists.AllMagicItem, (s, i) => new { Spell = s, Item = i }))
 			{
+				Console.WriteLine(FF1Text.BytesToText(item.Spell.Name) + " -> " + item.Item);
 				WriteItemSpellData(item.Spell, item.Item);
 			}
 		}
@@ -60,15 +55,16 @@ namespace FF1Lib
 				Data[offset + 6] = 0xFF; // Erase final non-icon characters from name.
 			}
 
-			Debug.Assert(Spell.Name.Length == 6);
-			Put(offset, Spell.Name);
+			// Fix up the name of the spell so it works as part of an item name.
+			var fixedSpellName = FF1Text.TextToBytes(FF1Text.BytesToText(Spell.Name).PadRight(6), false, FF1Text.Delimiter.Empty);
+			Debug.Assert(fixedSpellName.Length == 6);
+			Put(offset, fixedSpellName);
 		}
 
 		public void CastableItemTargeting()
 		{
 			// update a lut with the correct location of a routine
 			Put(0x314E2, Blob.FromHex("EC9563"));
-
 
 			// see 0C_94F5_BatleSubMenu_MagicDrinkItem.asm for all changes
 			// This is only useful if Item Magic is shuffled since there are no single target spells on items in vanilla
