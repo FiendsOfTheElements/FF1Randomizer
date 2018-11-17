@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using RomUtilities;
 using System.Diagnostics;
 
@@ -21,7 +19,13 @@ namespace FF1Lib
 		private int ArmorStart = (byte)ItemLists.AllArmor.ElementAt(0);
 
 		// Remove all out of battle only spells
-		private readonly List<byte> SpellsToRemove = new List<byte> { 38, 40, 41, 33, 56 }; // Warp, Soft, Exit, Life, Life 2
+		private readonly List<Magic> OutOfBattleMagic = new List<Magic> {
+			Magic.WARP,
+			Magic.SOFT,
+			Magic.EXIT,
+			Magic.LIFE,
+			Magic.LIF2
+		};
 
 		public void ShuffleItemMagic(MT19337 rng)
 		{
@@ -35,6 +39,7 @@ namespace FF1Lib
 				Name = FF1Text.TextToBytes(FF1Text.BytesToText(blob).PadRight(6), false, FF1Text.Delimiter.Empty),
 			}).ToList();
 
+			var SpellsToRemove = OutOfBattleMagic.Select(magic => (byte)magic);
 			Spells.RemoveAll(spell => SpellsToRemove.Contains(spell.Index)); // Remove the spells specified in SpellsToRemove
 			Spells.Shuffle(rng); // Shuffle all spells remaining, then assign to each item that can cast a spell
 			foreach (var item in Spells.Zip(ItemLists.AllMagicItem, (s, i) => new { Spell = s, Item = i }))

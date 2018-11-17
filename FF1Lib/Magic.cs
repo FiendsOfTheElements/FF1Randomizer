@@ -1,12 +1,76 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using RomUtilities;
 
 namespace FF1Lib
 {
+	public enum Magic : byte
+	{
+		CURE = 0,
+		HARM,
+		FOG,
+		RUSE,
+		FIRE,
+		SLEP,
+		LOCK,
+		LIT,
+		LAMP,
+		MUTE,
+		ALIT,
+		INVS,
+		ICE,
+		DARK,
+		TMPR,
+		SLOW,
+		CUR2,
+		HRM2,
+		AFIR,
+		HEAL,
+		FIR2,
+		HOLD,
+		LIT2,
+		LOK2,
+		PURE,
+		FEAR,
+		AICE,
+		AMUT,
+		SLP2,
+		FAST,
+		CONF,
+		ICE2,
+		CUR3,
+		LIFE,
+		HRM3,
+		HEL2,
+		FIR3,
+		BANE,
+		WARP,
+		SLO2,
+		SOFT,
+		EXIT,
+		FOG2,
+		INV2,
+		LIT3,
+		RUB,
+		QAKE,
+		STUN,
+		CUR4,
+		HRM4,
+		ARUB,
+		HEL3,
+		ICE3,
+		BRAK,
+		SABR,
+		BLND,
+		LIF2,
+		FADE,
+		WALL,
+		XFER,
+		NUKE,
+		STOP,
+		ZAP,
+		XXXX
+	}
 	public partial class FF1Rom : NesRom
 	{
 		public const int MagicOffset = 0x301E0;
