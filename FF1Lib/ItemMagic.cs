@@ -25,7 +25,7 @@ namespace FF1Lib
 
 		public void ShuffleItemMagic(MT19337 rng)
 		{
-			CastableItemTargeting(); // make items able to target a single enemy or party member
+			//CastableItemTargeting(); // make items able to target a single enemy or party member
 
 			List<Blob> spellNames = Get(SpellNamesOffset, SpellNamesSize * SpellNamesCount).Chunk(SpellNamesSize);
 			var Spells = spellNames.Select((blob, i) => new MagicSpell // creat a list of all spells 

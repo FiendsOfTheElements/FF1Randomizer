@@ -91,6 +91,7 @@ namespace FF1Lib
 			DynamicWindowColor();
 			PermanentCaravan();
 			ShiftEarthOrbDown();
+			CastableItemTargeting();
 
 			TeleportShuffle teleporters = new TeleportShuffle();
 			var palettes = OverworldMap.GeneratePalettes(Get(OverworldMap.MapPaletteOffset, MapCount * OverworldMap.MapPaletteSize).Chunk(OverworldMap.MapPaletteSize));
