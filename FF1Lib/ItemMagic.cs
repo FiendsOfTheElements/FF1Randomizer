@@ -33,7 +33,6 @@ namespace FF1Lib
 			Spells.Shuffle(rng); // Shuffle all spells remaining, then assign to each item that can cast a spell
 			foreach (var item in Spells.Zip(ItemLists.AllMagicItem, (s, i) => new { Spell = s, Item = i }))
 			{
-				Console.WriteLine(FF1Text.BytesToText(item.Spell.Name) + " -> " + item.Item);
 				WriteItemSpellData(item.Spell, item.Item);
 			}
 		}
