@@ -9,6 +9,12 @@
 	<div><input type="file" id="fileInput" onchange="@OnFileChanged" /></div>
 	<button onclick="@OnRandomize">Randomize</button><br />
 	<div><input type="text" class="form-control" value="@Flags.EncodeFlagsText(MyFlags.Flags)" /></div><br />
+	Presets:
+	<a onclick="@(() => LoadPreset("default"))">Default</a>
+	<a onclick="@(() => LoadPreset("beginner"))">Beginner</a>
+	<a onclick="@(() => LoadPreset("full-npc"))">NPC Shuffle</a>
+	<a onclick="@(() => LoadPreset("improved-vanilla"))">Improved Vanilla</a>
+	<a onclick="@(() => LoadPreset("debug"))">DEBUG</a>
 	<BlazorNav IsTabs>
 		<BlazorNavLink onclick="@(() => ActivateTab("Shuffle"))" IsActive="@(activeTab == "Shuffle")">Shuffle</BlazorNavLink>
 		<BlazorNavLink onclick="@(() => ActivateTab("Treasures"))" IsActive="@(activeTab == "Treasures")">Treasures</BlazorNavLink>
@@ -289,8 +295,13 @@
 	{
 		MyFlags.PropertyChanged += (sender, args) => StateHasChanged();
 
-		var defaultJson = await Http.GetStringAsync("presets/default.json");
-		MyFlags.Flags = Microsoft.JSInterop.Json.Deserialize<Flags.Preset>(defaultJson).Flags;
+		await LoadPreset("default");
+	}
+
+	async Task LoadPreset(string presetName)
+	{
+		var presetJson = await Http.GetStringAsync($"presets/{presetName}.json");
+		MyFlags.Flags = Microsoft.JSInterop.Json.Deserialize<Flags.Preset>(presetJson).Flags;
 	}
 
 	async Task OnFileChanged(UIChangeEventArgs e)
