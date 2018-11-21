@@ -1,5 +1,5 @@
 ﻿{
-	"Name": "Default",
+	"Name": "Beginner",
 
 	"Flags": {
 
@@ -33,15 +33,15 @@
 		"RandomTrapFormations": false,
 
 		"EnemyScripts": false,
-		"EnemySkillsSpells": true,
-		"EnemyStatusAttacks": true,
+		"EnemySkillsSpells": false,
+		"EnemyStatusAttacks": false,
 		"AllowUnsafePirates": false,
 
-		"WarMECHMode": 1,
-		"OrdealsPillars": true,
+		"WarMECHMode": 0,
+		"OrdealsPillars": false,
 		"SkyCastle4FTeleporters": false,
 		"TitansTrove": true,
-		"ConfusedOldMen": true,
+		"ConfusedOldMen": false,
 		"AllowUnsafeMelmond": false,
 
 		"MapOpenProgression": false,
@@ -54,21 +54,21 @@
 		"IncentivizeFreeNPCs": true,
 		"IncentivizeFetchNPCs": false,
 		"IncentivizeTail": true,
-		"IncentivizeFetchItems": true,
+		"IncentivizeFetchItems": false,
 
 		"IncentivizeMarsh": true,
 		"IncentivizeEarth": true,
 		"IncentivizeVolcano": false,
 		"IncentivizeIceCave": true,
 		"IncentivizeOrdeals": true,
-		"IncentivizeSeaShrine": false,
+		"IncentivizeSeaShrine": true,
 
 		"IncentivizeConeria": true,
 		"IncentivizeMarshKeyLocked": false,
-		"IncentivizeSkyPalace": false,
+		"IncentivizeSkyPalace": true,
 
 		"IncentivizeMasamune": true,
-		"IncentivizeOpal": true,
+		"IncentivizeOpal": false,
 		"IncentivizeRibbon": true,
 		"IncentivizeRibbon2": false,
 		"Incentivize65K": false,
@@ -86,7 +86,7 @@
 		"CrownlessOrdeals": true,
 		"OnlyRequireGameIsBeatable": false,
 
-		"FreeBridge": false,
+		"FreeBridge": true,
 		"FreeAirship": false,
 		"FreeOrbs": false,
 		"StartingGold": false,
@@ -119,11 +119,11 @@
 		"ClampMinimumStatScale": false,
 		"ClampMinimumBossStatScale": false,
 		"ClampMinimumPriceScale": false,
-		"EnemyScaleFactor": 1.5,
-		"BossScaleFactor": 1.5,
-		"PriceScaleFactor": 3.0,
-		"ExpMultiplier": 2.5,
-		"ExpBonus": 250,
+		"EnemyScaleFactor": 1.3,
+		"BossScaleFactor": 1.3,
+		"PriceScaleFactor": 2.0,
+		"ExpMultiplier": 3.0,
+		"ExpBonus": 300,
 		"ProgressiveScaleMode": 0,
 		"EncounterRate": 30.0,
 		"DungeonEncounterRate": 30.0,
