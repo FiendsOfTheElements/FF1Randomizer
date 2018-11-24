@@ -372,6 +372,11 @@ namespace FF1Lib
 				EnableFreeCanal();
 			}
 
+			if (flags.HousesFillHp)
+			{
+				EnableHousesFillHp();
+			}
+
 			if (flags.NoPartyShuffle)
 			{
 				DisablePartyShuffle();

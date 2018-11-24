@@ -22,29 +22,29 @@ namespace FF1Lib
 		private const int INCENTIVES_ITEMS2 = 11;
 		private const int ITEM_REQUIREMENTS = 12;
 		private const int FILTHY_CASUALS = 13;
-		private const int CONVENIENCES = 14;
-		private const int BUG_FIXES = 15;
-		private const int ENEMY_BUG_FIXES = 16;
-		private const int SCALE = 17;
-		private const int ENEMY_SCALE_FACTOR = 18;
-		private const int PRICE_SCALE_FACTOR = 19;
-		private const int EXP_MULTIPLIER = 20;
-		private const int EXP_BONUS = 21;
-		private const int ENCOUNTER_RATE = 22;
-		private const int PARTY_1 = 23;
-		private const int PROGRESSIVE_SCALE = 24;
-		private const int DUNGEON_ENCOUNTER_RATE = 25;
-		private const int BOSS_SCALE_FACTOR = 26;
-		private const int PARTY_2 = 27;
-		private const int PARTY_3 = 28;
-		private const int PARTY_4 = 29;
-		private const int PARTY_EXTRA = 30;
-		private const int PARTY_EXTRA2 = 31;
-		private const int SCALE_CLAMPING = 32;
-		private const int PROCEDURAL_GENERATION = 33;
-		private const int FORMATION = 34;
-		private const int WEALTH = 35;
-
+		private const int MORE_FILTHY_CASUALS = 14;
+		private const int CONVENIENCES = 15;
+		private const int BUG_FIXES = 16;
+		private const int ENEMY_BUG_FIXES = 17;
+		private const int SCALE = 18;
+		private const int ENEMY_SCALE_FACTOR = 19;
+		private const int PRICE_SCALE_FACTOR = 20;
+		private const int EXP_MULTIPLIER = 21;
+		private const int EXP_BONUS = 22;
+		private const int ENCOUNTER_RATE = 23;
+		private const int PARTY_1 = 24;
+		private const int PROGRESSIVE_SCALE = 25;
+		private const int DUNGEON_ENCOUNTER_RATE = 26;
+		private const int BOSS_SCALE_FACTOR = 27;
+		private const int PARTY_2 = 28;
+		private const int PARTY_3 = 29;
+		private const int PARTY_4 = 30;
+		private const int PARTY_EXTRA = 31;
+		private const int PARTY_EXTRA2 = 32;
+		private const int SCALE_CLAMPING = 33;
+		private const int PROCEDURAL_GENERATION = 34;
+		private const int FORMATION = 35;
+		private const int WEALTH = 36;
 
 		[FlagString(Character = ITEMS, FlagBit = 1)]
 		public bool Shops { get; set; }
@@ -213,6 +213,9 @@ namespace FF1Lib
 		public bool FreeCanal { get; set; }
 		[FlagString(Character = FILTHY_CASUALS, FlagBit = 32)]
 		public bool EasyMode { get; set; }
+
+		[FlagString(Character = MORE_FILTHY_CASUALS, FlagBit = 1)]
+		public bool HousesFillHp { get; set; }
 
 		[FlagString(Character = CONVENIENCES, FlagBit = 1)]
 		public bool SpeedHacks { get; set; }
