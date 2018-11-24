@@ -22,15 +22,12 @@ namespace FF1Lib
 
 		public void ShuffleItemMagic(MT19337 rng)
 		{
-			//CastableItemTargeting(); // make items able to target a single enemy or party member
-
 			var Spells = GetSpells();
 
 			// Remove out of battle only spells (spells where the effect is 0)
 			Spells.RemoveAll(spell => spell.Data[4] == 0);
-
-			//Spells.RemoveAll(spell => SpellsToRemove.Contains(spell.Index)); // Remove the spells specified in SpellsToRemove
 			Spells.Shuffle(rng); // Shuffle all spells remaining, then assign to each item that can cast a spell
+
 			foreach (var item in Spells.Zip(ItemLists.AllMagicItem, (s, i) => new { Spell = s, Item = i }))
 			{
 				WriteItemSpellData(item.Spell, item.Item);
