@@ -44,7 +44,7 @@ namespace FF1Lib
 		private const int PROCEDURAL_GENERATION = 33;
 		private const int FORMATION = 34;
 		private const int WEALTH = 35;
-
+		private const int MORE_FILTHY_CASUALS = 36;
 
 		[FlagString(Character = ITEMS, FlagBit = 1)]
 		public bool Shops { get; set; }
@@ -213,6 +213,9 @@ namespace FF1Lib
 		public bool FreeCanal { get; set; }
 		[FlagString(Character = FILTHY_CASUALS, FlagBit = 32)]
 		public bool EasyMode { get; set; }
+
+		[FlagString(Character = MORE_FILTHY_CASUALS, FlagBit = 1)]
+		public bool HousesFillHp { get; set; }
 
 		[FlagString(Character = CONVENIENCES, FlagBit = 1)]
 		public bool SpeedHacks { get; set; }
