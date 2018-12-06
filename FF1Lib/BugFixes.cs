@@ -81,6 +81,11 @@ namespace FF1Lib
 			Put(0x3AF13, Blob.FromHex("CC")); // update address for Cure4 routine
 		}
 
+		public void RebalanceSpells()
+		{
+			PutInBank(0x0C, 0xBA46, Blob.FromHex("2029B9AD856838ED7468B002A9008D85682085B860EAEAEAEAEAEAEAEAEAEAEAEAEA"));
+		}
+
 		public void FixEnemyStatusAttackBug()
 		{
 			Put(0x32812, Blob.FromHex("DF")); // This is the craziest freaking patch ever, man.
@@ -111,14 +116,6 @@ namespace FF1Lib
 			Put(0x33568, Blob.FromHex("EAEAEAEAEAEAEAEA"));
 		}
 
-		public void FixVanillaRibbon(Blob[] texts)
-		{
-			if (texts[(int)Item.Ribbon].Length > 8)
-			{
-				texts[(int)Item.Ribbon][7] = 0x00;
-			}
-		}
-
 		public void TameExitAndWarpBoss()
 		{
 			// See 0E_9C54_ExitBoss.asm for this
@@ -132,6 +129,11 @@ namespace FF1Lib
 			Put(0x3B0F7, Blob.FromHex("EAEAEAEAEA20549C")); // Exit
 			Put(0x38AB3, Blob.FromHex("95B237C5FF972E5D4B26B7C5FF9EB61A1C3005B6B3A84E1B2EA8BB5BC40599B8B6ABFF8BFF2820A53521")); // Text
 			Put(0x38BAA, Blob.FromHex("95B2B6B7C5FF97B2FFBAA4BCFFB2B8B7C5059EB6A8FFB7ABACB605B6B3A8AFAFFFB7B2FFA8BBACB7C4FF99B8B6ABFF8BFFB7B2FFA4A5B2B5B7"));
+		}
+
+		public void RemakeStyleMasterMDEF()
+		{
+			Put(0x2DDE8, Blob.FromHex("030203020202030204020202"));
 		}
 	}
 }

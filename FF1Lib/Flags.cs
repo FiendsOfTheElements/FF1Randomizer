@@ -44,7 +44,7 @@ namespace FF1Lib
 		private const int PROCEDURAL_GENERATION = 33;
 		private const int FORMATION = 34;
 		private const int WEALTH = 35;
-
+		private const int MORE_FILTHY_CASUALS = 36;
 
 		[FlagString(Character = ITEMS, FlagBit = 1)]
 		public bool Shops { get; set; }
@@ -80,6 +80,8 @@ namespace FF1Lib
 		public bool MagicPermissions { get; set; }
 		[FlagString(Character = MAGIC, FlagBit = 8)]
 		public bool ItemMagic { get; set; }
+		[FlagString(Character = MAGIC, FlagBit = 16)]
+		public bool RebalanceSpells { get; set; }
 
 		[FlagString(Character = ENCOUNTERS, FlagBit = 1)]
 		public bool Rng { get; set; }
@@ -135,6 +137,10 @@ namespace FF1Lib
 		public bool IncentivizeTail { get; set; }
 		[FlagString(Character = INCENTIVES_MAIN, FlagBit = 8)]
 		public bool IncentivizeFetchItems { get; set; }
+		[FlagString(Character = INCENTIVES_MAIN, FlagBit = 16)]
+		public bool AllowObsoleteVehicles { get; set; }
+		[FlagString(Character = INCENTIVES_MAIN, FlagBit = 32)]
+		public bool IncentivizeShipAndCanal { get; set; }
 
 		[FlagString(Character = INCENTIVES_CHESTS1, FlagBit = 1)]
 		public bool IncentivizeMarsh { get; set; }
@@ -155,6 +161,8 @@ namespace FF1Lib
 		public bool IncentivizeMarshKeyLocked { get; set; }
 		[FlagString(Character = INCENTIVES_CHESTS2, FlagBit = 4)]
 		public bool IncentivizeSkyPalace { get; set; }
+		[FlagString(Character = INCENTIVES_CHESTS2, FlagBit = 8)]
+		public bool IncentivizeTitansTrove { get; set; }
 
 		[FlagString(Character = INCENTIVES_ITEMS1, FlagBit = 1)]
 		public bool IncentivizeMasamune { get; set; }
@@ -201,8 +209,13 @@ namespace FF1Lib
 		public bool FreeOrbs { get; set; }
 		[FlagString(Character = FILTHY_CASUALS, FlagBit = 8)]
 		public bool EnableCritNumberDisplay { get; set; }
+		[FlagString(Character = FILTHY_CASUALS, FlagBit = 16)]
+		public bool FreeCanal { get; set; }
 		[FlagString(Character = FILTHY_CASUALS, FlagBit = 32)]
 		public bool EasyMode { get; set; }
+
+		[FlagString(Character = MORE_FILTHY_CASUALS, FlagBit = 1)]
+		public bool HousesFillHp { get; set; }
 
 		[FlagString(Character = CONVENIENCES, FlagBit = 1)]
 		public bool SpeedHacks { get; set; }
@@ -227,6 +240,8 @@ namespace FF1Lib
 		public bool SpellBugs { get; set; }
 		[FlagString(Character = BUG_FIXES, FlagBit = 16)]
 		public bool BlackBeltAbsorb { get; set; }
+		[FlagString(Character = BUG_FIXES, FlagBit = 32)]
+		public bool BlackBeltMDEF { get; set; }
 
 		[FlagString(Character = ENEMY_BUG_FIXES, FlagBit = 1)]
 		public bool EnemyStatusAttackBug { get; set; }
@@ -385,7 +400,7 @@ namespace FF1Lib
 		public bool IncentivizeFloater => !FreeAirship;
 		public bool IncentivizeBridge => false;
 		public bool IncentivizeLute => !ShortToFR;
-		public bool IncentivizeShip => !MapOpenProgression || IncentivizeFetchItems;
+		public bool IncentivizeShip => IncentivizeShipAndCanal;
 		public bool IncentivizeRod => true;
 		public bool IncentivizeCanoe => true;
 		public bool IncentivizeCube => true;
@@ -393,7 +408,7 @@ namespace FF1Lib
 		public bool IncentivizeCrystal => IncentivizeFetchItems;
 		public bool IncentivizeHerb => IncentivizeFetchItems;
 		public bool IncentivizeKey => true;
-		public bool IncentivizeCanal => !NPCItems || IncentivizeFetchItems; // If Canoe is unshuffled then Canal is Required
+		public bool IncentivizeCanal => (!NPCItems || IncentivizeShipAndCanal) && !FreeCanal; // If Canoe is unshuffled then Canal is Required
 		public bool IncentivizeChime => true;
 		public bool IncentivizeOxyale => true;
 		public bool IncentivizeXcalber => false;
@@ -493,7 +508,7 @@ namespace FF1Lib
 			return result;
 		}
 
-		private class Preset
+		public class Preset
 		{
 			public string Name { get; set; }
 			public Flags Flags { get; set; }

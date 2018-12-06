@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using RomUtilities;
@@ -8,9 +9,13 @@ namespace FF1Lib
 {
 	public enum MusicShuffle
 	{
+		[Description("No Music Shuffle")]
 		None = 0,
+		[Description("Standard Music Shuffle")]
 		Standard,
+		[Description("Nonsensical Music Shuffle")]
 		Nonsensical,
+		[Description("Disable Music")]
 		MusicDisabled
 	}
 
@@ -27,25 +32,25 @@ namespace FF1Lib
 	    {
 		    var enemyText = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
 
-		    enemyText[1] = FF1Text.TextToBytes("GrUMP", useDTE: false);
-		    enemyText[2] = FF1Text.TextToBytes("RURURU", useDTE: false); // +2
-		    enemyText[3] = FF1Text.TextToBytes("GrrrWOLF", useDTE: false); // +2
-		    enemyText[28] = FF1Text.TextToBytes("GeORGE", useDTE: false);
-		    enemyText[30] = FF1Text.TextToBytes("R.SNEK", useDTE: false); // +3
-		    enemyText[31] = FF1Text.TextToBytes("GrSNEK", useDTE: false); // +1
-		    enemyText[32] = FF1Text.TextToBytes("SeaSNEK", useDTE: false); // -1
-		    enemyText[40] = FF1Text.TextToBytes("iMAGE", useDTE: false);
-		    enemyText[56] = FF1Text.TextToBytes("EXPEDE", useDTE: false); // +2
-		    enemyText[66] = FF1Text.TextToBytes("White D", useDTE: false);
-		    enemyText[72] = FF1Text.TextToBytes("MtlSLIME", useDTE: false); // +3
+		    enemyText[1] = "GrUMP";
+		    enemyText[2] = "RURURU"; // +2
+		    enemyText[3] = "GrrrWOLF"; // +2
+		    enemyText[28] = "GeORGE";
+		    enemyText[30] = "R.SNEK"; // +3
+		    enemyText[31] = "GrSNEK"; // +1
+		    enemyText[32] = "SeaSNEK"; // -1
+		    enemyText[40] = "iMAGE";
+		    enemyText[56] = "EXPEDE"; // +2
+		    enemyText[66] = "White D";
+		    enemyText[72] = "MtlSLIME"; // +3
 		    if (teamSteak)
 		    {
-			    enemyText[85] = FF1Text.TextToBytes("STEAK", useDTE: false); // +1
-			    enemyText[86] = FF1Text.TextToBytes("T.BONE", useDTE: false); // +1
+			    enemyText[85] = "STEAK"; // +1
+			    enemyText[86] = "T.BONE"; // +1
 		    }
-			enemyText[92] = FF1Text.TextToBytes("NACHO", useDTE: false); // -1
-		    enemyText[106] = FF1Text.TextToBytes("Green D", useDTE: false); // +2
-		    enemyText[111] = FF1Text.TextToBytes("OKAYMAN", useDTE: false); // +1
+			enemyText[92] = "NACHO"; // -1
+		    enemyText[106] = "Green D"; // +2
+		    enemyText[111] = "OKAYMAN"; // +1
 
 			// Moving IMP and GrIMP gives me another 10 bytes, for a total of 19 extra bytes, of which I'm using 16.
 			var enemyTextPart1 = enemyText.Take(2).ToArray();

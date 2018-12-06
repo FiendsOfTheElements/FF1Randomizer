@@ -7,6 +7,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using FF1Lib.Assembly;
 
 namespace FF1Lib
 {
@@ -90,6 +91,7 @@ namespace FF1Lib
 			DynamicWindowColor();
 			PermanentCaravan();
 			ShiftEarthOrbDown();
+			CastableItemTargeting();
 
 			TeleportShuffle teleporters = new TeleportShuffle();
 			var palettes = OverworldMap.GeneratePalettes(Get(OverworldMap.MapPaletteOffset, MapCount * OverworldMap.MapPaletteSize).Chunk(OverworldMap.MapPaletteSize));
@@ -162,6 +164,11 @@ namespace FF1Lib
 			if (flags.SpellBugs)
 			{
 				FixSpellBugs();
+			}
+
+			if (flags.RebalanceSpells)
+			{
+				RebalanceSpells();
 			}
 
 			if (flags.EnemySpellsTargetingAllies)
@@ -360,6 +367,16 @@ namespace FF1Lib
 				EnableFreeOrbs();
 			}
 
+			if (flags.FreeCanal)
+			{
+				EnableFreeCanal();
+			}
+
+			if (flags.HousesFillHp)
+			{
+				EnableHousesFillHp();
+			}
+
 			if (flags.NoPartyShuffle)
 			{
 				DisablePartyShuffle();
@@ -425,6 +442,11 @@ namespace FF1Lib
 				FixBBAbsorbBug();
 			}
 
+			if (flags.BlackBeltMDEF)
+			{
+				RemakeStyleMasterMDEF();
+			}
+
 			if (flags.ImproveTurnOrderRandomization)
 			{
 				ImproveTurnOrderRandomization(rng);
@@ -441,8 +463,8 @@ namespace FF1Lib
 			}
 
 			var itemText = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
-			// var dialogueText = ReadText(DialogueTextPointerOffset, DialogueTextPointerBase, DialogueTextPointerCount);
-			FixVanillaRibbon(itemText);
+			itemText[(int)Item.Ribbon].Trim();
+
 			ExpGoldBoost(flags.ExpBonus, flags.ExpMultiplier);
 			ScalePrices(flags, itemText, rng, flags.ClampMinimumPriceScale, shopItemLocation);
 			ScaleEncounterRate(flags.EncounterRate / 30.0, flags.DungeonEncounterRate / 30.0);
@@ -451,7 +473,6 @@ namespace FF1Lib
 			WriteMaps(maps);
 
 			WriteText(itemText, ItemTextPointerOffset, ItemTextPointerBase, ItemTextOffset, UnusedGoldItems);
-			// WriteText(dialogueText, DialogueTextPointerOffset, DialogueTextPointerBase, DialogueTextOffset);
 
 			if (flags.EnemyScaleFactor > 1)
 			{
@@ -807,6 +828,12 @@ namespace FF1Lib
 			Array.Copy(Data, newData, 0x3C000);
 			Array.Copy(Data, 0x3C000, newData, 0x7C000, 0x4000);
 			Data = newData;
+
+			// Update symbol info
+			BA.MemoryMode = MemoryMode.MMC3;
+
+			// Change all 0F labels to be in 1F.
+			Symbols.AsDictionaries.Labels = Symbols.AsDictionaries.Labels.Where(entry => entry.Value.Bank == 0x0F).ToDictionary(entry => entry.Key, entry => new BA(0x1F, entry.Value.Addr));
 
 			// Change bank swap code.
 			// We put this code at SwapPRG_L, so we don't have to move any of the "long" calls to it.

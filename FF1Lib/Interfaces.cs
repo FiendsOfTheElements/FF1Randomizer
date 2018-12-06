@@ -23,6 +23,7 @@
 		bool IncentivizeMarsh { get; }
 		bool IncentivizeMarshKeyLocked { get; }
 		bool IncentivizeSkyPalace { get; }
+		bool IncentivizeTitansTrove { get; }
 		bool IncentivizeEarth { get; }
 		bool IncentivizeSeaShrine { get; }
 
@@ -69,8 +70,7 @@
 	}
 	public interface IItemPlacementFlags : IItemShuffleFlags, IVictoryConditionFlags
 	{
-		bool FreeBridge { get; }
-		bool FreeAirship { get; }
+		bool AllowObsoleteVehicles { get; }
 		bool MapCanalBridge { get; }
 		bool MapConeriaDwarves { get; }
 		bool MapVolcanoIceRiver { get; }
@@ -109,5 +109,8 @@
 		bool OnlyRequireGameIsBeatable { get; }
 		bool ShardHunt { get; }
 		bool ShortToFR { get; }
+		bool FreeBridge { get; }
+		bool FreeAirship { get; }
+		bool FreeCanal { get; }
 	}
 }

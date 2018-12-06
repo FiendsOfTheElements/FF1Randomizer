@@ -131,8 +131,8 @@ var app = new Vue({
 					var mode = presetFlags[key];
 					this.WarMECHMode =
 						mode == "Vanilla" ? 0 :
-							mode == "Wandering4F" ? 1 :
-								mode == "BridgeOfDestiny" ? 3 : 0;
+							mode == "Patrolling" ? 1 :
+								mode == "Required" ? 3 : 0;
 				}
 				else if (this[key] !== true && this[key] !== false) {
 					this[key] = presetFlags[key];
@@ -177,10 +177,10 @@ var app = new Vue({
 			incentiveItemCount += 1 * ((!this.NPCFetchItems || this.IncentivizeFetchItems) && this.NPCItems);
 
 			//Canal
-			incentiveItemCount += 1 * (!this.NPCItems || this.IncentivizeFetchItems);
+			incentiveItemCount += 1 * (this.NPCItems && this.NPCFetchItems && this.IncentivizeShipAndCanal);
 
 			//Ship
-			incentiveItemCount += 1 * ((!this.MapOpenProgression || this.IncentivizeFetchItems) && this.NPCItems);
+			incentiveItemCount += 1 * (this.IncentivizeShipAndCanal && this.NPCItems);
 
 			//TNT
 			incentiveItemCount += 1 * ((!this.NPCFetchItems && !this.NPCItems) || this.IncentivizeFetchItems);
@@ -191,7 +191,7 @@ var app = new Vue({
 			return incentiveItemCount;
 		},
 		getCountIncentivizedLocations: function () {
-			return this.IncentivizeIceCave + this.IncentivizeOrdeals + this.IncentivizeMarsh + this.IncentivizeEarth +
+			return this.IncentivizeIceCave + this.IncentivizeOrdeals + this.IncentivizeMarsh + this.IncentivizeEarth + this.IncentivizeTitansTrove + 
 				this.IncentivizeVolcano + this.IncentivizeSeaShrine + this.IncentivizeSkyPalace + this.IncentivizeConeria +
 				this.IncentivizeMarshKeyLocked + 7 * (this.IncentivizeFreeNPCs * this.NPCItems + this.IncentivizeFetchNPCs * this.NPCFetchItems);
 		}

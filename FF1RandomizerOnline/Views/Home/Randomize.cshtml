@@ -21,7 +21,7 @@
 					<div class="col-xs-12"><label for="Flags">Flags</label></div>
 				</div>
 				<div class="row">
-					<div class="col-xs-7" v-bind:class="{ 'has-error': flagError }"><input class="form-control" v-model="FlagsInput" type="text" asp-for="FlagsInput" id="Flags" /></div>
+					<div class="col-xs-8" v-bind:class="{ 'has-error': flagError }"><input class="form-control" v-model="FlagsInput" type="text" asp-for="FlagsInput" id="Flags" /></div>
 					<div class="col-xs-4"><input class="btn btn-default" type="button" value="Import / Export" v-on:click="importSeedFlags();" /></div>
 				</div>
 			</div>
@@ -34,9 +34,7 @@
 				<a v-on:click.prevent="preset('Default')">Defaults</a>,
 				<a v-on:click.prevent="preset('Improved Vanilla')">Improved Vanilla</a>,
 				<a v-on:click.prevent="preset('Beginner')">Beginner</a>,
-				<a v-on:click.prevent="preset('Full NPC')">NPC Shuffle</a>,
-				<a v-on:click.prevent="preset('Swiss Style')">Swiss Style</a>,
-				<a v-on:click.prevent="preset('Playoff Style')">Playoff Style</a>
+				<a v-on:click.prevent="preset('Full NPC')">Advanced NPC Shuffle</a>
 			</div>
 		</div>
 		<ul class="section nav nav-pills">
@@ -50,9 +48,9 @@
 			<li><a href="#bug-fixes" data-toggle="tab">Bug Fixes</a></li>
 			<li><a href="#fun" data-toggle="tab">Fun %</a></li>
 		</ul>
-		<div class="tab-content clearfix" style="height: 500px">
+		<div class="tab-content clearfix" style="min-height: 500px">
 			<div class="section tab-pane active" id="shuffle">
-				<div class="col-xs-4">
+				<div class="col-md-4">
 					<div class="checkbox-cell"><input v-model="Shops" type="checkbox" asp-for="Flags.Shops" /> <label asp-for="Flags.Shops"></label></div>
 					<div class="checkbox-cell" title="All weapons and armor for sale are random unincentivized items of that type, except caster items and elite gear."><input class="indent" v-model="RandomWares" :disabled="!Shops" type="checkbox" asp-for="Flags.RandomWares" /> <label :style="!Shops ? { color: 'grey'} : {}" asp-for="Flags.RandomWares">Random Weapons and Armor</label></div>
 					<div class="checkbox-cell" title="Random Shops can now stock any caster item or piece of elite gear. See What's New for the full list."><input class="indent" v-model="RandomWaresIncludesSpecialGear" :disabled="!Shops || !RandomWares" type="checkbox" asp-for="Flags.RandomWaresIncludesSpecialGear" /> <label :style="!Shops ? { color: 'grey'} : {}" asp-for="Flags.RandomWaresIncludesSpecialGear">Including Caster Items and Elite Gear</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">New!</a>)</small></div>
@@ -63,7 +61,7 @@
 					<div class="checkbox-cell" title="Shuffle Class Weapon Permissions."><input v-model="WeaponPermissions" type="checkbox" asp-for="Flags.WeaponPermissions" /> <label asp-for="Flags.WeaponPermissions">Class Weapon Permissions</label></div>
 					<div class="checkbox-cell" title="Shuffle Class Armor Permissions."><input v-model="ArmorPermissions" type="checkbox" asp-for="Flags.ArmorPermissions" /> <label asp-for="Flags.ArmorPermissions">Class Armor Permissions</label></div>
 				</div>
-				<div class="col-xs-4">
+				<div class="col-md-4">
 					<div class="checkbox-cell"><input v-model="EnemyScripts" type="checkbox" asp-for="Flags.EnemyScripts" /> <label asp-for="Flags.EnemyScripts">Enemy Scripts</label></div>
 					<div class="checkbox-cell"><input v-model="AllowUnsafePirates" :disabled="!EnemyScripts" class="indent" type="checkbox" asp-for="Flags.AllowUnsafePirates" /> <label :style="!EnemyScripts ? { color: 'grey'} : {}" asp-for="Flags.AllowUnsafePirates">Allow Unsafe Pirates <b v-if="AllowUnsafePirates" title="Risks 9 Pirates with THUNDER, etc. blocking early progression" style="color:orange">⚠</b></label></div>
 					<div class="checkbox-cell"><input v-model="EnemySkillsSpells" type="checkbox" asp-for="Flags.EnemySkillsSpells" /> <label asp-for="Flags.EnemySkillsSpells">Enemy Skills/Spells</label></div>
@@ -85,7 +83,7 @@
 				</div>
 			</div>
 			<div class="section tab-pane col-xs-12" id="treasures">
-				<div class="col-xs-4">
+				<div class="col-md-4">
 					<h4>Items Shuffle</h4>
 					<div class="col-xs-12">
 						<div class="checkbox-cell" title="Number of Incentive Items"> <b>Estimated Loose Incentive Items = {{getCountIncentivizedItems() - getCountIncentivizedLocations()}} </b></div>
@@ -103,11 +101,12 @@
 							</span>
 						</div>
 						<div class="checkbox-cell" title="If unchecked, forces vanilla Bridge, Lute, Ship, Rod, Canoe, Cube, Bottle"><input v-model="NPCItems" type="checkbox" asp-for="Flags.NPCItems" /> <label asp-for="Flags.NPCItems">Main NPC Items</label></div>
+						<div class="checkbox-cell" title="If unchecked, forces the Bridge, Ship, and Canal to be located in the initial continent."><input :disabled="!Treasures || !NPCItems" class="indent" v-model="AllowObsoleteVehicles" type="checkbox" asp-for="Flags.AllowObsoleteVehicles" /> <label asp-for="Flags.AllowObsoleteVehicles">Allow Obsolete Progression</label></div>
 						<div class="checkbox-cell" title="If unchecked, forces vanilla Crystal, Herb, Key, Canal, Oxyale, Chime, Xcalber"><input v-model="NPCFetchItems" type="checkbox" asp-for="Flags.NPCFetchItems" /> <label asp-for="Flags.NPCFetchItems">Fetch Quest Rewards</label></div>
 						<div class="checkbox-cell" title="Shuffle the locations of Bahamut, Dr. Unne, and the Elf Doctor."><input v-model="ShuffleObjectiveNPCs" type="checkbox" asp-for="Flags.ShuffleObjectiveNPCs" /> <label asp-for="Flags.ShuffleObjectiveNPCs">Objective NPCs</label></div>
 					</div>
 				</div>
-				<div class="col-xs-4" style="border-left: 1px solid black;" :style="!Treasures ? { color: 'grey'} : {}">
+				<div class="col-md-4" style="border-left: 1px solid black;" :style="!Treasures ? { color: 'grey'} : {}">
 					<h4>Incentivized Locations</h4>
 					<div class="col-xs-12">
 						<div class="checkbox-cell" title="Number of Incentive Locations"> <b>Number of Incentive Locations = {{getCountIncentivizedLocations()}} </b></div>
@@ -117,26 +116,24 @@
 						<div class="checkbox-cell" title="Floater chest"><input v-model="IncentivizeIceCave" :disabled="!Treasures" type="checkbox" asp-for="Flags.IncentivizeIceCave" /> <label asp-for="Flags.IncentivizeIceCave">Ice Cave</label></div>
 						<div class="checkbox-cell" title="Tail chest"><input v-model="IncentivizeOrdeals" :disabled="!Treasures" type="checkbox" asp-for="Flags.IncentivizeOrdeals" /> <label asp-for="Flags.IncentivizeOrdeals">Ordeals</label></div>
 						<div class="checkbox-cell" title="Crown chest"><input v-model="IncentivizeMarsh" :disabled="!Treasures" type="checkbox" asp-for="Flags.IncentivizeMarsh" /> <label asp-for="Flags.IncentivizeMarsh">Marsh Cave</label></div>
-						<div class="checkbox-cell"></div>
 						<div class="checkbox-cell" title="Ruby chest (behind Vampire)"><input v-model="IncentivizeEarth" :disabled="!Treasures" type="checkbox" asp-for="Flags.IncentivizeEarth" /> <label asp-for="Flags.IncentivizeEarth">Earth Cave</label></div>
 						<div class="checkbox-cell" title="Last Floor West (Red D)"><input v-model="IncentivizeVolcano" :disabled="!Treasures" type="checkbox" asp-for="Flags.IncentivizeVolcano" /> <label asp-for="Flags.IncentivizeVolcano">Volcano</label></div>
 						<div class="checkbox-cell" title="Slab chest"><input v-model="IncentivizeSeaShrine" :disabled="!Treasures" type="checkbox" asp-for="Flags.IncentivizeSeaShrine" /> <label asp-for="Flags.IncentivizeSeaShrine">Sea Shrine</label></div>
 						<div class="checkbox-cell" title="Adamant chest"><input v-model="IncentivizeSkyPalace" :disabled="!Treasures" type="checkbox" asp-for="Flags.IncentivizeSkyPalace" /> <label asp-for="Flags.IncentivizeSkyPalace">Sky Palace</label></div>
+						<div class="checkbox-cell" title="Titan's Trove Far Left Chest"><input v-model="IncentivizeTitansTrove" :disabled="!Treasures" type="checkbox" asp-for="Flags.IncentivizeTitansTrove" /> <label asp-for="Flags.IncentivizeTitansTrove">Titan's Trove</label></div>
 						<div class="checkbox-cell"></div>
 						<div class="checkbox-cell" title="TNT chest"><input v-model="IncentivizeConeria" :disabled="!Treasures" type="checkbox" asp-for="Flags.IncentivizeConeria" /> <label asp-for="Flags.IncentivizeConeria">Coneria (locked)</label></div>
 						<div class="checkbox-cell" title="Bottom Floor South East"><input v-model="IncentivizeMarshKeyLocked" :disabled="!Treasures" type="checkbox" asp-for="Flags.IncentivizeMarshKeyLocked" /> <label asp-for="Flags.IncentivizeMarshKeyLocked">Marsh (locked)</label></div>
 					</div>
 				</div>
-				<div class="col-xs-4" style="border-left: 1px solid black;" :style="!Treasures ? { color: 'grey'} : {}">
+				<div class="col-md-4" style="border-left: 1px solid black;" :style="!Treasures ? { color: 'grey'} : {}">
 					<h4>Incentivized Items</h4>
 					<div class="col-xs-12">
-						<div>
-							Any Required Item being Shuffled will be included in the incentive pool by default. Add additional items below:
-						</div>
-						<br />
 						<div class="checkbox-cell" title="Number of Incentive Items"> <b>Number of Incentive Items = {{getCountIncentivizedItems()}} </b></div>
+						<div> Any Required Item being Shuffled will be included by default.  </div> <br />
 						<div class="checkbox-cell"><input v-model="IncentivizeTail" :disabled="!Treasures" type="checkbox" asp-for="Flags.IncentivizeTail" /> <label asp-for="Flags.IncentivizeTail">Tail</label></div>
 						<div class="checkbox-cell" title="Other non-required quest items that are shuffled such as Ruby, Adamant, Crystal, TNT, Herb, etc."><input v-model="IncentivizeFetchItems" :disabled="!Treasures" type="checkbox" asp-for="Flags.IncentivizeFetchItems" /> <label asp-for="Flags.IncentivizeFetchItems">Other Quest Items</label></div>
+						<div class="checkbox-cell" title="Guarantee Ship and Canal if they're shuffled."><input v-model="IncentivizeShipAndCanal" :disabled="!Treasures" type="checkbox" asp-for="Flags.IncentivizeShipAndCanal" /> <label asp-for="Flags.IncentivizeShipAndCanal">Ship and Canal</label></div>
 						<div class="checkbox-cell"></div>
 						<div class="checkbox-cell"><input v-model="IncentivizeMasamune" :disabled="!Treasures" type="checkbox" asp-for="Flags.IncentivizeMasamune" /> <label asp-for="Flags.IncentivizeMasamune">Masamune</label></div>
 						<div class="checkbox-cell"><input v-model="IncentivizeRibbon" :disabled="!Treasures" type="checkbox" asp-for="Flags.IncentivizeRibbon" /> <label asp-for="Flags.IncentivizeRibbon">Ribbon</label></div>
@@ -150,7 +147,7 @@
 				</div>
 			</div>
 			<div class="section tab-pane" id="goal">
-				<div class="col-xs-4" :style="ShardHunt ? { color: 'grey'} : {}">
+				<div class="col-md-4" :style="ShardHunt ? { color: 'grey'} : {}">
 					<div class="col-xs-12">
 						<h4>Chaos Rush</h4>
 						<div>
@@ -162,7 +159,7 @@
 						<div class="checkbox-cell" title="Begin the game with all orbs already lit."><input v-model="FreeOrbs" :disabled="ShardHunt" type="checkbox" asp-for="Flags.FreeOrbs" /> <label :style="ShardHunt ? { color: 'grey'} : {}" asp-for="Flags.FreeOrbs">Free Orbs</label></div>
 					</div>
 				</div>
-				<div class="col-xs-4" style="border-left: 1px solid black;" :style="ChaosRush ? { color: 'grey'} : {}">
+				<div class="col-md-4" style="border-left: 1px solid black;" :style="ChaosRush ? { color: 'grey'} : {}">
 					<div class="col-xs-12">
 						<h4>Treasure Hunt</h4>
 						<div>
@@ -177,7 +174,7 @@
 						<br />&nbsp;
 					</div>
 				</div>
-				<div class="col-xs-4" style="border-left: 1px solid black;">
+				<div class="col-md-4" style="border-left: 1px solid black;">
 					<div class="col-xs-12">
 						<h4>Temple of Fiends</h4>
 						<div>
@@ -199,7 +196,7 @@
 				</div>
 			</div>
 			<div class="section tab-pane" id="map">
-				<div class="col-xs-4">
+				<div class="col-md-4">
 					<div class="col-xs-12">
 						<h4>Entrance Shuffle <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">New!</a>)</small></h4>
 						<div>
@@ -215,7 +212,7 @@
 						<div class="checkbox-cell" title="Experimental Procedural Floor Generation"><input v-model="ExperimentalFloorGeneration" type="checkbox" asp-for="Flags.ExperimentalFloorGeneration" /> <label asp-for="Flags.ExperimentalFloorGeneration">Experimental Procedural Generation</label></div>
 					</div>
 				</div>
-				<div class="col-xs-4" style="border-left: 1px solid black;">
+				<div class="col-md-4" style="border-left: 1px solid black;">
 					<div class="col-xs-12">
 						<h4>Fixed Map Edits</h4>
 						<div>
@@ -233,7 +230,7 @@
 						<div class="checkbox-cell"><input v-model="MapOpenProgressionExtended" type="checkbox" :disabled="!MapOpenProgression" asp-for="Flags.MapOpenProgressionExtended" /> <label :style="!MapOpenProgression ? { color: 'grey'} : {}" asp-for="Flags.MapOpenProgressionExtended">Extended Open Progression</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew">New!</a>)</small></div>
 					</div>
 				</div>
-				<div class="col-xs-4" style="border-left: 1px solid black;">
+				<div class="col-md-4" style="border-left: 1px solid black;">
 					<div class="col-xs-12">
 						<h4>WarMECH</h4>
 						<div>
@@ -257,35 +254,35 @@
 				</div>
 			</div>
 			<div class="section tab-pane" id="scale">
-				<div class="col-xs-9">
+				<div class="col-md-9">
 					<div class="slider-cell">
-						<div class="col-xs-6"><label>Prices:</label></div>
-						<div class="col-xs-3" title="Clamp Minimum to 100%"><input v-model="ClampMinimumPriceScale" type="checkbox" asp-for="Flags.ClampMinimumPriceScale" /> <label asp-for="Flags.ClampMinimumPriceScale" id="prices-display">{{ClampMinimumPriceScale ? 100 : Math.round(100 / PriceScaleFactor)}}% - {{Math.round(PriceScaleFactor * 100)}}%</label></div>
-						<div class="col-xs-3"><input v-model="PriceScaleFactor" type="range" asp-for="Flags.PriceScaleFactor" min="1.0" max="5.0" step="0.1" /></div>
+						<div class="col-xs-6 col-md-6"><label>Prices:</label></div>
+						<div class="col-xs-6 col-md-3" title="Clamp Minimum to 100%"><input v-model="ClampMinimumPriceScale" type="checkbox" asp-for="Flags.ClampMinimumPriceScale" /> <label asp-for="Flags.ClampMinimumPriceScale" id="prices-display">{{ClampMinimumPriceScale ? 100 : Math.round(100 / PriceScaleFactor)}}% - {{Math.round(PriceScaleFactor * 100)}}%</label></div>
+						<div class="col-xs-12 col-md-3"><input v-model="PriceScaleFactor" type="range" asp-for="Flags.PriceScaleFactor" min="1.0" max="5.0" step="0.1" /></div>
 					</div>
 					<div class="slider-cell">
-						<div class="col-xs-6"><label>Enemy Stats:</label></div>
-						<div class="col-xs-3" title="Clamp Minimum to 100%"><input v-model="ClampMinimumStatScale" type="checkbox" asp-for="Flags.ClampMinimumStatScale" /> <label  asp-for="Flags.ClampMinimumStatScale" id="enemy-stats-display">{{ClampMinimumStatScale ? 100 : Math.round(100 / EnemyScaleFactor)}}% - {{Math.round(EnemyScaleFactor * 100)}}% <b style="color:orange">{{EnemyScaleFactor > 2.4 ? (!WrapStatOverflow && EnemyScaleFactor >= 3.2) ? EnemyScaleFactor >= 4 ? "¯\\_(ツ)_/¯" : "⚠⚠" : "⚠" : ""}}</b></label></div>
-						<div class="col-xs-3"><input v-model="EnemyScaleFactor" type="range" asp-for="Flags.EnemyScaleFactor" min="1.0" max="5.0" step="0.1" /></div>
+						<div class="col-xs-6 col-md-6"><label>Enemy Stats:</label></div>
+						<div class="col-xs-6 col-md-3" title="Clamp Minimum to 100%"><input v-model="ClampMinimumStatScale" type="checkbox" asp-for="Flags.ClampMinimumStatScale" /> <label  asp-for="Flags.ClampMinimumStatScale" id="enemy-stats-display">{{ClampMinimumStatScale ? 100 : Math.round(100 / EnemyScaleFactor)}}% - {{Math.round(EnemyScaleFactor * 100)}}% <b style="color:orange">{{EnemyScaleFactor > 2.4 ? (!WrapStatOverflow && EnemyScaleFactor >= 3.2) ? EnemyScaleFactor >= 4 ? "¯\\_(ツ)_/¯" : "⚠⚠" : "⚠" : ""}}</b></label></div>
+						<div class="col-xs-12 col-md-3"><input v-model="EnemyScaleFactor" type="range" asp-for="Flags.EnemyScaleFactor" min="1.0" max="5.0" step="0.1" /></div>
 					</div>
 					<div class="slider-cell">
-						<div class="col-xs-6"><label>Boss Stats:</label></div>
-						<div class="col-xs-3" title="Clamp Minimum to 100%"><input v-model="ClampMinimumBossStatScale" type="checkbox" asp-for="Flags.ClampMinimumBossStatScale" /> <label asp-for="Flags.ClampMinimumBossStatScale" id="boss-stats-display">{{ClampMinimumBossStatScale ? 100 : Math.round(100 / BossScaleFactor)}}% - {{Math.round(BossScaleFactor * 100)}}% <b style="color:orange">{{BossScaleFactor > 2.4 ? (!WrapStatOverflow && BossScaleFactor >= 3.2) ? BossScaleFactor >= 4 ? "¯\\_(ツ)_/¯" : "⚠⚠" : "⚠" : ""}}</b></label></div>
-						<div class="col-xs-3"><input v-model="BossScaleFactor" type="range" asp-for="Flags.BossScaleFactor" min="1.0" max="5.0" step="0.1" /></div>
+						<div class="col-xs-6 col-md-6"><label>Boss Stats:</label></div>
+						<div class="col-xs-6 col-md-3" title="Clamp Minimum to 100%"><input v-model="ClampMinimumBossStatScale" type="checkbox" asp-for="Flags.ClampMinimumBossStatScale" /> <label asp-for="Flags.ClampMinimumBossStatScale" id="boss-stats-display">{{ClampMinimumBossStatScale ? 100 : Math.round(100 / BossScaleFactor)}}% - {{Math.round(BossScaleFactor * 100)}}% <b style="color:orange">{{BossScaleFactor > 2.4 ? (!WrapStatOverflow && BossScaleFactor >= 3.2) ? BossScaleFactor >= 4 ? "¯\\_(ツ)_/¯" : "⚠⚠" : "⚠" : ""}}</b></label></div>
+						<div class="col-xs-12 col-md-3"><input v-model="BossScaleFactor" type="range" asp-for="Flags.BossScaleFactor" min="1.0" max="5.0" step="0.1" /></div>
 					</div>
 					<div class="slider-cell"></div>
 					<div class="slider-cell">
-						<div class="col-xs-6"><label>Exp/Gold Boost:</label></div>
-						<div class="col-xs-3"><label id="exp-gold-display">{{ExpMultiplier.toPrecision(2)}}x + {{ExpBonus}}</label></div>
-						<div class="col-xs-3"><input v-model="ExpMultiplier" type="range" asp-for="Flags.ExpMultiplier" min="1.0" max="5.0" step="0.1" /></div>
+						<div class="col-xs-6 col-md-6"><label>Exp/Gold Boost:</label></div>
+						<div class="col-xs-6 col-md-3"><label id="exp-gold-display">{{ExpMultiplier.toPrecision(2)}}x + {{ExpBonus}}</label></div>
+						<div class="col-xs-12 col-md-3"><input v-model="ExpMultiplier" type="range" asp-for="Flags.ExpMultiplier" min="1.0" max="5.0" step="0.1" /></div>
 					</div>
 					<div class="slider-cell">
-						<div class="col-xs-9"></div>
-						<div class="col-xs-3"><input v-model="ExpBonus" type="range" asp-for="Flags.ExpBonus" min="0" max="500" step="10" /></div>
+						<div class="col-md-9"></div>
+						<div class="col-xs-12 col-md-3"><input v-model="ExpBonus" type="range" asp-for="Flags.ExpBonus" min="0" max="500" step="10" /></div>
 					</div>
 					<div class="checkbox-cell">
-						<div class="col-xs-9"><label>Exp/Gold Progressive Scaling:</label></div>
-						<div class="col-xs-3">
+						<div class="col-md-9"><label>Exp/Gold Progressive Scaling:</label></div>
+						<div class="col-md-3">
 							<select v-model="ProgressiveScaleMode" asp-for="Flags.ProgressiveScaleMode">
 								<option value="0">Disabled</option>
 								<option value="1">Increased to 150% at 12 Key Items</option>
@@ -300,18 +297,18 @@
 					</div>
 					<div class="slider-cell"></div>
 					<div class="slider-cell">
-						<div class="col-xs-6"><label>Overworld Encounter Rate:</label></div>
-						<div class="col-xs-3"><label id="encounter-rate-display">{{(EncounterRate/30.00).toFixed(2)}}x</label></div>
-						<div class="col-xs-3"><input v-model="EncounterRate" type="range" asp-for="Flags.EncounterRate" min="0" max="45" step="1" /></div>
+						<div class="col-xs-8 col-md-6"><label>Overworld Encounter Rate:</label></div>
+						<div class="col-xs-4 col-md-3"><label id="encounter-rate-display">{{(EncounterRate/30.00).toFixed(2)}}x</label></div>
+						<div class="col-xs-12 col-md-3"><input v-model="EncounterRate" type="range" asp-for="Flags.EncounterRate" min="0" max="45" step="1" /></div>
 					</div>
 					<div class="slider-cell">
-						<div class="col-xs-6"><label>Dungeon Encounter Rate:</label></div>
-						<div class="col-xs-3"><label id="encounter-rate-display">{{(DungeonEncounterRate/30.00).toFixed(2)}}x</label></div>
-						<div class="col-xs-3"><input v-model="DungeonEncounterRate" type="range" asp-for="Flags.DungeonEncounterRate" min="0" max="45" step="1" /></div>
+						<div class="col-xs-8 col-md-6"><label>Dungeon Encounter Rate:</label></div>
+						<div class="col-xs-4 col-md-3"><label id="encounter-rate-display">{{(DungeonEncounterRate/30.00).toFixed(2)}}x</label></div>
+						<div class="col-xs-12 col-md-3"><input v-model="DungeonEncounterRate" type="range" asp-for="Flags.DungeonEncounterRate" min="0" max="45" step="1" /></div>
 					</div>
 					<div class="slider-cell"></div>
 				</div>
-				<div class="col-xs-3">
+				<div class="col-xs-12 col-md-3">
 					<div class="slider-cell" title="Instead of capping, allow overflow values to start over at one"><input v-model="WrapPriceOverflow" type="checkbox" asp-for="Flags.WrapPriceOverflow" /> <label asp-for="Flags.WrapPriceOverflow">Restart overflow at 1</label></div>
 					<div class="slider-cell" title="Instead of capping, allow overflow values to start over at one"><input v-model="WrapStatOverflow" type="checkbox" asp-for="Flags.WrapStatOverflow" /> <label asp-for="Flags.WrapStatOverflow">Restart overflow at 1</label></div>
 					<div class="slider-cell" title="Include Morale in scaling. Uncheck to force vanilla morale for all enemies."><input v-model="IncludeMorale" type="checkbox" asp-for="Flags.IncludeMorale" /> <label asp-for="Flags.IncludeMorale">Include Morale</label></div>
@@ -393,7 +390,7 @@
 				</div>
 			</div>
 			<div class="section tab-pane" id="conveniences">
-				<div class="col-xs-4">
+				<div class="col-md-4">
 					<div class="checkbox-cell" title="Sarda will give you an item without requiring Vampire dead"><input v-model="EarlySarda" type="checkbox" asp-for="Flags.EarlySarda" /> <label asp-for="Flags.EarlySarda">Early Sarda Item</label></div>
 					<div class="checkbox-cell" title="Sage in Cresent Lake will give you an item without requiring Lich dead"><input v-model="EarlySage" type="checkbox" asp-for="Flags.EarlySage" /> <label asp-for="Flags.EarlySage">Early Sage Item</label></div>
 					<div class="checkbox-cell" title="Ordeals can be entered without the Crown"><input v-model="CrownlessOrdeals" type="checkbox" asp-for="Flags.CrownlessOrdeals" /> <label asp-for="Flags.CrownlessOrdeals">Early Ordeals</label></div>
@@ -405,21 +402,25 @@
 					<div class="checkbox-cell"><input v-model="BuyTen" type="checkbox" asp-for="Flags.BuyTen" /> <label asp-for="Flags.BuyTen">Buy 10 Items</label></div>
 					<div class="checkbox-cell" title="The RUN command becomes WAIT when battles are unrunnable."><input v-model="WaitWhenUnrunnable" type="checkbox" asp-for="Flags.WaitWhenUnrunnable" /> <label asp-for="Flags.WaitWhenUnrunnable">Change Unrunnable RUN to WAIT</label></div>
 					<div class="checkbox-cell"><input v-model="EnableCritNumberDisplay" type="checkbox" asp-for="Flags.EnableCritNumberDisplay" /> <label asp-for="Flags.EnableCritNumberDisplay">Critical Hit Count Display</label></div>
+					<div class="checkbox-cell"><input v-model="HousesFillHp" type="checkbox" asp-for="Flags.HousesFillHp" /> <label asp-for="Flags.HousesFillHp">Houses fill party's HP</label></div>
 				</div>
-				<div class="col-xs-4">
+				<div class="col-md-4">
 					<div class="checkbox-cell" title="The Airship is available at the start of the game"><input v-model="FreeAirship" type="checkbox" asp-for="Flags.FreeAirship" /> <label asp-for="Flags.FreeAirship">Free Airship</label></div>
 					<div class="checkbox-cell" title="The Bridge is available at the start of the game"><input v-model="FreeBridge" type="checkbox" asp-for="Flags.FreeBridge" /> <label asp-for="Flags.FreeBridge">Free Bridge</label></div>
+					<div class="checkbox-cell" title="The Canal is available at the start of the game"><input v-model="FreeCanal" type="checkbox" asp-for="Flags.FreeCanal" /> <label asp-for="Flags.FreeCanal">Free Canal</label></div>
 					<div class="checkbox-cell" title="Encounter rate cut to 20% and all Enemy HP cut to 10% (after any randomizations)"><input v-model="EasyMode" type="checkbox" asp-for="Flags.EasyMode" /> <label asp-for="Flags.EasyMode">Easy Mode</label></div>
 				</div>
 			</div>
 			<div class="section tab-pane" id="bug-fixes">
-				<div class="col-xs-4">
+				<div class="col-md-6">
 					<div class="checkbox-cell"><input v-model="HouseMPRestoration" type="checkbox" asp-for="Flags.HouseMPRestoration" /> <label asp-for="Flags.HouseMPRestoration">House MP Restoration</label></div>
 					<div class="checkbox-cell"><input v-model="WeaponStats" type="checkbox" asp-for="Flags.WeaponStats" /> <label asp-for="Flags.WeaponStats">Weapon Stats</label></div>
 					<div class="checkbox-cell"><input v-model="ChanceToRun" type="checkbox" asp-for="Flags.ChanceToRun" /> <label asp-for="Flags.ChanceToRun">Chance to Run</label></div>
 					<div class="checkbox-cell" title="Fixes LOCK, LOK2, HEL2, TMPR, SABR, CUR4 out of battle, and permit canceling of EXIT and WARP."><input v-model="SpellBugs" type="checkbox" asp-for="Flags.SpellBugs" /> <label asp-for="Flags.SpellBugs">Spell Fixes</label></div>
+					<div class="checkbox-cell" title="LOCK and LOK2 never miss."><input v-model="RebalanceSpells" type="checkbox" asp-for="Flags.RebalanceSpells" /> <label asp-for="Flags.RebalanceSpells">ALPHA:  LOCK and LOK2 always hit</label></div>
 					<div class="checkbox-cell"><input v-model="EnemyStatusAttackBug" type="checkbox" asp-for="Flags.EnemyStatusAttackBug" /> <label asp-for="Flags.EnemyStatusAttackBug">Enemy Status Attacks</label></div>
 					<div class="checkbox-cell"><input v-model="BlackBeltAbsorb" type="checkbox" asp-for="Flags.BlackBeltAbsorb" /> <label asp-for="Flags.BlackBeltAbsorb">Black Belt &amp; Master Absorb Calculation</label></div>
+					<div class="checkbox-cell" title="Change BB to +3 and Master to +4 to match several of the FF1 remakes."><input v-model="BlackBeltMDEF" type="checkbox" asp-for="Flags.BlackBeltMDEF" /> <label asp-for="Flags.BlackBeltMDEF">Black Belt &amp; Master MDEF Growth</label></div>
 					<div class="checkbox-cell"><input v-model="EnemyElementalResistancesBug" type="checkbox" asp-for="Flags.EnemyElementalResistancesBug" /> <label asp-for="Flags.EnemyElementalResistancesBug">Enemy Elemental Resistances</label></div>
 					<div class="checkbox-cell"><input v-model="EnemySpellsTargetingAllies" type="checkbox" asp-for="Flags.EnemySpellsTargetingAllies" /> <label asp-for="Flags.EnemySpellsTargetingAllies">Enemy Spells Targeting Allies</label></div>
 					<div class="checkbox-cell"><input v-model="ImproveTurnOrderRandomization" type="checkbox" asp-for="Flags.ImproveTurnOrderRandomization" /> <label asp-for="Flags.ImproveTurnOrderRandomization">Improve Turn Order Randomization</label></div>
@@ -427,7 +428,7 @@
 			</div>
 			<div class="section tab-pane" id="fun">
 				<div class="col-xs-12">
-					<div class="col-xs-8">
+					<div class="col-md-8">
 						<h4>Fun % Flags</h4>
 						Fun flags are not part of the standard flags string since they do not impact gameplay. The buttons
 						at the bottom can be used to store your preferred fun % settings within your browser so that they
@@ -436,13 +437,13 @@
 				</div>
 				<div class="col-xs-12">&nbsp;</div>
 				<div class="col-xs-12">
-					<div class="col-xs-4">
+					<div class="col-md-4">
 						<div class="checkbox-cell"><input v-model="fun.FunEnemyNames" type="checkbox" asp-for="Flags.FunEnemyNames" /> <label asp-for="Flags.FunEnemyNames">Fun Enemy Names</label></div>
 						<div class="checkbox-cell"><input v-model="fun.PaletteSwap" type="checkbox" asp-for="Flags.PaletteSwap" /> <label asp-for="Flags.PaletteSwap">Palette Swap</label></div>
 						<div class="checkbox-cell"><input v-model="fun.ModernBattlefield" type="checkbox" asp-for="Flags.ModernBattlefield" /> <label asp-for="Flags.ModernBattlefield">Modern Battlefield</label></div>
 						<div class="checkbox-cell"><input v-model="fun.ThirdBattlePalette" type="checkbox" asp-for="Flags.ThirdBattlePalette" /> <label asp-for="Flags.ThirdBattlePalette">Three Battle Palettes</label></div>
 					</div>
-					<div class="col-xs-4">
+					<div class="col-md-4">
 						<div class="checkbox-cell">
 							<select v-model="fun.TeamSteak" asp-for="Flags.TeamSteak">
 								<option value="false">Team TYRO</option>

@@ -7,6 +7,11 @@
 *.userosscache
 *.sln.docstates
 
+# The Usual Suspects
+*.swp
+.DS_Store
+Thumbs.db
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
@@ -241,3 +246,6 @@ _Pvt_Extensions
 # Archives
 *.zip
 *.tar.gz
+
+# IDEA files (Rider IDE, Pycharm, etc)
+.idea/
