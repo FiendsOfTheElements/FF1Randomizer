@@ -1,9 +1,0 @@
-{
-  "profiles": {
-    "FF1R": {
-      "commandName": "Project",
-      "commandLineArgs": "ff1.nes -i 07FFC8E9_PADBHHBP!HHbDA!fHPoUUA",
-      "workingDirectory": "$(OutDir)"
-    }
-  }
-}

@@ -1,0 +1,34 @@
+﻿<div class="checkbox-cell">
+	@if (Indent)
+	{
+		<span class="indent"></span>
+	}
+	<input type="checkbox" id="@Id" checked="@Value" onchange="@onchange" disabled="@(!IsEnabled)"/> <label for="@Id" class="@DisabledClass">@ChildContent</label>
+</div>
+
+@functions
+{
+	[Parameter]
+	private bool Value { get; set; }
+	[Parameter]
+	private Action<bool> ValueChanged { get; set; }
+	void onchange(UIChangeEventArgs e)
+	{
+		Value = (bool)e.Value;
+		ValueChanged(Value);
+	}
+
+	[Parameter]
+	private bool Indent { get; set; }
+
+	[Parameter]
+	private bool IsEnabled { get; set; } = true;
+	private string DisabledClass => IsEnabled ? "" : "disabled";
+
+	[Parameter]
+	private string Id { get; set; }
+
+	[Parameter]
+	private RenderFragment ChildContent { get; set; }
+
+}

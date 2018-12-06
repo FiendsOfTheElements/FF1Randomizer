@@ -158,8 +158,8 @@
 						<Label Margin="5,5,0,0" FontWeight="Bold">WarMECH Mode:</Label>
 						<ComboBox x:Name="WarMECHModeComboBox" SelectedValue="{Binding Flags.WarMECHMode}" Width="150" HorizontalAlignment="Left" Margin="10,0,0,0" ToolTip="How do you like your WarMECH?" SelectedValuePath="Tag">
 							<ComboBoxItem Tag="Vanilla">Vanilla</ComboBoxItem>
-							<ComboBoxItem Tag="Wandering4F">Patrolling</ComboBoxItem>
-							<ComboBoxItem Tag="BridgeOfDestiny">Required</ComboBoxItem>
+							<ComboBoxItem Tag="Patrolling">Patrolling</ComboBoxItem>
+							<ComboBoxItem Tag="Required">Required</ComboBoxItem>
 						</ComboBox>
 					</StackPanel>
 				</Grid>

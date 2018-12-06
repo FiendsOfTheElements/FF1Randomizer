@@ -1,0 +1,335 @@
+﻿@addTagHelper *, BlazorStrap
+@page "/Randomize"
+@using System.IO
+@using RomUtilities
+@using FF1Lib
+@inject HttpClient Http
+
+<div>
+	<div><input type="file" id="fileInput" onchange="@OnFileChanged" /></div>
+	<button onclick="@OnRandomize">Randomize</button><br />
+	<div><input type="text" class="form-control" value="@Flags.EncodeFlagsText(MyFlags.Flags)" /></div><br />
+	Presets:
+	<a onclick="@(() => LoadPreset("default"))">Default</a>
+	<a onclick="@(() => LoadPreset("beginner"))">Beginner</a>
+	<a onclick="@(() => LoadPreset("full-npc"))">NPC Shuffle</a>
+	<a onclick="@(() => LoadPreset("improved-vanilla"))">Improved Vanilla</a>
+	<a onclick="@(() => LoadPreset("debug"))">DEBUG</a>
+	<BlazorNav IsTabs>
+		<BlazorNavLink onclick="@(() => ActivateTab("Shuffle"))" IsActive="@(activeTab == "Shuffle")">Shuffle</BlazorNavLink>
+		<BlazorNavLink onclick="@(() => ActivateTab("Treasures"))" IsActive="@(activeTab == "Treasures")">Treasures</BlazorNavLink>
+		<BlazorNavLink onclick="@(() => ActivateTab("Goal"))" IsActive="@(activeTab == "Goal")">Goal</BlazorNavLink>
+		<BlazorNavLink onclick="@(() => ActivateTab("Map"))" IsActive="@(activeTab == "Map")">Map</BlazorNavLink>
+		<BlazorNavLink onclick="@(() => ActivateTab("Scale"))" IsActive="@(activeTab == "Scale")">Scale</BlazorNavLink>
+		<BlazorNavLink onclick="@(() => ActivateTab("Party"))" IsActive="@(activeTab == "Party")">Party</BlazorNavLink>
+		<BlazorNavLink onclick="@(() => ActivateTab("Conveniences"))" IsActive="@(activeTab == "Conveniences")">Conveniences</BlazorNavLink>
+		<BlazorNavLink onclick="@(() => ActivateTab("Bug Fixes"))" IsActive="@(activeTab == "Bug Fixes")">Bug Fixes</BlazorNavLink>
+		<BlazorNavLink onclick="@(() => ActivateTab("Fun %"))" IsActive="@(activeTab == "Fun %")">Fun %</BlazorNavLink>
+	</BlazorNav>
+	<TabContent>
+		<TabPane IsOpen="@(activeTab == "Shuffle")">
+			<div class="container">
+				<div class="row">
+					<div class="col-4">
+						<CheckBox Id="shopsCheckBox" bind-Value="@MyFlags.Shops">Shops</CheckBox>
+						<CheckBox Indent IsEnabled="@MyFlags.Shops" Id="randomWaresCheckBox" bind-Value="@MyFlags.RandomWares">Random Weapons and Armor</CheckBox>
+						<CheckBox Id="magicShopsCheckBox" bind-Value="@MyFlags.MagicShops">Magic Shops</CheckBox>
+						<CheckBox Id="magicLevelsCheckBox" bind-Value="@MyFlags.MagicLevels">Magic Levels</CheckBox>
+						<CheckBox Indent IsEnabled="@MyFlags.MagicLevels" Id="magicPermissionsCheckBox" bind-Value="@MyFlags.MagicPermissions">Keep Permissions</CheckBox>
+						<CheckBox Id="itemMagicCheckBox" bind-Value="@MyFlags.ItemMagic">Item Magic</CheckBox>
+						<div class="checkbox-cell"></div>
+						<CheckBox Id="rngCheckBox" bind-Value="@MyFlags.Rng">RNG Table</CheckBox>
+					</div>
+					<div class="col-4">
+						<CheckBox Id="enemyScriptsCheckBox" bind-Value="@MyFlags.EnemyScripts">Enemy Scripts</CheckBox>
+						<CheckBox Indent IsEnabled="@MyFlags.EnemyScripts" Id="allowUnsafePiratesCheckBox" bind-Value="@MyFlags.AllowUnsafePirates">Allow Unsafe Pirates</CheckBox>
+						<CheckBox Id="enemySkillsSpellsCheckBox" bind-Value="@MyFlags.EnemySkillsSpells">Enemy Skills/Spells</CheckBox>
+						<CheckBox Id="enemyStatusAttacksCheckBox" bind-Value="@MyFlags.EnemyStatusAttacks">Enemy Status Attacks</CheckBox>
+						<CheckBox Id="enemyFormationsUnrunnableCheckBox" bind-Value="@MyFlags.EnemyFormationsUnrunnable">Enemy Unrunnable Formations</CheckBox>
+						<CheckBox Id="enemyFormationsSurpriseCheckBox" bind-Value="@MyFlags.EnemyFormationsSurprise">Enemy Surprise Bonus</CheckBox>
+						<EnumDropDown TItem="FormationShuffleModeEnum" bind-Value="@MyFlags.FormationShuffleMode"></EnumDropDown>
+						<CheckBox Id="enemyTrapTilesCheckBox" bind-Value="@MyFlags.EnemyTrapTiles">Enemy Forced Encounter Tiles</CheckBox>
+						<CheckBox Indent Id="randomTrapFormationsCheckBox" IsEnabled="@MyFlags.EnemyTrapTiles" bind-Value="@MyFlags.RandomTrapFormations">Use Random Formations</CheckBox>
+					</div>
+				</div>
+			</div>
+		</TabPane>
+		<TabPane IsOpen="@(activeTab == "Treasures")">
+			<div class="container">
+				<div class="row">
+					<div class="col-4">
+						<h4>Items Shuffle</h4>
+						<CheckBox Id="treasuresCheckBox" bind-Value="@MyFlags.Treasures">Treasures</CheckBox>
+						<CheckBox Indent Id="randomLootCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.RandomLoot">Randomize Treasures</CheckBox>
+						<EnumDropDown Indent TItem="WorldWealth" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.WorldWealth">Random Wealth: </EnumDropDown>
+						<CheckBox Id="npcItemsCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.NPCItems">Main NPC Items</CheckBox>
+						<CheckBox Id="npcFetchItemsCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.NPCFetchItems">Fetch Quest Rewards</CheckBox>
+						<CheckBox Id="shuffleObjectiveNPCsCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.ShuffleObjectiveNPCs">Objective NPCs</CheckBox>
+					</div>
+					<div class="col-4">
+						<h4>Incentivized Locations</h4>
+						<CheckBox Id="incentivizeFreeNPCsCheckBox" IsEnabled="@MyFlags.IncentivizeFreeNPCsEnabled" bind-Value="@MyFlags.IncentivizeFreeNPCs">Main NPCs</CheckBox>
+						<CheckBox Id="incentivizeFetchNPCsCheckBox" IsEnabled="@MyFlags.IncentivizeFetchNPCsEnabled" bind-Value="@MyFlags.IncentivizeFetchNPCs">Fetch Quest NPCs</CheckBox>
+						<div class="checkbox-cell"></div>
+						<CheckBox Id="incentivizeIceCaveCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.IncentivizeIceCave">Ice Cave</CheckBox>
+						<CheckBox Id="incentivizeOrdealsCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.IncentivizeOrdeals">Ordeals</CheckBox>
+						<CheckBox Id="incentivizeMarshCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.IncentivizeMarsh">Marsh Cave</CheckBox>
+						<div class="checkbox-cell"></div>
+						<CheckBox Id="incentivizeEarthCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.IncentivizeEarth">Earth Cave</CheckBox>
+						<CheckBox Id="incentivizeVolcanoCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.IncentivizeVolcano">Volcano</CheckBox>
+						<CheckBox Id="incentivizeSeaShrineCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.IncentivizeSeaShrine">Sea Shrine</CheckBox>
+						<CheckBox Id="incentivizeSkyPalaceCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.IncentivizeSkyPalace">Sky Palace</CheckBox>
+						<div class="checkbox-cell"></div>
+						<CheckBox Id="incentivizeConeriaCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.IncentivizeConeria">Coneria (locked)</CheckBox>
+						<CheckBox Id="incentivizeMarshKeyLockedCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.IncentivizeMarshKeyLocked">Marsh (locked)</CheckBox>
+					</div>
+					<div class="col-4">
+						<h4>Incentivized Items</h4>
+						<p>Any Required Item being Shuffled will be included in the incentive pool by default. Add additional items below:</p>
+						<CheckBox Id="incentivizeTailCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.IncentivizeTail">Tail</CheckBox>
+						<CheckBox Id="incentivizeFetchItemsCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.IncentivizeFetchItems">Other Quest Items</CheckBox>
+						<div class="checkbox-cell"></div>
+						<CheckBox Id="incentivizeMasamuneCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.IncentivizeMasamune">Masamune</CheckBox>
+						<CheckBox Id="incentivizeRibbonCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.IncentivizeRibbon">Ribbon</CheckBox>
+						<CheckBox Id="incentivizeOpalCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.IncentivizeOpal">Opal Bracelet</CheckBox>
+						<div class="checkbox-cell"></div>
+						<CheckBox Id="incentivizeDefCastArmorCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.IncentivizeDefCastArmor">White Shirt</CheckBox>
+						<CheckBox Id="incentivizeOffCastArmorCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.IncentivizeOffCastArmor">Power Gauntlet</CheckBox>
+						<CheckBox Id="incentivizeDefCastWeaponCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.IncentivizeDefCastWeapon">Defense</CheckBox>
+						<CheckBox Id="incentivizeOffCastWeaponCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.IncentivizeOffCastWeapon">Thor Hammer</CheckBox>
+					</div>
+				</div>
+			</div>
+		</TabPane>
+		<TabPane IsOpen="@(activeTab == "Goal")">
+			<div class="container">
+				<div class="row">
+					<div class="col-4">
+						<h4>Chaos Rush</h4>
+						<p>No time for a long race? Chaos Rush combined with Free Orbs lets you begin the game with the Temple of Fiends Revisited completely unlocked!</p>
+						<CheckBox Id="chaosRushCheckBox" IsEnabled="@MyFlags.ChaosRushEnabled" bind-Value="@MyFlags.ChaosRush">CHAOS Rush</CheckBox>
+						<CheckBox Id="freeOrbsCheckBox" IsEnabled="@MyFlags.FreeOrbsEnabled" bind-Value="@MyFlags.FreeOrbs">Free Orbs</CheckBox>
+					</div>
+					<div class="col-4">
+						<h4>Treasure Hunt</h4>
+						<p>A new adventure! Instead of lighting the four orbs to activate the BLACK ORB, the Light Warriors must seek out and collect several of a random treasure item.</p>
+						<CheckBox Id="shardHuntCheckBox" IsEnabled="@MyFlags.ShardHuntEnabled" bind-Value="@MyFlags.ShardHunt">Treasure Hunt</CheckBox>
+						<CheckBox Id="extraShardsCheckBox" IsEnabled="@MyFlags.ExtraShardsEnabled" bind-Value="@MyFlags.ExtraShards">Extra Treasure</CheckBox>
+					</div>
+					<div class="col-4">
+						<h4>Temple of Fiends</h4>
+						<p>Randomly pick one of four new final bosses to replace the legendary Chaos! Take heed though; they can be more than a match for all but the mightiest Warriors.</p>
+						<CheckBox Id="transformFinalFormationCheckBox" bind-Value="@MyFlags.TransformFinalFormation">Alternate Final Boss</CheckBox>
+						<p>Jump straight from the Black Orb to the Final Battle! You may choose to keep the fiend refight tiles - two on each side of the path to Chaos.</p>
+						<CheckBox Id="shortToFRCheckBox" bind-Value="@MyFlags.ShortToFR">Shorten ToFR</CheckBox>
+						<CheckBox Id="preserveFiendRefightsCheckBox" IsEnabled="@MyFlags.ShortToFR" bind-Value="@MyFlags.PreserveFiendRefights">Include Fiend Tiles</CheckBox>
+					</div>
+				</div>
+			</div>
+		</TabPane>
+		<TabPane IsOpen="@(activeTab == "Map")">
+			<div class="container">
+				<div class="row">
+					<div class="col-4">
+						<h4>Entrance Shuffle</h4>
+						<p>Try shuffling dungeon entrances, floors, and towns to create a completely new world to explore!</p>
+						<CheckBox Id="entrancesCheckBox" bind-Value="@MyFlags.Entrances">Entrances</CheckBox>
+						<CheckBox Indent Id="floorsCheckBox" IsEnabled="@MyFlags.Entrances" bind-Value="@MyFlags.Floors">Floors</CheckBox>
+						<CheckBox Indent Id="allowDeepCastlesCheckBox" IsEnabled="@MyFlags.Entrances" bind-Value="@MyFlags.AllowDeepCastles">Deep ToFR</CheckBox>
+						<CheckBox Id="townsCheckBox" bind-Value="@MyFlags.Towns">Towns</CheckBox>
+					</div>
+					<div class="col-4">
+						<h4>Fixed Map Edits</h4>
+						<p>Classic Final Fantasy Randomizer map edits.</p>
+						<CheckBox Id="ordealsPillarsCheckBox" bind-Value="@MyFlags.OrdealsPillars">Castle Ordeals Pillars</CheckBox>
+						<CheckBox Id="skyCastle4FTeleportersCheckBox" bind-Value="@MyFlags.SkyCastle4FTeleporters">Sky Castle 4F Teleporters</CheckBox>
+						<CheckBox Id="titansTroveCheckBox" bind-Value="@MyFlags.TitansTrove">Titan's Trove</CheckBox>
+						<CheckBox Id="confusedOldMenCheckBox" bind-Value="@MyFlags.ConfusedOldMen">Confused Old Men</CheckBox>
+						<div class="checkbox-cell"></div>
+						<CheckBox Id="mapOpenProgressionCheckBox" bind-Value="@MyFlags.MapOpenProgression">Open Progression</CheckBox>
+						<CheckBox Id="mapOpenProgressionExtendedCheckBox" IsEnabled="@MyFlags.MapOpenProgression" bind-Value="@MyFlags.MapOpenProgressionExtended">Extended Open Progression</CheckBox>
+					</div>
+					<div class="col-4">
+						<h4>WarMECH</h4>
+						<p>Encounter 7 not enough WarMECH for you? Try a patrolling or required WarMECH instead.</p>
+						<EnumDropDown TItem="WarMECHMode" bind-Value="@MyFlags.WarMECHMode">WarMECH Mode: </EnumDropDown>
+					</div>
+				</div>
+			</div>
+		</TabPane>
+		<TabPane IsOpen="@(activeTab == "Scale")">
+			<div class="container">
+				<ClampedSlider Min="1" Max="5" Step="0.1" bind-Clamp="@MyFlags.ClampMinimumPriceScale" bind-Scale="@MyFlags.PriceScaleFactor">Prices:</ClampedSlider>
+				<ClampedSlider Min="1" Max="5" Step="0.1" bind-Clamp="@MyFlags.ClampMinimumStatScale" bind-Scale="@MyFlags.EnemyScaleFactor">Enemy Stats:</ClampedSlider>
+				<ClampedSlider Min="1" Max="5" Step="0.1" bind-Clamp="@MyFlags.ClampMinimumBossStatScale" bind-Scale="@MyFlags.BossScaleFactor">Boss Stats:</ClampedSlider>
+				<div class="slider-cell"></div>
+				<div class="row">
+					<div class="col-6">
+						<label>Exp/Gold Boost:</label>
+					</div>
+					<div class="col-3">
+						<label>@Math.Round(@MyFlags.ExpMultiplier, 1).ToString("F1")x + @MyFlags.ExpBonus</label>
+					</div>
+					<Slider bind-Value="@MyFlags.ExpMultiplier" Min="1" Max="5" Step="0.1"></Slider>
+				</div>
+				<div class="row">
+					<div class="col-9"></div>
+					<Slider bind-Value="@MyFlags.ExpBonus" Min="0" Max="500" Step="10"></Slider>
+				</div>
+				<div class="row">
+					<div class="col-9"><label>Exp/Gold Progressive Scaling:</label></div>
+					<div class="col-3">
+						<EnumDropDown TItem="ProgressiveScaleMode" bind-Value="@MyFlags.ProgressiveScaleMode"></EnumDropDown>
+					</div>
+				</div>
+				<div class="slider-cell"></div>
+				<div class="row">
+					<div class="col-6">
+						<label>Overworld Encounter Rate:</label>
+					</div>
+					<div class="col-3">
+						<label>@Math.Round(@MyFlags.EncounterRate / 30.0, 2).ToString("F2")x</label>
+					</div>
+					<Slider bind-Value="@MyFlags.EncounterRate" Min="0" Max="45" Step="1"></Slider>
+				</div>
+				<div class="row">
+					<div class="col-6">
+						<label>Dungeon Encounter Rate:</label>
+					</div>
+					<div class="col-3">
+						<label>@Math.Round(@MyFlags.DungeonEncounterRate / 30.0, 2).ToString("F2")x</label>
+					</div>
+					<Slider bind-Value="@MyFlags.DungeonEncounterRate" Min="0" Max="45" Step="1"></Slider>
+				</div>
+			</div>
+		</TabPane>
+		<TabPane IsOpen="@(activeTab == "Party")">
+			<div class="container">
+				<div class="row">
+					<div class="col-4">
+						<h4>This is like a whole thing.</h4>
+					</div>
+				</div>
+			</div>
+		</TabPane>
+		<TabPane IsOpen="@(activeTab == "Conveniences")">
+			<div class="container">
+				<div class="row">
+					<div class="col-4">
+						<CheckBox Id="earlySardaCheckBox" bind-Value="@MyFlags.EarlySarda">Early Sarda Item</CheckBox>
+						<CheckBox Id="earlySageCheckBox" bind-Value="@MyFlags.EarlySage">Early Sage Item</CheckBox>
+						<CheckBox Id="crownlessOrdealsCheckBox" bind-Value="@MyFlags.CrownlessOrdeals">Early Ordeals</CheckBox>
+						<div class="checkbox-cell"></div>
+						<CheckBox Id="noPartyShuffleCheckBox" bind-Value="@MyFlags.NoPartyShuffle">No Party Shuffle</CheckBox>
+						<CheckBox Id="speedHacksCheckBox" bind-Value="@MyFlags.SpeedHacks">Speed Hacks</CheckBox>
+						<CheckBox Id="identifyTreasuresCheckBox" bind-Value="@MyFlags.IdentifyTreasures">Identify Treasures</CheckBox>
+						<CheckBox Id="dashCheckBox" bind-Value="@MyFlags.Dash">Enable Dash</CheckBox>
+						<CheckBox Id="buyTenCheckBox" bind-Value="@MyFlags.BuyTen">Buy 10 Items</CheckBox>
+						<CheckBox Id="waitWhenUnrunnableCheckBox" bind-Value="@MyFlags.WaitWhenUnrunnable">Change Unrunnable RUN to WAIT</CheckBox>
+						<CheckBox Id="enableCritNumberDisplayCheckBox" bind-Value="@MyFlags.EnableCritNumberDisplay">Critical Hit Count Display</CheckBox>
+					</div>
+					<div class="col-4">
+						<CheckBox Id="freeAirshipCheckBox" bind-Value="@MyFlags.FreeAirship">Free Airship</CheckBox>
+						<CheckBox Id="freeBridgeCheckBox" bind-Value="@MyFlags.FreeBridge">Free Bridge</CheckBox>
+						<CheckBox Id="easyModeCheckBox" bind-Value="@MyFlags.EasyMode">Easy Mode</CheckBox>
+					</div>
+				</div>
+			</div>
+		</TabPane>
+		<TabPane IsOpen="@(activeTab == "Bug Fixes")">
+			<div class="container">
+				<div class="row">
+					<div class="col-4">
+						<CheckBox Id="houseMPRestorationCheckBox" bind-Value="@MyFlags.HouseMPRestoration">House MP Restoration</CheckBox>
+						<CheckBox Id="weaponStatsCheckBox" bind-Value="@MyFlags.WeaponStats">Weapon Stats</CheckBox>
+						<CheckBox Id="chanceToRunCheckBox" bind-Value="@MyFlags.ChanceToRun">Chance to Run</CheckBox>
+						<CheckBox Id="spellBugsCheckBox" bind-Value="@MyFlags.SpellBugs">Spell Fixes</CheckBox>
+						<CheckBox Id="enemyStatusAttackBugCheckBox" bind-Value="@MyFlags.EnemyStatusAttackBug">Enemy Status Attacks</CheckBox>
+						<CheckBox Id="blackBeltAbsorbCheckBox" bind-Value="@MyFlags.BlackBeltAbsorb">Black Belt & Master Absorb Calculation</CheckBox>
+						<CheckBox Id="enemyElementalResistancesCheckBox" bind-Value="@MyFlags.EnemyElementalResistancesBug">Enemy Elemental Resistances</CheckBox>
+						<CheckBox Id="enemySpellsTargetingAlliesCheckBox" bind-Value="@MyFlags.EnemySpellsTargetingAllies">Enemy Spells Targeting Allies</CheckBox>
+						<CheckBox Id="improveTurnOrderRandomizationCheckBox" bind-Value="@MyFlags.ImproveTurnOrderRandomization">Improve Turn Order Randomization</CheckBox>
+					</div>
+				</div>
+			</div>
+		</TabPane>
+		<TabPane IsOpen="@(activeTab == "Fun %")">
+			<div class="container">
+				<div class="row">
+					<h4>Fun % Flags</h4>
+					<p>Fun flags are not part of the standard flags string since they do not impact gameplay. The buttons at the bottom can be used to store your preferred fun % settings within your browser so that they will be automatically restored each time you visit the site.</p>
+					<div class="col-4">
+						<CheckBox Id="funEnemyNamesCheckBox" bind-Value="@MyFlags.FunEnemyNames">Fun Enemy Names</CheckBox>
+						<CheckBox Id="paletteSwapCheckBox" bind-Value="@MyFlags.PaletteSwap">Palette Swap</CheckBox>
+						<CheckBox Id="modernBattlefieldCheckBox" bind-Value="@MyFlags.ModernBattlefield">Modern Battlefield</CheckBox>
+						<CheckBox Id="thirdBattlePaletteCheckBox" bind-Value="@MyFlags.ThirdBattlePalette">Three Battle Palettes</CheckBox>
+					</div>
+					<div class="col-4">
+						<CheckBox Id="teamSteakCheckBox" bind-Value="@MyFlags.TeamSteak">Team STEAK</CheckBox>
+						<EnumDropDown TItem="MusicShuffle" bind-Value="@MyFlags.Music"></EnumDropDown>
+						<CheckBox Id="disableDamageTileFlickerCheckBox" bind-Value="@MyFlags.DisableDamageTileFlicker">Disable Damage Tile Flicker</CheckBox>
+					</div>
+					<button>lol save preferences</button>
+				</div>
+			</div>
+		</TabPane>
+	</TabContent>
+</div>
+
+@functions
+{
+	private byte[] _fileData;
+	private FF1Rom _rom;
+
+	private FF1Lib.ViewModelFlags MyFlags { get; set; } = new FF1Lib.ViewModelFlags();
+
+	private string activeTab = "Shuffle";
+
+	void ActivateTab(string tab)
+	{
+		activeTab = tab;
+		StateHasChanged();
+	}
+
+	protected override async Task OnInitAsync()
+	{
+		MyFlags.PropertyChanged += (sender, args) => StateHasChanged();
+
+		await LoadPreset("default");
+	}
+
+	async Task LoadPreset(string presetName)
+	{
+		var presetJson = await Http.GetStringAsync($"presets/{presetName}.json");
+		MyFlags.Flags = Microsoft.JSInterop.Json.Deserialize<Flags.Preset>(presetJson).Flags;
+	}
+
+	async Task OnFileChanged(UIChangeEventArgs e)
+	{
+		var encoded = await JSRuntime.Current.InvokeAsync<string>("handleFileSelect", "fileInput");
+		_fileData = Convert.FromBase64String(encoded);
+	}
+
+	void OnRandomize(UIMouseEventArgs e)
+	{
+		if (_fileData == null)
+			return;
+
+		using (var stream = new MemoryStream(_fileData))
+		{
+			_rom = new FF1Rom(stream);
+		}
+
+		_rom.Randomize(Blob.FromHex("DEADBEEF"), MyFlags.Flags);
+
+		var data = new byte[512 * 1024 + 16];
+		using (var stream = new MemoryStream(data, true))
+		{
+			_rom.Save(stream);
+		}
+
+		var encoded = Convert.ToBase64String(data);
+
+		JSRuntime.Current.InvokeAsync<object>("downloadROM", "ff1randomized.nes", encoded);
+	}
+}

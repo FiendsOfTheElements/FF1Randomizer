@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,9 +10,13 @@ namespace FF1Lib
 {
 	public enum FormationShuffleModeEnum
 	{
+		[Description("Don't Shuffle Encounters")]
 		None = 0,
+		[Description("Shuffle Encounter Rarity")]
 		Intrazone,
+		[Description("Shuffle All Encounters Across Zones")]
 		InterZone,
+		[Description("Random Encounter Zones")]
 		Randomize
 	}
 	public partial class FF1Rom : NesRom

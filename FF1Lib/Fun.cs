@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using RomUtilities;
@@ -8,9 +9,13 @@ namespace FF1Lib
 {
 	public enum MusicShuffle
 	{
+		[Description("No Music Shuffle")]
 		None = 0,
+		[Description("Standard Music Shuffle")]
 		Standard,
+		[Description("Nonsensical Music Shuffle")]
 		Nonsensical,
+		[Description("Disable Music")]
 		MusicDisabled
 	}
 

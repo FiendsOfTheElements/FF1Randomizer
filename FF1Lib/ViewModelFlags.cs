@@ -80,7 +80,7 @@ namespace FF1Lib
 				Flags.RandomWares = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomWares"));
 			}
-		}// Planned 2.x feature - random weapons and armor in shops
+		} // Planned 2.x feature - random weapons and armor in shops
 		public bool RandomLoot
 		{
 			get => Flags.RandomLoot;
@@ -91,6 +91,15 @@ namespace FF1Lib
 			}
 		} // Planned 2.x feature - random non-quest-item treasures
 
+		public FormationShuffleModeEnum FormationShuffleMode
+		{
+			get => Flags.FormationShuffleMode;
+			set
+			{
+				Flags.FormationShuffleMode = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FormationShuffleMode"));
+			}
+		}
 		public WorldWealth WorldWealth
 		{
 			get => Flags.WorldWealth;
@@ -930,6 +939,34 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ProgressiveScaleMode"));
 			}
 		}
+		public bool ClampMinimumStatScale
+		{
+			get => Flags.ClampMinimumStatScale;
+			set
+			{
+				Flags.ClampMinimumStatScale = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ClampMinimumStatScale"));
+			}
+		}
+		public bool ClampMinimumBossStatScale
+		{
+			get => Flags.ClampMinimumBossStatScale;
+			set
+			{
+				Flags.ClampMinimumBossStatScale = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ClampMinimumBossStatScale"));
+			}
+		}
+		public bool ClampMinimumPriceScale
+		{
+			get => Flags.ClampMinimumPriceScale;
+			set
+			{
+				Flags.ClampMinimumPriceScale = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ClampMinimumPriceScale"));
+			}
+		}
+
 		public double EncounterRate
 		{
 			get => Flags.EncounterRate;
@@ -958,12 +995,12 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ExpMultiplier"));
 			}
 		}
-		public int ExpBonus
+		public double ExpBonus
 		{
 			get => Flags.ExpBonus;
 			set
 			{
-				Flags.ExpBonus = value;
+				Flags.ExpBonus = (int)value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ExpBonus"));
 			}
 		}
