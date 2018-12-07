@@ -174,7 +174,20 @@ namespace FF1Lib
 			// this is a duplicate { "..", 0xC3 },
 			{ "!", 0xC4 },
 			{ "?", 0xC5 },
+			{ "@S", 0xD4 },
+			{ "@H", 0xD5 },
+			{ "@K", 0xD6 },
+			{ "@X", 0xD7 },
+			{ "@F", 0xD8 },
+			{ "@N", 0xD9 },
+			{ "@A", 0xDA },
+			{ "@s", 0xDB },
+			{ "@h", 0xDC },
+			{ "@G", 0xDD },
+			{ "@B", 0xDE },
+			{ "@T", 0xDF },
 			{ "%", 0xE0 },
+			{ "@p", 0xE1 },
 			{ ";", 0xFF }
 		};
 
