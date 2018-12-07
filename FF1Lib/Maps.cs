@@ -103,6 +103,7 @@ namespace FF1Lib
 		MarshCaveOOB = 0x3F,
 		EarthCaveRandomEncounters = 0x41,
 		WaterfallInside = 0x46,
+		WaterfallSpikeTile = 0x48,
 		WaterfallRandomEncounters = 0x49
 	}
 

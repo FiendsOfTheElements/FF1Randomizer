@@ -121,7 +121,7 @@ namespace FF1Lib.Procgen
 			//int doorPos = ;
 			//TO-DO: randomize the door position, rather than putting it at the left-most spot.
 			int doorYPos = (room_y + room.Height) % 64;
-			bool doorPlaced = false;
+			
 			List<int> possibleDoors = new List<int>();
 			for (var i = 0; i < room.Width; i++)
 			{
