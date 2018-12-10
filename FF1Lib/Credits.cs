@@ -300,23 +300,24 @@ namespace FF1Lib
 				new []
 				{
 					"",
-					"  Development",
+					"Lead Development",
 					"",
-					"  Entroper",
-					"  MeridianBC",
-					"  tartopan",
-					"  nitz, artea",
-					"  Septimus",
+					" Entroper",
+					" MeridianBC",
+					" nitz",
+					" Septimus",
+					" tartopan",
 				},
 				new []
 				{
 					"",
 					"  Contributors",
 					"",
-					"leggystarscream",
-					"  splitpunched",
-					"  drcatdoctor",
-					"  nic0lette",
+					" artea",
+					" drcatdoctor",
+					" leggystarscream",
+					" nic0lette",
+					" splitpunched",
 				},
 				new []
 				{
