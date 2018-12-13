@@ -100,6 +100,7 @@
 							</select>
 							</span>
 						</div>
+						<div class="checkbox-cell" title="If checked, attempts to put notable treasure in certain trap tile guarded chests."><input class="indent" :disabled="!Treasures" v-model="BetterTrapChests" type="checkbox" asp-for="Flags.BetterTrapChests" /> <label :style="!Treasures ? { color: 'grey'} : {}" asp-for="Flags.BetterTrapChests">Better trap treasure</label></div>
 						<div class="checkbox-cell" title="If unchecked, forces vanilla Bridge, Lute, Ship, Rod, Canoe, Cube, Bottle"><input v-model="NPCItems" type="checkbox" asp-for="Flags.NPCItems" /> <label asp-for="Flags.NPCItems">Main NPC Items</label></div>
 						<div class="checkbox-cell" title="If unchecked, forces the Bridge, Ship, and Canal to be located in the initial continent."><input :disabled="!Treasures || !NPCItems" class="indent" v-model="AllowObsoleteVehicles" type="checkbox" asp-for="Flags.AllowObsoleteVehicles" /> <label asp-for="Flags.AllowObsoleteVehicles">Allow Obsolete Progression</label></div>
 						<div class="checkbox-cell" title="If unchecked, forces vanilla Crystal, Herb, Key, Canal, Oxyale, Chime, Xcalber"><input v-model="NPCFetchItems" type="checkbox" asp-for="Flags.NPCFetchItems" /> <label asp-for="Flags.NPCFetchItems">Fetch Quest Rewards</label></div>
