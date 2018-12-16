@@ -23,7 +23,7 @@ namespace FF1Lib.Procgen
 			var startLoc = (x: 0x39, y: 0x38);
 
 			var startingX = rng.Between(-3, 0) + startLoc.x;
-			var startingY = rng.Between(-4, 0) + startLoc.y;
+			var startingY = rng.Between(-4, -1) + startLoc.y;
 
 			var startRegion = new Region(startingX, startingY, 4, 5, Tile.WaterfallRandomEncounters);
 
@@ -33,7 +33,7 @@ namespace FF1Lib.Procgen
 			List<Region> endingRegions = new List<Region>();
 			for (var i = 0; i < iteration_count; i++)
 			{
-				var startPoint = regionList[rng.Between(0, regionList.Count-1)];
+				var startPoint = regionList[rng.Between(0, regionList.Count - 1)];
 				var newRegions = RegionChain(rng, startPoint, regionList, 30 - i);
 				regionList.AddRange(newRegions);
 				if (newRegions.Count > 0)
@@ -54,23 +54,32 @@ namespace FF1Lib.Procgen
 				var base_x = (borderRegion.x - (room.Width - 1) + 64) % 64;
 				room_y = (borderRegion.y - room.Height + 64) % 64;
 				var x_offset = 1;
+				List<int> valid_offsets = new List<int>();
 
-
-				while(!foundRoomPlace && x_offset < room.Width - 1)
+				while (x_offset < room.Width)
 				{
-					room_x = (base_x + x_offset) %64;
-					foundRoomPlace = true;
-					foreach(Region r in regionList)
+					room_x = (base_x + x_offset) % 64;
+					var validRoomPlace = true;
+					foreach (Region r in regionList)
 					{
-						//foundRoomPlace = foundRoomPlace && !r.IntersectsRoom(room, room_x, room_y);
-						var testVal = foundRoomPlace && !r.IntersectsRoom(room, room_x, room_y);
-						if (!testVal && foundRoomPlace)
+						var testVal = validRoomPlace && !r.IntersectsRoom(room, room_x, room_y);
+						if (!testVal && validRoomPlace)
 						{
-							Console.WriteLine(room_x);
+							//Console.WriteLine(room_x);
 						}
-						foundRoomPlace = testVal;
+						validRoomPlace = testVal;
+					}
+					if (validRoomPlace)
+					{
+						valid_offsets.Add(x_offset);
 					}
 					x_offset++;
+				}
+
+				if (valid_offsets.Count != 0)
+				{
+					foundRoomPlace = true;
+					room_x = (base_x + valid_offsets[rng.Between(0, valid_offsets.Count - 1)]);
 				}
 
 				endingRegions.Remove(borderRegion);
@@ -79,7 +88,7 @@ namespace FF1Lib.Procgen
 			if (!foundRoomPlace)
 			{
 				List<int> idxs = Enumerable.Range(0, regionList.Count).ToList();
-				while(!foundRoomPlace && idxs.Count >0)
+				while (!foundRoomPlace && idxs.Count > 0)
 				{
 					int regionIdx = idxs.PickRandom(rng);
 
@@ -87,18 +96,34 @@ namespace FF1Lib.Procgen
 					var base_x = (borderRegion.x - (room.Width - 1) + 64) % 64;
 					room_y = (borderRegion.y - (room.Height - 1) + 64) % 64;
 					var x_offset = 1;
+					List<int> valid_offsets = new List<int>();
 
-
-					while (!foundRoomPlace && x_offset < room.Width)
+					while (x_offset < room.Width)
 					{
 						room_x = (base_x + x_offset) % 64;
-						foundRoomPlace = true;
+						var validRoomPlace = true;
 						foreach (Region r in regionList)
 						{
-							foundRoomPlace = foundRoomPlace && !r.IntersectsRoom(room, room_x, room_y);
+							var testVal = validRoomPlace && !r.IntersectsRoom(room, room_x, room_y);
+							if (!testVal && validRoomPlace)
+							{
+								//Console.WriteLine(room_x);
+							}
+							validRoomPlace = testVal;
+						}
+						if (validRoomPlace)
+						{
+							valid_offsets.Add(x_offset);
 						}
 						x_offset++;
 					}
+
+					if (valid_offsets.Count != 0)
+					{
+						foundRoomPlace = true;
+						room_x = (base_x + valid_offsets[rng.Between(0, valid_offsets.Count - 1)]);
+					}
+
 					idxs.Remove(regionIdx);
 				}
 			}
@@ -118,16 +143,18 @@ namespace FF1Lib.Procgen
 			Region waterfallRoom = new Region(room_x, room_y, room);
 			waterfallRoom.DrawRegion(complete);
 
-			//int doorPos = ;
-			//TO-DO: randomize the door position, rather than putting it at the left-most spot.
+
 			int doorYPos = (room_y + room.Height) % 64;
-			
+
 			List<int> possibleDoors = new List<int>();
 			for (var i = 0; i < room.Width; i++)
 			{
 				if (complete.Map[((room_x + i) % 64, doorYPos)].Tile == Tile.WaterfallRandomEncounters)
 				{
-					possibleDoors.Add(i);
+					if (!(i == 0 || i == 7))
+					{
+						possibleDoors.Add(i);
+					}
 				}
 				if (complete.Map[((room_x + i) % 64, doorYPos)].Tile == Tile.WaterfallInside)
 				{
@@ -139,11 +166,12 @@ namespace FF1Lib.Procgen
 					{
 						complete.Map[((room_x + i) % 64, doorYPos)].Tile = Tile.RoomRight;
 					}
-					/*else
-					{
-						complete.Map[doorYPos, (room_x + i) % 64] = (byte)Tile.RoomBackCenter;
-					}*/
 				}
+			}
+
+			if (possibleDoors.Count == 0)
+			{
+				return null;
 			}
 
 			//Then we do the cleanup
@@ -290,6 +318,32 @@ namespace FF1Lib.Procgen
 							cell.Tile = Tile.RoomFrontCenter;
 						}
 					}
+
+					//Highjacking this to include some room-bottom cleanup; this prevents a runaway robot!
+					if (cell.Neighbor(Direction.Up).Tile == Tile.RoomFrontCenter || cell.Neighbor(Direction.Up).Tile == Tile.RoomFrontLeft || cell.Neighbor(Direction.Up).Tile == Tile.RoomFrontRight)
+					{
+						cell.Tile = Tile.RoomBackCenter;
+					}
+				}
+
+				if (cell.Tile == Tile.RoomLeft && cell.Neighbor(Direction.Up).Tile == Tile.RoomFrontCenter)
+				{
+					cell.Tile = Tile.RoomBackLeft;
+				}
+
+				if (cell.Tile == Tile.RoomLeft && cell.Neighbor(Direction.Up).Tile == Tile.RoomFrontLeft)
+				{
+					cell.Tile = Tile.RoomBackLeft;
+				}
+
+				if (cell.Tile == Tile.RoomRight && cell.Neighbor(Direction.Up).Tile == Tile.RoomFrontCenter)
+				{
+					cell.Tile = Tile.RoomBackRight;
+				}
+
+				if (cell.Tile == Tile.RoomRight && cell.Neighbor(Direction.Up).Tile == Tile.RoomFrontLeft)
+				{
+					cell.Tile = Tile.RoomBackRight;
 				}
 			}
 
@@ -299,7 +353,8 @@ namespace FF1Lib.Procgen
 			}
 
 			//Finally we'll need to to clean up the room sometimes
-			foreach (MapElement cell in complete.Map)
+
+			/*foreach (MapElement cell in complete.Map)
 			{
 				if (cell.Tile == Tile.RoomFrontCenter && cell.Neighbor(Direction.Down).Tile == Tile.RoomFrontCenter)
 				{
@@ -317,7 +372,7 @@ namespace FF1Lib.Procgen
 				{
 					cell.Tile = Tile.WaterfallInside;
 				}
-			}
+			}*/
 
 			return complete;
 		}
