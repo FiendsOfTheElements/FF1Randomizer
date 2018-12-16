@@ -207,19 +207,18 @@ namespace FF1Lib
 
 				// We sort the treasure pool based on value (sort of) and pull out the highest ranked ones to put
 				// in the trap chests we picked out.
-				var notableTreasurePool = treasurePool.FindAll(item => notableTreasure.Contains(item));
-				notableTreasurePool.Shuffle(rng);
+				var notableTreasurePool = treasurePool.Where(item => notableTreasure.Contains(item)).ToList();
 
 				// Since some chests might be incentivized, remove those that aren't in the pool.
 				var trapChestPool = TrapChests.Where(chest => itemLocationPool.Contains(chest));
 
 				foreach (var chest in trapChestPool)
 				{
-					// Pick a notable treasure
-					Item treasure = notableTreasurePool.First();
-					notableTreasurePool.Remove(treasure);
+					// It seems unlikely that is possible, but just in case.
+					if (!notableTreasurePool.Any()) break;
 
-					// Place it
+					// Pick a random treasure and place it.
+					var treasure = notableTreasurePool.SpliceRandom(rng);
 					placedItems.Add(NewItemPlacement(chest, treasure));
 
 					// Since it was placed, remove both the item and location from the remaining pool.
