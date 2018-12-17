@@ -16,6 +16,26 @@ namespace FF1Lib
 	{
 		private const Item ReplacementItem = Item.Cabin;
 
+		private List<IRewardSource> TrapChests = new List<IRewardSource>()
+		{
+			ItemLocations.ToFTopRight2, // In-Out trap tile forced
+			ItemLocations.ToFBottomRight, // Locked trap tile
+			ItemLocations.MarshCave12, // Locked, center, trap tile
+			ItemLocations.EarthCave10, // Entrance trap, vanilla wooden shield
+			ItemLocations.EarthCave12, // Room before Vampire, trapped
+			ItemLocations.EarthCave20, // Far corner chest in Earth B4, top room
+			ItemLocations.Volcano6, // Armory trapped tile
+			ItemLocations.Volcano15, // Top hairpin, trapped, vanilla Giant Sword
+			ItemLocations.Volcano31, // Trapped far room B4, vanilla flame shield
+			ItemLocations.VolcanoMajor, // Red D chest
+			ItemLocations.IceCave6, // Trapped chest to right of floater
+			ItemLocations.IceCaveMajor, // Vanilla floater
+			ItemLocations.IceCave15, // In-out trap tile forced B3, vanilla Silver Gauntlet
+			ItemLocations.SeaShrine9, // B4 trapped chest, vanilla Power Gauntlet
+			ItemLocations.SeaShrine3, // In-Out trap Sharknado chest
+			ItemLocations.SkyPalace33, // Top chest B3, vanilla Pro-Ring
+		};
+
 		public static ItemPlacement Create(IItemPlacementFlags flags, IncentiveData incentivesData, List<Item> allTreasures, ItemShopSlot caravanItemLocation, OverworldMap overworldMap)
 		{
 			ItemPlacement placement;
@@ -158,8 +178,6 @@ namespace FF1Lib
 			treasurePool.AddRange(incentivePool);
 
 			Debug.Assert(treasurePool.Count() == itemLocationPool.Count());
-			treasurePool.Shuffle(rng);
-			itemLocationPool.Shuffle(rng);
 
 			if (_flags.RandomLoot)
 			{
@@ -174,6 +192,46 @@ namespace FF1Lib
 				ItemGenerator generator = new ItemGenerator(randomTreasure, _flags.WorldWealth);
 				treasurePool = treasurePool.Select(treasure => generator.GetItem(rng)).ToList();
 			}
+
+			if (_flags.BetterTrapChests)
+			{
+				// First we'll make a list of all 'notable' treasure.
+				var notableTreasureList = new List<Item>()
+					.Concat(ItemLists.UberTier)
+					.Concat(ItemLists.LegendaryWeaponTier)
+					.Concat(ItemLists.LegendaryArmorTier)
+					.Concat(ItemLists.RareWeaponTier)
+					.Concat(ItemLists.RareArmorTier);
+				// Convert the list to a HashSet since we'll be doing lookups in it.
+				var notableTreasure = new HashSet<Item>(notableTreasureList);
+
+				// We sort the treasure pool based on value (sort of) and pull out the highest ranked ones to put
+				// in the trap chests we picked out.
+				var notableTreasurePool = treasurePool.Where(item => notableTreasure.Contains(item)).ToList();
+
+				// Since some chests might be incentivized, remove those that aren't in the pool.
+				var trapChestPool = TrapChests.Where(chest => itemLocationPool.Contains(chest));
+
+				foreach (var chest in trapChestPool)
+				{
+					// It seems unlikely that is possible, but just in case.
+					if (!notableTreasurePool.Any()) break;
+
+					// Pick a random treasure and place it.
+					var treasure = notableTreasurePool.SpliceRandom(rng);
+					placedItems.Add(NewItemPlacement(chest, treasure));
+
+					// Since it was placed, remove both the item and location from the remaining pool.
+					treasurePool.Remove(treasure);
+					itemLocationPool.Remove(chest);
+				}
+
+				// This should still be true at the end, so make sure it is
+				Debug.Assert(treasurePool.Count() == itemLocationPool.Count());
+			}
+
+			treasurePool.Shuffle(rng);
+			itemLocationPool.Shuffle(rng);
 
 			var leftovers = treasurePool.Zip(itemLocationPool, (treasure, location) => NewItemPlacement(location, treasure));
 			placedItems.AddRange(leftovers);
