@@ -1,4 +1,37 @@
 ﻿<div class="col-xs-12">
+	<h1>Version 2.X</h1>
+	<h2>Major Features</h2>
+	<ul>
+        <li>
+            <h3>Better trap treasure</h3>
+			When shuffling or randomizing treasures, this option attempts to place more interesting items in
+			chests which are guarded by forced fights.
+            <div>
+                <img src="~/images/TrapTiles.png" style="margin: 0 auto; width: 512px;" />
+            </div>
+			The chests included in this option include:
+			<ul>
+                <li><a href="http://mikesrpgcenter.com/ffantasy/maps/templeoffiends.html" target="_blank">Temple of Fiends</a> (locked): "Soft", "Rune Sword"</li>
+                <li><a href="http://mikesrpgcenter.com/ffantasy/maps/marshcave.html" target="_blank">Marsh Cave</a> (locked): B3 "Silver Dagger"</li>
+                <li><a href="http://mikesrpgcenter.com/ffantasy/maps/earthcave.html" target="_blank">Earth Cave</a> B2 "Wooden Shield", B3 "1020 G", B4 "5450 G"</li>
+                <li><a href="http://mikesrpgcenter.com/ffantasy/maps/gurguvolcano.html" target="_blank">Volcano</a> B2 "1455 G", B2 "Giant Sword", B4 "Flame Shield", B5 "Flame Armor"</li>
+                <li><a href="http://mikesrpgcenter.com/ffantasy/maps/icecave.html" target="_blank">Ice Cave</a> B2 "Cloth Armor", B2 "Floater", B3 "Silver Gauntlet"</li>
+                <li><a href="http://mikesrpgcenter.com/ffantasy/maps/seashrine.html" target="_blank">Sea Shrine</a> B4 "Power Gauntlet", B4 "7340 G"</li>
+				<li><a href="http://mikesrpgcenter.com/ffantasy/maps/floatingcastle.html" target="_blank">Floating Castle</a> L3 "ProRing"</li>
+			</ul>
+            <p>The treasures which could be found in these chests include:</p>
+            <div style="margin: 1em; font-variant: small-caps;">
+                Aegis Shield, Bane Sword, Black Shirt, CatClaw, Coral Sword, Defense Sword, Dragon Armor,
+                Dragon Sword, Flame Armor, Flame Shield, Flame Sword, Giant Sword, Gold Bracelet, Heal Helm,
+                Heal Rod, Ice Armor, Ice Shield, Ice Sword, Katana, Light Axe, Mage Rod, Masamune, Opal Armor,
+                Opal Bracelet, Opal Gauntlets, Opal Helm, Opal Shield, Power Gauntlets, ProCape, ProRing,
+                Ribbon, Rune Sword, Steel Armor, Sun Sword, Thor Hammer, Vorpal, Were Sword, White Shirt,
+                Wizard Rod, Xcalber, Zeus Gauntlets
+            </div>
+            <b>Note:</b> If a chest was incentivized (such as the "Floater" chest in Ice Cave), it won't be included in this
+			treasure placement, even if it doesn't have an incentive item.
+        </li>
+	</ul>
 	<h1>Version 2.5.0</h1>
 	<h2>Major Features</h2>
 	<ul>
@@ -25,8 +58,10 @@
 				<li>Slot 2 is forced to Fighter or Thief or None and randomly selected and locked.</li>
 				<li>Slot 3 could be set to Red or White Mage, but allow user selection.</li>
 				<li>Slot 4 could be forbidden from being a Fighter, but allow anything else.</li>
-				<li>If the "Forced?" box is checked, the slot will be forced randomly from the available options
-				depending on the seed. If unchecked, the player will be able to choose from the selected boxes.</li>
+				<li>
+					If the "Forced?" box is checked, the slot will be forced randomly from the available options
+					depending on the seed. If unchecked, the player will be able to choose from the selected boxes.
+				</li>
 			</ul>
 		</li>
 		<li>
@@ -88,14 +123,20 @@
 	<ul>
 		<li>
 			<h3>Entrance Shuffle</h3>
-			<p>	Entrance randomization adds a whole new level of exploration. It breaks down into Entrance,
-			Floor, and Town Shuffling. <b>All forms of Entrance Shuffling Require NPC Item Shuffle to be enabled.</b>
-			Without shuffling NPCs the world map would be fairly restricted anyway. Therefore, to enforce the high degree
-			of variety this feature is designed to create, NPC Item Shuffle is required for Entrance Shuffle. </p>
-			<p>	Additionally, when Princess Sara is rescued following the initial battle with Garland, the party <b>is not
-			teleported along with her to Coneria Castle</b>. With the entrances shuffled it might not be possible for
-			the party to get back to the Temple of Fiends entrance where they may have parked their boat or ship! Even
-			if it would be possible, for the sake of consistency, that teleport is disabled.</p>
+			<p>
+				Entrance randomization adds a whole new level of exploration. It breaks down into Entrance,
+				Floor, and Town Shuffling. <b>All forms of Entrance Shuffling Require NPC Item Shuffle to be enabled.</b>
+				Without shuffling NPCs the world map would be fairly restricted anyway. Therefore, to enforce the high degree
+				of variety this feature is designed to create, NPC Item Shuffle is required for Entrance Shuffle.
+			</p>
+			<p>
+				Additionally, when Princess Sara is rescued following the initial battle with Garland, the party <b>
+					is not
+					teleported along with her to Coneria Castle
+				</b>. With the entrances shuffled it might not be possible for
+				the party to get back to the Temple of Fiends entrance where they may have parked their boat or ship! Even
+				if it would be possible, for the sake of consistency, that teleport is disabled.
+			</p>
 			<ul>
 				<li>
 					<b>Entrances</b> connect any entrance to any dungeon. For example, the Temple of Fiends
@@ -120,14 +161,20 @@
 						<br />
 					</div>
 					<br />
-					<p>Remember, <b>Entrance Shuffle creates an new focus on exploration!</b> One needs to realize
-					that the quest items may now come out of order, because <b>all dungeons might have different
-					requirements to be accessed.</b> The CHIME might just lead to an unimportant Cardia cave,
-					while the eastern entrance to the Titan's Tunnel may be the Sea Shrine. </p>
-					<p>Onrac is considered a town, so Entrance Shuffle does not move it. However, its entrance
-					to the Sea Shrine is considered an entrance, so the OXYALE is required to gain access to
-					whereever it leads. Note this may be a meaningless destination like an empty Cardia cave,
-					or it may be something as important as the Temple of Fiends.</p>
+					<p>
+						Remember, <b>Entrance Shuffle creates an new focus on exploration!</b> One needs to realize
+						that the quest items may now come out of order, because <b>
+							all dungeons might have different
+							requirements to be accessed.
+						</b> The CHIME might just lead to an unimportant Cardia cave,
+						while the eastern entrance to the Titan's Tunnel may be the Sea Shrine.
+					</p>
+					<p>
+						Onrac is considered a town, so Entrance Shuffle does not move it. However, its entrance
+						to the Sea Shrine is considered an entrance, so the OXYALE is required to gain access to
+						whereever it leads. Note this may be a meaningless destination like an empty Cardia cave,
+						or it may be something as important as the Temple of Fiends.
+					</p>
 					<br />&nbsp;
 				</li>
 				<li>
@@ -149,23 +196,27 @@
 				<li>
 					<b>Floors</b> really mixes things up by allowing almost any connecting stairs to lead
 					to any floor of any other dungeon. Virtually all dungeon floors in the game can be
-					shuffled into any ordering, with the exception of the following list which are <b> not
-					shuffled:</b>
+					shuffled into any ordering, with the exception of the following list which are <b>
+						not
+						shuffled:
+					</b>
 					<ul>
 						<li>Ice Cave from the Pit Room onward.</li>
 						<li>Castle Ordeals</li>
 						<li>Coneria Castle</li>
 						<li>Temple of Fiends & Revisited</li>
 					</ul>
-					<p> Of course this means things like the CUBE and ROD <b>might not be required</b>. The room
-					after the Vampire might just be a dead end in Cardia; the CUBE might just lead to the Ice Cave
-					Pit Room with an unimportant treasure at the end, for example. With floor shuffle almost
-					anything is possible! </p>
 					<p>
-					Regardless of how all of the fiends and Temple of Fiends are accessed, the entire game will
-					always be made available. In other words: all of the floors, treaures, bosses, and items
-					will be available somewhere. You may not need the CUBE to beat the game, but it nevertheless
-					gets placed in a chest or NPC, depending on your flags, waiting to be found.
+						Of course this means things like the CUBE and ROD <b>might not be required</b>. The room
+						after the Vampire might just be a dead end in Cardia; the CUBE might just lead to the Ice Cave
+						Pit Room with an unimportant treasure at the end, for example. With floor shuffle almost
+						anything is possible!
+					</p>
+					<p>
+						Regardless of how all of the fiends and Temple of Fiends are accessed, the entire game will
+						always be made available. In other words: all of the floors, treaures, bosses, and items
+						will be available somewhere. You may not need the CUBE to beat the game, but it nevertheless
+						gets placed in a chest or NPC, depending on your flags, waiting to be found.
 					</p>
 				</li>
 				<li>
@@ -255,10 +306,14 @@
 			<h3>WarMECH Mode</h3>
 			<ul>
 				<li>Vanilla. The classic 7th encounter on the Bridge of Destiny we all know and love.</li>
-				<li>Patrolling. WarMECH is now an NPC roaming the Sky Palace 4th floor maze. Talk to him to engage! In
-				this mode WarMECH is removed from the encounter table and cannot be fought on the Bridge of Destiny.</li>
-				<li>Required. WarMECH is now an NPC waiting for you in front of Tiamat. WarMECH cannot be randomly encountered
-				in this mode either, but will always be fought at the end of the hall.</li>
+				<li>
+					Patrolling. WarMECH is now an NPC roaming the Sky Palace 4th floor maze. Talk to him to engage! In
+					this mode WarMECH is removed from the encounter table and cannot be fought on the Bridge of Destiny.
+				</li>
+				<li>
+					Required. WarMECH is now an NPC waiting for you in front of Tiamat. WarMECH cannot be randomly encountered
+					in this mode either, but will always be fought at the end of the hall.
+				</li>
 			</ul>
 		</li>
 		<li>
@@ -274,8 +329,10 @@ TAIL        CUBE        BOTTLE
 OXYALE      SHIP        CANOE
 AIRSHIP     BRIDGE      CANAL
 </pre>
-			<p>It is important to note that this scaling is applied at the end of each battle and is recalculated
-			each time, thus applying its bonus appropriate as it changes. It stacks with the standard EXP / Gold bonus.</p>
+			<p>
+				It is important to note that this scaling is applied at the end of each battle and is recalculated
+				each time, thus applying its bonus appropriate as it changes. It stacks with the standard EXP / Gold bonus.
+			</p>
 			These are the modes:
 			<ul>
 				<li>Disabled</li>
