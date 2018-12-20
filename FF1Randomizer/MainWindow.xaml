@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FF1Randomizer"
         mc:Ignorable="d"
-        Title="{Binding WindowTitle}" Height="505" Width="646">
+        Title="{Binding WindowTitle}" Height="505" Width="750">
 	<Window.Resources>
 		<local:FlagsToStringConverter x:Key="FlagsToStringConverter"/>
 		<Style TargetType="CheckBox">
@@ -20,24 +20,29 @@
 		<TextBox x:Name="SeedTextBox" Text="{Binding Seed}" HorizontalAlignment="Left" Height="23" Margin="10,90,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
 		<Button x:Name="GenerateButton" Content="Generate ROM" HorizontalAlignment="Right" Margin="0,10,10,0" VerticalAlignment="Top" Width="150" FontSize="20" IsEnabled="False" Click="GenerateButton_Click" Height="46"/>
 		<Button x:Name="AboutButton" Content="About FF1 Randomizer" HorizontalAlignment="Right" Margin="0,61,10,0" VerticalAlignment="Top" Width="150" Height="24" Click="AboutButton_Click"/>
-		<TextBox x:Name="FlagsTextBox" Text="{Binding Path=Flags, Converter={StaticResource FlagsToStringConverter}}" IsReadOnly="True" HorizontalAlignment="Left" Height="23" Margin="135,90,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="211"/>
+		<TextBox x:Name="FlagsTextBox" Text="{Binding Path=Flags, Converter={StaticResource FlagsToStringConverter}}" IsReadOnly="True" HorizontalAlignment="Left" Height="23" Margin="135,90,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="311"/>
 		<Label x:Name="FlagsLabel" Content="Flags" HorizontalAlignment="Left" Margin="135,64,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
 		<Label x:Name="PresetLabel" HorizontalAlignment="Left" Margin="250,64,0,0" VerticalAlignment="Top">
 			<Hyperlink Click="LoadPreset">Load Preset...</Hyperlink>
 		</Label>
-		<Button x:Name="CopyButton" Content="Copy" HorizontalAlignment="Left" Margin="351,90,0,0" VerticalAlignment="Top" Width="85" Height="23" Click="CopyButton_Click"/>
-		<Button x:Name="PasteButton" Content="Paste" HorizontalAlignment="Left" Margin="441,90,0,0" VerticalAlignment="Top" Width="85" Height="23" Click="PasteButton_Click"/>
-		<Button x:Name="SeedButton" Content="New Seed" HorizontalAlignment="Left" Margin="531,90,0,0" VerticalAlignment="Top" Width="89" Height="23" Click="SeedButton_Click"/>
+		<Button x:Name="CopyButton" Content="Copy" HorizontalAlignment="Left" Margin="451,90,0,0" VerticalAlignment="Top" Width="85" Height="23" Click="CopyButton_Click"/>
+		<Button x:Name="PasteButton" Content="Paste" HorizontalAlignment="Left" Margin="541,90,0,0" VerticalAlignment="Top" Width="85" Height="23" Click="PasteButton_Click"/>
+		<Button x:Name="SeedButton" Content="New Seed" HorizontalAlignment="Left" Margin="631,90,0,0" VerticalAlignment="Top" Width="89" Height="23" Click="SeedButton_Click"/>
 		<TabControl x:Name="tabControl" Margin="10,118,10,10">
 			<TabItem Header="Shuffle">
 				<Grid>
 					<Grid.ColumnDefinitions>
-						<ColumnDefinition/>
-						<ColumnDefinition/>
+						<ColumnDefinition Width="64*"/>
+						<ColumnDefinition Width="16*"/>
+						<ColumnDefinition Width="10*"/>
+						<ColumnDefinition Width="269*"/>
+						<ColumnDefinition Width="72*"/>
+						<ColumnDefinition Width="287*"/>
 					</Grid.ColumnDefinitions>
-					<StackPanel Orientation="Vertical" Grid.Column="0">
+					<StackPanel Orientation="Vertical" Grid.Column="0" Grid.ColumnSpan="5" Margin="0,0,71.667,0">
 						<CheckBox x:Name="ShopsCheckBox" IsChecked="{Binding Flags.Shops}" Content="Shops" ToolTip="Shop contents (other than magic) are shuffled."/>
 						<CheckBox x:Name="RandomWaresCheckBox" IsChecked="{Binding Flags.RandomWares}" IsEnabled="{Binding Flags.Shops}" Content="Random Weapons and Armor" ToolTip="Shop contents (other than magic) are shuffled." Margin="30,5,0,0"/>
+						<CheckBox x:Name="IncludeCasterItemsCheckBox" IsChecked="{Binding Flags.RandomWaresIncludesSpecialGear}" IsEnabled="{Binding Flags.CanIncludeSpecialGear}" Content="Including Caster Items and Elite Gear" ToolTip="Shuffled shops permits elite gear." Margin="30,5,0,0"/>
 						<CheckBox x:Name="MagicShopsCheckBox" IsChecked="{Binding Flags.MagicShops}" Content="Magic Shops" ToolTip="Magic shop contents are shuffled."/>
 						<CheckBox x:Name="MagicLevelsCheckBox" IsChecked="{Binding Flags.MagicLevels}" Content="Magic Levels" ToolTip="Magic spells have their levels shuffled."/>
 						<CheckBox x:Name="MagicPermissionsCheckBox" IsChecked="{Binding Flags.MagicPermissions}" IsEnabled="{Binding Flags.MagicLevels}" Content="Keep Permissions" ToolTip="Retain the permissions of spells, even if they're shuffled to lower levels." Margin="30,5,0,0"/>
@@ -45,14 +50,19 @@
 						<Label Margin="5,5,0,0"/>
 						<CheckBox x:Name="RngCheckBox" IsChecked="{Binding Flags.Rng}" Content="RNG Table" ToolTip="Shuffle the RNG table so that encounters are more difficult to predict."/>
 					</StackPanel>
-					<StackPanel Orientation="Vertical" Grid.Column="1">
+					<StackPanel Orientation="Vertical" Grid.Column="4" Grid.ColumnSpan="2" Margin="0.333,0,0.334,0">
 						<CheckBox x:Name="EnemyScriptsCheckBox" IsChecked="{Binding Flags.EnemyScripts}" Content="Enemy Scripts" ToolTip="Enemy scripts are shuffled to different enemies."/>
 						<CheckBox x:Name="AllowUnsafePiratesCheckBox" IsChecked="{Binding Flags.AllowUnsafePirates}" IsEnabled="{Binding Flags.EnemyScripts}" Content="Allow Unsafe Pirates" ToolTip="Enemy scripts are shuffled to different enemies." Margin="30,5,0,0"/>
 						<CheckBox x:Name="EnemySkillsSpellsCheckBox" IsChecked="{Binding Flags.EnemySkillsSpells}" Content="Enemy Skills/Spells" ToolTip="Enemy skills and spells are shuffled to other scripts."/>
 						<CheckBox x:Name="EnemyStatusAttacksCheckBox" IsChecked="{Binding Flags.EnemyStatusAttacks}" Content="Enemy Status Attacks" ToolTip="Status attacks such as stun, sleep, and death are shuffled."/>
 						<CheckBox x:Name="EnemyFormationsUnrunnableCheckBox" IsChecked="{Binding Flags.EnemyFormationsUnrunnable}" Content="Enemy Unrunnable Formations" ToolTip="Enemy Unrunnable Formations"/>
 						<CheckBox x:Name="EnemyFormationsSurpriseCheckBox" IsChecked="{Binding Flags.EnemyFormationsSurprise}" Content="Enemy Surprise Bonus" ToolTip="Enemy Surprise Bonus"/>
-						<CheckBox x:Name="EnemyFormationsFrequencyCheckBox" IsChecked="{Binding Flags.EnemyFormationsFrequency}" Content="Enemy Formations Frequency" ToolTip="Enemy Formations Frequency"/>
+						<ComboBox x:Name="EnemyFormationsComboBox" SelectedValue="{Binding Flags.FormationShuffleModeEnum}" Width="220" HorizontalAlignment="Left" Margin="10,5,0,0" SelectedValuePath="Tag">
+							<ComboBoxItem Tag="None">Don't Shuffle Formations</ComboBoxItem>
+							<ComboBoxItem Tag="Intrazone">Shuffle Frequency Within Zones</ComboBoxItem>
+							<ComboBoxItem Tag="Interzone">Shuffle Formations Across Zones</ComboBoxItem>
+							<ComboBoxItem Tag="Randomize">Randomize Formations</ComboBoxItem>
+						</ComboBox>
 						<CheckBox x:Name="EnemyTrapTilesCheckBox" IsChecked="{Binding Flags.EnemyTrapTiles}" Content="Enemy Forced Encounter Tiles" ToolTip="Shuffle trap tile battles amongst one another."/>
 						<CheckBox x:Name="RandomTrapFormationsCheckBox" IsChecked="{Binding Flags.RandomTrapFormations}" IsEnabled="{Binding Flags.EnemyTrapTiles}" Content="Use Random Formations" ToolTip="Trap battles are instead selected at random from formation 2 battles." Margin="30,5,0,0"/>
 					</StackPanel>
@@ -61,17 +71,27 @@
 			<TabItem Header="Treasures">
 				<Grid>
 					<Grid.ColumnDefinitions>
-						<ColumnDefinition/>
-						<ColumnDefinition/>
-						<ColumnDefinition/>
+						<ColumnDefinition Width="239*"/>
+						<ColumnDefinition Width="188*"/>
+						<ColumnDefinition Width="51*"/>
+						<ColumnDefinition Width="239*"/>
 					</Grid.ColumnDefinitions>
-					<StackPanel Orientation="Vertical" Grid.Column="0">
+					<StackPanel Orientation="Vertical" Grid.Column="0" Margin="0,0,0.333,0">
 						<Label Margin="5,5,0,0" FontWeight="Bold">Item Shuffle</Label>
 						<CheckBox x:Name="TreasuresCheckBox" IsChecked="{Binding Flags.Treasures}" Content="Treasures" ToolTip="If unchecked, forces vanilla Treasure Chests"/>
+						<CheckBox x:Name="RandomTreasuresCheckBox" IsChecked="{Binding Flags.RandomTreasure}" IsEnabled="{Binding Flags.Treasures}" Content="Randomize Treasures" Margin="30,5,0,0"/>
+						<ComboBox x:Name="WorldWealthComboBox" SelectedValue="{Binding Flags.WorldWealthEnum}" IsEnabled="{Binding Flags.Treasures}" Width="120" HorizontalAlignment="Left" Margin="30,5,0,0" SelectedValuePath="Tag">
+							<ComboBoxItem Tag="High">High Wealth</ComboBoxItem>
+							<ComboBoxItem Tag="Normal">Normal Wealth</ComboBoxItem>
+							<ComboBoxItem Tag="Low">Low Wealth</ComboBoxItem>
+							<ComboBoxItem Tag="Improverished">Impoverished</ComboBoxItem>
+							<ComboBoxItem Tag="Melmond">Melmond</ComboBoxItem>
+						</ComboBox>
 						<CheckBox x:Name="NPCItemsCheckBox" IsChecked="{Binding Flags.NPCItems}" IsEnabled="{Binding Flags.Treasures}" Content="Main NPC Items" ToolTip="If unchecked, forces vanilla Bridge, Lute, Ship, Rod, Canoe, Cube, Bottle"/>
 						<CheckBox x:Name="NPCFetchItemsCheckBox" IsChecked="{Binding Flags.NPCFetchItems}" IsEnabled="{Binding Flags.Treasures}" Content="Fetch Quest Rewards" ToolTip="If unchecked, forces vanilla Crystal, Herb, Key, Canal, Oxyale, Chime, Xcalber"/>
+						<CheckBox x:Name="ObjectiveNPCCheckBox" IsChecked="{Binding Flags.ObjectiveNPCs}" IsEnabled="{Binding Flags.Treasures}" Content="Objective NPCs" ToolTip="Shuffle the locations of Dr. Unne, Elf Doctor, and Bahamut"/>
 					</StackPanel>
-					<StackPanel Orientation="Vertical" Grid.Column="1">
+					<StackPanel Orientation="Vertical" Grid.ColumnSpan="3" Margin="239,0,0,0">
 						<Label Margin="5,5,0,0" FontWeight="Bold">Incentivized Items</Label>
 						<CheckBox x:Name="IncentivizeFreeNPCsCheckBox" IsChecked="{Binding Flags.IncentivizeFreeNPCs}" IsEnabled="{Binding Flags.IncentivizeFreeNPCsEnabled}" Content="Main NPCs" ToolTip="King, Princess, Bikke, Sarda, Sage, Robot, Caravan"/>
 						<CheckBox x:Name="IncentivizeFetchNPCsCheckBox" IsChecked="{Binding Flags.IncentivizeFetchNPCs}" IsEnabled="{Binding Flags.IncentivizeFetchNPCsEnabled}" Content="Fetch Quest NPCs" ToolTip="Astos, Matoya, Prince, Dwarves, Lefein, Fairy"/>
@@ -88,7 +108,7 @@
 						<CheckBox x:Name="IncentivizeConeriaCheckBox" IsChecked="{Binding Flags.IncentivizeConeria}" IsEnabled="{Binding Flags.Treasures}" Content="Coneria (locked)" ToolTip="TNT chest"/>
 						<CheckBox x:Name="IncentivizeMarshKeyLockedCheckBox" IsChecked="{Binding Flags.IncentivizeMarshKeyLocked}" IsEnabled="{Binding Flags.Treasures}" Content="Marsh (locked)" ToolTip="Bottom Floor South East"/>
 					</StackPanel>
-					<StackPanel Orientation="Vertical" Grid.Column="2">
+					<StackPanel Orientation="Vertical" Grid.Column="3" Margin="0,0,0.334,0">
 						<Label Margin="5,5,0,0" FontWeight="Bold">Incentivized Locations</Label>
 						<CheckBox x:Name="IncentivizeTailCheckBox" IsChecked="{Binding Flags.IncentivizeTail}" IsEnabled="{Binding Flags.Treasures}" Content="Tail" ToolTip="Tail"/>
 						<CheckBox x:Name="IncentivizeFetchItemsCheckBox" IsChecked="{Binding Flags.IncentivizeFetchItems}" IsEnabled="{Binding Flags.Treasures}" Content="Other Quest Items" ToolTip="Any other non-required quest items that are shuffled such as Ruby or Adamant"/>
@@ -167,12 +187,14 @@
 			<TabItem Header="Scale">
 				<Grid>
 					<Grid.ColumnDefinitions>
-						<ColumnDefinition/>
-						<ColumnDefinition/>
-						<ColumnDefinition/>
-						<ColumnDefinition/>
+						<ColumnDefinition Width="180*"/>
+						<ColumnDefinition Width="40"/>
+						<ColumnDefinition Width="126*"/>
+						<ColumnDefinition Width="200*"/>
+						<ColumnDefinition Width="180*"/>
+						<ColumnDefinition Width="100*"/>
 					</Grid.ColumnDefinitions>
-					<StackPanel Grid.Column="0">
+					<StackPanel Grid.Column="0" Grid.ColumnSpan="2" Margin="0,0,0.333,0">
 						<Label MinHeight="26" x:Name="PricesLabel" Content="Prices:" ToolTip="Prices of items, weapons, armor, and magic are all scaled, as well as your starting gold and gold chests."/>
 						<Label MinHeight="26" x:Name="EnemyStatsLabel" Content="Enemy Stats:" HorizontalAlignment="Left" VerticalAlignment="Top" ToolTip="Enemy stats are scaled: HP, attack power, # of hits, accuracy, critical %, defense, evade, and magic defense."/>
 						<Label MinHeight="26" x:Name="BossStatsLabel" Content="Boss Stats:" HorizontalAlignment="Left" VerticalAlignment="Top" ToolTip="Boss stats are scaled: HP, attack power, # of hits, accuracy, critical %, defense, evade, and magic defense."/>
@@ -181,10 +203,13 @@
 						<Label MinHeight="26" x:Name="ProgressiveScaleLabel" Content="Progressive Scale:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
 						<Label MinHeight="26" x:Name="OverworldEncounterRateLabel" Content="Overworld Encounter Rate:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
 						<Label MinHeight="26" x:Name="DungeonEncounterRateLabel" Content="Dungeon Encounter Rate:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-						<Label MinHeight="26" Content=""/>
-						<Label MinHeight="26" x:Name="ForcedPartyMembersLabel" Content="Forced Party Members:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
 					</StackPanel>
 					<StackPanel Grid.Column="1">
+						<CheckBox MinHeight="20" x:Name="ClampPricesCheckBox" IsChecked="{Binding Flags.ClampPrices}" ToolTip="Clamp Minimum to 100%" Checked="ClampPricesCheckBox_ValueChanged" Unchecked="ClampPricesCheckBox_ValueChanged"/>
+						<CheckBox MinHeight="20" x:Name="ClampEnemiesCheckBox" IsChecked="{Binding Flags.ClampEnemies}" ToolTip="Clamp Minimum to 100%" Checked="ClampEnemiesCheckBox_ValueChanged" Unchecked="ClampEnemiesCheckBox_ValueChanged"/>
+						<CheckBox MinHeight="20" x:Name="ClampBossesCheckBox" IsChecked="{Binding Flags.ClampBosses}" ToolTip="Clamp Minimum to 100%" Checked="ClampBossesCheckBox_ValueChanged" Unchecked="ClampBossesCheckBox_ValueChanged"/>
+					</StackPanel>
+					<StackPanel Grid.Column="2">
 						<Label MinHeight="26" x:Name="PriceScaleFactorLabel" />
 						<Label MinHeight="26" x:Name="EnemyScaleFactorLabel" Content="" HorizontalAlignment="Left"  VerticalAlignment="Top"/>
 						<Label MinHeight="26" x:Name="BossScaleFactorLabel" Content="" HorizontalAlignment="Left" VerticalAlignment="Top"/>
@@ -193,10 +218,8 @@
 						<Label MinHeight="26" Content=""/>
 						<Label MinHeight="26" x:Name="EncounterRateFactorLabel" Content="" HorizontalAlignment="Left" VerticalAlignment="Top"/>
 						<Label MinHeight="26" x:Name="DungeonEncounterRateFactorLabel" Content="" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-						<Label MinHeight="26" Content=""/>
-						<Label MinHeight="26" x:Name="PartyScaleFactorLabel" Content="{Binding ElementName=PartyScaleFactorSlider, Path=Value}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
 					</StackPanel>
-					<StackPanel Grid.Column="2">
+					<StackPanel Grid.Column="3">
 						<Slider MinHeight="20" x:Name="PriceScaleFactorSlider" Value="{Binding Flags.PriceScaleFactor}" HorizontalAlignment="Left" VerticalAlignment="Top" Minimum="1" Maximum="5" Width="100" TickPlacement="BottomRight" TickFrequency="0.5" SmallChange="0.1" LargeChange="0.5" ToolTip="For each value to be scaled, a random exponent is selected between -1 and +1.  The value is scaled by the scale factor raised to that power." ValueChanged="PriceScaleFactorSlider_ValueChanged"/>
 						<Slider MinHeight="20" x:Name="EnemyScaleFactorSlider" Value="{Binding Flags.EnemyScaleFactor}" HorizontalAlignment="Left"  VerticalAlignment="Top" Minimum="1" Maximum="5" Width="100" TickPlacement="BottomRight" TickFrequency="0.5" ToolTip="For each value to be scaled, a random exponent is selected between -1 and +1.  The value is scaled by the scale factor raised to that power." ValueChanged="EnemyScaleFactorSlider_ValueChanged"/>
 						<Slider MinHeight="20" x:Name="BossScaleFactorSlider" Value="{Binding Flags.BossScaleFactor}" HorizontalAlignment="Left" VerticalAlignment="Top" Minimum="1" Maximum="5" Width="100" TickPlacement="BottomRight" TickFrequency="0.5" ToolTip="For each value to be scaled, a random exponent is selected between -1 and +1.  The value is scaled by the scale factor raised to that power." ValueChanged="BossScaleFactorSlider_ValueChanged"/>
@@ -214,14 +237,90 @@
 						</ComboBox>
 						<Slider MinHeight="20" x:Name="EncounterRateSlider" Value="{Binding Flags.EncounterRate}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Minimum="0" Maximum="45" TickPlacement="BottomRight" TickFrequency="5" LargeChange="1" SmallChange="1" ValueChanged="EncounterRate_ValueChanged"/>
 						<Slider MinHeight="20" x:Name="DungeonEncounterRateSlider" Value="{Binding Flags.DungeonEncounterRate}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Minimum="0" Maximum="45" TickPlacement="BottomRight" TickFrequency="5" LargeChange="1" SmallChange="1" ValueChanged="DungeonEncounterRate_ValueChanged"/>
-						<Label MinHeight="26" Content=""/>
-						<Slider MinHeight="20" x:Name="PartyScaleFactorSlider" Value="{Binding Flags.ForcedPartyMembers}" HorizontalAlignment="Left" VerticalAlignment="Top" Minimum="0" Maximum="4" Width="100" TickPlacement="BottomRight" TickFrequency="1" IsSnapToTickEnabled="True" SmallChange="1" LargeChange="1"/>
 					</StackPanel>
-					<StackPanel Grid.Column="3">
+					<StackPanel Grid.Column="4">
 						<CheckBox x:Name="PricesScaleOverflowCheckBox" IsChecked="{Binding Flags.WrapPriceOverflow}" Content="Restart Overflow at 1"/>
 						<CheckBox x:Name="EnemyStatScaleOverflowCheckBox" IsChecked="{Binding Flags.WrapStatOverflow}" Content="Restart Overflow at 1" />
 						<CheckBox x:Name="IncludeMoraleCheckBox" IsChecked="{Binding Flags.IncludeMorale}" Content="Include Morale" />
 						<CheckBox x:Name="VanillaStartingGoldCheckBox" IsChecked="{Binding Flags.StartingGold}" Content="Starting Gold" ToolTip="The Bridge is available at the start of the game" Width="296.667"/>
+					</StackPanel>
+				</Grid>
+			</TabItem>
+			<TabItem Header="Party">
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition/>
+						<ColumnDefinition/>
+						<ColumnDefinition/>
+						<ColumnDefinition/>
+						<ColumnDefinition/>
+						<ColumnDefinition/>
+						<ColumnDefinition/>
+						<ColumnDefinition/>
+						<ColumnDefinition/>
+					</Grid.ColumnDefinitions>
+					<StackPanel Grid.Column="0">
+						<Label MinHeight="26" x:Name="PermittedLabel" Content="Permitted:"/>
+						<Label MinHeight="26" x:Name="Member1Label" Content="Member 1"/>
+						<Label MinHeight="26" x:Name="Member2Label" Content="Member 2"/>
+						<Label MinHeight="26" x:Name="Member3Label" Content="Member 3"/>
+						<Label MinHeight="26" x:Name="Member4Label" Content="Member 4"/>
+					</StackPanel>
+					<StackPanel Grid.Column="1">
+						<Label MinHeight="26" x:Name="ForcedLabel" Content="Forced?"/>
+						<CheckBox MinHeight="20" x:Name="Forced1CheckBox" IsChecked="{Binding Flags.FORCED1}"/>
+						<CheckBox MinHeight="20" x:Name="Forced2CheckBox" IsChecked="{Binding Flags.FORCED2}"/>
+						<CheckBox MinHeight="20" x:Name="Forced3CheckBox" IsChecked="{Binding Flags.FORCED3}"/>
+						<CheckBox MinHeight="20" x:Name="Forced4CheckBox" IsChecked="{Binding Flags.FORCED4}"/>
+					</StackPanel>
+					<StackPanel Grid.Column="2">
+						<Label MinHeight="26" x:Name="FighterLabel" Content="Fighter"/>
+						<CheckBox MinHeight="20" x:Name="FighterCheckBox" IsChecked="{Binding Flags.FIGHTER1}"/>
+						<CheckBox MinHeight="20" x:Name="Fighter2CheckBox" IsChecked="{Binding Flags.FIGHTER2}"/>
+						<CheckBox MinHeight="20" x:Name="Fighter3Checkbox" IsChecked="{Binding Flags.FIGHTER3}"/>
+						<CheckBox MinHeight="20" x:Name="Fighter4CheckBox" IsChecked="{Binding Flags.FIGHTER4}"/>
+					</StackPanel>
+					<StackPanel Grid.Column="3">
+						<Label MinHeight="26" x:Name="ThiefLabel" Content="Thief"/>
+						<CheckBox MinHeight="20" x:Name="Thief1CheckBox" IsChecked="{Binding Flags.THIEF1}"/>
+						<CheckBox MinHeight="20" x:Name="Thief2CheckBox" IsChecked="{Binding Flags.THIEF2}"/>
+						<CheckBox MinHeight="20" x:Name="Thief3Checkbox" IsChecked="{Binding Flags.THIEF3}"/>
+						<CheckBox MinHeight="20" x:Name="Thief4CheckBox" IsChecked="{Binding Flags.THIEF4}"/>
+					</StackPanel>
+					<StackPanel Grid.Column="4">
+						<Label MinHeight="26" x:Name="BlackBeltLabel" Content="Black Belt"/>
+						<CheckBox MinHeight="20" x:Name="BlackBelt1CheckBox" IsChecked="{Binding Flags.BLACK_BELT1}"/>
+						<CheckBox MinHeight="20" x:Name="BlackBelt2CheckBox" IsChecked="{Binding Flags.BLACK_BELT2}"/>
+						<CheckBox MinHeight="20" x:Name="BlackBelt3Checkbox" IsChecked="{Binding Flags.BLACK_BELT3}"/>
+						<CheckBox MinHeight="20" x:Name="BlackBelt4CheckBox" IsChecked="{Binding Flags.BLACK_BELT4}"/>
+					</StackPanel>
+					<StackPanel Grid.Column="5">
+						<Label MinHeight="26" x:Name="RedMageLabel" Content="Red Mage"/>
+						<CheckBox MinHeight="20" x:Name="RedMake1CheckBox" IsChecked="{Binding Flags.RED_MAGE1}"/>
+						<CheckBox MinHeight="20" x:Name="RedMake2CheckBox" IsChecked="{Binding Flags.RED_MAGE2}"/>
+						<CheckBox MinHeight="20" x:Name="RedMake3CheckBox" IsChecked="{Binding Flags.RED_MAGE3}"/>
+						<CheckBox MinHeight="20" x:Name="RedMake4CheckBox" IsChecked="{Binding Flags.RED_MAGE4}"/>
+					</StackPanel>
+					<StackPanel Grid.Column="6">
+						<Label MinHeight="26" x:Name="WhiteMageLabel" Content="White Mage"/>
+						<CheckBox MinHeight="20" x:Name="WhiteMage1CheckBox" IsChecked="{Binding Flags.WHITE_MAGE1}"/>
+						<CheckBox MinHeight="20" x:Name="WhiteMage2CheckBox" IsChecked="{Binding Flags.WHITE_MAGE2}"/>
+						<CheckBox MinHeight="20" x:Name="WhiteMage3CheckBox" IsChecked="{Binding Flags.WHITE_MAGE3}"/>
+						<CheckBox MinHeight="20" x:Name="WhiteMage4CheckBox" IsChecked="{Binding Flags.WHITE_MAGE4}"/>
+					</StackPanel>
+					<StackPanel Grid.Column="7">
+						<Label MinHeight="26" x:Name="BlackMageLabel" Content="Black Mage"/>
+						<CheckBox MinHeight="20" x:Name="BlackMage1CheckBox" IsChecked="{Binding Flags.BLACK_MAGE1}"/>
+						<CheckBox MinHeight="20" x:Name="BlackMage2CheckBox" IsChecked="{Binding Flags.BLACK_MAGE2}"/>
+						<CheckBox MinHeight="20" x:Name="BlackMage3CheckBox" IsChecked="{Binding Flags.BLACK_MAGE3}"/>
+						<CheckBox MinHeight="20" x:Name="BlackMage4CheckBox" IsChecked="{Binding Flags.BLACK_MAGE4}"/>
+					</StackPanel>
+					<StackPanel Grid.Column="8">
+						<Label MinHeight="26" x:Name="NoneLabel" Content="None"/>
+						<CheckBox MinHeight="20" x:Name="NoneClass1CheckBox" IsEnabled="false"/>
+						<CheckBox MinHeight="20" x:Name="NoneClass2CheckBox" IsChecked="{Binding Flags.NONE_CLASS2}"/>
+						<CheckBox MinHeight="20" x:Name="NoneClass3CheckBox" IsChecked="{Binding Flags.NONE_CLASS3}"/>
+						<CheckBox MinHeight="20" x:Name="NoneClass4CheckBox" IsChecked="{Binding Flags.NONE_CLASS4}"/>
 					</StackPanel>
 				</Grid>
 			</TabItem>
@@ -274,6 +373,7 @@
 						<CheckBox x:Name="FunEnemyNamesCheckBox" IsChecked="{Binding Flags.FunEnemyNames}" Content="Fun Enemy Names" ToolTip="Replaces enemy names with funny ones."/>
 						<CheckBox x:Name="PaletteSwapCheckBox" IsChecked="{Binding Flags.PaletteSwap}" Content="Palette Swap" ToolTip="Shuffles enemy palettes."/>
 						<CheckBox x:Name="ModernBattlefieldCheckBox" IsChecked="{Binding Flags.ModernBattlefield}" Content="Modern Battlefield" ToolTip="Battlefield layout inspired by subsequent Final Fantasy games."/>
+						<CheckBox x:Name="ThreePalettesCheckBox" IsChecked="{Binding Flags.ThirdBattlePalette}" Content="Three Battle Palettes" ToolTip="Change the battle engine to free up palette 3 for character sprites."/>
 					</StackPanel>
 					<StackPanel Orientation="Vertical" Grid.Column="1">
 						<ComboBox x:Name="TeamTyroComboBox" SelectedValue="{Binding Flags.TeamSteak}" Width="150" HorizontalAlignment="Left" Margin="10,5,0,0" ToolTip="Save the TYROs, or save the STEAKs?" SelectedValuePath="Tag">
@@ -286,6 +386,7 @@
 							<ComboBoxItem Tag="Nonsensical">Nonsensical Music Shuffle</ComboBoxItem>
 							<ComboBoxItem Tag="MusicDisabled">Disable Music</ComboBoxItem>
 						</ComboBox>
+						<CheckBox x:Name="DisableDamageTileFlicker" IsChecked="{Binding Flags.DisableDamageTileFlicker}" Content="Disable Damage Tile Flicker"/>
 					</StackPanel>
 				</Grid>
 			</TabItem>

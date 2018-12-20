@@ -1,7 +1,7 @@
-﻿using System;
+﻿using RomUtilities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using RomUtilities;
 
 namespace FF1Lib
 {
@@ -143,6 +143,8 @@ namespace FF1Lib
 			 */
 			          0x80,0x40,0x20,0x10,0x08,0x04,0x02};
 
+		private readonly List<FF1Class> DefaultChoices = Enumerable.Range(0, 6).Select(x => (FF1Class)x).ToList();
+
 		void updateCharacterFromOptions(int slotNumber, bool forced, IList<FF1Class> options, MT19337 rng)
 		{
 			const int lut_PtyGenBuf = 0x784AA;       // offset for party generation buffer LUT
@@ -170,14 +172,14 @@ namespace FF1Lib
 			if (!options.Any()) return;
 
 			byte allowedFlags = 0b0000_0000;
-			foreach(FF1Class option in options)
+			foreach (FF1Class option in options)
 			{
 				allowedFlags |= AllowedClassBitmasks[(int)option];
 			}
 
 			// set default member
-			byte defaultclass = (byte)options.PickRandom(rng);
-			Data[lut_PtyGenBuf + i * 0x10] = defaultclass == 6 ? (byte)0xFF : defaultclass;
+			var defaultclass = (forced || !DefaultChoices.SequenceEqual(options)) ? (int)options.PickRandom(rng) : slotNumber - 1;
+			Data[lut_PtyGenBuf + i * 0x10] = defaultclass == 6 ? (byte)0xFF : (byte)defaultclass;
 
 			// set allowed classes
 			Data[lut_AllowedClasses + i] = allowedFlags;
@@ -360,7 +362,7 @@ namespace FF1Lib
 			MoveNpc(MapId.Elfland, 0, 0x27, 0x18, inRoom: false, stationary: true); // Efland Entrance Elf
 			MoveNpc(MapId.Onrac, 13, 0x29, 0x1B, inRoom: false, stationary: true); // Onrac Guy
 			MoveNpc(MapId.Lefein, 3, 0x21, 0x07, inRoom: false, stationary: true); // Lefein Guy
-			//MoveNpc(MapId.Waterfall, 1, 0x0C, 0x34, inRoom: false, stationary: false); // OoB Bat!
+																				   //MoveNpc(MapId.Waterfall, 1, 0x0C, 0x34, inRoom: false, stationary: false); // OoB Bat!
 			MoveNpc(MapId.EarthCaveB3, 10, 0x09, 0x0B, inRoom: true, stationary: false); // Earth Cave Bat B3
 			MoveNpc(MapId.EarthCaveB3, 7, 0x0B, 0x0B, inRoom: true, stationary: false); // Earth Cave Bat B3
 			MoveNpc(MapId.EarthCaveB3, 8, 0x0A, 0x0C, inRoom: true, stationary: false); // Earth Cave Bat B3
@@ -560,7 +562,7 @@ namespace FF1Lib
 			// Instead of looping through the 'check to see if characters are alive' thing, just set it to 4 and then remove the loop.
 			// EA EA EA EA EA EA (sports)
 			Put(0x2DEC6, Blob.FromHex("A204A004EAEAEAEAEAEAEAEAEAEAEAEAEA"));
-			
+
 		}
 
 		public void ShuffleWeaponPermissions(MT19337 rng)

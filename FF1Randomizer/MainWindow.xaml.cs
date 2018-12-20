@@ -1,23 +1,10 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using FF1Lib;
+using Microsoft.Win32;
+using RomUtilities;
+using System;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Microsoft.Win32;
-using FF1Lib;
-using RomUtilities;
 
 namespace FF1Randomizer
 {
@@ -39,8 +26,9 @@ namespace FF1Randomizer
 			TryOpenSavedFilename();
 			GenerateSeed();
 
-			SetScaleFactorLabel(PriceScaleFactorSlider, PriceScaleFactorLabel);
-			SetScaleFactorLabel(EnemyScaleFactorSlider, EnemyScaleFactorLabel);
+			SetScaleFactorLabel(PriceScaleFactorSlider, PriceScaleFactorLabel, ClampPricesCheckBox);
+			SetScaleFactorLabel(EnemyScaleFactorSlider, EnemyScaleFactorLabel, ClampEnemiesCheckBox);
+			SetScaleFactorLabel(BossScaleFactorSlider, BossScaleFactorLabel, ClampBossesCheckBox);
 			SetExpLabel();
 		}
 
@@ -69,7 +57,8 @@ namespace FF1Randomizer
 
 		private void RomButton_Click(object sender, RoutedEventArgs e)
 		{
-			var openFileDialog = new OpenFileDialog {
+			var openFileDialog = new OpenFileDialog
+			{
 				Filter = "NES ROM files (*.nes)|*.nes"
 			};
 
@@ -123,9 +112,9 @@ namespace FF1Randomizer
 		{
 			var text = Clipboard.GetText();
 			var parts = text.Split('_');
-			if (parts.Length != 2 || parts[0].Length != 8 || parts[1].Length != 27)
+			if (parts.Length != 2 || parts[0].Length != 8 || parts[1].Length < 32)
 			{
-				MessageBox.Show("Format not recognized.  Paste should look like SSSSSSSS_FFFFFFFFFFFFFFFFFFFFFF", "Invalid Format");
+				MessageBox.Show("Format not recognized.  Paste should look like SSSSSSSS_FFFFFFFFFFFFFFFFFFFFFFFFFFF", "Invalid Format");
 
 				return;
 			}
@@ -134,9 +123,9 @@ namespace FF1Randomizer
 			_model.Flags.Flags = Flags.DecodeFlagsText(parts[1]);
 		}
 
-		private void SetScaleFactorLabel(Slider slider, Label label)
+		private void SetScaleFactorLabel(Slider slider, Label label, CheckBox clamp)
 		{
-			var lower = Math.Round(100 / slider.Value);
+			var lower = (bool)clamp.IsChecked ? 100 : Math.Round(100 / slider.Value);
 			var upper = Math.Round(100 * slider.Value);
 
 			label.Content = $"{lower}% - {upper}%";
@@ -160,19 +149,19 @@ namespace FF1Randomizer
 		private void PriceScaleFactorSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
 		{
 			((Slider)sender).Value = Math.Round(e.NewValue, 1);
-			SetScaleFactorLabel(PriceScaleFactorSlider, PriceScaleFactorLabel);
+			SetScaleFactorLabel(PriceScaleFactorSlider, PriceScaleFactorLabel, ClampPricesCheckBox);
 		}
 
 		private void EnemyScaleFactorSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
 		{
 			((Slider)sender).Value = Math.Round(e.NewValue, 1);
-			SetScaleFactorLabel(EnemyScaleFactorSlider, EnemyScaleFactorLabel);
+			SetScaleFactorLabel(EnemyScaleFactorSlider, EnemyScaleFactorLabel, ClampEnemiesCheckBox);
 		}
 
 		private void BossScaleFactorSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
 		{
 			((Slider)sender).Value = Math.Round(e.NewValue, 1);
-			SetScaleFactorLabel(BossScaleFactorSlider, BossScaleFactorLabel);
+			SetScaleFactorLabel(BossScaleFactorSlider, BossScaleFactorLabel, ClampBossesCheckBox);
 		}
 
 		private void ExpMultiplierSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -183,7 +172,7 @@ namespace FF1Randomizer
 
 		private void ExpBonusSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
 		{
-			((Slider)sender).Value = Math.Round(e.NewValue/10.0)*10.0;
+			((Slider)sender).Value = Math.Round(e.NewValue / 10.0) * 10.0;
 			SetExpLabel();
 		}
 		private void EncounterRate_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -210,6 +199,21 @@ namespace FF1Randomizer
 			{
 				_model.Flags.Flags = Flags.FromJson(File.ReadAllText(openFileDialog.FileName));
 			}
+		}
+
+		private void ClampPricesCheckBox_ValueChanged(object sender, RoutedEventArgs e)
+		{
+			SetScaleFactorLabel(PriceScaleFactorSlider, PriceScaleFactorLabel, ClampPricesCheckBox);
+		}
+
+		private void ClampEnemiesCheckBox_ValueChanged(object sender, RoutedEventArgs e)
+		{
+			SetScaleFactorLabel(EnemyScaleFactorSlider, EnemyScaleFactorLabel, ClampEnemiesCheckBox);
+		}
+
+		private void ClampBossesCheckBox_ValueChanged(object sender, RoutedEventArgs e)
+		{
+			SetScaleFactorLabel(BossScaleFactorSlider, BossScaleFactorLabel, ClampBossesCheckBox);
 		}
 	}
 }
