@@ -163,6 +163,9 @@ namespace FF1Lib
 		public bool IncentivizeSkyPalace { get; set; }
 		[FlagString(Character = INCENTIVES_CHESTS2, FlagBit = 8)]
 		public bool IncentivizeTitansTrove { get; set; }
+		[FlagString(Character = INCENTIVES_CHESTS2, FlagBit = 16)]
+		public bool BetterTrapChests { get; set; }
+
 
 		[FlagString(Character = INCENTIVES_ITEMS1, FlagBit = 1)]
 		public bool IncentivizeMasamune { get; set; }

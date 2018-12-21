@@ -180,3 +180,12 @@ tr.odd {
 .indent {
 	margin-left: 20px;
 }
+
+h3.anchor::before {
+    display: block;
+    content: " ";
+    margin-top: -100px;
+    height: 100px;
+    visibility: hidden;
+    pointer-events: none;
+}
