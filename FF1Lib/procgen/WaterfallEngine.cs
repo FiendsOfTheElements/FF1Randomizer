@@ -187,8 +187,8 @@ namespace FF1Lib.Procgen
 			//NPC management
 			reqs.Rooms.First().NPCs.ToList().ForEach(npc =>
 			{
-				npc.Coord.x += room_x;
-				npc.Coord.y += room_y;
+				npc.Coord.x = (npc.Coord.x + room_x)%64;
+				npc.Coord.y = (npc.Coord.y + room_y) % 64;
 				reqs.Rom.MoveNpc(reqs.MapId, npc);
 			});
 
