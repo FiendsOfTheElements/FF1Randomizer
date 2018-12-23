@@ -8,6 +8,8 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using FF1Lib.Assembly;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace FF1Lib
 {
@@ -29,6 +31,8 @@ namespace FF1Lib
 		public const int GoldItemOffset = 108; // 108 items before gold chests
 		public const int GoldItemCount = 68;
 		public static readonly List<int> UnusedGoldItems = new List<int> { 110, 111, 112, 113, 114, 116, 120, 121, 122, 124, 125, 127, 132, 158, 165, 166, 167, 168, 170, 171, 172 };
+
+		private JObject Overrides;
 
 		public void PutInBank(int bank, int address, Blob data)
 		{
@@ -83,6 +87,11 @@ namespace FF1Lib
 
 		public void Randomize(Blob seed, Flags flags)
 		{
+			Randomize(seed, flags, null);
+		}
+
+		public void Randomize(Blob seed, Flags flags, String overrideJson)
+		{
 			var rng = new MT19337(BitConverter.ToUInt32(seed, 0));
 
 			UpgradeToMMC3();
@@ -92,6 +101,10 @@ namespace FF1Lib
 			PermanentCaravan();
 			ShiftEarthOrbDown();
 			CastableItemTargeting();
+
+			Overrides = overrideJson != null
+				? JObject.Parse(overrideJson)
+				: JObject.Parse("{}");
 
 			TeleportShuffle teleporters = new TeleportShuffle();
 			var palettes = OverworldMap.GeneratePalettes(Get(OverworldMap.MapPaletteOffset, MapCount * OverworldMap.MapPaletteSize).Chunk(OverworldMap.MapPaletteSize));
@@ -485,6 +498,11 @@ namespace FF1Lib
 			}
 
 			PartyComposition(rng, flags);
+
+			if (true)
+			{
+				LowerMaxLevel(10);
+			}
 
 			if (flags.RecruitmentMode)
 			{

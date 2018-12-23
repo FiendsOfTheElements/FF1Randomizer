@@ -32,6 +32,27 @@ namespace FF1Lib
 			{
 				WriteItemSpellData(item.Spell, item.Item);
 			}
+
+			if (Overrides.ContainsKey("ItemMagic"))
+			{
+				var itemMagicOverrides = Overrides["ItemMagic"];
+				foreach (var itemMagic in itemMagicOverrides)
+				{
+					var castItem = (Item)Enum.Parse(typeof(Item), itemMagic["item"].ToString());
+
+					var magicName = itemMagic["magic"].ToString();
+					var castMagic = FindMagicSpell(Spells, magicName);
+
+					if (castMagic.Data != null)
+					{
+						WriteItemSpellData(castMagic, castItem);
+					}
+					else
+					{
+						Debug.WriteLine("Failed to place override for " + magicName + " - not found");
+					}
+				}
+			}
 		}
 
 		private void WriteItemSpellData(MagicSpell Spell, Item item)
@@ -90,6 +111,12 @@ namespace FF1Lib
 			PutInBank(0x0F, 0x8AD0, Blob.FromHex("85808681C0FFD008A9D68580A9968581A91060"));
 		}
 
-
+		private MagicSpell FindMagicSpell(List<MagicSpell> spells, string name)
+		{
+			var upperName = name.ToUpper();
+			var found = spells.Find(spell =>
+				FF1Text.BytesToText(spell.Name).ToUpper().StartsWith(upperName));
+			return found;
+		}
 	}
 }

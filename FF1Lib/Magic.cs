@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using Newtonsoft.Json.Linq;
 using RomUtilities;
 
 namespace FF1Lib
@@ -48,8 +51,39 @@ namespace FF1Lib
 			var whiteSpells = magicSpells.Where((spell, i) => (i / 4) % 2 == 0).ToList();
 			var blackSpells = magicSpells.Where((spell, i) => (i / 4) % 2 == 1).ToList();
 
+			var whiteOverride = Overrides.ContainsKey("WhiteMagic")
+				? CreateOverrides(whiteSpells, Overrides["WhiteMagic"])
+				: new List<OverrideMagic>(0);
+			if (whiteOverride.Count > 0)
+			{
+				foreach (var spell in whiteOverride)
+				{
+					whiteSpells.Remove(spell.magic);
+				}
+			}
+
+			var blackOverride = Overrides.ContainsKey("BlackMagic")
+				? CreateOverrides(blackSpells, Overrides["BlackMagic"])
+				: new List<OverrideMagic>(0);
+			if (blackOverride.Count > 0)
+			{
+				foreach (var spell in blackOverride)
+				{
+					blackSpells.Remove(spell.magic);
+				}
+			}
+
 			whiteSpells.Shuffle(rng);
 			blackSpells.Shuffle(rng);
+
+			foreach (var spellOverride in whiteOverride.OrderBy(spell => spell.index))
+			{
+				whiteSpells.Insert(spellOverride.index, spellOverride.magic);
+			}
+			foreach (var spellOverride in blackOverride.OrderBy(spell => spell.index))
+			{
+				blackSpells.Insert(spellOverride.index, spellOverride.magic);
+			}
 
 			// Now we re-interleave the spells.
 			var shuffledSpells = new List<MagicSpell>();
@@ -165,6 +199,43 @@ namespace FF1Lib
 				TextPointer = pointers[i]
 			})
 			.ToList();
+		}
+
+		List<OverrideMagic> CreateOverrides(List<MagicSpell> spells, JToken magicOverrides)
+		{
+			var overrides = new List<OverrideMagic>(spells.Count);
+			foreach (var spell in magicOverrides)
+			{
+				var level = (long)spell["level"];
+				var slot = (long)spell["slot"];
+				var index = (int) (((level - 1) * 4) + (slot - 1));
+
+				var magicName = spell["name"].ToString().ToUpper();
+				var spellData = spells.Find(sp => FF1Text.BytesToText(sp.Name).ToUpper().StartsWith(magicName));
+
+				if (spellData.Data != null)
+				{
+					Console.WriteLine("Override " + magicName + " to index " + index);
+					overrides.Add(new OverrideMagic(index, spellData));
+				}
+				else
+				{
+					Console.WriteLine("Failed to place override for " + magicName + " - not found");
+				}
+			}
+			return overrides;
+		}
+
+		class OverrideMagic
+		{
+			public int index;
+			public MagicSpell magic;
+
+			public OverrideMagic(int index, MagicSpell magic)
+			{
+				this.index = index;
+				this.magic = magic;
+			}
 		}
 	}
 }
