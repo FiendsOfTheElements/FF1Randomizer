@@ -10,6 +10,8 @@
 		"RandomWares": false,
 		"RandomWaresIncludesSpecialGear": false,
 		"RandomLoot": false,
+		"WeaponPermissions": false,
+		"ArmorPermissions": false,
 
 		"ShardHunt": false,
 		"ExtraShards": false,
@@ -24,7 +26,7 @@
 		"ItemMagic": false,
 
 		"Rng": true,
-		"EnemyFormationsFrequency": false,
+		"FormationShuffleMode": 0,
 		"EnemyFormationsUnrunnable": false,
 		"EnemyFormationsSurprise": false,
 		"EnemyTrapTiles": false,
@@ -35,17 +37,18 @@
 		"EnemyStatusAttacks": true,
 		"AllowUnsafePirates": false,
 
-		"WarMECHMode": "Wandering4F",
+		"WarMECHMode": "Patrolling",
 		"OrdealsPillars": true,
-		"SkyCastle4FTeleporters": true,
+		"SkyCastle4FTeleporters": false,
 		"TitansTrove": true,
 		"ConfusedOldMen": true,
-		"Floors": false,
-		"AllowDeepCastles": false,
+		"AllowUnsafeMelmond": false,
 
 		"MapOpenProgression": false,
 		"MapOpenProgressionExtended": false,
 		"Entrances": false,
+		"Floors": false,
+		"AllowDeepCastles": false,
 		"Towns": false,
 
 		"IncentivizeFreeNPCs": true,
@@ -81,6 +84,7 @@
 		"EarlySarda": true,
 		"EarlySage": true,
 		"CrownlessOrdeals": true,
+		"ShuffleObjectiveNPCs": false,
 		"OnlyRequireGameIsBeatable": false,
 
 		"FreeBridge": false,
@@ -91,6 +95,7 @@
 		"WrapPriceOverflow": false,
 		"IncludeMorale": false,
 		"EasyMode": false,
+		"NoDanMode": false,
 
 		"SpeedHacks": true,
 		"NoPartyShuffle": true,
@@ -112,6 +117,9 @@
 		"EnemyElementalResistancesBug": true,
 		"ImproveTurnOrderRandomization": true,
 
+		"ClampMinimumStatScale": false,
+		"ClampMinimumBossStatScale": false,
+		"ClampMinimumPriceScale": false,
 		"EnemyScaleFactor": 1.5,
 		"BossScaleFactor": 1.5,
 		"PriceScaleFactor": 3.0,
@@ -120,7 +128,39 @@
 		"ProgressiveScaleMode": 0,
 		"EncounterRate": 30.0,
 		"DungeonEncounterRate": 30.0,
-		"ForcedPartyMembers": 0
+		"WorldWealth": 1,
+
+		"FIGHTER1": true,
+		"THIEF1": true,
+		"BLACK_BELT1": true,
+		"RED_MAGE1": true,
+		"WHITE_MAGE1": true,
+		"BLACK_MAGE1": true,
+		"FIGHTER2": true,
+		"THIEF2": true,
+		"BLACK_BELT2": true,
+		"RED_MAGE2": true,
+		"WHITE_MAGE2": true,
+		"BLACK_MAGE2": true,
+		"FIGHTER3": true,
+		"THIEF3": true,
+		"BLACK_BELT3": true,
+		"RED_MAGE3": true,
+		"WHITE_MAGE3": true,
+		"BLACK_MAGE3": true,
+		"FIGHTER4": true,
+		"THIEF4": true,
+		"BLACK_BELT4": true,
+		"RED_MAGE4": true,
+		"WHITE_MAGE4": true,
+		"BLACK_MAGE4": true,
+		"NONE_CLASS2": false,
+		"NONE_CLASS3": false,
+		"NONE_CLASS4": false,
+		"FORCED1": false,
+		"FORCED2": false,
+		"FORCED3": false,
+		"FORCED4": false
 
 	}
 

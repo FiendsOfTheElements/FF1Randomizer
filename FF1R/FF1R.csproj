@@ -4,6 +4,7 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <PostBuildEvent></PostBuildEvent>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -16,7 +17,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.2.5" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\FF1Lib\FF1Lib.csproj" />
+    <ProjectReference Include="..\FFR.Common\FFR.Common.csproj" />
   </ItemGroup>
 
   <ItemGroup>

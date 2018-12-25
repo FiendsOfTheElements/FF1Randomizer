@@ -1,0 +1,135 @@
+﻿{
+	"Name": "Beginner",
+
+	"Flags": {
+
+		"Shops": true,
+		"Treasures": true,
+		"NPCItems": true,
+		"NPCFetchItems": false,
+		"RandomWares": false,
+		"RandomWaresIncludesSpecialGear": false,
+		"RandomLoot": false,
+		"WeaponPermissions": false,
+		"ArmorPermissions": false,
+
+		"ShardHunt": false,
+		"ExtraShards": false,
+		"TransformFinalFormation": false,
+		"ChaosRush": false,
+		"ShortToFR": false,
+		"PreserveFiendRefights": false,
+
+		"MagicShops": false,
+		"MagicLevels": true,
+		"MagicPermissions": false,
+		"ItemMagic": false,
+
+		"Rng": true,
+		"FormationShuffleMode": 0,
+		"EnemyFormationsUnrunnable": false,
+		"EnemyFormationsSurprise": false,
+		"EnemyTrapTiles": false,
+		"RandomTrapFormations": false,
+
+		"EnemyScripts": false,
+		"EnemySkillsSpells": false,
+		"EnemyStatusAttacks": false,
+		"AllowUnsafePirates": false,
+
+		"WarMECHMode": 0,
+		"OrdealsPillars": false,
+		"SkyCastle4FTeleporters": false,
+		"TitansTrove": true,
+		"ConfusedOldMen": false,
+		"AllowUnsafeMelmond": false,
+
+		"MapOpenProgression": false,
+		"MapOpenProgressionExtended": false,
+		"Entrances": false,
+		"Floors": false,
+		"AllowDeepCastles": false,
+		"Towns": false,
+
+		"IncentivizeFreeNPCs": true,
+		"IncentivizeFetchNPCs": false,
+		"IncentivizeTail": true,
+		"IncentivizeFetchItems": false,
+
+		"IncentivizeMarsh": true,
+		"IncentivizeEarth": true,
+		"IncentivizeVolcano": false,
+		"IncentivizeIceCave": true,
+		"IncentivizeOrdeals": true,
+		"IncentivizeSeaShrine": true,
+
+		"IncentivizeConeria": true,
+		"IncentivizeMarshKeyLocked": false,
+		"IncentivizeSkyPalace": true,
+
+		"IncentivizeMasamune": true,
+		"IncentivizeOpal": false,
+		"IncentivizeRibbon": true,
+		"IncentivizeRibbon2": false,
+		"Incentivize65K": false,
+		"IncentivizeBad": false,
+
+		"IncentivizeDefCastArmor": false,
+		"IncentivizeOffCastArmor": false,
+		"IncentivizeOtherCastArmor": false,
+		"IncentivizeDefCastWeapon": false,
+		"IncentivizeOffCastWeapon": false,
+		"IncentivizeOtherCastWeapon": false,
+
+		"EarlySarda": true,
+		"EarlySage": true,
+		"CrownlessOrdeals": true,
+		"OnlyRequireGameIsBeatable": false,
+
+		"FreeBridge": true,
+		"FreeAirship": false,
+		"FreeOrbs": false,
+		"StartingGold": false,
+		"WrapStatOverflow": false,
+		"WrapPriceOverflow": false,
+		"IncludeMorale": false,
+		"EasyMode": false,
+		"NoDanMode": false,
+
+		"SpeedHacks": true,
+		"NoPartyShuffle": true,
+		"Dash": true,
+		"BuyTen": true,
+		"EnableCritNumberDisplay": true,
+
+		"IdentifyTreasures": true,
+		"WaitWhenUnrunnable": true,
+
+		"HouseMPRestoration": true,
+		"WeaponStats": true,
+		"ChanceToRun": true,
+		"SpellBugs": true,
+		"BlackBeltAbsorb": true,
+
+		"EnemyStatusAttackBug": true,
+		"EnemySpellsTargetingAllies": true,
+		"EnemyElementalResistancesBug": true,
+		"ImproveTurnOrderRandomization": true,
+
+		"ClampMinimumStatScale": false,
+		"ClampMinimumBossStatScale": false,
+		"ClampMinimumPriceScale": false,
+		"EnemyScaleFactor": 1.3,
+		"BossScaleFactor": 1.3,
+		"PriceScaleFactor": 2.0,
+		"ExpMultiplier": 3.0,
+		"ExpBonus": 300,
+		"ProgressiveScaleMode": 0,
+		"EncounterRate": 30.0,
+		"DungeonEncounterRate": 30.0,
+		"ForcedPartyMembers": 0,
+		"WorldWealth": 1
+
+	}
+
+}

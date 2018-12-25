@@ -135,5 +135,7 @@ namespace FF1Lib
 		public static readonly IReadOnlyCollection<IRewardSource> AllQuestItemLocations =
 			AllTreasures.Concat(AllNonTreasureItemLocations).Where(x => !x.IsUnused).ToList();
 
+		public static readonly IReadOnlyCollection<IRewardSource> CardiaBonusItemLocations =
+			new List<IRewardSource> { Unused2, Unused3 };
 	}
 }

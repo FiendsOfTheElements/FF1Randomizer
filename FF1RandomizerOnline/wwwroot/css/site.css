@@ -119,3 +119,60 @@ img {
     background: rgb(200, 200, 200);
     border-radius: 4px;
 }
+
+.icon {
+    background: url(../images/classes.png);
+    width: 44px;
+    height: 72px;
+}
+
+.icon:hover {
+    background-position-y: 72px;
+}
+
+#fighter {
+    background-position-x: 0;
+}
+
+#thief {
+    background-position-x: -48px;
+}
+
+#blackbelt {
+    background-position-x: -96px;
+}
+
+#redmage {
+    background-position-x: -144px;
+}
+
+#whitemage {
+    background-position-x: -192px;
+}
+
+#blackmage {
+    background-position-x: -240px;
+}
+
+#empty {
+    background-position-x: -240px;
+    filter: brightness(0%) blur(1px);
+}
+
+td {
+    padding: 12px;
+    text-align: center;
+}
+
+td input[type=checkbox] {
+    transform: scale(1.5);
+}
+
+
+tr.odd {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.indent {
+	margin-left: 20px;
+}

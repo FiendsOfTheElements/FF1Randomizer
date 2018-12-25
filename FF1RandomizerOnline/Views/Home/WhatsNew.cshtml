@@ -1,4 +1,88 @@
 ﻿<div class="col-xs-12">
+	<h1>Version 2.5.0</h1>
+	<h2>Major Features</h2>
+	<ul>
+		<li>
+			<h3>None Class</h3>
+			The None class creates a class of useless, permanently dead characters. Nones are still named and
+			can still carry gear. However they cannot ever be resurrected and will never gain experience. Nones
+			are mostly a shortcut for killing off characters to level up faster, but are simply permanent from the
+			moment the game begins until it ends.
+			<div>
+				<img src="~/images/NoneSelection.png" style="margin: 0 auto; width: 512px;" />
+				<img src="~/images/None.png" style="margin: 0 auto; width: 512px;" />
+			</div>
+			This is the None class at character selection time, and in battle. They are completely invisible throughout
+			the game as if to reduce the total size of the party. They can still be given gear to hold though
+			they cannot equip anything.
+		</li>
+		<li>
+			<h3>Party Composition</h3>
+			Forced party controls are now vastly improved. Each individual slot can now be toggled per
+			class, which allows for some really interesting customization, for example:
+			<ul>
+				<li>Slot 1 is forced to Fighter.</li>
+				<li>Slot 2 is forced to Fighter or Thief or None and randomly selected and locked.</li>
+				<li>Slot 3 could be set to Red or White Mage, but allow user selection.</li>
+				<li>Slot 4 could be forbidden from being a Fighter, but allow anything else.</li>
+				<li>If the "Forced?" box is checked, the slot will be forced randomly from the available options
+				depending on the seed. If unchecked, the player will be able to choose from the selected boxes.</li>
+			</ul>
+		</li>
+		<li>
+			<h3>Random Shops</h3>
+			When shuffling <b>Random Weapons and Armor, Including Caster Items and Elite Gear</b> is now a separate flag.
+			Unchecking it will remove the following items from the pool that could ever be for sale:
+			<ul>
+				<li>Light Axe, Mage Rod, Wizard Staff, Defense, Thor Hammer, Bane Sword, Heal Rod</li>
+				<li>Masmune, XCalber, Vorpal, Sun Sword, Katana</li>
+				<li>Heal Helm, White Shirt, Black Shirt, Zeus Gauntlet, Power Gauntlet</li>
+				<li>Dragon Armor, Aegis Shield, Ribbon</li>
+			</ul>
+		</li>
+		<li>
+			<h3>Enemy Formations Frequency is now a Drop down!</h3>
+			Instead of just shuffling the relative frequencies within a zone, there are now more options.
+			<ul>
+				<li>Don't Shuffle Encounters sticks with the vanilla behavior.</li>
+				<li>Shuffle Encounter Rarity has the same behavior as before, changing the relative rarity within a zone.</li>
+				<li>Shuffle All Encounters Across Zones does just that, shuffling all the enounters into other tables</li>
+				<li>Randomize Encounter Zones makes all zones randomly generated with possible duplications across them.</li>
+			</ul>
+		</li>
+		<li>
+			<h3>Randomized Treasures</h3>
+			When shuffling Treasures it's now possible to totally randomize them. This allows duplicates of rare items
+			and also means things like CatClaw might be found in chests, and so on. There is a dropdown of to provide
+			the overall wealth of the world, with higher wealths yielding a greater number of the best tiems and fewer
+			of the worst items. Naturally the reverse is also true, with the lowest settings being potentially grueling
+			seeds with potentially very little good endgame equipment to work with.
+		</li>
+		<li>
+			<h3>Scale Clamping Minimums to 100%</h3>
+			When scaling prices and enemy stats there is now a checkbox to set the minimum to 100%. This not only prevents anything
+			from being easier than vanilla but it actually bumps up the average result to the midpoint of 100% and your higher choice.
+			For example, if you set 100% to 300%, the average enemy will actually have 200% hp! Be warned!
+		</li>
+		<li>
+			<h3>Three Battle Palettes</h3>
+			This is a more advanced Fun% feature for modding enthusiasts. It changes the game to use three sprite palettes for the party
+			instead of just two, which allows a greater color variety on screen at once. The leverage it, a modder must make a copy of the
+			ROM where some of the classes have their palette set to number 3. The downside is that characters which have been turned to stone
+			will share their palette with weapons and spell effects during battles.
+			<div>
+				<img src="~/images/Palettes.png" style="margin: 0 auto; width: 512px;" />
+				<img src="~/images/Palettes2.png" style="margin: 0 auto; width: 512px;" />
+			</div>
+			If you like the look of these screenshots and want to learn more, join us in the discord and ask questions!
+		</li>
+	</ul>
+	<h2>Minor Features &amp; Other Changes</h2>
+	<ul>
+		<li>Fix a bug where the Mystic Key could have been placed in the first two chests of the Temple of Fiends Revisited.</li>
+		<li>Shuffle Objective NPCs allows the shuffling of the locations of Dr. Unne, The Elf Doctor, and Bahamut between their three locations.</li>
+		<li>Disable Damage Tile Flicker removes the flickering when stepping on damage tiles. The noise, damage, and lack of encounters remains of course.</li>
+	</ul>
 	<h1>Version 2.4.0</h1>
 	<h2>Major Features</h2>
 	<ul>
@@ -154,6 +238,14 @@
 		</li>
 		<li>
 			<b>Include Morale</b> is now explicit for enemy stat scaling. Uncheck this to force vanilla morale.
+		</li>
+		<li>
+			<b>Zozo Melmond</b> creates some pretty bad parts of town. Watch out for those desert tiles.
+		</li>
+		<li>
+			<b>Static EXP Distribution</b>, also known as <b>No Dan Mode</b>, gives a static amount of EXP per
+			party member. Dead party member EXP doesn't go to the survivors - it just disappears. For those of
+			you who think having party members be dead should be *bad*!
 		</li>
 	</ul>
 	<h1>Version 2.3.0</h1>

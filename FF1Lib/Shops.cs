@@ -32,14 +32,14 @@ namespace FF1Lib
 			Item = 60
 		}
 
-		public ItemShopSlot ShuffleShops(MT19337 rng, bool earlyAilments, bool randomizeWeaponsAndArmor, IEnumerable<Item> excludeItemsFromRandomShops)
+		public ItemShopSlot ShuffleShops(MT19337 rng, bool earlyAilments, bool randomizeWeaponsAndArmor, IEnumerable<Item> excludeItemsFromRandomShops, WorldWealth wealth)
 		{
 			var pointers = Get(ShopPointerOffset, ShopPointerCount * ShopPointerSize).ToUShorts();
 
 			RepackShops(pointers);
 
-			ShuffleShopType(ShopType.Weapon, pointers, rng, randomizeWeaponsAndArmor, excludeItemsFromRandomShops);
-			ShuffleShopType(ShopType.Armor, pointers, rng, randomizeWeaponsAndArmor, excludeItemsFromRandomShops);
+			ShuffleShopType(ShopType.Weapon, pointers, rng, randomizeWeaponsAndArmor, excludeItemsFromRandomShops, wealth);
+			ShuffleShopType(ShopType.Armor, pointers, rng, randomizeWeaponsAndArmor, excludeItemsFromRandomShops, wealth);
             ItemShopSlot result = null;
 			do
 			{
@@ -104,7 +104,7 @@ namespace FF1Lib
 			Put(ShopPointerBase + pointers[0], allEntries.ToArray());
 		}
 
-		private ItemShopSlot ShuffleShopType(ShopType shopType, ushort[] pointers, MT19337 rng, bool randomize = false, IEnumerable<Item> excludeItemsFromRandomShops = null)
+		private ItemShopSlot ShuffleShopType(ShopType shopType, ushort[] pointers, MT19337 rng, bool randomize = false, IEnumerable<Item> excludeItemsFromRandomShops = null, WorldWealth wealth = WorldWealth.Normal)
 		{
 			var shops = GetShops(shopType, pointers);
 
@@ -156,16 +156,16 @@ namespace FF1Lib
 				if (shopType == ShopType.Weapon || shopType == ShopType.Armor) {
 					// Shuffle up a byte array of random weapons or armor and assign them in place of the existing items.
 					var baseIndex = shopType == ShopType.Armor ? Item.Cloth : Item.WoodenNunchucks;
-					var indeces = Enumerable.Range((int)baseIndex, 40).Select(i => (byte)i).ToList();
+					var indeces = Enumerable.Range((int)baseIndex, 40).Select(i => (Item)i).ToList();
 					foreach (var exclusion in excludeItemsFromRandomShops ?? new List<Item>()) 
 					{ 
-						indeces.Remove((byte)exclusion);
+						indeces.Remove(exclusion);
 					}
 
+					ItemGenerator generator = new ItemGenerator(indeces, wealth);
 					for (int i = 0; i < newShops.Length; i++)
 					{
-						if (!indeces.Any()) break;
-						newShops[i] = newShops[i].Select(x => indeces.SpliceRandom(rng)).ToList();
+						newShops[i] = newShops[i].Select(x => (byte)generator.SpliceItem(rng)).ToList();
 					}
 				}
 			}

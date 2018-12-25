@@ -46,7 +46,7 @@ namespace FF1Lib
 		Scimitar = 35,
 		IronNunchucks = 36,
 		LargeKnife = 37,
-		IronSword = 38,
+		IronStaff = 38,
 		Sabre = 39,
 		LongSword = 40,
 		GreatAxe = 41,

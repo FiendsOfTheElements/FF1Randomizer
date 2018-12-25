@@ -2,7 +2,7 @@
   "profiles": {
     "Sandbox": {
       "commandName": "Project",
-      "workingDirectory": "C:\\Users\\Entroper\\Documents\\Visual Studio 2017\\Projects\\FF1Randomizer\\Sandbox\\bin"
+      "workingDirectory": ".\\bin"
     }
   }
 }

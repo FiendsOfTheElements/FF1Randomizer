@@ -240,6 +240,20 @@ namespace FF1Lib
 			treasurePool.Shuffle(rng);
 			itemLocationPool.Shuffle(rng);
 
+			if (flags.RandomLoot)
+			{
+				// We want to leave out anything incentivized (and thus already placed), but
+				// add all the other stuff that you can't find in vanilla.
+				var randomTreasure = treasurePool.ToList();
+				randomTreasure.AddRange(ItemLists.CommonWeaponTier);
+				randomTreasure.AddRange(ItemLists.CommonArmorTier);
+				randomTreasure.Add(Item.CatClaw);
+				randomTreasure.Add(Item.SteelArmor);
+
+				ItemGenerator generator = new ItemGenerator(randomTreasure, flags.WorldWealth);
+				treasurePool = treasurePool.Select(treasure => generator.GetItem(rng)).ToList();
+			}
+
 			var leftovers = treasurePool.Zip(itemLocationPool, (treasure, location) => NewItemPlacement(location, treasure));
 			placedItems.AddRange(leftovers);
 			return placedItems;
