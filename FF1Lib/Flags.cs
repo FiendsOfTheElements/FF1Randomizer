@@ -365,7 +365,7 @@ namespace FF1Lib
 
 		public bool AllowStartAreaDanager { get; set; } = false;
 
-		public bool MapCanalBridge => NPCItems || NPCFetchItems;
+		public bool MapCanalBridge => NPCItems || NPCFetchItems || MapOpenProgressionExtended;
 		public bool MapOnracDock => MapOpenProgression;
 		public bool MapMirageDock => MapOpenProgression;
 		public bool MapConeriaDwarves => MapOpenProgression;
