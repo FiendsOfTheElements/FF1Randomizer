@@ -449,6 +449,11 @@ namespace FF1Lib
 			Data[0x3002] = 169;
 		}
 
+		public void EnableFreeCanoe()
+		{
+			Data[0x3012] = 1;
+		}
+
 		public void EnableFreeAirship()
 		{
 			Data[0x3004] = 1;
@@ -501,6 +506,19 @@ namespace FF1Lib
 			Data[initItemOffset + (int)Item.FireOrb] = 0x01;
 			Data[initItemOffset + (int)Item.WaterOrb] = 0x01;
 			Data[initItemOffset + (int)Item.AirOrb] = 0x01;
+		}
+
+		public void EnableAutoGoMode()
+		{
+			const int initItemOffset = 0x3020;
+			Data[initItemOffset + (int)Item.Lute] = 0x01;
+			Data[initItemOffset + (int)Item.Key] = 0x01;
+			Data[initItemOffset + (int)Item.Rod] = 0x01;
+			Data[initItemOffset + (int)Item.Oxyale] = 0x01;
+			Data[initItemOffset + (int)Item.Chime] = 0x01;
+			Data[initItemOffset + (int)Item.Cube] = 0x01;
+
+			EnableFreeCanoe();
 		}
 
 		public void EnableHousesFillHp()

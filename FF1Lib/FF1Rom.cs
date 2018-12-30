@@ -99,11 +99,6 @@ namespace FF1Lib
 			var maps = ReadMaps();
 			var shopItemLocation = ItemLocations.CaravanItemShop1;
 
-			/*
-			flags.FreeAirship = true;
-			flags.ExperimentalFloorGeneration = true;
-			flags.DungeonEncounterRate = 0;
-			*/
 			if (flags.ExperimentalFloorGeneration)
 			{
 				MapRequirements reqs = new MapRequirements
@@ -365,6 +360,12 @@ namespace FF1Lib
 			if (flags.FreeOrbs)
 			{
 				EnableFreeOrbs();
+			}
+
+			if (flags.AutoGoMode)
+			{
+				Console.WriteLine("Enabling auto-go-mode");
+				EnableAutoGoMode();
 			}
 
 			if (flags.FreeCanal)

@@ -219,6 +219,8 @@ namespace FF1Lib
 
 		[FlagString(Character = MORE_FILTHY_CASUALS, FlagBit = 1)]
 		public bool HousesFillHp { get; set; }
+		[FlagString(Character = MORE_FILTHY_CASUALS, FlagBit = 2)]
+		public bool AutoGoMode { get; set; }
 
 		[FlagString(Character = CONVENIENCES, FlagBit = 1)]
 		public bool SpeedHacks { get; set; }
@@ -402,18 +404,18 @@ namespace FF1Lib
 
 		public bool IncentivizeFloater => !FreeAirship;
 		public bool IncentivizeBridge => false;
-		public bool IncentivizeLute => !ShortToFR;
+		public bool IncentivizeLute => !ShortToFR && !AutoGoMode;
 		public bool IncentivizeShip => IncentivizeShipAndCanal;
-		public bool IncentivizeRod => true;
-		public bool IncentivizeCanoe => true;
-		public bool IncentivizeCube => true;
+		public bool IncentivizeRod => !AutoGoMode;
+		public bool IncentivizeCanoe => !AutoGoMode;
+		public bool IncentivizeCube => !AutoGoMode;
 
 		public bool IncentivizeCrystal => IncentivizeFetchItems;
 		public bool IncentivizeHerb => IncentivizeFetchItems;
-		public bool IncentivizeKey => true;
+		public bool IncentivizeKey => !AutoGoMode;
 		public bool IncentivizeCanal => (!NPCItems || IncentivizeShipAndCanal) && !FreeCanal; // If Canoe is unshuffled then Canal is Required
-		public bool IncentivizeChime => true;
-		public bool IncentivizeOxyale => true;
+		public bool IncentivizeChime => !AutoGoMode;
+		public bool IncentivizeOxyale => !AutoGoMode;
 		public bool IncentivizeXcalber => false;
 
 		public bool IncentivizeKingConeria => IncentivizeFreeNPCs;
