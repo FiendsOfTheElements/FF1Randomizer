@@ -111,7 +111,8 @@ namespace FF1Lib
 	{
 		Vanilla,
 		Patrolling,
-		Required
+		Required,
+		Unleashed
 	}
 
 	public struct NPC
@@ -407,7 +408,8 @@ namespace FF1Lib
 			formations[6] = formations[7];
 			Put(formationOffset, formations);
 
-			MakeWarMECHUnrunnable();
+			if (mode != WarMECHMode.Unleashed)
+				MakeWarMECHUnrunnable();
 
 			if (mode == WarMECHMode.Required)
 			{

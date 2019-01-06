@@ -139,6 +139,32 @@ namespace FF1Lib
 				Put(ZoneFormationsOffset, newFormations.SelectMany(formation => formation.ToBytes()).ToArray());
 			}
 		}
+
+		private void UnleashWarMECH()
+		{
+			const int WarMECHsToAdd = 1;
+			const int WarMECHIndex = 6;
+			const byte WarMECHEncounter = 0x56;
+			var oldFormations = Get(ZoneFormationsOffset, ZoneFormationsSize * ZoneCount).Chunk(ZoneFormationsSize);
+			var newFormations = new List<byte>();
+
+			foreach(var zone in oldFormations)
+			{
+				var bytes = zone.ToBytes().ToList();
+				if (!bytes.Any(x => x > 0))
+				{
+					newFormations.AddRange(bytes);
+					continue;
+				}
+				bytes = bytes.Skip(WarMECHsToAdd).ToList();
+				newFormations.AddRange(bytes.Take(WarMECHIndex));
+				newFormations.AddRange(Enumerable.Repeat(WarMECHEncounter, WarMECHsToAdd));
+				newFormations.AddRange(bytes.Skip(WarMECHIndex));
+			}
+
+			Put(ZoneFormationsOffset, newFormations.ToArray());
+		}
+
 		public void ShuffleEnemyScripts(MT19337 rng, bool AllowUnsafePirates)
 		{
 			var oldEnemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
