@@ -124,6 +124,7 @@ namespace FF1Lib
 		public bool SpellBugs { get; set; }
 		public bool BlackBeltAbsorb { get; set; }
 		public bool BlackBeltMDEF { get; set; }
+		public bool NPCSwatter { get; set; }
 
 		public bool EnemyStatusAttackBug { get; set; }
 		public bool EnemySpellsTargetingAllies { get; set; }
@@ -440,6 +441,7 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.SpellBugs);
 			sum = AddBoolean(sum, flags.BlackBeltAbsorb);
 			sum = AddBoolean(sum, flags.BlackBeltMDEF);
+			sum = AddBoolean(sum, flags.NPCSwatter);
 			sum = AddBoolean(sum, flags.EnemyStatusAttackBug);
 			sum = AddBoolean(sum, flags.EnemySpellsTargetingAllies);
 			sum = AddBoolean(sum, flags.EnemyElementalResistancesBug);
@@ -570,6 +572,7 @@ namespace FF1Lib
 				EnemyElementalResistancesBug = GetBoolean(ref sum),
 				EnemySpellsTargetingAllies = GetBoolean(ref sum),
 				EnemyStatusAttackBug = GetBoolean(ref sum),
+				NPCSwatter = GetBoolean(ref sum),
 				BlackBeltMDEF = GetBoolean(ref sum),
 				BlackBeltAbsorb = GetBoolean(ref sum),
 				SpellBugs = GetBoolean(ref sum),

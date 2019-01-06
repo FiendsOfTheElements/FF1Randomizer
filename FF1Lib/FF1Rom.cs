@@ -432,6 +432,11 @@ namespace FF1Lib
 				EnableCritNumberDisplay();
 			}
 
+			if (flags.NPCSwatter)
+			{
+				EnableNPCSwatter();
+			}
+
 			if (flags.EasyMode)
 			{
 				EnableEasyMode();
@@ -553,6 +558,12 @@ namespace FF1Lib
 
 			WriteSeedAndFlags(Version, seed.ToHex(), Flags.EncodeFlagsText(flags));
 			ExtraTrackingAndInitCode();
+		}
+
+		private void EnableNPCSwatter()
+		{
+			// Talk_norm is overwritten with unconditional jump to Talk_CoOGuy (say whatever then disappear)
+			PutInBank(0x0E, 0x9492, Blob.FromHex("4CA294"));
 		}
 
 		private void ExtraTrackingAndInitCode()
