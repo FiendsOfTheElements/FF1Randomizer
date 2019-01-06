@@ -980,6 +980,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BlackBeltMDEF"));
 			}
 		}
+		public bool NPCSwatter
+		{
+			get => Flags.NPCSwatter;
+			set
+			{
+				Flags.NPCSwatter = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NPCSwatter"));
+			}
+		}
 
 		public bool EnemyStatusAttackBug
 		{
