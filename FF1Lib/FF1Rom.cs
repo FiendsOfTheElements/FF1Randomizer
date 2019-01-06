@@ -99,6 +99,8 @@ namespace FF1Lib
 			var maps = ReadMaps();
 			var shopItemLocation = ItemLocations.CaravanItemShop1;
 
+			EnableNPCSwatter();
+
 			/*
 			flags.FreeAirship = true;
 			flags.ExperimentalFloorGeneration = true;
@@ -533,6 +535,12 @@ namespace FF1Lib
 
 			WriteSeedAndFlags(Version, seed.ToHex(), Flags.EncodeFlagsText(flags));
 			ExtraTrackingAndInitCode();
+		}
+
+		private void EnableNPCSwatter()
+		{
+			// Talk_norm is overwritten with unconditional jump to Talk_CoOGuy (say whatever then disappear)
+			PutInBank(0x0E, 0x9492, Blob.FromHex("4CA294"));
 		}
 
 		private void ExtraTrackingAndInitCode()
