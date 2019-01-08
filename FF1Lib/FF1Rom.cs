@@ -307,6 +307,11 @@ namespace FF1Lib
 				WarMECHNpc(flags.WarMECHMode, rng, maps);
 			}
 
+			if (flags.WarMECHMode == WarMECHMode.Unleashed)
+			{
+				UnleashWarMECH();
+			}
+
 			if (flags.FormationShuffleMode != FormationShuffleModeEnum.None)
 			{
 				ShuffleEnemyFormations(rng, flags.FormationShuffleMode);
