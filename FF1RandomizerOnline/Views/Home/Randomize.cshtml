@@ -75,6 +75,7 @@
 							<option value="2">Shuffle All Encounters Across Zones</option>
 							<option value="3">Randomize Encounter Zones</option>
 						</select>
+						<b v-if="FormationShuffleMode>0 && FormationShuffleMode<3 && WarMECHMode==3" title="Risks unleashed WarMECH in a common encounter slot, blocking early progress." style="color: orange">⚠</b>
 					</div>
 					<div class="checkbox-cell"><input v-model="EnemyTrapTiles" type="checkbox" asp-for="Flags.EnemyTrapTiles" /> <label asp-for="Flags.EnemyTrapTiles">Enemy Forced Encounter Tiles</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew" asp-fragment="EnemyTrapTiles">New!</a>)</small></div>
 					<div class="checkbox-cell"><input v-model="RandomTrapFormations" :disabled="!EnemyTrapTiles" class="indent" type="checkbox" asp-for="Flags.RandomTrapFormations" /> <label :style="!EnemyTrapTiles ? { color: 'grey'} : {}" asp-for="Flags.RandomTrapFormations">Use Random Formations</label></div>
@@ -247,6 +248,7 @@
 								<option value="2">Required</option>
 								<option value="3">Unleashed</option>
 							</select>
+							<b v-if="FormationShuffleMode>0 && FormationShuffleMode<3 && WarMECHMode==3" title="Because encounters are shuffled, this risks WarMECH in an common encounter slot, blocking early progress." style="color: orange">⚠</b>
 						</div>
 						<br />
 						<br />
