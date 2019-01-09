@@ -132,7 +132,8 @@ var app = new Vue({
 					this.WarMECHMode =
 						mode == "Vanilla" ? 0 :
 							mode == "Patrolling" ? 1 :
-								mode == "Required" ? 3 : 0;
+								mode == "Required" ? 2 :
+									mode == "Unleashed" ? 3 : 0;
 				}
 				else if (this[key] !== true && this[key] !== false) {
 					this[key] = presetFlags[key];
