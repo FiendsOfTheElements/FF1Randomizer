@@ -312,6 +312,11 @@ namespace FF1Lib
 				UnleashWarMECH();
 			}
 
+			if (flags.FiendShuffle)
+			{
+				FiendShuffle(rng);
+			}
+
 			if (flags.FormationShuffleMode != FormationShuffleModeEnum.None)
 			{
 				ShuffleEnemyFormations(rng, flags.FormationShuffleMode);

@@ -368,6 +368,8 @@ namespace FF1Lib
 
 		[FlagString(Character = PROCEDURAL_GENERATION, FlagBit = 1)]
 		public bool ExperimentalFloorGeneration { get; set; }
+		[FlagString(Character = PROCEDURAL_GENERATION, FlagBit = 2)]
+		public bool FiendShuffle { get; set; }
 
 		[FlagString(Character = FORMATION, FlagBit = 3)]
 		public FormationShuffleModeEnum FormationShuffleMode { get; set; }
