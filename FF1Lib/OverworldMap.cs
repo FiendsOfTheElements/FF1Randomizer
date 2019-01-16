@@ -337,11 +337,16 @@ namespace FF1Lib
 			{
 				// Skip towns as they would be removed by the above.
 				// Remove SeaShrine1 so Onrac could lead to anywhere.
-				placedMaps = placedMaps
-					.Where(x => x.Key >= OverworldTeleportIndex.Coneria && x.Key <= OverworldTeleportIndex.Lefein)
-					.ToDictionary(x => x.Key, x => x.Value);
-				placedFloors.Remove(TeleportIndex.SeaShrine1);
+				var keepers = _teleporters.VanillaOverworldTeleports.Where(x => x.Key >= OverworldTeleportIndex.Coneria && x.Key <= OverworldTeleportIndex.Lefein).Select(x => x.Key).ToList();
 
+				if (!flags.EntrancesIncludesDeadEnds)
+				{
+					keepers.Add(OverworldTeleportIndex.Cardia1);
+					keepers.Add(OverworldTeleportIndex.Cardia5);
+				}
+
+				placedMaps = placedMaps .Where(x => keepers.Contains(x.Key)) .ToDictionary(x => x.Key, x => x.Value);
+				placedFloors.Remove(TeleportIndex.SeaShrine1);
 				FixUnusedDefaultBackdrops();
 			}
 			if (flags.Floors)

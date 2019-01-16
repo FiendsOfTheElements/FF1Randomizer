@@ -45,6 +45,8 @@ namespace FF1Lib
 		private const int FORMATION = 34;
 		private const int WEALTH = 35;
 		private const int MORE_FILTHY_CASUALS = 36;
+		private const int MORE_OVERWORLD_MAP = 37;
+
 
 		[FlagString(Character = ITEMS, FlagBit = 1)]
 		public bool Shops { get; set; }
@@ -128,6 +130,9 @@ namespace FF1Lib
 		public bool AllowDeepCastles { get; set; }
 		[FlagString(Character = OVERWORLD_MAP, FlagBit = 32)]
 		public bool MapOpenProgressionExtended { get; set; }
+
+		[FlagString(Character = MORE_OVERWORLD_MAP, FlagBit = 1)]
+		public bool EntrancesIncludesDeadEnds { get; set; }
 
 		[FlagString(Character = INCENTIVES_MAIN, FlagBit = 1)]
 		public bool IncentivizeFreeNPCs { get; set; }

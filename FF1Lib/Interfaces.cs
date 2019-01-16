@@ -100,6 +100,7 @@
 	public interface IFloorShuffleFlags
 	{
 		bool Entrances { get; }
+		bool EntrancesIncludesDeadEnds { get; }
 		bool Towns { get; }
 		bool Floors { get; }
 		bool AllowDeepCastles { get; }
