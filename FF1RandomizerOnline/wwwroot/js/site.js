@@ -4,8 +4,6 @@ loadPresetFile("debug.json");
 loadPresetFile("beginner.json");
 loadPresetFile("full-npc.json");
 loadPresetFile("improved-vanilla.json");
-loadPresetFile("swiss.json");
-loadPresetFile("playoff.json");
 
 function loadPresetFile(filename) {
 	$.getJSON("/presets/" + filename, (preset) => {
@@ -60,7 +58,7 @@ var app = new Vue({
 	data: {
 		flagString: document.getElementById('Flags').value,
 		flagError: false,
-		seedString: '',
+		seedString: document.getElementById('Seed').value,
 		seedError: false,
 		fun: defaultFun,
 		funKeyMessage: '',
@@ -74,7 +72,7 @@ var app = new Vue({
 				this.funKeyMessage = 'Your saved Fun % flags have been automatically restored.';
 			}
 
-			this.seedString = this.queryString.get('s');
+			this.seedString = this.queryString.get('s') || this.seedString;
 			if (!this.seedString) {
 				this.newSeed();
 			}
