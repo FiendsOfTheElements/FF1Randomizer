@@ -133,6 +133,8 @@ namespace FF1Lib
 
 		[FlagString(Character = MORE_OVERWORLD_MAP, FlagBit = 1)]
 		public bool EntrancesIncludesDeadEnds { get; set; }
+		[FlagString(Character = MORE_OVERWORLD_MAP, FlagBit = 2)]
+		public bool EntrancesMixedWithTowns { get; set; }
 
 		[FlagString(Character = INCENTIVES_MAIN, FlagBit = 1)]
 		public bool IncentivizeFreeNPCs { get; set; }

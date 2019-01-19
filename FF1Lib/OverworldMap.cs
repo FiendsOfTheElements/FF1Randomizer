@@ -358,14 +358,17 @@ namespace FF1Lib
 			var placedDestinations = placedMaps.Values.Select(x => x.Destination).Concat(placedFloors.Values.Select(x => x.Destination)).ToList();
 
 			// Grab a list of all non-unused overworld entrances, regardless of whether or not we've already placed them.
-			var maps = Enum.GetValues(typeof(OverworldTeleportIndex)).Cast<OverworldTeleportIndex>().Where(x => x < OverworldTeleportIndex.Unused1).ToList();
-			var shuffledOverworldCount = maps.Count(x => !placedMaps.ContainsKey(x));
+			var townEntrances = _teleporters.TownEntrances;
+			var nonTownEntrances = Enum.GetValues(typeof(OverworldTeleportIndex)).Cast<OverworldTeleportIndex>().Where(x => !townEntrances.Contains(x) && x < OverworldTeleportIndex.Unused1).ToList();
+			var shuffledOverworldCount = townEntrances.Count(x => !placedMaps.ContainsKey(x)) + nonTownEntrances.Count(x => !placedMaps.ContainsKey(x));
 
 			// Grab a list of floors we haven't placed yet that can be shuffled. i.e. not including bottom of ice cave or ordeals.
-			var topfloors = _teleporters.ForcedTopFloors.Where(x => !placedDestinations.Contains(x.Destination)).ToList();
+			var towns = _teleporters.TownTeleports.Where(x => !placedDestinations.Contains(x.Destination)).ToList();
+			var topfloors = _teleporters.NonTownForcedTopFloors.Where(x => !placedDestinations.Contains(x.Destination)).ToList();
 			var subfloors = _teleporters.FreePlacementFloors.Where(x => !placedDestinations.Contains(x.Destination)).ToList();
 			var deadEnds = new List<TeleportDestination>();
 
+			towns.Shuffle(rng);
 			topfloors.Shuffle(rng);
 			subfloors.Shuffle(rng);
 
@@ -393,7 +396,7 @@ namespace FF1Lib
 			deadEnds.Shuffle(rng);
 
 			// This will be the initial dataset from which we attempt to create a workable overworld and dungeon floor shuffling.
-			var destinations = topfloors.Concat(subfloors).Concat(deadEnds).ToList();
+			var destinations = towns.Concat(topfloors).Concat(subfloors).Concat(deadEnds).ToList();
 			var sanity = 0;
 			Dictionary<OverworldTeleportIndex, TeleportDestination> shuffled;
 			Dictionary<TeleportIndex, TeleportDestination> shuffledFloors;
@@ -414,11 +417,29 @@ namespace FF1Lib
 				var teleports = new List<TeleportIndex>();
 
 				// Overworld to First Floor Shuffle Loop
-				var shuffleMaps = maps.ToList();
-				while (shuffleMaps.Any())
+				var shuffleTowns = townEntrances.ToList();
+				var shuffleEntrances = nonTownEntrances.ToList();
+
+				// We keep the town destinations at the front of that list, so if we want to match towns
+				// with town entrances we just keep them at the front of shuffleEntrances too.
+				if (flags.EntrancesMixedWithTowns)
+				{
+					shuffleEntrances = shuffleTowns.Concat(shuffleEntrances).ToList();
+					shuffleEntrances.Shuffle(rng);
+				}
+				else
+				{
+					shuffleTowns.Shuffle(rng);
+					shuffleEntrances.Shuffle(rng);
+					shuffleEntrances = shuffleTowns.Concat(shuffleEntrances).ToList();
+				}
+
+				while (shuffleEntrances.Any())
 				{
 					// Grab the next overworld entrance at random and write it to the shuffled output.
-					var owti = shuffleMaps.SpliceRandom(rng);
+					var owti = shuffleEntrances.First();
+					shuffleEntrances.RemoveAt(0);
+
 					var destination = placedMaps.ContainsKey(owti) ? placedMaps[owti] : destinations[i++];
 					shuffled[owti] = destination;
 					UpdateOverworldOverride(destination.Destination, owti);

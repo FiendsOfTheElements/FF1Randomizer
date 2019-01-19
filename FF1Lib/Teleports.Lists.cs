@@ -93,9 +93,6 @@ namespace FF1Lib
 			{
 				Coneria, Pravoka, Elfland, Melmond, CrescentLake, Gaia, Onrac, Lefein
 			};
-
-		public List<TeleportDestination> ForcedTopFloors =>
-			TownTeleports.Concat(NonTownForcedTopFloors).ToList();
 		public List<TeleportDestination> FreePlacementFloors =>
 			new List<TeleportDestination>
 			{
@@ -110,8 +107,13 @@ namespace FF1Lib
 				SeaShrineMermaids, SeaShrine2, SeaShrine1, SeaShrine4, SeaShrine5, SeaShrine6, SeaShrine7, SeaShrine8, SeaShrineKraken,
 				SkyPalace1, SkyPalace2, SkyPalace3, SkyPalaceMaze, SkyPalaceTiamat
 			};
-		public List<TeleportDestination> FloorTeleports =>
-			ForcedTopFloors.Concat(FreePlacementFloors).ToList();
+		public List<OverworldTeleportIndex> TownEntrances =>
+			new List<OverworldTeleportIndex>
+			{
+				OverworldTeleportIndex.Coneria, OverworldTeleportIndex.Pravoka, OverworldTeleportIndex.Elfland,
+				OverworldTeleportIndex.Melmond, OverworldTeleportIndex.CrescentLake, OverworldTeleportIndex.Onrac,
+				OverworldTeleportIndex.Gaia, OverworldTeleportIndex.Lefein
+			};
 
 		public Dictionary<OverworldTeleportIndex, Coordinate> OverworldCoordinates =
 			new Dictionary<OverworldTeleportIndex, Coordinate>

@@ -101,6 +101,7 @@
 	{
 		bool Entrances { get; }
 		bool EntrancesIncludesDeadEnds { get; }
+		bool EntrancesMixedWithTowns { get; }
 		bool Towns { get; }
 		bool Floors { get; }
 		bool AllowDeepCastles { get; }
