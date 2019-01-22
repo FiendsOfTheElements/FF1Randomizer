@@ -14,38 +14,31 @@ jobs:
       - run:
           name: publish
           command: |
-            cd FF1RandomizerOnline
-            if [ "${CIRCLE_BRANCH}" == "master" ]; then
-              dotnet publish -c Release
-              git rev-parse HEAD > bin/Release/netcoreapp2.1/publish/version.txt
+            set -ex
+            if [ "${CIRCLE_BRANCH}" == "alpha" ]; then
+              cd FF1Blazorizer
+              if [ "${CIRCLE_BRANCH}" == "master" ]; then
+                dotnet publish -c Release
+                git rev-parse HEAD > bin/Release/netstandard2.0/publish/FF1Blazorizer/dist/version.txt
+              else
+                dotnet publish -c Debug
+                git rev-parse HEAD > bin/Debug/netstandard2.0/publish/FF1Blazorizer/dist/version.txt
+              fi
             else
-              dotnet publish -c Debug
-              git rev-parse HEAD > bin/Debug/netcoreapp2.1/publish/version.txt
+              cd FF1RandomizerOnline
+              if [ "${CIRCLE_BRANCH}" == "master" ]; then
+                dotnet publish -c Release
+                git rev-parse HEAD > bin/Release/netcoreapp2.1/publish/version.txt
+              else
+                dotnet publish -c Debug
+                git rev-parse HEAD > bin/Debug/netcoreapp2.1/publish/version.txt
+              fi
             fi
       - persist_to_workspace:
           root: ~/ff1randomizer
-          paths: FF1RandomizerOnline
-
-  build_blazor:
-    working_directory: ~/ff1randomizer
-    docker:
-      - image: microsoft/dotnet:2.1-sdk
-    steps:
-      - checkout
-      - run:
-          name: publish
-          command: |
-            cd FF1Blazorizer
-            if [ "${CIRCLE_BRANCH}" == "master" ]; then
-              dotnet publish -c Release
-              git rev-parse HEAD > bin/Release/netstandard2.0/publish/FF1Blazorizer/dist/version.txt
-            else
-              dotnet publish -c Debug
-              git rev-parse HEAD > bin/Debug/netstandard2.0/publish/FF1Blazorizer/dist/version.txt
-            fi
-      - persist_to_workspace:
-          root: ~/ff1randomizer
-          paths: FF1Blazorizer
+          paths:
+            - FF1RandomizerOnline
+            - FF1Blazorizer
 
   dockerize_production:
     <<: *defaults
@@ -109,7 +102,7 @@ jobs:
             set -ex
             mkdir -p ~/.ssh
             cp .ssh/known_hosts ~/.ssh/known_hosts
-            cd bin/Debug/netstandard2.0/publish/FF1Blazorizer/dist
+            cd FF1Blazorizer/bin/Debug/netstandard2.0/publish/FF1Blazorizer/dist
             tar cvzf FF1Blazorizer.tar.gz .
             scp FF1Blazorizer.tar.gz circle@finalfantasyrandomizer.com:FF1Blazorizer.tar.gz
             ssh circle@finalfantasyrandomizer.com "./deployff1rblazor.sh alpha"
@@ -119,9 +112,6 @@ workflows:
   main:
     jobs:
       - build
-          filters:
-            branches:
-              ignore: alpha
       - dockerize_production:
           requires:
             - build
@@ -146,16 +136,9 @@ workflows:
           filters:
             branches:
               only: dev
-
-  blazor:
-    jobs:
-      - build_blazor
-          filters:
-            branches:
-              only: alpha
       - deploy_alpha:
           requires:
-            - build_blazor
+            - build
           filters:
             branches:
               only: alpha
