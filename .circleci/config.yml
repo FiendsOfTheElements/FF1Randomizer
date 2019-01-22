@@ -102,8 +102,9 @@ jobs:
             set -ex
             mkdir -p ~/.ssh
             cp .ssh/known_hosts ~/.ssh/known_hosts
-            cd FF1Blazorizer/bin/Debug/netstandard2.0/publish/FF1Blazorizer/dist
-            tar cvzf FF1Blazorizer.tar.gz .
+            pushd FF1Blazorizer/bin/Debug/netstandard2.0/publish/FF1Blazorizer/dist
+            tar cvzf ../../../../../../../FF1Blazorizer.tar.gz .
+            popd
             scp FF1Blazorizer.tar.gz circle@finalfantasyrandomizer.com:FF1Blazorizer.tar.gz
             ssh circle@finalfantasyrandomizer.com "./deployff1rblazor.sh alpha"
 
