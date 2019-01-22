@@ -136,10 +136,6 @@ workflows:
           filters:
             branches:
               ignore: alpha
-      - build_blazor
-          filters:
-            branches:
-              only: alpha
       - dockerize_production:
           requires:
             - build
@@ -164,6 +160,13 @@ workflows:
           filters:
             branches:
               only: dev
+
+  blazor:
+    jobs:
+      - build_blazor
+          filters:
+            branches:
+              only: alpha
       - deploy_alpha:
           requires:
             - build_blazor
