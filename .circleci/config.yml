@@ -26,6 +26,27 @@ jobs:
           root: ~/ff1randomizer
           paths: FF1RandomizerOnline
 
+  build_blazor:
+    working_directory: ~/ff1randomizer
+    docker:
+      - image: microsoft/dotnet:2.1-sdk
+    steps:
+      - checkout
+      - run:
+          name: publish
+          command: |
+            cd FF1Blazorizer
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              dotnet publish -c Release
+              git rev-parse HEAD > bin/Release/netstandard2.0/publish/FF1Blazorizer/dist/version.txt
+            else
+              dotnet publish -c Debug
+              git rev-parse HEAD > bin/Debug/netstandard2.0/publish/FF1Blazorizer/dist/version.txt
+            fi
+      - persist_to_workspace:
+          root: ~/ff1randomizer
+          paths: FF1Blazorizer
+
   dockerize_production:
     <<: *defaults
     steps:
@@ -94,6 +115,8 @@ jobs:
     <<: *defaults
     steps:
       - checkout
+      - attach_workspace:
+          at: ~/ff1randomizer
       - run:
           name: deploy
           command: |
@@ -101,7 +124,7 @@ jobs:
             mkdir -p ~/.ssh
             cp .ssh/known_hosts ~/.ssh/known_hosts
             cd bin/Debug/netstandard2.0/publish/FF1Blazorizer/dist
-            tar czf FF1Blazorizer.tar.gz .
+            tar cvzf FF1Blazorizer.tar.gz .
             scp FF1Blazorizer.tar.gz circle@finalfantasyrandomizer.com:FF1Blazorizer.tar.gz
             ssh circle@finalfantasyrandomizer.com "./deployff1rblazor.sh alpha"
 
@@ -110,6 +133,13 @@ workflows:
   main:
     jobs:
       - build
+          filters:
+            branches:
+              ignore: alpha
+      - build_blazor
+          filters:
+            branches:
+              only: alpha
       - dockerize_production:
           requires:
             - build
@@ -122,12 +152,6 @@ workflows:
           filters:
             branches:
               only: dev
-      - dockerize_alpha:
-          requires:
-            - build
-          filters:
-            branches:
-              only: alpha
       - deploy_production:
           requires:
             - dockerize_production
@@ -142,7 +166,7 @@ workflows:
               only: dev
       - deploy_alpha:
           requires:
-            - dockerize_alpha
+            - build_blazor
           filters:
             branches:
               only: alpha
