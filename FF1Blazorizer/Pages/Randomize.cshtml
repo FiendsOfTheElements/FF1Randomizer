@@ -1,5 +1,6 @@
 ﻿@addTagHelper *, BlazorStrap
 @page "/Randomize"
+@using System.ComponentModel
 @using System.IO
 @using RomUtilities
 @using FF1Lib
@@ -281,7 +282,7 @@
 	private byte[] _fileData;
 	private FF1Rom _rom;
 
-	private FF1Lib.ViewModelFlags MyFlags { get; set; } = new FF1Lib.ViewModelFlags();
+	private ViewModelFlags MyFlags { get; set; } = new ViewModelFlags();
 
 	private string activeTab = "Shuffle";
 
@@ -294,6 +295,10 @@
 	protected override async Task OnInitAsync()
 	{
 		MyFlags.PropertyChanged += (sender, args) => StateHasChanged();
+
+		// This crap is a workaround for a type loading exception in Blazor 0.7.
+		typeof(INotifyPropertyChanged).GetHashCode();
+		typeof(INotifyPropertyChanging).GetHashCode();
 
 		await LoadPreset("default");
 	}
