@@ -296,6 +296,9 @@
 	{
 		MyFlags.PropertyChanged += (sender, args) => StateHasChanged();
 
+		// TODO: Remove this once there's a seed input field.
+		MyFlags.Seed = "DEADBEEF";
+
 		// This crap is a workaround for a type loading exception in Blazor 0.7.
 		typeof(INotifyPropertyChanged).GetHashCode();
 		typeof(INotifyPropertyChanging).GetHashCode();
@@ -325,7 +328,8 @@
 			_rom = new FF1Rom(stream);
 		}
 
-		_rom.Randomize(Blob.FromHex("DEADBEEF"), MyFlags.Flags);
+		var seed = MyFlags.Seed;
+		_rom.Randomize(Blob.FromHex(seed), MyFlags.Flags);
 
 		var data = new byte[512 * 1024 + 16];
 		using (var stream = new MemoryStream(data, true))
@@ -334,7 +338,7 @@
 		}
 
 		var encoded = Convert.ToBase64String(data);
-
-		JSRuntime.Current.InvokeAsync<object>("downloadROM", "ff1randomized.nes", encoded);
+		var filename = "ff1r_" + seed + "_" + Flags.EncodeFlagsText(MyFlags.Flags) + ".nes";
+		JSRuntime.Current.InvokeAsync<object>("downloadROM", filename, encoded);
 	}
 }

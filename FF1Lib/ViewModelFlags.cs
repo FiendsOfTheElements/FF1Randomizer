@@ -14,6 +14,25 @@ namespace FF1Lib
 
 		public event PropertyChangedEventHandler PropertyChanged;
 
+		private string _seed;
+		public string Seed
+		{
+			get => _seed;
+			set
+			{
+				try
+				{
+					int validate = Convert.ToInt32(value, 16);
+					_seed = value;
+				}
+				catch (FormatException)
+				{
+					_seed = (System.DateTime.Now.Millisecond & 0xffffffff).ToString("%08x");
+				}
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Seed"));
+			}
+		}
+
 		// At least this trick saves us from having to declare backing fields, and having to write a conversion from ViewModelFlags to Flags.
 		private Flags _flags;
 		public Flags Flags
