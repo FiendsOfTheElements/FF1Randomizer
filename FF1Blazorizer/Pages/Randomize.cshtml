@@ -206,9 +206,71 @@
 		</TabPane>
 		<TabPane IsOpen="@(activeTab == "Party")">
 			<div class="container">
-				<div class="row">
-					<div class="col-4">
-						<h4>This is like a whole thing.</h4>
+				<h4>Party Composition (Any entire rows left unchecked default to free selection)</h4>
+				<br />
+				<table>
+					<tr class="odd">
+						<td>Permitted Classes</td>
+						<td>Forced?</td>
+						<td>Fighter</td>
+						<td>Thief</td>
+						<td>Black Belt</td>
+						<td>Red Mage</td>
+						<td>White Mage</td>
+						<td>Black Mage</td>
+						<td>None!</td>
+					</tr>
+					<tr>
+						<td>Member 1</td>
+						<td><CheckBox Id="partyForced1" bind-Value="@MyFlags.FORCED1"></CheckBox></td>
+						<td><CheckBox Id="partyFighter1" bind-Value="@MyFlags.FIGHTER1"></CheckBox></td>
+						<td><CheckBox Id="partyThief1" bind-Value="@MyFlags.THIEF1"></CheckBox></td>
+						<td><CheckBox Id="partyBlackBelt1" bind-Value="@MyFlags.BLACK_BELT1"></CheckBox></td>
+						<td><CheckBox Id="partyRedMage1" bind-Value="@MyFlags.RED_MAGE1"></CheckBox></td>
+						<td><CheckBox Id="partyWhiteMage1" bind-Value="@MyFlags.WHITE_MAGE1"></CheckBox></td>
+						<td><CheckBox Id="partyBlackMage1" bind-Value="@MyFlags.BLACK_MAGE1"></CheckBox></td>
+						<td></td>
+					</tr>
+					<tr class="odd">
+						<td>Member 2</td>
+						<td><CheckBox Id="partyForced2" bind-Value="@MyFlags.FORCED2"></CheckBox></td>
+						<td><CheckBox Id="partyFighter2" bind-Value="@MyFlags.FIGHTER2"></CheckBox></td>
+						<td><CheckBox Id="partyThief2" bind-Value="@MyFlags.THIEF2"></CheckBox></td>
+						<td><CheckBox Id="partyBlackBelt2" bind-Value="@MyFlags.BLACK_BELT2"></CheckBox></td>
+						<td><CheckBox Id="partyRedMage2" bind-Value="@MyFlags.RED_MAGE2"></CheckBox></td>
+						<td><CheckBox Id="partyWhiteMage2" bind-Value="@MyFlags.WHITE_MAGE2"></CheckBox></td>
+						<td><CheckBox Id="partyBlackMage2" bind-Value="@MyFlags.BLACK_MAGE2"></CheckBox></td>
+						<td><CheckBox Id="partyNone2" bind-Value="@MyFlags.NONE_CLASS2"></CheckBox></td>
+					</tr>
+					<tr>
+						<td>Member 3</td>
+						<td><CheckBox Id="partyForced3" bind-Value="@MyFlags.FORCED3"></CheckBox></td>
+						<td><CheckBox Id="partyFighter3" bind-Value="@MyFlags.FIGHTER3"></CheckBox></td>
+						<td><CheckBox Id="partyThief3" bind-Value="@MyFlags.THIEF3"></CheckBox></td>
+						<td><CheckBox Id="partyBlackBelt3" bind-Value="@MyFlags.BLACK_BELT3"></CheckBox></td>
+						<td><CheckBox Id="partyRedMage3" bind-Value="@MyFlags.RED_MAGE3"></CheckBox></td>
+						<td><CheckBox Id="partyWhiteMage3" bind-Value="@MyFlags.WHITE_MAGE3"></CheckBox></td>
+						<td><CheckBox Id="partyBlackMage3" bind-Value="@MyFlags.BLACK_MAGE3"></CheckBox></td>
+						<td><CheckBox Id="partyNone3" bind-Value="@MyFlags.NONE_CLASS3"></CheckBox></td>
+					</tr>
+					<tr class="odd">
+						<td>Member 4</td>
+						<td><CheckBox Id="partyForced4" bind-Value="@MyFlags.FORCED4"></CheckBox></td>
+						<td><CheckBox Id="partyFighter4" bind-Value="@MyFlags.FIGHTER4"></CheckBox></td>
+						<td><CheckBox Id="partyThief4" bind-Value="@MyFlags.THIEF4"></CheckBox></td>
+						<td><CheckBox Id="partyBlackBelt4" bind-Value="@MyFlags.BLACK_BELT4"></CheckBox></td>
+						<td><CheckBox Id="partyRedMage4" bind-Value="@MyFlags.RED_MAGE4"></CheckBox></td>
+						<td><CheckBox Id="partyWhiteMage4" bind-Value="@MyFlags.WHITE_MAGE4"></CheckBox></td>
+						<td><CheckBox Id="partyBlackMage4" bind-Value="@MyFlags.BLACK_MAGE4"></CheckBox></td>
+						<td><CheckBox Id="partyNone4" bind-Value="@MyFlags.NONE_CLASS4"></CheckBox></td>
+					</tr>
+				</table>
+				<br />
+				<div class="col-12">
+					<h4>Tavern Recruitment</h4>
+					<div class="col-12">
+						<p>Enable Tavern Recruitment to unlock the ability to build a party as you go!</p>
+						<CheckBox Id="tavernMode" bind-Value="@MyFlags.RecruitmentMode">Tavern Recruitment Mode</CheckBox>
 					</div>
 				</div>
 			</div>

@@ -1087,6 +1087,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DisableDamageTileFlicker"));
 			}
 		}
+		public bool RecruitmentMode
+		{
+			get => Flags.RecruitmentMode;
+			set
+			{
+				Flags.RecruitmentMode = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RecruitmentMode"));
+			}
+		}
 		public bool FORCED1
 		{
 			get => Flags.FORCED1;

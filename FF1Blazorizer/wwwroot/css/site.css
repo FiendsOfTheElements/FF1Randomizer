@@ -163,3 +163,17 @@ h4 {
 .container label {
 	font-weight: bold;
 }
+
+td {
+    padding: 12px;
+    text-align: center;
+    min-width: 96px;
+}
+
+td input[type=checkbox] {
+    transform: scale(1.5);
+}
+
+tr.odd {
+    background: rgba(0, 0, 0, 0.05);
+}
