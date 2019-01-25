@@ -58,8 +58,6 @@
 					<div class="checkbox-cell"><input v-model="MagicLevels" type="checkbox" asp-for="Flags.MagicLevels" /> <label asp-for="Flags.MagicLevels">Magic Levels</label></div>
 					<div class="checkbox-cell"><input v-model="MagicPermissions" :disabled="!MagicLevels" class="indent" type="checkbox" asp-for="Flags.MagicPermissions" /> <label :style="!MagicLevels ? { color: 'grey'} : {}" asp-for="Flags.MagicPermissions">Keep Permissions</label></div>
 					<div class="checkbox-cell"><input v-model="ItemMagic" type="checkbox" asp-for="Flags.ItemMagic" /> <label asp-for="Flags.ItemMagic">Item Magic</label></div>
-					<div class="checkbox-cell" title="Shuffle Class Weapon Permissions."><input v-model="WeaponPermissions" type="checkbox" asp-for="Flags.WeaponPermissions" /> <label asp-for="Flags.WeaponPermissions">Class Weapon Permissions</label></div>
-					<div class="checkbox-cell" title="Shuffle Class Armor Permissions."><input v-model="ArmorPermissions" type="checkbox" asp-for="Flags.ArmorPermissions" /> <label asp-for="Flags.ArmorPermissions">Class Armor Permissions</label></div>
 				</div>
 				<div class="col-md-4">
 					<div class="checkbox-cell"><input v-model="EnemyScripts" type="checkbox" asp-for="Flags.EnemyScripts" /> <label asp-for="Flags.EnemyScripts">Enemy Scripts</label></div>
@@ -213,7 +211,6 @@
 						<div title="Ensures ToFR is buried instead of forced to ground level."><input :disabled="!Entrances || !Floors" class="indent" v-model="AllowDeepCastles" type="checkbox" asp-for="Flags.AllowDeepCastles" /> <label :style="(!Entrances || !Floors) ? { color: 'grey'} : {}" asp-for="Flags.AllowDeepCastles">Deep ToFR <b v-if="AllowDeepCastles" title="It is now possible for the entirety of ToFR to begin several floors down a massive dungeon. Be warned!" style="color:orange">⚠</b></label></div>
 						<div class="checkbox-cell" title="Shuffle All Town Entrances amongst one another."><input v-model="Towns" :disabled="!NPCItems " type="checkbox" asp-for="Flags.Towns" /> <label :style="!NPCItems ? { color: 'grey'} : {}" asp-for="Flags.Towns"></label></div>
 						<div title=""><input :disabled="!Entrances || !Towns" class="indent" v-model="EntrancesMixedWithTowns" type="checkbox" asp-for="Flags.EntrancesMixedWithTowns" /> <label :style="(!Entrances || !Towns)? { color: 'grey'} : {}" asp-for="Flags.EntrancesMixedWithTowns">Mix all entrances together.</label></div>
-						<div class="checkbox-cell" title="Experimental Procedural Floor Generation"><input v-model="ExperimentalFloorGeneration" type="checkbox" asp-for="Flags.ExperimentalFloorGeneration" /> <label asp-for="Flags.ExperimentalFloorGeneration">Experimental Procedural Generation</label> <small>(<a asp-area="" asp-controller="Home" asp-action="WhatsNew" asp-fragment="ExperimentalFloorGeneration">New!</a>)</small></div>
 						<div class="checkbox-cell" title="Shuffles the first fiend fights among themselves"><input v-model="FiendShuffle" type="checkbox" asp-for="Flags.FiendShuffle" /> <label asp-for="Flags.FiendShuffle">Fiend Shuffle</label></div>
 					</div>
 				</div>
@@ -386,13 +383,6 @@
 						</tr>
 						</table>
 						<div class="col-xs-12">&nbsp; </div>
-					</div>
-				</div>
-				<div class="col-xs-12">
-					<h4>Tavern Recruitment</h4>
-					<div class="col-xs-12">
-						<p>Enable Tavern Recruitment to unlock the ability to build a party as you go!</p>
-						<div class="slider-cell" title="Clinics are now PUBs with Light Warriors for Hire!"><input v-model="RecruitmentMode" type="checkbox" asp-for="Flags.RecruitmentMode" /> <label asp-for="Flags.RecruitmentMode">Tavern Recruitment Mode</label></div>
 					</div>
 				</div>
 			</div>
