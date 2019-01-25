@@ -25,6 +25,7 @@
 		"MagicLevels": true,
 		"MagicPermissions": false,
 		"ItemMagic": true,
+		"RebalanceSpells": true,
 
 		"Rng": true,
 		"FormationShuffleMode": 1,
