@@ -591,15 +591,7 @@ namespace FF1Lib
 			return flags;
 		}
 
-		private static BigInteger AddNumeric(BigInteger sum, int radix, int value)
-		{
-			sum = sum * radix + value;
-
-			Console.WriteLine(((Blob)sum.ToByteArray()).ToHex());
-
-			return sum;
-		}
-
+		private static BigInteger AddNumeric(BigInteger sum, int radix, int value) => sum * radix + value;
 		private static BigInteger AddBoolean(BigInteger sum, bool value) => AddNumeric(sum, 2, value ? 1 : 0);
 		private static int TriStateValue(bool? value) => value.HasValue ? (value.Value ? 1 : 0) : 2;
 		private static BigInteger AddTriState(BigInteger sum, bool? value) => AddNumeric(sum, 3, TriStateValue(value));
