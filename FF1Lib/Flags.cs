@@ -408,13 +408,6 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.FiendShuffle);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(FormationShuffleModeEnum)).Cast<int>().Max() + 1, (int)flags.FormationShuffleMode);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(WorldWealth)).Cast<int>().Max() + 1, (int)flags.WorldWealth);
-			sum = AddBoolean(sum, flags.ModernBattlefield);
-			sum = AddBoolean(sum, flags.ThirdBattlePalette);
-			sum = AddBoolean(sum, flags.DisableDamageTileFlicker);
-			sum = AddBoolean(sum, flags.FunEnemyNames);
-			sum = AddBoolean(sum, flags.PaletteSwap);
-			sum = AddBoolean(sum, flags.TeamSteak);
-			sum = AddNumeric(sum, Enum.GetValues(typeof(MusicShuffle)).Cast<int>().Max() + 1, (int)flags.Music);
 			sum = AddBoolean(sum, flags.AllowStartAreaDanager);
 
 			return BigIntegerToString(sum);
@@ -427,13 +420,6 @@ namespace FF1Lib
 			var flags = new Flags
 			{
 				AllowStartAreaDanager = GetBoolean(ref sum),
-				Music = (MusicShuffle)GetNumeric(ref sum, Enum.GetValues(typeof(MusicShuffle)).Cast<int>().Max() + 1),
-				TeamSteak = GetBoolean(ref sum),
-				PaletteSwap = GetBoolean(ref sum),
-				FunEnemyNames = GetBoolean(ref sum),
-				DisableDamageTileFlicker = GetBoolean(ref sum),
-				ThirdBattlePalette = GetBoolean(ref sum),
-				ModernBattlefield = GetBoolean(ref sum),
 				WorldWealth = (WorldWealth)GetNumeric(ref sum, Enum.GetValues(typeof(WorldWealth)).Cast<int>().Max() + 1),
 				FormationShuffleMode = (FormationShuffleModeEnum)GetNumeric(ref sum, Enum.GetValues(typeof(FormationShuffleModeEnum)).Cast<int>().Max() + 1),
 				FiendShuffle = GetBoolean(ref sum),
