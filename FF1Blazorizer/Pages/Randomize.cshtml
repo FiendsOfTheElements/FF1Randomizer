@@ -43,9 +43,13 @@
 		</div>
 	</div>
 	<br />
-	<button type="button" class="nes-btn is-primary" onclick="@OnRandomize">Randomize</button><br />
-	<br />
 	<TabContent>
+		<button type="button" class="nes-btn is-primary" onclick="@OnRandomize">Randomize</button>
+		<TabPane IsOpen="@(StatusMessage.Length > 0)">
+			<div class="is-dark nes-container">
+				@StatusMessage
+			</div>
+		</TabPane>
 		<button type="button" class="@(TabClasses("Shuffle"))" onclick="@(() => ActivateTab("Shuffle"))">Shuffle</button>
 		<TabPane IsOpen="@(activeTabs.Contains("Shuffle"))">
 			<div class="is-dark nes-container">
@@ -381,6 +385,8 @@
 	private List<string> activeTabs = new List<string>() {"Shuffle", "Treasures", "Goal", "Map", "Scale" };
 	private Random _rng = new Random();
 
+	private string StatusMessage = "";
+
 	void ActivateTab(string tab)
 	{
 		if (!activeTabs.Remove(tab)) {
@@ -449,17 +455,35 @@
 		ValidateSeed(Convert.ToString(_rng.Next(), 16).PadLeft(8, '0'));
 	}
 
-	void OnRandomize(UIMouseEventArgs e)
+	async void OnRandomize(UIMouseEventArgs e)
 	{
-		if (_fileData == null)
+		if (_fileData == null) {
+			StatusMessage = "Generate Failed: No ROM File Selected!";
+			StateHasChanged();
 			return;
+		}
 
 		using (var stream = new MemoryStream(_fileData))
 		{
 			_rom = new FF1Rom(stream);
 		}
 
-		_rom.Randomize(Blob.FromHex(_seed), MyFlags.Flags);
+		Blob seed = null;
+		try {
+			if (_seed.Length != 8) {
+				throw new Exception();
+			}
+			seed = Blob.FromHex(_seed);
+		} catch (Exception err) {
+			StatusMessage = "Generate Failed: Invalid Seed Format";
+			StateHasChanged();
+			return;
+		}
+
+		StatusMessage = "Generating Final Fantasy Randomizer ROM ... Please Wait";
+		StateHasChanged();
+
+		_rom.Randomize(seed, MyFlags.Flags);
 
 		var data = new byte[512 * 1024 + 16];
 		using (var stream = new MemoryStream(data, true))
@@ -468,6 +492,9 @@
 		}
 
 		var encoded = Convert.ToBase64String(data);
+
+		StatusMessage = "Generating Final Fantasy Randomizer ROM ... SUCCESS!";
+		StateHasChanged();
 
 		JSRuntime.Current.InvokeAsync<object>("downloadROM", "ff1randomized.nes", encoded);
 	}
