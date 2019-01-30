@@ -7,7 +7,7 @@
 @inject HttpClient Http
 
 <div>
-	<div class="nes-container">
+	<div class="is-dark nes-container">
 		<div class="row">
 			<div class="col-12">
 				Upload Rom: <br />
@@ -22,23 +22,23 @@
 			</div>
 			<div class="col-1">
 				<br />
-				<button type="button" class="nes-btn is-success">New</button>
+				<button type="button" class="nes-btn is-primary">New</button>
 			</div>
 			<div class="col-6">
 				Flags: <br />
-				<input type="text" class="nes-input is-success" value="@Flags.EncodeFlagsText(MyFlags.Flags)" />
+				<input type="text" class="nes-input" value="@Flags.EncodeFlagsText(MyFlags.Flags)" />
 			</div>
 			<div class="col-3">
 				<br />
-				<button type="button" class="nes-btn is-success">Import / Export</button>
+				<button type="button" class="nes-btn is-primary">Import / Export</button>
 			</div>
 		</div>
 		<div class="row">
 			Presets:
-			<a onclick="@(() => LoadPreset("default"))">Default</a>
-			<a onclick="@(() => LoadPreset("beginner"))">Beginner</a>
-			<a onclick="@(() => LoadPreset("full-npc"))">NPC Shuffle</a>
-			<a onclick="@(() => LoadPreset("improved-vanilla"))">Improved Vanilla</a>
+			<a onclick="@(() => LoadPreset("default"))">Default</a> 
+			<a onclick="@(() => LoadPreset("beginner"))">Beginner</a> 
+			<a onclick="@(() => LoadPreset("full-npc"))">NPC Shuffle</a> 
+			<a onclick="@(() => LoadPreset("improved-vanilla"))">Improved Vanilla</a> 
 			<a onclick="@(() => LoadPreset("debug"))">DEBUG</a>
 		</div>
 	</div>
@@ -48,7 +48,7 @@
 	<TabContent>
 		<button type="button" class="@(TabClasses("Shuffle"))" onclick="@(() => ActivateTab("Shuffle"))">Shuffle</button>
 		<TabPane IsOpen="@(activeTabs.Contains("Shuffle"))">
-			<div class="nes-container">
+			<div class="is-dark nes-container">
 				<div class="row">
 					<div class="col-6">
 						<CheckBox Id="shopsCheckBox" bind-Value="@MyFlags.Shops">Shops</CheckBox>
@@ -76,7 +76,7 @@
 		</TabPane>
 		<button type="button" class="@(TabClasses("Treasures"))" onclick="@(() => ActivateTab("Treasures"))">Treasures</button>
 		<TabPane IsOpen="@(activeTabs.Contains("Treasures"))">
-			<div class="nes-container">
+			<div class="is-dark nes-container">
 				<div class="row">
 					<div class="col-4">
 						<h4>Items Shuffle</h4>
@@ -124,7 +124,7 @@
 		</TabPane>
 		<button type="button" class="@(TabClasses("Goal"))" onclick="@(() => ActivateTab("Goal"))">Goal</button>
 		<TabPane IsOpen="@(activeTabs.Contains("Goal"))">
-			<div class="nes-container">
+			<div class="is-dark nes-container">
 				<div class="row">
 					<div class="col-4">
 						<h4>Chaos Rush</h4>
@@ -151,7 +151,7 @@
 		</TabPane>
 		<button type="button" class="@(TabClasses("Map"))" onclick="@(() => ActivateTab("Map"))">Map</button>
 		<TabPane IsOpen="@(activeTabs.Contains("Map"))">
-			<div class="nes-container">
+			<div class="is-dark nes-container">
 				<div class="row">
 					<div class="col-4">
 						<h4>Entrance Shuffle</h4>
@@ -182,7 +182,7 @@
 		</TabPane>
 		<button type="button" class="@(TabClasses("Scale"))" onclick="@(() => ActivateTab("Scale"))">Scale</button>
 		<TabPane IsOpen="@(activeTabs.Contains("Scale"))">
-			<div class="nes-container">
+			<div class="is-dark nes-container">
 				<ClampedSlider Min="1" Max="5" Step="0.1" bind-Clamp="@MyFlags.ClampMinimumPriceScale" bind-Scale="@MyFlags.PriceScaleFactor">Prices:</ClampedSlider>
 				<ClampedSlider Min="1" Max="5" Step="0.1" bind-Clamp="@MyFlags.ClampMinimumStatScale" bind-Scale="@MyFlags.EnemyScaleFactor">Enemy Stats:</ClampedSlider>
 				<ClampedSlider Min="1" Max="5" Step="0.1" bind-Clamp="@MyFlags.ClampMinimumBossStatScale" bind-Scale="@MyFlags.BossScaleFactor">Boss Stats:</ClampedSlider>
@@ -229,7 +229,7 @@
 		</TabPane>
 		<button type="button" class="@(TabClasses("Party"))" onclick="@(() => ActivateTab("Party"))">Party</button>
 		<TabPane IsOpen="@(activeTabs.Contains("Party"))">
-			<div class="nes-container">
+			<div class="is-dark nes-container">
 				<h4>Party Composition (Any entire rows left unchecked default to free selection)</h4>
 				<br />
 				<table>
@@ -301,7 +301,7 @@
 		</TabPane>
 		<button type="button" class="@(TabClasses("Conveniences"))" onclick="@(() => ActivateTab("Conveniences"))">Conveniences</button>
 		<TabPane IsOpen="@(activeTabs.Contains("Conveniences"))">
-			<div class="nes-container">
+			<div class="is-dark nes-container">
 				<div class="row">
 					<div class="col-6">
 						<CheckBox Id="earlySardaCheckBox" bind-Value="@MyFlags.EarlySarda">Early Sarda Item</CheckBox>
@@ -326,7 +326,7 @@
 		</TabPane>
 		<button type="button" class="@(TabClasses("Bug Fixes"))" onclick="@(() => ActivateTab("Bug Fixes"))">Bug Fixes</button>
 		<TabPane IsOpen="@(activeTabs.Contains("Bug Fixes"))">
-			<div class="nes-container">
+			<div class="is-dark nes-container">
 				<div class="row">
 					<div class="col-6">
 						<CheckBox Id="houseMPRestorationCheckBox" bind-Value="@MyFlags.HouseMPRestoration">House MP Restoration</CheckBox>
@@ -344,7 +344,7 @@
 		</TabPane>
 		<button type="button" class="@(TabClasses("Fun %"))" onclick="@(() => ActivateTab("Fun %"))">Fun %</button>
 		<TabPane IsOpen="@(activeTabs.Contains("Fun %"))">
-			<div class="nes-container">
+			<div class="is-dark nes-container">
 				<div class="row">
 					<p>Fun flags are not part of the standard flags string since they do not impact gameplay. The buttons at the bottom can be used to store your preferred fun % settings within your browser so that they will be automatically restored each time you visit the site.</p>
 					<div class="col-4">
@@ -387,7 +387,7 @@
 
 	string TabClasses(string tab)
 	{
-		return activeTabs.Contains(tab) ? "nes-btn nes-nav is-normal" : "nes-btn nes-nav is-warning";
+		return activeTabs.Contains(tab) ? "nes-btn nes-nav is-success" : "nes-btn nes-nav is-warning";
 	}
 
 	protected override async Task OnInitAsync()

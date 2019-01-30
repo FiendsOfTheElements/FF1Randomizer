@@ -14,35 +14,32 @@ app {
     height: 3.5rem;
     display: flex;
     align-items: center;
+    z-index: 100;
+    background: rgba(16, 16, 32, 0.8);
 }
 
 .main {
     flex: 1;
 }
 
-    .main .top-row {
-        background-color: #e6e6e6;
-        border-bottom: 1px solid #d6d5d5;
-    }
-
 .sidebar {
-    background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
+    background-image: linear-gradient(180deg, #052770 0%, #112 70%);
 }
 
-    .sidebar .top-row {
-        background-color: rgba(0,0,0,0.4);
-    }
+.sidebar .top-row {
+    background-color: rgba(0,0,0,0.4);
+}
 
-    .sidebar .navbar-brand {
-        font-size: 1.1rem;
-    }
+.sidebar .navbar-brand {
+    font-size: 1.1rem;
+}
 
-    .sidebar .oi {
-        width: 2rem;
-        font-size: 1.1rem;
-        vertical-align: text-top;
-        top: -2px;
-    }
+.sidebar .oi {
+    width: 2rem;
+    font-size: 1.1rem;
+    vertical-align: text-top;
+    top: -2px;
+}
 
 .nav-item {
     font-size: 0.9rem;
@@ -133,6 +130,7 @@ app {
 
 body {
 	font-size: 10px;
+    background: #444;
 }
 
 h4 {
@@ -157,7 +155,6 @@ h4 {
 	height: 30px;
 	margin: 0;
 	padding: 0;
-	font-weight: bold;
 }
 
 .slider-cell {
@@ -174,10 +171,6 @@ h4 {
 	color: grey;
 }
 
-.container label {
-	font-weight: bold;
-}
-
 td {
     padding: 12px;
     text-align: center;
@@ -190,4 +183,18 @@ td input[type=checkbox] {
 
 tr.odd {
     background: rgba(0, 0, 0, 0.05);
+}
+
+.ffr-nav {
+    font-size: 18px;
+    padding: 6px;
+    margin-right: 20px;
+}
+
+.ffr-nav:hover {
+    text-decoration: none
+}
+
+.ffr-nav.active {
+    border-bottom: 4px solid #444;
 }
