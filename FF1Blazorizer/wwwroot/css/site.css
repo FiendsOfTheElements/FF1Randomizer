@@ -1,7 +1,7 @@
 ﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
 html, body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: 'Press Start 2P', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
 app {
@@ -132,11 +132,25 @@ app {
 /* FFR */
 
 body {
-	font-size: 14px;
+	font-size: 10px;
 }
 
 h4 {
-	font-size: 18px;
+	font-size: 16px;
+}
+
+.nes-nav {
+    display: block;
+    margin-top: 14px;
+}
+
+.nes-container {
+    margin-top: -6px;
+    margin-left: -2px;
+}
+
+.nes-container::after {
+    border-radius: 0px;
 }
 
 .checkbox-cell {

@@ -7,31 +7,50 @@
 @inject HttpClient Http
 
 <div>
-	<div><input type="file" id="fileInput" onchange="@OnFileChanged" /></div>
-	<button onclick="@OnRandomize">Randomize</button><br />
-	<div><input type="text" class="form-control" value="@Flags.EncodeFlagsText(MyFlags.Flags)" /></div><br />
-	Presets:
-	<a onclick="@(() => LoadPreset("default"))">Default</a>
-	<a onclick="@(() => LoadPreset("beginner"))">Beginner</a>
-	<a onclick="@(() => LoadPreset("full-npc"))">NPC Shuffle</a>
-	<a onclick="@(() => LoadPreset("improved-vanilla"))">Improved Vanilla</a>
-	<a onclick="@(() => LoadPreset("debug"))">DEBUG</a>
-	<BlazorNav IsTabs>
-		<BlazorNavLink onclick="@(() => ActivateTab("Shuffle"))" IsActive="@(activeTab == "Shuffle")">Shuffle</BlazorNavLink>
-		<BlazorNavLink onclick="@(() => ActivateTab("Treasures"))" IsActive="@(activeTab == "Treasures")">Treasures</BlazorNavLink>
-		<BlazorNavLink onclick="@(() => ActivateTab("Goal"))" IsActive="@(activeTab == "Goal")">Goal</BlazorNavLink>
-		<BlazorNavLink onclick="@(() => ActivateTab("Map"))" IsActive="@(activeTab == "Map")">Map</BlazorNavLink>
-		<BlazorNavLink onclick="@(() => ActivateTab("Scale"))" IsActive="@(activeTab == "Scale")">Scale</BlazorNavLink>
-		<BlazorNavLink onclick="@(() => ActivateTab("Party"))" IsActive="@(activeTab == "Party")">Party</BlazorNavLink>
-		<BlazorNavLink onclick="@(() => ActivateTab("Conveniences"))" IsActive="@(activeTab == "Conveniences")">Conveniences</BlazorNavLink>
-		<BlazorNavLink onclick="@(() => ActivateTab("Bug Fixes"))" IsActive="@(activeTab == "Bug Fixes")">Bug Fixes</BlazorNavLink>
-		<BlazorNavLink onclick="@(() => ActivateTab("Fun %"))" IsActive="@(activeTab == "Fun %")">Fun %</BlazorNavLink>
-	</BlazorNav>
+	<div class="nes-container">
+		<div class="row">
+			<div class="col-12">
+				Upload Rom: <br />
+				<input type="file" id="fileInput" onchange="@OnFileChanged" />
+				<br />
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-2">
+				Seed: <br />
+				<input type="text" class="nes-input is-primary" id="seedInput" value="DEADBEEF"/>
+			</div>
+			<div class="col-1">
+				<br />
+				<button type="button" class="nes-btn is-success">New</button>
+			</div>
+			<div class="col-6">
+				Flags: <br />
+				<input type="text" class="nes-input is-success" value="@Flags.EncodeFlagsText(MyFlags.Flags)" />
+			</div>
+			<div class="col-3">
+				<br />
+				<button type="button" class="nes-btn is-success">Import / Export</button>
+			</div>
+		</div>
+		<div class="row">
+			Presets:
+			<a onclick="@(() => LoadPreset("default"))">Default</a>
+			<a onclick="@(() => LoadPreset("beginner"))">Beginner</a>
+			<a onclick="@(() => LoadPreset("full-npc"))">NPC Shuffle</a>
+			<a onclick="@(() => LoadPreset("improved-vanilla"))">Improved Vanilla</a>
+			<a onclick="@(() => LoadPreset("debug"))">DEBUG</a>
+		</div>
+	</div>
+	<br />
+	<button type="button" class="nes-btn is-primary" onclick="@OnRandomize">Randomize</button><br />
+	<br />
 	<TabContent>
-		<TabPane IsOpen="@(activeTab == "Shuffle")">
-			<div class="container">
+		<button type="button" class="@(TabClasses("Shuffle"))" onclick="@(() => ActivateTab("Shuffle"))">Shuffle</button>
+		<TabPane IsOpen="@(activeTabs.Contains("Shuffle"))">
+			<div class="nes-container">
 				<div class="row">
-					<div class="col-4">
+					<div class="col-6">
 						<CheckBox Id="shopsCheckBox" bind-Value="@MyFlags.Shops">Shops</CheckBox>
 						<CheckBox Indent IsEnabled="@MyFlags.Shops" Id="randomWaresCheckBox" bind-Value="@MyFlags.RandomWares">Random Weapons and Armor</CheckBox>
 						<CheckBox Id="magicShopsCheckBox" bind-Value="@MyFlags.MagicShops">Magic Shops</CheckBox>
@@ -41,7 +60,7 @@
 						<div class="checkbox-cell"></div>
 						<CheckBox Id="rngCheckBox" bind-Value="@MyFlags.Rng">RNG Table</CheckBox>
 					</div>
-					<div class="col-4">
+					<div class="col-6">
 						<CheckBox Id="enemyScriptsCheckBox" bind-Value="@MyFlags.EnemyScripts">Enemy Scripts</CheckBox>
 						<CheckBox Indent IsEnabled="@MyFlags.EnemyScripts" Id="allowUnsafePiratesCheckBox" bind-Value="@MyFlags.AllowUnsafePirates">Allow Unsafe Pirates</CheckBox>
 						<CheckBox Id="enemySkillsSpellsCheckBox" bind-Value="@MyFlags.EnemySkillsSpells">Enemy Skills/Spells</CheckBox>
@@ -55,8 +74,9 @@
 				</div>
 			</div>
 		</TabPane>
-		<TabPane IsOpen="@(activeTab == "Treasures")">
-			<div class="container">
+		<button type="button" class="@(TabClasses("Treasures"))" onclick="@(() => ActivateTab("Treasures"))">Treasures</button>
+		<TabPane IsOpen="@(activeTabs.Contains("Treasures"))">
+			<div class="nes-container">
 				<div class="row">
 					<div class="col-4">
 						<h4>Items Shuffle</h4>
@@ -102,8 +122,9 @@
 				</div>
 			</div>
 		</TabPane>
-		<TabPane IsOpen="@(activeTab == "Goal")">
-			<div class="container">
+		<button type="button" class="@(TabClasses("Goal"))" onclick="@(() => ActivateTab("Goal"))">Goal</button>
+		<TabPane IsOpen="@(activeTabs.Contains("Goal"))">
+			<div class="nes-container">
 				<div class="row">
 					<div class="col-4">
 						<h4>Chaos Rush</h4>
@@ -128,8 +149,9 @@
 				</div>
 			</div>
 		</TabPane>
-		<TabPane IsOpen="@(activeTab == "Map")">
-			<div class="container">
+		<button type="button" class="@(TabClasses("Map"))" onclick="@(() => ActivateTab("Map"))">Map</button>
+		<TabPane IsOpen="@(activeTabs.Contains("Map"))">
+			<div class="nes-container">
 				<div class="row">
 					<div class="col-4">
 						<h4>Entrance Shuffle</h4>
@@ -158,8 +180,9 @@
 				</div>
 			</div>
 		</TabPane>
-		<TabPane IsOpen="@(activeTab == "Scale")">
-			<div class="container">
+		<button type="button" class="@(TabClasses("Scale"))" onclick="@(() => ActivateTab("Scale"))">Scale</button>
+		<TabPane IsOpen="@(activeTabs.Contains("Scale"))">
+			<div class="nes-container">
 				<ClampedSlider Min="1" Max="5" Step="0.1" bind-Clamp="@MyFlags.ClampMinimumPriceScale" bind-Scale="@MyFlags.PriceScaleFactor">Prices:</ClampedSlider>
 				<ClampedSlider Min="1" Max="5" Step="0.1" bind-Clamp="@MyFlags.ClampMinimumStatScale" bind-Scale="@MyFlags.EnemyScaleFactor">Enemy Stats:</ClampedSlider>
 				<ClampedSlider Min="1" Max="5" Step="0.1" bind-Clamp="@MyFlags.ClampMinimumBossStatScale" bind-Scale="@MyFlags.BossScaleFactor">Boss Stats:</ClampedSlider>
@@ -204,8 +227,9 @@
 				</div>
 			</div>
 		</TabPane>
-		<TabPane IsOpen="@(activeTab == "Party")">
-			<div class="container">
+		<button type="button" class="@(TabClasses("Party"))" onclick="@(() => ActivateTab("Party"))">Party</button>
+		<TabPane IsOpen="@(activeTabs.Contains("Party"))">
+			<div class="nes-container">
 				<h4>Party Composition (Any entire rows left unchecked default to free selection)</h4>
 				<br />
 				<table>
@@ -275,10 +299,11 @@
 				</div>
 			</div>
 		</TabPane>
-		<TabPane IsOpen="@(activeTab == "Conveniences")">
-			<div class="container">
+		<button type="button" class="@(TabClasses("Conveniences"))" onclick="@(() => ActivateTab("Conveniences"))">Conveniences</button>
+		<TabPane IsOpen="@(activeTabs.Contains("Conveniences"))">
+			<div class="nes-container">
 				<div class="row">
-					<div class="col-4">
+					<div class="col-6">
 						<CheckBox Id="earlySardaCheckBox" bind-Value="@MyFlags.EarlySarda">Early Sarda Item</CheckBox>
 						<CheckBox Id="earlySageCheckBox" bind-Value="@MyFlags.EarlySage">Early Sage Item</CheckBox>
 						<CheckBox Id="crownlessOrdealsCheckBox" bind-Value="@MyFlags.CrownlessOrdeals">Early Ordeals</CheckBox>
@@ -291,7 +316,7 @@
 						<CheckBox Id="waitWhenUnrunnableCheckBox" bind-Value="@MyFlags.WaitWhenUnrunnable">Change Unrunnable RUN to WAIT</CheckBox>
 						<CheckBox Id="enableCritNumberDisplayCheckBox" bind-Value="@MyFlags.EnableCritNumberDisplay">Critical Hit Count Display</CheckBox>
 					</div>
-					<div class="col-4">
+					<div class="col-6">
 						<CheckBox Id="freeAirshipCheckBox" bind-Value="@MyFlags.FreeAirship">Free Airship</CheckBox>
 						<CheckBox Id="freeBridgeCheckBox" bind-Value="@MyFlags.FreeBridge">Free Bridge</CheckBox>
 						<CheckBox Id="easyModeCheckBox" bind-Value="@MyFlags.EasyMode">Easy Mode</CheckBox>
@@ -299,10 +324,11 @@
 				</div>
 			</div>
 		</TabPane>
-		<TabPane IsOpen="@(activeTab == "Bug Fixes")">
-			<div class="container">
+		<button type="button" class="@(TabClasses("Bug Fixes"))" onclick="@(() => ActivateTab("Bug Fixes"))">Bug Fixes</button>
+		<TabPane IsOpen="@(activeTabs.Contains("Bug Fixes"))">
+			<div class="nes-container">
 				<div class="row">
-					<div class="col-4">
+					<div class="col-6">
 						<CheckBox Id="houseMPRestorationCheckBox" bind-Value="@MyFlags.HouseMPRestoration">House MP Restoration</CheckBox>
 						<CheckBox Id="weaponStatsCheckBox" bind-Value="@MyFlags.WeaponStats">Weapon Stats</CheckBox>
 						<CheckBox Id="chanceToRunCheckBox" bind-Value="@MyFlags.ChanceToRun">Chance to Run</CheckBox>
@@ -316,10 +342,10 @@
 				</div>
 			</div>
 		</TabPane>
-		<TabPane IsOpen="@(activeTab == "Fun %")">
-			<div class="container">
+		<button type="button" class="@(TabClasses("Fun %"))" onclick="@(() => ActivateTab("Fun %"))">Fun %</button>
+		<TabPane IsOpen="@(activeTabs.Contains("Fun %"))">
+			<div class="nes-container">
 				<div class="row">
-					<h4>Fun % Flags</h4>
 					<p>Fun flags are not part of the standard flags string since they do not impact gameplay. The buttons at the bottom can be used to store your preferred fun % settings within your browser so that they will be automatically restored each time you visit the site.</p>
 					<div class="col-4">
 						<CheckBox Id="funEnemyNamesCheckBox" bind-Value="@MyFlags.FunEnemyNames">Fun Enemy Names</CheckBox>
@@ -337,6 +363,9 @@
 			</div>
 		</TabPane>
 	</TabContent>
+	<br />
+	<button type="button" class="nes-btn is-primary" onclick="@OnRandomize">Randomize</button>
+	<br />
 </div>
 
 @functions
@@ -346,12 +375,19 @@
 
 	private ViewModelFlags MyFlags { get; set; } = new ViewModelFlags();
 
-	private string activeTab = "Shuffle";
+	private List<string> activeTabs = new List<string>() {"Shuffle", "Treasures", "Goal", "Map", "Scale" };
 
 	void ActivateTab(string tab)
 	{
-		activeTab = tab;
+		if (!activeTabs.Remove(tab)) {
+			activeTabs.Add(tab);
+		}
 		StateHasChanged();
+	}
+
+	string TabClasses(string tab)
+	{
+		return activeTabs.Contains(tab) ? "nes-btn nes-nav is-normal" : "nes-btn nes-nav is-warning";
 	}
 
 	protected override async Task OnInitAsync()
