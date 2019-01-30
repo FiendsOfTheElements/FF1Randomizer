@@ -18,11 +18,11 @@
 		<div class="row">
 			<div class="col-2">
 				Seed: <br />
-				<input type="text" class="nes-input is-primary" id="seedInput" value="DEADBEEF"/>
+				<input type="text" class="nes-input @(_seedInputClass)" id="seedInput" onchange="@OnSeedInputChanged" value="@(_seed)"/>
 			</div>
 			<div class="col-1">
 				<br />
-				<button type="button" class="nes-btn is-primary">New</button>
+				<button type="button" class="nes-btn is-primary" onclick="@OnNewSeed">New</button>
 			</div>
 			<div class="col-6">
 				Flags: <br />
@@ -373,9 +373,13 @@
 	private byte[] _fileData;
 	private FF1Rom _rom;
 
+	private string _seed = "12345678";
+	private string _seedInputClass = "";
+
 	private ViewModelFlags MyFlags { get; set; } = new ViewModelFlags();
 
 	private List<string> activeTabs = new List<string>() {"Shuffle", "Treasures", "Goal", "Map", "Scale" };
+	private Random _rng = new Random();
 
 	void ActivateTab(string tab)
 	{
@@ -413,6 +417,38 @@
 		_fileData = Convert.FromBase64String(encoded);
 	}
 
+	void OnSeedInputChanged(UIChangeEventArgs e)
+	{
+		ValidateSeed((string)e.Value);
+	}
+
+	void ValidateSeed(string seed)
+	{
+		if (seed == _seed)
+			return;
+
+		_seed = seed;
+		try {
+			Blob.FromHex(_seed);
+
+			if (_seed.Length == 8)
+			{
+				_seedInputClass = "";
+			}
+			else
+			{
+				_seedInputClass = "is-error";
+			}
+		} catch (Exception err) {
+			_seedInputClass = "is-error";
+		}
+	}
+
+	void OnNewSeed(UIMouseEventArgs e)
+	{
+		ValidateSeed(Convert.ToString(_rng.Next(), 16).PadLeft(8, '0'));
+	}
+
 	void OnRandomize(UIMouseEventArgs e)
 	{
 		if (_fileData == null)
@@ -423,7 +459,7 @@
 			_rom = new FF1Rom(stream);
 		}
 
-		_rom.Randomize(Blob.FromHex("DEADBEEF"), MyFlags.Flags);
+		_rom.Randomize(Blob.FromHex(_seed), MyFlags.Flags);
 
 		var data = new byte[512 * 1024 + 16];
 		using (var stream = new MemoryStream(data, true))
