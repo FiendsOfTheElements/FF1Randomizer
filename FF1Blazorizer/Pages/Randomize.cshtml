@@ -26,7 +26,7 @@
 			</div>
 			<div class="col-6">
 				Flags: <br />
-				<input type="text" class="nes-input" value="@Flags.EncodeFlagsText(MyFlags.Flags)" />
+				<input type="text" class="nes-input" value="@MyFlags.Flags.Encoded" onchange="@OnFlagsInputChanged"/>
 			</div>
 			<div class="col-3">
 				<br />
@@ -453,6 +453,16 @@
 	void OnNewSeed(UIMouseEventArgs e)
 	{
 		ValidateSeed(Convert.ToString(_rng.Next(), 16).PadLeft(8, '0'));
+	}
+
+	void OnFlagsInputChanged(UIChangeEventArgs e)
+	{
+		try {
+			MyFlags.Flags = Flags.DecodeFlagsText((string)e.Value);
+		} catch (Exception err)
+		{
+			StatusMessage = "Invalid Flags String";
+		}
 	}
 
 	async void OnRandomize(UIMouseEventArgs e)
