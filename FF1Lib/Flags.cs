@@ -252,6 +252,8 @@ namespace FF1Lib
 
 		public bool ImmediatePureAndSoftRequired => EnemyStatusAttacks || Entrances || MapOpenProgression;
 
+		public string Encoded => EncodeFlagsText(this);
+
 		public static string EncodeFlagsText(Flags flags)
 		{
 			BigInteger sum = 0;
