@@ -459,6 +459,7 @@
 	{
 		try {
 			MyFlags.Flags = Flags.DecodeFlagsText((string)e.Value);
+			StatusMessage = "Successfully imported Flags.";
 		} catch (Exception err)
 		{
 			StatusMessage = "Invalid Flags String";
