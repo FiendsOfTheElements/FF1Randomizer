@@ -615,7 +615,10 @@ namespace FF1Lib
 
 			foreach (char c in s.Reverse())
 			{
-				sum = AddNumeric(sum, 64, Base64Chars.IndexOf(c));
+				int index = Base64Chars.IndexOf(c);
+				if (index < 0) throw new IndexOutOfRangeException($"{c} is not valid FFR-style Base64.");
+
+				sum = AddNumeric(sum, 64, index);
 			}
 
 			return sum;
