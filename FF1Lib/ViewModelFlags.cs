@@ -62,6 +62,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NPCFetchItems"));
 			}
 		}
+		public bool BetterTrapTreasure
+		{
+			get => Flags.BetterTrapChests;
+			set
+			{
+				Flags.BetterTrapChests = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BetterTrapChests"));
+			}
+		}
 
 		public bool ShuffleObjectiveNPCs
 		{
@@ -416,7 +425,7 @@ namespace FF1Lib
 				Flags.Entrances = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Entrances"));
 			}
-		} // Planned x.x feature - non-town entrance shuffle
+		}
 		public bool Towns
 		{
 			get => Flags.Towns;
@@ -425,7 +434,25 @@ namespace FF1Lib
 				Flags.Towns = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Towns"));
 			}
-		} // Planned x.x feature - town entrance shuffle
+		}
+		public bool EntrancesIncludesDeadEnds
+		{
+			get => Flags.EntrancesIncludesDeadEnds;
+			set
+			{
+				Flags.EntrancesIncludesDeadEnds = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EntrancesIncludesDeadEnds"));
+			}
+		}
+		public bool EntrancesMixedWithTowns
+		{
+			get => Flags.EntrancesMixedWithTowns;
+			set
+			{
+				Flags.EntrancesMixedWithTowns = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EntrancesMixedWithTowns"));
+			}
+		}
 
 		public bool IncentivizeFreeNPCs
 		{
