@@ -222,16 +222,16 @@ namespace FF1Lib
 		public bool IncentivizeBridge => false;
 		public bool IncentivizeLute => !ShortToFR;
 		public bool IncentivizeShip => IncentivizeShipAndCanal;
-		public bool IncentivizeRod => true;
-		public bool IncentivizeCanoe => true;
-		public bool IncentivizeCube => true;
+		public bool IncentivizeRod => NPCItems;
+		public bool IncentivizeCanoe => NPCItems;
+		public bool IncentivizeCube => NPCItems;
 
-		public bool IncentivizeCrystal => IncentivizeFetchItems;
-		public bool IncentivizeHerb => IncentivizeFetchItems;
-		public bool IncentivizeKey => true;
-		public bool IncentivizeCanal => (!NPCItems || IncentivizeShipAndCanal) && !FreeCanal; // If Canoe is unshuffled then Canal is Required
-		public bool IncentivizeChime => true;
-		public bool IncentivizeOxyale => true;
+		public bool IncentivizeCrystal => NPCFetchItems && IncentivizeFetchItems;
+		public bool IncentivizeHerb => NPCFetchItems && IncentivizeFetchItems;
+		public bool IncentivizeKey => NPCFetchItems;
+		public bool IncentivizeCanal => NPCFetchItems && (!NPCItems || IncentivizeShipAndCanal) && !FreeCanal; // If Canoe is unshuffled then Canal is Required
+		public bool IncentivizeChime => NPCFetchItems;
+		public bool IncentivizeOxyale => NPCFetchItems;
 		public bool IncentivizeXcalber => false;
 
 		public int IncentivizedItemCount => 0
@@ -261,6 +261,7 @@ namespace FF1Lib
 			+ (IncentivizeRod ? 1 : 0)
 			+ (IncentivizeCanoe ? 1 : 0)
 			+ (IncentivizeCube ? 1 : 0)
+			+ (IncentivizeCrystal ? 1 : 0)
 			+ (IncentivizeHerb ? 1 : 0)
 			+ (IncentivizeKey ? 1 : 0)
 			+ (IncentivizeCanal ? 1 : 0)
@@ -269,58 +270,59 @@ namespace FF1Lib
 			+ (IncentivizeXcalber ? 1 : 0);
 
 		public string IncentivizedItems => ""
-			+ (IncentivizeKey ? "Key " : "")
-			+ (IncentivizeFloater ? "Floater " : "")
-			+ (IncentivizeCanoe ? "Canoe " : "")
-			+ (IncentivizeShip ? "Ship " : "")
-			+ (IncentivizeCanal ? "Canal " : "")
-			+ (IncentivizeBridge ? "Bridge " : "")
-			+ (IncentivizeCrown ? "Crown " : "")
-			+ (IncentivizeLute ? "Lute " : "")
-			+ (IncentivizeCube ? "Cube " : "")
-			+ (IncentivizeChime ? "Chime " : "")
-			+ (IncentivizeOxyale ? "Oxyale " : "")
-			+ (IncentivizeRod ? "Rod " : "")
-			+ (IncentivizeSlab ? "Slab " : "")
-			+ (IncentivizeRuby ? "Ruby " : "")
 			+ (IncentivizeAdamant ? "Adamant " : "")
-			+ (IncentivizeTnt ? "Tnt " : "")
+			+ (IncentivizeBridge ? "Bridge " : "")
 			+ (IncentivizeBottle ? "Bottle " : "")
+			+ (IncentivizeCanal ? "Canal " : "")
+			+ (IncentivizeCanoe ? "Canoe " : "")
+			+ (IncentivizeChime ? "Chime " : "")
+			+ (IncentivizeBad ? "Cloth " : "")
+			+ (IncentivizeCrown ? "Crown " : "")
+			+ (IncentivizeCrystal ? "Crystal " : "")
+			+ (IncentivizeCube ? "Cube " : "")
+			+ (IncentivizeDefCastWeapon ? "Defense " : "")
+			+ (IncentivizeFloater ? "Floater " : "")
 			+ (IncentivizeHerb ? "Herb " : "")
-			+ (IncentivizeTail ? "Tail " : "")
+			+ (IncentivizeKey ? "Key " : "")
+			+ (IncentivizeLute ? "Lute " : "")
+			+ (IncentivizeOtherCastWeapon ? "Mage " : "")
 			+ (IncentivizeMasamune ? "Masmune " : "")
 			+ (IncentivizeOpal ? "Opal " : "")
+			+ (IncentivizeOxyale ? "Oxyale " : "")
+			+ (IncentivizeOffCastArmor ? "Power " : "")
 			+ (IncentivizeRibbon ? "Ribbon " : "")
 			+ (IncentivizeRibbon2 ? "Ribbon " : "")
-			+ (Incentivize65K ? "65000G " : "")
-			+ (IncentivizeBad ? "Cloth " : "")
-			+ (IncentivizeDefCastArmor ? "White " : "")
-			+ (IncentivizeOffCastArmor ? "Power " : "")
-			+ (IncentivizeOtherCastArmor ? "Zeus " : "")
-			+ (IncentivizeDefCastWeapon ? "Defense " : "")
+			+ (IncentivizeRod ? "Rod " : "")
+			+ (IncentivizeRuby ? "Ruby " : "")
+			+ (IncentivizeShip ? "Ship " : "")
+			+ (IncentivizeSlab ? "Slab " : "")
+			+ (IncentivizeTail ? "Tail " : "")
 			+ (IncentivizeOffCastWeapon ? "Thor " : "")
-			+ (IncentivizeOtherCastWeapon ? "Mage " : "")
-			+ (IncentivizeXcalber ? "XCalber " : "");
+			+ (IncentivizeTnt ? "Tnt " : "")
+			+ (IncentivizeDefCastArmor ? "White " : "")
+			+ (IncentivizeXcalber ? "XCalber " : "")
+			+ (IncentivizeOtherCastArmor ? "Zeus " : "")
+			+ (Incentivize65K ? "65000G " : "");
 
-		public bool IncentivizeKingConeria => IncentivizeFreeNPCs;
-		public bool IncentivizePrincess => IncentivizeFreeNPCs;
-		public bool IncentivizeBikke => IncentivizeFreeNPCs;
-		public bool IncentivizeSarda => IncentivizeFreeNPCs;
-		public bool IncentivizeCanoeSage => IncentivizeFreeNPCs;
-		public bool IncentivizeCaravan => IncentivizeFreeNPCs;
-		public bool IncentivizeCubeBot => IncentivizeFreeNPCs;
+		public bool IncentivizeKingConeria => NPCItems && IncentivizeFreeNPCs;
+		public bool IncentivizePrincess => NPCItems && IncentivizeFreeNPCs;
+		public bool IncentivizeBikke => NPCItems && IncentivizeFreeNPCs;
+		public bool IncentivizeSarda => NPCItems && IncentivizeFreeNPCs;
+		public bool IncentivizeCanoeSage => NPCItems && IncentivizeFreeNPCs;
+		public bool IncentivizeCaravan => NPCItems && IncentivizeFreeNPCs;
+		public bool IncentivizeCubeBot => NPCItems && IncentivizeFreeNPCs;
 
-		public bool IncentivizeFairy => IncentivizeFetchNPCs;
-		public bool IncentivizeAstos => IncentivizeFetchNPCs;
-		public bool IncentivizeMatoya => IncentivizeFetchNPCs;
-		public bool IncentivizeElfPrince => IncentivizeFetchNPCs;
-		public bool IncentivizeNerrick => IncentivizeFetchNPCs;
-		public bool IncentivizeLefein => IncentivizeFetchNPCs;
-		public bool IncentivizeSmith => IncentivizeFetchNPCs;
+		public bool IncentivizeFairy => NPCFetchItems && IncentivizeFetchNPCs;
+		public bool IncentivizeAstos => NPCFetchItems && IncentivizeFetchNPCs;
+		public bool IncentivizeMatoya => NPCFetchItems && IncentivizeFetchNPCs;
+		public bool IncentivizeElfPrince => NPCFetchItems && IncentivizeFetchNPCs;
+		public bool IncentivizeNerrick => NPCFetchItems && IncentivizeFetchNPCs;
+		public bool IncentivizeLefein => NPCFetchItems && IncentivizeFetchNPCs;
+		public bool IncentivizeSmith => NPCFetchItems && IncentivizeFetchNPCs;
 
 		public int IncentivizedLocationCount => 0
-			+ (IncentivizeFreeNPCs ? 7 : 0)
-			+ (IncentivizeFetchNPCs ? 7 : 0)
+			+ (NPCItems && IncentivizeFreeNPCs ? 7 : 0)
+			+ (NPCFetchItems && IncentivizeFetchNPCs ? 7 : 0)
 			+ (IncentivizeMarsh ? 1 : 0)
 			+ (IncentivizeEarth ? 1 : 0)
 			+ (IncentivizeVolcano ? 1 : 0)
