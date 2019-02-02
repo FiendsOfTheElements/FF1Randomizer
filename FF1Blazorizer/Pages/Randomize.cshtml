@@ -5,6 +5,7 @@
 @using RomUtilities
 @using FF1Lib
 @inject HttpClient Http
+@inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
 
 <div>
 	<div class="is-dark nes-container">
@@ -87,6 +88,7 @@
 						<CheckBox Id="treasuresCheckBox" bind-Value="@MyFlags.Treasures">Treasures</CheckBox>
 						<CheckBox Indent Id="randomLootCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.RandomLoot">Randomize Treasures</CheckBox>
 						<EnumDropDown Indent TItem="WorldWealth" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.WorldWealth">Random Wealth: </EnumDropDown>
+						<CheckBox Indent Id="betterTrapTreasureCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.BetterTrapTreasure">Better Trap Treasure</CheckBox>
 						<CheckBox Id="npcItemsCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.NPCItems">Main NPC Items</CheckBox>
 						<CheckBox Id="npcFetchItemsCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.NPCFetchItems">Fetch Quest Rewards</CheckBox>
 						<CheckBox Id="shuffleObjectiveNPCsCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.ShuffleObjectiveNPCs">Objective NPCs</CheckBox>
@@ -163,9 +165,11 @@
 						<h4>Entrance Shuffle</h4>
 						<p>Try shuffling dungeon entrances, floors, and towns to create a completely new world to explore!</p>
 						<CheckBox Id="entrancesCheckBox" bind-Value="@MyFlags.Entrances">Entrances</CheckBox>
+						<CheckBox Indent Id="deadEndsCheckBox" IsEnabled="@MyFlags.Entrances" bind-Value="@MyFlags.EntrancesIncludesDeadEnds">Include Dead Ends</CheckBox>
 						<CheckBox Indent Id="floorsCheckBox" IsEnabled="@MyFlags.Entrances" bind-Value="@MyFlags.Floors">Floors</CheckBox>
 						<CheckBox Indent Id="allowDeepCastlesCheckBox" IsEnabled="@MyFlags.Entrances" bind-Value="@MyFlags.AllowDeepCastles">Deep ToFR</CheckBox>
 						<CheckBox Id="townsCheckBox" bind-Value="@MyFlags.Towns">Towns</CheckBox>
+						<CheckBox Indent Id="mixEntrancesCheckBox" IsEnabled="@(MyFlags.Towns && MyFlags.Entrances)" bind-Value="@MyFlags.EntrancesMixedWithTowns">Mix All Entrances Together</CheckBox>
 					</div>
 					<div class="col-4">
 						<h4>Fixed Map Edits</h4>
@@ -379,7 +383,7 @@
 	private byte[] _fileData;
 	private FF1Rom _rom;
 
-	private string _seed = "12345678";
+	private string _seed;
 	private string _seedInputClass = "";
 
 	private ViewModelFlags MyFlags { get; set; } = new ViewModelFlags();
@@ -410,7 +414,15 @@
 		typeof(INotifyPropertyChanged).GetHashCode();
 		typeof(INotifyPropertyChanging).GetHashCode();
 
-		await LoadPreset("default");
+		var uri = new Uri(UriHelper.GetAbsoluteUri());
+        _seed = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query).TryGetValue("s", out var seed) ? seed.First() : "12345678";
+
+		if (Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query).TryGetValue("f", out var flags)) {
+			TrySetFlags(flags.First());
+		}
+		else {
+			await LoadPreset("default");
+		}
 	}
 
 	async Task LoadPreset(string presetName)
@@ -459,8 +471,13 @@
 
 	void OnFlagsInputChanged(UIChangeEventArgs e)
 	{
+		TrySetFlags((string)e.Value);
+	}
+
+	void TrySetFlags(string flags)
+	{
 		try {
-			MyFlags.Flags = Flags.DecodeFlagsText((string)e.Value);
+			MyFlags.Flags = Flags.DecodeFlagsText(flags);
 			StatusMessage = "Successfully imported Flags.";
 		} catch (Exception err)
 		{
