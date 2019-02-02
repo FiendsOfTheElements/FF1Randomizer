@@ -477,6 +477,16 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeMarsh"));
 			}
 		}
+
+		public bool IncentivizeTitansTrove
+		{
+			get => Flags.IncentivizeTitansTrove;
+			set
+			{
+				Flags.IncentivizeTitansTrove = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeTitansTrove"));
+			}
+		}
 		public bool IncentivizeEarth
 		{
 			get => Flags.IncentivizeEarth;
@@ -658,6 +668,15 @@ namespace FF1Lib
 			{
 				Flags.IncentivizeOtherCastWeapon = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeOtherCastWeapon"));
+			}
+		}
+		public bool IncentivizeShipAndCanal
+		{
+			get => Flags.IncentivizeShipAndCanal;
+			set
+			{
+				Flags.IncentivizeShipAndCanal = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeShipAndCanal"));
 			}
 		}
 

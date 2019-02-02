@@ -78,7 +78,7 @@
 				</div>
 			</div>
 		</TabPane>
-		<button type="button" class="@(TabClasses("Treasures"))" onclick="@(() => ActivateTab("Treasures"))">Treasures</button>
+		<button type="button" class="@(TabClasses("Treasures"))" onclick="@(() => ActivateTab("Treasures"))">Treasures &amp; Incentives</button>
 		<TabPane IsOpen="@(activeTabs.Contains("Treasures"))">
 			<div class="is-dark nes-container">
 				<div class="row">
@@ -92,13 +92,14 @@
 						<CheckBox Id="shuffleObjectiveNPCsCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.ShuffleObjectiveNPCs">Objective NPCs</CheckBox>
 					</div>
 					<div class="col-4">
-						<h4>Incentivized Locations</h4>
+						<h4>Locations: @MyFlags.Flags.IncentivizedLocationCount</h4>
 						<CheckBox Id="incentivizeFreeNPCsCheckBox" IsEnabled="@MyFlags.IncentivizeFreeNPCsEnabled" bind-Value="@MyFlags.IncentivizeFreeNPCs">Main NPCs</CheckBox>
 						<CheckBox Id="incentivizeFetchNPCsCheckBox" IsEnabled="@MyFlags.IncentivizeFetchNPCsEnabled" bind-Value="@MyFlags.IncentivizeFetchNPCs">Fetch Quest NPCs</CheckBox>
 						<div class="checkbox-cell"></div>
 						<CheckBox Id="incentivizeIceCaveCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.IncentivizeIceCave">Ice Cave</CheckBox>
 						<CheckBox Id="incentivizeOrdealsCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.IncentivizeOrdeals">Ordeals</CheckBox>
 						<CheckBox Id="incentivizeMarshCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.IncentivizeMarsh">Marsh Cave</CheckBox>
+						<CheckBox Id="incentivizeTitansCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.IncentivizeTitansTrove">Titan's Trove</CheckBox>
 						<div class="checkbox-cell"></div>
 						<CheckBox Id="incentivizeEarthCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.IncentivizeEarth">Earth Cave</CheckBox>
 						<CheckBox Id="incentivizeVolcanoCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.IncentivizeVolcano">Volcano</CheckBox>
@@ -109,10 +110,11 @@
 						<CheckBox Id="incentivizeMarshKeyLockedCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.IncentivizeMarshKeyLocked">Marsh (locked)</CheckBox>
 					</div>
 					<div class="col-4">
-						<h4>Incentivized Items</h4>
-						<p>Any Required Item being Shuffled will be included in the incentive pool by default. Add additional items below:</p>
+						<h4>Items: @MyFlags.Flags.IncentivizedItemCount</h4>
+						<p style="font-size: 10px">@MyFlags.Flags.IncentivizedItems</p>
 						<CheckBox Id="incentivizeTailCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.IncentivizeTail">Tail</CheckBox>
 						<CheckBox Id="incentivizeFetchItemsCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.IncentivizeFetchItems">Other Quest Items</CheckBox>
+						<CheckBox Id="incentivizeShipAndCanalBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.IncentivizeShipAndCanal">Ship &amp; Canal</CheckBox>
 						<div class="checkbox-cell"></div>
 						<CheckBox Id="incentivizeMasamuneCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.IncentivizeMasamune">Masamune</CheckBox>
 						<CheckBox Id="incentivizeRibbonCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.IncentivizeRibbon">Ribbon</CheckBox>

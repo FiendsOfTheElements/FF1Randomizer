@@ -234,6 +234,74 @@ namespace FF1Lib
 		public bool IncentivizeOxyale => true;
 		public bool IncentivizeXcalber => false;
 
+		public int IncentivizedItemCount => 0
+			+ (IncentivizeTail ? 1 : 0)
+			+ (IncentivizeMasamune ? 1 : 0)
+			+ (IncentivizeOpal ? 1 : 0)
+			+ (IncentivizeRibbon ? 1 : 0)
+			+ (IncentivizeRibbon2 ? 1 : 0)
+			+ (Incentivize65K ? 1 : 0)
+			+ (IncentivizeBad ? 1 : 0)
+			+ (IncentivizeDefCastArmor ? 1 : 0)
+			+ (IncentivizeOffCastArmor ? 1 : 0)
+			+ (IncentivizeOtherCastArmor ? 1 : 0)
+			+ (IncentivizeDefCastWeapon ? 1 : 0)
+			+ (IncentivizeOffCastWeapon ? 1 : 0)
+			+ (IncentivizeOtherCastWeapon ? 1 : 0)
+			+ (IncentivizeAdamant ? 1 : 0)
+			+ (IncentivizeRuby ? 1 : 0)
+			+ (IncentivizeCrown ? 1 : 0)
+			+ (IncentivizeTnt ? 1 : 0)
+			+ (IncentivizeSlab ? 1 : 0)
+			+ (IncentivizeBottle ? 1 : 0)
+			+ (IncentivizeFloater ? 1 : 0)
+			+ (IncentivizeBridge ? 1 : 0)
+			+ (IncentivizeLute ? 1 : 0)
+			+ (IncentivizeShip ? 1 : 0)
+			+ (IncentivizeRod ? 1 : 0)
+			+ (IncentivizeCanoe ? 1 : 0)
+			+ (IncentivizeCube ? 1 : 0)
+			+ (IncentivizeHerb ? 1 : 0)
+			+ (IncentivizeKey ? 1 : 0)
+			+ (IncentivizeCanal ? 1 : 0)
+			+ (IncentivizeChime ? 1 : 0)
+			+ (IncentivizeOxyale ? 1 : 0)
+			+ (IncentivizeXcalber ? 1 : 0);
+
+		public string IncentivizedItems => ""
+			+ (IncentivizeKey ? "Key " : "")
+			+ (IncentivizeFloater ? "Floater " : "")
+			+ (IncentivizeCanoe ? "Canoe " : "")
+			+ (IncentivizeShip ? "Ship " : "")
+			+ (IncentivizeCanal ? "Canal " : "")
+			+ (IncentivizeBridge ? "Bridge " : "")
+			+ (IncentivizeCrown ? "Crown " : "")
+			+ (IncentivizeLute ? "Lute " : "")
+			+ (IncentivizeCube ? "Cube " : "")
+			+ (IncentivizeChime ? "Chime " : "")
+			+ (IncentivizeOxyale ? "Oxyale " : "")
+			+ (IncentivizeRod ? "Rod " : "")
+			+ (IncentivizeSlab ? "Slab " : "")
+			+ (IncentivizeRuby ? "Ruby " : "")
+			+ (IncentivizeAdamant ? "Adamant " : "")
+			+ (IncentivizeTnt ? "Tnt " : "")
+			+ (IncentivizeBottle ? "Bottle " : "")
+			+ (IncentivizeHerb ? "Herb " : "")
+			+ (IncentivizeTail ? "Tail " : "")
+			+ (IncentivizeMasamune ? "Masmune " : "")
+			+ (IncentivizeOpal ? "Opal " : "")
+			+ (IncentivizeRibbon ? "Ribbon " : "")
+			+ (IncentivizeRibbon2 ? "Ribbon " : "")
+			+ (Incentivize65K ? "65000G " : "")
+			+ (IncentivizeBad ? "Cloth " : "")
+			+ (IncentivizeDefCastArmor ? "White " : "")
+			+ (IncentivizeOffCastArmor ? "Power " : "")
+			+ (IncentivizeOtherCastArmor ? "Zeus " : "")
+			+ (IncentivizeDefCastWeapon ? "Defense " : "")
+			+ (IncentivizeOffCastWeapon ? "Thor " : "")
+			+ (IncentivizeOtherCastWeapon ? "Mage " : "")
+			+ (IncentivizeXcalber ? "XCalber " : "");
+
 		public bool IncentivizeKingConeria => IncentivizeFreeNPCs;
 		public bool IncentivizePrincess => IncentivizeFreeNPCs;
 		public bool IncentivizeBikke => IncentivizeFreeNPCs;
@@ -249,6 +317,20 @@ namespace FF1Lib
 		public bool IncentivizeNerrick => IncentivizeFetchNPCs;
 		public bool IncentivizeLefein => IncentivizeFetchNPCs;
 		public bool IncentivizeSmith => IncentivizeFetchNPCs;
+
+		public int IncentivizedLocationCount => 0
+			+ (IncentivizeFreeNPCs ? 7 : 0)
+			+ (IncentivizeFetchNPCs ? 7 : 0)
+			+ (IncentivizeMarsh ? 1 : 0)
+			+ (IncentivizeEarth ? 1 : 0)
+			+ (IncentivizeVolcano ? 1 : 0)
+			+ (IncentivizeIceCave ? 1 : 0)
+			+ (IncentivizeOrdeals ? 1 : 0)
+			+ (IncentivizeSeaShrine ? 1 : 0)
+			+ (IncentivizeConeria ? 1 : 0)
+			+ (IncentivizeMarshKeyLocked ? 1 : 0)
+			+ (IncentivizeTitansTrove ? 1 : 0)
+			+ (IncentivizeSkyPalace ? 1 : 0);
 
 		public bool ImmediatePureAndSoftRequired => EnemyStatusAttacks || Entrances || MapOpenProgression;
 
