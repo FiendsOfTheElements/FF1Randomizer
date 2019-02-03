@@ -35,12 +35,16 @@
 			</div>
 		</div>
 		<div class="row">
-			Presets:
-			<a onclick="@(() => LoadPreset("default"))">Default</a> 
-			<a onclick="@(() => LoadPreset("beginner"))">Beginner</a> 
-			<a onclick="@(() => LoadPreset("full-npc"))">NPC Shuffle</a> 
-			<a onclick="@(() => LoadPreset("improved-vanilla"))">Improved Vanilla</a> 
-			<a onclick="@(() => LoadPreset("debug"))">DEBUG</a>
+			<div class="col-12">
+				Presets:
+				<div>
+					<button type="button" class="nes-btn is-primary" onclick="@(() => LoadPreset("default"))">Default</button>
+					<button type="button" class="nes-btn is-primary" onclick="@(() => LoadPreset("beginner"))">Beginner</button>
+					<button type="button" class="nes-btn is-primary" onclick="@(() => LoadPreset("full-npc"))">NPC Shuffle</button>
+					<button type="button" class="nes-btn is-primary" onclick="@(() => LoadPreset("improved-vanilla"))">Improved Vanilla</button>
+					<button type="button" class="nes-btn is-primary" onclick="@(() => LoadPreset("debug"))">DEBUG</button>
+				</div>
+			</div>
 		</div>
 	</div>
 	<br />
