@@ -220,7 +220,7 @@ namespace FF1Lib
 
 		public bool IncentivizeFloater => !FreeAirship;
 		public bool IncentivizeBridge => false;
-		public bool IncentivizeLute => NPCItems && !ShortToFR;
+		public bool IncentivizeLute => NPCItems && !(ShortToFR || ChaosRush);
 		public bool IncentivizeShip => NPCItems && IncentivizeShipAndCanal;
 		public bool IncentivizeRod => NPCItems;
 		public bool IncentivizeCanoe => NPCItems;
