@@ -526,6 +526,6 @@
 		StatusMessage = "Generating Final Fantasy Randomizer ROM ... SUCCESS!";
 		StateHasChanged();
 
-		JSRuntime.Current.InvokeAsync<object>("downloadROM", "ff1randomized.nes", encoded);
+		JSRuntime.Current.InvokeAsync<object>("downloadROM", $"FFR_{_seed}_{MyFlags.Flags.Encoded}.nes", encoded);
 	}
 }
