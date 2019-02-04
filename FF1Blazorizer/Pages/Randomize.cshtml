@@ -497,6 +497,15 @@
 			_rom = new FF1Rom(stream);
 		}
 
+
+		StatusMessage = "Generating Final Fantasy Randomizer ROM ... Please Wait ... ";
+		StateHasChanged();
+
+		await Task.Run(DoRandomize);
+	}
+
+	async void DoRandomize()
+	{
 		Blob seed;
 		try {
 			if (_seed.Length != 8) {
@@ -509,9 +518,6 @@
 			return;
 		}
 
-		StatusMessage = "Generating Final Fantasy Randomizer ROM ... Please Wait";
-		StateHasChanged();
-
 		_rom.Randomize(seed, MyFlags.Flags);
 
 		var data = new byte[512 * 1024 + 16];
@@ -522,7 +528,7 @@
 
 		var encoded = Convert.ToBase64String(data);
 
-		StatusMessage = "Generating Final Fantasy Randomizer ROM ... SUCCESS!";
+		StatusMessage += "SUCCESS!";
 		StateHasChanged();
 
 		await JSRuntime.Current.InvokeAsync<object>("downloadROM", $"FFR_{_seed}_{MyFlags.Flags.Encoded}.nes", encoded);
