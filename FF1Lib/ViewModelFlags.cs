@@ -89,7 +89,7 @@ namespace FF1Lib
 				Flags.RandomWares = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomWares"));
 			}
-		} // Planned 2.x feature - random weapons and armor in shops
+		}
 		public bool RandomLoot
 		{
 			get => Flags.RandomLoot;
@@ -98,7 +98,7 @@ namespace FF1Lib
 				Flags.RandomLoot = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomLoot"));
 			}
-		} // Planned 2.x feature - random non-quest-item treasures
+		}
 
 		public FormationShuffleModeEnum FormationShuffleMode
 		{
@@ -751,6 +751,15 @@ namespace FF1Lib
 			{
 				Flags.FreeAirship = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeAirship"));
+			}
+		}
+		public bool FreeCanal
+		{
+			get => Flags.FreeCanal;
+			set
+			{
+				Flags.FreeCanal = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeCanal"));
 			}
 		}
 		public bool FreeOrbs
