@@ -4,6 +4,7 @@
 @using System.IO
 @using RomUtilities
 @using FF1Lib
+@using Microsoft.AspNetCore.WebUtilities
 @inject HttpClient Http
 @inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
 
@@ -414,20 +415,43 @@
 	protected override async Task OnInitAsync()
 	{
 		MyFlags.PropertyChanged += (sender, args) => StateHasChanged();
+		MyFlags.PropertyChanged += (sender, args) => SetQueryString();
 
 		// This crap is a workaround for a type loading exception in Blazor 0.7.
 		typeof(INotifyPropertyChanged).GetHashCode();
 		typeof(INotifyPropertyChanging).GetHashCode();
 
 		var uri = new Uri(UriHelper.GetAbsoluteUri());
-        _seed = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query).TryGetValue("s", out var seed) ? seed.First() : "12345678";
+		if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("s", out var seed))
+		{
+			_seed = seed.Single();
+		}
+		else
+		{
+			OnNewSeed(null);
+		}
 
-		if (Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query).TryGetValue("f", out var flags)) {
+		if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("f", out var flags))
+		{
 			TrySetFlags(flags.First());
 		}
-		else {
+		else
+		{
 			await LoadPreset("default");
 		}
+	}
+
+	void SetQueryString()
+	{
+		var uri = new Uri(UriHelper.GetAbsoluteUri());
+		var parameters = new Dictionary<string, string>
+		{
+			["s"] = _seed,
+			["f"] = MyFlags.Flags.Encoded
+		};
+
+		var dest = QueryHelpers.AddQueryString(uri.AbsolutePath, parameters);
+		UriHelper.NavigateTo(dest);
 	}
 
 	async Task LoadPreset(string presetName)
