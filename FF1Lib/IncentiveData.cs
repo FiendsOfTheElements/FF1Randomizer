@@ -250,7 +250,7 @@ namespace FF1Lib
 				ItemLocations.AllTreasures.Concat(ItemLocations.AllNPCItemLocations)
 						  .Where(x => !x.IsUnused && !forcedItemPlacements.Any(y => y.Address == x.Address))
 						  .ToList();
-			if (flags.CrownlessOrdeals)
+			if (flags.EarlyOrdeals)
 			{
 				forcedItemPlacements =
 					forcedItemPlacements

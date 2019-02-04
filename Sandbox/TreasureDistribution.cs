@@ -28,7 +28,7 @@ namespace Sandbox
 
 			    EarlySarda = true,
 			    EarlySage = true,
-			    CrownlessOrdeals = true,
+			    EarlyOrdeals = true,
 			    NoPartyShuffle = false,
 			    SpeedHacks = false,
 			    IdentifyTreasures = false,

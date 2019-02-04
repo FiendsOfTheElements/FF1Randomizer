@@ -150,7 +150,7 @@ namespace FF1Lib
 					new Tuple<MapLocation, AccessRequirement>(MapLocation.TitansTunnelWest, AccessRequirement.Ruby);
 			}
 
-			if (flags.CrownlessOrdeals)
+			if (flags.EarlyOrdeals)
 			{
 				floorLocationRequirements[MapLocation.CastleOrdealsMaze] = new Tuple<MapLocation, AccessRequirement>(MapLocation.CastleOrdeals1, AccessRequirement.None);
 			}

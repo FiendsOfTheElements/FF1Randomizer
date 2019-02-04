@@ -87,7 +87,7 @@
 		bool NPCFetchItems { get; }
 		bool EarlySarda { get; }
 		bool EarlySage { get; }
-		bool CrownlessOrdeals { get; }
+		bool EarlyOrdeals { get; }
 	}
 	public interface IScaleFlags
 	{
