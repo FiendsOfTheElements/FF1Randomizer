@@ -206,7 +206,7 @@
 						<label>Exp/Gold Boost:</label>
 					</div>
 					<div class="col-3">
-						<label>@Math.Round(@MyFlags.ExpMultiplier, 1).ToString("F1")x + @MyFlags.ExpBonus</label>
+						<label>@Math.Round(MyFlags.ExpMultiplier, 1).ToString("F1")x + @MyFlags.ExpBonus</label>
 					</div>
 					<Slider bind-Value="@MyFlags.ExpMultiplier" Min="1" Max="5" Step="0.1"></Slider>
 				</div>
@@ -226,7 +226,7 @@
 						<label>Overworld Encounter Rate:</label>
 					</div>
 					<div class="col-3">
-						<label>@Math.Round(@MyFlags.EncounterRate / 30.0, 2).ToString("F2")x</label>
+						<label>@Math.Round(MyFlags.EncounterRate / 30.0, 2).ToString("F2")x</label>
 					</div>
 					<Slider bind-Value="@MyFlags.EncounterRate" Min="0" Max="45" Step="1"></Slider>
 				</div>
@@ -235,7 +235,7 @@
 						<label>Dungeon Encounter Rate:</label>
 					</div>
 					<div class="col-3">
-						<label>@Math.Round(@MyFlags.DungeonEncounterRate / 30.0, 2).ToString("F2")x</label>
+						<label>@Math.Round(MyFlags.DungeonEncounterRate / 30.0, 2).ToString("F2")x</label>
 					</div>
 					<Slider bind-Value="@MyFlags.DungeonEncounterRate" Min="0" Max="45" Step="1"></Slider>
 				</div>
@@ -392,8 +392,8 @@
 
 	private ViewModelFlags MyFlags { get; set; } = new ViewModelFlags();
 
-	private List<string> activeTabs = new List<string>() {"Shuffle", "Treasures", "Goal", "Map", "Scale" };
-	private Random _rng = new Random();
+	private readonly List<string> activeTabs = new List<string> {"Shuffle", "Treasures", "Goal", "Map", "Scale" };
+	private readonly Random _rng = new Random();
 
 	private string StatusMessage = "";
 
@@ -452,18 +452,12 @@
 			return;
 
 		_seed = seed;
-		try {
+		try
+		{
 			Blob.FromHex(_seed);
 
-			if (_seed.Length == 8)
-			{
-				_seedInputClass = "";
-			}
-			else
-			{
-				_seedInputClass = "is-error";
-			}
-		} catch (Exception err) {
+			_seedInputClass = _seed.Length == 8 ? "" : "is-error";
+		} catch (Exception) {
 			_seedInputClass = "is-error";
 		}
 	}
@@ -483,7 +477,7 @@
 		try {
 			MyFlags.Flags = Flags.DecodeFlagsText(flags);
 			StatusMessage = "Successfully imported Flags.";
-		} catch (Exception err)
+		} catch (Exception)
 		{
 			StatusMessage = "Invalid Flags String";
 		}
@@ -502,13 +496,13 @@
 			_rom = new FF1Rom(stream);
 		}
 
-		Blob seed = null;
+		Blob seed;
 		try {
 			if (_seed.Length != 8) {
 				throw new Exception();
 			}
 			seed = Blob.FromHex(_seed);
-		} catch (Exception err) {
+		} catch (Exception) {
 			StatusMessage = "Generate Failed: Invalid Seed Format";
 			StateHasChanged();
 			return;
@@ -530,6 +524,6 @@
 		StatusMessage = "Generating Final Fantasy Randomizer ROM ... SUCCESS!";
 		StateHasChanged();
 
-		JSRuntime.Current.InvokeAsync<object>("downloadROM", $"FFR_{_seed}_{MyFlags.Flags.Encoded}.nes", encoded);
+		await JSRuntime.Current.InvokeAsync<object>("downloadROM", $"FFR_{_seed}_{MyFlags.Flags.Encoded}.nes", encoded);
 	}
 }
