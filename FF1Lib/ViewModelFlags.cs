@@ -357,13 +357,13 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AllowUnsafeMelmond"));
 			}
 		}
-		public bool CrownlessOrdeals
+		public bool EarlyOrdeals
 		{
-			get => Flags.CrownlessOrdeals;
+			get => Flags.EarlyOrdeals;
 			set
 			{
-				Flags.CrownlessOrdeals = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CrownlessOrdeals"));
+				Flags.EarlyOrdeals = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EarlyOrdeals"));
 			}
 		}
 		public bool ChaosRush

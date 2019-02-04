@@ -94,7 +94,7 @@ namespace FF1Lib
 
 		public bool EarlySarda { get; set; }
 		public bool EarlySage { get; set; }
-		public bool CrownlessOrdeals { get; set; }
+		public bool EarlyOrdeals { get; set; }
 		public bool ShuffleObjectiveNPCs { get; set; }
 		public bool OnlyRequireGameIsBeatable { get; set; }
 
@@ -413,7 +413,7 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.IncentivizeOtherCastWeapon);
 			sum = AddBoolean(sum, flags.EarlySarda);
 			sum = AddBoolean(sum, flags.EarlySage);
-			sum = AddBoolean(sum, flags.CrownlessOrdeals);
+			sum = AddBoolean(sum, flags.EarlyOrdeals);
 			sum = AddBoolean(sum, flags.ShuffleObjectiveNPCs);
 			sum = AddBoolean(sum, flags.OnlyRequireGameIsBeatable);
 			sum = AddBoolean(sum, flags.FreeBridge);
@@ -586,7 +586,7 @@ namespace FF1Lib
 				FreeBridge = GetBoolean(ref sum),
 				OnlyRequireGameIsBeatable = GetBoolean(ref sum),
 				ShuffleObjectiveNPCs = GetBoolean(ref sum),
-				CrownlessOrdeals = GetBoolean(ref sum),
+				EarlyOrdeals = GetBoolean(ref sum),
 				EarlySage = GetBoolean(ref sum),
 				EarlySarda = GetBoolean(ref sum),
 				IncentivizeOtherCastWeapon = GetBoolean(ref sum),

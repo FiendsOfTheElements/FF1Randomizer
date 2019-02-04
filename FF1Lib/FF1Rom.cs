@@ -346,7 +346,7 @@ namespace FF1Lib
 				EnableConfusedOldMen(rng);
 			}
 
-			if (flags.CrownlessOrdeals)
+			if (flags.EarlyOrdeals)
 			{
 				EnableEarlyOrdeals();
 			}

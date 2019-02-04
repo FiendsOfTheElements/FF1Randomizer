@@ -85,7 +85,7 @@
 
 		"EarlySarda": false,
 		"EarlySage": false,
-		"CrownlessOrdeals": false,
+		"EarlyOrdeals": false,
 		"ShuffleObjectiveNPCs": false,
 		"OnlyRequireGameIsBeatable": false,
 
