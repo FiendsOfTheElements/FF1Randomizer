@@ -5,6 +5,7 @@
 @using RomUtilities
 @using FF1Lib
 @inject HttpClient Http
+@inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
 
 <div class="content px-4 tinted">
 	<div class="is-dark nes-container">
@@ -34,12 +35,16 @@
 			</div>
 		</div>
 		<div class="row">
-			Presets:
-			<a onclick="@(() => LoadPreset("default"))">Default</a> 
-			<a onclick="@(() => LoadPreset("beginner"))">Beginner</a> 
-			<a onclick="@(() => LoadPreset("full-npc"))">NPC Shuffle</a> 
-			<a onclick="@(() => LoadPreset("improved-vanilla"))">Improved Vanilla</a> 
-			<a onclick="@(() => LoadPreset("debug"))">DEBUG</a>
+			<div class="col-12">
+				Presets:
+				<div>
+					<button type="button" class="nes-btn is-primary" onclick="@(() => LoadPreset("default"))">Default</button>
+					<button type="button" class="nes-btn is-primary" onclick="@(() => LoadPreset("beginner"))">Beginner</button>
+					<button type="button" class="nes-btn is-primary" onclick="@(() => LoadPreset("full-npc"))">NPC Shuffle</button>
+					<button type="button" class="nes-btn is-primary" onclick="@(() => LoadPreset("improved-vanilla"))">Improved Vanilla</button>
+					<button type="button" class="nes-btn is-primary" onclick="@(() => LoadPreset("debug"))">DEBUG</button>
+				</div>
+			</div>
 		</div>
 	</div>
 	<br />
@@ -78,7 +83,7 @@
 				</div>
 			</div>
 		</TabPane>
-		<button type="button" class="@(TabClasses("Treasures"))" onclick="@(() => ActivateTab("Treasures"))">Treasures</button>
+		<button type="button" class="@(TabClasses("Treasures"))" onclick="@(() => ActivateTab("Treasures"))">Treasures &amp; Incentives</button>
 		<TabPane IsOpen="@(activeTabs.Contains("Treasures"))">
 			<div class="is-dark nes-container">
 				<div class="row">
@@ -87,18 +92,20 @@
 						<CheckBox Id="treasuresCheckBox" bind-Value="@MyFlags.Treasures">Treasures</CheckBox>
 						<CheckBox Indent Id="randomLootCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.RandomLoot">Randomize Treasures</CheckBox>
 						<EnumDropDown Indent TItem="WorldWealth" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.WorldWealth">Random Wealth: </EnumDropDown>
+						<CheckBox Indent Id="betterTrapTreasureCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.BetterTrapTreasure">Better Trap Treasure</CheckBox>
 						<CheckBox Id="npcItemsCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.NPCItems">Main NPC Items</CheckBox>
 						<CheckBox Id="npcFetchItemsCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.NPCFetchItems">Fetch Quest Rewards</CheckBox>
 						<CheckBox Id="shuffleObjectiveNPCsCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.ShuffleObjectiveNPCs">Objective NPCs</CheckBox>
 					</div>
 					<div class="col-4">
-						<h4>Incentivized Locations</h4>
+						<h4>Locations: @MyFlags.Flags.IncentivizedLocationCount</h4>
 						<CheckBox Id="incentivizeFreeNPCsCheckBox" IsEnabled="@MyFlags.IncentivizeFreeNPCsEnabled" bind-Value="@MyFlags.IncentivizeFreeNPCs">Main NPCs</CheckBox>
 						<CheckBox Id="incentivizeFetchNPCsCheckBox" IsEnabled="@MyFlags.IncentivizeFetchNPCsEnabled" bind-Value="@MyFlags.IncentivizeFetchNPCs">Fetch Quest NPCs</CheckBox>
 						<div class="checkbox-cell"></div>
 						<CheckBox Id="incentivizeIceCaveCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.IncentivizeIceCave">Ice Cave</CheckBox>
 						<CheckBox Id="incentivizeOrdealsCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.IncentivizeOrdeals">Ordeals</CheckBox>
 						<CheckBox Id="incentivizeMarshCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.IncentivizeMarsh">Marsh Cave</CheckBox>
+						<CheckBox Id="incentivizeTitansCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.IncentivizeTitansTrove">Titan's Trove</CheckBox>
 						<div class="checkbox-cell"></div>
 						<CheckBox Id="incentivizeEarthCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.IncentivizeEarth">Earth Cave</CheckBox>
 						<CheckBox Id="incentivizeVolcanoCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.IncentivizeVolcano">Volcano</CheckBox>
@@ -109,10 +116,11 @@
 						<CheckBox Id="incentivizeMarshKeyLockedCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.IncentivizeMarshKeyLocked">Marsh (locked)</CheckBox>
 					</div>
 					<div class="col-4">
-						<h4>Incentivized Items</h4>
-						<p>Any Required Item being Shuffled will be included in the incentive pool by default. Add additional items below:</p>
+						<h4>Items: @MyFlags.Flags.IncentivizedItemCount</h4>
+						<p style="font-size: 10px">@MyFlags.Flags.IncentivizedItems</p>
 						<CheckBox Id="incentivizeTailCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.IncentivizeTail">Tail</CheckBox>
 						<CheckBox Id="incentivizeFetchItemsCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.IncentivizeFetchItems">Other Quest Items</CheckBox>
+						<CheckBox Id="incentivizeShipAndCanalBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.IncentivizeShipAndCanal">Ship &amp; Canal</CheckBox>
 						<div class="checkbox-cell"></div>
 						<CheckBox Id="incentivizeMasamuneCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.IncentivizeMasamune">Masamune</CheckBox>
 						<CheckBox Id="incentivizeRibbonCheckBox" IsEnabled="@MyFlags.Treasures" bind-Value="@MyFlags.IncentivizeRibbon">Ribbon</CheckBox>
@@ -161,9 +169,11 @@
 						<h4>Entrance Shuffle</h4>
 						<p>Try shuffling dungeon entrances, floors, and towns to create a completely new world to explore!</p>
 						<CheckBox Id="entrancesCheckBox" bind-Value="@MyFlags.Entrances">Entrances</CheckBox>
+						<CheckBox Indent Id="deadEndsCheckBox" IsEnabled="@MyFlags.Entrances" bind-Value="@MyFlags.EntrancesIncludesDeadEnds">Include Dead Ends</CheckBox>
 						<CheckBox Indent Id="floorsCheckBox" IsEnabled="@MyFlags.Entrances" bind-Value="@MyFlags.Floors">Floors</CheckBox>
 						<CheckBox Indent Id="allowDeepCastlesCheckBox" IsEnabled="@MyFlags.Entrances" bind-Value="@MyFlags.AllowDeepCastles">Deep ToFR</CheckBox>
 						<CheckBox Id="townsCheckBox" bind-Value="@MyFlags.Towns">Towns</CheckBox>
+						<CheckBox Indent Id="mixEntrancesCheckBox" IsEnabled="@(MyFlags.Towns && MyFlags.Entrances)" bind-Value="@MyFlags.EntrancesMixedWithTowns">Mix All Entrances Together</CheckBox>
 					</div>
 					<div class="col-4">
 						<h4>Fixed Map Edits</h4>
@@ -377,13 +387,13 @@
 	private byte[] _fileData;
 	private FF1Rom _rom;
 
-	private string _seed = "12345678";
+	private string _seed;
 	private string _seedInputClass = "";
 
 	private ViewModelFlags MyFlags { get; set; } = new ViewModelFlags();
 
-	private List<string> activeTabs = new List<string> {"Shuffle", "Treasures", "Goal", "Map", "Scale" };
-	private readonly Random _rng = new Random();
+	private List<string> activeTabs = new List<string>() {"Shuffle", "Treasures", "Goal", "Map", "Scale" };
+	private Random _rng = new Random();
 
 	private string StatusMessage = "";
 
@@ -408,7 +418,15 @@
 		typeof(INotifyPropertyChanged).GetHashCode();
 		typeof(INotifyPropertyChanging).GetHashCode();
 
-		await LoadPreset("default");
+		var uri = new Uri(UriHelper.GetAbsoluteUri());
+        _seed = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query).TryGetValue("s", out var seed) ? seed.First() : "12345678";
+
+		if (Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query).TryGetValue("f", out var flags)) {
+			TrySetFlags(flags.First());
+		}
+		else {
+			await LoadPreset("default");
+		}
 	}
 
 	async Task LoadPreset(string presetName)
@@ -445,7 +463,7 @@
 			{
 				_seedInputClass = "is-error";
 			}
-		} catch (Exception) {
+		} catch (Exception err) {
 			_seedInputClass = "is-error";
 		}
 	}
@@ -457,10 +475,15 @@
 
 	void OnFlagsInputChanged(UIChangeEventArgs e)
 	{
+		TrySetFlags((string)e.Value);
+	}
+
+	void TrySetFlags(string flags)
+	{
 		try {
-			MyFlags.Flags = Flags.DecodeFlagsText((string)e.Value);
+			MyFlags.Flags = Flags.DecodeFlagsText(flags);
 			StatusMessage = "Successfully imported Flags.";
-		} catch (Exception)
+		} catch (Exception err)
 		{
 			StatusMessage = "Invalid Flags String";
 		}
@@ -479,13 +502,13 @@
 			_rom = new FF1Rom(stream);
 		}
 
-		Blob seed;
+		Blob seed = null;
 		try {
 			if (_seed.Length != 8) {
 				throw new Exception();
 			}
 			seed = Blob.FromHex(_seed);
-		} catch (Exception) {
+		} catch (Exception err) {
 			StatusMessage = "Generate Failed: Invalid Seed Format";
 			StateHasChanged();
 			return;
@@ -507,6 +530,6 @@
 		StatusMessage = "Generating Final Fantasy Randomizer ROM ... SUCCESS!";
 		StateHasChanged();
 
-		await JSRuntime.Current.InvokeAsync<object>("downloadROM", "ff1randomized.nes", encoded);
+		JSRuntime.Current.InvokeAsync<object>("downloadROM", $"FFR_{_seed}_{MyFlags.Flags.Encoded}.nes", encoded);
 	}
 }
