@@ -10,6 +10,7 @@ namespace FF1Lib
 		public FlagsViewModel()
 		{
 			Flags = new Flags();
+			Preferences = new Preferences();
 		}
 
 		public string Encoded => Flags.EncodeFlagsText(Flags);
@@ -25,6 +26,17 @@ namespace FF1Lib
 			{
 				_flags = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Flags"));
+			}
+		}
+
+		private Preferences _preferences;
+		public Preferences Preferences
+		{
+			get => _preferences;
+			set
+			{
+				_preferences = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Preferences"));
 			}
 		}
 
@@ -1083,64 +1095,64 @@ namespace FF1Lib
 
 		public bool ModernBattlefield
 		{
-			get => Flags.ModernBattlefield;
+			get => Preferences.ModernBattlefield;
 			set
 			{
-				Flags.ModernBattlefield = value;
+				Preferences.ModernBattlefield = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ModernBattlefield"));
 			}
 		}
 		public bool ThirdBattlePalette
 		{
-			get => Flags.ThirdBattlePalette;
+			get => Preferences.ThirdBattlePalette;
 			set
 			{
-				Flags.ThirdBattlePalette = value;
+				Preferences.ThirdBattlePalette = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ThirdBattlePalette"));
 			}
 		}
 		public bool FunEnemyNames
 		{
-			get => Flags.FunEnemyNames;
+			get => Preferences.FunEnemyNames;
 			set
 			{
-				Flags.FunEnemyNames = value;
+				Preferences.FunEnemyNames = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FunEnemyNames"));
 			}
 		}
 		public bool PaletteSwap
 		{
-			get => Flags.PaletteSwap;
+			get => Preferences.PaletteSwap;
 			set
 			{
-				Flags.PaletteSwap = value;
+				Preferences.PaletteSwap = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("PaletteSwap"));
 			}
 		}
 		public bool TeamSteak
 		{
-			get => Flags.TeamSteak;
+			get => Preferences.TeamSteak;
 			set
 			{
-				Flags.TeamSteak = value;
+				Preferences.TeamSteak = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TeamSteak"));
 			}
 		}
 		public MusicShuffle Music
 		{
-			get => Flags.Music;
+			get => Preferences.Music;
 			set
 			{
-				Flags.Music = value;
+				Preferences.Music = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Music"));
 			}
 		}
 		public bool DisableDamageTileFlicker
 		{
-			get => Flags.DisableDamageTileFlicker;
+			get => Preferences.DisableDamageTileFlicker;
 			set
 			{
-				Flags.DisableDamageTileFlicker = value;
+				Preferences.DisableDamageTileFlicker = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DisableDamageTileFlicker"));
 			}
 		}

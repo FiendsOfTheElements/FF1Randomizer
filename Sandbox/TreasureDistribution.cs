@@ -41,19 +41,22 @@ namespace Sandbox
 			    SpellBugs = false,
 			    EnemyStatusAttackBug = false,
 
-			    FunEnemyNames = false,
-			    PaletteSwap = false,
-			    TeamSteak = false,
-			    ModernBattlefield = false,
-			    Music = MusicShuffle.None,
-
 			    PriceScaleFactor = 1.0,
 			    EnemyScaleFactor = 1.0,
 			    ExpMultiplier = 1.0,
 			    ExpBonus = 0
 		    };
 
-		    var filename = "ff1.nes";
+		    var preferences = new Preferences
+		    {
+			    FunEnemyNames = false,
+			    PaletteSwap = false,
+			    TeamSteak = false,
+			    ModernBattlefield = false,
+			    Music = MusicShuffle.None
+		    };
+
+			var filename = "ff1.nes";
 		    var memoryStream = new MemoryStream();
 		    using (var fs = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read))
 		    {
@@ -68,7 +71,7 @@ namespace Sandbox
 				var seed = new byte[8];
 				rng.GetBytes(seed);
 
-				rom.Randomize(seed, flags);
+				rom.Randomize(seed, flags, preferences);
 
 				if (i % 1000 == 0)
 				{
