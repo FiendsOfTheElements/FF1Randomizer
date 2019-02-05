@@ -12,6 +12,8 @@ namespace FF1Lib
 			Flags = new Flags();
 		}
 
+		public string Encoded => Flags.EncodeFlagsText(Flags);
+
 		public event PropertyChangedEventHandler PropertyChanged;
 
 		// At least this trick saves us from having to declare backing fields, and having to write a conversion from FlagsViewModel to Flags.
