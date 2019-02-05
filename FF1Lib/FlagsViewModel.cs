@@ -5,16 +5,16 @@ using System.Text;
 
 namespace FF1Lib
 {
-	public class ViewModelFlags : INotifyPropertyChanged
+	public class FlagsViewModel : INotifyPropertyChanged
 	{
-		public ViewModelFlags()
+		public FlagsViewModel()
 		{
 			Flags = new Flags();
 		}
 
 		public event PropertyChangedEventHandler PropertyChanged;
 
-		// At least this trick saves us from having to declare backing fields, and having to write a conversion from ViewModelFlags to Flags.
+		// At least this trick saves us from having to declare backing fields, and having to write a conversion from FlagsViewModel to Flags.
 		private Flags _flags;
 		public Flags Flags
 		{
