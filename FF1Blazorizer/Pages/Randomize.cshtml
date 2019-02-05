@@ -482,7 +482,9 @@
 			Blob.FromHex(_seed);
 
 			_seedInputClass = _seed.Length == 8 ? "" : "is-error";
-		} catch (Exception) {
+		}
+		catch (Exception)
+		{
 			_seedInputClass = "is-error";
 		}
 	}
@@ -499,10 +501,12 @@
 
 	void TrySetFlags(string flags)
 	{
-		try {
+		try
+		{
 			Flags.Flags = FF1Lib.Flags.DecodeFlagsText(flags);
 			StatusMessage = "Successfully imported Flags.";
-		} catch (Exception)
+		}
+		catch (Exception)
 		{
 			StatusMessage = "Invalid Flags String";
 		}
@@ -510,7 +514,8 @@
 
 	async void OnRandomize(UIMouseEventArgs e)
 	{
-		if (_fileData == null) {
+		if (_fileData == null)
+		{
 			StatusMessage = "Generate Failed: No ROM File Selected!";
 			StateHasChanged();
 			return;
@@ -531,18 +536,22 @@
 	async void DoRandomize()
 	{
 		Blob seed;
-		try {
-			if (_seed.Length != 8) {
+		try
+		{
+			if (_seed.Length != 8)
+			{
 				throw new Exception();
 			}
 			seed = Blob.FromHex(_seed);
-		} catch (Exception) {
+		}
+		catch (Exception)
+		{
 			StatusMessage = "Generate Failed: Invalid Seed Format";
 			StateHasChanged();
 			return;
 		}
 
-		_rom.Randomize(seed, Flags.Flags);
+		_rom.Randomize(seed, Flags.Flags, Flags.Preferences);
 
 		var data = new byte[512 * 1024 + 16];
 		using (var stream = new MemoryStream(data, true))

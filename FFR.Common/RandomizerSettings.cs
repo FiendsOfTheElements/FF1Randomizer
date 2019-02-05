@@ -12,6 +12,7 @@
 	public struct RandomizerSettings {
 		public Blob Seed { get; }
 		public Flags Flags { get; }
+		public Preferences Preferences { get; }
 
 		public string SeedString
 			=> Seed.ToHex();
@@ -19,22 +20,24 @@
 		public string FlagString
 			=> FF1Lib.Flags.EncodeFlagsText(Flags);
 
-		public RandomizerSettings(Flags flags)
-			: this(Blob.Random(4), flags) { }
+		public RandomizerSettings(Flags flags, Preferences preferences)
+			: this(Blob.Random(4), flags, preferences) { }
 
-		public RandomizerSettings(string seed, Flags flags)
-			: this(SettingsUtils.ConvertSeed(seed), flags) { }
+		public RandomizerSettings(string seed, Flags flags, Preferences preferences)
+			: this(SettingsUtils.ConvertSeed(seed), flags, preferences) { }
 
-		public RandomizerSettings(Blob seed, Flags flags)
+		public RandomizerSettings(Blob seed, Flags flags, Preferences preferences)
 		{
 			Seed = seed;
 			Flags = flags;
+			Preferences = preferences;
 		}
 
 		public RandomizerSettings(string seed, string flags)
 			: this(
 				SettingsUtils.ConvertSeed(seed),
-				SettingsUtils.ConvertFlags(flags)
+				SettingsUtils.ConvertFlags(flags),
+				new Preferences()
 			) { }
 
 		public static RandomizerSettings FromImportString(string import)

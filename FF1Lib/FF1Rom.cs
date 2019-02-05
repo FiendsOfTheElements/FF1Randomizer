@@ -81,7 +81,7 @@ namespace FF1Lib
 			return rom;
 		}
 
-		public void Randomize(Blob seed, Flags flags)
+		public void Randomize(Blob seed, Flags flags, Preferences preferences)
 		{
 			var rng = new MT19337(BitConverter.ToUInt32(seed, 0));
 
@@ -150,7 +150,7 @@ namespace FF1Lib
 				maps[(int)MapId.EarthCaveB2] = earthB2.Map;
 			}
 
-			if (flags.ModernBattlefield)
+			if (preferences.ModernBattlefield)
 			{
 				EnableModernBattlefield();
 			}
@@ -467,9 +467,9 @@ namespace FF1Lib
 				FixEnemyElementalResistances();
 			}
 
-			if (flags.FunEnemyNames)
+			if (preferences.FunEnemyNames)
 			{
-				FunEnemyNames(flags.TeamSteak);
+				FunEnemyNames(preferences.TeamSteak);
 			}
 
 			var itemText = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
@@ -516,29 +516,29 @@ namespace FF1Lib
 			// We have to do "fun" stuff last because it alters the RNG state.
 			RollCredits(rng);
 
-			if (flags.DisableDamageTileFlicker)
+			if (preferences.DisableDamageTileFlicker)
 			{
 				DisableDamageTileFlicker();
 			}
 
-			if (flags.ThirdBattlePalette)
+			if (preferences.ThirdBattlePalette)
 			{
 				UseVariablePaletteForCursorAndStone();
 			}
 
-			if (flags.PaletteSwap)
+			if (preferences.PaletteSwap)
 			{
 				PaletteSwap(rng);
 			}
 
-			if (flags.TeamSteak)
+			if (preferences.TeamSteak)
 			{
 				TeamSteak();
 			}
 
-			if (flags.Music != MusicShuffle.None)
+			if (preferences.Music != MusicShuffle.None)
 			{
-				ShuffleMusic(flags.Music, rng);
+				ShuffleMusic(preferences.Music, rng);
 			}
 
 			WriteSeedAndFlags(Version, seed.ToHex(), Flags.EncodeFlagsText(flags));
