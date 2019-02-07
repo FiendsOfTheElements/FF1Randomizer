@@ -24,7 +24,7 @@
 				Seed: <br />
 				<input type="text" class="nes-input @(_seedInputClass)" id="seedInput" onchange="@OnSeedInputChanged" value="@(_seed)"/>
 			</div>
-			<div class="col-1">
+			<div class="col-2">
 				<br />
 				<button type="button" class="nes-btn is-primary" onclick="@OnNewSeed">New</button>
 			</div>
@@ -32,9 +32,9 @@
 				Flags: <br />
 				<input type="text" class="nes-input" value="@Flags.Encoded" onchange="@OnFlagsInputChanged"/>
 			</div>
-			<div class="col-3">
+			<div class="col-2">
 				<br />
-				<button type="button" class="nes-btn is-primary">Import / Export</button>
+				<button type="button" class="nes-btn is-primary" onclick="@OnCopyToClipboard">Export</button>
 			</div>
 		</div>
 		<div class="row">
@@ -480,6 +480,8 @@
 			Blob.FromHex(_seed);
 
 			_seedInputClass = _seed.Length == 8 ? "" : "is-error";
+
+			SetQueryString();
 		}
 		catch (Exception)
 		{
@@ -490,6 +492,13 @@
 	void OnNewSeed(UIMouseEventArgs e)
 	{
 		ValidateSeed(Convert.ToString(_rng.Next(), 16).PadLeft(8, '0'));
+	}
+
+	void OnCopyToClipboard(UIMouseEventArgs e)
+	{
+		StatusMessage = "URL Copied To Clipboard.";
+
+		JSRuntime.Current.InvokeAsync<object>("copyLocation");
 	}
 
 	void OnFlagsInputChanged(UIChangeEventArgs e)
