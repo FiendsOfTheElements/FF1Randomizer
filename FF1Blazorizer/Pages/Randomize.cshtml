@@ -474,13 +474,18 @@
 		if (seed == _seed)
 			return;
 
+		if (seed.Length > 8)
+		{
+			_seedInputClass = "is-error";
+			return;
+		}
+
 		_seed = seed;
 		try
 		{
 			Blob.FromHex(_seed);
-
-			_seedInputClass = _seed.Length == 8 ? "" : "is-error";
-
+			_seed = seed.PadLeft(8, '0');
+			_seedInputClass = "";
 			SetQueryString();
 		}
 		catch (Exception)
