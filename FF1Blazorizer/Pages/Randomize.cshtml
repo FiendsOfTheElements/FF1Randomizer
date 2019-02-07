@@ -447,17 +447,9 @@
 		await LoadPreferences();
 	}
 
-	void SetQueryString()
+	async Task SetQueryString()
 	{
-		var uri = new Uri(UriHelper.GetAbsoluteUri());
-		var parameters = new Dictionary<string, string>
-		{
-			["s"] = _seed,
-			["f"] = Flags.Encoded
-		};
-
-		var dest = QueryHelpers.AddQueryString(uri.AbsolutePath, parameters);
-		UriHelper.NavigateTo(dest);
+		await JSRuntime.Current.InvokeAsync<Task>("updateHistory", _seed, Flags.Encoded);
 	}
 
 	async Task LoadPreset(string presetName)

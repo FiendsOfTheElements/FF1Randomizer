@@ -22,6 +22,7 @@
 }
 
 function downloadROM(filename, encoded) {
+
 	var url = "data:application/octet-stream;base64," + encoded;
 	fetch(url)
 		.then(result => result.blob())
@@ -34,4 +35,16 @@ function downloadROM(filename, encoded) {
 			anchor.dispatchEvent(new MouseEvent('click'));
 
 		});
+
+}
+
+function updateHistory(seedString, flagString) {
+
+	var href = document.location.href;
+	if (href.indexOf('?') > 0) {
+		href = href.substr(0, href.indexOf('?'));
+	}
+
+	history.replaceState({}, '', href + '?' + 's=' + seedString + '&' + 'f=' + flagString);
+
 }
