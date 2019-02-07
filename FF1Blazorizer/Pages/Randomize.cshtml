@@ -2,11 +2,13 @@
 @page "/Randomize"
 @using System.ComponentModel
 @using System.IO
+@using Blazor.Extensions.Storage
 @using RomUtilities
 @using FF1Lib
 @using Microsoft.AspNetCore.WebUtilities
 @inject HttpClient Http
 @inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
+@inject LocalStorage LocalStorage
 
 <div class="content px-4 tinted">
 	<div class="is-dark nes-container">
@@ -374,7 +376,9 @@
 						<EnumDropDown TItem="MusicShuffle" bind-Value="@Flags.Music"></EnumDropDown>
 						<CheckBox Id="disableDamageTileFlickerCheckBox" bind-Value="@Flags.DisableDamageTileFlicker">Disable Damage Tile Flicker</CheckBox>
 					</div>
-					<button>lol save preferences</button>
+					<div class="col-4">
+						<button type="button" class="nes-btn is-primary" onclick="@SavePreferences">Save Preferences</button>
+					</div>
 				</div>
 			</div>
 		</TabPane>
@@ -439,6 +443,8 @@
 		{
 			await LoadPreset("default");
 		}
+
+		await LoadPreferences();
 	}
 
 	void SetQueryString()
@@ -512,7 +518,17 @@
 		}
 	}
 
-	async void OnRandomize(UIMouseEventArgs e)
+	async Task LoadPreferences()
+	{
+		Flags.Preferences = await LocalStorage.GetItem<Preferences>("preferences") ?? new Preferences();
+	}
+
+	async Task SavePreferences()
+	{
+		await LocalStorage.SetItem("preferences", Flags.Preferences);
+	}
+
+	async Task OnRandomize(UIMouseEventArgs e)
 	{
 		if (_fileData == null)
 		{
@@ -533,7 +549,7 @@
 		await Task.Run(DoRandomize);
 	}
 
-	async void DoRandomize()
+	async Task DoRandomize()
 	{
 		Blob seed;
 		try
