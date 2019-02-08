@@ -15,29 +15,17 @@ jobs:
           name: publish
           command: |
             set -ex
-            if [ "${CIRCLE_BRANCH}" == "alpha" ]; then
-              cd FF1Blazorizer
-              if [ "${CIRCLE_BRANCH}" == "master" ]; then
-                dotnet publish -c Release
-                git rev-parse HEAD > bin/Release/netstandard2.0/publish/FF1Blazorizer/dist/version.txt
-              else
-                dotnet publish -c Debug
-                git rev-parse HEAD > bin/Debug/netstandard2.0/publish/FF1Blazorizer/dist/version.txt
-              fi
+            cd FF1Blazorizer
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              dotnet publish -c Release
+              git rev-parse HEAD > bin/Release/netstandard2.0/publish/FF1Blazorizer/dist/version.txt
             else
-              cd FF1RandomizerOnline
-              if [ "${CIRCLE_BRANCH}" == "master" ]; then
-                dotnet publish -c Release
-                git rev-parse HEAD > bin/Release/netcoreapp2.1/publish/version.txt
-              else
-                dotnet publish -c Debug
-                git rev-parse HEAD > bin/Debug/netcoreapp2.1/publish/version.txt
-              fi
+              dotnet publish -c Debug
+              git rev-parse HEAD > bin/Debug/netstandard2.0/publish/FF1Blazorizer/dist/version.txt
             fi
       - persist_to_workspace:
           root: ~/ff1randomizer
           paths:
-            - FF1RandomizerOnline
             - FF1Blazorizer
 
   dockerize_production:
