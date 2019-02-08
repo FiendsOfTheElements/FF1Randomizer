@@ -1,4 +1,4 @@
-﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
+@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
 html, body {
     font-family: 'Press Start 2P', 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -179,4 +179,14 @@ tr.odd {
 
 .tinted {
     background: rgba(0, 0, 0, 0.5);
+}
+
+.nes-input.ffr-text-seed {
+	outline-color: #209cee;
+	box-shadow: 0 4px #209cee,0 -4px #209cee,4px 0 #209cee,-4px 0 #209cee
+}
+
+.nes-input.ffr-hex-seed {
+	outline-color: #92cc41;
+	box-shadow: 0 4px #92cc41,0 -4px #92cc41,4px 0 #92cc41,-4px 0 #92cc41
 }

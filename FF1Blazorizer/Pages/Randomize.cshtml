@@ -1,4 +1,4 @@
-﻿@addTagHelper *, BlazorStrap
+@addTagHelper *, BlazorStrap
 @page "/Randomize"
 @using System.ComponentModel
 @using System.IO
@@ -405,7 +405,8 @@
 
 	void ActivateTab(string tab)
 	{
-		if (!activeTabs.Remove(tab)) {
+		if (!activeTabs.Remove(tab))
+		{
 			activeTabs.Add(tab);
 		}
 		StateHasChanged();
@@ -485,12 +486,12 @@
 		{
 			Blob.FromHex(_seed);
 			_seed = seed.PadLeft(8, '0');
-			_seedInputClass = "";
+			_seedInputClass = "ffr-hex-seed";
 			SetQueryString();
 		}
 		catch (Exception)
 		{
-			_seedInputClass = "is-error";
+			_seedInputClass = "ffr-text-seed";
 		}
 	}
 
@@ -557,20 +558,21 @@
 
 	async Task DoRandomize()
 	{
-		Blob seed;
-		try
-		{
-			if (_seed.Length != 8)
-			{
-				throw new Exception();
-			}
-			seed = Blob.FromHex(_seed);
-		}
-		catch (Exception)
+		if (_seed.Length > 8)
 		{
 			StatusMessage = "Generate Failed: Invalid Seed Format";
 			StateHasChanged();
 			return;
+		}
+
+		Blob seed;
+		try
+		{
+			seed = Blob.FromHex(_seed.PadLeft(8, '0'));
+		}
+		catch (Exception)
+		{
+			seed = Blob.FromHex(_seed.GetHashCode().ToString("x8"));
 		}
 
 		_rom.Randomize(seed, Flags.Flags, Flags.Preferences);
