@@ -917,6 +917,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BlackBeltAbsorb"));
 			}
 		}
+		public bool BlackBeltMDEF
+		{
+			get => Flags.BlackBeltMDEF;
+			set
+			{
+				Flags.BlackBeltMDEF = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BlackBeltMDEF"));
+			}
+		}
 
 		public bool EnemyStatusAttackBug
 		{
