@@ -228,8 +228,7 @@ namespace FF1Lib
 			if (index <= MapIndex.Lefein) // Towns
 			{
 				// Towns are given arbitrary palettes to help provide color when dungeons take their place.
-				// But if a town ends up in place of another town, the default palette is appropriate.
-				if (source < OverworldTeleportIndex.Coneria || source > OverworldTeleportIndex.Lefein)
+				if (source != OverworldTeleportIndex.Coneria)
 				{
 					_rom.Put(MapPaletteOffset + (int)index * MapPaletteSize + 1, _palettes[palette].SubBlob(9, 2));
 					_rom.Put(MapPaletteOffset + (int)index * MapPaletteSize + 6, _palettes[palette].SubBlob(9, 1));
