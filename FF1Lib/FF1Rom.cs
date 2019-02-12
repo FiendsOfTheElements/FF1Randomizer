@@ -287,10 +287,18 @@ namespace FF1Lib
 
 			if (flags.EnemyFormationsUnrunnable)
 			{
-				ShuffleUnrunnable(rng);
+				if (flags.EverythingUnrunnable)
+				{
+					CompletelyUnrunnable();
+				}
+				else
+				{
+					ShuffleUnrunnable(rng);
+				}
 			}
 
-			CompletelyUnrunnable();
+			
+			
 
 			if (flags.EnemyFormationsSurprise)
 			{

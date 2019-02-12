@@ -77,8 +77,8 @@
 						<CheckBox Indent IsEnabled="@Flags.EnemyScripts" Id="allowUnsafePiratesCheckBox" bind-Value="@Flags.AllowUnsafePirates">Allow Unsafe Pirates</CheckBox>
 						<CheckBox Id="enemySkillsSpellsCheckBox" bind-Value="@Flags.EnemySkillsSpells">Enemy Skills/Spells</CheckBox>
 						<CheckBox Id="enemyStatusAttacksCheckBox" bind-Value="@Flags.EnemyStatusAttacks">Enemy Status Attacks</CheckBox>
-						<CheckBox Id="everythingUnrunnableCheckBox" bind-Value="@Flags.EverythingUnrunnable">All Encounters are Unrunnable</CheckBox>
 						<CheckBox Id="enemyFormationsUnrunnableCheckBox" bind-Value="@Flags.EnemyFormationsUnrunnable">Enemy Unrunnable Formations</CheckBox>
+						<CheckBox Indent IsEnabled="@Flags.EnemyFormationsUnrunnable" Id="everythingUnrunnableCheckBox" bind-Value="@Flags.EverythingUnrunnable">All Encounters are Unrunnable</CheckBox>
 						<CheckBox Id="enemyFormationsSurpriseCheckBox" bind-Value="@Flags.EnemyFormationsSurprise">Enemy Surprise Bonus</CheckBox>
 						<EnumDropDown TItem="FormationShuffleModeEnum" bind-Value="@Flags.FormationShuffleMode"></EnumDropDown>
 						<CheckBox Id="enemyTrapTilesCheckBox" bind-Value="@Flags.EnemyTrapTiles">Enemy Forced Encounter Tiles</CheckBox>
