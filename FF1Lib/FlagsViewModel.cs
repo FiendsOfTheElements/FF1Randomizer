@@ -240,6 +240,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EnemyFormationsUnrunnable"));
 			}
 		}
+		public bool EverythingUnrunnable
+		{
+			get => Flags.EverythingUnrunnable;
+			set
+			{
+				Flags.EverythingUnrunnable = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EverythingUnrunnable"));
+			}
+		}
 		public bool EnemyFormationsSurprise
 		{
 			get => Flags.EnemyFormationsSurprise;
