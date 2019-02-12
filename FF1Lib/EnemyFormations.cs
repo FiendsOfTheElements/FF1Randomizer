@@ -52,6 +52,13 @@ namespace FF1Lib
 			Put(FormationsOffset, formations.SelectMany(formation => formation.ToBytes()).ToArray());
 		}
 
+		public void CompletelyUnrunnable()
+		{
+			List<Blob> formations = Get(FormationsOffset, FormationSize * NormalFormationCount).Chunk(FormationSize);
+			formations.ForEach(formation => formation[UnrunnableOffset] |= 0x01);
+			Put(FormationsOffset, formations.SelectMany(formation => formation.ToBytes()).ToArray());
+		}
+
 		private void FiendShuffle(MT19337 rng)
 		{
 			//Shuffle the four Fiend1 fights.
