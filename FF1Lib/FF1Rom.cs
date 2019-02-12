@@ -294,6 +294,8 @@ namespace FF1Lib
 				ShuffleUnrunnable(rng);
 			}
 
+			CompletelyUnrunnable();
+
 			if (flags.EnemyFormationsSurprise)
 			{
 				ShuffleSurpriseBonus(rng);

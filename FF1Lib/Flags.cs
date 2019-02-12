@@ -30,6 +30,7 @@ namespace FF1Lib
 		public bool RebalanceSpells { get; set; }
 
 		public bool Rng { get; set; }
+		public bool EverythingUnrunnable { get; set; }
 		public bool EnemyFormationsUnrunnable { get; set; }
 		public bool EnemyFormationsSurprise { get; set; }
 		public bool EnemyTrapTiles { get; set; }
@@ -350,6 +351,7 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.ItemMagic);
 			sum = AddBoolean(sum, flags.RebalanceSpells);
 			sum = AddBoolean(sum, flags.Rng);
+			sum = AddBoolean(sum, flags.EverythingUnrunnable);
 			sum = AddBoolean(sum, flags.EnemyFormationsUnrunnable);
 			sum = AddBoolean(sum, flags.EnemyFormationsSurprise);
 			sum = AddBoolean(sum, flags.EnemyTrapTiles);
@@ -630,6 +632,7 @@ namespace FF1Lib
 				EnemyTrapTiles = GetBoolean(ref sum),
 				EnemyFormationsSurprise = GetBoolean(ref sum),
 				EnemyFormationsUnrunnable = GetBoolean(ref sum),
+				EverythingUnrunnable = GetBoolean(ref sum),
 				Rng = GetBoolean(ref sum),
 				RebalanceSpells = GetBoolean(ref sum),
 				ItemMagic = GetBoolean(ref sum),
