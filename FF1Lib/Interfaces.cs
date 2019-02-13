@@ -70,6 +70,7 @@
 	}
 	public interface IItemPlacementFlags : IItemShuffleFlags, IVictoryConditionFlags
 	{
+		bool Spoilers { get; }
 		bool AllowObsoleteVehicles { get; }
 		bool MapCanalBridge { get; }
 		bool MapConeriaDwarves { get; }

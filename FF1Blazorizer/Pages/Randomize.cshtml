@@ -13,10 +13,13 @@
 <div class="content px-4 tinted">
 	<div class="is-dark nes-container">
 		<div class="row">
-			<div class="col-md-12">
+			<div class="col-md-4">
 				Upload Rom: <br />
 				<input type="file" id="fileInput" onchange="@OnFileChanged" />
 				<br />
+			</div>
+			<div class="col-md-8">
+				<CheckBox Id="spoilersCheckBox" bind-Value="@Flags.Spoilers">Generate Spoiler Log!</CheckBox>
 			</div>
 		</div>
 		<div class="row">
@@ -247,6 +250,9 @@
 					<Slider bind-Value="@Flags.DungeonEncounterRate" Min="0" Max="45" Step="1"></Slider>
 				</div>
 				<div class="row">
+					&nbsp;
+				</div>
+				<div class="row">
 					<div class="col-md-12">
 						<CheckBox Id="startingGoldCheckBox" bind-Value="@Flags.StartingGold">Scale Starting Gold</CheckBox>
 						<CheckBox Id="wrapStatOverflowCheckBox" bind-Value="@Flags.WrapStatOverflow">Wrap Overflowing Scaled Stats</CheckBox>
@@ -384,18 +390,20 @@
 			<div class="is-dark nes-container">
 				<div class="row">
 					<p>Fun flags are not part of the standard flags string since they do not impact gameplay. The buttons at the bottom can be used to store your preferred fun % settings within your browser so that they will be automatically restored each time you visit the site.</p>
-					<div class="col-md-4">
+					<div class="col-md-6">
 						<CheckBox Id="funEnemyNamesCheckBox" bind-Value="@Flags.FunEnemyNames">Fun Enemy Names</CheckBox>
 						<CheckBox Id="paletteSwapCheckBox" bind-Value="@Flags.PaletteSwap">Palette Swap</CheckBox>
 						<CheckBox Id="modernBattlefieldCheckBox" bind-Value="@Flags.ModernBattlefield">Modern Battlefield</CheckBox>
 						<CheckBox Id="thirdBattlePaletteCheckBox" bind-Value="@Flags.ThirdBattlePalette">Three Battle Palettes</CheckBox>
 					</div>
-					<div class="col-md-4">
+					<div class="col-md-6">
 						<CheckBox Id="teamSteakCheckBox" bind-Value="@Flags.TeamSteak">Team STEAK</CheckBox>
 						<EnumDropDown TItem="MusicShuffle" bind-Value="@Flags.Music"></EnumDropDown>
 						<CheckBox Id="disableDamageTileFlickerCheckBox" bind-Value="@Flags.DisableDamageTileFlicker">Disable Damage Tile Flicker</CheckBox>
 					</div>
-					<div class="col-md-4">
+				</div>
+				<div class="row">
+					<div class="col-md-6">
 						<button type="button" class="nes-btn is-primary" onclick="@SavePreferences">Save Preferences</button>
 					</div>
 				</div>
@@ -404,7 +412,15 @@
 	</TabContent>
 	<br />
 	<button type="button" class="nes-btn is-primary" onclick="@OnRandomize">Randomize</button>
+	<TabPane IsOpen="@(StatusMessage.Length > 0)">
+		<div class="is-dark nes-container">
+			@StatusMessage
+		</div>
+	</TabPane>
 	<br />
+	<div>
+		&nbsp;
+	</div>
 </div>
 
 @functions
@@ -606,6 +622,12 @@
 			var encoded = Convert.ToBase64String(data);
 
 			StatusMessage += "SUCCESS!";
+
+			if (Flags.Spoilers)
+			{
+				StatusMessage += " SPOILER LOG IN BROWSER CONSOLE!";
+			}
+
 			StateHasChanged();
 
 			await JSRuntime.Current.InvokeAsync<object>("downloadROM", $"FFR_{_seed}_{Flags.Encoded}.nes", encoded);
