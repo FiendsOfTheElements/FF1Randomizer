@@ -229,10 +229,10 @@ namespace FF1Lib
 		public bool IncentivizeCanoe => NPCItems && IncentivizeCanoeItem;
 		public bool IncentivizeCube => NPCItems && IncentivizeMainItems;
 
+		public bool IncentivizeCanal => NPCFetchItems && IncentivizeShipAndCanal && !FreeCanal;
 		public bool IncentivizeCrystal => NPCFetchItems && IncentivizeFetchItems;
 		public bool IncentivizeHerb => NPCFetchItems && IncentivizeFetchItems;
 		public bool IncentivizeKey => NPCFetchItems && IncentivizeMainItems;
-		public bool IncentivizeCanal => NPCFetchItems && (!NPCItems || IncentivizeShipAndCanal) && !FreeCanal; // If Canoe is unshuffled then Canal is Required
 		public bool IncentivizeChime => NPCFetchItems && IncentivizeMainItems;
 		public bool IncentivizeOxyale => NPCFetchItems && IncentivizeMainItems;
 		public bool IncentivizeXcalber => false;

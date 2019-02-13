@@ -953,6 +953,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SpellBugs"));
 			}
 		}
+		public bool RebalanceSpells
+		{
+			get => Flags.RebalanceSpells;
+			set
+			{
+				Flags.RebalanceSpells = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RebalanceSpells"));
+			}
+		}
 		public bool BlackBeltAbsorb
 		{
 			get => Flags.BlackBeltAbsorb;
