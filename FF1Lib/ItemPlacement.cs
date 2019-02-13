@@ -144,8 +144,8 @@ namespace FF1Lib
 			{
 				Console.WriteLine($"ItemPlacement::PlaceSaneItems required {_sanityCounter} iterations.");
 				Console.WriteLine("");
-				Console.WriteLine("Item     Entrance  ->  Floor  ->  Source                   Requirements");
-				Console.WriteLine("------------------------------------------------------------------------------------------");
+				Console.WriteLine("Item     Entrance  ->  Floor  ->  Source                             Requirements");
+				Console.WriteLine("----------------------------------------------------------------------------------------------------");
 
 				var sorted = placedItems.Where(item => item.Item != Item.Shard).ToList();
 				sorted.Sort((IRewardSource lhs, IRewardSource rhs) => lhs.Item.ToString().CompareTo(rhs.Item.ToString()));
@@ -160,8 +160,8 @@ namespace FF1Lib
 						}
 
 						var itemStr = item.Item.ToString().PadRight(9);
-						var locStr = $"{overworldLocation} -> {item.MapLocation} -> {item.Name} ".PadRight(50);
-						var changes = $"{String.Join(" | ", flr.Item1.Select(mapChange => mapChange.ToString()).ToArray())}";
+						var locStr = $"{overworldLocation} -> {item.MapLocation} -> {item.Name} ".PadRight(60);
+						var changes = $"({String.Join(" OR ", flr.Item1.Select(mapChange => mapChange.ToString()).ToArray())})";
 						var reqs = flr.Item2.ToString().CompareTo("None") == 0 ? "" : $" AND {flr.Item2.ToString()}";
 						Console.WriteLine($"{itemStr}{locStr}{changes}{reqs}");
 					}
