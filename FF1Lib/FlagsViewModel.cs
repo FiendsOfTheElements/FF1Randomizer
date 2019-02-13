@@ -508,6 +508,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeTail"));
 			}
 		}
+		public bool IncentivizeMainItems
+		{
+			get => Flags.IncentivizeMainItems;
+			set
+			{
+				Flags.IncentivizeMainItems = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeMainItems"));
+			}
+		}
 		public bool IncentivizeFetchItems
 		{
 			get => Flags.IncentivizeFetchItems;
@@ -515,6 +524,24 @@ namespace FF1Lib
 			{
 				Flags.IncentivizeFetchItems = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeFetchItems"));
+			}
+		}
+		public bool IncentivizeAirship
+		{
+			get => Flags.IncentivizeAirship;
+			set
+			{
+				Flags.IncentivizeAirship = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeAirship"));
+			}
+		}
+		public bool IncentivizeCanoeItem
+		{
+			get => Flags.IncentivizeCanoeItem;
+			set
+			{
+				Flags.IncentivizeCanoeItem = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeCanoeItem"));
 			}
 		}
 
@@ -888,6 +915,15 @@ namespace FF1Lib
 			{
 				Flags.HouseMPRestoration = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("HouseMPRestoration"));
+			}
+		}
+		public bool HousesFillHP
+		{
+			get => Flags.HousesFillHp;
+			set
+			{
+				Flags.HousesFillHp = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("HousesFillHp"));
 			}
 		}
 		public bool WeaponStats

@@ -122,14 +122,16 @@
 					<div class="col-md-4">
 						<h4>Items: @Flags.Flags.IncentivizedItemCount</h4>
 						<p style="font-size: 10px">@Flags.Flags.IncentivizedItems</p>
-						<CheckBox Id="incentivizeTailCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeTail">Tail</CheckBox>
+						<CheckBox Id="incentivizeMainItemsCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeMainItems">Main Progression Items</CheckBox>
 						<CheckBox Id="incentivizeFetchItemsCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeFetchItems">Other Quest Items</CheckBox>
-						<CheckBox Id="incentivizeShipAndCanalBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeShipAndCanal">Ship &amp; Canal</CheckBox>
+						<CheckBox Id="incentivizeAirshipCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeAirship">Floater</CheckBox>
+						<CheckBox Id="incentivizeCanoeItemCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeCanoeItem">Canoe</CheckBox>
+						<CheckBox Id="incentivizeShipAndCanalCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeShipAndCanal">Ship &amp; Canal</CheckBox>
+						<CheckBox Id="incentivizeTailCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeTail">Tail</CheckBox>
 						<div class="checkbox-cell"></div>
 						<CheckBox Id="incentivizeMasamuneCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeMasamune">Masamune</CheckBox>
 						<CheckBox Id="incentivizeRibbonCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeRibbon">Ribbon</CheckBox>
 						<CheckBox Id="incentivizeOpalCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeOpal">Opal Bracelet</CheckBox>
-						<div class="checkbox-cell"></div>
 						<CheckBox Id="incentivizeDefCastArmorCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeDefCastArmor">White Shirt</CheckBox>
 						<CheckBox Id="incentivizeOffCastArmorCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeOffCastArmor">Power Gauntlet</CheckBox>
 						<CheckBox Id="incentivizeDefCastWeaponCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeDefCastWeapon">Defense</CheckBox>
@@ -351,6 +353,7 @@
 				<div class="row">
 					<div class="col-md-6">
 						<CheckBox Id="houseMPRestorationCheckBox" bind-Value="@Flags.HouseMPRestoration">House MP Restoration</CheckBox>
+						<CheckBox Id="houseMPRestorationCheckBox" bind-Value="@Flags.HouseMPRestoration">House Full HP Restoration</CheckBox>
 						<CheckBox Id="weaponStatsCheckBox" bind-Value="@Flags.WeaponStats">Weapon Stats</CheckBox>
 						<CheckBox Id="chanceToRunCheckBox" bind-Value="@Flags.ChanceToRun">Chance to Run</CheckBox>
 						<CheckBox Id="spellBugsCheckBox" bind-Value="@Flags.SpellBugs">Spell Fixes</CheckBox>

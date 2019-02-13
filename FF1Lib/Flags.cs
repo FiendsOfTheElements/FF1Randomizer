@@ -61,9 +61,12 @@ namespace FF1Lib
 		public bool IncentivizeFreeNPCs { get; set; }
 		public bool IncentivizeFetchNPCs { get; set; }
 		public bool IncentivizeTail { get; set; }
+		public bool IncentivizeMainItems { get; set; }
 		public bool IncentivizeFetchItems { get; set; }
-		public bool AllowObsoleteVehicles { get; set; }
+		public bool IncentivizeCanoeItem { get; set; }
+		public bool IncentivizeAirship { get; set; }
 		public bool IncentivizeShipAndCanal { get; set; }
+		public bool AllowObsoleteVehicles { get; set; }
 
 		public bool IncentivizeMarsh { get; set; }
 		public bool IncentivizeEarth { get; set; }
@@ -205,26 +208,33 @@ namespace FF1Lib
 		public bool MapAirshipDock => MapOpenProgressionExtended;
 
 		public bool IncentivizeAdamant => IncentivizeFetchItems;
-		public bool IncentivizeRuby => (!EarlySage && !NPCItems) || IncentivizeFetchItems;
-		public bool IncentivizeCrown => !NPCFetchItems || IncentivizeFetchItems;
-		public bool IncentivizeTnt => (!NPCFetchItems && !NPCItems) || IncentivizeFetchItems; // If Canoe and Fetch Quests are unshuffled then TNT is required
-		public bool IncentivizeSlab => !NPCFetchItems || IncentivizeFetchItems;
-		public bool IncentivizeBottle => !NPCFetchItems || IncentivizeFetchItems;
 
-		public bool IncentivizeFloater => !FreeAirship;
+		// Ruby is required if Sarda is Required for the ROD
+		public bool RequiredRuby => !EarlySage && !NPCItems;
+		public bool IncentivizeRuby => (RequiredRuby && IncentivizeMainItems) || (!RequiredRuby && IncentivizeFetchItems);
+
+		// If Canoe and Fetch Quests are unshuffled then TNT is required
+		public bool RequiredTnt => !NPCFetchItems && !NPCItems;
+		public bool IncentivizeTnt => (RequiredTnt && IncentivizeMainItems) || (!RequiredTnt && IncentivizeFetchItems);
+
+		public bool IncentivizeCrown => (!NPCFetchItems && IncentivizeMainItems) || (NPCFetchItems && IncentivizeFetchItems);
+		public bool IncentivizeSlab => (!NPCFetchItems && IncentivizeMainItems) || (NPCFetchItems && IncentivizeFetchItems);
+		public bool IncentivizeBottle => (!NPCFetchItems && IncentivizeMainItems) || (NPCFetchItems && IncentivizeFetchItems);
+
+		public bool IncentivizeFloater => !FreeAirship && IncentivizeAirship;
 		public bool IncentivizeBridge => false;
-		public bool IncentivizeLute => NPCItems && !(ShortToFR || ChaosRush);
+		public bool IncentivizeLute => NPCItems && !(ShortToFR || ChaosRush) && IncentivizeMainItems;
 		public bool IncentivizeShip => NPCItems && IncentivizeShipAndCanal;
-		public bool IncentivizeRod => NPCItems;
-		public bool IncentivizeCanoe => NPCItems;
-		public bool IncentivizeCube => NPCItems;
+		public bool IncentivizeRod => NPCItems && IncentivizeMainItems;
+		public bool IncentivizeCanoe => NPCItems && IncentivizeCanoeItem;
+		public bool IncentivizeCube => NPCItems && IncentivizeMainItems;
 
 		public bool IncentivizeCrystal => NPCFetchItems && IncentivizeFetchItems;
 		public bool IncentivizeHerb => NPCFetchItems && IncentivizeFetchItems;
-		public bool IncentivizeKey => NPCFetchItems;
+		public bool IncentivizeKey => NPCFetchItems && IncentivizeMainItems;
 		public bool IncentivizeCanal => NPCFetchItems && (!NPCItems || IncentivizeShipAndCanal) && !FreeCanal; // If Canoe is unshuffled then Canal is Required
-		public bool IncentivizeChime => NPCFetchItems;
-		public bool IncentivizeOxyale => NPCFetchItems;
+		public bool IncentivizeChime => NPCFetchItems && IncentivizeMainItems;
+		public bool IncentivizeOxyale => NPCFetchItems && IncentivizeMainItems;
 		public bool IncentivizeXcalber => false;
 
 		public int IncentivizedItemCount => 0
@@ -377,9 +387,12 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.IncentivizeFreeNPCs);
 			sum = AddBoolean(sum, flags.IncentivizeFetchNPCs);
 			sum = AddBoolean(sum, flags.IncentivizeTail);
+			sum = AddBoolean(sum, flags.IncentivizeMainItems);
 			sum = AddBoolean(sum, flags.IncentivizeFetchItems);
-			sum = AddBoolean(sum, flags.AllowObsoleteVehicles);
+			sum = AddBoolean(sum, flags.IncentivizeAirship);
+			sum = AddBoolean(sum, flags.IncentivizeCanoeItem);
 			sum = AddBoolean(sum, flags.IncentivizeShipAndCanal);
+			sum = AddBoolean(sum, flags.AllowObsoleteVehicles);
 			sum = AddBoolean(sum, flags.IncentivizeMarsh);
 			sum = AddBoolean(sum, flags.IncentivizeEarth);
 			sum = AddBoolean(sum, flags.IncentivizeVolcano);
@@ -604,9 +617,12 @@ namespace FF1Lib
 				IncentivizeVolcano = GetBoolean(ref sum),
 				IncentivizeEarth = GetBoolean(ref sum),
 				IncentivizeMarsh = GetBoolean(ref sum),
-				IncentivizeShipAndCanal = GetBoolean(ref sum),
 				AllowObsoleteVehicles = GetBoolean(ref sum),
+				IncentivizeShipAndCanal = GetBoolean(ref sum),
+				IncentivizeCanoeItem = GetBoolean(ref sum),
+				IncentivizeAirship = GetBoolean(ref sum),
 				IncentivizeFetchItems = GetBoolean(ref sum),
+				IncentivizeMainItems = GetBoolean(ref sum),
 				IncentivizeTail = GetBoolean(ref sum),
 				IncentivizeFetchNPCs = GetBoolean(ref sum),
 				IncentivizeFreeNPCs = GetBoolean(ref sum),
