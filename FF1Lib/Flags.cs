@@ -14,6 +14,7 @@ namespace FF1Lib
 		public bool NPCItems { get; set; }
 		public bool NPCFetchItems { get; set; }
 		public bool RandomWares { get; set; }
+		public bool RandomWaresIncludesSpecialGear { get; set; }
 		public bool RandomLoot { get; set; }
 
 		public bool ShardHunt { get; set; }
@@ -135,7 +136,6 @@ namespace FF1Lib
 		public bool WrapStatOverflow { get; set; }
 		public bool WrapPriceOverflow { get; set; }
 		public bool IncludeMorale { get; set; }
-		public bool RandomWaresIncludesSpecialGear { get; set; }
 		public bool NoDanMode { get; set; }
 
 		public double EnemyScaleFactor { get; set; }
@@ -208,7 +208,12 @@ namespace FF1Lib
 		public bool MapDwarvesNorthwest => MapOpenProgressionExtended;
 		public bool MapAirshipDock => MapOpenProgressionExtended;
 
-		public bool IncentivizeAdamant => IncentivizeFetchItems;
+		// The philosophy governing item incentivizations works something like this:
+		// 1. If the item is NOT being shuffled to another location it cannot be incentivized. (Duh)
+		// 2. If the item is required to unlock any location OR is given to a not-shuffled NPC who gives
+		//    such an item in return it is considered a MAIN item. (e.g. CROWN/SLAB with vanilla fetch quests)
+		// 3. If the item is given to an NPC who themselves is shuffled it's considered a FETCH item.
+		// 4. The vehicles now have their own incentivization flags apart from other progression items.
 
 		// Ruby is required if Sarda is Required for the ROD
 		public bool RequiredRuby => !EarlySage && !NPCItems;
@@ -222,13 +227,13 @@ namespace FF1Lib
 		public bool IncentivizeSlab => (!NPCFetchItems && IncentivizeMainItems) || (NPCFetchItems && IncentivizeFetchItems);
 		public bool IncentivizeBottle => (!NPCFetchItems && IncentivizeMainItems) || (NPCFetchItems && IncentivizeFetchItems);
 
-		public bool IncentivizeFloater => !FreeAirship && IncentivizeAirship;
 		public bool IncentivizeBridge => false;
+		public bool IncentivizeCanoe => NPCItems && IncentivizeCanoeItem;
 		public bool IncentivizeLute => NPCItems && !(ShortToFR || ChaosRush) && IncentivizeMainItems;
 		public bool IncentivizeShip => NPCItems && IncentivizeShipAndCanal;
 		public bool IncentivizeRod => NPCItems && IncentivizeMainItems;
-		public bool IncentivizeCanoe => NPCItems && IncentivizeCanoeItem;
 		public bool IncentivizeCube => NPCItems && IncentivizeMainItems;
+		public bool IncentivizeFloater => !FreeAirship && IncentivizeAirship;
 
 		public bool IncentivizeCanal => NPCFetchItems && IncentivizeShipAndCanal && !FreeCanal;
 		public bool IncentivizeCrystal => NPCFetchItems && IncentivizeFetchItems;
@@ -236,6 +241,8 @@ namespace FF1Lib
 		public bool IncentivizeKey => NPCFetchItems && IncentivizeMainItems;
 		public bool IncentivizeChime => NPCFetchItems && IncentivizeMainItems;
 		public bool IncentivizeOxyale => NPCFetchItems && IncentivizeMainItems;
+
+		public bool IncentivizeAdamant => IncentivizeFetchItems;
 		public bool IncentivizeXcalber => false;
 
 		public int IncentivizedItemCount => 0
