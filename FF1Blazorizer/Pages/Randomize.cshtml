@@ -246,6 +246,15 @@
 					</div>
 					<Slider bind-Value="@Flags.DungeonEncounterRate" Min="0" Max="45" Step="1"></Slider>
 				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<CheckBox Id="startingGoldCheckBox" bind-Value="@Flags.StartingGold">Scale Starting Gold</CheckBox>
+						<CheckBox Id="wrapStatOverflowCheckBox" bind-Value="@Flags.WrapStatOverflow">Wrap Overflowing Scaled Stats</CheckBox>
+						<CheckBox Id="wrapPriceOverflowCheckBox" bind-Value="@Flags.WrapStatOverflow">Wrap Overflowing Prices</CheckBox>
+						<CheckBox Id="includeMoraleCheckBox" bind-Value="@Flags.IncludeMorale">Scaled Stats Includes Morale</CheckBox>
+						<CheckBox Id="noDanModeCheckBox" bind-Value="@Flags.NoDanMode">Static EXP Distribution</CheckBox>
+					</div>
+				</div>
 			</div>
 		</TabPane>
 		<button type="button" class="@(TabClasses("Party"))" onclick="@(() => ActivateTab("Party"))">Party</button>
@@ -583,19 +592,28 @@
 			return;
 		}
 
-		_rom.Randomize(seed, Flags.Flags, Flags.Preferences);
-
-		var data = new byte[512 * 1024 + 16];
-		using (var stream = new MemoryStream(data, true))
+		try
 		{
-			_rom.Save(stream);
+
+			_rom.Randomize(seed, Flags.Flags, Flags.Preferences);
+
+			var data = new byte[512 * 1024 + 16];
+			using (var stream = new MemoryStream(data, true))
+			{
+				_rom.Save(stream);
+			}
+
+			var encoded = Convert.ToBase64String(data);
+
+			StatusMessage += "SUCCESS!";
+			StateHasChanged();
+
+			await JSRuntime.Current.InvokeAsync<object>("downloadROM", $"FFR_{_seed}_{Flags.Encoded}.nes", encoded);
 		}
-
-		var encoded = Convert.ToBase64String(data);
-
-		StatusMessage += "SUCCESS!";
-		StateHasChanged();
-
-		await JSRuntime.Current.InvokeAsync<object>("downloadROM", $"FFR_{_seed}_{Flags.Encoded}.nes", encoded);
+		catch (Exception e)
+		{
+			StatusMessage += "FAILURE: " + e.Message;
+			StateHasChanged();
+		}
 	}
 }

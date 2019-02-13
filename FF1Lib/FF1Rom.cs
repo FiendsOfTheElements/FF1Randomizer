@@ -198,7 +198,7 @@ namespace FF1Lib
 				TransformFinalFormation((FinalFormation)rng.Between(0, Enum.GetValues(typeof(FinalFormation)).Length - 1));
 			}
 
-			var maxRetries = 500;
+			var maxRetries = 50;
 			for (var i = 0; i < maxRetries; i++)
 			{
 				try
@@ -238,11 +238,11 @@ namespace FF1Lib
 					}
 					break;
 				}
-				catch (InsaneException)
+				catch (InsaneException e)
 				{
 					Console.WriteLine("Insane seed. Retrying");
 					if (maxRetries > (i + 1)) continue;
-					throw new InvalidOperationException("Failed Sanity Check too many times");
+					throw new InvalidOperationException($"Seed Generation Failed: {e.Message}");
 				}
 			}
 

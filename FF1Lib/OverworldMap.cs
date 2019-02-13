@@ -403,7 +403,7 @@ namespace FF1Lib
 			do
 			{
 				sanity++;
-				if (sanity > 500)
+				if (sanity > 50)
 					throw new InsaneException("Overworld Map Shuffle sanity exceeds 500 iterations.");
 				var i = 0; // overworld entrance destination counter
 				var j = 0; // underworld floor destination counter

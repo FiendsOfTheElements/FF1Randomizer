@@ -1081,6 +1081,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncludeMorale"));
 			}
 		}
+		public bool NoDanMode
+		{
+			get => Flags.NoDanMode;
+			set
+			{
+				Flags.NoDanMode = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NoDanMode"));
+			}
+		}
 		public ProgressiveScaleMode ProgressiveScaleMode
 		{
 			get => Flags.ProgressiveScaleMode;
