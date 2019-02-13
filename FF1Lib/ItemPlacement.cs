@@ -471,7 +471,7 @@ namespace FF1Lib
 			do
 			{
 				_sanityCounter++;
-				if (_sanityCounter > 500) throw new InsaneException("Sanity Counter exceeds 500 iterations!");
+				if (_sanityCounter > 50) throw new InsaneException("Sanity Counter exceeds 500 iterations!");
 				// 1. (Re)Initialize lists inside of loop
 				placedItems = ctx.Forced.ToList();
 				var incentives = ctx.Incentivized.ToList();
@@ -602,7 +602,7 @@ namespace FF1Lib
 			do
 			{
 				_sanityCounter++;
-				if (_sanityCounter > 500) throw new InsaneException("Sanity Counter exceeds 500 iterations!");
+				if (_sanityCounter > 50) throw new InsaneException("GuidedItemPlacement exceeds 50 iterations!");
 				// 1. (Re)Initialize lists inside of loop
 				placedItems = ctx.Forced.ToList();
 				var incentives = ctx.Incentivized.ToList();
