@@ -116,6 +116,7 @@
 		"SpellBugs": true,
 		"RebalanceSpells": true,
 		"BlackBeltAbsorb": true,
+		"BlackBeltMDEF": true,
 
 		"EnemyStatusAttackBug": true,
 		"EnemySpellsTargetingAllies": true,

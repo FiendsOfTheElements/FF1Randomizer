@@ -245,7 +245,7 @@ namespace FF1Lib
 				{
 					Console.WriteLine(e.Message);
 					if (maxRetries > (i + 1)) continue;
-					throw new InvalidOperationException($"Seed Generation Failed: {e.Message}");
+					throw new InvalidOperationException(e.Message);
 				}
 			}
 
