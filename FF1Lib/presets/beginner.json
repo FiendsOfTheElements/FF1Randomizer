@@ -3,6 +3,7 @@
 
 	"Flags": {
 
+		"Spoilers": true,
 		"Shops": true,
 		"Treasures": true,
 		"NPCItems": true,
@@ -103,6 +104,7 @@
 		"Dash": true,
 		"BuyTen": true,
 		"EnableCritNumberDisplay": true,
+		"NPCSwatter": false,
 
 		"IdentifyTreasures": true,
 		"WaitWhenUnrunnable": true,
@@ -111,6 +113,7 @@
 		"WeaponStats": true,
 		"ChanceToRun": true,
 		"SpellBugs": true,
+		"RebalanceSpells": true,
 		"BlackBeltAbsorb": true,
 
 		"EnemyStatusAttackBug": true,

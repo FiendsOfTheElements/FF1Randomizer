@@ -40,6 +40,15 @@ namespace FF1Lib
 			}
 		}
 
+		public bool Spoilers
+		{
+			get => Flags.Spoilers;
+			set
+			{
+				Flags.Spoilers = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Spoilers"));
+			}
+		}
 		public bool Shops
 		{
 			get => Flags.Shops;

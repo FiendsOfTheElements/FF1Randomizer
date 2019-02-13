@@ -85,6 +85,9 @@ namespace FF1Lib
 		{
 			var rng = new MT19337(BitConverter.ToUInt32(seed, 0));
 
+			// Spoilers => different rng immediately
+			if (flags.Spoilers) rng = new MT19337(rng.Next());
+
 			UpgradeToMMC3();
 			MakeSpace();
 			EasterEggs();
@@ -196,7 +199,7 @@ namespace FF1Lib
 				TransformFinalFormation((FinalFormation)rng.Between(0, Enum.GetValues(typeof(FinalFormation)).Length - 1));
 			}
 
-			var maxRetries = 50;
+			var maxRetries = 10;
 			for (var i = 0; i < maxRetries; i++)
 			{
 				try
@@ -238,7 +241,7 @@ namespace FF1Lib
 				}
 				catch (InsaneException e)
 				{
-					Console.WriteLine("Insane seed. Retrying");
+					Console.WriteLine(e.Message);
 					if (maxRetries > (i + 1)) continue;
 					throw new InvalidOperationException($"Seed Generation Failed: {e.Message}");
 				}

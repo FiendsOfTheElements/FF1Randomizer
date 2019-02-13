@@ -140,7 +140,7 @@ namespace FF1Lib
 				placedItems = placedItems.Select(x => x.Item != Item.Lute ? x : NewItemPlacement(x, ReplacementItem)).ToList();
 			}
 
-			if (Debugger.IsAttached)
+			if (_flags.Spoilers || Debugger.IsAttached)
 			{
 				Console.WriteLine($"ItemPlacement::PlaceSaneItems required {_sanityCounter} iterations.");
 				Console.WriteLine("");
@@ -471,7 +471,7 @@ namespace FF1Lib
 			do
 			{
 				_sanityCounter++;
-				if (_sanityCounter > 50) throw new InsaneException("Sanity Counter exceeds 500 iterations!");
+				if (_sanityCounter > 20) throw new InsaneException("RandomItemPlacement Sanity Counter exceeded!");
 				// 1. (Re)Initialize lists inside of loop
 				placedItems = ctx.Forced.ToList();
 				var incentives = ctx.Incentivized.ToList();
@@ -602,7 +602,7 @@ namespace FF1Lib
 			do
 			{
 				_sanityCounter++;
-				if (_sanityCounter > 50) throw new InsaneException("GuidedItemPlacement exceeds 50 iterations!");
+				if (_sanityCounter > 10) throw new InsaneException("GuidedItemPlacement sanity counter exceeded!");
 				// 1. (Re)Initialize lists inside of loop
 				placedItems = ctx.Forced.ToList();
 				var incentives = ctx.Incentivized.ToList();

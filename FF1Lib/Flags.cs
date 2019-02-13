@@ -9,6 +9,8 @@ namespace FF1Lib
 {
 	public class Flags : IIncentiveFlags, IMapEditFlags, IScaleFlags, IFloorShuffleFlags
 	{
+		public bool Spoilers { get; set; }
+
 		public bool Shops { get; set; }
 		public bool Treasures { get; set; }
 		public bool NPCItems { get; set; }
@@ -509,6 +511,7 @@ namespace FF1Lib
 			sum = AddNumeric(sum, Enum.GetValues(typeof(FormationShuffleModeEnum)).Cast<int>().Max() + 1, (int)flags.FormationShuffleMode);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(WorldWealth)).Cast<int>().Max() + 1, (int)flags.WorldWealth);
 			sum = AddBoolean(sum, flags.AllowStartAreaDanager);
+			sum = AddBoolean(sum, flags.Spoilers);
 
 			return BigIntegerToString(sum);
 		}
@@ -519,6 +522,7 @@ namespace FF1Lib
 
 			var flags = new Flags
 			{
+				Spoilers = GetBoolean(ref sum),
 				AllowStartAreaDanager = GetBoolean(ref sum),
 				WorldWealth = (WorldWealth)GetNumeric(ref sum, Enum.GetValues(typeof(WorldWealth)).Cast<int>().Max() + 1),
 				FormationShuffleMode = (FormationShuffleModeEnum)GetNumeric(ref sum, Enum.GetValues(typeof(FormationShuffleModeEnum)).Cast<int>().Max() + 1),
