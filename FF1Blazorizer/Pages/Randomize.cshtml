@@ -65,6 +65,7 @@
 					<div class="col-md-6">
 						<CheckBox Id="shopsCheckBox" bind-Value="@Flags.Shops">Shops</CheckBox>
 						<CheckBox Indent IsEnabled="@Flags.Shops" Id="randomWaresCheckBox" bind-Value="@Flags.RandomWares">Random Weapons and Armor</CheckBox>
+						<CheckBox Indent IsEnabled="@(Flags.Shops && Flags.RandomWares)" Id="randomWaresIncludesCheckBox" bind-Value="@Flags.RandomWaresIncludesSpecialGear">Include Caster &amp; Elite Gear</CheckBox>
 						<CheckBox Id="magicShopsCheckBox" bind-Value="@Flags.MagicShops">Magic Shops</CheckBox>
 						<CheckBox Id="magicLevelsCheckBox" bind-Value="@Flags.MagicLevels">Magic Levels</CheckBox>
 						<CheckBox Indent IsEnabled="@Flags.MagicLevels" Id="magicPermissionsCheckBox" bind-Value="@Flags.MagicPermissions">Keep Permissions</CheckBox>
@@ -357,6 +358,7 @@
 						<CheckBox Id="weaponStatsCheckBox" bind-Value="@Flags.WeaponStats">Weapon Stats</CheckBox>
 						<CheckBox Id="chanceToRunCheckBox" bind-Value="@Flags.ChanceToRun">Chance to Run</CheckBox>
 						<CheckBox Id="spellBugsCheckBox" bind-Value="@Flags.SpellBugs">Spell Fixes</CheckBox>
+						<CheckBox Id="rebalanceSpellsCheckBox" bind-Value="@Flags.RebalanceSpells">LOCK and LOK2 Always Hit</CheckBox>
 						<CheckBox Id="enemyStatusAttackBugCheckBox" bind-Value="@Flags.EnemyStatusAttackBug">Enemy Status Attacks</CheckBox>
 						<CheckBox Id="blackBeltAbsorbCheckBox" bind-Value="@Flags.BlackBeltAbsorb">Bl. Belt & Master Absorb Calculation</CheckBox>
 						<CheckBox Id="blackBeltMDEFCheckBox" bind-Value="@Flags.BlackBeltMDEF">Bl. Belt & Master MDEF Growth</CheckBox>
