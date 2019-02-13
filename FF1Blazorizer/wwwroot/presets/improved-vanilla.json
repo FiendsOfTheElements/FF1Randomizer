@@ -55,7 +55,10 @@
 		"IncentivizeFreeNPCs": false,
 		"IncentivizeFetchNPCs": false,
 		"IncentivizeTail": false,
+		"IncentivizeMainItems": false,
 		"IncentivizeFetchItems": false,
+		"IncentivizeAirship": false,
+		"IncentivizeCanoeItem": false,
 
 		"IncentivizeMarsh": false,
 		"IncentivizeEarth": false,
