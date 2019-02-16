@@ -140,12 +140,12 @@ namespace FF1Lib
 				placedItems = placedItems.Select(x => x.Item != Item.Lute ? x : NewItemPlacement(x, ReplacementItem)).ToList();
 			}
 
-			if (Debugger.IsAttached)
+			if (_flags.Spoilers || Debugger.IsAttached)
 			{
 				Console.WriteLine($"ItemPlacement::PlaceSaneItems required {_sanityCounter} iterations.");
 				Console.WriteLine("");
-				Console.WriteLine("Item     Entrance  ->  Floor  ->  Source                   Requirements");
-				Console.WriteLine("------------------------------------------------------------------------------------------");
+				Console.WriteLine("Item     Entrance  ->  Floor  ->  Source                             Requirements");
+				Console.WriteLine("----------------------------------------------------------------------------------------------------");
 
 				var sorted = placedItems.Where(item => item.Item != Item.Shard).ToList();
 				sorted.Sort((IRewardSource lhs, IRewardSource rhs) => lhs.Item.ToString().CompareTo(rhs.Item.ToString()));
@@ -160,8 +160,8 @@ namespace FF1Lib
 						}
 
 						var itemStr = item.Item.ToString().PadRight(9);
-						var locStr = $"{overworldLocation} -> {item.MapLocation} -> {item.Name} ".PadRight(50);
-						var changes = $"{String.Join(" | ", flr.Item1.Select(mapChange => mapChange.ToString()).ToArray())}";
+						var locStr = $"{overworldLocation} -> {item.MapLocation} -> {item.Name} ".PadRight(60);
+						var changes = $"({String.Join(" OR ", flr.Item1.Select(mapChange => mapChange.ToString()).ToArray())})";
 						var reqs = flr.Item2.ToString().CompareTo("None") == 0 ? "" : $" AND {flr.Item2.ToString()}";
 						Console.WriteLine($"{itemStr}{locStr}{changes}{reqs}");
 					}
@@ -471,7 +471,7 @@ namespace FF1Lib
 			do
 			{
 				_sanityCounter++;
-				if (_sanityCounter > 500) throw new InsaneException("Sanity Counter exceeds 500 iterations!");
+				if (_sanityCounter > 20) throw new InsaneException("RandomItemPlacement Failure!");
 				// 1. (Re)Initialize lists inside of loop
 				placedItems = ctx.Forced.ToList();
 				var incentives = ctx.Incentivized.ToList();
@@ -602,7 +602,7 @@ namespace FF1Lib
 			do
 			{
 				_sanityCounter++;
-				if (_sanityCounter > 500) throw new InsaneException("Sanity Counter exceeds 500 iterations!");
+				if (_sanityCounter > 10) throw new InsaneException("Item Placement could not meet incentivization requirements!");
 				// 1. (Re)Initialize lists inside of loop
 				placedItems = ctx.Forced.ToList();
 				var incentives = ctx.Incentivized.ToList();

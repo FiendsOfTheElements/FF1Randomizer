@@ -40,6 +40,15 @@ namespace FF1Lib
 			}
 		}
 
+		public bool Spoilers
+		{
+			get => Flags.Spoilers;
+			set
+			{
+				Flags.Spoilers = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Spoilers"));
+			}
+		}
 		public bool Shops
 		{
 			get => Flags.Shops;
@@ -517,6 +526,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeTail"));
 			}
 		}
+		public bool IncentivizeMainItems
+		{
+			get => Flags.IncentivizeMainItems;
+			set
+			{
+				Flags.IncentivizeMainItems = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeMainItems"));
+			}
+		}
 		public bool IncentivizeFetchItems
 		{
 			get => Flags.IncentivizeFetchItems;
@@ -524,6 +542,24 @@ namespace FF1Lib
 			{
 				Flags.IncentivizeFetchItems = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeFetchItems"));
+			}
+		}
+		public bool IncentivizeAirship
+		{
+			get => Flags.IncentivizeAirship;
+			set
+			{
+				Flags.IncentivizeAirship = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeAirship"));
+			}
+		}
+		public bool IncentivizeCanoeItem
+		{
+			get => Flags.IncentivizeCanoeItem;
+			set
+			{
+				Flags.IncentivizeCanoeItem = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeCanoeItem"));
 			}
 		}
 
@@ -899,6 +935,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("HouseMPRestoration"));
 			}
 		}
+		public bool HousesFillHP
+		{
+			get => Flags.HousesFillHp;
+			set
+			{
+				Flags.HousesFillHp = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("HousesFillHp"));
+			}
+		}
 		public bool WeaponStats
 		{
 			get => Flags.WeaponStats;
@@ -926,6 +971,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SpellBugs"));
 			}
 		}
+		public bool RebalanceSpells
+		{
+			get => Flags.RebalanceSpells;
+			set
+			{
+				Flags.RebalanceSpells = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RebalanceSpells"));
+			}
+		}
 		public bool BlackBeltAbsorb
 		{
 			get => Flags.BlackBeltAbsorb;
@@ -942,6 +996,15 @@ namespace FF1Lib
 			{
 				Flags.BlackBeltMDEF = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BlackBeltMDEF"));
+			}
+		}
+		public bool NPCSwatter
+		{
+			get => Flags.NPCSwatter;
+			set
+			{
+				Flags.NPCSwatter = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NPCSwatter"));
 			}
 		}
 
@@ -1034,6 +1097,15 @@ namespace FF1Lib
 			{
 				Flags.IncludeMorale = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncludeMorale"));
+			}
+		}
+		public bool NoDanMode
+		{
+			get => Flags.NoDanMode;
+			set
+			{
+				Flags.NoDanMode = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NoDanMode"));
 			}
 		}
 		public ProgressiveScaleMode ProgressiveScaleMode

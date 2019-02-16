@@ -3,6 +3,7 @@
 
 	"Flags": {
 
+		"Spoilers": true,
 		"Shops": true,
 		"Treasures": true,
 		"NPCItems": true,
@@ -53,9 +54,12 @@
 		"Towns": true,
 
 		"IncentivizeFreeNPCs": true,
-		"IncentivizeFetchNPCs": false,
-		"IncentivizeTail": false,
-		"IncentivizeFetchItems": false,
+		"IncentivizeFetchNPCs": true,
+		"IncentivizeTail": true,
+		"IncentivizeMainItems": true,
+		"IncentivizeFetchItems": true,
+		"IncentivizeAirship": true,
+		"IncentivizeCanoeItem": true,
 
 		"IncentivizeMarsh": false,
 		"IncentivizeEarth": false,
@@ -103,6 +107,7 @@
 		"Dash": true,
 		"BuyTen": true,
 		"EnableCritNumberDisplay": true,
+		"NPCSwatter": true,
 
 		"IdentifyTreasures": true,
 		"WaitWhenUnrunnable": true,
@@ -111,7 +116,9 @@
 		"WeaponStats": true,
 		"ChanceToRun": true,
 		"SpellBugs": true,
+		"RebalanceSpells": true,
 		"BlackBeltAbsorb": true,
+		"BlackBeltMDEF": true,
 
 		"EnemyStatusAttackBug": true,
 		"EnemySpellsTargetingAllies": true,
