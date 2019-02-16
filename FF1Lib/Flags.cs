@@ -39,6 +39,7 @@ namespace FF1Lib
 		public bool EnemyScripts { get; set; }
 		public bool EnemySkillsSpells { get; set; }
 		public bool EnemyStatusAttacks { get; set; }
+		public bool EnemyRandomStatusAttacks { get; set; }
 		public bool AllowUnsafePirates { get; set; }
 		public bool AllowUnsafeMelmond { get; set; }
 
@@ -359,6 +360,7 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.EnemyScripts);
 			sum = AddBoolean(sum, flags.EnemySkillsSpells);
 			sum = AddBoolean(sum, flags.EnemyStatusAttacks);
+			sum = AddBoolean(sum, flags.EnemyRandomStatusAttacks);
 			sum = AddBoolean(sum, flags.AllowUnsafePirates);
 			sum = AddBoolean(sum, flags.AllowUnsafeMelmond);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(WarMECHMode)).Cast<int>().Max() + 1, (int)flags.WarMECHMode);
@@ -625,6 +627,7 @@ namespace FF1Lib
 				WarMECHMode = (WarMECHMode)GetNumeric(ref sum, Enum.GetValues(typeof(WarMECHMode)).Cast<int>().Max() + 1),
 				AllowUnsafeMelmond = GetBoolean(ref sum),
 				AllowUnsafePirates = GetBoolean(ref sum),
+				EnemyRandomStatusAttacks = GetBoolean(ref sum),
 				EnemyStatusAttacks = GetBoolean(ref sum),
 				EnemySkillsSpells = GetBoolean(ref sum),
 				EnemyScripts = GetBoolean(ref sum),
