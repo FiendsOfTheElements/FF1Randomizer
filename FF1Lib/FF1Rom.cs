@@ -217,7 +217,7 @@ namespace FF1Lib
 						overworldMap.ShuffleObjectiveNPCs(rng);
 					}
 
-					var incentivesData = new IncentiveData(rng, flags, overworldMap);
+					IncentiveData incentivesData = new IncentiveData(rng, flags, overworldMap, shopItemLocation);
 
 					if (flags.Shops)
 					{
@@ -233,6 +233,7 @@ namespace FF1Lib
 						}
 
 						shopItemLocation = ShuffleShops(rng, flags.ImmediatePureAndSoftRequired, flags.RandomWares, excludeItemsFromRandomShops, flags.WorldWealth);
+						incentivesData = new IncentiveData(rng, flags, overworldMap, shopItemLocation);
 					}
 
 					if (flags.Treasures)

@@ -91,9 +91,9 @@ namespace FF1Lib
 			  .Concat(MirageTower).Concat(SkyPalace).Concat(ToFR)
 			  .ToList();
 
-		public static readonly IReadOnlyCollection<IRewardSource> AllNPCFreeItemLocations =
+		public static readonly IReadOnlyCollection<IRewardSource> AllNPCFreeItemLocationsExcludingVendor =
 			new List<IRewardSource> {
-			KingConeria, Princess, Bikke, Sarda, CanoeSage, CubeBot, CaravanItemShop1
+			KingConeria, Princess, Bikke, Sarda, CanoeSage, CubeBot
 		};
 
 		public static readonly IReadOnlyCollection<IRewardSource> AllNPCFetchItemLocations =

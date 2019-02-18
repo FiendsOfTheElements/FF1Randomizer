@@ -7,11 +7,15 @@ namespace FF1Lib
 {
 	public class IncentiveData
 	{
-		public IncentiveData(MT19337 rng, IIncentiveFlags flags, OverworldMap map)
+		public IncentiveData(MT19337 rng, IIncentiveFlags flags, OverworldMap map, ItemShopSlot shopSlot)
 		{
 			Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullLocationRequirements = map.FullLocationRequirements;
 			var forcedItemPlacements = ItemLocations.AllOtherItemLocations.ToList();
-			if (!flags.NPCItems) forcedItemPlacements.AddRange(ItemLocations.AllNPCFreeItemLocations);
+			if (!flags.NPCItems)
+			{
+				forcedItemPlacements.AddRange(ItemLocations.AllNPCFreeItemLocationsExcludingVendor);
+				forcedItemPlacements.Add(shopSlot);
+			}
 			if (!flags.NPCFetchItems) forcedItemPlacements.AddRange(ItemLocations.AllNPCFetchItemLocations);
 			if (!flags.Treasures) forcedItemPlacements.AddRange(ItemLocations.AllTreasures);
 			var incentivePool = new List<Item>();

@@ -238,8 +238,10 @@ namespace FF1Lib
 			return placedItems;
 		}
 
-		public static Item SelectVendorItem(List<Item> incentives, List<Item> nonincentives, List<Item> treasurePool, List<IRewardSource> incentiveLocationPool, MT19337 rng)
+		public Item SelectVendorItem(List<Item> incentives, List<Item> nonincentives, List<Item> treasurePool, List<IRewardSource> incentiveLocationPool, MT19337 rng)
 		{
+			if (!_flags.NPCItems) return Item.Bottle;
+
 			var itemShopItem = Item.Cabin;
 			var validShopIncentives = incentives.Where(x => x > Item.None && x <= Item.Soft).ToList();
 			if (validShopIncentives.Any() && incentiveLocationPool.Any(x => x.Address == ItemLocations.CaravanItemShop1.Address))
@@ -616,7 +618,7 @@ namespace FF1Lib
 					nonincentives.Add(incentives.SpliceRandom(rng));
 				}
 
-				if (_flags.NPCItems)
+				if (_flags.NPCItems || _flags.NPCFetchItems)
 				{
 					// Identify but don't place caravan item first because among incentive locations it has the smallest set of possible items
 					itemShopItem = SelectVendorItem(incentives, nonincentives, treasurePool, incentiveLocationPool, rng);
@@ -636,14 +638,15 @@ namespace FF1Lib
 
 					foreach (var item in allPlacements)
 					{
+						if (placedItems.Any(x => x.Item == item))
+							continue;
+
 						if (item == itemShopItem)
 						{
 							placedItems.Add(new ItemShopSlot(_caravanItemLocation, itemShopItem));
 							itemShopItem = Item.None;
-						}
-
-						if (placedItems.Any(x => x.Item == item))
 							continue;
+						}
 
 						var (_, mapLocations, requirements) = CheckSanity(placedItems, fullLocationRequirements, _flags);
 						var isIncentive = incentives.Contains(item);
@@ -668,7 +671,7 @@ namespace FF1Lib
 				}
 
 				// This is a junk item that didn't get placed in the above loop.
-				if (itemShopItem != Item.None)
+				if (!placedItems.Any(item => item.Address == _caravanItemLocation.Address))
 				{
 					placedItems.Add(new ItemShopSlot(_caravanItemLocation, itemShopItem));
 				}
