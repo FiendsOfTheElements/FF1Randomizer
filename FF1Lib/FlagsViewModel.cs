@@ -94,6 +94,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BetterTrapChests"));
 			}
 		}
+		public bool ClassicItemPlacement
+		{
+			get => Flags.ClassicItemPlacement;
+			set
+			{
+				Flags.ClassicItemPlacement = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ClassicItemPlacement"));
+			}
+		}
 
 		public bool ShuffleObjectiveNPCs
 		{

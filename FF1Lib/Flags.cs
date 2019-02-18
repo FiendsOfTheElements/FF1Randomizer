@@ -69,7 +69,7 @@ namespace FF1Lib
 		public bool IncentivizeCanoeItem { get; set; }
 		public bool IncentivizeAirship { get; set; }
 		public bool IncentivizeShipAndCanal { get; set; }
-		public bool AllowObsoleteVehicles { get; set; }
+		public bool ClassicItemPlacement { get; set; }
 
 		public bool IncentivizeMarsh { get; set; }
 		public bool IncentivizeEarth { get; set; }
@@ -402,7 +402,7 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.IncentivizeAirship);
 			sum = AddBoolean(sum, flags.IncentivizeCanoeItem);
 			sum = AddBoolean(sum, flags.IncentivizeShipAndCanal);
-			sum = AddBoolean(sum, flags.AllowObsoleteVehicles);
+			sum = AddBoolean(sum, flags.ClassicItemPlacement);
 			sum = AddBoolean(sum, flags.IncentivizeMarsh);
 			sum = AddBoolean(sum, flags.IncentivizeEarth);
 			sum = AddBoolean(sum, flags.IncentivizeVolcano);
@@ -631,7 +631,7 @@ namespace FF1Lib
 				IncentivizeVolcano = GetBoolean(ref sum),
 				IncentivizeEarth = GetBoolean(ref sum),
 				IncentivizeMarsh = GetBoolean(ref sum),
-				AllowObsoleteVehicles = GetBoolean(ref sum),
+				ClassicItemPlacement = GetBoolean(ref sum),
 				IncentivizeShipAndCanal = GetBoolean(ref sum),
 				IncentivizeCanoeItem = GetBoolean(ref sum),
 				IncentivizeAirship = GetBoolean(ref sum),

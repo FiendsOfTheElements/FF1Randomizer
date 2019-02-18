@@ -39,7 +39,7 @@ namespace FF1Lib
 		public static ItemPlacement Create(IItemPlacementFlags flags, IncentiveData incentivesData, List<Item> allTreasures, ItemShopSlot caravanItemLocation, OverworldMap overworldMap)
 		{
 			ItemPlacement placement;
-			if (flags.AllowObsoleteVehicles)
+			if (flags.ClassicItemPlacement)
 			{
 				placement = new RandomItemPlacement();
 			}
