@@ -371,6 +371,15 @@ namespace FF1Lib
 			maps[(byte)MapId.TitansTunnel][9, 3] = 0x3F; // Block the tunnel
 		}
 
+		public void EnableLefeinShops(List<Map> maps)
+		{
+			var lefein = maps[(byte)MapId.Lefein];
+			lefein[0x05, 0x11] = 0x25; // Inn Sign
+			lefein[0x06, 0x11] = 0x71; // Crescent Lake Inn
+			lefein[0x05, 0x15] = 0x1A; // Clinic Sign
+			lefein[0x06, 0x15] = 0x65; // Crescent Lake Clinic
+		}
+
 		public void WarMECHNpc(WarMECHMode mode, MT19337 rng, List<Map> maps)
 		{
 			const byte UnusedTextPointer = 0xF7;

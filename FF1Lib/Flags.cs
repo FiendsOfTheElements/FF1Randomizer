@@ -49,6 +49,7 @@ namespace FF1Lib
 		public bool OrdealsPillars { get; set; }
 		public bool SkyCastle4FTeleporters { get; set; }
 		public bool TitansTrove { get; set; }
+		public bool LefeinShops { get; set; }
 		public bool ConfusedOldMen { get; set; }
 
 		public bool MapOpenProgression { get; set; }
@@ -385,6 +386,7 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.OrdealsPillars);
 			sum = AddBoolean(sum, flags.SkyCastle4FTeleporters);
 			sum = AddBoolean(sum, flags.TitansTrove);
+			sum = AddBoolean(sum, flags.LefeinShops);
 			sum = AddBoolean(sum, flags.ConfusedOldMen);
 			sum = AddBoolean(sum, flags.MapOpenProgression);
 			sum = AddBoolean(sum, flags.Entrances);
@@ -649,6 +651,7 @@ namespace FF1Lib
 				Entrances = GetBoolean(ref sum),
 				MapOpenProgression = GetBoolean(ref sum),
 				ConfusedOldMen = GetBoolean(ref sum),
+				LefeinShops = GetBoolean(ref sum),
 				TitansTrove = GetBoolean(ref sum),
 				SkyCastle4FTeleporters = GetBoolean(ref sum),
 				OrdealsPillars = GetBoolean(ref sum),

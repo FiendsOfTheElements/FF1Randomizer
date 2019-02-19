@@ -380,6 +380,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TitansTrove"));
 			}
 		}
+		public bool LefeinShops
+		{
+			get => Flags.LefeinShops;
+			set
+			{
+				Flags.LefeinShops = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("LefeinShops"));
+			}
+		}
 		public bool ConfusedOldMen
 		{
 			get => Flags.ConfusedOldMen;
