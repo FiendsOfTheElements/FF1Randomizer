@@ -204,13 +204,13 @@ namespace FF1Lib
 
 		public bool AllowStartAreaDanager { get; set; } = false;
 
-		public bool MapCanalBridge => NPCItems || NPCFetchItems || MapOpenProgressionExtended;
+		public bool MapCanalBridge => NPCItems || NPCFetchItems || MapOpenProgression || MapOpenProgressionExtended;
 		public bool MapOnracDock => MapOpenProgression;
 		public bool MapMirageDock => MapOpenProgression;
 		public bool MapConeriaDwarves => MapOpenProgression;
 		public bool MapVolcanoIceRiver => MapOpenProgression;
-		public bool MapDwarvesNorthwest => MapOpenProgressionExtended;
-		public bool MapAirshipDock => MapOpenProgressionExtended;
+		public bool MapDwarvesNorthwest => MapOpenProgression && MapOpenProgressionExtended;
+		public bool MapAirshipDock => MapOpenProgression && MapOpenProgressionExtended;
 
 		// The philosophy governing item incentivizations works something like this:
 		// 1. If the item is NOT being shuffled to another location it cannot be incentivized. (Duh)
