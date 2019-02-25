@@ -362,13 +362,13 @@ namespace FF1Lib
 			}
 		}
 
-		public bool SkyCastle4FTeleporters
+		public SkyCastle4FMazeMode SkyCastle4FMazeMode
 		{
-			get => Flags.SkyCastle4FTeleporters;
+			get => Flags.SkyCastle4FMazeMode;
 			set
 			{
-				Flags.SkyCastle4FTeleporters = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SkyCastle4FTeleporters"));
+				Flags.SkyCastle4FMazeMode = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SkyCastle4FMazeMode"));
 			}
 		}
 		public bool TitansTrove

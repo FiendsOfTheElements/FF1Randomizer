@@ -191,7 +191,6 @@
 						<h4>Fixed Map Edits</h4>
 						<p>Classic Final Fantasy Randomizer map edits.</p>
 						<CheckBox Id="ordealsPillarsCheckBox" bind-Value="@Flags.OrdealsPillars">Castle Ordeals Pillars</CheckBox>
-						<CheckBox Id="skyCastle4FTeleportersCheckBox" bind-Value="@Flags.SkyCastle4FTeleporters">Sky Castle 4F Teleporters</CheckBox>
 						<CheckBox Id="titansTroveCheckBox" bind-Value="@Flags.TitansTrove">Titan's Trove</CheckBox>
 						<CheckBox Id="lefeinShopsCheckBox" bind-Value="@Flags.LefeinShops">Lefeinish Hospitality</CheckBox>
 						<CheckBox Id="confusedOldMenCheckBox" bind-Value="@Flags.ConfusedOldMen">Confused Old Men</CheckBox>
@@ -203,6 +202,10 @@
 						<h4>WarMECH</h4>
 						<p>Encounter 7 not enough WarMECH for you? Try a patrolling or required WarMECH instead.</p>
 						<EnumDropDown TItem="WarMECHMode" bind-Value="@Flags.WarMECHMode">WarMECH Mode: </EnumDropDown>
+						<br />
+						<h4>Sky Castle</h4>
+						<p>Sky Castle 4F too boring? Try your hand at navigating a randomly generated maze.</p>
+						<EnumDropDown TItem="SkyCastle4FMazeMode" bind-Value="@Flags.SkyCastle4FMazeMode">Sky Castle Mode: </EnumDropDown>
 					</div>
 				</div>
 			</div>

@@ -47,7 +47,7 @@ namespace FF1Lib
 
 		public WarMECHMode WarMECHMode { get; set; }
 		public bool OrdealsPillars { get; set; }
-		public bool SkyCastle4FTeleporters { get; set; }
+		public SkyCastle4FMazeMode SkyCastle4FMazeMode { get; set; }
 		public bool TitansTrove { get; set; }
 		public bool LefeinShops { get; set; }
 		public bool ConfusedOldMen { get; set; }
@@ -384,7 +384,7 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.AllowUnsafeMelmond);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(WarMECHMode)).Cast<int>().Max() + 1, (int)flags.WarMECHMode);
 			sum = AddBoolean(sum, flags.OrdealsPillars);
-			sum = AddBoolean(sum, flags.SkyCastle4FTeleporters);
+			sum = AddNumeric(sum, Enum.GetValues(typeof(SkyCastle4FMazeMode)).Cast<int>().Max() + 1, (int)flags.SkyCastle4FMazeMode);
 			sum = AddBoolean(sum, flags.TitansTrove);
 			sum = AddBoolean(sum, flags.LefeinShops);
 			sum = AddBoolean(sum, flags.ConfusedOldMen);
@@ -653,7 +653,7 @@ namespace FF1Lib
 				ConfusedOldMen = GetBoolean(ref sum),
 				LefeinShops = GetBoolean(ref sum),
 				TitansTrove = GetBoolean(ref sum),
-				SkyCastle4FTeleporters = GetBoolean(ref sum),
+				SkyCastle4FMazeMode = (SkyCastle4FMazeMode)GetNumeric(ref sum, Enum.GetValues(typeof(SkyCastle4FMazeMode)).Cast<int>().Max() + 1),
 				OrdealsPillars = GetBoolean(ref sum),
 				WarMECHMode = (WarMECHMode)GetNumeric(ref sum, Enum.GetValues(typeof(WarMECHMode)).Cast<int>().Max() + 1),
 				AllowUnsafeMelmond = GetBoolean(ref sum),

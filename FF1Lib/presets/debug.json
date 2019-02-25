@@ -42,7 +42,7 @@
 
 		"WarMECHMode": "Patrolling",
 		"OrdealsPillars": true,
-		"SkyCastle4FTeleporters": false,
+		"SkyCastle4FMazeMode": "Maze",
 		"TitansTrove": true,
 		"ConfusedOldMen": true,
 		"AllowUnsafeMelmond": true,

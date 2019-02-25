@@ -359,8 +359,12 @@ namespace FF1Lib
 				ShuffleOrdeals(rng, maps);
 			}
 
-			if (flags.SkyCastle4FTeleporters)
+			if (flags.SkyCastle4FMazeMode == SkyCastle4FMazeMode.Maze)
 			{
+				DoSkyCastle4FMaze(rng, maps);
+			}
+			else if (flags.SkyCastle4FMazeMode == SkyCastle4FMazeMode.Teleporters)
+			{ 
 				ShuffleSkyCastle4F(rng, maps);
 			}
 
