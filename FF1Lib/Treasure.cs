@@ -236,11 +236,6 @@ namespace FF1Lib
 			if (!ItemLocations.ShipLocations.TryGetValue(vanillaMapLocation, out Blob location))
 			{
 				location = Dock.Coneria;
-				Console.WriteLine($"Ship at {vanillaMapLocation} defaults to Coneria.");
-			}
-			else
-			{
-				Console.WriteLine($"Ship at {vanillaMapLocation}.");
 			}
 
 			Put(0x3000 + UnsramIndex.ShipX, location);

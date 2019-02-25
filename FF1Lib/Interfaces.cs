@@ -70,7 +70,8 @@
 	}
 	public interface IItemPlacementFlags : IItemShuffleFlags, IVictoryConditionFlags
 	{
-		bool AllowObsoleteVehicles { get; }
+		bool Spoilers { get; }
+		bool ClassicItemPlacement { get; }
 		bool MapCanalBridge { get; }
 		bool MapConeriaDwarves { get; }
 		bool MapVolcanoIceRiver { get; }
@@ -87,7 +88,7 @@
 		bool NPCFetchItems { get; }
 		bool EarlySarda { get; }
 		bool EarlySage { get; }
-		bool CrownlessOrdeals { get; }
+		bool EarlyOrdeals { get; }
 	}
 	public interface IScaleFlags
 	{

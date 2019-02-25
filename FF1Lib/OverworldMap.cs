@@ -150,7 +150,7 @@ namespace FF1Lib
 					new Tuple<MapLocation, AccessRequirement>(MapLocation.TitansTunnelWest, AccessRequirement.Ruby);
 			}
 
-			if (flags.CrownlessOrdeals)
+			if (flags.EarlyOrdeals)
 			{
 				floorLocationRequirements[MapLocation.CastleOrdealsMaze] = new Tuple<MapLocation, AccessRequirement>(MapLocation.CastleOrdeals1, AccessRequirement.None);
 			}
@@ -228,8 +228,7 @@ namespace FF1Lib
 			if (index <= MapIndex.Lefein) // Towns
 			{
 				// Towns are given arbitrary palettes to help provide color when dungeons take their place.
-				// But if a town ends up in place of another town, the default palette is appropriate.
-				if (source < OverworldTeleportIndex.Coneria || source > OverworldTeleportIndex.Lefein)
+				if (source != OverworldTeleportIndex.Coneria)
 				{
 					_rom.Put(MapPaletteOffset + (int)index * MapPaletteSize + 1, _palettes[palette].SubBlob(9, 2));
 					_rom.Put(MapPaletteOffset + (int)index * MapPaletteSize + 6, _palettes[palette].SubBlob(9, 1));
@@ -303,7 +302,7 @@ namespace FF1Lib
 			};
 
 			// Disable the Princess Warp back to Castle Coneria
-			_rom.Put(0x392CA, Blob.FromHex("EAEAEA"));
+			if (flags.Entrances || flags.Floors) _rom.Put(0x392CA, Blob.FromHex("EAEAEA"));
 
 			// Since we're going to move all the entrances around, we're going to change the requirements
 			// for just about everything. Most interestingly the Titan's Tunnel is going to connect totally
@@ -404,7 +403,7 @@ namespace FF1Lib
 			do
 			{
 				sanity++;
-				if (sanity > 500)
+				if (sanity > 50)
 					throw new InsaneException("Overworld Map Shuffle sanity exceeds 500 iterations.");
 				var i = 0; // overworld entrance destination counter
 				var j = 0; // underworld floor destination counter

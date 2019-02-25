@@ -39,7 +39,7 @@ namespace FF1Lib
 		public static ItemPlacement Create(IItemPlacementFlags flags, IncentiveData incentivesData, List<Item> allTreasures, ItemShopSlot caravanItemLocation, OverworldMap overworldMap)
 		{
 			ItemPlacement placement;
-			if (flags.AllowObsoleteVehicles)
+			if (flags.ClassicItemPlacement)
 			{
 				placement = new RandomItemPlacement();
 			}
@@ -140,12 +140,12 @@ namespace FF1Lib
 				placedItems = placedItems.Select(x => x.Item != Item.Lute ? x : NewItemPlacement(x, ReplacementItem)).ToList();
 			}
 
-			if (Debugger.IsAttached)
+			if (_flags.Spoilers || Debugger.IsAttached)
 			{
 				Console.WriteLine($"ItemPlacement::PlaceSaneItems required {_sanityCounter} iterations.");
 				Console.WriteLine("");
-				Console.WriteLine("Item     Entrance  ->  Floor  ->  Source                   Requirements");
-				Console.WriteLine("------------------------------------------------------------------------------------------");
+				Console.WriteLine("Item     Entrance  ->  Floor  ->  Source                             Requirements");
+				Console.WriteLine("----------------------------------------------------------------------------------------------------");
 
 				var sorted = placedItems.Where(item => item.Item != Item.Shard).ToList();
 				sorted.Sort((IRewardSource lhs, IRewardSource rhs) => lhs.Item.ToString().CompareTo(rhs.Item.ToString()));
@@ -160,8 +160,8 @@ namespace FF1Lib
 						}
 
 						var itemStr = item.Item.ToString().PadRight(9);
-						var locStr = $"{overworldLocation} -> {item.MapLocation} -> {item.Name} ".PadRight(50);
-						var changes = $"{String.Join(" | ", flr.Item1.Select(mapChange => mapChange.ToString()).ToArray())}";
+						var locStr = $"{overworldLocation} -> {item.MapLocation} -> {item.Name} ".PadRight(60);
+						var changes = $"({String.Join(" OR ", flr.Item1.Select(mapChange => mapChange.ToString()).ToArray())})";
 						var reqs = flr.Item2.ToString().CompareTo("None") == 0 ? "" : $" AND {flr.Item2.ToString()}";
 						Console.WriteLine($"{itemStr}{locStr}{changes}{reqs}");
 					}
@@ -238,8 +238,10 @@ namespace FF1Lib
 			return placedItems;
 		}
 
-		public static Item SelectVendorItem(List<Item> incentives, List<Item> nonincentives, List<Item> treasurePool, List<IRewardSource> incentiveLocationPool, MT19337 rng)
+		public Item SelectVendorItem(List<Item> incentives, List<Item> nonincentives, List<Item> treasurePool, List<IRewardSource> incentiveLocationPool, MT19337 rng)
 		{
+			if (!_flags.NPCItems) return Item.Bottle;
+
 			var itemShopItem = Item.Cabin;
 			var validShopIncentives = incentives.Where(x => x > Item.None && x <= Item.Soft).ToList();
 			if (validShopIncentives.Any() && incentiveLocationPool.Any(x => x.Address == ItemLocations.CaravanItemShop1.Address))
@@ -471,7 +473,7 @@ namespace FF1Lib
 			do
 			{
 				_sanityCounter++;
-				if (_sanityCounter > 500) throw new InsaneException("Sanity Counter exceeds 500 iterations!");
+				if (_sanityCounter > 20) throw new InsaneException("RandomItemPlacement Failure!");
 				// 1. (Re)Initialize lists inside of loop
 				placedItems = ctx.Forced.ToList();
 				var incentives = ctx.Incentivized.ToList();
@@ -602,7 +604,7 @@ namespace FF1Lib
 			do
 			{
 				_sanityCounter++;
-				if (_sanityCounter > 500) throw new InsaneException("Sanity Counter exceeds 500 iterations!");
+				if (_sanityCounter > 10) throw new InsaneException("Item Placement could not meet incentivization requirements!");
 				// 1. (Re)Initialize lists inside of loop
 				placedItems = ctx.Forced.ToList();
 				var incentives = ctx.Incentivized.ToList();
@@ -616,7 +618,7 @@ namespace FF1Lib
 					nonincentives.Add(incentives.SpliceRandom(rng));
 				}
 
-				if (_flags.NPCItems)
+				if (_flags.NPCItems || _flags.NPCFetchItems)
 				{
 					// Identify but don't place caravan item first because among incentive locations it has the smallest set of possible items
 					itemShopItem = SelectVendorItem(incentives, nonincentives, treasurePool, incentiveLocationPool, rng);
@@ -636,14 +638,15 @@ namespace FF1Lib
 
 					foreach (var item in allPlacements)
 					{
+						if (placedItems.Any(x => x.Item == item))
+							continue;
+
 						if (item == itemShopItem)
 						{
 							placedItems.Add(new ItemShopSlot(_caravanItemLocation, itemShopItem));
 							itemShopItem = Item.None;
-						}
-
-						if (placedItems.Any(x => x.Item == item))
 							continue;
+						}
 
 						var (_, mapLocations, requirements) = CheckSanity(placedItems, fullLocationRequirements, _flags);
 						var isIncentive = incentives.Contains(item);
@@ -668,7 +671,7 @@ namespace FF1Lib
 				}
 
 				// This is a junk item that didn't get placed in the above loop.
-				if (itemShopItem != Item.None)
+				if (!placedItems.Any(item => item.Address == _caravanItemLocation.Address))
 				{
 					placedItems.Add(new ItemShopSlot(_caravanItemLocation, itemShopItem));
 				}

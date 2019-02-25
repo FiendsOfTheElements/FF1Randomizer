@@ -3,6 +3,7 @@
 
 	"Flags": {
 
+		"Spoilers": false,
 		"Shops": true,
 		"Treasures": true,
 		"NPCItems": true,
@@ -85,7 +86,7 @@
 
 		"EarlySarda": true,
 		"EarlySage": true,
-		"CrownlessOrdeals": true,
+		"EarlyOrdeals": true,
 		"ShuffleObjectiveNPCs": false,
 		"OnlyRequireGameIsBeatable": false,
 
@@ -104,6 +105,7 @@
 		"Dash": true,
 		"BuyTen": true,
 		"EnableCritNumberDisplay": true,
+		"NPCSwatter": true,
 
 		"IdentifyTreasures": true,
 		"WaitWhenUnrunnable": true,
@@ -112,6 +114,7 @@
 		"WeaponStats": true,
 		"ChanceToRun": true,
 		"SpellBugs": true,
+		"RebalanceSpells": true,
 		"BlackBeltAbsorb": true,
 		"BlackBeltMDEF": true,
 

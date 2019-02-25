@@ -333,7 +333,7 @@
 					<StackPanel Orientation="Vertical" Grid.Column="0">
 						<CheckBox x:Name="EarlySardaCheckBox" IsChecked="{Binding Flags.EarlySarda}" Content="Early Sarda Item" ToolTip="Sarda will give you an item without requiring Vampire dead"/>
 						<CheckBox x:Name="EarlySageCheckBox" IsChecked="{Binding Flags.EarlySage}" Content="Early Sage Item" ToolTip="Sage in Cresent Lake will give you an item without requiring Lich dead"/>
-						<CheckBox x:Name="CrownlessOrdealsCheckBox" IsChecked="{Binding Flags.CrownlessOrdeals}" Content="Early Ordeals" ToolTip="You will be allowed access to Castle Ordeals without the CROWN."/>
+						<CheckBox x:Name="EarlyOrdealsCheckBox" IsChecked="{Binding Flags.EarlyOrdeals}" Content="Early Ordeals" ToolTip="You will be allowed access to Castle Ordeals without the CROWN."/>
 						<Label/>
 						<CheckBox x:Name="NoPartyShuffleCheckBox" IsChecked="{Binding Flags.NoPartyShuffle}" Content="No Party Shuffle" ToolTip="Poisoned, petrified, and slain party members will not be shuffled to the back of the party."/>
 						<CheckBox x:Name="SpeedHacksCheckBox" IsChecked="{Binding Flags.SpeedHacks}" Content="Speed Hacks" ToolTip="Various code hacks to speed up the game."/>

@@ -14,7 +14,7 @@ namespace FF1Lib
 		None = 0,
 		[Description("Shuffle Encounter Rarity")]
 		Intrazone,
-		[Description("Shuffle All Encounters Across Zones")]
+		[Description("Shuffle Encounters Across Zones")]
 		InterZone,
 		[Description("Random Encounter Zones")]
 		Randomize

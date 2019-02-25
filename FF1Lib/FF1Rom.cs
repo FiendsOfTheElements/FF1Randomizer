@@ -14,7 +14,11 @@ namespace FF1Lib
 	// ReSharper disable once InconsistentNaming
 	public partial class FF1Rom : NesRom
 	{
-		public const string Version = "2.6.0";
+#if DEBUG
+		public const string Version = "3.0.0 Beta";
+#else
+		public const string Version = "3.0.0";
+#endif
 
 		public const int RngOffset = 0x7F100;
 		public const int BattleRngOffset = 0x7FCF1;
@@ -81,9 +85,12 @@ namespace FF1Lib
 			return rom;
 		}
 
-		public void Randomize(Blob seed, Flags flags)
+		public void Randomize(Blob seed, Flags flags, Preferences preferences)
 		{
 			var rng = new MT19337(BitConverter.ToUInt32(seed, 0));
+
+			// Spoilers => different rng immediately
+			if (flags.Spoilers) rng = new MT19337(rng.Next());
 
 			UpgradeToMMC3();
 			MakeSpace();
@@ -152,7 +159,7 @@ namespace FF1Lib
 			}
 			*/
 
-			if (flags.ModernBattlefield)
+			if (preferences.ModernBattlefield)
 			{
 				EnableModernBattlefield();
 			}
@@ -160,6 +167,11 @@ namespace FF1Lib
 			if (flags.TitansTrove)
 			{
 				EnableTitansTrove(maps);
+			}
+
+			if (flags.LefeinShops)
+			{
+				EnableLefeinShops(maps);
 			}
 
 			// This has to be done before we shuffle spell levels.
@@ -198,7 +210,7 @@ namespace FF1Lib
 				TransformFinalFormation((FinalFormation)rng.Between(0, Enum.GetValues(typeof(FinalFormation)).Length - 1));
 			}
 
-			var maxRetries = 500;
+			var maxRetries = 4;
 			for (var i = 0; i < maxRetries; i++)
 			{
 				try
@@ -214,7 +226,7 @@ namespace FF1Lib
 						overworldMap.ShuffleObjectiveNPCs(rng);
 					}
 
-					var incentivesData = new IncentiveData(rng, flags, overworldMap);
+					IncentiveData incentivesData = new IncentiveData(rng, flags, overworldMap, shopItemLocation);
 
 					if (flags.Shops)
 					{
@@ -230,6 +242,7 @@ namespace FF1Lib
 						}
 
 						shopItemLocation = ShuffleShops(rng, flags.ImmediatePureAndSoftRequired, flags.RandomWares, excludeItemsFromRandomShops, flags.WorldWealth);
+						incentivesData = new IncentiveData(rng, flags, overworldMap, shopItemLocation);
 					}
 
 					if (flags.Treasures)
@@ -238,11 +251,11 @@ namespace FF1Lib
 					}
 					break;
 				}
-				catch (InsaneException)
+				catch (InsaneException e)
 				{
-					Console.WriteLine("Insane seed. Retrying");
+					Console.WriteLine(e.Message);
 					if (maxRetries > (i + 1)) continue;
-					throw new InvalidOperationException("Failed Sanity Check too many times");
+					throw new InvalidOperationException(e.Message);
 				}
 			}
 
@@ -291,8 +304,18 @@ namespace FF1Lib
 
 			if (flags.EnemyFormationsUnrunnable)
 			{
-				ShuffleUnrunnable(rng);
+				if (flags.EverythingUnrunnable)
+				{
+					CompletelyUnrunnable();
+				}
+				else
+				{
+					ShuffleUnrunnable(rng);
+				}
 			}
+
+			
+			
 
 			if (flags.EnemyFormationsSurprise)
 			{
@@ -346,7 +369,7 @@ namespace FF1Lib
 				EnableConfusedOldMen(rng);
 			}
 
-			if (flags.CrownlessOrdeals)
+			if (flags.EarlyOrdeals)
 			{
 				EnableEarlyOrdeals();
 			}
@@ -426,6 +449,11 @@ namespace FF1Lib
 				EnableCritNumberDisplay();
 			}
 
+			if (flags.NPCSwatter)
+			{
+				EnableNPCSwatter();
+			}
+
 			if (flags.EasyMode)
 			{
 				EnableEasyMode();
@@ -471,9 +499,9 @@ namespace FF1Lib
 				FixEnemyElementalResistances();
 			}
 
-			if (flags.FunEnemyNames)
+			if (preferences.FunEnemyNames)
 			{
-				FunEnemyNames(flags.TeamSteak);
+				FunEnemyNames(preferences.TeamSteak);
 			}
 
 			var itemText = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
@@ -522,33 +550,39 @@ namespace FF1Lib
 			// We have to do "fun" stuff last because it alters the RNG state.
 			RollCredits(rng);
 
-			if (flags.DisableDamageTileFlicker)
+			if (preferences.DisableDamageTileFlicker)
 			{
 				DisableDamageTileFlicker();
 			}
 
-			if (flags.ThirdBattlePalette)
+			if (preferences.ThirdBattlePalette)
 			{
 				UseVariablePaletteForCursorAndStone();
 			}
 
-			if (flags.PaletteSwap)
+			if (preferences.PaletteSwap)
 			{
 				PaletteSwap(rng);
 			}
 
-			if (flags.TeamSteak)
+			if (preferences.TeamSteak)
 			{
 				TeamSteak();
 			}
 
-			if (flags.Music != MusicShuffle.None)
+			if (preferences.Music != MusicShuffle.None)
 			{
-				ShuffleMusic(flags.Music, rng);
+				ShuffleMusic(preferences.Music, rng);
 			}
 
 			WriteSeedAndFlags(Version, seed.ToHex(), Flags.EncodeFlagsText(flags));
 			ExtraTrackingAndInitCode();
+		}
+
+		private void EnableNPCSwatter()
+		{
+			// Talk_norm is overwritten with unconditional jump to Talk_CoOGuy (say whatever then disappear)
+			PutInBank(0x0E, 0x9492, Blob.FromHex("4CA294"));
 		}
 
 		private void ExtraTrackingAndInitCode()

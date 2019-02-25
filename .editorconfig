@@ -9,9 +9,15 @@ indent_size = 4
 indent_style = tab
 end_of_line = crlf
 
-[*.{csproj,yml,yaml}]
+[*.{csproj}]
 indent_size = 2
 indent_style = space
+end_of_line = crlf
+
+[*.{yml,yaml}]
+indent_size = 2
+indent_style = space
+end_of_line = lf
 
 [*.{js,json}]
 indent_size = 4

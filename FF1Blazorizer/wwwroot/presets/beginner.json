@@ -3,6 +3,7 @@
 
 	"Flags": {
 
+		"Spoilers": true,
 		"Shops": true,
 		"Treasures": true,
 		"NPCItems": true,
@@ -38,10 +39,11 @@
 		"EnemyStatusAttacks": false,
 		"AllowUnsafePirates": false,
 
-		"WarMECHMode": "Vanilla",
+		"WarMECHMode": 0,
 		"OrdealsPillars": false,
 		"SkyCastle4FTeleporters": false,
 		"TitansTrove": true,
+		"LefeinShops": true,
 		"ConfusedOldMen": false,
 		"AllowUnsafeMelmond": false,
 
@@ -55,7 +57,10 @@
 		"IncentivizeFreeNPCs": true,
 		"IncentivizeFetchNPCs": false,
 		"IncentivizeTail": true,
+		"IncentivizeMainItems": true,
 		"IncentivizeFetchItems": false,
+		"IncentivizeAirship": true,
+		"IncentivizeCanoeItem": true,
 
 		"IncentivizeMarsh": true,
 		"IncentivizeEarth": true,
@@ -84,7 +89,7 @@
 
 		"EarlySarda": true,
 		"EarlySage": true,
-		"CrownlessOrdeals": true,
+		"EarlyOrdeals": true,
 		"ShuffleObjectiveNPCs": false,
 		"OnlyRequireGameIsBeatable": false,
 
@@ -103,6 +108,7 @@
 		"Dash": true,
 		"BuyTen": true,
 		"EnableCritNumberDisplay": true,
+		"NPCSwatter": false,
 
 		"IdentifyTreasures": true,
 		"WaitWhenUnrunnable": true,
@@ -111,7 +117,9 @@
 		"WeaponStats": true,
 		"ChanceToRun": true,
 		"SpellBugs": true,
+		"RebalanceSpells": true,
 		"BlackBeltAbsorb": true,
+		"BlackBeltMDEF": true,
 
 		"EnemyStatusAttackBug": true,
 		"EnemySpellsTargetingAllies": true,
