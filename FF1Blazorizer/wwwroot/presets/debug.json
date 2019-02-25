@@ -41,7 +41,7 @@
 
 		"WarMECHMode": 1,
 		"OrdealsPillars": true,
-		"SkyCastle4FTeleporters": false,
+		"SkyCastle4FMazeMode": 2,
 		"TitansTrove": true,
 		"LefeinShops": true,
 		"ConfusedOldMen": true,
