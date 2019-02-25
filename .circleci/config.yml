@@ -28,57 +28,7 @@ jobs:
           paths:
             - FF1Blazorizer
 
-  dockerize_production:
-    <<: *defaults
-    steps:
-      - setup_remote_docker
-      - attach_workspace:
-          at: ~/ff1randomizer
-      - run:
-          name: docker
-          command: |
-            cd FF1RandomizerOnline && \
-            docker login -u $DOCKER_USER -p $DOCKER_PASS && \
-            docker build -t entroper/finalfantasyrandomizer:latest -f Dockerfile . && \
-            docker push entroper/finalfantasyrandomizer:latest
-
-  dockerize_beta:
-    <<: *defaults
-    steps:
-      - setup_remote_docker
-      - attach_workspace:
-          at: ~/ff1randomizer
-      - run:
-          name: docker
-          command: |
-            cd FF1RandomizerOnline && \
-            docker login -u $DOCKER_USER -p $DOCKER_PASS && \
-            docker build -t entroper/finalfantasyrandomizer:beta -f Dockerfile.debug . && \
-            docker push entroper/finalfantasyrandomizer:beta
-
-  deploy_production:
-    <<: *defaults
-    steps:
-      - checkout
-      - run:
-          name: deploy
-          command: |
-            mkdir -p ~/.ssh && \
-            cp .ssh/known_hosts ~/.ssh/known_hosts && \
-            ssh circle@finalfantasyrandomizer.com "./deployff1r.sh master"
-
-  deploy_beta:
-    <<: *defaults
-    steps:
-      - checkout
-      - run:
-          name: deploy
-          command: |
-            mkdir -p ~/.ssh && \
-            cp .ssh/known_hosts ~/.ssh/known_hosts && \
-            ssh circle@finalfantasyrandomizer.com "./deployff1r.sh dev"
-
-  deploy_alpha:
+  deploy:
     <<: *defaults
     steps:
       - checkout
@@ -90,44 +40,27 @@ jobs:
             set -ex
             mkdir -p ~/.ssh
             cp .ssh/known_hosts ~/.ssh/known_hosts
-            pushd FF1Blazorizer/bin/Debug/netstandard2.0/publish/FF1Blazorizer/dist
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              pushd FF1Blazorizer/bin/Release/netstandard2.0/publish/FF1Blazorizer/dist
+            else
+              pushd FF1Blazorizer/bin/Debug/netstandard2.0/publish/FF1Blazorizer/dist
+            fi
             tar cvzf ../../../../../../../FF1Blazorizer.tar.gz .
             popd
             scp FF1Blazorizer.tar.gz circle@finalfantasyrandomizer.com:FF1Blazorizer.tar.gz
-            ssh circle@finalfantasyrandomizer.com "./deployff1rblazor.sh alpha"
+            ssh circle@finalfantasyrandomizer.com "./deployff1rblazor.sh $CIRCLE_BRANCH"
 
 workflows:
   version: 2
   main:
     jobs:
       - build
-      - dockerize_production:
+      - deploy:
           requires:
             - build
           filters:
             branches:
-              only: master
-      - dockerize_beta:
-          requires:
-            - build
-          filters:
-            branches:
-              only: dev
-      - deploy_production:
-          requires:
-            - dockerize_production
-          filters:
-            branches:
-              only: master
-      - deploy_beta:
-          requires:
-            - dockerize_beta
-          filters:
-            branches:
-              only: dev
-      - deploy_alpha:
-          requires:
-            - build
-          filters:
-            branches:
-              only: alpha
+              only:
+                - master
+                - dev
+                - alpha
