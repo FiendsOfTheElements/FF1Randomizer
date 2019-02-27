@@ -303,7 +303,7 @@ namespace FF1Lib
 			};
 
 			// Disable the Princess Warp back to Castle Coneria
-			_rom.Put(0x392CA, Blob.FromHex("EAEAEA"));
+			if (flags.Entrances || flags.Floors) _rom.Put(0x392CA, Blob.FromHex("EAEAEA"));
 
 			// Since we're going to move all the entrances around, we're going to change the requirements
 			// for just about everything. Most interestingly the Titan's Tunnel is going to connect totally

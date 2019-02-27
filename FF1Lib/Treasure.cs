@@ -75,6 +75,10 @@ namespace FF1Lib
 			{
 				placedItems = placedItems.Select(x => x.Item != Item.Floater ? x : ItemPlacement.NewItemPlacement(x, ReplacementItem)).ToList();
 			}
+			if (flags.FreeCanal)
+			{
+				placedItems = placedItems.Select(x => x.Item != Item.Canal ? x : ItemPlacement.NewItemPlacement(x, ReplacementItem)).ToList();
+			}
 			if (flags.ShortToFR)
 			{
 				placedItems = placedItems.Select(x => x.Item != Item.Lute ? x : ItemPlacement.NewItemPlacement(x, ReplacementItem)).ToList();
