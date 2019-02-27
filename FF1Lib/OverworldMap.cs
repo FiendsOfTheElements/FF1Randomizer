@@ -627,28 +627,27 @@ namespace FF1Lib
 			_rom.Put(0x03300, backdrops);
 		}
 
-		public bool CheckEntranceSanity(IEnumerable<KeyValuePair<OverworldTeleportIndex, TeleportDestination>> shuffledEntrances,
-										bool allowUnsafe = false)
+		public bool CheckEntranceSanity(IEnumerable<KeyValuePair<OverworldTeleportIndex, TeleportDestination>> shuffledEntrances, bool allowDanger)
 		{
 			var coneria = shuffledEntrances.Any(x => x.Key == OverworldTeleportIndex.Coneria && x.Value.Destination == MapLocation.Coneria);
-			var starterLocation =
-				shuffledEntrances.Any(x => StartingLocations.Contains(x.Key) && StarterDestinations.Contains(x.Value.Destination));
-			var dangerLocationAtConeriaCastle =
-				!shuffledEntrances.Any(x => x.Key == OverworldTeleportIndex.ConeriaCastle1 && SafeLocations.Contains(x.Value.Destination));
-			var dangerLocationAtToF =
-				!shuffledEntrances.Any(x => x.Key == OverworldTeleportIndex.TempleOfFiends1 && SafeLocations.Contains(x.Value.Destination));
-			var dangerLocationAtDwarf =
-				!shuffledEntrances.Any(x => x.Key == OverworldTeleportIndex.DwarfCave && SafeLocations.Contains(x.Value.Destination));
-			var dangerLocationAtMatoya =
-				!shuffledEntrances.Any(x => x.Key == OverworldTeleportIndex.MatoyasCave && SafeLocations.Contains(x.Value.Destination));
+			var starterLocation = shuffledEntrances.Any(x => StartingLocations.Contains(x.Key) && StarterDestinations.Contains(x.Value.Destination));
 			var titansConnections =
 				shuffledEntrances.Any(x => x.Value.Destination == MapLocation.TitansTunnelEast && ConnectedLocations.Contains(x.Key)) &&
 				shuffledEntrances.Any(x => x.Value.Destination == MapLocation.TitansTunnelWest && ConnectedLocations.Contains(x.Key));
 
-			var dangerCount = new List<bool> { dangerLocationAtConeriaCastle, dangerLocationAtToF, dangerLocationAtDwarf, dangerLocationAtMatoya }.Where(x => x).Count();
-			_log.Add($"Entrance sanity has {dangerCount} early dangers. Only 1 allowed.");
+			bool isSafe(OverworldTeleportIndex owti)
+			{
+				return shuffledEntrances.Any(x => x.Key == owti && SafeLocations.Contains(x.Value.Destination));
+			}
 
-			return coneria && starterLocation && titansConnections && (allowUnsafe || (dangerCount <= 1));
+			int dangerCount = 5;
+			if (isSafe(OverworldTeleportIndex.ConeriaCastle1)) --dangerCount;
+			if (isSafe(OverworldTeleportIndex.TempleOfFiends1)) --dangerCount;
+			if (isSafe(OverworldTeleportIndex.DwarfCave)) --dangerCount;
+			if (isSafe(OverworldTeleportIndex.MatoyasCave)) --dangerCount;
+			if (isSafe(OverworldTeleportIndex.Pravoka)) --dangerCount;
+
+			return coneria && starterLocation && titansConnections && (allowDanger || dangerCount <= 3);
 		}
 
 		public void Dump()
