@@ -339,5 +339,48 @@ namespace FF1Lib
 
 			Put(EnemyOffset, newEnemies.SelectMany(enemy => enemy.ToBytes()).ToArray());
 		}
+
+		public void RandomEnemyStatusAttacks(MT19337 rng, bool AllowUnsafePirates)
+		{
+			var enemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
+
+			List<(byte touch, byte element)> statusElements = new List<(byte touch, byte element)>()
+			{
+				(0x01, 0x08), //Death Touch = Death Element
+				(0x02, 0x02), //Stone Touch = Poison
+				(0x04, 0x02), //Poison Touch = Poison
+				(0x08, 0x01), //Dark Touch = Status
+				(0x10, 0x01), //Stun Touch = Status
+				(0x20, 0x01), //Sleep Touch = Status
+				(0x40, 0x01), //Mute Touch = Status
+				(0x80, 0x01) //Conf Touch = Status
+			};
+
+			for (int i = 0; i < EnemyCount; i++)
+			{
+				if (!AllowUnsafePirates)
+				{
+					if (i == 15) //pirates
+					{
+						continue;
+					}
+				}
+				//Vanilla ratio is 37/128, hence the magic numbers
+				if (rng.Between(0, 128) < 37)
+				{
+					var (touch, element) = statusElements.PickRandom(rng);
+					enemies[i][15] = touch;
+					enemies[i][14] = element;
+				}
+				else
+				{
+					//Otherwise, the enemy has no touch or associated element.
+					enemies[i][14] = 0x00;
+					enemies[i][15] = 0x00;
+				}
+			}
+
+			Put(EnemyOffset, enemies.SelectMany(enemy => enemy.ToBytes()).ToArray());
+		}
 	}
 }

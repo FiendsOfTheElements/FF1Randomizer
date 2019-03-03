@@ -299,7 +299,14 @@ namespace FF1Lib
 
 			if (flags.EnemyStatusAttacks)
 			{
-				ShuffleEnemyStatusAttacks(rng, flags.AllowUnsafePirates);
+				if (flags.RandomStatusAttacks)
+				{
+					RandomEnemyStatusAttacks(rng, flags.AllowUnsafePirates);
+				}
+				else
+				{
+					ShuffleEnemyStatusAttacks(rng, flags.AllowUnsafePirates);
+				}
 			}
 
 			if (flags.EnemyFormationsUnrunnable)
