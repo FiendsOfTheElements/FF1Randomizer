@@ -314,6 +314,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EnemyStatusAttacks"));
 			}
 		}
+		public bool RandomStatusAttacks
+		{
+			get => Flags.RandomStatusAttacks;
+			set
+			{
+				Flags.RandomStatusAttacks = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomStatusAttacks"));
+			}
+		}
 		public bool AllowUnsafePirates
 		{
 			get => Flags.AllowUnsafePirates;
