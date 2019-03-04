@@ -100,6 +100,7 @@
 	}
 	public interface IFloorShuffleFlags
 	{
+		bool Spoilers { get; }
 		bool Entrances { get; }
 		bool EntrancesIncludesDeadEnds { get; }
 		bool EntrancesMixedWithTowns { get; }

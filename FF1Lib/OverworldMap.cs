@@ -403,8 +403,8 @@ namespace FF1Lib
 			do
 			{
 				sanity++;
-				if (sanity > 50)
-					throw new InsaneException("Overworld Map Shuffle sanity exceeds 500 iterations.");
+				if (sanity > 100)
+					throw new InsaneException("Overworld Map Shuffle sanity exceeds 100 iterations.");
 				var i = 0; // overworld entrance destination counter
 				var j = 0; // underworld floor destination counter
 
@@ -467,6 +467,11 @@ namespace FF1Lib
 					}
 				}
 			} while (!CheckEntranceSanity(shuffled, flags.AllowStartAreaDanager));
+
+			if (flags.Spoilers || Debugger.IsAttached)
+			{
+				Console.WriteLine($"OverworldMap::ShuffleEntrancesAndFloors() required {sanity} iterations.");
+			}
 
 			// Pretty print map data
 			foreach (var map in shuffled.OrderBy(x => x.Key))
