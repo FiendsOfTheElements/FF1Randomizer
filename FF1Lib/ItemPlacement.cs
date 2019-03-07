@@ -604,7 +604,7 @@ namespace FF1Lib
 			do
 			{
 				_sanityCounter++;
-				if (_sanityCounter > 10) throw new InsaneException("Item Placement could not meet incentivization requirements!");
+				if (_sanityCounter > 20) throw new InsaneException("Item Placement could not meet incentivization requirements!");
 				// 1. (Re)Initialize lists inside of loop
 				placedItems = ctx.Forced.ToList();
 				var incentives = ctx.Incentivized.ToList();

@@ -210,7 +210,7 @@ namespace FF1Lib
 				TransformFinalFormation((FinalFormation)rng.Between(0, Enum.GetValues(typeof(FinalFormation)).Length - 1));
 			}
 
-			var maxRetries = 4;
+			var maxRetries = 8;
 			for (var i = 0; i < maxRetries; i++)
 			{
 				try
