@@ -503,11 +503,6 @@ namespace FF1Lib
 			Data[initItemOffset + (int)Item.AirOrb] = 0x01;
 		}
 
-		public void EnableHousesFillHp()
-		{
-			Put(0x03b2c8, Blob.FromHex("20D2AB"));
-		}
-
 		public void ChangeUnrunnableRunToWait()
 		{
 			// See Unrunnable.asm

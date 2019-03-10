@@ -420,11 +420,6 @@ namespace FF1Lib
 				EnableFreeCanal();
 			}
 
-			if (flags.HousesFillHp)
-			{
-				EnableHousesFillHp();
-			}
-
 			if (flags.NoPartyShuffle)
 			{
 				DisablePartyShuffle();
@@ -470,9 +465,9 @@ namespace FF1Lib
 				EnableEasyMode();
 			}
 
-			if (flags.HouseMPRestoration)
+			if (flags.HouseMPRestoration || flags.HousesFillHp)
 			{
-				FixHouse();
+				FixHouse(flags.HouseMPRestoration, flags.HousesFillHp);
 			}
 
 			if (flags.WeaponStats)
