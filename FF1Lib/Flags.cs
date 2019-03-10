@@ -201,6 +201,8 @@ namespace FF1Lib
 		public bool FreeOrbs { get; set; }
 		[FlagString(Character = FILTHY_CASUALS, FlagBit = 8)]
 		public bool EnableCritNumberDisplay { get; set; }
+		[FlagString(Character = FILTHY_CASUALS, FlagBit = 16)]
+		public bool FreeCanal { get; set; }
 		[FlagString(Character = FILTHY_CASUALS, FlagBit = 32)]
 		public bool EasyMode { get; set; }
 
@@ -391,7 +393,7 @@ namespace FF1Lib
 		public bool IncentivizeCrystal => IncentivizeFetchItems;
 		public bool IncentivizeHerb => IncentivizeFetchItems;
 		public bool IncentivizeKey => true;
-		public bool IncentivizeCanal => !NPCItems || IncentivizeFetchItems; // If Canoe is unshuffled then Canal is Required
+		public bool IncentivizeCanal => !FreeCanal && (!NPCItems || IncentivizeFetchItems); // If Canoe is unshuffled then Canal is Required
 		public bool IncentivizeChime => true;
 		public bool IncentivizeOxyale => true;
 		public bool IncentivizeXcalber => false;

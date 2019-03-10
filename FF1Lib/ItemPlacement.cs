@@ -1,9 +1,9 @@
-﻿using System;
+﻿using RomUtilities;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
-using RomUtilities;
 
 namespace FF1Lib
 {
@@ -296,6 +296,18 @@ namespace FF1Lib
 			}
 
 			var currentMapChanges = MapChange.None;
+			if (victoryConditions.FreeBridge)
+			{
+				currentMapChanges |= MapChange.Bridge;
+			}
+			if (victoryConditions.FreeAirship)
+			{
+				currentMapChanges |= MapChange.Airship;
+			}
+			if (victoryConditions.FreeCanal)
+			{
+				currentMapChanges |= MapChange.Canal;
+			}
 
 			IEnumerable<MapLocation> currentMapLocations()
 			{
