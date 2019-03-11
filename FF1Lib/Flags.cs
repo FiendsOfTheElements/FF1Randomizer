@@ -233,7 +233,7 @@ namespace FF1Lib
 
 		public bool IncentivizeBridge => false;
 		public bool IncentivizeCanoe => NPCItems && IncentivizeCanoeItem;
-		public bool IncentivizeLute => NPCItems && !(ShortToFR || ChaosRush) && IncentivizeMainItems;
+		public bool IncentivizeLute => NPCItems && !FreeLute && IncentivizeMainItems;
 		public bool IncentivizeShip => NPCItems && IncentivizeShipAndCanal;
 		public bool IncentivizeRod => NPCItems && IncentivizeMainItems;
 		public bool IncentivizeCube => NPCItems && IncentivizeMainItems;
@@ -350,6 +350,8 @@ namespace FF1Lib
 			+ (IncentivizeSkyPalace ? 1 : 0);
 
 		public bool ImmediatePureAndSoftRequired => EnemyStatusAttacks || Entrances || MapOpenProgression;
+
+		public bool FreeLute => ChaosRush || ShortToFR;
 
 		public static string EncodeFlagsText(Flags flags)
 		{

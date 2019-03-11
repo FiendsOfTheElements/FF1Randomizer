@@ -420,6 +420,11 @@ namespace FF1Lib
 				EnableFreeCanal();
 			}
 
+			if (flags.FreeLute)
+			{
+				EnableFreeLute();
+			}
+
 			if (flags.NoPartyShuffle)
 			{
 				DisablePartyShuffle();

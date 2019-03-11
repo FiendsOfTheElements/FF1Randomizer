@@ -117,5 +117,6 @@
 		bool FreeBridge { get; }
 		bool FreeAirship { get; }
 		bool FreeCanal { get; }
+		bool FreeLute { get; }
 	}
 }

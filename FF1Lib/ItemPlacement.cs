@@ -135,7 +135,7 @@ namespace FF1Lib
 			{
 				placedItems = placedItems.Select(x => x.Item != Item.Canal ? x : NewItemPlacement(x, ReplacementItem)).ToList();
 			}
-			if (_flags.ShortToFR)
+			if (_flags.FreeLute)
 			{
 				placedItems = placedItems.Select(x => x.Item != Item.Lute ? x : NewItemPlacement(x, ReplacementItem)).ToList();
 			}
@@ -299,7 +299,7 @@ namespace FF1Lib
 			const int maxIterations = 20;
 			var currentIteration = 0;
 			var currentAccess = AccessRequirement.None;
-			if (victoryConditions.ShortToFR)
+			if (victoryConditions.FreeLute)
 			{
 				currentAccess |= AccessRequirement.Lute;
 			}
