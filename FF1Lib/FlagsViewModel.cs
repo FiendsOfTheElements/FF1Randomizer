@@ -1643,5 +1643,14 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ObjectiveNPCs"));
 			}
 		}
+		public bool ExperimentalFloorGeneration
+		{
+			get => Flags.ExperimentalFloorGeneration;
+			set
+			{
+				Flags.ExperimentalFloorGeneration = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ExperimentalFloorGeneration"));
+			}
+		}
 	}
 }

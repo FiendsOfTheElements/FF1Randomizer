@@ -106,12 +106,7 @@ namespace FF1Lib
 			var maps = ReadMaps();
 			var shopItemLocation = ItemLocations.CaravanItemShop1;
 
-			/*
-			flags.FreeAirship = true;
-			flags.ExperimentalFloorGeneration = true;
-			flags.DungeonEncounterRate = 0;
-			*/
-			/*
+#if DEBUG
 			if (flags.ExperimentalFloorGeneration)
 			{
 				MapRequirements reqs = new MapRequirements
@@ -157,7 +152,7 @@ namespace FF1Lib
 				overworldMap.PutStandardTeleport(TeleportIndex.EarthCave2, teleporters.EarthCave2, OverworldTeleportIndex.EarthCave1);
 				maps[(int)MapId.EarthCaveB2] = earthB2.Map;
 			}
-			*/
+#endif
 
 			if (preferences.ModernBattlefield)
 			{
