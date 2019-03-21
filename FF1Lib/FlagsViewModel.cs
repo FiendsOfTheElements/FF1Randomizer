@@ -437,7 +437,8 @@ namespace FF1Lib
 
 		public bool ChaosRushEnabled => !ShardHunt;
 
-		public bool DeepCastlesPossible => Entrances && Floors;
+		public bool DeepCastlesPossible => Flags.DeepCastlesPossible;
+		public bool DeepTownsPossible => Flags.DeepTownsPossible;
 
 		public bool Floors
 		{
@@ -448,6 +449,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Floors"));
 			}
 		}
+
 		public bool AllowDeepCastles
 		{
 			get => Flags.AllowDeepCastles;
@@ -455,6 +457,16 @@ namespace FF1Lib
 			{
 				Flags.AllowDeepCastles = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AllowDeepCastles"));
+			}
+		}
+
+		public bool AllowDeepTowns
+		{
+			get => Flags.AllowDeepTowns;
+			set
+			{
+				Flags.AllowDeepTowns = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AllowDeepTowns"));
 			}
 		}
 

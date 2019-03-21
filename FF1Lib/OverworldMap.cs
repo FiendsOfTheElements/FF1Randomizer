@@ -384,10 +384,16 @@ namespace FF1Lib
 
 			// Deep "castles" for now just allows a deep ToFR but with refactoring could include others.
 			// Ordeals is a candidate but it would require map edits - it has an EXIT not a WARP due to its internal teleports.
-			if (flags.Floors && flags.AllowDeepCastles)
+			if (flags.DeepCastlesPossible && flags.AllowDeepCastles)
 			{
 				topfloors = topfloors.Where(floor => floor.Destination != _teleporters.TempleOfFiends.Destination).ToList();
 				deadEnds.Add(_teleporters.TempleOfFiends);
+			}
+
+			if (flags.DeepTownsPossible && flags.AllowDeepTowns)
+			{
+				subfloors.AddRange(towns);
+				towns.Clear();
 			}
 
 			// Shuffle again now that we've removed some to be placed at the end. Maybe unnecessary.

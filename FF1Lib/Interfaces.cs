@@ -106,7 +106,10 @@
 		bool EntrancesMixedWithTowns { get; }
 		bool Towns { get; }
 		bool Floors { get; }
+		bool DeepCastlesPossible { get; }
 		bool AllowDeepCastles { get; }
+		bool DeepTownsPossible { get; }
+		bool AllowDeepTowns { get; }
 		bool AllowStartAreaDanager { get; }
 	}
 	public interface IVictoryConditionFlags

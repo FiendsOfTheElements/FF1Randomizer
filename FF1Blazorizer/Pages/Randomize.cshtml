@@ -184,9 +184,10 @@
 						<CheckBox Id="entrancesCheckBox" bind-Value="@Flags.Entrances">Entrances</CheckBox>
 						<CheckBox Indent Id="deadEndsCheckBox" IsEnabled="@Flags.Entrances" bind-Value="@Flags.EntrancesIncludesDeadEnds">Include Dead Ends</CheckBox>
 						<CheckBox Indent Id="floorsCheckBox" IsEnabled="@Flags.Entrances" bind-Value="@Flags.Floors">Floors</CheckBox>
-						<CheckBox Indent Id="allowDeepCastlesCheckBox" IsEnabled="@Flags.Entrances" bind-Value="@Flags.AllowDeepCastles">Deep ToFR</CheckBox>
+						<CheckBox Indent Id="allowDeepCastlesCheckBox" IsEnabled="@Flags.DeepCastlesPossible" bind-Value="@Flags.AllowDeepCastles">Deep ToFR</CheckBox>
 						<CheckBox Id="townsCheckBox" bind-Value="@Flags.Towns">Towns</CheckBox>
 						<CheckBox Indent Id="mixEntrancesCheckBox" IsEnabled="@(Flags.Towns && Flags.Entrances)" bind-Value="@Flags.EntrancesMixedWithTowns">Mix All Entrances Together</CheckBox>
+						<CheckBox Indent Id="deepTownsCheckBox" IsEnabled="@(Flags.DeepTownsPossible)" bind-Value="@Flags.AllowDeepTowns">Deep Towns</CheckBox>
 					</div>
 					<div class="col-md-4">
 						<h4>Fixed Map Edits</h4>

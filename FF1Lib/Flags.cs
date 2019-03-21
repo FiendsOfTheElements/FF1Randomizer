@@ -58,6 +58,7 @@ namespace FF1Lib
 		public bool Towns { get; set; }
 		public bool Floors { get; set; }
 		public bool AllowDeepCastles { get; set; }
+		public bool AllowDeepTowns { get; set; }
 		public bool MapOpenProgressionExtended { get; set; }
 
 		public bool EntrancesIncludesDeadEnds { get; set; }
@@ -353,6 +354,9 @@ namespace FF1Lib
 
 		public bool FreeLute => ChaosRush || ShortToFR;
 
+		public bool DeepCastlesPossible => Entrances && Floors;
+		public bool DeepTownsPossible => Towns && Entrances && Floors && EntrancesMixedWithTowns;
+
 		public static string EncodeFlagsText(Flags flags)
 		{
 			BigInteger sum = 0;
@@ -397,6 +401,7 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.Towns);
 			sum = AddBoolean(sum, flags.Floors);
 			sum = AddBoolean(sum, flags.AllowDeepCastles);
+			sum = AddBoolean(sum, flags.AllowDeepTowns);
 			sum = AddBoolean(sum, flags.MapOpenProgressionExtended);
 			sum = AddBoolean(sum, flags.EntrancesIncludesDeadEnds);
 			sum = AddBoolean(sum, flags.EntrancesMixedWithTowns);
@@ -649,6 +654,7 @@ namespace FF1Lib
 				EntrancesMixedWithTowns = GetBoolean(ref sum),
 				EntrancesIncludesDeadEnds = GetBoolean(ref sum),
 				MapOpenProgressionExtended = GetBoolean(ref sum),
+				AllowDeepTowns = GetBoolean(ref sum),
 				AllowDeepCastles = GetBoolean(ref sum),
 				Floors = GetBoolean(ref sum),
 				Towns = GetBoolean(ref sum),
