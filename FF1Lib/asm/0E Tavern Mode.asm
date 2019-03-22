@@ -239,7 +239,27 @@ DoPartyGen_OnCharacter-jumps-into-routine               lda #$03
                     jmp La907
 
 DoLevelUp	    
-
+					LDA #$9D
+					PHA
+					LDA #$4A
+					PHA
+					LDA #$87
+					PHA
+					LDA #$A9
+					PHA
+					TXA
+					CLC
+					ROL A
+					ROL A
+					ROL A
+					STA $10
+					LDA #$1B
+					JMP $FE03
+					LDA #$00
+					STA $0024
+					STA $0025
+					STA $2001
+					RTS
 
 ClinicShop_Exit               rts
                     
@@ -337,6 +357,8 @@ La633               sta ($12),y
                     sta $6100,x
 @ClassChangeSkip               lda #$01
                     sta $610a,x
+					lda #$00
+					sta $6101,x
 		    jsr DoLevelUp
                     jsr LoadMenuCHRPal
                     jsr DrawShop

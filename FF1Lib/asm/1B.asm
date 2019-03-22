@@ -271,25 +271,7 @@ NOP
 NOP
       
 
-	  
-	  
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;;  SubtractOneFromVal  [$8798 :: 0x6C7A8]
-;;
-;;  input:  $80 points to desired value
-;;
-;;    Subtracts 1 from the 1-byte value stored at the given pointer.
-;;
-;; same as original
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-SubtractOneFromVal:  ldy #$00
-        lda ($80),y
-        sec
-        sbc #$01
-        sta ($80),y
-        rts
 		
 ; [$87A2 :: 0x6C7B2]
 data_MaxRewardPlusOne:
@@ -1287,6 +1269,24 @@ eobtext_PartyPerished:
   .BYTE $04, $0F, $3E, $0F, $3C, $00        ; "<Name> party perished", where <Name> is the party leader's name
   
 ;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;;  SubtractOneFromVal  [$8C77 :: 0x6CC87]
+;;
+;;  input:  $80 points to desired value
+;;
+;;    Subtracts 1 from the 1-byte value stored at the given pointer.
+;;
+;; same as original
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+SubtractOneFromVal:  ldy #$00
+        lda ($80),y
+        sec
+        sbc #$01
+        sta ($80),y
+        rts
 
 
 
