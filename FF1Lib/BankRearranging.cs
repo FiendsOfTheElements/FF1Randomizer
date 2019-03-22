@@ -176,7 +176,7 @@ namespace FF1Lib
 			Blob RespondDelay = Blob.FromHex("028C");
 			Blob AddBattleRewardToVal = Blob.FromHex("EF8A");
 			Blob MultiByteCmp = Blob.FromHex("2E8B");
-			Blob SubtractOneFromVal = Blob.FromHex("9887");
+			Blob SubtractOneFromVal = Blob.FromHex("778C");
 			Blob MultiplyXA = Blob.FromHex("788B");
 			Blob MusicPlay = Blob.FromHex("228C");
 			Blob GetJoyInput = Blob.FromHex("A787");
@@ -223,8 +223,8 @@ namespace FF1Lib
 			// LvlUp_AdjustBBSubStats
 			PutInBank(0x1B, 0x874A, Get(0x2D966, 0x33));
 
-			// SubtractOneFromVal
-			PutInBank(0x1B, 0x8798, Get(0x2D999, 0xF));
+
+			PutInBank(0x1B, 0x87A2, Get(0x2D9A3, 0x5));
 
 			// GetJoyInput jmp for up+A
 			PutInBank(0x1B, 0x87A7, Blob.FromHex("4C28D8"));
@@ -300,7 +300,8 @@ namespace FF1Lib
 			PutInBank(0x1B, 0x8C32, Blob.FromHex("468C4B8C4E8C538C588C5E8C618C688C6B8C718C0F3D0F3C000F49000C786899009098958D000C76689000000F3000"));
 			PutInBank(0x1B, 0x8C61, Get(0x2D950, 0x16));
 			
-
+			// SubtractOneFromVal
+			PutInBank(0x1B, 0x8C77, Get(0x2D999, 0xA));
 
 		}
 
