@@ -353,7 +353,6 @@ namespace FF1Lib
 				(0x10, 0x01), //Stun Touch = Status
 				(0x20, 0x01), //Sleep Touch = Status
 				(0x40, 0x01), //Mute Touch = Status
-				(0x80, 0x01) //Conf Touch = Status
 			};
 
 			for (int i = 0; i < EnemyCount; i++)
