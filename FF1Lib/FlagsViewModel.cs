@@ -371,13 +371,13 @@ namespace FF1Lib
 			}
 		}
 
-		public bool SkyCastle4FTeleporters
+		public SkyCastle4FMazeMode SkyCastle4FMazeMode
 		{
-			get => Flags.SkyCastle4FTeleporters;
+			get => Flags.SkyCastle4FMazeMode;
 			set
 			{
-				Flags.SkyCastle4FTeleporters = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SkyCastle4FTeleporters"));
+				Flags.SkyCastle4FMazeMode = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SkyCastle4FMazeMode"));
 			}
 		}
 		public bool TitansTrove
@@ -437,7 +437,8 @@ namespace FF1Lib
 
 		public bool ChaosRushEnabled => !ShardHunt;
 
-		public bool DeepCastlesPossible => Entrances && Floors;
+		public bool DeepCastlesPossible => Flags.DeepCastlesPossible;
+		public bool DeepTownsPossible => Flags.DeepTownsPossible;
 
 		public bool Floors
 		{
@@ -448,6 +449,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Floors"));
 			}
 		}
+
 		public bool AllowDeepCastles
 		{
 			get => Flags.AllowDeepCastles;
@@ -455,6 +457,16 @@ namespace FF1Lib
 			{
 				Flags.AllowDeepCastles = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AllowDeepCastles"));
+			}
+		}
+
+		public bool AllowDeepTowns
+		{
+			get => Flags.AllowDeepTowns;
+			set
+			{
+				Flags.AllowDeepTowns = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AllowDeepTowns"));
 			}
 		}
 
@@ -1629,6 +1641,15 @@ namespace FF1Lib
 			{
 				Flags.ShuffleObjectiveNPCs = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ObjectiveNPCs"));
+			}
+		}
+		public bool ExperimentalFloorGeneration
+		{
+			get => Flags.ExperimentalFloorGeneration;
+			set
+			{
+				Flags.ExperimentalFloorGeneration = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ExperimentalFloorGeneration"));
 			}
 		}
 	}

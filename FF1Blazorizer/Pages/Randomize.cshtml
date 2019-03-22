@@ -1,4 +1,4 @@
-﻿@addTagHelper *, BlazorStrap
+@addTagHelper *, BlazorStrap
 @page "/Randomize"
 @using System.ComponentModel
 @using System.IO
@@ -184,16 +184,17 @@
 						<CheckBox Id="entrancesCheckBox" bind-Value="@Flags.Entrances">Entrances</CheckBox>
 						<CheckBox Indent Id="deadEndsCheckBox" IsEnabled="@Flags.Entrances" bind-Value="@Flags.EntrancesIncludesDeadEnds">Include Dead Ends</CheckBox>
 						<CheckBox Indent Id="floorsCheckBox" IsEnabled="@Flags.Entrances" bind-Value="@Flags.Floors">Floors</CheckBox>
-						<CheckBox Indent Id="allowDeepCastlesCheckBox" IsEnabled="@Flags.Entrances" bind-Value="@Flags.AllowDeepCastles">Deep ToFR</CheckBox>
+						<CheckBox Indent Id="allowDeepCastlesCheckBox" IsEnabled="@Flags.DeepCastlesPossible" bind-Value="@Flags.AllowDeepCastles">Deep ToFR</CheckBox>
 						<CheckBox Id="townsCheckBox" bind-Value="@Flags.Towns">Towns</CheckBox>
 						<CheckBox Indent Id="mixEntrancesCheckBox" IsEnabled="@(Flags.Towns && Flags.Entrances)" bind-Value="@Flags.EntrancesMixedWithTowns">Mix All Entrances Together</CheckBox>
+						<CheckBox Indent Id="deepTownsCheckBox" IsEnabled="@(Flags.DeepTownsPossible)" bind-Value="@Flags.AllowDeepTowns">Deep Towns</CheckBox>
 					</div>
 					<div class="col-md-4">
 						<h4>Fixed Map Edits</h4>
 						<p>Classic Final Fantasy Randomizer map edits.</p>
 						<CheckBox Id="ordealsPillarsCheckBox" bind-Value="@Flags.OrdealsPillars">Castle Ordeals Pillars</CheckBox>
-						<CheckBox Id="skyCastle4FTeleportersCheckBox" bind-Value="@Flags.SkyCastle4FTeleporters">Sky Castle 4F Teleporters</CheckBox>
 						<CheckBox Id="titansTroveCheckBox" bind-Value="@Flags.TitansTrove">Titan's Trove</CheckBox>
+						<CheckBox Id="zozoMelmondCheckBox" bind-Value="@Flags.AllowUnsafeMelmond">Zozo Melmond</CheckBox>
 						<CheckBox Id="lefeinShopsCheckBox" bind-Value="@Flags.LefeinShops">Lefeinish Hospitality</CheckBox>
 						<CheckBox Id="confusedOldMenCheckBox" bind-Value="@Flags.ConfusedOldMen">Confused Old Men</CheckBox>
 						<div class="checkbox-cell"></div>
@@ -204,6 +205,10 @@
 						<h4>WarMECH</h4>
 						<p>Encounter 7 not enough WarMECH for you? Try a patrolling or required WarMECH instead.</p>
 						<EnumDropDown TItem="WarMECHMode" bind-Value="@Flags.WarMECHMode">WarMECH Mode: </EnumDropDown>
+						<br />
+						<h4>Sky Castle</h4>
+						<p>Sky Castle 4F too boring? Try your hand at navigating a randomly generated maze.</p>
+						<EnumDropDown TItem="SkyCastle4FMazeMode" bind-Value="@Flags.SkyCastle4FMazeMode">Sky Castle Mode: </EnumDropDown>
 					</div>
 				</div>
 			</div>
@@ -374,7 +379,7 @@
 				<div class="row">
 					<div class="col-md-6">
 						<CheckBox Id="houseMPRestorationCheckBox" bind-Value="@Flags.HouseMPRestoration">House MP Restoration</CheckBox>
-						<CheckBox Id="houseMPRestorationCheckBox" bind-Value="@Flags.HouseMPRestoration">House Full HP Restoration</CheckBox>
+						<CheckBox Id="housesFillHpCheckBox" bind-Value="@Flags.HousesFillHP">House Full HP Restoration</CheckBox>
 						<CheckBox Id="weaponStatsCheckBox" bind-Value="@Flags.WeaponStats">Weapon Stats</CheckBox>
 						<CheckBox Id="chanceToRunCheckBox" bind-Value="@Flags.ChanceToRun">Chance to Run</CheckBox>
 						<CheckBox Id="spellBugsCheckBox" bind-Value="@Flags.SpellBugs">Spell Fixes</CheckBox>
@@ -385,6 +390,19 @@
 						<CheckBox Id="enemyElementalResistancesCheckBox" bind-Value="@Flags.EnemyElementalResistancesBug">Enemy Elemental Resistances</CheckBox>
 						<CheckBox Id="enemySpellsTargetingAlliesCheckBox" bind-Value="@Flags.EnemySpellsTargetingAllies">Enemy Spells Targeting Allies</CheckBox>
 						<CheckBox Id="improveTurnOrderRandomizationCheckBox" bind-Value="@Flags.ImproveTurnOrderRandomization">Improve Turn Order Randomization</CheckBox>
+					</div>
+				</div>
+			</div>
+		</TabPane>
+		<button type="button" class="@(TabClasses("Experimental"))" onclick="@(() => ActivateTab("Experimental"))">Experimental</button>
+		<TabPane IsOpen="@(activeTabs.Contains("Experimental"))">
+			<div class="is-dark nes-container">
+				<div class="row">
+					<p>Test out features from 2000 years in the future - at your own risk!</p>
+					<div class="col-md-6">
+						<CheckBox Id="proceduralGenerationCheckBox" bind-Value="@Flags.ExperimentalFloorGeneration">Procedural Floor Generation</CheckBox>
+					</div>
+					<div class="col-md-6">
 					</div>
 				</div>
 			</div>

@@ -135,7 +135,7 @@ namespace FF1Lib
 			{
 				placedItems = placedItems.Select(x => x.Item != Item.Canal ? x : NewItemPlacement(x, ReplacementItem)).ToList();
 			}
-			if (_flags.ShortToFR)
+			if (_flags.FreeLute)
 			{
 				placedItems = placedItems.Select(x => x.Item != Item.Lute ? x : NewItemPlacement(x, ReplacementItem)).ToList();
 			}
@@ -299,7 +299,7 @@ namespace FF1Lib
 			const int maxIterations = 20;
 			var currentIteration = 0;
 			var currentAccess = AccessRequirement.None;
-			if (victoryConditions.ShortToFR)
+			if (victoryConditions.FreeLute)
 			{
 				currentAccess |= AccessRequirement.Lute;
 			}
@@ -604,7 +604,7 @@ namespace FF1Lib
 			do
 			{
 				_sanityCounter++;
-				if (_sanityCounter > 10) throw new InsaneException("Item Placement could not meet incentivization requirements!");
+				if (_sanityCounter > 20) throw new InsaneException("Item Placement could not meet incentivization requirements!");
 				// 1. (Re)Initialize lists inside of loop
 				placedItems = ctx.Forced.ToList();
 				var incentives = ctx.Incentivized.ToList();

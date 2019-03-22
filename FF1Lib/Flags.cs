@@ -48,7 +48,7 @@ namespace FF1Lib
 
 		public WarMECHMode WarMECHMode { get; set; }
 		public bool OrdealsPillars { get; set; }
-		public bool SkyCastle4FTeleporters { get; set; }
+		public SkyCastle4FMazeMode SkyCastle4FMazeMode { get; set; }
 		public bool TitansTrove { get; set; }
 		public bool LefeinShops { get; set; }
 		public bool ConfusedOldMen { get; set; }
@@ -58,6 +58,7 @@ namespace FF1Lib
 		public bool Towns { get; set; }
 		public bool Floors { get; set; }
 		public bool AllowDeepCastles { get; set; }
+		public bool AllowDeepTowns { get; set; }
 		public bool MapOpenProgressionExtended { get; set; }
 
 		public bool EntrancesIncludesDeadEnds { get; set; }
@@ -204,13 +205,13 @@ namespace FF1Lib
 
 		public bool AllowStartAreaDanager { get; set; } = false;
 
-		public bool MapCanalBridge => NPCItems || NPCFetchItems || MapOpenProgressionExtended;
+		public bool MapCanalBridge => NPCItems || NPCFetchItems || MapOpenProgression || MapOpenProgressionExtended;
 		public bool MapOnracDock => MapOpenProgression;
 		public bool MapMirageDock => MapOpenProgression;
 		public bool MapConeriaDwarves => MapOpenProgression;
 		public bool MapVolcanoIceRiver => MapOpenProgression;
-		public bool MapDwarvesNorthwest => MapOpenProgressionExtended;
-		public bool MapAirshipDock => MapOpenProgressionExtended;
+		public bool MapDwarvesNorthwest => MapOpenProgression && MapOpenProgressionExtended;
+		public bool MapAirshipDock => MapOpenProgression && MapOpenProgressionExtended;
 
 		// The philosophy governing item incentivizations works something like this:
 		// 1. If the item is NOT being shuffled to another location it cannot be incentivized. (Duh)
@@ -233,7 +234,7 @@ namespace FF1Lib
 
 		public bool IncentivizeBridge => false;
 		public bool IncentivizeCanoe => NPCItems && IncentivizeCanoeItem;
-		public bool IncentivizeLute => NPCItems && !(ShortToFR || ChaosRush) && IncentivizeMainItems;
+		public bool IncentivizeLute => NPCItems && !FreeLute && IncentivizeMainItems;
 		public bool IncentivizeShip => NPCItems && IncentivizeShipAndCanal;
 		public bool IncentivizeRod => NPCItems && IncentivizeMainItems;
 		public bool IncentivizeCube => NPCItems && IncentivizeMainItems;
@@ -351,6 +352,11 @@ namespace FF1Lib
 
 		public bool ImmediatePureAndSoftRequired => EnemyStatusAttacks || Entrances || MapOpenProgression;
 
+		public bool FreeLute => ChaosRush || ShortToFR;
+
+		public bool DeepCastlesPossible => Entrances && Floors;
+		public bool DeepTownsPossible => Towns && Entrances && Floors && EntrancesMixedWithTowns;
+
 		public static string EncodeFlagsText(Flags flags)
 		{
 			BigInteger sum = 0;
@@ -386,7 +392,7 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.AllowUnsafeMelmond);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(WarMECHMode)).Cast<int>().Max() + 1, (int)flags.WarMECHMode);
 			sum = AddBoolean(sum, flags.OrdealsPillars);
-			sum = AddBoolean(sum, flags.SkyCastle4FTeleporters);
+			sum = AddNumeric(sum, Enum.GetValues(typeof(SkyCastle4FMazeMode)).Cast<int>().Max() + 1, (int)flags.SkyCastle4FMazeMode);
 			sum = AddBoolean(sum, flags.TitansTrove);
 			sum = AddBoolean(sum, flags.LefeinShops);
 			sum = AddBoolean(sum, flags.ConfusedOldMen);
@@ -395,6 +401,7 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.Towns);
 			sum = AddBoolean(sum, flags.Floors);
 			sum = AddBoolean(sum, flags.AllowDeepCastles);
+			sum = AddBoolean(sum, flags.AllowDeepTowns);
 			sum = AddBoolean(sum, flags.MapOpenProgressionExtended);
 			sum = AddBoolean(sum, flags.EntrancesIncludesDeadEnds);
 			sum = AddBoolean(sum, flags.EntrancesMixedWithTowns);
@@ -647,6 +654,7 @@ namespace FF1Lib
 				EntrancesMixedWithTowns = GetBoolean(ref sum),
 				EntrancesIncludesDeadEnds = GetBoolean(ref sum),
 				MapOpenProgressionExtended = GetBoolean(ref sum),
+				AllowDeepTowns = GetBoolean(ref sum),
 				AllowDeepCastles = GetBoolean(ref sum),
 				Floors = GetBoolean(ref sum),
 				Towns = GetBoolean(ref sum),
@@ -655,7 +663,7 @@ namespace FF1Lib
 				ConfusedOldMen = GetBoolean(ref sum),
 				LefeinShops = GetBoolean(ref sum),
 				TitansTrove = GetBoolean(ref sum),
-				SkyCastle4FTeleporters = GetBoolean(ref sum),
+				SkyCastle4FMazeMode = (SkyCastle4FMazeMode)GetNumeric(ref sum, Enum.GetValues(typeof(SkyCastle4FMazeMode)).Cast<int>().Max() + 1),
 				OrdealsPillars = GetBoolean(ref sum),
 				WarMECHMode = (WarMECHMode)GetNumeric(ref sum, Enum.GetValues(typeof(WarMECHMode)).Cast<int>().Max() + 1),
 				AllowUnsafeMelmond = GetBoolean(ref sum),

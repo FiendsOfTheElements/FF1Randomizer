@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using FF1Lib.Procgen;
 using RomUtilities;
 using static FF1Lib.FF1Text;
 
@@ -113,6 +114,13 @@ namespace FF1Lib
 		Patrolling,
 		Required,
 		Unleashed
+	}
+
+	public enum SkyCastle4FMazeMode
+	{
+		None,
+		Teleporters,
+		Maze
 	}
 
 	public struct NPC
@@ -318,6 +326,58 @@ namespace FF1Lib
 			const byte LostTeleportIndex = 0x3C;
 			Put(TeleportOffset + LostTeleportIndex, new byte[] { 0x10 });
 			Put(TeleportOffset + TeleportCount + LostTeleportIndex, new byte[] { 0x12 });
+		}
+
+		public void DoSkyCastle4FMaze(MT19337 rng, List<Map> maps)
+		{
+			var map = maps[(int)MapId.SkyPalace4F];
+			var walls = Maze.DoSkyCastle4FMaze(rng);
+
+			// We make two passes and do vertical walls, then horizontal walls, because it works
+			// out nicely if we just let the horizontal wall tiles overwrite the vertical ones
+			// at the corners.
+			foreach (var wall in walls)
+			{
+				if (wall.one.Item.y == wall.two.Item.y) // vertical wall
+				{
+					int x;
+					int y = 8 * wall.one.Item.y;
+					byte tile;
+
+					// The first item will always have the lower coordinate, unless it's a wraparound.
+					if (wall.one.Item.x % 2 == 0)
+					{
+						x = 8 * wall.one.Item.x + 7;
+						tile = 0x33;
+					}
+					else
+					{
+						x = (8 * wall.one.Item.x + 8) % 64;
+						tile = 0x32;
+					}
+
+					for (int i = 0; i < 8; i++)
+					{
+						map[y + i, x] = tile;
+					}
+				}
+			}
+
+			foreach (var wall in walls)
+			{
+				if (wall.one.Item.x == wall.two.Item.x) // horizontal wall
+				{
+					int x = 8 * wall.one.Item.x;
+					int y = (8 * wall.one.Item.y + 8) % 64;
+
+					map[y, x] = 0x34;
+					for (int i = 1; i < 7; i++)
+						map[y, x + i] = 0x30;
+					map[y, x + 7] = 0x35;
+				}
+			}
+
+			ShuffleSkyCastle4F(rng, maps);
 		}
 
 		public void ShuffleSkyCastle4F(MT19337 rng, List<Map> maps)

@@ -106,12 +106,7 @@ namespace FF1Lib
 			var maps = ReadMaps();
 			var shopItemLocation = ItemLocations.CaravanItemShop1;
 
-			/*
-			flags.FreeAirship = true;
-			flags.ExperimentalFloorGeneration = true;
-			flags.DungeonEncounterRate = 0;
-			*/
-			/*
+#if DEBUG
 			if (flags.ExperimentalFloorGeneration)
 			{
 				MapRequirements reqs = new MapRequirements
@@ -157,7 +152,7 @@ namespace FF1Lib
 				overworldMap.PutStandardTeleport(TeleportIndex.EarthCave2, teleporters.EarthCave2, OverworldTeleportIndex.EarthCave1);
 				maps[(int)MapId.EarthCaveB2] = earthB2.Map;
 			}
-			*/
+#endif
 
 			if (preferences.ModernBattlefield)
 			{
@@ -210,7 +205,7 @@ namespace FF1Lib
 				TransformFinalFormation((FinalFormation)rng.Between(0, Enum.GetValues(typeof(FinalFormation)).Length - 1));
 			}
 
-			var maxRetries = 4;
+			var maxRetries = 8;
 			for (var i = 0; i < maxRetries; i++)
 			{
 				try
@@ -366,8 +361,12 @@ namespace FF1Lib
 				ShuffleOrdeals(rng, maps);
 			}
 
-			if (flags.SkyCastle4FTeleporters)
+			if (flags.SkyCastle4FMazeMode == SkyCastle4FMazeMode.Maze)
 			{
+				DoSkyCastle4FMaze(rng, maps);
+			}
+			else if (flags.SkyCastle4FMazeMode == SkyCastle4FMazeMode.Teleporters)
+			{ 
 				ShuffleSkyCastle4F(rng, maps);
 			}
 
@@ -416,9 +415,9 @@ namespace FF1Lib
 				EnableFreeCanal();
 			}
 
-			if (flags.HousesFillHp)
+			if (flags.FreeLute)
 			{
-				EnableHousesFillHp();
+				EnableFreeLute();
 			}
 
 			if (flags.NoPartyShuffle)
@@ -466,9 +465,9 @@ namespace FF1Lib
 				EnableEasyMode();
 			}
 
-			if (flags.HouseMPRestoration)
+			if (flags.HouseMPRestoration || flags.HousesFillHp)
 			{
-				FixHouse();
+				FixHouse(flags.HouseMPRestoration, flags.HousesFillHp);
 			}
 
 			if (flags.WeaponStats)
@@ -535,12 +534,10 @@ namespace FF1Lib
 
 			PartyComposition(rng, flags);
 
-			/*
 			if (flags.RecruitmentMode)
 			{
 				PubReplaceClinic(rng);
 			}
-			*/
 
 			if (flags.MapCanalBridge)
 			{

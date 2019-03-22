@@ -489,8 +489,10 @@ namespace FF1Lib
 		{
 			// Overwrite Keylocked door in ToFR tileset with normal door.
 			Put(0x0F76, Blob.FromHex("0300"));
+		}
 
-			// Start with Lute
+		public void EnableFreeLute()
+		{
 			Data[0x3020 + (int)Item.Lute] = 0x01;
 		}
 
@@ -501,11 +503,6 @@ namespace FF1Lib
 			Data[initItemOffset + (int)Item.FireOrb] = 0x01;
 			Data[initItemOffset + (int)Item.WaterOrb] = 0x01;
 			Data[initItemOffset + (int)Item.AirOrb] = 0x01;
-		}
-
-		public void EnableHousesFillHp()
-		{
-			Put(0x03b2c8, Blob.FromHex("20D2AB"));
 		}
 
 		public void ChangeUnrunnableRunToWait()

@@ -100,12 +100,16 @@
 	}
 	public interface IFloorShuffleFlags
 	{
+		bool Spoilers { get; }
 		bool Entrances { get; }
 		bool EntrancesIncludesDeadEnds { get; }
 		bool EntrancesMixedWithTowns { get; }
 		bool Towns { get; }
 		bool Floors { get; }
+		bool DeepCastlesPossible { get; }
 		bool AllowDeepCastles { get; }
+		bool DeepTownsPossible { get; }
+		bool AllowDeepTowns { get; }
 		bool AllowStartAreaDanager { get; }
 	}
 	public interface IVictoryConditionFlags
@@ -116,5 +120,6 @@
 		bool FreeBridge { get; }
 		bool FreeAirship { get; }
 		bool FreeCanal { get; }
+		bool FreeLute { get; }
 	}
 }

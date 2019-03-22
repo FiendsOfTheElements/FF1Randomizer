@@ -9,10 +9,22 @@ namespace FF1Lib
 {
 	public partial class FF1Rom
 	{
-		public void FixHouse()
+		public void FixHouse(bool MPfix, bool HPfix)
 		{
-			Put(0x03B2CB, Blob.FromHex("20F3ABA91E20E0B2EAEA"));
-			Put(0x038816, Blob.FromHex("203B42A4AAACA6FF23A6B23223A7C0059C8A9F8EC5FFFFFFFFFFFFFF"));
+
+
+			Put(0x03B2BE, Blob.FromHex("A52D4AB018CE3860A978203FB5EAEAEAA91E20E0B2900320F3AB4C1DB1A91F4CB8B2"));
+
+			if (MPfix)
+			{
+				Put(0x03B2CE, Blob.FromHex("20F3ABA91E20E0B2"));
+				Put(0x038816, Blob.FromHex("203B42A4AAACA6FF23A6B23223A7C0059C8A9F8EC5FFFFFFFFFFFFFF"));
+			}
+
+			if (HPfix)
+			{
+				Put(0x03b2c8, Blob.FromHex("20D2AB2000B4"));
+			}
 		}
 
 		public void FixWeaponStats()

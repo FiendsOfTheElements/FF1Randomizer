@@ -167,7 +167,6 @@
 					<StackPanel Grid.Column="1">
 						<Label Margin="5,5,0,0" FontWeight="Bold">Map Edits</Label>
 						<CheckBox x:Name="OrdealsPillarsCheckBox" IsChecked="{Binding Flags.OrdealsPillars}" Content="Castle Ordeals" ToolTip="Teleporters in Castle Ordeals are shuffled."/>
-						<CheckBox x:Name="SkyCastle4FTeleportersCheckBox" IsChecked="{Binding Flags.SkyCastle4FTeleporters}" Content="Sky Castle 4F Teleporters" ToolTip="Sky Castle 4F Teleporters"/>
 						<CheckBox x:Name="TitansTroveCheckBox" IsChecked="{Binding Flags.TitansTrove}" Content="Titan's Trove" ToolTip="Titan's Trove"/>
 						<CheckBox x:Name="ConfusedOldMenCheckBox" IsChecked="{Binding Flags.ConfusedOldMen}" Content="Confused Old Men" ToolTip="Yoga in the park!"/>
 						<Label Margin="5,5,0,0"/>
@@ -180,6 +179,12 @@
 							<ComboBoxItem Tag="Vanilla">Vanilla</ComboBoxItem>
 							<ComboBoxItem Tag="Patrolling">Patrolling</ComboBoxItem>
 							<ComboBoxItem Tag="Required">Required</ComboBoxItem>
+						</ComboBox>
+						<Label Margin="5,5,0,0" FontWeight="Bold">Sky Castle 4F Maze:</Label>
+						<ComboBox x:Name="SkyCastle4FMazeModeComboBox" SelectedValue="{Binding Flags.SkyCastle4FMazeMode}" Width="150" HorizontalAlignment="Left" Margin="10,0,0,0" ToolTip="What kind of Sky Castle Maze?" SelectedValuePath="Tag">
+							<ComboBoxItem Tag="None">None</ComboBoxItem>
+							<ComboBoxItem Tag="Teleporters">Teleporters Only</ComboBoxItem>
+							<ComboBoxItem Tag="Maze">Full Maze</ComboBoxItem>
 						</ComboBox>
 					</StackPanel>
 				</Grid>
