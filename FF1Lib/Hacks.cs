@@ -346,9 +346,11 @@ namespace FF1Lib
 			Put(0x7F4AA, Blob.FromHex($"ADFC6048A90F2003FE20008AA9{BattleBoxDrawInFrames}8517A90F2003FE20208A2085F4C617D0F1682003FE60"));
 			Put(0x7F4FF, Blob.FromHex($"ADFC6048A90F2003FE20808AA9{BattleBoxUndrawFrames}8517A90F2003FE20A08A2085F4C617D0F1682003FE60"));
 
-			// Gain multiple levels at once.  Also supresses stat increase messages as a side effect
+			// Gain multiple levels at once.
 			//Put(0x2DD82, Blob.FromHex("20789f20579f48a5802907c907f008a58029f0690785806820019c4ce89b")); old
 			PutInBank(0x1B, 0x8850, Blob.FromHex("4C4888"));
+			// Skip stat up messages
+			PutInBank(0x1B, 0x89F0, Blob.FromHex("4CE38B"));
 
 			// Default Response Rate 8 (0-based)
 			Data[0x384CB] = 0x07; // Initialize respondrate to 7

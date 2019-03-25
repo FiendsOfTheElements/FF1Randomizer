@@ -6,7 +6,7 @@
 .alias btltmp $90
 .alias BattleCrossPageJump_L $F209
 
-.outfile "1B - split drawing out.bin"
+.outfile "1B.bin"
 ; @2DAF6  009B
 
 ; LDA #$7F
@@ -668,7 +668,7 @@ LvlUp_Display:     lda #$00
         lda #$05
         sta $6aa7
         jsr Draw4EobBoxes
-        lda #$00
+        lda #$00           ; just exit here with a jmp to skip stat up messages
         sta $6aa6
         lda #$33
         sta $6aa7
