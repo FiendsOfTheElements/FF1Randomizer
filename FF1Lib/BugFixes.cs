@@ -146,7 +146,7 @@ namespace FF1Lib
 
 		public void RemakeStyleMasterMDEF()
 		{
-			Put(0x2DDE8, Blob.FromHex("030203020202030204020202"));
+			Put(0x6CA65, Blob.FromHex("030203020202030204020202"));
 		}
 	}
 }
