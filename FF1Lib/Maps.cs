@@ -118,7 +118,7 @@ namespace FF1Lib
 
 	public enum SkyCastle4FMazeMode
 	{
-		None,
+		Normal,
 		Teleporters,
 		Maze
 	}

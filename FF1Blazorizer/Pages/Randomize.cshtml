@@ -66,6 +66,7 @@
 			<div class="is-dark nes-container">
 				<div class="row">
 					<div class="col-md-6">
+						<h4>Shops &amp; RNG</h4>
 						<CheckBox Id="shopsCheckBox" bind-Value="@Flags.Shops">Shops</CheckBox>
 						<CheckBox Indent IsEnabled="@Flags.Shops" Id="randomWaresCheckBox" bind-Value="@Flags.RandomWares">Random Weapons and Armor</CheckBox>
 						<CheckBox Indent IsEnabled="@(Flags.Shops && Flags.RandomWares)" Id="randomWaresIncludesCheckBox" bind-Value="@Flags.RandomWaresIncludesSpecialGear">Include Caster &amp; Elite Gear</CheckBox>
@@ -77,6 +78,7 @@
 						<CheckBox Id="rngCheckBox" bind-Value="@Flags.Rng">RNG Table</CheckBox>
 					</div>
 					<div class="col-md-6">
+						<h4>Enemies</h4>
 						<CheckBox Id="enemyScriptsCheckBox" bind-Value="@Flags.EnemyScripts">Enemy Scripts</CheckBox>
 						<CheckBox Indent IsEnabled="@Flags.EnemyScripts" Id="allowUnsafePiratesCheckBox" bind-Value="@Flags.AllowUnsafePirates">Allow Unsafe Pirates</CheckBox>
 						<CheckBox Id="enemySkillsSpellsCheckBox" bind-Value="@Flags.EnemySkillsSpells">Enemy Skills/Spells</CheckBox>
@@ -88,6 +90,10 @@
 						<EnumDropDown TItem="FormationShuffleModeEnum" bind-Value="@Flags.FormationShuffleMode"></EnumDropDown>
 						<CheckBox Id="enemyTrapTilesCheckBox" bind-Value="@Flags.EnemyTrapTiles">Enemy Forced Encounter Tiles</CheckBox>
 						<CheckBox Indent Id="randomTrapFormationsCheckBox" IsEnabled="@Flags.EnemyTrapTiles" bind-Value="@Flags.RandomTrapFormations">Use Random Formations</CheckBox>
+						<div class="checkbox-cell"></div>
+						<h4>WarMECH</h4>
+						<p>Encounter 7 not enough WarMECH for you? Try a patrolling or required WarMECH instead.</p>
+						<EnumDropDown TItem="WarMECHMode" bind-Value="@Flags.WarMECHMode">WarMECH Mode: </EnumDropDown>
 					</div>
 				</div>
 			</div>
@@ -106,7 +112,10 @@
 						<CheckBox Id="npcFetchItemsCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.NPCFetchItems">Fetch Quest Rewards</CheckBox>
 						<CheckBox Id="shuffleObjectiveNPCsCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.ShuffleObjectiveNPCs">Objective NPCs</CheckBox>
 						<div class="checkbox-cell"></div>
-						<CheckBox Id="itemPlacementCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.ClassicItemPlacement">Use Older v2 Placement</CheckBox>
+						<h4>Freebies</h4>
+						<CheckBox Id="freeAirshipCheckBox" bind-Value="@Flags.FreeAirship">Free Airship</CheckBox>
+						<CheckBox Id="freeBridgeCheckBox" bind-Value="@Flags.FreeBridge">Free Bridge</CheckBox>
+						<CheckBox Id="freeCanalCheckBox" bind-Value="@Flags.FreeCanal">Free Canal</CheckBox>
 					</div>
 					<div class="col-md-4">
 						<h4>Locations: @Flags.Flags.IncentivizedLocationCount</h4>
@@ -174,7 +183,7 @@
 				</div>
 			</div>
 		</TabPane>
-		<button type="button" class="@(TabClasses("Map"))" onclick="@(() => ActivateTab("Map"))">Map</button>
+		<button type="button" class="@(TabClasses("Map"))" onclick="@(() => ActivateTab("Map"))">Maps &amp; Routing</button>
 		<TabPane IsOpen="@(activeTabs.Contains("Map"))">
 			<div class="is-dark nes-container">
 				<div class="row">
@@ -190,8 +199,9 @@
 						<CheckBox Indent Id="deepTownsCheckBox" IsEnabled="@(Flags.DeepTownsPossible)" bind-Value="@Flags.AllowDeepTowns">Deep Towns</CheckBox>
 					</div>
 					<div class="col-md-4">
-						<h4>Fixed Map Edits</h4>
-						<p>Classic Final Fantasy Randomizer map edits.</p>
+						<h4>Isolated Map Edits</h4>
+						<p>Individual Final Fantasy Map edits.</p>
+						<EnumDropDown TItem="SkyCastle4FMazeMode" bind-Value="@Flags.SkyCastle4FMazeMode">Sky Castle 4F: </EnumDropDown>
 						<CheckBox Id="ordealsPillarsCheckBox" bind-Value="@Flags.OrdealsPillars">Castle Ordeals Pillars</CheckBox>
 						<CheckBox Id="titansTroveCheckBox" bind-Value="@Flags.TitansTrove">Titan's Trove</CheckBox>
 						<CheckBox Id="zozoMelmondCheckBox" bind-Value="@Flags.AllowUnsafeMelmond">Zozo Melmond</CheckBox>
@@ -202,13 +212,11 @@
 						<CheckBox Id="mapOpenProgressionExtendedCheckBox" IsEnabled="@Flags.MapOpenProgression" bind-Value="@Flags.MapOpenProgressionExtended">Extended Open Progression</CheckBox>
 					</div>
 					<div class="col-md-4">
-						<h4>WarMECH</h4>
-						<p>Encounter 7 not enough WarMECH for you? Try a patrolling or required WarMECH instead.</p>
-						<EnumDropDown TItem="WarMECHMode" bind-Value="@Flags.WarMECHMode">WarMECH Mode: </EnumDropDown>
-						<br />
-						<h4>Sky Castle</h4>
-						<p>Sky Castle 4F too boring? Try your hand at navigating a randomly generated maze.</p>
-						<EnumDropDown TItem="SkyCastle4FMazeMode" bind-Value="@Flags.SkyCastle4FMazeMode">Sky Castle Mode: </EnumDropDown>
+						<h4>Routing</h4>
+						<p>Relax some requirements to accelerate routing.</p>
+						<CheckBox Id="earlySardaCheckBox" bind-Value="@Flags.EarlySarda">Early Sarda Item</CheckBox>
+						<CheckBox Id="earlySageCheckBox" bind-Value="@Flags.EarlySage">Early Sage Item</CheckBox>
+						<CheckBox Id="earlyOrdealsCheckBox" bind-Value="@Flags.EarlyOrdeals">Early Ordeals</CheckBox>
 					</div>
 				</div>
 			</div>
@@ -268,6 +276,7 @@
 						<CheckBox Id="includeMoraleCheckBox" bind-Value="@Flags.IncludeMorale">Scaled Stats Includes Morale</CheckBox>
 						<CheckBox Id="noDanModeCheckBox" bind-Value="@Flags.NoDanMode">Static EXP Distribution</CheckBox>
 						<CheckBox Id="startingGoldCheckBox" bind-Value="@Flags.StartingGold">Scale Starting Gold</CheckBox>
+						<CheckBox Id="easyModeCheckBox" bind-Value="@Flags.EasyMode">Easy Mode</CheckBox>
 					</div>
 				</div>
 			</div>
@@ -275,7 +284,7 @@
 		<button type="button" class="@(TabClasses("Party"))" onclick="@(() => ActivateTab("Party"))">Party</button>
 		<TabPane IsOpen="@(activeTabs.Contains("Party"))">
 			<div class="is-dark nes-container">
-				<h4>Party Composition (Any entire rows left unchecked default to free selection)</h4>
+				<h4>Party Composition</h4>
 				<br />
 				<div class="table-wrapper">
 				<table>
@@ -358,17 +367,6 @@
 						<CheckBox Id="buyTenCheckBox" bind-Value="@Flags.BuyTen">Buy 10 Items</CheckBox>
 						<CheckBox Id="waitWhenUnrunnableCheckBox" bind-Value="@Flags.WaitWhenUnrunnable">Change Unrunnable RUN to WAIT</CheckBox>
 						<CheckBox Id="enableCritNumberDisplayCheckBox" bind-Value="@Flags.EnableCritNumberDisplay">Critical Hit Count Display</CheckBox>
-						<CheckBox Id="npcSwatterCheckBox" bind-Value="@Flags.NPCSwatter">NPC Guillotine</CheckBox>
-					</div>
-					<div class="col-md-6">
-						<CheckBox Id="earlySardaCheckBox" bind-Value="@Flags.EarlySarda">Early Sarda Item</CheckBox>
-						<CheckBox Id="earlySageCheckBox" bind-Value="@Flags.EarlySage">Early Sage Item</CheckBox>
-						<CheckBox Id="earlyOrdealsCheckBox" bind-Value="@Flags.EarlyOrdeals">Early Ordeals</CheckBox>
-						<div class="checkbox-cell"></div>
-						<CheckBox Id="freeAirshipCheckBox" bind-Value="@Flags.FreeAirship">Free Airship</CheckBox>
-						<CheckBox Id="freeBridgeCheckBox" bind-Value="@Flags.FreeBridge">Free Bridge</CheckBox>
-						<CheckBox Id="freeCanalCheckBox" bind-Value="@Flags.FreeCanal">Free Canal</CheckBox>
-						<CheckBox Id="easyModeCheckBox" bind-Value="@Flags.EasyMode">Easy Mode</CheckBox>
 					</div>
 				</div>
 			</div>
@@ -401,6 +399,10 @@
 					<p>Test out features from 2000 years in the future - at your own risk!</p>
 					<div class="col-md-6">
 						<CheckBox Id="proceduralGenerationCheckBox" bind-Value="@Flags.ExperimentalFloorGeneration">Procedural Floor Generation</CheckBox>
+						<div class="checkbox-cell"></div>
+						<CheckBox Id="itemPlacementCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.ClassicItemPlacement">Use Older v2 Placement</CheckBox>
+						<div class="checkbox-cell"></div>
+						<CheckBox Id="npcSwatterCheckBox" bind-Value="@Flags.NPCSwatter">NPC Guillotine</CheckBox>
 					</div>
 					<div class="col-md-6">
 					</div>
