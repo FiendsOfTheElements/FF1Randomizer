@@ -305,7 +305,7 @@ namespace FF1Lib
 			+ (IncentivizeMasamune ? "Masmune " : "")
 			+ (IncentivizeOpal ? "Opal " : "")
 			+ (IncentivizeOxyale ? "Oxyale " : "")
-			+ (IncentivizeOffCastArmor ? "Power " : "")
+			+ (IncentivizeOffCastArmor ? "Black " : "")
 			+ (IncentivizeRibbon ? "Ribbon " : "")
 			+ (IncentivizeRibbon2 ? "Ribbon " : "")
 			+ (IncentivizeRod ? "Rod " : "")
@@ -317,7 +317,7 @@ namespace FF1Lib
 			+ (IncentivizeTnt ? "Tnt " : "")
 			+ (IncentivizeDefCastArmor ? "White " : "")
 			+ (IncentivizeXcalber ? "XCalber " : "")
-			+ (IncentivizeOtherCastArmor ? "Zeus " : "")
+			+ (IncentivizeOtherCastArmor ? "Power " : "")
 			+ (Incentivize65K ? "65000G " : "");
 
 		public bool IncentivizeKingConeria => NPCItems && IncentivizeFreeNPCs;
