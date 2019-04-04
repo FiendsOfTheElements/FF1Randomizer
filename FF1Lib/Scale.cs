@@ -203,7 +203,7 @@ namespace FF1Lib
 			string HexBlob = $"200090ADB860D009A91C8580A960858160A9{ScaleFactor:X2}8516A9{Threshold:X2}8514F00EADB860C51490E6A9018515189005ADB8608515AD78688510AD79688511A516851220C090A515AAAD786865108D7868AD796865118D7968C9A7900AA90F8D7868A9A78D7968CAD0DF18AD76688510AD77688511A516851220C090A515AAAD766865108D7668AD776865118D7768C9A7900AA90F8D7668A9A78D7768CAD0DFAD76688588AD77688589A91C8580A960858160";
 			PutInBank(0x0F, 0x9100, Blob.FromHex(HexBlob));
 			//Inject into end-of-battle code
-			PutInBank(0x0B, 0x9B4D, Blob.FromHex("20CBCFEAEAEAEAEA"));
+			PutInBank(0x1B, 0x806D, Blob.FromHex("20CBCFEAEAEAEAEA"));
 		}
 
 		private void ScaleEncounterRate(double overworldMultiplier, double dungeonMultiplier)
@@ -263,7 +263,7 @@ namespace FF1Lib
 				levelRequirementsBytes[i] = BitConverter.GetBytes(levelRequirement);
 			}
 
-			Put(LevelRequirementsOffset, Blob.Concat(levelRequirementsBytes.Select(bytes => (Blob)new byte[] { bytes[0], bytes[1], bytes[2] })));
+			Put(LevelRequirementsOffsetNewLocation, Blob.Concat(levelRequirementsBytes.Select(bytes => (Blob)new byte[] { bytes[0], bytes[1], bytes[2] })));
 
 			// A dirty, ugly, evil piece of code that sets the level requirement for level 2, even though that's already defined in the above table.
 			byte firstLevelRequirement = Data[0x7C04B];
