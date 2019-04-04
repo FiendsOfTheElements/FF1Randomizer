@@ -319,7 +319,10 @@ namespace FF1Lib
 				}
 			}
 
-			
+			if (flags.UnrunnablesStrikeFirstAndSuprise)
+			{
+				AllowStrikeFirstAndSuprise();
+			}
 			
 
 			if (flags.EnemyFormationsSurprise)

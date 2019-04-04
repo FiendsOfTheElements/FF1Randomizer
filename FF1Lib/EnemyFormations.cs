@@ -81,6 +81,11 @@ namespace FF1Lib
 			Put(FormationsOffset, formations.SelectMany(formation => formation.ToBytes()).ToArray());
 		}
 
+		public void AllowStrikeFirstAndSuprise()
+		{
+			PutInBank(0x0C, 0x93D4, Blob.FromHex("EAEA"));
+		}
+
 		public void MakeWarMECHUnrunnable()
 		{
 			// This needs to be called after ShuffleUnrunnable, otherwise it will shuffle away this unrunnability.

@@ -267,6 +267,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EverythingUnrunnable"));
 			}
 		}
+		public bool UnrunnablesStrikeFirstAndSuprise
+		{
+			get => Flags.UnrunnablesStrikeFirstAndSuprise;
+			set
+			{
+				Flags.UnrunnablesStrikeFirstAndSuprise = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("UnrunnablesStrikeFirstAndSuprise"));
+			}
+		}
 		public bool EnemyFormationsSurprise
 		{
 			get => Flags.EnemyFormationsSurprise;

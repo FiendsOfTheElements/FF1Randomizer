@@ -199,7 +199,7 @@ namespace FF1Lib
 					Data[0x31E44] = tracks[16];
 
 					//Gameover
-					Data[0x2DAF6] = tracks[17];
+					Data[0x3C5EF] = tracks[17];
 
 					//Battle
 					//Data[0x2D9C1] = Songs[rng.Between(0, Songs.Count - 1)];
@@ -222,7 +222,7 @@ namespace FF1Lib
 						0x7C235, 0x7C761, 0x7CFC3, 0x7CFC4, 0x7CFC5, 0x7CFC6,
 						0x7CFC7, 0x7CFC8, 0x7CFC9, 0x7CFCA, 0x3A226, 0x3A351,
 						0x3A56E, 0x3A597, 0x3ADB4, 0x3B677, 0x3997F, 0x37804,
-						0x3784E, 0x31E44, 0x2DAF6, 0x2D9C1, 0x36E86, 0x27C0D
+						0x3784E, 0x31E44, 0x3C5EF, 0x2D9C1, 0x36E86, 0x27C0D
 					};
 					//Set all music playback calls to play the new empty song
 					foreach (int address in AllSongs)
