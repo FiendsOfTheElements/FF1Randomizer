@@ -98,7 +98,7 @@ namespace FF1Lib
 			Bank1E();
 			Bank1B();
 			EasterEggs();
-			DynamicWindowColor();
+			DynamicWindowColor(preferences.MenuColor);
 			PermanentCaravan();
 			ShiftEarthOrbDown();
 			CastableItemTargeting();
@@ -603,7 +603,6 @@ namespace FF1Lib
 			//	- initialize tracking variables if no game is saved
 			PutInBank(0x0F, 0x8000, Blob.FromHex("A9008D00208D012085FEA90885FF85FDA51BC901D00160A901851BA94DC5F9F008A9FF85F585F685F7182088C8B049A94DC5F918F013ADA36469018DA364ADA46469008DA464189010ADA56469018DA564ADA66469008DA664A9008DFD64A200187D00647D00657D00667D0067E8D0F149FF8DFD64189010A2A0A9009D00609D0064E8D0F7EEFB64ADFB648DFB6060"));
 			Put(0x7C012, Blob.FromHex("A90F2003FE200080EAEAEAEAEAEAEAEA"));
-			Data[0x30FB] = 0x01;
 
 
 			// Move controller handling out of bank 1F

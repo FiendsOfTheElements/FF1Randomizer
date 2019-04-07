@@ -19,6 +19,36 @@ namespace FF1Lib
 		MusicDisabled
 	}
 
+	public enum MenuColor
+	{
+		[Description("Default Blue")]
+		Blue = 0x01,
+		[Description("Dark Blue")]
+		DarkBlue = 0x02,
+		[Description("Purple")]
+		Purple = 0x03,
+		[Description("Pink")]
+		Pink = 0x04,
+		[Description("Red")]
+		Red = 0x05,
+		[Description("Orange")]
+		Orange = 0x06,
+		[Description("Dark Orange")]
+		DarkOrange = 0x07,
+		[Description("Brown")]
+		Brown = 0x08,
+		[Description("Light Green")]
+		LightGreen = 0x09,
+		[Description("Green")]
+		Green = 0x0A,
+		[Description("Dark Green")]
+		DarkGreen = 0x0B,
+		[Description("Cyan")]
+		Cyan = 0x0C,
+		[Description("Black")]
+		Black = 0x0F,
+	}
+
     public partial class FF1Rom
     {
 	    public const int TyroPaletteOffset = 0x30FC5;
@@ -234,7 +264,7 @@ namespace FF1Lib
 			}
 		}
 
-		public void DynamicWindowColor()
+		public void DynamicWindowColor(MenuColor menuColor)
 		{
 			// This is an overhaul of LoadBorderPalette_Blue that enhances it to JSR to
 			// DrawMapPalette first. That allows us to wrap that with a dynamic load of
@@ -291,6 +321,13 @@ namespace FF1Lib
 			*/
 			Put(0x3BF3A, Blob.FromHex("A20BBD78AD9DC003CA10F7ADFB608DC2038DC60360"));
 			Put(0x3ADC2, Blob.FromHex("203ABFEAEAEAEAEAEAEAEA"));
+
+			// Dynamic location initial value
+			Data[0x30FB] = (byte)menuColor;
+
+			// Hardcoded spot for opening "cinematic"
+			Data[0x03A11C] = (byte)menuColor;
+			Data[0x03A2D3] = (byte)menuColor;
 		}
 
 		public void EnableModernBattlefield()

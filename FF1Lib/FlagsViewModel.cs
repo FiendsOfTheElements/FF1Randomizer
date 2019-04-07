@@ -1294,6 +1294,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DisableDamageTileFlicker"));
 			}
 		}
+		public MenuColor MenuColor
+		{
+			get => Preferences.MenuColor;
+			set
+			{
+				Preferences.MenuColor = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MenuColor"));
+			}
+		}
 		public bool RecruitmentMode
 		{
 			get => Flags.RecruitmentMode;

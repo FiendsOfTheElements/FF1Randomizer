@@ -13,5 +13,6 @@ namespace FF1Lib
 		public bool TeamSteak { get; set; }
 		public MusicShuffle Music { get; set; }
 		public bool DisableDamageTileFlicker { get; set; }
+		public MenuColor MenuColor { get; set; }
 	}
 }
