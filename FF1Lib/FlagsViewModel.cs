@@ -267,6 +267,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EverythingUnrunnable"));
 			}
 		}
+		public bool UnrunnablesStrikeFirstAndSuprise
+		{
+			get => Flags.UnrunnablesStrikeFirstAndSuprise;
+			set
+			{
+				Flags.UnrunnablesStrikeFirstAndSuprise = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("UnrunnablesStrikeFirstAndSuprise"));
+			}
+		}
 		public bool EnemyFormationsSurprise
 		{
 			get => Flags.EnemyFormationsSurprise;
@@ -1283,6 +1292,15 @@ namespace FF1Lib
 			{
 				Preferences.DisableDamageTileFlicker = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DisableDamageTileFlicker"));
+			}
+		}
+		public MenuColor MenuColor
+		{
+			get => Preferences.MenuColor;
+			set
+			{
+				Preferences.MenuColor = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MenuColor"));
 			}
 		}
 		public bool RecruitmentMode

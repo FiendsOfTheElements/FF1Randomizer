@@ -36,6 +36,7 @@ namespace FF1Lib
 		public bool EverythingUnrunnable { get; set; }
 		public bool EnemyFormationsUnrunnable { get; set; }
 		public bool EnemyFormationsSurprise { get; set; }
+		public bool UnrunnablesStrikeFirstAndSuprise { get; set; }
 		public bool EnemyTrapTiles { get; set; }
 		public bool RandomTrapFormations { get; set; }
 
@@ -382,6 +383,7 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.EverythingUnrunnable);
 			sum = AddBoolean(sum, flags.EnemyFormationsUnrunnable);
 			sum = AddBoolean(sum, flags.EnemyFormationsSurprise);
+			sum = AddBoolean(sum, flags.UnrunnablesStrikeFirstAndSuprise);
 			sum = AddBoolean(sum, flags.EnemyTrapTiles);
 			sum = AddBoolean(sum, flags.RandomTrapFormations);
 			sum = AddBoolean(sum, flags.EnemyScripts);
@@ -674,6 +676,7 @@ namespace FF1Lib
 				EnemyScripts = GetBoolean(ref sum),
 				RandomTrapFormations = GetBoolean(ref sum),
 				EnemyTrapTiles = GetBoolean(ref sum),
+				UnrunnablesStrikeFirstAndSuprise = GetBoolean(ref sum),
 				EnemyFormationsSurprise = GetBoolean(ref sum),
 				EnemyFormationsUnrunnable = GetBoolean(ref sum),
 				EverythingUnrunnable = GetBoolean(ref sum),
