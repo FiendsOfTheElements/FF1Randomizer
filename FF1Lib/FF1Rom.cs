@@ -112,48 +112,57 @@ namespace FF1Lib
 #if DEBUG
 			if (flags.ExperimentalFloorGeneration)
 			{
-				MapRequirements reqs = new MapRequirements
-				{
-					MapId = MapId.Waterfall,
-					Rom = this,
-				};
-
+				MapRequirements reqs;
+				MapGeneratorStrategy strategy;
 				MapGenerator generator = new MapGenerator();
-				MapGeneratorStrategy strategy = MapGeneratorStrategy.WaterfallClone;
-				CompleteMap waterfall = generator.Generate(rng, strategy, reqs);
-
-				// Should add more into the reqs so that this can be done inside the generator.
-				teleporters.Waterfall.SetEntrance(waterfall.Entrance);
-				overworldMap.PutOverworldTeleport(OverworldTeleportIndex.Waterfall, teleporters.Waterfall);
-				maps[(int)MapId.Waterfall] = waterfall.Map;
-
-				reqs = new MapRequirements
+				if (flags.EFGWaterfall)
 				{
-					MapId = MapId.EarthCaveB1,
-					Rom = this,
-				};
+					reqs = new MapRequirements
+					{
+						MapId = MapId.Waterfall,
+						Rom = this,
+					};
+					strategy = MapGeneratorStrategy.WaterfallClone;
+					CompleteMap waterfall = generator.Generate(rng, strategy, reqs);
 
-				strategy = MapGeneratorStrategy.Square;
-				var earthB1 = generator.Generate(rng, strategy, reqs);
+					// Should add more into the reqs so that this can be done inside the generator.
+					teleporters.Waterfall.SetEntrance(waterfall.Entrance);
+					overworldMap.PutOverworldTeleport(OverworldTeleportIndex.Waterfall, teleporters.Waterfall);
+					maps[(int)MapId.Waterfall] = waterfall.Map;
+				}
 
-				// Should add more into the reqs so that this can be done inside the generator.
-				teleporters.EarthCave1.SetEntrance(earthB1.Entrance);
-				overworldMap.PutOverworldTeleport(OverworldTeleportIndex.EarthCave1, teleporters.EarthCave1);
-				maps[(int)MapId.EarthCaveB1] = earthB1.Map;
-
-				reqs = new MapRequirements
+				if (flags.EFGEarth1)
 				{
-					MapId = MapId.EarthCaveB2,
-					Rom = this,
-				};
+					reqs = new MapRequirements
+					{
+						MapId = MapId.EarthCaveB1,
+						Rom = this,
+					};
 
-				strategy = MapGeneratorStrategy.Square;
-				var earthB2 = generator.Generate(rng, strategy, reqs);
+					strategy = MapGeneratorStrategy.Square;
+					var earthB1 = generator.Generate(rng, strategy, reqs);
 
-				// Should add more into the reqs so that this can be done inside the generator.
-				teleporters.EarthCave2.SetEntrance(earthB2.Entrance);
-				overworldMap.PutStandardTeleport(TeleportIndex.EarthCave2, teleporters.EarthCave2, OverworldTeleportIndex.EarthCave1);
-				maps[(int)MapId.EarthCaveB2] = earthB2.Map;
+					// Should add more into the reqs so that this can be done inside the generator.
+					teleporters.EarthCave1.SetEntrance(earthB1.Entrance);
+					overworldMap.PutOverworldTeleport(OverworldTeleportIndex.EarthCave1, teleporters.EarthCave1);
+					maps[(int)MapId.EarthCaveB1] = earthB1.Map;
+				}
+				if (flags.EFGEarth2)
+				{
+					reqs = new MapRequirements
+					{
+						MapId = MapId.EarthCaveB2,
+						Rom = this,
+					};
+
+					strategy = MapGeneratorStrategy.Square;
+					var earthB2 = generator.Generate(rng, strategy, reqs);
+
+					// Should add more into the reqs so that this can be done inside the generator.
+					teleporters.EarthCave2.SetEntrance(earthB2.Entrance);
+					overworldMap.PutStandardTeleport(TeleportIndex.EarthCave2, teleporters.EarthCave2, OverworldTeleportIndex.EarthCave1);
+					maps[(int)MapId.EarthCaveB2] = earthB2.Map;
+				}
 			}
 #endif
 
