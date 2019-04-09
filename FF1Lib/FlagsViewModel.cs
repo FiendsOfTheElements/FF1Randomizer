@@ -1670,5 +1670,32 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ExperimentalFloorGeneration"));
 			}
 		}
+		public bool EFGWaterfall
+		{
+			get => Flags.EFGWaterfall;
+			set
+			{
+				Flags.EFGWaterfall = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EFGWaterfall"));
+			}
+		}
+		public bool EFGEarth1
+		{
+			get => Flags.EFGEarth1;
+			set
+			{
+				Flags.EFGEarth1 = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EFGEarth1"));
+			}
+		}
+		public bool EFGEarth2
+		{
+			get => Flags.EFGEarth2;
+			set
+			{
+				Flags.EFGEarth2 = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EFGEarth2"));
+			}
+		}
 	}
 }

@@ -198,6 +198,9 @@ namespace FF1Lib
 		public bool ClampMinimumPriceScale { get; set; }
 
 		public bool ExperimentalFloorGeneration { get; set; }
+		public bool EFGWaterfall { get; set; }
+		public bool EFGEarth1 { get; set; }
+		public bool EFGEarth2 { get; set; }
 		public bool FiendShuffle { get; set; }
 
 		public FormationShuffleModeEnum FormationShuffleMode { get; set; }
@@ -520,6 +523,9 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.ClampMinimumBossStatScale);
 			sum = AddBoolean(sum, flags.ClampMinimumPriceScale);
 			sum = AddBoolean(sum, flags.ExperimentalFloorGeneration);
+			sum = AddBoolean(sum, flags.EFGWaterfall);
+			sum = AddBoolean(sum, flags.EFGEarth1);
+			sum = AddBoolean(sum, flags.EFGEarth2);
 			sum = AddBoolean(sum, flags.FiendShuffle);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(FormationShuffleModeEnum)).Cast<int>().Max() + 1, (int)flags.FormationShuffleMode);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(WorldWealth)).Cast<int>().Max() + 1, (int)flags.WorldWealth);
@@ -540,6 +546,9 @@ namespace FF1Lib
 				WorldWealth = (WorldWealth)GetNumeric(ref sum, Enum.GetValues(typeof(WorldWealth)).Cast<int>().Max() + 1),
 				FormationShuffleMode = (FormationShuffleModeEnum)GetNumeric(ref sum, Enum.GetValues(typeof(FormationShuffleModeEnum)).Cast<int>().Max() + 1),
 				FiendShuffle = GetBoolean(ref sum),
+				EFGEarth2 = GetBoolean(ref sum),
+				EFGEarth1 = GetBoolean(ref sum),
+				EFGWaterfall = GetBoolean(ref sum),
 				ExperimentalFloorGeneration = GetBoolean(ref sum),
 				ClampMinimumPriceScale = GetBoolean(ref sum),
 				ClampMinimumBossStatScale = GetBoolean(ref sum),
