@@ -1661,6 +1661,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ObjectiveNPCs"));
 			}
 		}
+		public bool FiendShuffle
+		{
+			get => Flags.FiendShuffle;
+			set
+			{
+				Flags.FiendShuffle = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FiendShuffle"));
+			}
+		}
 		public bool ExperimentalFloorGeneration
 		{
 			get => Flags.ExperimentalFloorGeneration;
