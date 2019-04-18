@@ -92,9 +92,9 @@ namespace FF1Lib
 		public bool IncentivizeMasamune { get; set; }
 		public bool IncentivizeOpal { get; set; }
 		public bool IncentivizeRibbon { get; set; }
-		public bool IncentivizeRibbon2 { get; set; }
-		public bool Incentivize65K { get; set; }
-		public bool IncentivizeBad { get; set; }
+		public bool IncentivizeRibbon2 => false;
+		public bool Incentivize65K => false;
+		public bool IncentivizeBad => false;
 
 		public bool IncentivizeDefCastArmor { get; set; }
 		public bool IncentivizeOffCastArmor { get; set; }
@@ -259,9 +259,6 @@ namespace FF1Lib
 			+ (IncentivizeMasamune ? 1 : 0)
 			+ (IncentivizeOpal ? 1 : 0)
 			+ (IncentivizeRibbon ? 1 : 0)
-			+ (IncentivizeRibbon2 ? 1 : 0)
-			+ (Incentivize65K ? 1 : 0)
-			+ (IncentivizeBad ? 1 : 0)
 			+ (IncentivizeDefCastArmor ? 1 : 0)
 			+ (IncentivizeOffCastArmor ? 1 : 0)
 			+ (IncentivizeOtherCastArmor ? 1 : 0)
@@ -300,28 +297,28 @@ namespace FF1Lib
 			+ (IncentivizeCrown ? "Crown " : "")
 			+ (IncentivizeCrystal ? "Crystal " : "")
 			+ (IncentivizeCube ? "Cube " : "")
-			+ (IncentivizeDefCastWeapon ? "Defense " : "")
 			+ (IncentivizeFloater ? "Floater " : "")
 			+ (IncentivizeHerb ? "Herb " : "")
 			+ (IncentivizeKey ? "Key " : "")
 			+ (IncentivizeLute ? "Lute " : "")
-			+ (IncentivizeOtherCastWeapon ? "Mage " : "")
-			+ (IncentivizeMasamune ? "Masmune " : "")
-			+ (IncentivizeOpal ? "Opal " : "")
 			+ (IncentivizeOxyale ? "Oxyale " : "")
-			+ (IncentivizeOffCastArmor ? "Black " : "")
-			+ (IncentivizeRibbon ? "Ribbon " : "")
-			+ (IncentivizeRibbon2 ? "Ribbon " : "")
 			+ (IncentivizeRod ? "Rod " : "")
 			+ (IncentivizeRuby ? "Ruby " : "")
 			+ (IncentivizeShip ? "Ship " : "")
 			+ (IncentivizeSlab ? "Slab " : "")
 			+ (IncentivizeTail ? "Tail " : "")
-			+ (IncentivizeOffCastWeapon ? "Thor " : "")
 			+ (IncentivizeTnt ? "Tnt " : "")
-			+ (IncentivizeDefCastArmor ? "White " : "")
-			+ (IncentivizeXcalber ? "XCalber " : "")
-			+ (IncentivizeOtherCastArmor ? "Power " : "")
+			+ (IncentivizeMasamune ? "Masmune\U0001F5E1 " : "")
+			+ (IncentivizeXcalber ? "XCalber\U0001F5E1 " : "")
+			+ (IncentivizeDefCastWeapon ? "Defense\U0001F5E1 " : "")
+			+ (IncentivizeOtherCastWeapon ? "Mage\U0001F9D9 " : "")
+			+ (IncentivizeOffCastWeapon ? "Thor\U0001F528 " : "")
+			+ (IncentivizeOpal ? "Opal\U0001F48D " : "")
+			+ (IncentivizeOtherCastArmor ? "Power\U0001F94A " : "")
+			+ (IncentivizeOffCastArmor ? "Black\U0001F9E5 " : "")
+			+ (IncentivizeDefCastArmor ? "White\U0001F455 " : "")
+			+ (IncentivizeRibbon ? "Ribbon\U0001F380 " : "")
+			+ (IncentivizeRibbon2 ? "Ribbon\U0001F380 " : "")
 			+ (Incentivize65K ? "65000G " : "");
 
 		public bool IncentivizeKingConeria => NPCItems && IncentivizeFreeNPCs;
@@ -636,9 +633,6 @@ namespace FF1Lib
 				IncentivizeOtherCastArmor = GetBoolean(ref sum),
 				IncentivizeOffCastArmor = GetBoolean(ref sum),
 				IncentivizeDefCastArmor = GetBoolean(ref sum),
-				IncentivizeBad = GetBoolean(ref sum),
-				Incentivize65K = GetBoolean(ref sum),
-				IncentivizeRibbon2 = GetBoolean(ref sum),
 				IncentivizeRibbon = GetBoolean(ref sum),
 				IncentivizeOpal = GetBoolean(ref sum),
 				IncentivizeMasamune = GetBoolean(ref sum),

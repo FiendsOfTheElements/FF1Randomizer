@@ -722,34 +722,6 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeRibbon"));
 			}
 		}
-		public bool IncentivizeRibbon2
-		{
-			get => Flags.IncentivizeRibbon2;
-			set
-			{
-				Flags.IncentivizeRibbon2 = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeRibbon2"));
-			}
-		}
-		public bool Incentivize65K
-		{
-			get => Flags.Incentivize65K;
-			set
-			{
-				Flags.Incentivize65K = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Incentivize65K"));
-			}
-		}
-		public bool IncentivizeBad
-		{
-			get => Flags.IncentivizeBad;
-			set
-			{
-				Flags.IncentivizeBad = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeBad"));
-			}
-		}
-
 		public bool IncentivizeDefCastArmor
 		{
 			get => Flags.IncentivizeDefCastArmor;
