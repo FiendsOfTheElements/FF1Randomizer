@@ -267,6 +267,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EverythingUnrunnable"));
 			}
 		}
+		public bool UnrunnablesStrikeFirstAndSuprise
+		{
+			get => Flags.UnrunnablesStrikeFirstAndSuprise;
+			set
+			{
+				Flags.UnrunnablesStrikeFirstAndSuprise = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("UnrunnablesStrikeFirstAndSuprise"));
+			}
+		}
 		public bool EnemyFormationsSurprise
 		{
 			get => Flags.EnemyFormationsSurprise;
@@ -713,34 +722,6 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeRibbon"));
 			}
 		}
-		public bool IncentivizeRibbon2
-		{
-			get => Flags.IncentivizeRibbon2;
-			set
-			{
-				Flags.IncentivizeRibbon2 = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeRibbon2"));
-			}
-		}
-		public bool Incentivize65K
-		{
-			get => Flags.Incentivize65K;
-			set
-			{
-				Flags.Incentivize65K = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Incentivize65K"));
-			}
-		}
-		public bool IncentivizeBad
-		{
-			get => Flags.IncentivizeBad;
-			set
-			{
-				Flags.IncentivizeBad = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeBad"));
-			}
-		}
-
 		public bool IncentivizeDefCastArmor
 		{
 			get => Flags.IncentivizeDefCastArmor;
@@ -1285,6 +1266,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DisableDamageTileFlicker"));
 			}
 		}
+		public MenuColor MenuColor
+		{
+			get => Preferences.MenuColor;
+			set
+			{
+				Preferences.MenuColor = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MenuColor"));
+			}
+		}
 		public bool RecruitmentMode
 		{
 			get => Flags.RecruitmentMode;
@@ -1643,6 +1633,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ObjectiveNPCs"));
 			}
 		}
+		public bool FiendShuffle
+		{
+			get => Flags.FiendShuffle;
+			set
+			{
+				Flags.FiendShuffle = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FiendShuffle"));
+			}
+		}
 		public bool ExperimentalFloorGeneration
 		{
 			get => Flags.ExperimentalFloorGeneration;
@@ -1650,6 +1649,33 @@ namespace FF1Lib
 			{
 				Flags.ExperimentalFloorGeneration = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ExperimentalFloorGeneration"));
+			}
+		}
+		public bool EFGWaterfall
+		{
+			get => Flags.EFGWaterfall;
+			set
+			{
+				Flags.EFGWaterfall = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EFGWaterfall"));
+			}
+		}
+		public bool EFGEarth1
+		{
+			get => Flags.EFGEarth1;
+			set
+			{
+				Flags.EFGEarth1 = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EFGEarth1"));
+			}
+		}
+		public bool EFGEarth2
+		{
+			get => Flags.EFGEarth2;
+			set
+			{
+				Flags.EFGEarth2 = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EFGEarth2"));
 			}
 		}
 	}

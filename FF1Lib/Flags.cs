@@ -36,6 +36,7 @@ namespace FF1Lib
 		public bool EverythingUnrunnable { get; set; }
 		public bool EnemyFormationsUnrunnable { get; set; }
 		public bool EnemyFormationsSurprise { get; set; }
+		public bool UnrunnablesStrikeFirstAndSuprise { get; set; }
 		public bool EnemyTrapTiles { get; set; }
 		public bool RandomTrapFormations { get; set; }
 
@@ -91,9 +92,9 @@ namespace FF1Lib
 		public bool IncentivizeMasamune { get; set; }
 		public bool IncentivizeOpal { get; set; }
 		public bool IncentivizeRibbon { get; set; }
-		public bool IncentivizeRibbon2 { get; set; }
-		public bool Incentivize65K { get; set; }
-		public bool IncentivizeBad { get; set; }
+		public bool IncentivizeRibbon2 => false;
+		public bool Incentivize65K => false;
+		public bool IncentivizeBad => false;
 
 		public bool IncentivizeDefCastArmor { get; set; }
 		public bool IncentivizeOffCastArmor { get; set; }
@@ -197,6 +198,9 @@ namespace FF1Lib
 		public bool ClampMinimumPriceScale { get; set; }
 
 		public bool ExperimentalFloorGeneration { get; set; }
+		public bool EFGWaterfall { get; set; }
+		public bool EFGEarth1 { get; set; }
+		public bool EFGEarth2 { get; set; }
 		public bool FiendShuffle { get; set; }
 
 		public FormationShuffleModeEnum FormationShuffleMode { get; set; }
@@ -255,9 +259,6 @@ namespace FF1Lib
 			+ (IncentivizeMasamune ? 1 : 0)
 			+ (IncentivizeOpal ? 1 : 0)
 			+ (IncentivizeRibbon ? 1 : 0)
-			+ (IncentivizeRibbon2 ? 1 : 0)
-			+ (Incentivize65K ? 1 : 0)
-			+ (IncentivizeBad ? 1 : 0)
 			+ (IncentivizeDefCastArmor ? 1 : 0)
 			+ (IncentivizeOffCastArmor ? 1 : 0)
 			+ (IncentivizeOtherCastArmor ? 1 : 0)
@@ -296,28 +297,28 @@ namespace FF1Lib
 			+ (IncentivizeCrown ? "Crown " : "")
 			+ (IncentivizeCrystal ? "Crystal " : "")
 			+ (IncentivizeCube ? "Cube " : "")
-			+ (IncentivizeDefCastWeapon ? "Defense " : "")
 			+ (IncentivizeFloater ? "Floater " : "")
 			+ (IncentivizeHerb ? "Herb " : "")
 			+ (IncentivizeKey ? "Key " : "")
 			+ (IncentivizeLute ? "Lute " : "")
-			+ (IncentivizeOtherCastWeapon ? "Mage " : "")
-			+ (IncentivizeMasamune ? "Masmune " : "")
-			+ (IncentivizeOpal ? "Opal " : "")
 			+ (IncentivizeOxyale ? "Oxyale " : "")
-			+ (IncentivizeOffCastArmor ? "Power " : "")
-			+ (IncentivizeRibbon ? "Ribbon " : "")
-			+ (IncentivizeRibbon2 ? "Ribbon " : "")
 			+ (IncentivizeRod ? "Rod " : "")
 			+ (IncentivizeRuby ? "Ruby " : "")
 			+ (IncentivizeShip ? "Ship " : "")
 			+ (IncentivizeSlab ? "Slab " : "")
 			+ (IncentivizeTail ? "Tail " : "")
-			+ (IncentivizeOffCastWeapon ? "Thor " : "")
 			+ (IncentivizeTnt ? "Tnt " : "")
-			+ (IncentivizeDefCastArmor ? "White " : "")
-			+ (IncentivizeXcalber ? "XCalber " : "")
-			+ (IncentivizeOtherCastArmor ? "Zeus " : "")
+			+ (IncentivizeMasamune ? "Masmune\U0001F5E1 " : "")
+			+ (IncentivizeXcalber ? "XCalber\U0001F5E1 " : "")
+			+ (IncentivizeDefCastWeapon ? "Defense\U0001F5E1 " : "")
+			+ (IncentivizeOtherCastWeapon ? "Mage\U0001F9D9 " : "")
+			+ (IncentivizeOffCastWeapon ? "Thor\U0001F528 " : "")
+			+ (IncentivizeOpal ? "Opal\U0001F48D " : "")
+			+ (IncentivizeOtherCastArmor ? "Power\U0001F94A " : "")
+			+ (IncentivizeOffCastArmor ? "Black\U0001F9E5 " : "")
+			+ (IncentivizeDefCastArmor ? "White\U0001F455 " : "")
+			+ (IncentivizeRibbon ? "Ribbon\U0001F380 " : "")
+			+ (IncentivizeRibbon2 ? "Ribbon\U0001F380 " : "")
 			+ (Incentivize65K ? "65000G " : "");
 
 		public bool IncentivizeKingConeria => NPCItems && IncentivizeFreeNPCs;
@@ -382,6 +383,7 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.EverythingUnrunnable);
 			sum = AddBoolean(sum, flags.EnemyFormationsUnrunnable);
 			sum = AddBoolean(sum, flags.EnemyFormationsSurprise);
+			sum = AddBoolean(sum, flags.UnrunnablesStrikeFirstAndSuprise);
 			sum = AddBoolean(sum, flags.EnemyTrapTiles);
 			sum = AddBoolean(sum, flags.RandomTrapFormations);
 			sum = AddBoolean(sum, flags.EnemyScripts);
@@ -518,6 +520,9 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.ClampMinimumBossStatScale);
 			sum = AddBoolean(sum, flags.ClampMinimumPriceScale);
 			sum = AddBoolean(sum, flags.ExperimentalFloorGeneration);
+			sum = AddBoolean(sum, flags.EFGWaterfall);
+			sum = AddBoolean(sum, flags.EFGEarth1);
+			sum = AddBoolean(sum, flags.EFGEarth2);
 			sum = AddBoolean(sum, flags.FiendShuffle);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(FormationShuffleModeEnum)).Cast<int>().Max() + 1, (int)flags.FormationShuffleMode);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(WorldWealth)).Cast<int>().Max() + 1, (int)flags.WorldWealth);
@@ -538,6 +543,9 @@ namespace FF1Lib
 				WorldWealth = (WorldWealth)GetNumeric(ref sum, Enum.GetValues(typeof(WorldWealth)).Cast<int>().Max() + 1),
 				FormationShuffleMode = (FormationShuffleModeEnum)GetNumeric(ref sum, Enum.GetValues(typeof(FormationShuffleModeEnum)).Cast<int>().Max() + 1),
 				FiendShuffle = GetBoolean(ref sum),
+				EFGEarth2 = GetBoolean(ref sum),
+				EFGEarth1 = GetBoolean(ref sum),
+				EFGWaterfall = GetBoolean(ref sum),
 				ExperimentalFloorGeneration = GetBoolean(ref sum),
 				ClampMinimumPriceScale = GetBoolean(ref sum),
 				ClampMinimumBossStatScale = GetBoolean(ref sum),
@@ -625,9 +633,6 @@ namespace FF1Lib
 				IncentivizeOtherCastArmor = GetBoolean(ref sum),
 				IncentivizeOffCastArmor = GetBoolean(ref sum),
 				IncentivizeDefCastArmor = GetBoolean(ref sum),
-				IncentivizeBad = GetBoolean(ref sum),
-				Incentivize65K = GetBoolean(ref sum),
-				IncentivizeRibbon2 = GetBoolean(ref sum),
 				IncentivizeRibbon = GetBoolean(ref sum),
 				IncentivizeOpal = GetBoolean(ref sum),
 				IncentivizeMasamune = GetBoolean(ref sum),
@@ -674,6 +679,7 @@ namespace FF1Lib
 				EnemyScripts = GetBoolean(ref sum),
 				RandomTrapFormations = GetBoolean(ref sum),
 				EnemyTrapTiles = GetBoolean(ref sum),
+				UnrunnablesStrikeFirstAndSuprise = GetBoolean(ref sum),
 				EnemyFormationsSurprise = GetBoolean(ref sum),
 				EnemyFormationsUnrunnable = GetBoolean(ref sum),
 				EverythingUnrunnable = GetBoolean(ref sum),

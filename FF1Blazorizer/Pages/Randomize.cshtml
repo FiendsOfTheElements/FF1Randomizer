@@ -86,6 +86,7 @@
 						<CheckBox Indent IsEnabled="@Flags.EnemyStatusAttacks" Id="enemyRandomAttacksCheckBox" bind-Value="@Flags.RandomStatusAttacks">Randomize Enemy Status Attacks</CheckBox>
 						<CheckBox Id="enemyFormationsUnrunnableCheckBox" bind-Value="@Flags.EnemyFormationsUnrunnable">Enemy Unrunnable Formations</CheckBox>
 						<CheckBox Indent IsEnabled="@Flags.EnemyFormationsUnrunnable" Id="everythingUnrunnableCheckBox" bind-Value="@Flags.EverythingUnrunnable">All Encounters are Unrunnable</CheckBox>
+						<CheckBox Id="unrunnablesStrikeFirstAndSupriseCheckBox" bind-Value="@Flags.UnrunnablesStrikeFirstAndSuprise">First Strike/Suprise on Unrunnables</CheckBox>
 						<CheckBox Id="enemyFormationsSurpriseCheckBox" bind-Value="@Flags.EnemyFormationsSurprise">Enemy Surprise Bonus</CheckBox>
 						<EnumDropDown TItem="FormationShuffleModeEnum" bind-Value="@Flags.FormationShuffleMode"></EnumDropDown>
 						<CheckBox Id="enemyTrapTilesCheckBox" bind-Value="@Flags.EnemyTrapTiles">Enemy Forced Encounter Tiles</CheckBox>
@@ -146,12 +147,13 @@
 						<CheckBox Id="incentivizeTailCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeTail">Tail</CheckBox>
 						<div class="checkbox-cell"></div>
 						<CheckBox Id="incentivizeMasamuneCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeMasamune">Masamune</CheckBox>
-						<CheckBox Id="incentivizeRibbonCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeRibbon">Ribbon</CheckBox>
-						<CheckBox Id="incentivizeOpalCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeOpal">Opal Bracelet</CheckBox>
-						<CheckBox Id="incentivizeDefCastArmorCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeDefCastArmor">White Shirt</CheckBox>
-						<CheckBox Id="incentivizeOffCastArmorCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeOffCastArmor">Black Shirt</CheckBox>
 						<CheckBox Id="incentivizeDefCastWeaponCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeDefCastWeapon">Defense</CheckBox>
 						<CheckBox Id="incentivizeOffCastWeaponCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeOffCastWeapon">Thor Hammer</CheckBox>
+						<CheckBox Id="incentivizeOpalCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeOpal">Opal Bracelet</CheckBox>
+						<CheckBox Id="incentivizeOtherCastArmorCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeOtherCastArmor">Power Gauntlet</CheckBox>
+						<CheckBox Id="incentivizeDefCastArmorCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeDefCastArmor">White Shirt</CheckBox>
+						<CheckBox Id="incentivizeOffCastArmorCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeOffCastArmor">Black Shirt</CheckBox>
+						<CheckBox Id="incentivizeRibbonCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeRibbon">Ribbon</CheckBox>
 					</div>
 				</div>
 			</div>
@@ -398,7 +400,12 @@
 				<div class="row">
 					<p>Test out features from 2000 years in the future - at your own risk!</p>
 					<div class="col-md-6">
-						<CheckBox Id="proceduralGenerationCheckBox" bind-Value="@Flags.ExperimentalFloorGeneration">Procedural Floor Generation</CheckBox>
+						<CheckBox Id="proceduralGenerationCheckBox" bind-Value="@Flags.ExperimentalFloorGeneration">Enable Procedural Floor Generation</CheckBox>
+						<CheckBox Indent IsEnabled="@Flags.ExperimentalFloorGeneration" Id="procGenWaterfall" bind-Value="@Flags.EFGWaterfall">Generated Waterfall Cave</CheckBox>
+						<CheckBox Indent IsEnabled="@Flags.ExperimentalFloorGeneration" Id="procGenEarth1" bind-Value="@Flags.EFGEarth1">Generated Earth Cave B1</CheckBox>
+						<CheckBox Indent IsEnabled="@Flags.ExperimentalFloorGeneration" Id="procGenEarth2" bind-Value="@Flags.EFGEarth2">Generated Earth Cave B2</CheckBox>
+						<div class="checkbox-cell"></div>
+						<CheckBox Id="fiendShuffleCheckBox" bind-Value="@Flags.FiendShuffle">Shuffle the Four Original Fiend Fights</CheckBox>
 						<div class="checkbox-cell"></div>
 						<CheckBox Id="itemPlacementCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.ClassicItemPlacement">Use Older v2 Placement</CheckBox>
 						<div class="checkbox-cell"></div>
@@ -424,6 +431,7 @@
 						<CheckBox Id="teamSteakCheckBox" bind-Value="@Flags.TeamSteak">Team STEAK</CheckBox>
 						<EnumDropDown TItem="MusicShuffle" bind-Value="@Flags.Music"></EnumDropDown>
 						<CheckBox Id="disableDamageTileFlickerCheckBox" bind-Value="@Flags.DisableDamageTileFlicker">Disable Damage Tile Flicker</CheckBox>
+						<EnumDropDown TItem="MenuColor" bind-Value="@Flags.MenuColor">Menu Color</EnumDropDown>
 					</div>
 				</div>
 				<div class="row">
