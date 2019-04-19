@@ -186,6 +186,7 @@ namespace FF1Lib
 			PutInBank(0x0B, 0x9AF5, Blob.FromHex("A97F48A9FF48A91B4C03FEA98048A92E48A91B4C03FE60"));
 			PutInBank(0x1F, 0xFC26, Blob.FromHex("A91B2003FEA984A24C"));
 
+
 			// GameOver
 			PutInBank(0x1B, 0x8000, Blob.FromHex("A91B8DB16B202ED88DA76BA9008DF86AA904A20920BA8B20168C20E58BA9031869008596A90069938597A90C4C09F2"));
 			PutInBank(0x1B, 0x8015, DrawEOBCombatBox);
@@ -303,6 +304,13 @@ namespace FF1Lib
 			// SubtractOneFromVal
 			PutInBank(0x1B, 0x8C77, Get(0x2D999, 0xA));
 
+			// fill empty space with NOPs
+			PutInBank(0x0B, 0x9B0C, Enumerable.Repeat((byte)0xEA, 0x3EF).ToArray());
+			PutInBank(0x0B, 0x8C40, Enumerable.Repeat((byte)0xEA, 0x6A0).ToArray());
+			PutInBank(0x0B, 0x9950, Enumerable.Repeat((byte)0xEA, 0x58).ToArray());
+			// Note, keeping a handfull of small routines that are not needed but might be useful in the future,
+			// such as DrawEOBCombatBox, RespondDelay_UndrawAllCombatBoxes, WaitForAnyInput and lut_EOBText. These
+			// also dont take up a large amount of space.
 		}
 
 
