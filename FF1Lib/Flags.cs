@@ -430,9 +430,6 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.IncentivizeMasamune);
 			sum = AddBoolean(sum, flags.IncentivizeOpal);
 			sum = AddBoolean(sum, flags.IncentivizeRibbon);
-			sum = AddBoolean(sum, flags.IncentivizeRibbon2);
-			sum = AddBoolean(sum, flags.Incentivize65K);
-			sum = AddBoolean(sum, flags.IncentivizeBad);
 			sum = AddBoolean(sum, flags.IncentivizeDefCastArmor);
 			sum = AddBoolean(sum, flags.IncentivizeOffCastArmor);
 			sum = AddBoolean(sum, flags.IncentivizeOtherCastArmor);
