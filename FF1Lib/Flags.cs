@@ -192,6 +192,7 @@ namespace FF1Lib
 		public bool WeaponPermissions { get; set; }
 		public bool ArmorPermissions { get; set; }
 		public bool RecruitmentMode { get; set; }
+		public bool RecruitmentModeHireOnly { get; set; }
 
 		public bool ClampMinimumStatScale { get; set; }
 		public bool ClampMinimumBossStatScale { get; set; }
@@ -513,6 +514,7 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.WeaponPermissions);
 			sum = AddBoolean(sum, flags.ArmorPermissions);
 			sum = AddBoolean(sum, flags.RecruitmentMode);
+			sum = AddBoolean(sum, flags.RecruitmentModeHireOnly);
 			sum = AddBoolean(sum, flags.ClampMinimumStatScale);
 			sum = AddBoolean(sum, flags.ClampMinimumBossStatScale);
 			sum = AddBoolean(sum, flags.ClampMinimumPriceScale);
@@ -547,6 +549,7 @@ namespace FF1Lib
 				ClampMinimumPriceScale = GetBoolean(ref sum),
 				ClampMinimumBossStatScale = GetBoolean(ref sum),
 				ClampMinimumStatScale = GetBoolean(ref sum),
+				RecruitmentModeHireOnly = GetBoolean(ref sum),
 				RecruitmentMode = GetBoolean(ref sum),
 				ArmorPermissions = GetBoolean(ref sum),
 				WeaponPermissions = GetBoolean(ref sum),

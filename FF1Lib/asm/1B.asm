@@ -36,14 +36,6 @@
 
 
 
-
-
-
-
-
-
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;  GameOver  [$8000 :: 0x6c010]
@@ -142,13 +134,9 @@ L9b3e:				  ldy #$0f
 	LDA #$0B
 	JMP SwapPRG
 
-;; Exp to Advance [$80AA :: 0x6C0BA]
-lut_ExpToAdvance:
-.INCBIN "Final Fantasy Disassembly/bin/lut_ExpToAdvance.bin"
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;  Battle Messages  [$813E :: 0x6C14E]
+;;  Battle Messages  [$80AA :: 0x6C0BA]
 ;;
 ;;  This block of text is weird because the pointer table comes AFTER the text
 ;;
@@ -158,33 +146,12 @@ data_BattleMessages_Raw:                        ; actual text data
   
         ; pointer table
 		
-;; $84E9 - "Nothing happens" string
+;; $8456 - "Nothing happens" string
   .BYTE $97, $B2, $B7, $AB, $AC, $B1, $AA, $FF, $AB, $A4, $B3, $B3, $A8, $B1, $B6, $00
   .BYTE $00, $00, $00, $00
 
-  
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;;  Level up data!  [$84FE :: 0x26C50E]
-;;
-;;  Data consists of 2 bytes per level.
-;;  49 levels per class
-;;   6 classes (promoted classes share their unpromoted data)
-;;
-;;  Byte 0:  bit 5:  set if level up is "strong" (extra 20-24 HP bonus)
-;;           bit 4:  set for guaranteed Str increase
-;;           bit 3:  set for guaranteed Agil increase
-;;           bit 2:  set for guaranteed Int increase
-;;           bit 1:  set for guaranteed Vit increase
-;;           bit 0:  set for guaranteed Luck increase
-;;
-;;  Byte 1:  MP up.  Each bit corresponds to a level of spell.
-;;            Ex:  bit 0 means you'll get a level 1 charge
-;;                 bit 7 means you'll get a level 8 charge
-
-data_LevelUpData_Raw:
-  .INCBIN "Final Fantasy Disassembly/bin/0B_9094_levelupdata.bin"
-
+.advance $874A
+; extra room for future level up changes
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -242,37 +209,9 @@ LvlUp_AdjustBBSubStats:
       STA (lvlup_chstats), Y
       RTS
 	  
-NOP  ;; padding for BB fix
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-      
+; padding for the BB fix      
+.advance $87A2
 
-
-		
 ; [$87A2 :: 0x6C7B2]
 data_MaxRewardPlusOne:
   .BYTE $40, $42, $0F
@@ -283,7 +222,6 @@ data_MaxHPPlusOne:
 
 
 GetJoyInput:         jmp $d828
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -1290,4 +1228,31 @@ SubtractOneFromVal:  ldy #$00
 
 
 
+;; Exp to Advance [$8C81 :: 0x6CC91]
+lut_ExpToAdvance:
+.INCBIN "lut_ExpToAdvance.bin"
 
+
+.advance $8DA9
+ 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;;  Level up data!  [$8DA9 :: 0x6CDB9]
+;;
+;;  Data consists of 2 bytes per level.
+;;  49 levels per class
+;;   6 classes (promoted classes share their unpromoted data)
+;;
+;;  Byte 0:  bit 5:  set if level up is "strong" (extra 20-24 HP bonus)
+;;           bit 4:  set for guaranteed Str increase
+;;           bit 3:  set for guaranteed Agil increase
+;;           bit 2:  set for guaranteed Int increase
+;;           bit 1:  set for guaranteed Vit increase
+;;           bit 0:  set for guaranteed Luck increase
+;;
+;;  Byte 1:  MP up.  Each bit corresponds to a level of spell.
+;;            Ex:  bit 0 means you'll get a level 1 charge
+;;                 bit 7 means you'll get a level 8 charge
+
+data_LevelUpData_Raw:
+  .INCBIN "0B_9094_levelupdata.bin"

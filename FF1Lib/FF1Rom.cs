@@ -24,8 +24,7 @@ namespace FF1Lib
 		public const int BattleRngOffset = 0x7FCF1;
 		public const int RngSize = 256;
 
-		public const int LevelRequirementsOffset = 0x2D000;
-		public const int LevelRequirementsOffsetNewLocation = 0x6C0AA;
+		public const int LevelRequirementsOffset = 0x6CC81;
 		public const int LevelRequirementsSize = 3;
 		public const int LevelRequirementsCount = 49;
 
@@ -551,7 +550,7 @@ namespace FF1Lib
 
 			if (flags.RecruitmentMode)
 			{
-				PubReplaceClinic(rng);
+				PubReplaceClinic(rng, flags.RecruitmentModeHireOnly);
 			}
 
 			if (flags.MapCanalBridge)

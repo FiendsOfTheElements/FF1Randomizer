@@ -263,7 +263,7 @@ namespace FF1Lib
 			PutInBank(0x0E, 0x95D0, Blob.FromHex("C0804000")); // lut used by the above code
 		}
 
-		public void PubReplaceClinic(MT19337 rng)
+		public void PubReplaceClinic(MT19337 rng, bool hireOnly)
 		{
 			List<byte> pub_lut = new List<byte> { 0x0, 0x1, 0x2, 0x3, 0x4, 0x5 };
 			pub_lut.Shuffle(rng);
@@ -297,6 +297,13 @@ namespace FF1Lib
 			Data[0x109A] = 0x13;
 			Data[0x111A] = 0x76;
 			Data[0x119A] = 0x77;
+
+			if (hireOnly) {
+				PutInBank(0x0E, 0xA60F, Blob.FromHex("EAEAEAEAEAEAEAEA"));
+			}
+
+
+
 		}
 
 		public void DisablePartyShuffle()

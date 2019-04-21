@@ -263,7 +263,7 @@ namespace FF1Lib
 				levelRequirementsBytes[i] = BitConverter.GetBytes(levelRequirement);
 			}
 
-			Put(LevelRequirementsOffsetNewLocation, Blob.Concat(levelRequirementsBytes.Select(bytes => (Blob)new byte[] { bytes[0], bytes[1], bytes[2] })));
+			Put(LevelRequirementsOffset, Blob.Concat(levelRequirementsBytes.Select(bytes => (Blob)new byte[] { bytes[0], bytes[1], bytes[2] })));
 
 			// A dirty, ugly, evil piece of code that sets the level requirement for level 2, even though that's already defined in the above table.
 			byte firstLevelRequirement = Data[0x7C04B];

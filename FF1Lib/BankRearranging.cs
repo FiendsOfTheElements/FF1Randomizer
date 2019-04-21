@@ -184,7 +184,7 @@ namespace FF1Lib
 			// stuff in other banks required for changes
 			PutInBank(0x0B, 0x9AE6, EndOfBattleWrapUp0B);
 			PutInBank(0x0B, 0x9AF5, Blob.FromHex("A97F48A9FF48A91B4C03FEA98048A92E48A91B4C03FE60"));
-			PutInBank(0x1F, 0xFC26, Blob.FromHex("A91B2003FEA984A24C"));
+			PutInBank(0x1F, 0xFC26, Blob.FromHex("A91B2003FEA983A2B8"));
 
 
 			// GameOver
@@ -212,19 +212,16 @@ namespace FF1Lib
 			PutInBank(0x1B, 0x8098, LvlUp_AwardAndUpdateExp);
 			PutInBank(0x1B, 0x809C, Blob.FromHex("20DA87A99B48A90A48A90B4C03FE"));
 
-			// lut_ExpToAdvance, data_BattleMessages_Raw, "Nothing happens" string and data_LevelUpData_Raw, all go here
+			// data_BattleMessages_Raw, and "Nothing happens" string
+			PutInBank(0x1B, 0x80AA, Get(0x2CC40, 0x3C0));
+			PutInBank(0x1B, 0x83BA, Blob.FromHex("aa80b180ba80c880cf80db80eb80f48005810e811f8131813d814b81578168817481868191819a81a381aa81ba81c481cc81d981ec8104820f821b8228823f824682528269827f82898292829f82a782b082b782c182ca82d982e782eb82f382fc82038308830d83128317831c8321832583268327832d8336834083488353835b83608365836a836f83748379837e8383838a839a83a283a9835684"));
+			PutInBank(0x1B, 0x8456, Get(0x2CFEC, 0x14));
 
-			PutInBank(0x1B, 0x80AA, Get(0x2CFF0, 0x94));
-			PutInBank(0x1B, 0x813E, Get(0x2CC40, 0x310));
-			// lut for battlemessages
-			PutInBank(0x1B, 0x844E, Blob.FromHex("3E8145814E815C8163816F817F8188819981A281B381C581D181DF81EB81FC8108821A8225822E8237823E824E82588260826D8280829882A382AF82BC82D382DA82E682FD8213831D83268333833B8344834B8355835E836D837B837F838783908397839C83A183A683AB83B083B583B983BA83BB83C183CA83D483DC83E783EF83F483F983FE83038408840D84128417841E842E8436843D84EA84"));
-			PutInBank(0x1B, 0x84EA, Get(0x2CFEC, 0x14));
-			PutInBank(0x1B, 0x84FE, Get(0x2D094, 0x24C));
 
 			// LvlUp_AdjustBBSubStats
 			PutInBank(0x1B, 0x874A, Get(0x2D966, 0x33));
 
-
+			// data_MaxRewardPlusOne, and data_MaxHPPlusOne
 			PutInBank(0x1B, 0x87A2, Get(0x2D9A3, 0x5));
 
 			// GetJoyInput jmp for up+A
@@ -245,8 +242,8 @@ namespace FF1Lib
 
 			// LvlUp_GetChar_Exp and LvlUp_GetExpToAdvance
 			PutInBank(0x1B, 0x8860, Get(0x2DBF3, 0x21));
-			PutInBank(0x1B, 0x8877, Blob.FromHex("AA"));
-			PutInBank(0x1B, 0x887D, Blob.FromHex("80"));
+			PutInBank(0x1B, 0x8877, Blob.FromHex("81"));
+			PutInBank(0x1B, 0x887D, Blob.FromHex("8C"));
 
 
 			// LvlUp_LevelUp
@@ -272,7 +269,7 @@ namespace FF1Lib
 			PutInBank(0x1B, 0x8A2B, WaitForAnyInput);
 			PutInBank(0x1B, 0x8A3E, Blob.FromHex("BB4CE38B"));
 			PutInBank(0x1B, 0x8A49, DrawEOBCombatBox);
-			PutInBank(0x1B, 0x8A71, Blob.FromHex("FE846085C28524868686E886FE846085C28524868686E886")); // lut for lvlup pointers
+			PutInBank(0x1B, 0x8A71, Blob.FromHex("A98D0B8E6D8ECF8E318F938FA98D0B8E6D8ECF8E318F938F")); // lut for lvlup pointers
 			PutInBank(0x1B, 0x8AA1, AddBattleRewardToVal);
 			PutInBank(0x1B, 0x8AA4, Blob.FromHex("A2"));
 			PutInBank(0x1B, 0x8AA8, Blob.FromHex("87"));
@@ -303,6 +300,11 @@ namespace FF1Lib
 			
 			// SubtractOneFromVal
 			PutInBank(0x1B, 0x8C77, Get(0x2D999, 0xA));
+
+			// level up data, extra space given for furture use
+			PutInBank(0x1B, 0x8C81, Get(0x2D000, 0x94));
+			PutInBank(0x1B, 0x8DA9, Get(0x2D094, 0x24C));
+
 
 			// fill empty space with NOPs
 			PutInBank(0x0B, 0x9B0C, Enumerable.Repeat((byte)0xEA, 0x3EF).ToArray());
