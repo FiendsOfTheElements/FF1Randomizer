@@ -150,6 +150,28 @@ data_BattleMessages_Raw:                        ; actual text data
   .BYTE $97, $B2, $B7, $AB, $AC, $B1, $AA, $FF, $AB, $A4, $B3, $B3, $A8, $B1, $B6, $00
   .BYTE $00, $00, $00, $00
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;;  LvlUp_CheckIfMax  [$846A :: 0x6C47E]
+;;
+;;
+;;	new routine, patches bug when hitting lvl 50
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+LvlUp_CheckIfMax:
+	ldy #$26
+    lda ($86),y
+    cmp #$31
+    beq LCheckIfMaxSkip
+	rts
+LCheckIfMaxSkip: pla
+	pla
+	pla
+	pla
+	jmp LincludeDisplay
+ 
+
 .advance $874A
 ; extra room for future level up changes
 
@@ -417,10 +439,13 @@ LvlUp_GetExpToAdvance:                   ldy #$26
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 		
-LvlUp_LevelUp:       ldy #$26
-        lda ($86),y
-        cmp #$31
-        beq L9bf2
+LvlUp_LevelUp:
+		jsr LvLUp_CheckIfMax
+		nop
+		nop
+		nop
+		nop
+		nop
         sta $6bad
         clc
         adc #$01

@@ -218,6 +218,8 @@ namespace FF1Lib
 			PutInBank(0x1B, 0x8456, Get(0x2CFEC, 0x14));
 
 
+			PutInBank(0x1B, 0x846A, Blob.FromHex("A026B186C931F00160686868684C5388"));
+
 			// LvlUp_AdjustBBSubStats
 			PutInBank(0x1B, 0x874A, Get(0x2D966, 0x33));
 
@@ -248,7 +250,7 @@ namespace FF1Lib
 
 			// LvlUp_LevelUp
 			PutInBank(0x1B, 0x8881, Get(0x2DC14, 0x151));
-			PutInBank(0x1B, 0x8888, Blob.FromHex("CD"));
+			PutInBank(0x1B, 0x8881, Blob.FromHex("206A84EAEAEAEAEA"));	
 			PutInBank(0x1B, 0x889E, Blob.FromHex("718A"));
 			PutInBank(0x1B, 0x88A7, Blob.FromHex("728A"));
 			PutInBank(0x1B, 0x88C3, Blob.FromHex("598A20998A"));
