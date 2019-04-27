@@ -33,6 +33,9 @@
     <Content Update="wwwroot\presets\full-npc.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Update="wwwroot\presets\chaos-rush.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Update="wwwroot\presets\improved-vanilla.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
