@@ -96,6 +96,7 @@
 		"FreeBridge": true,
 		"FreeAirship": false,
 		"FreeOrbs": false,
+		"FreeCanal": false,
 		"StartingGold": false,
 		"WrapStatOverflow": false,
 		"WrapPriceOverflow": false,
