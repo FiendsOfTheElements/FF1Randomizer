@@ -148,5 +148,11 @@ namespace FF1Lib
 		{
 			Put(0x6CA65, Blob.FromHex("030203020202030204020202"));
 		}
+
+		public void InvertedMDEF()
+		{
+			Put(0x6CA65, Blob.FromHex("020301030303020304030303"));
+		}
+
 	}
 }
