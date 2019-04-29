@@ -509,6 +509,11 @@ namespace FF1Lib
 				RemakeStyleMasterMDEF();
 			}
 
+			if (flags.InvertedMDEF)
+			{
+				InvertedMDEF();
+			}
+
 			if (flags.ImproveTurnOrderRandomization)
 			{
 				ImproveTurnOrderRandomization(rng);

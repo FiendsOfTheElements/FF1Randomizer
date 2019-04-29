@@ -389,7 +389,8 @@
 						<CheckBox Id="rebalanceSpellsCheckBox" bind-Value="@Flags.RebalanceSpells">LOCK and LOK2 Always Hit</CheckBox>
 						<CheckBox Id="enemyStatusAttackBugCheckBox" bind-Value="@Flags.EnemyStatusAttackBug">Enemy Status Attacks</CheckBox>
 						<CheckBox Id="blackBeltAbsorbCheckBox" bind-Value="@Flags.BlackBeltAbsorb">Bl. Belt & Master Absorb Calculation</CheckBox>
-						<CheckBox Id="blackBeltMDEFCheckBox" bind-Value="@Flags.BlackBeltMDEF">Bl. Belt & Master MDEF Growth</CheckBox>
+						<CheckBox Id="blackBeltMDEFCheckBox" IsEnabled="@(!Flags.InvertedMDEF)" bind-Value="@Flags.BlackBeltMDEF">Bl. Belt & Master MDEF Growth</CheckBox>
+						<CheckBox Id="invertedMDEFCheckBox" IsEnabled="@(!Flags.BlackBeltMDEF)" bind-Value="@Flags.InvertedMDEF">Inverted MDEF Growth</CheckBox>
 						<CheckBox Id="enemyElementalResistancesCheckBox" bind-Value="@Flags.EnemyElementalResistancesBug">Enemy Elemental Resistances</CheckBox>
 						<CheckBox Id="enemySpellsTargetingAlliesCheckBox" bind-Value="@Flags.EnemySpellsTargetingAllies">Enemy Spells Targeting Allies</CheckBox>
 						<CheckBox Id="improveTurnOrderRandomizationCheckBox" bind-Value="@Flags.ImproveTurnOrderRandomization">Improve Turn Order Randomization</CheckBox>

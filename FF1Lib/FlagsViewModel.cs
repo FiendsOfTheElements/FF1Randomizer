@@ -1009,6 +1009,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BlackBeltMDEF"));
 			}
 		}
+		public bool InvertedMDEF
+		{
+			get => Flags.InvertedMDEF;
+			set
+			{
+				Flags.InvertedMDEF = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("InvertedMDEF"));
+			}
+		}
 		public bool NPCSwatter
 		{
 			get => Flags.NPCSwatter;
