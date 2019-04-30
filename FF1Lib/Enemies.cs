@@ -33,9 +33,14 @@ namespace FF1Lib
 		public const int ZoneFormationsSize = 8;
 		public const int ZoneCount = 128;
 
+		public const int FormationDataOffset = 0x2C400;
+		public const int FormationDataSize = 16;
+		public const int FormationDataCount = 128;
+
 		public abstract class Enemy
 		{
 			public const int Pirate = 15;
+			public const int Phantom = 51;
 			public const int Garland = 105;
 			public const int Astos = 113;
 			public const int WarMech = 118;
