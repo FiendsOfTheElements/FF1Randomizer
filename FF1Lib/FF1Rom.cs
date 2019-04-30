@@ -565,6 +565,21 @@ namespace FF1Lib
 
 			SetProgressiveScaleMode(flags.ProgressiveScaleMode);
 
+			if (flags.DisableTentSaving)
+			{
+				CannotSaveOnOverworld();
+			}
+
+			if(flags.DisableInnSaving)
+			{
+				CannotSaveAtInns();
+			}
+
+			if(flags.RandomizeFormationEnemizer)
+			{
+				DoEnemizer(rng, false, flags.RandomizeFormationEnemizer, false);
+			}
+
 			// We have to do "fun" stuff last because it alters the RNG state.
 			RollCredits(rng);
 

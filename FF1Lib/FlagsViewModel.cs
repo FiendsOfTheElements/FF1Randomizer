@@ -1687,5 +1687,32 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EFGEarth2"));
 			}
 		}
+		public bool DisableTentSaving
+		{
+			get => Flags.DisableTentSaving;
+			set
+			{
+				Flags.DisableTentSaving = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DisableTentSaving"));
+			}
+		}
+		public bool DisableInnSaving
+		{
+			get => Flags.DisableInnSaving;
+			set
+			{
+				Flags.DisableInnSaving = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DisableInnSaving"));
+			}
+		}
+		public bool RandomizeFormationEnemizer
+		{
+			get => Flags.RandomizeFormationEnemizer;
+			set
+			{
+				Flags.RandomizeFormationEnemizer = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomizeFormationEnemizer"));
+			}
+		}
 	}
 }
