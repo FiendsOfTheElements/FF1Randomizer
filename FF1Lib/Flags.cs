@@ -204,6 +204,9 @@ namespace FF1Lib
 		public bool EFGEarth1 { get; set; }
 		public bool EFGEarth2 { get; set; }
 		public bool FiendShuffle { get; set; }
+		public bool DisableTentSaving { get; set; }
+		public bool DisableInnSaving { get; set; }
+		public bool RandomizeFormationEnemizer { get; set; }
 
 		public FormationShuffleModeEnum FormationShuffleMode { get; set; }
 
@@ -525,6 +528,9 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.EFGEarth1);
 			sum = AddBoolean(sum, flags.EFGEarth2);
 			sum = AddBoolean(sum, flags.FiendShuffle);
+			sum = AddBoolean(sum, flags.DisableTentSaving);
+			sum = AddBoolean(sum, flags.DisableInnSaving);
+			sum = AddBoolean(sum, flags.RandomizeFormationEnemizer);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(FormationShuffleModeEnum)).Cast<int>().Max() + 1, (int)flags.FormationShuffleMode);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(WorldWealth)).Cast<int>().Max() + 1, (int)flags.WorldWealth);
 			sum = AddBoolean(sum, flags.AllowStartAreaDanager);
@@ -543,6 +549,9 @@ namespace FF1Lib
 				AllowStartAreaDanager = GetBoolean(ref sum),
 				WorldWealth = (WorldWealth)GetNumeric(ref sum, Enum.GetValues(typeof(WorldWealth)).Cast<int>().Max() + 1),
 				FormationShuffleMode = (FormationShuffleModeEnum)GetNumeric(ref sum, Enum.GetValues(typeof(FormationShuffleModeEnum)).Cast<int>().Max() + 1),
+				RandomizeFormationEnemizer = GetBoolean(ref sum),
+				DisableInnSaving = GetBoolean(ref sum),
+				DisableTentSaving = GetBoolean(ref sum),
 				FiendShuffle = GetBoolean(ref sum),
 				EFGEarth2 = GetBoolean(ref sum),
 				EFGEarth1 = GetBoolean(ref sum),
