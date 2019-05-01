@@ -631,5 +631,17 @@ namespace FF1Lib
 			cardia.Put((0x26, 0x1C), room);
 			cardia[0x20, 0x27] = (byte)Tile.Doorway;
 		}
+
+		public void CannotSaveOnOverworld()
+		{
+			// Hacks the game to disallow saving on the overworld with Tents, Cabins, or Houses
+			Put(0x3B2F9, Blob.FromHex("1860"));
+		}
+
+		public void CannotSaveAtInns()
+		{
+			// Hacks the game so that Inns do not save the game
+			Put(0x3A53D, Blob.FromHex("EAEAEA"));
+		}
 	}
 }
