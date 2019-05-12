@@ -130,8 +130,6 @@ namespace FF1Lib
 		public bool ChanceToRun { get; set; }
 		public bool SpellBugs { get; set; }
 		public bool BlackBeltAbsorb { get; set; }
-		public bool BlackBeltMDEF { get; set; }
-		public bool InvertedMDEF { get; set; }
 		public bool NPCSwatter { get; set; }
 
 		public bool EnemyStatusAttackBug { get; set; }
@@ -207,6 +205,8 @@ namespace FF1Lib
 		public bool DisableTentSaving { get; set; }
 		public bool DisableInnSaving { get; set; }
 		public bool RandomizeFormationEnemizer { get; set; }
+
+		public MDefChangesEnum MDefMode { get; set; }
 
 		public FormationShuffleModeEnum FormationShuffleMode { get; set; }
 
@@ -464,8 +464,6 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.ChanceToRun);
 			sum = AddBoolean(sum, flags.SpellBugs);
 			sum = AddBoolean(sum, flags.BlackBeltAbsorb);
-			sum = AddBoolean(sum, flags.BlackBeltMDEF);
-			sum = AddBoolean(sum, flags.InvertedMDEF);
 			sum = AddBoolean(sum, flags.NPCSwatter);
 			sum = AddBoolean(sum, flags.EnemyStatusAttackBug);
 			sum = AddBoolean(sum, flags.EnemySpellsTargetingAllies);
@@ -532,6 +530,7 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.DisableInnSaving);
 			sum = AddBoolean(sum, flags.RandomizeFormationEnemizer);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(FormationShuffleModeEnum)).Cast<int>().Max() + 1, (int)flags.FormationShuffleMode);
+			sum = AddNumeric(sum, Enum.GetValues(typeof(MDefChangesEnum)).Cast<int>().Max() + 1, (int)flags.MDefMode);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(WorldWealth)).Cast<int>().Max() + 1, (int)flags.WorldWealth);
 			sum = AddBoolean(sum, flags.AllowStartAreaDanager);
 			sum = AddBoolean(sum, flags.Spoilers);
@@ -548,6 +547,7 @@ namespace FF1Lib
 				Spoilers = GetBoolean(ref sum),
 				AllowStartAreaDanager = GetBoolean(ref sum),
 				WorldWealth = (WorldWealth)GetNumeric(ref sum, Enum.GetValues(typeof(WorldWealth)).Cast<int>().Max() + 1),
+				MDefMode = (MDefChangesEnum)GetNumeric(ref sum, Enum.GetValues(typeof(MDefChangesEnum)).Cast<int>().Max() + 1),
 				FormationShuffleMode = (FormationShuffleModeEnum)GetNumeric(ref sum, Enum.GetValues(typeof(FormationShuffleModeEnum)).Cast<int>().Max() + 1),
 				RandomizeFormationEnemizer = GetBoolean(ref sum),
 				DisableInnSaving = GetBoolean(ref sum),
@@ -614,8 +614,6 @@ namespace FF1Lib
 				EnemySpellsTargetingAllies = GetBoolean(ref sum),
 				EnemyStatusAttackBug = GetBoolean(ref sum),
 				NPCSwatter = GetBoolean(ref sum),
-				InvertedMDEF = GetBoolean(ref sum),
-				BlackBeltMDEF = GetBoolean(ref sum),
 				BlackBeltAbsorb = GetBoolean(ref sum),
 				SpellBugs = GetBoolean(ref sum),
 				ChanceToRun = GetBoolean(ref sum),
