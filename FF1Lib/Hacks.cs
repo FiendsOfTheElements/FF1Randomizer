@@ -265,6 +265,21 @@ namespace FF1Lib
 
 		public void PubReplaceClinic(MT19337 rng, bool hireOnly)
 		{
+			// Copy some CHR data to make the Tavern look more like one.
+			const int ShopTileDataOffet = 0x24000;
+			const int TileSize = 16;
+			const int ArmorTileOffset = 14 * 1 * TileSize;
+			const int ClinicTileOffset = 14 * 4 * TileSize;
+			const int ItemTileOffset = 14 * 6 * TileSize;
+			const int CaravanTileOffset = 14 * 7 * TileSize;
+			const int DecorationOffset = TileSize * 4;
+			const int VendorOffset = TileSize * 8;
+
+			Put(ShopTileDataOffet + ClinicTileOffset, Get(ShopTileDataOffet + CaravanTileOffset, TileSize * 4)); // Tablecloth
+			Put(ShopTileDataOffet + ClinicTileOffset + DecorationOffset, Get(ShopTileDataOffet + ItemTileOffset + DecorationOffset, TileSize * 4)); // Barrels of fine ale
+			Put(ShopTileDataOffet + ClinicTileOffset + VendorOffset, Get(ShopTileDataOffet + ArmorTileOffset + VendorOffset, TileSize * 6)); // Armorer tending bar
+			Put(0x03250, Get(0x03258, 4)); // Caravan palette
+
 			List<byte> pub_lut = new List<byte> { 0x0, 0x1, 0x2, 0x3, 0x4, 0x5 };
 			pub_lut.Shuffle(rng);
 			pub_lut.Insert(3, (byte) 0xFF); // Will break if Melmond ever gets a clinic, Nones will need to be hired dead, this results in them being alive.
