@@ -286,6 +286,16 @@ namespace FF1Lib
 			}
 		}
 
+		public MDefChangesEnum MDefMode
+		{
+			get => Flags.MDefMode;
+			set
+			{
+				Flags.MDefMode = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MDefChangesEnum"));
+			}
+		}
+
 		public FormationShuffleModeEnum FormationShuffleModeEnum
 		{
 			get => Flags.FormationShuffleMode;
@@ -998,24 +1008,6 @@ namespace FF1Lib
 			{
 				Flags.BlackBeltAbsorb = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BlackBeltAbsorb"));
-			}
-		}
-		public bool BlackBeltMDEF
-		{
-			get => Flags.BlackBeltMDEF;
-			set
-			{
-				Flags.BlackBeltMDEF = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BlackBeltMDEF"));
-			}
-		}
-		public bool InvertedMDEF
-		{
-			get => Flags.InvertedMDEF;
-			set
-			{
-				Flags.InvertedMDEF = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("InvertedMDEF"));
 			}
 		}
 		public bool NPCSwatter

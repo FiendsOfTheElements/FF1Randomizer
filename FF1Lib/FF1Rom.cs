@@ -504,14 +504,9 @@ namespace FF1Lib
 				FixBBAbsorbBug();
 			}
 
-			if (flags.BlackBeltMDEF)
+			if (flags.MDefMode != MDefChangesEnum.None)
 			{
-				RemakeStyleMasterMDEF();
-			}
-
-			if (flags.InvertedMDEF)
-			{
-				InvertedMDEF();
+				MDefChanges(flags.MDefMode);
 			}
 
 			if (flags.ImproveTurnOrderRandomization)
