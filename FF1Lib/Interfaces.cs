@@ -119,6 +119,7 @@
 		bool ShortToFR { get; }
 		bool FreeBridge { get; }
 		bool FreeAirship { get; }
+		bool FreeShip { get; }
 		bool FreeCanal { get; }
 		bool FreeLute { get; }
 	}

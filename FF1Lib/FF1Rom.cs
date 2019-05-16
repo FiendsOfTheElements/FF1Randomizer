@@ -419,6 +419,11 @@ namespace FF1Lib
 				EnableFreeAirship();
 			}
 
+			if (flags.FreeShip)
+			{
+				EnableFreeShip();
+			}
+
 			if (flags.FreeOrbs)
 			{
 				EnableFreeOrbs();

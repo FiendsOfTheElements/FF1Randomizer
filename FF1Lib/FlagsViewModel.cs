@@ -823,6 +823,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeBridge"));
 			}
 		}
+		public bool FreeShip
+		{
+			get => Flags.FreeShip;
+			set
+			{
+				Flags.FreeShip = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeAirship"));
+			}
+		}
 		public bool FreeAirship
 		{
 			get => Flags.FreeAirship;
