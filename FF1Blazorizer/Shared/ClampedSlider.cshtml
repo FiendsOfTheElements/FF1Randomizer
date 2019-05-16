@@ -3,7 +3,7 @@
 		<label>@ChildContent</label>
 	</div>
 	<div class="col-xs-6 col-md-3">
-		<input type="checkbox" value="@Clamp" onchange="@onClampChanged"/>
+		<input type="checkbox" checked="@Clamp" onchange="@onClampChanged"/>
 		<label>@Math.Round(100.0 / (Clamp ? 1.0 : Scale)).ToString()% - @Math.Round(100.0 * Scale).ToString()%</label>
 	</div>
 	<Slider Value="@Scale" ValueChanged="@ScaleChanged" Min="@Min" Max="@Max" Step="@Step"></Slider>
