@@ -110,6 +110,7 @@ namespace FF1Lib
 		public bool OnlyRequireGameIsBeatable { get; set; }
 
 		public bool FreeBridge { get; set; }
+		public bool FreeShip { get; set; }
 		public bool FreeAirship { get; set; }
 		public bool FreeOrbs { get; set; }
 		public bool EnableCritNumberDisplay { get; set; }
@@ -447,6 +448,7 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.ShuffleObjectiveNPCs);
 			sum = AddBoolean(sum, flags.OnlyRequireGameIsBeatable);
 			sum = AddBoolean(sum, flags.FreeBridge);
+			sum = AddBoolean(sum, flags.FreeShip);
 			sum = AddBoolean(sum, flags.FreeAirship);
 			sum = AddBoolean(sum, flags.FreeOrbs);
 			sum = AddBoolean(sum, flags.EnableCritNumberDisplay);
@@ -631,6 +633,7 @@ namespace FF1Lib
 				EnableCritNumberDisplay = GetBoolean(ref sum),
 				FreeOrbs = GetBoolean(ref sum),
 				FreeAirship = GetBoolean(ref sum),
+				FreeShip = GetBoolean(ref sum),
 				FreeBridge = GetBoolean(ref sum),
 				OnlyRequireGameIsBeatable = GetBoolean(ref sum),
 				ShuffleObjectiveNPCs = GetBoolean(ref sum),
