@@ -161,7 +161,7 @@ namespace FF1Lib
 			}
 		}
 
-		public bool ShardHuntEnabled => !ChaosRush;
+		public bool ShardHuntEnabled => !FreeOrbs;
 
 		public bool ExtraShards
 		{
@@ -173,7 +173,7 @@ namespace FF1Lib
 			}
 		}
 
-		public bool ExtraShardsEnabled => ShardHunt && !ChaosRush;
+		public bool ExtraShardsEnabled => ShardHunt && !FreeOrbs;
 
 		public bool TransformFinalFormation
 		{
@@ -443,8 +443,6 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ChaosRush"));
 			}
 		}
-
-		public bool ChaosRushEnabled => !ShardHunt;
 
 		public bool DeepCastlesPossible => Flags.DeepCastlesPossible;
 		public bool DeepTownsPossible => Flags.DeepTownsPossible;

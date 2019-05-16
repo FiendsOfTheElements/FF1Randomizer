@@ -206,7 +206,7 @@ namespace FF1Lib
 				ShortenToFR(maps, flags.PreserveFiendRefights, rng);
 			}
 
-			if (flags.Treasures && flags.ShardHunt && !flags.ChaosRush)
+			if (flags.Treasures && flags.ShardHunt && !flags.FreeOrbs)
 			{
 				EnableShardHunt(rng, flags.ExtraShards ? rng.Between(24, 30) : 16, flags.NPCItems);
 			}
