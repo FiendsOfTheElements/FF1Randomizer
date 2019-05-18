@@ -187,8 +187,15 @@ namespace FF1Lib
 		public bool FORCED1 { get; set; }
 		public bool FORCED2 { get; set; }
 		public bool FORCED3 { get; set; }
-
 		public bool FORCED4 { get; set; }
+
+		public bool TAVERN1 { get; set; }
+		public bool TAVERN2 { get; set; }
+		public bool TAVERN3 { get; set; }
+		public bool TAVERN4 { get; set; }
+		public bool TAVERN5 { get; set; }
+		public bool TAVERN6 { get; set; }
+
 		public bool WeaponPermissions { get; set; }
 		public bool ArmorPermissions { get; set; }
 		public bool RecruitmentMode { get; set; }
@@ -516,6 +523,12 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.FORCED2);
 			sum = AddBoolean(sum, flags.FORCED3);
 			sum = AddBoolean(sum, flags.FORCED4);
+			sum = AddBoolean(sum, flags.TAVERN1);
+			sum = AddBoolean(sum, flags.TAVERN2);
+			sum = AddBoolean(sum, flags.TAVERN3);
+			sum = AddBoolean(sum, flags.TAVERN4);
+			sum = AddBoolean(sum, flags.TAVERN5);
+			sum = AddBoolean(sum, flags.TAVERN6);
 			sum = AddBoolean(sum, flags.WeaponPermissions);
 			sum = AddBoolean(sum, flags.ArmorPermissions);
 			sum = AddBoolean(sum, flags.RecruitmentMode);
@@ -566,6 +579,12 @@ namespace FF1Lib
 				RecruitmentMode = GetBoolean(ref sum),
 				ArmorPermissions = GetBoolean(ref sum),
 				WeaponPermissions = GetBoolean(ref sum),
+				TAVERN6 = GetBoolean(ref sum),
+				TAVERN5 = GetBoolean(ref sum),
+				TAVERN4 = GetBoolean(ref sum),
+				TAVERN3 = GetBoolean(ref sum),
+				TAVERN2 = GetBoolean(ref sum),
+				TAVERN1 = GetBoolean(ref sum),
 				FORCED4 = GetBoolean(ref sum),
 				FORCED3 = GetBoolean(ref sum),
 				FORCED2 = GetBoolean(ref sum),
