@@ -358,6 +358,26 @@
 						<CheckBox Indent IsEnabled="@Flags.RecruitmentMode" Id="tavernModeHireOnly" bind-Value="@Flags.RecruitmentModeHireOnly">Disable Reviving at Taverns</CheckBox>
 
 					</div>
+					<table>
+					<tr class="odd">
+						<td>Hireable Advernturers</td>
+						<td>Fighter</td>
+						<td>Thief</td>
+						<td>Black Belt</td>
+						<td>Red Mage</td>
+						<td>White Mage</td>
+						<td>Black Mage</td>
+					</tr>
+					<tr>
+						<td>Select to allow</td>
+						<td><CheckBox IsEnabled="@Flags.RecruitmentMode" Id="TavernFighter" bind-Value="@Flags.TAVERN1"></CheckBox></td>
+						<td><CheckBox IsEnabled="@Flags.RecruitmentMode" Id="TavernThief" bind-Value="@Flags.TAVERN2"></CheckBox></td>
+						<td><CheckBox IsEnabled="@Flags.RecruitmentMode" Id="TavernBlackBelt" bind-Value="@Flags.TAVERN3"></CheckBox></td>
+						<td><CheckBox IsEnabled="@Flags.RecruitmentMode" Id="TavernRedMage" bind-Value="@Flags.TAVERN4"></CheckBox></td>
+						<td><CheckBox IsEnabled="@Flags.RecruitmentMode" Id="TavernWhiteMage" bind-Value="@Flags.TAVERN5"></CheckBox></td>
+						<td><CheckBox IsEnabled="@Flags.RecruitmentMode" Id="TavernBlackMage" bind-Value="@Flags.TAVERN6"></CheckBox></td>
+					</tr>
+					</table>
 				</div>
 			</div>
 		</TabPane>

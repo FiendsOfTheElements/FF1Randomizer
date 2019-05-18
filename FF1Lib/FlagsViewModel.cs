@@ -1580,6 +1580,68 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NONE_CLASS4"));
 			}
 		}
+
+
+		public bool TAVERN1
+		{
+			get => Flags.TAVERN1;
+			set
+			{
+				Flags.TAVERN1 = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TAVERN1"));
+			}
+		}
+		public bool TAVERN2
+		{
+			get => Flags.TAVERN2;
+			set
+			{
+				Flags.TAVERN2 = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TAVERN2"));
+			}
+		}
+
+		public bool TAVERN3
+		{
+			get => Flags.TAVERN3;
+			set
+			{
+				Flags.TAVERN3 = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TAVERN3"));
+			}
+		}
+
+		public bool TAVERN4
+		{
+			get => Flags.TAVERN4;
+			set
+			{
+				Flags.TAVERN4 = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TAVERN4"));
+			}
+		}
+
+		public bool TAVERN5
+		{
+			get => Flags.TAVERN5;
+			set
+			{
+				Flags.TAVERN5 = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TAVERN5"));
+			}
+		}
+
+		public bool TAVERN6
+		{
+			get => Flags.TAVERN6;
+			set
+			{
+				Flags.TAVERN6 = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TAVERN6"));
+			}
+		}
+
+
 		public bool RandomWaresIncludesSpecialGear
 		{
 			get => Flags.RandomWaresIncludesSpecialGear;
