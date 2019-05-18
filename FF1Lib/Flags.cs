@@ -213,6 +213,7 @@ namespace FF1Lib
 		public bool DisableTentSaving { get; set; }
 		public bool DisableInnSaving { get; set; }
 		public bool RandomizeFormationEnemizer { get; set; }
+		public bool ThiefHitRate { get; set; }
 
 		public MDefChangesEnum MDefMode { get; set; }
 
@@ -544,6 +545,7 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.DisableTentSaving);
 			sum = AddBoolean(sum, flags.DisableInnSaving);
 			sum = AddBoolean(sum, flags.RandomizeFormationEnemizer);
+			sum = AddBoolean(sum, flags.ThiefHitRate);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(FormationShuffleModeEnum)).Cast<int>().Max() + 1, (int)flags.FormationShuffleMode);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(MDefChangesEnum)).Cast<int>().Max() + 1, (int)flags.MDefMode);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(WorldWealth)).Cast<int>().Max() + 1, (int)flags.WorldWealth);
@@ -564,6 +566,7 @@ namespace FF1Lib
 				WorldWealth = (WorldWealth)GetNumeric(ref sum, Enum.GetValues(typeof(WorldWealth)).Cast<int>().Max() + 1),
 				MDefMode = (MDefChangesEnum)GetNumeric(ref sum, Enum.GetValues(typeof(MDefChangesEnum)).Cast<int>().Max() + 1),
 				FormationShuffleMode = (FormationShuffleModeEnum)GetNumeric(ref sum, Enum.GetValues(typeof(FormationShuffleModeEnum)).Cast<int>().Max() + 1),
+				ThiefHitRate = GetBoolean(ref sum),
 				RandomizeFormationEnemizer = GetBoolean(ref sum),
 				DisableInnSaving = GetBoolean(ref sum),
 				DisableTentSaving = GetBoolean(ref sum),

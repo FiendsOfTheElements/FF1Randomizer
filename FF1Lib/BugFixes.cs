@@ -167,6 +167,13 @@ namespace FF1Lib
 			}
 		}
 
+		public void ThiefHitRate()
+		{
+			//Thief & Ninja growth rates are separate
+			Put(0x6CA5A, Blob.FromHex("04"));
+			Put(0x6CA60, Blob.FromHex("04"));
+		}
+
 		public void RemakeStyleMasterMDEF()
 		{
 			Put(0x6CA65, Blob.FromHex("030203020202030204020202"));
