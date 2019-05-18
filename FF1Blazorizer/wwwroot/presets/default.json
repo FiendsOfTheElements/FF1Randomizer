@@ -170,8 +170,13 @@
 		"FORCED1": false,
 		"FORCED2": false,
 		"FORCED3": false,
-		"FORCED4": false
-
+		"FORCED4": false,
+		"TAVERN1": true,
+		"TAVERN2": true,
+		"TAVERN3": true,
+		"TAVERN4": true,
+		"TAVERN5": true,
+		"TAVERN6": true,
 	}
 
 }

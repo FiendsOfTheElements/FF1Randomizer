@@ -555,7 +555,7 @@ namespace FF1Lib
 
 			if (flags.RecruitmentMode)
 			{
-				PubReplaceClinic(rng, flags.RecruitmentModeHireOnly);
+				PubReplaceClinic(rng, flags);
 			}
 
 			if (flags.MapCanalBridge)
