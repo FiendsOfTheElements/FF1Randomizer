@@ -245,7 +245,7 @@ namespace FF1Lib
 		public bool IncentivizeBridge => false;
 		public bool IncentivizeCanoe => NPCItems && IncentivizeCanoeItem;
 		public bool IncentivizeLute => NPCItems && !FreeLute && IncentivizeMainItems;
-		public bool IncentivizeShip => NPCItems && IncentivizeShipAndCanal;
+		public bool IncentivizeShip => NPCItems && IncentivizeShipAndCanal && !FreeShip;
 		public bool IncentivizeRod => NPCItems && IncentivizeMainItems;
 		public bool IncentivizeCube => NPCItems && IncentivizeMainItems;
 		public bool IncentivizeFloater => !FreeAirship && IncentivizeAirship;

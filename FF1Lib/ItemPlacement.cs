@@ -133,7 +133,7 @@ namespace FF1Lib
 			}
 			if (_flags.FreeShip)
 			{
-				placedItems = placedItems.Select(x => x.Item != Item.Floater ? x : NewItemPlacement(x, ReplacementItem)).ToList();
+				placedItems = placedItems.Select(x => x.Item != Item.Ship ? x : NewItemPlacement(x, ReplacementItem)).ToList();
 			}
 			if (_flags.FreeCanal)
 			{
