@@ -1784,5 +1784,14 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomizeFormationEnemizer"));
 			}
 		}
+		public bool ThiefHitRate
+		{
+			get => Flags.ThiefHitRate;
+			set
+			{
+				Flags.ThiefHitRate = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ThiefHitRate"));
+			}
+		}
 	}
 }
