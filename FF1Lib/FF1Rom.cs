@@ -514,6 +514,11 @@ namespace FF1Lib
 				MDefChanges(flags.MDefMode);
 			}
 
+			if (flags.ThiefHitRate)
+			{
+				ThiefHitRate();
+			}
+
 			if (flags.ImproveTurnOrderRandomization)
 			{
 				ImproveTurnOrderRandomization(rng);
