@@ -160,17 +160,37 @@ data_BattleMessages_Raw:                        ; actual text data
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 LvlUp_CheckIfMax:
-	ldy #$26
-    lda ($86),y
-    cmp #$31
-    beq LCheckIfMaxSkip
-	rts
-LCheckIfMaxSkip: pla
-	pla
-	pla
-	pla
-	jmp LincludeDisplay
- 
+    LDY #$26   
+    LDA ($86),Y
+    CMP #$31
+    BEQ LCheckIfMaxSkip
+    PHA
+    LDA #$32                  ; bool set for when we are level 50 to 
+    STA $10                   ; check if we have leveled up 
+    PLA
+    RTS
+  LCheckIfMaxSkip:
+    PLA
+    PLA
+    PLA
+    TAX
+    PLA
+    TXA
+    CMP #$4F
+    BNE LTavernModeExit
+    LDA $10
+    LDX #$00
+    STX $10
+    CMP #$32
+    BNE LNoDisplay
+    JMP $8853                 ; LvlUp_Display
+  LTavernModeExit:
+    JMP $87D5                 ; Tavern Mode, exits to bank 0E
+  LNoDisplay:
+    PLA
+    PLA
+    RTS
+    
 
 .advance $874A
 ; extra room for future level up changes
