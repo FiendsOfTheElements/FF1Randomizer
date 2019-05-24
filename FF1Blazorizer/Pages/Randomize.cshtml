@@ -488,7 +488,7 @@
 	protected override async Task OnInitAsync()
 	{
 		Flags.PropertyChanged += (sender, args) => StateHasChanged();
-		Flags.PropertyChanged += (sender, args) => SetQueryString();
+		Flags.PropertyChanged += async (sender, args) => await SetQueryString();
 
 		// This crap is a workaround for a type loading exception in Blazor 0.7.
 		typeof(INotifyPropertyChanged).GetHashCode();
@@ -501,7 +501,7 @@
 		}
 		else
 		{
-			OnNewSeed(null);
+			await OnNewSeed(null);
 		}
 
 		if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("f", out var flags))
@@ -533,12 +533,12 @@
 		_fileData = Convert.FromBase64String(encoded);
 	}
 
-	void OnSeedInputChanged(UIChangeEventArgs e)
+	async Task OnSeedInputChanged(UIChangeEventArgs e)
 	{
-		ValidateSeed((string)e.Value);
+		await ValidateSeed((string)e.Value);
 	}
 
-	void ValidateSeed(string seed)
+	async Task ValidateSeed(string seed)
 	{
 		if (seed == _seed)
 			return;
@@ -555,7 +555,7 @@
 			Blob.FromHex(_seed);
 			_seed = seed.PadLeft(8, '0');
 			_seedInputClass = "";
-			SetQueryString();
+			await SetQueryString();
 		}
 		catch (Exception)
 		{
@@ -563,9 +563,9 @@
 		}
 	}
 
-	void OnNewSeed(UIMouseEventArgs e)
+	async Task OnNewSeed(UIMouseEventArgs e)
 	{
-		ValidateSeed(Convert.ToString(_rng.Next(), 16).PadLeft(8, '0'));
+		await ValidateSeed(Convert.ToString(_rng.Next(), 16).PadLeft(8, '0'));
 	}
 
 	void OnCopyToClipboard(UIMouseEventArgs e)
