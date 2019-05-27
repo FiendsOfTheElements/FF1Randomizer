@@ -283,12 +283,12 @@ namespace FF1Lib
 					locations.Contains((source as MapObject)?.SecondLocation ?? MapLocation.StartingLocation);
 		}
 
-		public static IEnumerable<MapLocation> AccessibleMapLocations(
+		public static List<MapLocation> AccessibleMapLocations(
 										AccessRequirement currentAccess,
 										MapChange currentMapChanges,
 										Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullLocationRequirements)
 		{
-			return fullLocationRequirements.Where(x => x.Value.Item1.Any(y => currentMapChanges.HasFlag(y) && currentAccess.HasFlag(x.Value.Item2))).Select(x => x.Key);
+			return fullLocationRequirements.Where(x => x.Value.Item1.Any(y => currentMapChanges.HasFlag(y) && currentAccess.HasFlag(x.Value.Item2))).Select(x => x.Key).ToList();
 		}
 
 		public static (bool Complete, List<MapLocation> MapLocations, AccessRequirement Requirements) CheckSanity(List<IRewardSource> treasurePlacements,

@@ -1009,11 +1009,11 @@ namespace FF1Lib
 				var outputRow = new List<byte>();
 				byte tile = 0;
 				byte runCount = 1;
-				if (row.Distinct().Count() == 1)
-				{
-					outputMap.Add(new List<byte> { 0x97, 0x00, 0xFF });
-					continue;
-				}
+				//if (row.Distinct().Count() == 1)
+				//{
+				//	outputMap.Add(new List<byte> { 0x97, 0x00, 0xFF });
+				//	continue;
+				//}
 				for (var tileIndex = 0; tileIndex < 256; tileIndex++)
 				{
 					tile = row[tileIndex];
