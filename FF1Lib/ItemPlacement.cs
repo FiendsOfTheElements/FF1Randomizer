@@ -353,13 +353,14 @@ namespace FF1Lib
 				}
 
 				currentIteration++;
-				var accessibleLocations = currentItemLocations();
-				var currentItems = accessibleLocations.Select(x => x.Item).ToList();
-				if (accessibleLocations.Count() <= accessibleLocationCount)
+				var accessibleLocations = currentItemLocations().ToList();
+				if (accessibleLocations.Count <= accessibleLocationCount)
 				{
 					return (false, currentMapLocations().ToList(), currentAccess);
 				}
-				accessibleLocationCount = accessibleLocations.Count();
+
+				accessibleLocationCount = accessibleLocations.Count;
+				var currentItems = accessibleLocations.Select(x => x.Item).ToList();
 
 				if (!currentAccess.HasFlag(AccessRequirement.Key) &&
 					currentItems.Contains(Item.Key))
