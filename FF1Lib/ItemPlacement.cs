@@ -131,6 +131,10 @@ namespace FF1Lib
 			{
 				placedItems = placedItems.Select(x => x.Item != Item.Floater ? x : NewItemPlacement(x, ReplacementItem)).ToList();
 			}
+			if (_flags.FreeShip)
+			{
+				placedItems = placedItems.Select(x => x.Item != Item.Ship ? x : NewItemPlacement(x, ReplacementItem)).ToList();
+			}
 			if (_flags.FreeCanal)
 			{
 				placedItems = placedItems.Select(x => x.Item != Item.Canal ? x : NewItemPlacement(x, ReplacementItem)).ToList();
@@ -308,6 +312,10 @@ namespace FF1Lib
 			if (victoryConditions.FreeBridge)
 			{
 				currentMapChanges |= MapChange.Bridge;
+			}
+			if (victoryConditions.FreeShip)
+			{
+				currentMapChanges |= MapChange.Ship;
 			}
 			if (victoryConditions.FreeAirship)
 			{

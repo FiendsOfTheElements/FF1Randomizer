@@ -59,21 +59,23 @@ namespace FF1Lib
 
 			ItemPlacement placement = ItemPlacement.Create(flags, incentivesData, treasurePool, caravanItemLocation, overworldMap);
 			var placedItems = placement.PlaceSaneItems(rng);
-
+			
 			// Output the results to the ROM
 			foreach (var item in placedItems.Where(x => !x.IsUnused && x.Address < 0x80000 && (!vanillaNPCs || x is TreasureChest)))
 			{
 				//Debug.WriteLine(item.SpoilerText);
 				item.Put(this);
 			}
-
 			// Move the ship someplace closer to where it really ends up.
-			MapLocation shipLocation = placedItems.Find(reward => reward.Item == Item.Ship).MapLocation;
-			if (overridenOverworld != null && overridenOverworld.TryGetValue(shipLocation, out var overworldIndex))
+			if (!flags.FreeShip)
 			{
-				shipLocation = teleporters.OverworldMapLocations.TryGetValue(overworldIndex, out var vanillaShipLocation) ? vanillaShipLocation : shipLocation;
+				MapLocation shipLocation = placedItems.Find(reward => reward.Item == Item.Ship).MapLocation;
+				if (overridenOverworld != null && overridenOverworld.TryGetValue(shipLocation, out var overworldIndex))
+				{
+					shipLocation = teleporters.OverworldMapLocations.TryGetValue(overworldIndex, out var vanillaShipLocation) ? vanillaShipLocation : shipLocation;
+				}
+				MoveShipToRewardSource(shipLocation);
 			}
-			MoveShipToRewardSource(shipLocation);
 			return placedItems;
 		}
 

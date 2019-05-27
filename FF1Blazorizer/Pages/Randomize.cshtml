@@ -115,6 +115,7 @@
 						<CheckBox Id="shuffleObjectiveNPCsCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.ShuffleObjectiveNPCs">Objective NPCs</CheckBox>
 						<div class="checkbox-cell"></div>
 						<h4>Freebies</h4>
+						<CheckBox Id="freeShipCheckBox" bind-Value="@Flags.FreeShip">Free Ship</CheckBox>
 						<CheckBox Id="freeAirshipCheckBox" bind-Value="@Flags.FreeAirship">Free Airship</CheckBox>
 						<CheckBox Id="freeBridgeCheckBox" bind-Value="@Flags.FreeBridge">Free Bridge</CheckBox>
 						<CheckBox Id="freeCanalCheckBox" bind-Value="@Flags.FreeCanal">Free Canal</CheckBox>
@@ -166,7 +167,7 @@
 					<div class="col-md-4">
 						<h4>Chaos Rush</h4>
 						<p>No time for a long race? Chaos Rush combined with Free Orbs lets you begin the game with the Temple of Fiends Revisited completely unlocked!</p>
-						<CheckBox Id="chaosRushCheckBox" IsEnabled="@Flags.ChaosRushEnabled" bind-Value="@Flags.ChaosRush">CHAOS Rush</CheckBox>
+						<CheckBox Id="chaosRushCheckBox" bind-Value="@Flags.ChaosRush">CHAOS Rush</CheckBox>
 						<CheckBox Id="freeOrbsCheckBox" IsEnabled="@Flags.FreeOrbsEnabled" bind-Value="@Flags.FreeOrbs">Free Orbs</CheckBox>
 					</div>
 					<div class="col-md-4">
@@ -357,6 +358,26 @@
 						<CheckBox Indent IsEnabled="@Flags.RecruitmentMode" Id="tavernModeHireOnly" bind-Value="@Flags.RecruitmentModeHireOnly">Disable Reviving at Taverns</CheckBox>
 
 					</div>
+					<table>
+					<tr class="odd">
+						<td>Hireable Advernturers</td>
+						<td>Fighter</td>
+						<td>Thief</td>
+						<td>Black Belt</td>
+						<td>Red Mage</td>
+						<td>White Mage</td>
+						<td>Black Mage</td>
+					</tr>
+					<tr>
+						<td>Select to allow</td>
+						<td><CheckBox IsEnabled="@Flags.RecruitmentMode" Id="TavernFighter" bind-Value="@Flags.TAVERN1"></CheckBox></td>
+						<td><CheckBox IsEnabled="@Flags.RecruitmentMode" Id="TavernThief" bind-Value="@Flags.TAVERN2"></CheckBox></td>
+						<td><CheckBox IsEnabled="@Flags.RecruitmentMode" Id="TavernBlackBelt" bind-Value="@Flags.TAVERN3"></CheckBox></td>
+						<td><CheckBox IsEnabled="@Flags.RecruitmentMode" Id="TavernRedMage" bind-Value="@Flags.TAVERN4"></CheckBox></td>
+						<td><CheckBox IsEnabled="@Flags.RecruitmentMode" Id="TavernWhiteMage" bind-Value="@Flags.TAVERN5"></CheckBox></td>
+						<td><CheckBox IsEnabled="@Flags.RecruitmentMode" Id="TavernBlackMage" bind-Value="@Flags.TAVERN6"></CheckBox></td>
+					</tr>
+					</table>
 				</div>
 			</div>
 		</TabPane>
@@ -389,8 +410,7 @@
 						<CheckBox Id="rebalanceSpellsCheckBox" bind-Value="@Flags.RebalanceSpells">LOCK and LOK2 Always Hit</CheckBox>
 						<CheckBox Id="enemyStatusAttackBugCheckBox" bind-Value="@Flags.EnemyStatusAttackBug">Enemy Status Attacks</CheckBox>
 						<CheckBox Id="blackBeltAbsorbCheckBox" bind-Value="@Flags.BlackBeltAbsorb">Bl. Belt & Master Absorb Calculation</CheckBox>
-						<CheckBox Id="blackBeltMDEFCheckBox" IsEnabled="@(!Flags.InvertedMDEF)" bind-Value="@Flags.BlackBeltMDEF">Bl. Belt & Master MDEF Growth</CheckBox>
-						<CheckBox Id="invertedMDEFCheckBox" IsEnabled="@(!Flags.BlackBeltMDEF)" bind-Value="@Flags.InvertedMDEF">Inverted MDEF Growth</CheckBox>
+						<EnumDropDown TItem="MDefChangesEnum" bind-Value="@Flags.MDefMode"></EnumDropDown>
 						<CheckBox Id="enemyElementalResistancesCheckBox" bind-Value="@Flags.EnemyElementalResistancesBug">Enemy Elemental Resistances</CheckBox>
 						<CheckBox Id="enemySpellsTargetingAlliesCheckBox" bind-Value="@Flags.EnemySpellsTargetingAllies">Enemy Spells Targeting Allies</CheckBox>
 						<CheckBox Id="improveTurnOrderRandomizationCheckBox" bind-Value="@Flags.ImproveTurnOrderRandomization">Improve Turn Order Randomization</CheckBox>
@@ -418,6 +438,8 @@
 						<CheckBox Id="DisableTentSaving" bind-Value="@Flags.DisableTentSaving">Disable Tent/Cabin/House Saving on Overworld</CheckBox>
 						<CheckBox Id="DisableInnSaving" bind-Value="@Flags.DisableInnSaving">Disable Inn Saving</CheckBox>
 						<CheckBox Id="RandomizeFormationEnemizer" bind-Value="@Flags.RandomizeFormationEnemizer">Randomizer Formations (Enemizer)</CheckBox>
+						<div class="checkbox-cell"></div>
+						<CheckBox Id="ThiefHitCheckBox" bind-Value="@Flags.ThiefHitRate">Balance Change: Double the Thief & Ninja's Hit% growth.</CheckBox>
 					</div>
 					<div class="col-md-6">
 					</div>

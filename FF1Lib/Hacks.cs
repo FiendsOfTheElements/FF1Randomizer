@@ -263,17 +263,43 @@ namespace FF1Lib
 			PutInBank(0x0E, 0x95D0, Blob.FromHex("C0804000")); // lut used by the above code
 		}
 
-		public void PubReplaceClinic(MT19337 rng, bool hireOnly)
+		public void PubReplaceClinic(MT19337 rng, Flags flags)
 		{
-			List<byte> pub_lut = new List<byte> { 0x0, 0x1, 0x2, 0x3, 0x4, 0x5 };
-			pub_lut.Shuffle(rng);
+			// Copy some CHR data to make the Tavern look more like one.
+			const int ShopTileDataOffet = 0x24000;
+			const int TileSize = 16;
+			const int ArmorTileOffset = 14 * 1 * TileSize;
+			const int ClinicTileOffset = 14 * 4 * TileSize;
+			const int ItemTileOffset = 14 * 6 * TileSize;
+			const int CaravanTileOffset = 14 * 7 * TileSize;
+			const int DecorationOffset = TileSize * 4;
+			const int VendorOffset = TileSize * 8;
+
+			Put(ShopTileDataOffet + ClinicTileOffset, Get(ShopTileDataOffet + CaravanTileOffset, TileSize * 4)); // Tablecloth
+			Put(ShopTileDataOffet + ClinicTileOffset + DecorationOffset, Get(ShopTileDataOffet + ItemTileOffset + DecorationOffset, TileSize * 4)); // Barrels of fine ale
+			Put(ShopTileDataOffet + ClinicTileOffset + VendorOffset, Get(ShopTileDataOffet + ArmorTileOffset + VendorOffset, TileSize * 6)); // Armorer tending bar
+			Put(0x03250, Get(0x03258, 4)); // Caravan palette
+
+			List<byte> options = new List<byte> { };
+			if (flags.TAVERN1) options.Add(0x0);
+			if (flags.TAVERN2) options.Add(0x1);
+			if (flags.TAVERN3) options.Add(0x2);
+			if (flags.TAVERN4) options.Add(0x3);
+			if (flags.TAVERN5) options.Add(0x4);
+			if (flags.TAVERN6) options.Add(0x5);
+
+			if (options.Count == 0) options = new List<byte> { 0x0, 0x1, 0x2, 0x3, 0x4, 0x5 };
+			List<byte> pub_lut = new List<byte> { };
+			while (pub_lut.Count < 7)
+			{
+				options.Shuffle(rng);
+				pub_lut.AddRange(options);
+			}
 			pub_lut.Insert(3, (byte) 0xFF); // Will break if Melmond ever gets a clinic, Nones will need to be hired dead, this results in them being alive.
-			int lefein_class = rng.Between(0, 5);
-			pub_lut.Add((byte)lefein_class);
 			Put(0x38066, Blob.FromHex("9D8A9F8E9B97")); // Replaces "CLINIC" with "TAVERN"
 														// EnterClinic
 			PutInBank(0x0E, 0xA5A1, Blob.FromHex("60A90085248525205BAAA0FFC8B91DA7991003D0F7A902991003C8A648BD0A9D69F0991003C8A905991003C8A9C5991003C8A900991003A910853EA903853F2032AA20D7A6A5628D0C03B0B4209BAA20C2A8B0ADA562D0A92089A6AD0C03186D0C036D0C03AABD10036A6A6A29C04818201C9D68B08BAAA562D0458A690A8510A96185118A488512A9638513A000A90091109112C8C00A30F7C040D0F59D266120E99CA448B90A9D9D00612071C2A00E20799068AA900918BD006169069D0061A9019D0A61A9009D016120349DEAEAEAEA200CE92078A7A921205BAA2043A7A5240525F0F74CA2A5"));
-			PutInBank(0x0E, 0x9D0A, pub_lut.ToArray());
+			PutInBank(0x0E, 0x9D0A, pub_lut.Take(8).ToArray());
 			// ClinicBuildNameString
 			PutInBank(0x0E, 0xA6DD, Blob.FromHex("EDA6A910853EA903853F2032AA4C07A9A000A20086638A2A2A2A29036910991003A900991103A90199120398186903A8E6638A186940AAD0DDA900991003386091ACB5A8FFA40500"));
 			// Moved routine
@@ -298,7 +324,7 @@ namespace FF1Lib
 			Data[0x111A] = 0x76;
 			Data[0x119A] = 0x77;
 
-			if (hireOnly) {
+			if (flags.RecruitmentModeHireOnly) {
 				PutInBank(0x0E, 0xA60F, Blob.FromHex("EAEAEAEAEAEAEAEA"));
 			}
 

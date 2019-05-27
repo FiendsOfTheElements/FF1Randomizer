@@ -110,6 +110,7 @@ namespace FF1Lib
 		public bool OnlyRequireGameIsBeatable { get; set; }
 
 		public bool FreeBridge { get; set; }
+		public bool FreeShip { get; set; }
 		public bool FreeAirship { get; set; }
 		public bool FreeOrbs { get; set; }
 		public bool EnableCritNumberDisplay { get; set; }
@@ -130,8 +131,6 @@ namespace FF1Lib
 		public bool ChanceToRun { get; set; }
 		public bool SpellBugs { get; set; }
 		public bool BlackBeltAbsorb { get; set; }
-		public bool BlackBeltMDEF { get; set; }
-		public bool InvertedMDEF { get; set; }
 		public bool NPCSwatter { get; set; }
 
 		public bool EnemyStatusAttackBug { get; set; }
@@ -188,8 +187,15 @@ namespace FF1Lib
 		public bool FORCED1 { get; set; }
 		public bool FORCED2 { get; set; }
 		public bool FORCED3 { get; set; }
-
 		public bool FORCED4 { get; set; }
+
+		public bool TAVERN1 { get; set; }
+		public bool TAVERN2 { get; set; }
+		public bool TAVERN3 { get; set; }
+		public bool TAVERN4 { get; set; }
+		public bool TAVERN5 { get; set; }
+		public bool TAVERN6 { get; set; }
+
 		public bool WeaponPermissions { get; set; }
 		public bool ArmorPermissions { get; set; }
 		public bool RecruitmentMode { get; set; }
@@ -207,6 +213,9 @@ namespace FF1Lib
 		public bool DisableTentSaving { get; set; }
 		public bool DisableInnSaving { get; set; }
 		public bool RandomizeFormationEnemizer { get; set; }
+		public bool ThiefHitRate { get; set; }
+
+		public MDefChangesEnum MDefMode { get; set; }
 
 		public FormationShuffleModeEnum FormationShuffleMode { get; set; }
 
@@ -244,7 +253,7 @@ namespace FF1Lib
 		public bool IncentivizeBridge => false;
 		public bool IncentivizeCanoe => NPCItems && IncentivizeCanoeItem;
 		public bool IncentivizeLute => NPCItems && !FreeLute && IncentivizeMainItems;
-		public bool IncentivizeShip => NPCItems && IncentivizeShipAndCanal;
+		public bool IncentivizeShip => NPCItems && IncentivizeShipAndCanal && !FreeShip;
 		public bool IncentivizeRod => NPCItems && IncentivizeMainItems;
 		public bool IncentivizeCube => NPCItems && IncentivizeMainItems;
 		public bool IncentivizeFloater => !FreeAirship && IncentivizeAirship;
@@ -447,6 +456,7 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.ShuffleObjectiveNPCs);
 			sum = AddBoolean(sum, flags.OnlyRequireGameIsBeatable);
 			sum = AddBoolean(sum, flags.FreeBridge);
+			sum = AddBoolean(sum, flags.FreeShip);
 			sum = AddBoolean(sum, flags.FreeAirship);
 			sum = AddBoolean(sum, flags.FreeOrbs);
 			sum = AddBoolean(sum, flags.EnableCritNumberDisplay);
@@ -464,8 +474,6 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.ChanceToRun);
 			sum = AddBoolean(sum, flags.SpellBugs);
 			sum = AddBoolean(sum, flags.BlackBeltAbsorb);
-			sum = AddBoolean(sum, flags.BlackBeltMDEF);
-			sum = AddBoolean(sum, flags.InvertedMDEF);
 			sum = AddBoolean(sum, flags.NPCSwatter);
 			sum = AddBoolean(sum, flags.EnemyStatusAttackBug);
 			sum = AddBoolean(sum, flags.EnemySpellsTargetingAllies);
@@ -516,6 +524,12 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.FORCED2);
 			sum = AddBoolean(sum, flags.FORCED3);
 			sum = AddBoolean(sum, flags.FORCED4);
+			sum = AddBoolean(sum, flags.TAVERN1);
+			sum = AddBoolean(sum, flags.TAVERN2);
+			sum = AddBoolean(sum, flags.TAVERN3);
+			sum = AddBoolean(sum, flags.TAVERN4);
+			sum = AddBoolean(sum, flags.TAVERN5);
+			sum = AddBoolean(sum, flags.TAVERN6);
 			sum = AddBoolean(sum, flags.WeaponPermissions);
 			sum = AddBoolean(sum, flags.ArmorPermissions);
 			sum = AddBoolean(sum, flags.RecruitmentMode);
@@ -531,7 +545,9 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.DisableTentSaving);
 			sum = AddBoolean(sum, flags.DisableInnSaving);
 			sum = AddBoolean(sum, flags.RandomizeFormationEnemizer);
+			sum = AddBoolean(sum, flags.ThiefHitRate);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(FormationShuffleModeEnum)).Cast<int>().Max() + 1, (int)flags.FormationShuffleMode);
+			sum = AddNumeric(sum, Enum.GetValues(typeof(MDefChangesEnum)).Cast<int>().Max() + 1, (int)flags.MDefMode);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(WorldWealth)).Cast<int>().Max() + 1, (int)flags.WorldWealth);
 			sum = AddBoolean(sum, flags.AllowStartAreaDanager);
 			sum = AddBoolean(sum, flags.Spoilers);
@@ -548,7 +564,9 @@ namespace FF1Lib
 				Spoilers = GetBoolean(ref sum),
 				AllowStartAreaDanager = GetBoolean(ref sum),
 				WorldWealth = (WorldWealth)GetNumeric(ref sum, Enum.GetValues(typeof(WorldWealth)).Cast<int>().Max() + 1),
+				MDefMode = (MDefChangesEnum)GetNumeric(ref sum, Enum.GetValues(typeof(MDefChangesEnum)).Cast<int>().Max() + 1),
 				FormationShuffleMode = (FormationShuffleModeEnum)GetNumeric(ref sum, Enum.GetValues(typeof(FormationShuffleModeEnum)).Cast<int>().Max() + 1),
+				ThiefHitRate = GetBoolean(ref sum),
 				RandomizeFormationEnemizer = GetBoolean(ref sum),
 				DisableInnSaving = GetBoolean(ref sum),
 				DisableTentSaving = GetBoolean(ref sum),
@@ -564,6 +582,12 @@ namespace FF1Lib
 				RecruitmentMode = GetBoolean(ref sum),
 				ArmorPermissions = GetBoolean(ref sum),
 				WeaponPermissions = GetBoolean(ref sum),
+				TAVERN6 = GetBoolean(ref sum),
+				TAVERN5 = GetBoolean(ref sum),
+				TAVERN4 = GetBoolean(ref sum),
+				TAVERN3 = GetBoolean(ref sum),
+				TAVERN2 = GetBoolean(ref sum),
+				TAVERN1 = GetBoolean(ref sum),
 				FORCED4 = GetBoolean(ref sum),
 				FORCED3 = GetBoolean(ref sum),
 				FORCED2 = GetBoolean(ref sum),
@@ -614,8 +638,6 @@ namespace FF1Lib
 				EnemySpellsTargetingAllies = GetBoolean(ref sum),
 				EnemyStatusAttackBug = GetBoolean(ref sum),
 				NPCSwatter = GetBoolean(ref sum),
-				InvertedMDEF = GetBoolean(ref sum),
-				BlackBeltMDEF = GetBoolean(ref sum),
 				BlackBeltAbsorb = GetBoolean(ref sum),
 				SpellBugs = GetBoolean(ref sum),
 				ChanceToRun = GetBoolean(ref sum),
@@ -633,6 +655,7 @@ namespace FF1Lib
 				EnableCritNumberDisplay = GetBoolean(ref sum),
 				FreeOrbs = GetBoolean(ref sum),
 				FreeAirship = GetBoolean(ref sum),
+				FreeShip = GetBoolean(ref sum),
 				FreeBridge = GetBoolean(ref sum),
 				OnlyRequireGameIsBeatable = GetBoolean(ref sum),
 				ShuffleObjectiveNPCs = GetBoolean(ref sum),

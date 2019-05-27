@@ -206,7 +206,7 @@ namespace FF1Lib
 				ShortenToFR(maps, flags.PreserveFiendRefights, rng);
 			}
 
-			if (flags.Treasures && flags.ShardHunt && !flags.ChaosRush)
+			if (flags.Treasures && flags.ShardHunt && !flags.FreeOrbs)
 			{
 				EnableShardHunt(rng, flags.ExtraShards ? rng.Between(24, 30) : 16, flags.NPCItems);
 			}
@@ -419,6 +419,11 @@ namespace FF1Lib
 				EnableFreeAirship();
 			}
 
+			if (flags.FreeShip)
+			{
+				EnableFreeShip();
+			}
+
 			if (flags.FreeOrbs)
 			{
 				EnableFreeOrbs();
@@ -504,14 +509,14 @@ namespace FF1Lib
 				FixBBAbsorbBug();
 			}
 
-			if (flags.BlackBeltMDEF)
+			if (flags.MDefMode != MDefChangesEnum.None)
 			{
-				RemakeStyleMasterMDEF();
+				MDefChanges(flags.MDefMode);
 			}
 
-			if (flags.InvertedMDEF)
+			if (flags.ThiefHitRate)
 			{
-				InvertedMDEF();
+				ThiefHitRate();
 			}
 
 			if (flags.ImproveTurnOrderRandomization)
@@ -555,7 +560,7 @@ namespace FF1Lib
 
 			if (flags.RecruitmentMode)
 			{
-				PubReplaceClinic(rng, flags.RecruitmentModeHireOnly);
+				PubReplaceClinic(rng, flags);
 			}
 
 			if (flags.MapCanalBridge)

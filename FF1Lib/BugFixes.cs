@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -7,6 +8,16 @@ using RomUtilities;
 
 namespace FF1Lib
 {
+	public enum MDefChangesEnum
+	{
+		[Description("Use Vanilla Magic Defense")]
+		None = 0,
+		[Description("Replace Black Belt / Master MDef Growth")]
+		BBFix,
+		[Description("Invert all player Magic Defense Growth")]
+		Invert
+	}
+
 	public partial class FF1Rom
 	{
 		public void FixHouse(bool MPfix, bool HPfix)
@@ -142,6 +153,25 @@ namespace FF1Lib
 			Put(0x3B0F7, Blob.FromHex("EAEAEAEAEA20549C")); // Exit
 			Put(0x38AB3, Blob.FromHex("95B237C5FF972E5D4B26B7C5FF9EB61A1C3005B6B3A84E1B2EA8BB5BC40599B8B6ABFF8BFF2820A53521")); // Text
 			Put(0x38BAA, Blob.FromHex("95B2B6B7C5FF97B2FFBAA4BCFFB2B8B7C5059EB6A8FFB7ABACB605B6B3A8AFAFFFB7B2FFA8BBACB7C4FF99B8B6ABFF8BFFB7B2FFA4A5B2B5B7"));
+		}
+
+		public void MDefChanges(MDefChangesEnum mode)
+		{
+			if (mode == MDefChangesEnum.BBFix)
+			{
+				RemakeStyleMasterMDEF();
+			}
+			if (mode == MDefChangesEnum.Invert)
+			{
+				InvertedMDEF();
+			}
+		}
+
+		public void ThiefHitRate()
+		{
+			//Thief & Ninja growth rates are separate
+			Put(0x6CA5A, Blob.FromHex("04"));
+			Put(0x6CA60, Blob.FromHex("04"));
 		}
 
 		public void RemakeStyleMasterMDEF()
