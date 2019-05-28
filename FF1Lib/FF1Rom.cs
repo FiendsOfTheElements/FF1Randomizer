@@ -165,6 +165,11 @@ namespace FF1Lib
 			}
 #endif
 
+			if (flags.RandomizeFormationEnemizer)
+			{
+				DoEnemizer(rng, false, flags.RandomizeFormationEnemizer, false);
+			}
+
 			if (preferences.ModernBattlefield)
 			{
 				EnableModernBattlefield();
@@ -341,7 +346,7 @@ namespace FF1Lib
 			// Put this before other encounter / trap tile edits.
 			if (flags.AllowUnsafeMelmond)
 			{
-				EnableMelmondGhetto();
+				EnableMelmondGhetto(flags.RandomizeFormationEnemizer);
 			}
 
 			// After unrunnable shuffle and before formation shuffle. Perfect!
@@ -583,11 +588,6 @@ namespace FF1Lib
 			if(flags.DisableInnSaving)
 			{
 				CannotSaveAtInns();
-			}
-
-			if(flags.RandomizeFormationEnemizer)
-			{
-				DoEnemizer(rng, false, flags.RandomizeFormationEnemizer, false);
 			}
 
 			// We have to do "fun" stuff last because it alters the RNG state.
