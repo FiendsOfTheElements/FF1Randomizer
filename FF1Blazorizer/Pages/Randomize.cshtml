@@ -12,17 +12,20 @@
 
 <div class="content px-4 tinted">
 	<div class="is-dark nes-container">
-		<div class="row">
+		<div class="row spaced-row">
 			<div class="col-md-4">
-				Upload Rom: <br />
+				@RomMessage<br />
 				<input type="file" id="fileInput" onchange="@OnFileChanged" />
 				<br />
 			</div>
-			<div class="col-md-8">
+			<div class="col-md-4">
+				<CheckBox Id="rememberCheckBox" bind-Value="@RememberROM">Remember ROM</CheckBox>
+			</div>
+			<div class="col-md-4">
 				<CheckBox Id="spoilersCheckBox" bind-Value="@Flags.Spoilers">Generate Spoiler Log!</CheckBox>
 			</div>
 		</div>
-		<div class="row">
+		<div class="row spaced-row">
 			<div class="col-md-2">
 				Seed: <br />
 				<input type="text" class="nes-input @(_seedInputClass)" id="seedInput" onchange="@OnSeedInputChanged" value="@(_seed)"/>
@@ -499,6 +502,9 @@
 	private readonly Random _rng = new Random();
 
 	private string StatusMessage = "";
+	private string RomMessage = "Upload Rom:";
+
+	private bool RememberROM = false;
 
 	void ActivateTab(string tab)
 	{
@@ -542,6 +548,8 @@
 		}
 
 		await LoadPreferences();
+
+		await LoadLastROM();
 	}
 
 	async Task SetQueryString()
@@ -558,6 +566,17 @@
 	async Task OnFileChanged(UIChangeEventArgs e)
 	{
 		var encoded = await JSRuntime.Current.InvokeAsync<string>("handleFileSelect", "fileInput");
+		RomMessage = "Using Selected ROM.";
+		SetFileData(encoded);
+
+		if (RememberROM)
+		{
+			await LocalStorage.SetItem<string>("file", encoded);
+		}
+	}
+
+	void SetFileData(string encoded)
+	{
 		_fileData = Convert.FromBase64String(encoded);
 	}
 
@@ -617,7 +636,7 @@
 		}
 		catch (Exception)
 		{
-			StatusMessage = "Invalid Flags String";
+			StatusMessage = "Invalid Flags String.";
 		}
 	}
 
@@ -629,6 +648,18 @@
 	async Task SavePreferences()
 	{
 		await LocalStorage.SetItem("preferences", Flags.Preferences);
+	}
+
+	async Task LoadLastROM()
+	{
+		string encoded = await LocalStorage.GetItem<string>("file");
+		RememberROM = encoded != null && encoded.Length > 0;
+		if (RememberROM)
+		{
+			SetFileData(encoded);
+			RomMessage = "Using Remembered ROM.";
+			StatusMessage += " Remembered last used ROM.";
+		}
 	}
 
 	async Task OnRandomize(UIMouseEventArgs e)
@@ -645,6 +676,14 @@
 			_rom = new FF1Rom(stream);
 		}
 
+		if (RememberROM)
+		{
+			await LocalStorage.SetItem("file", Convert.ToBase64String(_fileData));
+		}
+		else
+		{
+			await LocalStorage.RemoveItem("file");
+		}
 
 		StatusMessage = "Generating Final Fantasy Randomizer ROM ... Please Wait ... ";
 		StateHasChanged();
