@@ -18,6 +18,10 @@ app {
     background: #112;
 }
 
+.spaced-row {
+    margin-bottom: 4px;
+}
+
 .main {
     flex: 1;
 }
