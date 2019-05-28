@@ -582,7 +582,7 @@ namespace FF1Lib
 			PutInBank(0x1F, 0xCFD1, CreateLongJumpTableEntry(0x0F, 0x92A0));
 		}
 
-		public void EnableMelmondGhetto(bool that_enemizer_piece_of_crap)
+		public void EnableMelmondGhetto(bool enemizerOn)
 		{
 			// Set town desert tile to random encounters.
 			// If enabled, trap tile shuffle will change that second byte to 0x00 afterward.
@@ -592,7 +592,7 @@ namespace FF1Lib
 			// Give Melmond Desert backdrop
 			Data[0x0334D] = (byte)Backdrop.Desert;
 
-			if(!that_enemizer_piece_of_crap) // if enemizer formation shuffle is on, it will have assigned battles to Melmond already
+			if(!enemizerOn) // if enemizer formation shuffle is on, it will have assigned battles to Melmond already
 				Put(0x2C218, Blob.FromHex("0F0F8F2CACAC7E7C"));
 		}
 
