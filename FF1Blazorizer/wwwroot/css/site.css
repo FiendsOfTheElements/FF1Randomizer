@@ -50,6 +50,10 @@ app {
             color: white;
         }
 
+.nes-btn:active {
+    transform:translateY(2px);
+}
+
 .content {
     padding-top: 1.1rem;
 }
