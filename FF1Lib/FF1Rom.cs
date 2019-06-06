@@ -474,7 +474,7 @@ namespace FF1Lib
 				ChangeUnrunnableRunToWait();
 			}
 
-			if (flags.EnableCritNumberDisplay)
+			if (flags.SpeedHacks && flags.EnableCritNumberDisplay)
 			{
 				EnableCritNumberDisplay();
 			}
