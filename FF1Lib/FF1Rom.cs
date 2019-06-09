@@ -8,6 +8,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using FF1Lib.Assembly;
+using System.Reflection;
 
 namespace FF1Lib
 {
@@ -239,7 +240,7 @@ namespace FF1Lib
 
 					IncentiveData incentivesData = new IncentiveData(rng, flags, overworldMap, shopItemLocation);
 
-					if (flags.Shops)
+					if (ConvertTriState(flags.Shops, rng))
 					{
 						var excludeItemsFromRandomShops = new List<Item>();
 						if (flags.Treasures)
@@ -620,6 +621,13 @@ namespace FF1Lib
 
 			WriteSeedAndFlags(Version, seed.ToHex(), Flags.EncodeFlagsText(flags));
 			ExtraTrackingAndInitCode();
+		}
+
+		private bool ConvertTriState(bool? tristate, MT19337 rng)
+		{
+			int rngval = rng.Between(0, 1);
+			bool rval = tristate ?? (rngval == 0);
+			return rval;
 		}
 
 		private void EnableNPCSwatter()

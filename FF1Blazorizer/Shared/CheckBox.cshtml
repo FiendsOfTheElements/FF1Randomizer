@@ -22,8 +22,8 @@
 	private bool Indent { get; set; }
 
 	[Parameter]
-	private bool IsEnabled { get; set; } = true;
-	private string DisabledClass => IsEnabled ? "" : "disabled";
+	private bool? IsEnabled { get; set; } = true;
+	private string DisabledClass => (IsEnabled ?? true) ? "" : "disabled";
 
 	[Parameter]
 	private string Id { get; set; }
