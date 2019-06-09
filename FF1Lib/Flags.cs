@@ -11,7 +11,7 @@ namespace FF1Lib
 	{
 		public bool Spoilers { get; set; }
 
-		public bool Shops { get; set; }
+		public bool? Shops { get; set; }
 		public bool Treasures { get; set; }
 		public bool NPCItems { get; set; }
 		public bool NPCFetchItems { get; set; }
@@ -376,7 +376,7 @@ namespace FF1Lib
 		{
 			BigInteger sum = 0;
 
-			sum = AddBoolean(sum, flags.Shops);
+			sum = AddTriState(sum, flags.Shops);
 			sum = AddBoolean(sum, flags.Treasures);
 			sum = AddBoolean(sum, flags.NPCItems);
 			sum = AddBoolean(sum, flags.NPCFetchItems);
@@ -735,7 +735,7 @@ namespace FF1Lib
 				NPCFetchItems = GetBoolean(ref sum),
 				NPCItems = GetBoolean(ref sum),
 				Treasures = GetBoolean(ref sum),
-				Shops = GetBoolean(ref sum)
+				Shops = GetTriState(ref sum)
 			};
 
 			return flags;

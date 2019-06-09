@@ -163,6 +163,7 @@ td {
 
 input[type=checkbox] {
     transform: scale(1.3);
+    cursor: url(get-file-as-data-uri("../assets/cursor.png")), pointer
 }
 
 select {
@@ -216,4 +217,14 @@ tr.odd {
     background-repeat: no-repeat;
     width: 38px;
     height: 38px;
+}
+
+.tri-state {
+    font-size: 9px;
+    padding: 0px;
+    height: 15px;
+    width: 15px;
+    margin-left: -2px;
+    cursor: default;
+    border-radius: 2px;
 }

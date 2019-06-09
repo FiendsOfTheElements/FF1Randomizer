@@ -49,7 +49,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Spoilers"));
 			}
 		}
-		public bool Shops
+		public bool? Shops
 		{
 			get => Flags.Shops;
 			set
@@ -1653,7 +1653,7 @@ namespace FF1Lib
 		}
 		public bool CanIncludeSpecialGear
 		{
-			get => Flags.Shops && Flags.RandomWares;
+			get => (Flags.Shops ?? true) && Flags.RandomWares;
 			set
 			{
 			}
