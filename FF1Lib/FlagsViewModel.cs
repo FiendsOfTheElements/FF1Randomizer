@@ -230,7 +230,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MagicPermissions"));
 			}
 		}
-		public bool ItemMagic
+		public bool? ItemMagic
 		{
 			get => Flags.ItemMagic;
 			set
@@ -240,7 +240,7 @@ namespace FF1Lib
 			}
 		}
 
-		public bool Rng
+		public bool? Rng
 		{
 			get => Flags.Rng;
 			set
@@ -267,7 +267,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EverythingUnrunnable"));
 			}
 		}
-		public bool UnrunnablesStrikeFirstAndSuprise
+		public bool? UnrunnablesStrikeFirstAndSuprise
 		{
 			get => Flags.UnrunnablesStrikeFirstAndSuprise;
 			set
@@ -276,7 +276,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("UnrunnablesStrikeFirstAndSuprise"));
 			}
 		}
-		public bool EnemyFormationsSurprise
+		public bool? EnemyFormationsSurprise
 		{
 			get => Flags.EnemyFormationsSurprise;
 			set
@@ -306,7 +306,7 @@ namespace FF1Lib
 			}
 		}
 
-		public bool EnemyScripts
+		public bool? EnemyScripts
 		{
 			get => Flags.EnemyScripts;
 			set
@@ -315,7 +315,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EnemyScripts"));
 			}
 		}
-		public bool EnemySkillsSpells
+		public bool? EnemySkillsSpells
 		{
 			get => Flags.EnemySkillsSpells;
 			set
@@ -324,7 +324,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EnemySkillsSpells"));
 			}
 		}
-		public bool EnemyStatusAttacks
+		public bool? EnemyStatusAttacks
 		{
 			get => Flags.EnemyStatusAttacks;
 			set
@@ -342,7 +342,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomStatusAttacks"));
 			}
 		}
-		public bool AllowUnsafePirates
+		public bool? AllowUnsafePirates
 		{
 			get => Flags.AllowUnsafePirates;
 			set
@@ -1136,7 +1136,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ProgressiveScaleMode"));
 			}
 		}
-		public bool ClampMinimumStatScale
+		public bool? ClampMinimumStatScale
 		{
 			get => Flags.ClampMinimumStatScale;
 			set
@@ -1145,7 +1145,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ClampMinimumStatScale"));
 			}
 		}
-		public bool ClampMinimumBossStatScale
+		public bool? ClampMinimumBossStatScale
 		{
 			get => Flags.ClampMinimumBossStatScale;
 			set
@@ -1154,7 +1154,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ClampMinimumBossStatScale"));
 			}
 		}
-		public bool ClampMinimumPriceScale
+		public bool? ClampMinimumPriceScale
 		{
 			get => Flags.ClampMinimumPriceScale;
 			set
@@ -1676,7 +1676,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("WorldWealthEnum"));
 			}
 		}
-		public bool ClampPrices
+		public bool? ClampPrices
 		{
 			get => Flags.ClampMinimumPriceScale;
 			set
@@ -1685,7 +1685,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ClampPrices"));
 			}
 		}
-		public bool ClampEnemies
+		public bool? ClampEnemies
 		{
 			get => Flags.ClampMinimumStatScale;
 			set
@@ -1694,7 +1694,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ClampEnemies"));
 			}
 		}
-		public bool ClampBosses
+		public bool? ClampBosses
 		{
 			get => Flags.ClampMinimumBossStatScale;
 			set

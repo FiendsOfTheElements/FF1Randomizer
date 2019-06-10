@@ -77,21 +77,21 @@
 						<CheckBox Id="magicShopsCheckBox" bind-Value="@Flags.MagicShops">Magic Shops</CheckBox>
 						<CheckBox Id="magicLevelsCheckBox" bind-Value="@Flags.MagicLevels">Magic Levels</CheckBox>
 						<CheckBox Indent IsEnabled="@Flags.MagicLevels" Id="magicPermissionsCheckBox" bind-Value="@Flags.MagicPermissions">Keep Permissions</CheckBox>
-						<CheckBox Id="itemMagicCheckBox" bind-Value="@Flags.ItemMagic">Item Magic</CheckBox>
+						<TriStateCheckBox Id="itemMagicCheckBox" bind-Value="@Flags.ItemMagic">Item Magic</TriStateCheckBox>
 						<div class="checkbox-cell"></div>
-						<CheckBox Id="rngCheckBox" bind-Value="@Flags.Rng">RNG Table</CheckBox>
+						<TriStateCheckBox Id="rngCheckBox" bind-Value="@Flags.Rng">RNG Table</TriStateCheckBox>
 					</div>
 					<div class="col-md-6">
 						<h4>Enemies</h4>
-						<CheckBox Id="enemyScriptsCheckBox" bind-Value="@Flags.EnemyScripts">Enemy Scripts</CheckBox>
-						<CheckBox Indent IsEnabled="@Flags.EnemyScripts" Id="allowUnsafePiratesCheckBox" bind-Value="@Flags.AllowUnsafePirates">Allow Unsafe Pirates</CheckBox>
-						<CheckBox Id="enemySkillsSpellsCheckBox" bind-Value="@Flags.EnemySkillsSpells">Enemy Skills/Spells</CheckBox>
-						<CheckBox Id="enemyStatusAttacksCheckBox" bind-Value="@Flags.EnemyStatusAttacks">Enemy Status Attacks</CheckBox>
+						<TriStateCheckBox Id="enemyScriptsCheckBox" bind-Value="@Flags.EnemyScripts">Enemy Scripts</TriStateCheckBox>
+						<TriStateCheckBox Indent IsEnabled="@Flags.EnemyScripts" Id="allowUnsafePiratesCheckBox" bind-Value="@Flags.AllowUnsafePirates">Allow Unsafe Pirates</TriStateCheckBox>
+						<TriStateCheckBox Id="enemySkillsSpellsCheckBox" bind-Value="@Flags.EnemySkillsSpells">Enemy Skills/Spells</TriStateCheckBox>
+						<TriStateCheckBox Id="enemyStatusAttacksCheckBox" bind-Value="@Flags.EnemyStatusAttacks">Enemy Status Attacks</TriStateCheckBox>
 						<CheckBox Indent IsEnabled="@Flags.EnemyStatusAttacks" Id="enemyRandomAttacksCheckBox" bind-Value="@Flags.RandomStatusAttacks">Randomize Enemy Status Attacks</CheckBox>
 						<CheckBox Id="enemyFormationsUnrunnableCheckBox" bind-Value="@Flags.EnemyFormationsUnrunnable">Enemy Unrunnable Formations</CheckBox>
 						<CheckBox Indent IsEnabled="@Flags.EnemyFormationsUnrunnable" Id="everythingUnrunnableCheckBox" bind-Value="@Flags.EverythingUnrunnable">All Encounters are Unrunnable</CheckBox>
-						<CheckBox Id="unrunnablesStrikeFirstAndSupriseCheckBox" bind-Value="@Flags.UnrunnablesStrikeFirstAndSuprise">First Strike/Suprise on Unrunnables</CheckBox>
-						<CheckBox Id="enemyFormationsSurpriseCheckBox" bind-Value="@Flags.EnemyFormationsSurprise">Enemy Surprise Bonus</CheckBox>
+						<TriStateCheckBox Id="unrunnablesStrikeFirstAndSupriseCheckBox" bind-Value="@Flags.UnrunnablesStrikeFirstAndSuprise">First Strike/Suprise on Unrunnables</TriStateCheckBox>
+						<TriStateCheckBox Id="enemyFormationsSurpriseCheckBox" bind-Value="@Flags.EnemyFormationsSurprise">Enemy Surprise Bonus</TriStateCheckBox>
 						<EnumDropDown TItem="FormationShuffleModeEnum" bind-Value="@Flags.FormationShuffleMode"></EnumDropDown>
 						<CheckBox Id="enemyTrapTilesCheckBox" bind-Value="@Flags.EnemyTrapTiles">Enemy Forced Encounter Tiles</CheckBox>
 						<CheckBox Indent Id="randomTrapFormationsCheckBox" IsEnabled="@Flags.EnemyTrapTiles" bind-Value="@Flags.RandomTrapFormations">Use Random Formations</CheckBox>
@@ -231,7 +231,7 @@
 		<button type="button" class="@(TabClasses("Scale"))" onclick="@(() => ActivateTab("Scale"))">Scale</button>
 		<TabPane IsOpen="@(activeTabs.Contains("Scale"))">
 			<div class="is-dark nes-container">
-				<ClampedSlider Min="1" Max="5" Step="0.1" bind-Clamp="@Flags.ClampMinimumPriceScale" bind-Scale="@Flags.PriceScaleFactor">Prices:</ClampedSlider>
+				<ClampedSlider Min="1" Max="5" Step="0.1" bind-Clamp="@Flags.ClampMinimumPriceScale" bind-Scale="@Flags.PriceScaleFactor">@Flags.ClampMinimumPriceScale</ClampedSlider>
 				<ClampedSlider Min="1" Max="5" Step="0.1" bind-Clamp="@Flags.ClampMinimumStatScale" bind-Scale="@Flags.EnemyScaleFactor">Enemy Stats:</ClampedSlider>
 				<ClampedSlider Min="1" Max="5" Step="0.1" bind-Clamp="@Flags.ClampMinimumBossStatScale" bind-Scale="@Flags.BossScaleFactor">Boss Stats:</ClampedSlider>
 				<div class="slider-cell"></div>

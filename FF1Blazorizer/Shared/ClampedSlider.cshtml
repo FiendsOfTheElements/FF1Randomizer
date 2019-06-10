@@ -3,8 +3,15 @@
 		<label>@ChildContent</label>
 	</div>
 	<div class="col-xs-6 col-md-3">
-		<input type="checkbox" checked="@Clamp" onchange="@onClampChanged"/>
-		<label>@Math.Round(100.0 / (Clamp ? 1.0 : Scale)).ToString()% - @Math.Round(100.0 * Scale).ToString()%</label>
+		<div class="checkbox-cell">
+			<div class="btn-group-toggle" data-toggle="buttons">
+				<input type="radio" name="@Name" value="2" checked="@checked2" hidden>
+				<input type="radio" name="@Name" value="1" checked="@checked1" hidden>
+				<input type="radio" name="@Name" value="0" checked="@checked0" hidden>
+				<button type="button" onclick="@onclick" id="@Id" class="tri-state">@DisplayValue</button>  <label for="@Id" class="@DisabledClass">@Math.Round(100.0 / (Clamp ?? true ? 1.0 : Scale)).ToString()% - @Math.Round(100.0 * Scale).ToString()%</label>
+			</div>
+		</div>
+
 	</div>
 	<Slider Value="@Scale" ValueChanged="@ScaleChanged" Min="@Min" Max="@Max" Step="@Step"></Slider>
 </div>
@@ -12,15 +19,22 @@
 @functions
 {
 
+
 	[Parameter]
-	private bool Clamp { get; set; }
+	private bool Indent { get; set; }
+
 	[Parameter]
-	Action<bool> ClampChanged { get; set; }
-	private void onClampChanged(UIChangeEventArgs e)
-	{
-		Clamp = (bool)e.Value;
-		ClampChanged(Clamp);
-	}
+	private bool IsEnabled { get; set; } = true;
+	private string DisabledClass => IsEnabled ? "" : "disabled";
+
+	[Parameter]
+	private string Id { get; set; }
+
+
+	[Parameter]
+	private bool? Clamp { get; set; } = false;
+	[Parameter]
+	Action<bool?> ClampChanged { get; set; }
 
 	[Parameter]
 	private double Scale { get; set; }
@@ -36,5 +50,31 @@
 
 	[Parameter]
 	private RenderFragment ChildContent { get; set; }
+
+	private bool checked0 => Clamp ?? false;
+	private bool checked1 => !Clamp ?? false;
+	private bool checked2 => Clamp == null;
+
+	[Parameter]
+	private bool Name { get; set; }
+
+	private Char DisplayValue => (Clamp == false ? 'O' : (Clamp == true ? 'X' : '?'));
+	void onclick()
+	{
+		if (Clamp == false)
+		{
+			Clamp = true;
+		}
+		else if (Clamp == true)
+		{
+			Clamp = null;
+		}
+		else
+		{
+			Clamp = false;
+		}
+		ClampChanged(Clamp);
+
+	}
 
 }
