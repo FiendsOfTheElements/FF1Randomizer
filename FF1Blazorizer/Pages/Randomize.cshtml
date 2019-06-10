@@ -231,7 +231,7 @@
 		<button type="button" class="@(TabClasses("Scale"))" onclick="@(() => ActivateTab("Scale"))">Scale</button>
 		<TabPane IsOpen="@(activeTabs.Contains("Scale"))">
 			<div class="is-dark nes-container">
-				<ClampedSlider Min="1" Max="5" Step="0.1" bind-Clamp="@Flags.ClampMinimumPriceScale" bind-Scale="@Flags.PriceScaleFactor">@Flags.ClampMinimumPriceScale</ClampedSlider>
+				<ClampedSlider Min="1" Max="5" Step="0.1" bind-Clamp="@Flags.ClampMinimumPriceScale" bind-Scale="@Flags.PriceScaleFactor">Prices:</ClampedSlider>
 				<ClampedSlider Min="1" Max="5" Step="0.1" bind-Clamp="@Flags.ClampMinimumStatScale" bind-Scale="@Flags.EnemyScaleFactor">Enemy Stats:</ClampedSlider>
 				<ClampedSlider Min="1" Max="5" Step="0.1" bind-Clamp="@Flags.ClampMinimumBossStatScale" bind-Scale="@Flags.BossScaleFactor">Boss Stats:</ClampedSlider>
 				<div class="slider-cell"></div>
