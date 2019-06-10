@@ -8,7 +8,8 @@
 				<input type="radio" name="@Name" value="2" checked="@checked2" hidden>
 				<input type="radio" name="@Name" value="1" checked="@checked1" hidden>
 				<input type="radio" name="@Name" value="0" checked="@checked0" hidden>
-				<button type="button" onclick="@onclick" id="@Id" class="tri-state">@DisplayValue</button>  <label for="@Id" class="@DisabledClass">@Math.Round(100.0 / (Clamp ?? true ? 1.0 : Scale)).ToString()% - @Math.Round(100.0 * Scale).ToString()%</label>
+				<input type="image" src="@image" onclick="@onclick" id="@Id" class="tri-state" disabled="@(!IsEnabled)" />  <label for="@Id" class="@DisabledClass">@DisplayText</label>
+
 			</div>
 		</div>
 
@@ -30,6 +31,11 @@
 	[Parameter]
 	private string Id { get; set; }
 
+	private string image => checked0 ? "/images/true.png" : (checked1 ? "/images/false.png" : "/images/random.png");
+	private string DisplayText => (Clamp != null ?
+		Math.Round(100.0 / (Clamp ?? true ? 1.0 : Scale)).ToString() :
+		Math.Round(100.0 / Scale).ToString() + "% OR " + Math.Round(100.0 / 1.0).ToString()
+		) + "% - " + Math.Round(100.0 * Scale).ToString() + "%";
 
 	[Parameter]
 	private bool? Clamp { get; set; } = false;
@@ -58,7 +64,6 @@
 	[Parameter]
 	private bool Name { get; set; }
 
-	private Char DisplayValue => (Clamp == false ? 'O' : (Clamp == true ? 'X' : '?'));
 	void onclick()
 	{
 		if (Clamp == false)

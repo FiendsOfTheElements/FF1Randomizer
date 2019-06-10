@@ -7,7 +7,7 @@
 			<input type="radio" name="@Name" value="2" checked="@checked2" hidden>
 			<input type="radio" name="@Name" value="1" checked="@checked1" hidden>
 			<input type="radio" name="@Name" value="0" checked="@checked0" hidden>
-			<button type="button" onclick="@onclick" id="@Id" class="tri-state" disabled="@(!IsEnabled)">@DisplayValue</button>  <label for="@Id" class="@DisabledClass">@ChildContent</label>
+			<input type="image" src="@image" onclick="@onclick" id="@Id" class="tri-state" disabled="@(!IsEnabled)"/>  <label for="@Id" class="@DisabledClass">@ChildContent</label>
 		</div>
 </div>
 
@@ -21,10 +21,11 @@
 	private bool checked1 => !Value ?? false;
 	private bool checked2 => Value == null;
 
+	private string image => checked0 ? "/images/true.png" : (checked1 ? "/images/false.png" : "/images/random.png");
+
 	[Parameter]
 	private bool Name { get; set; }
 
-	private Char DisplayValue => (Value == false ? 'O' : (Value == true ? 'X' : '?'));
 	void onclick()
 	{
 		if (Value == false)
