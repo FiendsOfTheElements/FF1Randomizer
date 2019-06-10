@@ -89,7 +89,6 @@ namespace FF1Lib
 		public void Randomize(Blob seed, Flags flags, Preferences preferences)
 		{
 			var rng = new MT19337(BitConverter.ToUInt32(seed, 0));
-
 			// Spoilers => different rng immediately
 			if (flags.Spoilers) rng = new MT19337(rng.Next());
 
@@ -202,7 +201,7 @@ namespace FF1Lib
 				FixEnemyAOESpells();
 			}
 
-			if (flags.ItemMagic)
+			if (ConvertTriState(flags.ItemMagic, rng))
 			{
 				ShuffleItemMagic(rng);
 			}
@@ -294,30 +293,33 @@ namespace FF1Lib
 			}
 			*/
 
-			if (flags.Rng)
+			if (ConvertTriState(flags.Rng, rng))
 			{
 				ShuffleRng(rng);
 			}
 
-			if (flags.EnemyScripts)
+			// convert the tri-state flag from a bool? to a bool, but VS doesnt know that, so add ?? true after each
+			flags.AllowUnsafePirates = ConvertTriState(flags.AllowUnsafePirates, rng);
+
+			if (ConvertTriState(flags.EnemyScripts, rng))
 			{
-				ShuffleEnemyScripts(rng, flags.AllowUnsafePirates);
+				ShuffleEnemyScripts(rng, flags.AllowUnsafePirates ?? true);
 			}
 
-			if (flags.EnemySkillsSpells)
+			if (ConvertTriState(flags.EnemySkillsSpells, rng))
 			{
 				ShuffleEnemySkillsSpells(rng);
 			}
 
-			if (flags.EnemyStatusAttacks)
+			if (ConvertTriState(flags.EnemyStatusAttacks, rng))
 			{
 				if (flags.RandomStatusAttacks)
 				{
-					RandomEnemyStatusAttacks(rng, flags.AllowUnsafePirates);
+					RandomEnemyStatusAttacks(rng, flags.AllowUnsafePirates ?? true);
 				}
 				else
 				{
-					ShuffleEnemyStatusAttacks(rng, flags.AllowUnsafePirates);
+					ShuffleEnemyStatusAttacks(rng, flags.AllowUnsafePirates ?? true);
 				}
 			}
 
@@ -333,13 +335,13 @@ namespace FF1Lib
 				}
 			}
 
-			if (flags.UnrunnablesStrikeFirstAndSuprise)
+			if (ConvertTriState(flags.UnrunnablesStrikeFirstAndSuprise, rng))
 			{
 				AllowStrikeFirstAndSuprise();
 			}
 			
 
-			if (flags.EnemyFormationsSurprise)
+			if (ConvertTriState(flags.EnemyFormationsSurprise, rng))
 			{
 				ShuffleSurpriseBonus(rng);
 			}
@@ -544,7 +546,7 @@ namespace FF1Lib
 			itemText[(int)Item.Ribbon].Trim();
 
 			ExpGoldBoost(flags.ExpBonus, flags.ExpMultiplier);
-			ScalePrices(flags, itemText, rng, flags.ClampMinimumPriceScale, shopItemLocation);
+			ScalePrices(flags, itemText, rng, ConvertTriState(flags.ClampMinimumPriceScale, rng), shopItemLocation);
 			ScaleEncounterRate(flags.EncounterRate / 30.0, flags.DungeonEncounterRate / 30.0);
 
 			overworldMap.ApplyMapEdits();
@@ -554,12 +556,12 @@ namespace FF1Lib
 
 			if (flags.EnemyScaleFactor > 1)
 			{
-				ScaleEnemyStats(flags.EnemyScaleFactor, flags.WrapStatOverflow, flags.IncludeMorale, rng, flags.ClampMinimumStatScale);
+				ScaleEnemyStats(flags.EnemyScaleFactor, flags.WrapStatOverflow, flags.IncludeMorale, rng, ConvertTriState(flags.ClampMinimumStatScale, rng));
 			}
 
 			if (flags.BossScaleFactor > 1)
 			{
-				ScaleBossStats(flags.BossScaleFactor, flags.WrapStatOverflow, flags.IncludeMorale, rng, flags.ClampMinimumBossStatScale);
+				ScaleBossStats(flags.BossScaleFactor, flags.WrapStatOverflow, flags.IncludeMorale, rng, ConvertTriState(flags.ClampMinimumBossStatScale, rng));
 			}
 
 			PartyComposition(rng, flags);
