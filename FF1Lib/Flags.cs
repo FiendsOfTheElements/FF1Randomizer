@@ -15,8 +15,8 @@ namespace FF1Lib
 		public bool Treasures { get; set; }
 		public bool NPCItems { get; set; }
 		public bool NPCFetchItems { get; set; }
-		public bool RandomWares { get; set; }
-		public bool RandomWaresIncludesSpecialGear { get; set; }
+		public bool? RandomWares { get; set; }
+		public bool? RandomWaresIncludesSpecialGear { get; set; }
 		public bool RandomLoot { get; set; }
 
 		public bool ShardHunt { get; set; }
@@ -26,24 +26,24 @@ namespace FF1Lib
 		public bool ShortToFR { get; set; }
 		public bool PreserveFiendRefights { get; set; }
 
-		public bool MagicShops { get; set; }
-		public bool MagicLevels { get; set; }
-		public bool MagicPermissions { get; set; }
+		public bool? MagicShops { get; set; }
+		public bool? MagicLevels { get; set; }
+		public bool? MagicPermissions { get; set; }
 		public bool? ItemMagic { get; set; }
 		public bool RebalanceSpells { get; set; }
 
 		public bool? Rng { get; set; }
-		public bool EverythingUnrunnable { get; set; }
-		public bool EnemyFormationsUnrunnable { get; set; }
+		public bool? EverythingUnrunnable { get; set; }
+		public bool? EnemyFormationsUnrunnable { get; set; }
 		public bool? EnemyFormationsSurprise { get; set; }
 		public bool? UnrunnablesStrikeFirstAndSuprise { get; set; }
-		public bool EnemyTrapTiles { get; set; }
-		public bool RandomTrapFormations { get; set; }
+		public bool? EnemyTrapTiles { get; set; }
+		public bool? RandomTrapFormations { get; set; }
 
 		public bool? EnemyScripts { get; set; }
 		public bool? EnemySkillsSpells { get; set; }
 		public bool? EnemyStatusAttacks { get; set; }
-		public bool RandomStatusAttacks { get; set; }
+		public bool? RandomStatusAttacks { get; set; }
 		public bool? AllowUnsafePirates { get; set; }
 		public bool AllowUnsafeMelmond { get; set; }
 
@@ -380,7 +380,7 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.Treasures);
 			sum = AddBoolean(sum, flags.NPCItems);
 			sum = AddBoolean(sum, flags.NPCFetchItems);
-			sum = AddBoolean(sum, flags.RandomWares);
+			sum = AddTriState(sum, flags.RandomWares);
 			sum = AddBoolean(sum, flags.RandomLoot);
 			sum = AddBoolean(sum, flags.ShardHunt);
 			sum = AddBoolean(sum, flags.ExtraShards);
@@ -388,22 +388,22 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.ChaosRush);
 			sum = AddBoolean(sum, flags.ShortToFR);
 			sum = AddBoolean(sum, flags.PreserveFiendRefights);
-			sum = AddBoolean(sum, flags.MagicShops);
-			sum = AddBoolean(sum, flags.MagicLevels);
-			sum = AddBoolean(sum, flags.MagicPermissions);
+			sum = AddTriState(sum, flags.MagicShops);
+			sum = AddTriState(sum, flags.MagicLevels);
+			sum = AddTriState(sum, flags.MagicPermissions);
 			sum = AddTriState(sum, flags.ItemMagic);
 			sum = AddBoolean(sum, flags.RebalanceSpells);
 			sum = AddTriState(sum, flags.Rng);
-			sum = AddBoolean(sum, flags.EverythingUnrunnable);
-			sum = AddBoolean(sum, flags.EnemyFormationsUnrunnable);
+			sum = AddTriState(sum, flags.EverythingUnrunnable);
+			sum = AddTriState(sum, flags.EnemyFormationsUnrunnable);
 			sum = AddTriState(sum, flags.EnemyFormationsSurprise);
 			sum = AddTriState(sum, flags.UnrunnablesStrikeFirstAndSuprise);
-			sum = AddBoolean(sum, flags.EnemyTrapTiles);
-			sum = AddBoolean(sum, flags.RandomTrapFormations);
+			sum = AddTriState(sum, flags.EnemyTrapTiles);
+			sum = AddTriState(sum, flags.RandomTrapFormations);
 			sum = AddTriState(sum, flags.EnemyScripts);
 			sum = AddTriState(sum, flags.EnemySkillsSpells);
 			sum = AddTriState(sum, flags.EnemyStatusAttacks);
-			sum = AddBoolean(sum, flags.RandomStatusAttacks);
+			sum = AddTriState(sum, flags.RandomStatusAttacks);
 			sum = AddTriState(sum, flags.AllowUnsafePirates);
 			sum = AddBoolean(sum, flags.AllowUnsafeMelmond);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(WarMECHMode)).Cast<int>().Max() + 1, (int)flags.WarMECHMode);
@@ -483,7 +483,7 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.WrapStatOverflow);
 			sum = AddBoolean(sum, flags.WrapPriceOverflow);
 			sum = AddBoolean(sum, flags.IncludeMorale);
-			sum = AddBoolean(sum, flags.RandomWaresIncludesSpecialGear);
+			sum = AddTriState(sum, flags.RandomWaresIncludesSpecialGear);
 			sum = AddBoolean(sum, flags.NoDanMode);
 			sum = AddNumeric(sum, 41, (int)(10.0*flags.EnemyScaleFactor) - 10);
 			sum = AddNumeric(sum, 41, (int)(10.0 * flags.BossScaleFactor) - 10);
@@ -628,7 +628,7 @@ namespace FF1Lib
 				BossScaleFactor = (GetNumeric(ref sum, 41) + 10) / 10.0,
 				EnemyScaleFactor = (GetNumeric(ref sum, 41) + 10) / 10.0,
 				NoDanMode = GetBoolean(ref sum),
-				RandomWaresIncludesSpecialGear = GetBoolean(ref sum),
+				RandomWaresIncludesSpecialGear = GetTriState(ref sum),
 				IncludeMorale = GetBoolean(ref sum),
 				WrapPriceOverflow = GetBoolean(ref sum),
 				WrapStatOverflow = GetBoolean(ref sum),
@@ -708,22 +708,22 @@ namespace FF1Lib
 				WarMECHMode = (WarMECHMode)GetNumeric(ref sum, Enum.GetValues(typeof(WarMECHMode)).Cast<int>().Max() + 1),
 				AllowUnsafeMelmond = GetBoolean(ref sum),
 				AllowUnsafePirates = GetTriState(ref sum),
-				RandomStatusAttacks = GetBoolean(ref sum),
+				RandomStatusAttacks = GetTriState(ref sum),
 				EnemyStatusAttacks = GetTriState(ref sum),
 				EnemySkillsSpells = GetTriState(ref sum),
 				EnemyScripts = GetTriState(ref sum),
-				RandomTrapFormations = GetBoolean(ref sum),
-				EnemyTrapTiles = GetBoolean(ref sum),
+				RandomTrapFormations = GetTriState(ref sum),
+				EnemyTrapTiles = GetTriState(ref sum),
 				UnrunnablesStrikeFirstAndSuprise = GetTriState(ref sum),
 				EnemyFormationsSurprise = GetTriState(ref sum),
-				EnemyFormationsUnrunnable = GetBoolean(ref sum),
-				EverythingUnrunnable = GetBoolean(ref sum),
+				EnemyFormationsUnrunnable = GetTriState(ref sum),
+				EverythingUnrunnable = GetTriState(ref sum),
 				Rng = GetTriState(ref sum),
 				RebalanceSpells = GetBoolean(ref sum),
 				ItemMagic = GetTriState(ref sum),
-				MagicPermissions = GetBoolean(ref sum),
-				MagicLevels = GetBoolean(ref sum),
-				MagicShops = GetBoolean(ref sum),
+				MagicPermissions = GetTriState(ref sum),
+				MagicLevels = GetTriState(ref sum),
+				MagicShops = GetTriState(ref sum),
 				PreserveFiendRefights = GetBoolean(ref sum),
 				ShortToFR = GetBoolean(ref sum),
 				ChaosRush = GetBoolean(ref sum),
@@ -731,7 +731,7 @@ namespace FF1Lib
 				ExtraShards = GetBoolean(ref sum),
 				ShardHunt = GetBoolean(ref sum),
 				RandomLoot = GetBoolean(ref sum),
-				RandomWares = GetBoolean(ref sum),
+				RandomWares = GetTriState(ref sum),
 				NPCFetchItems = GetBoolean(ref sum),
 				NPCItems = GetBoolean(ref sum),
 				Treasures = GetBoolean(ref sum),

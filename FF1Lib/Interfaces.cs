@@ -76,7 +76,7 @@
 		bool MapConeriaDwarves { get; }
 		bool MapVolcanoIceRiver { get; }
 		bool MapDwarvesNorthwest { get; }
-		bool RandomWares { get; }
+		bool? RandomWares { get; }
 		bool RandomLoot { get; }
 		bool BetterTrapChests { get; }
 		WorldWealth WorldWealth { get; }
