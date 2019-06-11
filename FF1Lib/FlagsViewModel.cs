@@ -1283,7 +1283,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MenuColor"));
 			}
 		}
-		public bool RecruitmentMode
+		public bool? RecruitmentMode
 		{
 			get => Flags.RecruitmentMode;
 			set
@@ -1292,7 +1292,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RecruitmentMode"));
 			}
 		}
-		public bool RecruitmentModeHireOnly
+		public bool? RecruitmentModeHireOnly
 		{
 			get => Flags.RecruitmentModeHireOnly;
 			set
@@ -1301,7 +1301,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RecruitmentModeHireOnly"));
 			}
 		}
-		public bool FORCED1
+		public bool? FORCED1
 		{
 			get => Flags.FORCED1;
 			set
@@ -1310,7 +1310,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FORCED1"));
 			}
 		}
-		public bool FORCED2
+		public bool? FORCED2
 		{
 			get => Flags.FORCED2;
 			set
@@ -1319,7 +1319,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FORCED2"));
 			}
 		}
-		public bool FORCED3
+		public bool? FORCED3
 		{
 			get => Flags.FORCED3;
 			set
@@ -1328,7 +1328,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FORCED3"));
 			}
 		}
-		public bool FORCED4
+		public bool? FORCED4
 		{
 			get => Flags.FORCED4;
 			set
@@ -1337,7 +1337,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FORCED4"));
 			}
 		}
-		public bool FIGHTER1
+		public bool? FIGHTER1
 		{
 			get => Flags.FIGHTER1;
 			set
@@ -1346,7 +1346,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FIGHTER1"));
 			}
 		}
-		public bool FIGHTER2
+		public bool? FIGHTER2
 		{
 			get => Flags.FIGHTER2;
 			set
@@ -1355,7 +1355,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FIGHTER2"));
 			}
 		}
-		public bool FIGHTER3
+		public bool? FIGHTER3
 		{
 			get => Flags.FIGHTER3;
 			set
@@ -1364,7 +1364,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FIGHTER3"));
 			}
 		}
-		public bool FIGHTER4
+		public bool? FIGHTER4
 		{
 			get => Flags.FIGHTER4;
 			set
@@ -1373,7 +1373,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FIGHTER4"));
 			}
 		}
-		public bool THIEF1
+		public bool? THIEF1
 		{
 			get => Flags.THIEF1;
 			set
@@ -1382,7 +1382,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("THIEF1"));
 			}
 		}
-		public bool THIEF2
+		public bool? THIEF2
 		{
 			get => Flags.THIEF2;
 			set
@@ -1391,7 +1391,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("THIEF2"));
 			}
 		}
-		public bool THIEF3
+		public bool? THIEF3
 		{
 			get => Flags.THIEF3;
 			set
@@ -1400,7 +1400,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("THIEF3"));
 			}
 		}
-		public bool THIEF4
+		public bool? THIEF4
 		{
 			get => Flags.THIEF4;
 			set
@@ -1409,7 +1409,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("THIEF4"));
 			}
 		}
-		public bool BLACK_BELT1
+		public bool? BLACK_BELT1
 		{
 			get => Flags.BLACK_BELT1;
 			set
@@ -1418,7 +1418,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BLACK_BELT1"));
 			}
 		}
-		public bool BLACK_BELT2
+		public bool? BLACK_BELT2
 		{
 			get => Flags.BLACK_BELT2;
 			set
@@ -1427,7 +1427,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BLACK_BELT2"));
 			}
 		}
-		public bool BLACK_BELT3
+		public bool? BLACK_BELT3
 		{
 			get => Flags.BLACK_BELT3;
 			set
@@ -1436,7 +1436,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BLACK_BELT3"));
 			}
 		}
-		public bool BLACK_BELT4
+		public bool? BLACK_BELT4
 		{
 			get => Flags.BLACK_BELT4;
 			set
@@ -1445,7 +1445,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BLACK_BELT4"));
 			}
 		}
-		public bool RED_MAGE1
+		public bool? RED_MAGE1
 		{
 			get => Flags.RED_MAGE1;
 			set
@@ -1454,7 +1454,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RED_MAGE1"));
 			}
 		}
-		public bool RED_MAGE2
+		public bool? RED_MAGE2
 		{
 			get => Flags.RED_MAGE2;
 			set
@@ -1463,7 +1463,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RED_MAGE2"));
 			}
 		}
-		public bool RED_MAGE3
+		public bool? RED_MAGE3
 		{
 			get => Flags.RED_MAGE3;
 			set
@@ -1472,7 +1472,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RED_MAGE3"));
 			}
 		}
-		public bool RED_MAGE4
+		public bool? RED_MAGE4
 		{
 			get => Flags.RED_MAGE4;
 			set
@@ -1481,7 +1481,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RED_MAGE4"));
 			}
 		}
-		public bool WHITE_MAGE1
+		public bool? WHITE_MAGE1
 		{
 			get => Flags.WHITE_MAGE1;
 			set
@@ -1490,7 +1490,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("WHITE_MAGE1"));
 			}
 		}
-		public bool WHITE_MAGE2
+		public bool? WHITE_MAGE2
 		{
 			get => Flags.WHITE_MAGE2;
 			set
@@ -1499,7 +1499,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("WHITE_MAGE2"));
 			}
 		}
-		public bool WHITE_MAGE3
+		public bool? WHITE_MAGE3
 		{
 			get => Flags.WHITE_MAGE3;
 			set
@@ -1508,7 +1508,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("WHITE_MAGE3"));
 			}
 		}
-		public bool WHITE_MAGE4
+		public bool? WHITE_MAGE4
 		{
 			get => Flags.WHITE_MAGE4;
 			set
@@ -1517,7 +1517,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("WHITE_MAGE4"));
 			}
 		}
-		public bool BLACK_MAGE1
+		public bool? BLACK_MAGE1
 		{
 			get => Flags.BLACK_MAGE1;
 			set
@@ -1526,7 +1526,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BLACK_MAGE1"));
 			}
 		}
-		public bool BLACK_MAGE2
+		public bool? BLACK_MAGE2
 		{
 			get => Flags.BLACK_MAGE2;
 			set
@@ -1535,7 +1535,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BLACK_MAGE2"));
 			}
 		}
-		public bool BLACK_MAGE3
+		public bool? BLACK_MAGE3
 		{
 			get => Flags.BLACK_MAGE3;
 			set
@@ -1544,7 +1544,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BLACK_MAGE3"));
 			}
 		}
-		public bool BLACK_MAGE4
+		public bool? BLACK_MAGE4
 		{
 			get => Flags.BLACK_MAGE4;
 			set
@@ -1553,7 +1553,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BLACK_MAGE4"));
 			}
 		}
-		public bool NONE_CLASS2
+		public bool? NONE_CLASS2
 		{
 			get => Flags.NONE_CLASS2;
 			set
@@ -1562,7 +1562,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NONE_CLASS2"));
 			}
 		}
-		public bool NONE_CLASS3
+		public bool? NONE_CLASS3
 		{
 			get => Flags.NONE_CLASS3;
 			set
@@ -1571,7 +1571,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NONE_CLASS3"));
 			}
 		}
-		public bool NONE_CLASS4
+		public bool? NONE_CLASS4
 		{
 			get => Flags.NONE_CLASS4;
 			set
@@ -1582,7 +1582,7 @@ namespace FF1Lib
 		}
 
 
-		public bool TAVERN1
+		public bool? TAVERN1
 		{
 			get => Flags.TAVERN1;
 			set
@@ -1591,7 +1591,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TAVERN1"));
 			}
 		}
-		public bool TAVERN2
+		public bool? TAVERN2
 		{
 			get => Flags.TAVERN2;
 			set
@@ -1601,7 +1601,7 @@ namespace FF1Lib
 			}
 		}
 
-		public bool TAVERN3
+		public bool? TAVERN3
 		{
 			get => Flags.TAVERN3;
 			set
@@ -1611,7 +1611,7 @@ namespace FF1Lib
 			}
 		}
 
-		public bool TAVERN4
+		public bool? TAVERN4
 		{
 			get => Flags.TAVERN4;
 			set
@@ -1621,7 +1621,7 @@ namespace FF1Lib
 			}
 		}
 
-		public bool TAVERN5
+		public bool? TAVERN5
 		{
 			get => Flags.TAVERN5;
 			set
@@ -1631,7 +1631,7 @@ namespace FF1Lib
 			}
 		}
 
-		public bool TAVERN6
+		public bool? TAVERN6
 		{
 			get => Flags.TAVERN6;
 			set
