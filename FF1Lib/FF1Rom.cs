@@ -247,12 +247,12 @@ namespace FF1Lib
 							excludeItemsFromRandomShops = incentivesData.ForcedItemPlacements.Select(x => x.Item).Concat(incentivesData.IncentiveItems).ToList();
 						}
 
-						if (!flags.RandomWaresIncludesSpecialGear)
+						if (!ConvertTriState(flags.RandomWaresIncludesSpecialGear, rng))
 						{
 							excludeItemsFromRandomShops.AddRange(ItemLists.SpecialGear);
 						}
 
-						shopItemLocation = ShuffleShops(rng, flags.ImmediatePureAndSoftRequired, flags.RandomWares, excludeItemsFromRandomShops, flags.WorldWealth);
+						shopItemLocation = ShuffleShops(rng, flags.ImmediatePureAndSoftRequired, ConvertTriState(flags.RandomWares, rng), excludeItemsFromRandomShops, flags.WorldWealth);
 						incentivesData = new IncentiveData(rng, flags, overworldMap, shopItemLocation);
 					}
 
@@ -270,15 +270,15 @@ namespace FF1Lib
 				}
 			}
 
-			if (flags.MagicShops)
+			if (ConvertTriState(flags.MagicShops, rng))
 			{
 				ShuffleMagicShops(rng);
 			}
 
-			if (flags.MagicLevels)
+			if (ConvertTriState(flags.MagicLevels, rng))
 			{
 				FixWarpBug(); // The warp bug only needs to be fixed if the magic levels are being shuffled
-				ShuffleMagicLevels(rng, flags.MagicPermissions);
+				ShuffleMagicLevels(rng, ConvertTriState(flags.MagicPermissions, rng));
 			}
 
 			/*
@@ -313,7 +313,7 @@ namespace FF1Lib
 
 			if (ConvertTriState(flags.EnemyStatusAttacks, rng))
 			{
-				if (flags.RandomStatusAttacks)
+				if (ConvertTriState(flags.RandomStatusAttacks, rng))
 				{
 					RandomEnemyStatusAttacks(rng, flags.AllowUnsafePirates ?? true);
 				}
@@ -323,9 +323,9 @@ namespace FF1Lib
 				}
 			}
 
-			if (flags.EnemyFormationsUnrunnable)
+			if (ConvertTriState(flags.EnemyFormationsUnrunnable, rng))
 			{
-				if (flags.EverythingUnrunnable)
+				if (ConvertTriState(flags.EverythingUnrunnable, rng))
 				{
 					CompletelyUnrunnable();
 				}
@@ -373,9 +373,9 @@ namespace FF1Lib
 				ShuffleEnemyFormations(rng, flags.FormationShuffleMode);
 			}
 
-			if (flags.EnemyTrapTiles)
+			if (ConvertTriState(flags.EnemyTrapTiles, rng))
 			{
-				ShuffleTrapTiles(rng, flags.RandomTrapFormations);
+				ShuffleTrapTiles(rng, ConvertTriState(flags.RandomTrapFormations, rng));
 			}
 
 			if (flags.OrdealsPillars)

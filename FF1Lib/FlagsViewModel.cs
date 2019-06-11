@@ -113,7 +113,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ShuffleObjectiveNPCs"));
 			}
 		}
-		public bool RandomWares
+		public bool? RandomWares
 		{
 			get => Flags.RandomWares;
 			set
@@ -203,7 +203,7 @@ namespace FF1Lib
 			}
 		}
 
-		public bool MagicShops
+		public bool? MagicShops
 		{
 			get => Flags.MagicShops;
 			set
@@ -212,7 +212,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MagicShops"));
 			}
 		}
-		public bool MagicLevels
+		public bool? MagicLevels
 		{
 			get => Flags.MagicLevels;
 			set
@@ -221,7 +221,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MagicLevels"));
 			}
 		}
-		public bool MagicPermissions
+		public bool? MagicPermissions
 		{
 			get => Flags.MagicPermissions;
 			set
@@ -249,7 +249,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Rng"));
 			}
 		}
-		public bool EnemyFormationsUnrunnable
+		public bool? EnemyFormationsUnrunnable
 		{
 			get => Flags.EnemyFormationsUnrunnable;
 			set
@@ -258,7 +258,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EnemyFormationsUnrunnable"));
 			}
 		}
-		public bool EverythingUnrunnable
+		public bool? EverythingUnrunnable
 		{
 			get => Flags.EverythingUnrunnable;
 			set
@@ -333,7 +333,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EnemyStatusAttacks"));
 			}
 		}
-		public bool RandomStatusAttacks
+		public bool? RandomStatusAttacks
 		{
 			get => Flags.RandomStatusAttacks;
 			set
@@ -351,7 +351,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AllowUnsafePirates"));
 			}
 		}
-		public bool EnemyTrapTiles
+		public bool? EnemyTrapTiles
 		{
 			get => Flags.EnemyTrapTiles;
 			set
@@ -360,7 +360,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EnemyTrapTiles"));
 			}
 		}
-		public bool RandomTrapFormations
+		public bool? RandomTrapFormations
 		{
 			get => Flags.RandomTrapFormations;
 			set
@@ -1642,7 +1642,7 @@ namespace FF1Lib
 		}
 
 
-		public bool RandomWaresIncludesSpecialGear
+		public bool? RandomWaresIncludesSpecialGear
 		{
 			get => Flags.RandomWaresIncludesSpecialGear;
 			set
@@ -1653,7 +1653,7 @@ namespace FF1Lib
 		}
 		public bool CanIncludeSpecialGear
 		{
-			get => (Flags.Shops ?? true) && Flags.RandomWares;
+			get => (Flags.Shops ?? true) && (Flags.RandomWares ?? true);
 			set
 			{
 			}
