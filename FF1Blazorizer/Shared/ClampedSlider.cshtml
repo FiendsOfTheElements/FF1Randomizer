@@ -1,4 +1,4 @@
-﻿<div class="row">
+<div class="row">
 	<div class="col-md-6">
 		<label>@ChildContent</label>
 	</div>
@@ -31,7 +31,7 @@
 	[Parameter]
 	private string Id { get; set; }
 
-	private string image => checked0 ? "/images/true.png" : (checked1 ? "/images/false.png" : "/images/random.png");
+	private string image => checked0 ? "/images/true.png" : (checked1 ? "/images/false.png" : "/images/random.gif");
 	private string DisplayText => (Clamp != null ?
 		Math.Round(100.0 / (Clamp ?? true ? 1.0 : Scale)).ToString() :
 		Math.Round(100.0 / Scale).ToString() + "% OR " + Math.Round(100.0 / 1.0).ToString()
