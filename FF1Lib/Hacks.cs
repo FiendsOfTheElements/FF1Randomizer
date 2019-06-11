@@ -192,40 +192,40 @@ namespace FF1Lib
 			var options = new List<FF1Class>();
 
 			// Do each slot - so ugly!
-			if (flags.FIGHTER1) options.Add(FF1Class.Fighter);
-			if (flags.THIEF1) options.Add(FF1Class.Thief);
-			if (flags.BLACK_BELT1) options.Add(FF1Class.BlackBelt);
-			if (flags.RED_MAGE1) options.Add(FF1Class.RedMage);
-			if (flags.WHITE_MAGE1) options.Add(FF1Class.WhiteMage);
-			if (flags.BLACK_MAGE1) options.Add(FF1Class.BlackMage);
-			updateCharacterFromOptions(1, flags.FORCED1, options, rng);
+			if (ConvertTriState(flags.FIGHTER1, rng)) options.Add(FF1Class.Fighter);
+			if (ConvertTriState(flags.THIEF1, rng)) options.Add(FF1Class.Thief);
+			if (ConvertTriState(flags.BLACK_BELT1, rng)) options.Add(FF1Class.BlackBelt);
+			if (ConvertTriState(flags.RED_MAGE1, rng)) options.Add(FF1Class.RedMage);
+			if (ConvertTriState(flags.WHITE_MAGE1, rng)) options.Add(FF1Class.WhiteMage);
+			if (ConvertTriState(flags.BLACK_MAGE1, rng)) options.Add(FF1Class.BlackMage);
+			updateCharacterFromOptions(1, ConvertTriState(flags.FORCED1, rng), options, rng);
 
-			if (flags.FIGHTER2) options.Add(FF1Class.Fighter);
-			if (flags.THIEF2) options.Add(FF1Class.Thief);
-			if (flags.BLACK_BELT2) options.Add(FF1Class.BlackBelt);
-			if (flags.RED_MAGE2) options.Add(FF1Class.RedMage);
-			if (flags.WHITE_MAGE2) options.Add(FF1Class.WhiteMage);
-			if (flags.BLACK_MAGE2) options.Add(FF1Class.BlackMage);
-			if (flags.NONE_CLASS2) options.Add(FF1Class.None);
-			updateCharacterFromOptions(2, flags.FORCED2, options, rng);
+			if (ConvertTriState(flags.FIGHTER2, rng)) options.Add(FF1Class.Fighter);
+			if (ConvertTriState(flags.THIEF2, rng)) options.Add(FF1Class.Thief);
+			if (ConvertTriState(flags.BLACK_BELT2, rng)) options.Add(FF1Class.BlackBelt);
+			if (ConvertTriState(flags.RED_MAGE2, rng)) options.Add(FF1Class.RedMage);
+			if (ConvertTriState(flags.WHITE_MAGE2, rng)) options.Add(FF1Class.WhiteMage);
+			if (ConvertTriState(flags.BLACK_MAGE2, rng)) options.Add(FF1Class.BlackMage);
+			if (ConvertTriState(flags.NONE_CLASS2, rng)) options.Add(FF1Class.None);
+			updateCharacterFromOptions(2, ConvertTriState(flags.FORCED2, rng), options, rng);
 
-			if (flags.FIGHTER3) options.Add(FF1Class.Fighter);
-			if (flags.THIEF3) options.Add(FF1Class.Thief);
-			if (flags.BLACK_BELT3) options.Add(FF1Class.BlackBelt);
-			if (flags.RED_MAGE3) options.Add(FF1Class.RedMage);
-			if (flags.WHITE_MAGE3) options.Add(FF1Class.WhiteMage);
-			if (flags.BLACK_MAGE3) options.Add(FF1Class.BlackMage);
-			if (flags.NONE_CLASS3) options.Add(FF1Class.None);
-			updateCharacterFromOptions(3, flags.FORCED3, options, rng);
+			if (ConvertTriState(flags.FIGHTER3, rng)) options.Add(FF1Class.Fighter);
+			if (ConvertTriState(flags.THIEF3, rng)) options.Add(FF1Class.Thief);
+			if (ConvertTriState(flags.BLACK_BELT3, rng)) options.Add(FF1Class.BlackBelt);
+			if (ConvertTriState(flags.RED_MAGE3, rng)) options.Add(FF1Class.RedMage);
+			if (ConvertTriState(flags.WHITE_MAGE3, rng)) options.Add(FF1Class.WhiteMage);
+			if (ConvertTriState(flags.BLACK_MAGE3, rng)) options.Add(FF1Class.BlackMage);
+			if (ConvertTriState(flags.NONE_CLASS3, rng)) options.Add(FF1Class.None);
+			updateCharacterFromOptions(3, ConvertTriState(flags.FORCED3, rng), options, rng);
 
-			if (flags.FIGHTER4) options.Add(FF1Class.Fighter);
-			if (flags.THIEF4) options.Add(FF1Class.Thief);
-			if (flags.BLACK_BELT4) options.Add(FF1Class.BlackBelt);
-			if (flags.RED_MAGE4) options.Add(FF1Class.RedMage);
-			if (flags.WHITE_MAGE4) options.Add(FF1Class.WhiteMage);
-			if (flags.BLACK_MAGE4) options.Add(FF1Class.BlackMage);
-			if (flags.NONE_CLASS4) options.Add(FF1Class.None);
-			updateCharacterFromOptions(4, flags.FORCED4, options, rng);
+			if (ConvertTriState(flags.FIGHTER4, rng)) options.Add(FF1Class.Fighter);
+			if (ConvertTriState(flags.THIEF4, rng)) options.Add(FF1Class.Thief);
+			if (ConvertTriState(flags.BLACK_BELT4, rng)) options.Add(FF1Class.BlackBelt);
+			if (ConvertTriState(flags.RED_MAGE4, rng)) options.Add(FF1Class.RedMage);
+			if (ConvertTriState(flags.WHITE_MAGE4, rng)) options.Add(FF1Class.WhiteMage);
+			if (ConvertTriState(flags.BLACK_MAGE4, rng)) options.Add(FF1Class.BlackMage);
+			if (ConvertTriState(flags.NONE_CLASS4, rng)) options.Add(FF1Class.None);
+			updateCharacterFromOptions(4, ConvertTriState(flags.FORCED4, rng), options, rng);
 
 			// Load stats for None
 			PutInBank(0x1F, 0xC783, Blob.FromHex("2080B3C931F053EA"));
@@ -281,12 +281,12 @@ namespace FF1Lib
 			Put(0x03250, Get(0x03258, 4)); // Caravan palette
 
 			List<byte> options = new List<byte> { };
-			if (flags.TAVERN1) options.Add(0x0);
-			if (flags.TAVERN2) options.Add(0x1);
-			if (flags.TAVERN3) options.Add(0x2);
-			if (flags.TAVERN4) options.Add(0x3);
-			if (flags.TAVERN5) options.Add(0x4);
-			if (flags.TAVERN6) options.Add(0x5);
+			if (ConvertTriState(flags.TAVERN1, rng)) options.Add(0x0);
+			if (ConvertTriState(flags.TAVERN2, rng)) options.Add(0x1);
+			if (ConvertTriState(flags.TAVERN3, rng)) options.Add(0x2);
+			if (ConvertTriState(flags.TAVERN4, rng)) options.Add(0x3);
+			if (ConvertTriState(flags.TAVERN5, rng)) options.Add(0x4);
+			if (ConvertTriState(flags.TAVERN6, rng)) options.Add(0x5);
 
 			if (options.Count == 0) options = new List<byte> { 0x0, 0x1, 0x2, 0x3, 0x4, 0x5 };
 			List<byte> pub_lut = new List<byte> { };
@@ -324,7 +324,7 @@ namespace FF1Lib
 			Data[0x111A] = 0x76;
 			Data[0x119A] = 0x77;
 
-			if (flags.RecruitmentModeHireOnly) {
+			if (ConvertTriState(flags.RecruitmentModeHireOnly, rng)) {
 				PutInBank(0x0E, 0xA60F, Blob.FromHex("EAEAEAEAEAEAEAEA"));
 			}
 

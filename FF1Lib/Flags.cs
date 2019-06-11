@@ -153,53 +153,53 @@ namespace FF1Lib
 		public double DungeonEncounterRate { get; set; }
 		public ProgressiveScaleMode ProgressiveScaleMode { get; set; }
 
-		public bool FIGHTER1 { get; set; }
-		public bool THIEF1 { get; set; }
-		public bool BLACK_BELT1 { get; set; }
-		public bool RED_MAGE1 { get; set; }
-		public bool WHITE_MAGE1 { get; set; }
-		public bool BLACK_MAGE1 { get; set; }
+		public bool? FIGHTER1 { get; set; }
+		public bool? THIEF1 { get; set; }
+		public bool? BLACK_BELT1 { get; set; }
+		public bool? RED_MAGE1 { get; set; }
+		public bool? WHITE_MAGE1 { get; set; }
+		public bool? BLACK_MAGE1 { get; set; }
 
-		public bool FIGHTER2 { get; set; }
-		public bool THIEF2 { get; set; }
-		public bool BLACK_BELT2 { get; set; }
-		public bool RED_MAGE2 { get; set; }
-		public bool WHITE_MAGE2 { get; set; }
-		public bool BLACK_MAGE2 { get; set; }
+		public bool? FIGHTER2 { get; set; }
+		public bool? THIEF2 { get; set; }
+		public bool? BLACK_BELT2 { get; set; }
+		public bool? RED_MAGE2 { get; set; }
+		public bool? WHITE_MAGE2 { get; set; }
+		public bool? BLACK_MAGE2 { get; set; }
 
-		public bool FIGHTER3 { get; set; }
-		public bool THIEF3 { get; set; }
-		public bool BLACK_BELT3 { get; set; }
-		public bool RED_MAGE3 { get; set; }
-		public bool WHITE_MAGE3 { get; set; }
-		public bool BLACK_MAGE3 { get; set; }
+		public bool? FIGHTER3 { get; set; }
+		public bool? THIEF3 { get; set; }
+		public bool? BLACK_BELT3 { get; set; }
+		public bool? RED_MAGE3 { get; set; }
+		public bool? WHITE_MAGE3 { get; set; }
+		public bool? BLACK_MAGE3 { get; set; }
 
-		public bool FIGHTER4 { get; set; }
-		public bool THIEF4 { get; set; }
-		public bool BLACK_BELT4 { get; set; }
-		public bool RED_MAGE4 { get; set; }
-		public bool WHITE_MAGE4 { get; set; }
-		public bool BLACK_MAGE4 { get; set; }
+		public bool? FIGHTER4 { get; set; }
+		public bool? THIEF4 { get; set; }
+		public bool? BLACK_BELT4 { get; set; }
+		public bool? RED_MAGE4 { get; set; }
+		public bool? WHITE_MAGE4 { get; set; }
+		public bool? BLACK_MAGE4 { get; set; }
 
-		public bool NONE_CLASS2 { get; set; }
-		public bool NONE_CLASS3 { get; set; }
-		public bool NONE_CLASS4 { get; set; }
-		public bool FORCED1 { get; set; }
-		public bool FORCED2 { get; set; }
-		public bool FORCED3 { get; set; }
-		public bool FORCED4 { get; set; }
+		public bool? NONE_CLASS2 { get; set; }
+		public bool? NONE_CLASS3 { get; set; }
+		public bool? NONE_CLASS4 { get; set; }
+		public bool? FORCED1 { get; set; }
+		public bool? FORCED2 { get; set; }
+		public bool? FORCED3 { get; set; }
+		public bool? FORCED4 { get; set; }
 
-		public bool TAVERN1 { get; set; }
-		public bool TAVERN2 { get; set; }
-		public bool TAVERN3 { get; set; }
-		public bool TAVERN4 { get; set; }
-		public bool TAVERN5 { get; set; }
-		public bool TAVERN6 { get; set; }
+		public bool? TAVERN1 { get; set; }
+		public bool? TAVERN2 { get; set; }
+		public bool? TAVERN3 { get; set; }
+		public bool? TAVERN4 { get; set; }
+		public bool? TAVERN5 { get; set; }
+		public bool? TAVERN6 { get; set; }
 
 		public bool WeaponPermissions { get; set; }
 		public bool ArmorPermissions { get; set; }
-		public bool RecruitmentMode { get; set; }
-		public bool RecruitmentModeHireOnly { get; set; }
+		public bool? RecruitmentMode { get; set; }
+		public bool? RecruitmentModeHireOnly { get; set; }
 
 		public bool? ClampMinimumStatScale { get; set; }
 		public bool? ClampMinimumBossStatScale { get; set; }
@@ -493,47 +493,47 @@ namespace FF1Lib
 			sum = AddNumeric(sum, 46, (int)flags.EncounterRate);
 			sum = AddNumeric(sum, 46, (int)flags.DungeonEncounterRate);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(ProgressiveScaleMode)).Cast<int>().Max() + 1, (int)flags.ProgressiveScaleMode);
-			sum = AddBoolean(sum, flags.FIGHTER1);
-			sum = AddBoolean(sum, flags.THIEF1);
-			sum = AddBoolean(sum, flags.BLACK_BELT1);
-			sum = AddBoolean(sum, flags.RED_MAGE1);
-			sum = AddBoolean(sum, flags.WHITE_MAGE1);
-			sum = AddBoolean(sum, flags.BLACK_MAGE1);
-			sum = AddBoolean(sum, flags.FIGHTER2);
-			sum = AddBoolean(sum, flags.THIEF2);
-			sum = AddBoolean(sum, flags.BLACK_BELT2);
-			sum = AddBoolean(sum, flags.RED_MAGE2);
-			sum = AddBoolean(sum, flags.WHITE_MAGE2);
-			sum = AddBoolean(sum, flags.BLACK_MAGE2);
-			sum = AddBoolean(sum, flags.FIGHTER3);
-			sum = AddBoolean(sum, flags.THIEF3);
-			sum = AddBoolean(sum, flags.BLACK_BELT3);
-			sum = AddBoolean(sum, flags.RED_MAGE3);
-			sum = AddBoolean(sum, flags.WHITE_MAGE3);
-			sum = AddBoolean(sum, flags.BLACK_MAGE3);
-			sum = AddBoolean(sum, flags.FIGHTER4);
-			sum = AddBoolean(sum, flags.THIEF4);
-			sum = AddBoolean(sum, flags.BLACK_BELT4);
-			sum = AddBoolean(sum, flags.RED_MAGE4);
-			sum = AddBoolean(sum, flags.WHITE_MAGE4);
-			sum = AddBoolean(sum, flags.BLACK_MAGE4);
-			sum = AddBoolean(sum, flags.NONE_CLASS2);
-			sum = AddBoolean(sum, flags.NONE_CLASS3);
-			sum = AddBoolean(sum, flags.NONE_CLASS4);
-			sum = AddBoolean(sum, flags.FORCED1);
-			sum = AddBoolean(sum, flags.FORCED2);
-			sum = AddBoolean(sum, flags.FORCED3);
-			sum = AddBoolean(sum, flags.FORCED4);
-			sum = AddBoolean(sum, flags.TAVERN1);
-			sum = AddBoolean(sum, flags.TAVERN2);
-			sum = AddBoolean(sum, flags.TAVERN3);
-			sum = AddBoolean(sum, flags.TAVERN4);
-			sum = AddBoolean(sum, flags.TAVERN5);
-			sum = AddBoolean(sum, flags.TAVERN6);
+			sum = AddTriState(sum, flags.FIGHTER1);
+			sum = AddTriState(sum, flags.THIEF1);
+			sum = AddTriState(sum, flags.BLACK_BELT1);
+			sum = AddTriState(sum, flags.RED_MAGE1);
+			sum = AddTriState(sum, flags.WHITE_MAGE1);
+			sum = AddTriState(sum, flags.BLACK_MAGE1);
+			sum = AddTriState(sum, flags.FIGHTER2);
+			sum = AddTriState(sum, flags.THIEF2);
+			sum = AddTriState(sum, flags.BLACK_BELT2);
+			sum = AddTriState(sum, flags.RED_MAGE2);
+			sum = AddTriState(sum, flags.WHITE_MAGE2);
+			sum = AddTriState(sum, flags.BLACK_MAGE2);
+			sum = AddTriState(sum, flags.FIGHTER3);
+			sum = AddTriState(sum, flags.THIEF3);
+			sum = AddTriState(sum, flags.BLACK_BELT3);
+			sum = AddTriState(sum, flags.RED_MAGE3);
+			sum = AddTriState(sum, flags.WHITE_MAGE3);
+			sum = AddTriState(sum, flags.BLACK_MAGE3);
+			sum = AddTriState(sum, flags.FIGHTER4);
+			sum = AddTriState(sum, flags.THIEF4);
+			sum = AddTriState(sum, flags.BLACK_BELT4);
+			sum = AddTriState(sum, flags.RED_MAGE4);
+			sum = AddTriState(sum, flags.WHITE_MAGE4);
+			sum = AddTriState(sum, flags.BLACK_MAGE4);
+			sum = AddTriState(sum, flags.NONE_CLASS2);
+			sum = AddTriState(sum, flags.NONE_CLASS3);
+			sum = AddTriState(sum, flags.NONE_CLASS4);
+			sum = AddTriState(sum, flags.FORCED1);
+			sum = AddTriState(sum, flags.FORCED2);
+			sum = AddTriState(sum, flags.FORCED3);
+			sum = AddTriState(sum, flags.FORCED4);
+			sum = AddTriState(sum, flags.TAVERN1);
+			sum = AddTriState(sum, flags.TAVERN2);
+			sum = AddTriState(sum, flags.TAVERN3);
+			sum = AddTriState(sum, flags.TAVERN4);
+			sum = AddTriState(sum, flags.TAVERN5);
+			sum = AddTriState(sum, flags.TAVERN6);
 			sum = AddBoolean(sum, flags.WeaponPermissions);
 			sum = AddBoolean(sum, flags.ArmorPermissions);
-			sum = AddBoolean(sum, flags.RecruitmentMode);
-			sum = AddBoolean(sum, flags.RecruitmentModeHireOnly);
+			sum = AddTriState(sum, flags.RecruitmentMode);
+			sum = AddTriState(sum, flags.RecruitmentModeHireOnly);
 			sum = AddTriState(sum, flags.ClampMinimumStatScale);
 			sum = AddTriState(sum, flags.ClampMinimumBossStatScale);
 			sum = AddTriState(sum, flags.ClampMinimumPriceScale);
@@ -578,47 +578,47 @@ namespace FF1Lib
 				ClampMinimumPriceScale = GetTriState(ref sum),
 				ClampMinimumBossStatScale = GetTriState(ref sum),
 				ClampMinimumStatScale = GetTriState(ref sum),
-				RecruitmentModeHireOnly = GetBoolean(ref sum),
-				RecruitmentMode = GetBoolean(ref sum),
+				RecruitmentModeHireOnly = GetTriState(ref sum),
+				RecruitmentMode = GetTriState(ref sum),
 				ArmorPermissions = GetBoolean(ref sum),
 				WeaponPermissions = GetBoolean(ref sum),
-				TAVERN6 = GetBoolean(ref sum),
-				TAVERN5 = GetBoolean(ref sum),
-				TAVERN4 = GetBoolean(ref sum),
-				TAVERN3 = GetBoolean(ref sum),
-				TAVERN2 = GetBoolean(ref sum),
-				TAVERN1 = GetBoolean(ref sum),
-				FORCED4 = GetBoolean(ref sum),
-				FORCED3 = GetBoolean(ref sum),
-				FORCED2 = GetBoolean(ref sum),
-				FORCED1 = GetBoolean(ref sum),
-				NONE_CLASS4 = GetBoolean(ref sum),
-				NONE_CLASS3 = GetBoolean(ref sum),
-				NONE_CLASS2 = GetBoolean(ref sum),
-				BLACK_MAGE4 = GetBoolean(ref sum),
-				WHITE_MAGE4 = GetBoolean(ref sum),
-				RED_MAGE4 = GetBoolean(ref sum),
-				BLACK_BELT4 = GetBoolean(ref sum),
-				THIEF4 = GetBoolean(ref sum),
-				FIGHTER4 = GetBoolean(ref sum),
-				BLACK_MAGE3 = GetBoolean(ref sum),
-				WHITE_MAGE3 = GetBoolean(ref sum),
-				RED_MAGE3 = GetBoolean(ref sum),
-				BLACK_BELT3 = GetBoolean(ref sum),
-				THIEF3 = GetBoolean(ref sum),
-				FIGHTER3 = GetBoolean(ref sum),
-				BLACK_MAGE2 = GetBoolean(ref sum),
-				WHITE_MAGE2 = GetBoolean(ref sum),
-				RED_MAGE2 = GetBoolean(ref sum),
-				BLACK_BELT2 = GetBoolean(ref sum),
-				THIEF2 = GetBoolean(ref sum),
-				FIGHTER2 = GetBoolean(ref sum),
-				BLACK_MAGE1 = GetBoolean(ref sum),
-				WHITE_MAGE1 = GetBoolean(ref sum),
-				RED_MAGE1 = GetBoolean(ref sum),
-				BLACK_BELT1 = GetBoolean(ref sum),
-				THIEF1 = GetBoolean(ref sum),
-				FIGHTER1 = GetBoolean(ref sum),
+				TAVERN6 = GetTriState(ref sum),
+				TAVERN5 = GetTriState(ref sum),
+				TAVERN4 = GetTriState(ref sum),
+				TAVERN3 = GetTriState(ref sum),
+				TAVERN2 = GetTriState(ref sum),
+				TAVERN1 = GetTriState(ref sum),
+				FORCED4 = GetTriState(ref sum),
+				FORCED3 = GetTriState(ref sum),
+				FORCED2 = GetTriState(ref sum),
+				FORCED1 = GetTriState(ref sum),
+				NONE_CLASS4 = GetTriState(ref sum),
+				NONE_CLASS3 = GetTriState(ref sum),
+				NONE_CLASS2 = GetTriState(ref sum),
+				BLACK_MAGE4 = GetTriState(ref sum),
+				WHITE_MAGE4 = GetTriState(ref sum),
+				RED_MAGE4 = GetTriState(ref sum),
+				BLACK_BELT4 = GetTriState(ref sum),
+				THIEF4 = GetTriState(ref sum),
+				FIGHTER4 = GetTriState(ref sum),
+				BLACK_MAGE3 = GetTriState(ref sum),
+				WHITE_MAGE3 = GetTriState(ref sum),
+				RED_MAGE3 = GetTriState(ref sum),
+				BLACK_BELT3 = GetTriState(ref sum),
+				THIEF3 = GetTriState(ref sum),
+				FIGHTER3 = GetTriState(ref sum),
+				BLACK_MAGE2 = GetTriState(ref sum),
+				WHITE_MAGE2 = GetTriState(ref sum),
+				RED_MAGE2 = GetTriState(ref sum),
+				BLACK_BELT2 = GetTriState(ref sum),
+				THIEF2 = GetTriState(ref sum),
+				FIGHTER2 = GetTriState(ref sum),
+				BLACK_MAGE1 = GetTriState(ref sum),
+				WHITE_MAGE1 = GetTriState(ref sum),
+				RED_MAGE1 = GetTriState(ref sum),
+				BLACK_BELT1 = GetTriState(ref sum),
+				THIEF1 = GetTriState(ref sum),
+				FIGHTER1 = GetTriState(ref sum),
 				ProgressiveScaleMode = (ProgressiveScaleMode)GetNumeric(ref sum, Enum.GetValues(typeof(ProgressiveScaleMode)).Cast<int>().Max() + 1),
 				DungeonEncounterRate = GetNumeric(ref sum, 46),
 				EncounterRate = GetNumeric(ref sum, 46),

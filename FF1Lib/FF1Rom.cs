@@ -566,7 +566,7 @@ namespace FF1Lib
 
 			PartyComposition(rng, flags);
 
-			if (flags.RecruitmentMode)
+			if (ConvertTriState(flags.RecruitmentMode, rng))
 			{
 				PubReplaceClinic(rng, flags);
 			}
@@ -625,7 +625,7 @@ namespace FF1Lib
 			ExtraTrackingAndInitCode();
 		}
 
-		private bool ConvertTriState(bool? tristate, MT19337 rng)
+		public bool ConvertTriState(bool? tristate, MT19337 rng)
 		{
 			int rngval = rng.Between(0, 1);
 			bool rval = tristate ?? (rngval == 0);
