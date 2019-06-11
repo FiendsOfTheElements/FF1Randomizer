@@ -1,4 +1,4 @@
-﻿<div class="checkbox-cell">
+<div class="checkbox-cell">
 	@if (Indent)
 	{
 		<span class="indent"></span>
@@ -21,7 +21,7 @@
 	private bool checked1 => !Value ?? false;
 	private bool checked2 => Value == null;
 
-	private string image => checked0 ? "/images/true.png" : (checked1 ? "/images/false.png" : "/images/random.png");
+	private string image => checked0 ? "/images/true.png" : (checked1 ? "/images/false.png" : "/images/random.gif");
 
 	[Parameter]
 	private bool Name { get; set; }
