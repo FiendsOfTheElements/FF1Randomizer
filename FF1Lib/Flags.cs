@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Reflection;
 using Newtonsoft.Json;
 using RomUtilities;
 
@@ -65,7 +66,7 @@ namespace FF1Lib
 		public bool EntrancesIncludesDeadEnds { get; set; }
 		public bool EntrancesMixedWithTowns { get; set; }
 
-		public bool IncentivizeFreeNPCs { get; set; }
+		public bool? IncentivizeFreeNPCs { get; set; }
 		public bool IncentivizeFetchNPCs { get; set; }
 		public bool IncentivizeTail { get; set; }
 		public bool IncentivizeMainItems { get; set; }
@@ -335,13 +336,13 @@ namespace FF1Lib
 			+ (IncentivizeRibbon2 ? "Ribbon\U0001F380 " : "")
 			+ (Incentivize65K ? "65000G " : "");
 
-		public bool IncentivizeKingConeria => NPCItems && IncentivizeFreeNPCs;
-		public bool IncentivizePrincess => NPCItems && IncentivizeFreeNPCs;
-		public bool IncentivizeBikke => NPCItems && IncentivizeFreeNPCs;
-		public bool IncentivizeSarda => NPCItems && IncentivizeFreeNPCs;
-		public bool IncentivizeCanoeSage => NPCItems && IncentivizeFreeNPCs;
-		public bool IncentivizeCaravan => NPCItems && IncentivizeFreeNPCs;
-		public bool IncentivizeCubeBot => NPCItems && IncentivizeFreeNPCs;
+		public bool IncentivizeKingConeria => NPCItems && (IncentivizeFreeNPCs ?? false);
+		public bool IncentivizePrincess => NPCItems && (IncentivizeFreeNPCs ?? false);
+		public bool IncentivizeBikke => NPCItems && (IncentivizeFreeNPCs ?? false);
+		public bool IncentivizeSarda => NPCItems && (IncentivizeFreeNPCs ?? false);
+		public bool IncentivizeCanoeSage => NPCItems && (IncentivizeFreeNPCs ?? false);
+		public bool IncentivizeCaravan => NPCItems && (IncentivizeFreeNPCs ?? false);
+		public bool IncentivizeCubeBot => NPCItems && (IncentivizeFreeNPCs ?? false);
 
 		public bool IncentivizeFairy => NPCFetchItems && IncentivizeFetchNPCs;
 		public bool IncentivizeAstos => NPCFetchItems && IncentivizeFetchNPCs;
@@ -351,8 +352,8 @@ namespace FF1Lib
 		public bool IncentivizeLefein => NPCFetchItems && IncentivizeFetchNPCs;
 		public bool IncentivizeSmith => NPCFetchItems && IncentivizeFetchNPCs;
 
-		public int IncentivizedLocationCount => 0
-			+ (NPCItems && IncentivizeFreeNPCs ? 7 : 0)
+		public int IncentivizedLocationCountMin => 0
+			+ (NPCItems && (IncentivizeFreeNPCs ?? false) ? 7 : 0)
 			+ (NPCFetchItems && IncentivizeFetchNPCs ? 7 : 0)
 			+ (IncentivizeMarsh ? 1 : 0)
 			+ (IncentivizeEarth ? 1 : 0)
@@ -365,7 +366,50 @@ namespace FF1Lib
 			+ (IncentivizeTitansTrove ? 1 : 0)
 			+ (IncentivizeSkyPalace ? 1 : 0);
 
-		public bool ImmediatePureAndSoftRequired => (EnemyStatusAttacks ?? true) || Entrances || MapOpenProgression;
+
+		public int IncentivizedLocationCountMax => 0
+			+ (NPCItems && (IncentivizeFreeNPCs ?? true) ? 7 : 0)
+			+ (NPCFetchItems && IncentivizeFetchNPCs ? 7 : 0)
+			+ (IncentivizeMarsh ? 1 : 0)
+			+ (IncentivizeEarth ? 1 : 0)
+			+ (IncentivizeVolcano ? 1 : 0)
+			+ (IncentivizeIceCave ? 1 : 0)
+			+ (IncentivizeOrdeals ? 1 : 0)
+			+ (IncentivizeSeaShrine ? 1 : 0)
+			+ (IncentivizeConeria ? 1 : 0)
+			+ (IncentivizeMarshKeyLocked ? 1 : 0)
+			+ (IncentivizeTitansTrove ? 1 : 0)
+			+ (IncentivizeSkyPalace ? 1 : 0);
+
+
+		private static bool ConvertTriState(bool? tristate, MT19337 rng)
+		{
+			int rngval = rng.Between(0, 1);
+			bool rval = tristate ?? (rngval == 0);
+			return rval;
+		}
+
+		public static Flags ConvertAllTriState(Flags flags, MT19337 rng)
+		{
+			Flags newflags = flags.ShallowCopy();
+			PropertyInfo[] properties = newflags.GetType().GetProperties();
+			foreach (var property in properties)
+			{
+				if (property.PropertyType == typeof(bool?) && property.GetValue(newflags) == null)
+               {
+					bool newvalue = ConvertTriState((bool?)property.GetValue(newflags), rng);
+					property.SetValue(newflags, newvalue);
+				}
+			}
+			return newflags;
+		}
+
+		private Flags ShallowCopy()
+		{
+			return (Flags)this.MemberwiseClone();
+		}
+
+		public bool ImmediatePureAndSoftRequired => (EnemyStatusAttacks ?? true) || Entrances || MapOpenProgression || RandomizeFormationEnemizer;
 
 		public bool FreeLute => ChaosRush || ShortToFR;
 
@@ -421,7 +465,7 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.MapOpenProgressionExtended);
 			sum = AddBoolean(sum, flags.EntrancesIncludesDeadEnds);
 			sum = AddBoolean(sum, flags.EntrancesMixedWithTowns);
-			sum = AddBoolean(sum, flags.IncentivizeFreeNPCs);
+			sum = AddTriState(sum, flags.IncentivizeFreeNPCs);
 			sum = AddBoolean(sum, flags.IncentivizeFetchNPCs);
 			sum = AddBoolean(sum, flags.IncentivizeTail);
 			sum = AddBoolean(sum, flags.IncentivizeMainItems);
@@ -690,7 +734,7 @@ namespace FF1Lib
 				IncentivizeMainItems = GetBoolean(ref sum),
 				IncentivizeTail = GetBoolean(ref sum),
 				IncentivizeFetchNPCs = GetBoolean(ref sum),
-				IncentivizeFreeNPCs = GetBoolean(ref sum),
+				IncentivizeFreeNPCs = GetTriState(ref sum),
 				EntrancesMixedWithTowns = GetBoolean(ref sum),
 				EntrancesIncludesDeadEnds = GetBoolean(ref sum),
 				MapOpenProgressionExtended = GetBoolean(ref sum),
