@@ -123,19 +123,19 @@ namespace FF1Lib
 			var placedItems = result.PlacedItems;
 			treasurePool = result.RemainingTreasures;
 
-			if (_flags.FreeBridge)
+			if (_flags.FreeBridge ?? false)
 			{
 				placedItems = placedItems.Select(x => x.Item != Item.Bridge ? x : NewItemPlacement(x, ReplacementItem)).ToList();
 			}
-			if (_flags.FreeAirship)
+			if (_flags.FreeAirship ?? false)
 			{
 				placedItems = placedItems.Select(x => x.Item != Item.Floater ? x : NewItemPlacement(x, ReplacementItem)).ToList();
 			}
-			if (_flags.FreeShip)
+			if (_flags.FreeShip ?? false)
 			{
 				placedItems = placedItems.Select(x => x.Item != Item.Ship ? x : NewItemPlacement(x, ReplacementItem)).ToList();
 			}
-			if (_flags.FreeCanal)
+			if (_flags.FreeCanal ?? false)
 			{
 				placedItems = placedItems.Select(x => x.Item != Item.Canal ? x : NewItemPlacement(x, ReplacementItem)).ToList();
 			}
@@ -183,7 +183,7 @@ namespace FF1Lib
 
 			Debug.Assert(treasurePool.Count() == itemLocationPool.Count());
 
-			if (_flags.RandomLoot)
+			if (_flags.RandomLoot ?? false)
 			{
 				// We want to leave out anything incentivized (and thus already placed), but
 				// add all the other stuff that you can't find in vanilla.
@@ -197,7 +197,7 @@ namespace FF1Lib
 				treasurePool = treasurePool.Select(treasure => generator.GetItem(rng)).ToList();
 			}
 
-			if (_flags.BetterTrapChests)
+			if (_flags.BetterTrapChests ?? false)
 			{
 				// First we'll make a list of all 'notable' treasure.
 				var notableTreasureList = new List<Item>()
@@ -244,7 +244,7 @@ namespace FF1Lib
 
 		public Item SelectVendorItem(List<Item> incentives, List<Item> nonincentives, List<Item> treasurePool, List<IRewardSource> incentiveLocationPool, MT19337 rng)
 		{
-			if (!_flags.NPCItems) return Item.Bottle;
+			if (!_flags.NPCItems ?? false) return Item.Bottle;
 
 			var itemShopItem = Item.Cabin;
 			var validShopIncentives = incentives.Where(x => x > Item.None && x <= Item.Soft).ToList();
@@ -309,19 +309,19 @@ namespace FF1Lib
 			}
 
 			var currentMapChanges = MapChange.None;
-			if (victoryConditions.FreeBridge)
+			if (victoryConditions.FreeBridge ?? false)
 			{
 				currentMapChanges |= MapChange.Bridge;
 			}
-			if (victoryConditions.FreeShip)
+			if (victoryConditions.FreeShip ?? false)
 			{
 				currentMapChanges |= MapChange.Ship;
 			}
-			if (victoryConditions.FreeAirship)
+			if (victoryConditions.FreeAirship ?? false)
 			{
 				currentMapChanges |= MapChange.Airship;
 			}
-			if (victoryConditions.FreeCanal)
+			if (victoryConditions.FreeCanal ?? false)
 			{
 				currentMapChanges |= MapChange.Canal;
 			}
@@ -491,7 +491,7 @@ namespace FF1Lib
 				incentives.Shuffle(rng);
 				nonincentives.Shuffle(rng);
 
-				if (_flags.NPCItems)
+				if (_flags.NPCItems ?? false)
 				{
 					// 2. Place caravan item first because among incentive locations it has the smallest set of possible items
 					itemShopItem = SelectVendorItem(incentives, nonincentives, treasurePool, incentiveLocationPool, rng);
@@ -541,7 +541,7 @@ namespace FF1Lib
 						placedItems.Any(x => x.Item == Item.Ship && startingMapLocations.Contains(x.MapLocation) &&
 							startingMapLocations.Contains((x as MapObject)?.SecondLocation ?? MapLocation.StartingLocation));
 
-					if (!(startingCanoeAvailable && canoeObsoletesBridge) && !startingShipAvailable && !_flags.FreeBridge)
+					if (!(startingCanoeAvailable && canoeObsoletesBridge) && !startingShipAvailable && !(_flags.FreeBridge ?? false))
 					{
 						var startingKeyAvailable =
 							earlyKeyAvailable && placedItems.Any(x => x.Item == Item.Key && startingMapLocations.Contains(x.MapLocation) &&
@@ -627,7 +627,7 @@ namespace FF1Lib
 					nonincentives.Add(incentives.SpliceRandom(rng));
 				}
 
-				if (_flags.NPCItems || _flags.NPCFetchItems)
+				if ((_flags.NPCItems ?? false) || (_flags.NPCFetchItems ?? false))
 				{
 					// Identify but don't place caravan item first because among incentive locations it has the smallest set of possible items
 					itemShopItem = SelectVendorItem(incentives, nonincentives, treasurePool, incentiveLocationPool, rng);

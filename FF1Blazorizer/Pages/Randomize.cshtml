@@ -109,56 +109,56 @@
 				<div class="row">
 					<div class="col-md-4">
 						<h4>Items Shuffle</h4>
-						<CheckBox Id="treasuresCheckBox" bind-Value="@Flags.Treasures">Treasures</CheckBox>
-						<CheckBox Indent Id="randomLootCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.RandomLoot">Randomize Treasures</CheckBox>
+						<TriStateCheckBox Id="treasuresCheckBox" bind-Value="@Flags.Treasures">Treasures</TriStateCheckBox>
+						<TriStateCheckBox Indent Id="randomLootCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.RandomLoot">Randomize Treasures</TriStateCheckBox>
 						<EnumDropDown Indent TItem="WorldWealth" IsEnabled="@Flags.Treasures" bind-Value="@Flags.WorldWealth">Random Wealth: </EnumDropDown>
-						<CheckBox Indent Id="betterTrapTreasureCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.BetterTrapTreasure">Better Trap Treasure</CheckBox>
-						<CheckBox Id="npcItemsCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.NPCItems">Main NPC Items</CheckBox>
-						<CheckBox Id="npcFetchItemsCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.NPCFetchItems">Fetch Quest Rewards</CheckBox>
-						<CheckBox Id="shuffleObjectiveNPCsCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.ShuffleObjectiveNPCs">Objective NPCs</CheckBox>
+						<TriStateCheckBox Indent Id="betterTrapTreasureCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.BetterTrapTreasure">Better Trap Treasure</TriStateCheckBox>
+						<TriStateCheckBox Id="npcItemsCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.NPCItems">Main NPC Items</TriStateCheckBox>
+						<TriStateCheckBox Id="npcFetchItemsCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.NPCFetchItems">Fetch Quest Rewards</TriStateCheckBox>
+						<TriStateCheckBox Id="shuffleObjectiveNPCsCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.ShuffleObjectiveNPCs">Objective NPCs</TriStateCheckBox>
 						<div class="checkbox-cell"></div>
 						<h4>Freebies</h4>
-						<CheckBox Id="freeShipCheckBox" bind-Value="@Flags.FreeShip">Free Ship</CheckBox>
-						<CheckBox Id="freeAirshipCheckBox" bind-Value="@Flags.FreeAirship">Free Airship</CheckBox>
-						<CheckBox Id="freeBridgeCheckBox" bind-Value="@Flags.FreeBridge">Free Bridge</CheckBox>
-						<CheckBox Id="freeCanalCheckBox" bind-Value="@Flags.FreeCanal">Free Canal</CheckBox>
+						<TriStateCheckBox Id="freeShipCheckBox" bind-Value="@Flags.FreeShip">Free Ship</TriStateCheckBox>
+						<TriStateCheckBox Id="freeAirshipCheckBox" bind-Value="@Flags.FreeAirship">Free Airship</TriStateCheckBox>
+						<TriStateCheckBox Id="freeBridgeCheckBox" bind-Value="@Flags.FreeBridge">Free Bridge</TriStateCheckBox>
+						<TriStateCheckBox Id="freeCanalCheckBox" bind-Value="@Flags.FreeCanal">Free Canal</TriStateCheckBox>
 					</div>
 					<div class="col-md-4">
 						<h4>Locations: @(Flags.Flags.IncentivizedLocationCountMin) @((Flags.Flags.IncentivizedLocationCountMin != Flags.Flags.IncentivizedLocationCountMax) ? "- " + Flags.Flags.IncentivizedLocationCountMax : "") </h4>
 						<TriStateCheckBox Id="incentivizeFreeNPCsCheckBox" IsEnabled="@Flags.IncentivizeFreeNPCsEnabled" bind-Value="@Flags.IncentivizeFreeNPCs">Main NPCs</TriStateCheckBox>
-						<CheckBox Id="incentivizeFetchNPCsCheckBox" IsEnabled="@Flags.IncentivizeFetchNPCsEnabled" bind-Value="@Flags.IncentivizeFetchNPCs">Fetch Quest NPCs</CheckBox>
+						<TriStateCheckBox Id="incentivizeFetchNPCsCheckBox" IsEnabled="@Flags.IncentivizeFetchNPCsEnabled" bind-Value="@Flags.IncentivizeFetchNPCs">Fetch Quest NPCs</TriStateCheckBox>
 						<div class="checkbox-cell"></div>
-						<CheckBox Id="incentivizeIceCaveCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeIceCave">Ice Cave</CheckBox>
-						<CheckBox Id="incentivizeOrdealsCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeOrdeals">Ordeals</CheckBox>
-						<CheckBox Id="incentivizeMarshCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeMarsh">Marsh Cave</CheckBox>
-						<CheckBox Id="incentivizeTitansCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeTitansTrove">Titan's Trove</CheckBox>
+						<TriStateCheckBox Id="incentivizeIceCaveCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeIceCave">Ice Cave</TriStateCheckBox>
+						<TriStateCheckBox Id="incentivizeOrdealsCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeOrdeals">Ordeals</TriStateCheckBox>
+						<TriStateCheckBox Id="incentivizeMarshCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeMarsh">Marsh Cave</TriStateCheckBox>
+						<TriStateCheckBox Id="incentivizeTitansCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeTitansTrove">Titan's Trove</TriStateCheckBox>
 						<div class="checkbox-cell"></div>
-						<CheckBox Id="incentivizeEarthCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeEarth">Earth Cave</CheckBox>
-						<CheckBox Id="incentivizeVolcanoCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeVolcano">Volcano</CheckBox>
-						<CheckBox Id="incentivizeSeaShrineCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeSeaShrine">Sea Shrine</CheckBox>
-						<CheckBox Id="incentivizeSkyPalaceCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeSkyPalace">Sky Palace</CheckBox>
+						<TriStateCheckBox Id="incentivizeEarthCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeEarth">Earth Cave</TriStateCheckBox>
+						<TriStateCheckBox Id="incentivizeVolcanoCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeVolcano">Volcano</TriStateCheckBox>
+						<TriStateCheckBox Id="incentivizeSeaShrineCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeSeaShrine">Sea Shrine</TriStateCheckBox>
+						<TriStateCheckBox Id="incentivizeSkyPalaceCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeSkyPalace">Sky Palace</TriStateCheckBox>
 						<div class="checkbox-cell"></div>
-						<CheckBox Id="incentivizeConeriaCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeConeria">Coneria (locked)</CheckBox>
-						<CheckBox Id="incentivizeMarshKeyLockedCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeMarshKeyLocked">Marsh (locked)</CheckBox>
+						<TriStateCheckBox Id="incentivizeConeriaCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeConeria">Coneria (locked)</TriStateCheckBox>
+						<TriStateCheckBox Id="incentivizeMarshKeyLockedCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeMarshKeyLocked">Marsh (locked)</TriStateCheckBox>
 					</div>
 					<div class="col-md-4">
-						<h4>Items: @Flags.Flags.IncentivizedItemCount</h4>
+						<h4>Items: @(Flags.Flags.IncentivizedItemCountMin) @((Flags.Flags.IncentivizedItemCountMin != Flags.Flags.IncentivizedItemCountMax) ? "- " + Flags.Flags.IncentivizedItemCountMax : "")</h4>
 						<p style="font-size: 10px">@Flags.Flags.IncentivizedItems</p>
-						<CheckBox Id="incentivizeMainItemsCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeMainItems">Main Progression Items</CheckBox>
-						<CheckBox Id="incentivizeFetchItemsCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeFetchItems">Other Quest Items</CheckBox>
-						<CheckBox Id="incentivizeAirshipCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeAirship">Floater</CheckBox>
-						<CheckBox Id="incentivizeCanoeItemCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeCanoeItem">Canoe</CheckBox>
-						<CheckBox Id="incentivizeShipAndCanalCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeShipAndCanal">Ship &amp; Canal</CheckBox>
-						<CheckBox Id="incentivizeTailCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeTail">Tail</CheckBox>
+						<TriStateCheckBox Id="incentivizeMainItemsCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeMainItems">Main Progression Items</TriStateCheckBox>
+						<TriStateCheckBox Id="incentivizeFetchItemsCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeFetchItems">Other Quest Items</TriStateCheckBox>
+						<TriStateCheckBox Id="incentivizeAirshipCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeAirship">Floater</TriStateCheckBox>
+						<TriStateCheckBox Id="incentivizeCanoeItemCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeCanoeItem">Canoe</TriStateCheckBox>
+						<TriStateCheckBox Id="incentivizeShipAndCanalCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeShipAndCanal">Ship &amp; Canal</TriStateCheckBox>
+						<TriStateCheckBox Id="incentivizeTailCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeTail">Tail</TriStateCheckBox>
 						<div class="checkbox-cell"></div>
-						<CheckBox Id="incentivizeMasamuneCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeMasamune">Masamune</CheckBox>
-						<CheckBox Id="incentivizeDefCastWeaponCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeDefCastWeapon">Defense</CheckBox>
-						<CheckBox Id="incentivizeOffCastWeaponCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeOffCastWeapon">Thor Hammer</CheckBox>
-						<CheckBox Id="incentivizeOpalCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeOpal">Opal Bracelet</CheckBox>
-						<CheckBox Id="incentivizeOtherCastArmorCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeOtherCastArmor">Power Gauntlet</CheckBox>
-						<CheckBox Id="incentivizeDefCastArmorCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeDefCastArmor">White Shirt</CheckBox>
-						<CheckBox Id="incentivizeOffCastArmorCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeOffCastArmor">Black Shirt</CheckBox>
-						<CheckBox Id="incentivizeRibbonCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeRibbon">Ribbon</CheckBox>
+						<TriStateCheckBox Id="incentivizeMasamuneCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeMasamune">Masamune</TriStateCheckBox>
+						<TriStateCheckBox Id="incentivizeDefCastWeaponCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeDefCastWeapon">Defense</TriStateCheckBox>
+						<TriStateCheckBox Id="incentivizeOffCastWeaponCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeOffCastWeapon">Thor Hammer</TriStateCheckBox>
+						<TriStateCheckBox Id="incentivizeOpalCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeOpal">Opal Bracelet</TriStateCheckBox>
+						<TriStateCheckBox Id="incentivizeOtherCastArmorCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeOtherCastArmor">Power Gauntlet</TriStateCheckBox>
+						<TriStateCheckBox Id="incentivizeDefCastArmorCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeDefCastArmor">White Shirt</TriStateCheckBox>
+						<TriStateCheckBox Id="incentivizeOffCastArmorCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeOffCastArmor">Black Shirt</TriStateCheckBox>
+						<TriStateCheckBox Id="incentivizeRibbonCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeRibbon">Ribbon</TriStateCheckBox>
 					</div>
 				</div>
 			</div>
