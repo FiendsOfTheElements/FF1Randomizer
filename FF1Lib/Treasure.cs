@@ -34,7 +34,7 @@ namespace FF1Lib
 			Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullFloorRequirements = overworldMap.FullLocationRequirements;
 			Dictionary<MapLocation, OverworldTeleportIndex> overridenOverworld = overworldMap.OverriddenOverworldLocations;
 
-			var vanillaNPCs = !flags.NPCItems && !flags.NPCFetchItems;
+			var vanillaNPCs = !(flags.NPCItems ?? false) && !(flags.NPCFetchItems ?? false);
 			if (!vanillaNPCs)
 			{
 				EnableBridgeShipCanalAnywhere();
@@ -67,7 +67,7 @@ namespace FF1Lib
 				item.Put(this);
 			}
 			// Move the ship someplace closer to where it really ends up.
-			if (!flags.FreeShip)
+			if (!(flags.FreeShip ?? false))
 			{
 				MapLocation shipLocation = placedItems.Find(reward => reward.Item == Item.Ship).MapLocation;
 				if (overridenOverworld != null && overridenOverworld.TryGetValue(shipLocation, out var overworldIndex))

@@ -28,8 +28,8 @@
 	private string IndentClass => Indent ? "indent" : "";
 
 	[Parameter]
-	private bool IsEnabled { get; set; } = true;
-	private string DisabledClass => IsEnabled ? "" : "disabled";
+	private bool? IsEnabled { get; set; } = true;
+	private string DisabledClass => (IsEnabled ?? true) ? "" : "disabled";
 
 	[Parameter]
 	private RenderFragment ChildContent { get; set; }

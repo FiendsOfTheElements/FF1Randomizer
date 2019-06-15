@@ -13,12 +13,12 @@ namespace FF1Lib
 		public bool Spoilers { get; set; }
 
 		public bool? Shops { get; set; }
-		public bool Treasures { get; set; }
-		public bool NPCItems { get; set; }
-		public bool NPCFetchItems { get; set; }
+		public bool? Treasures { get; set; }
+		public bool? NPCItems { get; set; }
+		public bool? NPCFetchItems { get; set; }
 		public bool? RandomWares { get; set; }
 		public bool? RandomWaresIncludesSpecialGear { get; set; }
-		public bool RandomLoot { get; set; }
+		public bool? RandomLoot { get; set; }
 
 		public bool ShardHunt { get; set; }
 		public bool ExtraShards { get; set; }
@@ -67,55 +67,55 @@ namespace FF1Lib
 		public bool EntrancesMixedWithTowns { get; set; }
 
 		public bool? IncentivizeFreeNPCs { get; set; }
-		public bool IncentivizeFetchNPCs { get; set; }
-		public bool IncentivizeTail { get; set; }
-		public bool IncentivizeMainItems { get; set; }
-		public bool IncentivizeFetchItems { get; set; }
-		public bool IncentivizeCanoeItem { get; set; }
-		public bool IncentivizeAirship { get; set; }
-		public bool IncentivizeShipAndCanal { get; set; }
+		public bool? IncentivizeFetchNPCs { get; set; }
+		public bool? IncentivizeTail { get; set; }
+		public bool? IncentivizeMainItems { get; set; }
+		public bool? IncentivizeFetchItems { get; set; }
+		public bool? IncentivizeCanoeItem { get; set; }
+		public bool? IncentivizeAirship { get; set; }
+		public bool? IncentivizeShipAndCanal { get; set; }
 		public bool ClassicItemPlacement { get; set; }
 
-		public bool IncentivizeMarsh { get; set; }
-		public bool IncentivizeEarth { get; set; }
-		public bool IncentivizeVolcano { get; set; }
-		public bool IncentivizeIceCave { get; set; }
-		public bool IncentivizeOrdeals { get; set; }
-		public bool IncentivizeSeaShrine { get; set; }
+		public bool? IncentivizeMarsh { get; set; }
+		public bool? IncentivizeEarth { get; set; }
+		public bool? IncentivizeVolcano { get; set; }
+		public bool? IncentivizeIceCave { get; set; }
+		public bool? IncentivizeOrdeals { get; set; }
+		public bool? IncentivizeSeaShrine { get; set; }
 
-		public bool IncentivizeConeria { get; set; }
-		public bool IncentivizeMarshKeyLocked { get; set; }
-		public bool IncentivizeSkyPalace { get; set; }
-		public bool IncentivizeTitansTrove { get; set; }
-		public bool BetterTrapChests { get; set; }
+		public bool? IncentivizeConeria { get; set; }
+		public bool? IncentivizeMarshKeyLocked { get; set; }
+		public bool? IncentivizeSkyPalace { get; set; }
+		public bool? IncentivizeTitansTrove { get; set; }
+		public bool? BetterTrapChests { get; set; }
 
 
-		public bool IncentivizeMasamune { get; set; }
-		public bool IncentivizeOpal { get; set; }
-		public bool IncentivizeRibbon { get; set; }
+		public bool? IncentivizeMasamune { get; set; }
+		public bool? IncentivizeOpal { get; set; }
+		public bool? IncentivizeRibbon { get; set; }
 		public bool IncentivizeRibbon2 => false;
 		public bool Incentivize65K => false;
 		public bool IncentivizeBad => false;
 
-		public bool IncentivizeDefCastArmor { get; set; }
-		public bool IncentivizeOffCastArmor { get; set; }
-		public bool IncentivizeOtherCastArmor { get; set; }
-		public bool IncentivizeDefCastWeapon { get; set; }
-		public bool IncentivizeOffCastWeapon { get; set; }
+		public bool? IncentivizeDefCastArmor { get; set; }
+		public bool? IncentivizeOffCastArmor { get; set; }
+		public bool? IncentivizeOtherCastArmor { get; set; }
+		public bool? IncentivizeDefCastWeapon { get; set; }
+		public bool? IncentivizeOffCastWeapon { get; set; }
 		public bool IncentivizeOtherCastWeapon { get; set; }
 
 		public bool EarlySarda { get; set; }
 		public bool EarlySage { get; set; }
 		public bool EarlyOrdeals { get; set; }
-		public bool ShuffleObjectiveNPCs { get; set; }
+		public bool? ShuffleObjectiveNPCs { get; set; }
 		public bool OnlyRequireGameIsBeatable { get; set; }
 
-		public bool FreeBridge { get; set; }
-		public bool FreeShip { get; set; }
-		public bool FreeAirship { get; set; }
+		public bool? FreeBridge { get; set; }
+		public bool? FreeShip { get; set; }
+		public bool? FreeAirship { get; set; }
 		public bool FreeOrbs { get; set; }
 		public bool EnableCritNumberDisplay { get; set; }
-		public bool FreeCanal { get; set; }
+		public bool? FreeCanal { get; set; }
 		public bool EasyMode { get; set; }
 
 		public bool HousesFillHp { get; set; }
@@ -224,7 +224,7 @@ namespace FF1Lib
 
 		public bool AllowStartAreaDanager { get; set; } = false;
 
-		public bool MapCanalBridge => NPCItems || NPCFetchItems || MapOpenProgression || MapOpenProgressionExtended;
+		public bool MapCanalBridge => (NPCItems ?? true) || (NPCFetchItems ?? true) || MapOpenProgression || MapOpenProgressionExtended;
 		public bool MapOnracDock => MapOpenProgression;
 		public bool MapMirageDock => MapOpenProgression;
 		public bool MapConeriaDwarves => MapOpenProgression;
@@ -240,146 +240,178 @@ namespace FF1Lib
 		// 4. The vehicles now have their own incentivization flags apart from other progression items.
 
 		// Ruby is required if Sarda is Required for the ROD
-		public bool RequiredRuby => !EarlySage && !NPCItems;
-		public bool IncentivizeRuby => (RequiredRuby && IncentivizeMainItems) || (!RequiredRuby && IncentivizeFetchItems);
+		public bool? RequiredRuby => !EarlySage & !NPCItems;
+		public bool? IncentivizeRuby => (RequiredRuby & IncentivizeMainItems) | (!RequiredRuby & IncentivizeFetchItems);
 
 		// If Canoe and Fetch Quests are unshuffled then TNT is required
-		public bool RequiredTnt => !NPCFetchItems && !NPCItems;
-		public bool IncentivizeTnt => (RequiredTnt && IncentivizeMainItems) || (!RequiredTnt && IncentivizeFetchItems);
+		public bool? RequiredTnt => !NPCFetchItems & !NPCItems;
+		public bool? IncentivizeTnt => (RequiredTnt & IncentivizeMainItems) | (!RequiredTnt & IncentivizeFetchItems);
 
-		public bool IncentivizeCrown => (!NPCFetchItems && IncentivizeMainItems) || (NPCFetchItems && IncentivizeFetchItems);
-		public bool IncentivizeSlab => (!NPCFetchItems && IncentivizeMainItems) || (NPCFetchItems && IncentivizeFetchItems);
-		public bool IncentivizeBottle => (!NPCFetchItems && IncentivizeMainItems) || (NPCFetchItems && IncentivizeFetchItems);
+		public bool? IncentivizeCrown => (!(NPCFetchItems ?? false) && (IncentivizeMainItems ?? false)) || ((NPCFetchItems ?? false) && (IncentivizeFetchItems ?? false));
+		public bool? IncentivizeSlab => (!(NPCFetchItems ?? false) && (IncentivizeMainItems ?? false)) || ((NPCFetchItems ?? false) && (IncentivizeFetchItems ?? false));
+		public bool? IncentivizeBottle => (!(NPCFetchItems ?? false) && (IncentivizeMainItems ?? false)) || ((NPCFetchItems ?? false) && (IncentivizeFetchItems ?? false));
 
 		public bool IncentivizeBridge => false;
-		public bool IncentivizeCanoe => NPCItems && IncentivizeCanoeItem;
-		public bool IncentivizeLute => NPCItems && !FreeLute && IncentivizeMainItems;
-		public bool IncentivizeShip => NPCItems && IncentivizeShipAndCanal && !FreeShip;
-		public bool IncentivizeRod => NPCItems && IncentivizeMainItems;
-		public bool IncentivizeCube => NPCItems && IncentivizeMainItems;
-		public bool IncentivizeFloater => !FreeAirship && IncentivizeAirship;
+		public bool? IncentivizeCanoe => NPCItems & IncentivizeCanoeItem;
+		public bool? IncentivizeLute => NPCItems & !FreeLute & IncentivizeMainItems;
+		public bool? IncentivizeShip => NPCItems & IncentivizeShipAndCanal & !FreeShip;
+		public bool? IncentivizeRod => NPCItems & IncentivizeMainItems;
+		public bool? IncentivizeCube => NPCItems & IncentivizeMainItems;
+		public bool? IncentivizeFloater => !FreeAirship & IncentivizeAirship;
 
-		public bool IncentivizeCanal => NPCFetchItems && IncentivizeShipAndCanal && !FreeCanal;
-		public bool IncentivizeCrystal => NPCFetchItems && IncentivizeFetchItems;
-		public bool IncentivizeHerb => NPCFetchItems && IncentivizeFetchItems;
-		public bool IncentivizeKey => NPCFetchItems && IncentivizeMainItems;
-		public bool IncentivizeChime => NPCFetchItems && IncentivizeMainItems;
-		public bool IncentivizeOxyale => NPCFetchItems && IncentivizeMainItems;
+		public bool? IncentivizeCanal => NPCFetchItems & IncentivizeShipAndCanal & !FreeCanal;
+		public bool? IncentivizeCrystal => NPCFetchItems & IncentivizeFetchItems;
+		public bool? IncentivizeHerb => NPCFetchItems & IncentivizeFetchItems;
+		public bool? IncentivizeKey => NPCFetchItems & IncentivizeMainItems;
+		public bool? IncentivizeChime => NPCFetchItems & IncentivizeMainItems;
+		public bool? IncentivizeOxyale => NPCFetchItems & IncentivizeMainItems;
 
-		public bool IncentivizeAdamant => IncentivizeFetchItems;
-		public bool IncentivizeXcalber => false;
+		public bool? IncentivizeAdamant => IncentivizeFetchItems;
+		public bool? IncentivizeXcalber => false;
 
-		public int IncentivizedItemCount => 0
-			+ (IncentivizeTail ? 1 : 0)
-			+ (IncentivizeMasamune ? 1 : 0)
-			+ (IncentivizeOpal ? 1 : 0)
-			+ (IncentivizeRibbon ? 1 : 0)
-			+ (IncentivizeDefCastArmor ? 1 : 0)
-			+ (IncentivizeOffCastArmor ? 1 : 0)
-			+ (IncentivizeOtherCastArmor ? 1 : 0)
-			+ (IncentivizeDefCastWeapon ? 1 : 0)
-			+ (IncentivizeOffCastWeapon ? 1 : 0)
+		public int IncentivizedItemCountMin => 0
+			+ ((IncentivizeTail ?? false) ? 1 : 0)
+			+ ((IncentivizeMasamune ?? false) ? 1 : 0)
+			+ ((IncentivizeOpal ?? false) ? 1 : 0)
+			+ ((IncentivizeRibbon ?? false) ? 1 : 0)
+			+ ((IncentivizeDefCastArmor ?? false) ? 1 : 0)
+			+ ((IncentivizeOffCastArmor ?? false) ? 1 : 0)
+			+ ((IncentivizeOtherCastArmor ?? false) ? 1 : 0)
+			+ ((IncentivizeDefCastWeapon ?? false) ? 1 : 0)
+			+ ((IncentivizeOffCastWeapon ?? false) ? 1 : 0)
 			+ (IncentivizeOtherCastWeapon ? 1 : 0)
-			+ (IncentivizeAdamant ? 1 : 0)
-			+ (IncentivizeRuby ? 1 : 0)
-			+ (IncentivizeCrown ? 1 : 0)
-			+ (IncentivizeTnt ? 1 : 0)
-			+ (IncentivizeSlab ? 1 : 0)
-			+ (IncentivizeBottle ? 1 : 0)
-			+ (IncentivizeFloater ? 1 : 0)
+			+ ((IncentivizeAdamant ?? false) ? 1 : 0)
+			+ ((IncentivizeRuby ?? false) ? 1 : 0)
+			+ ((IncentivizeCrown ?? false) ? 1 : 0)
+			+ ((IncentivizeTnt ?? false) ? 1 : 0)
+			+ ((IncentivizeSlab ?? false) ? 1 : 0)
+			+ ((IncentivizeBottle ?? false) ? 1 : 0)
+			+ ((IncentivizeFloater ?? false) ? 1 : 0)
 			+ (IncentivizeBridge ? 1 : 0)
-			+ (IncentivizeLute ? 1 : 0)
-			+ (IncentivizeShip ? 1 : 0)
-			+ (IncentivizeRod ? 1 : 0)
-			+ (IncentivizeCanoe ? 1 : 0)
-			+ (IncentivizeCube ? 1 : 0)
-			+ (IncentivizeCrystal ? 1 : 0)
-			+ (IncentivizeHerb ? 1 : 0)
-			+ (IncentivizeKey ? 1 : 0)
-			+ (IncentivizeCanal ? 1 : 0)
-			+ (IncentivizeChime ? 1 : 0)
-			+ (IncentivizeOxyale ? 1 : 0)
-			+ (IncentivizeXcalber ? 1 : 0);
+			+ ((IncentivizeLute ?? false) ? 1 : 0)
+			+ ((IncentivizeShip ?? false) ? 1 : 0)
+			+ ((IncentivizeRod ?? false) ? 1 : 0)
+			+ ((IncentivizeCanoe ?? false) ? 1 : 0)
+			+ ((IncentivizeCube ?? false) ? 1 : 0)
+			+ ((IncentivizeCrystal ?? false) ? 1 : 0)
+			+ ((IncentivizeHerb ?? false) ? 1 : 0)
+			+ ((IncentivizeKey ?? false) ? 1 : 0)
+			+ ((IncentivizeCanal ?? false) ? 1 : 0)
+			+ ((IncentivizeChime ?? false) ? 1 : 0)
+			+ ((IncentivizeOxyale ?? false) ? 1 : 0)
+			+ ((IncentivizeXcalber ?? false) ? 1 : 0);
+
+		public int IncentivizedItemCountMax => 0
+			+ ((IncentivizeTail ?? true) ? 1 : 0)
+			+ ((IncentivizeMasamune ?? true) ? 1 : 0)
+			+ ((IncentivizeOpal ?? true) ? 1 : 0)
+			+ ((IncentivizeRibbon ?? true) ? 1 : 0)
+			+ ((IncentivizeDefCastArmor ?? true) ? 1 : 0)
+			+ ((IncentivizeOffCastArmor ?? true) ? 1 : 0)
+			+ ((IncentivizeOtherCastArmor ?? true) ? 1 : 0)
+			+ ((IncentivizeDefCastWeapon ?? true) ? 1 : 0)
+			+ ((IncentivizeOffCastWeapon ?? true) ? 1 : 0)
+			+ (IncentivizeOtherCastWeapon ? 1 : 0)
+			+ ((IncentivizeAdamant ?? true) ? 1 : 0)
+			+ ((IncentivizeRuby ?? true) ? 1 : 0)
+			+ ((IncentivizeCrown ?? true) ? 1 : 0)
+			+ ((IncentivizeTnt ?? true) ? 1 : 0)
+			+ ((IncentivizeSlab ?? true) ? 1 : 0)
+			+ ((IncentivizeBottle ?? true) ? 1 : 0)
+			+ ((IncentivizeFloater ?? true) ? 1 : 0)
+			+ (IncentivizeBridge ? 1 : 0)
+			+ ((IncentivizeLute ?? true) ? 1 : 0)
+			+ ((IncentivizeShip ?? true) ? 1 : 0)
+			+ ((IncentivizeRod ?? true) ? 1 : 0)
+			+ ((IncentivizeCanoe ?? true) ? 1 : 0)
+			+ ((IncentivizeCube ?? true) ? 1 : 0)
+			+ ((IncentivizeCrystal ?? true) ? 1 : 0)
+			+ ((IncentivizeHerb ?? true) ? 1 : 0)
+			+ ((IncentivizeKey ?? true) ? 1 : 0)
+			+ ((IncentivizeCanal ?? true) ? 1 : 0)
+			+ ((IncentivizeChime ?? true) ? 1 : 0)
+			+ ((IncentivizeOxyale ?? true) ? 1 : 0)
+			+ ((IncentivizeXcalber ?? true) ? 1 : 0);
 
 		public string IncentivizedItems => ""
-			+ (IncentivizeAdamant ? "Adamant " : "")
+			+ ((IncentivizeAdamant != null) ? (IncentivizeAdamant ?? false ? "Adamant " : "") : ("Adamant? "))
 			+ (IncentivizeBridge ? "Bridge " : "")
-			+ (IncentivizeBottle ? "Bottle " : "")
-			+ (IncentivizeCanal ? "Canal " : "")
-			+ (IncentivizeCanoe ? "Canoe " : "")
-			+ (IncentivizeChime ? "Chime " : "")
+			+ ((IncentivizeBottle != null) ? (IncentivizeBottle ?? false ? "Bottle " : "") : ("Bottle? "))
+			+ ((IncentivizeCanal != null) ? (IncentivizeCanal ?? false ? "Canal " : "") : ("Canal? "))
+			+ ((IncentivizeCanoe != null) ? (IncentivizeCanoe ?? false ? "Canoe " : "") : ("Canoe? "))
+			+ ((IncentivizeChime != null) ? (IncentivizeChime ?? false ? "Chime " : "") : ("Chime? "))
 			+ (IncentivizeBad ? "Cloth " : "")
-			+ (IncentivizeCrown ? "Crown " : "")
-			+ (IncentivizeCrystal ? "Crystal " : "")
-			+ (IncentivizeCube ? "Cube " : "")
-			+ (IncentivizeFloater ? "Floater " : "")
-			+ (IncentivizeHerb ? "Herb " : "")
-			+ (IncentivizeKey ? "Key " : "")
-			+ (IncentivizeLute ? "Lute " : "")
-			+ (IncentivizeOxyale ? "Oxyale " : "")
-			+ (IncentivizeRod ? "Rod " : "")
-			+ (IncentivizeRuby ? "Ruby " : "")
-			+ (IncentivizeShip ? "Ship " : "")
-			+ (IncentivizeSlab ? "Slab " : "")
-			+ (IncentivizeTail ? "Tail " : "")
-			+ (IncentivizeTnt ? "Tnt " : "")
-			+ (IncentivizeMasamune ? "Masmune\U0001F5E1 " : "")
-			+ (IncentivizeXcalber ? "XCalber\U0001F5E1 " : "")
-			+ (IncentivizeDefCastWeapon ? "Defense\U0001F5E1 " : "")
+			+ ((IncentivizeCrown != null) ? (IncentivizeCrown ?? false ? "Crown " : "") : ("Crown? "))
+			+ ((IncentivizeCrystal != null) ? (IncentivizeCrystal ?? false ? "Crystal " : "") : ("Crystal? "))
+			+ ((IncentivizeCube != null) ? (IncentivizeCube ?? false ? "Cube " : "") : ("Cube? "))
+			+ ((IncentivizeFloater != null) ? (IncentivizeFloater ?? false ? "Floater " : "") : ("Floater? "))
+			+ ((IncentivizeHerb != null) ? (IncentivizeHerb ?? false ? "Herb " : "") : ("Herb? "))
+			+ ((IncentivizeKey != null) ? (IncentivizeKey ?? false ? "Key " : "") : ("Key? "))
+			+ ((IncentivizeLute != null) ? (IncentivizeLute ?? false ? "Lute " : "") : ("Lute? "))
+			+ ((IncentivizeOxyale != null) ? (IncentivizeOxyale ?? false ? "Oxyale " : "") : ("Oxyale? "))
+			+ ((IncentivizeRod != null) ? (IncentivizeRod ?? false ? "Rod " : "") : ("Rod? "))
+			+ ((IncentivizeRuby != null) ? (IncentivizeRuby ?? false ? "Ruby " : "") : ("Ruby? "))
+			+ ((IncentivizeShip != null) ? (IncentivizeShip ?? false ? "Ship " : "") : ("Ship? "))
+			+ ((IncentivizeSlab != null) ? (IncentivizeSlab ?? false ? "Slab " : "") : ("Slab? "))
+			+ ((IncentivizeTail != null) ? (IncentivizeTail ?? false ? "Tail " : "") : ("Tail? "))
+			+ ((IncentivizeTnt != null) ? (IncentivizeTnt ?? false ? "Tnt " : "") : ("Tnt? "))
+			+ ((IncentivizeMasamune != null) ? (IncentivizeMasamune ?? false ? "Masmune\U0001F5E1 " : "") : ("Masmune?\U0001F5E1 "))
+			+ ((IncentivizeXcalber != null) ? (IncentivizeXcalber ?? false ? "XCalber\U0001F5E1 " : "") : ("XCalber?\U0001F5E1 "))
+			+ ((IncentivizeDefCastWeapon != null) ? (IncentivizeDefCastWeapon ?? false ? "Defense\U0001F5E1 " : "") : ("Defense?\U0001F5E1 "))
 			+ (IncentivizeOtherCastWeapon ? "Mage\U0001F9D9 " : "")
-			+ (IncentivizeOffCastWeapon ? "Thor\U0001F528 " : "")
-			+ (IncentivizeOpal ? "Opal\U0001F48D " : "")
-			+ (IncentivizeOtherCastArmor ? "Power\U0001F94A " : "")
-			+ (IncentivizeOffCastArmor ? "Black\U0001F9E5 " : "")
-			+ (IncentivizeDefCastArmor ? "White\U0001F455 " : "")
-			+ (IncentivizeRibbon ? "Ribbon\U0001F380 " : "")
+			+ ((IncentivizeOffCastWeapon != null) ? (IncentivizeOffCastWeapon ?? false ? "Thor\U0001F528 " : "") : ("Thor?\U0001F528 "))
+			+ ((IncentivizeOpal != null) ? (IncentivizeOpal ?? false ? "Opal\U0001F48D " : "") : ("Opal?\U0001F48D "))
+			+ ((IncentivizeOtherCastArmor != null) ? (IncentivizeOtherCastArmor ?? false ? "Power\U0001F94A " : "") : ("Power?\U0001F94A "))
+			+ ((IncentivizeOffCastArmor != null) ? (IncentivizeOffCastArmor ?? false ? "Black\U0001F9E5 " : "") : ("Black?\U0001F9E5 "))
+			+ ((IncentivizeDefCastArmor != null) ? (IncentivizeDefCastArmor ?? false ? "White\U0001F455 " : "") : ("White?\U0001F455 "))
+			+ ((IncentivizeRibbon != null) ? (IncentivizeRibbon ?? false ? "Ribbon\U0001F380 " : "") : ("Ribbon?\U0001F380 "))
 			+ (IncentivizeRibbon2 ? "Ribbon\U0001F380 " : "")
 			+ (Incentivize65K ? "65000G " : "");
 
-		public bool IncentivizeKingConeria => NPCItems && (IncentivizeFreeNPCs ?? false);
-		public bool IncentivizePrincess => NPCItems && (IncentivizeFreeNPCs ?? false);
-		public bool IncentivizeBikke => NPCItems && (IncentivizeFreeNPCs ?? false);
-		public bool IncentivizeSarda => NPCItems && (IncentivizeFreeNPCs ?? false);
-		public bool IncentivizeCanoeSage => NPCItems && (IncentivizeFreeNPCs ?? false);
-		public bool IncentivizeCaravan => NPCItems && (IncentivizeFreeNPCs ?? false);
-		public bool IncentivizeCubeBot => NPCItems && (IncentivizeFreeNPCs ?? false);
+		public bool IncentivizeKingConeria => (NPCItems ?? false) && (IncentivizeFreeNPCs ?? false);
+		public bool IncentivizePrincess => (NPCItems ?? false) && (IncentivizeFreeNPCs ?? false);
+		public bool IncentivizeBikke => (NPCItems ?? false) && (IncentivizeFreeNPCs ?? false);
+		public bool IncentivizeSarda => (NPCItems ?? false) && (IncentivizeFreeNPCs ?? false);
+		public bool IncentivizeCanoeSage => (NPCItems ?? false) && (IncentivizeFreeNPCs ?? false);
+		public bool IncentivizeCaravan => (NPCItems ?? false) && (IncentivizeFreeNPCs ?? false);
+		public bool IncentivizeCubeBot => (NPCItems ?? false) && (IncentivizeFreeNPCs ?? false);
 
-		public bool IncentivizeFairy => NPCFetchItems && IncentivizeFetchNPCs;
-		public bool IncentivizeAstos => NPCFetchItems && IncentivizeFetchNPCs;
-		public bool IncentivizeMatoya => NPCFetchItems && IncentivizeFetchNPCs;
-		public bool IncentivizeElfPrince => NPCFetchItems && IncentivizeFetchNPCs;
-		public bool IncentivizeNerrick => NPCFetchItems && IncentivizeFetchNPCs;
-		public bool IncentivizeLefein => NPCFetchItems && IncentivizeFetchNPCs;
-		public bool IncentivizeSmith => NPCFetchItems && IncentivizeFetchNPCs;
+		public bool IncentivizeFairy => (NPCFetchItems ?? false) && (IncentivizeFetchNPCs ?? false);
+		public bool IncentivizeAstos => (NPCFetchItems ?? false) && (IncentivizeFetchNPCs ?? false);
+		public bool IncentivizeMatoya => (NPCFetchItems ?? false) && (IncentivizeFetchNPCs ?? false);
+		public bool IncentivizeElfPrince => (NPCFetchItems ?? false) && (IncentivizeFetchNPCs ?? false);
+		public bool IncentivizeNerrick => (NPCFetchItems ?? false) && (IncentivizeFetchNPCs ?? false);
+		public bool IncentivizeLefein => (NPCFetchItems ?? false) && (IncentivizeFetchNPCs ?? false);
+		public bool IncentivizeSmith => (NPCFetchItems ?? false) && (IncentivizeFetchNPCs ?? false);
 
 		public int IncentivizedLocationCountMin => 0
-			+ (NPCItems && (IncentivizeFreeNPCs ?? false) ? 7 : 0)
-			+ (NPCFetchItems && IncentivizeFetchNPCs ? 7 : 0)
-			+ (IncentivizeMarsh ? 1 : 0)
-			+ (IncentivizeEarth ? 1 : 0)
-			+ (IncentivizeVolcano ? 1 : 0)
-			+ (IncentivizeIceCave ? 1 : 0)
-			+ (IncentivizeOrdeals ? 1 : 0)
-			+ (IncentivizeSeaShrine ? 1 : 0)
-			+ (IncentivizeConeria ? 1 : 0)
-			+ (IncentivizeMarshKeyLocked ? 1 : 0)
-			+ (IncentivizeTitansTrove ? 1 : 0)
-			+ (IncentivizeSkyPalace ? 1 : 0);
+			+ ((NPCItems ?? false) && (IncentivizeFreeNPCs ?? false) ? 7 : 0)
+			+ ((NPCFetchItems ?? false) && (IncentivizeFetchNPCs ?? false) ? 7 : 0)
+			+ ((IncentivizeMarsh ?? false) ? 1 : 0)
+			+ ((IncentivizeEarth ?? false) ? 1 : 0)
+			+ ((IncentivizeVolcano ?? false) ? 1 : 0)
+			+ ((IncentivizeIceCave ?? false) ? 1 : 0)
+			+ ((IncentivizeOrdeals ?? false) ? 1 : 0)
+			+ ((IncentivizeSeaShrine ?? false) ? 1 : 0)
+			+ ((IncentivizeConeria ?? false) ? 1 : 0)
+			+ ((IncentivizeMarshKeyLocked ?? false) ? 1 : 0)
+			+ ((IncentivizeTitansTrove ?? false) ? 1 : 0)
+			+ ((IncentivizeSkyPalace ?? false) ? 1 : 0);
 
 
 		public int IncentivizedLocationCountMax => 0
-			+ (NPCItems && (IncentivizeFreeNPCs ?? true) ? 7 : 0)
-			+ (NPCFetchItems && IncentivizeFetchNPCs ? 7 : 0)
-			+ (IncentivizeMarsh ? 1 : 0)
-			+ (IncentivizeEarth ? 1 : 0)
-			+ (IncentivizeVolcano ? 1 : 0)
-			+ (IncentivizeIceCave ? 1 : 0)
-			+ (IncentivizeOrdeals ? 1 : 0)
-			+ (IncentivizeSeaShrine ? 1 : 0)
-			+ (IncentivizeConeria ? 1 : 0)
-			+ (IncentivizeMarshKeyLocked ? 1 : 0)
-			+ (IncentivizeTitansTrove ? 1 : 0)
-			+ (IncentivizeSkyPalace ? 1 : 0);
+			+ ((NPCItems ?? true) && (IncentivizeFreeNPCs ?? true) ? 7 : 0)
+			+ ((NPCFetchItems ?? true) && (IncentivizeFetchNPCs ?? true) ? 7 : 0)
+			+ ((IncentivizeMarsh ?? true) ? 1 : 0)
+			+ ((IncentivizeEarth ?? true) ? 1 : 0)
+			+ ((IncentivizeVolcano ?? true) ? 1 : 0)
+			+ ((IncentivizeIceCave ?? true) ? 1 : 0)
+			+ ((IncentivizeOrdeals ?? true) ? 1 : 0)
+			+ ((IncentivizeSeaShrine ?? true) ? 1 : 0)
+			+ ((IncentivizeConeria ?? true) ? 1 : 0)
+			+ ((IncentivizeMarshKeyLocked ?? true) ? 1 : 0)
+			+ ((IncentivizeTitansTrove ?? true) ? 1 : 0)
+			+ ((IncentivizeSkyPalace ?? true) ? 1 : 0);
 
 
 		private static bool ConvertTriState(bool? tristate, MT19337 rng)
@@ -421,11 +453,11 @@ namespace FF1Lib
 			BigInteger sum = 0;
 
 			sum = AddTriState(sum, flags.Shops);
-			sum = AddBoolean(sum, flags.Treasures);
-			sum = AddBoolean(sum, flags.NPCItems);
-			sum = AddBoolean(sum, flags.NPCFetchItems);
+			sum = AddTriState(sum, flags.Treasures);
+			sum = AddTriState(sum, flags.NPCItems);
+			sum = AddTriState(sum, flags.NPCFetchItems);
 			sum = AddTriState(sum, flags.RandomWares);
-			sum = AddBoolean(sum, flags.RandomLoot);
+			sum = AddTriState(sum, flags.RandomLoot);
 			sum = AddBoolean(sum, flags.ShardHunt);
 			sum = AddBoolean(sum, flags.ExtraShards);
 			sum = AddBoolean(sum, flags.TransformFinalFormation);
@@ -466,45 +498,45 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.EntrancesIncludesDeadEnds);
 			sum = AddBoolean(sum, flags.EntrancesMixedWithTowns);
 			sum = AddTriState(sum, flags.IncentivizeFreeNPCs);
-			sum = AddBoolean(sum, flags.IncentivizeFetchNPCs);
-			sum = AddBoolean(sum, flags.IncentivizeTail);
-			sum = AddBoolean(sum, flags.IncentivizeMainItems);
-			sum = AddBoolean(sum, flags.IncentivizeFetchItems);
-			sum = AddBoolean(sum, flags.IncentivizeAirship);
-			sum = AddBoolean(sum, flags.IncentivizeCanoeItem);
-			sum = AddBoolean(sum, flags.IncentivizeShipAndCanal);
+			sum = AddTriState(sum, flags.IncentivizeFetchNPCs);
+			sum = AddTriState(sum, flags.IncentivizeTail);
+			sum = AddTriState(sum, flags.IncentivizeMainItems);
+			sum = AddTriState(sum, flags.IncentivizeFetchItems);
+			sum = AddTriState(sum, flags.IncentivizeAirship);
+			sum = AddTriState(sum, flags.IncentivizeCanoeItem);
+			sum = AddTriState(sum, flags.IncentivizeShipAndCanal);
 			sum = AddBoolean(sum, flags.ClassicItemPlacement);
-			sum = AddBoolean(sum, flags.IncentivizeMarsh);
-			sum = AddBoolean(sum, flags.IncentivizeEarth);
-			sum = AddBoolean(sum, flags.IncentivizeVolcano);
-			sum = AddBoolean(sum, flags.IncentivizeIceCave);
-			sum = AddBoolean(sum, flags.IncentivizeOrdeals);
-			sum = AddBoolean(sum, flags.IncentivizeSeaShrine);
-			sum = AddBoolean(sum, flags.IncentivizeConeria);
-			sum = AddBoolean(sum, flags.IncentivizeMarshKeyLocked);
-			sum = AddBoolean(sum, flags.IncentivizeSkyPalace);
-			sum = AddBoolean(sum, flags.IncentivizeTitansTrove);
-			sum = AddBoolean(sum, flags.BetterTrapChests);
-			sum = AddBoolean(sum, flags.IncentivizeMasamune);
-			sum = AddBoolean(sum, flags.IncentivizeOpal);
-			sum = AddBoolean(sum, flags.IncentivizeRibbon);
-			sum = AddBoolean(sum, flags.IncentivizeDefCastArmor);
-			sum = AddBoolean(sum, flags.IncentivizeOffCastArmor);
-			sum = AddBoolean(sum, flags.IncentivizeOtherCastArmor);
-			sum = AddBoolean(sum, flags.IncentivizeDefCastWeapon);
-			sum = AddBoolean(sum, flags.IncentivizeOffCastWeapon);
+			sum = AddTriState(sum, flags.IncentivizeMarsh);
+			sum = AddTriState(sum, flags.IncentivizeEarth);
+			sum = AddTriState(sum, flags.IncentivizeVolcano);
+			sum = AddTriState(sum, flags.IncentivizeIceCave);
+			sum = AddTriState(sum, flags.IncentivizeOrdeals);
+			sum = AddTriState(sum, flags.IncentivizeSeaShrine);
+			sum = AddTriState(sum, flags.IncentivizeConeria);
+			sum = AddTriState(sum, flags.IncentivizeMarshKeyLocked);
+			sum = AddTriState(sum, flags.IncentivizeSkyPalace);
+			sum = AddTriState(sum, flags.IncentivizeTitansTrove);
+			sum = AddTriState(sum, flags.BetterTrapChests);
+			sum = AddTriState(sum, flags.IncentivizeMasamune);
+			sum = AddTriState(sum, flags.IncentivizeOpal);
+			sum = AddTriState(sum, flags.IncentivizeRibbon);
+			sum = AddTriState(sum, flags.IncentivizeDefCastArmor);
+			sum = AddTriState(sum, flags.IncentivizeOffCastArmor);
+			sum = AddTriState(sum, flags.IncentivizeOtherCastArmor);
+			sum = AddTriState(sum, flags.IncentivizeDefCastWeapon);
+			sum = AddTriState(sum, flags.IncentivizeOffCastWeapon);
 			sum = AddBoolean(sum, flags.IncentivizeOtherCastWeapon);
 			sum = AddBoolean(sum, flags.EarlySarda);
 			sum = AddBoolean(sum, flags.EarlySage);
 			sum = AddBoolean(sum, flags.EarlyOrdeals);
-			sum = AddBoolean(sum, flags.ShuffleObjectiveNPCs);
+			sum = AddTriState(sum, flags.ShuffleObjectiveNPCs);
 			sum = AddBoolean(sum, flags.OnlyRequireGameIsBeatable);
-			sum = AddBoolean(sum, flags.FreeBridge);
-			sum = AddBoolean(sum, flags.FreeShip);
-			sum = AddBoolean(sum, flags.FreeAirship);
+			sum = AddTriState(sum, flags.FreeBridge);
+			sum = AddTriState(sum, flags.FreeShip);
+			sum = AddTriState(sum, flags.FreeAirship);
 			sum = AddBoolean(sum, flags.FreeOrbs);
 			sum = AddBoolean(sum, flags.EnableCritNumberDisplay);
-			sum = AddBoolean(sum, flags.FreeCanal);
+			sum = AddTriState(sum, flags.FreeCanal);
 			sum = AddBoolean(sum, flags.EasyMode);
 			sum = AddBoolean(sum, flags.HousesFillHp);
 			sum = AddBoolean(sum, flags.SpeedHacks);
@@ -695,45 +727,45 @@ namespace FF1Lib
 				SpeedHacks = GetBoolean(ref sum),
 				HousesFillHp = GetBoolean(ref sum),
 				EasyMode = GetBoolean(ref sum),
-				FreeCanal = GetBoolean(ref sum),
+				FreeCanal = GetTriState(ref sum),
 				EnableCritNumberDisplay = GetBoolean(ref sum),
 				FreeOrbs = GetBoolean(ref sum),
-				FreeAirship = GetBoolean(ref sum),
-				FreeShip = GetBoolean(ref sum),
-				FreeBridge = GetBoolean(ref sum),
+				FreeAirship = GetTriState(ref sum),
+				FreeShip = GetTriState(ref sum),
+				FreeBridge = GetTriState(ref sum),
 				OnlyRequireGameIsBeatable = GetBoolean(ref sum),
-				ShuffleObjectiveNPCs = GetBoolean(ref sum),
+				ShuffleObjectiveNPCs = GetTriState(ref sum),
 				EarlyOrdeals = GetBoolean(ref sum),
 				EarlySage = GetBoolean(ref sum),
 				EarlySarda = GetBoolean(ref sum),
 				IncentivizeOtherCastWeapon = GetBoolean(ref sum),
-				IncentivizeOffCastWeapon = GetBoolean(ref sum),
-				IncentivizeDefCastWeapon = GetBoolean(ref sum),
-				IncentivizeOtherCastArmor = GetBoolean(ref sum),
-				IncentivizeOffCastArmor = GetBoolean(ref sum),
-				IncentivizeDefCastArmor = GetBoolean(ref sum),
-				IncentivizeRibbon = GetBoolean(ref sum),
-				IncentivizeOpal = GetBoolean(ref sum),
-				IncentivizeMasamune = GetBoolean(ref sum),
-				BetterTrapChests = GetBoolean(ref sum),
-				IncentivizeTitansTrove = GetBoolean(ref sum),
-				IncentivizeSkyPalace = GetBoolean(ref sum),
-				IncentivizeMarshKeyLocked = GetBoolean(ref sum),
-				IncentivizeConeria = GetBoolean(ref sum),
-				IncentivizeSeaShrine = GetBoolean(ref sum),
-				IncentivizeOrdeals = GetBoolean(ref sum),
-				IncentivizeIceCave = GetBoolean(ref sum),
-				IncentivizeVolcano = GetBoolean(ref sum),
-				IncentivizeEarth = GetBoolean(ref sum),
-				IncentivizeMarsh = GetBoolean(ref sum),
+				IncentivizeOffCastWeapon = GetTriState(ref sum),
+				IncentivizeDefCastWeapon = GetTriState(ref sum),
+				IncentivizeOtherCastArmor = GetTriState(ref sum),
+				IncentivizeOffCastArmor = GetTriState(ref sum),
+				IncentivizeDefCastArmor = GetTriState(ref sum),
+				IncentivizeRibbon = GetTriState(ref sum),
+				IncentivizeOpal = GetTriState(ref sum),
+				IncentivizeMasamune = GetTriState(ref sum),
+				BetterTrapChests = GetTriState(ref sum),
+				IncentivizeTitansTrove = GetTriState(ref sum),
+				IncentivizeSkyPalace = GetTriState(ref sum),
+				IncentivizeMarshKeyLocked = GetTriState(ref sum),
+				IncentivizeConeria = GetTriState(ref sum),
+				IncentivizeSeaShrine = GetTriState(ref sum),
+				IncentivizeOrdeals = GetTriState(ref sum),
+				IncentivizeIceCave = GetTriState(ref sum),
+				IncentivizeVolcano = GetTriState(ref sum),
+				IncentivizeEarth = GetTriState(ref sum),
+				IncentivizeMarsh = GetTriState(ref sum),
 				ClassicItemPlacement = GetBoolean(ref sum),
-				IncentivizeShipAndCanal = GetBoolean(ref sum),
-				IncentivizeCanoeItem = GetBoolean(ref sum),
-				IncentivizeAirship = GetBoolean(ref sum),
-				IncentivizeFetchItems = GetBoolean(ref sum),
-				IncentivizeMainItems = GetBoolean(ref sum),
-				IncentivizeTail = GetBoolean(ref sum),
-				IncentivizeFetchNPCs = GetBoolean(ref sum),
+				IncentivizeShipAndCanal = GetTriState(ref sum),
+				IncentivizeCanoeItem = GetTriState(ref sum),
+				IncentivizeAirship = GetTriState(ref sum),
+				IncentivizeFetchItems = GetTriState(ref sum),
+				IncentivizeMainItems = GetTriState(ref sum),
+				IncentivizeTail = GetTriState(ref sum),
+				IncentivizeFetchNPCs = GetTriState(ref sum),
 				IncentivizeFreeNPCs = GetTriState(ref sum),
 				EntrancesMixedWithTowns = GetBoolean(ref sum),
 				EntrancesIncludesDeadEnds = GetBoolean(ref sum),
@@ -774,11 +806,11 @@ namespace FF1Lib
 				TransformFinalFormation = GetBoolean(ref sum),
 				ExtraShards = GetBoolean(ref sum),
 				ShardHunt = GetBoolean(ref sum),
-				RandomLoot = GetBoolean(ref sum),
+				RandomLoot = GetTriState(ref sum),
 				RandomWares = GetTriState(ref sum),
-				NPCFetchItems = GetBoolean(ref sum),
-				NPCItems = GetBoolean(ref sum),
-				Treasures = GetBoolean(ref sum),
+				NPCFetchItems = GetTriState(ref sum),
+				NPCItems = GetTriState(ref sum),
+				Treasures = GetTriState(ref sum),
 				Shops = GetTriState(ref sum)
 			};
 

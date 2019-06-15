@@ -58,7 +58,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Shops"));
 			}
 		}
-		public bool Treasures
+		public bool? Treasures
 		{
 			get => Flags.Treasures;
 			set
@@ -67,7 +67,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Treasures"));
 			}
 		}
-		public bool NPCItems
+		public bool? NPCItems
 		{
 			get => Flags.NPCItems;
 			set
@@ -76,7 +76,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NPCItems"));
 			}
 		}
-		public bool NPCFetchItems
+		public bool? NPCFetchItems
 		{
 			get => Flags.NPCFetchItems;
 			set
@@ -85,7 +85,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NPCFetchItems"));
 			}
 		}
-		public bool BetterTrapTreasure
+		public bool? BetterTrapTreasure
 		{
 			get => Flags.BetterTrapChests;
 			set
@@ -104,7 +104,7 @@ namespace FF1Lib
 			}
 		}
 
-		public bool ShuffleObjectiveNPCs
+		public bool? ShuffleObjectiveNPCs
 		{
 			get => Flags.ShuffleObjectiveNPCs;
 			set
@@ -122,7 +122,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomWares"));
 			}
 		}
-		public bool RandomLoot
+		public bool? RandomLoot
 		{
 			get => Flags.RandomLoot;
 			set
@@ -551,7 +551,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeFreeNPCs"));
 			}
 		}
-		public bool IncentivizeFetchNPCs
+		public bool? IncentivizeFetchNPCs
 		{
 			get => Flags.IncentivizeFetchNPCs;
 			set
@@ -561,10 +561,10 @@ namespace FF1Lib
 			}
 		}
 
-		public bool? IncentivizeFreeNPCsEnabled => Treasures && NPCItems;
-		public bool IncentivizeFetchNPCsEnabled => Treasures && NPCFetchItems;
+		public bool IncentivizeFreeNPCsEnabled => (Treasures ?? true) && (NPCItems ?? true);
+		public bool IncentivizeFetchNPCsEnabled => (Treasures ?? true) && (NPCFetchItems ?? true);
 
-		public bool IncentivizeTail
+		public bool? IncentivizeTail
 		{
 			get => Flags.IncentivizeTail;
 			set
@@ -573,7 +573,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeTail"));
 			}
 		}
-		public bool IncentivizeMainItems
+		public bool? IncentivizeMainItems
 		{
 			get => Flags.IncentivizeMainItems;
 			set
@@ -582,7 +582,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeMainItems"));
 			}
 		}
-		public bool IncentivizeFetchItems
+		public bool? IncentivizeFetchItems
 		{
 			get => Flags.IncentivizeFetchItems;
 			set
@@ -591,7 +591,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeFetchItems"));
 			}
 		}
-		public bool IncentivizeAirship
+		public bool? IncentivizeAirship
 		{
 			get => Flags.IncentivizeAirship;
 			set
@@ -600,7 +600,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeAirship"));
 			}
 		}
-		public bool IncentivizeCanoeItem
+		public bool? IncentivizeCanoeItem
 		{
 			get => Flags.IncentivizeCanoeItem;
 			set
@@ -610,7 +610,7 @@ namespace FF1Lib
 			}
 		}
 
-		public bool IncentivizeMarsh
+		public bool? IncentivizeMarsh
 		{
 			get => Flags.IncentivizeMarsh;
 			set
@@ -620,7 +620,7 @@ namespace FF1Lib
 			}
 		}
 
-		public bool IncentivizeTitansTrove
+		public bool? IncentivizeTitansTrove
 		{
 			get => Flags.IncentivizeTitansTrove;
 			set
@@ -629,7 +629,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeTitansTrove"));
 			}
 		}
-		public bool IncentivizeEarth
+		public bool? IncentivizeEarth
 		{
 			get => Flags.IncentivizeEarth;
 			set
@@ -638,7 +638,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeEarth"));
 			}
 		}
-		public bool IncentivizeVolcano
+		public bool? IncentivizeVolcano
 		{
 			get => Flags.IncentivizeVolcano;
 			set
@@ -647,7 +647,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeVolcano"));
 			}
 		}
-		public bool IncentivizeIceCave
+		public bool? IncentivizeIceCave
 		{
 			get => Flags.IncentivizeIceCave;
 			set
@@ -656,7 +656,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeIceCave"));
 			}
 		}
-		public bool IncentivizeOrdeals
+		public bool? IncentivizeOrdeals
 		{
 			get => Flags.IncentivizeOrdeals;
 			set
@@ -665,7 +665,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeOrdeals"));
 			}
 		}
-		public bool IncentivizeSeaShrine
+		public bool? IncentivizeSeaShrine
 		{
 			get => Flags.IncentivizeSeaShrine;
 			set
@@ -675,7 +675,7 @@ namespace FF1Lib
 			}
 		}
 
-		public bool IncentivizeConeria
+		public bool? IncentivizeConeria
 		{
 			get => Flags.IncentivizeConeria;
 			set
@@ -684,7 +684,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeConeria"));
 			}
 		}
-		public bool IncentivizeMarshKeyLocked
+		public bool? IncentivizeMarshKeyLocked
 		{
 			get => Flags.IncentivizeMarshKeyLocked;
 			set
@@ -693,7 +693,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeMarshKeyLocked"));
 			}
 		}
-		public bool IncentivizeSkyPalace
+		public bool? IncentivizeSkyPalace
 		{
 			get => Flags.IncentivizeSkyPalace;
 			set
@@ -703,7 +703,7 @@ namespace FF1Lib
 			}
 		}
 
-		public bool IncentivizeMasamune
+		public bool? IncentivizeMasamune
 		{
 			get => Flags.IncentivizeMasamune;
 			set
@@ -712,7 +712,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeMasamune"));
 			}
 		}
-		public bool IncentivizeOpal
+		public bool? IncentivizeOpal
 		{
 			get => Flags.IncentivizeOpal;
 			set
@@ -721,7 +721,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeOpal"));
 			}
 		}
-		public bool IncentivizeRibbon
+		public bool? IncentivizeRibbon
 		{
 			get => Flags.IncentivizeRibbon;
 			set
@@ -730,7 +730,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeRibbon"));
 			}
 		}
-		public bool IncentivizeDefCastArmor
+		public bool? IncentivizeDefCastArmor
 		{
 			get => Flags.IncentivizeDefCastArmor;
 			set
@@ -739,7 +739,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeDefCastArmor"));
 			}
 		}
-		public bool IncentivizeOffCastArmor
+		public bool? IncentivizeOffCastArmor
 		{
 			get => Flags.IncentivizeOffCastArmor;
 			set
@@ -748,7 +748,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeOffCastArmor"));
 			}
 		}
-		public bool IncentivizeOtherCastArmor
+		public bool? IncentivizeOtherCastArmor
 		{
 			get => Flags.IncentivizeOtherCastArmor;
 			set
@@ -757,7 +757,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeOtherCastArmor"));
 			}
 		}
-		public bool IncentivizeDefCastWeapon
+		public bool? IncentivizeDefCastWeapon
 		{
 			get => Flags.IncentivizeDefCastWeapon;
 			set
@@ -766,7 +766,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeDefCastWeapon"));
 			}
 		}
-		public bool IncentivizeOffCastWeapon
+		public bool? IncentivizeOffCastWeapon
 		{
 			get => Flags.IncentivizeOffCastWeapon;
 			set
@@ -784,7 +784,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeOtherCastWeapon"));
 			}
 		}
-		public bool IncentivizeShipAndCanal
+		public bool? IncentivizeShipAndCanal
 		{
 			get => Flags.IncentivizeShipAndCanal;
 			set
@@ -822,7 +822,7 @@ namespace FF1Lib
 			}
 		}
 
-		public bool FreeBridge
+		public bool? FreeBridge
 		{
 			get => Flags.FreeBridge;
 			set
@@ -831,7 +831,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeBridge"));
 			}
 		}
-		public bool FreeShip
+		public bool? FreeShip
 		{
 			get => Flags.FreeShip;
 			set
@@ -840,7 +840,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeAirship"));
 			}
 		}
-		public bool FreeAirship
+		public bool? FreeAirship
 		{
 			get => Flags.FreeAirship;
 			set
@@ -849,7 +849,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeAirship"));
 			}
 		}
-		public bool FreeCanal
+		public bool? FreeCanal
 		{
 			get => Flags.FreeCanal;
 			set
@@ -1658,7 +1658,7 @@ namespace FF1Lib
 			{
 			}
 		}
-		public bool RandomTreasure
+		public bool? RandomTreasure
 		{
 			get => Flags.RandomLoot;
 			set
@@ -1703,7 +1703,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ClampBosses"));
 			}
 		}
-		public bool ObjectiveNPCs
+		public bool? ObjectiveNPCs
 		{
 			get => Flags.ShuffleObjectiveNPCs;
 			set

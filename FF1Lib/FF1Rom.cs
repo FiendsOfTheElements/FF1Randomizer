@@ -212,9 +212,9 @@ namespace FF1Lib
 				ShortenToFR(maps, flags.PreserveFiendRefights, rng);
 			}
 
-			if (flags.Treasures && flags.ShardHunt && !flags.FreeOrbs)
+			if ((flags.Treasures ?? false) && flags.ShardHunt && !flags.FreeOrbs)
 			{
-				EnableShardHunt(rng, flags.ExtraShards ? rng.Between(24, 30) : 16, flags.NPCItems);
+				EnableShardHunt(rng, flags.ExtraShards ? rng.Between(24, 30) : 16, (flags.NPCItems ?? false));
 			}
 
 			if (flags.TransformFinalFormation)
@@ -228,12 +228,12 @@ namespace FF1Lib
 				try
 				{
 					overworldMap = new OverworldMap(this, flags, palettes, teleporters);
-					if ((flags.Entrances || flags.Floors || flags.Towns) && flags.Treasures && flags.NPCItems)
+					if ((flags.Entrances || flags.Floors || flags.Towns) && (flags.Treasures ?? false) && (flags.NPCItems ?? false))
 					{
 						overworldMap.ShuffleEntrancesAndFloors(rng, flags);
 					}
 
-					if (flags.ShuffleObjectiveNPCs)
+					if (flags.ShuffleObjectiveNPCs ?? false)
 					{
 						overworldMap.ShuffleObjectiveNPCs(rng);
 					}
@@ -243,12 +243,12 @@ namespace FF1Lib
 					if ((flags.Shops ?? false))
 					{
 						var excludeItemsFromRandomShops = new List<Item>();
-						if (flags.Treasures)
+						if (flags.Treasures ?? false)
 						{
 							excludeItemsFromRandomShops = incentivesData.ForcedItemPlacements.Select(x => x.Item).Concat(incentivesData.IncentiveItems).ToList();
 						}
 
-						if (!flags.RandomWaresIncludesSpecialGear ?? false)
+						if (!(flags.RandomWaresIncludesSpecialGear ?? false))
 						{
 							excludeItemsFromRandomShops.AddRange(ItemLists.SpecialGear);
 						}
@@ -257,7 +257,7 @@ namespace FF1Lib
 						incentivesData = new IncentiveData(rng, flags, overworldMap, shopItemLocation);
 					}
 
-					if (flags.Treasures)
+					if (flags.Treasures ?? false)
 					{
 						ShuffleTreasures(rng, flags, incentivesData, shopItemLocation, overworldMap, teleporters);
 					}
@@ -405,27 +405,27 @@ namespace FF1Lib
 				EnableChaosRush();
 			}
 
-			if (flags.EarlySarda && !flags.NPCItems)
+			if (flags.EarlySarda && !(flags.NPCItems ?? false))
 			{
 				EnableEarlySarda();
 			}
 
-			if (flags.EarlySage && !flags.NPCItems)
+			if (flags.EarlySage && !(flags.NPCItems ?? false))
 			{
 				EnableEarlySage();
 			}
 
-			if (flags.FreeBridge)
+			if (flags.FreeBridge ?? false)
 			{
 				EnableFreeBridge();
 			}
 
-			if (flags.FreeAirship)
+			if (flags.FreeAirship ?? false)
 			{
 				EnableFreeAirship();
 			}
 
-			if (flags.FreeShip)
+			if (flags.FreeShip ?? false)
 			{
 				EnableFreeShip();
 			}
@@ -435,7 +435,7 @@ namespace FF1Lib
 				EnableFreeOrbs();
 			}
 
-			if (flags.FreeCanal)
+			if (flags.FreeCanal ?? false)
 			{
 				EnableFreeCanal();
 			}
