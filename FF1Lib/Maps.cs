@@ -154,18 +154,19 @@ namespace FF1Lib
 		public const int MapObjCount = 0xD0;
 
 		public const int FirstBossEncounterIndex = 0x73;
+		public const int LastBossEncounterIndex = 0x7F;
 
 		const ushort TalkFight = 0x94AA;
 
-		public void ShuffleTrapTiles(MT19337 rng, bool randomize)
+		public void ShuffleTrapTiles(MT19337 rng, bool randomize, bool enemizerOn)
 		{
 			// This is magic BNE code that enables formation 1 trap tiles but we have to change
 			// all the 0x0A 0x80 into 0x0A 0x00 and use 0x00 for random encounters instead of 0x80.
 			Data[0x7CDC5] = 0xD0;
 
 			bool IsBattleTile(Blob tuple) => tuple[0] == 0x0A;
-			bool IsRandomBattleTile(Blob tuple) => IsBattleTile(tuple) && (tuple[1] & 0x80) != 0x00;
-			bool IsNonBossTrapTile(Blob tuple) => IsBattleTile(tuple) && tuple[1] > 0 && tuple[1] < FirstBossEncounterIndex;
+			bool IsRandomBattleTile(Blob tuple) => IsBattleTile(tuple) && (((tuple[1] & 0x80) != 0x00 && !enemizerOn) || (tuple[1] == 0x00 && enemizerOn));
+			bool IsNonBossTrapTile(Blob tuple) => IsBattleTile(tuple) && tuple[1] > 0 && (( !enemizerOn && tuple[1] < FirstBossEncounterIndex) || (enemizerOn && (tuple[1] < FirstBossEncounterIndex || tuple[1] > LastBossEncounterIndex)));
 
 			var tilesets = Get(TilesetDataOffset, TilesetDataCount * TilesetDataSize * TilesetCount).Chunk(TilesetDataSize).ToList();
 			List<byte> encounters;

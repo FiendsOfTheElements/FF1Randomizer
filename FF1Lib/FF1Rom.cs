@@ -373,7 +373,7 @@ namespace FF1Lib
 
 			if ((flags.EnemyTrapTiles ?? false))
 			{
-				ShuffleTrapTiles(rng, (flags.RandomTrapFormations ?? false));
+				ShuffleTrapTiles(rng, flags.RandomTrapFormations ?? false, flags.RandomizeFormationEnemizer);
 			}
 
 			if (flags.OrdealsPillars)
