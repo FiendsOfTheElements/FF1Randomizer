@@ -124,8 +124,8 @@
 						<CheckBox Id="freeCanalCheckBox" bind-Value="@Flags.FreeCanal">Free Canal</CheckBox>
 					</div>
 					<div class="col-md-4">
-						<h4>Locations: @Flags.Flags.IncentivizedLocationCount</h4>
-						<CheckBox Id="incentivizeFreeNPCsCheckBox" IsEnabled="@Flags.IncentivizeFreeNPCsEnabled" bind-Value="@Flags.IncentivizeFreeNPCs">Main NPCs</CheckBox>
+						<h4>Locations: @(Flags.Flags.IncentivizedLocationCountMin) @((Flags.Flags.IncentivizedLocationCountMin != Flags.Flags.IncentivizedLocationCountMax) ? "- " + Flags.Flags.IncentivizedLocationCountMax : "") </h4>
+						<TriStateCheckBox Id="incentivizeFreeNPCsCheckBox" IsEnabled="@Flags.IncentivizeFreeNPCsEnabled" bind-Value="@Flags.IncentivizeFreeNPCs">Main NPCs</TriStateCheckBox>
 						<CheckBox Id="incentivizeFetchNPCsCheckBox" IsEnabled="@Flags.IncentivizeFetchNPCsEnabled" bind-Value="@Flags.IncentivizeFetchNPCs">Fetch Quest NPCs</CheckBox>
 						<div class="checkbox-cell"></div>
 						<CheckBox Id="incentivizeIceCaveCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeIceCave">Ice Cave</CheckBox>

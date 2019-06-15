@@ -8,7 +8,6 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using FF1Lib.Assembly;
-using System.Reflection;
 
 namespace FF1Lib
 {
@@ -101,6 +100,8 @@ namespace FF1Lib
 			PermanentCaravan();
 			ShiftEarthOrbDown();
 			CastableItemTargeting();
+			flags = Flags.ConvertAllTriState(flags, rng);
+
 
 			TeleportShuffle teleporters = new TeleportShuffle();
 			var palettes = OverworldMap.GeneratePalettes(Get(OverworldMap.MapPaletteOffset, MapCount * OverworldMap.MapPaletteSize).Chunk(OverworldMap.MapPaletteSize));
@@ -201,7 +202,7 @@ namespace FF1Lib
 				FixEnemyAOESpells();
 			}
 
-			if (ConvertTriState(flags.ItemMagic, rng))
+			if ((flags.ItemMagic ?? false))
 			{
 				ShuffleItemMagic(rng);
 			}
@@ -239,7 +240,7 @@ namespace FF1Lib
 
 					IncentiveData incentivesData = new IncentiveData(rng, flags, overworldMap, shopItemLocation);
 
-					if (ConvertTriState(flags.Shops, rng))
+					if ((flags.Shops ?? false))
 					{
 						var excludeItemsFromRandomShops = new List<Item>();
 						if (flags.Treasures)
@@ -247,12 +248,12 @@ namespace FF1Lib
 							excludeItemsFromRandomShops = incentivesData.ForcedItemPlacements.Select(x => x.Item).Concat(incentivesData.IncentiveItems).ToList();
 						}
 
-						if (!ConvertTriState(flags.RandomWaresIncludesSpecialGear, rng))
+						if (!flags.RandomWaresIncludesSpecialGear ?? false)
 						{
 							excludeItemsFromRandomShops.AddRange(ItemLists.SpecialGear);
 						}
 
-						shopItemLocation = ShuffleShops(rng, flags.ImmediatePureAndSoftRequired, ConvertTriState(flags.RandomWares, rng), excludeItemsFromRandomShops, flags.WorldWealth);
+						shopItemLocation = ShuffleShops(rng, flags.ImmediatePureAndSoftRequired, (flags.RandomWares ?? false), excludeItemsFromRandomShops, flags.WorldWealth);
 						incentivesData = new IncentiveData(rng, flags, overworldMap, shopItemLocation);
 					}
 
@@ -270,15 +271,15 @@ namespace FF1Lib
 				}
 			}
 
-			if (ConvertTriState(flags.MagicShops, rng))
+			if ((flags.MagicShops ?? false))
 			{
 				ShuffleMagicShops(rng);
 			}
 
-			if (ConvertTriState(flags.MagicLevels, rng))
+			if ((flags.MagicLevels ?? false))
 			{
 				FixWarpBug(); // The warp bug only needs to be fixed if the magic levels are being shuffled
-				ShuffleMagicLevels(rng, ConvertTriState(flags.MagicPermissions, rng));
+				ShuffleMagicLevels(rng, (flags.MagicPermissions ?? false));
 			}
 
 			/*
@@ -293,27 +294,24 @@ namespace FF1Lib
 			}
 			*/
 
-			if (ConvertTriState(flags.Rng, rng))
+			if ((flags.Rng ?? false))
 			{
 				ShuffleRng(rng);
 			}
 
-			// convert the tri-state flag from a bool? to a bool, but VS doesnt know that, so add ?? true after each
-			flags.AllowUnsafePirates = ConvertTriState(flags.AllowUnsafePirates, rng);
-
-			if (ConvertTriState(flags.EnemyScripts, rng))
+			if ((flags.EnemyScripts ?? false))
 			{
 				ShuffleEnemyScripts(rng, flags.AllowUnsafePirates ?? true);
 			}
 
-			if (ConvertTriState(flags.EnemySkillsSpells, rng))
+			if ((flags.EnemySkillsSpells ?? false))
 			{
 				ShuffleEnemySkillsSpells(rng);
 			}
 
-			if (ConvertTriState(flags.EnemyStatusAttacks, rng))
+			if ((flags.EnemyStatusAttacks ?? false))
 			{
-				if (ConvertTriState(flags.RandomStatusAttacks, rng))
+				if ((flags.RandomStatusAttacks ?? false))
 				{
 					RandomEnemyStatusAttacks(rng, flags.AllowUnsafePirates ?? true);
 				}
@@ -323,9 +321,9 @@ namespace FF1Lib
 				}
 			}
 
-			if (ConvertTriState(flags.EnemyFormationsUnrunnable, rng))
+			if ((flags.EnemyFormationsUnrunnable ?? false))
 			{
-				if (ConvertTriState(flags.EverythingUnrunnable, rng))
+				if ((flags.EverythingUnrunnable ?? false))
 				{
 					CompletelyUnrunnable();
 				}
@@ -335,13 +333,13 @@ namespace FF1Lib
 				}
 			}
 
-			if (ConvertTriState(flags.UnrunnablesStrikeFirstAndSuprise, rng))
+			if ((flags.UnrunnablesStrikeFirstAndSuprise ?? false))
 			{
 				AllowStrikeFirstAndSuprise();
 			}
 			
 
-			if (ConvertTriState(flags.EnemyFormationsSurprise, rng))
+			if ((flags.EnemyFormationsSurprise ?? false))
 			{
 				ShuffleSurpriseBonus(rng);
 			}
@@ -373,9 +371,9 @@ namespace FF1Lib
 				ShuffleEnemyFormations(rng, flags.FormationShuffleMode);
 			}
 
-			if (ConvertTriState(flags.EnemyTrapTiles, rng))
+			if ((flags.EnemyTrapTiles ?? false))
 			{
-				ShuffleTrapTiles(rng, ConvertTriState(flags.RandomTrapFormations, rng));
+				ShuffleTrapTiles(rng, (flags.RandomTrapFormations ?? false));
 			}
 
 			if (flags.OrdealsPillars)
@@ -546,7 +544,7 @@ namespace FF1Lib
 			itemText[(int)Item.Ribbon].Trim();
 
 			ExpGoldBoost(flags.ExpBonus, flags.ExpMultiplier);
-			ScalePrices(flags, itemText, rng, ConvertTriState(flags.ClampMinimumPriceScale, rng), shopItemLocation);
+			ScalePrices(flags, itemText, rng, (flags.ClampMinimumPriceScale ?? false), shopItemLocation);
 			ScaleEncounterRate(flags.EncounterRate / 30.0, flags.DungeonEncounterRate / 30.0);
 
 			overworldMap.ApplyMapEdits();
@@ -556,17 +554,17 @@ namespace FF1Lib
 
 			if (flags.EnemyScaleFactor > 1)
 			{
-				ScaleEnemyStats(flags.EnemyScaleFactor, flags.WrapStatOverflow, flags.IncludeMorale, rng, ConvertTriState(flags.ClampMinimumStatScale, rng));
+				ScaleEnemyStats(flags.EnemyScaleFactor, flags.WrapStatOverflow, flags.IncludeMorale, rng, (flags.ClampMinimumStatScale ?? false));
 			}
 
 			if (flags.BossScaleFactor > 1)
 			{
-				ScaleBossStats(flags.BossScaleFactor, flags.WrapStatOverflow, flags.IncludeMorale, rng, ConvertTriState(flags.ClampMinimumBossStatScale, rng));
+				ScaleBossStats(flags.BossScaleFactor, flags.WrapStatOverflow, flags.IncludeMorale, rng, (flags.ClampMinimumBossStatScale ?? false));
 			}
 
 			PartyComposition(rng, flags);
 
-			if (ConvertTriState(flags.RecruitmentMode, rng))
+			if ((flags.RecruitmentMode ?? false))
 			{
 				PubReplaceClinic(rng, flags);
 			}
@@ -623,13 +621,6 @@ namespace FF1Lib
 
 			WriteSeedAndFlags(Version, seed.ToHex(), Flags.EncodeFlagsText(flags));
 			ExtraTrackingAndInitCode();
-		}
-
-		public bool ConvertTriState(bool? tristate, MT19337 rng)
-		{
-			int rngval = rng.Between(0, 1);
-			bool rval = tristate ?? (rngval == 0);
-			return rval;
 		}
 
 		private void EnableNPCSwatter()

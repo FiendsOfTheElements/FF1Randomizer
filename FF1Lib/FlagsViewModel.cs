@@ -542,7 +542,7 @@ namespace FF1Lib
 			}
 		}
 
-		public bool IncentivizeFreeNPCs
+		public bool? IncentivizeFreeNPCs
 		{
 			get => Flags.IncentivizeFreeNPCs;
 			set
@@ -561,7 +561,7 @@ namespace FF1Lib
 			}
 		}
 
-		public bool IncentivizeFreeNPCsEnabled => Treasures && NPCItems;
+		public bool? IncentivizeFreeNPCsEnabled => Treasures && NPCItems;
 		public bool IncentivizeFetchNPCsEnabled => Treasures && NPCFetchItems;
 
 		public bool IncentivizeTail
