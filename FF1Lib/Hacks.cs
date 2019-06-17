@@ -145,7 +145,7 @@ namespace FF1Lib
 
 		private readonly List<FF1Class> DefaultChoices = Enumerable.Range(0, 6).Select(x => (FF1Class)x).ToList();
 
-		void updateCharacterFromOptions(int slotNumber, bool forced, IList<FF1Class> options, MT19337 rng)
+		void UpdateCharacterFromOptions(int slotNumber, bool forced, IList<FF1Class> options, MT19337 rng)
 		{
 			const int lut_PtyGenBuf = 0x784AA;       // offset for party generation buffer LUT
 			const int lut_AllowedClasses = 0x78110;  // offset for allowed classes per slot LUT
@@ -198,7 +198,7 @@ namespace FF1Lib
 			if ((flags.RED_MAGE1 ?? false)) options.Add(FF1Class.RedMage);
 			if ((flags.WHITE_MAGE1 ?? false)) options.Add(FF1Class.WhiteMage);
 			if ((flags.BLACK_MAGE1 ?? false)) options.Add(FF1Class.BlackMage);
-			updateCharacterFromOptions(1, (flags.FORCED1 ?? false), options, rng);
+			UpdateCharacterFromOptions(1, (flags.FORCED1 ?? false), options, rng);
 
 			if ((flags.FIGHTER2 ?? false)) options.Add(FF1Class.Fighter);
 			if ((flags.THIEF2 ?? false)) options.Add(FF1Class.Thief);
@@ -207,7 +207,7 @@ namespace FF1Lib
 			if ((flags.WHITE_MAGE2 ?? false)) options.Add(FF1Class.WhiteMage);
 			if ((flags.BLACK_MAGE2 ?? false)) options.Add(FF1Class.BlackMage);
 			if ((flags.NONE_CLASS2 ?? false)) options.Add(FF1Class.None);
-			updateCharacterFromOptions(2, (flags.FORCED2 ?? false), options, rng);
+			UpdateCharacterFromOptions(2, (flags.FORCED2 ?? false), options, rng);
 
 			if ((flags.FIGHTER3 ?? false)) options.Add(FF1Class.Fighter);
 			if ((flags.THIEF3 ?? false)) options.Add(FF1Class.Thief);
@@ -216,7 +216,7 @@ namespace FF1Lib
 			if ((flags.WHITE_MAGE3 ?? false)) options.Add(FF1Class.WhiteMage);
 			if ((flags.BLACK_MAGE3 ?? false)) options.Add(FF1Class.BlackMage);
 			if ((flags.NONE_CLASS3 ?? false)) options.Add(FF1Class.None);
-			updateCharacterFromOptions(3, (flags.FORCED3 ?? false), options, rng);
+			UpdateCharacterFromOptions(3, (flags.FORCED3 ?? false), options, rng);
 
 			if ((flags.FIGHTER4 ?? false)) options.Add(FF1Class.Fighter);
 			if ((flags.THIEF4 ?? false)) options.Add(FF1Class.Thief);
@@ -225,7 +225,7 @@ namespace FF1Lib
 			if ((flags.WHITE_MAGE4 ?? false)) options.Add(FF1Class.WhiteMage);
 			if ((flags.BLACK_MAGE4 ?? false)) options.Add(FF1Class.BlackMage);
 			if ((flags.NONE_CLASS4 ?? false)) options.Add(FF1Class.None);
-			updateCharacterFromOptions(4, (flags.FORCED4 ?? false), options, rng);
+			UpdateCharacterFromOptions(4, (flags.FORCED4 ?? false), options, rng);
 
 			// Load stats for None
 			PutInBank(0x1F, 0xC783, Blob.FromHex("2080B3C931F053EA"));

@@ -530,6 +530,11 @@ namespace FF1Lib
 				ImproveTurnOrderRandomization(rng);
 			}
 
+			if (flags.FixHitChanceCap)
+			{
+				FixHitChanceCap();
+			}
+
 			if (flags.EnemyElementalResistancesBug)
 			{
 				FixEnemyElementalResistances();

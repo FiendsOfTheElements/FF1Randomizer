@@ -126,6 +126,7 @@
 		"EnemySpellsTargetingAllies": true,
 		"EnemyElementalResistancesBug": true,
 		"ImproveTurnOrderRandomization": true,
+		"FixHitChanceCap": true,
 
 		"ClampMinimumStatScale": false,
 		"ClampMinimumBossStatScale": false,
@@ -176,7 +177,7 @@
 		"TAVERN3": true,
 		"TAVERN4": true,
 		"TAVERN5": true,
-		"TAVERN6": true,
+		"TAVERN6": true
 	}
 
 }

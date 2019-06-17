@@ -138,6 +138,7 @@ namespace FF1Lib
 		public bool EnemySpellsTargetingAllies { get; set; }
 		public bool EnemyElementalResistancesBug { get; set; }
 		public bool ImproveTurnOrderRandomization { get; set; }
+		public bool FixHitChanceCap { get; set; }
 
 		public bool StartingGold { get; set; }
 		public bool WrapStatOverflow { get; set; }
@@ -555,6 +556,7 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.EnemySpellsTargetingAllies);
 			sum = AddBoolean(sum, flags.EnemyElementalResistancesBug);
 			sum = AddBoolean(sum, flags.ImproveTurnOrderRandomization);
+			sum = AddBoolean(sum, flags.FixHitChanceCap);
 			sum = AddBoolean(sum, flags.StartingGold);
 			sum = AddBoolean(sum, flags.WrapStatOverflow);
 			sum = AddBoolean(sum, flags.WrapPriceOverflow);
@@ -709,6 +711,7 @@ namespace FF1Lib
 				WrapPriceOverflow = GetBoolean(ref sum),
 				WrapStatOverflow = GetBoolean(ref sum),
 				StartingGold = GetBoolean(ref sum),
+				FixHitChanceCap = GetBoolean(ref sum),
 				ImproveTurnOrderRandomization = GetBoolean(ref sum),
 				EnemyElementalResistancesBug = GetBoolean(ref sum),
 				EnemySpellsTargetingAllies = GetBoolean(ref sum),

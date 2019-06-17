@@ -126,6 +126,7 @@
 		"EnemySpellsTargetingAllies": true,
 		"EnemyElementalResistancesBug": true,
 		"ImproveTurnOrderRandomization": true,
+		"FixHitChanceCap": true,
 
 		"ClampMinimumStatScale": true,
 		"ClampMinimumBossStatScale": true,

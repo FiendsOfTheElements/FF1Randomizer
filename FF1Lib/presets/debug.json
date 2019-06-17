@@ -114,7 +114,6 @@
 		"WeaponStats": true,
 		"ChanceToRun": true,
 		"SpellBugs": true,
-		"RebalanceSpells": true,
 		"BlackBeltAbsorb": true,
 		"BlackBeltMDEF": true,
 
@@ -122,6 +121,7 @@
 		"EnemySpellsTargetingAllies": true,
 		"EnemyElementalResistancesBug": true,
 		"ImproveTurnOrderRandomization": true,
+		"FixHitChanceCap": true,
 
 		"ClampMinimumStatScale": true,
 		"ClampMinimumBossStatScale": true,

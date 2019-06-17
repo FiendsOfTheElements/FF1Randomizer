@@ -1063,6 +1063,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ImproveTurnOrderRandomization"));
 			}
 		}
+		public bool FixHitChanceCap
+		{
+			get => Flags.FixHitChanceCap;
+			set
+			{
+				Flags.FixHitChanceCap = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FixHitChanceCap"));
+			}
+		}
 
 		public double EnemyScaleFactor
 		{
