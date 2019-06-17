@@ -22,10 +22,10 @@ namespace FF1Lib
 
 		public bool ShardHunt { get; set; }
 		public bool ExtraShards { get; set; }
-		public bool TransformFinalFormation { get; set; }
+		public bool? TransformFinalFormation { get; set; }
 		public bool ChaosRush { get; set; }
-		public bool ShortToFR { get; set; }
-		public bool PreserveFiendRefights { get; set; }
+		public bool? ShortToFR { get; set; }
+		public bool? PreserveFiendRefights { get; set; }
 
 		public bool? MagicShops { get; set; }
 		public bool? MagicLevels { get; set; }
@@ -46,25 +46,25 @@ namespace FF1Lib
 		public bool? EnemyStatusAttacks { get; set; }
 		public bool? RandomStatusAttacks { get; set; }
 		public bool? AllowUnsafePirates { get; set; }
-		public bool AllowUnsafeMelmond { get; set; }
+		public bool? AllowUnsafeMelmond { get; set; }
 
 		public WarMECHMode WarMECHMode { get; set; }
-		public bool OrdealsPillars { get; set; }
+		public bool? OrdealsPillars { get; set; }
 		public SkyCastle4FMazeMode SkyCastle4FMazeMode { get; set; }
-		public bool TitansTrove { get; set; }
-		public bool LefeinShops { get; set; }
-		public bool ConfusedOldMen { get; set; }
+		public bool? TitansTrove { get; set; }
+		public bool? LefeinShops { get; set; }
+		public bool? ConfusedOldMen { get; set; }
 
-		public bool MapOpenProgression { get; set; }
-		public bool Entrances { get; set; }
-		public bool Towns { get; set; }
-		public bool Floors { get; set; }
-		public bool AllowDeepCastles { get; set; }
-		public bool AllowDeepTowns { get; set; }
-		public bool MapOpenProgressionExtended { get; set; }
+		public bool? MapOpenProgression { get; set; }
+		public bool? Entrances { get; set; }
+		public bool? Towns { get; set; }
+		public bool? Floors { get; set; }
+		public bool? AllowDeepCastles { get; set; }
+		public bool? AllowDeepTowns { get; set; }
+		public bool? MapOpenProgressionExtended { get; set; }
 
-		public bool EntrancesIncludesDeadEnds { get; set; }
-		public bool EntrancesMixedWithTowns { get; set; }
+		public bool? EntrancesIncludesDeadEnds { get; set; }
+		public bool? EntrancesMixedWithTowns { get; set; }
 
 		public bool? IncentivizeFreeNPCs { get; set; }
 		public bool? IncentivizeFetchNPCs { get; set; }
@@ -104,9 +104,9 @@ namespace FF1Lib
 		public bool? IncentivizeOffCastWeapon { get; set; }
 		public bool IncentivizeOtherCastWeapon { get; set; }
 
-		public bool EarlySarda { get; set; }
-		public bool EarlySage { get; set; }
-		public bool EarlyOrdeals { get; set; }
+		public bool? EarlySarda { get; set; }
+		public bool? EarlySage { get; set; }
+		public bool? EarlyOrdeals { get; set; }
 		public bool? ShuffleObjectiveNPCs { get; set; }
 		public bool OnlyRequireGameIsBeatable { get; set; }
 
@@ -225,13 +225,13 @@ namespace FF1Lib
 
 		public bool AllowStartAreaDanager { get; set; } = false;
 
-		public bool MapCanalBridge => (NPCItems ?? true) || (NPCFetchItems ?? true) || MapOpenProgression || MapOpenProgressionExtended;
-		public bool MapOnracDock => MapOpenProgression;
-		public bool MapMirageDock => MapOpenProgression;
-		public bool MapConeriaDwarves => MapOpenProgression;
-		public bool MapVolcanoIceRiver => MapOpenProgression;
-		public bool MapDwarvesNorthwest => MapOpenProgression && MapOpenProgressionExtended;
-		public bool MapAirshipDock => MapOpenProgression && MapOpenProgressionExtended;
+		public bool? MapCanalBridge => (NPCItems) | (NPCFetchItems) | MapOpenProgression | MapOpenProgressionExtended;
+		public bool? MapOnracDock => MapOpenProgression;
+		public bool? MapMirageDock => MapOpenProgression;
+		public bool? MapConeriaDwarves => MapOpenProgression;
+		public bool? MapVolcanoIceRiver => MapOpenProgression;
+		public bool? MapDwarvesNorthwest => MapOpenProgression & MapOpenProgressionExtended;
+		public bool? MapAirshipDock => MapOpenProgression & MapOpenProgressionExtended;
 
 		// The philosophy governing item incentivizations works something like this:
 		// 1. If the item is NOT being shuffled to another location it cannot be incentivized. (Duh)
@@ -442,12 +442,12 @@ namespace FF1Lib
 			return (Flags)this.MemberwiseClone();
 		}
 
-		public bool ImmediatePureAndSoftRequired => (EnemyStatusAttacks ?? true) || Entrances || MapOpenProgression || RandomizeFormationEnemizer;
+		public bool? ImmediatePureAndSoftRequired => EnemyStatusAttacks | Entrances | MapOpenProgression | RandomizeFormationEnemizer;
 
-		public bool FreeLute => ChaosRush || ShortToFR;
+		public bool? FreeLute => ChaosRush | ShortToFR;
 
-		public bool DeepCastlesPossible => Entrances && Floors;
-		public bool DeepTownsPossible => Towns && Entrances && Floors && EntrancesMixedWithTowns;
+		public bool? DeepCastlesPossible => Entrances & Floors;
+		public bool? DeepTownsPossible => Towns & Entrances & Floors & EntrancesMixedWithTowns;
 
 		public static string EncodeFlagsText(Flags flags)
 		{
@@ -461,10 +461,10 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.RandomLoot);
 			sum = AddBoolean(sum, flags.ShardHunt);
 			sum = AddBoolean(sum, flags.ExtraShards);
-			sum = AddBoolean(sum, flags.TransformFinalFormation);
+			sum = AddTriState(sum, flags.TransformFinalFormation);
 			sum = AddBoolean(sum, flags.ChaosRush);
-			sum = AddBoolean(sum, flags.ShortToFR);
-			sum = AddBoolean(sum, flags.PreserveFiendRefights);
+			sum = AddTriState(sum, flags.ShortToFR);
+			sum = AddTriState(sum, flags.PreserveFiendRefights);
 			sum = AddTriState(sum, flags.MagicShops);
 			sum = AddTriState(sum, flags.MagicLevels);
 			sum = AddTriState(sum, flags.MagicPermissions);
@@ -482,22 +482,22 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.EnemyStatusAttacks);
 			sum = AddTriState(sum, flags.RandomStatusAttacks);
 			sum = AddTriState(sum, flags.AllowUnsafePirates);
-			sum = AddBoolean(sum, flags.AllowUnsafeMelmond);
+			sum = AddTriState(sum, flags.AllowUnsafeMelmond);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(WarMECHMode)).Cast<int>().Max() + 1, (int)flags.WarMECHMode);
-			sum = AddBoolean(sum, flags.OrdealsPillars);
+			sum = AddTriState(sum, flags.OrdealsPillars);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(SkyCastle4FMazeMode)).Cast<int>().Max() + 1, (int)flags.SkyCastle4FMazeMode);
-			sum = AddBoolean(sum, flags.TitansTrove);
-			sum = AddBoolean(sum, flags.LefeinShops);
-			sum = AddBoolean(sum, flags.ConfusedOldMen);
-			sum = AddBoolean(sum, flags.MapOpenProgression);
-			sum = AddBoolean(sum, flags.Entrances);
-			sum = AddBoolean(sum, flags.Towns);
-			sum = AddBoolean(sum, flags.Floors);
-			sum = AddBoolean(sum, flags.AllowDeepCastles);
-			sum = AddBoolean(sum, flags.AllowDeepTowns);
-			sum = AddBoolean(sum, flags.MapOpenProgressionExtended);
-			sum = AddBoolean(sum, flags.EntrancesIncludesDeadEnds);
-			sum = AddBoolean(sum, flags.EntrancesMixedWithTowns);
+			sum = AddTriState(sum, flags.TitansTrove);
+			sum = AddTriState(sum, flags.LefeinShops);
+			sum = AddTriState(sum, flags.ConfusedOldMen);
+			sum = AddTriState(sum, flags.MapOpenProgression);
+			sum = AddTriState(sum, flags.Entrances);
+			sum = AddTriState(sum, flags.Towns);
+			sum = AddTriState(sum, flags.Floors);
+			sum = AddTriState(sum, flags.AllowDeepCastles);
+			sum = AddTriState(sum, flags.AllowDeepTowns);
+			sum = AddTriState(sum, flags.MapOpenProgressionExtended);
+			sum = AddTriState(sum, flags.EntrancesIncludesDeadEnds);
+			sum = AddTriState(sum, flags.EntrancesMixedWithTowns);
 			sum = AddTriState(sum, flags.IncentivizeFreeNPCs);
 			sum = AddTriState(sum, flags.IncentivizeFetchNPCs);
 			sum = AddTriState(sum, flags.IncentivizeTail);
@@ -527,9 +527,9 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.IncentivizeDefCastWeapon);
 			sum = AddTriState(sum, flags.IncentivizeOffCastWeapon);
 			sum = AddBoolean(sum, flags.IncentivizeOtherCastWeapon);
-			sum = AddBoolean(sum, flags.EarlySarda);
-			sum = AddBoolean(sum, flags.EarlySage);
-			sum = AddBoolean(sum, flags.EarlyOrdeals);
+			sum = AddTriState(sum, flags.EarlySarda);
+			sum = AddTriState(sum, flags.EarlySage);
+			sum = AddTriState(sum, flags.EarlyOrdeals);
 			sum = AddTriState(sum, flags.ShuffleObjectiveNPCs);
 			sum = AddBoolean(sum, flags.OnlyRequireGameIsBeatable);
 			sum = AddTriState(sum, flags.FreeBridge);
@@ -738,9 +738,9 @@ namespace FF1Lib
 				FreeBridge = GetTriState(ref sum),
 				OnlyRequireGameIsBeatable = GetBoolean(ref sum),
 				ShuffleObjectiveNPCs = GetTriState(ref sum),
-				EarlyOrdeals = GetBoolean(ref sum),
-				EarlySage = GetBoolean(ref sum),
-				EarlySarda = GetBoolean(ref sum),
+				EarlyOrdeals = GetTriState(ref sum),
+				EarlySage = GetTriState(ref sum),
+				EarlySarda = GetTriState(ref sum),
 				IncentivizeOtherCastWeapon = GetBoolean(ref sum),
 				IncentivizeOffCastWeapon = GetTriState(ref sum),
 				IncentivizeDefCastWeapon = GetTriState(ref sum),
@@ -770,22 +770,22 @@ namespace FF1Lib
 				IncentivizeTail = GetTriState(ref sum),
 				IncentivizeFetchNPCs = GetTriState(ref sum),
 				IncentivizeFreeNPCs = GetTriState(ref sum),
-				EntrancesMixedWithTowns = GetBoolean(ref sum),
-				EntrancesIncludesDeadEnds = GetBoolean(ref sum),
-				MapOpenProgressionExtended = GetBoolean(ref sum),
-				AllowDeepTowns = GetBoolean(ref sum),
-				AllowDeepCastles = GetBoolean(ref sum),
-				Floors = GetBoolean(ref sum),
-				Towns = GetBoolean(ref sum),
-				Entrances = GetBoolean(ref sum),
-				MapOpenProgression = GetBoolean(ref sum),
-				ConfusedOldMen = GetBoolean(ref sum),
-				LefeinShops = GetBoolean(ref sum),
-				TitansTrove = GetBoolean(ref sum),
+				EntrancesMixedWithTowns = GetTriState(ref sum),
+				EntrancesIncludesDeadEnds = GetTriState(ref sum),
+				MapOpenProgressionExtended = GetTriState(ref sum),
+				AllowDeepTowns = GetTriState(ref sum),
+				AllowDeepCastles = GetTriState(ref sum),
+				Floors = GetTriState(ref sum),
+				Towns = GetTriState(ref sum),
+				Entrances = GetTriState(ref sum),
+				MapOpenProgression = GetTriState(ref sum),
+				ConfusedOldMen = GetTriState(ref sum),
+				LefeinShops = GetTriState(ref sum),
+				TitansTrove = GetTriState(ref sum),
 				SkyCastle4FMazeMode = (SkyCastle4FMazeMode)GetNumeric(ref sum, Enum.GetValues(typeof(SkyCastle4FMazeMode)).Cast<int>().Max() + 1),
-				OrdealsPillars = GetBoolean(ref sum),
+				OrdealsPillars = GetTriState(ref sum),
 				WarMECHMode = (WarMECHMode)GetNumeric(ref sum, Enum.GetValues(typeof(WarMECHMode)).Cast<int>().Max() + 1),
-				AllowUnsafeMelmond = GetBoolean(ref sum),
+				AllowUnsafeMelmond = GetTriState(ref sum),
 				AllowUnsafePirates = GetTriState(ref sum),
 				RandomStatusAttacks = GetTriState(ref sum),
 				EnemyStatusAttacks = GetTriState(ref sum),
@@ -803,10 +803,10 @@ namespace FF1Lib
 				MagicPermissions = GetTriState(ref sum),
 				MagicLevels = GetTriState(ref sum),
 				MagicShops = GetTriState(ref sum),
-				PreserveFiendRefights = GetBoolean(ref sum),
-				ShortToFR = GetBoolean(ref sum),
+				PreserveFiendRefights = GetTriState(ref sum),
+				ShortToFR = GetTriState(ref sum),
 				ChaosRush = GetBoolean(ref sum),
-				TransformFinalFormation = GetBoolean(ref sum),
+				TransformFinalFormation = GetTriState(ref sum),
 				ExtraShards = GetBoolean(ref sum),
 				ShardHunt = GetBoolean(ref sum),
 				RandomLoot = GetTriState(ref sum),

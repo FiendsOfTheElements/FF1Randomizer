@@ -182,10 +182,10 @@
 					<div class="col-md-4">
 						<h4>Temple of Fiends</h4>
 						<p>Randomly pick one of four new final bosses to replace the legendary Chaos! Take heed though; they can be more than a match for all but the mightiest Warriors.</p>
-						<CheckBox Id="transformFinalFormationCheckBox" bind-Value="@Flags.TransformFinalFormation">Alternate Final Boss</CheckBox>
+						<TriStateCheckBox Id="transformFinalFormationCheckBox" bind-Value="@Flags.TransformFinalFormation">Alternate Final Boss</TriStateCheckBox>
 						<p>Jump straight from the Black Orb to the Final Battle! You may choose to keep the fiend refight tiles - two on each side of the path to Chaos.</p>
-						<CheckBox Id="shortToFRCheckBox" bind-Value="@Flags.ShortToFR">Shorten ToFR</CheckBox>
-						<CheckBox Id="preserveFiendRefightsCheckBox" IsEnabled="@Flags.ShortToFR" bind-Value="@Flags.PreserveFiendRefights">Include Fiend Tiles</CheckBox>
+						<TriStateCheckBox Id="shortToFRCheckBox" bind-Value="@Flags.ShortToFR">Shorten ToFR</TriStateCheckBox>
+						<TriStateCheckBox Id="preserveFiendRefightsCheckBox" IsEnabled="@Flags.ShortToFR" bind-Value="@Flags.PreserveFiendRefights">Include Fiend Tiles</TriStateCheckBox>
 					</div>
 				</div>
 			</div>
@@ -197,33 +197,33 @@
 					<div class="col-md-4">
 						<h4>Entrance Shuffle</h4>
 						<p>Try shuffling dungeon entrances, floors, and towns to create a completely new world to explore!</p>
-						<CheckBox Id="entrancesCheckBox" bind-Value="@Flags.Entrances">Entrances</CheckBox>
-						<CheckBox Indent Id="deadEndsCheckBox" IsEnabled="@Flags.Entrances" bind-Value="@Flags.EntrancesIncludesDeadEnds">Include Dead Ends</CheckBox>
-						<CheckBox Indent Id="floorsCheckBox" IsEnabled="@Flags.Entrances" bind-Value="@Flags.Floors">Floors</CheckBox>
-						<CheckBox Indent Id="allowDeepCastlesCheckBox" IsEnabled="@Flags.DeepCastlesPossible" bind-Value="@Flags.AllowDeepCastles">Deep ToFR</CheckBox>
-						<CheckBox Id="townsCheckBox" bind-Value="@Flags.Towns">Towns</CheckBox>
-						<CheckBox Indent Id="mixEntrancesCheckBox" IsEnabled="@(Flags.Towns && Flags.Entrances)" bind-Value="@Flags.EntrancesMixedWithTowns">Mix All Entrances Together</CheckBox>
-						<CheckBox Indent Id="deepTownsCheckBox" IsEnabled="@(Flags.DeepTownsPossible)" bind-Value="@Flags.AllowDeepTowns">Deep Towns</CheckBox>
+						<TriStateCheckBox Id="entrancesCheckBox" bind-Value="@Flags.Entrances">Entrances</TriStateCheckBox>
+						<TriStateCheckBox Indent Id="deadEndsCheckBox" IsEnabled="@Flags.Entrances" bind-Value="@Flags.EntrancesIncludesDeadEnds">Include Dead Ends</TriStateCheckBox>
+						<TriStateCheckBox Indent Id="floorsCheckBox" IsEnabled="@Flags.Entrances" bind-Value="@Flags.Floors">Floors</TriStateCheckBox>
+						<TriStateCheckBox Indent Id="allowDeepCastlesCheckBox" IsEnabled="@Flags.DeepCastlesPossible" bind-Value="@Flags.AllowDeepCastles">Deep ToFR</TriStateCheckBox>
+						<TriStateCheckBox Id="townsCheckBox" bind-Value="@Flags.Towns">Towns</TriStateCheckBox>
+						<TriStateCheckBox Indent Id="mixEntrancesCheckBox" IsEnabled="@(Flags.Towns & Flags.Entrances)" bind-Value="@Flags.EntrancesMixedWithTowns">Mix All Entrances Together</TriStateCheckBox>
+						<TriStateCheckBox Indent Id="deepTownsCheckBox" IsEnabled="@(Flags.DeepTownsPossible)" bind-Value="@Flags.AllowDeepTowns">Deep Towns</TriStateCheckBox>
 					</div>
 					<div class="col-md-4">
 						<h4>Isolated Map Edits</h4>
 						<p>Individual Final Fantasy Map edits.</p>
 						<EnumDropDown TItem="SkyCastle4FMazeMode" bind-Value="@Flags.SkyCastle4FMazeMode">Sky Castle 4F: </EnumDropDown>
-						<CheckBox Id="ordealsPillarsCheckBox" bind-Value="@Flags.OrdealsPillars">Castle Ordeals Pillars</CheckBox>
-						<CheckBox Id="titansTroveCheckBox" bind-Value="@Flags.TitansTrove">Titan's Trove</CheckBox>
-						<CheckBox Id="zozoMelmondCheckBox" bind-Value="@Flags.AllowUnsafeMelmond">Zozo Melmond</CheckBox>
-						<CheckBox Id="lefeinShopsCheckBox" bind-Value="@Flags.LefeinShops">Lefeinish Hospitality</CheckBox>
-						<CheckBox Id="confusedOldMenCheckBox" bind-Value="@Flags.ConfusedOldMen">Confused Old Men</CheckBox>
+						<TriStateCheckBox Id="ordealsPillarsCheckBox" bind-Value="@Flags.OrdealsPillars">Castle Ordeals Pillars</TriStateCheckBox>
+						<TriStateCheckBox Id="titansTroveCheckBox" bind-Value="@Flags.TitansTrove">Titan's Trove</TriStateCheckBox>
+						<TriStateCheckBox Id="zozoMelmondCheckBox" bind-Value="@Flags.AllowUnsafeMelmond">Zozo Melmond</TriStateCheckBox>
+						<TriStateCheckBox Id="lefeinShopsCheckBox" bind-Value="@Flags.LefeinShops">Lefeinish Hospitality</TriStateCheckBox>
+						<TriStateCheckBox Id="confusedOldMenCheckBox" bind-Value="@Flags.ConfusedOldMen">Confused Old Men</TriStateCheckBox>
 						<div class="checkbox-cell"></div>
-						<CheckBox Id="mapOpenProgressionCheckBox" bind-Value="@Flags.MapOpenProgression">Open Progression</CheckBox>
-						<CheckBox Id="mapOpenProgressionExtendedCheckBox" IsEnabled="@Flags.MapOpenProgression" bind-Value="@Flags.MapOpenProgressionExtended">Extended Open Progression</CheckBox>
+						<TriStateCheckBox Id="mapOpenProgressionCheckBox" bind-Value="@Flags.MapOpenProgression">Open Progression</TriStateCheckBox>
+						<TriStateCheckBox Id="mapOpenProgressionExtendedCheckBox" IsEnabled="@Flags.MapOpenProgression" bind-Value="@Flags.MapOpenProgressionExtended">Extended Open Progression</TriStateCheckBox>
 					</div>
 					<div class="col-md-4">
 						<h4>Routing</h4>
 						<p>Relax some requirements to accelerate routing.</p>
-						<CheckBox Id="earlySardaCheckBox" bind-Value="@Flags.EarlySarda">Early Sarda Item</CheckBox>
-						<CheckBox Id="earlySageCheckBox" bind-Value="@Flags.EarlySage">Early Sage Item</CheckBox>
-						<CheckBox Id="earlyOrdealsCheckBox" bind-Value="@Flags.EarlyOrdeals">Early Ordeals</CheckBox>
+						<TriStateCheckBox Id="earlySardaCheckBox" bind-Value="@Flags.EarlySarda">Early Sarda Item</TriStateCheckBox>
+						<TriStateCheckBox Id="earlySageCheckBox" bind-Value="@Flags.EarlySage">Early Sage Item</TriStateCheckBox>
+						<TriStateCheckBox Id="earlyOrdealsCheckBox" bind-Value="@Flags.EarlyOrdeals">Early Ordeals</TriStateCheckBox>
 					</div>
 				</div>
 			</div>

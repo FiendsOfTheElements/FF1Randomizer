@@ -40,7 +40,7 @@ namespace FF1Lib
 				EnableBridgeShipCanalAnywhere();
 				EnableNPCsGiveAnyItem();
 				// This extends Vampire's routine to set a flag for Sarda, but it also clobers Sarda's routine
-				if (!flags.EarlySarda)
+				if (!(bool)flags.EarlySarda)
 				{
 					Put(0x393E1, Blob.FromHex("207F90A51160"));
 				}

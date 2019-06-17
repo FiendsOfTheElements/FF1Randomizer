@@ -74,24 +74,24 @@ namespace FF1Lib
 				{ CanoeableRegion.OnracRegion, new List<OverworldTeleportIndex>{OverworldTeleportIndex.Onrac, OverworldTeleportIndex.Waterfall} }
 			};
 
-			if (flags.MapOnracDock)
+			if ((bool)flags.MapOnracDock)
 			{
 				MapEditsToApply.Add(OnracDock);
 				mapLocationRequirements[MapLocation.Onrac].Add(MapChange.Ship | MapChange.Canal);
 				mapLocationRequirements[MapLocation.Caravan].Add(MapChange.Ship | MapChange.Canal | MapChange.Canoe);
 				mapLocationRequirements[MapLocation.Waterfall].Add(MapChange.Ship | MapChange.Canal | MapChange.Canoe);
 			}
-			if (flags.MapMirageDock)
+			if ((bool)flags.MapMirageDock)
 			{
 				MapEditsToApply.Add(MirageDock);
 				mapLocationRequirements[MapLocation.MirageTower1].Add(MapChange.Ship | MapChange.Canal | MapChange.Chime);
 			}
-			if (flags.MapAirshipDock)
+			if ((bool)flags.MapAirshipDock)
 			{
 				MapEditsToApply.Add(AirshipDock);
 				mapLocationRequirements[MapLocation.AirshipLocation].Add(MapChange.Ship | MapChange.Canal);
 			}
-			if (flags.MapVolcanoIceRiver)
+			if ((bool)flags.MapVolcanoIceRiver)
 			{
 				MapEditsToApply.Add(VolcanoIceRiver);
 				mapLocationRequirements[MapLocation.GurguVolcano1].Add(MapChange.Bridge | MapChange.Canoe);
@@ -101,7 +101,7 @@ namespace FF1Lib
 				mapLocationRequirements[MapLocation.NorthwestCastle].Add(MapChange.Bridge | MapChange.Canoe);
 				mapLocationRequirements[MapLocation.MarshCave1].Add(MapChange.Bridge | MapChange.Canoe);
 				mapLocationRequirements[MapLocation.AirshipLocation].Add(MapChange.Bridge | MapChange.Canoe);
-				if (flags.MapCanalBridge)
+				if ((bool)flags.MapCanalBridge)
 				{
 					mapLocationRequirements[MapLocation.DwarfCave].Add(MapChange.Bridge | MapChange.Canoe);
 					_canoeableNodes[CanoeableRegion.ElflandRegion].Add(OverworldTeleportIndex.DwarfCave);
@@ -110,16 +110,16 @@ namespace FF1Lib
 				_canoeableNodes[CanoeableRegion.ElflandRegion].AddRange(_canoeableNodes[CanoeableRegion.PravokaRegion]);
 				_canoeableNodes[CanoeableRegion.PravokaRegion].Clear();
 			}
-			if (flags.MapConeriaDwarves)
+			if ((bool)flags.MapConeriaDwarves)
 			{
 				MapEditsToApply.Add(ConeriaToDwarves);
 				mapLocationRequirements[MapLocation.DwarfCave].Add(MapChange.None);
 				_walkableNodes[WalkableRegion.ConeriaRegion].Add(OverworldTeleportIndex.DwarfCave);
 
-				if (flags.MapCanalBridge)
+				if ((bool)flags.MapCanalBridge)
 				{
 					MapChange dwarvesToNorthwest = MapChange.Canoe;
-					if (flags.MapDwarvesNorthwest)
+					if ((bool)flags.MapDwarvesNorthwest)
 					{
 						MapEditsToApply.Add(DwarvesNorthwestGrass);
 						dwarvesToNorthwest = MapChange.None;
@@ -135,7 +135,7 @@ namespace FF1Lib
 					mapLocationRequirements[MapLocation.GurguVolcano1].Add(MapChange.Canoe);
 					mapLocationRequirements[MapLocation.CrescentLake].Add(MapChange.Canoe);
 					mapLocationRequirements[MapLocation.AirshipLocation].Add(MapChange.Canoe);
-					if (flags.MapVolcanoIceRiver)
+					if ((bool)flags.MapVolcanoIceRiver)
 					{
 						mapLocationRequirements[MapLocation.IceCave1].Add(MapChange.Canoe);
 						mapLocationRequirements[MapLocation.Pravoka].Add(MapChange.Canoe);
@@ -144,13 +144,13 @@ namespace FF1Lib
 				}
 			}
 
-			if (flags.TitansTrove)
+			if ((bool)flags.TitansTrove)
 			{
 				floorLocationRequirements[MapLocation.TitansTunnelRoom] =
 					new Tuple<MapLocation, AccessRequirement>(MapLocation.TitansTunnelWest, AccessRequirement.Ruby);
 			}
 
-			if (flags.EarlyOrdeals)
+			if ((bool)flags.EarlyOrdeals)
 			{
 				floorLocationRequirements[MapLocation.CastleOrdealsMaze] = new Tuple<MapLocation, AccessRequirement>(MapLocation.CastleOrdeals1, AccessRequirement.None);
 			}
@@ -302,7 +302,7 @@ namespace FF1Lib
 			};
 
 			// Disable the Princess Warp back to Castle Coneria
-			if (flags.Entrances || flags.Floors) _rom.Put(0x392CA, Blob.FromHex("EAEAEA"));
+			if ((bool)flags.Entrances || (bool)flags.Floors) _rom.Put(0x392CA, Blob.FromHex("EAEAEA"));
 
 			// Since we're going to move all the entrances around, we're going to change the requirements
 			// for just about everything. Most interestingly the Titan's Tunnel is going to connect totally
@@ -321,7 +321,7 @@ namespace FF1Lib
 			var placedMaps = _teleporters.VanillaOverworldTeleports.ToDictionary(x => x.Key, x => x.Value);
 			var placedFloors = _teleporters.VanillaStandardTeleports.ToDictionary(x => x.Key, x => x.Value);
 			var placedExits = new Dictionary<ExitTeleportIndex, Coordinate>();
-			if (flags.Towns)
+			if ((bool)flags.Towns)
 			{
 				// Conspicuously missing is Coneria; we do not shuffle it .... yet.
 				placedMaps.Remove(OverworldTeleportIndex.Pravoka);
@@ -332,13 +332,13 @@ namespace FF1Lib
 				placedMaps.Remove(OverworldTeleportIndex.Gaia);
 				placedMaps.Remove(OverworldTeleportIndex.Lefein);
 			}
-			if (flags.Entrances)
+			if ((bool)flags.Entrances)
 			{
 				// Skip towns as they would be removed by the above.
 				// Remove SeaShrine1 so Onrac could lead to anywhere.
 				var keepers = _teleporters.VanillaOverworldTeleports.Where(x => x.Key >= OverworldTeleportIndex.Coneria && x.Key <= OverworldTeleportIndex.Lefein).Select(x => x.Key).ToList();
 
-				if (!flags.EntrancesIncludesDeadEnds)
+				if (!(bool)flags.EntrancesIncludesDeadEnds)
 				{
 					keepers.Add(OverworldTeleportIndex.Cardia1);
 					keepers.Add(OverworldTeleportIndex.Cardia5);
@@ -348,7 +348,7 @@ namespace FF1Lib
 				placedFloors.Remove(TeleportIndex.SeaShrine1);
 				FixUnusedDefaultBackdrops();
 			}
-			if (flags.Floors)
+			if ((bool)flags.Floors && (bool)flags.Entrances)
 			{
 				placedFloors = new Dictionary<TeleportIndex, TeleportDestination>();
 			}
@@ -384,13 +384,13 @@ namespace FF1Lib
 
 			// Deep "castles" for now just allows a deep ToFR but with refactoring could include others.
 			// Ordeals is a candidate but it would require map edits - it has an EXIT not a WARP due to its internal teleports.
-			if (flags.DeepCastlesPossible && flags.AllowDeepCastles)
+			if ((bool)flags.DeepCastlesPossible && (bool)flags.AllowDeepCastles)
 			{
 				topfloors = topfloors.Where(floor => floor.Destination != _teleporters.TempleOfFiends.Destination).ToList();
 				deadEnds.Add(_teleporters.TempleOfFiends);
 			}
 
-			if (flags.DeepTownsPossible && flags.AllowDeepTowns)
+			if ((bool)flags.DeepTownsPossible && (bool)flags.AllowDeepTowns)
 			{
 				subfloors.AddRange(towns);
 				towns.Clear();
@@ -427,7 +427,7 @@ namespace FF1Lib
 
 				// We keep the town destinations at the front of that list, so if we want to match towns
 				// with town entrances we just keep them at the front of shuffleEntrances too.
-				if (flags.EntrancesMixedWithTowns)
+				if ((bool)flags.EntrancesMixedWithTowns)
 				{
 					shuffleEntrances = shuffleTowns.Concat(shuffleEntrances).ToList();
 					shuffleEntrances.Shuffle(rng);

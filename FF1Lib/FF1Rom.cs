@@ -176,12 +176,12 @@ namespace FF1Lib
 				EnableModernBattlefield();
 			}
 
-			if (flags.TitansTrove)
+			if ((bool)flags.TitansTrove)
 			{
 				EnableTitansTrove(maps);
 			}
 
-			if (flags.LefeinShops)
+			if ((bool)flags.LefeinShops)
 			{
 				EnableLefeinShops(maps);
 			}
@@ -202,22 +202,22 @@ namespace FF1Lib
 				FixEnemyAOESpells();
 			}
 
-			if ((flags.ItemMagic ?? false))
+			if ((bool)flags.ItemMagic)
 			{
 				ShuffleItemMagic(rng);
 			}
 
-			if (flags.ShortToFR)
+			if ((bool)flags.ShortToFR)
 			{
-				ShortenToFR(maps, flags.PreserveFiendRefights, rng);
+				ShortenToFR(maps, (bool)flags.PreserveFiendRefights, rng);
 			}
 
-			if ((flags.Treasures ?? false) && flags.ShardHunt && !flags.FreeOrbs)
+			if (((bool)flags.Treasures) && flags.ShardHunt && !flags.FreeOrbs)
 			{
-				EnableShardHunt(rng, flags.ExtraShards ? rng.Between(24, 30) : 16, (flags.NPCItems ?? false));
+				EnableShardHunt(rng, flags.ExtraShards ? rng.Between(24, 30) : 16, ((bool)flags.NPCItems));
 			}
 
-			if (flags.TransformFinalFormation)
+			if ((bool)flags.TransformFinalFormation)
 			{
 				TransformFinalFormation((FinalFormation)rng.Between(0, Enum.GetValues(typeof(FinalFormation)).Length - 1));
 			}
@@ -228,36 +228,36 @@ namespace FF1Lib
 				try
 				{
 					overworldMap = new OverworldMap(this, flags, palettes, teleporters);
-					if ((flags.Entrances || flags.Floors || flags.Towns) && (flags.Treasures ?? false) && (flags.NPCItems ?? false))
+					if (((bool)flags.Entrances || (bool)flags.Floors || (bool)flags.Towns) && ((bool)flags.Treasures) && ((bool)flags.NPCItems))
 					{
 						overworldMap.ShuffleEntrancesAndFloors(rng, flags);
 					}
 
-					if (flags.ShuffleObjectiveNPCs ?? false)
+					if ((bool)flags.ShuffleObjectiveNPCs)
 					{
 						overworldMap.ShuffleObjectiveNPCs(rng);
 					}
 
 					IncentiveData incentivesData = new IncentiveData(rng, flags, overworldMap, shopItemLocation);
 
-					if ((flags.Shops ?? false))
+					if (((bool)flags.Shops))
 					{
 						var excludeItemsFromRandomShops = new List<Item>();
-						if (flags.Treasures ?? false)
+						if ((bool)flags.Treasures)
 						{
 							excludeItemsFromRandomShops = incentivesData.ForcedItemPlacements.Select(x => x.Item).Concat(incentivesData.IncentiveItems).ToList();
 						}
 
-						if (!(flags.RandomWaresIncludesSpecialGear ?? false))
+						if (!((bool)flags.RandomWaresIncludesSpecialGear))
 						{
 							excludeItemsFromRandomShops.AddRange(ItemLists.SpecialGear);
 						}
 
-						shopItemLocation = ShuffleShops(rng, flags.ImmediatePureAndSoftRequired, (flags.RandomWares ?? false), excludeItemsFromRandomShops, flags.WorldWealth);
+						shopItemLocation = ShuffleShops(rng, (bool)flags.ImmediatePureAndSoftRequired, ((bool)flags.RandomWares), excludeItemsFromRandomShops, flags.WorldWealth);
 						incentivesData = new IncentiveData(rng, flags, overworldMap, shopItemLocation);
 					}
 
-					if (flags.Treasures ?? false)
+					if ((bool)flags.Treasures)
 					{
 						ShuffleTreasures(rng, flags, incentivesData, shopItemLocation, overworldMap, teleporters);
 					}
@@ -271,15 +271,15 @@ namespace FF1Lib
 				}
 			}
 
-			if ((flags.MagicShops ?? false))
+			if (((bool)flags.MagicShops))
 			{
 				ShuffleMagicShops(rng);
 			}
 
-			if ((flags.MagicLevels ?? false))
+			if (((bool)flags.MagicLevels))
 			{
 				FixWarpBug(); // The warp bug only needs to be fixed if the magic levels are being shuffled
-				ShuffleMagicLevels(rng, (flags.MagicPermissions ?? false));
+				ShuffleMagicLevels(rng, ((bool)flags.MagicPermissions));
 			}
 
 			/*
@@ -294,36 +294,36 @@ namespace FF1Lib
 			}
 			*/
 
-			if ((flags.Rng ?? false))
+			if (((bool)flags.Rng))
 			{
 				ShuffleRng(rng);
 			}
 
-			if ((flags.EnemyScripts ?? false))
+			if (((bool)flags.EnemyScripts))
 			{
-				ShuffleEnemyScripts(rng, flags.AllowUnsafePirates ?? true);
+				ShuffleEnemyScripts(rng, (bool)flags.AllowUnsafePirates);
 			}
 
-			if ((flags.EnemySkillsSpells ?? false))
+			if (((bool)flags.EnemySkillsSpells))
 			{
 				ShuffleEnemySkillsSpells(rng);
 			}
 
-			if ((flags.EnemyStatusAttacks ?? false))
+			if (((bool)flags.EnemyStatusAttacks))
 			{
-				if ((flags.RandomStatusAttacks ?? false))
+				if (((bool)flags.RandomStatusAttacks))
 				{
-					RandomEnemyStatusAttacks(rng, flags.AllowUnsafePirates ?? true);
+					RandomEnemyStatusAttacks(rng, (bool)flags.AllowUnsafePirates);
 				}
 				else
 				{
-					ShuffleEnemyStatusAttacks(rng, flags.AllowUnsafePirates ?? true);
+					ShuffleEnemyStatusAttacks(rng, (bool)flags.AllowUnsafePirates);
 				}
 			}
 
-			if ((flags.EnemyFormationsUnrunnable ?? false))
+			if (((bool)flags.EnemyFormationsUnrunnable))
 			{
-				if ((flags.EverythingUnrunnable ?? false))
+				if (((bool)flags.EverythingUnrunnable))
 				{
 					CompletelyUnrunnable();
 				}
@@ -333,19 +333,19 @@ namespace FF1Lib
 				}
 			}
 
-			if ((flags.UnrunnablesStrikeFirstAndSurprise ?? false))
+			if (((bool)flags.UnrunnablesStrikeFirstAndSurprise))
 			{
 				AllowStrikeFirstAndSurprise();
 			}
-			
 
-			if ((flags.EnemyFormationsSurprise ?? false))
+
+			if (((bool)flags.EnemyFormationsSurprise))
 			{
 				ShuffleSurpriseBonus(rng);
 			}
 
 			// Put this before other encounter / trap tile edits.
-			if (flags.AllowUnsafeMelmond)
+			if ((bool)flags.AllowUnsafeMelmond)
 			{
 				EnableMelmondGhetto(flags.RandomizeFormationEnemizer);
 			}
@@ -371,12 +371,12 @@ namespace FF1Lib
 				ShuffleEnemyFormations(rng, flags.FormationShuffleMode);
 			}
 
-			if ((flags.EnemyTrapTiles ?? false))
+			if (((bool)flags.EnemyTrapTiles))
 			{
-				ShuffleTrapTiles(rng, (flags.RandomTrapFormations ?? false));
+				ShuffleTrapTiles(rng, ((bool)flags.RandomTrapFormations));
 			}
 
-			if (flags.OrdealsPillars)
+			if ((bool)flags.OrdealsPillars)
 			{
 				ShuffleOrdeals(rng, maps);
 			}
@@ -386,16 +386,16 @@ namespace FF1Lib
 				DoSkyCastle4FMaze(rng, maps);
 			}
 			else if (flags.SkyCastle4FMazeMode == SkyCastle4FMazeMode.Teleporters)
-			{ 
+			{
 				ShuffleSkyCastle4F(rng, maps);
 			}
 
-			if (flags.ConfusedOldMen)
+			if ((bool)flags.ConfusedOldMen)
 			{
 				EnableConfusedOldMen(rng);
 			}
 
-			if (flags.EarlyOrdeals)
+			if ((bool)flags.EarlyOrdeals)
 			{
 				EnableEarlyOrdeals();
 			}
@@ -405,27 +405,27 @@ namespace FF1Lib
 				EnableChaosRush();
 			}
 
-			if (flags.EarlySarda && !(flags.NPCItems ?? false))
+			if ((bool)flags.EarlySarda && !((bool)flags.NPCItems))
 			{
 				EnableEarlySarda();
 			}
 
-			if (flags.EarlySage && !(flags.NPCItems ?? false))
+			if ((bool)flags.EarlySage && !((bool)flags.NPCItems))
 			{
 				EnableEarlySage();
 			}
 
-			if (flags.FreeBridge ?? false)
+			if ((bool)flags.FreeBridge)
 			{
 				EnableFreeBridge();
 			}
 
-			if (flags.FreeAirship ?? false)
+			if ((bool)flags.FreeAirship)
 			{
 				EnableFreeAirship();
 			}
 
-			if (flags.FreeShip ?? false)
+			if ((bool)flags.FreeShip)
 			{
 				EnableFreeShip();
 			}
@@ -435,12 +435,12 @@ namespace FF1Lib
 				EnableFreeOrbs();
 			}
 
-			if (flags.FreeCanal ?? false)
+			if ((bool)flags.FreeCanal)
 			{
 				EnableFreeCanal();
 			}
 
-			if (flags.FreeLute)
+			if ((bool)flags.FreeLute)
 			{
 				EnableFreeLute();
 			}
@@ -549,7 +549,7 @@ namespace FF1Lib
 			itemText[(int)Item.Ribbon].Trim();
 
 			ExpGoldBoost(flags.ExpBonus, flags.ExpMultiplier);
-			ScalePrices(flags, itemText, rng, (flags.ClampMinimumPriceScale ?? false), shopItemLocation);
+			ScalePrices(flags, itemText, rng, ((bool)flags.ClampMinimumPriceScale), shopItemLocation);
 			ScaleEncounterRate(flags.EncounterRate / 30.0, flags.DungeonEncounterRate / 30.0);
 
 			overworldMap.ApplyMapEdits();
@@ -559,22 +559,22 @@ namespace FF1Lib
 
 			if (flags.EnemyScaleFactor > 1)
 			{
-				ScaleEnemyStats(flags.EnemyScaleFactor, flags.WrapStatOverflow, flags.IncludeMorale, rng, (flags.ClampMinimumStatScale ?? false));
+				ScaleEnemyStats(flags.EnemyScaleFactor, flags.WrapStatOverflow, flags.IncludeMorale, rng, ((bool)flags.ClampMinimumStatScale));
 			}
 
 			if (flags.BossScaleFactor > 1)
 			{
-				ScaleBossStats(flags.BossScaleFactor, flags.WrapStatOverflow, flags.IncludeMorale, rng, (flags.ClampMinimumBossStatScale ?? false));
+				ScaleBossStats(flags.BossScaleFactor, flags.WrapStatOverflow, flags.IncludeMorale, rng, ((bool)flags.ClampMinimumBossStatScale));
 			}
 
 			PartyComposition(rng, flags);
 
-			if ((flags.RecruitmentMode ?? false))
+			if (((bool)flags.RecruitmentMode))
 			{
 				PubReplaceClinic(rng, flags);
 			}
 
-			if (flags.MapCanalBridge)
+			if ((bool)flags.MapCanalBridge)
 			{
 				EnableCanalBridge();
 			}
@@ -591,7 +591,7 @@ namespace FF1Lib
 				CannotSaveOnOverworld();
 			}
 
-			if(flags.DisableInnSaving)
+			if (flags.DisableInnSaving)
 			{
 				CannotSaveAtInns();
 			}

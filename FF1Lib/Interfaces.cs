@@ -63,19 +63,19 @@
 	}
 	public interface IMapEditFlags : IItemPlacementFlags
 	{
-		bool MapAirshipDock { get; }
-		bool MapOnracDock { get; }
-		bool MapMirageDock { get; }
-		bool TitansTrove { get; }
+		bool? MapAirshipDock { get; }
+		bool? MapOnracDock { get; }
+		bool? MapMirageDock { get; }
+		bool? TitansTrove { get; }
 	}
 	public interface IItemPlacementFlags : IItemShuffleFlags, IVictoryConditionFlags
 	{
 		bool Spoilers { get; }
 		bool ClassicItemPlacement { get; }
-		bool MapCanalBridge { get; }
-		bool MapConeriaDwarves { get; }
-		bool MapVolcanoIceRiver { get; }
-		bool MapDwarvesNorthwest { get; }
+		bool? MapCanalBridge { get; }
+		bool? MapConeriaDwarves { get; }
+		bool? MapVolcanoIceRiver { get; }
+		bool? MapDwarvesNorthwest { get; }
 		bool? RandomWares { get; }
 		bool? RandomLoot { get; }
 		bool? BetterTrapChests { get; }
@@ -86,9 +86,9 @@
 		bool? Treasures { get; }
 		bool? NPCItems { get; }
 		bool? NPCFetchItems { get; }
-		bool EarlySarda { get; }
-		bool EarlySage { get; }
-		bool EarlyOrdeals { get; }
+		bool? EarlySarda { get; }
+		bool? EarlySage { get; }
+		bool? EarlyOrdeals { get; }
 	}
 	public interface IScaleFlags
 	{
@@ -101,26 +101,26 @@
 	public interface IFloorShuffleFlags
 	{
 		bool Spoilers { get; }
-		bool Entrances { get; }
-		bool EntrancesIncludesDeadEnds { get; }
-		bool EntrancesMixedWithTowns { get; }
-		bool Towns { get; }
-		bool Floors { get; }
-		bool DeepCastlesPossible { get; }
-		bool AllowDeepCastles { get; }
-		bool DeepTownsPossible { get; }
-		bool AllowDeepTowns { get; }
+		bool? Entrances { get; }
+		bool? EntrancesIncludesDeadEnds { get; }
+		bool? EntrancesMixedWithTowns { get; }
+		bool? Towns { get; }
+		bool? Floors { get; }
+		bool? DeepCastlesPossible { get; }
+		bool? AllowDeepCastles { get; }
+		bool? DeepTownsPossible { get; }
+		bool? AllowDeepTowns { get; }
 		bool AllowStartAreaDanager { get; }
 	}
 	public interface IVictoryConditionFlags
 	{
 		bool OnlyRequireGameIsBeatable { get; }
 		bool ShardHunt { get; }
-		bool ShortToFR { get; }
+		bool? ShortToFR { get; }
 		bool? FreeBridge { get; }
 		bool? FreeAirship { get; }
 		bool? FreeShip { get; }
 		bool? FreeCanal { get; }
-		bool FreeLute { get; }
+		bool? FreeLute { get; }
 	}
 }

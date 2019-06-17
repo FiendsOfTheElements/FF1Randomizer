@@ -254,7 +254,7 @@ namespace FF1Lib
 				ItemLocations.AllTreasures.Concat(ItemLocations.AllNPCItemLocations)
 						  .Where(x => !x.IsUnused && !forcedItemPlacements.Any(y => y.Address == x.Address))
 						  .ToList();
-			if (flags.EarlyOrdeals)
+			if ((bool)flags.EarlyOrdeals)
 			{
 				forcedItemPlacements =
 					forcedItemPlacements
@@ -272,7 +272,7 @@ namespace FF1Lib
 							? new TreasureChest(x, x.Item, x.AccessRequirement & ~AccessRequirement.Crown)
 							: x).ToList();
 			}
-			if (flags.EarlySage)
+			if ((bool)flags.EarlySage)
 			{
 				forcedItemPlacements =
 						forcedItemPlacements
@@ -290,7 +290,7 @@ namespace FF1Lib
 									? new MapObject(ObjectId.CanoeSage, MapLocation.CrescentLake, x.Item)
 									: x).ToList();
 			}
-			if (flags.EarlySarda)
+			if ((bool)flags.EarlySarda)
 			{
 				forcedItemPlacements =
 					forcedItemPlacements

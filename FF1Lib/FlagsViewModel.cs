@@ -175,7 +175,7 @@ namespace FF1Lib
 
 		public bool ExtraShardsEnabled => ShardHunt && !FreeOrbs;
 
-		public bool TransformFinalFormation
+		public bool? TransformFinalFormation
 		{
 			get => Flags.TransformFinalFormation;
 			set
@@ -184,7 +184,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TransformFinalFormation"));
 			}
 		}
-		public bool ShortToFR
+		public bool? ShortToFR
 		{
 			get => Flags.ShortToFR;
 			set
@@ -193,7 +193,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ShortToFR"));
 			}
 		}
-		public bool PreserveFiendRefights
+		public bool? PreserveFiendRefights
 		{
 			get => Flags.PreserveFiendRefights;
 			set
@@ -370,7 +370,7 @@ namespace FF1Lib
 			}
 		}
 
-		public bool OrdealsPillars
+		public bool? OrdealsPillars
 		{
 			get => Flags.OrdealsPillars;
 			set
@@ -399,7 +399,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SkyCastle4FMazeMode"));
 			}
 		}
-		public bool TitansTrove
+		public bool? TitansTrove
 		{
 			get => Flags.TitansTrove;
 			set
@@ -408,7 +408,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TitansTrove"));
 			}
 		}
-		public bool LefeinShops
+		public bool? LefeinShops
 		{
 			get => Flags.LefeinShops;
 			set
@@ -417,7 +417,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("LefeinShops"));
 			}
 		}
-		public bool ConfusedOldMen
+		public bool? ConfusedOldMen
 		{
 			get => Flags.ConfusedOldMen;
 			set
@@ -426,7 +426,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ConfusedOldMen"));
 			}
 		}
-		public bool AllowUnsafeMelmond
+		public bool? AllowUnsafeMelmond
 		{
 			get => Flags.AllowUnsafeMelmond;
 			set
@@ -435,7 +435,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AllowUnsafeMelmond"));
 			}
 		}
-		public bool EarlyOrdeals
+		public bool? EarlyOrdeals
 		{
 			get => Flags.EarlyOrdeals;
 			set
@@ -454,10 +454,10 @@ namespace FF1Lib
 			}
 		}
 
-		public bool DeepCastlesPossible => Flags.DeepCastlesPossible;
-		public bool DeepTownsPossible => Flags.DeepTownsPossible;
+		public bool? DeepCastlesPossible => Flags.DeepCastlesPossible;
+		public bool? DeepTownsPossible => Flags.DeepTownsPossible;
 
-		public bool Floors
+		public bool? Floors
 		{
 			get => Flags.Floors;
 			set
@@ -467,7 +467,7 @@ namespace FF1Lib
 			}
 		}
 
-		public bool AllowDeepCastles
+		public bool? AllowDeepCastles
 		{
 			get => Flags.AllowDeepCastles;
 			set
@@ -477,7 +477,7 @@ namespace FF1Lib
 			}
 		}
 
-		public bool AllowDeepTowns
+		public bool? AllowDeepTowns
 		{
 			get => Flags.AllowDeepTowns;
 			set
@@ -487,7 +487,7 @@ namespace FF1Lib
 			}
 		}
 
-		public bool MapOpenProgression
+		public bool? MapOpenProgression
 		{
 			get => Flags.MapOpenProgression;
 			set
@@ -496,7 +496,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MapOpenProgression"));
 			}
 		}
-		public bool MapOpenProgressionExtended
+		public bool? MapOpenProgressionExtended
 		{
 			get => Flags.MapOpenProgressionExtended;
 			set
@@ -505,7 +505,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MapOpenProgressionExtended"));
 			}
 		}
-		public bool Entrances
+		public bool? Entrances
 		{
 			get => Flags.Entrances;
 			set
@@ -514,7 +514,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Entrances"));
 			}
 		}
-		public bool Towns
+		public bool? Towns
 		{
 			get => Flags.Towns;
 			set
@@ -523,7 +523,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Towns"));
 			}
 		}
-		public bool EntrancesIncludesDeadEnds
+		public bool? EntrancesIncludesDeadEnds
 		{
 			get => Flags.EntrancesIncludesDeadEnds;
 			set
@@ -532,7 +532,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EntrancesIncludesDeadEnds"));
 			}
 		}
-		public bool EntrancesMixedWithTowns
+		public bool? EntrancesMixedWithTowns
 		{
 			get => Flags.EntrancesMixedWithTowns;
 			set
@@ -794,7 +794,7 @@ namespace FF1Lib
 			}
 		}
 
-		public bool EarlySarda
+		public bool? EarlySarda
 		{
 			get => Flags.EarlySarda;
 			set
@@ -803,7 +803,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EarlySarda"));
 			}
 		}
-		public bool EarlySage
+		public bool? EarlySage
 		{
 			get => Flags.EarlySage;
 			set

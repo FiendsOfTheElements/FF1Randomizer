@@ -123,23 +123,23 @@ namespace FF1Lib
 			var placedItems = result.PlacedItems;
 			treasurePool = result.RemainingTreasures;
 
-			if (_flags.FreeBridge ?? false)
+			if ((bool)_flags.FreeBridge)
 			{
 				placedItems = placedItems.Select(x => x.Item != Item.Bridge ? x : NewItemPlacement(x, ReplacementItem)).ToList();
 			}
-			if (_flags.FreeAirship ?? false)
+			if ((bool)_flags.FreeAirship)
 			{
 				placedItems = placedItems.Select(x => x.Item != Item.Floater ? x : NewItemPlacement(x, ReplacementItem)).ToList();
 			}
-			if (_flags.FreeShip ?? false)
+			if ((bool)_flags.FreeShip)
 			{
 				placedItems = placedItems.Select(x => x.Item != Item.Ship ? x : NewItemPlacement(x, ReplacementItem)).ToList();
 			}
-			if (_flags.FreeCanal ?? false)
+			if ((bool)_flags.FreeCanal)
 			{
 				placedItems = placedItems.Select(x => x.Item != Item.Canal ? x : NewItemPlacement(x, ReplacementItem)).ToList();
 			}
-			if (_flags.FreeLute)
+			if ((bool)_flags.FreeLute)
 			{
 				placedItems = placedItems.Select(x => x.Item != Item.Lute ? x : NewItemPlacement(x, ReplacementItem)).ToList();
 			}
@@ -183,7 +183,7 @@ namespace FF1Lib
 
 			Debug.Assert(treasurePool.Count() == itemLocationPool.Count());
 
-			if (_flags.RandomLoot ?? false)
+			if ((bool)_flags.RandomLoot)
 			{
 				// We want to leave out anything incentivized (and thus already placed), but
 				// add all the other stuff that you can't find in vanilla.
@@ -197,7 +197,7 @@ namespace FF1Lib
 				treasurePool = treasurePool.Select(treasure => generator.GetItem(rng)).ToList();
 			}
 
-			if (_flags.BetterTrapChests ?? false)
+			if ((bool)_flags.BetterTrapChests)
 			{
 				// First we'll make a list of all 'notable' treasure.
 				var notableTreasureList = new List<Item>()
@@ -244,7 +244,7 @@ namespace FF1Lib
 
 		public Item SelectVendorItem(List<Item> incentives, List<Item> nonincentives, List<Item> treasurePool, List<IRewardSource> incentiveLocationPool, MT19337 rng)
 		{
-			if (!_flags.NPCItems ?? false) return Item.Bottle;
+			if (!(bool)_flags.NPCItems) return Item.Bottle;
 
 			var itemShopItem = Item.Cabin;
 			var validShopIncentives = incentives.Where(x => x > Item.None && x <= Item.Soft).ToList();
@@ -303,7 +303,7 @@ namespace FF1Lib
 			const int maxIterations = 20;
 			var currentIteration = 0;
 			var currentAccess = AccessRequirement.None;
-			if (victoryConditions.FreeLute)
+			if ((bool)victoryConditions.FreeLute)
 			{
 				currentAccess |= AccessRequirement.Lute;
 			}
@@ -463,8 +463,8 @@ namespace FF1Lib
 			var bridgeLocations = _incentivesData.BridgeLocations.ToList();
 			var shipLocations = _incentivesData.ShipLocations.ToList();
 
-			var canoeObsoletesBridge = _flags.MapCanalBridge && _flags.MapConeriaDwarves;
-			var canoeObsoletesShip = _flags.MapCanalBridge ? (_flags.MapConeriaDwarves || _flags.MapVolcanoIceRiver) : (_flags.MapConeriaDwarves && _flags.MapVolcanoIceRiver);
+			var canoeObsoletesBridge = (bool)_flags.MapCanalBridge && (bool)_flags.MapConeriaDwarves;
+			var canoeObsoletesShip = (bool)_flags.MapCanalBridge ? ((bool)_flags.MapConeriaDwarves || (bool)_flags.MapVolcanoIceRiver) : ((bool)_flags.MapConeriaDwarves && (bool)_flags.MapVolcanoIceRiver);
 
 			Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullLocationRequirements = _overworldMap.FullLocationRequirements;
 			Dictionary<MapLocation, OverworldTeleportIndex> overridenOverworld = _overworldMap.OverriddenOverworldLocations;
@@ -491,7 +491,7 @@ namespace FF1Lib
 				incentives.Shuffle(rng);
 				nonincentives.Shuffle(rng);
 
-				if (_flags.NPCItems ?? false)
+				if ((bool)_flags.NPCItems)
 				{
 					// 2. Place caravan item first because among incentive locations it has the smallest set of possible items
 					itemShopItem = SelectVendorItem(incentives, nonincentives, treasurePool, incentiveLocationPool, rng);
@@ -541,7 +541,7 @@ namespace FF1Lib
 						placedItems.Any(x => x.Item == Item.Ship && startingMapLocations.Contains(x.MapLocation) &&
 							startingMapLocations.Contains((x as MapObject)?.SecondLocation ?? MapLocation.StartingLocation));
 
-					if (!(startingCanoeAvailable && canoeObsoletesBridge) && !startingShipAvailable && !(_flags.FreeBridge ?? false))
+					if (!(startingCanoeAvailable && canoeObsoletesBridge) && !startingShipAvailable && !((bool)_flags.FreeBridge))
 					{
 						var startingKeyAvailable =
 							earlyKeyAvailable && placedItems.Any(x => x.Item == Item.Key && startingMapLocations.Contains(x.MapLocation) &&
@@ -627,7 +627,7 @@ namespace FF1Lib
 					nonincentives.Add(incentives.SpliceRandom(rng));
 				}
 
-				if ((_flags.NPCItems ?? false) || (_flags.NPCFetchItems ?? false))
+				if (((bool)_flags.NPCItems) || ((bool)_flags.NPCFetchItems))
 				{
 					// Identify but don't place caravan item first because among incentive locations it has the smallest set of possible items
 					itemShopItem = SelectVendorItem(incentives, nonincentives, treasurePool, incentiveLocationPool, rng);
