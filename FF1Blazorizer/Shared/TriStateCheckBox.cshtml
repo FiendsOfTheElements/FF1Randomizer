@@ -3,58 +3,73 @@
 		<input type="radio" name="@Name" value="2" checked="@checked2" hidden>
 		<input type="radio" name="@Name" value="1" checked="@checked1" hidden>
 		<input type="radio" name="@Name" value="0" checked="@checked0" hidden>
-		<input type="image" src="@image" onclick="@onclick" id="@Id" class="tri-state" disabled="@(!IsEnabled)"/>  <label for="@Id" class="@DisabledClass">@ChildContent</label>
+		<input type="image" src="@image" onclick="@onclick" id="@Id" class="tri-state" disabled="@(!IsEnabled)" />  <label for="@Id" onclick="@ShowToolTip" onmouseover="@ShowToolTip" onmouseout="@HideToolTip" class="@DisabledClass">@ChildContent</label>
 	</div>
 </div>
 
 @functions
 {
-	[Parameter]
-	private bool? Value { get; set; } = false;
-	private string ValueClass => checked0 ? "tri-yes" : (checked1 ? "tri-no" : "tri-maybe");
+[Parameter]
+private bool? Value { get; set; } = false;
+private string ValueClass => checked0 ? "tri-yes" : (checked1 ? "tri-no" : "tri-maybe");
 
-	[Parameter]
-	private Action<bool?> ValueChanged { get; set; }
-	private bool checked0 => Value ?? false;
-	private bool checked1 => !Value ?? false;
-	private bool checked2 => Value == null;
+[Parameter]
+private Action<bool?> ValueChanged { get; set; }
+private bool checked0 => Value ?? false;
+private bool checked1 => !Value ?? false;
+private bool checked2 => Value == null;
 
-	private string image => checked0 ? "/images/true.png" : (checked1 ? "/images/false.png" : "/images/random.gif");
+private string image => checked0 ? "/images/true.png" : (checked1 ? "/images/false.png" : "/images/random.gif");
 
-	[Parameter]
-	private bool Name { get; set; }
+[Parameter]
+private bool Name { get; set; }
 
-	void onclick()
+void onclick()
+{
+	if (Value == false)
 	{
-		if (Value == false)
-		{
-			Value = true;
-		} else if  (Value == true)
-		{
-			Value = null;
-		}
-		else
-		{
-			Value = false;
-		}
-		ValueChanged(Value);
-
+		Value = true;
 	}
+	else if (Value == true)
+	{
+		Value = null;
+	}
+	else
+	{
+		Value = false;
+	}
+	ValueChanged(Value);
+
+}
+
+private void ShowToolTip(UIMouseEventArgs e)
+{
+	UpdateToolTip?.Invoke(Id, e);
+}
+
+private void HideToolTip(UIMouseEventArgs e)
+{
+	UpdateToolTip?.Invoke("", e);
+}
 
 
+[CascadingParameter]
+protected string ToolTipId { get; set; }
+[Parameter]
+protected Action<string, UIMouseEventArgs> UpdateToolTip { get; set; }
 
-	[Parameter]
-	private bool Indent { get; set; }
-	private string IndentClass => Indent ? "indent" : "";
+[Parameter]
+private bool Indent { get; set; }
+private string IndentClass => Indent ? "indent" : "";
 
-	[Parameter]
-	private bool? IsEnabled { get; set; } = true;
-	private string DisabledClass => (IsEnabled ?? true) ? "" : "disabled";
+[Parameter]
+private bool? IsEnabled { get; set; } = true;
+private string DisabledClass => (IsEnabled ?? true) ? "" : "disabled";
 
-	[Parameter]
-	private string Id { get; set; }
+[Parameter]
+private string Id { get; set; }
 
-	[Parameter]
-	private RenderFragment ChildContent { get; set; }
+[Parameter]
+private RenderFragment ChildContent { get; set; }
 
 }

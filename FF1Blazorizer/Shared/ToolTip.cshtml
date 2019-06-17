@@ -1,0 +1,70 @@
+@inject HttpClient  Http
+<div class="ffr-tooltip" style=@css>
+	<h6>@(Visible == "visibility:hidden;" ? "" : Title)</h6>
+	<p class="ffr-tooltiptext">@(Visible == "visibility:hidden;" ? "" : Description)</p>
+</div>
+
+@functions
+{
+	private ToolTipObj TTip => Tooltips.FirstOrDefault(x => x.Id == ToolTipId);
+	private string Title => (TTip != null ? TTip.title : "no title");
+	private string Description => (TTip != null ? TTip.description : "no description");
+	private string css => "left:" + PosLeft + "px;top:" + PosTop + "px;" + Visible + "width: " + Width + "px;";
+	private int Width = 300;
+	private List<ToolTipObj> Tooltips { get; set; }
+	private bool Enabled { get; set; } = false;
+
+	[CascadingParameter]
+	protected string ToolTipId { get; set; }
+
+	protected override async Task OnInitAsync()
+	{
+		Tooltips = await Http.GetJsonAsync<List<ToolTipObj>>("/tooltips.json");
+	}
+
+	class ToolTipObj
+	{
+		public string Id { get; set; }
+		public string title { get; set; }
+		public string description { get; set; }
+	}
+
+	private string Visible => (Enabled ? "visibility:visible;" : "visibility:hidden;");
+	private void HideToolTip()
+	{
+		Enabled = false;
+		StateHasChanged();
+	}
+
+	private void ShowToolTip()
+	{
+		Enabled = true;
+	}
+
+	private long PosTop { get; set; } = 0;
+	private long PosLeft { get; set; } = 0;
+
+	public async Task UpdatePos(string Id, UIMouseEventArgs e)
+	{
+		if (Id == "")
+		{
+			HideToolTip();
+			return;
+		}
+		ShowToolTip();
+		PosTop = (e.ClientY - 20);
+		long left = (e.ClientX + 50);
+		int ScreenRightEdge = await JSRuntime.Current.InvokeAsync<int>("getScreenRightEdge");
+		if (left + Width >= ScreenRightEdge - 30)
+		{
+			PosLeft = (e.ClientX - 50 - Width);
+		}
+		else
+		{
+			PosLeft = (e.ClientX + 50);
+		}
+		StateHasChanged();
+
+		return;
+	}
+}

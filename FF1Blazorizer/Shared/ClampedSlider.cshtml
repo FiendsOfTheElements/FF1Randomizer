@@ -1,6 +1,7 @@
 <div class="row">
 	<div class="col-md-6">
-		<label>@ChildContent</label>
+		<label for="@Id" onclick="ShowToolTip" onmouseover="@ShowToolTip" onmouseout="@HideToolTip"
+		 class="@DisabledClass">@ChildContent</label>
 	</div>
 	<div class="col-xs-6 col-md-3">
 		<div class="checkbox-cell">
@@ -19,6 +20,20 @@
 
 @functions
 {
+	private void ShowToolTip(UIMouseEventArgs e)
+	{
+		UpdateToolTip?.Invoke(Id, e);
+	}
+
+	private void HideToolTip(UIMouseEventArgs e)
+	{
+		UpdateToolTip?.Invoke("", e);
+	}
+
+	[CascadingParameter]
+	protected string ToolTipId { get; set; }
+	[Parameter]
+	protected Action<string, UIMouseEventArgs> UpdateToolTip { get; set; }
 
 
 	[Parameter]

@@ -236,3 +236,15 @@ tr.odd {
 .tri-maybe {
     color: #c8916e;
 }
+
+.ffr-tooltip {
+    position: fixed;
+    background-color: whitesmoke;
+    z-index: 1000;
+    border-color: black;
+    border-radius: 10px;
+    border-width: 3px;
+    border-style: solid;
+    padding: 10px;
+}
+
