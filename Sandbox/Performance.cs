@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using FF1Lib;
@@ -19,7 +20,7 @@ namespace Sandbox
 				json = await sr.ReadToEndAsync();
 			}
 
-			var seed = Blob.Random(4);
+			var seeds = Enumerable.Range(0, 1000).Select(x => Blob.Random(4)).ToList();
 
 			var flags = Flags.FromJson(json);
 			flags.Entrances = true;
@@ -40,7 +41,7 @@ namespace Sandbox
 
 			for (int i = 0; i < 1000; i++)
 			{
-				roms[i].Randomize(seed, flags, preferences);
+				roms[i].Randomize(seeds[i], flags, preferences);
 			}
 		}
 	}
