@@ -16,6 +16,19 @@
 	});
 }
 
+async function computePreset(preset) {
+	const result = await fetch('presets/' + preset + '.json');
+	const overrides = await result.json();
+
+	if (preset !== 'default') {
+		const defaultResult = await fetch('presets/default.json');
+		const basic = await defaultResult.json();
+		overrides.Flags = Object.assign(basic.Flags, overrides.Flags);
+	}
+
+	return JSON.stringify(overrides);
+}
+
 async function downloadROM(filename, encoded) {
 	const url = "data:application/octet-stream;base64," + encoded;
 	const result = await fetch(url);

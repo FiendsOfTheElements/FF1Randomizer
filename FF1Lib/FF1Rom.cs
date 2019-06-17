@@ -15,9 +15,9 @@ namespace FF1Lib
 	public partial class FF1Rom : NesRom
 	{
 #if DEBUG
-		public const string Version = "3.0.0 Beta";
+		public const string Version = "3.0.1 Beta";
 #else
-		public const string Version = "3.0.0";
+		public const string Version = "3.0.1";
 #endif
 
 		public const int RngOffset = 0x7F100;
@@ -333,9 +333,9 @@ namespace FF1Lib
 				}
 			}
 
-			if ((flags.UnrunnablesStrikeFirstAndSuprise ?? false))
+			if ((flags.UnrunnablesStrikeFirstAndSurprise ?? false))
 			{
-				AllowStrikeFirstAndSuprise();
+				AllowStrikeFirstAndSurprise();
 			}
 			
 

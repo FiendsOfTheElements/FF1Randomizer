@@ -90,7 +90,7 @@
 						<TriStateCheckBox Indent IsEnabled="@Flags.EnemyStatusAttacks" Id="enemyRandomAttacksCheckBox" bind-Value="@Flags.RandomStatusAttacks">Randomize Enemy Status Attacks</TriStateCheckBox>
 						<TriStateCheckBox Id="enemyFormationsUnrunnableCheckBox" bind-Value="@Flags.EnemyFormationsUnrunnable">Enemy Unrunnable Formations</TriStateCheckBox>
 						<TriStateCheckBox Indent IsEnabled="@Flags.EnemyFormationsUnrunnable" Id="everythingUnrunnableCheckBox" bind-Value="@Flags.EverythingUnrunnable">All Encounters are Unrunnable</TriStateCheckBox>
-						<TriStateCheckBox Id="unrunnablesStrikeFirstAndSupriseCheckBox" bind-Value="@Flags.UnrunnablesStrikeFirstAndSuprise">First Strike/Suprise on Unrunnables</TriStateCheckBox>
+						<TriStateCheckBox Id="unrunnablesStrikeFirstAndSurpriseCheckBox" bind-Value="@Flags.UnrunnablesStrikeFirstAndSurprise">First Strike &amp; Surprise possible when Unrunnable</TriStateCheckBox>
 						<TriStateCheckBox Id="enemyFormationsSurpriseCheckBox" bind-Value="@Flags.EnemyFormationsSurprise">Enemy Surprise Bonus</TriStateCheckBox>
 						<EnumDropDown TItem="FormationShuffleModeEnum" bind-Value="@Flags.FormationShuffleMode"></EnumDropDown>
 						<TriStateCheckBox Id="enemyTrapTilesCheckBox" bind-Value="@Flags.EnemyTrapTiles">Enemy Forced Encounter Tiles</TriStateCheckBox>
@@ -399,25 +399,31 @@
 				</div>
 			</div>
 		</TabPane>
-		<button type="button" class="@(TabClasses("Bug Fixes"))" onclick="@(() => ActivateTab("Bug Fixes"))">Bug Fixes</button>
+		<button type="button" class="@(TabClasses("Bug Fixes"))" onclick="@(() => ActivateTab("Bug Fixes"))">Bug Fixes &amp; Rebalancing</button>
 		<TabPane IsOpen="@(activeTabs.Contains("Bug Fixes"))">
 			<div class="is-dark nes-container">
 				<div class="row">
 					<div class="col-md-6">
+						<h4>Bugs</h4>
 						<CheckBox Id="houseMPRestorationCheckBox" bind-Value="@Flags.HouseMPRestoration">House MP Restoration</CheckBox>
-						<CheckBox Id="housesFillHpCheckBox" bind-Value="@Flags.HousesFillHP">House Full HP Restoration</CheckBox>
 						<CheckBox Id="weaponStatsCheckBox" bind-Value="@Flags.WeaponStats">Weapon Stats</CheckBox>
 						<CheckBox Id="chanceToRunCheckBox" bind-Value="@Flags.ChanceToRun">Chance to Run</CheckBox>
 						<CheckBox Id="spellBugsCheckBox" bind-Value="@Flags.SpellBugs">Spell Fixes</CheckBox>
-						<CheckBox Id="rebalanceSpellsCheckBox" bind-Value="@Flags.RebalanceSpells">LOCK and LOK2 Always Hit</CheckBox>
 						<CheckBox Id="enemyStatusAttackBugCheckBox" bind-Value="@Flags.EnemyStatusAttackBug">Enemy Status Attacks</CheckBox>
 						<CheckBox Id="blackBeltAbsorbCheckBox" bind-Value="@Flags.BlackBeltAbsorb">Bl. Belt & Master Absorb Calculation</CheckBox>
-						<EnumDropDown TItem="MDefChangesEnum" bind-Value="@Flags.MDefMode"></EnumDropDown>
 						<CheckBox Id="enemyElementalResistancesCheckBox" bind-Value="@Flags.EnemyElementalResistancesBug">Enemy Elemental Resistances</CheckBox>
 						<CheckBox Id="enemySpellsTargetingAlliesCheckBox" bind-Value="@Flags.EnemySpellsTargetingAllies">Enemy Spells Targeting Allies</CheckBox>
 						<CheckBox Id="improveTurnOrderRandomizationCheckBox" bind-Value="@Flags.ImproveTurnOrderRandomization">Improve Turn Order Randomization</CheckBox>
 						<CheckBox Id="fixHitChanceCapCheckBox" bind-Value="@Flags.FixHitChanceCap">Fix Hit % Cap</CheckBox>
 					</div>
+					<div class="col-md-6">
+						<h4>Balance</h4>
+						<CheckBox Id="housesFillHpCheckBox" bind-Value="@Flags.HousesFillHP">House Full HP Restoration</CheckBox>
+						<CheckBox Id="rebalanceSpellsCheckBox" bind-Value="@Flags.RebalanceSpells">LOCK and LOK2 Always Hit</CheckBox>
+						<EnumDropDown TItem="MDefChangesEnum" bind-Value="@Flags.MDefMode"></EnumDropDown>
+						<CheckBox Id="ThiefHitCheckBox" bind-Value="@Flags.ThiefHitRate">Double Thief &amp; Ninja Hit% growth.</CheckBox>
+					</div>
+
 				</div>
 			</div>
 		</TabPane>
@@ -441,8 +447,6 @@
 						<CheckBox Id="DisableTentSaving" bind-Value="@Flags.DisableTentSaving">Disable Tent/Cabin/House Saving on Overworld</CheckBox>
 						<CheckBox Id="DisableInnSaving" bind-Value="@Flags.DisableInnSaving">Disable Inn Saving</CheckBox>
 						<CheckBox Id="RandomizeFormationEnemizer" bind-Value="@Flags.RandomizeFormationEnemizer">Randomizer Formations (Enemizer)</CheckBox>
-						<div class="checkbox-cell"></div>
-						<CheckBox Id="ThiefHitCheckBox" bind-Value="@Flags.ThiefHitRate">Balance Change: Double the Thief & Ninja's Hit% growth.</CheckBox>
 					</div>
 					<div class="col-md-6">
 					</div>
@@ -497,6 +501,7 @@
 	private string _seedInputClass = "";
 
 	private FlagsViewModel Flags { get; set; } = new FlagsViewModel();
+	private Flags DefaultFlags;
 
 	private readonly List<string> activeTabs = new List<string> {"Shuffle", "Treasures", "Goal", "Map", "Scale" };
 	private readonly Random _rng = new Random();
@@ -559,8 +564,8 @@
 
 	async Task LoadPreset(string presetName)
 	{
-		var presetJson = await Http.GetStringAsync($"presets/{presetName}.json");
-		Flags.Flags = Microsoft.JSInterop.Json.Deserialize<Flags.Preset>(presetJson).Flags;
+		var json = await JSRuntime.Current.InvokeAsync<string>("computePreset", presetName);
+		Flags.Flags = Microsoft.JSInterop.Json.Deserialize<Flags.Preset>(json).Flags;
 	}
 
 	async Task OnFileChanged(UIChangeEventArgs e)

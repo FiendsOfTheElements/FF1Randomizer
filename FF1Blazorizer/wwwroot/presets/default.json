@@ -2,8 +2,8 @@
 	"Name": "Default",
 
 	"Flags": {
-
 		"Spoilers": false,
+
 		"Shops": true,
 		"Treasures": true,
 		"NPCItems": true,
@@ -11,9 +11,6 @@
 		"RandomWares": false,
 		"RandomWaresIncludesSpecialGear": false,
 		"RandomLoot": false,
-		"WeaponPermissions": false,
-		"ArmorPermissions": false,
-		"RecruitmentMode": false,
 
 		"ShardHunt": false,
 		"ExtraShards": false,
@@ -26,18 +23,22 @@
 		"MagicLevels": true,
 		"MagicPermissions": false,
 		"ItemMagic": false,
+		"RebalanceSpells": false,
 
 		"Rng": true,
-		"FormationShuffleMode": 0,
-		"EnemyFormationsUnrunnable": false,
+		"EverythingUnrunnable": false,
+		"EnemyFormationsUnrunnable":  false,
 		"EnemyFormationsSurprise": false,
+		"UnrunnablesStrikeFirstAndSurprise": false,
 		"EnemyTrapTiles": false,
 		"RandomTrapFormations": false,
 
 		"EnemyScripts": false,
 		"EnemySkillsSpells": true,
 		"EnemyStatusAttacks": true,
+		"RandomStatusAttacks": false,
 		"AllowUnsafePirates": false,
+		"AllowUnsafeMelmond": false,
 
 		"WarMECHMode": 1,
 		"OrdealsPillars": true,
@@ -45,22 +46,27 @@
 		"TitansTrove": true,
 		"LefeinShops": true,
 		"ConfusedOldMen": true,
-		"AllowUnsafeMelmond": false,
 
 		"MapOpenProgression": false,
-		"MapOpenProgressionExtended": false,
 		"Entrances": false,
+		"Towns": false,
 		"Floors": false,
 		"AllowDeepCastles": false,
-		"Towns": false,
+		"AllowDeepTowns": false,
+		"MapOpenProgressionExtended": false,
+
+		"EntrancesIncludesDeadEnds": false,
+		"EntrancesMixedWithTowns": false,
 
 		"IncentivizeFreeNPCs": true,
 		"IncentivizeFetchNPCs": false,
 		"IncentivizeTail": true,
 		"IncentivizeMainItems": true,
 		"IncentivizeFetchItems": true,
-		"IncentivizeAirship": true,
 		"IncentivizeCanoeItem": true,
+		"IncentivizeAirship": true,
+		"IncentivizeShipAndCanal": true,
+		"ClassicItemPlacement": false,
 
 		"IncentivizeMarsh": true,
 		"IncentivizeEarth": true,
@@ -72,13 +78,12 @@
 		"IncentivizeConeria": true,
 		"IncentivizeMarshKeyLocked": false,
 		"IncentivizeSkyPalace": false,
+		"IncentivizeTitansTrove": false,
+		"BetterTrapChests": false,
 
 		"IncentivizeMasamune": true,
 		"IncentivizeOpal": true,
 		"IncentivizeRibbon": true,
-		"IncentivizeRibbon2": false,
-		"Incentivize65K": false,
-		"IncentivizeBad": false,
 
 		"IncentivizeDefCastArmor": false,
 		"IncentivizeOffCastArmor": false,
@@ -94,23 +99,19 @@
 		"OnlyRequireGameIsBeatable": false,
 
 		"FreeBridge": false,
+		"FreeShip": false,
 		"FreeAirship": false,
 		"FreeOrbs": false,
+		"EnableCritNumberDisplay": true,
 		"FreeCanal": false,
-		"StartingGold": false,
-		"WrapStatOverflow": false,
-		"WrapPriceOverflow": false,
-		"IncludeMorale": false,
 		"EasyMode": false,
-		"NoDanMode": false,
+
+		"HousesFillHp": false,
 
 		"SpeedHacks": true,
 		"NoPartyShuffle": true,
 		"Dash": true,
 		"BuyTen": true,
-		"EnableCritNumberDisplay": true,
-		"NPCSwatter": false,
-
 		"IdentifyTreasures": true,
 		"WaitWhenUnrunnable": true,
 
@@ -118,9 +119,8 @@
 		"WeaponStats": true,
 		"ChanceToRun": true,
 		"SpellBugs": true,
-		"RebalanceSpells": true,
 		"BlackBeltAbsorb": true,
-		"BlackBeltMDEF": true,
+		"NPCSwatter": false,
 
 		"EnemyStatusAttackBug": true,
 		"EnemySpellsTargetingAllies": true,
@@ -128,18 +128,20 @@
 		"ImproveTurnOrderRandomization": true,
 		"FixHitChanceCap": true,
 
-		"ClampMinimumStatScale": false,
-		"ClampMinimumBossStatScale": false,
-		"ClampMinimumPriceScale": false,
+		"StartingGold": false,
+		"WrapStatOverflow": false,
+		"WrapPriceOverflow": false,
+		"IncludeMorale": false,
+		"NoDanMode": false,
+
 		"EnemyScaleFactor": 1.5,
 		"BossScaleFactor": 1.5,
 		"PriceScaleFactor": 3.0,
 		"ExpMultiplier": 2.5,
 		"ExpBonus": 250,
-		"ProgressiveScaleMode": 0,
 		"EncounterRate": 30.0,
 		"DungeonEncounterRate": 30.0,
-		"WorldWealth": 1,
+		"ProgressiveScaleMode": 0,
 
 		"FIGHTER1": true,
 		"THIEF1": true,
@@ -147,24 +149,28 @@
 		"RED_MAGE1": true,
 		"WHITE_MAGE1": true,
 		"BLACK_MAGE1": true,
+
 		"FIGHTER2": true,
 		"THIEF2": true,
 		"BLACK_BELT2": true,
 		"RED_MAGE2": true,
 		"WHITE_MAGE2": true,
 		"BLACK_MAGE2": true,
+
 		"FIGHTER3": true,
 		"THIEF3": true,
 		"BLACK_BELT3": true,
 		"RED_MAGE3": true,
 		"WHITE_MAGE3": true,
 		"BLACK_MAGE3": true,
+
 		"FIGHTER4": true,
 		"THIEF4": true,
 		"BLACK_BELT4": true,
 		"RED_MAGE4": true,
 		"WHITE_MAGE4": true,
 		"BLACK_MAGE4": true,
+
 		"NONE_CLASS2": false,
 		"NONE_CLASS3": false,
 		"NONE_CLASS4": false,
@@ -172,12 +178,38 @@
 		"FORCED2": false,
 		"FORCED3": false,
 		"FORCED4": false,
+
 		"TAVERN1": true,
 		"TAVERN2": true,
 		"TAVERN3": true,
 		"TAVERN4": true,
 		"TAVERN5": true,
-		"TAVERN6": true
+		"TAVERN6": true,
+
+		"WeaponPermissions": false,
+		"ArmorPermissions": false,
+		"RecruitmentMode": false,
+		"RecruitmentModeHireOnly": false,
+
+		"ClampMinimumStatScale": false,
+		"ClampMinimumBossStatScale": false,
+		"ClampMinimumPriceScale": false,
+
+		"ExperimentalFloorGeneration": false,
+		"EFGWaterfall": false,
+		"EFGEarth1": false,
+		"EFGEarth2": false,
+		"FieldShuffle": false,
+		"DisableTentSaving": false,
+		"DisableInnSaving": false,
+		"RandomizeFormationEnemizer": false,
+		"ThiefHitRate": false,
+
+		"MDEFMode": 0,
+
+		"FormationShuffleMode": 0,
+
+		"WorldWealth": 1
 	}
 
 }
