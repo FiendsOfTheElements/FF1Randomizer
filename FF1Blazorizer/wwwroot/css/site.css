@@ -228,3 +228,11 @@ tr.odd {
     cursor: default;
     border-radius: 2px;
 }
+
+.tri-yes {
+    color: #54bc52;
+}
+
+.tri-maybe {
+    color: #c8916e;
+}
