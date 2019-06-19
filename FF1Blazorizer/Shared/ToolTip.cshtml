@@ -1,38 +1,15 @@
 @inject HttpClient  Http
 
 <div class="ffr-tooltip" style="@css">
-	<button type="button" class="nes-btn">@(Enabled ? Title : "")</button>
+	<button type="button" class="nes-btn">@Title</button>
 	<div class="is-dark nes-container">
 		<div class="ffr-tooltip-screenshot" style="@(ScreenshotStyle())"></div>
-		<p class="ffr-tooltip-text">@(Enabled ? Description : "")</p>
+		<p class="ffr-tooltip-text">@Description</p>
 	</div>
 </div>
 
 @functions
 {
-	private ToolTipObj TTip => Tooltips.FirstOrDefault(x => x.Id == ToolTipId);
-	private string Title => (TTip != null ? TTip.title : "no title");
-	private string Description => (TTip != null ? TTip.description : "no description");
-	private string ScreenshotStyle() {
-		if (!Enabled || TTip == null || TTip.screenshot == null)
-			return "display: none;";
-
-		return $"background-image: url(/images/tooltips/{TTip.screenshot})";
-	}
-
-	private string css => "left:" + PosLeft + "px;top:" + PosTop + "px;" + Visible + "width: " + Width + "px;";
-	private int Width = 800;
-	private List<ToolTipObj> Tooltips { get; set; }
-	private bool Enabled { get; set; } = false;
-
-	[CascadingParameter]
-	protected string ToolTipId { get; set; }
-
-	protected override async Task OnInitAsync()
-	{
-		Tooltips = await Http.GetJsonAsync<List<ToolTipObj>>("/tooltips.json");
-	}
-
 	class ToolTipObj
 	{
 		public string Id { get; set; }
@@ -41,11 +18,33 @@
 		public string screenshot { get; set; }
 	}
 
-	private string Visible => (Enabled ? "visibility:visible;" : "visibility:hidden;");
-	private void HideToolTip()
+	[CascadingParameter]
+	protected string ToolTipId { get; set; }
+
+	private List<ToolTipObj> Tooltips { get; set; }
+	protected override async Task OnInitAsync()
 	{
-		Enabled = false;
-		StateHasChanged();
+		Tooltips = await Http.GetJsonAsync<List<ToolTipObj>>("/tooltips/tooltips.json");
+	}
+
+	private ToolTipObj TTip => Enabled ? Tooltips.FirstOrDefault(x => x.Id == ToolTipId) : null;
+	private string Title => Enabled ? (TTip != null ? TTip.title : "no title") : "";
+	private string Description => Enabled ? (TTip != null ? TTip.description : "no description") : "";
+	private int Width = 800;
+	private bool Enabled { get; set; } = false;
+	private string Visible => (Enabled ? "visibility:visible;" : "visibility:hidden;");
+	private long PosTop { get; set; } = 0;
+	private long PosLeft { get; set; } = 0;
+	private string css => "left:" + PosLeft + "px;top:" + PosTop + "px;" + Visible + "width: " + Width + "px;";
+
+
+
+	private string ScreenshotStyle()
+	{
+		if (!Enabled || TTip == null || TTip.screenshot == null)
+			return "display: none;";
+
+		return $"background-image: url(/images/tooltips/{TTip.screenshot})";
 	}
 
 	private void ShowToolTip()
@@ -53,27 +52,30 @@
 		Enabled = true;
 	}
 
-	private long PosTop { get; set; } = 0;
-	private long PosLeft { get; set; } = 0;
+	private void HideToolTip()
+	{
+		Enabled = false;
+	}
 
 	public async Task UpdatePos(string Id, UIMouseEventArgs e)
 	{
 		if (Id == "")
 		{
 			HideToolTip();
+			StateHasChanged();
 			return;
 		}
 		ShowToolTip();
 		PosTop = (e.ClientY - 128);
 		long left = (e.ClientX + 50);
 		int ScreenRightEdge = await JSRuntime.Current.InvokeAsync<int>("getScreenRightEdge");
-		if (left + Width >= ScreenRightEdge - 30)
+		if (left + Width >= ScreenRightEdge - 30) // distance from the right edge before we draw the tooltip div on the left side of the cursor
 		{
 			PosLeft = (e.ClientX - 50 - Width);
 		}
 		else
 		{
-			PosLeft = (e.ClientX + 50);
+			PosLeft = (e.ClientX + 50); // add offset from the cursor (so it appears to the side instead of ontop of it)
 		}
 		StateHasChanged();
 

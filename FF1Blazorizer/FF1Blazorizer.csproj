@@ -27,7 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="wwwroot\tooltips.json" />
+    <None Include="wwwroot\tooltips\tooltips.json" />
   </ItemGroup>
 
   <ItemGroup>
