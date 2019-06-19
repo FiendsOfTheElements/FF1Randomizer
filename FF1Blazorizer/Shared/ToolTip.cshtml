@@ -1,7 +1,11 @@
 @inject HttpClient  Http
-<div class="ffr-tooltip" style=@css>
-	<h6>@(Visible == "visibility:hidden;" ? "" : Title)</h6>
-	<p class="ffr-tooltiptext">@(Visible == "visibility:hidden;" ? "" : Description)</p>
+
+<div class="ffr-tooltip" style="@css">
+	<button type="button" class="nes-btn">@(Enabled ? Title : "")</button>
+	<div class="is-dark nes-container">
+		<div class="ffr-tooltip-screenshot" style="@(ScreenshotStyle())"></div>
+		<p class="ffr-tooltip-text">@(Enabled ? Description : "")</p>
+	</div>
 </div>
 
 @functions
@@ -9,8 +13,15 @@
 	private ToolTipObj TTip => Tooltips.FirstOrDefault(x => x.Id == ToolTipId);
 	private string Title => (TTip != null ? TTip.title : "no title");
 	private string Description => (TTip != null ? TTip.description : "no description");
+	private string ScreenshotStyle() {
+		if (!Enabled || TTip == null || TTip.screenshot == null)
+			return "display: none;";
+
+		return $"background-image: url(/images/tooltips/{TTip.screenshot})";
+	}
+
 	private string css => "left:" + PosLeft + "px;top:" + PosTop + "px;" + Visible + "width: " + Width + "px;";
-	private int Width = 300;
+	private int Width = 800;
 	private List<ToolTipObj> Tooltips { get; set; }
 	private bool Enabled { get; set; } = false;
 
@@ -27,6 +38,7 @@
 		public string Id { get; set; }
 		public string title { get; set; }
 		public string description { get; set; }
+		public string screenshot { get; set; }
 	}
 
 	private string Visible => (Enabled ? "visibility:visible;" : "visibility:hidden;");
@@ -52,7 +64,7 @@
 			return;
 		}
 		ShowToolTip();
-		PosTop = (e.ClientY - 20);
+		PosTop = (e.ClientY - 128);
 		long left = (e.ClientX + 50);
 		int ScreenRightEdge = await JSRuntime.Current.InvokeAsync<int>("getScreenRightEdge");
 		if (left + Width >= ScreenRightEdge - 30)

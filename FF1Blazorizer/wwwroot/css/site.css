@@ -239,12 +239,19 @@ tr.odd {
 
 .ffr-tooltip {
     position: fixed;
-    background-color: whitesmoke;
     z-index: 1000;
-    border-color: black;
-    border-radius: 10px;
-    border-width: 3px;
-    border-style: solid;
-    padding: 10px;
+}
+
+.ffr-tooltip-text {
+    min-height: 256px;
+}
+
+.ffr-tooltip-screenshot {
+    width: 256px;
+    height: 224px;
+    float: right;
+    background-size: 100% 100%;
+    margin-bottom: 24px;
+    border: 2px solid white;
 }
 
