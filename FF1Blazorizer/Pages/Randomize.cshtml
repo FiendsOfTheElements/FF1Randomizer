@@ -11,55 +11,56 @@
 @inject LocalStorage LocalStorage
 
 <div class="content px-4 tinted">
-	<CascadingValue Value="@ToolTipId">
-		<ToolTip ref="ToolTipElement"></ToolTip>
-		<div class="is-dark nes-container">
-			<div class="row spaced-row">
-				<div class="col-md-4">
-					@RomMessage<br />
-					<input type="file" id="fileInput" onchange="@OnFileChanged" />
-					<br />
-				</div>
-				<div class="col-md-4">
-					<CheckBox UpdateToolTip="@UpdateToolTipID" Id="rememberCheckBox" bind-Value="@RememberROM">Remember ROM</CheckBox>
-				</div>
-				<div class="col-md-4">
-					<CheckBox UpdateToolTip="@UpdateToolTipID" Id="spoilersCheckBox" bind-Value="@Flags.Spoilers">Generate Spoiler Log!</CheckBox>
-				</div>
+
+	<div class="is-dark nes-container">
+		<div class="row spaced-row">
+			<div class="col-md-4">
+				@RomMessage<br />
+				<input type="file" id="fileInput" onchange="@OnFileChanged" />
+				<br />
 			</div>
-			<div class="row spaced-row">
-				<div class="col-md-2">
-					Seed: <br />
-					<input type="text" class="nes-input @(_seedInputClass)" id="seedInput" onchange="@OnSeedInputChanged" value="@(_seed)" />
-				</div>
-				<div class="col-md-2">
-					<br />
-					<button type="button" class="nes-btn is-primary" onclick="@OnNewSeed">New</button>
-				</div>
-				<div class="col-md-6">
-					Flags: <br />
-					<input type="text" class="nes-input" value="@Flags.Encoded" onchange="@OnFlagsInputChanged" />
-				</div>
-				<div class="col-md-2">
-					<br />
-					<button type="button" class="nes-btn is-primary" onclick="@OnCopyToClipboard">Export</button>
-				</div>
+			<div class="col-md-4">
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="rememberCheckBox" bind-Value="@RememberROM">Remember ROM</CheckBox>
 			</div>
-			<div class="row">
-				<div class="col-md-12">
-					Presets:
-					<div>
-						<button type="button" class="nes-btn is-primary" onclick="@(() => LoadPreset("default"))">Default</button>
-						<button type="button" class="nes-btn is-primary" onclick="@(() => LoadPreset("beginner"))">Beginner</button>
-						<button type="button" class="nes-btn is-primary" onclick="@(() => LoadPreset("full-npc"))">NPC Shuffle</button>
-						<button type="button" class="nes-btn is-primary" onclick="@(() => LoadPreset("improved-vanilla"))">Improved Vanilla</button>
-						<button type="button" class="nes-btn is-primary" onclick="@(() => LoadPreset("chaos-rush"))">Chaos Rush</button>
-						<button type="button" class="nes-btn is-primary" onclick="@(() => LoadPreset("debug"))">DEBUG</button>
-					</div>
+			<div class="col-md-4">
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="spoilersCheckBox" bind-Value="@Flags.Spoilers">Generate Spoiler Log!</CheckBox>
+			</div>
+		</div>
+		<div class="row spaced-row">
+			<div class="col-md-2">
+				Seed: <br />
+				<input type="text" class="nes-input @(_seedInputClass)" id="seedInput" onchange="@OnSeedInputChanged" value="@(_seed)" />
+			</div>
+			<div class="col-md-2">
+				<br />
+				<button type="button" class="nes-btn is-primary" onclick="@OnNewSeed">New</button>
+			</div>
+			<div class="col-md-6">
+				Flags: <br />
+				<input type="text" class="nes-input" value="@Flags.Encoded" onchange="@OnFlagsInputChanged" />
+			</div>
+			<div class="col-md-2">
+				<br />
+				<button type="button" class="nes-btn is-primary" onclick="@OnCopyToClipboard">Export</button>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				Presets:
+				<div>
+					<button type="button" class="nes-btn is-primary" onclick="@(() => LoadPreset("default"))">Default</button>
+					<button type="button" class="nes-btn is-primary" onclick="@(() => LoadPreset("beginner"))">Beginner</button>
+					<button type="button" class="nes-btn is-primary" onclick="@(() => LoadPreset("full-npc"))">NPC Shuffle</button>
+					<button type="button" class="nes-btn is-primary" onclick="@(() => LoadPreset("improved-vanilla"))">Improved Vanilla</button>
+					<button type="button" class="nes-btn is-primary" onclick="@(() => LoadPreset("chaos-rush"))">Chaos Rush</button>
+					<button type="button" class="nes-btn is-primary" onclick="@(() => LoadPreset("debug"))">DEBUG</button>
 				</div>
 			</div>
 		</div>
-		<br />
+	</div>
+	<br />
+	<CascadingValue Value="@ToolTipId">
+		<ToolTip ref="ToolTipElement"></ToolTip>
 		<TabContent>
 			<button type="button" class="nes-btn is-primary" onclick="@OnRandomize">Randomize</button>
 			<TabPane IsOpen="@(StatusMessage.Length > 0)">
