@@ -1,7 +1,8 @@
 @inject HttpClient  Http
 
 <div class="ffr-tooltip" style="@css">
-	<button type="button" class="nes-btn">@Title</button>
+	<button type="button" class="nes-btn is-error ffr-tooltip-close" onclick="@HideToolTip"> X </button>
+	<button type="button" class="nes-btn" onclick="@HideToolTip">@Title</button>
 	<div class="is-dark nes-container">
 		<div class="ffr-tooltip-screenshot" style="@(ScreenshotStyle())"></div>
 		<p class="ffr-tooltip-text">@Description</p>
@@ -33,8 +34,8 @@
 	private int Width = 800;
 	private bool Enabled { get; set; } = false;
 	private string Visible => (Enabled ? "visibility:visible;" : "visibility:hidden;");
-	private long PosTop { get; set; } = 0;
-	private long PosLeft { get; set; } = 0;
+	private long PosTop { get; set; } = 75;
+	private long PosLeft { get; set; } = 25;
 	private string css => "left:" + PosLeft + "px;top:" + PosTop + "px;" + Visible + "width: " + Width + "px;";
 
 
@@ -66,19 +67,6 @@
 			return;
 		}
 		ShowToolTip();
-		PosTop = (e.ClientY - 128);
-		long left = (e.ClientX + 50);
-		int ScreenRightEdge = await JSRuntime.Current.InvokeAsync<int>("getScreenRightEdge");
-		if (left + Width >= ScreenRightEdge - 30) // distance from the right edge before we draw the tooltip div on the left side of the cursor
-		{
-			PosLeft = (e.ClientX - 50 - Width);
-		}
-		else
-		{
-			PosLeft = (e.ClientX + 50); // add offset from the cursor (so it appears to the side instead of ontop of it)
-		}
 		StateHasChanged();
-
-		return;
 	}
 }

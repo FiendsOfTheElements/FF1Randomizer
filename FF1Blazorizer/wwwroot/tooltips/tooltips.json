@@ -4,7 +4,14 @@
 		"title": "Item Magic Shuffle",
 		"screenshot": "itemMagicCheckBox.png",
 		"description": "This flag shuffles what spell is cast when using any of the castable items (Power Gauntlet, Bane Sword, ect.). The spell name will replace the name of the item for clarity, although icons will remain the same (or absent for Defense). Items that use the same icon cannot be differentiated except by equipping."
+	},
+	{
+		"Id": "mapOpenProgressionExtendedCheckBox",
+		"title": "Extended Open Progression",
+		"screenshot": "mapOpenProgressionExtendedCheckBox.png",
+		"description": "Remove the river tile between the Dwarf Cave and Northwest Castle so it can be traversed on foot. Also add an additional dock near the Ryukhan desert."
 	}
+
 
 
 ]

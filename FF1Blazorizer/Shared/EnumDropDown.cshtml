@@ -1,14 +1,14 @@
 ﻿@typeparam TItem
 
 <div class="checkbox-cell @DisabledClass">
-	<span id="@Id"class="@IndentClass @DisabledClass" onclick="@ShowToolTip"
-     onmouseover="@ShowToolTip" onmouseout="@HideToolTip">@ChildContent</span>
+	<span id="@Id"class="@IndentClass @DisabledClass">@ChildContent</span>
 	<select value="@Value" onchange="@onchange" disabled="@(!IsEnabled)">
 		@foreach (var value in Enum.GetValues(typeof(TItem)))
 		{
 			<option value="@value">@(((Enum)value).ToName())</option>
 		}
 	</select>
+	<input type="image" src="/images/help.png" class="btn-group-help" title="Show Help" onclick="@ShowToolTip" id="@Id" />
 </div>
 
 @functions

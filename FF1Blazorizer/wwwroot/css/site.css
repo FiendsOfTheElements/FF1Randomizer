@@ -255,3 +255,15 @@ tr.odd {
     border: 2px solid white;
 }
 
+.ffr-tooltip-close {
+    position: absolute;
+    right: 2px;
+}
+
+.btn-group-help {
+    opacity: 0.25;
+}
+
+.btn-group-help:hover {
+    opacity: 0.75;
+}

@@ -1,5 +1,6 @@
 ﻿<div class="checkbox-cell @IndentClass @ValueClass">
-	<input type="checkbox" id="@Id" checked="@Value" onchange="@onchange" disabled="@(!IsEnabled)" />  <label for="@Id" onclick="@ShowToolTip" onmouseover="@ShowToolTip" onmouseout="@HideToolTip" class="@DisabledClass">@ChildContent</label>
+	<input type="checkbox" id="@Id" checked="@Value" onchange="@onchange" disabled="@(!IsEnabled)" />  <label for="@Id" class="@DisabledClass">@ChildContent</label>
+	<input type="image" src="/images/help.png" class="btn-group-help" title="Show Help" onclick="@ShowToolTip" id="@Id" />
 </div>
 
 
