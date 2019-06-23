@@ -3,7 +3,7 @@
 <div class="ffr-tooltip" style="@css">
 	<button type="button" class="nes-btn is-error ffr-tooltip-close" onclick="@HideToolTip"> X </button>
 	<button type="button" class="nes-btn" onclick="@HideToolTip">@Title</button>
-	<div class="is-dark nes-container">
+	<div class="is-dark nes-container" onmousedown=@StartDrag onmousemove=@Drag onmouseup=@EndDrag onmouseout=@EndDrag>
 		<div class="ffr-tooltip-screenshot" style="@(ScreenshotStyle())"></div>
 		<p class="ffr-tooltip-text">@Description</p>
 	</div>
@@ -36,9 +36,12 @@
 	private string Visible => (Enabled ? "visibility:visible;" : "visibility:hidden;");
 	private long PosTop { get; set; } = 75;
 	private long PosLeft { get; set; } = 25;
-	private string css => "left:" + PosLeft + "px;top:" + PosTop + "px;" + Visible + "width: " + Width + "px;";
+	private string css =>
+		$"left: {PosLeft}px; top: {PosTop}px; width: {Width}px; {Visible} {(Dragging ? "opacity: 0.8;" : "")}";
 
-
+	private bool Dragging = false;
+	private long LastX = 0;
+	private long LastY = 0;
 
 	private string ScreenshotStyle()
 	{
@@ -68,5 +71,35 @@
 		}
 		ShowToolTip();
 		StateHasChanged();
+	}
+
+	private void StartDrag(UIMouseEventArgs e)
+	{
+		if (e.Button == 0)
+		{
+			Dragging = true;
+			LastX = e.ClientX;
+			LastY = e.ClientY;
+		}
+	}
+
+	private void EndDrag(UIMouseEventArgs e)
+	{
+		if (e.Button == 0)
+		{
+			Dragging = false;
+		}
+	}
+
+	public async Task Drag(UIMouseEventArgs e)
+	{
+		if (Dragging)
+		{
+			PosLeft = PosLeft + e.ClientX - LastX;
+			LastX = e.ClientX;
+			PosTop = PosTop + e.ClientY - LastY;
+			LastY = e.ClientY;
+		}
+
 	}
 }
