@@ -557,7 +557,7 @@ namespace FF1Lib
 			// We then update the unrunnable branch to point here instead of the generic Can't Run handler
 			// See Disch's comments here: Battle_PlayerTryRun  [$A3D8 :: 0x323E8]
 			Put(0x32409, Blob.FromHex("189005A94E4C07AAEAEAEAEAEAEAEA"));
-			Data[0x323EB] = 0x20; // new delta to special unrunnable message handler
+			// new delta to special unrunnable message handler done in 
 		}
 
 		public void ImproveTurnOrderRandomization(MT19337 rng)

@@ -333,11 +333,8 @@ namespace FF1Lib
 				}
 			}
 
-			if (((bool)flags.UnrunnablesStrikeFirstAndSurprise))
-			{
-				AllowStrikeFirstAndSurprise();
-			}
-
+			// Always on to supply the correct changes for WaitWhenUnrunnable
+			AllowStrikeFirstAndSurprise(flags.WaitWhenUnrunnable, (bool)flags.UnrunnablesStrikeFirstAndSurprise);
 
 			if (((bool)flags.EnemyFormationsSurprise))
 			{
