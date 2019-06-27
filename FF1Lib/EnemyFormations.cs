@@ -84,7 +84,7 @@ namespace FF1Lib
 		public void AllowStrikeFirstAndSurprise()
 		{
 			PutInBank(0x0C, 0x93D4, Blob.FromHex("EAEA"));
-			PutInBank(0x0C, 0xA3E3, Blob.FromHex("EAEA")); // we dont want to be able to run if we get a first strike
+			PutInBank(0x0C, 0xA3E0, Blob.FromHex("AD916D2901D025ADAE6BD036")); // we dont want to be able to run if we get a first strike on an unrunnable
 		}
 
 		public void MakeWarMECHUnrunnable()
