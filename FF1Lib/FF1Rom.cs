@@ -90,6 +90,7 @@ namespace FF1Lib
 			var rng = new MT19337(BitConverter.ToUInt32(seed, 0));
 			// Spoilers => different rng immediately
 			if (flags.Spoilers) rng = new MT19337(rng.Next());
+			if (flags.TournamentSafe) AssureSafe(rng);
 
 			UpgradeToMMC3();
 			MakeSpace();
@@ -629,6 +630,33 @@ namespace FF1Lib
 		{
 			// Talk_norm is overwritten with unconditional jump to Talk_CoOGuy (say whatever then disappear)
 			PutInBank(0x0E, 0x9492, Blob.FromHex("4CA294"));
+		}
+
+		private void AssureSafe(MT19337 rng)
+		{
+			using (SHA256 hasher = SHA256.Create())
+			{
+				var Hash = hasher.ComputeHash(Data.ToBytes());
+				if (ByteArrayToString(Hash) != "fa456d852372173ea31b192459ba1a2026f779df67793327ba6e132476c1d034")
+				{
+					throw new TournamentSafeException("File has been modified");
+				}
+			}
+			rng.Next();
+		}
+
+		public class TournamentSafeException : Exception
+		{
+			public TournamentSafeException(string message)
+				: base(message) { }
+		}
+
+		private static string ByteArrayToString(byte[] ba)
+		{
+			StringBuilder hex = new StringBuilder(ba.Length * 2);
+			foreach (byte b in ba)
+				hex.AppendFormat("{0:x2}", b);
+			return hex.ToString();
 		}
 
 		private void ExtraTrackingAndInitCode()
