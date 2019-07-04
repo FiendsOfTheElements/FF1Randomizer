@@ -2,6 +2,7 @@
 
 html, body {
     font-family: 'Press Start 2P', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    user-select: none;
 }
 
 app {
@@ -62,7 +63,7 @@ app {
     background-color: rgba(255, 255, 255, 0.1);
 }
 
-@media (max-width: 767.98px) {
+@media (max-width: 849.98px) {
     .main .top-row {
         display: none;
     }
@@ -78,7 +79,7 @@ app {
     }
 }
 
-@media (min-width: 768px) {
+@media (min-width: 850px) {
     app {
         flex-direction: row;
     }
@@ -136,10 +137,24 @@ h4 {
     }
 
 .checkbox-cell {
+    white-space: nowrap;
+    overflow-x: hidden;
     min-height: 20px;
     margin: 0;
     padding: 0;
 }
+
+    .checkbox-cell label {
+        max-width: calc(100% - 64px);
+        text-overflow: ellipsis;
+        overflow-x: hidden;
+        vertical-align: top;
+    }
+
+.dropdown-cell {
+    white-space: normal;
+}
+
 
 .slider-cell {
     height: 35px;
@@ -242,16 +257,12 @@ tr.odd {
     z-index: 1000;
 }
 
-.ffr-tooltip-text {
-    min-height: 256px;
-}
-
 .ffr-tooltip-screenshot {
     width: 256px;
     height: 224px;
     float: right;
     background-size: 100% 100%;
-    margin-bottom: 24px;
+    margin: 0 0 20px 20px;
     border: 2px solid white;
 }
 

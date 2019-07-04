@@ -1,6 +1,6 @@
 ﻿@typeparam TItem
 
-<div class="checkbox-cell @DisabledClass">
+<div class="checkbox-cell dropdown-cell @DisabledClass">
 	<span id="@Id"class="@IndentClass @DisabledClass">@ChildContent</span>
 	<select value="@Value" onchange="@onchange" disabled="@(!IsEnabled)">
 		@foreach (var value in Enum.GetValues(typeof(TItem)))
