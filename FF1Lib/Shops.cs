@@ -32,7 +32,7 @@ namespace FF1Lib
 			Item = 60
 		}
 
-		public ItemShopSlot ShuffleShops(MT19337 rng, bool earlyAilments, bool randomizeWeaponsAndArmor, IEnumerable<Item> excludeItemsFromRandomShops, WorldWealth wealth)
+		public ItemShopSlot ShuffleShops(MT19337 rng, bool earlyAilments, bool randomizeWeaponsAndArmor, IEnumerable<Item> excludeItemsFromRandomShops, WorldWealthMode wealth)
 		{
 			var pointers = Get(ShopPointerOffset, ShopPointerCount * ShopPointerSize).ToUShorts();
 
@@ -104,7 +104,7 @@ namespace FF1Lib
 			Put(ShopPointerBase + pointers[0], allEntries.ToArray());
 		}
 
-		private ItemShopSlot ShuffleShopType(ShopType shopType, ushort[] pointers, MT19337 rng, bool randomize = false, IEnumerable<Item> excludeItemsFromRandomShops = null, WorldWealth wealth = WorldWealth.Normal)
+		private ItemShopSlot ShuffleShopType(ShopType shopType, ushort[] pointers, MT19337 rng, bool randomize = false, IEnumerable<Item> excludeItemsFromRandomShops = null, WorldWealthMode wealth = WorldWealthMode.Normal)
 		{
 			var shops = GetShops(shopType, pointers);
 

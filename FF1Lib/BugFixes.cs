@@ -8,13 +8,13 @@ using RomUtilities;
 
 namespace FF1Lib
 {
-	public enum MDefChangesEnum
+	public enum MDEFGrowthMode
 	{
-		[Description("Use Vanilla Magic Defense")]
+		[Description("Vanilla")]
 		None = 0,
-		[Description("Replace Black Belt / Master MDef Growth")]
+		[Description("BB/Master +3/+4")]
 		BBFix,
-		[Description("Invert all player Magic Defense Growth")]
+		[Description("Invert All")]
 		Invert
 	}
 
@@ -152,13 +152,13 @@ namespace FF1Lib
 			Put(0x38BAA, Blob.FromHex("95B2B6B7C5FF97B2FFBAA4BCFFB2B8B7C5059EB6A8FFB7ABACB605B6B3A8AFAFFFB7B2FFA8BBACB7C4FF99B8B6ABFF8BFFB7B2FFA4A5B2B5B7"));
 		}
 
-		public void MDefChanges(MDefChangesEnum mode)
+		public void MDefChanges(MDEFGrowthMode mode)
 		{
-			if (mode == MDefChangesEnum.BBFix)
+			if (mode == MDEFGrowthMode.BBFix)
 			{
 				RemakeStyleMasterMDEF();
 			}
-			if (mode == MDefChangesEnum.Invert)
+			if (mode == MDEFGrowthMode.Invert)
 			{
 				InvertedMDEF();
 			}

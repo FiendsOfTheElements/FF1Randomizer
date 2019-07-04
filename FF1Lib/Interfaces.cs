@@ -79,7 +79,7 @@
 		bool? RandomWares { get; }
 		bool? RandomLoot { get; }
 		bool? BetterTrapChests { get; }
-		WorldWealth WorldWealth { get; }
+		WorldWealthMode WorldWealth { get; }
 	}
 	public interface IItemShuffleFlags
 	{

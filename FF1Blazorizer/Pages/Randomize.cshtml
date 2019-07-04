@@ -100,7 +100,7 @@
 							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnemyFormationsUnrunnable" Id="everythingUnrunnableCheckBox" bind-Value="@Flags.EverythingUnrunnable">All Encounters are Unrunnable</TriStateCheckBox>
 							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="unrunnablesStrikeFirstAndSurpriseCheckBox" bind-Value="@Flags.UnrunnablesStrikeFirstAndSurprise">Unrunnable First Strike &amp; Surprise</TriStateCheckBox>
 							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyFormationsSurpriseCheckBox" bind-Value="@Flags.EnemyFormationsSurprise">Enemy Surprise Bonus</TriStateCheckBox>
-							<EnumDropDown UpdateToolTip="@UpdateToolTipID" TItem="FormationShuffleModeEnum" bind-Value="@Flags.FormationShuffleMode"></EnumDropDown>
+							<EnumDropDown UpdateToolTip="@UpdateToolTipID" TItem="FormationShuffleMode" bind-Value="@Flags.FormationShuffleMode">Enemy Formations:</EnumDropDown>
 							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyTrapTilesCheckBox" bind-Value="@Flags.EnemyTrapTiles">Enemy Forced Encounter Tiles</TriStateCheckBox>
 							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="randomTrapFormationsCheckBox" IsEnabled="@Flags.EnemyTrapTiles" bind-Value="@Flags.RandomTrapFormations">Use Random Formations</TriStateCheckBox>
 							<div class="checkbox-cell"></div>
@@ -119,7 +119,7 @@
 							<h4>Items Shuffle</h4>
 							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="treasuresCheckBox" bind-Value="@Flags.Treasures">Treasures</TriStateCheckBox>
 							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="randomLootCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.RandomLoot">Randomize Treasures</TriStateCheckBox>
-							<EnumDropDown UpdateToolTip="@UpdateToolTipID" Indent TItem="WorldWealth" IsEnabled="@Flags.Treasures" bind-Value="@Flags.WorldWealth">Random Wealth: </EnumDropDown>
+							<EnumDropDown UpdateToolTip="@UpdateToolTipID" Indent TItem="WorldWealthMode" IsEnabled="@Flags.Treasures" bind-Value="@Flags.WorldWealth">Random Wealth: </EnumDropDown>
 							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="betterTrapTreasureCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.BetterTrapTreasure">Better Trap Treasure</TriStateCheckBox>
 							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="npcItemsCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.NPCItems">Main NPC Items</TriStateCheckBox>
 							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="npcFetchItemsCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.NPCFetchItems">Fetch Quest Rewards</TriStateCheckBox>
@@ -436,7 +436,7 @@
 							<h4>Balance</h4>
 							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="housesFillHpCheckBox" bind-Value="@Flags.HousesFillHP">House Full HP Restoration</CheckBox>
 							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="rebalanceSpellsCheckBox" bind-Value="@Flags.RebalanceSpells">LOCK and LOK2 Always Hit</CheckBox>
-							<EnumDropDown UpdateToolTip="@UpdateToolTipID" TItem="MDefChangesEnum" bind-Value="@Flags.MDefMode"></EnumDropDown>
+							<EnumDropDown UpdateToolTip="@UpdateToolTipID" TItem="MDEFGrowthMode" bind-Value="@Flags.MDefMode">MDEF Growth:</EnumDropDown>
 							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="ThiefHitCheckBox" bind-Value="@Flags.ThiefHitRate">Double Thief &amp; Ninja Hit% growth.</CheckBox>
 						</div>
 

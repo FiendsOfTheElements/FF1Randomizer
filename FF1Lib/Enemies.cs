@@ -8,15 +8,15 @@ using RomUtilities;
 
 namespace FF1Lib
 {
-	public enum FormationShuffleModeEnum
+	public enum FormationShuffleMode
 	{
-		[Description("Don't Shuffle Encounters")]
+		[Description("Vanilla")]
 		None = 0,
-		[Description("Shuffle Encounter Rarity")]
+		[Description("Shuffle Rarity")]
 		Intrazone,
-		[Description("Shuffle Encounters Across Zones")]
+		[Description("Shuffle Across Zones")]
 		InterZone,
-		[Description("Random Encounter Zones")]
+		[Description("Totally Random")]
 		Randomize
 	}
 	public partial class FF1Rom : NesRom
@@ -56,10 +56,10 @@ namespace FF1Lib
 		}
 		public byte[] StartingZones = { 0x1B, 0x1C, 0x24, 0x2C };
 
-		public void ShuffleEnemyFormations(MT19337 rng, FormationShuffleModeEnum shuffleMode)
+		public void ShuffleEnemyFormations(MT19337 rng, FormationShuffleMode shuffleMode)
 		{
 
-			if (shuffleMode == FormationShuffleModeEnum.Intrazone)
+			if (shuffleMode == FormationShuffleMode.Intrazone)
 			{
 				// intra-zone shuffle, does not change which formations are in zomes.
 				var oldFormations = Get(ZoneFormationsOffset, ZoneFormationsSize * ZoneCount).Chunk(ZoneFormationsSize);
@@ -86,7 +86,7 @@ namespace FF1Lib
 
 				Put(ZoneFormationsOffset, newFormations.SelectMany(formation => formation.ToBytes()).ToArray());
 			}
-			if (shuffleMode == FormationShuffleModeEnum.InterZone)
+			if (shuffleMode == FormationShuffleMode.InterZone)
 			{
 				// Inter-zone shuffle
 				// Get all encounters from zones not surrounding starting area
@@ -122,7 +122,7 @@ namespace FF1Lib
 				Put(ZoneFormationsOffset, newFormations.SelectMany(formation => formation.ToBytes()).ToArray());
 			}
 
-			if (shuffleMode == FormationShuffleModeEnum.Randomize)
+			if (shuffleMode == FormationShuffleMode.Randomize)
 			{
 				// no-pants mode
 				var oldFormations = Get(ZoneFormationsOffset, ZoneFormationsSize * ZoneCount).Chunk(ZoneFormationsSize);

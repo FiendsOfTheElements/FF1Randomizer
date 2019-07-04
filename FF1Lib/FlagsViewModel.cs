@@ -141,7 +141,7 @@ namespace FF1Lib
 			}
 		}
 
-		public FormationShuffleModeEnum FormationShuffleMode
+		public FormationShuffleMode FormationShuffleMode
 		{
 			get => Flags.FormationShuffleMode;
 			set
@@ -150,13 +150,13 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FormationShuffleMode"));
 			}
 		}
-		public WorldWealth WorldWealth
+		public WorldWealthMode WorldWealth
 		{
 			get => Flags.WorldWealth;
 			set
 			{
 				Flags.WorldWealth = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("WorldWealth"));
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("WorldWealthMode"));
 			}
 		}
 
@@ -295,7 +295,7 @@ namespace FF1Lib
 			}
 		}
 
-		public MDefChangesEnum MDefMode
+		public MDEFGrowthMode MDefMode
 		{
 			get => Flags.MDefMode;
 			set
@@ -305,7 +305,7 @@ namespace FF1Lib
 			}
 		}
 
-		public FormationShuffleModeEnum FormationShuffleModeEnum
+		public FormationShuffleMode FormationShuffleModeEnum
 		{
 			get => Flags.FormationShuffleMode;
 			set
@@ -1685,7 +1685,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomTreasure"));
 			}
 		}
-		public WorldWealth WorldWealthEnum
+		public WorldWealthMode WorldWealthEnum
 		{
 			get => Flags.WorldWealth;
 			set

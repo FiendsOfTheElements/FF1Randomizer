@@ -364,7 +364,7 @@ namespace FF1Lib
 				FiendShuffle(rng);
 			}
 
-			if (flags.FormationShuffleMode != FormationShuffleModeEnum.None)
+			if (flags.FormationShuffleMode != FormationShuffleMode.None)
 			{
 				ShuffleEnemyFormations(rng, flags.FormationShuffleMode);
 			}
@@ -513,7 +513,7 @@ namespace FF1Lib
 				FixBBAbsorbBug();
 			}
 
-			if (flags.MDefMode != MDefChangesEnum.None)
+			if (flags.MDefMode != MDEFGrowthMode.None)
 			{
 				MDefChanges(flags.MDefMode);
 			}
