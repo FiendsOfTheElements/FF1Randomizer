@@ -77,7 +77,7 @@
 			<TabPane IsOpen="@(activeTabs.Contains("Shuffle"))">
 				<div class="is-dark nes-container">
 					<div class="row">
-						<div class="col-md-6">
+						<div class="col-md-5">
 							<h4>Shops &amp; RNG</h4>
 							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="shopsCheckBox" bind-Value="@Flags.Shops">Shops</TriStateCheckBox>
 							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.Shops" Id="randomWaresCheckBox" bind-Value="@Flags.RandomWares">Random Weapons and Armor</TriStateCheckBox>
@@ -89,7 +89,7 @@
 							<div class="checkbox-cell"></div>
 							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="rngCheckBox" bind-Value="@Flags.Rng">RNG Table</TriStateCheckBox>
 						</div>
-						<div class="col-md-6">
+						<div class="col-md-7">
 							<h4>Enemies</h4>
 							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyScriptsCheckBox" bind-Value="@Flags.EnemyScripts">Enemy Scripts</TriStateCheckBox>
 							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnemyScripts" Id="allowUnsafePiratesCheckBox" bind-Value="@Flags.AllowUnsafePirates">Allow Unsafe Pirates</TriStateCheckBox>
@@ -244,42 +244,50 @@
 					<ClampedSlider Min="1" Max="5" Step="0.1" bind-Clamp="@Flags.ClampMinimumBossStatScale" bind-Scale="@Flags.BossScaleFactor">Boss Stats:</ClampedSlider>
 					<div class="slider-cell"></div>
 					<div class="row">
-						<div class="col-md-6">
+						<div class="col-md-5">
 							<label>Exp/Gold Boost:</label>
 						</div>
 						<div class="col-xs-6 col-md-3">
 							<label>@Math.Round(Flags.ExpMultiplier, 1).ToString("F1")x + @Flags.ExpBonus</label>
 						</div>
-						<Slider bind-Value="@Flags.ExpMultiplier" Min="1" Max="5" Step="0.1"></Slider>
+						<div class="col-md-4">
+							<Slider bind-Value="@Flags.ExpMultiplier" Min="1" Max="5" Step="0.1"></Slider>
+						</div>
 					</div>
 					<div class="row">
-						<div class="col-md-9"></div>
-						<Slider bind-Value="@Flags.ExpBonus" Min="0" Max="500" Step="10"></Slider>
+						<div class="col-md-8"></div>
+						<div class="col-md-4">
+							<Slider bind-Value="@Flags.ExpBonus" Min="0" Max="500" Step="10"></Slider>
+						</div>
 					</div>
 					<div class="row">
-						<div class="col-md-9"><label>Exp/Gold Progressive Scaling:</label></div>
-						<div class="col-md-3">
+						<div class="col-md-8"><label>Exp/Gold Progressive Scaling:</label></div>
+						<div class="col-md-4">
 							<EnumDropDown UpdateToolTip="@UpdateToolTipID" TItem="ProgressiveScaleMode" bind-Value="@Flags.ProgressiveScaleMode"></EnumDropDown>
 						</div>
 					</div>
 					<div class="slider-cell"></div>
 					<div class="row">
-						<div class="col-md-6">
+						<div class="col-md-5">
 							<label>Overworld Encounter Rate:</label>
 						</div>
 						<div class="col-xs-6 col-md-3">
 							<label>@Math.Round(Flags.EncounterRate / 30.0, 2).ToString("F2")x</label>
 						</div>
-						<Slider bind-Value="@Flags.EncounterRate" Min="0" Max="45" Step="1"></Slider>
+						<div class="col-md-4">
+							<Slider bind-Value="@Flags.EncounterRate" Min="0" Max="45" Step="1"></Slider>
+						</div>
 					</div>
 					<div class="row">
-						<div class="col-md-6">
+						<div class="col-md-5">
 							<label>Dungeon Encounter Rate:</label>
 						</div>
 						<div class="col-md-3">
 							<label>@Math.Round(Flags.DungeonEncounterRate / 30.0, 2).ToString("F2")x</label>
 						</div>
-						<Slider bind-Value="@Flags.DungeonEncounterRate" Min="0" Max="45" Step="1"></Slider>
+						<div class="col-md-4">
+							<Slider bind-Value="@Flags.DungeonEncounterRate" Min="0" Max="45" Step="1"></Slider>
+						</div>
 					</div>
 					<div class="row">
 						&nbsp;
@@ -395,7 +403,7 @@
 			<TabPane IsOpen="@(activeTabs.Contains("Conveniences"))">
 				<div class="is-dark nes-container">
 					<div class="row">
-						<div class="col-md-6">
+						<div class="col-md-12">
 							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="noPartyShuffleCheckBox" bind-Value="@Flags.NoPartyShuffle">No Party Shuffle</CheckBox>
 							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="speedHacksCheckBox" bind-Value="@Flags.SpeedHacks">Speed Hacks</CheckBox>
 							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="identifyTreasuresCheckBox" bind-Value="@Flags.IdentifyTreasures">Identify Treasures</CheckBox>
@@ -440,7 +448,7 @@
 				<div class="is-dark nes-container">
 					<div class="row">
 						<p>Test out features from 2000 years in the future - at your own risk!</p>
-						<div class="col-md-6">
+						<div class="col-md-12">
 							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="proceduralGenerationCheckBox" bind-Value="@Flags.ExperimentalFloorGeneration">Enable Procedural Floor Generation</CheckBox>
 							<CheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.ExperimentalFloorGeneration" Id="procGenWaterfall" bind-Value="@Flags.EFGWaterfall">Generated Waterfall Cave</CheckBox>
 							<CheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.ExperimentalFloorGeneration" Id="procGenEarth1" bind-Value="@Flags.EFGEarth1">Generated Earth Cave B1</CheckBox>
@@ -456,7 +464,7 @@
 							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="DisableInnSaving" bind-Value="@Flags.DisableInnSaving">Disable Inn Saving</CheckBox>
 							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="RandomizeFormationEnemizer" bind-Value="@Flags.RandomizeFormationEnemizer">Randomizer Formations (Enemizer)</CheckBox>
 						</div>
-						<div class="col-md-6">
+						<div class="col-md-12">
 						</div>
 					</div>
 				</div>
@@ -486,18 +494,18 @@
 					</div>
 				</div>
 			</TabPane>
-		</TabContent>
-		<br />
-		<button type="button" class="nes-btn is-primary" onclick="@OnRandomize">Randomize</button>
-		<TabPane IsOpen="@(StatusMessage.Length > 0)">
-			<div class="is-dark nes-container">
-				@StatusMessage
+			<br />
+			<button type="button" class="nes-btn is-primary" onclick="@OnRandomize">Randomize</button>
+			<TabPane IsOpen="@(StatusMessage.Length > 0)">
+				<div class="is-dark nes-container">
+					@StatusMessage
+				</div>
+			</TabPane>
+			<br />
+			<div>
+				&nbsp;
 			</div>
-		</TabPane>
-		<br />
-		<div>
-			&nbsp;
-		</div>
+		</TabContent>
 	</CascadingValue>
 </div>
 
