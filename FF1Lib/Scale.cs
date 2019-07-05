@@ -13,19 +13,19 @@ namespace FF1Lib
 	{
 		[Description("Disabled")]
 		Disabled,
-		[Description("150% at 12 Key Items")]
+		[Description("150% @ 12 Items")]
 		FiftyPercentAt12,
-		[Description("150% at 15 Key Items")]
+		[Description("150% @ 15 Items")]
 		FiftyPercentAt15,
-		[Description("200% at 12 Key Items")]
+		[Description("200% @ 12 Items")]
 		DoubledAt12,
-		[Description("200% at 15 Key Items")]
+		[Description("200% @ 15 Items")]
 		DoubledAt15,
-		[Description("+5% Per Key Item")]
+		[Description("+ 5% Per Item")]
 		Progressive5Percent,
-		[Description("+10% Per Key Item")]
+		[Description("+10% Per Item")]
 		Progressive10Percent,
-		[Description("+20% Per Key Item")]
+		[Description("+20% Per Item")]
 		Progressive20Percent,
 	}
 
