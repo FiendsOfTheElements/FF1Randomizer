@@ -108,6 +108,10 @@ namespace FF1Lib
 			{
 				incentivePool.Add(Item.Masamune);
 			}
+			if (flags.IncentivizeVorpal ?? false)
+			{
+				incentivePool.Add(Item.Vorpal);
+			}
 			if (flags.IncentivizeRibbon ?? false)
 			{
 				incentivePool.Add(Item.Ribbon);

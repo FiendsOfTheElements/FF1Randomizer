@@ -92,6 +92,7 @@ namespace FF1Lib
 
 
 		public bool? IncentivizeMasamune { get; set; } = false;
+		public bool? IncentivizeVorpal { get; set; } = false;
 		public bool? IncentivizeOpal { get; set; } = false;
 		public bool? IncentivizeRibbon { get; set; } = false;
 		public bool IncentivizeRibbon2 => false;
@@ -275,6 +276,7 @@ namespace FF1Lib
 		public int IncentivizedItemCountMin => 0
 			+ ((IncentivizeTail ?? false) ? 1 : 0)
 			+ ((IncentivizeMasamune ?? false) ? 1 : 0)
+			+ ((IncentivizeVorpal ?? false) ? 1 : 0)
 			+ ((IncentivizeOpal ?? false) ? 1 : 0)
 			+ ((IncentivizeRibbon ?? false) ? 1 : 0)
 			+ ((IncentivizeDefCastArmor ?? false) ? 1 : 0)
@@ -307,6 +309,7 @@ namespace FF1Lib
 		public int IncentivizedItemCountMax => 0
 			+ ((IncentivizeTail ?? true) ? 1 : 0)
 			+ ((IncentivizeMasamune ?? true) ? 1 : 0)
+			+ ((IncentivizeVorpal ?? true) ? 1 : 0)
 			+ ((IncentivizeOpal ?? true) ? 1 : 0)
 			+ ((IncentivizeRibbon ?? true) ? 1 : 0)
 			+ ((IncentivizeDefCastArmor ?? true) ? 1 : 0)
@@ -359,6 +362,7 @@ namespace FF1Lib
 			+ ((IncentivizeTail != null) ? (IncentivizeTail ?? false ? "Tail " : "") : ("Tail? "))
 			+ ((IncentivizeTnt != null) ? (IncentivizeTnt ?? false ? "Tnt " : "") : ("Tnt? "))
 			+ ((IncentivizeMasamune != null) ? (IncentivizeMasamune ?? false ? "Masmune\U0001F5E1 " : "") : ("Masmune?\U0001F5E1 "))
+			+ ((IncentivizeVorpal != null) ? (IncentivizeVorpal ?? false ? "Vorpal\U0001F5E1 " : "") : ("Vorpal?\U0001F5E1 "))
 			+ ((IncentivizeXcalber != null) ? (IncentivizeXcalber ?? false ? "XCalber\U0001F5E1 " : "") : ("XCalber?\U0001F5E1 "))
 			+ ((IncentivizeDefCastWeapon != null) ? (IncentivizeDefCastWeapon ?? false ? "Defense\U0001F5E1 " : "") : ("Defense?\U0001F5E1 "))
 			+ (IncentivizeOtherCastWeapon ? "Mage\U0001F9D9 " : "")
@@ -455,6 +459,7 @@ namespace FF1Lib
 		{
 			BigInteger sum = 0;
 
+			sum = AddTriState(sum, flags.IncentivizeVorpal);
 			sum = AddTriState(sum, flags.Shops);
 			sum = AddTriState(sum, flags.Treasures);
 			sum = AddTriState(sum, flags.NPCItems);
@@ -818,7 +823,8 @@ namespace FF1Lib
 				NPCFetchItems = GetTriState(ref sum),
 				NPCItems = GetTriState(ref sum),
 				Treasures = GetTriState(ref sum),
-				Shops = GetTriState(ref sum)
+				Shops = GetTriState(ref sum),
+				IncentivizeVorpal = GetTriState(ref sum),
 			};
 
 			return flags;
