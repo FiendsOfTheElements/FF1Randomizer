@@ -75,7 +75,7 @@ namespace FF1Lib
 					newFormations[i][2] = lowFormations[2][0];
 					newFormations[i][3] = lowFormations[3][0];
 
-					var shuffleFormations = newFormations[i].SubBlob(1, 6).Chunk(1); // get formations 2-8
+					var shuffleFormations = newFormations[i].SubBlob(2, 6).Chunk(1); // get formations 2-8
 					shuffleFormations.Shuffle(rng);
 					for (int j = 2; j < 8; j++)
 					{
