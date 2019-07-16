@@ -1,9 +1,32 @@
 ﻿using RomUtilities;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace FF1Lib
 {
+	public enum ShardCount
+	{
+		[Description("Exactly 16")]
+		Count16,
+		[Description("Exactly 20")]
+		Count20,
+		[Description("Exactly 24")]
+		Count24,
+		[Description("Exactly 28")]
+		Count28,
+		[Description("Exactly 32")]
+		Count32,
+		[Description("Exactly 36")]
+		Count36,
+		[Description("From 16-24")]
+		Range16_24,
+		[Description("From 24-32")]
+		Range24_32,
+		[Description("From 16-36")]
+		Range16_36,
+	}
+
 	public partial class FF1Rom : NesRom
 	{
 		private const int TotalOrbsToInsert = 32;
@@ -79,11 +102,19 @@ namespace FF1Lib
 			"SHARD", "JEWEL", "PIECE", "CHUNK", "PRISM", "STONE", "SLICE", "WEDGE", "BIGGS", "SLIVR", "ORBLT", "ESPER", "FORCE",
 		};
 
-		public void EnableShardHunt(MT19337 rng, int goal, bool npcShuffleEnabled)
+		public void EnableShardHunt(MT19337 rng, ShardCount count, bool npcShuffleEnabled)
 		{
-			if (goal < 1 || goal > 30)
-			{
-				throw new ArgumentOutOfRangeException();
+			int goal = 16;
+			switch (count) {
+				case ShardCount.Count16: goal = 16; break;
+				case ShardCount.Count20: goal = 20; break;
+				case ShardCount.Count24: goal = 24; break;
+				case ShardCount.Count28: goal = 28; break;
+				case ShardCount.Count32: goal = 32; break;
+				case ShardCount.Count36: goal = 36; break;
+				case ShardCount.Range16_24: goal = rng.Between(16, 24); break;
+				case ShardCount.Range24_32: goal = rng.Between(24, 32); break;
+				case ShardCount.Range16_36: goal = rng.Between(16, 36); break;
 			}
 
 			if (!npcShuffleEnabled)

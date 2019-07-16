@@ -186,7 +186,7 @@
 							<h4>Treasure Hunt</h4>
 							<p>A new adventure! Instead of lighting the four orbs to activate the BLACK ORB, the Light Warriors must seek out and collect several of a random treasure item.</p>
 							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="shardHuntCheckBox" IsEnabled="@Flags.ShardHuntEnabled" bind-Value="@Flags.ShardHunt">Treasure Hunt</CheckBox>
-							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="extraShardsCheckBox" IsEnabled="@Flags.ExtraShardsEnabled" bind-Value="@Flags.ExtraShards">Extra Treasure</CheckBox>
+							<EnumDropDown UpdateToolTip="@UpdateToolTipID" TItem="ShardCount" bind-Value="@Flags.ShardCount">Goal:</EnumDropDown>
 						</div>
 						<div class="col-md-4">
 							<h4>Temple of Fiends</h4>

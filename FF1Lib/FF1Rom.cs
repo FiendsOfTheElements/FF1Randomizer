@@ -215,7 +215,7 @@ namespace FF1Lib
 
 			if (((bool)flags.Treasures) && flags.ShardHunt && !flags.FreeOrbs)
 			{
-				EnableShardHunt(rng, flags.ExtraShards ? rng.Between(24, 30) : 16, ((bool)flags.NPCItems));
+				EnableShardHunt(rng, flags.ShardCount, ((bool)flags.NPCItems));
 			}
 
 			if ((bool)flags.TransformFinalFormation)

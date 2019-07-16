@@ -172,13 +172,13 @@ namespace FF1Lib
 
 		public bool ShardHuntEnabled => !FreeOrbs;
 
-		public bool ExtraShards
+		public ShardCount ShardCount
 		{
-			get => Flags.ExtraShards;
+			get => Flags.ShardCount;
 			set
 			{
-				Flags.ExtraShards = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ExtraShards"));
+				Flags.ShardCount = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ShardCount"));
 			}
 		}
 

@@ -22,7 +22,7 @@ namespace FF1Lib
 		public bool? RandomLoot { get; set; } = false;
 
 		public bool ShardHunt { get; set; } = false;
-		public bool ExtraShards { get; set; } = false;
+		public ShardCount ShardCount { get; set; } = ShardCount.Count16;
 		public bool? TransformFinalFormation { get; set; } = false;
 		public bool ChaosRush { get; set; } = false;
 		public bool? ShortToFR { get; set; } = false;
@@ -467,7 +467,7 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.RandomWares);
 			sum = AddTriState(sum, flags.RandomLoot);
 			sum = AddBoolean(sum, flags.ShardHunt);
-			sum = AddBoolean(sum, flags.ExtraShards);
+			sum = AddNumeric(sum, Enum.GetValues(typeof(ShardCount)).Cast<int>().Max() + 1, (int)flags.ShardCount);
 			sum = AddTriState(sum, flags.TransformFinalFormation);
 			sum = AddBoolean(sum, flags.ChaosRush);
 			sum = AddTriState(sum, flags.ShortToFR);
@@ -816,7 +816,7 @@ namespace FF1Lib
 				ShortToFR = GetTriState(ref sum),
 				ChaosRush = GetBoolean(ref sum),
 				TransformFinalFormation = GetTriState(ref sum),
-				ExtraShards = GetBoolean(ref sum),
+				ShardCount = (ShardCount)GetNumeric(ref sum, Enum.GetValues(typeof(ShardCount)).Cast<int>().Max() + 1),
 				ShardHunt = GetBoolean(ref sum),
 				RandomLoot = GetTriState(ref sum),
 				RandomWares = GetTriState(ref sum),
