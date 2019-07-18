@@ -167,9 +167,9 @@ namespace FF1Lib
 			}
 #endif
 
-			if (flags.RandomizeFormationEnemizer)
+			if (flags.RandomizeEnemizer || flags.RandomizeFormationEnemizer)
 			{
-				DoEnemizer(rng, false, flags.RandomizeFormationEnemizer, false);
+				DoEnemizer(rng, flags.RandomizeEnemizer, flags.RandomizeFormationEnemizer, false);
 			}
 
 			if (preferences.ModernBattlefield)
@@ -364,12 +364,12 @@ namespace FF1Lib
 				FiendShuffle(rng);
 			}
 
-			if (flags.FormationShuffleMode != FormationShuffleMode.None)
+			if (flags.FormationShuffleMode != FormationShuffleMode.None && !flags.RandomizeEnemizer && !flags.RandomizeFormationEnemizer)
 			{
 				ShuffleEnemyFormations(rng, flags.FormationShuffleMode);
 			}
 
-			if (((bool)flags.EnemyTrapTiles))
+			if (((bool)flags.EnemyTrapTiles) && !flags.RandomizeEnemizer && !flags.RandomizeFormationEnemizer)
 			{
 				ShuffleTrapTiles(rng, ((bool)flags.RandomTrapFormations));
 			}
@@ -538,7 +538,7 @@ namespace FF1Lib
 				FixEnemyElementalResistances();
 			}
 
-			if (preferences.FunEnemyNames)
+			if (preferences.FunEnemyNames && !flags.RandomizeEnemizer && !flags.RandomizeFormationEnemizer)
 			{
 				FunEnemyNames(preferences.TeamSteak);
 			}
@@ -607,7 +607,7 @@ namespace FF1Lib
 				UseVariablePaletteForCursorAndStone();
 			}
 
-			if (preferences.PaletteSwap)
+			if (preferences.PaletteSwap && !flags.RandomizeEnemizer && !flags.RandomizeFormationEnemizer)
 			{
 				PaletteSwap(rng);
 			}

@@ -39,10 +39,16 @@ namespace FF1Lib
 
 		public abstract class Enemy
 		{
+			public const int Imp = 0;
 			public const int Pirate = 15;
+			public const int Crawl = 24;
 			public const int Phantom = 51;
+			public const int Mancat = 55;
+			public const int Coctrice = 81;
+			public const int Sorceror = 104;
 			public const int Garland = 105;
 			public const int Astos = 113;
+			public const int Nitemare = 117;
 			public const int WarMech = 118;
 			public const int Lich = 119;
 			public const int Lich2 = 120;
