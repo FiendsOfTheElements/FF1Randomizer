@@ -3656,6 +3656,8 @@ namespace FF1Lib
 				}			
 				// if for some reason there were no available mons, then a B-Side is not drawn at all and no formation is added to the zones, so this slot will remain unused.  this shouldn't happen, though
 				ENF_AssignPicAndPaletteBytes(f);
+				f.unrunnable = true;
+				f.surprise = 4;
 				LogAndCompressFormation(f, id);
 			}
 
