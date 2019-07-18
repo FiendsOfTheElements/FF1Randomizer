@@ -3953,6 +3953,8 @@ namespace FF1Lib
 				if(en.DoFormations(rng, enemies))
 				{
 					Put(FormationsOffset, en.GetFormationData());
+					if(en.imp_encounter != 0x80)
+						throw new InsaneException(en.imp_encounter.ToString());
 					// we must also do the domains
 					// This code is partially lifted from ShuffleTrapTiles
 					Data[0x7CDC5] = 0xD0; // changes the game's programming
