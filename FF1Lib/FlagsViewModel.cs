@@ -1803,6 +1803,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DisableInnSaving"));
 			}
 		}
+		public bool RandomizeEnemizer
+		{
+			get => Flags.RandomizeEnemizer;
+			set
+			{
+				Flags.RandomizeEnemizer = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomizeEnemizer"));
+			}
+		}
 		public bool RandomizeFormationEnemizer
 		{
 			get => Flags.RandomizeFormationEnemizer;

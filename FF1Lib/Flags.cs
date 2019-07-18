@@ -217,6 +217,7 @@ namespace FF1Lib
 		public bool FiendShuffle { get; set; } = false;
 		public bool DisableTentSaving { get; set; } = false;
 		public bool DisableInnSaving { get; set; } = false;
+		public bool RandomizeEnemizer { get; set; } = false;
 		public bool RandomizeFormationEnemizer { get; set; } = false;
 		public bool ThiefHitRate { get; set; } = false;
 
@@ -629,6 +630,7 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.FiendShuffle);
 			sum = AddBoolean(sum, flags.DisableTentSaving);
 			sum = AddBoolean(sum, flags.DisableInnSaving);
+			sum = AddBoolean(sum, flags.RandomizeEnemizer);
 			sum = AddBoolean(sum, flags.RandomizeFormationEnemizer);
 			sum = AddBoolean(sum, flags.ThiefHitRate);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(FormationShuffleMode)).Cast<int>().Max() + 1, (int)flags.FormationShuffleMode);
@@ -654,6 +656,7 @@ namespace FF1Lib
 				MDefMode = (MDEFGrowthMode)GetNumeric(ref sum, Enum.GetValues(typeof(MDEFGrowthMode)).Cast<int>().Max() + 1),
 				FormationShuffleMode = (FormationShuffleMode)GetNumeric(ref sum, Enum.GetValues(typeof(FormationShuffleMode)).Cast<int>().Max() + 1),
 				ThiefHitRate = GetBoolean(ref sum),
+				RandomizeEnemizer = GetBoolean(ref sum),
 				RandomizeFormationEnemizer = GetBoolean(ref sum),
 				DisableInnSaving = GetBoolean(ref sum),
 				DisableTentSaving = GetBoolean(ref sum),
