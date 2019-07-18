@@ -345,7 +345,7 @@ namespace FF1Lib
 			// Put this before other encounter / trap tile edits.
 			if ((bool)flags.AllowUnsafeMelmond)
 			{
-				EnableMelmondGhetto(flags.RandomizeFormationEnemizer);
+				EnableMelmondGhetto(flags.RandomizeFormationEnemizer || flags.RandomizeEnemizer);
 			}
 
 			// After unrunnable shuffle and before formation shuffle. Perfect!
