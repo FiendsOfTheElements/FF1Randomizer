@@ -86,7 +86,7 @@ namespace FF1Lib
 
 				public byte[] CompressData()
 				{
-					byte[] spellInfo = new byte[7];
+					byte[] spellInfo = new byte[8];
 					spellInfo[0] = accuracy;
 					spellInfo[1] = effect;
 					spellInfo[2] = elem;
@@ -3157,7 +3157,7 @@ namespace FF1Lib
 					// set surprise rate and unrunnability flags
 					f.unrunnable = rng.Between(0, 29) + (zoneA > zoneB ? zoneA : zoneB) >= 32 ? true : false; // unrunnable chance is higher for later zones
 					if (f.unrunnable)
-						f.surprise = 4;
+						f.surprise = (byte)rng.Between(3, 30);
 					else
 					{
 						if(bossformations - surpcount.Sum() <= i)
@@ -3875,7 +3875,7 @@ namespace FF1Lib
 					}
 				}
 				// special zone placement for overworld 4,4 and 4,5: replace the first four encounters with encounter 0x80 (imp group)
-				PutD(0x120, 0x80); PutD(0x121, imp_encounter); PutD(0x122, imp_encounter); PutD(0x123, imp_encounter); PutD(0x160, imp_encounter); PutD(0x161, imp_encounter); PutD(0x162, imp_encounter); PutD(0x163, imp_encounter);
+				PutD(0x120, imp_encounter); PutD(0x121, imp_encounter); PutD(0x122, imp_encounter); PutD(0x123, imp_encounter); PutD(0x160, imp_encounter); PutD(0x161, imp_encounter); PutD(0x162, imp_encounter); PutD(0x163, imp_encounter);
 				PutD(0x39E, 0x56); // replace 7th encounter on sky 5F with warmech
 			}
 		}
@@ -3952,42 +3952,33 @@ namespace FF1Lib
 			{
 				if(en.DoFormations(rng, enemies))
 				{
-					battledomains = true; // must use domain generator with formation shuffle
 					Put(FormationsOffset, en.GetFormationData());
+					// we must also do the domains
+					// This code is partially lifted from ShuffleTrapTiles
+					Data[0x7CDC5] = 0xD0; // changes the game's programming
+
+					bool IsBattleTile(Blob tuple) => tuple[0] == 0x0A;
+					bool IsRandomBattleTile(Blob tuple) => IsBattleTile(tuple) && (tuple[1] & 0x80) != 0x00;
+
+					var tilesets = Get(TilesetDataOffset, TilesetDataCount * TilesetDataSize * TilesetCount).Chunk(TilesetDataSize).ToList();
+					tilesets.ForEach(tile => { if (IsRandomBattleTile(tile)) tile[1] = 0x00; });
+					Put(TilesetDataOffset, tilesets.SelectMany(tileset => tileset.ToBytes()).ToArray());// set all random battle tiles to zero
+					
+					en.DoDomains(rng);
+					// write domains information
+					Put(ZoneFormationsOffset, en.GetDomainData());
+
+					// write trap tile information
+					for (int i = 0; i < en.traptile_addresses.Length; ++i)
+					{
+						Data[TilesetDataOffset + en.traptile_addresses[i]] = en.traptile_formations[i];
+					}
 				}
 					
 				else
 				{
 					Console.WriteLine("Fission Mailed - Abort Formation Shuffle");
 					throw new InsaneException("Something went wrong with Formation Generation (Enemizer)!");
-				}
-			}
-			if (battledomains)
-			{
-				// This code is partially lifted from ShuffleTrapTiles
-				Data[0x7CDC5] = 0xD0; // changes the game's programming
-
-				bool IsBattleTile(Blob tuple) => tuple[0] == 0x0A;
-				bool IsRandomBattleTile(Blob tuple) => IsBattleTile(tuple) && (tuple[1] & 0x80) != 0x00;
-
-				var tilesets = Get(TilesetDataOffset, TilesetDataCount * TilesetDataSize * TilesetCount).Chunk(TilesetDataSize).ToList();
-				tilesets.ForEach(tile => { if (IsRandomBattleTile(tile)) tile[1] = 0x00; });
-				Put(TilesetDataOffset, tilesets.SelectMany(tileset => tileset.ToBytes()).ToArray());// set all random battle tiles to zero
-				/* we will eventually allow the formation shuffle to judge what should be at which tile based on the ROM's encounter, but for now we will use hardcoded values
-				var traps_addresses = Enumerable.Range(0, tilesets.Count).Where(addr => IsNonBossTrapTile(tilesets[addr])).ToList();
-				var traps_formation = tilesets.Where(IsNonBossTrapTile).Select(trap => trap[1]).ToList();
-				// feed the information to Enemizer
-				en.traptile_addresses = traps_addresses;
-				en.traptile_formations = traps_formation; */
-
-				en.DoDomains(rng);
-				// write domains information
-				Put(ZoneFormationsOffset, en.GetDomainData());
-
-				// write trap tile information
-				for(int i = 0; i < en.traptile_addresses.Length; ++i)
-				{
-					Data[TilesetDataOffset + en.traptile_addresses[i]] = en.traptile_formations[i];
 				}
 			}
 		}
