@@ -3095,7 +3095,7 @@ namespace FF1Lib
 					{
 						availablemons = enemiesInTileset[f.tileset].Where(mon => NotFeatured(mon) && mon != f.Top).ToList();
 						if (availablemons.Count == 0)
-							availablemons = enemiesInTileset[f.tileset].ToList(); // if all other mons in this tileset have been featured, all mons in this tileset are eligible as a second mon
+							availablemons = enemiesInTileset[f.tileset].Where(mon=> mon != f.Top).ToList(); // if all other mons in this tileset have been featured, all mons in this tileset are eligible as a second mon
 					}
 					f.id[1] = availablemons.PickRandom(rng); // and pick a random mon from the available IDs to be mon 2 (and the primary monster of the A-side)
 					// we will attempt to hit a zone with the A-Side but if we can't we'll just try to make an encounter as close as possible to the goal
