@@ -169,7 +169,7 @@ namespace FF1Lib
 
 			if (flags.RandomizeEnemizer || flags.RandomizeFormationEnemizer)
 			{
-				DoEnemizer(rng, flags.RandomizeEnemizer, flags.RandomizeFormationEnemizer, false);
+				DoEnemizer(rng, flags.RandomizeEnemizer, flags.RandomizeFormationEnemizer);
 			}
 
 			if (preferences.ModernBattlefield)
