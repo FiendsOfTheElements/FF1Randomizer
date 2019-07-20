@@ -449,7 +449,7 @@ namespace FF1Lib
 			return (Flags)this.MemberwiseClone();
 		}
 
-		public bool? ImmediatePureAndSoftRequired => EnemyStatusAttacks | Entrances | MapOpenProgression | RandomizeFormationEnemizer;
+		public bool? ImmediatePureAndSoftRequired => EnemyStatusAttacks | Entrances | MapOpenProgression | RandomizeFormationEnemizer | RandomizeEnemizer;
 
 		public bool? FreeLute => ChaosRush | ShortToFR;
 
