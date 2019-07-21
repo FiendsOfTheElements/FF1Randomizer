@@ -99,7 +99,7 @@ namespace FF1Lib
 
 			public void decompressData(byte[] data)
 			{
-				if (data.Length < MagicSize)
+				if (data.Length != MagicSize)
 				{
 					accuracy = 0x00;
 					effect = 0x00;
@@ -147,7 +147,7 @@ namespace FF1Lib
 
 			public void decompressData(byte[] data)
 			{
-				if (data.Length < EnemySkillSize)
+				if (data.Length != EnemySkillSize)
 				{
 					accuracy = 0x00;
 					effect = 0x00;
@@ -589,7 +589,6 @@ namespace FF1Lib
 
 		private bool DoEnemizer_Formations(MT19337 rng, EnemyInfo[] enemy, EnemizerTrackingInfo en)
 		{
-			Console.WriteLine("Formations Start");
 			bool NotFeatured(byte mon) => !en.featured[mon];
 			bool Small(byte mon) => enemy[mon].Small;
 			bool Large(byte mon) => enemy[mon].Large;
@@ -1787,7 +1786,6 @@ namespace FF1Lib
 
 		private bool DoEnemizer_Enemies(MT19337 rng, EnemyInfo[] enemy, SpellInfo[] spell, EnemySkillInfo[] skill, EnemyScriptInfo[] script, string[] enemyNames, EnemizerTrackingInfo en)
 		{
-			Console.WriteLine("Enemies Start");
 			List<byte> enemyImageLUT = new List<byte> { 0b00000000, 0b00000010, 0b00000001, 0b00000011, 0b00000100, 0b00000110, 0b00000101, 0b00000111,
 														0b00001000, 0b00001010, 0b00001001, 0b00001011, 0b00001100, 0b00001110, 0b00001101, 0b00001111,
 														0b00010000, 0b00010010, 0b00010001, 0b00010011, 0b00010100, 0b00010110, 0b00010101, 0b00010111,
@@ -1928,7 +1926,7 @@ namespace FF1Lib
 				else
 				{
 					en.enemiesInTileset[enemy[i].tileset].Add(i); // add enemy to enemiesInTileset unless it is a boss
-																  // adjust HP, EXP, and GP if enemy changes size
+					// adjust HP, EXP, and GP if enemy changes size
 					if (oldSize && enemy[i].Small) // large became small
 					{
 						enemy[i].hp *= 4;
@@ -1948,7 +1946,7 @@ namespace FF1Lib
 						enemy[i].gp /= 9;
 					}
 					int elemental = 9; // track elemental affinity for certain classes of monsters (elementals and dragons)
-									   // generate BASE stats for generic monsters and their base name
+					// generate BASE stats for generic monsters and their base name
 					switch (enemy[i].image)
 					{
 						case 0: // Imp
@@ -3487,7 +3485,6 @@ namespace FF1Lib
 
 		public void DoEnemizer(MT19337 rng, bool doEnemies, bool doFormations)
 		{
-			Console.WriteLine("Enemizer Start");
 			// code modification to allow any formation except 0x00 to be a trap (lifted from ShuffleTrapTiles)
 			Data[0x7CDC5] = 0xD0; // changes the game's programming
 			bool IsBattleTile(Blob tuple) => tuple[0] == 0x0A;
@@ -3582,12 +3579,6 @@ namespace FF1Lib
 					var enemyTextPart2 = enemyNames.Skip(2).ToArray();
 					WriteText(enemyTextPart1, EnemyTextPointerOffset, EnemyTextPointerBase, 0x2CFEC);
 					WriteText(enemyTextPart2, EnemyTextPointerOffset + 4, EnemyTextPointerBase, EnemyTextOffset);
-					en.PurgeIDFromEnemyTilesetList(Enemy.Imp);
-					en.PurgeIDFromEnemyTilesetList(Enemy.Pirate);
-					en.PurgeIDFromEnemyTilesetList(Enemy.Phantom);
-					en.PurgeIDFromEnemyTilesetList(Enemy.Astos);
-					en.PurgeIDFromEnemyTilesetList(Enemy.Garland);
-					en.PurgeIDFromEnemyTilesetList(Enemy.WarMech); // making doubleplus sure these don't appear, probably not necessary
 				}
 				else
 				{

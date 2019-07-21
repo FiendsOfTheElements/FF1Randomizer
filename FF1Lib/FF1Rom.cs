@@ -169,6 +169,7 @@ namespace FF1Lib
 
 			if (flags.RandomizeEnemizer || flags.RandomizeFormationEnemizer)
 			{
+				FixEnemyPalettes(); // fixes a big in the original game's programming that causes third enemy slot's palette to render incorrectly
 				DoEnemizer(rng, flags.RandomizeEnemizer, flags.RandomizeFormationEnemizer);
 			}
 

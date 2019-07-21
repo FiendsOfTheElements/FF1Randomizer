@@ -186,5 +186,10 @@ namespace FF1Lib
 			Put(0x2DE1D, Blob.FromHex("FF"));
 			Put(0x2DE21, Blob.FromHex("FF"));
 		}
+
+		public void FixEnemyPalettes()
+		{
+			Data[0x2E382] = 0xEA; // remove an extraneous LSR A when drawing monsters in a Large-Small mixed formation, so that the enemy in the third monster slot in such formations uses the correct palette
+		}
 	}
 }
