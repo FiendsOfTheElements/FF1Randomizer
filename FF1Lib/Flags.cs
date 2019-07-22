@@ -456,6 +456,8 @@ namespace FF1Lib
 		public bool? DeepCastlesPossible => Entrances & Floors;
 		public bool? DeepTownsPossible => Towns & Entrances & Floors & EntrancesMixedWithTowns;
 
+		public bool EnemizerEnabled => RandomizeFormationEnemizer | RandomizeEnemizer;
+
 		public static string EncodeFlagsText(Flags flags)
 		{
 			BigInteger sum = 0;
