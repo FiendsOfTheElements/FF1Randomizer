@@ -101,6 +101,7 @@ namespace FF1Lib
 			PermanentCaravan();
 			ShiftEarthOrbDown();
 			CastableItemTargeting();
+			FixEnemyPalettes(); // fixes a bug in the original game's programming that causes third enemy slot's palette to render incorrectly
 			flags = Flags.ConvertAllTriState(flags, rng);
 
 
@@ -166,10 +167,8 @@ namespace FF1Lib
 				}
 			}
 #endif
-
-			if (flags.RandomizeEnemizer || flags.RandomizeFormationEnemizer)
+			if (flags.EnemizerEnabled)
 			{
-				FixEnemyPalettes(); // fixes a big in the original game's programming that causes third enemy slot's palette to render incorrectly
 				DoEnemizer(rng, flags.RandomizeEnemizer, flags.RandomizeFormationEnemizer);
 			}
 
@@ -346,7 +345,7 @@ namespace FF1Lib
 			// Put this before other encounter / trap tile edits.
 			if ((bool)flags.AllowUnsafeMelmond)
 			{
-				EnableMelmondGhetto(flags.RandomizeFormationEnemizer || flags.RandomizeEnemizer);
+				EnableMelmondGhetto(flags.EnemizerEnabled);
 			}
 
 			// After unrunnable shuffle and before formation shuffle. Perfect!
@@ -365,12 +364,12 @@ namespace FF1Lib
 				FiendShuffle(rng);
 			}
 
-			if (flags.FormationShuffleMode != FormationShuffleMode.None && !flags.RandomizeEnemizer && !flags.RandomizeFormationEnemizer)
+			if (flags.FormationShuffleMode != FormationShuffleMode.None && !flags.EnemizerEnabled)
 			{
 				ShuffleEnemyFormations(rng, flags.FormationShuffleMode);
 			}
 
-			if (((bool)flags.EnemyTrapTiles) && !flags.RandomizeEnemizer && !flags.RandomizeFormationEnemizer)
+			if (((bool)flags.EnemyTrapTiles) && !flags.EnemizerEnabled)
 			{
 				ShuffleTrapTiles(rng, ((bool)flags.RandomTrapFormations));
 			}
@@ -539,7 +538,7 @@ namespace FF1Lib
 				FixEnemyElementalResistances();
 			}
 
-			if (preferences.FunEnemyNames && !flags.RandomizeEnemizer && !flags.RandomizeFormationEnemizer)
+			if (preferences.FunEnemyNames && !flags.EnemizerEnabled)
 			{
 				FunEnemyNames(preferences.TeamSteak);
 			}
@@ -608,7 +607,7 @@ namespace FF1Lib
 				UseVariablePaletteForCursorAndStone();
 			}
 
-			if (preferences.PaletteSwap && !flags.RandomizeEnemizer && !flags.RandomizeFormationEnemizer)
+			if (preferences.PaletteSwap && !flags.EnemizerEnabled)
 			{
 				PaletteSwap(rng);
 			}
