@@ -100,8 +100,8 @@
 							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnemyFormationsUnrunnable" Id="everythingUnrunnableCheckBox" bind-Value="@Flags.EverythingUnrunnable">All Encounters are Unrunnable</TriStateCheckBox>
 							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="unrunnablesStrikeFirstAndSurpriseCheckBox" bind-Value="@Flags.UnrunnablesStrikeFirstAndSurprise">Unrunnable First Strike &amp; Surprise</TriStateCheckBox>
 							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyFormationsSurpriseCheckBox" bind-Value="@Flags.EnemyFormationsSurprise">Enemy Surprise Bonus</TriStateCheckBox>
-							<EnumDropDown UpdateToolTip="@UpdateToolTipID" TItem="FormationShuffleMode" bind-Value="@Flags.FormationShuffleMode">Enemy Formations:</EnumDropDown>
-							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyTrapTilesCheckBox" bind-Value="@Flags.EnemyTrapTiles">Enemy Forced Encounter Tiles</TriStateCheckBox>
+							<EnumDropDown UpdateToolTip="@UpdateToolTipID" TItem="FormationShuffleMode" IsEnabled="@(!Flags.RandomizeFormationEnemizer)" bind-Value="@Flags.FormationShuffleMode">Enemy Formations:</EnumDropDown>
+							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyTrapTilesCheckBox" IsEnabled="@(!Flags.RandomizeFormationEnemizer)" bind-Value="@Flags.EnemyTrapTiles">Enemy Forced Encounter Tiles</TriStateCheckBox>
 							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="randomTrapFormationsCheckBox" IsEnabled="@Flags.EnemyTrapTiles" bind-Value="@Flags.RandomTrapFormations">Use Random Formations</TriStateCheckBox>
 							<div class="checkbox-cell"></div>
 							<h4>WarMECH</h4>
@@ -463,8 +463,8 @@
 							<div class="checkbox-cell"></div>
 							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="DisableTentSaving" bind-Value="@Flags.DisableTentSaving">Disable Tent/Cabin/House Saving on Overworld</CheckBox>
 							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="DisableInnSaving" bind-Value="@Flags.DisableInnSaving">Disable Inn Saving</CheckBox>
-							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="RandomizeEnemizer" bind-Value="@Flags.RandomizeEnemizer">Randomize Enemies (Enemizer)</CheckBox>
 							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="RandomizeFormationEnemizer" bind-Value="@Flags.RandomizeFormationEnemizer">Randomize Formations (Enemizer)</CheckBox>
+							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="RandomizeEnemizer" IsEnabled="@Flags.RandomizeFormationEnemizer" bind-Value="@Flags.RandomizeEnemizer">Randomize Enemies (Enemizer)</CheckBox>
 						</div>
 						<div class="col-md-12">
 						</div>
