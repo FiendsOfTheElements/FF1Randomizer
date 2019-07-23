@@ -120,6 +120,432 @@ namespace FF1Lib
 					palette = data[6];
 				}
 			}
+
+			public void calc_Enemy_SpellTier() // calculates the usefulness of a spell (from the perspective of a generic random encounter enemy)
+			{
+				// this function is incomplete, do not call it
+				tier = 0; // if no value is assigned by this routine, assume the spell is worthless
+				if (routine == 0x01) // inflict damage
+				{
+					if (targeting == 0x01) // all enemies
+					{
+						if (elem == 0) // non-elemental tiers
+						{
+							if (effect < 8)
+								tier = 1;
+							else if (effect < 16)
+								tier = 2;
+							else if (effect < 36)
+								tier = 3;
+							else if (effect < 75)
+								tier = 4;
+							else
+								tier = 5;
+						}
+						else if ((elem & 0b01111000) != 0) // fire/ice/lit/death elemental - these elements are the easiest to find resistance against so they are the lowest value
+						{
+							if (effect < 12)
+								tier = 1;
+							else if (effect < 25)
+								tier = 2;
+							else if (effect < 50)
+								tier = 3;
+							else if (effect < 140)
+								tier = 4;
+							else
+								tier = 5;
+						}
+						else if ((elem & 0b10000111) != 0) // earth/time/poison/status element - these elements are harder for the player to resist so their value is increased
+						{
+							if (effect < 10)
+								tier = 1;
+							else if (effect < 20)
+								tier = 2;
+							else if (effect < 50)
+								tier = 3;
+							else if (effect < 140)
+								tier = 4;
+							else
+								tier = 5;
+						}
+					}
+					else if (targeting == 0x02) // single enemy
+					{
+						if (elem == 0) // non-elemental tiers
+						{
+							if (effect < 15)
+								tier = 1;
+							else if (effect < 30)
+								tier = 2;
+							else if (effect < 60)
+								tier = 3;
+							else if (effect < 120)
+								tier = 4;
+							else
+								tier = 5;
+						}
+						else if ((elem & 0b01111000) != 0) // fire/ice/lit/death elemental - these elements are the easiest to find resistance against so they are the lowest value
+						{
+							if (effect < 20)
+								tier = 1;
+							else if (effect < 45)
+								tier = 2;
+							else if (effect < 90)
+								tier = 3;
+							else if (effect < 180)
+								tier = 4;
+							else
+								tier = 5;
+						}
+						else if ((elem & 0b10000111) != 0) // earth/time/poison/status element - these elements are harder for the player to resist so their value is increased
+						{
+							if (effect < 20)
+								tier = 1;
+							else if (effect < 40)
+								tier = 2;
+							else if (effect < 80)
+								tier = 3;
+							else if (effect < 160)
+								tier = 4;
+							else
+								tier = 5;
+						}
+					}
+				}
+				if (routine == 0x03 || routine == 0x12) // negative status effect OR power word spells (both are judged by the same criteria)
+				{
+					if ((effect & 0b11) != 0) // death/stone overrides all other statuses
+					{
+						if (targeting == 0x01) // all enemies
+						{
+							if (elem == 0) // non-elemental tiers
+								tier = 5; // all non-blockable instakills that target all are tier 5
+							else
+								tier = 4; // otherwise they are tier 4
+						}
+						else if (targeting == 0x02) // single enemy
+						{
+							if (elem == 0) // non-elemental tiers
+							{
+								if (accuracy < 48 && routine != 0x12)
+									tier = 4;
+								else
+									tier = 5; // tier 5 installkills need no element and reasonably high accuracy or must be power words
+							}
+							else // elemental single targets are tier 3 if they have low accuracy, and tier 4 if their accuracy is decent
+							{
+								if (accuracy < 32 && routine != 0x12)
+									tier = 3;
+								else
+									tier = 4;
+							}
+						}
+					}
+					else if ((effect & 0b00010000) != 0) // if no death/stone, then paralysis is the next effect and doesn't care about other effects
+					{
+						if (targeting == 0x01) // all enemies
+						{
+							if (elem == 0) // non-elemental tiers
+								tier = 4;
+							else
+							{
+								if (accuracy < 32 && routine != 0x12)
+									tier = 3;
+								else
+									tier = 4;
+							}
+						}
+						else if (targeting == 0x02) // single enemy
+						{
+							if (elem == 0) // non-elemental tiers
+								tier = 4;
+							else
+								tier = 3; // paralysis spells are always at least tier 3
+						}
+					}
+					else if ((effect & 0b01000000) != 0) // next is mute
+					{
+						if (targeting == 0x01) // all enemies
+						{
+							if (elem == 0) // non-elemental tiers
+								tier = 3; // all non-elemental mute is tier 3
+							else if ((elem & 0b01111000) != 0) // fire/ice/lit/death elemental - these elements are the easiest to find resistance against so they are the lowest value
+							{
+								if (routine == 0x12)
+									tier = 3;
+								else
+									tier = 2;
+							}
+							else if ((elem & 0b10000111) != 0) // earth/time/poison/status element - these elements are harder for the player to resist so their value is increased
+							{
+								if (routine == 0x12)
+									tier = 3;
+								else
+									tier = 2;
+							}
+						}
+						else if (targeting == 0x02) // single enemy
+						{
+							if (elem == 0) // non-elemental tiers
+							{
+								if (routine == 0x12)
+									tier = 3;
+								else
+									tier = 2;
+							}
+							else
+								tier = 1;
+						}
+					}
+					else if ((effect & 0b00100000) != 0) // then sleep
+					{
+						if (targeting == 0x01) // all enemies
+							tier = 2;
+						else if (targeting == 0x02) // single enemy
+							tier = 1;
+					}
+					else if ((effect & 0b00001000) != 0) // darkness rates lowest of the useful effects
+						tier = 1;
+					else
+						tier = 0; // and the AI doesn't care about inflicting poison or confusion through spells
+				}
+				if(routine == 0x04) // decrease speed (SLOW)
+				{
+					if (elem == 0) // only non-elemental slow gets preferential treatment, and it doesn't care about targeting
+					{
+						if (accuracy >= 48)
+							tier = 3;
+						else
+							tier = 2;
+					}
+					else
+						tier = 2;
+				}
+				if(routine == 0x07 || routine == 0x06) // HP Up (CURE, HEAL)
+				{
+					if (targeting == 0x04) // single caster
+					{
+						if (effect < 10)
+							tier = 0;
+						else if (effect < 30)
+							tier = 1;
+						else if (effect < 60)
+							tier = 2;
+						else if (effect < 120)
+							tier = 3;
+						else
+							tier = 4;
+					}
+					else if (targeting == 0x08) // all party
+					{
+						if (effect < 10)
+							tier = 0;
+						else if (effect < 20)
+							tier = 1;
+						else if (effect < 40)
+							tier = 2;
+						else if (effect < 80)
+							tier = 3;
+						else
+							tier = 4;
+					}
+					else if (targeting == 0x10)
+					{
+						if (effect < 10)
+							tier = 0;
+						else if (effect < 30)
+							tier = 1;
+						else if (effect < 60)
+							tier = 2;
+						else if (effect < 120)
+							tier = 3;
+						else
+							tier = 4;
+					}
+				}
+				if(routine == 0x08) // neutralize status
+				{
+					if (targeting == 0x08)
+					{
+						if ((effect & 0b11010000) != 0)
+							tier = 2; // removing confuse, mute, or stun on the party is a tier 2
+					}
+					else if (targeting == 0x10)
+					{
+						if ((effect & 0b11010000) != 0)
+							tier = 1; // removing confuse, mute, or stun on a single target is a tier 1
+					}
+				}
+				if(routine == 0x09) // armor up
+				{
+					if (targeting == 0x04)
+					{
+						if (effect < 8)
+							tier = 0;
+						else if (effect < 16)
+							tier = 1;
+						else if (effect < 24)
+							tier = 2;
+						else if (effect < 40)
+							tier = 3;
+						else
+							tier = 4;
+					}
+					else if (targeting == 0x08)
+					{
+						if (effect < 4)
+							tier = 0;
+						else if (effect < 8)
+							tier = 1;
+						else if (effect < 16)
+							tier = 2;
+						else if (effect < 30)
+							tier = 3;
+						else
+							tier = 4;
+					}
+					else if (targeting == 0x10)
+					{
+						if (effect < 8)
+							tier = 0;
+						else if (effect < 16)
+							tier = 1;
+						else if (effect < 24)
+							tier = 2;
+						else if (effect < 40)
+							tier = 3;
+						else
+							tier = 4;
+					}
+				}
+				if(routine == 0x0A) // resist element
+				{
+					if(targeting == 0x04) // self caster: resist all elements is tier 3, all other elements are tier 1
+					{
+						if (effect == 0xFF)
+							tier = 3;
+						else if (effect != 0x00)
+							tier = 1;
+					}
+					if (targeting == 0x08) // whole party: resist 6+ elements is tier 4, three resists or two base resists is tier 3, otherwise tier 2 unless no element
+					{
+						int baseresists = 0;
+						int resists = 0;
+						for (int i = 1; i < 4; ++i)
+						{
+							baseresists += (elem & (0b10000000 >> i)) != 0 ? 1 : 0;
+							resists += (elem & (0b10000000 >> i)) != 0 ? 1 : 0;
+						}
+						resists += (elem & 0b10000000) != 0 ? 1 : 0;
+						for (int i = 4; i < 8; ++i)
+						{
+							resists += (elem & (0b10000000 >> i)) != 0 ? 1 : 0;
+						}
+						if (resists > 5)
+							tier = 4;
+						else if (baseresists > 1 || resists > 2)
+							tier = 3;
+						else if (resists > 0)
+							tier = 2;
+					}
+					else if (targeting == 0x10) // single target: resist all elements is tier 4, all other elements are tier 2
+					{
+						if (effect == 0xFF)
+							tier = 4;
+						else if (effect != 0x00)
+							tier = 2;
+					}
+					else
+						tier = 0; // spells which assist the enemy are useless
+				}
+				if(routine == 0x0C) // FAST
+				{
+					if (targeting == 0x04 || targeting == 0x10)
+						tier = 3; // tier 3 fast is fair for a regular monster
+					else if (targeting == 0x08)
+						tier = 4; // multi-target fast is tier 4 though
+				}
+				if(routine == 0x0D) // attack up
+				{
+					if (targeting == 0x04 || targeting == 0x10)
+					{
+						if (effect < 6)
+							tier = 0;
+						else if (effect < 12)
+							tier = 1;
+						else if (effect < 20)
+							tier = 2;
+						else if (effect < 35)
+							tier = 3;
+						else
+							tier = 4;
+					}
+					else if (targeting == 0x08)
+					{
+						if (effect < 4)
+							tier = 0;
+						else if (effect < 12)
+							tier = 2;
+						else if (effect < 20)
+							tier = 3;
+						else
+							tier = 4;
+					}
+				}
+				if(routine == 0x0E) // reduce evasion (LOCK)
+				{
+					if (targeting == 0x04 || targeting == 0x08 || targeting == 0x10)
+					{
+						if (effect == 0)
+							tier = 0;
+						else if (effect < 25)
+							tier = 1;
+						else if (effect < 80)
+							tier = 2;
+						else if (elem == 0x00)
+							tier = 3; // only allow tier 3 for extremely strong locks with no element
+					}
+				}
+				if(routine == 0x0F) // HP Max (CUR4)
+				{
+					tier = 4; // CUR4 is always tier 4 from an enemy's perspective
+				}
+				if(routine == 0x10) // increase evasion (RUSE, INVS)
+				{
+					if (targeting == 0x04 || targeting == 0x10)
+					{
+						if (effect == 0)
+							tier = 0;
+						else if (effect < 25)
+							tier = 1;
+						else if (effect < 80)
+							tier = 2;
+						else
+							tier = 3; // only allow tier 3 for extremely strong evasion
+					}
+					else if (targeting == 0x08)
+					{
+						if (effect == 0)
+							tier = 0;
+						else if (effect < 25)
+							tier = 2;
+						else if (effect < 80)
+							tier = 3;
+						else
+							tier = 4;
+					}
+				}
+				if(routine == 0x11) // remove resistance (XFER)
+				{
+					if (targeting == 0x04 || targeting == 0x08 || targeting == 0x10)
+					{
+						if (elem == 0) // we only care about the element, it can target whatever it likes as long as it isn't a friendly
+							tier = 4;
+						else
+							tier = 3; 
+					}
+				}
+			}
 		}
 
 		public class EnemySkillInfo
@@ -630,7 +1056,7 @@ namespace FF1Lib
 			formationData[en.astos_encounter] = ENF_DrawBossEncounter(en, rng, enemy, Enemy.Astos, 1, 0x02, true, 4, 0x7D);
 			formationData[en.pirate_encounter] = ENF_DrawBossEncounter(en, rng, enemy, Enemy.Pirate, 9, 0x00, true, 4, 0x7E);
 			formationData[en.garland_encounter] = ENF_DrawBossEncounter(en, rng, enemy, Enemy.Garland, 1, 0x02, true, 4, 0x7F);
-			formationData[en.warmech_encounter] = ENF_DrawBossEncounter(en, rng, enemy, Enemy.WarMech, 1, 0x02, false, 4, en.warmech_encounter);
+			formationData[en.warmech_encounter] = ENF_DrawBossEncounter(en, rng, enemy, Enemy.WarMech, 1, 0x02, false, 75, en.warmech_encounter);
 			// reserve so many slots for different surprise rates and unrunnables
 			int[,] surprisetiers = { { 10, 19 }, { 24, 36 }, { 48, 62 }, { 70, 100 } };
 			const int surp1 = 9;
@@ -1775,7 +2201,7 @@ namespace FF1Lib
 			else if (tier >= 3 && tier <= 4)
 				return 0x0D; // tier 3-4 uses R.GOYLE script
 			else if (tier == 5)
-				return 0x19; // tier 5 uses MudGOL script
+				return 0x0C; // tier 5 uses WzVAMP script
 			else if (tier >= 6 && tier <= 7)
 				return 0x1D; // tier 6-7 uses MAGE script
 			else if (tier >= 8 && tier <= 9)
@@ -3498,17 +3924,6 @@ namespace FF1Lib
 			EnemyScriptInfo[] script = new EnemyScriptInfo[ScriptCount]; // list of enemy scripts
 			
 			// load vanilla values from ROM into the enemizer
-			byte[] spelltiers_enemy = new byte[]
-			{
-				1, 0, 1, 3, 1, 2, 1, 1,
-				0, 2, 2, 1, 2, 1, 2, 2,
-				2, 0, 2, 2, 3, 3, 3, 2,
-				0, 0, 2, 1, 2, 3, 0, 3,
-				3, 0, 0, 3, 4, 4, 0, 3,
-				0, 0, 3, 3, 4, 3, 4, 3,
-				4, 0, 3, 4, 4, 4, 2, 1,
-				0, 5, 4, 4, 5, 4, 4, 4
-			};
 			byte[] skilltiers_enemy = new byte[]
 			{
 				3, 2, 3, 1, 2, 1, 4, 3, 3, 4, 4, 4, 5, 3, 4, 3, 4, 4, 4, 1, 5, 2, 2, 1, 5, 5
@@ -3517,7 +3932,7 @@ namespace FF1Lib
 			{
 				spell[i] = new SpellInfo();
 				spell[i].decompressData(Get(MagicOffset + i * MagicSize, MagicSize));
-				spell[i].tier = spelltiers_enemy[i];
+				spell[i].calc_Enemy_SpellTier();
 			}
 			for(int i = 0; i < EnemySkillCount; ++i)
 			{
