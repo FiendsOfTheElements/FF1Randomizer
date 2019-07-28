@@ -167,6 +167,7 @@ namespace FF1Lib
 				}
 			}
 #endif
+
 			if (flags.EnemizerEnabled)
 			{
 				DoEnemizer(rng, flags.RandomizeEnemizer, flags.RandomizeFormationEnemizer);
@@ -201,6 +202,11 @@ namespace FF1Lib
 			if (flags.EnemySpellsTargetingAllies)
 			{
 				FixEnemyAOESpells();
+			}
+
+			if (true)
+			{
+				CraftNewSpellbook(rng, false, flags.RebalanceSpells);
 			}
 
 			if ((bool)flags.ItemMagic)

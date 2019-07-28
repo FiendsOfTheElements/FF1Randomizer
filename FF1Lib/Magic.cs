@@ -38,8 +38,6 @@ namespace FF1Lib
 			public byte TextPointer;
 		}
 
-		private readonly List<byte> _outOfBattleSpells = new List<byte> { 0, 16, 32, 48, 19, 51, 35, 24, 33, 56, 38, 40, 41 };
-
 		public void ShuffleMagicLevels(MT19337 rng, bool keepPermissions)
 		{
 			var magicSpells = GetSpells();
@@ -139,7 +137,7 @@ namespace FF1Lib
 			var outOfBattleSpellOffset = MagicOutOfBattleOffset;
 			for (int i = 0; i < MagicOutOfBattleCount; i++)
 			{
-				var oldSpellIndex = _outOfBattleSpells[i];
+				var oldSpellIndex = Data[outOfBattleSpellOffset] - 0xB0;
 				var newSpellIndex = newIndices[oldSpellIndex];
 
 				Put(outOfBattleSpellOffset, new[] { (byte)(newSpellIndex + 0xB0) });

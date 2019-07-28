@@ -74,14 +74,14 @@ namespace FF1Lib
 
 		public class SpellInfo
 		{
-			public byte accuracy;
-			public byte effect;
-			public byte elem;
-			public byte targeting;
-			public byte routine;
-			public byte gfx;
-			public byte palette;
-			public int tier;
+			public byte accuracy = 0;
+			public byte effect = 0;
+			public byte elem = 0;
+			public byte targeting = 0;
+			public byte routine = 0;
+			public byte gfx = 0;
+			public byte palette = 0;
+			public int tier = 0;
 
 			public byte[] compressData()
 			{
@@ -108,6 +108,7 @@ namespace FF1Lib
 					routine = 0x00;
 					gfx = 0x00;
 					palette = 0x00;
+					tier = 0;
 				}
 				else
 				{
@@ -123,7 +124,6 @@ namespace FF1Lib
 
 			public void calc_Enemy_SpellTier() // calculates the usefulness of a spell (from the perspective of a generic random encounter enemy)
 			{
-				// this function is incomplete, do not call it
 				tier = 0; // if no value is assigned by this routine, assume the spell is worthless
 				if (routine == 0x01) // inflict damage
 				{
@@ -227,10 +227,7 @@ namespace FF1Lib
 						{
 							if (elem == 0) // non-elemental tiers
 							{
-								if (accuracy < 48 && routine != 0x12)
-									tier = 4;
-								else
-									tier = 5; // tier 5 installkills need no element and reasonably high accuracy or must be power words
+								tier = 5; // non-elemental instakills are always considered tier 5
 							}
 							else // elemental single targets are tier 3 if they have low accuracy, and tier 4 if their accuracy is decent
 							{
@@ -245,15 +242,7 @@ namespace FF1Lib
 					{
 						if (targeting == 0x01) // all enemies
 						{
-							if (elem == 0) // non-elemental tiers
-								tier = 4;
-							else
-							{
-								if (accuracy < 32 && routine != 0x12)
-									tier = 3;
-								else
-									tier = 4;
-							}
+							tier = 4;
 						}
 						else if (targeting == 0x02) // single enemy
 						{
@@ -550,12 +539,12 @@ namespace FF1Lib
 
 		public class EnemySkillInfo
 		{
-			public byte accuracy;
-			public byte effect;
-			public byte elem;
-			public byte targeting;
-			public byte routine;
-			public int tier;
+			public byte accuracy = 0;
+			public byte effect = 0;
+			public byte elem = 0;
+			public byte targeting = 0;
+			public byte routine = 0;
+			public int tier = 0;
 
 			public byte[] compressData()
 			{
