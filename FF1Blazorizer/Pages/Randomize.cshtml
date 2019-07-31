@@ -463,8 +463,10 @@
 							<div class="checkbox-cell"></div>
 							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="DisableTentSaving" bind-Value="@Flags.DisableTentSaving">Disable Tent/Cabin/House Saving on Overworld</CheckBox>
 							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="DisableInnSaving" bind-Value="@Flags.DisableInnSaving">Disable Inn Saving</CheckBox>
-							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="RandomizeFormationEnemizer" bind-Value="@Flags.RandomizeFormationEnemizer">Randomize Formations (Enemizer)</CheckBox>
-							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="RandomizeEnemizer" IsEnabled="@Flags.RandomizeFormationEnemizer" bind-Value="@Flags.RandomizeEnemizer">Randomize Enemies (Enemizer)</CheckBox>
+							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="RandomizeFormationEnemizer" bind-Value="@Flags.RandomizeFormationEnemizer">Generate New Formations (Enemizer)</CheckBox>
+							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="RandomizeEnemizer" IsEnabled="@Flags.RandomizeFormationEnemizer" bind-Value="@Flags.RandomizeEnemizer">Generate New Enemies (Enemizer)</CheckBox>
+							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="GenerateNewSpellbook" bind-Value="@Flags.GenerateNewSpellbook">Generate New Spellbook (Spellcrafter)</CheckBox>
+							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="SpellcrafterMixSpells" IsEnabled="@Flags.GenerateNewSpellbook" bind-Value="@Flags.SpellcrafterMixSpells">Mix spellbooks (Spellcrafter)</Checkbox>
 						</div>
 						<div class="col-md-12">
 						</div>
