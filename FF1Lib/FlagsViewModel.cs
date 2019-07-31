@@ -1821,6 +1821,24 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomizeFormationEnemizer"));
 			}
 		}
+		public bool GenerateNewSpellbook
+		{
+			get => Flags.GenerateNewSpellbook;
+			set
+			{
+				Flags.GenerateNewSpellbook = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("GenerateNewSpellbook"));
+			}
+		}
+		public bool SpellcrafterMixSpells
+		{
+			get => Flags.SpellcrafterMixSpells;
+			set
+			{
+				Flags.SpellcrafterMixSpells = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SpellcrafterMixSpells"));
+			}
+		}
 		public bool ThiefHitRate
 		{
 			get => Flags.ThiefHitRate;

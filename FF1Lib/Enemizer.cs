@@ -601,6 +601,7 @@ namespace FF1Lib
 			public byte elem_weakness;
 			public byte elem_resist;
 			public int tier; // enemy's tier rating, used by Enemizer to determine stats and Formation Generator to enforce certain placement rules
+			public int skilltier = 0;
 			public byte image; // the image used by this image, of the 52 unique monster images available to normal enemies (does not include fiends or chaos).
 			public byte pal; // the palette normally used by this enemy.  this and the enemy's image are not stored in game data directly, rather they are implied by data in the formations
 
@@ -815,9 +816,10 @@ namespace FF1Lib
 			public int maxXP; // maximum XP yield for this zone
 			public List<byte> zonemons; // monsters that are compatible with this zone
 			public int[] addr; // list of addresses this zone writes to
-			public Enemizer_Zone(int mincount, int maxcount, int zminXP, int zmidXP, int zmaxXP)
+			public int zoneskillmax; // highest skill/spell tier allowed for this zone
+			public Enemizer_Zone(int mincount, int maxcount, int zminXP, int zmidXP, int zmaxXP, int zskillmax)
 			{
-				min = mincount; max = maxcount; minXP = zminXP; midXP = zmidXP; maxXP = zmaxXP;
+				min = mincount; max = maxcount; minXP = zminXP; midXP = zmidXP; maxXP = zmaxXP; zoneskillmax = zskillmax;
 				forms = new List<byte> { };
 				zonemons = new List<byte> { };
 			}
@@ -858,23 +860,23 @@ namespace FF1Lib
 				}
 				int[] zonecountmin = new int[11] { 12, 36, 18, 12, 14, 12, 12, 22, 14, 10, 14 };
 				int[] zonecountmax = new int[11] { 18, 48, 27, 18, 21, 18, 18, 33, 21, 15, 21 };
-				int[,] zonexpreqs = new int[11, 3]
+				int[,] zonexpreqs = new int[11, 4]
 				{
-					{18, 24, 300}, // early game
-					{150, 300, 700}, // ocean/pravoka/elfland/marsh
-					{500, 800, 1400}, // melmond and other overworld area
-					{600, 1200, 2400}, // earth cave
-					{800, 2000, 4000}, // crescent/onrac/cardia/power peninsula overworld
-					{1200, 1500, 3600}, // gurgu/river south
-					{1350, 2800, 4800}, // ordeals ice waterfall
-					{1050, 2500, 5200}, // lefein/mirage desert/gaia overworld/river north
-					{2400, 3600, 7200}, // mirage tower and sea shrine
-					{2400, 4800, 10000}, // sky castle
-					{6000, 6001, 32000}, // tofr
+					{18, 24, 300, 2}, // early game
+					{150, 300, 700, 2}, // ocean/pravoka/elfland/marsh
+					{500, 800, 1400, 3}, // melmond and other overworld area
+					{600, 1200, 2400, 3}, // earth cave
+					{800, 2000, 4000, 5}, // crescent/onrac/cardia/power peninsula overworld
+					{1200, 1500, 3600, 5}, // gurgu/river south
+					{1350, 2800, 4800, 5}, // ordeals ice waterfall
+					{1050, 2500, 5200, 5}, // lefein/mirage desert/gaia overworld/river north
+					{2400, 3600, 7200, 5}, // mirage tower and sea shrine
+					{2400, 4800, 10000, 5}, // sky castle
+					{6000, 6001, 32000, 5}, // tofr
 				};
 				for (int i = 0; i < 11; ++i)
 				{
-					zone.Add(new Enemizer_Zone(zonecountmin[i], zonecountmax[i], zonexpreqs[i, 0], zonexpreqs[i, 1], zonexpreqs[i, 2]));
+					zone.Add(new Enemizer_Zone(zonecountmin[i], zonecountmax[i], zonexpreqs[i, 0], zonexpreqs[i, 1], zonexpreqs[i, 2], zonexpreqs[i, 3]));
 				}
 				zone[0].addr = new int[] { 0x0D8, 0x120, 0x128, 0x130, 0x260 };
 				zone[1].addr = new int[] { 0x0E8, 0x1E0, 0x118, 0x158, 0x168, 0x170, 0x190, 0x198, 0x1A0, 0x1D0, 0x1D8, 0x210, 0x2B0, 0x2D8, 0x2E0 };
@@ -1024,7 +1026,7 @@ namespace FF1Lib
 				int limit = enemy[mon].Large ? 4 : 9;
 				for (int i = 0; i < en.zone.Count; ++i)
 				{
-					if (enemy[mon].exp <= (en.zone[i].maxXP * 2) / 3 && enemy[mon].exp * limit >= en.zone[i].midXP)
+					if (enemy[mon].exp <= (en.zone[i].maxXP * 2) / 3 && enemy[mon].exp * limit >= en.zone[i].midXP && enemy[mon].skilltier <= en.zone[i].zoneskillmax)
 					{
 						en.zone[i].zonemons.Add(mon);
 						en.enemyZones[mon].Add(i);
@@ -2510,7 +2512,7 @@ namespace FF1Lib
 							perks.Add(MonsterPerks.PERK_MUTETOUCH);
 							break;
 						case 7: // Oddeye
-							enemyNames[i] = "EYE";
+							enemyNames[i] = "EYES";
 							enemy[i].num_hits = rng.Between(1, 4);
 							enemy[i].critrate = 1;
 							enemy[i].damage = ENE_rollEnemyStrength(enemy[i].tier, 2);
@@ -2742,7 +2744,7 @@ namespace FF1Lib
 							enemy[i].elem_weakness = 0b00010000;
 							break;
 						case 19: // Eyes that are totally not Beholders plz no sue
-							enemyNames[i] = "DRUJ";
+							enemyNames[i] = "EYE";
 							enemy[i].num_hits = 1;
 							enemy[i].critrate = 1;
 							enemy[i].damage = ENE_rollEnemyStrength(enemy[i].tier, 4);
@@ -2769,7 +2771,7 @@ namespace FF1Lib
 							enemyNames[i] = "LAMIA";
 							enemy[i].num_hits = rng.Between(0, 1) == 1 ? 1 : rng.Between(6, 10);
 							enemy[i].critrate = rng.Between(1, 5);
-							enemy[i].damage = ENE_rollEnemyStrength(enemy[i].tier, 4);
+							enemy[i].damage = enemy[i].num_hits > 1 ? ENE_rollEnemyStrength(enemy[i].tier, 3) : ENE_rollEnemyStrength(enemy[i].tier, 4);
 							enemy[i].accuracy = ENE_rollEnemyAccuracy(enemy[i].tier, 2);
 							enemy[i].absorb = ENE_rollEnemyAbsorb(enemy[i].tier, 2);
 							enemy[i].agility = ENE_rollEnemyEvade(enemy[i].tier, 5);
@@ -3262,7 +3264,7 @@ namespace FF1Lib
 							enemyNames[i] = "BEAST";
 							enemy[i].num_hits = 4;
 							enemy[i].critrate = rng.Between(1, 3);
-							enemy[i].damage = ENE_rollEnemyStrength(enemy[i].tier, 6);
+							enemy[i].damage = ENE_rollEnemyStrength(enemy[i].tier, 5);
 							enemy[i].accuracy = ENE_rollEnemyAccuracy(enemy[i].tier, 6);
 							enemy[i].absorb = ENE_rollEnemyAbsorb(enemy[i].tier, 4);
 							enemy[i].agility = ENE_rollEnemyEvade(enemy[i].tier, 6);
@@ -3366,8 +3368,8 @@ namespace FF1Lib
 							enemy[i].atk_elem = 0b00000000;
 							enemy[i].atk_ailment = 0b00000000;
 							enemy[i].monster_type = 0b00000000;
-							enemy[i].elem_resist = 0b11111011;
-							if (enemy[i].absorb > 60)
+							enemy[i].elem_resist = 0b01111011;
+							if (enemy[i].absorb > (enemy[i].tier < 3 ? 30 : 60))
 							{
 								switch (rng.Between(0, 2))
 								{
@@ -3824,6 +3826,29 @@ namespace FF1Lib
 					enemy[i].hp = rng.Between(enemy[i].hp - enemy[i].hp / 30, enemy[i].hp + enemy[i].hp / 30); // variance for hp rating
 					enemy[i].gp = rng.Between(enemy[i].gp - enemy[i].gp / 20, enemy[i].gp + enemy[i].gp / 20); // variance for gp reward
 					enemy[i].exp = rng.Between(enemy[i].exp - enemy[i].exp / 40, enemy[i].exp + enemy[i].exp / 40); // variance for exp reward
+					if(enemy[i].AIscript != 0xFF)
+					{
+						Console.WriteLine(enemy[i].AIscript);
+						// determine skill tier
+						int highestTier = 0;
+						foreach(byte id in script[enemy[i].AIscript].skill_list)
+						{
+							Console.WriteLine(id);
+							if (id == 0xFF)
+								continue;
+							if (skill[id].tier > highestTier)
+								highestTier = skill[id].tier;
+						}
+						foreach(byte id in script[enemy[i].AIscript].spell_list)
+						{
+							Console.WriteLine(id);
+							if (id == 0xFF)
+								continue;
+							if (spell[id].tier > highestTier)
+								highestTier = spell[id].tier;
+						}
+						enemy[i].skilltier = highestTier;
+					}
 				}
 			}
 			for (int i = 0; i < GenericTilesetsCount; ++i) // remove palettes from tilesets where there are no mons using those palettes
@@ -3855,31 +3880,6 @@ namespace FF1Lib
 			// skills will remain the same
 			for (int i = 0; i < ScriptCount - 10; ++i) // exclude the last 10 scripts
 			{
-				if (script[i].spell_chance == 0)
-				{
-					byte whichSpell = 0; // index for CURE, a tier 1 enemy spell
-					switch (skill[script[i].skill_list[0]].tier)
-					{
-						case 2:
-							whichSpell = 5; // these are just spell indices of spells that correspond to the tier, we will replace them later
-							break;
-						case 3:
-							whichSpell = 21;
-							break;
-						case 4:
-							whichSpell = 37;
-							break;
-						case 5:
-							whichSpell = 0xFF; // if a tier 5 is encountered, we don't fill the spell list (the skill is nasty enough!) - by default this only applies to warmech
-							break;
-					}
-					for (byte j = 0; j < 8; ++j)
-					{
-						script[i].spell_list[j] = whichSpell;
-					}
-					if (whichSpell != 0xFF)
-						script[i].spell_chance = 24;
-				}
 				// start replacing each spell with another spell from the same tier
 				for (byte j = 0; j < 8; ++j)
 				{

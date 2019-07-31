@@ -219,6 +219,8 @@ namespace FF1Lib
 		public bool DisableInnSaving { get; set; } = false;
 		public bool RandomizeEnemizer { get; set; } = false;
 		public bool RandomizeFormationEnemizer { get; set; } = false;
+		public bool GenerateNewSpellbook { get; set; } = false;
+		public bool SpellcrafterMixSpells { get; set; } = false;
 		public bool ThiefHitRate { get; set; } = false;
 
 		public MDEFGrowthMode MDefMode { get; set; } = MDEFGrowthMode.None;
