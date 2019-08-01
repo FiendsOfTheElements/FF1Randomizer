@@ -204,9 +204,9 @@ namespace FF1Lib
 				FixEnemyAOESpells();
 			}
 
-			if (true)
+			if (flags.GenerateNewSpellbook)
 			{
-				CraftNewSpellbook(rng, false, flags.RebalanceSpells);
+				CraftNewSpellbook(rng, flags.SpellcrafterMixSpells, flags.RebalanceSpells, ((bool)flags.MagicLevels));
 			}
 
 			if ((bool)flags.ItemMagic)
