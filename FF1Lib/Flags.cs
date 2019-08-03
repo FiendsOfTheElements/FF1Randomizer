@@ -636,6 +636,8 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.DisableInnSaving);
 			sum = AddBoolean(sum, flags.RandomizeEnemizer);
 			sum = AddBoolean(sum, flags.RandomizeFormationEnemizer);
+			sum = AddBoolean(sum, flags.GenerateNewSpellbook);
+			sum = AddBoolean(sum, flags.SpellcrafterMixSpells);
 			sum = AddBoolean(sum, flags.ThiefHitRate);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(FormationShuffleMode)).Cast<int>().Max() + 1, (int)flags.FormationShuffleMode);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(MDEFGrowthMode)).Cast<int>().Max() + 1, (int)flags.MDefMode);
@@ -660,6 +662,8 @@ namespace FF1Lib
 				MDefMode = (MDEFGrowthMode)GetNumeric(ref sum, Enum.GetValues(typeof(MDEFGrowthMode)).Cast<int>().Max() + 1),
 				FormationShuffleMode = (FormationShuffleMode)GetNumeric(ref sum, Enum.GetValues(typeof(FormationShuffleMode)).Cast<int>().Max() + 1),
 				ThiefHitRate = GetBoolean(ref sum),
+				SpellcrafterMixSpells = GetBoolean(ref sum),
+				GenerateNewSpellbook = GetBoolean(ref sum),
 				RandomizeEnemizer = GetBoolean(ref sum),
 				RandomizeFormationEnemizer = GetBoolean(ref sum),
 				DisableInnSaving = GetBoolean(ref sum),
