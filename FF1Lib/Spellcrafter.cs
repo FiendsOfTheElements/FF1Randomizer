@@ -189,7 +189,7 @@ namespace FF1Lib
 			spellindex.Remove(purespell);
 			selected = spellindex.Where(id => WhiteSpell(id) && id < 40 && id > 15).ToList().PickRandom(rng);
 			spell[selected].accuracy = 0xFF;
-			spellNames[selected] = levelShuffle ? "LIF" + SpellTier(selected).ToString() : "LIFE";
+			spellNames[selected] = levelShuffle ? "LIF" + (SpellTier(selected) + 1).ToString() : "LIFE";
 			spellMessages[selected] = 0x4A; // Ineffective now
 			SPCR_SetPermissionFalse(spellPermissions, selected, 6); // knight banned
 			SPCR_SetPermissionFalse(spellPermissions, selected, 9); // red wizard banned
@@ -197,7 +197,7 @@ namespace FF1Lib
 			spellindex.Remove(selected);
 			selected = spellindex.Where(id => WhiteSpell(id) && id > 47).ToList().PickRandom(rng);
 			spell[selected].accuracy = 0xFF;
-			spellNames[selected] = levelShuffle ? "LIF" + SpellTier(selected).ToString() : "LIF2";
+			spellNames[selected] = levelShuffle ? "LIF" + (SpellTier(selected) + 1).ToString() : "LIF2";
 			spellMessages[selected] = 0x4A; // Ineffective now
 			SPCR_SetPermissionFalse(spellPermissions, selected, 3); // red mage banned
 			SPCR_SetPermissionFalse(spellPermissions, selected, 4); // white mage banned
@@ -207,7 +207,7 @@ namespace FF1Lib
 			spellindex.Remove(selected);
 			selected = spellindex.Where(id => id % 8 > 3 && id > 31).ToList().PickRandom(rng); // warp will appear in black magic regardless of whether we mix spells or not
 			spell[selected].accuracy = 0xFF;
-			spellNames[selected] = levelShuffle ? "WRP" + SpellTier(selected).ToString() : "WARP";
+			spellNames[selected] = levelShuffle ? "WRP" + (SpellTier(selected) + 1).ToString() : "WARP";
 			spellMessages[selected] = 0x4A; // Ineffective now
 			SPCR_SetPermissionFalse(spellPermissions, selected, 3); // red mage banned
 			SPCR_SetPermissionFalse(spellPermissions, selected, 4); // white mage banned
@@ -216,7 +216,7 @@ namespace FF1Lib
 			spellindex.Remove(selected);
 			selected = spellindex.Where(id => WhiteSpell(id) && id < 48).ToList().PickRandom(rng);
 			spell[selected].accuracy = 0xFF;
-			spellNames[selected] = levelShuffle ? "SFT" + SpellTier(selected).ToString() : "SOFT";
+			spellNames[selected] = levelShuffle ? "SFT" + (SpellTier(selected) + 1).ToString() : "SOFT";
 			spellMessages[selected] = 0x4A; // Ineffective now
 			SPCR_SetPermissionFalse(spellPermissions, selected, 3); // red mage banned
 			SPCR_SetPermissionFalse(spellPermissions, selected, 9); // red wizard banned
@@ -224,7 +224,7 @@ namespace FF1Lib
 			spellindex.Remove(selected);
 			selected = spellindex.Where(id => id % 8 < 4 && id > 31).ToList().PickRandom(rng); // exit will appear in white magic regardless of whether we mix spells or not
 			spell[selected].accuracy = 0xFF;
-			spellNames[selected] = levelShuffle ? "EXT" + SpellTier(selected).ToString() : "EXIT";
+			spellNames[selected] = levelShuffle ? "EXT" + (SpellTier(selected) + 1).ToString() : "EXIT";
 			spellMessages[selected] = 0x4A; // Ineffective now
 			SPCR_SetPermissionFalse(spellPermissions, selected, 3); // red mage banned
 			SPCR_SetPermissionFalse(spellPermissions, selected, 4); // white mage banned
@@ -2002,7 +2002,7 @@ namespace FF1Lib
 		{
 
 			spell.accuracy = 40;
-			spell.effect = (byte)(12 * (tier + 2));
+			spell.effect = (byte)(20 * (tier + 1));
 			if (tier == 7)
 				spell.effect = (byte)(spell.effect + spell.effect / 2);
 			spell.targeting = 0x01;
