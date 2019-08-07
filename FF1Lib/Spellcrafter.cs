@@ -192,7 +192,7 @@ namespace FF1Lib
 			spellNames[selected] = levelShuffle ? "LIF" + (SpellTier(selected) + 1).ToString() : "LIFE";
 			spellMessages[selected] = 0x4A; // Ineffective now
 			SPCR_SetPermissionFalse(spellPermissions, selected, 6); // knight banned
-			SPCR_SetPermissionFalse(spellPermissions, selected, 9); // red wizard banned
+			SPCR_SetPermissionFalse(spellPermissions, selected, 3); // red mage banned
 			Put(MagicOutOfBattleOffset + MagicOutOfBattleSize * 8, new[] { (byte)(selected + 0xB0) });
 			spellindex.Remove(selected);
 			selected = spellindex.Where(id => WhiteSpell(id) && id > 47).ToList().PickRandom(rng);
