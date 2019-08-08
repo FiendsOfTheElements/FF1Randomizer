@@ -448,7 +448,7 @@ namespace FF1Lib
 									validElements.Add(0b00000010);
 								}
 								if (SpellTier(index) > 4)
-									validElements.Add(0b00100000);
+									validElements.Add(0b00000100);
 								if (SpellTier(index) > 5)
 									validElements.Add(0b00100000);
 								if (SpellTier(index) > 6)
