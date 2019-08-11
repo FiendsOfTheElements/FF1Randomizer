@@ -316,7 +316,7 @@ namespace FF1Lib
 							validroutines.Add(0x0E);
 						else
 						{
-							if (SpellTier(lockspell) - SpellTier(index) > -2 || SpellTier(lockspell) - SpellTier(index) < 2)
+							if (SpellTier(lockspell) - SpellTier(index) > 2 || SpellTier(lockspell) - SpellTier(index) < -2)
 								validroutines.Add(0x0E);
 						}
 					}					
