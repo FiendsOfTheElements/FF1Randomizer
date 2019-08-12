@@ -1842,7 +1842,7 @@ namespace FF1Lib
 				spell.targeting = 0x01;
 			else
 			{
-				if (tier < 2 || tier < 5 && element == 0)
+				if (tier < 2)
 					spell.targeting = 0x02;
 				else
 					spell.targeting = (byte)(rng.Between(0, 2) == 0 ? 0x02 : 0x01);
@@ -1882,13 +1882,13 @@ namespace FF1Lib
 					switch(tier)
 					{
 						case 2:
-							spell.effect = (byte)rng.Between(20, 25);
+							spell.effect = (byte)rng.Between(25, 30);
 							break;
 						case 3:
-							spell.effect = (byte)rng.Between(30, 36);
+							spell.effect = (byte)rng.Between(35, 40);
 							break;
 						case 4:
-							spell.effect = (byte)rng.Between(40, 48);
+							spell.effect = (byte)rng.Between(48, 52);
 							break;
 						case 5:
 							spell.effect = (byte)rng.Between(60, 72);
@@ -1906,6 +1906,15 @@ namespace FF1Lib
 				{
 					switch (tier)
 					{
+						case 2:
+							spell.effect = 24;
+							break;
+						case 3:
+							spell.effect = 32;
+							break;
+						case 4:
+							spell.effect = 46;
+							break;
 						case 5:
 							spell.effect = 60;
 							break;
@@ -1916,7 +1925,10 @@ namespace FF1Lib
 							spell.effect = (byte)rng.Between(90, 120);
 							break;
 					}
-					spell.accuracy = 107;
+					if (tier < 5)
+						spell.accuracy = 40;
+					else
+						spell.accuracy = 107;
 				}
 			}
 			else
@@ -1972,16 +1984,16 @@ namespace FF1Lib
 							spell.effect = 50;
 							break;
 						case 4:
-							spell.effect = 62;
+							spell.effect = 64;
 							break;
 						case 5:
-							spell.effect = 75;
+							spell.effect = 80;
 							break;
 						case 6:
-							spell.effect = 100;
+							spell.effect = 108;
 							break;
 						case 7:
-							spell.effect = 140;
+							spell.effect = 152;
 							break;
 					}
 					if (tier > 4 && spell.elem == 0)
