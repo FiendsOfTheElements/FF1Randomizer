@@ -316,7 +316,7 @@ namespace FF1Lib
 							validroutines.Add(0x0E);
 						else
 						{
-							if (SpellTier(lockspell) - SpellTier(index) > 2 || SpellTier(lockspell) - SpellTier(index) < -2)
+							if (Math.Abs(SpellTier(lockspell) - SpellTier(index)) > 2)
 								validroutines.Add(0x0E);
 						}
 					}					
@@ -404,7 +404,7 @@ namespace FF1Lib
 					}
 					if(routine == 0x02) // damage undead (or other enemy type)
 					{
-						if (harmspell.Exists(i => BlackSpell(index) == BlackSpell(i) && SpellTier(index) - SpellTier(i) < 2 && SpellTier(index) - SpellTier(i) > -2))
+						if (harmspell.Exists(i => BlackSpell(index) == BlackSpell(i) && Math.Abs(SpellTier(index) - SpellTier(i)) < 2))
 						{
 							validroutines.Remove(0x02); // don't pick this routine again
 							validroutines.Remove(0x02);
@@ -422,11 +422,11 @@ namespace FF1Lib
 							validStatuses.Add(0b10000000);
 						if (rollDarknessSpell && BlackSpell(index) && SpellTier(index) < 2)
 							validStatuses.Add(0b00001000);
-						if (!stunspell.Exists(id => SpellTier(index) - SpellTier(id) > -2 && SpellTier(index) - SpellTier(id) < 2) && SpellTier(index) > 1 && BlackSpell(index))
+						if (!stunspell.Exists(id => Math.Abs(SpellTier(index) - SpellTier(id)) < 2) && SpellTier(index) > 1 && BlackSpell(index))
 							validStatuses.Add(0b00010000);
 						if (SpellTier(index) < 4 && sleepspell != -2)
 							validStatuses.Add(0b00100000);
-						if (SpellTier(index) < 4 && !mutespell.Exists(id => SpellTier(index) - SpellTier(id) > -2 && SpellTier(index) - SpellTier(id) < 2))
+						if (SpellTier(index) < 4 && !mutespell.Exists(id => Math.Abs(SpellTier(index) - SpellTier(id)) < 2))
 							validStatuses.Add(0b01000000);
 						if (SpellTier(index) > 2 && BlackSpell(index) && !killspell.Exists(id => SpellTier(id) == SpellTier(index) && BlackSpell(index) == BlackSpell(index)))
 							validStatuses.Add(0b00000001);
@@ -457,7 +457,7 @@ namespace FF1Lib
 									validElements.Add(0b00000000);
 								}
 								elem = validElements.PickRandom(rng);
-								if (killspell.Exists(id => SpellTier(id) - SpellTier(index) < 2 && SpellTier(id) - SpellTier(index) > -2 && spell[id].elem == elem))
+								if (killspell.Exists(id => Math.Abs(SpellTier(id) - SpellTier(index)) < 2 && spell[id].elem == elem))
 									continue; // continue if there is a kill spell of the same element within this or an adjacent tier
 								SPCR_SetPermissionFalse(spellPermissions, index, 3); // red mage banned
 								SPCR_SetPermissionFalse(spellPermissions, index, 9); // red wizard banned
@@ -1000,9 +1000,9 @@ namespace FF1Lib
 						}
 						if (targeting == 0x04)
 						{
-							if (selfdefenseupspell.Exists(id => SpellTier(id) - SpellTier(index) > -3 && SpellTier(id) - SpellTier(index) < 3))
+							if (selfdefenseupspell.Exists(id => Math.Abs(SpellTier(id) - SpellTier(index)) < 3))
 							{
-								if (defenseupspell.Exists(id => SpellTier(id) - SpellTier(index) > -3 && SpellTier(id) - SpellTier(index) < 3))
+								if (defenseupspell.Exists(id => Math.Abs(SpellTier(id) - SpellTier(index)) < 3))
 								{
 									validroutines.Remove(0x09);
 									continue;
@@ -1013,9 +1013,9 @@ namespace FF1Lib
 						}
 						else
 						{
-							if (defenseupspell.Exists(id => SpellTier(id) - SpellTier(index) > -3 && SpellTier(id) - SpellTier(index) < 3))
+							if (defenseupspell.Exists(id => Math.Abs(SpellTier(id) - SpellTier(index)) < 3))
 							{
-								if (selfdefenseupspell.Exists(id => SpellTier(id) - SpellTier(index) > -3 && SpellTier(id) - SpellTier(index) < 3))
+								if (selfdefenseupspell.Exists(id => Math.Abs(SpellTier(id) - SpellTier(index)) < 3))
 								{
 									validroutines.Remove(0x09);
 									continue;
@@ -1128,7 +1128,7 @@ namespace FF1Lib
 					}
 					if(routine == 0x0D) // attack up (TMPR, SABR)
 					{
-						if (attackupspell.Exists(id => SpellTier(id) - SpellTier(index) < 3 && SpellTier(id) - SpellTier(index) > -3))
+						if (attackupspell.Exists(id => Math.Abs(SpellTier(id) - SpellTier(index)) < 3))
 						{
 							validroutines.Remove(0x0D);
 							continue;
@@ -1178,9 +1178,9 @@ namespace FF1Lib
 						}
 						if(targeting == 0x04)
 						{
-							if(selfevasionspell.Exists(id => SpellTier(id) - SpellTier(index) > -3 && SpellTier(id) - SpellTier(index) < 3))
+							if(selfevasionspell.Exists(id => Math.Abs(SpellTier(id) - SpellTier(index)) < 3))
 							{
-								if (evasionspell.Exists(id => SpellTier(id) - SpellTier(index) > -3 && SpellTier(id) - SpellTier(index) < 3))
+								if (evasionspell.Exists(id => Math.Abs(SpellTier(id) - SpellTier(index)) < 3))
 								{
 									validroutines.Remove(0x10);
 									continue;
@@ -1192,9 +1192,9 @@ namespace FF1Lib
 						else
 						{
 
-							if (evasionspell.Exists(id => SpellTier(id) - SpellTier(index) > -3 && SpellTier(id) - SpellTier(index) < 3))
+							if (evasionspell.Exists(id => Math.Abs(SpellTier(id) - SpellTier(index)) < 3))
 							{
-								if (selfevasionspell.Exists(id => SpellTier(id) - SpellTier(index) > -3 && SpellTier(id) - SpellTier(index) < 3))
+								if (selfevasionspell.Exists(id => Math.Abs(SpellTier(id) - SpellTier(index)) < 3))
 								{
 									validroutines.Remove(0x10);
 									continue;
