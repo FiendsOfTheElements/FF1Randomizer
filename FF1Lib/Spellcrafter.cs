@@ -2057,7 +2057,7 @@ namespace FF1Lib
 
 		public void SPCR_CraftFastSpell(SpellInfo spell, int tier)
 		{
-			if (tier < 3)
+			if (tier < 4)
 				spell.targeting = 0x04;
 			else if (tier < 7)
 				spell.targeting = 0x10;
