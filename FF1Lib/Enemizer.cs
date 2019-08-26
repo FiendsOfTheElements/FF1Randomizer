@@ -2327,6 +2327,8 @@ namespace FF1Lib
 					{
 						case Enemy.Imp:
 							enemyNames[i] = "BUM";
+							enemy[i].elem_weakness = 0b11111111;
+							enemy[i].monster_type = 0b11111111;
 							break;
 						case Enemy.Pirate:
 							break;
