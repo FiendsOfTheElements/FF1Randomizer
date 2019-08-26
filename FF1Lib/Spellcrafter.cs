@@ -60,7 +60,7 @@ namespace FF1Lib
 					spellPermissions[i] = 0x0F; // white mage can learn all white magic between tiers 1 and 6 except WARP, EXIT, CUR4, LIF2 and some tier 7 spell effects
 				else if (i >= 40 && i < 46)
 					spellPermissions[i] = 0xF0; // black mage can learn all black magic between tiers 1 and 6 except WARP, EXIT, CUR4, LIF2 and some tier 7 spell effects
-				else if (i >= 48 && i < 52)
+				else if (i >= 48 && i < 51)
 					spellPermissions[i] = 0x0F; // knight can learn all white magic between tiers 1 and 3 (their permissions will never be revoked)
 				else if (i >= 56 && i < 60)
 					spellPermissions[i] = 0xF0; // ninja can learn all black magic between tiers 1 and 4 (their permissions will never be revoked)
