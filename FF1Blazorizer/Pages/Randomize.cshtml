@@ -504,7 +504,6 @@
 	private Flags DefaultFlags;
 
 	private readonly List<string> activeTabs = new List<string> {"Shuffle", "Treasures", "Goal", "Map", "Scale" };
-	private readonly Random _rng = new Random();
 
 	private string StatusMessage = "";
 	private string RomMessage = "Upload Rom:";
@@ -617,7 +616,7 @@
 
 	async Task OnNewSeed(UIMouseEventArgs e)
 	{
-		await ValidateSeed(Convert.ToString(_rng.Next(), 16).PadLeft(8, '0'));
+		await ValidateSeed(Blob.Random(4).ToHex());
 	}
 
 	void OnCopyToClipboard(UIMouseEventArgs e)
