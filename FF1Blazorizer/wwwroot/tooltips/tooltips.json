@@ -711,8 +711,8 @@
 	},
 	{
 		"Id": "buyTenCheckBox",
-		"title": "Buy Ten Convenience",
-		"description": "If enabled, the player has the option to buy 10 of an item at once in the item shop, so they do not need to spend a long time buying 99 heal potions."
+		"title": "Item Shop Enhancement",
+		"description": "If enabled, the shop will offer an option to buy items in bulk.  This saves times when stocking up on potions and other items."
 	},
 	{
 		"Id": "waitWhenUnrunnableCheckBox",
