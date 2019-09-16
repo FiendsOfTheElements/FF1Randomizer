@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using FF1Lib.Procgen;
 using RomUtilities;
 using static FF1Lib.FF1Text;
 
@@ -103,6 +104,7 @@ namespace FF1Lib
 		MarshCaveOOB = 0x3F,
 		EarthCaveRandomEncounters = 0x41,
 		WaterfallInside = 0x46,
+		WaterfallSpikeTile = 0x48,
 		WaterfallRandomEncounters = 0x49
 	}
 
@@ -110,7 +112,15 @@ namespace FF1Lib
 	{
 		Vanilla,
 		Patrolling,
-		Required
+		Required,
+		Unleashed
+	}
+
+	public enum SkyCastle4FMazeMode
+	{
+		Normal,
+		Teleporters,
+		Maze
 	}
 
 	public struct NPC
@@ -318,6 +328,58 @@ namespace FF1Lib
 			Put(TeleportOffset + TeleportCount + LostTeleportIndex, new byte[] { 0x12 });
 		}
 
+		public void DoSkyCastle4FMaze(MT19337 rng, List<Map> maps)
+		{
+			var map = maps[(int)MapId.SkyPalace4F];
+			var walls = Maze.DoSkyCastle4FMaze(rng);
+
+			// We make two passes and do vertical walls, then horizontal walls, because it works
+			// out nicely if we just let the horizontal wall tiles overwrite the vertical ones
+			// at the corners.
+			foreach (var wall in walls)
+			{
+				if (wall.one.Item.y == wall.two.Item.y) // vertical wall
+				{
+					int x;
+					int y = 8 * wall.one.Item.y;
+					byte tile;
+
+					// The first item will always have the lower coordinate, unless it's a wraparound.
+					if (wall.one.Item.x % 2 == 0)
+					{
+						x = 8 * wall.one.Item.x + 7;
+						tile = 0x33;
+					}
+					else
+					{
+						x = (8 * wall.one.Item.x + 8) % 64;
+						tile = 0x32;
+					}
+
+					for (int i = 0; i < 8; i++)
+					{
+						map[y + i, x] = tile;
+					}
+				}
+			}
+
+			foreach (var wall in walls)
+			{
+				if (wall.one.Item.x == wall.two.Item.x) // horizontal wall
+				{
+					int x = 8 * wall.one.Item.x;
+					int y = (8 * wall.one.Item.y + 8) % 64;
+
+					map[y, x] = 0x34;
+					for (int i = 1; i < 7; i++)
+						map[y, x + i] = 0x30;
+					map[y, x + 7] = 0x35;
+				}
+			}
+
+			ShuffleSkyCastle4F(rng, maps);
+		}
+
 		public void ShuffleSkyCastle4F(MT19337 rng, List<Map> maps)
 		{
 			// Don't shuffle the return teleporter as Floor and Entrance shuffle might want to edit it.	
@@ -369,6 +431,15 @@ namespace FF1Lib
 			maps[(byte)MapId.TitansTunnel][9, 3] = 0x3F; // Block the tunnel
 		}
 
+		public void EnableLefeinShops(List<Map> maps)
+		{
+			var lefein = maps[(byte)MapId.Lefein];
+			lefein[0x05, 0x11] = 0x25; // Inn Sign
+			lefein[0x06, 0x11] = 0x71; // Crescent Lake Inn
+			lefein[0x05, 0x15] = 0x1A; // Clinic Sign
+			lefein[0x06, 0x15] = 0x65; // Crescent Lake Clinic
+		}
+
 		public void WarMECHNpc(WarMECHMode mode, MT19337 rng, List<Map> maps)
 		{
 			const byte UnusedTextPointer = 0xF7;
@@ -406,7 +477,8 @@ namespace FF1Lib
 			formations[6] = formations[7];
 			Put(formationOffset, formations);
 
-			MakeWarMECHUnrunnable();
+			if (mode != WarMECHMode.Unleashed)
+				MakeWarMECHUnrunnable();
 
 			if (mode == WarMECHMode.Required)
 			{

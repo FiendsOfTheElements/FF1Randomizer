@@ -15,6 +15,11 @@
     <TreatSpecificWarningsAsErrors />
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningsAsErrors />
+  </PropertyGroup>
+
   <ItemGroup>
     <None Remove="presets\debug.json" />
     <None Remove="presets\beginner.json" />
@@ -53,6 +58,7 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    <PackageReference Include="Patcher6502" Version="0.3.0" />
     <PackageReference Include="RomUtilities" Version="2.2.0" />
   </ItemGroup>
 

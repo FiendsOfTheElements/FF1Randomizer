@@ -19,6 +19,36 @@ namespace FF1Lib
 		MusicDisabled
 	}
 
+	public enum MenuColor
+	{
+		[Description("Default Blue")]
+		Blue = 0x01,
+		[Description("Dark Blue")]
+		DarkBlue = 0x02,
+		[Description("Purple")]
+		Purple = 0x03,
+		[Description("Pink")]
+		Pink = 0x04,
+		[Description("Red")]
+		Red = 0x05,
+		[Description("Orange")]
+		Orange = 0x06,
+		[Description("Dark Orange")]
+		DarkOrange = 0x07,
+		[Description("Brown")]
+		Brown = 0x08,
+		[Description("Light Green")]
+		LightGreen = 0x09,
+		[Description("Green")]
+		Green = 0x0A,
+		[Description("Dark Green")]
+		DarkGreen = 0x0B,
+		[Description("Cyan")]
+		Cyan = 0x0C,
+		[Description("Black")]
+		Black = 0x0F,
+	}
+
     public partial class FF1Rom
     {
 	    public const int TyroPaletteOffset = 0x30FC5;
@@ -32,25 +62,25 @@ namespace FF1Lib
 	    {
 		    var enemyText = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
 
-		    enemyText[1] = FF1Text.TextToBytes("GrUMP", useDTE: false);
-		    enemyText[2] = FF1Text.TextToBytes("RURURU", useDTE: false); // +2
-		    enemyText[3] = FF1Text.TextToBytes("GrrrWOLF", useDTE: false); // +2
-		    enemyText[28] = FF1Text.TextToBytes("GeORGE", useDTE: false);
-		    enemyText[30] = FF1Text.TextToBytes("R.SNEK", useDTE: false); // +3
-		    enemyText[31] = FF1Text.TextToBytes("GrSNEK", useDTE: false); // +1
-		    enemyText[32] = FF1Text.TextToBytes("SeaSNEK", useDTE: false); // -1
-		    enemyText[40] = FF1Text.TextToBytes("iMAGE", useDTE: false);
-		    enemyText[56] = FF1Text.TextToBytes("EXPEDE", useDTE: false); // +2
-		    enemyText[66] = FF1Text.TextToBytes("White D", useDTE: false);
-		    enemyText[72] = FF1Text.TextToBytes("MtlSLIME", useDTE: false); // +3
+		    enemyText[1] = "GrUMP";
+		    enemyText[2] = "RURURU"; // +2
+		    enemyText[3] = "GrrrWOLF"; // +2
+		    enemyText[28] = "GeORGE";
+		    enemyText[30] = "R.SNEK"; // +3
+		    enemyText[31] = "GrSNEK"; // +1
+		    enemyText[32] = "SeaSNEK"; // -1
+		    enemyText[40] = "iMAGE";
+		    enemyText[56] = "EXPEDE"; // +2
+		    enemyText[66] = "White D";
+		    enemyText[72] = "MtlSLIME"; // +3
 		    if (teamSteak)
 		    {
-			    enemyText[85] = FF1Text.TextToBytes("STEAK", useDTE: false); // +1
-			    enemyText[86] = FF1Text.TextToBytes("T.BONE", useDTE: false); // +1
+			    enemyText[85] = "STEAK"; // +1
+			    enemyText[86] = "T.BONE"; // +1
 		    }
-			enemyText[92] = FF1Text.TextToBytes("NACHO", useDTE: false); // -1
-		    enemyText[106] = FF1Text.TextToBytes("Green D", useDTE: false); // +2
-		    enemyText[111] = FF1Text.TextToBytes("OKAYMAN", useDTE: false); // +1
+			enemyText[92] = "NACHO"; // -1
+		    enemyText[106] = "Green D"; // +2
+		    enemyText[111] = "OKAYMAN"; // +1
 
 			// Moving IMP and GrIMP gives me another 10 bytes, for a total of 19 extra bytes, of which I'm using 16.
 			var enemyTextPart1 = enemyText.Take(2).ToArray();
@@ -199,7 +229,7 @@ namespace FF1Lib
 					Data[0x31E44] = tracks[16];
 
 					//Gameover
-					Data[0x2DAF6] = tracks[17];
+					Data[0x3C5EF] = tracks[17];
 
 					//Battle
 					//Data[0x2D9C1] = Songs[rng.Between(0, Songs.Count - 1)];
@@ -222,7 +252,7 @@ namespace FF1Lib
 						0x7C235, 0x7C761, 0x7CFC3, 0x7CFC4, 0x7CFC5, 0x7CFC6,
 						0x7CFC7, 0x7CFC8, 0x7CFC9, 0x7CFCA, 0x3A226, 0x3A351,
 						0x3A56E, 0x3A597, 0x3ADB4, 0x3B677, 0x3997F, 0x37804,
-						0x3784E, 0x31E44, 0x2DAF6, 0x2D9C1, 0x36E86, 0x27C0D
+						0x3784E, 0x31E44, 0x3C5EF, 0x2D9C1, 0x36E86, 0x27C0D
 					};
 					//Set all music playback calls to play the new empty song
 					foreach (int address in AllSongs)
@@ -234,7 +264,7 @@ namespace FF1Lib
 			}
 		}
 
-		public void DynamicWindowColor()
+		public void DynamicWindowColor(MenuColor menuColor)
 		{
 			// This is an overhaul of LoadBorderPalette_Blue that enhances it to JSR to
 			// DrawMapPalette first. That allows us to wrap that with a dynamic load of
@@ -291,6 +321,13 @@ namespace FF1Lib
 			*/
 			Put(0x3BF3A, Blob.FromHex("A20BBD78AD9DC003CA10F7ADFB608DC2038DC60360"));
 			Put(0x3ADC2, Blob.FromHex("203ABFEAEAEAEAEAEAEAEA"));
+
+			// Dynamic location initial value
+			Data[0x30FB] = (byte)menuColor;
+
+			// Hardcoded spot for opening "cinematic"
+			Data[0x03A11C] = (byte)menuColor;
+			Data[0x03A2D3] = (byte)menuColor;
 		}
 
 		public void EnableModernBattlefield()

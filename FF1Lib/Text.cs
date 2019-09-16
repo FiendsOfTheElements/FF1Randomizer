@@ -22,29 +22,29 @@ namespace FF1Lib
 	    public const int DialogueTextPointerBase = 0x20000;
 	    public const int DialogueTextOffset = 0x28200;
 
-		public Blob[] ReadText(int pointerOffset, int pointerBase, int count)
+		public string[] ReadText(int pointerOffset, int pointerBase, int count)
 	    {
 		    var pointers = Get(pointerOffset, 2 * count).ToUShorts().ToList();
 
-		    var textBlobs = new Blob[count];
+		    var texts = new string[count];
 		    for (int i = 0; i < pointers.Count; i++)
 		    {
-			    textBlobs[i] = ReadUntil(pointerBase + pointers[i], 0x00);
+			    texts[i] = FF1Text.BytesToText(ReadUntil(pointerBase + pointers[i], 0x00));
 		    }
 
-		    return textBlobs;
+		    return texts;
 	    }
 
-	    public void WriteText(Blob[] textBlobs, int pointerOffset, int pointerBase, int textOffset)
+	    public void WriteText(string[] texts, int pointerOffset, int pointerBase, int textOffset)
 	    {
-		    WriteText(textBlobs, pointerOffset, pointerBase, textOffset, new List<int>());
+		    WriteText(texts, pointerOffset, pointerBase, textOffset, new List<int>());
 	    }
 
-	    public void WriteText(Blob[] textBlobs, int pointerOffset, int pointerBase, int textOffset, List<int> skipThese)
+	    public void WriteText(string[] texts, int pointerOffset, int pointerBase, int textOffset, List<int> skipThese)
 	    {
 			int offset = textOffset;
-			var pointers = new ushort[textBlobs.Length];
-			for (int i = 0; i < textBlobs.Length; i++)
+			var pointers = new ushort[texts.Length];
+			for (int i = 0; i < texts.Length; i++)
 			{
 				if (skipThese.Contains(i))
 				{
@@ -53,10 +53,11 @@ namespace FF1Lib
 				}
 				else
 				{
-					Put(offset, textBlobs[i]);
+					var blob = FF1Text.TextToBytes(texts[i], useDTE: false);
+					Put(offset, blob);
 
 					pointers[i] = (ushort)(offset - pointerBase);
-					offset += textBlobs[i].Length;
+					offset += blob.Length;
 				}
 			}
 

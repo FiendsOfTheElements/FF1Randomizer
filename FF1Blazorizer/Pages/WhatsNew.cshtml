@@ -1,0 +1,754 @@
+﻿@page "/WhatsNew"
+<div class="content px-4 tinted">
+	<div class="nes-container is-dark col-xs-12">
+		<h1>Version 3.0.0</h1>
+		<p>A FINAL FANTASY RANDOMIZER!!</p>
+		<p>This HELP will lead us</p>
+		<p>to solve the riddle of</p>
+		<p>the Randomizer!!</p>
+		<p>Now, listen to me....</p>
+		<h1>Version 2.6.0</h1>
+		<h2>Major Features</h2>
+		<ul>
+			<li>
+				<h3 class="anchor" id="BetterTrapChests">Better trap treasure</h3>
+				When shuffling or randomizing treasures, this option attempts to place more interesting items in
+				chests which are guarded by forced fights.
+				<div>
+					<img src="images/TrapTiles.png" style="margin: 0 auto; width: 512px;" />
+				</div>
+				The chests included in this option include:
+				<ul>
+					<li><a href="http://mikesrpgcenter.com/ffantasy/maps/templeoffiends.html" target="_blank">Temple of Fiends</a> (locked): "Soft", "Rune Sword"</li>
+					<li><a href="http://mikesrpgcenter.com/ffantasy/maps/marshcave.html" target="_blank">Marsh Cave</a> (locked): B3 "Silver Dagger"</li>
+					<li><a href="http://mikesrpgcenter.com/ffantasy/maps/earthcave.html" target="_blank">Earth Cave</a> B2 "Wooden Shield", B3 "1020 G", B4 "5450 G"</li>
+					<li><a href="http://mikesrpgcenter.com/ffantasy/maps/gurguvolcano.html" target="_blank">Volcano</a> B2 "1455 G", B2 "Giant Sword", B4 "Flame Shield", B5 "Flame Armor"</li>
+					<li><a href="http://mikesrpgcenter.com/ffantasy/maps/icecave.html" target="_blank">Ice Cave</a> B2 "Cloth Armor", B2 "Floater", B3 "Silver Gauntlet"</li>
+					<li><a href="http://mikesrpgcenter.com/ffantasy/maps/seashrine.html" target="_blank">Sea Shrine</a> B4 "Power Gauntlet", B4 "7340 G"</li>
+					<li><a href="http://mikesrpgcenter.com/ffantasy/maps/floatingcastle.html" target="_blank">Floating Castle</a> L3 "ProRing"</li>
+				</ul>
+				<p>The treasures which could be found in these chests include:</p>
+				<div style="margin: 1em; font-variant: small-caps;">
+					Aegis Shield, Bane Sword, Black Shirt, CatClaw, Coral Sword, Defense Sword, Dragon Armor,
+					Dragon Sword, Flame Armor, Flame Shield, Flame Sword, Giant Sword, Gold Bracelet, Heal Helm,
+					Heal Rod, Ice Armor, Ice Shield, Ice Sword, Katana, Light Axe, Mage Rod, Masamune, Opal Armor,
+					Opal Bracelet, Opal Gauntlets, Opal Helm, Opal Shield, Power Gauntlets, ProCape, ProRing,
+					Ribbon, Rune Sword, Steel Armor, Sun Sword, Thor Hammer, Vorpal, Were Sword, White Shirt,
+					Wizard Rod, Xcalber, Zeus Gauntlets
+				</div>
+				<b>Note:</b> If a chest was incentivized (such as the "Floater" chest in Ice Cave), it won't be included in this
+				treasure placement, even if it doesn't have an incentive item.
+			</li>
+		</ul>
+		<h1>Version 2.5.0</h1>
+		<h2>Major Features</h2>
+		<ul>
+			<li>
+				<h3>None Class</h3>
+				The None class creates a class of useless, permanently dead characters. Nones are still named and
+				can still carry gear. However they cannot ever be resurrected and will never gain experience. Nones
+				are mostly a shortcut for killing off characters to level up faster, but are simply permanent from the
+				moment the game begins until it ends.
+				<div>
+					<img src="images/NoneSelection.png" style="margin: 0 auto; width: 512px;" />
+					<img src="images/None.png" style="margin: 0 auto; width: 512px;" />
+				</div>
+				This is the None class at character selection time, and in battle. They are completely invisible throughout
+				the game as if to reduce the total size of the party. They can still be given gear to hold though
+				they cannot equip anything.
+			</li>
+			<li>
+				<h3>Party Composition</h3>
+				Forced party controls are now vastly improved. Each individual slot can now be toggled per
+				class, which allows for some really interesting customization, for example:
+				<ul>
+					<li>Slot 1 is forced to Fighter.</li>
+					<li>Slot 2 is forced to Fighter or Thief or None and randomly selected and locked.</li>
+					<li>Slot 3 could be set to Red or White Mage, but allow user selection.</li>
+					<li>Slot 4 could be forbidden from being a Fighter, but allow anything else.</li>
+					<li>
+						If the "Forced?" box is checked, the slot will be forced randomly from the available options
+						depending on the seed. If unchecked, the player will be able to choose from the selected boxes.
+					</li>
+				</ul>
+			</li>
+			<li>
+				<h3 class="anchor" id="RandomShops">Random Shops</h3>
+				When shuffling <b>Random Weapons and Armor, Including Caster Items and Elite Gear</b> is now a separate flag.
+				Unchecking it will remove the following items from the pool that could ever be for sale:
+				<ul>
+					<li>Light Axe, Mage Rod, Wizard Staff, Defense, Thor Hammer, Bane Sword, Heal Rod</li>
+					<li>Masmune, XCalber, Vorpal, Sun Sword, Katana</li>
+					<li>Heal Helm, White Shirt, Black Shirt, Zeus Gauntlet, Power Gauntlet</li>
+					<li>Dragon Armor, Aegis Shield, Ribbon</li>
+				</ul>
+			</li>
+			<li>
+				<h3>Enemy Formations Frequency is now a Drop down!</h3>
+				Instead of just shuffling the relative frequencies within a zone, there are now more options.
+				<ul>
+					<li>Don't Shuffle Encounters sticks with the vanilla behavior.</li>
+					<li>Shuffle Encounter Rarity has the same behavior as before, changing the relative rarity within a zone.</li>
+					<li>Shuffle All Encounters Across Zones does just that, shuffling all the enounters into other tables</li>
+					<li>Randomize Encounter Zones makes all zones randomly generated with possible duplications across them.</li>
+				</ul>
+			</li>
+			<li>
+				<h3>Randomized Treasures</h3>
+				When shuffling Treasures it's now possible to totally randomize them. This allows duplicates of rare items
+				and also means things like CatClaw might be found in chests, and so on. There is a dropdown of to provide
+				the overall wealth of the world, with higher wealths yielding a greater number of the best tiems and fewer
+				of the worst items. Naturally the reverse is also true, with the lowest settings being potentially grueling
+				seeds with potentially very little good endgame equipment to work with.
+			</li>
+			<li>
+				<h3>Scale Clamping Minimums to 100%</h3>
+				When scaling prices and enemy stats there is now a checkbox to set the minimum to 100%. This not only prevents anything
+				from being easier than vanilla but it actually bumps up the average result to the midpoint of 100% and your higher choice.
+				For example, if you set 100% to 300%, the average enemy will actually have 200% hp! Be warned!
+			</li>
+			<li>
+				<h3>Three Battle Palettes</h3>
+				This is a more advanced Fun% feature for modding enthusiasts. It changes the game to use three sprite palettes for the party
+				instead of just two, which allows a greater color variety on screen at once. The leverage it, a modder must make a copy of the
+				ROM where some of the classes have their palette set to number 3. The downside is that characters which have been turned to stone
+				will share their palette with weapons and spell effects during battles.
+				<div>
+					<img src="images/Palettes.png" style="margin: 0 auto; width: 512px;" />
+					<img src="images/Palettes2.png" style="margin: 0 auto; width: 512px;" />
+				</div>
+				If you like the look of these screenshots and want to learn more, join us in the discord and ask questions!
+			</li>
+		</ul>
+		<h2>Minor Features &amp; Other Changes</h2>
+		<ul>
+			<li>Fix a bug where the Mystic Key could have been placed in the first two chests of the Temple of Fiends Revisited.</li>
+			<li>Shuffle Objective NPCs allows the shuffling of the locations of Dr. Unne, The Elf Doctor, and Bahamut between their three locations.</li>
+			<li>Disable Damage Tile Flicker removes the flickering when stepping on damage tiles. The noise, damage, and lack of encounters remains of course.</li>
+		</ul>
+		<h1>Version 2.4.0</h1>
+		<h2>Major Features</h2>
+		<ul>
+			<li>
+				<h3 class="anchor" id="EntranceShuffle">Entrance Shuffle</h3>
+				<p>
+					Entrance randomization adds a whole new level of exploration. It breaks down into Entrance,
+					Floor, and Town Shuffling. <b>All forms of Entrance Shuffling Require NPC Item Shuffle to be enabled.</b>
+					Without shuffling NPCs the world map would be fairly restricted anyway. Therefore, to enforce the high degree
+					of variety this feature is designed to create, NPC Item Shuffle is required for Entrance Shuffle.
+				</p>
+				<p>
+					Additionally, when Princess Sara is rescued following the initial battle with Garland, the party <b>
+						is not
+						teleported along with her to Coneria Castle
+					</b>. With the entrances shuffled it might not be possible for
+					the party to get back to the Temple of Fiends entrance where they may have parked their boat or ship! Even
+					if it would be possible, for the sake of consistency, that teleport is disabled.
+				</p>
+				<ul>
+					<li>
+						<b>Entrances</b> connect any entrance to any dungeon. For example, the Temple of Fiends
+						entrance may now take you to the Earth Cave. The Volcano Entrance might now lead to the
+						Waterfall. Where technical limitations allow, the new dungeon is tinted to match the
+						entrance to help you remember how you entered. Observe in the pictures below the Marsh
+						Cave has been tinted red to indicate it was entered through the Volcano entrance. The
+						Earth Cave is teal because it was reached through a Cardia cave.
+						<div>
+							<img src="images/VolcanoMarsh.png" style="margin: 0 auto; width: 512px;" />
+							<img src="images/CardiaEarth.png" style="margin: 0 auto; width: 512px;" />
+						</div>
+						<br />
+						Several new palettes hvae been created as well for some the castles and towns that
+						previously used to all share one. Observe below how Sarda's Cave is now tinted a new pink - this
+						palette applies to the Elfland entrance (and requires Town shuffle, explained below).
+						Finally the yellow-green Ice Cave floor shown to the right was reached through the
+						Crescent Lake entrance. Explore Entrance Shuffle mode to discover all the others!
+						<div>
+							<img src="images/SardaElfland.png" style="margin: 0 auto; width: 512px;" />
+							<img src="images/IceCaveCL.png" style="margin: 0 auto; width: 512px;" />
+							<br />
+						</div>
+						<br />
+						<p>
+							Remember, <b>Entrance Shuffle creates an new focus on exploration!</b> One needs to realize
+							that the quest items may now come out of order, because <b>
+								all dungeons might have different
+								requirements to be accessed.
+							</b> The CHIME might just lead to an unimportant Cardia cave,
+							while the eastern entrance to the Titan's Tunnel may be the Sea Shrine.
+						</p>
+						<p>
+							Onrac is considered a town, so Entrance Shuffle does not move it. However, its entrance
+							to the Sea Shrine is considered an entrance, so the OXYALE is required to gain access to
+							whereever it leads. Note this may be a meaningless destination like an empty Cardia cave,
+							or it may be something as important as the Temple of Fiends.
+						</p>
+						<br />&nbsp;
+					</li>
+					<li>
+						<b>Towns</b> adds the towns into the mix so they can appear outside of their original
+						entrances. They are also tinted when they appear in a dungeon entrance to help you
+						remember how you got there. For example, here is Melmond with the purple of Matoya's
+						Cave, The Brown of Sarda's Cave, and the pale green of the Marsh Cave, and an original
+						Sage Green palette added for the Elfland Castle entrance. When a town is shuffled to
+						another town's entrance, it is <b>not</b> tinted. The normal town palette is designed to
+						remind you that the town was found at <b>some vanilla town location.</b>
+						<div>
+							<img src="images/MelmondPurple.png" style="margin: 0 auto; width: 250px;" />
+							<img src="images/MelmondBrown.png" style="margin: 0 auto; width: 250px;" />
+							<img src="images/MelmondPaleGreen.png" style="margin: 0 auto; width: 250px;" />
+							<img src="images/MelmondSageGreen.png" style="margin: 0 auto; width: 250px;" />
+						</div>
+						<br />&nbsp;
+					</li>
+					<li>
+						<b>Floors</b> really mixes things up by allowing almost any connecting stairs to lead
+						to any floor of any other dungeon. Virtually all dungeon floors in the game can be
+						shuffled into any ordering, with the exception of the following list which are <b>
+							not
+							shuffled:
+						</b>
+						<ul>
+							<li>Ice Cave from the Pit Room onward.</li>
+							<li>Castle Ordeals</li>
+							<li>Coneria Castle</li>
+							<li>Temple of Fiends & Revisited</li>
+						</ul>
+						<p>
+							Of course this means things like the CUBE and ROD <b>might not be required</b>. The room
+							after the Vampire might just be a dead end in Cardia; the CUBE might just lead to the Ice Cave
+							Pit Room with an unimportant treasure at the end, for example. With floor shuffle almost
+							anything is possible!
+						</p>
+						<p>
+							Regardless of how all of the fiends and Temple of Fiends are accessed, the entire game will
+							always be made available. In other words: all of the floors, treaures, bosses, and items
+							will be available somewhere. You may not need the CUBE to beat the game, but it nevertheless
+							gets placed in a chest or NPC, depending on your flags, waiting to be found.
+						</p>
+					</li>
+					<li>
+						<b>Allow Deep ToFR</b> is asking for trouble. This option causes ToFR, in its entirety, to
+						be placed at the bottom of any dungeon. Normally it will always be placed at ground level,
+						but enabling this option can create an absolutely punishing final challenge. This is not
+						for the faint of heart!
+					</li>
+				</ul>
+			</li>
+			<li>
+				<h3>Encounter Rate</h3>
+				Two sliders are available to independently scale the encounter rates of the overworld and in dungeons.
+				The rates can be scaled from 0, meaning no random encounters whatsoever, to 150% of normal. Even without
+				random encounters all the forced encounter tiles and boss fights will occur as normal.
+			</li>
+			<li>
+				<h3 class="anchor" id="EnemyTrapTiles">Trap Tile Shuffle</h3>
+				<b>Enemy Forced Encounter Tiles</b> are now shuffled. In this mode all of the standard trap formations are preserved
+				and shuffled amongst the trap tiles. For example, the Wizard trap tile in Marsh could now be the Eye trap tile
+				from the Ice Cave, and so on. If <b>Use Random Formations</b> is also checked, trap tiles will now be any random
+				Formation 2 encounter from the standard encounter table. Formation 2 encounters are a lot less common in the
+				standard FF1 game, and this option creates a lot of variety and potential grinding locations with rarer enemy groups.
+			</li>
+			<li>
+				<h3 class="anchor" id="MapOpenProgressionExtended">Extended Open Progression</h3>
+				An extension to Open Progression that now also removes a length of river so you can walk all the way from Coneria
+				to Elfland without the aid of a canoe and addtionally provides a dock near the airship desert. The result of this
+				is a decreased importance to early game canoe, and the possibility of going directly from Ship to Airship and finding
+				the canoe much later on in the seed.
+				<div>
+					<img src="images/OpenProgressionRiver.png" style="margin: 0 auto; width: 512px; max-width:80%;" />
+					<img src="images/OpenProgressionAirship.png" style="margin: 0 auto; width: 512px; max-width:80%;" />
+				</div>
+			</li>
+			<li>
+				<h3 class="anchor" id="ShortToFR">Shortened Temple of Fiends Revisited</h3>
+				By popular demand, Shorten ToFR has been extracted from the Treasure Hunt mode. Treasure Hunt no longer
+				defaults to	the short jump to the Chaos final floor. However, by enabling it, both Treasure Hunt mode and the
+				normal game mode can be accelerated with the quick jump to Chaos.  As shown in the image on the left, the
+				traditional Black Orb teleport will now bring you to a new room shown in the center. This room
+				contains the seven chests of the Temple of Fiends Revisited for easy access, before the final challenge.
+				Since the LUTE is no longer useful in this mode it is given to the party for free at the outset to play
+				beautiful music at thier whim.
+				<div>
+					<img src="images/ToFRBlackOrb.png" style="margin: 0 auto; width: 336px; max-width:80%;" />
+					<img src="images/ToFRShort.png" style="margin: 0 auto; width: 336px; max-width:80%;" />
+					<img src="images/ToFRTraps.png" style="margin: 0 auto; width: 336px; max-width:80%;" />
+				</div>
+				If you enable Short ToFR, you can also <b>Preserve Fiend Refights</b> to include two trap tiles in each
+				direction around the final floor, as shown in the below image to the right. This will allow you to engage
+				the fiends you would have otherwise skipped with the short ToFR. Each of these tiles will be a trap tile
+				against one of the fight refights.
+			</li>
+		</ul>
+		<h2>Minor Features &amp; Other Changes</h2>
+		<ul>
+			<li><b>Confused Old Men</b> gets the sages in Crescent Lake up and moving to waste just a little of your time.</li>
+			<li>The venerable <b>Enable Buy 10</b> Convenience now includes the Caravan!</li>
+			<li><b>Speed Hacks</b> now accelerates the lineup screen when shuffling party members.</li>
+			<li>
+				<b>Scale Boss Stats</b> now operates independently of the rest of the monsters. The Bosses in question
+				comprise Garland, Astos, WarMECH, Lich, Lich2, Kary, Kary2, Kraken, Kraken2, Tiamat, Tiamat2, and CHAOS. All
+				the other enemies are scaled according to the original Enemy Stats slider.
+			</li>
+			<li>
+				<b>Critical Hit Count</b> lets you see how many times you critically hit, rather than just showing
+				"Critical hit!!" regardless of how many attacks you performed. It's a minor UI change that improves the
+				amount of information you have available.
+			</li>
+			<li>
+				<b>Include Morale</b> is now explicit for enemy stat scaling. Uncheck this to force vanilla morale.
+			</li>
+			<li>
+				<b>Zozo Melmond</b> creates some pretty bad parts of town. Watch out for those desert tiles.
+			</li>
+			<li>
+				<b>Static EXP Distribution</b>, also known as <b>No Dan Mode</b>, gives a static amount of EXP per
+				party member. Dead party member EXP doesn't go to the survivors - it just disappears. For those of
+				you who think having party members be dead should be *bad*!
+			</li>
+		</ul>
+		<h1>Version 2.3.0</h1>
+		<h2>Major Features</h2>
+		<ul>
+			<li>
+				<h3>WarMECH Mode</h3>
+				<ul>
+					<li>Vanilla. The classic 7th encounter on the Bridge of Destiny we all know and love.</li>
+					<li>
+						Patrolling. WarMECH is now an NPC roaming the Sky Palace 4th floor maze. Talk to him to engage! In
+						this mode WarMECH is removed from the encounter table and cannot be fought on the Bridge of Destiny.
+					</li>
+					<li>
+						Required. WarMECH is now an NPC waiting for you in front of Tiamat. WarMECH cannot be randomly encountered
+						in this mode either, but will always be fought at the end of the hall.
+					</li>
+				</ul>
+			</li>
+			<li>
+				<h3>EXP/Gold Progressive Scaling</h3>
+				Another Exp and Gold scaling mechanism has been added. Rather than a flat bonus, this option provides one
+				that will grow over time as key items are found. These are the key items: <br />
+<pre style="display: inline-block;">
+LUTE        CROWN       CRYSTAL
+HERB        KEY         TNT
+ADAMANT     SLAB        RUBY
+ROD         FLOATER     CHIME
+TAIL        CUBE        BOTTLE
+OXYALE      SHIP        CANOE
+AIRSHIP     BRIDGE      CANAL
+</pre>
+				<p>
+					It is important to note that this scaling is applied at the end of each battle and is recalculated
+					each time, thus applying its bonus appropriate as it changes. It stacks with the standard EXP / Gold bonus.
+				</p>
+				These are the modes:
+				<ul>
+					<li>Disabled</li>
+					<li>Increased to 150% at 12 Key Items</li>
+					<li>Increased to 150% at 15 Key Items</li>
+					<li>Increased to 200% at 12 Key Items</li>
+					<li>Increased to 200% at 15 Key Items</li>
+					<li>Increased by 5% per Key Item</li>
+					<li>Increased by 10% per Key Item</li>
+					<li>Increased by 20% per Key Item</li>
+				</ul>
+			</li>
+		</ul>
+		<h1>Version 2.2.0</h1>
+		<h2>Major Features</h2>
+		<ul>
+			<li>
+				<b>Treasure Hunt:</b> This new game mode replaces the original goal of beating Chaos
+				with something else entirely. The four orbs are gone; replaced by dozens of smaller
+				pieces. Collect enough of these randomized items to activate the BLACK ORB and reach the final battle.
+				<br />&nbsp;
+				<div>
+					<img src="images/TreasureCount.png" style="margin: 0 auto; max-width:80%;" />
+					<img src="images/TreasureHunt.png" style="margin: 0 auto; max-width:80%;" />
+				</div>
+				<ul>
+					<li>Current count is graphical display that replaces original ORB display in main menu.</li>
+					<li>32 random chests containing HEALs, PUREs, and other trash items are replaced by these items.</li>
+					<li>Defeating LICH or KARY to activate the original EARTH and FIRE orbs will earn you 2 each.</li>
+					<li>Defeating KRAKEN or TIAMAT to activate the original WATER and AIR orbs will earn you 4 each.</li>
+					<li>Approach the BLACK ORB when you have collected to teleport to the final floor of the Temple of Fiends Revisited to face your final challenge.</li>
+				</ul>
+			</li>
+			<li>
+				<b>Surprise Final Boss:</b> Replace Chaos with one of four new final challenges composed of new formations of familiar enemies.
+				This option pairs well with Shard Hunt but can be used in a standard race as well. Be warned though - these new formations can be pretty unforgiving.
+			</li>
+			<li>
+				<b>Item Magic:</b> Items casting spells, such as the White Shirt and the Defense have their
+				spell shuffled among all possible spells except for spells only usable out of battle.
+				In order to make it clear what each item casts, the item's name has been replaced with the
+				spell name while keeping the gear icon at the end that was originally there.
+				For example, you can get super lucky and have a NUKE Helm or you could be unlucky and only
+				find items such as a LOCK Staff or DARK Sword.
+			</li>
+		</ul>
+		<h2>Minor Features &amp; Other Changes</h2>
+		<ul>
+			<li>
+				Improved Turn Order Randomization shuffles the initial turn order bias so that the enemies and
+				allies are initially mixed together. Then each turn the number of random swaps is increased
+				from 16 to 64, thus increasing the entropy that determines each turn's order in battle. The
+				end result is that the party is more likely to strike sooner each turn and that on average
+				the enemies will act later than they would without this enabled, making the game somewhat easier.
+			</li>
+			<li>
+				Enable Dash is now reversed. Running is the default speed now; holding B will slow to half pace.
+				This is now possible on foot and in the canoe, as well as on board the ship and airship.
+			</li>
+			<li>
+				Change Unrunnable RUN -> WAIT now defaults to <b>enabled.</b> However it has been changed
+				so that <i>it can be disabled even when Unrunnable Formations are shuffled!</i>
+				This harrowing mode does in fact mean there will no way to know if an encounter is unrunnable
+				or if your luck is simply bad. Feel free to disable it in combination with Unrunnable Shuffle
+				if you wish to know the stress of never being sure if you can possibly run away.
+			</li>
+		</ul>
+		<hr />
+		<h1>Version 2.1.0</h1>
+		<h2>Major Features</h2>
+		<ul>
+			<li>
+				<b>Unrunnable Formations Shuffle:</b> The non-boss formations that are unrunnable can now be
+				shuffled. The IronGOL and WzSahag/R.Sahag fights share their formations with bosses
+				and will remain unrunnable. The IMPs around Coneria are kept out of shuffle as
+				well to avoid a super early game unrunnable and impossible IMP situation.
+			</li>
+			<li>
+				<b>Change Unrunnable RUN -> WAIT:</b> complements the above by replacing the RUN
+				command with WAIT when the battle is unrunnable. It is automatically enabled when
+				Unrunnable Formations Shuffle is on, but it can also be turned on to learn the
+				standard unrunnable formations for a beginner. <b>
+					Updated in 2.2 so that it
+					can now be disabled even with Unrunnable Shuffle!
+				</b>
+			</li>
+			<li>
+				<b>Surprise Bonus Shuffle:</b>The bonus that some enemy formations like Phantoms and
+				WarMECH have to their surprise chance can be shuffled to other enemy formations.
+			</li>
+			<li>
+				<b>Enemy Formation Frequency Shuffle:</b> The frequency of encounter groups
+				can now be shuffled. First for each table the enemies in slots 1-4 are shuffled; then
+				the resulting 3-8 slots are shuffled. The end result is that his means former slot 7 and
+				8 encounters now all have a one in three chance of becoming one of the common groups.
+				WarMECH is excluded from this and remains locked to slot 7.
+			</li>
+			<li>
+				<b>Random Weapon and Armor:</b> When shuffling weapons and armor shops,
+				there is now an option to randomize those items instead of shuffle the existing
+				vanilla pool of shop items. This wacky setting enables the possibility of Masmunes or
+				Ribbons for sale. Each Weapon or Armor will appear in no more than one location, so
+				remember where the good stuff is if you have to come back!
+			</li>
+			<li>
+				<b>Allow Unsafe Pirates:</b> When shuffling enemy scripts this is now distinct
+				and when not enabled will force the Pirates to their default Attack only script.
+			</li>
+			<li>
+				<b>Force Default Starting GP:</b> Start the game with 400 GP regardless of scaling.
+			</li>
+		</ul>
+		<h2>Minor Features &amp; Other Changes</h2>
+		<ul>
+			<li>
+				Speed Hacks are now even faster than before in battles.	Respond Rate has been adapted so numbers less than
+				8 can be used to help learn the game without being painfully slow. 8 remains the default and fastest setting.
+			</li>
+			<li>
+				The SHIP will now appear in the nearest <b>Inner Sea</b> dock (but never a river) to where it is found:
+				<ul>
+					<li>Northwest Castle, Marsh Cave, Elfland, Crescent Lake, and Volcano all spawn the SHIP north of Elfland.</li>
+					<li>Ice Cave and Pravoka SHIPs spawn near Pravoka.</li>
+					<li>Matoya's Cave spawns nearby.</li>
+					<li>Dwarf Cave spawns nearby.</li>
+					<li>Coneria, Temple of Fiends, and all locations outside of the inner sea (which would have required the airship to retrieve) will spawn the SHIP in Coneria.</li>
+				</ul>
+			</li>
+			<li>Chaos Rush now unlocks all doors in ToFR and provides the LUTE immediately as well.</li>
+			<li>Black Belt Absorb Bug Fixed. Black Belt and Master absorb will now always be equal to level if no armor is equipped.</li>
+			<li>Enemy AoE Spells on all enemies now also hit the caster.</li>
+			<li>Enemy Elemental Resistences Bug Fixed. XFER will now work, and AFIR when cast by enemies will work.</li>
+			<li>Ribbon Text Fixed to play nicely with modders editing the ribbon text. Though it may seem strange, ensure when modding the ribbon text to keep its length to 8 characters.</li>
+			<li>Start screen displays full flags and seed info (was briefly broken by 2.0 changes to flags)</li>
+			<li>Credits Updates</li>
+		</ul>
+		<hr />
+		<h1>Version 2.0.0</h1>
+		<h2>Major Features</h2>
+		<ul>
+			<li>
+				<h3>NPC Shuffle!</h3>
+				There is a new tab 'Treasures' available with the option to shuffle Treasures and
+				NPCs. Any NPC that gives an item in the vanilla game can now be shuffled in with the
+				treasure shuffle. There are 2 main options, each with additional related options
+				the 'Treasures' tab:
+				<ul>
+					<li>
+						<b>Main NPC Items:</b> This adds Bridge, Lute, Ship, Rod, Canoe, Cube, Bottle
+						to the pool of items to be shuffled. The NPCs giving those items could have any
+						other shuffled treasure instead. (Excluding Caravan which is limited to items that
+						show up on the Inventory screen)
+					</li>
+					<li>
+						<b>Fetch Quest Rewards:</b> This adds Crystal, Herb, Key, Canal, Xcalber, Oxyale,
+						and Chime to the pool of items to be shuffled. The NPCs giving those items could have
+						any other shuffled treasure instead.
+					</li>
+				</ul>
+			</li>
+			<li>
+				<h3>Incentives</h3>
+				Of the many new incentives options on the 'Treasures' tab, the 3 most important
+				ones are related to NPCs and quest items.
+				<ul>
+					<li>
+						<b>Incentivized Locations:</b> These options incentivize locations in the game
+						or groups of NPCs.
+						<ul>
+							<li>
+								<b>Main NPCs:</b>
+								This incentivizes King, Princess, Bikke, Sarda, Sage, Robot, and Carvan Item Shop Slot.
+								Those NPCs will be treated the same as incentivized teasure chests and will prefer
+								to draw an item from the incentivized item pool if possible. Note that the Caravan
+								item will still be shuffled by the Shop shuffle too.
+							</li>
+							<li>
+								<b>Fetch Quest NPCs:</b>
+								This incentivizes Astos, Matoya, Prince, Nerrick, Smith, Fairy, and Lefein. Those
+								NPCs will be treated the same as incentivized teasure chests and will prefer
+								to draw an item from the incentivized item pool if possible. If you have both this
+								and the 'Other Quest Items' incentivized (see below) it tends to result in a long
+								fetch quest kind of like the Crown -> Canal chain in the vanilla early game --
+								except it's random and can be late in the game -- so it's a lot of back and forth
+								to get just 1 item in the end.
+							</li>
+						</ul>
+					</li>
+					<li>
+						<b>Incentivized Items:</b> In earlier randomizer versions the incentive item
+						pool included all required items (Crown, TNT, Slab and sometimes Ruby), Adamant,
+						Tail, Masamune, and Ribbon. However, most of the actual required items could not
+						be shuffled. With NPC shuffle, any shuffled item that is required will continue to
+						be included in the incentive pool by default. This can include Bridge, Lute, Ship,
+						Key, Canal, Rod, Canoe, Floater, Cube, Oxyale, Chime but may also include any item
+						leading to those items when a partial NPC shuffle is done.
+					</li>
+					<li>
+						<b>Other Quest Items:</b>
+						This includes any other quest item even if they are not required. These are sometimes
+						referred to as 'Fetch Quest Items' and would include Crown, Crystal, Herb, TNT,
+						Ruby, Bottle, Slab, Adamant when all NPC items are shuffled.
+					</li>
+					<li>
+						Keep in mind that each incentive option with a group of items or locations
+						will only be able to incentivize those items or locations if they are
+						<i>shuffled</i>.
+					</li>
+				</ul>
+			</li>
+			<li>
+				<h3>Map Edits</h3>
+				There is a new tab 'Maps' with 2 new options, plus the Ordeals Pillars shuffle
+				relocated from the Shuffle tab:
+				<ul>
+					<li>
+						<b>Keyless ToFR:</b>
+						Updated in 2.1.0 so all Mystic KEY locked doors in Temple of Fiends Revisted have been unlocked.
+						You will begin the game with the LUTE ready to challenge Chaos as soon as you like.
+					</li>
+					<li>
+						<b>Titans Trove:</b>
+						The Titan moved a few squares to the West and now blocks access to the
+						4 treasure chests in this cave even if you come from the backside via the Airship.
+						This more than triples the chance that RUBY is required (but it's still pretty rare).
+						<br /><img src="images/TitansTrove.png" style="display:block; margin: 0 auto; max-width:80%;" /><br />
+					</li>
+					<li>
+						<b>Open Progression:</b>
+						This is a collection of small map tweaks that open up the possibilities for item
+						placement and progression through the game. A total of about 30 map tiles are edited.
+						In order:
+						<ul>
+							<li>
+								A land path from the starting area to Dwarf Cave. If you get an early CANOE
+								you can also walk south across the Canal Bridge to Elfland, Marsh, Cresent Lake,
+								and Volcano.
+								<br /><img src="images/WalkToDwarfCave.png" style="display:block; margin: 0 auto; max-width:80%;" /><br />
+							</li>
+							<li>
+								A small river extension to join the Volcano and Ice Cave river systems near
+								the tiny forest in the middle. If you get an early CANOE you can travel from
+								Pravoka to Volcano, etc.
+								<br /><img src="images/IceVolcanoRiver.png" style="display:block; margin: 0 auto; max-width:80%;" /><br />
+							</li>
+							<li>
+								A dock near Onrac and a dock near Mirage Tower. This increases the value of
+								the Canal which would otherwise be very unlikely to be required with NPC shuffle.
+								With both Main NPC Items and Fetch Quest Rewards shuffle options turned on, this
+								means FLOATER is not 100% required to kill Chaos (but you should still always be
+								able to find it).
+								<br /><img src="images/OnracDock.png" style="display:block; margin: 0 auto; max-width:80%;" /><br />
+								<br /><img src="images/MirageDock.png" style="display:block; margin: 0 auto; max-width:80%;" /><br />
+							</li>
+						</ul>
+					</li>
+				</ul>
+			</li>
+		</ul>
+		<h2>Minor Features &amp; Other Changes</h2>
+		<ul>
+			<li>
+				<b>Free Airship:</b>
+				The Airship spawns on the starting tile of the game. FLOATER is replaced with a
+				cozy CABIN.
+			</li>
+			<li>
+				<b>Free Orbs:</b>
+				Begin the game with all four orbs lit. That was easy!
+			</li>
+			<li>
+				<b>Easy Mode:</b>
+				Chance of random encounters are heavily reduced and all enemys have 10% of their
+				HP after the random scaling has been applied. Effectively this turns a 20-500%
+				slider into 2-50%, but for HP only.
+			</li>
+			<li>'Castle Ordeals' has moved to the Maps tab and renamed to Castle Ordeals Pillars</li>
+			<li>
+				Early Bridge was renamed Free Bridge. The Bridge item is also replaced with a CABIN
+				if NPC shuffle is turned on.
+			</li>
+			<li>Early Rod and Early Canoe have been renamed to Early Sarda Item and Early Sage Item</li>
+		</ul>
+		<h2>Known Issues</h2>
+		<ul>
+			<li>
+				<b>A0 HEALs??:</b>
+				This can happen with any consumable item but most commonly comes up with HEAL. If
+				you have 99 HEALs from shopping and you open a chest with one inside it will
+				increment it to 100 but the inventory can't display it so it shows A0, A1, A2, etc.
+				This generally doesn't hurt anything and the HEAL works as expected. In the original
+				game this was also bugged but instead of giving you A0 items it just threw the item
+				away.
+			</li>
+			<li>
+				<b>Astos text is strange:</b>
+				Overall the NPC item text is less than ideal. It was a quick generic text that
+				could be used everywhere and we expect to improve upon it in later versions. Astos
+				is commonly mentioned as the most strange, and it's worth remembering that in the
+				vanilla game he also tells you what your reward is for turning in the CROWN before
+				he attacks you.
+			</li>
+			<li>
+				<b>Free Item From the King:</b>
+				The King is far more trusting of random adventurers in NPC shuffle and he will
+				give you the reward item *before* you rescue the Princess. This might be fixed
+				later on, but usually doesn't make much difference.
+			</li>
+			<li>
+				<b>Bridge Scene on the Canal:</b>
+				This is not an error in the randomizer but actually the original game behavior if
+				you walk over the Canal before walking over the Bridge. That just wasn't possible
+				without the map tweaks and you had no reason to try it unless you had the Canoe.
+			</li>
+			<li>
+				<b>Duplicate Item in Shop:</b>
+				In some flagsets the Caravan Item Slot isn't incentivized or the randomizer runs
+				out of incentive items to put there and it picks a random HEAL or HOUSE instead.
+				Since the Shop shuffle also mixes things up before the item placement, a duplicate
+				item can remain after everything is placed.
+			</li>
+			<li>
+				<b>Flag String is no longer shown on the main menu:</b>
+				Sadly all the new flags couldn't fit in the default text space on the start screen.
+				The developers have a fix in progress that should be ready for 2.1 or sooner.
+			</li>
+		</ul>
+		<h2>FAQ</h2>
+		<ul>
+			<li>
+				<b>
+					I think I'm softlocked in the early game. I can't find either the BRIDGE or
+					the SHIP, help!
+				</b>
+				<br />Try walking from the starting area to the Dwarf Cave. This usually happens
+				the first time players try the 'Open Progression' map tweaks with Main NPC Items
+				Shuffle on.
+			</li>
+			<br />
+			<li>
+				<b>Why isn't Dr. Unne shuffled?</b>
+				<br />In short, it's because he doesn't actually give you an <i>item</i>. He's a
+				lot closer to the Elf Doctor that wakes up the Prince. By having an item he sets
+				an internal flag for the game to let the other NPC give you something. That being
+				said, keep an eye on future versions and maybe Dr. Unne or even the Dragon's Class
+				Change events will get shuffled someday too!
+			</li>
+			<br />
+			<li>
+				<b>A second Bridge over the Canal?!?</b>
+				<br />If NPC Shuffle options are turned on, a Bridge will be left behind after the
+				Canal is blown up. This is done to prevent soft locks when you get a very early
+				Canoe and could potentially end up stranded on the wrong side of the Canal and unable
+				to get back to your Ship.
+			</li>
+			<br />
+			<li>
+				<b>
+					I've played a few NPC shuffle seeds and it feels like I have to check every
+					treasure chest in the game. Is my luck terrible?
+				</b>
+				<br />Make sure that you don't have a lot more Items incentivized than there are
+				Item Locations to put them. Any incentivized item that doens't make it into an
+				incentivized location ends up in a random chest somewhere. If 4 or more required
+				items are in random chests you're going to need to check a lot of chests!
+			</li>
+			<br />
+			<li>
+				<b>How many items do I have incentivized?</b>
+				<br />It will depend on the flagsets, but in general here are the approximate counts:
+				<ul>
+					<li>
+						If you shuffled Treasures only (not shuffle Main NPC Items or Fetch Quest Rewards):
+						You have 4 items in the base pool, plus one for each checkbox in the Items column.
+					</li>
+					<li>
+						If you shuffled Treasures and Main NPC Items but not Fetch Quest Rewards:
+						You have 10 items in the base pool, plus one for each checkbox in the Items column,
+						plus 2 additional if you have 'Other Quest Items' checked.
+					</li>
+					<li>
+						If you shuffled Treasures and Main NPC Items and Fetch Quest Rewards:
+						You have 10 items in the base pool, plus one for each checkbox in the Items column,
+						plus 8 additional if you have 'Other Quest Items' checked.
+					</li>
+					<li>
+						If you shuffled Treasures and Fetch Quest Rewards but not Main NPC Items:
+						You have 4 items in the base pool, plus one for each checkbox in the Items column,
+						plus 2 additional if you have 'Other Quest Items' checked.
+					</li>
+					<li>
+						Other flags may alter this slightly, including the Early Sage convenience flag
+						or Open Progression map flag.
+					</li>
+				</ul>
+			</li>
+			<br />
+			<li>
+				<b>
+					I played the beta version and really liked having *all* of the incentive options.
+					Where'd they go?
+				</b>
+				<br />Awesome, we love beta testers! A lot of options tested in the beta didn't
+				all make the cut for 2.0.0, sorry if your favorite flagset is gone. There's still a
+				ton of new options and we can always expand to add those options later on. Stop by
+				the discord and let us know what you'd like to see in upcoming versions.
+			</li>
+			<br />
+		</ul>
+	</div>
+</div>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -7,12 +8,32 @@ using RomUtilities;
 
 namespace FF1Lib
 {
+	public enum MDefChangesEnum
+	{
+		[Description("Use Vanilla Magic Defense")]
+		None = 0,
+		[Description("Replace Black Belt / Master MDef Growth")]
+		BBFix,
+		[Description("Invert all player Magic Defense Growth")]
+		Invert
+	}
+
 	public partial class FF1Rom
 	{
-		public void FixHouse()
+		public void FixHouse(bool MPfix, bool HPfix)
 		{
-			Put(0x03B2CB, Blob.FromHex("20F3ABA91E20E0B2EAEA"));
-			Put(0x038816, Blob.FromHex("203B42A4AAACA6FF23A6B23223A7C0059C8A9F8EC5FFFFFFFFFFFFFF"));
+			Put(0x03B2BE, Blob.FromHex("A52D4AB018CE3860A978203FB5EAEAEAA91E20E0B2900320F3AB4C1DB1A91F4CB8B2"));
+
+			if (MPfix)
+			{
+				Put(0x03B2CE, Blob.FromHex("20F3ABA91E20E0B2"));
+				Put(0x038816, Blob.FromHex("203B42A4AAACA6FF23A6B23223A7C0059C8A9F8EC5FFFFFFFFFFFFFF"));
+			}
+
+			if (HPfix)
+			{
+				Put(0x03b2c8, Blob.FromHex("20D2AB2000B4"));
+			}
 		}
 
 		public void FixWeaponStats()
@@ -81,6 +102,11 @@ namespace FF1Lib
 			Put(0x3AF13, Blob.FromHex("CC")); // update address for Cure4 routine
 		}
 
+		public void RebalanceSpells()
+		{
+			PutInBank(0x0C, 0xBA46, Blob.FromHex("2029B9AD856838ED7468B002A9008D85682085B860EAEAEAEAEAEAEAEAEAEAEAEAEA"));
+		}
+
 		public void FixEnemyStatusAttackBug()
 		{
 			Put(0x32812, Blob.FromHex("DF")); // This is the craziest freaking patch ever, man.
@@ -88,8 +114,9 @@ namespace FF1Lib
 
 		public void FixBBAbsorbBug()
 		{
-			PutInBank(0x0B, 0x9966, Blob.FromHex("2046D860"));
-			PutInBank(0x1F, 0xD846, CreateLongJumpTableEntry(0x0F, 0x8800));
+			PutInBank(0x1B, 0x874A, Blob.FromHex("A000B186C902F005C908F00160A018B186301BC8B1863016C8B1863011C8B186300CA026B1861869010AA0209186A01CB186301AC8B1863015C8B1863010C8B186300BA026B186186901A022918660"));
+			//PutInBank(0x0B, 0x9966, Blob.FromHex("2046D860"));
+			//PutInBank(0x1F, 0xD846, CreateLongJumpTableEntry(0x0F, 0x8800));
 		}
 
 		public void FixEnemyElementalResistances()
@@ -111,19 +138,10 @@ namespace FF1Lib
 			Put(0x33568, Blob.FromHex("EAEAEAEAEAEAEAEA"));
 		}
 
-		public void FixVanillaRibbon(Blob[] texts)
-		{
-			if (texts[(int)Item.Ribbon].Length > 8)
-			{
-				texts[(int)Item.Ribbon][7] = 0x00;
-			}
-		}
-
 		public void TameExitAndWarpBoss()
 		{
 			// See 0E_9C54_ExitBoss.asm for this
-			PutInBank(0x0E, 0x9C54, Blob.FromHex("205DB6AD2400D012AD2500F0F32084AD6868A9008D25004C97AE2084ADA9008D2400AE6500DE00636000000000000000000000000000000000000000000020D7CF"));
-
+			PutInBank(0x0E, 0x9C54, Blob.FromHex("205DB6AD2400D012AD2500F0F32084AD6868A9008D25004C97AE2084ADA9008D2400AE6500DE006360"));
 
 			Put(0x3B0D6, Blob.FromHex("EAEAEAEAEA20549C")); // Warp
 			Put(0x38A77, Blob.FromHex("A02FB3315EAE36B1A8FFA9AFB2B2B50599B8B6ABFF8BFFB7B2FFA4A5B2B5B7")); // Text
@@ -132,6 +150,41 @@ namespace FF1Lib
 			Put(0x3B0F7, Blob.FromHex("EAEAEAEAEA20549C")); // Exit
 			Put(0x38AB3, Blob.FromHex("95B237C5FF972E5D4B26B7C5FF9EB61A1C3005B6B3A84E1B2EA8BB5BC40599B8B6ABFF8BFF2820A53521")); // Text
 			Put(0x38BAA, Blob.FromHex("95B2B6B7C5FF97B2FFBAA4BCFFB2B8B7C5059EB6A8FFB7ABACB605B6B3A8AFAFFFB7B2FFA8BBACB7C4FF99B8B6ABFF8BFFB7B2FFA4A5B2B5B7"));
+		}
+
+		public void MDefChanges(MDefChangesEnum mode)
+		{
+			if (mode == MDefChangesEnum.BBFix)
+			{
+				RemakeStyleMasterMDEF();
+			}
+			if (mode == MDefChangesEnum.Invert)
+			{
+				InvertedMDEF();
+			}
+		}
+
+		public void ThiefHitRate()
+		{
+			//Thief & Ninja growth rates are separate
+			Put(0x6CA5A, Blob.FromHex("04"));
+			Put(0x6CA60, Blob.FromHex("04"));
+		}
+
+		public void RemakeStyleMasterMDEF()
+		{
+			Put(0x6CA65, Blob.FromHex("030203020202030204020202"));
+		}
+
+		public void InvertedMDEF()
+		{
+			Put(0x6CA65, Blob.FromHex("020301030303020304030303"));
+		}
+
+		public void FixHitChanceCap()
+		{
+			Put(0x2DE1D, Blob.FromHex("FF"));
+			Put(0x2DE21, Blob.FromHex("FF"));
 		}
 	}
 }

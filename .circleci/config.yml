@@ -14,131 +14,53 @@ jobs:
       - run:
           name: publish
           command: |
-            cd FF1RandomizerOnline
+            set -ex
+            cd FF1Blazorizer
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
               dotnet publish -c Release
-              git rev-parse HEAD > bin/Release/netcoreapp2.1/publish/version.txt
+              git rev-parse HEAD > bin/Release/netstandard2.0/publish/FF1Blazorizer/dist/version.txt
             else
               dotnet publish -c Debug
-              git rev-parse HEAD > bin/Debug/netcoreapp2.1/publish/version.txt
+              git rev-parse HEAD > bin/Debug/netstandard2.0/publish/FF1Blazorizer/dist/version.txt
             fi
       - persist_to_workspace:
           root: ~/ff1randomizer
-          paths: FF1RandomizerOnline
+          paths:
+            - FF1Blazorizer
 
-  dockerize_production:
-    <<: *defaults
-    steps:
-      - setup_remote_docker
-      - attach_workspace:
-          at: ~/ff1randomizer
-      - run:
-          name: docker
-          command: |
-            cd FF1RandomizerOnline && \
-            docker login -u $DOCKER_USER -p $DOCKER_PASS && \
-            docker build -t entroper/finalfantasyrandomizer:latest -f Dockerfile . && \
-            docker push entroper/finalfantasyrandomizer:latest
-
-  dockerize_beta:
-    <<: *defaults
-    steps:
-      - setup_remote_docker
-      - attach_workspace:
-          at: ~/ff1randomizer
-      - run:
-          name: docker
-          command: |
-            cd FF1RandomizerOnline && \
-            docker login -u $DOCKER_USER -p $DOCKER_PASS && \
-            docker build -t entroper/finalfantasyrandomizer:beta -f Dockerfile.debug . && \
-            docker push entroper/finalfantasyrandomizer:beta
-
-  dockerize_alpha:
-    <<: *defaults
-    steps:
-      - setup_remote_docker
-      - attach_workspace:
-          at: ~/ff1randomizer
-      - run:
-          name: docker
-          command: |
-            cd FF1RandomizerOnline && \
-            docker login -u $DOCKER_USER -p $DOCKER_PASS && \
-            docker build -t entroper/finalfantasyrandomizer:alpha -f Dockerfile.debug . && \
-            docker push entroper/finalfantasyrandomizer:alpha
-
-  deploy_production:
+  deploy:
     <<: *defaults
     steps:
       - checkout
+      - attach_workspace:
+          at: ~/ff1randomizer
       - run:
           name: deploy
           command: |
-            mkdir -p ~/.ssh && \
-            cp .ssh/known_hosts ~/.ssh/known_hosts && \
-            ssh circle@finalfantasyrandomizer.com "./deployff1r.sh master"
-
-  deploy_beta:
-    <<: *defaults
-    steps:
-      - checkout
-      - run:
-          name: deploy
-          command: |
-            mkdir -p ~/.ssh && \
-            cp .ssh/known_hosts ~/.ssh/known_hosts && \
-            ssh circle@finalfantasyrandomizer.com "./deployff1r.sh dev"
-
-  deploy_alpha:
-    <<: *defaults
-    steps:
-      - checkout
-      - run:
-          name: deploy
-          command: |
-            mkdir -p ~/.ssh && \
-            cp .ssh/known_hosts ~/.ssh/known_hosts && \
-            ssh circle@finalfantasyrandomizer.com "./deployff1r.sh alpha"
+            set -ex
+            mkdir -p ~/.ssh
+            cp .ssh/known_hosts ~/.ssh/known_hosts
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              pushd FF1Blazorizer/bin/Release/netstandard2.0/publish/FF1Blazorizer/dist
+            else
+              pushd FF1Blazorizer/bin/Debug/netstandard2.0/publish/FF1Blazorizer/dist
+            fi
+            tar cvzf ../../../../../../../FF1Blazorizer.tar.gz .
+            popd
+            scp FF1Blazorizer.tar.gz circle@finalfantasyrandomizer.com:FF1Blazorizer.tar.gz
+            ssh circle@finalfantasyrandomizer.com "./deployff1rblazor.sh $CIRCLE_BRANCH"
 
 workflows:
   version: 2
   main:
     jobs:
       - build
-      - dockerize_production:
+      - deploy:
           requires:
             - build
           filters:
             branches:
-              only: master
-      - dockerize_beta:
-          requires:
-            - build
-          filters:
-            branches:
-              only: dev
-      - dockerize_alpha:
-          requires:
-            - build
-          filters:
-            branches:
-              only: alpha
-      - deploy_production:
-          requires:
-            - dockerize_production
-          filters:
-            branches:
-              only: master
-      - deploy_beta:
-          requires:
-            - dockerize_beta
-          filters:
-            branches:
-              only: dev
-      - deploy_alpha:
-          requires:
-            - dockerize_alpha
-          filters:
-            branches:
-              only: alpha
+              only:
+                - master
+                - dev
+                - alpha

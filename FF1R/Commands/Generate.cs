@@ -48,7 +48,8 @@ namespace FF1R.Commands
 				{
 					settings = new RandomizerSettings(
 						Seed,
-						FFR.Common.Presets.Load(Preset).Flags
+						FFR.Common.Presets.Load(Preset).Flags,
+						new Preferences()
 					);
 				}
 				catch(System.IO.FileNotFoundException)
@@ -88,7 +89,7 @@ namespace FF1R.Commands
 				: OutFile;
       
 			var rom = new FF1Rom(RomPath);
-			rom.Randomize(settings.Seed, settings.Flags);
+			rom.Randomize(settings.Seed, settings.Flags, settings.Preferences);
 			rom.Save(outFile);
 
 			if (Verbose) {
