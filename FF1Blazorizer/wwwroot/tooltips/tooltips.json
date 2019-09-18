@@ -269,7 +269,7 @@
 		"description": "Modifies the Tyro/T-Rex sprite to reflect the age old rivalry between two teams. Team Tyro believes firmly in the sanctity of Tyro life while Team Steak believes in the sanctity of Tyro meat dinners. Choosing Team Steak will make it clear what you see when confronting these majestic-but-delicious creatures."
 	},
 	{
-		"Id": "MusicShuffle",
+		"Id": "musicDropDown",
 		"title": "Music Shuffle",
 		"description": "Adjusts the behavior of background music during play.\nNo Music Shuffle leaves all tracks in their normal place.\nStandard Music Shuffle shuffles only dungeon tracks along with the overworld theme.\nNonsensical music shuffle mixes every song in the game into one pool, including shorter tunes that can loop very quickly.\nDisable music mutes all music, although sound effects will still play. "
 	},
@@ -279,9 +279,9 @@
 		"description": "Disables screen flashing when stepping over lava tiles."
 	},
 	{
-		"Id": "MenuColor",
+		"Id": "menuColorDropDown",
 		"title": "Menu Color",
-		"screenshot": "MenuColor.png",
+		"screenshot": "MenuColor.gif",
 		"description": "Changes your menu screen color from the default blue to a selection of other colors. This may also be changed in game by pressing Select at the New Game/Continue screen"
 	},
 	{
