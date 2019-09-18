@@ -2,16 +2,19 @@
 	{
 		"Id": "shopsCheckBox",
 		"title": "Shop Shuffle",
+		"screenshot": "shopsCheckBox.png",
 		"description": "Shop Shuffle: Shuffles the contents of Weapon, Armor, and Item shops, changing what shops have what items for sale. Pure and Soft potions will always be available in the Coneria Item Shop."
 	},
 	{
 		"Id": "randomWaresCheckBox",
 		"title": "Random Weapons and Armor",
+		"screenshot": "randomWaresCheckBox.png",
 		"description": "Random Weapons and Armor: Adds various low to mid-tier Weapons and Armor found in the game to Weapon and Armor Shops, regardless of whether they are normally sold in shops or found in chests."
 	},
 	{
 		"Id": "randomWaresIncludesCheckBox",
 		"title": "Include Caster and Elite Gear",
+		"screenshot": "randomWaresIncludesCheckBox.png",
 		"description": "Include Caster and Elite Gear: Adds rare and high level Weapons and Armor found in the game to Weapon and Armor Shops. These can include normally unique or high-value items such as the Masmune and Ribbons as well as equipment that casts spells when used."
 	},
 	{
@@ -29,6 +32,7 @@
 	{
 		"Id": "magicLevelsCheckBox",
 		"title": "Magic Levels",
+		"screenshot": "magicLevelsCheckBox.png",
 		"description": "Magic Levels: Shuffles the levels of spells, but not what level is sold at each magic shop. Unless \"Keep Permissions\" is checked, the ability of a character to learn a given spell depends on whether or not a class can learn the spell originally in that spell's new slot."
 	},
 	{
@@ -129,6 +133,7 @@
 	{
 		"Id": "npcItemsCheckBox",
 		"title": "Main NPC Items",
+		"screenshot": "npcItemsCheckBox.png",
 		"description": "Main NPC Items: Adds the Bridge, Lute, Ship, Rod, Canoe, Cube, and Bottle to the shuffle."
 	},
 	{
@@ -144,61 +149,73 @@
 	{
 		"Id": "incentivizeFreeNPCsCheckBox",
 		"title": "Free NPCs",
+		"screenshot": "incentivizeFreeNPCsCheckBox.png",
 		"description": "Guarantees all \"Main Quest\" NPCs will hold an item from your incentive item pool. These NPCs include: the king, Princess Sara, Bikke, Sage Lukhan, Sarda and the Waterfall Cave Robot."
 	},
 	{
 		"Id": "incentivizeFetchNPCsCheckBox",
 		"title": "Fetch Quest NPCs",
+		"screenshot": "incentivizeFetchNPCsCheckBox.png",
 		"description": "Guarantees all \"Fetch Quest\" NPCs will hold an item from your incentive pool. Fetch quest NPCs require their respective key items to gain the item they hold. For example, Astos requires the CROWN in order to get his item. Fetch quest NPCs include: Astos, Matoya, Elf Prince, the Dwarves, the Lefeinish, and the Fairy."
 	},
 	{
 		"Id": "incentivizeIceCaveCheckBox",
 		"title": "Ice Cave Incentive Chest",
+		"screenshot": "incentivizeIceCaveCheckBox.png",
 		"description": "Incentivizes the FLOATER chest from the vanilla game. One random item from your incentive item pool will be guaranteed in this chest, provided the number of incentive items matches or is less than the number of incentive locations."
 	},
 	{
 		"Id": "incentivizeOrdealsCheckBox",
 		"title": "Castle Ordeals Incentive Chest",
+		"screenshot": "incentivizeOrdealsCheckBox.png",
 		"description": "Incentivizes the TAIL chest from the vanilla game. One random item from your incentive item pool will be guaranteed in this chest, provided the number of incentive items matches or is less than the number of incentive locations."
 	},
 	{
 		"Id": "incentivizeMarshCheckBox",
 		"title": "Marsh Cave Incentive Chest",
+		"screenshot": "incentivizeMarshCheckBox.png",
 		"description": "Incentivizes the CROWN chest from the vanilla game. One random item from your incentive item pool will be guaranteed in this chest, provided the number of incentive items matches or is less than the number of incentive locations."
 	},
 	{
 		"Id": "incentivizeTitansCheckBox",
 		"title": "Titan’s Trove Incentive Chest",
+		"screenshot": "incentivizeTitansCheckBox.png",
 		"description": "Incentivizes the leftmost chest in Titan’s Trove. Note that if the Titan’s Trove map edit is on, this chest will require the RUBY to access. One random item from your incentive item pool will be guaranteed in this chest, provided the number of incentive items matches or is less than the number of incentive locations."
 	},
 	{
 		"Id": "incentivizeEarthCheckBox",
 		"title": "Earth Cave Incentive Chest",
+		"screenshot": "incentivizeEarthCheckBox.png",
 		"description": "Incentivizes the RUBY chest in the vanilla game. The Vampire must be killed to obtain access to this chest. One random item from your incentive item pool will be guaranteed in this chest, provided the number of incentive items matches or is less than the number of incentive locations."
 	},
 	{
 		"Id": "incentivizeVolcanoCheckBox",
 		"title": "Volcano Incentive Chest",
+		"screenshot": "incentivizeVolcanoCheckBox.png",
 		"description": "Incentivizes the leftmost chest on KARY’s floor. This chest requires two trap tile encounters to access, so make sure you are prepared before approaching. One random item from your incentive item pool will be guaranteed in this chest, provided the number of incentive items matches or is less than the number of incentive locations."
 	},
 	{
 		"Id": "incentivizeSeaShrineCheckBox",
 		"title": "Sea Shrine Incentive Chest",
+		"screenshot": "incentivizeSeaShrineCheckBox.png",
 		"description": "Incentivizes the SLAB chest from the vanilla game. One random item from your incentive item pool will be guaranteed in this chest, provided the number of incentive items matches or is less than the number of incentive locations."
 	},
 	{
 		"Id": "incentivizeSkyPalaceCheckBox",
 		"title": "Sky Palace Incentive Chest",
+		"screenshot": "incentivizeSkyPalaceCheckBox.png",
 		"description": "Incentivizes the ADAMANT chest from the vanilla game. One random item from your incentive item pool will be guaranteed in this chest, provided the number of incentive items matches or is less than the number of incentive locations."
 	},
 	{
 		"Id": "incentivizeConeriaCheckBox",
 		"title": "Coneria Castle Incentive Chest",
+		"screenshot": "incentivizeConeriaCheckBox.png",
 		"description": "Incentivizes the TNT chest from the vanilla game. This chest requires the KEY to access. One random item from your incentive item pool will be guaranteed in this chest, provided the number of incentive items matches or is less than the number of incentive locations."
 	},
 	{
 		"Id": "incentivizeMarshKeyLockedCheckBox",
 		"title": "Marsh KEY Locked Incentive Chest",
+		"screenshot": "incentivizeMarshKeyLockedCheckBox.png",
 		"description": "Incentivizes the bottom right chest of the final floor of Marsh Cave. This chest requires the KEY to access. One random item from your incentive item pool will be guaranteed in this chest, provided the number of incentive items matches or is less than the number of incentive locations."
 	},
 	{
@@ -264,6 +281,7 @@
 	{
 		"Id": "MenuColor",
 		"title": "Menu Color",
+		"screenshot": "MenuColor.png",
 		"description": "Changes your menu screen color from the default blue to a selection of other colors. This may also be changed in game by pressing Select at the New Game/Continue screen"
 	},
 	{
