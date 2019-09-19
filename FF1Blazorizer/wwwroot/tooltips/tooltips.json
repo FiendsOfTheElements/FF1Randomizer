@@ -38,21 +38,25 @@
 	{
 		"Id": "magicShopsCheckBox",
 		"title": "Magic Shop Shuffle",
+		"screenshot": "magicShopsCheckBox.png",
 		"description": "Magic Shop Shuffle: Shuffles what level spells are available at each shop. With this checked, you will likely find several different levels of magic at each shop, regardless of location."
 	},
 	{
 		"Id": "magicPermissionsCheckBox",
 		"title": "Keep Permissions",
+		"screenshot": "magicPermissionsCheckBox.png",
 		"description": "Keep Permissions: Forces spells to keep the class permissions from the unrandomized game, no matter what slot they are in or level they are."
 	},
 	{
 		"Id": "spoilerCheckBox",
 		"title": "SpoilerCheckBox",
+		"screenshot": "spoilerCheckBox.png",
 		"description": "Spoiler Log: Generates a text file of where items have been shuffled to which is provided when creating the randomized ROM. NOTE: This box will affect the seed generated."
 	},
 	{
 		"Id": "rememberCheckBox",
 		"title": "Remember ROM",
+		"screenshot": "rememberCheckBox.png",
 		"description": "Remember ROM: Allows the website to remember the file location of the ROM you use."
 	},
 	{
@@ -68,36 +72,43 @@
 	{
 		"Id": "enemyScriptsCheckBox",
 		"title": "Enemy Scripts",
+		"screenshot": "enemyScriptsCheckBox.png",
 		"description": "Enemy Scripts: Shuffles the spells and skills (if any) each monster uses, allowing any enemy to have any other's combat logic."
 	},
 	{
 		"Id": "allowUnsafePiratesCheckBox",
 		"title": "Unsafe Pirates",
+		"screenshot": "allowUnsafePiratesCheckBox.png",
 		"description": "Unsafe Pirates: Allows Pirates to be shuffled skills and spells. Left unchecked, Pirates will always have a script that directs them to only attack."
 	},
 	{
 		"Id": "enemySkillsSpellsCheckBox",
 		"title": "Enemy Skills/Spells",
+		"screenshot": "enemySkillsSpellsCheckBox.png",
 		"description": "Enemy Skills/Spells: Shuffles enemy skills and spells so they can appear in any script. There are three groups of enemies:\nAll random encounters,\nthe first fiend fights,\nand the second fiend fights with WarMech."
 	},
 	{
 		"Id": "enemyFormationsUnrunnableCheckBox",
 		"title": "Enemy Unrunnable Formations",
+		"screenshot": "enemyFormationsUnrunnableCheckBox.png",
 		"description": "Enemy Unrunnable Formations: Shuffles what formations are and are not runnable. Bosses and some other encounters will remain unrunnable."
 	},
 	{
 		"Id": "everythingUnrunnableCheckBox",
 		"title": "All Encounters are Unrunnable",
+		"screenshot": "everythingUnrunnableCheckBox.png",
 		"description": "All Encounters are Unrunnable: Disables the ability to run from fights."
 	},
 	{
 		"Id": "unrunnablesStrikeFirstAndSupriseCheckBox",
 		"title": "First Strike and Surprise Possible when Unrunnable",
+		"screenshot": "unrunnablesStrikeFirstAndSupriseCheckBox.png",
 		"description": "First Strike and Surprise Possible when Unrunnable: Allows you to first strike an unrunnable formation. Also allows an unrunnable formation to ambush YOU."
 	},
 	{
 		"Id": "enemyFormationsSurpriseCheckBox",
 		"title": "Enemy Surprise Bonus",
+		"screenshot": "enemyFormationsSurpriseCheckBox.png",
 		"description": "Enemy Surprise Bonus: Shuffles the surprise bonus for enemy formations, changing which groups will almost always ambush you."
 	},
 	{
