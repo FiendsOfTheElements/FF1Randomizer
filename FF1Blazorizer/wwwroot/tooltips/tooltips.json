@@ -38,21 +38,25 @@
 	{
 		"Id": "magicShopsCheckBox",
 		"title": "Magic Shop Shuffle",
+		"screenshot": "magicShopsCheckBox.png",
 		"description": "Magic Shop Shuffle: Shuffles what level spells are available at each shop. With this checked, you will likely find several different levels of magic at each shop, regardless of location."
 	},
 	{
 		"Id": "magicPermissionsCheckBox",
 		"title": "Keep Permissions",
+		"screenshot": "magicPermissionsCheckBox.png",
 		"description": "Keep Permissions: Forces spells to keep the class permissions from the unrandomized game, no matter what slot they are in or level they are."
 	},
 	{
 		"Id": "spoilerCheckBox",
 		"title": "SpoilerCheckBox",
+		"screenshot": "spoilerCheckBox.png",
 		"description": "Spoiler Log: Generates a text file of where items have been shuffled to which is provided when creating the randomized ROM. NOTE: This box will affect the seed generated."
 	},
 	{
 		"Id": "rememberCheckBox",
 		"title": "Remember ROM",
+		"screenshot": "rememberCheckBox.png",
 		"description": "Remember ROM: Allows the website to remember the file location of the ROM you use."
 	},
 	{
@@ -68,36 +72,43 @@
 	{
 		"Id": "enemyScriptsCheckBox",
 		"title": "Enemy Scripts",
+		"screenshot": "enemyScriptsCheckBox.png",
 		"description": "Enemy Scripts: Shuffles the spells and skills (if any) each monster uses, allowing any enemy to have any other's combat logic."
 	},
 	{
 		"Id": "allowUnsafePiratesCheckBox",
 		"title": "Unsafe Pirates",
+		"screenshot": "allowUnsafePiratesCheckBox.png",
 		"description": "Unsafe Pirates: Allows Pirates to be shuffled skills and spells. Left unchecked, Pirates will always have a script that directs them to only attack."
 	},
 	{
 		"Id": "enemySkillsSpellsCheckBox",
 		"title": "Enemy Skills/Spells",
+		"screenshot": "allowUnsafePiratesCheckBox.png",
 		"description": "Enemy Skills/Spells: Shuffles enemy skills and spells so they can appear in any script. There are three groups of enemies:\nAll random encounters,\nthe first fiend fights,\nand the second fiend fights with WarMech."
 	},
 	{
 		"Id": "enemyFormationsUnrunnableCheckBox",
 		"title": "Enemy Unrunnable Formations",
+		"screenshot": "enemyFormationsUnrunnableCheckBox.png",
 		"description": "Enemy Unrunnable Formations: Shuffles what formations are and are not runnable. Bosses and some other encounters will remain unrunnable."
 	},
 	{
 		"Id": "everythingUnrunnableCheckBox",
 		"title": "All Encounters are Unrunnable",
+		"screenshot": "everythingUnrunnableCheckBox.png",
 		"description": "All Encounters are Unrunnable: Disables the ability to run from fights."
 	},
 	{
 		"Id": "unrunnablesStrikeFirstAndSupriseCheckBox",
 		"title": "First Strike and Surprise Possible when Unrunnable",
+		"screenshot": "unrunnablesStrikeFirstAndSupriseCheckBox.png",
 		"description": "First Strike and Surprise Possible when Unrunnable: Allows you to first strike an unrunnable formation. Also allows an unrunnable formation to ambush YOU."
 	},
 	{
 		"Id": "enemyFormationsSurpriseCheckBox",
 		"title": "Enemy Surprise Bonus",
+		"screenshot": "enemyFormationsSurpriseCheckBox.png",
 		"description": "Enemy Surprise Bonus: Shuffles the surprise bonus for enemy formations, changing which groups will almost always ambush you."
 	},
 	{
@@ -123,11 +134,13 @@
 	{
 		"Id": "worldWealthDropDown",
 		"title": "Random Wealth",
+		"screenshot": "worldWealthDropDow.gif",
 		"description": "Random Wealth: Alters the distribution of items; Normal is the same number of each tier of item as in the vanilla item pool. High removes gold chests for more legendary and rare equipment, while more common items shows up in lower and lower tiers. Melmond has the lowest chance of top tier gear."
 	},
 	{
 		"Id": "betterTrapTreasureCheckBox",
 		"title": "Better Trap Treasure",
+		"screenshot": "betterTrapTreasureCheckBox.png",
 		"description": "Better Trap Treasure: Adjusts treasure chests that require walking over an encounter tile so that they are more likely to have high-tier treasures. There is a list in the Help section."
 	},
 	{
@@ -139,11 +152,13 @@
 	{
 		"Id": "npcFetchItemsCheckBox",
 		"title": "Fetch Quest Rewards",
+		"screenshot": "npcFetchItemsCheckBox.png",
 		"description": "Fetch Quest Rewards: Randomizes the rewards from the fetch quest items. These are the Crown, Crystal, Herb, TNT, Adamant, Bottle, and the Lefein item from the Slab. If unchecked, each fetch quest is vanilla."
 	},
 	{
 		"Id": "shuffleObjectiveNPCsCheckBox",
 		"title": "Objective NPCs",
+		"screenshot": "shuffleObjectiveNPCsCheckBox.png",
 		"description": "Objective NPCs: Shuffles the locations of Dr. Unne, the Elven Doctor, and Bahamut. Note that the Prince is still napping in Elfland once you deliver the Herb to the Elven Doctor and that the small pool means NPCs may retain their normal location."
 	},
 	{
@@ -224,13 +239,15 @@
 		"description": "Enables Chaos Rush mode, allowing you to reach Chaos without needing the KEY to pass through the door in Temple of Fiends and adding the LUTE to your inventory at the start of the game. This setting does not automatically light the four Orbs, although other settings may change this behavior."
 	},
 	{
-		"Id": "shardHuntCheckBox",
+		"Id": "freeOrbsCheckBox",
 		"title": "Free Orbs",
+		"screenshot": "freeOrbsCheckBox.png",
 		"description": "Starts the game with all four Orbs lit. The KEY and LUTE are still required to reach Chaos, although other settings may change this behavior."
 	},
 	{
 		"Id": "TreasureHuntCheckBox",
 		"title": "Treasure Hunt",
+		"screenshot": "TreasureHuntCheckBox.png",
 		"description": "Changes the objective of the game from the collection of the four Orbs to finding a randomized number of treasures to be able to reach Chaos. These tresures replace many of the \"low value\" items in chests and are given a random, five character name such as \"SHARD\" or \"ESPER\". Additionally, the four fiends give a set number of treasures when defeated instead of an Orb. Your menu will show you how many treasures you need to collect and how many you have in the upper left-hand corner."
 	},
 	{
