@@ -102,6 +102,7 @@ namespace FF1Lib
 			ShiftEarthOrbDown();
 			CastableItemTargeting();
 			FixEnemyPalettes(); // fixes a bug in the original game's programming that causes third enemy slot's palette to render incorrectly
+			FixWarpBug(); // The warp bug must be fixed for magic level shuffle and spellcrafter
 			flags = Flags.ConvertAllTriState(flags, rng);
 
 
@@ -205,7 +206,7 @@ namespace FF1Lib
 			}
 
 			if (flags.GenerateNewSpellbook)
-			{
+			{ 
 				CraftNewSpellbook(rng, flags.SpellcrafterMixSpells, flags.RebalanceSpells, ((bool)flags.MagicLevels));
 			}
 
@@ -285,7 +286,6 @@ namespace FF1Lib
 
 			if (((bool)flags.MagicLevels))
 			{
-				FixWarpBug(); // The warp bug only needs to be fixed if the magic levels are being shuffled
 				ShuffleMagicLevels(rng, ((bool)flags.MagicPermissions));
 			}
 
