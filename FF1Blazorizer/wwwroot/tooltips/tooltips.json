@@ -305,5 +305,340 @@
 		"Id": "thirdBattlePaletteCheckBox",
 		"title": "Three Battle Palettes",
 		"description": "Changes the behavior of in-battle color palettes to allow spite edits to use three different palettes instead of the normal two. This is an advanced option that requires the use of external tools such as FFHackster in order to have a noticeable effect."
+	},
+	{
+		"Id": "spoilersCheckBox",
+		"title": "Generate Spoiler Log!",
+		"description": "Creates a spoiler log for the seed into the console window of the browser. The resulting ROM's randomization will be different than if the log had not been generated, in order to prevent cheating in races."
+	},
+	{
+		"Id": "incentivizeMainItemsCheckBox",
+		"title": "Main Progression Items",
+		"description": "Adds the LUTE, KEY, ROD, OXYALE, CHIME and CUBE to the incentive pool to be distributed in the selected incentive locations.."
+	},
+	{
+		"Id": "incentivizeFetchItemsCheckBox",
+		"title": "Other Quest Items",
+		"description": "Adds the CROWN, CRYSTAL, HERB, TNT, RUBY, BOTTLE, SLAB, and ADAMANT to the incentive pool to be distributed in the selected incentive locations.."
+	},
+	{
+		"Id": "incentivizeAirshipCheckBox",
+		"title": "Floater",
+		"description": "Adds the FLOATER to the incentive pool to be distributed in the selected incentive locations."
+	},
+	{
+		"Id": "incentivizeCanoeItemCheckBox",
+		"title": "Canoe",
+		"description": "Adds the CANOE to the incentive pool to be distributed in the selected incentive locations."
+	},
+	{
+		"Id": "incentivizeShipAndCanalCheckBox",
+		"title": "Ship & Canal",
+		"description": "Adds the SHIP and CANAL to the incentive pool to be distributed in the selected incentive locations."
+	},
+	{
+		"Id": "incentivizeTailCheckBox",
+		"title": "Tail",
+		"description": "Adds the TAIL to the incentive pool to be distributed in the selected incentive locations."
+	},
+	{
+		"Id": "incentivizeMasamuneCheckBox",
+		"title": "Masamune",
+		"description": "Adds the Masamune to the incentive pool to be distributed in the selected incentive locations."
+	},
+	{
+		"Id": "incentivizeVorpalCheckBox",
+		"title": "Vorpal",
+		"description": "Adds the Vorpal Sword to the incentive pool to be distributed in the selected incentive locations."
+	},
+	{
+		"Id": "incentivizeDefCastWeaponCheckBox",
+		"title": "Defense",
+		"description": "Adds the Defense Sword to the incentive pool to be distributed in the selected incentive locations."
+	},
+	{
+		"Id": "incentivizeOffCastWeaponCheckBox",
+		"title": "Thor Hammer",
+		"description": "Adds Thor's Hammer to the incentive pool to be distributed in the selected incentive locations."
+	},
+	{
+		"Id": "incentivizeOpalCheckBox",
+		"title": "Opal Bracelet",
+		"description": "Adds the Opal Bracelet to the incentive pool to be distributed in the selected incentive locations."
+	},
+	{
+		"Id": "incentivizeOtherCastArmorCheckBox",
+		"title": "Power Gauntlet",
+		"description": "Adds the Power Gauntlet to the incentive pool to be distributed in the selected incentive locations."
+	},
+	{
+		"Id": "incentivizeDefCastArmorCheckBox",
+		"title": "White Shirt",
+		"description": "Adds the White Shirt to the incentive pool to be distributed in the selected incentive locations."
+	},
+	{
+		"Id": "incentivizeOffCastArmorCheckBox",
+		"title": "Black Shirt",
+		"description": "Adds the Black Shirt to the incentive pool to be distributed in the selected incentive locations."
+	},
+	{
+		"Id": "incentivizeRibbonCheckBox",
+		"title": "Ribbon",
+		"description": "Adds ONE Ribbon to the incentive pool to be distributed in the selected incentive locations."
+	},
+	{
+		"Id": "shardCountDropDown",
+		"title": "Shard Goal",
+		"description": "The number of SHARDs to collect in order to restore the Black Orb and travel into the past."
+	},
+	{
+		"Id": "deadEndsCheckBox",
+		"title": "Include Dead Ends",
+		"description": "Whether or not to include the empty floors of the Cardia Islands while shuffling. If they are not included, their entrances will be unchanged from the vanilla game."
+	},
+	{
+		"Id": "floorsCheckBox",
+		"title": "Shuffle Floors",
+		"description": "Whether floors should also be shuffled. If floors are not shuffled, each area will be moved together, such that Earth B1 leads to Earth B2, etc... If floors are shuffled, Earth B1 may lead to Volcano B3, for example."
+	},
+	{
+		"Id": "allowDeepCastlesCheckBox",
+		"title": "Deep ToFR",
+		"description": "Whether the Temple of Fiends floor must be at ground level (entered from the world map) or if it may be shuffled deeper, so that multiple floors may have to be crossed to enter it, and the Temple of Fiends Revisited (in the past)."
+	},
+	{
+		"Id": "townsCheckBox",
+		"title": "Shuffle Towns",
+		"description": "Whether to shuffle town entrances. When town entrances are shuffled, all towns, aside from Corneria, could appear at any other town, such that the town at Pravoka could be Lefein or vice-versa."
+	},
+	{
+		"Id": "mixEntrancesCheckBox",
+		"title": "Mix All Entrances Together",
+		"description": "Whether to mix dungeon and town entrances. When enabled, the entrance to any location, aside from Corneria Town, could lead to any town or dungeon."
+	},
+	{
+		"Id": "deepTownsCheckBox",
+		"title": "Deep Towns",
+		"description": "Whether to allow towns to be shuffled below dungeon floors. When enabled, towns other than Corneria may be hidden behind dungeon floors, such that Earth B1's staircase may lead to Elfland."
+	},
+	{
+		"Id": "skyCastle4FMazeModeDropDown",
+		"title": "Sky Castle 4F",
+		"description": "The configuration of the teleporters in Sky Castle's 4th Floor. Normal is vanilla teleporters. Teleporters moves the location of the teleporters so that they must be found. Maze introduces walls so the party must find a way through to the other teleporter."
+	},
+	{
+		"Id": "ordealsPillarsCheckBox",
+		"title": "Castle Ordeals Pillars",
+		"description": "Whether to shuffle the destination of the teleport pillars on the second floor of the Castle of Ordeals."
+	},
+	{
+		"Id": "titansTroveCheckBox",
+		"title": "Titan's Trove",
+		"description": "Moves the Titan over a square such that even with the AIRSHIP it is not possible to reach the Titan's treausre boxes without feeding him the RUBY."
+	},
+	{
+		"Id": "zozoMelmondCheckBox",
+		"title": "Zozo Melmond",
+		"description": "Includes random battles on the desert tiles inside the town of Melmond, reminiscent of the town of Zozo in Final Fantasy VI."
+	},
+	{
+		"Id": "lefeinShopsCheckBox",
+		"title": "Lefeinish Hospitality",
+		"description": "Includes an Inn and Clinic (or Pub, if Tavern mode is enabled) in Lefein."
+	},
+	{
+		"Id": "confusedOldMenCheckBox",
+		"title": "Confused Old Men",
+		"description": "The circle of sages in Cresent Lake is no longer a circle, but each of the sages will walk around."
+	},
+	{
+		"Id": "mapOpenProgressionCheckBox",
+		"title": "Open Progression",
+		"description": "Changes the map to allow walking from Corneria to Dwarf Cave."
+	},
+	{
+		"Id": "earlySardaCheckBox",
+		"title": "Early Sarda Item",
+		"description": "Sarda will give the party his item before the Vampire is killed."
+	},
+	{
+		"Id": "earlySageCheckBox",
+		"title": "Early Sage Item",
+		"description": "The Sage in Cresent Lake will give his item without requiring the Earth Orb to be lit."
+	},
+	{
+		"Id": "earlyOrdealsCheckBox",
+		"title": "Early Ordeals",
+		"description": "The party may complete the Castle of Ordeals without the CROWN."
+	},
+	{
+		"Id": "progressiveScaleModeDropDown",
+		"title": "Exp/Gold Progressive Scaling",
+		"description": "Increases the bonus provided by Exp/Gold boost based on the number of Key Items collected."
+	},
+	{
+		"Id": "wrapPriceOverflowCheckBox",
+		"title": "Wrap Overflowing Prices",
+		"description": "Whether items that cost more than 65,535G cost that (maximum) amoung of G, or if the price should be wrapped around. For example, when disabled, an item that should cost 67,000G would cost 65,535G. When enabled, that item would cost 1,465G."
+	},
+	{
+		"Id": "wrapStatOverflowCheckBox",
+		"title": "Wrap Overflowing Scaled Stats",
+		"description": "Whether stats that roll the maxium value should remain there or wrap back to 1. When disabled, a stat which was scaled to 260 would be 255. When enabled, the stat would be 5."
+	},
+	{
+		"Id": "includeMoraleCheckBox",
+		"title": "Scaled Stats Includes Morale",
+		"description": "Whether enemy morale should also be scaled along with their other stats."
+	},
+	{
+		"Id": "noDanModeCheckBox",
+		"title": "Static EXP Distribution",
+		"description": "When enabled, all experience received by enemies is always distributed as if there were 4 Light Warriors, rahter than dividing the total EXP between those Light Warriors alive at the end of battle."
+	},
+	{
+		"Id": "startingGoldCheckBox",
+		"title": "Scale Starting Gold",
+		"description": "Whether starting gold should be scaled according to the Exp/Gold scaling."
+	},
+	{
+		"Id": "easyModeCheckBox",
+		"title": "Easy Mode",
+		"description": "Used primarily to test new features, this scales all enemy HP to 10% and sets the encounter rate on the overworld and dungeons to 0.2x."
+	},
+	{
+		"Id": "tavernMode",
+		"title": "Tavern Recruitment Mode",
+		"description": "Replaces Clinics with Pubs. Pubs allow the party to recruit a Light Warrior of a random class, in addition to reviving fallen Light Warriors."
+	},
+	{
+		"Id": "tavernModeHireOnly",
+		"title": "Disable Reviving at Taverns",
+		"description": "Disables the ability to revive Light Warriors at the Pub. When enabled, fallen Light Warriors may only be revived with the LIFE or LIF2 spells, or replaced by the class sold by the Pub."
+	},
+	{
+		"Id": "houseMPRestorationCheckBox",
+		"title": "House MP Restoration",
+		"description": "Fixes a bug where the party's MP was restored only after the game was saved."
+	},
+	{
+		"Id": "weaponStatsCheckBox",
+		"title": "Weapon Stats",
+		"description": "Fixes various bugs about how weapon stats, including elemental bonuses and critical hit rate."
+	},
+	{
+		"Id": "chanceToRunCheckBox",
+		"title": "Chance to Run",
+		"description": "Fixes a bug in the way the chance to run is calculated."
+	},
+	{
+		"Id": "spellBugsCheckBox",
+		"title": "Spell Fixes",
+		"description": "Fixes bugs in various spells, such as TMPR, SABR, and HEL2. Also provides the opportunity to cancel out of casting WARP or EXIT."
+	},
+	{
+		"Id": "enemyStatusAttackBugCheckBox",
+		"title": "Enemy Status Attacks",
+		"description": ""
+	},
+	{
+		"Id": "blackBeltAbsorbCheckBox",
+		"title": "Bl. Belt & Master Absorb Calculation",
+		"description": "Fixes a bug in the way Bl. Belt & Master absorb is calculated. Unchecked, absorb is set to the Light Warrior's level so long as the character does not have a weapon equiped. Enabled, the absorb is applied only when the Light Warrior does not have any armor equiped."
+	},
+	{
+		"Id": "enemyElementalResistancesCheckBox",
+		"title": "Enemy Elemental Resistances",
+		"description": "Fixes a bug where XFER and other spells that affect elemental resistances would not work for enemies."
+	},
+	{
+		"Id": "enemySpellsTargetingAlliesCheckBox",
+		"title": "Enemy Spells Targeting Allies",
+		"description": "Fixes a bug in the way spells are applied when an enemy casts it on all allies. Unchecked, spells, such as INV2, will skip the enemy that casted it. Checked, the spell will (correctly) affect all enemies."
+	},
+	{
+		"Id": "improveTurnOrderRandomizationCheckBox",
+		"title": "Improve Turn Order Randomization",
+		"description": "Improves the balance of turn randomization. Unchecked, the turn order is weighted in favor of the enemies. Enabled, turn order is more balanced."
+	},
+	{
+		"Id": "fixHitChanceCapCheckBox",
+		"title": "Fix Hit % Cap",
+		"description": "Changes the max Hit % from 200 to 255."
+	},
+	{
+		"Id": "housesFillHpCheckBox",
+		"title": "House Full HP Restoration",
+		"description": "Houses completely restore the party's HP. Unchecked, using a HOUSE restores 120HP to each Light Warrior."
+	},
+	{
+		"Id": "rebalanceSpellsCheckBox",
+		"title": "LOCK and LOK2 Always Hit",
+		"description": "When enabled, the spells LOCK and LOK2 will always be effective against all enemies, regardless of their MDEF."
+	},
+	{
+		"Id": "proceduralGenerationCheckBox",
+		"title": "Enable Procedural Floor Generation",
+		"description": "Enables the generation of random floors for various dungeons."
+	},
+	{
+		"Id": "procGenWaterfall",
+		"title": "Generated Waterfall Cave",
+		"description": "Randomly generates the map for the Waterfall cave."
+	},
+	{
+		"Id": "procGenEarth1",
+		"title": "Generated Earth Cave B1",
+		"description": "Randomly generates the map for the first level of Earth Cave."
+	},
+	{
+		"Id": "procGenEarth2",
+		"title": "Generated Earth Cave B2",
+		"description": "Randomly generates the map for the second level of Earth Cave."
+	},
+	{
+		"Id": "fiendShuffleCheckBox",
+		"title": "Shuffle the Four Original Fiend Fights",
+		"description": "Shuffles which fiend is guarding which orb in the present day. For example, the fiend at the bottom of Earth Cave could be Kraken."
+	},
+	{
+		"Id": "itemPlacementCheckBox",
+		"title": "Use Older v2 Placement",
+		"description": "Uses an older algorithm to place key items which favored placing the Ship and Canal in the inner sea, even if the Airship could be obtained early."
+	},
+	{
+		"Id": "npcSwatterCheckBox",
+		"title": "NPC Guillotine",
+		"description": "Talking to certain NPCs removes them from the map when their dialog is dismissed. This can be used to make bats go away, for example."
+	},
+	{
+		"Id": "disableTentSaving",
+		"title": "Disable Tent/Cabin/House Saving on Overworld",
+		"description": "When enabled, using a TENT, CABIN, or HOUSE will only restore HP/MP and not save the game."
+	},
+	{
+		"Id": "disableInnSaving",
+		"title": "Disable Inn Saving",
+		"description": "When enabled, staying at an inn will only restore HP/MP, but not save the game."
+	},
+	{
+		"Id": "randomizeFormationEnemizer",
+		"title": "Generate New Formations (Enemizer)",
+		"description": "Generates entirely new formations of enemies."
+	},
+	{
+		"Id": "randomizeEnemizer",
+		"title": "Generate New Enemies (Enemizer)",
+		"description": "Randomly generates all non-boss enemies."
+	},
+	{
+		"Id": "generateNewSpellbook",
+		"title": "Generate New Spellbook (Spellcrafter)",
+		"description": "Randomly generates new white and black magic spell books, replacing all magic in the game."
+	},
+	{
+		"Id": "spellcrafterMixSpells",
+		"title": "Mix spellbooks (Spellcrafter)",
+		"description": "Mixes the randomly generated spells, so spells that would typically be considered 'white' magic may be classed as 'black' magic and vice-versa."
 	}
 ]
