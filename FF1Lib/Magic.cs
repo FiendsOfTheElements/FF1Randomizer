@@ -19,6 +19,9 @@ namespace FF1Lib
 		public const int MagicOutOfBattleSize = 7;
 		public const int MagicOutOfBattleCount = 13;
 
+		public const int OldLevelUpDataOffset = 0x2D094; // this was moved to bank 1B
+		public const int NewLevelUpDataOffset = 0x6CDA9; // this was moved from bank 1B
+
 		public const int ConfusedSpellIndexOffset = 0x3321E;
 		public const int FireSpellIndex = 4;
 

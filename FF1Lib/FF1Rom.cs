@@ -171,7 +171,7 @@ namespace FF1Lib
 
 			if (flags.EnemizerEnabled)
 			{
-				DoEnemizer(rng, flags.RandomizeEnemizer, flags.RandomizeFormationEnemizer);
+				DoEnemizer(rng, flags.RandomizeEnemizer, flags.RandomizeFormationEnemizer, (bool)flags.EnemySkillsSpells);
 			}
 
 			if (preferences.ModernBattlefield)
@@ -205,6 +205,11 @@ namespace FF1Lib
 				FixEnemyAOESpells();
 			}
 
+			if (flags.AllSpellLevelsForKnightNinja)
+			{
+				KnightNinjaChargesForAllLevels();
+			}
+		
 			if (flags.GenerateNewSpellbook)
 			{ 
 				CraftNewSpellbook(rng, flags.SpellcrafterMixSpells, flags.RebalanceSpells, ((bool)flags.MagicLevels));
@@ -447,6 +452,11 @@ namespace FF1Lib
 			if ((bool)flags.FreeLute)
 			{
 				EnableFreeLute();
+			}
+
+			if ((bool)flags.FreeTail)
+			{
+				EnableFreeTail();
 			}
 
 			if (flags.NoPartyShuffle)

@@ -537,6 +537,11 @@ namespace FF1Lib
 			Data[0x3020 + (int)Item.Lute] = 0x01;
 		}
 
+		public void EnableFreeTail()
+		{
+			Data[0x3020 + (int)Item.Tail] = 0x01;
+		}
+
 		public void EnableFreeOrbs()
 		{
 			const int initItemOffset = 0x3020;

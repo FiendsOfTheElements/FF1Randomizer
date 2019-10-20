@@ -1848,5 +1848,23 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ThiefHitRate"));
 			}
 		}
+		public bool AllSpellLevelsForKnightNinja
+		{
+			get => Flags.AllSpellLevelsForKnightNinja;
+			set
+			{
+				Flags.AllSpellLevelsForKnightNinja = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AllSpellLevelsForKnightNinja"));
+			}
+		}
+		public bool? FreeTail
+		{
+			get => Flags.FreeTail;
+			set
+			{
+				Flags.FreeTail = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeTail"));
+			}
+		}
 	}
 }
