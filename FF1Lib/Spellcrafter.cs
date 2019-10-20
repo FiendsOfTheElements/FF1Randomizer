@@ -1026,12 +1026,16 @@ namespace FF1Lib
 						}
 						if (targeting == 0x08 && SpellTier(index) < 4)
 							targeting = 0x10;
+						if (SpellTier(index) == 7)
+							targeting = 0x04;
 						spell[index].targeting = targeting;
 						spell[index].effect = (byte)(spell[index].targeting == 0x08 ? (SpellTier(index) - 3) * 8 : (SpellTier(index) + 1) * 6);
 						if(SpellTier(index) > 5 && targeting != 0x08)
 							spell[index].effect = (byte)(spell[index].effect + spell[index].effect / 2);
 						if (spell[index].targeting == 0x04)
 							spell[index].effect = (byte)(spell[index].effect + spell[index].effect / 2);
+						if (SpellTier(index) == 7)
+							targeting = 0x08;
 						spell[index].routine = routine;
 						spellMessages[index] = 0x02; // Armor up
 						if (spell[index].targeting == 0x04)
@@ -2025,11 +2029,15 @@ namespace FF1Lib
 		public void SPCR_CraftEvasionSpell(MT19337 rng, SpellInfo spell, int tier, byte targeting)
 		{
 			spell.targeting = targeting;
+			if (tier == 7)
+				spell.targeting = 0x04; // use selftargeting effect for all tier 8 spells
 			spell.effect = (byte)(spell.targeting == 0x08 ? tier * 10 : (tier + 3) * 10);
 			if (tier > 5)
 				spell.effect += 20;
 			if (spell.targeting == 0x04)
 				spell.effect <<= 1; // ASL the effect byte (multiply by two)
+			if (tier == 7)
+				spell.targeting = 0x08; // tier 8 spells target all allies with +200 evasion
 			spell.routine = 0x10;
 		}
 
@@ -2039,6 +2047,8 @@ namespace FF1Lib
 				spell.targeting = 0x04;
 			else if (tier < 3)
 				spell.targeting = (byte)(rng.Between(0, 2) == 0 ? 0x10 : 0x04);
+			else if (tier == 7)
+				spell.targeting = 0x04;
 			else
 			{
 				int choice = rng.Between(0, 8);
@@ -2052,6 +2062,8 @@ namespace FF1Lib
 			spell.effect = (byte)(spell.targeting == 0x08 ? tier * 3 + 1 : (tier + 2) * 3 + 1);
 			if (spell.targeting == 0x04)
 				spell.effect = (byte)(spell.effect + spell.effect / 2);
+			if (tier == 7)
+				spell.targeting = 0x08; // tier 8 targets all allies with the strength of a SABR spell
 			spell.routine = 0x0D;
 		}
 
