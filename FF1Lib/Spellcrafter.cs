@@ -1029,9 +1029,7 @@ namespace FF1Lib
 						if (SpellTier(index) == 7)
 							targeting = 0x04;
 						spell[index].targeting = targeting;
-						spell[index].effect = (byte)(spell[index].targeting == 0x08 ? (SpellTier(index) - 3) * 8 : (SpellTier(index) + 1) * 6);
-						if(SpellTier(index) > 5 && targeting != 0x08)
-							spell[index].effect = (byte)(spell[index].effect + spell[index].effect / 2);
+						spell[index].effect = (byte)(spell[index].targeting == 0x08 ? (SpellTier(index) - 3) * 8 : (SpellTier(index) + 2) * 4);
 						if (spell[index].targeting == 0x04)
 							spell[index].effect = (byte)(spell[index].effect + spell[index].effect / 2);
 						if (SpellTier(index) == 7)
@@ -2010,6 +2008,16 @@ namespace FF1Lib
 			{
 				spell.effect = (byte)(spell.effect - spell.effect / 4);
 			}
+			if (tier == 2)
+			{
+				if (element < 0b0001000 && element > 0 && rng.Between(0, 1) == 0)
+				{
+					spell.effect *= 6;
+					spell.effect /= 10;
+					spell.targeting = 0x01;
+					spell.accuracy = 24;
+				}
+			}
 				
 			spell.routine = 0x01;
 			spell.elem = element;
@@ -2048,7 +2056,7 @@ namespace FF1Lib
 			else if (tier < 3)
 				spell.targeting = (byte)(rng.Between(0, 2) == 0 ? 0x10 : 0x04);
 			else if (tier == 7)
-				spell.targeting = 0x04;
+				spell.targeting = 0x10;
 			else
 			{
 				int choice = rng.Between(0, 8);
@@ -2059,7 +2067,7 @@ namespace FF1Lib
 				else
 					spell.targeting = 0x08;
 			}
-			spell.effect = (byte)(spell.targeting == 0x08 ? tier * 3 + 1 : (tier + 2) * 3 + 1);
+			spell.effect = (byte)(spell.targeting == 0x08 ? tier * 3 - 2 : (tier + 2) * 3 + 1);
 			if (spell.targeting == 0x04)
 				spell.effect = (byte)(spell.effect + spell.effect / 2);
 			if (tier == 7)
