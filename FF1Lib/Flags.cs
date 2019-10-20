@@ -267,6 +267,7 @@ namespace FF1Lib
 		public bool? IncentivizeRod => NPCItems & IncentivizeMainItems;
 		public bool? IncentivizeCube => NPCItems & IncentivizeMainItems;
 		public bool? IncentivizeFloater => !FreeAirship & IncentivizeAirship;
+		public bool? IncentivizePromotion => !FreeTail & IncentivizeTail;
 
 		public bool? IncentivizeCanal => NPCFetchItems & IncentivizeShipAndCanal & !FreeCanal;
 		public bool? IncentivizeCrystal => NPCFetchItems & IncentivizeFetchItems;
@@ -279,7 +280,7 @@ namespace FF1Lib
 		public bool? IncentivizeXcalber => false;
 
 		public int IncentivizedItemCountMin => 0
-			+ ((IncentivizeTail ?? false) ? 1 : 0)
+			+ ((IncentivizePromotion ?? false) ? 1 : 0)
 			+ ((IncentivizeMasamune ?? false) ? 1 : 0)
 			+ ((IncentivizeVorpal ?? false) ? 1 : 0)
 			+ ((IncentivizeOpal ?? false) ? 1 : 0)
@@ -312,7 +313,7 @@ namespace FF1Lib
 			+ ((IncentivizeXcalber ?? false) ? 1 : 0);
 
 		public int IncentivizedItemCountMax => 0
-			+ ((IncentivizeTail ?? true) ? 1 : 0)
+			+ ((IncentivizePromotion ?? true) ? 1 : 0)
 			+ ((IncentivizeMasamune ?? true) ? 1 : 0)
 			+ ((IncentivizeVorpal ?? true) ? 1 : 0)
 			+ ((IncentivizeOpal ?? true) ? 1 : 0)
@@ -364,7 +365,7 @@ namespace FF1Lib
 			+ ((IncentivizeRuby != null) ? (IncentivizeRuby ?? false ? "Ruby " : "") : ("Ruby? "))
 			+ ((IncentivizeShip != null) ? (IncentivizeShip ?? false ? "Ship " : "") : ("Ship? "))
 			+ ((IncentivizeSlab != null) ? (IncentivizeSlab ?? false ? "Slab " : "") : ("Slab? "))
-			+ ((IncentivizeTail != null) ? (IncentivizeTail ?? false ? "Tail " : "") : ("Tail? "))
+			+ ((IncentivizePromotion != null) ? (IncentivizePromotion ?? false ? "Tail " : "") : ("Tail? "))
 			+ ((IncentivizeTnt != null) ? (IncentivizeTnt ?? false ? "Tnt " : "") : ("Tnt? "))
 			+ ((IncentivizeMasamune != null) ? (IncentivizeMasamune ?? false ? "Masmune\U0001F5E1 " : "") : ("Masmune?\U0001F5E1 "))
 			+ ((IncentivizeVorpal != null) ? (IncentivizeVorpal ?? false ? "Vorpal\U0001F5E1 " : "") : ("Vorpal?\U0001F5E1 "))

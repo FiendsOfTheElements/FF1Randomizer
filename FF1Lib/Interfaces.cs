@@ -46,7 +46,7 @@
 		bool? IncentivizeRod { get; }
 		bool? IncentivizeFloater { get; }
 		bool? IncentivizeChime { get; }
-		bool? IncentivizeTail { get; }
+		bool? IncentivizePromotion { get; }
 		bool? IncentivizeCube { get; }
 		bool? IncentivizeBottle { get; }
 		bool? IncentivizeOxyale { get; }
@@ -123,5 +123,6 @@
 		bool? FreeShip { get; }
 		bool? FreeCanal { get; }
 		bool? FreeLute { get; }
+		bool? FreeTail { get; }
 	}
 }
