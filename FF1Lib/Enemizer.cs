@@ -3009,6 +3009,8 @@ namespace FF1Lib
 							enemy[i].elem_weakness = 0b00000000;
 							perks.Add(MonsterPerks.PERK_LOWRESIST);
 							perks.Add(MonsterPerks.PERK_HIGHRESIST);
+							perks.Add(MonsterPerks.PERK_LOWWEAKNESS);
+							perks.Add(MonsterPerks.PERK_HIGHWEAKNESS);
 							perks.Add(MonsterPerks.PERK_PLUSONEHIT);
 							break;
 						case 31: // Ankylo
