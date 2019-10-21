@@ -2903,7 +2903,7 @@ namespace FF1Lib
 							enemyNames[i] = "GOYLE";
 							enemy[i].num_hits = 4;
 							enemy[i].critrate = 1;
-							enemy[i].damage = ENE_rollEnemyStrength(enemy[i].tier, 4);
+							enemy[i].damage = ENE_rollEnemyStrength(enemy[i].tier, 3);
 							enemy[i].accuracy = ENE_rollEnemyAccuracy(enemy[i].tier, 3);
 							enemy[i].absorb = ENE_rollEnemyAbsorb(enemy[i].tier, 4);
 							enemy[i].agility = ENE_rollEnemyEvade(enemy[i].tier, 5);
@@ -3002,17 +3002,14 @@ namespace FF1Lib
 							enemy[i].accuracy = ENE_rollEnemyAccuracy(enemy[i].tier, 4);
 							enemy[i].absorb = ENE_rollEnemyAbsorb(enemy[i].tier, 4);
 							enemy[i].agility = ENE_rollEnemyEvade(enemy[i].tier, 4);
-							enemy[i].atk_elem = 0b00000000;
-							enemy[i].atk_ailment = 0b00000000;
+							enemy[i].atk_elem = 0b00000001;
+							enemy[i].atk_ailment = (byte)(0b00000100 << rng.Between(0, 4));
 							enemy[i].monster_type = 0b00000000;
 							enemy[i].elem_resist = 0b00000000;
 							enemy[i].elem_weakness = 0b00000000;
 							perks.Add(MonsterPerks.PERK_LOWRESIST);
 							perks.Add(MonsterPerks.PERK_HIGHRESIST);
 							perks.Add(MonsterPerks.PERK_PLUSONEHIT);
-							perks.Add(MonsterPerks.PERK_POISONTOUCH);
-							perks.Add(MonsterPerks.PERK_STUNSLEEPTOUCH);
-							perks.Add(MonsterPerks.PERK_MUTETOUCH);
 							break;
 						case 31: // Ankylo
 							enemyNames[i] = "ANK";
@@ -3147,7 +3144,7 @@ namespace FF1Lib
 							break;
 						case 38: // Gator
 							enemyNames[i] = "GATOR";
-							enemy[i].num_hits = rng.Between(2, 3);
+							enemy[i].num_hits = 2;
 							enemy[i].critrate = 1;
 							enemy[i].damage = ENE_rollEnemyStrength(enemy[i].tier, 6);
 							enemy[i].accuracy = ENE_rollEnemyAccuracy(enemy[i].tier, 5);

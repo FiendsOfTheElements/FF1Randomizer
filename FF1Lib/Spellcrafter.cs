@@ -2012,7 +2012,7 @@ namespace FF1Lib
 			{
 				if (element < 0b0001000 && element > 0 && rng.Between(0, 1) == 0)
 				{
-					spell.effect *= 6;
+					spell.effect *= 7;
 					spell.effect /= 10;
 					spell.targeting = 0x01;
 					spell.accuracy = 24;
@@ -2045,7 +2045,7 @@ namespace FF1Lib
 			if (spell.targeting == 0x04)
 				spell.effect <<= 1; // ASL the effect byte (multiply by two)
 			if (tier == 7)
-				spell.targeting = 0x08; // tier 8 spells target all allies with +200 evasion
+				spell.targeting = 0x08; // tier 8 spells target all allies with +240 evasion
 			spell.routine = 0x10;
 		}
 
