@@ -454,7 +454,7 @@
 	{
 		"Id": "mapOpenProgressionCheckBox",
 		"title": "Open Progression",
-		"description": "Changes the map to allow walking from Corneria to Dwarf Cave."
+		"description": "Changes the map to allow walking from Corneria to Dwarf Cave, as well as connecting the Ice Cave and Volcano river systems, to allow passage from Pravoka to Crescent Lake with the CANOE."
 	},
 	{
 		"Id": "earlySardaCheckBox",
