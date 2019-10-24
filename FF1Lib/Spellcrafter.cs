@@ -2008,7 +2008,7 @@ namespace FF1Lib
 			{
 				spell.effect = (byte)(spell.effect - spell.effect / 4);
 			}
-			if (tier == 2)
+			if (tier == 1)
 			{
 				if (element < 0b0001000 && element > 0 && rng.Between(0, 1) == 0)
 				{
