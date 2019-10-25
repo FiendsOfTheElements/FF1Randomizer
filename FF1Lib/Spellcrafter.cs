@@ -246,8 +246,11 @@ namespace FF1Lib
 			int fastspell = spellindex.Where(id => BlackSpell(id) && id > 16).ToList().PickRandom(rng); // guaranteed FAST, we do NOT want this to land on an item and we need to track this
 			SPCR_CraftFastSpell(spell[fastspell], SpellTier(fastspell));
 			spellMessages[fastspell] = 0x12; // Quick Shot
-			SPCR_SetPermissionFalse(spellPermissions, fastspell, 3); // red mage banned
-			SPCR_SetPermissionFalse(spellPermissions, fastspell, 9); // red wizard banned
+			if (spell[fastspell].targeting != 0x04)
+			{
+				SPCR_SetPermissionFalse(spellPermissions, fastspell, 3); // red mage banned
+				SPCR_SetPermissionFalse(spellPermissions, fastspell, 9); // red wizard banned
+			}
 			spellindex.Remove(fastspell);
 			int slowspell = spellindex.Where(id => BlackSpell(id) && id > 31 && id < 48).ToList().PickRandom(rng); // guaranteed SLO2 equivalent
 			spell[slowspell].routine = 0x04;
@@ -1124,8 +1127,11 @@ namespace FF1Lib
 						}
 						SPCR_CraftFastSpell(spell[index], SpellTier(index));
 						spellMessages[index] = 0x12; // Quick shot
-						SPCR_SetPermissionFalse(spellPermissions, index, 3); // red mage banned
-						SPCR_SetPermissionFalse(spellPermissions, index, 9); // red wizard banned
+						if(spell[index].targeting != 0x04)
+						{
+							SPCR_SetPermissionFalse(spellPermissions, index, 3); // red mage banned
+							SPCR_SetPermissionFalse(spellPermissions, index, 9); // red wizard banned for all FAST spells tier 5-8
+						}
 						rollSecondFast = false;
 					}
 					if(routine == 0x0D) // attack up (TMPR, SABR)
