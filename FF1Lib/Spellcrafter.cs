@@ -1001,36 +1001,26 @@ namespace FF1Lib
 								targeting = 0x08;
 								break;
 						}
+						if (targeting == 0x08 && SpellTier(index) < 4)
+							targeting = 0x10;
+						if (SpellTier(index) == 7)
+							targeting = 0x04;
 						if (targeting == 0x04)
 						{
 							if (selfdefenseupspell.Exists(id => Math.Abs(SpellTier(id) - SpellTier(index)) < 3))
 							{
-								if (defenseupspell.Exists(id => Math.Abs(SpellTier(id) - SpellTier(index)) < 3))
-								{
-									validroutines.Remove(0x09);
-									continue;
-								}
-								else
-									targeting = (byte)(rng.Between(0, 1) == 0 ? 0x08 : 0x10);
+								validroutines.Remove(0x09);
+								continue;
 							}
 						}
 						else
 						{
 							if (defenseupspell.Exists(id => Math.Abs(SpellTier(id) - SpellTier(index)) < 3))
 							{
-								if (selfdefenseupspell.Exists(id => Math.Abs(SpellTier(id) - SpellTier(index)) < 3))
-								{
-									validroutines.Remove(0x09);
-									continue;
-								}
-								else
-									targeting = 0x04;
+								validroutines.Remove(0x09);
+								continue;
 							}
 						}
-						if (targeting == 0x08 && SpellTier(index) < 4)
-							targeting = 0x10;
-						if (SpellTier(index) == 7)
-							targeting = 0x04;
 						spell[index].targeting = targeting;
 						spell[index].effect = (byte)(spell[index].targeting == 0x08 ? (SpellTier(index) - 3) * 8 : (SpellTier(index) + 2) * 4);
 						if (spell[index].targeting == 0x04)
@@ -1184,35 +1174,24 @@ namespace FF1Lib
 								targeting = 0x08;
 								break;
 						}
-						if(targeting == 0x04)
-						{
-							if(selfevasionspell.Exists(id => Math.Abs(SpellTier(id) - SpellTier(index)) < 3))
-							{
-								if (evasionspell.Exists(id => Math.Abs(SpellTier(id) - SpellTier(index)) < 3))
-								{
-									validroutines.Remove(0x10);
-									continue;
-								}
-								else
-									targeting = (byte)(rng.Between(0, 1) == 0 ? 0x08 : 0x10);
-							}
-						}
-						else
-						{
-
-							if (evasionspell.Exists(id => Math.Abs(SpellTier(id) - SpellTier(index)) < 3))
-							{
-								if (selfevasionspell.Exists(id => Math.Abs(SpellTier(id) - SpellTier(index)) < 3))
-								{
-									validroutines.Remove(0x10);
-									continue;
-								}
-								else
-									targeting = 0x04;
-							}
-						}
 						if (SpellTier(index) < 4 && targeting == 0x08)
 							targeting = 0x10;
+						if (targeting == 0x04 || SpellTier(index) == 7)
+						{
+							if (selfevasionspell.Exists(id => Math.Abs(SpellTier(id) - SpellTier(index)) < 3))
+							{
+								validroutines.Remove(0x10);
+								continue;
+							}
+						}
+						if (targeting != 0x04 || SpellTier(index) == 7)
+						{
+							if (evasionspell.Exists(id => Math.Abs(SpellTier(id) - SpellTier(index)) < 3))
+							{
+								validroutines.Remove(0x10);
+								continue;
+							}
+						}
 						SPCR_CraftEvasionSpell(rng, spell[index], SpellTier(index), targeting);
 						if(spell[index].targeting == 0x04)
 							SPCR_SetPermissionFalse(spellPermissions, index, 3); // red mage banned
