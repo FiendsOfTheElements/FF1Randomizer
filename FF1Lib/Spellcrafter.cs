@@ -427,7 +427,7 @@ namespace FF1Lib
 							validStatuses.Add(0b00001000);
 						if (!stunspell.Exists(id => Math.Abs(SpellTier(index) - SpellTier(id)) < 2) && SpellTier(index) > 1 && BlackSpell(index))
 							validStatuses.Add(0b00010000);
-						if (SpellTier(index) < 4 && sleepspell != -2)
+						if (SpellTier(index) < 4 && sleepspell != -2 && SpellTier(sleepspell) != SpellTier(index))
 							validStatuses.Add(0b00100000);
 						if (SpellTier(index) < 4 && !mutespell.Exists(id => Math.Abs(SpellTier(index) - SpellTier(id)) < 2))
 							validStatuses.Add(0b01000000);
