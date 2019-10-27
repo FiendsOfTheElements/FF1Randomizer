@@ -315,7 +315,7 @@ namespace FF1Lib
 				if (BlackSpell(index))
 				{
 					validroutines.Add(0x0D);
-					if(lockspell != -2 && SpellTier(index) < 6)
+					if(lockspell != -2 && SpellTier(index) < 6 && SpellTier(lockspell) != SpellTier(index))
 					{
 						if(lockspell == -1)
 							validroutines.Add(0x0E);
