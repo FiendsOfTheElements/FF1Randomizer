@@ -295,6 +295,8 @@ namespace FF1Lib
 			List<int> selfevasionspell = new List<int> { rusespell };
 			List<int> attackupspell = new List<int> { sabrspell }; // attack increasing spells must be separated by three tiers regardless of targeting, whether they are white or black magic
 
+			spellindex.Shuffle(rng);
+
 			// draw remaining spells
 			foreach(int index in spellindex)
 			{
