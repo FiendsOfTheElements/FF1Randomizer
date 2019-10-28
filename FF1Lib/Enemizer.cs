@@ -1911,7 +1911,7 @@ namespace FF1Lib
 					thisEnemy.elem_weakness = 0b00000000;
 					if (thisEnemy.AIscript == 0xFF)
 					{
-						thisEnemy.AIscript = ENE_PickForcedAIScript(tier);
+						thisEnemy.AIscript = ENE_PickForcedAIScript(tier, rng);
 					}
 					break;
 				default: // Raw Mana Elemental
@@ -2040,7 +2040,7 @@ namespace FF1Lib
 					thisEnemy.elem_weakness = 0b00000000;
 					if (thisEnemy.AIscript == 0xFF)
 					{
-						thisEnemy.AIscript = ENE_PickForcedAIScript(tier);
+						thisEnemy.AIscript = ENE_PickForcedAIScript(tier, rng);
 					}
 					break;
 				default: // Air Elemental
@@ -2169,7 +2169,7 @@ namespace FF1Lib
 					thisEnemy.elem_weakness = 0b00000000;
 					if (thisEnemy.AIscript == 0xFF)
 					{
-						thisEnemy.AIscript = ENE_PickForcedAIScript(tier);
+						thisEnemy.AIscript = ENE_PickForcedAIScript(tier, rng);
 					}
 					break;
 				default: // Standard Dragon
@@ -2188,16 +2188,54 @@ namespace FF1Lib
 			}
 		}
 
-		public byte ENE_PickForcedAIScript(int tier)
+		public byte ENE_PickForcedAIScript(int tier, MT19337 rng)
 		{
 			if (tier >= 0 && tier <= 2)
-				return 0x1A; // tier 0-2 uses RockGOL script
+			{
+				switch (rng.Between(0, 1))
+				{
+					case 0:
+						return 0x1A; // RockGol script
+					default:
+						return 0x13; // GrNaga script
+				}
+			}
 			else if (tier >= 3 && tier <= 4)
-				return 0x0D; // tier 3-4 uses R.GOYLE script
+			{
+				switch (rng.Between(0, 2))
+				{
+					case 0:
+						return 0x0D; // R.Goyle script
+					case 1:
+						return 0x0A; // Mancat script
+					default:
+						return 0x06; // WzOgre script
+				}
+			}
 			else if (tier == 5)
-				return 0x0C; // tier 5 uses WzVAMP script
+			{
+				switch (rng.Between(0, 2))
+				{
+					case 0:
+						return 0x0C; // WzVamp script
+					case 1:
+						return 0x19; // MudGol script
+					default:
+						return 0x12; // Naga script
+				}
+			}
 			else if (tier >= 6 && tier <= 7)
-				return 0x1D; // tier 6-7 uses MAGE script
+			{
+				switch (rng.Between(0, 2))
+				{
+					case 0:
+						return 0x1D; // Mage script
+					case 1:
+						return 0x1E; // Fighter script
+					default:
+						return 0x08; // Eye script
+				}
+			}
 			else if (tier >= 8 && tier <= 9)
 				return 0x1C; // tier 8-9 uses EVILMAN script
 			else
@@ -2762,7 +2800,7 @@ namespace FF1Lib
 							enemy[i].elem_resist = 0b10000000;
 							enemy[i].elem_weakness = 0b00000000;
 							if (enemy[i].AIscript == 0xFF && !shuffledSkillsOn)
-								enemy[i].AIscript = ENE_PickForcedAIScript(enemy[i].tier);
+								enemy[i].AIscript = ENE_PickForcedAIScript(enemy[i].tier, rng);
 							perks.Add(MonsterPerks.PERK_LOWRESIST);
 							perks.Add(MonsterPerks.PERK_HIGHRESIST);
 							perks.Add(MonsterPerks.PERK_LOWWEAKNESS);
@@ -3219,7 +3257,7 @@ namespace FF1Lib
 							enemy[i].elem_resist = 0b00000000;
 							enemy[i].elem_weakness = 0b00000000;
 							if (enemy[i].AIscript == 0xFF && !shuffledSkillsOn)
-								enemy[i].AIscript = ENE_PickForcedAIScript(enemy[i].tier);
+								enemy[i].AIscript = ENE_PickForcedAIScript(enemy[i].tier, rng);
 							perks.Add(MonsterPerks.PERK_LOWRESIST);
 							perks.Add(MonsterPerks.PERK_HIGHRESIST);
 							perks.Add(MonsterPerks.PERK_LOWWEAKNESS);
@@ -3444,7 +3482,7 @@ namespace FF1Lib
 							enemy[i].elem_resist = 0b00000000;
 							enemy[i].elem_weakness = 0b00000000;
 							if (enemy[i].AIscript == 0xFF && !shuffledSkillsOn)
-								enemy[i].AIscript = ENE_PickForcedAIScript(enemy[i].tier);
+								enemy[i].AIscript = ENE_PickForcedAIScript(enemy[i].tier, rng);
 							perks.Add(MonsterPerks.PERK_LOWRESIST);
 							perks.Add(MonsterPerks.PERK_HIGHRESIST);
 							perks.Add(MonsterPerks.PERK_LOWWEAKNESS);
@@ -3538,7 +3576,7 @@ namespace FF1Lib
 								case "Wz":
 									if (enemy[i].AIscript == 0xFF && !shuffledSkillsOn)
 									{
-										enemy[i].AIscript = ENE_PickForcedAIScript(enemy[i].tier);
+										enemy[i].AIscript = ENE_PickForcedAIScript(enemy[i].tier, rng);
 									}
 									break;
 								case "Fr":
@@ -3815,6 +3853,7 @@ namespace FF1Lib
 							{
 								string nameModifier = monsterNameVariants[enemy[i].image].PickRandom(rng);
 								enemyNames[i] = nameModifier + enemyNames[i];
+								monsterNameVariants[enemy[i].image].Remove(nameModifier);
 							}
 							else
 								monsterBaseNameUsed[enemy[i].image] = true;
