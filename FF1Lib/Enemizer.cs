@@ -1035,6 +1035,17 @@ namespace FF1Lib
 						en.enemyZones[mon].Add(i);
 					}
 				}
+				if(en.enemyZones[mon].Count == 0)
+				{
+					for (int i = 0; i < en.zone.Count; ++i)
+					{
+						if (enemy[mon].exp <= (en.zone[i].maxXP * 2) / 3 && enemy[mon].exp * limit >= en.zone[i].midXP)
+						{
+							en.zone[i].zonemons.Add(mon);
+							en.enemyZones[mon].Add(i);
+						}
+					}
+				}
 			}
 			// roll special encounters for: imp, phantom, warmech, vampire, astos, pirates, garland (and ignore fiend encounters
 			en.wizard_encounter = 0x81;
