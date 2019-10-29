@@ -967,10 +967,7 @@ namespace FF1Lib
 
 			public void PrintFormationInfo()
 			{
-				foreach (Enemizer_Zone domain in zone)
-				{
-					Console.WriteLine("Zone " + domain.forms.Count() + "/" + domain.min);
-				}
+				// this is where we would print formation info to console when debugging the game
 			}
 
 			public int GetMonLimit(bool size, int shape)
@@ -1126,9 +1123,6 @@ namespace FF1Lib
 					availablezones = en.enemyZones[f.Top].ToList();
 				if (availablezones.Count == 0) // and if by some freak chance the enemy has not been assigned any zones, write an error report to Console and abort Formation shuffle
 				{
-					Console.WriteLine(f.Top);
-					Console.WriteLine(enemy[f.Top].exp);
-					Console.WriteLine("This Enemy Has No Zones");
 					return false;
 				}
 				int zoneB = availablezones.PickRandom(rng); // the B-Side zone we are trying to fill
@@ -1170,9 +1164,6 @@ namespace FF1Lib
 					availablezones = en.enemyZones[f.id[1]].ToList();
 				if (availablezones.Count == 0) // and if by some freak chance the enemy has not been assigned any zones, write an error report to Console and abort Formation shuffle
 				{
-					Console.WriteLine(f.id[1]);
-					Console.WriteLine(enemy[f.id[1]].exp);
-					Console.WriteLine("This Enemy Has No Zones");
 					return false;
 				}
 				int zoneA = availablezones.PickRandom(rng);
@@ -3882,12 +3873,10 @@ namespace FF1Lib
 					enemy[i].exp = rng.Between(enemy[i].exp - enemy[i].exp / 40, enemy[i].exp + enemy[i].exp / 40); // variance for exp reward
 					if(enemy[i].AIscript != 0xFF)
 					{
-						Console.WriteLine(enemy[i].AIscript);
 						// determine skill tier
 						int highestTier = 0;
 						foreach(byte id in script[enemy[i].AIscript].skill_list)
 						{
-							Console.WriteLine(id);
 							if (id == 0xFF)
 								continue;
 							if (skill[id].tier > highestTier)
@@ -3895,7 +3884,6 @@ namespace FF1Lib
 						}
 						foreach(byte id in script[enemy[i].AIscript].spell_list)
 						{
-							Console.WriteLine(id);
 							if (id == 0xFF)
 								continue;
 							if (spell[id].tier > highestTier)
