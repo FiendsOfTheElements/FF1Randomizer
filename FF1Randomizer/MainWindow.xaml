@@ -208,7 +208,7 @@
 						<Label Margin="5,5,0,0" FontWeight="Bold">Map Edits</Label>
 						<Label Margin="5,5,0,0" FontWeight="Bold">Sky Castle 4F Maze:</Label>
 						<ComboBox x:Name="SkyCastle4FMazeModeComboBox" SelectedValue="{Binding Flags.SkyCastle4FMazeMode}" Width="150" HorizontalAlignment="Left" Margin="10,0,0,0" ToolTip="What kind of Sky Castle Maze?" SelectedValuePath="Tag">
-							<ComboBoxItem Tag="None">None</ComboBoxItem>
+							<ComboBoxItem Tag="Normal">Normal</ComboBoxItem>
 							<ComboBoxItem Tag="Teleporters">Teleporters Only</ComboBoxItem>
 							<ComboBoxItem Tag="Maze">Full Maze</ComboBoxItem>
 						</ComboBox>
@@ -402,7 +402,7 @@
 						<CheckBox x:Name="LockAlwaysHitsCheckBox" IsChecked="{Binding Flags.RebalanceSpells}" Content="LOCK spells always hit" ToolTip="Spells which reduce enemy evasion will always hit.  If Spellcrafter is enabled, this will make LOCK spells half as effective."/>
 						<CheckBox x:Name="DoubleThiefHitRateCheckBox" IsChecked="{Binding Flags.ThiefHitRate}" Content="Double Thief and Ninja hit rate growth" ToolTip="Thieves and Ninjas gain 4 hitrate per level instead of 2"/>
 						<Label Content="MDef Growth:" Margin="30,5,0,0"/>
-						<ComboBox x:Name="MDefBalanceComboBox" SelectedValue="{Binding Flags.MDefMode}" Width="150" HorizontalAlignment="Left" Margin="30,5,0,0">
+						<ComboBox x:Name="MDefBalanceComboBox" SelectedValue="{Binding Flags.MDefMode}" Width="150" HorizontalAlignment="Left" Margin="30,5,0,0" SelectedValuePath="Tag">
 							<ComboBoxItem Tag="None" Content="Normal"/>
 							<ComboBoxItem Tag="BBFix" Content="BB/Master +3/+4"/>
 							<ComboBoxItem Tag="Invert" Content="Invert (5-Normal)"/>
