@@ -1028,7 +1028,7 @@ namespace FF1Lib
 						if (spell[index].targeting == 0x04)
 							spell[index].effect = (byte)(spell[index].effect + spell[index].effect / 2);
 						if (SpellTier(index) == 7)
-							targeting = 0x08;
+							spell[index].targeting = 0x08;
 						spell[index].routine = routine;
 						spellMessages[index] = 0x02; // Armor up
 						if (spell[index].targeting == 0x04)
