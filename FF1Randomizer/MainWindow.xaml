@@ -133,7 +133,7 @@
 					</StackPanel>
 					<StackPanel Orientation="Vertical" Grid.Column="3" Margin="0,0,0.334,0">
 						<Label Margin="5,5,0,0" FontWeight="Bold">Incentivized Item Pool</Label>
-						<CheckBox x:Name="IncentivizeMainProgressionCheckBox" IsChecked="{Binding Flags.IncentivizeMainItems}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Main Progression Items" ToolTip="Lute, Key, Rod, Canoe, Oxyale, Chime, Cube"/>
+						<CheckBox x:Name="IncentivizeMainProgressionCheckBox" IsChecked="{Binding Flags.IncentivizeMainItems}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Main Progression Items" ToolTip="Lute, Key, Rod, Oxyale, Chime, Cube"/>
 						<CheckBox x:Name="IncentivizeFetchItemsCheckBox" IsChecked="{Binding Flags.IncentivizeFetchItems}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Other Quest Items" ToolTip="Any other non-required quest items that are shuffled such as Ruby or Adamant"/>
 						<CheckBox x:Name="IncentivizeFloaterCheckBox" IsChecked="{Binding Flags.IncentivizeAirship}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Floater" ToolTip="Floater"/>
 						<CheckBox x:Name="IncentivizeCanoeCheckBox" IsChecked="{Binding Flags.IncentivizeCanoeItem}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Canoe" ToolTip="Canoe"/>
