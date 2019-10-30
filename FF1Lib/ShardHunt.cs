@@ -134,14 +134,14 @@ namespace FF1Lib
 			// These are at tile address $76 and $77 respectively.
 			Put(0x37760, Blob.FromHex("001C22414141221CFFE3DDBEBEBEDDE3001C3E7F7F7F3E1CFFFFE3CFDFDFFFFF"));
 
-			String hexCount = goal.ToString("X2");
-			String ppuLowByte = goal <= 24 ? "63" : "43";
+			int ppuLowByte = goal <= 24 ? 99 : 67;
+			int ppuHighByte = 32;
 
 			// Fancy shard drawing code, see 0E_B8D7_DrawShardBox.asm
-			Put(0x3B87D, Blob.FromHex($"A9{ppuLowByte}8511A977A00048AD0220A9208D0620A51118692085118D0620900DAD0220A9218D0620A9038D062068A200CC3560D002A976C0{hexCount}D001608D0720C8E8E006D0EB1890C3"));
+			Put(0x3B87D, Blob.FromHex($"A9{ppuLowByte:X2}8511A977A00048AD0220A9{ppuHighByte:X2}8D0620A51118692085118D0620900DAD0220A9{ppuHighByte + 1:X2}8D0620A9{ppuLowByte % 16:X2}8D062068A200CC3560D002A976C0{goal:X2}D001608D0720C8E8E006D0EB1890C3"));
 
 			// Black Orb Override to check for shards rather than ORBs.
-			Put(0x39502, Blob.FromHex($"AD3560C9{hexCount}300CA0CA209690E67DE67DA51160A51260"));
+			Put(0x39502, Blob.FromHex($"AD3560C9{goal:X2}300CA0CA209690E67DE67DA51160A51260"));
 			Put(0x7CDB3, Blob.FromHex("08CE"));
 
 			// A little narrative overhaul.
