@@ -1,13 +1,16 @@
 ﻿LDA #$43      ; $20 away from the top left corner THIS VALUE IS OVERWRITTEN in ShardHunt.cs
 STA $11       ; store low byte around for multiple rows
 
+LDA #$20      ; ppuHighByte (OVERWRITTEN)
+STA $12
+
 LDA #$77      ; Character to draw
 LDY #0        ; total counter
 
 DrawFullRow:
 PHA           ; Push printable character onto stack
 LDA $2002     ; reset PPU toggle
-LDA #$20      ; set PPU addr high byte (Also OVERWRITTEN in ShardHunt.cs)
+LDA $12       ; set PPU addr high byte (Also OVERWRITTEN in ShardHunt.cs)
 STA $2006
 LDA $11       ; load saved low byte and add $20
 CLC
@@ -15,10 +18,11 @@ ADC #$20
 STA $11       ; Add a row and save
 STA $2006
 BCC Continue  ; If it didn't carry we're good
-  LDA $2002   ; But the last row of orbs does...
-  LDA #$21    ; And is always the formerly hardcoded high byte + 1 (OVERWRITTEN)
+  LDA $2002   ; But if it does we reset the ppu and increment our high byte
+  INC $12     
+  LDA $12     
   STA $2006
-  LDA #$03    ; And this is the low byte MOD 16, since we keep adding $20. (OVERWRITTEN)
+  LDA $11     
   STA $2006
 
 Continue:     ; Here we are ready to draw 6 shards
