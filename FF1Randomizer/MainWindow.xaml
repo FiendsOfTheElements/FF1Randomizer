@@ -401,6 +401,7 @@
 						<CheckBox x:Name="HouseFullHPRestoreCheckBox" IsChecked="{Binding Flags.HousesFillHP}" Content="Houses fill HP to max"/>
 						<CheckBox x:Name="LockAlwaysHitsCheckBox" IsChecked="{Binding Flags.RebalanceSpells}" Content="LOCK spells always hit" ToolTip="Spells which reduce enemy evasion will always hit.  If Spellcrafter is enabled, this will make LOCK spells half as effective."/>
 						<CheckBox x:Name="DoubleThiefHitRateCheckBox" IsChecked="{Binding Flags.ThiefHitRate}" Content="Double Thief and Ninja hit rate growth" ToolTip="Thieves and Ninjas gain 4 hitrate per level instead of 2"/>
+						<CheckBox x:Name="KnightAndNinjaSpellChargesCheckBox" IsChecked="{Binding Flags.AllSpellLevelsForKnightNinja}" Content="Knight and Ninja gain charges in all levels" ToolTip="If a Knight or Ninja gains spell charges in a level, they gain a charge in all spell levels for that Experience Level"/>
 						<Label Content="MDef Growth:" Margin="30,5,0,0"/>
 						<ComboBox x:Name="MDefBalanceComboBox" SelectedValue="{Binding Flags.MDefMode}" Width="150" HorizontalAlignment="Left" Margin="30,5,0,0" SelectedValuePath="Tag">
 							<ComboBoxItem Tag="None" Content="Normal"/>
