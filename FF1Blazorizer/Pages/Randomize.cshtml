@@ -28,7 +28,7 @@
 				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="spoilersCheckBox" bind-Value="@Flags.Spoilers">Generate Spoiler Log!</CheckBox>
 			</div>
 			<div class="col-md-6">
-				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="tournamentSafeCheckBox" bind-Value="@Flags.TournamentSafe">Require Rom to be Tournament Safe</CheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="tournamentSafeCheckBox" bind-Value="@Flags.TournamentSafe">Tournament Safe ROM</CheckBox>
 			</div>
 		</div>
 		<div class="row spaced-row">
@@ -100,13 +100,13 @@
 							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnemyFormationsUnrunnable" Id="everythingUnrunnableCheckBox" bind-Value="@Flags.EverythingUnrunnable">All Encounters are Unrunnable</TriStateCheckBox>
 							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="unrunnablesStrikeFirstAndSurpriseCheckBox" bind-Value="@Flags.UnrunnablesStrikeFirstAndSurprise">Unrunnable First Strike &amp; Surprise</TriStateCheckBox>
 							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyFormationsSurpriseCheckBox" bind-Value="@Flags.EnemyFormationsSurprise">Enemy Surprise Bonus</TriStateCheckBox>
-							<EnumDropDown UpdateToolTip="@UpdateToolTipID" TItem="FormationShuffleMode" IsEnabled="@(!Flags.RandomizeFormationEnemizer)" bind-Value="@Flags.FormationShuffleMode">Enemy Formations:</EnumDropDown>
+							<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="formationShuffleModeDropDown" TItem="FormationShuffleMode" IsEnabled="@(!Flags.RandomizeFormationEnemizer)" bind-Value="@Flags.FormationShuffleMode">Enemy Formations:</EnumDropDown>
 							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyTrapTilesCheckBox" IsEnabled="@(!Flags.RandomizeFormationEnemizer)" bind-Value="@Flags.EnemyTrapTiles">Enemy Forced Encounter Tiles</TriStateCheckBox>
 							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="randomTrapFormationsCheckBox" IsEnabled="@Flags.EnemyTrapTiles" bind-Value="@Flags.RandomTrapFormations">Use Random Formations</TriStateCheckBox>
 							<div class="checkbox-cell"></div>
 							<h4>WarMECH</h4>
 							<p>Encounter 7 not enough WarMECH for you? Try a patrolling or required WarMECH instead.</p>
-							<EnumDropDown UpdateToolTip="@UpdateToolTipID" TItem="WarMECHMode" bind-Value="@Flags.WarMECHMode">WarMECH Mode: </EnumDropDown>
+							<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="WarMECHModeDropDown" TItem="WarMECHMode" bind-Value="@Flags.WarMECHMode">WarMECH Mode: </EnumDropDown>
 						</div>
 					</div>
 				</div>
@@ -119,7 +119,7 @@
 							<h4>Items Shuffle</h4>
 							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="treasuresCheckBox" bind-Value="@Flags.Treasures">Treasures</TriStateCheckBox>
 							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="randomLootCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.RandomLoot">Randomize Treasures</TriStateCheckBox>
-							<EnumDropDown UpdateToolTip="@UpdateToolTipID" Indent TItem="WorldWealthMode" IsEnabled="@Flags.Treasures" bind-Value="@Flags.WorldWealth">Random Wealth: </EnumDropDown>
+							<EnumDropDown UpdateToolTip="@UpdateToolTipID" Indent Id="worldWealthDropDown" TItem="WorldWealthMode" IsEnabled="@Flags.Treasures" bind-Value="@Flags.WorldWealth">Random Wealth: </EnumDropDown>
 							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="betterTrapTreasureCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.BetterTrapTreasure">Better Trap Treasure</TriStateCheckBox>
 							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="npcItemsCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.NPCItems">Main NPC Items</TriStateCheckBox>
 							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="npcFetchItemsCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.NPCFetchItems">Fetch Quest Rewards</TriStateCheckBox>
@@ -186,7 +186,7 @@
 							<h4>Treasure Hunt</h4>
 							<p>A new adventure! Instead of lighting the four orbs to activate the BLACK ORB, the Light Warriors must seek out and collect several of a random treasure item.</p>
 							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="shardHuntCheckBox" IsEnabled="@Flags.ShardHuntEnabled" bind-Value="@Flags.ShardHunt">Treasure Hunt</CheckBox>
-							<EnumDropDown UpdateToolTip="@UpdateToolTipID" TItem="ShardCount" bind-Value="@Flags.ShardCount">Goal:</EnumDropDown>
+							<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="shardCountDropDown" TItem="ShardCount" bind-Value="@Flags.ShardCount">Goal:</EnumDropDown>
 						</div>
 						<div class="col-md-4">
 							<h4>Temple of Fiends</h4>
@@ -217,7 +217,7 @@
 						<div class="col-md-4">
 							<h4>Isolated Map Edits</h4>
 							<p>Individual Final Fantasy Map edits.</p>
-							<EnumDropDown UpdateToolTip="@UpdateToolTipID" TItem="SkyCastle4FMazeMode" bind-Value="@Flags.SkyCastle4FMazeMode">Sky Castle 4F: </EnumDropDown>
+							<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="skyCastle4FMazeModeDropDown" TItem="SkyCastle4FMazeMode" bind-Value="@Flags.SkyCastle4FMazeMode">Sky Castle 4F: </EnumDropDown>
 							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="ordealsPillarsCheckBox" bind-Value="@Flags.OrdealsPillars">Castle Ordeals Pillars</TriStateCheckBox>
 							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="titansTroveCheckBox" bind-Value="@Flags.TitansTrove">Titan's Trove</TriStateCheckBox>
 							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="zozoMelmondCheckBox" bind-Value="@Flags.AllowUnsafeMelmond">Zozo Melmond</TriStateCheckBox>
@@ -240,7 +240,7 @@
 			<button type="button" class="@(TabClasses("Scale"))" onclick="@(() => ActivateTab("Scale"))">Scale</button>
 			<TabPane IsOpen="@(activeTabs.Contains("Scale"))">
 				<div class="is-dark nes-container">
-					<ClampedSlider Min="1" Max="5" Step="0.1" bind-Clamp="@Flags.ClampMinimumPriceScale" bind-Scale="@Flags.PriceScaleFactor">Prices:</ClampedSlider>
+					<ClampedSlider Min="1" Max="5" Step="0.1" Id="clampMinimumPriceScaleLable" bind-Clamp="@Flags.ClampMinimumPriceScale" bind-Scale="@Flags.PriceScaleFactor">Prices:</ClampedSlider>
 					<ClampedSlider Min="1" Max="5" Step="0.1" bind-Clamp="@Flags.ClampMinimumStatScale" bind-Scale="@Flags.EnemyScaleFactor">Enemy Stats:</ClampedSlider>
 					<ClampedSlider Min="1" Max="5" Step="0.1" bind-Clamp="@Flags.ClampMinimumBossStatScale" bind-Scale="@Flags.BossScaleFactor">Boss Stats:</ClampedSlider>
 					<div class="slider-cell"></div>
@@ -264,7 +264,7 @@
 					<div class="row">
 						<div class="col-md-8"><label>Exp/Gold Progressive Scaling:</label></div>
 						<div class="col-md-4">
-							<EnumDropDown UpdateToolTip="@UpdateToolTipID" TItem="ProgressiveScaleMode" bind-Value="@Flags.ProgressiveScaleMode"></EnumDropDown>
+							<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="progressiveScaleModeDropDown" TItem="ProgressiveScaleMode" bind-Value="@Flags.ProgressiveScaleMode"></EnumDropDown>
 						</div>
 					</div>
 					<div class="slider-cell"></div>
@@ -437,8 +437,8 @@
 							<h4>Balance</h4>
 							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="housesFillHpCheckBox" bind-Value="@Flags.HousesFillHP">House Full HP Restoration</CheckBox>
 							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="rebalanceSpellsCheckBox" bind-Value="@Flags.RebalanceSpells">LOCK and LOK2 Always Hit</CheckBox>
-							<EnumDropDown UpdateToolTip="@UpdateToolTipID" TItem="MDEFGrowthMode" bind-Value="@Flags.MDefMode">MDEF Growth:</EnumDropDown>
-							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="ThiefHitCheckBox" bind-Value="@Flags.ThiefHitRate">Double Thief &amp; Ninja Hit% growth.</CheckBox>
+							<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="MDefModeDropDown" TItem="MDEFGrowthMode" bind-Value="@Flags.MDefMode">MDEF Growth:</EnumDropDown>
+							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="thiefHitCheckBox" bind-Value="@Flags.ThiefHitRate">Double Thief &amp; Ninja Hit% growth.</CheckBox>
 						</div>
 
 					</div>
@@ -461,12 +461,12 @@
 							<div class="checkbox-cell"></div>
 							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="npcSwatterCheckBox" bind-Value="@Flags.NPCSwatter">NPC Guillotine</CheckBox>
 							<div class="checkbox-cell"></div>
-							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="DisableTentSaving" bind-Value="@Flags.DisableTentSaving">Disable Tent/Cabin/House Saving on Overworld</CheckBox>
-							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="DisableInnSaving" bind-Value="@Flags.DisableInnSaving">Disable Inn Saving</CheckBox>
-							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="RandomizeFormationEnemizer" bind-Value="@Flags.RandomizeFormationEnemizer">Generate New Formations (Enemizer)</CheckBox>
-							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="RandomizeEnemizer" IsEnabled="@Flags.RandomizeFormationEnemizer" bind-Value="@Flags.RandomizeEnemizer">Generate New Enemies (Enemizer)</CheckBox>
-							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="GenerateNewSpellbook" bind-Value="@Flags.GenerateNewSpellbook">Generate New Spellbook (Spellcrafter)</CheckBox>
-							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="SpellcrafterMixSpells" IsEnabled="@Flags.GenerateNewSpellbook" bind-Value="@Flags.SpellcrafterMixSpells">Mix spellbooks (Spellcrafter)</Checkbox>
+							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="disableTentSaving" bind-Value="@Flags.DisableTentSaving">Disable Tent/Cabin/House Saving on Overworld</CheckBox>
+							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="disableInnSaving" bind-Value="@Flags.DisableInnSaving">Disable Inn Saving</CheckBox>
+							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="randomizeFormationEnemizer" bind-Value="@Flags.RandomizeFormationEnemizer">Generate New Formations (Enemizer)</CheckBox>
+							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="randomizeEnemizer" IsEnabled="@Flags.RandomizeFormationEnemizer" bind-Value="@Flags.RandomizeEnemizer">Generate New Enemies (Enemizer)</CheckBox>
+							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="generateNewSpellbook" bind-Value="@Flags.GenerateNewSpellbook">Generate New Spellbook (Spellcrafter)</CheckBox>
+							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="spellcrafterMixSpells" IsEnabled="@Flags.GenerateNewSpellbook" bind-Value="@Flags.SpellcrafterMixSpells">Mix spellbooks (Spellcrafter)</Checkbox>
 							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="AllSpellLevelsForKnightNinja" bind-Value="@Flags.AllSpellLevelsForKnightNinja">Knight and Ninja Gain Charges in All Levels</CheckBox>
 							<TriStateCheckBox DisableToolTip UpdateToolTip="@UpdateToolTipID" Id="FreeTail" bind-Value="@Flags.FreeTail">Free Tail</TriStateCheckBox>
 						</div>
@@ -488,9 +488,9 @@
 						</div>
 						<div class="col-md-6">
 							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="teamSteakCheckBox" bind-Value="@Flags.TeamSteak">Team STEAK</CheckBox>
-							<EnumDropDown UpdateToolTip="@UpdateToolTipID" TItem="MusicShuffle" bind-Value="@Flags.Music"></EnumDropDown>
+							<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="musicDropDown" TItem="MusicShuffle" bind-Value="@Flags.Music"></EnumDropDown>
 							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="disableDamageTileFlickerCheckBox" bind-Value="@Flags.DisableDamageTileFlicker">Disable Damage Tile Flicker</CheckBox>
-							<EnumDropDown UpdateToolTip="@UpdateToolTipID" TItem="MenuColor" bind-Value="@Flags.MenuColor">Menu Color</EnumDropDown>
+							<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="menuColorDropDown" TItem="MenuColor" bind-Value="@Flags.MenuColor">Menu Color</EnumDropDown>
 						</div>
 					</div>
 					<div class="row">
