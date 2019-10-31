@@ -110,6 +110,7 @@
 		"BuyTen": true,
 		"EnableCritNumberDisplay": true,
 		"NPCSwatter": false,
+		"InventoryAutosort":  false,
 
 		"IdentifyTreasures": true,
 		"WaitWhenUnrunnable": true,

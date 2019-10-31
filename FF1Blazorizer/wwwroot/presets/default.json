@@ -27,7 +27,7 @@
 
 		"Rng": true,
 		"EverythingUnrunnable": false,
-		"EnemyFormationsUnrunnable":  false,
+		"EnemyFormationsUnrunnable": false,
 		"EnemyFormationsSurprise": false,
 		"UnrunnablesStrikeFirstAndSurprise": false,
 		"EnemyTrapTiles": false,
@@ -122,6 +122,7 @@
 		"SpellBugs": true,
 		"BlackBeltAbsorb": true,
 		"NPCSwatter": false,
+		"InventoryAutosort": false,
 
 		"EnemyStatusAttackBug": true,
 		"EnemySpellsTargetingAllies": true,

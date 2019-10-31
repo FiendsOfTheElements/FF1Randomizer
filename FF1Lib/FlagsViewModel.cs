@@ -917,6 +917,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SpeedHacks"));
 			}
 		}
+		public bool InventoryAutosort
+		{
+			get => Flags.InventoryAutosort;
+			set
+			{
+				Flags.InventoryAutosort = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("InventoryAutosort"));
+			}
+		}
 		public bool NoPartyShuffle
 		{
 			get => Flags.NoPartyShuffle;

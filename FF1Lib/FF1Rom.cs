@@ -489,6 +489,11 @@ namespace FF1Lib
 				EnableNPCSwatter();
 			}
 
+			if(flags.InventoryAutosort)
+			{
+				EnableInventoryAutosort();
+			}
+
 			if (flags.EasyMode)
 			{
 				EnableEasyMode();
