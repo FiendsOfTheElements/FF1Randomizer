@@ -1211,7 +1211,7 @@ namespace FF1Lib
 				// assign the pic and palette bytes to each monster slot
 				ENF_AssignPicAndPaletteBytes(enemy, f);
 				// set surprise rate and unrunnability flags
-				f.unrunnable = rng.Between(0, 37) + (zoneA > zoneB ? zoneA : zoneB) >= 40 ? true : false; // unrunnable chance is higher for later zones
+				f.unrunnable = rng.Between(0, 47) + (zoneA > zoneB ? zoneA : zoneB) >= 50 ? true : false; // unrunnable chance is higher for later zones
 				if (f.unrunnable)
 					f.surprise = (byte)rng.Between(3, 30);
 				else
