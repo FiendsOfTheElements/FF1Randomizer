@@ -875,7 +875,7 @@ namespace FF1Lib
 					{1050, 2500, 5200, 5}, // lefein/mirage desert/gaia overworld/river north
 					{2400, 3600, 7200, 5}, // mirage tower and sea shrine
 					{2400, 4800, 10000, 5}, // sky castle
-					{6000, 6001, 32000, 5}, // tofr
+					{6000, 6001, 21000, 5}, // tofr
 				};
 				for (int i = 0; i < 11; ++i)
 				{
@@ -1211,7 +1211,7 @@ namespace FF1Lib
 				// assign the pic and palette bytes to each monster slot
 				ENF_AssignPicAndPaletteBytes(enemy, f);
 				// set surprise rate and unrunnability flags
-				f.unrunnable = rng.Between(0, 47) + (zoneA > zoneB ? zoneA : zoneB) >= 50 ? true : false; // unrunnable chance is higher for later zones
+				f.unrunnable = rng.Between(0, 37) + (zoneA > zoneB ? zoneA : zoneB) >= 40 ? true : false; // unrunnable chance is higher for later zones
 				if (f.unrunnable)
 					f.surprise = (byte)rng.Between(3, 30);
 				else
