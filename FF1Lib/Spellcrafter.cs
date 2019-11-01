@@ -1007,7 +1007,7 @@ namespace FF1Lib
 							targeting = 0x10;
 						if (SpellTier(index) == 7)
 							targeting = 0x04;
-						if (targeting == 0x04)
+						if (targeting == 0x04 && SpellTier(index) != 7)
 						{
 							if (selfdefenseupspell.Exists(id => Math.Abs(SpellTier(id) - SpellTier(index)) < 3))
 							{
