@@ -250,7 +250,7 @@ namespace FF1Lib
 
 		// Ruby is required if Sarda is Required for the ROD
 		public bool? RequiredRuby => !EarlySage & !NPCItems;
-		public bool? IncentivizeRuby => (RequiredRuby & IncentivizeMainItems & !(FreeAirship & !IncentivizeTitansTrove)) | (!RequiredRuby & IncentivizeFetchItems);
+		public bool? IncentivizeRuby => (RequiredRuby & IncentivizeMainItems) | (!RequiredRuby & IncentivizeFetchItems);
 
 		// If Canoe and Fetch Quests are unshuffled then TNT is required
 		public bool? RequiredTnt => !NPCFetchItems & !NPCItems;
