@@ -1645,11 +1645,12 @@ namespace FF1Lib
 			WriteItemSpellData(Spells[healspell], Item.HealHelm); // write our HEAL to the Heal Helmet
 			WriteItemSpellData(Spells[rusespell], Item.Defense); // write our RUSE to the Defense Sword
 			WriteItemSpellData(Spells[sabrspell], Item.PowerGauntlets); // write our SABR tp the Power Gauntlets
-			var goodspells = spellindex.Where(id => spell[id].routine == 0x01 && spell[id].effect < 50 * spell[id].targeting && spell[id].elem != 0 ||
-				spell[id].routine == 0x02 && spell[id].effect < 80 ||
-				spell[id].routine == 0x03 && (spell[id].effect & 0b11001011) != 0 && id < 48 ||
-				spell[id].routine == 0x04 || spell[id].routine == 0x07 && spell[id].targeting == 0x10 ||
-				spell[id].routine == 0x09 && id < 48 || spell[id].routine == 0x10 && id < 48).ToList();
+			var goodspells = spellindex.Where(id => (spell[id].routine == 0x01 && spell[id].effect < 50 * spell[id].targeting && spell[id].elem != 0) ||
+				(spell[id].routine == 0x02 && spell[id].effect < 80) ||
+				(spell[id].routine == 0x03 && (spell[id].effect & 0b11001011) != 0 && id < 48) ||
+				spell[id].routine == 0x04 || (spell[id].routine == 0x07 && spell[id].targeting == 0x10) ||
+				(spell[id].routine == 0x09 && id < 48) || (spell[id].routine == 0x0A && id < 56) ||
+				spell[id].routine == 0x0D || (spell[id].routine == 0x10 && id < 48)).ToList();
 			if(goodspells.Count < 6) // if we don't have enough spells for the remaining items, expand the eligibility criteria to include ALL spells except the guaranteed ones and those that have no effect
 				goodspells = spellindex.Where(id => spell[id].routine != 0x00).ToList();
 			goodspells.Shuffle(rng);
