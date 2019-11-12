@@ -2194,13 +2194,7 @@ namespace FF1Lib
 		{
 			if (tier >= 0 && tier <= 2)
 			{
-				switch (rng.Between(0, 1))
-				{
-					case 0:
-						return 0x1A; // RockGol script
-					default:
-						return 0x13; // GrNaga script
-				}
+				return 0x1A; // RockGol script
 			}
 			else if (tier >= 3 && tier <= 4)
 			{
