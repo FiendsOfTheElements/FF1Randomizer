@@ -249,12 +249,15 @@ namespace FF1Lib
 		// 4. The vehicles now have their own incentivization flags apart from other progression items.
 
 		// Ruby is required if Sarda is Required for the ROD
-		public bool? RequiredRuby => !EarlySage & !NPCItems;
-		public bool? IncentivizeRuby => (RequiredRuby & IncentivizeMainItems) | (!RequiredRuby & IncentivizeFetchItems);
+		public bool? RequiredRuby => !EarlySage & !NPCItems & !FreeAirship;
+		public bool? UselessRuby => FreeAirship & !TitansTrove;
+		public bool? IncentivizeRuby => (RequiredRuby & IncentivizeMainItems) | (!RequiredRuby & IncentivizeFetchItems & !UselessRuby);
 
-		// If Canoe and Fetch Quests are unshuffled then TNT is required
-		public bool? RequiredTnt => !NPCFetchItems & !NPCItems;
-		public bool? IncentivizeTnt => (RequiredTnt & IncentivizeMainItems & !FreeAirship) | (!RequiredTnt & IncentivizeFetchItems);
+		// If Canoe and Fetch Quests are unshuffled and there is no free canal or airship then TNT is required
+		public bool? RequiredTnt => !NPCFetchItems & !NPCItems & !(FreeCanal | FreeAirship);
+		// If Fetch Items are vanilla and the player has a free Canal, do not incentivize TNT even if Other Quest Items are in the pool since there would be absolutely nothing to gain from TNT
+		public bool? UselessTnt => !NPCFetchItems & FreeCanal;
+		public bool? IncentivizeTnt => (RequiredTnt & IncentivizeMainItems) | (!RequiredTnt & IncentivizeFetchItems & !UselessTnt);
 
 		public bool? IncentivizeCrown => (!(NPCFetchItems ?? false) && (IncentivizeMainItems ?? false)) || ((NPCFetchItems ?? false) && (IncentivizeFetchItems ?? false));
 		public bool? IncentivizeSlab => (!(NPCFetchItems ?? false) && (IncentivizeMainItems ?? false)) || ((NPCFetchItems ?? false) && (IncentivizeFetchItems ?? false));
