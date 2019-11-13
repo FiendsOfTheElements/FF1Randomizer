@@ -258,6 +258,7 @@ namespace FF1Lib
 		// If Fetch Items are vanilla and the player has a free Canal, do not incentivize TNT even if Other Quest Items are in the pool since there would be absolutely nothing to gain from TNT
 		public bool? UselessTnt => !NPCFetchItems & (FreeCanal | (FreeAirship & !MapOpenProgression));
 		public bool? IncentivizeTnt => (RequiredTnt & IncentivizeMainItems) | (!RequiredTnt & IncentivizeFetchItems & !UselessTnt);
+		public bool? UselessShip => FreeAirship & !MapOpenProgression; // ship is useless with free airship and no open progression
 
 		public bool? IncentivizeCrown => (!(NPCFetchItems ?? false) && (IncentivizeMainItems ?? false)) || ((NPCFetchItems ?? false) && (IncentivizeFetchItems ?? false));
 		public bool? IncentivizeSlab => (!(NPCFetchItems ?? false) && (IncentivizeMainItems ?? false)) || ((NPCFetchItems ?? false) && (IncentivizeFetchItems ?? false));
@@ -266,7 +267,7 @@ namespace FF1Lib
 		public bool IncentivizeBridge => false;
 		public bool? IncentivizeCanoe => NPCItems & IncentivizeCanoeItem;
 		public bool? IncentivizeLute => NPCItems & !FreeLute & IncentivizeMainItems;
-		public bool? IncentivizeShip => NPCItems & IncentivizeShipAndCanal & !FreeShip;
+		public bool? IncentivizeShip => NPCItems & IncentivizeShipAndCanal & !FreeShip & !UselessShip;
 		public bool? IncentivizeRod => NPCItems & IncentivizeMainItems;
 		public bool? IncentivizeCube => NPCItems & IncentivizeMainItems;
 		public bool? IncentivizeFloater => !FreeAirship & IncentivizeAirship;
