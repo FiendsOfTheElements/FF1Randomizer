@@ -256,7 +256,7 @@ namespace FF1Lib
 		// If Canoe and Fetch Quests are unshuffled and there is no free canal or airship then TNT is required
 		public bool? RequiredTnt => !NPCFetchItems & !NPCItems & !(FreeCanal | FreeAirship);
 		// If Fetch Items are vanilla and the player has a free Canal, do not incentivize TNT even if Other Quest Items are in the pool since there would be absolutely nothing to gain from TNT
-		public bool? UselessTnt => !NPCFetchItems & FreeCanal;
+		public bool? UselessTnt => !NPCFetchItems & (FreeCanal | (FreeAirship & !MapOpenProgression));
 		public bool? IncentivizeTnt => (RequiredTnt & IncentivizeMainItems) | (!RequiredTnt & IncentivizeFetchItems & !UselessTnt);
 
 		public bool? IncentivizeCrown => (!(NPCFetchItems ?? false) && (IncentivizeMainItems ?? false)) || ((NPCFetchItems ?? false) && (IncentivizeFetchItems ?? false));
