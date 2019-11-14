@@ -47,8 +47,9 @@
 						<CheckBox x:Name="MagicLevelsCheckBox" IsChecked="{Binding Flags.MagicLevels}" IsThreeState="True" Content="Magic Levels" ToolTip="Magic spells have their levels shuffled."/>
 						<CheckBox x:Name="MagicPermissionsCheckBox" IsChecked="{Binding Flags.MagicPermissions}" IsThreeState="True" IsEnabled="{Binding Flags.MagicLevels}" Content="Keep Permissions" ToolTip="Retain the permissions of spells, even if they're shuffled to lower levels." Margin="30,5,0,0"/>
 						<CheckBox x:Name="ItemMagicCheckBox" IsChecked="{Binding Flags.ItemMagic}" IsThreeState="True" Content="Item Magic" ToolTip="Magic items have randomly assigned spells."/>
-						<CheckBox x:Name="SpellcrafterCheckBox" IsChecked="{Binding Flags.GenerateNewSpellbook}" Content="Generate New Spellbook" ToolTip="Generates a new spellbook with spells appropriate to their level placement."/>
-						<CheckBox x:Name="MixSpellcrafter" IsChecked="{Binding Flags.SpellcrafterMixSpells}" IsEnabled="{Binding Flags.GenerateNewSpellbook}" Content="Mix Spellbooks" ToolTip="Mixes the spell families when spellcrafter is on." Margin="30,5,0,0"/>
+						<CheckBox x:Name="SpellcrafterCheckBox" IsChecked="{Binding Flags.GenerateNewSpellbook}" IsThreeState="True" Content="Generate New Spellbook" ToolTip="Generates a new spellbook with spells appropriate to their level placement."/>
+						<CheckBox x:Name="SpellcrafterPermsCheckBox" IsChecked="{Binding Flags.SpellcrafterRetainPermissions}" IsThreeState="True" Content="Retain Old Permissions" ToolTip="Spell permissions are not altered, i.e. Red Mage has first and third slots of tier 3 white" Margin="30,5,0,0"/>
+						<CheckBox x:Name="MixSpellcrafter" IsChecked="{Binding Flags.SpellcrafterMixSpells}" IsThreeState="True" IsEnabled="{Binding Flags.GenerateNewSpellbook}" Content="Mix Spellbooks" ToolTip="Mixes the spell families when spellcrafter is on." Margin="30,5,0,0"/>
 						<Label Margin="5,5,0,0"/>
 						<CheckBox x:Name="RngCheckBox" IsChecked="{Binding Flags.Rng}" Content="RNG Table" IsThreeState="True" ToolTip="Shuffle the RNG table so that encounters are more difficult to predict."/>
 					</StackPanel>
@@ -70,8 +71,8 @@
 						</ComboBox>
 						<CheckBox x:Name="EnemyTrapTilesCheckBox" IsChecked="{Binding Flags.EnemyTrapTiles}" IsThreeState="True" Content="Enemy Forced Encounter Tiles" ToolTip="Shuffle trap tile battles amongst one another."/>
 						<CheckBox x:Name="RandomTrapFormationsCheckBox" IsChecked="{Binding Flags.RandomTrapFormations}" IsEnabled="{Binding Flags.EnemyTrapTiles}" IsThreeState="True" Content="Use Random Formations" ToolTip="Trap battles are instead selected at random from formation 2 battles." Margin="30,5,0,0"/>
-						<CheckBox x:Name="EnemizerFormationsCheckBox" IsChecked="{Binding Flags.RandomizeFormationEnemizer}" Content="Generate New Formations (Enemizer)" ToolTip="Generates new formations.  Turns off the ability to shuffle trap tiles or shuffle encounter zones."/>
-						<CheckBox x:Name="EnemizerCheckBox" IsChecked="{Binding Flags.RandomizeEnemizer}" Content="Generate New Enemies (Enemizer)" IsEnabled="{Binding Flags.RandomizeFormationEnemizer}" ToolTip="Generates new enemies procedurally.  Requires generating new formations in order to work." Margin="30,5,0,0"/>
+						<CheckBox x:Name="EnemizerFormationsCheckBox" IsChecked="{Binding Flags.RandomizeFormationEnemizer}" IsThreeState="True" Content="Generate New Formations (Enemizer)" ToolTip="Generates new formations.  Turns off the ability to shuffle trap tiles or shuffle encounter zones."/>
+						<CheckBox x:Name="EnemizerCheckBox" IsChecked="{Binding Flags.RandomizeEnemizer}" Content="Generate New Enemies (Enemizer)" IsEnabled="{Binding Flags.RandomizeFormationEnemizer}" IsThreeState="True" ToolTip="Generates new enemies procedurally.  Requires generating new formations in order to work." Margin="30,5,0,0"/>
 						<ComboBox x:Name="WarMechModeComboBox" SelectedValue="{Binding Flags.WarMECHMode}" Width="220" HorizontalAlignment="Left" Margin="10,5,0,0" SelectedValuePath="Tag">
 							<ComboBoxItem Tag="Vanilla">WarMECH Vanilla</ComboBoxItem>
 							<ComboBoxItem Tag="Patrolling">WarMECH Patrolling</ComboBoxItem>
@@ -114,7 +115,7 @@
 						<CheckBox x:Name="UseOlderPlacementCheckBox" IsChecked="{Binding Flags.ClassicItemPlacement}" Content="Use v2 logic for placing treasures" ToolTip="Uses an older version of the logic to place items"/>
 					</StackPanel>
 					<StackPanel Orientation="Vertical" Grid.ColumnSpan="3" Margin="239,0,0,0">
-						<Label Margin="5,5,0,0" FontWeight="Bold">Incentivized Locations</Label>
+						<Label Margin="5,5,0,0" FontWeight="Bold">Incentivized Locations:</Label>
 						<CheckBox x:Name="IncentivizeFreeNPCsCheckBox" IsChecked="{Binding Flags.IncentivizeFreeNPCs}" IsEnabled="{Binding Flags.IncentivizeFreeNPCsEnabled}" IsThreeState="True" Content="Main NPCs" ToolTip="King, Princess, Bikke, Sarda, Sage, Robot, Caravan"/>
 						<CheckBox x:Name="IncentivizeFetchNPCsCheckBox" IsChecked="{Binding Flags.IncentivizeFetchNPCs}" IsEnabled="{Binding Flags.IncentivizeFetchNPCsEnabled}" IsThreeState="True" Content="Fetch Quest NPCs" ToolTip="Astos, Matoya, Prince, Dwarves, Lefein, Fairy"/>
 						<Label Margin="5,5,0,0"/>
@@ -132,7 +133,7 @@
 						<CheckBox x:Name="IncentivizeMarshKeyLockedCheckBox" IsChecked="{Binding Flags.IncentivizeMarshKeyLocked}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Marsh (locked)" ToolTip="Bottom Floor South East"/>
 					</StackPanel>
 					<StackPanel Orientation="Vertical" Grid.Column="3" Margin="0,0,0.334,0">
-						<Label Margin="5,5,0,0" FontWeight="Bold">Incentivized Item Pool</Label>
+						<Label Margin="5,5,0,0" FontWeight="Bold">Incentivized Item Pool: </Label>
 						<CheckBox x:Name="IncentivizeMainProgressionCheckBox" IsChecked="{Binding Flags.IncentivizeMainItems}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Main Progression Items" ToolTip="Lute, Key, Rod, Oxyale, Chime, Cube"/>
 						<CheckBox x:Name="IncentivizeFetchItemsCheckBox" IsChecked="{Binding Flags.IncentivizeFetchItems}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Other Quest Items" ToolTip="Any other non-required quest items that are shuffled such as Ruby or Adamant"/>
 						<CheckBox x:Name="IncentivizeFloaterCheckBox" IsChecked="{Binding Flags.IncentivizeAirship}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Floater" ToolTip="Floater"/>
