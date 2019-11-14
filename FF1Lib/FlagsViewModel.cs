@@ -1803,7 +1803,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DisableInnSaving"));
 			}
 		}
-		public bool RandomizeEnemizer
+		public bool? RandomizeEnemizer
 		{
 			get => Flags.RandomizeEnemizer;
 			set
@@ -1812,7 +1812,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomizeEnemizer"));
 			}
 		}
-		public bool RandomizeFormationEnemizer
+		public bool? RandomizeFormationEnemizer
 		{
 			get => Flags.RandomizeFormationEnemizer;
 			set
@@ -1821,7 +1821,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomizeFormationEnemizer"));
 			}
 		}
-		public bool GenerateNewSpellbook
+		public bool? GenerateNewSpellbook
 		{
 			get => Flags.GenerateNewSpellbook;
 			set
@@ -1830,7 +1830,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("GenerateNewSpellbook"));
 			}
 		}
-		public bool SpellcrafterMixSpells
+		public bool? SpellcrafterMixSpells
 		{
 			get => Flags.SpellcrafterMixSpells;
 			set
@@ -1864,6 +1864,15 @@ namespace FF1Lib
 			{
 				Flags.FreeTail = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeTail"));
+			}
+		}
+		public bool? SpellcrafterRetainPermissions
+		{
+			get => Flags.SpellcrafterRetainPermissions;
+			set
+			{
+				Flags.SpellcrafterRetainPermissions = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SpellcrafterRetainPermissions"));
 			}
 		}
 	}

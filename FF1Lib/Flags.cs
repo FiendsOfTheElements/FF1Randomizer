@@ -217,13 +217,14 @@ namespace FF1Lib
 		public bool FiendShuffle { get; set; } = false;
 		public bool DisableTentSaving { get; set; } = false;
 		public bool DisableInnSaving { get; set; } = false;
-		public bool RandomizeEnemizer { get; set; } = false;
-		public bool RandomizeFormationEnemizer { get; set; } = false;
-		public bool GenerateNewSpellbook { get; set; } = false;
-		public bool SpellcrafterMixSpells { get; set; } = false;
+		public bool? RandomizeEnemizer { get; set; } = false;
+		public bool? RandomizeFormationEnemizer { get; set; } = false;
+		public bool? GenerateNewSpellbook { get; set; } = false;
+		public bool? SpellcrafterMixSpells { get; set; } = false;
 		public bool ThiefHitRate { get; set; } = false;
 		public bool AllSpellLevelsForKnightNinja { get; set; } = false;
 		public bool? FreeTail { get; set; } = false;
+		public bool? SpellcrafterRetainPermissions { get; set; } = false;
 
 		public MDEFGrowthMode MDefMode { get; set; } = MDEFGrowthMode.None;
 
@@ -464,7 +465,7 @@ namespace FF1Lib
 		public bool? DeepCastlesPossible => Entrances & Floors;
 		public bool? DeepTownsPossible => Towns & Entrances & Floors & EntrancesMixedWithTowns;
 
-		public bool EnemizerEnabled => RandomizeFormationEnemizer | RandomizeEnemizer;
+		public bool EnemizerEnabled => (bool)RandomizeFormationEnemizer | (bool)RandomizeEnemizer;
 
 		public static string EncodeFlagsText(Flags flags)
 		{
@@ -640,13 +641,14 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.FiendShuffle);
 			sum = AddBoolean(sum, flags.DisableTentSaving);
 			sum = AddBoolean(sum, flags.DisableInnSaving);
-			sum = AddBoolean(sum, flags.RandomizeEnemizer);
-			sum = AddBoolean(sum, flags.RandomizeFormationEnemizer);
-			sum = AddBoolean(sum, flags.GenerateNewSpellbook);
-			sum = AddBoolean(sum, flags.SpellcrafterMixSpells);
+			sum = AddTriState(sum, flags.RandomizeEnemizer);
+			sum = AddTriState(sum, flags.RandomizeFormationEnemizer);
+			sum = AddTriState(sum, flags.GenerateNewSpellbook);
+			sum = AddTriState(sum, flags.SpellcrafterMixSpells);
 			sum = AddBoolean(sum, flags.ThiefHitRate);
 			sum = AddBoolean(sum, flags.AllSpellLevelsForKnightNinja);
 			sum = AddTriState(sum, flags.FreeTail);
+			sum = AddTriState(sum, flags.SpellcrafterRetainPermissions);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(FormationShuffleMode)).Cast<int>().Max() + 1, (int)flags.FormationShuffleMode);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(MDEFGrowthMode)).Cast<int>().Max() + 1, (int)flags.MDefMode);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(WorldWealthMode)).Cast<int>().Max() + 1, (int)flags.WorldWealth);
@@ -669,13 +671,14 @@ namespace FF1Lib
 				WorldWealth = (WorldWealthMode)GetNumeric(ref sum, Enum.GetValues(typeof(WorldWealthMode)).Cast<int>().Max() + 1),
 				MDefMode = (MDEFGrowthMode)GetNumeric(ref sum, Enum.GetValues(typeof(MDEFGrowthMode)).Cast<int>().Max() + 1),
 				FormationShuffleMode = (FormationShuffleMode)GetNumeric(ref sum, Enum.GetValues(typeof(FormationShuffleMode)).Cast<int>().Max() + 1),
+				SpellcrafterRetainPermissions = GetTriState(ref sum),
 				FreeTail = GetTriState(ref sum),
 				AllSpellLevelsForKnightNinja = GetBoolean(ref sum),
 				ThiefHitRate = GetBoolean(ref sum),
-				SpellcrafterMixSpells = GetBoolean(ref sum),
-				GenerateNewSpellbook = GetBoolean(ref sum),
-				RandomizeFormationEnemizer = GetBoolean(ref sum),
-				RandomizeEnemizer = GetBoolean(ref sum),
+				SpellcrafterMixSpells = GetTriState(ref sum),
+				GenerateNewSpellbook = GetTriState(ref sum),
+				RandomizeFormationEnemizer = GetTriState(ref sum),
+				RandomizeEnemizer = GetTriState(ref sum),
 				DisableInnSaving = GetBoolean(ref sum),
 				DisableTentSaving = GetBoolean(ref sum),
 				FiendShuffle = GetBoolean(ref sum),
