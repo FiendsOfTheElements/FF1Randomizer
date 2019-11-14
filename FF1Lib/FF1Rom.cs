@@ -212,7 +212,7 @@ namespace FF1Lib
 		
 			if (flags.GenerateNewSpellbook)
 			{ 
-				CraftNewSpellbook(rng, flags.SpellcrafterMixSpells, flags.RebalanceSpells, ((bool)flags.MagicLevels));
+				CraftNewSpellbook(rng, flags.SpellcrafterMixSpells, flags.RebalanceSpells, (bool)flags.MagicLevels, (bool)flags.MagicPermissions);
 			}
 
 			if ((bool)flags.ItemMagic)
