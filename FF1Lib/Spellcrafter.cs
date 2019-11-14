@@ -27,11 +27,12 @@ namespace FF1Lib
 			NUM_OOB_SPELLS
 		}
 
-		public void CraftNewSpellbook(MT19337 rng, bool mixWhiteBlack, bool lockFix, bool levelShuffle) // generates a new spellbook and does all necessary steps to ensure that the new spells are assigned where they need to be for the game to work properly
+		public void CraftNewSpellbook(MT19337 rng, bool mixWhiteBlack, bool lockFix, bool levelShuffle, bool keepPermissions) // generates a new spellbook and does all necessary steps to ensure that the new spells are assigned where they need to be for the game to work properly
 		{
 			bool WhiteSpell(int id) => mixWhiteBlack || id % 8 < 4;
 			bool BlackSpell(int id) => mixWhiteBlack || id % 8 > 3;
 			int SpellTier(int id) => id / 8;
+			bool ChangeVanillaSlots() => !levelShuffle || keepPermissions;
 
 			SpellInfo[] spell = new SpellInfo[MagicCount]; // the spells we are creating.  every 4 indices split between white magic and black magic.
 			EnemyScriptInfo[] script = new EnemyScriptInfo[ScriptCount]; // enemy scripts (we will need to modify these after the spell list has been created)
@@ -52,27 +53,30 @@ namespace FF1Lib
 			spellNames[MagicCount] = "";
 			if (levelShuffle)
 				spellNames[MagicCount] = "L";
-			for(int i = 0; i < MagicPermissionsCount * MagicPermissionsSize; ++i)
+			if(ChangeVanillaSlots())
 			{
-				if (i >= 24 && i < 28)
-					spellPermissions[i] = 0x00; // red mage can learn all white and black magic between tiers 1 and 4 except WARP, EXIT, CUR4, and LIF2 (but many permissions are taken away from them)
-				else if (i >= 32 && i < 38)
-					spellPermissions[i] = 0x0F; // white mage can learn all white magic between tiers 1 and 6 except WARP, EXIT, CUR4, LIF2 and some tier 7 spell effects
-				else if (i >= 40 && i < 46)
-					spellPermissions[i] = 0xF0; // black mage can learn all black magic between tiers 1 and 6 except WARP, EXIT, CUR4, LIF2 and some tier 7 spell effects
-				else if (i >= 48 && i < 51)
-					spellPermissions[i] = 0x0F; // knight can learn all white magic between tiers 1 and 3 (their permissions will never be revoked)
-				else if (i >= 56 && i < 60)
-					spellPermissions[i] = 0xF0; // ninja can learn all black magic between tiers 1 and 4 (their permissions will never be revoked)
-				else if (i >= 72 && i < 79)
-					spellPermissions[i] = 0x00; // red wizard can learn all white and black magic up to tier 7 (but many permissions are taken from away from them)
-				else if (i >= 80 && i < 88)
-					spellPermissions[i] = 0x0F; // white wizard can learn all white magic spells
-				else if (i >= 88)
-					spellPermissions[i] = 0xF0; // black wizard can learn all black magic spells
-				else
-					spellPermissions[i] = 0XFF; // all others can not learn any magic (fighter, thief, black belt, master)
-			}
+				for (int i = 0; i < MagicPermissionsCount * MagicPermissionsSize; ++i)
+				{
+					if (i >= 24 && i < 28)
+						spellPermissions[i] = 0x00; // red mage can learn all white and black magic between tiers 1 and 4 except WARP, EXIT, CUR4, and LIF2 (but many permissions are taken away from them)
+					else if (i >= 32 && i < 38)
+						spellPermissions[i] = 0x0F; // white mage can learn all white magic between tiers 1 and 6 except WARP, EXIT, CUR4, LIF2 and some tier 7 spell effects
+					else if (i >= 40 && i < 46)
+						spellPermissions[i] = 0xF0; // black mage can learn all black magic between tiers 1 and 6 except WARP, EXIT, CUR4, LIF2 and some tier 7 spell effects
+					else if (i >= 48 && i < 51)
+						spellPermissions[i] = 0x0F; // knight can learn all white magic between tiers 1 and 3 (their permissions will never be revoked)
+					else if (i >= 56 && i < 60)
+						spellPermissions[i] = 0xF0; // ninja can learn all black magic between tiers 1 and 4 (their permissions will never be revoked)
+					else if (i >= 72 && i < 79)
+						spellPermissions[i] = 0x00; // red wizard can learn all white and black magic up to tier 7 (but many permissions are taken from away from them)
+					else if (i >= 80 && i < 88)
+						spellPermissions[i] = 0x0F; // white wizard can learn all white magic spells
+					else if (i >= 88)
+						spellPermissions[i] = 0xF0; // black wizard can learn all black magic spells
+					else
+						spellPermissions[i] = 0XFF; // all others can not learn any magic (fighter, thief, black belt, master)
+				}
+			}			
 			for(int i = 0; i < ScriptCount; ++i)
 			{
 				script[i] = new EnemyScriptInfo();
@@ -127,7 +131,8 @@ namespace FF1Lib
 			spell[selected].gfx = 0xC0;
 			spell[selected].palette = 0x29;
 			spellMessages[selected] = 0x01; // HP up!
-			SPCR_SetPermissionFalse(spellPermissions, selected, 3); // red mage banned
+			if(ChangeVanillaSlots())
+				SPCR_SetPermissionFalse(spellPermissions, selected, 3); // red mage banned
 			Put(0x3AF6F, Blob.FromHex("7F0980")); // changing the oob code for CUR3 to reflect the above effect
 			Put(MagicOutOfBattleOffset + MagicOutOfBattleSize * 2, new[] { (byte)(selected + 0xB0) });
 			spellindex.Remove(selected);
@@ -137,10 +142,13 @@ namespace FF1Lib
 			spell[cur4spell].gfx = 0xC0;
 			spell[cur4spell].palette = 0x21;
 			spellMessages[cur4spell] = 0x18; // HP max!
-			SPCR_SetPermissionFalse(spellPermissions, cur4spell, 3); // red mage banned
-			SPCR_SetPermissionFalse(spellPermissions, cur4spell, 4); // white mage banned
-			SPCR_SetPermissionFalse(spellPermissions, cur4spell, 5); // black mage banned
-			SPCR_SetPermissionFalse(spellPermissions, cur4spell, 9); // red wizard banned
+			if (ChangeVanillaSlots())
+			{
+				SPCR_SetPermissionFalse(spellPermissions, cur4spell, 3); // red mage banned
+				SPCR_SetPermissionFalse(spellPermissions, cur4spell, 4); // white mage banned
+				SPCR_SetPermissionFalse(spellPermissions, cur4spell, 5); // black mage banned
+				SPCR_SetPermissionFalse(spellPermissions, cur4spell, 9); // red wizard banned
+			}
 			Put(MagicOutOfBattleOffset + MagicOutOfBattleSize * 3, new[] { (byte)(cur4spell + 0xB0) });
 			spellindex.Remove(cur4spell);
 			int healspell = spellindex.Where(id => WhiteSpell(id) && id < 24).ToList().PickRandom(rng); // we store the index to assign to spellcasting items
@@ -150,8 +158,11 @@ namespace FF1Lib
 			spell[healspell].gfx = 0xC0;
 			spell[healspell].palette = 0x28;
 			spellMessages[healspell] = 0x01; // HP up!
-			SPCR_SetPermissionFalse(spellPermissions, healspell, 3); // red mage banned
-			SPCR_SetPermissionFalse(spellPermissions, healspell, 9); // red wizard banned
+			if (ChangeVanillaSlots())
+			{
+				SPCR_SetPermissionFalse(spellPermissions, healspell, 3); // red mage banned
+				SPCR_SetPermissionFalse(spellPermissions, healspell, 9); // red wizard banned
+			}
 			Put(MagicOutOfBattleOffset + MagicOutOfBattleSize * 4, new[] { (byte)(healspell + 0xB0) });
 			Put(0x3AFDF, Blob.FromHex("0F")); // changing the oob code for HEAL to reflect the above effect
 			spellindex.Remove(healspell);
@@ -162,8 +173,11 @@ namespace FF1Lib
 			spell[selected].gfx = 0xC0;
 			spell[selected].palette = 0x28;
 			spellMessages[selected] = 0x01; // HP up!
-			SPCR_SetPermissionFalse(spellPermissions, selected, 3); // red mage banned
-			SPCR_SetPermissionFalse(spellPermissions, selected, 9); // red wizard banned
+			if (ChangeVanillaSlots())
+			{
+				SPCR_SetPermissionFalse(spellPermissions, selected, 3); // red mage banned
+				SPCR_SetPermissionFalse(spellPermissions, selected, 9); // red wizard banned
+			}
 			Put(MagicOutOfBattleOffset + MagicOutOfBattleSize * 5, new[] { (byte)(selected + 0xB0) });
 			Put(0x3AFF1, Blob.FromHex("3F")); // changing the oob code for HEL3 to reflect the above effect
 			spellindex.Remove(selected);
@@ -174,8 +188,11 @@ namespace FF1Lib
 			spell[selected].gfx = 0xC0;
 			spell[selected].palette = 0x28;
 			spellMessages[selected] = 0x01; // HP up!
-			SPCR_SetPermissionFalse(spellPermissions, selected, 3); // red mage banned
-			SPCR_SetPermissionFalse(spellPermissions, selected, 9); // red wizard banned
+			if (ChangeVanillaSlots())
+			{
+				SPCR_SetPermissionFalse(spellPermissions, selected, 3); // red mage banned
+				SPCR_SetPermissionFalse(spellPermissions, selected, 9); // red wizard banned
+			}
 			Put(0x3AFE8, Blob.FromHex("1F")); // changing the oob code for HEL2 to reflect the above effect
 			Put(MagicOutOfBattleOffset + MagicOutOfBattleSize * 6, new[] { (byte)(selected + 0xB0) });
 			spellindex.Remove(selected);
@@ -191,45 +208,60 @@ namespace FF1Lib
 			spell[selected].accuracy = 0xFF;
 			spellNames[selected] = levelShuffle ? "LIF" + (SpellTier(selected) + 1).ToString() : "LIFE";
 			spellMessages[selected] = 0x4A; // Ineffective now
-			SPCR_SetPermissionFalse(spellPermissions, selected, 6); // knight banned
-			SPCR_SetPermissionFalse(spellPermissions, selected, 7); // ninja banned
-			SPCR_SetPermissionFalse(spellPermissions, selected, 3); // red mage banned
+			if (ChangeVanillaSlots())
+			{
+				SPCR_SetPermissionFalse(spellPermissions, selected, 6); // knight banned
+				SPCR_SetPermissionFalse(spellPermissions, selected, 7); // ninja banned
+				SPCR_SetPermissionFalse(spellPermissions, selected, 3); // red mage banned
+			}
 			Put(MagicOutOfBattleOffset + MagicOutOfBattleSize * 8, new[] { (byte)(selected + 0xB0) });
 			spellindex.Remove(selected);
 			selected = spellindex.Where(id => WhiteSpell(id) && id > 47).ToList().PickRandom(rng);
 			spell[selected].accuracy = 0xFF;
 			spellNames[selected] = levelShuffle ? "LIF" + (SpellTier(selected) + 1).ToString() : "LIF2";
 			spellMessages[selected] = 0x4A; // Ineffective now
-			SPCR_SetPermissionFalse(spellPermissions, selected, 3); // red mage banned
-			SPCR_SetPermissionFalse(spellPermissions, selected, 4); // white mage banned
-			SPCR_SetPermissionFalse(spellPermissions, selected, 5); // black mage banned
-			SPCR_SetPermissionFalse(spellPermissions, selected, 9); // red wizard banned
+			if (ChangeVanillaSlots())
+			{
+				SPCR_SetPermissionFalse(spellPermissions, selected, 3); // red mage banned
+				SPCR_SetPermissionFalse(spellPermissions, selected, 4); // white mage banned
+				SPCR_SetPermissionFalse(spellPermissions, selected, 5); // black mage banned
+				SPCR_SetPermissionFalse(spellPermissions, selected, 9); // red wizard banned
+			}
 			Put(MagicOutOfBattleOffset + MagicOutOfBattleSize * 9, new[] { (byte)(selected + 0xB0) });
 			spellindex.Remove(selected);
 			selected = spellindex.Where(id => id % 8 > 3 && id > 31).ToList().PickRandom(rng); // warp will appear in black magic regardless of whether we mix spells or not
 			spell[selected].accuracy = 0xFF;
 			spellNames[selected] = levelShuffle ? "WRP" + (SpellTier(selected) + 1).ToString() : "WARP";
 			spellMessages[selected] = 0x4A; // Ineffective now
-			SPCR_SetPermissionFalse(spellPermissions, selected, 3); // red mage banned
-			SPCR_SetPermissionFalse(spellPermissions, selected, 4); // white mage banned
-			SPCR_SetPermissionFalse(spellPermissions, selected, 5); // black mage banned
+			if (ChangeVanillaSlots())
+			{
+				SPCR_SetPermissionFalse(spellPermissions, selected, 3); // red mage banned
+				SPCR_SetPermissionFalse(spellPermissions, selected, 4); // white mage banned
+				SPCR_SetPermissionFalse(spellPermissions, selected, 5); // black mage banned
+			}
 			Put(MagicOutOfBattleOffset + MagicOutOfBattleSize * 10, new[] { (byte)(selected + 0xB0) });
 			spellindex.Remove(selected);
 			selected = spellindex.Where(id => WhiteSpell(id) && id < 48).ToList().PickRandom(rng);
 			spell[selected].accuracy = 0xFF;
 			spellNames[selected] = levelShuffle ? "SFT" + (SpellTier(selected) + 1).ToString() : "SOFT";
 			spellMessages[selected] = 0x4A; // Ineffective now
-			SPCR_SetPermissionFalse(spellPermissions, selected, 3); // red mage banned
-			SPCR_SetPermissionFalse(spellPermissions, selected, 9); // red wizard banned
+			if (ChangeVanillaSlots())
+			{
+				SPCR_SetPermissionFalse(spellPermissions, selected, 3); // red mage banned
+				SPCR_SetPermissionFalse(spellPermissions, selected, 9); // red wizard banned
+			}
 			Put(MagicOutOfBattleOffset + MagicOutOfBattleSize * 11, new[] { (byte)(selected + 0xB0) });
 			spellindex.Remove(selected);
 			selected = spellindex.Where(id => id % 8 < 4 && id > 31).ToList().PickRandom(rng); // exit will appear in white magic regardless of whether we mix spells or not
 			spell[selected].accuracy = 0xFF;
 			spellNames[selected] = levelShuffle ? "EXT" + (SpellTier(selected) + 1).ToString() : "EXIT";
 			spellMessages[selected] = 0x4A; // Ineffective now
-			SPCR_SetPermissionFalse(spellPermissions, selected, 3); // red mage banned
-			SPCR_SetPermissionFalse(spellPermissions, selected, 4); // white mage banned
-			SPCR_SetPermissionFalse(spellPermissions, selected, 5); // black mage banned
+			if (ChangeVanillaSlots())
+			{
+				SPCR_SetPermissionFalse(spellPermissions, selected, 3); // red mage banned
+				SPCR_SetPermissionFalse(spellPermissions, selected, 4); // white mage banned
+				SPCR_SetPermissionFalse(spellPermissions, selected, 5); // black mage banned
+			}
 			Put(MagicOutOfBattleOffset + MagicOutOfBattleSize * 12, new[] { (byte)(selected + 0xB0) });
 			spellindex.Remove(selected);
 
@@ -237,16 +269,18 @@ namespace FF1Lib
 			int rusespell = spellindex.Where(id => WhiteSpell(id) && id < 48).ToList().PickRandom(rng); // guaranteed RUSE, we will keep track of this when assigning spells to items
 			SPCR_CraftEvasionSpell(rng, spell[rusespell], SpellTier(rusespell), 0x04);
 			spellMessages[rusespell] = 0x03; // Evasion up
-			SPCR_SetPermissionFalse(spellPermissions, rusespell, 3); // red mage banned
+			if(ChangeVanillaSlots())
+				SPCR_SetPermissionFalse(spellPermissions, rusespell, 3); // red mage banned
 			spellindex.Remove(rusespell);
 			int sabrspell = spellindex.Where(id => BlackSpell(id) && id > 7 && id < 56).ToList().PickRandom(rng); // guaranteed SABR, again we track this for assigning spells to itmes
 			SPCR_CraftAttackUpSpell(rng, spell[sabrspell], SpellTier(sabrspell), true);
-			SPCR_SetPermissionFalse(spellPermissions, sabrspell, 3); // red mage banned
+			if(ChangeVanillaSlots())
+				SPCR_SetPermissionFalse(spellPermissions, sabrspell, 3); // red mage banned
 			spellindex.Remove(sabrspell);
 			int fastspell = spellindex.Where(id => BlackSpell(id) && id > 16).ToList().PickRandom(rng); // guaranteed FAST, we do NOT want this to land on an item and we need to track this
 			SPCR_CraftFastSpell(spell[fastspell], SpellTier(fastspell));
 			spellMessages[fastspell] = 0x12; // Quick Shot
-			if (spell[fastspell].targeting != 0x04)
+			if (spell[fastspell].targeting != 0x04 && ChangeVanillaSlots())
 			{
 				SPCR_SetPermissionFalse(spellPermissions, fastspell, 3); // red mage banned
 				SPCR_SetPermissionFalse(spellPermissions, fastspell, 9); // red wizard banned
@@ -398,12 +432,12 @@ namespace FF1Lib
 						if (elemSpell[elem].Exists(i => BlackSpell(index) == BlackSpell(i) && SpellTier(index) == SpellTier(i)))
 							continue; // return to start if this spell is in the same realm and at the same tier as another spell of the same element
 						SPCR_CraftDamageSpell(rng, spell[index], SpellTier(index), (byte)(0b10000000 >> elem), WhiteSpell(index) && !mixWhiteBlack, false);
-						if(elem == 5 || elem == 8)
+						if((elem == 5 || elem == 8) && ChangeVanillaSlots())
 						{
 							SPCR_SetPermissionFalse(spellPermissions, index, 3); // red mage banned
 							SPCR_SetPermissionFalse(spellPermissions, index, 9); // red wizard banned
 						}
-						if (SpellTier(index) > 5)
+						if (SpellTier(index) > 5 && ChangeVanillaSlots())
 							SPCR_SetPermissionFalse(spellPermissions, index, 9); // red wizard banned
 						elemSpell[elem].Add(index);
 					}
@@ -416,8 +450,11 @@ namespace FF1Lib
 							continue; // return to start if this spell is in the same realm and not at least two tiers away from any other such spell
 						}
 						SPCR_CraftHarmSpell(spell[index], SpellTier(index));
-						SPCR_SetPermissionFalse(spellPermissions, index, 3); // red mage banned
-						SPCR_SetPermissionFalse(spellPermissions, index, 9); // red wizard banned
+						if(ChangeVanillaSlots())
+						{
+							SPCR_SetPermissionFalse(spellPermissions, index, 3); // red mage banned
+							SPCR_SetPermissionFalse(spellPermissions, index, 9); // red wizard banned
+						}
 						harmspell.Add(index);
 					}
 					if(routine == 0x03) // inflict negative effect
@@ -464,8 +501,11 @@ namespace FF1Lib
 								elem = validElements.PickRandom(rng);
 								if (killspell.Exists(id => Math.Abs(SpellTier(id) - SpellTier(index)) < 2 && spell[id].elem == elem))
 									continue; // continue if there is a kill spell of the same element within this or an adjacent tier
-								SPCR_SetPermissionFalse(spellPermissions, index, 3); // red mage banned
-								SPCR_SetPermissionFalse(spellPermissions, index, 9); // red wizard banned
+								if(ChangeVanillaSlots())
+								{
+									SPCR_SetPermissionFalse(spellPermissions, index, 3); // red mage banned
+									SPCR_SetPermissionFalse(spellPermissions, index, 9); // red wizard banned
+								}
 								killspell.Add(index);
 								switch (elem)
 								{
@@ -663,7 +703,8 @@ namespace FF1Lib
 										spell[index].effect = effect;
 										spell[index].accuracy = 48;
 										spell[index].routine = routine;
-										SPCR_SetPermissionFalse(spellPermissions, index, 9); // red wizard banned
+										if(ChangeVanillaSlots())
+											SPCR_SetPermissionFalse(spellPermissions, index, 9); // red wizard banned
 										break;
 									case 5:
 										spell[index].targeting = (byte)rng.Between(1, 2);
@@ -671,7 +712,8 @@ namespace FF1Lib
 										spell[index].effect = effect;
 										spell[index].accuracy = 40;
 										spell[index].routine = routine;
-										SPCR_SetPermissionFalse(spellPermissions, index, 9); // red wizard banned
+										if (ChangeVanillaSlots())
+											SPCR_SetPermissionFalse(spellPermissions, index, 9); // red wizard banned
 										break;
 									case 6:
 										spell[index].targeting = 0x01;
@@ -679,7 +721,8 @@ namespace FF1Lib
 										spell[index].effect = effect;
 										spell[index].accuracy = 64;
 										spell[index].routine = routine;
-										SPCR_SetPermissionFalse(spellPermissions, index, 9); // red wizard banned
+										if (ChangeVanillaSlots())
+											SPCR_SetPermissionFalse(spellPermissions, index, 9); // red wizard banned
 										break;
 									case 7:
 										spell[index].targeting = 0x02;
@@ -919,7 +962,8 @@ namespace FF1Lib
 								spellMessages[index] = 0x15;
 								break;
 						}
-						SPCR_SetPermissionFalse(spellPermissions, index, 9); // red wizard banned from all power word spells
+						if (ChangeVanillaSlots())
+							SPCR_SetPermissionFalse(spellPermissions, index, 9); // red wizard banned from all power word spells
 					}
 					if(routine == 0x04) // decreases enemy speed
 					{
@@ -954,7 +998,8 @@ namespace FF1Lib
 								spell[index].targeting = 0x01;
 								spell[index].elem = 0b00000000;
 								spell[index].accuracy = 64;
-								SPCR_SetPermissionFalse(spellPermissions, index, 9); // red wizard banned
+								if (ChangeVanillaSlots())
+									SPCR_SetPermissionFalse(spellPermissions, index, 9); // red wizard banned
 								break;
 						}
 						spell[index].effect = 0;
@@ -970,8 +1015,11 @@ namespace FF1Lib
 						spell[index].routine = routine;
 						spell[index].accuracy = 24;
 						spellMessages[index] = 0x0F; // Became terrified
-						SPCR_SetPermissionFalse(spellPermissions, index, 3); // red mage banned
-						SPCR_SetPermissionFalse(spellPermissions, index, 9); // red wizard banned
+						if (ChangeVanillaSlots())
+						{
+							SPCR_SetPermissionFalse(spellPermissions, index, 3); // red mage banned
+							SPCR_SetPermissionFalse(spellPermissions, index, 9); // red wizard banned
+						}
 						rollMoraleSpell = false;
 					}
 					if(routine == 0x08) // recover status (this will be the AMUT equivalent automatically)
@@ -979,7 +1027,8 @@ namespace FF1Lib
 						spell[index].effect = 0b11110000; // cures confusion, silence, sleep, and stun
 						spell[index].targeting = (byte)(SpellTier(index) < 2 ? 0x10 : 0x08); // tier 1 and 2 are single ally, tier 3 and 4 are all allies
 						spell[index].routine = routine;
-						SPCR_SetPermissionFalse(spellPermissions, index, 3); // red mage banned
+						if(ChangeVanillaSlots())
+							SPCR_SetPermissionFalse(spellPermissions, index, 3); // red mage banned
 						rollEsuna = false;
 					}
 					if(routine == 0x09) // armor up
@@ -1089,7 +1138,8 @@ namespace FF1Lib
 							else
 								spell[index].targeting = 0x10;
 							spellMessages[index] = 0x19; // Defend magic
-							SPCR_SetPermissionFalse(spellPermissions, index, 9); // red wizard banned
+							if(ChangeVanillaSlots())
+								SPCR_SetPermissionFalse(spellPermissions, index, 9); // red wizard banned
 							resistelems.Add(resistances);
 						}
 						else
@@ -1119,7 +1169,7 @@ namespace FF1Lib
 						}
 						SPCR_CraftFastSpell(spell[index], SpellTier(index));
 						spellMessages[index] = 0x12; // Quick shot
-						if(spell[index].targeting != 0x04)
+						if(spell[index].targeting != 0x04 && ChangeVanillaSlots())
 						{
 							SPCR_SetPermissionFalse(spellPermissions, index, 3); // red mage banned
 							SPCR_SetPermissionFalse(spellPermissions, index, 9); // red wizard banned for all FAST spells tier 5-8
@@ -1134,8 +1184,9 @@ namespace FF1Lib
 							continue;
 						}
 						SPCR_CraftAttackUpSpell(rng, spell[index], SpellTier(index), false);
-						SPCR_SetPermissionFalse(spellPermissions, index, 3); // red mage banned
-						if(spell[index].targeting != 0x04)
+						if(ChangeVanillaSlots())
+							SPCR_SetPermissionFalse(spellPermissions, index, 3); // red mage banned
+						if(spell[index].targeting != 0x04 && ChangeVanillaSlots())
 							SPCR_SetPermissionFalse(spellPermissions, index, 9); // red wizard banned if spell is not self-caster
 						attackupspell.Add(index);
 					}
@@ -1148,8 +1199,11 @@ namespace FF1Lib
 						spell[index].accuracy = 107; // max accuracy for LOCK spells
 						spell[index].routine = routine;
 						spellMessages[index] = 0x05; // Easy to hit
-						SPCR_SetPermissionFalse(spellPermissions, index, 3); // red mage banned
-						SPCR_SetPermissionFalse(spellPermissions, index, 9); // red wizard banned
+						if(ChangeVanillaSlots())
+						{
+							SPCR_SetPermissionFalse(spellPermissions, index, 3); // red mage banned
+							SPCR_SetPermissionFalse(spellPermissions, index, 9); // red wizard banned
+						}
 						if (lockspell == -1)
 							lockspell = index;
 						else
@@ -1195,7 +1249,7 @@ namespace FF1Lib
 							}
 						}
 						SPCR_CraftEvasionSpell(rng, spell[index], SpellTier(index), targeting);
-						if(spell[index].targeting == 0x04)
+						if(spell[index].targeting == 0x04 && ChangeVanillaSlots())
 							SPCR_SetPermissionFalse(spellPermissions, index, 3); // red mage banned
 						spellMessages[index] = 0x03; // Easy to dodge
 						if (spell[index].targeting == 0x04)
@@ -1209,8 +1263,11 @@ namespace FF1Lib
 						spell[index].accuracy = (byte)(37 + SpellTier(index) * 10);
 						spell[index].routine = routine;
 						spellMessages[index] = 0x1D; // Defenseless
-						SPCR_SetPermissionFalse(spellPermissions, index, 3); // red mage banned
-						SPCR_SetPermissionFalse(spellPermissions, index, 9); // red wizard banned
+						if(ChangeVanillaSlots())
+						{
+							SPCR_SetPermissionFalse(spellPermissions, index, 3); // red mage banned
+							SPCR_SetPermissionFalse(spellPermissions, index, 9); // red wizard banned
+						}
 						rollDispel = false;
 					}
 					break; // if we reached the end without continuing, break the loop
@@ -1630,7 +1687,8 @@ namespace FF1Lib
 				Put(MagicNamesOffset + MagicNameSize * i, FF1Text.TextToBytes(spellNames[i]));
 				spell[i].calc_Enemy_SpellTier();
 			}
-			Put(MagicPermissionsOffset, spellPermissions); // write the permissions as one giant chunk
+			if(ChangeVanillaSlots())
+				Put(MagicPermissionsOffset, spellPermissions); // write the permissions as one giant chunk
 			Put(MagicTextPointersOffset, spellMessages); // write the spell messages as one giant chunk
 
 			// modify spellcasting items
