@@ -218,11 +218,14 @@ namespace FF1Lib
 		public bool FiendShuffle { get; set; } = false;
 		public bool DisableTentSaving { get; set; } = false;
 		public bool DisableInnSaving { get; set; } = false;
-		public bool RandomizeEnemizer { get; set; } = false;
-		public bool RandomizeFormationEnemizer { get; set; } = false;
-		public bool GenerateNewSpellbook { get; set; } = false;
-		public bool SpellcrafterMixSpells { get; set; } = false;
+		public bool? RandomizeEnemizer { get; set; } = false;
+		public bool? RandomizeFormationEnemizer { get; set; } = false;
+		public bool? GenerateNewSpellbook { get; set; } = false;
+		public bool? SpellcrafterMixSpells { get; set; } = false;
 		public bool ThiefHitRate { get; set; } = false;
+		public bool AllSpellLevelsForKnightNinja { get; set; } = false;
+		public bool? FreeTail { get; set; } = false;
+		public bool? SpellcrafterRetainPermissions { get; set; } = false;
 
 		public MDEFGrowthMode MDefMode { get; set; } = MDEFGrowthMode.None;
 
@@ -248,12 +251,15 @@ namespace FF1Lib
 		// 4. The vehicles now have their own incentivization flags apart from other progression items.
 
 		// Ruby is required if Sarda is Required for the ROD
-		public bool? RequiredRuby => !EarlySage & !NPCItems;
-		public bool? IncentivizeRuby => (RequiredRuby & IncentivizeMainItems) | (!RequiredRuby & IncentivizeFetchItems);
+		public bool? RequiredRuby => !EarlySage & !NPCItems & !FreeAirship;
+		public bool? UselessRuby => FreeAirship & !TitansTrove;
+		public bool? IncentivizeRuby => (RequiredRuby & IncentivizeMainItems) | (!RequiredRuby & IncentivizeFetchItems & !UselessRuby);
 
-		// If Canoe and Fetch Quests are unshuffled then TNT is required
-		public bool? RequiredTnt => !NPCFetchItems & !NPCItems;
-		public bool? IncentivizeTnt => (RequiredTnt & IncentivizeMainItems) | (!RequiredTnt & IncentivizeFetchItems);
+		// If Canoe and Fetch Quests are unshuffled and there is no free canal or airship then TNT is required
+		public bool? RequiredTnt => !NPCFetchItems & !NPCItems & !(FreeCanal | FreeAirship);
+		// If Fetch Items are vanilla and the player has a free Canal, do not incentivize TNT even if Other Quest Items are in the pool since there would be absolutely nothing to gain from TNT
+		public bool? UselessTnt => !NPCFetchItems & (FreeCanal | (FreeAirship & !MapOpenProgression));
+		public bool? IncentivizeTnt => (RequiredTnt & IncentivizeMainItems) | (!RequiredTnt & IncentivizeFetchItems & !UselessTnt);
 
 		public bool? IncentivizeCrown => (!(NPCFetchItems ?? false) && (IncentivizeMainItems ?? false)) || ((NPCFetchItems ?? false) && (IncentivizeFetchItems ?? false));
 		public bool? IncentivizeSlab => (!(NPCFetchItems ?? false) && (IncentivizeMainItems ?? false)) || ((NPCFetchItems ?? false) && (IncentivizeFetchItems ?? false));
@@ -266,6 +272,7 @@ namespace FF1Lib
 		public bool? IncentivizeRod => NPCItems & IncentivizeMainItems;
 		public bool? IncentivizeCube => NPCItems & IncentivizeMainItems;
 		public bool? IncentivizeFloater => !FreeAirship & IncentivizeAirship;
+		public bool? IncentivizePromotion => !FreeTail & IncentivizeTail;
 
 		public bool? IncentivizeCanal => NPCFetchItems & IncentivizeShipAndCanal & !FreeCanal;
 		public bool? IncentivizeCrystal => NPCFetchItems & IncentivizeFetchItems;
@@ -278,7 +285,7 @@ namespace FF1Lib
 		public bool? IncentivizeXcalber => false;
 
 		public int IncentivizedItemCountMin => 0
-			+ ((IncentivizeTail ?? false) ? 1 : 0)
+			+ ((IncentivizePromotion ?? false) ? 1 : 0)
 			+ ((IncentivizeMasamune ?? false) ? 1 : 0)
 			+ ((IncentivizeVorpal ?? false) ? 1 : 0)
 			+ ((IncentivizeOpal ?? false) ? 1 : 0)
@@ -311,7 +318,7 @@ namespace FF1Lib
 			+ ((IncentivizeXcalber ?? false) ? 1 : 0);
 
 		public int IncentivizedItemCountMax => 0
-			+ ((IncentivizeTail ?? true) ? 1 : 0)
+			+ ((IncentivizePromotion ?? true) ? 1 : 0)
 			+ ((IncentivizeMasamune ?? true) ? 1 : 0)
 			+ ((IncentivizeVorpal ?? true) ? 1 : 0)
 			+ ((IncentivizeOpal ?? true) ? 1 : 0)
@@ -363,7 +370,7 @@ namespace FF1Lib
 			+ ((IncentivizeRuby != null) ? (IncentivizeRuby ?? false ? "Ruby " : "") : ("Ruby? "))
 			+ ((IncentivizeShip != null) ? (IncentivizeShip ?? false ? "Ship " : "") : ("Ship? "))
 			+ ((IncentivizeSlab != null) ? (IncentivizeSlab ?? false ? "Slab " : "") : ("Slab? "))
-			+ ((IncentivizeTail != null) ? (IncentivizeTail ?? false ? "Tail " : "") : ("Tail? "))
+			+ ((IncentivizePromotion != null) ? (IncentivizePromotion ?? false ? "Tail " : "") : ("Tail? "))
 			+ ((IncentivizeTnt != null) ? (IncentivizeTnt ?? false ? "Tnt " : "") : ("Tnt? "))
 			+ ((IncentivizeMasamune != null) ? (IncentivizeMasamune ?? false ? "Masmune\U0001F5E1 " : "") : ("Masmune?\U0001F5E1 "))
 			+ ((IncentivizeVorpal != null) ? (IncentivizeVorpal ?? false ? "Vorpal\U0001F5E1 " : "") : ("Vorpal?\U0001F5E1 "))
@@ -459,7 +466,7 @@ namespace FF1Lib
 		public bool? DeepCastlesPossible => Entrances & Floors;
 		public bool? DeepTownsPossible => Towns & Entrances & Floors & EntrancesMixedWithTowns;
 
-		public bool EnemizerEnabled => RandomizeFormationEnemizer | RandomizeEnemizer;
+		public bool EnemizerEnabled => (bool)RandomizeFormationEnemizer | (bool)RandomizeEnemizer;
 
 		public static string EncodeFlagsText(Flags flags)
 		{
@@ -636,11 +643,14 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.FiendShuffle);
 			sum = AddBoolean(sum, flags.DisableTentSaving);
 			sum = AddBoolean(sum, flags.DisableInnSaving);
-			sum = AddBoolean(sum, flags.RandomizeEnemizer);
-			sum = AddBoolean(sum, flags.RandomizeFormationEnemizer);
-			sum = AddBoolean(sum, flags.GenerateNewSpellbook);
-			sum = AddBoolean(sum, flags.SpellcrafterMixSpells);
+			sum = AddTriState(sum, flags.RandomizeEnemizer);
+			sum = AddTriState(sum, flags.RandomizeFormationEnemizer);
+			sum = AddTriState(sum, flags.GenerateNewSpellbook);
+			sum = AddTriState(sum, flags.SpellcrafterMixSpells);
 			sum = AddBoolean(sum, flags.ThiefHitRate);
+			sum = AddBoolean(sum, flags.AllSpellLevelsForKnightNinja);
+			sum = AddTriState(sum, flags.FreeTail);
+			sum = AddTriState(sum, flags.SpellcrafterRetainPermissions);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(FormationShuffleMode)).Cast<int>().Max() + 1, (int)flags.FormationShuffleMode);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(MDEFGrowthMode)).Cast<int>().Max() + 1, (int)flags.MDefMode);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(WorldWealthMode)).Cast<int>().Max() + 1, (int)flags.WorldWealth);
@@ -663,11 +673,14 @@ namespace FF1Lib
 				WorldWealth = (WorldWealthMode)GetNumeric(ref sum, Enum.GetValues(typeof(WorldWealthMode)).Cast<int>().Max() + 1),
 				MDefMode = (MDEFGrowthMode)GetNumeric(ref sum, Enum.GetValues(typeof(MDEFGrowthMode)).Cast<int>().Max() + 1),
 				FormationShuffleMode = (FormationShuffleMode)GetNumeric(ref sum, Enum.GetValues(typeof(FormationShuffleMode)).Cast<int>().Max() + 1),
+				SpellcrafterRetainPermissions = GetTriState(ref sum),
+				FreeTail = GetTriState(ref sum),
+				AllSpellLevelsForKnightNinja = GetBoolean(ref sum),
 				ThiefHitRate = GetBoolean(ref sum),
-				SpellcrafterMixSpells = GetBoolean(ref sum),
-				GenerateNewSpellbook = GetBoolean(ref sum),
-				RandomizeFormationEnemizer = GetBoolean(ref sum),
-				RandomizeEnemizer = GetBoolean(ref sum),
+				SpellcrafterMixSpells = GetTriState(ref sum),
+				GenerateNewSpellbook = GetTriState(ref sum),
+				RandomizeFormationEnemizer = GetTriState(ref sum),
+				RandomizeEnemizer = GetTriState(ref sum),
 				DisableInnSaving = GetBoolean(ref sum),
 				DisableTentSaving = GetBoolean(ref sum),
 				FiendShuffle = GetBoolean(ref sum),

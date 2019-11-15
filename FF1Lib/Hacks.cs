@@ -537,6 +537,11 @@ namespace FF1Lib
 			Data[0x3020 + (int)Item.Lute] = 0x01;
 		}
 
+		public void EnableFreeTail()
+		{
+			Data[0x3020 + (int)Item.Tail] = 0x01;
+		}
+
 		public void EnableFreeOrbs()
 		{
 			const int initItemOffset = 0x3020;
@@ -596,7 +601,7 @@ namespace FF1Lib
 		{
 			// Instead of looping through the 'check to see if characters are alive' thing, just set it to 4 and then remove the loop.
 			// EA EA EA EA EA EA (sports)
-			Put(0x2DEC6, Blob.FromHex("A204A004EAEAEAEAEAEAEAEAEAEAEAEAEA"));
+			Put(0x6CB43, Blob.FromHex("A204A004EAEAEAEAEAEAEAEAEAEAEAEAEA"));
 
 		}
 

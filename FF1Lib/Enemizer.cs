@@ -13,6 +13,9 @@ namespace FF1Lib
 		public const int EnemySkillCount = 26;
 		public const int EnemySkillSize = 8; // even though the actual information is only five bytes, each entry in the game ROM uses three extra bytes that are all 00
 		public const int EnemySkillOffset = 0x303F0;
+		public const int EnemySkillTextPointerOffset = 0x2B600;
+		public const int EnemySkillTextPointerBase = 0x20000;
+		public const int EnemySkillTextOffset = 0x2B634;
 
 		enum MonsterPerks
 		{
@@ -872,7 +875,7 @@ namespace FF1Lib
 					{1050, 2500, 5200, 5}, // lefein/mirage desert/gaia overworld/river north
 					{2400, 3600, 7200, 5}, // mirage tower and sea shrine
 					{2400, 4800, 10000, 5}, // sky castle
-					{6000, 6001, 32000, 5}, // tofr
+					{6000, 6001, 21000, 5}, // tofr
 				};
 				for (int i = 0; i < 11; ++i)
 				{
@@ -964,10 +967,7 @@ namespace FF1Lib
 
 			public void PrintFormationInfo()
 			{
-				foreach (Enemizer_Zone domain in zone)
-				{
-					Console.WriteLine("Zone " + domain.forms.Count() + "/" + domain.min);
-				}
+				// this is where we would print formation info to console when debugging the game
 			}
 
 			public int GetMonLimit(bool size, int shape)
@@ -1030,6 +1030,17 @@ namespace FF1Lib
 					{
 						en.zone[i].zonemons.Add(mon);
 						en.enemyZones[mon].Add(i);
+					}
+				}
+				if(en.enemyZones[mon].Count == 0)
+				{
+					for (int i = 0; i < en.zone.Count; ++i)
+					{
+						if (enemy[mon].exp <= (en.zone[i].maxXP * 2) / 3 && enemy[mon].exp * limit >= en.zone[i].midXP)
+						{
+							en.zone[i].zonemons.Add(mon);
+							en.enemyZones[mon].Add(i);
+						}
 					}
 				}
 			}
@@ -1112,9 +1123,6 @@ namespace FF1Lib
 					availablezones = en.enemyZones[f.Top].ToList();
 				if (availablezones.Count == 0) // and if by some freak chance the enemy has not been assigned any zones, write an error report to Console and abort Formation shuffle
 				{
-					Console.WriteLine(f.Top);
-					Console.WriteLine(enemy[f.Top].exp);
-					Console.WriteLine("This Enemy Has No Zones");
 					return false;
 				}
 				int zoneB = availablezones.PickRandom(rng); // the B-Side zone we are trying to fill
@@ -1156,9 +1164,6 @@ namespace FF1Lib
 					availablezones = en.enemyZones[f.id[1]].ToList();
 				if (availablezones.Count == 0) // and if by some freak chance the enemy has not been assigned any zones, write an error report to Console and abort Formation shuffle
 				{
-					Console.WriteLine(f.id[1]);
-					Console.WriteLine(enemy[f.id[1]].exp);
-					Console.WriteLine("This Enemy Has No Zones");
 					return false;
 				}
 				int zoneA = availablezones.PickRandom(rng);
@@ -1206,7 +1211,7 @@ namespace FF1Lib
 				// assign the pic and palette bytes to each monster slot
 				ENF_AssignPicAndPaletteBytes(enemy, f);
 				// set surprise rate and unrunnability flags
-				f.unrunnable = rng.Between(0, 29) + (zoneA > zoneB ? zoneA : zoneB) >= 32 ? true : false; // unrunnable chance is higher for later zones
+				f.unrunnable = rng.Between(0, 47) + (zoneA > zoneB ? zoneA : zoneB) >= 50 ? true : false; // unrunnable chance is higher for later zones
 				if (f.unrunnable)
 					f.surprise = (byte)rng.Between(3, 30);
 				else
@@ -1908,7 +1913,7 @@ namespace FF1Lib
 					thisEnemy.elem_weakness = 0b00000000;
 					if (thisEnemy.AIscript == 0xFF)
 					{
-						thisEnemy.AIscript = ENE_PickForcedAIScript(tier);
+						thisEnemy.AIscript = ENE_PickForcedAIScript(tier, rng);
 					}
 					break;
 				default: // Raw Mana Elemental
@@ -2037,7 +2042,7 @@ namespace FF1Lib
 					thisEnemy.elem_weakness = 0b00000000;
 					if (thisEnemy.AIscript == 0xFF)
 					{
-						thisEnemy.AIscript = ENE_PickForcedAIScript(tier);
+						thisEnemy.AIscript = ENE_PickForcedAIScript(tier, rng);
 					}
 					break;
 				default: // Air Elemental
@@ -2166,7 +2171,7 @@ namespace FF1Lib
 					thisEnemy.elem_weakness = 0b00000000;
 					if (thisEnemy.AIscript == 0xFF)
 					{
-						thisEnemy.AIscript = ENE_PickForcedAIScript(tier);
+						thisEnemy.AIscript = ENE_PickForcedAIScript(tier, rng);
 					}
 					break;
 				default: // Standard Dragon
@@ -2185,23 +2190,55 @@ namespace FF1Lib
 			}
 		}
 
-		public byte ENE_PickForcedAIScript(int tier)
+		public byte ENE_PickForcedAIScript(int tier, MT19337 rng)
 		{
 			if (tier >= 0 && tier <= 2)
-				return 0x1A; // tier 0-2 uses RockGOL script
+			{
+				return 0x1A; // RockGol script
+			}
 			else if (tier >= 3 && tier <= 4)
-				return 0x0D; // tier 3-4 uses R.GOYLE script
+			{
+				switch (rng.Between(0, 2))
+				{
+					case 0:
+						return 0x0D; // R.Goyle script
+					case 1:
+						return 0x0A; // Mancat script
+					default:
+						return 0x06; // WzOgre script
+				}
+			}
 			else if (tier == 5)
-				return 0x0C; // tier 5 uses WzVAMP script
+			{
+				switch (rng.Between(0, 2))
+				{
+					case 0:
+						return 0x0C; // WzVamp script
+					case 1:
+						return 0x19; // MudGol script
+					default:
+						return 0x12; // Naga script
+				}
+			}
 			else if (tier >= 6 && tier <= 7)
-				return 0x1D; // tier 6-7 uses MAGE script
+			{
+				switch (rng.Between(0, 2))
+				{
+					case 0:
+						return 0x1D; // Mage script
+					case 1:
+						return 0x1E; // Fighter script
+					default:
+						return 0x08; // Eye script
+				}
+			}
 			else if (tier >= 8 && tier <= 9)
 				return 0x1C; // tier 8-9 uses EVILMAN script
 			else
 				return 0xFF; // invalid tier returns no script
 		}
 
-		private bool DoEnemizer_Enemies(MT19337 rng, EnemyInfo[] enemy, SpellInfo[] spell, EnemySkillInfo[] skill, EnemyScriptInfo[] script, string[] enemyNames, EnemizerTrackingInfo en)
+		private bool DoEnemizer_Enemies(MT19337 rng, EnemyInfo[] enemy, SpellInfo[] spell, EnemySkillInfo[] skill, EnemyScriptInfo[] script, string[] enemyNames, string[] skillNames, bool shuffledSkillsOn, EnemizerTrackingInfo en)
 		{
 			List<byte> enemyImageLUT = new List<byte> { 0b00000000, 0b00000010, 0b00000001, 0b00000011, 0b00000100, 0b00000110, 0b00000101, 0b00000111,
 														0b00001000, 0b00001010, 0b00001001, 0b00001011, 0b00001100, 0b00001110, 0b00001101, 0b00001111,
@@ -2758,8 +2795,8 @@ namespace FF1Lib
 							enemy[i].monster_type = 0b01000000;
 							enemy[i].elem_resist = 0b10000000;
 							enemy[i].elem_weakness = 0b00000000;
-							if (enemy[i].AIscript == 0xFF)
-								enemy[i].AIscript = ENE_PickForcedAIScript(enemy[i].tier);
+							if (enemy[i].AIscript == 0xFF && !shuffledSkillsOn)
+								enemy[i].AIscript = ENE_PickForcedAIScript(enemy[i].tier, rng);
 							perks.Add(MonsterPerks.PERK_LOWRESIST);
 							perks.Add(MonsterPerks.PERK_HIGHRESIST);
 							perks.Add(MonsterPerks.PERK_LOWWEAKNESS);
@@ -2900,7 +2937,7 @@ namespace FF1Lib
 							enemyNames[i] = "GOYLE";
 							enemy[i].num_hits = 4;
 							enemy[i].critrate = 1;
-							enemy[i].damage = ENE_rollEnemyStrength(enemy[i].tier, 4);
+							enemy[i].damage = ENE_rollEnemyStrength(enemy[i].tier, 3);
 							enemy[i].accuracy = ENE_rollEnemyAccuracy(enemy[i].tier, 3);
 							enemy[i].absorb = ENE_rollEnemyAbsorb(enemy[i].tier, 4);
 							enemy[i].agility = ENE_rollEnemyEvade(enemy[i].tier, 5);
@@ -2999,17 +3036,16 @@ namespace FF1Lib
 							enemy[i].accuracy = ENE_rollEnemyAccuracy(enemy[i].tier, 4);
 							enemy[i].absorb = ENE_rollEnemyAbsorb(enemy[i].tier, 4);
 							enemy[i].agility = ENE_rollEnemyEvade(enemy[i].tier, 4);
-							enemy[i].atk_elem = 0b00000000;
-							enemy[i].atk_ailment = 0b00000000;
+							enemy[i].atk_elem = 0b00000001;
+							enemy[i].atk_ailment = (byte)(0b00000100 << rng.Between(0, 4));
 							enemy[i].monster_type = 0b00000000;
 							enemy[i].elem_resist = 0b00000000;
 							enemy[i].elem_weakness = 0b00000000;
 							perks.Add(MonsterPerks.PERK_LOWRESIST);
 							perks.Add(MonsterPerks.PERK_HIGHRESIST);
+							perks.Add(MonsterPerks.PERK_LOWWEAKNESS);
+							perks.Add(MonsterPerks.PERK_HIGHWEAKNESS);
 							perks.Add(MonsterPerks.PERK_PLUSONEHIT);
-							perks.Add(MonsterPerks.PERK_POISONTOUCH);
-							perks.Add(MonsterPerks.PERK_STUNSLEEPTOUCH);
-							perks.Add(MonsterPerks.PERK_MUTETOUCH);
 							break;
 						case 31: // Ankylo
 							enemyNames[i] = "ANK";
@@ -3144,7 +3180,7 @@ namespace FF1Lib
 							break;
 						case 38: // Gator
 							enemyNames[i] = "GATOR";
-							enemy[i].num_hits = rng.Between(2, 3);
+							enemy[i].num_hits = 2;
 							enemy[i].critrate = 1;
 							enemy[i].damage = ENE_rollEnemyStrength(enemy[i].tier, 6);
 							enemy[i].accuracy = ENE_rollEnemyAccuracy(enemy[i].tier, 5);
@@ -3216,8 +3252,8 @@ namespace FF1Lib
 							enemy[i].monster_type = 0b01000000;
 							enemy[i].elem_resist = 0b00000000;
 							enemy[i].elem_weakness = 0b00000000;
-							if (enemy[i].AIscript == 0xFF)
-								enemy[i].AIscript = ENE_PickForcedAIScript(enemy[i].tier);
+							if (enemy[i].AIscript == 0xFF && !shuffledSkillsOn)
+								enemy[i].AIscript = ENE_PickForcedAIScript(enemy[i].tier, rng);
 							perks.Add(MonsterPerks.PERK_LOWRESIST);
 							perks.Add(MonsterPerks.PERK_HIGHRESIST);
 							perks.Add(MonsterPerks.PERK_LOWWEAKNESS);
@@ -3441,8 +3477,8 @@ namespace FF1Lib
 							enemy[i].monster_type = 0b01000000;
 							enemy[i].elem_resist = 0b00000000;
 							enemy[i].elem_weakness = 0b00000000;
-							if (enemy[i].AIscript == 0xFF)
-								enemy[i].AIscript = ENE_PickForcedAIScript(enemy[i].tier);
+							if (enemy[i].AIscript == 0xFF && !shuffledSkillsOn)
+								enemy[i].AIscript = ENE_PickForcedAIScript(enemy[i].tier, rng);
 							perks.Add(MonsterPerks.PERK_LOWRESIST);
 							perks.Add(MonsterPerks.PERK_HIGHRESIST);
 							perks.Add(MonsterPerks.PERK_LOWWEAKNESS);
@@ -3534,9 +3570,9 @@ namespace FF1Lib
 							switch (classModifier) // apply the traits of this enemy class
 							{
 								case "Wz":
-									if (enemy[i].AIscript == 0xFF)
+									if (enemy[i].AIscript == 0xFF && !shuffledSkillsOn)
 									{
-										enemy[i].AIscript = ENE_PickForcedAIScript(enemy[i].tier);
+										enemy[i].AIscript = ENE_PickForcedAIScript(enemy[i].tier, rng);
 									}
 									break;
 								case "Fr":
@@ -3813,6 +3849,7 @@ namespace FF1Lib
 							{
 								string nameModifier = monsterNameVariants[enemy[i].image].PickRandom(rng);
 								enemyNames[i] = nameModifier + enemyNames[i];
+								monsterNameVariants[enemy[i].image].Remove(nameModifier);
 							}
 							else
 								monsterBaseNameUsed[enemy[i].image] = true;
@@ -3830,12 +3867,10 @@ namespace FF1Lib
 					enemy[i].exp = rng.Between(enemy[i].exp - enemy[i].exp / 40, enemy[i].exp + enemy[i].exp / 40); // variance for exp reward
 					if(enemy[i].AIscript != 0xFF)
 					{
-						Console.WriteLine(enemy[i].AIscript);
 						// determine skill tier
 						int highestTier = 0;
 						foreach(byte id in script[enemy[i].AIscript].skill_list)
 						{
-							Console.WriteLine(id);
 							if (id == 0xFF)
 								continue;
 							if (skill[id].tier > highestTier)
@@ -3843,7 +3878,6 @@ namespace FF1Lib
 						}
 						foreach(byte id in script[enemy[i].AIscript].spell_list)
 						{
-							Console.WriteLine(id);
 							if (id == 0xFF)
 								continue;
 							if (spell[id].tier > highestTier)
@@ -3877,7 +3911,7 @@ namespace FF1Lib
 					en.palettesInTileset[i].Remove(pal);
 				}
 			}
-			// modify scripts - all scripts that are skills-only gain a magic list full of spells in the same tier (with 24/128 chance of activating)
+			// modify scripts
 			// each spell is then selected from a list of spells available for that tier.  it is not possible to promote to a higher tier
 			// skills will remain the same
 			for (int i = 0; i < ScriptCount - 10; ++i) // exclude the last 10 scripts
@@ -3900,7 +3934,7 @@ namespace FF1Lib
 			return true;
 		}
 
-		public void DoEnemizer(MT19337 rng, bool doEnemies, bool doFormations)
+		public void DoEnemizer(MT19337 rng, bool doEnemies, bool doFormations, bool shuffledSkillsOn)
 		{
 			// code modification to allow any formation except 0x00 to be a trap (lifted from ShuffleTrapTiles)
 			Data[0x7CDC5] = 0xD0; // changes the game's programming
@@ -3955,6 +3989,7 @@ namespace FF1Lib
 				enemy[i].tier = enemyTierList[i];
 			}		
 			string[] enemyNames = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount); // load all the enemy names into the array for use by enemizer
+			string[] skillNames = ReadText(EnemySkillTextPointerOffset, EnemySkillTextPointerBase, EnemySkillCount); // load all the names of enemy skills
 			for (int i = 0; i < FormationCount; ++i) // we need to scour the formations list for enemy information, and to give the enemizer tracking info construct information it can work with
 			{
 				FormationInfo f = new FormationInfo();
@@ -3970,7 +4005,7 @@ namespace FF1Lib
 			if (doEnemies)
 			{
 				// do enemizer stuff
-				if(DoEnemizer_Enemies(rng, enemy, spell, skill, script, enemyNames, en))
+				if(DoEnemizer_Enemies(rng, enemy, spell, skill, script, enemyNames, skillNames, shuffledSkillsOn, en))
 				{
 					doFormations = true; // must use formation generator with enemizer
 					for (int i = 0; i < EnemyCount; ++i)
@@ -3985,6 +4020,7 @@ namespace FF1Lib
 					var enemyTextPart2 = enemyNames.Skip(2).ToArray();
 					WriteText(enemyTextPart1, EnemyTextPointerOffset, EnemyTextPointerBase, 0x2CFEC);
 					WriteText(enemyTextPart2, EnemyTextPointerOffset + 4, EnemyTextPointerBase, EnemyTextOffset);
+					WriteText(skillNames, EnemySkillTextPointerOffset, EnemySkillTextPointerBase, EnemySkillTextOffset);
 				}
 				else
 				{

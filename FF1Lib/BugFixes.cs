@@ -171,6 +171,15 @@ namespace FF1Lib
 			Put(0x6CA60, Blob.FromHex("04"));
 		}
 
+		public void KnightNinjaChargesForAllLevels()
+		{
+			for(int cur_pointer = NewLevelUpDataOffset; cur_pointer < NewLevelUpDataOffset + 196; cur_pointer += 2) // we need to cycle through the 49 levelups for Fighter and the 49 levelups for Thief, each are two bytes
+			{
+				if (Data[cur_pointer + 1] != 0)
+					Data[cur_pointer + 1] = 0xFF; // every spell charge gain that isn't equal to 0 is changed to FF, so each spell level will gain a charge instead of just the first three / four
+			}
+		}
+
 		public void RemakeStyleMasterMDEF()
 		{
 			Put(0x6CA65, Blob.FromHex("030203020202030204020202"));

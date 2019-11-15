@@ -464,10 +464,13 @@
 							<div class="checkbox-cell"></div>
 							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="disableTentSaving" bind-Value="@Flags.DisableTentSaving">Disable Tent/Cabin/House Saving on Overworld</CheckBox>
 							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="disableInnSaving" bind-Value="@Flags.DisableInnSaving">Disable Inn Saving</CheckBox>
-							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="randomizeFormationEnemizer" bind-Value="@Flags.RandomizeFormationEnemizer">Generate New Formations (Enemizer)</CheckBox>
-							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="randomizeEnemizer" IsEnabled="@Flags.RandomizeFormationEnemizer" bind-Value="@Flags.RandomizeEnemizer">Generate New Enemies (Enemizer)</CheckBox>
-							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="generateNewSpellbook" bind-Value="@Flags.GenerateNewSpellbook">Generate New Spellbook (Spellcrafter)</CheckBox>
-							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="spellcrafterMixSpells" IsEnabled="@Flags.GenerateNewSpellbook" bind-Value="@Flags.SpellcrafterMixSpells">Mix spellbooks (Spellcrafter)</Checkbox>
+							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="randomizeFormationEnemizer" bind-Value="@Flags.RandomizeFormationEnemizer">Generate New Formations (Enemizer)</TriStateCheckBox>
+							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="randomizeEnemizer" IsEnabled="@Flags.RandomizeFormationEnemizer" bind-Value="@Flags.RandomizeEnemizer">Generate New Enemies (Enemizer)</TriStateCheckBox>
+							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="generateNewSpellbook" bind-Value="@Flags.GenerateNewSpellbook">Generate New Spellbook (Spellcrafter)</TriStateCheckBox>
+							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="spellcrafterRetainPermissions" IsEnabled="@Flags.GenerateNewSpellbook" bind-Value="@Flags.SpellcrafterRetainPermissions">Retain Old Permissions (Spellcrafter)</TriStateCheckbox>
+							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="spellcrafterMixSpells" IsEnabled="@Flags.GenerateNewSpellbook" bind-Value="@Flags.SpellcrafterMixSpells">Mix spellbooks (Spellcrafter)</TriStateCheckbox>
+							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="AllSpellLevelsForKnightNinja" bind-Value="@Flags.AllSpellLevelsForKnightNinja">Knight and Ninja Gain Charges in All Levels</CheckBox>
+							<TriStateCheckBox DisableToolTip UpdateToolTip="@UpdateToolTipID" Id="FreeTail" bind-Value="@Flags.FreeTail">Free Tail</TriStateCheckBox>
 						</div>
 						<div class="col-md-12">
 						</div>
