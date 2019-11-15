@@ -98,7 +98,7 @@
 							<ComboBoxItem Tag="High">High Wealth</ComboBoxItem>
 							<ComboBoxItem Tag="Normal">Normal Wealth</ComboBoxItem>
 							<ComboBoxItem Tag="Low">Low Wealth</ComboBoxItem>
-							<ComboBoxItem Tag="Improverished">Impoverished</ComboBoxItem>
+							<ComboBoxItem Tag="Impoverished">Impoverished</ComboBoxItem>
 							<ComboBoxItem Tag="Melmond">Melmond</ComboBoxItem>
 						</ComboBox>
 						<CheckBox x:Name="BetterTrapTreasureCheckBox" IsChecked="{Binding Flags.BetterTrapTreasure}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Better Treasure near Spike Tiles" ToolTip="Better treasures on chests next to spike tile" Margin="30, 5, 0 0"/>
