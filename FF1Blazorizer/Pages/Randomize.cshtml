@@ -426,9 +426,6 @@
 							<h4>Bugs</h4>
 							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="houseMPRestorationCheckBox" bind-Value="@Flags.HouseMPRestoration">House MP Restoration</CheckBox>
 							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="weaponStatsCheckBox" bind-Value="@Flags.WeaponStats">Weapon Stats</CheckBox>
-							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="doubleBBCritCheckBox" bind-Value="@Flags.BBCritRate">Double BB Crit Rate</CheckBox>
-							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="doubleWeaponCritCheckBox" bind-Value="@Flags.WeaponCritRate">Double Weapon Crit Rate</CheckBox>
-							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="increaseWepBonusesCheckBox" bind-Value="@Flags.WeaponBonuses">Increase Weapon Elemental and Type Bonuses</CheckBox>
 							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="chanceToRunCheckBox" bind-Value="@Flags.ChanceToRun">Chance to Run</CheckBox>
 							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="spellBugsCheckBox" bind-Value="@Flags.SpellBugs">Spell Fixes</CheckBox>
 							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyStatusAttackBugCheckBox" bind-Value="@Flags.EnemyStatusAttackBug">Enemy Status Attacks</CheckBox>
@@ -440,6 +437,9 @@
 						</div>
 						<div class="col-md-6">
 							<h4>Balance</h4>
+							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="doubleBBCritCheckBox" bind-Value="@Flags.BBCritRate">Double BB Crit Rate</CheckBox>
+							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="doubleWeaponCritCheckBox" bind-Value="@Flags.WeaponCritRate">Double Weapon Crit Rate</CheckBox>
+							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="increaseWepBonusesCheckBox" bind-Value="@Flags.WeaponBonuses">Increase Weapon Elemental and Type Bonuses</CheckBox>
 							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="housesFillHpCheckBox" bind-Value="@Flags.HousesFillHP">House Full HP Restoration</CheckBox>
 							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="rebalanceSpellsCheckBox" bind-Value="@Flags.RebalanceSpells">LOCK and LOK2 Always Hit</CheckBox>
 							<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="MDefModeDropDown" TItem="MDEFGrowthMode" bind-Value="@Flags.MDefMode">MDEF Growth:</EnumDropDown>
