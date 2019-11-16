@@ -132,6 +132,9 @@ namespace FF1Lib
 
 		public bool HouseMPRestoration { get; set; } = false;
 		public bool WeaponStats { get; set; } = false;
+		public bool BBCritRate { get; set; } = false;
+		public bool WeaponCritRate { get; set; } = false;
+		public bool WeaponBonuses { get; set; } = false;
 		public bool ChanceToRun { get; set; } = false;
 		public bool SpellBugs { get; set; } = false;
 		public bool BlackBeltAbsorb { get; set; } = false;
@@ -570,6 +573,9 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.WaitWhenUnrunnable);
 			sum = AddBoolean(sum, flags.HouseMPRestoration);
 			sum = AddBoolean(sum, flags.WeaponStats);
+			sum = AddBoolean(sum, flags.BBCritRate);
+			sum = AddBoolean(sum, flags.WeaponCritRate);
+			sum = AddBoolean(sum, flags.WeaponBonuses);
 			sum = AddBoolean(sum, flags.ChanceToRun);
 			sum = AddBoolean(sum, flags.SpellBugs);
 			sum = AddBoolean(sum, flags.BlackBeltAbsorb);
@@ -758,6 +764,9 @@ namespace FF1Lib
 				BlackBeltAbsorb = GetBoolean(ref sum),
 				SpellBugs = GetBoolean(ref sum),
 				ChanceToRun = GetBoolean(ref sum),
+				WeaponBonuses = GetBoolean(ref sum),
+				WeaponCritRate = GetBoolean(ref sum),
+				BBCritRate = GetBoolean(ref sum),
 				WeaponStats = GetBoolean(ref sum),
 				HouseMPRestoration = GetBoolean(ref sum),
 				WaitWhenUnrunnable = GetBoolean(ref sum),

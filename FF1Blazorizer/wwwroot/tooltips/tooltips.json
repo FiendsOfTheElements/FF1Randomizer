@@ -524,7 +524,22 @@
 	{
 		"Id": "weaponStatsCheckBox",
 		"title": "Weapon Stats",
-		"description": "Fixes various bugs about how weapon stats, including elemental bonuses and critical hit rate."
+		"description": "Fixes applying elemental and type bonuses to weapons"
+	},
+	{
+		"Id": "doubleBBCritCheckBox",
+		"title": "Double BB Crit Rate",
+		"description": "Doubles the BB crit rate"
+	},
+	{
+		"Id": "doubleWeaponCritCheckBox",
+		"title": "Double Weapon Crit Rates",
+		"description": "Doubles the crit rate of all weapons"
+	},
+	{
+		"Id": "increaseWepBonusesCheckBox",
+		"title": "Weapon Attack Bonuses",
+		"description": "Increases elemental and type bonuses to weapons"
 	},
 	{
 		"Id": "chanceToRunCheckBox",
