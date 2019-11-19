@@ -43,7 +43,7 @@ namespace FF1Lib
 			int unrunnableAcount = 0, unrunnableBcount = 0; // number of formations marked as unrunnable on both sides
 			foreach (Blob formation in formations)
 			{
-				if ((formation[UnrunnableOffset] & 0x01) != 0)
+				if ((formation[UnrunnableOffset] & 0x01) == 0x01)
 					unrunnableAcount++;
 				formation[UnrunnableOffset] &= 0xFE;
 			}
@@ -56,11 +56,13 @@ namespace FF1Lib
 
 			// And we repeat the process for B-Side unrunnables
 			formations = Get(FormationsOffset, FormationSize * FormationCount).Chunk(FormationSize); // for B-Side we include ALL formations
-			foreach (Blob formation in formations)
+			for (int i = 0; i < FormationCount; ++i)
 			{
-				if ((formation[UnrunnableOffset] & 0x02) != 0)
+				if (i >= NormalFormationCount && i <= ChaosFormationIndex)
+					continue; // skip fiends and Chaos
+				if ((formations[i][UnrunnableOffset] & 0x02) == 0x02)
 					unrunnableBcount++;
-				formation[UnrunnableOffset] &= 0xFD;
+				formations[i][UnrunnableOffset] &= 0xFD;
 			}
 			ids = Enumerable.Range(0, FormationCount).ToList();
 			ids.Shuffle(rng);
