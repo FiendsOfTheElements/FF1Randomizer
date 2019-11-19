@@ -17,6 +17,8 @@ namespace FF1Lib
 		public const int EnemySkillTextPointerBase = 0x20000;
 		public const int EnemySkillTextOffset = 0x2B634;
 
+		public const int EnemizerUnrunnabilityWeight = 31; // weight given to determine unrunnability.  for the highest level of encounters, this means 8/32 probability of a formation being unrunnable
+
 		enum MonsterPerks
 		{
 			PERK_GAINSTAT10, // increases a minor stat by 10%, +2% XP
@@ -1215,8 +1217,8 @@ namespace FF1Lib
 				// assign the pic and palette bytes to each monster slot
 				ENF_AssignPicAndPaletteBytes(enemy, f);
 				// set surprise rate and unrunnability flags
-				f.unrunnable_a = rng.Between(0, 47) + zoneA >= 50 ? true : false; // unrunnable chance is higher for later zones
-				f.unrunnable_b = rng.Between(0, 47) + zoneB >= 50 ? true : false;
+				f.unrunnable_a = rng.Between(0, EnemizerUnrunnabilityWeight) + zoneA >= EnemizerUnrunnabilityWeight + 3 ? true : false; // unrunnable chance is higher for later zones
+				f.unrunnable_b = rng.Between(0, EnemizerUnrunnabilityWeight) + zoneB >= EnemizerUnrunnabilityWeight + 3 ? true : false;
 				if (f.unrunnable_a && f.unrunnable_b)
 					f.surprise = (byte)rng.Between(3, 30);
 				else
@@ -1660,7 +1662,7 @@ namespace FF1Lib
 				zoneB = ENF_Picker_Generic(en, enemy, rng, f, zoneB, 0, true);
 				if (zoneB != -1)
 					en.zone[zoneB].forms.Add((byte)(formid | 0x80)); // if for some reason we didn't fill any valid zone from the B-side, we simply don't add it to any zones (and thus it will never be seen)
-				f.unrunnable_b = rng.Between(0, 47) + zoneB >= 50 ? true : false;
+				f.unrunnable_b = rng.Between(0, EnemizerUnrunnabilityWeight) + zoneB >= EnemizerUnrunnabilityWeight + 3 ? true : false;
 			}
 			else
 				f.unrunnable_b = false;
@@ -1735,7 +1737,7 @@ namespace FF1Lib
 			if (zoneA != -1)
 				en.zone[zoneA].forms.Add(formid); // if for some reason we didn't fill any valid zone from the A-side, we simply don't add it to any zones (and thus it will never be seen)
 			f.surprise = 4;
-			f.unrunnable_a = rng.Between(0, 47) + zoneA >= 50 ? true : false;
+			f.unrunnable_a = rng.Between(0, EnemizerUnrunnabilityWeight) + zoneA >= EnemizerUnrunnabilityWeight + 3 ? true : false;
 			f.unrunnable_b = true; // the trap side is always unrunnable
 			// put on the finishing touches and log and compress this formation
 			ENF_AssignPicAndPaletteBytes(enemy, f);
