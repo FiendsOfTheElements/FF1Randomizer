@@ -38,16 +38,34 @@ namespace FF1Lib
 
 		public void ShuffleUnrunnable(MT19337 rng)
 		{
-			// First indiscriminately mark all normal formations as runnable.
+			// First indiscriminately mark all normal formations as A-Side runnable.
 			List<Blob> formations = Get(FormationsOffset, FormationSize * NormalFormationCount).Chunk(FormationSize);
-			formations.ForEach(formation => formation[UnrunnableOffset] &= 0xFE);
-
+			int unrunnableAcount = 0, unrunnableBcount = 0; // number of formations marked as unrunnable on both sides
+			foreach (Blob formation in formations)
+			{
+				if ((formation[UnrunnableOffset] & 0x01) != 0)
+					unrunnableAcount++;
+				formation[UnrunnableOffset] &= 0xFE;
+			}
 			// Generate a shuffled list of ids in the normal formation range and update formations with that.
 			// We skip formation 1 to avoid unrunnable trolly IMPs at the start of the game.
 			List<int> ids = Enumerable.Range(1, NormalFormationCount - 1).ToList();
 			ids.Shuffle(rng);
-			ids = ids.Take(VanillaUnrunnableCount).ToList();
+			ids = ids.Take(unrunnableAcount).ToList();
 			ids.ForEach(id => formations[id][UnrunnableOffset] |= 0x01);
+
+			// And we repeat the process for B-Side unrunnables
+			formations = Get(FormationsOffset, FormationSize * FormationCount).Chunk(FormationSize); // for B-Side we include ALL formations
+			foreach (Blob formation in formations)
+			{
+				if ((formation[UnrunnableOffset] & 0x02) != 0)
+					unrunnableBcount++;
+				formation[UnrunnableOffset] &= 0xFD;
+			}
+			ids = Enumerable.Range(0, FormationCount).ToList();
+			ids.Shuffle(rng);
+			ids = ids.Take(unrunnableBcount).ToList();
+			ids.ForEach(id => formations[id][UnrunnableOffset] |= 0x02);
 
 			Put(FormationsOffset, formations.SelectMany(formation => formation.ToBytes()).ToArray());
 		}
@@ -55,7 +73,7 @@ namespace FF1Lib
 		public void CompletelyUnrunnable()
 		{
 			List<Blob> formations = Get(FormationsOffset, FormationSize * NormalFormationCount).Chunk(FormationSize);
-			formations.ForEach(formation => formation[UnrunnableOffset] |= 0x01);
+			formations.ForEach(formation => formation[UnrunnableOffset] |= 0x03);
 			Put(FormationsOffset, formations.SelectMany(formation => formation.ToBytes()).ToArray());
 		}
 
@@ -87,7 +105,7 @@ namespace FF1Lib
 			{
 				PutInBank(0x0C, 0x93D4, Blob.FromHex("EAEA"));
 			}
-			PutInBank(0x0C, 0xA3E0, Blob.FromHex($"AD916D2901D0{(UnrunnableToWait ? "25" : "31")}ADAE6BD036")); // we dont want to be able to run if we get a first strike on an unrunnable
+			PutInBank(0x0C, 0xA3E0, Blob.FromHex($"AD916D2903D0{(UnrunnableToWait ? "25" : "31")}ADAE6BD036")); // we dont want to be able to run if we get a first strike on an unrunnable
 		}
 
 		public void MakeWarMECHUnrunnable()

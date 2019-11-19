@@ -740,7 +740,8 @@ namespace FF1Lib
 			public byte pal2;
 			public byte surprise;
 			public byte paletteassignment = 0b00000000;
-			public bool unrunnable;
+			public bool unrunnable_a;
+			public bool unrunnable_b;
 
 			public byte Top
 			{
@@ -771,8 +772,10 @@ namespace FF1Lib
 				formationData[11] = pal2;
 				formationData[12] = surprise;
 				formationData[13] = paletteassignment;
-				if (unrunnable)
+				if (unrunnable_a)
 					formationData[13] |= 0x01;
+				if (unrunnable_b)
+					formationData[13] |= 0x02;
 				formationData[14] = (byte)((monMin[4] << 4) | monMax[4]);
 				formationData[15] = (byte)((monMin[5] << 4) | monMax[5]);
 				return formationData;
@@ -801,7 +804,8 @@ namespace FF1Lib
 				pal2 = data[11];
 				surprise = data[12];
 				paletteassignment = (byte)(data[13] & 0xF0);
-				unrunnable = (data[13] & 0x01) == 0x01 ? true : false;
+				unrunnable_a = (data[13] & 0x01) == 0x01 ? true : false;
+				unrunnable_b = (data[13] & 0x02) == 0x02 ? true : false;
 				monMin[4] = (data[14] & 0xF0) >> 4;
 				monMax[4] = data[14] & 0x0F;
 				monMin[5] = (data[15] & 0xF0) >> 4;
@@ -1211,8 +1215,9 @@ namespace FF1Lib
 				// assign the pic and palette bytes to each monster slot
 				ENF_AssignPicAndPaletteBytes(enemy, f);
 				// set surprise rate and unrunnability flags
-				f.unrunnable = rng.Between(0, 47) + (zoneA > zoneB ? zoneA : zoneB) >= 50 ? true : false; // unrunnable chance is higher for later zones
-				if (f.unrunnable)
+				f.unrunnable_a = rng.Between(0, 47) + zoneA >= 50 ? true : false; // unrunnable chance is higher for later zones
+				f.unrunnable_b = rng.Between(0, 47) + zoneB >= 50 ? true : false;
+				if (f.unrunnable_a && f.unrunnable_b)
 					f.surprise = (byte)rng.Between(3, 30);
 				else
 				{
@@ -1655,10 +1660,13 @@ namespace FF1Lib
 				zoneB = ENF_Picker_Generic(en, enemy, rng, f, zoneB, 0, true);
 				if (zoneB != -1)
 					en.zone[zoneB].forms.Add((byte)(formid | 0x80)); // if for some reason we didn't fill any valid zone from the B-side, we simply don't add it to any zones (and thus it will never be seen)
+				f.unrunnable_b = rng.Between(0, 47) + zoneB >= 50 ? true : false;
 			}
+			else
+				f.unrunnable_b = false;
 			// if for some reason there were no available mons, then a B-Side is not drawn at all and no formation is added to the zones, so this slot will remain unused.  this shouldn't happen, though
 			ENF_AssignPicAndPaletteBytes(enemy, f);
-			f.unrunnable = unrunnable;
+			f.unrunnable_a = unrunnable;
 			f.surprise = surprise;
 			en.LogFeatured(f);
 			return f.compressData();
@@ -1727,7 +1735,8 @@ namespace FF1Lib
 			if (zoneA != -1)
 				en.zone[zoneA].forms.Add(formid); // if for some reason we didn't fill any valid zone from the A-side, we simply don't add it to any zones (and thus it will never be seen)
 			f.surprise = 4;
-			f.unrunnable = true; // these fights are always unrunnable
+			f.unrunnable_a = rng.Between(0, 47) + zoneA >= 50 ? true : false;
+			f.unrunnable_b = true; // the trap side is always unrunnable
 			// put on the finishing touches and log and compress this formation
 			ENF_AssignPicAndPaletteBytes(enemy, f);
 			en.LogFeatured(f);
