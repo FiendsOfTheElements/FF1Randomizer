@@ -64,7 +64,7 @@ namespace FF1Lib
 					unrunnableBcount++;
 				formations[i][UnrunnableOffset] &= 0xFD;
 			}
-			ids = Enumerable.Range(0, NormalFormationCount).Union(Enumerable.Range(ChaosFormationIndex + 1, 4)).ToList();
+			ids = Enumerable.Range(0, NormalFormationCount).Concat(Enumerable.Range(ChaosFormationIndex + 1, 4)).ToList();
 			ids.Shuffle(rng);
 			ids = ids.Take(unrunnableBcount).ToList();
 			ids.ForEach(id => formations[id][UnrunnableOffset] |= 0x02);
