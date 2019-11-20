@@ -578,13 +578,15 @@ namespace FF1Lib
 			Put(0x313D3, Blob.FromHex("03")); // changes AND #$01 to AND #$03 when checking start of battle for unrunnability
 			// the second change is done in AllowStrikeFirstAndSurprise, which checks the unrunnability in battle
 			// alter the default formation data to set unrunnability of a formation to both sides if the unrunnable flag is set
-			var formData = Get(FormationDataOffset, FormationDataSize * NormalFormationCount).Chunk(FormationDataSize);
+			var formData = Get(FormationDataOffset, FormationDataSize * FormationCount).Chunk(FormationDataSize);
 			for(int i = 0; i < NormalFormationCount; ++i)
 			{
 				if ((formData[i][UnrunnableOffset] & 0x01) != 0)
 					formData[i][UnrunnableOffset] |= 0x02;
 			}
-			// for the B-Side of Vampire/Astos/Pirates/Garland, the default last bit remains unrunnable, but the B-Side unrunnability is already false, so we don't need to do anything
+			formData[126][UnrunnableOffset] |= 0x02; // set unrunnability for WzSahag/R.Sahag fight
+			formData[127][UnrunnableOffset] |= 0x02; // set unrunnability for IronGol fight
+			
 			Put(FormationsOffset, formData.SelectMany(formation => formation.ToBytes()).ToArray());
 		}
 
