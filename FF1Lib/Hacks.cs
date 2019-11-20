@@ -585,11 +585,6 @@ namespace FF1Lib
 					data[0x0D] |= 0x03;
 			}
 			Put(FormationsOffset, formData.SelectMany(formation => formation.ToBytes()).ToArray());
-			// FOR TESTING: Set the domain around Coneria to alternating fights 00 and 80, and set 00 to runnable and 80 to unrunnable
-			var formation00 = Get(FormationDataOffset, FormationDataSize);
-			formation00[0x0D] = 0x42;
-			Put(FormationDataOffset, formation00);
-			Put(0x2C120, Blob.FromHex("0080008000800080"));
 		}
 
 		public void ImproveTurnOrderRandomization(MT19337 rng)
