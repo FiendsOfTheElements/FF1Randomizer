@@ -142,7 +142,7 @@ namespace FF1Lib
 								tier = 2;
 							else if (effect < 36)
 								tier = 3;
-							else if (effect < 75)
+							else if (effect < 68)
 								tier = 4;
 							else
 								tier = 5;
@@ -806,8 +806,8 @@ namespace FF1Lib
 				pal2 = data[11];
 				surprise = data[12];
 				paletteassignment = (byte)(data[13] & 0xF0);
-				unrunnable_a = (data[13] & 0x01) == 0x01 ? true : false;
-				unrunnable_b = (data[13] & 0x02) == 0x02 ? true : false;
+				unrunnable_a = (data[13] & 0x01) == 0x01;
+				unrunnable_b = (data[13] & 0x02) == 0x02;
 				monMin[4] = (data[14] & 0xF0) >> 4;
 				monMax[4] = data[14] & 0x0F;
 				monMin[5] = (data[15] & 0xF0) >> 4;
