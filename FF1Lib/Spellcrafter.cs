@@ -298,7 +298,6 @@ namespace FF1Lib
 			spellindex.Shuffle(rng);
 
 			// draw remaining spells
-			Console.WriteLine("Crafting Spells");
 			foreach(int index in spellindex)
 			{
 				// first, we determine the routines we can select in the first place
@@ -1641,8 +1640,6 @@ namespace FF1Lib
 			// ensure the Power Gauntlet is turned into an item that increases attack power on self (or single ally), or some other appropriate effect, otherwise it will cast a random level 3-5 black magic spell
 			// all other items receive a random level 3-5 spell, either white magic or black magic, that is fit to cast in battle
 
-			Console.WriteLine("Drawing Item Magic");
-
 			var Spells = GetSpells(); // we have to do it this way because what's the rest of the randomizer lol
 			WriteItemSpellData(Spells[elemspell[1]], Item.MageRod); // write our FIR2 to the Mage Staff
 			WriteItemSpellData(Spells[elemspell[3]], Item.BlackShirt); // write our ICE2 to the Black Shirt
@@ -1697,7 +1694,6 @@ namespace FF1Lib
 					script[i].spell_list[j] = eligibleSpellIDs.PickRandom(rng);
 				}
 			}
-			Console.WriteLine("Drawing Fiend Lists");
 			spellindex = Enumerable.Range(0, 64).ToList(); // refilling the spell indexes to include all spells again
 			var middamagespells = spellindex.Where(id => spell[id].routine == 0x01 && spell[id].tier == 3).ToList(); // this will include some of the guaranteed spells, so there will always be entries
 			var highdamagespells = spellindex.Where(id => spell[id].routine == 0x01 && spell[id].tier == 4).ToList();
@@ -1797,8 +1793,6 @@ namespace FF1Lib
 
 			for (int i = 0; i < ScriptCount; ++i) // write the new scripts to ROM
 				Put(ScriptOffset + ScriptSize * i, script[i].compressData());
-
-			Console.WriteLine("End Spellcrafter");
 		}
 
 		private void SPCR_SetName(string[] spellnames, int index, string initialname, string altname)
