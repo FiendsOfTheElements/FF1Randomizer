@@ -38,38 +38,36 @@ namespace FF1Lib
 
 		public void ShuffleUnrunnable(MT19337 rng)
 		{
-			// First indiscriminately mark all normal formations as A-Side runnable.
-			List<Blob> formations = Get(FormationsOffset, FormationSize * NormalFormationCount).Chunk(FormationSize);
+			// Load a list of formations from ROM
+			List<Blob> formations = Get(FormationsOffset, FormationSize * FormationCount).Chunk(FormationSize);
 			int unrunnableAcount = 0, unrunnableBcount = 0; // number of formations marked as unrunnable on both sides
-			foreach (Blob formation in formations)
-			{
-				if ((formation[UnrunnableOffset] & 0x01) == 0x01)
-					unrunnableAcount++;
-				formation[UnrunnableOffset] &= 0xFE;
-			}
-			// Generate a shuffled list of ids in the normal formation range and update formations with that.
-			// We skip formation 1 to avoid unrunnable trolly IMPs at the start of the game.
-			List<int> ids = Enumerable.Range(1, NormalFormationCount - 1).ToList();
-			ids.Shuffle(rng);
-			ids = ids.Take(unrunnableAcount).ToList();
-			ids.ForEach(id => formations[id][UnrunnableOffset] |= 0x01);
-
-			// And we repeat the process for B-Side unrunnables
-			formations = Get(FormationsOffset, FormationSize * FormationCount).Chunk(FormationSize); // for B-Side we include ALL formations
+			// First we mark all formations as runnable except for fiends/chaos (both sides) or the other boss fights (on a-side only)
 			for (int i = 0; i < FormationCount; ++i)
 			{
 				if (i >= NormalFormationCount && i <= ChaosFormationIndex)
-					continue; // skip fiends and Chaos
-				if ((formations[i][UnrunnableOffset] & 0x02) == 0x02)
-					unrunnableBcount++;
-				formations[i][UnrunnableOffset] &= 0xFD;
+					continue; // skip fiends and Chaos on both sides
+				if ((formations[i][UnrunnableOffset] & 0x01) == 0x01 && i < NormalFormationCount)
+					unrunnableAcount++; // only add normal formations to the count for a-side
+				if ((formations[i][UnrunnableOffset] & 0x02) == 0x02 && (i < NormalFormationCount || i > ChaosFormationIndex))
+					unrunnableBcount++; // only add the b-sides that are not fiend/chaos fights
+				if (i > ChaosFormationIndex)
+					formations[i][UnrunnableOffset] &= 0xFD; // the last four fights only mark the B-side as runnable
+				else
+					formations[i][UnrunnableOffset] &= 0xFC; // while everything else in the normal encounter range is marked unrunnable
 			}
-			ids = Enumerable.Range(0, NormalFormationCount).Concat(Enumerable.Range(ChaosFormationIndex + 1, 4)).ToList();
+			// Generate a shuffled list of ids for encounters
+			// We include - all normal formation A-Sides except encounter 00 (imps), all normal formation B-Sides, and the four B-sides at the end
+			List<int> ids = Enumerable.Range(1, NormalFormationCount - 1).Concat(Enumerable.Range(128, NormalFormationCount)).Concat(Enumerable.Range(FormationCount + ChaosFormationIndex + 1, 4)).ToList();
 			ids.Shuffle(rng);
-			ids = ids.Take(unrunnableBcount).ToList();
-			ids.ForEach(id => formations[id][UnrunnableOffset] |= 0x02);
-
-			Put(FormationsOffset, formations.SelectMany(formation => formation.ToBytes()).ToArray());
+			ids = ids.Take(unrunnableAcount + unrunnableBcount).ToList(); // combine the number of unrunnables between both sides
+			foreach (int id in ids)
+			{
+				if (id < 128)
+					formations[id][UnrunnableOffset] |= 0x01; // last bit is A-Side unrunnability
+				else
+					formations[id - 128][UnrunnableOffset] |= 0x02; // and second-to-last bit is B-Side unrunnability
+			}
+			Put(FormationsOffset, formations.SelectMany(formation => formation.ToBytes()).ToArray()); // and put it all back in the ROM
 		}
 
 		public void CompletelyUnrunnable()
