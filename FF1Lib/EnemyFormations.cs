@@ -57,15 +57,15 @@ namespace FF1Lib
 			}
 			// Generate a shuffled list of ids for encounters
 			// We include - all normal formation A-Sides except encounter 00 (imps), all normal formation B-Sides, and the four B-sides at the end
-			List<int> ids = Enumerable.Range(1, NormalFormationCount - 1).Concat(Enumerable.Range(128, NormalFormationCount)).Concat(Enumerable.Range(FormationCount + ChaosFormationIndex + 1, 4)).ToList();
+			List<int> ids = Enumerable.Range(1, NormalFormationCount - 1).Concat(Enumerable.Range(FormationCount, NormalFormationCount)).Concat(Enumerable.Range(FormationCount + ChaosFormationIndex + 1, 4)).ToList();
 			ids.Shuffle(rng);
 			ids = ids.Take(unrunnableAcount + unrunnableBcount).ToList(); // combine the number of unrunnables between both sides
 			foreach (int id in ids)
 			{
-				if (id < 128)
+				if (id < FormationCount)
 					formations[id][UnrunnableOffset] |= 0x01; // last bit is A-Side unrunnability
 				else
-					formations[id - 128][UnrunnableOffset] |= 0x02; // and second-to-last bit is B-Side unrunnability
+					formations[id - FormationCount][UnrunnableOffset] |= 0x02; // and second-to-last bit is B-Side unrunnability
 			}
 			Put(FormationsOffset, formations.SelectMany(formation => formation.ToBytes()).ToArray()); // and put it all back in the ROM
 		}
