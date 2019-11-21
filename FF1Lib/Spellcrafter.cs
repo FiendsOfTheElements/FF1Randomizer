@@ -1090,7 +1090,6 @@ namespace FF1Lib
 							else
 								spell[index].targeting = 0x10;
 							spellMessages[index] = 0x19; // Defend magic
-							SPCR_SetPermissionFalse(spellPermissions, index, 9); // red wizard banned
 							resistelems.Add(resistances);
 						}
 						else
@@ -1136,8 +1135,6 @@ namespace FF1Lib
 						}
 						SPCR_CraftAttackUpSpell(rng, spell[index], SpellTier(index), false);
 						SPCR_SetPermissionFalse(spellPermissions, index, 3); // red mage banned
-						if(spell[index].targeting != 0x04)
-							SPCR_SetPermissionFalse(spellPermissions, index, 9); // red wizard banned if spell is not self-caster
 						attackupspell.Add(index);
 					}
 					if(routine == 0x0E) // decrease evade (LOCK)
@@ -1150,7 +1147,6 @@ namespace FF1Lib
 						spell[index].routine = routine;
 						spellMessages[index] = 0x05; // Easy to hit
 						SPCR_SetPermissionFalse(spellPermissions, index, 3); // red mage banned
-						SPCR_SetPermissionFalse(spellPermissions, index, 9); // red wizard banned
 						if (lockspell == -1)
 							lockspell = index;
 						else
