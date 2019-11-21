@@ -1,4 +1,4 @@
-﻿using FF1Lib.Procgen;
+using FF1Lib.Procgen;
 using RomUtilities;
 using System;
 using System.Collections.Generic;
@@ -603,7 +603,7 @@ namespace FF1Lib
 				NoDanMode();
 			}
 
-			SetProgressiveScaleMode(flags.ProgressiveScaleMode);
+			SetProgressiveScaleMode(flags);
 
 			if (flags.DisableTentSaving)
 			{
@@ -644,7 +644,7 @@ namespace FF1Lib
 			}
 
 			WriteSeedAndFlags(Version, seed.ToHex(), Flags.EncodeFlagsText(flags));
-			ExtraTrackingAndInitCode();
+			ExtraTrackingAndInitCode(flags);
 		}
 
 		private void EnableNPCSwatter()
@@ -680,7 +680,7 @@ namespace FF1Lib
 			return hex.ToString();
 		}
 
-		private void ExtraTrackingAndInitCode()
+		private void ExtraTrackingAndInitCode(Flags flags)
 		{
 			// Expanded game init code, does several things:
 			//	- Encounter table emu/hardware fix
@@ -777,7 +777,15 @@ namespace FF1Lib
 			Data[0x38DED] = 0x25;
 
 			//Key Items + Progressive Scaling
-			PutInBank(0x0F, 0x9000, Blob.FromHex("A200AD2160F001E8AD2260F001E8AD2560F001E8AD2A60F001E8AD2B60F001E8AD2C60F001E8AD2E60F001E8AD3060F001E8AD0060F001E8AD1260F001E8AD0460F001E8AD0860F001E8AD0C60D001E8AD2360D007AD0A622902F001E8AD2460D007AD05622902F001E8AD2660D007AD08622902F001E8AD2760D007AD09622902F001E8AD2860D007AD0B622902F001E8AD2960D007AD14622901D001E8AD2D60D007AD0E622902F001E8AD2F60D007AD13622903F001E88EB86060"));
+			if (flags.ProgressiveScaleMode == ProgressiveScaleMode.OrbProgressiveSlow || flags.ProgressiveScaleMode == ProgressiveScaleMode.OrbProgressiveMedium || flags.ProgressiveScaleMode == ProgressiveScaleMode.OrbProgressiveFast || flags.ProgressiveScaleMode == ProgressiveScaleMode.OrbProgressiveVFast) {
+				if (flags.ShardHunt) {
+					PutInBank(0x0F, 0x9000, Blob.FromHex("AD35608DB86060"));
+				} else {
+					PutInBank(0x0F, 0x9000, Blob.FromHex("A200AD3160F001E8AD3260F001E8AD3360F001E8AD3460F001E88EB86060"));
+				}
+			} else {
+				PutInBank(0x0F, 0x9000, Blob.FromHex("A200AD2160F001E8AD2260F001E8AD2560F001E8AD2A60F001E8AD2B60F001E8AD2C60F001E8AD2E60F001E8AD3060F001E8AD0060F001E8AD1260F001E8AD0460F001E8AD0860F001E8AD0C60D001E8AD2360D007AD0A622902F001E8AD2460D007AD05622902F001E8AD2660D007AD08622902F001E8AD2760D007AD09622902F001E8AD2860D007AD0B622902F001E8AD2960D007AD14622901D001E8AD2D60D007AD0E622902F001E8AD2F60D007AD13622903F001E88EB86060"));
+			}
 			PutInBank(0x1F, 0xCFCB, CreateLongJumpTableEntry(0x0F, 0x9100));
 			//Division routine
 			PutInBank(0x0F, 0x90C0, Blob.FromHex("8A48A9008513A210261026112613A513C5129004E512851326102611CAD0EDA513851268AA60"));
