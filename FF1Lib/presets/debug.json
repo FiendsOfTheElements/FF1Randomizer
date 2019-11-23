@@ -23,6 +23,7 @@
 		"PreserveFiendRefights": false,
 
 		"MagicShops": false,
+		"MagicShopLocs": false,
 		"MagicLevels": true,
 		"MagicPermissions": false,
 		"ItemMagic": true,

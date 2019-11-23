@@ -209,9 +209,9 @@ namespace FF1Lib
 			{
 				KnightNinjaChargesForAllLevels();
 			}
-		
+
 			if ((bool)flags.GenerateNewSpellbook)
-			{ 
+			{
 				CraftNewSpellbook(rng, (bool)flags.SpellcrafterMixSpells, flags.RebalanceSpells, (bool)flags.MagicLevels, (bool)flags.SpellcrafterRetainPermissions);
 			}
 
@@ -282,6 +282,11 @@ namespace FF1Lib
 					if (maxRetries > (i + 1)) continue;
 					throw new InvalidOperationException(e.Message);
 				}
+			}
+
+			if ((bool)flags.MagicShopLocs)
+			{
+				ShuffleMagicLocations(rng);
 			}
 
 			if (((bool)flags.MagicShops))

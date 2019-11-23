@@ -221,6 +221,16 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MagicShops"));
 			}
 		}
+
+		public bool? MagicShopLocs
+		{
+			get => Flags.MagicShopLocs;
+			set
+			{
+				Flags.MagicShopLocs = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MagicShopLocs"));
+			}
+		}
 		public bool? MagicLevels
 		{
 			get => Flags.MagicLevels;

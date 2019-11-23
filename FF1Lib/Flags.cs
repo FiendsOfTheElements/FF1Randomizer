@@ -29,6 +29,7 @@ namespace FF1Lib
 		public bool? PreserveFiendRefights { get; set; } = false;
 
 		public bool? MagicShops { get; set; } = false;
+		public bool? MagicShopLocs { get; set; } = false;
 		public bool? MagicLevels { get; set; } = false;
 		public bool? MagicPermissions { get; set; } = false;
 		public bool? ItemMagic { get; set; } = false;
@@ -486,6 +487,7 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.ShortToFR);
 			sum = AddTriState(sum, flags.PreserveFiendRefights);
 			sum = AddTriState(sum, flags.MagicShops);
+			sum = AddTriState(sum, flags.MagicShopLocs);
 			sum = AddTriState(sum, flags.MagicLevels);
 			sum = AddTriState(sum, flags.MagicPermissions);
 			sum = AddTriState(sum, flags.ItemMagic);
@@ -838,6 +840,7 @@ namespace FF1Lib
 				ItemMagic = GetTriState(ref sum),
 				MagicPermissions = GetTriState(ref sum),
 				MagicLevels = GetTriState(ref sum),
+				MagicShopLocs = GetTriState(ref sum),
 				MagicShops = GetTriState(ref sum),
 				PreserveFiendRefights = GetTriState(ref sum),
 				ShortToFR = GetTriState(ref sum),
