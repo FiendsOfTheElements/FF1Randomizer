@@ -243,7 +243,7 @@ namespace FF1Lib
 			SPCR_CraftAttackUpSpell(rng, spell[sabrspell], SpellTier(sabrspell), true);
 			SPCR_SetPermissionFalse(spellPermissions, sabrspell, 3); // red mage banned
 			spellindex.Remove(sabrspell);
-			int fastspell = spellindex.Where(id => BlackSpell(id) && id > 16).ToList().PickRandom(rng); // guaranteed FAST, we do NOT want this to land on an item and we need to track this
+			int fastspell = spellindex.Where(id => BlackSpell(id)).ToList().PickRandom(rng); // guaranteed FAST, we do NOT want this to land on an item and we need to track this
 			SPCR_CraftFastSpell(spell[fastspell], SpellTier(fastspell));
 			spellMessages[fastspell] = 0x12; // Quick Shot
 			if (spell[fastspell].targeting != 0x04)
@@ -330,7 +330,7 @@ namespace FF1Lib
 					}					
 					if(rollSecondSlow && SpellTier(index) < 4)
 						validroutines.Add(0x04);
-					if(rollSecondFast && SpellTier(index) > 1)
+					if(rollSecondFast)
 						validroutines.Add(0x0C);
 				}
 				if (rollMoraleSpell && SpellTier(index) < 4)
@@ -1115,7 +1115,7 @@ namespace FF1Lib
 					}
 					if(routine == 0x0C) // double number of hits (FAST)
 					{
-						if ((SpellTier(fastspell) < 3 && SpellTier(index) < 3) || (SpellTier(fastspell) == SpellTier(index)) || (SpellTier(fastspell) > 2 && SpellTier(fastspell) < 6 && SpellTier(index) > 2 && SpellTier(index) < 6) || (SpellTier(fastspell) > 5 && SpellTier(index) > 5 ) // if both spells would have the same effect, do not roll
+						if ((SpellTier(fastspell) < 3 && SpellTier(index) < 3) || (SpellTier(fastspell) == SpellTier(index)) || (SpellTier(fastspell) > 2 && SpellTier(fastspell) < 6 && SpellTier(index) > 2 && SpellTier(index) < 6) || (SpellTier(fastspell) > 5 && SpellTier(index) > 5 )) // if both spells would have the same effect, do not roll
 						{
 							validroutines.Remove(0x0C);
 							continue;
