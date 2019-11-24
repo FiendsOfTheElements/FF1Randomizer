@@ -249,7 +249,10 @@ namespace FF1Lib
 			if (spell[fastspell].targeting != 0x04)
 			{
 				SPCR_SetPermissionFalse(spellPermissions, fastspell, 3); // red mage banned
-				SPCR_SetPermissionFalse(spellPermissions, fastspell, 9); // red wizard banned
+			}
+			if (spell[fastspell].targeting == 0x08)
+			{
+				SPCR_SetPermissionFalse(spellPermissions, fastspell, 9); // red wizard banned from AoE FAST
 			}
 			spellindex.Remove(fastspell);
 			int slowspell = spellindex.Where(id => BlackSpell(id) && id > 31 && id < 48).ToList().PickRandom(rng); // guaranteed SLO2 equivalent
@@ -1112,7 +1115,7 @@ namespace FF1Lib
 					}
 					if(routine == 0x0C) // double number of hits (FAST)
 					{
-						if ((SpellTier(fastspell) < 4 && SpellTier(index) < 4) || (SpellTier(fastspell) == SpellTier(index)) || (SpellTier(fastspell) > 3 && SpellTier(fastspell) < 7 && SpellTier(index) > 3 && SpellTier(index) < 7) ) // if both spells would have the same effect, do not roll
+						if ((SpellTier(fastspell) < 3 && SpellTier(index) < 3) || (SpellTier(fastspell) == SpellTier(index)) || (SpellTier(fastspell) > 2 && SpellTier(fastspell) < 6 && SpellTier(index) > 2 && SpellTier(index) < 6) || (SpellTier(fastspell) > 5 && SpellTier(index) > 5 ) // if both spells would have the same effect, do not roll
 						{
 							validroutines.Remove(0x0C);
 							continue;
@@ -1122,7 +1125,10 @@ namespace FF1Lib
 						if(spell[index].targeting != 0x04)
 						{
 							SPCR_SetPermissionFalse(spellPermissions, index, 3); // red mage banned
-							SPCR_SetPermissionFalse(spellPermissions, index, 9); // red wizard banned for all FAST spells tier 5-8
+						}
+						if(spell[index].targeting == 0x08)
+						{
+							SPCR_SetPermissionFalse(spellPermissions, index, 9); // red wizard banned
 						}
 						rollSecondFast = false;
 					}
@@ -2065,9 +2071,9 @@ namespace FF1Lib
 
 		public void SPCR_CraftFastSpell(SpellInfo spell, int tier)
 		{
-			if (tier < 4)
+			if (tier < 3)
 				spell.targeting = 0x04;
-			else if (tier < 7)
+			else if (tier < 6)
 				spell.targeting = 0x10;
 			else
 				spell.targeting = 0x08;
