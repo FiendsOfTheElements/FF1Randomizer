@@ -1868,10 +1868,7 @@ namespace FF1Lib
 							spell.effect = (byte)rng.Between(120, 150);
 							break;
 					}
-					if (tier == 7)
-						spell.accuracy = 107;
-					else
-						spell.accuracy = 24;
+					spell.accuracy = 24;
 				}
 				else if (element == 0b00000100)
 				{
@@ -1958,10 +1955,7 @@ namespace FF1Lib
 							spell.effect = (byte)rng.Between(175, 200);
 							break;
 					}
-					if (tier == 7)
-						spell.accuracy = 107;
-					else
-						spell.accuracy = 48;
+					spell.accuracy = 48;
 				}
 				else
 				{
