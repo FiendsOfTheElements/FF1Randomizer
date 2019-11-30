@@ -519,6 +519,21 @@ namespace FF1Lib
 				FixHouse(flags.HouseMPRestoration, flags.HousesFillHp);
 			}
 
+			if (!flags.BBCritRate)
+			{
+				DontDoubleBBCritRates();
+			}
+
+			if (flags.WeaponCritRate)
+			{
+				DoubleWeaponCritRates();
+			}
+
+			if (flags.WeaponBonuses)
+			{
+				IncreaseWeaponBonus();
+			}
+
 			if (flags.WeaponStats)
 			{
 				FixWeaponStats();
