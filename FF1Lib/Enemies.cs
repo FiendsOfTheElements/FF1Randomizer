@@ -357,14 +357,15 @@ namespace FF1Lib
 
 			List<(byte touch, byte element)> statusElements = new List<(byte touch, byte element)>()
 			{
-				(0x01, 0x08), //Death Touch = Death Element
-				(0x02, 0x02), //Stone Touch = Poison
 				(0x04, 0x02), //Poison Touch = Poison
 				(0x08, 0x01), //Dark Touch = Status
 				(0x10, 0x01), //Stun Touch = Status
 				(0x20, 0x01), //Sleep Touch = Status
 				(0x40, 0x01), //Mute Touch = Status
 			};
+
+			(byte touch, byte element) deathElement = (0x01, 0x08); //Death Touch = Death Element
+			(byte touch, byte element) stoneElement = (0x02, 0x02); //Stone Touch = Poison
 
 			for (int i = 0; i < EnemyCount; i++)
 			{
@@ -375,8 +376,20 @@ namespace FF1Lib
 						continue;
 					}
 				}
-				//Vanilla ratio is 37/128, hence the magic numbers
-				if (rng.Between(0, 128) < 37)
+
+				int roll = rng.Between(0, 128);
+				if (roll < 1) //1 vanilla death toucher
+				{
+					//Death Touch
+					var (touch, element) = deathElement;
+					
+				}
+				else if (roll < 2) //1 vanilla stone toucher
+				{
+					//Stone Touch
+					var (touch, element) = stoneElement;
+				}
+				else if (roll < 37) //35 enemies with other assorted status touches
 				{
 					var (touch, element) = statusElements.PickRandom(rng);
 					enemies[i][15] = touch;
