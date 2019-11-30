@@ -83,6 +83,7 @@
 							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.Shops" Id="randomWaresCheckBox" bind-Value="@Flags.RandomWares">Random Weapons and Armor</TriStateCheckBox>
 							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@((Flags.Shops ?? true) && (Flags.RandomWares ?? true))" Id="randomWaresIncludesCheckBox" bind-Value="@Flags.RandomWaresIncludesSpecialGear">Include Caster &amp; Elite Gear</TriStateCheckBox>
 							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="magicShopsCheckBox" bind-Value="@Flags.MagicShops">Magic Shops</TriStateCheckBox>
+							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="magicShopLocsCheckBox" bind-Value="@Flags.MagicShopLocs">Magic Shop Locations</TriStateCheckBox>
 							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="magicLevelsCheckBox" bind-Value="@Flags.MagicLevels">Magic Levels</TriStateCheckBox>
 							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.MagicLevels" Id="magicPermissionsCheckBox" bind-Value="@Flags.MagicPermissions">Keep Permissions</TriStateCheckBox>
 							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="itemMagicCheckBox" bind-Value="@Flags.ItemMagic">Item Magic</TriStateCheckBox>
