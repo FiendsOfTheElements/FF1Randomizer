@@ -243,13 +243,16 @@ namespace FF1Lib
 			SPCR_CraftAttackUpSpell(rng, spell[sabrspell], SpellTier(sabrspell), true);
 			SPCR_SetPermissionFalse(spellPermissions, sabrspell, 3); // red mage banned
 			spellindex.Remove(sabrspell);
-			int fastspell = spellindex.Where(id => BlackSpell(id) && id > 16).ToList().PickRandom(rng); // guaranteed FAST, we do NOT want this to land on an item and we need to track this
+			int fastspell = spellindex.Where(id => BlackSpell(id)).ToList().PickRandom(rng); // guaranteed FAST, we do NOT want this to land on an item and we need to track this
 			SPCR_CraftFastSpell(spell[fastspell], SpellTier(fastspell));
 			spellMessages[fastspell] = 0x12; // Quick Shot
 			if (spell[fastspell].targeting != 0x04)
 			{
 				SPCR_SetPermissionFalse(spellPermissions, fastspell, 3); // red mage banned
-				SPCR_SetPermissionFalse(spellPermissions, fastspell, 9); // red wizard banned
+			}
+			if (spell[fastspell].targeting == 0x08)
+			{
+				SPCR_SetPermissionFalse(spellPermissions, fastspell, 9); // red wizard banned from AoE FAST
 			}
 			spellindex.Remove(fastspell);
 			int slowspell = spellindex.Where(id => BlackSpell(id) && id > 31 && id < 48).ToList().PickRandom(rng); // guaranteed SLO2 equivalent
@@ -298,7 +301,6 @@ namespace FF1Lib
 			spellindex.Shuffle(rng);
 
 			// draw remaining spells
-			Console.WriteLine("Crafting Spells");
 			foreach(int index in spellindex)
 			{
 				// first, we determine the routines we can select in the first place
@@ -328,7 +330,7 @@ namespace FF1Lib
 					}					
 					if(rollSecondSlow && SpellTier(index) < 4)
 						validroutines.Add(0x04);
-					if(rollSecondFast && SpellTier(index) > 1)
+					if(rollSecondFast)
 						validroutines.Add(0x0C);
 				}
 				if (rollMoraleSpell && SpellTier(index) < 4)
@@ -1091,7 +1093,6 @@ namespace FF1Lib
 							else
 								spell[index].targeting = 0x10;
 							spellMessages[index] = 0x19; // Defend magic
-							SPCR_SetPermissionFalse(spellPermissions, index, 9); // red wizard banned
 							resistelems.Add(resistances);
 						}
 						else
@@ -1114,7 +1115,7 @@ namespace FF1Lib
 					}
 					if(routine == 0x0C) // double number of hits (FAST)
 					{
-						if ((SpellTier(fastspell) < 4 && SpellTier(index) < 4) || (SpellTier(fastspell) == SpellTier(index)) || (SpellTier(fastspell) > 3 && SpellTier(fastspell) < 7 && SpellTier(index) > 3 && SpellTier(index) < 7) ) // if both spells would have the same effect, do not roll
+						if ((SpellTier(fastspell) < 3 && SpellTier(index) < 3) || (SpellTier(fastspell) == SpellTier(index)) || (SpellTier(fastspell) > 2 && SpellTier(fastspell) < 6 && SpellTier(index) > 2 && SpellTier(index) < 6) || (SpellTier(fastspell) > 5 && SpellTier(index) > 5 )) // if both spells would have the same effect, do not roll
 						{
 							validroutines.Remove(0x0C);
 							continue;
@@ -1124,7 +1125,10 @@ namespace FF1Lib
 						if(spell[index].targeting != 0x04)
 						{
 							SPCR_SetPermissionFalse(spellPermissions, index, 3); // red mage banned
-							SPCR_SetPermissionFalse(spellPermissions, index, 9); // red wizard banned for all FAST spells tier 5-8
+						}
+						if(spell[index].targeting == 0x08)
+						{
+							SPCR_SetPermissionFalse(spellPermissions, index, 9); // red wizard banned
 						}
 						rollSecondFast = false;
 					}
@@ -1137,8 +1141,6 @@ namespace FF1Lib
 						}
 						SPCR_CraftAttackUpSpell(rng, spell[index], SpellTier(index), false);
 						SPCR_SetPermissionFalse(spellPermissions, index, 3); // red mage banned
-						if(spell[index].targeting != 0x04)
-							SPCR_SetPermissionFalse(spellPermissions, index, 9); // red wizard banned if spell is not self-caster
 						attackupspell.Add(index);
 					}
 					if(routine == 0x0E) // decrease evade (LOCK)
@@ -1151,7 +1153,6 @@ namespace FF1Lib
 						spell[index].routine = routine;
 						spellMessages[index] = 0x05; // Easy to hit
 						SPCR_SetPermissionFalse(spellPermissions, index, 3); // red mage banned
-						SPCR_SetPermissionFalse(spellPermissions, index, 9); // red wizard banned
 						if (lockspell == -1)
 							lockspell = index;
 						else
@@ -1641,8 +1642,6 @@ namespace FF1Lib
 			// ensure the Power Gauntlet is turned into an item that increases attack power on self (or single ally), or some other appropriate effect, otherwise it will cast a random level 3-5 black magic spell
 			// all other items receive a random level 3-5 spell, either white magic or black magic, that is fit to cast in battle
 
-			Console.WriteLine("Drawing Item Magic");
-
 			var Spells = GetSpells(); // we have to do it this way because what's the rest of the randomizer lol
 			WriteItemSpellData(Spells[elemspell[1]], Item.MageRod); // write our FIR2 to the Mage Staff
 			WriteItemSpellData(Spells[elemspell[3]], Item.BlackShirt); // write our ICE2 to the Black Shirt
@@ -1697,7 +1696,6 @@ namespace FF1Lib
 					script[i].spell_list[j] = eligibleSpellIDs.PickRandom(rng);
 				}
 			}
-			Console.WriteLine("Drawing Fiend Lists");
 			spellindex = Enumerable.Range(0, 64).ToList(); // refilling the spell indexes to include all spells again
 			var middamagespells = spellindex.Where(id => spell[id].routine == 0x01 && spell[id].tier == 3).ToList(); // this will include some of the guaranteed spells, so there will always be entries
 			var highdamagespells = spellindex.Where(id => spell[id].routine == 0x01 && spell[id].tier == 4).ToList();
@@ -1797,8 +1795,6 @@ namespace FF1Lib
 
 			for (int i = 0; i < ScriptCount; ++i) // write the new scripts to ROM
 				Put(ScriptOffset + ScriptSize * i, script[i].compressData());
-
-			Console.WriteLine("End Spellcrafter");
 		}
 
 		private void SPCR_SetName(string[] spellnames, int index, string initialname, string altname)
@@ -1872,10 +1868,7 @@ namespace FF1Lib
 							spell.effect = (byte)rng.Between(120, 150);
 							break;
 					}
-					if (tier == 7)
-						spell.accuracy = 107;
-					else
-						spell.accuracy = 24;
+					spell.accuracy = 24;
 				}
 				else if (element == 0b00000100)
 				{
@@ -1962,10 +1955,7 @@ namespace FF1Lib
 							spell.effect = (byte)rng.Between(175, 200);
 							break;
 					}
-					if (tier == 7)
-						spell.accuracy = 107;
-					else
-						spell.accuracy = 48;
+					spell.accuracy = 48;
 				}
 				else
 				{
@@ -2075,9 +2065,9 @@ namespace FF1Lib
 
 		public void SPCR_CraftFastSpell(SpellInfo spell, int tier)
 		{
-			if (tier < 4)
+			if (tier < 3)
 				spell.targeting = 0x04;
-			else if (tier < 7)
+			else if (tier < 6)
 				spell.targeting = 0x10;
 			else
 				spell.targeting = 0x08;

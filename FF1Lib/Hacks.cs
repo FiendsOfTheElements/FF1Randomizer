@@ -565,6 +565,31 @@ namespace FF1Lib
 			// new delta to special unrunnable message handler done in 
 		}
 
+		public void SeparateUnrunnables()
+		{
+			// See SetRunnability.asm
+			// replace a segment of code in PrepareEnemyFormation with a JSR to a new routine in dummied ROM space in bank 0B
+			Put(0x2E141, Blob.FromHex("200C9B"));
+			// pad the excised code with NOPs
+			PutInBank(0x0B, 0xA144, Enumerable.Repeat((byte)0xEA, 0x1C).ToArray());
+			// write the new routine
+			Put(0x2DB0C, Blob.FromHex("AD6A001023AD926D8D8A6DAD936D8D8B6DA2008E886D8E896D8E8C6D8E8D6DAD916D29FE8D916D60AD916D29FD8D916D60"));
+			// change checks for unrunnability in bank 0C to check last two bits instead of last bit
+			Put(0x313D3, Blob.FromHex("03")); // changes AND #$01 to AND #$03 when checking start of battle for unrunnability
+			// the second change is done in AllowStrikeFirstAndSurprise, which checks the unrunnability in battle
+			// alter the default formation data to set unrunnability of a formation to both sides if the unrunnable flag is set
+			var formData = Get(FormationDataOffset, FormationDataSize * FormationCount).Chunk(FormationDataSize);
+			for(int i = 0; i < NormalFormationCount; ++i)
+			{
+				if ((formData[i][UnrunnableOffset] & 0x01) != 0)
+					formData[i][UnrunnableOffset] |= 0x02;
+			}
+			formData[126][UnrunnableOffset] |= 0x02; // set unrunnability for WzSahag/R.Sahag fight
+			formData[127][UnrunnableOffset] |= 0x02; // set unrunnability for IronGol fight
+			
+			Put(FormationsOffset, formData.SelectMany(formation => formation.ToBytes()).ToArray());
+		}
+
 		public void ImproveTurnOrderRandomization(MT19337 rng)
 		{
 			// Shuffle the initial bias so enemies are no longer always at the start initially.
