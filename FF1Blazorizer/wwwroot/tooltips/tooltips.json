@@ -84,7 +84,7 @@
 	{
 		"Id": "enemySkillsSpellsCheckBox",
 		"title": "Enemy Skills/Spells",
-		"screenshot": "allowUnsafePiratesCheckBox.png",
+		"screenshot": "enemySkillsSpellsCheckBox.png",
 		"description": "Enemy Skills/Spells: Shuffles enemy skills and spells so they can appear in any script. There are three groups of enemies:\nAll random encounters,\nthe first fiend fights,\nand the second fiend fights with WarMech."
 	},
 	{
@@ -124,6 +124,7 @@
 	{
 		"Id": "treasuresCheckBox",
 		"title": "Treasures",
+		"screenshot": "TreasureHuntCheckBox.png",
 		"description": "Treasures: Shuffle all treasures normally available to a random chest in the game. All items are assured to be in a chest somewhere in the game."
 	},
 	{
@@ -134,7 +135,7 @@
 	{
 		"Id": "worldWealthDropDown",
 		"title": "Random Wealth",
-		"screenshot": "worldWealthDropDow.gif",
+		"screenshot": "worldWealthDropDown.gif",
 		"description": "Random Wealth: Alters the distribution of items; Normal is the same number of each tier of item as in the vanilla item pool. High removes gold chests for more legendary and rare equipment, while more common items shows up in lower and lower tiers. Melmond has the lowest chance of top tier gear."
 	},
 	{
@@ -309,6 +310,7 @@
 	{
 		"Id": "spoilersCheckBox",
 		"title": "Generate Spoiler Log!",
+		"screenshot": "spoilerCheckBox.png",
 		"description": "Creates a spoiler log for the seed into the console window of the browser. The resulting ROM's randomization will be different than if the log had not been generated, in order to prevent cheating in races."
 	},
 	{
@@ -524,7 +526,22 @@
 	{
 		"Id": "weaponStatsCheckBox",
 		"title": "Weapon Stats",
-		"description": "Fixes various bugs about how weapon stats, including elemental bonuses and critical hit rate."
+		"description": "Fixes applying elemental and type bonuses to weapons"
+	},
+	{
+		"Id": "doubleBBCritCheckBox",
+		"title": "Double BB Crit Rate",
+		"description": "Doubles the BB crit rate"
+	},
+	{
+		"Id": "doubleWeaponCritCheckBox",
+		"title": "Double Weapon Crit Rates",
+		"description": "Doubles the crit rate of all weapons"
+	},
+	{
+		"Id": "increaseWepBonusesCheckBox",
+		"title": "Weapon Attack Bonuses",
+		"description": "Increases elemental and type bonuses to weapons"
 	},
 	{
 		"Id": "chanceToRunCheckBox",

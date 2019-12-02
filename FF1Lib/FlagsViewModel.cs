@@ -221,6 +221,16 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MagicShops"));
 			}
 		}
+
+		public bool? MagicShopLocs
+		{
+			get => Flags.MagicShopLocs;
+			set
+			{
+				Flags.MagicShopLocs = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MagicShopLocs"));
+			}
+		}
 		public bool? MagicLevels
 		{
 			get => Flags.MagicLevels;
@@ -1007,6 +1017,33 @@ namespace FF1Lib
 			{
 				Flags.WeaponStats = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("WeaponStats"));
+			}
+		}
+		public bool BBCritRate
+		{
+			get => Flags.BBCritRate;
+			set
+			{
+				Flags.BBCritRate = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BBCritRate"));
+			}
+		}
+		public bool WeaponCritRate
+		{
+			get => Flags.WeaponCritRate;
+			set
+			{
+				Flags.WeaponCritRate = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("WeaponCritRate"));
+			}
+		}
+		public bool WeaponBonuses
+		{
+			get => Flags.WeaponBonuses;
+			set
+			{
+				Flags.WeaponBonuses = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("WeaponBonuses"));
 			}
 		}
 		public bool ChanceToRun

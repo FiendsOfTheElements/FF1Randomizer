@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -27,6 +27,14 @@ namespace FF1Lib
 		Progressive10Percent,
 		[Description("+20% Per Item")]
 		Progressive20Percent,
+		[Description("+12.5% Per Orb or 8 Shards")]
+		OrbProgressiveSlow,
+		[Description("+25% Per Orb or 8 Shards")]
+		OrbProgressiveMedium,
+		[Description("+50% Per Orb or 8 Shards")]
+		OrbProgressiveFast,
+		[Description("+100% Per Orb or 8 Shards")]
+		OrbProgressiveVFast,
 	}
 
 	public partial class FF1Rom : NesRom
@@ -166,10 +174,13 @@ namespace FF1Lib
 			return (int)Round(Pow(adjustedScale, exponent) * value);
 		}
 
-		public void SetProgressiveScaleMode(ProgressiveScaleMode mode)
+		public void SetProgressiveScaleMode(Flags flags)
 		{
 			byte ScaleFactor = 1;   // Bonus given by progressive scaling in 1/n form (ScaleFactor = 5 means bonus is + 1/5 per item)
 			byte Threshold = 0;     // Number of key items required for bonus.  Set this to 0 for progressive mode (every key item increases bonus)
+			byte ShardMultiplier = 1;  // Shards are worth 1/8 Orbs
+			ProgressiveScaleMode mode = flags.ProgressiveScaleMode;
+			if (flags.ShardHunt)  ShardMultiplier = 8;
 			switch (mode)
 			{
 				case ProgressiveScaleMode.Disabled:
@@ -196,6 +207,18 @@ namespace FF1Lib
 					break;
 				case ProgressiveScaleMode.Progressive20Percent:
 					ScaleFactor = 5;
+					break;
+				case ProgressiveScaleMode.OrbProgressiveSlow:
+					ScaleFactor = (byte) (8 * ShardMultiplier); // +12.5 per orb
+					break;
+				case ProgressiveScaleMode.OrbProgressiveMedium:
+					ScaleFactor = (byte)(4 * ShardMultiplier); // +25 per orb
+					break;
+				case ProgressiveScaleMode.OrbProgressiveFast:
+					ScaleFactor = (byte)(2 * ShardMultiplier); // +50 per orb
+					break;
+				case ProgressiveScaleMode.OrbProgressiveVFast:
+					ScaleFactor = ShardMultiplier; // +100 per orb
 					break;
 			}
 
