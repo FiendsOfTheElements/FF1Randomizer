@@ -515,6 +515,16 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MapOpenProgression"));
 			}
 		}
+
+		public bool? MapOpenProgressionDocks
+		{
+			get => Flags.MapOpenProgressionDocks;
+			set
+			{
+				Flags.MapOpenProgressionDocks = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MapOpenProgressionDocks"));
+			}
+		}
 		public bool? MapOpenProgressionExtended
 		{
 			get => Flags.MapOpenProgressionExtended;

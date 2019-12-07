@@ -58,6 +58,7 @@ namespace FF1Lib
 		public bool? ConfusedOldMen { get; set; } = false;
 
 		public bool? MapOpenProgression { get; set; } = false;
+		public bool? MapOpenProgressionDocks { get; set; } = false;
 		public bool? Entrances { get; set; } = false;
 		public bool? Towns { get; set; } = false;
 		public bool? Floors { get; set; } = false;
@@ -240,8 +241,8 @@ namespace FF1Lib
 		public bool AllowStartAreaDanager { get; set; } = false;
 
 		public bool? MapCanalBridge => (NPCItems) | (NPCFetchItems) | MapOpenProgression | MapOpenProgressionExtended;
-		public bool? MapOnracDock => MapOpenProgression;
-		public bool? MapMirageDock => MapOpenProgression;
+		public bool? MapOnracDock => MapOpenProgressionDocks;
+		public bool? MapMirageDock => MapOpenProgressionDocks;
 		public bool? MapConeriaDwarves => MapOpenProgression;
 		public bool? MapVolcanoIceRiver => MapOpenProgression;
 		public bool? MapDwarvesNorthwest => MapOpenProgression & MapOpenProgressionExtended;
@@ -515,6 +516,7 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.LefeinShops);
 			sum = AddTriState(sum, flags.ConfusedOldMen);
 			sum = AddTriState(sum, flags.MapOpenProgression);
+			sum = AddTriState(sum, flags.MapOpenProgressionDocks);
 			sum = AddTriState(sum, flags.Entrances);
 			sum = AddTriState(sum, flags.Towns);
 			sum = AddTriState(sum, flags.Floors);
@@ -825,6 +827,7 @@ namespace FF1Lib
 				Floors = GetTriState(ref sum),
 				Towns = GetTriState(ref sum),
 				Entrances = GetTriState(ref sum),
+				MapOpenProgressionDocks = GetTriState(ref sum),
 				MapOpenProgression = GetTriState(ref sum),
 				ConfusedOldMen = GetTriState(ref sum),
 				LefeinShops = GetTriState(ref sum),
