@@ -187,7 +187,7 @@ namespace FF1Lib
 			options.Clear();
 		}
 
-		public void PartyComposition(MT19337 rng, Flags flags)
+		public void PartyComposition(MT19337 rng, Flags flags, Preferences preferences)
 		{
 			var options = new List<FF1Class>();
 
@@ -245,9 +245,11 @@ namespace FF1Lib
 			PutInBank(0x0C, 0x9910, Blob.FromHex("20A4C8C9FFD001608A0A0AA8"));
 			PutInBank(0x1F, 0xC8A4, CreateLongJumpTableEntry(0x0F, 0x8BD0));
 
-			// MapMan for Nones
+			// MapMan for Nones and Fun% Party Leader
+			byte leader = (byte)((byte)preferences.MapmanSlot << 6);
+            Data[0x7D8BC] = leader;
 			PutInBank(0x1F, 0xE92E, Blob.FromHex("20608FEAEAEAEA"));
-			PutInBank(0x02, 0x8F60, Blob.FromHex("A9008510AD0061C9FFF00160A92560"));
+			PutInBank(0x02, 0x8F60, Blob.FromHex($"A9008510AD{leader:X2}61C9FFF00160A92560"));
 
 			// Draw Complex String extension for class FF
 			PutInBank(0x1F, 0xC27D, Blob.FromHex("C9FFF0041869F060203EE0A997853EA9C2853F2045DE4C4EE0EA973CA800"));

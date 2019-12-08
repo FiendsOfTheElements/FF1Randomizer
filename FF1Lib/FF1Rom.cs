@@ -607,7 +607,7 @@ namespace FF1Lib
 				ScaleBossStats(flags.BossScaleFactor, flags.WrapStatOverflow, flags.IncludeMorale, rng, ((bool)flags.ClampMinimumBossStatScale));
 			}
 
-			PartyComposition(rng, flags);
+			PartyComposition(rng, flags, preferences);
 
 			if (((bool)flags.RecruitmentMode))
 			{
