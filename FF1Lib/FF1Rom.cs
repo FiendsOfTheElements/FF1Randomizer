@@ -520,7 +520,7 @@ namespace FF1Lib
 				FixHouse(flags.HouseMPRestoration, flags.HousesFillHp);
 			}
 
-			if (!flags.BBCritRate)
+			if (flags.BBCritRate)
 			{
 				DontDoubleBBCritRates();
 			}
