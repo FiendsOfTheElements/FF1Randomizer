@@ -296,7 +296,7 @@
 						<CheckBox x:Name="EnemyStatScaleOverflowCheckBox" IsChecked="{Binding Flags.WrapStatOverflow}" Content="Wrap Overflowing Stats" />
 						<CheckBox x:Name="IncludeMoraleCheckBox" IsChecked="{Binding Flags.IncludeMorale}" Content="Include Morale" />
 						<CheckBox x:Name="StaticXPGainCheckBox" IsChecked="{Binding Flags.NoDanMode}" Content="Static EXP Gain" ToolTip="XP is always split by 4 even if characters are slain/stoned (fallen characters do not gain any however)"/>
-						<CheckBox x:Name="VanillaStartingGoldCheckBox" IsChecked="{Binding Flags.StartingGold}" Content="Starting gold scaled to match exp/gold multiplier" Width="296.667"/>
+						<CheckBox x:Name="VanillaStartingGoldCheckBox" IsChecked="{Binding Flags.StartingGold}" Content="Starting Gold" ToolTip="Starting gold scaled to match exp/gold multiplier" Width="296.667"/>
 						<CheckBox x:Name="EasyModeCheckBox" IsChecked="{Binding Flags.EasyMode}" Content="Easy Mode" ToolTip="Encounter rate cut to 20% and all Enemy HP cut to 10% (after any randomizations)"/>
 					</StackPanel>
 				</Grid>
