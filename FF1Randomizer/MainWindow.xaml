@@ -59,21 +59,21 @@
 						<CheckBox x:Name="EnemySkillsSpellsCheckBox" IsChecked="{Binding Flags.EnemySkillsSpells}" IsThreeState="True" Content="Enemy Skills/Spells" ToolTip="Enemy skills and spells are shuffled to other scripts."/>
 						<CheckBox x:Name="EnemyStatusAttacksCheckBox" IsChecked="{Binding Flags.EnemyStatusAttacks}" IsThreeState="True" Content="Enemy Status Attacks" ToolTip="Status attacks such as stun, sleep, and death are shuffled."/>
 						<CheckBox x:Name="EnemyStatusAttacksRandomizedCheckBox" IsChecked="{Binding Flags.RandomStatusAttacks}" IsEnabled="{Binding Flags.EnemyStatusAttacks}" IsThreeState="True" Content="Randomize Status Attacks" ToolTip="Enemies roll random status attacks" Margin="30,5,0,0"/>
-						<CheckBox x:Name="EnemyFormationsUnrunnableCheckBox" IsChecked="{Binding Flags.EnemyFormationsUnrunnable}" IsThreeState="True" Content="Enemy Unrunnable Formations" ToolTip="Enemy Unrunnable Formations"/>
+						<CheckBox x:Name="EnemyFormationsUnrunnableCheckBox" IsChecked="{Binding Flags.EnemyFormationsUnrunnable}" IsThreeState="True" Content="Enemy Unrunnable Formations" ToolTip="A different set of enemy formations become unrunnable."/>
 						<CheckBox x:Name="AllFormationsUnrunnableCheckBox" IsChecked="{Binding Flags.EverythingUnrunnable}" IsEnabled="{Binding Flags.EnemyFormationsUnrunnable}" IsThreeState="True" Content="All Formations Are Unrunnable" ToolTip="All formations are unrunnable" Margin="30,5,0,0"/>
-						<CheckBox x:Name="UnrunnablesCanStrikeFirstAndSurpriseBox" IsChecked="{Binding Flags.UnrunnablesStrikeFirstAndSurprise}" IsThreeState="True" Content="Unrunnables Can Ambush/Be Ambushed" ToolTip="Unrunnable formations can strike first or surprise"/>
-						<CheckBox x:Name="EnemyFormationsSurpriseCheckBox" IsChecked="{Binding Flags.EnemyFormationsSurprise}" IsThreeState="True" Content="Enemy Surprise Bonus" ToolTip="Enemy Surprise Bonus"/>
+						<CheckBox x:Name="UnrunnablesCanStrikeFirstAndSurpriseBox" IsChecked="{Binding Flags.UnrunnablesStrikeFirstAndSurprise}" IsThreeState="True" Content="Unrunnables Can First Strike or Surprise" ToolTip="Unrunnable formations can strike first or surprise"/>
+						<CheckBox x:Name="EnemyFormationsSurpriseCheckBox" IsChecked="{Binding Flags.EnemyFormationsSurprise}" IsThreeState="True" Content="Enemy Surprise Bonus" ToolTip="Shuffle the surprise bonus value associated with formations"/>
 						<ComboBox x:Name="EnemyFormationsComboBox" SelectedValue="{Binding Flags.FormationShuffleModeEnum}" Width="220" HorizontalAlignment="Left" Margin="10,5,0,0" SelectedValuePath="Tag">
 							<ComboBoxItem Tag="None">Don't Shuffle Formations</ComboBoxItem>
 							<ComboBoxItem Tag="Intrazone">Shuffle Frequency Within Zones</ComboBoxItem>
 							<ComboBoxItem Tag="Interzone">Shuffle Formations Across Zones</ComboBoxItem>
 							<ComboBoxItem Tag="Randomize">Randomize Formations</ComboBoxItem>
 						</ComboBox>
-						<CheckBox x:Name="EnemyTrapTilesCheckBox" IsChecked="{Binding Flags.EnemyTrapTiles}" IsThreeState="True" Content="Enemy Forced Encounter Tiles" ToolTip="Shuffle trap tile battles amongst one another."/>
-						<CheckBox x:Name="RandomTrapFormationsCheckBox" IsChecked="{Binding Flags.RandomTrapFormations}" IsEnabled="{Binding Flags.EnemyTrapTiles}" IsThreeState="True" Content="Use Random Formations" ToolTip="Trap battles are instead selected at random from formation 2 battles." Margin="30,5,0,0"/>
+						<CheckBox x:Name="EnemyTrapTilesCheckBox" IsChecked="{Binding Flags.EnemyTrapTiles}" IsThreeState="True" Content="Enemy Forced Encounter Tiles" ToolTip="Shuffle the vanilla forced encounter tiles amongst each other."/>
+						<CheckBox x:Name="RandomTrapFormationsCheckBox" IsChecked="{Binding Flags.RandomTrapFormations}" IsEnabled="{Binding Flags.EnemyTrapTiles}" IsThreeState="True" Content="Use Random Formations" ToolTip="Formation 2 battles are shuffled into the forced encounter pool." Margin="30,5,0,0"/>
 						<CheckBox x:Name="EnemizerFormationsCheckBox" IsChecked="{Binding Flags.RandomizeFormationEnemizer}" IsThreeState="True" Content="Generate New Formations (Enemizer)" ToolTip="Generates new formations.  Turns off the ability to shuffle trap tiles or shuffle encounter zones."/>
 						<CheckBox x:Name="EnemizerCheckBox" IsChecked="{Binding Flags.RandomizeEnemizer}" Content="Generate New Enemies (Enemizer)" IsEnabled="{Binding Flags.RandomizeFormationEnemizer}" IsThreeState="True" ToolTip="Generates new enemies procedurally.  Requires generating new formations in order to work." Margin="30,5,0,0"/>
-						<ComboBox x:Name="WarMechModeComboBox" SelectedValue="{Binding Flags.WarMECHMode}" Width="220" HorizontalAlignment="Left" Margin="10,5,0,0" SelectedValuePath="Tag">
+						<ComboBox x:Name="WarMechModeComboBox" SelectedValue="{Binding Flags.WarMECHMode}" Width="220" HorizontalAlignment="Left" ToolTip="How do you like your WarMECH?" Margin="10,5,0,0" SelectedValuePath="Tag">
 							<ComboBoxItem Tag="Vanilla">WarMECH Vanilla</ComboBoxItem>
 							<ComboBoxItem Tag="Patrolling">WarMECH Patrolling</ComboBoxItem>
 							<ComboBoxItem Tag="Required">WarMECH Required</ComboBoxItem>
@@ -93,7 +93,7 @@
 					<StackPanel Orientation="Vertical" Grid.Column="0" Margin="0,0,0.333,0">
 						<Label Margin="5,5,0,0" FontWeight="Bold">Item Shuffle</Label>
 						<CheckBox x:Name="TreasuresCheckBox" IsChecked="{Binding Flags.Treasures}" IsThreeState="True" Content="Treasures" ToolTip="If unchecked, forces vanilla Treasure Chests"/>
-						<CheckBox x:Name="RandomTreasuresCheckBox" IsChecked="{Binding Flags.RandomTreasure}" IsThreeState="True" IsEnabled="{Binding Flags.Treasures}" Content="Randomize Treasures" Margin="30,5,0,0"/>
+						<CheckBox x:Name="RandomTreasuresCheckBox" IsChecked="{Binding Flags.RandomTreasure}" IsThreeState="True" IsEnabled="{Binding Flags.Treasures}" Content="Randomize Treasures" ToolTip="Generate a random set of collectable treasures in chests." Margin="30,5,0,0"/>
 						<ComboBox x:Name="WorldWealthComboBox" SelectedValue="{Binding Flags.WorldWealthEnum}" IsEnabled="{Binding Flags.Treasures}" Width="120" HorizontalAlignment="Left" Margin="30,5,0,0" SelectedValuePath="Tag">
 							<ComboBoxItem Tag="High">High Wealth</ComboBoxItem>
 							<ComboBoxItem Tag="Normal">Normal Wealth</ComboBoxItem>
@@ -136,19 +136,19 @@
 						<Label Margin="5,5,0,0" FontWeight="Bold">Incentivized Item Pool: </Label>
 						<CheckBox x:Name="IncentivizeMainProgressionCheckBox" IsChecked="{Binding Flags.IncentivizeMainItems}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Main Progression Items" ToolTip="Lute, Key, Rod, Oxyale, Chime, Cube"/>
 						<CheckBox x:Name="IncentivizeFetchItemsCheckBox" IsChecked="{Binding Flags.IncentivizeFetchItems}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Other Quest Items" ToolTip="Any other non-required quest items that are shuffled such as Ruby or Adamant"/>
-						<CheckBox x:Name="IncentivizeFloaterCheckBox" IsChecked="{Binding Flags.IncentivizeAirship}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Floater" ToolTip="Floater"/>
-						<CheckBox x:Name="IncentivizeCanoeCheckBox" IsChecked="{Binding Flags.IncentivizeCanoeItem}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Canoe" ToolTip="Canoe"/>
-						<CheckBox x:Name="IncentivizeShipCanalCheckBox" IsChecked="{Binding Flags.IncentivizeShipAndCanal}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Ship + Canal" ToolTip="Ship and Canal"/>
-						<CheckBox x:Name="IncentivizeTailCheckBox" IsChecked="{Binding Flags.IncentivizeTail}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Tail" ToolTip="Tail"/>
-						<CheckBox x:Name="IncentivizeMasamuneCheckBox" IsChecked="{Binding Flags.IncentivizeMasamune}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Masamune" ToolTip="Masamune"/>
-						<CheckBox x:Name="IncentivizeDefCastWeaponCheckBox" IsChecked="{Binding Flags.IncentivizeDefCastWeapon}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Defense" ToolTip="Defense"/>
-						<CheckBox x:Name="IncentivizeVorpalCheckBox" IsChecked="{Binding Flags.IncentivizeVorpal}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Vorpal" ToolTip="The Alleged Sword, or the Game Changer"/>
-						<CheckBox x:Name="IncentivizeOffCastWeaponCheckBox" IsChecked="{Binding Flags.IncentivizeOffCastWeapon}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Thor Hammer" ToolTip="Thor Hammer"/>
-						<CheckBox x:Name="IncentivizeOpalCheckBox" IsChecked="{Binding Flags.IncentivizeOpal}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Opal Bracelet" ToolTip="Opal Bracelet"/>
-						<CheckBox x:Name="IncentivizeOtherCastArmorCheckBox" IsChecked="{Binding Flags.IncentivizeOtherCastArmor}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Power Gauntlet" ToolTip="Power Gauntlet"/>
-						<CheckBox x:Name="IncentivizeDefCastArmorCheckBox" IsChecked="{Binding Flags.IncentivizeDefCastArmor}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="White Shirt" ToolTip=">White Shirt"/>
-						<CheckBox x:Name="IncentivizeOffCastArmorCheckBox" IsChecked="{Binding Flags.IncentivizeOffCastArmor}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Black Shirt" ToolTip="Black Shirt"/>
-						<CheckBox x:Name="IncentivizeRibbonCheckBox" IsChecked="{Binding Flags.IncentivizeRibbon}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Ribbon" ToolTip="Ribbon"/>
+						<CheckBox x:Name="IncentivizeFloaterCheckBox" IsChecked="{Binding Flags.IncentivizeAirship}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Floater"/>
+						<CheckBox x:Name="IncentivizeCanoeCheckBox" IsChecked="{Binding Flags.IncentivizeCanoeItem}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Canoe"/>
+						<CheckBox x:Name="IncentivizeShipCanalCheckBox" IsChecked="{Binding Flags.IncentivizeShipAndCanal}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Ship + Canal"/>
+						<CheckBox x:Name="IncentivizeTailCheckBox" IsChecked="{Binding Flags.IncentivizeTail}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Tail"/>
+						<CheckBox x:Name="IncentivizeMasamuneCheckBox" IsChecked="{Binding Flags.IncentivizeMasamune}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Masamune"/>
+						<CheckBox x:Name="IncentivizeDefCastWeaponCheckBox" IsChecked="{Binding Flags.IncentivizeDefCastWeapon}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Defense"/>
+						<CheckBox x:Name="IncentivizeVorpalCheckBox" IsChecked="{Binding Flags.IncentivizeVorpal}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Vorpal"/>
+						<CheckBox x:Name="IncentivizeOffCastWeaponCheckBox" IsChecked="{Binding Flags.IncentivizeOffCastWeapon}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Thor Hammer"/>
+						<CheckBox x:Name="IncentivizeOpalCheckBox" IsChecked="{Binding Flags.IncentivizeOpal}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Opal Bracelet"/>
+						<CheckBox x:Name="IncentivizeOtherCastArmorCheckBox" IsChecked="{Binding Flags.IncentivizeOtherCastArmor}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Power Gauntlet"/>
+						<CheckBox x:Name="IncentivizeDefCastArmorCheckBox" IsChecked="{Binding Flags.IncentivizeDefCastArmor}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="White Shirt"/>
+						<CheckBox x:Name="IncentivizeOffCastArmorCheckBox" IsChecked="{Binding Flags.IncentivizeOffCastArmor}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Black Shirt"/>
+						<CheckBox x:Name="IncentivizeRibbonCheckBox" IsChecked="{Binding Flags.IncentivizeRibbon}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Ribbon"/>
 					</StackPanel>
 				</Grid>
 			</TabItem>
@@ -162,11 +162,11 @@
 					<StackPanel Orientation="Vertical" Grid.Column="0">
 						<Label Margin="5,5,0,0" FontWeight="Bold">Quick Races</Label>
 						<CheckBox x:Name="ChaosRushCheckBox" IsChecked="{Binding Flags.ChaosRush}" IsEnabled="{Binding Flags.ChaosRushEnabled}" Content="CHAOS Rush" ToolTip="Enable access to CHAOS without the Mystic KEY and start with the LUTE."/>
-						<CheckBox x:Name="FreeOrbsCheckBox" IsChecked="{Binding Flags.FreeOrbs}" IsEnabled="{Binding Flags.FreeOrbsEnabled}" Content="Free Orbs" ToolTip="Enable access to CHAOS without the Mystic KEY and start with the LUTE."/>
+						<CheckBox x:Name="FreeOrbsCheckBox" IsChecked="{Binding Flags.FreeOrbs}" IsEnabled="{Binding Flags.FreeOrbsEnabled}" Content="Free Orbs" ToolTip="Begin the game with all orbs lit."/>
 					</StackPanel>
 					<StackPanel Orientation="Vertical" Grid.Column="1">
 						<Label Margin="5,5,0,0" FontWeight="Bold">Treasure Hunt</Label>
-						<CheckBox x:Name="ShardHuntCheckBox" IsChecked="{Binding Flags.ShardHunt}" IsEnabled="{Binding Flags.ShardHuntEnabled}" Content="Treasure Hunt" ToolTip="Treasure Hunt alternate gameplay mode. Collect 16 of a random Treasure Item to activate the BLACK ORB."/>
+						<CheckBox x:Name="ShardHuntCheckBox" IsChecked="{Binding Flags.ShardHunt}" IsEnabled="{Binding Flags.ShardHuntEnabled}" Content="Treasure Hunt" ToolTip="Alternate gameplay mode. Collect 16 of a random Treasure Item to activate the BLACK ORB."/>
 						<ComboBox x:Name="ShardCountComboBox" SelectedValue="{Binding Flags.ShardCount}" IsEnabled="{Binding Flags.ShardHuntEnabled}" Width="120" HorizontalAlignment="Left" Margin="30,5,0,0" SelectedValuePath="Tag">
 							<ComboBoxItem Tag="Count16">Exactly 16</ComboBoxItem>
 							<ComboBoxItem Tag="Count20">Exactly 20</ComboBoxItem>
@@ -202,7 +202,7 @@
 						<CheckBox x:Name="DeepToFRCheckBox" IsEnabled="{Binding Flags.DeepCastlesPossible}" IsChecked="{Binding Flags.AllowDeepCastles}" IsThreeState="True" Content="Deep ToFR" ToolTip="Instead of being at ground level, the Temple of Fiends can now be at the bottom of a dungeon." Margin="30,5,0,0"/>
 						<Label Margin="5,5,0,0"/>
 						<CheckBox x:Name="TownsCheckBox" IsChecked="{Binding Flags.Towns}" IsThreeState="True" Content="Towns" ToolTip="Add town entrances into the entrance shuffle."/>
-						<CheckBox x:Name="MixEntrancesAndTownEntrancesCheckBox" IsChecked="{Binding Flags.EntrancesMixedWithTowns}" IsEnabled="{Binding Flags.Entrances}" IsThreeState="True" Content="Mix All Entrances Together" ToolTip="If Entrance Shuffle and Town Shuffle are enabled, yowns can appear in overworld dungeon locations" Margin="30,5,0,0"/>
+						<CheckBox x:Name="MixEntrancesAndTownEntrancesCheckBox" IsChecked="{Binding Flags.EntrancesMixedWithTowns}" IsEnabled="{Binding Flags.Entrances}" IsThreeState="True" Content="Mix All Entrances Together" ToolTip="If Entrance Shuffle and Town Shuffle are enabled, towns can appear in overworld dungeon locations" Margin="30,5,0,0"/>
 						<CheckBox x:Name="DeepTownsCheckBox" IsChecked="{Binding Flags.AllowDeepTowns}" IsEnabled="{Binding Flags.DeepTownsPossible}" IsThreeState="True" Content="Deep Towns" ToolTip="Towns can be inside a dungeon" Margin="30,5,0,0"/>
 					</StackPanel>
 					<StackPanel Grid.Column="1">
@@ -214,13 +214,13 @@
 							<ComboBoxItem Tag="Maze">Full Maze</ComboBoxItem>
 						</ComboBox>
 						<CheckBox x:Name="OrdealsPillarsCheckBox" IsChecked="{Binding Flags.OrdealsPillars}" IsThreeState="True" Content="Castle Ordeals" ToolTip="Teleporters in Castle Ordeals are shuffled."/>
-						<CheckBox x:Name="TitansTroveCheckBox" IsChecked="{Binding Flags.TitansTrove}" IsThreeState="True" Content="Titan's Trove" ToolTip="Titan's Trove"/>
+						<CheckBox x:Name="TitansTroveCheckBox" IsChecked="{Binding Flags.TitansTrove}" IsThreeState="True" Content="Titan's Trove" ToolTip="Titan blocks its 4 treasure chests from both entrances"/>
 						<CheckBox x:Name="ZozoMelmondCheckBox" IsChecked="{Binding Flags.AllowUnsafeMelmond}" IsThreeState="True" Content="Zozo Melmond" ToolTip="Monsters can appear on the sand tiles in Melmond"/>
 						<CheckBox x:Name="LefeinishHospitalityCheckBox" IsChecked="{Binding Flags.LefeinShops}" IsThreeState="True" Content="Lefeinish Hospitality" ToolTip="An inn and clinic/tavern will appear in Lefein"/>
 						<CheckBox x:Name="ConfusedOldMenCheckBox" IsChecked="{Binding Flags.ConfusedOldMen}" IsThreeState="True" Content="Confused Old Men" ToolTip="Yoga in the park!"/>
 						<Label Margin="5,5,0,0"/>
-						<CheckBox x:Name="MapOpenProgressionCheckBox" IsChecked="{Binding Flags.MapOpenProgression}" IsThreeState="True" Content="Open Progression" ToolTip="Open Progression"/>
-						<CheckBox x:Name="MapExtendedOpenProgressionCheckBox" IsEnabled="{Binding Flags.MapOpenProgression}" IsChecked="{Binding Flags.MapOpenProgressionExtended}" IsThreeState="True" Content="Extended Open Progression" ToolTip="Extended Open Progression"/>
+						<CheckBox x:Name="MapOpenProgressionCheckBox" IsChecked="{Binding Flags.MapOpenProgression}" IsThreeState="True" Content="Open Progression" ToolTip="Opens inner continent movement and adds docks at Onrac and Mirage"/>
+						<CheckBox x:Name="MapExtendedOpenProgressionCheckBox" IsEnabled="{Binding Flags.MapOpenProgression}" IsChecked="{Binding Flags.MapOpenProgressionExtended}" IsThreeState="True" Content="Extended Open Progression" ToolTip="Allows walking from Coneria to Elfland and adds dock at Ryokan"/>
 						<Label Margin="5,5,0,0"/>
 						<CheckBox x:Name="ShuffleOriginalFiendFights" IsChecked="{Binding Flags.FiendShuffle}" Content="Shuffle Original Fiend Fights" ToolTip="Shuffle the four fiends in the present, so that Kraken can appear in Volcano or Kary in Sky Castle"/>
 					</StackPanel>
@@ -249,8 +249,8 @@
 					</Grid.ColumnDefinitions>
 					<StackPanel Grid.Column="0" Grid.ColumnSpan="2" Margin="0,0,0.333,0">
 						<Label MinHeight="26" x:Name="PricesLabel" Content="Prices:" ToolTip="Prices of items, weapons, armor, and magic are all scaled, as well as your starting gold and gold chests."/>
-						<Label MinHeight="26" x:Name="EnemyStatsLabel" Content="Enemy Stats:" HorizontalAlignment="Left" VerticalAlignment="Top" ToolTip="Enemy stats are scaled: HP, attack power, # of hits, accuracy, critical %, defense, evade, and magic defense."/>
-						<Label MinHeight="26" x:Name="BossStatsLabel" Content="Boss Stats:" HorizontalAlignment="Left" VerticalAlignment="Top" ToolTip="Boss stats are scaled: HP, attack power, # of hits, accuracy, critical %, defense, evade, and magic defense."/>
+						<Label MinHeight="26" x:Name="EnemyStatsLabel" Content="Enemy Stats:" HorizontalAlignment="Left" VerticalAlignment="Top" ToolTip="Enemy stats are scaled: HP, attack power, # of hits, accuracy, critical %, defense, and evasion."/>
+						<Label MinHeight="26" x:Name="BossStatsLabel" Content="Boss Stats:" HorizontalAlignment="Left" VerticalAlignment="Top" ToolTip="Boss stats are scaled: HP, attack power, # of hits, accuracy, critical %, defense, and evasion."/>
 						<Label MinHeight="26" x:Name="ExpGoldBoostLabel" Content="Exp/Gold Boost:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
 						<Label MinHeight="26" Content=""/>
 						<Label MinHeight="26" x:Name="ProgressiveScaleLabel" Content="Progressive Scale:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
@@ -278,15 +278,15 @@
 						<Slider MinHeight="20" x:Name="BossScaleFactorSlider" Value="{Binding Flags.BossScaleFactor}" HorizontalAlignment="Left" VerticalAlignment="Top" Minimum="1" Maximum="5" Width="100" TickPlacement="BottomRight" TickFrequency="0.5" ToolTip="For each value to be scaled, a random exponent is selected between -1 and +1.  The value is scaled by the scale factor raised to that power." ValueChanged="BossScaleFactorSlider_ValueChanged"/>
 						<Slider MinHeight="20" x:Name="ExpMultiplierSlider" Value="{Binding Flags.ExpMultiplier}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Minimum="1" Maximum="5" TickPlacement="BottomRight" TickFrequency="0.5" ToolTip="Multiplies enemy exp and gold by this amount." ValueChanged="ExpMultiplierSlider_ValueChanged"/>
 						<Slider MinHeight="20" x:Name="ExpBonusSlider" Value="{Binding Flags.ExpBonus}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Minimum="0" Maximum="500" TickPlacement="BottomRight" TickFrequency="50" LargeChange="50" SmallChange="10" ToolTip="Adds this amount to enemy exp and gold (after the multiplier)." ValueChanged="ExpBonusSlider_ValueChanged"/>
-						<ComboBox MinHeight="26" x:Name="ProgressiveScaleComboBox" SelectedValue="{Binding Flags.ProgressiveScaleMode}" Width="150" HorizontalAlignment="Left" ToolTip="How do you like your WarMECH?" SelectedValuePath="Tag">
+						<ComboBox MinHeight="26" x:Name="ProgressiveScaleComboBox" SelectedValue="{Binding Flags.ProgressiveScaleMode}" Width="150" HorizontalAlignment="Left" ToolTip="Additional experience added from collected key items" SelectedValuePath="Tag">
 							<ComboBoxItem Content="Disabled" Tag="Disabled"/>
-							<ComboBoxItem Content="150% at 12" Tag="FiftyPercentAt12"/>
-							<ComboBoxItem Content="150% at 15" Tag="FiftyPercentAt15"/>
-							<ComboBoxItem Content="200% at 12" Tag="DoubledAt12"/>
-							<ComboBoxItem Content="200% at 15" Tag="DoubledAt15"/>
-							<ComboBoxItem Content="5% Per Key Item" Tag="Progressive5Percent"/>
-							<ComboBoxItem Content="10% Per Key Item" Tag="Progressive10Percent"/>
-							<ComboBoxItem Content="20% Per Key Item" Tag="Progressive20Percent"/>
+							<ComboBoxItem Content="+50% at 12" Tag="FiftyPercentAt12"/>
+							<ComboBoxItem Content="+50% at 15" Tag="FiftyPercentAt15"/>
+							<ComboBoxItem Content="+100% at 12" Tag="DoubledAt12"/>
+							<ComboBoxItem Content="+100% at 15" Tag="DoubledAt15"/>
+							<ComboBoxItem Content="+5% Per Key Item" Tag="Progressive5Percent"/>
+							<ComboBoxItem Content="+10% Per Key Item" Tag="Progressive10Percent"/>
+							<ComboBoxItem Content="+20% Per Key Item" Tag="Progressive20Percent"/>
 						</ComboBox>
 						<Slider MinHeight="20" x:Name="EncounterRateSlider" Value="{Binding Flags.EncounterRate}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Minimum="0" Maximum="45" TickPlacement="BottomRight" TickFrequency="5" LargeChange="1" SmallChange="1" ValueChanged="EncounterRate_ValueChanged"/>
 						<Slider MinHeight="20" x:Name="DungeonEncounterRateSlider" Value="{Binding Flags.DungeonEncounterRate}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Minimum="0" Maximum="45" TickPlacement="BottomRight" TickFrequency="5" LargeChange="1" SmallChange="1" ValueChanged="DungeonEncounterRate_ValueChanged"/>
@@ -296,7 +296,7 @@
 						<CheckBox x:Name="EnemyStatScaleOverflowCheckBox" IsChecked="{Binding Flags.WrapStatOverflow}" Content="Wrap Overflowing Stats" />
 						<CheckBox x:Name="IncludeMoraleCheckBox" IsChecked="{Binding Flags.IncludeMorale}" Content="Include Morale" />
 						<CheckBox x:Name="StaticXPGainCheckBox" IsChecked="{Binding Flags.NoDanMode}" Content="Static EXP Gain" ToolTip="XP is always split by 4 even if characters are slain/stoned (fallen characters do not gain any however)"/>
-						<CheckBox x:Name="VanillaStartingGoldCheckBox" IsChecked="{Binding Flags.StartingGold}" Content="Starting Gold" ToolTip="The Bridge is available at the start of the game" Width="296.667"/>
+						<CheckBox x:Name="VanillaStartingGoldCheckBox" IsChecked="{Binding Flags.StartingGold}" Content="Starting gold scaled to match exp/gold multiplier" Width="296.667"/>
 						<CheckBox x:Name="EasyModeCheckBox" IsChecked="{Binding Flags.EasyMode}" Content="Easy Mode" ToolTip="Encounter rate cut to 20% and all Enemy HP cut to 10% (after any randomizations)"/>
 					</StackPanel>
 				</Grid>
