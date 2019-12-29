@@ -94,9 +94,9 @@
 							<h4>Enemies</h4>
 							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyScriptsCheckBox" bind-Value="@Flags.EnemyScripts">Enemy Scripts</TriStateCheckBox>
 							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnemyScripts" Id="allowUnsafePiratesCheckBox" bind-Value="@Flags.AllowUnsafePirates">Allow Unsafe Pirates</TriStateCheckBox>
-							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnemyScripts" Id="allowUnsafePiratesCheckBox" bind-Value="@Flags.BossScriptsOnly">Only Shuffle Bosses</TriStateCheckBox>
+							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnemyScripts" Id="onlyShuffleBossScriptsCheckBox" bind-Value="@Flags.BossScriptsOnly">Only Shuffle Bosses</TriStateCheckBox>
 							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="enemySkillsSpellsCheckBox" bind-Value="@Flags.EnemySkillsSpells">Enemy Skills/Spells</TriStateCheckBox>
-							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnemySkillsSpells" Id="allowUnsafePiratesCheckBox" bind-Value="@Flags.BossSkillsOnly">Only Shuffle Bosses</TriStateCheckBox>
+							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnemySkillsSpells" Id="onlyShuffleBossSkillsCheckBox" bind-Value="@Flags.BossSkillsOnly">Only Shuffle Bosses</TriStateCheckBox>
 							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyStatusAttacksCheckBox" bind-Value="@Flags.EnemyStatusAttacks">Enemy Status Attacks</TriStateCheckBox>
 							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnemyStatusAttacks" Id="enemyRandomAttacksCheckBox" bind-Value="@Flags.RandomStatusAttacks">Randomize Enemy Status Attacks</TriStateCheckBox>
 							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyFormationsUnrunnableCheckBox" bind-Value="@Flags.EnemyFormationsUnrunnable">Enemy Unrunnable Formations</TriStateCheckBox>
@@ -243,9 +243,9 @@
 			<button type="button" class="@(TabClasses("Scale"))" onclick="@(() => ActivateTab("Scale"))">Scale</button>
 			<TabPane IsOpen="@(activeTabs.Contains("Scale"))">
 				<div class="is-dark nes-container">
-					<ClampedSlider Min="1" Max="5" Step="0.1" Id="clampMinimumPriceScaleLable" bind-Clamp="@Flags.ClampMinimumPriceScale" bind-Scale="@Flags.PriceScaleFactor">Prices:</ClampedSlider>
-					<ClampedSlider Min="1" Max="5" Step="0.1" bind-Clamp="@Flags.ClampMinimumStatScale" bind-Scale="@Flags.EnemyScaleFactor">Enemy Stats:</ClampedSlider>
-					<ClampedSlider Min="1" Max="5" Step="0.1" bind-Clamp="@Flags.ClampMinimumBossStatScale" bind-Scale="@Flags.BossScaleFactor">Boss Stats:</ClampedSlider>
+					<ClampedSlider Min="1" Max="5" Step="0.1" UpdateToolTip="@UpdateToolTipID" Id="clampMinimumPriceScaleLable" bind-Clamp="@Flags.ClampMinimumPriceScale" bind-Scale="@Flags.PriceScaleFactor">Prices:</ClampedSlider>
+					<ClampedSlider Min="1" Max="5" Step="0.1" UpdateToolTip="@UpdateToolTipID" Id="clampMinimumStatScaleLable" bind-Clamp="@Flags.ClampMinimumStatScale" bind-Scale="@Flags.EnemyScaleFactor">Enemy Stats:</ClampedSlider>
+					<ClampedSlider Min="1" Max="5" Step="0.1" UpdateToolTip="@UpdateToolTipID" Id="clampMinimumBossScaleLable" bind-Clamp="@Flags.ClampMinimumBossStatScale" bind-Scale="@Flags.BossScaleFactor">Boss Stats:</ClampedSlider>
 					<div class="slider-cell"></div>
 					<div class="row">
 						<div class="col-md-5">
@@ -476,7 +476,7 @@
 							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="spellcrafterRetainPermissions" IsEnabled="@Flags.GenerateNewSpellbook" bind-Value="@Flags.SpellcrafterRetainPermissions">Retain Old Permissions (Spellcrafter)</TriStateCheckbox>
 							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="spellcrafterMixSpells" IsEnabled="@Flags.GenerateNewSpellbook" bind-Value="@Flags.SpellcrafterMixSpells">Mix spellbooks (Spellcrafter)</TriStateCheckbox>
 							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="AllSpellLevelsForKnightNinja" bind-Value="@Flags.AllSpellLevelsForKnightNinja">Knight and Ninja Gain Charges in All Levels</CheckBox>
-							<TriStateCheckBox DisableToolTip UpdateToolTip="@UpdateToolTipID" Id="FreeTail" bind-Value="@Flags.FreeTail">Free Tail</TriStateCheckBox>
+							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="FreeTail" bind-Value="@Flags.FreeTail">Free Tail</TriStateCheckBox>
 						</div>
 						<div class="col-md-12">
 						</div>
