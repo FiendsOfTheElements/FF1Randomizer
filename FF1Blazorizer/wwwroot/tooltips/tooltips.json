@@ -42,6 +42,11 @@
 		"description": "Magic Shop Shuffle: Shuffles what level spells are available at each shop. With this checked, you will likely find several different levels of magic at each shop, regardless of location."
 	},
 	{
+		"Id": "magicShopLocsCheckBox",
+		"title": "Magic Shop Location Shuffle",
+		"description": "Shuffles the logcations of magic shops except Coneria (Level 1), so that Pravoka's magic shop can be in Melmond, etc."
+	},
+	{
 		"Id": "magicPermissionsCheckBox",
 		"title": "Keep Permissions",
 		"screenshot": "magicPermissionsCheckBox.png",
@@ -88,6 +93,26 @@
 		"description": "Enemy Skills/Spells: Shuffles enemy skills and spells so they can appear in any script. There are three groups of enemies:\nAll random encounters,\nthe first fiend fights,\nand the second fiend fights with WarMech."
 	},
 	{
+		"Id": "onlyShuffleBossScriptsCheckBox",
+		"title": "Only Shuffle Boss Scripts",
+		"description": "Only include the scripts of the Fiends when shuffling scripts.  Normal enemies will retain their original scripts.  This alone does not mean however that spells on those scripts cannot be shuffled."
+	},
+	{
+		"Id": "onlyShuffleBossSkillsCheckBox",
+		"title": "Only Shuffle Boss Spells and Skills",
+		"description": "Only include the spells and skills of the Fiends when shuffling spells.  Normal enemies will retain their original spells and skills.  This alone does not mean however that scripts cannot be shuffled."
+	},
+	{
+		"Id": "enemyStatusAttacksCheckBox",
+		"title": "Enemy Status Attacks",
+		"description": "Enemy Status Attacks: Shuffles the status ailments each enemy can inflict when they use physical attacks."
+	},
+	{
+		"Id": "enemyRandomAttacksCheckBox",
+		"title": "Random Enemy Status Attacks",
+		"description": "Random Enemy Status Attacks: The status ailments enemies inflict on melee attack are randomly determined, and can include multiple death attacks or silencing attacks."
+	},
+	{
 		"Id": "enemyFormationsUnrunnableCheckBox",
 		"title": "Enemy Unrunnable Formations",
 		"screenshot": "enemyFormationsUnrunnableCheckBox.png",
@@ -100,7 +125,7 @@
 		"description": "All Encounters are Unrunnable: Disables the ability to run from fights."
 	},
 	{
-		"Id": "unrunnablesStrikeFirstAndSupriseCheckBox",
+		"Id": "unrunnablesStrikeFirstAndSurpriseCheckBox",
 		"title": "First Strike and Surprise Possible when Unrunnable",
 		"screenshot": "unrunnablesStrikeFirstAndSupriseCheckBox.png",
 		"description": "First Strike and Surprise Possible when Unrunnable: Allows you to first strike an unrunnable formation. Also allows an unrunnable formation to ambush YOU."
@@ -112,6 +137,11 @@
 		"description": "Enemy Surprise Bonus: Shuffles the surprise bonus for enemy formations, changing which groups will almost always ambush you."
 	},
 	{
+		"Id": "formationShuffleModeDropDown",
+		"title": "Enemy Formation Shuffle Mode",
+		"description": "Shuffles the encounters that appear in enemy domains.\nVanilla: Enemy groups remain as they exist in the original game.  This allows players to predict encounters in a dungeon if they know the vanilla values.\nShuffle Rarity: Enemy groups are shuffle within a zone, so that Group 1 fights can appear as Group 6, etc.  This removes the ability to 'scout' the encounter table and know which fights will appear without having to re-learn the process for each new dungeon.\nShuffle Across Zones: Shuffles the domains so that Ice Cave groups can appear in Gurgu Volcano etc., but does not alter the contents of the domains themselves\nTotally Random: Draws at random and without a shuffle any formation excepting fiends, plot-triggered encounters, and empty encounters.  The encounters can appear in any zone except the starting zones.\nThis feature is disabled when generating new enemy formations (Enemizer)."
+	},
+	{
 		"Id": "enemyTrapTilesCheckBox",
 		"title": "Enemy Forced Encounter Tiles",
 		"description": "Enemy Forced Encounter Tiles: Shuffles trap tiles excepting Fiend Refights."
@@ -120,6 +150,11 @@
 		"Id": "randomTrapFormationsCheckBox",
 		"title": "Use Random Formations",
 		"description": "Use Random Formations: Adds several formations into the shuffle pool for trap tiles, including formations that are not available in the original game."
+	},
+	{
+		"Id": "WarMECHModeDropDown",
+		"title": "WarMECH Mode",
+		"description": "Vanilla: WarMECH may appear as a group 7 encounter on Sky Castle 5F, as in the original game.\nPatrolling: A WarMECH sprite will appear wandering on Sky Castle 4F.  Talking to WarMECH starts an unrunnable battle.\nRequired: A WarMECH sprite will guard Tiamat's room.  You must defeat it before you can fight Tiamat.\nUnleashed: WarMECH appears as a Group 7 formation in all zones."
 	},
 	{
 		"Id": "treasuresCheckBox",
@@ -161,6 +196,31 @@
 		"title": "Objective NPCs",
 		"screenshot": "shuffleObjectiveNPCsCheckBox.png",
 		"description": "Objective NPCs: Shuffles the locations of Dr. Unne, the Elven Doctor, and Bahamut. Note that the Prince is still napping in Elfland once you deliver the Herb to the Elven Doctor and that the small pool means NPCs may retain their normal location."
+	},
+	{
+		"Id": "freeShipCheckBox",
+		"title": "Free Ship",
+		"description": "Bikke's SHIP will appear in Coneria's dock at the start of the game."
+	},
+	{
+		"Id": "freeAirshipCheckBox",
+		"title": "Free Airship",
+		"description": "The AIRSHIP rises from the grassy plains in front of Coneria at the start of the game."
+	},
+	{
+		"Id": "freeBridgeCheckBox",
+		"title": "Free Bridge",
+		"description": "The BRIDGE linking Coneria to Pravoka and onward is built when the game begins."
+	},
+	{
+		"Id": "freeCanalCheckBox",
+		"title": "Free Canal",
+		"description": "Nerrick's CANAL is already built when the game begins."
+	},
+	{
+		"Id": "FreeTail",
+		"title": "Free Tail",
+		"description": "The rat's TAIL required for promotion is in your inventory when the game begins.'"
 	},
 	{
 		"Id": "incentivizeFreeNPCsCheckBox",
@@ -389,9 +449,19 @@
 		"description": "Adds ONE Ribbon to the incentive pool to be distributed in the selected incentive locations."
 	},
 	{
+		"Id": "shardHuntCheckBox",
+		"title": "Shard Hunt",
+		"description": "Activates Shard Hunt, a mode in which the Light Warriors must acquire a number of a particular, special item in order to open the time gate in Temple of Fiends.  Defeating Fiends and activating the altars for the four standard orbs will instead grant the player 2 shards for Lich and Kary or 4 shards for Kraken and Tiamat.  The SHARDs replace generally low-quality items in the treasure pool."
+	},
+	{
 		"Id": "shardCountDropDown",
 		"title": "Shard Goal",
 		"description": "The number of SHARDs to collect in order to restore the Black Orb and travel into the past."
+	},
+	{
+		"Id": "entrancesCheckBox",
+		"title": "Entrance Shuffle",
+		"description": "Overworld entrances, except for towns, are shuffled, so that the entrance to Earth Cave may be at Waterfall, Volcano at the Cardia Islands, etc.  Required for floor shuffle.  Requires NPC Shuffle."
 	},
 	{
 		"Id": "deadEndsCheckBox",
@@ -474,6 +544,21 @@
 		"description": "The party may complete the Castle of Ordeals without the CROWN."
 	},
 	{
+		"Id": "clampMinimumPriceScaleLable",
+		"title": "Price Scaling",
+		"description": "Sets the scale of the prices of shop items and the value of gold treasure boxes you find.  Unclamped prices have a mean of 100% of normal prices (accounting for XP/Gold scale, so with 4x XP baseline prices and gold treasures will be 25% their normal values).  Clamped prices have a mean halfway between 100% and the maximum for the selected multiplier."
+	},
+	{
+		"Id": "clampMinimumStatScaleLable",
+		"title": "Monster Stats Scaling",
+		"description": "Sets the scale of monster stats (except Magic Defense).  Not all stats are adjusted equally, for example attack strength variance in either direction is only 1/4th that of HP variance.  Unclamped stats have a mean of 100% of normal stats.  Clamped stats have a mean halfway between 100% and the maximum for the selected multiplier (times adjustment factor for particular stats, like strength)."
+	},
+	{
+		"Id": "clampMinimumBossScaleLable",
+		"title": "Boss Stats Scaling",
+		"description": "Sets the scale of boss monster stats (except Magic Defense).  Not all stats are adjusted equally, for example attack strength variance in either direction is only 1/4th that of HP variance.  Unclamped stats have a mean of 100% of normal stats.  Clamped stats have a mean halfway between 100% and the maximum for the selected multiplier (times adjustment factor for particular stats, like strength)."
+	},
+	{
 		"Id": "progressiveScaleModeDropDown",
 		"title": "Exp/Gold Progressive Scaling",
 		"description": "Increases the bonus provided by Exp/Gold boost based on the number of Key Items collected."
@@ -519,6 +604,46 @@
 		"description": "Disables the ability to revive Light Warriors at the Pub. When enabled, fallen Light Warriors may only be revived with the LIFE or LIF2 spells, or replaced by the class sold by the Pub."
 	},
 	{
+		"Id": "noPartyShuffleCheckBox",
+		"title": "No Party Shuffle Convenience",
+		"description": "If enabled, the player's party is not automatically rearranged when afflicted with status ailments or slain."
+	},
+	{
+		"Id": "speedHacksCheckBox",
+		"title": "Speed Hacks Convenience",
+		"description": "If enabled, many game processes, such as opening the menu and battles, are significantly faster."
+	},
+	{
+		"Id": "identifyTreasuresCheckBox",
+		"title": "Identify Treasures Convenience",
+		"description": "If enabled, the player can see what item is in a chest if their inventory is full, instead of seeing 'Can't Hold anymore'."
+	},
+	{
+		"Id": "dashCheckBox",
+		"title": "Dash Convenience",
+		"description": "If enabled, the player's movement speed on foot is doubled.  Hold B while walking to reduce to normal speed."
+	},
+	{
+		"Id": "buyTenCheckBox",
+		"title": "Buy Ten Convenience",
+		"description": "If enabled, the player has the option to buy 10 of an item at once in the item shop, so they do not need to spend a long time buying 99 heal potions."
+	},
+	{
+		"Id": "waitWhenUnrunnableCheckBox",
+		"title": "WAIT When Unrunnable Convenience",
+		"description": "If enabled, the player is notified when it is impossible to escape a battle by RUNning, replacing the RUN command with WAIT."
+	},
+	{
+		"Id": "enableCritNumberDisplayCheckBox",
+		"title": "Crit Number Display Convenience",
+		"description": "If enabled, critical hits note how many hits out of the maximum connected with a critical, for example 2 critical hits out of 3, instead of simply marking that there was a critical."
+	},
+	{
+		"Id": "inventoryAutosortCheckBox",
+		"title": "Inventory Autosort",
+		"description": "If enabled, HEAL, PURE, and SOFT potions are automatically moved to the first row of the item menu, followed by saving items on the second row, then all key items in your inventory."
+	},
+	{
 		"Id": "houseMPRestorationCheckBox",
 		"title": "House MP Restoration",
 		"description": "Fixes a bug where the party's MP was restored only after the game was saved."
@@ -531,7 +656,7 @@
 	{
 		"Id": "doubleBBCritCheckBox",
 		"title": "Double BB Crit Rate",
-		"description": "Doubles the BB crit rate"
+		"description": "Doubles the BB crit rate (This Checkbox should be changed!)"
 	},
 	{
 		"Id": "doubleWeaponCritCheckBox",
@@ -556,7 +681,7 @@
 	{
 		"Id": "enemyStatusAttackBugCheckBox",
 		"title": "Enemy Status Attacks",
-		"description": ""
+		"description": "Fixes a bug where enemies had a chance to apply a status ailment on attacks that missed once the first attack connected.  When enabled, only enemy hits that connect have a chance to inflict status effects."
 	},
 	{
 		"Id": "blackBeltAbsorbCheckBox",
@@ -592,6 +717,16 @@
 		"Id": "rebalanceSpellsCheckBox",
 		"title": "LOCK and LOK2 Always Hit",
 		"description": "When enabled, the spells LOCK and LOK2 will always be effective against all enemies, regardless of their MDEF."
+	},
+	{
+		"Id": "thiefHitCheckBox",
+		"title": "Thief Hit Rate Rebalance",
+		"description": "The thief and ninja's hit rate is increased from +2 per level to +4."
+	},
+	{
+		"Id": "MDefModeDropDown",
+		"title": "MDef Mode Rebalancing",
+		"description": "Adjusts the Magic Defense gains for classes on level up."
 	},
 	{
 		"Id": "proceduralGenerationCheckBox",
@@ -657,5 +792,15 @@
 		"Id": "spellcrafterMixSpells",
 		"title": "Mix spellbooks (Spellcrafter)",
 		"description": "Mixes the randomly generated spells, so spells that would typically be considered 'white' magic may be classed as 'black' magic and vice-versa."
+	},
+	{
+		"Id": "spellcrafterRetainPermissions",
+		"title": "Retain Old Permissions (Spellcrafter)",
+		"description": "When enabled, Spellcrafter will not overwrite the game's original spell permissions, so Red Mages will learn the first and third slot in Level 1 White Magic, everything in the first four levels of black magic, etc."
+	},
+	{
+		"Id": "AllSpellLevelsForKnightNinja",
+		"title": "Knight and Ninja Gain Charges In All Levels",
+		"description": "Sets the Knight and Ninja magic charge growth to give a charge in all levels whenever those classes gain a charge in any level, giving Knight and Ninja tier 4-8 charges.  This alleviates an issue with Keep Permissions where the Knight and Ninja could never cast spells they could learn, but is useless otherwise."
 	}
 ]
