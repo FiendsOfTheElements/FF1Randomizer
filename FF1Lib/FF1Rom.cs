@@ -678,8 +678,21 @@ namespace FF1Lib
 		{
 			using (SHA256 hasher = SHA256.Create())
 			{
-				var Hash = hasher.ComputeHash(Data.ToBytes());
-				if (ByteArrayToString(Hash) != "fa456d852372173ea31b192459ba1a2026f779df67793327ba6e132476c1d034")
+				byte[] hashable = Data.ToBytes();
+
+				//zero out character mapman graphics
+				for (int i = 0x9000; i < 0xB000; i++)
+				{
+					hashable[i] = 0;
+				}
+				//zero out character battle graphics
+				for (int i = 0x25000; i < 0x26800; i++)
+				{
+					hashable[i] = 0;
+				}
+
+				var Hash = hasher.ComputeHash(hashable);
+				if (ByteArrayToString(Hash) != "2eb382079161d2687b29180f53c53d1badcd63c0d25dbb8f2d86b9d899ee91f4")
 				{
 					throw new TournamentSafeException("File has been modified");
 				}
