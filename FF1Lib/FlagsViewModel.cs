@@ -334,6 +334,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EnemyScripts"));
 			}
 		}
+		public bool? BossScriptsOnly
+		{
+			get => Flags.BossScriptsOnly;
+			set
+			{
+				Flags.BossScriptsOnly = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BossScripsOnly"));
+			}
+		}
 		public bool? EnemySkillsSpells
 		{
 			get => Flags.EnemySkillsSpells;
@@ -341,6 +350,15 @@ namespace FF1Lib
 			{
 				Flags.EnemySkillsSpells = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EnemySkillsSpells"));
+			}
+		}
+		public bool? BossSkillsOnly
+		{
+			get => Flags.BossSkillsOnly;
+			set
+			{
+				Flags.BossSkillsOnly = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BossSkillsOnly"));
 			}
 		}
 		public bool? EnemyStatusAttacks

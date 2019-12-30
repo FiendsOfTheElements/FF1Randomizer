@@ -319,12 +319,12 @@ namespace FF1Lib
 
 			if (((bool)flags.EnemyScripts))
 			{
-				ShuffleEnemyScripts(rng, (bool)flags.AllowUnsafePirates);
+				ShuffleEnemyScripts(rng, (bool)flags.AllowUnsafePirates, (bool)!flags.BossScriptsOnly);
 			}
 
 			if (((bool)flags.EnemySkillsSpells))
 			{
-				ShuffleEnemySkillsSpells(rng);
+				ShuffleEnemySkillsSpells(rng, (bool)!flags.BossSkillsOnly);
 			}
 
 			if (((bool)flags.EnemyStatusAttacks))
@@ -520,7 +520,7 @@ namespace FF1Lib
 				FixHouse(flags.HouseMPRestoration, flags.HousesFillHp);
 			}
 
-			if (!flags.BBCritRate)
+			if (flags.BBCritRate)
 			{
 				DontDoubleBBCritRates();
 			}

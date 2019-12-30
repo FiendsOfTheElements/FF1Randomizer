@@ -176,16 +176,19 @@ namespace FF1Lib
 			Put(ZoneFormationsOffset, newFormations.ToArray());
 		}
 
-		public void ShuffleEnemyScripts(MT19337 rng, bool AllowUnsafePirates)
+		public void ShuffleEnemyScripts(MT19337 rng, bool AllowUnsafePirates, bool doNormals)
 		{
 			var oldEnemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
 			var newEnemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
 
-			var normalOldEnemies = oldEnemies.Take(EnemyCount - 10).ToList(); // all but WarMECH, fiends, fiends revisited, and CHAOS
-			normalOldEnemies.Shuffle(rng);
-			for (int i = 0; i < EnemyCount - 10; i++)
+			if(doNormals)
 			{
-				newEnemies[i][7] = normalOldEnemies[i][7];
+				var normalOldEnemies = oldEnemies.Take(EnemyCount - 10).ToList(); // all but WarMECH, fiends, fiends revisited, and CHAOS
+				normalOldEnemies.Shuffle(rng);
+				for (int i = 0; i < EnemyCount - 10; i++)
+				{
+					newEnemies[i][7] = normalOldEnemies[i][7];
+				}
 			}
 
 			var oldBosses = new List<Blob>
@@ -233,7 +236,7 @@ namespace FF1Lib
 			Put(EnemyOffset, newEnemies.SelectMany(enemy => enemy.ToBytes()).ToArray());
 		}
 
-		public void ShuffleEnemySkillsSpells(MT19337 rng)
+		public void ShuffleEnemySkillsSpells(MT19337 rng, bool doNormals)
 		{
 			var scriptBytes = Get(ScriptOffset, ScriptSize * ScriptCount).Chunk(ScriptSize);
 
@@ -249,7 +252,8 @@ namespace FF1Lib
 			var bossIndices = new List<int> { 34, 36, 38, 40 };
 			var bigBossIndices = new List<int> { 32, 35, 37, 39, 41, 42 };
 
-			ShuffleIndexedSkillsSpells(scriptBytes, normalIndices, rng);
+			if(doNormals)
+				ShuffleIndexedSkillsSpells(scriptBytes, normalIndices, rng);
 			ShuffleIndexedSkillsSpells(scriptBytes, bossIndices, rng);
 			ShuffleIndexedSkillsSpells(scriptBytes, bigBossIndices, rng);
 

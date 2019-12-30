@@ -118,7 +118,7 @@
 
 		"HouseMPRestoration": true,
 		"WeaponStats": true,
-		"BBCritRate": false,
+		"BBCritRate": true,
 		"WeaponCritRate": true,
 		"WeaponBonuses": true,
 		"ChanceToRun": true,
