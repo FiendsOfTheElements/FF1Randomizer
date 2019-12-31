@@ -20,13 +20,13 @@
 		<TextBox x:Name="SeedTextBox" Text="{Binding Seed}" HorizontalAlignment="Left" Height="23" Margin="10,90,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
 		<Button x:Name="GenerateButton" Content="Generate ROM" HorizontalAlignment="Right" Margin="0,10,10,0" VerticalAlignment="Top" Width="150" FontSize="20" IsEnabled="False" Click="GenerateButton_Click" Height="46"/>
 		<Button x:Name="AboutButton" Content="About FF1 Randomizer" HorizontalAlignment="Right" Margin="0,61,10,0" VerticalAlignment="Top" Width="150" Height="24" Click="AboutButton_Click"/>
-		<TextBox x:Name="FlagsTextBox" Text="{Binding Path=Flags, Converter={StaticResource FlagsToStringConverter}}" IsReadOnly="True" HorizontalAlignment="Left" Height="23" Margin="229,90,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="474"/>
+		<TextBox x:Name="FlagsTextBox" Text="{Binding Path=Flags, Converter={StaticResource FlagsToStringConverter}}" IsReadOnly="True" HorizontalAlignment="Left" Height="23" Margin="229,90,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="494"/>
 		<Label x:Name="FlagsLabel" Content="Flags" HorizontalAlignment="Left" Margin="229,64,0,0" VerticalAlignment="Top" FontWeight="Bold" RenderTransformOrigin="-0.359,0.486"/>
 		<Label x:Name="PresetLabel" HorizontalAlignment="Left" Margin="278,64,0,0" VerticalAlignment="Top">
 			<Hyperlink Click="LoadPreset">Load Preset...</Hyperlink>
 		</Label>
-		<Button x:Name="CopyButton" Content="Copy" HorizontalAlignment="Left" Margin="708,90,0,0" VerticalAlignment="Top" Width="85" Height="23" Click="CopyButton_Click"/>
-		<Button x:Name="PasteButton" Content="Paste" HorizontalAlignment="Left" Margin="798,90,0,0" VerticalAlignment="Top" Width="85" Height="23" Click="PasteButton_Click"/>
+		<Button x:Name="CopyButton" Content="Export" HorizontalAlignment="Left" Margin="728,90,0,0" VerticalAlignment="Top" Width="80" Height="23" Click="CopyButton_Click"/>
+		<Button x:Name="PasteButton" Content="Import" HorizontalAlignment="Left" Margin="813,90,0,0" VerticalAlignment="Top" Width="62" Height="23" Click="PasteButton_Click"/>
 		<Button x:Name="SeedButton" Content="New Seed" HorizontalAlignment="Left" Margin="135,90,0,0" VerticalAlignment="Top" Width="89" Height="23" Click="SeedButton_Click"/>
 		<TabControl x:Name="tabControl" Margin="10,118,10,10">
 			<TabItem Header="Shuffle">
@@ -133,7 +133,7 @@
 						<CheckBox x:Name="IncentivizeMarshKeyLockedCheckBox" IsChecked="{Binding Flags.IncentivizeMarshKeyLocked}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Marsh (locked)" ToolTip="Bottom Floor South East"/>
 					</StackPanel>
 					<StackPanel Orientation="Vertical" Grid.Column="3" Margin="0,0,0.334,0">
-						<Label Margin="5,5,0,0" FontWeight="Bold">Incentivized Item Pool: </Label>
+						<Label Margin="5,5,0,0" FontWeight="Bold">Incentivized Item Pool:</Label>
 						<CheckBox x:Name="IncentivizeMainProgressionCheckBox" IsChecked="{Binding Flags.IncentivizeMainItems}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Main Progression Items" ToolTip="Lute, Key, Rod, Oxyale, Chime, Cube"/>
 						<CheckBox x:Name="IncentivizeFetchItemsCheckBox" IsChecked="{Binding Flags.IncentivizeFetchItems}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Other Quest Items" ToolTip="Any other non-required quest items that are shuffled such as Ruby or Adamant"/>
 						<CheckBox x:Name="IncentivizeFloaterCheckBox" IsChecked="{Binding Flags.IncentivizeAirship}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Floater" ToolTip="Floater"/>

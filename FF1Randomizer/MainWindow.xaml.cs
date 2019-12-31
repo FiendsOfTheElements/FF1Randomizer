@@ -105,7 +105,9 @@ namespace FF1Randomizer
 
 		private void CopyButton_Click(object sender, RoutedEventArgs e)
 		{
-			Clipboard.SetText("localhost?s=" + SeedTextBox.Text + "&f=" + FlagsTextBox.Text); // the copy/paste will look like a URL
+			string export = $"http://finalfantasyrandomizer.com/Randomize?s={SeedTextBox.Text}&f={FlagsTextBox.Text}";
+			Clipboard.SetText(export);
+			MessageBox.Show($"Copied URL {export} to system clipboard.");
 		}
 
 		private void PasteButton_Click(object sender, RoutedEventArgs e)
