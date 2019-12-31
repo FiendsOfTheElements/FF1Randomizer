@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FF1Randomizer"
         mc:Ignorable="d"
-        Title="{Binding WindowTitle}" Height="540" Width="750">
+        Title="{Binding WindowTitle}" Height="540" Width="900">
 	<Window.Resources>
 		<local:FlagsToStringConverter x:Key="FlagsToStringConverter"/>
 		<Style TargetType="CheckBox">
@@ -20,14 +20,14 @@
 		<TextBox x:Name="SeedTextBox" Text="{Binding Seed}" HorizontalAlignment="Left" Height="23" Margin="10,90,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
 		<Button x:Name="GenerateButton" Content="Generate ROM" HorizontalAlignment="Right" Margin="0,10,10,0" VerticalAlignment="Top" Width="150" FontSize="20" IsEnabled="False" Click="GenerateButton_Click" Height="46"/>
 		<Button x:Name="AboutButton" Content="About FF1 Randomizer" HorizontalAlignment="Right" Margin="0,61,10,0" VerticalAlignment="Top" Width="150" Height="24" Click="AboutButton_Click"/>
-		<TextBox x:Name="FlagsTextBox" Text="{Binding Path=Flags, Converter={StaticResource FlagsToStringConverter}}" IsReadOnly="True" HorizontalAlignment="Left" Height="23" Margin="135,90,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="311"/>
-		<Label x:Name="FlagsLabel" Content="Flags" HorizontalAlignment="Left" Margin="135,64,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
-		<Label x:Name="PresetLabel" HorizontalAlignment="Left" Margin="250,64,0,0" VerticalAlignment="Top">
+		<TextBox x:Name="FlagsTextBox" Text="{Binding Path=Flags, Converter={StaticResource FlagsToStringConverter}}" IsReadOnly="True" HorizontalAlignment="Left" Height="23" Margin="229,90,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="474"/>
+		<Label x:Name="FlagsLabel" Content="Flags" HorizontalAlignment="Left" Margin="229,64,0,0" VerticalAlignment="Top" FontWeight="Bold" RenderTransformOrigin="-0.359,0.486"/>
+		<Label x:Name="PresetLabel" HorizontalAlignment="Left" Margin="278,64,0,0" VerticalAlignment="Top">
 			<Hyperlink Click="LoadPreset">Load Preset...</Hyperlink>
 		</Label>
-		<Button x:Name="CopyButton" Content="Copy" HorizontalAlignment="Left" Margin="451,90,0,0" VerticalAlignment="Top" Width="85" Height="23" Click="CopyButton_Click"/>
-		<Button x:Name="PasteButton" Content="Paste" HorizontalAlignment="Left" Margin="541,90,0,0" VerticalAlignment="Top" Width="85" Height="23" Click="PasteButton_Click"/>
-		<Button x:Name="SeedButton" Content="New Seed" HorizontalAlignment="Left" Margin="631,90,0,0" VerticalAlignment="Top" Width="89" Height="23" Click="SeedButton_Click"/>
+		<Button x:Name="CopyButton" Content="Copy" HorizontalAlignment="Left" Margin="708,90,0,0" VerticalAlignment="Top" Width="85" Height="23" Click="CopyButton_Click"/>
+		<Button x:Name="PasteButton" Content="Paste" HorizontalAlignment="Left" Margin="798,90,0,0" VerticalAlignment="Top" Width="85" Height="23" Click="PasteButton_Click"/>
+		<Button x:Name="SeedButton" Content="New Seed" HorizontalAlignment="Left" Margin="135,90,0,0" VerticalAlignment="Top" Width="89" Height="23" Click="SeedButton_Click"/>
 		<TabControl x:Name="tabControl" Margin="10,118,10,10">
 			<TabItem Header="Shuffle">
 				<Grid>
