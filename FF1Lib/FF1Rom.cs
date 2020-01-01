@@ -691,9 +691,26 @@ namespace FF1Lib
 					hashable[i] = 0;
 				}
 
-				var Hash = hasher.ComputeHash(hashable);
-				if (ByteArrayToString(Hash) != "2eb382079161d2687b29180f53c53d1badcd63c0d25dbb8f2d86b9d899ee91f4")
+				//zero out character palette data
+				for (int i = 0x390; i < 0x3BC; i++)
 				{
+					hashable[i] = 0;
+				}
+				//palettes continued
+				for (int i = 0x3203C; i < 0x32408; i++)
+				{
+					hashable[i] = 0;
+				}
+				//palettes continued
+				for (int i = 0x3ECA4; i < 0x3ECB0; i++)
+				{
+					hashable[i] = 0;
+				}
+
+				var Hash = hasher.ComputeHash(hashable);
+				if (ByteArrayToString(Hash) != "022cc07015f25c37d617b5c725d3f545b142f9021ff6824db769294d60333d8b")
+				{
+					Console.WriteLine($"Rom hash: {ByteArrayToString(Hash)}");
 					throw new TournamentSafeException("File has been modified");
 				}
 			}
