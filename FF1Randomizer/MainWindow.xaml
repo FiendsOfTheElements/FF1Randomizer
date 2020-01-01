@@ -331,6 +331,7 @@
 					<Label MinHeight="26" x:Name="Member4Label" Grid.Row="4" Content="Member 4"/>
 					<CheckBox x:Name="TavernModeCheckBox" IsChecked="{Binding Flags.RecruitmentMode}" Grid.Row="5" Grid.ColumnSpan="3" IsThreeState="True" Content="Tavern Mode Enabled" ToolTip="Clinics are replaced with Pubs, which allow you to recruit a character class throughout the game."/>
 					<CheckBox x:Name="DisableRevivingInTavernsCheckBox" IsChecked="{Binding Flags.RecruitmentModeHireOnly}" IsEnabled="{Binding Flags.RecruitmentMode}" Grid.Row="6" Grid.ColumnSpan="3" IsThreeState="True" Content="Disallow Revive In Taverns" ToolTip="Cannot revive characters in taverns" Margin="30,5,0,0"/>
+					<CheckBox x:Name="DisableRevivingNoneNonesInTavernsCheckBox" IsChecked="{Binding Flags.RecruitmentModeReplaceOnlyNone}" IsEnabled="{Binding Flags.RecruitmentMode}" Grid.Row="6" Grid.ColumnSpan="3" IsThreeState="True" Content="Only replace Nones in Taverns" Margin="30,5,0,0"/>
 					<Label MinHeight="26" x:Name="Tavern4Label" Grid.Row="7" Content="Recruitable" ToolTip="If Tavern Mode is enabled, choose which classes can appear in the taverns"/>
 					<Label MinHeight="26" x:Name="ForcedLabel" Grid.Column="1" Content="Forced?"/>
 					<CheckBox MinHeight="20" x:Name="Forced1CheckBox" Grid.Column="1" Grid.Row="1" IsThreeState="True" IsChecked="{Binding Flags.FORCED1}"/>

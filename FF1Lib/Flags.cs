@@ -212,6 +212,7 @@ namespace FF1Lib
 		public bool ArmorPermissions { get; set; } = false;
 		public bool? RecruitmentMode { get; set; } = false;
 		public bool? RecruitmentModeHireOnly { get; set; } = false;
+		public bool? RecruitmentModeReplaceOnlyNone { get; set; } = false;
 
 		public bool? ClampMinimumStatScale { get; set; } = false;
 		public bool? ClampMinimumBossStatScale { get; set; } = false;
@@ -645,6 +646,7 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.ArmorPermissions);
 			sum = AddTriState(sum, flags.RecruitmentMode);
 			sum = AddTriState(sum, flags.RecruitmentModeHireOnly);
+			sum = AddTriState(sum, flags.RecruitmentModeReplaceOnlyNone);
 			sum = AddTriState(sum, flags.ClampMinimumStatScale);
 			sum = AddTriState(sum, flags.ClampMinimumBossStatScale);
 			sum = AddTriState(sum, flags.ClampMinimumPriceScale);
@@ -703,6 +705,7 @@ namespace FF1Lib
 				ClampMinimumPriceScale = GetTriState(ref sum),
 				ClampMinimumBossStatScale = GetTriState(ref sum),
 				ClampMinimumStatScale = GetTriState(ref sum),
+				RecruitmentModeReplaceOnlyNone = GetTriState(ref sum),
 				RecruitmentModeHireOnly = GetTriState(ref sum),
 				RecruitmentMode = GetTriState(ref sum),
 				ArmorPermissions = GetBoolean(ref sum),

@@ -378,6 +378,7 @@
 						<p>Enable Tavern Recruitment to unlock the ability to build a party as you go!</p>
 						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="tavernMode" bind-Value="@Flags.RecruitmentMode">Tavern Recruitment Mode</TriStateCheckBox>
 						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.RecruitmentMode" Id="tavernModeHireOnly" bind-Value="@Flags.RecruitmentModeHireOnly">Disable Reviving at Taverns</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.RecruitmentMode" Id="tavernModeReplaceOnlyNone" bind-Value="@Flags.RecruitmentModeReplaceOnlyNone">Only Replace Nones at Taverns</TriStateCheckBox>
 					</div>
 					<div class="table-wrapper">
 						<table>

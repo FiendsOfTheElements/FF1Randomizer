@@ -195,6 +195,7 @@
 		"ArmorPermissions": false,
 		"RecruitmentMode": false,
 		"RecruitmentModeHireOnly": false,
+		"RecruitmentModeReplaceOnlyNone": false,
 
 		"ClampMinimumStatScale": false,
 		"ClampMinimumBossStatScale": false,

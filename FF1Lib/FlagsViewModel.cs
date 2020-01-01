@@ -1403,6 +1403,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RecruitmentModeHireOnly"));
 			}
 		}
+		public bool? RecruitmentModeReplaceOnlyNone
+		{
+			get => Flags.RecruitmentModeReplaceOnlyNone;
+			set
+			{
+				Flags.RecruitmentModeReplaceOnlyNone = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RecruitmentModeReplaceOnlyNone"));
+			}
+		}
 		public bool? FORCED1
 		{
 			get => Flags.FORCED1;
