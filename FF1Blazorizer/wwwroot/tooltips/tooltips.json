@@ -655,7 +655,7 @@
 	},
 	{
 		"Id": "doubleBBCritCheckBox",
-		"title": "Double BB Crit Rate",
+		"title": "Halve BB Crit Rate",
 		"description": "Halves the BB's unarmed crit rate.  (Normal behavior is critrate = Level * 2, with this it is merely critrate = Level)."
 	},
 	{
