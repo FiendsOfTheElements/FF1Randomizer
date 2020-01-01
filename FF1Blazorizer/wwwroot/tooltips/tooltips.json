@@ -604,6 +604,11 @@
 		"description": "Disables the ability to revive Light Warriors at the Pub. When enabled, fallen Light Warriors may only be revived with the LIFE or LIF2 spells, or replaced by the class sold by the Pub."
 	},
 	{
+		"Id": "tavernModeReplaceOnlyNone",
+		"title": "Only Replace Nones at Taverns",
+		"description": "Limit hiring to only replace None characters, this means once you chose a party member for that spot, you are stuck with them."
+	},
+	{
 		"Id": "noPartyShuffleCheckBox",
 		"title": "No Party Shuffle Convenience",
 		"description": "If enabled, the player's party is not automatically rearranged when afflicted with status ailments or slain."

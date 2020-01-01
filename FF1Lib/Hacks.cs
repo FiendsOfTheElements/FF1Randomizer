@@ -335,7 +335,7 @@ namespace FF1Lib
 
 			if (!flags.RecruitmentModeReplaceOnlyNone ?? false)
 			{
-				PutInBank(0x0E, 0x9DA0, Blob.FromHex("A90060"));
+				PutInBank(0x0E, 0x9DAA, Blob.FromHex("A90060"));
 			}
 
 
