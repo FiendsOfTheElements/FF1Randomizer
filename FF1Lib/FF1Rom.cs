@@ -940,7 +940,7 @@ namespace FF1Lib
 		{
 			// of the 256 entries in the battle RNG table, the 98th entry (index 97) is a duplicate '00' where '95' hex / 149 int is absent.
 			// you could arbitrarily choose the other '00', the 111th entry (index 110), to replace instead
-			battleRng[97] = Blob.FromHex("95")
+			battleRng[97] = Blob.FromHex("95");
 		}
 
 		public void ShuffleRng(MT19337 rng)
@@ -954,7 +954,7 @@ namespace FF1Lib
 
 			if (flags.FixMissingBattleRngEntry)
 			{
-				FixMissingBattleRngEntry(battleRng)
+				FixMissingBattleRngEntry(battleRng);
 			}
 
 			battleRng.Shuffle(rng);
