@@ -1,5 +1,3 @@
-ail_or_class = $6100
-cmp_val = $10
 DSBox = $aa3b
 DSComplexString = $aa32
 CommonShopLoop_Cmd = $a907
@@ -20,6 +18,12 @@ ShopFrameNoCursor = $A743
 TavernModeClassLut = $9d0a
 HireA__Text = $9db0
 StringBuff+10 = $0310
+Clinic_InitialText = $9D58
+BuyOrRevive_Routine = $9d1C
+CBuildNameString  = $A6ED
+CSelectTarget = $a6d7
+joy_a = $24
+joy_b = $25
 
 * = $9d12
 ;Revive Hire text options
@@ -105,7 +109,7 @@ TextLoop            iny
 
 
 * = $9d95
-
+BuyOrRevive_Routine
                     lda $030d
                     bne hire
 
@@ -130,6 +134,7 @@ TextLoop            iny
 
 
                     * = $a5a1
+
 
 
 
@@ -228,14 +233,18 @@ ClassChangeSkip               lda #$01
                     lda #$21
                     jsr DSDialogueBox
 
-
+RetryLoop           jsr ShopFrameNoCursor
+                    lda *$24
+                    ora *$25
+                    beq RetryLoop
+                    jmp EnterShop_Clinic
 
 
 ExitLoop            jsr ShopFrameNoCursor
                     lda *$24
                     ora *$25
                     beq ExitLoop
-                    jmp EnterShop_Clinic
+                    jmp CShop_exit
 
 NobodyInList        LDA #$23
                     JSR DSDialogueBox   
@@ -338,4 +347,3 @@ La6f3
                     cmp #$01
                     rts
 
-     
