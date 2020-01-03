@@ -36,6 +36,7 @@ namespace FF1Lib
 		public bool RebalanceSpells { get; set; } = false;
 
 		public bool? Rng { get; set; } = false;
+		public bool FixMissingBattleRngEntry { get; set; } = false;
 		public bool? EverythingUnrunnable { get; set; } = false;
 		public bool? EnemyFormationsUnrunnable { get; set; } = false;
 		public bool? EnemyFormationsSurprise { get; set; } = false;
@@ -499,6 +500,7 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.ItemMagic);
 			sum = AddBoolean(sum, flags.RebalanceSpells);
 			sum = AddTriState(sum, flags.Rng);
+			sum = AddBoolean(sum, flags.FixMissingBattleRngEntry);
 			sum = AddTriState(sum, flags.EverythingUnrunnable);
 			sum = AddTriState(sum, flags.EnemyFormationsUnrunnable);
 			sum = AddTriState(sum, flags.EnemyFormationsSurprise);
@@ -854,6 +856,7 @@ namespace FF1Lib
 				EnemyFormationsUnrunnable = GetTriState(ref sum),
 				EverythingUnrunnable = GetTriState(ref sum),
 				Rng = GetTriState(ref sum),
+				FixMissingBattleRngEntry = GetBoolean(ref sum),
 				RebalanceSpells = GetBoolean(ref sum),
 				ItemMagic = GetTriState(ref sum),
 				MagicPermissions = GetTriState(ref sum),

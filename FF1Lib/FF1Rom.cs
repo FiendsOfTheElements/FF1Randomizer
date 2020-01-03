@@ -936,6 +936,13 @@ namespace FF1Lib
 				hash));
 		}
 
+		public void FixMissingBattleRngEntry(List<Blob> battleRng)
+		{
+			// of the 256 entries in the battle RNG table, the 98th entry (index 97) is a duplicate '00' where '95' hex / 149 int is absent.
+			// you could arbitrarily choose the other '00', the 111th entry (index 110), to replace instead
+			battleRng[97] = Blob.FromHex("95")
+		}
+
 		public void ShuffleRng(MT19337 rng)
 		{
 			var rngTable = Get(RngOffset, RngSize).Chunk(1).ToList();
@@ -944,6 +951,12 @@ namespace FF1Lib
 			Put(RngOffset, rngTable.SelectMany(blob => blob.ToBytes()).ToArray());
 
 			var battleRng = Get(BattleRngOffset, RngSize).Chunk(1).ToList();
+
+			if (flags.FixMissingBattleRngEntry)
+			{
+				FixMissingBattleRngEntry(battleRng)
+			}
+
 			battleRng.Shuffle(rng);
 
 			Put(BattleRngOffset, battleRng.SelectMany(blob => blob.ToBytes()).ToArray());

@@ -75,6 +75,11 @@
 		"description": "RNG Table: Shuffles the RNG Table and the Battle RNG, changing encounters and the distance between encounters while leaving overall probabilites unchanged."
 	},
 	{
+		"Id": "fixMissingBattleRngEntry",
+		"title": "Fix Missing Battle RNG Entry",
+		"description": "Fix Missing Battle RNG Entry: The vanilla Battle RNG table has two 00s out of 256 hex values. If checked, this flag replaces one of them with 95, the missing hex value."
+	},
+	{
 		"Id": "enemyScriptsCheckBox",
 		"title": "Enemy Scripts",
 		"screenshot": "enemyScriptsCheckBox.png",

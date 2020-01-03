@@ -28,6 +28,7 @@
 		"ItemMagic": false,
 
 		"Rng": false,
+		"FixMissingBattleRngEntry": false,
 		"FormationShuffleMode": 0,
 		"EnemyFormationsUnrunnable": false,
 		"EnemyFormationsSurprise": false,
