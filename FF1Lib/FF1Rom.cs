@@ -540,6 +540,17 @@ namespace FF1Lib
 				FixWeaponStats();
 			}
 
+			//needs to go after item magic
+			if ((bool)flags.RandomWeaponBonus)
+			{
+				RandomWeaponBonus(rng);
+			}
+
+			if ((bool)flags.RandomArmorBonus)
+			{
+				RandomArmorBonus(rng);
+			}
+
 			if (flags.ChanceToRun)
 			{
 				FixChanceToRun();

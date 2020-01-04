@@ -233,6 +233,8 @@ namespace FF1Lib
 		public bool AllSpellLevelsForKnightNinja { get; set; } = false;
 		public bool? FreeTail { get; set; } = false;
 		public bool? SpellcrafterRetainPermissions { get; set; } = false;
+		public bool? RandomWeaponBonus { get; set; } = false;
+		public bool? RandomArmorBonus { get; set; } = false;
 
 		public MDEFGrowthMode MDefMode { get; set; } = MDEFGrowthMode.None;
 
@@ -665,6 +667,8 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.AllSpellLevelsForKnightNinja);
 			sum = AddTriState(sum, flags.FreeTail);
 			sum = AddTriState(sum, flags.SpellcrafterRetainPermissions);
+			sum = AddTriState(sum, flags.RandomWeaponBonus);
+			sum = AddTriState(sum, flags.RandomArmorBonus);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(FormationShuffleMode)).Cast<int>().Max() + 1, (int)flags.FormationShuffleMode);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(MDEFGrowthMode)).Cast<int>().Max() + 1, (int)flags.MDefMode);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(WorldWealthMode)).Cast<int>().Max() + 1, (int)flags.WorldWealth);
@@ -687,6 +691,8 @@ namespace FF1Lib
 				WorldWealth = (WorldWealthMode)GetNumeric(ref sum, Enum.GetValues(typeof(WorldWealthMode)).Cast<int>().Max() + 1),
 				MDefMode = (MDEFGrowthMode)GetNumeric(ref sum, Enum.GetValues(typeof(MDEFGrowthMode)).Cast<int>().Max() + 1),
 				FormationShuffleMode = (FormationShuffleMode)GetNumeric(ref sum, Enum.GetValues(typeof(FormationShuffleMode)).Cast<int>().Max() + 1),
+				RandomArmorBonus = GetTriState(ref sum),
+				RandomWeaponBonus = GetTriState(ref sum),
 				SpellcrafterRetainPermissions = GetTriState(ref sum),
 				FreeTail = GetTriState(ref sum),
 				AllSpellLevelsForKnightNinja = GetBoolean(ref sum),

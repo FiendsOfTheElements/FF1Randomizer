@@ -223,6 +223,16 @@
 		"description": "The rat's TAIL required for promotion is in your inventory when the game begins.'"
 	},
 	{
+		"Id": "RandomWeaponBonus",
+		"title": "Random Weapon Bonus",
+		"description": "Gives each weapon a random bonus of +5 to -5. This will increase or decrease its damage by 2 per bonus, hit by 3 per bonus, crit by 1 per bonus."
+	},
+	{
+		"Id": "RandomArmorBonus",
+		"title": "Random Armor Bonus",
+		"description": "Gives each armor a random bonus of +5 to -5. This will increase or decrease its absorb by 1 per bonus (2 for body armor) and reduce its weight penalty by 1 per bonus (2 for body armor)."
+	},
+	{
 		"Id": "incentivizeFreeNPCsCheckBox",
 		"title": "Free NPCs",
 		"screenshot": "incentivizeFreeNPCsCheckBox.png",
