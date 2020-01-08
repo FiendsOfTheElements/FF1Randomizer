@@ -1958,5 +1958,25 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SpellcrafterRetainPermissions"));
 			}
 		}
+
+		public bool? RandomWeaponBonus
+		{
+			get => Flags.RandomWeaponBonus;
+			set
+			{
+				Flags.RandomWeaponBonus = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomWeaponBonus"));
+			}
+		}
+
+		public bool? RandomArmorBonus
+		{
+			get => Flags.RandomArmorBonus;
+			set
+			{
+				Flags.RandomWeaponBonus = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomArmorBonus"));
+			}
+		}
 	}
 }
