@@ -15,9 +15,9 @@ namespace FF1Lib
 	public partial class FF1Rom : NesRom
 	{
 #if DEBUG
-		public const string Version = "3.0.2 Beta";
+		public const string Version = "3.1.0 Beta";
 #else
-		public const string Version = "3.0.2";
+		public const string Version = "3.1.0";
 #endif
 
 		public const int RngOffset = 0x7F100;
