@@ -17,7 +17,7 @@ namespace FF1Lib
 #if DEBUG
 		public const string Version = "3.0.1 Beta";
 #else
-		public const string Version = "3.0.1";
+		public const string Version = "3.0.0";
 #endif
 
 		public const int RngOffset = 0x7F100;
