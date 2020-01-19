@@ -350,6 +350,7 @@
 					<StackPanel Orientation="Vertical" Grid.Column="1">
 						<CheckBox x:Name="FreeAirshipCheckBox" IsChecked="{Binding Flags.FreeAirship}" Content="Free Airship" ToolTip="The Airship is available at the start of the game"/>
 						<CheckBox x:Name="FreeBridgeCheckBox" IsChecked="{Binding Flags.FreeBridge}" Content="Free Bridge" ToolTip="The Bridge is available at the start of the game"/>
+						<CheckBox x:Name="FreeCanalCheckBox" IsChecked="{Binding Flags.FreeCanal}" Content="Free Canal" ToolTip="The Canal is available at the start of the game"/>
 						<CheckBox x:Name="EasyModeCheckBox" IsChecked="{Binding Flags.EasyMode}" Content="Easy Mode" ToolTip="Encounter rate cut to 20% and all Enemy HP cut to 10% (after any randomizations)"/>
 					</StackPanel>
 				</Grid>

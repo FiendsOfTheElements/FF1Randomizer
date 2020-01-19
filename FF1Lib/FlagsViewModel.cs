@@ -867,6 +867,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeOrbs"));
 			}
 		}
+		public bool FreeCanal
+		{
+			get => Flags.FreeCanal;
+			set
+			{
+				Flags.FreeCanal = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeCanal"));
+			}
+		}
 
 		public bool FreeOrbsEnabled => !ShardHunt;
 
