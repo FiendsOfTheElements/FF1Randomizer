@@ -1,15 +1,13 @@
-﻿using System;
+﻿using RomUtilities;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using RomUtilities;
 
 namespace FF1Lib
 {
 	public partial class FF1Rom : NesRom
 	{
-		private const Item ReplacementItem = Item.Cabin;
-
 		public const int TreasureOffset = 0x03100;
 		public const int TreasureSize = 1;
 		public const int TreasurePoolCount = 256;
@@ -30,19 +28,19 @@ namespace FF1Lib
 													IItemPlacementFlags flags,
 													IncentiveData incentivesData,
 													ItemShopSlot caravanItemLocation,
-                                                    OverworldMap overworldMap,
+													OverworldMap overworldMap,
 													TeleportShuffle teleporters)
 		{
 			Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullFloorRequirements = overworldMap.FullLocationRequirements;
 			Dictionary<MapLocation, OverworldTeleportIndex> overridenOverworld = overworldMap.OverriddenOverworldLocations;
 
-			var vanillaNPCs = !flags.NPCItems && !flags.NPCFetchItems;
+			var vanillaNPCs = !(flags.NPCItems ?? false) && !(flags.NPCFetchItems ?? false);
 			if (!vanillaNPCs)
 			{
 				EnableBridgeShipCanalAnywhere();
 				EnableNPCsGiveAnyItem();
 				// This extends Vampire's routine to set a flag for Sarda, but it also clobers Sarda's routine
-				if (!flags.EarlySarda)
+				if (!(bool)flags.EarlySarda)
 				{
 					Put(0x393E1, Blob.FromHex("207F90A51160"));
 				}
@@ -59,45 +57,25 @@ namespace FF1Lib
 				Debug.Assert(shardsAdded == TotalOrbsToInsert);
 			}
 
-			var placedItems =
-				ItemPlacement.PlaceSaneItems(rng,
-											flags,
-											incentivesData,
-											treasurePool,
-											caravanItemLocation,
-											overworldMap);
-
-			if (flags.FreeBridge)
-			{
-				placedItems = placedItems.Select(x => x.Item != Item.Bridge ? x : ItemPlacement.NewItemPlacement(x, ReplacementItem)).ToList();
-			}
-			if (flags.FreeAirship)
-			{
-				placedItems = placedItems.Select(x => x.Item != Item.Floater ? x : ItemPlacement.NewItemPlacement(x, ReplacementItem)).ToList();
-			}
-			if (flags.FreeCanal)
-			{
-				placedItems = placedItems.Select(x => x.Item != Item.Canal ? x : ItemPlacement.NewItemPlacement(x, ReplacementItem)).ToList();
-			}
-			if (flags.ShortToFR)
-			{
-				placedItems = placedItems.Select(x => x.Item != Item.Lute ? x : ItemPlacement.NewItemPlacement(x, ReplacementItem)).ToList();
-			}
-
+			ItemPlacement placement = ItemPlacement.Create(flags, incentivesData, treasurePool, caravanItemLocation, overworldMap);
+			var placedItems = placement.PlaceSaneItems(rng);
+			
 			// Output the results to the ROM
 			foreach (var item in placedItems.Where(x => !x.IsUnused && x.Address < 0x80000 && (!vanillaNPCs || x is TreasureChest)))
 			{
 				//Debug.WriteLine(item.SpoilerText);
 				item.Put(this);
 			}
-
-            // Move the ship someplace closer to where it really ends up.
-            MapLocation shipLocation = placedItems.Find(reward => reward.Item == Item.Ship).MapLocation;
-            if (overridenOverworld != null && overridenOverworld.TryGetValue(shipLocation, out var overworldIndex))
+			// Move the ship someplace closer to where it really ends up.
+			if (!(flags.FreeShip ?? false))
 			{
-				shipLocation = teleporters.OverworldMapLocations.TryGetValue(overworldIndex, out var vanillaShipLocation) ? vanillaShipLocation : shipLocation;
+				MapLocation shipLocation = placedItems.Find(reward => reward.Item == Item.Ship).MapLocation;
+				if (overridenOverworld != null && overridenOverworld.TryGetValue(shipLocation, out var overworldIndex))
+				{
+					shipLocation = teleporters.OverworldMapLocations.TryGetValue(overworldIndex, out var vanillaShipLocation) ? vanillaShipLocation : shipLocation;
+				}
+				MoveShipToRewardSource(shipLocation);
 			}
-			MoveShipToRewardSource(shipLocation);
 			return placedItems;
 		}
 
@@ -260,11 +238,6 @@ namespace FF1Lib
 			if (!ItemLocations.ShipLocations.TryGetValue(vanillaMapLocation, out Blob location))
 			{
 				location = Dock.Coneria;
-				Console.WriteLine($"Ship at {vanillaMapLocation} defaults to Coneria.");
-			}
-			else
-			{
-				Console.WriteLine($"Ship at {vanillaMapLocation}.");
 			}
 
 			Put(0x3000 + UnsramIndex.ShipX, location);

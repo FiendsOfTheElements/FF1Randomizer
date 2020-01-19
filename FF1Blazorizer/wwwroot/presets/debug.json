@@ -3,6 +3,7 @@
 
 	"Flags": {
 
+		"Spoilers": true,
 		"Shops": true,
 		"Treasures": true,
 		"NPCItems": true,
@@ -12,6 +13,7 @@
 		"RandomLoot": true,
 		"WeaponPermissions": true,
 		"ArmorPermissions": true,
+		"RecruitmentMode": true,
 
 		"ShardHunt": false,
 		"ExtraShards": false,
@@ -39,8 +41,9 @@
 
 		"WarMECHMode": 1,
 		"OrdealsPillars": true,
-		"SkyCastle4FTeleporters": false,
+		"SkyCastle4FMazeMode": 2,
 		"TitansTrove": true,
+		"LefeinShops": true,
 		"ConfusedOldMen": true,
 		"AllowUnsafeMelmond": true,
 
@@ -52,9 +55,12 @@
 		"Towns": true,
 
 		"IncentivizeFreeNPCs": true,
-		"IncentivizeFetchNPCs": false,
-		"IncentivizeTail": false,
-		"IncentivizeFetchItems": false,
+		"IncentivizeFetchNPCs": true,
+		"IncentivizeTail": true,
+		"IncentivizeMainItems": true,
+		"IncentivizeFetchItems": true,
+		"IncentivizeAirship": true,
+		"IncentivizeCanoeItem": true,
 
 		"IncentivizeMarsh": false,
 		"IncentivizeEarth": false,
@@ -83,13 +89,14 @@
 
 		"EarlySarda": true,
 		"EarlySage": true,
-		"CrownlessOrdeals": true,
+		"EarlyOrdeals": true,
 		"ShuffleObjectiveNPCs": true,
 		"OnlyRequireGameIsBeatable": false,
 
 		"FreeBridge": false,
 		"FreeAirship": false,
 		"FreeOrbs": false,
+		"FreeCanal": false,
 		"StartingGold": false,
 		"WrapStatOverflow": false,
 		"WrapPriceOverflow": false,
@@ -102,6 +109,7 @@
 		"Dash": true,
 		"BuyTen": true,
 		"EnableCritNumberDisplay": true,
+		"NPCSwatter": true,
 
 		"IdentifyTreasures": true,
 		"WaitWhenUnrunnable": true,
@@ -110,12 +118,15 @@
 		"WeaponStats": true,
 		"ChanceToRun": true,
 		"SpellBugs": true,
+		"RebalanceSpells": true,
 		"BlackBeltAbsorb": true,
+		"BlackBeltMDEF": true,
 
 		"EnemyStatusAttackBug": true,
 		"EnemySpellsTargetingAllies": true,
 		"EnemyElementalResistancesBug": true,
 		"ImproveTurnOrderRandomization": true,
+		"FixHitChanceCap": true,
 
 		"ClampMinimumStatScale": true,
 		"ClampMinimumBossStatScale": true,
@@ -128,9 +139,39 @@
 		"ProgressiveScaleMode": 1,
 		"EncounterRate": 15.0,
 		"DungeonEncounterRate": 15.0,
-		"ForcedPartyMembers": 2,
-		"WorldWealth": 0
+		"WorldWealth": 0,
 
+		"FIGHTER1": true,
+		"THIEF1": true,
+		"BLACK_BELT1": true,
+		"RED_MAGE1": true,
+		"WHITE_MAGE1": true,
+		"BLACK_MAGE1": true,
+		"FIGHTER2": true,
+		"THIEF2": true,
+		"BLACK_BELT2": true,
+		"RED_MAGE2": true,
+		"WHITE_MAGE2": true,
+		"BLACK_MAGE2": true,
+		"FIGHTER3": true,
+		"THIEF3": true,
+		"BLACK_BELT3": true,
+		"RED_MAGE3": true,
+		"WHITE_MAGE3": true,
+		"BLACK_MAGE3": true,
+		"FIGHTER4": true,
+		"THIEF4": true,
+		"BLACK_BELT4": true,
+		"RED_MAGE4": true,
+		"WHITE_MAGE4": true,
+		"BLACK_MAGE4": true,
+		"NONE_CLASS2": false,
+		"NONE_CLASS3": true,
+		"NONE_CLASS4": true,
+		"FORCED1": true,
+		"FORCED2": true,
+		"FORCED3": false,
+		"FORCED4": false
 	}
 
 }

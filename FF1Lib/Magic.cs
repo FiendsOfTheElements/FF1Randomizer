@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using RomUtilities;
 
 namespace FF1Lib
@@ -45,18 +42,7 @@ namespace FF1Lib
 
 		public void ShuffleMagicLevels(MT19337 rng, bool keepPermissions)
 		{
-			var spells = Get(MagicOffset, MagicSize * MagicCount).Chunk(MagicSize);
-			var names = Get(MagicNamesOffset, MagicNameSize * MagicCount).Chunk(MagicNameSize);
-			var pointers = Get(MagicTextPointersOffset, MagicCount);
-
-			var magicSpells = spells.Select((spell, i) => new MagicSpell
-			{
-				Index = (byte)i,
-				Data = spell,
-				Name = names[i],
-				TextPointer = pointers[i]
-			})
-			.ToList();
+			var magicSpells = GetSpells();
 
 			// First we have to un-interleave white and black spells.
 			var whiteSpells = magicSpells.Where((spell, i) => (i / 4) % 2 == 0).ToList();
@@ -162,8 +148,23 @@ namespace FF1Lib
 			}
 
 			// Confused enemies are supposed to cast FIRE, so figure out where FIRE ended up.
-			var newFireSpellIndex = shuffledSpells.FindIndex(spell => spell.Data == spells[FireSpellIndex]);
+			var newFireSpellIndex = shuffledSpells.FindIndex(spell => spell.Data == magicSpells[FireSpellIndex].Data);
 			Put(ConfusedSpellIndexOffset, new[] { (byte)newFireSpellIndex });
+		}
+
+		List<MagicSpell> GetSpells() {
+			var spells = Get(MagicOffset, MagicSize * MagicCount).Chunk(MagicSize);
+			var names = Get(MagicNamesOffset, MagicNameSize * MagicCount).Chunk(MagicNameSize);
+			var pointers = Get(MagicTextPointersOffset, MagicCount);
+
+			return spells.Select((spell, i) => new MagicSpell
+			{
+				Index = (byte)i,
+				Data = spell,
+				Name = names[i],
+				TextPointer = pointers[i]
+			})
+			.ToList();
 		}
 	}
 }

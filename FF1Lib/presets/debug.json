@@ -3,6 +3,7 @@
 
 	"Flags": {
 
+		"Spoilers": true,
 		"Shops": true,
 		"Treasures": true,
 		"NPCItems": true,
@@ -12,6 +13,7 @@
 		"RandomLoot": true,
 		"WeaponPermissions": true,
 		"ArmorPermissions": true,
+		"RecruitmentMode": true,
 
 		"ShardHunt": false,
 		"ExtraShards": false,
@@ -24,6 +26,7 @@
 		"MagicLevels": true,
 		"MagicPermissions": false,
 		"ItemMagic": true,
+		"RebalanceSpells": true,
 
 		"Rng": true,
 		"FormationShuffleMode": 1,
@@ -39,7 +42,7 @@
 
 		"WarMECHMode": "Patrolling",
 		"OrdealsPillars": true,
-		"SkyCastle4FTeleporters": false,
+		"SkyCastle4FMazeMode": "Maze",
 		"TitansTrove": true,
 		"ConfusedOldMen": true,
 		"AllowUnsafeMelmond": true,
@@ -83,7 +86,7 @@
 
 		"EarlySarda": true,
 		"EarlySage": true,
-		"CrownlessOrdeals": true,
+		"EarlyOrdeals": true,
 		"ShuffleObjectiveNPCs": true,
 		"OnlyRequireGameIsBeatable": false,
 
@@ -103,6 +106,7 @@
 		"Dash": true,
 		"BuyTen": true,
 		"EnableCritNumberDisplay": true,
+		"NPCSwatter": true,
 
 		"IdentifyTreasures": true,
 		"WaitWhenUnrunnable": true,
@@ -112,11 +116,13 @@
 		"ChanceToRun": true,
 		"SpellBugs": true,
 		"BlackBeltAbsorb": true,
+		"BlackBeltMDEF": true,
 
 		"EnemyStatusAttackBug": true,
 		"EnemySpellsTargetingAllies": true,
 		"EnemyElementalResistancesBug": true,
 		"ImproveTurnOrderRandomization": true,
+		"FixHitChanceCap": true,
 
 		"ClampMinimumStatScale": true,
 		"ClampMinimumBossStatScale": true,

@@ -1,7 +1,22 @@
 ﻿@page "/"
 
-<h1>Hello, world!</h1>
-
-Welcome to your new app.
-
-<SurveyPrompt Title="How is Blazor working for you?" />
+<div id="welcome" class="content px-4">
+	<h1>Final Fantasy Randomizer<br />Version @FF1Lib.FF1Rom.Version</h1>
+	<p>We've found the TAIL and we're promoting the Website!</p>
+	<div class="col-md-6 main-menu">
+		<div class="is-dark nes-container">
+			<a href="/Randomize" class="row main-menu-row">
+				<div class="col-3"><i class="nes-logo"></i></div>
+				<div class="col-9">Begin a New Game!</div>
+			</a>
+			<a href="https://discord.gg/95gbpFd" class="row main-menu-row">
+				<div class="col-3"><i class="nes-icon"><span class="discord-logo" /></i></div>
+				<div class="col-9">Final Fantasy 1 Randomizer Discord</div>
+			</a>
+			<a href="https://discord.gg/s7CRejk" class="row main-menu-row">
+				<div class="col-3"><i class="nes-icon"><span class="discord-logo" /></i></div>
+				<div class="col-9">FFR Developer's Discord</div>
+			</a>
+		</div>
+	</div>
+</div>

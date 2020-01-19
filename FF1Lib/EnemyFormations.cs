@@ -52,6 +52,23 @@ namespace FF1Lib
 			Put(FormationsOffset, formations.SelectMany(formation => formation.ToBytes()).ToArray());
 		}
 
+		public void CompletelyUnrunnable()
+		{
+			List<Blob> formations = Get(FormationsOffset, FormationSize * NormalFormationCount).Chunk(FormationSize);
+			formations.ForEach(formation => formation[UnrunnableOffset] |= 0x01);
+			Put(FormationsOffset, formations.SelectMany(formation => formation.ToBytes()).ToArray());
+		}
+
+		private void FiendShuffle(MT19337 rng)
+		{
+			//Shuffle the four Fiend1 fights.
+			//Specifically, shuffle what fight triggers during dialog with each of the Elemental Orbs
+			int Fiend1Offset = 119;
+			List<Blob> fiendFormations = Get(FormationsOffset + FormationSize*Fiend1Offset, FormationSize * 4).Chunk(FormationSize);
+			fiendFormations.Shuffle(rng);
+			Put(FormationsOffset + FormationSize * Fiend1Offset, fiendFormations.SelectMany(formation => formation.ToBytes()).ToArray());
+		}
+
 		public void ShuffleSurpriseBonus(MT19337 rng)
 		{
 			// Just like the vanilla game this doesn't care if a high surprise enemy is unrunnable
@@ -62,6 +79,12 @@ namespace FF1Lib
 
 			formations = formations.Zip(chances, (formation, chance) => { formation[SurpriseOffset] = chance; return formation; }).ToList();
 			Put(FormationsOffset, formations.SelectMany(formation => formation.ToBytes()).ToArray());
+		}
+
+		public void AllowStrikeFirstAndSurprise()
+		{
+			PutInBank(0x0C, 0x93D4, Blob.FromHex("EAEA"));
+			PutInBank(0x0C, 0xA3E3, Blob.FromHex("EAEA")); // we dont want to be able to run if we get a first strike
 		}
 
 		public void MakeWarMECHUnrunnable()

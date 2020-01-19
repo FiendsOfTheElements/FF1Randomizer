@@ -145,7 +145,7 @@ namespace FF1Lib
 
 		private readonly List<FF1Class> DefaultChoices = Enumerable.Range(0, 6).Select(x => (FF1Class)x).ToList();
 
-		void updateCharacterFromOptions(int slotNumber, bool forced, IList<FF1Class> options, MT19337 rng)
+		void UpdateCharacterFromOptions(int slotNumber, bool forced, IList<FF1Class> options, MT19337 rng)
 		{
 			const int lut_PtyGenBuf = 0x784AA;       // offset for party generation buffer LUT
 			const int lut_AllowedClasses = 0x78110;  // offset for allowed classes per slot LUT
@@ -192,40 +192,40 @@ namespace FF1Lib
 			var options = new List<FF1Class>();
 
 			// Do each slot - so ugly!
-			if (flags.FIGHTER1) options.Add(FF1Class.Fighter);
-			if (flags.THIEF1) options.Add(FF1Class.Thief);
-			if (flags.BLACK_BELT1) options.Add(FF1Class.BlackBelt);
-			if (flags.RED_MAGE1) options.Add(FF1Class.RedMage);
-			if (flags.WHITE_MAGE1) options.Add(FF1Class.WhiteMage);
-			if (flags.BLACK_MAGE1) options.Add(FF1Class.BlackMage);
-			updateCharacterFromOptions(1, flags.FORCED1, options, rng);
+			if ((flags.FIGHTER1 ?? false)) options.Add(FF1Class.Fighter);
+			if ((flags.THIEF1 ?? false)) options.Add(FF1Class.Thief);
+			if ((flags.BLACK_BELT1 ?? false)) options.Add(FF1Class.BlackBelt);
+			if ((flags.RED_MAGE1 ?? false)) options.Add(FF1Class.RedMage);
+			if ((flags.WHITE_MAGE1 ?? false)) options.Add(FF1Class.WhiteMage);
+			if ((flags.BLACK_MAGE1 ?? false)) options.Add(FF1Class.BlackMage);
+			UpdateCharacterFromOptions(1, (flags.FORCED1 ?? false), options, rng);
 
-			if (flags.FIGHTER2) options.Add(FF1Class.Fighter);
-			if (flags.THIEF2) options.Add(FF1Class.Thief);
-			if (flags.BLACK_BELT2) options.Add(FF1Class.BlackBelt);
-			if (flags.RED_MAGE2) options.Add(FF1Class.RedMage);
-			if (flags.WHITE_MAGE2) options.Add(FF1Class.WhiteMage);
-			if (flags.BLACK_MAGE2) options.Add(FF1Class.BlackMage);
-			if (flags.NONE_CLASS2) options.Add(FF1Class.None);
-			updateCharacterFromOptions(2, flags.FORCED2, options, rng);
+			if ((flags.FIGHTER2 ?? false)) options.Add(FF1Class.Fighter);
+			if ((flags.THIEF2 ?? false)) options.Add(FF1Class.Thief);
+			if ((flags.BLACK_BELT2 ?? false)) options.Add(FF1Class.BlackBelt);
+			if ((flags.RED_MAGE2 ?? false)) options.Add(FF1Class.RedMage);
+			if ((flags.WHITE_MAGE2 ?? false)) options.Add(FF1Class.WhiteMage);
+			if ((flags.BLACK_MAGE2 ?? false)) options.Add(FF1Class.BlackMage);
+			if ((flags.NONE_CLASS2 ?? false)) options.Add(FF1Class.None);
+			UpdateCharacterFromOptions(2, (flags.FORCED2 ?? false), options, rng);
 
-			if (flags.FIGHTER3) options.Add(FF1Class.Fighter);
-			if (flags.THIEF3) options.Add(FF1Class.Thief);
-			if (flags.BLACK_BELT3) options.Add(FF1Class.BlackBelt);
-			if (flags.RED_MAGE3) options.Add(FF1Class.RedMage);
-			if (flags.WHITE_MAGE3) options.Add(FF1Class.WhiteMage);
-			if (flags.BLACK_MAGE3) options.Add(FF1Class.BlackMage);
-			if (flags.NONE_CLASS3) options.Add(FF1Class.None);
-			updateCharacterFromOptions(3, flags.FORCED3, options, rng);
+			if ((flags.FIGHTER3 ?? false)) options.Add(FF1Class.Fighter);
+			if ((flags.THIEF3 ?? false)) options.Add(FF1Class.Thief);
+			if ((flags.BLACK_BELT3 ?? false)) options.Add(FF1Class.BlackBelt);
+			if ((flags.RED_MAGE3 ?? false)) options.Add(FF1Class.RedMage);
+			if ((flags.WHITE_MAGE3 ?? false)) options.Add(FF1Class.WhiteMage);
+			if ((flags.BLACK_MAGE3 ?? false)) options.Add(FF1Class.BlackMage);
+			if ((flags.NONE_CLASS3 ?? false)) options.Add(FF1Class.None);
+			UpdateCharacterFromOptions(3, (flags.FORCED3 ?? false), options, rng);
 
-			if (flags.FIGHTER4) options.Add(FF1Class.Fighter);
-			if (flags.THIEF4) options.Add(FF1Class.Thief);
-			if (flags.BLACK_BELT4) options.Add(FF1Class.BlackBelt);
-			if (flags.RED_MAGE4) options.Add(FF1Class.RedMage);
-			if (flags.WHITE_MAGE4) options.Add(FF1Class.WhiteMage);
-			if (flags.BLACK_MAGE4) options.Add(FF1Class.BlackMage);
-			if (flags.NONE_CLASS4) options.Add(FF1Class.None);
-			updateCharacterFromOptions(4, flags.FORCED4, options, rng);
+			if ((flags.FIGHTER4 ?? false)) options.Add(FF1Class.Fighter);
+			if ((flags.THIEF4 ?? false)) options.Add(FF1Class.Thief);
+			if ((flags.BLACK_BELT4 ?? false)) options.Add(FF1Class.BlackBelt);
+			if ((flags.RED_MAGE4 ?? false)) options.Add(FF1Class.RedMage);
+			if ((flags.WHITE_MAGE4 ?? false)) options.Add(FF1Class.WhiteMage);
+			if ((flags.BLACK_MAGE4 ?? false)) options.Add(FF1Class.BlackMage);
+			if ((flags.NONE_CLASS4 ?? false)) options.Add(FF1Class.None);
+			UpdateCharacterFromOptions(4, (flags.FORCED4 ?? false), options, rng);
 
 			// Load stats for None
 			PutInBank(0x1F, 0xC783, Blob.FromHex("2080B3C931F053EA"));
@@ -261,6 +261,75 @@ namespace FF1Lib
 			// Rewrite class promotion to not promote NONEs, See 0E_95AE_DoClassChange.asm
 			PutInBank(0x0E, 0x95AE, Blob.FromHex("A203BCD095B900613006186906990061CA10EFE65660"));
 			PutInBank(0x0E, 0x95D0, Blob.FromHex("C0804000")); // lut used by the above code
+		}
+
+		public void PubReplaceClinic(MT19337 rng, Flags flags)
+		{
+			// Copy some CHR data to make the Tavern look more like one.
+			const int ShopTileDataOffet = 0x24000;
+			const int TileSize = 16;
+			const int ArmorTileOffset = 14 * 1 * TileSize;
+			const int ClinicTileOffset = 14 * 4 * TileSize;
+			const int ItemTileOffset = 14 * 6 * TileSize;
+			const int CaravanTileOffset = 14 * 7 * TileSize;
+			const int DecorationOffset = TileSize * 4;
+			const int VendorOffset = TileSize * 8;
+
+			Put(ShopTileDataOffet + ClinicTileOffset, Get(ShopTileDataOffet + CaravanTileOffset, TileSize * 4)); // Tablecloth
+			Put(ShopTileDataOffet + ClinicTileOffset + DecorationOffset, Get(ShopTileDataOffet + ItemTileOffset + DecorationOffset, TileSize * 4)); // Barrels of fine ale
+			Put(ShopTileDataOffet + ClinicTileOffset + VendorOffset, Get(ShopTileDataOffet + ArmorTileOffset + VendorOffset, TileSize * 6)); // Armorer tending bar
+			Put(0x03250, Get(0x03258, 4)); // Caravan palette
+
+			List<byte> options = new List<byte> { };
+			if ((flags.TAVERN1 ?? false)) options.Add(0x0);
+			if ((flags.TAVERN2 ?? false)) options.Add(0x1);
+			if ((flags.TAVERN3 ?? false)) options.Add(0x2);
+			if ((flags.TAVERN4 ?? false)) options.Add(0x3);
+			if ((flags.TAVERN5 ?? false)) options.Add(0x4);
+			if ((flags.TAVERN6 ?? false)) options.Add(0x5);
+
+			if (options.Count == 0) options = new List<byte> { 0x0, 0x1, 0x2, 0x3, 0x4, 0x5 };
+			List<byte> pub_lut = new List<byte> { };
+			while (pub_lut.Count < 7)
+			{
+				options.Shuffle(rng);
+				pub_lut.AddRange(options);
+			}
+			pub_lut.Insert(3, (byte) 0xFF); // Will break if Melmond ever gets a clinic, Nones will need to be hired dead, this results in them being alive.
+			Put(0x38066, Blob.FromHex("9D8A9F8E9B97")); // Replaces "CLINIC" with "TAVERN"
+														// EnterClinic
+			PutInBank(0x0E, 0xA5A1, Blob.FromHex("60A90085248525205BAAA0FFC8B91DA7991003D0F7A902991003C8A648BD0A9D69F0991003C8A905991003C8A9C5991003C8A900991003A910853EA903853F2032AA20D7A6A5628D0C03B0B4209BAA20C2A8B0ADA562D0A92089A6AD0C03186D0C036D0C03AABD10036A6A6A29C04818201C9D68B08BAAA562D0458A690A8510A96185118A488512A9638513A000A90091109112C8C00A30F7C040D0F59D266120E99CA448B90A9D9D00612071C2A00E20799068AA900918BD006169069D0061A9019D0A61A9009D016120349DEAEAEAEA200CE92078A7A921205BAA2043A7A5240525F0F74CA2A5"));
+			PutInBank(0x0E, 0x9D0A, pub_lut.Take(8).ToArray());
+			// ClinicBuildNameString
+			PutInBank(0x0E, 0xA6DD, Blob.FromHex("EDA6A910853EA903853F2032AA4C07A9A000A20086638A2A2A2A29036910991003A900991103A90199120398186903A8E6638A186940AAD0DDA900991003386091ACB5A8FFA40500"));
+			// Moved routine
+			PutInBank(0x0E, 0xA3F8, Blob.FromHex("7D9C"));
+			PutInBank(0x0E, 0x9C7D, Blob.FromHex("A5626A6A6A29C08D0A03A666D01EA018AE0A03BD1861F032C8BD1961F02CC8BD1A61F026C8BD1B61F0203860A01CAE0A03BD1C61F025C8BD1D61F01FC8BD1E61F019C8BD1F61F013386098186D0A03AAAD0C0338E91B9D0061186098186D0A03AAAD0C0338E9439D00611860"));
+			// New routine that unequips all gear and sets all substats to zero
+			PutInBank(0x0E, 0x9CE9, Blob.FromHex("188A69188510A9618511A007B110297F91108810F7A900A0089110C8C00ED0F960"));
+
+			PutInBank(0x1F, 0xC271, CreateLongJumpTableEntry(0x00, 0xC783));
+
+			//ReviveorBuy routine
+			PutInBank(0x0E, 0x9D1C, Blob.FromHex("A903203BAAA912853EA99D853F2032AAA9028D62004C07A9"));
+
+			// Buy Revive text options
+			PutInBank(0x0E, 0x9D12, Blob.FromHex("8BB8BC019BA8B9AC3200"));
+
+			// New routine to level up replaced character and zero some stuff, needs new level up stuff in bank 1B
+			PutInBank(0x0E, 0x9D34, Blob.FromHex("A99D48A94B48A98748A9A9488A182A2A2A8510A91B4C03FEA9008D24008D25008D012060"));
+
+			Data[0x101A] = 0x13;
+			Data[0x109A] = 0x13;
+			Data[0x111A] = 0x76;
+			Data[0x119A] = 0x77;
+
+			if (flags.RecruitmentModeHireOnly ?? false) {
+				PutInBank(0x0E, 0xA60F, Blob.FromHex("EAEAEAEAEAEAEAEA"));
+			}
+
+
+
 		}
 
 		public void DisablePartyShuffle()
@@ -312,8 +381,11 @@ namespace FF1Lib
 			Put(0x7F4AA, Blob.FromHex($"ADFC6048A90F2003FE20008AA9{BattleBoxDrawInFrames}8517A90F2003FE20208A2085F4C617D0F1682003FE60"));
 			Put(0x7F4FF, Blob.FromHex($"ADFC6048A90F2003FE20808AA9{BattleBoxUndrawFrames}8517A90F2003FE20A08A2085F4C617D0F1682003FE60"));
 
-			// Gain multiple levels at once.  Also supresses stat increase messages as a side effect
-			Put(0x2DD82, Blob.FromHex("20789f20579f48a5802907c907f008a58029f0690785806820019c4ce89b"));
+			// Gain multiple levels at once.
+			//Put(0x2DD82, Blob.FromHex("20789f20579f48a5802907c907f008a58029f0690785806820019c4ce89b")); old
+			PutInBank(0x1B, 0x8850, Blob.FromHex("4C4888"));
+			// Skip stat up messages
+			PutInBank(0x1B, 0x89F0, Blob.FromHex("4CE38B"));
 
 			// Default Response Rate 8 (0-based)
 			Data[0x384CB] = 0x07; // Initialize respondrate to 7
@@ -458,8 +530,10 @@ namespace FF1Lib
 		{
 			// Overwrite Keylocked door in ToFR tileset with normal door.
 			Put(0x0F76, Blob.FromHex("0300"));
+		}
 
-			// Start with Lute
+		public void EnableFreeLute()
+		{
 			Data[0x3020 + (int)Item.Lute] = 0x01;
 		}
 
@@ -479,15 +553,11 @@ namespace FF1Lib
 			// The last 5 bytes here are the null terminated WAIT string (stashed in some leftover space of the original subroutine)
 			Put(0x7F700, Blob.FromHex("ADFC6048A90F2003FE204087682003FE4C48F6A08A929D00"));
 
-			// Replace some useless code with a special handler for unrunnables that prints a different message.
+			// Replace some useless code with a special handler for unrunnables that prints 'Nothing Happens'
 			// We then update the unrunnable branch to point here instead of the generic Can't Run handler
 			// See Disch's comments here: Battle_PlayerTryRun  [$A3D8 :: 0x323E8]
-			Put(0x32409, Blob.FromHex("189005A9064C07AAEAEAEAEAEAEAEA"));
+			Put(0x32409, Blob.FromHex("189005A94E4C07AAEAEAEAEAEAEAEA"));
 			Data[0x323EB] = 0x20; // new delta to special unrunnable message handler
-
-			// The above code uses battle message $06 which is the unused Sight Recovered string
-			// Let's overwrite that string with something more appropriate for the WAIT command
-			Put(0x2CC71, FF1Text.TextToBytes("W A I T", false));
 		}
 
 		public void ImproveTurnOrderRandomization(MT19337 rng)
@@ -508,7 +578,7 @@ namespace FF1Lib
 			PutInBank(0x1F, 0xCFD1, CreateLongJumpTableEntry(0x0F, 0x92A0));
 		}
 
-		public void EnableMelmondGhetto()
+		public void EnableMelmondGhetto(bool enemizerOn)
 		{
 			// Set town desert tile to random encounters.
 			// If enabled, trap tile shuffle will change that second byte to 0x00 afterward.
@@ -518,7 +588,8 @@ namespace FF1Lib
 			// Give Melmond Desert backdrop
 			Data[0x0334D] = (byte)Backdrop.Desert;
 
-			Put(0x2C218, Blob.FromHex("0F0F8F2CACAC7E7C"));
+			if(!enemizerOn) // if enemizer formation shuffle is on, it will have assigned battles to Melmond already
+				Put(0x2C218, Blob.FromHex("0F0F8F2CACAC7E7C"));
 		}
 
 		public void NoDanMode()
@@ -582,6 +653,18 @@ namespace FF1Lib
 			room[1, 1] = 0x76;
 			cardia.Put((0x26, 0x1C), room);
 			cardia[0x20, 0x27] = (byte)Tile.Doorway;
+		}
+
+		public void CannotSaveOnOverworld()
+		{
+			// Hacks the game to disallow saving on the overworld with Tents, Cabins, or Houses
+			Put(0x3B2F9, Blob.FromHex("1860"));
+		}
+
+		public void CannotSaveAtInns()
+		{
+			// Hacks the game so that Inns do not save the game
+			Put(0x3A53D, Blob.FromHex("EAEAEA"));
 		}
 	}
 }

@@ -74,24 +74,24 @@ namespace FF1Lib
 				{ CanoeableRegion.OnracRegion, new List<OverworldTeleportIndex>{OverworldTeleportIndex.Onrac, OverworldTeleportIndex.Waterfall} }
 			};
 
-			if (flags.MapOnracDock)
+			if ((bool)flags.MapOnracDock)
 			{
 				MapEditsToApply.Add(OnracDock);
 				mapLocationRequirements[MapLocation.Onrac].Add(MapChange.Ship | MapChange.Canal);
 				mapLocationRequirements[MapLocation.Caravan].Add(MapChange.Ship | MapChange.Canal | MapChange.Canoe);
 				mapLocationRequirements[MapLocation.Waterfall].Add(MapChange.Ship | MapChange.Canal | MapChange.Canoe);
 			}
-			if (flags.MapMirageDock)
+			if ((bool)flags.MapMirageDock)
 			{
 				MapEditsToApply.Add(MirageDock);
 				mapLocationRequirements[MapLocation.MirageTower1].Add(MapChange.Ship | MapChange.Canal | MapChange.Chime);
 			}
-			if (flags.MapAirshipDock)
+			if ((bool)flags.MapAirshipDock)
 			{
 				MapEditsToApply.Add(AirshipDock);
 				mapLocationRequirements[MapLocation.AirshipLocation].Add(MapChange.Ship | MapChange.Canal);
 			}
-			if (flags.MapVolcanoIceRiver)
+			if ((bool)flags.MapVolcanoIceRiver)
 			{
 				MapEditsToApply.Add(VolcanoIceRiver);
 				mapLocationRequirements[MapLocation.GurguVolcano1].Add(MapChange.Bridge | MapChange.Canoe);
@@ -101,7 +101,7 @@ namespace FF1Lib
 				mapLocationRequirements[MapLocation.NorthwestCastle].Add(MapChange.Bridge | MapChange.Canoe);
 				mapLocationRequirements[MapLocation.MarshCave1].Add(MapChange.Bridge | MapChange.Canoe);
 				mapLocationRequirements[MapLocation.AirshipLocation].Add(MapChange.Bridge | MapChange.Canoe);
-				if (flags.MapCanalBridge)
+				if ((bool)flags.MapCanalBridge)
 				{
 					mapLocationRequirements[MapLocation.DwarfCave].Add(MapChange.Bridge | MapChange.Canoe);
 					_canoeableNodes[CanoeableRegion.ElflandRegion].Add(OverworldTeleportIndex.DwarfCave);
@@ -110,16 +110,16 @@ namespace FF1Lib
 				_canoeableNodes[CanoeableRegion.ElflandRegion].AddRange(_canoeableNodes[CanoeableRegion.PravokaRegion]);
 				_canoeableNodes[CanoeableRegion.PravokaRegion].Clear();
 			}
-			if (flags.MapConeriaDwarves)
+			if ((bool)flags.MapConeriaDwarves)
 			{
 				MapEditsToApply.Add(ConeriaToDwarves);
 				mapLocationRequirements[MapLocation.DwarfCave].Add(MapChange.None);
 				_walkableNodes[WalkableRegion.ConeriaRegion].Add(OverworldTeleportIndex.DwarfCave);
 
-				if (flags.MapCanalBridge)
+				if ((bool)flags.MapCanalBridge)
 				{
 					MapChange dwarvesToNorthwest = MapChange.Canoe;
-					if (flags.MapDwarvesNorthwest)
+					if ((bool)flags.MapDwarvesNorthwest)
 					{
 						MapEditsToApply.Add(DwarvesNorthwestGrass);
 						dwarvesToNorthwest = MapChange.None;
@@ -135,7 +135,7 @@ namespace FF1Lib
 					mapLocationRequirements[MapLocation.GurguVolcano1].Add(MapChange.Canoe);
 					mapLocationRequirements[MapLocation.CrescentLake].Add(MapChange.Canoe);
 					mapLocationRequirements[MapLocation.AirshipLocation].Add(MapChange.Canoe);
-					if (flags.MapVolcanoIceRiver)
+					if ((bool)flags.MapVolcanoIceRiver)
 					{
 						mapLocationRequirements[MapLocation.IceCave1].Add(MapChange.Canoe);
 						mapLocationRequirements[MapLocation.Pravoka].Add(MapChange.Canoe);
@@ -144,13 +144,13 @@ namespace FF1Lib
 				}
 			}
 
-			if (flags.TitansTrove)
+			if ((bool)flags.TitansTrove)
 			{
 				floorLocationRequirements[MapLocation.TitansTunnelRoom] =
 					new Tuple<MapLocation, AccessRequirement>(MapLocation.TitansTunnelWest, AccessRequirement.Ruby);
 			}
 
-			if (flags.CrownlessOrdeals)
+			if ((bool)flags.EarlyOrdeals)
 			{
 				floorLocationRequirements[MapLocation.CastleOrdealsMaze] = new Tuple<MapLocation, AccessRequirement>(MapLocation.CastleOrdeals1, AccessRequirement.None);
 			}
@@ -228,8 +228,7 @@ namespace FF1Lib
 			if (index <= MapIndex.Lefein) // Towns
 			{
 				// Towns are given arbitrary palettes to help provide color when dungeons take their place.
-				// But if a town ends up in place of another town, the default palette is appropriate.
-				if (source < OverworldTeleportIndex.Coneria || source > OverworldTeleportIndex.Lefein)
+				if (source != OverworldTeleportIndex.Coneria)
 				{
 					_rom.Put(MapPaletteOffset + (int)index * MapPaletteSize + 1, _palettes[palette].SubBlob(9, 2));
 					_rom.Put(MapPaletteOffset + (int)index * MapPaletteSize + 6, _palettes[palette].SubBlob(9, 1));
@@ -303,7 +302,7 @@ namespace FF1Lib
 			};
 
 			// Disable the Princess Warp back to Castle Coneria
-			if (flags.Entrances || flags.Floors) _rom.Put(0x392CA, Blob.FromHex("EAEAEA"));
+			if ((bool)flags.Entrances || (bool)flags.Floors) _rom.Put(0x392CA, Blob.FromHex("EAEAEA"));
 
 			// Since we're going to move all the entrances around, we're going to change the requirements
 			// for just about everything. Most interestingly the Titan's Tunnel is going to connect totally
@@ -322,7 +321,7 @@ namespace FF1Lib
 			var placedMaps = _teleporters.VanillaOverworldTeleports.ToDictionary(x => x.Key, x => x.Value);
 			var placedFloors = _teleporters.VanillaStandardTeleports.ToDictionary(x => x.Key, x => x.Value);
 			var placedExits = new Dictionary<ExitTeleportIndex, Coordinate>();
-			if (flags.Towns)
+			if ((bool)flags.Towns)
 			{
 				// Conspicuously missing is Coneria; we do not shuffle it .... yet.
 				placedMaps.Remove(OverworldTeleportIndex.Pravoka);
@@ -333,18 +332,23 @@ namespace FF1Lib
 				placedMaps.Remove(OverworldTeleportIndex.Gaia);
 				placedMaps.Remove(OverworldTeleportIndex.Lefein);
 			}
-			if (flags.Entrances)
+			if ((bool)flags.Entrances)
 			{
 				// Skip towns as they would be removed by the above.
 				// Remove SeaShrine1 so Onrac could lead to anywhere.
-				placedMaps = placedMaps
-					.Where(x => x.Key >= OverworldTeleportIndex.Coneria && x.Key <= OverworldTeleportIndex.Lefein)
-					.ToDictionary(x => x.Key, x => x.Value);
-				placedFloors.Remove(TeleportIndex.SeaShrine1);
+				var keepers = _teleporters.VanillaOverworldTeleports.Where(x => x.Key >= OverworldTeleportIndex.Coneria && x.Key <= OverworldTeleportIndex.Lefein).Select(x => x.Key).ToList();
 
+				if (!(bool)flags.EntrancesIncludesDeadEnds)
+				{
+					keepers.Add(OverworldTeleportIndex.Cardia1);
+					keepers.Add(OverworldTeleportIndex.Cardia5);
+				}
+
+				placedMaps = placedMaps .Where(x => keepers.Contains(x.Key)) .ToDictionary(x => x.Key, x => x.Value);
+				placedFloors.Remove(TeleportIndex.SeaShrine1);
 				FixUnusedDefaultBackdrops();
 			}
-			if (flags.Floors)
+			if ((bool)flags.Floors && (bool)flags.Entrances)
 			{
 				placedFloors = new Dictionary<TeleportIndex, TeleportDestination>();
 			}
@@ -353,14 +357,17 @@ namespace FF1Lib
 			var placedDestinations = placedMaps.Values.Select(x => x.Destination).Concat(placedFloors.Values.Select(x => x.Destination)).ToList();
 
 			// Grab a list of all non-unused overworld entrances, regardless of whether or not we've already placed them.
-			var maps = Enum.GetValues(typeof(OverworldTeleportIndex)).Cast<OverworldTeleportIndex>().Where(x => x < OverworldTeleportIndex.Unused1).ToList();
-			var shuffledOverworldCount = maps.Count(x => !placedMaps.ContainsKey(x));
+			var townEntrances = _teleporters.TownEntrances;
+			var nonTownEntrances = Enum.GetValues(typeof(OverworldTeleportIndex)).Cast<OverworldTeleportIndex>().Where(x => !townEntrances.Contains(x) && x < OverworldTeleportIndex.Unused1).ToList();
+			var shuffledOverworldCount = townEntrances.Count(x => !placedMaps.ContainsKey(x)) + nonTownEntrances.Count(x => !placedMaps.ContainsKey(x));
 
 			// Grab a list of floors we haven't placed yet that can be shuffled. i.e. not including bottom of ice cave or ordeals.
-			var topfloors = _teleporters.ForcedTopFloors.Where(x => !placedDestinations.Contains(x.Destination)).ToList();
+			var towns = _teleporters.TownTeleports.Where(x => !placedDestinations.Contains(x.Destination)).ToList();
+			var topfloors = _teleporters.NonTownForcedTopFloors.Where(x => !placedDestinations.Contains(x.Destination)).ToList();
 			var subfloors = _teleporters.FreePlacementFloors.Where(x => !placedDestinations.Contains(x.Destination)).ToList();
 			var deadEnds = new List<TeleportDestination>();
 
+			towns.Shuffle(rng);
 			topfloors.Shuffle(rng);
 			subfloors.Shuffle(rng);
 
@@ -377,10 +384,16 @@ namespace FF1Lib
 
 			// Deep "castles" for now just allows a deep ToFR but with refactoring could include others.
 			// Ordeals is a candidate but it would require map edits - it has an EXIT not a WARP due to its internal teleports.
-			if (flags.Floors && flags.AllowDeepCastles)
+			if ((bool)flags.DeepCastlesPossible && (bool)flags.AllowDeepCastles)
 			{
 				topfloors = topfloors.Where(floor => floor.Destination != _teleporters.TempleOfFiends.Destination).ToList();
 				deadEnds.Add(_teleporters.TempleOfFiends);
+			}
+
+			if ((bool)flags.DeepTownsPossible && (bool)flags.AllowDeepTowns)
+			{
+				subfloors.AddRange(towns);
+				towns.Clear();
 			}
 
 			// Shuffle again now that we've removed some to be placed at the end. Maybe unnecessary.
@@ -388,7 +401,7 @@ namespace FF1Lib
 			deadEnds.Shuffle(rng);
 
 			// This will be the initial dataset from which we attempt to create a workable overworld and dungeon floor shuffling.
-			var destinations = topfloors.Concat(subfloors).Concat(deadEnds).ToList();
+			var destinations = towns.Concat(topfloors).Concat(subfloors).Concat(deadEnds).ToList();
 			var sanity = 0;
 			Dictionary<OverworldTeleportIndex, TeleportDestination> shuffled;
 			Dictionary<TeleportIndex, TeleportDestination> shuffledFloors;
@@ -396,8 +409,8 @@ namespace FF1Lib
 			do
 			{
 				sanity++;
-				if (sanity > 500)
-					throw new InsaneException("Overworld Map Shuffle sanity exceeds 500 iterations.");
+				if (sanity > 100)
+					throw new InsaneException("Overworld Map Shuffle sanity exceeds 100 iterations.");
 				var i = 0; // overworld entrance destination counter
 				var j = 0; // underworld floor destination counter
 
@@ -409,11 +422,29 @@ namespace FF1Lib
 				var teleports = new List<TeleportIndex>();
 
 				// Overworld to First Floor Shuffle Loop
-				var shuffleMaps = maps.ToList();
-				while (shuffleMaps.Any())
+				var shuffleTowns = townEntrances.ToList();
+				var shuffleEntrances = nonTownEntrances.ToList();
+
+				// We keep the town destinations at the front of that list, so if we want to match towns
+				// with town entrances we just keep them at the front of shuffleEntrances too.
+				if ((bool)flags.EntrancesMixedWithTowns)
+				{
+					shuffleEntrances = shuffleTowns.Concat(shuffleEntrances).ToList();
+					shuffleEntrances.Shuffle(rng);
+				}
+				else
+				{
+					shuffleTowns.Shuffle(rng);
+					shuffleEntrances.Shuffle(rng);
+					shuffleEntrances = shuffleTowns.Concat(shuffleEntrances).ToList();
+				}
+
+				while (shuffleEntrances.Any())
 				{
 					// Grab the next overworld entrance at random and write it to the shuffled output.
-					var owti = shuffleMaps.SpliceRandom(rng);
+					var owti = shuffleEntrances.First();
+					shuffleEntrances.RemoveAt(0);
+
 					var destination = placedMaps.ContainsKey(owti) ? placedMaps[owti] : destinations[i++];
 					shuffled[owti] = destination;
 					UpdateOverworldOverride(destination.Destination, owti);
@@ -442,6 +473,11 @@ namespace FF1Lib
 					}
 				}
 			} while (!CheckEntranceSanity(shuffled, flags.AllowStartAreaDanager));
+
+			if (flags.Spoilers || Debugger.IsAttached)
+			{
+				Console.WriteLine($"OverworldMap::ShuffleEntrancesAndFloors() required {sanity} iterations.");
+			}
 
 			// Pretty print map data
 			foreach (var map in shuffled.OrderBy(x => x.Key))
@@ -602,28 +638,27 @@ namespace FF1Lib
 			_rom.Put(0x03300, backdrops);
 		}
 
-		public bool CheckEntranceSanity(IEnumerable<KeyValuePair<OverworldTeleportIndex, TeleportDestination>> shuffledEntrances,
-										bool allowUnsafe = false)
+		public bool CheckEntranceSanity(IEnumerable<KeyValuePair<OverworldTeleportIndex, TeleportDestination>> shuffledEntrances, bool allowDanger)
 		{
 			var coneria = shuffledEntrances.Any(x => x.Key == OverworldTeleportIndex.Coneria && x.Value.Destination == MapLocation.Coneria);
-			var starterLocation =
-				shuffledEntrances.Any(x => StartingLocations.Contains(x.Key) && StarterDestinations.Contains(x.Value.Destination));
-			var dangerLocationAtConeriaCastle =
-				!shuffledEntrances.Any(x => x.Key == OverworldTeleportIndex.ConeriaCastle1 && SafeLocations.Contains(x.Value.Destination));
-			var dangerLocationAtToF =
-				!shuffledEntrances.Any(x => x.Key == OverworldTeleportIndex.TempleOfFiends1 && SafeLocations.Contains(x.Value.Destination));
-			var dangerLocationAtDwarf =
-				!shuffledEntrances.Any(x => x.Key == OverworldTeleportIndex.DwarfCave && SafeLocations.Contains(x.Value.Destination));
-			var dangerLocationAtMatoya =
-				!shuffledEntrances.Any(x => x.Key == OverworldTeleportIndex.MatoyasCave && SafeLocations.Contains(x.Value.Destination));
+			var starterLocation = shuffledEntrances.Any(x => StartingLocations.Contains(x.Key) && StarterDestinations.Contains(x.Value.Destination));
 			var titansConnections =
 				shuffledEntrances.Any(x => x.Value.Destination == MapLocation.TitansTunnelEast && ConnectedLocations.Contains(x.Key)) &&
 				shuffledEntrances.Any(x => x.Value.Destination == MapLocation.TitansTunnelWest && ConnectedLocations.Contains(x.Key));
 
-			var dangerCount = new List<bool> { dangerLocationAtConeriaCastle, dangerLocationAtToF, dangerLocationAtDwarf, dangerLocationAtMatoya }.Where(x => x).Count();
-			_log.Add($"Entrance sanity has {dangerCount} early dangers. Only 1 allowed.");
+			bool isSafe(OverworldTeleportIndex owti)
+			{
+				return shuffledEntrances.Any(x => x.Key == owti && SafeLocations.Contains(x.Value.Destination));
+			}
 
-			return coneria && starterLocation && titansConnections && (allowUnsafe || (dangerCount <= 1));
+			int dangerCount = 5;
+			if (isSafe(OverworldTeleportIndex.ConeriaCastle1)) --dangerCount;
+			if (isSafe(OverworldTeleportIndex.TempleOfFiends1)) --dangerCount;
+			if (isSafe(OverworldTeleportIndex.DwarfCave)) --dangerCount;
+			if (isSafe(OverworldTeleportIndex.MatoyasCave)) --dangerCount;
+			if (isSafe(OverworldTeleportIndex.Pravoka)) --dangerCount;
+
+			return coneria && starterLocation && titansConnections && (allowDanger || dangerCount <= 3);
 		}
 
 		public void Dump()
@@ -974,11 +1009,11 @@ namespace FF1Lib
 				var outputRow = new List<byte>();
 				byte tile = 0;
 				byte runCount = 1;
-				if (row.Distinct().Count() == 1)
-				{
-					outputMap.Add(new List<byte> { 0x97, 0x00, 0xFF });
-					continue;
-				}
+				//if (row.Distinct().Count() == 1)
+				//{
+				//	outputMap.Add(new List<byte> { 0x97, 0x00, 0xFF });
+				//	continue;
+				//}
 				for (var tileIndex = 0; tileIndex < 256; tileIndex++)
 				{
 					tile = row[tileIndex];

@@ -293,7 +293,7 @@ namespace FF1Lib
 		public static StaticItemLocation TiamatReward =
 			new StaticItemLocation(nameof(TiamatReward), MapLocation.SkyPalaceTiamat, Item.AirOrb);
 		public static StaticItemLocation ChaosReward =
-			new StaticItemLocation(nameof(ChaosReward), MapLocation.TempleOfFiendsChaos, Item.None);
+			new StaticItemLocation(nameof(ChaosReward), MapLocation.TempleOfFiendsChaos, Item.None, AccessRequirement.BlackOrb);
 
 		private const MapChange AirshipAndCanoe = MapChange.Airship | MapChange.Canoe;
 		private const MapChange CanalAndShip = MapChange.Canal | MapChange.Ship;

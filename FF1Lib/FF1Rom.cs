@@ -7,19 +7,24 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using FF1Lib.Assembly;
 
 namespace FF1Lib
 {
 	// ReSharper disable once InconsistentNaming
 	public partial class FF1Rom : NesRom
 	{
-		public const string Version = "2.5.1";
+#if DEBUG
+		public const string Version = "3.0.1 Beta";
+#else
+		public const string Version = "3.0.0";
+#endif
 
 		public const int RngOffset = 0x7F100;
 		public const int BattleRngOffset = 0x7FCF1;
 		public const int RngSize = 256;
 
-		public const int LevelRequirementsOffset = 0x2D000;
+		public const int LevelRequirementsOffset = 0x6CC81;
 		public const int LevelRequirementsSize = 3;
 		public const int LevelRequirementsCount = 49;
 
@@ -80,16 +85,23 @@ namespace FF1Lib
 			return rom;
 		}
 
-		public void Randomize(Blob seed, Flags flags)
+		public void Randomize(Blob seed, Flags flags, Preferences preferences)
 		{
 			var rng = new MT19337(BitConverter.ToUInt32(seed, 0));
+			// Spoilers => different rng immediately
+			if (flags.Spoilers) rng = new MT19337(rng.Next());
 
 			UpgradeToMMC3();
 			MakeSpace();
+			Bank1E();
+			Bank1B();
 			EasterEggs();
-			DynamicWindowColor();
+			DynamicWindowColor(preferences.MenuColor);
 			PermanentCaravan();
 			ShiftEarthOrbDown();
+			CastableItemTargeting();
+			flags = Flags.ConvertAllTriState(flags, rng);
+
 
 			TeleportShuffle teleporters = new TeleportShuffle();
 			var palettes = OverworldMap.GeneratePalettes(Get(OverworldMap.MapPaletteOffset, MapCount * OverworldMap.MapPaletteSize).Chunk(OverworldMap.MapPaletteSize));
@@ -97,67 +109,81 @@ namespace FF1Lib
 			var maps = ReadMaps();
 			var shopItemLocation = ItemLocations.CaravanItemShop1;
 
-			/*
-			flags.FreeAirship = true;
-			flags.ExperimentalFloorGeneration = true;
-			flags.DungeonEncounterRate = 0;
-			*/
-			/*
+#if DEBUG
 			if (flags.ExperimentalFloorGeneration)
 			{
-				MapRequirements reqs = new MapRequirements
-				{
-					MapId = MapId.Waterfall,
-					Rom = this,
-				};
-
+				MapRequirements reqs;
+				MapGeneratorStrategy strategy;
 				MapGenerator generator = new MapGenerator();
-				MapGeneratorStrategy strategy = MapGeneratorStrategy.WaterfallClone;
-				CompleteMap waterfall = generator.Generate(rng, strategy, reqs);
-
-				// Should add more into the reqs so that this can be done inside the generator.
-				teleporters.Waterfall.SetEntrance(waterfall.Entrance);
-				overworldMap.PutOverworldTeleport(OverworldTeleportIndex.Waterfall, teleporters.Waterfall);
-				maps[(int)MapId.Waterfall] = waterfall.Map;
-
-				reqs = new MapRequirements
+				if (flags.EFGWaterfall)
 				{
-					MapId = MapId.EarthCaveB1,
-					Rom = this,
-				};
+					reqs = new MapRequirements
+					{
+						MapId = MapId.Waterfall,
+						Rom = this,
+					};
+					strategy = MapGeneratorStrategy.WaterfallClone;
+					CompleteMap waterfall = generator.Generate(rng, strategy, reqs);
 
-				strategy = MapGeneratorStrategy.Square;
-				var earthB1 = generator.Generate(rng, strategy, reqs);
+					// Should add more into the reqs so that this can be done inside the generator.
+					teleporters.Waterfall.SetEntrance(waterfall.Entrance);
+					overworldMap.PutOverworldTeleport(OverworldTeleportIndex.Waterfall, teleporters.Waterfall);
+					maps[(int)MapId.Waterfall] = waterfall.Map;
+				}
 
-				// Should add more into the reqs so that this can be done inside the generator.
-				teleporters.EarthCave1.SetEntrance(earthB1.Entrance);
-				overworldMap.PutOverworldTeleport(OverworldTeleportIndex.EarthCave1, teleporters.EarthCave1);
-				maps[(int)MapId.EarthCaveB1] = earthB1.Map;
-
-				reqs = new MapRequirements
+				if (flags.EFGEarth1)
 				{
-					MapId = MapId.EarthCaveB2,
-					Rom = this,
-				};
+					reqs = new MapRequirements
+					{
+						MapId = MapId.EarthCaveB1,
+						Rom = this,
+					};
 
-				strategy = MapGeneratorStrategy.Square;
-				var earthB2 = generator.Generate(rng, strategy, reqs);
+					strategy = MapGeneratorStrategy.Square;
+					var earthB1 = generator.Generate(rng, strategy, reqs);
 
-				// Should add more into the reqs so that this can be done inside the generator.
-				teleporters.EarthCave2.SetEntrance(earthB2.Entrance);
-				overworldMap.PutStandardTeleport(TeleportIndex.EarthCave2, teleporters.EarthCave2, OverworldTeleportIndex.EarthCave1);
-				maps[(int)MapId.EarthCaveB2] = earthB2.Map;
+					// Should add more into the reqs so that this can be done inside the generator.
+					teleporters.EarthCave1.SetEntrance(earthB1.Entrance);
+					overworldMap.PutOverworldTeleport(OverworldTeleportIndex.EarthCave1, teleporters.EarthCave1);
+					maps[(int)MapId.EarthCaveB1] = earthB1.Map;
+				}
+				if (flags.EFGEarth2)
+				{
+					reqs = new MapRequirements
+					{
+						MapId = MapId.EarthCaveB2,
+						Rom = this,
+					};
+
+					strategy = MapGeneratorStrategy.Square;
+					var earthB2 = generator.Generate(rng, strategy, reqs);
+
+					// Should add more into the reqs so that this can be done inside the generator.
+					teleporters.EarthCave2.SetEntrance(earthB2.Entrance);
+					overworldMap.PutStandardTeleport(TeleportIndex.EarthCave2, teleporters.EarthCave2, OverworldTeleportIndex.EarthCave1);
+					maps[(int)MapId.EarthCaveB2] = earthB2.Map;
+				}
 			}
-			*/
+#endif
 
-			if (flags.ModernBattlefield)
+			if (flags.RandomizeFormationEnemizer)
+			{
+				DoEnemizer(rng, false, flags.RandomizeFormationEnemizer, false);
+			}
+
+			if (preferences.ModernBattlefield)
 			{
 				EnableModernBattlefield();
 			}
 
-			if (flags.TitansTrove)
+			if ((bool)flags.TitansTrove)
 			{
 				EnableTitansTrove(maps);
+			}
+
+			if ((bool)flags.LefeinShops)
+			{
+				EnableLefeinShops(maps);
 			}
 
 			// This has to be done before we shuffle spell levels.
@@ -166,134 +192,162 @@ namespace FF1Lib
 				FixSpellBugs();
 			}
 
+			if (flags.RebalanceSpells)
+			{
+				RebalanceSpells();
+			}
+
 			if (flags.EnemySpellsTargetingAllies)
 			{
 				FixEnemyAOESpells();
 			}
 
-			if (flags.ItemMagic)
+			if ((bool)flags.ItemMagic)
 			{
 				ShuffleItemMagic(rng);
 			}
 
-			if (flags.ShortToFR)
+			if ((bool)flags.ShortToFR)
 			{
-				ShortenToFR(maps, flags.PreserveFiendRefights, rng);
+				ShortenToFR(maps, (bool)flags.PreserveFiendRefights, rng);
 			}
 
-			if (flags.Treasures && flags.ShardHunt && !flags.ChaosRush)
+			if (((bool)flags.Treasures) && flags.ShardHunt && !flags.FreeOrbs)
 			{
-				EnableShardHunt(rng, flags.ExtraShards ? rng.Between(24, 30) : 16, flags.NPCItems);
+				EnableShardHunt(rng, flags.ExtraShards ? rng.Between(24, 30) : 16, ((bool)flags.NPCItems));
 			}
 
-			if (flags.TransformFinalFormation)
+			if ((bool)flags.TransformFinalFormation)
 			{
 				TransformFinalFormation((FinalFormation)rng.Between(0, Enum.GetValues(typeof(FinalFormation)).Length - 1));
 			}
 
-			var maxRetries = 500;
+			var maxRetries = 8;
 			for (var i = 0; i < maxRetries; i++)
 			{
 				try
 				{
 					overworldMap = new OverworldMap(this, flags, palettes, teleporters);
-					if ((flags.Entrances || flags.Floors || flags.Towns) && flags.Treasures && flags.NPCItems)
+					if (((bool)flags.Entrances || (bool)flags.Floors || (bool)flags.Towns) && ((bool)flags.Treasures) && ((bool)flags.NPCItems))
 					{
 						overworldMap.ShuffleEntrancesAndFloors(rng, flags);
 					}
 
-					if (flags.ShuffleObjectiveNPCs)
+					if ((bool)flags.ShuffleObjectiveNPCs)
 					{
 						overworldMap.ShuffleObjectiveNPCs(rng);
 					}
 
-					var incentivesData = new IncentiveData(rng, flags, overworldMap);
+					IncentiveData incentivesData = new IncentiveData(rng, flags, overworldMap, shopItemLocation);
 
-					if (flags.Shops)
+					if (((bool)flags.Shops))
 					{
 						var excludeItemsFromRandomShops = new List<Item>();
-						if (flags.Treasures)
+						if ((bool)flags.Treasures)
 						{
 							excludeItemsFromRandomShops = incentivesData.ForcedItemPlacements.Select(x => x.Item).Concat(incentivesData.IncentiveItems).ToList();
 						}
 
-						if (!flags.RandomWaresIncludesSpecialGear)
+						if (!((bool)flags.RandomWaresIncludesSpecialGear))
 						{
 							excludeItemsFromRandomShops.AddRange(ItemLists.SpecialGear);
 						}
 
-						shopItemLocation = ShuffleShops(rng, flags.ImmediatePureAndSoftRequired, flags.RandomWares, excludeItemsFromRandomShops, flags.WorldWealth);
+						shopItemLocation = ShuffleShops(rng, (bool)flags.ImmediatePureAndSoftRequired, ((bool)flags.RandomWares), excludeItemsFromRandomShops, flags.WorldWealth);
+						incentivesData = new IncentiveData(rng, flags, overworldMap, shopItemLocation);
 					}
 
-					if (flags.Treasures)
+					if ((bool)flags.Treasures)
 					{
 						ShuffleTreasures(rng, flags, incentivesData, shopItemLocation, overworldMap, teleporters);
 					}
 					break;
 				}
-				catch (InsaneException)
+				catch (InsaneException e)
 				{
-					Console.WriteLine("Insane seed. Retrying");
+					Console.WriteLine(e.Message);
 					if (maxRetries > (i + 1)) continue;
-					throw new InvalidOperationException("Failed Sanity Check too many times");
+					throw new InvalidOperationException(e.Message);
 				}
 			}
 
-			if (flags.MagicShops)
+			if (((bool)flags.MagicShops))
 			{
 				ShuffleMagicShops(rng);
 			}
 
-			if (flags.MagicLevels)
+			if (((bool)flags.MagicLevels))
 			{
 				FixWarpBug(); // The warp bug only needs to be fixed if the magic levels are being shuffled
-				ShuffleMagicLevels(rng, flags.MagicPermissions);
+				ShuffleMagicLevels(rng, ((bool)flags.MagicPermissions));
 			}
 
-			if (flags.WeaponPermissions && false)
+			/*
+			if (flags.WeaponPermissions)
 			{
 				ShuffleWeaponPermissions(rng);
 			}
 
-			if (flags.ArmorPermissions && false)
+			if (flags.ArmorPermissions)
 			{
 				ShuffleArmorPermissions(rng);
 			}
+			*/
 
-			if (flags.Rng)
+			if (((bool)flags.Rng))
 			{
 				ShuffleRng(rng);
 			}
 
-			if (flags.EnemyScripts)
+			if (((bool)flags.EnemyScripts))
 			{
-				ShuffleEnemyScripts(rng, flags.AllowUnsafePirates);
+				ShuffleEnemyScripts(rng, (bool)flags.AllowUnsafePirates);
 			}
 
-			if (flags.EnemySkillsSpells)
+			if (((bool)flags.EnemySkillsSpells))
 			{
 				ShuffleEnemySkillsSpells(rng);
 			}
 
-			if (flags.EnemyStatusAttacks)
+			if (((bool)flags.EnemyStatusAttacks))
 			{
-				ShuffleEnemyStatusAttacks(rng, flags.AllowUnsafePirates);
+				if (((bool)flags.RandomStatusAttacks))
+				{
+					RandomEnemyStatusAttacks(rng, (bool)flags.AllowUnsafePirates);
+				}
+				else
+				{
+					ShuffleEnemyStatusAttacks(rng, (bool)flags.AllowUnsafePirates);
+				}
 			}
 
-			if (flags.EnemyFormationsUnrunnable)
+			if (((bool)flags.EnemyFormationsUnrunnable))
 			{
-				ShuffleUnrunnable(rng);
+				if (((bool)flags.EverythingUnrunnable))
+				{
+					CompletelyUnrunnable();
+				}
+				else
+				{
+					ShuffleUnrunnable(rng);
+				}
 			}
 
-			if (flags.EnemyFormationsSurprise)
+			if (((bool)flags.UnrunnablesStrikeFirstAndSurprise))
+			{
+				AllowStrikeFirstAndSurprise();
+			}
+
+
+			if (((bool)flags.EnemyFormationsSurprise))
 			{
 				ShuffleSurpriseBonus(rng);
 			}
 
 			// Put this before other encounter / trap tile edits.
-			if (flags.AllowUnsafeMelmond)
+			if ((bool)flags.AllowUnsafeMelmond)
 			{
-				EnableMelmondGhetto();
+				EnableMelmondGhetto(flags.RandomizeFormationEnemizer);
 			}
 
 			// After unrunnable shuffle and before formation shuffle. Perfect!
@@ -302,32 +356,46 @@ namespace FF1Lib
 				WarMECHNpc(flags.WarMECHMode, rng, maps);
 			}
 
+			if (flags.WarMECHMode == WarMECHMode.Unleashed)
+			{
+				UnleashWarMECH();
+			}
+
+			if (flags.FiendShuffle)
+			{
+				FiendShuffle(rng);
+			}
+
 			if (flags.FormationShuffleMode != FormationShuffleModeEnum.None)
 			{
 				ShuffleEnemyFormations(rng, flags.FormationShuffleMode);
 			}
 
-			if (flags.EnemyTrapTiles)
+			if (((bool)flags.EnemyTrapTiles))
 			{
-				ShuffleTrapTiles(rng, flags.RandomTrapFormations);
+				ShuffleTrapTiles(rng, ((bool)flags.RandomTrapFormations));
 			}
 
-			if (flags.OrdealsPillars)
+			if ((bool)flags.OrdealsPillars)
 			{
 				ShuffleOrdeals(rng, maps);
 			}
 
-			if (flags.SkyCastle4FTeleporters)
+			if (flags.SkyCastle4FMazeMode == SkyCastle4FMazeMode.Maze)
+			{
+				DoSkyCastle4FMaze(rng, maps);
+			}
+			else if (flags.SkyCastle4FMazeMode == SkyCastle4FMazeMode.Teleporters)
 			{
 				ShuffleSkyCastle4F(rng, maps);
 			}
 
-			if (flags.ConfusedOldMen)
+			if ((bool)flags.ConfusedOldMen)
 			{
 				EnableConfusedOldMen(rng);
 			}
 
-			if (flags.CrownlessOrdeals)
+			if ((bool)flags.EarlyOrdeals)
 			{
 				EnableEarlyOrdeals();
 			}
@@ -337,24 +405,29 @@ namespace FF1Lib
 				EnableChaosRush();
 			}
 
-			if (flags.EarlySarda && !flags.NPCItems)
+			if ((bool)flags.EarlySarda && !((bool)flags.NPCItems))
 			{
 				EnableEarlySarda();
 			}
 
-			if (flags.EarlySage && !flags.NPCItems)
+			if ((bool)flags.EarlySage && !((bool)flags.NPCItems))
 			{
 				EnableEarlySage();
 			}
 
-			if (flags.FreeBridge)
+			if ((bool)flags.FreeBridge)
 			{
 				EnableFreeBridge();
 			}
 
-			if (flags.FreeAirship)
+			if ((bool)flags.FreeAirship)
 			{
 				EnableFreeAirship();
+			}
+
+			if ((bool)flags.FreeShip)
+			{
+				EnableFreeShip();
 			}
 
 			if (flags.FreeOrbs)
@@ -362,9 +435,14 @@ namespace FF1Lib
 				EnableFreeOrbs();
 			}
 
-			if (flags.FreeCanal)
+			if ((bool)flags.FreeCanal)
 			{
 				EnableFreeCanal();
+			}
+
+			if ((bool)flags.FreeLute)
+			{
+				EnableFreeLute();
 			}
 
 			if (flags.NoPartyShuffle)
@@ -397,9 +475,14 @@ namespace FF1Lib
 				ChangeUnrunnableRunToWait();
 			}
 
-			if (flags.EnableCritNumberDisplay)
+			if (flags.SpeedHacks && flags.EnableCritNumberDisplay)
 			{
 				EnableCritNumberDisplay();
+			}
+
+			if (flags.NPCSwatter)
+			{
+				EnableNPCSwatter();
 			}
 
 			if (flags.EasyMode)
@@ -407,9 +490,9 @@ namespace FF1Lib
 				EnableEasyMode();
 			}
 
-			if (flags.HouseMPRestoration)
+			if (flags.HouseMPRestoration || flags.HousesFillHp)
 			{
-				FixHouse();
+				FixHouse(flags.HouseMPRestoration, flags.HousesFillHp);
 			}
 
 			if (flags.WeaponStats)
@@ -432,9 +515,24 @@ namespace FF1Lib
 				FixBBAbsorbBug();
 			}
 
+			if (flags.MDefMode != MDefChangesEnum.None)
+			{
+				MDefChanges(flags.MDefMode);
+			}
+
+			if (flags.ThiefHitRate)
+			{
+				ThiefHitRate();
+			}
+
 			if (flags.ImproveTurnOrderRandomization)
 			{
 				ImproveTurnOrderRandomization(rng);
+			}
+
+			if (flags.FixHitChanceCap)
+			{
+				FixHitChanceCap();
 			}
 
 			if (flags.EnemyElementalResistancesBug)
@@ -442,37 +540,41 @@ namespace FF1Lib
 				FixEnemyElementalResistances();
 			}
 
-			if (flags.FunEnemyNames)
+			if (preferences.FunEnemyNames)
 			{
-				FunEnemyNames(flags.TeamSteak);
+				FunEnemyNames(preferences.TeamSteak);
 			}
 
 			var itemText = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
-			// var dialogueText = ReadText(DialogueTextPointerOffset, DialogueTextPointerBase, DialogueTextPointerCount);
-			FixVanillaRibbon(itemText);
+			itemText[(int)Item.Ribbon].Trim();
+
 			ExpGoldBoost(flags.ExpBonus, flags.ExpMultiplier);
-			ScalePrices(flags, itemText, rng, flags.ClampMinimumPriceScale, shopItemLocation);
+			ScalePrices(flags, itemText, rng, ((bool)flags.ClampMinimumPriceScale), shopItemLocation);
 			ScaleEncounterRate(flags.EncounterRate / 30.0, flags.DungeonEncounterRate / 30.0);
 
 			overworldMap.ApplyMapEdits();
 			WriteMaps(maps);
 
 			WriteText(itemText, ItemTextPointerOffset, ItemTextPointerBase, ItemTextOffset, UnusedGoldItems);
-			// WriteText(dialogueText, DialogueTextPointerOffset, DialogueTextPointerBase, DialogueTextOffset);
 
 			if (flags.EnemyScaleFactor > 1)
 			{
-				ScaleEnemyStats(flags.EnemyScaleFactor, flags.WrapStatOverflow, flags.IncludeMorale, rng, flags.ClampMinimumStatScale);
+				ScaleEnemyStats(flags.EnemyScaleFactor, flags.WrapStatOverflow, flags.IncludeMorale, rng, ((bool)flags.ClampMinimumStatScale));
 			}
 
 			if (flags.BossScaleFactor > 1)
 			{
-				ScaleBossStats(flags.BossScaleFactor, flags.WrapStatOverflow, flags.IncludeMorale, rng, flags.ClampMinimumBossStatScale);
+				ScaleBossStats(flags.BossScaleFactor, flags.WrapStatOverflow, flags.IncludeMorale, rng, ((bool)flags.ClampMinimumBossStatScale));
 			}
 
 			PartyComposition(rng, flags);
 
-			if (flags.MapCanalBridge)
+			if (((bool)flags.RecruitmentMode))
+			{
+				PubReplaceClinic(rng, flags);
+			}
+
+			if ((bool)flags.MapCanalBridge)
 			{
 				EnableCanalBridge();
 			}
@@ -484,36 +586,52 @@ namespace FF1Lib
 
 			SetProgressiveScaleMode(flags.ProgressiveScaleMode);
 
+			if (flags.DisableTentSaving)
+			{
+				CannotSaveOnOverworld();
+			}
+
+			if (flags.DisableInnSaving)
+			{
+				CannotSaveAtInns();
+			}
+
 			// We have to do "fun" stuff last because it alters the RNG state.
 			RollCredits(rng);
 
-			if (flags.DisableDamageTileFlicker)
+			if (preferences.DisableDamageTileFlicker)
 			{
 				DisableDamageTileFlicker();
 			}
 
-			if (flags.ThirdBattlePalette)
+			if (preferences.ThirdBattlePalette)
 			{
 				UseVariablePaletteForCursorAndStone();
 			}
 
-			if (flags.PaletteSwap)
+			if (preferences.PaletteSwap)
 			{
 				PaletteSwap(rng);
 			}
 
-			if (flags.TeamSteak)
+			if (preferences.TeamSteak)
 			{
 				TeamSteak();
 			}
 
-			if (flags.Music != MusicShuffle.None)
+			if (preferences.Music != MusicShuffle.None)
 			{
-				ShuffleMusic(flags.Music, rng);
+				ShuffleMusic(preferences.Music, rng);
 			}
 
 			WriteSeedAndFlags(Version, seed.ToHex(), Flags.EncodeFlagsText(flags));
 			ExtraTrackingAndInitCode();
+		}
+
+		private void EnableNPCSwatter()
+		{
+			// Talk_norm is overwritten with unconditional jump to Talk_CoOGuy (say whatever then disappear)
+			PutInBank(0x0E, 0x9492, Blob.FromHex("4CA294"));
 		}
 
 		private void ExtraTrackingAndInitCode()
@@ -524,7 +642,6 @@ namespace FF1Lib
 			//	- initialize tracking variables if no game is saved
 			PutInBank(0x0F, 0x8000, Blob.FromHex("A9008D00208D012085FEA90885FF85FDA51BC901D00160A901851BA94DC5F9F008A9FF85F585F685F7182088C8B049A94DC5F918F013ADA36469018DA364ADA46469008DA464189010ADA56469018DA564ADA66469008DA664A9008DFD64A200187D00647D00657D00667D0067E8D0F149FF8DFD64189010A2A0A9009D00609D0064E8D0F7EEFB64ADFB648DFB6060"));
 			Put(0x7C012, Blob.FromHex("A90F2003FE200080EAEAEAEAEAEAEAEA"));
-			Data[0x30FB] = 0x01;
 
 
 			// Move controller handling out of bank 1F
@@ -537,7 +654,7 @@ namespace FF1Lib
 			// Battles use 2 separate and independent controller handlers for a total of 3 (because why not), so we patch these to respond to Up+A also
 			PutInBank(0x0F, 0x8580, Blob.FromHex("A0018C1640888C1640A008AD16404AB0014A6EB368AD17402903C901261E88D0EAA51EC988F004ADB3686020A8FE20A8FE20A8FEA2FF9AA900851E9500CAD0FBA6004C12C0"));
 			PutInBank(0x1F, 0xD828, CreateLongJumpTableEntry(0x0F, 0x8580));
-			PutInBank(0x0B, 0x9A06, Blob.FromHex("4C28D8"));
+			// PutInBank(0x0B, 0x9A06, Blob.FromHex("4C28D8")); Included in bank 1B changes
 			PutInBank(0x0C, 0x97C7, Blob.FromHex("2027F22028D82029ABADB36860"));
 
 
@@ -572,7 +689,7 @@ namespace FF1Lib
 			// Party Wipes
 			PutInBank(0x0F, 0x85D0, Blob.FromHex("EEB564A9008DFD64A200187D00647D00657D00667D0067E8D0F149FF8DFD64A952854B60"));
 			PutInBank(0x1F, 0xD82E, CreateLongJumpTableEntry(0x0F, 0x85D0));
-			PutInBank(0x0B, 0x9AF5, Blob.FromHex("202ED8EAEA"));
+			//PutInBank(0x0B, 0x9AF5, Blob.FromHex("202ED8EAEA")); included in 1B changes
 			// "Nothing Here"s
 			PutInBank(0x0F, 0x8600, Blob.FromHex("A54429C2D005A545F00360A900EEB66060"));
 			PutInBank(0x1F, 0xD834, CreateLongJumpTableEntry(0x0F, 0x8600));
@@ -592,7 +709,7 @@ namespace FF1Lib
 			PutInBank(0x0F, 0x8780, Blob.FromHex("AD0860F014A512CD0960D00DA513CD0A60D006A90085451860A512CD0D60D00DA513CD0E60D006A900854518603860"));
 
 			// BB Absorb fix.
-			PutInBank(0x0F, 0x8800, Blob.FromHex("A000B186C902F005C908F00160A018B186301BC8B1863016C8B1863011C8B186300CA026B1861869010AA0209186A01CB186301AC8B1863015C8B1863010C8B186300BA026B186186901A022918660"));
+			//PutInBank(0x0F, 0x8800, Blob.FromHex("A000B186C902F005C908F00160A018B186301BC8B1863016C8B1863011C8B186300CA026B1861869010AA0209186A01CB186301AC8B1863015C8B1863010C8B186300BA026B186186901A022918660"));
 
 			// Copyright overhaul, see 0F_8960_DrawSeedAndFlags.asm
 			PutInBank(0x0F, 0x8980, Blob.FromHex("A9238D0620A9208D0620A200BD00898D0720E8E060D0F560"));
@@ -651,147 +768,6 @@ namespace FF1Lib
 			PutInBank(0x0E, 0xB816, Blob.FromHex("206BC24C95EC"));
 			PutInBank(0x1F, 0xC26B, CreateLongJumpTableEntry(0x0F, 0x8B40));
 			PutInBank(0x0F, 0x8B40, Blob.FromHex("A562851029030A851118651165110A0A0A1869508540A5100A0A29F0186928854160"));
-
-			// thing in bank 1F for switching to bank 1E when needed
-			PutInBank(0x1F, 0xCFD7, Blob.FromHex("2067E92099EBA91E4C03FE"));
-			PutInBank(0x1F, 0xC0AD, Blob.FromHex("1E2003FE200080"));
-			PutInBank(0x1F, 0xEADF, Blob.FromHex("D7CF"));
-
-			// Moving code and adding new stuff, look in 1E.asm
-			// Updating addresses, there are a lot
-			// Adresses used below
-			Blob Bank1E = Blob.FromHex("1E");
-			Blob PtyGen_DrawBoxes = Blob.FromHex("6C82");
-			Blob PtyGen_DrawText = Blob.FromHex("A082");
-			Blob TurnMenuScreenOn_ClearOAM = Blob.FromHex("5B85");
-			Blob DoPartyGen_OnCharacter = Blob.FromHex("C180");
-			Blob PtyGen_DrawScreen = Blob.FromHex("A480");
-			Blob PtyGen_DrawChars = Blob.FromHex("4A83");
-			Blob MenuWaitForBtn_SFX = Blob.FromHex("1A85");
-			Blob ClearNT = Blob.FromHex("8485");
-			Blob DrawNameInputScreen = Blob.FromHex("AC83");
-			Blob CharName_Frame = Blob.FromHex("2A82");
-			Blob MainLoop_in_DoNameInput = Blob.FromHex("5E81");
-			Blob lut_NameInputRowStart = Blob.FromHex("8406");
-			Blob lut_NameInput = Blob.FromHex("840D");
-			Blob skip_lut_NameInput_Load = Blob.FromHex("E581");
-			Blob NameInput_DrawName = Blob.FromHex("7983");
-			Blob PlaySFX_MenuSel = Blob.FromHex("EB84");
-			Blob PlaySFX_MenuMove = Blob.FromHex("0485");
-			Blob Box = Blob.FromHex("7F82");
-			Blob DrawOne_Text = Blob.FromHex("AF82");
-			Blob Call_DrawComplexString = Blob.FromHex("E482");
-			Blob DrawOne_Chars = Blob.FromHex("5B83");
-			Blob MenuFrame = Blob.FromHex("2C85");
-			Blob PtyGen_Joy = Blob.FromHex("4C82");
-			Blob CharName_DrawCursor = Blob.FromHex("3183");
-
-
-			// NewGamePartyGeneration
-			PutInBank(0x1E, 0x8000, Get(0x39C54, 0xC1));
-			PutInBank(0x1E, 0x8021, Blob.FromHex("AA84"));
-			PutInBank(0x1E, 0x8032, DoPartyGen_OnCharacter);
-			PutInBank(0x1E, 0x803B, DoPartyGen_OnCharacter);
-			PutInBank(0x1E, 0x8044, DoPartyGen_OnCharacter);
-			PutInBank(0x1E, 0x804D, DoPartyGen_OnCharacter);
-			PutInBank(0x1E, 0x8052, PtyGen_DrawScreen);
-			PutInBank(0x1E, 0x8058, PtyGen_DrawChars);
-			PutInBank(0x1E, 0x8063, MenuWaitForBtn_SFX);
-			PutInBank(0x1E, 0x8073, Blob.FromHex("8180A210208180A220208180"));
-
-			// PtyGen_DrawScreen
-			PutInBank(0x1E, 0x80B6, ClearNT);
-			PutInBank(0x1E, 0x80B9, PtyGen_DrawBoxes);
-			PutInBank(0x1E, 0x80BC, PtyGen_DrawText);
-			PutInBank(0x1E, 0x80BF, TurnMenuScreenOn_ClearOAM);
-
-			// DoPartyGen_OnCharacter
-			PutInBank(0x1E, 0x80C1, Blob.FromHex("A6678A4A4A4A4AA8B91081859020A480200F82A524D054A525F0023860A520290FC561F0EB8561C900F0E5A667BD0003186901C906D002A9FF9D0003A8C8B914812490F0E8A901853720B0824CD180"));
-
-			// lut_AllowedClasses, defaults to all but None and the anything for the rest
-			PutInBank(0x1E, 0x8110, Blob.FromHex("FDFFFFFF"));
-
-			// lut_ClassMask, 0=None, 1=FI,2=TH,  BB,  RM,  WM,  BM
-			PutInBank(0x1E, 0x8114, Blob.FromHex("02804020100804"));
-
-			// DoNameInput
-			PutInBank(0x1E, 0x812C, Get(0x39D50, 0xE3));
-			PutInBank(0x1E, 0x8142, ClearNT);
-			PutInBank(0x1E, 0x8145, DrawNameInputScreen);
-			PutInBank(0x1E, 0x8158, TurnMenuScreenOn_ClearOAM);
-			PutInBank(0x1E, 0x815F, CharName_Frame);
-			PutInBank(0x1E, 0x8188, MainLoop_in_DoNameInput);
-			PutInBank(0x1E, 0x8197, MainLoop_in_DoNameInput);
-			PutInBank(0x1E, 0x81A6, MainLoop_in_DoNameInput);
-			PutInBank(0x1E, 0x81B5, MainLoop_in_DoNameInput);
-			PutInBank(0x1E, 0x81D3, Blob.FromHex("06841865640AAA9006BD0D854CE581BD0D8485"));
-			PutInBank(0x1E, 0x81FD, NameInput_DrawName);
-			PutInBank(0x1E, 0x820B, MainLoop_in_DoNameInput);
-
-			// PtyGen_Frame
-			PutInBank(0x1E, 0x820F, Get(0x39E33, 0x89));
-			PutInBank(0x1E, 0x8213, Blob.FromHex("4A83202283"));
-			PutInBank(0x1E, 0x8221, Bank1E);
-			PutInBank(0x1E, 0x8228, PtyGen_Joy);
-
-			// CharName_Frame
-			PutInBank(0x1E, 0x822E, CharName_DrawCursor);
-			PutInBank(0x1E, 0x8246, Bank1E);
-
-			// PtyGen_Joy
-			PutInBank(0x1E, 0x825C, PlaySFX_MenuSel);
-			PutInBank(0x1E, 0x8269, PlaySFX_MenuMove);
-
-			// PtyGen_DrawBoxes
-			PutInBank(0x1E, 0x8271, Box);
-
-			// str_classNone
-			PutInBank(0x1E, 0x8298, Blob.FromHex("973CA8FFFFFFFF00"));
-
-			// PtyGen_DrawText
-			PutInBank(0x1E, 0x82A0, Get(0x39EBC, 0x10));
-			PutInBank(0x1E, 0x82A4, DrawOne_Text);
-
-			// PtyGen_DrawOneText
-			PutInBank(0x1E, 0x82B0, Blob.FromHex("BD0803853ABD0903853BBD000318C9FFD00DA9988D3E00A9828D3F004CE38269F08D5F00A9028D5E00A95E8D3E00A9008D3F00A91E8D57008D58008A482036DE68AABD0203855CBD0303855DBD0403855EBD0503855FBD0603853ABD0703853BA95C853EA900853FA91E855785584C36DE"));
-
-			// PtyGen_DrawCursor
-			PutInBank(0x1E, 0x8322, Get(0x39F26, 0x1C8));
-
-			// PtyGen_DrawChars
-			PutInBank(0x1E, 0x834D, DrawOne_Chars);
-			PutInBank(0x1E, 0x8352, DrawOne_Chars);
-			PutInBank(0x1E, 0x8357, DrawOne_Chars);
-
-			// NameInput_DrawName
-			PutInBank(0x1E, 0x8398, Bank1E);
-
-			// DrawNameInputScreen
-			PutInBank(0x1E, 0x83EE, Blob.FromHex("0D853EA984"));
-			PutInBank(0x1E, 0x83FE, Bank1E);
-
-			// PlaySFX_MenuSel
-			PutInBank(0x1E, 0x84EB, Get(0x3AD84, 0x2F));
-
-			// MenuWaitForBtn_SFX
-			PutInBank(0x1E, 0x851A, Get(0x3B613, 0x12));
-			PutInBank(0x1E, 0x851B, MenuFrame);
-			PutInBank(0x1E, 0x852A, PlaySFX_MenuSel);
-
-			// MenuFrame
-			PutInBank(0x1E, 0x852C, Get(0x3B65D, 0x2F));
-			PutInBank(0x1E, 0x854A, Bank1E);
-
-			// TurnMenuScreenOn_ClearOAM
-			PutInBank(0x1E, 0x855B, Get(0x3B780, 0x29));
-			PutInBank(0x1E, 0x857E, Bank1E);
-
-			// ClearNT
-			PutInBank(0x1E, 0x8584, Get(0x39C02, 0x2C));
-
-			// Overwrite free space with NOPs so its easier to find
-			PutInBank(0x0E, 0x9C54, Enumerable.Repeat((byte)0xEA, 0x49A).ToArray());
-
 		}
 
 		public override bool Validate()
@@ -809,6 +785,9 @@ namespace FF1Lib
 			Array.Copy(Data, newData, 0x3C000);
 			Array.Copy(Data, 0x3C000, newData, 0x7C000, 0x4000);
 			Data = newData;
+
+			// Update symbol info
+			BA.MemoryMode = MemoryMode.MMC3;
 
 			// Change bank swap code.
 			// We put this code at SwapPRG_L, so we don't have to move any of the "long" calls to it.

@@ -13,19 +13,19 @@ namespace FF1Lib
 	{
 		[Description("Disabled")]
 		Disabled,
-		[Description("Increased to 150% at 12 Key Items")]
+		[Description("150% at 12 Key Items")]
 		FiftyPercentAt12,
-		[Description("Increased to 150% at 15 Key Items")]
+		[Description("150% at 15 Key Items")]
 		FiftyPercentAt15,
-		[Description("Increased to 200% at 12 Key Items")]
+		[Description("200% at 12 Key Items")]
 		DoubledAt12,
-		[Description("Increased to 200% at 15 Key Items")]
+		[Description("200% at 15 Key Items")]
 		DoubledAt15,
-		[Description("Increased by 5% Per Key Item")]
+		[Description("+5% Per Key Item")]
 		Progressive5Percent,
-		[Description("Increased by 10% Per Key Item")]
+		[Description("+10% Per Key Item")]
 		Progressive10Percent,
-		[Description("Increased by 20% Per Key Item")]
+		[Description("+20% Per Key Item")]
 		Progressive20Percent,
 	}
 
@@ -47,7 +47,7 @@ namespace FF1Lib
 
 		// Scale is the geometric scale factor used with RNG.  Multiplier is where we make everything cheaper
 		// instead of enemies giving more gold, so we don't overflow.
-		public void ScalePrices(IScaleFlags flags, Blob[] text, MT19337 rng, bool increaseOnly, ItemShopSlot shopItemLocation)
+		public void ScalePrices(IScaleFlags flags, string[] text, MT19337 rng, bool increaseOnly, ItemShopSlot shopItemLocation)
 		{
 			var scale = flags.PriceScaleFactor;
 			var multiplier = flags.ExpMultiplier;
@@ -79,7 +79,7 @@ namespace FF1Lib
 
 			for (int i = GoldItemOffset; i < GoldItemOffset + GoldItemCount; i++)
 			{
-				text[i] = FF1Text.TextToBytes(prices[i].ToString() + " G");
+				text[i] = prices[i].ToString() + " G";
 			}
 
 			var pointers = Get(ShopPointerOffset, ShopPointerCount * ShopPointerSize).ToUShorts();
@@ -203,7 +203,7 @@ namespace FF1Lib
 			string HexBlob = $"200090ADB860D009A91C8580A960858160A9{ScaleFactor:X2}8516A9{Threshold:X2}8514F00EADB860C51490E6A9018515189005ADB8608515AD78688510AD79688511A516851220C090A515AAAD786865108D7868AD796865118D7968C9A7900AA90F8D7868A9A78D7968CAD0DF18AD76688510AD77688511A516851220C090A515AAAD766865108D7668AD776865118D7768C9A7900AA90F8D7668A9A78D7768CAD0DFAD76688588AD77688589A91C8580A960858160";
 			PutInBank(0x0F, 0x9100, Blob.FromHex(HexBlob));
 			//Inject into end-of-battle code
-			PutInBank(0x0B, 0x9B4D, Blob.FromHex("20CBCFEAEAEAEAEA"));
+			PutInBank(0x1B, 0x806D, Blob.FromHex("20CBCFEAEAEAEAEA"));
 		}
 
 		private void ScaleEncounterRate(double overworldMultiplier, double dungeonMultiplier)
