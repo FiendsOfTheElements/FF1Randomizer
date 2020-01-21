@@ -113,7 +113,6 @@ namespace FF1Lib
 			var maps = ReadMaps();
 			var shopItemLocation = ItemLocations.CaravanItemShop1;
 
-#if DEBUG
 			if (flags.ExperimentalFloorGeneration)
 			{
 				MapRequirements reqs;
@@ -168,7 +167,6 @@ namespace FF1Lib
 					maps[(int)MapId.EarthCaveB2] = earthB2.Map;
 				}
 			}
-#endif
 
 			if ((bool)flags.RandomizeFormationEnemizer)
 			{
