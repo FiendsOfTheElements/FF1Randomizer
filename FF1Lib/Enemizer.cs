@@ -1325,10 +1325,10 @@ namespace FF1Lib
 			// assign monsters to trap tiles
 			traptile_formations[(int)TrapTiles.TRAP_IMAGES] = en.zone[3].forms[0];
 			traptile_formations[(int)TrapTiles.TRAP_MUMMIES] = en.zone[3].forms[1];
-			traptile_formations[(int)TrapTiles.TRAP_MUDGOLS] = en.zone[6].forms[0];
-			traptile_formations[(int)TrapTiles.TRAP_NITEMARES] = en.zone[6].forms[1];
+			traptile_formations[(int)TrapTiles.TRAP_MUDGOLS] = en.zone[6].forms[2];
+			traptile_formations[(int)TrapTiles.TRAP_NITEMARES] = en.zone[6].forms[3];
 			traptile_formations[(int)TrapTiles.TRAP_ZOMBIE_D] = en.zombieD_encounter;
-			traptile_formations[(int)TrapTiles.TRAP_GARGOYLES] = en.zone[2].forms[0];
+			traptile_formations[(int)TrapTiles.TRAP_GARGOYLES] = en.zone[2].forms[1];
 			traptile_formations[(int)TrapTiles.TRAP_SEAFOOD_PARTY_MIX] = en.zone[8].forms[0];
 			traptile_formations[(int)TrapTiles.TRAP_SHARKNADO] = en.zone[8].forms[1];
 			traptile_formations[(int)TrapTiles.TRAP_WATERS] = en.zone[8].forms[2];
@@ -3933,6 +3933,8 @@ namespace FF1Lib
 					if (script[i].spell_list[j] == 0xFF)
 						continue; // skip blank spells
 					int whichTier = spell[script[i].spell_list[j]].tier;
+					if (whichTier == 0)
+						whichTier = 1; // tier 0 becomes tier 1
 					List<byte> eligibleSpellIDs = new List<byte> { };
 					for (byte k = 0; k < 64; ++k)
 					{

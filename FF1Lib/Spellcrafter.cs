@@ -1681,6 +1681,8 @@ namespace FF1Lib
 					if (script[i].spell_list[j] == 0xFF)
 						continue; // skip blank spells
 					int whichTier = oldTiers[script[i].spell_list[j]];
+					if (whichTier == 0)
+						whichTier = 1; // don't allow tier 0s to exist
 					List<byte> eligibleSpellIDs = new List<byte> { };
 					while(eligibleSpellIDs.Count == 0 && whichTier > 0)
 					{
