@@ -36,6 +36,7 @@ namespace FF1Lib
 		public bool RebalanceSpells { get; set; } = false;
 
 		public bool? Rng { get; set; } = false;
+		public bool FixMissingBattleRngEntry { get; set; } = false;
 		public bool? EverythingUnrunnable { get; set; } = false;
 		public bool? EnemyFormationsUnrunnable { get; set; } = false;
 		public bool? EnemyFormationsSurprise { get; set; } = false;
@@ -60,6 +61,7 @@ namespace FF1Lib
 		public bool? ConfusedOldMen { get; set; } = false;
 
 		public bool? MapOpenProgression { get; set; } = false;
+		public bool? MapOpenProgressionDocks { get; set; } = false;
 		public bool? Entrances { get; set; } = false;
 		public bool? Towns { get; set; } = false;
 		public bool? Floors { get; set; } = false;
@@ -245,8 +247,8 @@ namespace FF1Lib
 		public bool AllowStartAreaDanager { get; set; } = false;
 
 		public bool? MapCanalBridge => (NPCItems) | (NPCFetchItems) | MapOpenProgression | MapOpenProgressionExtended;
-		public bool? MapOnracDock => MapOpenProgression;
-		public bool? MapMirageDock => MapOpenProgression;
+		public bool? MapOnracDock => MapOpenProgressionDocks;
+		public bool? MapMirageDock => MapOpenProgressionDocks;
 		public bool? MapConeriaDwarves => MapOpenProgression;
 		public bool? MapVolcanoIceRiver => MapOpenProgression;
 		public bool? MapDwarvesNorthwest => MapOpenProgression & MapOpenProgressionExtended;
@@ -501,6 +503,7 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.ItemMagic);
 			sum = AddBoolean(sum, flags.RebalanceSpells);
 			sum = AddTriState(sum, flags.Rng);
+			sum = AddBoolean(sum, flags.FixMissingBattleRngEntry);
 			sum = AddTriState(sum, flags.EverythingUnrunnable);
 			sum = AddTriState(sum, flags.EnemyFormationsUnrunnable);
 			sum = AddTriState(sum, flags.EnemyFormationsSurprise);
@@ -522,6 +525,7 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.LefeinShops);
 			sum = AddTriState(sum, flags.ConfusedOldMen);
 			sum = AddTriState(sum, flags.MapOpenProgression);
+			sum = AddTriState(sum, flags.MapOpenProgressionDocks);
 			sum = AddTriState(sum, flags.Entrances);
 			sum = AddTriState(sum, flags.Towns);
 			sum = AddTriState(sum, flags.Floors);
@@ -838,6 +842,7 @@ namespace FF1Lib
 				Floors = GetTriState(ref sum),
 				Towns = GetTriState(ref sum),
 				Entrances = GetTriState(ref sum),
+				MapOpenProgressionDocks = GetTriState(ref sum),
 				MapOpenProgression = GetTriState(ref sum),
 				ConfusedOldMen = GetTriState(ref sum),
 				LefeinShops = GetTriState(ref sum),
@@ -860,6 +865,7 @@ namespace FF1Lib
 				EnemyFormationsUnrunnable = GetTriState(ref sum),
 				EverythingUnrunnable = GetTriState(ref sum),
 				Rng = GetTriState(ref sum),
+				FixMissingBattleRngEntry = GetBoolean(ref sum),
 				RebalanceSpells = GetBoolean(ref sum),
 				ItemMagic = GetTriState(ref sum),
 				MagicPermissions = GetTriState(ref sum),

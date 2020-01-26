@@ -268,6 +268,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Rng"));
 			}
 		}
+		public bool FixMissingBattleRngEntry
+		{
+			get => Flags.FixMissingBattleRngEntry;
+			set
+			{
+				Flags.FixMissingBattleRngEntry = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FixMissingBattleRngEntry"));
+			}
+		}
 		public bool? EnemyFormationsUnrunnable
 		{
 			get => Flags.EnemyFormationsUnrunnable;
@@ -531,6 +540,16 @@ namespace FF1Lib
 			{
 				Flags.MapOpenProgression = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MapOpenProgression"));
+			}
+		}
+
+		public bool? MapOpenProgressionDocks
+		{
+			get => Flags.MapOpenProgressionDocks;
+			set
+			{
+				Flags.MapOpenProgressionDocks = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MapOpenProgressionDocks"));
 			}
 		}
 		public bool? MapOpenProgressionExtended

@@ -26,6 +26,7 @@
 		"RebalanceSpells": false,
 
 		"Rng": true,
+		"FixMissingBattleRngEntry": false,
 		"EverythingUnrunnable": false,
 		"EnemyFormationsUnrunnable": false,
 		"EnemyFormationsSurprise": false,
