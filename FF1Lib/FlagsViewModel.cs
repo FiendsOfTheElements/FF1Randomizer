@@ -268,6 +268,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Rng"));
 			}
 		}
+		public bool FixMissingBattleRngEntry
+		{
+			get => Flags.FixMissingBattleRngEntry;
+			set
+			{
+				Flags.FixMissingBattleRngEntry = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FixMissingBattleRngEntry"));
+			}
+		}
 		public bool? EnemyFormationsUnrunnable
 		{
 			get => Flags.EnemyFormationsUnrunnable;
