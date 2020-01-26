@@ -220,7 +220,7 @@
 	{
 		"Id": "FreeTail",
 		"title": "Free Tail",
-		"description": "The rat's TAIL required for promotion is in your inventory when the game begins.'"
+		"description": "The rat's TAIL required for promotion is in your inventory when the game begins."
 	},
 	{
 		"Id": "incentivizeFreeNPCsCheckBox",
@@ -660,8 +660,8 @@
 	},
 	{
 		"Id": "doubleBBCritCheckBox",
-		"title": "Double BB Crit Rate",
-		"description": "Doubles the BB crit rate (This Checkbox should be changed!)"
+		"title": "Halve BB Crit Rate",
+		"description": "Halves the BB's unarmed crit rate.  (Normal behavior is critrate = Level * 2, with this it is merely critrate = Level)."
 	},
 	{
 		"Id": "doubleWeaponCritCheckBox",
