@@ -1993,7 +1993,7 @@ namespace FF1Lib
 			get => Flags.RandomArmorBonus;
 			set
 			{
-				Flags.RandomWeaponBonus = value;
+				Flags.RandomArmorBonus = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomArmorBonus"));
 			}
 		}
