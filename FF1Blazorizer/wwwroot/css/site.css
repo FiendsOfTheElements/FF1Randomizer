@@ -1,7 +1,7 @@
 ﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
 html, body {
-    font-family: 'Press Start 2P', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: 'Press Start 2P', monospace;
     user-select: none;
 }
 
@@ -50,6 +50,10 @@ app {
             background-color: rgba(255,255,255,0.1);
             color: white;
         }
+
+.nes-btn {
+    font-family: 'Press Start 2P';
+}
 
 .nes-btn:active {
     transform:translateY(2px);
@@ -104,13 +108,13 @@ app {
 /* FFR */
 
 body {
-    font-size: 14px;
     background-color: #3cbcfc;
     background-image: url("/images/bg.png");
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center center;
     background-attachment: fixed;
+    line-height: initial;
 }
 
 #welcome {
@@ -137,6 +141,7 @@ h4 {
     }
 
 .checkbox-cell {
+    font-family: monospace;
     white-space: nowrap;
     overflow: hidden;
     min-height: 20px;
@@ -278,4 +283,8 @@ tr.odd {
 
 .btn-group-help:hover {
     opacity: 0.75;
+}
+
+p {
+    font-family: monospace;
 }

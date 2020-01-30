@@ -11,62 +11,53 @@
 @inject LocalStorage LocalStorage
 
 <div class="content px-4 tinted">
-
-	<div class="is-dark nes-container">
-		<div class="row spaced-row">
-			<div class="col-md-6">
-				@RomMessage<br />
-				<input type="file" id="fileInput" onchange="@OnFileChanged" />
-				<br />
-			</div>
-			<div class="col-md-6">
-				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="rememberCheckBox" bind-Value="@RememberROM">Remember ROM</CheckBox>
-			</div>
-		</div>
-		<div class="row spaced-row">
-			<div class="col-md-6">
-				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="spoilersCheckBox" bind-Value="@Flags.Spoilers">Generate Spoiler Log!</CheckBox>
-			</div>
-			<div class="col-md-6">
-				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="tournamentSafeCheckBox" bind-Value="@Flags.TournamentSafe">Tournament Safe ROM</CheckBox>
-			</div>
-		</div>
-		<div class="row spaced-row">
-			<div class="col-md-2">
-				Seed: <br />
-				<input type="text" class="nes-input @(_seedInputClass)" id="seedInput" onchange="@OnSeedInputChanged" value="@(_seed)" />
-			</div>
-			<div class="col-md-2">
-				<br />
-				<button type="button" class="nes-btn is-primary" onclick="@OnNewSeed">New</button>
-			</div>
-			<div class="col-md-6">
-				Flags: <br />
-				<input type="text" class="nes-input" value="@Flags.Encoded" onchange="@OnFlagsInputChanged" />
-			</div>
-			<div class="col-md-2">
-				<br />
-				<button type="button" class="nes-btn is-primary" onclick="@OnCopyToClipboard">Export</button>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-12">
-				Presets:
-				<div>
-					<button type="button" class="nes-btn is-primary" onclick="@(() => LoadPreset("default"))">Default</button>
-					<button type="button" class="nes-btn is-primary" onclick="@(() => LoadPreset("beginner"))">Beginner</button>
-					<button type="button" class="nes-btn is-primary" onclick="@(() => LoadPreset("full-npc"))">NPC Shuffle</button>
-					<button type="button" class="nes-btn is-primary" onclick="@(() => LoadPreset("improved-vanilla"))">Improved Vanilla</button>
-					<button type="button" class="nes-btn is-primary" onclick="@(() => LoadPreset("chaos-rush"))">Chaos Rush</button>
-					<button type="button" class="nes-btn is-primary" onclick="@(() => LoadPreset("debug"))">DEBUG</button>
-				</div>
-			</div>
-		</div>
-	</div>
-	<br />
 	<CascadingValue Value="@ToolTipId">
 		<ToolTip ref="ToolTipElement"></ToolTip>
 		<TabContent>
+			<button type="button" class="@(TabClasses("File"))" onclick="@(() => ActivateTab("File"))">File</button>
+			<TabPane IsOpen="@(activeTabs.Contains("File"))">
+				<div class="is-dark nes-container">
+					<div class="row spaced-row">
+						<div class="col-md-6">
+							<input type="file" id="fileInput" onchange="@OnFileChanged" />
+							<p>@RomMessage</p>
+						</div>
+						<div class="col-md-6">
+							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="rememberCheckBox" bind-Value="@RememberROM">Remember ROM</CheckBox>
+							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="tournamentSafeCheckBox" bind-Value="@Flags.TournamentSafe">Tournament Safe ROM</CheckBox>
+							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="spoilersCheckBox" bind-Value="@Flags.Spoilers">Generate Spoiler Log!</CheckBox>
+						</div>
+					</div>
+					<div class="row">&nbsp;</div>
+					<div class="row spaced-row">
+						<div class="col-md-4">
+							<p>Seed:
+							<input type="text" style="width: calc(100% - 200px);"class="nes-input @(_seedInputClass)" id="seedInput" onchange="@OnSeedInputChanged" value="@(_seed)" />
+							<button type="button" class="nes-btn is-primary" onclick="@OnNewSeed">New</button>
+							</p>
+						</div>
+						<div class="col-md-8">
+							<p>Flags:
+							<input style="width: calc(100% - 300px);" type="text" class="nes-input" value="@Flags.Encoded" onchange="@OnFlagsInputChanged" />
+							<button type="button" class="nes-btn is-primary" onclick="@OnCopyToClipboard">Export</button>
+							</p>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-12">
+							<p>Presets:
+								<button type="button" class="nes-btn is-primary" onclick="@(() => LoadPreset("default"))">Default</button>
+								<button type="button" class="nes-btn is-primary" onclick="@(() => LoadPreset("beginner"))">Beginner</button>
+								<button type="button" class="nes-btn is-primary" onclick="@(() => LoadPreset("full-npc"))">NPC Shuffle</button>
+								<button type="button" class="nes-btn is-primary" onclick="@(() => LoadPreset("improved-vanilla"))">Improved Vanilla</button>
+								<button type="button" class="nes-btn is-primary" onclick="@(() => LoadPreset("chaos-rush"))">Chaos Rush</button>
+								<button type="button" class="nes-btn is-primary" onclick="@(() => LoadPreset("debug"))">DEBUG</button>
+							</p>
+						</div>
+					</div>
+				</div>
+			</TabPane>
+			<br />
 			<button type="button" class="nes-btn is-primary" onclick="@OnRandomize">Randomize</button>
 			<TabPane IsOpen="@(StatusMessage.Length > 0)">
 				<div class="is-dark nes-container">
@@ -77,7 +68,7 @@
 			<TabPane IsOpen="@(activeTabs.Contains("Shuffle"))">
 				<div class="is-dark nes-container">
 					<div class="row">
-						<div class="col-md-5">
+						<div class="col-md-4">
 							<h4>Shops &amp; RNG</h4>
 							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="shopsCheckBox" bind-Value="@Flags.Shops">Shops</TriStateCheckBox>
 							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.Shops" Id="randomWaresCheckBox" bind-Value="@Flags.RandomWares">Random Weapons and Armor</TriStateCheckBox>
@@ -90,7 +81,7 @@
 							<div class="checkbox-cell"></div>
 							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="rngCheckBox" bind-Value="@Flags.Rng">RNG Table</TriStateCheckBox>
 						</div>
-						<div class="col-md-7">
+						<div class="col-md-4">
 							<h4>Enemies</h4>
 							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyScriptsCheckBox" bind-Value="@Flags.EnemyScripts">Enemy Scripts</TriStateCheckBox>
 							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnemyScripts" Id="allowUnsafePiratesCheckBox" bind-Value="@Flags.AllowUnsafePirates">Allow Unsafe Pirates</TriStateCheckBox>
@@ -106,7 +97,8 @@
 							<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="formationShuffleModeDropDown" TItem="FormationShuffleMode" IsEnabled="@(!Flags.RandomizeFormationEnemizer)" bind-Value="@Flags.FormationShuffleMode">Enemy Formations:</EnumDropDown>
 							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyTrapTilesCheckBox" IsEnabled="@(!Flags.RandomizeFormationEnemizer)" bind-Value="@Flags.EnemyTrapTiles">Enemy Forced Encounter Tiles</TriStateCheckBox>
 							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="randomTrapFormationsCheckBox" IsEnabled="@Flags.EnemyTrapTiles" bind-Value="@Flags.RandomTrapFormations">Use Random Formations</TriStateCheckBox>
-							<div class="checkbox-cell"></div>
+						</div>
+						<div class="col-md-4">
 							<h4>WarMECH</h4>
 							<p>Encounter 7 not enough WarMECH for you? Try a patrolling or required WarMECH instead.</p>
 							<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="WarMECHModeDropDown" TItem="WarMECHMode" bind-Value="@Flags.WarMECHMode">WarMECH Mode: </EnumDropDown>
@@ -154,7 +146,7 @@
 						</div>
 						<div class="col-md-4">
 							<h4>Items: @(Flags.Flags.IncentivizedItemCountMin) @((Flags.Flags.IncentivizedItemCountMin != Flags.Flags.IncentivizedItemCountMax) ? "- " + Flags.Flags.IncentivizedItemCountMax : "")</h4>
-							<p style="font-size: 10px">@Flags.Flags.IncentivizedItems</p>
+							<p>@Flags.Flags.IncentivizedItems</p>
 							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeMainItemsCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeMainItems">Main Progression Items</TriStateCheckBox>
 							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeFetchItemsCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeFetchItems">Other Quest Items</TriStateCheckBox>
 							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeAirshipCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.IncentivizeAirship">Floater</TriStateCheckBox>
@@ -218,6 +210,17 @@
 							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="deepTownsCheckBox" IsEnabled="@(Flags.DeepTownsPossible)" bind-Value="@Flags.AllowDeepTowns">Deep Towns</TriStateCheckBox>
 						</div>
 						<div class="col-md-4">
+							<h4>Progression</h4>
+							<p>Relax some requirements to accelerate routing.</p>
+							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="mapOpenProgressionCheckBox" bind-Value="@Flags.MapOpenProgression">Open Southern Progression</TriStateCheckBox>
+							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="mapOpenProgressionDocksCheckBox" bind-Value="@Flags.MapOpenProgressionDocks">Open Northern Progression</TriStateCheckBox>
+							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="mapOpenProgressionExtendedCheckBox" IsEnabled="@Flags.MapOpenProgression" bind-Value="@Flags.MapOpenProgressionExtended">Extended Open Progression</TriStateCheckBox>
+							<div class="checkbox-cell"></div>
+							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="earlySardaCheckBox" bind-Value="@Flags.EarlySarda">Early Sarda Item</TriStateCheckBox>
+							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="earlySageCheckBox" bind-Value="@Flags.EarlySage">Early Sage Item</TriStateCheckBox>
+							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="earlyOrdealsCheckBox" bind-Value="@Flags.EarlyOrdeals">Early Ordeals</TriStateCheckBox>
+						</div>
+						<div class="col-md-4">
 							<h4>Isolated Map Edits</h4>
 							<p>Individual Final Fantasy Map edits.</p>
 							<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="skyCastle4FMazeModeDropDown" TItem="SkyCastle4FMazeMode" bind-Value="@Flags.SkyCastle4FMazeMode">Sky Castle 4F: </EnumDropDown>
@@ -226,18 +229,8 @@
 							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="zozoMelmondCheckBox" bind-Value="@Flags.AllowUnsafeMelmond">Zozo Melmond</TriStateCheckBox>
 							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="lefeinShopsCheckBox" bind-Value="@Flags.LefeinShops">Lefeinish Hospitality</TriStateCheckBox>
 							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="confusedOldMenCheckBox" bind-Value="@Flags.ConfusedOldMen">Confused Old Men</TriStateCheckBox>
-							<div class="checkbox-cell"></div>
-							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="mapOpenProgressionCheckBox" bind-Value="@Flags.MapOpenProgression">Open Progression (Southern Continent Edits)</TriStateCheckBox>
-							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="mapOpenProgressionDocksCheckBox" bind-Value="@Flags.MapOpenProgressionDocks">Open Progression (Northern Docks)</TriStateCheckBox>
-							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="mapOpenProgressionExtendedCheckBox" IsEnabled="@Flags.MapOpenProgression" bind-Value="@Flags.MapOpenProgressionExtended">Extended Open Progression</TriStateCheckBox>
 						</div>
-						<div class="col-md-4">
-							<h4>Routing</h4>
-							<p>Relax some requirements to accelerate routing.</p>
-							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="earlySardaCheckBox" bind-Value="@Flags.EarlySarda">Early Sarda Item</TriStateCheckBox>
-							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="earlySageCheckBox" bind-Value="@Flags.EarlySage">Early Sage Item</TriStateCheckBox>
-							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="earlyOrdealsCheckBox" bind-Value="@Flags.EarlyOrdeals">Early Ordeals</TriStateCheckBox>
-						</div>
+
 					</div>
 				</div>
 			</TabPane>
@@ -250,10 +243,10 @@
 					<div class="slider-cell"></div>
 					<div class="row">
 						<div class="col-md-5">
-							<label>Exp/Gold Boost:</label>
+							<p>Exp/Gold Boost:</p>
 						</div>
 						<div class="col-xs-6 col-md-3">
-							<label>@Math.Round(Flags.ExpMultiplier, 1).ToString("F1")x + @Flags.ExpBonus</label>
+							<p>@Math.Round(Flags.ExpMultiplier, 1).ToString("F1")x + @Flags.ExpBonus</p>
 						</div>
 						<div class="col-md-4">
 							<Slider bind-Value="@Flags.ExpMultiplier" Min="1" Max="5" Step="0.1"></Slider>
@@ -266,18 +259,18 @@
 						</div>
 					</div>
 					<div class="row">
-						<div class="col-md-8"><label>Exp/Gold Progressive Scaling:</label></div>
-						<div class="col-md-4">
+						<div class="col-md-8 col-xs-6"><p>Exp/Gold Progressive Scaling:</p></div>
+						<div class="col-md-4 col-xs-6">
 							<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="progressiveScaleModeDropDown" TItem="ProgressiveScaleMode" bind-Value="@Flags.ProgressiveScaleMode"></EnumDropDown>
 						</div>
 					</div>
 					<div class="slider-cell"></div>
 					<div class="row">
 						<div class="col-md-5">
-							<label>Overworld Encounter Rate:</label>
+							<p>Overworld Encounter Rate:</p>
 						</div>
 						<div class="col-xs-6 col-md-3">
-							<label>@Math.Round(Flags.EncounterRate / 30.0, 2).ToString("F2")x</label>
+							<p>@Math.Round(Flags.EncounterRate / 30.0, 2).ToString("F2")x</p>
 						</div>
 						<div class="col-md-4">
 							<Slider bind-Value="@Flags.EncounterRate" Min="0" Max="45" Step="1"></Slider>
@@ -285,10 +278,10 @@
 					</div>
 					<div class="row">
 						<div class="col-md-5">
-							<label>Dungeon Encounter Rate:</label>
+							<p>Dungeon Encounter Rate:</p>
 						</div>
 						<div class="col-md-3">
-							<label>@Math.Round(Flags.DungeonEncounterRate / 30.0, 2).ToString("F2")x</label>
+							<p>@Math.Round(Flags.DungeonEncounterRate / 30.0, 2).ToString("F2")x</p>
 						</div>
 						<div class="col-md-4">
 							<Slider bind-Value="@Flags.DungeonEncounterRate" Min="0" Max="45" Step="1"></Slider>
@@ -531,264 +524,266 @@
 
 @functions
 {
-private byte[] _fileData;
-private FF1Rom _rom;
+	private byte[] _fileData;
+	private FF1Rom _rom;
 
-private string _seed;
-private string _seedInputClass = "";
+	private string _seed;
+	private string _seedInputClass = "";
 
-private FlagsViewModel Flags { get; set; } = new FlagsViewModel();
-private Flags DefaultFlags;
+	private FlagsViewModel Flags { get; set; } = new FlagsViewModel();
+	private Flags DefaultFlags;
 
-private readonly List<string> activeTabs = new List<string> { "Shuffle", "Treasures", "Goal", "Map", "Scale" };
+	private readonly List<string> activeTabs = new List<string> { "File", "Shuffle", "Treasures", "Goal", "Map", "Scale", "Party", "Bug Fixes", "Conveniences", "Fun %" };
 
-private string StatusMessage = "";
-private string RomMessage = "Upload Rom:";
+	private string StatusMessage = "";
+	private string RomMessage = "Upload Rom:";
 
-private bool RememberROM = false;
+	private bool RememberROM = false;
 
-private string ToolTipId = "unupdated";
-private ToolTip ToolTipElement;
+	private string ToolTipId = "unupdated";
+	private ToolTip ToolTipElement;
 
-private async void UpdateToolTipID(string Id, UIMouseEventArgs e)
-{
-	ToolTipId = Id;
-	await ToolTipElement.UpdatePos(ToolTipId, e);
-	StateHasChanged();
-}
-
-void ActivateTab(string tab)
-{
-	if (!activeTabs.Remove(tab))
+	private async void UpdateToolTipID(string Id, UIMouseEventArgs e)
 	{
-		activeTabs.Add(tab);
-	}
-	StateHasChanged();
-}
-
-string TabClasses(string tab)
-{
-	return activeTabs.Contains(tab) ? "nes-btn nes-nav is-success" : "nes-btn nes-nav is-warning";
-}
-
-protected override async Task OnInitAsync()
-{
-	Flags.PropertyChanged += (sender, args) => StateHasChanged();
-	Flags.PropertyChanged += async (sender, args) => await SetQueryString();
-
-	// This crap is a workaround for a type loading exception in Blazor 0.7.
-	typeof(INotifyPropertyChanged).GetHashCode();
-	typeof(INotifyPropertyChanging).GetHashCode();
-
-	var uri = new Uri(UriHelper.GetAbsoluteUri());
-	if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("s", out var seed))
-	{
-		_seed = seed.Single();
-	}
-	else
-	{
-		await OnNewSeed(null);
+		ToolTipId = Id;
+		await ToolTipElement.UpdatePos(ToolTipId, e);
+		StateHasChanged();
 	}
 
-	if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("f", out var flags))
+	void ActivateTab(string tab)
 	{
-		TrySetFlags(flags.First());
-	}
-	else
-	{
-		await LoadPreset("default");
-	}
-
-	await LoadPreferences();
-
-	await LoadLastROM();
-}
-
-async Task SetQueryString()
-{
-	await JSRuntime.Current.InvokeAsync<Task>("updateHistory", _seed, Flags.Encoded);
-}
-
-async Task LoadPreset(string presetName)
-{
-	var json = await JSRuntime.Current.InvokeAsync<string>("computePreset", presetName);
-	Flags.Flags = Microsoft.JSInterop.Json.Deserialize<Flags.Preset>(json).Flags;
-}
-
-async Task OnFileChanged(UIChangeEventArgs e)
-{
-	var encoded = await JSRuntime.Current.InvokeAsync<string>("handleFileSelect", "fileInput");
-	RomMessage = "Using Selected ROM.";
-	SetFileData(encoded);
-
-	if (RememberROM)
-	{
-		await LocalStorage.SetItem<string>("file", encoded);
-	}
-}
-
-void SetFileData(string encoded)
-{
-	_fileData = Convert.FromBase64String(encoded);
-}
-
-async Task OnSeedInputChanged(UIChangeEventArgs e)
-{
-	await ValidateSeed((string)e.Value);
-}
-
-async Task ValidateSeed(string seed)
-{
-	if (seed == _seed)
-		return;
-
-	if (seed.Length > 8)
-	{
-		_seedInputClass = "is-error";
-		return;
+		if (!activeTabs.Remove(tab))
+		{
+			activeTabs.Add(tab);
+		}
+		StateHasChanged();
 	}
 
-	_seed = seed;
-	try
+	string TabClasses(string tab)
 	{
-		Blob.FromHex(_seed);
-		_seed = seed.PadLeft(8, '0');
-		_seedInputClass = "";
-		await SetQueryString();
+		return activeTabs.Contains(tab) ? "nes-btn nes-nav is-success" : "nes-btn nes-nav is-warning";
 	}
-	catch (Exception)
+
+	protected override async Task OnInitAsync()
 	{
-		_seedInputClass = "is-error";
+		Flags.PropertyChanged += (sender, args) => StateHasChanged();
+		Flags.PropertyChanged += async (sender, args) => await SetQueryString();
+
+		// This crap is a workaround for a type loading exception in Blazor 0.7.
+		typeof(INotifyPropertyChanged).GetHashCode();
+		typeof(INotifyPropertyChanging).GetHashCode();
+
+		var uri = new Uri(UriHelper.GetAbsoluteUri());
+		if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("s", out var seed))
+		{
+			_seed = seed.Single();
+		}
+		else
+		{
+			await OnNewSeed(null);
+		}
+
+		if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("f", out var flags))
+		{
+			TrySetFlags(flags.First());
+		}
+		else
+		{
+			await LoadPreset("default");
+		}
+
+		await LoadPreferences();
+
+		await LoadLastROM();
 	}
-}
 
-async Task OnNewSeed(UIMouseEventArgs e)
-{
-	await ValidateSeed(Blob.Random(4).ToHex());
-}
-
-void OnCopyToClipboard(UIMouseEventArgs e)
-{
-	StatusMessage = "URL Copied To Clipboard.";
-
-	JSRuntime.Current.InvokeAsync<object>("copyLocation");
-}
-
-void OnFlagsInputChanged(UIChangeEventArgs e)
-{
-	TrySetFlags((string)e.Value);
-}
-
-void TrySetFlags(string flags)
-{
-	try
+	async Task SetQueryString()
 	{
-		Flags.Flags = FF1Lib.Flags.DecodeFlagsText(flags);
-		StatusMessage = "Successfully imported Flags.";
+		await JSRuntime.Current.InvokeAsync<Task>("updateHistory", _seed, Flags.Encoded);
 	}
-	catch (Exception)
+
+	async Task LoadPreset(string presetName)
 	{
-		StatusMessage = "Invalid Flags String.";
+		var json = await JSRuntime.Current.InvokeAsync<string>("computePreset", presetName);
+		Flags.Flags = Microsoft.JSInterop.Json.Deserialize<Flags.Preset>(json).Flags;
 	}
-}
 
-async Task LoadPreferences()
-{
-	Flags.Preferences = await LocalStorage.GetItem<Preferences>("preferences") ?? new Preferences();
-}
-
-async Task SavePreferences()
-{
-	await LocalStorage.SetItem("preferences", Flags.Preferences);
-}
-
-async Task LoadLastROM()
-{
-	string encoded = await LocalStorage.GetItem<string>("file");
-	RememberROM = encoded != null && encoded.Length > 0;
-	if (RememberROM)
+	async Task OnFileChanged(UIChangeEventArgs e)
 	{
+		var encoded = await JSRuntime.Current.InvokeAsync<string>("handleFileSelect", "fileInput");
+		RomMessage = "Using Selected ROM.";
 		SetFileData(encoded);
-		RomMessage = "Using Remembered ROM.";
-		StatusMessage += " Remembered last used ROM.";
-	}
-}
 
-async Task OnRandomize(UIMouseEventArgs e)
-{
-	if (_fileData == null)
-	{
-		StatusMessage = "Generate Failed: No ROM File Selected!";
-		StateHasChanged();
-		return;
-	}
-
-	using (var stream = new MemoryStream(_fileData))
-	{
-		_rom = new FF1Rom(stream);
-	}
-
-	if (RememberROM)
-	{
-		await LocalStorage.SetItem("file", Convert.ToBase64String(_fileData));
-	}
-	else
-	{
-		await LocalStorage.RemoveItem("file");
-	}
-
-	StatusMessage = "Generating Final Fantasy Randomizer ROM ... Please Wait ... ";
-	StateHasChanged();
-
-	await Task.Run(DoRandomize);
-}
-
-async Task DoRandomize()
-{
-	Blob seed;
-	try
-	{
-		if (_seed.Length != 8)
+		if (RememberROM)
 		{
-			throw new Exception();
+			await LocalStorage.SetItem<string>("file", encoded);
 		}
-		seed = Blob.FromHex(_seed);
-	}
-	catch (Exception)
-	{
-		StatusMessage = "Generate Failed: Invalid Seed Format";
-		StateHasChanged();
-		return;
 	}
 
-	try
+	void SetFileData(string encoded)
 	{
+		_fileData = Convert.FromBase64String(encoded);
+	}
 
-		_rom.Randomize(seed, Flags.Flags, Flags.Preferences);
+	async Task OnSeedInputChanged(UIChangeEventArgs e)
+	{
+		await ValidateSeed((string)e.Value);
+	}
 
-		var data = new byte[512 * 1024 + 16];
-		using (var stream = new MemoryStream(data, true))
+	async Task ValidateSeed(string seed)
+	{
+		if (seed == _seed)
+			return;
+
+		if (seed.Length > 8)
 		{
-			_rom.Save(stream);
+			_seedInputClass = "is-error";
+			return;
 		}
 
-		var encoded = Convert.ToBase64String(data);
-
-		StatusMessage += "SUCCESS!";
-
-		if (Flags.Spoilers)
+		_seed = seed;
+		try
 		{
-			StatusMessage += " SPOILER LOG IN BROWSER CONSOLE!";
+			Blob.FromHex(_seed);
+			_seed = seed.PadLeft(8, '0');
+			_seedInputClass = "";
+			await SetQueryString();
+		}
+		catch (Exception)
+		{
+			_seedInputClass = "is-error";
+		}
+	}
+
+	async Task OnNewSeed(UIMouseEventArgs e)
+	{
+		await ValidateSeed(Blob.Random(4).ToHex());
+		StateHasChanged();
+	}
+
+	void OnCopyToClipboard(UIMouseEventArgs e)
+	{
+		StatusMessage = "URL Copied To Clipboard.";
+		StateHasChanged();
+
+		JSRuntime.Current.InvokeAsync<object>("copyLocation");
+	}
+
+	void OnFlagsInputChanged(UIChangeEventArgs e)
+	{
+		TrySetFlags((string)e.Value);
+	}
+
+	void TrySetFlags(string flags)
+	{
+		try
+		{
+			Flags.Flags = FF1Lib.Flags.DecodeFlagsText(flags);
+			StatusMessage = "Successfully imported Flags.";
+		}
+		catch (Exception)
+		{
+			StatusMessage = "Invalid Flags String.";
+		}
+	}
+
+	async Task LoadPreferences()
+	{
+		Flags.Preferences = await LocalStorage.GetItem<Preferences>("preferences") ?? new Preferences();
+	}
+
+	async Task SavePreferences()
+	{
+		await LocalStorage.SetItem("preferences", Flags.Preferences);
+	}
+
+	async Task LoadLastROM()
+	{
+		string encoded = await LocalStorage.GetItem<string>("file");
+		RememberROM = encoded != null && encoded.Length > 0;
+		if (RememberROM)
+		{
+			SetFileData(encoded);
+			RomMessage = "Using Remembered ROM.";
+			StatusMessage += " Remembered last used ROM.";
+		}
+	}
+
+	async Task OnRandomize(UIMouseEventArgs e)
+	{
+		if (_fileData == null)
+		{
+			StatusMessage = "Generate Failed: No ROM File Selected!";
+			StateHasChanged();
+			return;
 		}
 
+		using (var stream = new MemoryStream(_fileData))
+		{
+			_rom = new FF1Rom(stream);
+		}
+
+		if (RememberROM)
+		{
+			await LocalStorage.SetItem("file", Convert.ToBase64String(_fileData));
+		}
+		else
+		{
+			await LocalStorage.RemoveItem("file");
+		}
+
+		StatusMessage = "Generating Final Fantasy Randomizer ROM ... Please Wait ... ";
 		StateHasChanged();
 
-		await JSRuntime.Current.InvokeAsync<object>("downloadROM", $"FFR_{_seed}_{Flags.Encoded}.nes", encoded);
+		await Task.Run(DoRandomize);
 	}
-	catch (Exception e)
+
+	async Task DoRandomize()
 	{
-		StatusMessage += "FAILURE: " + e.Message;
-		StateHasChanged();
+		Blob seed;
+		try
+		{
+			if (_seed.Length != 8)
+			{
+				throw new Exception();
+			}
+			seed = Blob.FromHex(_seed);
+		}
+		catch (Exception)
+		{
+			StatusMessage = "Generate Failed: Invalid Seed Format";
+			StateHasChanged();
+			return;
+		}
+
+		try
+		{
+
+			_rom.Randomize(seed, Flags.Flags, Flags.Preferences);
+
+			var data = new byte[512 * 1024 + 16];
+			using (var stream = new MemoryStream(data, true))
+			{
+				_rom.Save(stream);
+			}
+
+			var encoded = Convert.ToBase64String(data);
+
+			StatusMessage += "SUCCESS!";
+
+			if (Flags.Spoilers)
+			{
+				StatusMessage += " SPOILER LOG IN BROWSER CONSOLE!";
+			}
+
+			StateHasChanged();
+
+			await JSRuntime.Current.InvokeAsync<object>("downloadROM", $"FFR_{_seed}_{Flags.Encoded}.nes", encoded);
+		}
+		catch (Exception e)
+		{
+			StatusMessage += "FAILURE: " + e.Message;
+			StateHasChanged();
+		}
 	}
-}
 }
