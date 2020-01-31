@@ -349,15 +349,7 @@ namespace FF1Lib
 						spellNames[index] = "NULL";
 						spellMessages[index] = 0x4A;
 						spell[index].routine = 0x00;
-						// if there are no valid routines, the NULL spell is created which does absolutely nothing and is blocked to all classes.  it will have no tier so enemies should not cast it ever.
-						SPCR_SetPermissionFalse(spellPermissions, index, 3);
-						SPCR_SetPermissionFalse(spellPermissions, index, 4);
-						SPCR_SetPermissionFalse(spellPermissions, index, 5);
-						SPCR_SetPermissionFalse(spellPermissions, index, 6);
-						SPCR_SetPermissionFalse(spellPermissions, index, 7);
-						SPCR_SetPermissionFalse(spellPermissions, index, 9);
-						SPCR_SetPermissionFalse(spellPermissions, index, 10);
-						SPCR_SetPermissionFalse(spellPermissions, index, 11);
+						// if there are no valid routines, the NULL spell is created which does absolutely nothing.  all classes can learn it assuming it fits normal criteria.
 						break;
 					}
 					byte routine = validroutines.PickRandom(rng);
@@ -1649,7 +1641,7 @@ namespace FF1Lib
 			WriteItemSpellData(Spells[healspell], Item.HealHelm); // write our HEAL to the Heal Helmet
 			WriteItemSpellData(Spells[rusespell], Item.Defense); // write our RUSE to the Defense Sword
 			WriteItemSpellData(Spells[sabrspell], Item.PowerGauntlets); // write our SABR tp the Power Gauntlets
-			var goodspells = spellindex.Where(id => (spell[id].routine == 0x01 && spell[id].effect < 50 * spell[id].targeting && spell[id].elem != 0) ||
+			var goodspells = spellindex.Where(id => (spell[id].routine == 0x01 && spell[id].effect < 50 * spell[id].targeting && spell[id].effect > 20 * spell[id].targeting && spell[id].elem != 0) ||
 				(spell[id].routine == 0x02 && spell[id].effect < 80) ||
 				(spell[id].routine == 0x03 && (spell[id].effect & 0b11001011) != 0 && id < 48) ||
 				spell[id].routine == 0x04 || (spell[id].routine == 0x07 && spell[id].targeting == 0x10) ||
