@@ -2387,6 +2387,165 @@ namespace FF1Lib
 						case Enemy.Astos:
 							break;
 						case Enemy.WarMech:
+							switch (enemy[i].image)
+							{
+								case 0:
+									enemyNames[i] = "WarIMP";
+									break;
+								case 1:
+									enemyNames[i] = "WarAGAMA";
+									break;
+								case 2:
+									enemyNames[i] = "WarWOLF";
+									break;
+								case 3:
+									enemyNames[i] = "WarGIANT";
+									break;
+								case 4:
+									enemyNames[i] = "WarSAHAG";
+									break;
+								case 5:
+									enemyNames[i] = "WarSHARK";
+									break;
+								case 6:
+									enemyNames[i] = "WarBRUTE";
+									break;
+								case 7:
+									enemyNames[i] = "WarEYE";
+									break;
+								case 8:
+									enemyNames[i] = "WarBONE";
+									break;
+								case 9:
+									enemyNames[i] = "WarHYENA";
+									break;
+								case 10:
+									enemyNames[i] = "WarCREEP";
+									break;
+								case 11:
+									enemyNames[i] = "WarOGRE";
+									break;
+								case 12:
+									enemyNames[i] = "WarSNAKE";
+									break;
+								case 13:
+									enemyNames[i] = "WarBULL";
+									break;
+								case 14:
+									enemyNames[i] = "WarLBSTR";
+									break;
+								case 15:
+									enemyNames[i] = "WarTROLL";
+									break;
+								case 16:
+									enemyNames[i] = "WarGHOST";
+									break;
+								case 17:
+									enemyNames[i] = "WarWORM";
+									break;
+								case 18:
+									enemyNames[i] = "WarGEIST";
+									break;
+								case 19:
+									enemyNames[i] = "WarEYE";
+									break;
+								case 20:
+									enemyNames[i] = "WarLAMIA";
+									break;
+								case 21:
+									enemyNames[i] = "WarPEDE";
+									break;
+								case 22:
+									enemyNames[i] = "WarCAT";
+									break;
+								case 23:
+									enemyNames[i] = "WarTIGER";
+									break;
+								case 24:
+									enemyNames[i] = "WarVAMP";
+									break;
+								case 25:
+									enemyNames[i] = "WarDJINN";
+									break;
+								case 26:
+									enemyNames[i] = "WarGOYLE";
+									break;
+								case 27:
+									enemyNames[i] = "WarDRAKE";
+									break;
+								case 28:
+									enemyNames[i] = "WarOOZE";
+									break;
+								case 29:
+									enemyNames[i] = "WarSPHNX";
+									break;
+								case 30:
+									enemyNames[i] = "WarBUG";
+									break;
+								case 31:
+									enemyNames[i] = "WarTURTL";
+									break;
+								case 32:
+									enemyNames[i] = "WarMUMMY";
+									break;
+								case 33:
+									enemyNames[i] = "WarWYRM";
+									break;
+								case 34:
+									enemyNames[i] = "WarBIRD";
+									break;
+								case 35:
+									enemyNames[i] = "WarREX";
+									break;
+								case 36:
+									enemyNames[i] = "WarFISH";
+									break;
+								case 37:
+									enemyNames[i] = "WarOCHO";
+									break;
+								case 38:
+									enemyNames[i] = "WarGATOR";
+									break;
+								case 39:
+									enemyNames[i] = "WarHYDRA";
+									break;
+								case 40:
+									enemyNames[i] = "WarMECH";
+									break;
+								case 41:
+									enemyNames[i] = "WarNAGA";
+									break;
+								case 42:
+									enemyNames[i] = "WarWATER";
+									break;
+								case 43:
+									enemyNames[i] = "WarBEAST";
+									break;
+								case 44:
+									enemyNames[i] = "WarPISCO";
+									break;
+								case 45:
+									enemyNames[i] = "WarDRAKE";
+									break;
+								case 46:
+									enemyNames[i] = "WarGRLND";
+									break;
+								case 47:
+									enemyNames[i] = "WarGOLEM";
+									break;
+								case 48:
+									enemyNames[i] = "WarMAN";
+									break;
+								case 49:
+									enemyNames[i] = "WarPONY";
+									break;
+								case 50:
+									enemyNames[i] = "WarELF";
+									break;
+								case 51:
+									enemyNames[i] = "WarMECH";
+									break;
+							}
 							break;
 					}
 				}
