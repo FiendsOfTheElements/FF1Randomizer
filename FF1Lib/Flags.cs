@@ -590,8 +590,8 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.ChanceToRun);
 			sum = AddBoolean(sum, flags.SpellBugs);
 			sum = AddBoolean(sum, flags.BlackBeltAbsorb);
-			sum = AddBoolean(sum, flags.NPCSwatter);
 			sum = AddBoolean(sum, flags.InventoryAutosort);
+			sum = AddBoolean(sum, flags.NPCSwatter);
 			sum = AddBoolean(sum, flags.EnemyStatusAttackBug);
 			sum = AddBoolean(sum, flags.EnemySpellsTargetingAllies);
 			sum = AddBoolean(sum, flags.EnemyElementalResistancesBug);
@@ -864,8 +864,8 @@ namespace FF1Lib
 				EnemyFormationsSurprise = GetTriState(ref sum),
 				EnemyFormationsUnrunnable = GetTriState(ref sum),
 				EverythingUnrunnable = GetTriState(ref sum),
-				Rng = GetTriState(ref sum),
 				FixMissingBattleRngEntry = GetBoolean(ref sum),
+				Rng = GetTriState(ref sum),
 				RebalanceSpells = GetBoolean(ref sum),
 				ItemMagic = GetTriState(ref sum),
 				MagicPermissions = GetTriState(ref sum),
