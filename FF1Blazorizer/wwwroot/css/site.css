@@ -115,6 +115,7 @@ body {
     background-position: center center;
     background-attachment: fixed;
     line-height: initial;
+    font-size: 18px;
 }
 
 #welcome {
