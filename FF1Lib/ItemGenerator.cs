@@ -6,7 +6,7 @@ using System.Text;
 
 namespace FF1Lib
 {
-	public enum WorldWealth
+	public enum WorldWealthMode
 	{
 		High,
 		Normal,
@@ -52,7 +52,7 @@ namespace FF1Lib
 
 		private List<List<Item>> _pool;
 
-		public ItemGenerator(List<Item> seedPool, WorldWealth wealth)
+		public ItemGenerator(List<Item> seedPool, WorldWealthMode wealth)
 		{
 			// Make a copy
 			var treasurePool = seedPool.ToList();
@@ -73,7 +73,7 @@ namespace FF1Lib
 
 			List<int> ratios = Ratios[(int)wealth];
 			System.Diagnostics.Debug.Assert(tiers.Count == ratios.Count);
-			System.Diagnostics.Debug.Assert(Enum.GetValues(typeof(WorldWealth)).Length == Ratios.Length);
+			System.Diagnostics.Debug.Assert(Enum.GetValues(typeof(WorldWealthMode)).Length == Ratios.Length);
 
 			// Now populate the comined pool with a weighted average of all those above lists.
 			_pool = new List<List<Item>>();

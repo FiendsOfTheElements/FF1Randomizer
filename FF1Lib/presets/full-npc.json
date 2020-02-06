@@ -23,6 +23,7 @@
 		"PreserveFiendRefights": false,
 
 		"MagicShops": true,
+		"MagicShopLocs": false,
 		"MagicLevels": true,
 		"MagicPermissions": false,
 		"ItemMagic": false,
@@ -113,6 +114,9 @@
 
 		"HouseMPRestoration": true,
 		"WeaponStats": true,
+		"BBCritRate": true,
+		"WeaponCritRate": true,
+		"WeaponBonuses": true,
 		"ChanceToRun": true,
 		"SpellBugs": true,
 		"BlackBeltAbsorb": true,

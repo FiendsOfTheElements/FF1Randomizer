@@ -1,9 +1,32 @@
 ﻿using RomUtilities;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace FF1Lib
 {
+	public enum ShardCount
+	{
+		[Description("Exactly 16")]
+		Count16,
+		[Description("Exactly 20")]
+		Count20,
+		[Description("Exactly 24")]
+		Count24,
+		[Description("Exactly 28")]
+		Count28,
+		[Description("Exactly 32")]
+		Count32,
+		[Description("Exactly 36")]
+		Count36,
+		[Description("From 16-24")]
+		Range16_24,
+		[Description("From 24-32")]
+		Range24_32,
+		[Description("From 16-36")]
+		Range16_36,
+	}
+
 	public partial class FF1Rom : NesRom
 	{
 		private const int TotalOrbsToInsert = 32;
@@ -79,11 +102,19 @@ namespace FF1Lib
 			"SHARD", "JEWEL", "PIECE", "CHUNK", "PRISM", "STONE", "SLICE", "WEDGE", "BIGGS", "SLIVR", "ORBLT", "ESPER", "FORCE",
 		};
 
-		public void EnableShardHunt(MT19337 rng, int goal, bool npcShuffleEnabled)
+		public void EnableShardHunt(MT19337 rng, ShardCount count, bool npcShuffleEnabled)
 		{
-			if (goal < 1 || goal > 30)
-			{
-				throw new ArgumentOutOfRangeException();
+			int goal = 16;
+			switch (count) {
+				case ShardCount.Count16: goal = 16; break;
+				case ShardCount.Count20: goal = 20; break;
+				case ShardCount.Count24: goal = 24; break;
+				case ShardCount.Count28: goal = 28; break;
+				case ShardCount.Count32: goal = 32; break;
+				case ShardCount.Count36: goal = 36; break;
+				case ShardCount.Range16_24: goal = rng.Between(16, 24); break;
+				case ShardCount.Range24_32: goal = rng.Between(24, 32); break;
+				case ShardCount.Range16_36: goal = rng.Between(16, 36); break;
 			}
 
 			if (!npcShuffleEnabled)
@@ -103,14 +134,14 @@ namespace FF1Lib
 			// These are at tile address $76 and $77 respectively.
 			Put(0x37760, Blob.FromHex("001C22414141221CFFE3DDBEBEBEDDE3001C3E7F7F7F3E1CFFFFE3CFDFDFFFFF"));
 
-			String hexCount = goal.ToString("X2");
-			String ppuLowByte = goal <= 24 ? "63" : "43";
+			int ppu = 0x2043;
+			ppu = ppu + (goal <= 24 ? 0x20 : 0x00);
 
 			// Fancy shard drawing code, see 0E_B8D7_DrawShardBox.asm
-			Put(0x3B87D, Blob.FromHex($"A9{ppuLowByte}8511A977A00048AD0220A9208D0620A51118692085118D0620900DAD0220A9218D0620A9038D062068A200CC3560D002A976C0{hexCount}D001608D0720C8E8E006D0EB1890C3"));
+			Put(0x3B87D, Blob.FromHex($"A9{ppu & 0xFF:X2}8511A9{(ppu & 0xFF00) >> 8:X2}8512A977A00048AD0220A5128D0620A51118692085118D0620900DAD0220E612A5128D0620A5118D062068A200CC3560D002A976C0{goal:X2}D001608D0720C8E8E006D0EB1890C1"));
 
 			// Black Orb Override to check for shards rather than ORBs.
-			Put(0x39502, Blob.FromHex($"AD3560C9{hexCount}300CA0CA209690E67DE67DA51160A51260"));
+			Put(0x39502, Blob.FromHex($"AD3560C9{goal:X2}300CA0CA209690E67DE67DA51160A51260"));
 			Put(0x7CDB3, Blob.FromHex("08CE"));
 
 			// A little narrative overhaul.

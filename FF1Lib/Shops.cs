@@ -32,7 +32,7 @@ namespace FF1Lib
 			Item = 60
 		}
 
-		public ItemShopSlot ShuffleShops(MT19337 rng, bool earlyAilments, bool randomizeWeaponsAndArmor, IEnumerable<Item> excludeItemsFromRandomShops, WorldWealth wealth)
+		public ItemShopSlot ShuffleShops(MT19337 rng, bool earlyAilments, bool randomizeWeaponsAndArmor, IEnumerable<Item> excludeItemsFromRandomShops, WorldWealthMode wealth)
 		{
 			var pointers = Get(ShopPointerOffset, ShopPointerCount * ShopPointerSize).ToUShorts();
 
@@ -60,6 +60,33 @@ namespace FF1Lib
 
 			ShuffleShopType(ShopType.White, pointers, rng);
 			ShuffleShopType(ShopType.Black, pointers, rng);
+
+			Put(ShopPointerOffset, Blob.FromUShorts(pointers));
+		}
+
+		private void ShuffleMagicLocations(MT19337 rng)
+		{
+			var pointers = Get(ShopPointerOffset, ShopPointerCount * ShopPointerSize).ToUShorts();
+
+			RepackShops(pointers);
+			var WhiteShops = GetShops(ShopType.White, pointers);
+
+			List<ushort> WhitePointers = new List<ushort>(9);
+			List<ushort> BlackPointers = new List<ushort>(9);
+			for (int i = 0; i < 9; i++)
+			{
+				WhitePointers.Add(pointers[(int)ShopType.White + i + 1]);
+				BlackPointers.Add(pointers[(int)ShopType.Black + i + 1]);
+			}
+
+			WhitePointers.Shuffle(rng);
+			BlackPointers.Shuffle(rng);
+
+			for (int i = 0; i < 9; i++)
+			{
+				pointers[(int)ShopType.White + i + 1] = WhitePointers[i];
+				pointers[(int)ShopType.Black + i + 1] = BlackPointers[i];
+			}
 
 			Put(ShopPointerOffset, Blob.FromUShorts(pointers));
 		}
@@ -104,7 +131,7 @@ namespace FF1Lib
 			Put(ShopPointerBase + pointers[0], allEntries.ToArray());
 		}
 
-		private ItemShopSlot ShuffleShopType(ShopType shopType, ushort[] pointers, MT19337 rng, bool randomize = false, IEnumerable<Item> excludeItemsFromRandomShops = null, WorldWealth wealth = WorldWealth.Normal)
+		private ItemShopSlot ShuffleShopType(ShopType shopType, ushort[] pointers, MT19337 rng, bool randomize = false, IEnumerable<Item> excludeItemsFromRandomShops = null, WorldWealthMode wealth = WorldWealthMode.Normal)
 		{
 			var shops = GetShops(shopType, pointers);
 

@@ -1,7 +1,8 @@
 ﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
 html, body {
-    font-family: 'Press Start 2P', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: 'Press Start 2P', monospace;
+    user-select: none;
 }
 
 app {
@@ -50,6 +51,10 @@ app {
             color: white;
         }
 
+.nes-btn {
+    font-family: 'Press Start 2P';
+}
+
 .nes-btn:active {
     transform:translateY(2px);
 }
@@ -62,7 +67,7 @@ app {
     background-color: rgba(255, 255, 255, 0.1);
 }
 
-@media (max-width: 767.98px) {
+@media (max-width: 849.98px) {
     .main .top-row {
         display: none;
     }
@@ -78,7 +83,7 @@ app {
     }
 }
 
-@media (min-width: 768px) {
+@media (min-width: 850px) {
     app {
         flex-direction: row;
     }
@@ -103,13 +108,14 @@ app {
 /* FFR */
 
 body {
-    font-size: 14px;
     background-color: #3cbcfc;
     background-image: url("/images/bg.png");
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center center;
     background-attachment: fixed;
+    line-height: initial;
+    font-size: 18px;
 }
 
 #welcome {
@@ -136,10 +142,25 @@ h4 {
     }
 
 .checkbox-cell {
+    font-family: monospace;
+    white-space: nowrap;
+    overflow: hidden;
     min-height: 20px;
     margin: 0;
     padding: 0;
 }
+
+    .checkbox-cell label {
+        max-width: calc(100% - 64px);
+        text-overflow: ellipsis;
+        overflow-x: hidden;
+        vertical-align: top;
+    }
+
+.dropdown-cell {
+    white-space: normal;
+}
+
 
 .slider-cell {
     height: 35px;
@@ -152,6 +173,7 @@ h4 {
 }
 
 .disabled {
+    filter: grayscale(85%);
     color: grey;
 }
 
@@ -163,7 +185,8 @@ td {
 
 input[type=checkbox] {
     transform: scale(1.3);
-    cursor: url(get-file-as-data-uri("../assets/cursor.png")), pointer
+    margin-left: 2px;
+    cursor: pointer;
 }
 
 select {
@@ -224,7 +247,6 @@ tr.odd {
     padding: 0px;
     height: 15px;
     width: 15px;
-    margin-left: -2px;
     cursor: default;
     border-radius: 2px;
 }
@@ -235,4 +257,35 @@ tr.odd {
 
 .tri-maybe {
     color: #c8916e;
+}
+
+.ffr-tooltip {
+    position: fixed;
+    z-index: 1000;
+}
+
+.ffr-tooltip-screenshot {
+    width: 256px;
+    height: 224px;
+    float: right;
+    background-size: 100% 100%;
+    margin: 0 0 20px 20px;
+    border: 2px solid white;
+}
+
+.ffr-tooltip-close {
+    position: absolute;
+    right: 2px;
+}
+
+.btn-group-help {
+    opacity: 0.25;
+}
+
+.btn-group-help:hover {
+    opacity: 0.75;
+}
+
+p {
+    font-family: monospace;
 }

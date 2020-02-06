@@ -28,6 +28,7 @@
 		"ItemMagic": false,
 
 		"Rng": true,
+		"FixMissingBattleRngEntry": false,
 		"FormationShuffleMode": 0,
 		"EnemyFormationsUnrunnable": false,
 		"EnemyFormationsSurprise": false,
@@ -110,12 +111,16 @@
 		"BuyTen": true,
 		"EnableCritNumberDisplay": true,
 		"NPCSwatter": false,
+		"InventoryAutosort":  false,
 
 		"IdentifyTreasures": true,
 		"WaitWhenUnrunnable": true,
 
 		"HouseMPRestoration": true,
 		"WeaponStats": true,
+		"BBCritRate": true,
+		"WeaponCritRate": true,
+		"WeaponBonuses": true,
 		"ChanceToRun": true,
 		"SpellBugs": true,
 		"RebalanceSpells": true,
