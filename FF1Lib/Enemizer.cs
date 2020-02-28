@@ -2376,7 +2376,7 @@ namespace FF1Lib
 						case Enemy.Imp:
 							enemyNames[i] = "BUM";
 							enemy[i].elem_weakness = 0b11111111;
-							enemy[i].monster_type = 0b11111111;
+							enemy[i].monster_type = 0b01111111;
 							break;
 						case Enemy.Pirate:
 							break;
@@ -2980,7 +2980,7 @@ namespace FF1Lib
 							enemyNames[i] = "LAMIA";
 							enemy[i].num_hits = rng.Between(0, 1) == 1 ? 1 : rng.Between(6, 10);
 							enemy[i].critrate = rng.Between(1, 5);
-							enemy[i].damage = enemy[i].num_hits > 1 ? ENE_rollEnemyStrength(enemy[i].tier, 3) : ENE_rollEnemyStrength(enemy[i].tier, 4);
+							enemy[i].damage = enemy[i].num_hits > 1 ? ENE_rollEnemyStrength(enemy[i].tier, 2) : ENE_rollEnemyStrength(enemy[i].tier, 4);
 							enemy[i].accuracy = ENE_rollEnemyAccuracy(enemy[i].tier, 2);
 							enemy[i].absorb = ENE_rollEnemyAbsorb(enemy[i].tier, 2);
 							enemy[i].agility = ENE_rollEnemyEvade(enemy[i].tier, 5);
@@ -3781,7 +3781,7 @@ namespace FF1Lib
 								case "Wr":
 									enemy[i].atk_ailment = 0b00000100;
 									enemy[i].atk_elem = 0b00000010;
-									enemy[i].monster_type |= 0b00010000;
+									enemy[i].monster_type |= 0b10010000;
 									break;
 							}
 							enemyNames[i] = classModifier + enemyNames[i]; // change the enemy's name

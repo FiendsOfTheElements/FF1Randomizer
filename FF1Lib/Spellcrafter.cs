@@ -155,19 +155,8 @@ namespace FF1Lib
 			Put(MagicOutOfBattleOffset + MagicOutOfBattleSize * 4, new[] { (byte)(healspell + 0xB0) });
 			Put(0x3AFDF, Blob.FromHex("0F")); // changing the oob code for HEAL to reflect the above effect
 			spellindex.Remove(healspell);
-			selected = spellindex.Where(id => WhiteSpell(id) && id < 56 && id > 39).ToList().PickRandom(rng);
-			spell[selected].targeting = 0x08;
-			spell[selected].effect = 64;
-			spell[selected].routine = 0x07;
-			spell[selected].gfx = 0xC0;
-			spell[selected].palette = 0x28;
-			spellMessages[selected] = 0x01; // HP up!
-			SPCR_SetPermissionFalse(spellPermissions, selected, 3); // red mage banned
-			SPCR_SetPermissionFalse(spellPermissions, selected, 9); // red wizard banned
-			Put(MagicOutOfBattleOffset + MagicOutOfBattleSize * 5, new[] { (byte)(selected + 0xB0) });
-			Put(0x3AFF1, Blob.FromHex("3F")); // changing the oob code for HEL3 to reflect the above effect
-			spellindex.Remove(selected);
-			selected = spellindex.Where(id => WhiteSpell(id) && id < 40 && id > 15).ToList().PickRandom(rng);
+			int healspellLevel = healspell / 8;
+			selected = spellindex.Where(id => WhiteSpell(id) && id < healspellLevel * 8 + 24 && id > healspellLevel * 8 + 7).ToList().PickRandom(rng);
 			spell[selected].targeting = 0x08;
 			spell[selected].effect = 32;
 			spell[selected].routine = 0x07;
@@ -179,6 +168,20 @@ namespace FF1Lib
 			Put(0x3AFE8, Blob.FromHex("1F")); // changing the oob code for HEL2 to reflect the above effect
 			Put(MagicOutOfBattleOffset + MagicOutOfBattleSize * 6, new[] { (byte)(selected + 0xB0) });
 			spellindex.Remove(selected);
+			healspellLevel = selected / 8;
+			selected = spellindex.Where(id => WhiteSpell(id) && id < healspellLevel * 8 + 24 && id > healspellLevel * 8 + 7).ToList().PickRandom(rng);
+			spell[selected].targeting = 0x08;
+			spell[selected].effect = 64;
+			spell[selected].routine = 0x07;
+			spell[selected].gfx = 0xC0;
+			spell[selected].palette = 0x28;
+			spellMessages[selected] = 0x01; // HP up!
+			SPCR_SetPermissionFalse(spellPermissions, selected, 3); // red mage banned
+			SPCR_SetPermissionFalse(spellPermissions, selected, 9); // red wizard banned
+			Put(MagicOutOfBattleOffset + MagicOutOfBattleSize * 5, new[] { (byte)(selected + 0xB0) });
+			Put(0x3AFF1, Blob.FromHex("3F")); // changing the oob code for HEL3 to reflect the above effect
+			spellindex.Remove(selected);
+
 			int purespell = spellindex.Where(id => WhiteSpell(id) && id < 16).ToList().PickRandom(rng);
 			spell[purespell].targeting = 0x10;
 			spell[purespell].effect = 0b00011100; // pure now cures darkness and paralysis in battle, woo
@@ -206,7 +209,7 @@ namespace FF1Lib
 			SPCR_SetPermissionFalse(spellPermissions, selected, 9); // red wizard banned
 			Put(MagicOutOfBattleOffset + MagicOutOfBattleSize * 9, new[] { (byte)(selected + 0xB0) });
 			spellindex.Remove(selected);
-			selected = spellindex.Where(id => id % 8 > 3 && id > 31).ToList().PickRandom(rng); // warp will appear in black magic regardless of whether we mix spells or not
+			selected = spellindex.Where(id => id % 8 > 3 && id > 15).ToList().PickRandom(rng); // warp will appear in black magic regardless of whether we mix spells or not
 			spell[selected].accuracy = 0xFF;
 			spellNames[selected] = levelShuffle ? "WRP" + (SpellTier(selected) + 1).ToString() : "WARP";
 			spellMessages[selected] = 0x4A; // Ineffective now
@@ -223,7 +226,7 @@ namespace FF1Lib
 			SPCR_SetPermissionFalse(spellPermissions, selected, 9); // red wizard banned
 			Put(MagicOutOfBattleOffset + MagicOutOfBattleSize * 11, new[] { (byte)(selected + 0xB0) });
 			spellindex.Remove(selected);
-			selected = spellindex.Where(id => id % 8 < 4 && id > 31).ToList().PickRandom(rng); // exit will appear in white magic regardless of whether we mix spells or not
+			selected = spellindex.Where(id => id % 8 < 4 && id > 15).ToList().PickRandom(rng); // exit will appear in white magic regardless of whether we mix spells or not
 			spell[selected].accuracy = 0xFF;
 			spellNames[selected] = levelShuffle ? "EXT" + (SpellTier(selected) + 1).ToString() : "EXIT";
 			spellMessages[selected] = 0x4A; // Ineffective now
