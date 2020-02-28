@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FF1Randomizer"
         mc:Ignorable="d"
-        Title="{Binding WindowTitle}" Height="540" Width="750">
+        Title="{Binding WindowTitle}" Height="540" Width="900">
 	<Window.Resources>
 		<local:FlagsToStringConverter x:Key="FlagsToStringConverter"/>
 		<Style TargetType="CheckBox">
@@ -20,26 +20,27 @@
 		<TextBox x:Name="SeedTextBox" Text="{Binding Seed}" HorizontalAlignment="Left" Height="23" Margin="10,90,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
 		<Button x:Name="GenerateButton" Content="Generate ROM" HorizontalAlignment="Right" Margin="0,10,10,0" VerticalAlignment="Top" Width="150" FontSize="20" IsEnabled="False" Click="GenerateButton_Click" Height="46"/>
 		<Button x:Name="AboutButton" Content="About FF1 Randomizer" HorizontalAlignment="Right" Margin="0,61,10,0" VerticalAlignment="Top" Width="150" Height="24" Click="AboutButton_Click"/>
-		<TextBox x:Name="FlagsTextBox" Text="{Binding Path=Flags, Converter={StaticResource FlagsToStringConverter}}" IsReadOnly="True" HorizontalAlignment="Left" Height="23" Margin="135,90,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="311"/>
-		<Label x:Name="FlagsLabel" Content="Flags" HorizontalAlignment="Left" Margin="135,64,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
-		<Label x:Name="PresetLabel" HorizontalAlignment="Left" Margin="250,64,0,0" VerticalAlignment="Top">
+		<TextBox x:Name="FlagsTextBox" Text="{Binding Path=Flags, Converter={StaticResource FlagsToStringConverter}}" IsReadOnly="True" HorizontalAlignment="Left" Height="23" Margin="229,90,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="494"/>
+		<Label x:Name="FlagsLabel" Content="Flags" HorizontalAlignment="Left" Margin="229,64,0,0" VerticalAlignment="Top" FontWeight="Bold" RenderTransformOrigin="-0.359,0.486"/>
+		<Label x:Name="PresetLabel" HorizontalAlignment="Left" Margin="278,64,0,0" VerticalAlignment="Top">
 			<Hyperlink Click="LoadPreset">Load Preset...</Hyperlink>
 		</Label>
-		<Button x:Name="CopyButton" Content="Copy" HorizontalAlignment="Left" Margin="451,90,0,0" VerticalAlignment="Top" Width="85" Height="23" Click="CopyButton_Click"/>
-		<Button x:Name="PasteButton" Content="Paste" HorizontalAlignment="Left" Margin="541,90,0,0" VerticalAlignment="Top" Width="85" Height="23" Click="PasteButton_Click"/>
-		<Button x:Name="SeedButton" Content="New Seed" HorizontalAlignment="Left" Margin="631,90,0,0" VerticalAlignment="Top" Width="89" Height="23" Click="SeedButton_Click"/>
+		<Button x:Name="CopyButton" Content="Export" HorizontalAlignment="Left" Margin="728,90,0,0" VerticalAlignment="Top" Width="80" Height="23" Click="CopyButton_Click"/>
+		<Button x:Name="PasteButton" Content="Import" HorizontalAlignment="Left" Margin="813,90,0,0" VerticalAlignment="Top" Width="62" Height="23" Click="PasteButton_Click"/>
+		<Button x:Name="SeedButton" Content="New Seed" HorizontalAlignment="Left" Margin="135,90,0,0" VerticalAlignment="Top" Width="89" Height="23" Click="SeedButton_Click"/>
 		<TabControl x:Name="tabControl" Margin="10,118,10,10">
 			<TabItem Header="Shuffle">
 				<Grid>
 					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="64*"/>
-						<ColumnDefinition Width="16*"/>
-						<ColumnDefinition Width="10*"/>
-						<ColumnDefinition Width="269*"/>
-						<ColumnDefinition Width="72*"/>
-						<ColumnDefinition Width="287*"/>
+						<ColumnDefinition Width="77*"/>
+						<ColumnDefinition Width="19*"/>
+						<ColumnDefinition Width="12*"/>
+						<ColumnDefinition Width="132*"/>
+						<ColumnDefinition Width="193*"/>
+						<ColumnDefinition Width="87*"/>
+						<ColumnDefinition Width="346*"/>
 					</Grid.ColumnDefinitions>
-					<StackPanel Orientation="Vertical" Grid.Column="0" Grid.ColumnSpan="5" Margin="0,0,71.667,0">
+					<StackPanel Orientation="Vertical" Grid.Column="0" Grid.ColumnSpan="6" Margin="0,0,72,0">
 						<CheckBox x:Name="ShopsCheckBox" IsChecked="{Binding Flags.Shops}" IsThreeState="True" Content="Shops" ToolTip="Shop contents (other than magic) are shuffled."/>
 						<CheckBox x:Name="RandomWaresCheckBox" IsChecked="{Binding Flags.RandomWares}" IsThreeState="True" IsEnabled="{Binding Flags.Shops}" Content="Random Weapons and Armor" ToolTip="Shop contents (other than magic) are shuffled." Margin="30,5,0,0"/>
 						<CheckBox x:Name="IncludeCasterItemsCheckBox" IsChecked="{Binding Flags.RandomWaresIncludesSpecialGear}" IsEnabled="{Binding Flags.CanIncludeSpecialGear}" IsThreeState="True" Content="Including Caster Items and Elite Gear" ToolTip="Shuffled shops permits elite gear." Margin="30,5,0,0"/>
@@ -53,7 +54,7 @@
 						<Label Margin="5,5,0,0"/>
 						<CheckBox x:Name="RngCheckBox" IsChecked="{Binding Flags.Rng}" Content="RNG Table" IsThreeState="True" ToolTip="Shuffle the RNG table so that encounters are more difficult to predict."/>
 					</StackPanel>
-					<StackPanel Orientation="Vertical" Grid.Column="4" Grid.ColumnSpan="2" Margin="0.333,0,0.334,0">
+					<StackPanel Orientation="Vertical" Grid.Column="5" Grid.ColumnSpan="2">
 						<CheckBox x:Name="EnemyScriptsCheckBox" IsChecked="{Binding Flags.EnemyScripts}" IsThreeState="True" Content="Enemy Scripts" ToolTip="Enemy scripts are shuffled to different enemies."/>
 						<CheckBox x:Name="AllowUnsafePiratesCheckBox" IsChecked="{Binding Flags.AllowUnsafePirates}" IsThreeState="True" IsEnabled="{Binding Flags.EnemyScripts}" Content="Allow Unsafe Pirates" ToolTip="Enemy scripts are shuffled to different enemies." Margin="30,5,0,0"/>
 						<CheckBox x:Name="EnemySkillsSpellsCheckBox" IsChecked="{Binding Flags.EnemySkillsSpells}" IsThreeState="True" Content="Enemy Skills/Spells" ToolTip="Enemy skills and spells are shuffled to other scripts."/>
@@ -133,7 +134,7 @@
 						<CheckBox x:Name="IncentivizeMarshKeyLockedCheckBox" IsChecked="{Binding Flags.IncentivizeMarshKeyLocked}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Marsh (locked)" ToolTip="Bottom Floor South East"/>
 					</StackPanel>
 					<StackPanel Orientation="Vertical" Grid.Column="3" Margin="0,0,0.334,0">
-						<Label Margin="5,5,0,0" FontWeight="Bold">Incentivized Item Pool: </Label>
+						<Label Margin="5,5,0,0" FontWeight="Bold">Incentivized Item Pool:</Label>
 						<CheckBox x:Name="IncentivizeMainProgressionCheckBox" IsChecked="{Binding Flags.IncentivizeMainItems}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Main Progression Items" ToolTip="Lute, Key, Rod, Oxyale, Chime, Cube"/>
 						<CheckBox x:Name="IncentivizeFetchItemsCheckBox" IsChecked="{Binding Flags.IncentivizeFetchItems}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Other Quest Items" ToolTip="Any other non-required quest items that are shuffled such as Ruby or Adamant"/>
 						<CheckBox x:Name="IncentivizeFloaterCheckBox" IsChecked="{Binding Flags.IncentivizeAirship}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Floater" ToolTip="Floater"/>
@@ -323,6 +324,7 @@
 						<RowDefinition Height="*"/>
 						<RowDefinition Height="*"/>
 						<RowDefinition Height="*"/>
+						<RowDefinition Height="*"/>
 					</Grid.RowDefinitions>
 					<Label MinHeight="26" x:Name="PermittedLabel" Content="Permitted:"/>
 					<Label MinHeight="26" x:Name="Member1Label" Grid.Row="1" Content="Member 1"/>
@@ -331,7 +333,8 @@
 					<Label MinHeight="26" x:Name="Member4Label" Grid.Row="4" Content="Member 4"/>
 					<CheckBox x:Name="TavernModeCheckBox" IsChecked="{Binding Flags.RecruitmentMode}" Grid.Row="5" Grid.ColumnSpan="3" IsThreeState="True" Content="Tavern Mode Enabled" ToolTip="Clinics are replaced with Pubs, which allow you to recruit a character class throughout the game."/>
 					<CheckBox x:Name="DisableRevivingInTavernsCheckBox" IsChecked="{Binding Flags.RecruitmentModeHireOnly}" IsEnabled="{Binding Flags.RecruitmentMode}" Grid.Row="6" Grid.ColumnSpan="3" IsThreeState="True" Content="Disallow Revive In Taverns" ToolTip="Cannot revive characters in taverns" Margin="30,5,0,0"/>
-					<Label MinHeight="26" x:Name="Tavern4Label" Grid.Row="7" Content="Recruitable" ToolTip="If Tavern Mode is enabled, choose which classes can appear in the taverns"/>
+					<CheckBox x:Name="DisableRevivingNoneNonesInTavernsCheckBox" IsChecked="{Binding Flags.RecruitmentModeReplaceOnlyNone}" IsEnabled="{Binding Flags.RecruitmentMode}" Grid.Row="7" Grid.ColumnSpan="3" IsThreeState="True" Content="Only replace Nones in Taverns" Margin="30,5,0,0"/>
+					<Label MinHeight="26" x:Name="Tavern4Label" Grid.Row="8" Content="Recruitable" ToolTip="If Tavern Mode is enabled, choose which classes can appear in the taverns"/>
 					<Label MinHeight="26" x:Name="ForcedLabel" Grid.Column="1" Content="Forced?"/>
 					<CheckBox MinHeight="20" x:Name="Forced1CheckBox" Grid.Column="1" Grid.Row="1" IsThreeState="True" IsChecked="{Binding Flags.FORCED1}"/>
 					<CheckBox MinHeight="20" x:Name="Forced2CheckBox" Grid.Column="1" Grid.Row="2" IsThreeState="True" IsChecked="{Binding Flags.FORCED2}"/>
@@ -342,37 +345,37 @@
 					<CheckBox MinHeight="20" x:Name="Fighter2CheckBox" Grid.Column="2" Grid.Row="2" IsThreeState="True" IsChecked="{Binding Flags.FIGHTER2}"/>
 					<CheckBox MinHeight="20" x:Name="Fighter3Checkbox" Grid.Column="2" Grid.Row="3" IsThreeState="True" IsChecked="{Binding Flags.FIGHTER3}"/>
 					<CheckBox MinHeight="20" x:Name="Fighter4CheckBox" Grid.Column="2" Grid.Row="4" IsThreeState="True" IsChecked="{Binding Flags.FIGHTER4}"/>
-					<CheckBox MinHeight="20" x:Name="TavernFighterCheckBox" Grid.Column="2" Grid.Row="7" IsThreeState="True" IsChecked="{Binding Flags.TAVERN1}"/>
+					<CheckBox MinHeight="20" x:Name="TavernFighterCheckBox" Grid.Column="2" Grid.Row="8" IsThreeState="True" IsChecked="{Binding Flags.TAVERN1}"/>
 					<Label MinHeight="26" x:Name="ThiefLabel" Grid.Column="3" Content="Thief"/>
 					<CheckBox MinHeight="20" x:Name="Thief1CheckBox" Grid.Column="3" Grid.Row="1" IsThreeState="True" IsChecked="{Binding Flags.THIEF1}"/>
 					<CheckBox MinHeight="20" x:Name="Thief2CheckBox" Grid.Column="3" Grid.Row="2" IsThreeState="True" IsChecked="{Binding Flags.THIEF2}"/>
 					<CheckBox MinHeight="20" x:Name="Thief3Checkbox" Grid.Column="3" Grid.Row="3" IsThreeState="True" IsChecked="{Binding Flags.THIEF3}"/>
 					<CheckBox MinHeight="20" x:Name="Thief4CheckBox" Grid.Column="3" Grid.Row="4" IsThreeState="True" IsChecked="{Binding Flags.THIEF4}"/>
-					<CheckBox MinHeight="20" x:Name="TavernThiefCheckBox" Grid.Column="3" Grid.Row="7" IsThreeState="True" IsChecked="{Binding Flags.TAVERN2}"/>
+					<CheckBox MinHeight="20" x:Name="TavernThiefCheckBox" Grid.Column="3" Grid.Row="8" IsThreeState="True" IsChecked="{Binding Flags.TAVERN2}"/>
 					<Label MinHeight="26" x:Name="BlackBeltLabel" Grid.Column="4" Content="Black Belt"/>
 					<CheckBox MinHeight="20" x:Name="BlackBelt1CheckBox" Grid.Column="4" Grid.Row="1" IsThreeState="True" IsChecked="{Binding Flags.BLACK_BELT1}"/>
 					<CheckBox MinHeight="20" x:Name="BlackBelt2CheckBox" Grid.Column="4" Grid.Row="2" IsThreeState="True" IsChecked="{Binding Flags.BLACK_BELT2}"/>
 					<CheckBox MinHeight="20" x:Name="BlackBelt3Checkbox" Grid.Column="4" Grid.Row="3" IsThreeState="True" IsChecked="{Binding Flags.BLACK_BELT3}"/>
 					<CheckBox MinHeight="20" x:Name="BlackBelt4CheckBox" Grid.Column="4" Grid.Row="4" IsThreeState="True" IsChecked="{Binding Flags.BLACK_BELT4}"/>
-					<CheckBox MinHeight="20" x:Name="TavernBBCheckBox" Grid.Column="4" Grid.Row="7" IsThreeState="True" IsChecked="{Binding Flags.TAVERN3}"/>
+					<CheckBox MinHeight="20" x:Name="TavernBBCheckBox" Grid.Column="4" Grid.Row="8" IsThreeState="True" IsChecked="{Binding Flags.TAVERN3}"/>
 					<Label MinHeight="26" x:Name="RedMageLabel" Grid.Column="5" Content="Red Mage"/>
 					<CheckBox MinHeight="20" x:Name="RedMake1CheckBox" Grid.Column="5" Grid.Row="1" IsThreeState="True" IsChecked="{Binding Flags.RED_MAGE1}"/>
 					<CheckBox MinHeight="20" x:Name="RedMake2CheckBox" Grid.Column="5" Grid.Row="2" IsThreeState="True" IsChecked="{Binding Flags.RED_MAGE2}"/>
 					<CheckBox MinHeight="20" x:Name="RedMake3CheckBox" Grid.Column="5" Grid.Row="3" IsThreeState="True" IsChecked="{Binding Flags.RED_MAGE3}"/>
 					<CheckBox MinHeight="20" x:Name="RedMake4CheckBox" Grid.Column="5" Grid.Row="4" IsThreeState="True" IsChecked="{Binding Flags.RED_MAGE4}"/>
-					<CheckBox MinHeight="20" x:Name="TavernRMCheckBox" Grid.Column="5" Grid.Row="7" IsThreeState="True" IsChecked="{Binding Flags.TAVERN4}"/>
+					<CheckBox MinHeight="20" x:Name="TavernRMCheckBox" Grid.Column="5" Grid.Row="8" IsThreeState="True" IsChecked="{Binding Flags.TAVERN4}"/>
 					<Label MinHeight="26" x:Name="WhiteMageLabel" Grid.Column="6" Content="White Mage"/>
 					<CheckBox MinHeight="20" x:Name="WhiteMage1CheckBox" Grid.Column="6" Grid.Row="1" IsThreeState="True" IsChecked="{Binding Flags.WHITE_MAGE1}"/>
 					<CheckBox MinHeight="20" x:Name="WhiteMage2CheckBox" Grid.Column="6" Grid.Row="2" IsThreeState="True" IsChecked="{Binding Flags.WHITE_MAGE2}"/>
 					<CheckBox MinHeight="20" x:Name="WhiteMage3CheckBox" Grid.Column="6" Grid.Row="3" IsThreeState="True" IsChecked="{Binding Flags.WHITE_MAGE3}"/>
 					<CheckBox MinHeight="20" x:Name="WhiteMage4CheckBox" Grid.Column="6" Grid.Row="4" IsThreeState="True" IsChecked="{Binding Flags.WHITE_MAGE4}"/>
-					<CheckBox MinHeight="20" x:Name="TavernWMCheckBox" Grid.Column="6" Grid.Row="7" IsThreeState="True" IsChecked="{Binding Flags.TAVERN5}"/>
+					<CheckBox MinHeight="20" x:Name="TavernWMCheckBox" Grid.Column="6" Grid.Row="8" IsThreeState="True" IsChecked="{Binding Flags.TAVERN5}"/>
 					<Label MinHeight="26" x:Name="BlackMageLabel" Grid.Column="7" Content="Black Mage"/>
 					<CheckBox MinHeight="20" x:Name="BlackMage1CheckBox" Grid.Column="7" Grid.Row="1" IsThreeState="True" IsChecked="{Binding Flags.BLACK_MAGE1}"/>
 					<CheckBox MinHeight="20" x:Name="BlackMage2CheckBox" Grid.Column="7" Grid.Row="2" IsThreeState="True" IsChecked="{Binding Flags.BLACK_MAGE2}"/>
 					<CheckBox MinHeight="20" x:Name="BlackMage3CheckBox" Grid.Column="7" Grid.Row="3" IsThreeState="True" IsChecked="{Binding Flags.BLACK_MAGE3}"/>
 					<CheckBox MinHeight="20" x:Name="BlackMage4CheckBox" Grid.Column="7" Grid.Row="4" IsThreeState="True" IsChecked="{Binding Flags.BLACK_MAGE4}"/>
-					<CheckBox MinHeight="20" x:Name="TavernBMCheckBox" Grid.Column="7" Grid.Row="7" IsThreeState="True" IsChecked="{Binding Flags.TAVERN6}"/>
+					<CheckBox MinHeight="20" x:Name="TavernBMCheckBox" Grid.Column="7" Grid.Row="8" IsThreeState="True" IsChecked="{Binding Flags.TAVERN6}"/>
 					<Label MinHeight="26" x:Name="NoneLabel" Grid.Column="8" Content="None"/>
 					<CheckBox MinHeight="20" x:Name="NoneClass1CheckBox" Grid.Column="8" Grid.Row="1" IsEnabled="false"/>
 					<CheckBox MinHeight="20" x:Name="NoneClass2CheckBox" Grid.Column="8" Grid.Row="2" IsThreeState="True" IsChecked="{Binding Flags.NONE_CLASS2}"/>

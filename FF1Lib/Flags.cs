@@ -36,6 +36,7 @@ namespace FF1Lib
 		public bool RebalanceSpells { get; set; } = false;
 
 		public bool? Rng { get; set; } = false;
+		public bool FixMissingBattleRngEntry { get; set; } = false;
 		public bool? EverythingUnrunnable { get; set; } = false;
 		public bool? EnemyFormationsUnrunnable { get; set; } = false;
 		public bool? EnemyFormationsSurprise { get; set; } = false;
@@ -60,6 +61,7 @@ namespace FF1Lib
 		public bool? ConfusedOldMen { get; set; } = false;
 
 		public bool? MapOpenProgression { get; set; } = false;
+		public bool? MapOpenProgressionDocks { get; set; } = false;
 		public bool? Entrances { get; set; } = false;
 		public bool? Towns { get; set; } = false;
 		public bool? Floors { get; set; } = false;
@@ -212,6 +214,7 @@ namespace FF1Lib
 		public bool ArmorPermissions { get; set; } = false;
 		public bool? RecruitmentMode { get; set; } = false;
 		public bool? RecruitmentModeHireOnly { get; set; } = false;
+		public bool? RecruitmentModeReplaceOnlyNone { get; set; } = false;
 
 		public bool? ClampMinimumStatScale { get; set; } = false;
 		public bool? ClampMinimumBossStatScale { get; set; } = false;
@@ -232,6 +235,8 @@ namespace FF1Lib
 		public bool AllSpellLevelsForKnightNinja { get; set; } = false;
 		public bool? FreeTail { get; set; } = false;
 		public bool? SpellcrafterRetainPermissions { get; set; } = false;
+		public bool? RandomWeaponBonus { get; set; } = false;
+		public bool? RandomArmorBonus { get; set; } = false;
 
 		public MDEFGrowthMode MDefMode { get; set; } = MDEFGrowthMode.None;
 
@@ -242,8 +247,8 @@ namespace FF1Lib
 		public bool AllowStartAreaDanager { get; set; } = false;
 
 		public bool? MapCanalBridge => (NPCItems) | (NPCFetchItems) | MapOpenProgression | MapOpenProgressionExtended;
-		public bool? MapOnracDock => MapOpenProgression;
-		public bool? MapMirageDock => MapOpenProgression;
+		public bool? MapOnracDock => MapOpenProgressionDocks;
+		public bool? MapMirageDock => MapOpenProgressionDocks;
 		public bool? MapConeriaDwarves => MapOpenProgression;
 		public bool? MapVolcanoIceRiver => MapOpenProgression;
 		public bool? MapDwarvesNorthwest => MapOpenProgression & MapOpenProgressionExtended;
@@ -498,6 +503,7 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.ItemMagic);
 			sum = AddBoolean(sum, flags.RebalanceSpells);
 			sum = AddTriState(sum, flags.Rng);
+			sum = AddBoolean(sum, flags.FixMissingBattleRngEntry);
 			sum = AddTriState(sum, flags.EverythingUnrunnable);
 			sum = AddTriState(sum, flags.EnemyFormationsUnrunnable);
 			sum = AddTriState(sum, flags.EnemyFormationsSurprise);
@@ -519,6 +525,7 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.LefeinShops);
 			sum = AddTriState(sum, flags.ConfusedOldMen);
 			sum = AddTriState(sum, flags.MapOpenProgression);
+			sum = AddTriState(sum, flags.MapOpenProgressionDocks);
 			sum = AddTriState(sum, flags.Entrances);
 			sum = AddTriState(sum, flags.Towns);
 			sum = AddTriState(sum, flags.Floors);
@@ -583,8 +590,8 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.ChanceToRun);
 			sum = AddBoolean(sum, flags.SpellBugs);
 			sum = AddBoolean(sum, flags.BlackBeltAbsorb);
-			sum = AddBoolean(sum, flags.NPCSwatter);
 			sum = AddBoolean(sum, flags.InventoryAutosort);
+			sum = AddBoolean(sum, flags.NPCSwatter);
 			sum = AddBoolean(sum, flags.EnemyStatusAttackBug);
 			sum = AddBoolean(sum, flags.EnemySpellsTargetingAllies);
 			sum = AddBoolean(sum, flags.EnemyElementalResistancesBug);
@@ -645,6 +652,7 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.ArmorPermissions);
 			sum = AddTriState(sum, flags.RecruitmentMode);
 			sum = AddTriState(sum, flags.RecruitmentModeHireOnly);
+			sum = AddTriState(sum, flags.RecruitmentModeReplaceOnlyNone);
 			sum = AddTriState(sum, flags.ClampMinimumStatScale);
 			sum = AddTriState(sum, flags.ClampMinimumBossStatScale);
 			sum = AddTriState(sum, flags.ClampMinimumPriceScale);
@@ -663,6 +671,8 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.AllSpellLevelsForKnightNinja);
 			sum = AddTriState(sum, flags.FreeTail);
 			sum = AddTriState(sum, flags.SpellcrafterRetainPermissions);
+			sum = AddTriState(sum, flags.RandomWeaponBonus);
+			sum = AddTriState(sum, flags.RandomArmorBonus);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(FormationShuffleMode)).Cast<int>().Max() + 1, (int)flags.FormationShuffleMode);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(MDEFGrowthMode)).Cast<int>().Max() + 1, (int)flags.MDefMode);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(WorldWealthMode)).Cast<int>().Max() + 1, (int)flags.WorldWealth);
@@ -685,6 +695,8 @@ namespace FF1Lib
 				WorldWealth = (WorldWealthMode)GetNumeric(ref sum, Enum.GetValues(typeof(WorldWealthMode)).Cast<int>().Max() + 1),
 				MDefMode = (MDEFGrowthMode)GetNumeric(ref sum, Enum.GetValues(typeof(MDEFGrowthMode)).Cast<int>().Max() + 1),
 				FormationShuffleMode = (FormationShuffleMode)GetNumeric(ref sum, Enum.GetValues(typeof(FormationShuffleMode)).Cast<int>().Max() + 1),
+				RandomArmorBonus = GetTriState(ref sum),
+				RandomWeaponBonus = GetTriState(ref sum),
 				SpellcrafterRetainPermissions = GetTriState(ref sum),
 				FreeTail = GetTriState(ref sum),
 				AllSpellLevelsForKnightNinja = GetBoolean(ref sum),
@@ -703,6 +715,7 @@ namespace FF1Lib
 				ClampMinimumPriceScale = GetTriState(ref sum),
 				ClampMinimumBossStatScale = GetTriState(ref sum),
 				ClampMinimumStatScale = GetTriState(ref sum),
+				RecruitmentModeReplaceOnlyNone = GetTriState(ref sum),
 				RecruitmentModeHireOnly = GetTriState(ref sum),
 				RecruitmentMode = GetTriState(ref sum),
 				ArmorPermissions = GetBoolean(ref sum),
@@ -829,6 +842,7 @@ namespace FF1Lib
 				Floors = GetTriState(ref sum),
 				Towns = GetTriState(ref sum),
 				Entrances = GetTriState(ref sum),
+				MapOpenProgressionDocks = GetTriState(ref sum),
 				MapOpenProgression = GetTriState(ref sum),
 				ConfusedOldMen = GetTriState(ref sum),
 				LefeinShops = GetTriState(ref sum),
@@ -850,6 +864,7 @@ namespace FF1Lib
 				EnemyFormationsSurprise = GetTriState(ref sum),
 				EnemyFormationsUnrunnable = GetTriState(ref sum),
 				EverythingUnrunnable = GetTriState(ref sum),
+				FixMissingBattleRngEntry = GetBoolean(ref sum),
 				Rng = GetTriState(ref sum),
 				RebalanceSpells = GetBoolean(ref sum),
 				ItemMagic = GetTriState(ref sum),

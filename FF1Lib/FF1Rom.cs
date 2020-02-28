@@ -15,9 +15,9 @@ namespace FF1Lib
 	public partial class FF1Rom : NesRom
 	{
 #if DEBUG
-		public const string Version = "3.0.2 Beta";
+		public const string Version = "3.1.0 Beta";
 #else
-		public const string Version = "3.0.2";
+		public const string Version = "3.1.0";
 #endif
 
 		public const int RngOffset = 0x7F100;
@@ -113,7 +113,6 @@ namespace FF1Lib
 			var maps = ReadMaps();
 			var shopItemLocation = ItemLocations.CaravanItemShop1;
 
-#if DEBUG
 			if (flags.ExperimentalFloorGeneration)
 			{
 				MapRequirements reqs;
@@ -168,7 +167,6 @@ namespace FF1Lib
 					maps[(int)MapId.EarthCaveB2] = earthB2.Map;
 				}
 			}
-#endif
 
 			if ((bool)flags.RandomizeFormationEnemizer)
 			{
@@ -311,6 +309,12 @@ namespace FF1Lib
 				ShuffleArmorPermissions(rng);
 			}
 			*/
+
+			// Ordered before RNG shuffle. In the event that both flags are on, RNG shuffle depends on this.
+			if (((bool)flags.FixMissingBattleRngEntry))
+			{
+				FixMissingBattleRngEntry();
+			}
 
 			if (((bool)flags.Rng))
 			{
@@ -540,6 +544,17 @@ namespace FF1Lib
 				FixWeaponStats();
 			}
 
+			//needs to go after item magic
+			if ((bool)flags.RandomWeaponBonus)
+			{
+				RandomWeaponBonus(rng);
+			}
+
+			if ((bool)flags.RandomArmorBonus)
+			{
+				RandomArmorBonus(rng);
+			}
+
 			if (flags.ChanceToRun)
 			{
 				FixChanceToRun();
@@ -691,9 +706,26 @@ namespace FF1Lib
 					hashable[i] = 0;
 				}
 
-				var Hash = hasher.ComputeHash(hashable);
-				if (ByteArrayToString(Hash) != "2eb382079161d2687b29180f53c53d1badcd63c0d25dbb8f2d86b9d899ee91f4")
+				//zero out character palette data
+				for (int i = 0x390; i < 0x3BC; i++)
 				{
+					hashable[i] = 0;
+				}
+				//palettes continued
+				for (int i = 0x3203C; i < 0x32408; i++)
+				{
+					hashable[i] = 0;
+				}
+				//palettes continued
+				for (int i = 0x3ECA4; i < 0x3ECB0; i++)
+				{
+					hashable[i] = 0;
+				}
+
+				var Hash = hasher.ComputeHash(hashable);
+				if (ByteArrayToString(Hash) != "022cc07015f25c37d617b5c725d3f545b142f9021ff6824db769294d60333d8b")
+				{
+					Console.WriteLine($"Rom hash: {ByteArrayToString(Hash)}");
 					throw new TournamentSafeException("File has been modified");
 				}
 			}
@@ -917,6 +949,16 @@ namespace FF1Lib
 				FF1Text.TextToCopyrightLine("Final Fantasy Randomizer " + version),
 				FF1Text.TextToCopyrightLine((sha == "development" ? "DEVELOPMENT BUILD " : "Seed  ") + seed),
 				hash));
+		}
+
+		public void FixMissingBattleRngEntry()
+		{
+			// of the 256 entries in the battle RNG table, the 98th entry (index 97) is a duplicate '00' where '95' hex / 149 int is absent.
+			// you could arbitrarily choose the other '00', the 111th entry (index 110), to replace instead
+			var battleRng = Get(BattleRngOffset, RngSize).Chunk(1).ToList();
+			battleRng[97] = Blob.FromHex("95");
+
+			Put(BattleRngOffset, battleRng.SelectMany(blob => blob.ToBytes()).ToArray());
 		}
 
 		public void ShuffleRng(MT19337 rng)

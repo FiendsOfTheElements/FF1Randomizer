@@ -268,6 +268,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Rng"));
 			}
 		}
+		public bool FixMissingBattleRngEntry
+		{
+			get => Flags.FixMissingBattleRngEntry;
+			set
+			{
+				Flags.FixMissingBattleRngEntry = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FixMissingBattleRngEntry"));
+			}
+		}
 		public bool? EnemyFormationsUnrunnable
 		{
 			get => Flags.EnemyFormationsUnrunnable;
@@ -531,6 +540,16 @@ namespace FF1Lib
 			{
 				Flags.MapOpenProgression = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MapOpenProgression"));
+			}
+		}
+
+		public bool? MapOpenProgressionDocks
+		{
+			get => Flags.MapOpenProgressionDocks;
+			set
+			{
+				Flags.MapOpenProgressionDocks = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MapOpenProgressionDocks"));
 			}
 		}
 		public bool? MapOpenProgressionExtended
@@ -1403,6 +1422,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RecruitmentModeHireOnly"));
 			}
 		}
+		public bool? RecruitmentModeReplaceOnlyNone
+		{
+			get => Flags.RecruitmentModeReplaceOnlyNone;
+			set
+			{
+				Flags.RecruitmentModeReplaceOnlyNone = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RecruitmentModeReplaceOnlyNone"));
+			}
+		}
 		public bool? FORCED1
 		{
 			get => Flags.FORCED1;
@@ -1947,6 +1975,26 @@ namespace FF1Lib
 			{
 				Flags.SpellcrafterRetainPermissions = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SpellcrafterRetainPermissions"));
+			}
+		}
+
+		public bool? RandomWeaponBonus
+		{
+			get => Flags.RandomWeaponBonus;
+			set
+			{
+				Flags.RandomWeaponBonus = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomWeaponBonus"));
+			}
+		}
+
+		public bool? RandomArmorBonus
+		{
+			get => Flags.RandomArmorBonus;
+			set
+			{
+				Flags.RandomArmorBonus = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomArmorBonus"));
 			}
 		}
 	}
