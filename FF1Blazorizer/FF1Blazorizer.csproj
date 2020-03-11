@@ -35,6 +35,9 @@
     <Content Update="wwwroot\presets\default.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Update="wwwroot\presets\swiss.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Update="wwwroot\presets\full-npc.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
