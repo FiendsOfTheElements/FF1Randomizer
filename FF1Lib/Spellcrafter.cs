@@ -1075,19 +1075,36 @@ namespace FF1Lib
 						}
 						else if(SpellTier(index) < 7)
 						{
-							resistances = GenerateRandomBits(0xFF, rng);
-							if(resistelems.Contains(resistances))
+							List<byte> validElements = new List<byte> { 0b01110000, 0b10001001, 0b10000101, 0b11111111 };
+							validElements = validElements.Except(resistelems).ToList();
+							if (validElements.Count == 0)
 							{
 								validroutines.Remove(0x0A);
 								continue;
 							}
-							if (CountBitsActive(resistances) < 3)
-								continue; // re-loop if there are less than two resistances
-							if (CountBitsActive(resistances) < SpellTier(index))
-								spell[index].targeting = 0x08;
-							else
-								spell[index].targeting = 0x10;
-							spellMessages[index] = 0x19; // Defend magic
+							switch (validElements.PickRandom(rng))
+							{
+								case 0b01110000:
+									resistances = 0b01110000;
+									spellMessages[index] = 0x19; // Defend magic
+									spell[index].targeting = 0x08;
+									break;
+								case 0b10001001:
+									resistances = 0b10001001;
+									spellMessages[index] = 0x19; // Defend magic
+									spell[index].targeting = 0x08;
+									break;
+								case 0b10000101:
+									resistances = 0b10000101;
+									spellMessages[index] = 0x19; // Defend magic
+									spell[index].targeting = 0x08;
+									break;
+								case 0b11111111:
+									resistances = 0b11111111;
+									spellMessages[index] = 0x1C; // Defend all
+									spell[index].targeting = 0x10;
+									break;
+							}
 							resistelems.Add(resistances);
 						}
 						else
@@ -1513,6 +1530,12 @@ namespace FF1Lib
 						SPCR_SetName(spellNames, i, "APSN", "APS");
 					else if (spell[i].effect == 0b00000001)
 						SPCR_SetName(spellNames, i, "ASTA", "AST");
+					else if (spell[i].effect == 0b01110000)
+						SPCR_SetName(spellNames, i, "AMAG", "AMG");
+					else if (spell[i].effect == 0b10001001)
+						SPCR_SetName(spellNames, i, "ARUB", "ARB");
+					else if (spell[i].effect == 0b10000101)
+						SPCR_SetName(spellNames, i, "ATIM", "ATI");
 					else
 						SPCR_SetName(spellNames, i, "AMAG", "AMG");
 					spell[i].gfx = 0xB0;

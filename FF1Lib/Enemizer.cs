@@ -1814,111 +1814,70 @@ namespace FF1Lib
 			return returnValue[level - 1, tier];
 		}
 
+		public void ENE_rollEnemyStats(MT19337 rng, EnemyInfo enemy)
+		{
+			// roll number of hits
+			enemy.num_hits = rng.Between(1, 1 + (enemy.tier > 5 ? 5 : enemy.tier));
+			// roll valid damage tiers based on num_hits
+			int minDamageTier = 4 + enemy.tier / 4 - enemy.num_hits;
+			if(minDamageTier < 1)
+				minDamageTier = 1;
+			int maxDamageTier = 8 - enemy.num_hits;
+			if (enemy.num_hits > 3)
+				maxDamageTier--;
+			if (maxDamageTier < 2)
+				maxDamageTier = 2;
+			int finalDamageTier = rng.Between(minDamageTier, maxDamageTier);
+			enemy.damage = ENE_rollEnemyStrength(enemy.tier, finalDamageTier);
+			// roll accuracy based on tier
+			enemy.accuracy = ENE_rollEnemyAccuracy(enemy.tier, rng.Between(1, 7));
+			// roll absorb based on tier
+			enemy.absorb = ENE_rollEnemyAbsorb(enemy.tier, rng.Between(1, 7));
+			// roll evasion based on tier
+			enemy.agility = rng.Between(ENE_rollEnemyEvade(enemy.tier, 1), ENE_rollEnemyEvade(enemy.tier, 7));
+		}
+
 		public void ENE_rollLargeElemental(MT19337 rng, ref EnemyInfo thisEnemy, int element)
 		{
 			int tier = thisEnemy.tier;
 			switch (element)
 			{
 				case 1: // Earth Elemental
-					thisEnemy.num_hits = 1;
-					thisEnemy.critrate = 1;
-					thisEnemy.damage = ENE_rollEnemyStrength(tier, 7);
-					thisEnemy.accuracy = ENE_rollEnemyAccuracy(tier, 7);
-					thisEnemy.absorb = ENE_rollEnemyAbsorb(tier, 5);
-					thisEnemy.agility = ENE_rollEnemyEvade(tier, 2);
-					thisEnemy.atk_elem = 0b10000000;
-					thisEnemy.atk_ailment = 0b00000000;
 					thisEnemy.monster_type = 0b00000001;
 					thisEnemy.elem_resist = 0b11101011;
 					thisEnemy.elem_weakness = 0b00010000;
 					break;
 				case 2: // Lightning Elemental
-					thisEnemy.num_hits = 1;
-					thisEnemy.critrate = 20;
-					thisEnemy.damage = ENE_rollEnemyStrength(tier, 5);
-					thisEnemy.accuracy = ENE_rollEnemyAccuracy(tier, 5);
-					thisEnemy.absorb = ENE_rollEnemyAbsorb(tier, 2);
-					thisEnemy.agility = ENE_rollEnemyEvade(tier, 6);
-					thisEnemy.atk_elem = 0b01000000;
-					thisEnemy.atk_ailment = 0b00100000;
 					thisEnemy.monster_type = 0b00000001;
 					thisEnemy.elem_resist = 0b11011001;
 					thisEnemy.elem_weakness = 0b00000110;
 					break;
 				case 3: // Ice Elemental
-					thisEnemy.num_hits = 1;
-					thisEnemy.critrate = 1;
-					thisEnemy.damage = ENE_rollEnemyStrength(tier, 5);
-					thisEnemy.accuracy = ENE_rollEnemyAccuracy(tier, 7);
-					thisEnemy.absorb = ENE_rollEnemyAbsorb(tier, 6);
-					thisEnemy.agility = ENE_rollEnemyEvade(tier, 2);
-					thisEnemy.atk_elem = 0b00100000;
-					thisEnemy.atk_ailment = 0b00010000;
 					thisEnemy.monster_type = 0b00000001;
 					thisEnemy.elem_resist = 0b11101011;
 					thisEnemy.elem_weakness = 0b00010000;
 					break;
 				case 4: // Fire Elemental
-					thisEnemy.num_hits = 1;
-					thisEnemy.critrate = 1;
-					thisEnemy.damage = ENE_rollEnemyStrength(tier, 6);
-					thisEnemy.accuracy = ENE_rollEnemyAccuracy(tier, 7);
-					thisEnemy.absorb = ENE_rollEnemyAbsorb(tier, 5);
-					thisEnemy.agility = ENE_rollEnemyEvade(tier, 2);
-					thisEnemy.atk_elem = 0b00010000;
-					thisEnemy.atk_ailment = 0b00000000;
 					thisEnemy.monster_type = 0b00000001;
 					thisEnemy.elem_resist = 0b11011011;
 					thisEnemy.elem_weakness = 0b00100000;
 					break;
 				case 5: // Death Elemental
-					thisEnemy.num_hits = 2;
-					thisEnemy.critrate = 1;
-					thisEnemy.damage = ENE_rollEnemyStrength(tier, 7);
-					thisEnemy.accuracy = ENE_rollEnemyAccuracy(tier, 4);
-					thisEnemy.absorb = ENE_rollEnemyAbsorb(tier, 4);
-					thisEnemy.agility = ENE_rollEnemyEvade(tier, 4);
-					thisEnemy.atk_elem = 0b00001000;
-					thisEnemy.atk_ailment = 0b00001000;
 					thisEnemy.monster_type = 0b00001001;
 					thisEnemy.elem_resist = 0b10101011;
 					thisEnemy.elem_weakness = 0b00010000;
 					break;
 				case 6: // Time Elemental
-					thisEnemy.num_hits = rng.Between(4, 6);
-					thisEnemy.critrate = 1;
-					thisEnemy.damage = ENE_rollEnemyStrength(tier, 4);
-					thisEnemy.accuracy = ENE_rollEnemyAccuracy(tier, 4);
-					thisEnemy.absorb = ENE_rollEnemyAbsorb(tier, 4);
-					thisEnemy.agility = ENE_rollEnemyEvade(tier, 5);
-					thisEnemy.atk_elem = 0b00000100;
-					thisEnemy.atk_ailment = 0b00010000;
 					thisEnemy.monster_type = 0b00000001;
 					thisEnemy.elem_resist = 0b10001111;
 					thisEnemy.elem_weakness = 0b01110000;
 					break;
 				case 7: // Poison Elemental
-					thisEnemy.num_hits = 1;
-					thisEnemy.critrate = 1;
-					thisEnemy.damage = ENE_rollEnemyStrength(tier, 6);
-					thisEnemy.accuracy = ENE_rollEnemyAccuracy(tier, 7);
-					thisEnemy.absorb = ENE_rollEnemyAbsorb(tier, 2);
-					thisEnemy.agility = ENE_rollEnemyEvade(tier, 6);
-					thisEnemy.atk_elem = 0b00000010;
-					thisEnemy.atk_ailment = 0b00000100;
 					thisEnemy.monster_type = 0b10000001;
 					thisEnemy.elem_resist = 0b10001011;
 					thisEnemy.elem_weakness = 0b00000000;
 					break;
 				case 8: // Status Elemental
-					thisEnemy.num_hits = 1;
-					thisEnemy.critrate = 3;
-					thisEnemy.damage = ENE_rollEnemyStrength(tier, 4);
-					thisEnemy.accuracy = ENE_rollEnemyAccuracy(tier, 7);
-					thisEnemy.absorb = ENE_rollEnemyAbsorb(tier, 5);
-					thisEnemy.agility = ENE_rollEnemyEvade(tier, 5);
-					thisEnemy.atk_elem = 0b00000001;
-					thisEnemy.atk_ailment = 0b01000000;
 					thisEnemy.monster_type = 0b00000001;
 					thisEnemy.elem_resist = 0b11111011;
 					thisEnemy.elem_weakness = 0b00000000;
@@ -1928,14 +1887,6 @@ namespace FF1Lib
 					}
 					break;
 				default: // Raw Mana Elemental
-					thisEnemy.num_hits = 1;
-					thisEnemy.critrate = 1;
-					thisEnemy.damage = ENE_rollEnemyStrength(tier, 5);
-					thisEnemy.accuracy = ENE_rollEnemyAccuracy(tier, 5);
-					thisEnemy.absorb = ENE_rollEnemyAbsorb(tier, 5);
-					thisEnemy.agility = ENE_rollEnemyEvade(tier, 2);
-					thisEnemy.atk_elem = 0b00000000;
-					thisEnemy.atk_ailment = 0b00000000;
 					thisEnemy.monster_type = 0b00000001;
 					thisEnemy.elem_resist = 0b11111011;
 					thisEnemy.elem_weakness = 0b00000000;
@@ -1949,105 +1900,41 @@ namespace FF1Lib
 			switch (element)
 			{
 				case 1: // Earth Elemental
-					thisEnemy.num_hits = 1;
-					thisEnemy.critrate = 1;
-					thisEnemy.damage = ENE_rollEnemyStrength(tier, 6);
-					thisEnemy.accuracy = ENE_rollEnemyAccuracy(tier, 7);
-					thisEnemy.absorb = ENE_rollEnemyAbsorb(tier, 5);
-					thisEnemy.agility = ENE_rollEnemyEvade(tier, 2);
-					thisEnemy.atk_elem = 0b10000000;
-					thisEnemy.atk_ailment = 0b00000000;
 					thisEnemy.monster_type = 0b00000001;
 					thisEnemy.elem_resist = 0b10101011;
 					thisEnemy.elem_weakness = 0b01010000;
 					break;
 				case 2: // Lightning Elemental
-					thisEnemy.num_hits = 1;
-					thisEnemy.critrate = 10;
-					thisEnemy.damage = ENE_rollEnemyStrength(tier, 5);
-					thisEnemy.accuracy = ENE_rollEnemyAccuracy(tier, 5);
-					thisEnemy.absorb = ENE_rollEnemyAbsorb(tier, 2);
-					thisEnemy.agility = ENE_rollEnemyEvade(tier, 6);
-					thisEnemy.atk_elem = 0b01000000;
-					thisEnemy.atk_ailment = 0b00100000;
 					thisEnemy.monster_type = 0b00000001;
 					thisEnemy.elem_resist = 0b11011001;
 					thisEnemy.elem_weakness = 0b00000110;
 					break;
 				case 3: // Water Elemental
-					thisEnemy.num_hits = 1;
-					thisEnemy.critrate = 1;
-					thisEnemy.damage = ENE_rollEnemyStrength(tier, 6);
-					thisEnemy.accuracy = ENE_rollEnemyAccuracy(tier, 6);
-					thisEnemy.absorb = ENE_rollEnemyAbsorb(tier, 4);
-					thisEnemy.agility = ENE_rollEnemyEvade(tier, 5);
-					thisEnemy.atk_elem = 0b00100000;
-					thisEnemy.atk_ailment = 0b00000000;
 					thisEnemy.monster_type = 0b00000001;
 					thisEnemy.elem_resist = 0b10011011;
 					thisEnemy.elem_weakness = 0b00100000;
 					break;
 				case 4: // Fire Elemental
-					thisEnemy.num_hits = 1;
-					thisEnemy.critrate = 1;
-					thisEnemy.damage = ENE_rollEnemyStrength(tier, 5);
-					thisEnemy.accuracy = ENE_rollEnemyAccuracy(tier, 6);
-					thisEnemy.absorb = ENE_rollEnemyAbsorb(tier, 3);
-					thisEnemy.agility = ENE_rollEnemyEvade(tier, 6);
-					thisEnemy.atk_elem = 0b00010000;
-					thisEnemy.atk_ailment = 0b00000000;
 					thisEnemy.monster_type = 0b00000001;
 					thisEnemy.elem_resist = 0b10011001;
 					thisEnemy.elem_weakness = 0b00100000;
 					break;
 				case 5: // Death Elemental
-					thisEnemy.num_hits = 2;
-					thisEnemy.critrate = 1;
-					thisEnemy.damage = ENE_rollEnemyStrength(tier, 7);
-					thisEnemy.accuracy = ENE_rollEnemyAccuracy(tier, 4);
-					thisEnemy.absorb = ENE_rollEnemyAbsorb(tier, 4);
-					thisEnemy.agility = ENE_rollEnemyEvade(tier, 4);
-					thisEnemy.atk_elem = 0b00001000;
-					thisEnemy.atk_ailment = 0b00001000;
 					thisEnemy.monster_type = 0b00001001;
 					thisEnemy.elem_resist = 0b10101011;
 					thisEnemy.elem_weakness = 0b00010000;
 					break;
 				case 6: // Time Elemental
-					thisEnemy.num_hits = rng.Between(2, 5);
-					thisEnemy.critrate = 1;
-					thisEnemy.damage = ENE_rollEnemyStrength(tier, 4);
-					thisEnemy.accuracy = ENE_rollEnemyAccuracy(tier, 4);
-					thisEnemy.absorb = ENE_rollEnemyAbsorb(tier, 4);
-					thisEnemy.agility = ENE_rollEnemyEvade(tier, 5);
-					thisEnemy.atk_elem = 0b00000100;
-					thisEnemy.atk_ailment = 0b00010000;
 					thisEnemy.monster_type = 0b00000001;
 					thisEnemy.elem_resist = 0b10001111;
 					thisEnemy.elem_weakness = 0b01110000;
 					break;
 				case 7: // Poison Elemental
-					thisEnemy.num_hits = 1;
-					thisEnemy.critrate = 1;
-					thisEnemy.damage = ENE_rollEnemyStrength(tier, 6);
-					thisEnemy.accuracy = ENE_rollEnemyAccuracy(tier, 7);
-					thisEnemy.absorb = ENE_rollEnemyAbsorb(tier, 2);
-					thisEnemy.agility = ENE_rollEnemyEvade(tier, 6);
-					thisEnemy.atk_elem = 0b00000010;
-					thisEnemy.atk_ailment = 0b00100000;
 					thisEnemy.monster_type = 0b10000001;
 					thisEnemy.elem_resist = 0b10001011;
 					thisEnemy.elem_weakness = 0b00000100;
 					break;
 				case 8: // Status Elemental
-					thisEnemy.num_hits = 2;
-					thisEnemy.critrate = 3;
-					thisEnemy.damage = ENE_rollEnemyStrength(tier, 4);
-					thisEnemy.accuracy = ENE_rollEnemyAccuracy(tier, 4);
-					thisEnemy.absorb = ENE_rollEnemyAbsorb(tier, 4);
-					thisEnemy.agility = ENE_rollEnemyEvade(tier, 4);
-					thisEnemy.atk_elem = 0b00000001;
-					thisEnemy.atk_ailment = 0b01000000;
 					thisEnemy.monster_type = 0b00000001;
 					thisEnemy.elem_resist = 0b11111011;
 					thisEnemy.elem_weakness = 0b00000000;
@@ -2057,14 +1944,6 @@ namespace FF1Lib
 					}
 					break;
 				default: // Air Elemental
-					thisEnemy.num_hits = 1;
-					thisEnemy.critrate = 1;
-					thisEnemy.damage = ENE_rollEnemyStrength(tier, 5);
-					thisEnemy.accuracy = ENE_rollEnemyAccuracy(tier, 6);
-					thisEnemy.absorb = ENE_rollEnemyAbsorb(tier, 2);
-					thisEnemy.agility = ENE_rollEnemyEvade(tier, 7);
-					thisEnemy.atk_elem = 0b00000000;
-					thisEnemy.atk_ailment = 0b00000000;
 					thisEnemy.monster_type = 0b00000001;
 					thisEnemy.elem_resist = 0b10001011;
 					thisEnemy.elem_weakness = 0b00000000;
@@ -2078,105 +1957,41 @@ namespace FF1Lib
 			switch (element)
 			{
 				case 1: // Earth Elemental
-					thisEnemy.num_hits = 1;
-					thisEnemy.critrate = 1;
-					thisEnemy.damage = ENE_rollEnemyStrength(tier, 6);
-					thisEnemy.accuracy = ENE_rollEnemyAccuracy(tier, 4);
-					thisEnemy.absorb = ENE_rollEnemyAbsorb(tier, 7);
-					thisEnemy.agility = ENE_rollEnemyEvade(tier, 1);
-					thisEnemy.atk_elem = 0b10000000;
-					thisEnemy.atk_ailment = 0b00000000;
 					thisEnemy.monster_type = 0b00000010;
 					thisEnemy.elem_resist = 0b11100000;
 					thisEnemy.elem_weakness = 0b00000010;
 					break;
 				case 2: // Lightning Elemental
-					thisEnemy.num_hits = 1;
-					thisEnemy.critrate = 5;
-					thisEnemy.damage = ENE_rollEnemyStrength(tier, 7);
-					thisEnemy.accuracy = ENE_rollEnemyAccuracy(tier, 6);
-					thisEnemy.absorb = ENE_rollEnemyAbsorb(tier, 3);
-					thisEnemy.agility = ENE_rollEnemyEvade(tier, 6);
-					thisEnemy.atk_elem = 0b01000000;
-					thisEnemy.atk_ailment = 0b00000000;
 					thisEnemy.monster_type = 0b00000010;
 					thisEnemy.elem_resist = 0b11000000;
 					thisEnemy.elem_weakness = 0b00010000;
 					break;
 				case 3: // Ice Elemental
-					thisEnemy.num_hits = 1;
-					thisEnemy.critrate = 1;
-					thisEnemy.damage = ENE_rollEnemyStrength(tier, 5);
-					thisEnemy.accuracy = ENE_rollEnemyAccuracy(tier, 6);
-					thisEnemy.absorb = ENE_rollEnemyAbsorb(tier, 2);
-					thisEnemy.agility = ENE_rollEnemyEvade(tier, 7);
-					thisEnemy.atk_elem = 0b00100000;
-					thisEnemy.atk_ailment = 0b00000000;
 					thisEnemy.monster_type = 0b00000010;
 					thisEnemy.elem_resist = 0b10100010;
 					thisEnemy.elem_weakness = 0b01010000;
 					break;
 				case 4: // Fire Elemental
-					thisEnemy.num_hits = 1;
-					thisEnemy.critrate = 1;
-					thisEnemy.damage = ENE_rollEnemyStrength(tier, 7);
-					thisEnemy.accuracy = ENE_rollEnemyAccuracy(tier, 7);
-					thisEnemy.absorb = ENE_rollEnemyAbsorb(tier, 5);
-					thisEnemy.agility = ENE_rollEnemyEvade(tier, 6);
-					thisEnemy.atk_elem = 0b00010000;
-					thisEnemy.atk_ailment = 0b00000000;
 					thisEnemy.monster_type = 0b00000010;
 					thisEnemy.elem_resist = 0b10010000;
 					thisEnemy.elem_weakness = 0b00100010;
 					break;
 				case 5: // Death Elemental
-					thisEnemy.num_hits = 1;
-					thisEnemy.critrate = 1;
-					thisEnemy.damage = ENE_rollEnemyStrength(tier, 6);
-					thisEnemy.accuracy = ENE_rollEnemyAccuracy(tier, 6);
-					thisEnemy.absorb = ENE_rollEnemyAbsorb(tier, 6);
-					thisEnemy.agility = ENE_rollEnemyEvade(tier, 3);
-					thisEnemy.atk_elem = 0b00001000;
-					thisEnemy.atk_ailment = 0b00010000;
 					thisEnemy.monster_type = 0b00001010;
 					thisEnemy.elem_resist = 0b10101011;
 					thisEnemy.elem_weakness = 0b00010000;
 					break;
 				case 6: // Time Elemental
-					thisEnemy.num_hits = 1;
-					thisEnemy.critrate = 12;
-					thisEnemy.damage = ENE_rollEnemyStrength(tier, 6);
-					thisEnemy.accuracy = ENE_rollEnemyAccuracy(tier, 7);
-					thisEnemy.absorb = ENE_rollEnemyAbsorb(tier, 6);
-					thisEnemy.agility = ENE_rollEnemyEvade(tier, 6);
-					thisEnemy.atk_elem = 0b00000100;
-					thisEnemy.atk_ailment = 0b00010000;
 					thisEnemy.monster_type = 0b00000011;
 					thisEnemy.elem_resist = 0b10001111;
 					thisEnemy.elem_weakness = 0b01110000;
 					break;
 				case 7: // Poison Elemental
-					thisEnemy.num_hits = 1;
-					thisEnemy.critrate = 1;
-					thisEnemy.damage = ENE_rollEnemyStrength(tier, 6);
-					thisEnemy.accuracy = ENE_rollEnemyAccuracy(tier, 5);
-					thisEnemy.absorb = ENE_rollEnemyAbsorb(tier, 2);
-					thisEnemy.agility = ENE_rollEnemyEvade(tier, 6);
-					thisEnemy.atk_elem = 0b00000010;
-					thisEnemy.atk_ailment = 0b00000000;
 					thisEnemy.monster_type = 0b00000010;
 					thisEnemy.elem_resist = 0b10000000;
 					thisEnemy.elem_weakness = 0b00100000;
 					break;
 				case 8: // Status Elemental
-					thisEnemy.num_hits = 1;
-					thisEnemy.critrate = 3;
-					thisEnemy.damage = ENE_rollEnemyStrength(tier, 4);
-					thisEnemy.accuracy = ENE_rollEnemyAccuracy(tier, 5);
-					thisEnemy.absorb = ENE_rollEnemyAbsorb(tier, 5);
-					thisEnemy.agility = ENE_rollEnemyEvade(tier, 5);
-					thisEnemy.atk_elem = 0b00000001;
-					thisEnemy.atk_ailment = 0b01000000;
 					thisEnemy.monster_type = 0b00000011;
 					thisEnemy.elem_resist = 0b01110001;
 					thisEnemy.elem_weakness = 0b00000000;
@@ -2186,14 +2001,6 @@ namespace FF1Lib
 					}
 					break;
 				default: // Standard Dragon
-					thisEnemy.num_hits = 1;
-					thisEnemy.critrate = 1;
-					thisEnemy.damage = ENE_rollEnemyStrength(tier, 6);
-					thisEnemy.accuracy = ENE_rollEnemyAccuracy(tier, 6);
-					thisEnemy.absorb = ENE_rollEnemyAbsorb(tier, 6);
-					thisEnemy.agility = ENE_rollEnemyEvade(tier, 6);
-					thisEnemy.atk_elem = 0b00000000;
-					thisEnemy.atk_ailment = 0b00000000;
 					thisEnemy.monster_type = 0b00000010;
 					thisEnemy.elem_resist = 0b00000000;
 					thisEnemy.elem_weakness = 0b00000000;
@@ -2572,496 +2379,158 @@ namespace FF1Lib
 						enemy[i].gp /= 9;
 					}
 					int elemental = 9; // track elemental affinity for certain classes of monsters (elementals and dragons)
-					// generate BASE stats for generic monsters and their base name
+					// generate monster's base elemental weakness/resist, type, and base name based on the monster image type
+					enemy[i].critrate = 1; // default crit rate of 1 for most enemies
 					switch (enemy[i].image)
 					{
 						case 0: // Imp
 							enemyNames[i] = "IMP";
-							enemy[i].num_hits = rng.Between(1, 3);
-							enemy[i].critrate = rng.Between(1, 5);
-							enemy[i].damage = ENE_rollEnemyStrength(enemy[i].tier, 4);
-							enemy[i].accuracy = ENE_rollEnemyAccuracy(enemy[i].tier, 4);
-							enemy[i].absorb = ENE_rollEnemyAbsorb(enemy[i].tier, 5);
-							enemy[i].agility = ENE_rollEnemyEvade(enemy[i].tier, 3);
-							enemy[i].atk_elem = 0b00000000;
-							enemy[i].atk_ailment = 0b00000000;
 							enemy[i].monster_type = 0b00000100;
 							enemy[i].elem_resist = 0b00000000;
 							enemy[i].elem_weakness = 0b00000000;
-							perks.Add(MonsterPerks.PERK_LOWRESIST);
-							perks.Add(MonsterPerks.PERK_HIGHRESIST);
-							perks.Add(MonsterPerks.PERK_LOWWEAKNESS);
-							perks.Add(MonsterPerks.PERK_HIGHWEAKNESS);
-							perks.Add(MonsterPerks.PERK_PLUSONEHIT);
-							perks.Add(MonsterPerks.PERK_POISONTOUCH);
-							perks.Add(MonsterPerks.PERK_STUNSLEEPTOUCH);
-							perks.Add(MonsterPerks.PERK_MUTETOUCH);
 							break;
 						case 1: // Iguana
 							enemyNames[i] = "SAUR";
-							enemy[i].num_hits = rng.Between(1, 3);
-							enemy[i].critrate = rng.Between(1, 5);
-							enemy[i].damage = ENE_rollEnemyStrength(enemy[i].tier, 4);
-							enemy[i].accuracy = ENE_rollEnemyAccuracy(enemy[i].tier, 5);
-							enemy[i].absorb = ENE_rollEnemyAbsorb(enemy[i].tier, 5);
-							enemy[i].agility = ENE_rollEnemyEvade(enemy[i].tier, 2);
-							enemy[i].atk_elem = 0b00000000;
-							enemy[i].atk_ailment = 0b00000000;
 							enemy[i].monster_type = 0b00000010;
 							enemy[i].elem_resist = 0b00000000;
 							enemy[i].elem_weakness = 0b00000000;
-							perks.Add(MonsterPerks.PERK_LOWRESIST);
-							perks.Add(MonsterPerks.PERK_HIGHRESIST);
-							perks.Add(MonsterPerks.PERK_LOWWEAKNESS);
-							perks.Add(MonsterPerks.PERK_HIGHWEAKNESS);
-							perks.Add(MonsterPerks.PERK_PLUSONEHIT);
-							perks.Add(MonsterPerks.PERK_POISONTOUCH);
-							perks.Add(MonsterPerks.PERK_STUNSLEEPTOUCH);
-							perks.Add(MonsterPerks.PERK_MUTETOUCH);
 							break;
 						case 2: // Wolf
 							enemyNames[i] = "WOLF";
-							enemy[i].num_hits = 1;
-							enemy[i].critrate = rng.Between(1, 5);
-							enemy[i].damage = ENE_rollEnemyStrength(enemy[i].tier, 4);
-							enemy[i].accuracy = ENE_rollEnemyAccuracy(enemy[i].tier, 5);
-							enemy[i].absorb = 0;
-							enemy[i].agility = ENE_rollEnemyEvade(enemy[i].tier, 6);
-							enemy[i].atk_elem = 0b00000000;
-							enemy[i].atk_ailment = 0b00000000;
 							enemy[i].monster_type = 0b00000000;
 							enemy[i].elem_resist = 0b00000000;
 							enemy[i].elem_weakness = 0b00000000;
-							perks.Add(MonsterPerks.PERK_LOWRESIST);
-							perks.Add(MonsterPerks.PERK_HIGHRESIST);
-							perks.Add(MonsterPerks.PERK_LOWWEAKNESS);
-							perks.Add(MonsterPerks.PERK_HIGHWEAKNESS);
-							perks.Add(MonsterPerks.PERK_PLUSONEHIT);
 							break;
 						case 3: // Giant
 							enemyNames[i] = "GIANT";
-							enemy[i].num_hits = 1;
-							enemy[i].critrate = rng.Between(1, 5);
-							enemy[i].damage = ENE_rollEnemyStrength(enemy[i].tier, 6);
-							enemy[i].accuracy = ENE_rollEnemyAccuracy(enemy[i].tier, 6);
-							enemy[i].absorb = ENE_rollEnemyAbsorb(enemy[i].tier, 3);
-							enemy[i].agility = ENE_rollEnemyEvade(enemy[i].tier, 4);
-							enemy[i].atk_elem = 0b00000000;
-							enemy[i].atk_ailment = 0b00000000;
 							enemy[i].monster_type = 0b00000100;
 							enemy[i].elem_resist = 0b00000000;
 							enemy[i].elem_weakness = 0b00000000;
-							perks.Add(MonsterPerks.PERK_LOWRESIST);
-							perks.Add(MonsterPerks.PERK_HIGHRESIST);
-							perks.Add(MonsterPerks.PERK_LOWWEAKNESS);
-							perks.Add(MonsterPerks.PERK_HIGHWEAKNESS);
 							break;
 						case 4: // Sahag
 							enemyNames[i] = "SAHAG";
-							enemy[i].num_hits = 1;
-							enemy[i].critrate = 1;
-							enemy[i].damage = ENE_rollEnemyStrength(enemy[i].tier, 4);
-							enemy[i].accuracy = ENE_rollEnemyAccuracy(enemy[i].tier, 2);
-							enemy[i].absorb = ENE_rollEnemyAbsorb(enemy[i].tier, 3);
-							enemy[i].agility = 72 + enemy[i].exp / 40;
-							if (enemy[i].agility > 100)
-								enemy[i].agility = 100;
-							enemy[i].atk_elem = 0b00000000;
-							enemy[i].atk_ailment = 0b00000000;
 							enemy[i].monster_type = 0b00100000;
 							enemy[i].elem_resist = 0b10010000;
 							enemy[i].elem_weakness = 0b01000000;
-							perks.Add(MonsterPerks.PERK_HIGHRESIST);
-							perks.Add(MonsterPerks.PERK_HIGHWEAKNESS);
-							perks.Add(MonsterPerks.PERK_PLUSONEHIT);
-							perks.Add(MonsterPerks.PERK_POISONTOUCH);
-							perks.Add(MonsterPerks.PERK_STUNSLEEPTOUCH);
-							perks.Add(MonsterPerks.PERK_MUTETOUCH);
 							break;
 						case 5: // Shark
 							enemyNames[i] = "SHARK";
-							enemy[i].num_hits = 1;
-							enemy[i].critrate = 1;
-							enemy[i].damage = ENE_rollEnemyStrength(enemy[i].tier, 6);
-							enemy[i].accuracy = ENE_rollEnemyAccuracy(enemy[i].tier, 5);
-							enemy[i].absorb = rng.Between(0, 8);
-							enemy[i].agility = 72 + enemy[i].exp / 40;
-							if (enemy[i].agility > 100)
-								enemy[i].agility = 100;
-							enemy[i].atk_elem = 0b00000000;
-							enemy[i].atk_ailment = 0b00000000;
 							enemy[i].monster_type = 0b00100000;
 							enemy[i].elem_resist = 0b10010000;
 							enemy[i].elem_weakness = 0b01000000;
-							perks.Add(MonsterPerks.PERK_HIGHRESIST);
-							perks.Add(MonsterPerks.PERK_HIGHWEAKNESS);
-							perks.Add(MonsterPerks.PERK_PLUSONEHIT);
-							perks.Add(MonsterPerks.PERK_POISONTOUCH);
 							break;
 						case 6: // Pirate
 							enemyNames[i] = "BRUTE";
-							enemy[i].num_hits = rng.Between(1, 2);
-							enemy[i].critrate = rng.Between(1, 5);
-							enemy[i].damage = ENE_rollEnemyStrength(enemy[i].tier, 4);
-							enemy[i].accuracy = ENE_rollEnemyAccuracy(enemy[i].tier, 4);
-							enemy[i].absorb = ENE_rollEnemyAbsorb(enemy[i].tier, 4);
-							enemy[i].agility = ENE_rollEnemyEvade(enemy[i].tier, 4);
-							enemy[i].atk_elem = 0b00000000;
-							enemy[i].atk_ailment = 0b00000000;
 							enemy[i].monster_type = 0b00000000;
 							enemy[i].elem_resist = 0b10000000;
 							enemy[i].elem_weakness = 0b00000000;
-							perks.Add(MonsterPerks.PERK_LOWRESIST);
-							perks.Add(MonsterPerks.PERK_HIGHRESIST);
-							perks.Add(MonsterPerks.PERK_LOWWEAKNESS);
-							perks.Add(MonsterPerks.PERK_HIGHWEAKNESS);
-							perks.Add(MonsterPerks.PERK_PLUSONEHIT);
-							perks.Add(MonsterPerks.PERK_POISONTOUCH);
-							perks.Add(MonsterPerks.PERK_STUNSLEEPTOUCH);
-							perks.Add(MonsterPerks.PERK_MUTETOUCH);
 							break;
 						case 7: // Oddeye
 							enemyNames[i] = "EYES";
-							enemy[i].num_hits = rng.Between(1, 4);
-							enemy[i].critrate = 1;
-							enemy[i].damage = ENE_rollEnemyStrength(enemy[i].tier, 2);
-							enemy[i].accuracy = ENE_rollEnemyAccuracy(enemy[i].tier, 5);
-							enemy[i].absorb = ENE_rollEnemyAbsorb(enemy[i].tier, 2);
-							enemy[i].agility = enemy[i].exp > 400 ? ENE_rollEnemyEvade(enemy[i].tier, 4) : ENE_rollEnemyEvade(enemy[i].tier, 7);
-							enemy[i].atk_elem = 0b00000000;
-							enemy[i].atk_ailment = 0b00000000;
 							enemy[i].monster_type = 0b00100000;
 							enemy[i].elem_resist = 0b10010000;
 							enemy[i].elem_weakness = 0b01000000;
-							perks.Add(MonsterPerks.PERK_HIGHRESIST);
-							perks.Add(MonsterPerks.PERK_HIGHWEAKNESS);
-							perks.Add(MonsterPerks.PERK_PLUSONEHIT);
-							perks.Add(MonsterPerks.PERK_POISONTOUCH);
-							perks.Add(MonsterPerks.PERK_STUNSLEEPTOUCH);
-							perks.Add(MonsterPerks.PERK_MUTETOUCH);
 							break;
 						case 8: // Skeleton
 							enemyNames[i] = "BONE";
-							enemy[i].num_hits = 1;
-							enemy[i].critrate = rng.Between(1, 2);
-							enemy[i].damage = ENE_rollEnemyStrength(enemy[i].tier, 5);
-							enemy[i].accuracy = ENE_rollEnemyAccuracy(enemy[i].tier, 4);
-							enemy[i].absorb = ENE_rollEnemyAbsorb(enemy[i].tier, 2);
-							enemy[i].agility = ENE_rollEnemyEvade(enemy[i].tier, 4);
-							enemy[i].atk_elem = 0b00000000;
-							enemy[i].atk_ailment = 0b00000000;
 							enemy[i].monster_type = 0b00001000;
 							enemy[i].elem_resist = 0b00101011;
 							enemy[i].elem_weakness = 0b00010000;
 							break;
 						case 9: // Hyena
 							enemyNames[i] = "DOG";
-							enemy[i].num_hits = rng.Between(1, 2);
-							enemy[i].critrate = rng.Between(1, 3);
-							enemy[i].damage = ENE_rollEnemyStrength(enemy[i].tier, 4);
-							enemy[i].accuracy = ENE_rollEnemyAccuracy(enemy[i].tier, 4);
-							enemy[i].absorb = rng.Between(0, 12);
-							enemy[i].agility = ENE_rollEnemyEvade(enemy[i].tier, 5);
-							enemy[i].atk_elem = 0b00000000;
-							enemy[i].atk_ailment = 0b00000000;
 							enemy[i].monster_type = 0b00000000;
 							enemy[i].elem_resist = 0b00000000;
 							enemy[i].elem_weakness = 0b00000000;
-							perks.Add(MonsterPerks.PERK_LOWRESIST);
-							perks.Add(MonsterPerks.PERK_HIGHRESIST);
-							perks.Add(MonsterPerks.PERK_LOWWEAKNESS);
-							perks.Add(MonsterPerks.PERK_HIGHWEAKNESS);
-							perks.Add(MonsterPerks.PERK_PLUSONEHIT);
-							perks.Add(MonsterPerks.PERK_POISONTOUCH);
-							perks.Add(MonsterPerks.PERK_STUNSLEEPTOUCH);
-							perks.Add(MonsterPerks.PERK_MUTETOUCH);
 							break;
 						case 10: // Creep
 							enemyNames[i] = "CRAWL";
-							enemy[i].num_hits = 1;
-							enemy[i].critrate = 1;
-							enemy[i].damage = ENE_rollEnemyStrength(enemy[i].tier, 6);
-							enemy[i].accuracy = ENE_rollEnemyAccuracy(enemy[i].tier, 4);
-							enemy[i].absorb = ENE_rollEnemyAbsorb(enemy[i].tier, 4);
-							enemy[i].agility = ENE_rollEnemyEvade(enemy[i].tier, 4);
-							enemy[i].atk_elem = 0b00000000;
-							enemy[i].atk_ailment = 0b00000000;
 							enemy[i].monster_type = 0b00000000;
 							enemy[i].elem_resist = 0b00000000;
 							enemy[i].elem_weakness = 0b00010000;
-							perks.Add(MonsterPerks.PERK_LOWRESIST);
-							perks.Add(MonsterPerks.PERK_HIGHRESIST);
-							perks.Add(MonsterPerks.PERK_LOWWEAKNESS);
-							perks.Add(MonsterPerks.PERK_HIGHWEAKNESS);
-							perks.Add(MonsterPerks.PERK_POISONTOUCH);
-							perks.Add(MonsterPerks.PERK_STUNSLEEPTOUCH);
-							perks.Add(MonsterPerks.PERK_MUTETOUCH);
 							break;
 						case 11: // Ogre
 							enemyNames[i] = "OGRE";
-							enemy[i].num_hits = 1;
-							enemy[i].critrate = rng.Between(1, 5);
-							enemy[i].damage = ENE_rollEnemyStrength(enemy[i].tier, 5);
-							enemy[i].accuracy = ENE_rollEnemyAccuracy(enemy[i].tier, 4);
-							enemy[i].absorb = ENE_rollEnemyAbsorb(enemy[i].tier, 4);
-							enemy[i].agility = ENE_rollEnemyEvade(enemy[i].tier, 4);
-							enemy[i].atk_elem = 0b00000000;
-							enemy[i].atk_ailment = 0b00000000;
 							enemy[i].monster_type = 0b00000100;
 							enemy[i].elem_resist = 0b00000000;
 							enemy[i].elem_weakness = 0b00000000;
-							perks.Add(MonsterPerks.PERK_LOWRESIST);
-							perks.Add(MonsterPerks.PERK_HIGHRESIST);
-							perks.Add(MonsterPerks.PERK_LOWWEAKNESS);
-							perks.Add(MonsterPerks.PERK_HIGHWEAKNESS);
-							perks.Add(MonsterPerks.PERK_PLUSONEHIT);
-							perks.Add(MonsterPerks.PERK_POISONTOUCH);
 							break;
 						case 12: // Asp
 							enemyNames[i] = "ASP";
-							enemy[i].num_hits = 1;
-							enemy[i].critrate = rng.Between(1, 31);
-							enemy[i].damage = ENE_rollEnemyStrength(enemy[i].tier, 4);
-							enemy[i].accuracy = ENE_rollEnemyAccuracy(enemy[i].tier, 4);
-							enemy[i].absorb = ENE_rollEnemyAbsorb(enemy[i].tier, 3);
-							enemy[i].agility = ENE_rollEnemyEvade(enemy[i].tier, 5);
-							enemy[i].atk_elem = 0b00000000;
-							enemy[i].atk_ailment = 0b00000000;
+							enemy[i].critrate = rng.Between(1, 20);
 							enemy[i].monster_type = 0b00000010;
 							enemy[i].elem_resist = 0b00000000;
 							enemy[i].elem_weakness = 0b00000000;
-							perks.Add(MonsterPerks.PERK_LOWRESIST);
-							perks.Add(MonsterPerks.PERK_HIGHRESIST);
-							perks.Add(MonsterPerks.PERK_LOWWEAKNESS);
-							perks.Add(MonsterPerks.PERK_HIGHWEAKNESS);
-							perks.Add(MonsterPerks.PERK_POISONTOUCH);
-							perks.Add(MonsterPerks.PERK_STUNSLEEPTOUCH);
-							perks.Add(MonsterPerks.PERK_MUTETOUCH);
 							break;
 						case 13: // Bull
 							enemyNames[i] = "BULL";
-							enemy[i].num_hits = 2;
-							enemy[i].critrate = rng.Between(1, 3);
-							enemy[i].damage = ENE_rollEnemyStrength(enemy[i].tier, 4);
-							enemy[i].accuracy = ENE_rollEnemyAccuracy(enemy[i].tier, 5);
-							enemy[i].absorb = ENE_rollEnemyAbsorb(enemy[i].tier, 4);
-							enemy[i].agility = ENE_rollEnemyEvade(enemy[i].tier, 5);
-							enemy[i].atk_elem = 0b00000000;
-							enemy[i].atk_ailment = 0b00000000;
 							enemy[i].monster_type = 0b00000000;
 							enemy[i].elem_resist = 0b00000000;
 							enemy[i].elem_weakness = 0b00000000;
-							perks.Add(MonsterPerks.PERK_LOWRESIST);
-							perks.Add(MonsterPerks.PERK_HIGHRESIST);
-							perks.Add(MonsterPerks.PERK_LOWWEAKNESS);
-							perks.Add(MonsterPerks.PERK_HIGHWEAKNESS);
-							perks.Add(MonsterPerks.PERK_PLUSONEHIT);
-							perks.Add(MonsterPerks.PERK_POISONTOUCH);
-							perks.Add(MonsterPerks.PERK_STUNSLEEPTOUCH);
-							perks.Add(MonsterPerks.PERK_MUTETOUCH);
 							break;
 						case 14: // Crab
 							enemyNames[i] = "CRAB";
-							enemy[i].num_hits = rng.Between(2, 4);
-							enemy[i].critrate = 1;
-							enemy[i].damage = ENE_rollEnemyStrength(enemy[i].tier, 5);
-							enemy[i].accuracy = ENE_rollEnemyAccuracy(enemy[i].tier, 3);
-							enemy[i].absorb = ENE_rollEnemyAbsorb(enemy[i].tier, 4);
-							enemy[i].agility = ENE_rollEnemyEvade(enemy[i].tier, 6);
-							enemy[i].atk_elem = 0b00000000;
-							enemy[i].atk_ailment = 0b00000000;
 							enemy[i].monster_type = 0b00000000;
 							enemy[i].elem_resist = 0b00000000;
 							enemy[i].elem_weakness = 0b00000000;
-							perks.Add(MonsterPerks.PERK_LOWRESIST);
-							perks.Add(MonsterPerks.PERK_HIGHRESIST);
-							perks.Add(MonsterPerks.PERK_LOWWEAKNESS);
-							perks.Add(MonsterPerks.PERK_HIGHWEAKNESS);
-							perks.Add(MonsterPerks.PERK_PLUSONEHIT);
-							perks.Add(MonsterPerks.PERK_POISONTOUCH);
 							break;
 						case 15: // Troll
 							enemyNames[i] = "TROLL";
-							enemy[i].num_hits = 3;
-							enemy[i].critrate = 1;
-							enemy[i].damage = ENE_rollEnemyStrength(enemy[i].tier, 4);
-							enemy[i].accuracy = ENE_rollEnemyAccuracy(enemy[i].tier, 4);
-							enemy[i].absorb = ENE_rollEnemyAbsorb(enemy[i].tier, 4);
-							enemy[i].agility = ENE_rollEnemyEvade(enemy[i].tier, 4);
-							enemy[i].atk_elem = 0b00000000;
-							enemy[i].atk_ailment = 0b00000000;
 							enemy[i].monster_type = 0b10000000;
 							enemy[i].elem_resist = 0b00000000;
 							enemy[i].elem_weakness = 0b00000000;
-							perks.Add(MonsterPerks.PERK_LOWRESIST);
-							perks.Add(MonsterPerks.PERK_HIGHRESIST);
-							perks.Add(MonsterPerks.PERK_LOWWEAKNESS);
-							perks.Add(MonsterPerks.PERK_HIGHWEAKNESS);
-							perks.Add(MonsterPerks.PERK_PLUSONEHIT);
-							perks.Add(MonsterPerks.PERK_POISONTOUCH);
-							perks.Add(MonsterPerks.PERK_STUNSLEEPTOUCH);
-							perks.Add(MonsterPerks.PERK_MUTETOUCH);
 							break;
 						case 16: // Spectral Undead
 							enemyNames[i] = "GHOST";
-							enemy[i].num_hits = 1;
-							enemy[i].critrate = 1;
-							enemy[i].damage = ENE_rollEnemyStrength(enemy[i].tier, 6);
-							enemy[i].accuracy = ENE_rollEnemyAccuracy(enemy[i].tier, 3);
-							enemy[i].absorb = rng.Between(0, 4) == 4 ? ENE_rollEnemyAbsorb(enemy[i].tier, 4) : rng.Between(0, 8);
-							enemy[i].agility = rng.Between(0, 2) == 2 ? ENE_rollEnemyEvade(enemy[i].tier, 4) : ENE_rollEnemyEvade(enemy[i].tier, 7);
-							enemy[i].atk_elem = 0b00000001;
-							enemy[i].atk_ailment = enemy[i].exp < 150 ? (byte)0b00001000 : (byte)0b00010000; // darkness for low xp enemies, stun for high xp enemies
 							enemy[i].monster_type = 0b00001001;
 							enemy[i].elem_resist = 0b10101011;
 							enemy[i].elem_weakness = 0b00010000;
 							break;
 						case 17: // Worm
 							enemyNames[i] = "WORM";
-							enemy[i].num_hits = 1;
-							enemy[i].critrate = 1;
-							enemy[i].damage = ENE_rollEnemyStrength(enemy[i].tier, 5);
-							enemy[i].accuracy = ENE_rollEnemyAccuracy(enemy[i].tier, 7);
-							enemy[i].absorb = enemy[i].exp < 100 ? rng.Between(0, 10) : (enemy[i].exp > 1200 ? rng.Between(10, 40) : rng.Between(10, 20));
-							enemy[i].agility = rng.Between(0, 60);
-							enemy[i].atk_elem = 0b00000000;
-							enemy[i].atk_ailment = 0b00000000;
 							enemy[i].monster_type = 0b00000000;
 							enemy[i].elem_resist = 0b10000000;
 							enemy[i].elem_weakness = 0b00000000;
-							perks.Add(MonsterPerks.PERK_LOWRESIST);
-							perks.Add(MonsterPerks.PERK_HIGHRESIST);
-							perks.Add(MonsterPerks.PERK_LOWWEAKNESS);
-							perks.Add(MonsterPerks.PERK_HIGHWEAKNESS);
-							perks.Add(MonsterPerks.PERK_PLUSONEHIT);
-							perks.Add(MonsterPerks.PERK_POISONTOUCH);
-							perks.Add(MonsterPerks.PERK_STUNSLEEPTOUCH);
-							perks.Add(MonsterPerks.PERK_MUTETOUCH);
 							break;
 						case 18: // Zombie Undead
 							enemyNames[i] = "WIGHT";
-							enemy[i].num_hits = rng.Between(0, 4) == 4 || enemy[i].exp < 100 ? 1 : 3;
-							enemy[i].critrate = 1;
-							enemy[i].damage = enemy[i].num_hits == 3 ? ENE_rollEnemyStrength(enemy[i].tier, 2) : ENE_rollEnemyStrength(enemy[i].tier, 4);
-							enemy[i].accuracy = ENE_rollEnemyAccuracy(enemy[i].tier, 2);
-							enemy[i].absorb = ENE_rollEnemyAbsorb(enemy[i].tier, 2);
-							enemy[i].agility = ENE_rollEnemyEvade(enemy[i].tier, 5);
-							enemy[i].atk_elem = 0b00000001;
-							enemy[i].atk_ailment = enemy[i].exp > 80 ? (byte)0b00010000 : (byte)0b00000000;
 							enemy[i].monster_type = 0b00001000;
 							enemy[i].elem_resist = 0b00101011;
 							enemy[i].elem_weakness = 0b00010000;
 							break;
 						case 19: // Eyes that are totally not Beholders plz no sue
 							enemyNames[i] = "EYE";
-							enemy[i].num_hits = 1;
-							enemy[i].critrate = 1;
-							enemy[i].damage = ENE_rollEnemyStrength(enemy[i].tier, 4);
-							enemy[i].accuracy = ENE_rollEnemyAccuracy(enemy[i].tier, 4);
-							enemy[i].absorb = ENE_rollEnemyAbsorb(enemy[i].tier, 6);
-							enemy[i].agility = ENE_rollEnemyEvade(enemy[i].tier, 2);
-							enemy[i].atk_elem = 0b00000000;
-							enemy[i].atk_ailment = 0b00000000;
 							enemy[i].monster_type = 0b01000000;
 							enemy[i].elem_resist = 0b10000000;
 							enemy[i].elem_weakness = 0b00000000;
-							if (enemy[i].AIscript == 0xFF && !shuffledSkillsOn)
-								enemy[i].AIscript = ENE_PickForcedAIScript(enemy[i].tier, rng);
-							perks.Add(MonsterPerks.PERK_LOWRESIST);
-							perks.Add(MonsterPerks.PERK_HIGHRESIST);
-							perks.Add(MonsterPerks.PERK_LOWWEAKNESS);
-							perks.Add(MonsterPerks.PERK_HIGHWEAKNESS);
-							perks.Add(MonsterPerks.PERK_PLUSONEHIT);
-							perks.Add(MonsterPerks.PERK_POISONTOUCH);
-							perks.Add(MonsterPerks.PERK_STUNSLEEPTOUCH);
-							perks.Add(MonsterPerks.PERK_MUTETOUCH);
 							break;
 						case 20: // Medusa
 							enemyNames[i] = "LAMIA";
-							enemy[i].num_hits = rng.Between(0, 1) == 1 ? 1 : rng.Between(6, 10);
-							enemy[i].critrate = rng.Between(1, 5);
-							enemy[i].damage = enemy[i].num_hits > 1 ? ENE_rollEnemyStrength(enemy[i].tier, 2) : ENE_rollEnemyStrength(enemy[i].tier, 4);
-							enemy[i].accuracy = ENE_rollEnemyAccuracy(enemy[i].tier, 2);
-							enemy[i].absorb = ENE_rollEnemyAbsorb(enemy[i].tier, 2);
-							enemy[i].agility = ENE_rollEnemyEvade(enemy[i].tier, 5);
-							enemy[i].atk_elem = 0b00000001;
-							enemy[i].atk_ailment = enemy[i].exp > 200 ? (byte)0b00010000 : (byte)0b00000000;
 							enemy[i].monster_type = 0b00000000;
 							enemy[i].elem_resist = 0b00000000;
 							enemy[i].elem_weakness = 0b00000000;
-							perks.Add(MonsterPerks.PERK_LOWRESIST);
-							perks.Add(MonsterPerks.PERK_HIGHRESIST);
-							perks.Add(MonsterPerks.PERK_LOWWEAKNESS);
-							perks.Add(MonsterPerks.PERK_HIGHWEAKNESS);
-							perks.Add(MonsterPerks.PERK_PLUSONEHIT);
 							break;
 						case 21: // Pede
 							enemyNames[i] = "PEDE";
-							enemy[i].num_hits = 1;
-							enemy[i].critrate = 1;
-							enemy[i].damage = ENE_rollEnemyStrength(enemy[i].tier, 7);
-							enemy[i].accuracy = ENE_rollEnemyAccuracy(enemy[i].tier, 5);
-							enemy[i].absorb = ENE_rollEnemyAbsorb(enemy[i].tier, 5);
-							enemy[i].agility = ENE_rollEnemyEvade(enemy[i].tier, 4);
-							enemy[i].atk_elem = 0b00000000;
-							enemy[i].atk_ailment = 0b00000000;
 							enemy[i].monster_type = 0b00000000;
 							enemy[i].elem_resist = 0b00000000;
 							enemy[i].elem_weakness = 0b00000000;
-							perks.Add(MonsterPerks.PERK_LOWRESIST);
-							perks.Add(MonsterPerks.PERK_LOWWEAKNESS);
-							perks.Add(MonsterPerks.PERK_HIGHWEAKNESS);
-							perks.Add(MonsterPerks.PERK_POISONTOUCH);
 							break;
 						case 22: // Were
 							enemyNames[i] = "CAT";
-							enemy[i].num_hits = rng.Between(2, 3);
-							enemy[i].critrate = rng.Between(1, 2);
-							enemy[i].damage = ENE_rollEnemyStrength(enemy[i].tier, 5);
-							enemy[i].accuracy = ENE_rollEnemyAccuracy(enemy[i].tier, 4);
-							enemy[i].absorb = ENE_rollEnemyAbsorb(enemy[i].tier, 4);
-							enemy[i].agility = ENE_rollEnemyEvade(enemy[i].tier, 5);
-							enemy[i].atk_elem = 0b00000010;
-							enemy[i].atk_ailment = 0b00000100;
 							enemy[i].monster_type = 0b00010000;
 							enemy[i].elem_resist = 0b00000000;
 							enemy[i].elem_weakness = 0b00000000;
-							perks.Add(MonsterPerks.PERK_LOWRESIST);
-							perks.Add(MonsterPerks.PERK_HIGHRESIST);
-							perks.Add(MonsterPerks.PERK_LOWWEAKNESS);
-							perks.Add(MonsterPerks.PERK_HIGHWEAKNESS);
 							break;
 						case 23: // Tiger
 							enemyNames[i] = "TIGER";
-							enemy[i].num_hits = 2;
 							enemy[i].critrate = rng.Between(20, 100);
-							enemy[i].damage = ENE_rollEnemyStrength(enemy[i].tier, 4);
-							enemy[i].accuracy = ENE_rollEnemyAccuracy(enemy[i].tier, 4);
-							enemy[i].absorb = 8;
-							enemy[i].agility = ENE_rollEnemyEvade(enemy[i].tier, 5);
-							enemy[i].atk_elem = 0b00000000;
-							enemy[i].atk_ailment = 0b00000000;
 							enemy[i].monster_type = 0b00000000;
 							enemy[i].elem_resist = 0b00000000;
 							enemy[i].elem_weakness = 0b00000000;
-							perks.Add(MonsterPerks.PERK_LOWRESIST);
-							perks.Add(MonsterPerks.PERK_HIGHRESIST);
-							perks.Add(MonsterPerks.PERK_LOWWEAKNESS);
-							perks.Add(MonsterPerks.PERK_HIGHWEAKNESS);
-							perks.Add(MonsterPerks.PERK_POISONTOUCH);
-							perks.Add(MonsterPerks.PERK_STUNSLEEPTOUCH);
-							perks.Add(MonsterPerks.PERK_MUTETOUCH);
 							break;
 						case 24: // Blah, it's a Vampire!
 							enemyNames[i] = "VAMP";
-							enemy[i].num_hits = 1;
-							enemy[i].critrate = rng.Between(1, 5);
-							enemy[i].damage = ENE_rollEnemyStrength(enemy[i].tier, 6);
-							enemy[i].accuracy = ENE_rollEnemyAccuracy(enemy[i].tier, 4);
-							enemy[i].absorb = ENE_rollEnemyAbsorb(enemy[i].tier, 5);
-							enemy[i].agility = ENE_rollEnemyEvade(enemy[i].tier, 6);
-							enemy[i].atk_elem = 0b00000001;
-							enemy[i].atk_ailment = 0b00010000;
 							enemy[i].monster_type = 0b10001001;
 							enemy[i].elem_resist = 0b10101011;
 							enemy[i].elem_weakness = 0b00010000;
@@ -3105,25 +2574,9 @@ namespace FF1Lib
 							break;
 						case 26: // Gargoyle
 							enemyNames[i] = "GOYLE";
-							enemy[i].num_hits = 4;
-							enemy[i].critrate = 1;
-							enemy[i].damage = ENE_rollEnemyStrength(enemy[i].tier, 3);
-							enemy[i].accuracy = ENE_rollEnemyAccuracy(enemy[i].tier, 3);
-							enemy[i].absorb = ENE_rollEnemyAbsorb(enemy[i].tier, 4);
-							enemy[i].agility = ENE_rollEnemyEvade(enemy[i].tier, 5);
-							enemy[i].atk_elem = 0b00000000;
-							enemy[i].atk_ailment = 0b00000000;
 							enemy[i].monster_type = 0b00000001;
 							enemy[i].elem_resist = 0b10000000;
 							enemy[i].elem_weakness = 0b00000000;
-							perks.Add(MonsterPerks.PERK_LOWRESIST);
-							perks.Add(MonsterPerks.PERK_HIGHRESIST);
-							perks.Add(MonsterPerks.PERK_LOWWEAKNESS);
-							perks.Add(MonsterPerks.PERK_HIGHWEAKNESS);
-							perks.Add(MonsterPerks.PERK_PLUSONEHIT);
-							perks.Add(MonsterPerks.PERK_POISONTOUCH);
-							perks.Add(MonsterPerks.PERK_STUNSLEEPTOUCH);
-							perks.Add(MonsterPerks.PERK_MUTETOUCH);
 							break;
 						case 27: // Dragon Type 1
 							if (dragonsSelected.Count > 0)
@@ -3164,271 +2617,88 @@ namespace FF1Lib
 							break;
 						case 28: // Slime
 							enemyNames[i] = "FLAN";
-							enemy[i].num_hits = 1;
-							enemy[i].critrate = 1;
-							enemy[i].damage = ENE_rollEnemyStrength(enemy[i].tier, 6);
-							enemy[i].accuracy = ENE_rollEnemyAccuracy(enemy[i].tier, 2);
-							enemy[i].absorb = rng.Between(0, 2) == 2 ? rng.Between(0, 12) : 255;
-							enemy[i].agility = ENE_rollEnemyEvade(enemy[i].tier, 1);
-							enemy[i].atk_elem = 0b00000000;
-							enemy[i].atk_ailment = 0b00000000;
 							enemy[i].monster_type = 0b00000001;
 							enemy[i].elem_weakness = (byte)(rng.Between(1, 6) << 4); // can be fire, ice, fire+ice, lit, fire+lit, or ice+lit weak
 							enemy[i].elem_resist = (byte)((0b11111111 ^ enemy[i].elem_weakness) & 0b11111011); // resist all other elements except time
 							break;
 						case 29: // Manticore
 							enemyNames[i] = "MANT";
-							enemy[i].num_hits = rng.Between(2, 3);
-							enemy[i].critrate = rng.Between(1, 3);
-							enemy[i].damage = ENE_rollEnemyStrength(enemy[i].tier, 4);
-							enemy[i].accuracy = ENE_rollEnemyAccuracy(enemy[i].tier, 5);
-							enemy[i].absorb = ENE_rollEnemyAbsorb(enemy[i].tier, 2);
-							enemy[i].agility = ENE_rollEnemyEvade(enemy[i].tier, 7);
-							enemy[i].atk_elem = 0b00000000;
-							enemy[i].atk_ailment = 0b00000000;
 							enemy[i].monster_type = 0b00000000;
 							enemy[i].elem_resist = 0b00000000;
 							enemy[i].elem_weakness = 0b00000000;
-							perks.Add(MonsterPerks.PERK_LOWRESIST);
-							perks.Add(MonsterPerks.PERK_HIGHRESIST);
-							perks.Add(MonsterPerks.PERK_LOWWEAKNESS);
-							perks.Add(MonsterPerks.PERK_HIGHWEAKNESS);
-							perks.Add(MonsterPerks.PERK_PLUSONEHIT);
-							perks.Add(MonsterPerks.PERK_POISONTOUCH);
-							perks.Add(MonsterPerks.PERK_STUNSLEEPTOUCH);
-							perks.Add(MonsterPerks.PERK_MUTETOUCH);
 							break;
 						case 30: // Spider
 							enemyNames[i] = "BUG";
-							enemy[i].num_hits = 1;
-							enemy[i].critrate = 1;
-							enemy[i].damage = ENE_rollEnemyStrength(enemy[i].tier, 3);
-							enemy[i].accuracy = ENE_rollEnemyAccuracy(enemy[i].tier, 4);
-							enemy[i].absorb = ENE_rollEnemyAbsorb(enemy[i].tier, 4);
-							enemy[i].agility = ENE_rollEnemyEvade(enemy[i].tier, 4);
-							enemy[i].atk_elem = 0b00000001;
-							enemy[i].atk_ailment = (byte)(0b00000100 << rng.Between(0, 4));
 							enemy[i].monster_type = 0b00000000;
 							enemy[i].elem_resist = 0b00000000;
 							enemy[i].elem_weakness = 0b00000000;
-							perks.Add(MonsterPerks.PERK_LOWRESIST);
-							perks.Add(MonsterPerks.PERK_HIGHRESIST);
-							perks.Add(MonsterPerks.PERK_LOWWEAKNESS);
-							perks.Add(MonsterPerks.PERK_HIGHWEAKNESS);
-							perks.Add(MonsterPerks.PERK_PLUSONEHIT);
 							break;
 						case 31: // Ankylo
 							enemyNames[i] = "ANK";
-							enemy[i].num_hits = 1;
-							enemy[i].critrate = rng.Between(1, 3);
-							enemy[i].damage = ENE_rollEnemyStrength(enemy[i].tier, 7);
-							enemy[i].accuracy = ENE_rollEnemyAccuracy(enemy[i].tier, 6);
-							enemy[i].absorb = ENE_rollEnemyAbsorb(enemy[i].tier, 7);
-							enemy[i].agility = ENE_rollEnemyEvade(enemy[i].tier, 4);
-							enemy[i].atk_elem = 0b00000000;
-							enemy[i].atk_ailment = 0b00000000;
 							enemy[i].monster_type = 0b00000000;
 							enemy[i].elem_resist = 0b00000000;
 							enemy[i].elem_weakness = 0b00000000;
 							break;
 						case 32: // Mummy
 							enemyNames[i] = "MUMMY";
-							enemy[i].num_hits = 1;
-							enemy[i].critrate = rng.Between(1, 3);
-							enemy[i].damage = ENE_rollEnemyStrength(enemy[i].tier, 3);
-							enemy[i].accuracy = ENE_rollEnemyAccuracy(enemy[i].tier, 4);
-							enemy[i].absorb = ENE_rollEnemyAbsorb(enemy[i].tier, 5);
-							enemy[i].agility = ENE_rollEnemyEvade(enemy[i].tier, 3);
-							enemy[i].atk_elem = 0b00000001;
-							enemy[i].atk_ailment = 0b00100000;
 							enemy[i].monster_type = 0b00001000;
 							enemy[i].elem_resist = 0b00101011;
 							enemy[i].elem_weakness = 0b00010000;
 							break;
 						case 33: // Wyvern
 							enemyNames[i] = "WYRM";
-							enemy[i].num_hits = 1;
-							enemy[i].critrate = 1;
-							enemy[i].damage = ENE_rollEnemyStrength(enemy[i].tier, 5);
-							enemy[i].accuracy = ENE_rollEnemyAccuracy(enemy[i].tier, 6);
-							enemy[i].absorb = ENE_rollEnemyAbsorb(enemy[i].tier, 4);
-							enemy[i].agility = 72 + enemy[i].exp / 40;
-							if (enemy[i].agility > 100)
-								enemy[i].agility = 100;
-							enemy[i].atk_elem = 0b00000000;
-							enemy[i].atk_ailment = 0b00000000;
 							enemy[i].monster_type = 0b00000010;
 							enemy[i].elem_resist = 0b10000000;
 							enemy[i].elem_weakness = 0b00000000;
-							perks.Add(MonsterPerks.PERK_LOWRESIST);
-							perks.Add(MonsterPerks.PERK_HIGHRESIST);
-							perks.Add(MonsterPerks.PERK_LOWWEAKNESS);
-							perks.Add(MonsterPerks.PERK_HIGHWEAKNESS);
-							perks.Add(MonsterPerks.PERK_PLUSONEHIT);
-							perks.Add(MonsterPerks.PERK_POISONTOUCH);
 							break;
 						case 34: // Jerk Bird
 							enemyNames[i] = "BIRD";
-							enemy[i].num_hits = 1;
-							enemy[i].critrate = 1;
-							enemy[i].damage = ENE_rollEnemyStrength(enemy[i].tier, 3);
-							enemy[i].accuracy = ENE_rollEnemyAccuracy(enemy[i].tier, 3);
-							enemy[i].absorb = rng.Between(0, 8);
-							enemy[i].agility = 72;
-							enemy[i].atk_elem = 0b00000000;
-							enemy[i].atk_ailment = 0b00000000;
 							enemy[i].monster_type = 0b00000000;
 							enemy[i].elem_resist = 0b10000000;
 							enemy[i].elem_weakness = 0b00000000;
-							perks.Add(MonsterPerks.PERK_LOWRESIST);
-							perks.Add(MonsterPerks.PERK_HIGHRESIST);
-							perks.Add(MonsterPerks.PERK_LOWWEAKNESS);
-							perks.Add(MonsterPerks.PERK_HIGHWEAKNESS);
-							perks.Add(MonsterPerks.PERK_PLUSONEHIT);
-							perks.Add(MonsterPerks.PERK_POISONTOUCH);
-							perks.Add(MonsterPerks.PERK_STUNSLEEPTOUCH);
-							perks.Add(MonsterPerks.PERK_MUTETOUCH);
 							break;
 						case 35: // Steak
 							enemyNames[i] = "TYRO";
-							enemy[i].num_hits = 1;
-							enemy[i].critrate = rng.Between(20, 40);
-							enemy[i].damage = ENE_rollEnemyStrength(enemy[i].tier, 7);
-							enemy[i].accuracy = ENE_rollEnemyAccuracy(enemy[i].tier, 7);
-							enemy[i].absorb = ENE_rollEnemyAbsorb(enemy[i].tier, 2);
-							enemy[i].agility = ENE_rollEnemyEvade(enemy[i].tier, 6);
-							enemy[i].atk_elem = 0b00000000;
-							enemy[i].atk_ailment = 0b00000000;
+							enemy[i].critrate = rng.Between(20, 100);
 							enemy[i].monster_type = 0b00000010;
 							enemy[i].elem_resist = 0b00000000;
 							enemy[i].elem_weakness = 0b00000000;
-							perks.Add(MonsterPerks.PERK_LOWRESIST);
-							perks.Add(MonsterPerks.PERK_HIGHRESIST);
-							perks.Add(MonsterPerks.PERK_LOWWEAKNESS);
-							perks.Add(MonsterPerks.PERK_HIGHWEAKNESS);
 							break;
 						case 36: // Pirahna
 							enemyNames[i] = "FISH";
-							enemy[i].num_hits = 1;
-							enemy[i].critrate = 1;
-							enemy[i].damage = ENE_rollEnemyStrength(enemy[i].tier, 4);
-							enemy[i].accuracy = ENE_rollEnemyAccuracy(enemy[i].tier, 4);
-							enemy[i].absorb = ENE_rollEnemyAbsorb(enemy[i].tier, 2);
-							enemy[i].agility = 72;
-							enemy[i].atk_elem = 0b00000000;
-							enemy[i].atk_ailment = 0b00000000;
 							enemy[i].monster_type = 0b00100000;
 							enemy[i].elem_resist = 0b10010000;
 							enemy[i].elem_weakness = 0b01000000;
-							perks.Add(MonsterPerks.PERK_LOWRESIST);
-							perks.Add(MonsterPerks.PERK_HIGHRESIST);
-							perks.Add(MonsterPerks.PERK_HIGHWEAKNESS);
-							perks.Add(MonsterPerks.PERK_PLUSONEHIT);
-							perks.Add(MonsterPerks.PERK_POISONTOUCH);
-							perks.Add(MonsterPerks.PERK_STUNSLEEPTOUCH);
 							break;
 						case 37: // Ocho
 							enemyNames[i] = "OCHO";
-							enemy[i].num_hits = 3;
-							enemy[i].critrate = 1;
-							enemy[i].damage = ENE_rollEnemyStrength(enemy[i].tier, 4);
-							enemy[i].accuracy = ENE_rollEnemyAccuracy(enemy[i].tier, 6);
-							enemy[i].absorb = ENE_rollEnemyAbsorb(enemy[i].tier, 5);
-							enemy[i].agility = ENE_rollEnemyEvade(enemy[i].tier, 4);
-							enemy[i].atk_elem = 0b00000010;
-							enemy[i].atk_ailment = 0b00000100;
 							enemy[i].monster_type = 0b00100000;
 							enemy[i].elem_resist = 0b10010000;
 							enemy[i].elem_weakness = 0b01000000;
-							perks.Add(MonsterPerks.PERK_LOWRESIST);
-							perks.Add(MonsterPerks.PERK_HIGHRESIST);
-							perks.Add(MonsterPerks.PERK_HIGHWEAKNESS);
-							perks.Add(MonsterPerks.PERK_PLUSONEHIT);
-							perks.Add(MonsterPerks.PERK_POISONTOUCH);
-							perks.Add(MonsterPerks.PERK_STUNSLEEPTOUCH);
-							perks.Add(MonsterPerks.PERK_MUTETOUCH);
 							break;
 						case 38: // Gator
 							enemyNames[i] = "GATOR";
-							enemy[i].num_hits = 2;
-							enemy[i].critrate = 1;
-							enemy[i].damage = ENE_rollEnemyStrength(enemy[i].tier, 6);
-							enemy[i].accuracy = ENE_rollEnemyAccuracy(enemy[i].tier, 5);
-							enemy[i].absorb = ENE_rollEnemyAbsorb(enemy[i].tier, 4);
-							enemy[i].agility = 48;
-							enemy[i].atk_elem = 0b00000000;
-							enemy[i].atk_ailment = 0b00000000;
 							enemy[i].monster_type = 0b00100010;
 							enemy[i].elem_resist = 0b10010000;
 							enemy[i].elem_weakness = 0b01000000;
-							perks.Add(MonsterPerks.PERK_HIGHRESIST);
-							perks.Add(MonsterPerks.PERK_HIGHWEAKNESS);
-							perks.Add(MonsterPerks.PERK_PLUSONEHIT);
-							perks.Add(MonsterPerks.PERK_POISONTOUCH);
-							perks.Add(MonsterPerks.PERK_STUNSLEEPTOUCH);
-							perks.Add(MonsterPerks.PERK_MUTETOUCH);
 							break;
 						case 39: // Hydra
 							enemyNames[i] = "HYDRA";
-							enemy[i].num_hits = 4;
-							enemy[i].critrate = 1;
-							enemy[i].damage = ENE_rollEnemyStrength(enemy[i].tier, 4);
-							enemy[i].accuracy = ENE_rollEnemyAccuracy(enemy[i].tier, 5);
-							enemy[i].absorb = ENE_rollEnemyAbsorb(enemy[i].tier, 4);
-							enemy[i].agility = ENE_rollEnemyEvade(enemy[i].tier, 5);
-							enemy[i].atk_elem = 0b00000000;
-							enemy[i].atk_ailment = 0b00000000;
 							enemy[i].monster_type = 0b00000010;
 							enemy[i].elem_resist = 0b00000000;
 							enemy[i].elem_weakness = 0b00000000;
-							perks.Add(MonsterPerks.PERK_LOWRESIST);
-							perks.Add(MonsterPerks.PERK_HIGHRESIST);
-							perks.Add(MonsterPerks.PERK_LOWWEAKNESS);
-							perks.Add(MonsterPerks.PERK_HIGHWEAKNESS);
-							perks.Add(MonsterPerks.PERK_POISONTOUCH);
-							perks.Add(MonsterPerks.PERK_STUNSLEEPTOUCH);
-							perks.Add(MonsterPerks.PERK_MUTETOUCH);
 							break;
 						case 40: // Robot
 							enemyNames[i] = "BOT";
-							enemy[i].num_hits = rng.Between(1, 2);
-							enemy[i].critrate = rng.Between(1, 5);
-							enemy[i].damage = enemy[i].num_hits == 1 ? ENE_rollEnemyStrength(enemy[i].tier, 7) : ENE_rollEnemyStrength(enemy[i].tier, 5);
-							enemy[i].accuracy = ENE_rollEnemyAccuracy(enemy[i].tier, 6);
-							enemy[i].absorb = ENE_rollEnemyAbsorb(enemy[i].tier, 7);
-							enemy[i].agility = ENE_rollEnemyEvade(enemy[i].tier, 6);
-							enemy[i].atk_elem = 0b00000001;
-							enemy[i].atk_ailment = enemy[i].num_hits == 1 ? (byte)0b00000000 : (byte)0b00010000;
 							enemy[i].monster_type = 0b00000000;
 							enemy[i].elem_resist = 0b00001011;
 							enemy[i].elem_weakness = 0b01000000;
-							perks.Add(MonsterPerks.PERK_LOWRESIST);
-							perks.Add(MonsterPerks.PERK_LOWWEAKNESS);
-							perks.Add(MonsterPerks.PERK_PLUSONEHIT);
-							perks.Add(MonsterPerks.PERK_POISONTOUCH);
-							perks.Add(MonsterPerks.PERK_STUNSLEEPTOUCH);
-							perks.Add(MonsterPerks.PERK_MUTETOUCH);
 							break;
 						case 41: // Naga
 							enemyNames[i] = "NAGA";
-							enemy[i].num_hits = 1;
-							enemy[i].critrate = 1;
-							enemy[i].damage = ENE_rollEnemyStrength(enemy[i].tier, 1);
-							enemy[i].accuracy = ENE_rollEnemyAccuracy(enemy[i].tier, 7);
-							enemy[i].absorb = ENE_rollEnemyAbsorb(enemy[i].tier, 2);
-							enemy[i].agility = ENE_rollEnemyEvade(enemy[i].tier, 6);
-							enemy[i].atk_elem = 0b00000010;
-							enemy[i].atk_ailment = 0b00000100;
 							enemy[i].monster_type = 0b01000000;
 							enemy[i].elem_resist = 0b00000000;
 							enemy[i].elem_weakness = 0b00000000;
-							if (enemy[i].AIscript == 0xFF && !shuffledSkillsOn)
-								enemy[i].AIscript = ENE_PickForcedAIScript(enemy[i].tier, rng);
-							perks.Add(MonsterPerks.PERK_LOWRESIST);
-							perks.Add(MonsterPerks.PERK_HIGHRESIST);
-							perks.Add(MonsterPerks.PERK_LOWWEAKNESS);
-							perks.Add(MonsterPerks.PERK_HIGHWEAKNESS);
-							perks.Add(MonsterPerks.PERK_PLUSONEHIT);
 							break;
 						case 42: // Small Elemental
 							enemyNames[i] = "AIR";
@@ -3470,36 +2740,12 @@ namespace FF1Lib
 							break;
 						case 43: // Chimera
 							enemyNames[i] = "BEAST";
-							enemy[i].num_hits = 4;
-							enemy[i].critrate = rng.Between(1, 3);
-							enemy[i].damage = ENE_rollEnemyStrength(enemy[i].tier, 5);
-							enemy[i].accuracy = ENE_rollEnemyAccuracy(enemy[i].tier, 6);
-							enemy[i].absorb = ENE_rollEnemyAbsorb(enemy[i].tier, 4);
-							enemy[i].agility = ENE_rollEnemyEvade(enemy[i].tier, 6);
-							enemy[i].atk_elem = 0b00000000;
-							enemy[i].atk_ailment = 0b00000000;
 							enemy[i].monster_type = 0b00000010;
 							enemy[i].elem_resist = 0b10010000;
 							enemy[i].elem_weakness = 0b00100000;
-							perks.Add(MonsterPerks.PERK_LOWRESIST);
-							perks.Add(MonsterPerks.PERK_HIGHRESIST);
-							perks.Add(MonsterPerks.PERK_LOWWEAKNESS);
-							perks.Add(MonsterPerks.PERK_HIGHWEAKNESS);
-							perks.Add(MonsterPerks.PERK_PLUSONEHIT);
-							perks.Add(MonsterPerks.PERK_POISONTOUCH);
-							perks.Add(MonsterPerks.PERK_STUNSLEEPTOUCH);
-							perks.Add(MonsterPerks.PERK_MUTETOUCH);
 							break;
 						case 44: // Piscodemon
 							enemyNames[i] = "SQUID";
-							enemy[i].num_hits = rng.Between(2, 3);
-							enemy[i].critrate = 1;
-							enemy[i].damage = ENE_rollEnemyStrength(enemy[i].tier, 5);
-							enemy[i].accuracy = ENE_rollEnemyAccuracy(enemy[i].tier, 4);
-							enemy[i].absorb = ENE_rollEnemyAbsorb(enemy[i].tier, 5);
-							enemy[i].agility = ENE_rollEnemyEvade(enemy[i].tier, 6);
-							enemy[i].atk_elem = 0b00000000;
-							enemy[i].atk_ailment = 0b00000000;
 							enemy[i].monster_type = 0b00000000;
 							enemy[i].elem_resist = 0b00110011;
 							enemy[i].elem_weakness = 0b00000000;
@@ -3543,38 +2789,12 @@ namespace FF1Lib
 							break;
 						case 46: // Knight Type 1
 							enemyNames[i] = "KNIGHT";
-							enemy[i].num_hits = 1;
-							enemy[i].critrate = rng.Between(1, 10);
-							enemy[i].damage = ENE_rollEnemyStrength(enemy[i].tier, 5);
-							enemy[i].accuracy = ENE_rollEnemyAccuracy(enemy[i].tier, 5);
-							enemy[i].absorb = ENE_rollEnemyAbsorb(enemy[i].tier, 5);
-							enemy[i].agility = ENE_rollEnemyEvade(enemy[i].tier, 5);
-							enemy[i].atk_elem = 0b00000000;
-							enemy[i].atk_ailment = 0b00000000;
 							enemy[i].monster_type = 0b00000000;
 							enemy[i].elem_resist = 0b00000000;
 							enemy[i].elem_weakness = 0b00000000;
-							perks.Add(MonsterPerks.PERK_LOWRESIST);
-							perks.Add(MonsterPerks.PERK_HIGHRESIST);
-							perks.Add(MonsterPerks.PERK_LOWWEAKNESS);
-							perks.Add(MonsterPerks.PERK_HIGHWEAKNESS);
-							perks.Add(MonsterPerks.PERK_PLUSONEHIT);
-							perks.Add(MonsterPerks.PERK_POISONTOUCH);
-							perks.Add(MonsterPerks.PERK_STUNSLEEPTOUCH);
-							perks.Add(MonsterPerks.PERK_MUTETOUCH);
 							break;
 						case 47: // Golem
 							enemyNames[i] = "GOLEM";
-							enemy[i].num_hits = 1;
-							enemy[i].critrate = 1;
-							enemy[i].damage = ENE_rollEnemyStrength(enemy[i].tier, 6);
-							enemy[i].accuracy = ENE_rollEnemyAccuracy(enemy[i].tier, 4);
-							enemy[i].absorb = rng.Between(7, 60);
-							if (enemy[i].exp > 4000)
-								enemy[i].absorb = (enemy[i].absorb * 2) + 30;
-							enemy[i].agility = ENE_rollEnemyEvade(enemy[i].tier, 4);
-							enemy[i].atk_elem = 0b00000000;
-							enemy[i].atk_ailment = 0b00000000;
 							enemy[i].monster_type = 0b00000000;
 							enemy[i].elem_resist = 0b01111011;
 							if (enemy[i].absorb > (enemy[i].tier < 3 ? 30 : 60))
@@ -3596,85 +2816,44 @@ namespace FF1Lib
 							break;
 						case 48: // Knight Type 2
 							enemyNames[i] = "RANGER";
-							enemy[i].num_hits = rng.Between(1, 2);
-							enemy[i].critrate = rng.Between(1, 5);
-							enemy[i].damage = ENE_rollEnemyStrength(enemy[i].tier, 6);
-							enemy[i].accuracy = ENE_rollEnemyAccuracy(enemy[i].tier, 6);
-							enemy[i].absorb = ENE_rollEnemyAbsorb(enemy[i].tier, 6);
-							enemy[i].agility = ENE_rollEnemyEvade(enemy[i].tier, 4);
-							enemy[i].atk_elem = 0b00000000;
-							enemy[i].atk_ailment = 0b00000000;
 							enemy[i].monster_type = 0b00000000;
 							enemy[i].elem_resist = 0b00000000;
 							enemy[i].elem_weakness = 0b00000000;
-							perks.Add(MonsterPerks.PERK_LOWRESIST);
-							perks.Add(MonsterPerks.PERK_HIGHRESIST);
-							perks.Add(MonsterPerks.PERK_LOWWEAKNESS);
-							perks.Add(MonsterPerks.PERK_HIGHWEAKNESS);
-							perks.Add(MonsterPerks.PERK_PLUSONEHIT);
-							perks.Add(MonsterPerks.PERK_POISONTOUCH);
-							perks.Add(MonsterPerks.PERK_STUNSLEEPTOUCH);
-							perks.Add(MonsterPerks.PERK_MUTETOUCH);
 							break;
 						case 49: // Pony
 							enemyNames[i] = "PONY";
-							enemy[i].num_hits = rng.Between(2, 4);
-							enemy[i].critrate = rng.Between(1, 3);
-							enemy[i].damage = ENE_rollEnemyStrength(enemy[i].tier, 5);
-							enemy[i].accuracy = ENE_rollEnemyAccuracy(enemy[i].tier, 5);
-							enemy[i].absorb = ENE_rollEnemyAbsorb(enemy[i].tier, 4);
-							enemy[i].agility = ENE_rollEnemyEvade(enemy[i].tier, 6);
-							enemy[i].atk_elem = 0b00000000;
-							enemy[i].atk_ailment = 0b00000000;
 							enemy[i].monster_type = 0b00000000;
 							enemy[i].elem_resist = 0b00000000;
 							enemy[i].elem_weakness = 0b00000000;
-							perks.Add(MonsterPerks.PERK_LOWRESIST);
-							perks.Add(MonsterPerks.PERK_HIGHRESIST);
-							perks.Add(MonsterPerks.PERK_LOWWEAKNESS);
-							perks.Add(MonsterPerks.PERK_HIGHWEAKNESS);
 							break;
 						case 50: // Elf
 							enemyNames[i] = "ELF";
-							enemy[i].num_hits = 1;
-							enemy[i].critrate = rng.Between(1, 5);
-							enemy[i].damage = ENE_rollEnemyStrength(enemy[i].tier, 4);
-							enemy[i].accuracy = ENE_rollEnemyAccuracy(enemy[i].tier, 4);
-							enemy[i].absorb = ENE_rollEnemyAbsorb(enemy[i].tier, 6);
-							enemy[i].agility = ENE_rollEnemyEvade(enemy[i].tier, 7);
-							enemy[i].atk_elem = 0b00000000;
-							enemy[i].atk_ailment = 0b00000000;
 							enemy[i].monster_type = 0b01000000;
 							enemy[i].elem_resist = 0b00000000;
 							enemy[i].elem_weakness = 0b00000000;
-							if (enemy[i].AIscript == 0xFF && !shuffledSkillsOn)
-								enemy[i].AIscript = ENE_PickForcedAIScript(enemy[i].tier, rng);
-							perks.Add(MonsterPerks.PERK_LOWRESIST);
-							perks.Add(MonsterPerks.PERK_HIGHRESIST);
-							perks.Add(MonsterPerks.PERK_LOWWEAKNESS);
-							perks.Add(MonsterPerks.PERK_HIGHWEAKNESS);
-							perks.Add(MonsterPerks.PERK_PLUSONEHIT);
-							perks.Add(MonsterPerks.PERK_POISONTOUCH);
-							perks.Add(MonsterPerks.PERK_STUNSLEEPTOUCH);
-							perks.Add(MonsterPerks.PERK_MUTETOUCH);
 							break;
 						case 51: // War Machine
 							enemyNames[i] = "MECH";
-							enemy[i].num_hits = 2;
-							enemy[i].critrate = 1;
-							enemy[i].damage = ENE_rollEnemyStrength(enemy[i].tier, 7);
-							enemy[i].accuracy = ENE_rollEnemyAccuracy(enemy[i].tier, 7);
-							enemy[i].absorb = ENE_rollEnemyAbsorb(enemy[i].tier, 7);
-							enemy[i].agility = ENE_rollEnemyEvade(enemy[i].tier, 4);
-							enemy[i].atk_elem = 0b00000000;
-							enemy[i].atk_ailment = 0b00000000;
 							enemy[i].monster_type = 0b10000000;
 							enemy[i].elem_resist = 0b00111011;
 							enemy[i].elem_weakness = 0b01000000;
-							enemy[i].exp *= 9;
-							enemy[i].exp /= 8;
 							break;
 					}
+					// generate perk eligibility
+					perks.Add(MonsterPerks.PERK_LOWRESIST);
+					perks.Add(MonsterPerks.PERK_HIGHRESIST);
+					perks.Add(MonsterPerks.PERK_LOWWEAKNESS);
+					perks.Add(MonsterPerks.PERK_HIGHWEAKNESS);
+					perks.Add(MonsterPerks.PERK_PLUSONEHIT);
+					perks.Add(MonsterPerks.PERK_POISONTOUCH);
+					perks.Add(MonsterPerks.PERK_STUNSLEEPTOUCH);
+					perks.Add(MonsterPerks.PERK_MUTETOUCH);
+					// generate most enemy BASE stats
+					ENE_rollEnemyStats(rng, enemy[i]);
+					// set attack element and ailments to default value
+					enemy[i].atk_ailment = 0b00000000;
+					enemy[i].atk_elem = 0b00000000;
+					// apply global perks
 					bool hasGlobalPerk = false;
 					bool didntChooseVariantClass = true; // false if this monster rolled a variant class and thus doesn't need a name modifier
 														 // if enemy has a global perk, apply it now and skip all other perks
@@ -3696,38 +2875,12 @@ namespace FF1Lib
 							enemy[i].num_hits--;
 						hasGlobalPerk = true;
 					}
-					else if (i == Enemy.Mancat)
-					{
-						// Global Perk - Mancat (resistance to all elements except time and no weaknesses)
-						enemy[i].elem_resist = 0b11111011;
-						enemy[i].elem_weakness = 0b00000000;
-						hasGlobalPerk = true;
-					}
 					else if (i == Enemy.Sorceror)
 					{
 						// Global Perk - deathtouch
 						enemy[i].atk_elem = 0b00000000;
 						enemy[i].atk_ailment = 0b00000001;
 						hasGlobalPerk = true;
-					}
-					else if (i == Enemy.Nitemare)
-					{
-						// Global Perk - resist all except one low element and time, weak to selected element
-						switch (rng.Between(0, 2))
-						{
-							case 0:
-								enemy[i].elem_resist = 0b10111011;
-								enemy[i].elem_weakness = 0b01000000;
-								break;
-							case 1:
-								enemy[i].elem_resist = 0b11011011;
-								enemy[i].elem_weakness = 0b00100000;
-								break;
-							case 2:
-								enemy[i].elem_resist = 0b11101011;
-								enemy[i].elem_weakness = 0b00010000;
-								break;
-						}
 					}
 					else
 					{
@@ -4030,6 +3183,11 @@ namespace FF1Lib
 					for (int j = 1; j < enemy[i].num_hits; ++j) // for each hit past the first, reduce the base damage by one for every 15 points of damage rating
 					{
 						enemy[i].damage = enemy[i].damage - enemy[i].damage / 15;
+					}
+					if ((enemy[i].monster_type & 0b00001000) != 0)
+					{
+						enemy[i].elem_resist |= 0b00001000; // force death resist on undead enemies
+						enemy[i].elem_weakness &= 0b11110111; // and remove weakness to death
 					}
 					enemy[i].damage = rng.Between(enemy[i].damage - enemy[i].damage / 25, enemy[i].damage + enemy[i].damage / 25); // variance for damage rating
 					enemy[i].hp = rng.Between(enemy[i].hp - enemy[i].hp / 30, enemy[i].hp + enemy[i].hp / 30); // variance for hp rating
