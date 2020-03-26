@@ -1819,14 +1819,18 @@ namespace FF1Lib
 			// roll number of hits
 			enemy.num_hits = rng.Between(1, 1 + (enemy.tier > 5 ? 5 : enemy.tier));
 			// roll valid damage tiers based on num_hits
-			int minDamageTier = 4 + enemy.tier / 4 - enemy.num_hits;
+			int minDamageTier = 4 + enemy.tier / 3 - enemy.num_hits;
 			if(minDamageTier < 1)
 				minDamageTier = 1;
-			int maxDamageTier = 8 - enemy.num_hits;
-			if (enemy.num_hits > 3)
+			int maxDamageTier = 9 - enemy.num_hits;
+			if (enemy.num_hits > 1)
 				maxDamageTier--;
-			if (maxDamageTier < 2)
-				maxDamageTier = 2;
+			if (enemy.tier > 5)
+				maxDamageTier++;
+			if (maxDamageTier < minDamageTier)
+				maxDamageTier = minDamageTier;
+			if (maxDamageTier > 7)
+				maxDamageTier = 7;
 			int finalDamageTier = rng.Between(minDamageTier, maxDamageTier);
 			enemy.damage = ENE_rollEnemyStrength(enemy.tier, finalDamageTier);
 			// roll accuracy based on tier
