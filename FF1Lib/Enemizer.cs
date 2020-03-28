@@ -1822,11 +1822,11 @@ namespace FF1Lib
 			int minDamageTier = 4 + enemy.tier / 3 - enemy.num_hits;
 			if(minDamageTier < 1)
 				minDamageTier = 1;
-			int maxDamageTier = 9 - enemy.num_hits;
-			if (enemy.num_hits > 1)
-				maxDamageTier--;
+			int maxDamageTier = 8 - enemy.num_hits;
 			if (enemy.tier > 5)
 				maxDamageTier++;
+			if (enemy.num_hits > 1 && maxDamageTier == 7)
+				maxDamageTier = 6;
 			if (maxDamageTier < minDamageTier)
 				maxDamageTier = minDamageTier;
 			if (maxDamageTier > 7)
