@@ -13,12 +13,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="wwwroot\tooltips.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Blazor.Extensions.Storage" Version="0.1.7" />
     <PackageReference Include="BlazorStrap" Version="0.6.1" />
     <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="1.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor.Browser" Version="0.7.0" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor.Build" Version="0.7.0" PrivateAssets="all" />
+    <PackageReference Include="System.Net.Http" Version="4.3.4" />
     <DotNetCliToolReference Include="Microsoft.AspNetCore.Blazor.Cli" Version="0.7.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\tooltips\tooltips.json" />
   </ItemGroup>
 
   <ItemGroup>

@@ -318,6 +318,8 @@ namespace FF1Lib
 					" leggystarscream",
 					" nic0lette",
 					" splitpunched",
+					" onefineday",
+					" Darkmoon",
 				},
 				new []
 				{

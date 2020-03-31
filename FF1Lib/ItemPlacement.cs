@@ -143,6 +143,10 @@ namespace FF1Lib
 			{
 				placedItems = placedItems.Select(x => x.Item != Item.Lute ? x : NewItemPlacement(x, ReplacementItem)).ToList();
 			}
+			if ((bool)_flags.FreeTail)
+			{
+				placedItems = placedItems.Select(x => x.Item != Item.Tail ? x : NewItemPlacement(x, ReplacementItem)).ToList();
+			}
 
 			if (_flags.Spoilers || Debugger.IsAttached)
 			{

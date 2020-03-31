@@ -1,13 +1,14 @@
 ﻿@typeparam TItem
 
-<div class="checkbox-cell @DisabledClass">
-	<span class="@IndentClass @DisabledClass">@ChildContent</span>
+<div class="checkbox-cell dropdown-cell @DisabledClass">
+	<span id="@Id"class="@IndentClass @DisabledClass">@ChildContent</span>
 	<select value="@Value" onchange="@onchange" disabled="@(!IsEnabled)">
 		@foreach (var value in Enum.GetValues(typeof(TItem)))
 		{
 			<option value="@value">@(((Enum)value).ToName())</option>
 		}
 	</select>
+	<input type="image" src="/images/help.png" class="btn-group-help" title="Show Help" onclick="@ShowToolTip" id="@Id" />
 </div>
 
 @functions
@@ -23,6 +24,23 @@
 		ValueChanged(Value);
 	}
 
+	private void ShowToolTip(UIMouseEventArgs e)
+	{
+		UpdateToolTip?.Invoke(Id, e);
+	}
+
+	private void HideToolTip(UIMouseEventArgs e)
+	{
+		UpdateToolTip?.Invoke("", e);
+	}
+
+	[CascadingParameter]
+	protected string ToolTipId { get; set; }
+
+	[Parameter]
+	protected Action<string, UIMouseEventArgs> UpdateToolTip { get; set; }
+
+
 	[Parameter]
 	private bool Indent { get; set; }
 	private string IndentClass => Indent ? "indent" : "";
@@ -30,6 +48,9 @@
 	[Parameter]
 	private bool? IsEnabled { get; set; } = true;
 	private string DisabledClass => (IsEnabled ?? true) ? "" : "disabled";
+
+	[Parameter]
+	private string Id { get; set; }
 
 	[Parameter]
 	private RenderFragment ChildContent { get; set; }

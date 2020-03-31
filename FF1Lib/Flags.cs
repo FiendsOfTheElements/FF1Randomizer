@@ -10,224 +10,245 @@ namespace FF1Lib
 {
 	public class Flags : IIncentiveFlags, IMapEditFlags, IScaleFlags, IFloorShuffleFlags
 	{
-		public bool Spoilers { get; set; }
+		public bool Spoilers { get; set; } = false;
+		public bool TournamentSafe { get; set; } = false;
 
-		public bool? Shops { get; set; }
-		public bool? Treasures { get; set; }
-		public bool? NPCItems { get; set; }
-		public bool? NPCFetchItems { get; set; }
-		public bool? RandomWares { get; set; }
-		public bool? RandomWaresIncludesSpecialGear { get; set; }
-		public bool? RandomLoot { get; set; }
+		public bool? Shops { get; set; } = false;
+		public bool? Treasures { get; set; } = false;
+		public bool? NPCItems { get; set; } = false;
+		public bool? NPCFetchItems { get; set; } = false;
+		public bool? RandomWares { get; set; } = false;
+		public bool? RandomWaresIncludesSpecialGear { get; set; } = false;
+		public bool? RandomLoot { get; set; } = false;
 
-		public bool ShardHunt { get; set; }
-		public bool ExtraShards { get; set; }
-		public bool? TransformFinalFormation { get; set; }
-		public bool ChaosRush { get; set; }
-		public bool? ShortToFR { get; set; }
-		public bool? PreserveFiendRefights { get; set; }
+		public bool ShardHunt { get; set; } = false;
+		public ShardCount ShardCount { get; set; } = ShardCount.Count16;
+		public bool? TransformFinalFormation { get; set; } = false;
+		public bool ChaosRush { get; set; } = false;
+		public bool? ShortToFR { get; set; } = false;
+		public bool? PreserveFiendRefights { get; set; } = false;
 
-		public bool? MagicShops { get; set; }
-		public bool? MagicLevels { get; set; }
-		public bool? MagicPermissions { get; set; }
-		public bool? ItemMagic { get; set; }
-		public bool RebalanceSpells { get; set; }
+		public bool? MagicShops { get; set; } = false;
+		public bool? MagicShopLocs { get; set; } = false;
+		public bool? MagicLevels { get; set; } = false;
+		public bool? MagicPermissions { get; set; } = false;
+		public bool? ItemMagic { get; set; } = false;
+		public bool RebalanceSpells { get; set; } = false;
 
-		public bool? Rng { get; set; }
-		public bool? EverythingUnrunnable { get; set; }
-		public bool? EnemyFormationsUnrunnable { get; set; }
-		public bool? EnemyFormationsSurprise { get; set; }
-		public bool? UnrunnablesStrikeFirstAndSurprise { get; set; }
-		public bool? EnemyTrapTiles { get; set; }
-		public bool? RandomTrapFormations { get; set; }
+		public bool? Rng { get; set; } = false;
+		public bool FixMissingBattleRngEntry { get; set; } = false;
+		public bool? EverythingUnrunnable { get; set; } = false;
+		public bool? EnemyFormationsUnrunnable { get; set; } = false;
+		public bool? EnemyFormationsSurprise { get; set; } = false;
+		public bool? UnrunnablesStrikeFirstAndSurprise { get; set; } = false;
+		public bool? EnemyTrapTiles { get; set; } = false;
+		public bool? RandomTrapFormations { get; set; } = false;
 
-		public bool? EnemyScripts { get; set; }
-		public bool? EnemySkillsSpells { get; set; }
-		public bool? EnemyStatusAttacks { get; set; }
-		public bool? RandomStatusAttacks { get; set; }
-		public bool? AllowUnsafePirates { get; set; }
-		public bool? AllowUnsafeMelmond { get; set; }
+		public bool? EnemyScripts { get; set; } = false;
+		public bool? BossScriptsOnly { get; set; } = false;
+		public bool? EnemySkillsSpells { get; set; } = false;
+		public bool? BossSkillsOnly { get; set; } = false;
+		public bool? EnemyStatusAttacks { get; set; } = false;
+		public bool? RandomStatusAttacks { get; set; } = false;
+		public bool? AllowUnsafePirates { get; set; } = false;
+		public bool? AllowUnsafeMelmond { get; set; } = false;
 
-		public WarMECHMode WarMECHMode { get; set; }
-		public bool? OrdealsPillars { get; set; }
-		public SkyCastle4FMazeMode SkyCastle4FMazeMode { get; set; }
-		public bool? TitansTrove { get; set; }
-		public bool? LefeinShops { get; set; }
-		public bool? ConfusedOldMen { get; set; }
+		public WarMECHMode WarMECHMode { get; set; } = WarMECHMode.Vanilla;
+		public bool? OrdealsPillars { get; set; } = false;
+		public SkyCastle4FMazeMode SkyCastle4FMazeMode { get; set; } = SkyCastle4FMazeMode.Normal;
+		public bool? TitansTrove { get; set; } = false;
+		public bool? LefeinShops { get; set; } = false;
+		public bool? ConfusedOldMen { get; set; } = false;
 
-		public bool? MapOpenProgression { get; set; }
-		public bool? Entrances { get; set; }
-		public bool? Towns { get; set; }
-		public bool? Floors { get; set; }
-		public bool? AllowDeepCastles { get; set; }
-		public bool? AllowDeepTowns { get; set; }
-		public bool? MapOpenProgressionExtended { get; set; }
+		public bool? MapOpenProgression { get; set; } = false;
+		public bool? MapOpenProgressionDocks { get; set; } = false;
+		public bool? Entrances { get; set; } = false;
+		public bool? Towns { get; set; } = false;
+		public bool? Floors { get; set; } = false;
+		public bool? AllowDeepCastles { get; set; } = false;
+		public bool? AllowDeepTowns { get; set; } = false;
+		public bool? MapOpenProgressionExtended { get; set; } = false;
 
-		public bool? EntrancesIncludesDeadEnds { get; set; }
-		public bool? EntrancesMixedWithTowns { get; set; }
+		public bool? EntrancesIncludesDeadEnds { get; set; } = false;
+		public bool? EntrancesMixedWithTowns { get; set; } = false;
 
-		public bool? IncentivizeFreeNPCs { get; set; }
-		public bool? IncentivizeFetchNPCs { get; set; }
-		public bool? IncentivizeTail { get; set; }
-		public bool? IncentivizeMainItems { get; set; }
-		public bool? IncentivizeFetchItems { get; set; }
-		public bool? IncentivizeCanoeItem { get; set; }
-		public bool? IncentivizeAirship { get; set; }
-		public bool? IncentivizeShipAndCanal { get; set; }
-		public bool ClassicItemPlacement { get; set; }
+		public bool? IncentivizeFreeNPCs { get; set; } = false;
+		public bool? IncentivizeFetchNPCs { get; set; } = false;
+		public bool? IncentivizeTail { get; set; } = false;
+		public bool? IncentivizeMainItems { get; set; } = false;
+		public bool? IncentivizeFetchItems { get; set; } = false;
+		public bool? IncentivizeCanoeItem { get; set; } = false;
+		public bool? IncentivizeAirship { get; set; } = false;
+		public bool? IncentivizeShipAndCanal { get; set; } = false;
+		public bool ClassicItemPlacement { get; set; } = false;
 
-		public bool? IncentivizeMarsh { get; set; }
-		public bool? IncentivizeEarth { get; set; }
-		public bool? IncentivizeVolcano { get; set; }
-		public bool? IncentivizeIceCave { get; set; }
-		public bool? IncentivizeOrdeals { get; set; }
-		public bool? IncentivizeSeaShrine { get; set; }
+		public bool? IncentivizeMarsh { get; set; } = false;
+		public bool? IncentivizeEarth { get; set; } = false;
+		public bool? IncentivizeVolcano { get; set; } = false;
+		public bool? IncentivizeIceCave { get; set; } = false;
+		public bool? IncentivizeOrdeals { get; set; } = false;
+		public bool? IncentivizeSeaShrine { get; set; } = false;
 
-		public bool? IncentivizeConeria { get; set; }
-		public bool? IncentivizeMarshKeyLocked { get; set; }
-		public bool? IncentivizeSkyPalace { get; set; }
-		public bool? IncentivizeTitansTrove { get; set; }
-		public bool? BetterTrapChests { get; set; }
+		public bool? IncentivizeConeria { get; set; } = false;
+		public bool? IncentivizeMarshKeyLocked { get; set; } = false;
+		public bool? IncentivizeSkyPalace { get; set; } = false;
+		public bool? IncentivizeTitansTrove { get; set; } = false;
+		public bool? BetterTrapChests { get; set; } = false;
 
 
-		public bool? IncentivizeMasamune { get; set; }
-		public bool? IncentivizeOpal { get; set; }
-		public bool? IncentivizeRibbon { get; set; }
+		public bool? IncentivizeMasamune { get; set; } = false;
+		public bool? IncentivizeVorpal { get; set; } = false;
+		public bool? IncentivizeOpal { get; set; } = false;
+		public bool? IncentivizeRibbon { get; set; } = false;
 		public bool IncentivizeRibbon2 => false;
 		public bool Incentivize65K => false;
 		public bool IncentivizeBad => false;
 
-		public bool? IncentivizeDefCastArmor { get; set; }
-		public bool? IncentivizeOffCastArmor { get; set; }
-		public bool? IncentivizeOtherCastArmor { get; set; }
-		public bool? IncentivizeDefCastWeapon { get; set; }
-		public bool? IncentivizeOffCastWeapon { get; set; }
-		public bool IncentivizeOtherCastWeapon { get; set; }
+		public bool? IncentivizeDefCastArmor { get; set; } = false;
+		public bool? IncentivizeOffCastArmor { get; set; } = false;
+		public bool? IncentivizeOtherCastArmor { get; set; } = false;
+		public bool? IncentivizeDefCastWeapon { get; set; } = false;
+		public bool? IncentivizeOffCastWeapon { get; set; } = false;
+		public bool IncentivizeOtherCastWeapon { get; set; } = false;
 
-		public bool? EarlySarda { get; set; }
-		public bool? EarlySage { get; set; }
-		public bool? EarlyOrdeals { get; set; }
-		public bool? ShuffleObjectiveNPCs { get; set; }
-		public bool OnlyRequireGameIsBeatable { get; set; }
+		public bool? EarlySarda { get; set; } = false;
+		public bool? EarlySage { get; set; } = false;
+		public bool? EarlyOrdeals { get; set; } = false;
+		public bool? ShuffleObjectiveNPCs { get; set; } = false;
+		public bool OnlyRequireGameIsBeatable { get; set; } = true;
 
-		public bool? FreeBridge { get; set; }
-		public bool? FreeShip { get; set; }
-		public bool? FreeAirship { get; set; }
-		public bool FreeOrbs { get; set; }
-		public bool EnableCritNumberDisplay { get; set; }
-		public bool? FreeCanal { get; set; }
-		public bool EasyMode { get; set; }
+		public bool? FreeBridge { get; set; } = false;
+		public bool? FreeShip { get; set; } = false;
+		public bool? FreeAirship { get; set; } = false;
+		public bool FreeOrbs { get; set; } = false;
+		public bool EnableCritNumberDisplay { get; set; } = false;
+		public bool? FreeCanal { get; set; } = false;
+		public bool EasyMode { get; set; } = false;
 
-		public bool HousesFillHp { get; set; }
+		public bool HousesFillHp { get; set; } = false;
 
-		public bool SpeedHacks { get; set; }
-		public bool NoPartyShuffle { get; set; }
-		public bool Dash { get; set; }
-		public bool BuyTen { get; set; }
-		public bool IdentifyTreasures { get; set; }
-		public bool WaitWhenUnrunnable { get; set; }
+		public bool SpeedHacks { get; set; } = false;
+		public bool NoPartyShuffle { get; set; } = false;
+		public bool Dash { get; set; } = false;
+		public bool BuyTen { get; set; } = false;
+		public bool IdentifyTreasures { get; set; } = false;
+		public bool WaitWhenUnrunnable { get; set; } = false;
 
-		public bool HouseMPRestoration { get; set; }
-		public bool WeaponStats { get; set; }
-		public bool ChanceToRun { get; set; }
-		public bool SpellBugs { get; set; }
-		public bool BlackBeltAbsorb { get; set; }
-		public bool NPCSwatter { get; set; }
+		public bool HouseMPRestoration { get; set; } = false;
+		public bool WeaponStats { get; set; } = false;
+		public bool BBCritRate { get; set; } = false;
+		public bool WeaponCritRate { get; set; } = false;
+		public bool WeaponBonuses { get; set; } = false;
+		public bool ChanceToRun { get; set; } = false;
+		public bool SpellBugs { get; set; } = false;
+		public bool BlackBeltAbsorb { get; set; } = false;
+		public bool NPCSwatter { get; set; } = false;
+		public bool InventoryAutosort { get; set; } = false;
 
-		public bool EnemyStatusAttackBug { get; set; }
-		public bool EnemySpellsTargetingAllies { get; set; }
-		public bool EnemyElementalResistancesBug { get; set; }
-		public bool ImproveTurnOrderRandomization { get; set; }
-		public bool FixHitChanceCap { get; set; }
+		public bool EnemyStatusAttackBug { get; set; } = false;
+		public bool EnemySpellsTargetingAllies { get; set; } = false;
+		public bool EnemyElementalResistancesBug { get; set; } = false;
+		public bool ImproveTurnOrderRandomization { get; set; } = false;
+		public bool FixHitChanceCap { get; set; } = false;
 
-		public bool StartingGold { get; set; }
-		public bool WrapStatOverflow { get; set; }
-		public bool WrapPriceOverflow { get; set; }
-		public bool IncludeMorale { get; set; }
-		public bool NoDanMode { get; set; }
+		public bool StartingGold { get; set; } = false;
+		public bool WrapStatOverflow { get; set; } = false;
+		public bool WrapPriceOverflow { get; set; } = false;
+		public bool IncludeMorale { get; set; } = false;
+		public bool NoDanMode { get; set; } = false;
 
-		public double EnemyScaleFactor { get; set; }
-		public double BossScaleFactor { get; set; }
-		public double PriceScaleFactor { get; set; }
-		public double ExpMultiplier { get; set; }
-		public int ExpBonus { get; set; }
-		public double EncounterRate { get; set; }
-		public double DungeonEncounterRate { get; set; }
-		public ProgressiveScaleMode ProgressiveScaleMode { get; set; }
+		public double EnemyScaleFactor { get; set; } = 0;
+		public double BossScaleFactor { get; set; } = 0;
+		public double PriceScaleFactor { get; set; } = 0;
 
-		public bool? FIGHTER1 { get; set; }
-		public bool? THIEF1 { get; set; }
-		public bool? BLACK_BELT1 { get; set; }
-		public bool? RED_MAGE1 { get; set; }
-		public bool? WHITE_MAGE1 { get; set; }
-		public bool? BLACK_MAGE1 { get; set; }
+		public double ExpMultiplier { get; set; } = 0;
+		public int ExpBonus { get; set; } = 0;
+		public double EncounterRate { get; set; } = 0;
+		public double DungeonEncounterRate { get; set; } = 0;
+		public ProgressiveScaleMode ProgressiveScaleMode { get; set; } = ProgressiveScaleMode.Disabled;
 
-		public bool? FIGHTER2 { get; set; }
-		public bool? THIEF2 { get; set; }
-		public bool? BLACK_BELT2 { get; set; }
-		public bool? RED_MAGE2 { get; set; }
-		public bool? WHITE_MAGE2 { get; set; }
-		public bool? BLACK_MAGE2 { get; set; }
+		public bool? FIGHTER1 { get; set; } = false;
+		public bool? THIEF1 { get; set; } = false;
+		public bool? BLACK_BELT1 { get; set; } = false;
+		public bool? RED_MAGE1 { get; set; } = false;
+		public bool? WHITE_MAGE1 { get; set; } = false;
+		public bool? BLACK_MAGE1 { get; set; } = false;
 
-		public bool? FIGHTER3 { get; set; }
-		public bool? THIEF3 { get; set; }
-		public bool? BLACK_BELT3 { get; set; }
-		public bool? RED_MAGE3 { get; set; }
-		public bool? WHITE_MAGE3 { get; set; }
-		public bool? BLACK_MAGE3 { get; set; }
+		public bool? FIGHTER2 { get; set; } = false;
+		public bool? THIEF2 { get; set; } = false;
+		public bool? BLACK_BELT2 { get; set; } = false;
+		public bool? RED_MAGE2 { get; set; } = false;
+		public bool? WHITE_MAGE2 { get; set; } = false;
+		public bool? BLACK_MAGE2 { get; set; } = false;
 
-		public bool? FIGHTER4 { get; set; }
-		public bool? THIEF4 { get; set; }
-		public bool? BLACK_BELT4 { get; set; }
-		public bool? RED_MAGE4 { get; set; }
-		public bool? WHITE_MAGE4 { get; set; }
-		public bool? BLACK_MAGE4 { get; set; }
+		public bool? FIGHTER3 { get; set; } = false;
+		public bool? THIEF3 { get; set; } = false;
+		public bool? BLACK_BELT3 { get; set; } = false;
+		public bool? RED_MAGE3 { get; set; } = false;
+		public bool? WHITE_MAGE3 { get; set; } = false;
+		public bool? BLACK_MAGE3 { get; set; } = false;
 
-		public bool? NONE_CLASS2 { get; set; }
-		public bool? NONE_CLASS3 { get; set; }
-		public bool? NONE_CLASS4 { get; set; }
-		public bool? FORCED1 { get; set; }
-		public bool? FORCED2 { get; set; }
-		public bool? FORCED3 { get; set; }
-		public bool? FORCED4 { get; set; }
+		public bool? FIGHTER4 { get; set; } = false;
+		public bool? THIEF4 { get; set; } = false;
+		public bool? BLACK_BELT4 { get; set; } = false;
+		public bool? RED_MAGE4 { get; set; } = false;
+		public bool? WHITE_MAGE4 { get; set; } = false;
+		public bool? BLACK_MAGE4 { get; set; } = false;
 
-		public bool? TAVERN1 { get; set; }
-		public bool? TAVERN2 { get; set; }
-		public bool? TAVERN3 { get; set; }
-		public bool? TAVERN4 { get; set; }
-		public bool? TAVERN5 { get; set; }
-		public bool? TAVERN6 { get; set; }
+		public bool? NONE_CLASS2 { get; set; } = false;
+		public bool? NONE_CLASS3 { get; set; } = false;
+		public bool? NONE_CLASS4 { get; set; } = false;
+		public bool? FORCED1 { get; set; } = false;
+		public bool? FORCED2 { get; set; } = false;
+		public bool? FORCED3 { get; set; } = false;
+		public bool? FORCED4 { get; set; } = false;
 
-		public bool WeaponPermissions { get; set; }
-		public bool ArmorPermissions { get; set; }
-		public bool? RecruitmentMode { get; set; }
-		public bool? RecruitmentModeHireOnly { get; set; }
+		public bool? TAVERN1 { get; set; } = false;
+		public bool? TAVERN2 { get; set; } = false;
+		public bool? TAVERN3 { get; set; } = false;
+		public bool? TAVERN4 { get; set; } = false;
+		public bool? TAVERN5 { get; set; } = false;
+		public bool? TAVERN6 { get; set; } = false;
 
-		public bool? ClampMinimumStatScale { get; set; }
-		public bool? ClampMinimumBossStatScale { get; set; }
-		public bool? ClampMinimumPriceScale { get; set; }
+		public bool WeaponPermissions { get; set; } = false;
+		public bool ArmorPermissions { get; set; } = false;
+		public bool? RecruitmentMode { get; set; } = false;
+		public bool? RecruitmentModeHireOnly { get; set; } = false;
+		public bool? RecruitmentModeReplaceOnlyNone { get; set; } = false;
 
-		public bool ExperimentalFloorGeneration { get; set; }
-		public bool EFGWaterfall { get; set; }
-		public bool EFGEarth1 { get; set; }
-		public bool EFGEarth2 { get; set; }
-		public bool FiendShuffle { get; set; }
-		public bool DisableTentSaving { get; set; }
-		public bool DisableInnSaving { get; set; }
-		public bool RandomizeFormationEnemizer { get; set; }
-		public bool ThiefHitRate { get; set; }
+		public bool? ClampMinimumStatScale { get; set; } = false;
+		public bool? ClampMinimumBossStatScale { get; set; } = false;
+		public bool? ClampMinimumPriceScale { get; set; } = false;
 
-		public MDefChangesEnum MDefMode { get; set; }
+		public bool ExperimentalFloorGeneration { get; set; } = false;
+		public bool EFGWaterfall { get; set; } = false;
+		public bool EFGEarth1 { get; set; } = false;
+		public bool EFGEarth2 { get; set; } = false;
+		public bool FiendShuffle { get; set; } = false;
+		public bool DisableTentSaving { get; set; } = false;
+		public bool DisableInnSaving { get; set; } = false;
+		public bool? RandomizeEnemizer { get; set; } = false;
+		public bool? RandomizeFormationEnemizer { get; set; } = false;
+		public bool? GenerateNewSpellbook { get; set; } = false;
+		public bool? SpellcrafterMixSpells { get; set; } = false;
+		public bool ThiefHitRate { get; set; } = false;
+		public bool AllSpellLevelsForKnightNinja { get; set; } = false;
+		public bool? FreeTail { get; set; } = false;
+		public bool? SpellcrafterRetainPermissions { get; set; } = false;
+		public bool? RandomWeaponBonus { get; set; } = false;
+		public bool? RandomArmorBonus { get; set; } = false;
 
-		public FormationShuffleModeEnum FormationShuffleMode { get; set; }
+		public MDEFGrowthMode MDefMode { get; set; } = MDEFGrowthMode.None;
 
-		public WorldWealth WorldWealth { get; set; }
+		public FormationShuffleMode FormationShuffleMode { get; set; } = FormationShuffleMode.None;
+
+		public WorldWealthMode WorldWealth { get; set; } = WorldWealthMode.Normal;
 
 		public bool AllowStartAreaDanager { get; set; } = false;
 
 		public bool? MapCanalBridge => (NPCItems) | (NPCFetchItems) | MapOpenProgression | MapOpenProgressionExtended;
-		public bool? MapOnracDock => MapOpenProgression;
-		public bool? MapMirageDock => MapOpenProgression;
+		public bool? MapOnracDock => MapOpenProgressionDocks;
+		public bool? MapMirageDock => MapOpenProgressionDocks;
 		public bool? MapConeriaDwarves => MapOpenProgression;
 		public bool? MapVolcanoIceRiver => MapOpenProgression;
 		public bool? MapDwarvesNorthwest => MapOpenProgression & MapOpenProgressionExtended;
@@ -241,12 +262,15 @@ namespace FF1Lib
 		// 4. The vehicles now have their own incentivization flags apart from other progression items.
 
 		// Ruby is required if Sarda is Required for the ROD
-		public bool? RequiredRuby => !EarlySage & !NPCItems;
-		public bool? IncentivizeRuby => (RequiredRuby & IncentivizeMainItems) | (!RequiredRuby & IncentivizeFetchItems);
+		public bool? RequiredRuby => !EarlySage & !NPCItems & !FreeAirship;
+		public bool? UselessRuby => FreeAirship & !TitansTrove;
+		public bool? IncentivizeRuby => (RequiredRuby & IncentivizeMainItems) | (!RequiredRuby & IncentivizeFetchItems & !UselessRuby);
 
-		// If Canoe and Fetch Quests are unshuffled then TNT is required
-		public bool? RequiredTnt => !NPCFetchItems & !NPCItems;
-		public bool? IncentivizeTnt => (RequiredTnt & IncentivizeMainItems) | (!RequiredTnt & IncentivizeFetchItems);
+		// If Canoe and Fetch Quests are unshuffled and there is no free canal or airship then TNT is required
+		public bool? RequiredTnt => !NPCFetchItems & !NPCItems & !(FreeCanal | FreeAirship);
+		// If Fetch Items are vanilla and the player has a free Canal, do not incentivize TNT even if Other Quest Items are in the pool since there would be absolutely nothing to gain from TNT
+		public bool? UselessTnt => !NPCFetchItems & (FreeCanal | (FreeAirship & !MapOpenProgression));
+		public bool? IncentivizeTnt => (RequiredTnt & IncentivizeMainItems) | (!RequiredTnt & IncentivizeFetchItems & !UselessTnt);
 
 		public bool? IncentivizeCrown => (!(NPCFetchItems ?? false) && (IncentivizeMainItems ?? false)) || ((NPCFetchItems ?? false) && (IncentivizeFetchItems ?? false));
 		public bool? IncentivizeSlab => (!(NPCFetchItems ?? false) && (IncentivizeMainItems ?? false)) || ((NPCFetchItems ?? false) && (IncentivizeFetchItems ?? false));
@@ -259,6 +283,7 @@ namespace FF1Lib
 		public bool? IncentivizeRod => NPCItems & IncentivizeMainItems;
 		public bool? IncentivizeCube => NPCItems & IncentivizeMainItems;
 		public bool? IncentivizeFloater => !FreeAirship & IncentivizeAirship;
+		public bool? IncentivizePromotion => !FreeTail & IncentivizeTail;
 
 		public bool? IncentivizeCanal => NPCFetchItems & IncentivizeShipAndCanal & !FreeCanal;
 		public bool? IncentivizeCrystal => NPCFetchItems & IncentivizeFetchItems;
@@ -271,8 +296,9 @@ namespace FF1Lib
 		public bool? IncentivizeXcalber => false;
 
 		public int IncentivizedItemCountMin => 0
-			+ ((IncentivizeTail ?? false) ? 1 : 0)
+			+ ((IncentivizePromotion ?? false) ? 1 : 0)
 			+ ((IncentivizeMasamune ?? false) ? 1 : 0)
+			+ ((IncentivizeVorpal ?? false) ? 1 : 0)
 			+ ((IncentivizeOpal ?? false) ? 1 : 0)
 			+ ((IncentivizeRibbon ?? false) ? 1 : 0)
 			+ ((IncentivizeDefCastArmor ?? false) ? 1 : 0)
@@ -303,8 +329,9 @@ namespace FF1Lib
 			+ ((IncentivizeXcalber ?? false) ? 1 : 0);
 
 		public int IncentivizedItemCountMax => 0
-			+ ((IncentivizeTail ?? true) ? 1 : 0)
+			+ ((IncentivizePromotion ?? true) ? 1 : 0)
 			+ ((IncentivizeMasamune ?? true) ? 1 : 0)
+			+ ((IncentivizeVorpal ?? true) ? 1 : 0)
 			+ ((IncentivizeOpal ?? true) ? 1 : 0)
 			+ ((IncentivizeRibbon ?? true) ? 1 : 0)
 			+ ((IncentivizeDefCastArmor ?? true) ? 1 : 0)
@@ -354,9 +381,10 @@ namespace FF1Lib
 			+ ((IncentivizeRuby != null) ? (IncentivizeRuby ?? false ? "Ruby " : "") : ("Ruby? "))
 			+ ((IncentivizeShip != null) ? (IncentivizeShip ?? false ? "Ship " : "") : ("Ship? "))
 			+ ((IncentivizeSlab != null) ? (IncentivizeSlab ?? false ? "Slab " : "") : ("Slab? "))
-			+ ((IncentivizeTail != null) ? (IncentivizeTail ?? false ? "Tail " : "") : ("Tail? "))
+			+ ((IncentivizePromotion != null) ? (IncentivizePromotion ?? false ? "Tail " : "") : ("Tail? "))
 			+ ((IncentivizeTnt != null) ? (IncentivizeTnt ?? false ? "Tnt " : "") : ("Tnt? "))
 			+ ((IncentivizeMasamune != null) ? (IncentivizeMasamune ?? false ? "Masmune\U0001F5E1 " : "") : ("Masmune?\U0001F5E1 "))
+			+ ((IncentivizeVorpal != null) ? (IncentivizeVorpal ?? false ? "Vorpal\U0001F5E1 " : "") : ("Vorpal?\U0001F5E1 "))
 			+ ((IncentivizeXcalber != null) ? (IncentivizeXcalber ?? false ? "XCalber\U0001F5E1 " : "") : ("XCalber?\U0001F5E1 "))
 			+ ((IncentivizeDefCastWeapon != null) ? (IncentivizeDefCastWeapon ?? false ? "Defense\U0001F5E1 " : "") : ("Defense?\U0001F5E1 "))
 			+ (IncentivizeOtherCastWeapon ? "Mage\U0001F9D9 " : "")
@@ -442,17 +470,20 @@ namespace FF1Lib
 			return (Flags)this.MemberwiseClone();
 		}
 
-		public bool? ImmediatePureAndSoftRequired => EnemyStatusAttacks | Entrances | MapOpenProgression | RandomizeFormationEnemizer;
+		public bool? ImmediatePureAndSoftRequired => EnemyStatusAttacks | Entrances | MapOpenProgression | RandomizeFormationEnemizer | RandomizeEnemizer;
 
 		public bool? FreeLute => ChaosRush | ShortToFR;
 
 		public bool? DeepCastlesPossible => Entrances & Floors;
 		public bool? DeepTownsPossible => Towns & Entrances & Floors & EntrancesMixedWithTowns;
 
+		public bool EnemizerEnabled => (bool)RandomizeFormationEnemizer | (bool)RandomizeEnemizer;
+
 		public static string EncodeFlagsText(Flags flags)
 		{
 			BigInteger sum = 0;
 
+			sum = AddTriState(sum, flags.IncentivizeVorpal);
 			sum = AddTriState(sum, flags.Shops);
 			sum = AddTriState(sum, flags.Treasures);
 			sum = AddTriState(sum, flags.NPCItems);
@@ -460,17 +491,19 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.RandomWares);
 			sum = AddTriState(sum, flags.RandomLoot);
 			sum = AddBoolean(sum, flags.ShardHunt);
-			sum = AddBoolean(sum, flags.ExtraShards);
+			sum = AddNumeric(sum, Enum.GetValues(typeof(ShardCount)).Cast<int>().Max() + 1, (int)flags.ShardCount);
 			sum = AddTriState(sum, flags.TransformFinalFormation);
 			sum = AddBoolean(sum, flags.ChaosRush);
 			sum = AddTriState(sum, flags.ShortToFR);
 			sum = AddTriState(sum, flags.PreserveFiendRefights);
 			sum = AddTriState(sum, flags.MagicShops);
+			sum = AddTriState(sum, flags.MagicShopLocs);
 			sum = AddTriState(sum, flags.MagicLevels);
 			sum = AddTriState(sum, flags.MagicPermissions);
 			sum = AddTriState(sum, flags.ItemMagic);
 			sum = AddBoolean(sum, flags.RebalanceSpells);
 			sum = AddTriState(sum, flags.Rng);
+			sum = AddBoolean(sum, flags.FixMissingBattleRngEntry);
 			sum = AddTriState(sum, flags.EverythingUnrunnable);
 			sum = AddTriState(sum, flags.EnemyFormationsUnrunnable);
 			sum = AddTriState(sum, flags.EnemyFormationsSurprise);
@@ -478,7 +511,9 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.EnemyTrapTiles);
 			sum = AddTriState(sum, flags.RandomTrapFormations);
 			sum = AddTriState(sum, flags.EnemyScripts);
+			sum = AddTriState(sum, flags.BossScriptsOnly);
 			sum = AddTriState(sum, flags.EnemySkillsSpells);
+			sum = AddTriState(sum, flags.BossSkillsOnly);
 			sum = AddTriState(sum, flags.EnemyStatusAttacks);
 			sum = AddTriState(sum, flags.RandomStatusAttacks);
 			sum = AddTriState(sum, flags.AllowUnsafePirates);
@@ -490,6 +525,7 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.LefeinShops);
 			sum = AddTriState(sum, flags.ConfusedOldMen);
 			sum = AddTriState(sum, flags.MapOpenProgression);
+			sum = AddTriState(sum, flags.MapOpenProgressionDocks);
 			sum = AddTriState(sum, flags.Entrances);
 			sum = AddTriState(sum, flags.Towns);
 			sum = AddTriState(sum, flags.Floors);
@@ -548,9 +584,13 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.WaitWhenUnrunnable);
 			sum = AddBoolean(sum, flags.HouseMPRestoration);
 			sum = AddBoolean(sum, flags.WeaponStats);
+			sum = AddBoolean(sum, flags.BBCritRate);
+			sum = AddBoolean(sum, flags.WeaponCritRate);
+			sum = AddBoolean(sum, flags.WeaponBonuses);
 			sum = AddBoolean(sum, flags.ChanceToRun);
 			sum = AddBoolean(sum, flags.SpellBugs);
 			sum = AddBoolean(sum, flags.BlackBeltAbsorb);
+			sum = AddBoolean(sum, flags.InventoryAutosort);
 			sum = AddBoolean(sum, flags.NPCSwatter);
 			sum = AddBoolean(sum, flags.EnemyStatusAttackBug);
 			sum = AddBoolean(sum, flags.EnemySpellsTargetingAllies);
@@ -612,6 +652,7 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.ArmorPermissions);
 			sum = AddTriState(sum, flags.RecruitmentMode);
 			sum = AddTriState(sum, flags.RecruitmentModeHireOnly);
+			sum = AddTriState(sum, flags.RecruitmentModeReplaceOnlyNone);
 			sum = AddTriState(sum, flags.ClampMinimumStatScale);
 			sum = AddTriState(sum, flags.ClampMinimumBossStatScale);
 			sum = AddTriState(sum, flags.ClampMinimumPriceScale);
@@ -622,12 +663,21 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.FiendShuffle);
 			sum = AddBoolean(sum, flags.DisableTentSaving);
 			sum = AddBoolean(sum, flags.DisableInnSaving);
-			sum = AddBoolean(sum, flags.RandomizeFormationEnemizer);
+			sum = AddTriState(sum, flags.RandomizeEnemizer);
+			sum = AddTriState(sum, flags.RandomizeFormationEnemizer);
+			sum = AddTriState(sum, flags.GenerateNewSpellbook);
+			sum = AddTriState(sum, flags.SpellcrafterMixSpells);
 			sum = AddBoolean(sum, flags.ThiefHitRate);
-			sum = AddNumeric(sum, Enum.GetValues(typeof(FormationShuffleModeEnum)).Cast<int>().Max() + 1, (int)flags.FormationShuffleMode);
-			sum = AddNumeric(sum, Enum.GetValues(typeof(MDefChangesEnum)).Cast<int>().Max() + 1, (int)flags.MDefMode);
-			sum = AddNumeric(sum, Enum.GetValues(typeof(WorldWealth)).Cast<int>().Max() + 1, (int)flags.WorldWealth);
+			sum = AddBoolean(sum, flags.AllSpellLevelsForKnightNinja);
+			sum = AddTriState(sum, flags.FreeTail);
+			sum = AddTriState(sum, flags.SpellcrafterRetainPermissions);
+			sum = AddTriState(sum, flags.RandomWeaponBonus);
+			sum = AddTriState(sum, flags.RandomArmorBonus);
+			sum = AddNumeric(sum, Enum.GetValues(typeof(FormationShuffleMode)).Cast<int>().Max() + 1, (int)flags.FormationShuffleMode);
+			sum = AddNumeric(sum, Enum.GetValues(typeof(MDEFGrowthMode)).Cast<int>().Max() + 1, (int)flags.MDefMode);
+			sum = AddNumeric(sum, Enum.GetValues(typeof(WorldWealthMode)).Cast<int>().Max() + 1, (int)flags.WorldWealth);
 			sum = AddBoolean(sum, flags.AllowStartAreaDanager);
+			sum = AddBoolean(sum, flags.TournamentSafe);
 			sum = AddBoolean(sum, flags.Spoilers);
 
 			return BigIntegerToString(sum);
@@ -640,12 +690,21 @@ namespace FF1Lib
 			var flags = new Flags
 			{
 				Spoilers = GetBoolean(ref sum),
+				TournamentSafe = GetBoolean(ref sum),
 				AllowStartAreaDanager = GetBoolean(ref sum),
-				WorldWealth = (WorldWealth)GetNumeric(ref sum, Enum.GetValues(typeof(WorldWealth)).Cast<int>().Max() + 1),
-				MDefMode = (MDefChangesEnum)GetNumeric(ref sum, Enum.GetValues(typeof(MDefChangesEnum)).Cast<int>().Max() + 1),
-				FormationShuffleMode = (FormationShuffleModeEnum)GetNumeric(ref sum, Enum.GetValues(typeof(FormationShuffleModeEnum)).Cast<int>().Max() + 1),
+				WorldWealth = (WorldWealthMode)GetNumeric(ref sum, Enum.GetValues(typeof(WorldWealthMode)).Cast<int>().Max() + 1),
+				MDefMode = (MDEFGrowthMode)GetNumeric(ref sum, Enum.GetValues(typeof(MDEFGrowthMode)).Cast<int>().Max() + 1),
+				FormationShuffleMode = (FormationShuffleMode)GetNumeric(ref sum, Enum.GetValues(typeof(FormationShuffleMode)).Cast<int>().Max() + 1),
+				RandomArmorBonus = GetTriState(ref sum),
+				RandomWeaponBonus = GetTriState(ref sum),
+				SpellcrafterRetainPermissions = GetTriState(ref sum),
+				FreeTail = GetTriState(ref sum),
+				AllSpellLevelsForKnightNinja = GetBoolean(ref sum),
 				ThiefHitRate = GetBoolean(ref sum),
-				RandomizeFormationEnemizer = GetBoolean(ref sum),
+				SpellcrafterMixSpells = GetTriState(ref sum),
+				GenerateNewSpellbook = GetTriState(ref sum),
+				RandomizeFormationEnemizer = GetTriState(ref sum),
+				RandomizeEnemizer = GetTriState(ref sum),
 				DisableInnSaving = GetBoolean(ref sum),
 				DisableTentSaving = GetBoolean(ref sum),
 				FiendShuffle = GetBoolean(ref sum),
@@ -656,6 +715,7 @@ namespace FF1Lib
 				ClampMinimumPriceScale = GetTriState(ref sum),
 				ClampMinimumBossStatScale = GetTriState(ref sum),
 				ClampMinimumStatScale = GetTriState(ref sum),
+				RecruitmentModeReplaceOnlyNone = GetTriState(ref sum),
 				RecruitmentModeHireOnly = GetTriState(ref sum),
 				RecruitmentMode = GetTriState(ref sum),
 				ArmorPermissions = GetBoolean(ref sum),
@@ -717,9 +777,13 @@ namespace FF1Lib
 				EnemySpellsTargetingAllies = GetBoolean(ref sum),
 				EnemyStatusAttackBug = GetBoolean(ref sum),
 				NPCSwatter = GetBoolean(ref sum),
+				InventoryAutosort = GetBoolean(ref sum),
 				BlackBeltAbsorb = GetBoolean(ref sum),
 				SpellBugs = GetBoolean(ref sum),
 				ChanceToRun = GetBoolean(ref sum),
+				WeaponBonuses = GetBoolean(ref sum),
+				WeaponCritRate = GetBoolean(ref sum),
+				BBCritRate = GetBoolean(ref sum),
 				WeaponStats = GetBoolean(ref sum),
 				HouseMPRestoration = GetBoolean(ref sum),
 				WaitWhenUnrunnable = GetBoolean(ref sum),
@@ -778,6 +842,7 @@ namespace FF1Lib
 				Floors = GetTriState(ref sum),
 				Towns = GetTriState(ref sum),
 				Entrances = GetTriState(ref sum),
+				MapOpenProgressionDocks = GetTriState(ref sum),
 				MapOpenProgression = GetTriState(ref sum),
 				ConfusedOldMen = GetTriState(ref sum),
 				LefeinShops = GetTriState(ref sum),
@@ -789,7 +854,9 @@ namespace FF1Lib
 				AllowUnsafePirates = GetTriState(ref sum),
 				RandomStatusAttacks = GetTriState(ref sum),
 				EnemyStatusAttacks = GetTriState(ref sum),
+				BossSkillsOnly = GetTriState(ref sum),
 				EnemySkillsSpells = GetTriState(ref sum),
+				BossScriptsOnly = GetTriState(ref sum),
 				EnemyScripts = GetTriState(ref sum),
 				RandomTrapFormations = GetTriState(ref sum),
 				EnemyTrapTiles = GetTriState(ref sum),
@@ -797,24 +864,27 @@ namespace FF1Lib
 				EnemyFormationsSurprise = GetTriState(ref sum),
 				EnemyFormationsUnrunnable = GetTriState(ref sum),
 				EverythingUnrunnable = GetTriState(ref sum),
+				FixMissingBattleRngEntry = GetBoolean(ref sum),
 				Rng = GetTriState(ref sum),
 				RebalanceSpells = GetBoolean(ref sum),
 				ItemMagic = GetTriState(ref sum),
 				MagicPermissions = GetTriState(ref sum),
 				MagicLevels = GetTriState(ref sum),
+				MagicShopLocs = GetTriState(ref sum),
 				MagicShops = GetTriState(ref sum),
 				PreserveFiendRefights = GetTriState(ref sum),
 				ShortToFR = GetTriState(ref sum),
 				ChaosRush = GetBoolean(ref sum),
 				TransformFinalFormation = GetTriState(ref sum),
-				ExtraShards = GetBoolean(ref sum),
+				ShardCount = (ShardCount)GetNumeric(ref sum, Enum.GetValues(typeof(ShardCount)).Cast<int>().Max() + 1),
 				ShardHunt = GetBoolean(ref sum),
 				RandomLoot = GetTriState(ref sum),
 				RandomWares = GetTriState(ref sum),
 				NPCFetchItems = GetTriState(ref sum),
 				NPCItems = GetTriState(ref sum),
 				Treasures = GetTriState(ref sum),
-				Shops = GetTriState(ref sum)
+				Shops = GetTriState(ref sum),
+				IncentivizeVorpal = GetTriState(ref sum),
 			};
 
 			return flags;
