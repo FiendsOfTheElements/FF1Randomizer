@@ -9,6 +9,16 @@ namespace FF1Lib
 		// A fun list of initial victory pages. Classic mistranslations.
 		private static readonly List<string[]> VictoryMessages = new List<string[]>
 		{
+			new [] // SMB
+			{
+				"",
+				"THANK YOU",
+				"LIGHT WARRIORS!",
+				"",
+				"BUT OUR PRINCESS",
+				"IS IN ANOTHER",
+				"TIMELINE!",
+			},
 			new [] // Snow Brothers
 			{
 				"",
