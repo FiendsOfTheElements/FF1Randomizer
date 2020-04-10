@@ -9,6 +9,17 @@ namespace FF1Lib
 		// A fun list of initial victory pages. Classic mistranslations.
 		private static readonly List<string[]> VictoryMessages = new List<string[]>
 		{
+			new [] // Contra
+			{
+				"",
+				"CONGRATULATIONS!",
+				"YOU'VE DESTROYED",
+				"THE VILE CHAOS AND",
+				"SAVED THE UNIVERSE.",
+				"",
+				"CONSIDER YOURSELVES",
+				"HEROES.",
+			},
 			new [] // SMB
 			{
 				"",
