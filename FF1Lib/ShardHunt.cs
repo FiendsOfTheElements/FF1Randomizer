@@ -125,6 +125,7 @@ namespace FF1Lib
 			}
 
 			string shardName = ShardNames.PickRandom(rng);
+			shardName = "EGG  ";
 
 			// Replace unused CANOE string and EarthOrb pointer with whatever we're calling the scavenged item.
 			Put(0x2B981, FF1Text.TextToBytes($"{shardName}  ", false, FF1Text.Delimiter.Null));
