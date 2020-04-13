@@ -239,7 +239,13 @@
 				<div class="is-dark nes-container">
 					<ClampedSlider Min="1" Max="5" Step="0.1" UpdateToolTip="@UpdateToolTipID" Id="clampMinimumPriceScaleLable" bind-Clamp="@Flags.ClampMinimumPriceScale" bind-Scale="@Flags.PriceScaleFactor">Prices:</ClampedSlider>
 					<ClampedSlider Min="1" Max="5" Step="0.1" UpdateToolTip="@UpdateToolTipID" Id="clampMinimumStatScaleLable" bind-Clamp="@Flags.ClampMinimumStatScale" bind-Scale="@Flags.EnemyScaleFactor">Enemy Stats:</ClampedSlider>
+					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="separateEnemyHPScalingCheckBox" bind-Value="@Flags.SeparateEnemyHPScaling">Separate Enemy HP Scaling</TriStateCheckBox>
+					<ClampedSlider Min="1" Max="5" Step="0.1" Indent IsEnabled="@Flags.SeparateEnemyHPScaling" UpdateToolTip="@UpdateToolTipID" Id="clampEnemyHpScaleLable" bind-Clamp="@Flags.ClampEnemyHpScaling" bind-Scale="@Flags.EnemyHPScaleFactor">Enemy HP:</ClampedSlider>
+
 					<ClampedSlider Min="1" Max="5" Step="0.1" UpdateToolTip="@UpdateToolTipID" Id="clampMinimumBossScaleLable" bind-Clamp="@Flags.ClampMinimumBossStatScale" bind-Scale="@Flags.BossScaleFactor">Boss Stats:</ClampedSlider>
+					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="separateBossHPScalingCheckBox" bind-Value="@Flags.SeparateBossHPScaling">Separate Boss HP Scaling</TriStateCheckBox>
+					<ClampedSlider Min="1" Max="5" Step="0.1" Indent IsEnabled="@Flags.SeparateBossHPScaling" UpdateToolTip="@UpdateToolTipID" Id="clampBossHpScaleLable" bind-Clamp="@Flags.ClampBossHPScaling" bind-Scale="@Flags.BossHPScaleFactor">Boss HP:</ClampedSlider>
+
 					<div class="slider-cell"></div>
 					<div class="row">
 						<div class="col-md-5">
