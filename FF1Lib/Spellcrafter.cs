@@ -397,7 +397,7 @@ namespace FF1Lib
 						if (elemSpell[elem].Exists(i => BlackSpell(index) == BlackSpell(i) && SpellTier(index) == SpellTier(i)))
 							continue; // return to start if this spell is in the same realm and at the same tier as another spell of the same element
 						SPCR_CraftDamageSpell(rng, spell[index], SpellTier(index), (byte)(0b10000000 >> elem), WhiteSpell(index) && !mixWhiteBlack, false);
-						if(elem == 5 || elem == 8)
+						if(elem == 4 || elem == 5 || elem == 8)
 						{
 							SPCR_SetPermissionFalse(spellPermissions, index, 3); // red mage banned
 							SPCR_SetPermissionFalse(spellPermissions, index, 9); // red wizard banned
