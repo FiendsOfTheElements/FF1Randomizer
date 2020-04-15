@@ -1103,10 +1103,10 @@ namespace FF1Lib
 									resistances = 0b11111111;
 									spellMessages[index] = 0x1C; // Defend all
 									spell[index].targeting = 0x10;
+									SPCR_SetPermissionFalse(spellPermissions, index, 3); // red mage banned
+									SPCR_SetPermissionFalse(spellPermissions, index, 9); // red wizard banned
 									break;
 							}
-							SPCR_SetPermissionFalse(spellPermissions, index, 3); // red mage banned
-							SPCR_SetPermissionFalse(spellPermissions, index, 9); // red wizard banned
 							resistelems.Add(resistances);
 						}
 						else
