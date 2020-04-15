@@ -1105,6 +1105,8 @@ namespace FF1Lib
 									spell[index].targeting = 0x10;
 									break;
 							}
+							SPCR_SetPermissionFalse(spellPermissions, index, 3); // red mage banned
+							SPCR_SetPermissionFalse(spellPermissions, index, 9); // red wizard banned
 							resistelems.Add(resistances);
 						}
 						else
