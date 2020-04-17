@@ -2051,7 +2051,7 @@ namespace FF1Lib
 				spell.targeting = 0x04; // use singletargeting effect for all tier 8 spells
 			spell.effect = (byte)(spell.targeting == 0x08 ? tier * 10 : (tier + 2) * 12);
 			if (tier > 3 && targeting != 0x08)
-				spell.effect += 20;
+				spell.effect += 12;
 			if (spell.targeting == 0x04)
 				spell.effect = (byte)(spell.effect + spell.effect / 2); // increase buff by 50% for self-cast
 			if (tier == 7)
