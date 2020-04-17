@@ -2048,12 +2048,12 @@ namespace FF1Lib
 		{
 			spell.targeting = targeting;
 			if (tier == 7)
-				spell.targeting = 0x04; // use selftargeting effect for all tier 8 spells
-			spell.effect = (byte)(spell.targeting == 0x08 ? tier * 10 : (tier + 3) * 10);
-			if (tier > 5)
+				spell.targeting = 0x04; // use singletargeting effect for all tier 8 spells
+			spell.effect = (byte)(spell.targeting == 0x08 ? tier * 10 : (tier + 2) * 10);
+			if (tier > 3 && targeting != 0x08)
 				spell.effect += 20;
 			if (spell.targeting == 0x04)
-				spell.effect <<= 1; // ASL the effect byte (multiply by two)
+				spell.effect = (byte)(spell.effect + spell.effect / 2); // increase buff by 50% for self-cast
 			if (tier == 7)
 				spell.targeting = 0x08; // tier 8 spells target all allies with +240 evasion
 			spell.routine = 0x10;
