@@ -2049,7 +2049,7 @@ namespace FF1Lib
 			spell.targeting = targeting;
 			if (tier == 7)
 				spell.targeting = 0x04; // use singletargeting effect for all tier 8 spells
-			spell.effect = (byte)(spell.targeting == 0x08 ? tier * 10 : (tier + 2) * 10);
+			spell.effect = (byte)(spell.targeting == 0x08 ? tier * 10 : (tier + 2) * 12);
 			if (tier > 3 && targeting != 0x08)
 				spell.effect += 20;
 			if (spell.targeting == 0x04)
