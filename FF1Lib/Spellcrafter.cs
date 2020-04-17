@@ -242,7 +242,7 @@ namespace FF1Lib
 			spellMessages[rusespell] = 0x03; // Evasion up
 			SPCR_SetPermissionFalse(spellPermissions, rusespell, 3); // red mage banned
 			spellindex.Remove(rusespell);
-			int sabrspell = spellindex.Where(id => BlackSpell(id) && id > 7 && id < 40).ToList().PickRandom(rng); // guaranteed SABR, again we track this for assigning spells to itmes
+			int sabrspell = spellindex.Where(id => BlackSpell(id) && id > 7 && id < 32).ToList().PickRandom(rng); // guaranteed SABR, again we track this for assigning spells to itmes
 			SPCR_CraftAttackUpSpell(rng, spell[sabrspell], SpellTier(sabrspell), true);
 			SPCR_SetPermissionFalse(spellPermissions, sabrspell, 3); // red mage banned
 			spellindex.Remove(sabrspell);
