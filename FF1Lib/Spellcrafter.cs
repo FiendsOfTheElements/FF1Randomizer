@@ -237,12 +237,12 @@ namespace FF1Lib
 			spellindex.Remove(selected);
 
 			// draw guaranteed spells
-			int rusespell = spellindex.Where(id => WhiteSpell(id) && id < 48).ToList().PickRandom(rng); // guaranteed RUSE, we will keep track of this when assigning spells to items
+			int rusespell = spellindex.Where(id => WhiteSpell(id) && id < 32).ToList().PickRandom(rng); // guaranteed RUSE, we will keep track of this when assigning spells to items
 			SPCR_CraftEvasionSpell(rng, spell[rusespell], SpellTier(rusespell), 0x04);
 			spellMessages[rusespell] = 0x03; // Evasion up
 			SPCR_SetPermissionFalse(spellPermissions, rusespell, 3); // red mage banned
 			spellindex.Remove(rusespell);
-			int sabrspell = spellindex.Where(id => BlackSpell(id) && id > 7 && id < 56).ToList().PickRandom(rng); // guaranteed SABR, again we track this for assigning spells to itmes
+			int sabrspell = spellindex.Where(id => BlackSpell(id) && id > 7 && id < 40).ToList().PickRandom(rng); // guaranteed SABR, again we track this for assigning spells to itmes
 			SPCR_CraftAttackUpSpell(rng, spell[sabrspell], SpellTier(sabrspell), true);
 			SPCR_SetPermissionFalse(spellPermissions, sabrspell, 3); // red mage banned
 			spellindex.Remove(sabrspell);
