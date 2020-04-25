@@ -90,6 +90,7 @@ namespace FF1Lib
 			var rng = new MT19337(BitConverter.ToUInt32(seed, 0));
 			// Spoilers => different rng immediately
 			if (flags.Spoilers) rng = new MT19337(rng.Next());
+			if (flags.TournamentSafe) AssureSafe(rng);
 
 			UpgradeToMMC3();
 			MakeSpace();
@@ -626,12 +627,78 @@ namespace FF1Lib
 
 			WriteSeedAndFlags(Version, seed.ToHex(), Flags.EncodeFlagsText(flags));
 			ExtraTrackingAndInitCode();
+			if (flags.TournamentSafe)
+			{
+				AssureSafe2();
+			}
 		}
 
 		private void EnableNPCSwatter()
 		{
 			// Talk_norm is overwritten with unconditional jump to Talk_CoOGuy (say whatever then disappear)
 			PutInBank(0x0E, 0x9492, Blob.FromHex("4CA294"));
+		}
+
+		private void AssureSafe(MT19337 rng)
+		{
+			using (SHA256 hasher = SHA256.Create())
+			{
+				byte[] hashable = Data.ToBytes();
+
+				//zero out character mapman graphics
+				for (int i = 0x9000; i < 0xB000; i++)
+				{
+					hashable[i] = 0;
+				}
+				//zero out character battle graphics
+				for (int i = 0x25000; i < 0x26800; i++)
+				{
+					hashable[i] = 0;
+				}
+
+				//zero out character palette data
+				for (int i = 0x390; i < 0x3BC; i++)
+				{
+					hashable[i] = 0;
+				}
+				//palettes continued
+				for (int i = 0x3203C; i < 0x32408; i++)
+				{
+					hashable[i] = 0;
+				}
+				//palettes continued
+				for (int i = 0x3ECA4; i < 0x3ECB0; i++)
+				{
+					hashable[i] = 0;
+				}
+
+				var Hash = hasher.ComputeHash(hashable);
+				if (ByteArrayToString(Hash) != "022cc07015f25c37d617b5c725d3f545b142f9021ff6824db769294d60333d8b")
+				{
+					Console.WriteLine($"Rom hash: {ByteArrayToString(Hash)}");
+					throw new TournamentSafeException("File has been modified");
+				}
+			}
+			Put(0x3FFE3, Blob.FromHex("66696E616C2066616E74617379"));
+			rng.Next();
+		}
+		public void AssureSafe2()
+		{
+			Put(0x3FFE3, Blob.FromHex("66696E616C2066616E74617379"));
+		}
+
+		public class TournamentSafeException : Exception
+		{
+			public TournamentSafeException(string message)
+				: base(message) { }
+		}
+
+		private static string ByteArrayToString(byte[] ba)
+		{
+			StringBuilder hex = new StringBuilder(ba.Length * 2);
+			foreach (byte b in ba)
+				hex.AppendFormat("{0:x2}", b);
+			return hex.ToString();
 		}
 
 		private void ExtraTrackingAndInitCode()
