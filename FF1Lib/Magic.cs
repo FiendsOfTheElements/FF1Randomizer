@@ -41,16 +41,290 @@ namespace FF1Lib
 			public byte TextPointer;
 		}
 
-		public void ShuffleMagicLevels(MT19337 rng, bool keepPermissions)
+		public void ShuffleMagicLevels(MT19337 rng, bool keepPermissions, bool tieredShuffle, bool mixSpellbooks)
 		{
 			var magicSpells = GetSpells();
+			if(tieredShuffle)
+			{
+				// if we are doing a tiered shuffle, swap the position of TMPR and SABR before further shuffling for balance purposes
+				MagicSpell tmpTMPR = magicSpells[14];
+				magicSpells[14] = magicSpells[54];
+				magicSpells[54] = tmpTMPR;
+			}
 
 			// First we have to un-interleave white and black spells.
 			var whiteSpells = magicSpells.Where((spell, i) => (i / 4) % 2 == 0).ToList();
 			var blackSpells = magicSpells.Where((spell, i) => (i / 4) % 2 == 1).ToList();
 
-			whiteSpells.Shuffle(rng);
-			blackSpells.Shuffle(rng);
+			if(tieredShuffle)
+			{
+				// weigh spell probability of landing in a tier based on where it was in the original game
+				var whiteSpellList = new List<MagicSpell>[3];
+				var blackSpellList = new List<MagicSpell>[3];
+				var whiteSpellFinalList = new List<MagicSpell>[3];
+				var blackSpellFinalList = new List<MagicSpell>[3];
+				int mergedSpellDoubler = 1;
+				whiteSpellList[0] = magicSpells.Where((spell, i) => (i / 4) % 2 == 0 && i < 24).ToList();
+				whiteSpellList[1] = magicSpells.Where((spell, i) => (i / 4) % 2 == 0 && i < 48 && i >= 24).ToList();
+				whiteSpellList[2] = magicSpells.Where((spell, i) => (i / 4) % 2 == 0 && i >= 48).ToList();
+				blackSpellList[0] = magicSpells.Where((spell, i) => (i / 4) % 2 == 1 && i < 24).ToList();
+				blackSpellList[1] = magicSpells.Where((spell, i) => (i / 4) % 2 == 1 && i < 48 && i >= 24).ToList();
+				blackSpellList[2] = magicSpells.Where((spell, i) => (i / 4) % 2 == 1 && i >= 48).ToList();
+				if(mixSpellbooks)
+				{
+					whiteSpellList[0] = whiteSpellList[0].Concat(blackSpellList[0]).ToList();
+					whiteSpellList[1] = whiteSpellList[1].Concat(blackSpellList[1]).ToList();
+					whiteSpellList[2] = whiteSpellList[2].Concat(blackSpellList[2]).ToList();
+					mergedSpellDoubler = 2;
+				}
+				whiteSpellFinalList[0] = new List<MagicSpell> { };
+				whiteSpellFinalList[1] = new List<MagicSpell> { };
+				whiteSpellFinalList[2] = new List<MagicSpell> { };
+				blackSpellFinalList[0] = new List<MagicSpell> { };
+				blackSpellFinalList[1] = new List<MagicSpell> { };
+				blackSpellFinalList[2] = new List<MagicSpell> { };
+				whiteSpells.Clear();
+				blackSpells.Clear();
+				foreach (MagicSpell spell in whiteSpellList[2])
+				{
+					// 60% chance of tier 7-8, 30% chance of tier 4-6, 10% chance of tier 1-3
+					int diceRoll = rng.Between(0, 9);
+					if(diceRoll < 6)
+					{
+						whiteSpellFinalList[2].Add(spell);
+					}
+					else if (diceRoll < 9)
+					{
+						whiteSpellFinalList[1].Add(spell);
+					}
+					else
+					{
+						whiteSpellFinalList[0].Add(spell);
+					}
+				}
+				foreach (MagicSpell spell in whiteSpellList[1])
+				{
+					// 60% chance of tier 4-6, 20% chance of tier 1-3, 20% chance of tier 7-8
+					// if a section of the final list is full, move to another section
+					int diceRoll = rng.Between(0, 9);
+					if(diceRoll < 6)
+					{
+						if(whiteSpellFinalList[1].Count >= 12 * mergedSpellDoubler)
+						{
+							if(whiteSpellFinalList[0].Count >= 12 * mergedSpellDoubler)
+							{
+								whiteSpellFinalList[2].Add(spell);
+							}
+							else
+							{
+								whiteSpellFinalList[0].Add(spell);
+							}
+						}
+						else
+						{
+							whiteSpellFinalList[1].Add(spell);
+						}
+					}
+					else if (diceRoll < 8)
+					{
+						if(whiteSpellFinalList[0].Count >= 12 * mergedSpellDoubler)
+						{
+							if(whiteSpellFinalList[1].Count >= 12 * mergedSpellDoubler)
+							{
+								whiteSpellFinalList[2].Add(spell);
+							}
+							else
+							{
+								whiteSpellFinalList[1].Add(spell);
+							}
+						}
+						else
+						{
+							whiteSpellFinalList[0].Add(spell);
+						}
+					}
+					else
+					{
+						if(whiteSpellFinalList[2].Count >= 8 * mergedSpellDoubler)
+						{
+							if(whiteSpellFinalList[1].Count >= 12 * mergedSpellDoubler)
+							{
+								whiteSpellFinalList[0].Add(spell);
+							}
+							else
+							{
+								whiteSpellFinalList[1].Add(spell);
+							}
+						}
+						else
+						{
+							whiteSpellFinalList[2].Add(spell);
+						}
+					}
+				}
+				foreach(MagicSpell spell in whiteSpellList[0])
+				{
+					// fill the remaining tiers with the tier 1-3 base magic
+					if(whiteSpellFinalList[0].Count >= 12 * mergedSpellDoubler)
+					{
+						if(whiteSpellFinalList[1].Count >= 12 * mergedSpellDoubler)
+						{
+							whiteSpellFinalList[2].Add(spell);
+						}
+						else
+						{
+							whiteSpellFinalList[1].Add(spell);
+						}
+					}
+					else
+					{
+						whiteSpellFinalList[0].Add(spell);
+					}
+				}
+				// and repeat the process for black magic if we didn't mix spellbooks
+				if(mixSpellbooks)
+				{
+					// if we mixed spellbooks, split the white (merged) spellbook in halves to set the black spell list
+					blackSpellFinalList[0] = whiteSpellFinalList[0].Take(12).ToList();
+					whiteSpellFinalList[0] = whiteSpellFinalList[0].Except(blackSpellFinalList[0]).ToList();
+					blackSpellFinalList[1] = whiteSpellFinalList[1].Take(12).ToList();
+					whiteSpellFinalList[1] = whiteSpellFinalList[1].Except(blackSpellFinalList[1]).ToList();
+					blackSpellFinalList[2] = whiteSpellFinalList[2].Take(8).ToList();
+					whiteSpellFinalList[2] = whiteSpellFinalList[2].Except(blackSpellFinalList[2]).ToList();
+				}
+				else
+				{
+					foreach (MagicSpell spell in blackSpellList[2])
+					{
+						// 60% chance of tier 7-8, 30% chance of tier 4-6, 10% chance of tier 1-3
+						int diceRoll = rng.Between(0, 9);
+						if (diceRoll < 6)
+						{
+							blackSpellFinalList[2].Add(spell);
+						}
+						else if (diceRoll < 9)
+						{
+							blackSpellFinalList[1].Add(spell);
+						}
+						else
+						{
+							blackSpellFinalList[0].Add(spell);
+						}
+					}
+					foreach (MagicSpell spell in blackSpellList[1])
+					{
+						// 60% chance of tier 4-6, 20% chance of tier 1-3, 20% chance of tier 7-8
+						// if a section of the final list is full, move to another section
+						int diceRoll = rng.Between(0, 9);
+						if (diceRoll < 6)
+						{
+							if (blackSpellFinalList[1].Count >= 12)
+							{
+								if (blackSpellFinalList[0].Count >= 12)
+								{
+									blackSpellFinalList[2].Add(spell);
+								}
+								else
+								{
+									blackSpellFinalList[0].Add(spell);
+								}
+							}
+							else
+							{
+								blackSpellFinalList[1].Add(spell);
+							}
+						}
+						else if (diceRoll < 8)
+						{
+							if (blackSpellFinalList[0].Count >= 12)
+							{
+								if (blackSpellFinalList[1].Count >= 12)
+								{
+									blackSpellFinalList[2].Add(spell);
+								}
+								else
+								{
+									blackSpellFinalList[1].Add(spell);
+								}
+							}
+							else
+							{
+								blackSpellFinalList[0].Add(spell);
+							}
+						}
+						else
+						{
+							if (blackSpellFinalList[2].Count >= 8)
+							{
+								if (blackSpellFinalList[1].Count >= 12)
+								{
+									blackSpellFinalList[0].Add(spell);
+								}
+								else
+								{
+									blackSpellFinalList[1].Add(spell);
+								}
+							}
+							else
+							{
+								blackSpellFinalList[2].Add(spell);
+							}
+						}
+					}
+					foreach (MagicSpell spell in blackSpellList[0])
+					{
+						// fill the remaining tiers with the tier 1-3 base magic
+						if (blackSpellFinalList[0].Count >= 12)
+						{
+							if (blackSpellFinalList[1].Count >= 12)
+							{
+								blackSpellFinalList[2].Add(spell);
+							}
+							else
+							{
+								blackSpellFinalList[1].Add(spell);
+							}
+						}
+						else
+						{
+							blackSpellFinalList[0].Add(spell);
+						}
+					}
+				}		
+				// shuffle each of the final lists
+				foreach(List<MagicSpell> spellList in whiteSpellFinalList)
+				{
+					spellList.Shuffle(rng);
+				}
+				if(!mixSpellbooks)
+				{
+					foreach (List<MagicSpell> spellList in blackSpellFinalList)
+					{
+						spellList.Shuffle(rng);
+					}
+				}
+				// and append each in turn to the whitespells / blackspells list
+				whiteSpells = whiteSpells.Concat(whiteSpellFinalList[0]).ToList();
+				whiteSpells = whiteSpells.Concat(whiteSpellFinalList[1]).ToList();
+				whiteSpells = whiteSpells.Concat(whiteSpellFinalList[2]).ToList();
+				blackSpells = blackSpells.Concat(blackSpellFinalList[0]).ToList();
+				blackSpells = blackSpells.Concat(blackSpellFinalList[1]).ToList();
+				blackSpells = blackSpells.Concat(blackSpellFinalList[2]).ToList();
+			}
+			else
+			{
+				if(mixSpellbooks)
+				{
+					magicSpells.Shuffle(rng);
+					whiteSpells = magicSpells.Where((spell, i) => (i / 4) % 2 == 0).ToList();
+					blackSpells = magicSpells.Where((spell, i) => (i / 4) % 2 == 1).ToList();
+				}
+				else
+				{
+					whiteSpells.Shuffle(rng);
+					blackSpells.Shuffle(rng);
+				}
+			}
 
 			// Now we re-interleave the spells.
 			var shuffledSpells = new List<MagicSpell>();

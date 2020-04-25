@@ -258,6 +258,24 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ItemMagic"));
 			}
 		}
+		public bool? MagicLevelsTiered
+		{
+			get => Flags.MagicLevelsTiered;
+			set
+			{
+				Flags.MagicLevelsTiered = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MagicLevelsTiered"));
+			}
+		}
+		public bool? MagicLevelsMixed
+		{
+			get => Flags.MagicLevelsMixed;
+			set
+			{
+				Flags.MagicLevelsMixed = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MagicLevelsMixed"));
+			}
+		}
 
 		public bool? Rng
 		{
