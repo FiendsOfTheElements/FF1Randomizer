@@ -255,6 +255,16 @@
 		"description": "Gives each armor a random bonus of +5 to -5. This will increase or decrease its absorb by 1 per bonus (2 for body armor) and reduce its weight penalty by 1 per bonus (2 for body armor)."
 	},
 	{
+		"Id": "separateBossHPScalingCheckBox",
+		"title": "Separate Boss HP Scaling",
+		"description": "Uses a second scaling for boss hp independant of other stats."
+	},
+	{
+		"Id": "separateEnemyHPScalingCheckBox",
+		"title": "Separate Enemy HP Scaling",
+		"description": "Uses a second scaling for enemy hp independant of other stats."
+	},
+	{
 		"Id": "incentivizeFreeNPCsCheckBox",
 		"title": "Free NPCs",
 		"screenshot": "incentivizeFreeNPCsCheckBox.png",

@@ -2015,5 +2015,65 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomArmorBonus"));
 			}
 		}
+
+		public bool ?SeparateBossHPScaling
+		{
+			get => Flags.SeparateBossHPScaling;
+			set
+			{
+				Flags.SeparateBossHPScaling = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SeparateBossHPScaling"));
+			}
+		}
+
+		public bool ?SeparateEnemyHPScaling
+		{
+			get => Flags.SeparateEnemyHPScaling;
+			set
+			{
+				Flags.SeparateEnemyHPScaling = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SeparateEnemyHPScaling"));
+			}
+		}
+
+		public bool ?ClampBossHPScaling
+		{
+			get => Flags.ClampBossHPScaling;
+			set
+			{
+				Flags.ClampBossHPScaling = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ClampBossHPScaling"));
+			}
+		}
+
+		public bool ?ClampEnemyHpScaling
+		{
+			get => Flags.ClampEnemyHpScaling;
+			set
+			{
+				Flags.ClampEnemyHpScaling = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ClampEnemyHpScaling"));
+			}
+		}
+
+		public double EnemyHPScaleFactor
+		{
+			get => Flags.EnemyHPScaleFactor;
+			set
+			{
+				Flags.EnemyHPScaleFactor = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EnemyHPScaleFactor"));
+			}
+		}
+
+		public double BossHPScaleFactor
+		{
+			get => Flags.BossHPScaleFactor;
+			set
+			{
+				Flags.BossHPScaleFactor = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BossHPScaleFactor"));
+			}
+		}
 	}
 }
