@@ -245,7 +245,7 @@ namespace FF1Lib
 						overworldMap.ShuffleEntrancesAndFloors(rng, flags);
 					}
 
-					if ((bool)flags.ShuffleObjectiveNPCs)
+					if ((bool)flags.Treasures && (bool)flags.ShuffleObjectiveNPCs)
 					{
 						overworldMap.ShuffleObjectiveNPCs(rng);
 					}
