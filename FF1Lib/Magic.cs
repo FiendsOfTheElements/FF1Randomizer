@@ -41,10 +41,10 @@ namespace FF1Lib
 			public byte TextPointer;
 		}
 
-		public void ShuffleMagicLevels(MT19337 rng, bool keepPermissions, bool tieredShuffle, bool mixSpellbooks)
+		public void ShuffleMagicLevels(MT19337 rng, bool keepPermissions, bool tieredShuffle, bool mixSpellbooks, bool noSpellcrafter)
 		{
 			var magicSpells = GetSpells();
-			if(tieredShuffle)
+			if(tieredShuffle && noSpellcrafter)
 			{
 				// if we are doing a tiered shuffle, swap the position of TMPR and SABR before further shuffling for balance purposes
 				MagicSpell tmpTMPR = magicSpells[14];

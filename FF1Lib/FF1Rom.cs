@@ -295,7 +295,7 @@ namespace FF1Lib
 
 			if (((bool)flags.MagicLevels))
 			{
-				ShuffleMagicLevels(rng, ((bool)flags.MagicPermissions), (bool)flags.MagicLevelsTiered, (bool)flags.MagicLevelsMixed);
+				ShuffleMagicLevels(rng, ((bool)flags.MagicPermissions), (bool)flags.MagicLevelsTiered, (bool)flags.MagicLevelsMixed, (bool)!flags.GenerateNewSpellbook);
 			}
 
 			/*
