@@ -34,6 +34,8 @@ namespace FF1Lib
 		public bool? MagicPermissions { get; set; } = false;
 		public bool? ItemMagic { get; set; } = false;
 		public bool RebalanceSpells { get; set; } = false;
+		public bool? MagicLevelsTiered { get; set; } = false;
+		public bool? MagicLevelsMixed { get; set; } = false;
 
 		public bool? Rng { get; set; } = false;
 		public bool FixMissingBattleRngEntry { get; set; } = false;
@@ -501,6 +503,8 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.MagicLevels);
 			sum = AddTriState(sum, flags.MagicPermissions);
 			sum = AddTriState(sum, flags.ItemMagic);
+			sum = AddTriState(sum, flags.MagicLevelsTiered);
+			sum = AddTriState(sum, flags.MagicLevelsMixed);
 			sum = AddBoolean(sum, flags.RebalanceSpells);
 			sum = AddTriState(sum, flags.Rng);
 			sum = AddBoolean(sum, flags.FixMissingBattleRngEntry);
@@ -867,6 +871,8 @@ namespace FF1Lib
 				FixMissingBattleRngEntry = GetBoolean(ref sum),
 				Rng = GetTriState(ref sum),
 				RebalanceSpells = GetBoolean(ref sum),
+				MagicLevelsMixed = GetTriState(ref sum),
+				MagicLevelsTiered = GetTriState(ref sum),
 				ItemMagic = GetTriState(ref sum),
 				MagicPermissions = GetTriState(ref sum),
 				MagicLevels = GetTriState(ref sum),
