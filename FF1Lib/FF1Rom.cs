@@ -245,7 +245,7 @@ namespace FF1Lib
 						overworldMap.ShuffleEntrancesAndFloors(rng, flags);
 					}
 
-					if ((bool)flags.Treasures && (bool)flags.ShuffleObjectiveNPCs)
+					if ((bool)flags.ShuffleObjectiveNPCs)
 					{
 						overworldMap.ShuffleObjectiveNPCs(rng);
 					}
@@ -329,6 +329,10 @@ namespace FF1Lib
 			if (((bool)flags.EnemySkillsSpells))
 			{
 				ShuffleEnemySkillsSpells(rng, (bool)!flags.BossSkillsOnly);
+				if((bool)flags.EnemySkillsSpellsTiered && (bool)!flags.BossSkillsOnly)
+				{
+					GenerateBalancedEnemyScripts(rng);
+				}
 			}
 
 			if (((bool)flags.EnemyStatusAttacks))

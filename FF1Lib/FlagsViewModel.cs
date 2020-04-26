@@ -388,6 +388,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BossSkillsOnly"));
 			}
 		}
+		public bool? EnemySkillsSpellsTiered
+		{
+			get => Flags.EnemySkillsSpellsTiered;
+			set
+			{
+				Flags.EnemySkillsSpellsTiered = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EnemySkillsSpellsTiered"));
+			}
+		}
 		public bool? EnemyStatusAttacks
 		{
 			get => Flags.EnemyStatusAttacks;
