@@ -328,10 +328,13 @@ namespace FF1Lib
 
 			if (((bool)flags.EnemySkillsSpells))
 			{
-				ShuffleEnemySkillsSpells(rng, (bool)!flags.BossSkillsOnly);
 				if((bool)flags.EnemySkillsSpellsTiered && (bool)!flags.BossSkillsOnly)
 				{
 					GenerateBalancedEnemyScripts(rng);
+				}
+				else
+				{
+					ShuffleEnemySkillsSpells(rng, (bool)!flags.BossSkillsOnly);
 				}
 			}
 
