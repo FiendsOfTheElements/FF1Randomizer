@@ -49,15 +49,6 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Spoilers"));
 			}
 		}
-		public bool TournamentSafe
-		{
-			get => Flags.TournamentSafe;
-			set
-			{
-				Flags.TournamentSafe = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TournamentSafe"));
-			}
-		}
 		public bool? Shops
 		{
 			get => Flags.Shops;

@@ -4,7 +4,6 @@
 	"Flags": {
 
 		"Spoilers": true,
-		"TournamentSafe": false,
 		"Shops": true,
 		"Treasures": true,
 		"NPCItems": true,

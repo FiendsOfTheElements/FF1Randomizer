@@ -3,7 +3,6 @@
 
 	"Flags": {
 		"Spoilers": false,
-		"TournamentSafe": false,
 
 		"Shops": true,
 		"Treasures": true,
@@ -28,7 +27,7 @@
 
 		"Rng": true,
 		"EverythingUnrunnable": false,
-		"EnemyFormationsUnrunnable": false,
+		"EnemyFormationsUnrunnable":  false,
 		"EnemyFormationsSurprise": false,
 		"UnrunnablesStrikeFirstAndSurprise": false,
 		"EnemyTrapTiles": false,
