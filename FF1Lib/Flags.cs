@@ -11,6 +11,7 @@ namespace FF1Lib
 	public class Flags : IIncentiveFlags, IMapEditFlags, IScaleFlags, IFloorShuffleFlags
 	{
 		public bool Spoilers { get; set; }
+		public bool TournamentSafe { get; set; } = false;
 
 		public bool? Shops { get; set; }
 		public bool? Treasures { get; set; }
