@@ -1986,6 +1986,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AllSpellLevelsForKnightNinja"));
 			}
 		}
+		public bool BuffHealingSpells
+		{
+			get => Flags.BuffHealingSpells;
+			set
+			{
+				Flags.BuffHealingSpells = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BuffHealingSpells"));
+			}
+		}
 		public bool? FreeTail
 		{
 			get => Flags.FreeTail;

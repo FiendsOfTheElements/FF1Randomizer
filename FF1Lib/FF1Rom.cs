@@ -209,6 +209,10 @@ namespace FF1Lib
 				KnightNinjaChargesForAllLevels();
 			}
 
+			if (flags.BuffHealingSpells) {
+				BuffHealingSpells();
+			}
+
 			if ((bool)flags.GenerateNewSpellbook)
 			{
 				CraftNewSpellbook(rng, (bool)flags.SpellcrafterMixSpells, flags.RebalanceSpells, (bool)flags.MagicLevels, (bool)flags.SpellcrafterRetainPermissions);
