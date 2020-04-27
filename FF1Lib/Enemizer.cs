@@ -217,6 +217,8 @@ namespace FF1Lib
 						}
 					}
 				}
+				if (routine == 0x02)
+					tier = 0; // HARM spells are always tier 0
 				if (routine == 0x03 || routine == 0x12) // negative status effect OR power word spells (both are judged by the same criteria)
 				{
 					if ((effect & 0b11) != 0) // death/stone overrides all other statuses
@@ -3369,6 +3371,190 @@ namespace FF1Lib
 					Console.WriteLine("Fission Mailed - Abort Formation Shuffle");
 					throw new InsaneException("Something went wrong with Formation Generation (Enemizer)!");
 				}
+			}
+		}
+
+		public void GenerateBalancedEnemyScripts(MT19337 rng)
+		{
+			SpellInfo[] spell = new SpellInfo[MagicCount]; // list of spells and their appropriate tiers
+			EnemySkillInfo[] skill = new EnemySkillInfo[EnemySkillCount]; // list of enemy skills and their appropriate tiers
+			EnemyScriptInfo[] script = new EnemyScriptInfo[ScriptCount]; // list of enemy scripts
+
+			// load values from the ROM (this can be normal spells or Spellcrafter spells)
+			byte[] skilltiers_enemy = new byte[]
+			{
+				2, 1, 2, 1, 1, 1, 3, 2, 1, 3, 3, 3, 4, 2, 4, 3, 3, 3, 3, 1, 5, 1, 2, 2, 4, 4
+			};
+			for (int i = 0; i < MagicCount; ++i)
+			{
+				spell[i] = new SpellInfo();
+				spell[i].decompressData(Get(MagicOffset + i * MagicSize, MagicSize));
+				spell[i].calc_Enemy_SpellTier();
+			}
+			for (int i = 0; i < EnemySkillCount; ++i)
+			{
+				skill[i] = new EnemySkillInfo();
+				skill[i].decompressData(Get(EnemySkillOffset + i * EnemySkillSize, EnemySkillSize));
+				skill[i].tier = skilltiers_enemy[i];
+			}
+			for (int i = 0; i < ScriptCount; ++i)
+			{
+				script[i] = new EnemyScriptInfo();
+				script[i].decompressData(Get(ScriptOffset + i * ScriptSize, ScriptSize));
+			}
+			EnemyInfo[] enemy = new EnemyInfo[EnemyCount]; // list of enemies, including information that is either inferred from formation inspection or tier lists that I have just made up
+			// set enemy default tier list.  these tier rankings are different from the enemizer basis, but show the kind of skills/spells that are prioritized
+			// when a script lands on that monster.  the final 10 enemies are warmech, the fiends, and chaos.
+			int[] enemyTierList = new int[] {     0, 1, 1, 1, 1, 2, 1, 3, 3, 2, 3, 3, 1, 1, 3, 1,
+												  1, 1, 3, 1, 4, 1, 1, 1, 1, 1, 2, 1, 1, 3, 1, 1,
+												  3, 1, 2, 2, 2, 2, 3, 1, 1, 2, 3, 1, 1, 1, 1, 4,
+												  3, 2, 3, 5, 3, 3, 2, 3, 2, 3, 2, 3, 3, 4, 1, 3,
+												  2, 3, 4, 4, 4, 1, 1, 1, 3, 1, 1, 3, 2, 3, 3, 1,
+												  3, 2, 2, 3, 3, 4, 5, 1, 2, 2, 3, 2, 4, 2, 2, 3,
+												  4, 3, 3, 3, 4, 3, 4, 1, 3, 1, 4, 4, 3, 3, 5, 3,
+												  4, 3, 3, 4, 1, 3, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
+			for (int i = 0; i < EnemyCount; ++i)
+			{
+				enemy[i] = new EnemyInfo();
+				enemy[i].decompressData(Get(EnemyOffset + i * EnemySize, EnemySize));
+				enemy[i].tier = enemyTierList[i];
+			}
+
+			int medusaScriptTier = 10;
+			for(int i = 0; i < EnemyCount - 10; ++i)
+			{
+				if (enemy[i].AIscript == 0xFF)
+					continue; // skip any enemy without a script
+				if (enemy[i].AIscript == 0x02 && enemy[i].tier >= medusaScriptTier)
+					continue; // skip medusa script if this enemy is stronger than another monster with the medusa script
+				int[] tierchance = new int[5];
+				int[] skilltierchance = new int[4];
+				tierchance[0] = 0; tierchance[1] = 0; tierchance[2] = 0; tierchance[3] = 0; tierchance[4] = 0;
+				skilltierchance[0] = 0; skilltierchance[1] = 0; skilltierchance[2] = 0; skilltierchance[3] = 0; 
+				switch (enemy[i].tier)
+				{
+					case 0:
+						enemy[i].AIscript = 0xFF; // disable scripts if they land on IMP
+						break;
+					case 1:
+						// enemy will only have weak spells and skills
+						skilltierchance[0] = 10;
+						tierchance[0] = 6;
+						tierchance[1] = 4;
+						break;
+					case 2:
+						// enemy may have medium tier skills but mostly weak spells with small chance of mid-tier spells
+						skilltierchance[0] = 2;
+						skilltierchance[1] = 8;
+						tierchance[0] = 2;
+						tierchance[1] = 6;
+						tierchance[2] = 2;
+						break;
+					case 3:
+						// enemy tends towards mid-tier spells and skills with a very small chance of higher tier spells
+						skilltierchance[0] = 1;
+						skilltierchance[1] = 9;
+						tierchance[0] = 1;
+						tierchance[1] = 2;
+						tierchance[2] = 6;
+						tierchance[3] = 1;
+						break;
+					case 4:
+						// enemy uses exclusively high tier skills and is close to 50/50 on high/mid tier spells
+						skilltierchance[2] = 10;
+						tierchance[1] = 1;
+						tierchance[2] = 5;
+						tierchance[3] = 4;
+						break;
+					case 5:
+						// enemy uses exclusively high tier skills with a small chance of using god-tier skills (SWIRL/TORNADO) and tends towards high tier spells with a small chance of god-tier spells (NUKE/FADE)
+						skilltierchance[2] = 8;
+						skilltierchance[3] = 2;
+						tierchance[2] = 2;
+						tierchance[3] = 6;
+						tierchance[4] = 2;
+						break;
+				}
+				// cycle through skills, replacing each skill with a tier appropriate skill
+				for(byte j = 0; j < 4; ++j)
+				{
+					if (script[enemy[i].AIscript].skill_list[j] == 0xFF)
+						continue; // skip blank skills
+					int diceRoll = rng.Between(0, 9);
+					List<byte> eligibleSkillIDs = new List<byte> { };
+					int sumRoll = 0;
+					for(int k = 0; k < 4; ++k)
+					{
+						sumRoll += skilltierchance[k];
+						if(diceRoll < sumRoll)
+						{
+							for(byte l = 0; l < EnemySkillCount; ++l)
+							{
+								if (skill[l].tier == k + 1)
+									eligibleSkillIDs.Add(l);
+							}
+							break;
+						}
+					}
+					if (eligibleSkillIDs.Count == 0)
+						script[enemy[i].AIscript].skill_list[j] = 0xFF;
+					else
+						script[enemy[i].AIscript].skill_list[j] = eligibleSkillIDs.PickRandom(rng);
+				}
+				// cycle through spells, replacing each spell with a tier appropriate skill (first slot will always be the dominant spell tier for this enemy tier)
+				if (script[enemy[i].AIscript].spell_list[0] != 0xFF)
+				{
+					List<byte> eligibleSpellIDs = new List<byte> { };
+					int bestTier = 1;
+					int bestValue = -1;
+					for(int j = 0; j < 5; ++j)
+					{
+						if(tierchance[j] > bestValue)
+						{
+							bestValue = tierchance[j];
+							bestTier = j + 1;
+						}
+					}
+					for(byte j = 0; j < MagicCount; ++j)
+					{
+						if (spell[j].tier == bestTier)
+							eligibleSpellIDs.Add(j);
+					}
+					if (eligibleSpellIDs.Count == 0)
+						script[enemy[i].AIscript].spell_list[0] = 0xFF;
+					else
+						script[enemy[i].AIscript].spell_list[0] = eligibleSpellIDs.PickRandom(rng);
+				}
+				for (byte j = 1; j < 8; ++j)
+				{
+					if (script[enemy[i].AIscript].spell_list[j] == 0xFF)
+						continue; // skip blank skills
+					int diceRoll = rng.Between(0, 9);
+					List<byte> eligibleSpellIDs = new List<byte> { };
+					int sumRoll = 0;
+					for (int k = 0; k < 5; ++k)
+					{
+						sumRoll += tierchance[k];
+						if (diceRoll < sumRoll)
+						{
+							for (byte l = 0; l < MagicCount; ++l)
+							{
+								if (spell[l].tier == k + 1)
+									eligibleSpellIDs.Add(l);
+							}
+							break;
+						}
+					}
+					if (eligibleSpellIDs.Count == 0)
+						script[enemy[i].AIscript].spell_list[j] = 0xFF;
+					else
+						script[enemy[i].AIscript].spell_list[j] = eligibleSpellIDs.PickRandom(rng);
+				}
+			}
+			// write the modified scripts to ROM
+			for (int i = 0; i < ScriptCount; ++i)
+			{
+				Put(ScriptOffset + ScriptSize * i, script[i].compressData()); // and move the modified scripts as well
 			}
 		}
 	}

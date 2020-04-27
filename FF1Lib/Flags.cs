@@ -50,6 +50,7 @@ namespace FF1Lib
 		public bool? BossScriptsOnly { get; set; } = false;
 		public bool? EnemySkillsSpells { get; set; } = false;
 		public bool? BossSkillsOnly { get; set; } = false;
+		public bool? EnemySkillsSpellsTiered { get; set; } = false;
 		public bool? EnemyStatusAttacks { get; set; } = false;
 		public bool? RandomStatusAttacks { get; set; } = false;
 		public bool? AllowUnsafePirates { get; set; } = false;
@@ -524,6 +525,7 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.BossScriptsOnly);
 			sum = AddTriState(sum, flags.EnemySkillsSpells);
 			sum = AddTriState(sum, flags.BossSkillsOnly);
+			sum = AddTriState(sum, flags.EnemySkillsSpellsTiered);
 			sum = AddTriState(sum, flags.EnemyStatusAttacks);
 			sum = AddTriState(sum, flags.RandomStatusAttacks);
 			sum = AddTriState(sum, flags.AllowUnsafePirates);
@@ -876,6 +878,7 @@ namespace FF1Lib
 				AllowUnsafePirates = GetTriState(ref sum),
 				RandomStatusAttacks = GetTriState(ref sum),
 				EnemyStatusAttacks = GetTriState(ref sum),
+				EnemySkillsSpellsTiered = GetTriState(ref sum),
 				BossSkillsOnly = GetTriState(ref sum),
 				EnemySkillsSpells = GetTriState(ref sum),
 				BossScriptsOnly = GetTriState(ref sum),
