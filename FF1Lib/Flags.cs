@@ -236,6 +236,7 @@ namespace FF1Lib
 		public bool? SpellcrafterMixSpells { get; set; } = false;
 		public bool ThiefHitRate { get; set; } = false;
 		public bool AllSpellLevelsForKnightNinja { get; set; } = false;
+		public bool BuffHealingSpells { get; set; } = false;
 		public bool? FreeTail { get; set; } = false;
 		public bool? SpellcrafterRetainPermissions { get; set; } = false;
 		public bool? RandomWeaponBonus { get; set; } = false;
@@ -675,6 +676,7 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.SpellcrafterMixSpells);
 			sum = AddBoolean(sum, flags.ThiefHitRate);
 			sum = AddBoolean(sum, flags.AllSpellLevelsForKnightNinja);
+			sum = AddBoolean(sum, flags.BuffHealingSpells);
 			sum = AddTriState(sum, flags.FreeTail);
 			sum = AddTriState(sum, flags.SpellcrafterRetainPermissions);
 			sum = AddTriState(sum, flags.RandomWeaponBonus);
@@ -705,6 +707,7 @@ namespace FF1Lib
 				RandomWeaponBonus = GetTriState(ref sum),
 				SpellcrafterRetainPermissions = GetTriState(ref sum),
 				FreeTail = GetTriState(ref sum),
+				BuffHealingSpells = GetBoolean(ref sum),
 				AllSpellLevelsForKnightNinja = GetBoolean(ref sum),
 				ThiefHitRate = GetBoolean(ref sum),
 				SpellcrafterMixSpells = GetTriState(ref sum),
