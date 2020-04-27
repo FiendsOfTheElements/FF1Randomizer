@@ -11,7 +11,7 @@ namespace FF1Lib
 	public class Flags : IIncentiveFlags, IMapEditFlags, IScaleFlags, IFloorShuffleFlags
 	{
 		public bool Spoilers { get; set; }
-		public bool TournamentSafe { get; set; } = false;
+		public bool TournamentSafe { get; set; }
 
 		public bool? Shops { get; set; }
 		public bool? Treasures { get; set; }
@@ -630,6 +630,7 @@ namespace FF1Lib
 			sum = AddNumeric(sum, Enum.GetValues(typeof(WorldWealth)).Cast<int>().Max() + 1, (int)flags.WorldWealth);
 			sum = AddBoolean(sum, flags.AllowStartAreaDanager);
 			sum = AddBoolean(sum, flags.Spoilers);
+			sum = AddBoolean(sum, flags.TournamentSafe);
 
 			return BigIntegerToString(sum);
 		}
@@ -640,6 +641,7 @@ namespace FF1Lib
 
 			var flags = new Flags
 			{
+				TournamentSafe = GetBoolean(ref sum),
 				Spoilers = GetBoolean(ref sum),
 				AllowStartAreaDanager = GetBoolean(ref sum),
 				WorldWealth = (WorldWealth)GetNumeric(ref sum, Enum.GetValues(typeof(WorldWealth)).Cast<int>().Max() + 1),
