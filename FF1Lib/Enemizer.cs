@@ -3498,7 +3498,6 @@ namespace FF1Lib
 							break;
 						}
 					}
-					Console.WriteLine(eligibleSkillIDs.Count);
 					if (eligibleSkillIDs.Count == 0)
 						script[enemy[i].AIscript].skill_list[j] = 0xFF;
 					else
@@ -3523,7 +3522,6 @@ namespace FF1Lib
 						if (spell[j].tier == bestTier)
 							eligibleSpellIDs.Add(j);
 					}
-					Console.WriteLine(eligibleSpellIDs.Count);
 					if (eligibleSpellIDs.Count == 0)
 						script[enemy[i].AIscript].spell_list[0] = 0xFF;
 					else
@@ -3549,7 +3547,6 @@ namespace FF1Lib
 							break;
 						}
 					}
-					Console.WriteLine(eligibleSpellIDs.Count);
 					if (eligibleSpellIDs.Count == 0)
 						script[enemy[i].AIscript].spell_list[j] = 0xFF;
 					else
