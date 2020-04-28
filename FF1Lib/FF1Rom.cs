@@ -667,13 +667,18 @@ namespace FF1Lib
 					hashable[i] = 0;
 				}
 				//palettes continued
+				for (int i = 0x3EBA6; i < 0x3EBB2; i++)
+				{
+					hashable[i] = 0;
+				}
+				//palettes continued
 				for (int i = 0x3ECA4; i < 0x3ECB0; i++)
 				{
 					hashable[i] = 0;
 				}
 
 				var Hash = hasher.ComputeHash(hashable);
-				if (ByteArrayToString(Hash) != "022cc07015f25c37d617b5c725d3f545b142f9021ff6824db769294d60333d8b")
+				if (ByteArrayToString(Hash) != "bf3dfa0d7dcaf239f3382907b2d7aa74b6c5af4bd56d73038a17e08f3c272957")
 				{
 					Console.WriteLine($"Rom hash: {ByteArrayToString(Hash)}");
 					throw new TournamentSafeException("File has been modified");
