@@ -3475,6 +3475,8 @@ namespace FF1Lib
 						tierchance[4] = 2;
 						break;
 				}
+				if (enemy[i].tier == 0)
+					continue; // no need to roll for tier 0 enemies (imps) since we simply remove their script
 				// cycle through skills, replacing each skill with a tier appropriate skill
 				for(byte j = 0; j < 4; ++j)
 				{
