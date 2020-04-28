@@ -3455,8 +3455,8 @@ namespace FF1Lib
 						skilltierchance[0] = 1;
 						skilltierchance[1] = 9;
 						tierchance[0] = 1;
-						tierchance[1] = 2;
-						tierchance[2] = 5;
+						tierchance[1] = 1;
+						tierchance[2] = 6;
 						tierchance[3] = 2;
 						break;
 					case 4:
