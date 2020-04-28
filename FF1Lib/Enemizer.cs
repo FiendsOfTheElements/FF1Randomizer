@@ -3475,6 +3475,8 @@ namespace FF1Lib
 						tierchance[4] = 2;
 						break;
 				}
+				if (enemy[i].tier == 0)
+					continue; // no need to roll for tier 0 enemies (imps) since we simply remove their script
 				// cycle through skills, replacing each skill with a tier appropriate skill
 				for(byte j = 0; j < 4; ++j)
 				{
@@ -3496,6 +3498,7 @@ namespace FF1Lib
 							break;
 						}
 					}
+					Console.WriteLine(eligibleSkillIDs.Count);
 					if (eligibleSkillIDs.Count == 0)
 						script[enemy[i].AIscript].skill_list[j] = 0xFF;
 					else
@@ -3520,6 +3523,7 @@ namespace FF1Lib
 						if (spell[j].tier == bestTier)
 							eligibleSpellIDs.Add(j);
 					}
+					Console.WriteLine(eligibleSpellIDs.Count);
 					if (eligibleSpellIDs.Count == 0)
 						script[enemy[i].AIscript].spell_list[0] = 0xFF;
 					else
@@ -3545,6 +3549,7 @@ namespace FF1Lib
 							break;
 						}
 					}
+					Console.WriteLine(eligibleSpellIDs.Count);
 					if (eligibleSpellIDs.Count == 0)
 						script[enemy[i].AIscript].spell_list[j] = 0xFF;
 					else
