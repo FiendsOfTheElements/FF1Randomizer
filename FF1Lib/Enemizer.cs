@@ -3456,22 +3456,22 @@ namespace FF1Lib
 						skilltierchance[1] = 9;
 						tierchance[0] = 1;
 						tierchance[1] = 2;
-						tierchance[2] = 6;
-						tierchance[3] = 1;
+						tierchance[2] = 5;
+						tierchance[3] = 2;
 						break;
 					case 4:
-						// enemy uses exclusively high tier skills and is close to 50/50 on high/mid tier spells
+						// enemy uses exclusively high tier skills and tends towards high-tier spells
 						skilltierchance[2] = 10;
 						tierchance[1] = 1;
-						tierchance[2] = 5;
-						tierchance[3] = 4;
+						tierchance[2] = 3;
+						tierchance[3] = 6;
 						break;
 					case 5:
-						// enemy uses exclusively high tier skills with a small chance of using god-tier skills (SWIRL/TORNADO) and tends towards high tier spells with a small chance of god-tier spells (NUKE/FADE)
-						skilltierchance[2] = 8;
-						skilltierchance[3] = 2;
-						tierchance[2] = 2;
-						tierchance[3] = 6;
+						// enemy uses exclusively high tier skills with a chance of using god-tier skills (SWIRL/TORNADO) and tends towards high tier spells with a small chance of god-tier spells (NUKE/FADE)
+						skilltierchance[2] = 6;
+						skilltierchance[3] = 4;
+						tierchance[2] = 1;
+						tierchance[3] = 7;
 						tierchance[4] = 2;
 						break;
 				}
