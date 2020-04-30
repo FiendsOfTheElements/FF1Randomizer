@@ -16,6 +16,7 @@ namespace FF1Lib
 		public const int EnemySkillTextPointerOffset = 0x2B600;
 		public const int EnemySkillTextPointerBase = 0x20000;
 		public const int EnemySkillTextOffset = 0x2B634;
+		public const int EnemyPatternTablesOffset = 0x1C000;
 
 		public const int EnemizerUnrunnabilityWeight = 31; // weight given to determine unrunnability.  for the highest level of encounters, this means 8/32 probability of a formation being unrunnable
 
@@ -1062,7 +1063,7 @@ namespace FF1Lib
 			formationData[0x02] = ENF_DrawForcedSingleFight(en, rng, enemy, 6, 0x02);
 			formationData[0x03] = ENF_DrawForcedSingleFight(en, rng, enemy, 6, 0x03);
 			formationData[0x04] = ENF_DrawBossEncounter(en, rng, enemy, Enemy.Phantom, 1, 0x02, true, 4, 0x04);
-			formationData[en.vamp_encounter] = ENF_DrawBossEncounter(en, rng, enemy, ENF_PickAVamp(enemy, uniqueEnemyIDs, rng), 1, 0x02, true, 4, 0x7C);
+			formationData[en.vamp_encounter] = ENF_DrawBossEncounter(en, rng, enemy, Enemy.Vampire, 1, 0x02, true, 4, 0x7C);
 			formationData[en.astos_encounter] = ENF_DrawBossEncounter(en, rng, enemy, Enemy.Astos, 1, 0x02, true, 4, 0x7D);
 			formationData[en.pirate_encounter] = ENF_DrawBossEncounter(en, rng, enemy, Enemy.Pirate, 9, 0x00, true, 4, 0x7E);
 			formationData[en.garland_encounter] = ENF_DrawBossEncounter(en, rng, enemy, Enemy.Garland, 1, 0x02, true, 4, 0x7F);
@@ -1747,15 +1748,6 @@ namespace FF1Lib
 			return f.compressData();
 		}
 
-		public byte ENF_PickAVamp(EnemyInfo[] enemy, List<byte> uniqueEnemyIDs, MT19337 rng)
-		{
-			// picks a random vampire for the Earth Cave fight.  priority is given to vampires that give out less than 3000 experience points, then to any monster under 3000 experience points
-			List<byte> vamps = uniqueEnemyIDs.Where(mon => enemy[mon].image == 24 && enemy[mon].exp <= 3000).ToList();
-			if (vamps.Count == 0)
-				vamps = uniqueEnemyIDs.Where(mon => enemy[mon].exp <= 3000).ToList();
-			return vamps.PickRandom(rng);
-		}
-
 		public int ENE_rollEnemyStrength(int tier, int level)
 		{
 			int[,] returnValue = new int[,] {
@@ -2062,7 +2054,7 @@ namespace FF1Lib
 				return 0xFF; // invalid tier returns no script
 		}
 
-		private bool DoEnemizer_Enemies(MT19337 rng, EnemyInfo[] enemy, SpellInfo[] spell, EnemySkillInfo[] skill, EnemyScriptInfo[] script, string[] enemyNames, string[] skillNames, bool shuffledSkillsOn, EnemizerTrackingInfo en)
+		private bool DoEnemizer_Enemies(MT19337 rng, EnemyInfo[] enemy, byte[] patterntabledata, SpellInfo[] spell, EnemySkillInfo[] skill, EnemyScriptInfo[] script, string[] enemyNames, string[] skillNames, bool shuffledSkillsOn, EnemizerTrackingInfo en)
 		{
 			List<byte> enemyImageLUT = new List<byte> { 0b00000000, 0b00000010, 0b00000001, 0b00000011, 0b00000100, 0b00000110, 0b00000101, 0b00000111,
 														0b00001000, 0b00001010, 0b00001001, 0b00001011, 0b00001100, 0b00001110, 0b00001101, 0b00001111,
@@ -2071,6 +2063,54 @@ namespace FF1Lib
 														0b00100000, 0b00100010, 0b00100001, 0b00100011, 0b00100100, 0b00100110, 0b00100101, 0b00100111,
 														0b00101000, 0b00101010, 0b00101001, 0b00101011, 0b00101100, 0b00101110, 0b00101101, 0b00101111,
 														0b00110000, 0b00110010, 0b00110001, 0b00110011 }; // these are the default tilesets + pics of the enemies we wish to shuffle
+			// first, we shuffle what images appear in which pattern tables.  small enemies can replace small enemies, and large enemies can replace large
+			List<byte> smallImages = new List<byte> {	0b00000000, 0b00000010, 0b00000100, 0b00000110, 0b00001000, 0b00001010, 0b00001100, 0b00001110,
+														0b00010000, 0b00010010, 0b00010100, 0b00010110, 0b00011000, 0b00011010, 0b00011100, 0b00011110,
+														0b00100000, 0b00100010, 0b00100100, 0b00100110, 0b00101000, 0b00101010, 0b00101100, 0b00101110,
+														0b00110000, 0b00110010 };
+			List<byte> largeImages = new List<byte> {   0b00000001, 0b00000011, 0b00000101, 0b00000111, 0b00001001, 0b00001011, 0b00001101, 0b00001111,
+														0b00010001, 0b00010011, 0b00010101, 0b00010111, 0b00011001, 0b00011011, 0b00011101, 0b00011111,
+														0b00100001, 0b00100011, 0b00100101, 0b00100111, 0b00101001, 0b00101011, 0b00101101, 0b00101111,
+														0b00110001, 0b00110011 };
+			smallImages.Shuffle(rng);
+			largeImages.Shuffle(rng);
+			byte[] newPatternTableData = new byte[0x6800];
+			patterntabledata.CopyTo(newPatternTableData, 0);
+			List<byte> newEnemyImageLUT = new List<byte> {	0, 2, 1, 3, 4, 6, 5, 7,
+															8, 10, 9, 11, 12, 14, 13, 15,
+															16, 18, 17, 19, 20, 22, 21, 23,
+															24, 26, 25, 27, 28, 30, 29, 31,
+															32, 34, 33, 35, 36, 38, 37, 39,
+															40, 42, 41, 43, 44, 46, 45, 47,
+															48, 50, 49, 51 };
+			for(int i = 0; i < 13; ++i)
+			{
+				int small1offset = 0x800 * (smallImages[i * 2] / 4) + (smallImages[i * 2] % 4 == 0 ? 0x120 : 0x220);
+				int small2offset = 0x800 * (smallImages[i * 2 + 1] / 4) + (smallImages[i * 2 + 1] % 4 == 0 ? 0x120 : 0x220);
+				int large1offset = 0x800 * (largeImages[i * 2] / 4) + (largeImages[i * 2] % 4 == 1 ? 0x320 : 0x560);
+				int large2offset = 0x800 * (largeImages[i * 2 + 1] / 4) + (largeImages[i * 2 + 1] % 4 == 1 ? 0x320 : 0x560);
+				newEnemyImageLUT[i * 4] = smallImages[i * 2];
+				for(int j = 0; j < 0x100; ++j)
+				{ 
+					newPatternTableData[i * 0x800 + 0x120 + j] = patterntabledata[small1offset + j];
+				}
+				newEnemyImageLUT[i * 4 + 2] = smallImages[i * 2 + 1];
+				for (int j = 0; j < 0x100; ++j)
+				{
+					newPatternTableData[i * 0x800 + 0x220 + j] = patterntabledata[small2offset + j];
+				}
+				newEnemyImageLUT[i * 4 + 1] = largeImages[i * 2];
+				for (int j = 0; j < 0x240; ++j)
+				{
+					newPatternTableData[i * 0x800 + 0x320 + j] = patterntabledata[large1offset + j];
+				}
+				newEnemyImageLUT[i * 4 + 3] = largeImages[i * 2 + 1];
+				for (int j = 0; j < 0x240; ++j)
+				{
+					newPatternTableData[i * 0x800 + 0x560 + j] = patterntabledata[large2offset + j];
+				}
+			}
+			newPatternTableData.CopyTo(patterntabledata, 0);
 			List<byte> enemyImages = new List<byte> { };
 			for (int i = 0; i < Enemy.Lich; ++i)
 				enemyImages.Add(enemy[i].image); // we are reproducing the iamge array because we only want to shuffle the images, not the monsters themselves
@@ -2140,16 +2180,6 @@ namespace FF1Lib
 			monsterBaseNameUsed[45] = true; // dragon 2
 			enemyImageLUT.Shuffle(rng); // shuffle the LUT - whatever image was there in vanilla will be replaced with what is at its position in the LUT
 			enemyImages.Shuffle(rng); // and shuffle the enemy images themselves
-			byte whatIsPirate = enemyImageLUT[enemyImages[Enemy.Pirate]]; // find out what monster was assigned to the pirate
-			for (int i = 0; i < enemyImageLUT.Count(); ++i)
-			{
-				if (enemyImageLUT[i] == 0b00000110)
-				{
-					enemyImageLUT[i] = whatIsPirate; // assign whatever what given the pirate image the image that was assigned to the pirate monster's slot
-					break;
-				}
-			}
-			enemyImageLUT[enemyImages[Enemy.Pirate]] = 0b00000110; // and now assign the pirate himself his proper slot
 			for (int i = 0; i < GenericTilesetsCount; ++i) // generate the palettes for each tileset
 			{
 				en.palettesInTileset[i].Clear();
@@ -2192,15 +2222,21 @@ namespace FF1Lib
 							enemy[i].monster_type = 0b01111111;
 							break;
 						case Enemy.Pirate:
+							enemy[i].image = (byte)newEnemyImageLUT.IndexOf(6); // image forced to where the PIRATE image was moved
+							enemy[i].pal = 0x0B;
 							break;
 						case Enemy.Phantom:
 							break;
 						case Enemy.Garland:
+							enemy[i].image = (byte)newEnemyImageLUT.IndexOf(46); // image forced to where the GARLAND image was moved
+							enemy[i].pal = 0x13;
 							break;
 						case Enemy.Astos:
+							enemy[i].image = (byte)newEnemyImageLUT.IndexOf(50); // image forced to where the ASTOS image was moved
+							enemy[i].pal = 0x06;
 							break;
 						case Enemy.WarMech:
-							switch (enemy[i].image)
+							switch (newEnemyImageLUT[enemy[i].image])
 							{
 								case 0:
 									enemyNames[i] = "WarIMP";
@@ -2387,7 +2423,7 @@ namespace FF1Lib
 					int elemental = 9; // track elemental affinity for certain classes of monsters (elementals and dragons)
 					// generate monster's base elemental weakness/resist, type, and base name based on the monster image type
 					enemy[i].critrate = 1; // default crit rate of 1 for most enemies
-					switch (enemy[i].image)
+					switch (newEnemyImageLUT[enemy[i].image])
 					{
 						case 0: // Imp
 							enemyNames[i] = "IMP";
@@ -2892,10 +2928,10 @@ namespace FF1Lib
 					{
 						// else, roll the chance for an enemy to get a class modifier.  Each class of monster can have Frost, Red, Zombie, Were, and Wizard variants, though some monster classes can't use some of these
 						// this perk restricts the monster from rolling any other perks
-						if (rng.Between(0, 11) < monsterClassVariants[enemy[i].image].Count())
+						if (rng.Between(0, 11) < monsterClassVariants[newEnemyImageLUT[enemy[i].image]].Count())
 						{
 							didntChooseVariantClass = false;
-							string classModifier = monsterClassVariants[enemy[i].image].PickRandom(rng);
+							string classModifier = monsterClassVariants[newEnemyImageLUT[enemy[i].image]].PickRandom(rng);
 							switch (classModifier) // apply the traits of this enemy class
 							{
 								case "Wz":
@@ -2944,7 +2980,7 @@ namespace FF1Lib
 									break;
 							}
 							enemyNames[i] = classModifier + enemyNames[i]; // change the enemy's name
-							monsterClassVariants[enemy[i].image].Remove(classModifier); // remove this variant from the list of variants available for this enemy image
+							monsterClassVariants[newEnemyImageLUT[enemy[i].image]].Remove(classModifier); // remove this variant from the list of variants available for this enemy image
 						}
 					}
 					if (didntChooseVariantClass)
@@ -3174,14 +3210,14 @@ namespace FF1Lib
 						// if enemy's vanilla name has already been used, add a name modifier
 						if (elemental == 9) // don't make alternate names for elementals
 						{
-							if (monsterBaseNameUsed[enemy[i].image])
+							if (monsterBaseNameUsed[newEnemyImageLUT[enemy[i].image]])
 							{
-								string nameModifier = monsterNameVariants[enemy[i].image].PickRandom(rng);
+								string nameModifier = monsterNameVariants[newEnemyImageLUT[enemy[i].image]].PickRandom(rng);
 								enemyNames[i] = nameModifier + enemyNames[i];
-								monsterNameVariants[enemy[i].image].Remove(nameModifier);
+								monsterNameVariants[newEnemyImageLUT[enemy[i].image]].Remove(nameModifier);
 							}
 							else
-								monsterBaseNameUsed[enemy[i].image] = true;
+								monsterBaseNameUsed[newEnemyImageLUT[enemy[i].image]] = true;
 						}
 					}
 					if (enemy[i].AIscript != 0xFF) // set monster type to Mage if it has a script
@@ -3340,14 +3376,16 @@ namespace FF1Lib
 			en.PurgeIDFromEnemyTilesetList(Enemy.WarMech); // purging enemies from the generic enemy lists that we don't want to appear outside of set battles
 			if (doEnemies)
 			{
+				byte[] patterntabledata = Get(EnemyPatternTablesOffset, 0x6800); // each pattern table is 0x800 bytes and there are 13 pattern tables that we will edit
 				// do enemizer stuff
-				if(DoEnemizer_Enemies(rng, enemy, spell, skill, script, enemyNames, skillNames, shuffledSkillsOn, en))
+				if(DoEnemizer_Enemies(rng, enemy, patterntabledata, spell, skill, script, enemyNames, skillNames, shuffledSkillsOn, en))
 				{
 					doFormations = true; // must use formation generator with enemizer
 					for (int i = 0; i < EnemyCount; ++i)
 					{
 						Put(EnemyOffset + EnemySize * i, enemy[i].compressData()); // move every entry from the enemizer to the ROM
 					}
+					Put(EnemyPatternTablesOffset, patterntabledata); // write the new pattern tables as a chunk
 					for (int i = 0; i < ScriptCount; ++i)
 					{
 						Put(ScriptOffset + ScriptSize * i, script[i].compressData()); // and move the modified scripts as well
