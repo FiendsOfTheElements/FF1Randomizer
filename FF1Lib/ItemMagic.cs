@@ -48,7 +48,7 @@ namespace FF1Lib
 				// remove HARM spells with > 120 effectivity
 				Spells.RemoveAll(spell => spell.Data[4] == 0x02 && spell.Data[1] > 120);
 				// remove non-elemental power word kill
-				Spells.RemoveAll(spell => spell.Data[4] == 0x12 && (spell.Data[1] & 0b00000011) != 0);
+				Spells.RemoveAll(spell => spell.Data[4] == 0x12 && (spell.Data[1] & 0b00000011) != 0 && spell.Data[2] == 0b00000000);
 			}
 			Spells.Shuffle(rng); // Shuffle all spells remaining, then assign to each item that can cast a spell
 
