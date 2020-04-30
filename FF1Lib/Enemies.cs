@@ -44,6 +44,7 @@ namespace FF1Lib
 			public const int Crawl = 24;
 			public const int Phantom = 51;
 			public const int Mancat = 55;
+			public const int Vampire = 60;
 			public const int Coctrice = 81;
 			public const int Sorceror = 104;
 			public const int Garland = 105;
