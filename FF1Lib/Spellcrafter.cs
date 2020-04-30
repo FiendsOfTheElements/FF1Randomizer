@@ -2132,10 +2132,5 @@ namespace FF1Lib
 			}
 			return returnValue;
 		}
-
-		public void BalancedItemMagic(MT19337 rng)
-		{
-
-		}
 	}
 }
