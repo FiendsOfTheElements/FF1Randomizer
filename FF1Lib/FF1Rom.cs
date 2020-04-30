@@ -220,7 +220,7 @@ namespace FF1Lib
 
 			if ((bool)flags.ItemMagic)
 			{
-				ShuffleItemMagic(rng);
+				ShuffleItemMagic(rng, (bool)flags.BalancedItemMagicShuffle);
 			}
 
 			if ((bool)flags.ShortToFR)
