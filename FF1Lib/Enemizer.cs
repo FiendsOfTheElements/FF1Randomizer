@@ -1817,7 +1817,7 @@ namespace FF1Lib
 			if(minDamageTier < 1)
 				minDamageTier = 1;
 			int maxDamageTier = 8 - enemy.num_hits;
-			if (enemy.tier > 5)
+			if (enemy.Large)
 				maxDamageTier++;
 			if (enemy.num_hits > 1 && maxDamageTier == 7)
 				maxDamageTier = 6;
