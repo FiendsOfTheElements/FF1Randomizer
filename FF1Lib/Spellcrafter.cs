@@ -853,7 +853,7 @@ namespace FF1Lib
 										spell[index].elem = 0b00000001;
 										break;
 									case 6:
-										spell[index].effect = 0b10010000;
+										spell[index].effect = 0b10000000;
 										spell[index].targeting = 0x01;
 										spell[index].routine = routine;
 										spell[index].elem = 0b00000001;
