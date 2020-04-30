@@ -2034,6 +2034,16 @@ namespace FF1Lib
 			}
 		}
 
+		public bool? BalancedItemMagicShuffle
+		{
+			get => Flags.BalancedItemMagicShuffle;
+			set
+			{
+				Flags.BalancedItemMagicShuffle = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BalancedItemMagicShuffle"));
+			}
+		}
+
 		public bool ?SeparateBossHPScaling
 		{
 			get => Flags.SeparateBossHPScaling;
