@@ -116,22 +116,22 @@ namespace FF1Lib
 
 		}
 
-		public void ScaleEnemyStats(double scale, bool wrapOverflow, bool includeMorale, MT19337 rng, bool increaseOnly)
+		public void ScaleEnemyStats(double scale, bool wrapOverflow, bool includeMorale, MT19337 rng, bool increaseOnly, bool separateHPScale, double hpScale, bool hpIncreaseOnly)
 		{
-			NonBossEnemies.ForEach(index => ScaleSingleEnemyStats(index, scale, wrapOverflow, includeMorale, rng, increaseOnly));
+			NonBossEnemies.ForEach(index => ScaleSingleEnemyStats(index, scale, wrapOverflow, includeMorale, rng, increaseOnly, separateHPScale, hpScale, hpIncreaseOnly));
 		}
 
-		public void ScaleBossStats(double scale, bool wrapOverflow, bool includeMorale, MT19337 rng, bool increaseOnly)
+		public void ScaleBossStats(double scale, bool wrapOverflow, bool includeMorale, MT19337 rng, bool increaseOnly, bool separateHPScale, double hpScale, bool hpIncreaseOnly)
 		{
-			Bosses.ForEach(index => ScaleSingleEnemyStats(index, scale, wrapOverflow, includeMorale, rng, increaseOnly));
+			Bosses.ForEach(index => ScaleSingleEnemyStats(index, scale, wrapOverflow, includeMorale, rng, increaseOnly, separateHPScale, hpScale, hpIncreaseOnly));
 		}
 
-		public void ScaleSingleEnemyStats(int index, double scale, bool wrapOverflow, bool includeMorale, MT19337 rng, bool increaseOnly)
+		public void ScaleSingleEnemyStats(int index, double scale, bool wrapOverflow, bool includeMorale, MT19337 rng, bool increaseOnly, bool separateHPScale, double hpScale, bool hpIncreaseOnly)
 		{
 			var enemy = Get(EnemyOffset + index * EnemySize, EnemySize);
 
 			var hp = BitConverter.ToUInt16(enemy, 4);
-			hp = (ushort)Min(Scale(hp, scale, 1.0, rng, increaseOnly), 0x7FFF);
+			hp = (ushort)Min(Scale(hp, separateHPScale ? hpScale : scale, 1.0, rng, separateHPScale ? hpIncreaseOnly : increaseOnly), 0x7FFF);
 			var hpBytes = BitConverter.GetBytes(hp);
 			Array.Copy(hpBytes, 0, enemy, 4, 2);
 

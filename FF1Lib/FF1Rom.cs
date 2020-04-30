@@ -541,6 +541,17 @@ namespace FF1Lib
 				DontDoubleBBCritRates();
 			}
 
+			//needs to go after item magic, goes before weapon crit doubling now to actually change 1% per bonus
+			if ((bool)flags.RandomWeaponBonus)
+			{
+				RandomWeaponBonus(rng);
+			}
+
+			if ((bool)flags.RandomArmorBonus)
+			{
+				RandomArmorBonus(rng);
+			}
+
 			if (flags.WeaponCritRate)
 			{
 				DoubleWeaponCritRates();
@@ -554,17 +565,6 @@ namespace FF1Lib
 			if (flags.WeaponStats)
 			{
 				FixWeaponStats();
-			}
-
-			//needs to go after item magic
-			if ((bool)flags.RandomWeaponBonus)
-			{
-				RandomWeaponBonus(rng);
-			}
-
-			if ((bool)flags.RandomArmorBonus)
-			{
-				RandomArmorBonus(rng);
 			}
 
 			if (flags.ChanceToRun)
@@ -626,12 +626,12 @@ namespace FF1Lib
 
 			if (flags.EnemyScaleFactor > 1)
 			{
-				ScaleEnemyStats(flags.EnemyScaleFactor, flags.WrapStatOverflow, flags.IncludeMorale, rng, ((bool)flags.ClampMinimumStatScale));
+				ScaleEnemyStats(flags.EnemyScaleFactor, flags.WrapStatOverflow, flags.IncludeMorale, rng, (bool)flags.ClampMinimumStatScale, (bool)flags.SeparateEnemyHPScaling, flags.EnemyHPScaleFactor, (bool)flags.ClampEnemyHpScaling);
 			}
 
 			if (flags.BossScaleFactor > 1)
 			{
-				ScaleBossStats(flags.BossScaleFactor, flags.WrapStatOverflow, flags.IncludeMorale, rng, ((bool)flags.ClampMinimumBossStatScale));
+				ScaleBossStats(flags.BossScaleFactor, flags.WrapStatOverflow, flags.IncludeMorale, rng, (bool)flags.ClampMinimumBossStatScale, (bool)flags.SeparateBossHPScaling, flags.BossHPScaleFactor, (bool)flags.ClampBossHPScaling);
 			}
 
 			PartyComposition(rng, flags, preferences);

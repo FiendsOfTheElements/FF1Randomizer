@@ -241,6 +241,12 @@ namespace FF1Lib
 		public bool? SpellcrafterRetainPermissions { get; set; } = false;
 		public bool? RandomWeaponBonus { get; set; } = false;
 		public bool? RandomArmorBonus { get; set; } = false;
+		public bool? SeparateBossHPScaling { get; set; } = false;
+		public bool? SeparateEnemyHPScaling { get; set; } = false;
+		public bool? ClampBossHPScaling { get; set; } = false;
+		public bool? ClampEnemyHpScaling { get; set; } = false;
+		public double EnemyHPScaleFactor { get; set; } = 1;
+		public double BossHPScaleFactor { get; set; } = 1;
 
 		public MDEFGrowthMode MDefMode { get; set; } = MDEFGrowthMode.None;
 
@@ -681,6 +687,12 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.SpellcrafterRetainPermissions);
 			sum = AddTriState(sum, flags.RandomWeaponBonus);
 			sum = AddTriState(sum, flags.RandomArmorBonus);
+			sum = AddTriState(sum, flags.SeparateBossHPScaling);
+			sum = AddTriState(sum, flags.SeparateEnemyHPScaling);
+			sum = AddTriState(sum, flags.ClampBossHPScaling);
+			sum = AddTriState(sum, flags.ClampEnemyHpScaling);
+			sum = AddNumeric(sum, 41, (int)(10.0 * flags.EnemyHPScaleFactor) - 10);
+			sum = AddNumeric(sum, 41, (int)(10.0 * flags.BossHPScaleFactor) - 10);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(FormationShuffleMode)).Cast<int>().Max() + 1, (int)flags.FormationShuffleMode);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(MDEFGrowthMode)).Cast<int>().Max() + 1, (int)flags.MDefMode);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(WorldWealthMode)).Cast<int>().Max() + 1, (int)flags.WorldWealth);
@@ -703,6 +715,12 @@ namespace FF1Lib
 				WorldWealth = (WorldWealthMode)GetNumeric(ref sum, Enum.GetValues(typeof(WorldWealthMode)).Cast<int>().Max() + 1),
 				MDefMode = (MDEFGrowthMode)GetNumeric(ref sum, Enum.GetValues(typeof(MDEFGrowthMode)).Cast<int>().Max() + 1),
 				FormationShuffleMode = (FormationShuffleMode)GetNumeric(ref sum, Enum.GetValues(typeof(FormationShuffleMode)).Cast<int>().Max() + 1),
+				BossHPScaleFactor = (GetNumeric(ref sum, 41) + 10) / 10.0,
+				EnemyHPScaleFactor = (GetNumeric(ref sum, 41) + 10) / 10.0,
+				ClampEnemyHpScaling = GetTriState(ref sum),
+				ClampBossHPScaling = GetTriState(ref sum),
+				SeparateEnemyHPScaling = GetTriState(ref sum),
+				SeparateBossHPScaling = GetTriState(ref sum),
 				RandomArmorBonus = GetTriState(ref sum),
 				RandomWeaponBonus = GetTriState(ref sum),
 				SpellcrafterRetainPermissions = GetTriState(ref sum),
