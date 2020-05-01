@@ -3458,13 +3458,21 @@ namespace FF1Lib
 				enemy[i].tier = enemyTierList[i];
 			}
 
-			int medusaScriptTier = 10;
+			bool[] scriptRepeat = new bool[ScriptCount];
+			int[] scriptLowestTier = new int[ScriptCount];
+			for(int i = 0; i < ScriptCount; ++i)
+			{
+				scriptRepeat[i] = false;
+				scriptLowestTier[i] = 10;
+			}
 			for(int i = 0; i < EnemyCount - 10; ++i)
 			{
 				if (enemy[i].AIscript == 0xFF)
 					continue; // skip any enemy without a script
-				if (enemy[i].AIscript == 0x02 && enemy[i].tier >= medusaScriptTier)
+				if (scriptRepeat[enemy[i].AIscript] && enemy[i].tier >= scriptLowestTier[enemy[i].AIscript])
 					continue; // skip medusa script if this enemy is stronger than another monster with the medusa script
+				scriptRepeat[enemy[i].AIscript] = true;
+				scriptLowestTier[enemy[i].AIscript] = enemy[i].tier;
 				int[] tierchance = new int[5];
 				int[] skilltierchance = new int[4];
 				tierchance[0] = 0; tierchance[1] = 0; tierchance[2] = 0; tierchance[3] = 0; tierchance[4] = 0;
