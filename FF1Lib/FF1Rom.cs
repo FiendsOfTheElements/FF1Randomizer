@@ -699,6 +699,8 @@ namespace FF1Lib
 		{
 			// Talk_norm is overwritten with unconditional jump to Talk_CoOGuy (say whatever then disappear)
 			PutInBank(0x0E, 0x9492, Blob.FromHex("4CA294"));
+			Put(MapObjJumpTableOffset + 0x16 * JumpTablePointerSize, Blob.FromHex("B894B894")); // overwrite mab object jump table so that it calls "Talk_iftem"
+			Put(MapObjOffset + 0x16 * MapObjSize, Blob.FromHex("01FFFF0001FFFF00")); // and overwrite the data so that it prints message 0xFF regardless of whether you have the item or not
 		}
 
 		private void AssureSafe(MT19337 rng)
