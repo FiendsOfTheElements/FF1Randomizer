@@ -59,6 +59,12 @@ namespace FF1Lib
 				System.Diagnostics.Debug.Assert(Data[address] == 0x35);
 				Data[address] = 0x31;
 			});
+			
+			// Fix for four NPCs checking for the Earth Orb in the wrong position (1 in Dwarf Cave, 3 in Melmond)
+			Data[MapObjOffset + 0x5D * MapObjSize] = 0x11;
+			Data[MapObjOffset + 0x6B * MapObjSize] = 0x11;
+			Data[MapObjOffset + 0x70 * MapObjSize] = 0x11;
+			Data[MapObjOffset + 0x74 * MapObjSize] = 0x11;
 
 			Data[0x7EF45] = 0x11; // Skip over orbs and shards when printing the item menu
 		}
