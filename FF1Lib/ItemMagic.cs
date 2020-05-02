@@ -26,7 +26,7 @@ namespace FF1Lib
 
 			// Remove out of battle only spells (spells where the effect is 0)
 			Spells.RemoveAll(spell => spell.Data[4] == 0);
-			if(balancedShuffle)
+			if (balancedShuffle)
 			{
 				// if balanced shuffle is on, remove spells which are too strong or too weak
 				// remove any spell which boosts attack power that isn't self-casting
@@ -58,7 +58,7 @@ namespace FF1Lib
 				Spells.RemoveAll(spell => spell.Data[4] == 0x09 && spell.Data[1] > 32);
 				// remove spells which resist all elements
 				Spells.RemoveAll(spell => spell.Data[4] == 0x0A && spell.Data[1] == 0xFF);
-1			}
+			}
 			Spells.Shuffle(rng); // Shuffle all spells remaining, then assign to each item that can cast a spell
 
 			foreach (var item in Spells.Zip(ItemLists.AllMagicItem, (s, i) => new { Spell = s, Item = i }))
