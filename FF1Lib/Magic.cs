@@ -115,13 +115,13 @@ namespace FF1Lib
 				blackSpells.Clear();
 				foreach (MagicSpell spell in whiteSpellList[2])
 				{
-					// 60% chance of tier 7-8, 30% chance of tier 4-6, 10% chance of tier 1-3
-					int diceRoll = rng.Between(0, 9);
-					if(diceRoll < 6)
+					// 70% chance of tier 7-8, 25% chance of tier 4-6, 5% chance of tier 1-3
+					int diceRoll = rng.Between(0, 19);
+					if(diceRoll < 14)
 					{
 						whiteSpellFinalList[2].Add(spell);
 					}
-					else if (diceRoll < 9)
+					else if (diceRoll < 19)
 					{
 						whiteSpellFinalList[1].Add(spell);
 					}
@@ -132,10 +132,10 @@ namespace FF1Lib
 				}
 				foreach (MagicSpell spell in whiteSpellList[1])
 				{
-					// 60% chance of tier 4-6, 20% chance of tier 1-3, 20% chance of tier 7-8
+					// 60% chance of tier 4-6, 25% chance of tier 1-3, 15% chance of tier 7-8
 					// if a section of the final list is full, move to another section
-					int diceRoll = rng.Between(0, 9);
-					if(diceRoll < 6)
+					int diceRoll = rng.Between(0, 19);
+					if(diceRoll < 12)
 					{
 						if(whiteSpellFinalList[1].Count >= 12 * mergedSpellDoubler)
 						{
@@ -153,7 +153,7 @@ namespace FF1Lib
 							whiteSpellFinalList[1].Add(spell);
 						}
 					}
-					else if (diceRoll < 8)
+					else if (diceRoll < 17)
 					{
 						if(whiteSpellFinalList[0].Count >= 12 * mergedSpellDoubler)
 						{
@@ -224,13 +224,13 @@ namespace FF1Lib
 				{
 					foreach (MagicSpell spell in blackSpellList[2])
 					{
-						// 60% chance of tier 7-8, 30% chance of tier 4-6, 10% chance of tier 1-3
-						int diceRoll = rng.Between(0, 9);
-						if (diceRoll < 6)
+						// 70% chance of tier 7-8, 25% chance of tier 4-6, 5% chance of tier 1-3
+						int diceRoll = rng.Between(0, 19);
+						if (diceRoll < 14)
 						{
 							blackSpellFinalList[2].Add(spell);
 						}
-						else if (diceRoll < 9)
+						else if (diceRoll < 19)
 						{
 							blackSpellFinalList[1].Add(spell);
 						}
@@ -241,10 +241,10 @@ namespace FF1Lib
 					}
 					foreach (MagicSpell spell in blackSpellList[1])
 					{
-						// 60% chance of tier 4-6, 20% chance of tier 1-3, 20% chance of tier 7-8
+						// 60% chance of tier 4-6, 25% chance of tier 1-3, 15% chance of tier 7-8
 						// if a section of the final list is full, move to another section
-						int diceRoll = rng.Between(0, 9);
-						if (diceRoll < 6)
+						int diceRoll = rng.Between(0, 19);
+						if (diceRoll < 12)
 						{
 							if (blackSpellFinalList[1].Count >= 12)
 							{
@@ -262,7 +262,7 @@ namespace FF1Lib
 								blackSpellFinalList[1].Add(spell);
 							}
 						}
-						else if (diceRoll < 8)
+						else if (diceRoll < 17)
 						{
 							if (blackSpellFinalList[0].Count >= 12)
 							{

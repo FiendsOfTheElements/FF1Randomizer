@@ -49,6 +49,13 @@ namespace FF1Lib
 				Spells.RemoveAll(spell => spell.Data[4] == 0x02 && spell.Data[1] > 120);
 				// remove non-elemental power word kill
 				Spells.RemoveAll(spell => spell.Data[4] == 0x12 && (spell.Data[1] & 0b00000011) != 0 && spell.Data[2] == 0b00000000);
+				// remove status spells which only cast darkness, sleep, or poison
+				Spells.RemoveAll(spell => spell.Data[4] == 0x03 && (spell.Data[1] & 0b11010011) == 0);
+				Spells.RemoveAll(spell => spell.Data[4] == 0x12 && (spell.Data[1] & 0b11010011) == 0);
+				// remove evasion up spells with effects greater than 80
+				Spells.RemoveAll(spell => spell.Data[4] == 0x10 && spell.Data[1] > 80);
+				// remove armor up spells with effects greater than 32
+				Spells.RemoveAll(spell => spell.Data[4] == 0x09 && spell.Data[1] > 32);
 			}
 			Spells.Shuffle(rng); // Shuffle all spells remaining, then assign to each item that can cast a spell
 
