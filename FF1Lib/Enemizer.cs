@@ -2423,6 +2423,8 @@ namespace FF1Lib
 					int elemental = 9; // track elemental affinity for certain classes of monsters (elementals and dragons)
 					// generate monster's base elemental weakness/resist, type, and base name based on the monster image type
 					enemy[i].critrate = 1; // default crit rate of 1 for most enemies
+					// generate most enemy BASE stats
+					ENE_rollEnemyStats(rng, enemy[i]);
 					switch (newEnemyImageLUT[enemy[i].image])
 					{
 						case 0: // Imp
@@ -2566,7 +2568,7 @@ namespace FF1Lib
 							break;
 						case 23: // Tiger
 							enemyNames[i] = "TIGER";
-							enemy[i].critrate = rng.Between(20, 100);
+							enemy[i].critrate = rng.Between(20, 80);
 							enemy[i].monster_type = 0b00000000;
 							enemy[i].elem_resist = 0b00000000;
 							enemy[i].elem_weakness = 0b00000000;
@@ -2662,6 +2664,8 @@ namespace FF1Lib
 							enemy[i].monster_type = 0b00000001;
 							enemy[i].elem_weakness = (byte)(rng.Between(1, 6) << 4); // can be fire, ice, fire+ice, lit, fire+lit, or ice+lit weak
 							enemy[i].elem_resist = (byte)((0b11111111 ^ enemy[i].elem_weakness) & 0b11111011); // resist all other elements except time
+							if (rng.Between(0, 1) == 1)
+								enemy[i].absorb = 255; // 50% chance of max absorb for this enemy type
 							break;
 						case 29: // Manticore
 							enemyNames[i] = "MANT";
@@ -2701,7 +2705,7 @@ namespace FF1Lib
 							break;
 						case 35: // Steak
 							enemyNames[i] = "TYRO";
-							enemy[i].critrate = rng.Between(20, 100);
+							enemy[i].critrate = rng.Between(20, 80);
 							enemy[i].monster_type = 0b00000010;
 							enemy[i].elem_resist = 0b00000000;
 							enemy[i].elem_weakness = 0b00000000;
@@ -2890,8 +2894,6 @@ namespace FF1Lib
 					perks.Add(MonsterPerks.PERK_POISONTOUCH);
 					perks.Add(MonsterPerks.PERK_STUNSLEEPTOUCH);
 					perks.Add(MonsterPerks.PERK_MUTETOUCH);
-					// generate most enemy BASE stats
-					ENE_rollEnemyStats(rng, enemy[i]);
 					// set attack element and ailments to default value
 					enemy[i].atk_ailment = 0b00000000;
 					enemy[i].atk_elem = 0b00000000;
