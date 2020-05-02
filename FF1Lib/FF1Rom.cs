@@ -700,7 +700,9 @@ namespace FF1Lib
 			// Talk_norm is overwritten with unconditional jump to Talk_CoOGuy (say whatever then disappear)
 			PutInBank(0x0E, 0x9492, Blob.FromHex("4CA294"));
 			Put(MapObjJumpTableOffset + 0x16 * JumpTablePointerSize, Blob.FromHex("B894B894")); // overwrite map object jump table so that it calls "Talk_iftem"
+			Put(MapObjJumpTableOffset + 0x63 * JumpTablePointerSize, Blob.FromHex("B894")); // save the "hurray! dwarf too!
 			Put(MapObjOffset + 0x16 * MapObjSize, Blob.FromHex("01FFFF0001FFFF00")); // and overwrite the data so that it prints message 0xFF regardless of whether you have the item or not
+			Put(MapObjOffset + 0x63 * MapObjSize, Blob.FromHex("01777700")); // Hurray!
 		}
 
 		private void AssureSafe(MT19337 rng)
