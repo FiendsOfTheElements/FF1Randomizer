@@ -153,5 +153,61 @@
 		"FloorsAndTownsSeparate": 5,
 		"FloorsAndTownsTogether": 5,
 		"FloorsAndTownsWithDeepTowns": 5
+	},
+
+	"Scaling": {
+		"Price": {
+			"Max": 3.3,
+			"Min": 1.0,
+			"Clamped": 25
+		},
+		"Enemies": {
+			"Max": 4.0,
+			"Min": 2.0,
+			"Clamped": 50
+		},
+		"Bosses": {
+			"Max": 3.3,
+			"Min": 2.0,
+			"Clamped": 50
+		},
+		"ExpGold": {
+			"Multiplier" : {
+				"Max": 3.5,
+				"Min": 1.0
+			},
+			"AddedValue": {
+				"Max": 300,
+				"Min": 100
+			},
+			"Progressive": {
+				"PerItem5":  50,
+				"PerItem10": 25,
+				"PerItem20": 0,
+				"PerOrb12": 0,
+				"PerOrb25": 25,
+				"PerOrb50": 0,
+				"PerOrb100": 0
+			}
+		},
+		"EncounterRate": {
+			"Overworld": {
+				"Max": 0.8,
+				"Min": 0.3
+			},
+			"Dungeon": {
+				"Max": 1.0,
+				"Min": 0.5
+			}
+		}
+	},
+	"Party": {
+		"Forced": {
+			"None":  50,
+			"One":  0,
+			"Two":  15,
+			"Three":  10,
+			"Four": 25
+		}
 	}
 }

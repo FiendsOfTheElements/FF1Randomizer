@@ -619,6 +619,72 @@ namespace Sandbox
 					throw new ArgumentOutOfRangeException();
 			}
 
+			var priceScale = GetRandomNumberFromScale(weights.Scaling.Price, random);
+			var priceClamped = GetBasedOnWeight(weights.Scaling.Price.Clamped, random);
+			var enemiesScale = GetRandomNumberFromScale(weights.Scaling.Enemies, random);
+			var enemiesClamped = GetBasedOnWeight(weights.Scaling.Enemies.Clamped, random);
+			var bossesScale =  GetRandomNumberFromScale(weights.Scaling.Bosses, random);
+			var bossesClamped = GetBasedOnWeight(weights.Scaling.Bosses.Clamped, random);
+
+			var expMultiplier = GetRandomNumberFromScale(weights.Scaling.ExpGold.Multiplier, random);
+			var expAddedValue = GetRandomNumberFromScale(weights.Scaling.ExpGold.AddedValue, random);
+
+			var progressiveScaleMode = ProgressiveScaleMode.Disabled;
+			switch (GetEnumFromWeights(weights.Scaling.ExpGold.Progressive, random))
+			{
+				case ProgressiveType.PerItem5:
+					progressiveScaleMode = ProgressiveScaleMode.Progressive5Percent;
+					break;
+				case ProgressiveType.PerItem10:
+					progressiveScaleMode = ProgressiveScaleMode.Progressive10Percent;
+					break;
+				case ProgressiveType.PerItem20:
+					progressiveScaleMode = ProgressiveScaleMode.Progressive20Percent;
+					break;
+				case ProgressiveType.PerOrb12:
+					progressiveScaleMode = ProgressiveScaleMode.OrbProgressiveSlow;
+					break;
+				case ProgressiveType.PerOrb25:
+					progressiveScaleMode = ProgressiveScaleMode.OrbProgressiveMedium;
+					break;
+				case ProgressiveType.PerOrb50:
+					progressiveScaleMode = ProgressiveScaleMode.OrbProgressiveFast;
+					break;
+				case ProgressiveType.PerOrb100:
+					progressiveScaleMode = ProgressiveScaleMode.OrbProgressiveVFast;
+					break;
+			}
+
+			var encounterRate = GetRandomNumberFromScale(weights.Scaling.EncounterRate.Overworld, random) * 30;
+			var dungeonEncounterRate = GetRandomNumberFromScale(weights.Scaling.EncounterRate.Dungeon, random) * 30;
+
+			var force1 = false;
+			var force2 = false;
+			var force3 = false;
+			var force4 = false;
+
+			switch (GetEnumFromWeights(weights.Party.Forced, random))
+			{
+				case ForcedTypes.Four:
+					force4 = true;
+					force3 = true;
+					force2 = true;
+					force1 = true;
+					break;
+				case ForcedTypes.Three:
+					force3 = true;
+					force2 = true;
+					force1 = true;
+					break;
+				case ForcedTypes.Two:
+					force2 = true;
+					force1 = true;
+					break;
+				case ForcedTypes.One:
+					force1 = true;
+					break;
+			}
+
 			var flags = new Flags
 			{
 				// Always shuffle NPCItems and FetchItems for ease of understanding
@@ -727,6 +793,7 @@ namespace Sandbox
 				RED_MAGE1 = true,
 				WHITE_MAGE1 = true,
 				BLACK_MAGE1 = true,
+				FORCED1 = force1,
 
 				FIGHTER2 = true,
 				THIEF2 = true,
@@ -735,6 +802,7 @@ namespace Sandbox
 				WHITE_MAGE2 = true,
 				BLACK_MAGE2 = true,
 				NONE_CLASS2 = true,
+				FORCED2 = force2,
 
 				FIGHTER3 = true,
 				THIEF3 = true,
@@ -743,6 +811,7 @@ namespace Sandbox
 				WHITE_MAGE3 = true,
 				BLACK_MAGE3 = true,
 				NONE_CLASS3 = true,
+				FORCED3 = force3,
 
 				FIGHTER4 = true,
 				THIEF4 = true,
@@ -751,6 +820,7 @@ namespace Sandbox
 				WHITE_MAGE4 = true,
 				BLACK_MAGE4 = true,
 				NONE_CLASS4 = true,
+				FORCED4 = force4,
 
 				// Set some to true so the logic can be consistent while this is a WIP
 				OrdealsPillars = true,
@@ -797,15 +867,31 @@ namespace Sandbox
 				MDefMode = MDEFGrowthMode.None,
 				RebalanceSpells = true, //LOCK always hits
 
-				PriceScaleFactor = 1.0,
-				EnemyScaleFactor = 1.0,
-				BossScaleFactor = 1.0,
-				ExpMultiplier = 2.0,
-				EncounterRate = 0.5,
-				DungeonEncounterRate = 0.8,
-				ExpBonus = 250
+				PriceScaleFactor = priceScale,
+				ClampMinimumPriceScale = priceClamped,
+				EnemyScaleFactor = enemiesScale,
+				ClampMinimumStatScale = enemiesClamped,
+				BossScaleFactor = bossesScale,
+				ClampMinimumBossStatScale = bossesClamped,
+				ExpMultiplier = expMultiplier,
+				ExpBonus = expAddedValue,
+				ProgressiveScaleMode = progressiveScaleMode,
+				EncounterRate = encounterRate,
+				DungeonEncounterRate = dungeonEncounterRate,
 			};
 			return Flags.EncodeFlagsText(flags);
+		}
+
+		private static double GetRandomNumberFromScale(DoubleScale doubleScale, Random random)
+		{
+			// Single decimal precision only
+			var doubleValue = (double)(GetRandomNumber(random, (int)(doubleScale.Max * 10 + 1), (int)(doubleScale.Min * 10)));
+			return doubleValue / 10.0;
+		}
+
+		private static int GetRandomNumberFromScale(IntScale intScale, Random random)
+		{
+			return GetRandomNumber(random, intScale.Max + 1, intScale.Min);
 		}
 
 		private static bool GetBasedOnWeight(int weight, Random random)
@@ -916,6 +1002,8 @@ namespace Sandbox
 		public Dictionary<OrbType, int> Orbs { get; set; }
 		public ToFRWeights TempleOfFiends { get; set; }
 		public Dictionary<EntranceShuffleType, int> EntranceShuffle { get; set; }
+		public ScalingWeights Scaling { get; set; }
+		public PartyWeights Party { get; set; }
 	}
 
 	public class EnemyWeights
@@ -953,6 +1041,71 @@ namespace Sandbox
 		public int AlternateBoss { get; set; } = 0;
 		// ReSharper disable once InconsistentNaming
 		public Dictionary<ToFRType, int> TempleOfFiendsLength { get; set; }
+	}
+
+	public class ScalingWeights
+	{
+		public ClampedScale Price { get; set; }
+		public ClampedScale Enemies { get; set; }
+		public ClampedScale Bosses { get; set; }
+		public ExpGoldScale ExpGold { get; set; }
+		public EncounterRateWeights EncounterRate { get; set; }
+	}
+
+	public class DoubleScale
+	{
+		public double Max { get; set; }
+		public double Min { get; set; }
+	}
+
+	public class IntScale
+	{
+		public int Max { get; set; }
+		public int Min { get; set; }
+	}
+
+	public class ClampedScale: DoubleScale
+	{
+		public int Clamped { get; set; } = 0;
+	}
+
+	public class ExpGoldScale
+	{
+		public DoubleScale Multiplier { get; set; }
+		public IntScale AddedValue { get; set; }
+		public Dictionary<ProgressiveType, int> Progressive { get; set; }
+		public EncounterRateWeights EncounterRate { get; set; }
+	}
+
+	public class EncounterRateWeights
+	{
+		public DoubleScale Overworld { get; set; }
+		public DoubleScale Dungeon { get; set; }
+	}
+
+	public class PartyWeights
+	{
+		public Dictionary<ForcedTypes, int> Forced { get; set; }
+	}
+
+	public enum ForcedTypes
+	{
+		None,
+		One,
+		Two,
+		Three,
+		Four
+	}
+
+	public enum ProgressiveType
+	{
+		PerItem5,
+		PerItem10,
+		PerItem20,
+		PerOrb12,
+		PerOrb25,
+		PerOrb50,
+		PerOrb100
 	}
 
 	public enum EntranceShuffleType
