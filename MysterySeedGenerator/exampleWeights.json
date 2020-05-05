@@ -1,0 +1,157 @@
+﻿{
+	"spoilers": false,
+	"tournamentSafe": false,
+	"shops": {
+		"Vanilla": 10,
+		"OnlyShops": 60,
+		"ShopsWithCustomGear": 20,
+		"ShopsWithEliteGear": 10
+	},
+	"magic": {
+		"Vanilla": 0,
+		"MagicLevelsOnly": 50,
+		"KeepPermissionsOnly": 25,
+		"MagicLevelsAndShops": 10,
+		"MagicLevelsAndLocations": 5,
+		"MagicLevelsAndShopsAndLocations": 0,
+		"KeepPermissionsAndShops": 5,
+		"KeepPermissionsAndLocations": 5,
+		"KeepPermissionsAndShopsAndLocations": 0
+	},
+	"itemMagic": 0,
+	"rngTable": 100,
+	"enemies": {
+		"enemyScripts": {
+			"Vanilla": 25,
+			"Scripts": 50,
+			"UnsafePirates": 15,
+			"OnlyShuffleBosses": 10
+		},
+		"enemySkillsSpells": {
+			"Vanilla": 20,
+			"SkillsSpells": 75,
+			"OnlyShuffleBosses": 5
+		},
+		"enemyStatusAttacks": {
+			"Vanilla": 10,
+			"StatusAttacks": 75,
+			"StatusAttackAilments": 15
+		},
+		"enemyUnrunnableFormations": {
+			"Vanilla": 20,
+			"EnemyUnrunnableFormations": 80,
+			"AllUnrunnable": 0
+		},
+		"unrunnableFirstStrikeSurprise": 25,
+		"enemySurpriseBonus": 75,
+		"enemyFormations": {
+			"None": 50,
+			"Intrazone": 25,
+			"InterZone": 15,
+			"Randomize": 10
+		},
+		"enemyForcedEncounterTiles": {
+			"Vanilla": 25,
+			"EnemyForcedEncounterTiles": 50,
+			"RandomFormations": 25
+		}
+	},
+	"WarMECH": {
+		"Vanilla": 60,
+		"Patrolling": 20,
+		"Required": 10,
+		"Unleashed": 10
+	},
+	"Treasures": {
+		"Treasures": 100,
+		"WealthLevel": {
+			"Vanilla": 65,
+			"High": 10,
+			"Normal": 10,
+			"Low": 5,
+			"Impoverished": 5,
+			"Melmond": 5
+		},
+		"BetterTrapTreasure": 25
+	},
+	"Incentives": {
+		"ObjectiveNpcs": 0,
+		"LooseItems": {
+			"Trash2": 0,
+			"Trash1": 20,
+			"None": 20,
+			"Loose1": 20,
+			"Loose2": 20,
+			"Loose3": 20
+		},
+		"FreeItems": {
+			"Ship": 50,
+			"Airship": 50,
+			"Bridge": 100,
+			"Canal": 15
+		},
+		"GuaranteedIncentiveItems": [
+			"MainProgressionItems",
+			"OtherQuestItems",
+			"Floater",
+			"Canoe"
+		],
+		"IncentiveItemWeights": {
+			"ShipCanal": 1,
+			"Tail": 4,
+			"Masamune": 1,
+			"Vorpal": 2,
+			"Defense": 2,
+			"ThorHammer": 2,
+			"OpalBracelet": 2,
+			"PowerGauntlet": 4,
+			"WhiteShirt": 0,
+			"BlackShirt": 0,
+			"Ribbon": 0
+		},
+		"GuaranteedIncentiveLocations": [
+			"MainNPCs",
+			"FetchQuestNPCs"
+		],
+		"IncentiveLocationWeights": {
+			"IceCave": 5,
+			"Ordeals": 5,
+			"MarshCave": 2,
+			"TitansTrove": 5,
+			"EarthCave": 1,
+			"Volcano": 1,
+			"SeaShrine": 1,
+			"SkyPalace": 1,
+			"ConeriaLocked": 2,
+			"MarshLocked": 1
+		}
+	},
+	"Orbs": {
+		"Vanilla": 50,
+		"ShardHunt16": 5,
+		"ShardHunt20": 5,
+		"ShardHunt24": 5,
+		"ShardHunt28": 5,
+		"ShardHunt32": 5,
+		"ShardHunt36": 5,
+		"FreeOrbs": 20
+	},
+	"TempleOfFiends": {
+		"AlternateBoss": 25,
+		"TempleOfFiendsLength": {
+			"Vanilla": 75,
+			"Shortened": 10,
+			"ShortenedWithFiendTiles": 15
+		}
+	},
+	"EntranceShuffle": {
+		"Vanilla": 50,
+		"Entrances": 10,
+		"Floors": 10,
+		"EntrancesAndTownsSeparate": 10,
+		"EntrancesAndTownsTogether": 5,
+		"FloorsAndTownsSeparate": 5,
+		"FloorsAndTownsTogether": 5,
+		"FloorsAndTownsWithDeepTowns": 5
+	}
+}
