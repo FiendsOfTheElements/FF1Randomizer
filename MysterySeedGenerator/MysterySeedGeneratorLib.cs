@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Linq.Expressions;
 using FF1Lib;
 
-namespace Sandbox
+namespace MysterySeedGenerator
 {
 	public static class MysterySeedGeneratorLib
 	{

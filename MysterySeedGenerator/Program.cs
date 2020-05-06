@@ -2,7 +2,6 @@
 using System.IO;
 using FF1Lib;
 using Newtonsoft.Json;
-using Sandbox;
 
 namespace MysterySeedGenerator
 {
