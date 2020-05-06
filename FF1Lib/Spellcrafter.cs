@@ -668,7 +668,7 @@ namespace FF1Lib
 										spell[index].targeting = (byte)rng.Between(1, 2);
 										spell[index].elem = (byte)(spell[index].targeting == 0x01 ? 0b00000001 : 0b00000100);
 										spell[index].effect = effect;
-										spell[index].accuracy = 40;
+										spell[index].accuracy = (byte)(spell[index].targeting == 0x01 ? 40 : 64);
 										spell[index].routine = routine;
 										SPCR_SetPermissionFalse(spellPermissions, index, 9); // red wizard banned
 										break;
@@ -1287,9 +1287,9 @@ namespace FF1Lib
 								if (i % 8 < 4)
 								{
 									if (SpellTier(i) < 5)
-										SPCR_SetName(spellNames, i, "FADE", "FAD");
+										SPCR_SetName(spellNames, i, "RAY", "RAY");
 									else
-										SPCR_SetName(spellNames, i, "HOLY", "HLY");
+										SPCR_SetName(spellNames, i, "FADE", "FAD");
 									spell[i].gfx = 0xC8;
 									spell[i].palette = 0x24;
 								}
@@ -1373,7 +1373,7 @@ namespace FF1Lib
 									if (SpellTier(i) < 5)
 										SPCR_SetName(spellNames, i, "MG.M", "M.M");
 									else
-										SPCR_SetName(spellNames, i, "NUKE", "NUK");
+										SPCR_SetName(spellNames, i, "FLAR", "FLA");
 									spell[i].gfx = 0xD0;
 									spell[i].palette = 0x28;
 								}
@@ -1385,7 +1385,7 @@ namespace FF1Lib
 				{
 					spell[i].gfx = 0xC8;
 					spell[i].palette = 0x21;
-					SPCR_SetName(spellNames, i, "DIA", "DIA");
+					SPCR_SetName(spellNames, i, "HARM", "HRM");
 				}
 				if(spell[i].routine == 0x03)
 				{
