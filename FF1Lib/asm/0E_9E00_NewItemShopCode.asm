@@ -1,11 +1,5 @@
 ;; 0E-9E00
 
-;; replace JSR DrawShopBuyItemConfirm with JSR ShopBuyQuantity
-;; at the end of DrawShopBuyQuantity, it will call ShopLoop_YesNo and ask to confirm
-;; after the confirmation, we RTS
-;; at CheckForSpace, JSR NewCheckForSpace instead of the code that exists there
-;; rewrite the rest of the code to add the quantity instead of adding 1
-
 ; 9E00
 PrintQuantity:	; used to display the quantity to buy
 	LDA $030A	; we are storing the quantity in shop_charindex, which is otherwise unused in item shops
