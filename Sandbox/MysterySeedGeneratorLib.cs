@@ -9,7 +9,7 @@ namespace Sandbox
 {
 	public static class MysterySeedGeneratorLib
 	{
-		public static string GenerateMysterySeed(Weights weights, int seed)
+		public static FlagsAndInfo GenerateMysterySeed(Weights weights, int seed)
 		{
 			var random = new Random(seed);
 
@@ -290,7 +290,6 @@ namespace Sandbox
 				default:
 					throw new ArgumentOutOfRangeException();
 			}
-			Console.WriteLine($"Loose Item Count: {looseCount}");
 
 			// Determine incentive count and location count
 			var maxHypotheticalIncentiveCount = guaranteedIncentiveCount + possibleAdditionalItems;
@@ -417,7 +416,6 @@ namespace Sandbox
 				remainingIncentiveWeights.Remove(chosenIncentive);
 				UpdateFlagForIncentive(chosenIncentive);
 			}
-			Console.WriteLine($"Incentive Items are: {string.Join(",", addedIncentives)}");
 
 			// Determine Incentive Locations
 			var incentivizeFreeNPCs = true;
@@ -515,8 +513,6 @@ namespace Sandbox
 				remainingIncentiveLocationWeights.Remove(chosenIncentiveLocation);
 				UpdateFlagForIncentiveLocation(chosenIncentiveLocation);
 			}
-			Console.WriteLine($"Incentive Locations are: {string.Join(",", addedIncentiveLocations)}");
-
 			var freeOrbs = false;
 			var shardHunt = false;
 			var shardCount = ShardCount.Count16;
@@ -879,7 +875,13 @@ namespace Sandbox
 				EncounterRate = encounterRate,
 				DungeonEncounterRate = dungeonEncounterRate,
 			};
-			return Flags.EncodeFlagsText(flags);
+			return new FlagsAndInfo()
+			{
+				Flags = flags,
+				LooseCount = looseCount,
+				Incentives = addedIncentives,
+				IncentiveLocations = addedIncentiveLocations
+			};
 		}
 
 		private static double GetRandomNumberFromScale(DoubleScale doubleScale, Random random)
@@ -980,6 +982,14 @@ namespace Sandbox
 
 			return isFree;
 		}
+	}
+
+	public class FlagsAndInfo
+	{
+		public Flags Flags { get; set; }
+		public HashSet<Incentives> Incentives { get; set; }
+		public HashSet<IncentiveLocations> IncentiveLocations { get; set; }
+		public int LooseCount { get; set; }
 	}
 
 	public class Weights

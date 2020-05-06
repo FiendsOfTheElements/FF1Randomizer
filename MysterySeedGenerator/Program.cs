@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using FF1Lib;
 using Newtonsoft.Json;
 using Sandbox;
 
@@ -21,7 +22,11 @@ namespace MysterySeedGenerator
 			}
 			var jsonString = File.ReadAllText(args[0]);
 			var weights = JsonConvert.DeserializeObject<Weights>(jsonString);
-			Console.WriteLine(MysterySeedGeneratorLib.GenerateMysterySeed(weights, seed));
+			var mysterySeed = MysterySeedGeneratorLib.GenerateMysterySeed(weights, seed);
+			Console.WriteLine(Flags.EncodeFlagsText(mysterySeed.Flags));
+			Console.WriteLine($"Loose Item Count: {mysterySeed.LooseCount}");
+			Console.WriteLine($"Incentive Items are: {string.Join(",", mysterySeed.Incentives)}");
+			Console.WriteLine($"Incentive Locations are: {string.Join(",", mysterySeed.IncentiveLocations)}");
 		}
 	}
 }
