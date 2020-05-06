@@ -335,7 +335,7 @@ namespace FF1Lib
 			{
 				if((bool)flags.EnemySkillsSpellsTiered && (bool)!flags.BossSkillsOnly)
 				{
-					GenerateBalancedEnemyScripts(rng);
+					GenerateBalancedEnemyScripts(rng, (bool)flags.SwolePirates);
 					ShuffleEnemySkillsSpells(rng, false);
 				}
 				else
@@ -628,6 +628,11 @@ namespace FF1Lib
 			WriteMaps(maps);
 
 			WriteText(itemText, ItemTextPointerOffset, ItemTextPointerBase, ItemTextOffset, UnusedGoldItems);
+
+			if ((bool)flags.SwolePirates)
+			{
+				EnableSwolePirates();
+			}
 
 			if (flags.EnemyScaleFactor > 1)
 			{

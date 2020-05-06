@@ -904,5 +904,10 @@
 		"Id": "AllSpellLevelsForKnightNinja",
 		"title": "Knight and Ninja Gain Charges In All Levels",
 		"description": "Sets the Knight and Ninja magic charge growth to give a charge in all levels whenever those classes gain a charge in any level, giving Knight and Ninja tier 4-8 charges.  This alleviates an issue with Keep Permissions where the Knight and Ninja could never cast spells they could learn, but is useless otherwise."
+	},
+	{
+		"Id": "swolePiratesCheckBox",
+		"title": "Buff the Pirates",
+		"description": "Increases the stats of Bikke's pirates considerably, roughly to the equivalent of a level 6 Fighter with a cheap but decent sword and iron armor, and increases the XP and gold yield from them by a factor of 20.  This is done before stat scaling, and also increases the level of script they can carry when generating balanced scripts (if Allow Unsafe Pirates is on)."
 	}
 ]

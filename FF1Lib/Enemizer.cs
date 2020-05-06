@@ -3414,7 +3414,7 @@ namespace FF1Lib
 			}
 		}
 
-		public void GenerateBalancedEnemyScripts(MT19337 rng)
+		public void GenerateBalancedEnemyScripts(MT19337 rng, bool swolePirates)
 		{
 			SpellInfo[] spell = new SpellInfo[MagicCount]; // list of spells and their appropriate tiers
 			EnemySkillInfo[] skill = new EnemySkillInfo[EnemySkillCount]; // list of enemy skills and their appropriate tiers
@@ -3453,6 +3453,8 @@ namespace FF1Lib
 												  3, 2, 2, 3, 3, 4, 5, 1, 2, 2, 3, 2, 4, 2, 2, 3,
 												  4, 3, 3, 3, 4, 3, 4, 1, 3, 1, 4, 4, 3, 3, 5, 3,
 												  4, 3, 3, 4, 1, 3, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
+			if (swolePirates)
+				enemyTierList[Enemy.Pirate] = 3;
 			for (int i = 0; i < EnemyCount; ++i)
 			{
 				enemy[i] = new EnemyInfo();

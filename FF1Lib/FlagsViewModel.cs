@@ -2112,5 +2112,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BossHPScaleFactor"));
 			}
 		}
+
+		public bool? SwolePirates
+		{
+			get => Flags.SwolePirates;
+			set
+			{
+				Flags.SwolePirates = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SwolePirates"));
+			}
+		}
 	}
 }

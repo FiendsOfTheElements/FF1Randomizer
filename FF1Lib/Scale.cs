@@ -39,7 +39,7 @@ namespace FF1Lib
 
 	public partial class FF1Rom : NesRom
 	{
-		public static readonly List<int> Bosses = new List<int> { Enemy.Garland, Enemy.Astos, Enemy.WarMech,
+		public static readonly List<int> Bosses = new List<int> { Enemy.Garland, Enemy.Astos, Enemy.Pirate, Enemy.WarMech,
 			Enemy.Lich, Enemy.Lich2, Enemy.Kary, Enemy.Kary2, Enemy.Kraken, Enemy.Kraken2, Enemy.Tiamat, Enemy.Tiamat2, Enemy.Chaos };
 
 		public static readonly List<int> NonBossEnemies = Enumerable.Range(0, EnemyCount).Where(x => !Bosses.Contains(x)).ToList();
@@ -292,6 +292,23 @@ namespace FF1Lib
 			byte firstLevelRequirement = Data[0x7C04B];
 			firstLevelRequirement = (byte)(firstLevelRequirement / multiplier);
 			Data[0x7C04B] = firstLevelRequirement;
+		}
+
+		public void EnableSwolePirates()
+		{
+			EnemyInfo newPirate = new EnemyInfo();
+			newPirate.decompressData(Get(EnemyOffset + EnemySize * Enemy.Pirate, EnemySize));
+			newPirate.exp = 800;
+			newPirate.gp = 800;
+			newPirate.hp = 160;
+			newPirate.num_hits = 2;
+			newPirate.damage = 32;
+			newPirate.absorb = 32;
+			newPirate.mdef = 30;
+			newPirate.accuracy = 35;
+			newPirate.critrate = 5;
+			newPirate.agility = 24;
+			Put(EnemyOffset + EnemySize * Enemy.Pirate, newPirate.compressData());
 		}
 	}
 }
