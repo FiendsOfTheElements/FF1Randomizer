@@ -106,8 +106,9 @@ namespace FF1Lib
 				if (bonus != 0)
 				{
 					//adjust stats
-					//clamp to 1 dmg min, 0 hit min
+					//clamp to 1 dmg min, 0 hit min, 50 hit maximum
 					currentWeapon.HitBonus = (byte)Math.Max(0, (int)(currentWeapon.HitBonus + (3 * bonus)));
+					currentWeapon.HitBonus = (byte)Math.Min(50, (int)(currentWeapon.HitBonus));
 					currentWeapon.Damage = (byte)Math.Max(1, (int)currentWeapon.Damage + (2 * bonus));
 					currentWeapon.Crit = (byte)Math.Max(1, (int)currentWeapon.Crit + bonus);
 
