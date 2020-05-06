@@ -134,6 +134,7 @@ namespace FF1Lib
 		public bool NoPartyShuffle { get; set; } = false;
 		public bool Dash { get; set; } = false;
 		public bool BuyTen { get; set; } = false;
+		public bool BuyTenOld { get; set; } = false;
 		public bool IdentifyTreasures { get; set; } = false;
 		public bool WaitWhenUnrunnable { get; set; } = false;
 
@@ -595,6 +596,7 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.NoPartyShuffle);
 			sum = AddBoolean(sum, flags.Dash);
 			sum = AddBoolean(sum, flags.BuyTen);
+			sum = AddBoolean(sum, flags.BuyTenOld);
 			sum = AddBoolean(sum, flags.IdentifyTreasures);
 			sum = AddBoolean(sum, flags.WaitWhenUnrunnable);
 			sum = AddBoolean(sum, flags.HouseMPRestoration);
@@ -819,6 +821,7 @@ namespace FF1Lib
 				HouseMPRestoration = GetBoolean(ref sum),
 				WaitWhenUnrunnable = GetBoolean(ref sum),
 				IdentifyTreasures = GetBoolean(ref sum),
+				BuyTenOld = GetBoolean(ref sum),
 				BuyTen = GetBoolean(ref sum),
 				Dash = GetBoolean(ref sum),
 				NoPartyShuffle = GetBoolean(ref sum),

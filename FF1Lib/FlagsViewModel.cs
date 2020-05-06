@@ -1027,6 +1027,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BuyTen"));
 			}
 		}
+		public bool BuyTenOld
+		{
+			get => Flags.BuyTenOld;
+			set
+			{
+				Flags.BuyTenOld = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BuyTenOld"));
+			}
+		}
 
 		public bool IdentifyTreasures
 		{

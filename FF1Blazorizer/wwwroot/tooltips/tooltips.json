@@ -721,6 +721,11 @@
 	},
 	{
 		"Id": "buyTenCheckBox",
+		"title": "Buy Quantity Convenience",
+		"description": "If enabled, the player has the option to select the quantity of items bought in the item shop.  Press left to reduce quantity by 1, right to increase quantity by 1, up to increase quantity by 10, and down to decrease quantity by 10.  Mutually exclusive with Buy Ten."
+	},
+	{
+		"Id": "buyTenOldCheckBox",
 		"title": "Buy Ten Convenience",
 		"description": "If enabled, the player has the option to buy 10 of an item at once in the item shop, so they do not need to spend a long time buying 99 heal potions."
 	},
