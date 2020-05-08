@@ -32,15 +32,13 @@
 					<div class="row">&nbsp;</div>
 					<div class="row spaced-row">
 						<div class="col-md-4">
-							<p>
-								Seed:
+							<p>Seed:
 								<input type="text" style="width: calc(100% - 200px);" class="nes-input @(_seedInputClass)" id="seedInput" onchange="@OnSeedInputChanged" value="@(_seed)" />
 								<button type="button" class="nes-btn is-primary" onclick="@OnNewSeed">New</button>
 							</p>
 						</div>
 						<div class="col-md-8">
-							<p>
-								Flags:
+							<p>Flags:
 								<input style="width: calc(100% - 300px);" type="text" class="nes-input" value="@Flags.Encoded" onchange="@OnFlagsInputChanged" />
 								<button type="button" class="nes-btn is-primary" onclick="@OnCopyToClipboard">Export</button>
 							</p>
@@ -48,8 +46,7 @@
 					</div>
 					<div class="row">
 						<div class="col-md-12">
-							<p>
-								Presets:
+							<p>Presets:
 								<button type="button" class="nes-btn is-primary" onclick="@(() => LoadPreset("default"))">Default</button>
 								<button type="button" class="nes-btn is-primary" onclick="@(() => LoadPreset("beginner"))">Beginner</button>
 								<button type="button" class="nes-btn is-primary" onclick="@(() => LoadPreset("full-npc"))">NPC Shuffle</button>
