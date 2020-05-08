@@ -6,6 +6,7 @@
 @using RomUtilities
 @using FF1Lib
 @using Microsoft.AspNetCore.WebUtilities
+@using Newtonsoft.Json
 @inject HttpClient Http
 @inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
 @inject LocalStorage LocalStorage
@@ -31,21 +32,24 @@
 					<div class="row">&nbsp;</div>
 					<div class="row spaced-row">
 						<div class="col-md-4">
-							<p>Seed:
-							<input type="text" style="width: calc(100% - 200px);"class="nes-input @(_seedInputClass)" id="seedInput" onchange="@OnSeedInputChanged" value="@(_seed)" />
-							<button type="button" class="nes-btn is-primary" onclick="@OnNewSeed">New</button>
+							<p>
+								Seed:
+								<input type="text" style="width: calc(100% - 200px);" class="nes-input @(_seedInputClass)" id="seedInput" onchange="@OnSeedInputChanged" value="@(_seed)" />
+								<button type="button" class="nes-btn is-primary" onclick="@OnNewSeed">New</button>
 							</p>
 						</div>
 						<div class="col-md-8">
-							<p>Flags:
-							<input style="width: calc(100% - 300px);" type="text" class="nes-input" value="@Flags.Encoded" onchange="@OnFlagsInputChanged" />
-							<button type="button" class="nes-btn is-primary" onclick="@OnCopyToClipboard">Export</button>
+							<p>
+								Flags:
+								<input style="width: calc(100% - 300px);" type="text" class="nes-input" value="@Flags.Encoded" onchange="@OnFlagsInputChanged" />
+								<button type="button" class="nes-btn is-primary" onclick="@OnCopyToClipboard">Export</button>
 							</p>
 						</div>
 					</div>
 					<div class="row">
 						<div class="col-md-12">
-							<p>Presets:
+							<p>
+								Presets:
 								<button type="button" class="nes-btn is-primary" onclick="@(() => LoadPreset("default"))">Default</button>
 								<button type="button" class="nes-btn is-primary" onclick="@(() => LoadPreset("beginner"))">Beginner</button>
 								<button type="button" class="nes-btn is-primary" onclick="@(() => LoadPreset("full-npc"))">NPC Shuffle</button>
@@ -58,10 +62,22 @@
 				</div>
 			</TabPane>
 			<br />
-			<button type="button" class="nes-btn is-primary" onclick="@OnRandomize">Randomize</button>
+			<div>
+				<button type="button" class="nes-btn is-primary" onclick="@OnRandomize">Randomize</button>
+				<button type="button" class="nes-btn is-primary" onclick="@OnGenerateMysterySeed">Generate Mystery Seed ROM</button>
+			</div>
 			<TabPane IsOpen="@(StatusMessage.Length > 0)">
 				<div class="is-dark nes-container">
 					@StatusMessage
+				</div>
+				<div class="is-dark nes-container" hidden="@(MysteryLooseCount.Length == 0)">
+					Loose Items: @MysteryLooseCount
+				</div>
+				<div class="is-dark nes-container" hidden="@(MysteryIncentivizedItems.Length == 0)">
+					Incentivized Items: @MysteryIncentivizedItems
+				</div>
+				<div class="is-dark nes-container" hidden="@(MysteryIncentivizedLocations.Length == 0)">
+					Incentivized Locations: @MysteryIncentivizedLocations
 				</div>
 			</TabPane>
 			<button type="button" class="@(TabClasses("Shuffle"))" onclick="@(() => ActivateTab("Shuffle"))">Shuffle</button>
@@ -468,8 +484,8 @@
 							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="randomizeFormationEnemizer" bind-Value="@Flags.RandomizeFormationEnemizer">Generate New Formations (Enemizer)</TriStateCheckBox>
 							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="randomizeEnemizer" IsEnabled="@Flags.RandomizeFormationEnemizer" bind-Value="@Flags.RandomizeEnemizer">Generate New Enemies (Enemizer)</TriStateCheckBox>
 							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="generateNewSpellbook" bind-Value="@Flags.GenerateNewSpellbook">Generate New Spellbook (Spellcrafter)</TriStateCheckBox>
-							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="spellcrafterRetainPermissions" IsEnabled="@Flags.GenerateNewSpellbook" bind-Value="@Flags.SpellcrafterRetainPermissions">Retain Old Permissions (Spellcrafter)</TriStateCheckbox>
-							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="spellcrafterMixSpells" IsEnabled="@Flags.GenerateNewSpellbook" bind-Value="@Flags.SpellcrafterMixSpells">Mix spellbooks (Spellcrafter)</TriStateCheckbox>
+							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="spellcrafterRetainPermissions" IsEnabled="@Flags.GenerateNewSpellbook" bind-Value="@Flags.SpellcrafterRetainPermissions">Retain Old Permissions (Spellcrafter)</TriStateCheckBox>
+							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="spellcrafterMixSpells" IsEnabled="@Flags.GenerateNewSpellbook" bind-Value="@Flags.SpellcrafterMixSpells">Mix spellbooks (Spellcrafter)</TriStateCheckBox>
 							<CheckBox UpdateToolTip="@UpdateToolTipID" Id="AllSpellLevelsForKnightNinja" bind-Value="@Flags.AllSpellLevelsForKnightNinja">Knight and Ninja Gain Charges in All Levels</CheckBox>
 							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="FreeTail" bind-Value="@Flags.FreeTail">Free Tail</TriStateCheckBox>
 							<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="RandomWeaponBonus" bind-Value="@Flags.RandomWeaponBonus">Random Weapon Bonus</TriStateCheckBox>
@@ -542,6 +558,10 @@
 
 	private string ToolTipId = "unupdated";
 	private ToolTip ToolTipElement;
+
+	private string MysteryLooseCount = "";
+	private string MysteryIncentivizedItems = "";
+	private string MysteryIncentivizedLocations = "";
 
 	private async void UpdateToolTipID(string Id, UIMouseEventArgs e)
 	{
@@ -738,28 +758,72 @@
 		await Task.Run(DoRandomize);
 	}
 
-	async Task DoRandomize()
+	async Task OnGenerateMysterySeed(UIMouseEventArgs e)
 	{
-		Blob seed;
-		try
+		if (_fileData == null)
 		{
-			if (_seed.Length != 8)
-			{
-				throw new Exception();
-			}
-			seed = Blob.FromHex(_seed);
-		}
-		catch (Exception)
-		{
-			StatusMessage = "Generate Failed: Invalid Seed Format";
+			StatusMessage = "Generate Failed: No ROM File Selected!";
 			StateHasChanged();
 			return;
 		}
 
+		using (var stream = new MemoryStream(_fileData))
+		{
+			_rom = new FF1Rom(stream);
+		}
+
+		if (RememberROM)
+		{
+			await LocalStorage.SetItem("file", Convert.ToBase64String(_fileData));
+		}
+		else
+		{
+			await LocalStorage.RemoveItem("file");
+		}
+
+		StatusMessage = "Generating Mystery Seed ROM ... Please Wait ... ";
+		StateHasChanged();
+		try
+		{
+			var weightsJson = await JSRuntime.Current.InvokeAsync<string>("getWeights", "example");
+			var weights = JsonConvert.DeserializeObject<Weights>(weightsJson);
+			var flagsAndInfo = MysterySeedGeneratorLib.GenerateMysterySeed(weights, _seed.GetHashCode());
+			StateHasChanged();
+			MysteryLooseCount = flagsAndInfo.LooseCount.ToString();
+			MysteryIncentivizedItems = string.Join(", ", flagsAndInfo.Incentives);
+			MysteryIncentivizedLocations = string.Join(", ", flagsAndInfo.IncentiveLocations);
+			StateHasChanged();
+
+			await Task.Run(() => GenerateRomFromFlags(GenerateSeedBlob(), flagsAndInfo.Flags, Flags.Preferences, $"FFR_{_seed}_mystery.nes"));
+		}
+		catch (Exception exception)
+		{
+			System.Console.WriteLine(exception);
+		}
+	}
+
+	public class Startup
+	{
+		static Startup()
+		{
+			typeof(System.ComponentModel.INotifyPropertyChanging).GetHashCode();
+			typeof(System.ComponentModel.INotifyPropertyChanged).GetHashCode();
+			typeof(System.Collections.Specialized.INotifyCollectionChanged).GetHashCode();
+		}
+	}
+
+	async Task DoRandomize()
+	{
+		var seed = GenerateSeedBlob();
+		await GenerateRomFromFlags(seed, Flags.Flags, Flags.Preferences, $"FFR_{_seed}_{Flags.Encoded}.nes");
+	}
+
+	async Task GenerateRomFromFlags(Blob seed, Flags flags, Preferences preferences, string romName)
+	{
 		try
 		{
 
-			_rom.Randomize(seed, Flags.Flags, Flags.Preferences);
+			_rom.Randomize(seed, flags, preferences);
 
 			var data = new byte[512 * 1024 + 16];
 			using (var stream = new MemoryStream(data, true))
@@ -771,19 +835,38 @@
 
 			StatusMessage += "SUCCESS!";
 
-			if (Flags.Spoilers)
+			if (flags.Spoilers)
 			{
 				StatusMessage += " SPOILER LOG IN BROWSER CONSOLE!";
 			}
 
 			StateHasChanged();
 
-			await JSRuntime.Current.InvokeAsync<object>("downloadROM", $"FFR_{_seed}_{Flags.Encoded}.nes", encoded);
+			await JSRuntime.Current.InvokeAsync<object>("downloadROM", romName, encoded);
 		}
 		catch (Exception e)
 		{
 			StatusMessage += "FAILURE: " + e.Message;
 			StateHasChanged();
+		}
+	}
+
+	Blob GenerateSeedBlob()
+	{
+		Blob seed;
+		try
+		{
+			if (_seed.Length != 8)
+			{
+				throw new Exception();
+			}
+			return Blob.FromHex(_seed);
+		}
+		catch (Exception)
+		{
+			StatusMessage = "Generate Failed: Invalid Seed Format";
+			StateHasChanged();
+			return null;
 		}
 	}
 }

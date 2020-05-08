@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using FF1Lib;
 
-namespace MysterySeedGenerator
+namespace FF1Lib
 {
 	public static class MysterySeedGeneratorLib
 	{
@@ -36,7 +35,6 @@ namespace MysterySeedGenerator
 
 			var magicShops = false;
 			var magicShopLocs = false;
-			var magicLevelLocs = false;
 			var magicLevels = false;
 			var magicPermissions = false;
 			switch (GetEnumFromWeights(weights.Magic, random))
@@ -972,13 +970,17 @@ namespace MysterySeedGenerator
 
 		private static bool GetFreeValue(Dictionary<FreeItemTypes, int> freeItemWeights, FreeItemTypes freeItem, ref List<FreeItemTypes> freeItems, Random random)
 		{
-			var isFree = GetBasedOnWeight(freeItemWeights.GetValueOrDefault(FreeItemTypes.Ship, 0), random);
-			if (isFree)
+			if (freeItemWeights.ContainsKey(freeItem))
 			{
-				freeItems.Add(freeItem);
-			}
+				var isFree = GetBasedOnWeight(freeItemWeights[freeItem], random);
+				if (isFree)
+				{
+					freeItems.Add(freeItem);
+				}
 
-			return isFree;
+				return isFree;
+			}
+			return false;
 		}
 	}
 

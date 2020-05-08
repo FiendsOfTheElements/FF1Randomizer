@@ -24,8 +24,8 @@ namespace MysterySeedGenerator
 			var mysterySeed = MysterySeedGeneratorLib.GenerateMysterySeed(weights, seed);
 			Console.WriteLine(Flags.EncodeFlagsText(mysterySeed.Flags));
 			Console.WriteLine($"Loose Item Count: {mysterySeed.LooseCount}");
-			Console.WriteLine($"Incentive Items are: {string.Join(",", mysterySeed.Incentives)}");
-			Console.WriteLine($"Incentive Locations are: {string.Join(",", mysterySeed.IncentiveLocations)}");
+			Console.WriteLine($"Incentive Items are: {string.Join(", ", mysterySeed.Incentives)}");
+			Console.WriteLine($"Incentive Locations are: {string.Join(", ", mysterySeed.IncentiveLocations)}");
 		}
 	}
 }

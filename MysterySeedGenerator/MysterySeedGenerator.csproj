@@ -6,7 +6,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Sandbox\Sandbox.csproj" />
+      <ProjectReference Include="..\FF1Lib\FF1Lib.csproj" />
     </ItemGroup>
 
 </Project>

@@ -29,6 +29,13 @@ async function computePreset(preset) {
 	return JSON.stringify(overrides);
 }
 
+async function getWeights(weights) {
+	const result = await fetch('weights/' + weights + '.json');
+	const weightsObject = await result.json();
+	return JSON.stringify(weightsObject);
+}
+
+
 async function downloadROM(filename, encoded) {
 	const url = "data:application/octet-stream;base64," + encoded;
 	const result = await fetch(url);
