@@ -563,6 +563,17 @@
 	private string MysteryIncentivizedItems = "";
 	private string MysteryIncentivizedLocations = "";
 
+	// This is a workaround to deal with a known blazor + Newtonsoft.JSON issue.
+	public class Startup
+	{
+		static Startup()
+		{
+			typeof(System.ComponentModel.INotifyPropertyChanging).GetHashCode();
+			typeof(System.ComponentModel.INotifyPropertyChanged).GetHashCode();
+			typeof(System.Collections.Specialized.INotifyCollectionChanged).GetHashCode();
+		}
+	}
+
 	private async void UpdateToolTipID(string Id, UIMouseEventArgs e)
 	{
 		ToolTipId = Id;
@@ -799,16 +810,6 @@
 		catch (Exception exception)
 		{
 			System.Console.WriteLine(exception);
-		}
-	}
-
-	public class Startup
-	{
-		static Startup()
-		{
-			typeof(System.ComponentModel.INotifyPropertyChanging).GetHashCode();
-			typeof(System.ComponentModel.INotifyPropertyChanged).GetHashCode();
-			typeof(System.Collections.Specialized.INotifyCollectionChanged).GetHashCode();
 		}
 	}
 
