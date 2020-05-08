@@ -403,6 +403,11 @@
 		"description": "Disables screen flashing when stepping over lava tiles."
 	},
 	{
+		"Id": "disableSpellCastFlashCheckBox",
+		"title": "Disable Spell Cast Flash",
+		"description": "Removes the full screen color flash when casting spells."
+	},
+	{
 		"Id": "menuColorDropDown",
 		"title": "Menu Color",
 		"screenshot": "MenuColor.gif",

@@ -123,6 +123,12 @@ namespace FF1Lib
 				"00000000000000000000000000000000" + "01010101010000000000000000000000" + "fb9b9b9b98ff7f006767676767000000" + "6060606060c080008080808080000000" + "00000000000000000000000000000000" + "00000000000000000000000000000000"));
 		}
 
+		public void DisableSpellCastScreenFlash()
+		{
+			//just load the original battleground background in place of the flash color, it will still use the same number of frames
+			Put(0x32051, Blob.FromHex("AD446D"));
+		}
+
 		public void ShuffleLeader(MT19337 rng)
 		{
 			byte leader = (byte)(rng.Between(0, 3) << 6);
