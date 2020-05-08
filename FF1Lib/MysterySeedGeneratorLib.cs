@@ -1049,7 +1049,6 @@ namespace FF1Lib
 	public class ToFRWeights
 	{
 		public int AlternateBoss { get; set; } = 0;
-		// ReSharper disable once InconsistentNaming
 		public Dictionary<ToFRType, int> TempleOfFiendsLength { get; set; }
 	}
 
