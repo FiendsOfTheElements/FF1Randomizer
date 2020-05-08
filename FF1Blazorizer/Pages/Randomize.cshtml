@@ -739,26 +739,7 @@
 
 	async Task OnRandomize(UIMouseEventArgs e)
 	{
-		if (_fileData == null)
-		{
-			StatusMessage = "Generate Failed: No ROM File Selected!";
-			StateHasChanged();
-			return;
-		}
-
-		using (var stream = new MemoryStream(_fileData))
-		{
-			_rom = new FF1Rom(stream);
-		}
-
-		if (RememberROM)
-		{
-			await LocalStorage.SetItem("file", Convert.ToBase64String(_fileData));
-		}
-		else
-		{
-			await LocalStorage.RemoveItem("file");
-		}
+		await PrepareAndAssertRom();
 
 		StatusMessage = "Generating Final Fantasy Randomizer ROM ... Please Wait ... ";
 		StateHasChanged();
@@ -767,6 +748,31 @@
 	}
 
 	async Task OnGenerateMysterySeed(UIMouseEventArgs e)
+	{
+		await PrepareAndAssertRom();
+
+		StatusMessage = "Generating Mystery Seed ROM ... Please Wait ... ";
+		StateHasChanged();
+		try
+		{
+			var weightsJson = await JSRuntime.Current.InvokeAsync<string>("getWeights", "example");
+			var weights = JsonConvert.DeserializeObject<Weights>(weightsJson);
+			var flagsAndInfo = MysterySeedGeneratorLib.GenerateMysterySeed(weights, _seed.GetHashCode());
+			StateHasChanged();
+			MysteryLooseCount = flagsAndInfo.LooseCount.ToString();
+			MysteryIncentivizedItems = string.Join(", ", flagsAndInfo.Incentives);
+			MysteryIncentivizedLocations = string.Join(", ", flagsAndInfo.IncentiveLocations);
+			StateHasChanged();
+
+			await Task.Run(() => GenerateRomFromFlags(GenerateSeedBlob(), flagsAndInfo.Flags, Flags.Preferences, $"FFR_{_seed}_mystery.nes"));
+		}
+		catch (Exception exception)
+		{
+			System.Console.WriteLine(exception);
+		}
+	}
+
+	async Task PrepareAndAssertRom()
 	{
 		if (_fileData == null)
 		{
@@ -787,26 +793,6 @@
 		else
 		{
 			await LocalStorage.RemoveItem("file");
-		}
-
-		StatusMessage = "Generating Mystery Seed ROM ... Please Wait ... ";
-		StateHasChanged();
-		try
-		{
-			var weightsJson = await JSRuntime.Current.InvokeAsync<string>("getWeights", "example");
-			var weights = JsonConvert.DeserializeObject<Weights>(weightsJson);
-			var flagsAndInfo = MysterySeedGeneratorLib.GenerateMysterySeed(weights, _seed.GetHashCode());
-			StateHasChanged();
-			MysteryLooseCount = flagsAndInfo.LooseCount.ToString();
-			MysteryIncentivizedItems = string.Join(", ", flagsAndInfo.Incentives);
-			MysteryIncentivizedLocations = string.Join(", ", flagsAndInfo.IncentiveLocations);
-			StateHasChanged();
-
-			await Task.Run(() => GenerateRomFromFlags(GenerateSeedBlob(), flagsAndInfo.Flags, Flags.Preferences, $"FFR_{_seed}_mystery.nes"));
-		}
-		catch (Exception exception)
-		{
-			System.Console.WriteLine(exception);
 		}
 	}
 
