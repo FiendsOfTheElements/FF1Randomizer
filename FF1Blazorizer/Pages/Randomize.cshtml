@@ -60,7 +60,7 @@
 			</TabPane>
 			<br />
 			<div>
-				<button type="button" class="nes-btn is-primary" onclick="@OnRandomize">Randomize</button>
+				<button type="button" class="nes-btn is-primary" onclick="@OnRandomize">Generate ROM</button>
 				<button type="button" class="nes-btn is-primary" onclick="@OnGenerateMysterySeed">Generate Mystery Seed ROM</button>
 			</div>
 			<TabPane IsOpen="@(StatusMessage.Length > 0)">
@@ -521,7 +521,7 @@
 				</div>
 			</TabPane>
 			<br />
-			<button type="button" class="nes-btn is-primary" onclick="@OnRandomize">Randomize</button>
+			<button type="button" class="nes-btn is-primary" onclick="@OnRandomize">Generate ROM</button>
 			<TabPane IsOpen="@(StatusMessage.Length > 0)">
 				<div class="is-dark nes-container">
 					@StatusMessage
