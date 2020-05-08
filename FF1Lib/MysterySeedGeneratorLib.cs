@@ -399,14 +399,19 @@ namespace FF1Lib
 			}
 
 			var remainingIncentiveWeights = new Dictionary<Incentives, int>(weights.Incentives.IncentiveItemWeights);
+			var failedCount = 0;
 			while (addedIncentivesCount < incentiveCount)
 			{
-				foreach (var incentive in remainingIncentiveWeights.Keys.Where(incentive => addedIncentivesCount + ConvertToIncentiveItemCount(freeItems, incentive) > incentiveCount))
-				{
-					remainingIncentiveWeights.Remove(incentive);
-				}
-
 				var chosenIncentive = GetEnumFromWeights(remainingIncentiveWeights, random);
+				if (ConvertToIncentiveItemCount(freeItems, chosenIncentive) + addedIncentivesCount > incentiveCount)
+				{
+					failedCount += 1;
+					if (failedCount > 7)
+					{
+						throw new Exception("Stuck choosing incentives please try with a different seed");
+					}
+					continue;
+				}
 				addedIncentives.Add(chosenIncentive);
 				addedIncentivesCount += ConvertToIncentiveItemCount(freeItems, chosenIncentive);
 				remainingIncentiveWeights.Remove(chosenIncentive);
@@ -496,14 +501,19 @@ namespace FF1Lib
 			}
 
 			var remainingIncentiveLocationWeights = new Dictionary<IncentiveLocations, int>(weights.Incentives.IncentiveLocationWeights);
+			failedCount = 0;
 			while (addedIncentiveLocationCount < locationCount)
 			{
-				foreach (var incentiveLocation in remainingIncentiveLocationWeights.Keys.Where(incentive => addedIncentiveLocationCount + ConvertToIncentiveLocationCount( incentive) > locationCount))
-				{
-					remainingIncentiveLocationWeights.Remove(incentiveLocation);
-				}
-
 				var chosenIncentiveLocation = GetEnumFromWeights(remainingIncentiveLocationWeights, random);
+				if (ConvertToIncentiveLocationCount(chosenIncentiveLocation) + addedIncentiveLocationCount > locationCount)
+				{
+					failedCount += 1;
+					if (failedCount > 7)
+					{
+						throw new Exception("Stuck choosing incentive locations please try with a different seed");
+					}
+					continue;
+				}
 				addedIncentiveLocations.Add(chosenIncentiveLocation);
 				addedIncentiveLocationCount += ConvertToIncentiveLocationCount(chosenIncentiveLocation);
 				remainingIncentiveLocationWeights.Remove(chosenIncentiveLocation);
