@@ -701,6 +701,11 @@ namespace FF1Lib
 				ShuffleMusic(preferences.Music, rng);
 			}
 
+			if (preferences.DisableSpellCastFlash)
+			{
+				DisableSpellCastScreenFlash();
+			}
+
 			WriteSeedAndFlags(Version, seed.ToHex(), Flags.EncodeFlagsText(flags));
 			ExtraTrackingAndInitCode(flags);
 		}

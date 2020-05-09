@@ -1439,6 +1439,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MapmanSlot"));
 			}
 		}
+		public bool DisableSpellCastFlash
+		{
+			get => Preferences.DisableSpellCastFlash;
+			set
+			{
+				Preferences.DisableSpellCastFlash = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DisableSpellCastFlash"));
+			}
+		}
 
 		public bool? RecruitmentMode
 		{
