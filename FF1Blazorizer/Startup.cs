@@ -1,6 +1,6 @@
-using Blazor.Extensions.Storage;
-using Microsoft.AspNetCore.Blazor.Builder;
+using Microsoft.AspNetCore.Components.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using Blazor.Extensions.Storage;
 
 namespace FF1Blazorizer
 {
@@ -11,7 +11,7 @@ namespace FF1Blazorizer
 	        services.AddStorage();
         }
 
-        public void Configure(IBlazorApplicationBuilder app)
+        public void Configure(IComponentsApplicationBuilder app)
         {
             app.AddComponent<App>("app");
         }
