@@ -1,35 +1,26 @@
-﻿using Microsoft.AspNetCore.Blazor.Hosting;
-using BlazorStrap;
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Net.Http;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Text;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using FF1Blazorizer;
 
-namespace FF1Blazorizer
+namespace BlazorApp4
 {
     public class Program
     {
         public static async Task Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            var builder = WebAssemblyHostBuilder.CreateDefault(args);
+            builder.RootComponents.Add<App>("app");
 
-			IWebAssemblyHostBuilder builder = ;
+            builder.Services.AddTransient(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
-			builder.Services.AddSingleton(new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
-			builder.Services.AddBootstrapCss();
-			builder.Services.AddBlazorPrettyCode(defaults =>
-			{
-				defaults.DefaultTheme = "SolarizedDark";
-				defaults.ShowLineNumbers = true;
-			});
-
-			builder.RootComponents.Add<App>("app");
-
-			await builder.Build().RunAsync();
-		}
-
-        public static IWebAssemblyHostBuilder CreateHostBuilder(string[] args) =>
-            BlazorWebAssemblyHost.CreateDefaultBuilder()
-                .UseBlazorStartup<Startup>();
+            await builder.Build().RunAsync();
+        }
     }
 }
