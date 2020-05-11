@@ -8,7 +8,7 @@
 			<option value="@value">@(((Enum)value).ToName())</option>
 		}
 	</select>
-	<input type="image" src="/images/help.png" class="btn-group-help" title="Show Help" onclick="@ShowToolTip" id="@Id" />
+	<input type="image" src="/images/help.png" class="btn-group-help" title="Show Help" @onclick="@ShowToolTip" id="@Id" />
 </div>
 
 @functions

@@ -1,9 +1,11 @@
+@using System.Net.Http;
+@using System.Net.Http.Json;
 @inject HttpClient  Http
 
 <div class="ffr-tooltip" style="@css">
-	<button type="button" class="nes-btn is-error ffr-tooltip-close" onclick="@HideToolTip"> X </button>
-	<button type="button" class="nes-btn" onclick="@HideToolTip">@Title</button>
-	<div class="is-dark nes-container" onmousedown=@StartDrag onmousemove=@Drag onmouseup=@EndDrag onmouseout=@EndDrag>
+	<button type="button" class="nes-btn is-error ffr-tooltip-close" @onclick="@HideToolTip"> X </button>
+	<button type="button" class="nes-btn" @onclick="@HideToolTip">@Title</button>
+	<div class="is-dark nes-container" @onmousedown=@StartDrag @onmousemove=@Drag @onmouseup=@EndDrag @onmouseout=@EndDrag>
 		<div class="ffr-tooltip-screenshot" style="@(ScreenshotStyle())"></div>
 		<p class="ffr-tooltip-text">@Description</p>
 		<p style="clear: both"></p>
@@ -24,7 +26,7 @@
 	protected string ToolTipId { get; set; }
 
 	private List<ToolTipObj> Tooltips { get; set; }
-	protected override async void OnInitialized()
+	protected override async Task OnInitializedAsync()
 	{
 		Tooltips = await Http.GetJsonAsync<List<ToolTipObj>>("/tooltips/tooltips.json");
 	}
