@@ -2,7 +2,7 @@
 @using System.ComponentModel;
 @using System.IO;
 @using RomUtilities;
-@using System.Net.Http; 
+@using System.Net.Http;
 @using FF1Lib;
 @using System.Text.Json.Serialization;
 @using BlazorStrap
@@ -10,15 +10,13 @@
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JSRuntime
-@inject Blazor.Extensions.Storage.LocalStorage LocalStorage
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 
 
 <div class="content px-4 tinted">
     <CascadingValue Value="@ToolTipId">
-        <ToolTip ref="ToolTipElement"></ToolTip>
-        <BSTabContent>
+        <ToolTip @ref="ToolTipElement"></ToolTip>
             <button type="button" class="@(TabClasses("File"))" @onclick="@(() => ActivateTab("File"))">File</button>
-            <BSTab IsOpen="@(activeTabs.Contains("File"))">
                 <div class="is-dark nes-container">
                     <div class="row spaced-row">
                         <div class="col-md-6">
@@ -62,16 +60,12 @@
                         </div>
                     </div>
                 </div>
-            </BSTab>
             <br />
             <button type="button" class="nes-btn is-primary" @onclick="@OnRandomize">Randomize</button>
-            <BSTab IsOpen="@(StatusMessage.Length > 0)">
                 <div class="is-dark nes-container">
                     @StatusMessage
                 </div>
-            </BSTab>
             <button type="button" class="@(TabClasses("Shuffle"))" @onclick="@(() => ActivateTab("Shuffle"))">Shuffle</button>
-            <BSTab IsOpen="@(activeTabs.Contains("Shuffle"))">
                 <div class="is-dark nes-container">
                     <div class="row">
                         <div class="col-md-4">
@@ -115,9 +109,7 @@
                         </div>
                     </div>
                 </div>
-            </BSTab>
             <button type="button" class="@(TabClasses("Treasures"))" @onclick="@(() => ActivateTab("Treasures"))">Treasures &amp; Incentives</button>
-            <BSTab IsOpen="@(activeTabs.Contains("Treasures"))">
                 <div class="is-dark nes-container">
                     <div class="row">
                         <div class="col-md-4">
@@ -176,9 +168,7 @@
                         </div>
                     </div>
                 </div>
-            </BSTab>
             <button type="button" class="@(TabClasses("Goal"))" @onclick="@(() => ActivateTab("Goal"))">Goal</button>
-            <BSTab IsOpen="@(activeTabs.Contains("Goal"))">
                 <div class="is-dark nes-container">
                     <div class="row">
                         <div class="col-md-4">
@@ -203,9 +193,7 @@
                         </div>
                     </div>
                 </div>
-            </BSTab>
             <button type="button" class="@(TabClasses("Map"))" @onclick="@(() => ActivateTab("Map"))">Maps &amp; Routing</button>
-            <BSTab IsOpen="@(activeTabs.Contains("Map"))">
                 <div class="is-dark nes-container">
                     <div class="row">
                         <div class="col-md-4">
@@ -243,9 +231,7 @@
 
                     </div>
                 </div>
-            </BSTab>
             <button type="button" class="@(TabClasses("Scale"))" @onclick="@(() => ActivateTab("Scale"))">Scale</button>
-            <BSTab IsOpen="@(activeTabs.Contains("Scale"))">
                 <div class="is-dark nes-container">
                     <ClampedSlider Min="1" Max="5" Step="0.1" UpdateToolTip="@UpdateToolTipID" Id="clampMinimumPriceScaleLable" bind-Clamp="@Flags.ClampMinimumPriceScale" bind-Scale="@Flags.PriceScaleFactor">Prices:</ClampedSlider>
                     <ClampedSlider Min="1" Max="5" Step="0.1" UpdateToolTip="@UpdateToolTipID" Id="clampMinimumStatScaleLable" bind-Clamp="@Flags.ClampMinimumStatScale" bind-Scale="@Flags.EnemyScaleFactor">Enemy Stats:</ClampedSlider>
@@ -317,9 +303,7 @@
                         </div>
                     </div>
                 </div>
-            </BSTab>
             <button type="button" class="@(TabClasses("Party"))" @onclick="@(() => ActivateTab("Party"))">Party</button>
-            <BSTab IsOpen="@(activeTabs.Contains("Party"))">
                 <div class="is-dark nes-container">
                     <h4>Party Composition</h4>
                     <br />
@@ -413,9 +397,7 @@
                         </table>
                     </div>
                 </div>
-            </BSTab>
             <button type="button" class="@(TabClasses("Conveniences"))" @onclick="@(() => ActivateTab("Conveniences"))">Conveniences</button>
-            <BSTab IsOpen="@(activeTabs.Contains("Conveniences"))">
                 <div class="is-dark nes-container">
                     <div class="row">
                         <div class="col-md-12">
@@ -431,9 +413,7 @@
                         </div>
                     </div>
                 </div>
-            </BSTab>
             <button type="button" class="@(TabClasses("Bug Fixes"))" @onclick="@(() => ActivateTab("Bug Fixes"))">Bug Fixes &amp; Rebalancing</button>
-            <BSTab IsOpen="@(activeTabs.Contains("Bug Fixes"))">
                 <div class="is-dark nes-container">
                     <div class="row">
                         <div class="col-md-6">
@@ -463,9 +443,7 @@
 
                     </div>
                 </div>
-            </BSTab>
             <button type="button" class="@(TabClasses("Experimental"))" @onclick="@(() => ActivateTab("Experimental"))">Experimental</button>
-            <BSTab IsOpen="@(activeTabs.Contains("Experimental"))">
                 <div class="is-dark nes-container">
                     <div class="row">
                         <p>Test out features from 2000 years in the future - at your own risk!</p>
@@ -499,9 +477,7 @@
                         </div>
                     </div>
                 </div>
-            </BSTab>
             <button type="button" class="@(TabClasses("Fun %"))" @onclick="@(() => ActivateTab("Fun %"))">Fun %</button>
-            <BSTab IsOpen="@(activeTabs.Contains("Fun %"))">
                 <div class="is-dark nes-container">
                     <div class="row">
                         <p>Fun flags are not part of the standard flags string since they do not impact gameplay. The buttons at the bottom can be used to store your preferred fun % settings within your browser so that they will be automatically restored each time you visit the site.</p>
@@ -526,19 +502,15 @@
                         </div>
                     </div>
                 </div>
-            </BSTab>
             <br />
             <button type="button" class="nes-btn is-primary" @onclick="@OnRandomize">Randomize</button>
-            <BSTab IsOpen="@(StatusMessage.Length > 0)">
                 <div class="is-dark nes-container">
                     @StatusMessage
                 </div>
-            </BSTab>
             <br />
             <div>
                 &nbsp;
             </div>
-        </BSTabContent>
     </CascadingValue>
 </div>
 
@@ -638,7 +610,7 @@
 
         if (RememberROM)
         {
-            await LocalStorage.SetItem<string>("file", encoded);
+            await LocalStorage.SetItemAsync("file", encoded);
         }
     }
 
@@ -711,17 +683,19 @@
 
     async Task LoadPreferences()
     {
-        Flags.Preferences = await LocalStorage.GetItem<Preferences>("preferences") ?? new Preferences();
+        Preferences temp = await LocalStorage.GetItemAsync<Preferences>("preferences") ?? new Preferences();
+        Flags.Preferences = temp;
+
     }
 
     async Task SavePreferences()
     {
-        await LocalStorage.SetItem("preferences", Flags.Preferences);
+        await LocalStorage.SetItemAsync("preferences", Flags.Preferences);
     }
 
     async Task LoadLastROM()
     {
-        string encoded = await LocalStorage.GetItem<string>("file");
+        string encoded = await LocalStorage.GetItemAsync<string>("file");
         RememberROM = encoded != null && encoded.Length > 0;
         if (RememberROM)
         {
@@ -747,11 +721,11 @@
 
         if (RememberROM)
         {
-            await LocalStorage.SetItem("file", Convert.ToBase64String(_fileData));
+            await LocalStorage.SetItemAsync("file", Convert.ToBase64String(_fileData));
         }
         else
         {
-            await LocalStorage.RemoveItem("file");
+            await LocalStorage.RemoveItemAsync("file");
         }
 
         StatusMessage = "Generating Final Fantasy Randomizer ROM ... Please Wait ... ";

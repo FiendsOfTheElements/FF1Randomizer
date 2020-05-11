@@ -25,7 +25,7 @@
 	protected string ToolTipId { get; set; }
 
 	private List<ToolTipObj> Tooltips { get; set; }
-	protected override async Task OnInitializedAsync()
+	protected override async void OnInitialized()
 	{
 		Tooltips = await Http.GetJsonAsync<List<ToolTipObj>>("/tooltips/tooltips.json");
 	}

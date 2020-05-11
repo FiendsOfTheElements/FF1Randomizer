@@ -11,11 +11,11 @@ public bool Value { get; set; }
 private string ValueClass => Value ? "tri-yes" : "tri-no";
 
 [Parameter]
-public Action<bool> ValueChanged { get; set; }
-void onchange(ChangeEventArgs e)
+public EventCallback<bool> ValueChanged { get; set; }
+private Task onchange(ChangeEventArgs e)
 {
 	Value = (bool)e.Value;
-	ValueChanged(Value);
+	return ValueChanged.InvokeAsync(Value);
 }
 
 private void ShowToolTip(MouseEventArgs e)
