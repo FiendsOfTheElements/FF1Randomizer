@@ -8,9 +8,10 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Blazor.Extensions.Storage;
 using FF1Blazorizer;
 
-namespace BlazorApp4
+namespace FF1Blazorizer
 {
     public class Program
     {
@@ -21,6 +22,7 @@ namespace BlazorApp4
 
             builder.Services.AddTransient(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 			builder.Services.AddBootstrapCss();
+			builder.Services.AddStorage();
 
             await builder.Build().RunAsync();
         }

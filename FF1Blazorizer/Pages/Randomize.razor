@@ -4,12 +4,14 @@
 @using RomUtilities;
 @using System.Net.Http; 
 @using FF1Lib;
-@using FF1Blazorizer.Shared;
+@using System.Text.Json.Serialization;
 @using BlazorStrap
 @using Microsoft.AspNetCore.Components.Web
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JSRuntime
+@inject Blazor.Extensions.Storage.LocalStorage LocalStorage
+
 
 <div class="content px-4 tinted">
     <CascadingValue Value="@ToolTipId">
@@ -21,7 +23,7 @@
                     <div class="row spaced-row">
                         <div class="col-md-6">
                             <p>@RomMessage</p>
-                            <input type="file" id="fileInput" onchange="@OnFileChanged" />
+                            <input type="file" id="fileInput" @onchange="@OnFileChanged" />
                         </div>
                         <div class="col-md-6">
                             <CheckBox UpdateToolTip="@UpdateToolTipID" Id="rememberCheckBox" bind-Value="@RememberROM">Remember ROM</CheckBox>
@@ -34,14 +36,14 @@
                         <div class="col-md-4">
                             <p>
                                 Seed:
-                                <input type="text" style="width: calc(100% - 200px);" class="nes-input @(_seedInputClass)" id="seedInput" onchange="@OnSeedInputChanged" value="@(_seed)" />
+                                <input type="text" style="width: calc(100% - 200px);" class="nes-input @(_seedInputClass)" id="seedInput" @onchange="@OnSeedInputChanged" value="@(_seed)" />
                                 <button type="button" class="nes-btn is-primary" @onclick="@OnNewSeed">New</button>
                             </p>
                         </div>
                         <div class="col-md-8">
                             <p>
                                 Flags:
-                                <input style="width: calc(100% - 300px);" type="text" class="nes-input" value="@Flags.Encoded" onchange="@OnFlagsInputChanged" />
+                                <input style="width: calc(100% - 300px);" type="text" class="nes-input" value="@Flags.Encoded" @onchange="@OnFlagsInputChanged" />
                                 <button type="button" class="nes-btn is-primary" @onclick="@OnCopyToClipboard">Export</button>
                             </p>
                         </div>
@@ -527,11 +529,11 @@
             </BSTab>
             <br />
             <button type="button" class="nes-btn is-primary" @onclick="@OnRandomize">Randomize</button>
-            <TabPane IsOpen="@(StatusMessage.Length > 0)">
+            <BSTab IsOpen="@(StatusMessage.Length > 0)">
                 <div class="is-dark nes-container">
                     @StatusMessage
                 </div>
-            </TabPane>
+            </BSTab>
             <br />
             <div>
                 &nbsp;
@@ -591,7 +593,7 @@
         typeof(INotifyPropertyChanged).GetHashCode();
         typeof(INotifyPropertyChanging).GetHashCode();
 
-        var uri = new Uri(UriHelper.GetAbsoluteUri());
+        var uri = new Uri(NavigationManager.Uri);
         if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("s", out var seed))
         {
             _seed = seed.Single();
@@ -624,13 +626,13 @@
 
     async Task LoadPreset(string presetName)
     {
-        var json = await JSRuntime.Current.InvokeAsync<string>("computePreset", presetName);
-        Flags.Flags = Microsoft.JSInterop.Json.Deserialize<Flags.Preset>(json).Flags;
+        var json = await JSRuntime.InvokeAsync<string>("computePreset", presetName);
+        Flags.Flags = System.Text.Json.JsonSerializer.Deserialize<Flags.Preset>(json).Flags;
     }
 
     async Task OnFileChanged(ChangeEventArgs e)
     {
-        var encoded = await JSRuntime.Current.InvokeAsync<string>("handleFileSelect", "fileInput");
+        var encoded = await JSRuntime.InvokeAsync<string>("handleFileSelect", "fileInput");
         RomMessage = "Using Selected ROM.";
         SetFileData(encoded);
 
@@ -686,7 +688,7 @@
         StatusMessage = "URL Copied To Clipboard.";
         StateHasChanged();
 
-        JSRuntime.Current.InvokeAsync<object>("copyLocation");
+        JSRuntime.InvokeAsync<object>("copyLocation");
     }
 
     void OnFlagsInputChanged(ChangeEventArgs e)
@@ -798,7 +800,7 @@
 
             StateHasChanged();
 
-            await JSRuntime.Current.InvokeAsync<object>("downloadROM", $"FFR_{_seed}_{Flags.Encoded}.nes", encoded);
+            await JSRuntime.InvokeAsync<object>("downloadROM", $"FFR_{_seed}_{Flags.Encoded}.nes", encoded);
         }
         catch (Exception e)
         {
