@@ -90,7 +90,14 @@ namespace FF1Lib
 			var rng = new MT19337(BitConverter.ToUInt32(seed, 0));
 			// Spoilers => different rng immediately
 			if (flags.Spoilers) rng = new MT19337(rng.Next());
-			if (flags.TournamentSafe) AssureSafe(rng);
+			if (flags.TournamentSafe)
+			{
+				rng.Next();
+				rng.Next();
+				rng = new MT19337(rng.Next());
+				AssureSafe(rng);
+			}
+				
 
 			UpgradeToMMC3();
 			MakeSpace();
