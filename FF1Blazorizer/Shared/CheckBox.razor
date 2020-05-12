@@ -1,50 +1,55 @@
 ﻿<div class="checkbox-cell @IndentClass @ValueClass">
-	<input type="checkbox" id="@Id" checked="@Value" @onchange="@onchange" disabled="@(!IsEnabled)" />  <label for="@Id" class="@DisabledClass">@ChildContent</label>
+	<input type="checkbox" id="@Id" checked="@Checked" @onchange="@onchange" disabled="@(!IsEnabled)" />  <label for="@Id" class="@DisabledClass">@ChildContent</label>
 	<input type="image" src="/images/help.png" class="btn-group-help" title="Show Help" @onclick="@ShowToolTip" id="@Id" />
 </div>
 
 
 @functions
 {
-[Parameter]
-public bool Value { get; set; }
-private string ValueClass => Value ? "tri-yes" : "tri-no";
+    [Parameter]
+    public EventCallback<bool> CheckedChanged { get; set; }
 
-[Parameter]
-public EventCallback<bool> ValueChanged { get; set; }
-private Task onchange(ChangeEventArgs e)
-{
-	Value = (bool)e.Value;
-	return ValueChanged.InvokeAsync(Value);
-}
 
-private void ShowToolTip(MouseEventArgs e)
-{
-	UpdateToolTip?.Invoke(Id, e);
-}
+    [Parameter]
+    public bool Checked { get; set; }
 
-private void HideToolTip(MouseEventArgs e)
-{
-	UpdateToolTip?.Invoke("", e);
-}
 
-[CascadingParameter]
-protected string ToolTipId { get; set; }
-[Parameter]
-public Action<string, MouseEventArgs> UpdateToolTip { get; set; }
+    private string ValueClass => Checked ? "tri-yes" : "tri-no";
 
-[Parameter]
-public bool Indent { get; set; }
-private string IndentClass => Indent ? "indent" : "";
 
-[Parameter]
-public bool? IsEnabled { get; set; } = true;
-private string DisabledClass => (IsEnabled ?? true) ? "" : "disabled";
+    private Task onchange(ChangeEventArgs e)
+    {
+        Checked = (bool)e.Value;
+        return CheckedChanged.InvokeAsync(Checked);
+    }
 
-[Parameter]
-public string Id { get; set; }
+    private void ShowToolTip(MouseEventArgs e)
+    {
+        UpdateToolTip?.Invoke(Id, e);
+    }
 
-[Parameter]
-public RenderFragment ChildContent { get; set; }
+    private void HideToolTip(MouseEventArgs e)
+    {
+        UpdateToolTip?.Invoke("", e);
+    }
+
+    [CascadingParameter]
+    protected string ToolTipId { get; set; }
+    [Parameter]
+    public Action<string, MouseEventArgs> UpdateToolTip { get; set; }
+
+    [Parameter]
+    public bool Indent { get; set; }
+    private string IndentClass => Indent ? "indent" : "";
+
+    [Parameter]
+    public bool? IsEnabled { get; set; } = true;
+    private string DisabledClass => (IsEnabled ?? true) ? "" : "disabled";
+
+    [Parameter]
+    public string Id { get; set; }
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
 
 }
