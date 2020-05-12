@@ -24,9 +24,9 @@
                             <input type="file" id="fileInput" @onchange="@OnFileChanged" />
                         </div>
                         <div class="col-md-6">
-                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="rememberCheckBox" bind-Value="@RememberROM">Remember ROM</CheckBox>
-                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="tournamentSafeCheckBox" bind-Value="@Flags.TournamentSafe">Tournament Safe ROM</CheckBox>
-                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="spoilersCheckBox" bind-Value="@Flags.Spoilers">Generate Spoiler Log!</CheckBox>
+                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="rememberCheckBox" Checked="@RememberROM">Remember ROM</CheckBox>
+                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="tournamentSafeCheckBox" Checked="@Flags.TournamentSafe">Tournament Safe ROM</CheckBox>
+                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="spoilersCheckBox" Checked="@Flags.Spoilers">Generate Spoiler Log!</CheckBox>
                         </div>
                     </div>
                     <div class="row">&nbsp;</div>
@@ -70,7 +70,7 @@
                     <div class="row">
                         <div class="col-md-4">
                             <h4>Shops &amp; RNG</h4>
-                            <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="shopsCheckBox" bind-Value="@Flags.Shops">Shops</TriStateCheckBox>
+                            <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="shopsCheckBox" Value="@Flags.Shops">Shops</TriStateCheckBox>
                             <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.Shops" Id="randomWaresCheckBox" bind-Value="@Flags.RandomWares">Random Weapons and Armor</TriStateCheckBox>
                             <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@((Flags.Shops ?? true) && (Flags.RandomWares ?? true))" Id="randomWaresIncludesCheckBox" bind-Value="@Flags.RandomWaresIncludesSpecialGear">Include Caster &amp; Elite Gear</TriStateCheckBox>
                             <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="magicShopsCheckBox" bind-Value="@Flags.MagicShops">Magic Shops</TriStateCheckBox>
@@ -174,13 +174,13 @@
                         <div class="col-md-4">
                             <h4>Chaos Rush</h4>
                             <p>No time for a long race? Chaos Rush combined with Free Orbs lets you begin the game with the Temple of Fiends Revisited completely unlocked!</p>
-                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="chaosRushCheckBox" bind-Value="@Flags.ChaosRush">CHAOS Rush</CheckBox>
-                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="freeOrbsCheckBox" IsEnabled="@Flags.FreeOrbsEnabled" bind-Value="@Flags.FreeOrbs">Free Orbs</CheckBox>
+                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="chaosRushCheckBox" Checked="@Flags.ChaosRush">CHAOS Rush</CheckBox>
+                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="freeOrbsCheckBox" IsEnabled="@Flags.FreeOrbsEnabled" Checked="@Flags.FreeOrbs">Free Orbs</CheckBox>
                         </div>
                         <div class="col-md-4">
                             <h4>Treasure Hunt</h4>
                             <p>A new adventure! Instead of lighting the four orbs to activate the BLACK ORB, the Light Warriors must seek out and collect several of a random treasure item.</p>
-                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="shardHuntCheckBox" IsEnabled="@Flags.ShardHuntEnabled" bind-Value="@Flags.ShardHunt">Treasure Hunt</CheckBox>
+                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="shardHuntCheckBox" IsEnabled="@Flags.ShardHuntEnabled" Checked="@Flags.ShardHunt">Treasure Hunt</CheckBox>
                             <EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="shardCountDropDown" TItem="ShardCount" bind-Value="@Flags.ShardCount">Goal:</EnumDropDown>
                         </div>
                         <div class="col-md-4">
@@ -294,12 +294,12 @@
                     </div>
                     <div class="row">
                         <div class="col-md-12">
-                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="wrapPriceOverflowCheckBox" bind-Value="@Flags.WrapPriceOverflow">Wrap Overflowing Prices</CheckBox>
-                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="wrapStatOverflowCheckBox" bind-Value="@Flags.WrapStatOverflow">Wrap Overflowing Scaled Stats</CheckBox>
-                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="includeMoraleCheckBox" bind-Value="@Flags.IncludeMorale">Scaled Stats Includes Morale</CheckBox>
-                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="noDanModeCheckBox" bind-Value="@Flags.NoDanMode">Static EXP Distribution</CheckBox>
-                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="startingGoldCheckBox" bind-Value="@Flags.StartingGold">Scale Starting Gold</CheckBox>
-                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="easyModeCheckBox" bind-Value="@Flags.EasyMode">Easy Mode</CheckBox>
+                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="wrapPriceOverflowCheckBox" Checked="@Flags.WrapPriceOverflow">Wrap Overflowing Prices</CheckBox>
+                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="wrapStatOverflowCheckBox" Checked="@Flags.WrapStatOverflow">Wrap Overflowing Scaled Stats</CheckBox>
+                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="includeMoraleCheckBox" Checked="@Flags.IncludeMorale">Scaled Stats Includes Morale</CheckBox>
+                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="noDanModeCheckBox" Checked="@Flags.NoDanMode">Static EXP Distribution</CheckBox>
+                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="startingGoldCheckBox" Checked="@Flags.StartingGold">Scale Starting Gold</CheckBox>
+                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="easyModeCheckBox" Checked="@Flags.EasyMode">Easy Mode</CheckBox>
                         </div>
                     </div>
                 </div>
@@ -401,15 +401,15 @@
                 <div class="is-dark nes-container">
                     <div class="row">
                         <div class="col-md-12">
-                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="noPartyShuffleCheckBox" bind-Value="@Flags.NoPartyShuffle">No Party Shuffle</CheckBox>
-                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="speedHacksCheckBox" bind-Value="@Flags.SpeedHacks">Speed Hacks</CheckBox>
-                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="identifyTreasuresCheckBox" bind-Value="@Flags.IdentifyTreasures">Identify Treasures</CheckBox>
-                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="dashCheckBox" bind-Value="@Flags.Dash">Enable Dash</CheckBox>
-                            <CheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(!Flags.BuyTenOld)" Id="buyTenCheckBox" bind-Value="@Flags.BuyTen">Buy Quantity</CheckBox>
-                            <CheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(!Flags.BuyTen)" Id="buyTenOldCheckBox" bind-Value="Flags.BuyTenOld">Buy Ten (old)</CheckBox>
-                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="waitWhenUnrunnableCheckBox" bind-Value="@Flags.WaitWhenUnrunnable">Change Unrunnable RUN to WAIT</CheckBox>
-                            <CheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.SpeedHacks" Id="enableCritNumberDisplayCheckBox" bind-Value="@Flags.EnableCritNumberDisplay">Critical Hit Count Display</CheckBox>
-                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="inventoryAutosortCheckBox" bind-Value="@Flags.InventoryAutosort">Autosort Inventory</CheckBox>
+                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="noPartyShuffleCheckBox" Checked="@Flags.NoPartyShuffle">No Party Shuffle</CheckBox>
+                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="speedHacksCheckBox" Checked="@Flags.SpeedHacks">Speed Hacks</CheckBox>
+                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="identifyTreasuresCheckBox" Checked="@Flags.IdentifyTreasures">Identify Treasures</CheckBox>
+                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="dashCheckBox" Checked="@Flags.Dash">Enable Dash</CheckBox>
+                            <CheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(!Flags.BuyTenOld)" Id="buyTenCheckBox" Checked="@Flags.BuyTen">Buy Quantity</CheckBox>
+                            <CheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(!Flags.BuyTen)" Id="buyTenOldCheckBox" Checked="Flags.BuyTenOld">Buy Ten (old)</CheckBox>
+                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="waitWhenUnrunnableCheckBox" Checked="@Flags.WaitWhenUnrunnable">Change Unrunnable RUN to WAIT</CheckBox>
+                            <CheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.SpeedHacks" Id="enableCritNumberDisplayCheckBox" Checked="@Flags.EnableCritNumberDisplay">Critical Hit Count Display</CheckBox>
+                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="inventoryAutosortCheckBox" Checked="@Flags.InventoryAutosort">Autosort Inventory</CheckBox>
                         </div>
                     </div>
                 </div>
@@ -418,26 +418,26 @@
                     <div class="row">
                         <div class="col-md-6">
                             <h4>Bugs</h4>
-                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="houseMPRestorationCheckBox" bind-Value="@Flags.HouseMPRestoration">House MP Restoration</CheckBox>
-                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="weaponStatsCheckBox" bind-Value="@Flags.WeaponStats">Weapon Stats</CheckBox>
-                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="chanceToRunCheckBox" bind-Value="@Flags.ChanceToRun">Chance to Run</CheckBox>
-                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="spellBugsCheckBox" bind-Value="@Flags.SpellBugs">Spell Fixes</CheckBox>
-                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyStatusAttackBugCheckBox" bind-Value="@Flags.EnemyStatusAttackBug">Enemy Status Attacks</CheckBox>
-                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="blackBeltAbsorbCheckBox" bind-Value="@Flags.BlackBeltAbsorb">Bl. Belt & Master Absorb Calculation</CheckBox>
-                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyElementalResistancesCheckBox" bind-Value="@Flags.EnemyElementalResistancesBug">Enemy Elemental Resistances</CheckBox>
-                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="enemySpellsTargetingAlliesCheckBox" bind-Value="@Flags.EnemySpellsTargetingAllies">Enemy Spells Targeting Allies</CheckBox>
-                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="improveTurnOrderRandomizationCheckBox" bind-Value="@Flags.ImproveTurnOrderRandomization">Improve Turn Order Randomization</CheckBox>
-                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="fixHitChanceCapCheckBox" bind-Value="@Flags.FixHitChanceCap">Fix Hit % Cap</CheckBox>
+                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="houseMPRestorationCheckBox" Checked="@Flags.HouseMPRestoration">House MP Restoration</CheckBox>
+                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="weaponStatsCheckBox" Checked="@Flags.WeaponStats">Weapon Stats</CheckBox>
+                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="chanceToRunCheckBox" Checked="@Flags.ChanceToRun">Chance to Run</CheckBox>
+                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="spellBugsCheckBox" Checked="@Flags.SpellBugs">Spell Fixes</CheckBox>
+                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyStatusAttackBugCheckBox" Checked="@Flags.EnemyStatusAttackBug">Enemy Status Attacks</CheckBox>
+                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="blackBeltAbsorbCheckBox" Checked="@Flags.BlackBeltAbsorb">Bl. Belt & Master Absorb Calculation</CheckBox>
+                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyElementalResistancesCheckBox" Checked="@Flags.EnemyElementalResistancesBug">Enemy Elemental Resistances</CheckBox>
+                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="enemySpellsTargetingAlliesCheckBox" Checked="@Flags.EnemySpellsTargetingAllies">Enemy Spells Targeting Allies</CheckBox>
+                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="improveTurnOrderRandomizationCheckBox" Checked="@Flags.ImproveTurnOrderRandomization">Improve Turn Order Randomization</CheckBox>
+                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="fixHitChanceCapCheckBox" Checked="@Flags.FixHitChanceCap">Fix Hit % Cap</CheckBox>
                         </div>
                         <div class="col-md-6">
                             <h4>Balance</h4>
-                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="doubleBBCritCheckBox" bind-Value="@Flags.BBCritRate">Halve BB Crit Rate</CheckBox>
-                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="doubleWeaponCritCheckBox" bind-Value="@Flags.WeaponCritRate">Double Weapon Crit Rate</CheckBox>
-                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="increaseWepBonusesCheckBox" bind-Value="@Flags.WeaponBonuses">Increase Weapon Elemental and Type Bonuses</CheckBox>
-                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="thiefHitCheckBox" bind-Value="@Flags.ThiefHitRate">Double Thief &amp; Ninja Hit% growth.</CheckBox>
-                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="cureHealBuffCheckBox" bind-Value="@Flags.BuffHealingSpells">Improve CURE, HEAL, LAMP, and AMUT spells</CheckBox>
-                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="housesFillHpCheckBox" bind-Value="@Flags.HousesFillHP">House Full HP Restoration</CheckBox>
-                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="rebalanceSpellsCheckBox" bind-Value="@Flags.RebalanceSpells">LOCK and LOK2 Always Hit</CheckBox>
+                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="doubleBBCritCheckBox" Checked="@Flags.BBCritRate">Halve BB Crit Rate</CheckBox>
+                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="doubleWeaponCritCheckBox" Checked="@Flags.WeaponCritRate">Double Weapon Crit Rate</CheckBox>
+                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="increaseWepBonusesCheckBox" Checked="@Flags.WeaponBonuses">Increase Weapon Elemental and Type Bonuses</CheckBox>
+                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="thiefHitCheckBox" Checked="@Flags.ThiefHitRate">Double Thief &amp; Ninja Hit% growth.</CheckBox>
+                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="cureHealBuffCheckBox" Checked="@Flags.BuffHealingSpells">Improve CURE, HEAL, LAMP, and AMUT spells</CheckBox>
+                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="housesFillHpCheckBox" Checked="@Flags.HousesFillHP">House Full HP Restoration</CheckBox>
+                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="rebalanceSpellsCheckBox" Checked="@Flags.RebalanceSpells">LOCK and LOK2 Always Hit</CheckBox>
                             <EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="MDefModeDropDown" TItem="MDEFGrowthMode" bind-Value="@Flags.MDefMode">MDEF Growth:</EnumDropDown>
                         </div>
 
@@ -448,29 +448,29 @@
                     <div class="row">
                         <p>Test out features from 2000 years in the future - at your own risk!</p>
                         <div class="col-md-12">
-                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="proceduralGenerationCheckBox" bind-Value="@Flags.ExperimentalFloorGeneration">Enable Procedural Floor Generation</CheckBox>
-                            <CheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.ExperimentalFloorGeneration" Id="procGenWaterfall" bind-Value="@Flags.EFGWaterfall">Generated Waterfall Cave</CheckBox>
-                            <CheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.ExperimentalFloorGeneration" Id="procGenEarth1" bind-Value="@Flags.EFGEarth1">Generated Earth Cave B1</CheckBox>
-                            <CheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.ExperimentalFloorGeneration" Id="procGenEarth2" bind-Value="@Flags.EFGEarth2">Generated Earth Cave B2</CheckBox>
+                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="proceduralGenerationCheckBox" Checked="@Flags.ExperimentalFloorGeneration">Enable Procedural Floor Generation</CheckBox>
+                            <CheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.ExperimentalFloorGeneration" Id="procGenWaterfall" Checked="@Flags.EFGWaterfall">Generated Waterfall Cave</CheckBox>
+                            <CheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.ExperimentalFloorGeneration" Id="procGenEarth1" Checked="@Flags.EFGEarth1">Generated Earth Cave B1</CheckBox>
+                            <CheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.ExperimentalFloorGeneration" Id="procGenEarth2" Checked="@Flags.EFGEarth2">Generated Earth Cave B2</CheckBox>
                             <div class="checkbox-cell"></div>
-                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="fiendShuffleCheckBox" bind-Value="@Flags.FiendShuffle">Shuffle the Four Original Fiend Fights</CheckBox>
+                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="fiendShuffleCheckBox" Checked="@Flags.FiendShuffle">Shuffle the Four Original Fiend Fights</CheckBox>
                             <div class="checkbox-cell"></div>
-                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="itemPlacementCheckBox" IsEnabled="@Flags.Treasures" bind-Value="@Flags.ClassicItemPlacement">Use Older v2 Placement</CheckBox>
+                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="itemPlacementCheckBox" IsEnabled="@Flags.Treasures" Checked="@Flags.ClassicItemPlacement">Use Older v2 Placement</CheckBox>
                             <div class="checkbox-cell"></div>
-                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="npcSwatterCheckBox" bind-Value="@Flags.NPCSwatter">NPC Guillotine</CheckBox>
+                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="npcSwatterCheckBox" Checked="@Flags.NPCSwatter">NPC Guillotine</CheckBox>
                             <div class="checkbox-cell"></div>
-                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="disableTentSaving" bind-Value="@Flags.DisableTentSaving">Disable Tent/Cabin/House Saving on Overworld</CheckBox>
-                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="disableInnSaving" bind-Value="@Flags.DisableInnSaving">Disable Inn Saving</CheckBox>
+                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="disableTentSaving" Checked="@Flags.DisableTentSaving">Disable Tent/Cabin/House Saving on Overworld</CheckBox>
+                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="disableInnSaving" Checked="@Flags.DisableInnSaving">Disable Inn Saving</CheckBox>
                             <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="randomizeFormationEnemizer" bind-Value="@Flags.RandomizeFormationEnemizer">Generate New Formations (Enemizer)</TriStateCheckBox>
                             <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="randomizeEnemizer" IsEnabled="@Flags.RandomizeFormationEnemizer" bind-Value="@Flags.RandomizeEnemizer">Generate New Enemies (Enemizer)</TriStateCheckBox>
                             <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="generateNewSpellbook" bind-Value="@Flags.GenerateNewSpellbook">Generate New Spellbook (Spellcrafter)</TriStateCheckBox>
                             <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="spellcrafterRetainPermissions" IsEnabled="@Flags.GenerateNewSpellbook" bind-Value="@Flags.SpellcrafterRetainPermissions">Retain Old Permissions (Spellcrafter)</TriStateCheckBox>
                             <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="spellcrafterMixSpells" IsEnabled="@Flags.GenerateNewSpellbook" bind-Value="@Flags.SpellcrafterMixSpells">Mix spellbooks (Spellcrafter)</TriStateCheckBox>
-                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="AllSpellLevelsForKnightNinja" bind-Value="@Flags.AllSpellLevelsForKnightNinja">Knight and Ninja Gain Charges in All Levels</CheckBox>
+                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="AllSpellLevelsForKnightNinja" Checked="@Flags.AllSpellLevelsForKnightNinja">Knight and Ninja Gain Charges in All Levels</CheckBox>
                             <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="FreeTail" bind-Value="@Flags.FreeTail">Free Tail</TriStateCheckBox>
                             <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="RandomWeaponBonus" bind-Value="@Flags.RandomWeaponBonus">Random Weapon Bonus</TriStateCheckBox>
                             <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="RandomArmorBonus" bind-Value="@Flags.RandomArmorBonus">Random Armor Bonus</TriStateCheckBox>
-                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="fixMissingBattleRngEntry" bind-Value="@Flags.FixMissingBattleRngEntry">Fix Missing Battle RNG Entry</CheckBox>
+                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="fixMissingBattleRngEntry" Checked="@Flags.FixMissingBattleRngEntry">Fix Missing Battle RNG Entry</CheckBox>
                             <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="swolePiratesCheckBox" bind-Value="@Flags.SwolePirates">Buffed Pirates</TriStateCheckBox>
                         </div>
                         <div class="col-md-12">
@@ -482,17 +482,17 @@
                     <div class="row">
                         <p>Fun flags are not part of the standard flags string since they do not impact gameplay. The buttons at the bottom can be used to store your preferred fun % settings within your browser so that they will be automatically restored each time you visit the site.</p>
                         <div class="col-md-6">
-                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="funEnemyNamesCheckBox" bind-Value="@Flags.FunEnemyNames">Fun Enemy Names</CheckBox>
-                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="teamSteakCheckBox" bind-Value="@Flags.TeamSteak">Team STEAK</CheckBox>
-                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="paletteSwapCheckBox" bind-Value="@Flags.PaletteSwap">Palette Swap</CheckBox>
-                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="modernBattlefieldCheckBox" bind-Value="@Flags.ModernBattlefield">Modern Battlefield</CheckBox>
-                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="thirdBattlePaletteCheckBox" bind-Value="@Flags.ThirdBattlePalette">Three Battle Palettes</CheckBox>
+                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="funEnemyNamesCheckBox" Checked="@Flags.FunEnemyNames">Fun Enemy Names</CheckBox>
+                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="teamSteakCheckBox" Checked="@Flags.TeamSteak">Team STEAK</CheckBox>
+                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="paletteSwapCheckBox" Checked="@Flags.PaletteSwap">Palette Swap</CheckBox>
+                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="modernBattlefieldCheckBox" Checked="@Flags.ModernBattlefield">Modern Battlefield</CheckBox>
+                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="thirdBattlePaletteCheckBox" Checked="@Flags.ThirdBattlePalette">Three Battle Palettes</CheckBox>
                         </div>
                         <div class="col-md-6">
                             <EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="partyMapmanSlot" TItem="MapmanSlot" bind-Value="@Flags.MapmanSlot">Mapman Slot</EnumDropDown>
                             <EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="musicDropDown" TItem="MusicShuffle" bind-Value="@Flags.Music"></EnumDropDown>
-                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="disableDamageTileFlickerCheckBox" bind-Value="@Flags.DisableDamageTileFlicker">Disable Damage Tile Flicker</CheckBox>
-                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="disableSpellCastFlashCheckBox" bind-Value="@Flags.DisableSpellCastFlash">Disable Spell Cast Flash</CheckBox>
+                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="disableDamageTileFlickerCheckBox" Checked="@Flags.DisableDamageTileFlicker">Disable Damage Tile Flicker</CheckBox>
+                            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="disableSpellCastFlashCheckBox" Checked="@Flags.DisableSpellCastFlash">Disable Spell Cast Flash</CheckBox>
                             <EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="menuColorDropDown" TItem="MenuColor" bind-Value="@Flags.MenuColor">Menu Color</EnumDropDown>
                         </div>
                     </div>

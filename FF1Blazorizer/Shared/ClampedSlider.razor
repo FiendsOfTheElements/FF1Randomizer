@@ -15,7 +15,7 @@
 
     </div>
     <div class="col-xs-6 col-md-4">
-        <Slider Value="@Scale" ValueChanged="@ScaleChanged" Min="@Min" Max="@Max" Step="@Step"></Slider>
+        <Slider Value="@Scale" ValueChanged="onValueChanged" Min="@Min" Max="@Max" Step="@Step"></Slider>
         <input type="image" src="/images/help.png" class="btn-group-help" title="Show Help" @onclick="@ShowToolTip" id="@Id" />
     </div>
 </div>
@@ -68,9 +68,12 @@
     [Parameter]
     public double Scale { get; set; }
     [Parameter]
-    public Action<double>
-        ScaleChanged
-    { get; set; }
+    public EventCallback<double> ScaleChanged { get; set; }
+
+    public async void onValueChanged(double Value)
+    {
+        await ScaleChanged.InvokeAsync(Value);
+    }
 
     [Parameter]
     public double Min { get; set; }

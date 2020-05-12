@@ -5,11 +5,11 @@
 	[Parameter]
 	public double Value { get; set; }
 	[Parameter]
-	public Action<double> ValueChanged { get; set; }
+	public EventCallback<double> ValueChanged { get; set; }
 	void onchange(ChangeEventArgs e)
 	{
 		Value = double.Parse((string)e.Value);
-		ValueChanged(Value);
+		ValueChanged.InvokeAsync(Value);
 	}
 
 	[Parameter]
