@@ -28,11 +28,11 @@
 	[Parameter]
 	public bool Name { get; set; }
 
-	void onclick()
+	Task onclick()
 	{
 		if (Disabled)
 		{
-			return;
+			return Task.CompletedTask;
 		}
 
 		if (Value == false)
@@ -47,7 +47,7 @@
 		{
 			Value = false;
 		}
-		ValueChanged.InvokeAsync(Value);
+		return ValueChanged.InvokeAsync(Value);
 
 	}
 
@@ -73,6 +73,8 @@
 
 	[Parameter]
 	public bool? IsEnabled { get; set; } = true;
+	[Parameter]
+	public EventCallback<bool?> IsEnabledChanged { get; set; }
 	private bool Disabled => !(IsEnabled ?? true);
 	private string DisabledClass => (IsEnabled ?? true) ? "" : "disabled";
 
