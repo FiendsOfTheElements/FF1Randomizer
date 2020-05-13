@@ -73,8 +73,6 @@
 
 	[Parameter]
 	public bool? IsEnabled { get; set; } = true;
-	[Parameter]
-	public EventCallback<bool?> IsEnabledChanged { get; set; }
 	private bool Disabled => !(IsEnabled ?? true);
 	private string DisabledClass => (IsEnabled ?? true) ? "" : "disabled";
 
