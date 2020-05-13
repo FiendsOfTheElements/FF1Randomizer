@@ -17,11 +17,11 @@
 	[Parameter]
 	public TItem Value { get; set; }
 	[Parameter]
-	public Action<TItem> ValueChanged { get; set; }
+	public EventCallback<TItem> ValueChanged { get; set; }
 	void onchange(ChangeEventArgs e)
 	{
 		Value = (TItem)Enum.Parse(typeof(TItem), e.Value.ToString());
-		ValueChanged(Value);
+		ValueChanged.InvokeAsync(Value);
 	}
 
 	private void ShowToolTip(MouseEventArgs e)

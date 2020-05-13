@@ -61,9 +61,7 @@
     [Parameter]
     public bool? Clamp { get; set; } = false;
     [Parameter]
-    public Action<bool?>
-        ClampChanged
-    { get; set; }
+    public EventCallback<bool?> ClampChanged { get; set; }
 
     [Parameter]
     public double Scale { get; set; }
@@ -106,7 +104,7 @@
         {
             Clamp = false;
         }
-        ClampChanged(Clamp);
+        ClampChanged.InvokeAsync(Clamp);
 
     }
 

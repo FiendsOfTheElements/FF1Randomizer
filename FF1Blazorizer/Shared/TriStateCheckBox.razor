@@ -18,7 +18,7 @@
 	private string ValueClass => checked0 ? "tri-yes" : (checked1 ? "tri-no" : "tri-maybe");
 
 	[Parameter]
-	public Action<bool?> ValueChanged { get; set; }
+	public EventCallback<bool?> ValueChanged { get; set; }
 	private bool checked0 => Value ?? false;
 	private bool checked1 => !Value ?? false;
 	private bool checked2 => Value == null;
@@ -47,7 +47,7 @@
 		{
 			Value = false;
 		}
-		ValueChanged(Value);
+		ValueChanged.InvokeAsync(Value);
 
 	}
 
