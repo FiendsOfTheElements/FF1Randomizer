@@ -1,6 +1,6 @@
-{
-  "name": "FF1Blazorizer",
-  "short_name": "FFB",
+﻿{
+  "name": "FF1 Randomizer - alpha",
+  "short_name": "FFR α",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#ffffff",
