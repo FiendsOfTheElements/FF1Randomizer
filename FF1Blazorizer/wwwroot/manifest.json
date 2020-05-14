@@ -6,9 +6,16 @@
   "background_color": "#ffffff",
   "theme_color": "#03173d",
   "icons": [
-    {
-      "src": "favicon.ico",
-		"type": "image/x-icon"
-    }
+	{
+		"src": "favicon.ico",
+		"type": "image/x-icon",
+		"sizes": "48x48"
+	},
+	{
+		"src": "warmech-256.png",
+		"type": "image/png",
+		"sizes": "256x256",
+		"purpose": "any maskable"
+	}
   ]
 }
