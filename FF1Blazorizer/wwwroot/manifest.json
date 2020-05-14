@@ -1,0 +1,14 @@
+{
+  "name": "FF1Blazorizer",
+  "short_name": "FFB",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#03173d",
+  "icons": [
+    {
+      "src": "favicon.ico",
+		"type": "image/x-icon"
+    }
+  ]
+}
