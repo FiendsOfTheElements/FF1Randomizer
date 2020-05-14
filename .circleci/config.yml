@@ -45,7 +45,7 @@ jobs:
             else
               pushd FF1Blazorizer/bin/Debug/netstandard2.1/publish/wwwroot
             fi
-            tar cvzf ../../../../../../../FF1Blazorizer.tar.gz .
+            tar cvzf ../../../../../../FF1Blazorizer.tar.gz .
             popd
             scp FF1Blazorizer.tar.gz circle@finalfantasyrandomizer.com:FF1Blazorizer.tar.gz
             ssh circle@finalfantasyrandomizer.com "./deployff1rblazor.sh $CIRCLE_BRANCH"
