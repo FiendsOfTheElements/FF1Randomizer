@@ -8,7 +8,7 @@ jobs:
   build:
     working_directory: ~/ff1randomizer
     docker:
-      - image: microsoft/dotnet:2.1-sdk
+      - image: mcr.microsoft.com/dotnet/core/sdk:3.1-alpine
     steps:
       - checkout
       - run:
@@ -18,10 +18,10 @@ jobs:
             cd FF1Blazorizer
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
               dotnet publish -c Release
-              git rev-parse HEAD > bin/Release/netstandard2.0/publish/FF1Blazorizer/dist/version.txt
+              git rev-parse HEAD > bin/Release/netstandard2.1/publish/FF1Blazorizer/dist/version.txt
             else
               dotnet publish -c Debug
-              git rev-parse HEAD > bin/Debug/netstandard2.0/publish/FF1Blazorizer/dist/version.txt
+              git rev-parse HEAD > bin/Debug/netstandard2.1/publish/FF1Blazorizer/dist/version.txt
             fi
       - persist_to_workspace:
           root: ~/ff1randomizer
@@ -41,9 +41,9 @@ jobs:
             mkdir -p ~/.ssh
             cp .ssh/known_hosts ~/.ssh/known_hosts
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
-              pushd FF1Blazorizer/bin/Release/netstandard2.0/publish/FF1Blazorizer/dist
+              pushd FF1Blazorizer/bin/Release/netstandard2.1/publish/FF1Blazorizer/dist
             else
-              pushd FF1Blazorizer/bin/Debug/netstandard2.0/publish/FF1Blazorizer/dist
+              pushd FF1Blazorizer/bin/Debug/netstandard2.1/publish/FF1Blazorizer/dist
             fi
             tar cvzf ../../../../../../../FF1Blazorizer.tar.gz .
             popd
