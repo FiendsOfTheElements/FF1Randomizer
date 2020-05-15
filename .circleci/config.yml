@@ -24,7 +24,7 @@ jobs:
               git rev-parse HEAD > output/wwwroot/version.txt
             fi
       - persist_to_workspace:
-          root: output
+          root: ~/ff1randomizer/FF1Blazorizer/output
           paths:
             - wwwroot
 
