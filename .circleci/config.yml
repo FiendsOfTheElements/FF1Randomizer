@@ -33,10 +33,18 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-          at: tmp/output
+          at: ~/ff1randomizer/FF1Blazorizer/output
       - run:
           name: deploy
-          command: "netlify deploy --dir=/tmp/output/wwwroot --prod"
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              netlify deploy --dir=~/ff1randomizer/FF1Blazorizer/output/wwwroot --prod --site=<main site id>
+            elif ["${CIRCLE_BRANCH}" == "dev"]; then
+              netlify deploy --dir=~/ff1randomizer/FF1Blazorizer/output/wwwroot --prod --site=<beta site id>
+            else
+               netlify deploy --dir=~/ff1randomizer/FF1Blazorizer/output/wwwroot --prod --site=<alpha site id>
+            fi
+         
 
 
 workflows:
