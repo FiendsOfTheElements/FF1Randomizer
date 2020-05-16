@@ -122,6 +122,17 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ShuffleObjectiveNPCs"));
 			}
 		}
+		
+		public bool? ShuffleAstos
+		{
+			get => Flags.ShuffleAstos;
+			set
+			{
+				Flags.ShuffleAstos = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ShuffleAstos"));
+			}
+		}
+		
 		public bool? RandomWares
 		{
 			get => Flags.RandomWares;
