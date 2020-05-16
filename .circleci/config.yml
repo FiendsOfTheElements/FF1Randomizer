@@ -1,14 +1,14 @@
 defaults: &defaults
   working_directory: ~/ff1randomizer
   docker:
-    - image: circleci/node:8
+    - image: fiendsoftheelements/netlify-build:alpine
 
 version: 2
 jobs:
   build:
     working_directory: ~/ff1randomizer
     docker:
-      - image: microsoft/dotnet:2.1-sdk
+      - image: fiendsoftheelements/netlify-build:alpine
     steps:
       - checkout
       - run:
@@ -17,38 +17,35 @@ jobs:
             set -ex
             cd FF1Blazorizer
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
-              dotnet publish -c Release
-              git rev-parse HEAD > bin/Release/netstandard2.0/publish/FF1Blazorizer/dist/version.txt
+              dotnet publish -c Release -o output
+              git rev-parse HEAD > output/wwwroot/version.txt
             else
-              dotnet publish -c Debug
-              git rev-parse HEAD > bin/Debug/netstandard2.0/publish/FF1Blazorizer/dist/version.txt
+              dotnet publish -c Debug -o output
+              git rev-parse HEAD > output/wwwroot/version.txt
             fi
       - persist_to_workspace:
-          root: ~/ff1randomizer
+          root: ~/ff1randomizer/FF1Blazorizer/output
           paths:
-            - FF1Blazorizer
+            - wwwroot
 
   deploy:
     <<: *defaults
     steps:
       - checkout
       - attach_workspace:
-          at: ~/ff1randomizer
+          at: ~/ff1randomizer/FF1Blazorizer/output
       - run:
           name: deploy
           command: |
-            set -ex
-            mkdir -p ~/.ssh
-            cp .ssh/known_hosts ~/.ssh/known_hosts
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
-              pushd FF1Blazorizer/bin/Release/netstandard2.0/publish/FF1Blazorizer/dist
+              netlify deploy --dir=~/ff1randomizer/FF1Blazorizer/output/wwwroot --prod --site=<main site id>
+            elif ["${CIRCLE_BRANCH}" == "dev"]; then
+              netlify deploy --dir=~/ff1randomizer/FF1Blazorizer/output/wwwroot --prod --site=<beta site id>
             else
-              pushd FF1Blazorizer/bin/Debug/netstandard2.0/publish/FF1Blazorizer/dist
+               netlify deploy --dir=~/ff1randomizer/FF1Blazorizer/output/wwwroot --prod --site=e09ff967-73b0-4780-bb36-4937361bb133
             fi
-            tar cvzf ../../../../../../FF1Blazorizer.tar.gz .
-            popd
-            scp FF1Blazorizer.tar.gz circle@finalfantasyrandomizer.com:FF1Blazorizer.tar.gz
-            ssh circle@finalfantasyrandomizer.com "./deployff1rblazor.sh $CIRCLE_BRANCH"
+         
+
 
 workflows:
   version: 2
