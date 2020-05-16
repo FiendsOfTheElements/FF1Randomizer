@@ -1,10 +1,11 @@
 ﻿{
   "name": "FF1 Randomizer - alpha",
   "short_name": "FFR α",
-  "start_url": "./",
+  "description": "The randomizer for Final Fantasy 1.",
+  "start_url": "./Randomize",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#03173d",
+  "theme_color": "##111122",
   "icons": [
 	{
 		"src": "favicon.ico",
@@ -14,7 +15,7 @@
 	{
 		"src": "warmech-256.png",
 		"type": "image/png",
-		"sizes": "256x256",
+		"sizes": "96x96 192x192 256x256 512x512",
 		"purpose": "any maskable"
 	}
   ]
