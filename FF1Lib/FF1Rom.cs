@@ -288,11 +288,6 @@ namespace FF1Lib
 				}
 			}
 
-			if ((bool)flags.ShuffleAstos && ((bool)flags.NPCItems || (bool)flags.NPCFetchItems))
-			{
-				ShuffleAstos(flags, rng);
-			}
-			
 			if ((bool)flags.MagicShopLocs)
 			{
 				ShuffleMagicLocations(rng);
@@ -656,6 +651,11 @@ namespace FF1Lib
 				PubReplaceClinic(rng, flags);
 			}
 
+			if ((bool)flags.ShuffleAstos && ((bool)flags.NPCItems || (bool)flags.NPCFetchItems))
+			{
+				ShuffleAstos(flags, rng);
+			}
+			
 			if ((bool)flags.MapCanalBridge)
 			{
 				EnableCanalBridge();
