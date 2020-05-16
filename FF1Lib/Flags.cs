@@ -119,6 +119,7 @@ namespace FF1Lib
 		public bool? EarlySage { get; set; } = false;
 		public bool? EarlyOrdeals { get; set; } = false;
 		public bool? ShuffleObjectiveNPCs { get; set; } = false;
+		public bool? ShuffleAstos { get; set; } = false;
 		public bool OnlyRequireGameIsBeatable { get; set; } = true;
 
 		public bool? FreeBridge { get; set; } = false;
@@ -585,6 +586,7 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.EarlySage);
 			sum = AddTriState(sum, flags.EarlyOrdeals);
 			sum = AddTriState(sum, flags.ShuffleObjectiveNPCs);
+			sum = AddTriState(sum, flags.ShuffleAstos);
 			sum = AddBoolean(sum, flags.OnlyRequireGameIsBeatable);
 			sum = AddTriState(sum, flags.FreeBridge);
 			sum = AddTriState(sum, flags.FreeShip);
@@ -838,6 +840,7 @@ namespace FF1Lib
 				FreeBridge = GetTriState(ref sum),
 				OnlyRequireGameIsBeatable = GetBoolean(ref sum),
 				ShuffleObjectiveNPCs = GetTriState(ref sum),
+				ShuffleAstos = GetTriState(ref sum),
 				EarlyOrdeals = GetTriState(ref sum),
 				EarlySage = GetTriState(ref sum),
 				EarlySarda = GetTriState(ref sum),
