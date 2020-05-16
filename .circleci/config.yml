@@ -38,11 +38,11 @@ jobs:
           name: deploy
           command: |
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
-              netlify deploy --dir=~/ff1randomizer/FF1Blazorizer/output/wwwroot --prod --site=main
+              netlify deploy --dir=/root/ff1randomizer/FF1Blazorizer/output/wwwroot --prod --site=main
             elif [ "${CIRCLE_BRANCH}" == "dev" ]; then
-              netlify deploy --dir=~/ff1randomizer/FF1Blazorizer/output/wwwroot --prod --site=beta
+              netlify deploy --dir=/root/ff1randomizer/FF1Blazorizer/output/wwwroot --prod --site=beta
             else
-              netlify deploy --dir=~/ff1randomizer/FF1Blazorizer/output/wwwroot --prod --site=e09ff967-73b0-4780-bb36-4937361bb133
+              netlify deploy --dir=/root/ff1randomizer/FF1Blazorizer/output/wwwroot --prod --site=e09ff967-73b0-4780-bb36-4937361bb133
             fi
          
 
