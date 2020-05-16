@@ -42,7 +42,7 @@ jobs:
             elif [ "${CIRCLE_BRANCH}" == "dev" ]; then
               netlify deploy --dir=/root/ff1randomizer/FF1Blazorizer/output/wwwroot --prod --site=beta
             else
-              netlify deploy --dir=/root/ff1randomizer/FF1Blazorizer/output/wwwroot --prod --site=e09ff967-73b0-4780-bb36-4937361bb133
+              netlify deploy --dir=/root/ff1randomizer/FF1Blazorizer/output/wwwroot --prod --site=61141991-cfa6-4a2e-ab6b-187b1611a2e4
             fi
          
 
