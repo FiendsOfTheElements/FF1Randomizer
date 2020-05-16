@@ -215,6 +215,12 @@
 		"description": "Objective NPCs: Shuffles the locations of Dr. Unne, the Elven Doctor, and Bahamut. Note that the Prince is still napping in Elfland once you deliver the Herb to the Elven Doctor and that the small pool means NPCs may retain their normal location."
 	},
 	{
+		"Id": "shuffleAstosCheckBox",
+		"title": "Shuffle Astos",
+		"screenshot": "",
+		"description": "Astos disguise himself as another NPC: Bahamut, Canoe Sage, CubeBot, Elf Doctor, Fairy, King, Mayoya, Nerrick, Princess, Smith, Titan, Unne or the kindly old king from Northwest Castle. Also Sarda if Early Sarda is enabled."
+	},	
+	{
 		"Id": "freeShipCheckBox",
 		"title": "Free Ship",
 		"screenshot": "freeShipCheckBox.png",
