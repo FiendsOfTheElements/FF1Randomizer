@@ -30,7 +30,7 @@ jobs:
               sed -i 's/NAMESHORT/FFR α/' wwwroot/manifest.json
               dotnet publish -c Debug -o output
             else
-              dotnet publis -c Debug -o output
+              dotnet publish -c Debug -o output
             fi
             
             git rev-parse HEAD > output/wwwroot/version.txt
