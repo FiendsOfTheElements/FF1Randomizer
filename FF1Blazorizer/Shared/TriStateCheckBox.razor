@@ -3,10 +3,10 @@
 		<input type="radio" name="@Name" value="2" checked="@checked2" hidden>
 		<input type="radio" name="@Name" value="1" checked="@checked1" hidden>
 		<input type="radio" name="@Name" value="0" checked="@checked0" hidden>
-		<input type="image" src="@image" id="@Id" class="tri-state" disabled="@(!IsEnabled)" onclick="@onclick" /> <label for="@Id">@ChildContent</label>
+		<input type="image" src="@image" id="@Id" class="tri-state" disabled="@(!IsEnabled)" @onclick="onclick" /> <label for="@Id">@ChildContent</label>
 	@if (!DisableTooltip)
 	{
-		<input type="image" src="/images/help.png" class="btn-group-help" title="Show Help" onclick="@ShowToolTip" id="@Id" />
+		<input type="image" src="/images/help.png" class="btn-group-help" title="Show Help" @onclick="ShowToolTip" id="@Id" />
 	}
 	</div>
 </div>
@@ -14,11 +14,11 @@
 @functions
 {
 	[Parameter]
-	private bool? Value { get; set; } = false;
+	public bool? Value { get; set; } = false;
 	private string ValueClass => checked0 ? "tri-yes" : (checked1 ? "tri-no" : "tri-maybe");
 
 	[Parameter]
-	private Action<bool?> ValueChanged { get; set; }
+	public EventCallback<bool?> ValueChanged { get; set; }
 	private bool checked0 => Value ?? false;
 	private bool checked1 => !Value ?? false;
 	private bool checked2 => Value == null;
@@ -26,13 +26,13 @@
 	private string image => checked0 ? "/images/true.png" : (checked1 ? "/images/false.png" : "/images/random.gif");
 
 	[Parameter]
-	private bool Name { get; set; }
+	public bool Name { get; set; }
 
-	void onclick()
+	Task onclick()
 	{
 		if (Disabled)
 		{
-			return;
+			return Task.CompletedTask;
 		}
 
 		if (Value == false)
@@ -47,16 +47,16 @@
 		{
 			Value = false;
 		}
-		ValueChanged(Value);
+		return ValueChanged.InvokeAsync(Value);
 
 	}
 
-	private void ShowToolTip(UIMouseEventArgs e)
+	private void ShowToolTip(MouseEventArgs e)
 	{
 		UpdateToolTip?.Invoke(Id, e);
 	}
 
-	private void HideToolTip(UIMouseEventArgs e)
+	private void HideToolTip(MouseEventArgs e)
 	{
 		UpdateToolTip?.Invoke("", e);
 	}
@@ -65,24 +65,24 @@
 	[CascadingParameter]
 	protected string ToolTipId { get; set; }
 	[Parameter]
-	protected Action<string, UIMouseEventArgs> UpdateToolTip { get; set; }
+	public Action<string, MouseEventArgs> UpdateToolTip { get; set; }
 
 	[Parameter]
-	private bool Indent { get; set; }
+	public bool Indent { get; set; }
 	private string IndentClass => Indent ? "indent" : "";
 
 	[Parameter]
-	private bool? IsEnabled { get; set; } = true;
+	public bool? IsEnabled { get; set; } = true;
 	private bool Disabled => !(IsEnabled ?? true);
 	private string DisabledClass => (IsEnabled ?? true) ? "" : "disabled";
 
 	[Parameter]
-	private string Id { get; set; }
+	public string Id { get; set; }
 
 	[Parameter]
-	private RenderFragment ChildContent { get; set; }
+	public RenderFragment ChildContent { get; set; }
 
 	[Parameter]
-	private bool DisableTooltip { get; set; }
+	public bool DisableTooltip { get; set; }
 
 }
