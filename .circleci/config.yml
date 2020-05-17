@@ -16,13 +16,24 @@ jobs:
           command: |
             set -ex
             cd FF1Blazorizer
+            
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              sed -i 's/$NAMELONG/Final Fantasy Randomizer/' wwwroot/manifest.json
+              sed -i 's/$NAMESHORT/FFR/' wwwroot/manifest.json
               dotnet publish -c Release -o output
-              git rev-parse HEAD > output/wwwroot/version.txt
-            else
+            elif [ "${CIRCLE_BRANCH}" == "dev" ]; then
+              sed -i 's/$NAMELONG/Final Fantasy 1 Randomizer - beta/' wwwroot/manifest.json
+              sed -i 's/$NAMESHORT/FFR β/' wwwroot/manifest.json
               dotnet publish -c Debug -o output
-              git rev-parse HEAD > output/wwwroot/version.txt
+            elif [ "${CIRCLE_BRANCH}" == "alpha" ]; then
+              sed -i 's/$NAMELONG/Final Fantasy 1 Randomizer - alpha/' wwwroot/manifest.json
+              sed -i 's/$NAMESHORT/FFR α/' wwwroot/manifest.json
+              dotnet publish -c Debug -o output
+            else
+              dotnet publis -c Debug -o output
             fi
+            
+            git rev-parse HEAD > output/wwwroot/version.txt
       - persist_to_workspace:
           root: ~/ff1randomizer/FF1Blazorizer/output
           paths:
