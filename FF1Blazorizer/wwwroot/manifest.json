@@ -1,10 +1,11 @@
 ﻿{
-  "name": "FF1 Randomizer - alpha",
-  "short_name": "FFR α",
-  "start_url": "./",
+  "name": "NAMELONG",
+  "short_name": "NAMESHORT",
+  "description": "The randomizer for Final Fantasy 1.",
+  "start_url": "/Randomize",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#03173d",
+  "theme_color": "#111122",
   "icons": [
 	{
 		"src": "favicon.ico",
@@ -12,9 +13,27 @@
 		"sizes": "48x48"
 	},
 	{
-		"src": "warmech-256.png",
+		"src": "images/warmech-96.png",
+		"type": "image/png",
+		"sizes": "96x96",
+		"purpose": "any maskable"
+	},
+	{
+		"src": "images/warmech-192.png",
+		"type": "image/png",
+		"sizes": "192x192",
+		"purpose": "any maskable"
+	},
+	{
+		"src": "images/warmech-256.png",
 		"type": "image/png",
 		"sizes": "256x256",
+		"purpose": "any maskable"
+	},
+	{
+		"src": "images/warmech-512.png",
+		"type": "image/png",
+		"sizes": "512x512",
 		"purpose": "any maskable"
 	}
   ]
