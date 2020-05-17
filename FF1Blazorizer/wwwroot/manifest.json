@@ -1,6 +1,6 @@
 ﻿{
-  "name": "FF1 Randomizer - alpha",
-  "short_name": "FFR α",
+  "name": "$NAMELONG",
+  "short_name": "$NAMESHORT",
   "description": "The randomizer for Final Fantasy 1.",
   "start_url": "/Randomize",
   "display": "standalone",
