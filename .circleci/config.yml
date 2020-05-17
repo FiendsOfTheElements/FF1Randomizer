@@ -18,15 +18,15 @@ jobs:
             cd FF1Blazorizer
             
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
-              sed -i 's/NAMELONG/Final Fantasy Randomizer/' wwwroot/manifest.json
+              sed -i 's/NAMELONG/FFRandomizer/' wwwroot/manifest.json
               sed -i 's/NAMESHORT/FFR/' wwwroot/manifest.json
               dotnet publish -c Release -o output
             elif [ "${CIRCLE_BRANCH}" == "dev" ]; then
-              sed -i 's/NAMELONG/Final Fantasy 1 Randomizer - beta/' wwwroot/manifest.json
+              sed -i 's/NAMELONG/FFRandomizer - beta/' wwwroot/manifest.json
               sed -i 's/NAMESHORT/FFR β/' wwwroot/manifest.json
               dotnet publish -c Debug -o output
             elif [ "${CIRCLE_BRANCH}" == "alpha" ]; then
-              sed -i 's/NAMELONG/Final Fantasy 1 Randomizer - alpha/' wwwroot/manifest.json
+              sed -i 's/NAMELONG/FFRandomizer - alpha/' wwwroot/manifest.json
               sed -i 's/NAMESHORT/FFR α/' wwwroot/manifest.json
               dotnet publish -c Debug -o output
             else
