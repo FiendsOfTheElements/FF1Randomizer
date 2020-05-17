@@ -1,6 +1,6 @@
 ﻿{
-  "name": "$NAMELONG",
-  "short_name": "$NAMESHORT",
+  "name": "NAMELONG",
+  "short_name": "NAMESHORT",
   "description": "The randomizer for Final Fantasy 1.",
   "start_url": "/Randomize",
   "display": "standalone",
