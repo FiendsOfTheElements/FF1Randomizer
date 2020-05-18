@@ -2,7 +2,7 @@
 	"name": "NAME_LONG",
 	"short_name": "NAME_SHORT",
 	"description": "The randomizer for Final Fantasy 1.",
-	"start_url": "/Randomize",
+	"start_url": "/",
 	"display": "standalone",
 	"background_color": "#ffffff",
 	"theme_color": "DARK_BACKGROUND_COLOR",
