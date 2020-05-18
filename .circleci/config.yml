@@ -49,7 +49,7 @@ jobs:
             else
               dotnet publish -c Debug -o output
             fi
-            
+            mv -f output/wwwroot/manifest.published.json output/wwwroot/manifest.json
             git rev-parse HEAD > output/wwwroot/version.txt
       - persist_to_workspace:
           root: ~/ff1randomizer/FF1Blazorizer/output
