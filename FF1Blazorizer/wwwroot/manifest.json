@@ -12,6 +12,7 @@
 		{
 			"src": "normal.ico",
 			"type": "image/x-icon",
+			"sizes": "16x16 24x24 32x32",
 			"purpose": "any maskable"
 		},
 		{
