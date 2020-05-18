@@ -141,7 +141,6 @@ h1, h2, h4 {
 .nes-container {
     margin-top: -6px;
     margin-left: -2px;
-    background-color: var(--DARK_BACKGROUND_COLOR);
 }
 
     .nes-container::after {

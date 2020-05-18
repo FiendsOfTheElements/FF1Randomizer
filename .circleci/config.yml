@@ -20,7 +20,7 @@ jobs:
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
               sed -i 's/NAME_LONG/FFRandomizer/g' wwwroot/manifest.published.json
               sed -i 's/NAME_SHORT/FFR/g' wwwroot/manifest.published.json
-              color=$(grep "DARK_BACKGROUND_COLOR: #.*" wwwroot/css/main.css | grep -o "#.*")
+              color=$(grep "DARK_BACKGROUND_COLOR: #.*" wwwroot/css/main.css | grep -o "#[0-9a-fA-F]*")
               sed -i "s/DARK_BACKGROUND_COLOR/$color/g" wwwroot/manifest.published.json
               sed -i "s/DARK_BACKGROUND_COLOR/$color/g" wwwroot/index.html
               sed -i 's/SITE_ICON_COLOR/normal/g' wwwroot/manifest.published.json
@@ -28,7 +28,7 @@ jobs:
             elif [ "${CIRCLE_BRANCH}" == "dev" ]; then
               sed -i 's/NAME_LONG/FFRandomizer - beta/g' wwwroot/manifest.published.json
               sed -i 's/NAME_SHORT/FFR β/g' wwwroot/manifest.published.json
-              color=$(grep "DARK_BACKGROUND_COLOR: #.*" wwwroot/css/beta.css | grep -o "#.*")
+              color=$(grep "DARK_BACKGROUND_COLOR: #.*" wwwroot/css/beta.css | grep -o "#[0-9a-fA-F]*")
               sed -i "s/DARK_BACKGROUND_COLOR/$color/g" wwwroot/manifest.published.json
               sed -i "s/DARK_BACKGROUND_COLOR/$color/g" wwwroot/index.html
               sed -i 's/main.css/beta.css/g' wwwroot/css/site.css
@@ -37,7 +37,7 @@ jobs:
             elif [ "${CIRCLE_BRANCH}" == "alpha" ]; then
               sed -i 's/NAME_LONG/FFRandomizer - alpha/g' wwwroot/manifest.published.json
               sed -i 's/NAME_SHORT/FFR α/g' wwwroot/manifest.published.json
-              color=$(grep "DARK_BACKGROUND_COLOR: #.*" wwwroot/css/alpha.css | grep -o "#.*")
+              color=$(grep "DARK_BACKGROUND_COLOR: #.*" wwwroot/css/alpha.css | grep -o "#[0-9a-fA-F]*")
               sed -i "s/DARK_BACKGROUND_COLOR/$color/g" wwwroot/manifest.published.json
               sed -i "s/DARK_BACKGROUND_COLOR/$color/g" wwwroot/index.html
               sed -i 's/main.css/alpha.css/g' wwwroot/css/site.css
