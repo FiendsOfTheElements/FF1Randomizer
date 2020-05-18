@@ -8,6 +8,12 @@
 	"theme_color": "DARK_BACKGROUND_COLOR",
 	"icons": [
 		{
+			"src": "SITE_ICON_COLOR",
+			"type": "image/x-icon",
+			"sizes": "16x16 32x32 48x48",
+			"purpose": "any maskable"
+		},
+		{
 			"src": "images/icons/warmech-SITE_ICON_COLOR-192.png",
 			"type": "image/png",
 			"sizes": "192x192",
