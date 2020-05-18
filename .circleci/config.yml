@@ -25,6 +25,7 @@ jobs:
               sed -i "s/DARK_BACKGROUND_COLOR/$color/g" wwwroot/index.html
               sed -i 's/SITE_ICON_COLOR/normal/g' wwwroot/manifest.published.json
               sed -i 's/SITE_ICON_COLOR/normal/g' wwwroot/index.html
+              mv -f wwwroot/manifest.published.json wwwroot/manifest.json
               dotnet publish -c Release -o output
             elif [ "${CIRCLE_BRANCH}" == "dev" ]; then
               sed -i 's/NAME_LONG/FFRandomizer - beta/g' wwwroot/manifest.published.json
@@ -35,6 +36,7 @@ jobs:
               sed -i 's/main.css/beta.css/g' wwwroot/css/site.css
               sed -i 's/SITE_ICON_COLOR/cyan/g' wwwroot/manifest.published.json
               sed -i 's/SITE_ICON_COLOR/cyan/g' wwwroot/index.html
+              mv -f wwwroot/manifest.published.json wwwroot/manifest.json
               dotnet publish -c Debug -o output
             elif [ "${CIRCLE_BRANCH}" == "alpha" ]; then
               sed -i 's/NAME_LONG/FFRandomizer - alpha/g' wwwroot/manifest.published.json
@@ -45,11 +47,11 @@ jobs:
               sed -i 's/main.css/alpha.css/g' wwwroot/css/site.css
               sed -i 's/SITE_ICON_COLOR/red/g' wwwroot/manifest.published.json
               sed -i 's/SITE_ICON_COLOR/red/g' wwwroot/index.html
+              mv -f wwwroot/manifest.published.json wwwroot/manifest.json
               dotnet publish -c Debug -o output
             else
               dotnet publish -c Debug -o output
             fi
-            mv -f output/wwwroot/manifest.published.json output/wwwroot/manifest.json
             git rev-parse HEAD > output/wwwroot/version.txt
       - persist_to_workspace:
           root: ~/ff1randomizer/FF1Blazorizer/output
