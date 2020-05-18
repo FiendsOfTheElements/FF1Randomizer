@@ -52,10 +52,8 @@
 		<Copy SourceFiles="$(OutDir)version.txt" DestinationFolder="$(OutDir)dist" />
 	</Target>
 
-	<!--replaces these files on publish-->
 	<ItemGroup>
 		<ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.published.js" />
-		<ServiceWorker Include="wwwroot\manifest.json" PublishedContent="wwwroot\manifest.published.json" />
 	</ItemGroup>
 
 </Project>
