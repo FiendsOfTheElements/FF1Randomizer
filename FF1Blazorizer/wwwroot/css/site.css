@@ -214,7 +214,7 @@ tr.odd {
 
     .ffr-nav:hover {
         text-decoration: none;
-        color: #000000
+        color: #ffffff;
     }
 
     .ffr-nav.active {
@@ -237,7 +237,8 @@ tr.odd {
 }
 
     .main-menu-row:hover {
-        background-color: rgba(0, 0, 0, 0.2)
+        background-color: rgba(0, 0, 0, 0.2);
+        color: #ffffff;
     }
 
 .main-menu a {
