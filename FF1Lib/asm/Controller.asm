@@ -42,7 +42,12 @@ Loopone:
 	LDA joy2
 	CMP #$88
 	BEQ reset
+	CMP #$48
+	BEQ softreset
     RTS
+
+softreset:
+	JMP $FE2E ; jump to where the reset vector is pointing
 
 reset:
 	JSR $FEA8
