@@ -229,19 +229,20 @@ New_Talk_Astos:
       JSR $90A4
       LDA #$7D
       JSR $90C5
-      LDA $11
+      LDA $12
       RTS
 AlreadyFought:
+	  CLC
       LDA $13
       BEQ Default
-      JSR $D094
+      JSR $DD93
       BCS EndRoutine
       LDY #$07
 	  JSR $9273
       LDA #$3A
       RTS
 Default:
-    LDA $12
+    LDA $11
 EndRoutine:
     RTS
 
@@ -256,7 +257,7 @@ New_Talk_Astos:
       JSR $90A4
       LDA #$7D
       JSR $90C5
-      LDA $11
+      LDA $12
       RTS
 AlreadyFought:
       INC $6023
@@ -266,6 +267,6 @@ AlreadyFought:
       LDA #$77
       RTS
 Default:
-    LDA $12
+    LDA $11
 EndRoutine:
     RTS
