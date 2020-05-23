@@ -553,6 +553,11 @@ namespace FF1Lib
 				DontDoubleBBCritRates();
 			}
 
+			if (flags.WeaponCritRate)
+			{
+				DoubleWeaponCritRates();
+			}
+
 			//needs to go after item magic, goes before weapon crit doubling now to actually change 1% per bonus
 			if ((bool)flags.RandomWeaponBonus)
 			{
@@ -562,11 +567,6 @@ namespace FF1Lib
 			if ((bool)flags.RandomArmorBonus)
 			{
 				RandomArmorBonus(rng);
-			}
-
-			if (flags.WeaponCritRate)
-			{
-				DoubleWeaponCritRates();
 			}
 
 			if (flags.WeaponBonuses)
@@ -706,6 +706,11 @@ namespace FF1Lib
 			if (preferences.Music != MusicShuffle.None)
 			{
 				ShuffleMusic(preferences.Music, rng);
+			}
+
+			if (preferences.DisableSpellCastFlash)
+			{
+				DisableSpellCastScreenFlash();
 			}
 
 			WriteSeedAndFlags(Version, seed.ToHex(), Flags.EncodeFlagsText(flags));

@@ -1440,6 +1440,16 @@ namespace FF1Lib
 			}
 		}
 
+		public bool DisableSpellCastFlash
+		{
+			get => Preferences.DisableSpellCastFlash;
+			set
+			{
+				Preferences.DisableSpellCastFlash = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DisableSpellCastFlash"));
+			}
+		}
+
 		public bool? RecruitmentMode
 		{
 			get => Flags.RecruitmentMode;
