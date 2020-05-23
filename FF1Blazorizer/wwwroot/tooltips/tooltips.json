@@ -880,6 +880,11 @@
 		"description": "When enabled, staying at an inn will only restore HP/MP, but not save the game."
 	},
 	{
+		"Id": "saveGameWhenGameOverCheckBox",
+		"title": "Save Game When Game Over",
+		"description": "When enabled, if your party perishes, you will respawn with all of your progression (items acquired, levels gained, etc.) intact.  Certain events (those that involve talking to NPCs that begin fights) will be reset based on the condition of other flags, for example you must acquire the item in the vanilla RUBY chest to ensure Vampire does not respawn.  If you have the SHIP (but not the airship), you will respawn where you last docked; if you have the AIRSHIP, you will respawn at the airship and the ship will be waiting for you at Coneria; if you have neither, you will respawn where you last saved."
+	},
+	{
 		"Id": "randomizeFormationEnemizer",
 		"title": "Generate New Formations (Enemizer)",
 		"description": "Generates entirely new formations of enemies."

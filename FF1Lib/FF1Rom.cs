@@ -104,6 +104,7 @@ namespace FF1Lib
 			FixEnemyPalettes(); // fixes a bug in the original game's programming that causes third enemy slot's palette to render incorrectly
 			FixWarpBug(); // The warp bug must be fixed for magic level shuffle and spellcrafter
 			SeparateUnrunnables();
+			
 			flags = Flags.ConvertAllTriState(flags, rng);
 
 			TeleportShuffle teleporters = new TeleportShuffle();
@@ -313,6 +314,13 @@ namespace FF1Lib
 				ShuffleArmorPermissions(rng);
 			}
 			*/
+
+			NewAstosRoutine((bool)flags.NPCItems | (bool)flags.NPCFetchItems);  // moves Talk_Astos to a new location so we can play with it, and also makes it so Astos will only give his item after you have defeated him and speak to him again
+																				// we make this happen on all seeds for consistency with other features
+			if (flags.SaveGameWhenGameOver)
+			{
+				EnableSaveOnDeath();
+			}
 
 			// Ordered before RNG shuffle. In the event that both flags are on, RNG shuffle depends on this.
 			if (((bool)flags.FixMissingBattleRngEntry))
