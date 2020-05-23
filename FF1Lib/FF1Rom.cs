@@ -558,7 +558,7 @@ namespace FF1Lib
 				DoubleWeaponCritRates();
 			}
 
-			//needs to go after item magic, goes before weapon crit doubling now to actually change 1% per bonus
+			//needs to go after item magic, moved after double weapon crit to have more control over the actual number of crit gained.
 			if ((bool)flags.RandomWeaponBonus)
 			{
 				RandomWeaponBonus(rng);
