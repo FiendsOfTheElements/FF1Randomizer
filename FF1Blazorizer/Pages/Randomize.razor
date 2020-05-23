@@ -440,7 +440,7 @@
                         <CheckBox UpdateToolTip="@UpdateToolTipID" Id="identifyTreasuresCheckBox" @bind-Checked="Flags.IdentifyTreasures">Identify Treasures</CheckBox>
                         <CheckBox UpdateToolTip="@UpdateToolTipID" Id="dashCheckBox" @bind-Checked="Flags.Dash">Enable Dash</CheckBox>
                         <CheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(!Flags.BuyTenOld)" Id="buyTenCheckBox" @bind-Checked="Flags.BuyTen">Buy Quantity</CheckBox>
-                        <CheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(!Flags.BuyTen)" Id="buyTenOldCheckBox" Checked="Flags.BuyTenOld">Buy Ten (old)</CheckBox>
+                        <CheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(!Flags.BuyTen)" Id="buyTenOldCheckBox" @bind-Checked="Flags.BuyTenOld">Buy Ten (old)</CheckBox>
                         <CheckBox UpdateToolTip="@UpdateToolTipID" Id="waitWhenUnrunnableCheckBox" @bind-Checked="Flags.WaitWhenUnrunnable">Change Unrunnable RUN to WAIT</CheckBox>
                         <CheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.SpeedHacks" Id="enableCritNumberDisplayCheckBox" @bind-Checked="Flags.EnableCritNumberDisplay">Critical Hit Count Display</CheckBox>
                         <CheckBox UpdateToolTip="@UpdateToolTipID" Id="inventoryAutosortCheckBox" @bind-Checked="Flags.InventoryAutosort">Autosort Inventory</CheckBox>
