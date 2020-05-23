@@ -742,14 +742,5 @@ namespace FF1Lib
 			// Hacks the game so that Inns do not save the game
 			Put(0x3A53D, Blob.FromHex("EAEAEA"));
 		}
-
-		public void SaveGameOnDeath()
-		{
-			// hacks the game to save progress when your party perishes (places the player where they last saved)
-			// replace a JSR in bank 1B GameOver to jump to our new routine instead
-			PutInBank(0x1B, 0x801A, Blob.FromHex("4CF58F"));
-			// the routine that will save the game progress
-			PutInBank(0x1B, 0x8FF5, Blob.FromHex("A200BD00609D0064BD00619D0065BD00629D0066BD00639D0067E8D0E5A9558DFE64A9AA8DFF64A9008DFD64A200187D00647D00657D0067E8D0F149FF8DFD6420E38B60"));
-		}
 	}
 }
