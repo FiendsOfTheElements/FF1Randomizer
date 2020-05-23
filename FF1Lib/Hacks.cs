@@ -473,9 +473,9 @@ namespace FF1Lib
 			Put(0x39338, Blob.FromHex("4C459F"));
 			// write the new Astos routine
 			if (isNPCShuffle)
-				Put(0x39F45, Blob.FromHex("ad2260f023a040209190b00b20a490a97d20c590a51160a513f00d2094d0b00aa007207392a93a60a51260"));
+				Put(0x39F45, Blob.FromHex("ad2260f024a040209190b00b20a490a97d20c590a5126018a513f00d2093ddb00aa007207392a93a60a51160"));
 			else // alternate code if NPC Shuffle is off
-				Put(0x39F45, Blob.FromHex("ad2260f01fa040209190b00b20a490a97d20c590a51160ee2360a007207392e67da97760a51260"));
+				Put(0x39F45, Blob.FromHex("ad2260f01fa040209190b00b20a490a97d20c590a51260ee2360a007207392e67da97760a51160"));
 		}
 
 		public void EnableSaveOnDeath()

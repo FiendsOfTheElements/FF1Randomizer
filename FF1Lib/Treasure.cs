@@ -180,11 +180,7 @@ namespace FF1Lib
 			var newText =
 				"571E92BFC1" + // tis I, 
 				"8A37B2B6BFC1" + // Astos, 
-				"5F585F3CAAC4C405" + // all along!!\n
-				"92BE4EC1B7A4AE1A1C39" +// I'll take that
-				"C18C9B98A097C1222705" + //  CROWN and\n 
-				"56B8BE4E4FB54B1C1A0305" + // you'll pry the \n___
-				"A94DB0424BA6B2AF27A72B27413BB6C400!"; // from my cold dead hands!
+				"5F585F3CAAC4C400"; // all along!!
 			Put(0x285EF, Blob.FromHex(newText));
 			var newAstosRoutine =
 				"AD2260F016A513F01220" + giveRewardRoutineAddress +
