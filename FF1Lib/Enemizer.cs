@@ -2066,6 +2066,7 @@ namespace FF1Lib
 														0b00100001, 0b00100011, 0b00100101, 0b00100111, 0b00101001, 0b00101011, 0b00101101, 0b00101111,
 														0b00110001, 0b00110011 };
 			smallImages.Shuffle(rng);
+			largeImages.Shuffle(rng);
 			byte[] newPatternTableData = new byte[0x6800];
 			patterntabledata.CopyTo(newPatternTableData, 0);
 			List<byte> newEnemyImageLUT = new List<byte> {  0, 2, 1, 3, 4, 6, 5, 7,
@@ -2122,7 +2123,7 @@ namespace FF1Lib
 				enemyImagePalettes[i] = new List<byte> { };
 			for (byte i = 0; i < Enemy.Lich; ++i) // reassign enemy images to the appropriate image in the pattern table and pick a random palette of those that were drawn
 			{
-				enemy[i].image = newEnemyImageLUT[enemy[i].image]; // assign the enemy's image to the appropriate pattern table
+				enemy[i].image = (byte)newEnemyImageLUT.IndexOf(enemy[i].image); // assign the enemy's image to the appropriate pattern table
 				switch (i) // fix palettes for Pirate, Garland, and Astos to their originals
 				{
 					case Enemy.Pirate:
@@ -2134,12 +2135,16 @@ namespace FF1Lib
 					case Enemy.Astos:
 						enemy[i].pal = 0x06;
 						break;
+					default:
+						if (enemy[i].tier != -1)
+							en.enemiesInTileset[enemy[i].tileset].Add(i); // add enemy to enemiesInTileset unless it is a boss
+						List<byte> acceptablepalettes = en.palettesInTileset[enemy[i].tileset].Except(enemyImagePalettes[enemy[i].image]).ToList();
+						if (acceptablepalettes.Count == 0)
+							acceptablepalettes = en.palettesInTileset[enemy[i].tileset].ToList();
+						enemy[i].pal = acceptablepalettes.PickRandom(rng);
+						enemyImagePalettes[enemy[i].image].Add(enemy[i].pal);
+						break;
 				}
-				List<byte> acceptablepalettes = en.palettesInTileset[enemy[i].tileset].Except(enemyImagePalettes[enemy[i].image]).ToList();
-				if (acceptablepalettes.Count == 0)
-					acceptablepalettes = en.palettesInTileset[enemy[i].tileset].ToList();
-				enemy[i].pal = acceptablepalettes.PickRandom(rng);
-				enemyImagePalettes[enemy[i].image].Add(enemy[i].pal);
 			}
 			for (int i = 0; i < GenericTilesetsCount; ++i) // remove palettes from tilesets where there are no mons using those palettes
 			{
