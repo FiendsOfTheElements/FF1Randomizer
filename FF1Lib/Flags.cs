@@ -232,6 +232,7 @@ namespace FF1Lib
 		public bool FiendShuffle { get; set; } = false;
 		public bool DisableTentSaving { get; set; } = false;
 		public bool DisableInnSaving { get; set; } = false;
+		public bool SaveGameWhenGameOver { get; set; } = false;
 		public bool? RandomizeEnemizer { get; set; } = false;
 		public bool? RandomizeFormationEnemizer { get; set; } = false;
 		public bool? GenerateNewSpellbook { get; set; } = false;
@@ -682,6 +683,7 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.FiendShuffle);
 			sum = AddBoolean(sum, flags.DisableTentSaving);
 			sum = AddBoolean(sum, flags.DisableInnSaving);
+			sum = AddBoolean(sum, flags.SaveGameWhenGameOver);
 			sum = AddTriState(sum, flags.RandomizeEnemizer);
 			sum = AddTriState(sum, flags.RandomizeFormationEnemizer);
 			sum = AddTriState(sum, flags.GenerateNewSpellbook);
@@ -740,6 +742,7 @@ namespace FF1Lib
 				GenerateNewSpellbook = GetTriState(ref sum),
 				RandomizeFormationEnemizer = GetTriState(ref sum),
 				RandomizeEnemizer = GetTriState(ref sum),
+				SaveGameWhenGameOver = GetBoolean(ref sum),
 				DisableInnSaving = GetBoolean(ref sum),
 				DisableTentSaving = GetBoolean(ref sum),
 				FiendShuffle = GetBoolean(ref sum),

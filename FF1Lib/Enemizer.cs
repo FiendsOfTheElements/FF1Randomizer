@@ -2054,6 +2054,119 @@ namespace FF1Lib
 				return 0xFF; // invalid tier returns no script
 		}
 
+		private void DoEnemizer_EnemyPatternTablesOnly(MT19337 rng, byte[] patterntabledata, EnemyInfo[] enemy, EnemizerTrackingInfo en)
+		{
+			// in this function we shuffle the pattern tables and enemy palettes only (we shuffle palettes because otherwise eligible formations would be even more constrained)
+			List<byte> smallImages = new List<byte> {   0b00000000, 0b00000010, 0b00000100, 0b00000110, 0b00001000, 0b00001010, 0b00001100, 0b00001110,
+														0b00010000, 0b00010010, 0b00010100, 0b00010110, 0b00011000, 0b00011010, 0b00011100, 0b00011110,
+														0b00100000, 0b00100010, 0b00100100, 0b00100110, 0b00101000, 0b00101010, 0b00101100, 0b00101110,
+														0b00110000, 0b00110010 };
+			List<byte> largeImages = new List<byte> {   0b00000001, 0b00000011, 0b00000101, 0b00000111, 0b00001001, 0b00001011, 0b00001101, 0b00001111,
+														0b00010001, 0b00010011, 0b00010101, 0b00010111, 0b00011001, 0b00011011, 0b00011101, 0b00011111,
+														0b00100001, 0b00100011, 0b00100101, 0b00100111, 0b00101001, 0b00101011, 0b00101101, 0b00101111,
+														0b00110001, 0b00110011 };
+			smallImages.Shuffle(rng);
+			byte[] newPatternTableData = new byte[0x6800];
+			patterntabledata.CopyTo(newPatternTableData, 0);
+			List<byte> newEnemyImageLUT = new List<byte> {  0, 2, 1, 3, 4, 6, 5, 7,
+															8, 10, 9, 11, 12, 14, 13, 15,
+															16, 18, 17, 19, 20, 22, 21, 23,
+															24, 26, 25, 27, 28, 30, 29, 31,
+															32, 34, 33, 35, 36, 38, 37, 39,
+															40, 42, 41, 43, 44, 46, 45, 47,
+															48, 50, 49, 51 };
+			for (int i = 0; i < 13; ++i)
+			{
+				int small1offset = 0x800 * (smallImages[i * 2] / 4) + (smallImages[i * 2] % 4 == 0 ? 0x120 : 0x220);
+				int small2offset = 0x800 * (smallImages[i * 2 + 1] / 4) + (smallImages[i * 2 + 1] % 4 == 0 ? 0x120 : 0x220);
+				int large1offset = 0x800 * (largeImages[i * 2] / 4) + (largeImages[i * 2] % 4 == 1 ? 0x320 : 0x560);
+				int large2offset = 0x800 * (largeImages[i * 2 + 1] / 4) + (largeImages[i * 2 + 1] % 4 == 1 ? 0x320 : 0x560);
+				newEnemyImageLUT[i * 4] = smallImages[i * 2];
+				for (int j = 0; j < 0x100; ++j)
+				{
+					newPatternTableData[i * 0x800 + 0x120 + j] = patterntabledata[small1offset + j];
+				}
+				newEnemyImageLUT[i * 4 + 2] = smallImages[i * 2 + 1];
+				for (int j = 0; j < 0x100; ++j)
+				{
+					newPatternTableData[i * 0x800 + 0x220 + j] = patterntabledata[small2offset + j];
+				}
+				newEnemyImageLUT[i * 4 + 1] = largeImages[i * 2];
+				for (int j = 0; j < 0x240; ++j)
+				{
+					newPatternTableData[i * 0x800 + 0x320 + j] = patterntabledata[large1offset + j];
+				}
+				newEnemyImageLUT[i * 4 + 3] = largeImages[i * 2 + 1];
+				for (int j = 0; j < 0x240; ++j)
+				{
+					newPatternTableData[i * 0x800 + 0x560 + j] = patterntabledata[large2offset + j];
+				}
+			}
+			newPatternTableData.CopyTo(patterntabledata, 0);
+
+			for (int i = 0; i < GenericTilesetsCount; ++i) // generate the palettes for each tileset
+			{
+				en.palettesInTileset[i].Clear();
+				while (en.palettesInTileset[i].Count < 4)
+				{
+					int newPal = rng.Between(0, 0x3F);
+					if (en.palettesInTileset[i].Contains((byte)newPal))
+						continue;
+					en.palettesInTileset[i].Add((byte)newPal);
+				}
+			}
+			for (int i = 0; i < GenericTilesetsCount; ++i)// clear the list of enemies in each tileset
+				en.enemiesInTileset[i].Clear();
+			List<byte>[] enemyImagePalettes = new List<byte>[52]; // create lists of palettes used for each enemy image
+			for (int i = 0; i < 52; ++i)
+				enemyImagePalettes[i] = new List<byte> { };
+			for (byte i = 0; i < Enemy.Lich; ++i) // reassign enemy images to the appropriate image in the pattern table and pick a random palette of those that were drawn
+			{
+				enemy[i].image = newEnemyImageLUT[enemy[i].image]; // assign the enemy's image to the appropriate pattern table
+				switch (i) // fix palettes for Pirate, Garland, and Astos to their originals
+				{
+					case Enemy.Pirate:
+						enemy[i].pal = 0x0B;
+						break;
+					case Enemy.Garland:
+						enemy[i].pal = 0x13;
+						break;
+					case Enemy.Astos:
+						enemy[i].pal = 0x06;
+						break;
+				}
+				List<byte> acceptablepalettes = en.palettesInTileset[enemy[i].tileset].Except(enemyImagePalettes[enemy[i].image]).ToList();
+				if (acceptablepalettes.Count == 0)
+					acceptablepalettes = en.palettesInTileset[enemy[i].tileset].ToList();
+				enemy[i].pal = acceptablepalettes.PickRandom(rng);
+				enemyImagePalettes[enemy[i].image].Add(enemy[i].pal);
+			}
+			for (int i = 0; i < GenericTilesetsCount; ++i) // remove palettes from tilesets where there are no mons using those palettes
+			{
+				List<byte> palRemoveList = new List<byte> { };
+				foreach (byte pal in en.palettesInTileset[i])
+				{
+					bool nopalettematch = true;
+					foreach (byte mon in en.enemiesInTileset[i])
+					{
+						if (enemy[mon].pal == pal)
+						{
+							nopalettematch = false;
+							break;
+						}
+					}
+					if (nopalettematch)
+					{
+						palRemoveList.Add(pal);
+					}
+				}
+				foreach (byte pal in palRemoveList)
+				{
+					en.palettesInTileset[i].Remove(pal);
+				}
+			}
+		}
+
 		private bool DoEnemizer_Enemies(MT19337 rng, EnemyInfo[] enemy, byte[] patterntabledata, SpellInfo[] spell, EnemySkillInfo[] skill, EnemyScriptInfo[] script, string[] enemyNames, string[] skillNames, bool shuffledSkillsOn, EnemizerTrackingInfo en)
 		{
 			List<byte> enemyImageLUT = new List<byte> { 0b00000000, 0b00000010, 0b00000001, 0b00000011, 0b00000100, 0b00000110, 0b00000101, 0b00000111,
@@ -3406,6 +3519,13 @@ namespace FF1Lib
 			}
 			if(doFormations)
 			{
+				if (!doEnemies)
+				{
+					byte[] patterntabledata = Get(EnemyPatternTablesOffset, 0x6800); // each pattern table is 0x800 bytes and there are 13 pattern tables that we will edit
+					DoEnemizer_EnemyPatternTablesOnly(rng, patterntabledata, enemy, en); // rewrite the pattern tables and enemy palette assignments
+					Put(EnemyPatternTablesOffset, patterntabledata); // write the new pattern tables as a chunk
+				}
+					
 				if(!DoEnemizer_Formations(rng, enemy, en))
 				{
 					Console.WriteLine("Fission Mailed - Abort Formation Shuffle");

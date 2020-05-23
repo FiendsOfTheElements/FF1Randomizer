@@ -1439,15 +1439,6 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MapmanSlot"));
 			}
 		}
-		public bool DisableSpellCastFlash
-		{
-			get => Preferences.DisableSpellCastFlash;
-			set
-			{
-				Preferences.DisableSpellCastFlash = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DisableSpellCastFlash"));
-			}
-		}
 
 		public bool? RecruitmentMode
 		{
@@ -1948,6 +1939,15 @@ namespace FF1Lib
 			{
 				Flags.DisableInnSaving = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DisableInnSaving"));
+			}
+		}
+		public bool SaveGameWhenGameOver
+		{
+			get => Flags.SaveGameWhenGameOver;
+			set
+			{
+				Flags.SaveGameWhenGameOver = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SaveGameWhenGameOver"));
 			}
 		}
 		public bool? RandomizeEnemizer

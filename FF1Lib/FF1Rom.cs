@@ -104,6 +104,7 @@ namespace FF1Lib
 			FixEnemyPalettes(); // fixes a bug in the original game's programming that causes third enemy slot's palette to render incorrectly
 			FixWarpBug(); // The warp bug must be fixed for magic level shuffle and spellcrafter
 			SeparateUnrunnables();
+			
 			flags = Flags.ConvertAllTriState(flags, rng);
 
 			TeleportShuffle teleporters = new TeleportShuffle();
@@ -165,6 +166,13 @@ namespace FF1Lib
 					overworldMap.PutStandardTeleport(TeleportIndex.EarthCave2, teleporters.EarthCave2, OverworldTeleportIndex.EarthCave1);
 					maps[(int)MapId.EarthCaveB2] = earthB2.Map;
 				}
+			}
+
+			NewAstosRoutine((bool)flags.NPCItems | (bool)flags.NPCFetchItems);  // moves Talk_Astos to a new location so we can play with it, and also makes it so Astos will only give his item after you have defeated him and speak to him again
+																				// we make this happen on all seeds for consistency with other features
+			if (flags.SaveGameWhenGameOver)
+			{
+				EnableSaveOnDeath();
 			}
 
 			if ((bool)flags.RandomizeFormationEnemizer)
@@ -545,12 +553,7 @@ namespace FF1Lib
 				DontDoubleBBCritRates();
 			}
 
-			if (flags.WeaponCritRate)
-			{
-				DoubleWeaponCritRates();
-			}
-
-			//needs to go after item magic, moved after double weapon crit to have more control over the actual number of crit gained.
+			//needs to go after item magic, goes before weapon crit doubling now to actually change 1% per bonus
 			if ((bool)flags.RandomWeaponBonus)
 			{
 				RandomWeaponBonus(rng);
@@ -559,6 +562,11 @@ namespace FF1Lib
 			if ((bool)flags.RandomArmorBonus)
 			{
 				RandomArmorBonus(rng);
+			}
+
+			if (flags.WeaponCritRate)
+			{
+				DoubleWeaponCritRates();
 			}
 
 			if (flags.WeaponBonuses)
@@ -698,11 +706,6 @@ namespace FF1Lib
 			if (preferences.Music != MusicShuffle.None)
 			{
 				ShuffleMusic(preferences.Music, rng);
-			}
-
-			if (preferences.DisableSpellCastFlash)
-			{
-				DisableSpellCastScreenFlash();
 			}
 
 			WriteSeedAndFlags(Version, seed.ToHex(), Flags.EncodeFlagsText(flags));
