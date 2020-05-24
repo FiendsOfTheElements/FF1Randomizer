@@ -308,68 +308,7 @@
 			<button type="button" class="@(TabClasses("Party"))" @onclick="@(() => ActivateTab("Party"))">Party</button>
 			<BSCollapse IsOpen="@(activeTabs.Contains("Party"))">
 				<div class="is-dark nes-container">
-					<h4>Party Composition</h4>
-					<br />
-					<div class="table-wrapper">
-						<table>
-							<tr class="odd">
-								<td>Permitted Classes</td>
-								<td>Forced?</td>
-								<td>Fighter</td>
-								<td>Thief</td>
-								<td>Black Belt</td>
-								<td>Red Mage</td>
-								<td>White Mage</td>
-								<td>Black Mage</td>
-								<td>None!</td>
-							</tr>
-							<tr>
-								<td>Member 1</td>
-								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyForced1" @bind-Value="Flags.FORCED1"></TriStateCheckBox></td>
-								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyFighter1" @bind-Value="Flags.FIGHTER1"></TriStateCheckBox></td>
-								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyThief1" @bind-Value="Flags.THIEF1"></TriStateCheckBox></td>
-								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyBlackBelt1" @bind-Value="Flags.BLACK_BELT1"></TriStateCheckBox></td>
-								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyRedMage1" @bind-Value="Flags.RED_MAGE1"></TriStateCheckBox></td>
-								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyWhiteMage1" @bind-Value="Flags.WHITE_MAGE1"></TriStateCheckBox></td>
-								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyBlackMage1" @bind-Value="Flags.BLACK_MAGE1"></TriStateCheckBox></td>
-								<td></td>
-							</tr>
-							<tr class="odd">
-								<td>Member 2</td>
-								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyForced2" @bind-Value="Flags.FORCED2"></TriStateCheckBox></td>
-								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyFighter2" @bind-Value="Flags.FIGHTER2"></TriStateCheckBox></td>
-								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyThief2" @bind-Value="Flags.THIEF2"></TriStateCheckBox></td>
-								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyBlackBelt2" @bind-Value="Flags.BLACK_BELT2"></TriStateCheckBox></td>
-								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyRedMage2" @bind-Value="Flags.RED_MAGE2"></TriStateCheckBox></td>
-								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyWhiteMage2" @bind-Value="Flags.WHITE_MAGE2"></TriStateCheckBox></td>
-								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyBlackMage2" @bind-Value="Flags.BLACK_MAGE2"></TriStateCheckBox></td>
-								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyNone2" @bind-Value="Flags.NONE_CLASS2"></TriStateCheckBox></td>
-							</tr>
-							<tr>
-								<td>Member 3</td>
-								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyForced3" @bind-Value="Flags.FORCED3"></TriStateCheckBox></td>
-								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyFighter3" @bind-Value="Flags.FIGHTER3"></TriStateCheckBox></td>
-								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyThief3" @bind-Value="Flags.THIEF3"></TriStateCheckBox></td>
-								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyBlackBelt3" @bind-Value="Flags.BLACK_BELT3"></TriStateCheckBox></td>
-								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyRedMage3" @bind-Value="Flags.RED_MAGE3"></TriStateCheckBox></td>
-								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyWhiteMage3" @bind-Value="Flags.WHITE_MAGE3"></TriStateCheckBox></td>
-								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyBlackMage3" @bind-Value="Flags.BLACK_MAGE3"></TriStateCheckBox></td>
-								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyNone3" @bind-Value="Flags.NONE_CLASS3"></TriStateCheckBox></td>
-							</tr>
-							<tr class="odd">
-								<td>Member 4</td>
-								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyForced4" @bind-Value="Flags.FORCED4"></TriStateCheckBox></td>
-								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyFighter4" @bind-Value="Flags.FIGHTER4"></TriStateCheckBox></td>
-								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyThief4" @bind-Value="Flags.THIEF4"></TriStateCheckBox></td>
-								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyBlackBelt4" @bind-Value="Flags.BLACK_BELT4"></TriStateCheckBox></td>
-								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyRedMage4" @bind-Value="Flags.RED_MAGE4"></TriStateCheckBox></td>
-								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyWhiteMage4" @bind-Value="Flags.WHITE_MAGE4"></TriStateCheckBox></td>
-								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyBlackMage4" @bind-Value="Flags.BLACK_MAGE4"></TriStateCheckBox></td>
-								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyNone4" @bind-Value="Flags.NONE_CLASS4"></TriStateCheckBox></td>
-							</tr>
-						</table>
-					</div>
-					<br />
+					<PartyCompositionClasses Flags="@Flags"/>
 					<h4>Tavern Recruitment</h4>
 					<div class="col-md-12">
 						<p>Enable Tavern Recruitment to unlock the ability to build a party as you go!</p>
