@@ -32,6 +32,11 @@ app {
     flex: 1;
 }
 
+.update-notification {
+    background-color:darkcyan;
+    border-radius: 15px;
+}
+
 .nav-item {
     font-size: 0.9rem;
     padding-bottom: 0.5rem;

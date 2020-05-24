@@ -61,3 +61,38 @@ function copyLocation() {
 function getScreenRightEdge() {
 	return window.innerWidth;
 }
+
+Blazor.start({}).then(() => {
+
+	let newWorker;
+
+	DotNet.invokeMethod('FF1Blazorizer', 'ShowUpdateNotification');
+	if ('serviceWorker' in navigator) {
+		navigator.serviceWorker.register('/service-worker.js').then(reg => {
+			reg.addEventListener('updatefound', () => {
+				newWorker = reg.installing;
+
+				newWorker.addEventListener('statechange', () => {
+					if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+						DotNet.invokeMethod('FF1Blazorizer', 'ShowUpdateNotification');
+					}
+				});
+			});
+		});
+
+		let refreshing;
+		navigator.serviceWorker.addEventListener('controllerchange', function () {
+			if (refreshing) return;
+			window.location.reload();
+			refreshing = true;
+		});
+	}
+})
+
+
+/**
+ * Call from Blazor to register the new service worker 
+ */
+function updateServiceWorkerNow() {
+	newWorker.postMessage({ action: 'skipWaiting' });
+}
