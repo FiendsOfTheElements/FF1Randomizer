@@ -45,7 +45,7 @@
 		"Id": "magicShopLocsCheckBox",
 		"title": "Magic Shop Location Shuffle",
 		"screenshot": "magicShopLocsCheckBox.gif",
-		"description": "Shuffles the logcations of magic shops except Coneria (Level 1), so that Pravoka's magic shop can be in Melmond, etc."
+		"description": "Shuffles the locations of magic shops except Coneria (Level 1), so that Pravoka's magic shop can be in Melmond, etc."
 	},
 	{
 		"Id": "magicPermissionsCheckBox",
