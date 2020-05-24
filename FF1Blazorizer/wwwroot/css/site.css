@@ -198,6 +198,10 @@ tr.odd {
     background: rgba(0, 0, 0, 0.05);
 }
 
+tr.bottom-borderd {
+    border-bottom: 1px solid white;
+}
+
 .ffr-nav {
     font-size: 18px;
     font-family: 'Press Start 2P';

@@ -19,6 +19,9 @@
 
 	[Parameter]
 	private Action<bool?> ValueChanged { get; set; }
+
+	[Parameter]
+	private Action<bool?> SideEffect { get; set; } = (x) => { };
 	private bool checked0 => Value ?? false;
 	private bool checked1 => !Value ?? false;
 	private bool checked2 => Value == null;
@@ -48,6 +51,7 @@
 			Value = false;
 		}
 		ValueChanged(Value);
+		SideEffect(Value);
 
 	}
 

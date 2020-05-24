@@ -320,48 +320,60 @@
 								<td>Black Mage</td>
 								<td>None!</td>
 							</tr>
+							<tr class="bottom-borderd">
+								<td>All</td>
+								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyForcedAll" bind-Value="@SelectAll.Forced" SideEffect="@UpdateAllForced"></TriStateCheckBox></td>
+								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyFighterAll" bind-Value="@SelectAll.Fighter" SideEffect="@UpdateAllFighter"></TriStateCheckBox></td>
+								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyThiefAll" bind-Value="@SelectAll.Thief" SideEffect="@UpdateAllThief"></TriStateCheckBox></td>
+								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyBlackBeltAll" bind-Value="@SelectAll.BlackBelt" SideEffect="@UpdateAllBlackBelt"></TriStateCheckBox></td>
+								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyRedMageAll" bind-Value="@SelectAll.RedMage" SideEffect="@UpdateAllRedMage"></TriStateCheckBox></td>
+								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyWhiteMageAll" bind-Value="@SelectAll.WhiteMage" SideEffect="@UpdateAllWhiteMage"></TriStateCheckBox></td>
+								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyBlackMageAll" bind-Value="@SelectAll.BlackMage" SideEffect="@UpdateAllBlackMage"></TriStateCheckBox></td>
+								<td></td>
+							</tr>
+
 							<tr>
 								<td>Member 1</td>
-								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyForced1" bind-Value="@Flags.FORCED1"></TriStateCheckBox></td>
-								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyFighter1" bind-Value="@Flags.FIGHTER1"></TriStateCheckBox></td>
-								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyThief1" bind-Value="@Flags.THIEF1"></TriStateCheckBox></td>
-								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyBlackBelt1" bind-Value="@Flags.BLACK_BELT1"></TriStateCheckBox></td>
-								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyRedMage1" bind-Value="@Flags.RED_MAGE1"></TriStateCheckBox></td>
-								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyWhiteMage1" bind-Value="@Flags.WHITE_MAGE1"></TriStateCheckBox></td>
-								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyBlackMage1" bind-Value="@Flags.BLACK_MAGE1"></TriStateCheckBox></td>
+								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyForced1" bind-Value="@Flags.FORCED1" SideEffect="@UpdateAllValues"></TriStateCheckBox></td>
+								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyFighter1" bind-Value="@Flags.FIGHTER1" SideEffect="@UpdateAllValues"></TriStateCheckBox></td>
+								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyThief1" bind-Value="@Flags.THIEF1" SideEffect="@UpdateAllValues"></TriStateCheckBox></td>
+								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyBlackBelt1" bind-Value="@Flags.BLACK_BELT1" SideEffect="@UpdateAllValues"></TriStateCheckBox></td>
+								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyRedMage1" bind-Value="@Flags.RED_MAGE1" SideEffect="@UpdateAllValues"></TriStateCheckBox></td>
+								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyWhiteMage1" bind-Value="@Flags.WHITE_MAGE1" SideEffect="@UpdateAllValues"></TriStateCheckBox></td>
+								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyBlackMage1" bind-Value="@Flags.BLACK_MAGE1" SideEffect="@UpdateAllValues"></TriStateCheckBox></td>
 								<td></td>
 							</tr>
 							<tr class="odd">
 								<td>Member 2</td>
-								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyForced2" bind-Value="@Flags.FORCED2"></TriStateCheckBox></td>
-								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyFighter2" bind-Value="@Flags.FIGHTER2"></TriStateCheckBox></td>
-								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyThief2" bind-Value="@Flags.THIEF2"></TriStateCheckBox></td>
-								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyBlackBelt2" bind-Value="@Flags.BLACK_BELT2"></TriStateCheckBox></td>
-								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyRedMage2" bind-Value="@Flags.RED_MAGE2"></TriStateCheckBox></td>
-								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyWhiteMage2" bind-Value="@Flags.WHITE_MAGE2"></TriStateCheckBox></td>
-								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyBlackMage2" bind-Value="@Flags.BLACK_MAGE2"></TriStateCheckBox></td>
+								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyForced2" bind-Value="@Flags.FORCED2" SideEffect="@UpdateAllValues"></TriStateCheckBox></td>
+								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyFighter2" bind-Value="@Flags.FIGHTER2" SideEffect="@UpdateAllValues"></TriStateCheckBox></td>
+								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyThief2" bind-Value="@Flags.THIEF2" SideEffect="@UpdateAllValues"></TriStateCheckBox></td>
+								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyBlackBelt2" bind-Value="@Flags.BLACK_BELT2" SideEffect="@UpdateAllValues"></TriStateCheckBox></td>
+								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyRedMage2" bind-Value="@Flags.RED_MAGE2" SideEffect="@UpdateAllValues"></TriStateCheckBox></td>
+								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyWhiteMage2" bind-Value="@Flags.WHITE_MAGE2" SideEffect="@UpdateAllValues"></TriStateCheckBox></td>
+								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyBlackMage2" bind-Value="@Flags.BLACK_MAGE2" SideEffect="@UpdateAllValues"></TriStateCheckBox></td>
 								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyNone2" bind-Value="@Flags.NONE_CLASS2"></TriStateCheckBox></td>
 							</tr>
 							<tr>
 								<td>Member 3</td>
-								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyForced3" bind-Value="@Flags.FORCED3"></TriStateCheckBox></td>
-								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyFighter3" bind-Value="@Flags.FIGHTER3"></TriStateCheckBox></td>
-								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyThief3" bind-Value="@Flags.THIEF3"></TriStateCheckBox></td>
-								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyBlackBelt3" bind-Value="@Flags.BLACK_BELT3"></TriStateCheckBox></td>
-								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyRedMage3" bind-Value="@Flags.RED_MAGE3"></TriStateCheckBox></td>
-								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyWhiteMage3" bind-Value="@Flags.WHITE_MAGE3"></TriStateCheckBox></td>
-								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyBlackMage3" bind-Value="@Flags.BLACK_MAGE3"></TriStateCheckBox></td>
+								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyForced3" bind-Value="@Flags.FORCED3" SideEffect="@UpdateAllValues"></TriStateCheckBox></td>
+								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyFighter3" bind-Value="@Flags.FIGHTER3" SideEffect="@UpdateAllValues"></TriStateCheckBox></td>
+								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyThief3" bind-Value="@Flags.THIEF3" SideEffect="@UpdateAllValues"></TriStateCheckBox></td>
+								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyBlackBelt3" bind-Value="@Flags.BLACK_BELT3" SideEffect="@UpdateAllValues"></TriStateCheckBox></td>
+								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyRedMage3" bind-Value="@Flags.RED_MAGE3" SideEffect="@UpdateAllValues"></TriStateCheckBox></td>
+								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyWhiteMage3" bind-Value="@Flags.WHITE_MAGE3" SideEffect="@UpdateAllValues"></TriStateCheckBox></td>
+								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyBlackMage3" bind-Value="@Flags.BLACK_MAGE3" SideEffect="@UpdateAllValues"></TriStateCheckBox></td>
 								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyNone3" bind-Value="@Flags.NONE_CLASS3"></TriStateCheckBox></td>
 							</tr>
 							<tr class="odd">
 								<td>Member 4</td>
-								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyForced4" bind-Value="@Flags.FORCED4"></TriStateCheckBox></td>
-								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyFighter4" bind-Value="@Flags.FIGHTER4"></TriStateCheckBox></td>
-								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyThief4" bind-Value="@Flags.THIEF4"></TriStateCheckBox></td>
-								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyBlackBelt4" bind-Value="@Flags.BLACK_BELT4"></TriStateCheckBox></td>
-								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyRedMage4" bind-Value="@Flags.RED_MAGE4"></TriStateCheckBox></td>
-								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyWhiteMage4" bind-Value="@Flags.WHITE_MAGE4"></TriStateCheckBox></td>
-								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyBlackMage4" bind-Value="@Flags.BLACK_MAGE4"></TriStateCheckBox></td>
+								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyForced4" bind-Value="@Flags.FORCED4" SideEffect="@UpdateAllValues"></TriStateCheckBox></td>
+								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyFighter4" bind-Value="@Flags.FIGHTER4" SideEffect="@UpdateAllValues"></TriStateCheckBox></td>
+								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyThief4" bind-Value="@Flags.THIEF4" SideEffect="@UpdateAllValues"></TriStateCheckBox></td>
+								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyBlackBelt4" bind-Value="@Flags.BLACK_BELT4" SideEffect="@UpdateAllValues"></TriStateCheckBox></td>
+								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyRedMage4" bind-Value="@Flags.RED_MAGE4" SideEffect="@UpdateAllValues"></TriStateCheckBox></td>
+								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyWhiteMage4" bind-Value="@Flags.WHITE_MAGE4" SideEffect="@UpdateAllValues"></TriStateCheckBox></td>
+								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyBlackMage4" bind-Value="@Flags.BLACK_MAGE4" SideEffect="@UpdateAllValues"></TriStateCheckBox></td>
 								<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyNone4" bind-Value="@Flags.NONE_CLASS4"></TriStateCheckBox></td>
 							</tr>
 						</table>
@@ -533,6 +545,8 @@
 	private FlagsViewModel Flags { get; set; } = new FlagsViewModel();
 	private Flags DefaultFlags;
 
+	private SelectAllFlags SelectAll = new SelectAllFlags();
+
 	private readonly List<string> activeTabs = new List<string> { "File", "Shuffle", "Treasures", "Goal", "Map", "Scale", "Party", "Bug Fixes", "Conveniences", "Fun %" };
 
 	private string StatusMessage = "";
@@ -542,6 +556,132 @@
 
 	private string ToolTipId = "unupdated";
 	private ToolTip ToolTipElement;
+
+	class SelectAllFlags
+	{
+		public bool? Forced { get; set; } = false;
+		public bool? Fighter { get; set; } = true;
+		public bool? Thief { get; set; } = true;
+		public bool? BlackBelt { get; set; } = true;
+		public bool? RedMage { get; set; } = true;
+		public bool? WhiteMage { get; set; } = true;
+		public bool? BlackMage { get; set; } = true;
+	}
+
+	private void UpdateAllForced(bool? value)
+	{
+		Flags.FORCED1 = value;
+		Flags.FORCED2 = value;
+		Flags.FORCED3 = value;
+		Flags.FORCED4 = value;
+	}
+	private void UpdateAllFighter(bool? value)
+	{
+		Flags.FIGHTER1 = value;
+		Flags.FIGHTER2 = value;
+		Flags.FIGHTER3 = value;
+		Flags.FIGHTER4 = value;
+	}
+
+	private void UpdateAllThief(bool? value)
+	{
+		Flags.THIEF1 = value;
+		Flags.THIEF2 = value;
+		Flags.THIEF3 = value;
+		Flags.THIEF4 = value;
+	}
+
+	private void UpdateAllBlackBelt(bool? value)
+	{
+		Flags.BLACK_BELT1 = value;
+		Flags.BLACK_BELT2 = value;
+		Flags.BLACK_BELT3 = value;
+		Flags.BLACK_BELT4 = value;
+	}
+
+	private void UpdateAllRedMage(bool? value)
+	{
+		Flags.RED_MAGE1 = value;
+		Flags.RED_MAGE2 = value;
+		Flags.RED_MAGE3 = value;
+		Flags.RED_MAGE4 = value;
+	}
+
+	private void UpdateAllWhiteMage(bool? value)
+	{
+		Flags.WHITE_MAGE1 = value;
+		Flags.WHITE_MAGE2 = value;
+		Flags.WHITE_MAGE3 = value;
+		Flags.WHITE_MAGE4 = value;
+	}
+
+	private void UpdateAllBlackMage(bool? value)
+	{
+		Flags.BLACK_MAGE1 = value;
+		Flags.BLACK_MAGE2 = value;
+		Flags.BLACK_MAGE3 = value;
+		Flags.BLACK_MAGE4 = value;
+	}
+
+	private void UpdateAllValues(bool? value)
+	{
+		if (Flags.FORCED1 == Flags.FORCED2 && Flags.FORCED2 == Flags.FORCED3 && Flags.FORCED3 == Flags.FORCED4)
+		{
+			SelectAll.Forced = Flags.FORCED1;
+		}
+		else
+		{
+			SelectAll.Forced = false;
+		}
+		if (Flags.FIGHTER1 == Flags.FIGHTER2 && Flags.FIGHTER2 == Flags.FIGHTER3 && Flags.FIGHTER3 == Flags.FIGHTER4)
+		{
+			SelectAll.Fighter = Flags.FIGHTER1;
+		}
+		else
+		{
+			SelectAll.Fighter = false;
+		}
+		if (Flags.THIEF1 == Flags.THIEF2 && Flags.THIEF2 == Flags.THIEF3 && Flags.THIEF3 == Flags.THIEF4)
+		{
+			SelectAll.Thief = Flags.THIEF1;
+		}
+		else
+		{
+			SelectAll.Thief = false;
+		}
+		if (Flags.BLACK_BELT1 == Flags.BLACK_BELT2 && Flags.BLACK_BELT2 == Flags.BLACK_BELT3 && Flags.BLACK_BELT3 == Flags.BLACK_BELT4)
+		{
+			SelectAll.BlackBelt = Flags.BLACK_BELT1;
+		}
+		else
+		{
+			SelectAll.BlackBelt = false;
+		}
+		if (Flags.RED_MAGE1 == Flags.RED_MAGE2 && Flags.RED_MAGE2 == Flags.RED_MAGE3 && Flags.RED_MAGE3 == Flags.RED_MAGE4)
+		{
+			SelectAll.RedMage = Flags.RED_MAGE1;
+		}
+		else
+		{
+			SelectAll.RedMage = false;
+		}
+		if (Flags.WHITE_MAGE1 == Flags.WHITE_MAGE2 && Flags.WHITE_MAGE2 == Flags.WHITE_MAGE3 && Flags.WHITE_MAGE3 == Flags.WHITE_MAGE4)
+		{
+			SelectAll.WhiteMage = Flags.WHITE_MAGE1;
+		}
+		else
+		{
+			SelectAll.WhiteMage = false;
+		}
+		if (Flags.BLACK_MAGE1 == Flags.BLACK_MAGE2 && Flags.BLACK_MAGE2 == Flags.BLACK_MAGE3 && Flags.BLACK_MAGE3 == Flags.BLACK_MAGE4)
+		{
+			SelectAll.BlackMage = Flags.BLACK_MAGE1;
+		}
+		else
+		{
+			SelectAll.BlackMage = false;
+		}
+	}
 
 	private async void UpdateToolTipID(string Id, UIMouseEventArgs e)
 	{
