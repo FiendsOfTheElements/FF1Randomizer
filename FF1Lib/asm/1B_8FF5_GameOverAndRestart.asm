@@ -38,11 +38,11 @@
 ;;	always be reset to their default values as if you never
 ;;	entered the room.
 
-	JSR $8BE3
+	JSR $8BE3	; do a routine which we gutted in GameOver
 
 GameOverUpdateSaveData:
 	LDX #$00
-RestorePlayerLoop:
+RestorePlayerLoop:	; first, we restore the player's party to max hp/mp and restore status
 	LDA $610C,X
 	STA $610A,X
     LDA $610D,X
@@ -71,59 +71,59 @@ RestorePlayerLoop:
     TAX
     BNE RestorePlayerLoop
 
-ResetGarlandFlagIfPrincessStillVisible:
+ResetGarlandFlagIfPrincessStillVisible:	; if we didn't rescue the princess in ToF, Garland is made visible (respawned)
 	LDA $6203
 	AND #$01
 	BEQ ResetBikkeIfDidNotReceiveItem
 	LDA $6202
 	ORA #$01
 	STA $6202
-ResetBikkeIfDidNotReceiveItem:
+ResetBikkeIfDidNotReceiveItem:	; if we did not get the item from Bikke, the terrified townsfolk are made invisible so you'll initiate the Bikke fight properly
 	LDA $6204
 	AND #$02
 	BNE ResetAstosIfStillVisible
 	LDA $623F
 	AND #$FE
 	STA $623F
-ResetAstosIfStillVisible:
+ResetAstosIfStillVisible:	; if Astos is still visible (he will only disappear after you fight him), another terrified townsfolk in Pravoka is disappeared
 	LDA $6207
 	AND #$01
 	BEQ ResetVampireIfDidNotReceiveRubyChest
 	LDA $6240
 	AND #$FE
 	STA $6240
-ResetVampireIfDidNotReceiveRubyChest:
+ResetVampireIfDidNotReceiveRubyChest:	; if the contents of the Ruby chest are not acquired, the Vampire is made visible (note that if you can't hold the item in that chest, Vampire will respawn)
 	LDA $623D
 	AND #$04
 	BNE ResetLichIfDidNotReceiveEarthOrb
 	LDA $620C
 	ORA #$01
 	STA $620C
-ResetLichIfDidNotReceiveEarthOrb:
+ResetLichIfDidNotReceiveEarthOrb:	; if you didn't acquire Earth Orb, Lich will respawn
 	LDA $6031
 	BNE RsetKaryIfDidNotReceiveFireOrb
 	LDA $621B
 	ORA #$01
 	STA $621B
-RsetKaryIfDidNotReceiveFireOrb:
+RsetKaryIfDidNotReceiveFireOrb:	; and kary
 	LDA $6032
 	BNE RsetKrakenIfDidNotReceiveWaterOrb
 	LDA $621C
 	ORA #$01
 	STA $621C
-RsetKrakenIfDidNotReceiveWaterOrb:
+RsetKrakenIfDidNotReceiveWaterOrb:	; and kraken
 	LDA $6033
 	BNE ResetTiamatIfDidNotReceiveAirOrb
 	LDA $621D
 	ORA #$01
 	STA $621D
-ResetTiamatIfDidNotReceiveAirOrb:
+ResetTiamatIfDidNotReceiveAirOrb:	; and tiamat
 	LDA $6034
 	BNE ResetChaosAlways
 	LDA $621E
 	ORA #$01
 	STA $621E
-ResetChaosAlways:
+ResetChaosAlways:	; the final room is always reset as if you never entered it
 	LDA $6218
 	ORA #$01
 	STA $6218
@@ -139,6 +139,13 @@ ResetChaosAlways:
 	LDA $6000
 	BEQ StartCopying
 ShipSpawn:
+	LDA $6001
+	CMP $6401
+	BNE SpawnAtShip
+	LDA $6002
+	CMP $6402
+	BEQ StartCopying
+SpawnAtShip:
 	LDA $6001
 	SEC
 	SBC #$07
