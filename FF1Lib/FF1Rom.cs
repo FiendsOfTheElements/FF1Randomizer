@@ -319,7 +319,7 @@ namespace FF1Lib
 																				// we make this happen on all seeds for consistency with other features
 			if (flags.SaveGameWhenGameOver)
 			{
-				EnableSaveOnDeath((bool)flags.NPCItems | (bool)flags.NPCFetchItems));
+				EnableSaveOnDeath((bool)flags.NPCItems | (bool)flags.NPCFetchItems);
 			}
 
 			// Ordered before RNG shuffle. In the event that both flags are on, RNG shuffle depends on this.
