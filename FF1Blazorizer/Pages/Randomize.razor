@@ -61,7 +61,7 @@
                 </div>
             </div>
         </BSCollapse>
-        
+
 
         <br />
         <button type="button" class="nes-btn is-primary" @onclick="@OnRandomize">Generate ROM</button>
@@ -71,7 +71,7 @@
             </div>
 
         </BSCollapse>
-        
+
 
         <button type="button" class="@(TabClasses("Shuffle"))" @onclick="@(() => ActivateTab("Shuffle"))">Shuffle</button>
         <BSCollapse IsOpen=@(activeTabs.Contains("Shuffle"))>
@@ -119,7 +119,7 @@
                 </div>
             </div>
         </BSCollapse>
-        
+
 
         <button type="button" class="@(TabClasses("Treasures"))" @onclick="@(() => ActivateTab("Treasures"))">Treasures &amp; Incentives</button>
         <BSCollapse IsOpen="@(activeTabs.Contains("Treasures"))">
@@ -182,7 +182,7 @@
                 </div>
             </div>
         </BSCollapse>
-        
+
 
         <button type="button" class="@(TabClasses("Goal"))" @onclick="@(() => ActivateTab("Goal"))">Goal</button>
         <BSCollapse IsOpen="@(activeTabs.Contains("Goal"))">
@@ -211,7 +211,7 @@
                 </div>
             </div>
         </BSCollapse>
-        
+
 
         <button type="button" class="@(TabClasses("Map"))" @onclick="@(() => ActivateTab("Map"))">Maps &amp; Routing</button>
         <BSCollapse IsOpen="@(activeTabs.Contains("Map"))">
@@ -253,7 +253,7 @@
                 </div>
             </div>
         </BSCollapse>
-        
+
 
         <button type="button" class="@(TabClasses("Scale"))" @onclick="@(() => ActivateTab("Scale"))">Scale</button>
         <BSCollapse IsOpen="@(activeTabs.Contains("Scale"))">
@@ -427,7 +427,7 @@
                 </div>
             </div>
         </BSCollapse>
-        
+
 
         <button type="button" class="@(TabClasses("Conveniences"))" @onclick="@(() => ActivateTab("Conveniences"))">Conveniences</button>
         <BSCollapse IsOpen="@(activeTabs.Contains("Conveniences"))">
@@ -447,7 +447,7 @@
                 </div>
             </div>
         </BSCollapse>
-        
+
 
         <button type="button" class="@(TabClasses("Bug Fixes"))" @onclick="@(() => ActivateTab("Bug Fixes"))">Bug Fixes &amp; Rebalancing</button>
         <BSCollapse IsOpen="@(activeTabs.Contains("Bug Fixes"))">
@@ -481,7 +481,7 @@
                 </div>
             </div>
         </BSCollapse>
-        
+
 
         <button type="button" class="@(TabClasses("Experimental"))" @onclick="@(() => ActivateTab("Experimental"))">Experimental</button>
         <BSCollapse IsOpen="@(activeTabs.Contains("Experimental"))">
@@ -502,7 +502,7 @@
                         <div class="checkbox-cell"></div>
                         <CheckBox UpdateToolTip="@UpdateToolTipID" Id="disableTentSaving" @bind-Checked="Flags.DisableTentSaving">Disable Tent/Cabin/House Saving on Overworld</CheckBox>
                         <CheckBox UpdateToolTip="@UpdateToolTipID" Id="disableInnSaving" @bind-Checked="Flags.DisableInnSaving">Disable Inn Saving</CheckBox>
-						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="saveGameWhenGameOverCheckBox" @bind-Checked="Flags.SaveGameWhenGameOver">Save Game When Game Over</CheckBox>
+                        <CheckBox UpdateToolTip="@UpdateToolTipID" Id="saveGameWhenGameOverCheckBox" @bind-Checked="Flags.SaveGameWhenGameOver">Save Game When Game Over</CheckBox>
                         <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="randomizeFormationEnemizer" @bind-Value="Flags.RandomizeFormationEnemizer">Generate New Formations (Enemizer)</TriStateCheckBox>
                         <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="randomizeEnemizer" IsEnabled="@Flags.RandomizeFormationEnemizer" @bind-Value="Flags.RandomizeEnemizer">Generate New Enemies (Enemizer)</TriStateCheckBox>
                         <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="generateNewSpellbook" @bind-Value="Flags.GenerateNewSpellbook">Generate New Spellbook (Spellcrafter)</TriStateCheckBox>
@@ -520,7 +520,7 @@
                 </div>
             </div>
         </BSCollapse>
-        
+
 
         <button type="button" class="@(TabClasses("Fun %"))" @onclick="@(() => ActivateTab("Fun %"))">Fun %</button>
         <BSCollapse IsOpen="@(activeTabs.Contains("Fun %"))">
@@ -549,7 +549,7 @@
                 </div>
             </div>
         </BSCollapse>
-        
+
 
         <br />
         <button type="button" class="nes-btn is-primary" @onclick="@OnRandomize">Generate ROM</button>
@@ -558,7 +558,7 @@
                 @StatusMessage
             </div>
         </BSCollapse>
-        
+
 
         <br />
         <div>
@@ -568,268 +568,264 @@
 </div>
 
 @code { private byte[] _fileData;
-            private FF1Rom _rom;
+    private FF1Rom _rom;
 
-            private string _seed;
-            private string _seedInputClass = "";
+    private string _seed;
+    private string _seedInputClass = "";
 
-            private FlagsViewModel Flags { get; set; } = new FlagsViewModel();
-            private Flags DefaultFlags;
+    private FlagsViewModel Flags { get; set; } = new FlagsViewModel();
+    private Flags DefaultFlags;
 
-            private readonly List<string> activeTabs = new List<string> { "File", "Shuffle", "Treasures", "Goal", "Map", "Scale", "Party", "Bug Fixes", "Conveniences", "Fun %" };
+    private readonly List<string> activeTabs = new List<string> { "File", "Shuffle", "Treasures", "Goal", "Map", "Scale", "Party", "Bug Fixes", "Conveniences", "Fun %" };
 
-            private string StatusMessage = "";
-            private string RomMessage = "Upload Rom:";
+    private string StatusMessage = "";
+    private string RomMessage = "Upload Rom:";
 
-            private bool RememberROM = false;
+    private bool RememberROM = false;
 
-            private string ToolTipId = "unupdated";
-            private ToolTip ToolTipElement;
+    private string ToolTipId = "unupdated";
+    private ToolTip ToolTipElement;
 
-            private async void UpdateToolTipID(string Id, MouseEventArgs e)
+    private async void UpdateToolTipID(string Id, MouseEventArgs e)
+    {
+        ToolTipId = Id;
+        await ToolTipElement.UpdatePos(ToolTipId, e);
+        StateHasChanged();
+    }
+
+    void ActivateTab(string tab)
+    {
+        if (!activeTabs.Remove(tab))
+        {
+            activeTabs.Add(tab);
+        }
+        StateHasChanged();
+    }
+
+    string TabClasses(string tab)
+    {
+        return activeTabs.Contains(tab) ? "nes-btn nes-nav is-success" : "nes-btn nes-nav is-warning";
+    }
+
+    protected override async void OnInitialized()
+    {
+        Flags.PropertyChanged += (sender, args) => StateHasChanged();
+        Flags.PropertyChanged += async (sender, args) => await SetQueryString();
+
+        var uri = new Uri(NavigationManager.Uri);
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("s", out var seed))
+        {
+            _seed = seed.Single();
+        }
+        else
+        {
+            await OnNewSeed(null);
+        }
+
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("f", out var flags))
+        {
+            TrySetFlags(flags.First());
+        }
+        else
+        {
+            await LoadPreset("default");
+        }
+
+        await LoadPreferences();
+        await LoadLastROM();
+        StateHasChanged();
+    }
+
+    async Task SetQueryString()
+    {
+        string[] args = new string[2] { _seed, Flags.Encoded };
+
+        await JSRuntime.InvokeAsync<Task>("updateHistory", args);
+    }
+
+    async Task LoadPreset(string presetName)
+    {
+        var json = await JSRuntime.InvokeAsync<string>("computePreset", presetName);
+        Flags.Flags = System.Text.Json.JsonSerializer.Deserialize<Flags.Preset>(json).Flags;
+    }
+
+    async Task OnFileChanged(ChangeEventArgs e)
+    {
+        var encoded = await JSRuntime.InvokeAsync<string>("handleFileSelect", "fileInput");
+        RomMessage = "Using Selected ROM.";
+        SetFileData(encoded);
+
+        if (RememberROM)
+        {
+            await LocalStorage.SetItemAsync("file", encoded);
+        }
+    }
+
+    void SetFileData(string encoded)
+    {
+        _fileData = Convert.FromBase64String(encoded);
+    }
+
+    async Task OnSeedInputChanged(ChangeEventArgs e)
+    {
+        await ValidateSeed((string)e.Value);
+    }
+
+    async Task ValidateSeed(string seed)
+    {
+        if (seed == _seed)
+            return;
+
+        if (seed.Length > 8)
+        {
+            _seedInputClass = "is-error";
+            return;
+        }
+
+        _seed = seed;
+        try
+        {
+            Blob.FromHex(_seed);
+            _seed = seed.PadLeft(8, '0');
+            _seedInputClass = "";
+            await SetQueryString();
+        }
+        catch (Exception)
+        {
+            _seedInputClass = "is-error";
+        }
+    }
+
+    async Task OnNewSeed(MouseEventArgs e)
+    {
+        await ValidateSeed(Blob.Random(4).ToHex());
+        StateHasChanged();
+    }
+
+    void OnCopyToClipboard(MouseEventArgs e)
+    {
+        StatusMessage = "URL Copied To Clipboard.";
+        StateHasChanged();
+
+        JSRuntime.InvokeAsync<object>("copyLocation");
+    }
+
+    void OnFlagsInputChanged(ChangeEventArgs e)
+    {
+        TrySetFlags((string)e.Value);
+    }
+
+    void TrySetFlags(string flags)
+    {
+        try
+        {
+            Flags.Flags = FF1Lib.Flags.DecodeFlagsText(flags);
+            StatusMessage = "Successfully imported Flags.";
+        }
+        catch (Exception)
+        {
+            StatusMessage = "Invalid Flags String.";
+        }
+    }
+
+    async Task LoadPreferences()
+    {
+        Preferences temp = await LocalStorage.GetItemAsync<Preferences>("preferences") ?? new Preferences();
+        Flags.Preferences = temp;
+
+    }
+
+    async Task SavePreferences()
+    {
+        await LocalStorage.SetItemAsync("preferences", Flags.Preferences);
+    }
+
+    async Task LoadLastROM()
+    {
+        string encoded = await LocalStorage.GetItemAsync<string>("file");
+        RememberROM = encoded != null && encoded.Length > 0;
+        if (RememberROM)
+        {
+            SetFileData(encoded);
+            RomMessage = "Using Remembered ROM.";
+            StatusMessage += " Remembered last used ROM.";
+        }
+    }
+
+    async Task OnRandomize(MouseEventArgs e)
+    {
+        if (_fileData == null)
+        {
+            StatusMessage = "Generate Failed: No ROM File Selected!";
+            StateHasChanged();
+            return;
+        }
+
+        using (var stream = new MemoryStream(_fileData))
+        {
+            _rom = new FF1Rom(stream);
+        }
+
+        if (RememberROM)
+        {
+            await LocalStorage.SetItemAsync("file", Convert.ToBase64String(_fileData));
+        }
+        else
+        {
+            await LocalStorage.RemoveItemAsync("file");
+        }
+
+        StatusMessage = "Generating Final Fantasy Randomizer ROM ... Please Wait ... ";
+        StateHasChanged();
+
+        await Task.Run(DoRandomize);
+    }
+
+    async Task DoRandomize()
+    {
+        Blob seed;
+        try
+        {
+            if (_seed.Length != 8)
             {
-                ToolTipId = Id;
-                await ToolTipElement.UpdatePos(ToolTipId, e);
-                StateHasChanged();
+                throw new Exception();
+            }
+            seed = Blob.FromHex(_seed);
+        }
+        catch (Exception)
+        {
+            StatusMessage = "Generate Failed: Invalid Seed Format";
+            StateHasChanged();
+            return;
+        }
+
+        try
+        {
+
+            _rom.Randomize(seed, Flags.Flags, Flags.Preferences);
+
+            var data = new byte[512 * 1024 + 16];
+            using (var stream = new MemoryStream(data, true))
+            {
+                _rom.Save(stream);
             }
 
-            void ActivateTab(string tab)
+            var encoded = Convert.ToBase64String(data);
+
+            StatusMessage += "SUCCESS!";
+
+            if (Flags.Spoilers)
             {
-                if (!activeTabs.Remove(tab))
-                {
-                    activeTabs.Add(tab);
-                }
-                StateHasChanged();
+                StatusMessage += " SPOILER LOG IN BROWSER CONSOLE!";
             }
 
-            string TabClasses(string tab)
-            {
-                return activeTabs.Contains(tab) ? "nes-btn nes-nav is-success" : "nes-btn nes-nav is-warning";
-            }
+            StateHasChanged();
 
-            protected override async void OnInitialized()
-            {
-                Flags.PropertyChanged += (sender, args) => StateHasChanged();
-                Flags.PropertyChanged += async (sender, args) => await SetQueryString();
-
-                // This crap is a workaround for a type loading exception in Blazor 0.7.
-                typeof(INotifyPropertyChanged).GetHashCode();
-                typeof(INotifyPropertyChanging).GetHashCode();
-
-                var uri = new Uri(NavigationManager.Uri);
-                if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("s", out var seed))
-                {
-                    _seed = seed.Single();
-                }
-                else
-                {
-                    await OnNewSeed(null);
-                }
-
-                if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("f", out var flags))
-                {
-                    TrySetFlags(flags.First());
-                }
-                else
-                {
-                    await LoadPreset("default");
-                }
-
-                await LoadPreferences();
-
-                await LoadLastROM();
-            }
-
-            async Task SetQueryString()
-            {
-                string[] args = new string[2] { _seed, Flags.Encoded };
-
-                await JSRuntime.InvokeAsync<Task>("updateHistory", args);
-            }
-
-            async Task LoadPreset(string presetName)
-            {
-                var json = await JSRuntime.InvokeAsync<string>("computePreset", presetName);
-                Flags.Flags = System.Text.Json.JsonSerializer.Deserialize<Flags.Preset>(json).Flags;
-            }
-
-            async Task OnFileChanged(ChangeEventArgs e)
-            {
-                var encoded = await JSRuntime.InvokeAsync<string>("handleFileSelect", "fileInput");
-                RomMessage = "Using Selected ROM.";
-                SetFileData(encoded);
-
-                if (RememberROM)
-                {
-                    await LocalStorage.SetItemAsync("file", encoded);
-                }
-            }
-
-            void SetFileData(string encoded)
-            {
-                _fileData = Convert.FromBase64String(encoded);
-            }
-
-            async Task OnSeedInputChanged(ChangeEventArgs e)
-            {
-                await ValidateSeed((string)e.Value);
-            }
-
-            async Task ValidateSeed(string seed)
-            {
-                if (seed == _seed)
-                    return;
-
-                if (seed.Length > 8)
-                {
-                    _seedInputClass = "is-error";
-                    return;
-                }
-
-                _seed = seed;
-                try
-                {
-                    Blob.FromHex(_seed);
-                    _seed = seed.PadLeft(8, '0');
-                    _seedInputClass = "";
-                    await SetQueryString();
-                }
-                catch (Exception)
-                {
-                    _seedInputClass = "is-error";
-                }
-            }
-
-            async Task OnNewSeed(MouseEventArgs e)
-            {
-                await ValidateSeed(Blob.Random(4).ToHex());
-                StateHasChanged();
-            }
-
-            void OnCopyToClipboard(MouseEventArgs e)
-            {
-                StatusMessage = "URL Copied To Clipboard.";
-                StateHasChanged();
-
-                JSRuntime.InvokeAsync<object>("copyLocation");
-            }
-
-            void OnFlagsInputChanged(ChangeEventArgs e)
-            {
-                TrySetFlags((string)e.Value);
-            }
-
-            void TrySetFlags(string flags)
-            {
-                try
-                {
-                    Flags.Flags = FF1Lib.Flags.DecodeFlagsText(flags);
-                    StatusMessage = "Successfully imported Flags.";
-                }
-                catch (Exception)
-                {
-                    StatusMessage = "Invalid Flags String.";
-                }
-            }
-
-            async Task LoadPreferences()
-            {
-                Preferences temp = await LocalStorage.GetItemAsync<Preferences>("preferences") ?? new Preferences();
-                Flags.Preferences = temp;
-
-            }
-
-            async Task SavePreferences()
-            {
-                await LocalStorage.SetItemAsync("preferences", Flags.Preferences);
-            }
-
-            async Task LoadLastROM()
-            {
-                string encoded = await LocalStorage.GetItemAsync<string>("file");
-                RememberROM = encoded != null && encoded.Length > 0;
-                if (RememberROM)
-                {
-                    SetFileData(encoded);
-                    RomMessage = "Using Remembered ROM.";
-                    StatusMessage += " Remembered last used ROM.";
-                }
-            }
-
-            async Task OnRandomize(MouseEventArgs e)
-            {
-                if (_fileData == null)
-                {
-                    StatusMessage = "Generate Failed: No ROM File Selected!";
-                    StateHasChanged();
-                    return;
-                }
-
-                using (var stream = new MemoryStream(_fileData))
-                {
-                    _rom = new FF1Rom(stream);
-                }
-
-                if (RememberROM)
-                {
-                    await LocalStorage.SetItemAsync("file", Convert.ToBase64String(_fileData));
-                }
-                else
-                {
-                    await LocalStorage.RemoveItemAsync("file");
-                }
-
-                StatusMessage = "Generating Final Fantasy Randomizer ROM ... Please Wait ... ";
-                StateHasChanged();
-
-                await Task.Run(DoRandomize);
-            }
-
-            async Task DoRandomize()
-            {
-                Blob seed;
-                try
-                {
-                    if (_seed.Length != 8)
-                    {
-                        throw new Exception();
-                    }
-                    seed = Blob.FromHex(_seed);
-                }
-                catch (Exception)
-                {
-                    StatusMessage = "Generate Failed: Invalid Seed Format";
-                    StateHasChanged();
-                    return;
-                }
-
-                try
-                {
-
-                    _rom.Randomize(seed, Flags.Flags, Flags.Preferences);
-
-                    var data = new byte[512 * 1024 + 16];
-                    using (var stream = new MemoryStream(data, true))
-                    {
-                        _rom.Save(stream);
-                    }
-
-                    var encoded = Convert.ToBase64String(data);
-
-                    StatusMessage += "SUCCESS!";
-
-                    if (Flags.Spoilers)
-                    {
-                        StatusMessage += " SPOILER LOG IN BROWSER CONSOLE!";
-                    }
-
-                    StateHasChanged();
-
-                    await JSRuntime.InvokeAsync<object>("downloadROM", $"FFR_{_seed}_{Flags.Encoded}.nes", encoded);
-                }
-                catch (Exception e)
-                {
-                    StatusMessage += "FAILURE: " + e.Message;
-                    StateHasChanged();
-                }
-            } }
+            await JSRuntime.InvokeAsync<object>("downloadROM", $"FFR_{_seed}_{Flags.Encoded}.nes", encoded);
+        }
+        catch (Exception e)
+        {
+            StatusMessage += "FAILURE: " + e.Message;
+            StateHasChanged();
+        }
+    } }
