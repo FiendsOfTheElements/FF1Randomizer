@@ -62,8 +62,8 @@ function getScreenRightEdge() {
 	return window.innerWidth;
 }
 
+let newWorker;
 Blazor.start({}).then(() => {
-	let newWorker;
 	if ('serviceWorker' in navigator) {
 		navigator.serviceWorker.register('/service-worker.js').then(reg => {
 			console.debug('service worker registered');
