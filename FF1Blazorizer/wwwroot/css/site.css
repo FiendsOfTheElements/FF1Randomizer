@@ -33,9 +33,9 @@ app {
 }
 
 .update-notification {
-    background-color: darkcyan;
+    background-color: #30bb6b;
     border-radius: 15px;
-    position: sticky;
+    position: fixed;
     right: 2%;
     margin-top: 1%;
     max-width: 96%;
@@ -43,7 +43,6 @@ app {
     padding: 0.5rem;
     font-family: 'Press Start 2P';
     z-index: 101;
-    background-color: rgba(0, 0, 0, 0.5);
 }
 
     .update-notification:hover {
