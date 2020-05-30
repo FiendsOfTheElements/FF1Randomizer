@@ -93,5 +93,9 @@ Blazor.start({}).then(() => {
  * Call from Blazor to register the new service worker 
  */
 function updateServiceWorkerNow() {
-	newWorker.postMessage({ action: 'skipWaiting' });
+	if (newWorker) {
+		newWorker.postMessage({ action: 'skipWaiting' });
+	} else {
+		window.location.reload();
+	}
 }
