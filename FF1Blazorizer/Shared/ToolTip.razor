@@ -1,4 +1,4 @@
-@using System.Net.Http;
+@using System.Net.Http.Json
 @inject HttpClient  Http
 
 <div class="ffr-tooltip" style="@css">
@@ -27,7 +27,7 @@
 	private List<ToolTipObj> Tooltips { get; set; }
 	protected override async void OnInitialized()
 	{
-		Tooltips = await Http.GetJsonAsync<List<ToolTipObj>>("/tooltips/tooltips.json");
+		Tooltips = await Http.GetFromJsonAsync<List<ToolTipObj>>("/tooltips/tooltips.json");
 	}
 
 	private ToolTipObj TTip => Enabled ? Tooltips.FirstOrDefault(x => x.Id == ToolTipId) : null;
