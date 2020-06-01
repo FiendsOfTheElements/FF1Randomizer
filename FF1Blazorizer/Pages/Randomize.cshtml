@@ -406,8 +406,17 @@
 							</tr>
 						</table>
 					</div>
-				</div>
-			</TabPane>
+					<br />
+					<h4>Party Balance</h4>
+					<div class="col-md-12">
+						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="ChangeMaxMP" bind-Value="@Flags.ChangeMaxMP">Change Class Max MP</CheckBox>
+						<IntSlider Indent Min="1" Max="9" Step="1" DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.ChangeMaxMP" Id="RedMageMaxMP" bind-Value="@Flags.RedMageMaxMP">Red Mage Max MP:</IntSlider>
+						<IntSlider Indent Min="1" Max="9" Step="1" DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.ChangeMaxMP" Id="WhiteMageMaxMP" bind-Value="@Flags.WhiteMageMaxMP">White Mage Max MP:</IntSlider>
+						<IntSlider Indent Min="1" Max="9" Step="1" DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.ChangeMaxMP" Id="BlackMageMaxMP" bind-Value="@Flags.BlackMageMaxMP">Black Mage Max MP:</IntSlider>
+						<IntSlider Indent Min="1" Max="9" Step="1" UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.ChangeMaxMP" Id="KnightNinjaMaxMP" bind-Value="@Flags.KnightNinjaMaxMP">Knight/Ninja Max MP:</IntSlider>
+					</div>
+					</div>
+				</TabPane>
 			<button type="button" class="@(TabClasses("Conveniences"))" onclick="@(() => ActivateTab("Conveniences"))">Conveniences</button>
 			<TabPane IsOpen="@(activeTabs.Contains("Conveniences"))">
 				<div class="is-dark nes-container">

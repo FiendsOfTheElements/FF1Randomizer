@@ -251,6 +251,12 @@ namespace FF1Lib
 		public double EnemyHPScaleFactor { get; set; } = 1;
 		public double BossHPScaleFactor { get; set; } = 1;
 
+		public bool ChangeMaxMP { get; set; } = false;
+		public int RedMageMaxMP { get; set; } = 9;
+		public int WhiteMageMaxMP { get; set; } = 9;
+		public int BlackMageMaxMP { get; set; } = 9;
+		public int KnightNinjaMaxMP { get; set; } = 4;
+
 		public MDEFGrowthMode MDefMode { get; set; } = MDEFGrowthMode.None;
 
 		public FormationShuffleMode FormationShuffleMode { get; set; } = FormationShuffleMode.None;
@@ -700,6 +706,11 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.ClampEnemyHpScaling);
 			sum = AddNumeric(sum, 41, (int)(10.0 * flags.EnemyHPScaleFactor) - 10);
 			sum = AddNumeric(sum, 41, (int)(10.0 * flags.BossHPScaleFactor) - 10);
+			sum = AddNumeric(sum, 10, flags.KnightNinjaMaxMP);
+			sum = AddNumeric(sum, 10, flags.BlackMageMaxMP);
+			sum = AddNumeric(sum, 10, flags.WhiteMageMaxMP);
+			sum = AddNumeric(sum, 10, flags.RedMageMaxMP);
+			sum = AddBoolean(sum, flags.ChangeMaxMP);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(FormationShuffleMode)).Cast<int>().Max() + 1, (int)flags.FormationShuffleMode);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(MDEFGrowthMode)).Cast<int>().Max() + 1, (int)flags.MDefMode);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(WorldWealthMode)).Cast<int>().Max() + 1, (int)flags.WorldWealth);
@@ -722,6 +733,11 @@ namespace FF1Lib
 				WorldWealth = (WorldWealthMode)GetNumeric(ref sum, Enum.GetValues(typeof(WorldWealthMode)).Cast<int>().Max() + 1),
 				MDefMode = (MDEFGrowthMode)GetNumeric(ref sum, Enum.GetValues(typeof(MDEFGrowthMode)).Cast<int>().Max() + 1),
 				FormationShuffleMode = (FormationShuffleMode)GetNumeric(ref sum, Enum.GetValues(typeof(FormationShuffleMode)).Cast<int>().Max() + 1),
+				ChangeMaxMP = GetBoolean(ref sum),
+				RedMageMaxMP = GetNumeric(ref sum, 10),
+				WhiteMageMaxMP = GetNumeric(ref sum, 10),
+				BlackMageMaxMP = GetNumeric(ref sum, 10),
+				KnightNinjaMaxMP = GetNumeric(ref sum, 10),
 				BossHPScaleFactor = (GetNumeric(ref sum, 41) + 10) / 10.0,
 				EnemyHPScaleFactor = (GetNumeric(ref sum, 41) + 10) / 10.0,
 				ClampEnemyHpScaling = GetTriState(ref sum),

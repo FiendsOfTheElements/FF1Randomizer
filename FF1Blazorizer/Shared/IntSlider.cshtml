@@ -1,0 +1,73 @@
+﻿<div class="row">
+	<div class="col-md-5">
+		<p class="@DisabledClass @IndentClass">@ChildContent</p>
+	</div>
+	<div class="col-xs-6 col-md-3">
+		<label for="@Id" class="@DisabledClass">@Value</label>
+	</div>
+	<div class="col-xs-6 col-md-4">
+		<input class="@DisabledClass" type="range" value="@Value" onchange="@onchange" min="@Min" max="@Max" step="@Step" />
+		@if (!DisableTooltip)
+		{
+			<input type="image" src="/images/help.png" class="btn-group-help" title="Show Help" onclick="@ShowToolTip" id="@Id" />
+		}
+	</div>
+</div>
+
+@functions
+{
+	private void ShowToolTip(UIMouseEventArgs e)
+	{
+		UpdateToolTip?.Invoke(Id, e);
+	}
+
+	private void HideToolTip(UIMouseEventArgs e)
+	{
+		UpdateToolTip?.Invoke("", e);
+	}
+
+	[CascadingParameter]
+	protected string ToolTipId { get; set; }
+	[Parameter]
+	protected Action<string, UIMouseEventArgs>
+	UpdateToolTip { get; set; }
+	[Parameter]
+	private bool DisableTooltip { get; set; }
+
+	[Parameter]
+	private bool Indent { get; set; }
+	private string IndentClass => Indent ? "indent" : "";
+
+	[Parameter]
+	private bool? IsEnabled { get; set; } = true;
+	private bool Disabled => !(IsEnabled ?? true);
+	private string DisabledClass => (IsEnabled ?? true) ? "" : "disabled";
+
+	[Parameter]
+	private string Id { get; set; }
+
+	[Parameter]
+	private int Value { get; set; }
+	[Parameter]
+	private Action<int>
+		ValueChanged { get; set; }
+		void onchange(UIChangeEventArgs e)
+		{
+		Value = int.Parse((string)e.Value);
+		ValueChanged(Value);
+		}
+
+		[Parameter]
+		private int Min { get; set; }
+		[Parameter]
+		private int Max { get; set; }
+		[Parameter]
+		private int Step { get; set; }
+
+		[Parameter]
+		private RenderFragment ChildContent { get; set; }
+
+		[Parameter]
+		private bool Name { get; set; }
+
+		}

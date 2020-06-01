@@ -562,6 +562,11 @@ namespace FF1Lib
 				RandomArmorBonus(rng);
 			}
 
+			if(flags.ChangeMaxMP)
+			{
+				SetMPMax(flags.RedMageMaxMP, flags.WhiteMageMaxMP, flags.BlackMageMaxMP, flags.KnightNinjaMaxMP);
+			}
+			
 			if (flags.WeaponBonuses)
 			{
 				IncreaseWeaponBonus();

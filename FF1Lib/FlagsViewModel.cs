@@ -2122,6 +2122,56 @@ namespace FF1Lib
 			}
 		}
 
+		public bool ChangeMaxMP
+		{
+			get => Flags.ChangeMaxMP;
+			set
+			{
+				Flags.ChangeMaxMP = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ChangeMaxMP"));
+			}
+		}
+
+		public int RedMageMaxMP
+		{
+			get => Flags.RedMageMaxMP;
+			set
+			{
+				Flags.RedMageMaxMP = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RedMageMaxMP"));
+			}
+		}
+
+		public int WhiteMageMaxMP
+		{
+			get => Flags.WhiteMageMaxMP;
+			set
+			{
+				Flags.WhiteMageMaxMP = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("WhiteMageMaxMP"));
+			}
+		}
+
+		public int BlackMageMaxMP
+		{
+			get => Flags.BlackMageMaxMP;
+			set
+			{
+				Flags.BlackMageMaxMP = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BlackMageMaxMP"));
+			}
+		}
+
+		public int KnightNinjaMaxMP
+		{
+			get => Flags.KnightNinjaMaxMP;
+			set
+			{
+				Flags.KnightNinjaMaxMP = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("KnightNinjaMaxMP"));
+			}
+		}
+
 		public bool? SwolePirates
 		{
 			get => Flags.SwolePirates;
