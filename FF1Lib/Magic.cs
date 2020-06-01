@@ -344,9 +344,10 @@ namespace FF1Lib
 			{
 				if(mixSpellbooks)
 				{
-					magicSpells.Shuffle(rng);
-					whiteSpells = magicSpells.Where((spell, i) => (i / 4) % 2 == 0).ToList();
-					blackSpells = magicSpells.Where((spell, i) => (i / 4) % 2 == 1).ToList();
+					var mergedList = magicSpells.ToList();
+					mergedList.Shuffle(rng);
+					whiteSpells = mergedList.Where((spell, i) => (i / 4) % 2 == 0).ToList();
+					blackSpells = mergedList.Where((spell, i) => (i / 4) % 2 == 1).ToList();
 				}
 				else
 				{

@@ -104,8 +104,8 @@ namespace FF1Lib
 			FixEnemyPalettes(); // fixes a bug in the original game's programming that causes third enemy slot's palette to render incorrectly
 			FixWarpBug(); // The warp bug must be fixed for magic level shuffle and spellcrafter
 			SeparateUnrunnables();
+			
 			flags = Flags.ConvertAllTriState(flags, rng);
-
 
 			TeleportShuffle teleporters = new TeleportShuffle();
 			var palettes = OverworldMap.GeneratePalettes(Get(OverworldMap.MapPaletteOffset, MapCount * OverworldMap.MapPaletteSize).Chunk(OverworldMap.MapPaletteSize));
@@ -314,6 +314,13 @@ namespace FF1Lib
 				ShuffleArmorPermissions(rng);
 			}
 			*/
+
+			NewAstosRoutine((bool)flags.NPCItems | (bool)flags.NPCFetchItems);  // moves Talk_Astos to a new location so we can play with it, and also makes it so Astos will only give his item after you have defeated him and speak to him again
+																				// we make this happen on all seeds for consistency with other features
+			if (flags.SaveGameWhenGameOver)
+			{
+				EnableSaveOnDeath((bool)flags.NPCItems | (bool)flags.NPCFetchItems);
+			}
 
 			// Ordered before RNG shuffle. In the event that both flags are on, RNG shuffle depends on this.
 			if (((bool)flags.FixMissingBattleRngEntry))
@@ -795,12 +802,12 @@ namespace FF1Lib
 			// Move controller handling out of bank 1F
 			// This bit of code is also altered to allow a hard reset using Up+A on controller 2
 			PutInBank(0x0F, 0x8200, Blob.FromHex("20108220008360"));
-			PutInBank(0x0F, 0x8210, Blob.FromHex("A9018D1640A9008D1640A208AD16402903C9012620AD17402903C901261ECAD0EBA51EC988F0016020A8FE20A8FE20A8FEA2FF9AA900851E9500CAD0FBA6004C12C0"));
+			PutInBank(0x0F, 0x8210, Blob.FromHex("A9018D1640A9008D1640A208AD16402903C9012620AD17402903C901261ECAD0EBA51EC988F008C948F001604C2EFE20A8FE20A8FE20A8FEA2FF9AA900851E9500CAD0FBA6004C12C0"));
 			PutInBank(0x0F, 0x8300, Blob.FromHex("A5202903F002A2038611A520290CF0058A090C8511A52045212511452185214520AA2910F00EA5202910F002E623A521491085218A2920F00EA5202920F002E622A521492085218A2940F00EA5202940F002E625A521494085218A2980F00EA5202980F002E624A5214980852160"));
 			PutInBank(0x1F, 0xD7C2, CreateLongJumpTableEntry(0x0F, 0x8200));
 
 			// Battles use 2 separate and independent controller handlers for a total of 3 (because why not), so we patch these to respond to Up+A also
-			PutInBank(0x0F, 0x8580, Blob.FromHex("A0018C1640888C1640A008AD16404AB0014A6EB368AD17402903C901261E88D0EAA51EC988F004ADB3686020A8FE20A8FE20A8FEA2FF9AA900851E9500CAD0FBA6004C12C0"));
+			PutInBank(0x0F, 0x8580, Blob.FromHex("A0018C1640888C1640A008AD16404AB0014A6EB368AD17402903C901261E88D0EAA51EC988F00BC948F004ADB368604C2EFE20A8FE20A8FE20A8FEA2FF9AA900851E9500CAD0FBA6004C12C0"));
 			PutInBank(0x1F, 0xD828, CreateLongJumpTableEntry(0x0F, 0x8580));
 			// PutInBank(0x0B, 0x9A06, Blob.FromHex("4C28D8")); Included in bank 1B changes
 			PutInBank(0x0C, 0x97C7, Blob.FromHex("2027F22028D82029ABADB36860"));

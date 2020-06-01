@@ -1,0 +1,37 @@
+﻿{
+	"_comment":  "This is a valid config without any placeholders for development purposes",
+
+	"name": "Final Fantasy Randomizer - Development Build",
+	"short_name": "FFR Dev",
+	"description": "The randomizer for Final Fantasy 1.",
+	"start_url": "/",
+	"display": "standalone",
+	"background_color": "#ffffff",
+	"theme_color": "#221d11",
+	"icons": [
+		{
+			"src": "normal.ico",
+			"type": "image/x-icon",
+			"sizes": "16x16 24x24 32x32",
+			"purpose": "any maskable"
+		},
+		{
+			"src": "images/icons/warmech-normal-192.png",
+			"type": "image/png",
+			"sizes": "192x192",
+			"purpose": "any maskable"
+		},
+		{
+			"src": "images/icons/warmech-normal-256.png",
+			"type": "image/png",
+			"sizes": "256x256",
+			"purpose": "any maskable"
+		},
+		{
+			"src": "images/icons/warmech-normal-512.png",
+			"type": "image/png",
+			"sizes": "512x512",
+			"purpose": "any maskable"
+		}
+	]
+}

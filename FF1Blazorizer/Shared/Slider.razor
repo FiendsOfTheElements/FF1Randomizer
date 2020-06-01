@@ -1,0 +1,21 @@
+﻿<input type="range" value="@Value" @onchange="@onchange" min="@Min" max="@Max" step="@Step" />
+
+@code
+{
+	[Parameter]
+	public double Value { get; set; }
+	[Parameter]
+	public EventCallback<double> ValueChanged { get; set; }
+	void onchange(ChangeEventArgs e)
+	{
+		Value = double.Parse((string)e.Value);
+		ValueChanged.InvokeAsync(Value);
+	}
+
+	[Parameter]
+	public double Min { get; set; }
+	[Parameter]
+	public double Max { get; set; }
+	[Parameter]
+	public double Step { get; set; }
+}
