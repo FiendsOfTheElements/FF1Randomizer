@@ -252,6 +252,14 @@ namespace FF1Lib
 		public double EnemyHPScaleFactor { get; set; } = 1;
 		public double BossHPScaleFactor { get; set; } = 1;
 
+		public PoolSize PoolSize { get; set; } = PoolSize.Size6;
+		public bool EnablePoolParty { get; set; }= false;
+		public bool? IncludePromClasses { get; set; } = false;
+		public bool EnableRandomPromotions { get; set; } = false;
+		public bool? IncludeBaseClasses { get; set; } = false;
+
+
+
 		public MDEFGrowthMode MDefMode { get; set; } = MDEFGrowthMode.None;
 
 		public FormationShuffleMode FormationShuffleMode { get; set; } = FormationShuffleMode.None;
@@ -702,6 +710,11 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.ClampEnemyHpScaling);
 			sum = AddNumeric(sum, 41, (int)(10.0 * flags.EnemyHPScaleFactor) - 10);
 			sum = AddNumeric(sum, 41, (int)(10.0 * flags.BossHPScaleFactor) - 10);
+			sum = AddNumeric(sum, Enum.GetValues(typeof(PoolSize)).Cast<int>().Max() + 1, (int)flags.PoolSize);
+			sum = AddBoolean(sum, flags.EnablePoolParty);
+			sum = AddTriState(sum, flags.IncludePromClasses);
+			sum = AddBoolean(sum, flags.EnableRandomPromotions);
+			sum = AddTriState(sum, flags.IncludeBaseClasses);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(FormationShuffleMode)).Cast<int>().Max() + 1, (int)flags.FormationShuffleMode);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(MDEFGrowthMode)).Cast<int>().Max() + 1, (int)flags.MDefMode);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(WorldWealthMode)).Cast<int>().Max() + 1, (int)flags.WorldWealth);
@@ -730,6 +743,11 @@ namespace FF1Lib
 				ClampBossHPScaling = GetTriState(ref sum),
 				SeparateEnemyHPScaling = GetTriState(ref sum),
 				SeparateBossHPScaling = GetTriState(ref sum),
+				PoolSize = (PoolSize)GetNumeric(ref sum, Enum.GetValues(typeof(PoolSize)).Cast<int>().Max() + 1),
+				EnablePoolParty = GetBoolean(ref sum),
+				IncludePromClasses = GetTriState(ref sum),
+				EnableRandomPromotions = GetBoolean(ref sum),
+				IncludeBaseClasses = GetTriState(ref sum),
 				BalancedItemMagicShuffle = GetTriState(ref sum),
 				RandomArmorBonus = GetTriState(ref sum),
 				RandomWeaponBonus = GetTriState(ref sum),

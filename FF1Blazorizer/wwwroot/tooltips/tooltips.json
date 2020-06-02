@@ -95,6 +95,31 @@
 		"description": "Unsafe Pirates: Allows Pirates to be shuffled skills and spells. Left unchecked, Pirates will always have a script that directs them to only attack."
 	},
 	{
+		"Id": "EnablePoolParty",
+		"title": "Select Party From Pool of Random Characters",
+		"description": "This fills a pool with random characters, allowing duplicates, from which to form your party. Once a character is selected, it's removed from the pool. Cancelling your choice puts back the character in the pool."
+	},
+	{
+		"Id": "PoolSizeDropDown",
+		"title": "Pool Size",
+		"description": "Number of characters in the pool."
+	},
+	{
+		"Id": "PPIncludePromotedClasses",
+		"title": "Include Promoted Classes",
+		"description": "Allow promoted classes to be added to the pool."
+	},
+	{
+		"Id": "EnableRandomPromotions",
+		"title": "Random Promotions",
+		"description": "When giving the TAIL to Bahamut, promote your party to random classes."
+	},
+	{
+		"Id": "RPIncludeBaseClasses",
+		"title": "Include Base Classes",
+		"description": "Allow base classes as possible promotions."
+	},
+	{
 		"Id": "enemySkillsSpellsCheckBox",
 		"title": "Enemy Skills/Spells",
 		"screenshot": "enemySkillsSpellsCheckBox.png",

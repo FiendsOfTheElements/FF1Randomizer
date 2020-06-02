@@ -658,6 +658,18 @@ namespace FF1Lib
 				PubReplaceClinic(rng, flags);
 			}
 
+			if (flags.EnablePoolParty)
+			{
+				EnableTwelveClasses();
+				EnablePoolParty(flags, rng);
+			}
+
+			if (flags.EnableRandomPromotions)
+			{
+				EnableTwelveClasses();
+				EnableRandomPromotions(flags, rng);
+			}
+
 			if ((bool)flags.MapCanalBridge)
 			{
 				EnableCanalBridge();
@@ -963,10 +975,10 @@ namespace FF1Lib
 		public void WriteSeedAndFlags(string version, string seed, string flags)
 		{
 			// Replace most of the old copyright string printing with a JSR to a LongJump
-			Put(0x38486, Blob.FromHex("20FCFE60"));
+			Put(0x38486, Blob.FromHex("20B9FF60"));
 
 			// DrawSeedAndFlags LongJump
-			PutInBank(0x1F, 0xFEFC, CreateLongJumpTableEntry(0x0F, 0x8980));
+			PutInBank(0x1F, 0xFFB9, CreateLongJumpTableEntry(0x0F, 0x8980));
 
 			var sha = File.Exists("version.txt") ? File.ReadAllText("version.txt").Trim() : "development";
 			Blob hash;
