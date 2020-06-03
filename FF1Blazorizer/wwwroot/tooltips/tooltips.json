@@ -929,5 +929,10 @@
 		"Id": "KnightNinjaMaxMP",
 		"title": "Set Max Knight Ninja MP",
 		"description": "At the moment with the way the game is coded, knight's and ninja's max mp is determined together. This wont change when they get spells, it will still be at every odd level starting at 15."
+	},
+	{
+		"Id": "LockMode",
+		"title": "Set Lock Hit Mode",
+		"description": "Allows control over LOCK and LOK2 chance to hit. 107 is about 20% vs chaos. 160 is about 50% vs chaos. Autohit will always hit."
 	}
 ]

@@ -194,9 +194,9 @@ namespace FF1Lib
 				FixSpellBugs();
 			}
 
-			if (flags.RebalanceSpells)
+			if (flags.LockMode != LockHitMode.Vanilla)
 			{
-				RebalanceSpells();
+				ChangeLockMode(flags.LockMode);
 			}
 
 			if (flags.EnemySpellsTargetingAllies)
@@ -216,7 +216,7 @@ namespace FF1Lib
 
 			if ((bool)flags.GenerateNewSpellbook)
 			{
-				CraftNewSpellbook(rng, (bool)flags.SpellcrafterMixSpells, flags.RebalanceSpells, (bool)flags.MagicLevels, (bool)flags.SpellcrafterRetainPermissions);
+				CraftNewSpellbook(rng, (bool)flags.SpellcrafterMixSpells, flags.LockMode, (bool)flags.MagicLevels, (bool)flags.SpellcrafterRetainPermissions);
 			}
 
 			if ((bool)flags.ItemMagic)

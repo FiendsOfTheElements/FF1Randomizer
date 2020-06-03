@@ -1,9 +1,22 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using RomUtilities;
+using System.ComponentModel;
 
 namespace FF1Lib
 {
+	public enum LockHitMode
+	{
+		[Description("Vanilla")]
+		Vanilla = 0,
+		[Description("107 Accuracy")]
+		Accuracy107,
+		[Description("162 Accuracy")]
+		Accuracy162,
+		[Description("Auto Hit")]
+		AutoHit
+	}
+
 	public partial class FF1Rom : NesRom
 	{
 		public const int MagicOffset = 0x301E0;
@@ -495,6 +508,25 @@ namespace FF1Lib
 				}
 
 				Put(currentOffset, new byte[] { currentSpellData });
+			}
+		}
+
+		public void ChangeLockMode(LockHitMode lockHitMode)
+		{
+			//must be done before spells get shuffled around otherwise we'd be changing a spell that isnt lock
+			if (lockHitMode == LockHitMode.Accuracy107)
+			{
+				Put(MagicOffset + (MagicSize * 6), new byte[] { 107 });
+				Put(MagicOffset + (MagicSize * 23), new byte[] { 107 });
+			}
+			else if (lockHitMode == LockHitMode.Accuracy162)
+			{
+				Put(MagicOffset + (MagicSize * 6), new byte[] { 162 });
+				Put(MagicOffset + (MagicSize * 23), new byte[] { 162 });
+			}
+			else if (lockHitMode == LockHitMode.AutoHit)
+			{
+				PutInBank(0x0C, 0xBA46, Blob.FromHex("2029B9AD856838ED7468B002A9008D85682085B860EAEAEAEAEAEAEAEAEAEAEAEAEA"));
 			}
 		}
 

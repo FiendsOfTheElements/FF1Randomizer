@@ -33,7 +33,6 @@ namespace FF1Lib
 		public bool? MagicLevels { get; set; } = false;
 		public bool? MagicPermissions { get; set; } = false;
 		public bool? ItemMagic { get; set; } = false;
-		public bool RebalanceSpells { get; set; } = false;
 		public bool? MagicLevelsTiered { get; set; } = false;
 		public bool? MagicLevelsMixed { get; set; } = false;
 
@@ -257,6 +256,8 @@ namespace FF1Lib
 		public int WhiteMageMaxMP { get; set; } = 9;
 		public int BlackMageMaxMP { get; set; } = 9;
 		public int KnightNinjaMaxMP { get; set; } = 4;
+
+		public LockHitMode LockMode { get; set; } = LockHitMode.Vanilla;
 
 		public MDEFGrowthMode MDefMode { get; set; } = MDEFGrowthMode.None;
 
@@ -524,7 +525,6 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.ItemMagic);
 			sum = AddTriState(sum, flags.MagicLevelsTiered);
 			sum = AddTriState(sum, flags.MagicLevelsMixed);
-			sum = AddBoolean(sum, flags.RebalanceSpells);
 			sum = AddTriState(sum, flags.Rng);
 			sum = AddBoolean(sum, flags.FixMissingBattleRngEntry);
 			sum = AddTriState(sum, flags.EverythingUnrunnable);
@@ -713,6 +713,7 @@ namespace FF1Lib
 			sum = AddNumeric(sum, 10, flags.WhiteMageMaxMP);
 			sum = AddNumeric(sum, 10, flags.RedMageMaxMP);
 			sum = AddBoolean(sum, flags.ChangeMaxMP);
+			sum = AddNumeric(sum, Enum.GetValues(typeof(LockHitMode)).Cast<int>().Max() + 1, (int)flags.LockMode);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(FormationShuffleMode)).Cast<int>().Max() + 1, (int)flags.FormationShuffleMode);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(MDEFGrowthMode)).Cast<int>().Max() + 1, (int)flags.MDefMode);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(WorldWealthMode)).Cast<int>().Max() + 1, (int)flags.WorldWealth);
@@ -735,6 +736,7 @@ namespace FF1Lib
 				WorldWealth = (WorldWealthMode)GetNumeric(ref sum, Enum.GetValues(typeof(WorldWealthMode)).Cast<int>().Max() + 1),
 				MDefMode = (MDEFGrowthMode)GetNumeric(ref sum, Enum.GetValues(typeof(MDEFGrowthMode)).Cast<int>().Max() + 1),
 				FormationShuffleMode = (FormationShuffleMode)GetNumeric(ref sum, Enum.GetValues(typeof(FormationShuffleMode)).Cast<int>().Max() + 1),
+				LockMode = (LockHitMode)GetNumeric(ref sum, Enum.GetValues(typeof(LockHitMode)).Cast<int>().Max() + 1),
 				ChangeMaxMP = GetBoolean(ref sum),
 				RedMageMaxMP = GetNumeric(ref sum, 10),
 				WhiteMageMaxMP = GetNumeric(ref sum, 10),
@@ -923,7 +925,6 @@ namespace FF1Lib
 				EverythingUnrunnable = GetTriState(ref sum),
 				FixMissingBattleRngEntry = GetBoolean(ref sum),
 				Rng = GetTriState(ref sum),
-				RebalanceSpells = GetBoolean(ref sum),
 				MagicLevelsMixed = GetTriState(ref sum),
 				MagicLevelsTiered = GetTriState(ref sum),
 				ItemMagic = GetTriState(ref sum),

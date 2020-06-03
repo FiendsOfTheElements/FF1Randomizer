@@ -483,7 +483,7 @@
                         <CheckBox UpdateToolTip="@UpdateToolTipID" Id="thiefHitCheckBox" @bind-Checked="Flags.ThiefHitRate">Double Thief &amp; Ninja Hit% growth.</CheckBox>
                         <CheckBox UpdateToolTip="@UpdateToolTipID" Id="cureHealBuffCheckBox" @bind-Checked="Flags.BuffHealingSpells">Improve CURE, HEAL, LAMP, and AMUT spells</CheckBox>
                         <CheckBox UpdateToolTip="@UpdateToolTipID" Id="housesFillHpCheckBox" @bind-Checked="Flags.HousesFillHP">House Full HP Restoration</CheckBox>
-                        <CheckBox UpdateToolTip="@UpdateToolTipID" Id="rebalanceSpellsCheckBox" @bind-Checked="Flags.RebalanceSpells">LOCK and LOK2 Always Hit</CheckBox>
+                        <EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="LockMode" TItem="LockHitMode" @bind-Value="Flags.LockMode">LOCK and LOK2 Mode:</EnumDropDown>
                         <EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="MDefModeDropDown" TItem="MDEFGrowthMode" @bind-Value="Flags.MDefMode">MDEF Growth:</EnumDropDown>
                     </div>
 
