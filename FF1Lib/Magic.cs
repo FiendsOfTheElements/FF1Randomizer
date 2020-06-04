@@ -513,7 +513,6 @@ namespace FF1Lib
 
 		public void ChangeLockMode(LockHitMode lockHitMode)
 		{
-			//must be done before spells get shuffled around otherwise we'd be changing a spell that isnt lock
 			if (lockHitMode == LockHitMode.Accuracy107)
 			{
 				Put(MagicOffset + (MagicSize * 6), new byte[] { 107 });

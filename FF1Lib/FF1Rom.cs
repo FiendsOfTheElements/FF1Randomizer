@@ -194,6 +194,7 @@ namespace FF1Lib
 				FixSpellBugs();
 			}
 
+			//must be done before spells get shuffled around otherwise we'd be changing a spell that isnt lock
 			if (flags.LockMode != LockHitMode.Vanilla)
 			{
 				ChangeLockMode(flags.LockMode);
