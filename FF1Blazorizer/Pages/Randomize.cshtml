@@ -11,6 +11,7 @@
 @inject LocalStorage LocalStorage
 
 <div class="content px-4 tinted">
+	<a href="https://en.wikipedia.org/wiki/George_Floyd" style="color: yellow; font-family: monospace; font-weight: bold; font-size: 24px; display: table; margin-left: auto; margin-right: auto; margin-bottom: 20px;">#icantbreathe</a>
 	<div class="is-dark nes-container">
 		<div class="row spaced-row">
 			<div class="col-md-4">
@@ -27,40 +28,40 @@
 			<div class="col-md-4">
 				<CheckBox Id="spoilersCheckBox" bind-Value="@Flags.Spoilers">Generate Spoiler Log!</CheckBox>
 			</div>
+		</div>
+		<div class="row spaced-row">
+			<div class="col-md-2">
+				Seed: <br />
+				<input type="text" class="nes-input @(_seedInputClass)" id="seedInput" onchange="@OnSeedInputChanged" value="@(_seed)" />
 			</div>
-			<div class="row spaced-row">
-				<div class="col-md-2">
-					Seed: <br />
-					<input type="text" class="nes-input @(_seedInputClass)" id="seedInput" onchange="@OnSeedInputChanged" value="@(_seed)" />
-				</div>
-				<div class="col-md-2">
-					<br />
-					<button type="button" class="nes-btn is-primary" onclick="@OnNewSeed">New</button>
-				</div>
-				<div class="col-md-6">
-					Flags: <br />
-					<input type="text" class="nes-input" value="@Flags.Encoded" onchange="@OnFlagsInputChanged" />
-				</div>
-				<div class="col-md-2">
-					<br />
-					<button type="button" class="nes-btn is-primary" onclick="@OnCopyToClipboard">Export</button>
-				</div>
+			<div class="col-md-2">
+				<br />
+				<button type="button" class="nes-btn is-primary" onclick="@OnNewSeed">New</button>
 			</div>
-			<div class="row">
-				<div class="col-md-12">
-					Presets:
-					<div>
-						<button type="button" class="nes-btn is-primary" onclick="@(() => LoadPreset("default"))">Default</button>
-						<button type="button" class="nes-btn is-primary" onclick="@(() => LoadPreset("beginner"))">Beginner</button>
-						<button type="button" class="nes-btn is-primary" onclick="@(() => LoadPreset("full-npc"))">NPC Shuffle</button>
-						<button type="button" class="nes-btn is-primary" onclick="@(() => LoadPreset("improved-vanilla"))">Improved Vanilla</button>
-						<button type="button" class="nes-btn is-primary" onclick="@(() => LoadPreset("chaos-rush"))">Chaos Rush</button>
-						<button type="button" class="nes-btn is-primary" onclick="@(() => LoadPreset("swiss"))">Swiss</button>
-						<button type="button" class="nes-btn is-primary" onclick="@(() => LoadPreset("brackets"))">Brackets</button>
-					</div>
+			<div class="col-md-6">
+				Flags: <br />
+				<input type="text" class="nes-input" value="@Flags.Encoded" onchange="@OnFlagsInputChanged" />
+			</div>
+			<div class="col-md-2">
+				<br />
+				<button type="button" class="nes-btn is-primary" onclick="@OnCopyToClipboard">Export</button>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				Presets:
+				<div>
+					<button type="button" class="nes-btn is-primary" onclick="@(() => LoadPreset("default"))">Default</button>
+					<button type="button" class="nes-btn is-primary" onclick="@(() => LoadPreset("beginner"))">Beginner</button>
+					<button type="button" class="nes-btn is-primary" onclick="@(() => LoadPreset("full-npc"))">NPC Shuffle</button>
+					<button type="button" class="nes-btn is-primary" onclick="@(() => LoadPreset("improved-vanilla"))">Improved Vanilla</button>
+					<button type="button" class="nes-btn is-primary" onclick="@(() => LoadPreset("chaos-rush"))">Chaos Rush</button>
+					<button type="button" class="nes-btn is-primary" onclick="@(() => LoadPreset("swiss"))">Swiss</button>
+					<button type="button" class="nes-btn is-primary" onclick="@(() => LoadPreset("brackets"))">Brackets</button>
 				</div>
 			</div>
 		</div>
+	</div>
 	<br />
 	<TabContent>
 		<button type="button" class="nes-btn is-primary" onclick="@OnRandomize">Randomize</button>
@@ -298,63 +299,63 @@
 				<h4>Party Composition</h4>
 				<br />
 				<div class="table-wrapper">
-				<table>
-					<tr class="odd">
-						<td>Permitted Classes</td>
-						<td>Forced?</td>
-						<td>Fighter</td>
-						<td>Thief</td>
-						<td>Black Belt</td>
-						<td>Red Mage</td>
-						<td>White Mage</td>
-						<td>Black Mage</td>
-						<td>None!</td>
-					</tr>
-					<tr>
-						<td>Member 1</td>
-						<td><TriStateCheckBox Id="partyForced1" bind-Value="@Flags.FORCED1"></TriStateCheckBox></td>
-						<td><TriStateCheckBox Id="partyFighter1" bind-Value="@Flags.FIGHTER1"></TriStateCheckBox></td>
-						<td><TriStateCheckBox Id="partyThief1" bind-Value="@Flags.THIEF1"></TriStateCheckBox></td>
-						<td><TriStateCheckBox Id="partyBlackBelt1" bind-Value="@Flags.BLACK_BELT1"></TriStateCheckBox></td>
-						<td><TriStateCheckBox Id="partyRedMage1" bind-Value="@Flags.RED_MAGE1"></TriStateCheckBox></td>
-						<td><TriStateCheckBox Id="partyWhiteMage1" bind-Value="@Flags.WHITE_MAGE1"></TriStateCheckBox></td>
-						<td><TriStateCheckBox Id="partyBlackMage1" bind-Value="@Flags.BLACK_MAGE1"></TriStateCheckBox></td>
-						<td></td>
-					</tr>
-					<tr class="odd">
-						<td>Member 2</td>
-						<td><TriStateCheckBox Id="partyForced2" bind-Value="@Flags.FORCED2"></TriStateCheckBox></td>
-						<td><TriStateCheckBox Id="partyFighter2" bind-Value="@Flags.FIGHTER2"></TriStateCheckBox></td>
-						<td><TriStateCheckBox Id="partyThief2" bind-Value="@Flags.THIEF2"></TriStateCheckBox></td>
-						<td><TriStateCheckBox Id="partyBlackBelt2" bind-Value="@Flags.BLACK_BELT2"></TriStateCheckBox></td>
-						<td><TriStateCheckBox Id="partyRedMage2" bind-Value="@Flags.RED_MAGE2"></TriStateCheckBox></td>
-						<td><TriStateCheckBox Id="partyWhiteMage2" bind-Value="@Flags.WHITE_MAGE2"></TriStateCheckBox></td>
-						<td><TriStateCheckBox Id="partyBlackMage2" bind-Value="@Flags.BLACK_MAGE2"></TriStateCheckBox></td>
-						<td><TriStateCheckBox Id="partyNone2" bind-Value="@Flags.NONE_CLASS2"></TriStateCheckBox></td>
-					</tr>
-					<tr>
-						<td>Member 3</td>
-						<td><TriStateCheckBox Id="partyForced3" bind-Value="@Flags.FORCED3"></TriStateCheckBox></td>
-						<td><TriStateCheckBox Id="partyFighter3" bind-Value="@Flags.FIGHTER3"></TriStateCheckBox></td>
-						<td><TriStateCheckBox Id="partyThief3" bind-Value="@Flags.THIEF3"></TriStateCheckBox></td>
-						<td><TriStateCheckBox Id="partyBlackBelt3" bind-Value="@Flags.BLACK_BELT3"></TriStateCheckBox></td>
-						<td><TriStateCheckBox Id="partyRedMage3" bind-Value="@Flags.RED_MAGE3"></TriStateCheckBox></td>
-						<td><TriStateCheckBox Id="partyWhiteMage3" bind-Value="@Flags.WHITE_MAGE3"></TriStateCheckBox></td>
-						<td><TriStateCheckBox Id="partyBlackMage3" bind-Value="@Flags.BLACK_MAGE3"></TriStateCheckBox></td>
-						<td><TriStateCheckBox Id="partyNone3" bind-Value="@Flags.NONE_CLASS3"></TriStateCheckBox></td>
-					</tr>
-					<tr class="odd">
-						<td>Member 4</td>
-						<td><TriStateCheckBox Id="partyForced4" bind-Value="@Flags.FORCED4"></TriStateCheckBox></td>
-						<td><TriStateCheckBox Id="partyFighter4" bind-Value="@Flags.FIGHTER4"></TriStateCheckBox></td>
-						<td><TriStateCheckBox Id="partyThief4" bind-Value="@Flags.THIEF4"></TriStateCheckBox></td>
-						<td><TriStateCheckBox Id="partyBlackBelt4" bind-Value="@Flags.BLACK_BELT4"></TriStateCheckBox></td>
-						<td><TriStateCheckBox Id="partyRedMage4" bind-Value="@Flags.RED_MAGE4"></TriStateCheckBox></td>
-						<td><TriStateCheckBox Id="partyWhiteMage4" bind-Value="@Flags.WHITE_MAGE4"></TriStateCheckBox></td>
-						<td><TriStateCheckBox Id="partyBlackMage4" bind-Value="@Flags.BLACK_MAGE4"></TriStateCheckBox></td>
-						<td><TriStateCheckBox Id="partyNone4" bind-Value="@Flags.NONE_CLASS4"></TriStateCheckBox></td>
-					</tr>
-				</table>
+					<table>
+						<tr class="odd">
+							<td>Permitted Classes</td>
+							<td>Forced?</td>
+							<td>Fighter</td>
+							<td>Thief</td>
+							<td>Black Belt</td>
+							<td>Red Mage</td>
+							<td>White Mage</td>
+							<td>Black Mage</td>
+							<td>None!</td>
+						</tr>
+						<tr>
+							<td>Member 1</td>
+							<td><TriStateCheckBox Id="partyForced1" bind-Value="@Flags.FORCED1"></TriStateCheckBox></td>
+							<td><TriStateCheckBox Id="partyFighter1" bind-Value="@Flags.FIGHTER1"></TriStateCheckBox></td>
+							<td><TriStateCheckBox Id="partyThief1" bind-Value="@Flags.THIEF1"></TriStateCheckBox></td>
+							<td><TriStateCheckBox Id="partyBlackBelt1" bind-Value="@Flags.BLACK_BELT1"></TriStateCheckBox></td>
+							<td><TriStateCheckBox Id="partyRedMage1" bind-Value="@Flags.RED_MAGE1"></TriStateCheckBox></td>
+							<td><TriStateCheckBox Id="partyWhiteMage1" bind-Value="@Flags.WHITE_MAGE1"></TriStateCheckBox></td>
+							<td><TriStateCheckBox Id="partyBlackMage1" bind-Value="@Flags.BLACK_MAGE1"></TriStateCheckBox></td>
+							<td></td>
+						</tr>
+						<tr class="odd">
+							<td>Member 2</td>
+							<td><TriStateCheckBox Id="partyForced2" bind-Value="@Flags.FORCED2"></TriStateCheckBox></td>
+							<td><TriStateCheckBox Id="partyFighter2" bind-Value="@Flags.FIGHTER2"></TriStateCheckBox></td>
+							<td><TriStateCheckBox Id="partyThief2" bind-Value="@Flags.THIEF2"></TriStateCheckBox></td>
+							<td><TriStateCheckBox Id="partyBlackBelt2" bind-Value="@Flags.BLACK_BELT2"></TriStateCheckBox></td>
+							<td><TriStateCheckBox Id="partyRedMage2" bind-Value="@Flags.RED_MAGE2"></TriStateCheckBox></td>
+							<td><TriStateCheckBox Id="partyWhiteMage2" bind-Value="@Flags.WHITE_MAGE2"></TriStateCheckBox></td>
+							<td><TriStateCheckBox Id="partyBlackMage2" bind-Value="@Flags.BLACK_MAGE2"></TriStateCheckBox></td>
+							<td><TriStateCheckBox Id="partyNone2" bind-Value="@Flags.NONE_CLASS2"></TriStateCheckBox></td>
+						</tr>
+						<tr>
+							<td>Member 3</td>
+							<td><TriStateCheckBox Id="partyForced3" bind-Value="@Flags.FORCED3"></TriStateCheckBox></td>
+							<td><TriStateCheckBox Id="partyFighter3" bind-Value="@Flags.FIGHTER3"></TriStateCheckBox></td>
+							<td><TriStateCheckBox Id="partyThief3" bind-Value="@Flags.THIEF3"></TriStateCheckBox></td>
+							<td><TriStateCheckBox Id="partyBlackBelt3" bind-Value="@Flags.BLACK_BELT3"></TriStateCheckBox></td>
+							<td><TriStateCheckBox Id="partyRedMage3" bind-Value="@Flags.RED_MAGE3"></TriStateCheckBox></td>
+							<td><TriStateCheckBox Id="partyWhiteMage3" bind-Value="@Flags.WHITE_MAGE3"></TriStateCheckBox></td>
+							<td><TriStateCheckBox Id="partyBlackMage3" bind-Value="@Flags.BLACK_MAGE3"></TriStateCheckBox></td>
+							<td><TriStateCheckBox Id="partyNone3" bind-Value="@Flags.NONE_CLASS3"></TriStateCheckBox></td>
+						</tr>
+						<tr class="odd">
+							<td>Member 4</td>
+							<td><TriStateCheckBox Id="partyForced4" bind-Value="@Flags.FORCED4"></TriStateCheckBox></td>
+							<td><TriStateCheckBox Id="partyFighter4" bind-Value="@Flags.FIGHTER4"></TriStateCheckBox></td>
+							<td><TriStateCheckBox Id="partyThief4" bind-Value="@Flags.THIEF4"></TriStateCheckBox></td>
+							<td><TriStateCheckBox Id="partyBlackBelt4" bind-Value="@Flags.BLACK_BELT4"></TriStateCheckBox></td>
+							<td><TriStateCheckBox Id="partyRedMage4" bind-Value="@Flags.RED_MAGE4"></TriStateCheckBox></td>
+							<td><TriStateCheckBox Id="partyWhiteMage4" bind-Value="@Flags.WHITE_MAGE4"></TriStateCheckBox></td>
+							<td><TriStateCheckBox Id="partyBlackMage4" bind-Value="@Flags.BLACK_MAGE4"></TriStateCheckBox></td>
+							<td><TriStateCheckBox Id="partyNone4" bind-Value="@Flags.NONE_CLASS4"></TriStateCheckBox></td>
+						</tr>
+					</table>
 				</div>
 				<br />
 				<h4>Tavern Recruitment</h4>
@@ -365,24 +366,24 @@
 				</div>
 				<div class="table-wrapper">
 					<table>
-					<tr class="odd">
-						<td>Hireable Advernturers</td>
-						<td>Fighter</td>
-						<td>Thief</td>
-						<td>Black Belt</td>
-						<td>Red Mage</td>
-						<td>White Mage</td>
-						<td>Black Mage</td>
-					</tr>
-					<tr>
-						<td>Select to allow</td>
-						<td><TriStateCheckBox IsEnabled="@Flags.RecruitmentMode" Id="TavernFighter" bind-Value="@Flags.TAVERN1"></TriStateCheckBox></td>
-						<td><TriStateCheckBox IsEnabled="@Flags.RecruitmentMode" Id="TavernThief" bind-Value="@Flags.TAVERN2"></TriStateCheckBox></td>
-						<td><TriStateCheckBox IsEnabled="@Flags.RecruitmentMode" Id="TavernBlackBelt" bind-Value="@Flags.TAVERN3"></TriStateCheckBox></td>
-						<td><TriStateCheckBox IsEnabled="@Flags.RecruitmentMode" Id="TavernRedMage" bind-Value="@Flags.TAVERN4"></TriStateCheckBox></td>
-						<td><TriStateCheckBox IsEnabled="@Flags.RecruitmentMode" Id="TavernWhiteMage" bind-Value="@Flags.TAVERN5"></TriStateCheckBox></td>
-						<td><TriStateCheckBox IsEnabled="@Flags.RecruitmentMode" Id="TavernBlackMage" bind-Value="@Flags.TAVERN6"></TriStateCheckBox></td>
-					</tr>
+						<tr class="odd">
+							<td>Hireable Advernturers</td>
+							<td>Fighter</td>
+							<td>Thief</td>
+							<td>Black Belt</td>
+							<td>Red Mage</td>
+							<td>White Mage</td>
+							<td>Black Mage</td>
+						</tr>
+						<tr>
+							<td>Select to allow</td>
+							<td><TriStateCheckBox IsEnabled="@Flags.RecruitmentMode" Id="TavernFighter" bind-Value="@Flags.TAVERN1"></TriStateCheckBox></td>
+							<td><TriStateCheckBox IsEnabled="@Flags.RecruitmentMode" Id="TavernThief" bind-Value="@Flags.TAVERN2"></TriStateCheckBox></td>
+							<td><TriStateCheckBox IsEnabled="@Flags.RecruitmentMode" Id="TavernBlackBelt" bind-Value="@Flags.TAVERN3"></TriStateCheckBox></td>
+							<td><TriStateCheckBox IsEnabled="@Flags.RecruitmentMode" Id="TavernRedMage" bind-Value="@Flags.TAVERN4"></TriStateCheckBox></td>
+							<td><TriStateCheckBox IsEnabled="@Flags.RecruitmentMode" Id="TavernWhiteMage" bind-Value="@Flags.TAVERN5"></TriStateCheckBox></td>
+							<td><TriStateCheckBox IsEnabled="@Flags.RecruitmentMode" Id="TavernBlackMage" bind-Value="@Flags.TAVERN6"></TriStateCheckBox></td>
+						</tr>
 					</table>
 				</div>
 			</div>
