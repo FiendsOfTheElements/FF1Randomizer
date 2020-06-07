@@ -233,6 +233,7 @@ namespace FF1Lib
 		public bool DisableTentSaving { get; set; } = false;
 		public bool DisableInnSaving { get; set; } = false;
 		public bool SaveGameWhenGameOver { get; set; } = false;
+		public bool ShuffleAstos { get; set; } = false;
 		public bool? RandomizeEnemizer { get; set; } = false;
 		public bool? RandomizeFormationEnemizer { get; set; } = false;
 		public bool? GenerateNewSpellbook { get; set; } = false;
@@ -251,6 +252,8 @@ namespace FF1Lib
 		public bool? ClampEnemyHpScaling { get; set; } = false;
 		public double EnemyHPScaleFactor { get; set; } = 1;
 		public double BossHPScaleFactor { get; set; } = 1;
+		public bool EnablePoolParty { get; set; } = false;
+		public bool EnableRandomPromotions { get; set; } = false;
 
 		public MDEFGrowthMode MDefMode { get; set; } = MDEFGrowthMode.None;
 
@@ -684,6 +687,7 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.DisableTentSaving);
 			sum = AddBoolean(sum, flags.DisableInnSaving);
 			sum = AddBoolean(sum, flags.SaveGameWhenGameOver);
+			sum = AddBoolean(sum, flags.ShuffleAstos);
 			sum = AddTriState(sum, flags.RandomizeEnemizer);
 			sum = AddTriState(sum, flags.RandomizeFormationEnemizer);
 			sum = AddTriState(sum, flags.GenerateNewSpellbook);
@@ -743,6 +747,7 @@ namespace FF1Lib
 				RandomizeFormationEnemizer = GetTriState(ref sum),
 				RandomizeEnemizer = GetTriState(ref sum),
 				SaveGameWhenGameOver = GetBoolean(ref sum),
+				ShuffleAstos = GetBoolean(ref sum),
 				DisableInnSaving = GetBoolean(ref sum),
 				DisableTentSaving = GetBoolean(ref sum),
 				FiendShuffle = GetBoolean(ref sum),

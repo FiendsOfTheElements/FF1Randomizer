@@ -1960,6 +1960,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SaveGameWhenGameOver"));
 			}
 		}
+		public bool ShuffleAstos
+		{
+			get => Flags.ShuffleAstos;
+			set
+			{
+				Flags.ShuffleAstos = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ShuffleAstos"));
+			}
+		}
 		public bool? RandomizeEnemizer
 		{
 			get => Flags.RandomizeEnemizer;
