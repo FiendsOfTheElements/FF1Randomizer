@@ -686,8 +686,8 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.FiendShuffle);
 			sum = AddBoolean(sum, flags.DisableTentSaving);
 			sum = AddBoolean(sum, flags.DisableInnSaving);
-			sum = AddBoolean(sum, flags.SaveGameWhenGameOver);
 			sum = AddBoolean(sum, flags.ShuffleAstos);
+			sum = AddBoolean(sum, flags.SaveGameWhenGameOver);
 			sum = AddTriState(sum, flags.RandomizeEnemizer);
 			sum = AddTriState(sum, flags.RandomizeFormationEnemizer);
 			sum = AddTriState(sum, flags.GenerateNewSpellbook);
