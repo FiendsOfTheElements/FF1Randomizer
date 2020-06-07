@@ -2140,7 +2140,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("PoolSize"));
 			}
 		}
-		public bool EnablePoolParty
+		public bool? EnablePoolParty
 		{
 			get => Flags.EnablePoolParty;
 			set
@@ -2158,7 +2158,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncludePromClasses"));
 			}
 		}
-		public bool EnableRandomPromotions
+		public bool? EnableRandomPromotions
 		{
 			get => Flags.EnableRandomPromotions;
 			set
