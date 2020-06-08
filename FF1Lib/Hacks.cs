@@ -520,8 +520,6 @@ namespace FF1Lib
 			// Select random npc
 			ObjectId newastos = npcpool.PickRandom(rng);
 
-			newastos = ObjectId.Sarda;
-
 			// If Astos, we're done here
 			if (newastos == ObjectId.Astos) return;
 
