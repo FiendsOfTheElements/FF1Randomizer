@@ -663,13 +663,13 @@ namespace FF1Lib
 				ShuffleAstos(flags, rng);
       }
 
-			if (flags.EnablePoolParty)
+			if ((bool)flags.EnablePoolParty)
 			{
 				EnableTwelveClasses();
 				EnablePoolParty(flags, rng);
 			}
 
-			if (flags.EnableRandomPromotions)
+			if ((bool)flags.EnableRandomPromotions)
 			{
 				EnableTwelveClasses();
 				EnableRandomPromotions(flags, rng);
