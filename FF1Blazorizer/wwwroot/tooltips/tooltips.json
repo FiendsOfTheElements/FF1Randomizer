@@ -950,5 +950,20 @@
 		"Id": "swolePiratesCheckBox",
 		"title": "Buff the Pirates",
 		"description": "Increases the stats of Bikke's pirates considerably, roughly to the equivalent of a level 6 Fighter with a cheap but decent sword and iron armor, and increases the XP and gold yield from them by a factor of 20.  This is done before stat scaling, and also increases the level of script they can carry when generating balanced scripts (if Allow Unsafe Pirates is on)."
+	},
+	{
+		"Id": "ChangeMaxMP",
+		"title": "Change Spell Caster Max MP",
+		"description": "Allows the control over the maximum spell charges per spell level. This does not change when they recieve new spell levels. A value of less than 2 will not reduce the starting level 1 charges of red/white/black mages."
+	},
+	{
+		"Id": "KnightNinjaMaxMP",
+		"title": "Set Max Knight Ninja MP",
+		"description": "At the moment with the way the game is coded, knight's and ninja's max mp is determined together. This wont change when they get spells, it will still be at every odd level starting at 15."
+	},
+	{
+		"Id": "LockMode",
+		"title": "Set Lock Hit Mode",
+		"description": "Allows control over LOCK and LOK2 chance to hit. 107 is about 20% vs chaos. 160 is about 50% vs chaos. Autohit will always hit."
 	}
 ]

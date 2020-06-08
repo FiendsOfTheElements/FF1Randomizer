@@ -27,7 +27,7 @@ namespace FF1Lib
 			NUM_OOB_SPELLS
 		}
 
-		public void CraftNewSpellbook(MT19337 rng, bool mixWhiteBlack, bool lockFix, bool levelShuffle, bool keepPermissions) // generates a new spellbook and does all necessary steps to ensure that the new spells are assigned where they need to be for the game to work properly
+		public void CraftNewSpellbook(MT19337 rng, bool mixWhiteBlack, LockHitMode lockMode, bool levelShuffle, bool keepPermissions) // generates a new spellbook and does all necessary steps to ensure that the new spells are assigned where they need to be for the game to work properly
 		{
 			bool WhiteSpell(int id) => mixWhiteBlack || id % 8 < 4;
 			bool BlackSpell(int id) => mixWhiteBlack || id % 8 > 3;
@@ -1161,7 +1161,7 @@ namespace FF1Lib
 					{
 						spell[index].targeting = (byte)rng.Between(1, 2);
 						spell[index].effect = (byte)(20 * (SpellTier(index) + 1) * spell[index].targeting);
-						if (lockFix)
+						if (lockMode == LockHitMode.AutoHit)
 							spell[index].effect >>= 1; // LSR effect byte by one (divide by two) if lock fix is on
 						spell[index].accuracy = 107; // max accuracy for LOCK spells
 						spell[index].routine = routine;
