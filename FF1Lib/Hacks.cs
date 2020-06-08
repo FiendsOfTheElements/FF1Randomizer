@@ -2,9 +2,23 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.ComponentModel;
 
 namespace FF1Lib
 {
+	public enum PoolSize
+	{
+		[Description("4 characters")]
+		Size4,
+		[Description("5 characters")]
+		Size5,
+		[Description("6 characters")]
+		Size6,
+		[Description("7 characters")]
+		Size7,
+		[Description("8 characters")]
+		Size8,
+	}
 	public partial class FF1Rom : NesRom
 	{
 		public const int Nop = 0xEA;
@@ -469,25 +483,178 @@ namespace FF1Lib
 
 		public void NewAstosRoutine(bool isNPCShuffle)
 		{
-			// Talk_Astos must jump to new Astos routine in bank 0E (we fill some of the space that was where party generation used to be)
-			Put(0x39338, Blob.FromHex("4C459F"));
-			// write the new Astos routine
 			if (isNPCShuffle)
-				Put(0x39F45, Blob.FromHex("ad2260f024a040209190b00b20a490a97d20c590a5126018a513f00d2093ddb00aa007207392a93a60a51160"));
-			else // alternate code if NPC Shuffle is off
-				Put(0x39F45, Blob.FromHex("ad2260f01fa040209190b00b20a490a97d20c590a51260ee2360a007207392e67da97760a51160"));
+			{
+				// Talk_Astos must jump to new Astos routine in bank 0E (we fill some of the space that was where party generation used to be)
+				PutInBank(0x0E, 0x9338, Blob.FromHex("4C459F"));
+				var newAstosRoutine = "EAEAEAAD2260F025A513F0212093DDB01E8467A5108D0E03A5118D0F03A416207F90207392A97D20C590A93A60A51160";
+				PutInBank(0x0E, 0x9F45, Blob.FromHex(newAstosRoutine));
+			}
 		}
 
-		public void EnableSaveOnDeath(bool isNPCShuffle)
+		public void EnableSaveOnDeath()
 		{
 			// this routine assumes NewAstosRoutine has been run (which is set to run on all seeds from now on)
 			// rewrite rando's GameOver routine to jump to a new section that will save the game data
-			Put(0x6C01A, Blob.FromHex("4CF58F"));
+			PutInBank(0x1B, 0x801A, Blob.FromHex("4CF58F"));
 			// write new routine to save data at game over (the game will save when you clear the final textbox and not before)
-			Put(0x6CFF5, Blob.FromHex("20E38BA200BD0C619D0A61BD0D619D0B61BD28639D2063BD29639D2163BD2A639D2263BD2B639D2363BD2C639D2463BD2D639D2563BD2E639D2663BD2F639D2763A9009D01618A186940AAD0B8AD03622901F008AD026209018D0262AD04622902D008AD3F6229FE8D3F62AD07622901F008AD406229FE8D4062AD3D622904D008AD0C6209018D0C62AD3160D008AD1B6209018D1B62AD3260D008AD1C6209018D1C62AD3360D008AD1D6209018D1D62AD3460D008AD1E6209018D1E62AD186209018D1862AD196229FE8D1962AD1A6229FE8D1A62AD0460D02EAD0060F04FAD0160CD0164D008AD0260CD0264F03FAD016038E9078D1060AD026038E9078D1160A9048D1460D026AD056038E9078D1060AD066038E9078D1160A9018D1460AD0060F00AA9988D0160A9A98D0260A200BD00609D0064BD00619D0065BD00629D0066BD00639D0067E8D0E5A9558DFE64A9AA8DFF64A9008DFD64A200187D00647D00657D00667D0067E8D0F149FF8DFD644C1D80"));
-			// if NPC shuffle is off, we have to write the routine for Bikke differently
-			if (!isNPCShuffle)
-				Put(0x6D051, Blob.FromHex("AD0060EAEAD008AD046229FD8D0462"));
+			PutInBank(0x1B, 0x8FF5, Blob.FromHex("20E38BA200BD0061C9FFF041BD0C619D0A61BD0D619D0B61BD28639D2063BD29639D2163BD2A639D2263BD2B639D2363BD2C639D2463BD2D639D2563BD2E639D2663BD2F639D2763A9009D01618A186940AAD0B1A56AC97FD0062071914CD290C97ED01E207191AD3F6229FE8D3F62AD406229FE8D4062AD416229FE8D41624CD290C97DD009207191207E914CD290C97CD0062071914CD290C97AD0062071914CD290C979D0062071914CD290C978D0062071914CD290C977D0062071914CD290C97BD018AD186209018D1862AD196229FE8D1962AD1A6229FE8D1A62AD0460D02EAD0060F04FAD0160CD0164D008AD0260CD0264F03FAD016038E9078D1060AD026038E9078D1160A9048D1460D026AD056038E9078D1060AD066038E9078D1160A9018D1460AD0060F00AA9988D0160A9A98D0260A200BD00609D0064BD00619D0065BD00629D0066BD00639D0067E8D0E5A9558DFE64A9AA8DFF64A9008DFD64A200187D00647D00657D00667D0067E8D0F149FF8DFD644C1D80A616BD0062090129FD9D006260A513186920C93CB00DAAC90CD004FE006060DE006060A513A467C96C901CAD1C6038ED0E038D1C60AD1D60ED0F038D1D60AD1E60E9008D1E6060C944B009BECE91A9009D006160BEDE91A9009D00616018191A1B58595A5B98999A9BD8D9DADB1C1D1E1F5C5D5E5F9C9D9E9FDCDDDEDF"));
+		}
+
+		public void ShuffleAstos(Flags flags, MT19337 rng)
+		{
+			// Assume NewAstosRoutine() is on
+			const int NpcTalkOffset = 0x390D3;
+			const int newTalk_Astos = 0x9F45;
+			const int newTalk_AstosBank = 0x0E;
+			const int NpcTalkSize = 2;
+
+			// NPC pool to swap Astos with
+			List<ObjectId> npcpool = new List<ObjectId> { ObjectId.Astos, ObjectId.Bahamut, ObjectId.CanoeSage, ObjectId.CubeBot, ObjectId.ElfDoc,
+			ObjectId.Fairy, ObjectId.King, ObjectId.Matoya, ObjectId.Nerrick, ObjectId.Princess2, ObjectId.Smith,
+			ObjectId.Titan, ObjectId.Unne, ObjectId.Sarda, ObjectId.ElfPrince, ObjectId.Lefein };
+
+			var scriptStandardNPCItemTrade = Blob.FromHex("5693");
+			var scriptTalk_Astos = Blob.FromHex("3893");
+
+			// Select random npc
+			ObjectId newastos = npcpool.PickRandom(rng);
+
+			newastos = ObjectId.Sarda;
+
+			// If Astos, we're done here
+			if (newastos == ObjectId.Astos) return;
+
+			// If not get NPC talk routine, get NPC object
+			var talkscript = Get(NpcTalkOffset + (byte)newastos * NpcTalkSize, 2);
+			var talkvalue = Get(MapObjOffset + (byte)newastos * MapObjSize, 4);
+
+			// Switch astos to TalkScripts.StandardNPCItemTrade, set scriptvalue to crown Item.Crown;
+			Put(NpcTalkOffset + (byte)ObjectId.Astos * NpcTalkSize, scriptStandardNPCItemTrade);
+			Put(MapObjOffset + (byte)ObjectId.Astos * MapObjSize, Blob.FromHex("02")); // 0x02 = Crown
+
+			// Swtich NPC to Astos
+			Put(NpcTalkOffset + (byte)newastos * NpcTalkSize, scriptTalk_Astos);
+
+			// Change dialog a bit for non-item giving NPCs
+			Put(0x285EF + 18, Blob.FromHex("00"));
+
+			if (newastos == ObjectId.Titan)
+			{
+				// Check required item, don't try to give any item
+				PutInBank(newTalk_AstosBank, newTalk_Astos + 3, Blob.FromHex("AD2960F025EAEAEAEAEAEAEAEA"));
+
+				// Change dialog
+				PutInBank(newTalk_AstosBank, newTalk_Astos + 42, Blob.FromHex("A912"));
+
+				// No need to restore item
+				if (flags.SaveGameWhenGameOver)
+					Put(0x6CFF5 + 0x89, Blob.FromHex("EAEAEA"));
+			}
+			else if (newastos == ObjectId.Bahamut)
+			{   // Change Talk_Astos to make it work with Bahamut, and also modify DoClassChange
+
+				// Change routine to check for Tail, give promotion and trigger the battle at the same time
+				var newroutine =
+					"AD2D60" +  // LDA item_tail - Load Tail
+					"F025" +    // BEQ @Default 
+					"A416" +    // LDY tmp+6 - Load this object instead of Astos
+					"207F90" +  // JSR SetEventFlag (207F90)
+					"207392" +  // JSR HideThisMapObject
+					"A97D" +    // LDA #BTL_ASTOS
+					"20C590" +  // JSR TalkBattle
+					"20AE95" +  // JSR DoClassChange
+					"A912" +    // LDA Astos dialog, A512 would be this npc dialog
+					"60";       // RTS
+
+				PutInBank(newTalk_AstosBank, newTalk_Astos + 3, Blob.FromHex(newroutine));
+
+				// DoClassChange reload the map to show the new class sprites, this break TalkBattle, so we stop it from reloading the map
+				// INC dlgflg_reentermap (E656) => NOPx2 (EAEA)
+				if (flags.EnablePoolParty || flags.EnableRandomPromotions)
+					PutInBank(0x0E, 0x95AE + 20, Blob.FromHex("EAEA"));
+				else   
+					PutInBank(0x0E, 0x95AE + 19, Blob.FromHex("EAEA"));
+
+				// Modify GameOver routine for compatibility
+				if (flags.SaveGameWhenGameOver)
+				{
+					// Different changes if EnableTwelveClasses is activated
+					if (flags.EnablePoolParty || flags.EnableRandomPromotions)
+					{
+						Blob PromoteArray = Get(0x395AE, 12);
+						sbyte[] inversedPromoted = new sbyte[12];
+						for (int i = 0; i < 12; i++)
+						{
+							inversedPromoted[PromoteArray[i]] = (sbyte)i;
+						}
+						PutInBank(0x1B, 0x8FF5 + 0x0189, Blob.FromHex("A200209391A240209391A280209391A2C020939160BC00613006B99F919D006160") + Blob.FromSBytes(inversedPromoted));
+					}
+					else
+						PutInBank(0x1B, 0x8FF5 + 0x0189, Blob.FromHex("A200209391A240209391A280209391A2C020939160BD0061300638E9069D006160"));
+				}
+			}
+			else if (newastos == ObjectId.Unne)
+			{
+				// Change required item to Slab, don't give any item
+				PutInBank(newTalk_AstosBank, newTalk_Astos + 3, Blob.FromHex("AD2860F025EAEAEAEAEAEAEAEA"));
+
+				// Change dialog
+				PutInBank(newTalk_AstosBank, newTalk_Astos + 42, Blob.FromHex("A912"));
+
+				// No need to restore item
+				if (flags.SaveGameWhenGameOver)
+					PutInBank(0x1B, 0x8FF5 + 0x89, Blob.FromHex("EAEAEA"));
+			}
+			else if (newastos == ObjectId.ElfDoc)
+			{
+				// Change required item to Herb, don't give any item
+				PutInBank(newTalk_AstosBank, newTalk_Astos + 3, Blob.FromHex("AD2460F025EAEAEAEAEAEAEAEA"));
+
+				// Change dialog
+				PutInBank(newTalk_AstosBank, newTalk_Astos + 42, Blob.FromHex("A912"));
+
+				// No need to restore item
+				if (flags.SaveGameWhenGameOver)
+					PutInBank(0x1B, 0x8FF5 + 0x89, Blob.FromHex("EAEAEA"));
+			}
+			else if (newastos == ObjectId.Lefein)
+			{
+				// Check if we speak Lefein
+				PutInBank(newTalk_AstosBank, newTalk_Astos, Blob.FromHex("A00B207990902618"));
+
+				// Change dialog
+				Put(MapObjOffset + (byte)ObjectId.Lefein * MapObjSize + 1, Blob.FromHex("D0"));
+			}
+			else if (newastos == ObjectId.ElfPrince)
+			{
+				// Check if we gave the herb                              
+				PutInBank(newTalk_AstosBank, newTalk_Astos, Blob.FromHex("A005207990902618"));
+
+				// Change dialog
+				Put(MapObjOffset + (byte)ObjectId.ElfPrince * MapObjSize + 1, Blob.FromHex("10"));
+			}
+			else if (newastos == ObjectId.Sarda && !(flags.EarlySarda ?? false))
+			{
+				// Check if we defeated the Vampire
+				PutInBank(newTalk_AstosBank, newTalk_Astos, Blob.FromHex("A00C209190B02618"));
+
+				// Change dialog
+				Put(MapObjOffset + (byte)ObjectId.Sarda * MapObjSize + 1, Blob.FromHex("81"));
+			}
+			else
+			{
+				if (talkscript == scriptStandardNPCItemTrade)
+				{
+					// Check required item
+					PutInBank(newTalk_AstosBank, newTalk_Astos + 4, Blob.FromSBytes(new sbyte[] { (sbyte)(talkvalue[0] + 32) }));
+				}
+				else
+				{
+					// Just skip item check, then we're set
+					PutInBank(newTalk_AstosBank, newTalk_Astos + 3, Blob.FromHex("EAEAEAEAEA"));
+				}
+			}
 		}
 
 		private void EnableEasyMode()
@@ -745,5 +912,112 @@ namespace FF1Lib
 			// Hacks the game so that Inns do not save the game
 			Put(0x3A53D, Blob.FromHex("EAEAEA"));
 		}
+		public void EnableTwelveClasses()
+		{
+			// Expand characters shown in party creation screen; set to 0C for all promoted classes
+			PutInBank(0x1E, 0x80F5, Blob.FromHex("06"));
+			// Add the classes to authorized classes lut
+			PutInBank(0x1E, 0x811B, Blob.FromHex("804020100804"));
+			// Reduce count to $10 in PtyGen_DrawChars because we only loaded one row of sprites
+			PutInBank(0x1E, 0x8373, Blob.FromHex("EA"));
+
+			// New CHRLoad routine so we can load promoted classes' sprites in memory by only loading one row of sprites instead of two
+			var newfCHRLoad = Blob.FromHex("A000B1108D0720C8D0F8E611E611CAD0F160");
+
+			// Put new CHRLoad routine
+			PutInBank(0x1F, 0xEAD5, Blob.FromHex("20EBFE"));
+			PutInBank(0x1F, 0xFEEB, newfCHRLoad);
+
+			// Starting stats for promoted classes, same as base classes
+			Put(0x30A0, Get(0x3040, 0x0A));
+			Put(0x30B0, Get(0x3050, 0x0A));
+			Put(0x30C0, Get(0x3060, 0x0A));
+			Put(0x30D0, Get(0x3070, 0x0A));
+			Put(0x30E0, Get(0x3080, 0x0A));
+			Put(0x30F0, Get(0x3090, 0x0A));
+
+			// Starting magic for promoted classes. Instead of checking for the class ID of the characters, we compare with the unused class ID in the starting stats array.
+			PutInBank(0x1F, 0xC7CA, Blob.FromHex("B940B0"));
+
+			// New promotion routine to not bug out with already promoted classes and allow random promotion; works with Nones; see 0E_95AE_DoClassChange-2.asm
+			PutInBank(0x0E, 0x95AE, Blob.FromHex("A20020C595A24020C595A28020C595A2C020C595E65660BC00613006B9809C9D006160"));
+			// lut for standard promotion, can be modified or randomized
+			PutInBank(0x0E, 0x9C80, Blob.FromHex("060708090A0B060708090A0B"));
+		}
+
+		public void EnableRandomPromotions(Flags flags, MT19337 rng)
+		{
+			// Need EnableTwelveClasses()
+			// Promotions list
+			List<sbyte> promotions = new List<sbyte> { 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B };
+
+			// Include base classes
+			if (flags.IncludeBaseClasses ?? false)
+			{
+				promotions.AddRange(new List<sbyte> { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05 });
+				promotions.Shuffle(rng);
+			}
+			else
+			{
+				// If not shuffle list first then add promoted classes so that already promoted classes don't bug
+				promotions.Shuffle(rng);
+				promotions.AddRange(new List<sbyte> { 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B });
+			}
+
+			// Insert randomized promotions
+			PutInBank(0x0E, 0x9C80, Blob.FromSBytes(promotions.ToArray()));
+		}
+
+		public void EnablePoolParty(Flags flags, MT19337 rng)
+		{
+			// Need EnableTwelveClasses()
+			// New DoPartyGen_OnCharacter and update references; see 1E_85B0_DoPartyGen_OnCharacter.asm
+			PutInBank(0x1E, 0x85B0, Blob.FromHex("A667BD01030D41038D410320A480200F82A667AC4003A524F016BD0003C9FFF00CB926869D01034D41038D41034C2C81A525F0118AC900F00AA9009D0103A9FF9D00033860A520290FC561F0C18561C900F0BBC898C9099002A0008C4003B926862C4103F0EDB942039D0003A901853720B0824CBE858040201008040201"));
+			PutInBank(0x1E, 0x8032, Blob.FromHex("B085"));
+			PutInBank(0x1E, 0x803B, Blob.FromHex("B085"));
+			PutInBank(0x1E, 0x8044, Blob.FromHex("B085"));
+			PutInBank(0x1E, 0x804D, Blob.FromHex("B085"));
+
+			// Routine to load the random pool in memory
+			PutInBank(0x1E, 0x80C1, Blob.FromHex("A23FBDAA849D0003CA10F7A209BD30869D4003CA10F760"));
+
+			// Zero out free space
+			sbyte[] zerofill = new sbyte[0x54];
+			PutInBank(0x1E, 0x80D8, Blob.FromSBytes(zerofill));
+
+			// Change reference in NewGamePartyGeneration
+			PutInBank(0x1E, 0x801E, Blob.FromHex("20C180EAEAEAEAEAEAEAEA"));
+
+			// Standard party pool lut, byte1 = selection; byte2 = availability mask; byte3-10: characters pool
+			PutInBank(0x1E, 0x8630, Blob.FromHex("00FC0001020304050607"));
+
+			int size = 6;
+			Blob sizebyte = Blob.FromHex("");
+
+			switch (flags.PoolSize)
+			{
+				case PoolSize.Size4: size = 4; sizebyte = Blob.FromHex("F0"); break;
+				case PoolSize.Size5: size = 5; sizebyte = Blob.FromHex("F8"); break;
+				case PoolSize.Size6: size = 6; sizebyte = Blob.FromHex("FC"); break;
+				case PoolSize.Size7: size = 7; sizebyte = Blob.FromHex("FE"); break;
+				case PoolSize.Size8: size = 8; sizebyte = Blob.FromHex("FF"); break;
+			}
+
+			int class_span = 5;
+			if (flags.IncludePromClasses ?? false) class_span = 11;
+			Blob pool = Blob.FromHex("");
+			for (int i = 0; i < size; i++)
+				pool += Blob.FromSBytes(new List<sbyte> { (sbyte)Rng.Between(rng, 0, class_span) }.ToArray());
+
+			// Pool size : 4 0xF0; 5 0xF8; 6 0xFC; 7 0xFE; 8 0xFF)
+			PutInBank(0x1E, 0x8630, Blob.FromHex("00") + sizebyte + pool);
+
+			// Starting party composition
+			PutInBank(0x1E, 0x84AA, pool.SubBlob(0, 1));
+			PutInBank(0x1E, 0x84BA, Blob.FromHex("FF"));
+			PutInBank(0x1E, 0x84CA, Blob.FromHex("FF"));
+			PutInBank(0x1E, 0x84DA, Blob.FromHex("FF"));
+		}
+
 	}
 }

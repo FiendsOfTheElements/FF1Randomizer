@@ -233,6 +233,7 @@ namespace FF1Lib
 		public bool DisableTentSaving { get; set; } = false;
 		public bool DisableInnSaving { get; set; } = false;
 		public bool SaveGameWhenGameOver { get; set; } = false;
+		public bool ShuffleAstos { get; set; } = false;
 		public bool? RandomizeEnemizer { get; set; } = false;
 		public bool? RandomizeFormationEnemizer { get; set; } = false;
 		public bool? GenerateNewSpellbook { get; set; } = false;
@@ -251,6 +252,16 @@ namespace FF1Lib
 		public bool? ClampEnemyHpScaling { get; set; } = false;
 		public double EnemyHPScaleFactor { get; set; } = 1;
 		public double BossHPScaleFactor { get; set; } = 1;
+		public bool EnablePoolParty { get; set; } = false;
+		public bool EnableRandomPromotions { get; set; } = false;
+
+		public PoolSize PoolSize { get; set; } = PoolSize.Size6;
+		public bool? EnablePoolParty { get; set; }= false;
+		public bool? IncludePromClasses { get; set; } = false;
+		public bool? EnableRandomPromotions { get; set; } = false;
+		public bool? IncludeBaseClasses { get; set; } = false;
+
+
 
 		public MDEFGrowthMode MDefMode { get; set; } = MDEFGrowthMode.None;
 
@@ -683,6 +694,7 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.FiendShuffle);
 			sum = AddBoolean(sum, flags.DisableTentSaving);
 			sum = AddBoolean(sum, flags.DisableInnSaving);
+			sum = AddBoolean(sum, flags.ShuffleAstos);
 			sum = AddBoolean(sum, flags.SaveGameWhenGameOver);
 			sum = AddTriState(sum, flags.RandomizeEnemizer);
 			sum = AddTriState(sum, flags.RandomizeFormationEnemizer);
@@ -702,6 +714,11 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.ClampEnemyHpScaling);
 			sum = AddNumeric(sum, 41, (int)(10.0 * flags.EnemyHPScaleFactor) - 10);
 			sum = AddNumeric(sum, 41, (int)(10.0 * flags.BossHPScaleFactor) - 10);
+			sum = AddNumeric(sum, Enum.GetValues(typeof(PoolSize)).Cast<int>().Max() + 1, (int)flags.PoolSize);
+			sum = AddTristate(sum, flags.EnablePoolParty);
+			sum = AddTriState(sum, flags.IncludePromClasses);
+			sum = AddTristate(sum, flags.EnableRandomPromotions);
+			sum = AddTriState(sum, flags.IncludeBaseClasses);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(FormationShuffleMode)).Cast<int>().Max() + 1, (int)flags.FormationShuffleMode);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(MDEFGrowthMode)).Cast<int>().Max() + 1, (int)flags.MDefMode);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(WorldWealthMode)).Cast<int>().Max() + 1, (int)flags.WorldWealth);
@@ -724,6 +741,11 @@ namespace FF1Lib
 				WorldWealth = (WorldWealthMode)GetNumeric(ref sum, Enum.GetValues(typeof(WorldWealthMode)).Cast<int>().Max() + 1),
 				MDefMode = (MDEFGrowthMode)GetNumeric(ref sum, Enum.GetValues(typeof(MDEFGrowthMode)).Cast<int>().Max() + 1),
 				FormationShuffleMode = (FormationShuffleMode)GetNumeric(ref sum, Enum.GetValues(typeof(FormationShuffleMode)).Cast<int>().Max() + 1),
+				IncludeBaseClasses = GetTriState(ref sum),
+				EnableRandomPromotions = GetBoolean(ref sum),
+				IncludePromClasses = GetTriState(ref sum),
+				EnablePoolParty = GetBoolean(ref sum),
+				PoolSize = (PoolSize)GetNumeric(ref sum, Enum.GetValues(typeof(PoolSize)).Cast<int>().Max() + 1),
 				BossHPScaleFactor = (GetNumeric(ref sum, 41) + 10) / 10.0,
 				EnemyHPScaleFactor = (GetNumeric(ref sum, 41) + 10) / 10.0,
 				ClampEnemyHpScaling = GetTriState(ref sum),
@@ -743,6 +765,7 @@ namespace FF1Lib
 				RandomizeFormationEnemizer = GetTriState(ref sum),
 				RandomizeEnemizer = GetTriState(ref sum),
 				SaveGameWhenGameOver = GetBoolean(ref sum),
+				ShuffleAstos = GetBoolean(ref sum),
 				DisableInnSaving = GetBoolean(ref sum),
 				DisableTentSaving = GetBoolean(ref sum),
 				FiendShuffle = GetBoolean(ref sum),
