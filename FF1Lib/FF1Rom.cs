@@ -315,11 +315,11 @@ namespace FF1Lib
 			}
 			*/
 
-			NewAstosRoutine((bool)flags.NPCItems | (bool)flags.NPCFetchItems);  // moves Talk_Astos to a new location so we can play with it, and also makes it so Astos will only give his item after you have defeated him and speak to him again
+			NewAstosRoutine((bool)flags.NPCItems || (bool)flags.NPCFetchItems);  // moves Talk_Astos to a new location so we can play with it, and also makes it so Astos will only give his item after you have defeated him and speak to him again
 																				// we make this happen on all seeds for consistency with other features
-			if (flags.SaveGameWhenGameOver)
+			if (flags.SaveGameWhenGameOver && ((bool)flags.NPCItems || (bool)flags.NPCFetchItems))
 			{
-				EnableSaveOnDeath((bool)flags.NPCItems | (bool)flags.NPCFetchItems);
+				EnableSaveOnDeath();
 			}
 
 			// Ordered before RNG shuffle. In the event that both flags are on, RNG shuffle depends on this.
@@ -657,6 +657,11 @@ namespace FF1Lib
 			{
 				PubReplaceClinic(rng, flags);
 			}
+
+			if ((bool)flags.ShuffleAstos && ((bool)flags.NPCItems || (bool)flags.NPCFetchItems))
+			{
+				ShuffleAstos(flags, rng);
+      }
 
 			if (flags.EnablePoolParty)
 			{
