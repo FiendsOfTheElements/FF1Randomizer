@@ -571,7 +571,7 @@ namespace FF1Lib
 
 				// DoClassChange reload the map to show the new class sprites, this break TalkBattle, so we stop it from reloading the map
 				// INC dlgflg_reentermap (E656) => NOPx2 (EAEA)
-				if (flags.EnablePoolParty || flags.EnableRandomPromotions)
+				if ((bool)flags.EnablePoolParty || (bool)flags.EnableRandomPromotions)
 					PutInBank(0x0E, 0x95AE + 20, Blob.FromHex("EAEA"));
 				else   
 					PutInBank(0x0E, 0x95AE + 19, Blob.FromHex("EAEA"));
@@ -580,7 +580,7 @@ namespace FF1Lib
 				if (flags.SaveGameWhenGameOver)
 				{
 					// Different changes if EnableTwelveClasses is activated
-					if (flags.EnablePoolParty || flags.EnableRandomPromotions)
+					if ((bool)flags.EnablePoolParty || (bool)flags.EnableRandomPromotions)
 					{
 						Blob PromoteArray = Get(0x395AE, 12);
 						sbyte[] inversedPromoted = new sbyte[12];

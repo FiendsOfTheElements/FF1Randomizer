@@ -252,9 +252,6 @@ namespace FF1Lib
 		public bool? ClampEnemyHpScaling { get; set; } = false;
 		public double EnemyHPScaleFactor { get; set; } = 1;
 		public double BossHPScaleFactor { get; set; } = 1;
-		public bool EnablePoolParty { get; set; } = false;
-		public bool EnableRandomPromotions { get; set; } = false;
-
 		public PoolSize PoolSize { get; set; } = PoolSize.Size6;
 		public bool? EnablePoolParty { get; set; }= false;
 		public bool? IncludePromClasses { get; set; } = false;
@@ -715,9 +712,9 @@ namespace FF1Lib
 			sum = AddNumeric(sum, 41, (int)(10.0 * flags.EnemyHPScaleFactor) - 10);
 			sum = AddNumeric(sum, 41, (int)(10.0 * flags.BossHPScaleFactor) - 10);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(PoolSize)).Cast<int>().Max() + 1, (int)flags.PoolSize);
-			sum = AddTristate(sum, flags.EnablePoolParty);
+			sum = AddTriState(sum, flags.EnablePoolParty);
 			sum = AddTriState(sum, flags.IncludePromClasses);
-			sum = AddTristate(sum, flags.EnableRandomPromotions);
+			sum = AddTriState(sum, flags.EnableRandomPromotions);
 			sum = AddTriState(sum, flags.IncludeBaseClasses);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(FormationShuffleMode)).Cast<int>().Max() + 1, (int)flags.FormationShuffleMode);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(MDEFGrowthMode)).Cast<int>().Max() + 1, (int)flags.MDefMode);
