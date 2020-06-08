@@ -1951,6 +1951,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SaveGameWhenGameOver"));
 			}
 		}
+		public bool ShuffleAstos
+		{
+			get => Flags.ShuffleAstos;
+			set
+			{
+				Flags.ShuffleAstos = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ShuffleAstos"));
+			}
+		}
 		public bool? RandomizeEnemizer
 		{
 			get => Flags.RandomizeEnemizer;
@@ -2123,7 +2132,7 @@ namespace FF1Lib
 			}
 		}
 
-		public bool ChangeMaxMP
+		public bool? ChangeMaxMP
 		{
 			get => Flags.ChangeMaxMP;
 			set
@@ -2180,6 +2189,52 @@ namespace FF1Lib
 			{
 				Flags.LockMode = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("LockMode"));
+			}
+		}
+
+		public PoolSize PoolSize
+		{
+			get => Flags.PoolSize;
+			set
+			{
+				Flags.PoolSize = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("PoolSize"));
+			}
+		}
+		public bool? EnablePoolParty
+		{
+			get => Flags.EnablePoolParty;
+			set
+			{
+				Flags.EnablePoolParty = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EnablePoolParty"));
+			}
+		}
+		public bool? IncludePromClasses
+		{
+			get => Flags.IncludePromClasses;
+			set
+			{
+				Flags.IncludePromClasses = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncludePromClasses"));
+			}
+		}
+		public bool? EnableRandomPromotions
+		{
+			get => Flags.EnableRandomPromotions;
+			set
+			{
+				Flags.EnableRandomPromotions = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EnableRandomPromotions"));
+			}
+		}
+		public bool? IncludeBaseClasses
+		{
+			get => Flags.IncludeBaseClasses;
+			set
+			{
+				Flags.IncludeBaseClasses = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncludeBaseClasses"));
 			}
 		}
 

@@ -316,11 +316,11 @@ namespace FF1Lib
 			}
 			*/
 
-			NewAstosRoutine((bool)flags.NPCItems | (bool)flags.NPCFetchItems);  // moves Talk_Astos to a new location so we can play with it, and also makes it so Astos will only give his item after you have defeated him and speak to him again
+			NewAstosRoutine((bool)flags.NPCItems || (bool)flags.NPCFetchItems);  // moves Talk_Astos to a new location so we can play with it, and also makes it so Astos will only give his item after you have defeated him and speak to him again
 																				// we make this happen on all seeds for consistency with other features
-			if (flags.SaveGameWhenGameOver)
+			if (flags.SaveGameWhenGameOver && ((bool)flags.NPCItems || (bool)flags.NPCFetchItems))
 			{
-				EnableSaveOnDeath((bool)flags.NPCItems | (bool)flags.NPCFetchItems);
+				EnableSaveOnDeath();
 			}
 
 			// Ordered before RNG shuffle. In the event that both flags are on, RNG shuffle depends on this.
@@ -570,11 +570,11 @@ namespace FF1Lib
 				RandomArmorBonus(rng);
 			}
 
-			if(flags.ChangeMaxMP)
+			if((bool)flags.ChangeMaxMP)
 			{
 				SetMPMax(flags.RedMageMaxMP, flags.WhiteMageMaxMP, flags.BlackMageMaxMP, flags.KnightNinjaMaxMP);
 			}
-			
+
 			if (flags.WeaponBonuses)
 			{
 				IncreaseWeaponBonus();
@@ -662,6 +662,23 @@ namespace FF1Lib
 			if (((bool)flags.RecruitmentMode))
 			{
 				PubReplaceClinic(rng, flags);
+			}
+
+			if ((bool)flags.ShuffleAstos && ((bool)flags.NPCItems || (bool)flags.NPCFetchItems))
+			{
+				ShuffleAstos(flags, rng);
+      }
+
+			if ((bool)flags.EnablePoolParty)
+			{
+				EnableTwelveClasses();
+				EnablePoolParty(flags, rng);
+			}
+
+			if ((bool)flags.EnableRandomPromotions)
+			{
+				EnableTwelveClasses();
+				EnableRandomPromotions(flags, rng);
 			}
 
 			if ((bool)flags.MapCanalBridge)
@@ -969,10 +986,10 @@ namespace FF1Lib
 		public void WriteSeedAndFlags(string version, string seed, string flags)
 		{
 			// Replace most of the old copyright string printing with a JSR to a LongJump
-			Put(0x38486, Blob.FromHex("20FCFE60"));
+			Put(0x38486, Blob.FromHex("20B9FF60"));
 
 			// DrawSeedAndFlags LongJump
-			PutInBank(0x1F, 0xFEFC, CreateLongJumpTableEntry(0x0F, 0x8980));
+			PutInBank(0x1F, 0xFFB9, CreateLongJumpTableEntry(0x0F, 0x8980));
 
 			var sha = File.Exists("version.txt") ? File.ReadAllText("version.txt").Trim() : "development";
 			Blob hash;

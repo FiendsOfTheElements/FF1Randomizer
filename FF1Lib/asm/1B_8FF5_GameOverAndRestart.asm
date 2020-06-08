@@ -9,121 +9,112 @@
 ;;	This also does the closing animation of fading out the
 ;;	Combat boxes since we have to replace a JSR in new
 ;;	GameOver.
-;;	Certain game flags will need to be reset under particular
-;;	conditions.  Particularly, this means that Garland,
-;;	Bikke, Astos, Vampire, and the four fiends - map objects
-;;	which trigger a fight - must be reset if particular
-;;	conditions are not set.  These conditions are:
-;;	Garland: If did not talk to the princess (princess 1 in
-;;	tof is visible), Garland is reset to visible.
-;;	Bikke (no NPC shuffle): If the terrified townsfolk are
-;;	not visible, Bikke's flag to indicate that he has been
-;;	fought is reset.
-;;	Bikke (NPC shuffle): If the event flag for bikke is not
-;;	1, then the terrified townsfolk are turned to invisible.
-;;	Astos: The NPC code for Astos is changed
-;;	to function like Bikke (see additional code).  A bat in
-;;	Astos' castle is set to turn on visibility if Astos is
-;;	defeated.  If this bat is not visible, then Astos'
-;;	event flag is reset.
-;;	Vampire: If the chest Vampire is guarding is not open,
-;;	then Vampire's visibility is reset.  This does mean that
-;;	if the chest is not picked up because of inventory space
-;;	then Vampire will respawn (and if Early Sarda is off,
-;;	you are in for a rude awakening).
-;;	Earth/Fire/Water/Air orb: If the appropriate orb is not
-;;	in the player's inventory, then the visibility flag for
-;;	the the fiend fights is turned back on.
-;;	Garland 1/2/3 (the version you encounter in ToFR) will
-;;	always be reset to their default values as if you never
-;;	entered the room.
+;;
+;;	Astos: The Talk code for Astos is changed
+;;  to store some information so to prevent cheating is item.
+
+btlformation	= $6A	
+ch_stats		= $6100
+ch_weapons		= ch_stats + $18
+ch_armor		= ch_weapons + $04
+unsram 			= $6000
+gold			= unsram + $1C	
+game_flags      = unsram + $0200 
+shop_curprice	= $030E
+tmp				= $10
 
 	JSR $8BE3	; do a routine which we gutted in GameOver
 
 GameOverUpdateSaveData:
-	LDX #$00
+  LDX #$00
 RestorePlayerLoop:	; first, we restore the player's party to max hp/mp and restore status
-	LDA $610C,X
-	STA $610A,X
+  LDA $6100,X           ; we don't restore Nones, so skip them
+  CMP #$FF
+  BEQ SkipNone
+    LDA $610C,X         ; restore hp
+    STA $610A,X
     LDA $610D,X
-	STA $610B,X
-	LDA $6328,X
+    STA $610B,X
+    LDA $6328,X         ; restore mp
     STA $6320,X
     LDA $6329,X
     STA $6321,X
-	LDA $632A,X
+    LDA $632A,X
     STA $6322,X
-	LDA $632B,X
+    LDA $632B,X
     STA $6323,X
-	LDA $632C,X
+    LDA $632C,X
     STA $6324,X
-	LDA $632D,X
+    LDA $632D,X
     STA $6325,X
-	LDA $632E,X
+    LDA $632E,X
     STA $6326,X
-	LDA $632F,X
+    LDA $632F,X
     STA $6327,X
-	LDA #$00
-	STA $6101,X
-	TXA
-    CLC
-    ADC #$40
-    TAX
-    BNE RestorePlayerLoop
+    LDA #$00            ; reset status
+    STA $6101,X
+SkipNone:
+  TXA
+  CLC
+  ADC #$40
+  TAX
+  BNE RestorePlayerLoop
 
-ResetGarlandFlagIfPrincessStillVisible:	; if we didn't rescue the princess in ToF, Garland is made visible (respawned)
-	LDA $6203
-	AND #$01
-	BEQ ResetBikkeIfDidNotReceiveItem
-	LDA $6202
-	ORA #$01
-	STA $6202
-ResetBikkeIfDidNotReceiveItem:	; if we did not get the item from Bikke, the terrified townsfolk are made invisible so you'll initiate the Bikke fight properly
-	LDA $6204
-	AND #$02
-	BNE ResetAstosIfStillVisible
-	LDA $623F
+; Check from which battle we died so we can reset that battle
+ResetGarland:
+	LDA btlformation    ; Check the last battle formation
+	CMP #$7F            ;  and check if it was Garland
+	BNE ResetBikke      ; If it's not, go to next formation
+	JSR ShowThis        ; If it is, make it visible again
+	JMP CheckSpawn      ; Skip, no need to check for the other battle formations
+ResetBikke:
+	CMP #$7E
+	BNE ResetAstos
+	JSR ShowThis        ; Reset Bikke's flag
+	LDA $623F           ; Hide townsfolk 1, 2, 3
 	AND #$FE
 	STA $623F
-ResetAstosIfStillVisible:	; if Astos is still visible (he will only disappear after you fight him), another terrified townsfolk in Pravoka is disappeared
-	LDA $6207
-	AND #$01
-	BEQ ResetVampireIfDidNotReceiveRubyChest
 	LDA $6240
 	AND #$FE
 	STA $6240
-ResetVampireIfDidNotReceiveRubyChest:	; if the contents of the Ruby chest are not acquired, the Vampire is made visible (note that if you can't hold the item in that chest, Vampire will respawn)
-	LDA $623D
-	AND #$04
-	BNE ResetLichIfDidNotReceiveEarthOrb
-	LDA $620C
-	ORA #$01
-	STA $620C
-ResetLichIfDidNotReceiveEarthOrb:	; if you didn't acquire Earth Orb, Lich will respawn
-	LDA $6031
-	BNE RsetKaryIfDidNotReceiveFireOrb
-	LDA $621B
-	ORA #$01
-	STA $621B
-RsetKaryIfDidNotReceiveFireOrb:	; and kary
-	LDA $6032
-	BNE RsetKrakenIfDidNotReceiveWaterOrb
-	LDA $621C
-	ORA #$01
-	STA $621C
-RsetKrakenIfDidNotReceiveWaterOrb:	; and kraken
-	LDA $6033
-	BNE ResetTiamatIfDidNotReceiveAirOrb
-	LDA $621D
-	ORA #$01
-	STA $621D
-ResetTiamatIfDidNotReceiveAirOrb:	; and tiamat
-	LDA $6034
-	BNE ResetChaosAlways
-	LDA $621E
-	ORA #$01
-	STA $621E
-ResetChaosAlways:	; the final room is always reset as if you never entered it
+	LDA $6241
+	AND #$FE
+	STA $6241
+	JMP CheckSpawn
+ResetAstos:	            ; Astos is a bit more complicated
+	CMP #$7D
+	BNE ResetVampire
+	JSR ShowThis
+	JSR AstosComplex    ; Do the complex routine to retake Astos' item
+	JMP CheckSpawn
+ResetVampire:           ; All the rest is like Garland
+	CMP #$7C           
+	BNE ResetLich
+	JSR ShowThis
+	JMP CheckSpawn
+ResetLich:
+	CMP #$7A
+	BNE ResetKary
+	JSR ShowThis
+	JMP CheckSpawn	
+ResetKary:
+	CMP #$79
+	BNE ResetKraken
+	JSR ShowThis
+	JMP CheckSpawn
+ResetKraken:
+	CMP #$78
+	BNE ResetTiamat
+	JSR ShowThis
+	JMP CheckSpawn
+ResetTiamat:
+	CMP #$77
+	BNE ResetChaos
+	JSR ShowThis
+	JMP CheckSpawn
+ResetChaos:
+	CMP #$7B           
+	BNE CheckSpawn
 	LDA $6218
 	ORA #$01
 	STA $6218
@@ -133,8 +124,8 @@ ResetChaosAlways:	; the final room is always reset as if you never entered it
 	LDA $621A
 	AND #$FE
 	STA $621A
-
-	LDA $6004
+CheckSpawn:
+	LDA $6004              ; Check if we have the arship
 	BNE AirshipSpawn
 	LDA $6000
 	BEQ StartCopying
@@ -211,21 +202,91 @@ ChecksumLoop:
 
 	JMP $801D
 
+ShowThis:
+	LDX tmp+6            ; Get obj ID
+	LDA game_flags, X    ; Get flag
+	ORA #$01             ; Make visible
+	AND #$FD             ; Reset flag
+	STA game_flags, X    ; Store back flag
+	RTS
+
+AstosComplex:	         ; Most of the code here comes from the new GiveReward routine
+	LDA $13              ; Check what he gave
+	CLC
+	ADC #$20             ; Add $20 for item offset in RAM
+ 	CMP #$3C             ; if it's an item
+	BCS NoItem
+Item:                      
+	TAX
+	CMP #$0C             ; Check if it's the Canal, because it's not like other item
+	BNE NoCanal
+	INC unsram, X        ; Hide Canal
+	RTS
+NoCanal:
+	DEC unsram, X        ; If it's not the Canal, just decrease the quantity by 1
+	RTS
+NoItem:
+	LDA $13              ; Reload the item ID
+	LDY $67              ; Talk_Astos stored Y after GiveItem for weapon/armor slot and the amount of gold in shop_curprice
+	CMP #$6C             ; Is it gold?
+	BCC NoGold
+	  LDA gold           ; Same routine if you're buying an item in a shop
+          SEC            ; Load party's gold and subtract the price
+          SBC shop_curprice  
+          STA gold
+
+          LDA gold+1
+          SBC shop_curprice+1
+          STA gold+1
+
+          LDA gold+2
+          SBC #0             
+          STA gold+2
+          RTS
+NoGold:
+	CMP #$44                    ; Check if it's a weapon or armor
+	BCS Armor
+        LDX lut_WeaponSlots, Y  ; We compare Y with a lut that will give the right equipement slot where
+	LDA #$00                    ;  Astos's item was put
+	STA ch_stats, X             ; Zero out item from inventory
+	RTS       
+Armor:
+	LDX lut_ArmorSlots, Y
+	LDA #$00           
+	STA ch_stats, X
+	RTS
+
+lut_WeaponSlots:
+  .BYTE <ch_weapons+$00, <ch_weapons+$01, <ch_weapons+$02, <ch_weapons+$03
+  .BYTE <ch_weapons+$40, <ch_weapons+$41, <ch_weapons+$42, <ch_weapons+$43
+  .BYTE <ch_weapons+$80, <ch_weapons+$81, <ch_weapons+$82, <ch_weapons+$83
+  .BYTE <ch_weapons+$C0, <ch_weapons+$C1, <ch_weapons+$C2, <ch_weapons+$C3
+
+lut_ArmorSlots:
+  .BYTE <ch_armor+$00, <ch_armor+$01, <ch_armor+$02, <ch_armor+$03
+  .BYTE <ch_armor+$40, <ch_armor+$41, <ch_armor+$42, <ch_armor+$43
+  .BYTE <ch_armor+$80, <ch_armor+$81, <ch_armor+$82, <ch_armor+$83
+  .BYTE <ch_armor+$C0, <ch_armor+$C1, <ch_armor+$C2, <ch_armor+$C3	
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;	NewAstosRoutine	[$9F45 ;; 0x39F55]
 ;;
-;;	This is a new routine for Astos, in which he
-;;	behaves like Bikke and will give you his item
-;;	AFTER you have beaten him, not when you fight
-;;	him.  This is necessary for death-saving to
+;;	This is a new routine for Astos, where
+;;  we load some data in memory from his item.
+;;  This is necessary for death-saving to
 ;;	not break the game by letting you die to Astos
 ;;	and keep the item.  We use some of the space
 ;;	that was cleared out in bank 0E's character
 ;;	creation routines to accomplish this.
-;;	If NPC Shuffle is off, instead of loading the
-;;	GiveItem text it will load the dialogue for
-;;	"Hurray!!" to indicate that you defeated Astos
+
+item_crown			= $6022
+GiveItem			= $DD93
+HideMapObject		= $9273
+OBJID_ASTOS			= $07
+BTL_ASTOS			= $7D
+TalkBattle			= $90C5
+SetGameEventFlag	= $907F
 
 New_Talk_Astos:
 	LDA $6022
@@ -256,24 +317,29 @@ EndRoutine:
 ;; alternate routine if NPC Shuffle is off
 
 New_Talk_Astos:
-    LDA $6022
-    BEQ Default
-    LDY #$40
-    JSR $9091
-    BCS AlreadyFought
-      JSR $90A4
-      LDA #$7D
-      JSR $90C5
-      LDA $12
+  NOP                           ; Leave some space for code modifications 
+  NOP
+  NOP
+  LDA item_crown                ; Load Crown
+  BEQ Default1                  ; Do we have it?
+    LDA tmp+3                   ; If yes, is there an item to give?
+    BEQ Default1                
+      JSR GiveItem              ; Give item
+      BCS End1                  ; If inventory is full, skip
+      STY $67                   ; Store Y in memory for SaveOnDeath, if it's equipment
+      LDA tmp                   ; And store the amount for SaveOnDeath, if it's GP
+      STA shop_curprice
+      LDA tmp+1
+      STA shop_curprice+1
+      LDY tmp+6                 ; Load this object
+      JSR SetGameEventFlag      ; Set its flag
+      JSR HideMapObject         ; Hide it
+      LDA #BTL_ASTOS            ; Load Astos' battle ID
+      JSR TalkBattle            ; Do battle
+      LDA #$3A                  ; Show give item dialog
       RTS
-AlreadyFought:
-      INC $6023
-      LDY #$07
-      JSR $9273
-      INC $7D
-      LDA #$77
-      RTS
-Default:
-    LDA $11
-EndRoutine:
-    RTS
+Default1:
+   LDA tmp+1                    ; Show default dialog
+End1:
+   RTS
+
