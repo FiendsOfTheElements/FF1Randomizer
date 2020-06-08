@@ -515,6 +515,11 @@
                         <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="RandomArmorBonus" @bind-Value="Flags.RandomArmorBonus">Random Armor Bonus</TriStateCheckBox>
                         <CheckBox UpdateToolTip="@UpdateToolTipID" Id="fixMissingBattleRngEntry" @bind-Checked="Flags.FixMissingBattleRngEntry">Fix Missing Battle RNG Entry</CheckBox>
                         <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="swolePiratesCheckBox" @bind-Value="Flags.SwolePirates">Buffed Pirates</TriStateCheckBox>
+                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="EnablePoolParty" @bind-Value="Flags.EnablePoolParty">Select Party From Pool of Random Characters</TriStateCheckBox>
+                        <EnumDropDown UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnablePoolParty" Id="PoolSizeDropDown" TItem="PoolSize" @bind-Value="Flags.PoolSize">Pool Size :</EnumDropDown>
+                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnablePoolParty" Id="PPIncludePromotedClasses" @bind-Value="Flags.IncludePromClasses">Include Promoted Classes</TriStateCheckBox>
+                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="EnableRandomPromotions" @bind-Value="Flags.EnableRandomPromotions">Random Classes at Class Change</TriStateCheckBox>
+                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnableRandomPromotions" Id="RPIncludeBaseClasses" @bind-Value="Flags.IncludeBaseClasses">Include Base Classes</TriStateCheckBox>
                     </div>
                     <div class="col-md-12">
                     </div>
