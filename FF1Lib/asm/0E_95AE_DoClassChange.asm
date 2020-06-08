@@ -1,4 +1,6 @@
-﻿define ch_class $6100
+;; Superseded for Hacks.cs/EnableTwelveClasses() - see "0E_95AE_DoClassChange-2.asm"
+
+define ch_class $6100
 define lut_ptr $95D0
 define dlgflg_reentermap $56
 

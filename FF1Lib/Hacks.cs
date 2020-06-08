@@ -2,9 +2,23 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.ComponentModel;
 
 namespace FF1Lib
 {
+	public enum PoolSize
+	{
+		[Description("4 characters")]
+		Size4,
+		[Description("5 characters")]
+		Size5,
+		[Description("6 characters")]
+		Size6,
+		[Description("7 characters")]
+		Size7,
+		[Description("8 characters")]
+		Size8,
+	}
 	public partial class FF1Rom : NesRom
 	{
 		public const int Nop = 0xEA;
@@ -898,5 +912,112 @@ namespace FF1Lib
 			// Hacks the game so that Inns do not save the game
 			Put(0x3A53D, Blob.FromHex("EAEAEA"));
 		}
+		public void EnableTwelveClasses()
+		{
+			// Expand characters shown in party creation screen; set to 0C for all promoted classes
+			PutInBank(0x1E, 0x80F5, Blob.FromHex("06"));
+			// Add the classes to authorized classes lut
+			PutInBank(0x1E, 0x811B, Blob.FromHex("804020100804"));
+			// Reduce count to $10 in PtyGen_DrawChars because we only loaded one row of sprites
+			PutInBank(0x1E, 0x8373, Blob.FromHex("EA"));
+
+			// New CHRLoad routine so we can load promoted classes' sprites in memory by only loading one row of sprites instead of two
+			var newfCHRLoad = Blob.FromHex("A000B1108D0720C8D0F8E611E611CAD0F160");
+
+			// Put new CHRLoad routine
+			PutInBank(0x1F, 0xEAD5, Blob.FromHex("20EBFE"));
+			PutInBank(0x1F, 0xFEEB, newfCHRLoad);
+
+			// Starting stats for promoted classes, same as base classes
+			Put(0x30A0, Get(0x3040, 0x0A));
+			Put(0x30B0, Get(0x3050, 0x0A));
+			Put(0x30C0, Get(0x3060, 0x0A));
+			Put(0x30D0, Get(0x3070, 0x0A));
+			Put(0x30E0, Get(0x3080, 0x0A));
+			Put(0x30F0, Get(0x3090, 0x0A));
+
+			// Starting magic for promoted classes. Instead of checking for the class ID of the characters, we compare with the unused class ID in the starting stats array.
+			PutInBank(0x1F, 0xC7CA, Blob.FromHex("B940B0"));
+
+			// New promotion routine to not bug out with already promoted classes and allow random promotion; works with Nones; see 0E_95AE_DoClassChange-2.asm
+			PutInBank(0x0E, 0x95AE, Blob.FromHex("A20020C595A24020C595A28020C595A2C020C595E65660BC00613006B9809C9D006160"));
+			// lut for standard promotion, can be modified or randomized
+			PutInBank(0x0E, 0x9C80, Blob.FromHex("060708090A0B060708090A0B"));
+		}
+
+		public void EnableRandomPromotions(Flags flags, MT19337 rng)
+		{
+			// Need EnableTwelveClasses()
+			// Promotions list
+			List<sbyte> promotions = new List<sbyte> { 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B };
+
+			// Include base classes
+			if (flags.IncludeBaseClasses ?? false)
+			{
+				promotions.AddRange(new List<sbyte> { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05 });
+				promotions.Shuffle(rng);
+			}
+			else
+			{
+				// If not shuffle list first then add promoted classes so that already promoted classes don't bug
+				promotions.Shuffle(rng);
+				promotions.AddRange(new List<sbyte> { 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B });
+			}
+
+			// Insert randomized promotions
+			PutInBank(0x0E, 0x9C80, Blob.FromSBytes(promotions.ToArray()));
+		}
+
+		public void EnablePoolParty(Flags flags, MT19337 rng)
+		{
+			// Need EnableTwelveClasses()
+			// New DoPartyGen_OnCharacter and update references; see 1E_85B0_DoPartyGen_OnCharacter.asm
+			PutInBank(0x1E, 0x85B0, Blob.FromHex("A667BD01030D41038D410320A480200F82A667AC4003A524F016BD0003C9FFF00CB926869D01034D41038D41034C2C81A525F0118AC900F00AA9009D0103A9FF9D00033860A520290FC561F0C18561C900F0BBC898C9099002A0008C4003B926862C4103F0EDB942039D0003A901853720B0824CBE858040201008040201"));
+			PutInBank(0x1E, 0x8032, Blob.FromHex("B085"));
+			PutInBank(0x1E, 0x803B, Blob.FromHex("B085"));
+			PutInBank(0x1E, 0x8044, Blob.FromHex("B085"));
+			PutInBank(0x1E, 0x804D, Blob.FromHex("B085"));
+
+			// Routine to load the random pool in memory
+			PutInBank(0x1E, 0x80C1, Blob.FromHex("A23FBDAA849D0003CA10F7A209BD30869D4003CA10F760"));
+
+			// Zero out free space
+			sbyte[] zerofill = new sbyte[0x54];
+			PutInBank(0x1E, 0x80D8, Blob.FromSBytes(zerofill));
+
+			// Change reference in NewGamePartyGeneration
+			PutInBank(0x1E, 0x801E, Blob.FromHex("20C180EAEAEAEAEAEAEAEA"));
+
+			// Standard party pool lut, byte1 = selection; byte2 = availability mask; byte3-10: characters pool
+			PutInBank(0x1E, 0x8630, Blob.FromHex("00FC0001020304050607"));
+
+			int size = 6;
+			Blob sizebyte = Blob.FromHex("");
+
+			switch (flags.PoolSize)
+			{
+				case PoolSize.Size4: size = 4; sizebyte = Blob.FromHex("F0"); break;
+				case PoolSize.Size5: size = 5; sizebyte = Blob.FromHex("F8"); break;
+				case PoolSize.Size6: size = 6; sizebyte = Blob.FromHex("FC"); break;
+				case PoolSize.Size7: size = 7; sizebyte = Blob.FromHex("FE"); break;
+				case PoolSize.Size8: size = 8; sizebyte = Blob.FromHex("FF"); break;
+			}
+
+			int class_span = 5;
+			if (flags.IncludePromClasses ?? false) class_span = 11;
+			Blob pool = Blob.FromHex("");
+			for (int i = 0; i < size; i++)
+				pool += Blob.FromSBytes(new List<sbyte> { (sbyte)Rng.Between(rng, 0, class_span) }.ToArray());
+
+			// Pool size : 4 0xF0; 5 0xF8; 6 0xFC; 7 0xFE; 8 0xFF)
+			PutInBank(0x1E, 0x8630, Blob.FromHex("00") + sizebyte + pool);
+
+			// Starting party composition
+			PutInBank(0x1E, 0x84AA, pool.SubBlob(0, 1));
+			PutInBank(0x1E, 0x84BA, Blob.FromHex("FF"));
+			PutInBank(0x1E, 0x84CA, Blob.FromHex("FF"));
+			PutInBank(0x1E, 0x84DA, Blob.FromHex("FF"));
+		}
+
 	}
 }
