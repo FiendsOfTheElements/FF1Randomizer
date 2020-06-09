@@ -912,8 +912,7 @@
 	{
 		"Id": "shuffleAstosCheckBox",
 		"title": "Shuffle Astos",
-		"screenshot": "",
-		"description": "Astos disguises himself as another NPC: Bahamut, Canoe Sage, CubeBot, Elf Doctor, Elf Prince, Fairy, King, Lefein, Mayoya, Nerrick, Princess Sara, Sarda, Smith, Titan, Unne or the kindly old king from Northwest Castle."
+		"description": "Astos disguises himself as another NPC: Bahamut, Canoe Sage, CubeBot, Elf Doctor, Elf Prince, Fairy, King, Lefein, Matoya, Nerrick, Princess Sara, Sarda, Smith, Titan, Unne or the kindly old king from Northwest Castle."
 	},
 	{
 		"Id": "randomizeFormationEnemizer",
