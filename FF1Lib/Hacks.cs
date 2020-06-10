@@ -938,9 +938,9 @@ namespace FF1Lib
 			PutInBank(0x1F, 0xC7CA, Blob.FromHex("B940B0"));
 
 			// New promotion routine to not bug out with already promoted classes and allow random promotion; works with Nones; see 0E_95AE_DoClassChange-2.asm
-			PutInBank(0x0E, 0x95AE, Blob.FromHex("A20020C595A24020C595A28020C595A2C020C595E65660BC00613006B9809C9D006160"));
+			PutInBank(0x0E, 0x95AE, Blob.FromHex("A20020C595A24020C595A28020C595A2C020C595E65660BC00613006B9F09D9D006160"));
 			// lut for standard promotion, can be modified or randomized
-			PutInBank(0x0E, 0x9C80, Blob.FromHex("060708090A0B060708090A0B"));
+			PutInBank(0x0E, 0x9DF0, Blob.FromHex("060708090A0B060708090A0B"));
 		}
 
 		public void EnableRandomPromotions(Flags flags, MT19337 rng)
@@ -963,7 +963,7 @@ namespace FF1Lib
 			}
 
 			// Insert randomized promotions
-			PutInBank(0x0E, 0x9C80, Blob.FromSBytes(promotions.ToArray()));
+			PutInBank(0x0E, 0x9DF0, Blob.FromSBytes(promotions.ToArray()));
 		}
 
 		public void EnablePoolParty(Flags flags, MT19337 rng)
