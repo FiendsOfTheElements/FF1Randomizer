@@ -33,7 +33,6 @@ namespace FF1Lib
 		public bool? MagicLevels { get; set; } = false;
 		public bool? MagicPermissions { get; set; } = false;
 		public bool? ItemMagic { get; set; } = false;
-		public bool RebalanceSpells { get; set; } = false;
 		public bool? MagicLevelsTiered { get; set; } = false;
 		public bool? MagicLevelsMixed { get; set; } = false;
 
@@ -257,8 +256,13 @@ namespace FF1Lib
 		public bool? IncludePromClasses { get; set; } = false;
 		public bool? EnableRandomPromotions { get; set; } = false;
 		public bool? IncludeBaseClasses { get; set; } = false;
+		public bool? ChangeMaxMP { get; set; } = false;
+		public int RedMageMaxMP { get; set; } = 9;
+		public int WhiteMageMaxMP { get; set; } = 9;
+		public int BlackMageMaxMP { get; set; } = 9;
+		public int KnightNinjaMaxMP { get; set; } = 4;
 
-
+		public LockHitMode LockMode { get; set; } = LockHitMode.Vanilla;
 
 		public MDEFGrowthMode MDefMode { get; set; } = MDEFGrowthMode.None;
 
@@ -526,7 +530,6 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.ItemMagic);
 			sum = AddTriState(sum, flags.MagicLevelsTiered);
 			sum = AddTriState(sum, flags.MagicLevelsMixed);
-			sum = AddBoolean(sum, flags.RebalanceSpells);
 			sum = AddTriState(sum, flags.Rng);
 			sum = AddBoolean(sum, flags.FixMissingBattleRngEntry);
 			sum = AddTriState(sum, flags.EverythingUnrunnable);
@@ -711,6 +714,12 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.ClampEnemyHpScaling);
 			sum = AddNumeric(sum, 41, (int)(10.0 * flags.EnemyHPScaleFactor) - 10);
 			sum = AddNumeric(sum, 41, (int)(10.0 * flags.BossHPScaleFactor) - 10);
+			sum = AddNumeric(sum, 10, flags.KnightNinjaMaxMP);
+			sum = AddNumeric(sum, 10, flags.BlackMageMaxMP);
+			sum = AddNumeric(sum, 10, flags.WhiteMageMaxMP);
+			sum = AddNumeric(sum, 10, flags.RedMageMaxMP);
+			sum = AddTriState(sum, flags.ChangeMaxMP);
+			sum = AddNumeric(sum, Enum.GetValues(typeof(LockHitMode)).Cast<int>().Max() + 1, (int)flags.LockMode);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(PoolSize)).Cast<int>().Max() + 1, (int)flags.PoolSize);
 			sum = AddTriState(sum, flags.EnablePoolParty);
 			sum = AddTriState(sum, flags.IncludePromClasses);
@@ -739,10 +748,16 @@ namespace FF1Lib
 				MDefMode = (MDEFGrowthMode)GetNumeric(ref sum, Enum.GetValues(typeof(MDEFGrowthMode)).Cast<int>().Max() + 1),
 				FormationShuffleMode = (FormationShuffleMode)GetNumeric(ref sum, Enum.GetValues(typeof(FormationShuffleMode)).Cast<int>().Max() + 1),
 				IncludeBaseClasses = GetTriState(ref sum),
-				EnableRandomPromotions = GetBoolean(ref sum),
+				EnableRandomPromotions = GetTriState(ref sum),
 				IncludePromClasses = GetTriState(ref sum),
-				EnablePoolParty = GetBoolean(ref sum),
+				EnablePoolParty = GetTriState(ref sum),
 				PoolSize = (PoolSize)GetNumeric(ref sum, Enum.GetValues(typeof(PoolSize)).Cast<int>().Max() + 1),
+				LockMode = (LockHitMode)GetNumeric(ref sum, Enum.GetValues(typeof(LockHitMode)).Cast<int>().Max() + 1),
+				ChangeMaxMP = GetTriState(ref sum),
+				RedMageMaxMP = GetNumeric(ref sum, 10),
+				WhiteMageMaxMP = GetNumeric(ref sum, 10),
+				BlackMageMaxMP = GetNumeric(ref sum, 10),
+				KnightNinjaMaxMP = GetNumeric(ref sum, 10),
 				BossHPScaleFactor = (GetNumeric(ref sum, 41) + 10) / 10.0,
 				EnemyHPScaleFactor = (GetNumeric(ref sum, 41) + 10) / 10.0,
 				ClampEnemyHpScaling = GetTriState(ref sum),
@@ -927,7 +942,6 @@ namespace FF1Lib
 				EverythingUnrunnable = GetTriState(ref sum),
 				FixMissingBattleRngEntry = GetBoolean(ref sum),
 				Rng = GetTriState(ref sum),
-				RebalanceSpells = GetBoolean(ref sum),
 				MagicLevelsMixed = GetTriState(ref sum),
 				MagicLevelsTiered = GetTriState(ref sum),
 				ItemMagic = GetTriState(ref sum),

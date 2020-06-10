@@ -1,9 +1,22 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using RomUtilities;
+using System.ComponentModel;
 
 namespace FF1Lib
 {
+	public enum LockHitMode
+	{
+		[Description("Vanilla")]
+		Vanilla = 0,
+		[Description("107 Accuracy")]
+		Accuracy107,
+		[Description("162 Accuracy")]
+		Accuracy162,
+		[Description("Auto Hit")]
+		AutoHit
+	}
+
 	public partial class FF1Rom : NesRom
 	{
 		public const int MagicOffset = 0x301E0;
@@ -21,6 +34,7 @@ namespace FF1Lib
 
 		public const int OldLevelUpDataOffset = 0x2D094; // this was moved to bank 1B
 		public const int NewLevelUpDataOffset = 0x6CDA9; // this was moved from bank 1B
+		public const int KnightNinjaMaxMPOffset = 0x6C907;
 
 		public const int ConfusedSpellIndexOffset = 0x3321E;
 		public const int FireSpellIndex = 4;
@@ -454,6 +468,65 @@ namespace FF1Lib
 			// Confused enemies are supposed to cast FIRE, so figure out where FIRE ended up.
 			var newFireSpellIndex = shuffledSpells.FindIndex(spell => spell.Data == magicSpells[FireSpellIndex].Data);
 			Put(ConfusedSpellIndexOffset, new[] { (byte)newFireSpellIndex });
+		}
+
+		public void SetMPMax(int redMageMaxMP, int whiteMageMaxMP, int blackMageMaxMP, int knightNinjaMaxMp)
+		{
+			//class index order: fighter, thief, blackbelt, redmage, whitemage, blackmage
+			SetClassMaxMp(3, redMageMaxMP);
+			SetClassMaxMp(4, whiteMageMaxMP);
+			SetClassMaxMp(5, blackMageMaxMP);
+
+			//for now, before we change the asm for knight and ninja, the two will be tied together
+			Put(KnightNinjaMaxMPOffset, new byte[] { (byte)(knightNinjaMaxMp + 1)});
+		}
+
+		public void SetClassMaxMp(int classIndex, int maxMp)
+		{
+			//49 levels per class, 2 bytes
+			//spell data is packed into a byte, bit index = spell level gained that level
+			//0 0 0 0 1 0 0 0 would mean gaining a level 4 spell slot that level
+
+			//brute force way... count the number of spells and rewrite it to not gain any more after the max
+			List<int> spellCount = new List<int> { 2, 0, 0, 0, 0, 0, 0, 0 };
+			for (int i = 0; i < 49; i++)
+			{
+				int currentOffset = NewLevelUpDataOffset + (49 * classIndex * 2) + (i * 2) + 1;
+				byte currentSpellData = Get(currentOffset, 1)[0];
+
+				for (int bitTest = 0; bitTest < 8; bitTest++)
+				{
+					if ((currentSpellData & (1 << bitTest)) != 0)
+					{
+						spellCount[bitTest]++;
+					}
+
+					if (spellCount[bitTest] > maxMp)
+					{
+						currentSpellData = (byte)(currentSpellData & ~(1 << bitTest));
+					}
+				}
+
+				Put(currentOffset, new byte[] { currentSpellData });
+			}
+		}
+
+		public void ChangeLockMode(LockHitMode lockHitMode)
+		{
+			if (lockHitMode == LockHitMode.Accuracy107)
+			{
+				Put(MagicOffset + (MagicSize * 6), new byte[] { 107 });
+				Put(MagicOffset + (MagicSize * 23), new byte[] { 107 });
+			}
+			else if (lockHitMode == LockHitMode.Accuracy162)
+			{
+				Put(MagicOffset + (MagicSize * 6), new byte[] { 162 });
+				Put(MagicOffset + (MagicSize * 23), new byte[] { 162 });
+			}
+			else if (lockHitMode == LockHitMode.AutoHit)
+			{
+				PutInBank(0x0C, 0xBA46, Blob.FromHex("2029B9AD856838ED7468B002A9008D85682085B860EAEAEAEAEAEAEAEAEAEAEAEAEA"));
+			}
 		}
 
 		List<MagicSpell> GetSpells() {

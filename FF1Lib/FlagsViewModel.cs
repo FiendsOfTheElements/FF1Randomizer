@@ -1137,15 +1137,6 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SpellBugs"));
 			}
 		}
-		public bool RebalanceSpells
-		{
-			get => Flags.RebalanceSpells;
-			set
-			{
-				Flags.RebalanceSpells = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RebalanceSpells"));
-			}
-		}
 		public bool BlackBeltAbsorb
 		{
 			get => Flags.BlackBeltAbsorb;
@@ -2140,6 +2131,67 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BossHPScaleFactor"));
 			}
 		}
+
+		public bool? ChangeMaxMP
+		{
+			get => Flags.ChangeMaxMP;
+			set
+			{
+				Flags.ChangeMaxMP = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ChangeMaxMP"));
+			}
+		}
+
+		public int RedMageMaxMP
+		{
+			get => Flags.RedMageMaxMP;
+			set
+			{
+				Flags.RedMageMaxMP = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RedMageMaxMP"));
+			}
+		}
+
+		public int WhiteMageMaxMP
+		{
+			get => Flags.WhiteMageMaxMP;
+			set
+			{
+				Flags.WhiteMageMaxMP = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("WhiteMageMaxMP"));
+			}
+		}
+
+		public int BlackMageMaxMP
+		{
+			get => Flags.BlackMageMaxMP;
+			set
+			{
+				Flags.BlackMageMaxMP = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BlackMageMaxMP"));
+			}
+		}
+
+		public int KnightNinjaMaxMP
+		{
+			get => Flags.KnightNinjaMaxMP;
+			set
+			{
+				Flags.KnightNinjaMaxMP = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("KnightNinjaMaxMP"));
+			}
+		}
+
+		public LockHitMode LockMode
+		{
+			get => Flags.LockMode;
+			set
+			{
+				Flags.LockMode = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("LockMode"));
+			}
+		}
+
 		public PoolSize PoolSize
 		{
 			get => Flags.PoolSize;
@@ -2185,6 +2237,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncludeBaseClasses"));
 			}
 		}
+
 		public bool? SwolePirates
 		{
 			get => Flags.SwolePirates;

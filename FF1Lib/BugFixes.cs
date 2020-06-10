@@ -111,11 +111,6 @@ namespace FF1Lib
 			Put(0x3AF13, Blob.FromHex("CC")); // update address for Cure4 routine
 		}
 
-		public void RebalanceSpells()
-		{
-			PutInBank(0x0C, 0xBA46, Blob.FromHex("2029B9AD856838ED7468B002A9008D85682085B860EAEAEAEAEAEAEAEAEAEAEAEAEA"));
-		}
-
 		public void FixEnemyStatusAttackBug()
 		{
 			Put(0x32812, Blob.FromHex("DF")); // This is the craziest freaking patch ever, man.

@@ -194,9 +194,10 @@ namespace FF1Lib
 				FixSpellBugs();
 			}
 
-			if (flags.RebalanceSpells)
+			//must be done before spells get shuffled around otherwise we'd be changing a spell that isnt lock
+			if (flags.LockMode != LockHitMode.Vanilla)
 			{
-				RebalanceSpells();
+				ChangeLockMode(flags.LockMode);
 			}
 
 			if (flags.EnemySpellsTargetingAllies)
@@ -216,7 +217,7 @@ namespace FF1Lib
 
 			if ((bool)flags.GenerateNewSpellbook)
 			{
-				CraftNewSpellbook(rng, (bool)flags.SpellcrafterMixSpells, flags.RebalanceSpells, (bool)flags.MagicLevels, (bool)flags.SpellcrafterRetainPermissions);
+				CraftNewSpellbook(rng, (bool)flags.SpellcrafterMixSpells, flags.LockMode, (bool)flags.MagicLevels, (bool)flags.SpellcrafterRetainPermissions);
 			}
 
 			if ((bool)flags.ItemMagic)
@@ -567,6 +568,11 @@ namespace FF1Lib
 			if ((bool)flags.RandomArmorBonus)
 			{
 				RandomArmorBonus(rng);
+			}
+
+			if((bool)flags.ChangeMaxMP)
+			{
+				SetMPMax(flags.RedMageMaxMP, flags.WhiteMageMaxMP, flags.BlackMageMaxMP, flags.KnightNinjaMaxMP);
 			}
 
 			if (flags.WeaponBonuses)
