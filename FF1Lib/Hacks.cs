@@ -939,7 +939,7 @@ namespace FF1Lib
 
 			// New promotion routine to not bug out with already promoted classes and allow random promotion; works with Nones; see 0E_95AE_DoClassChange-2.asm
 			PutInBank(0x0E, 0x95AE, Blob.FromHex("A20020C595A24020C595A28020C595A2C020C595E65660BC00613006B9F09D9D006160"));
-			// lut for standard promotion, can be modified or randomized //9C80
+			// lut for standard promotion, can be modified or randomized
 			PutInBank(0x0E, 0x9DF0, Blob.FromHex("060708090A0B060708090A0B"));
 		}
 
