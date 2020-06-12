@@ -513,7 +513,8 @@
                         <CheckBox UpdateToolTip="@UpdateToolTipID" Id="disableTentSaving" @bind-Checked="Flags.DisableTentSaving">Disable Tent/Cabin/House Saving on Overworld</CheckBox>
                         <CheckBox UpdateToolTip="@UpdateToolTipID" Id="disableInnSaving" @bind-Checked="Flags.DisableInnSaving">Disable Inn Saving</CheckBox>
                         <CheckBox UpdateToolTip="@UpdateToolTipID" Id="saveGameWhenGameOverCheckBox" IsEnabled="@((Flags.NPCItems ?? true) || (Flags.NPCFetchItems ?? true))" @bind-Checked="Flags.SaveGameWhenGameOver">Save Game When Game Over</CheckBox>
-                        <CheckBox UpdateToolTip="@UpdateToolTipID" Id="shuffleAstosCheckBox" IsEnabled="@((Flags.NPCItems ?? true) || (Flags.NPCFetchItems ?? true))" @bind-Checked="Flags.ShuffleAstos">Shuffle Astos</CheckBox>
+                        <CheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="saveGameDWModeCheckBox" IsEnabled="@Flags.SaveGameWhenGameOver" @bind-Checked="Flags.SaveGameDWMode">Dragon Warrior Mode</CheckBox>
+                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="shuffleAstosCheckBox" IsEnabled="@((Flags.NPCItems ?? true) || (Flags.NPCFetchItems ?? true))" @bind-Value="Flags.ShuffleAstos">Shuffle Astos</TriStateCheckBox>
                         <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="randomizeFormationEnemizer" @bind-Value="Flags.RandomizeFormationEnemizer">Generate New Formations (Enemizer)</TriStateCheckBox>
                         <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="randomizeEnemizer" IsEnabled="@Flags.RandomizeFormationEnemizer" @bind-Value="Flags.RandomizeEnemizer">Generate New Enemies (Enemizer)</TriStateCheckBox>
                         <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="generateNewSpellbook" @bind-Value="Flags.GenerateNewSpellbook">Generate New Spellbook (Spellcrafter)</TriStateCheckBox>

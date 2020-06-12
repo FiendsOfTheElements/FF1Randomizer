@@ -1951,7 +1951,16 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SaveGameWhenGameOver"));
 			}
 		}
-		public bool ShuffleAstos
+		public bool SaveGameDWMode
+		{
+			get => Flags.SaveGameDWMode;
+			set
+			{
+				Flags.SaveGameDWMode = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SaveGameDWMode"));
+			}
+		}
+		public bool? ShuffleAstos
 		{
 			get => Flags.ShuffleAstos;
 			set
