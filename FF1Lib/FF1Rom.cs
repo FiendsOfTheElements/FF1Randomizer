@@ -311,7 +311,7 @@ namespace FF1Lib
 			*/
 
 			NewAstosRoutine((bool)flags.NPCItems || (bool)flags.NPCFetchItems);  // moves Talk_Astos to a new location so we can play with it, and also makes it so Astos will only give his item after you have defeated him and speak to him again
-																				// we make this happen on all seeds for consistency with other features
+																				 // we make this happen on all seeds for consistency with other features
 			if (flags.SaveGameWhenGameOver && ((bool)flags.NPCItems || (bool)flags.NPCFetchItems))
 			{
 				EnableSaveOnDeath(flags);
@@ -335,7 +335,7 @@ namespace FF1Lib
 
 			if (((bool)flags.EnemySkillsSpells))
 			{
-				if((bool)flags.EnemySkillsSpellsTiered && (bool)!flags.BossSkillsOnly)
+				if ((bool)flags.EnemySkillsSpellsTiered && (bool)!flags.BossSkillsOnly)
 				{
 					GenerateBalancedEnemyScripts(rng, (bool)flags.SwolePirates);
 					ShuffleEnemySkillsSpells(rng, false);
@@ -528,7 +528,7 @@ namespace FF1Lib
 				EnableNPCSwatter();
 			}
 
-			if(flags.InventoryAutosort)
+			if (flags.InventoryAutosort)
 			{
 				EnableInventoryAutosort();
 			}
@@ -564,7 +564,7 @@ namespace FF1Lib
 				RandomArmorBonus(rng);
 			}
 
-			if((bool)flags.ChangeMaxMP)
+			if ((bool)flags.ChangeMaxMP)
 			{
 				SetMPMax(flags.RedMageMaxMP, flags.WhiteMageMaxMP, flags.BlackMageMaxMP, flags.KnightNinjaMaxMP);
 			}
@@ -661,7 +661,7 @@ namespace FF1Lib
 			if ((bool)flags.ShuffleAstos && ((bool)flags.NPCItems || (bool)flags.NPCFetchItems))
 			{
 				ShuffleAstos(flags, rng);
-      }
+			}
 
 			if ((bool)flags.EnablePoolParty)
 			{
@@ -898,13 +898,19 @@ namespace FF1Lib
 			Data[0x38DED] = 0x25;
 
 			//Key Items + Progressive Scaling
-			if (flags.ProgressiveScaleMode == ProgressiveScaleMode.OrbProgressiveSlow || flags.ProgressiveScaleMode == ProgressiveScaleMode.OrbProgressiveMedium || flags.ProgressiveScaleMode == ProgressiveScaleMode.OrbProgressiveFast || flags.ProgressiveScaleMode == ProgressiveScaleMode.OrbProgressiveVFast) {
-				if (flags.ShardHunt) {
+			if (flags.ProgressiveScaleMode == ProgressiveScaleMode.OrbProgressiveSlow || flags.ProgressiveScaleMode == ProgressiveScaleMode.OrbProgressiveMedium || flags.ProgressiveScaleMode == ProgressiveScaleMode.OrbProgressiveFast || flags.ProgressiveScaleMode == ProgressiveScaleMode.OrbProgressiveVFast)
+			{
+				if (flags.ShardHunt)
+				{
 					PutInBank(0x0F, 0x9000, Blob.FromHex("AD35608DB86060"));
-				} else {
+				}
+				else
+				{
 					PutInBank(0x0F, 0x9000, Blob.FromHex("A200AD3160F001E8AD3260F001E8AD3360F001E8AD3460F001E88EB86060"));
 				}
-			} else {
+			}
+			else
+			{
 				PutInBank(0x0F, 0x9000, Blob.FromHex("A200AD2160F001E8AD2260F001E8AD2560F001E8AD2A60F001E8AD2B60F001E8AD2C60F001E8AD2E60F001E8AD3060F001E8AD0060F001E8AD1260F001E8AD0460F001E8AD0860F001E8AD0C60D001E8AD2360D007AD0A622902F001E8AD2460D007AD05622902F001E8AD2660D007AD08622902F001E8AD2760D007AD09622902F001E8AD2860D007AD0B622902F001E8AD2960D007AD14622901D001E8AD2D60D007AD0E622902F001E8AD2F60D007AD13622903F001E88EB86060"));
 			}
 			PutInBank(0x1F, 0xCFCB, CreateLongJumpTableEntry(0x0F, 0x9100));
