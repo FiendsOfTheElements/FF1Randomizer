@@ -17,11 +17,11 @@ jobs:
             set -ex
             cd FF1Blazorizer
             
-            sed -i "s/SHA/${CIRCLE_SHA1}/" wwwroot/version.json
-            sed -i "s/BRANCH/${CIRCLE_BRANCH}/" wwwroot/version.json
-            echo  "$(wwwroot/version.json)"
+            sed -i "s/SHA/${CIRCLE_SHA1}/" wwwroot/FFRVersion.cs
+            sed -i "s/BRANCH/${CIRCLE_BRANCH}/" wwwroot/FFRVersion.cs
+            echo  "$(wwwroot/FFRVersion.cs)"
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
-              sed -i 's/SHA//' wwwroot/version.json
+              sed -i 's/SHA//' wwwroot/FFRVersion.cs
               sed -i 's/NAME_LONG/FFRandomizer/g' wwwroot/manifest.published.json
               sed -i 's/NAME_SHORT/FFR/g' wwwroot/manifest.published.json
               color=$(grep "DARK_BACKGROUND_COLOR: #.*" wwwroot/css/main.css | grep -o "#[0-9a-fA-F]*")
