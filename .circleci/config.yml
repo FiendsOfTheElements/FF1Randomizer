@@ -15,6 +15,11 @@ jobs:
           name: publish
           command: |
             set -ex
+            
+            sed -i "s/SHA/${CIRCLE_SHA1}/" FF1Lib/FFRVersion.cs
+            sed -i "s/BRANCH/${CIRCLE_BRANCH}/" FF1Lib/FFRVersion.cs
+            echo  "$(FF1Lib/FFRVersion.cs)"
+            
             cd FF1Blazorizer
             
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
@@ -52,7 +57,6 @@ jobs:
             else
               dotnet publish -c Debug -o output
             fi
-            git rev-parse HEAD > output/wwwroot/version.txt
       - persist_to_workspace:
           root: ~/ff1randomizer/FF1Blazorizer/output
           paths:

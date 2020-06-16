@@ -14,12 +14,6 @@ namespace FF1Lib
 	// ReSharper disable once InconsistentNaming
 	public partial class FF1Rom : NesRom
 	{
-#if DEBUG
-		public const string Version = "3.1.0 Beta";
-#else
-		public const string Version = "3.1.0";
-#endif
-
 		public const int RngOffset = 0x7F100;
 		public const int BattleRngOffset = 0x7FCF1;
 		public const int RngSize = 256;
@@ -104,7 +98,7 @@ namespace FF1Lib
 			FixEnemyPalettes(); // fixes a bug in the original game's programming that causes third enemy slot's palette to render incorrectly
 			FixWarpBug(); // The warp bug must be fixed for magic level shuffle and spellcrafter
 			SeparateUnrunnables();
-			
+
 			flags = Flags.ConvertAllTriState(flags, rng);
 
 			TeleportShuffle teleporters = new TeleportShuffle();
@@ -317,7 +311,7 @@ namespace FF1Lib
 			*/
 
 			NewAstosRoutine((bool)flags.NPCItems || (bool)flags.NPCFetchItems);  // moves Talk_Astos to a new location so we can play with it, and also makes it so Astos will only give his item after you have defeated him and speak to him again
-																				// we make this happen on all seeds for consistency with other features
+																				 // we make this happen on all seeds for consistency with other features
 			if (flags.SaveGameWhenGameOver && ((bool)flags.NPCItems || (bool)flags.NPCFetchItems))
 			{
 				EnableSaveOnDeath(flags);
@@ -341,7 +335,7 @@ namespace FF1Lib
 
 			if (((bool)flags.EnemySkillsSpells))
 			{
-				if((bool)flags.EnemySkillsSpellsTiered && (bool)!flags.BossSkillsOnly)
+				if ((bool)flags.EnemySkillsSpellsTiered && (bool)!flags.BossSkillsOnly)
 				{
 					GenerateBalancedEnemyScripts(rng, (bool)flags.SwolePirates);
 					ShuffleEnemySkillsSpells(rng, false);
@@ -534,7 +528,7 @@ namespace FF1Lib
 				EnableNPCSwatter();
 			}
 
-			if(flags.InventoryAutosort)
+			if (flags.InventoryAutosort)
 			{
 				EnableInventoryAutosort();
 			}
@@ -570,7 +564,7 @@ namespace FF1Lib
 				RandomArmorBonus(rng);
 			}
 
-			if((bool)flags.ChangeMaxMP)
+			if ((bool)flags.ChangeMaxMP)
 			{
 				SetMPMax(flags.RedMageMaxMP, flags.WhiteMageMaxMP, flags.BlackMageMaxMP, flags.KnightNinjaMaxMP);
 			}
@@ -667,7 +661,7 @@ namespace FF1Lib
 			if ((bool)flags.ShuffleAstos && ((bool)flags.NPCItems || (bool)flags.NPCFetchItems))
 			{
 				ShuffleAstos(flags, rng);
-      }
+			}
 
 			if ((bool)flags.EnablePoolParty)
 			{
@@ -736,7 +730,7 @@ namespace FF1Lib
 				DisableSpellCastScreenFlash();
 			}
 
-			WriteSeedAndFlags(Version, seed.ToHex(), Flags.EncodeFlagsText(flags));
+			WriteSeedAndFlags(seed.ToHex(), Flags.EncodeFlagsText(flags));
 			ExtraTrackingAndInitCode(flags);
 		}
 
@@ -904,13 +898,19 @@ namespace FF1Lib
 			Data[0x38DED] = 0x25;
 
 			//Key Items + Progressive Scaling
-			if (flags.ProgressiveScaleMode == ProgressiveScaleMode.OrbProgressiveSlow || flags.ProgressiveScaleMode == ProgressiveScaleMode.OrbProgressiveMedium || flags.ProgressiveScaleMode == ProgressiveScaleMode.OrbProgressiveFast || flags.ProgressiveScaleMode == ProgressiveScaleMode.OrbProgressiveVFast) {
-				if (flags.ShardHunt) {
+			if (flags.ProgressiveScaleMode == ProgressiveScaleMode.OrbProgressiveSlow || flags.ProgressiveScaleMode == ProgressiveScaleMode.OrbProgressiveMedium || flags.ProgressiveScaleMode == ProgressiveScaleMode.OrbProgressiveFast || flags.ProgressiveScaleMode == ProgressiveScaleMode.OrbProgressiveVFast)
+			{
+				if (flags.ShardHunt)
+				{
 					PutInBank(0x0F, 0x9000, Blob.FromHex("AD35608DB86060"));
-				} else {
+				}
+				else
+				{
 					PutInBank(0x0F, 0x9000, Blob.FromHex("A200AD3160F001E8AD3260F001E8AD3360F001E8AD3460F001E88EB86060"));
 				}
-			} else {
+			}
+			else
+			{
 				PutInBank(0x0F, 0x9000, Blob.FromHex("A200AD2160F001E8AD2260F001E8AD2560F001E8AD2A60F001E8AD2B60F001E8AD2C60F001E8AD2E60F001E8AD3060F001E8AD0060F001E8AD1260F001E8AD0460F001E8AD0860F001E8AD0C60D001E8AD2360D007AD0A622902F001E8AD2460D007AD05622902F001E8AD2660D007AD08622902F001E8AD2760D007AD09622902F001E8AD2860D007AD0B622902F001E8AD2960D007AD14622901D001E8AD2D60D007AD0E622902F001E8AD2F60D007AD13622903F001E88EB86060"));
 			}
 			PutInBank(0x1F, 0xCFCB, CreateLongJumpTableEntry(0x0F, 0x9100));
@@ -983,7 +983,7 @@ namespace FF1Lib
 			Data[0x7FE97] = 0x03;
 		}
 
-		public void WriteSeedAndFlags(string version, string seed, string flags)
+		public void WriteSeedAndFlags(string seed, string flags)
 		{
 			// Replace most of the old copyright string printing with a JSR to a LongJump
 			Put(0x38486, Blob.FromHex("20B9FF60"));
@@ -991,10 +991,9 @@ namespace FF1Lib
 			// DrawSeedAndFlags LongJump
 			PutInBank(0x1F, 0xFFB9, CreateLongJumpTableEntry(0x0F, 0x8980));
 
-			var sha = File.Exists("version.txt") ? File.ReadAllText("version.txt").Trim() : "development";
 			Blob hash;
 			var hasher = SHA256.Create();
-			hash = hasher.ComputeHash(Encoding.ASCII.GetBytes($"{seed}_{flags}_{sha}"));
+			hash = hasher.ComputeHash(Encoding.ASCII.GetBytes($"{seed}_{flags}_{FFRVersion.Sha}"));
 
 			var hashpart = BitConverter.ToUInt64(hash, 0);
 			hash = Blob.FromHex("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
@@ -1007,8 +1006,8 @@ namespace FF1Lib
 
 			// Put the new string data in a known location.
 			PutInBank(0x0F, 0x8900, Blob.Concat(
-				FF1Text.TextToCopyrightLine("Final Fantasy Randomizer " + version),
-				FF1Text.TextToCopyrightLine((sha == "development" ? "DEVELOPMENT BUILD " : "Seed  ") + seed),
+				FF1Text.TextToCopyrightLine("Final Fantasy Randomizer " + FFRVersion.Version),
+				FF1Text.TextToCopyrightLine((FFRVersion.Branch == "master" ? "Seed " : FFRVersion.Branch + " BUILD ") + seed),
 				hash));
 		}
 

@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Reflection;
+using System.Text;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Schema;
 using RomUtilities;
 
 namespace FF1Lib
@@ -253,7 +255,7 @@ namespace FF1Lib
 		public double EnemyHPScaleFactor { get; set; } = 1;
 		public double BossHPScaleFactor { get; set; } = 1;
 		public PoolSize PoolSize { get; set; } = PoolSize.Size6;
-		public bool? EnablePoolParty { get; set; }= false;
+		public bool? EnablePoolParty { get; set; } = false;
 		public bool? IncludePromClasses { get; set; } = false;
 		public bool? EnableRandomPromotions { get; set; } = false;
 		public bool? IncludeBaseClasses { get; set; } = false;
@@ -484,7 +486,7 @@ namespace FF1Lib
 			foreach (var property in properties)
 			{
 				if (property.PropertyType == typeof(bool?) && property.GetValue(newflags) == null)
-               {
+				{
 					bool newvalue = ConvertTriState((bool?)property.GetValue(newflags), rng);
 					property.SetValue(newflags, newvalue);
 				}
@@ -510,6 +512,8 @@ namespace FF1Lib
 		public static string EncodeFlagsText(Flags flags)
 		{
 			BigInteger sum = 0;
+			sum = AddString(sum, FFRVersion.Sha.Length, FFRVersion.Sha);
+
 
 			sum = AddTriState(sum, flags.IncentivizeVorpal);
 			sum = AddTriState(sum, flags.Shops);
@@ -635,11 +639,11 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.IncludeMorale);
 			sum = AddTriState(sum, flags.RandomWaresIncludesSpecialGear);
 			sum = AddBoolean(sum, flags.NoDanMode);
-			sum = AddNumeric(sum, 41, (int)(10.0*flags.EnemyScaleFactor) - 10);
+			sum = AddNumeric(sum, 41, (int)(10.0 * flags.EnemyScaleFactor) - 10);
 			sum = AddNumeric(sum, 41, (int)(10.0 * flags.BossScaleFactor) - 10);
 			sum = AddNumeric(sum, 41, (int)(10.0 * flags.PriceScaleFactor) - 10);
 			sum = AddNumeric(sum, 41, (int)(10.0 * flags.ExpMultiplier) - 10);
-			sum = AddNumeric(sum, 51, (int)(flags.ExpBonus/10.0));
+			sum = AddNumeric(sum, 51, (int)(flags.ExpBonus / 10.0));
 			sum = AddNumeric(sum, 46, (int)flags.EncounterRate);
 			sum = AddNumeric(sum, 46, (int)flags.DungeonEncounterRate);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(ProgressiveScaleMode)).Cast<int>().Max() + 1, (int)flags.ProgressiveScaleMode);
@@ -966,11 +970,26 @@ namespace FF1Lib
 				Shops = GetTriState(ref sum),
 				IncentivizeVorpal = GetTriState(ref sum),
 			};
+			string EncodedSha = GetString(ref sum, FFRVersion.Sha.Length);
+			if (FFRVersion.Sha != EncodedSha)
+			{
+				throw new Exception("The encoded version does not match the expected version");
+			}
 
 			return flags;
 		}
 
 		private static BigInteger AddNumeric(BigInteger sum, int radix, int value) => sum * radix + value;
+		private static BigInteger AddString(BigInteger sum, int length, string str)
+		{
+			Encoding AsciiEncoding = Encoding.ASCII;
+			byte[] bytes = AsciiEncoding.GetBytes(str);
+			BigInteger StringAsBigInt = new BigInteger(bytes);
+			BigInteger LargestInt = new BigInteger(Math.Pow(0xFF, bytes.Length) - 1);
+
+
+			return sum * LargestInt + StringAsBigInt;
+		}
 		private static BigInteger AddBoolean(BigInteger sum, bool value) => AddNumeric(sum, 2, value ? 1 : 0);
 		private static int TriStateValue(bool? value) => value.HasValue ? (value.Value ? 1 : 0) : 2;
 		private static BigInteger AddTriState(BigInteger sum, bool? value) => AddNumeric(sum, 3, TriStateValue(value));
@@ -980,6 +999,16 @@ namespace FF1Lib
 			sum = BigInteger.DivRem(sum, radix, out var value);
 
 			return (int)value;
+		}
+		private static string GetString(ref BigInteger sum, int length)
+		{
+			BigInteger LargestInt = new BigInteger(Math.Pow(0xFF, length) - 1);
+			sum = BigInteger.DivRem(sum, LargestInt, out BigInteger value);
+			Encoding AsciiEncoding = Encoding.ASCII;
+			byte[] bytes = value.ToByteArray();
+			string str = AsciiEncoding.GetString(bytes);
+
+			return str;
 		}
 		private static bool GetBoolean(ref BigInteger sum) => GetNumeric(ref sum, 2) != 0;
 		private static bool? ValueTriState(int value) => value == 0 ? (bool?)false : value == 1 ? (bool?)true : null;
