@@ -255,7 +255,7 @@ namespace FF1Lib
 		public double EnemyHPScaleFactor { get; set; } = 1;
 		public double BossHPScaleFactor { get; set; } = 1;
 		public PoolSize PoolSize { get; set; } = PoolSize.Size6;
-		public bool? EnablePoolParty { get; set; }= false;
+		public bool? EnablePoolParty { get; set; } = false;
 		public bool? IncludePromClasses { get; set; } = false;
 		public bool? EnableRandomPromotions { get; set; } = false;
 		public bool? IncludeBaseClasses { get; set; } = false;
@@ -486,7 +486,7 @@ namespace FF1Lib
 			foreach (var property in properties)
 			{
 				if (property.PropertyType == typeof(bool?) && property.GetValue(newflags) == null)
-               {
+				{
 					bool newvalue = ConvertTriState((bool?)property.GetValue(newflags), rng);
 					property.SetValue(newflags, newvalue);
 				}
@@ -512,8 +512,7 @@ namespace FF1Lib
 		public static string EncodeFlagsText(Flags flags)
 		{
 			BigInteger sum = 0;
-			FFRVersion Version = FF1Rom.Version();
-			sum = AddString(sum, Version.Sha.Length, Version.Sha);
+			sum = AddString(sum, FFRVersion.Sha.Length, FFRVersion.Sha);
 
 
 			sum = AddTriState(sum, flags.IncentivizeVorpal);
@@ -640,11 +639,11 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.IncludeMorale);
 			sum = AddTriState(sum, flags.RandomWaresIncludesSpecialGear);
 			sum = AddBoolean(sum, flags.NoDanMode);
-			sum = AddNumeric(sum, 41, (int)(10.0*flags.EnemyScaleFactor) - 10);
+			sum = AddNumeric(sum, 41, (int)(10.0 * flags.EnemyScaleFactor) - 10);
 			sum = AddNumeric(sum, 41, (int)(10.0 * flags.BossScaleFactor) - 10);
 			sum = AddNumeric(sum, 41, (int)(10.0 * flags.PriceScaleFactor) - 10);
 			sum = AddNumeric(sum, 41, (int)(10.0 * flags.ExpMultiplier) - 10);
-			sum = AddNumeric(sum, 51, (int)(flags.ExpBonus/10.0));
+			sum = AddNumeric(sum, 51, (int)(flags.ExpBonus / 10.0));
 			sum = AddNumeric(sum, 46, (int)flags.EncounterRate);
 			sum = AddNumeric(sum, 46, (int)flags.DungeonEncounterRate);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(ProgressiveScaleMode)).Cast<int>().Max() + 1, (int)flags.ProgressiveScaleMode);
@@ -971,9 +970,9 @@ namespace FF1Lib
 				Shops = GetTriState(ref sum),
 				IncentivizeVorpal = GetTriState(ref sum),
 			};
-			FFRVersion Version = FF1Rom.Version();
-			string EncodedSha = GetString(ref sum, Version.Sha.Length);
-			if (Version.Sha != EncodedSha)
+			string EncodedSha = GetString(ref sum, FFRVersion.Sha.Length);
+			Console.WriteLine("expected Sha: {0}, encoded Sha: {1}", FFRVersion.Sha, EncodedSha);
+			if (FFRVersion.Sha != EncodedSha)
 			{
 				throw new Exception("The encoded version does not match the expected version");
 			}
@@ -985,19 +984,10 @@ namespace FF1Lib
 		private static BigInteger AddString(BigInteger sum, int length, string str)
 		{
 			Encoding AsciiEncoding = Encoding.ASCII;
-
-			byte[] bytes = new byte[length];
-
-		    bytes = AsciiEncoding.GetBytes(str);
-
+			byte[] bytes = AsciiEncoding.GetBytes(str);
 			BigInteger StringAsBigInt = new BigInteger(bytes);
+			BigInteger LargestInt = new BigInteger(Math.Pow(0xFF, bytes.Length) - 1);
 
-			byte[] RepeatedFFs = new byte[length];
-			for (int i = 0; i < RepeatedFFs.Length; i++)
-			{
-				RepeatedFFs[i] = 0xFF;
-			}
-			BigInteger LargestInt = new BigInteger(RepeatedFFs);
 
 			return sum * LargestInt + StringAsBigInt;
 		}
@@ -1013,12 +1003,7 @@ namespace FF1Lib
 		}
 		private static string GetString(ref BigInteger sum, int length)
 		{
-			byte[] RepeatedFFs = new byte[length];
-			for (int i = 0; i < RepeatedFFs.Length; i++)
-			{
-				RepeatedFFs[i] = 0xFF;
-			}
-			BigInteger LargestInt = new BigInteger(RepeatedFFs);
+			BigInteger LargestInt = new BigInteger(Math.Pow(0xFF, length) - 1);
 			sum = BigInteger.DivRem(sum, LargestInt, out BigInteger value);
 			Encoding AsciiEncoding = Encoding.ASCII;
 			byte[] bytes = value.ToByteArray();

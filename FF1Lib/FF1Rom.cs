@@ -8,26 +8,12 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using FF1Lib.Assembly;
-using Newtonsoft.Json;
 
 namespace FF1Lib
 {
-	public class FFRVersion
-	{
-		public string Version { get; set; }
-		public string Sha { get; set; }
-		public string Branch { get; set; }
-		public string MasterBranch { get; set; }
-	}
-
 	// ReSharper disable once InconsistentNaming
 	public partial class FF1Rom : NesRom
 	{
-
-		public static FFRVersion Version()
-		{
-		    return JsonConvert.DeserializeObject<FFRVersion>(File.ReadAllText("version.json"));
-		}
 		public const int RngOffset = 0x7F100;
 		public const int BattleRngOffset = 0x7FCF1;
 		public const int RngSize = 256;
@@ -112,7 +98,7 @@ namespace FF1Lib
 			FixEnemyPalettes(); // fixes a bug in the original game's programming that causes third enemy slot's palette to render incorrectly
 			FixWarpBug(); // The warp bug must be fixed for magic level shuffle and spellcrafter
 			SeparateUnrunnables();
-			
+
 			flags = Flags.ConvertAllTriState(flags, rng);
 
 			TeleportShuffle teleporters = new TeleportShuffle();
@@ -744,7 +730,7 @@ namespace FF1Lib
 				DisableSpellCastScreenFlash();
 			}
 
-			WriteSeedAndFlags(Version(), seed.ToHex(), Flags.EncodeFlagsText(flags));
+			WriteSeedAndFlags(seed.ToHex(), Flags.EncodeFlagsText(flags));
 			ExtraTrackingAndInitCode(flags);
 		}
 
@@ -991,7 +977,7 @@ namespace FF1Lib
 			Data[0x7FE97] = 0x03;
 		}
 
-		public void WriteSeedAndFlags(FFRVersion version, string seed, string flags)
+		public void WriteSeedAndFlags(string seed, string flags)
 		{
 			// Replace most of the old copyright string printing with a JSR to a LongJump
 			Put(0x38486, Blob.FromHex("20B9FF60"));
@@ -1001,7 +987,7 @@ namespace FF1Lib
 
 			Blob hash;
 			var hasher = SHA256.Create();
-			hash = hasher.ComputeHash(Encoding.ASCII.GetBytes($"{seed}_{flags}_{version.Sha}"));
+			hash = hasher.ComputeHash(Encoding.ASCII.GetBytes($"{seed}_{flags}_{FFRVersion.Sha}"));
 
 			var hashpart = BitConverter.ToUInt64(hash, 0);
 			hash = Blob.FromHex("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
@@ -1014,8 +1000,8 @@ namespace FF1Lib
 
 			// Put the new string data in a known location.
 			PutInBank(0x0F, 0x8900, Blob.Concat(
-				FF1Text.TextToCopyrightLine("Final Fantasy Randomizer " + version.Version),
-				FF1Text.TextToCopyrightLine((version.Branch == "master" ? "Seed " : version.Branch + " BUILD ") + seed),
+				FF1Text.TextToCopyrightLine("Final Fantasy Randomizer " + FFRVersion.Version),
+				FF1Text.TextToCopyrightLine((FFRVersion.Branch == "master" ? "Seed " : FFRVersion.Branch + " BUILD ") + seed),
 				hash));
 		}
 

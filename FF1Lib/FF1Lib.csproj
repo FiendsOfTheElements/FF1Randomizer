@@ -32,7 +32,6 @@
     <None Remove="presets\ro8.json" />
     <None Remove="presets\semifinals.json" />
     <None Remove="presets\tournament.json" />
-    <None Remove="version.json" />
   </ItemGroup>
 
   <ItemGroup>
@@ -49,9 +48,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="presets\improved-vanilla.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="version.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

@@ -47,13 +47,6 @@
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 	</ItemGroup>
-	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-		<Copy SourceFiles="$(OutDir)version.json" DestinationFolder="$(OutDir)\wwwroot" />
-	</Target>
-	<Target Name="PostPublish" AfterTargets="Publish">
-		<Copy SourceFiles="$(OutDir)version.json" DestinationFolder="$(PublishDir)\wwwroot" />
-	</Target>
-
 	<ItemGroup>
 		<ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.published.js" />
 	</ItemGroup>

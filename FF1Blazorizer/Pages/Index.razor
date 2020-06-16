@@ -29,22 +29,24 @@
 </div>
 
 @code {
-    string VersionString = "";
-    protected override async void OnInitialized() {
-        FF1Lib.FFRVersion Version = await Http.GetFromJsonAsync<FF1Lib.FFRVersion>("/version.json");
-        VersionString = Version.Version;
-        if (Version.Branch == "dev")
-        {
+	string VersionString = "";
+	protected override void OnInitialized()
+	{
+		VersionString = FF1Lib.FFRVersion.Version;
+		if (FF1Lib.FFRVersion.Branch == "dev")
+		{
 			VersionString += " Beta";
-        } else if (Version.Branch == "alpha")
-        {
-			VersionString += " Alpha : " + Version.Sha; 
-        } else
-        {
-			VersionString += " " + Version.Branch;
-        }
-        StateHasChanged();
-    }
+		}
+		else if (FF1Lib.FFRVersion.Branch == "alpha")
+		{
+			VersionString += " Alpha : " + FF1Lib.FFRVersion.Sha.Substring(0, 7);
+		}
+		else
+		{
+			VersionString += " " + FF1Lib.FFRVersion.Branch;
+		}
+		StateHasChanged();
+	}
 }
 
 
