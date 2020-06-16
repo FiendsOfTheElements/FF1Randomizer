@@ -971,7 +971,6 @@ namespace FF1Lib
 				IncentivizeVorpal = GetTriState(ref sum),
 			};
 			string EncodedSha = GetString(ref sum, FFRVersion.Sha.Length);
-			Console.WriteLine("expected Sha: {0}, encoded Sha: {1}", FFRVersion.Sha, EncodedSha);
 			if (FFRVersion.Sha != EncodedSha)
 			{
 				throw new Exception("The encoded version does not match the expected version");
