@@ -17,7 +17,11 @@ jobs:
             set -ex
             cd FF1Blazorizer
             
+            sed -i "s/SHA/${CIRCLE_SHA1}/" wwwroot/version.json
+            sed -i "s/BRANCH/${CIRCLE_BRANCH}/" wwwroot/version.json
+            echo  "$(wwwroot/version.json)"
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              sed -i 's/SHA//' wwwroot/version.json
               sed -i 's/NAME_LONG/FFRandomizer/g' wwwroot/manifest.published.json
               sed -i 's/NAME_SHORT/FFR/g' wwwroot/manifest.published.json
               color=$(grep "DARK_BACKGROUND_COLOR: #.*" wwwroot/css/main.css | grep -o "#[0-9a-fA-F]*")
@@ -52,7 +56,6 @@ jobs:
             else
               dotnet publish -c Debug -o output
             fi
-            git rev-parse HEAD > output/wwwroot/version.txt
       - persist_to_workspace:
           root: ~/ff1randomizer/FF1Blazorizer/output
           paths:

@@ -1,6 +1,8 @@
-﻿<div>
+﻿@using System.Net.Http.Json
+@inject HttpClient  Http
+<div>
 	<NavLink class="ffr-nav" href="" Match=NavLinkMatch.All>
-		FFR @FF1Lib.FF1Rom.Version
+		@(VersionString)
 	</NavLink>
 	<NavLink class="ffr-nav" href="Randomize">
 		<span class="oi oi-random" aria-hidden="true"></span> Randomize
@@ -15,3 +17,21 @@
 		<span class="oi oi-bug" aria-hidden="true"></span> Report a Bug
 	</NavLink>
 </div>
+@code {
+    string VersionString = "";
+    protected override async void OnInitialized() {
+        FF1Lib.FFRVersion Version = await Http.GetFromJsonAsync<FF1Lib.FFRVersion>("/version.json");
+        VersionString = Version.Version;
+        if (Version.Branch == "dev")
+        {
+			VersionString += " Beta";
+        } else if (Version.Branch == "alpha")
+        {
+			VersionString += " Alpha : " + Version.Sha; 
+        } else
+        {
+			VersionString += " " + Version.Branch;
+        }
+        StateHasChanged();
+    }
+}

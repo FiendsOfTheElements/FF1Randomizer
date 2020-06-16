@@ -48,7 +48,10 @@
 		</Content>
 	</ItemGroup>
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-		<Copy SourceFiles="$(OutDir)version.txt" DestinationFolder="$(OutDir)dist" />
+		<Copy SourceFiles="$(OutDir)version.json" DestinationFolder="$(OutDir)\wwwroot" />
+	</Target>
+	<Target Name="PostPublish" AfterTargets="Publish">
+		<Copy SourceFiles="$(OutDir)version.json" DestinationFolder="$(PublishDir)\wwwroot" />
 	</Target>
 
 	<ItemGroup>

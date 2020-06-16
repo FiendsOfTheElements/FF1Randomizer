@@ -8,18 +8,26 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using FF1Lib.Assembly;
+using Newtonsoft.Json;
 
 namespace FF1Lib
 {
+	public class FFRVersion
+	{
+		public string Version { get; set; }
+		public string Sha { get; set; }
+		public string Branch { get; set; }
+		public string MasterBranch { get; set; }
+	}
+
 	// ReSharper disable once InconsistentNaming
 	public partial class FF1Rom : NesRom
 	{
-#if DEBUG
-		public const string Version = "3.1.0 Beta";
-#else
-		public const string Version = "3.1.0";
-#endif
 
+		public static FFRVersion Version()
+		{
+		    return JsonConvert.DeserializeObject<FFRVersion>(File.ReadAllText("version.json"));
+		}
 		public const int RngOffset = 0x7F100;
 		public const int BattleRngOffset = 0x7FCF1;
 		public const int RngSize = 256;
@@ -736,7 +744,7 @@ namespace FF1Lib
 				DisableSpellCastScreenFlash();
 			}
 
-			WriteSeedAndFlags(Version, seed.ToHex(), Flags.EncodeFlagsText(flags));
+			WriteSeedAndFlags(Version(), seed.ToHex(), Flags.EncodeFlagsText(flags));
 			ExtraTrackingAndInitCode(flags);
 		}
 
@@ -983,7 +991,7 @@ namespace FF1Lib
 			Data[0x7FE97] = 0x03;
 		}
 
-		public void WriteSeedAndFlags(string version, string seed, string flags)
+		public void WriteSeedAndFlags(FFRVersion version, string seed, string flags)
 		{
 			// Replace most of the old copyright string printing with a JSR to a LongJump
 			Put(0x38486, Blob.FromHex("20B9FF60"));
@@ -991,10 +999,9 @@ namespace FF1Lib
 			// DrawSeedAndFlags LongJump
 			PutInBank(0x1F, 0xFFB9, CreateLongJumpTableEntry(0x0F, 0x8980));
 
-			var sha = File.Exists("version.txt") ? File.ReadAllText("version.txt").Trim() : "development";
 			Blob hash;
 			var hasher = SHA256.Create();
-			hash = hasher.ComputeHash(Encoding.ASCII.GetBytes($"{seed}_{flags}_{sha}"));
+			hash = hasher.ComputeHash(Encoding.ASCII.GetBytes($"{seed}_{flags}_{version.Sha}"));
 
 			var hashpart = BitConverter.ToUInt64(hash, 0);
 			hash = Blob.FromHex("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
@@ -1007,8 +1014,8 @@ namespace FF1Lib
 
 			// Put the new string data in a known location.
 			PutInBank(0x0F, 0x8900, Blob.Concat(
-				FF1Text.TextToCopyrightLine("Final Fantasy Randomizer " + version),
-				FF1Text.TextToCopyrightLine((sha == "development" ? "DEVELOPMENT BUILD " : "Seed  ") + seed),
+				FF1Text.TextToCopyrightLine("Final Fantasy Randomizer " + version.Version),
+				FF1Text.TextToCopyrightLine((version.Branch == "master" ? "Seed " : version.Branch + " BUILD ") + seed),
 				hash));
 		}
 

@@ -1,7 +1,9 @@
-﻿@page "/"
+﻿@using System.Net.Http.Json
+@inject HttpClient  Http
+@page "/"
 
 <div id="welcome" class="content px-4">
-	<h1>Final Fantasy Randomizer<br />Version @FF1Lib.FF1Rom.Version</h1>
+	<h1>Final Fantasy Randomizer<br />Version @VersionString</h1>
 	<p>We've found the TAIL and we're promoting the Website!</p>
 	<div class="col-md-6 main-menu">
 		<div class="is-dark nes-container">
@@ -25,5 +27,24 @@
 	</div>
 	<a href="https://en.wikipedia.org/wiki/George_Floyd" style="color: yellow; font-weight: bold; font-size: 24px">#icantbreathe</a>
 </div>
+
+@code {
+    string VersionString = "";
+    protected override async void OnInitialized() {
+        FF1Lib.FFRVersion Version = await Http.GetFromJsonAsync<FF1Lib.FFRVersion>("/version.json");
+        VersionString = Version.Version;
+        if (Version.Branch == "dev")
+        {
+			VersionString += " Beta";
+        } else if (Version.Branch == "alpha")
+        {
+			VersionString += " Alpha : " + Version.Sha; 
+        } else
+        {
+			VersionString += " " + Version.Branch;
+        }
+        StateHasChanged();
+    }
+}
 
 
