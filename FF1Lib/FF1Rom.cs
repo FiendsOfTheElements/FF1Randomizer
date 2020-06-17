@@ -81,7 +81,17 @@ namespace FF1Lib
 
 		public void Randomize(Blob seed, Flags flags, Preferences preferences)
 		{
-			var rng = new MT19337(BitConverter.ToUInt32(seed, 0));
+			MT19337 rng;
+			using (SHA256 hasher = SHA256.Create())
+			{
+				string flagstring = Flags.EncodeFlagsText(flags);
+				byte[] FlagsBytes = hasher.ComputeHash(Encoding.UTF8.GetBytes(flagstring));
+				byte[] SeedAndFlags = new byte[seed.Length + FlagsBytes.Length];
+				Array.Copy(seed, SeedAndFlags, seed.Length);
+				Array.Copy(FlagsBytes, 0, SeedAndFlags, seed.Length, FlagsBytes.Length);
+				byte[] hash = hasher.ComputeHash(SeedAndFlags);
+				rng = new MT19337(BitConverter.ToUInt32(hash, 0));
+			}
 			// Spoilers => different rng immediately
 			if (flags.Spoilers) rng = new MT19337(rng.Next());
 			if (flags.TournamentSafe) AssureSafe(rng);
