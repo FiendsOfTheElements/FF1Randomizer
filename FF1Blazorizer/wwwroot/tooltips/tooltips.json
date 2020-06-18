@@ -910,6 +910,11 @@
 		"description": "When enabled, if your party perishes, you will respawn with all of your progression (items acquired, levels gained, etc.) intact. If you have the SHIP (but not the airship), you will respawn where you last docked; if you have the AIRSHIP, you will respawn at the airship and the ship will be waiting for you at Coneria; if you have neither, you will respawn where you last saved."
 	},
 	{
+		"Id": "saveGameDWModeCheckBox",
+		"title": "Dragon Warrior Mode",
+		"description": "Always respawn at Coneria (the Ship and Airship will wait for you there if you have them). Gold is halved."
+	},
+	{
 		"Id": "shuffleAstosCheckBox",
 		"title": "Shuffle Astos",
 		"description": "Astos disguises himself as another NPC: Bahamut, Canoe Sage, CubeBot, Elf Doctor, Elf Prince, Fairy, King, Lefein, Matoya, Nerrick, Princess Sara, Sarda, Smith, Titan, Unne or the kindly old king from Northwest Castle."
