@@ -84,8 +84,9 @@ namespace FF1Lib
 			MT19337 rng;
 			using (SHA256 hasher = SHA256.Create())
 			{
-				Blob FlagsBlob = Blob.FromBase64(Flags.EncodeFlagsText(flags));
-				Blob hash = hasher.ComputeHash(FlagsBlob + seed);
+				Blob FlagsBlob = Encoding.UTF8.GetBytes(Flags.EncodeFlagsText(flags));
+				Blob SeedAndFlags = Blob.Concat( new Blob[] { FlagsBlob, seed });
+				Blob hash = hasher.ComputeHash(SeedAndFlags);
 				rng = new MT19337(BitConverter.ToUInt32(hash, 0));
 			}
 			// Spoilers => different rng immediately
