@@ -32,7 +32,6 @@
     <None Remove="presets\ro8.json" />
     <None Remove="presets\semifinals.json" />
     <None Remove="presets\tournament.json" />
-    <None Remove="version.txt" />
   </ItemGroup>
 
   <ItemGroup>
@@ -51,9 +50,6 @@
     <Content Include="presets\improved-vanilla.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="version.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
 
   <ItemGroup>
@@ -67,5 +63,7 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+
+  <ProjectExtensions><VisualStudio><UserProperties version_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
 
 </Project>
