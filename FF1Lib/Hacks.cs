@@ -931,13 +931,8 @@ namespace FF1Lib
 			PutInBank(0x1F, 0xEAD5, Blob.FromHex("20EBFE"));
 			PutInBank(0x1F, 0xFEEB, newfCHRLoad);
 
-			// Starting stats for promoted classes, same as base classes
-			Put(0x30A0, Get(0x3040, 0x0A));
-			Put(0x30B0, Get(0x3050, 0x0A));
-			Put(0x30C0, Get(0x3060, 0x0A));
-			Put(0x30D0, Get(0x3070, 0x0A));
-			Put(0x30E0, Get(0x3080, 0x0A));
-			Put(0x30F0, Get(0x3090, 0x0A));
+			// Update LoadStats routine added by PartyComp to load the right stats for promoted classes
+			PutInBank(0x00, 0xB380, Blob.FromHex("BD0061C9FFD013A9019D0161A9009D07619D08619D0961A93160C9069002E9060A0A0A0AA860"));
 
 			// Starting magic for promoted classes. Instead of checking for the class ID of the characters, we compare with the unused class ID in the starting stats array.
 			PutInBank(0x1F, 0xC7CA, Blob.FromHex("B940B0"));
