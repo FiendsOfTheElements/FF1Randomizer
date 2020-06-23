@@ -2246,6 +2246,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncludeBaseClasses"));
 			}
 		}
+		public bool? RandomPromotionsSpoilers
+		{
+			get => Flags.RandomPromotionsSpoilers;
+			set
+			{
+				Flags.RandomPromotionsSpoilers = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomPromotionsSpoilers"));
+			}
+		}
 
 		public bool? SwolePirates
 		{

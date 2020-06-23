@@ -120,6 +120,11 @@
 		"description": "Allow base classes as possible promotions."
 	},
 	{
+		"Id": "RPSpoilers",
+		"title": "Spoil Promotions",
+		"description": "Change class names to show class promotions.\nFormat: Current class - Promotion class."
+	},
+	{
 		"Id": "enemySkillsSpellsCheckBox",
 		"title": "Enemy Skills/Spells",
 		"screenshot": "enemySkillsSpellsCheckBox.png",

@@ -498,40 +498,41 @@
             <div class="is-dark nes-container">
                 <div class="row">
                     <p>Test out features from 2000 years in the future - at your own risk!</p>
-                    <div class="col-md-12">
-                        <CheckBox UpdateToolTip="@UpdateToolTipID" Id="proceduralGenerationCheckBox" @bind-Checked="Flags.ExperimentalFloorGeneration">Enable Procedural Floor Generation</CheckBox>
-                        <CheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.ExperimentalFloorGeneration" Id="procGenWaterfall" @bind-Checked="Flags.EFGWaterfall">Generated Waterfall Cave</CheckBox>
-                        <CheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.ExperimentalFloorGeneration" Id="procGenEarth1" @bind-Checked="Flags.EFGEarth1">Generated Earth Cave B1</CheckBox>
-                        <CheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.ExperimentalFloorGeneration" Id="procGenEarth2" @bind-Checked="Flags.EFGEarth2">Generated Earth Cave B2</CheckBox>
-                        <div class="checkbox-cell"></div>
-                        <CheckBox UpdateToolTip="@UpdateToolTipID" Id="fiendShuffleCheckBox" @bind-Checked="Flags.FiendShuffle">Shuffle the Four Original Fiend Fights</CheckBox>
-                        <div class="checkbox-cell"></div>
-                        <CheckBox UpdateToolTip="@UpdateToolTipID" Id="itemPlacementCheckBox" IsEnabled="@Flags.Treasures" @bind-Checked="Flags.ClassicItemPlacement">Use Older v2 Placement</CheckBox>
-                        <div class="checkbox-cell"></div>
-                        <CheckBox UpdateToolTip="@UpdateToolTipID" Id="npcSwatterCheckBox" @bind-Checked="Flags.NPCSwatter">NPC Guillotine</CheckBox>
-                        <div class="checkbox-cell"></div>
-                        <CheckBox UpdateToolTip="@UpdateToolTipID" Id="disableTentSaving" @bind-Checked="Flags.DisableTentSaving">Disable Tent/Cabin/House Saving on Overworld</CheckBox>
-                        <CheckBox UpdateToolTip="@UpdateToolTipID" Id="disableInnSaving" @bind-Checked="Flags.DisableInnSaving">Disable Inn Saving</CheckBox>
-                        <CheckBox UpdateToolTip="@UpdateToolTipID" Id="saveGameWhenGameOverCheckBox" IsEnabled="@((Flags.NPCItems ?? true) || (Flags.NPCFetchItems ?? true))" @bind-Checked="Flags.SaveGameWhenGameOver">Save Game When Game Over</CheckBox>
-                        <CheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="saveGameDWModeCheckBox" IsEnabled="@Flags.SaveGameWhenGameOver" @bind-Checked="Flags.SaveGameDWMode">Dragon Warrior Mode</CheckBox>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="shuffleAstosCheckBox" IsEnabled="@((Flags.NPCItems ?? true) || (Flags.NPCFetchItems ?? true))" @bind-Value="Flags.ShuffleAstos">Shuffle Astos</TriStateCheckBox>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="randomizeFormationEnemizer" @bind-Value="Flags.RandomizeFormationEnemizer">Generate New Formations (Enemizer)</TriStateCheckBox>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="randomizeEnemizer" IsEnabled="@Flags.RandomizeFormationEnemizer" @bind-Value="Flags.RandomizeEnemizer">Generate New Enemies (Enemizer)</TriStateCheckBox>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="generateNewSpellbook" @bind-Value="Flags.GenerateNewSpellbook">Generate New Spellbook (Spellcrafter)</TriStateCheckBox>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="spellcrafterRetainPermissions" IsEnabled="@Flags.GenerateNewSpellbook" @bind-Value="Flags.SpellcrafterRetainPermissions">Retain Old Permissions (Spellcrafter)</TriStateCheckBox>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="spellcrafterMixSpells" IsEnabled="@Flags.GenerateNewSpellbook" @bind-Value="Flags.SpellcrafterMixSpells">Mix spellbooks (Spellcrafter)</TriStateCheckBox>
-                        <CheckBox UpdateToolTip="@UpdateToolTipID" Id="AllSpellLevelsForKnightNinja" @bind-Checked="Flags.AllSpellLevelsForKnightNinja">Knight and Ninja Gain Charges in All Levels</CheckBox>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="FreeTail" @bind-Value="Flags.FreeTail">Free Tail</TriStateCheckBox>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="RandomWeaponBonus" @bind-Value="Flags.RandomWeaponBonus">Random Weapon Bonus</TriStateCheckBox>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="RandomArmorBonus" @bind-Value="Flags.RandomArmorBonus">Random Armor Bonus</TriStateCheckBox>
-                        <CheckBox UpdateToolTip="@UpdateToolTipID" Id="fixMissingBattleRngEntry" @bind-Checked="Flags.FixMissingBattleRngEntry">Fix Missing Battle RNG Entry</CheckBox>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="swolePiratesCheckBox" @bind-Value="Flags.SwolePirates">Buffed Pirates</TriStateCheckBox>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="EnablePoolParty" @bind-Value="Flags.EnablePoolParty">Select Party From Pool of Random Characters</TriStateCheckBox>
-                        <EnumDropDown UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnablePoolParty" Id="PoolSizeDropDown" TItem="PoolSize" @bind-Value="Flags.PoolSize">Pool Size :</EnumDropDown>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnablePoolParty" Id="PPIncludePromotedClasses" @bind-Value="Flags.IncludePromClasses">Include Promoted Classes</TriStateCheckBox>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="EnableRandomPromotions" @bind-Value="Flags.EnableRandomPromotions">Random Classes at Class Change</TriStateCheckBox>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnableRandomPromotions" Id="RPIncludeBaseClasses" @bind-Value="Flags.IncludeBaseClasses">Include Base Classes</TriStateCheckBox>
-                    </div>
+					<div class="col-md-12">
+						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="proceduralGenerationCheckBox" @bind-Checked="Flags.ExperimentalFloorGeneration">Enable Procedural Floor Generation</CheckBox>
+						<CheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.ExperimentalFloorGeneration" Id="procGenWaterfall" @bind-Checked="Flags.EFGWaterfall">Generated Waterfall Cave</CheckBox>
+						<CheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.ExperimentalFloorGeneration" Id="procGenEarth1" @bind-Checked="Flags.EFGEarth1">Generated Earth Cave B1</CheckBox>
+						<CheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.ExperimentalFloorGeneration" Id="procGenEarth2" @bind-Checked="Flags.EFGEarth2">Generated Earth Cave B2</CheckBox>
+						<div class="checkbox-cell"></div>
+						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="fiendShuffleCheckBox" @bind-Checked="Flags.FiendShuffle">Shuffle the Four Original Fiend Fights</CheckBox>
+						<div class="checkbox-cell"></div>
+						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="itemPlacementCheckBox" IsEnabled="@Flags.Treasures" @bind-Checked="Flags.ClassicItemPlacement">Use Older v2 Placement</CheckBox>
+						<div class="checkbox-cell"></div>
+						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="npcSwatterCheckBox" @bind-Checked="Flags.NPCSwatter">NPC Guillotine</CheckBox>
+						<div class="checkbox-cell"></div>
+						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="disableTentSaving" @bind-Checked="Flags.DisableTentSaving">Disable Tent/Cabin/House Saving on Overworld</CheckBox>
+						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="disableInnSaving" @bind-Checked="Flags.DisableInnSaving">Disable Inn Saving</CheckBox>
+						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="saveGameWhenGameOverCheckBox" IsEnabled="@((Flags.NPCItems ?? true) || (Flags.NPCFetchItems ?? true))" @bind-Checked="Flags.SaveGameWhenGameOver">Save Game When Game Over</CheckBox>
+						<CheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="saveGameDWModeCheckBox" IsEnabled="@Flags.SaveGameWhenGameOver" @bind-Checked="Flags.SaveGameDWMode">Dragon Warrior Mode</CheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="shuffleAstosCheckBox" IsEnabled="@((Flags.NPCItems ?? true) || (Flags.NPCFetchItems ?? true))" @bind-Value="Flags.ShuffleAstos">Shuffle Astos</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="randomizeFormationEnemizer" @bind-Value="Flags.RandomizeFormationEnemizer">Generate New Formations (Enemizer)</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="randomizeEnemizer" IsEnabled="@Flags.RandomizeFormationEnemizer" @bind-Value="Flags.RandomizeEnemizer">Generate New Enemies (Enemizer)</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="generateNewSpellbook" @bind-Value="Flags.GenerateNewSpellbook">Generate New Spellbook (Spellcrafter)</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="spellcrafterRetainPermissions" IsEnabled="@Flags.GenerateNewSpellbook" @bind-Value="Flags.SpellcrafterRetainPermissions">Retain Old Permissions (Spellcrafter)</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="spellcrafterMixSpells" IsEnabled="@Flags.GenerateNewSpellbook" @bind-Value="Flags.SpellcrafterMixSpells">Mix spellbooks (Spellcrafter)</TriStateCheckBox>
+						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="AllSpellLevelsForKnightNinja" @bind-Checked="Flags.AllSpellLevelsForKnightNinja">Knight and Ninja Gain Charges in All Levels</CheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="FreeTail" @bind-Value="Flags.FreeTail">Free Tail</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="RandomWeaponBonus" @bind-Value="Flags.RandomWeaponBonus">Random Weapon Bonus</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="RandomArmorBonus" @bind-Value="Flags.RandomArmorBonus">Random Armor Bonus</TriStateCheckBox>
+						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="fixMissingBattleRngEntry" @bind-Checked="Flags.FixMissingBattleRngEntry">Fix Missing Battle RNG Entry</CheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="swolePiratesCheckBox" @bind-Value="Flags.SwolePirates">Buffed Pirates</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="EnablePoolParty" @bind-Value="Flags.EnablePoolParty">Select Party From Pool of Random Characters</TriStateCheckBox>
+						<EnumDropDown UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnablePoolParty" Id="PoolSizeDropDown" TItem="PoolSize" @bind-Value="Flags.PoolSize">Pool Size :</EnumDropDown>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnablePoolParty" Id="PPIncludePromotedClasses" @bind-Value="Flags.IncludePromClasses">Include Promoted Classes</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="EnableRandomPromotions" @bind-Value="Flags.EnableRandomPromotions">Random Classes at Class Change</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnableRandomPromotions" Id="RPIncludeBaseClasses" @bind-Value="Flags.IncludeBaseClasses">Include Base Classes</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnableRandomPromotions" Id="RPSpoilers" @bind-Value="Flags.RandomPromotionsSpoilers">Spoil Promotions</TriStateCheckBox>
+					</div>
                     <div class="col-md-12">
                     </div>
                 </div>

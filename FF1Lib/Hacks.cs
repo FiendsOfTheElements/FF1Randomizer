@@ -946,8 +946,9 @@ namespace FF1Lib
 		public void EnableRandomPromotions(Flags flags, MT19337 rng)
 		{
 			// Need EnableTwelveClasses()
-			// Promotions list
+			// Promotions list & class names list
 			List<sbyte> promotions = new List<sbyte> { 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B };
+			List<string> className = new List<string> { "Fi", "Th", "BB", "RM", "WM", "BM", "Kn", "Ni", "Ma", "RW", "WW", "BW" };
 
 			// Include base classes
 			if (flags.IncludeBaseClasses ?? false)
@@ -964,6 +965,15 @@ namespace FF1Lib
 
 			// Insert randomized promotions
 			PutInBank(0x0E, 0x9DF0, Blob.FromSBytes(promotions.ToArray()));
+
+			// Change class names to spoil to what they randomly promote
+			if (flags.RandomPromotionsSpoilers ?? false)
+			{
+				var itemNames = ReadText(FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, 256);
+				for (int i = 0; i < 12; i++)
+					itemNames[0xF0 + i] = className[i] + " - " + className[promotions[i]];
+				WriteText(itemNames, FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextOffset);
+			}
 		}
 
 		public void EnablePoolParty(Flags flags, MT19337 rng)

@@ -259,6 +259,7 @@ namespace FF1Lib
 		public bool? IncludePromClasses { get; set; } = false;
 		public bool? EnableRandomPromotions { get; set; } = false;
 		public bool? IncludeBaseClasses { get; set; } = false;
+		public bool? RandomPromotionsSpoilers { get; set; } = false;
 		public bool? ChangeMaxMP { get; set; } = false;
 		public int RedMageMaxMP { get; set; } = 9;
 		public int WhiteMageMaxMP { get; set; } = 9;
@@ -731,6 +732,7 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.IncludePromClasses);
 			sum = AddTriState(sum, flags.EnableRandomPromotions);
 			sum = AddTriState(sum, flags.IncludeBaseClasses);
+			sum = AddTriState(sum, flags.RandomPromotionsSpoilers);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(FormationShuffleMode)).Cast<int>().Max() + 1, (int)flags.FormationShuffleMode);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(MDEFGrowthMode)).Cast<int>().Max() + 1, (int)flags.MDefMode);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(WorldWealthMode)).Cast<int>().Max() + 1, (int)flags.WorldWealth);
@@ -753,6 +755,7 @@ namespace FF1Lib
 				WorldWealth = (WorldWealthMode)GetNumeric(ref sum, Enum.GetValues(typeof(WorldWealthMode)).Cast<int>().Max() + 1),
 				MDefMode = (MDEFGrowthMode)GetNumeric(ref sum, Enum.GetValues(typeof(MDEFGrowthMode)).Cast<int>().Max() + 1),
 				FormationShuffleMode = (FormationShuffleMode)GetNumeric(ref sum, Enum.GetValues(typeof(FormationShuffleMode)).Cast<int>().Max() + 1),
+				RandomPromotionsSpoilers = GetTriState(ref sum),
 				IncludeBaseClasses = GetTriState(ref sum),
 				EnableRandomPromotions = GetTriState(ref sum),
 				IncludePromClasses = GetTriState(ref sum),
