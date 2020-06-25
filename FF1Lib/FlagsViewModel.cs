@@ -886,7 +886,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeShipAndCanal"));
 			}
 		}
-
+		public bool? EarlyKing
+		{
+			get => Flags.EarlyKing;
+			set
+			{
+				Flags.EarlyKing = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EarlyKing"));
+			}
+		}
 		public bool? EarlySarda
 		{
 			get => Flags.EarlySarda;

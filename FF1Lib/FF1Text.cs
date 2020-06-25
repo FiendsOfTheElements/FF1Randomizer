@@ -23,6 +23,7 @@ namespace FF1Lib
 		private static readonly string[] TextByBytes;
 		private static readonly Dictionary<string, byte> BytesByText = new Dictionary<string, byte>
 		{
+			{ "#", 0x03 },
 			{ "\n", 0x05 },
 			{ "e ", 0x1A },
 			{ " t", 0x1B },
@@ -169,7 +170,7 @@ namespace FF1Lib
 			{ "'", 0xBE },
 			{ ",", 0xBF },
 			{ ".", 0xC0 },
-			{ " ", 0xC1 },
+			{ ";", 0xC1 },
 			{ "-", 0xC2 },
 			// this is a duplicate { "..", 0xC3 },
 			{ "!", 0xC4 },
@@ -188,7 +189,7 @@ namespace FF1Lib
 			{ "@T", 0xDF },
 			{ "%", 0xE0 },
 			{ "@p", 0xE1 },
-			{ ";", 0xFF }
+			{ " ", 0xFF }
 		};
 
 		static FF1Text()

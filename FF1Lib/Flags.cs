@@ -116,6 +116,7 @@ namespace FF1Lib
 		public bool? IncentivizeOffCastWeapon { get; set; } = false;
 		public bool IncentivizeOtherCastWeapon { get; set; } = false;
 
+		public bool? EarlyKing { get; set; } = false;
 		public bool? EarlySarda { get; set; } = false;
 		public bool? EarlySage { get; set; } = false;
 		public bool? EarlyOrdeals { get; set; } = false;
@@ -599,6 +600,7 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.IncentivizeDefCastWeapon);
 			sum = AddTriState(sum, flags.IncentivizeOffCastWeapon);
 			sum = AddBoolean(sum, flags.IncentivizeOtherCastWeapon);
+			sum = AddTriState(sum, flags.EarlyKing);
 			sum = AddTriState(sum, flags.EarlySarda);
 			sum = AddTriState(sum, flags.EarlySage);
 			sum = AddTriState(sum, flags.EarlyOrdeals);
@@ -889,6 +891,7 @@ namespace FF1Lib
 				EarlyOrdeals = GetTriState(ref sum),
 				EarlySage = GetTriState(ref sum),
 				EarlySarda = GetTriState(ref sum),
+				EarlyKing = GetTriState(ref sum),
 				IncentivizeOtherCastWeapon = GetBoolean(ref sum),
 				IncentivizeOffCastWeapon = GetTriState(ref sum),
 				IncentivizeDefCastWeapon = GetTriState(ref sum),

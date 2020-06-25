@@ -642,6 +642,11 @@
 		"description": "Changes the map to allow walking from Corneria to Dwarf Cave, as well as connecting the Ice Cave and Volcano river systems, to allow passage from Pravoka to Crescent Lake with the CANOE."
 	},
 	{
+		"Id": "earlyKingCheckBox",
+		"title": "Early King Item",
+		"description": "The King of Coneria will give the party his item before the Princess is saved."
+	},
+	{
 		"Id": "earlySardaCheckBox",
 		"title": "Early Sarda Item",
 		"screenshot": "earlySardaCheckBox.png",
