@@ -235,9 +235,19 @@ tr.odd {
     width: 38px;
     height: 38px;
 }
+
 .pokerchip-icon {
     display: block;
     background-image: url("/images/chip.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 38px;
+    height: 38px;
+}
+
+.dualcontrollers-icon {
+    display: block;
+    background-image: url("/images/controllers.png");
     background-size: cover;
     background-repeat: no-repeat;
     width: 38px;
