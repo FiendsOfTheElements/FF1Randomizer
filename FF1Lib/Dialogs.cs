@@ -84,7 +84,7 @@ namespace FF1Lib
 			public static readonly Blob Talk_Bahamut = Blob.FromHex("0594");
 			public static readonly Blob Talk_ElfDocUnne = Blob.FromHex("2594");
 			public static readonly Blob Talk_GiveItemOnFlag = Blob.FromHex("4594");
-			public static readonly Blob Talk_TradeItems = Blob.FromHex("7294");
+			public static readonly Blob Talk_TradeItems = Blob.FromHex("7394");
 			public static readonly Blob Talk_GiveItemOnItem = Blob.FromHex("A394");
 			public static readonly Blob Talk_Astos = Blob.FromHex("CF94");
 			public static readonly Blob Talk_kill = Blob.FromHex("0995");
@@ -227,7 +227,15 @@ namespace FF1Lib
 				Array.Copy(FF1Text.TextToBytes(itemNames[i], false), byteitemname, itemNames[i].Length);
 				itemNamesBlob = Blob.Concat(itemNamesBlob, byteitemname);
 			}
-			for (int i = 22; i < 25; i++)
+			for (int i = 22; i < 23; i++)
+			{
+				byte[] byteitemname = new byte[8];
+				itemNames[i] = itemNames[i].TrimEnd(' ') + " ";
+				Array.Copy(FF1Text.TextToBytes(itemNames[i], false), byteitemname, itemNames[i].Length);
+				itemNamesBlob = Blob.Concat(itemNamesBlob, byteitemname);
+			}
+
+			for (int i = 23; i < 25; i++)
 			{
 				byte[] byteitemname = new byte[8];
 				itemNames[i] = itemNames[i].TrimEnd(' ');
@@ -330,19 +338,19 @@ namespace FF1Lib
 			// Update all NPC dialogs for NPC shuffle so we can show what item they're giving.
 			Dictionary<int, string> NPCShuffleDialogs = new Dictionary<int, string>();
 
-			NPCShuffleDialogs.Add(0x02, "Thank you for saving the\nPrincess. To aid your\nquest, please take this.\n\n\nReceived the #.");
-			NPCShuffleDialogs.Add(0x06, "This heirloom has been\npassed down from Queen\nto Princess for 2000\nyears. Please take it.\n\nReceived the #.");
-			NPCShuffleDialogs.Add(0x09, "Okay, you got me.\nTake my #.\n\n\n\nReceived the #.");
-			NPCShuffleDialogs.Add(0x0E, "Is this a dream?.. Are\nyou the LIGHT WARRIORS?\nSo, as legend says,\nI give you this.\n\nReceived the #.");
+			NPCShuffleDialogs.Add(0x02, "Thank you for saving the\nPrincess. To aid your\nquest, please take this.\n\n\nReceived #.");
+			NPCShuffleDialogs.Add(0x06, "This heirloom has been\npassed down from Queen\nto Princess for 2000\nyears. Please take it.\n\nReceived #.");
+			NPCShuffleDialogs.Add(0x09, "Okay, you got me.\nTake my #.\n\n\n\nReceived #.");
+			NPCShuffleDialogs.Add(0x0E, "Is this a dream?.. Are\nyou the LIGHT WARRIORS?\nSo, as legend says,\nI give you this.\n\nReceived #.");
 			NPCShuffleDialogs.Add(0x12, "HA, HA, HA! I am Astos,\nKing of the Dark Elves.\nI have the #,\nand you shall give me\nthat CROWN, now!!!");
-			NPCShuffleDialogs.Add(0x14, "Yes, yes indeed,\nthis TNT is just what I\nneed to finish my work.\nTake this in return!\n\nReceived the #.");
-			NPCShuffleDialogs.Add(0x16, "ADAMANT!! Now let me\nforge this for you..\nHere, the best work\nI've ever done.\n\nReceived the #.");
-			NPCShuffleDialogs.Add(0x19, "I'll trade my most\npowerful charm to get\nmy CRYSTAL back..\nOh! I can see!!\n\nReceived the #.");
-			NPCShuffleDialogs.Add(0x1E, "Take this.\nIt will help you\nfight the source of the\nearth's rot.\n\nReceived the #.");
-			NPCShuffleDialogs.Add(0x23, "That pirate trapped me\nin the BOTTLE. I will\nget what's at the bottom\nof the spring for you.\n\nReceived the #.");
+			NPCShuffleDialogs.Add(0x14, "Yes, yes indeed,\nthis TNT is just what I\nneed to finish my work.\nTake this in return!\n\nReceived #.");
+			NPCShuffleDialogs.Add(0x16, "ADAMANT!! Now let me\nforge this for you..\nHere, the best work\nI've ever done.\n\nReceived #.");
+			NPCShuffleDialogs.Add(0x19, "I'll trade my most\npowerful charm to get\nmy CRYSTAL back..\nOh! I can see!!\n\nReceived #.");
+			NPCShuffleDialogs.Add(0x1E, "Take this.\nIt will help you\nfight the source of the\nearth's rot.\n\nReceived #.");
+			NPCShuffleDialogs.Add(0x23, "That pirate trapped me\nin the BOTTLE. I will\nget what's at the bottom\nof the spring for you.\n\nReceived #.");
 			NPCShuffleDialogs.Add(0x27, "Take this.\n\n\n\n\nReceived the #.");
-			NPCShuffleDialogs.Add(0x2B, "Great job vanquishing\nthe Earth FIEND.\nWith this, go and defeat\nthe other FIENDS!\n\nReceived the #.");
-			NPCShuffleDialogs.Add(0xCD, "With this, you can\navenge the SKY WARRIORS.\n\n\n\nReceived the #.");
+			NPCShuffleDialogs.Add(0x2B, "Great job vanquishing\nthe Earth FIEND.\nWith this, go and defeat\nthe other FIENDS!\n\nReceived #.");
+			NPCShuffleDialogs.Add(0xCD, "With this, you can\navenge the SKY WARRIORS.\n\n\n\nReceived #.");
 
 			InsertDialogs(NPCShuffleDialogs);
 		}
@@ -582,6 +590,13 @@ namespace FF1Lib
 				}
 			}
 
+			// Chime Lefein man is moved to ID 15 to keep him with all the other NPCs
+			Put(MapObjGfxOffset + 0x0F, Blob.FromHex("0E"));
+			Put(0x03400 + (int)MapId.Lefein * 48 + 0, Blob.FromHex("0F"));
+			npcScript[0x0F] = newTalk.Talk_GiveItemOnFlag;
+			npcScriptValue[0x0F] = Blob.FromHex("D0CECD00");
+			npcScriptValue[0x0F][3] = (byte)Item.Chime;
+
 			// Insert the updated talk scripts
 			for (int i = 0; i < 0xD0; i++)
 			{
@@ -589,12 +604,7 @@ namespace FF1Lib
 				PutInBank(0x0E, 0x95D5 + i * 4, npcScriptValue[i]);
 			}
 
-			// Chime Lefein man is moved to ID 15 to keep him with all the other NPCs
-			Put(MapObjGfxOffset + 0x0F, Blob.FromHex("0E"));
-			Put(0x03400 + (int)MapId.Lefein * 48 + 0, Blob.FromHex("0F"));
-			npcScript[0x0F] = newTalk.Talk_GiveItemOnFlag;
-			npcScriptValue[0x0F] = Blob.FromHex("D0CECD00");
-			npcScriptValue[0x0F][3] = (byte)Item.Chime;
+
 
 			// Update treasure box dialog for new DrawDialogueString routine
 			newDialogs.Add(0xF0 + 0x50, "In the treasure box,\nyou found..\n#");

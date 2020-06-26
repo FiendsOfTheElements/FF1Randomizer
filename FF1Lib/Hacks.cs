@@ -56,7 +56,7 @@ namespace FF1Lib
 		public void EnableEarlySage()
 		{
 			PutInBank(0x0E, 0x9580 + (int)ObjectId.CanoeSage, Blob.FromHex("00"));
-			InsertDialogs(0x2B, "The FIENDS are waking.\nTake this and go defeat\nthem!\n\n\nReceived the #.");
+			InsertDialogs(0x2B, "The FIENDS are waking.\nTake this and go defeat\nthem!\n\n\nReceived #.");
 		}
 
 		public void PartyRoulette()
@@ -458,26 +458,26 @@ namespace FF1Lib
 			// Custom dialogs for Astos NPC and the Kindly Old King
 			List<(byte, string)> astosdialogs = new List<(byte, string)>
 			{
-				(0x00,""),
+				(0x00, ""),
 				(0x02, "You have ruined my plans\nto steal this #!\nThe princess will see\nthrough my disguise.\nTremble before the might\nof Astos, the Dark King!"),
-				(0x00,""),(0x00,""),(0x00,""),
-				(0x0C,"You found the HERB?\nCurses! The Elf Prince\nmust never awaken.\nOnly then shall I,\nAstos, become\nthe King of ALL Elves!"),
-				(0x0E,"Is this a dream?..\nAre you,\nthe LIGHT WARRIORS?..\nHA! Thank you for waking\nme! I am actually Astos,\nKing of ALL Elves!\nYou won't take\nmy #!"),
-				(0x12,"My CROWN! Oh, but it\ndoesn't go with this\noutfit at all.\nYou keep it. But thanks!\nHere, take\nthis # also!"),
-				(0x14,"Oh, wonderful!\nNice work! Yes, this TNT\nis just what I need to\nblow open the vault.\nSoon more than\nthe # will\nbelong to Astos,\nKing of Dark Dwarves!"),
-				(0x16,"ADAMANT!! Now let me\nmake this #..\nAnd now that I have\nthis, you shall take a\nbeating from Astos,\nthe Dark Blacksmith!"),
-				(0x19,"You found my CRYSTAL\nand want my #?\nOh! I can see!! And now,\nyou will see the wrath\nof Astos,\nthe Dark Witch!"),
-				(0x1C,"Finally! With\nthis SLAB, I shall\nconquer Lefein and her\nsecrets will belong to\nAstos, the Dark Scholar!"),
-				(0x00,""),
+				(0x00, ""),(0x00, ""),(0x00, ""),
+				(0x0C, "You found the HERB?\nCurses! The Elf Prince\nmust never awaken.\nOnly then shall I,\nAstos, become\nthe King of ALL Elves!"),
+				(0x0E, "Is this a dream?.. Are\nyou, the LIGHT WARRIORS?\nHA! Thank you for waking\nme! I am actually Astos,\nKing of ALL Elves! You\nwon't take my #!"),
+				(0x12, "My CROWN! Oh, but it\ndoesn't go with this\noutfit at all.\nYou keep it. But thanks!\nHere, take\nthis # also!"),
+				(0x14, "Oh, wonderful!\nNice work! Yes, this TNT\nis just what I need to\nblow open the vault.\nSoon more than\nthe # will\nbelong to Astos,\nKing of Dark Dwarves!"),
+				(0x16, "ADAMANT!! Now let me\nmake this #..\nAnd now that I have\nthis, you shall take a\nbeating from Astos,\nthe Dark Blacksmith!"),
+				(0x19, "You found my CRYSTAL\nand want my #?\nOh! I can see!! And now,\nyou will see the wrath\nof Astos,\nthe Dark Witch!"),
+				(0x1C, "Finally! With\nthis SLAB, I shall\nconquer Lefein and her\nsecrets will belong to\nAstos, the Dark Scholar!"),
+				(0x00, ""),
 				(0x1E, "Can't you take a hint?\nI just want to be left\nalone with my #!\nI even paid a Titan\nto guard the path!\nFine.\nNow you face Astos,\nKing of the Hermits!"),
 				(0x20, "Really, a rat TAIL?\nYou think this is what\nwould impress me?\nIf you want to prove\nyourself, face off with\nAstos, the Dark Dragon!"),
-				(0xCD,"Kupo?.. Lali ho?..\nMugu mugu?.. Fine!\nYou are in the\npresence of Astos,\nthe Dark Thief!\nI stole their #\nfair and square!"),
-				(0x00,""),
-				(0x27,"Boop Beep Boop..\nError! Malfunction!..\nI see you are not\nfooled. It is I, Astos,\nKing of the Dark Robots!\nYou shall never have\nthis #!"),
+				(0xCD, "Kupo?.. Lali ho?..\nMugu mugu?.. Fine!\nYou are in the\npresence of Astos,\nthe Dark Thief!\nI stole their #\nfair and square!"),
+				(0x00, ""),
+				(0x27, "Boop Beep Boop..\nError! Malfunction!..\nI see you are not\nfooled. It is I, Astos,\nKing of the Dark Robots!\nYou shall never have\nthis #!"),
 				(0x06, "This # has passed from\nQueen to Princess for\n2000 years. It would\nhave been mine if you\nhadn't rescued me! Now\nyou face Astos,\nthe Dark Queen!"),
-				(0x23,"I, Astos the Dark Fairy,\nam free! The other\nfairies trapped me in\nthat BOTTLE! I'd give\nyou this # in\nthanks, but I would\nrather just kill you."),
-				(0x2A,"If you want pass, give\nme the RUBY..\nHa, it mine! Now, you\nin trouble. Me am Astos,\nKing of the Titans!"),
-				(0x2B,"Curses! Do you know how\nlong it took me to\ninfiltrate these\ngrumpy old men and\nsteal the #?\nNow feel the wrath of\nAstos, the Dark Sage!")
+				(0x23, "I, Astos the Dark Fairy,\nam free! The other\nfairies trapped me in\nthat BOTTLE! I'd give\nyou this # in\nthanks, but I would\nrather just kill you."),
+				(0x2A, "If you want pass, give\nme the RUBY..\nHa, it mine! Now, you\nin trouble. Me am Astos,\nKing of the Titans!"),
+				(0x2B, "Curses! Do you know how\nlong it took me to\ninfiltrate these\ngrumpy old men and\nsteal the #?\nNow feel the wrath of\nAstos, the Dark Sage!")
 			};
 
 			InsertDialogs(astosdialogs[(int)newastos].Item1, astosdialogs[(int)newastos].Item2);
@@ -571,7 +571,7 @@ namespace FF1Lib
 		public void EnableEarlyKing()
 		{
 			PutInBank(0x0E, 0x9580 + (int)ObjectId.King, Blob.FromHex("00"));
-			InsertDialogs(0x02, "To aid your\nquest, please take this.\n\n\n\nReceived the #.");
+			InsertDialogs(0x02, "To aid your\nquest, please take this.\n\n\n\nReceived #.");
 		}
 
 		public void EnableFreeBridge()
