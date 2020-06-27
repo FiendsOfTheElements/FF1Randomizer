@@ -1026,6 +1026,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("InventoryAutosort"));
 			}
 		}
+		public bool RenounceAutosort
+		{
+			get => Preferences.RenounceAutosort;
+			set
+			{
+				Preferences.RenounceAutosort = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RenouceAutosort"));
+			}
+		}
 		public bool NoPartyShuffle
 		{
 			get => Flags.NoPartyShuffle;
