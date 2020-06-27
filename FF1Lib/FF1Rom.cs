@@ -105,6 +105,7 @@ namespace FF1Lib
 			FixEnemyPalettes(); // fixes a bug in the original game's programming that causes third enemy slot's palette to render incorrectly
 			FixWarpBug(); // The warp bug must be fixed for magic level shuffle and spellcrafter
 			SeparateUnrunnables();
+			UpdateDialogs();
 
 			flags = Flags.ConvertAllTriState(flags, rng);
 
@@ -317,9 +318,7 @@ namespace FF1Lib
 			}
 			*/
 
-			NewAstosRoutine((bool)flags.NPCItems || (bool)flags.NPCFetchItems);  // moves Talk_Astos to a new location so we can play with it, and also makes it so Astos will only give his item after you have defeated him and speak to him again
-																				 // we make this happen on all seeds for consistency with other features
-			if (flags.SaveGameWhenGameOver && ((bool)flags.NPCItems || (bool)flags.NPCFetchItems))
+			if (flags.SaveGameWhenGameOver)
 			{
 				EnableSaveOnDeath(flags);
 			}
@@ -445,13 +444,17 @@ namespace FF1Lib
 			{
 				EnableChaosRush();
 			}
+			if ((bool)flags.EarlyKing)
+			{
+				EnableEarlyKing();
+			}
 
-			if ((bool)flags.EarlySarda && !((bool)flags.NPCItems))
+			if ((bool)flags.EarlySarda)
 			{
 				EnableEarlySarda();
 			}
 
-			if ((bool)flags.EarlySage && !((bool)flags.NPCItems))
+			if ((bool)flags.EarlySage)
 			{
 				EnableEarlySage();
 			}
@@ -665,7 +668,7 @@ namespace FF1Lib
 				PubReplaceClinic(rng, flags);
 			}
 
-			if ((bool)flags.ShuffleAstos && ((bool)flags.NPCItems || (bool)flags.NPCFetchItems))
+			if ((bool)flags.ShuffleAstos)
 			{
 				ShuffleAstos(flags, rng);
 			}
@@ -744,9 +747,9 @@ namespace FF1Lib
 		private void EnableNPCSwatter()
 		{
 			// Talk_norm is overwritten with unconditional jump to Talk_CoOGuy (say whatever then disappear)
-			PutInBank(0x0E, 0x9492, Blob.FromHex("4CA294"));
-			Put(MapObjJumpTableOffset + 0x16 * JumpTablePointerSize, Blob.FromHex("B894B894")); // overwrite map object jump table so that it calls "Talk_iftem"
-			Put(MapObjJumpTableOffset + 0x63 * JumpTablePointerSize, Blob.FromHex("B894")); // save the "hurray!" dwarf too!
+			PutInBank(0x0E, 0x9297, Blob.Concat(Blob.FromHex("4C"), newTalk.Talk_kill));
+			Put(MapObjJumpTableOffset + 0x16 * JumpTablePointerSize, Blob.FromHex("A792A792")); // overwrite map object jump table so that it calls "Talk_iftem"
+			Put(MapObjJumpTableOffset + 0x63 * JumpTablePointerSize, Blob.FromHex("A792")); // save the "hurray!" dwarf too!
 			Put(MapObjOffset + 0x16 * MapObjSize, Blob.FromHex("01FFFF0001FFFF00")); // and overwrite the data so that it prints message 0xFF regardless of whether you have the item or not
 			Put(MapObjOffset + 0x63 * MapObjSize, Blob.FromHex("01777700")); // Hurray!
 		}

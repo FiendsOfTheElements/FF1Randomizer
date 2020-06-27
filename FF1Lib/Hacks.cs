@@ -46,84 +46,17 @@ namespace FF1Lib
 		{
 			Put(CaravanFairyCheck, Enumerable.Repeat((byte)Nop, CaravanFairyCheckSize).ToArray());
 		}
-		// Required for npc quest item randomizing
-		// Doesn't substantially change anything if EnableNPCsGiveAnyItem isn't called
-		public void CleanupNPCRoutines()
-		{
-			// Have ElfDoc set his own flag instead of the prince's so that
-			// the prince can still set his own flag after giving a shuffled item
-			Data[0x39302] = (byte)ObjectId.ElfDoc;
-			Data[0x3931F] = (byte)ObjectId.ElfDoc;
 
-			// Convert Talk_ifcanoe into Talk_ifairship
-			Data[0x39534] = UnsramIndex.AirshipVis;
-			// Point Talk_ifairship person to old Talk_ifcanoe routine
-			Data[0x391B5] = 0x33;
-			Data[0x391B6] = 0x95;
-
-			// Then we move Talk_earthfire to Talk_norm to clear space for
-			// new item gift routine without overwriting Talk_chime
-			Data[0x391D3] = 0x92;
-			Data[0x391D4] = 0x94;
-
-			// Swap string pointer in index 2 and 3 for King, Bikke, Prince, and Lefein
-			var temp = Data[ItemLocations.KingConeria.Address];
-			Data[ItemLocations.KingConeria.Address] = Data[ItemLocations.KingConeria.Address - 1];
-			Data[ItemLocations.KingConeria.Address - 1] = temp;
-			temp = Data[ItemLocations.Bikke.Address];
-			Data[ItemLocations.Bikke.Address] = Data[ItemLocations.Bikke.Address - 1];
-			Data[ItemLocations.Bikke.Address - 1] = temp;
-			temp = Data[ItemLocations.ElfPrince.Address];
-			Data[ItemLocations.ElfPrince.Address] = Data[ItemLocations.ElfPrince.Address - 1];
-			Data[ItemLocations.ElfPrince.Address - 1] = temp;
-			temp = Data[ItemLocations.CanoeSage.Address - 1];
-			Data[ItemLocations.CanoeSage.Address - 1] = Data[ItemLocations.CanoeSage.Address - 2];
-			Data[ItemLocations.CanoeSage.Address - 2] = temp;
-			temp = Data[ItemLocations.Lefein.Address];
-			Data[ItemLocations.Lefein.Address] = Data[ItemLocations.Lefein.Address - 1];
-			Data[ItemLocations.Lefein.Address - 1] = temp;
-
-			// And do the same swap in the vanilla routines so those still work if needed
-			Data[0x392A7] = 0x12;
-			Data[0x392AA] = 0x13;
-			Data[0x392FC] = 0x13;
-			Data[0x392FF] = 0x12;
-			Data[0x39326] = 0x12;
-			Data[0x3932E] = 0x13;
-			Data[0x3959C] = 0x12;
-			Data[0x395A4] = 0x13;
-
-			// When getting jump address from lut_MapObjTalkJumpTbl (starting 0x3902B), store
-			// it in tmp+4 & tmp+5 (unused normally) instead of tmp+6 & tmp+7 so that tmp+6
-			// will still have the mapobj_id (allowing optimizations in TalkRoutines)
-			Data[0x39063] = 0x14;
-			Data[0x39068] = 0x15;
-			Data[0x3906A] = 0x14;
-			Data[0x39070] = 0x14;
-			Data[0x39075] = 0x15;
-			Data[0x39077] = 0x14;
-		}
 
 		public void EnableEarlySarda()
 		{
-			var nops = new byte[SardaSize];
-			for (int i = 0; i < nops.Length; i++)
-			{
-				nops[i] = Nop;
-			}
-
-			Put(SardaOffset, nops);
+			PutInBank(0x0E, 0x9580 + (int)ObjectId.Sarda, Blob.FromHex("00"));
 		}
 
 		public void EnableEarlySage()
 		{
-			var nops = new byte[CanoeSageSize];
-			for (int i = 0; i < nops.Length; i++)
-			{
-				nops[i] = Nop;
-			}
-
-			Put(CanoeSageOffset, nops);
+			PutInBank(0x0E, 0x9580 + (int)ObjectId.CanoeSage, Blob.FromHex("00"));
+			InsertDialogs(0x2B, "The FIENDS are waking.\nTake this and go defeat\nthem!\n\n\nReceived #.");
 		}
 
 		public void PartyRoulette()
@@ -434,6 +367,9 @@ namespace FF1Lib
 			MoveNpc(MapId.EarthCaveB3, 9, 0x09, 0x25, inRoom: false, stationary: false); // Earth Cave Bat B3
 			MoveNpc(MapId.EarthCaveB5, 1, 0x22, 0x34, inRoom: false, stationary: false); // Earth Cave Bat B5
 			MoveNpc(MapId.ConeriaCastle1F, 5, 0x07, 0x0F, inRoom: false, stationary: true); // Coneria Ghost Lady
+
+			MoveNpc(MapId.Pravoka, 4, 0x1F, 0x05, inRoom: false, stationary: true); // Pravoka Old Man
+			MoveNpc(MapId.Pravoka, 5, 0x08, 0x0E, inRoom: false, stationary: true); // Pravoka Woman
 		}
 
 		public void EnableConfusedOldMen(MT19337 rng)
@@ -450,7 +386,8 @@ namespace FF1Lib
 
 		public void EnableIdentifyTreasures()
 		{
-			Put(0x2B192, Blob.FromHex("C1010200000000"));
+			InsertDialogs(0xF1 + 0x50, "Can't hold\n#");
+			InsertDialogs(0xF1, "Can't hold\n#");
 		}
 
 		public void EnableDash()
@@ -481,20 +418,8 @@ namespace FF1Lib
 			Put(0x3A494, Blob.FromHex("201b9eb0e820999e20c2a8b0e0a562d0dc20ff9e9008a910205baa4c81a420089e9008a90c205baa4c81a420239fa913205baa4c81a4eaeaea"));
 		}
 
-		public void NewAstosRoutine(bool isNPCShuffle)
-		{
-			if (isNPCShuffle)
-			{
-				// Talk_Astos must jump to new Astos routine in bank 0E (we fill some of the space that was where party generation used to be)
-				PutInBank(0x0E, 0x9338, Blob.FromHex("4C459F"));
-				var newAstosRoutine = "EAEAEAAD2260F025A513F0212093DDB01E8467A5108D0E03A5118D0F03A416207F90207392A97D20C590A93A60A51160";
-				PutInBank(0x0E, 0x9F45, Blob.FromHex(newAstosRoutine));
-			}
-		}
-
 		public void EnableSaveOnDeath(Flags flags)
 		{
-			// this routine assumes NewAstosRoutine has been run (which is set to run on all seeds from now on)
 			// rewrite rando's GameOver routine to jump to a new section that will save the game data
 			PutInBank(0x1B, 0x801A, Blob.FromHex("4CF58F"));
 			// write new routine to save data at game over (the game will save when you clear the final textbox and not before)
@@ -508,19 +433,15 @@ namespace FF1Lib
 
 		public void ShuffleAstos(Flags flags, MT19337 rng)
 		{
-			// Assume NewAstosRoutine() is on
 			const int NpcTalkOffset = 0x390D3;
-			const int newTalk_Astos = 0x9F45;
 			const int newTalk_AstosBank = 0x0E;
 			const int NpcTalkSize = 2;
+			int Talk_Astos = newTalk.Talk_Astos[1] * 0x100 + newTalk.Talk_Astos[0];
 
 			// NPC pool to swap Astos with
 			List<ObjectId> npcpool = new List<ObjectId> { ObjectId.Astos, ObjectId.Bahamut, ObjectId.CanoeSage, ObjectId.CubeBot, ObjectId.ElfDoc,
 			ObjectId.Fairy, ObjectId.King, ObjectId.Matoya, ObjectId.Nerrick, ObjectId.Princess2, ObjectId.Smith,
 			ObjectId.Titan, ObjectId.Unne, ObjectId.Sarda, ObjectId.ElfPrince, ObjectId.Lefein };
-
-			var scriptStandardNPCItemTrade = Blob.FromHex("5693");
-			var scriptTalk_Astos = Blob.FromHex("3893");
 
 			// Select random npc
 			ObjectId newastos = npcpool.PickRandom(rng);
@@ -530,47 +451,75 @@ namespace FF1Lib
 
 			// If not get NPC talk routine, get NPC object
 			var talkscript = Get(NpcTalkOffset + (byte)newastos * NpcTalkSize, 2);
-			var talkvalue = Get(MapObjOffset + (byte)newastos * MapObjSize, 4);
 
-			// Switch astos to TalkScripts.StandardNPCItemTrade, set scriptvalue to crown Item.Crown;
-			Put(NpcTalkOffset + (byte)ObjectId.Astos * NpcTalkSize, scriptStandardNPCItemTrade);
-			Put(MapObjOffset + (byte)ObjectId.Astos * MapObjSize, Blob.FromHex("02")); // 0x02 = Crown
+			// Switch astos to Talk_GiveItemOnItem;
+			Put(NpcTalkOffset + (byte)ObjectId.Astos * NpcTalkSize, newTalk.Talk_GiveItemOnItem);
 
 			// Swtich NPC to Astos
-			Put(NpcTalkOffset + (byte)newastos * NpcTalkSize, scriptTalk_Astos);
+			Put(NpcTalkOffset + (byte)newastos * NpcTalkSize, newTalk.Talk_Astos);
 
-			// Change dialog a bit for non-item giving NPCs
-			Put(0x285EF + 18, Blob.FromHex("00"));
-
-			if (newastos == ObjectId.Titan)
+			// Custom dialogs for Astos NPC and the Kindly Old King
+			List<(byte, string)> astosdialogs = new List<(byte, string)>
 			{
-				// Check required item, don't try to give any item
-				PutInBank(newTalk_AstosBank, newTalk_Astos + 3, Blob.FromHex("AD2960F025EAEAEAEAEAEAEAEA"));
+				(0x00, ""),
+				(0x02, "You have ruined my plans\nto steal this #!\nThe princess will see\nthrough my disguise.\nTremble before the might\nof Astos, the Dark King!"),
+				(0x00, ""),(0x00, ""),(0x00, ""),
+				(0x0C, "You found the HERB?\nCurses! The Elf Prince\nmust never awaken.\nOnly then shall I,\nAstos, become\nthe King of ALL Elves!"),
+				(0x0E, "Is this a dream?.. Are\nyou, the LIGHT WARRIORS?\nHA! Thank you for waking\nme! I am actually Astos,\nKing of ALL Elves! You\nwon't take my #!"),
+				(0x12, "My CROWN! Oh, but it\ndoesn't go with this\noutfit at all. You keep\nit. But thanks! Here,\ntake this # also!"),
+				(0x14, "Oh, wonderful!\nNice work! Yes, this TNT\nis just what I need to\nblow open the vault.\nSoon more than\nthe # will\nbelong to Astos,\nKing of Dark Dwarves!"),
+				(0x16, "ADAMANT!! Now let me\nmake this #..\nAnd now that I have\nthis, you shall take a\nbeating from Astos,\nthe Dark Blacksmith!"),
+				(0x19, "You found my CRYSTAL and\nwant my #? Oh!\nI can see!! And now, you\nwill see the wrath of\nAstos, the Dark Witch!"),
+				(0x1C, "Finally! With this SLAB,\nI shall conquer Lefein\nand her secrets will\nbelong to Astos,\nthe Dark Scholar!"),
+				(0x00, ""),
+				(0x1E, "Can't you take a hint?\nI just want to be left\nalone with my #!\nI even paid a Titan to\nguard the path! Fine.\nNow you face Astos,\nKing of the Hermits!"),
+				(0x20, "Really, a rat TAIL?\nYou think this is what\nwould impress me?\nIf you want to prove\nyourself, face off with\nAstos, the Dark Dragon!"),
+				(0xCD, "Kupo?.. Lali ho?..\nMugu mugu?.. Fine! You\nare in the presence of\nAstos, the Dark Thief!\nI stole their #\nfair and square!"),
+				(0x00, ""),
+				(0x27, "Boop Beep Boop..\nError! Malfunction!..\nI see you are not\nfooled. It is I, Astos,\nKing of the Dark Robots!\nYou shall never have\nthis #!"),
+				(0x06, "This # has passed from\nQueen to Princess for\n2000 years. It would\nhave been mine if you\nhadn't rescued me! Now\nyou face Astos, the\nDark Queen!"),
+				(0x23, "I, Astos the Dark Fairy,\nam free! The other\nfairies trapped me in\nthat BOTTLE! I'd give\nyou this # in\nthanks, but I would\nrather just kill you."),
+				(0x2A, "If you want pass, give\nme the RUBY..\nHa, it mine! Now, you in\ntrouble. Me am Astos,\nKing of the Titans!"),
+				(0x2B, "Curses! Do you know how\nlong it took me to\ninfiltrate these grumpy\nold men and steal\nthe #?\nNow feel the wrath of\nAstos, the Dark Sage!")
+			};
 
-				// Change dialog
-				PutInBank(newTalk_AstosBank, newTalk_Astos + 42, Blob.FromHex("A912"));
+			InsertDialogs(astosdialogs[(int)newastos].Item1, astosdialogs[(int)newastos].Item2);
+			InsertDialogs(astosdialogs[(int)ObjectId.Astos].Item1, astosdialogs[(int)ObjectId.Astos].Item2);
+			
+			if (talkscript == newTalk.Talk_Titan || talkscript == newTalk.Talk_ElfDocUnne)
+			{
+				// Skip giving item for Titan, ElfDoc or Unne
+				PutInBank(newTalk_AstosBank, Talk_Astos + 13, Blob.FromHex("A4128414EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
 
 				// No need to restore item
 				if (flags.SaveGameWhenGameOver)
 					Put(0x6CFF5 + 0x89, Blob.FromHex("EAEAEA"));
 			}
-			else if (newastos == ObjectId.Bahamut)
+
+			if (talkscript == newTalk.Talk_GiveItemOnFlag)
+			{
+				// Check for a flag instead of an item
+				PutInBank(newTalk_AstosBank, Talk_Astos + 2, Blob.FromHex("B9")); 
+				PutInBank(newTalk_AstosBank, Talk_Astos + 7, Blob.FromHex("A820799090")); 
+			}
+
+			if (newastos == ObjectId.Bahamut)
 			{   // Change Talk_Astos to make it work with Bahamut, and also modify DoClassChange
 
 				// Change routine to check for Tail, give promotion and trigger the battle at the same time
 				var newroutine =
 					"AD2D60" +  // LDA item_tail - Load Tail
-					"F025" +    // BEQ @Default 
+					"F030" +    // BEQ @Default 
 					"A416" +    // LDY tmp+6 - Load this object instead of Astos
 					"207F90" +  // JSR SetEventFlag (207F90)
 					"207392" +  // JSR HideThisMapObject
 					"A97D" +    // LDA #BTL_ASTOS
 					"20C590" +  // JSR TalkBattle
 					"20AE95" +  // JSR DoClassChange
-					"A912" +    // LDA Astos dialog, A512 would be this npc dialog
+					"A512" +    // LDA Load dialog
 					"60";       // RTS
 
-				PutInBank(newTalk_AstosBank, newTalk_Astos + 3, Blob.FromHex(newroutine));
+				PutInBank(newTalk_AstosBank, Talk_Astos, Blob.FromHex(newroutine));
 
 				// DoClassChange reload the map to show the new class sprites, this break TalkBattle, so we stop it from reloading the map
 				// INC dlgflg_reentermap (E656) => NOPx2 (EAEA)
@@ -595,67 +544,6 @@ namespace FF1Lib
 					}
 					else
 						PutInBank(0x1B, 0x8FF5 + 0x0189, Blob.FromHex("A200209391A240209391A280209391A2C020939160BD0061300638E9069D006160"));
-				}
-			}
-			else if (newastos == ObjectId.Unne)
-			{
-				// Change required item to Slab, don't give any item
-				PutInBank(newTalk_AstosBank, newTalk_Astos + 3, Blob.FromHex("AD2860F025EAEAEAEAEAEAEAEA"));
-
-				// Change dialog
-				PutInBank(newTalk_AstosBank, newTalk_Astos + 42, Blob.FromHex("A912"));
-
-				// No need to restore item
-				if (flags.SaveGameWhenGameOver)
-					PutInBank(0x1B, 0x8FF5 + 0x89, Blob.FromHex("EAEAEA"));
-			}
-			else if (newastos == ObjectId.ElfDoc)
-			{
-				// Change required item to Herb, don't give any item
-				PutInBank(newTalk_AstosBank, newTalk_Astos + 3, Blob.FromHex("AD2460F025EAEAEAEAEAEAEAEA"));
-
-				// Change dialog
-				PutInBank(newTalk_AstosBank, newTalk_Astos + 42, Blob.FromHex("A912"));
-
-				// No need to restore item
-				if (flags.SaveGameWhenGameOver)
-					PutInBank(0x1B, 0x8FF5 + 0x89, Blob.FromHex("EAEAEA"));
-			}
-			else if (newastos == ObjectId.Lefein)
-			{
-				// Check if we speak Lefein
-				PutInBank(newTalk_AstosBank, newTalk_Astos, Blob.FromHex("A00B207990902618"));
-
-				// Change dialog
-				Put(MapObjOffset + (byte)ObjectId.Lefein * MapObjSize + 1, Blob.FromHex("D0"));
-			}
-			else if (newastos == ObjectId.ElfPrince)
-			{
-				// Check if we gave the herb                              
-				PutInBank(newTalk_AstosBank, newTalk_Astos, Blob.FromHex("A005207990902618"));
-
-				// Change dialog
-				Put(MapObjOffset + (byte)ObjectId.ElfPrince * MapObjSize + 1, Blob.FromHex("10"));
-			}
-			else if (newastos == ObjectId.Sarda && !(flags.EarlySarda ?? false))
-			{
-				// Check if we defeated the Vampire
-				PutInBank(newTalk_AstosBank, newTalk_Astos, Blob.FromHex("A00C209190B02618"));
-
-				// Change dialog
-				Put(MapObjOffset + (byte)ObjectId.Sarda * MapObjSize + 1, Blob.FromHex("81"));
-			}
-			else
-			{
-				if (talkscript == scriptStandardNPCItemTrade)
-				{
-					// Check required item
-					PutInBank(newTalk_AstosBank, newTalk_Astos + 4, Blob.FromSBytes(new sbyte[] { (sbyte)(talkvalue[0] + 32) }));
-				}
-				else
-				{
-					// Just skip item check, then we're set
-					PutInBank(newTalk_AstosBank, newTalk_Astos + 3, Blob.FromHex("EAEAEAEAEA"));
 				}
 			}
 		}
@@ -685,7 +573,8 @@ namespace FF1Lib
 		/// </summary>
 		public void EnableEarlyKing()
 		{
-			Data[0x390D5] = 0xA1;
+			PutInBank(0x0E, 0x9580 + (int)ObjectId.King, Blob.FromHex("00"));
+			InsertDialogs(0x02, "To aid your\nquest, please take this.\n\n\n\nReceived #.");
 		}
 
 		public void EnableFreeBridge()

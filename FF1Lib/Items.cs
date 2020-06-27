@@ -233,8 +233,8 @@ namespace FF1Lib
 		Vampire = 12,
 		Sarda = 13,
 		Bahamut = 14,
-
-		WarMECH = 15, // This is for WarMECH NPC.  Unused in the original (seems to be a copy of BlackOrb).
+		Lefein = 15, // Move Up Lefein Guy. Unused in the original (seems to be a copy of BlackOrb).
+		WarMECH = 187, // This is for WarMECH NPC. Take the place of Lefein.
 
 		SubEngineer = 16,
 		CubeBot = 17,
@@ -260,7 +260,7 @@ namespace FF1Lib
 
 		EarthFirePerson = 128,
 
-		Lefein = 187,
+		
 
 		BlackOrb = 202
 	}

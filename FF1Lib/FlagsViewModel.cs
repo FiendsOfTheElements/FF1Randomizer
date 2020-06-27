@@ -588,6 +588,24 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MapOpenProgressionExtended"));
 			}
 		}
+		public bool? MapDwarvesNorthwest
+		{
+			get => Flags.MapDwarvesNorthwest;
+			set
+			{
+				Flags.MapDwarvesNorthwest = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MapDwarvesNorthwest"));
+			}
+		}
+		public bool? MapAirshipDock
+		{
+			get => Flags.MapAirshipDock;
+			set
+			{
+				Flags.MapAirshipDock = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MapAirshipDock"));
+			}
+		}
 		public bool? Entrances
 		{
 			get => Flags.Entrances;
@@ -886,7 +904,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeShipAndCanal"));
 			}
 		}
-
+		public bool? EarlyKing
+		{
+			get => Flags.EarlyKing;
+			set
+			{
+				Flags.EarlyKing = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EarlyKing"));
+			}
+		}
 		public bool? EarlySarda
 		{
 			get => Flags.EarlySarda;

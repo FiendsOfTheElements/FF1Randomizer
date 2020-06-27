@@ -24,10 +24,15 @@
 		"description": "This flag shuffles what spell is cast when using any of the castable items (Power Gauntlet, Bane Sword, ect.). The spell name will replace the name of the item for clarity, although icons will remain the same (or absent for Defense). Items that use the same icon cannot be differentiated except by equipping."
 	},
 	{
-		"Id": "mapOpenProgressionExtendedCheckBox",
+		"Id": "mapOpenProgressionDwavesNWCheckBox",
 		"title": "Extended Open Progression",
+		"description": "Remove the river tile between the Dwarf Cave and Northwest Castle so it can be traversed on foot."
+	},
+	{
+		"Id": "mapOpenProgressionFloaterDockCheckBox",
+		"title": "Ryukahn Desert Dock",
 		"screenshot": "mapOpenProgressionExtendedCheckBox.png",
-		"description": "Remove the river tile between the Dwarf Cave and Northwest Castle so it can be traversed on foot. Also add an additional dock near the Ryukhan desert."
+		"description": "Add an additional dock near the Ryukhan desert."
 	},
 	{
 		"Id": "magicLevelsCheckBox",
@@ -640,6 +645,11 @@
 		"title": "Open Progression",
 		"screenshot": "mapOpenProgressionCheckBox.png",
 		"description": "Changes the map to allow walking from Corneria to Dwarf Cave, as well as connecting the Ice Cave and Volcano river systems, to allow passage from Pravoka to Crescent Lake with the CANOE."
+	},
+	{
+		"Id": "earlyKingCheckBox",
+		"title": "Early King Item",
+		"description": "The King of Coneria will give the party his item before the Princess is saved."
 	},
 	{
 		"Id": "earlySardaCheckBox",
