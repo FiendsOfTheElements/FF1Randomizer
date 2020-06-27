@@ -265,7 +265,7 @@ namespace FF1Lib
 		public static TreasureChest ToFRevisited7 = new TreasureChest(0x31FE, nameof(ToFRevisited7), MapLocation.TempleOfFiendsPhantom, Item.Gold65000);
 		public static TreasureChest Unused15 = new TreasureChest(0x31FF, nameof(Unused15), 0, 0, isUnused: true);
 
-		public static MapObject KingConeria = new MapObject(ObjectId.King, MapLocation.ConeriaCastle2, Item.Bridge);
+		public static MapObject KingConeria = new MapObject(ObjectId.King, MapLocation.ConeriaCastle2, Item.Bridge, requiredGameEventFlag: ObjectId.Princess2, requiredSecondLocation: MapLocation.TempleOfFiends1);
 		public static MapObject Princess = new MapObject(ObjectId.Princess2, MapLocation.ConeriaCastle2, Item.Lute, requiredSecondLocation: MapLocation.TempleOfFiends1);
 		public static MapObject Matoya = new MapObject(ObjectId.Matoya, MapLocation.MatoyasCave, Item.Herb, AccessRequirement.Crystal, requiredItemTrade: Item.Crystal);
 		public static MapObject Bikke = new MapObject(ObjectId.Bikke, MapLocation.Pravoka, Item.Ship);

@@ -87,6 +87,7 @@
 		bool? Treasures { get; }
 		bool? NPCItems { get; }
 		bool? NPCFetchItems { get; }
+		bool? EarlyKing { get; }
 		bool? EarlySarda { get; }
 		bool? EarlySage { get; }
 		bool? EarlyOrdeals { get; }
