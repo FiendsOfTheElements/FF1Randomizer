@@ -125,7 +125,7 @@ namespace FF1Lib
 			}
 
 			string shardName = ShardNames.PickRandom(rng);
-			shardName = "EGG  ";
+			//shardName = "EGG  ";
 
 			// Replace unused CANOE string and EarthOrb pointer with whatever we're calling the scavenged item.
 			Put(0x2B981, FF1Text.TextToBytes($"{shardName}  ", false, FF1Text.Delimiter.Null));
@@ -144,7 +144,7 @@ namespace FF1Lib
 			// Black Orb Override to check for shards rather than ORBs.
 			Put(0x39502, Blob.FromHex($"AD3560C9{goal:X2}300CA0CA209690E67DE67DA51160A51260"));
 			Put(0x7CDB3, Blob.FromHex("08CE"));
-
+			/*
 			// A little narrative overhaul.
 			Blob intro = FF1Text.TextToStory(new string[]
 			{
@@ -164,6 +164,7 @@ namespace FF1Lib
 			Put(0x28CF8, FF1Text.TextToBytes($"Ah, the Light Warriors!\n\nSo you have collected\nthe EGGS and restored\nthe BUNNY NEST."));
 			Put(0x28D57, FF1Text.TextToBytes("Thus you've travelled\n2000 years into the past\nto try to stop me?\n\nStep forward then,\nto your peril!"));
 			Put(0x28DAF, FF1Text.TextToBytes("Oh, Light Warriors!\nSuch arrogant bravery.\n\nLet us see whom history\nremembers. En Garde!"));
+			*/
 		}
 
 		public Item ShardHuntTreasureSelector(Item item)

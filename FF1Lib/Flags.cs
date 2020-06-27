@@ -73,7 +73,8 @@ namespace FF1Lib
 		public bool? AllowDeepCastles { get; set; } = false;
 		public bool? AllowDeepTowns { get; set; } = false;
 		public bool? MapOpenProgressionExtended { get; set; } = false;
-
+		public bool? MapDwarvesNorthwest { get; set; } = false;
+		public bool? MapAirshipDock { get; set; } = false;
 		public bool? EntrancesIncludesDeadEnds { get; set; } = false;
 		public bool? EntrancesMixedWithTowns { get; set; } = false;
 
@@ -282,8 +283,8 @@ namespace FF1Lib
 		public bool? MapMirageDock => MapOpenProgressionDocks;
 		public bool? MapConeriaDwarves => MapOpenProgression;
 		public bool? MapVolcanoIceRiver => MapOpenProgression;
-		public bool? MapDwarvesNorthwest => MapOpenProgression & MapOpenProgressionExtended;
-		public bool? MapAirshipDock => MapOpenProgression & MapOpenProgressionExtended;
+		// public bool? MapDwarvesNorthwest => MapOpenProgression;
+		// public bool? MapAirshipDock => MapOpenProgression;
 
 		// The philosophy governing item incentivizations works something like this:
 		// 1. If the item is NOT being shuffled to another location it cannot be incentivized. (Duh)
@@ -569,6 +570,8 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.AllowDeepCastles);
 			sum = AddTriState(sum, flags.AllowDeepTowns);
 			sum = AddTriState(sum, flags.MapOpenProgressionExtended);
+			sum = AddTriState(sum, flags.MapDwarvesNorthwest);
+			sum = AddTriState(sum, flags.MapAirshipDock);
 			sum = AddTriState(sum, flags.EntrancesIncludesDeadEnds);
 			sum = AddTriState(sum, flags.EntrancesMixedWithTowns);
 			sum = AddTriState(sum, flags.IncentivizeFreeNPCs);
@@ -923,6 +926,8 @@ namespace FF1Lib
 				IncentivizeFreeNPCs = GetTriState(ref sum),
 				EntrancesMixedWithTowns = GetTriState(ref sum),
 				EntrancesIncludesDeadEnds = GetTriState(ref sum),
+				MapAirshipDock = GetTriState(ref sum),
+				MapDwarvesNorthwest = GetTriState(ref sum),
 				MapOpenProgressionExtended = GetTriState(ref sum),
 				AllowDeepTowns = GetTriState(ref sum),
 				AllowDeepCastles = GetTriState(ref sum),

@@ -348,7 +348,7 @@ namespace FF1Lib
 			NPCShuffleDialogs.Add(0x19, "I'll trade my most\npowerful charm to get\nmy CRYSTAL back..\nOh! I can see!!\n\nReceived #.");
 			NPCShuffleDialogs.Add(0x1E, "Take this.\nIt will help you\nfight the source of the\nearth's rot.\n\nReceived #.");
 			NPCShuffleDialogs.Add(0x23, "That pirate trapped me\nin the BOTTLE. I will\nget what's at the bottom\nof the spring for you.\n\nReceived #.");
-			NPCShuffleDialogs.Add(0x27, "Take this.\n\n\n\n\nReceived the #.");
+			NPCShuffleDialogs.Add(0x27, "Take this.\n\n\n\n\nReceived #.");
 			NPCShuffleDialogs.Add(0x2B, "Great job vanquishing\nthe Earth FIEND.\nWith this, go and defeat\nthe other FIENDS!\n\nReceived #.");
 			NPCShuffleDialogs.Add(0xCD, "With this, you can\navenge the SKY WARRIORS.\n\n\n\nReceived #.");
 
@@ -386,7 +386,6 @@ namespace FF1Lib
 				if (npcScript[i] == originalTalk.Talk_4Orb)
 				{
 					npcScript[i] = newTalk.Talk_4Orb;
-					npcScriptValue[0x3D] = Blob.FromHex("00DB4C00"); // replace sky warrior dialog that got taken over by nothing here.
 				}
 				else if (npcScript[i] == originalTalk.Talk_Astos)
 				{
@@ -543,7 +542,6 @@ namespace FF1Lib
 				}
 				else if (npcScript[i] == originalTalk.Talk_Sarda)
 				{
-					newDialogs.Add(0xB3, "I shall help only\nthe true LIGHT WARRIORS.\nProve yourself by\ndefeating the Vampire.");
 					npcScript[i] = newTalk.Talk_GiveItemOnFlag;
 					npcScriptValue[i] = Blob.FromHex("B3181E00");
 					npcScriptValue[i][3] = (byte)Item.Rod;
@@ -590,6 +588,9 @@ namespace FF1Lib
 				}
 			}
 
+			// Replace sky warrior dialog that got taken over by "Nothing here".
+			npcScriptValue[0x3D] = Blob.FromHex("00DB4C00"); 
+
 			// Chime Lefein man is moved to ID 15 to keep him with all the other NPCs
 			Put(MapObjGfxOffset + 0x0F, Blob.FromHex("0E"));
 			Put(0x03400 + (int)MapId.Lefein * 48 + 0, Blob.FromHex("0F"));
@@ -604,7 +605,8 @@ namespace FF1Lib
 				PutInBank(0x0E, 0x95D5 + i * 4, npcScriptValue[i]);
 			}
 
-
+			// Dialogue for Sarda if Early sarda is off
+			newDialogs.Add(0xB3, "I shall help only\nthe true LIGHT WARRIORS.\nProve yourself by\ndefeating the Vampire.");
 
 			// Update treasure box dialog for new DrawDialogueString routine
 			newDialogs.Add(0xF0 + 0x50, "In the treasure box,\nyou found..\n#");
