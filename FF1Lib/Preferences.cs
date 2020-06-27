@@ -16,5 +16,6 @@ namespace FF1Lib
 		public MenuColor MenuColor { get; set; } = MenuColor.Blue;
 		public MapmanSlot MapmanSlot { get; set; } = MapmanSlot.Leader;
 		public bool DisableSpellCastFlash { get; set; } = false;
+		public bool RenounceAutosort { get; set; } = false;
 	}
 }

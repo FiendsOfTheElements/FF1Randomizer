@@ -152,7 +152,6 @@ namespace FF1Lib
 		public bool BlackBeltAbsorb { get; set; } = false;
 		public bool NPCSwatter { get; set; } = false;
 		public bool InventoryAutosort { get; set; } = false;
-
 		public bool EnemyStatusAttackBug { get; set; } = false;
 		public bool EnemySpellsTargetingAllies { get; set; } = false;
 		public bool EnemyElementalResistancesBug { get; set; } = false;

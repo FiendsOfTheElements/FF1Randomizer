@@ -538,11 +538,6 @@ namespace FF1Lib
 				EnableNPCSwatter();
 			}
 
-			if (flags.InventoryAutosort)
-			{
-				EnableInventoryAutosort();
-			}
-
 			if (flags.EasyMode)
 			{
 				EnableEasyMode();
@@ -705,6 +700,11 @@ namespace FF1Lib
 			if (flags.DisableInnSaving)
 			{
 				CannotSaveAtInns();
+			}
+
+			if (flags.InventoryAutosort && !(preferences.RenounceAutosort))
+			{
+				EnableInventoryAutosort();
 			}
 
 			// We have to do "fun" stuff last because it alters the RNG state.

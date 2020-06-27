@@ -790,6 +790,11 @@
 		"description": "If enabled, HEAL, PURE, and SOFT potions are automatically moved to the first row of the item menu, followed by saving items on the second row, then all key items in your inventory."
 	},
 	{
+		"Id": "renounceAutosortCheckBox",
+		"title": "Renounce Autosort",
+		"description": "Forgo the Autosort Inventory feature if it's enabled."
+	},
+	{
 		"Id": "houseMPRestorationCheckBox",
 		"title": "House MP Restoration",
 		"description": "Fixes a bug where the party's MP was restored only after the game was saved."
