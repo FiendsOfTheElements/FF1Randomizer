@@ -108,7 +108,7 @@
 		"FreeCanal": false,
 		"EasyMode": false,
 
-		"HousesFillHp": false,
+		"HousesFillHp": true,
 
 		"SpeedHacks": true,
 		"NoPartyShuffle": true,

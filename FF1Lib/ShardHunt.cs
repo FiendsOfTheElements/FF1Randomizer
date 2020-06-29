@@ -125,7 +125,6 @@ namespace FF1Lib
 			}
 
 			string shardName = ShardNames.PickRandom(rng);
-			//shardName = "EGG  ";
 
 			// Replace unused CANOE string and EarthOrb pointer with whatever we're calling the scavenged item.
 			Put(0x2B981, FF1Text.TextToBytes($"{shardName}  ", false, FF1Text.Delimiter.Null));
@@ -144,27 +143,30 @@ namespace FF1Lib
 			// Black Orb Override to check for shards rather than ORBs.
 			PutInBank(0x0E, newTalk.Talk_BlackOrb[1] * 0x100 + newTalk.Talk_BlackOrb[0], Blob.FromHex($"AD3560C9{goal:X2}300CA0CA209690E67DE67DA51160A51260"));
 			Put(0x7CDB3, Blob.FromHex("08CE"));
-			/*
+
 			// A little narrative overhaul.
 			Blob intro = FF1Text.TextToStory(new string[]
 			{
-				"The Easter Bunny's nest has", "",
-				"been ransacked!", "", "", "",
-				"The resulting EGGS were", "",
+				"The Time Loop has reopened!", "",
+				"The ORBS have been smashed!", "", "", "",
+				$"The resulting {shardName}S were", "",
 				"stolen and scattered around", "",
 				"the world to distract while", "",
 				"this new evil incubates....", "", "", "",
 				"But The Light Warriors return!", "",
-				$"They will need to find {goal}", "",
-				"EGGS to save Easter.", "",
+				$"They will need {goal} {shardName}S", "",
+				"to restore the BLACK ORB and", "",
+				"confront this new malevolence.",
 			});
 			System.Diagnostics.Debug.Assert(intro.Length <= 208);
 			Put(0x37F20, intro);
-			Put(0x289B2, FF1Text.TextToBytes($"The EGGS coalesce to\nrestore the BUNNY NEST.\n\nBrave Light Warriors....\nDestroy the Evil within!")); // Black Orb Text
-			Put(0x28CF8, FF1Text.TextToBytes($"Ah, the Light Warriors!\n\nSo you have collected\nthe EGGS and restored\nthe BUNNY NEST."));
-			Put(0x28D57, FF1Text.TextToBytes("Thus you've travelled\n2000 years into the past\nto try to stop me?\n\nStep forward then,\nto your peril!"));
-			Put(0x28DAF, FF1Text.TextToBytes("Oh, Light Warriors!\nSuch arrogant bravery.\n\nLet us see whom history\nremembers. En Garde!"));
-			*/
+
+			InsertDialogs(new Dictionary<int, string>() {
+				{ 0x21, $"The {shardName}S coalesce to\nrestore the Black ORB.\n\nBrave Light Warriors....\nDestroy the Evil within!" }, // Black Orb Text
+				{ 0x2E, $"Ah, the Light Warriors!\n\nSo you have collected\nthe {shardName}S and restored\nthe BLACK ORB." },
+				{ 0x2F, "Thus you've travelled\n2000 years into the past\nto try to stop me?\n\nStep forward then,\nto your peril!" },
+				{ 0x30, "Oh, Light Warriors!\nSuch arrogant bravery.\n\nLet us see whom history\nremembers. En Garde!" },
+			});
 		}
 
 		public Item ShardHuntTreasureSelector(Item item)
