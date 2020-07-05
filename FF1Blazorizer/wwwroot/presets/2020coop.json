@@ -5,7 +5,7 @@
 
 		"Spoilers": false,
 		"Shops": true,
-		"RandomWares": true,
+		"RandomWares": false,
 		"MagicLevels": true,
 		"ItemMagic": true,
 		"BalancedItemMagicShuffle": true,
@@ -24,9 +24,9 @@
 		"WarMECHMode": 2,
 
 		"Treasures": true,
-		"RandomLoot": true,
-		"WorldWealth": 2,
-		"BetterTrapTreasure": true,
+		"RandomLoot": false,
+		"BetterTrapChests": true,
+		"WorldWealth": 1,
 
 		"NPCItems": true,
 		"NPCFetchItems": true,
@@ -62,7 +62,7 @@
 		"IncentivizeFetchItems": true,
 		"IncentivizeAirship": true,
 		"IncentivizeCanoeItem": true,
-		"IncentivizeShipAndCanal": true,
+		"IncentivizeShipAndCanal": false,
 
 		"ShardHunt": true,
 		"ShardCount": 3,
@@ -89,21 +89,21 @@
 		"SeparateEnemyHPScaling": true,
 		"ClampMinimumStatScale": true,
 		"EnemyScaleFactor": 2.0,
-		"EnemyHPScaleFactor": 3.0,
+		"EnemyHPScaleFactor": 3.3,
 
 		"SeparateBossHPScaling": true,
 		"ClampMinimumBossStatScale": true,
-		"BossScaleFactor": 2.3,
+		"BossScaleFactor": 2.2,
 		"ClampBossHPScaling": true,
-		"BossHPScaleFactor": 4.0,
+		"BossHPScaleFactor": 3.5,
 
-		"ExpMultiplier": 2.5,
-		"ExpBonus": 200,
+		"ExpMultiplier": 2.8,
+		"ExpBonus": 150,
 		"ProgressiveScaleMode": 6,
 		"EncounterRate": 10.0,
 		"DungeonEncounterRate": 18.0,
 
-		"HousesFillHP": true,
+		"HousesFillHp": true,
 
 		"FIGHTER1": true,
 		"THIEF1": true,

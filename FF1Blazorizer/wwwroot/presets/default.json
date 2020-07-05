@@ -8,6 +8,7 @@
 		"Treasures": true,
 		"NPCItems": true,
 		"NPCFetchItems": false,
+		"BetterTrapTreasure": false,
 		"RandomWares": false,
 		"RandomWaresIncludesSpecialGear": false,
 		"RandomLoot": false,

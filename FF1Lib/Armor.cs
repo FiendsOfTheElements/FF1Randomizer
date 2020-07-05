@@ -45,7 +45,7 @@ namespace FF1Lib
 					currentArmor.Absorb = (byte)Math.Max(1, currentArmor.Absorb + (armorTypeAbsorbBonus * bonus));
 
 					//change last two non icon characters to -/+bonus
-					string bonusString = bonus.ToString();
+					string bonusString = string.Format((bonus > 0) ? "+{0}" : "{0}", bonus.ToString());
 					byte[] bonusBytes = FF1Text.TextToBytes(bonusString);
 
 					int iconIndex = currentArmor.NameBytes[6] > 200 && currentArmor.NameBytes[6] != 255 ? 5 : 6;
