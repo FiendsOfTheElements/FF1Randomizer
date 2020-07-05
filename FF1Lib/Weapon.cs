@@ -113,7 +113,7 @@ namespace FF1Lib
 					currentWeapon.Crit = (byte)Math.Max(1, (int)currentWeapon.Crit + (3 * bonus));
 
 					//change last two non icon characters to -/+bonus
-					string bonusString = bonus.ToString();
+					string bonusString = string.Format((bonus > 0) ? "+{0}" : "{0}", bonus.ToString());
 					byte[] bonusBytes = FF1Text.TextToBytes(bonusString);
 
 					int iconIndex = currentWeapon.NameBytes[6] > 200 && currentWeapon.NameBytes[6] != 255 ? 5 : 6;

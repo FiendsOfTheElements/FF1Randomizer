@@ -8,6 +8,7 @@
 		"Treasures": true,
 		"NPCItems": true,
 		"NPCFetchItems": false,
+		"BetterTrapTreasure": false,
 		"RandomWares": false,
 		"RandomWaresIncludesSpecialGear": false,
 		"RandomLoot": false,
@@ -108,7 +109,7 @@
 		"FreeCanal": false,
 		"EasyMode": false,
 
-		"HousesFillHp": false,
+		"HousesFillHp": true,
 
 		"SpeedHacks": true,
 		"NoPartyShuffle": true,
