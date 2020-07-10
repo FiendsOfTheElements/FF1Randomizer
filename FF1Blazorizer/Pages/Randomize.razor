@@ -393,17 +393,19 @@
         <BSCollapse IsOpen="@(activeTabs.Contains("Conveniences"))">
             <div class="is-dark nes-container">
                 <div class="row">
-                    <div class="col-md-12">
-                        <CheckBox UpdateToolTip="@UpdateToolTipID" Id="noPartyShuffleCheckBox" @bind-Checked="Flags.NoPartyShuffle">No Party Shuffle</CheckBox>
-                        <CheckBox UpdateToolTip="@UpdateToolTipID" Id="speedHacksCheckBox" @bind-Checked="Flags.SpeedHacks">Speed Hacks</CheckBox>
-                        <CheckBox UpdateToolTip="@UpdateToolTipID" Id="identifyTreasuresCheckBox" @bind-Checked="Flags.IdentifyTreasures">Identify Treasures</CheckBox>
-                        <CheckBox UpdateToolTip="@UpdateToolTipID" Id="dashCheckBox" @bind-Checked="Flags.Dash">Enable Dash</CheckBox>
-                        <CheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(!Flags.BuyTenOld)" Id="buyTenCheckBox" @bind-Checked="Flags.BuyTen">Buy Quantity</CheckBox>
-                        <CheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(!Flags.BuyTen)" Id="buyTenOldCheckBox" @bind-Checked="Flags.BuyTenOld">Buy Ten (old)</CheckBox>
-                        <CheckBox UpdateToolTip="@UpdateToolTipID" Id="waitWhenUnrunnableCheckBox" @bind-Checked="Flags.WaitWhenUnrunnable">Change Unrunnable RUN to WAIT</CheckBox>
-                        <CheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.SpeedHacks" Id="enableCritNumberDisplayCheckBox" @bind-Checked="Flags.EnableCritNumberDisplay">Critical Hit Count Display</CheckBox>
-                        <CheckBox UpdateToolTip="@UpdateToolTipID" Id="inventoryAutosortCheckBox" @bind-Checked="Flags.InventoryAutosort">Autosort Inventory</CheckBox>
-                    </div>
+					<div class="col-md-12">
+						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="noPartyShuffleCheckBox" @bind-Checked="Flags.NoPartyShuffle">No Party Shuffle</CheckBox>
+						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="speedHacksCheckBox" @bind-Checked="Flags.SpeedHacks">Speed Hacks</CheckBox>
+						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="identifyTreasuresCheckBox" @bind-Checked="Flags.IdentifyTreasures">Identify Treasures</CheckBox>
+						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="dashCheckBox" @bind-Checked="Flags.Dash">Enable Dash</CheckBox>
+						<CheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(!Flags.BuyTenOld)" Id="buyTenCheckBox" @bind-Checked="Flags.BuyTen">Buy Quantity</CheckBox>
+						<CheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(!Flags.BuyTen)" Id="buyTenOldCheckBox" @bind-Checked="Flags.BuyTenOld">Buy Ten (old)</CheckBox>
+						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="waitWhenUnrunnableCheckBox" @bind-Checked="Flags.WaitWhenUnrunnable">Change Unrunnable RUN to WAIT</CheckBox>
+						<CheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.SpeedHacks" Id="enableCritNumberDisplayCheckBox" @bind-Checked="Flags.EnableCritNumberDisplay">Critical Hit Count Display</CheckBox>
+						<div class="checkbox-cell"></div>
+						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="inventoryAutosortCheckBox" @bind-Checked="Flags.InventoryAutosort">Autosort Inventory</CheckBox>
+						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="npcSwatterCheckBox" @bind-Checked="Flags.NPCSwatter">NPC Guillotine</CheckBox>
+					</div>
                 </div>
             </div>
         </BSCollapse>
@@ -457,8 +459,6 @@
 						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="fiendShuffleCheckBox" @bind-Checked="Flags.FiendShuffle">Shuffle the Four Original Fiend Fights</CheckBox>
 						<div class="checkbox-cell"></div>
 						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="itemPlacementCheckBox" IsEnabled="@Flags.Treasures" @bind-Checked="Flags.ClassicItemPlacement">Use Older v2 Placement</CheckBox>
-						<div class="checkbox-cell"></div>
-						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="npcSwatterCheckBox" @bind-Checked="Flags.NPCSwatter">NPC Guillotine</CheckBox>
 						<div class="checkbox-cell"></div>
 						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="disableTentSaving" @bind-Checked="Flags.DisableTentSaving">Disable Tent/Cabin/House Saving on Overworld</CheckBox>
 						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="disableInnSaving" @bind-Checked="Flags.DisableInnSaving">Disable Inn Saving</CheckBox>

@@ -240,6 +240,7 @@ namespace FF1Lib
 			PutInBank(0x0E, 0x95AE, Blob.FromHex("A203BCD095B900613006186906990061CA10EFE65660"));
 			PutInBank(0x0E, 0x95D0, Blob.FromHex("C0804000")); // lut used by the above code
 
+			// To allow all promoted classes
 			EnableTwelveClasses();
 		}
 
@@ -554,27 +555,18 @@ namespace FF1Lib
 
 				// DoClassChange reload the map to show the new class sprites, this break TalkBattle, so we stop it from reloading the map
 				// INC dlgflg_reentermap (E656) => NOPx2 (EAEA)
-				if ((bool)flags.EnablePoolParty || (bool)flags.EnableRandomPromotions)
-					PutInBank(0x0E, 0x95AE + 20, Blob.FromHex("EAEA"));
-				else   
-					PutInBank(0x0E, 0x95AE + 19, Blob.FromHex("EAEA"));
+				PutInBank(0x0E, 0x95AE + 20, Blob.FromHex("EAEA"));
 
 				// Modify GameOver routine for compatibility
 				if (flags.SaveGameWhenGameOver)
 				{
-					// Different changes if EnableTwelveClasses is activated
-					if ((bool)flags.EnablePoolParty || (bool)flags.EnableRandomPromotions)
+					Blob PromoteArray = Get(0x395AE, 12);
+					sbyte[] inversedPromoted = new sbyte[12];
+					for (int i = 0; i < 12; i++)
 					{
-						Blob PromoteArray = Get(0x395AE, 12);
-						sbyte[] inversedPromoted = new sbyte[12];
-						for (int i = 0; i < 12; i++)
-						{
-							inversedPromoted[PromoteArray[i]] = (sbyte)i;
-						}
-						PutInBank(0x1B, 0x8FF5 + 0x0189, Blob.FromHex("A200209391A240209391A280209391A2C020939160BC00613006B99F919D006160") + Blob.FromSBytes(inversedPromoted));
+						inversedPromoted[PromoteArray[i]] = (sbyte)i;
 					}
-					else
-						PutInBank(0x1B, 0x8FF5 + 0x0189, Blob.FromHex("A200209391A240209391A280209391A2C020939160BD0061300638E9069D006160"));
+					PutInBank(0x1B, 0x8FF5 + 0x0189, Blob.FromHex("A200209391A240209391A280209391A2C020939160BC00613006B99F919D006160") + Blob.FromSBytes(inversedPromoted));
 				}
 			}
 		}
