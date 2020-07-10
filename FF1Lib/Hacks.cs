@@ -597,7 +597,7 @@ namespace FF1Lib
 		public void EnableEarlyKing()
 		{
 			PutInBank(0x0E, 0x9580 + (int)ObjectId.King, Blob.FromHex("00"));
-			InsertDialogs(0x02, "To aid your\nquest, please take this.\n\n\n\nReceived #.");
+			InsertDialogs(0x02, "To aid your quest\n, please take this.\n\n\n\nReceived #.");
 		}
 
 		public void EnableFreeBridge()
