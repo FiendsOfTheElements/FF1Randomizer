@@ -89,6 +89,28 @@ namespace FF1Lib
 			public static readonly Blob Talk_Astos = Blob.FromHex("CF94");
 			public static readonly Blob Talk_kill = Blob.FromHex("0995");
 		}
+		public void AddNewChars()
+		{
+			// New characters, frees up 5 characters at 0xCA, 0xCE, 0xE6, 0xE8, 0xE9
+			// STATUS, use normal S and draw AT closer
+			Put(0x385A1, Blob.FromHex("9CCBCCCD9C"));
+			Put(0x24CC0, Blob.FromHex("00DFC66666E63636"));
+			Put(0x24CD0, Blob.FromHex("00B333333333331E"));
+
+			// Stone ailment, use normal S and e, use Poison's "on"
+			Put(0x6C360, Blob.FromHex("9CE7E5A8")); // Stone
+
+			// White out free chars
+			Put(0x24CA0, Blob.FromHex("FFFFFFFFFFFFFFFF"));
+			Put(0x24CE0, Blob.FromHex("FFFFFFFFFFFFFFFF"));
+			Put(0x24E60, Blob.FromHex("FFFFFFFFFFFFFFFF"));
+			Put(0x24E80, Blob.FromHex("FFFFFFFFFFFFFFFF"));
+			Put(0x24E90, Blob.FromHex("FFFFFFFFFFFFFFFF"));
+
+			// Add plus sign at 0xC1
+			Put(0x24C10, Blob.FromHex("000008083E080800"));
+		}
+
 		public void TransferDialogs()
 		{
 			// Get dialogs from bank A and put them in bank 10
@@ -212,64 +234,21 @@ namespace FF1Lib
 			var itemNames = ReadText(FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, 256);
 			Blob itemNamesBlob = Blob.FromHex("");
 
-			for (int i = 1; i < 18; i++)
+			for (int i = 1; i < 108; i++)
 			{
-				byte[] byteitemname = new byte[8];
-				itemNames[i] = itemNames[i].TrimEnd(' ');
-				Array.Copy(FF1Text.TextToBytes(itemNames[i], false), byteitemname, itemNames[i].Length);
-				itemNamesBlob = Blob.Concat(itemNamesBlob, byteitemname);
-			}
+				int name_length = 8;
+				if (i > 17 && i < 22) name_length = 2;
+				else if (i > 24 && i < 27) name_length = 6;
+				else if (i == 99) name_length = 9;
 
-			for (int i = 18; i < 22; i++)
-			{
-				byte[] byteitemname = new byte[2];
-				itemNames[i] = " ";
-				Array.Copy(FF1Text.TextToBytes(itemNames[i], false), byteitemname, itemNames[i].Length);
-				itemNamesBlob = Blob.Concat(itemNamesBlob, byteitemname);
-			}
-			for (int i = 22; i < 23; i++)
-			{
-				byte[] byteitemname = new byte[8];
-				itemNames[i] = itemNames[i].TrimEnd(' ') + " ";
-				Array.Copy(FF1Text.TextToBytes(itemNames[i], false), byteitemname, itemNames[i].Length);
-				itemNamesBlob = Blob.Concat(itemNamesBlob, byteitemname);
-			}
+				int pad_length = (i > 21) ? 5 : 0;
 
-			for (int i = 23; i < 25; i++)
-			{
-				byte[] byteitemname = new byte[8];
-				itemNames[i] = itemNames[i].TrimEnd(' ');
+				byte[] byteitemname = new byte[name_length];
+				itemNames[i] = itemNames[i].TrimEnd(' ').PadRight(pad_length);
 				Array.Copy(FF1Text.TextToBytes(itemNames[i], false), byteitemname, itemNames[i].Length);
 				itemNamesBlob = Blob.Concat(itemNamesBlob, byteitemname);
 			}
-			for (int i = 25; i < 27; i++)
-			{
-				byte[] byteitemname = new byte[6];
-				itemNames[i] = itemNames[i].TrimEnd(' ');
-				Array.Copy(FF1Text.TextToBytes(itemNames[i], false), byteitemname, itemNames[i].Length);
-				itemNamesBlob = Blob.Concat(itemNamesBlob, byteitemname);
-			}
-			for (int i = 27; i < 99; i++)
-			{
-				byte[] byteitemname = new byte[8];
-				itemNames[i] = itemNames[i].TrimEnd(' ').PadRight(5);
-				Array.Copy(FF1Text.TextToBytes(itemNames[i], false), byteitemname, itemNames[i].Length);
-				itemNamesBlob = Blob.Concat(itemNamesBlob, byteitemname);
-			}
-			for (int i = 99; i < 100; i++)
-			{
-				byte[] byteitemname = new byte[9];
-				itemNames[i] = itemNames[i].TrimEnd(' ');
-				Array.Copy(FF1Text.TextToBytes(itemNames[i], false), byteitemname, itemNames[i].Length);
-				itemNamesBlob = Blob.Concat(itemNamesBlob, byteitemname);
-			}
-			for (int i = 100; i < 108; i++)
-			{
-				byte[] byteitemname = new byte[8];
-				itemNames[i] = itemNames[i].TrimEnd(' ');
-				Array.Copy(FF1Text.TextToBytes(itemNames[i], false), byteitemname, itemNames[i].Length);
-				itemNamesBlob = Blob.Concat(itemNamesBlob, byteitemname);
-			}
+			
 			Put(ItemTextOffset + 1, itemNamesBlob);
 		}
 		// Insert a single dialog in the given position
@@ -340,7 +319,7 @@ namespace FF1Lib
 
 			NPCShuffleDialogs.Add(0x02, "Thank you for saving the\nPrincess. To aid your\nquest, please take this.\n\n\nReceived #.");
 			NPCShuffleDialogs.Add(0x06, "This heirloom has been\npassed down from Queen\nto Princess for 2000\nyears. Please take it.\n\nReceived #.");
-			NPCShuffleDialogs.Add(0x09, "Okay, you got me.\nTake my #.\n\n\n\nReceived #.");
+			NPCShuffleDialogs.Add(0x09, "Okay, you got me.\nTake this.\n\n\n\nReceived #.");
 			NPCShuffleDialogs.Add(0x0E, "Is this a dream?.. Are\nyou the LIGHT WARRIORS?\nSo, as legend says,\nI give you this.\n\nReceived #.");
 			NPCShuffleDialogs.Add(0x12, "HA, HA, HA! I am Astos,\nKing of the Dark Elves.\nI have the #,\nand you shall give me\nthat CROWN, now!!!");
 			NPCShuffleDialogs.Add(0x14, "Yes, yes indeed,\nthis TNT is just what I\nneed to finish my work.\nTake this in return!\n\nReceived #.");
@@ -362,9 +341,7 @@ namespace FF1Lib
 			CleanupNPCRoutines();
 			SplitOpenTreasureRoutine();
 			TransferDialogs();
-
-			// Add plus sign
-			Put(0x24C10, Blob.FromHex("000008083E080800"));
+			AddNewChars();
 
 			// Get all NPC scripts and script values to update them
 			var npcScript = new List<Blob>();

@@ -202,6 +202,30 @@ namespace FF1Lib
 		public bool? WHITE_MAGE4 { get; set; } = false;
 		public bool? BLACK_MAGE4 { get; set; } = false;
 
+		public bool? KNIGHT1 { get; set; } = false;
+		public bool? KNIGHT2 { get; set; } = false;
+		public bool? KNIGHT3 { get; set; } = false;
+		public bool? KNIGHT4 { get; set; } = false;
+		public bool? NINJA1 { get; set; } = false;
+		public bool? NINJA2 { get; set; } = false;
+		public bool? NINJA3 { get; set; } = false;
+		public bool? NINJA4 { get; set; } = false;
+		public bool? MASTER1 { get; set; } = false;
+		public bool? MASTER2 { get; set; } = false;
+		public bool? MASTER3 { get; set; } = false;
+		public bool? MASTER4 { get; set; } = false;
+		public bool? RED_WIZ1 { get; set; } = false;
+		public bool? RED_WIZ2 { get; set; } = false;
+		public bool? RED_WIZ3 { get; set; } = false;
+		public bool? RED_WIZ4 { get; set; } = false;
+		public bool? WHITE_WIZ1 { get; set; } = false;
+		public bool? WHITE_WIZ2 { get; set; } = false;
+		public bool? WHITE_WIZ3 { get; set; } = false;
+		public bool? WHITE_WIZ4 { get; set; } = false;
+		public bool? BLACK_WIZ1 { get; set; } = false;
+		public bool? BLACK_WIZ2 { get; set; } = false;
+		public bool? BLACK_WIZ3 { get; set; } = false;
+		public bool? BLACK_WIZ4 { get; set; } = false;
 		public bool? NONE_CLASS2 { get; set; } = false;
 		public bool? NONE_CLASS3 { get; set; } = false;
 		public bool? NONE_CLASS4 { get; set; } = false;
@@ -514,7 +538,7 @@ namespace FF1Lib
 		public static string EncodeFlagsText(Flags flags)
 		{
 			BigInteger sum = 0;
-			sum = AddString(sum, FFRVersion.Sha.Length, FFRVersion.Sha);
+			sum = AddString(sum, 7, (FFRVersion.Sha.Length >= 7) ? FFRVersion.Sha.Substring(0,7) : FFRVersion.Sha.PadRight(7, 'X'));
 
 
 			sum = AddTriState(sum, flags.IncentivizeVorpal);
@@ -676,6 +700,30 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.RED_MAGE4);
 			sum = AddTriState(sum, flags.WHITE_MAGE4);
 			sum = AddTriState(sum, flags.BLACK_MAGE4);
+			sum = AddTriState(sum, flags.KNIGHT1);
+			sum = AddTriState(sum, flags.KNIGHT2);
+			sum = AddTriState(sum, flags.KNIGHT3);
+			sum = AddTriState(sum, flags.KNIGHT4);
+			sum = AddTriState(sum, flags.NINJA1);
+			sum = AddTriState(sum, flags.NINJA2);
+			sum = AddTriState(sum, flags.NINJA3);
+			sum = AddTriState(sum, flags.NINJA4);
+			sum = AddTriState(sum, flags.MASTER1);
+			sum = AddTriState(sum, flags.MASTER2);
+			sum = AddTriState(sum, flags.MASTER3);
+			sum = AddTriState(sum, flags.MASTER4);
+			sum = AddTriState(sum, flags.RED_WIZ1);
+			sum = AddTriState(sum, flags.RED_WIZ2);
+			sum = AddTriState(sum, flags.RED_WIZ3);
+			sum = AddTriState(sum, flags.RED_WIZ4);
+			sum = AddTriState(sum, flags.WHITE_WIZ1);
+			sum = AddTriState(sum, flags.WHITE_WIZ2);
+			sum = AddTriState(sum, flags.WHITE_WIZ3);
+			sum = AddTriState(sum, flags.WHITE_WIZ4);
+			sum = AddTriState(sum, flags.BLACK_WIZ1);
+			sum = AddTriState(sum, flags.BLACK_WIZ2);
+			sum = AddTriState(sum, flags.BLACK_WIZ3);
+			sum = AddTriState(sum, flags.BLACK_WIZ4);
 			sum = AddTriState(sum, flags.NONE_CLASS2);
 			sum = AddTriState(sum, flags.NONE_CLASS3);
 			sum = AddTriState(sum, flags.NONE_CLASS4);
@@ -820,6 +868,30 @@ namespace FF1Lib
 				NONE_CLASS4 = GetTriState(ref sum),
 				NONE_CLASS3 = GetTriState(ref sum),
 				NONE_CLASS2 = GetTriState(ref sum),
+				BLACK_WIZ4 = GetTriState(ref sum),
+				BLACK_WIZ3 = GetTriState(ref sum),
+				BLACK_WIZ2 = GetTriState(ref sum),
+				BLACK_WIZ1 = GetTriState(ref sum),
+				WHITE_WIZ4 = GetTriState(ref sum),
+				WHITE_WIZ3 = GetTriState(ref sum),
+				WHITE_WIZ2 = GetTriState(ref sum),
+				WHITE_WIZ1 = GetTriState(ref sum),
+				RED_WIZ4 = GetTriState(ref sum),
+				RED_WIZ3 = GetTriState(ref sum),
+				RED_WIZ2 = GetTriState(ref sum),
+				RED_WIZ1 = GetTriState(ref sum),
+				MASTER4 = GetTriState(ref sum),
+				MASTER3 = GetTriState(ref sum),
+				MASTER2 = GetTriState(ref sum),
+				MASTER1 = GetTriState(ref sum),
+				NINJA4 = GetTriState(ref sum),
+				NINJA3 = GetTriState(ref sum),
+				NINJA2 = GetTriState(ref sum),
+				NINJA1 = GetTriState(ref sum),
+				KNIGHT4 = GetTriState(ref sum),
+				KNIGHT3 = GetTriState(ref sum),
+				KNIGHT2 = GetTriState(ref sum),
+				KNIGHT1 = GetTriState(ref sum),
 				BLACK_MAGE4 = GetTriState(ref sum),
 				WHITE_MAGE4 = GetTriState(ref sum),
 				RED_MAGE4 = GetTriState(ref sum),
@@ -980,8 +1052,8 @@ namespace FF1Lib
 				Shops = GetTriState(ref sum),
 				IncentivizeVorpal = GetTriState(ref sum),
 			};
-			string EncodedSha = GetString(ref sum, FFRVersion.Sha.Length);
-			if (FFRVersion.Sha != EncodedSha)
+			string EncodedSha = GetString(ref sum, 7);
+			if (((FFRVersion.Sha.Length >= 7) ? FFRVersion.Sha.Substring(0, 7) : FFRVersion.Sha.PadRight(7, 'X')) != EncodedSha)
 			{
 				throw new Exception("The encoded version does not match the expected version");
 			}
