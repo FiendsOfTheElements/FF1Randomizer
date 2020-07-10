@@ -1,0 +1,1043 @@
+﻿<h4>Party Composition</h4>
+<br />
+<div class="table-wrapper">
+	<table>
+		<tr class="odd">
+			<td>Permitted Classes</td>
+			<td>Forced?</td>
+			<td>Fighter</td>
+			<td>Thief</td>
+			<td>Black Belt</td>
+			<td>Red Mage</td>
+			<td>White Mage</td>
+			<td>Black Mage</td>
+			<td>None!</td>
+			<td>Knight</td>
+			<td>Ninja</td>
+			<td>Master</td>
+			<td>Red Wizard</td>
+			<td>White Wizard</td>
+			<td>Black Wizard</td>
+		</tr>
+		<tr class="bottom-borderd">
+			<td class="right-bordered">All</td>
+			<td><TriStateCheckBox DisableTooltip Id="partyForcedAll" @bind-Value="@AllForced" IsEnabled="@(Flags.EnablePoolParty != true)"></TriStateCheckBox></td>
+			<td><TriStateCheckBox DisableTooltip Id="partyFighterAll" @bind-Value="@AllFighter"></TriStateCheckBox></td>
+			<td><TriStateCheckBox DisableTooltip Id="partyThiefAll" @bind-Value="@AllThief"></TriStateCheckBox></td>
+			<td><TriStateCheckBox DisableTooltip Id="partyBlackBeltAll" @bind-Value="@AllBlackBelt"></TriStateCheckBox></td>
+			<td><TriStateCheckBox DisableTooltip Id="partyRedMageAll" @bind-Value="@AllRedMage"></TriStateCheckBox></td>
+			<td><TriStateCheckBox DisableTooltip Id="partyWhiteMageAll" @bind-Value="@AllWhiteMage"></TriStateCheckBox></td>
+			<td class="right-bordered"><TriStateCheckBox DisableTooltip Id="partyBlackMageAll" @bind-Value="@AllBlackMage"></TriStateCheckBox></td>
+			<td class="right-bordered"><TriStateCheckBox DisableTooltip Id="partyNoneAll" @bind-Value="@AllNone" IsEnabled="@(Flags.EnablePoolParty != true)"></TriStateCheckBox></td>
+			<td><TriStateCheckBox DisableTooltip Id="partyKnightAll" @bind-Value="@AllKnight"></TriStateCheckBox></td>
+			<td><TriStateCheckBox DisableTooltip Id="partyNinjaAll" @bind-Value="@AllNinja"></TriStateCheckBox></td>
+			<td><TriStateCheckBox DisableTooltip Id="partyMasterAll" @bind-Value="@AllMaster"></TriStateCheckBox></td>
+			<td><TriStateCheckBox DisableTooltip Id="partyRedWizAll" @bind-Value="@AllRedWiz"></TriStateCheckBox></td>
+			<td><TriStateCheckBox DisableTooltip Id="partyWhiteWizAll" @bind-Value="@AllWhiteWiz"></TriStateCheckBox></td>
+			<td><TriStateCheckBox DisableTooltip Id="partyBlackWizAll" @bind-Value="@AllBlackWiz"></TriStateCheckBox></td>
+			<td></td>
+		</tr>
+	</table>
+	<BSCollapse IsOpen=@(Flags.EnablePoolParty != true)>
+		<table>
+			<tr class="odd" style="visibility:collapse;">
+				<td>Permitted Classes</td>
+				<td>Forced?</td>
+				<td>Fighter</td>
+				<td>Thief</td>
+				<td>Black Belt</td>
+				<td>Red Mage</td>
+				<td>White Mage</td>
+				<td>Black Mage</td>
+				<td>None!</td>
+				<td>Knight</td>
+				<td>Ninja</td>
+				<td>Master</td>
+				<td>Red Wizard</td>
+				<td>White Wizard</td>
+				<td>Black Wizard</td>
+			</tr>
+			<tr>
+				<td class="right-bordered">Member 1</td>
+				<td><TriStateCheckBox DisableTooltip Id="partyForced1" @bind-Value="@FORCED1"></TriStateCheckBox></td>
+				<td><TriStateCheckBox DisableTooltip Id="partyFighter1" @bind-Value="@FIGHTER1"></TriStateCheckBox></td>
+				<td><TriStateCheckBox DisableTooltip Id="partyThief1" @bind-Value="@THIEF1"></TriStateCheckBox></td>
+				<td><TriStateCheckBox DisableTooltip Id="partyBlackBelt1" @bind-Value="@BLACK_BELT1"></TriStateCheckBox></td>
+				<td><TriStateCheckBox DisableTooltip Id="partyRedMage1" @bind-Value="@RED_MAGE1"></TriStateCheckBox></td>
+				<td><TriStateCheckBox DisableTooltip Id="partyWhiteMage1" @bind-Value="@WHITE_MAGE1"></TriStateCheckBox></td>
+				<td class="right-bordered"><TriStateCheckBox DisableTooltip Id="partyBlackMage1" @bind-Value="@BLACK_MAGE1"></TriStateCheckBox></td>
+				<td class="right-bordered"></td>
+				<td><TriStateCheckBox DisableTooltip Id="partyKnight1" @bind-Value="@KNIGHT1"></TriStateCheckBox></td>
+				<td><TriStateCheckBox DisableTooltip Id="partyNinja1" @bind-Value="@NINJA1"></TriStateCheckBox></td>
+				<td><TriStateCheckBox DisableTooltip Id="partyMaster1" @bind-Value="@MASTER1"></TriStateCheckBox></td>
+				<td><TriStateCheckBox DisableTooltip Id="partyRedWiz1" @bind-Value="@RED_WIZ1"></TriStateCheckBox></td>
+				<td><TriStateCheckBox DisableTooltip Id="partyWhiteWiz1" @bind-Value="@WHITE_WIZ1"></TriStateCheckBox></td>
+				<td><TriStateCheckBox DisableTooltip Id="partyBlackWiz1" @bind-Value="@BLACK_WIZ1"></TriStateCheckBox></td>
+				<td></td>
+			</tr>
+			<tr class="odd">
+				<td class="right-bordered">Member 2</td>
+				<td><TriStateCheckBox DisableTooltip Id="partyForced2" @bind-Value="@FORCED2"></TriStateCheckBox></td>
+				<td><TriStateCheckBox DisableTooltip Id="partyFighter2" @bind-Value="@FIGHTER2"></TriStateCheckBox></td>
+				<td><TriStateCheckBox DisableTooltip Id="partyThief2" @bind-Value="@THIEF2"></TriStateCheckBox></td>
+				<td><TriStateCheckBox DisableTooltip Id="partyBlackBelt2" @bind-Value="@BLACK_BELT2"></TriStateCheckBox></td>
+				<td><TriStateCheckBox DisableTooltip Id="partyRedMage2" @bind-Value="@RED_MAGE2"></TriStateCheckBox></td>
+				<td><TriStateCheckBox DisableTooltip Id="partyWhiteMage2" @bind-Value="@WHITE_MAGE2"></TriStateCheckBox></td>
+				<td class="right-bordered"><TriStateCheckBox DisableTooltip Id="partyBlackMage2" @bind-Value="@BLACK_MAGE2"></TriStateCheckBox></td>
+				<td class="right-bordered"><TriStateCheckBox DisableTooltip Id="partyNone2" @bind-Value="@NONE_CLASS2"></TriStateCheckBox></td>
+				<td><TriStateCheckBox DisableTooltip Id="partyKnight2" @bind-Value="@KNIGHT2"></TriStateCheckBox></td>
+				<td><TriStateCheckBox DisableTooltip Id="partyNinja2" @bind-Value="@NINJA2"></TriStateCheckBox></td>
+				<td><TriStateCheckBox DisableTooltip Id="partyMaster2" @bind-Value="@MASTER2"></TriStateCheckBox></td>
+				<td><TriStateCheckBox DisableTooltip Id="partyRedWiz2" @bind-Value="@RED_WIZ2"></TriStateCheckBox></td>
+				<td><TriStateCheckBox DisableTooltip Id="partyWhiteWiz2" @bind-Value="@WHITE_WIZ2"></TriStateCheckBox></td>
+				<td><TriStateCheckBox DisableTooltip Id="partyBlackWiz2" @bind-Value="@BLACK_WIZ2"></TriStateCheckBox></td>
+			</tr>
+			<tr>
+				<td class="right-bordered">Member 3</td>
+				<td><TriStateCheckBox DisableTooltip Id="partyForced3" @bind-Value="@FORCED3"></TriStateCheckBox></td>
+				<td><TriStateCheckBox DisableTooltip Id="partyFighter3" @bind-Value="@FIGHTER3"></TriStateCheckBox></td>
+				<td><TriStateCheckBox DisableTooltip Id="partyThief3" @bind-Value="@THIEF3"></TriStateCheckBox></td>
+				<td><TriStateCheckBox DisableTooltip Id="partyBlackBelt3" @bind-Value="@BLACK_BELT3"></TriStateCheckBox></td>
+				<td><TriStateCheckBox DisableTooltip Id="partyRedMage3" @bind-Value="@RED_MAGE3"></TriStateCheckBox></td>
+				<td><TriStateCheckBox DisableTooltip Id="partyWhiteMage3" @bind-Value="@WHITE_MAGE3"></TriStateCheckBox></td>
+				<td class="right-bordered"><TriStateCheckBox DisableTooltip Id="partyBlackMage3" @bind-Value="@BLACK_MAGE3"></TriStateCheckBox></td>
+				<td class="right-bordered"><TriStateCheckBox DisableTooltip Id="partyNone3" @bind-Value="@NONE_CLASS3"></TriStateCheckBox></td>
+				<td><TriStateCheckBox DisableTooltip Id="partyKnight3" @bind-Value="@KNIGHT3"></TriStateCheckBox></td>
+				<td><TriStateCheckBox DisableTooltip Id="partyNinja3" @bind-Value="@NINJA3"></TriStateCheckBox></td>
+				<td><TriStateCheckBox DisableTooltip Id="partyMaster3" @bind-Value="@MASTER3"></TriStateCheckBox></td>
+				<td><TriStateCheckBox DisableTooltip Id="partyRedWiz3" @bind-Value="@RED_WIZ3"></TriStateCheckBox></td>
+				<td><TriStateCheckBox DisableTooltip Id="partyWhiteWiz3" @bind-Value="@WHITE_WIZ3"></TriStateCheckBox></td>
+				<td><TriStateCheckBox DisableTooltip Id="partyBlackWiz3" @bind-Value="@BLACK_WIZ3"></TriStateCheckBox></td>
+			</tr>
+			<tr class="odd">
+				<td class="right-bordered">Member 4</td>
+				<td><TriStateCheckBox DisableTooltip Id="partyForced4" @bind-Value="@FORCED4"></TriStateCheckBox></td>
+				<td><TriStateCheckBox DisableTooltip Id="partyFighter4" @bind-Value="@FIGHTER4"></TriStateCheckBox></td>
+				<td><TriStateCheckBox DisableTooltip Id="partyThief4" @bind-Value="@THIEF4"></TriStateCheckBox></td>
+				<td><TriStateCheckBox DisableTooltip Id="partyBlackBelt4" @bind-Value="@BLACK_BELT4"></TriStateCheckBox></td>
+				<td><TriStateCheckBox DisableTooltip Id="partyRedMage4" @bind-Value="@RED_MAGE4"></TriStateCheckBox></td>
+				<td><TriStateCheckBox DisableTooltip Id="partyWhiteMage4" @bind-Value="@WHITE_MAGE4"></TriStateCheckBox></td>
+				<td class="right-bordered"><TriStateCheckBox DisableTooltip Id="partyBlackMage4" @bind-Value="@BLACK_MAGE4"></TriStateCheckBox></td>
+				<td class="right-bordered"><TriStateCheckBox DisableTooltip Id="partyNone4" @bind-Value="@NONE_CLASS4"></TriStateCheckBox></td>
+				<td><TriStateCheckBox DisableTooltip Id="partyKnight4" @bind-Value="@KNIGHT4"></TriStateCheckBox></td>
+				<td><TriStateCheckBox DisableTooltip Id="partyNinja4" @bind-Value="@NINJA4"></TriStateCheckBox></td>
+				<td><TriStateCheckBox DisableTooltip Id="partyMaster4" @bind-Value="@MASTER4"></TriStateCheckBox></td>
+				<td><TriStateCheckBox DisableTooltip Id="partyRedWiz4" @bind-Value="@RED_WIZ4"></TriStateCheckBox></td>
+				<td><TriStateCheckBox DisableTooltip Id="partyWhiteWiz4" @bind-Value="@WHITE_WIZ4"></TriStateCheckBox></td>
+				<td><TriStateCheckBox DisableTooltip Id="partyBlackWiz4" @bind-Value="@BLACK_WIZ4"></TriStateCheckBox></td>
+			</tr>
+		</table>
+	</BSCollapse>
+
+</div>
+
+@code {
+	[Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }
+	private bool? _allForced = false;
+	public bool? AllForced
+	{
+		get { return _allForced; }
+		set
+		{
+			Flags.FORCED1 = value;
+			Flags.FORCED2 = value;
+			Flags.FORCED3 = value;
+			Flags.FORCED4 = value;
+			_allForced = value;
+		}
+	}
+
+	public bool? FORCED1
+	{
+		get { return Flags.FORCED1; }
+		set
+		{
+			Flags.FORCED1 = value;
+			if (Flags.FORCED1 == Flags.FORCED2 && Flags.FORCED2 == Flags.FORCED3 && Flags.FORCED3 == Flags.FORCED4)
+			{
+				_allForced = value;
+			}
+			else { _allForced = false; }
+		}
+	}
+	public bool? FORCED2
+	{
+		get { return Flags.FORCED2; }
+		set
+		{
+			Flags.FORCED2 = value;
+			if (Flags.FORCED1 == Flags.FORCED2 && Flags.FORCED2 == Flags.FORCED3 && Flags.FORCED3 == Flags.FORCED4)
+			{
+				_allForced = value;
+			}
+			else { _allForced = false; }
+		}
+	}
+	public bool? FORCED3
+	{
+		get { return Flags.FORCED3; }
+		set
+		{
+			Flags.FORCED3 = value;
+			if (Flags.FORCED1 == Flags.FORCED2 && Flags.FORCED2 == Flags.FORCED3 && Flags.FORCED3 == Flags.FORCED4)
+			{
+				_allForced = value;
+			}
+			else { _allForced = false; }
+		}
+	}
+	public bool? FORCED4
+	{
+		get { return Flags.FORCED4; }
+		set
+		{
+			Flags.FORCED4 = value;
+			if (Flags.FORCED1 == Flags.FORCED2 && Flags.FORCED2 == Flags.FORCED3 && Flags.FORCED3 == Flags.FORCED4)
+			{
+				_allForced = value;
+			}
+			else { _allForced = false; }
+		}
+	}
+
+	private bool? _allFighter = true;
+	public bool? AllFighter
+	{
+		get { return _allFighter; }
+		set
+		{
+			Flags.FIGHTER1 = value;
+			Flags.FIGHTER2 = value;
+			Flags.FIGHTER3 = value;
+			Flags.FIGHTER4 = value;
+			_allFighter = value;
+		}
+	}
+	public bool? FIGHTER1
+	{
+		get { return Flags.FIGHTER1; }
+		set
+		{
+			Flags.FIGHTER1 = value;
+			if (Flags.FIGHTER1 == Flags.FIGHTER2 && Flags.FIGHTER2 == Flags.FIGHTER3 && Flags.FIGHTER3 == Flags.FIGHTER4)
+			{
+				_allFighter = value;
+			}
+			else { _allFighter = false; }
+		}
+	}
+	public bool? FIGHTER2
+	{
+		get { return Flags.FIGHTER2; }
+		set
+		{
+			Flags.FIGHTER2 = value;
+			if (Flags.FIGHTER1 == Flags.FIGHTER2 && Flags.FIGHTER2 == Flags.FIGHTER3 && Flags.FIGHTER3 == Flags.FIGHTER4)
+			{
+				_allFighter = value;
+			}
+			else { _allFighter = false; }
+		}
+	}
+	public bool? FIGHTER3
+	{
+		get { return Flags.FIGHTER3; }
+		set
+		{
+			Flags.FIGHTER3 = value;
+			if (Flags.FIGHTER1 == Flags.FIGHTER2 && Flags.FIGHTER2 == Flags.FIGHTER3 && Flags.FIGHTER3 == Flags.FIGHTER4)
+			{
+				_allFighter = value;
+			}
+			else { _allFighter = false; }
+		}
+	}
+	public bool? FIGHTER4
+	{
+		get { return Flags.FIGHTER4; }
+		set
+		{
+			Flags.FIGHTER4 = value;
+			if (Flags.FIGHTER1 == Flags.FIGHTER2 && Flags.FIGHTER2 == Flags.FIGHTER3 && Flags.FIGHTER3 == Flags.FIGHTER4)
+			{
+				_allFighter = value;
+			}
+			else { _allFighter = false; }
+		}
+	}
+
+	private bool? _allThief = true;
+	public bool? AllThief
+	{
+		get { return _allThief; }
+		set
+		{
+			Flags.THIEF1 = value;
+			Flags.THIEF2 = value;
+			Flags.THIEF3 = value;
+			Flags.THIEF4 = value;
+			_allThief = value;
+		}
+	}
+
+	public bool? THIEF1
+	{
+		get { return Flags.THIEF1; }
+		set
+		{
+			Flags.THIEF1 = value;
+			if (Flags.THIEF1 == Flags.THIEF2 && Flags.THIEF2 == Flags.THIEF3 && Flags.THIEF3 == Flags.THIEF4)
+			{
+				_allThief = value;
+			}
+			else { _allThief = false; }
+		}
+	}
+	public bool? THIEF2
+	{
+		get { return Flags.THIEF2; }
+		set
+		{
+			Flags.THIEF2 = value;
+			if (Flags.THIEF1 == Flags.THIEF2 && Flags.THIEF2 == Flags.THIEF3 && Flags.THIEF3 == Flags.THIEF4)
+			{
+				_allThief = value;
+			}
+			else { _allThief = false; }
+		}
+	}
+	public bool? THIEF3
+	{
+		get { return Flags.THIEF3; }
+		set
+		{
+			Flags.THIEF3 = value;
+			if (Flags.THIEF1 == Flags.THIEF2 && Flags.THIEF2 == Flags.THIEF3 && Flags.THIEF3 == Flags.THIEF4)
+			{
+				_allThief = value;
+			}
+			else { _allThief = false; }
+		}
+	}
+	public bool? THIEF4
+	{
+		get { return Flags.THIEF4; }
+		set
+		{
+			Flags.THIEF4 = value;
+			if (Flags.THIEF1 == Flags.THIEF2 && Flags.THIEF2 == Flags.THIEF3 && Flags.THIEF3 == Flags.THIEF4)
+			{
+				_allThief = value;
+			}
+			else { _allThief = false; }
+		}
+	}
+
+	private bool? _allBlackBelt = true;
+	public bool? AllBlackBelt
+	{
+		get { return _allBlackBelt; }
+		set
+		{
+			Flags.BLACK_BELT1 = value;
+			Flags.BLACK_BELT2 = value;
+			Flags.BLACK_BELT3 = value;
+			Flags.BLACK_BELT4 = value;
+			_allBlackBelt = value;
+		}
+	}
+	public bool? BLACK_BELT1
+	{
+		get { return Flags.BLACK_BELT1; }
+		set
+		{
+			Flags.BLACK_BELT1 = value;
+			if (Flags.BLACK_BELT1 == Flags.BLACK_BELT2 && Flags.BLACK_BELT2 == Flags.BLACK_BELT3 && Flags.BLACK_BELT3 == Flags.BLACK_BELT4)
+			{
+				_allBlackBelt = value;
+			}
+			else { _allBlackBelt = false; }
+		}
+	}
+	public bool? BLACK_BELT2
+	{
+		get { return Flags.BLACK_BELT2; }
+		set
+		{
+			Flags.BLACK_BELT2 = value;
+			if (Flags.BLACK_BELT1 == Flags.BLACK_BELT2 && Flags.BLACK_BELT2 == Flags.BLACK_BELT3 && Flags.BLACK_BELT3 == Flags.BLACK_BELT4)
+			{
+				_allBlackBelt = value;
+			}
+			else { _allBlackBelt = false; }
+		}
+	}
+	public bool? BLACK_BELT3
+	{
+		get { return Flags.BLACK_BELT3; }
+		set
+		{
+			Flags.BLACK_BELT3 = value;
+			if (Flags.BLACK_BELT1 == Flags.BLACK_BELT2 && Flags.BLACK_BELT2 == Flags.BLACK_BELT3 && Flags.BLACK_BELT3 == Flags.BLACK_BELT4)
+			{
+				_allBlackBelt = value;
+			}
+			else { _allBlackBelt = false; }
+		}
+	}
+	public bool? BLACK_BELT4
+	{
+		get { return Flags.BLACK_BELT4; }
+		set
+		{
+			Flags.BLACK_BELT4 = value;
+			if (Flags.BLACK_BELT1 == Flags.BLACK_BELT2 && Flags.BLACK_BELT2 == Flags.BLACK_BELT3 && Flags.BLACK_BELT3 == Flags.BLACK_BELT4)
+			{
+				_allBlackBelt = value;
+			}
+			else { _allBlackBelt = false; }
+		}
+	}
+
+	private bool? _allRedMage = true;
+	public bool? AllRedMage
+	{
+		get { return _allRedMage; }
+		set
+		{
+			Flags.RED_MAGE1 = value;
+			Flags.RED_MAGE2 = value;
+			Flags.RED_MAGE3 = value;
+			Flags.RED_MAGE4 = value;
+			_allRedMage = value;
+		}
+	}
+	public bool? RED_MAGE1
+	{
+		get { return Flags.RED_MAGE1; }
+		set
+		{
+			Flags.RED_MAGE1 = value;
+			if (Flags.RED_MAGE1 == Flags.RED_MAGE2 && Flags.RED_MAGE2 == Flags.RED_MAGE3 && Flags.RED_MAGE3 == Flags.RED_MAGE4)
+			{
+				_allRedMage = value;
+			}
+			else { _allRedMage = false; }
+		}
+	}
+	public bool? RED_MAGE2
+	{
+		get { return Flags.RED_MAGE2; }
+		set
+		{
+			Flags.RED_MAGE2 = value;
+			if (Flags.RED_MAGE1 == Flags.RED_MAGE2 && Flags.RED_MAGE2 == Flags.RED_MAGE3 && Flags.RED_MAGE3 == Flags.RED_MAGE4)
+			{
+				_allRedMage = value;
+			}
+			else { _allRedMage = false; }
+		}
+	}
+	public bool? RED_MAGE3
+	{
+		get { return Flags.RED_MAGE3; }
+		set
+		{
+			Flags.RED_MAGE3 = value;
+			if (Flags.RED_MAGE1 == Flags.RED_MAGE2 && Flags.RED_MAGE2 == Flags.RED_MAGE3 && Flags.RED_MAGE3 == Flags.RED_MAGE4)
+			{
+				_allRedMage = value;
+			}
+			else { _allRedMage = false; }
+		}
+	}
+	public bool? RED_MAGE4
+	{
+		get { return Flags.RED_MAGE4; }
+		set
+		{
+			Flags.RED_MAGE4 = value;
+			if (Flags.RED_MAGE1 == Flags.RED_MAGE2 && Flags.RED_MAGE2 == Flags.RED_MAGE3 && Flags.RED_MAGE3 == Flags.RED_MAGE4)
+			{
+				_allRedMage = value;
+			}
+			else { _allRedMage = false; }
+		}
+	}
+
+	private bool? _allWhiteMage = true;
+	public bool? AllWhiteMage
+	{
+		get { return _allWhiteMage; }
+		set
+		{
+			Flags.WHITE_MAGE1 = value;
+			Flags.WHITE_MAGE2 = value;
+			Flags.WHITE_MAGE3 = value;
+			Flags.WHITE_MAGE4 = value;
+			_allWhiteMage = value;
+		}
+	}
+	public bool? WHITE_MAGE1
+	{
+		get { return Flags.WHITE_MAGE1; }
+		set
+		{
+			Flags.WHITE_MAGE1 = value;
+			if (Flags.WHITE_MAGE1 == Flags.WHITE_MAGE2 && Flags.WHITE_MAGE2 == Flags.WHITE_MAGE3 && Flags.WHITE_MAGE3 == Flags.WHITE_MAGE4)
+			{
+				_allWhiteMage = value;
+			}
+			else { _allWhiteMage = false; }
+		}
+	}
+	public bool? WHITE_MAGE2
+	{
+		get { return Flags.WHITE_MAGE2; }
+		set
+		{
+			Flags.WHITE_MAGE2 = value;
+			if (Flags.WHITE_MAGE1 == Flags.WHITE_MAGE2 && Flags.WHITE_MAGE2 == Flags.WHITE_MAGE3 && Flags.WHITE_MAGE3 == Flags.WHITE_MAGE4)
+			{
+				_allWhiteMage = value;
+			}
+			else { _allWhiteMage = false; }
+		}
+	}
+	public bool? WHITE_MAGE3
+	{
+		get { return Flags.WHITE_MAGE3; }
+		set
+		{
+			Flags.WHITE_MAGE3 = value;
+			if (Flags.WHITE_MAGE1 == Flags.WHITE_MAGE2 && Flags.WHITE_MAGE2 == Flags.WHITE_MAGE3 && Flags.WHITE_MAGE3 == Flags.WHITE_MAGE4)
+			{
+				_allWhiteMage = value;
+			}
+			else { _allWhiteMage = false; }
+		}
+	}
+	public bool? WHITE_MAGE4
+	{
+		get { return Flags.WHITE_MAGE4; }
+		set
+		{
+			Flags.WHITE_MAGE4 = value;
+			if (Flags.WHITE_MAGE1 == Flags.WHITE_MAGE2 && Flags.WHITE_MAGE2 == Flags.WHITE_MAGE3 && Flags.WHITE_MAGE3 == Flags.WHITE_MAGE4)
+			{
+				_allWhiteMage = value;
+			}
+			else { _allWhiteMage = false; }
+		}
+	}
+
+	private bool? _allBlackMage = true;
+	public bool? AllBlackMage
+	{
+		get { return _allBlackMage; }
+		set
+		{
+			Flags.BLACK_MAGE1 = value;
+			Flags.BLACK_MAGE2 = value;
+			Flags.BLACK_MAGE3 = value;
+			Flags.BLACK_MAGE4 = value;
+			_allBlackMage = value;
+		}
+	}
+	public bool? BLACK_MAGE1
+	{
+		get { return Flags.BLACK_MAGE1; }
+		set
+		{
+			Flags.BLACK_MAGE1 = value;
+			if (Flags.BLACK_MAGE1 == Flags.BLACK_MAGE2 && Flags.BLACK_MAGE2 == Flags.BLACK_MAGE3 && Flags.BLACK_MAGE3 == Flags.BLACK_MAGE4)
+			{
+				_allBlackMage = value;
+			}
+			else { _allBlackMage = false; }
+		}
+	}
+	public bool? BLACK_MAGE2
+	{
+		get { return Flags.BLACK_MAGE2; }
+		set
+		{
+			Flags.BLACK_MAGE2 = value;
+			if (Flags.BLACK_MAGE1 == Flags.BLACK_MAGE2 && Flags.BLACK_MAGE2 == Flags.BLACK_MAGE3 && Flags.BLACK_MAGE3 == Flags.BLACK_MAGE4)
+			{
+				_allBlackMage = value;
+			}
+			else { _allBlackMage = false; }
+		}
+	}
+	public bool? BLACK_MAGE3
+	{
+		get { return Flags.BLACK_MAGE3; }
+		set
+		{
+			Flags.BLACK_MAGE3 = value;
+			if (Flags.BLACK_MAGE1 == Flags.BLACK_MAGE2 && Flags.BLACK_MAGE2 == Flags.BLACK_MAGE3 && Flags.BLACK_MAGE3 == Flags.BLACK_MAGE4)
+			{
+				_allBlackMage = value;
+			}
+			else { _allBlackMage = false; }
+		}
+	}
+	public bool? BLACK_MAGE4
+	{
+		get { return Flags.BLACK_MAGE4; }
+		set
+		{
+			Flags.BLACK_MAGE4 = value;
+			if (Flags.BLACK_MAGE1 == Flags.BLACK_MAGE2 && Flags.BLACK_MAGE2 == Flags.BLACK_MAGE3 && Flags.BLACK_MAGE3 == Flags.BLACK_MAGE4)
+			{
+				_allBlackMage = value;
+			}
+			else { _allBlackMage = false; }
+		}
+	}
+
+	private bool? _allNone = false;
+	public bool? AllNone
+	{
+		get { return _allNone; }
+		set
+		{
+			Flags.NONE_CLASS2 = value;
+			Flags.NONE_CLASS3 = value;
+			Flags.NONE_CLASS4 = value;
+			_allNone = value;
+		}
+	}
+	public bool? NONE_CLASS2
+	{
+		get { return Flags.NONE_CLASS2; }
+		set
+		{
+			Flags.NONE_CLASS2 = value;
+			if (Flags.NONE_CLASS2 == Flags.NONE_CLASS3 && Flags.NONE_CLASS3 == Flags.NONE_CLASS4)
+			{
+				_allNone = value;
+			}
+			else { _allNone = false; }
+		}
+	}
+	public bool? NONE_CLASS3
+	{
+		get { return Flags.NONE_CLASS3; }
+		set
+		{
+			Flags.NONE_CLASS3 = value;
+			if (Flags.NONE_CLASS2 == Flags.NONE_CLASS3 && Flags.NONE_CLASS3 == Flags.NONE_CLASS4)
+			{
+				_allNone = value;
+			}
+			else { _allNone = false; }
+		}
+	}
+	public bool? NONE_CLASS4
+	{
+		get { return Flags.NONE_CLASS4; }
+		set
+		{
+			Flags.NONE_CLASS4 = value;
+			if (Flags.NONE_CLASS2 == Flags.NONE_CLASS3 && Flags.NONE_CLASS3 == Flags.NONE_CLASS4)
+			{
+				_allNone = value;
+			}
+			else { _allNone = false; }
+		}
+	}
+
+
+	private bool? _allKnight = false;
+	public bool? AllKnight
+	{
+		get { return _allKnight; }
+		set
+		{
+			Flags.KNIGHT1 = value;
+			Flags.KNIGHT2 = value;
+			Flags.KNIGHT3 = value;
+			Flags.KNIGHT4 = value;
+			_allKnight = value;
+		}
+	}
+	public bool? KNIGHT1
+	{
+		get { return Flags.KNIGHT1; }
+		set
+		{
+			Flags.KNIGHT1 = value;
+			if (Flags.KNIGHT1 == Flags.KNIGHT2 && Flags.KNIGHT2 == Flags.KNIGHT3 && Flags.KNIGHT3 == Flags.KNIGHT4)
+			{
+				_allKnight = value;
+			}
+			else { _allKnight = false; }
+		}
+	}
+	public bool? KNIGHT2
+	{
+		get { return Flags.KNIGHT2; }
+		set
+		{
+			Flags.KNIGHT2 = value;
+			if (Flags.KNIGHT1 == Flags.KNIGHT2 && Flags.KNIGHT2 == Flags.KNIGHT3 && Flags.KNIGHT3 == Flags.KNIGHT4)
+			{
+				_allKnight = value;
+			}
+			else { _allKnight = false; }
+		}
+	}
+	public bool? KNIGHT3
+	{
+		get { return Flags.KNIGHT3; }
+		set
+		{
+			Flags.KNIGHT3 = value;
+			if (Flags.KNIGHT1 == Flags.KNIGHT2 && Flags.KNIGHT2 == Flags.KNIGHT3 && Flags.KNIGHT3 == Flags.KNIGHT4)
+			{
+				_allKnight = value;
+			}
+			else { _allKnight = false; }
+		}
+	}
+	public bool? KNIGHT4
+	{
+		get { return Flags.KNIGHT4; }
+		set
+		{
+			Flags.KNIGHT4 = value;
+			if (Flags.KNIGHT1 == Flags.KNIGHT2 && Flags.KNIGHT2 == Flags.KNIGHT3 && Flags.KNIGHT3 == Flags.KNIGHT4)
+			{
+				_allKnight = value;
+			}
+			else { _allKnight = false; }
+		}
+	}
+	private bool? _allNinja = false;
+	public bool? AllNinja
+	{
+		get { return _allNinja; }
+		set
+		{
+			Flags.NINJA1 = value;
+			Flags.NINJA2 = value;
+			Flags.NINJA3 = value;
+			Flags.NINJA4 = value;
+			_allNinja = value;
+		}
+	}
+	public bool? NINJA1
+	{
+		get { return Flags.NINJA1; }
+		set
+		{
+			Flags.NINJA1 = value;
+			if (Flags.NINJA1 == Flags.NINJA2 && Flags.NINJA2 == Flags.NINJA3 && Flags.NINJA3 == Flags.NINJA4)
+			{
+				_allNinja = value;
+			}
+			else { _allNinja = false; }
+		}
+	}
+	public bool? NINJA2
+	{
+		get { return Flags.NINJA2; }
+		set
+		{
+			Flags.NINJA2 = value;
+			if (Flags.NINJA1 == Flags.NINJA2 && Flags.NINJA2 == Flags.NINJA3 && Flags.NINJA3 == Flags.NINJA4)
+			{
+				_allNinja = value;
+			}
+			else { _allNinja = false; }
+		}
+	}
+	public bool? NINJA3
+	{
+		get { return Flags.NINJA3; }
+		set
+		{
+			Flags.NINJA3 = value;
+			if (Flags.NINJA1 == Flags.NINJA2 && Flags.NINJA2 == Flags.NINJA3 && Flags.NINJA3 == Flags.NINJA4)
+			{
+				_allNinja = value;
+			}
+			else { _allNinja = false; }
+		}
+	}
+	public bool? NINJA4
+	{
+		get { return Flags.NINJA4; }
+		set
+		{
+			Flags.NINJA4 = value;
+			if (Flags.NINJA1 == Flags.NINJA2 && Flags.NINJA2 == Flags.NINJA3 && Flags.NINJA3 == Flags.NINJA4)
+			{
+				_allNinja = value;
+			}
+			else { _allNinja = false; }
+		}
+	}
+	private bool? _allMaster = false;
+	public bool? AllMaster
+	{
+		get { return _allMaster; }
+		set
+		{
+			Flags.MASTER1 = value;
+			Flags.MASTER2 = value;
+			Flags.MASTER3 = value;
+			Flags.MASTER4 = value;
+			_allMaster = value;
+		}
+	}
+	public bool? MASTER1
+	{
+		get { return Flags.MASTER1; }
+		set
+		{
+			Flags.MASTER1 = value;
+			if (Flags.MASTER1 == Flags.MASTER2 && Flags.MASTER2 == Flags.MASTER3 && Flags.MASTER3 == Flags.MASTER4)
+			{
+				_allMaster = value;
+			}
+			else { _allMaster = false; }
+		}
+	}
+	public bool? MASTER2
+	{
+		get { return Flags.MASTER2; }
+		set
+		{
+			Flags.MASTER2 = value;
+			if (Flags.MASTER1 == Flags.MASTER2 && Flags.MASTER2 == Flags.MASTER3 && Flags.MASTER3 == Flags.MASTER4)
+			{
+				_allMaster = value;
+			}
+			else { _allMaster = false; }
+		}
+	}
+	public bool? MASTER3
+	{
+		get { return Flags.MASTER3; }
+		set
+		{
+			Flags.MASTER3 = value;
+			if (Flags.MASTER1 == Flags.MASTER2 && Flags.MASTER2 == Flags.MASTER3 && Flags.MASTER3 == Flags.MASTER4)
+			{
+				_allMaster = value;
+			}
+			else { _allMaster = false; }
+		}
+	}
+	public bool? MASTER4
+	{
+		get { return Flags.MASTER4; }
+		set
+		{
+			Flags.MASTER4 = value;
+			if (Flags.MASTER1 == Flags.MASTER2 && Flags.MASTER2 == Flags.MASTER3 && Flags.MASTER3 == Flags.MASTER4)
+			{
+				_allMaster = value;
+			}
+			else { _allMaster = false; }
+		}
+	}
+	private bool? _allRedWiz = false;
+	public bool? AllRedWiz
+	{
+		get { return _allRedWiz; }
+		set
+		{
+			Flags.RED_WIZ1 = value;
+			Flags.RED_WIZ2 = value;
+			Flags.RED_WIZ3 = value;
+			Flags.RED_WIZ4 = value;
+			_allRedWiz = value;
+		}
+	}
+	public bool? RED_WIZ1
+	{
+		get { return Flags.RED_WIZ1; }
+		set
+		{
+			Flags.RED_WIZ1 = value;
+			if (Flags.RED_WIZ1 == Flags.RED_WIZ2 && Flags.RED_WIZ2 == Flags.RED_WIZ3 && Flags.RED_WIZ3 == Flags.RED_WIZ4)
+			{
+				_allRedWiz = value;
+			}
+			else { _allRedWiz = false; }
+		}
+	}
+	public bool? RED_WIZ2
+	{
+		get { return Flags.RED_WIZ2; }
+		set
+		{
+			Flags.RED_WIZ2 = value;
+			if (Flags.RED_WIZ1 == Flags.RED_WIZ2 && Flags.RED_WIZ2 == Flags.RED_WIZ3 && Flags.RED_WIZ3 == Flags.RED_WIZ4)
+			{
+				_allRedWiz = value;
+			}
+			else { _allRedWiz = false; }
+		}
+	}
+	public bool? RED_WIZ3
+	{
+		get { return Flags.RED_WIZ3; }
+		set
+		{
+			Flags.RED_WIZ3 = value;
+			if (Flags.RED_WIZ1 == Flags.RED_WIZ2 && Flags.RED_WIZ2 == Flags.RED_WIZ3 && Flags.RED_WIZ3 == Flags.RED_WIZ4)
+			{
+				_allRedWiz = value;
+			}
+			else { _allRedWiz = false; }
+		}
+	}
+	public bool? RED_WIZ4
+	{
+		get { return Flags.RED_WIZ4; }
+		set
+		{
+			Flags.RED_WIZ4 = value;
+			if (Flags.RED_WIZ1 == Flags.RED_WIZ2 && Flags.RED_WIZ2 == Flags.RED_WIZ3 && Flags.RED_WIZ3 == Flags.RED_WIZ4)
+			{
+				_allRedWiz = value;
+			}
+			else { _allRedWiz = false; }
+		}
+	}
+	private bool? _allWhiteWiz = false;
+	public bool? AllWhiteWiz
+	{
+		get { return _allWhiteWiz; }
+		set
+		{
+			Flags.WHITE_WIZ1 = value;
+			Flags.WHITE_WIZ2 = value;
+			Flags.WHITE_WIZ3 = value;
+			Flags.WHITE_WIZ4 = value;
+			_allWhiteWiz = value;
+		}
+	}
+	public bool? WHITE_WIZ1
+	{
+		get { return Flags.WHITE_WIZ1; }
+		set
+		{
+			Flags.WHITE_WIZ1 = value;
+			if (Flags.WHITE_WIZ1 == Flags.WHITE_WIZ2 && Flags.WHITE_WIZ2 == Flags.WHITE_WIZ3 && Flags.WHITE_WIZ3 == Flags.WHITE_WIZ4)
+			{
+				_allWhiteWiz = value;
+			}
+			else { _allWhiteWiz = false; }
+		}
+	}
+	public bool? WHITE_WIZ2
+	{
+		get { return Flags.WHITE_WIZ2; }
+		set
+		{
+			Flags.WHITE_WIZ2 = value;
+			if (Flags.WHITE_WIZ1 == Flags.WHITE_WIZ2 && Flags.WHITE_WIZ2 == Flags.WHITE_WIZ3 && Flags.WHITE_WIZ3 == Flags.WHITE_WIZ4)
+			{
+				_allWhiteWiz = value;
+			}
+			else { _allWhiteWiz = false; }
+		}
+	}
+	public bool? WHITE_WIZ3
+	{
+		get { return Flags.WHITE_WIZ3; }
+		set
+		{
+			Flags.WHITE_WIZ3 = value;
+			if (Flags.WHITE_WIZ1 == Flags.WHITE_WIZ2 && Flags.WHITE_WIZ2 == Flags.WHITE_WIZ3 && Flags.WHITE_WIZ3 == Flags.WHITE_WIZ4)
+			{
+				_allWhiteWiz = value;
+			}
+			else { _allWhiteWiz = false; }
+		}
+	}
+	public bool? WHITE_WIZ4
+	{
+		get { return Flags.WHITE_WIZ4; }
+		set
+		{
+			Flags.WHITE_WIZ4 = value;
+			if (Flags.WHITE_WIZ1 == Flags.WHITE_WIZ2 && Flags.WHITE_WIZ2 == Flags.WHITE_WIZ3 && Flags.WHITE_WIZ3 == Flags.WHITE_WIZ4)
+			{
+				_allWhiteWiz = value;
+			}
+			else { _allWhiteWiz = false; }
+		}
+	}
+	private bool? _allBlackWiz = false;
+	public bool? AllBlackWiz
+	{
+		get { return _allBlackWiz; }
+		set
+		{
+			Flags.BLACK_WIZ1 = value;
+			Flags.BLACK_WIZ2 = value;
+			Flags.BLACK_WIZ3 = value;
+			Flags.BLACK_WIZ4 = value;
+			_allBlackWiz = value;
+		}
+	}
+	public bool? BLACK_WIZ1
+	{
+		get { return Flags.BLACK_WIZ1; }
+		set
+		{
+			Flags.BLACK_WIZ1 = value;
+			if (Flags.BLACK_WIZ1 == Flags.BLACK_WIZ2 && Flags.BLACK_WIZ2 == Flags.BLACK_WIZ3 && Flags.BLACK_WIZ3 == Flags.BLACK_WIZ4)
+			{
+				_allBlackWiz = value;
+			}
+			else { _allBlackWiz = false; }
+		}
+	}
+	public bool? BLACK_WIZ2
+	{
+		get { return Flags.BLACK_WIZ2; }
+		set
+		{
+			Flags.BLACK_WIZ2 = value;
+			if (Flags.BLACK_WIZ1 == Flags.BLACK_WIZ2 && Flags.BLACK_WIZ2 == Flags.BLACK_WIZ3 && Flags.BLACK_WIZ3 == Flags.BLACK_WIZ4)
+			{
+				_allBlackWiz = value;
+			}
+			else { _allBlackWiz = false; }
+		}
+	}
+	public bool? BLACK_WIZ3
+	{
+		get { return Flags.BLACK_WIZ3; }
+		set
+		{
+			Flags.BLACK_WIZ3 = value;
+			if (Flags.BLACK_WIZ1 == Flags.BLACK_WIZ2 && Flags.BLACK_WIZ2 == Flags.BLACK_WIZ3 && Flags.BLACK_WIZ3 == Flags.BLACK_WIZ4)
+			{
+				_allBlackWiz = value;
+			}
+			else { _allBlackWiz = false; }
+		}
+	}
+	public bool? BLACK_WIZ4
+	{
+		get { return Flags.BLACK_WIZ4; }
+		set
+		{
+			Flags.BLACK_WIZ4 = value;
+			if (Flags.BLACK_WIZ1 == Flags.BLACK_WIZ2 && Flags.BLACK_WIZ2 == Flags.BLACK_WIZ3 && Flags.BLACK_WIZ3 == Flags.BLACK_WIZ4)
+			{
+				_allBlackWiz = value;
+			}
+			else { _allBlackWiz = false; }
+		}
+	}
+}

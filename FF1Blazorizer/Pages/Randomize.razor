@@ -341,108 +341,51 @@
 
         <button type="button" class="@(TabClasses("Party"))" @onclick="@(() => ActivateTab("Party"))">Party</button>
         <BSCollapse IsOpen="@(activeTabs.Contains("Party"))">
-            <div class="is-dark nes-container">
-                <h4>Party Composition</h4>
+			<div class="is-dark nes-container">
+				<PartyCompositionClasses Flags="@Flags" />
+				<br />
+				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="EnablePoolParty" @bind-Value="Flags.EnablePoolParty">Party Draft</TriStateCheckBox>
+				<EnumDropDown UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnablePoolParty" Id="PoolSizeDropDown" TItem="PoolSize" @bind-Value="Flags.PoolSize">Pool Size :</EnumDropDown>
                 <br />
-                <div class="table-wrapper">
-                    <table>
-                        <tr class="odd">
-                            <td>Permitted Classes</td>
-                            <td>Forced?</td>
-                            <td>Fighter</td>
-                            <td>Thief</td>
-                            <td>Black Belt</td>
-                            <td>Red Mage</td>
-                            <td>White Mage</td>
-                            <td>Black Mage</td>
-                            <td>None!</td>
-                        </tr>
-                        <tr>
-                            <td>Member 1</td>
-                            <td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyForced1" @bind-Value="Flags.FORCED1"></TriStateCheckBox></td>
-                            <td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyFighter1" @bind-Value="Flags.FIGHTER1"></TriStateCheckBox></td>
-                            <td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyThief1" @bind-Value="Flags.THIEF1"></TriStateCheckBox></td>
-                            <td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyBlackBelt1" @bind-Value="Flags.BLACK_BELT1"></TriStateCheckBox></td>
-                            <td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyRedMage1" @bind-Value="Flags.RED_MAGE1"></TriStateCheckBox></td>
-                            <td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyWhiteMage1" @bind-Value="Flags.WHITE_MAGE1"></TriStateCheckBox></td>
-                            <td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyBlackMage1" @bind-Value="Flags.BLACK_MAGE1"></TriStateCheckBox></td>
-                            <td></td>
-                        </tr>
-                        <tr class="odd">
-                            <td>Member 2</td>
-                            <td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyForced2" @bind-Value="Flags.FORCED2"></TriStateCheckBox></td>
-                            <td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyFighter2" @bind-Value="Flags.FIGHTER2"></TriStateCheckBox></td>
-                            <td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyThief2" @bind-Value="Flags.THIEF2"></TriStateCheckBox></td>
-                            <td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyBlackBelt2" @bind-Value="Flags.BLACK_BELT2"></TriStateCheckBox></td>
-                            <td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyRedMage2" @bind-Value="Flags.RED_MAGE2"></TriStateCheckBox></td>
-                            <td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyWhiteMage2" @bind-Value="Flags.WHITE_MAGE2"></TriStateCheckBox></td>
-                            <td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyBlackMage2" @bind-Value="Flags.BLACK_MAGE2"></TriStateCheckBox></td>
-                            <td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyNone2" @bind-Value="Flags.NONE_CLASS2"></TriStateCheckBox></td>
-                        </tr>
-                        <tr>
-                            <td>Member 3</td>
-                            <td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyForced3" @bind-Value="Flags.FORCED3"></TriStateCheckBox></td>
-                            <td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyFighter3" @bind-Value="Flags.FIGHTER3"></TriStateCheckBox></td>
-                            <td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyThief3" @bind-Value="Flags.THIEF3"></TriStateCheckBox></td>
-                            <td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyBlackBelt3" @bind-Value="Flags.BLACK_BELT3"></TriStateCheckBox></td>
-                            <td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyRedMage3" @bind-Value="Flags.RED_MAGE3"></TriStateCheckBox></td>
-                            <td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyWhiteMage3" @bind-Value="Flags.WHITE_MAGE3"></TriStateCheckBox></td>
-                            <td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyBlackMage3" @bind-Value="Flags.BLACK_MAGE3"></TriStateCheckBox></td>
-                            <td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyNone3" @bind-Value="Flags.NONE_CLASS3"></TriStateCheckBox></td>
-                        </tr>
-                        <tr class="odd">
-                            <td>Member 4</td>
-                            <td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyForced4" @bind-Value="Flags.FORCED4"></TriStateCheckBox></td>
-                            <td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyFighter4" @bind-Value="Flags.FIGHTER4"></TriStateCheckBox></td>
-                            <td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyThief4" @bind-Value="Flags.THIEF4"></TriStateCheckBox></td>
-                            <td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyBlackBelt4" @bind-Value="Flags.BLACK_BELT4"></TriStateCheckBox></td>
-                            <td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyRedMage4" @bind-Value="Flags.RED_MAGE4"></TriStateCheckBox></td>
-                            <td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyWhiteMage4" @bind-Value="Flags.WHITE_MAGE4"></TriStateCheckBox></td>
-                            <td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyBlackMage4" @bind-Value="Flags.BLACK_MAGE4"></TriStateCheckBox></td>
-                            <td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="partyNone4" @bind-Value="Flags.NONE_CLASS4"></TriStateCheckBox></td>
-                        </tr>
-                    </table>
-                </div>
-                <br />
-                <h4>Tavern Recruitment</h4>
-                <div class="col-md-12">
-                    <p>Enable Tavern Recruitment to unlock the ability to build a party as you go!</p>
-                    <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="tavernMode" @bind-Value="Flags.RecruitmentMode">Tavern Recruitment Mode</TriStateCheckBox>
-                    <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.RecruitmentMode" Id="tavernModeHireOnly" @bind-Value="Flags.RecruitmentModeHireOnly">Disable Reviving at Taverns</TriStateCheckBox>
-                    <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.RecruitmentMode" Id="tavernModeReplaceOnlyNone" @bind-Value="Flags.RecruitmentModeReplaceOnlyNone">Only Replace Nones at Taverns</TriStateCheckBox>
-                </div>
-                <div class="table-wrapper">
-                    <table>
-                        <tr class="odd">
-                            <td>Hireable Advernturers</td>
-                            <td>Fighter</td>
-                            <td>Thief</td>
-                            <td>Black Belt</td>
-                            <td>Red Mage</td>
-                            <td>White Mage</td>
-                            <td>Black Mage</td>
-                        </tr>
-                        <tr>
-                            <td>Select to allow</td>
-                            <td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.RecruitmentMode" Id="TavernFighter" @bind-Value="Flags.TAVERN1"></TriStateCheckBox></td>
-                            <td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.RecruitmentMode" Id="TavernThief" @bind-Value="Flags.TAVERN2"></TriStateCheckBox></td>
-                            <td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.RecruitmentMode" Id="TavernBlackBelt" @bind-Value="Flags.TAVERN3"></TriStateCheckBox></td>
-                            <td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.RecruitmentMode" Id="TavernRedMage" @bind-Value="Flags.TAVERN4"></TriStateCheckBox></td>
-                            <td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.RecruitmentMode" Id="TavernWhiteMage" @bind-Value="Flags.TAVERN5"></TriStateCheckBox></td>
-                            <td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.RecruitmentMode" Id="TavernBlackMage" @bind-Value="Flags.TAVERN6"></TriStateCheckBox></td>
-                        </tr>
-                    </table>
-                </div>
-                <br />
-                <h4>Party Balance</h4>
-                <div class="col-md-12">
-                    <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="ChangeMaxMP" @bind-Value="@Flags.ChangeMaxMP">Change Class Max MP</TriStateCheckBox>
-                    <IntSlider Indent Min="1" Max="9" Step="1" DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.ChangeMaxMP" Id="RedMageMaxMP" @bind-Value="@Flags.RedMageMaxMP">Red Mage Max MP:</IntSlider>
-                    <IntSlider Indent Min="1" Max="9" Step="1" DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.ChangeMaxMP" Id="WhiteMageMaxMP" @bind-Value="@Flags.WhiteMageMaxMP">White Mage Max MP:</IntSlider>
-                    <IntSlider Indent Min="1" Max="9" Step="1" DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.ChangeMaxMP" Id="BlackMageMaxMP" @bind-Value="@Flags.BlackMageMaxMP">Black Mage Max MP:</IntSlider>
-                    <IntSlider Indent Min="1" Max="9" Step="1" UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.ChangeMaxMP" Id="KnightNinjaMaxMP" @bind-Value="@Flags.KnightNinjaMaxMP">Knight/Ninja Max MP:</IntSlider>
-                </div>
-            </div>
+				<h4>Tavern Recruitment</h4>
+				<div class="col-md-12">
+					<p>Enable Tavern Recruitment to unlock the ability to build a party as you go!</p>
+					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="tavernMode" @bind-Value="Flags.RecruitmentMode">Tavern Recruitment Mode</TriStateCheckBox>
+					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.RecruitmentMode" Id="tavernModeHireOnly" @bind-Value="Flags.RecruitmentModeHireOnly">Disable Reviving at Taverns</TriStateCheckBox>
+					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.RecruitmentMode" Id="tavernModeReplaceOnlyNone" @bind-Value="Flags.RecruitmentModeReplaceOnlyNone">Only Replace Nones at Taverns</TriStateCheckBox>
+				</div>
+				<div class="table-wrapper">
+					<table>
+						<tr class="odd">
+							<td>Hireable Advernturers</td>
+							<td>Fighter</td>
+							<td>Thief</td>
+							<td>Black Belt</td>
+							<td>Red Mage</td>
+							<td>White Mage</td>
+							<td>Black Mage</td>
+						</tr>
+						<tr>
+							<td>Select to allow</td>
+							<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.RecruitmentMode" Id="TavernFighter" @bind-Value="Flags.TAVERN1"></TriStateCheckBox></td>
+							<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.RecruitmentMode" Id="TavernThief" @bind-Value="Flags.TAVERN2"></TriStateCheckBox></td>
+							<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.RecruitmentMode" Id="TavernBlackBelt" @bind-Value="Flags.TAVERN3"></TriStateCheckBox></td>
+							<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.RecruitmentMode" Id="TavernRedMage" @bind-Value="Flags.TAVERN4"></TriStateCheckBox></td>
+							<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.RecruitmentMode" Id="TavernWhiteMage" @bind-Value="Flags.TAVERN5"></TriStateCheckBox></td>
+							<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.RecruitmentMode" Id="TavernBlackMage" @bind-Value="Flags.TAVERN6"></TriStateCheckBox></td>
+						</tr>
+					</table>
+				</div>
+				<br />
+				<h4>Party Balance</h4>
+				<div class="col-md-12">
+					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="ChangeMaxMP" @bind-Value="@Flags.ChangeMaxMP">Change Class Max MP</TriStateCheckBox>
+					<IntSlider Indent Min="1" Max="9" Step="1" DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.ChangeMaxMP" Id="RedMageMaxMP" @bind-Value="@Flags.RedMageMaxMP">Red Mage Max MP:</IntSlider>
+					<IntSlider Indent Min="1" Max="9" Step="1" DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.ChangeMaxMP" Id="WhiteMageMaxMP" @bind-Value="@Flags.WhiteMageMaxMP">White Mage Max MP:</IntSlider>
+					<IntSlider Indent Min="1" Max="9" Step="1" DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.ChangeMaxMP" Id="BlackMageMaxMP" @bind-Value="@Flags.BlackMageMaxMP">Black Mage Max MP:</IntSlider>
+					<IntSlider Indent Min="1" Max="9" Step="1" UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.ChangeMaxMP" Id="KnightNinjaMaxMP" @bind-Value="@Flags.KnightNinjaMaxMP">Knight/Ninja Max MP:</IntSlider>
+				</div>
+			</div>
         </BSCollapse>
 
 
@@ -531,9 +474,6 @@
 						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="FreeTail" @bind-Value="Flags.FreeTail">Free Tail</TriStateCheckBox>
 						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="fixMissingBattleRngEntry" @bind-Checked="Flags.FixMissingBattleRngEntry">Fix Missing Battle RNG Entry</CheckBox>
 						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="swolePiratesCheckBox" @bind-Value="Flags.SwolePirates">Buffed Pirates</TriStateCheckBox>
-						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="EnablePoolParty" @bind-Value="Flags.EnablePoolParty">Select Party From Pool of Random Characters</TriStateCheckBox>
-						<EnumDropDown UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnablePoolParty" Id="PoolSizeDropDown" TItem="PoolSize" @bind-Value="Flags.PoolSize">Pool Size :</EnumDropDown>
-						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnablePoolParty" Id="PPIncludePromotedClasses" @bind-Value="Flags.IncludePromClasses">Include Promoted Classes</TriStateCheckBox>
 						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="EnableRandomPromotions" @bind-Value="Flags.EnableRandomPromotions">Random Classes at Class Change</TriStateCheckBox>
 						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnableRandomPromotions" Id="RPIncludeBaseClasses" @bind-Value="Flags.IncludeBaseClasses">Include Base Classes</TriStateCheckBox>
 						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnableRandomPromotions" Id="RPSpoilers" @bind-Value="Flags.RandomPromotionsSpoilers">Spoil Promotions</TriStateCheckBox>
@@ -671,6 +611,7 @@
     {
         var json = await JSRuntime.InvokeAsync<string>("computePreset", presetName);
         Flags.Flags = System.Text.Json.JsonSerializer.Deserialize<Flags.Preset>(json).Flags;
+        StatusMessage = System.Text.Json.JsonSerializer.Deserialize<Flags.Preset>(json).Name + " preset successfully loaded.";
     }
 
     async Task OnFileChanged(ChangeEventArgs e)
@@ -852,4 +793,5 @@
             StatusMessage += "FAILURE: " + e.Message;
             StateHasChanged();
         }
-    } }
+    }
+}

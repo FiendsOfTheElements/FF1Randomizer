@@ -126,6 +126,7 @@
 		"FIGHTER4": true,
 		"THIEF4": true,
 		"BLACK_BELT4": false,
+		"AllBlackBelt": false,
 		"RED_MAGE4": true,
 		"WHITE_MAGE4": true,
 		"BLACK_MAGE4": true,

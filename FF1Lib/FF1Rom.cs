@@ -670,13 +670,11 @@ namespace FF1Lib
 
 			if ((bool)flags.EnablePoolParty)
 			{
-				EnableTwelveClasses();
 				EnablePoolParty(flags, rng);
 			}
 
 			if ((bool)flags.EnableRandomPromotions)
 			{
-				EnableTwelveClasses();
 				EnableRandomPromotions(flags, rng);
 			}
 

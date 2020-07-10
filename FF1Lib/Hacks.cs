@@ -80,22 +80,24 @@ namespace FF1Lib
 			RedMage = 3,
 			WhiteMage = 4,
 			BlackMage = 5,
-			None = 6,
+			Knight = 6,
+			Ninja = 7,
+			Master = 8,
+			RedWiz = 9,
+			WhiteWiz = 10,
+			BlackWiz = 11,
+			None = 12,
 		}
 
-		private readonly List<byte> AllowedClassBitmasks = new List<byte> {
-			/*   lut_ClassMask:
-             *       ;0=FI,1=TH,  BB,  RM,  WM,  BM, None
-             *   .byte $80, $40, $20, $10, $08, $04, $02
-			 */
-			          0x80,0x40,0x20,0x10,0x08,0x04,0x02};
+
+		private readonly List<byte> AllowedSlotBitmasks = new List<byte> { 0x01,0x02,0x04,0x08 };
 
 		private readonly List<FF1Class> DefaultChoices = Enumerable.Range(0, 6).Select(x => (FF1Class)x).ToList();
 
 		void UpdateCharacterFromOptions(int slotNumber, bool forced, IList<FF1Class> options, MT19337 rng)
 		{
 			const int lut_PtyGenBuf = 0x784AA;       // offset for party generation buffer LUT
-			const int lut_AllowedClasses = 0x78110;  // offset for allowed classes per slot LUT
+			const int lut_ClassPreferences = 0x78114;  // classes LUT
 
 			var i = slotNumber - 1;
 
@@ -109,7 +111,7 @@ namespace FF1Lib
 				else
 				{
 					forcedclass = (FF1Class)(Enum.GetValues(typeof(FF1Class))).
-						GetValue(rng.Between(0, slotNumber == 1 ? 5 : 6));
+						GetValue(rng.Between(0, slotNumber == 1 ? 11 : 12));
 				}
 				options.Clear();
 				options.Add(forcedclass);
@@ -118,18 +120,15 @@ namespace FF1Lib
 			// don't make any changes if there's nothing to do
 			if (!options.Any()) return;
 
-			byte allowedFlags = 0b0000_0000;
+			//byte allowedFlags = 0b0000_0000;
 			foreach (FF1Class option in options)
 			{
-				allowedFlags |= AllowedClassBitmasks[(int)option];
+				Data[lut_ClassPreferences + (((int)option == 12) ? 0 : (int)option + 1)] |= AllowedSlotBitmasks[i];
 			}
 
 			// set default member
 			var defaultclass = (forced || !DefaultChoices.SequenceEqual(options)) ? (int)options.PickRandom(rng) : slotNumber - 1;
-			Data[lut_PtyGenBuf + i * 0x10] = defaultclass == 6 ? (byte)0xFF : (byte)defaultclass;
-
-			// set allowed classes
-			Data[lut_AllowedClasses + i] = allowedFlags;
+			Data[lut_PtyGenBuf + i * 0x10] = defaultclass == 12 ? (byte)0xFF : (byte)defaultclass;
 
 			options.Clear();
 		}
@@ -138,6 +137,12 @@ namespace FF1Lib
 		{
 			var options = new List<FF1Class>();
 
+			// Set bitmask for each slots (AllowedSlotBitmasks)
+			PutInBank(0x1E, 0x8110, Blob.FromHex("01020408"));
+
+			// Zero out allowed classes lut since we're going to bitwise OR it
+			PutInBank(0x1E, 0x8114, Blob.FromHex("00000000000000000000000000"));
+
 			// Do each slot - so ugly!
 			if ((flags.FIGHTER1 ?? false)) options.Add(FF1Class.Fighter);
 			if ((flags.THIEF1 ?? false)) options.Add(FF1Class.Thief);
@@ -145,6 +150,12 @@ namespace FF1Lib
 			if ((flags.RED_MAGE1 ?? false)) options.Add(FF1Class.RedMage);
 			if ((flags.WHITE_MAGE1 ?? false)) options.Add(FF1Class.WhiteMage);
 			if ((flags.BLACK_MAGE1 ?? false)) options.Add(FF1Class.BlackMage);
+			if ((flags.KNIGHT1 ?? false)) options.Add(FF1Class.Knight);
+			if ((flags.NINJA1 ?? false)) options.Add(FF1Class.Ninja);
+			if ((flags.MASTER1 ?? false)) options.Add(FF1Class.Master);
+			if ((flags.RED_WIZ1 ?? false)) options.Add(FF1Class.RedWiz);
+			if ((flags.WHITE_WIZ1 ?? false)) options.Add(FF1Class.WhiteWiz);
+			if ((flags.BLACK_WIZ1 ?? false)) options.Add(FF1Class.BlackWiz);
 			UpdateCharacterFromOptions(1, (flags.FORCED1 ?? false), options, rng);
 
 			if ((flags.FIGHTER2 ?? false)) options.Add(FF1Class.Fighter);
@@ -154,6 +165,12 @@ namespace FF1Lib
 			if ((flags.WHITE_MAGE2 ?? false)) options.Add(FF1Class.WhiteMage);
 			if ((flags.BLACK_MAGE2 ?? false)) options.Add(FF1Class.BlackMage);
 			if ((flags.NONE_CLASS2 ?? false)) options.Add(FF1Class.None);
+			if ((flags.KNIGHT2 ?? false)) options.Add(FF1Class.Knight);
+			if ((flags.NINJA2 ?? false)) options.Add(FF1Class.Ninja);
+			if ((flags.MASTER2 ?? false)) options.Add(FF1Class.Master);
+			if ((flags.RED_WIZ2 ?? false)) options.Add(FF1Class.RedWiz);
+			if ((flags.WHITE_WIZ2 ?? false)) options.Add(FF1Class.WhiteWiz);
+			if ((flags.BLACK_WIZ2 ?? false)) options.Add(FF1Class.BlackWiz);
 			UpdateCharacterFromOptions(2, (flags.FORCED2 ?? false), options, rng);
 
 			if ((flags.FIGHTER3 ?? false)) options.Add(FF1Class.Fighter);
@@ -163,6 +180,12 @@ namespace FF1Lib
 			if ((flags.WHITE_MAGE3 ?? false)) options.Add(FF1Class.WhiteMage);
 			if ((flags.BLACK_MAGE3 ?? false)) options.Add(FF1Class.BlackMage);
 			if ((flags.NONE_CLASS3 ?? false)) options.Add(FF1Class.None);
+			if ((flags.KNIGHT3 ?? false)) options.Add(FF1Class.Knight);
+			if ((flags.NINJA3 ?? false)) options.Add(FF1Class.Ninja);
+			if ((flags.MASTER3 ?? false)) options.Add(FF1Class.Master);
+			if ((flags.RED_WIZ3 ?? false)) options.Add(FF1Class.RedWiz);
+			if ((flags.WHITE_WIZ3 ?? false)) options.Add(FF1Class.WhiteWiz);
+			if ((flags.BLACK_WIZ3 ?? false)) options.Add(FF1Class.BlackWiz);
 			UpdateCharacterFromOptions(3, (flags.FORCED3 ?? false), options, rng);
 
 			if ((flags.FIGHTER4 ?? false)) options.Add(FF1Class.Fighter);
@@ -172,6 +195,12 @@ namespace FF1Lib
 			if ((flags.WHITE_MAGE4 ?? false)) options.Add(FF1Class.WhiteMage);
 			if ((flags.BLACK_MAGE4 ?? false)) options.Add(FF1Class.BlackMage);
 			if ((flags.NONE_CLASS4 ?? false)) options.Add(FF1Class.None);
+			if ((flags.KNIGHT4 ?? false)) options.Add(FF1Class.Knight);
+			if ((flags.NINJA4 ?? false)) options.Add(FF1Class.Ninja);
+			if ((flags.MASTER4 ?? false)) options.Add(FF1Class.Master);
+			if ((flags.RED_WIZ4 ?? false)) options.Add(FF1Class.RedWiz);
+			if ((flags.WHITE_WIZ4 ?? false)) options.Add(FF1Class.WhiteWiz);
+			if ((flags.BLACK_WIZ4 ?? false)) options.Add(FF1Class.BlackWiz);
 			UpdateCharacterFromOptions(4, (flags.FORCED4 ?? false), options, rng);
 
 			// Load stats for None
@@ -210,6 +239,8 @@ namespace FF1Lib
 			// Rewrite class promotion to not promote NONEs, See 0E_95AE_DoClassChange.asm
 			PutInBank(0x0E, 0x95AE, Blob.FromHex("A203BCD095B900613006186906990061CA10EFE65660"));
 			PutInBank(0x0E, 0x95D0, Blob.FromHex("C0804000")); // lut used by the above code
+
+			EnableTwelveClasses();
 		}
 
 		public void PubReplaceClinic(MT19337 rng, Flags flags)
@@ -807,9 +838,7 @@ namespace FF1Lib
 		public void EnableTwelveClasses()
 		{
 			// Expand characters shown in party creation screen; set to 0C for all promoted classes
-			PutInBank(0x1E, 0x80F5, Blob.FromHex("06"));
-			// Add the classes to authorized classes lut
-			PutInBank(0x1E, 0x811B, Blob.FromHex("804020100804"));
+			PutInBank(0x1E, 0x80F5, Blob.FromHex("0C"));
 			// Reduce count to $10 in PtyGen_DrawChars because we only loaded one row of sprites
 			PutInBank(0x1E, 0x8373, Blob.FromHex("EA"));
 
@@ -900,11 +929,36 @@ namespace FF1Lib
 				case PoolSize.Size8: size = 8; sizebyte = Blob.FromHex("FF"); break;
 			}
 
-			int class_span = 5;
-			if (flags.IncludePromClasses ?? false) class_span = 11;
+			List<sbyte> availableClasses = new List<sbyte>();
+
+			if ((flags.FIGHTER1 ?? false) && (flags.FIGHTER2 ?? false) && (flags.FIGHTER3 ?? false) && (flags.FIGHTER4 ?? false))
+				availableClasses.Add((sbyte)FF1Class.Fighter);
+			if ((flags.THIEF1 ?? false) && (flags.THIEF2 ?? false) && (flags.THIEF3 ?? false) && (flags.THIEF4 ?? false))
+				availableClasses.Add((sbyte)FF1Class.Thief);
+			if ((flags.BLACK_BELT1 ?? false) && (flags.BLACK_BELT2 ?? false) && (flags.BLACK_BELT3 ?? false) && (flags.BLACK_BELT4 ?? false))
+				availableClasses.Add((sbyte)FF1Class.BlackBelt);
+			if ((flags.RED_MAGE1 ?? false) && (flags.RED_MAGE2 ?? false) && (flags.RED_MAGE3 ?? false) && (flags.RED_MAGE4 ?? false))
+				availableClasses.Add((sbyte)FF1Class.RedMage);
+			if ((flags.WHITE_MAGE1 ?? false) && (flags.WHITE_MAGE2 ?? false) && (flags.WHITE_MAGE3 ?? false) && (flags.WHITE_MAGE4 ?? false))
+				availableClasses.Add((sbyte)FF1Class.WhiteMage);
+			if ((flags.BLACK_MAGE1 ?? false) && (flags.BLACK_MAGE2 ?? false) && (flags.BLACK_MAGE3 ?? false) && (flags.BLACK_MAGE4 ?? false))
+				availableClasses.Add((sbyte)FF1Class.BlackMage);
+			if ((flags.KNIGHT1 ?? false) && (flags.KNIGHT2 ?? false) && (flags.KNIGHT3 ?? false) && (flags.KNIGHT4 ?? false))
+				availableClasses.Add((sbyte)FF1Class.Knight);
+			if ((flags.NINJA1 ?? false) && (flags.NINJA2 ?? false) && (flags.NINJA3 ?? false) && (flags.NINJA4 ?? false))
+				availableClasses.Add((sbyte)FF1Class.Ninja);
+			if ((flags.MASTER1 ?? false) && (flags.MASTER2 ?? false) && (flags.MASTER3 ?? false) && (flags.MASTER4 ?? false))
+				availableClasses.Add((sbyte)FF1Class.Master);
+			if ((flags.RED_WIZ1 ?? false) && (flags.RED_WIZ2 ?? false) && (flags.RED_WIZ3 ?? false) && (flags.RED_WIZ4 ?? false))
+				availableClasses.Add((sbyte)FF1Class.RedWiz);
+			if ((flags.WHITE_WIZ1 ?? false) && (flags.WHITE_WIZ2 ?? false) && (flags.WHITE_WIZ3 ?? false) && (flags.WHITE_WIZ4 ?? false))
+				availableClasses.Add((sbyte)FF1Class.WhiteWiz);
+			if ((flags.BLACK_WIZ1 ?? false) && (flags.BLACK_WIZ2 ?? false) && (flags.BLACK_WIZ3 ?? false) && (flags.BLACK_WIZ4 ?? false))
+				availableClasses.Add((sbyte)FF1Class.BlackWiz);
+
 			Blob pool = Blob.FromHex("");
 			for (int i = 0; i < size; i++)
-				pool += Blob.FromSBytes(new List<sbyte> { (sbyte)Rng.Between(rng, 0, class_span) }.ToArray());
+				pool += Blob.FromSBytes(new List<sbyte> { availableClasses.PickRandom(rng) }.ToArray());
 
 			// Pool size : 4 0xF0; 5 0xF8; 6 0xFC; 7 0xFE; 8 0xFF)
 			PutInBank(0x1E, 0x8630, Blob.FromHex("00") + sizebyte + pool);
