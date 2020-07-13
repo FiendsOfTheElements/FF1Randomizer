@@ -2292,6 +2292,33 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeTail"));
 			}
 		}
+		public bool? HintsVillage
+		{
+			get => Flags.HintsVillage;
+			set
+			{
+				Flags.HintsVillage = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("HintsVillage"));
+			}
+		}
+		public bool? HintsDungeon
+		{
+			get => Flags.HintsDungeon;
+			set
+			{
+				Flags.HintsDungeon = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("HintsDungeon"));
+			}
+		}
+		public bool? HintsRngDungeon
+		{
+			get => Flags.HintsRngDungeon;
+			set
+			{
+				Flags.HintsRngDungeon = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("HintsRngDungeon"));
+			}
+		}
 		public bool? SpellcrafterRetainPermissions
 		{
 			get => Flags.SpellcrafterRetainPermissions;

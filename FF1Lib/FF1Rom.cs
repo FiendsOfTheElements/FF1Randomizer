@@ -279,7 +279,7 @@ namespace FF1Lib
 
 					if ((bool)flags.Treasures)
 					{
-						ShuffleTreasures(rng, flags, incentivesData, shopItemLocation, overworldMap, teleporters);
+						generatedPlacement = ShuffleTreasures(rng, flags, incentivesData, shopItemLocation, overworldMap, teleporters);
 					}
 					break;
 				}
@@ -541,6 +541,14 @@ namespace FF1Lib
 			if (flags.EasyMode)
 			{
 				EnableEasyMode();
+			}
+
+			if ((bool)flags.HintsVillage || (bool)flags.HintsDungeon)
+			{
+				if ((bool)flags.HintsDungeon)
+					maps = SetDungeonNPC(maps, rng, (bool)flags.HintsRngDungeon);
+
+				NPCHints(rng, flags);
 			}
 
 			if (flags.HouseMPRestoration || flags.HousesFillHp)

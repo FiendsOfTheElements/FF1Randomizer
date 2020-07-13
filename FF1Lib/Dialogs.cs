@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using RomUtilities;
 
@@ -12,6 +13,11 @@ namespace FF1Lib
 		public const int dialogsPointerBase = 0x38000;
 		public const int dialogsPointerCount = 0x150;
 
+		public const int NpcTalkOffset = 0x390D3;
+		public const int NpcTalkSize = 2;
+		public const int NpcVisFlagOffset = 0x2F00;
+
+		public List<IRewardSource> generatedPlacement;
 		// All original talk scripts for reference
 		public static partial class originalTalk
 		{
@@ -607,5 +613,384 @@ namespace FF1Lib
 			var newDrawDialogueString = "AAA91085572003FEA9808597A567C9F0D0068AA2A04C7FDB8AA2002007FCA594853EA595853FA90A85172000FEA538853AA539853B2080DCA000B13EF0BEE63ED002E63FC91A904AC97A90168D0720A53A186901293F853A291FD0DC2080DC4C9CDB38E91AAA48BDA0F08D0720204EDC68AABD50F08D0720204EDCC617D0B920A1CC2069C62000FEA90A85172080DC4C9CDBC903D04EA53E48A53F48A90A85572003FEA5616920900D0A69D0853EA9B5853F184C2DDCA9B78597A561A2002007FCA594853EA595853F209CDBA91085572003FE68853F68853E4C9CDB0000000000000000205FDC4C9CDB";
 			Put(0x7DB64, Blob.FromHex(newDrawDialogueString));
 		}
+
+		public string LocationText(MapLocation location)
+		{
+			if (new List<MapLocation> { MapLocation.ConeriaCastle1, MapLocation.ConeriaCastle2, MapLocation.ConeriaCastleRoom1, MapLocation.ConeriaCastleRoom2 }.Contains(location))
+				return "Coneria Castle";
+			else if (new List<MapLocation> { MapLocation.CrescentLake }.Contains(location))
+				return "Crescent Lake";
+			else if (new List<MapLocation> { MapLocation.Caravan }.Contains(location))
+				return "the Caravan";
+			else if (new List<MapLocation> { MapLocation.ElflandCastle, MapLocation.ElflandCastleRoom1 }.Contains(location))
+				return "the Castle of Efland";
+			else if (new List<MapLocation> { MapLocation.NorthwestCastle, MapLocation.NorthwestCastleRoom2 }.Contains(location))
+				return "Northwest Castle";
+			else if (new List<MapLocation> { MapLocation.CastleOrdeals1, MapLocation.CastleOrdealsMaze, MapLocation.CastleOrdealsTop }.Contains(location))
+				return "the Castle of Ordeals";
+			else if (new List<MapLocation> { MapLocation.EarthCave1, MapLocation.EarthCave2, MapLocation.EarthCave4, MapLocation.EarthCaveLich, MapLocation.EarthCaveVampire }.Contains(location))
+				return "the Earth Cave";
+			else if (new List<MapLocation> { MapLocation.GurguVolcano1, MapLocation.GurguVolcano2, MapLocation.GurguVolcano3, MapLocation.GurguVolcano4, MapLocation.GurguVolcano5,
+					MapLocation.GurguVolcano6, MapLocation.GurguVolcanoKary  }.Contains(location))
+				return "Gurgu Volcano";
+			else if (new List<MapLocation> { MapLocation.IceCave1, MapLocation.IceCave2, MapLocation.IceCave3, MapLocation.IceCave5,
+					MapLocation.IceCaveBackExit, MapLocation.IceCaveFloater, MapLocation.IceCavePitRoom }.Contains(location))
+				return "the Ice Cave";
+			else if (new List<MapLocation> { MapLocation.Cardia1, MapLocation.Cardia2, MapLocation.BahamutCave1, MapLocation.BahamutCave2, MapLocation.Cardia4, MapLocation.Cardia5,
+					MapLocation.Cardia6 }.Contains(location))
+				return "the Cardia Islands";
+			else if (new List<MapLocation> { MapLocation.Waterfall }.Contains(location))
+				return "the Waterfall";
+			else if (new List<MapLocation> { MapLocation.DwarfCave, MapLocation.DwarfCaveRoom3 }.Contains(location))
+				return "the Dwarfs' Cave";
+			else if (new List<MapLocation> { MapLocation.MatoyasCave }.Contains(location))
+				return "Matoya's Cave";
+			else if (new List<MapLocation> { MapLocation.SardasCave }.Contains(location))
+				return "Sarda's Cave";
+			else if (new List<MapLocation> { MapLocation.MarshCave1, MapLocation.MarshCave3, MapLocation.MarshCaveBottom, MapLocation.MarshCaveBottomRoom13, MapLocation.MarshCaveBottomRoom14,
+					MapLocation.MarshCaveBottomRoom16, MapLocation.MarshCaveTop }.Contains(location))
+				return "the Marsh Cave";
+			else if (new List<MapLocation> { MapLocation.MirageTower1, MapLocation.MirageTower2, MapLocation.MirageTower3 }.Contains(location))
+				return "the Mirage Tower";
+			else if (new List<MapLocation> { MapLocation.SeaShrine1, MapLocation.SeaShrine2, MapLocation.SeaShrine2Room2, MapLocation.SeaShrine4, MapLocation.SeaShrine5, MapLocation.SeaShrine6,
+					MapLocation.SeaShrine7, MapLocation.SeaShrine8, MapLocation.SeaShrineKraken, MapLocation.SeaShrineMermaids }.Contains(location))
+				return "the Sea Shrine";
+			else if (new List<MapLocation> { MapLocation.SkyPalace1, MapLocation.SkyPalace2, MapLocation.SkyPalace3, MapLocation.SkyPalaceMaze, MapLocation.SkyPalaceTiamat }.Contains(location))
+				return "the Sky Palace";
+			else if (new List<MapLocation> { MapLocation.TempleOfFiends1, MapLocation.TempleOfFiends1Room1, MapLocation.TempleOfFiends1Room2, MapLocation.TempleOfFiends1Room3,
+					MapLocation.TempleOfFiends1Room4  }.Contains(location))
+				return "the Temple of Fiends";
+			else if (new List<MapLocation> { MapLocation.TempleOfFiends2, MapLocation.TempleOfFiends3, MapLocation.TempleOfFiendsAir, MapLocation.TempleOfFiendsChaos, MapLocation.TempleOfFiendsEarth,
+					MapLocation.TempleOfFiendsFire, MapLocation.TempleOfFiendsPhantom, MapLocation.TempleOfFiendsWater }.Contains(location))
+				return "the Temple of Fiends, 2,000 years ago";
+			else if (new List<MapLocation> { MapLocation.TitansTunnelEast, MapLocation.TitansTunnelRoom, MapLocation.TitansTunnelWest }.Contains(location))
+				return "Titan's Tunnel";
+			else return location.ToString();
+		}
+
+		public static Dictionary<string, string> NiceNpcName = new Dictionary<string, string>
+		{
+			{ItemLocations.Astos.Name, "the kindly old King from Northwest Castle"},
+			{ItemLocations.Bikke.Name, "Bikke the Pirate"},
+			{ItemLocations.CanoeSage.Name, "the Sage from Crescent Lake"},
+			{ItemLocations.CubeBot.Name, "a Robot in the Waterfall"},
+			{ItemLocations.ElfPrince.Name, "the Elf Prince"},
+			{ItemLocations.Fairy.Name, "a Fairy in a Bottle"},
+			{ItemLocations.KingConeria.Name, "the King of Coneria"},
+			{ItemLocations.Lefein.Name, "a man in Lefein"},
+			{ItemLocations.Matoya.Name, "Matoya the Witch"},
+			{ItemLocations.Nerrick.Name, "Nerrick the Dwarf"},
+			{ItemLocations.Princess.Name, "the Princess of Coneria"},
+			{ItemLocations.Sarda.Name, "Sarda the Sage"},
+			{ItemLocations.Smith.Name, "the Blacksmith"},
+		};
+		public string FormatText(string text)
+		{
+			var tempstring = text.Split(' ');
+			var tempchars = tempstring[0].ToArray();
+			tempchars[0] = char.ToUpper(tempchars[0]);
+			tempstring[0] = new String(tempchars);
+
+			string[] templines = new string[7];
+			int linenumber = 0;
+			templines[0] = tempstring[0];
+
+			for (int j = 1; j < tempstring.Length; j++)
+			{
+				if (templines[linenumber].Length + tempstring[j].Length > 23)
+				{
+					templines[linenumber] += "\n";
+					linenumber++;
+					templines[linenumber] += tempstring[j];
+				}
+				else
+				{ templines[linenumber] += " " + tempstring[j]; }
+
+				if (linenumber > 5) break;
+			}
+
+			text = string.Concat(templines);
+
+			return text;
+		}
+		public List<Map> SetDungeonNPC(List<Map> maps, MT19337 rng, bool randomize)
+		{
+			// Earth modification
+			List<List<byte>> earthmod = new List<List<byte>> {
+				new List<byte> { 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E },
+				new List<byte> { 0x3E, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41 },
+				new List<byte> { 0x3E, 0x41, 0x00, 0x01, 0x02, 0x41, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E },
+				new List<byte> { 0x3E, 0x41, 0x03, 0x2E, 0x05, 0x41, 0x3E, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38 },
+				new List<byte> { 0x3E, 0x41, 0x06, 0x07, 0x08, 0x41, 0x3E, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38 },
+				new List<byte> { 0x3E, 0x41, 0x30, 0x36, 0x30, 0x41, 0x3E, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38 },
+				new List<byte> { 0x3E, 0x41, 0x41, 0x3A, 0x41, 0x41, 0x3E, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38 },
+				new List<byte> { 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38 },
+			};
+
+			for (int y = 0; y < earthmod.Count; y++)
+			{
+				for (int x = 0; x < earthmod[y].Count; x++)
+				{
+					maps[(byte)MapId.EarthCaveB1][y + 35, x + 2] = earthmod[y][x];
+				}
+			}
+
+			// Seashrine modification
+			maps[(byte)MapId.SeaShrineB4][0x2E, 0x16] = 0x36;
+			maps[(byte)MapId.SeaShrineB4][0x2F, 0x16] = 0x3A;
+
+			// Palettes changes
+			PutInBank(0x00, 0xA000 + ((byte)MapId.EarthCaveB1 * 0x30) + 0x18, Blob.FromHex("000F2736000F1A36"));
+			PutInBank(0x00, 0xA000 + ((byte)MapId.SeaShrineB4 * 0x30) + 0x18, Blob.FromHex("0F1527360F241536"));
+			PutInBank(0x00, 0xA000 + ((byte)MapId.SeaShrineB3 * 0x30) + 0x18, Blob.FromHex("0F1527360F241536"));
+			PutInBank(0x00, 0xA000 + ((byte)MapId.GurguVolcanoB3 * 0x30) + 0x18, Blob.FromHex("000F1716000F1716"));
+			PutInBank(0x00, 0xA000 + ((byte)MapId.GurguVolcanoB2 * 0x30) + 0x18, Blob.FromHex("000F1716000F1716"));
+			PutInBank(0x00, 0xA000 + ((byte)MapId.MarshCaveB1 * 0x30) + 0x18, Blob.FromHex("000F1C34000F1834"));
+			PutInBank(0x00, 0xA000 + ((byte)MapId.MarshCaveB2 * 0x30) + 0x18, Blob.FromHex("000F1C34000F1834"));
+			PutInBank(0x00, 0xA000 + ((byte)MapId.MarshCaveB3 * 0x30) + 0x18, Blob.FromHex("000F1C34000F1834"));
+			PutInBank(0x00, 0xA000 + ((byte)MapId.SkyPalace4F * 0x30) + 0x18, Blob.FromHex("0F0F18140F0F1714"));
+
+			
+			int randomposition = randomize ? rng.Between(1, 3) : 1;
+
+			// Dwarf hinter - Earth - Text 0x70 - 0x5B - 5e
+			SetNpc(MapId.DwarfCave, 5, ObjectId.None, 0x12, 0x18, false, false);
+
+			if (randomposition == 1)
+				SetNpc(MapId.EarthCaveB5, 0x0B, (ObjectId)0x5B, 0x12, 0x18, false, false);
+			else if (randomposition == 2)
+				SetNpc(MapId.EarthCaveB1, 0, (ObjectId)0x5B, 0x05, 0x26, true, false);
+			else
+				SetNpc(MapId.EarthCaveB3, 2, (ObjectId)0x5B, 0x09, 0x09, true, false);
+
+
+			// Robot hinter - Sky - Tex 0xE1 - 0xCF
+			SetNpc(MapId.SkyPalace3F, 0, ObjectId.None, 0x08, 0x1C, false, true);
+			randomposition = randomize ? rng.Between(1, 3) : 1;
+			if (randomposition == 1)
+				SetNpc(MapId.SkyPalace3F, 0, (ObjectId)0xCF, 0x1B, 0x34, true, false);
+			else if (randomposition == 2)
+				SetNpc(MapId.MirageTower2F, 1, (ObjectId)0xCF, 0x08, 0x1C, false, true);
+			else
+			{
+				var (x_robot, y_robot) = GetSkyCastleFloorTile(rng, maps[(byte)MapId.SkyPalace4F]);
+				SetNpc(MapId.SkyPalace4F, 1, (ObjectId)0xCF, x_robot, y_robot, inRoom: false, stationary: false);
+			}
+
+			// Dragon hinter - Gurgu - Text 0xE3 - 0x86 dragon
+			SetNpc(MapId.Cardia, 1, ObjectId.None, 0x2D, 0x1A, false, false);
+			randomposition = randomize ? rng.Between(1, 3) : 1;
+			if (randomposition == 1)
+				SetNpc(MapId.GurguVolcanoB3, 1, (ObjectId)0x86, 0x04, 0x1D, false, false);
+			else if (randomposition == 2)
+				SetNpc(MapId.GurguVolcanoB2, 1, (ObjectId)0x86, 0x02, 0x02, true, false);
+			else
+				SetNpc(MapId.GurguVolcanoB5, 1, (ObjectId)0x86, 0x37, 0x08, true, false);
+			//SetNpc(MapId.GurguVolcanoB3, 1, (ObjectId)0x86, 0x01, 0x02, false, true);
+
+			// Punk hinter - Marsh - Text 0xAF - 0x9D punk
+			SetNpc(MapId.Onrac, 11, ObjectId.None, 0x2D, 0x1A, false, false);
+			randomposition = randomize ? rng.Between(1, 3) : 1;
+			if (randomposition == 1)
+				SetNpc(MapId.MarshCaveB1, 5, ObjectId.OnracPunk2, 0x2D, 0x1A, false, false);
+			else if (randomposition == 2)
+				SetNpc(MapId.MarshCaveB2, 0x0E, ObjectId.OnracPunk2, 0x0E, 0x34, true, false);
+			else
+				SetNpc(MapId.MarshCaveB2, 0x0D, ObjectId.OnracPunk2, 0x37, 0x21, true, false);
+
+			// Mermaid hinter - Text 0xB6 - 0xA5 mermaid
+			SetNpc(MapId.SeaShrineB1, 2, ObjectId.None, 0x00, 0x00, true, false);
+			randomposition = randomize ? rng.Between(1, 3) : 1;
+			if (randomposition == 1)
+				SetNpc(MapId.SeaShrineB4, 0, (ObjectId)0xA5, 0x16, 0x2C, true, false);
+			else if (randomposition == 2)
+				SetNpc(MapId.SeaShrineB3, 0, (ObjectId)0xA5, 0x1A, 0x11, true, false);
+			else
+			{
+				List<ObjectId> mermaids = new List<ObjectId> { ObjectId.Mermaid1, ObjectId.Mermaid2, ObjectId.Mermaid4, ObjectId.Mermaid5, ObjectId.Mermaid6, ObjectId.Mermaid7, ObjectId.Mermaid8, ObjectId.Mermaid9, ObjectId.Mermaid10 };
+				var selectedMermaid = mermaids.PickRandom(rng);
+				Put(lut_MapObjTalkJumpTblAddress + (byte)selectedMermaid * NpcTalkSize, newTalk.Talk_norm);
+				Put(NpcTalkOffset + (byte)selectedMermaid * NpcTalkSize, Blob.FromHex("00B60000"));
+			}
+
+			return maps;
+		}
+		public void NPCHints(MT19337 rng, Flags flags)
+		{
+			// Het all game dialogs, get all item names, set dialog templates
+			var itemnames = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
+			var hintschests = new List<string>() { "The $ is #.", "The $? It's # I believe.", "Did you know that the $ is #?", "My grandpa used to say 'The $ is #'.", "Did you hear? The $ is #!", "Wanna hear a secret? The $ is #!", "I've read somewhere that the $ is #.", "I used to have the $. I lost it #!", "I've hidden the $ #, can you find it?", "Interesting! This book says the $ is #!", "Duh, everyone knows that the $ is #!", "I saw the $ while I was #." };
+			var hintsnpc = new List<string>() { "& has the $.", "The $? Did you try asking &?", "The $? & will never part with it!", "& stole the $ from ME! I swear!", "& told me not to reveal he has the $.", "& is hiding something. I bet it's the $!" };
+			var hintsvendormed = new List<string>() { "The $ is for sale #.", "I used to have the $. I sold it #!", "There's a fire sale for the $ #.", "I almost bought the $ for sale #." };
+
+			// Set item pool from flags, we only give hints for randomized items
+			var incentivePool = new List<Item>();
+
+			if (flags.Treasures ?? false)
+			{
+				incentivePool.Add(Item.Masamune);
+				incentivePool.Add(Item.Vorpal);
+				incentivePool.Add(Item.Defense);
+				incentivePool.Add(Item.ThorHammer);
+				incentivePool.Add(Item.Opal);
+				incentivePool.Add(Item.PowerGauntlets);
+				incentivePool.Add(Item.WhiteShirt);
+				incentivePool.Add(Item.BlackShirt);
+				incentivePool.Add(Item.Ribbon);
+				incentivePool.Add(Item.Slab);
+				incentivePool.Add(Item.Ruby);
+				incentivePool.Add(Item.Floater);
+				incentivePool.Add(Item.Tnt);
+				incentivePool.Add(Item.Crown);
+				incentivePool.Add(Item.Tail);
+				incentivePool.Add(Item.Adamant);
+			}
+
+			if (flags.NPCItems ?? false)
+			{
+				incentivePool.Add(Item.Bridge);
+				incentivePool.Add(Item.Lute);
+				incentivePool.Add(Item.Ship);
+				incentivePool.Add(Item.Rod);
+				incentivePool.Add(Item.Canoe);
+				incentivePool.Add(Item.Cube);
+				incentivePool.Add(Item.Bottle);
+			}
+
+			if (flags.NPCFetchItems ?? false)
+			{
+				incentivePool.Add(Item.Key);
+				incentivePool.Add(Item.Crystal);
+				incentivePool.Add(Item.Oxyale);
+				incentivePool.Add(Item.Canal);
+				incentivePool.Add(Item.Herb);
+				incentivePool.Add(Item.Chime);
+				incentivePool.Add(Item.Xcalber);
+			}
+
+			if (flags.FreeAirship ?? false) incentivePool.Remove(Item.Floater);
+			if (flags.FreeBridge ?? false) incentivePool.Remove(Item.Bridge);
+			if (flags.FreeCanal ?? false) incentivePool.Remove(Item.Canal);
+			if (flags.FreeLute ?? false) incentivePool.Remove(Item.Lute);
+			if (flags.FreeShip ?? false) incentivePool.Remove(Item.Ship);
+			if (flags.FreeTail ?? false) incentivePool.Remove(Item.Tail);
+
+			if (incentivePool.Count == 0)
+				incentivePool.Add(Item.Cabin);
+
+			// Select NPCs from flags
+			var priorityList = new List<Item> { Item.Lute, Item.Key, Item.Rod, Item.Oxyale, Item.Chime, Item.Cube, Item.Floater, Item.Canoe, Item.Ship, Item.Bridge, Item.Canal, Item.Bottle, Item.Slab, Item.Ruby, Item.Crown, Item.Crystal, Item.Herb, Item.Tnt, Item.Tail };
+
+			var npcSelected = new List<ObjectId>();
+			var dialogueID = new List<byte>();
+			if (flags.HintsVillage ?? false)
+			{
+				npcSelected.AddRange(new List<ObjectId> { ObjectId.ConeriaOldMan, ObjectId.PravokaOldMan, ObjectId.ElflandScholar1, ObjectId.MelmondOldMan2, ObjectId.CrescentSage1, ObjectId.OnracOldMan2, ObjectId.GaiaWitch, ObjectId.LefeinMan12 });
+				dialogueID.AddRange(new List<byte> { 0x45, 0x53, 0x69, 0x82, 0x8C, 0xAA, 0xCB, 0xDC });
+				MoveNpc(MapId.Lefein, 0x0C, 0x0E, 0x15, false, true);
+			}
+
+			if (flags.HintsDungeon ?? false)
+			{
+				npcSelected.AddRange(new List<ObjectId> { ObjectId.OnracPunk2, ObjectId.DwarfcaveDwarf4, ObjectId.CardiaDragon2, ObjectId.SkyRobot, ObjectId.Mermaid3 });
+				dialogueID.AddRange(new List<byte> { 0x9D, 0x70, 0xE3, 0xE1, 0xB6 });
+			}
+
+			List<TreasureChest> incentivizedChests = new List<TreasureChest>();
+
+			if (flags.IncentivizeEarth ?? false) incentivizedChests.Add(ItemLocations.EarthCaveMajor);
+			if (flags.IncentivizeIceCave ?? false) incentivizedChests.Add(ItemLocations.IceCaveMajor);
+			if (flags.IncentivizeMarsh ?? false) incentivizedChests.Add(ItemLocations.MarshCaveMajor);
+			if (flags.IncentivizeMarshKeyLocked ?? false) incentivizedChests.Add(ItemLocations.MarshCave13);
+			if (flags.IncentivizeOrdeals ?? false) incentivizedChests.Add(ItemLocations.OrdealsMajor);
+			if (flags.IncentivizeSeaShrine ?? false) incentivizedChests.Add(ItemLocations.SeaShrineMajor);
+			if (flags.IncentivizeSkyPalace ?? false) incentivizedChests.Add(ItemLocations.SkyPalaceMajor);
+			if (flags.IncentivizeTitansTrove ?? false) incentivizedChests.Add(ItemLocations.TitansTunnel1);
+			if (flags.IncentivizeVolcano ?? false) incentivizedChests.Add(ItemLocations.VolcanoMajor);
+			if (flags.IncentivizeConeria ?? false) incentivizedChests.Add(ItemLocations.ConeriaMajor);
+
+			var hintedItems = new List<Item>();
+			foreach (Item priorityitem in priorityList)
+			{
+				if(generatedPlacement.Find(x => x.Item == priorityitem) != null)
+					if (generatedPlacement.Find(x => x.Item == priorityitem).GetType().Equals(typeof(TreasureChest)) && !incentivizedChests.Contains((TreasureChest)generatedPlacement.Find(x => x.Item == priorityitem)))
+						hintedItems.Add(priorityitem);
+
+				if (hintedItems.Count == npcSelected.Count)
+					break;
+			}
+
+			while (hintedItems.Count < npcSelected.Count)
+			{
+				hintedItems.Add(incentivePool.PickRandom(rng));
+			}
+
+
+			// Declare hints string for each hinted at item
+			var hintsList = new List<string>();
+
+			// Create hint for a random item in the pool for each NPC
+			for (int i = 0; i < npcSelected.Count; i++)
+			{
+				var tempItem = hintedItems.First();
+				string tempHint;
+				string tempName;
+
+				if (tempItem.Equals(Item.Ship)) tempName = FF1Text.BytesToText(Get(0x2B5D0, 4));
+				//else if (tempRndItem.Equals(Item.Airship)) tempName = FF1Text.BytesToText((byte[])Get(0x285C+8, 7));
+				else if (tempItem.Equals(Item.Bridge)) tempName = FF1Text.BytesToText(Get(0x2B5D0 + 16, 6));
+				else if (tempItem.Equals(Item.Canal)) tempName = FF1Text.BytesToText(Get(0x2B5D0 + 24, 5));
+				else if (tempItem.Equals(Item.Canoe)) tempName = FF1Text.BytesToText(Get(0x2B5D0 + 36, 5));
+				else tempName = itemnames[(int)tempItem].Replace(" ", "");
+
+				if (generatedPlacement.Find(x => x.Item == tempItem).GetType().Equals(typeof(TreasureChest)))
+				{
+					tempHint = hintschests.PickRandom(rng);
+					tempHint = tempHint.Split('$')[0] + tempName + tempHint.Split('$')[1];
+
+					tempHint = FormatText(tempHint.Split('#')[0] + "in " + LocationText(generatedPlacement.Find(x => x.Item == tempItem).MapLocation) + tempHint.Split('#')[1]);
+					hintsList.Add(tempHint);
+					hintedItems.RemoveRange(0, 1);
+				}
+				else if (generatedPlacement.Find(x => x.Item == tempItem).GetType().Equals(typeof(MapObject)))
+				{
+					tempHint = hintsnpc.PickRandom(rng);
+					tempHint = tempHint.Split('$')[0] + tempName + tempHint.Split('$')[1];
+					tempHint = FormatText(tempHint.Split('&')[0] + NiceNpcName[generatedPlacement.Find(x => x.Item == tempItem).Name] + tempHint.Split('&')[1]);
+					hintsList.Add(tempHint);
+					hintedItems.RemoveRange(0, 1);
+				}
+				else if (generatedPlacement.Find(x => x.Item == tempItem).GetType().Equals(typeof(ItemShopSlot)))
+				{
+					tempHint = hintsvendormed.PickRandom(rng);
+					tempHint = tempHint.Split('$')[0] + tempName + tempHint.Split('$')[1];
+					tempHint = FormatText(tempHint.Split('#')[0] + LocationText(generatedPlacement.Find(x => x.Item == tempItem).MapLocation) + tempHint.Split('#')[1]);
+					hintsList.Add(tempHint);
+					hintedItems.RemoveRange(0, 1);
+				}
+				else
+					tempHint = "I am error.";
+			}
+
+
+			//var hintsList = hints.ToList();
+			hintsList.Shuffle(rng);
+
+			Dictionary<int, string> hintDialogues = new Dictionary<int, string>();
+
+			// Set NPCs new dialogs
+			for (int i = 0; i < npcSelected.Count; i++)
+			{
+				Put(lut_MapObjTalkJumpTblAddress + (byte)npcSelected[i] * NpcTalkSize, newTalk.Talk_norm);
+				Put(MapObjOffset + (byte)npcSelected[i] * MapObjSize, Blob.FromSBytes(new sbyte[] { 0x00, (sbyte)dialogueID[i], 0x00, 0x00 }));
+
+				hintDialogues.Add(dialogueID[i], hintsList.First());
+				hintsList.RemoveRange(0, 1);
+			}
+
+			InsertDialogs(hintDialogues);
+
+		}
+
 	}
 }
