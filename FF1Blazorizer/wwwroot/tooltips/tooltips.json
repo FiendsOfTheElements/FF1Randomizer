@@ -100,6 +100,21 @@
 		"description": "Unsafe Pirates: Allows Pirates to be shuffled skills and spells. Left unchecked, Pirates will always have a script that directs them to only attack."
 	},
 	{
+		"Id": "hintsVillage",
+		"title": "Hints from villagers",
+		"description": "In each town, a villager reveals the location of an item. The old men in Coneria, Pravoka, Melmond and Onrac, an Elf scholar in Elfland, Lukkanh in Crescent Lake, the Witch in Gaia and the Lefein villager on the left side (no Slab required)."
+	},
+	{
+		"Id": "hintsDungeon",
+		"title": "Hints from dungeon explorers",
+		"description": "Five NPC in dungeons reveals the location of an item. Down the dead end of Marsh Cave B1, on Lich's floor in Earth Cave, in the hallway of Gurgu Volcano B3, in a room on the left of Sea Shrine B4 and in the South room of Sky Palace 3F."
+	},
+	{
+		"Id": "hintsRngDungeon",
+		"title": "Shuffled location in dungeon",
+		"description": "The NPCs could be at two other possible locations in each dungeon."
+	},
+	{
 		"Id": "EnablePoolParty",
 		"title": "Party Draft",
 		"description": "Draft your party from a pool of random characters. Allowed classes are selected from Party Composition, allowing duplicates. Once a character is selected, it's removed from the pool. Cancelling your choice puts back the character in the pool."

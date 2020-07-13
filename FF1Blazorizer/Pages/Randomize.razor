@@ -477,9 +477,12 @@
 						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="EnableRandomPromotions" @bind-Value="Flags.EnableRandomPromotions">Random Classes at Class Change</TriStateCheckBox>
 						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnableRandomPromotions" Id="RPIncludeBaseClasses" @bind-Value="Flags.IncludeBaseClasses">Include Base Classes</TriStateCheckBox>
 						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnableRandomPromotions" Id="RPSpoilers" @bind-Value="Flags.RandomPromotionsSpoilers">Spoil Promotions</TriStateCheckBox>
+                        <div class="checkbox-cell"></div>
+						<p>Item location hints</p>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.Treasures" Id="hintsVillage" @bind-Value="Flags.HintsVillage">Hint givers in villages</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.Treasures" Id="hintsDungeon" @bind-Value="Flags.HintsDungeon">Hint givers in dungeons</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.HintsDungeon" Id="hintsRngDungeon" @bind-Value="Flags.HintsRngDungeon">Shuffle location in dungeon</TriStateCheckBox>
 					</div>
-                    <div class="col-md-12">
-                    </div>
                 </div>
             </div>
         </BSCollapse>
