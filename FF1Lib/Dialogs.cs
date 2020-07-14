@@ -614,58 +614,148 @@ namespace FF1Lib
 			Put(0x7DB64, Blob.FromHex(newDrawDialogueString));
 		}
 
-		public string LocationText(MapLocation location)
+		public string LocationText(MapLocation location, OverworldMap overworldmap)
 		{
-			if (new List<MapLocation> { MapLocation.ConeriaCastle1, MapLocation.ConeriaCastle2, MapLocation.ConeriaCastleRoom1, MapLocation.ConeriaCastleRoom2 }.Contains(location))
-				return "Coneria Castle";
-			else if (new List<MapLocation> { MapLocation.CrescentLake }.Contains(location))
-				return "Crescent Lake";
-			else if (new List<MapLocation> { MapLocation.Caravan }.Contains(location))
-				return "the Caravan";
-			else if (new List<MapLocation> { MapLocation.ElflandCastle, MapLocation.ElflandCastleRoom1 }.Contains(location))
-				return "the Castle of Efland";
-			else if (new List<MapLocation> { MapLocation.NorthwestCastle, MapLocation.NorthwestCastleRoom2 }.Contains(location))
-				return "Northwest Castle";
-			else if (new List<MapLocation> { MapLocation.CastleOrdeals1, MapLocation.CastleOrdealsMaze, MapLocation.CastleOrdealsTop }.Contains(location))
-				return "the Castle of Ordeals";
-			else if (new List<MapLocation> { MapLocation.EarthCave1, MapLocation.EarthCave2, MapLocation.EarthCave4, MapLocation.EarthCaveLich, MapLocation.EarthCaveVampire }.Contains(location))
-				return "the Earth Cave";
-			else if (new List<MapLocation> { MapLocation.GurguVolcano1, MapLocation.GurguVolcano2, MapLocation.GurguVolcano3, MapLocation.GurguVolcano4, MapLocation.GurguVolcano5,
-					MapLocation.GurguVolcano6, MapLocation.GurguVolcanoKary  }.Contains(location))
-				return "Gurgu Volcano";
-			else if (new List<MapLocation> { MapLocation.IceCave1, MapLocation.IceCave2, MapLocation.IceCave3, MapLocation.IceCave5,
-					MapLocation.IceCaveBackExit, MapLocation.IceCaveFloater, MapLocation.IceCavePitRoom }.Contains(location))
-				return "the Ice Cave";
-			else if (new List<MapLocation> { MapLocation.Cardia1, MapLocation.Cardia2, MapLocation.BahamutCave1, MapLocation.BahamutCave2, MapLocation.Cardia4, MapLocation.Cardia5,
-					MapLocation.Cardia6 }.Contains(location))
-				return "the Cardia Islands";
-			else if (new List<MapLocation> { MapLocation.Waterfall }.Contains(location))
-				return "the Waterfall";
-			else if (new List<MapLocation> { MapLocation.DwarfCave, MapLocation.DwarfCaveRoom3 }.Contains(location))
-				return "the Dwarfs' Cave";
-			else if (new List<MapLocation> { MapLocation.MatoyasCave }.Contains(location))
-				return "Matoya's Cave";
-			else if (new List<MapLocation> { MapLocation.SardasCave }.Contains(location))
-				return "Sarda's Cave";
-			else if (new List<MapLocation> { MapLocation.MarshCave1, MapLocation.MarshCave3, MapLocation.MarshCaveBottom, MapLocation.MarshCaveBottomRoom13, MapLocation.MarshCaveBottomRoom14,
-					MapLocation.MarshCaveBottomRoom16, MapLocation.MarshCaveTop }.Contains(location))
-				return "the Marsh Cave";
-			else if (new List<MapLocation> { MapLocation.MirageTower1, MapLocation.MirageTower2, MapLocation.MirageTower3 }.Contains(location))
-				return "the Mirage Tower";
-			else if (new List<MapLocation> { MapLocation.SeaShrine1, MapLocation.SeaShrine2, MapLocation.SeaShrine2Room2, MapLocation.SeaShrine4, MapLocation.SeaShrine5, MapLocation.SeaShrine6,
-					MapLocation.SeaShrine7, MapLocation.SeaShrine8, MapLocation.SeaShrineKraken, MapLocation.SeaShrineMermaids }.Contains(location))
-				return "the Sea Shrine";
-			else if (new List<MapLocation> { MapLocation.SkyPalace1, MapLocation.SkyPalace2, MapLocation.SkyPalace3, MapLocation.SkyPalaceMaze, MapLocation.SkyPalaceTiamat }.Contains(location))
-				return "the Sky Palace";
-			else if (new List<MapLocation> { MapLocation.TempleOfFiends1, MapLocation.TempleOfFiends1Room1, MapLocation.TempleOfFiends1Room2, MapLocation.TempleOfFiends1Room3,
-					MapLocation.TempleOfFiends1Room4  }.Contains(location))
-				return "the Temple of Fiends";
-			else if (new List<MapLocation> { MapLocation.TempleOfFiends2, MapLocation.TempleOfFiends3, MapLocation.TempleOfFiendsAir, MapLocation.TempleOfFiendsChaos, MapLocation.TempleOfFiendsEarth,
-					MapLocation.TempleOfFiendsFire, MapLocation.TempleOfFiendsPhantom, MapLocation.TempleOfFiendsWater }.Contains(location))
-				return "the Temple of Fiends, 2,000 years ago";
-			else if (new List<MapLocation> { MapLocation.TitansTunnelEast, MapLocation.TitansTunnelRoom, MapLocation.TitansTunnelWest }.Contains(location))
-				return "Titan's Tunnel";
-			else return location.ToString();
+			Dictionary<MapLocation, OverworldTeleportIndex> StandardOverworldLocations =
+			new Dictionary<MapLocation, OverworldTeleportIndex>
+			{
+				{MapLocation.Coneria,OverworldTeleportIndex.Coneria},
+				{MapLocation.Caravan,(OverworldTeleportIndex)36},
+				{MapLocation.Pravoka, OverworldTeleportIndex.Pravoka},
+				{MapLocation.Elfland, OverworldTeleportIndex.Elfland},
+				{MapLocation.Melmond, OverworldTeleportIndex.Melmond},
+				{MapLocation.CrescentLake, OverworldTeleportIndex.CrescentLake},
+				{MapLocation.Gaia,OverworldTeleportIndex.Gaia},
+				{MapLocation.Onrac,OverworldTeleportIndex.Onrac},
+				{MapLocation.Lefein,OverworldTeleportIndex.Lefein},
+				{MapLocation.ConeriaCastle1,OverworldTeleportIndex.ConeriaCastle1},
+				{MapLocation.ConeriaCastle2,OverworldTeleportIndex.ConeriaCastle1},
+				{MapLocation.ConeriaCastleRoom1,OverworldTeleportIndex.ConeriaCastle1},
+				{MapLocation.ConeriaCastleRoom2,OverworldTeleportIndex.ConeriaCastle1},
+				{MapLocation.ElflandCastle,OverworldTeleportIndex.ElflandCastle},
+				{MapLocation.ElflandCastleRoom1,OverworldTeleportIndex.ElflandCastle},
+				{MapLocation.NorthwestCastle,OverworldTeleportIndex.NorthwestCastle},
+				{MapLocation.NorthwestCastleRoom2,OverworldTeleportIndex.NorthwestCastle},
+				{MapLocation.CastleOrdeals1,OverworldTeleportIndex.CastleOrdeals1},
+				{MapLocation.CastleOrdealsMaze,OverworldTeleportIndex.CastleOrdeals1},
+				{MapLocation.CastleOrdealsTop,OverworldTeleportIndex.CastleOrdeals1},
+				{MapLocation.TempleOfFiends1,OverworldTeleportIndex.TempleOfFiends1},
+				{MapLocation.TempleOfFiends1Room1,OverworldTeleportIndex.TempleOfFiends1},
+				{MapLocation.TempleOfFiends1Room2,OverworldTeleportIndex.TempleOfFiends1},
+				{MapLocation.TempleOfFiends1Room3,OverworldTeleportIndex.TempleOfFiends1},
+				{MapLocation.TempleOfFiends1Room4,OverworldTeleportIndex.TempleOfFiends1},
+				{MapLocation.TempleOfFiends2,OverworldTeleportIndex.TempleOfFiends1},
+				{MapLocation.TempleOfFiends3,OverworldTeleportIndex.TempleOfFiends1},
+				{MapLocation.TempleOfFiendsChaos,OverworldTeleportIndex.TempleOfFiends1},
+				{MapLocation.TempleOfFiendsAir,OverworldTeleportIndex.TempleOfFiends1},
+				{MapLocation.TempleOfFiendsEarth,OverworldTeleportIndex.TempleOfFiends1},
+				{MapLocation.TempleOfFiendsFire,OverworldTeleportIndex.TempleOfFiends1},
+				{MapLocation.TempleOfFiendsWater,OverworldTeleportIndex.TempleOfFiends1},
+				{MapLocation.TempleOfFiendsPhantom,OverworldTeleportIndex.TempleOfFiends1},
+				{MapLocation.EarthCave1,OverworldTeleportIndex.EarthCave1},
+				{MapLocation.EarthCave2,OverworldTeleportIndex.EarthCave1},
+				{MapLocation.EarthCaveVampire,OverworldTeleportIndex.EarthCave1},
+				{MapLocation.EarthCave4,OverworldTeleportIndex.EarthCave1},
+				{MapLocation.EarthCaveLich,OverworldTeleportIndex.EarthCave1},
+				{MapLocation.GurguVolcano1,OverworldTeleportIndex.GurguVolcano1},
+				{MapLocation.GurguVolcano2,OverworldTeleportIndex.GurguVolcano1},
+				{MapLocation.GurguVolcano3,OverworldTeleportIndex.GurguVolcano1},
+				{MapLocation.GurguVolcano4,OverworldTeleportIndex.GurguVolcano1},
+				{MapLocation.GurguVolcano5,OverworldTeleportIndex.GurguVolcano1},
+				{MapLocation.GurguVolcano6,OverworldTeleportIndex.GurguVolcano1},
+				{MapLocation.GurguVolcanoKary,OverworldTeleportIndex.GurguVolcano1},
+				{MapLocation.IceCave1,OverworldTeleportIndex.IceCave1},
+				{MapLocation.IceCave2,OverworldTeleportIndex.IceCave1},
+				{MapLocation.IceCave3,OverworldTeleportIndex.IceCave1},
+				{MapLocation.IceCave5,OverworldTeleportIndex.IceCave1},
+				{MapLocation.IceCaveBackExit,OverworldTeleportIndex.IceCave1},
+				{MapLocation.IceCaveFloater,OverworldTeleportIndex.IceCave1},
+				{MapLocation.IceCavePitRoom,OverworldTeleportIndex.IceCave1},
+				{MapLocation.SeaShrine1, (OverworldTeleportIndex)35},
+				{MapLocation.SeaShrine2, (OverworldTeleportIndex)35},
+				{MapLocation.SeaShrine2Room2, (OverworldTeleportIndex)35},
+				{MapLocation.SeaShrine4, (OverworldTeleportIndex)35},
+				{MapLocation.SeaShrine5, (OverworldTeleportIndex)35},
+				{MapLocation.SeaShrine6, (OverworldTeleportIndex)35},
+				{MapLocation.SeaShrine7, (OverworldTeleportIndex)35},
+				{MapLocation.SeaShrine8, (OverworldTeleportIndex)35},
+				{MapLocation.SeaShrineKraken, (OverworldTeleportIndex)35},
+				{MapLocation.SeaShrineMermaids, (OverworldTeleportIndex)35},
+				{MapLocation.Cardia1,OverworldTeleportIndex.Cardia1},
+				{MapLocation.Cardia2,OverworldTeleportIndex.Cardia2},
+				{MapLocation.BahamutCave1,OverworldTeleportIndex.BahamutCave1},
+				{MapLocation.BahamutCave2,OverworldTeleportIndex.BahamutCave1},
+				{MapLocation.Cardia4,OverworldTeleportIndex.Cardia4}, 
+				{MapLocation.Cardia5,OverworldTeleportIndex.Cardia5},
+				{MapLocation.Cardia6,OverworldTeleportIndex.Cardia6},
+				{MapLocation.Waterfall,OverworldTeleportIndex.Waterfall},
+				{MapLocation.DwarfCave,OverworldTeleportIndex.DwarfCave},
+				{MapLocation.DwarfCaveRoom3,OverworldTeleportIndex.DwarfCave},
+				{MapLocation.MatoyasCave,OverworldTeleportIndex.MatoyasCave},
+				{MapLocation.SardasCave,OverworldTeleportIndex.SardasCave},
+				{MapLocation.MarshCave1,OverworldTeleportIndex.MarshCave1},
+				{MapLocation.MarshCave3,OverworldTeleportIndex.MarshCave1},
+				{MapLocation.MarshCaveBottom,OverworldTeleportIndex.MarshCave1},
+				{MapLocation.MarshCaveBottomRoom13,OverworldTeleportIndex.MarshCave1},
+				{MapLocation.MarshCaveBottomRoom14,OverworldTeleportIndex.MarshCave1},
+				{MapLocation.MarshCaveBottomRoom16,OverworldTeleportIndex.MarshCave1},
+				{MapLocation.MarshCaveTop,OverworldTeleportIndex.MarshCave1},
+				{MapLocation.MirageTower1,OverworldTeleportIndex.MirageTower1},
+				{MapLocation.MirageTower2,OverworldTeleportIndex.MirageTower1},
+				{MapLocation.MirageTower3,OverworldTeleportIndex.MirageTower1},
+				{MapLocation.SkyPalace1,OverworldTeleportIndex.MirageTower1},
+				{MapLocation.SkyPalace2,OverworldTeleportIndex.MirageTower1},
+				{MapLocation.SkyPalace3,OverworldTeleportIndex.MirageTower1},
+				{MapLocation.SkyPalaceMaze,OverworldTeleportIndex.MirageTower1},
+				{MapLocation.SkyPalaceTiamat,OverworldTeleportIndex.MirageTower1},
+				{MapLocation.TitansTunnelEast,OverworldTeleportIndex.TitansTunnelEast},
+				{MapLocation.TitansTunnelWest,OverworldTeleportIndex.TitansTunnelWest},
+				{MapLocation.TitansTunnelRoom,OverworldTeleportIndex.TitansTunnelWest},
+			};
+
+			Dictionary<OverworldTeleportIndex, string> LocationNames = new Dictionary<OverworldTeleportIndex, string>
+			{
+				{OverworldTeleportIndex.Coneria,"Coneria"},
+				{OverworldTeleportIndex.Pravoka,"Pravoka"},
+				{OverworldTeleportIndex.Elfland,"Elfland"},
+				{OverworldTeleportIndex.Melmond,"Melmond"},
+				{OverworldTeleportIndex.CrescentLake,"Crescent Lake"},
+				{OverworldTeleportIndex.Gaia,"Gaia"},
+				{OverworldTeleportIndex.Onrac,"Onrac"},
+				{OverworldTeleportIndex.Lefein,"Lefein"},
+				{OverworldTeleportIndex.ConeriaCastle1,"Coneria Castle"},
+				{OverworldTeleportIndex.ElflandCastle,"the Castle of Efland"},
+				{OverworldTeleportIndex.NorthwestCastle,"Northwest Castle"},
+				{OverworldTeleportIndex.CastleOrdeals1,"the Castle of Ordeals"},
+				{OverworldTeleportIndex.TempleOfFiends1,"the Temple of Fiends"},
+				{OverworldTeleportIndex.EarthCave1,"the Earth Cave"},
+				{OverworldTeleportIndex.GurguVolcano1,"Gurgu Volcano"},
+				{OverworldTeleportIndex.IceCave1,"the Ice Cave"},
+				{OverworldTeleportIndex.Cardia1,"the Northernemost Cave of Cardia"}, // To check
+				{OverworldTeleportIndex.Cardia2,"the Western plains of Cardia"},
+				{OverworldTeleportIndex.BahamutCave1,"Bahamut's Cave"},
+				{OverworldTeleportIndex.Cardia4,"the Marshes of Cardia"},
+				{OverworldTeleportIndex.Cardia5,"the Tiny island's Cave of Cardia"}, // To check
+				{OverworldTeleportIndex.Cardia6,"the Eastern forest of Cardia"},
+				{OverworldTeleportIndex.Waterfall,"the Waterfall"},
+				{OverworldTeleportIndex.DwarfCave,"the Dwarves' Cave"},
+				{OverworldTeleportIndex.MatoyasCave,"Matoya's Cave"},
+				{OverworldTeleportIndex.SardasCave,"Sarda's Cave"},
+				{OverworldTeleportIndex.MarshCave1,"the Marsh Cave"},
+				{OverworldTeleportIndex.MirageTower1,"the Mirage Tower"},
+				{OverworldTeleportIndex.TitansTunnelEast,"the Titan's tunnel"},
+				{OverworldTeleportIndex.TitansTunnelWest,"the Titan's tunnel"},
+				{(OverworldTeleportIndex)35,"the Sea Shrine"},
+				{(OverworldTeleportIndex)36,"the Caravan"},
+			};
+
+			var targetlocation = new OverworldTeleportIndex();
+			if (overworldmap.OverriddenOverworldLocations != null && overworldmap.OverriddenOverworldLocations.Where(x => x.Key == location).Any())
+				targetlocation = overworldmap.OverriddenOverworldLocations.Where(x => x.Key == location).First().Value;
+			else
+				targetlocation = StandardOverworldLocations.Where(x => x.Key == location).First().Value;
+
+			return LocationNames.Where(x => x.Key == targetlocation).First().Value;
 		}
 
 		public static Dictionary<string, string> NiceNpcName = new Dictionary<string, string>
@@ -815,7 +905,7 @@ namespace FF1Lib
 
 			return maps;
 		}
-		public void NPCHints(MT19337 rng, Flags flags)
+		public void NPCHints(MT19337 rng, Flags flags, OverworldMap overworldmap)
 		{
 			// Het all game dialogs, get all item names, set dialog templates
 			var itemnames = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
@@ -948,7 +1038,7 @@ namespace FF1Lib
 					tempHint = hintschests.PickRandom(rng);
 					tempHint = tempHint.Split('$')[0] + tempName + tempHint.Split('$')[1];
 
-					tempHint = FormatText(tempHint.Split('#')[0] + "in " + LocationText(generatedPlacement.Find(x => x.Item == tempItem).MapLocation) + tempHint.Split('#')[1]);
+					tempHint = FormatText(tempHint.Split('#')[0] + "in " + LocationText(generatedPlacement.Find(x => x.Item == tempItem).MapLocation, overworldmap) + tempHint.Split('#')[1]);
 					hintsList.Add(tempHint);
 					hintedItems.RemoveRange(0, 1);
 				}
@@ -964,7 +1054,7 @@ namespace FF1Lib
 				{
 					tempHint = hintsvendormed.PickRandom(rng);
 					tempHint = tempHint.Split('$')[0] + tempName + tempHint.Split('$')[1];
-					tempHint = FormatText(tempHint.Split('#')[0] + LocationText(generatedPlacement.Find(x => x.Item == tempItem).MapLocation) + tempHint.Split('#')[1]);
+					tempHint = FormatText(tempHint.Split('#')[0] + ((generatedPlacement.Find(x => x.Item == tempItem).MapLocation.Equals(MapLocation.Caravan)) ? "at " : "in ") + LocationText(generatedPlacement.Find(x => x.Item == tempItem).MapLocation, overworldmap) + tempHint.Split('#')[1]);
 					hintsList.Add(tempHint);
 					hintedItems.RemoveRange(0, 1);
 				}
