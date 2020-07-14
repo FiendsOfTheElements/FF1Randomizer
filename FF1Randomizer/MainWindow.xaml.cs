@@ -143,7 +143,7 @@ namespace FF1Randomizer
 
 		private void AboutButton_Click(object sender, RoutedEventArgs e)
 		{
-			var aboutWindow = new AboutWindow(FF1Rom.Version) { Owner = this };
+			var aboutWindow = new AboutWindow(FFRVersion.Version) { Owner = this };
 
 			aboutWindow.ShowDialog();
 		}

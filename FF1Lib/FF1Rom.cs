@@ -548,7 +548,7 @@ namespace FF1Lib
 				if ((bool)flags.HintsDungeon)
 					maps = SetDungeonNPC(maps, rng, (bool)flags.HintsRngDungeon);
 
-				NPCHints(rng, flags);
+				NPCHints(rng, flags, overworldMap);
 			}
 
 			if (flags.HouseMPRestoration || flags.HousesFillHp)
