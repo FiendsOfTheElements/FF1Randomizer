@@ -344,7 +344,7 @@ namespace FF1Lib
 					"",
 					"  Contributors",
 					"",
-					" artea",
+					" artea, wildham",
 					" drcatdoctor",
 					" leggystarscream",
 					" nic0lette",
