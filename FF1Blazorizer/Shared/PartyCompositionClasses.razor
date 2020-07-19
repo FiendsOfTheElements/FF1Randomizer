@@ -2,22 +2,22 @@
 <br />
 <div class="table-wrapper">
 	<table>
-		<tr class="odd">
+		<tr class="odd jobs">
 			<td>Permitted Classes</td>
 			<td>Forced?</td>
-			<td>Fighter</td>
-			<td>Thief</td>
-			<td>Black Belt</td>
-			<td>Red Mage</td>
-			<td>White Mage</td>
-			<td>Black Mage</td>
+			<td class="job fighter"></td>
+			<td class="job thief"></td>
+			<td class="job blackbelt"></td>
+			<td class="job redmage"></td>
+			<td class="job whitemage"></td>
+			<td class="job blackmage"></td>
 			<td>None!</td>
-			<td>Knight</td>
-			<td>Ninja</td>
-			<td>Master</td>
-			<td>Red Wizard</td>
-			<td>White Wizard</td>
-			<td>Black Wizard</td>
+			<td class="job knight"></td>
+			<td class="job ninja"></td>
+			<td class="job master"></td>
+			<td class="job redwizard"></td>
+			<td class="job whitewizard"></td>
+			<td class="job blackwizard"></td>
 		</tr>
 		<tr class="bottom-borderd">
 			<td class="right-bordered">All</td>
@@ -35,27 +35,26 @@
 			<td><TriStateCheckBox DisableTooltip Id="partyRedWizAll" @bind-Value="@AllRedWiz"></TriStateCheckBox></td>
 			<td><TriStateCheckBox DisableTooltip Id="partyWhiteWizAll" @bind-Value="@AllWhiteWiz"></TriStateCheckBox></td>
 			<td><TriStateCheckBox DisableTooltip Id="partyBlackWizAll" @bind-Value="@AllBlackWiz"></TriStateCheckBox></td>
-			<td></td>
 		</tr>
 	</table>
 	<BSCollapse IsOpen=@(Flags.EnablePoolParty != true)>
 		<table>
-			<tr class="odd" style="visibility:collapse;">
+			<tr class="odd jobs" style="visibility: collapse;">
 				<td>Permitted Classes</td>
 				<td>Forced?</td>
-				<td>Fighter</td>
-				<td>Thief</td>
-				<td>Black Belt</td>
-				<td>Red Mage</td>
-				<td>White Mage</td>
-				<td>Black Mage</td>
+				<td class="job fighter"></td>
+				<td class="job thief"></td>
+				<td class="job blackbelt"></td>
+				<td class="job redmage"></td>
+				<td class="job whitemage"></td>
+				<td class="job blackmage"></td>
 				<td>None!</td>
-				<td>Knight</td>
-				<td>Ninja</td>
-				<td>Master</td>
-				<td>Red Wizard</td>
-				<td>White Wizard</td>
-				<td>Black Wizard</td>
+				<td class="job knight"></td>
+				<td class="job ninja"></td>
+				<td class="job master"></td>
+				<td class="job redwizard"></td>
+				<td class="job whitewizard"></td>
+				<td class="job blackwizard"></td>
 			</tr>
 			<tr>
 				<td class="right-bordered">Member 1</td>
@@ -73,7 +72,6 @@
 				<td><TriStateCheckBox DisableTooltip Id="partyRedWiz1" @bind-Value="@RED_WIZ1"></TriStateCheckBox></td>
 				<td><TriStateCheckBox DisableTooltip Id="partyWhiteWiz1" @bind-Value="@WHITE_WIZ1"></TriStateCheckBox></td>
 				<td><TriStateCheckBox DisableTooltip Id="partyBlackWiz1" @bind-Value="@BLACK_WIZ1"></TriStateCheckBox></td>
-				<td></td>
 			</tr>
 			<tr class="odd">
 				<td class="right-bordered">Member 2</td>
