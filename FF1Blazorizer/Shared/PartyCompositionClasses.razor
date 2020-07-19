@@ -2,24 +2,24 @@
 <br />
 <div class="table-wrapper">
 	<table>
-		<tr class="odd jobs">
-			<td>Permitted Classes</td>
+		<tr class="jobs">
+			<td class="right-bordered">Permitted Classes</td>
 			<td>Forced?</td>
 			<td class="job fighter" title="Fighter"></td>
 			<td class="job thief" title="Thief"></td>
 			<td class="job blackbelt" title="Black Belt"></td>
 			<td class="job redmage" title="Red Mage"></td>
 			<td class="job whitemage" title="White Mage"></td>
-			<td class="job blackmage" title="Black Mage"></td>
+			<td class="job blackmage right-bordered" title="Black Mage"></td>
 			<td class="job knight" title="Knight"></td>
 			<td class="job ninja" title="Ninja"></td>
 			<td class="job master" title="Master"></td>
 			<td class="job redwizard" title="Red Wizard"></td>
 			<td class="job whitewizard" title="White Wizard"></td>
-			<td class="job blackwizard" title="Black Wizard"></td>
+			<td class="job blackwizard right-bordered" title="Black Wizard"></td>
 			<td>None!</td>
 		</tr>
-		<tr class="bottom-borderd">
+		<tr class="odd bottom-borderd">
 			<td class="right-bordered">All</td>
 			<td><TriStateCheckBox DisableTooltip Id="partyForcedAll" @bind-Value="@AllForced" IsEnabled="@(Flags.EnablePoolParty != true)"></TriStateCheckBox></td>
 			<td><TriStateCheckBox DisableTooltip Id="partyFighterAll" @bind-Value="@AllFighter"></TriStateCheckBox></td>
@@ -40,20 +40,20 @@
 	<BSCollapse IsOpen=@(Flags.EnablePoolParty != true)>
 		<table>
 			<tr class="odd jobs" style="visibility: collapse;">
-				<td>Permitted Classes</td>
+				<td class="right-bordered">Permitted Classes</td>
 				<td>Forced?</td>
 				<td class="job fighter" title="Fighter"></td>
 				<td class="job thief" title="Thief"></td>
 				<td class="job blackbelt" title="Black Belt"></td>
 				<td class="job redmage" title="Red Mage"></td>
 				<td class="job whitemage" title="White Mage"></td>
-				<td class="job blackmage" title="Black Mage"></td>
+				<td class="job blackmage right-bordered" title="Black Mage"></td>
 				<td class="job knight" title="Knight"></td>
 				<td class="job ninja" title="Ninja"></td>
 				<td class="job master" title="Master"></td>
 				<td class="job redwizard" title="Red Wizard"></td>
 				<td class="job whitewizard" title="White Wizard"></td>
-				<td class="job blackwizard" title="Black Wizard"></td>
+				<td class="job blackwizard right-bordered" title="Black Wizard"></td>
 				<td>None!</td>
 			</tr>
 			<tr>
