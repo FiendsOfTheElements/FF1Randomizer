@@ -543,14 +543,6 @@ namespace FF1Lib
 				EnableEasyMode();
 			}
 
-			if ((bool)flags.HintsVillage || (bool)flags.HintsDungeon)
-			{
-				if ((bool)flags.HintsDungeon)
-					maps = SetDungeonNPC(maps, rng, (bool)flags.HintsRngDungeon);
-
-				NPCHints(rng, flags, overworldMap);
-			}
-
 			if (flags.HouseMPRestoration || flags.HousesFillHp)
 			{
 				FixHouse(flags.HouseMPRestoration, flags.HousesFillHp);
@@ -575,11 +567,6 @@ namespace FF1Lib
 			if ((bool)flags.RandomArmorBonus)
 			{
 				RandomArmorBonus(rng);
-			}
-
-			if ((bool)flags.ChangeMaxMP)
-			{
-				SetMPMax(flags.RedMageMaxMP, flags.WhiteMageMaxMP, flags.BlackMageMaxMP, flags.KnightNinjaMaxMP);
 			}
 
 			if (flags.WeaponBonuses)
@@ -671,6 +658,11 @@ namespace FF1Lib
 				PubReplaceClinic(rng, flags);
 			}
 
+			if ((bool)flags.ChangeMaxMP)
+			{
+				SetMPMax(flags.RedMageMaxMP, flags.WhiteMageMaxMP, flags.BlackMageMaxMP, flags.KnightNinjaMaxMP);
+			}
+
 			if ((bool)flags.ShuffleAstos)
 			{
 				ShuffleAstos(flags, rng);
@@ -697,6 +689,14 @@ namespace FF1Lib
 			}
 
 			SetProgressiveScaleMode(flags);
+
+			if ((bool)flags.HintsVillage || (bool)flags.HintsDungeon)
+			{
+				if ((bool)flags.HintsDungeon)
+					maps = SetDungeonNPC(maps, rng, (bool)flags.HintsRngDungeon);
+
+				NPCHints(rng, flags, overworldMap);
+			}
 
 			if (flags.DisableTentSaving)
 			{

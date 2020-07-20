@@ -34,7 +34,8 @@ namespace FF1Lib
 
 		public const int OldLevelUpDataOffset = 0x2D094; // this was moved to bank 1B
 		public const int NewLevelUpDataOffset = 0x6CDA9; // this was moved from bank 1B
-		public const int KnightNinjaMaxMPOffset = 0x6C907;
+		public const int oldKnightNinjaMaxMPOffset = 0x6C907;
+		public const int newKnightNinjaMaxMPOffset = 0x6D33C;
 
 		public const int ConfusedSpellIndexOffset = 0x3321E;
 		public const int FireSpellIndex = 4;
@@ -478,7 +479,7 @@ namespace FF1Lib
 			SetClassMaxMp(5, blackMageMaxMP);
 
 			//for now, before we change the asm for knight and ninja, the two will be tied together
-			Put(KnightNinjaMaxMPOffset, new byte[] { (byte)(knightNinjaMaxMp + 1)});
+			Put(newKnightNinjaMaxMPOffset, new byte[] { (byte)(knightNinjaMaxMp - 1)});
 		}
 
 		public void SetClassMaxMp(int classIndex, int maxMp)
