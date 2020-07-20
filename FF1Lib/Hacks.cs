@@ -240,8 +240,9 @@ namespace FF1Lib
 			PutInBank(0x0E, 0x95AE, Blob.FromHex("A203BCD095B900613006186906990061CA10EFE65660"));
 			PutInBank(0x0E, 0x95D0, Blob.FromHex("C0804000")); // lut used by the above code
 
-			// Change to level Up routine to not go over max MP
-			PutInBank(0x1B, 0x88E0, Blob.FromHex("AD8E68C906F008C907F004A908D002A903AAA001B182A028488AD184B005684A4C1089684A900948B184186901918468C8C030D0E3EAEAEAEAEAEAEA"));
+			// Change to level Up routine to not go over max MP and to allow gaining MP when random promotion is on, See 1B_9300_LvlUp_LevelUp.asm
+			PutInBank(0x1B, 0x88E0, Blob.FromHex("AD8E68C903903EC908F03AA001B182A0282000934C1C89"));
+			PutInBank(0x1B, 0x9300, Blob.FromHex("AD8E68C906F034C907F030A5828590A5838591A027B1868DAD6B18690191860EAD6BAD8E680AA8B9718A186DAD6B8582B9728A69008583A908D002A903AAA001B182A028488AD184B005684A4C5C93684A900948B184186901918468C8C030D0E3A5908582A591858360"));
 
 			// To allow all promoted classes
 			EnableTwelveClasses();
@@ -301,7 +302,7 @@ namespace FF1Lib
 			PutInBank(0x0E, 0x9D12, Blob.FromHex("9BA8B9AC320191AC2300"));
 
 			// Clinic_InitialText followed by ShouldSkipChar followed by "Hire a\n" text
-			PutInBank(0x0E, 0x9D58, Blob.FromHex("205BAAA0FFC8B9B09D991003D0F7A902991003C8A648BD0A9D69F0991003C8A905991003C8A9C5991003C8A900991003A9108D3E00A9038D3F004C32AAAD0D03D010BD0061C9FFD003A90160BD0161C90160BD0061C9FF6091AC23C1A40100"));
+			PutInBank(0x0E, 0x9D58, Blob.FromHex("205BAAA0FFC8B9B09D991003D0F7A902991003C8A648BD0A9D69F0991003C8A905991003C8A9C5991003C8A900991003A9108D3E00A9038D3F004C32AAAD0D03D010BD0061C9FFD003A90160BD0161C90160BD0061C9FF6091AC23FFA40100"));
 
 			// New routine to level up replaced character and zero some stuff, needs new level up stuff in bank 1B
 			PutInBank(0x0E, 0x9D34, Blob.FromHex("A99D48A94B48A98748A9A9488A182A2A2A8510A91B4C03FEA9008D24008D25008D012060"));
@@ -890,52 +891,6 @@ namespace FF1Lib
 					itemNames[0xF0 + i] = className[i] + " - " + className[promotions[i]];
 				WriteText(itemNames, FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextOffset);
 			}
-
-			// Update level up data to allow gain after 9th charge
-			var levelup_data = Get(0x6CDA9, 49 * 2 * 6);
-
-			for (int i = 3; i < 50; i += 2)
-			{
-				// RedMage
-				if (i > 22) levelup_data[(49 * 2) * 3 + (i - 2) * 2 + 1] |= 0x01; //6CF10
-				if (i > 41) levelup_data[(49 * 2) * 3 + (i - 2) * 2 + 1] |= 0b0000_0010;
-				if (i > 45)	levelup_data[(49 * 2) * 3 + (i - 2) * 2 + 1] |= 0b0000_0100;
-				if (i > 48)	levelup_data[(49 * 2) * 3 + (i - 2) * 2 + 1] |= 0b0000_1000;
-
-				// WhiteMage/BlackMage
-				if (i > 24)
-				{
-					levelup_data[(49 * 2) * 4 + (i - 2) * 2 + 1] |= 0b0000_0001;
-					levelup_data[(49 * 2) * 5 + (i - 2) * 2 + 1] |= 0b0000_0001;
-				}
-				if (i > 38)
-				{
-					levelup_data[(49 * 2) * 4 + (i - 2) * 2 + 1] |= 0b0000_0010;
-					levelup_data[(49 * 2) * 5 + (i - 2) * 2 + 1] |= 0b0000_0010;
-				}
-				if (i > 43)
-				{
-					levelup_data[(49 * 2) * 4 + (i - 2) * 2 + 1] |= 0b0000_0100;
-					levelup_data[(49 * 2) * 5 + (i - 2) * 2 + 1] |= 0b0000_0100;
-				}
-				if (i > 46)
-				{
-					levelup_data[(49 * 2) * 4 + (i - 2) * 2 + 1] |= 0b0000_1000;
-					levelup_data[(49 * 2) * 5 + (i - 2) * 2 + 1] |= 0b0000_1000;
-				}
-				if (i > 47)
-				{
-					levelup_data[(49 * 2) * 4 + (i - 2) * 2 + 1] |= 0b0001_0000;
-					levelup_data[(49 * 2) * 5 + (i - 2) * 2 + 1] |= 0b0001_0000;
-				}
-				if (i > 48)
-				{
-					levelup_data[(49 * 2) * 4 + (i - 2) * 2 + 1] |= 0b0010_0000;
-					levelup_data[(49 * 2) * 5 + (i - 2) * 2 + 1] |= 0b0010_0000;
-				}
-			}
-
-			Put(0x6CDA9, levelup_data);
 		}
 
 		public void EnablePoolParty(Flags flags, MT19337 rng)
