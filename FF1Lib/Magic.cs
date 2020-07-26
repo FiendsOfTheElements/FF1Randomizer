@@ -35,7 +35,7 @@ namespace FF1Lib
 		public const int OldLevelUpDataOffset = 0x2D094; // this was moved to bank 1B
 		public const int NewLevelUpDataOffset = 0x6CDA9; // this was moved from bank 1B
 		public const int oldKnightNinjaMaxMPOffset = 0x6C907;
-		public const int newKnightNinjaMaxMPOffset = 0x6D33C;
+		public const int newKnightNinjaMaxMPOffset = 0x6D344;
 
 		public const int ConfusedSpellIndexOffset = 0x3321E;
 		public const int FireSpellIndex = 4;
