@@ -302,7 +302,7 @@ namespace FF1Lib
 
 		public WorldWealthMode WorldWealth { get; set; } = WorldWealthMode.Normal;
 
-		public bool AllowStartAreaDanager { get; set; } = false;
+		public bool? AllowUnsafeStartArea { get; set; } = false;
 
 		public bool? MapCanalBridge => (NPCItems) | (NPCFetchItems) | MapOpenProgression | MapOpenProgressionExtended;
 		public bool? MapOnracDock => MapOpenProgressionDocks;
@@ -794,7 +794,7 @@ namespace FF1Lib
 			sum = AddNumeric(sum, Enum.GetValues(typeof(FormationShuffleMode)).Cast<int>().Max() + 1, (int)flags.FormationShuffleMode);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(MDEFGrowthMode)).Cast<int>().Max() + 1, (int)flags.MDefMode);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(WorldWealthMode)).Cast<int>().Max() + 1, (int)flags.WorldWealth);
-			sum = AddBoolean(sum, flags.AllowStartAreaDanager);
+			sum = AddTriState(sum, flags.AllowUnsafeStartArea);
 			sum = AddBoolean(sum, flags.TournamentSafe);
 			sum = AddBoolean(sum, flags.Spoilers);
 
@@ -809,7 +809,7 @@ namespace FF1Lib
 			{
 				Spoilers = GetBoolean(ref sum),
 				TournamentSafe = GetBoolean(ref sum),
-				AllowStartAreaDanager = GetBoolean(ref sum),
+				AllowUnsafeStartArea = GetTriState(ref sum),
 				WorldWealth = (WorldWealthMode)GetNumeric(ref sum, Enum.GetValues(typeof(WorldWealthMode)).Cast<int>().Max() + 1),
 				MDefMode = (MDEFGrowthMode)GetNumeric(ref sum, Enum.GetValues(typeof(MDEFGrowthMode)).Cast<int>().Max() + 1),
 				FormationShuffleMode = (FormationShuffleMode)GetNumeric(ref sum, Enum.GetValues(typeof(FormationShuffleMode)).Cast<int>().Max() + 1),

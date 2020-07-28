@@ -472,7 +472,7 @@ namespace FF1Lib
 						}
 					}
 				}
-			} while (!CheckEntranceSanity(shuffled, flags.AllowStartAreaDanager));
+			} while (!CheckEntranceSanity(shuffled, (bool)flags.AllowUnsafeStartArea));
 
 			if (flags.Spoilers || Debugger.IsAttached)
 			{
@@ -658,7 +658,7 @@ namespace FF1Lib
 			if (isSafe(OverworldTeleportIndex.MatoyasCave)) --dangerCount;
 			if (isSafe(OverworldTeleportIndex.Pravoka)) --dangerCount;
 
-			return coneria && starterLocation && titansConnections && (allowDanger || dangerCount <= 3);
+			return coneria && titansConnections && (allowDanger || (starterLocation && dangerCount <= 3));
 		}
 
 		public void Dump()

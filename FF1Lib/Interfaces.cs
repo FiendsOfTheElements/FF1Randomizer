@@ -112,7 +112,7 @@
 		bool? AllowDeepCastles { get; }
 		bool? DeepTownsPossible { get; }
 		bool? AllowDeepTowns { get; }
-		bool AllowStartAreaDanager { get; }
+		bool? AllowUnsafeStartArea { get; }
 	}
 	public interface IVictoryConditionFlags
 	{

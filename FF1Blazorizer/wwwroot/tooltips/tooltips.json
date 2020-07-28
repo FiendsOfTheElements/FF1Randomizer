@@ -100,6 +100,11 @@
 		"description": "Unsafe Pirates: Allows Pirates to be shuffled skills and spells. Left unchecked, Pirates will always have a script that directs them to only attack."
 	},
 	{
+		"Id": "allowUnsafeStartAreaCheckBox",
+		"title": "Allow Unsafe Start Area",
+		"description": "Entrance shuffle normally requires at least 3 safe locations amongst the Coneria Castle, Dwarf Cave, Temple of Fiends, Matoya's Cave, and Pravoka entrances. This flag removes that safety net."
+	},
+	{
 		"Id": "hintsVillage",
 		"title": "Hints from villagers",
 		"description": "In each town, a villager reveals the location of an item. The old men in Coneria, Pravoka, Melmond and Onrac, an Elf scholar in Elfland, Lukkanh in Crescent Lake, the Witch in Gaia and the Lefein villager on the left side (no Slab required)."

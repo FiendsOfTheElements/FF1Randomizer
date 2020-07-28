@@ -424,6 +424,16 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AllowUnsafePirates"));
 			}
 		}
+		public bool? AllowUnsafeStartArea
+		{
+			get => Flags.AllowUnsafeStartArea;
+			set
+			{
+				Flags.AllowUnsafeStartArea = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AllowUnsafeStartArea"));
+			}
+		}
+
 		public bool? EnemyTrapTiles
 		{
 			get => Flags.EnemyTrapTiles;
