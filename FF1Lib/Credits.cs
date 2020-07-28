@@ -371,7 +371,7 @@ namespace FF1Lib
 			Data[0x37873] = (byte)pages.Count;
 
 			Blob credits = PackageTextBlob(pages, 0xBB00);
-			System.Diagnostics.Debug.Assert(credits.Length <= 0x0100, "Credits too large: " + credits.Length);
+			System.Diagnostics.Debug.Assert(credits.Length <= 0x0200, "Credits too large: " + credits.Length);
 			Put(0x37B00, credits);
 		}
 
