@@ -1012,7 +1012,9 @@ namespace FF1Lib
 
 			while (hintedItems.Count < npcSelected.Count)
 			{
-				hintedItems.Add(incentivePool.PickRandom(rng));
+				var tempItem = incentivePool.PickRandom(rng);
+				if(generatedPlacement.Find(x => x.Item == tempItem) != null)
+					hintedItems.Add(tempItem);
 			}
 
 
