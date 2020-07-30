@@ -1466,6 +1466,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MenuColor"));
 			}
 		}
+		public bool ChangeLute
+		{
+			get => Preferences.ChangeLute;
+			set
+			{
+				Preferences.ChangeLute = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ChangeLute"));
+			}
+		}
 		public MapmanSlot MapmanSlot
 		{
 			get => Preferences.MapmanSlot;

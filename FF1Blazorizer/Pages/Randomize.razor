@@ -493,13 +493,14 @@
             <div class="is-dark nes-container">
                 <div class="row">
                     <p>Fun flags are not part of the standard flags string since they do not impact gameplay. The buttons at the bottom can be used to store your preferred fun % settings within your browser so that they will be automatically restored each time you visit the site.</p>
-                    <div class="col-md-6">
-                        <CheckBox UpdateToolTip="@UpdateToolTipID" Id="funEnemyNamesCheckBox" @bind-Checked="Flags.FunEnemyNames">Fun Enemy Names</CheckBox>
-                        <CheckBox UpdateToolTip="@UpdateToolTipID" Id="teamSteakCheckBox" @bind-Checked="Flags.TeamSteak">Team STEAK</CheckBox>
-                        <CheckBox UpdateToolTip="@UpdateToolTipID" Id="paletteSwapCheckBox" @bind-Checked="Flags.PaletteSwap">Palette Swap</CheckBox>
-                        <CheckBox UpdateToolTip="@UpdateToolTipID" Id="modernBattlefieldCheckBox" @bind-Checked="Flags.ModernBattlefield">Modern Battlefield</CheckBox>
-                        <CheckBox UpdateToolTip="@UpdateToolTipID" Id="thirdBattlePaletteCheckBox" @bind-Checked="Flags.ThirdBattlePalette">Three Battle Palettes</CheckBox>
-                    </div>
+					<div class="col-md-6">
+						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="funEnemyNamesCheckBox" @bind-Checked="Flags.FunEnemyNames">Fun Enemy Names</CheckBox>
+						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="teamSteakCheckBox" @bind-Checked="Flags.TeamSteak">Team STEAK</CheckBox>
+						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="changeLuteCheckBox" @bind-Checked="Flags.ChangeLute">Multi-instrumentalist Sara</CheckBox>
+						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="paletteSwapCheckBox" @bind-Checked="Flags.PaletteSwap">Palette Swap</CheckBox>
+						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="modernBattlefieldCheckBox" @bind-Checked="Flags.ModernBattlefield">Modern Battlefield</CheckBox>
+						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="thirdBattlePaletteCheckBox" @bind-Checked="Flags.ThirdBattlePalette">Three Battle Palettes</CheckBox>
+					</div>
 					<div class="col-md-6">
 						<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="partyMapmanSlot" TItem="MapmanSlot" @bind-Value="Flags.MapmanSlot">Mapman Slot</EnumDropDown>
 						<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="musicDropDown" TItem="MusicShuffle" @bind-Value="Flags.Music"></EnumDropDown>
