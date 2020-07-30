@@ -736,6 +736,11 @@ namespace FF1Lib
 				TeamSteak();
 			}
 
+			if (preferences.ChangeLute)
+			{
+				ChangeLute(rng);
+			}
+			
 			if (preferences.Music != MusicShuffle.None)
 			{
 				ShuffleMusic(preferences.Music, rng);
