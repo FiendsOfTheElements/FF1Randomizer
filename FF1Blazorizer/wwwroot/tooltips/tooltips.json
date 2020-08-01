@@ -1011,6 +1011,11 @@
 		"description": "Change Princess Sara's Lute to another instrument."
 	},
 	{
+		"Id": "earlierRubyCheckBox",
+		"title": "Earlier Ruby",
+		"description": "Adjust the Ruby's placement to earlier in the seed to increase the likelihood that negotiating the Titan's Tunnel is required for progression."
+	},
+	{
 		"Id": "LockMode",
 		"title": "Set Lock Hit Mode",
 		"description": "Allows control over LOCK and LOK2 chance to hit. 107 is about 20% vs chaos. 160 is about 50% vs chaos. Autohit will always hit."

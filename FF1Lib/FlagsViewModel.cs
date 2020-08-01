@@ -433,6 +433,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AllowUnsafeStartArea"));
 			}
 		}
+		public bool? EarlierRuby
+		{
+			get => Flags.EarlierRuby;
+			set
+			{
+				Flags.EarlierRuby = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EarlierRuby"));
+			}
+		}
 
 		public bool? EnemyTrapTiles
 		{

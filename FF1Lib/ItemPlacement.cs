@@ -645,6 +645,11 @@ namespace FF1Lib
 					List<Item> lastPlacements = new List<Item> { Item.Floater, Item.Lute, Item.Crown, Item.Crystal, Item.Herb, Item.Tnt, Item.Adamant,
 						Item.Slab, Item.Ruby, Item.Rod, Item.Chime, Item.Tail, Item.Cube, Item.Bottle, Item.Oxyale };
 
+					if ((bool)_flags.EarlierRuby) {
+						nextPlacements.Add(Item.Ruby);
+						lastPlacements.Remove(Item.Ruby);
+					}
+
 					nextPlacements.Shuffle(rng);
 					lastPlacements.Shuffle(rng);
 					var allPlacements = fixedPlacements.Concat(nextPlacements).Concat(lastPlacements);
