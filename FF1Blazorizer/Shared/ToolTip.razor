@@ -39,7 +39,7 @@
 	private double PosTop { get; set; } = 75;
 	private double PosLeft { get; set; } = 25;
 	private string css =>
-		$"left: {PosLeft}px; top: {PosTop}px; width: {Width}px; {Visible} {(Dragging ? "opacity: 0.8;" : "")}";
+		$"left: {PosLeft}px; top: {PosTop}px; width: {Width}px; {Visible}";
 
 	private bool Dragging = false;
 	private double LastX = 0;

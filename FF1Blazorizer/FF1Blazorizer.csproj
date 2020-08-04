@@ -28,6 +28,9 @@
 
 
 	<ItemGroup>
+		<Content Update="wwwroot\presets\2020coop.json">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
 		<Content Update="wwwroot\presets\beginner.json">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>

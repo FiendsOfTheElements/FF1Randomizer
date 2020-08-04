@@ -73,7 +73,8 @@ namespace FF1Lib
 		public bool? AllowDeepCastles { get; set; } = false;
 		public bool? AllowDeepTowns { get; set; } = false;
 		public bool? MapOpenProgressionExtended { get; set; } = false;
-
+		public bool? MapDwarvesNorthwest { get; set; } = false;
+		public bool? MapAirshipDock { get; set; } = false;
 		public bool? EntrancesIncludesDeadEnds { get; set; } = false;
 		public bool? EntrancesMixedWithTowns { get; set; } = false;
 
@@ -116,6 +117,7 @@ namespace FF1Lib
 		public bool? IncentivizeOffCastWeapon { get; set; } = false;
 		public bool IncentivizeOtherCastWeapon { get; set; } = false;
 
+		public bool? EarlyKing { get; set; } = false;
 		public bool? EarlySarda { get; set; } = false;
 		public bool? EarlySage { get; set; } = false;
 		public bool? EarlyOrdeals { get; set; } = false;
@@ -150,7 +152,6 @@ namespace FF1Lib
 		public bool BlackBeltAbsorb { get; set; } = false;
 		public bool NPCSwatter { get; set; } = false;
 		public bool InventoryAutosort { get; set; } = false;
-
 		public bool EnemyStatusAttackBug { get; set; } = false;
 		public bool EnemySpellsTargetingAllies { get; set; } = false;
 		public bool EnemyElementalResistancesBug { get; set; } = false;
@@ -201,6 +202,30 @@ namespace FF1Lib
 		public bool? WHITE_MAGE4 { get; set; } = false;
 		public bool? BLACK_MAGE4 { get; set; } = false;
 
+		public bool? KNIGHT1 { get; set; } = false;
+		public bool? KNIGHT2 { get; set; } = false;
+		public bool? KNIGHT3 { get; set; } = false;
+		public bool? KNIGHT4 { get; set; } = false;
+		public bool? NINJA1 { get; set; } = false;
+		public bool? NINJA2 { get; set; } = false;
+		public bool? NINJA3 { get; set; } = false;
+		public bool? NINJA4 { get; set; } = false;
+		public bool? MASTER1 { get; set; } = false;
+		public bool? MASTER2 { get; set; } = false;
+		public bool? MASTER3 { get; set; } = false;
+		public bool? MASTER4 { get; set; } = false;
+		public bool? RED_WIZ1 { get; set; } = false;
+		public bool? RED_WIZ2 { get; set; } = false;
+		public bool? RED_WIZ3 { get; set; } = false;
+		public bool? RED_WIZ4 { get; set; } = false;
+		public bool? WHITE_WIZ1 { get; set; } = false;
+		public bool? WHITE_WIZ2 { get; set; } = false;
+		public bool? WHITE_WIZ3 { get; set; } = false;
+		public bool? WHITE_WIZ4 { get; set; } = false;
+		public bool? BLACK_WIZ1 { get; set; } = false;
+		public bool? BLACK_WIZ2 { get; set; } = false;
+		public bool? BLACK_WIZ3 { get; set; } = false;
+		public bool? BLACK_WIZ4 { get; set; } = false;
 		public bool? NONE_CLASS2 { get; set; } = false;
 		public bool? NONE_CLASS3 { get; set; } = false;
 		public bool? NONE_CLASS4 { get; set; } = false;
@@ -244,6 +269,9 @@ namespace FF1Lib
 		public bool AllSpellLevelsForKnightNinja { get; set; } = false;
 		public bool BuffHealingSpells { get; set; } = false;
 		public bool? FreeTail { get; set; } = false;
+		public bool? HintsVillage { get; set; } = false;
+		public bool? HintsDungeon { get; set; } = false;
+		public bool? HintsRngDungeon { get; set; } = false;
 		public bool? SpellcrafterRetainPermissions { get; set; } = false;
 		public bool? RandomWeaponBonus { get; set; } = false;
 		public bool? RandomArmorBonus { get; set; } = false;
@@ -259,6 +287,7 @@ namespace FF1Lib
 		public bool? IncludePromClasses { get; set; } = false;
 		public bool? EnableRandomPromotions { get; set; } = false;
 		public bool? IncludeBaseClasses { get; set; } = false;
+		public bool? RandomPromotionsSpoilers { get; set; } = false;
 		public bool? ChangeMaxMP { get; set; } = false;
 		public int RedMageMaxMP { get; set; } = 9;
 		public int WhiteMageMaxMP { get; set; } = 9;
@@ -273,15 +302,17 @@ namespace FF1Lib
 
 		public WorldWealthMode WorldWealth { get; set; } = WorldWealthMode.Normal;
 
-		public bool AllowStartAreaDanager { get; set; } = false;
+		public bool? AllowUnsafeStartArea { get; set; } = false;
+
+		public bool? EarlierRuby { get; set; } = false;
 
 		public bool? MapCanalBridge => (NPCItems) | (NPCFetchItems) | MapOpenProgression | MapOpenProgressionExtended;
 		public bool? MapOnracDock => MapOpenProgressionDocks;
 		public bool? MapMirageDock => MapOpenProgressionDocks;
 		public bool? MapConeriaDwarves => MapOpenProgression;
 		public bool? MapVolcanoIceRiver => MapOpenProgression;
-		public bool? MapDwarvesNorthwest => MapOpenProgression & MapOpenProgressionExtended;
-		public bool? MapAirshipDock => MapOpenProgression & MapOpenProgressionExtended;
+		// public bool? MapDwarvesNorthwest => MapOpenProgression;
+		// public bool? MapAirshipDock => MapOpenProgression;
 
 		// The philosophy governing item incentivizations works something like this:
 		// 1. If the item is NOT being shuffled to another location it cannot be incentivized. (Duh)
@@ -512,7 +543,7 @@ namespace FF1Lib
 		public static string EncodeFlagsText(Flags flags)
 		{
 			BigInteger sum = 0;
-			sum = AddString(sum, FFRVersion.Sha.Length, FFRVersion.Sha);
+			sum = AddString(sum, 7, (FFRVersion.Sha.Length >= 7) ? FFRVersion.Sha.Substring(0,7) : FFRVersion.Sha.PadRight(7, 'X'));
 
 
 			sum = AddTriState(sum, flags.IncentivizeVorpal);
@@ -567,6 +598,8 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.AllowDeepCastles);
 			sum = AddTriState(sum, flags.AllowDeepTowns);
 			sum = AddTriState(sum, flags.MapOpenProgressionExtended);
+			sum = AddTriState(sum, flags.MapDwarvesNorthwest);
+			sum = AddTriState(sum, flags.MapAirshipDock);
 			sum = AddTriState(sum, flags.EntrancesIncludesDeadEnds);
 			sum = AddTriState(sum, flags.EntrancesMixedWithTowns);
 			sum = AddTriState(sum, flags.IncentivizeFreeNPCs);
@@ -598,6 +631,7 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.IncentivizeDefCastWeapon);
 			sum = AddTriState(sum, flags.IncentivizeOffCastWeapon);
 			sum = AddBoolean(sum, flags.IncentivizeOtherCastWeapon);
+			sum = AddTriState(sum, flags.EarlyKing);
 			sum = AddTriState(sum, flags.EarlySarda);
 			sum = AddTriState(sum, flags.EarlySage);
 			sum = AddTriState(sum, flags.EarlyOrdeals);
@@ -671,6 +705,30 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.RED_MAGE4);
 			sum = AddTriState(sum, flags.WHITE_MAGE4);
 			sum = AddTriState(sum, flags.BLACK_MAGE4);
+			sum = AddTriState(sum, flags.KNIGHT1);
+			sum = AddTriState(sum, flags.KNIGHT2);
+			sum = AddTriState(sum, flags.KNIGHT3);
+			sum = AddTriState(sum, flags.KNIGHT4);
+			sum = AddTriState(sum, flags.NINJA1);
+			sum = AddTriState(sum, flags.NINJA2);
+			sum = AddTriState(sum, flags.NINJA3);
+			sum = AddTriState(sum, flags.NINJA4);
+			sum = AddTriState(sum, flags.MASTER1);
+			sum = AddTriState(sum, flags.MASTER2);
+			sum = AddTriState(sum, flags.MASTER3);
+			sum = AddTriState(sum, flags.MASTER4);
+			sum = AddTriState(sum, flags.RED_WIZ1);
+			sum = AddTriState(sum, flags.RED_WIZ2);
+			sum = AddTriState(sum, flags.RED_WIZ3);
+			sum = AddTriState(sum, flags.RED_WIZ4);
+			sum = AddTriState(sum, flags.WHITE_WIZ1);
+			sum = AddTriState(sum, flags.WHITE_WIZ2);
+			sum = AddTriState(sum, flags.WHITE_WIZ3);
+			sum = AddTriState(sum, flags.WHITE_WIZ4);
+			sum = AddTriState(sum, flags.BLACK_WIZ1);
+			sum = AddTriState(sum, flags.BLACK_WIZ2);
+			sum = AddTriState(sum, flags.BLACK_WIZ3);
+			sum = AddTriState(sum, flags.BLACK_WIZ4);
 			sum = AddTriState(sum, flags.NONE_CLASS2);
 			sum = AddTriState(sum, flags.NONE_CLASS3);
 			sum = AddTriState(sum, flags.NONE_CLASS4);
@@ -710,6 +768,9 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.AllSpellLevelsForKnightNinja);
 			sum = AddBoolean(sum, flags.BuffHealingSpells);
 			sum = AddTriState(sum, flags.FreeTail);
+			sum = AddTriState(sum, flags.HintsVillage);
+			sum = AddTriState(sum, flags.HintsDungeon);
+			sum = AddTriState(sum, flags.HintsRngDungeon);
 			sum = AddTriState(sum, flags.SpellcrafterRetainPermissions);
 			sum = AddTriState(sum, flags.RandomWeaponBonus);
 			sum = AddTriState(sum, flags.RandomArmorBonus);
@@ -731,10 +792,12 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.IncludePromClasses);
 			sum = AddTriState(sum, flags.EnableRandomPromotions);
 			sum = AddTriState(sum, flags.IncludeBaseClasses);
+			sum = AddTriState(sum, flags.RandomPromotionsSpoilers);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(FormationShuffleMode)).Cast<int>().Max() + 1, (int)flags.FormationShuffleMode);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(MDEFGrowthMode)).Cast<int>().Max() + 1, (int)flags.MDefMode);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(WorldWealthMode)).Cast<int>().Max() + 1, (int)flags.WorldWealth);
-			sum = AddBoolean(sum, flags.AllowStartAreaDanager);
+			sum = AddTriState(sum, flags.AllowUnsafeStartArea);
+			sum = AddTriState(sum, flags.EarlierRuby);
 			sum = AddBoolean(sum, flags.TournamentSafe);
 			sum = AddBoolean(sum, flags.Spoilers);
 
@@ -749,10 +812,12 @@ namespace FF1Lib
 			{
 				Spoilers = GetBoolean(ref sum),
 				TournamentSafe = GetBoolean(ref sum),
-				AllowStartAreaDanager = GetBoolean(ref sum),
+				EarlierRuby = GetTriState(ref sum),
+				AllowUnsafeStartArea = GetTriState(ref sum),
 				WorldWealth = (WorldWealthMode)GetNumeric(ref sum, Enum.GetValues(typeof(WorldWealthMode)).Cast<int>().Max() + 1),
 				MDefMode = (MDEFGrowthMode)GetNumeric(ref sum, Enum.GetValues(typeof(MDEFGrowthMode)).Cast<int>().Max() + 1),
 				FormationShuffleMode = (FormationShuffleMode)GetNumeric(ref sum, Enum.GetValues(typeof(FormationShuffleMode)).Cast<int>().Max() + 1),
+				RandomPromotionsSpoilers = GetTriState(ref sum),
 				IncludeBaseClasses = GetTriState(ref sum),
 				EnableRandomPromotions = GetTriState(ref sum),
 				IncludePromClasses = GetTriState(ref sum),
@@ -774,6 +839,9 @@ namespace FF1Lib
 				RandomArmorBonus = GetTriState(ref sum),
 				RandomWeaponBonus = GetTriState(ref sum),
 				SpellcrafterRetainPermissions = GetTriState(ref sum),
+				HintsVillage = GetTriState(ref sum),
+				HintsDungeon = GetTriState(ref sum),
+				HintsRngDungeon = GetTriState(ref sum),
 				FreeTail = GetTriState(ref sum),
 				BuffHealingSpells = GetBoolean(ref sum),
 				AllSpellLevelsForKnightNinja = GetBoolean(ref sum),
@@ -813,6 +881,30 @@ namespace FF1Lib
 				NONE_CLASS4 = GetTriState(ref sum),
 				NONE_CLASS3 = GetTriState(ref sum),
 				NONE_CLASS2 = GetTriState(ref sum),
+				BLACK_WIZ4 = GetTriState(ref sum),
+				BLACK_WIZ3 = GetTriState(ref sum),
+				BLACK_WIZ2 = GetTriState(ref sum),
+				BLACK_WIZ1 = GetTriState(ref sum),
+				WHITE_WIZ4 = GetTriState(ref sum),
+				WHITE_WIZ3 = GetTriState(ref sum),
+				WHITE_WIZ2 = GetTriState(ref sum),
+				WHITE_WIZ1 = GetTriState(ref sum),
+				RED_WIZ4 = GetTriState(ref sum),
+				RED_WIZ3 = GetTriState(ref sum),
+				RED_WIZ2 = GetTriState(ref sum),
+				RED_WIZ1 = GetTriState(ref sum),
+				MASTER4 = GetTriState(ref sum),
+				MASTER3 = GetTriState(ref sum),
+				MASTER2 = GetTriState(ref sum),
+				MASTER1 = GetTriState(ref sum),
+				NINJA4 = GetTriState(ref sum),
+				NINJA3 = GetTriState(ref sum),
+				NINJA2 = GetTriState(ref sum),
+				NINJA1 = GetTriState(ref sum),
+				KNIGHT4 = GetTriState(ref sum),
+				KNIGHT3 = GetTriState(ref sum),
+				KNIGHT2 = GetTriState(ref sum),
+				KNIGHT1 = GetTriState(ref sum),
 				BLACK_MAGE4 = GetTriState(ref sum),
 				WHITE_MAGE4 = GetTriState(ref sum),
 				RED_MAGE4 = GetTriState(ref sum),
@@ -886,6 +978,7 @@ namespace FF1Lib
 				EarlyOrdeals = GetTriState(ref sum),
 				EarlySage = GetTriState(ref sum),
 				EarlySarda = GetTriState(ref sum),
+				EarlyKing = GetTriState(ref sum),
 				IncentivizeOtherCastWeapon = GetBoolean(ref sum),
 				IncentivizeOffCastWeapon = GetTriState(ref sum),
 				IncentivizeDefCastWeapon = GetTriState(ref sum),
@@ -917,6 +1010,8 @@ namespace FF1Lib
 				IncentivizeFreeNPCs = GetTriState(ref sum),
 				EntrancesMixedWithTowns = GetTriState(ref sum),
 				EntrancesIncludesDeadEnds = GetTriState(ref sum),
+				MapAirshipDock = GetTriState(ref sum),
+				MapDwarvesNorthwest = GetTriState(ref sum),
 				MapOpenProgressionExtended = GetTriState(ref sum),
 				AllowDeepTowns = GetTriState(ref sum),
 				AllowDeepCastles = GetTriState(ref sum),
@@ -970,8 +1065,8 @@ namespace FF1Lib
 				Shops = GetTriState(ref sum),
 				IncentivizeVorpal = GetTriState(ref sum),
 			};
-			string EncodedSha = GetString(ref sum, FFRVersion.Sha.Length);
-			if (FFRVersion.Sha != EncodedSha)
+			string EncodedSha = GetString(ref sum, 7);
+			if (((FFRVersion.Sha.Length >= 7) ? FFRVersion.Sha.Substring(0, 7) : FFRVersion.Sha.PadRight(7, 'X')) != EncodedSha)
 			{
 				throw new Exception("The encoded version does not match the expected version");
 			}

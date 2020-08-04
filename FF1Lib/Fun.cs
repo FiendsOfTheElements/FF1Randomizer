@@ -491,6 +491,36 @@ namespace FF1Lib
 			Data[0x7C7E2] = 0xA9;
 		}
 
+		public void ChangeLute(MT19337 rng)
+		{
+			var newInstruments = new List<string> {"BASS", "LYRE", "HARP", "VIOLA", "CELLO", "PIANO", "ORGAN", "FLUTE", "OBOE", "PICCOLO", "FLUTE", "WHISTLE", "HORN", "TRUMPET",
+				"BAGPIPE", "DRUM", "VIOLIN", "DBLBASS", "GUITAR", "BANJO", "FIDDLE", "MNDOLIN", "CLARNET", "BASSOON", "TROMBON", "TUBA", "BUGLE", "MARIMBA", "XYLOPHN","SNARE D",
+				"BASS D", "TMBRINE", "CYMBALS", "TRIANGL", "COWBELL", "GONG", "TRUMPET", "SAX", "TIMPANI", "B GRAND", "HURDY G", "FLUGEL", "SONG", "KAZOO", "FOGHORN", "AIRHORN",
+				"VUVUZLA", "OCARINA", "PANFLUT", "SITAR", "HRMNICA", "UKULELE", "THREMIN", "DITTY", "JINGLE", "LIMRICK", "POEM", "HAIKU", "OCTBASS", "HRPSCRD", "FLUBA", "AEOLUS",
+				"TESLA", "STLDRUM", "DGDRIDO", "WNDCHIM" };
+
+			var itemnames = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
+			var dialogs = ReadText(dialogsPointerOffset, dialogsPointerBase, dialogsPointerCount);
+
+			var newLute = newInstruments.PickRandom(rng);
+
+			var dialogsUpdate = new Dictionary<int, string>();
+			var princessDialogue = dialogs[0x06].Split(new string[] { "LUTE" }, System.StringSplitOptions.RemoveEmptyEntries);
+			var monkDialogue = dialogs[0x35].Split(new string[] { "LUTE" }, System.StringSplitOptions.RemoveEmptyEntries);
+			
+			if (princessDialogue.Length > 1)
+				dialogsUpdate.Add(0x06, princessDialogue[0] + newLute + princessDialogue[1]);
+
+			if (monkDialogue.Length > 1)
+				dialogsUpdate.Add(0x35, monkDialogue[0] + newLute + monkDialogue[1].Substring(0,14) + "\n" + monkDialogue[1].Substring(15, 10).Replace('\n',' '));
+
+			if (dialogsUpdate.Count > 0)
+				InsertDialogs(dialogsUpdate);
+
+			itemnames[(int)Item.Lute] = newLute;
+			WriteText(itemnames, ItemTextPointerOffset, ItemTextPointerBase, ItemTextOffset);
+		}
+
 	}
 
 }

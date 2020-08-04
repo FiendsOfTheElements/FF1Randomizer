@@ -21,7 +21,7 @@ namespace FF1Randomizer
 
 		public event PropertyChangedEventHandler PropertyChanged;
 
-		public string WindowTitle => $"FF1 Randomizer {FF1Rom.Version}";
+		public string WindowTitle => $"FF1 Randomizer {FFRVersion.Version}";
 
 		private string _filename;
 		public string Filename

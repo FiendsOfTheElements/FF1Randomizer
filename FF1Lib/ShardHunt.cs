@@ -59,6 +59,12 @@ namespace FF1Lib
 				System.Diagnostics.Debug.Assert(Data[address] == 0x35);
 				Data[address] = 0x31;
 			});
+			
+			// Fix for four NPCs checking for the Earth Orb in the wrong position (1 in Dwarf Cave, 3 in Melmond)
+			Data[MapObjOffset + 0x5D * MapObjSize] = 0x11;
+			Data[MapObjOffset + 0x6B * MapObjSize] = 0x11;
+			Data[MapObjOffset + 0x70 * MapObjSize] = 0x11;
+			Data[MapObjOffset + 0x74 * MapObjSize] = 0x11;
 
 			Data[0x7EF45] = 0x11; // Skip over orbs and shards when printing the item menu
 		}
@@ -125,7 +131,6 @@ namespace FF1Lib
 			}
 
 			string shardName = ShardNames.PickRandom(rng);
-			shardName = "EGG  ";
 
 			// Replace unused CANOE string and EarthOrb pointer with whatever we're calling the scavenged item.
 			Put(0x2B981, FF1Text.TextToBytes($"{shardName}  ", false, FF1Text.Delimiter.Null));
@@ -142,28 +147,32 @@ namespace FF1Lib
 			Put(0x3B87D, Blob.FromHex($"A9{ppu & 0xFF:X2}8511A9{(ppu & 0xFF00) >> 8:X2}8512A977A00048AD0220A5128D0620A51118692085118D0620900DAD0220E612A5128D0620A5118D062068A200CC3560D002A976C0{goal:X2}D001608D0720C8E8E006D0EB1890C1"));
 
 			// Black Orb Override to check for shards rather than ORBs.
-			Put(0x39502, Blob.FromHex($"AD3560C9{goal:X2}300CA0CA209690E67DE67DA51160A51260"));
+			PutInBank(0x0E, newTalk.Talk_BlackOrb[1] * 0x100 + newTalk.Talk_BlackOrb[0], Blob.FromHex($"AD3560C9{goal:X2}300CA0CA209690E67DE67DA51160A51260"));
 			Put(0x7CDB3, Blob.FromHex("08CE"));
 
 			// A little narrative overhaul.
 			Blob intro = FF1Text.TextToStory(new string[]
 			{
-				"The Easter Bunny's nest has", "",
-				"been ransacked!", "", "", "",
-				"The resulting EGGS were", "",
+				"The Time Loop has reopened!", "",
+				"The ORBS have been smashed!", "", "", "",
+				$"The resulting {shardName}S were", "",
 				"stolen and scattered around", "",
 				"the world to distract while", "",
 				"this new evil incubates....", "", "", "",
 				"But The Light Warriors return!", "",
-				$"They will need to find {goal}", "",
-				"EGGS to save Easter.", "",
+				$"They will need {goal} {shardName}S", "",
+				"to restore the BLACK ORB and", "",
+				"confront this new malevolence.",
 			});
 			System.Diagnostics.Debug.Assert(intro.Length <= 208);
 			Put(0x37F20, intro);
-			Put(0x289B2, FF1Text.TextToBytes($"The EGGS coalesce to\nrestore the BUNNY NEST.\n\nBrave Light Warriors....\nDestroy the Evil within!")); // Black Orb Text
-			Put(0x28CF8, FF1Text.TextToBytes($"Ah, the Light Warriors!\n\nSo you have collected\nthe EGGS and restored\nthe BUNNY NEST."));
-			Put(0x28D57, FF1Text.TextToBytes("Thus you've travelled\n2000 years into the past\nto try to stop me?\n\nStep forward then,\nto your peril!"));
-			Put(0x28DAF, FF1Text.TextToBytes("Oh, Light Warriors!\nSuch arrogant bravery.\n\nLet us see whom history\nremembers. En Garde!"));
+
+			InsertDialogs(new Dictionary<int, string>() {
+				{ 0x21, $"The {shardName}S coalesce to\nrestore the Black ORB.\n\nBrave Light Warriors....\nDestroy the Evil within!" }, // Black Orb Text
+				{ 0x2E, $"Ah, the Light Warriors!\n\nSo you have collected\nthe {shardName}S and restored\nthe BLACK ORB." },
+				{ 0x2F, "Thus you've travelled\n2000 years into the past\nto try to stop me?\n\nStep forward then,\nto your peril!" },
+				{ 0x30, "Oh, Light Warriors!\nSuch arrogant bravery.\n\nLet us see whom history\nremembers. En Garde!" },
+			});
 		}
 
 		public Item ShardHuntTreasureSelector(Item item)

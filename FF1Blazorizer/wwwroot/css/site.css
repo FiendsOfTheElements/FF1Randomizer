@@ -221,7 +221,11 @@ h1, h2, h4 {
 td {
     padding: 12px;
     text-align: center;
-    min-width: 96px;
+    min-width: 72px;
+}
+
+.right-bordered {
+    border-right: 1px solid white;
 }
 
 input[type=checkbox] {
@@ -235,7 +239,11 @@ select {
 }
 
 tr.odd {
-    background: rgba(0, 0, 0, 0.05);
+    background: rgba(0, 0, 0, 0.2);
+}
+
+tr.bottom-borderd {
+    border-bottom: 1px solid white;
 }
 
 .ffr-nav {
@@ -344,4 +352,62 @@ tr.odd {
 
 p {
     font-family: monospace;
+}
+
+.job {
+    background-size: 48px;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.jobs {
+    height: 72px;
+}
+
+.job.fighter {
+    background-image: url("/images/classes/fighter.png");   
+}
+
+.job.thief {
+    background-image: url("/images/classes/thief.png");
+}
+
+.job.blackbelt {
+    background-image: url("/images/classes/blackbelt.png");
+}
+
+.job.redmage {
+    background-image: url("/images/classes/redmage.png");
+}
+
+.job.whitemage {
+    background-image: url("/images/classes/whitemage.png");
+}
+
+.job.blackmage {
+    background-image: url("/images/classes/blackmage.png");
+}
+
+.job.knight {
+    background-image: url("/images/classes/knight.png");   
+}
+
+.job.ninja {
+    background-image: url("/images/classes/ninja.png");
+}
+
+.job.master {
+    background-image: url("/images/classes/master.png");
+}
+
+.job.redwizard {
+    background-image: url("/images/classes/redwizard.png");
+}
+
+.job.whitewizard {
+    background-image: url("/images/classes/whitewizard.png");
+}
+
+.job.blackwizard {
+    background-image: url("/images/classes/blackwizard.png");
 }

@@ -46,84 +46,17 @@ namespace FF1Lib
 		{
 			Put(CaravanFairyCheck, Enumerable.Repeat((byte)Nop, CaravanFairyCheckSize).ToArray());
 		}
-		// Required for npc quest item randomizing
-		// Doesn't substantially change anything if EnableNPCsGiveAnyItem isn't called
-		public void CleanupNPCRoutines()
-		{
-			// Have ElfDoc set his own flag instead of the prince's so that
-			// the prince can still set his own flag after giving a shuffled item
-			Data[0x39302] = (byte)ObjectId.ElfDoc;
-			Data[0x3931F] = (byte)ObjectId.ElfDoc;
 
-			// Convert Talk_ifcanoe into Talk_ifairship
-			Data[0x39534] = UnsramIndex.AirshipVis;
-			// Point Talk_ifairship person to old Talk_ifcanoe routine
-			Data[0x391B5] = 0x33;
-			Data[0x391B6] = 0x95;
-
-			// Then we move Talk_earthfire to Talk_norm to clear space for
-			// new item gift routine without overwriting Talk_chime
-			Data[0x391D3] = 0x92;
-			Data[0x391D4] = 0x94;
-
-			// Swap string pointer in index 2 and 3 for King, Bikke, Prince, and Lefein
-			var temp = Data[ItemLocations.KingConeria.Address];
-			Data[ItemLocations.KingConeria.Address] = Data[ItemLocations.KingConeria.Address - 1];
-			Data[ItemLocations.KingConeria.Address - 1] = temp;
-			temp = Data[ItemLocations.Bikke.Address];
-			Data[ItemLocations.Bikke.Address] = Data[ItemLocations.Bikke.Address - 1];
-			Data[ItemLocations.Bikke.Address - 1] = temp;
-			temp = Data[ItemLocations.ElfPrince.Address];
-			Data[ItemLocations.ElfPrince.Address] = Data[ItemLocations.ElfPrince.Address - 1];
-			Data[ItemLocations.ElfPrince.Address - 1] = temp;
-			temp = Data[ItemLocations.CanoeSage.Address - 1];
-			Data[ItemLocations.CanoeSage.Address - 1] = Data[ItemLocations.CanoeSage.Address - 2];
-			Data[ItemLocations.CanoeSage.Address - 2] = temp;
-			temp = Data[ItemLocations.Lefein.Address];
-			Data[ItemLocations.Lefein.Address] = Data[ItemLocations.Lefein.Address - 1];
-			Data[ItemLocations.Lefein.Address - 1] = temp;
-
-			// And do the same swap in the vanilla routines so those still work if needed
-			Data[0x392A7] = 0x12;
-			Data[0x392AA] = 0x13;
-			Data[0x392FC] = 0x13;
-			Data[0x392FF] = 0x12;
-			Data[0x39326] = 0x12;
-			Data[0x3932E] = 0x13;
-			Data[0x3959C] = 0x12;
-			Data[0x395A4] = 0x13;
-
-			// When getting jump address from lut_MapObjTalkJumpTbl (starting 0x3902B), store
-			// it in tmp+4 & tmp+5 (unused normally) instead of tmp+6 & tmp+7 so that tmp+6
-			// will still have the mapobj_id (allowing optimizations in TalkRoutines)
-			Data[0x39063] = 0x14;
-			Data[0x39068] = 0x15;
-			Data[0x3906A] = 0x14;
-			Data[0x39070] = 0x14;
-			Data[0x39075] = 0x15;
-			Data[0x39077] = 0x14;
-		}
 
 		public void EnableEarlySarda()
 		{
-			var nops = new byte[SardaSize];
-			for (int i = 0; i < nops.Length; i++)
-			{
-				nops[i] = Nop;
-			}
-
-			Put(SardaOffset, nops);
+			PutInBank(0x0E, 0x9580 + (int)ObjectId.Sarda, Blob.FromHex("00"));
 		}
 
 		public void EnableEarlySage()
 		{
-			var nops = new byte[CanoeSageSize];
-			for (int i = 0; i < nops.Length; i++)
-			{
-				nops[i] = Nop;
-			}
-
-			Put(CanoeSageOffset, nops);
+			PutInBank(0x0E, 0x9580 + (int)ObjectId.CanoeSage, Blob.FromHex("00"));
+			InsertDialogs(0x2B, "The FIENDS are waking.\nTake this and go defeat\nthem!\n\n\nReceived #.");
 		}
 
 		public void PartyRoulette()
@@ -147,22 +80,24 @@ namespace FF1Lib
 			RedMage = 3,
 			WhiteMage = 4,
 			BlackMage = 5,
-			None = 6,
+			Knight = 6,
+			Ninja = 7,
+			Master = 8,
+			RedWiz = 9,
+			WhiteWiz = 10,
+			BlackWiz = 11,
+			None = 12,
 		}
 
-		private readonly List<byte> AllowedClassBitmasks = new List<byte> {
-			/*   lut_ClassMask:
-             *       ;0=FI,1=TH,  BB,  RM,  WM,  BM, None
-             *   .byte $80, $40, $20, $10, $08, $04, $02
-			 */
-			          0x80,0x40,0x20,0x10,0x08,0x04,0x02};
+
+		private readonly List<byte> AllowedSlotBitmasks = new List<byte> { 0x01,0x02,0x04,0x08 };
 
 		private readonly List<FF1Class> DefaultChoices = Enumerable.Range(0, 6).Select(x => (FF1Class)x).ToList();
 
 		void UpdateCharacterFromOptions(int slotNumber, bool forced, IList<FF1Class> options, MT19337 rng)
 		{
 			const int lut_PtyGenBuf = 0x784AA;       // offset for party generation buffer LUT
-			const int lut_AllowedClasses = 0x78110;  // offset for allowed classes per slot LUT
+			const int lut_ClassPreferences = 0x78114;  // classes LUT
 
 			var i = slotNumber - 1;
 
@@ -176,7 +111,7 @@ namespace FF1Lib
 				else
 				{
 					forcedclass = (FF1Class)(Enum.GetValues(typeof(FF1Class))).
-						GetValue(rng.Between(0, slotNumber == 1 ? 5 : 6));
+						GetValue(rng.Between(0, slotNumber == 1 ? 11 : 12));
 				}
 				options.Clear();
 				options.Add(forcedclass);
@@ -185,18 +120,15 @@ namespace FF1Lib
 			// don't make any changes if there's nothing to do
 			if (!options.Any()) return;
 
-			byte allowedFlags = 0b0000_0000;
+			//byte allowedFlags = 0b0000_0000;
 			foreach (FF1Class option in options)
 			{
-				allowedFlags |= AllowedClassBitmasks[(int)option];
+				Data[lut_ClassPreferences + (((int)option == 12) ? 0 : (int)option + 1)] |= AllowedSlotBitmasks[i];
 			}
 
 			// set default member
 			var defaultclass = (forced || !DefaultChoices.SequenceEqual(options)) ? (int)options.PickRandom(rng) : slotNumber - 1;
-			Data[lut_PtyGenBuf + i * 0x10] = defaultclass == 6 ? (byte)0xFF : (byte)defaultclass;
-
-			// set allowed classes
-			Data[lut_AllowedClasses + i] = allowedFlags;
+			Data[lut_PtyGenBuf + i * 0x10] = defaultclass == 12 ? (byte)0xFF : (byte)defaultclass;
 
 			options.Clear();
 		}
@@ -205,6 +137,12 @@ namespace FF1Lib
 		{
 			var options = new List<FF1Class>();
 
+			// Set bitmask for each slots (AllowedSlotBitmasks)
+			PutInBank(0x1E, 0x8110, Blob.FromHex("01020408"));
+
+			// Zero out allowed classes lut since we're going to bitwise OR it
+			PutInBank(0x1E, 0x8114, Blob.FromHex("00000000000000000000000000"));
+
 			// Do each slot - so ugly!
 			if ((flags.FIGHTER1 ?? false)) options.Add(FF1Class.Fighter);
 			if ((flags.THIEF1 ?? false)) options.Add(FF1Class.Thief);
@@ -212,6 +150,12 @@ namespace FF1Lib
 			if ((flags.RED_MAGE1 ?? false)) options.Add(FF1Class.RedMage);
 			if ((flags.WHITE_MAGE1 ?? false)) options.Add(FF1Class.WhiteMage);
 			if ((flags.BLACK_MAGE1 ?? false)) options.Add(FF1Class.BlackMage);
+			if ((flags.KNIGHT1 ?? false)) options.Add(FF1Class.Knight);
+			if ((flags.NINJA1 ?? false)) options.Add(FF1Class.Ninja);
+			if ((flags.MASTER1 ?? false)) options.Add(FF1Class.Master);
+			if ((flags.RED_WIZ1 ?? false)) options.Add(FF1Class.RedWiz);
+			if ((flags.WHITE_WIZ1 ?? false)) options.Add(FF1Class.WhiteWiz);
+			if ((flags.BLACK_WIZ1 ?? false)) options.Add(FF1Class.BlackWiz);
 			UpdateCharacterFromOptions(1, (flags.FORCED1 ?? false), options, rng);
 
 			if ((flags.FIGHTER2 ?? false)) options.Add(FF1Class.Fighter);
@@ -221,6 +165,12 @@ namespace FF1Lib
 			if ((flags.WHITE_MAGE2 ?? false)) options.Add(FF1Class.WhiteMage);
 			if ((flags.BLACK_MAGE2 ?? false)) options.Add(FF1Class.BlackMage);
 			if ((flags.NONE_CLASS2 ?? false)) options.Add(FF1Class.None);
+			if ((flags.KNIGHT2 ?? false)) options.Add(FF1Class.Knight);
+			if ((flags.NINJA2 ?? false)) options.Add(FF1Class.Ninja);
+			if ((flags.MASTER2 ?? false)) options.Add(FF1Class.Master);
+			if ((flags.RED_WIZ2 ?? false)) options.Add(FF1Class.RedWiz);
+			if ((flags.WHITE_WIZ2 ?? false)) options.Add(FF1Class.WhiteWiz);
+			if ((flags.BLACK_WIZ2 ?? false)) options.Add(FF1Class.BlackWiz);
 			UpdateCharacterFromOptions(2, (flags.FORCED2 ?? false), options, rng);
 
 			if ((flags.FIGHTER3 ?? false)) options.Add(FF1Class.Fighter);
@@ -230,6 +180,12 @@ namespace FF1Lib
 			if ((flags.WHITE_MAGE3 ?? false)) options.Add(FF1Class.WhiteMage);
 			if ((flags.BLACK_MAGE3 ?? false)) options.Add(FF1Class.BlackMage);
 			if ((flags.NONE_CLASS3 ?? false)) options.Add(FF1Class.None);
+			if ((flags.KNIGHT3 ?? false)) options.Add(FF1Class.Knight);
+			if ((flags.NINJA3 ?? false)) options.Add(FF1Class.Ninja);
+			if ((flags.MASTER3 ?? false)) options.Add(FF1Class.Master);
+			if ((flags.RED_WIZ3 ?? false)) options.Add(FF1Class.RedWiz);
+			if ((flags.WHITE_WIZ3 ?? false)) options.Add(FF1Class.WhiteWiz);
+			if ((flags.BLACK_WIZ3 ?? false)) options.Add(FF1Class.BlackWiz);
 			UpdateCharacterFromOptions(3, (flags.FORCED3 ?? false), options, rng);
 
 			if ((flags.FIGHTER4 ?? false)) options.Add(FF1Class.Fighter);
@@ -239,6 +195,12 @@ namespace FF1Lib
 			if ((flags.WHITE_MAGE4 ?? false)) options.Add(FF1Class.WhiteMage);
 			if ((flags.BLACK_MAGE4 ?? false)) options.Add(FF1Class.BlackMage);
 			if ((flags.NONE_CLASS4 ?? false)) options.Add(FF1Class.None);
+			if ((flags.KNIGHT4 ?? false)) options.Add(FF1Class.Knight);
+			if ((flags.NINJA4 ?? false)) options.Add(FF1Class.Ninja);
+			if ((flags.MASTER4 ?? false)) options.Add(FF1Class.Master);
+			if ((flags.RED_WIZ4 ?? false)) options.Add(FF1Class.RedWiz);
+			if ((flags.WHITE_WIZ4 ?? false)) options.Add(FF1Class.WhiteWiz);
+			if ((flags.BLACK_WIZ4 ?? false)) options.Add(FF1Class.BlackWiz);
 			UpdateCharacterFromOptions(4, (flags.FORCED4 ?? false), options, rng);
 
 			// Load stats for None
@@ -277,6 +239,13 @@ namespace FF1Lib
 			// Rewrite class promotion to not promote NONEs, See 0E_95AE_DoClassChange.asm
 			PutInBank(0x0E, 0x95AE, Blob.FromHex("A203BCD095B900613006186906990061CA10EFE65660"));
 			PutInBank(0x0E, 0x95D0, Blob.FromHex("C0804000")); // lut used by the above code
+
+			// Change to level Up routine to not go over max MP and to allow gaining MP when random promotion is on, See 1B_9300_LvlUp_LevelUp.asm
+			PutInBank(0x1B, 0x88D7, Blob.FromHex("AD8E68C903903EC908F03AA001B182A0282000934C1C89"));
+			PutInBank(0x1B, 0x9300, Blob.FromHex("AD8E68C906F034C907F030A5828590A5838591A027B1868DAD6B18690191860EAD6BAD8E680AA8B9718A186DAD6B8582B9728A69008583A908D00AA5828590A5838591A903AAA001B182A028488AD184B005684A4C6493684A900948B184186901918468C8C030D0E3A5908582A591858360"));
+
+			// To allow all promoted classes
+			EnableTwelveClasses();
 		}
 
 		public void PubReplaceClinic(MT19337 rng, Flags flags)
@@ -333,7 +302,7 @@ namespace FF1Lib
 			PutInBank(0x0E, 0x9D12, Blob.FromHex("9BA8B9AC320191AC2300"));
 
 			// Clinic_InitialText followed by ShouldSkipChar followed by "Hire a\n" text
-			PutInBank(0x0E, 0x9D58, Blob.FromHex("205BAAA0FFC8B9B09D991003D0F7A902991003C8A648BD0A9D69F0991003C8A905991003C8A9C5991003C8A900991003A9108D3E00A9038D3F004C32AAAD0D03D010BD0061C9FFD003A90160BD0161C90160BD0061C9FF6091AC23C1A40100"));
+			PutInBank(0x0E, 0x9D58, Blob.FromHex("205BAAA0FFC8B9B09D991003D0F7A902991003C8A648BD0A9D69F0991003C8A905991003C8A9C5991003C8A900991003A9108D3E00A9038D3F004C32AAAD0D03D010BD0061C9FFD003A90160BD0161C90160BD0061C9FF6091AC23FFA40100"));
 
 			// New routine to level up replaced character and zero some stuff, needs new level up stuff in bank 1B
 			PutInBank(0x0E, 0x9D34, Blob.FromHex("A99D48A94B48A98748A9A9488A182A2A2A8510A91B4C03FEA9008D24008D25008D012060"));
@@ -434,6 +403,9 @@ namespace FF1Lib
 			MoveNpc(MapId.EarthCaveB3, 9, 0x09, 0x25, inRoom: false, stationary: false); // Earth Cave Bat B3
 			MoveNpc(MapId.EarthCaveB5, 1, 0x22, 0x34, inRoom: false, stationary: false); // Earth Cave Bat B5
 			MoveNpc(MapId.ConeriaCastle1F, 5, 0x07, 0x0F, inRoom: false, stationary: true); // Coneria Ghost Lady
+
+			MoveNpc(MapId.Pravoka, 4, 0x1F, 0x05, inRoom: false, stationary: true); // Pravoka Old Man
+			MoveNpc(MapId.Pravoka, 5, 0x08, 0x0E, inRoom: false, stationary: true); // Pravoka Woman
 		}
 
 		public void EnableConfusedOldMen(MT19337 rng)
@@ -450,7 +422,8 @@ namespace FF1Lib
 
 		public void EnableIdentifyTreasures()
 		{
-			Put(0x2B192, Blob.FromHex("C1010200000000"));
+			InsertDialogs(0xF1 + 0x50, "Can't hold\n#");
+			InsertDialogs(0xF1, "Can't hold\n#");
 		}
 
 		public void EnableDash()
@@ -481,46 +454,33 @@ namespace FF1Lib
 			Put(0x3A494, Blob.FromHex("201b9eb0e820999e20c2a8b0e0a562d0dc20ff9e9008a910205baa4c81a420089e9008a90c205baa4c81a420239fa913205baa4c81a4eaeaea"));
 		}
 
-		public void NewAstosRoutine(bool isNPCShuffle)
-		{
-			if (isNPCShuffle)
-			{
-				// Talk_Astos must jump to new Astos routine in bank 0E (we fill some of the space that was where party generation used to be)
-				PutInBank(0x0E, 0x9338, Blob.FromHex("4C459F"));
-				var newAstosRoutine = "EAEAEAAD2260F025A513F0212093DDB01E8467A5108D0E03A5118D0F03A416207F90207392A97D20C590A93A60A51160";
-				PutInBank(0x0E, 0x9F45, Blob.FromHex(newAstosRoutine));
-			}
-		}
-
 		public void EnableSaveOnDeath(Flags flags)
 		{
-			// this routine assumes NewAstosRoutine has been run (which is set to run on all seeds from now on)
 			// rewrite rando's GameOver routine to jump to a new section that will save the game data
 			PutInBank(0x1B, 0x801A, Blob.FromHex("4CF58F"));
 			// write new routine to save data at game over (the game will save when you clear the final textbox and not before)
+			PutInBank(0x1B, 0x8FF5, Blob.FromHex("20E38BA200BD0061C9FFF041BD0C619D0A61BD0D619D0B61BD28639D2063BD29639D2163BD2A639D2263BD2B639D2363BD2C639D2463BD2D639D2563BD2E639D2663BD2F639D2763A9009D01618A186940AAD0B1A56AC97FD006207B914CDC90C97ED01E207B91AD3F6229FE8D3F62AD406229FE8D4062AD416229FE8D41624CDC90C97DD009207B912090914CDC90C97CD006207B914CDC90C97AD006207B914CDC90C979D006207B914CDC90C978D006207B914CDC90C977D006207B914CDC90C956D006207B914CDC90C97BD018AD186209018D1862AD196229FE8D1962AD1A6229FE8D1A62AD0460D02EAD0060F04FAD0160CD0164D008AD0260CD0264F03FAD016038E9078D1060AD026038E9078D1160A9048D1460D026AD056038E9078D1060AD066038E9078D1160A9018D1460AD0060F00AA9988D0160A9A98D0260A200BD00609D0064BD00619D0065BD00629D0066BD00639D0067E8D0E5A9558DFE64A9AA8DFF64A9008DFD64A200187D00647D00657D00667D0067E8D0F149FF8DFD644C1D80A616BD0062090129FD9D0062600000000000000000A513186920C93CB00DAAC90CD004FE006060DE006060A513A467C96C901CAD1C6038ED0E038D1C60AD1D60ED0F038D1D60AD1E60E9008D1E6060C944B009BEE091A9009D006160BEF091A9009D00616018191A1B58595A5B98999A9BD8D9DADB1C1D1E1F5C5D5E5F9C9D9E9FDCDDDEDF"));
+
+			// Don't reset on WarMech fight if it isn't a NPC
+			if (flags.WarMECHMode != WarMECHMode.Required && flags.WarMECHMode != WarMECHMode.Patrolling)
+				PutInBank(0x1B, 0x90B6, Blob.FromHex("EAEAEAEAEAEAEAEAEAEA"));
+
+			// DWMode
 			if ((bool)flags.SaveGameDWMode)
-			{
-				PutInBank(0x1B, 0x8FF5, Blob.FromHex("20E38BA200BD0061C9FFF041BD0C619D0A61BD0D619D0B61BD28639D2063BD29639D2163BD2A639D2263BD2B639D2363BD2C639D2463BD2D639D2563BD2E639D2663BD2F639D2763A9009D01618A186940AAD0B1A56AC97FD0062049914CD290C97ED01E204991AD3F6229FE8D3F62AD406229FE8D4062AD416229FE8D41624CD290C97DD0092049912056914CD290C97CD0062049914CD290C97AD0062049914CD290C979D0062049914CD290C978D0062049914CD290C977D0062049914CD290C97BD018AD186209018D1862AD196229FE8D1962AD1A6229FE8D1A62AD0460F00AA9998D0560A9A58D0660AD0060F00AA9988D0160A9A98D0260A9928D1060A99E8D11604E1E606E1D606E1C60A200BD00609D0064BD00619D0065BD00629D0066BD00639D0067E8D0E5A9558DFE64A9AA8DFF64A9008DFD64A200187D00647D00657D00667D0067E8D0F149FF8DFD644C1D80A616BD0062090129FD9D006260A513186920C93CB00DAAC90CD004FE006060DE006060A513A467C96C901CAD1C6038ED0E038D1C60AD1D60ED0F038D1D60AD1E60E9008D1E6060C944B009BEA691A9009D006160BEB691A9009D00616018191A1B58595A5B98999A9BD8D9DADB1C1D1E1F5C5D5E5F9C9D9E9FDCDDDEDF"));
-			}
-			else
-				PutInBank(0x1B, 0x8FF5, Blob.FromHex("20E38BA200BD0061C9FFF041BD0C619D0A61BD0D619D0B61BD28639D2063BD29639D2163BD2A639D2263BD2B639D2363BD2C639D2463BD2D639D2563BD2E639D2663BD2F639D2763A9009D01618A186940AAD0B1A56AC97FD0062071914CD290C97ED01E207191AD3F6229FE8D3F62AD406229FE8D4062AD416229FE8D41624CD290C97DD009207191207E914CD290C97CD0062071914CD290C97AD0062071914CD290C979D0062071914CD290C978D0062071914CD290C977D0062071914CD290C97BD018AD186209018D1862AD196229FE8D1962AD1A6229FE8D1A62AD0460D02EAD0060F04FAD0160CD0164D008AD0260CD0264F03FAD016038E9078D1060AD026038E9078D1160A9048D1460D026AD056038E9078D1060AD066038E9078D1160A9018D1460AD0060F00AA9988D0160A9A98D0260A200BD00609D0064BD00619D0065BD00629D0066BD00639D0067E8D0E5A9558DFE64A9AA8DFF64A9008DFD64A200187D00647D00657D00667D0067E8D0F149FF8DFD644C1D80A616BD0062090129FD9D006260A513186920C93CB00DAAC90CD004FE006060DE006060A513A467C96C901CAD1C6038ED0E038D1C60AD1D60ED0F038D1D60AD1E60E9008D1E6060C944B009BECE91A9009D006160BEDE91A9009D00616018191A1B58595A5B98999A9BD8D9DADB1C1D1E1F5C5D5E5F9C9D9E9FDCDDDEDF"));
+				PutInBank(0x1B, 0x90DC, Blob.FromHex("AD0460F00AA9998D0560A9A58D0660AD0060F00AA9988D0160A9A98D0260A9928D1060A99E8D11604E1E606E1D606E1C60EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
 		}
 
 		public void ShuffleAstos(Flags flags, MT19337 rng)
 		{
-			// Assume NewAstosRoutine() is on
 			const int NpcTalkOffset = 0x390D3;
-			const int newTalk_Astos = 0x9F45;
 			const int newTalk_AstosBank = 0x0E;
 			const int NpcTalkSize = 2;
+			int Talk_Astos = newTalk.Talk_Astos[1] * 0x100 + newTalk.Talk_Astos[0];
 
 			// NPC pool to swap Astos with
 			List<ObjectId> npcpool = new List<ObjectId> { ObjectId.Astos, ObjectId.Bahamut, ObjectId.CanoeSage, ObjectId.CubeBot, ObjectId.ElfDoc,
 			ObjectId.Fairy, ObjectId.King, ObjectId.Matoya, ObjectId.Nerrick, ObjectId.Princess2, ObjectId.Smith,
 			ObjectId.Titan, ObjectId.Unne, ObjectId.Sarda, ObjectId.ElfPrince, ObjectId.Lefein };
-
-			var scriptStandardNPCItemTrade = Blob.FromHex("5693");
-			var scriptTalk_Astos = Blob.FromHex("3893");
 
 			// Select random npc
 			ObjectId newastos = npcpool.PickRandom(rng);
@@ -530,132 +490,90 @@ namespace FF1Lib
 
 			// If not get NPC talk routine, get NPC object
 			var talkscript = Get(NpcTalkOffset + (byte)newastos * NpcTalkSize, 2);
-			var talkvalue = Get(MapObjOffset + (byte)newastos * MapObjSize, 4);
 
-			// Switch astos to TalkScripts.StandardNPCItemTrade, set scriptvalue to crown Item.Crown;
-			Put(NpcTalkOffset + (byte)ObjectId.Astos * NpcTalkSize, scriptStandardNPCItemTrade);
-			Put(MapObjOffset + (byte)ObjectId.Astos * MapObjSize, Blob.FromHex("02")); // 0x02 = Crown
+			// Switch astos to Talk_GiveItemOnItem;
+			Put(NpcTalkOffset + (byte)ObjectId.Astos * NpcTalkSize, newTalk.Talk_GiveItemOnItem);
 
 			// Swtich NPC to Astos
-			Put(NpcTalkOffset + (byte)newastos * NpcTalkSize, scriptTalk_Astos);
+			Put(NpcTalkOffset + (byte)newastos * NpcTalkSize, newTalk.Talk_Astos);
 
-			// Change dialog a bit for non-item giving NPCs
-			Put(0x285EF + 18, Blob.FromHex("00"));
-
-			if (newastos == ObjectId.Titan)
+			// Custom dialogs for Astos NPC and the Kindly Old King
+			List<(byte, string)> astosdialogs = new List<(byte, string)>
 			{
-				// Check required item, don't try to give any item
-				PutInBank(newTalk_AstosBank, newTalk_Astos + 3, Blob.FromHex("AD2960F025EAEAEAEAEAEAEAEA"));
+				(0x00, ""),
+				(0x02, "You have ruined my plans\nto steal this #!\nThe princess will see\nthrough my disguise.\nTremble before the might\nof Astos, the Dark King!"),
+				(0x00, ""),(0x00, ""),(0x00, ""),
+				(0x0C, "You found the HERB?\nCurses! The Elf Prince\nmust never awaken.\nOnly then shall I,\nAstos, become\nthe King of ALL Elves!"),
+				(0x0E, "Is this a dream?.. Are\nyou, the LIGHT WARRIORS?\nHA! Thank you for waking\nme! I am actually Astos,\nKing of ALL Elves! You\nwon't take my #!"),
+				(0x12, "My CROWN! Oh, but it\ndoesn't go with this\noutfit at all. You keep\nit. But thanks! Here,\ntake this # also!"),
+				(0x14, "Oh, wonderful!\nNice work! Yes, this TNT\nis just what I need to\nblow open the vault.\nSoon more than\nthe # will\nbelong to Astos,\nKing of Dark Dwarves!"),
+				(0x16, "ADAMANT!! Now let me\nmake this #..\nAnd now that I have\nthis, you shall take a\nbeating from Astos,\nthe Dark Blacksmith!"),
+				(0x19, "You found my CRYSTAL and\nwant my #? Oh!\nI can see!! And now, you\nwill see the wrath of\nAstos, the Dark Witch!"),
+				(0x1C, "Finally! With this SLAB,\nI shall conquer Lefein\nand her secrets will\nbelong to Astos,\nthe Dark Scholar!"),
+				(0x00, ""),
+				(0x1E, "Can't you take a hint?\nI just want to be left\nalone with my #!\nI even paid a Titan to\nguard the path! Fine.\nNow you face Astos,\nKing of the Hermits!"),
+				(0x20, "Really, a rat TAIL?\nYou think this is what\nwould impress me?\nIf you want to prove\nyourself, face off with\nAstos, the Dark Dragon!"),
+				(0xCD, "Kupo?.. Lali ho?..\nMugu mugu?.. Fine! You\nare in the presence of\nAstos, the Dark Thief!\nI stole their #\nfair and square!"),
+				(0x00, ""),
+				(0x27, "Boop Beep Boop..\nError! Malfunction!..\nI see you are not\nfooled. It is I, Astos,\nKing of the Dark Robots!\nYou shall never have\nthis #!"),
+				(0x06, "This # has passed from\nQueen to Princess for\n2000 years. It would\nhave been mine if you\nhadn't rescued me! Now\nyou face Astos, the\nDark Queen!"),
+				(0x23, "I, Astos the Dark Fairy,\nam free! The other\nfairies trapped me in\nthat BOTTLE! I'd give\nyou this # in\nthanks, but I would\nrather just kill you."),
+				(0x2A, "If you want pass, give\nme the RUBY..\nHa, it mine! Now, you in\ntrouble. Me am Astos,\nKing of the Titans!"),
+				(0x2B, "Curses! Do you know how\nlong it took me to\ninfiltrate these grumpy\nold men and steal\nthe #?\nNow feel the wrath of\nAstos, the Dark Sage!")
+			};
 
-				// Change dialog
-				PutInBank(newTalk_AstosBank, newTalk_Astos + 42, Blob.FromHex("A912"));
+			InsertDialogs(astosdialogs[(int)newastos].Item1, astosdialogs[(int)newastos].Item2);
+			InsertDialogs(astosdialogs[(int)ObjectId.Astos].Item1, astosdialogs[(int)ObjectId.Astos].Item2);
+			
+			if (talkscript == newTalk.Talk_Titan || talkscript == newTalk.Talk_ElfDocUnne)
+			{
+				// Skip giving item for Titan, ElfDoc or Unne
+				PutInBank(newTalk_AstosBank, Talk_Astos + 13, Blob.FromHex("A4128414EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
 
 				// No need to restore item
 				if (flags.SaveGameWhenGameOver)
 					Put(0x6CFF5 + 0x89, Blob.FromHex("EAEAEA"));
 			}
-			else if (newastos == ObjectId.Bahamut)
+
+			if (talkscript == newTalk.Talk_GiveItemOnFlag)
+			{
+				// Check for a flag instead of an item
+				PutInBank(newTalk_AstosBank, Talk_Astos + 2, Blob.FromHex("B9")); 
+				PutInBank(newTalk_AstosBank, Talk_Astos + 7, Blob.FromHex("A820799090")); 
+			}
+
+			if (newastos == ObjectId.Bahamut)
 			{   // Change Talk_Astos to make it work with Bahamut, and also modify DoClassChange
 
 				// Change routine to check for Tail, give promotion and trigger the battle at the same time
 				var newroutine =
 					"AD2D60" +  // LDA item_tail - Load Tail
-					"F025" +    // BEQ @Default 
+					"F030" +    // BEQ @Default 
 					"A416" +    // LDY tmp+6 - Load this object instead of Astos
 					"207F90" +  // JSR SetEventFlag (207F90)
 					"207392" +  // JSR HideThisMapObject
 					"A97D" +    // LDA #BTL_ASTOS
 					"20C590" +  // JSR TalkBattle
 					"20AE95" +  // JSR DoClassChange
-					"A912" +    // LDA Astos dialog, A512 would be this npc dialog
+					"A512" +    // LDA Load dialog
 					"60";       // RTS
 
-				PutInBank(newTalk_AstosBank, newTalk_Astos + 3, Blob.FromHex(newroutine));
+				PutInBank(newTalk_AstosBank, Talk_Astos, Blob.FromHex(newroutine));
 
 				// DoClassChange reload the map to show the new class sprites, this break TalkBattle, so we stop it from reloading the map
 				// INC dlgflg_reentermap (E656) => NOPx2 (EAEA)
-				if ((bool)flags.EnablePoolParty || (bool)flags.EnableRandomPromotions)
-					PutInBank(0x0E, 0x95AE + 20, Blob.FromHex("EAEA"));
-				else   
-					PutInBank(0x0E, 0x95AE + 19, Blob.FromHex("EAEA"));
+				PutInBank(0x0E, 0x95AE + 20, Blob.FromHex("EAEA"));
 
 				// Modify GameOver routine for compatibility
 				if (flags.SaveGameWhenGameOver)
 				{
-					// Different changes if EnableTwelveClasses is activated
-					if ((bool)flags.EnablePoolParty || (bool)flags.EnableRandomPromotions)
+					Blob PromoteArray = Get(0x395AE, 12);
+					sbyte[] inversedPromoted = new sbyte[12];
+					for (int i = 0; i < 12; i++)
 					{
-						Blob PromoteArray = Get(0x395AE, 12);
-						sbyte[] inversedPromoted = new sbyte[12];
-						for (int i = 0; i < 12; i++)
-						{
-							inversedPromoted[PromoteArray[i]] = (sbyte)i;
-						}
-						PutInBank(0x1B, 0x8FF5 + 0x0189, Blob.FromHex("A200209391A240209391A280209391A2C020939160BC00613006B99F919D006160") + Blob.FromSBytes(inversedPromoted));
+						inversedPromoted[PromoteArray[i]] = (sbyte)i;
 					}
-					else
-						PutInBank(0x1B, 0x8FF5 + 0x0189, Blob.FromHex("A200209391A240209391A280209391A2C020939160BD0061300638E9069D006160"));
-				}
-			}
-			else if (newastos == ObjectId.Unne)
-			{
-				// Change required item to Slab, don't give any item
-				PutInBank(newTalk_AstosBank, newTalk_Astos + 3, Blob.FromHex("AD2860F025EAEAEAEAEAEAEAEA"));
-
-				// Change dialog
-				PutInBank(newTalk_AstosBank, newTalk_Astos + 42, Blob.FromHex("A912"));
-
-				// No need to restore item
-				if (flags.SaveGameWhenGameOver)
-					PutInBank(0x1B, 0x8FF5 + 0x89, Blob.FromHex("EAEAEA"));
-			}
-			else if (newastos == ObjectId.ElfDoc)
-			{
-				// Change required item to Herb, don't give any item
-				PutInBank(newTalk_AstosBank, newTalk_Astos + 3, Blob.FromHex("AD2460F025EAEAEAEAEAEAEAEA"));
-
-				// Change dialog
-				PutInBank(newTalk_AstosBank, newTalk_Astos + 42, Blob.FromHex("A912"));
-
-				// No need to restore item
-				if (flags.SaveGameWhenGameOver)
-					PutInBank(0x1B, 0x8FF5 + 0x89, Blob.FromHex("EAEAEA"));
-			}
-			else if (newastos == ObjectId.Lefein)
-			{
-				// Check if we speak Lefein
-				PutInBank(newTalk_AstosBank, newTalk_Astos, Blob.FromHex("A00B207990902618"));
-
-				// Change dialog
-				Put(MapObjOffset + (byte)ObjectId.Lefein * MapObjSize + 1, Blob.FromHex("D0"));
-			}
-			else if (newastos == ObjectId.ElfPrince)
-			{
-				// Check if we gave the herb                              
-				PutInBank(newTalk_AstosBank, newTalk_Astos, Blob.FromHex("A005207990902618"));
-
-				// Change dialog
-				Put(MapObjOffset + (byte)ObjectId.ElfPrince * MapObjSize + 1, Blob.FromHex("10"));
-			}
-			else if (newastos == ObjectId.Sarda && !(flags.EarlySarda ?? false))
-			{
-				// Check if we defeated the Vampire
-				PutInBank(newTalk_AstosBank, newTalk_Astos, Blob.FromHex("A00C209190B02618"));
-
-				// Change dialog
-				Put(MapObjOffset + (byte)ObjectId.Sarda * MapObjSize + 1, Blob.FromHex("81"));
-			}
-			else
-			{
-				if (talkscript == scriptStandardNPCItemTrade)
-				{
-					// Check required item
-					PutInBank(newTalk_AstosBank, newTalk_Astos + 4, Blob.FromSBytes(new sbyte[] { (sbyte)(talkvalue[0] + 32) }));
-				}
-				else
-				{
-					// Just skip item check, then we're set
-					PutInBank(newTalk_AstosBank, newTalk_Astos + 3, Blob.FromHex("EAEAEAEAEA"));
+					PutInBank(0x1B, 0x9190, Blob.FromHex("A200209391A240209391A280209391A2C020939160BC00613006B99F919D006160") + Blob.FromSBytes(inversedPromoted));
 				}
 			}
 		}
@@ -677,7 +595,7 @@ namespace FF1Lib
 
 		public void EasterEggs()
 		{
-			Put(0x2ADDE, Blob.FromHex("91251A682CC18EB1B74DB32505C1BE9296991E2F1AB6A4A9A8BE05C1C1C1C1C1C19B929900"));
+			Put(0x2ADDE, Blob.FromHex("91251A682CFF8EB1B74DB32505FFBE9296991E2F1AB6A4A9A8BE05FFFFFFFFFFFF9B929900"));
 		}
 
 		/// <summary>
@@ -685,7 +603,8 @@ namespace FF1Lib
 		/// </summary>
 		public void EnableEarlyKing()
 		{
-			Data[0x390D5] = 0xA1;
+			PutInBank(0x0E, 0x9580 + (int)ObjectId.King, Blob.FromHex("00"));
+			InsertDialogs(0x02, "To aid you on your\nquest, please take this.\n\n\n\nReceived #.");
 		}
 
 		public void EnableFreeBridge()
@@ -918,9 +837,7 @@ namespace FF1Lib
 		public void EnableTwelveClasses()
 		{
 			// Expand characters shown in party creation screen; set to 0C for all promoted classes
-			PutInBank(0x1E, 0x80F5, Blob.FromHex("06"));
-			// Add the classes to authorized classes lut
-			PutInBank(0x1E, 0x811B, Blob.FromHex("804020100804"));
+			PutInBank(0x1E, 0x80F5, Blob.FromHex("0C"));
 			// Reduce count to $10 in PtyGen_DrawChars because we only loaded one row of sprites
 			PutInBank(0x1E, 0x8373, Blob.FromHex("EA"));
 
@@ -931,13 +848,8 @@ namespace FF1Lib
 			PutInBank(0x1F, 0xEAD5, Blob.FromHex("20EBFE"));
 			PutInBank(0x1F, 0xFEEB, newfCHRLoad);
 
-			// Starting stats for promoted classes, same as base classes
-			Put(0x30A0, Get(0x3040, 0x0A));
-			Put(0x30B0, Get(0x3050, 0x0A));
-			Put(0x30C0, Get(0x3060, 0x0A));
-			Put(0x30D0, Get(0x3070, 0x0A));
-			Put(0x30E0, Get(0x3080, 0x0A));
-			Put(0x30F0, Get(0x3090, 0x0A));
+			// Update LoadStats routine added by PartyComp to load the right stats for promoted classes
+			PutInBank(0x00, 0xB380, Blob.FromHex("BD0061C9FFD013A9019D0161A9009D07619D08619D0961A93160C9069002E9060A0A0A0AA860"));
 
 			// Starting magic for promoted classes. Instead of checking for the class ID of the characters, we compare with the unused class ID in the starting stats array.
 			PutInBank(0x1F, 0xC7CA, Blob.FromHex("B940B0"));
@@ -951,8 +863,9 @@ namespace FF1Lib
 		public void EnableRandomPromotions(Flags flags, MT19337 rng)
 		{
 			// Need EnableTwelveClasses()
-			// Promotions list
+			// Promotions list & class names list
 			List<sbyte> promotions = new List<sbyte> { 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B };
+			List<string> className = new List<string> { "Fi", "Th", "BB", "RM", "WM", "BM", "Kn", "Ni", "Ma", "RW", "WW", "BW" };
 
 			// Include base classes
 			if (flags.IncludeBaseClasses ?? false)
@@ -969,6 +882,15 @@ namespace FF1Lib
 
 			// Insert randomized promotions
 			PutInBank(0x0E, 0x9DF0, Blob.FromSBytes(promotions.ToArray()));
+
+			// Change class names to spoil to what they randomly promote
+			if (flags.RandomPromotionsSpoilers ?? false)
+			{
+				var itemNames = ReadText(FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, 256);
+				for (int i = 0; i < 12; i++)
+					itemNames[0xF0 + i] = className[i] + " - " + className[promotions[i]];
+				WriteText(itemNames, FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextOffset);
+			}
 		}
 
 		public void EnablePoolParty(Flags flags, MT19337 rng)
@@ -1006,11 +928,36 @@ namespace FF1Lib
 				case PoolSize.Size8: size = 8; sizebyte = Blob.FromHex("FF"); break;
 			}
 
-			int class_span = 5;
-			if (flags.IncludePromClasses ?? false) class_span = 11;
+			List<sbyte> availableClasses = new List<sbyte>();
+
+			if ((flags.FIGHTER1 ?? false) && (flags.FIGHTER2 ?? false) && (flags.FIGHTER3 ?? false) && (flags.FIGHTER4 ?? false))
+				availableClasses.Add((sbyte)FF1Class.Fighter);
+			if ((flags.THIEF1 ?? false) && (flags.THIEF2 ?? false) && (flags.THIEF3 ?? false) && (flags.THIEF4 ?? false))
+				availableClasses.Add((sbyte)FF1Class.Thief);
+			if ((flags.BLACK_BELT1 ?? false) && (flags.BLACK_BELT2 ?? false) && (flags.BLACK_BELT3 ?? false) && (flags.BLACK_BELT4 ?? false))
+				availableClasses.Add((sbyte)FF1Class.BlackBelt);
+			if ((flags.RED_MAGE1 ?? false) && (flags.RED_MAGE2 ?? false) && (flags.RED_MAGE3 ?? false) && (flags.RED_MAGE4 ?? false))
+				availableClasses.Add((sbyte)FF1Class.RedMage);
+			if ((flags.WHITE_MAGE1 ?? false) && (flags.WHITE_MAGE2 ?? false) && (flags.WHITE_MAGE3 ?? false) && (flags.WHITE_MAGE4 ?? false))
+				availableClasses.Add((sbyte)FF1Class.WhiteMage);
+			if ((flags.BLACK_MAGE1 ?? false) && (flags.BLACK_MAGE2 ?? false) && (flags.BLACK_MAGE3 ?? false) && (flags.BLACK_MAGE4 ?? false))
+				availableClasses.Add((sbyte)FF1Class.BlackMage);
+			if ((flags.KNIGHT1 ?? false) && (flags.KNIGHT2 ?? false) && (flags.KNIGHT3 ?? false) && (flags.KNIGHT4 ?? false))
+				availableClasses.Add((sbyte)FF1Class.Knight);
+			if ((flags.NINJA1 ?? false) && (flags.NINJA2 ?? false) && (flags.NINJA3 ?? false) && (flags.NINJA4 ?? false))
+				availableClasses.Add((sbyte)FF1Class.Ninja);
+			if ((flags.MASTER1 ?? false) && (flags.MASTER2 ?? false) && (flags.MASTER3 ?? false) && (flags.MASTER4 ?? false))
+				availableClasses.Add((sbyte)FF1Class.Master);
+			if ((flags.RED_WIZ1 ?? false) && (flags.RED_WIZ2 ?? false) && (flags.RED_WIZ3 ?? false) && (flags.RED_WIZ4 ?? false))
+				availableClasses.Add((sbyte)FF1Class.RedWiz);
+			if ((flags.WHITE_WIZ1 ?? false) && (flags.WHITE_WIZ2 ?? false) && (flags.WHITE_WIZ3 ?? false) && (flags.WHITE_WIZ4 ?? false))
+				availableClasses.Add((sbyte)FF1Class.WhiteWiz);
+			if ((flags.BLACK_WIZ1 ?? false) && (flags.BLACK_WIZ2 ?? false) && (flags.BLACK_WIZ3 ?? false) && (flags.BLACK_WIZ4 ?? false))
+				availableClasses.Add((sbyte)FF1Class.BlackWiz);
+
 			Blob pool = Blob.FromHex("");
 			for (int i = 0; i < size; i++)
-				pool += Blob.FromSBytes(new List<sbyte> { (sbyte)Rng.Between(rng, 0, class_span) }.ToArray());
+				pool += Blob.FromSBytes(new List<sbyte> { availableClasses.PickRandom(rng) }.ToArray());
 
 			// Pool size : 4 0xF0; 5 0xF8; 6 0xFC; 7 0xFE; 8 0xFF)
 			PutInBank(0x1E, 0x8630, Blob.FromHex("00") + sizebyte + pool);

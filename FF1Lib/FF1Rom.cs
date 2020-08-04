@@ -105,6 +105,7 @@ namespace FF1Lib
 			FixEnemyPalettes(); // fixes a bug in the original game's programming that causes third enemy slot's palette to render incorrectly
 			FixWarpBug(); // The warp bug must be fixed for magic level shuffle and spellcrafter
 			SeparateUnrunnables();
+			UpdateDialogs();
 
 			flags = Flags.ConvertAllTriState(flags, rng);
 
@@ -278,7 +279,7 @@ namespace FF1Lib
 
 					if ((bool)flags.Treasures)
 					{
-						ShuffleTreasures(rng, flags, incentivesData, shopItemLocation, overworldMap, teleporters);
+						generatedPlacement = ShuffleTreasures(rng, flags, incentivesData, shopItemLocation, overworldMap, teleporters);
 					}
 					break;
 				}
@@ -317,9 +318,7 @@ namespace FF1Lib
 			}
 			*/
 
-			NewAstosRoutine((bool)flags.NPCItems || (bool)flags.NPCFetchItems);  // moves Talk_Astos to a new location so we can play with it, and also makes it so Astos will only give his item after you have defeated him and speak to him again
-																				 // we make this happen on all seeds for consistency with other features
-			if (flags.SaveGameWhenGameOver && ((bool)flags.NPCItems || (bool)flags.NPCFetchItems))
+			if (flags.SaveGameWhenGameOver)
 			{
 				EnableSaveOnDeath(flags);
 			}
@@ -445,13 +444,17 @@ namespace FF1Lib
 			{
 				EnableChaosRush();
 			}
+			if ((bool)flags.EarlyKing)
+			{
+				EnableEarlyKing();
+			}
 
-			if ((bool)flags.EarlySarda && !((bool)flags.NPCItems))
+			if ((bool)flags.EarlySarda)
 			{
 				EnableEarlySarda();
 			}
 
-			if ((bool)flags.EarlySage && !((bool)flags.NPCItems))
+			if ((bool)flags.EarlySage)
 			{
 				EnableEarlySage();
 			}
@@ -535,11 +538,6 @@ namespace FF1Lib
 				EnableNPCSwatter();
 			}
 
-			if (flags.InventoryAutosort)
-			{
-				EnableInventoryAutosort();
-			}
-
 			if (flags.EasyMode)
 			{
 				EnableEasyMode();
@@ -569,11 +567,6 @@ namespace FF1Lib
 			if ((bool)flags.RandomArmorBonus)
 			{
 				RandomArmorBonus(rng);
-			}
-
-			if ((bool)flags.ChangeMaxMP)
-			{
-				SetMPMax(flags.RedMageMaxMP, flags.WhiteMageMaxMP, flags.BlackMageMaxMP, flags.KnightNinjaMaxMP);
 			}
 
 			if (flags.WeaponBonuses)
@@ -665,20 +658,23 @@ namespace FF1Lib
 				PubReplaceClinic(rng, flags);
 			}
 
-			if ((bool)flags.ShuffleAstos && ((bool)flags.NPCItems || (bool)flags.NPCFetchItems))
+			if ((bool)flags.ChangeMaxMP)
+			{
+				SetMPMax(flags.RedMageMaxMP, flags.WhiteMageMaxMP, flags.BlackMageMaxMP, flags.KnightNinjaMaxMP);
+			}
+
+			if ((bool)flags.ShuffleAstos)
 			{
 				ShuffleAstos(flags, rng);
 			}
 
 			if ((bool)flags.EnablePoolParty)
 			{
-				EnableTwelveClasses();
 				EnablePoolParty(flags, rng);
 			}
 
 			if ((bool)flags.EnableRandomPromotions)
 			{
-				EnableTwelveClasses();
 				EnableRandomPromotions(flags, rng);
 			}
 
@@ -694,6 +690,14 @@ namespace FF1Lib
 
 			SetProgressiveScaleMode(flags);
 
+			if ((bool)flags.HintsVillage || (bool)flags.HintsDungeon)
+			{
+				if ((bool)flags.HintsDungeon)
+					maps = SetDungeonNPC(maps, rng, (bool)flags.HintsRngDungeon);
+
+				NPCHints(rng, flags, overworldMap);
+			}
+
 			if (flags.DisableTentSaving)
 			{
 				CannotSaveOnOverworld();
@@ -702,6 +706,11 @@ namespace FF1Lib
 			if (flags.DisableInnSaving)
 			{
 				CannotSaveAtInns();
+			}
+
+			if (flags.InventoryAutosort && !(preferences.RenounceAutosort))
+			{
+				EnableInventoryAutosort();
 			}
 
 			// We have to do "fun" stuff last because it alters the RNG state.
@@ -727,6 +736,11 @@ namespace FF1Lib
 				TeamSteak();
 			}
 
+			if (preferences.ChangeLute)
+			{
+				ChangeLute(rng);
+			}
+			
 			if (preferences.Music != MusicShuffle.None)
 			{
 				ShuffleMusic(preferences.Music, rng);
@@ -744,9 +758,9 @@ namespace FF1Lib
 		private void EnableNPCSwatter()
 		{
 			// Talk_norm is overwritten with unconditional jump to Talk_CoOGuy (say whatever then disappear)
-			PutInBank(0x0E, 0x9492, Blob.FromHex("4CA294"));
-			Put(MapObjJumpTableOffset + 0x16 * JumpTablePointerSize, Blob.FromHex("B894B894")); // overwrite map object jump table so that it calls "Talk_iftem"
-			Put(MapObjJumpTableOffset + 0x63 * JumpTablePointerSize, Blob.FromHex("B894")); // save the "hurray!" dwarf too!
+			PutInBank(0x0E, 0x9297, Blob.Concat(Blob.FromHex("4C"), newTalk.Talk_kill));
+			Put(MapObjJumpTableOffset + 0x16 * JumpTablePointerSize, Blob.FromHex("A792A792")); // overwrite map object jump table so that it calls "Talk_iftem"
+			Put(MapObjJumpTableOffset + 0x63 * JumpTablePointerSize, Blob.FromHex("A792")); // save the "hurray!" dwarf too!
 			Put(MapObjOffset + 0x16 * MapObjSize, Blob.FromHex("01FFFF0001FFFF00")); // and overwrite the data so that it prints message 0xFF regardless of whether you have the item or not
 			Put(MapObjOffset + 0x63 * MapObjSize, Blob.FromHex("01777700")); // Hurray!
 		}

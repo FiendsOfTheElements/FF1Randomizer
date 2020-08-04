@@ -105,7 +105,7 @@ namespace FF1Lib
 			{
 				PutInBank(0x0C, 0x93D4, Blob.FromHex("EAEA"));
 			}
-			PutInBank(0x0C, 0xA3E0, Blob.FromHex($"AD916D2903D0{(UnrunnableToWait ? "25" : "31")}ADAE6BD036")); // we dont want to be able to run if we get a first strike on an unrunnable
+			PutInBank(0x0C, 0xA3E0, Blob.FromHex($"AD916D2903D0{(UnrunnableToWait ? "25" : "36")}ADAE6BD036")); // we dont want to be able to run if we get a first strike on an unrunnable
 		}
 
 		public void MakeWarMECHUnrunnable()

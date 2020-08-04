@@ -24,10 +24,15 @@
 		"description": "This flag shuffles what spell is cast when using any of the castable items (Power Gauntlet, Bane Sword, ect.). The spell name will replace the name of the item for clarity, although icons will remain the same (or absent for Defense). Items that use the same icon cannot be differentiated except by equipping."
 	},
 	{
-		"Id": "mapOpenProgressionExtendedCheckBox",
+		"Id": "mapOpenProgressionDwavesNWCheckBox",
 		"title": "Extended Open Progression",
+		"description": "Remove the river tile between the Dwarf Cave and Northwest Castle so it can be traversed on foot."
+	},
+	{
+		"Id": "mapOpenProgressionFloaterDockCheckBox",
+		"title": "Ryukahn Desert Dock",
 		"screenshot": "mapOpenProgressionExtendedCheckBox.png",
-		"description": "Remove the river tile between the Dwarf Cave and Northwest Castle so it can be traversed on foot. Also add an additional dock near the Ryukhan desert."
+		"description": "Add an additional dock near the Ryukhan desert."
 	},
 	{
 		"Id": "magicLevelsCheckBox",
@@ -95,9 +100,29 @@
 		"description": "Unsafe Pirates: Allows Pirates to be shuffled skills and spells. Left unchecked, Pirates will always have a script that directs them to only attack."
 	},
 	{
+		"Id": "allowUnsafeStartAreaCheckBox",
+		"title": "Allow Unsafe Start Area",
+		"description": "Entrance shuffle normally requires at least 3 safe locations amongst the Coneria Castle, Dwarf Cave, Temple of Fiends, Matoya's Cave, and Pravoka entrances. This flag removes that safety net."
+	},
+	{
+		"Id": "hintsVillage",
+		"title": "Hints from villagers",
+		"description": "In each town, a villager reveals the location of an item. The old men in Coneria, Pravoka, Melmond and Onrac, an Elf scholar in Elfland, Lukkanh in Crescent Lake, the Witch in Gaia and the Lefein villager on the left side (no Slab required)."
+	},
+	{
+		"Id": "hintsDungeon",
+		"title": "Hints from dungeon explorers",
+		"description": "Five NPC in dungeons reveals the location of an item. Down the dead end of Marsh Cave B1, on Lich's floor in Earth Cave, in the hallway of Gurgu Volcano B3, in a room on the left of Sea Shrine B4 and in the South room of Sky Palace 3F."
+	},
+	{
+		"Id": "hintsRngDungeon",
+		"title": "Shuffled location in dungeon",
+		"description": "The NPCs could be at two other possible locations in each dungeon."
+	},
+	{
 		"Id": "EnablePoolParty",
-		"title": "Select Party From Pool of Random Characters",
-		"description": "This fills a pool with random characters, allowing duplicates, from which to form your party. Once a character is selected, it's removed from the pool. Cancelling your choice puts back the character in the pool."
+		"title": "Party Draft",
+		"description": "Draft your party from a pool of random characters. Allowed classes are selected from Party Composition, allowing duplicates. Once a character is selected, it's removed from the pool. Cancelling your choice puts back the character in the pool."
 	},
 	{
 		"Id": "PoolSizeDropDown",
@@ -118,6 +143,11 @@
 		"Id": "RPIncludeBaseClasses",
 		"title": "Include Base Classes",
 		"description": "Allow base classes as possible promotions."
+	},
+	{
+		"Id": "RPSpoilers",
+		"title": "Spoil Promotions",
+		"description": "Change class names to show class promotions.\nFormat: Current class - Promotion class."
 	},
 	{
 		"Id": "enemySkillsSpellsCheckBox",
@@ -637,6 +667,11 @@
 		"description": "Changes the map to allow walking from Corneria to Dwarf Cave, as well as connecting the Ice Cave and Volcano river systems, to allow passage from Pravoka to Crescent Lake with the CANOE."
 	},
 	{
+		"Id": "earlyKingCheckBox",
+		"title": "Early King Item",
+		"description": "The King of Coneria will give the party his item before the Princess is saved."
+	},
+	{
 		"Id": "earlySardaCheckBox",
 		"title": "Early Sarda Item",
 		"screenshot": "earlySardaCheckBox.png",
@@ -773,6 +808,11 @@
 		"Id": "inventoryAutosortCheckBox",
 		"title": "Inventory Autosort",
 		"description": "If enabled, HEAL, PURE, and SOFT potions are automatically moved to the first row of the item menu, followed by saving items on the second row, then all key items in your inventory."
+	},
+	{
+		"Id": "renounceAutosortCheckBox",
+		"title": "Renounce Autosort",
+		"description": "Forgo the Autosort Inventory feature if it's enabled."
 	},
 	{
 		"Id": "houseMPRestorationCheckBox",
@@ -964,6 +1004,16 @@
 		"Id": "KnightNinjaMaxMP",
 		"title": "Set Max Knight Ninja MP",
 		"description": "At the moment with the way the game is coded, knight's and ninja's max mp is determined together. This wont change when they get spells, it will still be at every odd level starting at 15."
+	},
+	{
+		"Id": "changeLuteCheckBox",
+		"title": "Multi-instrumentalist Sara",
+		"description": "Change Princess Sara's Lute to another instrument."
+	},
+	{
+		"Id": "earlierRubyCheckBox",
+		"title": "Earlier Ruby",
+		"description": "Adjust the Ruby's placement to earlier in the seed to increase the likelihood that negotiating the Titan's Tunnel is required for progression."
 	},
 	{
 		"Id": "LockMode",

@@ -9,6 +9,37 @@ namespace FF1Lib
 		// A fun list of initial victory pages. Classic mistranslations.
 		private static readonly List<string[]> VictoryMessages = new List<string[]>
 		{
+			new[] // Punchout
+			{
+				"GREAT FIGHTING!!",
+				"YOU WERE TOUGH,",
+				"WARRIORS!",
+				"",
+				"I'VE NEVER SEEN",
+				"SUCH FINGER",
+				"SPEED BEFORE.",
+			},
+			new [] // Contra
+			{
+				"CONGRATULATIONS!",
+				"YOU'VE DESTROYED",
+				"THE VILE CHAOS",
+				"AND SAVED THE",
+				"UNIVERSE.",
+				"",
+				"CONSIDER",
+				"YOURSELF HEROES.",
+			},
+			new [] // SMB
+			{
+				"",
+				"THANK YOU",
+				"LIGHT WARRIORS!",
+				"",
+				"BUT OUR PRINCESS",
+				"IS IN ANOTHER",
+				"TIMELINE!",
+			},
 			new [] // Snow Brothers
 			{
 				"",
@@ -313,7 +344,7 @@ namespace FF1Lib
 					"",
 					"  Contributors",
 					"",
-					" artea",
+					" artea, wildham",
 					" drcatdoctor",
 					" leggystarscream",
 					" nic0lette",
@@ -340,7 +371,7 @@ namespace FF1Lib
 			Data[0x37873] = (byte)pages.Count;
 
 			Blob credits = PackageTextBlob(pages, 0xBB00);
-			System.Diagnostics.Debug.Assert(credits.Length <= 0x0100, "Credits too large: " + credits.Length);
+			System.Diagnostics.Debug.Assert(credits.Length <= 0x0200, "Credits too large: " + credits.Length);
 			Put(0x37B00, credits);
 		}
 

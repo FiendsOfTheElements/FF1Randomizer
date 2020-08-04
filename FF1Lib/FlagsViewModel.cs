@@ -424,6 +424,25 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AllowUnsafePirates"));
 			}
 		}
+		public bool? AllowUnsafeStartArea
+		{
+			get => Flags.AllowUnsafeStartArea;
+			set
+			{
+				Flags.AllowUnsafeStartArea = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AllowUnsafeStartArea"));
+			}
+		}
+		public bool? EarlierRuby
+		{
+			get => Flags.EarlierRuby;
+			set
+			{
+				Flags.EarlierRuby = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EarlierRuby"));
+			}
+		}
+
 		public bool? EnemyTrapTiles
 		{
 			get => Flags.EnemyTrapTiles;
@@ -586,6 +605,24 @@ namespace FF1Lib
 			{
 				Flags.MapOpenProgressionExtended = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MapOpenProgressionExtended"));
+			}
+		}
+		public bool? MapDwarvesNorthwest
+		{
+			get => Flags.MapDwarvesNorthwest;
+			set
+			{
+				Flags.MapDwarvesNorthwest = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MapDwarvesNorthwest"));
+			}
+		}
+		public bool? MapAirshipDock
+		{
+			get => Flags.MapAirshipDock;
+			set
+			{
+				Flags.MapAirshipDock = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MapAirshipDock"));
 			}
 		}
 		public bool? Entrances
@@ -886,7 +923,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeShipAndCanal"));
 			}
 		}
-
+		public bool? EarlyKing
+		{
+			get => Flags.EarlyKing;
+			set
+			{
+				Flags.EarlyKing = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EarlyKing"));
+			}
+		}
 		public bool? EarlySarda
 		{
 			get => Flags.EarlySarda;
@@ -998,6 +1043,15 @@ namespace FF1Lib
 			{
 				Flags.InventoryAutosort = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("InventoryAutosort"));
+			}
+		}
+		public bool RenounceAutosort
+		{
+			get => Preferences.RenounceAutosort;
+			set
+			{
+				Preferences.RenounceAutosort = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RenouceAutosort"));
 			}
 		}
 		public bool NoPartyShuffle
@@ -1421,6 +1475,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MenuColor"));
 			}
 		}
+		public bool ChangeLute
+		{
+			get => Preferences.ChangeLute;
+			set
+			{
+				Preferences.ChangeLute = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ChangeLute"));
+			}
+		}
 		public MapmanSlot MapmanSlot
 		{
 			get => Preferences.MapmanSlot;
@@ -1718,6 +1781,222 @@ namespace FF1Lib
 			{
 				Flags.BLACK_MAGE4 = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BLACK_MAGE4"));
+			}
+		}
+		public bool? KNIGHT1
+		{
+			get => Flags.KNIGHT1;
+			set
+			{
+				Flags.KNIGHT1 = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("KNIGHT1"));
+			}
+		}
+		public bool? KNIGHT2
+		{
+			get => Flags.KNIGHT2;
+			set
+			{
+				Flags.KNIGHT2 = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("KNIGHT2"));
+			}
+		}
+		public bool? KNIGHT3
+		{
+			get => Flags.KNIGHT3;
+			set
+			{
+				Flags.KNIGHT3 = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("KNIGHT3"));
+			}
+		}
+		public bool? KNIGHT4
+		{
+			get => Flags.KNIGHT4;
+			set
+			{
+				Flags.KNIGHT4 = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("KNIGHT4"));
+			}
+		}
+		public bool? NINJA1
+		{
+			get => Flags.NINJA1;
+			set
+			{
+				Flags.NINJA1 = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NINJA1"));
+			}
+		}
+		public bool? NINJA2
+		{
+			get => Flags.NINJA2;
+			set
+			{
+				Flags.NINJA2 = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NINJA2"));
+			}
+		}
+		public bool? NINJA3
+		{
+			get => Flags.NINJA3;
+			set
+			{
+				Flags.NINJA3 = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NINJA3"));
+			}
+		}
+		public bool? NINJA4
+		{
+			get => Flags.NINJA4;
+			set
+			{
+				Flags.NINJA4 = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NINJA4"));
+			}
+		}
+		public bool? MASTER1
+		{
+			get => Flags.MASTER1;
+			set
+			{
+				Flags.MASTER1 = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MASTER1"));
+			}
+		}
+		public bool? MASTER2
+		{
+			get => Flags.MASTER2;
+			set
+			{
+				Flags.MASTER2 = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MASTER2"));
+			}
+		}
+		public bool? MASTER3
+		{
+			get => Flags.MASTER3;
+			set
+			{
+				Flags.MASTER3 = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MASTER3"));
+			}
+		}
+		public bool? MASTER4
+		{
+			get => Flags.MASTER4;
+			set
+			{
+				Flags.MASTER4 = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MASTER4"));
+			}
+		}
+		public bool? RED_WIZ1
+		{
+			get => Flags.RED_WIZ1;
+			set
+			{
+				Flags.RED_WIZ1 = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RED_WIZ1"));
+			}
+		}
+		public bool? RED_WIZ2
+		{
+			get => Flags.RED_WIZ2;
+			set
+			{
+				Flags.RED_WIZ2 = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RED_WIZ2"));
+			}
+		}
+		public bool? RED_WIZ3
+		{
+			get => Flags.RED_WIZ3;
+			set
+			{
+				Flags.RED_WIZ3 = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RED_WIZ3"));
+			}
+		}
+		public bool? RED_WIZ4
+		{
+			get => Flags.RED_WIZ4;
+			set
+			{
+				Flags.RED_WIZ4 = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RED_WIZ4"));
+			}
+		}
+		public bool? WHITE_WIZ1
+		{
+			get => Flags.WHITE_WIZ1;
+			set
+			{
+				Flags.WHITE_WIZ1 = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("WHITE_WIZ1"));
+			}
+		}
+		public bool? WHITE_WIZ2
+		{
+			get => Flags.WHITE_WIZ2;
+			set
+			{
+				Flags.WHITE_WIZ2 = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("WHITE_WIZ2"));
+			}
+		}
+		public bool? WHITE_WIZ3
+		{
+			get => Flags.WHITE_WIZ3;
+			set
+			{
+				Flags.WHITE_WIZ3 = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("WHITE_WIZ3"));
+			}
+		}
+		public bool? WHITE_WIZ4
+		{
+			get => Flags.WHITE_WIZ4;
+			set
+			{
+				Flags.WHITE_WIZ4 = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("WHITE_WIZ4"));
+			}
+		}
+		public bool? BLACK_WIZ1
+		{
+			get => Flags.BLACK_WIZ1;
+			set
+			{
+				Flags.BLACK_WIZ1 = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BLACK_WIZ1"));
+			}
+		}
+		public bool? BLACK_WIZ2
+		{
+			get => Flags.BLACK_WIZ2;
+			set
+			{
+				Flags.BLACK_WIZ2 = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BLACK_WIZ2"));
+			}
+		}
+		public bool? BLACK_WIZ3
+		{
+			get => Flags.BLACK_WIZ3;
+			set
+			{
+				Flags.BLACK_WIZ3 = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BLACK_WIZ3"));
+			}
+		}
+		public bool? BLACK_WIZ4
+		{
+			get => Flags.BLACK_WIZ4;
+			set
+			{
+				Flags.BLACK_WIZ4 = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BLACK_WIZ4"));
 			}
 		}
 		public bool? NONE_CLASS2
@@ -2041,6 +2320,33 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeTail"));
 			}
 		}
+		public bool? HintsVillage
+		{
+			get => Flags.HintsVillage;
+			set
+			{
+				Flags.HintsVillage = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("HintsVillage"));
+			}
+		}
+		public bool? HintsDungeon
+		{
+			get => Flags.HintsDungeon;
+			set
+			{
+				Flags.HintsDungeon = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("HintsDungeon"));
+			}
+		}
+		public bool? HintsRngDungeon
+		{
+			get => Flags.HintsRngDungeon;
+			set
+			{
+				Flags.HintsRngDungeon = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("HintsRngDungeon"));
+			}
+		}
 		public bool? SpellcrafterRetainPermissions
 		{
 			get => Flags.SpellcrafterRetainPermissions;
@@ -2244,6 +2550,15 @@ namespace FF1Lib
 			{
 				Flags.IncludeBaseClasses = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncludeBaseClasses"));
+			}
+		}
+		public bool? RandomPromotionsSpoilers
+		{
+			get => Flags.RandomPromotionsSpoilers;
+			set
+			{
+				Flags.RandomPromotionsSpoilers = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomPromotionsSpoilers"));
 			}
 		}
 

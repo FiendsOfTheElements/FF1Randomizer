@@ -233,8 +233,8 @@ namespace FF1Lib
 		Vampire = 12,
 		Sarda = 13,
 		Bahamut = 14,
-
-		WarMECH = 15, // This is for WarMECH NPC.  Unused in the original (seems to be a copy of BlackOrb).
+		Lefein = 15, // Move Up Lefein Guy. Unused in the original (seems to be a copy of BlackOrb).
+		WarMECH = 187, // This is for WarMECH NPC. Take the place of Lefein.
 
 		SubEngineer = 16,
 		CubeBot = 17,
@@ -260,9 +260,189 @@ namespace FF1Lib
 
 		EarthFirePerson = 128,
 
-		Lefein = 187,
+		BlackOrb = 202,
 
-		BlackOrb = 202
+
+		ConeriaCastle1FGuard1 = 32,
+		ConeriaCastle1FWoman1 = 34,
+		ConeriaCastle1FScholar = 35,
+		ConeriaCastle1FGuard2 = 37,
+		ConeriaCastle1FWoman2 = 38,
+		ConeriaCastle1FRoyal1 = 41,
+		ConeriaCastle1FRoyal2 = 42,
+		ConeriaCastle1FOldMan1 = 44,
+		ConeriaCastle1FOldMan2 = 46,
+
+		ConeriaCastle2FGuard1 = 43,
+		ConeriaCastle2FGuard2 = 48,
+
+		ConeriaGuard1 = 49,
+		ConeriaGuard2 = 50,
+		ConeriaOldMan = 52,
+		ConeriaDancer = 53,
+		ConeriaWoman1 = 54,
+		ConeriaOldWoman = 55,
+		ConeriaWoman2 = 56,
+		ConeriaMan = 57,
+
+		// Sky Warriors
+
+		PravokaMan1 = 63,
+		PravokaOldMan = 64,
+		PravokaWoman = 65,
+		PravokaPunk = 66,
+		PravokaMan2 = 67,
+
+		ElflandCastleElf1 = 69,
+		ElflandCastleElf2 = 70,
+		ElflandCastleElf3 = 71,
+		ElflandCastleScholar1 = 72,
+		ElflandCastleElf4 = 73,
+		ElflandCastleElf5 = 74,
+
+		ElflandElf1 = 77,
+		ElflandElf2 = 78,
+		ElflandElf3 = 79,
+		ElflandElf4 = 80,
+		ElflandElf5 = 81,
+		ElflandElf6 = 82,
+		ElflandScholar1 = 83,
+		ElflandScholar2 = 84,
+
+		// More Elf
+		// Bat
+
+		DwarfcaveDwarf1 = 88,
+		DwarfcaveDwarf2 = 89,
+		DwarfcaveDwarf3 = 90,
+		DwarfcaveDwarf4 = 91,
+		DwarfcaveDwarf5 = 92,
+		DwarfcaveDwarf6 = 93,
+		DwarfcaveDwarf7 = 94,
+		DwarfcaveDwarf8 = 95,
+		DwarfcaveDwarf9 = 96,
+		DwarfcaveDwarf10 = 97,
+		DwarfcaveDwarfHurray = 99,
+
+		MatoyaBroom1 = 100,
+		MatoyaBroom2 = 101,
+		MatoyaBroom3 = 102,
+		MatoyaBroom4 = 103,
+
+		MelmondMan1 = 104,
+		MelmondMan2 = 105,
+		MelmondMan3 = 106,
+		MelmondOldMan1 = 107,
+		MelmondMan4 = 108,
+		MelmondMan5 = 109,
+		MelmondOldMan2 = 110,
+		MelmondMan6 = 111,
+		MelmondMan7 = 112,
+		MelmondMan8 = 113,
+		MelmondWoman1 = 114,
+		MelmondWoman2 = 115,
+		MelmondDwarf = 116,
+
+		Unused1 = 118,
+		// 117,118 What?
+
+		CrescentSage1 = 119,
+		CrescentSage2 = 120,
+		CrescentSage3 = 121,
+		CrescentSage4 = 122,
+		CrescentSage5 = 123,
+		CrescentSage6 = 124,
+		CrescentSage7 = 125,
+		CrescentSage8 = 126,
+		CrescentSage9 = 127,
+		CrescentSage10 = 128,
+		CrescentMan = 129,
+		CrescentSage11 = 130,
+		CrescentWoman = 131,
+
+		CastleOrdealsOldMan = 132,
+
+		CardiaDragon1 = 133,
+		CardiaDragon2 = 134,
+		CardiaDragon3 = 135,
+		CardiaDragon4 = 136,
+		CardiaDragon5 = 137,
+		CardiaDragon6 = 138,
+		CardiaDragon7 = 139,
+		CardiaDragon8 = 140,
+		CardiaDragon9 = 141,
+		CardiaDragon10 = 142,
+		CardiaDragon11 = 143,
+		CardiaDragon12 = 144,
+
+		Tomb = 145,
+		Well = 146,
+
+		OnracWoman1 = 147,
+		OnracScholar = 148,
+		OnracGuard = 149,
+		OnracWitch = 150,
+		OnracDancer = 151,
+		OnracPunk1 = 152,
+		OnracOldMan1 = 153,
+		OnracOldMan2 = 154,
+		OnracDragon = 155,
+		OnracPirate = 156,
+		OnracPunk2 = 157,
+		OnracWoman2 = 158,
+		OnracMan1 = 159,
+		OnracMan2 = 160,
+
+		SwordSample = 161,
+		BadCubeBot = 162,
+
+		Mermaid1 = 163,
+		Mermaid2 = 164,
+		Mermaid3 = 165,
+		Mermaid4 = 166,
+		Mermaid5 = 167,
+		Mermaid6 = 168,
+		Mermaid7 = 169,
+		Mermaid8 = 170,
+		Mermaid9 = 171,
+		Mermaid10 = 172,
+
+		LockedDoor = 173,
+
+		GaiaMan1 = 174,
+		GaiaScholar1 = 175,
+		GaiaScholar2 = 176,
+		GaiaWoman = 177,
+		GaiaDancer = 178,
+		GaiaScholar3 = 179,
+		GaiaMan2 = 180,
+		GaiaMan3 = 181,
+		GaiaPirate = 182,
+		GaiaMan4 = 183,
+		GaiaBroom = 184,
+		GaiaWitch = 185,
+		GaiaOldWoman = 186,
+
+		// LefeinChime
+
+		LefeinMan1 = 188,
+		LefeinMan2 = 189,
+		LefeinMan3 = 190,
+		LefeinMan4 = 191,
+		LefeinMan5 = 192,
+		LefeinMan6 = 193,
+		LefeinMan7 = 194,
+		LefeinMan8 = 195,
+		LefeinMan9 = 196,
+		LefeinMan10 = 197,
+		LefeinMan11 = 198,
+		LefeinMan12 = 200,
+		LefeinMan13 = 201,
+
+		MirageRobot1 = 204,
+		MirageRobot2 = 205,
+		MirageRobot3 = 206,
+		SkyRobot = 207,
 	}
 	[Flags]
 	public enum MapChange
