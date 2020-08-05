@@ -150,6 +150,16 @@
 		"description": "Change class names to show class promotions.\nFormat: Current class - Promotion class."
 	},
 	{
+		"Id": "RandomizeClassCheckBox",
+		"title": "Blursed Classes",
+		"description": "Give 2 bonus and 1 malus at random to each class. Press Select at Party selection screen and A at Status screen to reveal the modifiers."
+	},
+	{
+		"Id": "RandomizeClassChaosCheckBox",
+		"title": "Chaos Mode",
+		"description": "Shuffle Stats, Spellcasting and Equipment permissions between all classes."
+	},
+	{
 		"Id": "enemySkillsSpellsCheckBox",
 		"title": "Enemy Skills/Spells",
 		"screenshot": "enemySkillsSpellsCheckBox.png",

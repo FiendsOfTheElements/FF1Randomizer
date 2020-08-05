@@ -267,13 +267,12 @@
         <button type="button" class="@(TabClasses("Scale"))" @onclick="@(() => ActivateTab("Scale"))">Scale</button>
         <BSCollapse IsOpen="@(activeTabs.Contains("Scale"))">
 			<div class="is-dark nes-container">
-
 				<ClampedSlider Min="1" Max="5" Step="0.1" UpdateToolTip="@UpdateToolTipID" Id="clampMinimumPriceScaleLable" @bind-Clamp="Flags.ClampMinimumPriceScale" @bind-Scale="Flags.PriceScaleFactor">Prices:</ClampedSlider>
 				<DoubleSlider Id="enemyStatsDoubleSlider" MinValue="20" MaxValue="500" @bind-ValueHigh="Flags.EnemyScaleStatsHigh" @bind-ValueLow="Flags.EnemyScaleStatsLow" @bind-Clamp="Flags.ClampEnemies">Enemy Stats:</DoubleSlider>
 				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="separateEnemyHPScalingCheckBox" @bind-Value="Flags.SeparateEnemyHPScaling">Separate Enemy HP Scaling</TriStateCheckBox>
 				<DoubleSlider Id="enemyHpDoubleSlider" Indent IsEnabled="Flags.SeparateEnemyHPScaling" MinValue="20" MaxValue="500" @bind-ValueHigh="Flags.EnemyScaleHpHigh" @bind-ValueLow="Flags.EnemyScaleHpLow" @bind-Clamp="Flags.ClampEnemyHpScaling">Enemy Hp:</DoubleSlider>
 
-                <DoubleSlider Id="bossStatsDoubleSlider" MinValue="20" MaxValue="500" @bind-ValueHigh="Flags.BossScaleStatsHigh" @bind-ValueLow="Flags.BossScaleStatsLow" @bind-Clamp="Flags.ClampMinimumBossStatScale">Boss Stats:</DoubleSlider>
+				<DoubleSlider Id="bossStatsDoubleSlider" MinValue="20" MaxValue="500" @bind-ValueHigh="Flags.BossScaleStatsHigh" @bind-ValueLow="Flags.BossScaleStatsLow" @bind-Clamp="Flags.ClampMinimumBossStatScale">Boss Stats:</DoubleSlider>
 				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="separateBossHPScalingCheckBox" @bind-Value="Flags.SeparateBossHPScaling">Separate Boss HP Scaling</TriStateCheckBox>
 				<DoubleSlider Id="bossHpDoubleSlider" Indent IsEnabled="Flags.SeparateBossHPScaling" MinValue="20" MaxValue="500" @bind-ValueHigh="Flags.BossScaleHpHigh" @bind-ValueLow="Flags.BossScaleHpLow" @bind-Clamp="Flags.ClampBossHPScaling">Boss Hp:</DoubleSlider>
 
@@ -346,7 +345,7 @@
 			<div class="is-dark nes-container">
 				<PartyCompositionClasses Flags="@Flags" />
 				<br />
-				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="EnablePoolParty" @bind-Value="Flags.EnablePoolParty">Party Draft</TriStateCheckBox>
+				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="EnablePoolParty" IsEnabled="@(!Flags.RandomizeClass)" @bind-Value="Flags.EnablePoolParty">Party Draft</TriStateCheckBox>
 				<EnumDropDown UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnablePoolParty" Id="PoolSizeDropDown" TItem="PoolSize" @bind-Value="Flags.PoolSize">Pool Size :</EnumDropDown>
                 <br />
 				<h4>Tavern Recruitment</h4>
@@ -479,7 +478,9 @@
 						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="EnableRandomPromotions" @bind-Value="Flags.EnableRandomPromotions">Random Classes at Class Change</TriStateCheckBox>
 						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnableRandomPromotions" Id="RPIncludeBaseClasses" @bind-Value="Flags.IncludeBaseClasses">Include Base Classes</TriStateCheckBox>
 						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnableRandomPromotions" Id="RPSpoilers" @bind-Value="Flags.RandomPromotionsSpoilers">Spoil Promotions</TriStateCheckBox>
-                        <div class="checkbox-cell"></div>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(!Flags.EnablePoolParty)" Id="RandomizeClassCheckBox" @bind-Value="Flags.RandomizeClass">Blursed Classes</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.RandomizeClass" Id="RandomizeClassChaosCheckBox" @bind-Value="Flags.RandomizeClassChaos">Chaos Mode</TriStateCheckBox>
+						<div class="checkbox-cell"></div>
 						<p>Item location hints</p>
 						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.Treasures" Id="hintsVillage" @bind-Value="Flags.HintsVillage">Hint givers in villages</TriStateCheckBox>
 						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.Treasures" Id="hintsDungeon" @bind-Value="Flags.HintsDungeon">Hint givers in dungeons</TriStateCheckBox>
