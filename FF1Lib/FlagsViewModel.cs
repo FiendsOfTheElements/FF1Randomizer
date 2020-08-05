@@ -2561,7 +2561,24 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomPromotionsSpoilers"));
 			}
 		}
-
+		public bool? RandomizeClass
+		{
+			get => Flags.RandomizeClass;
+			set
+			{
+				Flags.RandomizeClass = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomizeClass"));
+			}
+		}
+		public bool? RandomizeClassChaos
+		{
+			get => Flags.RandomizeClassChaos;
+			set
+			{
+				Flags.RandomizeClassChaos = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomizeClassChaos"));
+			}
+		}
 		public bool? SwolePirates
 		{
 			get => Flags.SwolePirates;

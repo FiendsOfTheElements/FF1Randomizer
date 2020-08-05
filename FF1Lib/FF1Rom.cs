@@ -114,7 +114,9 @@ namespace FF1Lib
 			var overworldMap = new OverworldMap(this, flags, palettes, teleporters);
 			var maps = ReadMaps();
 			var shopItemLocation = ItemLocations.CaravanItemShop1;
+			var oldItemNames = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
 
+			
 			if (flags.ExperimentalFloorGeneration)
 			{
 				MapRequirements reqs;
@@ -696,6 +698,11 @@ namespace FF1Lib
 					maps = SetDungeonNPC(maps, rng, (bool)flags.HintsRngDungeon);
 
 				NPCHints(rng, flags, overworldMap);
+			}
+
+			if ((bool)flags.RandomizeClass && !(bool)flags.EnablePoolParty)
+			{
+				RandomizeClass(rng, flags, oldItemNames);
 			}
 
 			if (flags.DisableTentSaving)
