@@ -419,7 +419,7 @@ namespace FF1Lib
 				{
 					if (classData[j].wpPermissions.Contains((Item)(i + 28)))
 						wpNewPermissions[i] |= equipmentPermissionBit[j];
-					else if (classData[j].arPermissions.Contains((Item)(i + 68)))
+					if (classData[j].arPermissions.Contains((Item)(i + 68)))
 						arNewPermissions[i] |= equipmentPermissionBit[j];
 				}
 				wpNewPermissions[i] = (ushort)~wpNewPermissions[i];
