@@ -112,10 +112,12 @@
 	public RenderFragment ChildContent { get; set; }
 
 	private string DisplayText =>
-		(Clamp != null ?
-		(Clamp ?? true ? 100 : _valueLow).ToString() :
-		_valueLow.ToString() + "% OR " + "100"
-		) + "% - " + _valueHigh + "%";
+		(
+		Clamp == null ?
+			_valueLow + "% - " + _valueHigh + "% OR " +
+			"100% - " + Math.Max(_valueHigh, 100) +"%" :
+			((Clamp ?? true ? 100 : _valueLow).ToString() + "% - " + (Clamp ?? true ? Math.Max(_valueHigh, 100) : _valueHigh)) + "%"
+		);
 
 	//slider fields
 	int _valueLow = 20;
