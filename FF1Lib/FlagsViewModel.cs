@@ -1484,6 +1484,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ChangeLute"));
 			}
 		}
+		public Fate HurrayDwarfFate
+		{
+			get => Preferences.HurrayDwarfFate;
+			set
+			{
+				Preferences.HurrayDwarfFate = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("HurrayDwarfFate"));
+			}
+		}
 		public MapmanSlot MapmanSlot
 		{
 			get => Preferences.MapmanSlot;

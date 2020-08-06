@@ -61,7 +61,13 @@ namespace FF1Lib
 		Fourth = 0x03,
 	}
 
-
+	public enum Fate
+	{
+		[Description("Spare")]
+		Spare = 0,
+		[Description("Kill")]
+		Kill = 2,
+	}
 	public partial class FF1Rom
 	{
 		public const int TyroPaletteOffset = 0x30FC5;
@@ -519,6 +525,43 @@ namespace FF1Lib
 
 			itemnames[(int)Item.Lute] = newLute;
 			WriteText(itemnames, ItemTextPointerOffset, ItemTextPointerBase, ItemTextOffset);
+		}
+
+		public void HurrayDwarfFate(Fate fate, MT19337 rng)
+		{
+			if (fate == Fate.Spare)
+			{
+				// Protect Hurray Dwarf from NPC guillotine
+				Put(MapObjJumpTableOffset + 0x63 * JumpTablePointerSize, Blob.FromHex("A792"));
+				Put(MapObjOffset + 0x63 * MapObjSize, Blob.FromHex("01777700")); // Hurray!
+			}
+			else
+			{
+				// Whether NPC guillotine is on or not, kill Hurray Dwarf
+				Put(MapObjJumpTableOffset + 0x63 * JumpTablePointerSize, newTalk.Talk_kill);
+
+				// Change the dialogue
+				var dialogueStrings = new List<string>
+				{
+				    "No! I'm gonna disappear.\nYou'll never see\nme again. Please,\nI don't want to die.",
+					"If you strike me down,\nI shall become more\npowerful than you can\npossibly imagine.",
+					"Freeeeedom!!",
+					"I've seen things you\npeople wouldn't believe.\nAll those moments will\nbe lost in time..\nlike tears in rain..\nTime to die.",
+					"Become vengeance, David.\nBecome wrath.",
+					"My only regret..\nis that I have boneitis.",
+					"No, not the bees!\nNOT THE BEES!\nAAAAAAAAGH!\nTHEY'RE IN MY EYES!\nMY EYES! AAAAAAAAAAGH!",
+					"This is blasphemy!\nThis is madness!",
+					"Not like this..\nnot like this..",
+					"Suicide squad, attack!\n\n\n\nThat showed 'em, huh?",
+					"Well, what are you\nwaiting for?\nDo it. DO IT!!",
+					"The path you walk on has\nno end. Each step you\ntake is paved with the\ncorpses of your enemies.\nTheir souls will haunt\nyou forever. Hear me!\nMy spirit will be\nwatching you!",
+					"K-Kefka..!\nY-you're insane.."
+				};
+
+				//Put new dialogue to E6 since another Dwarf also says hurray
+				InsertDialogs(0xE6, dialogueStrings.PickRandom(rng));
+				Put(MapObjOffset + 0x63 * MapObjSize, Blob.FromHex("00E60000"));
+			}
 		}
 
 	}

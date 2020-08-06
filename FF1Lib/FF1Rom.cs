@@ -747,7 +747,9 @@ namespace FF1Lib
 			{
 				ChangeLute(rng);
 			}
-			
+
+			HurrayDwarfFate(preferences.HurrayDwarfFate, rng);
+
 			if (preferences.Music != MusicShuffle.None)
 			{
 				ShuffleMusic(preferences.Music, rng);
@@ -767,9 +769,7 @@ namespace FF1Lib
 			// Talk_norm is overwritten with unconditional jump to Talk_CoOGuy (say whatever then disappear)
 			PutInBank(0x0E, 0x9297, Blob.Concat(Blob.FromHex("4C"), newTalk.Talk_kill));
 			Put(MapObjJumpTableOffset + 0x16 * JumpTablePointerSize, Blob.FromHex("A792A792")); // overwrite map object jump table so that it calls "Talk_iftem"
-			Put(MapObjJumpTableOffset + 0x63 * JumpTablePointerSize, Blob.FromHex("A792")); // save the "hurray!" dwarf too!
 			Put(MapObjOffset + 0x16 * MapObjSize, Blob.FromHex("01FFFF0001FFFF00")); // and overwrite the data so that it prints message 0xFF regardless of whether you have the item or not
-			Put(MapObjOffset + 0x63 * MapObjSize, Blob.FromHex("01777700")); // Hurray!
 		}
 
 		private void AssureSafe(MT19337 rng)
