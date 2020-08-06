@@ -632,8 +632,8 @@ namespace FF1Lib
 				new BonusMalus(BonusMalusAction.SpcMod, "+2 Lv1 MP", mod: 2, authclass: new List<AuthClass> { AuthClass.RedMage, AuthClass.WhiteMage, AuthClass.BlackMage }),
 				new BonusMalus(BonusMalusAction.WhiteSpellcaster, "Lv1 White\n Spells", mod: 2, mod2: 0, binarylist: lv1WhiteSpells, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief, AuthClass.BlackBelt, AuthClass.BlackMage }),
 				new BonusMalus(BonusMalusAction.BlackSpellcaster, "Lv1 Black\n Spells", mod: 2, mod2: 0, binarylist: lv1BlackSpells, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief, AuthClass.BlackBelt, AuthClass.WhiteMage }),
-				new BonusMalus(BonusMalusAction.WhiteSpellcaster, "Lv3 White\n Spells", mod: 2, mod2: 4, binarylist: lv3WhiteSpells, bytelist: exKnightMPlist, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief, AuthClass.BlackBelt, AuthClass.BlackMage }),
-				new BonusMalus(BonusMalusAction.BlackSpellcaster, "Lv4 Black\n Spells", mod: 2, mod2: 4, binarylist: lv4BlackSpells, bytelist: exNinjaMPlist, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief, AuthClass.BlackBelt, AuthClass.WhiteMage }),
+				new BonusMalus(BonusMalusAction.WhiteSpellcaster, "Knight\n Spells", mod: 2, mod2: 4, binarylist: lv3WhiteSpells, bytelist: exKnightMPlist, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief, AuthClass.BlackBelt, AuthClass.BlackMage }),
+				new BonusMalus(BonusMalusAction.BlackSpellcaster, "Ninja\n Spells", mod: 2, mod2: 4, binarylist: lv4BlackSpells, bytelist: exNinjaMPlist, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief, AuthClass.BlackBelt, AuthClass.WhiteMage }),
 			};
 
 			var bonusStrong = new List<BonusMalus> {
@@ -668,8 +668,8 @@ namespace FF1Lib
 				new BonusMalus(BonusMalusAction.HpMod, "-20 HP", mod: -20),
 				new BonusMalus(BonusMalusAction.AgiGrowth, "Blk Mage HP", binarylist: classData[(int)AuthClass.BlackMage].HpGrowth, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.BlackBelt }),
 				new BonusMalus(BonusMalusAction.HitMod, "-10 Hit%", mod: -10),
-				new BonusMalus(BonusMalusAction.HitGrowth, "-1 Hit%/Lv", mod: -1),
-				new BonusMalus(BonusMalusAction.MDefGrowth, "-1 MDef/Lv", mod: -1),
+				new BonusMalus(BonusMalusAction.HitGrowth, "-1 Hit%\n Growth", mod: -1),
+				new BonusMalus(BonusMalusAction.MDefGrowth, "-1 MDef\n Growth", mod: -1),
 				new BonusMalus(BonusMalusAction.ArmorRemove, "-" + itemnames[(int)Item.Ribbon], equipment: new List<Item> { Item.Ribbon }),
 				new BonusMalus(BonusMalusAction.WeaponReplace, "Thief\n Weapons", equipment: equipThiefWeapon, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.RedMage } ),
 				new BonusMalus(BonusMalusAction.SpcMax, "-4 Max MP", mod: -4, authclass: new List<AuthClass> {  AuthClass.RedMage, AuthClass.WhiteMage, AuthClass.BlackMage }),
@@ -728,9 +728,11 @@ namespace FF1Lib
 				descriptionList.Add(tempstring);
 			}
 
+			
 			for (int i = 0; i < 6; i++)
 			{
-	
+
+				assignedBonusMalus[i].Reverse();
 				foreach (var bonusmalus in assignedBonusMalus[i])
 				{
 					switch (bonusmalus.Action)
