@@ -643,14 +643,14 @@ namespace FF1Lib
 				EnableSwolePirates();
 			}
 
-			if (flags.EnemyScaleFactor > 1)
+			if (flags.EnemyScaleStatsHigh != 100 || flags.EnemyScaleStatsLow != 100 || ((bool)flags.SeparateEnemyHPScaling && (flags.EnemyScaleHpLow != 100 || flags.EnemyScaleHpHigh != 100)))
 			{
-				ScaleEnemyStats(flags.EnemyScaleFactor, flags.WrapStatOverflow, flags.IncludeMorale, rng, (bool)flags.ClampMinimumStatScale, (bool)flags.SeparateEnemyHPScaling, flags.EnemyHPScaleFactor, (bool)flags.ClampEnemyHpScaling);
+				ScaleEnemyStats(rng, flags);
 			}
 
-			if (flags.BossScaleFactor > 1)
+			if (flags.BossScaleStatsHigh != 100 || flags.BossScaleStatsLow != 100 || ((bool)flags.SeparateBossHPScaling && (flags.BossScaleHpLow != 100 || flags.BossScaleHpHigh != 100)))
 			{
-				ScaleBossStats(flags.BossScaleFactor, flags.WrapStatOverflow, flags.IncludeMorale, rng, (bool)flags.ClampMinimumBossStatScale, (bool)flags.SeparateBossHPScaling, flags.BossHPScaleFactor, (bool)flags.ClampBossHPScaling);
+				ScaleBossStats(rng, flags);
 			}
 
 			PartyComposition(rng, flags, preferences);

@@ -49,6 +49,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Spoilers"));
 			}
 		}
+
 		public bool TournamentSafe
 		{
 			get => Flags.TournamentSafe;
@@ -1256,24 +1257,80 @@ namespace FF1Lib
 			}
 		}
 
-		public double EnemyScaleFactor
+		public int BossScaleStatsLow
 		{
-			get => Flags.EnemyScaleFactor;
+			get => Flags.BossScaleStatsLow;
 			set
 			{
-				Flags.EnemyScaleFactor = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EnemyScaleFactor"));
+				Flags.BossScaleStatsLow = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BossScaleStatsLow"));
 			}
 		}
-		public double BossScaleFactor
+		public int BossScaleStatsHigh
 		{
-			get => Flags.BossScaleFactor;
+			get => Flags.BossScaleStatsHigh;
 			set
 			{
-				Flags.BossScaleFactor = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BossScaleFactor"));
+				Flags.BossScaleStatsHigh = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BossScaleStatsHigh"));
 			}
 		}
+		public int BossScaleHpLow
+		{
+			get => Flags.BossScaleHpLow;
+			set
+			{
+				Flags.BossScaleHpLow = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BossScaleHpLow"));
+			}
+		}
+		public int BossScaleHpHigh
+		{
+			get => Flags.BossScaleHpHigh;
+			set
+			{
+				Flags.BossScaleHpHigh = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BossScaleHpHigh"));
+			}
+		}
+
+		public int EnemyScaleStatsLow
+		{
+			get => Flags.EnemyScaleStatsLow;
+			set
+			{
+				Flags.EnemyScaleStatsLow = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EnemyScaleStatsLow"));
+			}
+		}
+		public int EnemyScaleStatsHigh
+		{
+			get => Flags.EnemyScaleStatsHigh;
+			set
+			{
+				Flags.EnemyScaleStatsHigh = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EnemyScaleStatsHigh"));
+			}
+		}
+		public int EnemyScaleHpLow
+		{
+			get => Flags.EnemyScaleHpLow;
+			set
+			{
+				Flags.EnemyScaleHpLow = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EnemyScaleHpLow"));
+			}
+		}
+		public int EnemyScaleHpHigh
+		{
+			get => Flags.EnemyScaleHpHigh;
+			set
+			{
+				Flags.EnemyScaleHpHigh = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EnemyScaleHpHigh"));
+			}
+		}
+
 		public double PriceScaleFactor
 		{
 			get => Flags.PriceScaleFactor;
@@ -2424,26 +2481,6 @@ namespace FF1Lib
 			{
 				Flags.ClampEnemyHpScaling = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ClampEnemyHpScaling"));
-			}
-		}
-
-		public double EnemyHPScaleFactor
-		{
-			get => Flags.EnemyHPScaleFactor;
-			set
-			{
-				Flags.EnemyHPScaleFactor = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EnemyHPScaleFactor"));
-			}
-		}
-
-		public double BossHPScaleFactor
-		{
-			get => Flags.BossHPScaleFactor;
-			set
-			{
-				Flags.BossHPScaleFactor = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BossHPScaleFactor"));
 			}
 		}
 

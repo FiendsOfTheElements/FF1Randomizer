@@ -14,7 +14,6 @@ namespace FF1Lib
 	{
 		public bool Spoilers { get; set; } = false;
 		public bool TournamentSafe { get; set; } = false;
-
 		public bool? Shops { get; set; } = false;
 		public bool? Treasures { get; set; } = false;
 		public bool? NPCItems { get; set; } = false;
@@ -164,8 +163,15 @@ namespace FF1Lib
 		public bool IncludeMorale { get; set; } = false;
 		public bool NoDanMode { get; set; } = false;
 
-		public double EnemyScaleFactor { get; set; } = 0;
-		public double BossScaleFactor { get; set; } = 0;
+		public int BossScaleStatsLow { get; set; } = 50;
+		public int BossScaleStatsHigh { get; set; } = 200;
+		public int BossScaleHpLow { get; set; } = 50;
+		public int BossScaleHpHigh { get; set; } = 200;
+		public int EnemyScaleStatsLow { get; set; } = 50;
+		public int EnemyScaleStatsHigh { get; set; } = 200;
+		public int EnemyScaleHpLow { get; set; } = 50;
+		public int EnemyScaleHpHigh { get; set; } = 200;
+
 		public double PriceScaleFactor { get; set; } = 0;
 
 		public double ExpMultiplier { get; set; } = 0;
@@ -246,7 +252,6 @@ namespace FF1Lib
 		public bool? RecruitmentMode { get; set; } = false;
 		public bool? RecruitmentModeHireOnly { get; set; } = false;
 		public bool? RecruitmentModeReplaceOnlyNone { get; set; } = false;
-
 		public bool? ClampMinimumStatScale { get; set; } = false;
 		public bool? ClampMinimumBossStatScale { get; set; } = false;
 		public bool? ClampMinimumPriceScale { get; set; } = false;
@@ -280,8 +285,6 @@ namespace FF1Lib
 		public bool? SeparateEnemyHPScaling { get; set; } = false;
 		public bool? ClampBossHPScaling { get; set; } = false;
 		public bool? ClampEnemyHpScaling { get; set; } = false;
-		public double EnemyHPScaleFactor { get; set; } = 1;
-		public double BossHPScaleFactor { get; set; } = 1;
 		public PoolSize PoolSize { get; set; } = PoolSize.Size6;
 		public bool? EnablePoolParty { get; set; } = false;
 		public bool? IncludePromClasses { get; set; } = false;
@@ -675,8 +678,14 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.IncludeMorale);
 			sum = AddTriState(sum, flags.RandomWaresIncludesSpecialGear);
 			sum = AddBoolean(sum, flags.NoDanMode);
-			sum = AddNumeric(sum, 41, (int)(10.0 * flags.EnemyScaleFactor) - 10);
-			sum = AddNumeric(sum, 41, (int)(10.0 * flags.BossScaleFactor) - 10);
+			sum = AddNumeric(sum, 49, flags.EnemyScaleStatsLow / 10);
+			sum = AddNumeric(sum, 49, flags.EnemyScaleStatsHigh/ 10);
+			sum = AddNumeric(sum, 49, flags.EnemyScaleHpLow/ 10);
+			sum = AddNumeric(sum, 49, flags.EnemyScaleHpHigh/ 10);
+			sum = AddNumeric(sum, 49, flags.BossScaleStatsLow/ 10);
+			sum = AddNumeric(sum, 49, flags.BossScaleStatsHigh/ 10);
+			sum = AddNumeric(sum, 49, flags.BossScaleHpLow/ 10);
+			sum = AddNumeric(sum, 49, flags.BossScaleHpHigh/ 10);
 			sum = AddNumeric(sum, 41, (int)(10.0 * flags.PriceScaleFactor) - 10);
 			sum = AddNumeric(sum, 41, (int)(10.0 * flags.ExpMultiplier) - 10);
 			sum = AddNumeric(sum, 51, (int)(flags.ExpBonus / 10.0));
@@ -781,8 +790,6 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.SeparateEnemyHPScaling);
 			sum = AddTriState(sum, flags.ClampBossHPScaling);
 			sum = AddTriState(sum, flags.ClampEnemyHpScaling);
-			sum = AddNumeric(sum, 41, (int)(10.0 * flags.EnemyHPScaleFactor) - 10);
-			sum = AddNumeric(sum, 41, (int)(10.0 * flags.BossHPScaleFactor) - 10);
 			sum = AddNumeric(sum, 10, flags.KnightNinjaMaxMP);
 			sum = AddNumeric(sum, 10, flags.BlackMageMaxMP);
 			sum = AddNumeric(sum, 10, flags.WhiteMageMaxMP);
@@ -835,8 +842,6 @@ namespace FF1Lib
 				WhiteMageMaxMP = GetNumeric(ref sum, 10),
 				BlackMageMaxMP = GetNumeric(ref sum, 10),
 				KnightNinjaMaxMP = GetNumeric(ref sum, 10),
-				BossHPScaleFactor = (GetNumeric(ref sum, 41) + 10) / 10.0,
-				EnemyHPScaleFactor = (GetNumeric(ref sum, 41) + 10) / 10.0,
 				ClampEnemyHpScaling = GetTriState(ref sum),
 				ClampBossHPScaling = GetTriState(ref sum),
 				SeparateEnemyHPScaling = GetTriState(ref sum),
@@ -941,8 +946,14 @@ namespace FF1Lib
 				ExpBonus = GetNumeric(ref sum, 51) * 10,
 				ExpMultiplier = (GetNumeric(ref sum, 41) + 10) / 10.0,
 				PriceScaleFactor = (GetNumeric(ref sum, 41) + 10) / 10.0,
-				BossScaleFactor = (GetNumeric(ref sum, 41) + 10) / 10.0,
-				EnemyScaleFactor = (GetNumeric(ref sum, 41) + 10) / 10.0,
+				BossScaleHpHigh = GetNumeric(ref sum, 49) * 10,
+				BossScaleHpLow = GetNumeric(ref sum, 49) * 10,
+				BossScaleStatsHigh = GetNumeric(ref sum, 49) * 10,
+				BossScaleStatsLow = GetNumeric(ref sum, 49) * 10,
+				EnemyScaleHpHigh = GetNumeric(ref sum, 49) * 10,
+				EnemyScaleHpLow = GetNumeric(ref sum, 49) * 10,
+				EnemyScaleStatsHigh = GetNumeric(ref sum, 49) * 10,
+				EnemyScaleStatsLow = GetNumeric(ref sum, 49) * 10,
 				NoDanMode = GetBoolean(ref sum),
 				RandomWaresIncludesSpecialGear = GetTriState(ref sum),
 				IncludeMorale = GetBoolean(ref sum),
