@@ -118,14 +118,24 @@ namespace FF1Lib
 
 		public void ScaleEnemyStats(MT19337 rng, Flags flags)
 		{
-			NonBossEnemies.ForEach(index => ScaleSingleEnemyStats(index, (bool)flags.ClampMinimumStatScale ? 100 : flags.EnemyScaleStatsLow, flags.EnemyScaleStatsHigh, flags.WrapStatOverflow, flags.IncludeMorale, rng,
-				(bool)flags.SeparateEnemyHPScaling, (bool)flags.ClampEnemyHpScaling ? 100 : flags.EnemyScaleHpLow, flags.EnemyScaleHpHigh));
+			int minStats = (bool)flags.ClampMinimumStatScale ? 100 : flags.EnemyScaleStatsLow;
+			int highStats = (bool)flags.ClampMinimumStatScale ? Math.Max(100, flags.EnemyScaleStatsHigh) : flags.EnemyScaleStatsHigh;
+			int minHp = (bool)flags.ClampEnemyHpScaling ? 100 : flags.EnemyScaleHpLow;
+			int highHp = (bool)flags.ClampEnemyHpScaling ? Math.Max(100, flags.EnemyScaleHpHigh) : flags.EnemyScaleHpHigh;
+
+			NonBossEnemies.ForEach(index => ScaleSingleEnemyStats(index, minStats, highStats, flags.WrapStatOverflow, flags.IncludeMorale, rng,
+				(bool)flags.SeparateEnemyHPScaling, minHp, highHp));
 		}
 
 		public void ScaleBossStats(MT19337 rng, Flags flags)
 		{
-			Bosses.ForEach(index => ScaleSingleEnemyStats(index, (bool)flags.ClampMinimumBossStatScale ? 100 : flags.BossScaleStatsLow, flags.BossScaleStatsHigh, flags.WrapStatOverflow, flags.IncludeMorale, rng,
-				(bool)flags.SeparateBossHPScaling, (bool)flags.ClampBossHPScaling ? 100 : flags.BossScaleHpLow, flags.BossScaleHpHigh));
+			int minStats = (bool)flags.ClampMinimumBossStatScale ? 100 : flags.BossScaleStatsLow;
+			int highStats = (bool)flags.ClampMinimumBossStatScale ? Math.Max(100, flags.BossScaleStatsHigh) : flags.BossScaleStatsHigh;
+			int minHp = (bool)flags.ClampBossHPScaling ? 100 : flags.BossScaleHpLow;
+			int highHp = (bool)flags.ClampBossHPScaling ? Math.Max(100, flags.BossScaleHpHigh) : flags.BossScaleHpHigh;
+
+			Bosses.ForEach(index => ScaleSingleEnemyStats(index, minStats, highStats, flags.WrapStatOverflow, flags.IncludeMorale, rng,
+				(bool)flags.SeparateBossHPScaling,  minHp, highHp));
 		}
 
 		public void ScaleSingleEnemyStats(int index, int lowPercentStats, int highPercentStats, bool wrapOverflow, bool includeMorale, MT19337 rng,

@@ -112,10 +112,12 @@
 	public RenderFragment ChildContent { get; set; }
 
 	private string DisplayText =>
-		(Clamp != null ?
-		(Clamp ?? true ? 100 : _valueLow).ToString() :
-		_valueLow.ToString() + "% OR " + "100"
-		) + "% - " + _valueHigh + "%";
+		(
+		Clamp == null ?
+			_valueLow + "% - " + _valueHigh + "% OR " +
+			"100% - " + Math.Max(_valueHigh, 100) +"%" :
+			((Clamp ?? true ? 100 : _valueLow).ToString() + "% - " + (Clamp ?? true ? Math.Max(_valueHigh, 100) : _valueHigh)) + "%"
+		);
 
 	//slider fields
 	int _valueLow = 20;
@@ -125,17 +127,18 @@
 	[Parameter]
 	public int ValueLow
 	{
-		get => Math.Min(_valueLow, _valueHigh);
+		get => _valueLow;
 		set
 		{
 			if (_valueLow.Equals(value))
 				return;
-			_valueLow = value;
-			if (_valueLow >= _valueHigh)
+
+			if (value >= _valueHigh)
 			{
 				_valueLow = _valueHigh;
-				_valueHigh = value;
-				ValueHighChanged.InvokeAsync(_valueHigh);
+			} else
+			{
+				_valueLow = value;
 			}
 			ValueLowChanged.InvokeAsync(_valueLow);
 		}
@@ -143,17 +146,18 @@
 	[Parameter]
 	public int ValueHigh
 	{
-		get => Math.Max(_valueLow, _valueHigh);
+		get => _valueHigh;
 		set
 		{
 			if (_valueHigh.Equals(value))
 				return;
-			_valueHigh = value;
-			if (_valueLow >= _valueHigh)
+
+			if (value <= _valueLow)
 			{
 				_valueHigh = _valueLow;
-				_valueLow = value;
-				ValueLowChanged.InvokeAsync(_valueLow);
+			} else
+			{
+				_valueHigh = value;
 			}
 			ValueHighChanged.InvokeAsync(_valueHigh);
 		}
