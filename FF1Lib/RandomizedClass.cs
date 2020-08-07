@@ -151,6 +151,7 @@ namespace FF1Lib
 			public List<bool> LckGrowth { get; set; }
 			public List<byte> SpCGrowth { get; set; }
 			public byte MaxSpC { get; set;  }
+			public List<string> MagicRanks { get; set; }
 			public List<Rank> Ranks { get; set; }
 			public ClassData()
 			{
@@ -181,6 +182,7 @@ namespace FF1Lib
 				blackPermissions = Enumerable.Repeat(false, 4 * 8).ToList();
 				arPermissions = new List<Item>();
 				wpPermissions = new List<Item>();
+				MagicRanks = new List<string> { "- ", "- ", "- " };
 				Ranks = Enumerable.Repeat((Rank)0, Enum.GetNames(typeof(RankedType)).Length).ToList();
 			}
 
@@ -321,7 +323,6 @@ namespace FF1Lib
 
 			// Strings to build info screen in game
 			List<string> rankString = new List<string> { "-", "E", "D", "C", "B", "A", "S" };
-			List<string> classString = new List<string> { "Fi", "Th", "BB", "RM", "WM", "BM", "Kn", "Ni", "Ma", "RW", "WW", "BW" };
 			List<string> symboleString = new List<string> { "@S", "@H", "@K", "@X", "@F", "@N", "@A", "@s", "@h", "@G", "HP", "Str", "Agi", "Int", "Vit", "Lck", "Ht%", "MDf", "Wt", "Bk", "Sp" };
 
 			// Addresses
@@ -489,11 +490,21 @@ namespace FF1Lib
 					string promoChange = "";
 					if (i < 6)
 					{
-						for (int j = 0; j < Enum.GetNames(typeof(RankedType)).Length; j++)
+						for (int j = 0; j < Enum.GetNames(typeof(RankedType)).Length - 1; j++)
 						{
 							if (classData[i + 6].Ranks[j] > classData[i].Ranks[j])
 							{
-								promoChange += symboleString[j] + rankString[(int)classData[i + 6].Ranks[j]];
+								if (j == (int)RankedType.White)
+								{
+									promoChange += classData[i + 6].MagicRanks[0] + "W";
+								}
+								else if (j == (int)RankedType.Black)
+								{
+									promoChange += classData[i + 6].MagicRanks[1] + "B";
+								}
+								else
+									promoChange += symboleString[j] + rankString[(int)classData[i + 6].Ranks[j]];
+
 								if (promoChange.Split('\n').Last().Length > (11 - 4))
 									promoChange += "\n";
 								else
@@ -514,9 +525,11 @@ namespace FF1Lib
 						classData[i].MDefGrowth + "   " +
 						rankString[(int)classData[i].Ranks[(int)RankedType.HP]] +
 						"\n\n\n\n" +
-						" " + rankString[(int)classData[i].Ranks[(int)RankedType.White]] + "   " +
-						rankString[(int)classData[i].Ranks[(int)RankedType.Black]] + "   " +
+						" " + classData[i].MagicRanks[0] + "  " +
+						classData[i].MagicRanks[1] + "  " +
 						rankString[(int)classData[i].Ranks[(int)RankedType.Charges]] +
+						//rankString[(int)classData[i].Ranks[(int)RankedType.Black]] + "   " +
+						//rankString[(int)classData[i].Ranks[(int)RankedType.Charges]] +
 						"\n\n\n\n" +
 						rankString[(int)classData[i].Ranks[(int)RankedType.Swords]] + " " +
 						rankString[(int)classData[i].Ranks[(int)RankedType.Hammers]] + " " +
@@ -955,13 +968,16 @@ namespace FF1Lib
 			var promoGauntlets = new List<(RankedType, Rank)> { (RankedType.Gauntlets, Rank.A), (RankedType.Gauntlets, Rank.S) };
 
 			var chargesRank = new List<(Rank, Rank, int, int)> {
-				(Rank.F, Rank.C, 0, 6),
+				(Rank.F, Rank.B, 0, 6),
 				(Rank.F, Rank.B, 1, 7),
 				(Rank.F, Rank.F, 2, 8),
 				(Rank.A, Rank.A, 3, 9),
 				(Rank.S, Rank.S, 4, 10),
 				(Rank.S, Rank.S, 5, 11)
 			};
+
+			List<string> classBaseString = new List<string> { "Fi", "Th", "Bb", "Rm", "Wm", "Bm" };
+			List<string> classPromoString = new List<string> { "Kn", "Ni", "Ma", "Rw", "Ww", "Bw" };
 
 			// new arrays
 			var newChargeList = new List<List<byte>>();
@@ -997,8 +1013,8 @@ namespace FF1Lib
 			var whitePermPromo = classData.GetRange(6, 6).Select(x => x.whitePermissions).ToList();
 			var blackPermBase = classData.GetRange(0, 6).Select(x => x.blackPermissions).ToList();
 			var blackPermPromo = classData.GetRange(6, 6).Select(x => x.blackPermissions).ToList();
-			var shuffleWhitePermissions = Enumerable.Zip(whitePermBase, whitePermPromo, (whitePermBase, whitePermPromo) => new KeyValuePair<List<bool>, List<bool>>(whitePermBase, whitePermPromo)).ToList();
-			var shuffleBlackPermissions = Enumerable.Zip(blackPermBase, blackPermPromo, (blackPermBase, blackPermPromo) => new KeyValuePair<List<bool>, List<bool>>(blackPermBase, blackPermPromo)).ToList();
+			var shuffleWhitePermissions = new List<int> { 0, 1, 2, 3, 4, 5 };
+			var shuffleBlackPermissions = new List<int> { 0, 1, 2, 3, 4, 5 };
 
 			// Actual Shuffle
 			shuffleStartingStats.Shuffle(rng);
@@ -1016,20 +1032,13 @@ namespace FF1Lib
 			int minLvStats = shuffleLevelUp.Select(x => x.Where(y => y == true).Count()).Min();
 			int spreadStats = (maxLvStats + maxStats - minLvStats - minStats) / 5;
 
-			int maxLvHp = shuffleHP.Select(x => x.Where(y => y == true).Count()).Max();
-			int minLvHp = shuffleHP.Select(x => x.Where(y => y == true).Count()).Min();
-			int spreadLvHp = (maxLvHp - minLvHp) / 5;
-
-			var maxMagic = 32;
-			var spreadMagic = 32 / 5;
-			var magicCounts = shuffleWhitePermissions.Select(x => x.Key.Where(y => y).Count())
-				.Concat(shuffleWhitePermissions.Select(x => x.Value.Where(y => y).Count()))
-				.Concat(shuffleBlackPermissions.Select(x => x.Key.Where(y => y).Count()))
-				.Concat(shuffleBlackPermissions.Select(x => x.Value.Where(y => y).Count())).ToList();
+			int maxLvHp = 555;
+			int minLvHp = 255;
+			int spreadLvHp = (maxLvHp - minLvHp) / 4;
 
 			var statsRanks = new List<Rank>();
 			var hpRanks = new List<Rank>();
-			var magicRanks = new List<Rank>();
+			var magicRanks = Enumerable.Repeat(Rank.F, 24).ToArray();
 
 			for (int i = 0; i < shuffleLevelUp.Count(); i++)
 			{
@@ -1049,34 +1058,56 @@ namespace FF1Lib
 
 			for (int i = 0; i < shuffleHP.Count(); i++)
 			{
-				if (shuffleHP[i].Where(x => x == true).Count() > (maxLvHp - spreadLvHp))
+				var hpAverage25 = classData[i].HpStarting +
+					(shuffleHP[i].GetRange(0, 24).Where(x => x == true).Count() * 23) +
+					(shuffleStartingStats[i*7+3]/4 + shuffleLevelUp[i*5+3].Where(x => x == true).Count()/8)*24;
+
+
+				if (hpAverage25 > (maxLvHp))
 					hpRanks.Add(Rank.S);
-				else if (shuffleHP[i].Where(x => x == true).Count() > (maxLvHp - spreadLvHp * 2))
+				else if (hpAverage25 > (maxLvHp - spreadLvHp))
 					hpRanks.Add(Rank.A);
-				else if (shuffleHP[i].Where(x => x == true).Count() > (maxLvHp - spreadLvHp * 3))
+				else if (hpAverage25 > (maxLvHp - spreadLvHp * 2))
 					hpRanks.Add(Rank.B);
-				else if (shuffleHP[i].Where(x => x == true).Count() > (maxLvHp - spreadLvHp * 4))
+				else if (hpAverage25 > (maxLvHp - spreadLvHp * 3))
 					hpRanks.Add(Rank.C);
-				else if (shuffleHP[i].Where(x => x == true).Count() > (maxLvHp - spreadLvHp * 5))
+				else if (hpAverage25 > (maxLvHp - spreadLvHp * 4))
 					hpRanks.Add(Rank.D);
 				else
 					hpRanks.Add(Rank.E);
 			}
 
-			for (int i = 0; i < magicCounts.Count(); i++)
+			for (int i = 0; i < 6; i++)
 			{
-				if (magicCounts[i] > (maxMagic - spreadMagic))
-					magicRanks.Add(Rank.S);
-				else if (magicCounts[i] > (maxMagic - spreadMagic * 2))
-					magicRanks.Add(Rank.A);
-				else if (magicCounts[i] > (maxMagic - spreadMagic * 3))
-					magicRanks.Add(Rank.B);
-				else if (magicCounts[i] > (maxMagic - spreadMagic * 4))
-					magicRanks.Add(Rank.C);
-				else if (magicCounts[i] > (maxMagic - spreadMagic * 5))
-					magicRanks.Add(Rank.D);
-				else
-					magicRanks.Add(Rank.F);
+				switch (shuffleWhitePermissions[i])
+				{
+					case 0:
+						magicRanks[i + 6] = Rank.C;
+						break;
+					case 3:
+						magicRanks[i] = Rank.C;
+						magicRanks[i + 6] = Rank.B;
+						break;
+					case 4:
+						magicRanks[i] = Rank.A;
+						magicRanks[i + 6] = Rank.S;
+						break;
+				}
+
+				switch (shuffleBlackPermissions[i])
+				{
+					case 1:
+						magicRanks[i+18] = Rank.B;
+						break;
+					case 3:
+						magicRanks[i + 12] = Rank.B;
+						magicRanks[i + 18] = Rank.A;
+						break;
+					case 5:
+						magicRanks[i + 12] = Rank.A;
+						magicRanks[i + 18] = Rank.S;
+						break;
+				}
 			}
 
 			// Update data
@@ -1098,15 +1129,22 @@ namespace FF1Lib
 				classData[i].MDefGrowth = shuffleMDef[i].Key;
 				classData[i + 6].MDefGrowth = shuffleMDef[i].Value;
 
-				classData[i].whitePermissions = shuffleWhitePermissions[i].Key;
-				classData[i + 6].whitePermissions = shuffleWhitePermissions[i].Value;
+				classData[i].whitePermissions = whitePermBase[shuffleWhitePermissions[i]];
+				classData[i + 6].whitePermissions = whitePermPromo[shuffleWhitePermissions[i]];
 				classData[i].Ranks[(int)RankedType.White] = magicRanks[i];
+				if(magicRanks[i] > Rank.F)
+					classData[i].MagicRanks[0] = classBaseString[shuffleWhitePermissions[i]];
 				classData[i + 6].Ranks[(int)RankedType.White] = magicRanks[i + 6];
-
-				classData[i].blackPermissions = shuffleBlackPermissions[i].Key;
-				classData[i + 6].blackPermissions = shuffleBlackPermissions[i].Value;
+				if (magicRanks[i + 6] > Rank.F)
+					classData[i + 6].MagicRanks[0] = classPromoString[shuffleWhitePermissions[i]];
+				classData[i].blackPermissions = blackPermBase[shuffleBlackPermissions[i]];
+				classData[i + 6].blackPermissions = blackPermPromo[shuffleBlackPermissions[i]];
 				classData[i].Ranks[(int)RankedType.Black] = magicRanks[i + 12];
+				if (magicRanks[i + 12] > Rank.F)
+					classData[i].MagicRanks[1] = classBaseString[shuffleBlackPermissions[i]];
 				classData[i + 6].Ranks[(int)RankedType.Black] = magicRanks[i + 18];
+				if (magicRanks[i + 18] > Rank.F)
+					classData[i + 6].MagicRanks[1] = classPromoString[shuffleBlackPermissions[i]];
 			}
 
 
@@ -1124,19 +1162,37 @@ namespace FF1Lib
 					var tempClass = chargesRank.Find(x => x.Item1 == startSpellcharges.First()).Item3;
 					classData[i].Ranks[(int)RankedType.Charges] = startSpellcharges.First();
 					classData[i + 6].Ranks[(int)RankedType.Charges] = startSpellcharges.First();
-					classData[i].SpCGrowth = chargeList[tempClass];
+					classData[i].MagicRanks[2] = classBaseString[tempClass];
+					classData[i + 6].MagicRanks[2] = classPromoString[tempClass];
+					classData[i].SpCGrowth = chargeList[tempClass].ToList();
 					classData[i].MaxSpC = maxCharges[tempClass];
 					classData[i + 6].MaxSpC = maxCharges[tempClass + 6];
 					classData[i].SpCStarting = 0x02;
 					classData[i + 6].SpCStarting = 0x02;
 					startSpellcharges.RemoveRange(0, 1);
 				}
-				else if (classData[i + 6].Ranks[(int)RankedType.White] > Rank.F || classData[i + 6].Ranks[(int)RankedType.Black] > Rank.F)
+				else if (classData[i + 6].Ranks[(int)RankedType.Black] > Rank.F)
 				{
-					var tempClass = chargesRank.Find(x => x.Item2 == promoSpellcharges.First()).Item3;
+					var tempClass = 1;
 					classData[i].Ranks[(int)RankedType.Charges] = Rank.F;
-					classData[i + 6].Ranks[(int)RankedType.Charges] = promoSpellcharges.First();
-					newChargeList.Add(chargeList[tempClass]);
+					classData[i + 6].Ranks[(int)RankedType.Charges] = Rank.B;
+					classData[i + 6].MagicRanks[2] = classPromoString[tempClass];
+					classData[i].SpCGrowth = chargeList[tempClass].ToList();
+					classData[i + 6].SpCGrowth = chargeList[tempClass].ToList();
+					classData[i].MaxSpC = maxCharges[tempClass];
+					classData[i + 6].MaxSpC = maxCharges[tempClass + 6];
+					classData[i].SpCStarting = 0x00;
+					classData[i + 6].SpCStarting = 0x00;
+					promoSpellcharges.RemoveRange(0, 1);
+				}
+				else if (classData[i + 6].Ranks[(int)RankedType.White] > Rank.F)
+				{
+					var tempClass = 0;
+					classData[i].Ranks[(int)RankedType.Charges] = Rank.F;
+					classData[i + 6].Ranks[(int)RankedType.Charges] = Rank.B;
+					classData[i + 6].MagicRanks[2] = classPromoString[tempClass];
+					classData[i].SpCGrowth = chargeList[tempClass].ToList();
+					classData[i + 6].SpCGrowth = chargeList[tempClass].ToList();
 					classData[i].MaxSpC = maxCharges[tempClass];
 					classData[i + 6].MaxSpC = maxCharges[tempClass + 6];
 					classData[i].SpCStarting = 0x00;
@@ -1151,7 +1207,6 @@ namespace FF1Lib
 					classData[i + 6].MaxSpC = 0x00;
 					classData[i].SpCStarting = 0x00;
 					classData[i + 6].SpCStarting = 0x00;
-					newChargeList.Add(chargeList[chargesRank.Find(x => x.Item2 == Rank.F).Item3]);
 				}
 			}
 
