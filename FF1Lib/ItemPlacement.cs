@@ -347,14 +347,6 @@ namespace FF1Lib
 			var requiredAccess = AccessRequirement.All;
 			var requiredMapChanges = new List<MapChange> { MapChange.All };
 
-			if (victoryConditions.OnlyRequireGameIsBeatable)
-			{
-				var winTheGameAccess = ItemLocations.ChaosReward.AccessRequirement;
-				var winTheGameLocation = ItemLocations.ChaosReward.MapLocation;
-				requiredAccess = winTheGameAccess;
-				requiredMapChanges = fullLocationRequirements[winTheGameLocation].Item1;
-			}
-
 			var accessibleLocationCount = 0;
 			while (!currentAccess.HasFlag(requiredAccess) ||
 				   !requiredMapChanges.Any(x => currentMapChanges.HasFlag(x)))
