@@ -16,6 +16,14 @@
             "themeColor": "#111122",
             "cssFile": "css/beta.css",
             "siteIcon": "cyan"
+        },
+        {
+            "branch": "default",
+            "longName": "FFRandomizer",
+            "shortName": "FFR",
+            "themeColor": "#221d11",
+            "cssFile": "css/main.css",
+            "siteIcon": "normal"
         }
     ]
 }
