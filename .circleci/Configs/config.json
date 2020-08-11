@@ -1,0 +1,21 @@
+{
+    "$schema": "./configSchema.json",
+    "branchConfig": [
+        {
+            "branch": "master",
+            "longName": "FFRandomizer",
+            "shortName": "FFR",
+            "themeColor": "#221d11",
+            "cssFile": "css/main.css",
+            "siteIcon": "normal"
+        },
+        {
+            "branch": "dev",
+            "longName": "FFRandomizer - beta",
+            "shortName": "FFR β",
+            "themeColor": "#111122",
+            "cssFile": "css/beta.css",
+            "siteIcon": "cyan"
+        }
+    ]
+}
