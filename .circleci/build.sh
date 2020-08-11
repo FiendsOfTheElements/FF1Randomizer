@@ -4,7 +4,7 @@ set -o errexit
 sed -i "s/SHA/${CIRCLE_SHA1}/" FF1Lib/FFRVersion.cs
 sed -i "s/BRANCH/${CIRCLE_BRANCH}/" FF1Lib/FFRVersion.cs
 
-cd FF1Blazorizer
+cd ../FF1Blazorizer
 
 if [ "${CIRCLE_BRANCH}" = "master" ]; then
     sed -i 's/NAME_LONG/FFRandomizer/g' wwwroot/manifest.published.json
