@@ -1,4 +1,4 @@
-﻿#!/bin/sh
+#!/bin/sh
 set -o errexit
 
 sed -i "s/SHA/${CIRCLE_SHA1}/" FF1Lib/FFRVersion.cs
