@@ -7,7 +7,8 @@ sed -i "s/BRANCH/${CIRCLE_BRANCH}/" FF1Lib/FFRVersion.cs
 
 cd FF1Blazorizer
 
-config=$(jq ".branchConfig | map(select(.branch == ${CIRCLE_BRANCH})) | .[0]")
+echo ${CIRCLE_BRANCH}
+config=$(jq ".branchConfig | map(select(.branch == \"${CIRCLE_BRANCH}\")) | .[0]")
 echo config
 
 if [ "${CIRCLE_BRANCH}" = "master" ]; then
