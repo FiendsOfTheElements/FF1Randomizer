@@ -4,7 +4,7 @@ defaults: &defaults
 
   working_directory: ~/ff1randomizer
   docker:
-    - image: fiendsoftheelements/netlify-build:alpine
+    - image: septimusd/test-netlifybuild:test-alpine
 
 orbs:
   shellcheck: circleci/shellcheck@1.3.16
@@ -13,7 +13,7 @@ jobs:
   build:
     working_directory: ~/ff1randomizer
     docker:
-      - image: fiendsoftheelements/netlify-build:alpine
+      - image: septimusd/test-netlifybuild:test-alpine
     steps:
       - checkout
       - run:
