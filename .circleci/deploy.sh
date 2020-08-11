@@ -1,3 +1,4 @@
+#!/bin/sh 
 if [ "${CIRCLE_BRANCH}" == "master" ]; then
     netlify deploy --dir=/root/ff1randomizer/FF1Blazorizer/output/wwwroot --prod --site=cd1fef70-df7f-44ab-b1c8-3239dae773ac
 elif [ "${CIRCLE_BRANCH}" == "dev" ]; then
