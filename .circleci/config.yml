@@ -18,7 +18,7 @@ jobs:
       - checkout
       - run:
           name: publish
-          command: sh ./build.sh
+          command: sh .circleci/build.sh
       - persist_to_workspace:
           root: ~/ff1randomizer/FF1Blazorizer/output
           paths:
@@ -32,13 +32,13 @@ jobs:
           at: ~/ff1randomizer/FF1Blazorizer/output
       - run:
           name: deploy
-          command: sh ./deploy.sh
+          command: sh .circleci/deploy.sh
 
 workflows:
   shellcheck:
     jobs:
       - shellcheck/check:
-          path: "/.circleci/"
+          path: ".circleci/"
   main:
     jobs:
       - build
