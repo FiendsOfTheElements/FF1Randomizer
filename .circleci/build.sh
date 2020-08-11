@@ -7,6 +7,9 @@ sed -i "s/BRANCH/${CIRCLE_BRANCH}/" FF1Lib/FFRVersion.cs
 
 cd FF1Blazorizer
 
+config = jq ".branchConfig | map(select(.branch == ${CIRCLE_BRANCH})) | .[0]"
+echo config
+
 if [ "${CIRCLE_BRANCH}" = "master" ]; then
     sed -i 's/NAME_LONG/FFRandomizer/g' wwwroot/manifest.published.json
     sed -i 's/NAME_SHORT/FFR/g' wwwroot/manifest.published.json
