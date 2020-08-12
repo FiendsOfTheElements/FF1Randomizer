@@ -16,7 +16,7 @@ themeColor=$(jq ".themeColor" <<<"$config")
 siteIcon=$(jq ".siteIcon" <<<"$config")
 releaseBuild=$(jq ".releaseBuild" <<<"$config")
 
-sed -i 's/NAME_LONG/FFRandomizer/g' wwwroot/manifest.published.json
+sed -i 's/NAME_LONG/$longName/g' wwwroot/manifest.published.json
 sed -i 's/NAME_SHORT/FFR/g' wwwroot/manifest.published.json
 sed -i "s/DARK_BACKGROUND_COLOR/$color/g" wwwroot/manifest.published.json
 sed -i "s/DARK_BACKGROUND_COLOR/$color/g" wwwroot/index.html
