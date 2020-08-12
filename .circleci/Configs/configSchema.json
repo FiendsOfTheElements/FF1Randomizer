@@ -11,7 +11,8 @@
 				"shortName",
 				"cssFile",
 				"themeColor",
-				"siteIcon"
+				"siteIcon",
+				"releaseBuild"
 			],
 			"type": "object",
 			"properties": {
@@ -38,6 +39,10 @@
 				"siteIcon": {
 					"description": "The basename used for the site icons: <basename>.ico, <basename>-192.png, <basename>-256.png, <basename>-512.png",
 					"type": "string"
+				},
+				"releaseBuild": {
+					"description": "Should this branch be built/published as a release build or a debug build",
+					"type": "boolean"
 				}
 			}
 		}
