@@ -7,7 +7,8 @@
             "shortName": "FFR",
             "themeColor": "#221d11",
             "cssFile": "css/main.css",
-            "siteIcon": "normal"
+            "siteIcon": "normal",
+            "releaseBuild": true
         },
         {
             "branch": "dev",
@@ -15,15 +16,17 @@
             "shortName": "FFR β",
             "themeColor": "#111122",
             "cssFile": "css/beta.css",
-            "siteIcon": "cyan"
+            "siteIcon": "cyan",
+            "releaseBuild": false
         },
         {
             "branch": "default",
-            "longName": "FFRandomizer",
-            "shortName": "FFR",
+            "longName": "FFRandomizer - PR",
+            "shortName": "FFR PR",
             "themeColor": "#221d11",
-            "cssFile": "css/main.css",
-            "siteIcon": "normal"
+            "cssFile": "css/alpha.css",
+            "siteIcon": "red",
+            "releaseBuild": false
         }
     ]
 }
