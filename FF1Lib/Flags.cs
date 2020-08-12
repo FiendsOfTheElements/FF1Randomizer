@@ -277,6 +277,7 @@ namespace FF1Lib
 		public bool? HintsVillage { get; set; } = false;
 		public bool? HintsDungeon { get; set; } = false;
 		public bool? HintsRngDungeon { get; set; } = false;
+		public bool? HintsUseless { get; set; } = false;
 		public bool? SpellcrafterRetainPermissions { get; set; } = false;
 		public bool? RandomWeaponBonus { get; set; } = false;
 		public bool? RandomArmorBonus { get; set; } = false;
@@ -293,6 +294,8 @@ namespace FF1Lib
 		public bool? RandomPromotionsSpoilers { get; set; } = false;
 		public bool? RandomizeClass { get; set; } = false;
 		public bool? RandomizeClassChaos { get; set; } = false;
+		public int RandomizeClassMaxBonus { get; set; } = 2;
+		public int RandomizeClassMaxMalus { get; set; } = 1;
 		public bool? ChangeMaxMP { get; set; } = false;
 		public int RedMageMaxMP { get; set; } = 9;
 		public int WhiteMageMaxMP { get; set; } = 9;
@@ -782,6 +785,7 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.HintsVillage);
 			sum = AddTriState(sum, flags.HintsDungeon);
 			sum = AddTriState(sum, flags.HintsRngDungeon);
+			sum = AddTriState(sum, flags.HintsUseless);
 			sum = AddTriState(sum, flags.SpellcrafterRetainPermissions);
 			sum = AddTriState(sum, flags.RandomWeaponBonus);
 			sum = AddTriState(sum, flags.RandomArmorBonus);
@@ -804,6 +808,8 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.RandomPromotionsSpoilers);
 			sum = AddTriState(sum, flags.RandomizeClass);
 			sum = AddTriState(sum, flags.RandomizeClassChaos);
+			sum = AddNumeric(sum, 5, flags.RandomizeClassMaxBonus);
+			sum = AddNumeric(sum, 5, flags.RandomizeClassMaxMalus);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(FormationShuffleMode)).Cast<int>().Max() + 1, (int)flags.FormationShuffleMode);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(MDEFGrowthMode)).Cast<int>().Max() + 1, (int)flags.MDefMode);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(WorldWealthMode)).Cast<int>().Max() + 1, (int)flags.WorldWealth);
@@ -828,6 +834,8 @@ namespace FF1Lib
 				WorldWealth = (WorldWealthMode)GetNumeric(ref sum, Enum.GetValues(typeof(WorldWealthMode)).Cast<int>().Max() + 1),
 				MDefMode = (MDEFGrowthMode)GetNumeric(ref sum, Enum.GetValues(typeof(MDEFGrowthMode)).Cast<int>().Max() + 1),
 				FormationShuffleMode = (FormationShuffleMode)GetNumeric(ref sum, Enum.GetValues(typeof(FormationShuffleMode)).Cast<int>().Max() + 1),
+				RandomizeClassMaxMalus = GetNumeric(ref sum, 5),
+				RandomizeClassMaxBonus = GetNumeric(ref sum, 5),
 				RandomizeClassChaos = GetTriState(ref sum),
 				RandomizeClass = GetTriState(ref sum),
 				RandomPromotionsSpoilers = GetTriState(ref sum),
@@ -850,9 +858,10 @@ namespace FF1Lib
 				RandomArmorBonus = GetTriState(ref sum),
 				RandomWeaponBonus = GetTriState(ref sum),
 				SpellcrafterRetainPermissions = GetTriState(ref sum),
-				HintsVillage = GetTriState(ref sum),
-				HintsDungeon = GetTriState(ref sum),
+				HintsUseless = GetTriState(ref sum),
 				HintsRngDungeon = GetTriState(ref sum),
+				HintsDungeon = GetTriState(ref sum),
+				HintsVillage = GetTriState(ref sum),
 				FreeTail = GetTriState(ref sum),
 				BuffHealingSpells = GetBoolean(ref sum),
 				AllSpellLevelsForKnightNinja = GetBoolean(ref sum),
