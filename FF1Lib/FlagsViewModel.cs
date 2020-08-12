@@ -2413,6 +2413,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("HintsRngDungeon"));
 			}
 		}
+		public bool? HintsUseless
+		{
+			get => Flags.HintsUseless;
+			set
+			{
+				Flags.HintsUseless = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("HintsUseless"));
+			}
+		}
 		public bool? SpellcrafterRetainPermissions
 		{
 			get => Flags.SpellcrafterRetainPermissions;
@@ -2623,6 +2632,24 @@ namespace FF1Lib
 			{
 				Flags.RandomizeClassChaos = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomizeClassChaos"));
+			}
+		}
+		public int RandomizeClassMaxBonus
+		{
+			get => Flags.RandomizeClassMaxBonus;
+			set
+			{
+				Flags.RandomizeClassMaxBonus = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomizeClassMaxBonus"));
+			}
+		}
+		public int RandomizeClassMaxMalus
+		{
+			get => Flags.RandomizeClassMaxMalus;
+			set
+			{
+				Flags.RandomizeClassMaxMalus = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomizeClassMaxMalus"));
 			}
 		}
 		public bool? SwolePirates
