@@ -9,12 +9,12 @@ cd FF1Blazorizer
 
 config=$(jq -r ".branchConfig | map(select(if .branch == \"default\" then true elif .branch == \"${CIRCLE_BRANCH}\" then true else false end)) | .[0]" ../.circleci/configs/config.json)
 echo "$config" | cat
-longName=$(jq -r ".longName" <<<"$config")
-shortName=$(jq -r ".shortName" <<<"$config")
-# cssFile=$(jq -r ".cssFile" <<<"$config")
-themeColor=$(jq -r ".themeColor" <<<"$config")
-siteIcon=$(jq -r ".siteIcon" <<<"$config")
-releaseBuild=$(jq -r ".releaseBuild" <<<"$config")
+longName=$(echo  "$config" | jq -r ".longName")
+shortName=$(echo "$config" | jq -r ".shortName")
+cssFile=$(echo "$config" | jq -r ".cssFile")
+themeColor=$(echo "$config" | jq -r ".themeColor")
+siteIcon=$(echo "$config" | jq -r ".siteIcon")
+releaseBuild=$(echo "$config" | jq -r ".releaseBuild")
 
 sed -i "s/NAME_LONG/${longName}/g" wwwroot/manifest.published.json
 sed -i "s/NAME_SHORT/$shortName/g" wwwroot/manifest.published.json
