@@ -18,7 +18,7 @@ jobs:
       - checkout
       - run:
           name: publish
-          command: sh .circleci/build.sh
+          command: bash .circleci/build.sh
       - persist_to_workspace:
           root: ~/ff1randomizer/FF1Blazorizer/output
           paths:
