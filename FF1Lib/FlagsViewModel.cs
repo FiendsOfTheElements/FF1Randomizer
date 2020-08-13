@@ -2443,6 +2443,54 @@ namespace FF1Lib
 			}
 		}
 
+		public bool? RandomWeaponBonusExcludeMasa
+		{
+			get => Flags.RandomWeaponBonusExcludeMasa;
+			set
+			{
+				Flags.RandomWeaponBonusExcludeMasa = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomWeaponBonusExcludeMasa"));
+			}
+		}
+
+		public int RandomWeaponBonusLow
+		{
+			get => Flags.RandomWeaponBonusLow;
+			set
+			{
+				Flags.RandomWeaponBonusLow = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomWeaponBonusLow"));
+			}
+		}
+		public int RandomWeaponBonusHigh
+		{
+			get => Flags.RandomWeaponBonusHigh;
+			set
+			{
+				Flags.RandomWeaponBonusHigh = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomWeaponBonusHigh"));
+			}
+		}
+
+		public int RandomArmorBonusLow
+		{
+			get => Flags.RandomArmorBonusLow;
+			set
+			{
+				Flags.RandomArmorBonusLow = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomArmorBonusLow"));
+			}
+		}
+		public int RandomArmorBonusHigh
+		{
+			get => Flags.RandomArmorBonusHigh;
+			set
+			{
+				Flags.RandomArmorBonusHigh = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomArmorBonusHigh"));
+			}
+		}
+
 		public bool? BalancedItemMagicShuffle
 		{
 			get => Flags.BalancedItemMagicShuffle;

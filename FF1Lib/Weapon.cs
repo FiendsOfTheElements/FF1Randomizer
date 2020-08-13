@@ -94,35 +94,37 @@ namespace FF1Lib
 		//6 - weapon type sprite
 		//7 - weapon sprite palette color
 
-		public void RandomWeaponBonus(MT19337 rng)
+		public void RandomWeaponBonus(MT19337 rng, int min, int max, bool excludeMasa)
 		{
 			//get base stats
 			Weapon currentWeapon;
 			for (int i = 0; i < WeaponCount; i++)
 			{
-				currentWeapon = new Weapon(i, this);
-				//number from -5 to +5
-				int bonus = rng.Between(-5, 5);
-				if (bonus != 0)
+				if (i != 39 || !excludeMasa)
 				{
-					//adjust stats
-					//clamp to 1 dmg min, 0 hit min, 50 hit maximum
-					currentWeapon.HitBonus = (byte)Math.Max(0, (int)(currentWeapon.HitBonus + (3 * bonus)));
-					currentWeapon.HitBonus = (byte)Math.Min(50, (int)(currentWeapon.HitBonus));
-					currentWeapon.Damage = (byte)Math.Max(1, (int)currentWeapon.Damage + (2 * bonus));
-					currentWeapon.Crit = (byte)Math.Max(1, (int)currentWeapon.Crit + (3 * bonus));
-
-					//change last two non icon characters to -/+bonus
-					string bonusString = string.Format((bonus > 0) ? "+{0}" : "{0}", bonus.ToString());
-					byte[] bonusBytes = FF1Text.TextToBytes(bonusString);
-
-					int iconIndex = currentWeapon.NameBytes[6] > 200 && currentWeapon.NameBytes[6] != 255 ? 5 : 6;
-					for (int j = 0; j < bonusBytes.Length - 1; j++)
+					currentWeapon = new Weapon(i, this);
+					int bonus = rng.Between(min, max);
+					if (bonus != 0)
 					{
-						currentWeapon.NameBytes[iconIndex - j] = bonusBytes[bonusBytes.Length - 2 - j];
-					}
+						//adjust stats
+						//clamp to 1 dmg min, 0 hit min, 50 hit maximum
+						currentWeapon.HitBonus = (byte)Math.Max(0, (int)(currentWeapon.HitBonus + (3 * bonus)));
+						currentWeapon.HitBonus = (byte)Math.Min(50, (int)(currentWeapon.HitBonus));
+						currentWeapon.Damage = (byte)Math.Max(1, (int)currentWeapon.Damage + (2 * bonus));
+						currentWeapon.Crit = (byte)Math.Max(1, (int)currentWeapon.Crit + (3 * bonus));
 
-					currentWeapon.writeWeaponMemory(this);
+						//change last two non icon characters to -/+bonus
+						string bonusString = string.Format((bonus > 0) ? "+{0}" : "{0}", bonus.ToString());
+						byte[] bonusBytes = FF1Text.TextToBytes(bonusString);
+
+						int iconIndex = currentWeapon.NameBytes[6] > 200 && currentWeapon.NameBytes[6] != 255 ? 5 : 6;
+						for (int j = 0; j < bonusBytes.Length - 1; j++)
+						{
+							currentWeapon.NameBytes[iconIndex - j] = bonusBytes[bonusBytes.Length - 2 - j];
+						}
+
+						currentWeapon.writeWeaponMemory(this);
+					}
 				}
 			}
 		}

@@ -145,7 +145,12 @@
 						<div class="checkbox-cell"></div>
 						<h4>Blursed Items</h4>
 						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="RandomWeaponBonus" @bind-Value="Flags.RandomWeaponBonus">Random Weapon Bonus</TriStateCheckBox>
+						<DoubleSlider Id="RandomWeaponBonusSlider" Indent IsEnabled="Flags.RandomWeaponBonus" MinValue="-9" MaxValue="9" Step="1" @bind-ValueHigh="Flags.RandomWeaponBonusHigh" @bind-ValueLow="Flags.RandomWeaponBonusLow">Weapon Bonus Range:</DoubleSlider>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="RandomWeaponBonusExcludeMasa" @bind-Value="Flags.RandomWeaponBonusExcludeMasa">Exclude Masmune</TriStateCheckBox>
+
 						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="RandomArmorBonus" @bind-Value="Flags.RandomArmorBonus">Random Armor Bonus</TriStateCheckBox>
+						<DoubleSlider Id="RandomWeaponBonusSlider" Indent IsEnabled="Flags.RandomArmorBonus" MinValue="-9" MaxValue="9" Step="1" @bind-ValueHigh="Flags.RandomArmorBonusHigh" @bind-ValueLow="Flags.RandomArmorBonusLow">Armor Bonus Range:</DoubleSlider>
+
 					</div>
                     <div class="col-md-4">
                         <h4>Locations: @(Flags.Flags.IncentivizedLocationCountMin) @((Flags.Flags.IncentivizedLocationCountMin != Flags.Flags.IncentivizedLocationCountMax) ? "- " + Flags.Flags.IncentivizedLocationCountMax : "") </h4>
@@ -268,13 +273,13 @@
         <BSCollapse IsOpen="@(activeTabs.Contains("Scale"))">
 			<div class="is-dark nes-container">
 				<ClampedSlider Min="1" Max="5" Step="0.1" UpdateToolTip="@UpdateToolTipID" Id="clampMinimumPriceScaleLable" @bind-Clamp="Flags.ClampMinimumPriceScale" @bind-Scale="Flags.PriceScaleFactor">Prices:</ClampedSlider>
-				<DoubleSlider Id="enemyStatsDoubleSlider" MinValue="20" MaxValue="500" @bind-ValueHigh="Flags.EnemyScaleStatsHigh" @bind-ValueLow="Flags.EnemyScaleStatsLow" @bind-Clamp="Flags.ClampEnemies">Enemy Stats:</DoubleSlider>
+				<ClampedDoubleSlider Id="enemyStatsDoubleSlider" MinValue="20" MaxValue="500" @bind-ValueHigh="Flags.EnemyScaleStatsHigh" @bind-ValueLow="Flags.EnemyScaleStatsLow" @bind-Clamp="Flags.ClampEnemies">Enemy Stats:</ClampedDoubleSlider>
 				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="separateEnemyHPScalingCheckBox" @bind-Value="Flags.SeparateEnemyHPScaling">Separate Enemy HP Scaling</TriStateCheckBox>
-				<DoubleSlider Id="enemyHpDoubleSlider" Indent IsEnabled="Flags.SeparateEnemyHPScaling" MinValue="20" MaxValue="500" @bind-ValueHigh="Flags.EnemyScaleHpHigh" @bind-ValueLow="Flags.EnemyScaleHpLow" @bind-Clamp="Flags.ClampEnemyHpScaling">Enemy Hp:</DoubleSlider>
+				<ClampedDoubleSlider Id="enemyHpDoubleSlider" Indent IsEnabled="Flags.SeparateEnemyHPScaling" MinValue="20" MaxValue="500" @bind-ValueHigh="Flags.EnemyScaleHpHigh" @bind-ValueLow="Flags.EnemyScaleHpLow" @bind-Clamp="Flags.ClampEnemyHpScaling">Enemy Hp:</ClampedDoubleSlider>
 
-				<DoubleSlider Id="bossStatsDoubleSlider" MinValue="20" MaxValue="500" @bind-ValueHigh="Flags.BossScaleStatsHigh" @bind-ValueLow="Flags.BossScaleStatsLow" @bind-Clamp="Flags.ClampMinimumBossStatScale">Boss Stats:</DoubleSlider>
+				<ClampedDoubleSlider Id="bossStatsDoubleSlider" MinValue="20" MaxValue="500" @bind-ValueHigh="Flags.BossScaleStatsHigh" @bind-ValueLow="Flags.BossScaleStatsLow" @bind-Clamp="Flags.ClampMinimumBossStatScale">Boss Stats:</ClampedDoubleSlider>
 				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="separateBossHPScalingCheckBox" @bind-Value="Flags.SeparateBossHPScaling">Separate Boss HP Scaling</TriStateCheckBox>
-				<DoubleSlider Id="bossHpDoubleSlider" Indent IsEnabled="Flags.SeparateBossHPScaling" MinValue="20" MaxValue="500" @bind-ValueHigh="Flags.BossScaleHpHigh" @bind-ValueLow="Flags.BossScaleHpLow" @bind-Clamp="Flags.ClampBossHPScaling">Boss Hp:</DoubleSlider>
+				<ClampedDoubleSlider Id="bossHpDoubleSlider" Indent IsEnabled="Flags.SeparateBossHPScaling" MinValue="20" MaxValue="500" @bind-ValueHigh="Flags.BossScaleHpHigh" @bind-ValueLow="Flags.BossScaleHpLow" @bind-Clamp="Flags.ClampBossHPScaling">Boss Hp:</ClampedDoubleSlider>
 
 				<div class="slider-cell"></div>
 				<div class="row">
