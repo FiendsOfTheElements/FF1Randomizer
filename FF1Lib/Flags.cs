@@ -282,6 +282,11 @@ namespace FF1Lib
 		public bool? SpellcrafterRetainPermissions { get; set; } = false;
 		public bool? RandomWeaponBonus { get; set; } = false;
 		public bool? RandomArmorBonus { get; set; } = false;
+		public bool? RandomWeaponBonusExcludeMasa { get; set; } = false;
+		public int RandomWeaponBonusLow { get; set; } = -5;
+		public int RandomWeaponBonusHigh { get; set; } = 5;
+		public int RandomArmorBonusLow { get; set; } = -5;
+		public int RandomArmorBonusHigh { get; set; } = 5;
 		public bool? BalancedItemMagicShuffle { get; set; } = false;
 		public bool? SeparateBossHPScaling { get; set; } = false;
 		public bool? SeparateEnemyHPScaling { get; set; } = false;
@@ -794,6 +799,11 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.SpellcrafterRetainPermissions);
 			sum = AddTriState(sum, flags.RandomWeaponBonus);
 			sum = AddTriState(sum, flags.RandomArmorBonus);
+			sum = AddTriState(sum, flags.RandomWeaponBonusExcludeMasa);
+			sum = AddNumeric(sum, 19, flags.RandomWeaponBonusLow + 9);
+			sum = AddNumeric(sum, 19, flags.RandomWeaponBonusHigh + 9);
+			sum = AddNumeric(sum, 19, flags.RandomArmorBonusLow + 9);
+			sum = AddNumeric(sum, 19, flags.RandomArmorBonusHigh + 9);
 			sum = AddTriState(sum, flags.BalancedItemMagicShuffle);
 			sum = AddTriState(sum, flags.SeparateBossHPScaling);
 			sum = AddTriState(sum, flags.SeparateEnemyHPScaling);
@@ -860,6 +870,11 @@ namespace FF1Lib
 				SeparateEnemyHPScaling = GetTriState(ref sum),
 				SeparateBossHPScaling = GetTriState(ref sum),
 				BalancedItemMagicShuffle = GetTriState(ref sum),
+				RandomArmorBonusHigh = GetNumeric(ref sum, 19) - 9,
+				RandomArmorBonusLow = GetNumeric(ref sum, 19) - 9,
+				RandomWeaponBonusHigh = GetNumeric(ref sum, 19) - 9,
+				RandomWeaponBonusLow = GetNumeric(ref sum, 19) - 9,
+				RandomWeaponBonusExcludeMasa = GetTriState(ref sum),
 				RandomArmorBonus = GetTriState(ref sum),
 				RandomWeaponBonus = GetTriState(ref sum),
 				SpellcrafterRetainPermissions = GetTriState(ref sum),
