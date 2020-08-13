@@ -558,7 +558,7 @@ namespace FF1Lib
 			sum = AddString(sum, 7, (FFRVersion.Sha.Length >= 7) ? FFRVersion.Sha.Substring(0,7) : FFRVersion.Sha.PadRight(7, 'X'));
 
 
-            sum = AddTriState(sum, flags.IncentivizeKatana);
+			sum = AddTriState(sum, flags.IncentivizeKatana);
 			sum = AddTriState(sum, flags.IncentivizeVorpal);
 			sum = AddTriState(sum, flags.Shops);
 			sum = AddTriState(sum, flags.Treasures);
