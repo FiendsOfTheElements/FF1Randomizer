@@ -825,6 +825,11 @@
 		"description": "If enabled, critical hits note how many hits out of the maximum connected with a critical, for example 2 critical hits out of 3, instead of simply marking that there was a critical."
 	},
 	{
+		"Id": "battleMagicMenuWrapAroundCheckBox",
+		"title": "Battle Magic Menu Wrap Around",
+		"description": "If enabled, allows to wrap up and down in the battle magic menu."
+	},
+	{
 		"Id": "inventoryAutosortCheckBox",
 		"title": "Inventory Autosort",
 		"description": "If enabled, HEAL, PURE, and SOFT potions are automatically moved to the first row of the item menu, followed by saving items on the second row, then all key items in your inventory."

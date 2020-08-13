@@ -113,16 +113,16 @@ namespace FF1Lib
 		{
 			// New characters, frees up 5 characters at 0xCA, 0xCE, 0xE6, 0xE8, 0xE9
 			// STATUS, use normal S and draw AT closer
-			Put(0x385A1, Blob.FromHex("9CCBCCCD9C"));
-			Put(0x24CC0, Blob.FromHex("00DFC66666E63636"));
-			Put(0x24CD0, Blob.FromHex("00B333333333331E"));
+			// Put(0x385A1, Blob.FromHex("9CCBCCCD9C"));
+			// Put(0x24CC0, Blob.FromHex("00DFC66666E63636"));
+			// Put(0x24CD0, Blob.FromHex("00B333333333331E"));
 
 			// Stone ailment, use normal S and e, use Poison's "on"
 			Put(0x6C360, Blob.FromHex("9CE7E5A8")); // Stone
 
 			// White out free chars
-			Put(0x24CA0, Blob.FromHex("FFFFFFFFFFFFFFFF"));
-			Put(0x24CE0, Blob.FromHex("FFFFFFFFFFFFFFFF"));
+			//Put(0x24CA0, Blob.FromHex("FFFFFFFFFFFFFFFF"));
+			//Put(0x24CE0, Blob.FromHex("FFFFFFFFFFFFFFFF"));
 			Put(0x24E60, Blob.FromHex("FFFFFFFFFFFFFFFF"));
 			Put(0x24E80, Blob.FromHex("FFFFFFFFFFFFFFFF"));
 			Put(0x24E90, Blob.FromHex("FFFFFFFFFFFFFFFF"));
@@ -337,19 +337,19 @@ namespace FF1Lib
 			// Update all NPC dialogs for NPC shuffle so we can show what item they're giving.
 			Dictionary<int, string> NPCShuffleDialogs = new Dictionary<int, string>();
 
-			NPCShuffleDialogs.Add(0x02, "Thank you for saving the\nPrincess. To aid your\nquest, please take this.\n\n\nReceived #.");
-			NPCShuffleDialogs.Add(0x06, "This heirloom has been\npassed down from Queen\nto Princess for 2000\nyears. Please take it.\n\nReceived #.");
+			NPCShuffleDialogs.Add(0x02, "Thank you for saving the\nPrincess. To aid your\nquest, please take this.\n\n\nReceived #");
+			NPCShuffleDialogs.Add(0x06, "This heirloom has been\npassed down from Queen\nto Princess for 2000\nyears. Please take it.\n\nReceived #");
 			NPCShuffleDialogs.Add(0x09, "Okay, you got me.\nTake this.\n\n\n\nReceived #.");
-			NPCShuffleDialogs.Add(0x0E, "Is this a dream?.. Are\nyou the LIGHT WARRIORS?\nSo, as legend says,\nI give you this.\n\nReceived #.");
+			NPCShuffleDialogs.Add(0x0E, "Is this a dream?.. Are\nyou the LIGHT WARRIORS?\nSo, as legend says,\nI give you this.\n\nReceived #");
 			NPCShuffleDialogs.Add(0x12, "HA, HA, HA! I am Astos,\nKing of the Dark Elves.\nI have the #,\nand you shall give me\nthat CROWN, now!!!");
-			NPCShuffleDialogs.Add(0x14, "Yes, yes indeed,\nthis TNT is just what I\nneed to finish my work.\nTake this in return!\n\nReceived #.");
-			NPCShuffleDialogs.Add(0x16, "ADAMANT!! Now let me\nforge this for you..\nHere, the best work\nI've ever done.\n\nReceived #.");
-			NPCShuffleDialogs.Add(0x19, "I'll trade my most\npowerful charm to get\nmy CRYSTAL back..\nOh! I can see!!\n\nReceived #.");
-			NPCShuffleDialogs.Add(0x1E, "Take this.\nIt will help you\nfight the source of the\nearth's rot.\n\nReceived #.");
-			NPCShuffleDialogs.Add(0x23, "That pirate trapped me\nin the BOTTLE. I will\nget what's at the bottom\nof the spring for you.\n\nReceived #.");
-			NPCShuffleDialogs.Add(0x27, "Take this.\n\n\n\n\nReceived #.");
-			NPCShuffleDialogs.Add(0x2B, "Great job vanquishing\nthe Earth FIEND.\nWith this, go and defeat\nthe other FIENDS!\n\nReceived #.");
-			NPCShuffleDialogs.Add(0xCD, "With this, you can\navenge the SKY WARRIORS.\n\n\n\nReceived #.");
+			NPCShuffleDialogs.Add(0x14, "Yes, yes indeed,\nthis TNT is just what I\nneed to finish my work.\nTake this in return!\n\nReceived #");
+			NPCShuffleDialogs.Add(0x16, "ADAMANT!! Now let me\nforge this for you..\nHere, the best work\nI've ever done.\n\nReceived #");
+			NPCShuffleDialogs.Add(0x19, "I'll trade my most\npowerful charm to get\nmy CRYSTAL back..\nOh! I can see!!\n\nReceived #");
+			NPCShuffleDialogs.Add(0x1E, "Take this.\nIt will help you\nfight the source of the\nearth's rot.\n\nReceived #");
+			NPCShuffleDialogs.Add(0x23, "That pirate trapped me\nin the BOTTLE. I will\nget what's at the bottom\nof the spring for you.\n\nReceived #");
+			NPCShuffleDialogs.Add(0x27, "Take this.\n\n\n\n\nReceived #");
+			NPCShuffleDialogs.Add(0x2B, "Great job vanquishing\nthe Earth FIEND.\nWith this, go and defeat\nthe other FIENDS!\n\nReceived #");
+			NPCShuffleDialogs.Add(0xCD, "With this, you can\navenge the SKY WARRIORS.\n\n\n\nReceived #");
 
 			InsertDialogs(NPCShuffleDialogs);
 		}
@@ -357,7 +357,7 @@ namespace FF1Lib
 		{
 			Dictionary<int, string> newDialogs = new Dictionary<int, string>();
 
-			FormatItems();
+			//FormatItems();
 			CleanupNPCRoutines();
 			SplitOpenTreasureRoutine();
 			TransferDialogs();

@@ -807,6 +807,15 @@ namespace FF1Lib
 			Put(offset, Blob.FromUShorts(newPermissions.ToArray()));
 		}
 
+		public void BattleMagicMenuWrapAround()
+		{
+			// Allow wrapping up or down in the battle magic menu, see 0C_9C9E_MenuSelection_Magic.asm
+			PutInBank(0x0C, 0x9C9E, Blob.FromHex("ADB36829F0C980F057C940F045C920F005C910F01160ADAB6A2903C903D00320D29CEEAB6A60ADAB6A2903D00320D29CCEAB6A60EEF86AADF86A29018DF86AA901200FF2201BF260"));
+
+			// Zero out empty space
+			var emptySpace = new byte[0x0A];
+			PutInBank(0X0C, 0x9CE6, emptySpace);
+		}
 		public void EnableCardiaTreasures(MT19337 rng, Map cardia)
 		{
 			// Assign items to the chests.

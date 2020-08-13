@@ -151,6 +151,7 @@ namespace FF1Lib
 		public bool SpellBugs { get; set; } = false;
 		public bool BlackBeltAbsorb { get; set; } = false;
 		public bool NPCSwatter { get; set; } = false;
+		public bool BattleMagicMenuWrapAround { get; set; } = false;
 		public bool InventoryAutosort { get; set; } = false;
 		public bool EnemyStatusAttackBug { get; set; } = false;
 		public bool EnemySpellsTargetingAllies { get; set; } = false;
@@ -679,6 +680,7 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.SpellBugs);
 			sum = AddBoolean(sum, flags.BlackBeltAbsorb);
 			sum = AddBoolean(sum, flags.InventoryAutosort);
+			sum = AddBoolean(sum, flags.BattleMagicMenuWrapAround);
 			sum = AddBoolean(sum, flags.NPCSwatter);
 			sum = AddBoolean(sum, flags.EnemyStatusAttackBug);
 			sum = AddBoolean(sum, flags.EnemySpellsTargetingAllies);
@@ -995,6 +997,7 @@ namespace FF1Lib
 				EnemySpellsTargetingAllies = GetBoolean(ref sum),
 				EnemyStatusAttackBug = GetBoolean(ref sum),
 				NPCSwatter = GetBoolean(ref sum),
+				BattleMagicMenuWrapAround = GetBoolean(ref sum),
 				InventoryAutosort = GetBoolean(ref sum),
 				BlackBeltAbsorb = GetBoolean(ref sum),
 				SpellBugs = GetBoolean(ref sum),
