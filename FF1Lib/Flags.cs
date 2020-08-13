@@ -558,6 +558,7 @@ namespace FF1Lib
 			sum = AddString(sum, 7, (FFRVersion.Sha.Length >= 7) ? FFRVersion.Sha.Substring(0,7) : FFRVersion.Sha.PadRight(7, 'X'));
 
 
+            sum = AddTriState(sum, flags.IncentivizeKatana);
 			sum = AddTriState(sum, flags.IncentivizeVorpal);
 			sum = AddTriState(sum, flags.Shops);
 			sum = AddTriState(sum, flags.Treasures);
@@ -635,7 +636,6 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.IncentivizeTitansTrove);
 			sum = AddTriState(sum, flags.BetterTrapChests);
 			sum = AddTriState(sum, flags.IncentivizeMasamune);
-			sum = AddTriState(sum, flags.IncentivizeKatana);
 			sum = AddTriState(sum, flags.IncentivizeOpal);
 			sum = AddTriState(sum, flags.IncentivizeRibbon);
 			sum = AddTriState(sum, flags.IncentivizeDefCastArmor);
@@ -1019,7 +1019,6 @@ namespace FF1Lib
 				IncentivizeRibbon = GetTriState(ref sum),
 				IncentivizeOpal = GetTriState(ref sum),
 				IncentivizeMasamune = GetTriState(ref sum),
-				IncentivizeKatana = GetTriState(ref sum),
 				BetterTrapChests = GetTriState(ref sum),
 				IncentivizeTitansTrove = GetTriState(ref sum),
 				IncentivizeSkyPalace = GetTriState(ref sum),
@@ -1096,6 +1095,7 @@ namespace FF1Lib
 				Treasures = GetTriState(ref sum),
 				Shops = GetTriState(ref sum),
 				IncentivizeVorpal = GetTriState(ref sum),
+				IncentivizeKatana = GetTriState(ref sum),
 			};
 			string EncodedSha = GetString(ref sum, 7);
 			if (((FFRVersion.Sha.Length >= 7) ? FFRVersion.Sha.Substring(0, 7) : FFRVersion.Sha.PadRight(7, 'X')) != EncodedSha)
