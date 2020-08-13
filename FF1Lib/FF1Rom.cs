@@ -535,6 +535,11 @@ namespace FF1Lib
 				EnableCritNumberDisplay();
 			}
 
+			if (flags.BattleMagicMenuWrapAround)
+			{
+				BattleMagicMenuWrapAround();
+			}
+
 			if (flags.NPCSwatter)
 			{
 				EnableNPCSwatter();

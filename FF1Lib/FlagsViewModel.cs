@@ -1211,6 +1211,15 @@ namespace FF1Lib
 			}
 		}
 
+		public bool BattleMagicMenuWrapAround
+		{
+			get => Flags.BattleMagicMenuWrapAround;
+			set
+			{
+				Flags.BattleMagicMenuWrapAround = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BattleMagicMenuWrapAround"));
+			}
+		}
 		public bool EnemyStatusAttackBug
 		{
 			get => Flags.EnemyStatusAttackBug;
