@@ -833,6 +833,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeMasamune"));
 			}
 		}
+		public bool? IncentivizeKatana
+		{
+			get => Flags.IncentivizeKatana;
+			set
+			{
+				Flags.IncentivizeKatana = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeKatana"));
+			}
+		}
 		public bool? IncentivizeVorpal
 		{
 			get => Flags.IncentivizeVorpal;

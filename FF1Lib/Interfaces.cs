@@ -29,6 +29,7 @@
 
 		bool? IncentivizeXcalber { get; }
 		bool? IncentivizeMasamune { get; }
+		bool? IncentivizeKatana { get; }
 		bool? IncentivizeVorpal { get; }
 		bool? IncentivizeRibbon { get; }
 		bool IncentivizeBridge { get; }
