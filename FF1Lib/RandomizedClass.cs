@@ -151,6 +151,7 @@ namespace FF1Lib
 			public List<bool> LckGrowth { get; set; }
 			public List<byte> SpCGrowth { get; set; }
 			public byte MaxSpC { get; set;  }
+			public List<string> MagicRanks { get; set; }
 			public List<Rank> Ranks { get; set; }
 			public ClassData()
 			{
@@ -181,6 +182,7 @@ namespace FF1Lib
 				blackPermissions = Enumerable.Repeat(false, 4 * 8).ToList();
 				arPermissions = new List<Item>();
 				wpPermissions = new List<Item>();
+				MagicRanks = new List<string> { "- ", "- ", "- " };
 				Ranks = Enumerable.Repeat((Rank)0, Enum.GetNames(typeof(RankedType)).Length).ToList();
 			}
 
@@ -321,7 +323,6 @@ namespace FF1Lib
 
 			// Strings to build info screen in game
 			List<string> rankString = new List<string> { "-", "E", "D", "C", "B", "A", "S" };
-			List<string> classString = new List<string> { "Fi", "Th", "BB", "RM", "WM", "BM", "Kn", "Ni", "Ma", "RW", "WW", "BW" };
 			List<string> symboleString = new List<string> { "@S", "@H", "@K", "@X", "@F", "@N", "@A", "@s", "@h", "@G", "HP", "Str", "Agi", "Int", "Vit", "Lck", "Ht%", "MDf", "Wt", "Bk", "Sp" };
 
 			// Addresses
@@ -410,7 +411,7 @@ namespace FF1Lib
 			if ((bool)flags.RandomizeClassChaos)
 				DoRandomizeClassChaosMode(ref classData, rng);
 			else
-				bonusmalusDescription = DoRandomizeClassNormalMode(ref classData, rng, itemnames);
+				bonusmalusDescription = DoRandomizeClassNormalMode(ref classData, rng, itemnames, flags.RandomizeClassMaxBonus, flags.RandomizeClassMaxMalus);
 
 			// Update equipment permissions
 			for (int i = 0; i < 40; i++)
@@ -424,6 +425,13 @@ namespace FF1Lib
 				}
 				wpNewPermissions[i] = (ushort)~wpNewPermissions[i];
 				arNewPermissions[i] = (ushort)~arNewPermissions[i];
+			}
+
+			// Update Starting Attack and Evasion
+			for (int i = 0; i < 12; i++)
+			{
+				classData[i].DmgStarting = (byte)Math.Min(classData[i].StrStarting / 2, 255);
+				classData[i].EvaStarting = (byte)Math.Min(classData[i].AgiStarting + 48, 255);
 			}
 
 			// Insert starting stats
@@ -489,11 +497,21 @@ namespace FF1Lib
 					string promoChange = "";
 					if (i < 6)
 					{
-						for (int j = 0; j < Enum.GetNames(typeof(RankedType)).Length; j++)
+						for (int j = 0; j < Enum.GetNames(typeof(RankedType)).Length - 1; j++)
 						{
 							if (classData[i + 6].Ranks[j] > classData[i].Ranks[j])
 							{
-								promoChange += symboleString[j] + rankString[(int)classData[i + 6].Ranks[j]];
+								if (j == (int)RankedType.White)
+								{
+									promoChange += classData[i + 6].MagicRanks[0] + "W";
+								}
+								else if (j == (int)RankedType.Black)
+								{
+									promoChange += classData[i + 6].MagicRanks[1] + "B";
+								}
+								else
+									promoChange += symboleString[j] + rankString[(int)classData[i + 6].Ranks[j]];
+
 								if (promoChange.Split('\n').Last().Length > (11 - 4))
 									promoChange += "\n";
 								else
@@ -514,9 +532,11 @@ namespace FF1Lib
 						classData[i].MDefGrowth + "   " +
 						rankString[(int)classData[i].Ranks[(int)RankedType.HP]] +
 						"\n\n\n\n" +
-						" " + rankString[(int)classData[i].Ranks[(int)RankedType.White]] + "   " +
-						rankString[(int)classData[i].Ranks[(int)RankedType.Black]] + "   " +
+						" " + classData[i].MagicRanks[0] + "  " +
+						classData[i].MagicRanks[1] + "  " +
 						rankString[(int)classData[i].Ranks[(int)RankedType.Charges]] +
+						//rankString[(int)classData[i].Ranks[(int)RankedType.Black]] + "   " +
+						//rankString[(int)classData[i].Ranks[(int)RankedType.Charges]] +
 						"\n\n\n\n" +
 						rankString[(int)classData[i].Ranks[(int)RankedType.Swords]] + " " +
 						rankString[(int)classData[i].Ranks[(int)RankedType.Hammers]] + " " +
@@ -542,7 +562,7 @@ namespace FF1Lib
 
 			// Insert class data screen
 			for (int i = 0; i < 12; i++)
-			{ 
+			{
 				var tempBlob = FF1Text.TextToBytes(dataScreen[i], true, FF1Text.Delimiter.Null);
 				PutInBank(0x1E, 0x8970 + totalByte, tempBlob);
 				var tempAddress = 0x8970 + totalByte;
@@ -556,12 +576,14 @@ namespace FF1Lib
 			PutInBank(0x1E, 0x8950 + 24, new byte[] { (byte)(noneAddress % 0x100), (byte)(noneAddress / 0x100) });
 		}
 
-		public List<string> DoRandomizeClassNormalMode(ref List<ClassData> classData, MT19337 rng, string[] itemnames)
+		public List<string> DoRandomizeClassNormalMode(ref List<ClassData> classData, MT19337 rng, string[] itemnames, int maxbonus, int maxmalus)
 		{
 			var equipFighterArmor = new List<Item> { Item.WoodenArmor, Item.ChainArmor, Item.SilverArmor, Item.IronArmor,
 				Item.FlameArmor, Item.IceArmor, Item.SteelArmor, Item.Buckler, Item.WoodenShield, Item.IronShield, Item.ProCape,
 				Item.SilverShield, Item.FlameShield, Item.IceShield, Item.WoodenHelm, Item.IronHelm, Item.SilverHelm,
 				Item.CopperGauntlets, Item.IronGauntlets, Item.SilverGauntlets };
+
+			var equipRedMageArmor = new List<Item> { Item.WoodenArmor, Item.ChainArmor, Item.SilverArmor };
 
 			var equipKnightArmor = new List<Item>(equipFighterArmor) { Item.DragonArmor, Item.OpalArmor, Item.AegisShield, Item.OpalShield,
 				Item.HealHelm, Item.OpalHelm, Item.PowerGauntlets, Item.ZeusGauntlets, Item.OpalGauntlets };
@@ -609,18 +631,25 @@ namespace FF1Lib
 
 			var bonusNormal = new List<BonusMalus> {
 				new BonusMalus(BonusMalusAction.StrMod, "+10 Str.", mod: 10),
+				new BonusMalus(BonusMalusAction.StrMod, "+15 Str.", mod: 15),
 				new BonusMalus(BonusMalusAction.StrMod, "+20 Str.", mod: 20),
 				new BonusMalus(BonusMalusAction.AgiMod, "+10 Agi.", mod: 10),
+				new BonusMalus(BonusMalusAction.AgiMod, "+15 Agi.", mod: 15),
 				new BonusMalus(BonusMalusAction.AgiMod, "+20 Agi.", mod: 20),
 				new BonusMalus(BonusMalusAction.VitMod, "+10 Vit.", mod: 10),
+				new BonusMalus(BonusMalusAction.VitMod, "+15 Vit.", mod: 15),
 				new BonusMalus(BonusMalusAction.VitMod, "+20 Vit.", mod: 20),
 				new BonusMalus(BonusMalusAction.LckMod, "+5 Luck", mod: 5),
+				new BonusMalus(BonusMalusAction.LckMod, "+7 Luck", mod: 7),
 				new BonusMalus(BonusMalusAction.LckMod, "+10 Luck", mod: 10),
 				new BonusMalus(BonusMalusAction.HpMod, "+20 HP", mod: 20),
+				new BonusMalus(BonusMalusAction.HpMod, "+30 HP", mod: 30),
 				new BonusMalus(BonusMalusAction.HpMod, "+40 HP", mod: 40),
 				new BonusMalus(BonusMalusAction.HitMod, "+10 Hit%", mod: 10),
+				new BonusMalus(BonusMalusAction.HitMod, "+15 Hit%", mod: 15),
 				new BonusMalus(BonusMalusAction.HitMod, "+20 Hit%", mod: 20),
 				new BonusMalus(BonusMalusAction.MDefMod, "+10 MDef", mod: 10),
+				new BonusMalus(BonusMalusAction.MDefMod, "+15 MDef", mod: 15),
 				new BonusMalus(BonusMalusAction.MDefMod, "+20 MDef", mod: 20),
 				new BonusMalus(BonusMalusAction.WeaponAdd, "+" + itemnames[(int)Item.ThorHammer], equipment: new List<Item> {  Item.ThorHammer }),
 				new BonusMalus(BonusMalusAction.WeaponAdd, "+" + itemnames[(int)Item.Vorpal], equipment: new List<Item> {  Item.Vorpal }),
@@ -629,11 +658,17 @@ namespace FF1Lib
 				new BonusMalus(BonusMalusAction.WeaponAdd, "+" + itemnames[(int)Item.Xcalber], equipment: new List<Item> {  Item.Xcalber }),
 				new BonusMalus(BonusMalusAction.ArmorAdd, "+" + itemnames[(int)Item.WhiteShirt], equipment: new List<Item> {  Item.WhiteShirt }),
 				new BonusMalus(BonusMalusAction.ArmorAdd, "+" + itemnames[(int)Item.BlackShirt], equipment: new List<Item> {  Item.BlackShirt }),
+				new BonusMalus(BonusMalusAction.StrGrowth, "Fightr Str.", binarylist: classData[(int)AuthClass.Fighter].StrGrowth, authclass: new List<AuthClass> { AuthClass.Thief, AuthClass.BlackBelt, AuthClass.RedMage, AuthClass.WhiteMage, AuthClass.BlackMage }),
+				new BonusMalus(BonusMalusAction.LckGrowth, "Thief Luck", binarylist: classData[(int)AuthClass.Thief].LckGrowth, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.BlackBelt, AuthClass.RedMage, AuthClass.WhiteMage, AuthClass.BlackMage }),
+				new BonusMalus(BonusMalusAction.VitGrowth, "B.Belt Vit.", binarylist: classData[(int)AuthClass.BlackBelt].VitGrowth, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief, AuthClass.RedMage, AuthClass.WhiteMage, AuthClass.BlackMage }),
+				new BonusMalus(BonusMalusAction.WeaponAdd, "+Thief @S", equipment: equipThiefWeapon, authclass: new List<AuthClass> { AuthClass.BlackBelt, AuthClass.WhiteMage, AuthClass.BlackMage } ),
+				new BonusMalus(BonusMalusAction.ArmorAdd, "+Red Mage @A", equipment: equipRedMageArmor, authclass: new List<AuthClass> { AuthClass.Thief, AuthClass.BlackBelt, AuthClass.WhiteMage, AuthClass.BlackMage } ),
 				new BonusMalus(BonusMalusAction.SpcMod, "+2 Lv1 MP", mod: 2, authclass: new List<AuthClass> { AuthClass.RedMage, AuthClass.WhiteMage, AuthClass.BlackMage }),
-				new BonusMalus(BonusMalusAction.WhiteSpellcaster, "Lv1 White\n Spells", mod: 2, mod2: 0, binarylist: lv1WhiteSpells, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief, AuthClass.BlackBelt, AuthClass.BlackMage }),
-				new BonusMalus(BonusMalusAction.BlackSpellcaster, "Lv1 Black\n Spells", mod: 2, mod2: 0, binarylist: lv1BlackSpells, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief, AuthClass.BlackBelt, AuthClass.WhiteMage }),
-				new BonusMalus(BonusMalusAction.WhiteSpellcaster, "Knight\n Spells", mod: 2, mod2: 4, binarylist: lv3WhiteSpells, bytelist: exKnightMPlist, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief, AuthClass.BlackBelt, AuthClass.BlackMage }),
-				new BonusMalus(BonusMalusAction.BlackSpellcaster, "Ninja\n Spells", mod: 2, mod2: 4, binarylist: lv4BlackSpells, bytelist: exNinjaMPlist, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief, AuthClass.BlackBelt, AuthClass.WhiteMage }),
+				new BonusMalus(BonusMalusAction.SpcMod, "+2 Lv1 MP", mod: 2, authclass: new List<AuthClass> { AuthClass.RedMage, AuthClass.WhiteMage, AuthClass.BlackMage }),
+				new BonusMalus(BonusMalusAction.WhiteSpellcaster, "L1 White Sp", mod: 2, mod2: 0, binarylist: lv1WhiteSpells, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief, AuthClass.BlackBelt, AuthClass.BlackMage }),
+				new BonusMalus(BonusMalusAction.BlackSpellcaster, "L1 Black Sp", mod: 2, mod2: 0, binarylist: lv1BlackSpells, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief, AuthClass.BlackBelt, AuthClass.WhiteMage }),
+				new BonusMalus(BonusMalusAction.WhiteSpellcaster, "Knight Sp", mod: 2, mod2: 4, binarylist: lv3WhiteSpells, bytelist: exKnightMPlist, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief, AuthClass.BlackBelt, AuthClass.BlackMage }),
+				new BonusMalus(BonusMalusAction.BlackSpellcaster, "Ninja Sp", mod: 2, mod2: 4, binarylist: lv4BlackSpells, bytelist: exNinjaMPlist, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief, AuthClass.BlackBelt, AuthClass.WhiteMage }),
 			};
 
 			var bonusStrong = new List<BonusMalus> {
@@ -644,36 +679,48 @@ namespace FF1Lib
 				new BonusMalus(BonusMalusAction.HpMod, "+80 HP", mod: 80),
 				new BonusMalus(BonusMalusAction.HitGrowth, "+2 Hit%/Lv", mod: 2),
 				new BonusMalus(BonusMalusAction.MDefGrowth, "+2 MDef/Lv", mod: 2),
-				new BonusMalus(BonusMalusAction.WeaponAdd, "Fighter\n Weapons", equipment: equipFighterWeapon, authclass: new List<AuthClass> { AuthClass.Thief, AuthClass.BlackBelt, AuthClass.WhiteMage, AuthClass.BlackMage } ),
-				new BonusMalus(BonusMalusAction.ArmorAdd, "Fighter\n Armors", equipment: equipFighterArmor, authclass: new List<AuthClass> { AuthClass.Thief, AuthClass.BlackBelt, AuthClass.WhiteMage, AuthClass.BlackMage, AuthClass.RedMage } ),
+				new BonusMalus(BonusMalusAction.WeaponAdd, "Fighter @S", equipment: equipFighterWeapon, authclass: new List<AuthClass> { AuthClass.Thief, AuthClass.BlackBelt, AuthClass.WhiteMage, AuthClass.BlackMage } ),
+				new BonusMalus(BonusMalusAction.ArmorAdd, "Fighter @A", equipment: equipFighterArmor, authclass: new List<AuthClass> { AuthClass.Thief, AuthClass.BlackBelt, AuthClass.WhiteMage, AuthClass.BlackMage, AuthClass.RedMage } ),
 				new BonusMalus(BonusMalusAction.SpcGrowth, "Improved MP", bytelist: improvedMPlist, authclass: new List<AuthClass> { AuthClass.RedMage, AuthClass.WhiteMage, AuthClass.BlackMage } ),
-				new BonusMalus(BonusMalusAction.WhiteSpellcaster, "White Mage\n Spells", mod: 2, mod2: 9, binarylist: wmWhiteSpells, bytelist: rmMPlist, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief, AuthClass.BlackBelt, AuthClass.BlackMage }),
-				new BonusMalus(BonusMalusAction.BlackSpellcaster, "Black Mage\n Spells", mod: 2, mod2: 9, binarylist: bmBlackSpells, bytelist: rmMPlist, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief, AuthClass.BlackBelt, AuthClass.WhiteMage }),
+				new BonusMalus(BonusMalusAction.WhiteSpellcaster, "White M. Sp", mod: 2, mod2: 9, binarylist: wmWhiteSpells, bytelist: rmMPlist, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief, AuthClass.BlackBelt, AuthClass.BlackMage }),
+				new BonusMalus(BonusMalusAction.BlackSpellcaster, "Black M. Sp", mod: 2, mod2: 9, binarylist: bmBlackSpells, bytelist: rmMPlist, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief, AuthClass.BlackBelt, AuthClass.WhiteMage }),
 				new BonusMalus(BonusMalusAction.PowerRW, "Sage Class", binarylist: wmWhiteSpells.Concat(bmBlackSpells).Concat(wwWhiteSpells).Concat(bwBlackSpells).ToList(), authclass: new List<AuthClass> { AuthClass.RedMage }),
-				new BonusMalus(BonusMalusAction.WhiteSpellcaster, "Early White\n Wizard", binarylist: wwWhiteSpells, authclass: new List<AuthClass> { AuthClass.WhiteMage }),
-				new BonusMalus(BonusMalusAction.BlackSpellcaster, "Early Black\n Wizard", binarylist: bwBlackSpells, authclass: new List<AuthClass> { AuthClass.BlackMage }),
+				new BonusMalus(BonusMalusAction.WhiteSpellcaster, "White W. Sp", binarylist: wwWhiteSpells, authclass: new List<AuthClass> { AuthClass.WhiteMage }),
+				new BonusMalus(BonusMalusAction.BlackSpellcaster, "Black W. Sp", binarylist: bwBlackSpells, authclass: new List<AuthClass> { AuthClass.BlackMage }),
 				//new BonusMalus(BonusMalusAction.EquipmentAdd, "+Knight\n Weapons", equipment: equipKnightWeapon, authclass: new List<AuthClass> { AuthClass.Thief, AuthClass.BlackBelt, AuthClass.WhiteMage, AuthClass.BlackMage } ),
 			};
 
 			var malusNormal = new List<BonusMalus> {
 				new BonusMalus(BonusMalusAction.StrMod, "-10 Str.", mod: -10),
-				new BonusMalus(BonusMalusAction.StrGrowth, "Black Mage\n Strength", binarylist: classData[(int)AuthClass.BlackMage].StrGrowth, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief, AuthClass.BlackBelt, AuthClass.RedMage }),
+				new BonusMalus(BonusMalusAction.StrMod, "-10 Str.", mod: -10),
+				new BonusMalus(BonusMalusAction.StrMod, "-15 Str.", mod: -15),
+				new BonusMalus(BonusMalusAction.StrGrowth, "BlackM Str.", binarylist: classData[(int)AuthClass.BlackMage].StrGrowth, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief, AuthClass.BlackBelt, AuthClass.RedMage }),
 				new BonusMalus(BonusMalusAction.AgiMod, "-10 Agi.", mod: -10),
-				new BonusMalus(BonusMalusAction.AgiGrowth, "Black Mage\n Agility", binarylist: classData[(int)AuthClass.BlackMage].AgiGrowth, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief, AuthClass.BlackBelt }),
+				new BonusMalus(BonusMalusAction.AgiMod, "-10 Agi.", mod: -10),
+				new BonusMalus(BonusMalusAction.AgiMod, "-15 Agi.", mod: -15),
+				new BonusMalus(BonusMalusAction.AgiGrowth, "BlackM Agi.", binarylist: classData[(int)AuthClass.BlackMage].AgiGrowth, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief, AuthClass.BlackBelt }),
 				new BonusMalus(BonusMalusAction.IntMod, "+80 Int.", mod: 80),
 				new BonusMalus(BonusMalusAction.VitMod, "-10 Vit.", mod: -10),
-				new BonusMalus(BonusMalusAction.AgiGrowth, "Black Mage\n Vitality", binarylist: classData[(int)AuthClass.BlackMage].VitGrowth, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.BlackBelt, AuthClass.RedMage }),
+				new BonusMalus(BonusMalusAction.VitMod, "-10 Vit.", mod: -10),
+				new BonusMalus(BonusMalusAction.VitMod, "-15 Vit.", mod: -15),
+				new BonusMalus(BonusMalusAction.AgiGrowth, "BlackM Vit.", binarylist: classData[(int)AuthClass.BlackMage].VitGrowth, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.BlackBelt, AuthClass.RedMage }),
 				new BonusMalus(BonusMalusAction.LckMod, "-5 Luck", mod: -5),
-				new BonusMalus(BonusMalusAction.LckMod, "-15 Luck", mod: -15),
+				new BonusMalus(BonusMalusAction.LckMod, "-5 Luck", mod: -5),
+				new BonusMalus(BonusMalusAction.LckMod, "-10 Luck", mod: -10),
 				new BonusMalus(BonusMalusAction.HpMod, "-20 HP", mod: -20),
-				new BonusMalus(BonusMalusAction.AgiGrowth, "Blk Mage HP", binarylist: classData[(int)AuthClass.BlackMage].HpGrowth, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.BlackBelt }),
+				new BonusMalus(BonusMalusAction.HpMod, "-20 HP", mod: -20),
+				new BonusMalus(BonusMalusAction.HpMod, "-30 HP", mod: -30),
+				new BonusMalus(BonusMalusAction.AgiGrowth, "BlackM HP", binarylist: classData[(int)AuthClass.BlackMage].HpGrowth, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.BlackBelt }),
 				new BonusMalus(BonusMalusAction.HitMod, "-10 Hit%", mod: -10),
-				new BonusMalus(BonusMalusAction.HitGrowth, "-1 Hit%\n Growth", mod: -1),
-				new BonusMalus(BonusMalusAction.MDefGrowth, "-1 MDef\n Growth", mod: -1),
+				new BonusMalus(BonusMalusAction.MDefMod, "-10 MDef", mod: -10),
+				new BonusMalus(BonusMalusAction.HitGrowth, "-1 Hit%/Lv", mod: -1),
+				new BonusMalus(BonusMalusAction.MDefGrowth, "-1 MDef/Lv", mod: -1),
 				new BonusMalus(BonusMalusAction.ArmorRemove, "-" + itemnames[(int)Item.Ribbon], equipment: new List<Item> { Item.Ribbon }),
-				new BonusMalus(BonusMalusAction.WeaponReplace, "Thief\n Weapons", equipment: equipThiefWeapon, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.RedMage } ),
+				new BonusMalus(BonusMalusAction.ArmorRemove, "-" + itemnames[(int)Item.ProRing], equipment: new List<Item> { Item.ProRing }),
+				new BonusMalus(BonusMalusAction.ArmorRemove, "No @B", equipment: new List<Item> { Item.Gold, Item.Opal, Item.Silver, Item.Copper }),
+				new BonusMalus(BonusMalusAction.WeaponReplace, "Thief @S", equipment: equipThiefWeapon, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.RedMage } ),
 				new BonusMalus(BonusMalusAction.SpcMax, "-4 Max MP", mod: -4, authclass: new List<AuthClass> {  AuthClass.RedMage, AuthClass.WhiteMage, AuthClass.BlackMage }),
-				new BonusMalus(BonusMalusAction.NoPromoMagic, "No Magic\n at Promo", mod: 0, mod2: 0, binarylist: nullSpells, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief }),
+				new BonusMalus(BonusMalusAction.NoPromoMagic, "No Promo Sp", mod: 0, mod2: 0, binarylist: nullSpells, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief }),
 				//new BonusMalus(BonusMalusAction.BlackNewSpellcaster, "Black Mage\n Spells", mod: 2, mod2: 9, binarylist: bmBlackSpells, bytelist: rmMPlist, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief, AuthClass.BlackBelt }),
 			};
 
@@ -686,48 +733,56 @@ namespace FF1Lib
 			var descriptionList = new List<string>();
 			for (int i = 0; i < 6; i++)
 			{
-				var tempstring = "";
+				var tempstring = new List<(int, string)>();
 
-				while (!bonusNormal.First().ClassList.Contains((AuthClass)i))
-					bonusNormal.Shuffle(rng);
-
-				assignedBonusMalus[i].Add(bonusNormal.First());
-				tempstring += bonusNormal.First().Description + "\n\n";
-
-				bonusNormal.RemoveRange(0, 1);
-				if (i == luckyDude)
+				if (i == luckyDude && maxbonus > 0)
 				{
 					while (!bonusStrong.First().ClassList.Contains((AuthClass)i))
 						bonusStrong.Shuffle(rng);
 
 					assignedBonusMalus[i].Add(bonusStrong.First());
-					tempstring += bonusStrong.First().Description + "\n\n";
+					tempstring.Add((0, bonusStrong.First().Description));
 					bonusStrong.RemoveRange(0, 1);
+
+					for (int j = 1; j < maxbonus; j++)
+					{
+						while (!bonusNormal.First().ClassList.Contains((AuthClass)i))
+							bonusNormal.Shuffle(rng);
+
+						assignedBonusMalus[i].Add(bonusNormal.First());
+						tempstring.Add((0, bonusNormal.First().Description));
+						bonusNormal.RemoveRange(0, 1);
+					}
 				}
 				else
 				{
-					while (!bonusNormal.First().ClassList.Contains((AuthClass)i))
-						bonusNormal.Shuffle(rng);
+					for (int j = 0; j < maxbonus; j++)
+					{
+						while (!bonusNormal.First().ClassList.Contains((AuthClass)i))
+							bonusNormal.Shuffle(rng);
 
-					assignedBonusMalus[i].Add(bonusNormal.First());
-					tempstring += bonusNormal.First().Description + "\n\n";
-					bonusNormal.RemoveRange(0, 1);
+						assignedBonusMalus[i].Add(bonusNormal.First());
+						tempstring.Add((0, bonusNormal.First().Description));
+						bonusNormal.RemoveRange(0, 1);
+					}
 				}
 
-				while (!malusNormal.First().ClassList.Contains((AuthClass)i) || assignedBonusMalus[i].Select(x => x.Action).ToList().Contains(malusNormal.First().Action))
-					malusNormal.Shuffle(rng);
+				for (int j = 0; j < maxmalus; j++)
+				{
+					while (!malusNormal.First().ClassList.Contains((AuthClass)i) || assignedBonusMalus[i].Select(x => x.Action).ToList().Contains(malusNormal.First().Action))
+						malusNormal.Shuffle(rng);
 
-				assignedBonusMalus[i].Add(malusNormal.First());
-				if (malusNormal.First().Action == BonusMalusAction.IntMod)
-					tempstring += malusNormal.First().Description;
-				else
-					tempstring += "\nMALUS\n\n" + malusNormal.First().Description;
+					assignedBonusMalus[i].Add(malusNormal.First());
+					if (malusNormal.First().Action == BonusMalusAction.IntMod)
+						tempstring.Add((0, malusNormal.First().Description));
+					else
+						tempstring.Add((1, malusNormal.First().Description));
 
-				malusNormal.RemoveRange(0, 1);
+					malusNormal.RemoveRange(0, 1);
+				}
 
-				descriptionList.Add(tempstring);
+				descriptionList.Add(string.Join("\n\n", tempstring.Where(x => x.Item1 == 0).Select(x => x.Item2)) + "\n\n\nMALUS\n\n" + string.Join("\n\n", tempstring.Where(x => x.Item1 == 1).Select(x => x.Item2)));
 			}
-
 			
 			for (int i = 0; i < 6; i++)
 			{
@@ -739,11 +794,9 @@ namespace FF1Lib
 					{
 						case BonusMalusAction.StrMod:
 							classData[i].StrStarting = (byte)Math.Max(classData[i].StrStarting + bonusmalus.StatMod, 0);
-							classData[i].DmgStarting = (byte)Math.Min(classData[i].StrStarting / 2, 255);
 							break;
 						case BonusMalusAction.AgiMod:
 							classData[i].AgiStarting = (byte)Math.Max(classData[i].AgiStarting + bonusmalus.StatMod, 0);
-							classData[i].EvaStarting = (byte)Math.Min(classData[i].AgiStarting + 48, 255);
 							break;
 						case BonusMalusAction.IntMod:
 							classData[i].IntStarting = (byte)Math.Max(classData[i].IntStarting + bonusmalus.StatMod, 0);
@@ -872,7 +925,6 @@ namespace FF1Lib
 					}
 				}
 			}
-
 			return descriptionList;
 		}
 
@@ -955,13 +1007,16 @@ namespace FF1Lib
 			var promoGauntlets = new List<(RankedType, Rank)> { (RankedType.Gauntlets, Rank.A), (RankedType.Gauntlets, Rank.S) };
 
 			var chargesRank = new List<(Rank, Rank, int, int)> {
-				(Rank.F, Rank.C, 0, 6),
+				(Rank.F, Rank.B, 0, 6),
 				(Rank.F, Rank.B, 1, 7),
 				(Rank.F, Rank.F, 2, 8),
 				(Rank.A, Rank.A, 3, 9),
 				(Rank.S, Rank.S, 4, 10),
 				(Rank.S, Rank.S, 5, 11)
 			};
+
+			List<string> classBaseString = new List<string> { "Fi", "Th", "Bb", "Rm", "Wm", "Bm" };
+			List<string> classPromoString = new List<string> { "Kn", "Ni", "Ma", "Rw", "Ww", "Bw" };
 
 			// new arrays
 			var newChargeList = new List<List<byte>>();
@@ -997,8 +1052,8 @@ namespace FF1Lib
 			var whitePermPromo = classData.GetRange(6, 6).Select(x => x.whitePermissions).ToList();
 			var blackPermBase = classData.GetRange(0, 6).Select(x => x.blackPermissions).ToList();
 			var blackPermPromo = classData.GetRange(6, 6).Select(x => x.blackPermissions).ToList();
-			var shuffleWhitePermissions = Enumerable.Zip(whitePermBase, whitePermPromo, (whitePermBase, whitePermPromo) => new KeyValuePair<List<bool>, List<bool>>(whitePermBase, whitePermPromo)).ToList();
-			var shuffleBlackPermissions = Enumerable.Zip(blackPermBase, blackPermPromo, (blackPermBase, blackPermPromo) => new KeyValuePair<List<bool>, List<bool>>(blackPermBase, blackPermPromo)).ToList();
+			var shuffleWhitePermissions = new List<int> { 0, 1, 2, 3, 4, 5 };
+			var shuffleBlackPermissions = new List<int> { 0, 1, 2, 3, 4, 5 };
 
 			// Actual Shuffle
 			shuffleStartingStats.Shuffle(rng);
@@ -1016,20 +1071,13 @@ namespace FF1Lib
 			int minLvStats = shuffleLevelUp.Select(x => x.Where(y => y == true).Count()).Min();
 			int spreadStats = (maxLvStats + maxStats - minLvStats - minStats) / 5;
 
-			int maxLvHp = shuffleHP.Select(x => x.Where(y => y == true).Count()).Max();
-			int minLvHp = shuffleHP.Select(x => x.Where(y => y == true).Count()).Min();
-			int spreadLvHp = (maxLvHp - minLvHp) / 5;
-
-			var maxMagic = 32;
-			var spreadMagic = 32 / 5;
-			var magicCounts = shuffleWhitePermissions.Select(x => x.Key.Where(y => y).Count())
-				.Concat(shuffleWhitePermissions.Select(x => x.Value.Where(y => y).Count()))
-				.Concat(shuffleBlackPermissions.Select(x => x.Key.Where(y => y).Count()))
-				.Concat(shuffleBlackPermissions.Select(x => x.Value.Where(y => y).Count())).ToList();
+			int maxLvHp = 555;
+			int minLvHp = 255;
+			int spreadLvHp = (maxLvHp - minLvHp) / 4;
 
 			var statsRanks = new List<Rank>();
 			var hpRanks = new List<Rank>();
-			var magicRanks = new List<Rank>();
+			var magicRanks = Enumerable.Repeat(Rank.F, 24).ToArray();
 
 			for (int i = 0; i < shuffleLevelUp.Count(); i++)
 			{
@@ -1049,34 +1097,56 @@ namespace FF1Lib
 
 			for (int i = 0; i < shuffleHP.Count(); i++)
 			{
-				if (shuffleHP[i].Where(x => x == true).Count() > (maxLvHp - spreadLvHp))
+				var hpAverage25 = classData[i].HpStarting +
+					(shuffleHP[i].GetRange(0, 24).Where(x => x == true).Count() * 23) +
+					(shuffleStartingStats[i*7+3]/4 + shuffleLevelUp[i*5+3].Where(x => x == true).Count()/8)*24;
+
+
+				if (hpAverage25 > (maxLvHp))
 					hpRanks.Add(Rank.S);
-				else if (shuffleHP[i].Where(x => x == true).Count() > (maxLvHp - spreadLvHp * 2))
+				else if (hpAverage25 > (maxLvHp - spreadLvHp))
 					hpRanks.Add(Rank.A);
-				else if (shuffleHP[i].Where(x => x == true).Count() > (maxLvHp - spreadLvHp * 3))
+				else if (hpAverage25 > (maxLvHp - spreadLvHp * 2))
 					hpRanks.Add(Rank.B);
-				else if (shuffleHP[i].Where(x => x == true).Count() > (maxLvHp - spreadLvHp * 4))
+				else if (hpAverage25 > (maxLvHp - spreadLvHp * 3))
 					hpRanks.Add(Rank.C);
-				else if (shuffleHP[i].Where(x => x == true).Count() > (maxLvHp - spreadLvHp * 5))
+				else if (hpAverage25 > (maxLvHp - spreadLvHp * 4))
 					hpRanks.Add(Rank.D);
 				else
 					hpRanks.Add(Rank.E);
 			}
 
-			for (int i = 0; i < magicCounts.Count(); i++)
+			for (int i = 0; i < 6; i++)
 			{
-				if (magicCounts[i] > (maxMagic - spreadMagic))
-					magicRanks.Add(Rank.S);
-				else if (magicCounts[i] > (maxMagic - spreadMagic * 2))
-					magicRanks.Add(Rank.A);
-				else if (magicCounts[i] > (maxMagic - spreadMagic * 3))
-					magicRanks.Add(Rank.B);
-				else if (magicCounts[i] > (maxMagic - spreadMagic * 4))
-					magicRanks.Add(Rank.C);
-				else if (magicCounts[i] > (maxMagic - spreadMagic * 5))
-					magicRanks.Add(Rank.D);
-				else
-					magicRanks.Add(Rank.F);
+				switch (shuffleWhitePermissions[i])
+				{
+					case 0:
+						magicRanks[i + 6] = Rank.C;
+						break;
+					case 3:
+						magicRanks[i] = Rank.C;
+						magicRanks[i + 6] = Rank.B;
+						break;
+					case 4:
+						magicRanks[i] = Rank.A;
+						magicRanks[i + 6] = Rank.S;
+						break;
+				}
+
+				switch (shuffleBlackPermissions[i])
+				{
+					case 1:
+						magicRanks[i+18] = Rank.B;
+						break;
+					case 3:
+						magicRanks[i + 12] = Rank.B;
+						magicRanks[i + 18] = Rank.A;
+						break;
+					case 5:
+						magicRanks[i + 12] = Rank.A;
+						magicRanks[i + 18] = Rank.S;
+						break;
+				}
 			}
 
 			// Update data
@@ -1098,15 +1168,22 @@ namespace FF1Lib
 				classData[i].MDefGrowth = shuffleMDef[i].Key;
 				classData[i + 6].MDefGrowth = shuffleMDef[i].Value;
 
-				classData[i].whitePermissions = shuffleWhitePermissions[i].Key;
-				classData[i + 6].whitePermissions = shuffleWhitePermissions[i].Value;
+				classData[i].whitePermissions = whitePermBase[shuffleWhitePermissions[i]];
+				classData[i + 6].whitePermissions = whitePermPromo[shuffleWhitePermissions[i]];
 				classData[i].Ranks[(int)RankedType.White] = magicRanks[i];
+				if(magicRanks[i] > Rank.F)
+					classData[i].MagicRanks[0] = classBaseString[shuffleWhitePermissions[i]];
 				classData[i + 6].Ranks[(int)RankedType.White] = magicRanks[i + 6];
-
-				classData[i].blackPermissions = shuffleBlackPermissions[i].Key;
-				classData[i + 6].blackPermissions = shuffleBlackPermissions[i].Value;
+				if (magicRanks[i + 6] > Rank.F)
+					classData[i + 6].MagicRanks[0] = classPromoString[shuffleWhitePermissions[i]];
+				classData[i].blackPermissions = blackPermBase[shuffleBlackPermissions[i]];
+				classData[i + 6].blackPermissions = blackPermPromo[shuffleBlackPermissions[i]];
 				classData[i].Ranks[(int)RankedType.Black] = magicRanks[i + 12];
+				if (magicRanks[i + 12] > Rank.F)
+					classData[i].MagicRanks[1] = classBaseString[shuffleBlackPermissions[i]];
 				classData[i + 6].Ranks[(int)RankedType.Black] = magicRanks[i + 18];
+				if (magicRanks[i + 18] > Rank.F)
+					classData[i + 6].MagicRanks[1] = classPromoString[shuffleBlackPermissions[i]];
 			}
 
 
@@ -1124,19 +1201,37 @@ namespace FF1Lib
 					var tempClass = chargesRank.Find(x => x.Item1 == startSpellcharges.First()).Item3;
 					classData[i].Ranks[(int)RankedType.Charges] = startSpellcharges.First();
 					classData[i + 6].Ranks[(int)RankedType.Charges] = startSpellcharges.First();
-					classData[i].SpCGrowth = chargeList[tempClass];
+					classData[i].MagicRanks[2] = classBaseString[tempClass];
+					classData[i + 6].MagicRanks[2] = classPromoString[tempClass];
+					classData[i].SpCGrowth = chargeList[tempClass].ToList();
 					classData[i].MaxSpC = maxCharges[tempClass];
 					classData[i + 6].MaxSpC = maxCharges[tempClass + 6];
 					classData[i].SpCStarting = 0x02;
 					classData[i + 6].SpCStarting = 0x02;
 					startSpellcharges.RemoveRange(0, 1);
 				}
-				else if (classData[i + 6].Ranks[(int)RankedType.White] > Rank.F || classData[i + 6].Ranks[(int)RankedType.Black] > Rank.F)
+				else if (classData[i + 6].Ranks[(int)RankedType.Black] > Rank.F)
 				{
-					var tempClass = chargesRank.Find(x => x.Item2 == promoSpellcharges.First()).Item3;
+					var tempClass = 1;
 					classData[i].Ranks[(int)RankedType.Charges] = Rank.F;
-					classData[i + 6].Ranks[(int)RankedType.Charges] = promoSpellcharges.First();
-					newChargeList.Add(chargeList[tempClass]);
+					classData[i + 6].Ranks[(int)RankedType.Charges] = Rank.B;
+					classData[i + 6].MagicRanks[2] = classPromoString[tempClass];
+					classData[i].SpCGrowth = chargeList[tempClass].ToList();
+					classData[i + 6].SpCGrowth = chargeList[tempClass].ToList();
+					classData[i].MaxSpC = maxCharges[tempClass];
+					classData[i + 6].MaxSpC = maxCharges[tempClass + 6];
+					classData[i].SpCStarting = 0x00;
+					classData[i + 6].SpCStarting = 0x00;
+					promoSpellcharges.RemoveRange(0, 1);
+				}
+				else if (classData[i + 6].Ranks[(int)RankedType.White] > Rank.F)
+				{
+					var tempClass = 0;
+					classData[i].Ranks[(int)RankedType.Charges] = Rank.F;
+					classData[i + 6].Ranks[(int)RankedType.Charges] = Rank.B;
+					classData[i + 6].MagicRanks[2] = classPromoString[tempClass];
+					classData[i].SpCGrowth = chargeList[tempClass].ToList();
+					classData[i + 6].SpCGrowth = chargeList[tempClass].ToList();
 					classData[i].MaxSpC = maxCharges[tempClass];
 					classData[i + 6].MaxSpC = maxCharges[tempClass + 6];
 					classData[i].SpCStarting = 0x00;
@@ -1151,7 +1246,6 @@ namespace FF1Lib
 					classData[i + 6].MaxSpC = 0x00;
 					classData[i].SpCStarting = 0x00;
 					classData[i + 6].SpCStarting = 0x00;
-					newChargeList.Add(chargeList[chargesRank.Find(x => x.Item2 == Rank.F).Item3]);
 				}
 			}
 

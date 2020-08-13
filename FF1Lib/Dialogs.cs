@@ -95,6 +95,20 @@ namespace FF1Lib
 			public static readonly Blob Talk_Astos = Blob.FromHex("CF94");
 			public static readonly Blob Talk_kill = Blob.FromHex("0995");
 		}
+		public bool RedMageHasLife()
+		{
+			var itemnames = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
+			var magicPermissions = Get(MagicPermissionsOffset, 8 * 12).Chunk(8);
+			var whiteArray = new List<byte> { 0x80, 0x40, 0x20, 0x10 };
+
+			var firstLifeIndex = itemnames.ToList().FindIndex(x => x.ToLower().Contains("lif")) - 176;
+			var secondLifeIndex = itemnames.ToList().FindIndex(firstLifeIndex + 177,x => x.ToLower().Contains("lif")) - 176;
+
+			var firstlife = ((~magicPermissions[3][firstLifeIndex / 8] & whiteArray[firstLifeIndex % 8]) > 0) ? true : false;
+			var secondlife = ((~magicPermissions[3][secondLifeIndex / 8] & whiteArray[secondLifeIndex % 8]) > 0) ? true : false;
+
+			return (firstlife || secondlife);
+		}
 		public void AddNewChars()
 		{
 			// New characters, frees up 5 characters at 0xCA, 0xCE, 0xE6, 0xE8, 0xE9
@@ -912,6 +926,10 @@ namespace FF1Lib
 			var hintschests = new List<string>() { "The $ is #.", "The $? It's # I believe.", "Did you know that the $ is #?", "My grandpa used to say 'The $ is #'.", "Did you hear? The $ is #!", "Wanna hear a secret? The $ is #!", "I've read somewhere that the $ is #.", "I used to have the $. I lost it #!", "I've hidden the $ #, can you find it?", "Interesting! This book says the $ is #!", "Duh, everyone knows that the $ is #!", "I saw the $ while I was #." };
 			var hintsnpc = new List<string>() { "& has the $.", "The $? Did you try asking &?", "The $? & will never part with it!", "& stole the $ from ME! I swear!", "& told me not to reveal he has the $.", "& is hiding something. I bet it's the $!" };
 			var hintsvendormed = new List<string>() { "The $ is for sale #.", "I used to have the $. I sold it #!", "There's a fire sale for the $ #.", "I almost bought the $ for sale #." };
+			var uselesshints = new List<string>() { "GET A SILK BAG FROM THE\nGRAVEYARD DUCK TO LIVE\nLONGER.", "You spoony bard!", "Press A to talk\nto NPCs!", "A crooked trader is\noffering bum deals in\nthis town.", "The game doesn't start\nuntil you say 'yes'.", "Thieves run away\nreally fast.", "No, I won't move quit\npushing me.","Dr. Unnes instant\ntranslation services,\njust send one slab\nand 299 GP for\nprocessing.","I am error.", "Kraken has a good chance\nto one-shot your knight.","If NPC guillotine is on,\npress reset now or your\nemulator will crash!","GET EQUIPPED WITH\nTED WOOLSEY." };
+
+			if (!RedMageHasLife())
+				uselesshints.Add("Red Mages have no life!");
 
 			// Set item pool from flags, we only give hints for randomized items
 			var incentivePool = new List<Item>();
@@ -1064,7 +1082,16 @@ namespace FF1Lib
 					tempHint = "I am error.";
 			}
 
+			if (flags.HintsUseless != false)
+			{
+				uselesshints.Shuffle(rng);
+				hintsList.Reverse();
+				var uselessHintsCount = hintsList.Count() / 2;
+				hintsList.RemoveRange(0, uselessHintsCount);
 
+				for (int i = 0; i < uselessHintsCount; i++)
+					hintsList.Add(uselesshints[i]);
+			}
 			//var hintsList = hints.ToList();
 			hintsList.Shuffle(rng);
 

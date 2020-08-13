@@ -115,6 +115,11 @@
 		"description": "Five NPC in dungeons reveals the location of an item. Down the dead end of Marsh Cave B1, on Lich's floor in Earth Cave, in the hallway of Gurgu Volcano B3, in a room on the left of Sea Shrine B4 and in the South room of Sky Palace 3F."
 	},
 	{
+		"Id": "hintsUselessCheckBox",
+		"title": "Useless Hints",
+		"description": "Half of the NPCs give useless hints."
+	},
+	{
 		"Id": "hintsRngDungeon",
 		"title": "Shuffled location in dungeon",
 		"description": "The NPCs could be at two other possible locations in each dungeon."
@@ -152,7 +157,7 @@
 	{
 		"Id": "RandomizeClassCheckBox",
 		"title": "Blursed Classes",
-		"description": "Give 2 bonus and 1 malus at random to each class. Press Select at Party selection screen and A at Status screen to reveal the modifiers."
+		"description": "Give bonuses and maluses at random to each class. Press Select at Party selection screen and A at Status screen to reveal the modifiers."
 	},
 	{
 		"Id": "RandomizeClassChaosCheckBox",
@@ -1024,6 +1029,11 @@
 		"Id": "changeLuteCheckBox",
 		"title": "Multi-instrumentalist Sara",
 		"description": "Change Princess Sara's Lute to another instrument."
+	},
+	{
+		"Id": "hurrayDwarfFate",
+		"title": "Hurray Dwarf's Fate",
+		"description": "Choose if Hurray Dwarf is spared when NPC Guillotine is on or kill him."
 	},
 	{
 		"Id": "earlierRubyCheckBox",

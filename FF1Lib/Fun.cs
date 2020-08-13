@@ -509,7 +509,6 @@ namespace FF1Lib
 			var dialogs = ReadText(dialogsPointerOffset, dialogsPointerBase, dialogsPointerCount);
 
 			var newLute = newInstruments.PickRandom(rng);
-
 			var dialogsUpdate = new Dictionary<int, string>();
 			var princessDialogue = dialogs[0x06].Split(new string[] { "LUTE" }, System.StringSplitOptions.RemoveEmptyEntries);
 			var monkDialogue = dialogs[0x35].Split(new string[] { "LUTE" }, System.StringSplitOptions.RemoveEmptyEntries);
@@ -519,6 +518,16 @@ namespace FF1Lib
 
 			if (monkDialogue.Length > 1)
 				dialogsUpdate.Add(0x35, monkDialogue[0] + newLute + monkDialogue[1].Substring(0,14) + "\n" + monkDialogue[1].Substring(15, 10).Replace('\n',' '));
+
+			// Add extra dialogues that might contain the LUTE if the NPChints flag is enabled
+			var npcHinters = new List<byte> { 0x45, 0x53, 0x69, 0x82, 0x8C, 0xAA, 0xCB, 0xDC, 0x9D, 0x70, 0xE3, 0xE1, 0xB6 };
+
+			for (int i = 0; i < npcHinters.Count(); i++)
+			{
+				var tempDialogue = dialogs[npcHinters[i]].Split(new string[] { "LUTE" }, System.StringSplitOptions.RemoveEmptyEntries);
+				if (tempDialogue.Length > 1)
+					dialogsUpdate.Add(npcHinters[i], tempDialogue[0] + newLute + tempDialogue[1]);
+			}
 
 			if (dialogsUpdate.Count > 0)
 				InsertDialogs(dialogsUpdate);
