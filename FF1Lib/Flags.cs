@@ -102,6 +102,7 @@ namespace FF1Lib
 
 
 		public bool? IncentivizeMasamune { get; set; } = false;
+		public bool? IncentivizeKatana { get; set; } = false;
 		public bool? IncentivizeVorpal { get; set; } = false;
 		public bool? IncentivizeOpal { get; set; } = false;
 		public bool? IncentivizeRibbon { get; set; } = false;
@@ -282,6 +283,11 @@ namespace FF1Lib
 		public bool? SpellcrafterRetainPermissions { get; set; } = false;
 		public bool? RandomWeaponBonus { get; set; } = false;
 		public bool? RandomArmorBonus { get; set; } = false;
+		public bool? RandomWeaponBonusExcludeMasa { get; set; } = false;
+		public int RandomWeaponBonusLow { get; set; } = -5;
+		public int RandomWeaponBonusHigh { get; set; } = 5;
+		public int RandomArmorBonusLow { get; set; } = -5;
+		public int RandomArmorBonusHigh { get; set; } = 5;
 		public bool? BalancedItemMagicShuffle { get; set; } = false;
 		public bool? SeparateBossHPScaling { get; set; } = false;
 		public bool? SeparateEnemyHPScaling { get; set; } = false;
@@ -367,6 +373,7 @@ namespace FF1Lib
 		public int IncentivizedItemCountMin => 0
 			+ ((IncentivizePromotion ?? false) ? 1 : 0)
 			+ ((IncentivizeMasamune ?? false) ? 1 : 0)
+			+ ((IncentivizeKatana ?? false) ? 1 : 0)
 			+ ((IncentivizeVorpal ?? false) ? 1 : 0)
 			+ ((IncentivizeOpal ?? false) ? 1 : 0)
 			+ ((IncentivizeRibbon ?? false) ? 1 : 0)
@@ -400,6 +407,7 @@ namespace FF1Lib
 		public int IncentivizedItemCountMax => 0
 			+ ((IncentivizePromotion ?? true) ? 1 : 0)
 			+ ((IncentivizeMasamune ?? true) ? 1 : 0)
+			+ ((IncentivizeKatana ?? true) ? 1 : 0)
 			+ ((IncentivizeVorpal ?? true) ? 1 : 0)
 			+ ((IncentivizeOpal ?? true) ? 1 : 0)
 			+ ((IncentivizeRibbon ?? true) ? 1 : 0)
@@ -453,6 +461,7 @@ namespace FF1Lib
 			+ ((IncentivizePromotion != null) ? (IncentivizePromotion ?? false ? "Tail " : "") : ("Tail? "))
 			+ ((IncentivizeTnt != null) ? (IncentivizeTnt ?? false ? "Tnt " : "") : ("Tnt? "))
 			+ ((IncentivizeMasamune != null) ? (IncentivizeMasamune ?? false ? "Masmune\U0001F5E1 " : "") : ("Masmune?\U0001F5E1 "))
+			+ ((IncentivizeKatana != null) ? (IncentivizeKatana ?? false ? "Katana\U0001F5E1 " : "") : ("Katana?\U0001F5E1 "))
 			+ ((IncentivizeVorpal != null) ? (IncentivizeVorpal ?? false ? "Vorpal\U0001F5E1 " : "") : ("Vorpal?\U0001F5E1 "))
 			+ ((IncentivizeXcalber != null) ? (IncentivizeXcalber ?? false ? "XCalber\U0001F5E1 " : "") : ("XCalber?\U0001F5E1 "))
 			+ ((IncentivizeDefCastWeapon != null) ? (IncentivizeDefCastWeapon ?? false ? "Defense\U0001F5E1 " : "") : ("Defense?\U0001F5E1 "))
@@ -555,6 +564,7 @@ namespace FF1Lib
 			sum = AddString(sum, 7, (FFRVersion.Sha.Length >= 7) ? FFRVersion.Sha.Substring(0,7) : FFRVersion.Sha.PadRight(7, 'X'));
 
 
+			sum = AddTriState(sum, flags.IncentivizeKatana);
 			sum = AddTriState(sum, flags.IncentivizeVorpal);
 			sum = AddTriState(sum, flags.Shops);
 			sum = AddTriState(sum, flags.Treasures);
@@ -791,6 +801,11 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.SpellcrafterRetainPermissions);
 			sum = AddTriState(sum, flags.RandomWeaponBonus);
 			sum = AddTriState(sum, flags.RandomArmorBonus);
+			sum = AddTriState(sum, flags.RandomWeaponBonusExcludeMasa);
+			sum = AddNumeric(sum, 19, flags.RandomWeaponBonusLow + 9);
+			sum = AddNumeric(sum, 19, flags.RandomWeaponBonusHigh + 9);
+			sum = AddNumeric(sum, 19, flags.RandomArmorBonusLow + 9);
+			sum = AddNumeric(sum, 19, flags.RandomArmorBonusHigh + 9);
 			sum = AddTriState(sum, flags.BalancedItemMagicShuffle);
 			sum = AddTriState(sum, flags.SeparateBossHPScaling);
 			sum = AddTriState(sum, flags.SeparateEnemyHPScaling);
@@ -857,6 +872,11 @@ namespace FF1Lib
 				SeparateEnemyHPScaling = GetTriState(ref sum),
 				SeparateBossHPScaling = GetTriState(ref sum),
 				BalancedItemMagicShuffle = GetTriState(ref sum),
+				RandomArmorBonusHigh = GetNumeric(ref sum, 19) - 9,
+				RandomArmorBonusLow = GetNumeric(ref sum, 19) - 9,
+				RandomWeaponBonusHigh = GetNumeric(ref sum, 19) - 9,
+				RandomWeaponBonusLow = GetNumeric(ref sum, 19) - 9,
+				RandomWeaponBonusExcludeMasa = GetTriState(ref sum),
 				RandomArmorBonus = GetTriState(ref sum),
 				RandomWeaponBonus = GetTriState(ref sum),
 				SpellcrafterRetainPermissions = GetTriState(ref sum),
@@ -1093,6 +1113,7 @@ namespace FF1Lib
 				Treasures = GetTriState(ref sum),
 				Shops = GetTriState(ref sum),
 				IncentivizeVorpal = GetTriState(ref sum),
+				IncentivizeKatana = GetTriState(ref sum),
 			};
 			string EncodedSha = GetString(ref sum, 7);
 			if (((FFRVersion.Sha.Length >= 7) ? FFRVersion.Sha.Substring(0, 7) : FFRVersion.Sha.PadRight(7, 'X')) != EncodedSha)

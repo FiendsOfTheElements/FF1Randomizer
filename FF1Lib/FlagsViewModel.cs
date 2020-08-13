@@ -833,6 +833,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeMasamune"));
 			}
 		}
+		public bool? IncentivizeKatana
+		{
+			get => Flags.IncentivizeKatana;
+			set
+			{
+				Flags.IncentivizeKatana = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeKatana"));
+			}
+		}
 		public bool? IncentivizeVorpal
 		{
 			get => Flags.IncentivizeVorpal;
@@ -2458,6 +2467,54 @@ namespace FF1Lib
 			{
 				Flags.RandomArmorBonus = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomArmorBonus"));
+			}
+		}
+
+		public bool? RandomWeaponBonusExcludeMasa
+		{
+			get => Flags.RandomWeaponBonusExcludeMasa;
+			set
+			{
+				Flags.RandomWeaponBonusExcludeMasa = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomWeaponBonusExcludeMasa"));
+			}
+		}
+
+		public int RandomWeaponBonusLow
+		{
+			get => Flags.RandomWeaponBonusLow;
+			set
+			{
+				Flags.RandomWeaponBonusLow = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomWeaponBonusLow"));
+			}
+		}
+		public int RandomWeaponBonusHigh
+		{
+			get => Flags.RandomWeaponBonusHigh;
+			set
+			{
+				Flags.RandomWeaponBonusHigh = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomWeaponBonusHigh"));
+			}
+		}
+
+		public int RandomArmorBonusLow
+		{
+			get => Flags.RandomArmorBonusLow;
+			set
+			{
+				Flags.RandomArmorBonusLow = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomArmorBonusLow"));
+			}
+		}
+		public int RandomArmorBonusHigh
+		{
+			get => Flags.RandomArmorBonusHigh;
+			set
+			{
+				Flags.RandomArmorBonusHigh = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomArmorBonusHigh"));
 			}
 		}
 

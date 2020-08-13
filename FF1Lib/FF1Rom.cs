@@ -568,12 +568,12 @@ namespace FF1Lib
 			//needs to go after item magic, moved after double weapon crit to have more control over the actual number of crit gained.
 			if ((bool)flags.RandomWeaponBonus)
 			{
-				RandomWeaponBonus(rng);
+				RandomWeaponBonus(rng, flags.RandomWeaponBonusLow, flags.RandomWeaponBonusHigh, (bool)flags.RandomWeaponBonusExcludeMasa);
 			}
 
 			if ((bool)flags.RandomArmorBonus)
 			{
-				RandomArmorBonus(rng);
+				RandomArmorBonus(rng, flags.RandomArmorBonusLow, flags.RandomWeaponBonusHigh);
 			}
 
 			if (flags.WeaponBonuses)

@@ -317,12 +317,17 @@
 	{
 		"Id": "RandomWeaponBonus",
 		"title": "Random Weapon Bonus",
-		"description": "Gives each weapon a random bonus of +5 to -5. This will increase or decrease its damage by 2 per bonus, hit by 3(max 50%) per bonus, crit by 3(1.5%) per bonus. All values cannot go below zero hit or 1 crit/damage."
+		"description": "Gives each weapon a random bonus from the selected range. This will increase or decrease (if negative) its damage by 2 per bonus, hit by 3(max 50%) per bonus, crit by 3(1.5%) per bonus. All values cannot go below zero hit or 1 crit/damage."
+	},
+	{
+		"Id": "RandomWeaponBonusExcludeMasa",
+		"title": "Random Weapon Bonus - Exclude Masa",
+		"description": "Masmune will not receive any bonuses or minuses, it will always be regular."
 	},
 	{
 		"Id": "RandomArmorBonus",
 		"title": "Random Armor Bonus",
-		"description": "Gives each armor a random bonus of +5 to -5. This will increase or decrease its absorb by 1 per bonus (2 for body armor) and reduce its weight penalty by 1 per bonus (2 for body armor)."
+		"description": "Gives each armor a random bonus from the selected range. This will increase or decrease (if negative) its absorb by 1 per bonus (2 for body armor) and reduce its weight penalty by 1 per bonus (2 for body armor)."
 	},
 	{
 		"Id": "separateBossHPScalingCheckBox",

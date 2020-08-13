@@ -145,7 +145,12 @@
 						<div class="checkbox-cell"></div>
 						<h4>Blursed Items</h4>
 						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="RandomWeaponBonus" @bind-Value="Flags.RandomWeaponBonus">Random Weapon Bonus</TriStateCheckBox>
+						<DoubleSlider Id="RandomWeaponBonusSlider" Indent IsEnabled="Flags.RandomWeaponBonus" MinValue="-9" MaxValue="9" Step="1" @bind-ValueHigh="Flags.RandomWeaponBonusHigh" @bind-ValueLow="Flags.RandomWeaponBonusLow">Weapon Bonus Range:</DoubleSlider>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="RandomWeaponBonusExcludeMasa" @bind-Value="Flags.RandomWeaponBonusExcludeMasa">Exclude Masmune</TriStateCheckBox>
+
 						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="RandomArmorBonus" @bind-Value="Flags.RandomArmorBonus">Random Armor Bonus</TriStateCheckBox>
+						<DoubleSlider Id="RandomWeaponBonusSlider" Indent IsEnabled="Flags.RandomArmorBonus" MinValue="-9" MaxValue="9" Step="1" @bind-ValueHigh="Flags.RandomArmorBonusHigh" @bind-ValueLow="Flags.RandomArmorBonusLow">Armor Bonus Range:</DoubleSlider>
+
 					</div>
                     <div class="col-md-4">
                         <h4>Locations: @(Flags.Flags.IncentivizedLocationCountMin) @((Flags.Flags.IncentivizedLocationCountMin != Flags.Flags.IncentivizedLocationCountMax) ? "- " + Flags.Flags.IncentivizedLocationCountMax : "") </h4>
@@ -165,26 +170,27 @@
                         <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeConeriaCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeConeria">Coneria (locked)</TriStateCheckBox>
                         <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeMarshKeyLockedCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeMarshKeyLocked">Marsh (locked)</TriStateCheckBox>
                     </div>
-                    <div class="col-md-4">
-                        <h4>Items: @(Flags.Flags.IncentivizedItemCountMin) @((Flags.Flags.IncentivizedItemCountMin != Flags.Flags.IncentivizedItemCountMax) ? "- " + Flags.Flags.IncentivizedItemCountMax : "")</h4>
-                        <p>@Flags.Flags.IncentivizedItems</p>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeMainItemsCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeMainItems">Main Progression Items</TriStateCheckBox>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeFetchItemsCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeFetchItems">Other Quest Items</TriStateCheckBox>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeAirshipCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeAirship">Floater</TriStateCheckBox>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeCanoeItemCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeCanoeItem">Canoe</TriStateCheckBox>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeShipAndCanalCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeShipAndCanal">Ship &amp; Canal</TriStateCheckBox>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeTailCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeTail">Tail</TriStateCheckBox>
-                        <div class="checkbox-cell"></div>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeMasamuneCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeMasamune">Masamune</TriStateCheckBox>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeVorpalCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeVorpal">Vorpal</TriStateCheckBox>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeDefCastWeaponCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeDefCastWeapon">Defense</TriStateCheckBox>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeOffCastWeaponCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeOffCastWeapon">Thor Hammer</TriStateCheckBox>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeOpalCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeOpal">Opal Bracelet</TriStateCheckBox>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeOtherCastArmorCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeOtherCastArmor">Power Gauntlet</TriStateCheckBox>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeDefCastArmorCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeDefCastArmor">White Shirt</TriStateCheckBox>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeOffCastArmorCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeOffCastArmor">Black Shirt</TriStateCheckBox>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeRibbonCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeRibbon">Ribbon</TriStateCheckBox>
-                    </div>
+					<div class="col-md-4">
+						<h4>Items: @(Flags.Flags.IncentivizedItemCountMin) @((Flags.Flags.IncentivizedItemCountMin != Flags.Flags.IncentivizedItemCountMax) ? "- " + Flags.Flags.IncentivizedItemCountMax : "")</h4>
+						<p>@Flags.Flags.IncentivizedItems</p>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeMainItemsCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeMainItems">Main Progression Items</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeFetchItemsCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeFetchItems">Other Quest Items</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeAirshipCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeAirship">Floater</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeCanoeItemCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeCanoeItem">Canoe</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeShipAndCanalCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeShipAndCanal">Ship &amp; Canal</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeTailCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeTail">Tail</TriStateCheckBox>
+						<div class="checkbox-cell"></div>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeMasamuneCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeMasamune">Masamune</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeKatanaCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeKatana">Katana</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeVorpalCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeVorpal">Vorpal</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeDefCastWeaponCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeDefCastWeapon">Defense</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeOffCastWeaponCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeOffCastWeapon">Thor Hammer</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeOpalCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeOpal">Opal Bracelet</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeOtherCastArmorCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeOtherCastArmor">Power Gauntlet</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeDefCastArmorCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeDefCastArmor">White Shirt</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeOffCastArmorCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeOffCastArmor">Black Shirt</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeRibbonCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeRibbon">Ribbon</TriStateCheckBox>
+					</div>
                 </div>
             </div>
         </BSCollapse>
@@ -268,13 +274,13 @@
         <BSCollapse IsOpen="@(activeTabs.Contains("Scale"))">
 			<div class="is-dark nes-container">
 				<ClampedSlider Min="1" Max="5" Step="0.1" UpdateToolTip="@UpdateToolTipID" Id="clampMinimumPriceScaleLable" @bind-Clamp="Flags.ClampMinimumPriceScale" @bind-Scale="Flags.PriceScaleFactor">Prices:</ClampedSlider>
-				<DoubleSlider Id="enemyStatsDoubleSlider" MinValue="20" MaxValue="500" @bind-ValueHigh="Flags.EnemyScaleStatsHigh" @bind-ValueLow="Flags.EnemyScaleStatsLow" @bind-Clamp="Flags.ClampEnemies">Enemy Stats:</DoubleSlider>
+				<ClampedDoubleSlider Id="enemyStatsDoubleSlider" MinValue="20" MaxValue="500" @bind-ValueHigh="Flags.EnemyScaleStatsHigh" @bind-ValueLow="Flags.EnemyScaleStatsLow" @bind-Clamp="Flags.ClampEnemies">Enemy Stats:</ClampedDoubleSlider>
 				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="separateEnemyHPScalingCheckBox" @bind-Value="Flags.SeparateEnemyHPScaling">Separate Enemy HP Scaling</TriStateCheckBox>
-				<DoubleSlider Id="enemyHpDoubleSlider" Indent IsEnabled="Flags.SeparateEnemyHPScaling" MinValue="20" MaxValue="500" @bind-ValueHigh="Flags.EnemyScaleHpHigh" @bind-ValueLow="Flags.EnemyScaleHpLow" @bind-Clamp="Flags.ClampEnemyHpScaling">Enemy Hp:</DoubleSlider>
+				<ClampedDoubleSlider Id="enemyHpDoubleSlider" Indent IsEnabled="Flags.SeparateEnemyHPScaling" MinValue="20" MaxValue="500" @bind-ValueHigh="Flags.EnemyScaleHpHigh" @bind-ValueLow="Flags.EnemyScaleHpLow" @bind-Clamp="Flags.ClampEnemyHpScaling">Enemy Hp:</ClampedDoubleSlider>
 
-				<DoubleSlider Id="bossStatsDoubleSlider" MinValue="20" MaxValue="500" @bind-ValueHigh="Flags.BossScaleStatsHigh" @bind-ValueLow="Flags.BossScaleStatsLow" @bind-Clamp="Flags.ClampMinimumBossStatScale">Boss Stats:</DoubleSlider>
+				<ClampedDoubleSlider Id="bossStatsDoubleSlider" MinValue="20" MaxValue="500" @bind-ValueHigh="Flags.BossScaleStatsHigh" @bind-ValueLow="Flags.BossScaleStatsLow" @bind-Clamp="Flags.ClampMinimumBossStatScale">Boss Stats:</ClampedDoubleSlider>
 				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="separateBossHPScalingCheckBox" @bind-Value="Flags.SeparateBossHPScaling">Separate Boss HP Scaling</TriStateCheckBox>
-				<DoubleSlider Id="bossHpDoubleSlider" Indent IsEnabled="Flags.SeparateBossHPScaling" MinValue="20" MaxValue="500" @bind-ValueHigh="Flags.BossScaleHpHigh" @bind-ValueLow="Flags.BossScaleHpLow" @bind-Clamp="Flags.ClampBossHPScaling">Boss Hp:</DoubleSlider>
+				<ClampedDoubleSlider Id="bossHpDoubleSlider" Indent IsEnabled="Flags.SeparateBossHPScaling" MinValue="20" MaxValue="500" @bind-ValueHigh="Flags.BossScaleHpHigh" @bind-ValueLow="Flags.BossScaleHpLow" @bind-Clamp="Flags.ClampBossHPScaling">Boss Hp:</ClampedDoubleSlider>
 
 				<div class="slider-cell"></div>
 				<div class="row">
