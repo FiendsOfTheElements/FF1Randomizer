@@ -102,6 +102,7 @@ namespace FF1Lib
 
 
 		public bool? IncentivizeMasamune { get; set; } = false;
+		public bool? IncentivizeKatana { get; set; } = false;
 		public bool? IncentivizeVorpal { get; set; } = false;
 		public bool? IncentivizeOpal { get; set; } = false;
 		public bool? IncentivizeRibbon { get; set; } = false;
@@ -366,6 +367,7 @@ namespace FF1Lib
 		public int IncentivizedItemCountMin => 0
 			+ ((IncentivizePromotion ?? false) ? 1 : 0)
 			+ ((IncentivizeMasamune ?? false) ? 1 : 0)
+			+ ((IncentivizeKatana ?? false) ? 1 : 0)
 			+ ((IncentivizeVorpal ?? false) ? 1 : 0)
 			+ ((IncentivizeOpal ?? false) ? 1 : 0)
 			+ ((IncentivizeRibbon ?? false) ? 1 : 0)
@@ -399,6 +401,7 @@ namespace FF1Lib
 		public int IncentivizedItemCountMax => 0
 			+ ((IncentivizePromotion ?? true) ? 1 : 0)
 			+ ((IncentivizeMasamune ?? true) ? 1 : 0)
+			+ ((IncentivizeKatana ?? true) ? 1 : 0)
 			+ ((IncentivizeVorpal ?? true) ? 1 : 0)
 			+ ((IncentivizeOpal ?? true) ? 1 : 0)
 			+ ((IncentivizeRibbon ?? true) ? 1 : 0)
@@ -452,6 +455,7 @@ namespace FF1Lib
 			+ ((IncentivizePromotion != null) ? (IncentivizePromotion ?? false ? "Tail " : "") : ("Tail? "))
 			+ ((IncentivizeTnt != null) ? (IncentivizeTnt ?? false ? "Tnt " : "") : ("Tnt? "))
 			+ ((IncentivizeMasamune != null) ? (IncentivizeMasamune ?? false ? "Masmune\U0001F5E1 " : "") : ("Masmune?\U0001F5E1 "))
+			+ ((IncentivizeKatana != null) ? (IncentivizeKatana ?? false ? "Katana\U0001F5E1 " : "") : ("Katana?\U0001F5E1 "))
 			+ ((IncentivizeVorpal != null) ? (IncentivizeVorpal ?? false ? "Vorpal\U0001F5E1 " : "") : ("Vorpal?\U0001F5E1 "))
 			+ ((IncentivizeXcalber != null) ? (IncentivizeXcalber ?? false ? "XCalber\U0001F5E1 " : "") : ("XCalber?\U0001F5E1 "))
 			+ ((IncentivizeDefCastWeapon != null) ? (IncentivizeDefCastWeapon ?? false ? "Defense\U0001F5E1 " : "") : ("Defense?\U0001F5E1 "))
@@ -631,6 +635,7 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.IncentivizeTitansTrove);
 			sum = AddTriState(sum, flags.BetterTrapChests);
 			sum = AddTriState(sum, flags.IncentivizeMasamune);
+			sum = AddTriState(sum, flags.IncentivizeKatana);
 			sum = AddTriState(sum, flags.IncentivizeOpal);
 			sum = AddTriState(sum, flags.IncentivizeRibbon);
 			sum = AddTriState(sum, flags.IncentivizeDefCastArmor);
@@ -1014,6 +1019,7 @@ namespace FF1Lib
 				IncentivizeRibbon = GetTriState(ref sum),
 				IncentivizeOpal = GetTriState(ref sum),
 				IncentivizeMasamune = GetTriState(ref sum),
+				IncentivizeKatana = GetTriState(ref sum),
 				BetterTrapChests = GetTriState(ref sum),
 				IncentivizeTitansTrove = GetTriState(ref sum),
 				IncentivizeSkyPalace = GetTriState(ref sum),
