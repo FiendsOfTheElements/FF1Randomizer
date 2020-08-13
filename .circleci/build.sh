@@ -9,7 +9,7 @@ cd FF1Blazorizer
 
 config=$(jq -r ".branchConfig | map(select(if .branch == \"default\" then true elif .branch == \"${CIRCLE_BRANCH}\" then true else false end)) | .[0]" ../.circleci/configs/config.json)
 echo "$config" | cat
-longName=$(echo  "$config" | jq -r ".longName")
+longName=$(echo "$config" | jq -r ".longName")
 shortName=$(echo "$config" | jq -r ".shortName")
 cssFile=$(echo "$config" | jq -r ".cssFile")
 themeColor=$(echo "$config" | jq -r ".themeColor")
@@ -23,4 +23,8 @@ sed -i "s/DARK_BACKGROUND_COLOR/$themeColor/g" wwwroot/index.html
 sed -i "s/SITE_ICON_COLOR/$siteIcon/g" wwwroot/manifest.published.json
 sed -i "s/SITE_ICON_COLOR/$siteIcon/g" wwwroot/index.html
 mv -f wwwroot/manifest.published.json wwwroot/manifest.json
-dotnet publish -c Release -o output
+if "$releaseBuild"; then
+    dotnet publish -c Release -o output
+else
+    dotnet publish -c Debug -o output
+fi
