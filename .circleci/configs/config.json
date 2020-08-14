@@ -8,7 +8,9 @@
             "themeColor": "#221d11",
             "cssFile": "css/main.css",
             "siteIcon": "normal",
-            "releaseBuild": true
+            "releaseBuild": true,
+            "netlifyID": "cd1fef70-df7f-44ab-b1c8-3239dae773ac",
+            "deployPreview": false
         },
         {
             "branch": "dev",
@@ -17,16 +19,20 @@
             "themeColor": "#111122",
             "cssFile": "css/beta.css",
             "siteIcon": "cyan",
-            "releaseBuild": false
+            "releaseBuild": false,
+            "netlifyID": "b1e4219e-dfb6-4efa-924f-3136bbf3fa26",
+            "deployPreview": false
         },
         {
             "branch": "default",
             "longName": "FFRandomizer - PR",
             "shortName": "FFR PR",
-            "themeColor": "#221d11",
+            "themeColor": "#221119",
             "cssFile": "css/alpha.css",
             "siteIcon": "red",
-            "releaseBuild": false
+            "releaseBuild": false,
+            "netlifyID": "61141991-cfa6-4a2e-ab6b-187b1611a2e4",
+            "deployPreview": true
         }
     ]
 }
