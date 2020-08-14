@@ -12,7 +12,9 @@
 				"cssFile",
 				"themeColor",
 				"siteIcon",
-				"releaseBuild"
+				"releaseBuild",
+				"netlifyID",
+				"deployPreview"
 			],
 			"type": "object",
 			"properties": {
@@ -43,6 +45,14 @@
 				"releaseBuild": {
 					"description": "Should this branch be built/published as a release build or a debug build",
 					"type": "boolean"
+				},
+				"netlifyID": {
+					"type": "string",
+					"description": "The netlify id to deploy this branch to"
+				},
+				"deployPreview": {
+					"type": "boolean",
+					"description": "Should this be deployed as a preview or as a real deployment"
 				}
 			}
 		}
