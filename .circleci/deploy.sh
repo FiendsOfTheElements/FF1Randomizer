@@ -26,5 +26,6 @@ if "$deployPreview"; then
       }'
 
 else
+    echo "nothing"
     # netlify deploy --dir=/root/ff1randomizer/FF1Blazorizer/output/wwwroot --prod --site="$netlifyID"
 fi
