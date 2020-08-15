@@ -7,7 +7,7 @@ echo "$config" | cat
 netlifyID=$(echo "$config" | jq -r ".netlifyID")
 deployPreview=$(echo "$config" | jq -r ".deployPreview")
 if "$deployPreview"; then
-    url=$(netlify deploy --json --dir=/root/ff1randomizer/FF1Blazorizer/output/wwwroot --site="$netlifyID" | js -r ".deploy_url")
+    url=$(netlify deploy --json --dir=/root/ff1randomizer/FF1Blazorizer/output/wwwroot --site="$netlifyID" | jq -r ".deploy_url")
 
     GH_USER=FFR_Build_And_Deploy
     pr_response=$(curl --location --request GET "https://api.github.com/repos/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/pulls?head=$CIRCLE_PROJECT_USERNAME:$CIRCLE_BRANCH&state=open" -u $GH_USER:"$GH_API")
