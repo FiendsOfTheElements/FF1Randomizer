@@ -1,4 +1,7 @@
 #!/bin/sh
+set -o errexit
+set -o verbose
+
 config=$(jq -r ".branchConfig | map(select(if .branch == \"default\" then true elif .branch == \"${CIRCLE_BRANCH}\" then true else false end)) | .[0]" .circleci/configs/config.json)
 echo "$config" | cat
 netlifyID=$(echo "$config" | jq -r ".netlifyID")
