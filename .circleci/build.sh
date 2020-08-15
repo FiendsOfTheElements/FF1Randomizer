@@ -11,7 +11,7 @@ config=$(jq -r ".branchConfig | map(select(if .branch == \"default\" then true e
 echo "$config" | cat
 longName=$(echo "$config" | jq -r ".longName")
 shortName=$(echo "$config" | jq -r ".shortName")
-cssFile=$(echo "$config" | jq -r ".cssFile")
+# cssFile=$(echo "$config" | jq -r ".cssFile")
 themeColor=$(echo "$config" | jq -r ".themeColor")
 siteIcon=$(echo "$config" | jq -r ".siteIcon")
 releaseBuild=$(echo "$config" | jq -r ".releaseBuild")
