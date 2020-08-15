@@ -3,7 +3,7 @@ set -o errexit
 set -x
 
 sed -i "s/SHA/${CIRCLE_SHA1}/" FF1Lib/FFRVersion.cs
-sed -i "s/BRANCH/${CIRCLE_BRANCH}/" FF1Lib/FFRVersion.cs
+sed -i "s|BRANCH|${CIRCLE_BRANCH}|" FF1Lib/FFRVersion.cs
 
 cd FF1Blazorizer
 
