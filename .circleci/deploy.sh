@@ -1,6 +1,6 @@
 #!/bin/sh
 set -o errexit
-set -o verbose
+set -x
 
 config=$(jq -r ".branchConfig | map(select(if .branch == \"default\" then true elif .branch == \"${CIRCLE_BRANCH}\" then true else false end)) | .[0]" .circleci/configs/config.json)
 echo "$config" | cat
