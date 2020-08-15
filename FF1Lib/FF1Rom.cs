@@ -632,7 +632,7 @@ namespace FF1Lib
 			}
 
 			var itemText = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
-			itemText[(int)Item.Ribbon].Trim();
+			itemText[(int)Item.Ribbon] = itemText[(int)Item.Ribbon].Remove(7);
 
 			ExpGoldBoost(flags.ExpBonus, flags.ExpMultiplier);
 			ScalePrices(flags, itemText, rng, ((bool)flags.ClampMinimumPriceScale), shopItemLocation);
@@ -705,7 +705,7 @@ namespace FF1Lib
 				NPCHints(rng, flags, overworldMap);
 			}
 
-			if ((bool)flags.RandomizeClass && !(bool)flags.EnablePoolParty)
+			if ((bool)flags.RandomizeClass)
 			{
 				RandomizeClass(rng, flags, oldItemNames);
 			}

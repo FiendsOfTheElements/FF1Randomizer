@@ -91,6 +91,7 @@
 		"EarlySarda": false,
 		"EarlySage": false,
 		"EarlyOrdeals": false,
+		"EarlyKing": false,
 		"ShuffleObjectiveNPCs": false,
 		"OnlyRequireGameIsBeatable": false,
 
@@ -110,7 +111,7 @@
 		"Dash": true,
 		"BuyTen": true,
 		"EnableCritNumberDisplay": true,
-		"NPCSwatter": true,
+		"NPCSwatter": false,
 		"InventoryAutosort": false,
 
 		"IdentifyTreasures": true,
@@ -126,6 +127,7 @@
 		"RebalanceSpells": true,
 		"BlackBeltAbsorb": true,
 		"BlackBeltMDEF": true,
+		"LockMode": 0,
 
 		"EnemyStatusAttackBug": true,
 		"EnemySpellsTargetingAllies": true,
