@@ -56,7 +56,7 @@ namespace FF1Lib
 		public void EnableEarlySage()
 		{
 			PutInBank(0x0E, 0x9580 + (int)ObjectId.CanoeSage, Blob.FromHex("00"));
-			InsertDialogs(0x2B, "The FIENDS are waking.\nTake this and go defeat\nthem!\n\n\nReceived #.");
+			InsertDialogs(0x2B, "The FIENDS are waking.\nTake this and go defeat\nthem!\n\n\nReceived #");
 		}
 
 		public void PartyRoulette()
@@ -476,6 +476,7 @@ namespace FF1Lib
 			const int newTalk_AstosBank = 0x0E;
 			const int NpcTalkSize = 2;
 			int Talk_Astos = newTalk.Talk_Astos[1] * 0x100 + newTalk.Talk_Astos[0];
+			var itemnames = ReadText(FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, 256);
 
 			// NPC pool to swap Astos with
 			List<ObjectId> npcpool = new List<ObjectId> { ObjectId.Astos, ObjectId.Bahamut, ObjectId.CanoeSage, ObjectId.CubeBot, ObjectId.ElfDoc,
@@ -497,29 +498,33 @@ namespace FF1Lib
 			// Swtich NPC to Astos
 			Put(NpcTalkOffset + (byte)newastos * NpcTalkSize, newTalk.Talk_Astos);
 
+			// Get items ID
+			var newastositem = Get(MapObjOffset + (byte)newastos * 4, 4)[3];
+			var nwkingitem = Get(MapObjOffset + (byte)ObjectId.Astos * 4, 4)[3];
+
 			// Custom dialogs for Astos NPC and the Kindly Old King
 			List<(byte, string)> astosdialogs = new List<(byte, string)>
 			{
 				(0x00, ""),
-				(0x02, "You have ruined my plans\nto steal this #!\nThe princess will see\nthrough my disguise.\nTremble before the might\nof Astos, the Dark King!"),
+				(0x02, "You have ruined my plans\nto steal this " + itemnames[newastositem].TrimEnd(' ') + "!\nThe princess will see\nthrough my disguise.\nTremble before the might\nof Astos, the Dark King!"),
 				(0x00, ""),(0x00, ""),(0x00, ""),
 				(0x0C, "You found the HERB?\nCurses! The Elf Prince\nmust never awaken.\nOnly then shall I,\nAstos, become\nthe King of ALL Elves!"),
-				(0x0E, "Is this a dream?.. Are\nyou, the LIGHT WARRIORS?\nHA! Thank you for waking\nme! I am actually Astos,\nKing of ALL Elves! You\nwon't take my #!"),
-				(0x12, "My CROWN! Oh, but it\ndoesn't go with this\noutfit at all. You keep\nit. But thanks! Here,\ntake this # also!"),
-				(0x14, "Oh, wonderful!\nNice work! Yes, this TNT\nis just what I need to\nblow open the vault.\nSoon more than\nthe # will\nbelong to Astos,\nKing of Dark Dwarves!"),
-				(0x16, "ADAMANT!! Now let me\nmake this #..\nAnd now that I have\nthis, you shall take a\nbeating from Astos,\nthe Dark Blacksmith!"),
-				(0x19, "You found my CRYSTAL and\nwant my #? Oh!\nI can see!! And now, you\nwill see the wrath of\nAstos, the Dark Witch!"),
+				(0x0E, "Is this a dream?.. Are\nyou, the LIGHT WARRIORS?\nHA! Thank you for waking\nme! I am actually Astos,\nKing of ALL Elves! You\nwon't take my " + itemnames[newastositem].TrimEnd(' ') + "!"),
+				(0x12, "My CROWN! Oh, but it\ndoesn't go with this\noutfit at all. You keep\nit. But thanks! Here,\ntake this " + itemnames[nwkingitem].TrimEnd(' ') + " also!"),
+				(0x14, "Oh, wonderful!\nNice work! Yes, this TNT\nis just what I need to\nblow open the vault.\nSoon more than\nthe " + itemnames[newastositem].TrimEnd(' ') + " will\nbelong to Astos,\nKing of Dark Dwarves!"),
+				(0x16, "ADAMANT!! Now let me\nmake this " + itemnames[newastositem].TrimEnd(' ') + "..\nAnd now that I have\nthis, you shall take a\nbeating from Astos,\nthe Dark Blacksmith!"),
+				(0x19, "You found my CRYSTAL and\nwant my " + itemnames[newastositem].TrimEnd(' ') + "? Oh!\nI can see!! And now, you\nwill see the wrath of\nAstos, the Dark Witch!"),
 				(0x1C, "Finally! With this SLAB,\nI shall conquer Lefein\nand her secrets will\nbelong to Astos,\nthe Dark Scholar!"),
 				(0x00, ""),
-				(0x1E, "Can't you take a hint?\nI just want to be left\nalone with my #!\nI even paid a Titan to\nguard the path! Fine.\nNow you face Astos,\nKing of the Hermits!"),
+				(0x1E, "Can't you take a hint?\nI just want to be left\nalone with my " + itemnames[newastositem].TrimEnd(' ') + "!\nI even paid a Titan to\nguard the path! Fine.\nNow you face Astos,\nKing of the Hermits!"),
 				(0x20, "Really, a rat TAIL?\nYou think this is what\nwould impress me?\nIf you want to prove\nyourself, face off with\nAstos, the Dark Dragon!"),
-				(0xCD, "Kupo?.. Lali ho?..\nMugu mugu?.. Fine! You\nare in the presence of\nAstos, the Dark Thief!\nI stole their #\nfair and square!"),
+				(0xCD, "Kupo?.. Lali ho?..\nMugu mugu?.. Fine! You\nare in the presence of\nAstos, the Dark Thief!\nI stole their " + itemnames[newastositem].TrimEnd(' ') + "\nfair and square!"),
 				(0x00, ""),
-				(0x27, "Boop Beep Boop..\nError! Malfunction!..\nI see you are not\nfooled. It is I, Astos,\nKing of the Dark Robots!\nYou shall never have\nthis #!"),
-				(0x06, "This # has passed from\nQueen to Princess for\n2000 years. It would\nhave been mine if you\nhadn't rescued me! Now\nyou face Astos, the\nDark Queen!"),
-				(0x23, "I, Astos the Dark Fairy,\nam free! The other\nfairies trapped me in\nthat BOTTLE! I'd give\nyou this # in\nthanks, but I would\nrather just kill you."),
+				(0x27, "Boop Beep Boop..\nError! Malfunction!..\nI see you are not\nfooled. It is I, Astos,\nKing of the Dark Robots!\nYou shall never have\nthis " + itemnames[newastositem].TrimEnd(' ') + "!"),
+				(0x06, "This " + itemnames[newastositem].TrimEnd(' ') + " has passed from\nQueen to Princess for\n2000 years. It would\nhave been mine if you\nhadn't rescued me! Now\nyou face Astos, the\nDark Queen!"),
+				(0x23, "I, Astos the Dark Fairy,\nam free! The other\nfairies trapped me in\nthat BOTTLE! I'd give\nyou this " + itemnames[newastositem].TrimEnd(' ') + " in\nthanks, but I would\nrather just kill you."),
 				(0x2A, "If you want pass, give\nme the RUBY..\nHa, it mine! Now, you in\ntrouble. Me am Astos,\nKing of the Titans!"),
-				(0x2B, "Curses! Do you know how\nlong it took me to\ninfiltrate these grumpy\nold men and steal\nthe #?\nNow feel the wrath of\nAstos, the Dark Sage!")
+				(0x2B, "Curses! Do you know how\nlong it took me to\ninfiltrate these grumpy\nold men and steal\nthe " + itemnames[newastositem].TrimEnd(' ') + "?\nNow feel the wrath of\nAstos, the Dark Sage!")
 			};
 
 			InsertDialogs(astosdialogs[(int)newastos].Item1, astosdialogs[(int)newastos].Item2);
@@ -604,7 +609,7 @@ namespace FF1Lib
 		public void EnableEarlyKing()
 		{
 			PutInBank(0x0E, 0x9580 + (int)ObjectId.King, Blob.FromHex("00"));
-			InsertDialogs(0x02, "To aid you on your\nquest, please take this.\n\n\n\nReceived #.");
+			InsertDialogs(0x02, "To aid you on your\nquest, please take this.\n\n\n\nReceived #");
 		}
 
 		public void EnableFreeBridge()
@@ -913,7 +918,7 @@ namespace FF1Lib
 			PutInBank(0x1E, 0x804D, Blob.FromHex("B085"));
 
 			// Routine to load the random pool in memory
-			PutInBank(0x1E, 0x80C1, Blob.FromHex("A23FBDAA849D0003CA10F7A209BD30869D4003CA10F760"));
+			PutInBank(0x1E, 0x80C1, Blob.FromHex("A23FBDAA849D0003CA10F7A209BD50869D4003CA10F760"));
 
 			// Zero out free space
 			sbyte[] zerofill = new sbyte[0x54];
@@ -923,7 +928,7 @@ namespace FF1Lib
 			PutInBank(0x1E, 0x801E, Blob.FromHex("20C180EAEAEAEAEAEAEAEA"));
 
 			// Standard party pool lut, byte1 = selection; byte2 = availability mask; byte3-10: characters pool
-			PutInBank(0x1E, 0x8630, Blob.FromHex("00FC0001020304050607"));
+			PutInBank(0x1E, 0x8650, Blob.FromHex("00FC0001020304050607"));
 
 			int size = 6;
 			Blob sizebyte = Blob.FromHex("");
@@ -969,7 +974,7 @@ namespace FF1Lib
 				pool += Blob.FromSBytes(new List<sbyte> { availableClasses.PickRandom(rng) }.ToArray());
 
 			// Pool size : 4 0xF0; 5 0xF8; 6 0xFC; 7 0xFE; 8 0xFF)
-			PutInBank(0x1E, 0x8630, Blob.FromHex("00") + sizebyte + pool);
+			PutInBank(0x1E, 0x8650, Blob.FromHex("00") + sizebyte + pool);
 
 			// Starting party composition
 			PutInBank(0x1E, 0x84AA, pool.SubBlob(0, 1));

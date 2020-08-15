@@ -5,12 +5,32 @@ using System.Text;
 
 namespace FF1Lib
 {
+	public class AllClasses
+	{
+		public bool? AllForced { get; set; }
+		public bool? AllFighters { get; set; }
+		public bool? AllThiefs { get; set; }
+		public bool? AllBlackBelts { get; set; }
+		public bool? AllRedMages { get; set; }
+		public bool? AllWhiteMages { get; set; }
+		public bool? AllBlackMages { get; set; }
+		public bool? AllKnights { get; set; }
+		public bool? AllNinjas { get; set; }
+		public bool? AllMasters { get; set; }
+		public bool? AllRedWizards { get; set; }
+		public bool? AllWhiteWizards { get; set; }
+		public bool? AllBlackWizards { get; set; }
+		public bool? AllNones { get; set; }
+
+	}
+
 	public class FlagsViewModel : INotifyPropertyChanged
 	{
 		public FlagsViewModel()
 		{
 			Flags = new Flags();
 			Preferences = new Preferences();
+			AllClasses = new AllClasses();
 		}
 
 		public string Encoded => Flags.EncodeFlagsText(Flags);
@@ -40,6 +60,325 @@ namespace FF1Lib
 			}
 		}
 
+		private AllClasses _allClasses;
+		public AllClasses AllClasses
+		{
+			get => _allClasses;
+			set
+			{
+				_allClasses = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AllClasses"));
+			}
+		}
+
+		public bool? AllFighters
+		{
+			get
+			{
+				if (Flags.FIGHTER1 == Flags.FIGHTER2 && Flags.FIGHTER2 == Flags.FIGHTER3 && Flags.FIGHTER3 == Flags.FIGHTER4)
+				{
+					AllClasses.AllFighters = Flags.FIGHTER1;
+				}
+				else { AllClasses.AllFighters = false; }
+
+				return AllClasses.AllFighters;
+			}
+			set
+			{
+				Flags.FIGHTER1 = value;
+				Flags.FIGHTER2 = value;
+				Flags.FIGHTER3 = value;
+				Flags.FIGHTER4 = value;
+				AllClasses.AllFighters = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AllFighters"));
+			}
+		}
+		public bool? AllThiefs
+		{
+			get
+			{
+				if (Flags.THIEF1 == Flags.THIEF2 && Flags.THIEF2 == Flags.THIEF3 && Flags.THIEF3 == Flags.THIEF4)
+				{
+					AllClasses.AllThiefs = Flags.THIEF1;
+				}
+				else { AllClasses.AllThiefs = false; }
+
+				return AllClasses.AllThiefs;
+			}
+			set
+			{
+				Flags.THIEF1 = value;
+				Flags.THIEF2 = value;
+				Flags.THIEF3 = value;
+				Flags.THIEF4 = value;
+				AllClasses.AllThiefs = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AllThiefs"));
+			}
+		}
+		public bool? AllBlackBelts
+		{
+			get
+			{
+				if (Flags.BLACK_BELT1 == Flags.BLACK_BELT2 && Flags.BLACK_BELT2 == Flags.BLACK_BELT3 && Flags.BLACK_BELT3 == Flags.BLACK_BELT4)
+				{
+					AllClasses.AllBlackBelts = Flags.BLACK_BELT1;
+				}
+				else { AllClasses.AllBlackBelts = false; }
+
+				return AllClasses.AllBlackBelts;
+			}
+			set
+			{
+				Flags.BLACK_BELT1 = value;
+				Flags.BLACK_BELT2 = value;
+				Flags.BLACK_BELT3 = value;
+				Flags.BLACK_BELT4 = value;
+				AllClasses.AllBlackBelts = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AllBlackBelts"));
+			}
+		}
+
+		public bool? AllRedMages
+		{
+			get
+			{
+				if (Flags.RED_MAGE1 == Flags.RED_MAGE2 && Flags.RED_MAGE2 == Flags.RED_MAGE3 && Flags.RED_MAGE3 == Flags.RED_MAGE4)
+				{
+					AllClasses.AllRedMages = Flags.RED_MAGE1;
+				}
+				else { AllClasses.AllRedMages = false; }
+
+				return AllClasses.AllRedMages;
+			}
+			set
+			{
+				Flags.RED_MAGE1 = value;
+				Flags.RED_MAGE2 = value;
+				Flags.RED_MAGE3 = value;
+				Flags.RED_MAGE4 = value;
+				AllClasses.AllRedMages = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AllRedMages"));
+			}
+		}
+		public bool? AllWhiteMages
+		{
+			get
+			{
+				if (Flags.WHITE_MAGE1 == Flags.WHITE_MAGE2 && Flags.WHITE_MAGE2 == Flags.WHITE_MAGE3 && Flags.WHITE_MAGE3 == Flags.WHITE_MAGE4)
+				{
+					AllClasses.AllWhiteMages = Flags.WHITE_MAGE1;
+				}
+				else { AllClasses.AllWhiteMages = false; }
+
+				return AllClasses.AllWhiteMages;
+			}
+			set
+			{
+				Flags.WHITE_MAGE1 = value;
+				Flags.WHITE_MAGE2 = value;
+				Flags.WHITE_MAGE3 = value;
+				Flags.WHITE_MAGE4 = value;
+				AllClasses.AllWhiteMages = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AllWhiteMages"));
+			}
+		}
+		public bool? AllBlackMages
+		{
+			get
+			{
+				if (Flags.BLACK_MAGE1 == Flags.BLACK_MAGE2 && Flags.BLACK_MAGE2 == Flags.BLACK_MAGE3 && Flags.BLACK_MAGE3 == Flags.BLACK_MAGE4)
+				{
+					AllClasses.AllBlackMages = Flags.BLACK_MAGE1;
+				}
+				else { AllClasses.AllBlackMages = false; }
+
+				return AllClasses.AllBlackMages;
+			}
+			set
+			{
+				Flags.BLACK_MAGE1 = value;
+				Flags.BLACK_MAGE2 = value;
+				Flags.BLACK_MAGE3 = value;
+				Flags.BLACK_MAGE4 = value;
+				AllClasses.AllBlackMages = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AllBlackMages"));
+			}
+		}
+		public bool? AllKnights
+		{
+			get
+			{
+				if (Flags.KNIGHT1 == Flags.KNIGHT2 && Flags.KNIGHT2 == Flags.KNIGHT3 && Flags.KNIGHT3 == Flags.KNIGHT4)
+				{
+					AllClasses.AllKnights = Flags.KNIGHT1;
+				}
+				else { AllClasses.AllKnights = false; }
+
+				return AllClasses.AllKnights;
+			}
+			set
+			{
+				Flags.KNIGHT1 = value;
+				Flags.KNIGHT2 = value;
+				Flags.KNIGHT3 = value;
+				Flags.KNIGHT4 = value;
+				AllClasses.AllKnights = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AllKnights"));
+			}
+		}
+		public bool? AllNinjas
+		{
+			get
+			{
+				if (Flags.NINJA1 == Flags.NINJA2 && Flags.NINJA2 == Flags.NINJA3 && Flags.NINJA3 == Flags.NINJA4)
+				{
+					AllClasses.AllNinjas = Flags.NINJA1;
+				}
+				else { AllClasses.AllNinjas = false; }
+
+				return AllClasses.AllNinjas;
+			}
+			set
+			{
+				Flags.NINJA1 = value;
+				Flags.NINJA2 = value;
+				Flags.NINJA3 = value;
+				Flags.NINJA4 = value;
+				AllClasses.AllNinjas = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AllNinjas"));
+			}
+		}
+		public bool? AllMasters
+		{
+			get
+			{
+				if (Flags.MASTER1 == Flags.MASTER2 && Flags.MASTER2 == Flags.MASTER3 && Flags.MASTER3 == Flags.MASTER4)
+				{
+					AllClasses.AllMasters = Flags.MASTER1;
+				}
+				else { AllClasses.AllMasters = false; }
+
+				return AllClasses.AllMasters;
+			}
+			set
+			{
+				Flags.MASTER1 = value;
+				Flags.MASTER2 = value;
+				Flags.MASTER3 = value;
+				Flags.MASTER4 = value;
+				AllClasses.AllMasters = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AllMasters"));
+			}
+		}
+		public bool? AllRedWizards
+		{
+			get
+			{
+				if (Flags.RED_WIZ1 == Flags.RED_WIZ2 && Flags.RED_WIZ2 == Flags.RED_WIZ3 && Flags.RED_WIZ3 == Flags.RED_WIZ4)
+				{
+					AllClasses.AllRedWizards = Flags.RED_WIZ1;
+				}
+				else { AllClasses.AllRedWizards = false; }
+
+				return AllClasses.AllRedWizards;
+			}
+			set
+			{
+				Flags.RED_WIZ1 = value;
+				Flags.RED_WIZ2 = value;
+				Flags.RED_WIZ3 = value;
+				Flags.RED_WIZ4 = value;
+				AllClasses.AllRedWizards = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AllRedWizards"));
+			}
+		}
+		public bool? AllWhiteWizards
+		{
+			get
+			{
+				if (Flags.WHITE_WIZ1 == Flags.WHITE_WIZ2 && Flags.WHITE_WIZ2 == Flags.WHITE_WIZ3 && Flags.WHITE_WIZ3 == Flags.WHITE_WIZ4)
+				{
+					AllClasses.AllWhiteWizards = Flags.WHITE_WIZ1;
+				}
+				else { AllClasses.AllWhiteWizards = false; }
+
+				return AllClasses.AllWhiteWizards;
+			}
+			set
+			{
+				Flags.WHITE_WIZ1 = value;
+				Flags.WHITE_WIZ2 = value;
+				Flags.WHITE_WIZ3 = value;
+				Flags.WHITE_WIZ4 = value;
+				AllClasses.AllWhiteWizards = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AllWhiteWizards"));
+			}
+		}
+		public bool? AllBlackWizards
+		{
+			get
+			{
+				if (Flags.BLACK_WIZ1 == Flags.BLACK_WIZ2 && Flags.BLACK_WIZ2 == Flags.BLACK_WIZ3 && Flags.BLACK_WIZ3 == Flags.BLACK_WIZ4)
+				{
+					AllClasses.AllBlackWizards = Flags.BLACK_WIZ1;
+				}
+				else { AllClasses.AllBlackWizards = false; }
+
+				return AllClasses.AllBlackWizards;
+			}
+			set
+			{
+				Flags.BLACK_WIZ1 = value;
+				Flags.BLACK_WIZ2 = value;
+				Flags.BLACK_WIZ3 = value;
+				Flags.BLACK_WIZ4 = value;
+				AllClasses.AllBlackWizards = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AllBlackWizards"));
+			}
+		}
+		public bool? AllForced
+		{
+			get
+			{
+				if (Flags.FORCED1 == Flags.FORCED2 && Flags.FORCED2 == Flags.FORCED3 && Flags.FORCED3 == Flags.FORCED4)
+				{
+					AllClasses.AllForced = Flags.FORCED1;
+				}
+				else { AllClasses.AllForced = false; }
+
+				return AllClasses.AllForced;
+			}
+			set
+			{
+				Flags.FORCED1 = value;
+				Flags.FORCED2 = value;
+				Flags.FORCED3 = value;
+				Flags.FORCED4 = value;
+				AllClasses.AllForced = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AllForced"));
+			}
+		}
+		public bool? AllNones
+		{
+			get
+			{
+				if (Flags.NONE_CLASS2 == Flags.NONE_CLASS3 && Flags.NONE_CLASS3 == Flags.NONE_CLASS4)
+				{
+					AllClasses.AllNones = Flags.NONE_CLASS2;
+				}
+				else { AllClasses.AllNones = false; }
+
+				return AllClasses.AllNones;
+			}
+			set
+			{
+				Flags.NONE_CLASS2 = value;
+				Flags.NONE_CLASS3 = value;
+				Flags.NONE_CLASS4 = value;
+				AllClasses.AllNones = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AllNones"));
+			}
+		}
 		public bool Spoilers
 		{
 			get => Flags.Spoilers;
