@@ -18,7 +18,7 @@ if "$deployPreview"; then
     else
         pr_comment_url=$(echo "$pr_response" | jq -r ".[]._links.comments.href")
     fi
-    url=$(echo "$url" | sed 's/\//\\\//g')
+    url=$(echo "$url" | sed 's/\//\\\//g' | cat)
     echo "$url"
     echo "{\"body\": \"Automatic deployment: ${url}\"}"
     curl -X POST -H "Accept: application/vnd.github.v3+json" "$pr_comment_url" -u $GH_USER:"$GH_API" -d "{\"body\": \"Automatic deployment: ${url}\"}" | cat
