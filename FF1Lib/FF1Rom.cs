@@ -236,7 +236,7 @@ namespace FF1Lib
 
 			if (((bool)flags.Treasures) && flags.ShardHunt && !flags.FreeOrbs)
 			{
-				EnableShardHunt(rng, flags.ShardCount, ((bool)flags.NPCItems));
+				EnableShardHunt(rng, flags.ShardCount);
 			}
 
 			if ((bool)flags.TransformFinalFormation)
@@ -483,7 +483,7 @@ namespace FF1Lib
 
 			if ((bool)flags.FreeCanal)
 			{
-				EnableFreeCanal();
+				EnableFreeCanal((bool)flags.NPCItems);
 			}
 
 			if ((bool)flags.FreeLute)

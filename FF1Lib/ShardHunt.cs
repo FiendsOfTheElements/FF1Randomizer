@@ -108,7 +108,7 @@ namespace FF1Lib
 			"SHARD", "JEWEL", "PIECE", "CHUNK", "PRISM", "STONE", "SLICE", "WEDGE", "BIGGS", "SLIVR", "ORBLT", "ESPER", "FORCE",
 		};
 
-		public void EnableShardHunt(MT19337 rng, ShardCount count, bool npcShuffleEnabled)
+		public void EnableShardHunt(MT19337 rng, ShardCount count)
 		{
 			int goal = 16;
 			switch (count) {
@@ -121,13 +121,6 @@ namespace FF1Lib
 				case ShardCount.Range16_24: goal = rng.Between(16, 24); break;
 				case ShardCount.Range24_32: goal = rng.Between(24, 32); break;
 				case ShardCount.Range16_36: goal = rng.Between(16, 36); break;
-			}
-
-			if (!npcShuffleEnabled)
-			{
-				// NPC Shuffle fixes OpenTreasureChest to not play the fanfare for Shards differently
-				System.Diagnostics.Debug.Assert(Data[0x7DDA0] == (byte)Item.Tent);
-				Data[0x7DDA0] = (byte)Item.Shard;
 			}
 
 			string shardName = ShardNames.PickRandom(rng);

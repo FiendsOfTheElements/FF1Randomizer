@@ -519,14 +519,17 @@ namespace FF1Lib
 			if (monkDialogue.Length > 1)
 				dialogsUpdate.Add(0x35, monkDialogue[0] + newLute + monkDialogue[1].Substring(0,14) + "\n" + monkDialogue[1].Substring(15, 10).Replace('\n',' '));
 
-			// Add extra dialogues that might contain the LUTE if the NPChints flag is enabled
-			var npcHinters = new List<byte> { 0x45, 0x53, 0x69, 0x82, 0x8C, 0xAA, 0xCB, 0xDC, 0x9D, 0x70, 0xE3, 0xE1, 0xB6 };
+			// Add extra dialogues that might contain the LUTE if the NPChints flag is enabled or if Astos Shuffle is enabled
+			var otherNPCs = new List<byte> {
+				0x45, 0x53, 0x69, 0x82, 0x8C, 0xAA, 0xCB, 0xDC, 0x9D, 0x70, 0xE3, 0xE1, 0xB6, // NPChints
+				0x02, 0x0E, 0x12, 0x14, 0x16, 0x19, 0x1E, 0xCD, 0x27, 0x23, 0x2B // SuffleAstos
+			};
 
-			for (int i = 0; i < npcHinters.Count(); i++)
+			for (int i = 0; i < otherNPCs.Count(); i++)
 			{
-				var tempDialogue = dialogs[npcHinters[i]].Split(new string[] { "LUTE" }, System.StringSplitOptions.RemoveEmptyEntries);
+				var tempDialogue = dialogs[otherNPCs[i]].Split(new string[] { "LUTE" }, System.StringSplitOptions.RemoveEmptyEntries);
 				if (tempDialogue.Length > 1)
-					dialogsUpdate.Add(npcHinters[i], tempDialogue[0] + newLute + tempDialogue[1]);
+					dialogsUpdate.Add(otherNPCs[i], tempDialogue[0] + newLute + tempDialogue[1]);
 			}
 
 			if (dialogsUpdate.Count > 0)

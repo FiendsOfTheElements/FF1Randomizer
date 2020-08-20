@@ -718,8 +718,7 @@ namespace FF1Lib
 				new BonusMalus(BonusMalusAction.AgiMod, "-10 Agi.", mod: -10),
 				new BonusMalus(BonusMalusAction.AgiMod, "-10 Agi.", mod: -10),
 				new BonusMalus(BonusMalusAction.AgiMod, "-15 Agi.", mod: -15),
-				new BonusMalus(BonusMalusAction.AgiGrowth, "BlackM Agi.", binarylist: classData[(int)AuthClass.BlackMage].AgiGrowth, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief, AuthClass.BlackBelt }),
-				new BonusMalus(BonusMalusAction.IntMod, "+80 Int.", mod: 80),
+				new BonusMalus(BonusMalusAction.AgiGrowth, "BlackM Agi.", binarylist: classData[(int)AuthClass.BlackMage].AgiGrowth, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief, AuthClass.BlackBelt }),				
 				new BonusMalus(BonusMalusAction.VitMod, "-10 Vit.", mod: -10),
 				new BonusMalus(BonusMalusAction.VitMod, "-10 Vit.", mod: -10),
 				new BonusMalus(BonusMalusAction.VitMod, "-15 Vit.", mod: -15),
@@ -743,6 +742,9 @@ namespace FF1Lib
 				new BonusMalus(BonusMalusAction.NoPromoMagic, "No Promo Sp", mod: 0, mod2: 0, binarylist: nullSpells, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief }),
 				//new BonusMalus(BonusMalusAction.BlackNewSpellcaster, "Black Mage\n Spells", mod: 2, mod2: 9, binarylist: bmBlackSpells, bytelist: rmMPlist, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief, AuthClass.BlackBelt }),
 			};
+
+			if(Rng.Between(rng, 0, 10) == 0)
+				malusNormal.Add(new BonusMalus(BonusMalusAction.IntMod, "+80 Int.", mod: 80));
 
 			var assignedBonusMalus = new List<List<BonusMalus>> { new List<BonusMalus>(), new List<BonusMalus>(), new List<BonusMalus>(), new List<BonusMalus>(), new List<BonusMalus>(), new List<BonusMalus>() };
 

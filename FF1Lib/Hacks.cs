@@ -498,33 +498,33 @@ namespace FF1Lib
 			// Swtich NPC to Astos
 			Put(NpcTalkOffset + (byte)newastos * NpcTalkSize, newTalk.Talk_Astos);
 
-			// Get items ID
-			var newastositem = Get(MapObjOffset + (byte)newastos * 4, 4)[3];
-			var nwkingitem = Get(MapObjOffset + (byte)ObjectId.Astos * 4, 4)[3];
+			// Get items name
+			var newastositem = FormattedItemName((Item)Get(MapObjOffset + (byte)newastos * 4, 4)[3]);
+			var nwkingitem = FormattedItemName((Item)Get(MapObjOffset + (byte)ObjectId.Astos * 4, 4)[3]);
 
 			// Custom dialogs for Astos NPC and the Kindly Old King
 			List<(byte, string)> astosdialogs = new List<(byte, string)>
 			{
 				(0x00, ""),
-				(0x02, "You have ruined my plans\nto steal this " + itemnames[newastositem].TrimEnd(' ') + "!\nThe princess will see\nthrough my disguise.\nTremble before the might\nof Astos, the Dark King!"),
+				(0x02, "You have ruined my plans\nto steal this " + newastositem + "!\nThe princess will see\nthrough my disguise.\nTremble before the might\nof Astos, the Dark King!"),
 				(0x00, ""),(0x00, ""),(0x00, ""),
 				(0x0C, "You found the HERB?\nCurses! The Elf Prince\nmust never awaken.\nOnly then shall I,\nAstos, become\nthe King of ALL Elves!"),
-				(0x0E, "Is this a dream?.. Are\nyou, the LIGHT WARRIORS?\nHA! Thank you for waking\nme! I am actually Astos,\nKing of ALL Elves! You\nwon't take my " + itemnames[newastositem].TrimEnd(' ') + "!"),
-				(0x12, "My CROWN! Oh, but it\ndoesn't go with this\noutfit at all. You keep\nit. But thanks! Here,\ntake this " + itemnames[nwkingitem].TrimEnd(' ') + " also!"),
-				(0x14, "Oh, wonderful!\nNice work! Yes, this TNT\nis just what I need to\nblow open the vault.\nSoon more than\nthe " + itemnames[newastositem].TrimEnd(' ') + " will\nbelong to Astos,\nKing of Dark Dwarves!"),
-				(0x16, "ADAMANT!! Now let me\nmake this " + itemnames[newastositem].TrimEnd(' ') + "..\nAnd now that I have\nthis, you shall take a\nbeating from Astos,\nthe Dark Blacksmith!"),
-				(0x19, "You found my CRYSTAL and\nwant my " + itemnames[newastositem].TrimEnd(' ') + "? Oh!\nI can see!! And now, you\nwill see the wrath of\nAstos, the Dark Witch!"),
+				(0x0E, "Is this a dream?.. Are\nyou, the LIGHT WARRIORS?\nHA! Thank you for waking\nme! I am actually Astos,\nKing of ALL Elves! You\nwon't take my " + newastositem + "!"),
+				(0x12, "My CROWN! Oh, but it\ndoesn't go with this\noutfit at all. You keep\nit. But thanks! Here,\ntake this " +nwkingitem + " also!"),
+				(0x14, "Oh, wonderful!\nNice work! Yes, this TNT\nis just what I need to\nblow open the vault.\nSoon more than\nthe " + newastositem + " will\nbelong to Astos,\nKing of Dark Dwarves!"),
+				(0x16, "ADAMANT!! Now let me\nmake this " + newastositem.TrimEnd(' ') + "..\nAnd now that I have\nthis, you shall take a\nbeating from Astos,\nthe Dark Blacksmith!"),
+				(0x19, "You found my CRYSTAL and\nwant my " + newastositem.TrimEnd(' ') + "? Oh!\nI can see!! And now, you\nwill see the wrath of\nAstos, the Dark Witch!"),
 				(0x1C, "Finally! With this SLAB,\nI shall conquer Lefein\nand her secrets will\nbelong to Astos,\nthe Dark Scholar!"),
 				(0x00, ""),
-				(0x1E, "Can't you take a hint?\nI just want to be left\nalone with my " + itemnames[newastositem].TrimEnd(' ') + "!\nI even paid a Titan to\nguard the path! Fine.\nNow you face Astos,\nKing of the Hermits!"),
+				(0x1E, "Can't you take a hint?\nI just want to be left\nalone with my " + newastositem + "!\nI even paid a Titan to\nguard the path! Fine.\nNow you face Astos,\nKing of the Hermits!"),
 				(0x20, "Really, a rat TAIL?\nYou think this is what\nwould impress me?\nIf you want to prove\nyourself, face off with\nAstos, the Dark Dragon!"),
-				(0xCD, "Kupo?.. Lali ho?..\nMugu mugu?.. Fine! You\nare in the presence of\nAstos, the Dark Thief!\nI stole their " + itemnames[newastositem].TrimEnd(' ') + "\nfair and square!"),
+				(0xCD, "Kupo?.. Lali ho?..\nMugu mugu?.. Fine! You\nare in the presence of\nAstos, the Dark Thief!\nI stole their " + newastositem + "\nfair and square!"),
 				(0x00, ""),
-				(0x27, "Boop Beep Boop..\nError! Malfunction!..\nI see you are not\nfooled. It is I, Astos,\nKing of the Dark Robots!\nYou shall never have\nthis " + itemnames[newastositem].TrimEnd(' ') + "!"),
-				(0x06, "This " + itemnames[newastositem].TrimEnd(' ') + " has passed from\nQueen to Princess for\n2000 years. It would\nhave been mine if you\nhadn't rescued me! Now\nyou face Astos, the\nDark Queen!"),
-				(0x23, "I, Astos the Dark Fairy,\nam free! The other\nfairies trapped me in\nthat BOTTLE! I'd give\nyou this " + itemnames[newastositem].TrimEnd(' ') + " in\nthanks, but I would\nrather just kill you."),
+				(0x27, "Boop Beep Boop..\nError! Malfunction!..\nI see you are not\nfooled. It is I, Astos,\nKing of the Dark Robots!\nYou shall never have\nthis " + newastositem + "!"),
+				(0x06, "This " + newastositem + " has passed\nfrom Queen to Princess\nfor 2000 years. It would\nhave been mine if you\nhadn't rescued me! Now\nyou face Astos, the\nDark Queen!"),
+				(0x23, "I, Astos the Dark Fairy,\nam free! The other\nfairies trapped me in\nthat BOTTLE! I'd give\nyou this " + newastositem + " in\nthanks, but I would\nrather just kill you."),
 				(0x2A, "If you want pass, give\nme the RUBY..\nHa, it mine! Now, you in\ntrouble. Me am Astos,\nKing of the Titans!"),
-				(0x2B, "Curses! Do you know how\nlong it took me to\ninfiltrate these grumpy\nold men and steal\nthe " + itemnames[newastositem].TrimEnd(' ') + "?\nNow feel the wrath of\nAstos, the Dark Sage!")
+				(0x2B, "Curses! Do you know how\nlong it took me to\ninfiltrate these grumpy\nold men and steal\nthe " + newastositem + "?\nNow feel the wrath of\nAstos, the Dark Sage!")
 			};
 
 			InsertDialogs(astosdialogs[(int)newastos].Item1, astosdialogs[(int)newastos].Item2);
@@ -632,9 +632,13 @@ namespace FF1Lib
 			Data[0x3006] = 165;
 		}
 
-		public void EnableFreeCanal()
+		public void EnableFreeCanal(bool npcShuffleEnabled)
 		{
 			Data[0x300C] = 0;
+
+			// Put safeguard to prevent softlock if TNT is turned in (as it will remove the Canal)
+			if(!npcShuffleEnabled)
+				PutInBank(0x0E, 0x95D5 + (int)ObjectId.Nerrick * 4 + 3, new byte[] { (byte)Item.Cabin });
 		}
 
 		public void EnableCanalBridge()
