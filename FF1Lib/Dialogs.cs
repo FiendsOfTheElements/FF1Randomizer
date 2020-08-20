@@ -248,28 +248,29 @@ namespace FF1Lib
 			Data[0x39075] = 0x15;
 			Data[0x39077] = 0x14;
 		}
-		public void FormatItems()
+
+		// Remove trailing spaces and return the right item for some generated text
+		public string FormattedItemName(Item item)
 		{
-			// Format items name so they look nicer in text boxes
-			var itemNames = ReadText(FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, 256);
-			Blob itemNamesBlob = Blob.FromHex("");
+			var itemnames = ReadText(FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, 256);
+			var formatted = itemnames[(byte)item].TrimEnd(' ');
 
-			for (int i = 1; i < 108; i++)
+			switch (item)
 			{
-				int name_length = 8;
-				if (i > 17 && i < 22) name_length = 2;
-				else if (i > 24 && i < 27) name_length = 6;
-				else if (i == 99) name_length = 9;
-
-				int pad_length = (i > 21) ? 5 : 0;
-
-				byte[] byteitemname = new byte[name_length];
-				itemNames[i] = itemNames[i].TrimEnd(' ').PadRight(pad_length);
-				Array.Copy(FF1Text.TextToBytes(itemNames[i], false), byteitemname, itemNames[i].Length);
-				itemNamesBlob = Blob.Concat(itemNamesBlob, byteitemname);
+				case Item.Ship:
+					formatted = FF1Text.BytesToText(Get(0x2B5D0, 8)).TrimEnd(' ');
+					break;
+				case Item.Bridge:
+					formatted = FF1Text.BytesToText(Get(0x2B5D0 + 16, 8)).TrimEnd(' ');
+					break;
+				case Item.Canal:
+					formatted = FF1Text.BytesToText(Get(0x2B5D0 + 24, 8)).TrimEnd(' ');
+					break;
+				case Item.Canoe:
+					formatted = FF1Text.BytesToText(Get(0x2B5D0, + 36)).TrimEnd(' ');
+					break;
 			}
-			
-			Put(ItemTextOffset + 1, itemNamesBlob);
+			return formatted;
 		}
 		// Insert a single dialog in the given position
 		public void InsertDialogs(int dialogID, string dialogtext)
