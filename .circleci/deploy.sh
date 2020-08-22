@@ -6,12 +6,13 @@ config=$(jq -r ".branchConfig | map(select(if .branch == \"default\" then true e
 netlifyID=$(echo "$config" | jq -r ".netlifyID")
 deployPreview=$(echo "$config" | jq -r ".deployPreview")
 if "$deployPreview"; then
-    # deploy_response=$(netlify deploy --json --dir=FF1Blazorizer/output/wwwroot --site="$netlifyID")
-    deploy_response=$(netlify deploy --json --dir=FF1Blazorizer/output/wwwroot --site="4ef4838f-158d-4929-bd24-d516bec18708")
+    deploy_response=$(netlify deploy --json --dir=FF1Blazorizer/output/wwwroot --site="$netlifyID")
+    # deploy_response=$(netlify deploy --json --dir=FF1Blazorizer/output/wwwroot --site="4ef4838f-158d-4929-bd24-d516bec18708")
     url=$(echo "$deploy_response" | jq -r ".deploy_url")
 
     GH_USER=FFR_Build_And_Deploy
     pr_response=$(curl --location --request GET "https://api.github.com/repos/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/pulls?head=$CIRCLE_PROJECT_USERNAME:$CIRCLE_BRANCH&state=open" -u $GH_USER:"$GH_API")
+    # pr_response=$(curl --location --request GET "https://api.github.com/repos/FiendsOfTheElements/FF1Randomizer/pulls?head=FiendsOfTheElements:$RANCH&state=open" -u $GH_USER:"$GH_API")
 
     if [ "$(echo "$pr_response" | jq length)" -eq 0 ]; then
         echo "No PR found to update"
