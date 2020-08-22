@@ -79,7 +79,7 @@ namespace FF1Lib
 			{
 				incentivePool.Add(Item.Chime);
 			}
-			if (flags.IncentivizeTail ?? false)
+			if (flags.IncentivizePromotion ?? false)
 			{
 				incentivePool.Add(Item.Tail);
 			}
@@ -107,6 +107,10 @@ namespace FF1Lib
 			if (flags.IncentivizeMasamune ?? false)
 			{
 				incentivePool.Add(Item.Masamune);
+			}
+			if (flags.IncentivizeVorpal ?? false)
+			{
+				incentivePool.Add(Item.Vorpal);
 			}
 			if (flags.IncentivizeRibbon ?? false)
 			{

@@ -31,7 +31,6 @@
     <None Remove="presets\ro16.json" />
     <None Remove="presets\ro8.json" />
     <None Remove="presets\semifinals.json" />
-    <None Remove="presets\swiss.json" />
     <None Remove="presets\tournament.json" />
     <None Remove="version.txt" />
   </ItemGroup>
@@ -51,10 +50,6 @@
     </Content>
     <Content Include="presets\improved-vanilla.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="presets\swiss.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
     <Content Include="version.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

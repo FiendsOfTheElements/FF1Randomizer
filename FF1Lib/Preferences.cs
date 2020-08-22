@@ -14,5 +14,6 @@ namespace FF1Lib
 		public MusicShuffle Music { get; set; }
 		public bool DisableDamageTileFlicker { get; set; }
 		public MenuColor MenuColor { get; set; } = MenuColor.Blue;
+		public MapmanSlot MapmanSlot { get; set; } = MapmanSlot.Leader;
 	}
 }

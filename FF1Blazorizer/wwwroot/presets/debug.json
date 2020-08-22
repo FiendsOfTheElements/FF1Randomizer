@@ -4,7 +4,6 @@
 	"Flags": {
 
 		"Spoilers": true,
-		"TournamentSafe": false,
 		"Shops": true,
 		"Treasures": true,
 		"NPCItems": true,
@@ -29,6 +28,7 @@
 		"ItemMagic": true,
 
 		"Rng": true,
+		"FixMissingBattleRngEntry": true,
 		"FormationShuffleMode": 1,
 		"EnemyFormationsUnrunnable": true,
 		"EnemyFormationsSurprise": true,
@@ -111,12 +111,16 @@
 		"BuyTen": true,
 		"EnableCritNumberDisplay": true,
 		"NPCSwatter": true,
+		"InventoryAutosort": false,
 
 		"IdentifyTreasures": true,
 		"WaitWhenUnrunnable": true,
 
 		"HouseMPRestoration": true,
 		"WeaponStats": true,
+		"BBCritRate": true,
+		"WeaponCritRate": true,
+		"WeaponBonuses": true,
 		"ChanceToRun": true,
 		"SpellBugs": true,
 		"RebalanceSpells": true,

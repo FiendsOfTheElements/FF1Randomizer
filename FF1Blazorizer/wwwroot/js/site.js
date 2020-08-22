@@ -57,3 +57,7 @@ function copyLocation() {
 	document.execCommand('copy');
 	document.body.removeChild(textarea);
 }
+
+function getScreenRightEdge() {
+	return window.innerWidth;
+}
