@@ -16,6 +16,7 @@ if "$deployPreview"; then
 
     if [ "$(echo "$pr_response" | jq length)" -eq 0 ]; then
         echo "No PR found to update"
+        exit 0
     else
         pr_comment_url=$(echo "$pr_response" | jq -r ".[]._links.comments.href")
     fi
