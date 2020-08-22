@@ -6,8 +6,8 @@ config=$(jq -r ".branchConfig | map(select(if .branch == \"default\" then true e
 netlifyID=$(echo "$config" | jq -r ".netlifyID")
 deployPreview=$(echo "$config" | jq -r ".deployPreview")
 if "$deployPreview"; then
-    # deploy_response=$(netlify deploy --debug --json --dir=FF1Blazorizer/output/wwwroot --site="$netlifyID")
-    deploy_response=$(netlify deploy --debug --json --dir=FF1Blazorizer/output/wwwroot --site="4ef4838f-158d-4929-bd24-d516bec18708")
+    deploy_response=$(netlify deploy --debug --json --dir=/root/ff1randomizer/FF1Blazorizer/output/wwwroot --site="$netlifyID")
+    # deploy_response=$(netlify deploy --debug --json --dir=FF1Blazorizer/output/wwwroot --site="4ef4838f-158d-4929-bd24-d516bec18708")
     url=$(echo "$deploy_response" | jq -r ".deploy_url")
 
     GH_USER=FFR_Build_And_Deploy
