@@ -1,14 +1,14 @@
 defaults: &defaults
   working_directory: ~/ff1randomizer
   docker:
-    - image: circleci/node:8
+    - image: fiendsoftheelements/netlify-build:alpine
 
 version: 2
 jobs:
   build:
     working_directory: ~/ff1randomizer
     docker:
-      - image: microsoft/dotnet:2.1-sdk
+      - image: fiendsoftheelements/netlify-build:alpine
     steps:
       - checkout
       - run:
@@ -16,39 +16,66 @@ jobs:
           command: |
             set -ex
             cd FF1Blazorizer
+            
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
-              dotnet publish -c Release
-              git rev-parse HEAD > bin/Release/netstandard2.0/publish/FF1Blazorizer/dist/version.txt
+              sed -i 's/NAME_LONG/FFRandomizer/g' wwwroot/manifest.published.json
+              sed -i 's/NAME_SHORT/FFR/g' wwwroot/manifest.published.json
+              color=$(grep "DARK_BACKGROUND_COLOR: #.*" wwwroot/css/main.css | grep -o "#[0-9a-fA-F]*")
+              sed -i "s/DARK_BACKGROUND_COLOR/$color/g" wwwroot/manifest.published.json
+              sed -i "s/DARK_BACKGROUND_COLOR/$color/g" wwwroot/index.html
+              sed -i 's/SITE_ICON_COLOR/normal/g' wwwroot/manifest.published.json
+              sed -i 's/SITE_ICON_COLOR/normal/g' wwwroot/index.html
+              mv -f wwwroot/manifest.published.json wwwroot/manifest.json
+              dotnet publish -c Release -o output
+            elif [ "${CIRCLE_BRANCH}" == "dev" ]; then
+              sed -i 's/NAME_LONG/FFRandomizer - beta/g' wwwroot/manifest.published.json
+              sed -i 's/NAME_SHORT/FFR β/g' wwwroot/manifest.published.json
+              color=$(grep "DARK_BACKGROUND_COLOR: #.*" wwwroot/css/beta.css | grep -o "#[0-9a-fA-F]*")
+              sed -i "s/DARK_BACKGROUND_COLOR/$color/g" wwwroot/manifest.published.json
+              sed -i "s/DARK_BACKGROUND_COLOR/$color/g" wwwroot/index.html
+              sed -i 's/main.css/beta.css/g' wwwroot/css/site.css
+              sed -i 's/SITE_ICON_COLOR/cyan/g' wwwroot/manifest.published.json
+              sed -i 's/SITE_ICON_COLOR/cyan/g' wwwroot/index.html
+              mv -f wwwroot/manifest.published.json wwwroot/manifest.json
+              dotnet publish -c Debug -o output
+            elif [ "${CIRCLE_BRANCH}" == "alpha" ]; then
+              sed -i 's/NAME_LONG/FFRandomizer - alpha/g' wwwroot/manifest.published.json
+              sed -i 's/NAME_SHORT/FFR α/g' wwwroot/manifest.published.json
+              color=$(grep "DARK_BACKGROUND_COLOR: #.*" wwwroot/css/alpha.css | grep -o "#[0-9a-fA-F]*")
+              sed -i "s/DARK_BACKGROUND_COLOR/$color/g" wwwroot/manifest.published.json
+              sed -i "s/DARK_BACKGROUND_COLOR/$color/g" wwwroot/index.html
+              sed -i 's/main.css/alpha.css/g' wwwroot/css/site.css
+              sed -i 's/SITE_ICON_COLOR/red/g' wwwroot/manifest.published.json
+              sed -i 's/SITE_ICON_COLOR/red/g' wwwroot/index.html
+              mv -f wwwroot/manifest.published.json wwwroot/manifest.json
+              dotnet publish -c Debug -o output
             else
-              dotnet publish -c Debug
-              git rev-parse HEAD > bin/Debug/netstandard2.0/publish/FF1Blazorizer/dist/version.txt
+              dotnet publish -c Debug -o output
             fi
+            git rev-parse HEAD > output/wwwroot/version.txt
       - persist_to_workspace:
-          root: ~/ff1randomizer
+          root: ~/ff1randomizer/FF1Blazorizer/output
           paths:
-            - FF1Blazorizer
+            - wwwroot
 
   deploy:
     <<: *defaults
     steps:
       - checkout
       - attach_workspace:
-          at: ~/ff1randomizer
+          at: ~/ff1randomizer/FF1Blazorizer/output
       - run:
           name: deploy
           command: |
-            set -ex
-            mkdir -p ~/.ssh
-            cp .ssh/known_hosts ~/.ssh/known_hosts
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
-              pushd FF1Blazorizer/bin/Release/netstandard2.0/publish/FF1Blazorizer/dist
+              netlify deploy --dir=/root/ff1randomizer/FF1Blazorizer/output/wwwroot --prod --site=cd1fef70-df7f-44ab-b1c8-3239dae773ac
+            elif [ "${CIRCLE_BRANCH}" == "dev" ]; then
+              netlify deploy --dir=/root/ff1randomizer/FF1Blazorizer/output/wwwroot --prod --site=b1e4219e-dfb6-4efa-924f-3136bbf3fa26
             else
-              pushd FF1Blazorizer/bin/Debug/netstandard2.0/publish/FF1Blazorizer/dist
+              netlify deploy --dir=/root/ff1randomizer/FF1Blazorizer/output/wwwroot --prod --site=61141991-cfa6-4a2e-ab6b-187b1611a2e4
             fi
-            tar cvzf ../../../../../../../FF1Blazorizer.tar.gz .
-            popd
-            scp FF1Blazorizer.tar.gz circle@finalfantasyrandomizer.com:FF1Blazorizer.tar.gz
-            ssh circle@finalfantasyrandomizer.com "./deployff1rblazor.sh $CIRCLE_BRANCH"
+         
+
 
 workflows:
   version: 2

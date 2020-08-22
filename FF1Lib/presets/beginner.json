@@ -4,7 +4,6 @@
 	"Flags": {
 
 		"Spoilers": true,
-		"TournamentSafe":  false,
 		"Shops": true,
 		"Treasures": true,
 		"NPCItems": true,
@@ -24,6 +23,7 @@
 		"PreserveFiendRefights": false,
 
 		"MagicShops": false,
+		"MagicShopLocs": false,
 		"MagicLevels": true,
 		"MagicPermissions": false,
 		"ItemMagic": false,
@@ -114,6 +114,9 @@
 
 		"HouseMPRestoration": true,
 		"WeaponStats": true,
+		"BBCritRate": true,
+		"WeaponCritRate": true,
+		"WeaponBonuses": true,
 		"ChanceToRun": true,
 		"SpellBugs": true,
 		"BlackBeltAbsorb": true,

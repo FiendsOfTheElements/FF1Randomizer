@@ -3,7 +3,6 @@
 
 	"Flags": {
 		"Spoilers": false,
-		"TournamentSafe": false,
 
 		"Shops": true,
 		"Treasures": true,
@@ -27,6 +26,7 @@
 		"RebalanceSpells": false,
 
 		"Rng": true,
+		"FixMissingBattleRngEntry": false,
 		"EverythingUnrunnable": false,
 		"EnemyFormationsUnrunnable": false,
 		"EnemyFormationsSurprise": false,
@@ -83,6 +83,7 @@
 		"BetterTrapChests": false,
 
 		"IncentivizeMasamune": true,
+		"IncentivizeVorpal": false,
 		"IncentivizeOpal": true,
 		"IncentivizeRibbon": true,
 
@@ -118,10 +119,14 @@
 
 		"HouseMPRestoration": true,
 		"WeaponStats": true,
+		"BBCritRate": true,
+		"WeaponCritRate": true,
+		"WeaponBonuses": true,
 		"ChanceToRun": true,
 		"SpellBugs": true,
 		"BlackBeltAbsorb": true,
 		"NPCSwatter": false,
+		"InventoryAutosort": false,
 
 		"EnemyStatusAttackBug": true,
 		"EnemySpellsTargetingAllies": true,
@@ -191,6 +196,7 @@
 		"ArmorPermissions": false,
 		"RecruitmentMode": false,
 		"RecruitmentModeHireOnly": false,
+		"RecruitmentModeReplaceOnlyNone": false,
 
 		"ClampMinimumStatScale": false,
 		"ClampMinimumBossStatScale": false,

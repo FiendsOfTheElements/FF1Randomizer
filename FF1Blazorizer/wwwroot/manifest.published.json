@@ -1,0 +1,35 @@
+{
+	"name": "NAME_LONG",
+	"short_name": "NAME_SHORT",
+	"description": "The randomizer for Final Fantasy 1.",
+	"start_url": "/",
+	"display": "standalone",
+	"background_color": "#ffffff",
+	"theme_color": "DARK_BACKGROUND_COLOR",
+	"icons": [
+		{
+			"src": "SITE_ICON_COLOR.ico",
+			"type": "image/x-icon",
+			"sizes": "16x16 24x24 32x32",
+			"purpose": "any maskable"
+		},
+		{
+			"src": "images/icons/warmech-SITE_ICON_COLOR-192.png",
+			"type": "image/png",
+			"sizes": "192x192",
+			"purpose": "any maskable"
+		},
+		{
+			"src": "images/icons/warmech-SITE_ICON_COLOR-256.png",
+			"type": "image/png",
+			"sizes": "256x256",
+			"purpose": "any maskable"
+		},
+		{
+			"src": "images/icons/warmech-SITE_ICON_COLOR-512.png",
+			"type": "image/png",
+			"sizes": "512x512",
+			"purpose": "any maskable"
+		}
+	]
+}

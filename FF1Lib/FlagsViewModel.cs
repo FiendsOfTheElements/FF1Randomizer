@@ -141,7 +141,7 @@ namespace FF1Lib
 			}
 		}
 
-		public FormationShuffleModeEnum FormationShuffleMode
+		public FormationShuffleMode FormationShuffleMode
 		{
 			get => Flags.FormationShuffleMode;
 			set
@@ -150,13 +150,13 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FormationShuffleMode"));
 			}
 		}
-		public WorldWealth WorldWealth
+		public WorldWealthMode WorldWealth
 		{
 			get => Flags.WorldWealth;
 			set
 			{
 				Flags.WorldWealth = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("WorldWealth"));
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("WorldWealthMode"));
 			}
 		}
 
@@ -172,13 +172,13 @@ namespace FF1Lib
 
 		public bool ShardHuntEnabled => !FreeOrbs;
 
-		public bool ExtraShards
+		public ShardCount ShardCount
 		{
-			get => Flags.ExtraShards;
+			get => Flags.ShardCount;
 			set
 			{
-				Flags.ExtraShards = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ExtraShards"));
+				Flags.ShardCount = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ShardCount"));
 			}
 		}
 
@@ -221,6 +221,16 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MagicShops"));
 			}
 		}
+
+		public bool? MagicShopLocs
+		{
+			get => Flags.MagicShopLocs;
+			set
+			{
+				Flags.MagicShopLocs = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MagicShopLocs"));
+			}
+		}
 		public bool? MagicLevels
 		{
 			get => Flags.MagicLevels;
@@ -256,6 +266,15 @@ namespace FF1Lib
 			{
 				Flags.Rng = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Rng"));
+			}
+		}
+		public bool FixMissingBattleRngEntry
+		{
+			get => Flags.FixMissingBattleRngEntry;
+			set
+			{
+				Flags.FixMissingBattleRngEntry = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FixMissingBattleRngEntry"));
 			}
 		}
 		public bool? EnemyFormationsUnrunnable
@@ -295,7 +314,7 @@ namespace FF1Lib
 			}
 		}
 
-		public MDefChangesEnum MDefMode
+		public MDEFGrowthMode MDefMode
 		{
 			get => Flags.MDefMode;
 			set
@@ -305,7 +324,7 @@ namespace FF1Lib
 			}
 		}
 
-		public FormationShuffleModeEnum FormationShuffleModeEnum
+		public FormationShuffleMode FormationShuffleModeEnum
 		{
 			get => Flags.FormationShuffleMode;
 			set
@@ -324,6 +343,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EnemyScripts"));
 			}
 		}
+		public bool? BossScriptsOnly
+		{
+			get => Flags.BossScriptsOnly;
+			set
+			{
+				Flags.BossScriptsOnly = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BossScripsOnly"));
+			}
+		}
 		public bool? EnemySkillsSpells
 		{
 			get => Flags.EnemySkillsSpells;
@@ -331,6 +359,15 @@ namespace FF1Lib
 			{
 				Flags.EnemySkillsSpells = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EnemySkillsSpells"));
+			}
+		}
+		public bool? BossSkillsOnly
+		{
+			get => Flags.BossSkillsOnly;
+			set
+			{
+				Flags.BossSkillsOnly = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BossSkillsOnly"));
 			}
 		}
 		public bool? EnemyStatusAttacks
@@ -503,6 +540,16 @@ namespace FF1Lib
 			{
 				Flags.MapOpenProgression = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MapOpenProgression"));
+			}
+		}
+
+		public bool? MapOpenProgressionDocks
+		{
+			get => Flags.MapOpenProgressionDocks;
+			set
+			{
+				Flags.MapOpenProgressionDocks = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MapOpenProgressionDocks"));
 			}
 		}
 		public bool? MapOpenProgressionExtended
@@ -721,6 +768,16 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeMasamune"));
 			}
 		}
+		public bool? IncentivizeVorpal
+		{
+			get => Flags.IncentivizeVorpal;
+			set
+			{
+				Flags.IncentivizeVorpal = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeVorpal"));
+			}
+		}
+
 		public bool? IncentivizeOpal
 		{
 			get => Flags.IncentivizeOpal;
@@ -907,6 +964,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SpeedHacks"));
 			}
 		}
+		public bool InventoryAutosort
+		{
+			get => Flags.InventoryAutosort;
+			set
+			{
+				Flags.InventoryAutosort = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("InventoryAutosort"));
+			}
+		}
 		public bool NoPartyShuffle
 		{
 			get => Flags.NoPartyShuffle;
@@ -988,6 +1054,33 @@ namespace FF1Lib
 			{
 				Flags.WeaponStats = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("WeaponStats"));
+			}
+		}
+		public bool BBCritRate
+		{
+			get => Flags.BBCritRate;
+			set
+			{
+				Flags.BBCritRate = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BBCritRate"));
+			}
+		}
+		public bool WeaponCritRate
+		{
+			get => Flags.WeaponCritRate;
+			set
+			{
+				Flags.WeaponCritRate = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("WeaponCritRate"));
+			}
+		}
+		public bool WeaponBonuses
+		{
+			get => Flags.WeaponBonuses;
+			set
+			{
+				Flags.WeaponBonuses = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("WeaponBonuses"));
 			}
 		}
 		public bool ChanceToRun
@@ -1301,6 +1394,16 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MenuColor"));
 			}
 		}
+		public MapmanSlot MapmanSlot
+		{
+			get => Preferences.MapmanSlot;
+			set
+			{
+				Preferences.MapmanSlot = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MapmanSlot"));
+			}
+		}
+
 		public bool? RecruitmentMode
 		{
 			get => Flags.RecruitmentMode;
@@ -1317,6 +1420,15 @@ namespace FF1Lib
 			{
 				Flags.RecruitmentModeHireOnly = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RecruitmentModeHireOnly"));
+			}
+		}
+		public bool? RecruitmentModeReplaceOnlyNone
+		{
+			get => Flags.RecruitmentModeReplaceOnlyNone;
+			set
+			{
+				Flags.RecruitmentModeReplaceOnlyNone = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RecruitmentModeReplaceOnlyNone"));
 			}
 		}
 		public bool? FORCED1
@@ -1685,7 +1797,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomTreasure"));
 			}
 		}
-		public WorldWealth WorldWealthEnum
+		public WorldWealthMode WorldWealthEnum
 		{
 			get => Flags.WorldWealth;
 			set
@@ -1793,13 +1905,40 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DisableInnSaving"));
 			}
 		}
-		public bool RandomizeFormationEnemizer
+		public bool? RandomizeEnemizer
+		{
+			get => Flags.RandomizeEnemizer;
+			set
+			{
+				Flags.RandomizeEnemizer = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomizeEnemizer"));
+			}
+		}
+		public bool? RandomizeFormationEnemizer
 		{
 			get => Flags.RandomizeFormationEnemizer;
 			set
 			{
 				Flags.RandomizeFormationEnemizer = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomizeFormationEnemizer"));
+			}
+		}
+		public bool? GenerateNewSpellbook
+		{
+			get => Flags.GenerateNewSpellbook;
+			set
+			{
+				Flags.GenerateNewSpellbook = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("GenerateNewSpellbook"));
+			}
+		}
+		public bool? SpellcrafterMixSpells
+		{
+			get => Flags.SpellcrafterMixSpells;
+			set
+			{
+				Flags.SpellcrafterMixSpells = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SpellcrafterMixSpells"));
 			}
 		}
 		public bool ThiefHitRate
@@ -1809,6 +1948,53 @@ namespace FF1Lib
 			{
 				Flags.ThiefHitRate = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ThiefHitRate"));
+			}
+		}
+		public bool AllSpellLevelsForKnightNinja
+		{
+			get => Flags.AllSpellLevelsForKnightNinja;
+			set
+			{
+				Flags.AllSpellLevelsForKnightNinja = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AllSpellLevelsForKnightNinja"));
+			}
+		}
+		public bool? FreeTail
+		{
+			get => Flags.FreeTail;
+			set
+			{
+				Flags.FreeTail = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeTail"));
+			}
+		}
+		public bool? SpellcrafterRetainPermissions
+		{
+			get => Flags.SpellcrafterRetainPermissions;
+			set
+			{
+				Flags.SpellcrafterRetainPermissions = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SpellcrafterRetainPermissions"));
+			}
+		}
+
+		public bool? RandomWeaponBonus
+		{
+			get => Flags.RandomWeaponBonus;
+			set
+			{
+				Flags.RandomWeaponBonus = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomWeaponBonus"));
+			}
+		}
+
+		public bool? RandomArmorBonus
+		{
+			get => Flags.RandomArmorBonus;
+			set
+			{
+				Flags.RandomArmorBonus = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomArmorBonus"));
 			}
 		}
 	}

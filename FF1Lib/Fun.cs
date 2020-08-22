@@ -49,66 +49,79 @@ namespace FF1Lib
 		Black = 0x0F,
 	}
 
-    public partial class FF1Rom
-    {
-	    public const int TyroPaletteOffset = 0x30FC5;
-	    public const int TyroSpriteOffset = 0x20560;
+	public enum MapmanSlot
+	{
+		[Description("Leader")]
+		Leader = 0x00,
+		[Description("Second")]
+		Second = 0x01,
+		[Description("Third")]
+		Third = 0x02,
+		[Description("Fourth")]
+		Fourth = 0x03,
+	}
 
-	    public const int PaletteOffset = 0x30F20;
-	    public const int PaletteSize = 4;
-	    public const int PaletteCount = 64;
 
-	    public void FunEnemyNames(bool teamSteak)
-	    {
-		    var enemyText = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
+	public partial class FF1Rom
+	{
+		public const int TyroPaletteOffset = 0x30FC5;
+		public const int TyroSpriteOffset = 0x20560;
 
-		    enemyText[1] = "GrUMP";
-		    enemyText[2] = "RURURU"; // +2
-		    enemyText[3] = "GrrrWOLF"; // +2
-		    enemyText[28] = "GeORGE";
-		    enemyText[30] = "R.SNEK"; // +3
-		    enemyText[31] = "GrSNEK"; // +1
-		    enemyText[32] = "SeaSNEK"; // -1
-		    enemyText[40] = "iMAGE";
-		    enemyText[56] = "EXPEDE"; // +2
-		    enemyText[66] = "White D";
-		    enemyText[72] = "MtlSLIME"; // +3
-		    if (teamSteak)
-		    {
-			    enemyText[85] = "STEAK"; // +1
-			    enemyText[86] = "T.BONE"; // +1
-		    }
+		public const int PaletteOffset = 0x30F20;
+		public const int PaletteSize = 4;
+		public const int PaletteCount = 64;
+
+		public void FunEnemyNames(bool teamSteak)
+		{
+			var enemyText = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
+
+			enemyText[1] = "GrUMP";
+			enemyText[2] = "RURURU"; // +2
+			enemyText[3] = "GrrrWOLF"; // +2
+			enemyText[28] = "GeORGE";
+			enemyText[30] = "R.SNEK"; // +3
+			enemyText[31] = "GrSNEK"; // +1
+			enemyText[32] = "SeaSNEK"; // -1
+			enemyText[40] = "iMAGE";
+			enemyText[56] = "EXPEDE"; // +2
+			enemyText[66] = "White D";
+			enemyText[72] = "MtlSLIME"; // +3
+			if (teamSteak)
+			{
+				enemyText[85] = "STEAK"; // +1
+				enemyText[86] = "T.BONE"; // +1
+			}
 			enemyText[92] = "NACHO"; // -1
-		    enemyText[106] = "Green D"; // +2
-		    enemyText[111] = "OKAYMAN"; // +1
+			enemyText[106] = "Green D"; // +2
+			enemyText[111] = "OKAYMAN"; // +1
 
 			// Moving IMP and GrIMP gives me another 10 bytes, for a total of 19 extra bytes, of which I'm using 16.
 			var enemyTextPart1 = enemyText.Take(2).ToArray();
-		    var enemyTextPart2 = enemyText.Skip(2).ToArray();
-		    WriteText(enemyTextPart1, EnemyTextPointerOffset, EnemyTextPointerBase, 0x2CFEC);
-		    WriteText(enemyTextPart2, EnemyTextPointerOffset + 4, EnemyTextPointerBase, EnemyTextOffset);
-	    }
+			var enemyTextPart2 = enemyText.Skip(2).ToArray();
+			WriteText(enemyTextPart1, EnemyTextPointerOffset, EnemyTextPointerBase, 0x2CFEC);
+			WriteText(enemyTextPart2, EnemyTextPointerOffset + 4, EnemyTextPointerBase, EnemyTextOffset);
+		}
 
-	    public void PaletteSwap(MT19337 rng)
-	    {
-		    var palettes = Get(PaletteOffset, PaletteSize * PaletteCount).Chunk(PaletteSize);
+		public void PaletteSwap(MT19337 rng)
+		{
+			var palettes = Get(PaletteOffset, PaletteSize * PaletteCount).Chunk(PaletteSize);
 
 			palettes.Shuffle(rng);
 
 			Put(PaletteOffset, Blob.Concat(palettes));
-	    }
+		}
 
-	    public void TeamSteak()
-	    {
-		    Put(TyroPaletteOffset, Blob.FromHex("302505"));
-		    Put(TyroSpriteOffset, Blob.FromHex(
+		public void TeamSteak()
+		{
+			Put(TyroPaletteOffset, Blob.FromHex("302505"));
+			Put(TyroSpriteOffset, Blob.FromHex(
 				"00000000000000000000000000000000" + "00000000000103060000000000000001" + "001f3f60cf9f3f7f0000001f3f7fffff" + "0080c07f7f87c7e60000008080f8f8f9" + "00000080c0e0f0780000000000000080" + "00000000000000000000000000000000" +
 				"00000000000000000000000000000000" + "0c1933676f6f6f6f03070f1f1f1f1f1f" + "ffffffffffffffffffffffffffffffff" + "e6e6f6fbfdfffffff9f9f9fcfefefefe" + "3c9e4e26b6b6b6b6c0e0f0f878787878" + "00000000000000000000000000000000" +
 				"00000000000000000000000000000000" + "6f6f6f6f673b190f1f1f1f1f1f070701" + "fffffec080f9fbffffffffffff8787ff" + "ff3f1f1f3ffdf9f3fefefefefefefefc" + "b6b6b6b6b6b6b6b67878787878787878" + "00000000000000000000000000000000" +
 				"00000000000000000000000000000000" + "07070706060707070100000101010101" + "ffffff793080c0f0fffc3086cfffffff" + "e7fefcf9f26469e3f80103070f9f9e1c" + "264c983060c08000f8f0e0c080000000" + "00000000000000000000000000000000" +
 				"00000000000000000000000000000000" + "07070706060301010101010101000000" + "f9f9f9797366ece8fefefefefcf97377" + "c68c98981830606038706060e0c08080" + "00000000000000000000000000000000" + "00000000000000000000000000000000" +
 				"00000000000000000000000000000000" + "01010101010000000000000000000000" + "fb9b9b9b98ff7f006767676767000000" + "6060606060c080008080808080000000" + "00000000000000000000000000000000" + "00000000000000000000000000000000"));
-	    }
+		}
 
 		public void ShuffleLeader(MT19337 rng)
 		{
@@ -259,7 +272,7 @@ namespace FF1Lib
 					{
 						Data[address] = 0x41;
 					}
-					
+
 					break;
 			}
 		}
@@ -357,7 +370,7 @@ namespace FF1Lib
 			//                           BOX      TEXT
 			// lut_CombatBoxes:        HDXXYYWWHHHDXXYY
 			Put(0x7F9E9, Blob.FromHex("0001010A04010202" + // attacker name
-				                      "000B010C04010C02" + // their attack("FROST", "2Hits!" etc)
+									  "000B010C04010C02" + // their attack("FROST", "2Hits!" etc)
 									  "0001040A04010205" + // defender name
 									  "000B040B04010C05" + // damage
 									  "0001071804010208"));// bottom message("Terminated", "Critical Hit", etc)
@@ -471,7 +484,7 @@ namespace FF1Lib
 		{
 			Data[0x7C7E2] = 0xA9;
 		}
-	}
 
+	}
 
 }

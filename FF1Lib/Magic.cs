@@ -19,6 +19,9 @@ namespace FF1Lib
 		public const int MagicOutOfBattleSize = 7;
 		public const int MagicOutOfBattleCount = 13;
 
+		public const int OldLevelUpDataOffset = 0x2D094; // this was moved to bank 1B
+		public const int NewLevelUpDataOffset = 0x6CDA9; // this was moved from bank 1B
+
 		public const int ConfusedSpellIndexOffset = 0x3321E;
 		public const int FireSpellIndex = 4;
 
@@ -37,8 +40,6 @@ namespace FF1Lib
 			public Blob Name;
 			public byte TextPointer;
 		}
-
-		private readonly List<byte> _outOfBattleSpells = new List<byte> { 0, 16, 32, 48, 19, 51, 35, 24, 33, 56, 38, 40, 41 };
 
 		public void ShuffleMagicLevels(MT19337 rng, bool keepPermissions)
 		{
@@ -139,7 +140,7 @@ namespace FF1Lib
 			var outOfBattleSpellOffset = MagicOutOfBattleOffset;
 			for (int i = 0; i < MagicOutOfBattleCount; i++)
 			{
-				var oldSpellIndex = _outOfBattleSpells[i];
+				var oldSpellIndex = Data[outOfBattleSpellOffset] - 0xB0;
 				var newSpellIndex = newIndices[oldSpellIndex];
 
 				Put(outOfBattleSpellOffset, new[] { (byte)(newSpellIndex + 0xB0) });

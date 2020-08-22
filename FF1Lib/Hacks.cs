@@ -187,7 +187,7 @@ namespace FF1Lib
 			options.Clear();
 		}
 
-		public void PartyComposition(MT19337 rng, Flags flags)
+		public void PartyComposition(MT19337 rng, Flags flags, Preferences preferences)
 		{
 			var options = new List<FF1Class>();
 
@@ -245,9 +245,11 @@ namespace FF1Lib
 			PutInBank(0x0C, 0x9910, Blob.FromHex("20A4C8C9FFD001608A0A0AA8"));
 			PutInBank(0x1F, 0xC8A4, CreateLongJumpTableEntry(0x0F, 0x8BD0));
 
-			// MapMan for Nones
+			// MapMan for Nones and Fun% Party Leader
+			byte leader = (byte)((byte)preferences.MapmanSlot << 6);
+            Data[0x7D8BC] = leader;
 			PutInBank(0x1F, 0xE92E, Blob.FromHex("20608FEAEAEAEA"));
-			PutInBank(0x02, 0x8F60, Blob.FromHex("A9008510AD0061C9FFF00160A92560"));
+			PutInBank(0x02, 0x8F60, Blob.FromHex($"A9008510AD{leader:X2}61C9FFF00160A92560"));
 
 			// Draw Complex String extension for class FF
 			PutInBank(0x1F, 0xC27D, Blob.FromHex("C9FFF0041869F060203EE0A997853EA9C2853F2045DE4C4EE0EA973CA800"));
@@ -298,10 +300,10 @@ namespace FF1Lib
 			pub_lut.Insert(3, (byte) 0xFF); // Will break if Melmond ever gets a clinic, Nones will need to be hired dead, this results in them being alive.
 			Put(0x38066, Blob.FromHex("9D8A9F8E9B97")); // Replaces "CLINIC" with "TAVERN"
 														// EnterClinic
-			PutInBank(0x0E, 0xA5A1, Blob.FromHex("60A90085248525205BAAA0FFC8B91DA7991003D0F7A902991003C8A648BD0A9D69F0991003C8A905991003C8A9C5991003C8A900991003A910853EA903853F2032AA20D7A6A5628D0C03B0B4209BAA20C2A8B0ADA562D0A92089A6AD0C03186D0C036D0C03AABD10036A6A6A29C04818201C9D68B08BAAA562D0458A690A8510A96185118A488512A9638513A000A90091109112C8C00A30F7C040D0F59D266120E99CA448B90A9D9D00612071C2A00E20799068AA900918BD006169069D0061A9019D0A61A9009D016120349DEAEAEAEA200CE92078A7A921205BAA2043A7A5240525F0F74CA2A5"));
+			PutInBank(0x0E, 0xA5A1, Blob.FromHex("60A9008524852520589DA902856318201C9DB0ECAD62008D0D0320EDA6B0034C6CA620D7A6B0DAAD62008D0C03209BAA20C2A8B0CCAD6200D0C72089A6AD0C03186D0C036D0C03AABD10036A6A6A29C0AAAD0D03F0458A690A8510A96185118A488512A9638513A000A90091109112C8C00A30F7C040D0F59D266120E99CA448B90A9D9D00612071C2A00E20799068AA900918BD006169069D0061A9019D0A61A9009D016120349D200CE92078A7A921205BAA2043A7A5240525F0F74CA2A52043A7A5240525F0F74CA1A5A923205BAAA9008D24008D25004C60A6EAEAEAEAEAEAEAEAEAEAEAEAEA"));
 			PutInBank(0x0E, 0x9D0A, pub_lut.Take(8).ToArray());
-			// ClinicBuildNameString
-			PutInBank(0x0E, 0xA6DD, Blob.FromHex("EDA6A910853EA903853F2032AA4C07A9A000A20086638A2A2A2A29036910991003A900991103A90199120398186903A8E6638A186940AAD0DDA900991003386091ACB5A8FFA40500"));
+			// Clinic_SelectTarget followed by ClinicBuildNameString
+			PutInBank(0x0E, 0xA6D7, Blob.FromHex("A903203BAA20EDA6A910853EA903853F2032AA4C07A9A000A200866320959DD01C8A2A2A2A29036910991003A900991103A90199120398186903A8E6638A186940AAD0D8A900991003A563C90160EAEA"));
 			// Moved routine
 			PutInBank(0x0E, 0xA3F8, Blob.FromHex("7D9C"));
 			PutInBank(0x0E, 0x9C7D, Blob.FromHex("A5626A6A6A29C08D0A03A666D01EA018AE0A03BD1861F032C8BD1961F02CC8BD1A61F026C8BD1B61F0203860A01CAE0A03BD1C61F025C8BD1D61F01FC8BD1E61F019C8BD1F61F013386098186D0A03AAAD0C0338E91B9D0061186098186D0A03AAAD0C0338E9439D00611860"));
@@ -313,8 +315,11 @@ namespace FF1Lib
 			//ReviveorBuy routine
 			PutInBank(0x0E, 0x9D1C, Blob.FromHex("A903203BAAA912853EA99D853F2032AAA9028D62004C07A9"));
 
-			// Buy Revive text options
-			PutInBank(0x0E, 0x9D12, Blob.FromHex("8BB8BC019BA8B9AC3200"));
+			// Revive Hire text options
+			PutInBank(0x0E, 0x9D12, Blob.FromHex("9BA8B9AC320191AC2300"));
+
+			// Clinic_InitialText followed by ShouldSkipChar followed by "Hire a\n" text
+			PutInBank(0x0E, 0x9D58, Blob.FromHex("205BAAA0FFC8B9B09D991003D0F7A902991003C8A648BD0A9D69F0991003C8A905991003C8A9C5991003C8A900991003A9108D3E00A9038D3F004C32AAAD0D03D010BD0061C9FFD003A90160BD0161C90160BD0061C9FF6091AC23C1A40100"));
 
 			// New routine to level up replaced character and zero some stuff, needs new level up stuff in bank 1B
 			PutInBank(0x0E, 0x9D34, Blob.FromHex("A99D48A94B48A98748A9A9488A182A2A2A8510A91B4C03FEA9008D24008D25008D012060"));
@@ -325,9 +330,14 @@ namespace FF1Lib
 			Data[0x119A] = 0x77;
 
 			if (flags.RecruitmentModeHireOnly ?? false) {
-				PutInBank(0x0E, 0xA60F, Blob.FromHex("EAEAEAEAEAEAEAEA"));
+				PutInBank(0x0E, 0xA5B0, Blob.FromHex("EAEAEAEAEAA901EA"));
+				PutInBank(0x0E, 0xA5C7, Blob.FromHex("D9"));
 			}
 
+			if (!flags.RecruitmentModeReplaceOnlyNone ?? false)
+			{
+				PutInBank(0x0E, 0x9DAA, Blob.FromHex("A90060"));
+			}
 
 
 		}
@@ -537,6 +547,11 @@ namespace FF1Lib
 			Data[0x3020 + (int)Item.Lute] = 0x01;
 		}
 
+		public void EnableFreeTail()
+		{
+			Data[0x3020 + (int)Item.Tail] = 0x01;
+		}
+
 		public void EnableFreeOrbs()
 		{
 			const int initItemOffset = 0x3020;
@@ -557,7 +572,33 @@ namespace FF1Lib
 			// We then update the unrunnable branch to point here instead of the generic Can't Run handler
 			// See Disch's comments here: Battle_PlayerTryRun  [$A3D8 :: 0x323E8]
 			Put(0x32409, Blob.FromHex("189005A94E4C07AAEAEAEAEAEAEAEA"));
-			Data[0x323EB] = 0x20; // new delta to special unrunnable message handler
+			// new delta to special unrunnable message handler done in 
+		}
+
+		public void SeparateUnrunnables()
+		{
+			// See SetRunnability.asm
+			// replace a segment of code in PrepareEnemyFormation with a JSR to a new routine in dummied ROM space in bank 0B
+			Put(0x2E141, Blob.FromHex("200C9B"));
+			// move the rest of PrepareEnemyFormation up pad the excised code with NOPs
+			Put(0x2E144, Get(0x2E160, 0x1E));
+			PutInBank(0x0B, 0xA162, Enumerable.Repeat((byte)0xEA, 0x1C).ToArray());
+			// write the new routine
+			Put(0x2DB0C, Blob.FromHex("AD6A001023AD926D8D8A6DAD936D8D8B6DA2008E886D8E896D8E8C6D8E8D6DAD916D29FE8D916D60AD916D29FD8D916D60"));
+			// change checks for unrunnability in bank 0C to check last two bits instead of last bit
+			Put(0x313D3, Blob.FromHex("03")); // changes AND #$01 to AND #$03 when checking start of battle for unrunnability
+			// the second change is done in AllowStrikeFirstAndSurprise, which checks the unrunnability in battle
+			// alter the default formation data to set unrunnability of a formation to both sides if the unrunnable flag is set
+			var formData = Get(FormationDataOffset, FormationDataSize * FormationCount).Chunk(FormationDataSize);
+			for(int i = 0; i < NormalFormationCount; ++i)
+			{
+				if ((formData[i][UnrunnableOffset] & 0x01) != 0)
+					formData[i][UnrunnableOffset] |= 0x02;
+			}
+			formData[126][UnrunnableOffset] |= 0x02; // set unrunnability for WzSahag/R.Sahag fight
+			formData[127][UnrunnableOffset] |= 0x02; // set unrunnability for IronGol fight
+			
+			Put(FormationsOffset, formData.SelectMany(formation => formation.ToBytes()).ToArray());
 		}
 
 		public void ImproveTurnOrderRandomization(MT19337 rng)
@@ -569,6 +610,13 @@ namespace FF1Lib
 
 			// Rewrite turn order shuffle to Fisher-Yates.
 			Put(0x3217A, Blob.FromHex("A90C8D8E68A900AE8E68205DAEA8AE8E68EAEAEAEAEAEA"));
+		}
+
+		public void EnableInventoryAutosort()
+		{
+			//see 0F_8670_SortInventory.asm
+			Put(0x7EF58, Blob.FromHex("A90F2003FE20008DEAEAEA"));
+			PutInBank(0x0F, 0x8D00, Blob.FromHex("8663A9009D0003A900856218A000A219BD2060F0058A990003C8E8E01CD0F1A216BD2060F0058A990003C8E8E019D0F1A200BD2060F0058A990003C8E8E011D0F1C8AD3560F00399000360"));
 		}
 
 		public void EnableCritNumberDisplay()
@@ -583,7 +631,7 @@ namespace FF1Lib
 			// Set town desert tile to random encounters.
 			// If enabled, trap tile shuffle will change that second byte to 0x00 afterward.
 			Data[0x00864] = 0x0A;
-			Data[0x00865] = 0x80;
+			Data[0x00865] = enemizerOn ? (byte)0x00 : (byte)0x80;
 
 			// Give Melmond Desert backdrop
 			Data[0x0334D] = (byte)Backdrop.Desert;
@@ -596,7 +644,7 @@ namespace FF1Lib
 		{
 			// Instead of looping through the 'check to see if characters are alive' thing, just set it to 4 and then remove the loop.
 			// EA EA EA EA EA EA (sports)
-			Put(0x2DEC6, Blob.FromHex("A204A004EAEAEAEAEAEAEAEAEAEAEAEAEA"));
+			Put(0x6CB43, Blob.FromHex("A204A004EAEAEAEAEAEAEAEAEAEAEAEAEA"));
 
 		}
 

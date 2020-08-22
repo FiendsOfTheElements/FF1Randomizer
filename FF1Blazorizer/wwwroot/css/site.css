@@ -1,7 +1,13 @@
 ﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
+/* import the relevent site css file, this line replaced when building by the circle config */
+@import url('main.css');
+
+
+
 html, body {
-    font-family: 'Press Start 2P', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: monospace;
+    user-select: none;
 }
 
 app {
@@ -15,7 +21,7 @@ app {
     display: flex;
     align-items: center;
     z-index: 100;
-    background: #112;
+    background: var(--DARK_BACKGROUND_COLOR);
 }
 
 .spaced-row {
@@ -50,9 +56,14 @@ app {
             color: white;
         }
 
-.nes-btn:active {
-    transform:translateY(2px);
+.nes-btn {
+    font-family: 'Press Start 2P';
+    font-size: 14px;
 }
+
+    .nes-btn:active {
+        transform: translateY(2px);
+    }
 
 .content {
     padding-top: 1.1rem;
@@ -61,22 +72,22 @@ app {
 .loading {
     width: 100%;
     text-align: center;
-    color: #007bfe;
+    color: var(--TOPBAR_FONT_COLOR);
 }
 
 h1 {
-    color: #007bfe;
+    color: var(--TOPBAR_FONT_COLOR);
 }
 
 #welcome p {
-    color: #007bfe;
+    color: var(--TOPBAR_FONT_COLOR);
 }
 
 .navbar-toggler {
     background-color: rgba(255, 255, 255, 0.1);
 }
 
-@media (max-width: 767.98px) {
+@media (max-width: 849.98px) {
     .main .top-row {
         display: none;
     }
@@ -92,7 +103,7 @@ h1 {
     }
 }
 
-@media (min-width: 768px) {
+@media (min-width: 850px) {
     app {
         flex-direction: row;
     }
@@ -117,16 +128,17 @@ h1 {
 /* FFR */
 
 body {
-    font-size: 14px;
     /*
     background-color: #3cbcfc;
-    background-image: url("/images/bg.png");
-    */
+    background-image: url("/images/bg.jpg");
+        */
     background-color: #000000;
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center center;
     background-attachment: fixed;
+    line-height: initial;
+    font-size: 18px;
 }
 
 #welcome {
@@ -134,8 +146,8 @@ body {
     text-align: center;
 }
 
-h4 {
-    font-size: 18px;
+h1, h2, h4 {
+    font-family: 'Press Start 2P';
 }
 
 .nes-nav {
@@ -153,10 +165,25 @@ h4 {
     }
 
 .checkbox-cell {
+    font-family: monospace;
+    white-space: nowrap;
+    overflow: hidden;
     min-height: 20px;
     margin: 0;
     padding: 0;
 }
+
+    .checkbox-cell label {
+        max-width: calc(100% - 64px);
+        text-overflow: ellipsis;
+        overflow-x: hidden;
+        vertical-align: top;
+    }
+
+.dropdown-cell {
+    white-space: normal;
+}
+
 
 .slider-cell {
     height: 35px;
@@ -169,6 +196,7 @@ h4 {
 }
 
 .disabled {
+    filter: grayscale(85%);
     color: grey;
 }
 
@@ -178,9 +206,14 @@ td {
     min-width: 96px;
 }
 
+.right-bordered {
+    border-right: 1px solid white;
+}
+
 input[type=checkbox] {
     transform: scale(1.3);
-    cursor: url(get-file-as-data-uri("../assets/cursor.png")), pointer
+    margin-left: 2px;
+    cursor: pointer;
 }
 
 select {
@@ -191,14 +224,21 @@ tr.odd {
     background: rgba(0, 0, 0, 0.05);
 }
 
+tr.bottom-borderd {
+    border-bottom: 1px solid white;
+}
+
 .ffr-nav {
     font-size: 18px;
+    font-family: 'Press Start 2P';
     padding: 6px;
     margin-right: 20px;
+    color: var(--TOPBAR_FONT_COLOR)
 }
 
     .ffr-nav:hover {
-        text-decoration: none
+        text-decoration: none;
+        color: #ffffff;
     }
 
     .ffr-nav.active {
@@ -216,10 +256,13 @@ tr.odd {
 .main-menu-row {
     margin: 10px;
     min-height: 60px;
+    font-family: 'Press Start 2P';
+    color: var(--TOPBAR_FONT_COLOR);
 }
 
     .main-menu-row:hover {
-        background-color: rgba(0, 0, 0, 0.2)
+        background-color: rgba(0, 0, 0, 0.2);
+        color: #ffffff;
     }
 
 .main-menu a {
@@ -245,21 +288,11 @@ tr.odd {
     height: 38px;
 }
 
-.dualcontrollers-icon {
-    display: block;
-    background-image: url("/images/controllers.png");
-    background-size: cover;
-    background-repeat: no-repeat;
-    width: 38px;
-    height: 38px;
-}
-
 .tri-state {
     font-size: 9px;
     padding: 0px;
     height: 15px;
     width: 15px;
-    margin-left: -2px;
     cursor: default;
     border-radius: 2px;
 }
@@ -270,4 +303,35 @@ tr.odd {
 
 .tri-maybe {
     color: #c8916e;
+}
+
+.ffr-tooltip {
+    position: fixed;
+    z-index: 1000;
+}
+
+.ffr-tooltip-screenshot {
+    width: 256px;
+    height: 224px;
+    float: right;
+    background-size: 100% 100%;
+    margin: 0 0 20px 20px;
+    border: 2px solid white;
+}
+
+.ffr-tooltip-close {
+    position: absolute;
+    right: 2px;
+}
+
+.btn-group-help {
+    opacity: 0.25;
+}
+
+    .btn-group-help:hover {
+        opacity: 0.75;
+    }
+
+p {
+    font-family: monospace;
 }
