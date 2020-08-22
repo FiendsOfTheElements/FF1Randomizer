@@ -658,6 +658,11 @@ namespace FF1Lib
 				ScaleBossStats(rng, flags);
 			}
 
+			if (flags.LinearMPGrowth)
+			{
+				LinearMPGrowth();
+			}
+
 			PartyComposition(rng, flags, preferences);
 
 			if (((bool)flags.RecruitmentMode))
@@ -667,7 +672,7 @@ namespace FF1Lib
 
 			if ((bool)flags.ChangeMaxMP)
 			{
-				SetMPMax(flags.RedMageMaxMP, flags.WhiteMageMaxMP, flags.BlackMageMaxMP, flags.KnightNinjaMaxMP);
+				SetMPMax(flags.RedMageMaxMP, flags.WhiteMageMaxMP, flags.BlackMageMaxMP, flags.KnightMaxMP, flags.NinjaMaxMP);
 			}
 
 			if ((bool)flags.ShuffleAstos)

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using RomUtilities;
 
@@ -99,13 +100,13 @@ namespace FF1Lib
 		{
 			var itemnames = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
 			var magicPermissions = Get(MagicPermissionsOffset, 8 * 12).Chunk(8);
-			var whiteArray = new List<byte> { 0x80, 0x40, 0x20, 0x10 };
+			var magicArray = new List<byte> { 0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01 };
 
 			var firstLifeIndex = itemnames.ToList().FindIndex(x => x.ToLower().Contains("lif")) - 176;
-			var secondLifeIndex = itemnames.ToList().FindIndex(firstLifeIndex + 177,x => x.ToLower().Contains("lif")) - 176;
+			var secondLifeIndex = itemnames.ToList().FindIndex(firstLifeIndex + 177, x => x.ToLower().Contains("lif")) - 176;
 
-			var firstlife = ((~magicPermissions[3][firstLifeIndex / 8] & whiteArray[firstLifeIndex % 8]) > 0) ? true : false;
-			var secondlife = ((~magicPermissions[3][secondLifeIndex / 8] & whiteArray[secondLifeIndex % 8]) > 0) ? true : false;
+			var firstlife = firstLifeIndex >= 0 ? (((~magicPermissions[3][firstLifeIndex / 8] & magicArray[firstLifeIndex % 8]) > 0) ? true : false) : false;
+			var secondlife = secondLifeIndex >= 0 ? (((~magicPermissions[3][secondLifeIndex / 8] & magicArray[secondLifeIndex % 8]) > 0) ? true : false) : false;
 
 			return (firstlife || secondlife);
 		}
@@ -165,7 +166,7 @@ namespace FF1Lib
 			dialogs[0x140] = dialogs[0xF0]; // Treasure box
 			dialogs[0xF0] = "";
 			dialogs[0x141] = dialogs[0xF1]; // Can't hold (duplicate for key NPCs)
-			//dialogs[0xF1] = "";
+											//dialogs[0xF1] = "";
 			dialogs[0x142] = dialogs[0xF2]; // Empty
 			dialogs[0xF2] = "";
 			dialogs[0x143] = dialogs[0xF3]; // Altar of Earth
@@ -193,7 +194,7 @@ namespace FF1Lib
 			for (int i = 0; i < dialogs.Length; i++)
 			{
 				var blob = FF1Text.TextToBytes(dialogs[i], useDTE: true);
-					generatedText += blob;
+				generatedText += blob;
 
 				pointers[i] = (ushort)(offset - dialogsPointerBase);
 				offset += blob.Length;
@@ -310,7 +311,7 @@ namespace FF1Lib
 
 			// Insert at the right position each dictionary entry
 			foreach (var x in dialogsdict)
-					dialogs[x.Key] = x.Value;
+				dialogs[x.Key] = x.Value;
 
 			// Convert all dialogs to bytes
 			int offset = dialogsOffset;
@@ -461,7 +462,7 @@ namespace FF1Lib
 				{
 					npcScript[i] = newTalk.Talk_GoBridge;
 				}
-				else if (npcScript[i] == originalTalk.Talk_ifairship) 
+				else if (npcScript[i] == originalTalk.Talk_ifairship)
 				{
 					npcScript[i] = newTalk.Talk_ifitem;
 					npcScriptValue[i][3] = 0xE4;
@@ -569,7 +570,7 @@ namespace FF1Lib
 					npcScript[i] = newTalk.Talk_fight;
 					npcScriptValue[i][3] = 0x7C;
 				}
-				
+
 				else if (npcScript[i] == originalTalk.Talk_ifcanoe)
 				{
 					npcScript[i] = newTalk.Talk_ifitem;
@@ -590,7 +591,7 @@ namespace FF1Lib
 			}
 
 			// Replace sky warrior dialog that got taken over by "Nothing here".
-			npcScriptValue[0x3D] = Blob.FromHex("00DB4C00"); 
+			npcScriptValue[0x3D] = Blob.FromHex("00DB4C00");
 
 			// Chime Lefein man is moved to ID 15 to keep him with all the other NPCs
 			Put(MapObjGfxOffset + 0x0F, Blob.FromHex("0E"));
@@ -700,7 +701,7 @@ namespace FF1Lib
 				{MapLocation.Cardia2,OverworldTeleportIndex.Cardia2},
 				{MapLocation.BahamutCave1,OverworldTeleportIndex.BahamutCave1},
 				{MapLocation.BahamutCave2,OverworldTeleportIndex.BahamutCave1},
-				{MapLocation.Cardia4,OverworldTeleportIndex.Cardia4}, 
+				{MapLocation.Cardia4,OverworldTeleportIndex.Cardia4},
 				{MapLocation.Cardia5,OverworldTeleportIndex.Cardia5},
 				{MapLocation.Cardia6,OverworldTeleportIndex.Cardia6},
 				{MapLocation.Waterfall,OverworldTeleportIndex.Waterfall},
@@ -855,7 +856,7 @@ namespace FF1Lib
 			PutInBank(0x00, 0xA000 + ((byte)MapId.MarshCaveB3 * 0x30) + 0x18, Blob.FromHex("000F1C34000F1834"));
 			PutInBank(0x00, 0xA000 + ((byte)MapId.SkyPalace4F * 0x30) + 0x18, Blob.FromHex("0F0F18140F0F1714"));
 
-			
+
 			int randomposition = randomize ? rng.Between(1, 3) : 1;
 
 			// Dwarf hinter - Earth - Text 0x70 - 0x5B - 5e
@@ -927,7 +928,7 @@ namespace FF1Lib
 			var hintschests = new List<string>() { "The $ is #.", "The $? It's # I believe.", "Did you know that the $ is #?", "My grandpa used to say 'The $ is #'.", "Did you hear? The $ is #!", "Wanna hear a secret? The $ is #!", "I've read somewhere that the $ is #.", "I used to have the $. I lost it #!", "I've hidden the $ #, can you find it?", "Interesting! This book says the $ is #!", "Duh, everyone knows that the $ is #!", "I saw the $ while I was #." };
 			var hintsnpc = new List<string>() { "& has the $.", "The $? Did you try asking &?", "The $? & will never part with it!", "& stole the $ from ME! I swear!", "& told me not to reveal he has the $.", "& is hiding something. I bet it's the $!" };
 			var hintsvendormed = new List<string>() { "The $ is for sale #.", "I used to have the $. I sold it #!", "There's a fire sale for the $ #.", "I almost bought the $ for sale #." };
-			var uselesshints = new List<string>() { "GET A SILK BAG FROM THE\nGRAVEYARD DUCK TO LIVE\nLONGER.", "You spoony bard!", "Press A to talk\nto NPCs!", "A crooked trader is\noffering bum deals in\nthis town.", "The game doesn't start\nuntil you say 'yes'.", "Thieves run away\nreally fast.", "No, I won't move quit\npushing me.","Dr. Unnes instant\ntranslation services,\njust send one slab\nand 299 GP for\nprocessing.","I am error.", "Kraken has a good chance\nto one-shot your knight.","If NPC guillotine is on,\npress reset now or your\nemulator will crash!","GET EQUIPPED WITH\nTED WOOLSEY." };
+			var uselesshints = new List<string>() { "GET A SILK BAG FROM THE\nGRAVEYARD DUCK TO LIVE\nLONGER.", "You spoony bard!", "Press A to talk\nto NPCs!", "A crooked trader is\noffering bum deals in\nthis town.", "The game doesn't start\nuntil you say 'yes'.", "Thieves run away\nreally fast.", "No, I won't move quit\npushing me.", "Dr. Unnes instant\ntranslation services,\njust send one slab\nand 299 GP for\nprocessing.", "I am error.", "Kraken has a good chance\nto one-shot your knight.", "If NPC guillotine is on,\npress reset now or your\nemulator will crash!", "GET EQUIPPED WITH\nTED WOOLSEY." };
 
 			if (!RedMageHasLife())
 				uselesshints.Add("Red Mages have no life!");
@@ -938,6 +939,7 @@ namespace FF1Lib
 			if (flags.Treasures ?? false)
 			{
 				incentivePool.Add(Item.Masamune);
+				incentivePool.Add(Item.Katana);
 				incentivePool.Add(Item.Vorpal);
 				incentivePool.Add(Item.Defense);
 				incentivePool.Add(Item.ThorHammer);
@@ -1021,7 +1023,7 @@ namespace FF1Lib
 			var hintedItems = new List<Item>();
 			foreach (Item priorityitem in priorityList)
 			{
-				if(generatedPlacement.Find(x => x.Item == priorityitem) != null)
+				if (generatedPlacement.Find(x => x.Item == priorityitem) != null)
 					if (generatedPlacement.Find(x => x.Item == priorityitem).GetType().Equals(typeof(TreasureChest)) && !incentivizedChests.Contains((TreasureChest)generatedPlacement.Find(x => x.Item == priorityitem)))
 						hintedItems.Add(priorityitem);
 
@@ -1032,85 +1034,97 @@ namespace FF1Lib
 			while (hintedItems.Count < npcSelected.Count)
 			{
 				var tempItem = incentivePool.PickRandom(rng);
-				if(generatedPlacement.Find(x => x.Item == tempItem) != null)
+				if (generatedPlacement.Find(x => x.Item == tempItem) != null)
 					hintedItems.Add(tempItem);
 			}
-
 
 			// Declare hints string for each hinted at item
 			var hintsList = new List<string>();
 
 			// Create hint for a random item in the pool for each NPC
-			for (int i = 0; i < npcSelected.Count; i++)
+			var attempts = 0;
+			while (++attempts < 50)
 			{
-				var tempItem = hintedItems.First();
-				string tempHint;
-				string tempName;
-
-				if (tempItem.Equals(Item.Ship)) tempName = FF1Text.BytesToText(Get(0x2B5D0, 4));
-				//else if (tempRndItem.Equals(Item.Airship)) tempName = FF1Text.BytesToText((byte[])Get(0x285C+8, 7));
-				else if (tempItem.Equals(Item.Bridge)) tempName = FF1Text.BytesToText(Get(0x2B5D0 + 16, 6));
-				else if (tempItem.Equals(Item.Canal)) tempName = FF1Text.BytesToText(Get(0x2B5D0 + 24, 5));
-				else if (tempItem.Equals(Item.Canoe)) tempName = FF1Text.BytesToText(Get(0x2B5D0 + 36, 5));
-				else tempName = itemnames[(int)tempItem].Replace(" ", "");
-
-				if (generatedPlacement.Find(x => x.Item == tempItem).GetType().Equals(typeof(TreasureChest)))
+				for (int i = 0; i < npcSelected.Count; i++)
 				{
-					tempHint = hintschests.PickRandom(rng);
-					tempHint = tempHint.Split('$')[0] + tempName + tempHint.Split('$')[1];
+					var tempItem = hintedItems.First();
+					string tempHint;
+					string tempName;
 
-					tempHint = FormatText(tempHint.Split('#')[0] + "in " + LocationText(generatedPlacement.Find(x => x.Item == tempItem).MapLocation, overworldmap) + tempHint.Split('#')[1]);
-					hintsList.Add(tempHint);
-					hintedItems.RemoveRange(0, 1);
+					if (tempItem.Equals(Item.Ship)) tempName = FF1Text.BytesToText(Get(0x2B5D0, 4));
+					//else if (tempRndItem.Equals(Item.Airship)) tempName = FF1Text.BytesToText((byte[])Get(0x285C+8, 7));
+					else if (tempItem.Equals(Item.Bridge)) tempName = FF1Text.BytesToText(Get(0x2B5D0 + 16, 6));
+					else if (tempItem.Equals(Item.Canal)) tempName = FF1Text.BytesToText(Get(0x2B5D0 + 24, 5));
+					else if (tempItem.Equals(Item.Canoe)) tempName = FF1Text.BytesToText(Get(0x2B5D0 + 36, 5));
+					else tempName = itemnames[(int)tempItem].Replace(" ", "");
+
+					if (generatedPlacement.Find(x => x.Item == tempItem).GetType().Equals(typeof(TreasureChest)))
+					{
+						tempHint = hintschests.PickRandom(rng);
+						tempHint = tempHint.Split('$')[0] + tempName + tempHint.Split('$')[1];
+
+						tempHint = FormatText(tempHint.Split('#')[0] + "in " + LocationText(generatedPlacement.Find(x => x.Item == tempItem).MapLocation, overworldmap) + tempHint.Split('#')[1]);
+						hintsList.Add(tempHint);
+						hintedItems.RemoveRange(0, 1);
+					}
+					else if (generatedPlacement.Find(x => x.Item == tempItem).GetType().Equals(typeof(MapObject)))
+					{
+						tempHint = hintsnpc.PickRandom(rng);
+						tempHint = tempHint.Split('$')[0] + tempName + tempHint.Split('$')[1];
+						tempHint = FormatText(tempHint.Split('&')[0] + NiceNpcName[generatedPlacement.Find(x => x.Item == tempItem).Name] + tempHint.Split('&')[1]);
+						hintsList.Add(tempHint);
+						hintedItems.RemoveRange(0, 1);
+					}
+					else if (generatedPlacement.Find(x => x.Item == tempItem).GetType().Equals(typeof(ItemShopSlot)))
+					{
+						tempHint = hintsvendormed.PickRandom(rng);
+						tempHint = tempHint.Split('$')[0] + tempName + tempHint.Split('$')[1];
+						tempHint = FormatText(tempHint.Split('#')[0] + ((generatedPlacement.Find(x => x.Item == tempItem).MapLocation.Equals(MapLocation.Caravan)) ? "at " : "in ") + LocationText(generatedPlacement.Find(x => x.Item == tempItem).MapLocation, overworldmap) + tempHint.Split('#')[1]);
+						hintsList.Add(tempHint);
+						hintedItems.RemoveRange(0, 1);
+					}
+					else
+						tempHint = "I am error.";
 				}
-				else if (generatedPlacement.Find(x => x.Item == tempItem).GetType().Equals(typeof(MapObject)))
+
+				if (flags.HintsUseless != false)
 				{
-					tempHint = hintsnpc.PickRandom(rng);
-					tempHint = tempHint.Split('$')[0] + tempName + tempHint.Split('$')[1];
-					tempHint = FormatText(tempHint.Split('&')[0] + NiceNpcName[generatedPlacement.Find(x => x.Item == tempItem).Name] + tempHint.Split('&')[1]);
-					hintsList.Add(tempHint);
-					hintedItems.RemoveRange(0, 1);
+					uselesshints.Shuffle(rng);
+					hintsList.Reverse();
+					var uselessHintsCount = hintsList.Count() / 2;
+					hintsList.RemoveRange(0, uselessHintsCount);
+
+					for (int i = 0; i < uselessHintsCount; i++)
+						hintsList.Add(uselesshints[i]);
 				}
-				else if (generatedPlacement.Find(x => x.Item == tempItem).GetType().Equals(typeof(ItemShopSlot)))
+				//var hintsList = hints.ToList();
+				hintsList.Shuffle(rng);
+
+				Dictionary<int, string> hintDialogues = new Dictionary<int, string>();
+
+				// Set NPCs new dialogs
+				for (int i = 0; i < npcSelected.Count; i++)
 				{
-					tempHint = hintsvendormed.PickRandom(rng);
-					tempHint = tempHint.Split('$')[0] + tempName + tempHint.Split('$')[1];
-					tempHint = FormatText(tempHint.Split('#')[0] + ((generatedPlacement.Find(x => x.Item == tempItem).MapLocation.Equals(MapLocation.Caravan)) ? "at " : "in ") + LocationText(generatedPlacement.Find(x => x.Item == tempItem).MapLocation, overworldmap) + tempHint.Split('#')[1]);
-					hintsList.Add(tempHint);
-					hintedItems.RemoveRange(0, 1);
+					Put(lut_MapObjTalkJumpTblAddress + (byte)npcSelected[i] * NpcTalkSize, newTalk.Talk_norm);
+					Put(MapObjOffset + (byte)npcSelected[i] * MapObjSize, Blob.FromSBytes(new sbyte[] { 0x00, (sbyte)dialogueID[i], 0x00, 0x00 }));
+
+					hintDialogues.Add(dialogueID[i], hintsList.First());
+					hintsList.RemoveRange(0, 1);
 				}
-				else
-					tempHint = "I am error.";
+
+				try
+				{
+					InsertDialogs(hintDialogues);
+				}
+				catch (Exception e)
+				{
+					if (e == new Exception("Dialogs maximum length exceeded."))
+						continue;
+				}
+				if(attempts > 1) Console.WriteLine($"NPC Hints generated in {attempts} attempts.");
+				return;
 			}
-
-			if (flags.HintsUseless != false)
-			{
-				uselesshints.Shuffle(rng);
-				hintsList.Reverse();
-				var uselessHintsCount = hintsList.Count() / 2;
-				hintsList.RemoveRange(0, uselessHintsCount);
-
-				for (int i = 0; i < uselessHintsCount; i++)
-					hintsList.Add(uselesshints[i]);
-			}
-			//var hintsList = hints.ToList();
-			hintsList.Shuffle(rng);
-
-			Dictionary<int, string> hintDialogues = new Dictionary<int, string>();
-
-			// Set NPCs new dialogs
-			for (int i = 0; i < npcSelected.Count; i++)
-			{
-				Put(lut_MapObjTalkJumpTblAddress + (byte)npcSelected[i] * NpcTalkSize, newTalk.Talk_norm);
-				Put(MapObjOffset + (byte)npcSelected[i] * MapObjSize, Blob.FromSBytes(new sbyte[] { 0x00, (sbyte)dialogueID[i], 0x00, 0x00 }));
-
-				hintDialogues.Add(dialogueID[i], hintsList.First());
-				hintsList.RemoveRange(0, 1);
-			}
-
-			InsertDialogs(hintDialogues);
-
+			throw new Exception("Couldn't generate hints in 50 tries.");
 		}
-
 	}
 }

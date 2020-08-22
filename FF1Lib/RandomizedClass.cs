@@ -336,8 +336,10 @@ namespace FF1Lib
 			const int lut_ArmorPermissions = 0x3BFA0;
 			const int lut_MaxMP = 0x6C902;
 
+			/*
 			// Spell level up change to allow any class to gain spell charges
 			PutInBank(0x1B, 0x88D7, Blob.FromHex("AE8E68A001B182A02848B184DD02899005684A4CFA88684A900948B184186901918468C8C030D0E14C1C89000000090909040400090909"));
+			*/
 
 			// Starting Stats awards MP to allow any class to start with spell charges
 			PutInBank(0x1F, 0xC7CA, Blob.FromHex("B94BB09D20639D286360"));
@@ -369,14 +371,11 @@ namespace FF1Lib
 				PutInBank(0x1E, 0x80C1, Blob.FromHex("A6678A4A4A4A4AA8B9B085859020A480A9008522200F82A522F0034C0088A524D049A525F0023860A520290FC561F0E08561C900F0DAA667BD0003186901C90CD002A9FF9D0003A8C8B9B4852490F0E8A901853720B0824CD180"));
 				PutInBank(0x1E, 0x85B0, partypermissions);
 			}
-
-
-
-
+			/*
 			// Hijack spell charges, change for Flags
 			Put(lut_MaxMP, new List<byte> { 0x00, 0x00, 0x00, (byte)flags.RedMageMaxMP, (byte)flags.WhiteMageMaxMP, (byte)flags.BlackMageMaxMP,
 				(byte)flags.KnightNinjaMaxMP, (byte)flags.KnightNinjaMaxMP, 0x00, (byte)flags.RedMageMaxMP, (byte)flags.WhiteMageMaxMP, (byte)flags.BlackMageMaxMP }.ToArray());
-
+			*/
 			// Get data
 			var startingStats = Get(StartingStatsOffset, 0x60).Chunk(0x10);
 			var levelUpStats = Get(NewLevelUpDataOffset, 588).Chunk(49 * 2);
