@@ -8,6 +8,7 @@
 		"Treasures": true,
 		"NPCItems": true,
 		"NPCFetchItems": false,
+		"BetterTrapTreasure": false,
 		"RandomWares": false,
 		"RandomWaresIncludesSpecialGear": false,
 		"RandomLoot": false,
@@ -46,7 +47,7 @@
 		"SkyCastle4FMazeMode": 0,
 		"TitansTrove": true,
 		"LefeinShops": true,
-		"ConfusedOldMen": true,
+		"ConfusedOldMen": false,
 
 		"MapOpenProgression": false,
 		"Entrances": false,
@@ -97,6 +98,7 @@
 		"EarlySarda": true,
 		"EarlySage": true,
 		"EarlyOrdeals": true,
+		"EarlyKing": true,
 		"ShuffleObjectiveNPCs": false,
 		"OnlyRequireGameIsBeatable": false,
 
@@ -108,7 +110,7 @@
 		"FreeCanal": false,
 		"EasyMode": false,
 
-		"HousesFillHp": false,
+		"HousesFillHp": true,
 
 		"SpeedHacks": true,
 		"NoPartyShuffle": true,
@@ -116,6 +118,7 @@
 		"BuyTen": true,
 		"IdentifyTreasures": true,
 		"WaitWhenUnrunnable": true,
+		"BattleMagicMenuWrapAround": true,
 
 		"HouseMPRestoration": true,
 		"WeaponStats": true,
@@ -125,7 +128,8 @@
 		"ChanceToRun": true,
 		"SpellBugs": true,
 		"BlackBeltAbsorb": true,
-		"NPCSwatter": false,
+		"ThiefHitRate": true,
+		"NPCSwatter": true,
 		"InventoryAutosort": false,
 
 		"EnemyStatusAttackBug": true,
@@ -133,6 +137,7 @@
 		"EnemyElementalResistancesBug": true,
 		"ImproveTurnOrderRandomization": true,
 		"FixHitChanceCap": true,
+		"LockMode": 3,
 
 		"StartingGold": false,
 		"WrapStatOverflow": false,
@@ -210,8 +215,7 @@
 		"DisableTentSaving": false,
 		"DisableInnSaving": false,
 		"RandomizeFormationEnemizer": false,
-		"ThiefHitRate": false,
-
+		
 		"MDEFMode": 0,
 
 		"FormationShuffleMode": 0,

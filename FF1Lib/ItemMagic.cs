@@ -20,12 +20,45 @@ namespace FF1Lib
 		private int WeaponStart = (byte)ItemLists.AllWeapons.ElementAt(0);
 		private int ArmorStart = (byte)ItemLists.AllArmor.ElementAt(0);
 
-		public void ShuffleItemMagic(MT19337 rng)
+		public void ShuffleItemMagic(MT19337 rng, bool balancedShuffle)
 		{
 			var Spells = GetSpells();
 
 			// Remove out of battle only spells (spells where the effect is 0)
 			Spells.RemoveAll(spell => spell.Data[4] == 0);
+			if (balancedShuffle)
+			{
+				// if balanced shuffle is on, remove spells which are too strong or too weak
+				// remove any spell which boosts attack power that isn't self-casting
+				Spells.RemoveAll(spell => spell.Data[4] == 0x0D && spell.Data[3] != 0x04);
+				// remove any spell that doubles hit rate
+				Spells.RemoveAll(spell => spell.Data[4] == 0x0C);
+				// remove any non-elemental damage spell with >55 effectivity
+				Spells.RemoveAll(spell => spell.Data[4] == 0x01 && spell.Data[1] > 55 && spell.Data[2] == 0b0000000);
+				// remove any multitarget elemental damage spell with > 70 effectivity
+				Spells.RemoveAll(spell => spell.Data[4] == 0x01 && spell.Data[1] > 70 && spell.Data[3] == 0x01);
+				// remove any singletarget elemental damage spell with > 100 effectivity
+				Spells.RemoveAll(spell => spell.Data[4] == 0x01 && spell.Data[1] > 100);
+				// remove any damage spell with <20 effectivity
+				Spells.RemoveAll(spell => spell.Data[4] == 0x01 && spell.Data[1] < 20);
+				// remove status recovery spells which don't heal paralysis or mute
+				Spells.RemoveAll(spell => spell.Data[4] == 0x08 && (spell.Data[1] & 0b01010000) == 0);
+				// remove HP Max
+				Spells.RemoveAll(spell => spell.Data[4] == 0x0F);
+				// remove HARM spells with > 120 effectivity
+				Spells.RemoveAll(spell => spell.Data[4] == 0x02 && spell.Data[1] > 120);
+				// remove non-elemental power word kill
+				Spells.RemoveAll(spell => spell.Data[4] == 0x12 && (spell.Data[1] & 0b00000011) != 0 && spell.Data[2] == 0b00000000);
+				// remove status spells which only cast darkness, sleep, or poison
+				Spells.RemoveAll(spell => spell.Data[4] == 0x03 && (spell.Data[1] & 0b11010011) == 0);
+				Spells.RemoveAll(spell => spell.Data[4] == 0x12 && (spell.Data[1] & 0b11010011) == 0);
+				// remove evasion up spells with effects greater than 80
+				Spells.RemoveAll(spell => spell.Data[4] == 0x10 && spell.Data[1] > 80);
+				// remove armor up spells with effects greater than 32
+				Spells.RemoveAll(spell => spell.Data[4] == 0x09 && spell.Data[1] > 32);
+				// remove spells which resist all elements
+				Spells.RemoveAll(spell => spell.Data[4] == 0x0A && spell.Data[1] == 0xFF);
+			}
 			Spells.Shuffle(rng); // Shuffle all spells remaining, then assign to each item that can cast a spell
 
 			foreach (var item in Spells.Zip(ItemLists.AllMagicItem, (s, i) => new { Spell = s, Item = i }))

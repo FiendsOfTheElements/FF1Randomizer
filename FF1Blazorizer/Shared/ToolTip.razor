@@ -1,9 +1,10 @@
+@using System.Net.Http.Json
 @inject HttpClient  Http
 
 <div class="ffr-tooltip" style="@css">
-	<button type="button" class="nes-btn is-error ffr-tooltip-close" @onclick="HideToolTip"> X </button>
-	<button type="button" class="nes-btn" @onclick="HideToolTip">@Title</button>
-	<div class="is-dark nes-container" @onmousedown=StartDrag @onmousemove=Drag @onmouseup=EndDrag @onmouseout=EndDrag>
+	<button type="button" class="nes-btn is-error ffr-tooltip-close" @onclick="@HideToolTip"> X </button>
+	<button type="button" class="nes-btn" @onclick="@HideToolTip">@Title</button>
+	<div class="is-dark nes-container" @onmousedown=@StartDrag @onmousemove=@Drag @onmouseup=@EndDrag @onmouseout=@EndDrag>
 		<div class="ffr-tooltip-screenshot" style="@(ScreenshotStyle())"></div>
 		<p class="ffr-tooltip-text">@Description</p>
 		<p style="clear: both"></p>
@@ -26,7 +27,7 @@
 	private List<ToolTipObj> Tooltips { get; set; }
 	protected override async void OnInitialized()
 	{
-		Tooltips = await Http.GetJsonAsync<List<ToolTipObj>>("/tooltips/tooltips.json");
+		Tooltips = await Http.GetFromJsonAsync<List<ToolTipObj>>("/tooltips/tooltips.json");
 	}
 
 	private ToolTipObj TTip => Enabled ? Tooltips.FirstOrDefault(x => x.Id == ToolTipId) : null;
@@ -38,7 +39,7 @@
 	private double PosTop { get; set; } = 75;
 	private double PosLeft { get; set; } = 25;
 	private string css =>
-		$"left: {PosLeft}px; top: {PosTop}px; width: {Width}px; {Visible} {(Dragging ? "opacity: 0.8;" : "")}";
+		$"left: {PosLeft}px; top: {PosTop}px; width: {Width}px; {Visible}";
 
 	private bool Dragging = false;
 	private double LastX = 0;

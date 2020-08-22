@@ -451,25 +451,22 @@ namespace FF1Lib
 			Data[MapObjGfxOffset + (byte)ObjectId.WarMECH] = RobotGfx;
 
 			// Set the action when you talk to WarMECH.
-			Put(MapObjJumpTableOffset + (byte)ObjectId.WarMECH * JumpTablePointerSize, Blob.FromUShorts(new[] { TalkFight }));
+			Put(MapObjJumpTableOffset + (byte)ObjectId.WarMECH * JumpTablePointerSize, newTalk.Talk_fight);
 
 			// Change the dialogue.
-			var dialogueStrings = new List<Blob>
+			var dialogueStrings = new List<string>
 			{
-				TextToBytes("I. aM. WarMECH."),
-				Blob.Concat(TextToBytes("I think you ought to", delimiter: Delimiter.Line), TextToBytes("know, I'm feeling very", delimiter: Delimiter.Line), TextToBytes("depressed.")),
-				TextToBytes("Bite my shiny metal ass!"),
-				Blob.Concat(TextToBytes("Put down your weapons.", delimiter: Delimiter.Line), TextToBytes("You have 15 seconds to", delimiter: Delimiter.Line), TextToBytes("comply.")),
-				// Blob.Concat(TextToBytes("I'm sorry "), new byte[] { 0x03 }, TextToBytes(",", delimiter: Delimiter.Line), TextToBytes("I'm afraid I can't do that.")),
-				TextToBytes("rEsIsTaNcE iS fUtIlE."),
-				TextToBytes("Hasta la vista, baby."),
-				TextToBytes("NoOo DiSaSsEmBlE!"),
-				Blob.Concat(TextToBytes("Bring back life form.", delimiter: Delimiter.Line), TextToBytes("Priority one.", delimiter: Delimiter.Line), TextToBytes("All other priorities", delimiter: Delimiter.Line), TextToBytes("rescinded."))
+				"I. aM. WarMECH.",
+				"I think you ought to\nknow, I'm feeling very\ndepressed.",
+				"Bite my shiny metal ass!",
+				"Put down your weapons.\nYou have 15 seconds to\ncomply.",
+				"rEsIsTaNcE iS fUtIlE.",
+				"Hasta la vista, baby.",
+				"NoOo DiSaSsEmBlE!",
+				"Bring back life form.\nPriority one.\nAll other priorities\nrescinded."
 			};
-			ushort freeTextSpacePointer = 0xB487;
-			int pointerTarget = 0x20000 + freeTextSpacePointer;
-			Put(pointerTarget, dialogueStrings.PickRandom(rng));
-			Put(DialogueTextPointerOffset + 2 * UnusedTextPointer, Blob.FromUShorts(new[] { freeTextSpacePointer }));
+
+			InsertDialogs(UnusedTextPointer, dialogueStrings.PickRandom(rng));
 
 			// Get rid of random WarMECH encounters.  Group 8 is now also group 7.
 			var formationOffset = ZoneFormationsOffset + ZoneFormationsSize * (64 + (byte)MapId.SkyPalace5F);

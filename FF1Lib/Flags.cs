@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Reflection;
+using System.Text;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Schema;
 using RomUtilities;
 
 namespace FF1Lib
@@ -12,7 +14,6 @@ namespace FF1Lib
 	{
 		public bool Spoilers { get; set; } = false;
 		public bool TournamentSafe { get; set; } = false;
-
 		public bool? Shops { get; set; } = false;
 		public bool? Treasures { get; set; } = false;
 		public bool? NPCItems { get; set; } = false;
@@ -33,7 +34,8 @@ namespace FF1Lib
 		public bool? MagicLevels { get; set; } = false;
 		public bool? MagicPermissions { get; set; } = false;
 		public bool? ItemMagic { get; set; } = false;
-		public bool RebalanceSpells { get; set; } = false;
+		public bool? MagicLevelsTiered { get; set; } = false;
+		public bool? MagicLevelsMixed { get; set; } = false;
 
 		public bool? Rng { get; set; } = false;
 		public bool FixMissingBattleRngEntry { get; set; } = false;
@@ -44,10 +46,12 @@ namespace FF1Lib
 		public bool? EnemyTrapTiles { get; set; } = false;
 		public bool? RandomTrapFormations { get; set; } = false;
 
+		public bool? SwolePirates { get; set; } = false;
 		public bool? EnemyScripts { get; set; } = false;
 		public bool? BossScriptsOnly { get; set; } = false;
 		public bool? EnemySkillsSpells { get; set; } = false;
 		public bool? BossSkillsOnly { get; set; } = false;
+		public bool? EnemySkillsSpellsTiered { get; set; } = false;
 		public bool? EnemyStatusAttacks { get; set; } = false;
 		public bool? RandomStatusAttacks { get; set; } = false;
 		public bool? AllowUnsafePirates { get; set; } = false;
@@ -68,7 +72,8 @@ namespace FF1Lib
 		public bool? AllowDeepCastles { get; set; } = false;
 		public bool? AllowDeepTowns { get; set; } = false;
 		public bool? MapOpenProgressionExtended { get; set; } = false;
-
+		public bool? MapDwarvesNorthwest { get; set; } = false;
+		public bool? MapAirshipDock { get; set; } = false;
 		public bool? EntrancesIncludesDeadEnds { get; set; } = false;
 		public bool? EntrancesMixedWithTowns { get; set; } = false;
 
@@ -97,6 +102,7 @@ namespace FF1Lib
 
 
 		public bool? IncentivizeMasamune { get; set; } = false;
+		public bool? IncentivizeKatana { get; set; } = false;
 		public bool? IncentivizeVorpal { get; set; } = false;
 		public bool? IncentivizeOpal { get; set; } = false;
 		public bool? IncentivizeRibbon { get; set; } = false;
@@ -111,6 +117,7 @@ namespace FF1Lib
 		public bool? IncentivizeOffCastWeapon { get; set; } = false;
 		public bool IncentivizeOtherCastWeapon { get; set; } = false;
 
+		public bool? EarlyKing { get; set; } = false;
 		public bool? EarlySarda { get; set; } = false;
 		public bool? EarlySage { get; set; } = false;
 		public bool? EarlyOrdeals { get; set; } = false;
@@ -131,6 +138,7 @@ namespace FF1Lib
 		public bool NoPartyShuffle { get; set; } = false;
 		public bool Dash { get; set; } = false;
 		public bool BuyTen { get; set; } = false;
+		public bool BuyTenOld { get; set; } = false;
 		public bool IdentifyTreasures { get; set; } = false;
 		public bool WaitWhenUnrunnable { get; set; } = false;
 
@@ -143,8 +151,8 @@ namespace FF1Lib
 		public bool SpellBugs { get; set; } = false;
 		public bool BlackBeltAbsorb { get; set; } = false;
 		public bool NPCSwatter { get; set; } = false;
+		public bool BattleMagicMenuWrapAround { get; set; } = false;
 		public bool InventoryAutosort { get; set; } = false;
-
 		public bool EnemyStatusAttackBug { get; set; } = false;
 		public bool EnemySpellsTargetingAllies { get; set; } = false;
 		public bool EnemyElementalResistancesBug { get; set; } = false;
@@ -157,8 +165,15 @@ namespace FF1Lib
 		public bool IncludeMorale { get; set; } = false;
 		public bool NoDanMode { get; set; } = false;
 
-		public double EnemyScaleFactor { get; set; } = 0;
-		public double BossScaleFactor { get; set; } = 0;
+		public int BossScaleStatsLow { get; set; } = 50;
+		public int BossScaleStatsHigh { get; set; } = 200;
+		public int BossScaleHpLow { get; set; } = 50;
+		public int BossScaleHpHigh { get; set; } = 200;
+		public int EnemyScaleStatsLow { get; set; } = 50;
+		public int EnemyScaleStatsHigh { get; set; } = 200;
+		public int EnemyScaleHpLow { get; set; } = 50;
+		public int EnemyScaleHpHigh { get; set; } = 200;
+
 		public double PriceScaleFactor { get; set; } = 0;
 
 		public double ExpMultiplier { get; set; } = 0;
@@ -195,6 +210,30 @@ namespace FF1Lib
 		public bool? WHITE_MAGE4 { get; set; } = false;
 		public bool? BLACK_MAGE4 { get; set; } = false;
 
+		public bool? KNIGHT1 { get; set; } = false;
+		public bool? KNIGHT2 { get; set; } = false;
+		public bool? KNIGHT3 { get; set; } = false;
+		public bool? KNIGHT4 { get; set; } = false;
+		public bool? NINJA1 { get; set; } = false;
+		public bool? NINJA2 { get; set; } = false;
+		public bool? NINJA3 { get; set; } = false;
+		public bool? NINJA4 { get; set; } = false;
+		public bool? MASTER1 { get; set; } = false;
+		public bool? MASTER2 { get; set; } = false;
+		public bool? MASTER3 { get; set; } = false;
+		public bool? MASTER4 { get; set; } = false;
+		public bool? RED_WIZ1 { get; set; } = false;
+		public bool? RED_WIZ2 { get; set; } = false;
+		public bool? RED_WIZ3 { get; set; } = false;
+		public bool? RED_WIZ4 { get; set; } = false;
+		public bool? WHITE_WIZ1 { get; set; } = false;
+		public bool? WHITE_WIZ2 { get; set; } = false;
+		public bool? WHITE_WIZ3 { get; set; } = false;
+		public bool? WHITE_WIZ4 { get; set; } = false;
+		public bool? BLACK_WIZ1 { get; set; } = false;
+		public bool? BLACK_WIZ2 { get; set; } = false;
+		public bool? BLACK_WIZ3 { get; set; } = false;
+		public bool? BLACK_WIZ4 { get; set; } = false;
 		public bool? NONE_CLASS2 { get; set; } = false;
 		public bool? NONE_CLASS3 { get; set; } = false;
 		public bool? NONE_CLASS4 { get; set; } = false;
@@ -215,7 +254,6 @@ namespace FF1Lib
 		public bool? RecruitmentMode { get; set; } = false;
 		public bool? RecruitmentModeHireOnly { get; set; } = false;
 		public bool? RecruitmentModeReplaceOnlyNone { get; set; } = false;
-
 		public bool? ClampMinimumStatScale { get; set; } = false;
 		public bool? ClampMinimumBossStatScale { get; set; } = false;
 		public bool? ClampMinimumPriceScale { get; set; } = false;
@@ -227,16 +265,53 @@ namespace FF1Lib
 		public bool FiendShuffle { get; set; } = false;
 		public bool DisableTentSaving { get; set; } = false;
 		public bool DisableInnSaving { get; set; } = false;
+		public bool SaveGameWhenGameOver { get; set; } = false;
+		public bool SaveGameDWMode { get; set; } = false;
+		public bool? ShuffleAstos { get; set; } = false;
 		public bool? RandomizeEnemizer { get; set; } = false;
 		public bool? RandomizeFormationEnemizer { get; set; } = false;
 		public bool? GenerateNewSpellbook { get; set; } = false;
 		public bool? SpellcrafterMixSpells { get; set; } = false;
 		public bool ThiefHitRate { get; set; } = false;
 		public bool AllSpellLevelsForKnightNinja { get; set; } = false;
+		public bool BuffHealingSpells { get; set; } = false;
 		public bool? FreeTail { get; set; } = false;
+		public bool? HintsVillage { get; set; } = false;
+		public bool? HintsDungeon { get; set; } = false;
+		public bool? HintsRngDungeon { get; set; } = false;
+		public bool? HintsUseless { get; set; } = false;
 		public bool? SpellcrafterRetainPermissions { get; set; } = false;
 		public bool? RandomWeaponBonus { get; set; } = false;
 		public bool? RandomArmorBonus { get; set; } = false;
+		public bool? RandomWeaponBonusExcludeMasa { get; set; } = false;
+		public int RandomWeaponBonusLow { get; set; } = -5;
+		public int RandomWeaponBonusHigh { get; set; } = 5;
+		public int RandomArmorBonusLow { get; set; } = -5;
+		public int RandomArmorBonusHigh { get; set; } = 5;
+		public bool? BalancedItemMagicShuffle { get; set; } = false;
+		public bool? SeparateBossHPScaling { get; set; } = false;
+		public bool? SeparateEnemyHPScaling { get; set; } = false;
+		public bool? ClampBossHPScaling { get; set; } = false;
+		public bool? ClampEnemyHpScaling { get; set; } = false;
+		public PoolSize PoolSize { get; set; } = PoolSize.Size6;
+		public bool? EnablePoolParty { get; set; } = false;
+		public bool? IncludePromClasses { get; set; } = false;
+		public bool? EnableRandomPromotions { get; set; } = false;
+		public bool? IncludeBaseClasses { get; set; } = false;
+		public bool? RandomPromotionsSpoilers { get; set; } = false;
+		public bool LinearMPGrowth { get; set; } = false;
+		public bool? RandomizeClass { get; set; } = false;
+		public bool? RandomizeClassChaos { get; set; } = false;
+		public int RandomizeClassMaxBonus { get; set; } = 2;
+		public int RandomizeClassMaxMalus { get; set; } = 1;
+		public bool? ChangeMaxMP { get; set; } = false;
+		public int RedMageMaxMP { get; set; } = 9;
+		public int WhiteMageMaxMP { get; set; } = 9;
+		public int BlackMageMaxMP { get; set; } = 9;
+		public int KnightMaxMP { get; set; } = 4;
+		public int NinjaMaxMP { get; set; } = 4;
+
+		public LockHitMode LockMode { get; set; } = LockHitMode.Vanilla;
 
 		public MDEFGrowthMode MDefMode { get; set; } = MDEFGrowthMode.None;
 
@@ -244,15 +319,17 @@ namespace FF1Lib
 
 		public WorldWealthMode WorldWealth { get; set; } = WorldWealthMode.Normal;
 
-		public bool AllowStartAreaDanager { get; set; } = false;
+		public bool? AllowUnsafeStartArea { get; set; } = false;
+
+		public bool? EarlierRuby { get; set; } = false;
 
 		public bool? MapCanalBridge => (NPCItems) | (NPCFetchItems) | MapOpenProgression | MapOpenProgressionExtended;
 		public bool? MapOnracDock => MapOpenProgressionDocks;
 		public bool? MapMirageDock => MapOpenProgressionDocks;
 		public bool? MapConeriaDwarves => MapOpenProgression;
 		public bool? MapVolcanoIceRiver => MapOpenProgression;
-		public bool? MapDwarvesNorthwest => MapOpenProgression & MapOpenProgressionExtended;
-		public bool? MapAirshipDock => MapOpenProgression & MapOpenProgressionExtended;
+		// public bool? MapDwarvesNorthwest => MapOpenProgression;
+		// public bool? MapAirshipDock => MapOpenProgression;
 
 		// The philosophy governing item incentivizations works something like this:
 		// 1. If the item is NOT being shuffled to another location it cannot be incentivized. (Duh)
@@ -298,6 +375,7 @@ namespace FF1Lib
 		public int IncentivizedItemCountMin => 0
 			+ ((IncentivizePromotion ?? false) ? 1 : 0)
 			+ ((IncentivizeMasamune ?? false) ? 1 : 0)
+			+ ((IncentivizeKatana ?? false) ? 1 : 0)
 			+ ((IncentivizeVorpal ?? false) ? 1 : 0)
 			+ ((IncentivizeOpal ?? false) ? 1 : 0)
 			+ ((IncentivizeRibbon ?? false) ? 1 : 0)
@@ -331,6 +409,7 @@ namespace FF1Lib
 		public int IncentivizedItemCountMax => 0
 			+ ((IncentivizePromotion ?? true) ? 1 : 0)
 			+ ((IncentivizeMasamune ?? true) ? 1 : 0)
+			+ ((IncentivizeKatana ?? true) ? 1 : 0)
 			+ ((IncentivizeVorpal ?? true) ? 1 : 0)
 			+ ((IncentivizeOpal ?? true) ? 1 : 0)
 			+ ((IncentivizeRibbon ?? true) ? 1 : 0)
@@ -384,6 +463,7 @@ namespace FF1Lib
 			+ ((IncentivizePromotion != null) ? (IncentivizePromotion ?? false ? "Tail " : "") : ("Tail? "))
 			+ ((IncentivizeTnt != null) ? (IncentivizeTnt ?? false ? "Tnt " : "") : ("Tnt? "))
 			+ ((IncentivizeMasamune != null) ? (IncentivizeMasamune ?? false ? "Masmune\U0001F5E1 " : "") : ("Masmune?\U0001F5E1 "))
+			+ ((IncentivizeKatana != null) ? (IncentivizeKatana ?? false ? "Katana\U0001F5E1 " : "") : ("Katana?\U0001F5E1 "))
 			+ ((IncentivizeVorpal != null) ? (IncentivizeVorpal ?? false ? "Vorpal\U0001F5E1 " : "") : ("Vorpal?\U0001F5E1 "))
 			+ ((IncentivizeXcalber != null) ? (IncentivizeXcalber ?? false ? "XCalber\U0001F5E1 " : "") : ("XCalber?\U0001F5E1 "))
 			+ ((IncentivizeDefCastWeapon != null) ? (IncentivizeDefCastWeapon ?? false ? "Defense\U0001F5E1 " : "") : ("Defense?\U0001F5E1 "))
@@ -457,7 +537,7 @@ namespace FF1Lib
 			foreach (var property in properties)
 			{
 				if (property.PropertyType == typeof(bool?) && property.GetValue(newflags) == null)
-               {
+				{
 					bool newvalue = ConvertTriState((bool?)property.GetValue(newflags), rng);
 					property.SetValue(newflags, newvalue);
 				}
@@ -478,11 +558,15 @@ namespace FF1Lib
 		public bool? DeepTownsPossible => Towns & Entrances & Floors & EntrancesMixedWithTowns;
 
 		public bool EnemizerEnabled => (bool)RandomizeFormationEnemizer | (bool)RandomizeEnemizer;
+		public bool EnemizerDontMakeNewScripts => (bool)EnemySkillsSpells & !((bool)BossSkillsOnly | (bool)EnemySkillsSpellsTiered);
 
 		public static string EncodeFlagsText(Flags flags)
 		{
 			BigInteger sum = 0;
+			sum = AddString(sum, 7, (FFRVersion.Sha.Length >= 7) ? FFRVersion.Sha.Substring(0,7) : FFRVersion.Sha.PadRight(7, 'X'));
 
+
+			sum = AddTriState(sum, flags.IncentivizeKatana);
 			sum = AddTriState(sum, flags.IncentivizeVorpal);
 			sum = AddTriState(sum, flags.Shops);
 			sum = AddTriState(sum, flags.Treasures);
@@ -501,7 +585,8 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.MagicLevels);
 			sum = AddTriState(sum, flags.MagicPermissions);
 			sum = AddTriState(sum, flags.ItemMagic);
-			sum = AddBoolean(sum, flags.RebalanceSpells);
+			sum = AddTriState(sum, flags.MagicLevelsTiered);
+			sum = AddTriState(sum, flags.MagicLevelsMixed);
 			sum = AddTriState(sum, flags.Rng);
 			sum = AddBoolean(sum, flags.FixMissingBattleRngEntry);
 			sum = AddTriState(sum, flags.EverythingUnrunnable);
@@ -510,10 +595,12 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.UnrunnablesStrikeFirstAndSurprise);
 			sum = AddTriState(sum, flags.EnemyTrapTiles);
 			sum = AddTriState(sum, flags.RandomTrapFormations);
+			sum = AddTriState(sum, flags.SwolePirates);
 			sum = AddTriState(sum, flags.EnemyScripts);
 			sum = AddTriState(sum, flags.BossScriptsOnly);
 			sum = AddTriState(sum, flags.EnemySkillsSpells);
 			sum = AddTriState(sum, flags.BossSkillsOnly);
+			sum = AddTriState(sum, flags.EnemySkillsSpellsTiered);
 			sum = AddTriState(sum, flags.EnemyStatusAttacks);
 			sum = AddTriState(sum, flags.RandomStatusAttacks);
 			sum = AddTriState(sum, flags.AllowUnsafePirates);
@@ -532,6 +619,8 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.AllowDeepCastles);
 			sum = AddTriState(sum, flags.AllowDeepTowns);
 			sum = AddTriState(sum, flags.MapOpenProgressionExtended);
+			sum = AddTriState(sum, flags.MapDwarvesNorthwest);
+			sum = AddTriState(sum, flags.MapAirshipDock);
 			sum = AddTriState(sum, flags.EntrancesIncludesDeadEnds);
 			sum = AddTriState(sum, flags.EntrancesMixedWithTowns);
 			sum = AddTriState(sum, flags.IncentivizeFreeNPCs);
@@ -563,6 +652,7 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.IncentivizeDefCastWeapon);
 			sum = AddTriState(sum, flags.IncentivizeOffCastWeapon);
 			sum = AddBoolean(sum, flags.IncentivizeOtherCastWeapon);
+			sum = AddTriState(sum, flags.EarlyKing);
 			sum = AddTriState(sum, flags.EarlySarda);
 			sum = AddTriState(sum, flags.EarlySage);
 			sum = AddTriState(sum, flags.EarlyOrdeals);
@@ -580,6 +670,7 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.NoPartyShuffle);
 			sum = AddBoolean(sum, flags.Dash);
 			sum = AddBoolean(sum, flags.BuyTen);
+			sum = AddBoolean(sum, flags.BuyTenOld);
 			sum = AddBoolean(sum, flags.IdentifyTreasures);
 			sum = AddBoolean(sum, flags.WaitWhenUnrunnable);
 			sum = AddBoolean(sum, flags.HouseMPRestoration);
@@ -591,6 +682,7 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.SpellBugs);
 			sum = AddBoolean(sum, flags.BlackBeltAbsorb);
 			sum = AddBoolean(sum, flags.InventoryAutosort);
+			sum = AddBoolean(sum, flags.BattleMagicMenuWrapAround);
 			sum = AddBoolean(sum, flags.NPCSwatter);
 			sum = AddBoolean(sum, flags.EnemyStatusAttackBug);
 			sum = AddBoolean(sum, flags.EnemySpellsTargetingAllies);
@@ -603,11 +695,17 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.IncludeMorale);
 			sum = AddTriState(sum, flags.RandomWaresIncludesSpecialGear);
 			sum = AddBoolean(sum, flags.NoDanMode);
-			sum = AddNumeric(sum, 41, (int)(10.0*flags.EnemyScaleFactor) - 10);
-			sum = AddNumeric(sum, 41, (int)(10.0 * flags.BossScaleFactor) - 10);
+			sum = AddNumeric(sum, 51, flags.EnemyScaleStatsLow / 10);
+			sum = AddNumeric(sum, 51, flags.EnemyScaleStatsHigh/ 10);
+			sum = AddNumeric(sum, 51, flags.EnemyScaleHpLow/ 10);
+			sum = AddNumeric(sum, 51, flags.EnemyScaleHpHigh/ 10);
+			sum = AddNumeric(sum, 51, flags.BossScaleStatsLow/ 10);
+			sum = AddNumeric(sum, 51, flags.BossScaleStatsHigh/ 10);
+			sum = AddNumeric(sum, 51, flags.BossScaleHpLow/ 10);
+			sum = AddNumeric(sum, 51, flags.BossScaleHpHigh/ 10);
 			sum = AddNumeric(sum, 41, (int)(10.0 * flags.PriceScaleFactor) - 10);
 			sum = AddNumeric(sum, 41, (int)(10.0 * flags.ExpMultiplier) - 10);
-			sum = AddNumeric(sum, 51, (int)(flags.ExpBonus/10.0));
+			sum = AddNumeric(sum, 51, (int)(flags.ExpBonus / 10.0));
 			sum = AddNumeric(sum, 46, (int)flags.EncounterRate);
 			sum = AddNumeric(sum, 46, (int)flags.DungeonEncounterRate);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(ProgressiveScaleMode)).Cast<int>().Max() + 1, (int)flags.ProgressiveScaleMode);
@@ -635,6 +733,30 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.RED_MAGE4);
 			sum = AddTriState(sum, flags.WHITE_MAGE4);
 			sum = AddTriState(sum, flags.BLACK_MAGE4);
+			sum = AddTriState(sum, flags.KNIGHT1);
+			sum = AddTriState(sum, flags.KNIGHT2);
+			sum = AddTriState(sum, flags.KNIGHT3);
+			sum = AddTriState(sum, flags.KNIGHT4);
+			sum = AddTriState(sum, flags.NINJA1);
+			sum = AddTriState(sum, flags.NINJA2);
+			sum = AddTriState(sum, flags.NINJA3);
+			sum = AddTriState(sum, flags.NINJA4);
+			sum = AddTriState(sum, flags.MASTER1);
+			sum = AddTriState(sum, flags.MASTER2);
+			sum = AddTriState(sum, flags.MASTER3);
+			sum = AddTriState(sum, flags.MASTER4);
+			sum = AddTriState(sum, flags.RED_WIZ1);
+			sum = AddTriState(sum, flags.RED_WIZ2);
+			sum = AddTriState(sum, flags.RED_WIZ3);
+			sum = AddTriState(sum, flags.RED_WIZ4);
+			sum = AddTriState(sum, flags.WHITE_WIZ1);
+			sum = AddTriState(sum, flags.WHITE_WIZ2);
+			sum = AddTriState(sum, flags.WHITE_WIZ3);
+			sum = AddTriState(sum, flags.WHITE_WIZ4);
+			sum = AddTriState(sum, flags.BLACK_WIZ1);
+			sum = AddTriState(sum, flags.BLACK_WIZ2);
+			sum = AddTriState(sum, flags.BLACK_WIZ3);
+			sum = AddTriState(sum, flags.BLACK_WIZ4);
 			sum = AddTriState(sum, flags.NONE_CLASS2);
 			sum = AddTriState(sum, flags.NONE_CLASS3);
 			sum = AddTriState(sum, flags.NONE_CLASS4);
@@ -663,20 +785,57 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.FiendShuffle);
 			sum = AddBoolean(sum, flags.DisableTentSaving);
 			sum = AddBoolean(sum, flags.DisableInnSaving);
+			sum = AddTriState(sum, flags.ShuffleAstos);
+			sum = AddBoolean(sum, flags.SaveGameWhenGameOver);
+			sum = AddBoolean(sum, flags.SaveGameDWMode);
 			sum = AddTriState(sum, flags.RandomizeEnemizer);
 			sum = AddTriState(sum, flags.RandomizeFormationEnemizer);
 			sum = AddTriState(sum, flags.GenerateNewSpellbook);
 			sum = AddTriState(sum, flags.SpellcrafterMixSpells);
 			sum = AddBoolean(sum, flags.ThiefHitRate);
 			sum = AddBoolean(sum, flags.AllSpellLevelsForKnightNinja);
+			sum = AddBoolean(sum, flags.BuffHealingSpells);
 			sum = AddTriState(sum, flags.FreeTail);
+			sum = AddTriState(sum, flags.HintsVillage);
+			sum = AddTriState(sum, flags.HintsDungeon);
+			sum = AddTriState(sum, flags.HintsRngDungeon);
+			sum = AddTriState(sum, flags.HintsUseless);
 			sum = AddTriState(sum, flags.SpellcrafterRetainPermissions);
 			sum = AddTriState(sum, flags.RandomWeaponBonus);
 			sum = AddTriState(sum, flags.RandomArmorBonus);
+			sum = AddTriState(sum, flags.RandomWeaponBonusExcludeMasa);
+			sum = AddNumeric(sum, 19, flags.RandomWeaponBonusLow + 9);
+			sum = AddNumeric(sum, 19, flags.RandomWeaponBonusHigh + 9);
+			sum = AddNumeric(sum, 19, flags.RandomArmorBonusLow + 9);
+			sum = AddNumeric(sum, 19, flags.RandomArmorBonusHigh + 9);
+			sum = AddTriState(sum, flags.BalancedItemMagicShuffle);
+			sum = AddTriState(sum, flags.SeparateBossHPScaling);
+			sum = AddTriState(sum, flags.SeparateEnemyHPScaling);
+			sum = AddTriState(sum, flags.ClampBossHPScaling);
+			sum = AddTriState(sum, flags.ClampEnemyHpScaling);
+			sum = AddNumeric(sum, 10, flags.NinjaMaxMP);
+			sum = AddNumeric(sum, 10, flags.KnightMaxMP);
+			sum = AddNumeric(sum, 10, flags.BlackMageMaxMP);
+			sum = AddNumeric(sum, 10, flags.WhiteMageMaxMP);
+			sum = AddNumeric(sum, 10, flags.RedMageMaxMP);
+			sum = AddTriState(sum, flags.ChangeMaxMP);
+			sum = AddNumeric(sum, Enum.GetValues(typeof(LockHitMode)).Cast<int>().Max() + 1, (int)flags.LockMode);
+			sum = AddNumeric(sum, Enum.GetValues(typeof(PoolSize)).Cast<int>().Max() + 1, (int)flags.PoolSize);
+			sum = AddTriState(sum, flags.EnablePoolParty);
+			sum = AddTriState(sum, flags.IncludePromClasses);
+			sum = AddTriState(sum, flags.EnableRandomPromotions);
+			sum = AddTriState(sum, flags.IncludeBaseClasses);
+			sum = AddTriState(sum, flags.RandomPromotionsSpoilers);
+			sum = AddBoolean(sum, flags.LinearMPGrowth);
+			sum = AddTriState(sum, flags.RandomizeClass);
+			sum = AddTriState(sum, flags.RandomizeClassChaos);
+			sum = AddNumeric(sum, 5, flags.RandomizeClassMaxBonus);
+			sum = AddNumeric(sum, 5, flags.RandomizeClassMaxMalus);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(FormationShuffleMode)).Cast<int>().Max() + 1, (int)flags.FormationShuffleMode);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(MDEFGrowthMode)).Cast<int>().Max() + 1, (int)flags.MDefMode);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(WorldWealthMode)).Cast<int>().Max() + 1, (int)flags.WorldWealth);
-			sum = AddBoolean(sum, flags.AllowStartAreaDanager);
+			sum = AddTriState(sum, flags.AllowUnsafeStartArea);
+			sum = AddTriState(sum, flags.EarlierRuby);
 			sum = AddBoolean(sum, flags.TournamentSafe);
 			sum = AddBoolean(sum, flags.Spoilers);
 
@@ -691,20 +850,57 @@ namespace FF1Lib
 			{
 				Spoilers = GetBoolean(ref sum),
 				TournamentSafe = GetBoolean(ref sum),
-				AllowStartAreaDanager = GetBoolean(ref sum),
+				EarlierRuby = GetTriState(ref sum),
+				AllowUnsafeStartArea = GetTriState(ref sum),
 				WorldWealth = (WorldWealthMode)GetNumeric(ref sum, Enum.GetValues(typeof(WorldWealthMode)).Cast<int>().Max() + 1),
 				MDefMode = (MDEFGrowthMode)GetNumeric(ref sum, Enum.GetValues(typeof(MDEFGrowthMode)).Cast<int>().Max() + 1),
 				FormationShuffleMode = (FormationShuffleMode)GetNumeric(ref sum, Enum.GetValues(typeof(FormationShuffleMode)).Cast<int>().Max() + 1),
+				RandomizeClassMaxMalus = GetNumeric(ref sum, 5),
+				RandomizeClassMaxBonus = GetNumeric(ref sum, 5),
+				RandomizeClassChaos = GetTriState(ref sum),
+				RandomizeClass = GetTriState(ref sum),
+				LinearMPGrowth = GetBoolean(ref sum),
+				RandomPromotionsSpoilers = GetTriState(ref sum),
+				IncludeBaseClasses = GetTriState(ref sum),
+				EnableRandomPromotions = GetTriState(ref sum),
+				IncludePromClasses = GetTriState(ref sum),
+				EnablePoolParty = GetTriState(ref sum),
+				PoolSize = (PoolSize)GetNumeric(ref sum, Enum.GetValues(typeof(PoolSize)).Cast<int>().Max() + 1),
+				LockMode = (LockHitMode)GetNumeric(ref sum, Enum.GetValues(typeof(LockHitMode)).Cast<int>().Max() + 1),
+				ChangeMaxMP = GetTriState(ref sum),
+				RedMageMaxMP = GetNumeric(ref sum, 10),
+				WhiteMageMaxMP = GetNumeric(ref sum, 10),
+				BlackMageMaxMP = GetNumeric(ref sum, 10),
+				KnightMaxMP = GetNumeric(ref sum, 10),
+				NinjaMaxMP = GetNumeric(ref sum, 10),
+				ClampEnemyHpScaling = GetTriState(ref sum),
+				ClampBossHPScaling = GetTriState(ref sum),
+				SeparateEnemyHPScaling = GetTriState(ref sum),
+				SeparateBossHPScaling = GetTriState(ref sum),
+				BalancedItemMagicShuffle = GetTriState(ref sum),
+				RandomArmorBonusHigh = GetNumeric(ref sum, 19) - 9,
+				RandomArmorBonusLow = GetNumeric(ref sum, 19) - 9,
+				RandomWeaponBonusHigh = GetNumeric(ref sum, 19) - 9,
+				RandomWeaponBonusLow = GetNumeric(ref sum, 19) - 9,
+				RandomWeaponBonusExcludeMasa = GetTriState(ref sum),
 				RandomArmorBonus = GetTriState(ref sum),
 				RandomWeaponBonus = GetTriState(ref sum),
 				SpellcrafterRetainPermissions = GetTriState(ref sum),
+				HintsUseless = GetTriState(ref sum),
+				HintsRngDungeon = GetTriState(ref sum),
+				HintsDungeon = GetTriState(ref sum),
+				HintsVillage = GetTriState(ref sum),
 				FreeTail = GetTriState(ref sum),
+				BuffHealingSpells = GetBoolean(ref sum),
 				AllSpellLevelsForKnightNinja = GetBoolean(ref sum),
 				ThiefHitRate = GetBoolean(ref sum),
 				SpellcrafterMixSpells = GetTriState(ref sum),
 				GenerateNewSpellbook = GetTriState(ref sum),
 				RandomizeFormationEnemizer = GetTriState(ref sum),
 				RandomizeEnemizer = GetTriState(ref sum),
+				SaveGameDWMode = GetBoolean(ref sum),
+				SaveGameWhenGameOver = GetBoolean(ref sum),
+				ShuffleAstos = GetTriState(ref sum),
 				DisableInnSaving = GetBoolean(ref sum),
 				DisableTentSaving = GetBoolean(ref sum),
 				FiendShuffle = GetBoolean(ref sum),
@@ -733,6 +929,30 @@ namespace FF1Lib
 				NONE_CLASS4 = GetTriState(ref sum),
 				NONE_CLASS3 = GetTriState(ref sum),
 				NONE_CLASS2 = GetTriState(ref sum),
+				BLACK_WIZ4 = GetTriState(ref sum),
+				BLACK_WIZ3 = GetTriState(ref sum),
+				BLACK_WIZ2 = GetTriState(ref sum),
+				BLACK_WIZ1 = GetTriState(ref sum),
+				WHITE_WIZ4 = GetTriState(ref sum),
+				WHITE_WIZ3 = GetTriState(ref sum),
+				WHITE_WIZ2 = GetTriState(ref sum),
+				WHITE_WIZ1 = GetTriState(ref sum),
+				RED_WIZ4 = GetTriState(ref sum),
+				RED_WIZ3 = GetTriState(ref sum),
+				RED_WIZ2 = GetTriState(ref sum),
+				RED_WIZ1 = GetTriState(ref sum),
+				MASTER4 = GetTriState(ref sum),
+				MASTER3 = GetTriState(ref sum),
+				MASTER2 = GetTriState(ref sum),
+				MASTER1 = GetTriState(ref sum),
+				NINJA4 = GetTriState(ref sum),
+				NINJA3 = GetTriState(ref sum),
+				NINJA2 = GetTriState(ref sum),
+				NINJA1 = GetTriState(ref sum),
+				KNIGHT4 = GetTriState(ref sum),
+				KNIGHT3 = GetTriState(ref sum),
+				KNIGHT2 = GetTriState(ref sum),
+				KNIGHT1 = GetTriState(ref sum),
 				BLACK_MAGE4 = GetTriState(ref sum),
 				WHITE_MAGE4 = GetTriState(ref sum),
 				RED_MAGE4 = GetTriState(ref sum),
@@ -763,8 +983,14 @@ namespace FF1Lib
 				ExpBonus = GetNumeric(ref sum, 51) * 10,
 				ExpMultiplier = (GetNumeric(ref sum, 41) + 10) / 10.0,
 				PriceScaleFactor = (GetNumeric(ref sum, 41) + 10) / 10.0,
-				BossScaleFactor = (GetNumeric(ref sum, 41) + 10) / 10.0,
-				EnemyScaleFactor = (GetNumeric(ref sum, 41) + 10) / 10.0,
+				BossScaleHpHigh = GetNumeric(ref sum, 51) * 10,
+				BossScaleHpLow = GetNumeric(ref sum, 51) * 10,
+				BossScaleStatsHigh = GetNumeric(ref sum, 51) * 10,
+				BossScaleStatsLow = GetNumeric(ref sum, 51) * 10,
+				EnemyScaleHpHigh = GetNumeric(ref sum, 51) * 10,
+				EnemyScaleHpLow = GetNumeric(ref sum, 51) * 10,
+				EnemyScaleStatsHigh = GetNumeric(ref sum, 51) * 10,
+				EnemyScaleStatsLow = GetNumeric(ref sum, 51) * 10,
 				NoDanMode = GetBoolean(ref sum),
 				RandomWaresIncludesSpecialGear = GetTriState(ref sum),
 				IncludeMorale = GetBoolean(ref sum),
@@ -777,6 +1003,7 @@ namespace FF1Lib
 				EnemySpellsTargetingAllies = GetBoolean(ref sum),
 				EnemyStatusAttackBug = GetBoolean(ref sum),
 				NPCSwatter = GetBoolean(ref sum),
+				BattleMagicMenuWrapAround = GetBoolean(ref sum),
 				InventoryAutosort = GetBoolean(ref sum),
 				BlackBeltAbsorb = GetBoolean(ref sum),
 				SpellBugs = GetBoolean(ref sum),
@@ -788,6 +1015,7 @@ namespace FF1Lib
 				HouseMPRestoration = GetBoolean(ref sum),
 				WaitWhenUnrunnable = GetBoolean(ref sum),
 				IdentifyTreasures = GetBoolean(ref sum),
+				BuyTenOld = GetBoolean(ref sum),
 				BuyTen = GetBoolean(ref sum),
 				Dash = GetBoolean(ref sum),
 				NoPartyShuffle = GetBoolean(ref sum),
@@ -805,6 +1033,7 @@ namespace FF1Lib
 				EarlyOrdeals = GetTriState(ref sum),
 				EarlySage = GetTriState(ref sum),
 				EarlySarda = GetTriState(ref sum),
+				EarlyKing = GetTriState(ref sum),
 				IncentivizeOtherCastWeapon = GetBoolean(ref sum),
 				IncentivizeOffCastWeapon = GetTriState(ref sum),
 				IncentivizeDefCastWeapon = GetTriState(ref sum),
@@ -836,6 +1065,8 @@ namespace FF1Lib
 				IncentivizeFreeNPCs = GetTriState(ref sum),
 				EntrancesMixedWithTowns = GetTriState(ref sum),
 				EntrancesIncludesDeadEnds = GetTriState(ref sum),
+				MapAirshipDock = GetTriState(ref sum),
+				MapDwarvesNorthwest = GetTriState(ref sum),
 				MapOpenProgressionExtended = GetTriState(ref sum),
 				AllowDeepTowns = GetTriState(ref sum),
 				AllowDeepCastles = GetTriState(ref sum),
@@ -854,10 +1085,12 @@ namespace FF1Lib
 				AllowUnsafePirates = GetTriState(ref sum),
 				RandomStatusAttacks = GetTriState(ref sum),
 				EnemyStatusAttacks = GetTriState(ref sum),
+				EnemySkillsSpellsTiered = GetTriState(ref sum),
 				BossSkillsOnly = GetTriState(ref sum),
 				EnemySkillsSpells = GetTriState(ref sum),
 				BossScriptsOnly = GetTriState(ref sum),
 				EnemyScripts = GetTriState(ref sum),
+				SwolePirates = GetTriState(ref sum),
 				RandomTrapFormations = GetTriState(ref sum),
 				EnemyTrapTiles = GetTriState(ref sum),
 				UnrunnablesStrikeFirstAndSurprise = GetTriState(ref sum),
@@ -866,7 +1099,8 @@ namespace FF1Lib
 				EverythingUnrunnable = GetTriState(ref sum),
 				FixMissingBattleRngEntry = GetBoolean(ref sum),
 				Rng = GetTriState(ref sum),
-				RebalanceSpells = GetBoolean(ref sum),
+				MagicLevelsMixed = GetTriState(ref sum),
+				MagicLevelsTiered = GetTriState(ref sum),
 				ItemMagic = GetTriState(ref sum),
 				MagicPermissions = GetTriState(ref sum),
 				MagicLevels = GetTriState(ref sum),
@@ -885,12 +1119,28 @@ namespace FF1Lib
 				Treasures = GetTriState(ref sum),
 				Shops = GetTriState(ref sum),
 				IncentivizeVorpal = GetTriState(ref sum),
+				IncentivizeKatana = GetTriState(ref sum),
 			};
+			string EncodedSha = GetString(ref sum, 7);
+			if (((FFRVersion.Sha.Length >= 7) ? FFRVersion.Sha.Substring(0, 7) : FFRVersion.Sha.PadRight(7, 'X')) != EncodedSha)
+			{
+				throw new Exception("The encoded version does not match the expected version");
+			}
 
 			return flags;
 		}
 
 		private static BigInteger AddNumeric(BigInteger sum, int radix, int value) => sum * radix + value;
+		private static BigInteger AddString(BigInteger sum, int length, string str)
+		{
+			Encoding AsciiEncoding = Encoding.ASCII;
+			byte[] bytes = AsciiEncoding.GetBytes(str);
+			BigInteger StringAsBigInt = new BigInteger(bytes);
+			BigInteger LargestInt = new BigInteger(Math.Pow(0xFF, bytes.Length) - 1);
+
+
+			return sum * LargestInt + StringAsBigInt;
+		}
 		private static BigInteger AddBoolean(BigInteger sum, bool value) => AddNumeric(sum, 2, value ? 1 : 0);
 		private static int TriStateValue(bool? value) => value.HasValue ? (value.Value ? 1 : 0) : 2;
 		private static BigInteger AddTriState(BigInteger sum, bool? value) => AddNumeric(sum, 3, TriStateValue(value));
@@ -900,6 +1150,16 @@ namespace FF1Lib
 			sum = BigInteger.DivRem(sum, radix, out var value);
 
 			return (int)value;
+		}
+		private static string GetString(ref BigInteger sum, int length)
+		{
+			BigInteger LargestInt = new BigInteger(Math.Pow(0xFF, length) - 1);
+			sum = BigInteger.DivRem(sum, LargestInt, out BigInteger value);
+			Encoding AsciiEncoding = Encoding.ASCII;
+			byte[] bytes = value.ToByteArray();
+			string str = AsciiEncoding.GetString(bytes);
+
+			return str;
 		}
 		private static bool GetBoolean(ref BigInteger sum) => GetNumeric(ref sum, 2) != 0;
 		private static bool? ValueTriState(int value) => value == 0 ? (bool?)false : value == 1 ? (bool?)true : null;

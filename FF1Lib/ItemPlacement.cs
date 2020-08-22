@@ -347,14 +347,6 @@ namespace FF1Lib
 			var requiredAccess = AccessRequirement.All;
 			var requiredMapChanges = new List<MapChange> { MapChange.All };
 
-			if (victoryConditions.OnlyRequireGameIsBeatable)
-			{
-				var winTheGameAccess = ItemLocations.ChaosReward.AccessRequirement;
-				var winTheGameLocation = ItemLocations.ChaosReward.MapLocation;
-				requiredAccess = winTheGameAccess;
-				requiredMapChanges = fullLocationRequirements[winTheGameLocation].Item1;
-			}
-
 			var accessibleLocationCount = 0;
 			while (!currentAccess.HasFlag(requiredAccess) ||
 				   !requiredMapChanges.Any(x => currentMapChanges.HasFlag(x)))
@@ -644,6 +636,11 @@ namespace FF1Lib
 					List<Item> nextPlacements = new List<Item> { Item.Ship, Item.Canal };
 					List<Item> lastPlacements = new List<Item> { Item.Floater, Item.Lute, Item.Crown, Item.Crystal, Item.Herb, Item.Tnt, Item.Adamant,
 						Item.Slab, Item.Ruby, Item.Rod, Item.Chime, Item.Tail, Item.Cube, Item.Bottle, Item.Oxyale };
+
+					if ((bool)_flags.EarlierRuby) {
+						nextPlacements.Add(Item.Ruby);
+						lastPlacements.Remove(Item.Ruby);
+					}
 
 					nextPlacements.Shuffle(rng);
 					lastPlacements.Shuffle(rng);

@@ -61,7 +61,13 @@ namespace FF1Lib
 		Fourth = 0x03,
 	}
 
-
+	public enum Fate
+	{
+		[Description("Spare")]
+		Spare = 0,
+		[Description("Kill")]
+		Kill = 2,
+	}
 	public partial class FF1Rom
 	{
 		public const int TyroPaletteOffset = 0x30FC5;
@@ -121,6 +127,12 @@ namespace FF1Lib
 				"00000000000000000000000000000000" + "07070706060707070100000101010101" + "ffffff793080c0f0fffc3086cfffffff" + "e7fefcf9f26469e3f80103070f9f9e1c" + "264c983060c08000f8f0e0c080000000" + "00000000000000000000000000000000" +
 				"00000000000000000000000000000000" + "07070706060301010101010101000000" + "f9f9f9797366ece8fefefefefcf97377" + "c68c98981830606038706060e0c08080" + "00000000000000000000000000000000" + "00000000000000000000000000000000" +
 				"00000000000000000000000000000000" + "01010101010000000000000000000000" + "fb9b9b9b98ff7f006767676767000000" + "6060606060c080008080808080000000" + "00000000000000000000000000000000" + "00000000000000000000000000000000"));
+		}
+
+		public void DisableSpellCastScreenFlash()
+		{
+			//just load the original battleground background in place of the flash color, it will still use the same number of frames
+			Put(0x32051, Blob.FromHex("AD446D"));
 		}
 
 		public void ShuffleLeader(MT19337 rng)
@@ -483,6 +495,85 @@ namespace FF1Lib
 		public void DisableDamageTileFlicker()
 		{
 			Data[0x7C7E2] = 0xA9;
+		}
+
+		public void ChangeLute(MT19337 rng)
+		{
+			var newInstruments = new List<string> {"BASS", "LYRE", "HARP", "VIOLA", "CELLO", "PIANO", "ORGAN", "FLUTE", "OBOE", "PICCOLO", "FLUTE", "WHISTLE", "HORN", "TRUMPET",
+				"BAGPIPE", "DRUM", "VIOLIN", "DBLBASS", "GUITAR", "BANJO", "FIDDLE", "MNDOLIN", "CLARNET", "BASSOON", "TROMBON", "TUBA", "BUGLE", "MARIMBA", "XYLOPHN","SNARE D",
+				"BASS D", "TMBRINE", "CYMBALS", "TRIANGL", "COWBELL", "GONG", "TRUMPET", "SAX", "TIMPANI", "B GRAND", "HURDY G", "FLUGEL", "SONG", "KAZOO", "FOGHORN", "AIRHORN",
+				"VUVUZLA", "OCARINA", "PANFLUT", "SITAR", "HRMNICA", "UKULELE", "THREMIN", "DITTY", "JINGLE", "LIMRICK", "POEM", "HAIKU", "OCTBASS", "HRPSCRD", "FLUBA", "AEOLUS",
+				"TESLA", "STLDRUM", "DGDRIDO", "WNDCHIM" };
+
+			var itemnames = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
+			var dialogs = ReadText(dialogsPointerOffset, dialogsPointerBase, dialogsPointerCount);
+
+			var newLute = newInstruments.PickRandom(rng);
+			var dialogsUpdate = new Dictionary<int, string>();
+			var princessDialogue = dialogs[0x06].Split(new string[] { "LUTE" }, System.StringSplitOptions.RemoveEmptyEntries);
+			var monkDialogue = dialogs[0x35].Split(new string[] { "LUTE" }, System.StringSplitOptions.RemoveEmptyEntries);
+			
+			if (princessDialogue.Length > 1)
+				dialogsUpdate.Add(0x06, princessDialogue[0] + newLute + princessDialogue[1]);
+
+			if (monkDialogue.Length > 1)
+				dialogsUpdate.Add(0x35, monkDialogue[0] + newLute + monkDialogue[1].Substring(0,14) + "\n" + monkDialogue[1].Substring(15, 10).Replace('\n',' '));
+
+			// Add extra dialogues that might contain the LUTE if the NPChints flag is enabled or if Astos Shuffle is enabled
+			var otherNPCs = new List<byte> {
+				0x45, 0x53, 0x69, 0x82, 0x8C, 0xAA, 0xCB, 0xDC, 0x9D, 0x70, 0xE3, 0xE1, 0xB6, // NPChints
+				0x02, 0x0E, 0x12, 0x14, 0x16, 0x19, 0x1E, 0xCD, 0x27, 0x23, 0x2B // SuffleAstos
+			};
+
+			for (int i = 0; i < otherNPCs.Count(); i++)
+			{
+				var tempDialogue = dialogs[otherNPCs[i]].Split(new string[] { "LUTE" }, System.StringSplitOptions.RemoveEmptyEntries);
+				if (tempDialogue.Length > 1)
+					dialogsUpdate.Add(otherNPCs[i], tempDialogue[0] + newLute + tempDialogue[1]);
+			}
+
+			if (dialogsUpdate.Count > 0)
+				InsertDialogs(dialogsUpdate);
+
+			itemnames[(int)Item.Lute] = newLute;
+			WriteText(itemnames, ItemTextPointerOffset, ItemTextPointerBase, ItemTextOffset);
+		}
+
+		public void HurrayDwarfFate(Fate fate, MT19337 rng)
+		{
+			if (fate == Fate.Spare)
+			{
+				// Protect Hurray Dwarf from NPC guillotine
+				Put(MapObjJumpTableOffset + 0x63 * JumpTablePointerSize, Blob.FromHex("A792"));
+				Put(MapObjOffset + 0x63 * MapObjSize, Blob.FromHex("01777700")); // Hurray!
+			}
+			else
+			{
+				// Whether NPC guillotine is on or not, kill Hurray Dwarf
+				Put(MapObjJumpTableOffset + 0x63 * JumpTablePointerSize, newTalk.Talk_kill);
+
+				// Change the dialogue
+				var dialogueStrings = new List<string>
+				{
+				    "No! I'm gonna disappear.\nYou'll never see\nme again. Please,\nI don't want to die.",
+					"If you strike me down,\nI shall become more\npowerful than you can\npossibly imagine.",
+					"Freeeeedom!!",
+					"I've seen things you\npeople wouldn't believe.\nAll those moments will\nbe lost in time..\nlike tears in rain..\nTime to die.",
+					"Become vengeance, David.\nBecome wrath.",
+					"My only regret..\nis that I have boneitis.",
+					"No, not the bees!\nNOT THE BEES!\nAAAAAAAAGH!\nTHEY'RE IN MY EYES!\nMY EYES! AAAAAAAAAAGH!",
+					"This is blasphemy!\nThis is madness!",
+					"Not like this..\nnot like this..",
+					"Suicide squad, attack!\n\n\n\nThat showed 'em, huh?",
+					"Well, what are you\nwaiting for?\nDo it. DO IT!!",
+					"The path you walk on has\nno end. Each step you\ntake is paved with the\ncorpses of your enemies.\nTheir souls will haunt\nyou forever. Hear me!\nMy spirit will be\nwatching you!",
+					"K-Kefka..!\nY-you're insane.."
+				};
+
+				//Put new dialogue to E6 since another Dwarf also says hurray
+				InsertDialogs(0xE6, dialogueStrings.PickRandom(rng));
+				Put(MapObjOffset + 0x63 * MapObjSize, Blob.FromHex("00E60000"));
+			}
 		}
 
 	}

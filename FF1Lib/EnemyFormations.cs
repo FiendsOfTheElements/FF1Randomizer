@@ -105,7 +105,7 @@ namespace FF1Lib
 			{
 				PutInBank(0x0C, 0x93D4, Blob.FromHex("EAEA"));
 			}
-			PutInBank(0x0C, 0xA3E0, Blob.FromHex($"AD916D2903D0{(UnrunnableToWait ? "25" : "31")}ADAE6BD036")); // we dont want to be able to run if we get a first strike on an unrunnable
+			PutInBank(0x0C, 0xA3E0, Blob.FromHex($"AD916D2903D0{(UnrunnableToWait ? "25" : "36")}ADAE6BD036")); // we dont want to be able to run if we get a first strike on an unrunnable
 		}
 
 		public void MakeWarMECHUnrunnable()
@@ -156,8 +156,8 @@ namespace FF1Lib
 					finalBattle[PaletteAsignmentOffset] = 0x41; // Palette Assignment in top nibble, 1 in bottom for unrunnable.
 
 					// Scale up the Fundead enemies if we end up with them. They're too weak otherwise.
-					ScaleSingleEnemyStats(0x78, 1.4, false, false, null, false);
-					ScaleSingleEnemyStats(0x33, 1.2, false, false, null, false);
+					ScaleSingleEnemyStats(0x78, 140, 140, false, false, null, false, 100, 100);
+					ScaleSingleEnemyStats(0x33, 120, 120, false, false, null, false, 100, 100);
 					break;
 				case FinalFormation.TimeLoop:
 					finalBattle[TypeOffset] = 0x0B;         // 9Small + Garland pattern

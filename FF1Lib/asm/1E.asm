@@ -143,6 +143,7 @@ PtyGen_DrawScreen:
 ;;
 ;;  DoPartyGen_OnCharacter  [around $80C1 :: 0x780D1]
 ;;    modified
+;;    modified further for Hacks.cs/EnablePoolParty() - see "1E_85B0_DoPartyGen_OnCharacter.asm"
 ;;
 ;;    Does character selection and name input for one character.
 ;;

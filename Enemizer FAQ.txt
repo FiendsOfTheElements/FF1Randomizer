@@ -3,15 +3,6 @@ ENEMIZER FAQ
 Q: So, what the flip is this "Enemizer" business, anyway?
 A: Enemizer is split into two major features: Enemy generation, and Formation generation.  Enemy generation does exactly what you'd think it does - it creates a whole new set of random enemies for you to fight, with abilities and perks that are procedurally generated.  Boss enemies remain (mostly) the same, but everything else is different.  Formation generation creates new formations of enemies procedurally, using any valid combination of palettes and remaining within the constraints of the original game's programming.  If Enemy Generation is on, then Formation Generation is automatically turned on since it will be necessary to create new formations.  You can, however, turn on Formation Generation without Enemy Generation, if you like the original enemy set just fine but would rather see some new battles.
 
-Q: I've heard this causes the game to break.  What precautions do you take against that?
-A: There have been some bugs in alpha testing, which have led me to make a few decisions.  Certain randomizer features will be disabled if Enemizer is on.  These features are:
-- Formation Shuffle (this is superfluous anyway since Formation Generation is effectively an inter-zone shuffle)
-- Trap Tile Shuffle (technically this could be something useful, but there are multiple steps I would need to take to make this compatible, or I would need to write a competing function, and I would rather have some consensus on this before I start writing a bunch of branching paths in the Trap Tile Shuffle function)
-- Fun% Enemy Names and Fun% Palette Swap (Enemy Generation uses the added space that is also used in Fun% names, and Enemy Generation also generates new palettes.  Since palettes are necessary to the functioning on Formation Generation, I'd rather not mess with them)
-Certain features are also changed. These are:
-- Zozo Melmond (Formation generator will create its own zone for Melmond, rather than using the one EnableMelmondGhetto hard-codes.  Otherwise, the function works exactly the same, with necessary alterations made to the EnableMelmondGhetto function to ensure that it will be compatible with the things Enemizer does)
-If there are other issues that arise, please let me know and I'll see what is causing the issue.  I believe I have resolved most of the obvious problems but there may be new ones that crop up from time to time.
-
 Q: So is there any method to how enemies are generated?
 A: Enemies are generated on top of the original monster list (or the monster list provided by the ROM).  For most enemies, the stats of the monster are based on (A) the monster image chosen for that monster (all 52 images will provide different stats, and some monster types are just flat out stronger than others), (B) the level of the monster, based usually on where it is encountered in the vanilla game, and (C) bonuses applied to each monster, which are randomly determined (with a few traits, like Deathtouch and Stonetouch, being limited to the monster that has those traits in the base game).  The stats of Boss monsters and fiends are left completely unchanged, assuming your ROM has those monsters in the slot they would occupy in the vanilla ROM.
 
@@ -21,8 +12,6 @@ There are global bonuses that will only occur for one enemy in every seed.  Thes
 - Crawl multi-hit stun attack
 - Sorceror Deathtouch
 - Coctrice Stonetouch
-- Mancat Resistances + Low MDef
-- Nitemare Resistances
 Secondly, there are type bonuses which can roll once per monster group, that will be noted in the monster's name.  These are:
 - Frost (denoted by "Fr"), Ice resistance and Fire weakness
 - Red (denoted by "R."), Fire resistance and Ice weakness
@@ -45,12 +34,7 @@ Finally, every enemy (except boss enemies) will have a small variance in hp, exp
 Any enemy with a script (excepting bosses) is automatically assigned the Mage flag, since all script enemies are spellcasters now.
 
 Q: How do you ensure enemies have a spell list?
-A: They will be assigned the spell list of an enemy appropriate to that monster's level.  The scripts they are assigned are, in order of severity:
-- RockGOL
-- R.GOYLE
-- MudGOL
-- MAGE
-- EVILMAN (reserved for only the highest tier enemies)
+A: They will be assigned the spell list of an enemy appropriate to that monster's level.
 
 Q: What happens to spell/skill lists?
 A: Enemizer will also generate new spell lists.  Enemy skills are not altered (my preference would be to keep enemies limited to one or two skills, since the threat of the enemy pounding you repeatedly with blizzard is part of what makes skills an interesting mechanics, rather than mixing in something useless like GAZE or SNORTING with a strong skill).  However, every enemy with a pure skill list (except WarMECH) is given a spell list of spells appropriate to the strength of the skill list (so the enemy with SCORCH will use tier 1 magic, while the CREMATE enemy will use tier 3 magic).
@@ -63,6 +47,7 @@ A: The fiends, Astos, and Warmech do not change their skill list at all, so if y
 Q: What does formation generation do?
 A: Formation generation, as the name suggests, creates new formations within the constraints of the game's programming.  Therefore, enemies in a formation must share the same pattern table, there can only be two palettes for enemies in a formation, and each formation has an A-Side (which can have up to 4 unique enemies) and a B-side (which can only contain the first two selected enemies).  Aside from that, anything goes; however, to maintain some balance to the game, each formation is assigned a zone that corresponds to an experience level requirement, so early game formations tend to give low experience while late game formations can give much more.
 When rolling formations, the generator prioritizes placing enemies that haven't been placed yet, while trying to pick enemies that correspond to zones which need to be filled.  The result of this is that, generally, there is a reasonable distribution of enemy formations for all areas of the game, though there are usually only 3-4 encounters for each individual domain (and some domains are reproduced, for example the world map domains).
+The latest version will shuffle the pattern tables as well, so Imps can appear with Hyenas and so on, but there can only be 13 pattern tables for monsters within the game's programming constraints.
 
 Q: What about boss formations?
 A: There are a number of formations which are set aside as special exemptions, which have special rules on how they are drawn.  These formations are drawn before the general formations.  The special formations are:
@@ -70,17 +55,3 @@ A: There are a number of formations which are set aside as special exemptions, w
 - Wizard, Eye and Zombie D formations.  The B-Side of these formations is a group of a single enemy selected for a particular zone, while the A-side is a generic encounter.  These formations are always unrunnable, and the B-Sides are placed on the appropriate trap tile (and are available as random encounters, too).
 - Phantom, Garland, Astos, Warmech, Vampire, and Pirates.  The A-Side of these formation is always the boss battle, which appears in a fixed quantity (1 usually, 9 for the pirates).  The boss is placed in the third slot for enemies in the formation.  The B-Side of the formation contains two enemies that are compatible with the pattern table and the boss' palette, and appears as a random encounter somewhere in the world.  With the exception of the Pirates (which must be a 9-small), these formations are always 2 large-6 small formations.
 - Fiends and Chaos, which are simply ignored by the formation generator altogether.  There are multiple assurances made so that these monsters do not appear in any encounter outside of the ones they belong in, in addition to any designated boss monster.
-
-Q: Is Garland supposed to be a dragon?
-A: Yes, that is intended.  It gives the player information about which enemy types will NOT appear elsewhere in the seed, and I think that isn't too bad.  I could force Garland, WarMECH, etc. into their proper appearance, but it's kind of fun to guess what they will look like today.
-
-Q: Are there future expansions you intend to create?
-A: Why yes indeed, there are.  Here are my rough plans for the future:
-- Improve the variety of formations that can appear.  Right now my priority is just to get the formation generator working without crashes.  After a full recode, the formation generator works a lot smoother, and avoids many of the characteristics that caused it to crash profusely in the first version of Enemizer.
-- Allow the character to select the intensity of encounters through a slider, which modifies the XP requirements for tiers.  How to do this while preserving the delicate balance of the game and the enemies available to me is a pretty tough question, since the game's XP table was designed to produce encounters in a fairly limited distribution concerning the characteristics I want to emphasize.
-- Allow formation zones to be defined by qualities other than XP yield, for example creating a sea zone for ocean monsters.  This can be really tricky and I would need a schema for the vanilla enemies if players are just using formation shuffle.
-- General flexibility for compatibility with FF1 hacks, within a reasonable boundary.
-- More detailed enemy generation, which can also assign enemies new tiers based on specifications offered by the user interface.
-- Spell/skill randomizer which creates a whole new spellbook for you AND the enemies, and works with Item Magic.
-- General integration of the enemizer's data structures with the randomizer as a whole, so that other features of the randomizers can refer to spell tiers and such when doing things like script shuffle and so on.  This is tricky because my implementation is quite janky, and I'd need the approval of the big cheeses to make it happen.
-- Eventually, I'd like to move in the direction of procedural map generation and dungeon generation, and turn the game into a straight up roguelike.  This is going to take a lot of work and cooperation.

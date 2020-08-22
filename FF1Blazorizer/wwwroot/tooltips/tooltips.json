@@ -24,10 +24,15 @@
 		"description": "This flag shuffles what spell is cast when using any of the castable items (Power Gauntlet, Bane Sword, ect.). The spell name will replace the name of the item for clarity, although icons will remain the same (or absent for Defense). Items that use the same icon cannot be differentiated except by equipping."
 	},
 	{
-		"Id": "mapOpenProgressionExtendedCheckBox",
+		"Id": "mapOpenProgressionDwavesNWCheckBox",
 		"title": "Extended Open Progression",
+		"description": "Remove the river tile between the Dwarf Cave and Northwest Castle so it can be traversed on foot."
+	},
+	{
+		"Id": "mapOpenProgressionFloaterDockCheckBox",
+		"title": "Ryukahn Desert Dock",
 		"screenshot": "mapOpenProgressionExtendedCheckBox.png",
-		"description": "Remove the river tile between the Dwarf Cave and Northwest Castle so it can be traversed on foot. Also add an additional dock near the Ryukhan desert."
+		"description": "Add an additional dock near the Ryukhan desert."
 	},
 	{
 		"Id": "magicLevelsCheckBox",
@@ -45,7 +50,7 @@
 		"Id": "magicShopLocsCheckBox",
 		"title": "Magic Shop Location Shuffle",
 		"screenshot": "magicShopLocsCheckBox.gif",
-		"description": "Shuffles the logcations of magic shops except Coneria (Level 1), so that Pravoka's magic shop can be in Melmond, etc."
+		"description": "Shuffles the locations of magic shops except Coneria (Level 1), so that Pravoka's magic shop can be in Melmond, etc."
 	},
 	{
 		"Id": "magicPermissionsCheckBox",
@@ -93,6 +98,76 @@
 		"title": "Unsafe Pirates",
 		"screenshot": "allowUnsafePiratesCheckBox.png",
 		"description": "Unsafe Pirates: Allows Pirates to be shuffled skills and spells. Left unchecked, Pirates will always have a script that directs them to only attack."
+	},
+	{
+		"Id": "allowUnsafeStartAreaCheckBox",
+		"title": "Allow Unsafe Start Area",
+		"description": "Entrance shuffle normally requires at least 3 safe locations amongst the Coneria Castle, Dwarf Cave, Temple of Fiends, Matoya's Cave, and Pravoka entrances. This flag removes that safety net."
+	},
+	{
+		"Id": "hintsVillage",
+		"title": "Hints from villagers",
+		"description": "In each town, a villager reveals the location of an item. The old men in Coneria, Pravoka, Melmond and Onrac, an Elf scholar in Elfland, Lukkanh in Crescent Lake, the Witch in Gaia and the Lefein villager on the left side (no Slab required)."
+	},
+	{
+		"Id": "hintsDungeon",
+		"title": "Hints from dungeon explorers",
+		"description": "Five NPC in dungeons reveals the location of an item. Down the dead end of Marsh Cave B1, on Lich's floor in Earth Cave, in the hallway of Gurgu Volcano B3, in a room on the left of Sea Shrine B4 and in the South room of Sky Palace 3F."
+	},
+	{
+		"Id": "hintsUselessCheckBox",
+		"title": "Useless Hints",
+		"description": "Half of the NPCs give useless hints."
+	},
+	{
+		"Id": "hintsRngDungeon",
+		"title": "Shuffled location in dungeon",
+		"description": "The NPCs could be at two other possible locations in each dungeon."
+	},
+	{
+		"Id": "EnablePoolParty",
+		"title": "Party Draft",
+		"description": "Draft your party from a pool of random characters. Allowed classes are selected from Party Composition, allowing duplicates. Once a character is selected, it's removed from the pool. Cancelling your choice puts back the character in the pool."
+	},
+	{
+		"Id": "PoolSizeDropDown",
+		"title": "Pool Size",
+		"description": "Number of characters in the pool."
+	},
+	{
+		"Id": "PPIncludePromotedClasses",
+		"title": "Include Promoted Classes",
+		"description": "Allow promoted classes to be added to the pool."
+	},
+	{
+		"Id": "EnableRandomPromotions",
+		"title": "Random Promotions",
+		"description": "When giving the TAIL to Bahamut, promote your party to random classes."
+	},
+	{
+		"Id": "RPIncludeBaseClasses",
+		"title": "Include Base Classes",
+		"description": "Allow base classes as possible promotions."
+	},
+	{
+		"Id": "RPSpoilers",
+		"title": "Spoil Promotions",
+		"description": "Change class names to show class promotions.\nFormat: Current class - Promotion class."
+	},
+	{
+		"Id": "checkboxLinearMPGrowth",
+		"title": "Linear MP Growth",
+		"description": "Change MP growth for Red, White and Black Mages to a linear growth, gaining 1 MP every 3 levels for each slots, starting from the original level for a given slot (ie: first lv3 MP for a White Mage at level 5, etc.). Mainly a fix for Random Promotions."
+	},
+	{
+		"Id": "RandomizeClassCheckBox",
+		"title": "Blursed Classes",
+		"description": "Give bonuses and maluses at random to each class. Press Select at Party selection screen and A at Status screen to reveal the modifiers."
+	},
+	{
+		"Id": "RandomizeClassChaosCheckBox",
+		"title": "Chaos Mode",
+		"description": "Shuffle Stats, Spellcasting and Equipment permissions between all classes."
 	},
 	{
 		"Id": "enemySkillsSpellsCheckBox",
@@ -247,12 +322,27 @@
 	{
 		"Id": "RandomWeaponBonus",
 		"title": "Random Weapon Bonus",
-		"description": "Gives each weapon a random bonus of +5 to -5. This will increase or decrease its damage by 2 per bonus, hit by 3 per bonus, crit by 1 per bonus."
+		"description": "Gives each weapon a random bonus from the selected range. This will increase or decrease (if negative) its damage by 2 per bonus, hit by 3(max 50%) per bonus, crit by 3(1.5%) per bonus. All values cannot go below zero hit or 1 crit/damage."
+	},
+	{
+		"Id": "RandomWeaponBonusExcludeMasa",
+		"title": "Random Weapon Bonus - Exclude Masa",
+		"description": "Masmune will not receive any bonuses or minuses, it will always be regular."
 	},
 	{
 		"Id": "RandomArmorBonus",
 		"title": "Random Armor Bonus",
-		"description": "Gives each armor a random bonus of +5 to -5. This will increase or decrease its absorb by 1 per bonus (2 for body armor) and reduce its weight penalty by 1 per bonus (2 for body armor)."
+		"description": "Gives each armor a random bonus from the selected range. This will increase or decrease (if negative) its absorb by 1 per bonus (2 for body armor) and reduce its weight penalty by 1 per bonus (2 for body armor)."
+	},
+	{
+		"Id": "separateBossHPScalingCheckBox",
+		"title": "Separate Boss HP Scaling",
+		"description": "Uses a second scaling for boss hp independant of other stats."
+	},
+	{
+		"Id": "separateEnemyHPScalingCheckBox",
+		"title": "Separate Enemy HP Scaling",
+		"description": "Uses a second scaling for enemy hp independant of other stats."
 	},
 	{
 		"Id": "incentivizeFreeNPCsCheckBox",
@@ -391,6 +481,11 @@
 		"title": "Disable Damage Tile Flicker",
 		"screenshot": "disableDamageTileFlickerCheckBox.gif",
 		"description": "Disables screen flashing when stepping over lava tiles."
+	},
+	{
+		"Id": "disableSpellCastFlashCheckBox",
+		"title": "Disable Spell Cast Flash",
+		"description": "Removes the full screen color flash when casting spells."
 	},
 	{
 		"Id": "menuColorDropDown",
@@ -597,6 +692,11 @@
 		"description": "Changes the map to allow walking from Corneria to Dwarf Cave, as well as connecting the Ice Cave and Volcano river systems, to allow passage from Pravoka to Crescent Lake with the CANOE."
 	},
 	{
+		"Id": "earlyKingCheckBox",
+		"title": "Early King Item",
+		"description": "The King of Coneria will give the party his item before the Princess is saved."
+	},
+	{
 		"Id": "earlySardaCheckBox",
 		"title": "Early Sarda Item",
 		"screenshot": "earlySardaCheckBox.png",
@@ -711,6 +811,11 @@
 	},
 	{
 		"Id": "buyTenCheckBox",
+		"title": "Buy Quantity Convenience",
+		"description": "If enabled, the player has the option to select the quantity of items bought in the item shop.  Press left to reduce quantity by 1, right to increase quantity by 1, up to increase quantity by 10, and down to decrease quantity by 10.  Mutually exclusive with Buy Ten."
+	},
+	{
+		"Id": "buyTenOldCheckBox",
 		"title": "Buy Ten Convenience",
 		"description": "If enabled, the player has the option to buy 10 of an item at once in the item shop, so they do not need to spend a long time buying 99 heal potions."
 	},
@@ -725,9 +830,19 @@
 		"description": "If enabled, critical hits note how many hits out of the maximum connected with a critical, for example 2 critical hits out of 3, instead of simply marking that there was a critical."
 	},
 	{
+		"Id": "battleMagicMenuWrapAroundCheckBox",
+		"title": "Battle Magic Menu Wrap Around",
+		"description": "If enabled, allows to wrap up and down in the battle magic menu."
+	},
+	{
 		"Id": "inventoryAutosortCheckBox",
 		"title": "Inventory Autosort",
 		"description": "If enabled, HEAL, PURE, and SOFT potions are automatically moved to the first row of the item menu, followed by saving items on the second row, then all key items in your inventory."
+	},
+	{
+		"Id": "renounceAutosortCheckBox",
+		"title": "Renounce Autosort",
+		"description": "Forgo the Autosort Inventory feature if it's enabled."
 	},
 	{
 		"Id": "houseMPRestorationCheckBox",
@@ -860,6 +975,21 @@
 		"description": "When enabled, staying at an inn will only restore HP/MP, but not save the game."
 	},
 	{
+		"Id": "saveGameWhenGameOverCheckBox",
+		"title": "Save Game When Game Over",
+		"description": "When enabled, if your party perishes, you will respawn with all of your progression (items acquired, levels gained, etc.) intact. If you have the SHIP (but not the airship), you will respawn where you last docked; if you have the AIRSHIP, you will respawn at the airship and the ship will be waiting for you at Coneria; if you have neither, you will respawn where you last saved."
+	},
+	{
+		"Id": "saveGameDWModeCheckBox",
+		"title": "Dragon Warrior Mode",
+		"description": "Always respawn at Coneria (the Ship and Airship will wait for you there if you have them). Gold is halved."
+	},
+	{
+		"Id": "shuffleAstosCheckBox",
+		"title": "Shuffle Astos",
+		"description": "Astos disguises himself as another NPC: Bahamut, Canoe Sage, CubeBot, Elf Doctor, Elf Prince, Fairy, King, Lefein, Matoya, Nerrick, Princess Sara, Sarda, Smith, Titan, Unne or the kindly old king from Northwest Castle."
+	},
+	{
 		"Id": "randomizeFormationEnemizer",
 		"title": "Generate New Formations (Enemizer)",
 		"description": "Generates entirely new formations of enemies."
@@ -889,5 +1019,40 @@
 		"Id": "AllSpellLevelsForKnightNinja",
 		"title": "Knight and Ninja Gain Charges In All Levels",
 		"description": "Sets the Knight and Ninja magic charge growth to give a charge in all levels whenever those classes gain a charge in any level, giving Knight and Ninja tier 4-8 charges.  This alleviates an issue with Keep Permissions where the Knight and Ninja could never cast spells they could learn, but is useless otherwise."
+	},
+	{
+		"Id": "swolePiratesCheckBox",
+		"title": "Buff the Pirates",
+		"description": "Increases the stats of Bikke's pirates considerably, roughly to the equivalent of a level 6 Fighter with a cheap but decent sword and iron armor, and increases the XP and gold yield from them by a factor of 20.  This is done before stat scaling, and also increases the level of script they can carry when generating balanced scripts (if Allow Unsafe Pirates is on)."
+	},
+	{
+		"Id": "ChangeMaxMP",
+		"title": "Change Spell Caster Max MP",
+		"description": "Allows the control over the maximum spell charges per spell level. This does not change when they recieve new spell levels. A value of less than 2 will not reduce the starting level 1 charges of red/white/black mages."
+	},
+	{
+		"Id": "KnightNinjaMaxMP",
+		"title": "Set Max Knight Ninja MP",
+		"description": "At the moment with the way the game is coded, knight's and ninja's max mp is determined together. This wont change when they get spells, it will still be at every odd level starting at 15."
+	},
+	{
+		"Id": "changeLuteCheckBox",
+		"title": "Multi-instrumentalist Sara",
+		"description": "Change Princess Sara's Lute to another instrument."
+	},
+	{
+		"Id": "hurrayDwarfFate",
+		"title": "Hurray Dwarf's Fate",
+		"description": "Choose if Hurray Dwarf is spared when NPC Guillotine is on or kill him."
+	},
+	{
+		"Id": "earlierRubyCheckBox",
+		"title": "Earlier Ruby",
+		"description": "Adjust the Ruby's placement to earlier in the seed to increase the likelihood that negotiating the Titan's Tunnel is required for progression."
+	},
+	{
+		"Id": "LockMode",
+		"title": "Set Lock Hit Mode",
+		"description": "Allows control over LOCK and LOK2 chance to hit. 107 is about 20% vs chaos. 160 is about 50% vs chaos. Autohit will always hit."
 	}
 ]

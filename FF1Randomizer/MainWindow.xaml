@@ -235,6 +235,9 @@
 						<CheckBox x:Name="ProcGenWaterfallCheckBox" IsChecked="{Binding Flags.EFGWaterfall}" IsEnabled="{Binding Flags.ExperimentalFloorGeneration}" Content="Procgen Waterfall" Margin="30,5,0,0"/>
 						<CheckBox x:Name="ProcGenEarthB1CheckBox" IsChecked="{Binding Flags.EFGEarth1}" IsEnabled="{Binding Flags.ExperimentalFloorGeneration}" Content="Procgen Earth Cave B1" Margin="30,5,0,0"/>
 						<CheckBox x:Name="ProcGenEarthB2CheckBox" IsChecked="{Binding Flags.EFGEarth2}" IsEnabled="{Binding Flags.ExperimentalFloorGeneration}" Content="Procgen Earth Cave B2" Margin="30,5,0,0"/>
+						<Label Margin="5,5,0,0" FontWeight="Bold">Hints</Label>
+						<CheckBox x:Name="hintsVillagerCB" IsChecked="{Binding Flags.HintsVillage}" Content="Enable Procedural Floor Generation"/>
+						<CheckBox x:Name="hintsDungeonCB" IsChecked="{Binding Flags.HintsDungeon}" Content="Procgen Waterfall"/>
 					</StackPanel>
 				</Grid>
 			</TabItem>

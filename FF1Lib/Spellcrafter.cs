@@ -27,7 +27,7 @@ namespace FF1Lib
 			NUM_OOB_SPELLS
 		}
 
-		public void CraftNewSpellbook(MT19337 rng, bool mixWhiteBlack, bool lockFix, bool levelShuffle, bool keepPermissions) // generates a new spellbook and does all necessary steps to ensure that the new spells are assigned where they need to be for the game to work properly
+		public void CraftNewSpellbook(MT19337 rng, bool mixWhiteBlack, LockHitMode lockMode, bool levelShuffle, bool keepPermissions) // generates a new spellbook and does all necessary steps to ensure that the new spells are assigned where they need to be for the game to work properly
 		{
 			bool WhiteSpell(int id) => mixWhiteBlack || id % 8 < 4;
 			bool BlackSpell(int id) => mixWhiteBlack || id % 8 > 3;
@@ -155,19 +155,8 @@ namespace FF1Lib
 			Put(MagicOutOfBattleOffset + MagicOutOfBattleSize * 4, new[] { (byte)(healspell + 0xB0) });
 			Put(0x3AFDF, Blob.FromHex("0F")); // changing the oob code for HEAL to reflect the above effect
 			spellindex.Remove(healspell);
-			selected = spellindex.Where(id => WhiteSpell(id) && id < 56 && id > 39).ToList().PickRandom(rng);
-			spell[selected].targeting = 0x08;
-			spell[selected].effect = 64;
-			spell[selected].routine = 0x07;
-			spell[selected].gfx = 0xC0;
-			spell[selected].palette = 0x28;
-			spellMessages[selected] = 0x01; // HP up!
-			SPCR_SetPermissionFalse(spellPermissions, selected, 3); // red mage banned
-			SPCR_SetPermissionFalse(spellPermissions, selected, 9); // red wizard banned
-			Put(MagicOutOfBattleOffset + MagicOutOfBattleSize * 5, new[] { (byte)(selected + 0xB0) });
-			Put(0x3AFF1, Blob.FromHex("3F")); // changing the oob code for HEL3 to reflect the above effect
-			spellindex.Remove(selected);
-			selected = spellindex.Where(id => WhiteSpell(id) && id < 40 && id > 15).ToList().PickRandom(rng);
+			int healspellLevel = healspell / 8;
+			selected = spellindex.Where(id => WhiteSpell(id) && id < healspellLevel * 8 + 24 && id > healspellLevel * 8 + 7).ToList().PickRandom(rng);
 			spell[selected].targeting = 0x08;
 			spell[selected].effect = 32;
 			spell[selected].routine = 0x07;
@@ -179,6 +168,20 @@ namespace FF1Lib
 			Put(0x3AFE8, Blob.FromHex("1F")); // changing the oob code for HEL2 to reflect the above effect
 			Put(MagicOutOfBattleOffset + MagicOutOfBattleSize * 6, new[] { (byte)(selected + 0xB0) });
 			spellindex.Remove(selected);
+			healspellLevel = selected / 8;
+			selected = spellindex.Where(id => WhiteSpell(id) && id < healspellLevel * 8 + 24 && id > healspellLevel * 8 + 7).ToList().PickRandom(rng);
+			spell[selected].targeting = 0x08;
+			spell[selected].effect = 64;
+			spell[selected].routine = 0x07;
+			spell[selected].gfx = 0xC0;
+			spell[selected].palette = 0x28;
+			spellMessages[selected] = 0x01; // HP up!
+			SPCR_SetPermissionFalse(spellPermissions, selected, 3); // red mage banned
+			SPCR_SetPermissionFalse(spellPermissions, selected, 9); // red wizard banned
+			Put(MagicOutOfBattleOffset + MagicOutOfBattleSize * 5, new[] { (byte)(selected + 0xB0) });
+			Put(0x3AFF1, Blob.FromHex("3F")); // changing the oob code for HEL3 to reflect the above effect
+			spellindex.Remove(selected);
+
 			int purespell = spellindex.Where(id => WhiteSpell(id) && id < 16).ToList().PickRandom(rng);
 			spell[purespell].targeting = 0x10;
 			spell[purespell].effect = 0b00011100; // pure now cures darkness and paralysis in battle, woo
@@ -206,7 +209,7 @@ namespace FF1Lib
 			SPCR_SetPermissionFalse(spellPermissions, selected, 9); // red wizard banned
 			Put(MagicOutOfBattleOffset + MagicOutOfBattleSize * 9, new[] { (byte)(selected + 0xB0) });
 			spellindex.Remove(selected);
-			selected = spellindex.Where(id => id % 8 > 3 && id > 31).ToList().PickRandom(rng); // warp will appear in black magic regardless of whether we mix spells or not
+			selected = spellindex.Where(id => id % 8 > 3 && id > 15).ToList().PickRandom(rng); // warp will appear in black magic regardless of whether we mix spells or not
 			spell[selected].accuracy = 0xFF;
 			spellNames[selected] = levelShuffle ? "WRP" + (SpellTier(selected) + 1).ToString() : "WARP";
 			spellMessages[selected] = 0x4A; // Ineffective now
@@ -223,7 +226,7 @@ namespace FF1Lib
 			SPCR_SetPermissionFalse(spellPermissions, selected, 9); // red wizard banned
 			Put(MagicOutOfBattleOffset + MagicOutOfBattleSize * 11, new[] { (byte)(selected + 0xB0) });
 			spellindex.Remove(selected);
-			selected = spellindex.Where(id => id % 8 < 4 && id > 31).ToList().PickRandom(rng); // exit will appear in white magic regardless of whether we mix spells or not
+			selected = spellindex.Where(id => id % 8 < 4 && id > 15).ToList().PickRandom(rng); // exit will appear in white magic regardless of whether we mix spells or not
 			spell[selected].accuracy = 0xFF;
 			spellNames[selected] = levelShuffle ? "EXT" + (SpellTier(selected) + 1).ToString() : "EXIT";
 			spellMessages[selected] = 0x4A; // Ineffective now
@@ -234,12 +237,12 @@ namespace FF1Lib
 			spellindex.Remove(selected);
 
 			// draw guaranteed spells
-			int rusespell = spellindex.Where(id => WhiteSpell(id) && id < 48).ToList().PickRandom(rng); // guaranteed RUSE, we will keep track of this when assigning spells to items
+			int rusespell = spellindex.Where(id => WhiteSpell(id) && id < 32).ToList().PickRandom(rng); // guaranteed RUSE, we will keep track of this when assigning spells to items
 			SPCR_CraftEvasionSpell(rng, spell[rusespell], SpellTier(rusespell), 0x04);
 			spellMessages[rusespell] = 0x03; // Evasion up
 			SPCR_SetPermissionFalse(spellPermissions, rusespell, 3); // red mage banned
 			spellindex.Remove(rusespell);
-			int sabrspell = spellindex.Where(id => BlackSpell(id) && id > 7 && id < 56).ToList().PickRandom(rng); // guaranteed SABR, again we track this for assigning spells to itmes
+			int sabrspell = spellindex.Where(id => BlackSpell(id) && id > 7 && id < 32).ToList().PickRandom(rng); // guaranteed SABR, again we track this for assigning spells to itmes
 			SPCR_CraftAttackUpSpell(rng, spell[sabrspell], SpellTier(sabrspell), true);
 			SPCR_SetPermissionFalse(spellPermissions, sabrspell, 3); // red mage banned
 			spellindex.Remove(sabrspell);
@@ -394,7 +397,7 @@ namespace FF1Lib
 						if (elemSpell[elem].Exists(i => BlackSpell(index) == BlackSpell(i) && SpellTier(index) == SpellTier(i)))
 							continue; // return to start if this spell is in the same realm and at the same tier as another spell of the same element
 						SPCR_CraftDamageSpell(rng, spell[index], SpellTier(index), (byte)(0b10000000 >> elem), WhiteSpell(index) && !mixWhiteBlack, false);
-						if(elem == 5 || elem == 8)
+						if(elem == 4 || elem == 5 || elem == 8)
 						{
 							SPCR_SetPermissionFalse(spellPermissions, index, 3); // red mage banned
 							SPCR_SetPermissionFalse(spellPermissions, index, 9); // red wizard banned
@@ -665,7 +668,7 @@ namespace FF1Lib
 										spell[index].targeting = (byte)rng.Between(1, 2);
 										spell[index].elem = (byte)(spell[index].targeting == 0x01 ? 0b00000001 : 0b00000100);
 										spell[index].effect = effect;
-										spell[index].accuracy = 40;
+										spell[index].accuracy = (byte)(spell[index].targeting == 0x01 ? 40 : 64);
 										spell[index].routine = routine;
 										SPCR_SetPermissionFalse(spellPermissions, index, 9); // red wizard banned
 										break;
@@ -850,7 +853,7 @@ namespace FF1Lib
 										spell[index].elem = 0b00000001;
 										break;
 									case 6:
-										spell[index].effect = 0b10010000;
+										spell[index].effect = 0b10000000;
 										spell[index].targeting = 0x01;
 										spell[index].routine = routine;
 										spell[index].elem = 0b00000001;
@@ -1072,19 +1075,38 @@ namespace FF1Lib
 						}
 						else if(SpellTier(index) < 7)
 						{
-							resistances = GenerateRandomBits(0xFF, rng);
-							if(resistelems.Contains(resistances))
+							List<byte> validElements = new List<byte> { 0b01110000, 0b10001001, 0b10000101, 0b11111111 };
+							validElements = validElements.Except(resistelems).ToList();
+							if (validElements.Count == 0)
 							{
 								validroutines.Remove(0x0A);
 								continue;
 							}
-							if (CountBitsActive(resistances) < 3)
-								continue; // re-loop if there are less than two resistances
-							if (CountBitsActive(resistances) < SpellTier(index))
-								spell[index].targeting = 0x08;
-							else
-								spell[index].targeting = 0x10;
-							spellMessages[index] = 0x19; // Defend magic
+							switch (validElements.PickRandom(rng))
+							{
+								case 0b01110000:
+									resistances = 0b01110000;
+									spellMessages[index] = 0x19; // Defend magic
+									spell[index].targeting = 0x08;
+									break;
+								case 0b10001001:
+									resistances = 0b10001001;
+									spellMessages[index] = 0x19; // Defend magic
+									spell[index].targeting = 0x08;
+									break;
+								case 0b10000101:
+									resistances = 0b10000101;
+									spellMessages[index] = 0x19; // Defend magic
+									spell[index].targeting = 0x08;
+									break;
+								case 0b11111111:
+									resistances = 0b11111111;
+									spellMessages[index] = 0x1C; // Defend all
+									spell[index].targeting = 0x10;
+									SPCR_SetPermissionFalse(spellPermissions, index, 3); // red mage banned
+									SPCR_SetPermissionFalse(spellPermissions, index, 9); // red wizard banned
+									break;
+							}
 							resistelems.Add(resistances);
 						}
 						else
@@ -1139,7 +1161,7 @@ namespace FF1Lib
 					{
 						spell[index].targeting = (byte)rng.Between(1, 2);
 						spell[index].effect = (byte)(20 * (SpellTier(index) + 1) * spell[index].targeting);
-						if (lockFix)
+						if (lockMode == LockHitMode.AutoHit)
 							spell[index].effect >>= 1; // LSR effect byte by one (divide by two) if lock fix is on
 						spell[index].accuracy = 107; // max accuracy for LOCK spells
 						spell[index].routine = routine;
@@ -1265,9 +1287,9 @@ namespace FF1Lib
 								if (i % 8 < 4)
 								{
 									if (SpellTier(i) < 5)
-										SPCR_SetName(spellNames, i, "FADE", "FAD");
+										SPCR_SetName(spellNames, i, "RAY", "RAY");
 									else
-										SPCR_SetName(spellNames, i, "HOLY", "HLY");
+										SPCR_SetName(spellNames, i, "FADE", "FAD");
 									spell[i].gfx = 0xC8;
 									spell[i].palette = 0x24;
 								}
@@ -1351,7 +1373,7 @@ namespace FF1Lib
 									if (SpellTier(i) < 5)
 										SPCR_SetName(spellNames, i, "MG.M", "M.M");
 									else
-										SPCR_SetName(spellNames, i, "NUKE", "NUK");
+										SPCR_SetName(spellNames, i, "FLAR", "FLA");
 									spell[i].gfx = 0xD0;
 									spell[i].palette = 0x28;
 								}
@@ -1363,7 +1385,7 @@ namespace FF1Lib
 				{
 					spell[i].gfx = 0xC8;
 					spell[i].palette = 0x21;
-					SPCR_SetName(spellNames, i, "DIA", "DIA");
+					SPCR_SetName(spellNames, i, "HARM", "HRM");
 				}
 				if(spell[i].routine == 0x03)
 				{
@@ -1510,6 +1532,12 @@ namespace FF1Lib
 						SPCR_SetName(spellNames, i, "APSN", "APS");
 					else if (spell[i].effect == 0b00000001)
 						SPCR_SetName(spellNames, i, "ASTA", "AST");
+					else if (spell[i].effect == 0b01110000)
+						SPCR_SetName(spellNames, i, "AMAG", "AMG");
+					else if (spell[i].effect == 0b10001001)
+						SPCR_SetName(spellNames, i, "ARUB", "ARB");
+					else if (spell[i].effect == 0b10000101)
+						SPCR_SetName(spellNames, i, "ATIM", "ATI");
 					else
 						SPCR_SetName(spellNames, i, "AMAG", "AMG");
 					spell[i].gfx = 0xB0;
@@ -2020,12 +2048,12 @@ namespace FF1Lib
 		{
 			spell.targeting = targeting;
 			if (tier == 7)
-				spell.targeting = 0x04; // use selftargeting effect for all tier 8 spells
-			spell.effect = (byte)(spell.targeting == 0x08 ? tier * 10 : (tier + 3) * 10);
-			if (tier > 5)
-				spell.effect += 20;
+				spell.targeting = 0x04; // use singletargeting effect for all tier 8 spells
+			spell.effect = (byte)(spell.targeting == 0x08 ? tier * 10 : (tier + 2) * 12);
+			if (tier > 3 && targeting != 0x08)
+				spell.effect += 12;
 			if (spell.targeting == 0x04)
-				spell.effect <<= 1; // ASL the effect byte (multiply by two)
+				spell.effect = (byte)(spell.effect + spell.effect / 2); // increase buff by 50% for self-cast
 			if (tier == 7)
 				spell.targeting = 0x08; // tier 8 spells target all allies with +240 evasion
 			spell.routine = 0x10;

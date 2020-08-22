@@ -21,15 +21,14 @@ namespace FF1Lib
 		public const int ArmorPermissionsOffset = 0x3BFB0;
 		public const int ArmorPermissionsCount = 40;
 
-		public void RandomArmorBonus(MT19337 rng)
+		public void RandomArmorBonus(MT19337 rng, int min, int max)
 		{
 			//get base stats
 			Armor currentArmor;
 			for (int i = 0; i < ArmorCount; i++)
 			{
 				currentArmor = new Armor(i, this);
-				//number from -5 to +5
-				int bonus = rng.Between(-5, 5);
+				int bonus = rng.Between(min, max);
 				if (bonus != 0)
 				{
 					//body armor(indexes 0 - 15) +2/-2 +2/-2 weight
@@ -45,7 +44,7 @@ namespace FF1Lib
 					currentArmor.Absorb = (byte)Math.Max(1, currentArmor.Absorb + (armorTypeAbsorbBonus * bonus));
 
 					//change last two non icon characters to -/+bonus
-					string bonusString = bonus.ToString();
+					string bonusString = string.Format((bonus > 0) ? "+{0}" : "{0}", bonus.ToString());
 					byte[] bonusBytes = FF1Text.TextToBytes(bonusString);
 
 					int iconIndex = currentArmor.NameBytes[6] > 200 && currentArmor.NameBytes[6] != 255 ? 5 : 6;

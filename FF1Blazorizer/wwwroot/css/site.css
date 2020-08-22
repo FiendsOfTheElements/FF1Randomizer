@@ -17,8 +17,8 @@ app {
 }
 
 .top-row {
-    height: 3.5rem;
     display: flex;
+    padding: 1rem;
     align-items: center;
     z-index: 100;
     background: var(--DARK_BACKGROUND_COLOR);
@@ -31,6 +31,24 @@ app {
 .main {
     flex: 1;
 }
+
+.update-notification {
+    background-color: #30bb6b;
+    border-radius: 15px;
+    position: fixed;
+    right: 2%;
+    margin-top: 1%;
+    max-width: 96%;
+    width: max-content;
+    padding: 0.5rem;
+    font-family: 'Press Start 2P';
+    z-index: 101;
+}
+
+    .update-notification:hover {
+        color: white;
+        cursor: url(https://unpkg.com/nes.css/assets/cursor-click.png),pointer;
+    }
 
 .nav-item {
     font-size: 0.9rem;
@@ -65,9 +83,9 @@ app {
         transform: translateY(2px);
     }
 
-.content {
-    padding-top: 1.1rem;
-}
+    .content {
+        padding-top: 1.1rem;
+    }
 
 .loading {
     width: 100%;
@@ -203,7 +221,7 @@ h1, h2, h4 {
 td {
     padding: 12px;
     text-align: center;
-    min-width: 96px;
+    min-width: 72px;
 }
 
 .right-bordered {
@@ -221,7 +239,7 @@ select {
 }
 
 tr.odd {
-    background: rgba(0, 0, 0, 0.05);
+    background: rgba(0, 0, 0, 0.2);
 }
 
 tr.bottom-borderd {
@@ -334,4 +352,62 @@ tr.bottom-borderd {
 
 p {
     font-family: monospace;
+}
+
+.job {
+    background-size: 48px;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.jobs {
+    height: 72px;
+}
+
+.job.fighter {
+    background-image: url("/images/classes/fighter.png");   
+}
+
+.job.thief {
+    background-image: url("/images/classes/thief.png");
+}
+
+.job.blackbelt {
+    background-image: url("/images/classes/blackbelt.png");
+}
+
+.job.redmage {
+    background-image: url("/images/classes/redmage.png");
+}
+
+.job.whitemage {
+    background-image: url("/images/classes/whitemage.png");
+}
+
+.job.blackmage {
+    background-image: url("/images/classes/blackmage.png");
+}
+
+.job.knight {
+    background-image: url("/images/classes/knight.png");   
+}
+
+.job.ninja {
+    background-image: url("/images/classes/ninja.png");
+}
+
+.job.master {
+    background-image: url("/images/classes/master.png");
+}
+
+.job.redwizard {
+    background-image: url("/images/classes/redwizard.png");
+}
+
+.job.whitewizard {
+    background-image: url("/images/classes/whitewizard.png");
+}
+
+.job.blackwizard {
+    background-image: url("/images/classes/blackwizard.png");
 }
