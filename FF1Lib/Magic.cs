@@ -471,15 +471,12 @@ namespace FF1Lib
 			Put(ConfusedSpellIndexOffset, new[] { (byte)newFireSpellIndex });
 		}
 
-		public void SetMPMax(int redMageMaxMP, int whiteMageMaxMP, int blackMageMaxMP, int knightNinjaMaxMp)
+		public void SetMPMax(int redMageMaxMP, int whiteMageMaxMP, int blackMageMaxMP, int knightMaxMP, int ninjaMaxMP)
 		{
-			//class index order: fighter, thief, blackbelt, redmage, whitemage, blackmage
-			SetClassMaxMp(3, redMageMaxMP);
-			SetClassMaxMp(4, whiteMageMaxMP);
-			SetClassMaxMp(5, blackMageMaxMP);
+			const int lut_MaxMP = 0x6C902;
 
-			//for now, before we change the asm for knight and ninja, the two will be tied together
-			Put(newKnightNinjaMaxMPOffset, new byte[] { (byte)(knightNinjaMaxMp - 1)});
+			Put(lut_MaxMP, new List<byte> { 0x00, 0x00, 0x00, (byte)redMageMaxMP, (byte)whiteMageMaxMP, (byte)blackMageMaxMP,
+				(byte)knightMaxMP, (byte)ninjaMaxMP, 0x00, (byte)redMageMaxMP, (byte)whiteMageMaxMP, (byte)blackMageMaxMP }.ToArray());
 		}
 
 		public void SetClassMaxMp(int classIndex, int maxMp)

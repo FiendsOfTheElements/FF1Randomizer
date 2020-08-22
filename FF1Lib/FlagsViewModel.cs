@@ -2947,13 +2947,22 @@ namespace FF1Lib
 			}
 		}
 
-		public int KnightNinjaMaxMP
+		public int KnightMaxMP
 		{
-			get => Flags.KnightNinjaMaxMP;
+			get => Flags.KnightMaxMP;
 			set
 			{
-				Flags.KnightNinjaMaxMP = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("KnightNinjaMaxMP"));
+				Flags.KnightMaxMP = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("KnightMaxMP"));
+			}
+		}
+		public int NinjaMaxMP
+		{
+			get => Flags.NinjaMaxMP;
+			set
+			{
+				Flags.NinjaMaxMP = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NinjaMaxMP"));
 			}
 		}
 
@@ -3019,6 +3028,15 @@ namespace FF1Lib
 			{
 				Flags.RandomPromotionsSpoilers = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomPromotionsSpoilers"));
+			}
+		}
+		public bool LinearMPGrowth
+		{
+			get => Flags.LinearMPGrowth;
+			set
+			{
+				Flags.LinearMPGrowth = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("LinearMPGrowth"));
 			}
 		}
 		public bool? RandomizeClass

@@ -240,12 +240,58 @@ namespace FF1Lib
 			PutInBank(0x0E, 0x95AE, Blob.FromHex("A203BCD095B900613006186906990061CA10EFE65660"));
 			PutInBank(0x0E, 0x95D0, Blob.FromHex("C0804000")); // lut used by the above code
 
-			// Change to level Up routine to not go over max MP and to allow gaining MP when random promotion is on, See 1B_9300_LvlUp_LevelUp.asm
-			PutInBank(0x1B, 0x88D7, Blob.FromHex("AD8E68C903903EC908F03AA001B182A0282000934C1C89"));
-			PutInBank(0x1B, 0x9300, Blob.FromHex("AD8E68C906F034C907F030A5828590A5838591A027B1868DAD6B18690191860EAD6BAD8E680AA8B9718A186DAD6B8582B9728A69008583A908D00AA5828590A5838591A903AAA001B182A028488AD184B005684A4C6493684A900948B184186901918468C8C030D0E3A5908582A591858360"));
+			// Spell level up change to allow any class to gain spell charges
+			PutInBank(0x1B, 0x88D7, Blob.FromHex("AE8E68A001B182A02848B184DD02899005684A4CFA88684A900948B184186901918468C8C030D0E14C1C89000000090909040400090909"));
 
 			// To allow all promoted classes
 			EnableTwelveClasses();
+		}
+
+		public void LinearMPGrowth()
+		{
+			// Change MP growth to be linear (every 3 levels) as a fix for random promotion 
+			var levelUpStats = Get(NewLevelUpDataOffset, 588).Chunk(49 * 2);
+			var rmArray = Enumerable.Repeat((byte)0x00, 49).ToList();
+			var wbmArray = Enumerable.Repeat((byte)0x00, 49).ToList();
+			var rmCount = new List<int> { 2, 2, 2, 2, 2, 2, 2, 2 };
+			var wbmCount = new List<int> { 2, 2, 2, 2, 2, 2, 2, 2 };
+			var rmMinLevel = new List<int> { 2, 2, 6, 10, 15, 20, 25, 31 };
+			var wbmMinLevel = new List<int> { 2, 2, 5, 8, 12, 16, 20, 25 };
+			var bitArray = new List<byte> { 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80 };
+
+			for (int i = 0; i < 49; i++)
+			{
+				for (int j = 0; j < 8; j++)
+				{
+					if (rmMinLevel[j] <= i + 2)
+						rmCount[j]++;
+
+					if (rmCount[j] >= 3)
+					{
+						rmArray[i] |= bitArray[j];
+						rmCount[j] = 0;
+					}
+
+					if (wbmMinLevel[j] <= i + 2)
+						wbmCount[j]++;
+
+					if (wbmCount[j] >= 3)
+					{ 
+						wbmArray[i] |= bitArray[j];
+						wbmCount[j] = 0;
+					}
+				}
+			}
+
+			for (int i = 0; i < 49; i++)
+			{
+				levelUpStats[3][i * 2 + 1] = rmArray[i];
+				levelUpStats[4][i * 2 + 1] = wbmArray[i];
+				levelUpStats[5][i * 2 + 1] = wbmArray[i];
+			}
+
+			// Insert level up data
+			Put(NewLevelUpDataOffset, levelUpStats.SelectMany(x => (byte[])x).ToArray());
 		}
 
 		public void PubReplaceClinic(MT19337 rng, Flags flags)
@@ -497,11 +543,11 @@ namespace FF1Lib
 
 			// Swtich NPC to Astos
 			Put(NpcTalkOffset + (byte)newastos * NpcTalkSize, newTalk.Talk_Astos);
-
+			
 			// Get items name
 			var newastositem = FormattedItemName((Item)Get(MapObjOffset + (byte)newastos * 4, 4)[3]);
 			var nwkingitem = FormattedItemName((Item)Get(MapObjOffset + (byte)ObjectId.Astos * 4, 4)[3]);
-
+			
 			// Custom dialogs for Astos NPC and the Kindly Old King
 			List<(byte, string)> astosdialogs = new List<(byte, string)>
 			{
@@ -510,10 +556,10 @@ namespace FF1Lib
 				(0x00, ""),(0x00, ""),(0x00, ""),
 				(0x0C, "You found the HERB?\nCurses! The Elf Prince\nmust never awaken.\nOnly then shall I,\nAstos, become\nthe King of ALL Elves!"),
 				(0x0E, "Is this a dream?.. Are\nyou, the LIGHT WARRIORS?\nHA! Thank you for waking\nme! I am actually Astos,\nKing of ALL Elves! You\nwon't take my " + newastositem + "!"),
-				(0x12, "My CROWN! Oh, but it\ndoesn't go with this\noutfit at all. You keep\nit. But thanks! Here,\ntake this " +nwkingitem + " also!"),
+				(0x12, "My CROWN! Oh, but it\ndoesn't go with this\noutfit at all. You keep\nit. But thanks! Here,\ntake this " + nwkingitem + " also!"),
 				(0x14, "Oh, wonderful!\nNice work! Yes, this TNT\nis just what I need to\nblow open the vault.\nSoon more than\nthe " + newastositem + " will\nbelong to Astos,\nKing of Dark Dwarves!"),
-				(0x16, "ADAMANT!! Now let me\nmake this " + newastositem.TrimEnd(' ') + "..\nAnd now that I have\nthis, you shall take a\nbeating from Astos,\nthe Dark Blacksmith!"),
-				(0x19, "You found my CRYSTAL and\nwant my " + newastositem.TrimEnd(' ') + "? Oh!\nI can see!! And now, you\nwill see the wrath of\nAstos, the Dark Witch!"),
+				(0x16, "ADAMANT!! Now let me\nmake this " + newastositem + "..\nAnd now that I have\nthis, you shall take a\nbeating from Astos,\nthe Dark Blacksmith!"),
+				(0x19, "You found my CRYSTAL and\nwant my " + newastositem + "? Oh!\nI can see!! And now, you\nwill see the wrath of\nAstos, the Dark Witch!"),
 				(0x1C, "Finally! With this SLAB,\nI shall conquer Lefein\nand her secrets will\nbelong to Astos,\nthe Dark Scholar!"),
 				(0x00, ""),
 				(0x1E, "Can't you take a hint?\nI just want to be left\nalone with my " + newastositem + "!\nI even paid a Titan to\nguard the path! Fine.\nNow you face Astos,\nKing of the Hermits!"),
@@ -539,14 +585,14 @@ namespace FF1Lib
 				if (flags.SaveGameWhenGameOver)
 					Put(0x6CFF5 + 0x89, Blob.FromHex("EAEAEA"));
 			}
-
+			
 			if (talkscript == newTalk.Talk_GiveItemOnFlag)
 			{
 				// Check for a flag instead of an item
 				PutInBank(newTalk_AstosBank, Talk_Astos + 2, Blob.FromHex("B9")); 
 				PutInBank(newTalk_AstosBank, Talk_Astos + 7, Blob.FromHex("A820799090")); 
 			}
-
+			
 			if (newastos == ObjectId.Bahamut)
 			{   // Change Talk_Astos to make it work with Bahamut, and also modify DoClassChange
 
@@ -572,7 +618,7 @@ namespace FF1Lib
 				// Modify GameOver routine for compatibility
 				if (flags.SaveGameWhenGameOver)
 				{
-					Blob PromoteArray = Get(0x395AE, 12);
+					var PromoteArray = Get(0x39DF0, 12);
 					sbyte[] inversedPromoted = new sbyte[12];
 					for (int i = 0; i < 12; i++)
 					{

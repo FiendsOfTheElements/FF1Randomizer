@@ -299,6 +299,7 @@ namespace FF1Lib
 		public bool? EnableRandomPromotions { get; set; } = false;
 		public bool? IncludeBaseClasses { get; set; } = false;
 		public bool? RandomPromotionsSpoilers { get; set; } = false;
+		public bool LinearMPGrowth { get; set; } = false;
 		public bool? RandomizeClass { get; set; } = false;
 		public bool? RandomizeClassChaos { get; set; } = false;
 		public int RandomizeClassMaxBonus { get; set; } = 2;
@@ -307,7 +308,8 @@ namespace FF1Lib
 		public int RedMageMaxMP { get; set; } = 9;
 		public int WhiteMageMaxMP { get; set; } = 9;
 		public int BlackMageMaxMP { get; set; } = 9;
-		public int KnightNinjaMaxMP { get; set; } = 4;
+		public int KnightMaxMP { get; set; } = 4;
+		public int NinjaMaxMP { get; set; } = 4;
 
 		public LockHitMode LockMode { get; set; } = LockHitMode.Vanilla;
 
@@ -811,7 +813,8 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.SeparateEnemyHPScaling);
 			sum = AddTriState(sum, flags.ClampBossHPScaling);
 			sum = AddTriState(sum, flags.ClampEnemyHpScaling);
-			sum = AddNumeric(sum, 10, flags.KnightNinjaMaxMP);
+			sum = AddNumeric(sum, 10, flags.NinjaMaxMP);
+			sum = AddNumeric(sum, 10, flags.KnightMaxMP);
 			sum = AddNumeric(sum, 10, flags.BlackMageMaxMP);
 			sum = AddNumeric(sum, 10, flags.WhiteMageMaxMP);
 			sum = AddNumeric(sum, 10, flags.RedMageMaxMP);
@@ -823,6 +826,7 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.EnableRandomPromotions);
 			sum = AddTriState(sum, flags.IncludeBaseClasses);
 			sum = AddTriState(sum, flags.RandomPromotionsSpoilers);
+			sum = AddBoolean(sum, flags.LinearMPGrowth);
 			sum = AddTriState(sum, flags.RandomizeClass);
 			sum = AddTriState(sum, flags.RandomizeClassChaos);
 			sum = AddNumeric(sum, 5, flags.RandomizeClassMaxBonus);
@@ -855,6 +859,7 @@ namespace FF1Lib
 				RandomizeClassMaxBonus = GetNumeric(ref sum, 5),
 				RandomizeClassChaos = GetTriState(ref sum),
 				RandomizeClass = GetTriState(ref sum),
+				LinearMPGrowth = GetBoolean(ref sum),
 				RandomPromotionsSpoilers = GetTriState(ref sum),
 				IncludeBaseClasses = GetTriState(ref sum),
 				EnableRandomPromotions = GetTriState(ref sum),
@@ -866,7 +871,8 @@ namespace FF1Lib
 				RedMageMaxMP = GetNumeric(ref sum, 10),
 				WhiteMageMaxMP = GetNumeric(ref sum, 10),
 				BlackMageMaxMP = GetNumeric(ref sum, 10),
-				KnightNinjaMaxMP = GetNumeric(ref sum, 10),
+				KnightMaxMP = GetNumeric(ref sum, 10),
+				NinjaMaxMP = GetNumeric(ref sum, 10),
 				ClampEnemyHpScaling = GetTriState(ref sum),
 				ClampBossHPScaling = GetTriState(ref sum),
 				SeparateEnemyHPScaling = GetTriState(ref sum),

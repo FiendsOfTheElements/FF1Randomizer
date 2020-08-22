@@ -155,6 +155,11 @@
 		"description": "Change class names to show class promotions.\nFormat: Current class - Promotion class."
 	},
 	{
+		"Id": "checkboxLinearMPGrowth",
+		"title": "Linear MP Growth",
+		"description": "Change MP growth for Red, White and Black Mages to a linear growth, gaining 1 MP every 3 levels for each slots, starting from the original level for a given slot (ie: first lv3 MP for a White Mage at level 5, etc.). Mainly a fix for Random Promotions."
+	},
+	{
 		"Id": "RandomizeClassCheckBox",
 		"title": "Blursed Classes",
 		"description": "Give bonuses and maluses at random to each class. Press Select at Party selection screen and A at Status screen to reveal the modifiers."
