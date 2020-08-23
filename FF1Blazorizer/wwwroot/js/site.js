@@ -16,6 +16,25 @@
 	});
 }
 
+function handlePresetSelect(inputId) {
+	const input = document.getElementById(inputId);
+	const file = input.files[0];
+	const reader = new FileReader();
+
+	return new Promise((resolve, reject) => {
+		reader.onload = e => {
+			resolve(e.target.result);
+			input.value = null;
+		};
+		reader.onerror = () => {
+			reader.abort();
+			reject(new DOMException("Error reading file"));
+			input.value = null;
+		};
+		reader.readAsText(file);
+	});
+}
+
 async function computePreset(preset) {
 	const result = await fetch('presets/' + preset + '.json');
 	const overrides = await result.json();

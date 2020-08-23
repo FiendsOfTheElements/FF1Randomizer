@@ -3,7 +3,7 @@
 @using System.IO;
 @using RomUtilities;
 @using FF1Lib;
-@using System.Text.Json.Serialization;
+@using System.Text.Json;
 @using BlazorStrap
 @using Microsoft.AspNetCore.Components.Web
 @inject HttpClient Http
@@ -14,41 +14,47 @@
 
 <div class="content px-4 tinted">
     <a href="https://en.wikipedia.org/wiki/George_Floyd" style="color: yellow; font-weight: bold; font-size: 24px; display: table; margin-left: auto; margin-right: auto;">#icantbreathe</a>
-    <CascadingValue Value="@ToolTipId">
-        <ToolTip @ref="ToolTipElement"></ToolTip>
-        <button type="button" class="@(TabClasses("File"))" @onclick="@(() => ActivateTab("File"))">File</button>
-        <BSCollapse IsOpen="@(activeTabs.Contains("File"))">
-            <div class="is-dark nes-container">
-                <div class="row spaced-row">
-                    <div class="col-md-6">
-                        <p>@RomMessage</p>
-                        <input type="file" id="fileInput" @onchange="@OnFileChanged" />
-                    </div>
-                    <div class="col-md-6">
-                        <CheckBox UpdateToolTip="@UpdateToolTipID" Id="rememberCheckBox" @bind-Checked="RememberROM">Remember ROM</CheckBox>
-                        <CheckBox UpdateToolTip="@UpdateToolTipID" Id="tournamentSafeCheckBox" @bind-Checked="Flags.TournamentSafe">Tournament Safe ROM</CheckBox>
-                        <CheckBox UpdateToolTip="@UpdateToolTipID" Id="spoilersCheckBox" @bind-Checked="Flags.Spoilers">Generate Spoiler Log!</CheckBox>
-                    </div>
-                </div>
-                <div class="row">&nbsp;</div>
-                <div class="row spaced-row">
-                    <div class="col-md-4">
-                        <p>
-                            Seed:
-                            <input type="text" style="width: calc(100% - 200px);" class="nes-input @(_seedInputClass)" id="seedInput" @onchange="@OnSeedInputChanged" value="@(_seed)" />
-                            <button type="button" class="nes-btn is-primary" @onclick="@OnNewSeed">New</button>
-                        </p>
-                    </div>
-                    <div class="col-md-8">
-                        <p>
-                            Flags:
-                            <input style="width: calc(100% - 300px);" type="text" class="nes-input" value="@Flags.Encoded" @onchange="@OnFlagsInputChanged" />
-                            <button type="button" class="nes-btn is-primary" @onclick="@OnCopyToClipboard">Export</button>
-                        </p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
+	<CascadingValue Value="@ToolTipId">
+		<ToolTip @ref="ToolTipElement"></ToolTip>
+		<button type="button" class="@(TabClasses("File"))" @onclick="@(() => ActivateTab("File"))">File</button>
+		<BSCollapse IsOpen="@(activeTabs.Contains("File"))">
+			<div class="is-dark nes-container">
+				<div class="row spaced-row">
+					<div class="col-md-6">
+						<p>@RomMessage</p>
+						<input type="file" id="fileInput" @onchange="@OnFileChanged" />
+					</div>
+					<div class="col-md-6">
+						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="rememberCheckBox" @bind-Checked="RememberROM">Remember ROM</CheckBox>
+						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="tournamentSafeCheckBox" @bind-Checked="Flags.TournamentSafe">Tournament Safe ROM</CheckBox>
+						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="spoilersCheckBox" @bind-Checked="Flags.Spoilers">Generate Spoiler Log!</CheckBox>
+					</div>
+				</div>
+				<div class="row">&nbsp;</div>
+				<div class="row spaced-row">
+					<div class="col-md-4">
+						<p>
+							Seed:
+							<input type="text" style="width: calc(100% - 200px);" class="nes-input @(_seedInputClass)" id="seedInput" @onchange="@OnSeedInputChanged" value="@(_seed)" />
+							<button type="button" class="nes-btn is-primary" @onclick="@OnNewSeed">New</button>
+						</p>
+					</div>
+					<div class="col-md-8">
+						<p>
+							Flags:
+							<input style="width: calc(100% - 300px);" type="text" class="nes-input" value="@Flags.Encoded" @onchange="@OnFlagsInputChanged" />
+							<button type="button" class="nes-btn is-primary" @onclick="@OnCopyToClipboard">Export</button>
+						</p>
+					</div>
+				</div>
+			</div>
+		</BSCollapse>
+
+		<button type="button" class="@(TabClasses("Presets"))" @onclick="@(() => ActivateTab("Presets"))">Presets</button>
+		<BSCollapse IsOpen="@(activeTabs.Contains("Presets"))">
+			<div class="is-dark nes-container">
+				<div class="row">
+					<div class="col-md-12">
 						<p>
 							Presets:
 							<button type="button" class="nes-btn is-primary" @onclick="@(() => LoadPreset("default"))">Default</button>
@@ -58,74 +64,90 @@
 							<button type="button" class="nes-btn is-primary" @onclick="@(() => LoadPreset("chaos-rush"))">Chaos Rush</button>
 							<button type="button" class="nes-btn is-primary" @onclick="@(() => LoadPreset("debug"))">DEBUG</button>
 						</p>
-                    </div>
-                </div>
-            </div>
-        </BSCollapse>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<p>
+							Load Preset from JSON file:
+							<input type="file" id="presetInput" @onchange="OnPresetChanged" />
+						</p>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<p>
+							Save Preset:
+							<input type="text" @bind="presetName" />
+							<button type="button" class="nes-btn is-primary" @onclick="SavePreset">Download Flags as JSON</button>
+						</p>
+					</div>
+				</div>
+			</div>
+		</BSCollapse>
+
+		<br />
+		<button type="button" class="nes-btn is-primary" @onclick="@OnRandomize">Generate ROM</button>
+		<BSCollapse IsOpen="@(StatusMessage.Length > 0)">
+			<div class="is-dark nes-container">
+				@StatusMessage
+			</div>
+
+		</BSCollapse>
 
 
-        <br />
-        <button type="button" class="nes-btn is-primary" @onclick="@OnRandomize">Generate ROM</button>
-        <BSCollapse IsOpen="@(StatusMessage.Length > 0)">
-            <div class="is-dark nes-container">
-                @StatusMessage
-            </div>
-
-        </BSCollapse>
-
-
-        <button type="button" class="@(TabClasses("Shuffle"))" @onclick="@(() => ActivateTab("Shuffle"))">Shuffle</button>
-        <BSCollapse IsOpen=@(activeTabs.Contains("Shuffle"))>
-            <div class="is-dark nes-container">
-                <div class="row">
-                    <div class="col-md-4">
-                        <h4>Shops &amp; RNG</h4>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="shopsCheckBox" @bind-Value="Flags.Shops">Shops</TriStateCheckBox>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.Shops" Id="randomWaresCheckBox" @bind-Value="Flags.RandomWares">Random Weapons and Armor</TriStateCheckBox>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@((Flags.Shops ?? true) && (Flags.RandomWares ?? true))" Id="randomWaresIncludesCheckBox" @bind-Value="Flags.RandomWaresIncludesSpecialGear">Include Caster &amp; Elite Gear</TriStateCheckBox>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="magicShopsCheckBox" @bind-Value="Flags.MagicShops">Magic Shops</TriStateCheckBox>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="magicShopLocsCheckBox" @bind-Value="Flags.MagicShopLocs">Magic Shop Locations</TriStateCheckBox>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="magicLevelsCheckBox" @bind-Value="Flags.MagicLevels">Magic Levels</TriStateCheckBox>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.MagicLevels" Id="magicLevelsTieredCheckBox" @bind-Value="Flags.MagicLevelsTiered">Tiered Shuffle</TriStateCheckBox>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.MagicLevels" Id="magicLevelsMixed" @bind-Value="Flags.MagicLevelsMixed">Mix Spellbooks</TriStateCheckBox>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.MagicLevels" Id="magicPermissionsCheckBox" @bind-Value="Flags.MagicPermissions">Keep Permissions</TriStateCheckBox>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="itemMagicCheckBox" @bind-Value="Flags.ItemMagic">Item Magic</TriStateCheckBox>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.ItemMagic" Id="balancedItemMagicCheckBox" @bind-Value="Flags.BalancedItemMagicShuffle">Balanced Shuffle</TriStateCheckBox>
-                        <div class="checkbox-cell"></div>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="rngCheckBox" @bind-Value="Flags.Rng">RNG Table</TriStateCheckBox>
-                    </div>
-                    <div class="col-md-4">
-                        <h4>Enemies</h4>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyScriptsCheckBox" @bind-Value="Flags.EnemyScripts">Enemy Scripts</TriStateCheckBox>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnemyScripts" Id="allowUnsafePiratesCheckBox" @bind-Value="Flags.AllowUnsafePirates">Allow Unsafe Pirates</TriStateCheckBox>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnemyScripts" Id="onlyShuffleBossScriptsCheckBox" @bind-Value="Flags.BossScriptsOnly">Only Shuffle Bosses</TriStateCheckBox>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="enemySkillsSpellsCheckBox" @bind-Value="Flags.EnemySkillsSpells">Enemy Skills/Spells</TriStateCheckBox>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnemySkillsSpells" Id="onlyShuffleBossSkillsCheckBox" @bind-Value="Flags.BossSkillsOnly">Only Shuffle Bosses</TriStateCheckBox>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnemySkillsSpells" Id="enemySkillsSpellsTieredCheckBox" @bind-Value="Flags.EnemySkillsSpellsTiered">Generate Balanced and Random Scripts</TriStateCheckBox>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyStatusAttacksCheckBox" @bind-Value="Flags.EnemyStatusAttacks">Enemy Status Attacks</TriStateCheckBox>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnemyStatusAttacks" Id="enemyRandomAttacksCheckBox" @bind-Value="Flags.RandomStatusAttacks">Randomize Enemy Status Attacks</TriStateCheckBox>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyFormationsUnrunnableCheckBox" @bind-Value="Flags.EnemyFormationsUnrunnable">Enemy Unrunnable Formations</TriStateCheckBox>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnemyFormationsUnrunnable" Id="everythingUnrunnableCheckBox" @bind-Value="Flags.EverythingUnrunnable">All Encounters are Unrunnable</TriStateCheckBox>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="unrunnablesStrikeFirstAndSurpriseCheckBox" @bind-Value="Flags.UnrunnablesStrikeFirstAndSurprise">Unrunnable First Strike &amp; Surprise</TriStateCheckBox>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyFormationsSurpriseCheckBox" @bind-Value="Flags.EnemyFormationsSurprise">Enemy Surprise Bonus</TriStateCheckBox>
-                        <EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="formationShuffleModeDropDown" TItem="FormationShuffleMode" IsEnabled="@(!Flags.RandomizeFormationEnemizer)" @bind-Value="Flags.FormationShuffleMode">Enemy Formations:</EnumDropDown>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyTrapTilesCheckBox" IsEnabled="@(!Flags.RandomizeFormationEnemizer)" @bind-Value="Flags.EnemyTrapTiles">Enemy Forced Encounter Tiles</TriStateCheckBox>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="randomTrapFormationsCheckBox" IsEnabled="@Flags.EnemyTrapTiles" @bind-Value="Flags.RandomTrapFormations">Use Random Formations</TriStateCheckBox>
-                    </div>
-                    <div class="col-md-4">
-                        <h4>WarMECH</h4>
-                        <p>Encounter 7 not enough WarMECH for you? Try a patrolling or required WarMECH instead.</p>
-                        <EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="WarMECHModeDropDown" TItem="WarMECHMode" @bind-Value="Flags.WarMECHMode">WarMECH Mode: </EnumDropDown>
-                    </div>
-                </div>
-            </div>
-        </BSCollapse>
+		<button type="button" class="@(TabClasses("Shuffle"))" @onclick="@(() => ActivateTab("Shuffle"))">Shuffle</button>
+		<BSCollapse IsOpen=@(activeTabs.Contains("Shuffle"))>
+			<div class="is-dark nes-container">
+				<div class="row">
+					<div class="col-md-4">
+						<h4>Shops &amp; RNG</h4>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="shopsCheckBox" @bind-Value="Flags.Shops">Shops</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.Shops" Id="randomWaresCheckBox" @bind-Value="Flags.RandomWares">Random Weapons and Armor</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@((Flags.Shops ?? true) && (Flags.RandomWares ?? true))" Id="randomWaresIncludesCheckBox" @bind-Value="Flags.RandomWaresIncludesSpecialGear">Include Caster &amp; Elite Gear</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="magicShopsCheckBox" @bind-Value="Flags.MagicShops">Magic Shops</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="magicShopLocsCheckBox" @bind-Value="Flags.MagicShopLocs">Magic Shop Locations</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="magicLevelsCheckBox" @bind-Value="Flags.MagicLevels">Magic Levels</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.MagicLevels" Id="magicLevelsTieredCheckBox" @bind-Value="Flags.MagicLevelsTiered">Tiered Shuffle</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.MagicLevels" Id="magicLevelsMixed" @bind-Value="Flags.MagicLevelsMixed">Mix Spellbooks</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.MagicLevels" Id="magicPermissionsCheckBox" @bind-Value="Flags.MagicPermissions">Keep Permissions</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="itemMagicCheckBox" @bind-Value="Flags.ItemMagic">Item Magic</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.ItemMagic" Id="balancedItemMagicCheckBox" @bind-Value="Flags.BalancedItemMagicShuffle">Balanced Shuffle</TriStateCheckBox>
+						<div class="checkbox-cell"></div>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="rngCheckBox" @bind-Value="Flags.Rng">RNG Table</TriStateCheckBox>
+					</div>
+					<div class="col-md-4">
+						<h4>Enemies</h4>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyScriptsCheckBox" @bind-Value="Flags.EnemyScripts">Enemy Scripts</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnemyScripts" Id="allowUnsafePiratesCheckBox" @bind-Value="Flags.AllowUnsafePirates">Allow Unsafe Pirates</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnemyScripts" Id="onlyShuffleBossScriptsCheckBox" @bind-Value="Flags.BossScriptsOnly">Only Shuffle Bosses</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="enemySkillsSpellsCheckBox" @bind-Value="Flags.EnemySkillsSpells">Enemy Skills/Spells</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnemySkillsSpells" Id="onlyShuffleBossSkillsCheckBox" @bind-Value="Flags.BossSkillsOnly">Only Shuffle Bosses</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnemySkillsSpells" Id="enemySkillsSpellsTieredCheckBox" @bind-Value="Flags.EnemySkillsSpellsTiered">Generate Balanced and Random Scripts</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyStatusAttacksCheckBox" @bind-Value="Flags.EnemyStatusAttacks">Enemy Status Attacks</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnemyStatusAttacks" Id="enemyRandomAttacksCheckBox" @bind-Value="Flags.RandomStatusAttacks">Randomize Enemy Status Attacks</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyFormationsUnrunnableCheckBox" @bind-Value="Flags.EnemyFormationsUnrunnable">Enemy Unrunnable Formations</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnemyFormationsUnrunnable" Id="everythingUnrunnableCheckBox" @bind-Value="Flags.EverythingUnrunnable">All Encounters are Unrunnable</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="unrunnablesStrikeFirstAndSurpriseCheckBox" @bind-Value="Flags.UnrunnablesStrikeFirstAndSurprise">Unrunnable First Strike &amp; Surprise</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyFormationsSurpriseCheckBox" @bind-Value="Flags.EnemyFormationsSurprise">Enemy Surprise Bonus</TriStateCheckBox>
+						<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="formationShuffleModeDropDown" TItem="FormationShuffleMode" IsEnabled="@(!Flags.RandomizeFormationEnemizer)" @bind-Value="Flags.FormationShuffleMode">Enemy Formations:</EnumDropDown>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyTrapTilesCheckBox" IsEnabled="@(!Flags.RandomizeFormationEnemizer)" @bind-Value="Flags.EnemyTrapTiles">Enemy Forced Encounter Tiles</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="randomTrapFormationsCheckBox" IsEnabled="@Flags.EnemyTrapTiles" @bind-Value="Flags.RandomTrapFormations">Use Random Formations</TriStateCheckBox>
+					</div>
+					<div class="col-md-4">
+						<h4>WarMECH</h4>
+						<p>Encounter 7 not enough WarMECH for you? Try a patrolling or required WarMECH instead.</p>
+						<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="WarMECHModeDropDown" TItem="WarMECHMode" @bind-Value="Flags.WarMECHMode">WarMECH Mode: </EnumDropDown>
+					</div>
+				</div>
+			</div>
+		</BSCollapse>
 
 
-        <button type="button" class="@(TabClasses("Treasures"))" @onclick="@(() => ActivateTab("Treasures"))">Treasures &amp; Incentives</button>
-        <BSCollapse IsOpen="@(activeTabs.Contains("Treasures"))">
-            <div class="is-dark nes-container">
-                <div class="row">
+		<button type="button" class="@(TabClasses("Treasures"))" @onclick="@(() => ActivateTab("Treasures"))">Treasures &amp; Incentives</button>
+		<BSCollapse IsOpen="@(activeTabs.Contains("Treasures"))">
+			<div class="is-dark nes-container">
+				<div class="row">
 					<div class="col-md-4">
 						<h4>Items Shuffle</h4>
 						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="treasuresCheckBox" @bind-Value="Flags.Treasures">Treasures</TriStateCheckBox>
@@ -152,24 +174,24 @@
 						<DoubleSlider Id="RandomWeaponBonusSlider" Indent IsEnabled="Flags.RandomArmorBonus" MinValue="-9" MaxValue="9" Step="1" @bind-ValueHigh="Flags.RandomArmorBonusHigh" @bind-ValueLow="Flags.RandomArmorBonusLow">Armor Bonus Range:</DoubleSlider>
 
 					</div>
-                    <div class="col-md-4">
-                        <h4>Locations: @(Flags.Flags.IncentivizedLocationCountMin) @((Flags.Flags.IncentivizedLocationCountMin != Flags.Flags.IncentivizedLocationCountMax) ? "- " + Flags.Flags.IncentivizedLocationCountMax : "") </h4>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeFreeNPCsCheckBox" IsEnabled="@Flags.IncentivizeFreeNPCsEnabled" @bind-Value="Flags.IncentivizeFreeNPCs">Main NPCs</TriStateCheckBox>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeFetchNPCsCheckBox" IsEnabled="@Flags.IncentivizeFetchNPCsEnabled" @bind-Value="Flags.IncentivizeFetchNPCs">Fetch Quest NPCs</TriStateCheckBox>
-                        <div class="checkbox-cell"></div>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeIceCaveCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeIceCave">Ice Cave</TriStateCheckBox>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeOrdealsCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeOrdeals">Ordeals</TriStateCheckBox>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeMarshCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeMarsh">Marsh Cave</TriStateCheckBox>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeTitansCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeTitansTrove">Titan's Trove</TriStateCheckBox>
-                        <div class="checkbox-cell"></div>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeEarthCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeEarth">Earth Cave</TriStateCheckBox>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeVolcanoCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeVolcano">Volcano</TriStateCheckBox>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeSeaShrineCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeSeaShrine">Sea Shrine</TriStateCheckBox>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeSkyPalaceCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeSkyPalace">Sky Palace</TriStateCheckBox>
-                        <div class="checkbox-cell"></div>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeConeriaCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeConeria">Coneria (locked)</TriStateCheckBox>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeMarshKeyLockedCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeMarshKeyLocked">Marsh (locked)</TriStateCheckBox>
-                    </div>
+					<div class="col-md-4">
+						<h4>Locations: @(Flags.Flags.IncentivizedLocationCountMin) @((Flags.Flags.IncentivizedLocationCountMin != Flags.Flags.IncentivizedLocationCountMax) ? "- " + Flags.Flags.IncentivizedLocationCountMax : "") </h4>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeFreeNPCsCheckBox" IsEnabled="@Flags.IncentivizeFreeNPCsEnabled" @bind-Value="Flags.IncentivizeFreeNPCs">Main NPCs</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeFetchNPCsCheckBox" IsEnabled="@Flags.IncentivizeFetchNPCsEnabled" @bind-Value="Flags.IncentivizeFetchNPCs">Fetch Quest NPCs</TriStateCheckBox>
+						<div class="checkbox-cell"></div>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeIceCaveCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeIceCave">Ice Cave</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeOrdealsCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeOrdeals">Ordeals</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeMarshCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeMarsh">Marsh Cave</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeTitansCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeTitansTrove">Titan's Trove</TriStateCheckBox>
+						<div class="checkbox-cell"></div>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeEarthCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeEarth">Earth Cave</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeVolcanoCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeVolcano">Volcano</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeSeaShrineCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeSeaShrine">Sea Shrine</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeSkyPalaceCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeSkyPalace">Sky Palace</TriStateCheckBox>
+						<div class="checkbox-cell"></div>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeConeriaCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeConeria">Coneria (locked)</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeMarshKeyLockedCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeMarshKeyLocked">Marsh (locked)</TriStateCheckBox>
+					</div>
 					<div class="col-md-4">
 						<h4>Items: @(Flags.Flags.IncentivizedItemCountMin) @((Flags.Flags.IncentivizedItemCountMin != Flags.Flags.IncentivizedItemCountMax) ? "- " + Flags.Flags.IncentivizedItemCountMax : "")</h4>
 						<p>@Flags.Flags.IncentivizedItems</p>
@@ -191,44 +213,44 @@
 						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeOffCastArmorCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeOffCastArmor">Black Shirt</TriStateCheckBox>
 						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeRibbonCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeRibbon">Ribbon</TriStateCheckBox>
 					</div>
-                </div>
-            </div>
-        </BSCollapse>
+				</div>
+			</div>
+		</BSCollapse>
 
 
-        <button type="button" class="@(TabClasses("Goal"))" @onclick="@(() => ActivateTab("Goal"))">Goal</button>
-        <BSCollapse IsOpen="@(activeTabs.Contains("Goal"))">
-            <div class="is-dark nes-container">
-                <div class="row">
-                    <div class="col-md-4">
-                        <h4>Chaos Rush</h4>
-                        <p>No time for a long race? Chaos Rush combined with Free Orbs lets you begin the game with the Temple of Fiends Revisited completely unlocked!</p>
-                        <CheckBox UpdateToolTip="@UpdateToolTipID" Id="chaosRushCheckBox" @bind-Checked="Flags.ChaosRush">CHAOS Rush</CheckBox>
-                        <CheckBox UpdateToolTip="@UpdateToolTipID" Id="freeOrbsCheckBox" IsEnabled="@Flags.FreeOrbsEnabled" @bind-Checked="Flags.FreeOrbs">Free Orbs</CheckBox>
-                    </div>
-                    <div class="col-md-4">
-                        <h4>Treasure Hunt</h4>
-                        <p>A new adventure! Instead of lighting the four orbs to activate the BLACK ORB, the Light Warriors must seek out and collect several of a random treasure item.</p>
-                        <CheckBox UpdateToolTip="@UpdateToolTipID" Id="shardHuntCheckBox" IsEnabled="@Flags.ShardHuntEnabled" @bind-Checked="Flags.ShardHunt">Treasure Hunt</CheckBox>
-                        <EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="shardCountDropDown" TItem="ShardCount" @bind-Value="Flags.ShardCount">Goal:</EnumDropDown>
-                    </div>
-                    <div class="col-md-4">
-                        <h4>Temple of Fiends</h4>
-                        <p>Randomly pick one of four new final bosses to replace the legendary Chaos! Take heed though; they can be more than a match for all but the mightiest Warriors.</p>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="transformFinalFormationCheckBox" @bind-Value="Flags.TransformFinalFormation">Alternate Final Boss</TriStateCheckBox>
-                        <p>Jump straight from the Black Orb to the Final Battle! You may choose to keep the fiend refight tiles - two on each side of the path to Chaos.</p>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="shortToFRCheckBox" @bind-Value="Flags.ShortToFR">Shorten ToFR</TriStateCheckBox>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="preserveFiendRefightsCheckBox" IsEnabled="@Flags.ShortToFR" @bind-Value="Flags.PreserveFiendRefights">Include Fiend Tiles</TriStateCheckBox>
-                    </div>
-                </div>
-            </div>
-        </BSCollapse>
+		<button type="button" class="@(TabClasses("Goal"))" @onclick="@(() => ActivateTab("Goal"))">Goal</button>
+		<BSCollapse IsOpen="@(activeTabs.Contains("Goal"))">
+			<div class="is-dark nes-container">
+				<div class="row">
+					<div class="col-md-4">
+						<h4>Chaos Rush</h4>
+						<p>No time for a long race? Chaos Rush combined with Free Orbs lets you begin the game with the Temple of Fiends Revisited completely unlocked!</p>
+						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="chaosRushCheckBox" @bind-Checked="Flags.ChaosRush">CHAOS Rush</CheckBox>
+						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="freeOrbsCheckBox" IsEnabled="@Flags.FreeOrbsEnabled" @bind-Checked="Flags.FreeOrbs">Free Orbs</CheckBox>
+					</div>
+					<div class="col-md-4">
+						<h4>Treasure Hunt</h4>
+						<p>A new adventure! Instead of lighting the four orbs to activate the BLACK ORB, the Light Warriors must seek out and collect several of a random treasure item.</p>
+						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="shardHuntCheckBox" IsEnabled="@Flags.ShardHuntEnabled" @bind-Checked="Flags.ShardHunt">Treasure Hunt</CheckBox>
+						<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="shardCountDropDown" TItem="ShardCount" @bind-Value="Flags.ShardCount">Goal:</EnumDropDown>
+					</div>
+					<div class="col-md-4">
+						<h4>Temple of Fiends</h4>
+						<p>Randomly pick one of four new final bosses to replace the legendary Chaos! Take heed though; they can be more than a match for all but the mightiest Warriors.</p>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="transformFinalFormationCheckBox" @bind-Value="Flags.TransformFinalFormation">Alternate Final Boss</TriStateCheckBox>
+						<p>Jump straight from the Black Orb to the Final Battle! You may choose to keep the fiend refight tiles - two on each side of the path to Chaos.</p>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="shortToFRCheckBox" @bind-Value="Flags.ShortToFR">Shorten ToFR</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="preserveFiendRefightsCheckBox" IsEnabled="@Flags.ShortToFR" @bind-Value="Flags.PreserveFiendRefights">Include Fiend Tiles</TriStateCheckBox>
+					</div>
+				</div>
+			</div>
+		</BSCollapse>
 
 
-        <button type="button" class="@(TabClasses("Map"))" @onclick="@(() => ActivateTab("Map"))">Maps &amp; Routing</button>
-        <BSCollapse IsOpen="@(activeTabs.Contains("Map"))">
-            <div class="is-dark nes-container">
-                <div class="row">
+		<button type="button" class="@(TabClasses("Map"))" @onclick="@(() => ActivateTab("Map"))">Maps &amp; Routing</button>
+		<BSCollapse IsOpen="@(activeTabs.Contains("Map"))">
+			<div class="is-dark nes-container">
+				<div class="row">
 					<div class="col-md-4">
 						<h4>Entrance Shuffle</h4>
 						<p>Try shuffling dungeon entrances, floors, and towns to create a completely new world to explore!</p>
@@ -254,24 +276,24 @@
 						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="earlySageCheckBox" @bind-Value="Flags.EarlySage">Early Sage Item</TriStateCheckBox>
 						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="earlyOrdealsCheckBox" @bind-Value="Flags.EarlyOrdeals">Early Ordeals</TriStateCheckBox>
 					</div>
-                    <div class="col-md-4">
-                        <h4>Isolated Map Edits</h4>
-                        <p>Individual Final Fantasy Map edits.</p>
-                        <EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="skyCastle4FMazeModeDropDown" TItem="SkyCastle4FMazeMode" @bind-Value="Flags.SkyCastle4FMazeMode">Sky Castle 4F: </EnumDropDown>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="ordealsPillarsCheckBox" @bind-Value="Flags.OrdealsPillars">Castle Ordeals Pillars</TriStateCheckBox>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="titansTroveCheckBox" @bind-Value="Flags.TitansTrove">Titan's Trove</TriStateCheckBox>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="zozoMelmondCheckBox" @bind-Value="Flags.AllowUnsafeMelmond">Zozo Melmond</TriStateCheckBox>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="lefeinShopsCheckBox" @bind-Value="Flags.LefeinShops">Lefeinish Hospitality</TriStateCheckBox>
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="confusedOldMenCheckBox" @bind-Value="Flags.ConfusedOldMen">Confused Old Men</TriStateCheckBox>
-                    </div>
+					<div class="col-md-4">
+						<h4>Isolated Map Edits</h4>
+						<p>Individual Final Fantasy Map edits.</p>
+						<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="skyCastle4FMazeModeDropDown" TItem="SkyCastle4FMazeMode" @bind-Value="Flags.SkyCastle4FMazeMode">Sky Castle 4F: </EnumDropDown>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="ordealsPillarsCheckBox" @bind-Value="Flags.OrdealsPillars">Castle Ordeals Pillars</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="titansTroveCheckBox" @bind-Value="Flags.TitansTrove">Titan's Trove</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="zozoMelmondCheckBox" @bind-Value="Flags.AllowUnsafeMelmond">Zozo Melmond</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="lefeinShopsCheckBox" @bind-Value="Flags.LefeinShops">Lefeinish Hospitality</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="confusedOldMenCheckBox" @bind-Value="Flags.ConfusedOldMen">Confused Old Men</TriStateCheckBox>
+					</div>
 
-                </div>
-            </div>
-        </BSCollapse>
+				</div>
+			</div>
+		</BSCollapse>
 
 
-        <button type="button" class="@(TabClasses("Scale"))" @onclick="@(() => ActivateTab("Scale"))">Scale</button>
-        <BSCollapse IsOpen="@(activeTabs.Contains("Scale"))">
+		<button type="button" class="@(TabClasses("Scale"))" @onclick="@(() => ActivateTab("Scale"))">Scale</button>
+		<BSCollapse IsOpen="@(activeTabs.Contains("Scale"))">
 			<div class="is-dark nes-container">
 				<ClampedSlider Min="1" Max="5" Step="0.1" UpdateToolTip="@UpdateToolTipID" Id="clampMinimumPriceScaleLable" @bind-Clamp="Flags.ClampMinimumPriceScale" @bind-Scale="Flags.PriceScaleFactor">Prices:</ClampedSlider>
 				<ClampedDoubleSlider Id="enemyStatsDoubleSlider" MinValue="20" MaxValue="500" @bind-ValueHigh="Flags.EnemyScaleStatsHigh" @bind-ValueLow="Flags.EnemyScaleStatsLow" @bind-Clamp="Flags.ClampEnemies">Enemy Stats:</ClampedDoubleSlider>
@@ -343,17 +365,17 @@
 					</div>
 				</div>
 			</div>
-        </BSCollapse>
+		</BSCollapse>
 
 
-        <button type="button" class="@(TabClasses("Party"))" @onclick="@(() => ActivateTab("Party"))">Party</button>
-        <BSCollapse IsOpen="@(activeTabs.Contains("Party"))">
+		<button type="button" class="@(TabClasses("Party"))" @onclick="@(() => ActivateTab("Party"))">Party</button>
+		<BSCollapse IsOpen="@(activeTabs.Contains("Party"))">
 			<div class="is-dark nes-container">
 				<PartyCompositionClasses Flags="@Flags" />
 				<br />
 				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="EnablePoolParty" @bind-Value="Flags.EnablePoolParty">Party Draft</TriStateCheckBox>
 				<EnumDropDown UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnablePoolParty" Id="PoolSizeDropDown" TItem="PoolSize" @bind-Value="Flags.PoolSize">Pool Size :</EnumDropDown>
-                <br />
+				<br />
 				<h4>Tavern Recruitment</h4>
 				<div class="col-md-12">
 					<p>Enable Tavern Recruitment to unlock the ability to build a party as you go!</p>
@@ -394,13 +416,13 @@
 					<IntSlider Indent Min="1" Max="9" Step="1" DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.ChangeMaxMP" Id="NinjaMaxMP" @bind-Value="@Flags.NinjaMaxMP">Ninja Max MP:</IntSlider>
 				</div>
 			</div>
-        </BSCollapse>
+		</BSCollapse>
 
 
-        <button type="button" class="@(TabClasses("Conveniences"))" @onclick="@(() => ActivateTab("Conveniences"))">Conveniences</button>
-        <BSCollapse IsOpen="@(activeTabs.Contains("Conveniences"))">
-            <div class="is-dark nes-container">
-                <div class="row">
+		<button type="button" class="@(TabClasses("Conveniences"))" @onclick="@(() => ActivateTab("Conveniences"))">Conveniences</button>
+		<BSCollapse IsOpen="@(activeTabs.Contains("Conveniences"))">
+			<div class="is-dark nes-container">
+				<div class="row">
 					<div class="col-md-12">
 						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="noPartyShuffleCheckBox" @bind-Checked="Flags.NoPartyShuffle">No Party Shuffle</CheckBox>
 						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="speedHacksCheckBox" @bind-Checked="Flags.SpeedHacks">Speed Hacks</CheckBox>
@@ -415,51 +437,51 @@
 						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="inventoryAutosortCheckBox" @bind-Checked="Flags.InventoryAutosort">Autosort Inventory</CheckBox>
 						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="npcSwatterCheckBox" @bind-Checked="Flags.NPCSwatter">NPC Guillotine</CheckBox>
 					</div>
-                </div>
-            </div>
-        </BSCollapse>
+				</div>
+			</div>
+		</BSCollapse>
 
 
-        <button type="button" class="@(TabClasses("Bug Fixes"))" @onclick="@(() => ActivateTab("Bug Fixes"))">Bug Fixes &amp; Rebalancing</button>
-        <BSCollapse IsOpen="@(activeTabs.Contains("Bug Fixes"))">
-            <div class="is-dark nes-container">
-                <div class="row">
-                    <div class="col-md-6">
-                        <h4>Bugs</h4>
-                        <CheckBox UpdateToolTip="@UpdateToolTipID" Id="houseMPRestorationCheckBox" @bind-Checked="Flags.HouseMPRestoration">House MP Restoration</CheckBox>
-                        <CheckBox UpdateToolTip="@UpdateToolTipID" Id="weaponStatsCheckBox" @bind-Checked="Flags.WeaponStats">Weapon Stats</CheckBox>
-                        <CheckBox UpdateToolTip="@UpdateToolTipID" Id="chanceToRunCheckBox" @bind-Checked="Flags.ChanceToRun">Chance to Run</CheckBox>
-                        <CheckBox UpdateToolTip="@UpdateToolTipID" Id="spellBugsCheckBox" @bind-Checked="Flags.SpellBugs">Spell Fixes</CheckBox>
-                        <CheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyStatusAttackBugCheckBox" @bind-Checked="Flags.EnemyStatusAttackBug">Enemy Status Attacks</CheckBox>
-                        <CheckBox UpdateToolTip="@UpdateToolTipID" Id="blackBeltAbsorbCheckBox" @bind-Checked="Flags.BlackBeltAbsorb">Bl. Belt & Master Absorb Calculation</CheckBox>
-                        <CheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyElementalResistancesCheckBox" @bind-Checked="Flags.EnemyElementalResistancesBug">Enemy Elemental Resistances</CheckBox>
-                        <CheckBox UpdateToolTip="@UpdateToolTipID" Id="enemySpellsTargetingAlliesCheckBox" @bind-Checked="Flags.EnemySpellsTargetingAllies">Enemy Spells Targeting Allies</CheckBox>
-                        <CheckBox UpdateToolTip="@UpdateToolTipID" Id="improveTurnOrderRandomizationCheckBox" @bind-Checked="Flags.ImproveTurnOrderRandomization">Improve Turn Order Randomization</CheckBox>
-                        <CheckBox UpdateToolTip="@UpdateToolTipID" Id="fixHitChanceCapCheckBox" @bind-Checked="Flags.FixHitChanceCap">Fix Hit % Cap</CheckBox>
-                    </div>
-                    <div class="col-md-6">
-                        <h4>Balance</h4>
-                        <CheckBox UpdateToolTip="@UpdateToolTipID" Id="doubleBBCritCheckBox" @bind-Checked="Flags.BBCritRate">Halve BB Crit Rate</CheckBox>
-                        <CheckBox UpdateToolTip="@UpdateToolTipID" Id="doubleWeaponCritCheckBox" @bind-Checked="Flags.WeaponCritRate">Double Weapon Crit Rate</CheckBox>
-                        <CheckBox UpdateToolTip="@UpdateToolTipID" Id="increaseWepBonusesCheckBox" @bind-Checked="Flags.WeaponBonuses">Increase Weapon Elemental and Type Bonuses</CheckBox>
-                        <CheckBox UpdateToolTip="@UpdateToolTipID" Id="thiefHitCheckBox" @bind-Checked="Flags.ThiefHitRate">Double Thief &amp; Ninja Hit% growth.</CheckBox>
-                        <CheckBox UpdateToolTip="@UpdateToolTipID" Id="cureHealBuffCheckBox" @bind-Checked="Flags.BuffHealingSpells">Improve CURE, HEAL, LAMP, and AMUT spells</CheckBox>
-                        <CheckBox UpdateToolTip="@UpdateToolTipID" Id="housesFillHpCheckBox" @bind-Checked="Flags.HousesFillHP">House Full HP Restoration</CheckBox>
-                        <EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="LockMode" TItem="LockHitMode" @bind-Value="Flags.LockMode">LOCK and LOK2 Mode:</EnumDropDown>
-                        <EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="MDefModeDropDown" TItem="MDEFGrowthMode" @bind-Value="Flags.MDefMode">MDEF Growth:</EnumDropDown>
-                    </div>
+		<button type="button" class="@(TabClasses("Bug Fixes"))" @onclick="@(() => ActivateTab("Bug Fixes"))">Bug Fixes &amp; Rebalancing</button>
+		<BSCollapse IsOpen="@(activeTabs.Contains("Bug Fixes"))">
+			<div class="is-dark nes-container">
+				<div class="row">
+					<div class="col-md-6">
+						<h4>Bugs</h4>
+						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="houseMPRestorationCheckBox" @bind-Checked="Flags.HouseMPRestoration">House MP Restoration</CheckBox>
+						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="weaponStatsCheckBox" @bind-Checked="Flags.WeaponStats">Weapon Stats</CheckBox>
+						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="chanceToRunCheckBox" @bind-Checked="Flags.ChanceToRun">Chance to Run</CheckBox>
+						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="spellBugsCheckBox" @bind-Checked="Flags.SpellBugs">Spell Fixes</CheckBox>
+						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyStatusAttackBugCheckBox" @bind-Checked="Flags.EnemyStatusAttackBug">Enemy Status Attacks</CheckBox>
+						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="blackBeltAbsorbCheckBox" @bind-Checked="Flags.BlackBeltAbsorb">Bl. Belt & Master Absorb Calculation</CheckBox>
+						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyElementalResistancesCheckBox" @bind-Checked="Flags.EnemyElementalResistancesBug">Enemy Elemental Resistances</CheckBox>
+						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="enemySpellsTargetingAlliesCheckBox" @bind-Checked="Flags.EnemySpellsTargetingAllies">Enemy Spells Targeting Allies</CheckBox>
+						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="improveTurnOrderRandomizationCheckBox" @bind-Checked="Flags.ImproveTurnOrderRandomization">Improve Turn Order Randomization</CheckBox>
+						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="fixHitChanceCapCheckBox" @bind-Checked="Flags.FixHitChanceCap">Fix Hit % Cap</CheckBox>
+					</div>
+					<div class="col-md-6">
+						<h4>Balance</h4>
+						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="doubleBBCritCheckBox" @bind-Checked="Flags.BBCritRate">Halve BB Crit Rate</CheckBox>
+						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="doubleWeaponCritCheckBox" @bind-Checked="Flags.WeaponCritRate">Double Weapon Crit Rate</CheckBox>
+						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="increaseWepBonusesCheckBox" @bind-Checked="Flags.WeaponBonuses">Increase Weapon Elemental and Type Bonuses</CheckBox>
+						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="thiefHitCheckBox" @bind-Checked="Flags.ThiefHitRate">Double Thief &amp; Ninja Hit% growth.</CheckBox>
+						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="cureHealBuffCheckBox" @bind-Checked="Flags.BuffHealingSpells">Improve CURE, HEAL, LAMP, and AMUT spells</CheckBox>
+						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="housesFillHpCheckBox" @bind-Checked="Flags.HousesFillHP">House Full HP Restoration</CheckBox>
+						<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="LockMode" TItem="LockHitMode" @bind-Value="Flags.LockMode">LOCK and LOK2 Mode:</EnumDropDown>
+						<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="MDefModeDropDown" TItem="MDEFGrowthMode" @bind-Value="Flags.MDefMode">MDEF Growth:</EnumDropDown>
+					</div>
 
-                </div>
-            </div>
-        </BSCollapse>
+				</div>
+			</div>
+		</BSCollapse>
 
 
-        <button type="button" class="@(TabClasses("Experimental"))" @onclick="@(() => ActivateTab("Experimental"))">Experimental</button>
-        <BSCollapse IsOpen="@(activeTabs.Contains("Experimental"))">
+		<button type="button" class="@(TabClasses("Experimental"))" @onclick="@(() => ActivateTab("Experimental"))">Experimental</button>
+		<BSCollapse IsOpen="@(activeTabs.Contains("Experimental"))">
 			<div class="is-dark nes-container">
 				<div class="row">
 					<p>Test out features from 2000 years in the future - at your own risk!</p>
-                </div>
+				</div>
 				<div class="row">
 					<div class="col-md-6">
 						<h4>Shops &amp; RNG</h4>
@@ -519,16 +541,16 @@
 						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="saveGameWhenGameOverCheckBox" @bind-Checked="Flags.SaveGameWhenGameOver">Save Game When Game Over</CheckBox>
 						<CheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="saveGameDWModeCheckBox" IsEnabled="@Flags.SaveGameWhenGameOver" @bind-Checked="Flags.SaveGameDWMode">Dragon Warrior Mode</CheckBox>
 					</div>
-					</div>
 				</div>
-    </BSCollapse>
+			</div>
+		</BSCollapse>
 
 
-        <button type="button" class="@(TabClasses("Fun %"))" @onclick="@(() => ActivateTab("Fun %"))">Fun %</button>
-        <BSCollapse IsOpen="@(activeTabs.Contains("Fun %"))">
-            <div class="is-dark nes-container">
-                <div class="row">
-                    <p>Fun flags are not part of the standard flags string since they do not impact gameplay. The buttons at the bottom can be used to store your preferred fun % settings within your browser so that they will be automatically restored each time you visit the site.</p>
+		<button type="button" class="@(TabClasses("Fun %"))" @onclick="@(() => ActivateTab("Fun %"))">Fun %</button>
+		<BSCollapse IsOpen="@(activeTabs.Contains("Fun %"))">
+			<div class="is-dark nes-container">
+				<div class="row">
+					<p>Fun flags are not part of the standard flags string since they do not impact gameplay. The buttons at the bottom can be used to store your preferred fun % settings within your browser so that they will be automatically restored each time you visit the site.</p>
 					<div class="col-md-6">
 						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="funEnemyNamesCheckBox" @bind-Checked="Flags.FunEnemyNames">Fun Enemy Names</CheckBox>
 						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="teamSteakCheckBox" @bind-Checked="Flags.TeamSteak">Team STEAK</CheckBox>
@@ -546,30 +568,30 @@
 						<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="menuColorDropDown" TItem="MenuColor" @bind-Value="Flags.MenuColor">Menu Color</EnumDropDown>
 						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="renounceAutosortCheckBox" @bind-Checked="Flags.RenounceAutosort">Renounce Autosort</CheckBox>
 					</div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <button type="button" class="nes-btn is-primary" @onclick="@SavePreferences">Save Preferences</button>
-                    </div>
-                </div>
-            </div>
-        </BSCollapse>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<button type="button" class="nes-btn is-primary" @onclick="@SavePreferences">Save Preferences</button>
+					</div>
+				</div>
+			</div>
+		</BSCollapse>
 
 
-        <br />
-        <button type="button" class="nes-btn is-primary" @onclick="@OnRandomize">Generate ROM</button>
-        <BSCollapse IsOpen="@(StatusMessage.Length > 0)">
-            <div class="is-dark nes-container">
-                @StatusMessage
-            </div>
-        </BSCollapse>
+		<br />
+		<button type="button" class="nes-btn is-primary" @onclick="@OnRandomize">Generate ROM</button>
+		<BSCollapse IsOpen="@(StatusMessage.Length > 0)">
+			<div class="is-dark nes-container">
+				@StatusMessage
+			</div>
+		</BSCollapse>
 
 
-        <br />
-        <div>
-            &nbsp;
-        </div>
-    </CascadingValue>
+		<br />
+		<div>
+			&nbsp;
+		</div>
+	</CascadingValue>
 </div>
 
 @code { private byte[] _fileData;
@@ -578,10 +600,12 @@
 	private string _seed;
 	private string _seedInputClass = "";
 
+	private string presetName = "Unnamed Preset";
+
 	private FlagsViewModel Flags { get; set; } = new FlagsViewModel();
 	private Flags DefaultFlags;
 
-	private readonly List<string> activeTabs = new List<string> { "File", "Shuffle", "Treasures", "Goal", "Map", "Scale", "Party", "Bug Fixes", "Conveniences", "Experimental", "Fun %" };
+	private readonly List<string> activeTabs = new List<string> { "File", "Presets", "Shuffle", "Treasures", "Goal", "Map", "Scale", "Party", "Bug Fixes", "Conveniences", "Experimental", "Fun %" };
 
 	private string StatusMessage = "";
 	private string RomMessage = "Upload Rom:";
@@ -651,8 +675,42 @@
 	async Task LoadPreset(string presetName)
 	{
 		var json = await JSRuntime.InvokeAsync<string>("computePreset", presetName);
-		Flags.Flags = System.Text.Json.JsonSerializer.Deserialize<Flags.Preset>(json).Flags;
-		StatusMessage = System.Text.Json.JsonSerializer.Deserialize<Flags.Preset>(json).Name + " preset successfully loaded.";
+		Flags.Preset preset = System.Text.Json.JsonSerializer.Deserialize<Flags.Preset>(json);
+		Flags.Flags = preset.Flags;
+		StatusMessage = preset.Name + " preset successfully loaded.";
+		StateHasChanged();
+	}
+
+	async Task SavePreset()
+	{
+		System.Text.Json.JsonSerializerOptions options = new System.Text.Json.JsonSerializerOptions();
+		options.IgnoreReadOnlyProperties = true;
+		options.WriteIndented = true;
+
+		Flags.Preset preset = new Flags.Preset();
+		preset.Name = presetName;
+		preset.Flags = Flags.Flags;
+
+		var json = System.Text.Json.JsonSerializer.Serialize(preset, options);
+		var encoded = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(json));
+
+		await JSRuntime.InvokeAsync<object>("downloadROM", $"{presetName}.json", encoded);
+	}
+
+	async Task OnPresetChanged(ChangeEventArgs e)
+	{
+		try
+		{
+			var json = await JSRuntime.InvokeAsync<string>("handlePresetSelect", "presetInput");
+			var preset = System.Text.Json.JsonSerializer.Deserialize<Flags.Preset>(json);
+			Flags.Flags = preset.Flags;
+			StatusMessage = $"{preset.Name} preset successfully loaded from json file.";
+		}
+		catch (Exception ex)
+		{
+			StatusMessage = "Preset load failed: " + ex.ToString();
+		}
+		StateHasChanged();
 	}
 
 	async Task OnFileChanged(ChangeEventArgs e)
@@ -836,3 +894,4 @@
 		}
 	}
 }
+
