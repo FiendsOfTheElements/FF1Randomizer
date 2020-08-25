@@ -29,7 +29,7 @@
 
 
 	<ItemGroup>
-		<Content Update="wwwroot\presets\beginner.json">
+		<Content Update="wwwroot\presets\freeenterprise.json">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 		<Content Update="wwwroot\presets\debug.json">

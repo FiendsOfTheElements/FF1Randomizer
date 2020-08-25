@@ -49,14 +49,16 @@
 					</div>
 					<div class="row">
 						<div class="col-md-12">
-							<p>Presets:
-								<button type="button" class="nes-btn is-primary" @onclick="@(() => LoadPreset("default"))">Default</button>
-								<button type="button" class="nes-btn is-primary" @onclick="@(() => LoadPreset("beginner"))">Beginner</button>
-								<button type="button" class="nes-btn is-primary" @onclick="@(() => LoadPreset("full-npc"))">NPC Shuffle</button>
-								<button type="button" class="nes-btn is-primary" @onclick="@(() => LoadPreset("improved-vanilla"))">Improved Vanilla</button>
-								<button type="button" class="nes-btn is-primary" @onclick="@(() => LoadPreset("chaos-rush"))">Chaos Rush</button>
-								<button type="button" class="nes-btn is-primary" @onclick="@(() => LoadPreset("debug"))">DEBUG</button>
-							</p>
+                            <p>
+                                Presets:
+                                <button type="button" class="nes-btn is-primary" @onclick="@(() => LoadPreset("default"))">Default</button>
+                                <button type="button" class="nes-btn is-primary" @onclick="@(() => LoadPreset("entranceshuffle"))">Floor Shuffle</button>
+                                <button type="button" class="nes-btn is-primary" @onclick="@(() => LoadPreset("shardhunt"))">Shard Hunt</button>
+                                <button type="button" class="nes-btn is-primary" @onclick="@(() => LoadPreset("chaos-rush"))">Chaos Rush</button>
+                                <button type="button" class="nes-btn is-primary" @onclick="@(() => LoadPreset("freeenterprise"))">Free Enterprise</button>
+                                <button type="button" class="nes-btn is-primary" @onclick="@(() => LoadPreset("improved-vanilla"))">Improved Vanilla</button>
+
+                            </p>
 						</div>
 					</div>
 				</div>
