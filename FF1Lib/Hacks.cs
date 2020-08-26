@@ -240,7 +240,7 @@ namespace FF1Lib
 			PutInBank(0x0E, 0x95AE, Blob.FromHex("A203BCD095B900613006186906990061CA10EFE65660"));
 			PutInBank(0x0E, 0x95D0, Blob.FromHex("C0804000")); // lut used by the above code
 
-			// Spell level up change to allow any class to gain spell charges
+			// Spell level up change to allow any class to gain spell charges, see 1B_8818_LvlUp_LevelUp.asm
 			PutInBank(0x1B, 0x88D7, Blob.FromHex("AE8E68A001B182A02848B184DD02899005684A4CFA88684A900948B184186901918468C8C030D0E14C1C89000000090909040400090909"));
 
 			// To allow all promoted classes
