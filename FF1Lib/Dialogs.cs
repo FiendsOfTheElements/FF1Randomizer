@@ -268,7 +268,7 @@ namespace FF1Lib
 					formatted = FF1Text.BytesToText(Get(0x2B5D0 + 24, 8)).TrimEnd(' ');
 					break;
 				case Item.Canoe:
-					formatted = FF1Text.BytesToText(Get(0x2B5D0, + 36)).TrimEnd(' ');
+					formatted = FF1Text.BytesToText(Get(0x2B5D0 + 36, 8)).TrimEnd(' ');
 					break;
 			}
 			return formatted;
