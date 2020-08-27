@@ -7,12 +7,10 @@ netlifyID=$(echo "$config" | jq -r ".netlifyID")
 deployPreview=$(echo "$config" | jq -r ".deployPreview")
 if "$deployPreview"; then
     deploy_response=$(netlify deploy --json --dir=/root/ff1randomizer/FF1Blazorizer/output/wwwroot --site="$netlifyID")
-    # deploy_response=$(netlify deploy --json --dir=FF1Blazorizer/output/wwwroot --site="4ef4838f-158d-4929-bd24-d516bec18708")
     url=$(echo "$deploy_response" | jq -r ".deploy_url")
 
     GH_USER=FFR_Build_And_Deploy
     pr_response=$(curl --location --request GET "https://api.github.com/repos/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/pulls?head=$CIRCLE_PROJECT_USERNAME:$CIRCLE_BRANCH&state=open" -u $GH_USER:"$GH_API")
-    # pr_response=$(curl --location --request GET "https://api.github.com/repos/FiendsOfTheElements/FF1Randomizer/pulls?head=FiendsOfTheElements:$RANCH&state=open" -u $GH_USER:"$GH_API")
 
     if [ "$(echo "$pr_response" | jq length)" -eq 0 ]; then
         echo "No PR found to update"
@@ -24,6 +22,5 @@ if "$deployPreview"; then
     curl -X POST -H "Accept: application/vnd.github.v3+json" -H "Content-Type:application/json" "$pr_comment_url" -u $GH_USER:"$GH_API" -d "$post_data"
 
 else
-    echo "nothing"
-    # netlify deploy --dir=/root/ff1randomizer/FF1Blazorizer/output/wwwroot --prod --site="$netlifyID"
+    netlify deploy --dir=/root/ff1randomizer/FF1Blazorizer/output/wwwroot --prod --site="$netlifyID"
 fi
