@@ -594,7 +594,7 @@ namespace FF1Lib
 			var equipFighterArmor = new List<Item> { Item.WoodenArmor, Item.ChainArmor, Item.SilverArmor, Item.IronArmor,
 				Item.FlameArmor, Item.IceArmor, Item.SteelArmor, Item.Buckler, Item.WoodenShield, Item.IronShield, Item.ProCape,
 				Item.SilverShield, Item.FlameShield, Item.IceShield, Item.WoodenHelm, Item.IronHelm, Item.SilverHelm,
-				Item.CopperGauntlets, Item.IronGauntlets, Item.SilverGauntlets };
+				Item.CopperGauntlets, Item.IronGauntlets, Item.SilverGauntlets, Item.PowerGauntlets };
 
 			var equipRedMageArmor = new List<Item> { Item.WoodenArmor, Item.ChainArmor, Item.SilverArmor };
 
