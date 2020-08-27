@@ -41,19 +41,7 @@ workflows:
           path: ".circleci/"
   main:
     jobs:
-      - build:
-          filters:
-            branches:
-              only:
-                - /pull\/.+/
-                - master
-                - dev
+      - build
       - deploy:
-          filters:
-            branches:
-              only:
-                - /pull\/.+/
-                - master
-                - dev
           requires:
             - build
