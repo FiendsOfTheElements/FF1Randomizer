@@ -573,7 +573,7 @@ namespace FF1Lib
 
 			if ((bool)flags.RandomArmorBonus)
 			{
-				RandomArmorBonus(rng, flags.RandomArmorBonusLow, flags.RandomWeaponBonusHigh);
+				RandomArmorBonus(rng, flags.RandomArmorBonusLow, flags.RandomArmorBonusHigh);
 			}
 
 			if (flags.WeaponBonuses)
