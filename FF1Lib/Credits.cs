@@ -338,13 +338,14 @@ namespace FF1Lib
 					" nitz",
 					" Septimus",
 					" tartopan",
+					" wildham",
 				},
 				new []
 				{
 					"",
 					"  Contributors",
 					"",
-					" artea, wildham",
+					" artea",
 					" drcatdoctor",
 					" leggystarscream",
 					" nic0lette",
