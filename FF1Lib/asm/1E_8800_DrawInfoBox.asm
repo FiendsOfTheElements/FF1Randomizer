@@ -249,15 +249,23 @@ DrawInfoBox:
  .ORG $8910
  
 StatusWaitForBtn_SFX:
-    JSR MenuFrame             ; Do a frame
-    LDA joy_a                 ; Check if button A or B was pressed
-    ORA joy_b
-    BEQ StatusWaitForBtn_SFX  ;  if both are zero, keep looping.  Otherwise...
+  JSR MenuFrame               ; Do a frame
+  LDA joy_a
+  ORA joy_select
+  BNE OkPressed               ; If A or select was pressed, show info box
+  LDA joy_b
+  BEQ StatusWaitForBtn_SFX    ; If B was pressed
     LDA #$00
-    STA joy_a                 ; clear both joy_a and joy_b
     STA joy_b
-    JMP EnterFromStatus       ; Show info box
+    LDA #$0E                  ; Switch to bank 0E
+    STA cur_bank              ;  returning to main menu
+    JMP SwapPRG_L 
+OkPressed:
+    LDA #$00
+    STA joy_a                 ; clear buttons
+    STA joy_b
+    STA joy_select
+    JMP EnterFromStatus       ; Show info box 
 
 
 
-  
