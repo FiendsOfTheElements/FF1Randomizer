@@ -35,11 +35,15 @@ jobs:
           command: sh .circleci/deploy.sh
 
 workflows:
-  main:
+  shellcheck:
     jobs:
       - shellcheck/check:
+          type: approval
           path: ".circleci/"
-      - build
+  main:
+    jobs:
+      - build:
+          type: approval
       - deploy:
           requires:
             - build
