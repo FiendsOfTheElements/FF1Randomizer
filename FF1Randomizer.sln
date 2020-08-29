@@ -19,6 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sandbox", "Sandbox\Sandbox.
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".circleci", ".circleci", "{E8698844-8DA6-44D4-9290-F816B135E44E}"
 	ProjectSection(SolutionItems) = preProject
+		build.sh = build.sh
 		.circleci\config.yml = .circleci\config.yml
 	EndProjectSection
 EndProject
