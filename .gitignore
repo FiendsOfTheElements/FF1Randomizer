@@ -249,3 +249,6 @@ _Pvt_Extensions
 
 # IDEA files (Rider IDE, Pycharm, etc)
 .idea/
+
+# Local Netlify folder
+.netlify
