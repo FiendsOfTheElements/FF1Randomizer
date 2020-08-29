@@ -26,12 +26,19 @@
 	{
 		"Id": "mapOpenProgressionDwavesNWCheckBox",
 		"title": "Extended Open Progression",
+		"screenshot": "mapOpenProgressionExtendedCheckBox.png",
 		"description": "Remove the river tile between the Dwarf Cave and Northwest Castle so it can be traversed on foot."
+	},
+	{
+		"Id": "mapOpenProgressionDocksCheckBox",
+		"title": "Northern Docks",
+		"screenshot": "mapOpenProgressionDocksCheckBox.png",
+		"description": "Add additional docks near Onrac and the Mirage Tower."
 	},
 	{
 		"Id": "mapOpenProgressionFloaterDockCheckBox",
 		"title": "Ryukahn Desert Dock",
-		"screenshot": "mapOpenProgressionExtendedCheckBox.png",
+		"screenshot": "desertDockCheckBox.png",
 		"description": "Add an additional dock near the Ryukhan desert."
 	},
 	{
@@ -687,7 +694,7 @@
 	},
 	{
 		"Id": "mapOpenProgressionCheckBox",
-		"title": "Open Progression",
+		"title": "Early Open Progression",
 		"screenshot": "mapOpenProgressionCheckBox.png",
 		"description": "Changes the map to allow walking from Corneria to Dwarf Cave, as well as connecting the Ice Cave and Volcano river systems, to allow passage from Pravoka to Crescent Lake with the CANOE."
 	},
@@ -760,7 +767,7 @@
 		"Id": "noDanModeCheckBox",
 		"title": "Static EXP Distribution",
 		"screenshot": "noDanModeCheckBox.png",
-		"description": "When enabled, all experience received by enemies is always distributed as if there were 4 Light Warriors, rahter than dividing the total EXP between those Light Warriors alive at the end of battle."
+		"description": "When enabled, all experience received by enemies is always distributed as if there were 4 Light Warriors, rather than dividing the total EXP between those Light Warriors alive at the end of battle."
 	},
 	{
 		"Id": "startingGoldCheckBox",

@@ -266,9 +266,9 @@
 					<div class="col-md-4">
 						<h4>Progression</h4>
 						<p>Relax some requirements to accelerate routing.</p>
-						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="mapOpenProgressionCheckBox" @bind-Value="Flags.MapOpenProgression">Open Southern Progression</TriStateCheckBox>
-						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="mapOpenProgressionDocksCheckBox" @bind-Value="Flags.MapOpenProgressionDocks">Open Northern Progression</TriStateCheckBox>
-						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="mapOpenProgressionDwavesNWCheckBox" IsEnabled="@Flags.MapOpenProgression" @bind-Value="Flags.MapDwarvesNorthwest">Extended Open Progression</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="mapOpenProgressionCheckBox" @bind-Value="Flags.MapOpenProgression">Early Open Progression</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="mapOpenProgressionDwavesNWCheckBox" Indent IsEnabled="@Flags.MapOpenProgression" @bind-Value="Flags.MapDwarvesNorthwest">Extended Open Progression</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="mapOpenProgressionDocksCheckBox" @bind-Value="Flags.MapOpenProgressionDocks">Northern Docks</TriStateCheckBox>
 						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="mapOpenProgressionFloaterDockCheckBox" IsEnabled="@Flags.MapOpenProgression" @bind-Value="Flags.MapAirshipDock">Ryukahn Desert Dock</TriStateCheckBox>
 						<div class="checkbox-cell"></div>
 						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="earlyKingCheckBox" @bind-Value="Flags.EarlyKing">Early King Item</TriStateCheckBox>
