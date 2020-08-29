@@ -268,7 +268,7 @@ namespace FF1Lib
 					formatted = FF1Text.BytesToText(Get(0x2B5D0 + 24, 8)).TrimEnd(' ');
 					break;
 				case Item.Canoe:
-					formatted = FF1Text.BytesToText(Get(0x2B5D0, + 36)).TrimEnd(' ');
+					formatted = FF1Text.BytesToText(Get(0x2B5D0 + 36, 8)).TrimEnd(' ');
 					break;
 			}
 			return formatted;
@@ -719,11 +719,11 @@ namespace FF1Lib
 				{MapLocation.MirageTower1,OverworldTeleportIndex.MirageTower1},
 				{MapLocation.MirageTower2,OverworldTeleportIndex.MirageTower1},
 				{MapLocation.MirageTower3,OverworldTeleportIndex.MirageTower1},
-				{MapLocation.SkyPalace1,OverworldTeleportIndex.MirageTower1},
-				{MapLocation.SkyPalace2,OverworldTeleportIndex.MirageTower1},
-				{MapLocation.SkyPalace3,OverworldTeleportIndex.MirageTower1},
-				{MapLocation.SkyPalaceMaze,OverworldTeleportIndex.MirageTower1},
-				{MapLocation.SkyPalaceTiamat,OverworldTeleportIndex.MirageTower1},
+				{MapLocation.SkyPalace1,(OverworldTeleportIndex)37},
+				{MapLocation.SkyPalace2,(OverworldTeleportIndex)37},
+				{MapLocation.SkyPalace3,(OverworldTeleportIndex)37},
+				{MapLocation.SkyPalaceMaze,(OverworldTeleportIndex)37},
+				{MapLocation.SkyPalaceTiamat,(OverworldTeleportIndex)37},
 				{MapLocation.TitansTunnelEast,OverworldTeleportIndex.TitansTunnelEast},
 				{MapLocation.TitansTunnelWest,OverworldTeleportIndex.TitansTunnelWest},
 				{MapLocation.TitansTunnelRoom,OverworldTeleportIndex.TitansTunnelWest},
@@ -763,6 +763,7 @@ namespace FF1Lib
 				{OverworldTeleportIndex.TitansTunnelWest,"the Titan's tunnel"},
 				{(OverworldTeleportIndex)35,"the Sea Shrine"},
 				{(OverworldTeleportIndex)36,"the Caravan"},
+				{(OverworldTeleportIndex)37,"the Sky Palace"},
 			};
 
 			var targetlocation = new OverworldTeleportIndex();

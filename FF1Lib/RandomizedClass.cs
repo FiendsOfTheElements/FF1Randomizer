@@ -362,7 +362,7 @@ namespace FF1Lib
 			if (flags.EnablePoolParty ?? false)
 			{
 				// We just reproduce EnablePoolParty()'s new DoPartyGen_OnCharacter and add the select button
-				PutInBank(0x1E, 0x85B0, Blob.FromHex("A667BD01030D41038D410320A480A9008522200F82A522F0034C0088A667AC4003A524F016BD0003C9FFF00CB931869D01034D41038D41034C2C81A525F0118AC900F00AA9009D0103A9FF9D00033860A520290FC561F0B68561C900F0B0C898C9099002A0008C4003B931862C4103F0EDB942039D0003A901853720B0824CBE858040201008040201"));
+				PutInBank(0x1E, 0x85B0, Blob.FromHex("A667BD01030D41038D4103A9FF8D4003BD0103C900F00718EE40032A90FA20A480A9008522200F82A522F0034C0088A667AC4003A524F013BD0003C9FFF009BD01034D41038D41034C2C81A525F0118AC900F00AA9009D0103A9FF9D00033860A520290FC561F0B98561C900F0B3C898C9099002A0008C4003B944862C4103F0ED9D0103B942039D0003A901853720B0824CD1858040201008040201"));
 				PutInBank(0x1E, 0x8843, Blob.FromHex("A98548A9AF48"));
 			}
 			else
@@ -450,7 +450,7 @@ namespace FF1Lib
 			Put(0x3040, classData.GetRange(0, 6).SelectMany(x => x.StartingStatsArray()).ToArray());
 
 			// Insert level up data
-			Put(NewLevelUpDataOffset, classData.SelectMany(x => x.LevelUpArray()).ToArray());
+			Put(NewLevelUpDataOffset, classData.GetRange(0, 6).SelectMany(x => x.LevelUpArray()).ToArray());
 
 			// Insert hit% and mdef growth rate
 			Put(lut_LvlUpHitRateBonus, classData.Select(x => x.HitGrowth).ToArray());
@@ -594,7 +594,7 @@ namespace FF1Lib
 			var equipFighterArmor = new List<Item> { Item.WoodenArmor, Item.ChainArmor, Item.SilverArmor, Item.IronArmor,
 				Item.FlameArmor, Item.IceArmor, Item.SteelArmor, Item.Buckler, Item.WoodenShield, Item.IronShield, Item.ProCape,
 				Item.SilverShield, Item.FlameShield, Item.IceShield, Item.WoodenHelm, Item.IronHelm, Item.SilverHelm,
-				Item.CopperGauntlets, Item.IronGauntlets, Item.SilverGauntlets };
+				Item.CopperGauntlets, Item.IronGauntlets, Item.SilverGauntlets, Item.PowerGauntlets };
 
 			var equipRedMageArmor = new List<Item> { Item.WoodenArmor, Item.ChainArmor, Item.SilverArmor };
 
@@ -1094,8 +1094,8 @@ namespace FF1Lib
 			// Generate Ranks
 			int maxStats = shuffleStartingStats.Max();
 			int minStats = shuffleStartingStats.Min();
-			int maxLvStats = shuffleLevelUp.Select(x => x.Where(y => y == true).Count()).Max();
-			int minLvStats = shuffleLevelUp.Select(x => x.Where(y => y == true).Count()).Min();
+			int maxLvStats = shuffleLevelUp.Select(x => x.GetRange(0, 24).Where(y => y == true).Count()).Max();
+			int minLvStats = shuffleLevelUp.Select(x => x.GetRange(0, 24).Where(y => y == true).Count()).Min();
 			int spreadStats = (maxLvStats + maxStats - minLvStats - minStats) / 5;
 
 			// For HP, max is a Lv25 Fighter average HP, min is a Lv25 Black Mage average HP
@@ -1109,15 +1109,15 @@ namespace FF1Lib
 
 			for (int i = 0; i < shuffleLevelUp.Count(); i++)
 			{
-				if (shuffleStartingStats[i] + shuffleLevelUp[i].Where(x => x == true).Count() > (maxLvStats + maxStats - spreadStats))
+				if (shuffleStartingStats[i] + shuffleLevelUp[i].GetRange(0, 24).Where(x => x == true).Count() > (maxLvStats + maxStats - spreadStats))
 					statsRanks.Add(Rank.S);
-				else if (shuffleStartingStats[i] + shuffleLevelUp[i].Where(x => x == true).Count() > (maxLvStats + maxStats - spreadStats * 2))
+				else if (shuffleStartingStats[i] + shuffleLevelUp[i].GetRange(0, 24).Where(x => x == true).Count() > (maxLvStats + maxStats - spreadStats * 2))
 					statsRanks.Add(Rank.A);
-				else if (shuffleStartingStats[i] + shuffleLevelUp[i].Where(x => x == true).Count() > (maxLvStats + maxStats - spreadStats * 3))
+				else if (shuffleStartingStats[i] + shuffleLevelUp[i].GetRange(0, 24).Where(x => x == true).Count() > (maxLvStats + maxStats - spreadStats * 3))
 					statsRanks.Add(Rank.B);
-				else if (shuffleStartingStats[i] + shuffleLevelUp[i].Where(x => x == true).Count() > (maxLvStats + maxStats - spreadStats * 4))
+				else if (shuffleStartingStats[i] + shuffleLevelUp[i].GetRange(0, 24).Where(x => x == true).Count() > (maxLvStats + maxStats - spreadStats * 4))
 					statsRanks.Add(Rank.C);
-				else if (shuffleStartingStats[i] + shuffleLevelUp[i].Where(x => x == true).Count() > (maxLvStats + maxStats - spreadStats * 5))
+				else if (shuffleStartingStats[i] + shuffleLevelUp[i].GetRange(0, 24).Where(x => x == true).Count() > (maxLvStats + maxStats - spreadStats * 5))
 					statsRanks.Add(Rank.D);
 				else
 					statsRanks.Add(Rank.E);
