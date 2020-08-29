@@ -38,10 +38,12 @@ workflows:
   shellcheck:
     jobs:
       - shellcheck/check:
+          type: approval
           path: ".circleci/"
   main:
     jobs:
-      - build
+      - build:
+          type: approval
       - deploy:
           requires:
             - build
