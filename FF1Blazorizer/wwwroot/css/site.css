@@ -251,7 +251,8 @@ tr.bottom-borderd {
     font-family: 'Press Start 2P';
     padding: 6px;
     margin-right: 20px;
-    color: var(--TOPBAR_FONT_COLOR)
+    color: var(--TOPBAR_FONT_COLOR);
+    white-space: nowrap;
 }
 
     .ffr-nav:hover {

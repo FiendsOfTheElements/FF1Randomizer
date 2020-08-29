@@ -336,11 +336,6 @@ namespace FF1Lib
 			const int lut_ArmorPermissions = 0x3BFA0;
 			const int lut_MaxMP = 0x6C902;
 
-			/*
-			// Spell level up change to allow any class to gain spell charges
-			PutInBank(0x1B, 0x88D7, Blob.FromHex("AE8E68A001B182A02848B184DD02899005684A4CFA88684A900948B184186901918468C8C030D0E14C1C89000000090909040400090909"));
-			*/
-
 			// Starting Stats awards MP to allow any class to start with spell charges
 			PutInBank(0x1F, 0xC7CA, Blob.FromHex("B94BB09D20639D286360"));
 			PutInBank(0x00, 0xB07B, Blob.FromHex("02"));
@@ -355,7 +350,7 @@ namespace FF1Lib
 			PutInBank(0x1E, 0x8800, Blob.FromHex("203CC4A5674A4A4A4A4AB015A200205B83A220205B83A9118538A90285394C3388A210205B83A230205B83A9038538A9028539A667BD0003C9FFD002A90C0AAA207188A98048A9C0484C1A85A9118538A9028539A667BD0061C9FFD002A90C0AAA207188A9B648A91248A90E85574C03FEA90D853CA91A853DA9008D0120A90085378A482063E0A970853EA989853FA538853AE63AA539853BE63BA91E855785582036DE68AABD5089853EBD5189853FA53B186902853B2036DE205E8560"));
 
 			// StatusWaitForBtn_SFX, see 1E_8800_DrawInfoBox.asm
-			PutInBank(0x1E, 0x8910, Blob.FromHex("202C85A5240525F0F7A900852485254C4C88"));
+			PutInBank(0x1E, 0x8910, Blob.FromHex("202C85A5240522D00FA525F0F3A9008525A90E85574C03FEA9008524852585224C4C88"));
 
 			// InfoScreen in PtyGen and Status screen
 			// DoPartyGen_OnCharacter change to check for Select button, see 1E_8800_DrawInfoBox.asm
@@ -371,11 +366,7 @@ namespace FF1Lib
 				PutInBank(0x1E, 0x80C1, Blob.FromHex("A6678A4A4A4A4AA8B9B085859020A480A9008522200F82A522F0034C0088A524D049A525F0023860A520290FC561F0E08561C900F0DAA667BD0003186901C90CD002A9FF9D0003A8C8B9B4852490F0E8A901853720B0824CD180"));
 				PutInBank(0x1E, 0x85B0, partypermissions);
 			}
-			/*
-			// Hijack spell charges, change for Flags
-			Put(lut_MaxMP, new List<byte> { 0x00, 0x00, 0x00, (byte)flags.RedMageMaxMP, (byte)flags.WhiteMageMaxMP, (byte)flags.BlackMageMaxMP,
-				(byte)flags.KnightNinjaMaxMP, (byte)flags.KnightNinjaMaxMP, 0x00, (byte)flags.RedMageMaxMP, (byte)flags.WhiteMageMaxMP, (byte)flags.BlackMageMaxMP }.ToArray());
-			*/
+
 			// Get data
 			var startingStats = Get(StartingStatsOffset, 0x60).Chunk(0x10);
 			var levelUpStats = Get(NewLevelUpDataOffset, 588).Chunk(49 * 2);
