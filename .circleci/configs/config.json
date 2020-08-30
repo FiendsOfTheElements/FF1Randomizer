@@ -1,0 +1,38 @@
+{
+    "$schema": "./configSchema.json",
+    "branchConfig": [
+        {
+            "branch": "master",
+            "longName": "FFRandomizer",
+            "shortName": "FFR",
+            "themeColor": "#221d11",
+            "cssFile": "main.css",
+            "siteIcon": "normal",
+            "releaseBuild": true,
+            "netlifyID": "cd1fef70-df7f-44ab-b1c8-3239dae773ac",
+            "deployPreview": false
+        },
+        {
+            "branch": "dev",
+            "longName": "FFRandomizer - beta",
+            "shortName": "FFR β",
+            "themeColor": "#111122",
+            "cssFile": "beta.css",
+            "siteIcon": "cyan",
+            "releaseBuild": false,
+            "netlifyID": "b1e4219e-dfb6-4efa-924f-3136bbf3fa26",
+            "deployPreview": false
+        },
+        {
+            "branch": "default",
+            "longName": "FFRandomizer - PR",
+            "shortName": "FFR PR",
+            "themeColor": "#221119",
+            "cssFile": "alpha.css",
+            "siteIcon": "red",
+            "releaseBuild": false,
+            "netlifyID": "b1e4219e-dfb6-4efa-924f-3136bbf3fa26",
+            "deployPreview": true
+        }
+    ]
+}

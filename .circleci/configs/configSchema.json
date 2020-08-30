@@ -1,0 +1,73 @@
+{
+	"$schema": "http://json-schema.org/schema#",
+	"title": "FFR build and deploy config schema",
+	"description": "A schema for the FF1 Randomizer circleci build and deploy jobs.",
+	"type": "object",
+	"definitions": {
+		"branchConfig": {
+			"required": [
+				"branch",
+				"longName",
+				"shortName",
+				"cssFile",
+				"themeColor",
+				"siteIcon",
+				"releaseBuild",
+				"netlifyID",
+				"deployPreview"
+			],
+			"type": "object",
+			"properties": {
+				"branch": {
+					"description": "The git branch this config is for",
+					"type": "string"
+				},
+				"longName": {
+					"description": "The long name to be used in the site manifest",
+					"type": "string"
+				},
+				"shortName": {
+					"description": "The short name to be used in the site manifest",
+					"type": "string"
+				},
+				"cssFile": {
+					"description": "The path to the version specific css file from inside /FF1Blazorizer/wwwroot/",
+					"type": "string"
+				},
+				"themeColor": {
+					"description": "The theme colour to use in the site manifest",
+					"type": "string"
+				},
+				"siteIcon": {
+					"description": "The basename used for the site icons: <basename>.ico, <basename>-192.png, <basename>-256.png, <basename>-512.png",
+					"type": "string"
+				},
+				"releaseBuild": {
+					"description": "Should this branch be built/published as a release build or a debug build",
+					"type": "boolean"
+				},
+				"netlifyID": {
+					"type": "string",
+					"description": "The netlify id to deploy this branch to"
+				},
+				"deployPreview": {
+					"type": "boolean",
+					"description": "Should this be deployed as a preview or as a real deployment"
+				}
+			}
+		}
+	},
+	"properties": {
+		"branchConfig": {
+			"type": "array",
+			"uniqueItems": true,
+			"items": {
+				"$ref": "#/definitions/branchConfig"
+			},
+			"description": "The config for a single branch"
+		}
+	},
+	"required": [
+		"branchConfig"
+	]
+}
