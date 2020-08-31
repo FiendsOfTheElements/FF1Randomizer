@@ -16,6 +16,10 @@ app {
     flex-direction: column;
 }
 
+input {
+    margin: 2px;
+}
+
 .top-row {
     display: flex;
     padding: 1rem;
