@@ -322,7 +322,7 @@ namespace FF1Lib
 		public bool? AllowUnsafeStartArea { get; set; } = false;
 
 		public bool? EarlierRuby { get; set; } = false;
-
+		public bool? GuaranteedRuseItem { get; set; } = false;
 		public bool? MapCanalBridge => (NPCItems) | (NPCFetchItems) | MapOpenProgression | MapOpenProgressionExtended;
 		public bool? MapOnracDock => MapOpenProgressionDocks;
 		public bool? MapMirageDock => MapOpenProgressionDocks;
@@ -836,6 +836,7 @@ namespace FF1Lib
 			sum = AddNumeric(sum, Enum.GetValues(typeof(WorldWealthMode)).Cast<int>().Max() + 1, (int)flags.WorldWealth);
 			sum = AddTriState(sum, flags.AllowUnsafeStartArea);
 			sum = AddTriState(sum, flags.EarlierRuby);
+			sum = AddTriState(sum, flags.GuaranteedRuseItem);
 			sum = AddBoolean(sum, flags.TournamentSafe);
 			sum = AddBoolean(sum, flags.Spoilers);
 
@@ -850,6 +851,7 @@ namespace FF1Lib
 			{
 				Spoilers = GetBoolean(ref sum),
 				TournamentSafe = GetBoolean(ref sum),
+				GuaranteedRuseItem = GetTriState(ref sum),
 				EarlierRuby = GetTriState(ref sum),
 				AllowUnsafeStartArea = GetTriState(ref sum),
 				WorldWealth = (WorldWealthMode)GetNumeric(ref sum, Enum.GetValues(typeof(WorldWealthMode)).Cast<int>().Max() + 1),

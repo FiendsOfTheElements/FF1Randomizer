@@ -782,7 +782,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EarlierRuby"));
 			}
 		}
-
+		public bool? GuaranteedRuseItem
+		{
+			get => Flags.GuaranteedRuseItem;
+			set
+			{
+				Flags.GuaranteedRuseItem = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("GuaranteedRuseItem"));
+			}
+		}
 		public bool? EnemyTrapTiles
 		{
 			get => Flags.EnemyTrapTiles;

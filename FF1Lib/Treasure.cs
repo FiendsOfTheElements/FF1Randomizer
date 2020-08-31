@@ -107,5 +107,11 @@ namespace FF1Lib
 
 			Put(0x3000 + UnsramIndex.ShipX, location);
 		}
+
+		public void CraftRuseItem()
+		{
+			var newspell = GetSpells();
+			WriteItemSpellData(newspell.Where(x => x.Data[4] == 0x10 && x.Data[3] == 0x04).First(), Item.PowerRod);
+		}
 	}
 }

@@ -229,6 +229,11 @@ namespace FF1Lib
 				ShuffleItemMagic(rng, (bool)flags.BalancedItemMagicShuffle);
 			}
 
+			if ((bool)flags.GuaranteedRuseItem)
+			{
+				CraftRuseItem();
+			}
+
 			if ((bool)flags.ShortToFR)
 			{
 				ShortenToFR(maps, (bool)flags.PreserveFiendRefights, rng);
