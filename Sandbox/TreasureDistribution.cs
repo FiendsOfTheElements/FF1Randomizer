@@ -42,7 +42,6 @@ namespace Sandbox
 			    EnemyStatusAttackBug = false,
 
 			    PriceScaleFactor = 1.0,
-			    EnemyScaleFactor = 1.0,
 			    ExpMultiplier = 1.0,
 			    ExpBonus = 0
 		    };

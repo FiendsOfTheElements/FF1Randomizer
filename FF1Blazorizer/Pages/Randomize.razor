@@ -607,7 +607,6 @@
 	private string presetName = "Unnamed Preset";
 
 	private FlagsViewModel Flags { get; set; } = new FlagsViewModel();
-	private Flags DefaultFlags;
 
 	private readonly List<string> activeTabs = new List<string> { "File", "Presets", "Shuffle", "Treasures", "Goal", "Map", "Scale", "Party", "Bug Fixes", "Conveniences", "Experimental", "Fun %" };
 
@@ -619,10 +618,10 @@
 	private string ToolTipId = "unupdated";
 	private ToolTip ToolTipElement;
 
-	private async void UpdateToolTipID(string Id, MouseEventArgs e)
+	private void UpdateToolTipID(string Id, MouseEventArgs e)
 	{
 		ToolTipId = Id;
-		await ToolTipElement.UpdatePos(ToolTipId, e);
+		ToolTipElement.UpdatePos(ToolTipId, e);
 		StateHasChanged();
 	}
 
