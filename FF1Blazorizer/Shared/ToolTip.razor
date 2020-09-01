@@ -4,7 +4,7 @@
 <div class="ffr-tooltip" style="@css">
 	<button type="button" class="nes-btn is-error ffr-tooltip-close" @onclick="@HideToolTip"> X </button>
 	<button type="button" class="nes-btn" @onclick="@HideToolTip">@Title</button>
-	<div class="is-dark nes-container" @onmousedown=@StartDrag @onmousemove=@Drag @onmouseup=@EndDrag @onmouseout=@EndDrag>
+	<div class="is-dark nes-container" @onmousedown=@StartDrag @onmousemove=@Drag @onmouseup=@EndDrag @onmouseout=@Drag>
 		<div class="ffr-tooltip-screenshot" style="@(ScreenshotStyle())"></div>
 		<p class="ffr-tooltip-text">@Description</p>
 		<p style="clear: both"></p>
@@ -63,7 +63,7 @@
 		Enabled = false;
 	}
 
-	public async Task UpdatePos(string Id, MouseEventArgs e)
+	public void UpdatePos(string Id, MouseEventArgs e)
 	{
 		if (Id == "")
 		{
@@ -93,7 +93,7 @@
 		}
 	}
 
-	public async Task Drag(MouseEventArgs e)
+	public void Drag(MouseEventArgs e)
 	{
 		if (Dragging)
 		{

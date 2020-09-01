@@ -12,7 +12,7 @@ namespace Sandbox
 {
     class Program
     {
-	    private static FF1Rom rom;
+	    // private static FF1Rom rom;
 
         static async Task Main(string[] args)
         {

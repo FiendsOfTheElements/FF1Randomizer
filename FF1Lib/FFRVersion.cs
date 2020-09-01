@@ -3,9 +3,9 @@
 	// THIS FILE IS UPDATED DURING THE BUILD AND DEPLOY. DO NOT EDIT UNLESS YOU KONW WHAT YOU ARE DOING.
 	public static class FFRVersion
 	{
-		public const string Version = "3.1.1";
-		public const string Sha = "SHA";
-		public const string Branch = "BRANCH";
-		public const string MasterBranch = "master";
+		public static readonly string Version = "3.1.1";
+		public static readonly string Sha = "SHA";
+		public static readonly string Branch = "BRANCH";
+		public static readonly string MasterBranch = "master";
 	}
 }
