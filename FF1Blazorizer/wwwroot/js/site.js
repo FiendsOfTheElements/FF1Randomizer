@@ -118,3 +118,14 @@ function updateServiceWorkerNow() {
 		window.location.reload();
 	}
 }
+
+let pwa;
+window.addEventListener('beforeinstallprompt', (e) => {	
+	e.preventDefault();
+	pwa = e;
+});
+
+function showPWAInstall() {
+	pwa?.prompt();
+	pwa = null;
+}
