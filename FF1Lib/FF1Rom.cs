@@ -363,7 +363,7 @@ namespace FF1Lib
 			{
 				if (((bool)flags.RandomStatusAttacks))
 				{
-					RandomEnemyStatusAttacks(rng, (bool)flags.AllowUnsafePirates);
+					RandomEnemyStatusAttacks(rng, (bool)flags.AllowUnsafePirates, (bool)flags.DisableStunTouch);
 				}
 				else
 				{

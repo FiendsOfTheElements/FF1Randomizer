@@ -323,6 +323,7 @@ namespace FF1Lib
 
 		public bool? EarlierRuby { get; set; } = false;
 		public bool? GuaranteedRuseItem { get; set; } = false;
+		public bool? DisableStunTouch { get; set; } = false;
 		public bool? MapCanalBridge => (NPCItems) | (NPCFetchItems) | MapOpenProgression | MapOpenProgressionExtended;
 		public bool? MapOnracDock => MapOpenProgressionDocks;
 		public bool? MapMirageDock => MapOpenProgressionDocks;
@@ -837,6 +838,7 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.AllowUnsafeStartArea);
 			sum = AddTriState(sum, flags.EarlierRuby);
 			sum = AddTriState(sum, flags.GuaranteedRuseItem);
+			sum = AddTriState(sum, flags.DisableStunTouch);
 			sum = AddBoolean(sum, flags.TournamentSafe);
 			sum = AddBoolean(sum, flags.Spoilers);
 
@@ -851,6 +853,7 @@ namespace FF1Lib
 			{
 				Spoilers = GetBoolean(ref sum),
 				TournamentSafe = GetBoolean(ref sum),
+				DisableStunTouch = GetTriState(ref sum),
 				GuaranteedRuseItem = GetTriState(ref sum),
 				EarlierRuby = GetTriState(ref sum),
 				AllowUnsafeStartArea = GetTriState(ref sum),

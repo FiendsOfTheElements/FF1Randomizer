@@ -506,7 +506,6 @@
 						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="itemPlacementCheckBox" IsEnabled="@Flags.Treasures" @bind-Checked="Flags.ClassicItemPlacement">Use Older v2 Placement</CheckBox>
 						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="shuffleAstosCheckBox" @bind-Value="Flags.ShuffleAstos">Shuffle Astos</TriStateCheckBox>
 						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="FreeTail" @bind-Value="Flags.FreeTail">Free Tail</TriStateCheckBox>
-						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="ruseItemCheckBox" @bind-Value="Flags.GuaranteedRuseItem">Guaranteed Ruse Item</TriStateCheckBox>
 						<div class="checkbox-cell"></div>
 						<div class="checkbox-cell"></div>
 						<h4>Maps &amp; Routing</h4>
@@ -541,6 +540,10 @@
 						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="disableInnSaving" @bind-Checked="Flags.DisableInnSaving">Disable Inn Saving</CheckBox>
 						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="saveGameWhenGameOverCheckBox" @bind-Checked="Flags.SaveGameWhenGameOver">Save Game When Game Over</CheckBox>
 						<CheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="saveGameDWModeCheckBox" IsEnabled="@Flags.SaveGameWhenGameOver" @bind-Checked="Flags.SaveGameDWMode">Dragon Warrior Mode</CheckBox>
+						<div class="checkbox-cell"></div>
+						<p>DW Mode Single Character Tweaks</p>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="ruseItemCheckBox" @bind-Value="Flags.GuaranteedRuseItem">Guaranteed Ruse Item</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="disableStunTouchCheckBox" IsEnabled="@Flags.RandomStatusAttacks" @bind-Value="Flags.DisableStunTouch">Remove Stun Touch from Randomize Status Attacks</TriStateCheckBox>
 					</div>
 				</div>
 			</div>

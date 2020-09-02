@@ -356,7 +356,7 @@ namespace FF1Lib
 			Put(EnemyOffset, newEnemies.SelectMany(enemy => enemy.ToBytes()).ToArray());
 		}
 
-		public void RandomEnemyStatusAttacks(MT19337 rng, bool AllowUnsafePirates)
+		public void RandomEnemyStatusAttacks(MT19337 rng, bool AllowUnsafePirates, bool DisableStunTouch)
 		{
 			var enemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
 
@@ -368,6 +368,8 @@ namespace FF1Lib
 				(0x20, 0x01), //Sleep Touch = Status
 				(0x40, 0x01), //Mute Touch = Status
 			};
+
+			if (DisableStunTouch) statusElements.Remove((0x10, 0x01));
 
 			(byte touch, byte element) deathElement = (0x01, 0x08); //Death Touch = Death Element
 			(byte touch, byte element) stoneElement = (0x02, 0x02); //Stone Touch = Poison
