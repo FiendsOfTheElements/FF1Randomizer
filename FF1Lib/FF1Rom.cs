@@ -229,6 +229,11 @@ namespace FF1Lib
 				ShuffleItemMagic(rng, (bool)flags.BalancedItemMagicShuffle);
 			}
 
+			if ((bool)flags.GuaranteedRuseItem)
+			{
+				CraftRuseItem();
+			}
+
 			if ((bool)flags.ShortToFR)
 			{
 				ShortenToFR(maps, (bool)flags.PreserveFiendRefights, rng);
@@ -358,7 +363,7 @@ namespace FF1Lib
 			{
 				if (((bool)flags.RandomStatusAttacks))
 				{
-					RandomEnemyStatusAttacks(rng, (bool)flags.AllowUnsafePirates);
+					RandomEnemyStatusAttacks(rng, (bool)flags.AllowUnsafePirates, (bool)flags.DisableStunTouch);
 				}
 				else
 				{

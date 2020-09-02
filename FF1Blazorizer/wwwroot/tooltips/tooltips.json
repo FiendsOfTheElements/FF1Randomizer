@@ -1053,6 +1053,16 @@
 		"description": "Choose if Hurray Dwarf is spared when NPC Guillotine is on or kill him."
 	},
 	{
+		"Id": "ruseItemCheckBox",
+		"title": "Guaranteed Ruse Item",
+		"description": "Turn the Power Staff into a RUSE casting item immune to Item Magic and Randomize Treasures that won't be placed in ToFR."
+	},
+	{
+		"Id": "disableStunTouchCheckBox",
+		"title": "Remove Stun Touch from Randomize Status Attacks",
+		"description": "Remove stun touch from possible status attacks when Randomize Enemy Status Attacks is enabled."
+	},
+	{
 		"Id": "earlierRubyCheckBox",
 		"title": "Earlier Ruby",
 		"description": "Adjust the Ruby's placement to earlier in the seed to increase the likelihood that negotiating the Titan's Tunnel is required for progression."

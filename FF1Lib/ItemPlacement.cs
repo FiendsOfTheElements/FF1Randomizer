@@ -94,6 +94,10 @@ namespace FF1Lib
 
 			var treasurePool = _allTreasures.ToList();
 
+			if ((bool)_flags.GuaranteedRuseItem)
+			{
+				unincentivizedQuestItems.Add(Item.PowerRod);
+			}
 			foreach (var incentive in incentivePool)
 			{
 				treasurePool.Remove(incentive);
