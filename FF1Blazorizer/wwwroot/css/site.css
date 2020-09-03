@@ -411,3 +411,7 @@ p {
 .job.blackwizard {
     background-image: url("/images/classes/blackwizard.png");
 }
+
+.preset-pill {
+    margin-left: -10px;
+}

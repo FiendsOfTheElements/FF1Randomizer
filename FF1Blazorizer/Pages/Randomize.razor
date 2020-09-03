@@ -53,36 +53,7 @@
 		<button type="button" class="@(TabClasses("Presets"))" @onclick="@(() => ActivateTab("Presets"))">Presets</button>
 		<BSCollapse IsOpen="@(activeTabs.Contains("Presets"))">
 			<div class="is-dark nes-container">
-				<div class="row">
-					<div class="col-md-12">
-						<p>
-							Presets:
-							<button type="button" class="nes-btn is-primary" @onclick="@(() => LoadPreset("default"))">Default</button>
-							<button type="button" class="nes-btn is-primary" @onclick="@(() => LoadPreset("entranceshuffle"))">Floor Shuffle</button>
-							<button type="button" class="nes-btn is-primary" @onclick="@(() => LoadPreset("shardhunt"))">Shard Hunt</button>
-							<button type="button" class="nes-btn is-primary" @onclick="@(() => LoadPreset("chaos-rush"))">Chaos Rush</button>
-							<button type="button" class="nes-btn is-primary" @onclick="@(() => LoadPreset("freeenterprise"))">Free Enterprise</button>
-							<button type="button" class="nes-btn is-primary" @onclick="@(() => LoadPreset("improved-vanilla"))">Improved Vanilla</button>
-						</p>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-md-12">
-						<p>
-							Load Preset from JSON file:
-							<input type="file" id="presetInput" @onchange="OnPresetChanged" />
-						</p>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-md-12">
-						<p>
-							Save Preset:
-							<input type="text" @bind="presetName" />
-							<button type="button" class="nes-btn is-primary" @onclick="SavePreset">Download Flags as JSON</button>
-						</p>
-					</div>
-				</div>
+				<Presets Flags="@Flags" SetStatusMessage="@SetStatusMessage" />
 			</div>
 		</BSCollapse>
 
@@ -604,8 +575,6 @@
 	private string _seed;
 	private string _seedInputClass = "";
 
-	private string presetName = "Unnamed Preset";
-
 	private FlagsViewModel Flags { get; set; } = new FlagsViewModel();
 
 	private readonly List<string> activeTabs = new List<string> { "File", "Presets", "Shuffle", "Treasures", "Goal", "Map", "Scale", "Party", "Bug Fixes", "Conveniences", "Experimental", "Fun %" };
@@ -658,10 +627,6 @@
 		{
 			TrySetFlags(flags.First());
 		}
-		else
-		{
-			await LoadPreset("default");
-		}
 
 		await LoadPreferences();
 		await LoadLastROM();
@@ -675,46 +640,7 @@
 		await JSRuntime.InvokeAsync<Task>("updateHistory", args);
 	}
 
-	async Task LoadPreset(string presetName)
-	{
-		var json = await JSRuntime.InvokeAsync<string>("computePreset", presetName);
-		Flags.Preset preset = System.Text.Json.JsonSerializer.Deserialize<Flags.Preset>(json);
-		Flags.Flags = preset.Flags;
-		StatusMessage = preset.Name + " preset successfully loaded.";
-		StateHasChanged();
-	}
 
-	async Task SavePreset()
-	{
-		System.Text.Json.JsonSerializerOptions options = new System.Text.Json.JsonSerializerOptions();
-		options.IgnoreReadOnlyProperties = true;
-		options.WriteIndented = true;
-
-		Flags.Preset preset = new Flags.Preset();
-		preset.Name = presetName;
-		preset.Flags = Flags.Flags;
-
-		var json = System.Text.Json.JsonSerializer.Serialize(preset, options);
-		var encoded = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(json));
-
-		await JSRuntime.InvokeAsync<object>("downloadROM", $"{presetName}.json", encoded);
-	}
-
-	async Task OnPresetChanged(ChangeEventArgs e)
-	{
-		try
-		{
-			var json = await JSRuntime.InvokeAsync<string>("handlePresetSelect", "presetInput");
-			var preset = System.Text.Json.JsonSerializer.Deserialize<Flags.Preset>(json);
-			Flags.Flags = preset.Flags;
-			StatusMessage = $"{preset.Name} preset successfully loaded from json file.";
-		}
-		catch (Exception ex)
-		{
-			StatusMessage = "Preset load failed: " + ex.ToString();
-		}
-		StateHasChanged();
-	}
 
 	async Task OnFileChanged(ChangeEventArgs e)
 	{
@@ -895,6 +821,12 @@
 			StatusMessage += "FAILURE: " + e.Message;
 			StateHasChanged();
 		}
+	}
+
+	void SetStatusMessage(string message)
+	{
+		StatusMessage = message;
+		StateHasChanged();
 	}
 }
 
