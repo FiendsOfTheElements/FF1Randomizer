@@ -35,6 +35,42 @@ function handlePresetSelect(inputId) {
 	});
 }
 
+async function storePreset(name, json) {
+	let presets;
+	try {
+		presets = JSON.parse(localStorage.getItem('presets'));
+	} catch {
+		presets = {};
+	}
+	presets[name] = json;
+	localStorage.setItem('presets', JSON.stringify(presets));
+}
+
+async function listLocalPresets() {
+	let presets;
+	try {
+		presets = JSON.parse(localStorage.getItem('presets'));
+	} catch {
+		presets = {};
+	}
+
+	return Object.keys(presets);
+}
+
+async function loadLocalPreset(preset) {
+	document.querySelector('#presetNameInput').value = preset;
+	return JSON.parse(localStorage.getItem('presets'))[preset];
+}
+
+async function deleteLocalPreset(preset) {
+	try {
+		const presets = JSON.parse(localStorage.getItem('presets'));
+		delete presets[preset];
+		localStorage.setItem('presets', JSON.stringify(presets));
+	} catch {
+	}
+}
+
 async function computePreset(preset) {
 	const result = await fetch('presets/' + preset + '.json');
 	const overrides = await result.json();
@@ -44,7 +80,7 @@ async function computePreset(preset) {
 		const basic = await defaultResult.json();
 		overrides.Flags = Object.assign(basic.Flags, overrides.Flags);
 	}
-
+	document.querySelector('#presetNameInput').value = overrides.Name;
 	return JSON.stringify(overrides);
 }
 
