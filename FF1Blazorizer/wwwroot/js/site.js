@@ -23,6 +23,7 @@ function handlePresetSelect(inputId) {
 
 	return new Promise((resolve, reject) => {
 		reader.onload = e => {
+			document.querySelector('#presetNameInput').value = JSON.parse(e.target.result).Name;
 			resolve(e.target.result);
 			input.value = null;
 		};
