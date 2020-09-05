@@ -793,6 +793,13 @@ namespace FF1Lib
 			{
 				byte[] hashable = Data.ToBytes();
 
+
+				//zero out mapman palette data
+				for (int i = 0x390; i < 0x3BC; i++)
+				{
+					hashable[i] = 0;
+				}
+
 				//zero out character mapman graphics
 				for (int i = 0x9000; i < 0xB000; i++)
 				{
@@ -804,24 +811,26 @@ namespace FF1Lib
 					hashable[i] = 0;
 				}
 
-				//zero out character palette data
-				for (int i = 0x390; i < 0x3BC; i++)
+				// lut_InBattleCharPaletteAssign (LUT for assigning palettes to in-battle char sprites)
+				for (int i = 0x3203C; i < 0x32048; i++)
 				{
 					hashable[i] = 0;
 				}
-				//palettes continued
-				for (int i = 0x3203C; i < 0x32408; i++)
+
+				// BattleSpritePalettes (palette for battle sprites)
+				for (int i = 0x3EBA4; i < 0x3EBB5; i++)
 				{
 					hashable[i] = 0;
 				}
-				//palettes continued
+
+				// lutClassBatSprPalette (LUT for battle sprite palettes)
 				for (int i = 0x3ECA4; i < 0x3ECB0; i++)
 				{
 					hashable[i] = 0;
 				}
 
 				var Hash = hasher.ComputeHash(hashable);
-				if (ByteArrayToString(Hash) != "022cc07015f25c37d617b5c725d3f545b142f9021ff6824db769294d60333d8b")
+				if (ByteArrayToString(Hash) != "b56d671b82ec8aff52a459bfa123ca8c15ae082d22980670c60f318349c978ff")
 				{
 					Console.WriteLine($"Rom hash: {ByteArrayToString(Hash)}");
 					throw new TournamentSafeException("File has been modified");
