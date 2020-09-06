@@ -42,6 +42,25 @@ namespace FF1Lib
 		public const string BattleBoxUndrawFrames = "04"; // 2/3 normal (Must  divide 12)
 		public const string BattleBoxUndrawRows = "03";
 
+		public const int SmokeSpriteReplaceStart = 0x317E9;
+		public const int SmokeSpriteReplaceEnd = 0x31A2C;
+
+		public void MoveSmokeSpriteVariables()
+		{
+			// This moves some temporary memory locations used to draw the smoke effect sprites
+			// in battle to the same locations used to store attacker stats.  These can overwrite
+			// each other without issue, and it frees up some space for a few bytes of RNG state.
+			var smokeSpriteCode = Get(SmokeSpriteReplaceStart, SmokeSpriteReplaceEnd - SmokeSpriteReplaceStart);
+
+			smokeSpriteCode.ReplaceInPlace(Blob.FromUShorts(new ushort[] { 0x68AF }), Blob.FromUShorts(new ushort[] { 0x686C }));
+			smokeSpriteCode.ReplaceInPlace(Blob.FromUShorts(new ushort[] { 0x68B1 }), Blob.FromUShorts(new ushort[] { 0x686E }));
+			smokeSpriteCode.ReplaceInPlace(Blob.FromUShorts(new ushort[] { 0x68B3 }), Blob.FromUShorts(new ushort[] { 0x6870 }));
+			smokeSpriteCode.ReplaceInPlace(Blob.FromUShorts(new ushort[] { 0x68B4 }), Blob.FromUShorts(new ushort[] { 0x6871 }));
+			smokeSpriteCode.ReplaceInPlace(Blob.FromUShorts(new ushort[] { 0x68B5 }), Blob.FromUShorts(new ushort[] { 0x6872 }));
+
+			Put(SmokeSpriteReplaceStart, smokeSpriteCode);
+		}
+
 		// Required for npc quest item randomizing
 		public void PermanentCaravan()
 		{
