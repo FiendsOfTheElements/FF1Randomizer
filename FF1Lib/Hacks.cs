@@ -19,6 +19,38 @@ namespace FF1Lib
 		[Description("8 characters")]
 		Size8,
 	}
+
+	public enum ClassSprite
+	{
+		Fighter = 0xEE,
+		Thief = 0xEF,
+		BlackBelt = 0xF0,
+		RedMage = 0xF1,
+		WhiteMage = 0xF2,
+		BlackMage = 0xF3,
+		Knight = 0xF4,
+		Ninja = 0xF5,
+		Master = 0xF6,
+		RedWizard = 0xF7,
+		WhiteWizard = 0xF8,
+		BlackWizard = 0xF9
+	}
+
+	public enum ClassId
+	{
+		Fighter = 0,
+		Thief = 1,
+		BlackBelt = 2,
+		RedMage = 3,
+		WhiteMage = 4,
+		BlackMage = 5,
+		Knight = 6,
+		Ninja = 7,
+		Master = 8,
+		RedWizard = 9,
+		WhiteWizard = 10,
+		BlackWizard = 11
+	}
 	public partial class FF1Rom : NesRom
 	{
 		public const int Nop = 0xEA;
