@@ -10,13 +10,13 @@
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyFormationsSurpriseCheckBox" @bind-Value="Flags.EnemyFormationsSurprise">Shuffle Surprise Bonus</TriStateCheckBox>
 			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="formationShuffleModeDropDown" TItem="FormationShuffleMode" IsEnabled="@(!Flags.RandomizeFormationEnemizer)" @bind-Value="Flags.FormationShuffleMode">Formation Rarity:</EnumDropDown>
 			<div class="checkbox-cell"></div>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="randomizeFormationEnemizer" @bind-Value="Flags.RandomizeFormationEnemizer">Enemizer - Generate Formations</TriStateCheckBox>
+			<div class="checkbox-cell"></div>
 			<h4>Fixed Encounters</h4>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="swolePiratesCheckBox" @bind-Value="Flags.SwolePirates">Buffed Pirates</TriStateCheckBox>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="fiendShuffleCheckBox" @bind-Checked="Flags.FiendShuffle">Shuffle the Four Original Fiend Fights</CheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyTrapTilesCheckBox" IsEnabled="@(!Flags.RandomizeFormationEnemizer)" @bind-Value="Flags.EnemyTrapTiles">Shuffle All Trap Tiles</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="randomTrapFormationsCheckBox" IsEnabled="@Flags.EnemyTrapTiles" @bind-Value="Flags.RandomTrapFormations">Use Random Formations</TriStateCheckBox>
-			<div class="checkbox-cell"></div>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="randomizeFormationEnemizer" @bind-Value="Flags.RandomizeFormationEnemizer">Enemizer - Generate Formations</TriStateCheckBox>
 		</div>
 		<div class="col-md-4">
 			<h4>Enemies</h4>
