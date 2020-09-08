@@ -1,0 +1,73 @@
+﻿@using FF1Lib; 
+
+<div class="is-dark nes-container">
+	<div class="row">
+		<div class="col-md-12">
+			<PartyCompositionClasses Flags="@Flags" />
+			<br />
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="EnablePoolParty" @bind-Value="Flags.EnablePoolParty">Party Draft</TriStateCheckBox>
+			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnablePoolParty" Id="PoolSizeDropDown" TItem="PoolSize" @bind-Value="Flags.PoolSize">Pool Size :</EnumDropDown>
+			<br />
+			<h4>Tavern Recruitment</h4>
+			<div class="col-md-12">
+				<p>Enable Tavern Recruitment to unlock the ability to build a party as you go!</p>
+				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="tavernMode" @bind-Value="Flags.RecruitmentMode">Tavern Recruitment Mode</TriStateCheckBox>
+				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.RecruitmentMode" Id="tavernModeHireOnly" @bind-Value="Flags.RecruitmentModeHireOnly">Disable Reviving at Taverns</TriStateCheckBox>
+				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.RecruitmentMode" Id="tavernModeReplaceOnlyNone" @bind-Value="Flags.RecruitmentModeReplaceOnlyNone">Only Replace Nones at Taverns</TriStateCheckBox>
+			</div>
+			<div class="table-wrapper">
+				<table>
+					<tr class="jobs">
+						<td>Hireable Adventurers</td>
+						<td class="job fighter" title="Fighter"></td>
+						<td class="job thief" title="Thief"></td>
+						<td class="job blackbelt" title="Black Belt"></td>
+						<td class="job redmage" title="Red Mage"></td>
+						<td class="job whitemage" title="White Mage"></td>
+						<td class="job blackmage" title="Black Mage"></td>
+					</tr>
+					<tr class="odd">
+						<td>Select to allow</td>
+						<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.RecruitmentMode" Id="TavernFighter" @bind-Value="Flags.TAVERN1"></TriStateCheckBox></td>
+						<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.RecruitmentMode" Id="TavernThief" @bind-Value="Flags.TAVERN2"></TriStateCheckBox></td>
+						<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.RecruitmentMode" Id="TavernBlackBelt" @bind-Value="Flags.TAVERN3"></TriStateCheckBox></td>
+						<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.RecruitmentMode" Id="TavernRedMage" @bind-Value="Flags.TAVERN4"></TriStateCheckBox></td>
+						<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.RecruitmentMode" Id="TavernWhiteMage" @bind-Value="Flags.TAVERN5"></TriStateCheckBox></td>
+						<td><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.RecruitmentMode" Id="TavernBlackMage" @bind-Value="Flags.TAVERN6"></TriStateCheckBox></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-6">
+			<h4>Class Balance</h4>
+			<div class="checkbox-cell"></div>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="EnableRandomPromotions" @bind-Value="Flags.EnableRandomPromotions">Random Classes at Class Change</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnableRandomPromotions" Id="RPIncludeBaseClasses" @bind-Value="Flags.IncludeBaseClasses">Include Base Classes</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnableRandomPromotions" Id="RPSpoilers" @bind-Value="Flags.RandomPromotionsSpoilers">Spoil Promotions</TriStateCheckBox>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="checkboxLinearMPGrowth" @bind-Checked="Flags.LinearMPGrowth">Linear MP Growth</CheckBox>
+			<div class="checkbox-cell"></div>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="RandomizeClassCheckBox" @bind-Value="Flags.RandomizeClass">Blursed Classes</TriStateCheckBox>
+			<IntSlider Indent Min="0" Max="4" Step="1" DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.RandomizeClass != false && (Flags.RandomizeClassChaos != true))" Id="RandomizeClassMaxBonusSlider" @bind-Value="@Flags.RandomizeClassMaxBonus">Bonuses:</IntSlider>
+			<IntSlider Indent Min="0" Max="4" Step="1" DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.RandomizeClass != false && (Flags.RandomizeClassChaos != true))" Id="RandomizeClassMaxMalusSlider" @bind-Value="@Flags.RandomizeClassMaxMalus">Maluses:</IntSlider>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.RandomizeClass" Id="RandomizeClassChaosCheckBox" @bind-Value="Flags.RandomizeClassChaos">Chaos Mode</TriStateCheckBox>
+		</div>
+		<div class="col-md-6">
+			<h4>Magic Charges</h4>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="ChangeMaxMP" @bind-Value="@Flags.ChangeMaxMP">Max MP</TriStateCheckBox>
+			<IntSlider Indent Min="1" Max="9" Step="1" DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.ChangeMaxMP" Id="RedMageMaxMP" @bind-Value="@Flags.RedMageMaxMP">Red Mage Max MP:</IntSlider>
+			<IntSlider Indent Min="1" Max="9" Step="1" DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.ChangeMaxMP" Id="WhiteMageMaxMP" @bind-Value="@Flags.WhiteMageMaxMP">White Mage Max MP:</IntSlider>
+			<IntSlider Indent Min="1" Max="9" Step="1" DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.ChangeMaxMP" Id="BlackMageMaxMP" @bind-Value="@Flags.BlackMageMaxMP">Black Mage Max MP:</IntSlider>
+			<IntSlider Indent Min="1" Max="9" Step="1" DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.ChangeMaxMP" Id="KnightMaxMP" @bind-Value="@Flags.KnightMaxMP">Knight Max MP:</IntSlider>
+			<IntSlider Indent Min="1" Max="9" Step="1" DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.ChangeMaxMP" Id="NinjaMaxMP" @bind-Value="@Flags.NinjaMaxMP">Ninja Max MP:</IntSlider>
+			<div class="checkbox-cell"></div>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="AllSpellLevelsForKnightNinja" @bind-Checked="Flags.AllSpellLevelsForKnightNinja">Knight and Ninja Gain Charges in All Levels</CheckBox>
+		</div>
+	</div>
+</div>
+
+@code {
+	[Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }
+	[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
+}
