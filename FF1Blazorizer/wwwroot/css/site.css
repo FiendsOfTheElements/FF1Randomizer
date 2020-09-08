@@ -415,3 +415,11 @@ p {
 .preset-pill {
     margin-left: -10px;
 }
+
+.nes-btn.is-huge {
+    font-size: 2em;
+}
+
+.nes-btn.is-tiny {
+    font-size: 0.5em;
+}

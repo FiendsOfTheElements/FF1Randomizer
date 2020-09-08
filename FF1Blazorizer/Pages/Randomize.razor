@@ -57,15 +57,21 @@
 			</div>
 		</BSCollapse>
 
-		<br />
-		<button type="button" class="nes-btn is-primary" @onclick="@OnRandomize">Generate ROM</button>
-		<BSCollapse IsOpen="@(StatusMessage.Length > 0)">
+		<button type="button" class="@(TabClasses("Presets"))" @onclick="@(() => ActivateTab("Generate"))">Generate</button>
+		<BSCollapse IsOpen="@(activeTabs.Contains("Generate"))">
 			<div class="is-dark nes-container">
-				@StatusMessage
+				<div class="row">
+					<div class="col-md-12">
+						<button type="button" class="nes-btn is-primary is-huge" @onclick="@OnRandomize">Generate ROM</button>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						@StatusMessage
+					</div>
+				</div>
 			</div>
-
 		</BSCollapse>
-
 
 		<button type="button" class="@(TabClasses("Shuffle"))" @onclick="@(() => ActivateTab("Shuffle"))">Shuffle</button>
 		<BSCollapse IsOpen=@(activeTabs.Contains("Shuffle"))>
@@ -577,7 +583,7 @@
 
 	private FlagsViewModel Flags { get; set; } = new FlagsViewModel();
 
-	private readonly List<string> activeTabs = new List<string> { "File", "Presets", "Shuffle", "Treasures", "Goal", "Map", "Scale", "Party", "Bug Fixes", "Conveniences", "Experimental", "Fun %" };
+	private readonly List<string> activeTabs = new List<string> { "File", "Presets", "Generate", "Shuffle", "Treasures", "Goal", "Map", "Scale", "Party", "Bug Fixes", "Conveniences", "Experimental", "Fun %" };
 
 	private string StatusMessage = "";
 	private string RomMessage = "Upload Rom:";
