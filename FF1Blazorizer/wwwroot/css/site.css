@@ -43,7 +43,6 @@ input {
     right: 2%;
     margin-top: 1%;
     max-width: 96%;
-    width: max-content;
     padding: 0.5rem;
     font-family: 'Press Start 2P';
     z-index: 101;
@@ -112,10 +111,6 @@ h1 {
 @media (max-width: 849.98px) {
     .main .top-row {
         display: none;
-    }
-
-    app {
-        width: fit-content;
     }
 
     .table-wrapper {
@@ -415,4 +410,8 @@ p {
 
 .job.blackwizard {
     background-image: url("/images/classes/blackwizard.png");
+}
+
+.preset-pill {
+    margin-left: -10px;
 }
