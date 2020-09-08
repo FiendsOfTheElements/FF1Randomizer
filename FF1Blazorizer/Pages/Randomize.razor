@@ -116,7 +116,6 @@
 			</div>
 		</BSCollapse>
 
-
 		<button type="button" class="@(TabClasses("Treasures"))" @onclick="@(() => ActivateTab("Treasures"))">Treasures &amp; Incentives</button>
 		<BSCollapse IsOpen="@(activeTabs.Contains("Treasures"))">
 			<div class="is-dark nes-container">
@@ -137,6 +136,7 @@
 						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="freeAirshipCheckBox" @bind-Value="Flags.FreeAirship">Free Airship</TriStateCheckBox>
 						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="freeBridgeCheckBox" @bind-Value="Flags.FreeBridge">Free Bridge</TriStateCheckBox>
 						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="freeCanalCheckBox" @bind-Value="Flags.FreeCanal">Free Canal</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="FreeTail" @bind-Value="Flags.FreeTail">Free Tail</TriStateCheckBox>
 						<div class="checkbox-cell"></div>
 						<h4>Blursed Items</h4>
 						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="RandomWeaponBonus" @bind-Value="Flags.RandomWeaponBonus">Random Weapon Bonus</TriStateCheckBox>
@@ -145,7 +145,6 @@
 
 						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="RandomArmorBonus" @bind-Value="Flags.RandomArmorBonus">Random Armor Bonus</TriStateCheckBox>
 						<DoubleSlider Id="RandomWeaponBonusSlider" Indent IsEnabled="Flags.RandomArmorBonus" MinValue="-9" MaxValue="9" Step="1" @bind-ValueHigh="Flags.RandomArmorBonusHigh" @bind-ValueLow="Flags.RandomArmorBonusLow">Armor Bonus Range:</DoubleSlider>
-
 					</div>
 					<div class="col-md-4">
 						<h4>Locations: @(Flags.Flags.IncentivizedLocationCountMin) @((Flags.Flags.IncentivizedLocationCountMin != Flags.Flags.IncentivizedLocationCountMax) ? "- " + Flags.Flags.IncentivizedLocationCountMax : "") </h4>
@@ -190,7 +189,6 @@
 			</div>
 		</BSCollapse>
 
-
 		<button type="button" class="@(TabClasses("Goal"))" @onclick="@(() => ActivateTab("Goal"))">Goal</button>
 		<BSCollapse IsOpen="@(activeTabs.Contains("Goal"))">
 			<div class="is-dark nes-container">
@@ -218,7 +216,6 @@
 				</div>
 			</div>
 		</BSCollapse>
-
 
 		<button type="button" class="@(TabClasses("Map"))" @onclick="@(() => ActivateTab("Map"))">Maps &amp; Routing</button>
 		<BSCollapse IsOpen="@(activeTabs.Contains("Map"))">
@@ -478,7 +475,7 @@
 						<h4>Treasures &amp; Incentives</h4>
 						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="itemPlacementCheckBox" IsEnabled="@Flags.Treasures" @bind-Checked="Flags.ClassicItemPlacement">Use Older v2 Placement</CheckBox>
 						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="shuffleAstosCheckBox" @bind-Value="Flags.ShuffleAstos">Shuffle Astos</TriStateCheckBox>
-						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="FreeTail" @bind-Value="Flags.FreeTail">Free Tail</TriStateCheckBox>
+						
 						<div class="checkbox-cell"></div>
 						<div class="checkbox-cell"></div>
 						<h4>Maps &amp; Routing</h4>
