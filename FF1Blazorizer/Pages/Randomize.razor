@@ -159,14 +159,15 @@
 		<BSCollapse IsOpen="@(activeTabs.Contains("Experimental"))">
 			<div class="is-dark nes-container">
 				<div class="row">
-					<p>Test out features from 2000 years in the future - at your own risk!</p>
+					<div class="col-md-12">
+						Test out features from 2000 years in the future - at your own risk!
+					</div>
 				</div>
 				<div class="row">
 					<div class="col-md-12">
 						<h4>Legacy</h4>
 						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="itemPlacementCheckBox" IsEnabled="@Flags.Treasures" @bind-Checked="Flags.ClassicItemPlacement">Use Older v2 Placement</CheckBox>
 						<CheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(!Flags.BuyTen)" Id="buyTenOldCheckBox" @bind-Checked="Flags.BuyTenOld">Buy Ten (old)</CheckBox>
-
 						<h4>Maps &amp; Routing</h4>
 						<CheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.ExperimentalFloorGeneration" Id="procGenEarth1" @bind-Checked="Flags.EFGEarth1">Generated Earth Cave B1</CheckBox>
 						<CheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.ExperimentalFloorGeneration" Id="procGenEarth2" @bind-Checked="Flags.EFGEarth2">Generated Earth Cave B2</CheckBox>
@@ -179,7 +180,9 @@
 		<BSCollapse IsOpen="@(activeTabs.Contains("Fun %"))">
 			<div class="is-dark nes-container">
 				<div class="row">
-					<p>Fun flags are not part of the standard flags string since they do not impact gameplay. The buttons at the bottom can be used to store your preferred fun % settings within your browser so that they will be automatically restored each time you visit the site.</p>
+					<div class="col-md-12">
+						Fun flags are not part of the standard flags string since they do not impact gameplay. The buttons at the bottom can be used to store your preferred fun % settings within your browser so that they will be automatically restored each time you visit the site.
+					</div>
 					<div class="col-md-6">
 						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="funEnemyNamesCheckBox" @bind-Checked="Flags.FunEnemyNames">Fun Enemy Names</CheckBox>
 						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="teamSteakCheckBox" @bind-Checked="Flags.TeamSteak">Team STEAK</CheckBox>
