@@ -69,12 +69,12 @@
 			</div>
 		</BSCollapse>
 
-		<button type="button" class="@(TabClasses("Shuffle"))" @onclick="@(() => ActivateTab("Shuffle"))">Shuffle</button>
-		<BSCollapse IsOpen=@(activeTabs.Contains("Shuffle"))>
+		<button type="button" class="@(TabClasses("Shops"))" @onclick="@(() => ActivateTab("Shops"))">Shops, Spells, RNG</button>
+		<BSCollapse IsOpen=@(activeTabs.Contains("Shops"))>
 			<div class="is-dark nes-container">
 				<div class="row">
 					<div class="col-md-4">
-						<h4>Shops &amp; RNG</h4>
+						<h4>Shops</h4>
 						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="shopsCheckBox" @bind-Value="Flags.Shops">Shops</TriStateCheckBox>
 						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.Shops" Id="randomWaresCheckBox" @bind-Value="Flags.RandomWares">Random Weapons and Armor</TriStateCheckBox>
 						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@((Flags.Shops ?? true) && (Flags.RandomWares ?? true))" Id="randomWaresIncludesCheckBox" @bind-Value="Flags.RandomWaresIncludesSpecialGear">Include Caster &amp; Elite Gear</TriStateCheckBox>
@@ -84,11 +84,29 @@
 						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.MagicLevels" Id="magicLevelsTieredCheckBox" @bind-Value="Flags.MagicLevelsTiered">Tiered Shuffle</TriStateCheckBox>
 						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.MagicLevels" Id="magicLevelsMixed" @bind-Value="Flags.MagicLevelsMixed">Mix Spellbooks</TriStateCheckBox>
 						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.MagicLevels" Id="magicPermissionsCheckBox" @bind-Value="Flags.MagicPermissions">Keep Permissions</TriStateCheckBox>
+					</div>
+					<div class="col-md-4">
+						<h4>Spells</h4>
 						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="itemMagicCheckBox" @bind-Value="Flags.ItemMagic">Item Magic</TriStateCheckBox>
 						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.ItemMagic" Id="balancedItemMagicCheckBox" @bind-Value="Flags.BalancedItemMagicShuffle">Balanced Shuffle</TriStateCheckBox>
 						<div class="checkbox-cell"></div>
-						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="rngCheckBox" @bind-Value="Flags.Rng">RNG Table</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="generateNewSpellbook" @bind-Value="Flags.GenerateNewSpellbook">Generate New Spellbooks</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="spellcrafterRetainPermissions" IsEnabled="@Flags.GenerateNewSpellbook" @bind-Value="Flags.SpellcrafterRetainPermissions">Retain Old Permissions</TriStateCheckBox>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="spellcrafterMixSpells" IsEnabled="@Flags.GenerateNewSpellbook" @bind-Value="Flags.SpellcrafterMixSpells">Mix spellbooks</TriStateCheckBox>
 					</div>
+					<div class="col-md-4">
+						<h4>RNG</h4>
+						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="rngCheckBox" @bind-Value="Flags.Rng">RNG Tables</TriStateCheckBox>
+						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="fixMissingBattleRngEntry" @bind-Checked="Flags.FixMissingBattleRngEntry">Fix Missing Battle RNG Entry</CheckBox>
+					</div>
+				</div>
+			</div>
+		</BSCollapse>
+
+		<button type="button" class="@(TabClasses("Enemies"))" @onclick="@(() => ActivateTab("Enemies"))">Enemies</button>
+		<BSCollapse IsOpen=@(activeTabs.Contains("Enemies"))>
+			<div class="is-dark nes-container">
+				<div class="row">
 					<div class="col-md-4">
 						<h4>Enemies</h4>
 						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyScriptsCheckBox" @bind-Value="Flags.EnemyScripts">Enemy Scripts</TriStateCheckBox>
@@ -456,11 +474,9 @@
 					<div class="col-md-6">
 						<h4>Shops &amp; RNG</h4>
 						<p>Spellcrafter</p>
-						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="generateNewSpellbook" @bind-Value="Flags.GenerateNewSpellbook">Generate New Spellbook</TriStateCheckBox>
-						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="spellcrafterRetainPermissions" IsEnabled="@Flags.GenerateNewSpellbook" @bind-Value="Flags.SpellcrafterRetainPermissions">Retain Old Permissions</TriStateCheckBox>
-						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="spellcrafterMixSpells" IsEnabled="@Flags.GenerateNewSpellbook" @bind-Value="Flags.SpellcrafterMixSpells">Mix spellbooks</TriStateCheckBox>
+
 						<div class="checkbox-cell"></div>
-						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="fixMissingBattleRngEntry" @bind-Checked="Flags.FixMissingBattleRngEntry">Fix Missing Battle RNG Entry</CheckBox>
+						
 						<div class="checkbox-cell"></div>
 						<div class="checkbox-cell"></div>
 						<h4>Enemies</h4>
@@ -475,7 +491,7 @@
 						<h4>Treasures &amp; Incentives</h4>
 						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="itemPlacementCheckBox" IsEnabled="@Flags.Treasures" @bind-Checked="Flags.ClassicItemPlacement">Use Older v2 Placement</CheckBox>
 						<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="shuffleAstosCheckBox" @bind-Value="Flags.ShuffleAstos">Shuffle Astos</TriStateCheckBox>
-						
+
 						<div class="checkbox-cell"></div>
 						<div class="checkbox-cell"></div>
 						<h4>Maps &amp; Routing</h4>
@@ -550,16 +566,6 @@
 				</div>
 			</div>
 		</BSCollapse>
-
-
-		<br />
-		<button type="button" class="nes-btn is-primary" @onclick="@OnRandomize">Generate ROM</button>
-		<BSCollapse IsOpen="@(StatusMessage.Length > 0)">
-			<div class="is-dark nes-container">
-				@StatusMessage
-			</div>
-		</BSCollapse>
-
 
 		<br />
 		<div>
