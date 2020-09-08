@@ -6,44 +6,45 @@
 <div class="row">
 	<div class="col-md-12">
 		<p>
-			Standard Presets:
-			<button type="button" class="nes-btn is-primary" @onclick="@(() => LoadStandardPreset("default"))">Default</button>
-			<button type="button" class="nes-btn is-primary" @onclick="@(() => LoadStandardPreset("entranceshuffle"))">Floor Shuffle</button>
-			<button type="button" class="nes-btn is-primary" @onclick="@(() => LoadStandardPreset("shardhunt"))">Shard Hunt</button>
-			<button type="button" class="nes-btn is-primary" @onclick="@(() => LoadStandardPreset("chaos-rush"))">Chaos Rush</button>
-			<button type="button" class="nes-btn is-primary" @onclick="@(() => LoadStandardPreset("freeenterprise"))">Free Enterprise</button>
-			<button type="button" class="nes-btn is-primary" @onclick="@(() => LoadStandardPreset("improved-vanilla"))">Improved Vanilla</button>
+			Standard:
+			<button type="button" class="nes-btn is-primary is-tiny" @onclick="@(() => LoadStandardPreset("default"))">Default</button>
+			<button type="button" class="nes-btn is-primary is-tiny" @onclick="@(() => LoadStandardPreset("entranceshuffle"))">Floor Shuffle</button>
+			<button type="button" class="nes-btn is-primary is-tiny" @onclick="@(() => LoadStandardPreset("shardhunt"))">Shard Hunt</button>
+			<button type="button" class="nes-btn is-primary is-tiny" @onclick="@(() => LoadStandardPreset("chaos-rush"))">Chaos Rush</button>
+			<button type="button" class="nes-btn is-primary is-tiny" @onclick="@(() => LoadStandardPreset("freeenterprise"))">Free Enterprise</button>
+			<button type="button" class="nes-btn is-primary is-tiny" @onclick="@(() => LoadStandardPreset("improved-vanilla"))">Improved Vanilla</button>
 		</p>
 	</div>
 </div>
 <div class="row">
 	<div class="col-md-12">
 		<p>
-			Saved Presets: @foreach (var preset in localPresets)
+			Saved: @foreach (var preset in localPresets)
 			{
 			<span style="white-space:nowrap">
-				<button type="button" class="nes-btn is-primary" @onclick="@(() => LoadLocalPreset(@preset))">@preset</button>
-				<button type="button" class="nes-btn is-error preset-pill" @onclick="@(() => DeleteLocalPreset(@preset))">X</button>
+				<button type="button" class="nes-btn is-primary is-tiny" @onclick="@(() => LoadLocalPreset(@preset))">@preset</button>
+				<button type="button" class="nes-btn is-error is-tiny preset-pill" @onclick="@(() => DeleteLocalPreset(@preset))">X</button>
 			</span>
 			}
 		</p>
 	</div>
 </div>
+<div class="row">&nbsp;</div>
 <div class="row">
 	<div class="col-md-12">
 		<p>
-			Load Preset from JSON file:
-			<input type="file" id="presetInput" @onchange="OnPresetChanged" />
+			Current:
+			<input type="text" id="presetNameInput" @bind="presetName" />
+			<button type="button" class="nes-btn is-primary" @onclick="@(() => SavePreset(false))">Save Preset</button>
+			<button type="button" class="nes-btn is-primary" @onclick="@(() => SavePreset(true))">Export to JSON</button>
 		</p>
 	</div>
 </div>
 <div class="row">
 	<div class="col-md-12">
 		<p>
-			Save Preset:
-			<input type="text" id="presetNameInput" @bind="presetName" />
-			<button type="button" class="nes-btn is-primary" @onclick="@(() => SavePreset(false))">Save Preset</button>
-			<button type="button" class="nes-btn is-primary" @onclick="@(() => SavePreset(true))">Download Flags as JSON</button>
+			Load from JSON:
+			<input type="file" id="presetInput" @onchange="OnPresetChanged" />
 		</p>
 	</div>
 </div>
