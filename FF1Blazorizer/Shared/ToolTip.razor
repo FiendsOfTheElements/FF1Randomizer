@@ -6,7 +6,10 @@
 	<button type="button" class="nes-btn" @onclick="@HideToolTip">@Title</button>
 	<div class="is-dark nes-container" @onmousedown=@StartDrag @onmousemove=@Drag @onmouseup=@EndDrag @onmouseout=@Drag>
 		<div class="ffr-tooltip-screenshot" style="@(ScreenshotStyle())"></div>
-		<p class="ffr-tooltip-text">@Description</p>
+		@foreach (var paragraph in Description.Split("\n"))
+		{
+			<p class="ffr-tooltip-text">@paragraph</p>
+		}
 		<p style="clear: both"></p>
 	</div>
 </div>
