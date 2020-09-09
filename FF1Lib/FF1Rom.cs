@@ -408,7 +408,7 @@ namespace FF1Lib
 				UnleashWarMECH();
 			}
 
-			if (flags.FiendShuffle)
+			if ((bool)flags.FiendShuffle)
 			{
 				FiendShuffle(rng);
 			}

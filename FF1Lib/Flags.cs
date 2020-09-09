@@ -262,7 +262,7 @@ namespace FF1Lib
 		public bool EFGWaterfall { get; set; } = false;
 		public bool EFGEarth1 { get; set; } = false;
 		public bool EFGEarth2 { get; set; } = false;
-		public bool FiendShuffle { get; set; } = false;
+		public bool? FiendShuffle { get; set; } = false;
 		public bool DisableTentSaving { get; set; } = false;
 		public bool DisableInnSaving { get; set; } = false;
 		public bool SaveGameWhenGameOver { get; set; } = false;
@@ -783,7 +783,7 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.EFGWaterfall);
 			sum = AddBoolean(sum, flags.EFGEarth1);
 			sum = AddBoolean(sum, flags.EFGEarth2);
-			sum = AddBoolean(sum, flags.FiendShuffle);
+			sum = AddTriState(sum, flags.FiendShuffle);
 			sum = AddBoolean(sum, flags.DisableTentSaving);
 			sum = AddBoolean(sum, flags.DisableInnSaving);
 			sum = AddTriState(sum, flags.ShuffleAstos);
@@ -908,7 +908,7 @@ namespace FF1Lib
 				ShuffleAstos = GetTriState(ref sum),
 				DisableInnSaving = GetBoolean(ref sum),
 				DisableTentSaving = GetBoolean(ref sum),
-				FiendShuffle = GetBoolean(ref sum),
+				FiendShuffle = GetTriState(ref sum),
 				EFGEarth2 = GetBoolean(ref sum),
 				EFGEarth1 = GetBoolean(ref sum),
 				EFGWaterfall = GetBoolean(ref sum),

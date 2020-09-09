@@ -2598,7 +2598,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ObjectiveNPCs"));
 			}
 		}
-		public bool FiendShuffle
+		public bool? FiendShuffle
 		{
 			get => Flags.FiendShuffle;
 			set
