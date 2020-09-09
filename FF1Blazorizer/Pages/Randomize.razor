@@ -94,7 +94,7 @@
 
 		<button type="button" class="@(TabClasses("Scale"))" @onclick="@(() => ActivateTab("Scale"))">Scale</button>
 		<BSCollapse IsOpen="@(activeTabs.Contains("Scale"))">
-			<Scale Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
+			<ScaleTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
 		</BSCollapse>
 
 		<button type="button" class="@(TabClasses("Party"))" @onclick="@(() => ActivateTab("Party"))">Party</button>
