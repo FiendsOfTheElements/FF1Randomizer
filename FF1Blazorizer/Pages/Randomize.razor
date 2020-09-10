@@ -62,51 +62,15 @@
 			</div>
 		</BSCollapse>
 
-		<button type="button" class="@(TabClasses("Presets"))" @onclick="@(() => ActivateTab("Presets"))">Presets</button>
-		<BSCollapse IsOpen="@(activeTabs.Contains("Presets"))">
-			<PresetsTab Flags="@Flags" SetStatusMessage="@SetStatusMessage" />
-		</BSCollapse>
-
-		<button type="button" class="@(TabClasses("Shops"))" @onclick="@(() => ActivateTab("Shops"))">Shops, Spells, RNG</button>
-		<BSCollapse IsOpen=@(activeTabs.Contains("Shops"))>
-			<ShopsTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
-		</BSCollapse>
-
-		<button type="button" class="@(TabClasses("Enemies"))" @onclick="@(() => ActivateTab("Enemies"))">Enemies</button>
-		<BSCollapse IsOpen=@(activeTabs.Contains("Enemies"))>
-			<EnemiesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
-		</BSCollapse>
-
-		<button type="button" class="@(TabClasses("Treasures"))" @onclick="@(() => ActivateTab("Treasures"))">Treasures &amp; Incentives</button>
-		<BSCollapse IsOpen="@(activeTabs.Contains("Treasures"))">
-			<TreasuresTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
-		</BSCollapse>
-
-		<button type="button" class="@(TabClasses("Goal"))" @onclick="@(() => ActivateTab("Goal"))">Goal</button>
-		<BSCollapse IsOpen="@(activeTabs.Contains("Goal"))">
-			<GoalTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
-		</BSCollapse>
-
-		<button type="button" class="@(TabClasses("Map"))" @onclick="@(() => ActivateTab("Map"))">Maps &amp; Routing</button>
-		<BSCollapse IsOpen="@(activeTabs.Contains("Map"))">
-			<MapsTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
-		</BSCollapse>
-
-		<button type="button" class="@(TabClasses("Scale"))" @onclick="@(() => ActivateTab("Scale"))">Scale</button>
-		<BSCollapse IsOpen="@(activeTabs.Contains("Scale"))">
-			<ScaleTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
-		</BSCollapse>
-
-		<button type="button" class="@(TabClasses("Party"))" @onclick="@(() => ActivateTab("Party"))">Party</button>
-		<BSCollapse IsOpen="@(activeTabs.Contains("Party"))">
-			<PartyTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
-		</BSCollapse>
-
-		<button type="button" class="@(TabClasses("Conveniences"))" @onclick="@(() => ActivateTab("Conveniences"))">Conveniences</button>
-		<BSCollapse IsOpen="@(activeTabs.Contains("Conveniences"))">
-			<ConveniencesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
-		</BSCollapse>
-
+		<PresetsTab Flags="@Flags" SetStatusMessage="@SetStatusMessage" />
+		<ShopsTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
+		<EnemiesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
+		<TreasuresTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
+		<GoalTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
+		<MapsTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
+		<ScaleTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />			
+		<PartyTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
+		<ConveniencesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
 		<BugFixesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
 		<ExperimentalTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" IsOpen="false" />
 		<FunTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
