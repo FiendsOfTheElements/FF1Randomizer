@@ -524,6 +524,26 @@ namespace FF1Lib
 			Data[offset + 2] = (byte)y;
 		}
 
+		public NPC FindNpc(MapId mapId, ObjectId mapObjId)
+		{
+			var tempNPC = new NPC();
+
+			for (int i = 0; i < MapSpriteCount; i++)
+			{
+				int offset = MapSpriteOffset + ((byte)mapId * MapSpriteCount + i) * MapSpriteSize;
+
+				if (Data[offset] == (byte)mapObjId)
+				{
+					tempNPC.Index = i;
+					tempNPC.Coord = (Data[offset + 1] & 0x3F, Data[offset + 2]);
+					tempNPC.InRoom = (Data[offset + 1] & 0x80) > 0;
+					tempNPC.Stationary = (Data[offset + 1] & 0x40) > 0;
+					break;
+				}
+			}
+
+			return tempNPC;
+		}
 		public List<Map> ReadMaps()
 		{
 			var pointers = Get(MapPointerOffset, MapCount * MapPointerSize).ToUShorts();
