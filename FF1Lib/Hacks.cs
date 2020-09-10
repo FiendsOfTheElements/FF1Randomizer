@@ -1195,12 +1195,12 @@ namespace FF1Lib
 			if ((bool)flags.ClassAsNpcFiends)
 			{
 				SetNpc(MapId.Melmond, 8, ObjectId.None, 0x12, 0x18, false, false);
-				SetNpc(MapId.Elfland, 1, ObjectId.None, 0x12, 0x18, false, false);
+				SetNpc(MapId.Gaia, FindNpc(MapId.Gaia, ObjectId.GaiaMan4).Index, ObjectId.None, 0x12, 0x18, false, false);
 				SetNpc(MapId.Onrac, 6, ObjectId.None, 0x12, 0x18, false, false);
 				SetNpc(MapId.Gaia, 1, ObjectId.None, 0x12, 0x18, false, false);
 
 				SetNpc(MapId.EarthCaveB5, 0x0C, ObjectId.MelmondMan6, 0x0D, 0x28, true, true);
-				SetNpc(MapId.GurguVolcanoB5, 0x02, ObjectId.ElflandElf2, 0x05, 0x35, true, true);
+				SetNpc(MapId.GurguVolcanoB5, 0x02, ObjectId.GaiaMan4, 0x05, 0x35, true, true);
 				SetNpc(MapId.SeaShrineB5, 0x01, ObjectId.OnracPunk1, 0x0A, 0x07, true, true);
 				SetNpc(MapId.SkyPalace5F, 0x02, ObjectId.GaiaMan1, 0x09, 0x03, true, true);
 
