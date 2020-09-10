@@ -3,8 +3,6 @@
 /* import the relevent site css file, this line replaced when building by the circle config */
 @import url('main.css');
 
-
-
 html, body {
     font-family: monospace;
     user-select: none;
@@ -82,13 +80,14 @@ input {
     font-size: 14px;
 }
 
-    .nes-btn:active {
-        transform: translateY(2px);
-    }
+.nes-btn:active {
+    transform: translateY(2px);
+}
 
-    .content {
-        padding-top: 1.1rem;
-    }
+.content {
+    padding-top: 1.1rem;
+    padding-bottom: 1.1rem;
+}
 
 .loading {
     width: 100%;
