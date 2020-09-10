@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Numerics;
 using System.Reflection;
@@ -164,7 +165,12 @@ namespace FF1Lib
 		public bool WrapPriceOverflow { get; set; } = false;
 		public bool IncludeMorale { get; set; } = false;
 		public bool NoDanMode { get; set; } = false;
-
+		public bool? NoTail { get; set; } = false;
+		public bool? ClassAsNpcFiends { get; set; } = false;
+		public bool? ClassAsNpcKeyNPC { get; set; } = false;
+		public int ClassAsNpcCount { get; set; } = 6;
+		public bool ClassAsNpcDuplicate { get; set; } = false;
+		public bool ClassAsNpcPromotion { get; set; } = false;
 		public int BossScaleStatsLow { get; set; } = 50;
 		public int BossScaleStatsHigh { get; set; } = 200;
 		public int BossScaleHpLow { get; set; } = 50;
@@ -696,6 +702,12 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.IncludeMorale);
 			sum = AddTriState(sum, flags.RandomWaresIncludesSpecialGear);
 			sum = AddBoolean(sum, flags.NoDanMode);
+			sum = AddTriState(sum, flags.NoTail);
+			sum = AddTriState(sum, flags.ClassAsNpcFiends);
+			sum = AddTriState(sum, flags.ClassAsNpcKeyNPC);
+			sum = AddNumeric(sum, 14, flags.ClassAsNpcCount);
+			sum = AddBoolean(sum, flags.ClassAsNpcDuplicate);
+			sum = AddBoolean(sum, flags.ClassAsNpcPromotion);
 			sum = AddNumeric(sum, 51, flags.EnemyScaleStatsLow / 10);
 			sum = AddNumeric(sum, 51, flags.EnemyScaleStatsHigh/ 10);
 			sum = AddNumeric(sum, 51, flags.EnemyScaleHpLow/ 10);
@@ -996,6 +1008,12 @@ namespace FF1Lib
 				EnemyScaleHpLow = GetNumeric(ref sum, 51) * 10,
 				EnemyScaleStatsHigh = GetNumeric(ref sum, 51) * 10,
 				EnemyScaleStatsLow = GetNumeric(ref sum, 51) * 10,
+				ClassAsNpcPromotion = GetBoolean(ref sum),
+				ClassAsNpcDuplicate = GetBoolean(ref sum),
+				ClassAsNpcCount = GetNumeric(ref sum, 14),
+				ClassAsNpcKeyNPC = GetTriState(ref sum),
+				ClassAsNpcFiends = GetTriState(ref sum),
+				NoTail = GetTriState(ref sum),
 				NoDanMode = GetBoolean(ref sum),
 				RandomWaresIncludesSpecialGear = GetTriState(ref sum),
 				IncludeMorale = GetBoolean(ref sum),

@@ -408,6 +408,11 @@ namespace FF1Lib
 				UnleashWarMECH();
 			}
 
+			if ((bool)flags.ClassAsNpcFiends || (bool)flags.ClassAsNpcKeyNPC)
+			{
+				ClassAsNPC(rng, flags);
+			}
+
 			if ((bool)flags.FiendShuffle)
 			{
 				FiendShuffle(rng);

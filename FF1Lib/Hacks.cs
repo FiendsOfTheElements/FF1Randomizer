@@ -1084,19 +1084,21 @@ namespace FF1Lib
 			var selectList = new List<FF1Class>();
 			var classList = new List<FF1Class>();
 
-			var totalKeyNPC = (bool)flags.AllowUnsafePirates ? Math.Min(flags.BlackMageMaxMP, 12) : 0;
-			var totalAllNPC = ((bool)flags.AllowUnsafeMelmond ? 4 : 0) + totalKeyNPC;
+			var totalKeyNPC = (bool)flags.ClassAsNpcFiends ? Math.Min(flags.ClassAsNpcCount, 12) : 0;
+			var totalAllNPC = ((bool)flags.ClassAsNpcFiends ? 4 : 0) + totalKeyNPC;
 
-			if ((bool)flags.AllowDeepTowns)
+			// Select promoted or base classes list
+			if ((bool)flags.ClassAsNpcPromotion)
 				selectList = promoClassList;
 			else
 				selectList = baseClassList;
 
 			selectList.Shuffle(rng);
 
+			// Populate random classes list
 			for (int i = 0; i < totalAllNPC; i++)
 			{
-				if (i < 6 && !(bool)flags.AllowDeepCastles)
+				if (i < 6 && !(bool)flags.ClassAsNpcDuplicate)
 					classList.Add(selectList[i]);
 				else
 					classList.Add(selectList.PickRandom(rng));
@@ -1114,7 +1116,8 @@ namespace FF1Lib
 
 			Dictionary<int, string> newDialogs = new Dictionary<int, string>();
 
-			if ((bool)flags.AllowUnsafePirates)
+			// Generate the new NPCs
+			if ((bool)flags.ClassAsNpcKeyNPC && (flags.ClassAsNpcCount > 0))
 			{
 				keyNpc.Shuffle(rng);
 				var selectedNpc = keyNpc.GetRange(0, totalKeyNPC);
@@ -1128,6 +1131,7 @@ namespace FF1Lib
 					bool targetInRoom = false;
 					bool targetStationary = true;
 
+					// Bikke, Lefein and CanoeSage use local NPCs
 					if (npc.linkedNPC == ObjectId.None)
 					{
 						targetNpc = ObjectId.PravokaWoman;
@@ -1161,7 +1165,7 @@ namespace FF1Lib
 						targetInRoom = tempNpc.InRoom;
 						targetStationary = tempNpc.Stationary;
 					}
-					else
+					else // For all the other key NPCs, we kidnap a NPC from another town
 					{
 						var selectTarget = eventNpc.SpliceRandom(rng);
 						targetNpc = selectTarget.Item1;
@@ -1171,13 +1175,13 @@ namespace FF1Lib
 						targetCoord = npc.newPosition;
 						targetInRoom = npc.inRoom;
 						targetStationary = npc.stationary;
-						//targetIndex = FindNpc(npc.targetMap, ObjectId.None).Index;
 						SetNpc(originMap, tempNpc.Index, ObjectId.None, 0x00, 0x00, false, false);
 					}
 
 					SetNpc(npc.targetMap, targetIndex, targetNpc, targetCoord.Item1, targetCoord.Item2, targetInRoom, targetStationary);
 					npcScriptValue[(int)targetNpc][0] = (byte)npc.linkedNPC;
 					npcScriptValue[(int)targetNpc][3] = (byte)classList.First();
+					// New Talk routine below
 					npcScript[(int)targetNpc] = Blob.FromHex("2095");
 					Data[MapObjGfxOffset + (byte)targetNpc] = classSprite[(int)classList.First()];
 
@@ -1188,7 +1192,7 @@ namespace FF1Lib
 				}
 			}
 
-			if ((bool)flags.AllowUnsafeMelmond)
+			if ((bool)flags.ClassAsNpcFiends)
 			{
 				SetNpc(MapId.Melmond, 8, ObjectId.None, 0x12, 0x18, false, false);
 				SetNpc(MapId.Elfland, 1, ObjectId.None, 0x12, 0x18, false, false);
@@ -1200,7 +1204,8 @@ namespace FF1Lib
 				SetNpc(MapId.SeaShrineB5, 0x01, ObjectId.OnracPunk1, 0x0A, 0x07, true, true);
 				SetNpc(MapId.SkyPalace5F, 0x02, ObjectId.GaiaMan1, 0x09, 0x03, true, true);
 
-				Data[0x029AB] = 0x30; // we can only change one color without messing up the Wind ORB.
+				// Restore the default color if Required WarMech is enabled so Tiamat's NPC don't look too weird
+				Data[0x029AB] = 0x30; 
 
 				for (int i = 0; i < 4; i++)
 				{
