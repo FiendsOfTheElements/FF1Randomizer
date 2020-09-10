@@ -53,10 +53,12 @@ namespace FF1Lib
 			var smokeSpriteCode = Get(SmokeSpriteReplaceStart, SmokeSpriteReplaceEnd - SmokeSpriteReplaceStart);
 
 			smokeSpriteCode.ReplaceInPlace(Blob.FromUShorts(new ushort[] { 0x68AF }), Blob.FromUShorts(new ushort[] { 0x686C }));
+			smokeSpriteCode.ReplaceInPlace(Blob.FromUShorts(new ushort[] { 0x68B0 }), Blob.FromUShorts(new ushort[] { 0x686D }));
 			smokeSpriteCode.ReplaceInPlace(Blob.FromUShorts(new ushort[] { 0x68B1 }), Blob.FromUShorts(new ushort[] { 0x686E }));
-			smokeSpriteCode.ReplaceInPlace(Blob.FromUShorts(new ushort[] { 0x68B3 }), Blob.FromUShorts(new ushort[] { 0x6870 }));
-			smokeSpriteCode.ReplaceInPlace(Blob.FromUShorts(new ushort[] { 0x68B4 }), Blob.FromUShorts(new ushort[] { 0x6871 }));
-			smokeSpriteCode.ReplaceInPlace(Blob.FromUShorts(new ushort[] { 0x68B5 }), Blob.FromUShorts(new ushort[] { 0x6872 }));
+			smokeSpriteCode.ReplaceInPlace(Blob.FromUShorts(new ushort[] { 0x68B2 }), Blob.FromUShorts(new ushort[] { 0x686F }));
+			//smokeSpriteCode.ReplaceInPlace(Blob.FromUShorts(new ushort[] { 0x68B3 }), Blob.FromUShorts(new ushort[] { 0x6870 }));
+			//smokeSpriteCode.ReplaceInPlace(Blob.FromUShorts(new ushort[] { 0x68B4 }), Blob.FromUShorts(new ushort[] { 0x6871 }));
+			//smokeSpriteCode.ReplaceInPlace(Blob.FromUShorts(new ushort[] { 0x68B5 }), Blob.FromUShorts(new ushort[] { 0x6872 }));
 
 			Put(SmokeSpriteReplaceStart, smokeSpriteCode);
 		}
