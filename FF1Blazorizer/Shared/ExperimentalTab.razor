@@ -1,0 +1,22 @@
+﻿<button type="button" class="@(IsOpen ? "nes-btn nes-nav is-success" : "nes-btn nes-nav is-warning")" @onclick="@(() => IsOpen = !IsOpen)">Experimental</button>
+<BSCollapse IsOpen="@IsOpen">
+	<div class="is-dark nes-container">
+		<div class="row">
+			<div class="col-md-12">
+				Test out features from 2000 years in the future - at your own risk!
+				<div class="checkbox-cell"></div>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="itemPlacementCheckBox" IsEnabled="@Flags.Treasures" @bind-Checked="Flags.ClassicItemPlacement">Use Older v2 Placement</CheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(!Flags.BuyTen)" Id="buyTenOldCheckBox" @bind-Checked="Flags.BuyTenOld">Buy Ten (old)</CheckBox>
+				<div class="checkbox-cell"></div>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.ExperimentalFloorGeneration" Id="procGenEarth1" @bind-Checked="Flags.EFGEarth1">Generated Earth Cave B1</CheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.ExperimentalFloorGeneration" Id="procGenEarth2" @bind-Checked="Flags.EFGEarth2">Generated Earth Cave B2</CheckBox>
+			</div>
+		</div>
+	</div>
+</BSCollapse>
+
+@code {
+	[Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }
+	[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
+	[Parameter] public bool IsOpen { get; set; } = true;
+}

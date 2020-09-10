@@ -108,56 +108,8 @@
 		</BSCollapse>
 
 		<BugFixesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
-
-		<button type="button" class="@(TabClasses("Experimental"))" @onclick="@(() => ActivateTab("Experimental"))">Experimental</button>
-		<BSCollapse IsOpen="@(activeTabs.Contains("Experimental"))">
-			<div class="is-dark nes-container">
-				<div class="row">
-					<div class="col-md-12">
-						Test out features from 2000 years in the future - at your own risk!
-						<div class="checkbox-cell"></div>
-						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="itemPlacementCheckBox" IsEnabled="@Flags.Treasures" @bind-Checked="Flags.ClassicItemPlacement">Use Older v2 Placement</CheckBox>
-						<CheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(!Flags.BuyTen)" Id="buyTenOldCheckBox" @bind-Checked="Flags.BuyTenOld">Buy Ten (old)</CheckBox>
-						<div class="checkbox-cell"></div>
-						<CheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.ExperimentalFloorGeneration" Id="procGenEarth1" @bind-Checked="Flags.EFGEarth1">Generated Earth Cave B1</CheckBox>
-						<CheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.ExperimentalFloorGeneration" Id="procGenEarth2" @bind-Checked="Flags.EFGEarth2">Generated Earth Cave B2</CheckBox>
-					</div>
-				</div>
-			</div>
-		</BSCollapse>
-
-		<button type="button" class="@(TabClasses("Fun %"))" @onclick="@(() => ActivateTab("Fun %"))">Fun %</button>
-		<BSCollapse IsOpen="@(activeTabs.Contains("Fun %"))">
-			<div class="is-dark nes-container">
-				<div class="row">
-					<div class="col-md-12">
-						Fun flags are not part of the standard flags string since they do not impact gameplay. The buttons at the bottom can be used to store your preferred fun % settings within your browser so that they will be automatically restored each time you visit the site.
-					</div>
-					<div class="col-md-6">
-						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="funEnemyNamesCheckBox" @bind-Checked="Flags.FunEnemyNames">Fun Enemy Names</CheckBox>
-						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="teamSteakCheckBox" @bind-Checked="Flags.TeamSteak">Team STEAK</CheckBox>
-						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="changeLuteCheckBox" @bind-Checked="Flags.ChangeLute">Multi-instrumentalist Sara</CheckBox>
-						<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="hurrayDwarfFate" TItem="Fate" @bind-Value="Flags.HurrayDwarfFate">Hurray Dwarf's Fate</EnumDropDown>
-						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="paletteSwapCheckBox" @bind-Checked="Flags.PaletteSwap">Palette Swap</CheckBox>
-						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="modernBattlefieldCheckBox" @bind-Checked="Flags.ModernBattlefield">Modern Battlefield</CheckBox>
-						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="thirdBattlePaletteCheckBox" @bind-Checked="Flags.ThirdBattlePalette">Three Battle Palettes</CheckBox>
-					</div>
-					<div class="col-md-6">
-						<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="partyMapmanSlot" TItem="MapmanSlot" @bind-Value="Flags.MapmanSlot">Mapman Slot</EnumDropDown>
-						<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="musicDropDown" TItem="MusicShuffle" @bind-Value="Flags.Music"></EnumDropDown>
-						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="disableDamageTileFlickerCheckBox" @bind-Checked="Flags.DisableDamageTileFlicker">Disable Damage Tile Flicker</CheckBox>
-						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="disableSpellCastFlashCheckBox" @bind-Checked="Flags.DisableSpellCastFlash">Disable Spell Cast Flash</CheckBox>
-						<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="menuColorDropDown" TItem="MenuColor" @bind-Value="Flags.MenuColor">Menu Color</EnumDropDown>
-						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="renounceAutosortCheckBox" @bind-Checked="Flags.RenounceAutosort">Renounce Autosort</CheckBox>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-md-6">
-						<button type="button" class="nes-btn is-primary" @onclick="@SavePreferences">Save Preferences</button>
-					</div>
-				</div>
-			</div>
-		</BSCollapse>
+		<ExperimentalTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" IsOpen="false" />
+		<FunTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
 	</CascadingValue>
 </div>
 
@@ -220,7 +172,6 @@
 			TrySetFlags(flags.First());
 		}
 
-		await LoadPreferences();
 		await LoadLastROM();
 		StateHasChanged();
 	}
@@ -313,17 +264,6 @@
 		}
 	}
 
-	async Task LoadPreferences()
-	{
-		Preferences temp = await LocalStorage.GetItemAsync<Preferences>("preferences") ?? new Preferences();
-		Flags.Preferences = temp;
-
-	}
-
-	async Task SavePreferences()
-	{
-		await LocalStorage.SetItemAsync("preferences", Flags.Preferences);
-	}
 
 	async Task LoadLastROM()
 	{
