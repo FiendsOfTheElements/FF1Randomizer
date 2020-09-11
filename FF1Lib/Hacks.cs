@@ -1210,7 +1210,7 @@ namespace FF1Lib
 
 				for (int i = 0; i < 4; i++)
 				{
-					newDialogs.Add(npcScriptValue[(int)dungeonNpc[i]][1], readyString.SpliceRandom(rng) + "\n\n" + classNames[(int)classList.First()] + " joined.");
+					newDialogs.Add(npcScriptValue[(int)dungeonNpc[i]][1], readyString.SpliceRandom(rng) + "\n\n" + classNames[(int)classList[i]] + " joined.");
 					npcScriptValue[(int)dungeonNpc[i]][0] = 0x00;
 					npcScriptValue[(int)dungeonNpc[i]][3] = (byte)(classList[i]);
 					npcScript[(int)dungeonNpc[i]] = Blob.FromHex("2095");

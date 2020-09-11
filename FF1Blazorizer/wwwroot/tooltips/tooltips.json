@@ -149,7 +149,7 @@
 	{
 		"Id": "EnableRandomPromotions",
 		"title": "Random Promotions",
-		"description": "When giving the TAIL to Bahamut, promote your party to random classes."
+		"description": "When giving the TAIL to Bahamut, promote your party to random classes.\nNOTE: By default, a non-caster class promoting to a caster class (Red, White & Black Mages) will gain few MP. Use Linear MP Growth to fix this."
 	},
 	{
 		"Id": "RPIncludeBaseClasses",

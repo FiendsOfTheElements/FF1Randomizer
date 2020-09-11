@@ -379,6 +379,20 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AllNones"));
 			}
 		}
+		public bool? linkedRandomPromo
+		{
+			get
+			{
+				return Flags.EnableRandomPromotions;
+			}
+			set
+			{
+				Flags.EnableRandomPromotions = value;
+				if (Flags.EnableRandomPromotions == true)
+					Flags.LinearMPGrowth = true;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("linkedRandomPromo"));
+			}
+		}
 		public bool Spoilers
 		{
 			get => Flags.Spoilers;
