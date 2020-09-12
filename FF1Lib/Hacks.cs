@@ -20,37 +20,6 @@ namespace FF1Lib
 		Size8,
 	}
 
-	public enum ClassSprite
-	{
-		Fighter = 0xEE,
-		Thief = 0xEF,
-		BlackBelt = 0xF0,
-		RedMage = 0xF1,
-		WhiteMage = 0xF2,
-		BlackMage = 0xF3,
-		Knight = 0xF4,
-		Ninja = 0xF5,
-		Master = 0xF6,
-		RedWizard = 0xF7,
-		WhiteWizard = 0xF8,
-		BlackWizard = 0xF9
-	}
-
-	public enum ClassId
-	{
-		Fighter = 0,
-		Thief = 1,
-		BlackBelt = 2,
-		RedMage = 3,
-		WhiteMage = 4,
-		BlackMage = 5,
-		Knight = 6,
-		Ninja = 7,
-		Master = 8,
-		RedWizard = 9,
-		WhiteWizard = 10,
-		BlackWizard = 11
-	}
 	public partial class FF1Rom : NesRom
 	{
 		public const int Nop = 0xEA;
@@ -122,7 +91,7 @@ namespace FF1Lib
 		}
 
 
-		private readonly List<byte> AllowedSlotBitmasks = new List<byte> { 0x01,0x02,0x04,0x08 };
+		private readonly List<byte> AllowedSlotBitmasks = new List<byte> { 0x01, 0x02, 0x04, 0x08 };
 
 		private readonly List<FF1Class> DefaultChoices = Enumerable.Range(0, 6).Select(x => (FF1Class)x).ToList();
 
@@ -255,7 +224,7 @@ namespace FF1Lib
 
 			// MapMan for Nones and Fun% Party Leader
 			byte leader = (byte)((byte)preferences.MapmanSlot << 6);
-            Data[0x7D8BC] = leader;
+			Data[0x7D8BC] = leader;
 			PutInBank(0x1F, 0xE92E, Blob.FromHex("20608FEAEAEAEA"));
 			PutInBank(0x02, 0x8F60, Blob.FromHex($"A9008510AD{leader:X2}61C9FFF00160A92560"));
 
@@ -308,7 +277,7 @@ namespace FF1Lib
 						wbmCount[j]++;
 
 					if (wbmCount[j] >= 3)
-					{ 
+					{
 						wbmArray[i] |= bitArray[j];
 						wbmCount[j] = 0;
 					}
@@ -358,7 +327,7 @@ namespace FF1Lib
 				options.Shuffle(rng);
 				pub_lut.AddRange(options);
 			}
-			pub_lut.Insert(3, (byte) 0xFF); // Will break if Melmond ever gets a clinic, Nones will need to be hired dead, this results in them being alive.
+			pub_lut.Insert(3, (byte)0xFF); // Will break if Melmond ever gets a clinic, Nones will need to be hired dead, this results in them being alive.
 			Put(0x38066, Blob.FromHex("9D8A9F8E9B97")); // Replaces "CLINIC" with "TAVERN"
 														// EnterClinic
 			PutInBank(0x0E, 0xA5A1, Blob.FromHex("60A9008524852520589DA902856318201C9DB0ECAD62008D0D0320EDA6B0034C6CA620D7A6B0DAAD62008D0C03209BAA20C2A8B0CCAD6200D0C72089A6AD0C03186D0C036D0C03AABD10036A6A6A29C0AAAD0D03F0458A690A8510A96185118A488512A9638513A000A90091109112C8C00A30F7C040D0F59D266120E99CA448B90A9D9D00612071C2A00E20799068AA900918BD006169069D0061A9019D0A61A9009D016120349D200CE92078A7A921205BAA2043A7A5240525F0F74CA2A52043A7A5240525F0F74CA1A5A923205BAAA9008D24008D25004C60A6EAEAEAEAEAEAEAEAEAEAEAEAEA"));
@@ -390,7 +359,8 @@ namespace FF1Lib
 			Data[0x111A] = 0x76;
 			Data[0x119A] = 0x77;
 
-			if (flags.RecruitmentModeHireOnly ?? false) {
+			if (flags.RecruitmentModeHireOnly ?? false)
+			{
 				PutInBank(0x0E, 0xA5B0, Blob.FromHex("EAEAEAEAEAA901EA"));
 				PutInBank(0x0E, 0xA5C7, Blob.FromHex("D9"));
 			}
@@ -575,11 +545,11 @@ namespace FF1Lib
 
 			// Swtich NPC to Astos
 			Put(NpcTalkOffset + (byte)newastos * NpcTalkSize, newTalk.Talk_Astos);
-			
+
 			// Get items name
 			var newastositem = FormattedItemName((Item)Get(MapObjOffset + (byte)newastos * 4, 4)[3]);
 			var nwkingitem = FormattedItemName((Item)Get(MapObjOffset + (byte)ObjectId.Astos * 4, 4)[3]);
-			
+
 			// Custom dialogs for Astos NPC and the Kindly Old King
 			List<(byte, string)> astosdialogs = new List<(byte, string)>
 			{
@@ -607,7 +577,7 @@ namespace FF1Lib
 
 			InsertDialogs(astosdialogs[(int)newastos].Item1, astosdialogs[(int)newastos].Item2);
 			InsertDialogs(astosdialogs[(int)ObjectId.Astos].Item1, astosdialogs[(int)ObjectId.Astos].Item2);
-			
+
 			if (talkscript == newTalk.Talk_Titan || talkscript == newTalk.Talk_ElfDocUnne)
 			{
 				// Skip giving item for Titan, ElfDoc or Unne
@@ -617,14 +587,14 @@ namespace FF1Lib
 				if (flags.SaveGameWhenGameOver)
 					Put(0x6CFF5 + 0x89, Blob.FromHex("EAEAEA"));
 			}
-			
+
 			if (talkscript == newTalk.Talk_GiveItemOnFlag)
 			{
 				// Check for a flag instead of an item
-				PutInBank(newTalk_AstosBank, Talk_Astos + 2, Blob.FromHex("B9")); 
-				PutInBank(newTalk_AstosBank, Talk_Astos + 7, Blob.FromHex("A820799090")); 
+				PutInBank(newTalk_AstosBank, Talk_Astos + 2, Blob.FromHex("B9"));
+				PutInBank(newTalk_AstosBank, Talk_Astos + 7, Blob.FromHex("A820799090"));
 			}
-			
+
 			if (newastos == ObjectId.Bahamut)
 			{   // Change Talk_Astos to make it work with Bahamut, and also modify DoClassChange
 
@@ -715,7 +685,7 @@ namespace FF1Lib
 			Data[0x300C] = 0;
 
 			// Put safeguard to prevent softlock if TNT is turned in (as it will remove the Canal)
-			if(!npcShuffleEnabled)
+			if (!npcShuffleEnabled)
 				PutInBank(0x0E, 0x95D5 + (int)ObjectId.Nerrick * 4 + 3, new byte[] { (byte)Item.Cabin });
 		}
 
@@ -794,17 +764,17 @@ namespace FF1Lib
 			Put(0x2DB0C, Blob.FromHex("AD6A001023AD926D8D8A6DAD936D8D8B6DA2008E886D8E896D8E8C6D8E8D6DAD916D29FE8D916D60AD916D29FD8D916D60"));
 			// change checks for unrunnability in bank 0C to check last two bits instead of last bit
 			Put(0x313D3, Blob.FromHex("03")); // changes AND #$01 to AND #$03 when checking start of battle for unrunnability
-			// the second change is done in AllowStrikeFirstAndSurprise, which checks the unrunnability in battle
-			// alter the default formation data to set unrunnability of a formation to both sides if the unrunnable flag is set
+											  // the second change is done in AllowStrikeFirstAndSurprise, which checks the unrunnability in battle
+											  // alter the default formation data to set unrunnability of a formation to both sides if the unrunnable flag is set
 			var formData = Get(FormationDataOffset, FormationDataSize * FormationCount).Chunk(FormationDataSize);
-			for(int i = 0; i < NormalFormationCount; ++i)
+			for (int i = 0; i < NormalFormationCount; ++i)
 			{
 				if ((formData[i][UnrunnableOffset] & 0x01) != 0)
 					formData[i][UnrunnableOffset] |= 0x02;
 			}
 			formData[126][UnrunnableOffset] |= 0x02; // set unrunnability for WzSahag/R.Sahag fight
 			formData[127][UnrunnableOffset] |= 0x02; // set unrunnability for IronGol fight
-			
+
 			Put(FormationsOffset, formData.SelectMany(formation => formation.ToBytes()).ToArray());
 		}
 
@@ -843,7 +813,7 @@ namespace FF1Lib
 			// Give Melmond Desert backdrop
 			Data[0x0334D] = (byte)Backdrop.Desert;
 
-			if(!enemizerOn) // if enemizer formation shuffle is on, it will have assigned battles to Melmond already
+			if (!enemizerOn) // if enemizer formation shuffle is on, it will have assigned battles to Melmond already
 				Put(0x2C218, Blob.FromHex("0F0F8F2CACAC7E7C"));
 		}
 
@@ -1065,5 +1035,204 @@ namespace FF1Lib
 			PutInBank(0x1E, 0x84DA, Blob.FromHex("FF"));
 		}
 
+		public class TargetNpc
+		{
+			public ObjectId linkedNPC { get; set; }
+			public MapId targetMap { get; set; }
+			public (int, int) newPosition { get; set; }
+			public Boolean inRoom { get; set; }
+			public Boolean stationary { get; set; }
+			public String newDialogue { get; set; }
+
+			public TargetNpc(ObjectId objectId, MapId mapid, (int, int) pos, Boolean inroom, Boolean stat, string dialog)
+			{
+				linkedNPC = objectId;
+				targetMap = mapid;
+				newPosition = pos;
+				inRoom = inroom;
+				stationary = stat;
+				newDialogue = dialog;
+			}
+		}
+
+		public void ClassAsNPC(MT19337 rng, Flags flags)
+		{
+			var crescentSages = new List<ObjectId> { ObjectId.CrescentSage2, ObjectId.CrescentSage3, ObjectId.CrescentSage4, ObjectId.CrescentSage5, ObjectId.CrescentSage6, ObjectId.CrescentSage7, ObjectId.CrescentSage8, ObjectId.CrescentSage9, ObjectId.CrescentSage10 };
+			var keyNpc = new List<TargetNpc> {
+				new TargetNpc(ObjectId.Princess1, MapId.ConeriaCastle2F, (0x0D, 0x05), true, true, "I won't rest until\nthe Princess is rescued!\n\n..What? Me?"),
+				new TargetNpc(ObjectId.Matoya, MapId.MatoyasCave, (0x06,0x03), true, false, "I'm Matoya's apprentice!\n..She only needs me for\nreading her grimoires."),
+				new TargetNpc(ObjectId.None, MapId.Pravoka, (0,0), false, true, "Hello!"),
+				new TargetNpc(ObjectId.ElfDoc, MapId.ElflandCastle, (0x07, 0x05), true, false, "I swore to find a cure\nfor the Prince's curse.\nIf only I could find\nthat elusive Astos.."),
+				new TargetNpc(ObjectId.Astos, MapId.NorthwestCastle, (0x11,0x07), true, true, "While the Crown is\nmissing, I can attest\nthat this is indeed\nthe REAL King of\nNorthwest Castle."),
+				new TargetNpc(ObjectId.Unne, MapId.Melmond, (0x1D, 0x02), false, true, "I'm also trying\nto discover the secret\nof Lefeinish!"),
+				new TargetNpc(ObjectId.Unne, MapId.Lefein, (0,0), false, false, "Lu..pa..?\nLu..pa..?"),
+				new TargetNpc(ObjectId.Vampire, MapId.SardasCave, (0x14, 0x01), true, false, "Sarda told me to sort\nthese garlic pots and\nvases until the Vampire\nis killed."),
+				new TargetNpc(ObjectId.CanoeSage, MapId.CrescentLake, (0,0), false, true, "I came here to learn\neverything about the\nFiend of Earth. You got\nto respect such a\ndangerous adversary."),
+				new TargetNpc(ObjectId.Fairy, MapId.Gaia, (0x2F, 0x14), false, true, "I'm trying to get\nwhat's at the bottom\nof the pond.\n\nMaybe if I drained it.."),
+				new TargetNpc(ObjectId.Smith, MapId.DwarfCave, (0x08, 0x02), true, false, "I'm sure it will be a\nbadass sword! Like with\na huge blade, and a gun\nas the hilt, and you can\ntrigger it..\nI can't wait!"),
+				new TargetNpc(ObjectId.Nerrick, MapId.DwarfCave, (0x0F, 0x2D), false, true, "Digging a canal is hard\nbut honest work.\n\n..Can't wait to be done\nwith it."),
+			};
+
+			var eventNpc = new List<(ObjectId, MapId)> { (ObjectId.ElflandCastleElf3, MapId.ElflandCastle), (ObjectId.MelmondMan1, MapId.Melmond), (ObjectId.MelmondMan3, MapId.Melmond), (ObjectId.MelmondMan4, MapId.Melmond), (ObjectId.MelmondMan8, MapId.Melmond), (ObjectId.DwarfcaveDwarf6, MapId.DwarfCave), (ObjectId.ConeriaCastle1FWoman2, MapId.ConeriaCastle1F), (ObjectId.ElflandElf2, MapId.Elfland), (ObjectId.ElflandElf5, MapId.Elfland) };
+			var classSprite = new List<byte> { 0xEE, 0xEF, 0xF0, 0xF1, 0xF2, 0xF3, 0xF4, 0xF5, 0xF6, 0xF7, 0xF8, 0xF9 };
+			var classNames = new List<string> { "Fighter", "Thief", "Black Belt", "Red Mage", "White Mage", "Black Mage", "Knight", "Ninja", "Master", "Red Wizard", "White Wizard", "Black Wizard" };
+			var readyString = new List<string> { "Well, that's that.\nLet's go.", "Onward to new\nadventures!", "I knew you'd come back\nfor me!", "......", "I'm the leader now,\nright?", "The Reaper is always\njust a step behind me..", "O.. Okay.. I hope it's\nnot too scary out there.", "Yes!\nI made it on the team!", "A bold choice, let's\nsee if it pays off.", "Alright, let's do this!", "I obey, master.", "They say I'm the best.", "I see, we have the same\ngoal. Let's join forces.", "My.. name? Huh..", "Just don't put me first\nagainst Kraken.", "I'm taking care of the\nGPs from now on!", "It's Saturday night.\nI've got no date, a\nbottle of Shasta, and\nmy all Rush mixtape.\nLet's rock.", "Life insurance?\nNo, I don't have any.\nWhy?", "Let's put an end to\nthis madness.", "Finally, some action!", "You convinced me. I will\njoin your noble cause.", "Evil never rests. I will\nfight by your side.", "Edward wants to join\nthe party."};
+
+			var baseClassList = new List<FF1Class> { FF1Class.Fighter, FF1Class.Thief, FF1Class.BlackBelt, FF1Class.RedMage, FF1Class.WhiteMage, FF1Class.BlackMage };
+			var promoClassList = new List<FF1Class> { FF1Class.Knight, FF1Class.Ninja, FF1Class.Master, FF1Class.RedWiz, FF1Class.WhiteWiz, FF1Class.BlackWiz };
+			var selectList = new List<FF1Class>();
+			var classList = new List<FF1Class>();
+
+			var totalKeyNPC = (bool)flags.ClassAsNpcFiends ? Math.Min(flags.ClassAsNpcCount, 12) : 0;
+			var totalAllNPC = ((bool)flags.ClassAsNpcFiends ? 4 : 0) + totalKeyNPC;
+
+			// Select promoted or base classes list
+			if ((bool)flags.ClassAsNpcPromotion)
+				selectList = promoClassList;
+			else
+				selectList = baseClassList;
+
+			selectList.Shuffle(rng);
+
+			// Populate random classes list
+			for (int i = 0; i < totalAllNPC; i++)
+			{
+				if (i < 6 && !(bool)flags.ClassAsNpcDuplicate)
+					classList.Add(selectList[i]);
+				else
+					classList.Add(selectList.PickRandom(rng));
+			}
+
+			// Get all NPC scripts and script values 
+			var npcScript = new List<Blob>();
+			var npcScriptValue = new List<Blob>();
+
+			for (int i = 0; i < 0xD0; i++)
+			{
+				npcScriptValue.Add(Get(MapObjOffset + i * 4, 4));
+				npcScript.Add(Get(0x390D3 + i * 2, 2));
+			}
+
+			Dictionary<int, string> newDialogs = new Dictionary<int, string>();
+
+			// Generate the new NPCs
+			if ((bool)flags.ClassAsNpcKeyNPC && (flags.ClassAsNpcCount > 0))
+			{
+				keyNpc.Shuffle(rng);
+				var selectedNpc = keyNpc.GetRange(0, totalKeyNPC);
+
+				foreach (var npc in selectedNpc)
+				{
+					ObjectId targetNpc = ObjectId.None;
+					MapId originMap = MapId.Cardia;
+					int targetIndex = 16;
+					(int, int) targetCoord = (0, 0);
+					bool targetInRoom = false;
+					bool targetStationary = true;
+
+					// Bikke, Lefein and CanoeSage use local NPCs
+					if (npc.linkedNPC == ObjectId.None)
+					{
+						targetNpc = ObjectId.PravokaWoman;
+						originMap = MapId.Pravoka;
+						var tempNpc = FindNpc(originMap, targetNpc);
+						targetIndex = tempNpc.Index;
+						targetCoord = tempNpc.Coord;
+						targetInRoom = tempNpc.InRoom;
+						targetStationary = tempNpc.Stationary;
+					}
+					else if (npc.linkedNPC == ObjectId.Unne && npc.targetMap == MapId.Lefein)
+					{
+						targetNpc = ObjectId.LefeinMan11;
+						originMap = MapId.Lefein;
+						var tempNpc = FindNpc(originMap, targetNpc);
+						targetIndex = tempNpc.Index;
+						targetCoord = tempNpc.Coord;
+						targetInRoom = tempNpc.InRoom;
+						targetStationary = tempNpc.Stationary;
+						var tempdiagid = npcScriptValue[(int)targetNpc][1];
+						npcScriptValue[(int)targetNpc][1] = npcScriptValue[(int)targetNpc][2];
+						npcScriptValue[(int)targetNpc][2] = tempdiagid;
+					}
+					else if (npc.linkedNPC == ObjectId.CanoeSage)
+					{
+						targetNpc = crescentSages.PickRandom(rng);
+						originMap = MapId.CrescentLake;
+						var tempNpc = FindNpc(originMap, targetNpc);
+						targetIndex = tempNpc.Index;
+						targetCoord = tempNpc.Coord;
+						targetInRoom = tempNpc.InRoom;
+						targetStationary = tempNpc.Stationary;
+					}
+					else // For all the other key NPCs, we kidnap a NPC from another town
+					{
+						var selectTarget = eventNpc.SpliceRandom(rng);
+						targetNpc = selectTarget.Item1;
+						originMap = selectTarget.Item2;
+						var tempNpc = FindNpc(originMap, targetNpc);
+						targetIndex = FindNpc(npc.targetMap, ObjectId.None).Index;
+						targetCoord = npc.newPosition;
+						targetInRoom = npc.inRoom;
+						targetStationary = npc.stationary;
+						SetNpc(originMap, tempNpc.Index, ObjectId.None, 0x00, 0x00, false, false);
+					}
+
+					SetNpc(npc.targetMap, targetIndex, targetNpc, targetCoord.Item1, targetCoord.Item2, targetInRoom, targetStationary);
+					npcScriptValue[(int)targetNpc][0] = (byte)npc.linkedNPC;
+					npcScriptValue[(int)targetNpc][3] = (byte)classList.First();
+					// New Talk routine below
+					npcScript[(int)targetNpc] = Blob.FromHex("2095");
+					Data[MapObjGfxOffset + (byte)targetNpc] = classSprite[(int)classList.First()];
+
+					newDialogs.Add(npcScriptValue[(int)targetNpc][1], readyString.SpliceRandom(rng) + "\n\n" + classNames[(int)classList.First()] + " joined.");
+					newDialogs.Add(npcScriptValue[(int)targetNpc][2], npc.newDialogue);
+
+					classList.RemoveRange(0, 1);
+				}
+			}
+
+			if ((bool)flags.ClassAsNpcFiends)
+			{
+				var dungeonNpc = new List<ObjectId> { ObjectId.MelmondMan6, ObjectId.GaiaMan4, ObjectId.OnracPunk1, ObjectId.GaiaMan1 };
+
+				SetNpc(MapId.Melmond, 8, ObjectId.None, 0x12, 0x18, false, false);
+				SetNpc(MapId.Gaia, FindNpc(MapId.Gaia, ObjectId.GaiaMan4).Index, ObjectId.None, 0x12, 0x18, false, false);
+				SetNpc(MapId.Onrac, 6, ObjectId.None, 0x12, 0x18, false, false);
+				SetNpc(MapId.Gaia, 1, ObjectId.None, 0x12, 0x18, false, false);
+
+				SetNpc(MapId.EarthCaveB5, 0x0C, ObjectId.MelmondMan6, 0x0D, 0x28, true, true);
+				SetNpc(MapId.GurguVolcanoB5, 0x02, ObjectId.GaiaMan4, 0x05, 0x35, true, true);
+				SetNpc(MapId.SeaShrineB5, 0x01, ObjectId.OnracPunk1, 0x0A, 0x07, true, true);
+				SetNpc(MapId.SkyPalace5F, 0x02, ObjectId.GaiaMan1, 0x09, 0x03, true, true);
+
+				// Restore the default color if Required WarMech is enabled so Tiamat's NPC don't look too weird
+				Data[0x029AB] = 0x30; 
+
+				for (int i = 0; i < 4; i++)
+				{
+					newDialogs.Add(npcScriptValue[(int)dungeonNpc[i]][1], readyString.SpliceRandom(rng) + "\n\n" + classNames[(int)classList[i]] + " joined.");
+					npcScriptValue[(int)dungeonNpc[i]][0] = 0x00;
+					npcScriptValue[(int)dungeonNpc[i]][3] = (byte)(classList[i]);
+					npcScript[(int)dungeonNpc[i]] = Blob.FromHex("2095");
+					Data[MapObjGfxOffset + (byte)dungeonNpc[i]] = classSprite[(int)classList[i]];
+				}
+			}
+
+			InsertDialogs(newDialogs);
+
+			// Insert the updated talk scripts
+			for (int i = 0; i < 0xD0; i++)
+			{
+				PutInBank(0x0E, 0x90D3 + i * 2, npcScript[i]);
+				PutInBank(0x0E, 0x95D5 + i * 4, npcScriptValue[i]);
+			}
+
+			// New talk routine to add class to 4th slot
+			PutInBank(0x0E, 0x9520, Blob.FromHex("A410F0052079909032A51148A2C0A5139D0061A9009D26619D01619D0B619D0D6120669F20509FA00E207990900320C59520829FA4162073926860A51260"));
+
+			// Routines to switch the class (clear stats, equipment, new stats, levelup)
+			PutInBank(0x0E, 0x9F50, Blob.FromHex("A90E48A9FE48A90648A9C748A98248A2C0A9004C03FEA018B9C061297F99C061C8C01FD0F3A000A90099C063C8C02FD0F860A98748A9A948A9038510A91B4C03FE"));
+
+		}
 	}
 }

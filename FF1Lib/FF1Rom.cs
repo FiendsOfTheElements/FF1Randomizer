@@ -408,6 +408,11 @@ namespace FF1Lib
 				UnleashWarMECH();
 			}
 
+			if ((bool)flags.ClassAsNpcFiends || (bool)flags.ClassAsNpcKeyNPC)
+			{
+				ClassAsNPC(rng, flags);
+			}
+
 			if ((bool)flags.FiendShuffle)
 			{
 				FiendShuffle(rng);
@@ -639,6 +644,14 @@ namespace FF1Lib
 			var itemText = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
 			itemText[(int)Item.Ribbon] = itemText[(int)Item.Ribbon].Remove(7);
 
+			if ((bool)flags.HintsVillage || (bool)flags.HintsDungeon)
+			{
+				if ((bool)flags.HintsDungeon)
+					SetDungeonNPC(maps, rng, (bool)flags.HintsRngDungeon);
+
+				NPCHints(rng, flags, overworldMap);
+			}
+
 			ExpGoldBoost(flags.ExpBonus, flags.ExpMultiplier);
 			ScalePrices(flags, itemText, rng, ((bool)flags.ClampMinimumPriceScale), shopItemLocation);
 			ScaleEncounterRate(flags.EncounterRate / 30.0, flags.DungeonEncounterRate / 30.0);
@@ -706,14 +719,6 @@ namespace FF1Lib
 			}
 
 			SetProgressiveScaleMode(flags);
-
-			if ((bool)flags.HintsVillage || (bool)flags.HintsDungeon)
-			{
-				if ((bool)flags.HintsDungeon)
-					maps = SetDungeonNPC(maps, rng, (bool)flags.HintsRngDungeon);
-
-				NPCHints(rng, flags, overworldMap);
-			}
 
 			if ((bool)flags.RandomizeClass)
 			{

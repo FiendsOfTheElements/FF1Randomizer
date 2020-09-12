@@ -379,6 +379,20 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AllNones"));
 			}
 		}
+		public bool? linkedRandomPromo
+		{
+			get
+			{
+				return Flags.EnableRandomPromotions;
+			}
+			set
+			{
+				Flags.EnableRandomPromotions = value;
+				if (Flags.EnableRandomPromotions == true)
+					Flags.LinearMPGrowth = true;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("linkedRandomPromo"));
+			}
+		}
 		public bool Spoilers
 		{
 			get => Flags.Spoilers;
@@ -1748,6 +1762,60 @@ namespace FF1Lib
 			{
 				Flags.NoDanMode = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NoDanMode"));
+			}
+		}
+		public bool? NoTail
+		{
+			get => Flags.NoTail;
+			set
+			{
+				Flags.NoTail = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NoTail"));
+			}
+		}
+		public bool? ClassAsNpcFiends
+		{
+			get => Flags.ClassAsNpcFiends;
+			set
+			{
+				Flags.ClassAsNpcFiends = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ClassAsNpcFiends"));
+			}
+		}
+		public bool? ClassAsNpcKeyNPC
+		{
+			get => Flags.ClassAsNpcKeyNPC;
+			set
+			{
+				Flags.ClassAsNpcKeyNPC = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ClassAsNpcKeyNPC"));
+			}
+		}
+		public int ClassAsNpcCount
+		{
+			get => Flags.ClassAsNpcCount;
+			set
+			{
+				Flags.ClassAsNpcCount = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ClassAsNpcCount"));
+			}
+		}
+		public bool ClassAsNpcDuplicate
+		{
+			get => Flags.ClassAsNpcDuplicate;
+			set
+			{
+				Flags.ClassAsNpcDuplicate = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ClassAsNpcDuplicate"));
+			}
+		}
+		public bool ClassAsNpcPromotion
+		{
+			get => Flags.ClassAsNpcPromotion;
+			set
+			{
+				Flags.ClassAsNpcPromotion = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ClassAsNpcPromotion"));
 			}
 		}
 		public ProgressiveScaleMode ProgressiveScaleMode

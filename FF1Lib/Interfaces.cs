@@ -128,5 +128,6 @@
 		bool? FreeCanal { get; }
 		bool? FreeLute { get; }
 		bool? FreeTail { get; }
+		bool? NoTail { get; }
 	}
 }

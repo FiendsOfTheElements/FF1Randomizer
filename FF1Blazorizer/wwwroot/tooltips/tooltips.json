@@ -149,7 +149,7 @@
 	{
 		"Id": "EnableRandomPromotions",
 		"title": "Random Promotions",
-		"description": "When giving the TAIL to Bahamut, promote your party to random classes."
+		"description": "When giving the TAIL to Bahamut, promote your party to random classes.\nNOTE: By default, a non-caster class promoting to a caster class (Red, White & Black Mages) will gain few MP. Use Linear MP Growth to fix this."
 	},
 	{
 		"Id": "RPIncludeBaseClasses",
@@ -1061,6 +1061,31 @@
 		"Id": "disableStunTouchCheckBox",
 		"title": "Remove Stun Touch from Randomize Status Attacks",
 		"description": "Remove stun touch from possible status attacks when Randomize Enemy Status Attacks is enabled."
+	},
+	{
+		"Id": "classAsNpcFiendsCheckBox",
+		"title": "Characters gated by Fiends",
+		"description": "A new character (from a random class) is behind each Fiend. When talked to, that character replaces the 4th slot party member."
+	},
+	{
+		"Id": "classAsNpcKeyNpcCheckBox",
+		"title": "Characters linked to Key NPCs",
+		"description": "A new character (from a random class) is linked to a key NPC. If that key NPC requirement is fulfilled, the linked character replaces the 4th slot party member.\nPossible key NPCs: Princess Sara, Matoya, Bikke, King of the Northwest Castle, Elf Prince, Smith, Nerrick, Dr. Unne, Sarda, Canoe Sage, Fairy, Lefeinish Man."
+	},
+	{
+		"Id": "classAsNpcDuplicateCheckBox",
+		"title": "Allow Duplicates",
+		"description": "Not all 6 classes will be guaranteed."
+	},
+	{
+		"Id": "classAsNpcPromoCheckBox",
+		"title": "Promoted Classes",
+		"description": "Characters will be from promoted classes."
+	},
+	{
+		"Id": "NoTailCheckBox",
+		"title": "Remove Tail",
+		"description": "Remove the Tail from the items pool, disallowing class change."
 	},
 	{
 		"Id": "earlierRubyCheckBox",
