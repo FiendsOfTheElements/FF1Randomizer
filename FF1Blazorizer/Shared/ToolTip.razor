@@ -24,8 +24,7 @@
 		public string screenshot { get; set; }
 	}
 
-	[CascadingParameter]
-	protected string ToolTipId { get; set; }
+	[Parameter] public string ToolTipId { get; set; }
 
 	private List<ToolTipObj> Tooltips { get; set; }
 	protected override async void OnInitialized()

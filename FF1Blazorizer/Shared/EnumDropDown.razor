@@ -34,9 +34,6 @@
 		UpdateToolTip?.Invoke("", e);
 	}
 
-	[CascadingParameter]
-	public string ToolTipId { get; set; }
-
 	[Parameter]
 	public Action<string, MouseEventArgs> UpdateToolTip { get; set; }
 
