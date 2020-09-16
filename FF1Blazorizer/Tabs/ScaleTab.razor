@@ -61,9 +61,20 @@
 				<Slider @bind-Value="Flags.DungeonEncounterRate" Min="0" Max="45" Step="1"></Slider>
 			</div>
 		</div>
+		<div class="row">&nbsp;</div>
 		<div class="row">
-			&nbsp;
+			<div class="col-md-12">
+				<p>Blursed Items:</p>
+				<DoubleSlider Id="RandomWeaponBonusSlider" IsEnabled="Flags.RandomWeaponBonus" MinValue="-9" MaxValue="9" Step="1" @bind-ValueHigh="Flags.RandomWeaponBonusHigh" @bind-ValueLow="Flags.RandomWeaponBonusLow">
+					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="RandomWeaponBonus" @bind-Value="Flags.RandomWeaponBonus">Weapon Bonus Range:</TriStateCheckBox>
+					<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="RandomWeaponBonusExcludeMasa" @bind-Value="Flags.RandomWeaponBonusExcludeMasa">Exclude Masmune</TriStateCheckBox>
+				</DoubleSlider>
+				<DoubleSlider Id="RandomArmorBonusSlider" IsEnabled="Flags.RandomArmorBonus" MinValue="-9" MaxValue="9" Step="1" @bind-ValueHigh="Flags.RandomArmorBonusHigh" @bind-ValueLow="Flags.RandomArmorBonusLow">
+					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="RandomArmorBonus" @bind-Value="Flags.RandomArmorBonus">Armor Bonus Range:</TriStateCheckBox>
+				</DoubleSlider>
+			</div>
 		</div>
+		<div class="row">&nbsp;</div>
 		<div class="row">
 			<div class="col-md-12">
 				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="wrapPriceOverflowCheckBox" @bind-Checked="Flags.WrapPriceOverflow">Wrap Overflowing Prices</CheckBox>
