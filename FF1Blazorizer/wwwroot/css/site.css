@@ -4,7 +4,7 @@
 @import url('main.css');
 
 html, body {
-    font-family: monospace;
+    font-family: 'Lucida Console', Monaco, monospace;
     user-select: none;
 }
 
@@ -46,34 +46,34 @@ input {
     z-index: 101;
 }
 
-    .update-notification:hover {
-        color: white;
-        cursor: url(https://unpkg.com/nes.css/assets/cursor-click.png),pointer;
-    }
+.update-notification:hover {
+    color: white;
+    cursor: url(https://unpkg.com/nes.css/assets/cursor-click.png),pointer;
+}
 
 .nav-item {
     font-size: 0.9rem;
     padding-bottom: 0.5rem;
 }
 
-    .nav-item a {
-        color: #d7d7d7;
-        border-radius: 4px;
-        height: 3rem;
-        display: flex;
-        align-items: center;
-        line-height: 3rem;
-    }
+.nav-item a {
+    color: #d7d7d7;
+    border-radius: 4px;
+    height: 3rem;
+    display: flex;
+    align-items: center;
+    line-height: 3rem;
+}
 
-        .nav-item a.active {
-            background-color: rgba(255,255,255,0.25);
-            color: white;
-        }
+.nav-item a:active {
+    background-color: rgba(255,255,255,0.25);
+    color: white;
+}
 
-        .nav-item a:hover {
-            background-color: rgba(255,255,255,0.1);
-            color: white;
-        }
+.nav-item a:hover {
+    background-color: rgba(255,255,255,0.1);
+    color: white;
+}
 
 .nes-btn {
     font-family: 'Press Start 2P';
@@ -162,10 +162,6 @@ body {
     text-align: center;
 }
 
-h1, h2, h4 {
-    font-family: 'Press Start 2P';
-}
-
 .nes-nav {
     display: block;
     margin-top: 14px;
@@ -176,12 +172,11 @@ h1, h2, h4 {
     margin-left: -2px;
 }
 
-    .nes-container::after {
-        border-radius: 0px;
-    }
+.nes-container::after {
+    border-radius: 0px;
+}
 
 .checkbox-cell {
-    font-family: monospace;
     white-space: nowrap;
     overflow: hidden;
     min-height: 20px;
@@ -189,12 +184,13 @@ h1, h2, h4 {
     padding: 0;
 }
 
-    .checkbox-cell label {
-        max-width: calc(100% - 64px);
-        text-overflow: ellipsis;
-        overflow-x: hidden;
-        vertical-align: top;
-    }
+.checkbox-cell label {
+    max-width: calc(100% - 64px);
+    text-overflow: ellipsis;
+    overflow-x: hidden;
+    vertical-align: top;
+    margin: 2px 0 5px 0;
+}
 
 .dropdown-cell {
     white-space: normal;
@@ -342,15 +338,11 @@ tr.bottom-borderd {
 }
 
 .btn-group-help {
-    opacity: 0.25;
+    opacity: 0.5;
 }
 
-    .btn-group-help:hover {
-        opacity: 0.75;
-    }
-
-p {
-    font-family: monospace;
+.btn-group-help:hover {
+    opacity: 0.75;
 }
 
 .job {
