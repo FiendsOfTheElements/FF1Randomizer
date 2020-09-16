@@ -33,8 +33,6 @@
         UpdateToolTip?.Invoke("", e);
     }
 
-    [CascadingParameter]
-    protected string ToolTipId { get; set; }
     [Parameter]
     public Action<string, MouseEventArgs> UpdateToolTip { get; set; }
 
