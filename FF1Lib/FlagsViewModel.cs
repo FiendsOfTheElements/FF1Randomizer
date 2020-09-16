@@ -1809,6 +1809,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ClassAsNpcDuplicate"));
 			}
 		}
+		public bool? ClassAsNpcForcedFiends
+		{
+			get => Flags.ClassAsNpcForcedFiends;
+			set
+			{
+				Flags.ClassAsNpcForcedFiends = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ClassAsNpcForcedFiends"));
+			}
+		}
 		public bool ClassAsNpcPromotion
 		{
 			get => Flags.ClassAsNpcPromotion;
@@ -2675,15 +2684,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FiendShuffle"));
 			}
 		}
-		public bool ExperimentalFloorGeneration
-		{
-			get => Flags.ExperimentalFloorGeneration;
-			set
-			{
-				Flags.ExperimentalFloorGeneration = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ExperimentalFloorGeneration"));
-			}
-		}
+
 		public bool EFGWaterfall
 		{
 			get => Flags.EFGWaterfall;

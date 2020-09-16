@@ -893,12 +893,20 @@ namespace FF1Lib
 		{
 			// Hacks the game to disallow saving on the overworld with Tents, Cabins, or Houses
 			Put(0x3B2F9, Blob.FromHex("1860"));
+			// Change Item using text to avoid confusion
+			PutInBank(0x0E, 0x87B0, FF1Text.TextToBytes("\n\nSAVING DISABLED!"));
+			PutInBank(0x0E, 0x87E7, FF1Text.TextToBytes("\n\nSAVING DISABLED!"));
+			PutInBank(0x0E, 0x8825, FF1Text.TextToBytes("\n\nSAVING DISABLED!"));
 		}
 
 		public void CannotSaveAtInns()
 		{
 			// Hacks the game so that Inns do not save the game
 			Put(0x3A53D, Blob.FromHex("EAEAEA"));
+			// Change Inn text to avoid confusion
+			PutInBank(0x0E, 0x81BB, FF1Text.TextToBytes("Welcome\n  ..\nStay to\nheal\nyour\nwounds?"));
+			PutInBank(0x0E, 0x81DC, FF1Text.TextToBytes("Don't\nforget\n.."));
+			PutInBank(0x0E, 0x81FC, FF1Text.TextToBytes("Your\ngame\nhasn't\nbeen\nsaved."));
 		}
 		public void EnableTwelveClasses()
 		{
@@ -1200,10 +1208,10 @@ namespace FF1Lib
 				SetNpc(MapId.Onrac, 6, ObjectId.None, 0x12, 0x18, false, false);
 				SetNpc(MapId.Gaia, 1, ObjectId.None, 0x12, 0x18, false, false);
 
-				SetNpc(MapId.EarthCaveB5, 0x0C, ObjectId.MelmondMan6, 0x0D, 0x28, true, true);
-				SetNpc(MapId.GurguVolcanoB5, 0x02, ObjectId.GaiaMan4, 0x05, 0x35, true, true);
-				SetNpc(MapId.SeaShrineB5, 0x01, ObjectId.OnracPunk1, 0x0A, 0x07, true, true);
-				SetNpc(MapId.SkyPalace5F, 0x02, ObjectId.GaiaMan1, 0x09, 0x03, true, true);
+				SetNpc(MapId.EarthCaveB5, 0x0C, ObjectId.MelmondMan6, (bool)flags.ClassAsNpcForcedFiends ? 0x0C : 0x0D, 0x28, true, true);
+				SetNpc(MapId.GurguVolcanoB5, 0x02, ObjectId.GaiaMan4, (bool)flags.ClassAsNpcForcedFiends ? 0x07 : 0x05, 0x35, true, true);
+				SetNpc(MapId.SeaShrineB5, 0x01, ObjectId.OnracPunk1, (bool)flags.ClassAsNpcForcedFiends ? 0x0C : 0x0A, 0x07, true, true);
+				SetNpc(MapId.SkyPalace5F, 0x02, ObjectId.GaiaMan1, (bool)flags.ClassAsNpcForcedFiends ? 0x07 : 0x09, 0x03, true, true);
 
 				// Restore the default color if Required WarMech is enabled so Tiamat's NPC don't look too weird
 				Data[0x029AB] = 0x30; 

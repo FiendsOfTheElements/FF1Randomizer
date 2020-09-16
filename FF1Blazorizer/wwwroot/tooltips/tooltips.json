@@ -1078,6 +1078,11 @@
 		"description": "Not all 6 classes will be guaranteed."
 	},
 	{
+		"Id": "classAsNpcForcedFiendsCheckBox",
+		"title": "Forced Characters",
+		"description": "Can't light Orb without picking up the characters."
+	},
+	{
 		"Id": "classAsNpcPromoCheckBox",
 		"title": "Promoted Classes",
 		"description": "Characters will be from promoted classes."
