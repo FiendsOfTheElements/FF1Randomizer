@@ -117,7 +117,7 @@ namespace FF1Lib
 			var oldItemNames = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
 
 			
-			if (flags.ExperimentalFloorGeneration)
+			if (flags.EFGWaterfall || flags.EFGEarth1 || flags.EFGEarth2)
 			{
 				MapRequirements reqs;
 				MapGeneratorStrategy strategy;
@@ -278,6 +278,8 @@ namespace FF1Lib
 						if (!((bool)flags.RandomWaresIncludesSpecialGear))
 						{
 							excludeItemsFromRandomShops.AddRange(ItemLists.SpecialGear);
+							if ((bool)flags.GuaranteedRuseItem)
+								excludeItemsFromRandomShops.Add(Item.PowerRod);
 						}
 
 						shopItemLocation = ShuffleShops(rng, (bool)flags.ImmediatePureAndSoftRequired, ((bool)flags.RandomWares), excludeItemsFromRandomShops, flags.WorldWealth);
@@ -501,7 +503,7 @@ namespace FF1Lib
 				EnableFreeLute();
 			}
 
-			if ((bool)flags.FreeTail)
+			if ((bool)flags.FreeTail && !(bool)flags.NoTail)
 			{
 				EnableFreeTail();
 			}

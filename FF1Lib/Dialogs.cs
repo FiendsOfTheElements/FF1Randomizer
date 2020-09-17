@@ -986,7 +986,7 @@ namespace FF1Lib
 			if (flags.FreeCanal ?? false) incentivePool.Remove(Item.Canal);
 			if (flags.FreeLute ?? false) incentivePool.Remove(Item.Lute);
 			if (flags.FreeShip ?? false) incentivePool.Remove(Item.Ship);
-			if (flags.FreeTail ?? false) incentivePool.Remove(Item.Tail);
+			if ((flags.FreeTail ?? false) || (flags.NoTail ?? false)) incentivePool.Remove(Item.Tail);
 
 			if (incentivePool.Count == 0)
 				incentivePool.Add(Item.Cabin);

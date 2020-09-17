@@ -170,6 +170,7 @@ namespace FF1Lib
 		public bool? ClassAsNpcKeyNPC { get; set; } = false;
 		public int ClassAsNpcCount { get; set; } = 6;
 		public bool ClassAsNpcDuplicate { get; set; } = false;
+		public bool? ClassAsNpcForcedFiends { get; set; } = false;
 		public bool ClassAsNpcPromotion { get; set; } = false;
 		public int BossScaleStatsLow { get; set; } = 50;
 		public int BossScaleStatsHigh { get; set; } = 200;
@@ -263,8 +264,6 @@ namespace FF1Lib
 		public bool? ClampMinimumStatScale { get; set; } = false;
 		public bool? ClampMinimumBossStatScale { get; set; } = false;
 		public bool? ClampMinimumPriceScale { get; set; } = false;
-
-		public bool ExperimentalFloorGeneration { get; set; } = false;
 		public bool EFGWaterfall { get; set; } = false;
 		public bool EFGEarth1 { get; set; } = false;
 		public bool EFGEarth2 { get; set; } = false;
@@ -367,7 +366,7 @@ namespace FF1Lib
 		public bool? IncentivizeRod => NPCItems & IncentivizeMainItems;
 		public bool? IncentivizeCube => NPCItems & IncentivizeMainItems;
 		public bool? IncentivizeFloater => !FreeAirship & IncentivizeAirship;
-		public bool? IncentivizePromotion => !FreeTail & IncentivizeTail;
+		public bool? IncentivizePromotion => !FreeTail & !NoTail & IncentivizeTail;
 
 		public bool? IncentivizeCanal => NPCFetchItems & IncentivizeShipAndCanal & !FreeCanal;
 		public bool? IncentivizeCrystal => NPCFetchItems & IncentivizeFetchItems;
@@ -707,6 +706,7 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.ClassAsNpcKeyNPC);
 			sum = AddNumeric(sum, 14, flags.ClassAsNpcCount);
 			sum = AddBoolean(sum, flags.ClassAsNpcDuplicate);
+			sum = AddTriState(sum, flags.ClassAsNpcForcedFiends);
 			sum = AddBoolean(sum, flags.ClassAsNpcPromotion);
 			sum = AddNumeric(sum, 51, flags.EnemyScaleStatsLow / 10);
 			sum = AddNumeric(sum, 51, flags.EnemyScaleStatsHigh/ 10);
@@ -791,7 +791,6 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.ClampMinimumStatScale);
 			sum = AddTriState(sum, flags.ClampMinimumBossStatScale);
 			sum = AddTriState(sum, flags.ClampMinimumPriceScale);
-			sum = AddBoolean(sum, flags.ExperimentalFloorGeneration);
 			sum = AddBoolean(sum, flags.EFGWaterfall);
 			sum = AddBoolean(sum, flags.EFGEarth1);
 			sum = AddBoolean(sum, flags.EFGEarth2);
@@ -924,7 +923,6 @@ namespace FF1Lib
 				EFGEarth2 = GetBoolean(ref sum),
 				EFGEarth1 = GetBoolean(ref sum),
 				EFGWaterfall = GetBoolean(ref sum),
-				ExperimentalFloorGeneration = GetBoolean(ref sum),
 				ClampMinimumPriceScale = GetTriState(ref sum),
 				ClampMinimumBossStatScale = GetTriState(ref sum),
 				ClampMinimumStatScale = GetTriState(ref sum),
@@ -1009,6 +1007,7 @@ namespace FF1Lib
 				EnemyScaleStatsHigh = GetNumeric(ref sum, 51) * 10,
 				EnemyScaleStatsLow = GetNumeric(ref sum, 51) * 10,
 				ClassAsNpcPromotion = GetBoolean(ref sum),
+				ClassAsNpcForcedFiends = GetTriState(ref sum),
 				ClassAsNpcDuplicate = GetBoolean(ref sum),
 				ClassAsNpcCount = GetNumeric(ref sum, 14),
 				ClassAsNpcKeyNPC = GetTriState(ref sum),

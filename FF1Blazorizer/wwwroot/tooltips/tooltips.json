@@ -1133,6 +1133,11 @@
 		"screenshot": "classAsNpcFiendsCheckBox.png",
 		"description": "A new character (from a random class) is behind each Fiend. When talked to, that character replaces the 4th slot party member."
 	},
+  {
+		"Id": "classAsNpcForcedFiendsCheckBox",
+		"title": "Forced Characters",
+		"description": "Can't light Orb without picking up the characters."
+	},
 	{
 		"Id": "classAsNpcKeyNpcCheckBox",
 		"title": "Characters linked to Key NPCs",
