@@ -4,7 +4,6 @@
     display: inline-block;
     vertical-align: top;
     --range-color: hsl(190, 80%, 40%);
-     pointer-events: none;
      width: 200px;
 }
 
