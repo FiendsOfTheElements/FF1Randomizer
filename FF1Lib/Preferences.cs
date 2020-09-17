@@ -14,5 +14,10 @@ namespace FF1Lib
 		public MusicShuffle Music { get; set; }
 		public bool DisableDamageTileFlicker { get; set; }
 		public MenuColor MenuColor { get; set; } = MenuColor.Blue;
+		public MapmanSlot MapmanSlot { get; set; } = MapmanSlot.Leader;
+		public bool DisableSpellCastFlash { get; set; } = false;
+		public bool ChangeLute { get; set; } = false;
+		public Fate HurrayDwarfFate { get; set; } = Fate.Spare;
+		public bool RenounceAutosort { get; set; } = false;
 	}
 }

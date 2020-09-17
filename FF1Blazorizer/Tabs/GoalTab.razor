@@ -1,0 +1,35 @@
+﻿@using FF1Lib;
+
+<button type="button" class="@(IsOpen ? "nes-btn nes-nav is-success" : "nes-btn nes-nav is-warning")" @onclick="@(() => IsOpen = !IsOpen)">Goal</button>
+<BSCollapse IsOpen="@IsOpen">
+	<div class="is-dark nes-container">
+		<div class="row">
+			<div class="col-md-4">
+				<h4>Chaos Rush</h4>
+				<p>No time for a long race? Chaos Rush combined with Free Orbs lets you begin the game with the Temple of Fiends Revisited completely unlocked!</p>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="chaosRushCheckBox" @bind-Checked="Flags.ChaosRush">CHAOS Rush</CheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="freeOrbsCheckBox" IsEnabled="@Flags.FreeOrbsEnabled" @bind-Checked="Flags.FreeOrbs">Free Orbs</CheckBox>
+			</div>
+			<div class="col-md-4">
+				<h4>Treasure Hunt</h4>
+				<p>A new adventure! Instead of lighting the four orbs to activate the BLACK ORB, the Light Warriors must seek out and collect several of a random treasure item.</p>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="shardHuntCheckBox" IsEnabled="@Flags.ShardHuntEnabled" @bind-Checked="Flags.ShardHunt">Treasure Hunt</CheckBox>
+				<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="shardCountDropDown" TItem="ShardCount" @bind-Value="Flags.ShardCount">Goal:</EnumDropDown>
+			</div>
+			<div class="col-md-4">
+				<h4>Temple of Fiends</h4>
+				<p>Randomly pick one of four new final bosses to replace the legendary Chaos! Take heed though; they can be more than a match for all but the mightiest Warriors.</p>
+				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="transformFinalFormationCheckBox" @bind-Value="Flags.TransformFinalFormation">Alternate Final Boss</TriStateCheckBox>
+				<p>Jump straight from the Black Orb to the Final Battle! You may choose to keep the fiend refight tiles - two on each side of the path to Chaos.</p>
+				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="shortToFRCheckBox" @bind-Value="Flags.ShortToFR">Shorten ToFR</TriStateCheckBox>
+				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="preserveFiendRefightsCheckBox" IsEnabled="@Flags.ShortToFR" @bind-Value="Flags.PreserveFiendRefights">Include Fiend Tiles</TriStateCheckBox>
+			</div>
+		</div>
+	</div>
+</BSCollapse>
+
+	@code {
+		[Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }
+		[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
+		[Parameter] public bool IsOpen { get; set; } = true;
+	}

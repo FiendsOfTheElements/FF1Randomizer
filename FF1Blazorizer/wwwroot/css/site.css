@@ -1,7 +1,11 @@
 ﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
+/* import the relevent site css file, this line replaced when building by the circle config */
+@import url('main.css');
+
 html, body {
-    font-family: 'Press Start 2P', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: monospace;
+    user-select: none;
 }
 
 app {
@@ -10,12 +14,16 @@ app {
     flex-direction: column;
 }
 
+input {
+    margin: 2px;
+}
+
 .top-row {
-    height: 3.5rem;
     display: flex;
+    padding: 1rem;
     align-items: center;
     z-index: 100;
-    background: #112;
+    background: var(--DARK_BACKGROUND_COLOR);
 }
 
 .spaced-row {
@@ -25,6 +33,23 @@ app {
 .main {
     flex: 1;
 }
+
+.update-notification {
+    background-color: #30bb6b;
+    border-radius: 15px;
+    position: fixed;
+    right: 2%;
+    margin-top: 1%;
+    max-width: 96%;
+    padding: 0.5rem;
+    font-family: 'Press Start 2P';
+    z-index: 101;
+}
+
+    .update-notification:hover {
+        color: white;
+        cursor: url(https://unpkg.com/nes.css/assets/cursor-click.png),pointer;
+    }
 
 .nav-item {
     font-size: 0.9rem;
@@ -50,25 +75,41 @@ app {
             color: white;
         }
 
+.nes-btn {
+    font-family: 'Press Start 2P';
+    font-size: 14px;
+}
+
 .nes-btn:active {
-    transform:translateY(2px);
+    transform: translateY(2px);
 }
 
 .content {
     padding-top: 1.1rem;
+    padding-bottom: 1.1rem;
+}
+
+.loading {
+    width: 100%;
+    text-align: center;
+    color: var(--TOPBAR_FONT_COLOR);
+}
+
+h1 {
+    color: var(--TOPBAR_FONT_COLOR);
+}
+
+#welcome p {
+    color: var(--TOPBAR_FONT_COLOR);
 }
 
 .navbar-toggler {
     background-color: rgba(255, 255, 255, 0.1);
 }
 
-@media (max-width: 767.98px) {
+@media (max-width: 849.98px) {
     .main .top-row {
         display: none;
-    }
-
-    app {
-        width: fit-content;
     }
 
     .table-wrapper {
@@ -78,7 +119,7 @@ app {
     }
 }
 
-@media (min-width: 768px) {
+@media (min-width: 850px) {
     app {
         flex-direction: row;
     }
@@ -103,13 +144,17 @@ app {
 /* FFR */
 
 body {
-    font-size: 14px;
+    /*
     background-color: #3cbcfc;
-    background-image: url("/images/bg.png");
+    background-image: url("/images/bg.jpg");
+        */
+    background-color: #000000;
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center center;
     background-attachment: fixed;
+    line-height: initial;
+    font-size: 18px;
 }
 
 #welcome {
@@ -117,8 +162,8 @@ body {
     text-align: center;
 }
 
-h4 {
-    font-size: 18px;
+h1, h2, h4 {
+    font-family: 'Press Start 2P';
 }
 
 .nes-nav {
@@ -136,10 +181,25 @@ h4 {
     }
 
 .checkbox-cell {
+    font-family: monospace;
+    white-space: nowrap;
+    overflow: hidden;
     min-height: 20px;
     margin: 0;
     padding: 0;
 }
+
+    .checkbox-cell label {
+        max-width: calc(100% - 64px);
+        text-overflow: ellipsis;
+        overflow-x: hidden;
+        vertical-align: top;
+    }
+
+.dropdown-cell {
+    white-space: normal;
+}
+
 
 .slider-cell {
     height: 35px;
@@ -152,18 +212,24 @@ h4 {
 }
 
 .disabled {
+    filter: grayscale(85%);
     color: grey;
 }
 
 td {
     padding: 12px;
     text-align: center;
-    min-width: 96px;
+    min-width: 72px;
+}
+
+.right-bordered {
+    border-right: 1px solid white;
 }
 
 input[type=checkbox] {
     transform: scale(1.3);
-    cursor: url(get-file-as-data-uri("../assets/cursor.png")), pointer
+    margin-left: 2px;
+    cursor: pointer;
 }
 
 select {
@@ -171,17 +237,25 @@ select {
 }
 
 tr.odd {
-    background: rgba(0, 0, 0, 0.05);
+    background: rgba(0, 0, 0, 0.2);
+}
+
+tr.bottom-borderd {
+    border-bottom: 1px solid white;
 }
 
 .ffr-nav {
     font-size: 18px;
+    font-family: 'Press Start 2P';
     padding: 6px;
     margin-right: 20px;
+    color: var(--TOPBAR_FONT_COLOR);
+    white-space: nowrap;
 }
 
     .ffr-nav:hover {
-        text-decoration: none
+        text-decoration: none;
+        color: #ffffff;
     }
 
     .ffr-nav.active {
@@ -199,10 +273,13 @@ tr.odd {
 .main-menu-row {
     margin: 10px;
     min-height: 60px;
+    font-family: 'Press Start 2P';
+    color: var(--TOPBAR_FONT_COLOR);
 }
 
     .main-menu-row:hover {
-        background-color: rgba(0, 0, 0, 0.2)
+        background-color: rgba(0, 0, 0, 0.2);
+        color: #ffffff;
     }
 
 .main-menu a {
@@ -219,12 +296,20 @@ tr.odd {
     height: 38px;
 }
 
+.pokerchip-icon {
+    display: block;
+    background-image: url("/images/chip.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 38px;
+    height: 38px;
+}
+
 .tri-state {
     font-size: 9px;
     padding: 0px;
     height: 15px;
     width: 15px;
-    margin-left: -2px;
     cursor: default;
     border-radius: 2px;
 }
@@ -235,4 +320,105 @@ tr.odd {
 
 .tri-maybe {
     color: #c8916e;
+}
+
+.ffr-tooltip {
+    position: fixed;
+    z-index: 1000;
+}
+
+.ffr-tooltip-screenshot {
+    width: 256px;
+    height: 224px;
+    float: right;
+    background-size: 100% 100%;
+    margin: 0 0 20px 20px;
+    border: 2px solid white;
+}
+
+.ffr-tooltip-close {
+    position: absolute;
+    right: 2px;
+}
+
+.btn-group-help {
+    opacity: 0.25;
+}
+
+    .btn-group-help:hover {
+        opacity: 0.75;
+    }
+
+p {
+    font-family: monospace;
+}
+
+.job {
+    background-size: 48px;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.jobs {
+    height: 72px;
+}
+
+.job.fighter {
+    background-image: url("/images/classes/fighter.png");   
+}
+
+.job.thief {
+    background-image: url("/images/classes/thief.png");
+}
+
+.job.blackbelt {
+    background-image: url("/images/classes/blackbelt.png");
+}
+
+.job.redmage {
+    background-image: url("/images/classes/redmage.png");
+}
+
+.job.whitemage {
+    background-image: url("/images/classes/whitemage.png");
+}
+
+.job.blackmage {
+    background-image: url("/images/classes/blackmage.png");
+}
+
+.job.knight {
+    background-image: url("/images/classes/knight.png");   
+}
+
+.job.ninja {
+    background-image: url("/images/classes/ninja.png");
+}
+
+.job.master {
+    background-image: url("/images/classes/master.png");
+}
+
+.job.redwizard {
+    background-image: url("/images/classes/redwizard.png");
+}
+
+.job.whitewizard {
+    background-image: url("/images/classes/whitewizard.png");
+}
+
+.job.blackwizard {
+    background-image: url("/images/classes/blackwizard.png");
+}
+
+.preset-pill {
+    margin-left: -10px;
+}
+
+.nes-btn.is-huge {
+    font-size: 1.5em;
+}
+
+.nes-btn.is-tiny {
+    font-size: 0.5em;
 }

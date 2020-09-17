@@ -1,18 +1,25 @@
 ﻿<!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="DARK_BACKGROUND_COLOR"/>
+    <meta name="Description" content="The randomizer for Final Fantasy 1. Move treasures around, change what NPCs give, or even shuffle whole dungeons up.">
     <title>FFR</title>
     <base href="/" />
     <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />
+    <script src="_content/BlazorStrap/blazorStrap.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
     <link href="css/nes.min.css" rel="stylesheet" />
     <link href="css/site.css" rel="stylesheet" />
+    <link href="manifest.json" rel="manifest" />
+    <link rel="icon" type="image/x-icon" href="/SITE_ICON_COLOR.ico">
+    <link rel="apple-touch-icon" sizes="512x512" href="/images/icons/warmech-SITE_ICON_COLOR-512.png" />
+
 </head>
-<body style="background-color: #3cbcfc">
+<body>
     <app>
-        <div style="width: 100%; text-align: center">
+        <div class="loading">
             <p>&nbsp;</p>
             <p>Now loading Final Fantasy Randomizer!</p>
             <p>&nbsp;</p>
@@ -20,7 +27,7 @@
             <p>Hold RESET while you turn POWER off!!</p>
         </div>
     </app>
-    <script src="_framework/blazor.webassembly.js"></script>
+    <script src="_framework/blazor.webassembly.js" autostart="false"></script>
     <script src="js/site.js"></script>
 </body>
 </html>

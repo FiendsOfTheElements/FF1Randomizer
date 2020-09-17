@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2010
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30011.22
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FF1Lib", "FF1Lib\FF1Lib.csproj", "{C5F0CF19-C775-4133-AE81-43606C73CB4B}"
 EndProject
@@ -19,6 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sandbox", "Sandbox\Sandbox.
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".circleci", ".circleci", "{E8698844-8DA6-44D4-9290-F816B135E44E}"
 	ProjectSection(SolutionItems) = preProject
+		build.sh = build.sh
 		.circleci\config.yml = .circleci\config.yml
 	EndProjectSection
 EndProject
@@ -27,6 +28,15 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FFR.Common", "FFR.Common\FFR.Common.csproj", "{9C1D0EB1-A5E1-408E-B569-478C20B64088}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FFR.Common.Tests", "FFR.Common.Tests\FFR.Common.Tests.csproj", "{93FA510C-CC5D-4B74-A341-7CFE18357EF1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BuildConfigs", "BuildConfigs", "{C785879B-F4EB-4715-A621-91610BAF23C9}"
+	ProjectSection(SolutionItems) = preProject
+		ConfigSchema.json = ConfigSchema.json
+		Main.json = Main.json
+	EndProjectSection
+	ProjectSection(FolderGlobals) = preProject
+		C_5_4Users_4Steven_4dev_4FF1Randomizer_4main_1json__JsonSchema = ConfigSchema.json
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -68,6 +78,7 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{E8698844-8DA6-44D4-9290-F816B135E44E} = {F74A70F8-A938-4587-B083-8DC615B98D23}
+		{C785879B-F4EB-4715-A621-91610BAF23C9} = {E8698844-8DA6-44D4-9290-F816B135E44E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B742F3AC-5BCA-469A-BBD4-A787AC019E72}

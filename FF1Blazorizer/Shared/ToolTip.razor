@@ -1,0 +1,110 @@
+@using System.Net.Http.Json
+@inject HttpClient  Http
+
+<div class="ffr-tooltip" style="@css">
+	<button type="button" class="nes-btn is-error ffr-tooltip-close" @onclick="@HideToolTip"> X </button>
+	<button type="button" class="nes-btn" @onclick="@HideToolTip">@Title</button>
+	<div class="is-dark nes-container" @onmousedown=@StartDrag @onmousemove=@Drag @onmouseup=@EndDrag @onmouseout=@Drag>
+		<div class="ffr-tooltip-screenshot" style="@(ScreenshotStyle())"></div>
+		@foreach (var paragraph in Description.Split("\n"))
+		{
+			<p class="ffr-tooltip-text">@paragraph</p>
+		}
+		<p style="clear: both"></p>
+	</div>
+</div>
+
+@code
+{
+	class ToolTipObj
+	{
+		public string Id { get; set; }
+		public string title { get; set; }
+		public string description { get; set; }
+		public string screenshot { get; set; }
+	}
+
+	[CascadingParameter]
+	protected string ToolTipId { get; set; }
+
+	private List<ToolTipObj> Tooltips { get; set; }
+	protected override async void OnInitialized()
+	{
+		Tooltips = await Http.GetFromJsonAsync<List<ToolTipObj>>("/tooltips/tooltips.json");
+	}
+
+	private ToolTipObj TTip => Enabled ? Tooltips.FirstOrDefault(x => x.Id == ToolTipId) : null;
+	private string Title => Enabled ? (TTip != null ? TTip.title : "no title") : "";
+	private string Description => Enabled ? (TTip != null ? TTip.description : "no description") : "";
+	private int Width = 800;
+	private bool Enabled { get; set; } = false;
+	private string Visible => (Enabled ? "visibility:visible;" : "visibility:hidden;");
+	private double PosTop { get; set; } = 75;
+	private double PosLeft { get; set; } = 25;
+	private string css =>
+		$"left: {PosLeft}px; top: {PosTop}px; width: {Width}px; {Visible}";
+
+	private bool Dragging = false;
+	private double LastX = 0;
+	private double LastY = 0;
+
+	private string ScreenshotStyle()
+	{
+		if (!Enabled || TTip == null || TTip.screenshot == null)
+			return "display: none;";
+
+		return $"background-image: url(/images/tooltips/{TTip.screenshot})";
+	}
+
+	private void ShowToolTip()
+	{
+		Enabled = true;
+	}
+
+	private void HideToolTip()
+	{
+		Enabled = false;
+	}
+
+	public void UpdatePos(string Id, MouseEventArgs e)
+	{
+		if (Id == "")
+		{
+			HideToolTip();
+			StateHasChanged();
+			return;
+		}
+		ShowToolTip();
+		StateHasChanged();
+	}
+
+	private void StartDrag(MouseEventArgs e)
+	{
+		if (e.Button == 0)
+		{
+			Dragging = true;
+			LastX = e.ClientX;
+			LastY = e.ClientY;
+		}
+	}
+
+	private void EndDrag(MouseEventArgs e)
+	{
+		if (e.Button == 0)
+		{
+			Dragging = false;
+		}
+	}
+
+	public void Drag(MouseEventArgs e)
+	{
+		if (Dragging)
+		{
+			PosLeft = PosLeft + e.ClientX - LastX;
+			LastX = e.ClientX;
+			PosTop = PosTop + e.ClientY - LastY;
+			LastY = e.ClientY;
+		}
+
+	}
+}

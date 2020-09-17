@@ -1,0 +1,62 @@
+@page "/Randomize"
+@using System.ComponentModel;
+@using System.IO;
+@using RomUtilities;
+@using FF1Lib;
+@using System.Text.Json;
+@using BlazorStrap
+@using Microsoft.AspNetCore.Components.Web
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+
+
+<div class="content px-4 tinted">
+    <a href="https://en.wikipedia.org/wiki/George_Floyd" style="color: yellow; font-weight: bold; font-size: 24px; display: table; margin-left: auto; margin-right: auto;">#icantbreathe</a>
+	<CascadingValue Value="@ToolTipId">
+		<ToolTip @ref="ToolTipElement"></ToolTip>
+
+		<FileTab Flags="@Flags" StatusMessage="@StatusMessage" SetStatusMessage="@SetStatusMessage" UpdateToolTipID="@UpdateToolTipID" />
+		<PresetsTab Flags="@Flags" SetStatusMessage="@SetStatusMessage" />
+		<ShopsTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
+		<EnemiesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
+		<TreasuresTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
+		<GoalTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
+		<MapsTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
+		<ScaleTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
+		<PartyTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
+		<ConveniencesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
+		<BugFixesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
+		<ExperimentalTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
+		<FunTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
+	</CascadingValue>
+</div>
+
+@code {
+	private FlagsViewModel Flags { get; set; } = new FlagsViewModel();
+
+	private string StatusMessage = "";
+	private string ToolTipId = "unupdated";
+	private ToolTip ToolTipElement;
+
+	protected override void OnInitialized()
+	{
+		Flags.PropertyChanged += (sender, args) => StateHasChanged();
+		StateHasChanged();
+	}
+
+	private void UpdateToolTipID(string Id, MouseEventArgs e)
+	{
+		ToolTipId = Id;
+		ToolTipElement.UpdatePos(ToolTipId, e);
+		StateHasChanged();
+	}
+
+	void SetStatusMessage(string message)
+	{
+		StatusMessage = message;
+		StateHasChanged();
+	}
+}
+

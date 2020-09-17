@@ -1,0 +1,57 @@
+ENEMIZER FAQ
+
+Q: So, what the flip is this "Enemizer" business, anyway?
+A: Enemizer is split into two major features: Enemy generation, and Formation generation.  Enemy generation does exactly what you'd think it does - it creates a whole new set of random enemies for you to fight, with abilities and perks that are procedurally generated.  Boss enemies remain (mostly) the same, but everything else is different.  Formation generation creates new formations of enemies procedurally, using any valid combination of palettes and remaining within the constraints of the original game's programming.  If Enemy Generation is on, then Formation Generation is automatically turned on since it will be necessary to create new formations.  You can, however, turn on Formation Generation without Enemy Generation, if you like the original enemy set just fine but would rather see some new battles.
+
+Q: So is there any method to how enemies are generated?
+A: Enemies are generated on top of the original monster list (or the monster list provided by the ROM).  For most enemies, the stats of the monster are based on (A) the monster image chosen for that monster (all 52 images will provide different stats, and some monster types are just flat out stronger than others), (B) the level of the monster, based usually on where it is encountered in the vanilla game, and (C) bonuses applied to each monster, which are randomly determined (with a few traits, like Deathtouch and Stonetouch, being limited to the monster that has those traits in the base game).  The stats of Boss monsters and fiends are left completely unchanged, assuming your ROM has those monsters in the slot they would occupy in the vanilla ROM.
+
+Q: What are the bonuses an enemy may roll?
+A: HP, Experience, Gold, and MDef base values will be whatever the enemy in that slot had originally.  Their strength, absorb, accuracy, and evasion are based on the enemy class primarily, and also the number of hits is determined by enemy class.
+There are global bonuses that will only occur for one enemy in every seed.  These are:
+- Crawl multi-hit stun attack
+- Sorceror Deathtouch
+- Coctrice Stonetouch
+Secondly, there are type bonuses which can roll once per monster group, that will be noted in the monster's name.  These are:
+- Frost (denoted by "Fr"), Ice resistance and Fire weakness
+- Red (denoted by "R."), Fire resistance and Ice weakness
+- Sea (denoted by "Sea"), Lightning weakness and Fire/Earth resistance, plus Aquatic type monster flag is set
+- Zombie (denoted by "Z."), monster gains all the resistances and weaknesses of an undead and the Undead type monster flag is set, and also gains stuntouch
+- Were (denoted by "Wr"), monster becomes a Were type and will automatically acquire poisontouch
+- Wizard (denoted by "Wz"), monster is guaranteed to have a spell list
+Thirdly, there are minor perks (and penalties) which can roll, which affect the monster's XP reward.  These are, for now:
+- Gain/Lose 10% from HP, Strength, or Absorb rating
+- Gain low resistance (or cancel a weakness).  Low resistances are Earth, Lightning, Ice, and Fire.
+- Gain low weakness (or cancel a resistance), the inverse of the above
+- Gain high resistance.  High resistances are Status, Poison, Time, and Death.
+- Gain high weaknesses, again same as the above.  High weakness/resist is slightly less valued than low weakness/resist in XP effects.
+- Plus one hit, adds a melee hit
+- Poisontouch
+- Mutetouch
+- Stuntouch or Sleeptouch
+These minor effects roll quite frequently, but not all type bonuses or minor bonuses/penalties are available to all monster classes.  Undead monster types, for example, will never gain or lose a weakness.  Any monster that gets a type bonus ("Fr" etc.) will not roll any minor perks/weaknesses.
+Finally, every enemy (except boss enemies) will have a small variance in hp, exp, gold, and strength rating.  Additionally, any enemy with multiple hits will have their damage rating reduced by 1/15 per extra hit (with the effect per hit rounded down, so an enemy with 29 damage rating will only lose 1 strength per extra hit).  This effect on multi-hit enemies is intended to keep the attack strength of multihitters reasonable enough to account for their extra damage output.
+Any enemy with a script (excepting bosses) is automatically assigned the Mage flag, since all script enemies are spellcasters now.
+
+Q: How do you ensure enemies have a spell list?
+A: They will be assigned the spell list of an enemy appropriate to that monster's level.
+
+Q: What happens to spell/skill lists?
+A: Enemizer will also generate new spell lists.  Enemy skills are not altered (my preference would be to keep enemies limited to one or two skills, since the threat of the enemy pounding you repeatedly with blizzard is part of what makes skills an interesting mechanics, rather than mixing in something useless like GAZE or SNORTING with a strong skill).  However, every enemy with a pure skill list (except WarMECH) is given a spell list of spells appropriate to the strength of the skill list (so the enemy with SCORCH will use tier 1 magic, while the CREMATE enemy will use tier 3 magic).
+When generating spell lists, every spell is rated on a tier of 0-5, with 0 being a spell that will never be selected (all spells which are useless in battle or useless to the enemy at least), and 5 being reserved for FADE and NUKE.  Spells will only be replaced with a spell from the same tier, and all of the AoE spells are tier 3 or higher.  This will mean, however, that many enemies will utilize spells that no enemy would use in vanilla, like ALIT or TMPR.
+Because many enemies are guaranteed a spell list, you can expect to see a lot more magic, and generally more dangerous magic, than you would see in a standard script shuffle randomizer.  For this reason, I strongly recommend against using script shuffle when playing with Enemy Generator, but there is no reason why you can't do it if you really want to.
+
+Q: What about bosses?
+A: The fiends, Astos, and Warmech do not change their skill list at all, so if you don't use script shuffle, you will see Lich 2 open with NUKE, CUR4 on chaos, etc.  This is admittedly a weakness, but I don't have a good solution yet unless I force a script shuffle always for the bosses (which I really don't want to do).
+
+Q: What does formation generation do?
+A: Formation generation, as the name suggests, creates new formations within the constraints of the game's programming.  Therefore, enemies in a formation must share the same pattern table, there can only be two palettes for enemies in a formation, and each formation has an A-Side (which can have up to 4 unique enemies) and a B-side (which can only contain the first two selected enemies).  Aside from that, anything goes; however, to maintain some balance to the game, each formation is assigned a zone that corresponds to an experience level requirement, so early game formations tend to give low experience while late game formations can give much more.
+When rolling formations, the generator prioritizes placing enemies that haven't been placed yet, while trying to pick enemies that correspond to zones which need to be filled.  The result of this is that, generally, there is a reasonable distribution of enemy formations for all areas of the game, though there are usually only 3-4 encounters for each individual domain (and some domains are reproduced, for example the world map domains).
+The latest version will shuffle the pattern tables as well, so Imps can appear with Hyenas and so on, but there can only be 13 pattern tables for monsters within the game's programming constraints.
+
+Q: What about boss formations?
+A: There are a number of formations which are set aside as special exemptions, which have special rules on how they are drawn.  These formations are drawn before the general formations.  The special formations are:
+- Imp/Bum formation, which generates the designated noodle fight that appears in the area around Coneria.  The other side of this formation is a regular encounter.  This formation is never unrunnable and has a low surprise rating.
+- Wizard, Eye and Zombie D formations.  The B-Side of these formations is a group of a single enemy selected for a particular zone, while the A-side is a generic encounter.  These formations are always unrunnable, and the B-Sides are placed on the appropriate trap tile (and are available as random encounters, too).
+- Phantom, Garland, Astos, Warmech, Vampire, and Pirates.  The A-Side of these formation is always the boss battle, which appears in a fixed quantity (1 usually, 9 for the pirates).  The boss is placed in the third slot for enemies in the formation.  The B-Side of the formation contains two enemies that are compatible with the pattern table and the boss' palette, and appears as a random encounter somewhere in the world.  With the exception of the Pirates (which must be a 9-small), these formations are always 2 large-6 small formations.
+- Fiends and Chaos, which are simply ignored by the formation generator altogether.  There are multiple assurances made so that these monsters do not appear in any encounter outside of the ones they belong in, in addition to any designated boss monster.

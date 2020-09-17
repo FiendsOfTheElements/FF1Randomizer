@@ -13,7 +13,7 @@ Loop:
 	CPY #27       ; After Y reaches 27 we check and print WAIT instead of RUN if unrunnable
 	BNE cont0
 		LDA $6D91 ; Load and check unrunnable bit
-		AND #$01
+		AND #$03 ; this is changed for compatibility with splitting the unrunnables
 		BEQ cont0
 			LDA #$13       ; Replace RUN ptr with WAIT ptr
 			STA $6A9E, X   ; $F713 is in bank 1F immediately after the code that jumps here

@@ -1,0 +1,25 @@
+﻿<button type="button" class="@(IsOpen ? "nes-btn nes-nav is-success" : "nes-btn nes-nav is-warning")" @onclick="@(() => IsOpen = !IsOpen)">Conveniences</button>
+<BSCollapse IsOpen="@IsOpen">
+	<div class="is-dark nes-container">
+		<div class="row">
+			<div class="col-md-12">
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="noPartyShuffleCheckBox" @bind-Checked="Flags.NoPartyShuffle">No Party Shuffle</CheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="speedHacksCheckBox" @bind-Checked="Flags.SpeedHacks">Speed Hacks</CheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="identifyTreasuresCheckBox" @bind-Checked="Flags.IdentifyTreasures">Identify Treasures</CheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="dashCheckBox" @bind-Checked="Flags.Dash">Enable Dash</CheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(!Flags.BuyTenOld)" Id="buyTenCheckBox" @bind-Checked="Flags.BuyTen">Buy Quantity</CheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="waitWhenUnrunnableCheckBox" @bind-Checked="Flags.WaitWhenUnrunnable">Change Unrunnable RUN to WAIT</CheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.SpeedHacks" Id="enableCritNumberDisplayCheckBox" @bind-Checked="Flags.EnableCritNumberDisplay">Critical Hit Count Display</CheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="battleMagicMenuWrapAroundCheckBox" @bind-Checked="Flags.BattleMagicMenuWrapAround">Battle Magic Menu Wrap Around</CheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="inventoryAutosortCheckBox" @bind-Checked="Flags.InventoryAutosort">Autosort Inventory</CheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="npcSwatterCheckBox" @bind-Checked="Flags.NPCSwatter">NPC Guillotine</CheckBox>
+			</div>
+		</div>
+	</div>
+</BSCollapse>
+
+@code {
+	[Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }
+	[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
+	[Parameter] public bool IsOpen { get; set; } = true;
+}

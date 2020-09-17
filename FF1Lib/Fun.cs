@@ -49,66 +49,91 @@ namespace FF1Lib
 		Black = 0x0F,
 	}
 
-    public partial class FF1Rom
-    {
-	    public const int TyroPaletteOffset = 0x30FC5;
-	    public const int TyroSpriteOffset = 0x20560;
+	public enum MapmanSlot
+	{
+		[Description("Leader")]
+		Leader = 0x00,
+		[Description("Second")]
+		Second = 0x01,
+		[Description("Third")]
+		Third = 0x02,
+		[Description("Fourth")]
+		Fourth = 0x03,
+	}
 
-	    public const int PaletteOffset = 0x30F20;
-	    public const int PaletteSize = 4;
-	    public const int PaletteCount = 64;
+	public enum Fate
+	{
+		[Description("Spare")]
+		Spare = 0,
+		[Description("Kill")]
+		Kill = 2,
+	}
+	public partial class FF1Rom
+	{
+		public const int TyroPaletteOffset = 0x30FC5;
+		public const int TyroSpriteOffset = 0x20560;
 
-	    public void FunEnemyNames(bool teamSteak)
-	    {
-		    var enemyText = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
+		public const int PaletteOffset = 0x30F20;
+		public const int PaletteSize = 4;
+		public const int PaletteCount = 64;
 
-		    enemyText[1] = "GrUMP";
-		    enemyText[2] = "RURURU"; // +2
-		    enemyText[3] = "GrrrWOLF"; // +2
-		    enemyText[28] = "GeORGE";
-		    enemyText[30] = "R.SNEK"; // +3
-		    enemyText[31] = "GrSNEK"; // +1
-		    enemyText[32] = "SeaSNEK"; // -1
-		    enemyText[40] = "iMAGE";
-		    enemyText[56] = "EXPEDE"; // +2
-		    enemyText[66] = "White D";
-		    enemyText[72] = "MtlSLIME"; // +3
-		    if (teamSteak)
-		    {
-			    enemyText[85] = "STEAK"; // +1
-			    enemyText[86] = "T.BONE"; // +1
-		    }
+		public void FunEnemyNames(bool teamSteak)
+		{
+			var enemyText = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
+
+			enemyText[1] = "GrUMP";
+			enemyText[2] = "RURURU"; // +2
+			enemyText[3] = "GrrrWOLF"; // +2
+			enemyText[28] = "GeORGE";
+			enemyText[30] = "R.SNEK"; // +3
+			enemyText[31] = "GrSNEK"; // +1
+			enemyText[32] = "SeaSNEK"; // -1
+			enemyText[40] = "iMAGE";
+			enemyText[56] = "EXPEDE"; // +2
+			enemyText[66] = "White D";
+			enemyText[72] = "MtlSLIME"; // +3
+			if (teamSteak)
+			{
+				enemyText[85] = "STEAK"; // +1
+				enemyText[86] = "T.BONE"; // +1
+			}
 			enemyText[92] = "NACHO"; // -1
-		    enemyText[106] = "Green D"; // +2
-		    enemyText[111] = "OKAYMAN"; // +1
+			enemyText[106] = "Green D"; // +2
+			enemyText[111] = "OKAYMAN"; // +1
 
 			// Moving IMP and GrIMP gives me another 10 bytes, for a total of 19 extra bytes, of which I'm using 16.
 			var enemyTextPart1 = enemyText.Take(2).ToArray();
-		    var enemyTextPart2 = enemyText.Skip(2).ToArray();
-		    WriteText(enemyTextPart1, EnemyTextPointerOffset, EnemyTextPointerBase, 0x2CFEC);
-		    WriteText(enemyTextPart2, EnemyTextPointerOffset + 4, EnemyTextPointerBase, EnemyTextOffset);
-	    }
+			var enemyTextPart2 = enemyText.Skip(2).ToArray();
+			WriteText(enemyTextPart1, EnemyTextPointerOffset, EnemyTextPointerBase, 0x2CFEC);
+			WriteText(enemyTextPart2, EnemyTextPointerOffset + 4, EnemyTextPointerBase, EnemyTextOffset);
+		}
 
-	    public void PaletteSwap(MT19337 rng)
-	    {
-		    var palettes = Get(PaletteOffset, PaletteSize * PaletteCount).Chunk(PaletteSize);
+		public void PaletteSwap(MT19337 rng)
+		{
+			var palettes = Get(PaletteOffset, PaletteSize * PaletteCount).Chunk(PaletteSize);
 
 			palettes.Shuffle(rng);
 
 			Put(PaletteOffset, Blob.Concat(palettes));
-	    }
+		}
 
-	    public void TeamSteak()
-	    {
-		    Put(TyroPaletteOffset, Blob.FromHex("302505"));
-		    Put(TyroSpriteOffset, Blob.FromHex(
+		public void TeamSteak()
+		{
+			Put(TyroPaletteOffset, Blob.FromHex("302505"));
+			Put(TyroSpriteOffset, Blob.FromHex(
 				"00000000000000000000000000000000" + "00000000000103060000000000000001" + "001f3f60cf9f3f7f0000001f3f7fffff" + "0080c07f7f87c7e60000008080f8f8f9" + "00000080c0e0f0780000000000000080" + "00000000000000000000000000000000" +
 				"00000000000000000000000000000000" + "0c1933676f6f6f6f03070f1f1f1f1f1f" + "ffffffffffffffffffffffffffffffff" + "e6e6f6fbfdfffffff9f9f9fcfefefefe" + "3c9e4e26b6b6b6b6c0e0f0f878787878" + "00000000000000000000000000000000" +
 				"00000000000000000000000000000000" + "6f6f6f6f673b190f1f1f1f1f1f070701" + "fffffec080f9fbffffffffffff8787ff" + "ff3f1f1f3ffdf9f3fefefefefefefefc" + "b6b6b6b6b6b6b6b67878787878787878" + "00000000000000000000000000000000" +
 				"00000000000000000000000000000000" + "07070706060707070100000101010101" + "ffffff793080c0f0fffc3086cfffffff" + "e7fefcf9f26469e3f80103070f9f9e1c" + "264c983060c08000f8f0e0c080000000" + "00000000000000000000000000000000" +
 				"00000000000000000000000000000000" + "07070706060301010101010101000000" + "f9f9f9797366ece8fefefefefcf97377" + "c68c98981830606038706060e0c08080" + "00000000000000000000000000000000" + "00000000000000000000000000000000" +
 				"00000000000000000000000000000000" + "01010101010000000000000000000000" + "fb9b9b9b98ff7f006767676767000000" + "6060606060c080008080808080000000" + "00000000000000000000000000000000" + "00000000000000000000000000000000"));
-	    }
+		}
+
+		public void DisableSpellCastScreenFlash()
+		{
+			//just load the original battleground background in place of the flash color, it will still use the same number of frames
+			Put(0x32051, Blob.FromHex("AD446D"));
+		}
 
 		public void ShuffleLeader(MT19337 rng)
 		{
@@ -259,7 +284,7 @@ namespace FF1Lib
 					{
 						Data[address] = 0x41;
 					}
-					
+
 					break;
 			}
 		}
@@ -357,7 +382,7 @@ namespace FF1Lib
 			//                           BOX      TEXT
 			// lut_CombatBoxes:        HDXXYYWWHHHDXXYY
 			Put(0x7F9E9, Blob.FromHex("0001010A04010202" + // attacker name
-				                      "000B010C04010C02" + // their attack("FROST", "2Hits!" etc)
+									  "000B010C04010C02" + // their attack("FROST", "2Hits!" etc)
 									  "0001040A04010205" + // defender name
 									  "000B040B04010C05" + // damage
 									  "0001071804010208"));// bottom message("Terminated", "Critical Hit", etc)
@@ -471,7 +496,86 @@ namespace FF1Lib
 		{
 			Data[0x7C7E2] = 0xA9;
 		}
-	}
 
+		public void ChangeLute(MT19337 rng)
+		{
+			var newInstruments = new List<string> {"BASS", "LYRE", "HARP", "VIOLA", "CELLO", "PIANO", "ORGAN", "FLUTE", "OBOE", "PICCOLO", "FLUTE", "WHISTLE", "HORN", "TRUMPET",
+				"BAGPIPE", "DRUM", "VIOLIN", "DBLBASS", "GUITAR", "BANJO", "FIDDLE", "MNDOLIN", "CLARNET", "BASSOON", "TROMBON", "TUBA", "BUGLE", "MARIMBA", "XYLOPHN","SNARE D",
+				"BASS D", "TMBRINE", "CYMBALS", "TRIANGL", "COWBELL", "GONG", "TRUMPET", "SAX", "TIMPANI", "B GRAND", "HURDY G", "FLUGEL", "SONG", "KAZOO", "FOGHORN", "AIRHORN",
+				"VUVUZLA", "OCARINA", "PANFLUT", "SITAR", "HRMNICA", "UKULELE", "THREMIN", "DITTY", "JINGLE", "LIMRICK", "POEM", "HAIKU", "OCTBASS", "HRPSCRD", "FLUBA", "AEOLUS",
+				"TESLA", "STLDRUM", "DGDRIDO", "WNDCHIM" };
+
+			var itemnames = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
+			var dialogs = ReadText(dialogsPointerOffset, dialogsPointerBase, dialogsPointerCount);
+
+			var newLute = newInstruments.PickRandom(rng);
+			var dialogsUpdate = new Dictionary<int, string>();
+			var princessDialogue = dialogs[0x06].Split(new string[] { "LUTE" }, System.StringSplitOptions.RemoveEmptyEntries);
+			var monkDialogue = dialogs[0x35].Split(new string[] { "LUTE" }, System.StringSplitOptions.RemoveEmptyEntries);
+			
+			if (princessDialogue.Length > 1)
+				dialogsUpdate.Add(0x06, princessDialogue[0] + newLute + princessDialogue[1]);
+
+			if (monkDialogue.Length > 1)
+				dialogsUpdate.Add(0x35, monkDialogue[0] + newLute + monkDialogue[1].Substring(0,14) + "\n" + monkDialogue[1].Substring(15, 10).Replace('\n',' '));
+
+			// Add extra dialogues that might contain the LUTE if the NPChints flag is enabled or if Astos Shuffle is enabled
+			var otherNPCs = new List<byte> {
+				0x45, 0x53, 0x69, 0x82, 0x8C, 0xAA, 0xCB, 0xDC, 0x9D, 0x70, 0xE3, 0xE1, 0xB6, // NPChints
+				0x02, 0x0E, 0x12, 0x14, 0x16, 0x19, 0x1E, 0xCD, 0x27, 0x23, 0x2B // SuffleAstos
+			};
+
+			for (int i = 0; i < otherNPCs.Count(); i++)
+			{
+				var tempDialogue = dialogs[otherNPCs[i]].Split(new string[] { "LUTE" }, System.StringSplitOptions.RemoveEmptyEntries);
+				if (tempDialogue.Length > 1)
+					dialogsUpdate.Add(otherNPCs[i], tempDialogue[0] + newLute + tempDialogue[1]);
+			}
+
+			if (dialogsUpdate.Count > 0)
+				InsertDialogs(dialogsUpdate);
+
+			itemnames[(int)Item.Lute] = newLute;
+			WriteText(itemnames, ItemTextPointerOffset, ItemTextPointerBase, ItemTextOffset);
+		}
+
+		public void HurrayDwarfFate(Fate fate, MT19337 rng)
+		{
+			if (fate == Fate.Spare)
+			{
+				// Protect Hurray Dwarf from NPC guillotine
+				Put(MapObjJumpTableOffset + 0x63 * JumpTablePointerSize, Blob.FromHex("A792"));
+				Put(MapObjOffset + 0x63 * MapObjSize, Blob.FromHex("01777700")); // Hurray!
+			}
+			else
+			{
+				// Whether NPC guillotine is on or not, kill Hurray Dwarf
+				Put(MapObjJumpTableOffset + 0x63 * JumpTablePointerSize, newTalk.Talk_kill);
+
+				// Change the dialogue
+				var dialogueStrings = new List<string>
+				{
+				    "No! I'm gonna disappear.\nYou'll never see\nme again. Please,\nI don't want to die.",
+					"If you strike me down,\nI shall become more\npowerful than you can\npossibly imagine.",
+					"Freeeeedom!!",
+					"I've seen things you\npeople wouldn't believe.\nAll those moments will\nbe lost in time..\nlike tears in rain..\nTime to die.",
+					"Become vengeance, David.\nBecome wrath.",
+					"My only regret..\nis that I have boneitis.",
+					"No, not the bees!\nNOT THE BEES!\nAAAAAAAAGH!\nTHEY'RE IN MY EYES!\nMY EYES! AAAAAAAAAAGH!",
+					"This is blasphemy!\nThis is madness!",
+					"Not like this..\nnot like this..",
+					"Suicide squad, attack!\n\n\n\nThat showed 'em, huh?",
+					"Well, what are you\nwaiting for?\nDo it. DO IT!!",
+					"The path you walk on has\nno end. Each step you\ntake is paved with the\ncorpses of your enemies.\nTheir souls will haunt\nyou forever. Hear me!\nMy spirit will be\nwatching you!",
+					"K-Kefka..!\nY-you're insane.."
+				};
+
+				//Put new dialogue to E6 since another Dwarf also says hurray
+				InsertDialogs(0xE6, dialogueStrings.PickRandom(rng));
+				Put(MapObjOffset + 0x63 * MapObjSize, Blob.FromHex("00E60000"));
+			}
+		}
+
+	}
 
 }

@@ -105,22 +105,24 @@ namespace FF1Randomizer
 
 		private void CopyButton_Click(object sender, RoutedEventArgs e)
 		{
-			Clipboard.SetText(SeedTextBox.Text + "_" + FlagsTextBox.Text);
+			string export = $"http://finalfantasyrandomizer.com/Randomize?s={SeedTextBox.Text}&f={FlagsTextBox.Text}";
+			Clipboard.SetText(export);
+			MessageBox.Show($"Copied URL {export} to system clipboard.");
 		}
 
 		private void PasteButton_Click(object sender, RoutedEventArgs e)
 		{
 			var text = Clipboard.GetText();
-			var parts = text.Split('_');
-			if (parts.Length != 2 || parts[0].Length != 8 || parts[1].Length < 32)
+			var parts = text.Split('=');
+			if (parts.Length != 3 || parts[1].Length < 8 || parts[2].Length < 32)
 			{
-				MessageBox.Show("Format not recognized.  Paste should look like SSSSSSSS_FFFFFFFFFFFFFFFFFFFFFFFFFFF", "Invalid Format");
+				MessageBox.Show("Format not recognized.  Paste should look like (url)?s=SSSSSSSS&f=FFFFFFFFFFFFFFFFFFFFFFFFFFF", "Invalid Format");
 
 				return;
 			}
 
-			_model.Seed = parts[0];
-			_model.Flags.Flags = Flags.DecodeFlagsText(parts[1]);
+			_model.Seed = parts[1].Substring(0, 8); // we only take the first 8 characters of the seed provided
+			_model.Flags.Flags = Flags.DecodeFlagsText(parts[2]);
 		}
 
 		private void SetScaleFactorLabel(Slider slider, Label label, CheckBox clamp)
@@ -141,7 +143,7 @@ namespace FF1Randomizer
 
 		private void AboutButton_Click(object sender, RoutedEventArgs e)
 		{
-			var aboutWindow = new AboutWindow(FF1Rom.Version) { Owner = this };
+			var aboutWindow = new AboutWindow(FFRVersion.Version) { Owner = this };
 
 			aboutWindow.ShowDialog();
 		}

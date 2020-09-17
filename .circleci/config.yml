@@ -1,66 +1,50 @@
+version: 2.1
+
 defaults: &defaults
+
   working_directory: ~/ff1randomizer
   docker:
-    - image: circleci/node:8
+    - image: fiendsoftheelements/netlify-build:alpine
 
-version: 2
+orbs:
+  shellcheck: circleci/shellcheck@1.3.16
+
 jobs:
   build:
     working_directory: ~/ff1randomizer
     docker:
-      - image: microsoft/dotnet:2.1-sdk
+      - image: fiendsoftheelements/netlify-build:alpine
     steps:
       - checkout
       - run:
           name: publish
-          command: |
-            set -ex
-            cd FF1Blazorizer
-            if [ "${CIRCLE_BRANCH}" == "master" ]; then
-              dotnet publish -c Release
-              git rev-parse HEAD > bin/Release/netstandard2.0/publish/FF1Blazorizer/dist/version.txt
-            else
-              dotnet publish -c Debug
-              git rev-parse HEAD > bin/Debug/netstandard2.0/publish/FF1Blazorizer/dist/version.txt
-            fi
+          command: sh .circleci/build.sh
       - persist_to_workspace:
-          root: ~/ff1randomizer
+          root: ~/ff1randomizer/FF1Blazorizer/output
           paths:
-            - FF1Blazorizer
+            - wwwroot
 
   deploy:
     <<: *defaults
     steps:
       - checkout
       - attach_workspace:
-          at: ~/ff1randomizer
+          at: ~/ff1randomizer/FF1Blazorizer/output
       - run:
           name: deploy
-          command: |
-            set -ex
-            mkdir -p ~/.ssh
-            cp .ssh/known_hosts ~/.ssh/known_hosts
-            if [ "${CIRCLE_BRANCH}" == "master" ]; then
-              pushd FF1Blazorizer/bin/Release/netstandard2.0/publish/FF1Blazorizer/dist
-            else
-              pushd FF1Blazorizer/bin/Debug/netstandard2.0/publish/FF1Blazorizer/dist
-            fi
-            tar cvzf ../../../../../../../FF1Blazorizer.tar.gz .
-            popd
-            scp FF1Blazorizer.tar.gz circle@finalfantasyrandomizer.com:FF1Blazorizer.tar.gz
-            ssh circle@finalfantasyrandomizer.com "./deployff1rblazor.sh $CIRCLE_BRANCH"
+          command: sh .circleci/deploy.sh
 
 workflows:
-  version: 2
   main:
     jobs:
-      - build
+      - shellcheck/check:
+          path: ".circleci/"
+      - build:
+          requires:
+            - shellcheck/check
+      - hold:
+          type: approval
       - deploy:
           requires:
+            - hold
             - build
-          filters:
-            branches:
-              only:
-                - master
-                - dev
-                - alpha

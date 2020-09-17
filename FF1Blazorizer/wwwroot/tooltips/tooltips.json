@@ -3,31 +3,37 @@
 		"Id": "shopsCheckBox",
 		"title": "Shop Shuffle",
 		"screenshot": "shopsCheckBox.png",
-		"description": "Shop Shuffle: Shuffles the contents of Weapon, Armor, and Item shops, changing what shops have what items for sale. Pure and Soft potions will always be available in the Coneria Item Shop."
+		"description": "Shuffles the contents of Weapon, Armor, and Item shops, changing what shops have what items for sale.\nPure and Soft potions will always be available in the Coneria Item Shop."
 	},
 	{
 		"Id": "randomWaresCheckBox",
 		"title": "Random Weapons and Armor",
 		"screenshot": "randomWaresCheckBox.png",
-		"description": "Random Weapons and Armor: Adds various low to mid-tier Weapons and Armor found in the game to Weapon and Armor Shops, regardless of whether they are normally sold in shops or found in chests."
+		"description": "Adds various low to mid-tier Weapons and Armor found in the game to Weapon and Armor Shops, regardless of whether they are normally sold in shops or found in chests."
 	},
 	{
 		"Id": "randomWaresIncludesCheckBox",
 		"title": "Include Caster and Elite Gear",
 		"screenshot": "randomWaresIncludesCheckBox.png",
-		"description": "Include Caster and Elite Gear: Adds rare and high level Weapons and Armor found in the game to Weapon and Armor Shops. These can include normally unique or high-value items such as the Masmune and Ribbons as well as equipment that casts spells when used."
+		"description": "Adds rare and high level Weapons and Armor found in the game to Weapon and Armor Shops.\nThese can include normally unique or high-value items such as the Masmune and Ribbons as well as equipment that casts spells when used."
 	},
 	{
 		"Id": "itemMagicCheckBox",
 		"title": "Item Magic Shuffle",
 		"screenshot": "itemMagicCheckBox.png",
-		"description": "This flag shuffles what spell is cast when using any of the castable items (Power Gauntlet, Bane Sword, ect.). The spell name will replace the name of the item for clarity, although icons will remain the same (or absent for Defense). Items that use the same icon cannot be differentiated except by equipping."
+		"description": "This flag shuffles what spell is cast when using any of the castable items (Power Gauntlet, Bane Sword, ect.).\nThe spell name will replace the name of the item for clarity, although icons will remain the same (or absent for Defense).\nItems that use the same icon cannot be differentiated except by equipping."
 	},
 	{
 		"Id": "mapOpenProgressionDwavesNWCheckBox",
 		"title": "Extended Open Progression",
 		"screenshot": "mapOpenProgressionDwavesNWCheckBox.png",
 		"description": "Remove the river tile between the Dwarf Cave and Northwest Castle so it can be traversed on foot."
+	},
+	{
+		"Id": "mapOpenProgressionDocksCheckBox",
+		"title": "Northern Docks",
+		"screenshot": "mapOpenProgressionDocksCheckBox.png",
+		"description": "Add additional docks near Onrac and the Mirage Tower."
 	},
 	{
 		"Id": "mapOpenProgressionFloaterDockCheckBox",
@@ -39,13 +45,13 @@
 		"Id": "magicLevelsCheckBox",
 		"title": "Magic Levels",
 		"screenshot": "magicLevelsCheckBox.png",
-		"description": "Magic Levels: Shuffles the levels of spells, but not what level is sold at each magic shop. Unless \"Keep Permissions\" is checked, the ability of a character to learn a given spell depends on whether or not a class can learn the spell originally in that spell's new slot."
-	},
+		"description": "Shuffles the levels of spells, but not what level is sold at each magic shop.\nUnless \"Keep Permissions\" is checked, the ability of a character to learn a given spell depends on whether or not a class can learn the spell originally in that spell's new slot."
+  },
 	{
 		"Id": "magicShopsCheckBox",
 		"title": "Magic Shop Shuffle",
 		"screenshot": "magicShopsCheckBox.png",
-		"description": "Magic Shop Shuffle: Shuffles what level spells are available at each shop. With this checked, you will likely find several different levels of magic at each shop, regardless of location."
+		"description": "Magic Shop Shuffle: Shuffles what level spells are available at each shop.\nWith this checked, you will likely find several different levels of magic at each shop, regardless of location."
 	},
 	{
 		"Id": "magicShopLocsCheckBox",
@@ -57,55 +63,55 @@
 		"Id": "magicPermissionsCheckBox",
 		"title": "Keep Permissions",
 		"screenshot": "magicPermissionsCheckBox.png",
-		"description": "Keep Permissions: Forces spells to keep the class permissions from the unrandomized game, no matter what slot they are in or level they are."
+		"description": "Forces spells to keep the class permissions from the unrandomized game, no matter what slot they are in or level they are."
 	},
 	{
 		"Id": "spoilerCheckBox",
 		"title": "SpoilerCheckBox",
 		"screenshot": "spoilerCheckBox.png",
-		"description": "Spoiler Log: Generates a text file of where items have been shuffled to which is provided when creating the randomized ROM. NOTE: This box will affect the seed generated."
+		"description": "Generates a text file of where items have been shuffled to which is provided when creating the randomized ROM.\nNOTE: This box will affect the seed generated."
 	},
 	{
 		"Id": "rememberCheckBox",
 		"title": "Remember ROM",
 		"screenshot": "rememberCheckBox.png",
-		"description": "Remember ROM: Allows the website to remember the file location of the ROM you use."
+		"description": "Allows the website to remember the file location of the ROM you use."
 	},
 	{
 		"Id": "tournamentSafeCheckBox",
 		"title": "Tournament Safe ROM",
 		"screenshot": "tournamentSafeCheckBox.png",
-		"description": "Tournament Safe ROM: Verifies that the ROM provided is an original Final Fantasy 1 ROM."
+		"description": "Verifies that the ROM provided is an original Final Fantasy 1 ROM."
 	},
 	{
 		"Id": "rngCheckBox",
 		"title": "RNG Table",
 		"screenshot": "rngCheckBox.gif",
-		"description": "RNG Table: Shuffles the RNG Table and the Battle RNG, changing encounters and the distance between encounters while leaving overall probabilites unchanged."
+		"description": "Shuffles the RNG Table and the Battle RNG, changing encounters and the distance between encounters while leaving overall probabilites unchanged."
 	},
 	{
 		"Id": "fixMissingBattleRngEntry",
 		"title": "Fix Missing Battle RNG Entry",
 		"screenshot": "fixMissingBattleRngEntry.gif",
-		"description": "Fix Missing Battle RNG Entry: The vanilla Battle RNG table has two 00s out of 256 hex values. If checked, this flag replaces one of them with 95, the missing hex value."
+		"description": "The vanilla Battle RNG table has two 00s out of 256 hex values. If checked, this flag replaces one of them with 0x95, the missing hex value."
 	},
 	{
 		"Id": "enemyScriptsCheckBox",
 		"title": "Enemy Scripts",
 		"screenshot": "enemyScriptsCheckBox.png",
-		"description": "Enemy Scripts: Shuffles the spells and skills (if any) each monster uses, allowing any enemy to have any other's combat logic."
+		"description": "Shuffles the spells and skills (if any) each monster uses, allowing any enemy to have any other's combat logic."
 	},
 	{
 		"Id": "allowUnsafePiratesCheckBox",
 		"title": "Unsafe Pirates",
 		"screenshot": "allowUnsafePiratesCheckBox.png",
-		"description": "Unsafe Pirates: Allows Pirates to be shuffled skills and spells. Left unchecked, Pirates will always have a script that directs them to only attack."
+		"description": "Allows Pirates to be shuffled skills and spells. Left unchecked, Pirates will always have a script that directs them to only attack."
 	},
 	{
 		"Id": "allowUnsafeStartAreaCheckBox",
 		"title": "Allow Unsafe Start Area",
 		"screenshot": "allowUnsafeStartAreaCheckBox.gif",
-		"description": "Entrance shuffle normally requires at least 3 safe locations amongst the Coneria Castle, Dwarf Cave, Temple of Fiends, Matoya's Cave, and Pravoka entrances. This flag removes that safety net."
+		"description": "Entrance shuffle normally requires at least 3 safe locations amongst the Coneria Castle, Dwarf Cave, Temple of Fiends, Matoya's Cave, and Pravoka entrances.\nThis flag removes that safety net."
 	},
 	{
 		"Id": "hintsVillage",
@@ -153,7 +159,7 @@
 		"Id": "EnableRandomPromotions",
 		"title": "Random Promotions",
 		"screenshot": "EnableRandomPromotions.gif",
-		"description": "When giving the TAIL to Bahamut, promote your party to various random classes. Random classes are pre-selected by the randomizer when the seed is generated. You will not know ahead of time what that promoted class will be."
+		"description": "When giving the TAIL to Bahamut, promote your party to various random classes. Random classes are pre-selected by the randomizer when the seed is generated. You will not know ahead of time what that promoted class will be.\nNOTE: By default, a non-caster class promoting to a caster class (Red, White & Black Mages) will gain few MP. Use Linear MP Growth to fix this."
 	},
 	{
 		"Id": "RPIncludeBaseClasses",
@@ -188,37 +194,37 @@
 		"Id": "enemySkillsSpellsCheckBox",
 		"title": "Enemy Skills/Spells",
 		"screenshot": "enemySkillsSpellsCheckBox.png",
-		"description": "Enemy Skills/Spells: Shuffles enemy skills and spells so they can appear in any script. There are three groups of enemies:\nAll random encounters,\nthe first fiend fights,\nand the second fiend fights with WarMech."
+		"description": "Shuffles enemy skills and spells so they can appear in any script. There are three groups of enemies:\nAll random encounters,\nthe first fiend fights,\nand the second fiend fights with WarMech."
 	},
 	{
 		"Id": "onlyShuffleBossScriptsCheckBox",
 		"title": "Only Shuffle Boss Scripts",
 		"screenshot": "onlyShuffleBossScriptsCheckBox.png",
-		"description": "Only include the scripts of the Fiends when shuffling scripts.  Normal enemies will retain their original scripts.  This alone does not mean however that spells on those scripts cannot be shuffled."
+		"description": "Only include the scripts of the Fiends when shuffling scripts.  Normal enemies will retain their original scripts.\nThis alone does not mean however that spells on those scripts cannot be shuffled."
 	},
 	{
 		"Id": "onlyShuffleBossSkillsCheckBox",
 		"title": "Only Shuffle Boss Spells and Skills",
 		"screenshot": "onlyShuffleBossSkillsCheckBox.png",
-		"description": "Only include the spells and skills of the Fiends when shuffling spells.  Normal enemies will retain their original spells and skills.  This alone does not mean however that scripts cannot be shuffled."
+		"description": "Only include the spells and skills of the Fiends when shuffling spells.  Normal enemies will retain their original spells and skills.\nThis alone does not mean however that scripts cannot be shuffled."
 	},
 	{
 		"Id": "enemyStatusAttacksCheckBox",
 		"title": "Enemy Status Attacks",
 		"screenshot": "enemyStatusAttacksCheckBox.png",
-		"description": "Enemy Status Attacks: Shuffles the status ailments each enemy can inflict when they use physical attacks."
+		"description": "Shuffles the status ailments each enemy can inflict when they use physical attacks."
 	},
 	{
 		"Id": "enemyRandomAttacksCheckBox",
 		"title": "Random Enemy Status Attacks",
 		"screenshot": "enemyRandomAttacksCheckBox.png",
-		"description": "Random Enemy Status Attacks: The status ailments enemies inflict on melee attack are randomly determined, and can include multiple death attacks or silencing attacks."
+		"description": "The status ailments enemies inflict on melee attack are randomly determined, and can include multiple death attacks or silencing attacks."
 	},
 	{
 		"Id": "enemyFormationsUnrunnableCheckBox",
 		"title": "Enemy Unrunnable Formations",
 		"screenshot": "enemyFormationsUnrunnableCheckBox.png",
-		"description": "Enemy Unrunnable Formations: Shuffles what formations are and are not runnable. Bosses and some other encounters will remain unrunnable."
+		"description": "Shuffles what formations are and are not runnable. Bosses and some other encounters will remain unrunnable."
 	},
 	{
 		"Id": "everythingUnrunnableCheckBox",
@@ -230,7 +236,7 @@
 		"Id": "unrunnablesStrikeFirstAndSurpriseCheckBox",
 		"title": "First Strike and Surprise Possible when Unrunnable",
 		"screenshot": "unrunnablesStrikeFirstAndSupriseCheckBox.png",
-		"description": "First Strike and Surprise Possible when Unrunnable: Allows you to first strike an unrunnable formation. Also allows an unrunnable formation to ambush YOU."
+		"description": "Allows you to first strike an unrunnable formation. Also allows an unrunnable formation to ambush YOU."
 	},
 	{
 		"Id": "enemyFormationsSurpriseCheckBox",
@@ -248,13 +254,13 @@
 		"Id": "enemyTrapTilesCheckBox",
 		"title": "Enemy Forced Encounter Tiles",
 		"screenshot": "enemyTrapTilesCheckBox.gif",
-		"description": "Enemy Forced Encounter Tiles: Shuffles trap tiles excepting Fiend Refights."
+		"description": "Shuffles trap tiles excepting Fiend Refights."
 	},
 	{
 		"Id": "randomTrapFormationsCheckBox",
 		"title": "Use Random Formations",
 		"screenshot": "randomTrapFormationsCheckBox.png",
-		"description": "Use Random Formations: Adds several formations into the shuffle pool for trap tiles, including formations that are not available in the original game."
+		"description": "Adds several formations into the shuffle pool for trap tiles, including formations that are not available in the original game."
 	},
 	{
 		"Id": "WarMECHModeDropDown",
@@ -266,13 +272,13 @@
 		"Id": "treasuresCheckBox",
 		"title": "Treasures",
 		"screenshot": "treasuresCheckBox.png",
-		"description": "Treasures: Shuffle all treasures normally available to a random chest in the game. All items are assured to be in a chest somewhere in the game."
+		"description": "Shuffle all treasures normally available to a random chest in the game. All items are assured to be in a chest somewhere in the game."
 	},
 	{
 		"Id": "randomLootCheckBox",
 		"title": "Randomize Treasures",
 		"screenshot": "randomLootCheckBox.png",
-		"description": "Randomize Treasures: Randomizes the contents of each chest based on tier of item. Each setting for random wealth weighs the pool differently. Items not normally found in chests may be available, some items may not be found in chests that normally would, and duplicates may exist."
+		"description": "Randomizes the contents of each chest based on tier of item. Each setting for random wealth weighs the pool differently.\nItems not normally found in chests may be available, some items may not be found in chests that normally would, and duplicates may exist."
 	},
 	{
 		"Id": "worldWealthDropDown",
@@ -284,25 +290,25 @@
 		"Id": "betterTrapTreasureCheckBox",
 		"title": "Better Trap Treasure",
 		"screenshot": "betterTrapTreasureCheckBox.png",
-		"description": "Better Trap Treasure: Adjusts treasure chests that require walking over an encounter tile so that they are more likely to have high-tier treasures. There is a list in the Help section."
+		"description": "Adjusts treasure chests that require walking over an encounter tile so that they are more likely to have high-tier treasures. There is a list in the Help section."
 	},
 	{
 		"Id": "npcItemsCheckBox",
 		"title": "Main NPC Items",
 		"screenshot": "npcItemsCheckBox.png",
-		"description": "Main NPC Items: Adds the Bridge, Lute, Ship, Rod, Canoe, Cube, and Bottle to the shuffle."
+		"description": "Adds the Bridge, Lute, Ship, Rod, Canoe, Cube, and Bottle to the shuffle."
 	},
 	{
 		"Id": "npcFetchItemsCheckBox",
 		"title": "Fetch Quest Rewards",
 		"screenshot": "npcFetchItemsCheckBox.png",
-		"description": "Fetch Quest Rewards: Randomizes the rewards from the fetch quest items. These are the Crown, Crystal, Herb, TNT, Adamant, Bottle, and the Lefein item from the Slab. If unchecked, each fetch quest is vanilla."
+		"description": "Randomizes the rewards from the fetch quest items. These are the Crown, Crystal, Herb, TNT, Adamant, Bottle, and the Lefein item from the Slab. If unchecked, each fetch quest is vanilla."
 	},
 	{
 		"Id": "shuffleObjectiveNPCsCheckBox",
 		"title": "Objective NPCs",
 		"screenshot": "shuffleObjectiveNPCsCheckBox.png",
-		"description": "Objective NPCs: Shuffles the locations of Dr. Unne, the Elven Doctor, and Bahamut. Note that the Prince is still napping in Elfland once you deliver the Herb to the Elven Doctor and that the small pool means NPCs may retain their normal location."
+		"description": "Shuffles the locations of Dr. Unne, the Elven Doctor, and Bahamut. Note that the Prince is still napping in Elfland once you deliver the Herb to the Elven Doctor and that the small pool means NPCs may retain their normal location."
 	},
 	{
 		"Id": "freeShipCheckBox",
@@ -338,7 +344,7 @@
 		"Id": "RandomWeaponBonus",
 		"title": "Random Weapon Bonus",
 		"screenshot": "RandomWeaponBonus.png",
-		"description": "Gives each weapon a random bonus from the selected range. This will increase or decrease (if negative) its damage by 2 per bonus, hit by 3(max 50%) per bonus, crit by 3(1.5%) per bonus. All values cannot go below zero hit or 1 crit/damage."
+		"description": "Gives each weapon a random bonus from the selected range. This will increase or decrease (if negative) its damage by 2 per bonus, hit by 3(max 50%) per bonus, crit by 3(1.5%) per bonus.\nAll values cannot go below zero hit or 1 crit/damage."
 	},
 	{
 		"Id": "RandomWeaponBonusExcludeMasa",
@@ -380,37 +386,37 @@
 		"Id": "incentivizeIceCaveCheckBox",
 		"title": "Ice Cave Incentive Chest",
 		"screenshot": "incentivizeIceCaveCheckBox.png",
-		"description": "Incentivizes the FLOATER chest from the vanilla game. One random item from your incentive item pool will be guaranteed in this chest, provided the number of incentive items matches or is less than the number of incentive locations."
+		"description": "Incentivizes the FLOATER chest from the vanilla game.\nOne random item from your incentive item pool will be guaranteed in this chest, provided the number of incentive items matches or is less than the number of incentive locations."
 	},
 	{
 		"Id": "incentivizeOrdealsCheckBox",
 		"title": "Castle Ordeals Incentive Chest",
 		"screenshot": "incentivizeOrdealsCheckBox.png",
-		"description": "Incentivizes the TAIL chest from the vanilla game. One random item from your incentive item pool will be guaranteed in this chest, provided the number of incentive items matches or is less than the number of incentive locations."
+		"description": "Incentivizes the TAIL chest from the vanilla game.\nOne random item from your incentive item pool will be guaranteed in this chest, provided the number of incentive items matches or is less than the number of incentive locations."
 	},
 	{
 		"Id": "incentivizeMarshCheckBox",
 		"title": "Marsh Cave Incentive Chest",
 		"screenshot": "incentivizeMarshCheckBox.png",
-		"description": "Incentivizes the CROWN chest from the vanilla game. One random item from your incentive item pool will be guaranteed in this chest, provided the number of incentive items matches or is less than the number of incentive locations."
+		"description": "Incentivizes the CROWN chest from the vanilla game.\nOne random item from your incentive item pool will be guaranteed in this chest, provided the number of incentive items matches or is less than the number of incentive locations."
 	},
 	{
 		"Id": "incentivizeTitansCheckBox",
 		"title": "Titan’s Trove Incentive Chest",
 		"screenshot": "incentivizeTitansCheckBox.png",
-		"description": "Incentivizes the leftmost chest in Titan’s Trove. Note that if the Titan’s Trove map edit is on, this chest will require the RUBY to access. One random item from your incentive item pool will be guaranteed in this chest, provided the number of incentive items matches or is less than the number of incentive locations."
+		"description": "Incentivizes the leftmost chest in Titan’s Trove. Note that if the Titan’s Trove map edit is on, this chest will require the RUBY to access.\nOne random item from your incentive item pool will be guaranteed in this chest, provided the number of incentive items matches or is less than the number of incentive locations."
 	},
 	{
 		"Id": "incentivizeEarthCheckBox",
 		"title": "Earth Cave Incentive Chest",
 		"screenshot": "incentivizeEarthCheckBox.png",
-		"description": "Incentivizes the RUBY chest in the vanilla game. The Vampire must be killed to obtain access to this chest. One random item from your incentive item pool will be guaranteed in this chest, provided the number of incentive items matches or is less than the number of incentive locations."
+		"description": "Incentivizes the RUBY chest in the vanilla game. The Vampire must be killed to obtain access to this chest.\nOne random item from your incentive item pool will be guaranteed in this chest, provided the number of incentive items matches or is less than the number of incentive locations."
 	},
 	{
 		"Id": "incentivizeVolcanoCheckBox",
 		"title": "Volcano Incentive Chest",
 		"screenshot": "incentivizeVolcanoCheckBox.png",
-		"description": "Incentivizes the leftmost chest on KARY’s floor. This chest requires two trap tile encounters to access, so make sure you are prepared before approaching. One random item from your incentive item pool will be guaranteed in this chest, provided the number of incentive items matches or is less than the number of incentive locations."
+		"description": "Incentivizes the leftmost chest on KARY’s floor. This chest requires two trap tile encounters to access, so make sure you are prepared before approaching.\nOne random item from your incentive item pool will be guaranteed in this chest, provided the number of incentive items matches or is less than the number of incentive locations."
 	},
 	{
 		"Id": "incentivizeSeaShrineCheckBox",
@@ -422,7 +428,7 @@
 		"Id": "incentivizeSkyPalaceCheckBox",
 		"title": "Sky Palace Incentive Chest",
 		"screenshot": "incentivizeSkyPalaceCheckBox.png",
-		"description": "Incentivizes the ADAMANT chest from the vanilla game. One random item from your incentive item pool will be guaranteed in this chest, provided the number of incentive items matches or is less than the number of incentive locations."
+		"description": "Incentivizes the ADAMANT chest from the vanilla game.\nOne random item from your incentive item pool will be guaranteed in this chest, provided the number of incentive items matches or is less than the number of incentive locations."
 	},
 	{
 		"Id": "incentivizeConeriaCheckBox",
@@ -434,13 +440,13 @@
 		"Id": "incentivizeMarshKeyLockedCheckBox",
 		"title": "Marsh KEY Locked Incentive Chest",
 		"screenshot": "incentivizeMarshKeyLockedCheckBox.png",
-		"description": "Incentivizes the bottom right chest of the final floor of Marsh Cave. This chest requires the KEY to access. One random item from your incentive item pool will be guaranteed in this chest, provided the number of incentive items matches or is less than the number of incentive locations."
+		"description": "Incentivizes the bottom right chest of the final floor of Marsh Cave. This chest requires the KEY to access.\nOne random item from your incentive item pool will be guaranteed in this chest, provided the number of incentive items matches or is less than the number of incentive locations."
 	},
 	{
 		"Id": "chaosRushCheckBox",
 		"title": "Chaos Rush",
 		"screenshot": "chaosRushCheckBox.png",
-		"description": "Enables Chaos Rush mode, allowing you to reach Chaos without needing the KEY to pass through the door in Temple of Fiends and adding the LUTE to your inventory at the start of the game. This setting does not automatically light the four Orbs, although other settings may change this behavior."
+		"description": "Enables Chaos Rush mode, allowing you to reach Chaos without needing the KEY to pass through the door in Temple of Fiends and adding the LUTE to your inventory at the start of the game.\nThis setting does not automatically light the four Orbs, although other settings may change this behavior."
 	},
 	{
 		"Id": "freeOrbsCheckBox",
@@ -452,13 +458,13 @@
 		"Id": "transformFinalFormationCheckBox",
 		"title": "Alternate Final Boss",
 		"screenshot": "transformFinalFormationCheckBox.png",
-		"description": "Changes the Chaos fight to involve one of several enemy formations instead of just Chaos. These formations are: Kary2 and Tiamat2; 2 Lich2s and 4 Phantoms; 2 Warmechs and 6 Evilmen; or Chaos and 8 Garlands."
+		"description": "Changes the Chaos fight to involve one of several enemy formations instead of just Chaos.\nThese formations are: Kary2 and Tiamat2; 2 Lich2s and 4 Phantoms; 2 Warmechs and 6 Evilmen; or Chaos and 8 Garlands."
 	},
 	{
 		"Id": "shortToFRCheckBox",
 		"title": "Shorten ToFR",
 		"screenshot": "shortToFRCheckBox.png",
-		"description": "Shortens the Temple of Fiends Revisted to lead straight to Chaos' Floor. The four Orbs are still required to enter the dungeon, excepting the use of other settings. Neither the KEY nor the LUTE will be requires if this box is checked."
+		"description": "Shortens the Temple of Fiends Revisted to lead straight to Chaos' Floor. The four Orbs are still required to enter the dungeon, excepting the use of other settings.\nNeither the KEY nor the LUTE will be requires if this box is checked."
 	},
 	{
 		"Id": "preserveFiendRefightsCheckBox",
@@ -476,7 +482,7 @@
 		"Id": "paletteSwapCheckBox",
 		"title": "Palette Swap",
 		"screenshot": "paletteSwapCheckBox.png",
-		"description": "Randomizes the colors of used for enemies in the generated seed. For example, Imps may be largely pink rather than orange. Note that combining this setting with Fun Enemy Name can lead to confusion for newer players in both asking for and recieving advice."
+		"description": "Randomizes the colors of used for enemies in the generated seed. For example, Imps may be largely pink rather than orange.\nNote that combining this setting with Fun Enemy Name can lead to confusion for newer players in both asking for and recieving advice."
 	},
 	{
 		"Id": "modernBattlefieldCheckBox",
@@ -488,7 +494,7 @@
 		"Id": "teamSteakCheckBox",
 		"title": "Team Steak",
 		"screenshot": "teamSteakCheckBox.png",
-		"description": "Modifies the Tyro/T-Rex sprite to reflect the age old rivalry between two teams. Team Tyro believes firmly in the sanctity of Tyro life while Team Steak believes in the sanctity of Tyro meat dinners. Choosing Team Steak will make it clear what you see when confronting these majestic-but-delicious creatures."
+		"description": "Modifies the Tyro/T-Rex sprite to reflect the age old rivalry between two teams.\nTeam Tyro believes firmly in the sanctity of Tyro life while Team Steak believes in the sanctity of Tyro meat dinners. Choosing Team Steak will make it clear what you see when confronting these majestic-but-delicious creatures."
 	},
 	{
 		"Id": "musicDropDown",
@@ -512,13 +518,13 @@
 		"Id": "menuColorDropDown",
 		"title": "Menu Color",
 		"screenshot": "MenuColor.gif",
-		"description": "Changes your menu screen color from the default blue to a selection of other colors. This may also be changed in game by pressing Select at the New Game/Continue screen"
+		"description": "Changes your menu screen color from the default blue to a selection of other colors.\nThis may also be changed in game by pressing Select at the New Game/Continue screen"
 	},
 	{
 		"Id": "thirdBattlePaletteCheckBox",
 		"title": "Three Battle Palettes",
 		"screenshot": "thirdBattlePaletteCheckBox.png",
-		"description": "Changes the behavior of in-battle color palettes to allow spite edits to use three different palettes instead of the normal two. This is an advanced option that requires the use of external tools such as FFHackster in order to have a noticeable effect."
+		"description": "Changes the behavior of in-battle color palettes to allow spite edits to use three different palettes instead of the normal two.\nThis is an advanced option that requires the use of external tools such as FFHackster in order to have a noticeable effect."
 	},
 	{
 		"Id": "spoilersCheckBox",
@@ -620,7 +626,7 @@
 		"Id": "shardHuntCheckBox",
 		"title": "Shard Hunt",
 		"screenshot": "shardHuntCheckBox.png",
-		"description": "Activates Shard Hunt, a mode in which the Light Warriors must acquire a number of a particular, special item in order to open the time gate in Temple of Fiends.  Defeating Fiends and activating the altars for the four standard orbs will instead grant the player 2 shards for Lich and Kary or 4 shards for Kraken and Tiamat.  The SHARDs replace generally low-quality items in the treasure pool."
+		"description": "Activates Shard Hunt, a mode in which the Light Warriors must acquire a number of a particular, special item in order to open the time gate in Temple of Fiends.\nDefeating Fiends and activating the altars for the four standard orbs will instead grant the player 2 shards for Lich and Kary or 4 shards for Kraken and Tiamat.  The SHARDs replace generally low-quality items in the treasure pool."
 	},
 	{
 		"Id": "shardCountDropDown",
@@ -632,7 +638,7 @@
 		"Id": "entrancesCheckBox",
 		"title": "Entrance Shuffle",
 		"screenshot": "entrancesCheckBox.gif",
-		"description": "Overworld entrances, except for towns, are shuffled, so that the entrance to Earth Cave may be at Waterfall, Volcano at the Cardia Islands, etc.  Required for floor shuffle.  Requires NPC Shuffle."
+		"description": "Overworld entrances, except for towns, are shuffled, so that the entrance to Earth Cave may be at Waterfall, Volcano at the Cardia Islands, etc.\nRequired for floor shuffle.\nRequires NPC Shuffle."
 	},
 	{
 		"Id": "deadEndsCheckBox",
@@ -644,7 +650,7 @@
 		"Id": "floorsCheckBox",
 		"title": "Shuffle Floors",
 		"screenshot": "floorsCheckBox.gif",
-		"description": "Whether floors should also be shuffled. If floors are not shuffled, each area will be moved together, such that Earth B1 leads to Earth B2, etc... If floors are shuffled, Earth B1 may lead to Volcano B3, for example."
+		"description": "Whether floors should also be shuffled. If floors are not shuffled, each area will be moved together, such that Earth B1 leads to Earth B2, etc...\nIf floors are shuffled, Earth B1 may lead to Volcano B3, for example."
 	},
 	{
 		"Id": "allowDeepCastlesCheckBox",
@@ -674,7 +680,7 @@
 		"Id": "skyCastle4FMazeModeDropDown",
 		"title": "Sky Castle 4F",
 		"screenshot": "skyCastle4FMazeModeDropDown.gif",
-		"description": "The configuration of the teleporters in Sky Castle's 4th Floor. Normal is vanilla teleporters. Teleporters moves the location of the teleporters so that they must be found. Maze introduces walls so the party must find a way through to the other teleporter."
+		"description": "The configuration of the teleporters in Sky Castle's 4th Floor.\nNormal is vanilla teleporters.\nTeleporters moves the location of the teleporters so that they must be found.\nMaze introduces walls so the party must find a way through to the other teleporter."
 	},
 	{
 		"Id": "ordealsPillarsCheckBox",
@@ -708,7 +714,7 @@
 	},
 	{
 		"Id": "mapOpenProgressionCheckBox",
-		"title": "Open Progression",
+		"title": "Early Open Progression",
 		"screenshot": "mapOpenProgressionCheckBox.png",
 		"description": "Changes the map to allow walking from Corneria to Dwarf Cave, as well as connecting the Ice Cave and Volcano river systems, to allow passage from Pravoka to Crescent Lake with the CANOE."
 	},
@@ -740,19 +746,19 @@
 		"Id": "clampMinimumPriceScaleLable",
 		"title": "Price Scaling",
 		"screenshot": "clampMinimumPriceScaleLable.png",
-		"description": "Sets the scale of the prices of shop items and the value of gold treasure boxes you find.  Unclamped prices have a mean of 100% of normal prices (accounting for XP/Gold scale, so with 4x XP baseline prices and gold treasures will be 25% their normal values).  Clamped prices have a mean halfway between 100% and the maximum for the selected multiplier."
+		"description": "Sets the scale of the prices of shop items and the value of gold treasure boxes you find.\nUnclamped prices have a mean of 100% of normal prices (accounting for XP/Gold scale, so with 4x XP baseline prices and gold treasures will be 25% their normal values).  Clamped prices have a mean halfway between 100% and the maximum for the selected multiplier."
 	},
 	{
 		"Id": "clampMinimumStatScaleLable",
 		"title": "Monster Stats Scaling",
 		"screenshot": "clampMinimumStatScaleLable.png",
-		"description": "Sets the scale of monster stats (except Magic Defense).  Not all stats are adjusted equally, for example attack strength variance in either direction is only 1/4th that of HP variance.  Unclamped stats have a mean of 100% of normal stats.  Clamped stats have a mean halfway between 100% and the maximum for the selected multiplier (times adjustment factor for particular stats, like strength)."
+		"description": "Sets the scale of monster stats (except Magic Defense).\nNot all stats are adjusted equally, for example attack strength variance in either direction is only 1/4th that of HP variance.  Unclamped stats have a mean of 100% of normal stats.  Clamped stats have a mean halfway between 100% and the maximum for the selected multiplier (times adjustment factor for particular stats, like strength)."
 	},
 	{
 		"Id": "clampMinimumBossScaleLable",
 		"title": "Boss Stats Scaling",
 		"screenshot": "clampMinimumBossScaleLable.png",
-		"description": "Sets the scale of boss monster stats (except Magic Defense).  Not all stats are adjusted equally, for example attack strength variance in either direction is only 1/4th that of HP variance.  Unclamped stats have a mean of 100% of normal stats.  Clamped stats have a mean halfway between 100% and the maximum for the selected multiplier (times adjustment factor for particular stats, like strength)."
+		"description": "Sets the scale of boss monster stats (except Magic Defense).\nNot all stats are adjusted equally, for example attack strength variance in either direction is only 1/4th that of HP variance.  Unclamped stats have a mean of 100% of normal stats.  Clamped stats have a mean halfway between 100% and the maximum for the selected multiplier (times adjustment factor for particular stats, like strength)."
 	},
 	{
 		"Id": "progressiveScaleModeDropDown",
@@ -764,7 +770,7 @@
 		"Id": "wrapPriceOverflowCheckBox",
 		"title": "Wrap Overflowing Prices",
 		"screenshot": "wrapPriceOverflowCheckBox.png",
-		"description": "Whether items that cost more than 65,535G cost that (maximum) amount of G, or if the price should be wrapped around. For example, when disabled, an item that should cost 67,000G would cost 65,535G. When enabled, that item would cost 1,465G."
+		"description": "Whether items that cost more than 65,535G cost that (maximum) amount of G, or if the price should be wrapped around.\nFor example, when disabled, an item that should cost 67,000G would cost 65,535G. When enabled, that item would cost 1,465G."
 	},
 	{
 		"Id": "wrapStatOverflowCheckBox",
@@ -782,7 +788,7 @@
 		"Id": "noDanModeCheckBox",
 		"title": "Static EXP Distribution",
 		"screenshot": "noDanModeCheckBox.png",
-		"description": "When enabled, all experience received by enemies is always distributed as if there were 4 Light Warriors, rahter than dividing the total EXP between those Light Warriors alive at the end of battle."
+		"description": "When enabled, all experience received by enemies is always distributed as if there were 4 Light Warriors, rather than dividing the total EXP between those Light Warriors alive at the end of battle."
 	},
 	{
 		"Id": "startingGoldCheckBox",
@@ -806,7 +812,7 @@
 		"Id": "tavernModeHireOnly",
 		"title": "Disable Reviving at Taverns",
 		"screenshot": "tavernModeHireOnly.png",
-		"description": "Disables the ability to revive Light Warriors at the Pub. When enabled, fallen Light Warriors may only be revived with the LIFE or LIF2 spells, or replaced by the class sold by the Pub."
+		"description": "Disables the ability to revive Light Warriors at the Pub.\nWhen enabled, fallen Light Warriors may only be revived with the LIFE or LIF2 spells, or replaced by the class sold by the Pub."
 	},
 	{
 		"Id": "tavernModeReplaceOnlyNone",
@@ -842,7 +848,7 @@
 		"Id": "buyTenCheckBox",
 		"title": "Buy Quantity Convenience",
 		"screenshot": "buyTenCheckBox.png",
-		"description": "If enabled, the player has the option to select the quantity of items bought in the item shop.  Press left to reduce quantity by 1, right to increase quantity by 1, up to increase quantity by 10, and down to decrease quantity by 10.  Mutually exclusive with Buy Ten."
+		"description": "If enabled, the player has the option to select the quantity of items bought in the item shop.\nPress left to reduce quantity by 1, right to increase quantity by 1, up to increase quantity by 10, and down to decrease quantity by 10.  Mutually exclusive with Buy Ten."
 	},
 	{
 		"Id": "buyTenOldCheckBox",
@@ -921,16 +927,17 @@
 		"title": "Spell Fixes",
 		"screenshot": "spellBugsCheckBox.png",
 		"description": "Fixes bugs in various spells, such as TMPR, SABR, and HEL2, so that they provide their proper effect (as opposed to not working, or even in some cases providing an opposite effect from what was intended, as in the vanilla game). Also provides the opportunity to cancel out of casting WARP or EXIT."
-	},
+  },
 	{
 		"Id": "enemyStatusAttackBugCheckBox",
 		"title": "Enemy Status Attacks",
 		"screenshot": "enemyStatusAttackBugCheckBox.png",
-		"description": "Fixes a bug where enemies had a chance to apply a status ailment on attacks that missed once the first attack connected.  When enabled, only enemy hits that connect have a chance to inflict status effects."
+		"description": "Fixes a bug where enemies had a chance to apply a status ailment on attacks that missed once the first attack connected.\nWhen enabled, only enemy hits that connect have a chance to inflict status effects."
 	},
 	{
 		"Id": "blackBeltAbsorbCheckBox",
 		"title": "Bl. Belt & Master Absorb Calculation",
+
 		"screenshot": "blackBeltAbsorbCheckBox.gif",
 		"description": "Fixes a bug in the way Black Belt & Master absorb is calculated. Unchecked, absorb is set to the Light Warrior's level so long as the character does not have a weapon equiped. Enabled, the absorb is applied only when the Light Warrior does not have any armor equiped."
 	},
@@ -944,7 +951,7 @@
 		"Id": "enemySpellsTargetingAlliesCheckBox",
 		"title": "Enemy Spells Targeting Allies",
 		"screenshot": "enemySpellsTargetingAlliesCheckBox.png",
-		"description": "Fixes a bug in the way spells are applied when an enemy casts it on all allies. Unchecked, spells, such as INV2, will skip the enemy that casted it. Checked, the spell will (correctly) affect all enemies."
+		"description": "Fixes a bug in the way spells are applied when an enemy casts it on all allies.\nUnchecked, spells, such as INV2, will skip the enemy that casted it.\nChecked, the spell will (correctly) affect all enemies."
 	},
 	{
 		"Id": "improveTurnOrderRandomizationCheckBox",
@@ -1034,7 +1041,7 @@
 		"Id": "saveGameWhenGameOverCheckBox",
 		"title": "Save Game When Game Over",
 		"screenshot": "saveGameWhenGameOverCheckBox.png",
-		"description": "When enabled, if your party perishes, you will respawn with all of your progression (items acquired, levels gained, etc.) intact. If you have the SHIP (but not the airship), you will respawn where you last docked; if you have the AIRSHIP, you will respawn at the airship and the ship will be waiting for you at Coneria; if you have neither, you will respawn where you last saved."
+		"description": "When enabled, if your party perishes, you will respawn with all of your progression (items acquired, levels gained, etc.) intact.\nIf you have the SHIP (but not the airship), you will respawn where you last docked; if you have the AIRSHIP, you will respawn at the airship and the ship will be waiting for you at Coneria; if you have neither, you will respawn where you last saved."
 	},
 	{
 		"Id": "saveGameDWModeCheckBox",
@@ -1082,19 +1089,19 @@
 		"Id": "AllSpellLevelsForKnightNinja",
 		"title": "Knight and Ninja Gain Charges In All Levels",
 		"screenshot": "ChangeMaxMP.png",
-		"description": "Sets the Knight and Ninja magic charge growth to give a charge in all levels whenever those classes gain a charge in any level, giving Knight and Ninja tier 4-8 charges.  This alleviates an issue with Keep Permissions where the Knight and Ninja could never cast spells they could learn, but is useless otherwise."
+		"description": "Sets the Knight and Ninja magic charge growth to give a charge in all levels whenever those classes gain a charge in any level, giving Knight and Ninja tier 4-8 charges.\nThis alleviates an issue with Keep Permissions where the Knight and Ninja could never cast spells they could learn, but is useless otherwise."
 	},
 	{
 		"Id": "swolePiratesCheckBox",
 		"title": "Buff the Pirates",
 		"screenshot": "swolePiratesCheckBox.png",
-		"description": "Increases the stats of Bikke's pirates considerably, roughly to the equivalent of a level 6 Fighter with a cheap but decent sword and iron armor, and increases the XP and gold yield from them by a factor of 20.  This is done before stat scaling, and also increases the level of script they can carry when generating balanced scripts (if Allow Unsafe Pirates is on)."
+		"description": "Increases the stats of Bikke's pirates considerably, roughly to the equivalent of a level 6 Fighter with a cheap but decent sword and iron armor, and increases the XP and gold yield from them by a factor of 20.\nThis is done before stat scaling, and also increases the level of script they can carry when generating balanced scripts (if Allow Unsafe Pirates is on)."
 	},
 	{
 		"Id": "ChangeMaxMP",
 		"title": "Change Spell Caster Max MP",
 		"screenshot": "ChangeMaxMP.png",
-		"description": "Allows the control over the maximum spell charges per spell level. This does not change when they recieve new spell levels. A value of less than 2 will not reduce the starting level 1 charges of red/white/black mages."
+		"description": "Allows the control over the maximum spell charges per spell level. This does not change when they recieve new spell levels.\nA value of less than 2 will not reduce the starting level 1 charges of red/white/black mages."
 	},
 	{
 		"Id": "changeLuteCheckBox",

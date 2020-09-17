@@ -38,24 +38,42 @@ namespace FF1Lib
 
 		public void ShuffleUnrunnable(MT19337 rng)
 		{
-			// First indiscriminately mark all normal formations as runnable.
-			List<Blob> formations = Get(FormationsOffset, FormationSize * NormalFormationCount).Chunk(FormationSize);
-			formations.ForEach(formation => formation[UnrunnableOffset] &= 0xFE);
-
-			// Generate a shuffled list of ids in the normal formation range and update formations with that.
-			// We skip formation 1 to avoid unrunnable trolly IMPs at the start of the game.
-			List<int> ids = Enumerable.Range(1, NormalFormationCount - 1).ToList();
+			// Load a list of formations from ROM
+			List<Blob> formations = Get(FormationsOffset, FormationSize * FormationCount).Chunk(FormationSize);
+			int unrunnableAcount = 0, unrunnableBcount = 0; // number of formations marked as unrunnable on both sides
+			// First we mark all formations as runnable except for fiends/chaos (both sides) or the other boss fights (on a-side only)
+			for (int i = 0; i < FormationCount; ++i)
+			{
+				if (i >= NormalFormationCount && i <= ChaosFormationIndex)
+					continue; // skip fiends and Chaos on both sides
+				if ((formations[i][UnrunnableOffset] & 0x01) == 0x01 && i < NormalFormationCount)
+					unrunnableAcount++; // only add normal formations to the count for a-side
+				if ((formations[i][UnrunnableOffset] & 0x02) == 0x02 && (i < NormalFormationCount || i > ChaosFormationIndex))
+					unrunnableBcount++; // only add the b-sides that are not fiend/chaos fights
+				if (i > ChaosFormationIndex)
+					formations[i][UnrunnableOffset] &= 0xFD; // the last four fights only mark the B-side as runnable
+				else
+					formations[i][UnrunnableOffset] &= 0xFC; // while everything else in the normal encounter range is marked unrunnable
+			}
+			// Generate a shuffled list of ids for encounters
+			// We include - all normal formation A-Sides except encounter 00 (imps), all normal formation B-Sides, and the four B-sides at the end
+			List<int> ids = Enumerable.Range(1, NormalFormationCount - 1).Concat(Enumerable.Range(FormationCount, NormalFormationCount)).Concat(Enumerable.Range(FormationCount + ChaosFormationIndex + 1, 4)).ToList();
 			ids.Shuffle(rng);
-			ids = ids.Take(VanillaUnrunnableCount).ToList();
-			ids.ForEach(id => formations[id][UnrunnableOffset] |= 0x01);
-
-			Put(FormationsOffset, formations.SelectMany(formation => formation.ToBytes()).ToArray());
+			ids = ids.Take(unrunnableAcount + unrunnableBcount).ToList(); // combine the number of unrunnables between both sides
+			foreach (int id in ids)
+			{
+				if (id < FormationCount)
+					formations[id][UnrunnableOffset] |= 0x01; // last bit is A-Side unrunnability
+				else
+					formations[id - FormationCount][UnrunnableOffset] |= 0x02; // and second-to-last bit is B-Side unrunnability
+			}
+			Put(FormationsOffset, formations.SelectMany(formation => formation.ToBytes()).ToArray()); // and put it all back in the ROM
 		}
 
 		public void CompletelyUnrunnable()
 		{
 			List<Blob> formations = Get(FormationsOffset, FormationSize * NormalFormationCount).Chunk(FormationSize);
-			formations.ForEach(formation => formation[UnrunnableOffset] |= 0x01);
+			formations.ForEach(formation => formation[UnrunnableOffset] |= 0x03);
 			Put(FormationsOffset, formations.SelectMany(formation => formation.ToBytes()).ToArray());
 		}
 
@@ -81,10 +99,13 @@ namespace FF1Lib
 			Put(FormationsOffset, formations.SelectMany(formation => formation.ToBytes()).ToArray());
 		}
 
-		public void AllowStrikeFirstAndSurprise()
+		public void AllowStrikeFirstAndSurprise(bool UnrunnableToWait, bool AllowStrikeFirstAndSurpriseflag)
 		{
-			PutInBank(0x0C, 0x93D4, Blob.FromHex("EAEA"));
-			PutInBank(0x0C, 0xA3E3, Blob.FromHex("EAEA")); // we dont want to be able to run if we get a first strike
+			if (AllowStrikeFirstAndSurpriseflag)
+			{
+				PutInBank(0x0C, 0x93D4, Blob.FromHex("EAEA"));
+			}
+			PutInBank(0x0C, 0xA3E0, Blob.FromHex($"AD916D2903D0{(UnrunnableToWait ? "25" : "36")}ADAE6BD036")); // we dont want to be able to run if we get a first strike on an unrunnable
 		}
 
 		public void MakeWarMECHUnrunnable()
@@ -135,8 +156,8 @@ namespace FF1Lib
 					finalBattle[PaletteAsignmentOffset] = 0x41; // Palette Assignment in top nibble, 1 in bottom for unrunnable.
 
 					// Scale up the Fundead enemies if we end up with them. They're too weak otherwise.
-					ScaleSingleEnemyStats(0x78, 1.4, false, false, null, false);
-					ScaleSingleEnemyStats(0x33, 1.2, false, false, null, false);
+					ScaleSingleEnemyStats(0x78, 140, 140, false, false, null, false, 100, 100);
+					ScaleSingleEnemyStats(0x33, 120, 120, false, false, null, false, 100, 100);
 					break;
 				case FinalFormation.TimeLoop:
 					finalBattle[TypeOffset] = 0x0B;         // 9Small + Garland pattern

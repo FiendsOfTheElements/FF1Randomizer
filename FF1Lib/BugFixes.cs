@@ -8,13 +8,13 @@ using RomUtilities;
 
 namespace FF1Lib
 {
-	public enum MDefChangesEnum
+	public enum MDEFGrowthMode
 	{
-		[Description("Use Vanilla Magic Defense")]
+		[Description("Vanilla")]
 		None = 0,
-		[Description("Replace Black Belt / Master MDef Growth")]
+		[Description("BB/Master +3/+4")]
 		BBFix,
-		[Description("Invert all player Magic Defense Growth")]
+		[Description("Invert All")]
 		Invert
 	}
 
@@ -43,9 +43,21 @@ namespace FF1Lib
 			// Move and rewrite function
 			Put(0x032CE1, Blob.FromHex("B18248C8B182488AA86891808868918060A9002006ADA9012006ADA9022006ADA9034C06AD8DB3682045A1A000B182A8B93CA0ACB36899A86BADB368A0009180A20220E1ACA00AA20420E1ACA021A20620E1ACA025A20720E1ACA023A20820E1ACA022A20920E1ACA020A20A20E1ACA024A20B20E1ACA901A00B9180A021B1824A4A4A4A4A186901A00C9180A900A00D9180C89180C89180A018B1823007C8C01CD0F7A900297FF02DE9002005AC85888689A002B188A00F9180A005B188A00D9180A004B188A00E9180"));
 
+			// Fix player elemental and category defense
+			Put(0x325B0, Blob.FromHex("A9008D6D68A00E"));
+			Put(0x325E8, Blob.FromHex("A9008D7668A00EA900"));
+			Put(0x33618, Blob.FromHex("A900"));
+			Put(0x33655, Blob.FromHex("A900"));
+		}
+
+		public void DontDoubleBBCritRates()
+		{
 			// Don't double BB crit
 			Put(0x32DDD, new byte[] { 0xEA });
+		}
 
+		public void DoubleWeaponCritRates()
+		{
 			// Increase crit rate of all weapons
 			var weapons = Get(WeaponOffset, WeaponSize * WeaponCount).Chunk(WeaponSize);
 			foreach (var weapon in weapons)
@@ -53,15 +65,12 @@ namespace FF1Lib
 				weapon[2] *= 2;
 			}
 			Put(WeaponOffset, weapons.SelectMany(weapon => weapon.ToBytes()).ToArray());
+		}
 
+		public void IncreaseWeaponBonus()
+		{
 			// Change damage bonus from +4 to +10
 			Put(0x326F5, Blob.FromHex("0A"));
-
-			// Fix player elemental and category defense
-			Put(0x325B0, Blob.FromHex("A9008D6D68A00E"));
-			Put(0x325E8, Blob.FromHex("A9008D7668A00EA900"));
-			Put(0x33618, Blob.FromHex("A900"));
-			Put(0x33655, Blob.FromHex("A900"));
 		}
 
 		public void FixChanceToRun()
@@ -100,11 +109,9 @@ namespace FF1Lib
 			Put(0x3AF80, Blob.FromHex("36"));
 			Put(0x3AF8F, Blob.FromHex("2AC902F026A564C900F0062061B54CACAFBD0D619D0B61BD0C619D0A612000B4A665DE00632013B64C97AE2026DB4C7CAF0000000000000000000000002000B4A92B202BB9A9008D64004C7CAF"));
 			Put(0x3AF13, Blob.FromHex("CC")); // update address for Cure4 routine
-		}
 
-		public void RebalanceSpells()
-		{
-			PutInBank(0x0C, 0xBA46, Blob.FromHex("2029B9AD856838ED7468B002A9008D85682085B860EAEAEAEAEAEAEAEAEAEAEAEAEA"));
+			// Better Slow battle message
+			Put(0x6C11F, FF1Text.TextToBytes("Attack rate down", false, FF1Text.Delimiter.Null));
 		}
 
 		public void FixEnemyStatusAttackBug()
@@ -152,13 +159,13 @@ namespace FF1Lib
 			Put(0x38BAA, Blob.FromHex("95B2B6B7C5FF97B2FFBAA4BCFFB2B8B7C5059EB6A8FFB7ABACB605B6B3A8AFAFFFB7B2FFA8BBACB7C4FF99B8B6ABFF8BFFB7B2FFA4A5B2B5B7"));
 		}
 
-		public void MDefChanges(MDefChangesEnum mode)
+		public void MDefChanges(MDEFGrowthMode mode)
 		{
-			if (mode == MDefChangesEnum.BBFix)
+			if (mode == MDEFGrowthMode.BBFix)
 			{
 				RemakeStyleMasterMDEF();
 			}
-			if (mode == MDefChangesEnum.Invert)
+			if (mode == MDEFGrowthMode.Invert)
 			{
 				InvertedMDEF();
 			}
@@ -169,6 +176,15 @@ namespace FF1Lib
 			//Thief & Ninja growth rates are separate
 			Put(0x6CA5A, Blob.FromHex("04"));
 			Put(0x6CA60, Blob.FromHex("04"));
+		}
+
+		public void KnightNinjaChargesForAllLevels()
+		{
+			for(int cur_pointer = NewLevelUpDataOffset; cur_pointer < NewLevelUpDataOffset + 196; cur_pointer += 2) // we need to cycle through the 49 levelups for Fighter and the 49 levelups for Thief, each are two bytes
+			{
+				if (Data[cur_pointer + 1] != 0)
+					Data[cur_pointer + 1] = 0xFF; // every spell charge gain that isn't equal to 0 is changed to FF, so each spell level will gain a charge instead of just the first three / four
+			}
 		}
 
 		public void RemakeStyleMasterMDEF()
@@ -185,6 +201,11 @@ namespace FF1Lib
 		{
 			Put(0x2DE1D, Blob.FromHex("FF"));
 			Put(0x2DE21, Blob.FromHex("FF"));
+		}
+
+		public void FixEnemyPalettes()
+		{
+			Data[0x2E382] = 0xEA; // remove an extraneous LSR A when drawing monsters in a Large-Small mixed formation, so that the enemy in the third monster slot in such formations uses the correct palette
 		}
 	}
 }

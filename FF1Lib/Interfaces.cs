@@ -29,6 +29,8 @@
 
 		bool? IncentivizeXcalber { get; }
 		bool? IncentivizeMasamune { get; }
+		bool? IncentivizeKatana { get; }
+		bool? IncentivizeVorpal { get; }
 		bool? IncentivizeRibbon { get; }
 		bool IncentivizeBridge { get; }
 		bool? IncentivizeShip { get; }
@@ -45,7 +47,7 @@
 		bool? IncentivizeRod { get; }
 		bool? IncentivizeFloater { get; }
 		bool? IncentivizeChime { get; }
-		bool? IncentivizeTail { get; }
+		bool? IncentivizePromotion { get; }
 		bool? IncentivizeCube { get; }
 		bool? IncentivizeBottle { get; }
 		bool? IncentivizeOxyale { get; }
@@ -79,13 +81,16 @@
 		bool? RandomWares { get; }
 		bool? RandomLoot { get; }
 		bool? BetterTrapChests { get; }
-		WorldWealth WorldWealth { get; }
+		bool? EarlierRuby { get; }
+		bool? GuaranteedRuseItem { get; }
+		WorldWealthMode WorldWealth { get; }
 	}
 	public interface IItemShuffleFlags
 	{
 		bool? Treasures { get; }
 		bool? NPCItems { get; }
 		bool? NPCFetchItems { get; }
+		bool? EarlyKing { get; }
 		bool? EarlySarda { get; }
 		bool? EarlySage { get; }
 		bool? EarlyOrdeals { get; }
@@ -110,7 +115,7 @@
 		bool? AllowDeepCastles { get; }
 		bool? DeepTownsPossible { get; }
 		bool? AllowDeepTowns { get; }
-		bool AllowStartAreaDanager { get; }
+		bool? AllowUnsafeStartArea { get; }
 	}
 	public interface IVictoryConditionFlags
 	{
@@ -122,5 +127,7 @@
 		bool? FreeShip { get; }
 		bool? FreeCanal { get; }
 		bool? FreeLute { get; }
+		bool? FreeTail { get; }
+		bool? NoTail { get; }
 	}
 }

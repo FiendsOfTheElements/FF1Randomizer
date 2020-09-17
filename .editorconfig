@@ -4,7 +4,7 @@ root = true
 insert_final_newline = true
 trim_trailing_whitespace = true
 
-[*.{cs,xaml,cshtml}]
+[*.{cs,xaml,cshtml,razor}]
 indent_size = 4
 indent_style = tab
 end_of_line = crlf

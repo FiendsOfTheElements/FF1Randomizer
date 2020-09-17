@@ -1,0 +1,39 @@
+﻿@using FF1Lib;
+
+<button type="button" class="@(IsOpen ? "nes-btn nes-nav is-success" : "nes-btn nes-nav is-warning")" @onclick="@(() => IsOpen = !IsOpen)">Bug Fixes &amp; Rebalancing</button>
+<BSCollapse IsOpen="@IsOpen">
+	<div class="is-dark nes-container">
+		<div class="row">
+			<div class="col-md-6">
+				<h4>Bugs</h4>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="houseMPRestorationCheckBox" @bind-Checked="Flags.HouseMPRestoration">House MP Restoration</CheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="weaponStatsCheckBox" @bind-Checked="Flags.WeaponStats">Weapon Stats</CheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="chanceToRunCheckBox" @bind-Checked="Flags.ChanceToRun">Chance to Run</CheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="spellBugsCheckBox" @bind-Checked="Flags.SpellBugs">Spell Fixes</CheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyStatusAttackBugCheckBox" @bind-Checked="Flags.EnemyStatusAttackBug">Enemy Status Attacks</CheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="blackBeltAbsorbCheckBox" @bind-Checked="Flags.BlackBeltAbsorb">Bl. Belt & Master Absorb Calculation</CheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyElementalResistancesCheckBox" @bind-Checked="Flags.EnemyElementalResistancesBug">Enemy Elemental Resistances</CheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="enemySpellsTargetingAlliesCheckBox" @bind-Checked="Flags.EnemySpellsTargetingAllies">Enemy Spells Targeting Allies</CheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="improveTurnOrderRandomizationCheckBox" @bind-Checked="Flags.ImproveTurnOrderRandomization">Improve Turn Order Randomization</CheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="fixHitChanceCapCheckBox" @bind-Checked="Flags.FixHitChanceCap">Fix Hit % Cap</CheckBox>
+			</div>
+			<div class="col-md-6">
+				<h4>Balance</h4>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="doubleBBCritCheckBox" @bind-Checked="Flags.BBCritRate">Halve BB Crit Rate</CheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="doubleWeaponCritCheckBox" @bind-Checked="Flags.WeaponCritRate">Double Weapon Crit Rate</CheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="increaseWepBonusesCheckBox" @bind-Checked="Flags.WeaponBonuses">Increase Weapon Elemental and Type Bonuses</CheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="thiefHitCheckBox" @bind-Checked="Flags.ThiefHitRate">Double Thief &amp; Ninja Hit% growth.</CheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="cureHealBuffCheckBox" @bind-Checked="Flags.BuffHealingSpells">Improve CURE, HEAL, LAMP, and AMUT spells</CheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="housesFillHpCheckBox" @bind-Checked="Flags.HousesFillHP">House Full HP Restoration</CheckBox>
+				<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="LockMode" TItem="LockHitMode" @bind-Value="Flags.LockMode">LOCK and LOK2 Mode:</EnumDropDown>
+				<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="MDefModeDropDown" TItem="MDEFGrowthMode" @bind-Value="Flags.MDefMode">MDEF Growth:</EnumDropDown>
+			</div>
+		</div>
+	</div>
+</BSCollapse>
+
+@code {
+	[Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }
+	[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
+	[Parameter] public bool IsOpen { get; set; } = true;
+}

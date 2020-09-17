@@ -265,13 +265,13 @@ namespace FF1Lib
 		public static TreasureChest ToFRevisited7 = new TreasureChest(0x31FE, nameof(ToFRevisited7), MapLocation.TempleOfFiendsPhantom, Item.Gold65000);
 		public static TreasureChest Unused15 = new TreasureChest(0x31FF, nameof(Unused15), 0, 0, isUnused: true);
 
-		public static MapObject KingConeria = new MapObject(ObjectId.King, MapLocation.ConeriaCastle2, Item.Bridge);
+		public static MapObject KingConeria = new MapObject(ObjectId.King, MapLocation.ConeriaCastle2, Item.Bridge, requiredGameEventFlag: ObjectId.Princess2, requiredSecondLocation: MapLocation.TempleOfFiends1);
 		public static MapObject Princess = new MapObject(ObjectId.Princess2, MapLocation.ConeriaCastle2, Item.Lute, requiredSecondLocation: MapLocation.TempleOfFiends1);
 		public static MapObject Matoya = new MapObject(ObjectId.Matoya, MapLocation.MatoyasCave, Item.Herb, AccessRequirement.Crystal, requiredItemTrade: Item.Crystal);
-		public static MapObject Bikke = new MapObject(ObjectId.Bikke, MapLocation.Pravoka, Item.Ship, useVanillaRoutineAddress: true);
+		public static MapObject Bikke = new MapObject(ObjectId.Bikke, MapLocation.Pravoka, Item.Ship);
 		// Assumption is made that if you have access to the Elf Prince you also have access to the Elf Doc
 		public static MapObject ElfPrince = new MapObject(ObjectId.ElfPrince, MapLocation.ElflandCastle, Item.Key, AccessRequirement.Herb, ObjectId.ElfDoc);
-		public static MapObject Astos = new MapObject(ObjectId.Astos, MapLocation.NorthwestCastle, Item.Crystal, AccessRequirement.Crown, useVanillaRoutineAddress: true);
+		public static MapObject Astos = new MapObject(ObjectId.Astos, MapLocation.NorthwestCastle, Item.Crystal, AccessRequirement.Crown);
 		public static MapObject Sarda = new MapObject(ObjectId.Sarda, MapLocation.SardasCave, Item.Rod, requiredGameEventFlag: ObjectId.Vampire, requiredSecondLocation: MapLocation.EarthCaveVampire);
 		public static MapObject CanoeSage = new MapObject(ObjectId.CanoeSage, MapLocation.CrescentLake, Item.Canoe, AccessRequirement.EarthOrb, requiredItemTrade: Item.EarthOrb);
 		public static MapObject CubeBot = new MapObject(ObjectId.CubeBot, MapLocation.Waterfall, Item.Cube);

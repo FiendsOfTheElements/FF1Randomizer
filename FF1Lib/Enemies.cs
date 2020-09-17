@@ -8,15 +8,15 @@ using RomUtilities;
 
 namespace FF1Lib
 {
-	public enum FormationShuffleModeEnum
+	public enum FormationShuffleMode
 	{
-		[Description("Don't Shuffle Encounters")]
+		[Description("Vanilla")]
 		None = 0,
-		[Description("Shuffle Encounter Rarity")]
+		[Description("Shuffle Rarity")]
 		Intrazone,
-		[Description("Shuffle Encounters Across Zones")]
+		[Description("Shuffle Across Zones")]
 		InterZone,
-		[Description("Random Encounter Zones")]
+		[Description("Totally Random")]
 		Randomize
 	}
 	public partial class FF1Rom : NesRom
@@ -39,10 +39,17 @@ namespace FF1Lib
 
 		public abstract class Enemy
 		{
+			public const int Imp = 0;
 			public const int Pirate = 15;
+			public const int Crawl = 24;
 			public const int Phantom = 51;
+			public const int Mancat = 55;
+			public const int Vampire = 60;
+			public const int Coctrice = 81;
+			public const int Sorceror = 104;
 			public const int Garland = 105;
 			public const int Astos = 113;
+			public const int Nitemare = 117;
 			public const int WarMech = 118;
 			public const int Lich = 119;
 			public const int Lich2 = 120;
@@ -56,10 +63,10 @@ namespace FF1Lib
 		}
 		public byte[] StartingZones = { 0x1B, 0x1C, 0x24, 0x2C };
 
-		public void ShuffleEnemyFormations(MT19337 rng, FormationShuffleModeEnum shuffleMode)
+		public void ShuffleEnemyFormations(MT19337 rng, FormationShuffleMode shuffleMode)
 		{
 
-			if (shuffleMode == FormationShuffleModeEnum.Intrazone)
+			if (shuffleMode == FormationShuffleMode.Intrazone)
 			{
 				// intra-zone shuffle, does not change which formations are in zomes.
 				var oldFormations = Get(ZoneFormationsOffset, ZoneFormationsSize * ZoneCount).Chunk(ZoneFormationsSize);
@@ -86,7 +93,7 @@ namespace FF1Lib
 
 				Put(ZoneFormationsOffset, newFormations.SelectMany(formation => formation.ToBytes()).ToArray());
 			}
-			if (shuffleMode == FormationShuffleModeEnum.InterZone)
+			if (shuffleMode == FormationShuffleMode.InterZone)
 			{
 				// Inter-zone shuffle
 				// Get all encounters from zones not surrounding starting area
@@ -122,7 +129,7 @@ namespace FF1Lib
 				Put(ZoneFormationsOffset, newFormations.SelectMany(formation => formation.ToBytes()).ToArray());
 			}
 
-			if (shuffleMode == FormationShuffleModeEnum.Randomize)
+			if (shuffleMode == FormationShuffleMode.Randomize)
 			{
 				// no-pants mode
 				var oldFormations = Get(ZoneFormationsOffset, ZoneFormationsSize * ZoneCount).Chunk(ZoneFormationsSize);
@@ -170,16 +177,19 @@ namespace FF1Lib
 			Put(ZoneFormationsOffset, newFormations.ToArray());
 		}
 
-		public void ShuffleEnemyScripts(MT19337 rng, bool AllowUnsafePirates)
+		public void ShuffleEnemyScripts(MT19337 rng, bool AllowUnsafePirates, bool doNormals)
 		{
 			var oldEnemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
 			var newEnemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
 
-			var normalOldEnemies = oldEnemies.Take(EnemyCount - 10).ToList(); // all but WarMECH, fiends, fiends revisited, and CHAOS
-			normalOldEnemies.Shuffle(rng);
-			for (int i = 0; i < EnemyCount - 10; i++)
+			if(doNormals)
 			{
-				newEnemies[i][7] = normalOldEnemies[i][7];
+				var normalOldEnemies = oldEnemies.Take(EnemyCount - 10).ToList(); // all but WarMECH, fiends, fiends revisited, and CHAOS
+				normalOldEnemies.Shuffle(rng);
+				for (int i = 0; i < EnemyCount - 10; i++)
+				{
+					newEnemies[i][7] = normalOldEnemies[i][7];
+				}
 			}
 
 			var oldBosses = new List<Blob>
@@ -227,7 +237,7 @@ namespace FF1Lib
 			Put(EnemyOffset, newEnemies.SelectMany(enemy => enemy.ToBytes()).ToArray());
 		}
 
-		public void ShuffleEnemySkillsSpells(MT19337 rng)
+		public void ShuffleEnemySkillsSpells(MT19337 rng, bool doNormals)
 		{
 			var scriptBytes = Get(ScriptOffset, ScriptSize * ScriptCount).Chunk(ScriptSize);
 
@@ -243,7 +253,8 @@ namespace FF1Lib
 			var bossIndices = new List<int> { 34, 36, 38, 40 };
 			var bigBossIndices = new List<int> { 32, 35, 37, 39, 41, 42 };
 
-			ShuffleIndexedSkillsSpells(scriptBytes, normalIndices, rng);
+			if(doNormals)
+				ShuffleIndexedSkillsSpells(scriptBytes, normalIndices, rng);
 			ShuffleIndexedSkillsSpells(scriptBytes, bossIndices, rng);
 			ShuffleIndexedSkillsSpells(scriptBytes, bigBossIndices, rng);
 
@@ -345,20 +356,23 @@ namespace FF1Lib
 			Put(EnemyOffset, newEnemies.SelectMany(enemy => enemy.ToBytes()).ToArray());
 		}
 
-		public void RandomEnemyStatusAttacks(MT19337 rng, bool AllowUnsafePirates)
+		public void RandomEnemyStatusAttacks(MT19337 rng, bool AllowUnsafePirates, bool DisableStunTouch)
 		{
 			var enemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
 
 			List<(byte touch, byte element)> statusElements = new List<(byte touch, byte element)>()
 			{
-				(0x01, 0x08), //Death Touch = Death Element
-				(0x02, 0x02), //Stone Touch = Poison
 				(0x04, 0x02), //Poison Touch = Poison
 				(0x08, 0x01), //Dark Touch = Status
 				(0x10, 0x01), //Stun Touch = Status
 				(0x20, 0x01), //Sleep Touch = Status
 				(0x40, 0x01), //Mute Touch = Status
 			};
+
+			if (DisableStunTouch) statusElements.Remove((0x10, 0x01));
+
+			(byte touch, byte element) deathElement = (0x01, 0x08); //Death Touch = Death Element
+			(byte touch, byte element) stoneElement = (0x02, 0x02); //Stone Touch = Poison
 
 			for (int i = 0; i < EnemyCount; i++)
 			{
@@ -369,8 +383,20 @@ namespace FF1Lib
 						continue;
 					}
 				}
-				//Vanilla ratio is 37/128, hence the magic numbers
-				if (rng.Between(0, 128) < 37)
+
+				int roll = rng.Between(0, 128);
+				if (roll < 1) //1 vanilla death toucher
+				{
+					//Death Touch
+					var (touch, element) = deathElement;
+					
+				}
+				else if (roll < 2) //1 vanilla stone toucher
+				{
+					//Stone Touch
+					var (touch, element) = stoneElement;
+				}
+				else if (roll < 37) //35 enemies with other assorted status touches
 				{
 					var (touch, element) = statusElements.PickRandom(rng);
 					enemies[i][15] = touch;
