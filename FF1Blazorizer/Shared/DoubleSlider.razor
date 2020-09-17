@@ -10,6 +10,7 @@
 			@(new MarkupString($@"<style>
 				#rc-{Id} > input[type='range'] {{
 					background: var(--track-background);
+					pointer-events: none;
 				}}
 				#rc-{Id} > input[name='low-range'] {{
 					position: absolute;
