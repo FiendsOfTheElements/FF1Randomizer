@@ -38,7 +38,7 @@
 	{
 		"Id": "mapOpenProgressionFloaterDockCheckBox",
 		"title": "Ryukahn Desert Dock",
-		"screenshot": "mapOpenProgressionExtendedCheckBox.png",
+		"screenshot": "desertDockCheckBox.png",
 		"description": "Add an additional dock near the Ryukhan desert."
 	},
 	{
