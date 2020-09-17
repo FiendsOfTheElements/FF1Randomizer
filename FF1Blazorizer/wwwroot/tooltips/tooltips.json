@@ -26,7 +26,7 @@
 	{
 		"Id": "mapOpenProgressionDwavesNWCheckBox",
 		"title": "Extended Open Progression",
-		"screenshot": "mapOpenProgressionExtendedCheckBox.png",
+		"screenshot": "mapOpenProgressionDwavesNWCheckBox.png",
 		"description": "Remove the river tile between the Dwarf Cave and Northwest Castle so it can be traversed on foot."
 	},
 	{
@@ -38,7 +38,7 @@
 	{
 		"Id": "mapOpenProgressionFloaterDockCheckBox",
 		"title": "Ryukahn Desert Dock",
-		"screenshot": "desertDockCheckBox.png",
+		"screenshot": "mapOpenProgressionExtendedCheckBox.png",
 		"description": "Add an additional dock near the Ryukhan desert."
 	},
 	{
@@ -46,7 +46,7 @@
 		"title": "Magic Levels",
 		"screenshot": "magicLevelsCheckBox.png",
 		"description": "Shuffles the levels of spells, but not what level is sold at each magic shop.\nUnless \"Keep Permissions\" is checked, the ability of a character to learn a given spell depends on whether or not a class can learn the spell originally in that spell's new slot."
-	},
+  },
 	{
 		"Id": "magicShopsCheckBox",
 		"title": "Magic Shop Shuffle",
@@ -92,6 +92,7 @@
 	{
 		"Id": "fixMissingBattleRngEntry",
 		"title": "Fix Missing Battle RNG Entry",
+		"screenshot": "fixMissingBattleRngEntry.gif",
 		"description": "The vanilla Battle RNG table has two 00s out of 256 hex values. If checked, this flag replaces one of them with 0x95, the missing hex value."
 	},
 	{
@@ -109,66 +110,79 @@
 	{
 		"Id": "allowUnsafeStartAreaCheckBox",
 		"title": "Allow Unsafe Start Area",
+		"screenshot": "allowUnsafeStartAreaCheckBox.gif",
 		"description": "Entrance shuffle normally requires at least 3 safe locations amongst the Coneria Castle, Dwarf Cave, Temple of Fiends, Matoya's Cave, and Pravoka entrances.\nThis flag removes that safety net."
 	},
 	{
 		"Id": "hintsVillage",
 		"title": "Hints from villagers",
-		"description": "In each town a villager reveals the location of an item.\nThe old men in Coneria, Pravoka, Melmond and Onrac.\nAn Elf scholar in Elfland, Lukkanh in Crescent Lake.\nThe Witch in Gaia.\nThe Lefein villager on the left side (no Slab required)."
+		"screenshot": "hintsVillage.png",
+		"description": "In each town, a villager reveals the location of an item. The old man in Coneria, Pravoka, Melmond and Onrac, an Elf scholar in Elfland, Lukkanh in Crescent Lake, the Witch in Gaia and the Lefein villager on the left side (no Slab required)."
 	},
 	{
 		"Id": "hintsDungeon",
 		"title": "Hints from dungeon explorers",
-		"description": "Five NPC in dungeons reveals the location of an item.\nDown the dead end of Marsh Cave B1.\nOn Lich's floor in Earth Cave.\nIn the hallway of Gurgu Volcano B3.\nIn a room on the left of Sea Shrine B4.\nIn the South room of Sky Palace 3F."
+		"screenshot": "hintsDungeon.png",
+		"description": "Five NPC in dungeons reveals the location of an item. Down the dead end of Marsh Cave B1, on Lich's floor in Earth Cave, in the hallway of Gurgu Volcano B3, in a room on the left of Sea Shrine B4 and in the South room of Sky Palace 3F."
 	},
 	{
 		"Id": "hintsUselessCheckBox",
 		"title": "Useless Hints",
-		"description": "Half of the NPCs give useless hints."
+		"screenshot": "hintsUselessCheckBox.png",
+		"description": "Half of the hint-giving NPCs will give useless hints instead."
 	},
 	{
 		"Id": "hintsRngDungeon",
 		"title": "Shuffled location in dungeon",
-		"description": "The NPCs could be at two other possible locations in each dungeon."
+		"screenshot": "hintsRngDungeon.png",
+		"description": "The hint giving NPCs in dungeons could be at two other potential locations within each dungeon."
 	},
 	{
 		"Id": "EnablePoolParty",
 		"title": "Party Draft",
-		"description": "Draft your party from a pool of random characters.\nAllowed classes are selected from Party Composition, allowing duplicates.\nOnce a character is selected, it's removed from the pool. Cancelling your choice puts back the character in the pool."
+		"screenshot": "EnablePoolParty.gif",
+		"description": "Draft your party from a pool of random characters. Allowed classes are selected from Party Composition, allowing duplicates. Once a character is selected, it's removed from the pool. Cancelling your choice puts back the character in the pool."
 	},
 	{
 		"Id": "PoolSizeDropDown",
 		"title": "Pool Size",
-		"description": "Number of characters in the pool."
+		"screenshot": "PoolSizeDropDown.gif",
+		"description": "Allows you to set the total number of characters in the pool."
 	},
 	{
 		"Id": "PPIncludePromotedClasses",
 		"title": "Include Promoted Classes",
-		"description": "Allow promoted classes to be added to the pool."
+		"screenshot": "PPIncludePromotedClasses.gif",
+		"description": "Allow promoted classes to be added to the character select pool."
 	},
 	{
 		"Id": "EnableRandomPromotions",
 		"title": "Random Promotions",
-		"description": "When giving the TAIL to Bahamut, promote your party to random classes.\nNOTE: By default, a non-caster class promoting to a caster class (Red, White & Black Mages) will gain few MP. Use Linear MP Growth to fix this."
+		"screenshot": "EnableRandomPromotions.gif",
+		"description": "When giving the TAIL to Bahamut, promote your party to various random classes. Random classes are pre-selected by the randomizer when the seed is generated. You will not know ahead of time what that promoted class will be.\nNOTE: By default, a non-caster class promoting to a caster class (Red, White & Black Mages) will gain few MP. Use Linear MP Growth to fix this."
 	},
 	{
 		"Id": "RPIncludeBaseClasses",
 		"title": "Include Base Classes",
+		"screenshot": "RPIncludeBaseClasses.gif",
 		"description": "Allow base classes as possible promotions."
 	},
 	{
 		"Id": "RPSpoilers",
 		"title": "Spoil Promotions",
+		"screenshot": "RPSpoilers.png",
 		"description": "Change class names to show class promotions.\nFormat: Current class - Promotion class."
 	},
 	{
 		"Id": "checkboxLinearMPGrowth",
 		"title": "Linear MP Growth",
-		"description": "Change MP growth for Red, White and Black Mages to a linear growth:\n1 MP every 3 levels for each slots starting from the original level for a given slot (ie: first lv3 MP for a White Mage at level 5, etc.).\nMainly a fix for Random Promotions."
+		"screenshot": "checkboxLinearMPGrowth.gif",
+		"description": "Change MP growth for Red, White and Black Mages to a linear growth, gaining 1 MP every 3 levels for each slots, starting from the original level for a given slot (ie: first lv3 MP for a White Mage at level 5, etc.). Mainly a fix for Random Promotions."
 	},
 	{
 		"Id": "RandomizeClassCheckBox",
 		"title": "Blursed Classes",
+		"screenshot": "RandomizeClassCheckBox.png",
 		"description": "Give bonuses and maluses at random to each class. Press Select at Party selection screen and A at Status screen to reveal the modifiers."
 	},
 	{
@@ -270,7 +284,7 @@
 		"Id": "worldWealthDropDown",
 		"title": "Random Wealth",
 		"screenshot": "worldWealthDropDown.gif",
-		"description": "Alters the distribution of items:\nNormal is the same number of each tier of item as in the vanilla item pool.\nHigh removes gold chests for more legendary and rare equipment, while more common items shows up in lower and lower tiers.\nMelmond has the lowest chance of top tier gear."
+		"description": "Random Wealth: Alters the distribution of items; Normal is the same number of each tier of item as in the vanilla item pool. High removes gold chests for more legendary and rare equipment, while more common items shows up in lower and lower tiers. Melmond has the lowest chance of top tier gear."
 	},
 	{
 		"Id": "betterTrapTreasureCheckBox",
@@ -329,26 +343,31 @@
 	{
 		"Id": "RandomWeaponBonus",
 		"title": "Random Weapon Bonus",
+		"screenshot": "RandomWeaponBonus.png",
 		"description": "Gives each weapon a random bonus from the selected range. This will increase or decrease (if negative) its damage by 2 per bonus, hit by 3(max 50%) per bonus, crit by 3(1.5%) per bonus.\nAll values cannot go below zero hit or 1 crit/damage."
 	},
 	{
 		"Id": "RandomWeaponBonusExcludeMasa",
 		"title": "Random Weapon Bonus - Exclude Masa",
+		"screenshot": "RandomWeaponBonusExcludeMasa.png",
 		"description": "Masmune will not receive any bonuses or minuses, it will always be regular."
 	},
 	{
 		"Id": "RandomArmorBonus",
 		"title": "Random Armor Bonus",
+		"screenshot": "RandomArmorBonus.png",
 		"description": "Gives each armor a random bonus from the selected range. This will increase or decrease (if negative) its absorb by 1 per bonus (2 for body armor) and reduce its weight penalty by 1 per bonus (2 for body armor)."
 	},
 	{
 		"Id": "separateBossHPScalingCheckBox",
 		"title": "Separate Boss HP Scaling",
+		"screenshot": "separateBossHPScalingCheckBox.png",
 		"description": "Uses a second scaling for boss hp independant of other stats."
 	},
 	{
 		"Id": "separateEnemyHPScalingCheckBox",
 		"title": "Separate Enemy HP Scaling",
+		"screenshot": "separateEnemyHPScalingCheckBox.png",
 		"description": "Uses a second scaling for enemy hp independant of other stats."
 	},
 	{
@@ -492,6 +511,7 @@
 	{
 		"Id": "disableSpellCastFlashCheckBox",
 		"title": "Disable Spell Cast Flash",
+		"screenshot": "disableSpellCastFlashCheckBox.gif",
 		"description": "Removes the full screen color flash when casting spells."
 	},
 	{
@@ -701,6 +721,7 @@
 	{
 		"Id": "earlyKingCheckBox",
 		"title": "Early King Item",
+		"screenshot": "earlyKingCheckBox.png",
 		"description": "The King of Coneria will give the party his item before the Princess is saved."
 	},
 	{
@@ -784,226 +805,266 @@
 	{
 		"Id": "tavernMode",
 		"title": "Tavern Recruitment Mode",
+		"screenshot": "tavernMode.png",
 		"description": "Replaces Clinics with Pubs. Pubs allow the party to recruit a Light Warrior of a random class, in addition to reviving fallen Light Warriors."
 	},
 	{
 		"Id": "tavernModeHireOnly",
 		"title": "Disable Reviving at Taverns",
+		"screenshot": "tavernModeHireOnly.png",
 		"description": "Disables the ability to revive Light Warriors at the Pub.\nWhen enabled, fallen Light Warriors may only be revived with the LIFE or LIF2 spells, or replaced by the class sold by the Pub."
 	},
 	{
 		"Id": "tavernModeReplaceOnlyNone",
 		"title": "Only Replace Nones at Taverns",
+		"screenshot": "tavernModeReplaceOnlyNone.png",
 		"description": "Limit hiring to only replace None characters, this means once you chose a party member for that spot, you are stuck with them."
 	},
 	{
 		"Id": "noPartyShuffleCheckBox",
 		"title": "No Party Shuffle Convenience",
+		"screenshot": "noPartyShuffleCheckBox.png",
 		"description": "If enabled, the player's party is not automatically rearranged when afflicted with status ailments or slain."
 	},
 	{
 		"Id": "speedHacksCheckBox",
 		"title": "Speed Hacks Convenience",
+		"screenshot": "speedHacksCheckBox.gif",
 		"description": "If enabled, many game processes, such as opening the menu and battles, are significantly faster."
 	},
 	{
 		"Id": "identifyTreasuresCheckBox",
 		"title": "Identify Treasures Convenience",
+		"screenshot": "identifyTreasuresCheckBox.png",
 		"description": "If enabled, the player can see what item is in a chest if their inventory is full, instead of seeing 'Can't Hold anymore'."
 	},
 	{
 		"Id": "dashCheckBox",
 		"title": "Dash Convenience",
+		"screenshot": "dashCheckBox.gif",
 		"description": "If enabled, the player's movement speed on foot is doubled.  Hold B while walking to reduce to normal speed."
 	},
 	{
 		"Id": "buyTenCheckBox",
 		"title": "Buy Quantity Convenience",
+		"screenshot": "buyTenCheckBox.png",
 		"description": "If enabled, the player has the option to select the quantity of items bought in the item shop.\nPress left to reduce quantity by 1, right to increase quantity by 1, up to increase quantity by 10, and down to decrease quantity by 10.  Mutually exclusive with Buy Ten."
 	},
 	{
 		"Id": "buyTenOldCheckBox",
 		"title": "Buy Ten Convenience",
+		"screenshot": "buyTenOldCheckBox.png",
 		"description": "If enabled, the player has the option to buy 10 of an item at once in the item shop, so they do not need to spend a long time buying 99 heal potions."
 	},
 	{
 		"Id": "waitWhenUnrunnableCheckBox",
 		"title": "WAIT When Unrunnable Convenience",
+		"screenshot": "waitWhenUnrunnableCheckBox.png",
 		"description": "If enabled, the player is notified when it is impossible to escape a battle by RUNning, replacing the RUN command with WAIT."
 	},
 	{
 		"Id": "enableCritNumberDisplayCheckBox",
 		"title": "Crit Number Display Convenience",
+		"screenshot": "enableCritNumberDisplayCheckBox.png",
 		"description": "If enabled, critical hits note how many hits out of the maximum connected with a critical, for example 2 critical hits out of 3, instead of simply marking that there was a critical."
 	},
 	{
 		"Id": "battleMagicMenuWrapAroundCheckBox",
 		"title": "Battle Magic Menu Wrap Around",
+		"screenshot": "battleMagicMenuWrapAroundCheckBox.gif",
 		"description": "If enabled, allows to wrap up and down in the battle magic menu."
 	},
 	{
 		"Id": "inventoryAutosortCheckBox",
 		"title": "Inventory Autosort",
+		"screenshot": "inventoryAutosortCheckBox.png",
 		"description": "If enabled, HEAL, PURE, and SOFT potions are automatically moved to the first row of the item menu, followed by saving items on the second row, then all key items in your inventory."
 	},
 	{
 		"Id": "renounceAutosortCheckBox",
 		"title": "Renounce Autosort",
+		"screenshot": "renounceAutosortCheckBox.png",
 		"description": "Forgo the Autosort Inventory feature if it's enabled."
 	},
 	{
 		"Id": "houseMPRestorationCheckBox",
 		"title": "House MP Restoration",
+		"screenshot": "houseMPRestorationCheckBox.png",
 		"description": "Fixes a bug where the party's MP was restored only after the game was saved."
 	},
 	{
 		"Id": "weaponStatsCheckBox",
 		"title": "Weapon Stats",
+		"screenshot": "weaponStatsCheckBox.png",
 		"description": "Fixes applying elemental and type bonuses to weapons"
 	},
 	{
 		"Id": "doubleBBCritCheckBox",
 		"title": "Halve BB Crit Rate",
+		"screenshot": "doubleBBCritCheckBox.png",
 		"description": "Halves the BB's unarmed crit rate.  (Normal behavior is critrate = Level * 2, with this it is merely critrate = Level)."
 	},
 	{
 		"Id": "doubleWeaponCritCheckBox",
 		"title": "Double Weapon Crit Rates",
+		"screenshot": "doubleWeaponCritCheckBox.png",
 		"description": "Doubles the crit rate of all weapons"
 	},
 	{
 		"Id": "increaseWepBonusesCheckBox",
 		"title": "Weapon Attack Bonuses",
-		"description": "Increases elemental and type bonuses to weapons"
+		"screenshot": "increaseWepBonusesCheckBox.png",
+		"description": "Increases elemental and type bonuses to weapons, improving the damage bonus from +4 to +10"
 	},
 	{
 		"Id": "chanceToRunCheckBox",
 		"title": "Chance to Run",
-		"description": "Fixes a bug in the way the chance to run is calculated."
+		"screenshot": "chanceToRunCheckBox.png",
+		"description": "Fixes a bug in the way the chance to run is calculated, using the actual intended stat -- Luck -- instead of the glitched stat from the original NES release"
 	},
 	{
 		"Id": "spellBugsCheckBox",
 		"title": "Spell Fixes",
-		"description": "Fixes bugs in various spells, such as TMPR, SABR, and HEL2. Also provides the opportunity to cancel out of casting WARP or EXIT."
-	},
+		"screenshot": "spellBugsCheckBox.png",
+		"description": "Fixes bugs in various spells, such as TMPR, SABR, and HEL2, so that they provide their proper effect (as opposed to not working, or even in some cases providing an opposite effect from what was intended, as in the vanilla game). Also provides the opportunity to cancel out of casting WARP or EXIT."
+  },
 	{
 		"Id": "enemyStatusAttackBugCheckBox",
 		"title": "Enemy Status Attacks",
+		"screenshot": "enemyStatusAttackBugCheckBox.png",
 		"description": "Fixes a bug where enemies had a chance to apply a status ailment on attacks that missed once the first attack connected.\nWhen enabled, only enemy hits that connect have a chance to inflict status effects."
 	},
 	{
 		"Id": "blackBeltAbsorbCheckBox",
 		"title": "Bl. Belt & Master Absorb Calculation",
-		"description": "Fixes a bug in the way Bl. Belt & Master absorb is calculated.\nUnchecked, absorb is set to the Light Warrior's level so long as the character does not have a weapon equiped.\nEnabled, the absorb is applied only when the Light Warrior does not have any armor equiped."
+
+		"screenshot": "blackBeltAbsorbCheckBox.gif",
+		"description": "Fixes a bug in the way Black Belt & Master absorb is calculated. Unchecked, absorb is set to the Light Warrior's level so long as the character does not have a weapon equiped. Enabled, the absorb is applied only when the Light Warrior does not have any armor equiped."
 	},
 	{
 		"Id": "enemyElementalResistancesCheckBox",
 		"title": "Enemy Elemental Resistances",
+		"screenshot": "enemyElementalResistancesCheckBox.png",
 		"description": "Fixes a bug where XFER and other spells that affect elemental resistances would not work for enemies."
 	},
 	{
 		"Id": "enemySpellsTargetingAlliesCheckBox",
 		"title": "Enemy Spells Targeting Allies",
+		"screenshot": "enemySpellsTargetingAlliesCheckBox.png",
 		"description": "Fixes a bug in the way spells are applied when an enemy casts it on all allies.\nUnchecked, spells, such as INV2, will skip the enemy that casted it.\nChecked, the spell will (correctly) affect all enemies."
 	},
 	{
 		"Id": "improveTurnOrderRandomizationCheckBox",
 		"title": "Improve Turn Order Randomization",
+		"screenshot": "improveTurnOrderRandomizationCheckBox.png",
 		"description": "Improves the balance of turn randomization. Unchecked, the turn order is weighted in favor of the enemies. Enabled, turn order is more balanced."
 	},
 	{
 		"Id": "fixHitChanceCapCheckBox",
 		"title": "Fix Hit % Cap",
+		"screenshot": "fixHitChanceCapCheckBox.png",
 		"description": "Changes the max Hit % from 200 to 255."
 	},
 	{
 		"Id": "housesFillHpCheckBox",
 		"title": "House Full HP Restoration",
+		"screenshot": "housesFillHpCheckBox.gif",
 		"description": "Houses completely restore the party's HP. Unchecked, using a HOUSE restores 120HP to each Light Warrior."
 	},
 	{
 		"Id": "rebalanceSpellsCheckBox",
 		"title": "LOCK and LOK2 Always Hit",
+		"screenshot": "rebalanceSpellsCheckBox.png",
 		"description": "When enabled, the spells LOCK and LOK2 will always be effective against all enemies, regardless of their MDEF."
 	},
 	{
 		"Id": "thiefHitCheckBox",
 		"title": "Thief Hit Rate Rebalance",
+		"screenshot": "thiefHitCheckBox.gif",
 		"description": "The thief and ninja's hit rate is increased from +2 per level to +4."
 	},
 	{
 		"Id": "MDefModeDropDown",
 		"title": "MDef Mode Rebalancing",
+		"screenshot": "MDefModeDropDown.gif",
 		"description": "Adjusts the Magic Defense gains for classes on level up."
-	},
-	{
-		"Id": "proceduralGenerationCheckBox",
-		"title": "Enable Procedural Floor Generation",
-		"description": "Enables the generation of random floors for various dungeons."
 	},
 	{
 		"Id": "procGenWaterfall",
 		"title": "Generated Waterfall Cave",
+		"screenshot": "procGenWaterfall.png",
 		"description": "Randomly generates the map for the Waterfall cave."
 	},
 	{
 		"Id": "procGenEarth1",
 		"title": "Generated Earth Cave B1",
+		"screenshot": "procGenEarth1.png",
 		"description": "Randomly generates the map for the first level of Earth Cave."
 	},
 	{
 		"Id": "procGenEarth2",
 		"title": "Generated Earth Cave B2",
+		"screenshot": "procGenEarth2.png",
 		"description": "Randomly generates the map for the second level of Earth Cave."
 	},
 	{
 		"Id": "fiendShuffleCheckBox",
 		"title": "Shuffle the Four Original Fiend Fights",
+		"screenshot": "fiendShuffleCheckBox.gif",
 		"description": "Shuffles which fiend is guarding which orb in the present day. For example, the fiend at the bottom of Earth Cave could be Kraken."
 	},
 	{
 		"Id": "itemPlacementCheckBox",
 		"title": "Use Older v2 Placement",
-		"description": "Uses an older algorithm to place key items which favored placing the Ship and Canal in the inner sea, even if the Airship could be obtained early."
+		"screenshot": "fiendShuffleCheckBox.png",
+		"description": "Uses an older algorithm for key item placement which favored having the Ship and Canal in the inner sea, even if the Airship could be obtained early."
 	},
 	{
 		"Id": "npcSwatterCheckBox",
 		"title": "NPC Guillotine",
+		"screenshot": "npcSwatterCheckBox.gif",
 		"description": "Talking to certain NPCs removes them from the map when their dialog is dismissed. This can be used to make bats go away, for example."
 	},
 	{
 		"Id": "disableTentSaving",
 		"title": "Disable Tent/Cabin/House Saving on Overworld",
+		"screenshot": "disableTentSaving.gif",
 		"description": "When enabled, using a TENT, CABIN, or HOUSE will only restore HP/MP and not save the game."
 	},
 	{
 		"Id": "disableInnSaving",
 		"title": "Disable Inn Saving",
+		"screenshot": "disableInnSaving.png",
 		"description": "When enabled, staying at an inn will only restore HP/MP, but not save the game."
 	},
 	{
 		"Id": "saveGameWhenGameOverCheckBox",
 		"title": "Save Game When Game Over",
+		"screenshot": "saveGameWhenGameOverCheckBox.png",
 		"description": "When enabled, if your party perishes, you will respawn with all of your progression (items acquired, levels gained, etc.) intact.\nIf you have the SHIP (but not the airship), you will respawn where you last docked; if you have the AIRSHIP, you will respawn at the airship and the ship will be waiting for you at Coneria; if you have neither, you will respawn where you last saved."
 	},
 	{
 		"Id": "saveGameDWModeCheckBox",
 		"title": "Dragon Warrior Mode",
+		"screenshot": "saveGameDWModeCheckBox.png",
 		"description": "Always respawn at Coneria (the Ship and Airship will wait for you there if you have them). Gold is halved."
 	},
 	{
 		"Id": "shuffleAstosCheckBox",
 		"title": "Shuffle Astos",
+		"screenshot": "shuffleAstosCheckBox.png",
 		"description": "Astos disguises himself as another NPC: Bahamut, Canoe Sage, CubeBot, Elf Doctor, Elf Prince, Fairy, King, Lefein, Matoya, Nerrick, Princess Sara, Sarda, Smith, Titan, Unne or the kindly old king from Northwest Castle."
 	},
 	{
 		"Id": "randomizeFormationEnemizer",
 		"title": "Generate New Formations (Enemizer)",
+		"screenshot": "randomizeFormationEnemizer.png",
 		"description": "Generates entirely new formations of enemies."
 	},
 	{
 		"Id": "randomizeEnemizer",
 		"title": "Generate New Enemies (Enemizer)",
+		"screenshot": "randomizeEnemizer.png",
 		"description": "Randomly generates all non-boss enemies."
 	},
 	{
@@ -1015,86 +1076,103 @@
 	{
 		"Id": "spellcrafterMixSpells",
 		"title": "Mix spellbooks (Spellcrafter)",
+		"screenshot": "spellcrafterMixSpells.png",
 		"description": "Mixes the randomly generated spells, so spells that would typically be considered 'white' magic may be classed as 'black' magic and vice-versa."
 	},
 	{
 		"Id": "spellcrafterRetainPermissions",
 		"title": "Retain Old Permissions (Spellcrafter)",
+		"screenshot": "spellcrafterRetainPermissions.png",
 		"description": "When enabled, Spellcrafter will not overwrite the game's original spell permissions, so Red Mages will learn the first and third slot in Level 1 White Magic, everything in the first four levels of black magic, etc."
 	},
 	{
 		"Id": "AllSpellLevelsForKnightNinja",
 		"title": "Knight and Ninja Gain Charges In All Levels",
+		"screenshot": "ChangeMaxMP.png",
 		"description": "Sets the Knight and Ninja magic charge growth to give a charge in all levels whenever those classes gain a charge in any level, giving Knight and Ninja tier 4-8 charges.\nThis alleviates an issue with Keep Permissions where the Knight and Ninja could never cast spells they could learn, but is useless otherwise."
 	},
 	{
 		"Id": "swolePiratesCheckBox",
 		"title": "Buff the Pirates",
+		"screenshot": "swolePiratesCheckBox.png",
 		"description": "Increases the stats of Bikke's pirates considerably, roughly to the equivalent of a level 6 Fighter with a cheap but decent sword and iron armor, and increases the XP and gold yield from them by a factor of 20.\nThis is done before stat scaling, and also increases the level of script they can carry when generating balanced scripts (if Allow Unsafe Pirates is on)."
 	},
 	{
 		"Id": "ChangeMaxMP",
 		"title": "Change Spell Caster Max MP",
+		"screenshot": "ChangeMaxMP.png",
 		"description": "Allows the control over the maximum spell charges per spell level. This does not change when they recieve new spell levels.\nA value of less than 2 will not reduce the starting level 1 charges of red/white/black mages."
-	},
-	{
-		"Id": "KnightNinjaMaxMP",
-		"title": "Set Max Knight Ninja MP",
-		"description": "At the moment with the way the game is coded, knight's and ninja's max mp is determined together. This wont change when they get spells, it will still be at every odd level starting at 15."
 	},
 	{
 		"Id": "changeLuteCheckBox",
 		"title": "Multi-instrumentalist Sara",
+		"screenshot": "changeLuteCheckBox.png",
 		"description": "Change Princess Sara's Lute to another instrument."
 	},
 	{
 		"Id": "hurrayDwarfFate",
 		"title": "Hurray Dwarf's Fate",
+		"screenshot": "hurrayDwarfFate.png",
 		"description": "Choose if Hurray Dwarf is spared when NPC Guillotine is on or kill him."
 	},
 	{
 		"Id": "ruseItemCheckBox",
 		"title": "Guaranteed Ruse Item",
+		"screenshot": "ruseItemCheckBox.png",
 		"description": "Turn the Power Staff into a RUSE casting item immune to Item Magic and Randomize Treasures that won't be placed in ToFR."
 	},
 	{
 		"Id": "disableStunTouchCheckBox",
 		"title": "Remove Stun Touch from Randomize Status Attacks",
+		"screenshot": "disableStunTouchCheckBox.png",
 		"description": "Remove stun touch from possible status attacks when Randomize Enemy Status Attacks is enabled."
 	},
 	{
 		"Id": "classAsNpcFiendsCheckBox",
 		"title": "Characters gated by Fiends",
+		"screenshot": "classAsNpcFiendsCheckBox.png",
 		"description": "A new character (from a random class) is behind each Fiend. When talked to, that character replaces the 4th slot party member."
 	},
 	{
 		"Id": "classAsNpcKeyNpcCheckBox",
 		"title": "Characters linked to Key NPCs",
+		"screenshot": "classAsNpcKeyNpcCheckBox.png",
 		"description": "A new character (from a random class) is linked to a key NPC. If that key NPC requirement is fulfilled, the linked character replaces the 4th slot party member.\nPossible key NPCs: Princess Sara, Matoya, Bikke, King of the Northwest Castle, Elf Prince, Smith, Nerrick, Dr. Unne, Sarda, Canoe Sage, Fairy, Lefeinish Man."
 	},
 	{
 		"Id": "classAsNpcDuplicateCheckBox",
 		"title": "Allow Duplicates",
+		"screenshot": "classAsNpcDuplicateCheckBox.png",
 		"description": "Not all 6 classes will be guaranteed."
 	},
 	{
 		"Id": "classAsNpcPromoCheckBox",
 		"title": "Promoted Classes",
+		"screenshot": "classAsNpcPromoCheckBox.png",
 		"description": "Characters will be from promoted classes."
 	},
 	{
 		"Id": "NoTailCheckBox",
 		"title": "Remove Tail",
+		"screenshot": "NoTailCheckBox.png",
 		"description": "Remove the Tail from the items pool, disallowing class change."
 	},
 	{
 		"Id": "earlierRubyCheckBox",
 		"title": "Earlier Ruby",
+		"screenshot": "earlierRubyCheckBox.png",
 		"description": "Adjust the Ruby's placement to earlier in the seed to increase the likelihood that negotiating the Titan's Tunnel is required for progression."
 	},
 	{
 		"Id": "LockMode",
 		"title": "Set Lock Hit Mode",
+		"screenshot": "LockMode.png",
 		"description": "Allows control over LOCK and LOK2 chance to hit. 107 is about 20% vs chaos. 160 is about 50% vs chaos. Autohit will always hit."
+	},
+	{
+		"Id": "cureHealBuffCheckBox",
+		"title": "Improve Curative Spells",
+		"screenshot": "cureHealBuffCheckBox.png",
+		"description": "Improves the efficacy of CURE, HEAL, LAMP, and AMUT spells, granting greater healing from CURE and HEAL spells while, for LAMP and AMUT, curing paralysis effects."
 	}
 ]
