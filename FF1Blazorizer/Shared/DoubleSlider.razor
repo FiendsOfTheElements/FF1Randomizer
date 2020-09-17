@@ -8,51 +8,27 @@
 	<div class="col-xs-6 col-md-4">
 		<div id="rc-@Id">
 			@(new MarkupString($@"<style>
-				#rc-{Id} {{
-					position: relative;
-				}}
-
-				#rc-{Id} > input[type='range'] {{            
-					padding: 0;
-					margin: 0;
-					display: inline-block;
-					vertical-align: top;
-					--range-color: hsl(190, 80%, 40%);
+				#rc-{Id} > input[type='range'] {{
 					background: var(--track-background);
-				}}
-				#rc-{Id} > input[type='range']::-moz-range-track {{
-					border-color: transparent; /* needed to switch FF to 'styleable' control */
 				}}
 				#rc-{Id} > input[name='low-range'] {{
 					position: absolute;
-					background: white;
 				}}
 				#rc-{Id} > input[name='low-range']::-webkit-slider-thumb {{
 					position: relative;
-					z-index: 2;
-				}}
-				#rc-{Id} > input[name='low-range']::-moz-range-thumb {{
-						transform: scale(1); /* FF doesn't apply position it seems */
-						z-index: 1;
 				}}
 				#rc-{Id} > input[name='high-range'] {{
 					position: relative;
 					--track-background: linear-gradient(to right, transparent {100 * (ValueLow - MinValue) / (MaxValue - MinValue) + 1}%, var(--range-color) 0, var(--range-color) {100 * (ValueHigh - MinValue) / (MaxValue - MinValue) - 1}%, transparent 0 ) no-repeat 0 45% / 100% 40%;
 					clip-path: polygon({(ValueLow + ValueHigh) / (MaxValue - MinValue) + 1}% 0, 100% 0, 100% 100%, {(ValueLow + ValueHigh) / (MaxValue - MinValue) + 1}% 100%);
 				}}
-
 				#rc-{Id} > input[type='range']::-webkit-slider-runnable-track {{
-					background: var(--track-background);
-				}}
-
-				#rc-{Id} > input[type='range']::-moz-range-track {{
 					background: var(--track-background);
 				}}
 			</style>"))
 			<input name="low-range" type="range" min="@MinValue" max="@MaxValue" step="@Step" @bind="@ValueLow" @bind:event="onchange" />
 			<input name="high-range" type="range" min="@MinValue" max="@MaxValue" step="@Step" @bind="@ValueHigh" @bind:event="onchange" />
 		</div>
-
 	</div>
 </div>
 
@@ -71,7 +47,7 @@
 
 	[Parameter]
 	public RenderFragment ChildContent { get; set; }
-	private string DisplayText => _valueLow + " - +" + _valueHigh;
+	private string DisplayText => _valueLow + " - " + _valueHigh;
 
 	//slider fields
 	int _valueLow = 20;
