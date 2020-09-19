@@ -21,7 +21,12 @@
 		"Id": "itemMagicCheckBox",
 		"title": "Item Magic Shuffle",
 		"screenshot": "itemMagicCheckBox.png",
-		"description": "This flag shuffles what spell is cast when using any of the castable items (Power Gauntlet, Bane Sword, ect.). The spell name will replace the name of the item for clarity, although icons will remain the same (or absent for Defense). Items that use the same icon cannot be differentiated except by equipping (i.e. White Shirt and Black Shirt). Spell effects do not change the innate magic defense bonuses of the items (i.e. Black Shirt will still provide protection from ice and time elements, even if it becomes the AMUT Shirt)."
+		"description": "This flag shuffles what spell is cast when using any of the castable items (Power Gauntlet, Bane Sword, ect.).\n The spell name will replace the name of the item for clarity, although icons will remain the same (or absent for Defense). Items that use the same icon cannot be differentiated except by equipping (i.e. White Shirt and Black Shirt).\n Spell effects do not change the innate magic defense bonuses of the items (i.e. Black Shirt will still provide protection from ice and time elements, even if it becomes the AMUT Shirt)."
+	},
+	{
+		"Id": "balancedItemMagicCheckBox",
+		"title": "Balanced Shuffle",
+		"description": "Remove all of the most power spells from the possibilities for Item Magic Shuffle.\n For example this removes the potential for a NUKE Axe.\n To accommodate Spellcrafter mode the heuristics that determine what is not allowed are very complex. Basically, almost nothing better than the vanilla buff and debuff magic is possible, nor are damage spells better than the vanilla level 3 versions for each element. The purpose of this flag is therefore to avoid otherwise challenging seeds that are trivialized by the presence of overpowered caster items."
 	},
 	{
 		"Id": "mapOpenProgressionDwavesNWCheckBox",
