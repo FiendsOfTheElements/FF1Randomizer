@@ -71,7 +71,7 @@ namespace FF1Lib
 			// Choose a random odd number for c in the LCG.
 			uint c = rng.Next();
 			c |= 0x00000001;
-			Put(BattleRngOffset + 4, Blob.FromUInts(new[] { c }));
+			Put(BattleRngOffset + 0x74, Blob.FromUInts(new[] { c }));
 		}
 
 		// Required for npc quest item randomizing
