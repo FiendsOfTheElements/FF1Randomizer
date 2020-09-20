@@ -15,11 +15,14 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 battle_rng_state = $68AF
+tmp = $10
 
 BattleRNG:
+	TXA
+	PHA                        ; Push X onto the stack, because we'll clobber it
+
 	LDA battle_rng_state       ; Get the first byte of state
-	TAX
-	LDA battle_rng_a           ; Get the first byte of m
+	LDX battle_rng_a           ; Get the first byte of m
 	JSR MultiplyXA             ; Multiply state by m
 	CLC
 	ADC battle_rng_c           ; Add c
@@ -28,12 +31,10 @@ BattleRNG:
 		CLC
 	:
 	STA battle_rng_state       ; Store the low bits back to state
-	TXA
-	STA btltmp_multA           ; Save the high bits for the next step
+	STX tmp                    ; Save the high bits for the next step
 
 	LDA battle_rng_state + 1   ; Now do it again for the next byte of state
-	TAX
-	LDA battle_rng_a + 1
+	LDX battle_rng_a + 1
 	JSR MultiplyXA
 	CLC
 	ADC battle_rng_c + 1
@@ -41,18 +42,16 @@ BattleRNG:
 		INX
 		CLC
 	:
-	ADC btltmp_multA           ; Add the high bits from the previous step
+	ADC tmp                    ; Add the high bits from the previous step
 	BCC :+
 		INX
 		CLC
 	:
 	STA battle_rng_state + 1
-	TXA
-	STA btltmp_multA
+	STX tmp
 
 	LDA battle_rng_state + 2
-	TAX
-	LDA battle_rng_a + 2
+	LDX battle_rng_a + 2
 	JSR MultiplyXA
 	CLC
 	ADC battle_rng_c + 2
@@ -60,27 +59,28 @@ BattleRNG:
 		INX
 		CLC
 	:
-	ADC btltmp_multA
+	ADC tmp
 	BCC :+
 		INX
 		CLC
 	:
 	STA battle_rng_state + 2
-	TXA
-	STA btltmp_multA
+	STX tmp
 
 	LDA battle_rng_state + 3   ; Last byte
-	TAX
-	LDA battle_rng_a + 3
+	LDX battle_rng_a + 3
 	JSR MultiplyXA
 	CLC
 	ADC battle_rng_c + 3
 	CLC                        ; No need to save the high bits, so just CLC
-	ADC btltmp_multA
+	ADC tmp
 	CLC                        ; Just in case
 	STA battle_rng_state + 3
 
-	; And we're done.  A already has the highest bits of state, and that's what we want to return.
+	PLA
+	TAX                        ; Restore X from the stack
+
+	LDA battle_rng_state + 3   ; We want to return the highest byte of state.
 	RTS
 
 battle_rng_a:
@@ -91,9 +91,9 @@ battle_rng_c:
 
 
 ; MultiplyXA copied from bank 0B
-btltmp_multA = $68B3
-btltmp_multB = $68B4
-btltmp_multC = $68B5
+btltmp_multA = $11
+btltmp_multB = $12
+btltmp_multC = $13
 
 MultiplyXA:
     STA btltmp_multA    ; store the values we'll be multiplying

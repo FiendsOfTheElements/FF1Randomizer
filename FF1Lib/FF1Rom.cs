@@ -15,7 +15,7 @@ namespace FF1Lib
 	public partial class FF1Rom : NesRom
 	{
 		public const int RngOffset = 0x7F100;
-		public const int BattleRngOffset = 0x7FCF1;
+		public const int BattleRngLutOffset = 0x7FCF1;
 		public const int RngSize = 256;
 
 		public const int LevelRequirementsOffset = 0x6CC81;
@@ -1075,10 +1075,10 @@ namespace FF1Lib
 		{
 			// of the 256 entries in the battle RNG table, the 98th entry (index 97) is a duplicate '00' where '95' hex / 149 int is absent.
 			// you could arbitrarily choose the other '00', the 111th entry (index 110), to replace instead
-			var battleRng = Get(BattleRngOffset, RngSize).Chunk(1).ToList();
+			var battleRng = Get(BattleRngLutOffset, RngSize).Chunk(1).ToList();
 			battleRng[97] = Blob.FromHex("95");
 
-			Put(BattleRngOffset, battleRng.SelectMany(blob => blob.ToBytes()).ToArray());
+			Put(BattleRngLutOffset, battleRng.SelectMany(blob => blob.ToBytes()).ToArray());
 		}
 
 		public void ShuffleRng(MT19337 rng)
@@ -1088,10 +1088,10 @@ namespace FF1Lib
 
 			Put(RngOffset, rngTable.SelectMany(blob => blob.ToBytes()).ToArray());
 
-			var battleRng = Get(BattleRngOffset, RngSize).Chunk(1).ToList();
+			var battleRng = Get(BattleRngLutOffset, RngSize).Chunk(1).ToList();
 			battleRng.Shuffle(rng);
 
-			Put(BattleRngOffset, battleRng.SelectMany(blob => blob.ToBytes()).ToArray());
+			Put(BattleRngLutOffset, battleRng.SelectMany(blob => blob.ToBytes()).ToArray());
 		}
 
 	}
