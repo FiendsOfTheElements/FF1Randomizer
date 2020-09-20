@@ -902,7 +902,6 @@
 	{
 		"Id": "speedHacksCheckBox",
 		"title": "Speed Hacks Convenience",
-		"screenshot": "speedHacksCheckBox.gif",
 		"description": "If enabled, many game processes, such as opening the menu and battles, are significantly faster."
 	},
 	{
