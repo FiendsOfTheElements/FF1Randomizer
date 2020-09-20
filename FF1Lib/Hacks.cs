@@ -45,13 +45,16 @@ namespace FF1Lib
 		public const int SmokeSpriteReplaceStart = 0x317E9;
 		public const int SmokeSpriteReplaceEnd = 0x31A2C;
 
-		public void MoveSmokeSpriteVariables()
+		public const int BattleRNGOffset = 0x7FCE7;
+
+		public void ReplaceBattleRNG(MT19337 rng)
 		{
 			// This moves some temporary memory locations used to draw the smoke effect sprites
 			// in battle to the same locations used to store attacker stats.  These can overwrite
 			// each other without issue, and it frees up some space for a few bytes of RNG state.
 			var smokeSpriteCode = Get(SmokeSpriteReplaceStart, SmokeSpriteReplaceEnd - SmokeSpriteReplaceStart);
 
+			// We only need 4 bytes, and moving the others seems to mess some stuff up.
 			smokeSpriteCode.ReplaceInPlace(Blob.FromUShorts(new ushort[] { 0x68AF }), Blob.FromUShorts(new ushort[] { 0x686C }));
 			smokeSpriteCode.ReplaceInPlace(Blob.FromUShorts(new ushort[] { 0x68B0 }), Blob.FromUShorts(new ushort[] { 0x686D }));
 			smokeSpriteCode.ReplaceInPlace(Blob.FromUShorts(new ushort[] { 0x68B1 }), Blob.FromUShorts(new ushort[] { 0x686E }));
@@ -61,6 +64,14 @@ namespace FF1Lib
 			//smokeSpriteCode.ReplaceInPlace(Blob.FromUShorts(new ushort[] { 0x68B5 }), Blob.FromUShorts(new ushort[] { 0x6872 }));
 
 			Put(SmokeSpriteReplaceStart, smokeSpriteCode);
+
+			// LCG.asm
+			Put(BattleRngOffset, Blob.FromHex("ADAF68AAAD57FD205FFD186D5BFD9020E8188DAF688A8DB368ADB068AAAD58FD205FFD186D5CFD9002E8186DB3689002E8188DB0688A8DB368ADB168AAAD59FD205FFD186D5DFD9002E8186DB3689002E8188DB1688A8DB368ADB268AAAD5AFD205FFD186D5EFD186DB368188DB26860054B56AC000000008DB3688EB468A208A9008DB5684EB3689004186DB4686A6EB568CAD0F0AAADB56860"));
+
+			// Choose a random odd number for c in the LCG.
+			uint c = rng.Next();
+			c |= 0x00000001;
+			Put(BattleRngOffset + 4, Blob.FromUInts(new[] { c }));
 		}
 
 		// Required for npc quest item randomizing

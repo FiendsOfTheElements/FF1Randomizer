@@ -106,7 +106,7 @@ namespace FF1Lib
 			FixWarpBug(); // The warp bug must be fixed for magic level shuffle and spellcrafter
 			SeparateUnrunnables();
 			UpdateDialogs();
-			MoveSmokeSpriteVariables();
+			ReplaceBattleRNG(rng);
 
 			flags = Flags.ConvertAllTriState(flags, rng);
 
