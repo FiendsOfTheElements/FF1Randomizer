@@ -2,7 +2,7 @@
 	{
 		<span class="indent"></span>
 	}
-<label for="@Id" onclick="ShowToolTip" @onmouseover="ShowToolTip" @onmouseout="HideToolTip" class="@DisabledClass">@ChildContent</label>
+<label for="@Id" @onclick="ShowToolTip" @onmouseover="@ShowToolTip" @onmouseout="@HideToolTip" class="@DisabledClass">@ChildContent</label>
 
 
 @code
@@ -17,8 +17,6 @@
 		UpdateToolTip?.Invoke("", e);
 	}
 
-	[CascadingParameter]
-	protected string ToolTipId { get; set; }
 	[Parameter]
 	public Action<string, MouseEventArgs> UpdateToolTip { get; set; }
 

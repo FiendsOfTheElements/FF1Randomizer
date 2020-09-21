@@ -3,10 +3,10 @@
 		<input type="radio" name="@Name" value="2" checked="@checked2" hidden>
 		<input type="radio" name="@Name" value="1" checked="@checked1" hidden>
 		<input type="radio" name="@Name" value="0" checked="@checked0" hidden>
-		<input type="image" src="@image" id="@Id" class="tri-state" disabled="@(!IsEnabled)" @onclick="onclick" /> <label for="@Id">@ChildContent</label>
+		<input type="image" src="@image" id="@Id" class="tri-state" disabled="@(!IsEnabled)" @onclick="@onclick" /> <label for="@Id">@ChildContent</label>
 	@if (!DisableTooltip)
 	{
-		<input type="image" src="/images/help.png" class="btn-group-help" title="Show Help" @onclick="ShowToolTip" id="@Id" />
+		<input type="image" src="/images/help.png" class="btn-group-help" title="Show Help" @onclick="@ShowToolTip" id="@Id" />
 	}
 	</div>
 </div>
@@ -62,8 +62,6 @@
 	}
 
 
-	[CascadingParameter]
-	protected string ToolTipId { get; set; }
 	[Parameter]
 	public Action<string, MouseEventArgs> UpdateToolTip { get; set; }
 

@@ -302,7 +302,7 @@ namespace FF1Lib
 			};
 
 			// Disable the Princess Warp back to Castle Coneria
-			if ((bool)flags.Entrances || (bool)flags.Floors) _rom.Put(0x392CA, Blob.FromHex("EAEAEA"));
+			if ((bool)flags.Entrances || (bool)flags.Floors) _rom.Put(0x3937F, Blob.FromHex("EAEAEA"));
 
 			// Since we're going to move all the entrances around, we're going to change the requirements
 			// for just about everything. Most interestingly the Titan's Tunnel is going to connect totally
@@ -472,7 +472,7 @@ namespace FF1Lib
 						}
 					}
 				}
-			} while (!CheckEntranceSanity(shuffled, flags.AllowStartAreaDanager));
+			} while (!CheckEntranceSanity(shuffled, (bool)flags.AllowUnsafeStartArea));
 
 			if (flags.Spoilers || Debugger.IsAttached)
 			{
@@ -658,7 +658,7 @@ namespace FF1Lib
 			if (isSafe(OverworldTeleportIndex.MatoyasCave)) --dangerCount;
 			if (isSafe(OverworldTeleportIndex.Pravoka)) --dangerCount;
 
-			return coneria && starterLocation && titansConnections && (allowDanger || dangerCount <= 3);
+			return coneria && titansConnections && (allowDanger || (starterLocation && dangerCount <= 3));
 		}
 
 		public void Dump()

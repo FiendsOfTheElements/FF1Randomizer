@@ -1,0 +1,30 @@
+﻿@inject IJSRuntime JSRuntime;
+<div class="update-notification" style=@css @onclick=@UpdateServiceWorkerNow>New Version Available, Click Here</div>
+
+@code {
+    private static Action action;
+    private string css = "visibility: hidden";
+
+    private async Task UpdateServiceWorkerNow()
+    {
+        await JSRuntime.InvokeVoidAsync("updateServiceWorkerNow");
+    }
+
+    private void showNotification()
+    {
+        css = "visibility: visible";
+        StateHasChanged();
+    }
+
+    protected override void OnInitialized()
+    {
+        action = showNotification;
+    }
+
+    [JSInvokable]
+    public static void ShowUpdateNotification()
+    {
+        action.Invoke();
+    }
+
+}

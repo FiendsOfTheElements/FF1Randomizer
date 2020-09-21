@@ -1,0 +1,88 @@
+﻿@using FF1Lib;
+
+<button type="button" class="@(IsOpen ? "nes-btn nes-nav is-success" : "nes-btn nes-nav is-warning")" @onclick="@(() => IsOpen = !IsOpen)">Scale</button>
+<BSCollapse IsOpen="@IsOpen">
+	<div class="is-dark nes-container">
+		<ClampedSlider Min="1" Max="5" Step="0.1" UpdateToolTip="@UpdateToolTipID" Id="clampMinimumPriceScaleLable" @bind-Clamp="Flags.ClampMinimumPriceScale" @bind-Scale="Flags.PriceScaleFactor">Prices:</ClampedSlider>
+		<ClampedDoubleSlider Id="enemyStatsDoubleSlider" MinValue="20" MaxValue="500" @bind-ValueHigh="Flags.EnemyScaleStatsHigh" @bind-ValueLow="Flags.EnemyScaleStatsLow" @bind-Clamp="Flags.ClampEnemies">Enemy Stats:</ClampedDoubleSlider>
+		<ClampedDoubleSlider Id="enemyHpDoubleSlider" Indent IsEnabled="Flags.SeparateEnemyHPScaling" MinValue="20" MaxValue="500" @bind-ValueHigh="Flags.EnemyScaleHpHigh" @bind-ValueLow="Flags.EnemyScaleHpLow" @bind-Clamp="Flags.ClampEnemyHpScaling">
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="separateEnemyHPScalingCheckBox" @bind-Value="Flags.SeparateEnemyHPScaling">Separate HP Scaling:</TriStateCheckBox>
+		</ClampedDoubleSlider>
+
+		<ClampedDoubleSlider Id="bossStatsDoubleSlider" MinValue="20" MaxValue="500" @bind-ValueHigh="Flags.BossScaleStatsHigh" @bind-ValueLow="Flags.BossScaleStatsLow" @bind-Clamp="Flags.ClampMinimumBossStatScale">Boss Stats:</ClampedDoubleSlider>
+		<ClampedDoubleSlider Id="bossHpDoubleSlider" Indent IsEnabled="Flags.SeparateBossHPScaling" MinValue="20" MaxValue="500" @bind-ValueHigh="Flags.BossScaleHpHigh" @bind-ValueLow="Flags.BossScaleHpLow" @bind-Clamp="Flags.ClampBossHPScaling">
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="separateBossHPScalingCheckBox" @bind-Value="Flags.SeparateBossHPScaling">Separate HP Scaling:</TriStateCheckBox>
+		</ClampedDoubleSlider>
+
+		<div class="slider-cell"></div>
+		<div class="row">
+			<div class="col-md-5">
+				<p>Exp. &amp; Gold Boost:</p>
+			</div>
+			<div class="col-xs-6 col-md-3">
+				<p>@Math.Round(Flags.ExpMultiplier, 1).ToString("F1")x + @Flags.ExpBonus</p>
+			</div>
+			<div class="col-md-4">
+				<Slider @bind-Value="Flags.ExpMultiplier" Min="1" Max="5" Step="0.1"></Slider>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-8"></div>
+			<div class="col-md-4">
+				<Slider @bind-Value="Flags.ExpBonus" Min="0" Max="500" Step="10"></Slider>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-8 col-xs-6"><p>Exp. &amp; Gold Progressive Scaling:</p></div>
+			<div class="col-md-4 col-xs-6">
+				<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="progressiveScaleModeDropDown" TItem="ProgressiveScaleMode" @bind-Value="Flags.ProgressiveScaleMode"></EnumDropDown>
+			</div>
+		</div>
+		<div class="slider-cell"></div>
+		<div class="row">
+			<div class="col-md-5">
+				<p>Overworld Encounter Rate:</p>
+			</div>
+			<div class="col-xs-6 col-md-3">
+				<p>@Math.Round(Flags.EncounterRate / 30.0, 2).ToString("F2")x</p>
+			</div>
+			<div class="col-md-4">
+				<Slider @bind-Value="Flags.EncounterRate" Min="0" Max="45" Step="1"></Slider>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-5">
+				<p>Dungeon Encounter Rate:</p>
+			</div>
+			<div class="col-md-3">
+				<p>@Math.Round(Flags.DungeonEncounterRate / 30.0, 2).ToString("F2")x</p>
+			</div>
+			<div class="col-md-4">
+				<Slider @bind-Value="Flags.DungeonEncounterRate" Min="0" Max="45" Step="1"></Slider>
+			</div>
+		</div>
+		<div class="row">&nbsp;</div>
+		<DoubleSlider Id="RandomWeaponBonusSlider" IsEnabled="Flags.RandomWeaponBonus" MinValue="-9" MaxValue="9" Step="1" @bind-ValueHigh="Flags.RandomWeaponBonusHigh" @bind-ValueLow="Flags.RandomWeaponBonusLow">
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="RandomWeaponBonus" @bind-Value="Flags.RandomWeaponBonus">Blursed Weapons:</TriStateCheckBox>
+			<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="RandomWeaponBonusExcludeMasa" @bind-Value="Flags.RandomWeaponBonusExcludeMasa">Exclude Masmune</TriStateCheckBox>
+		</DoubleSlider>
+		<DoubleSlider Id="RandomArmorBonusSlider" IsEnabled="Flags.RandomArmorBonus" MinValue="-9" MaxValue="9" Step="1" @bind-ValueHigh="Flags.RandomArmorBonusHigh" @bind-ValueLow="Flags.RandomArmorBonusLow">
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="RandomArmorBonus" @bind-Value="Flags.RandomArmorBonus">Blursed Armor:</TriStateCheckBox>
+		</DoubleSlider>
+		<div class="row">&nbsp;</div>
+		<div class="row">
+			<div class="col-md-12">
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="wrapPriceOverflowCheckBox" @bind-Checked="Flags.WrapPriceOverflow">Wrap Overflowing Prices</CheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="wrapStatOverflowCheckBox" @bind-Checked="Flags.WrapStatOverflow">Wrap Overflowing Scaled Stats</CheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="includeMoraleCheckBox" @bind-Checked="Flags.IncludeMorale">Scaled Stats Includes Morale</CheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="noDanModeCheckBox" @bind-Checked="Flags.NoDanMode">Static EXP Distribution</CheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="startingGoldCheckBox" @bind-Checked="Flags.StartingGold">Scale Starting Gold</CheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="easyModeCheckBox" @bind-Checked="Flags.EasyMode">Easy Mode</CheckBox>
+			</div>
+		</div>
+	</div>
+</BSCollapse>
+
+	@code { [Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }
+				[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
+				[Parameter] public bool IsOpen { get; set; } = true; }

@@ -1,0 +1,18 @@
+﻿input[type='range'] {
+    padding: 0;
+    margin: 0;
+    display: inline-block;
+    vertical-align: top;
+    --range-color: hsl(190, 80%, 40%);
+     width: 200px;
+}
+
+input[type='range']::-webkit-slider-thumb {
+    pointer-events: all;
+    z-index: 2;
+}
+
+input[type='range']::-moz-range-thumb {
+    pointer-events: all;
+    z-index: 2;
+}

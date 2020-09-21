@@ -108,6 +108,10 @@ namespace FF1Lib
 			{
 				incentivePool.Add(Item.Masamune);
 			}
+			if (flags.IncentivizeKatana ?? false)
+			{
+				incentivePool.Add(Item.Katana);
+			}
 			if (flags.IncentivizeVorpal ?? false)
 			{
 				incentivePool.Add(Item.Vorpal);
@@ -275,6 +279,24 @@ namespace FF1Lib
 						.Select(x => ((x as TreasureChest)?.AccessRequirement.HasFlag(AccessRequirement.Crown) ?? false)
 							? new TreasureChest(x, x.Item, x.AccessRequirement & ~AccessRequirement.Crown)
 							: x).ToList();
+			}
+			if ((bool)flags.EarlyKing)
+			{
+				forcedItemPlacements =
+						forcedItemPlacements
+							.Select(x => x.Address == ItemLocations.KingConeria.Address
+									? new MapObject(ObjectId.King, MapLocation.ConeriaCastle2, x.Item)
+									: x).ToList();
+				itemLocationPool =
+						itemLocationPool
+							.Select(x => x.Address == ItemLocations.KingConeria.Address
+									? new MapObject(ObjectId.King, MapLocation.ConeriaCastle2, x.Item)
+									: x).ToList();
+				incentiveLocationPool =
+						incentiveLocationPool
+							.Select(x => x.Address == ItemLocations.KingConeria.Address
+									? new MapObject(ObjectId.King, MapLocation.ConeriaCastle2, x.Item)
+									: x).ToList();
 			}
 			if ((bool)flags.EarlySage)
 			{

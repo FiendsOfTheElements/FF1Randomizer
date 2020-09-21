@@ -1,13 +1,19 @@
-﻿@page "/"
+﻿@using System.Net.Http.Json
+@inject HttpClient  Http
+@page "/"
 
 <div id="welcome" class="content px-4">
-	<h1>Final Fantasy Randomizer<br />Version @FF1Lib.FF1Rom.Version</h1>
+	<h1>Final Fantasy Randomizer<br />Version @VersionString</h1>
 	<p>We've found the TAIL and we're promoting the Website!</p>
 	<div class="col-md-6 main-menu">
 		<div class="is-dark nes-container">
 			<a href="/Randomize" class="row main-menu-row">
 				<div class="col-3"><i class="nes-logo"></i></div>
 				<div class="col-9">Begin a New Game!</div>
+			</a>
+			<a href="/About" class="row main-menu-row">
+				<div class="col-3"><i class="nes-icon star"></i></div>
+				<div class="col-9">Help Me Get Started!</div>
 			</a>
 			<a href="https://discord.gg/95gbpFd" class="row main-menu-row">
 				<div class="col-3"><i class="nes-icon"><span class="discord-logo" /></i></div>
@@ -21,3 +27,26 @@
 	</div>
 	<a href="https://en.wikipedia.org/wiki/George_Floyd" style="color: yellow; font-weight: bold; font-size: 24px">#icantbreathe</a>
 </div>
+
+@code {
+	string VersionString = "";
+	protected override void OnInitialized()
+	{
+		VersionString = FF1Lib.FFRVersion.Version;
+		if (FF1Lib.FFRVersion.Branch == "dev")
+		{
+			VersionString += " Beta";
+		}
+		else if (FF1Lib.FFRVersion.Branch == "alpha")
+		{
+			VersionString += " Alpha : " + FF1Lib.FFRVersion.Sha.Substring(0, 7);
+		}
+		else
+		{
+			VersionString += " " + FF1Lib.FFRVersion.Branch;
+		}
+		StateHasChanged();
+	}
+}
+
+

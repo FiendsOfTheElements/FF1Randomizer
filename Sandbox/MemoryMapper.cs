@@ -33,7 +33,7 @@ namespace Sandbox
 			Put(0x7FE1A, Blob.FromHex("0a09808d1551a90060"));
 		}
 
-		public void UpgradeToMMC3()
+		public new void UpgradeToMMC3()
 		{
 			Header[4] = 32; // 32 pages of 16 kB
 			Header[6] = 0x43; // original is 0x13 where 1 = MMC1 and 4 = MMC3

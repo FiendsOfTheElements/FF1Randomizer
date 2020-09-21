@@ -1,23 +1,23 @@
 <div class="row">
-	<div class="col-md-5">
-		<p class="@DisabledClass">@ChildContent</p>
-	</div>
-	<div class="col-xs-6 col-md-3">
-		<div class="checkbox-cell">
-			<div class="btn-group-toggle" data-toggle="buttons">
-				<input type="radio" name="@Name" value="2" checked="@checked2" hidden>
-				<input type="radio" name="@Name" value="1" checked="@checked1" hidden>
-				<input type="radio" name="@Name" value="0" checked="@checked0" hidden>
-				<input type="image" src="@image" @onclick="onclick" id="@Id" class="tri-state" disabled="@(!IsEnabled)" />  <label for="@Id" class="@DisabledClass">@DisplayText</label>
+    <div class="col-md-5">
+        <p class="@DisabledClass @IndentClass">@ChildContent</p>
+    </div>
+    <div class="col-xs-6 col-md-3">
+        <div class="checkbox-cell">
+            <div class="btn-group-toggle" data-toggle="buttons">
+                <input type="radio" name="@Name" value="2" checked="@checked2" hidden>
+                <input type="radio" name="@Name" value="1" checked="@checked1" hidden>
+                <input type="radio" name="@Name" value="0" checked="@checked0" hidden>
+                <input type="image" src="@image" @onclick="@onclick" id="@Id" class="tri-state" disabled="@(!IsEnabled)" />  <label for="@Id" class="@DisabledClass">@DisplayText</label>
 
-			</div>
-		</div>
+            </div>
+        </div>
 
-	</div>
-	<div class="col-xs-6 col-md-4">
-		<Slider Value="@Scale" ValueChanged="@ScaleChanged" Min="@Min" Max="@Max" Step="@Step"></Slider>
-		<input type="image" src="/images/help.png" class="btn-group-help" title="Show Help" @onclick="ShowToolTip" id="@Id" />
-	</div>
+    </div>
+    <div class="col-xs-6 col-md-4">
+        <Slider Value="@Scale" ValueChanged="onValueChanged" Min="@Min" Max="@Max" Step="@Step"></Slider>
+        <input type="image" src="/images/help.png" class="btn-group-help" title="Show Help" @onclick="@ShowToolTip" id="@Id" />
+    </div>
 </div>
 
 @code
@@ -32,8 +32,6 @@
         UpdateToolTip?.Invoke("", e);
     }
 
-    [CascadingParameter]
-    protected string ToolTipId { get; set; }
     [Parameter]
     public Action<string, MouseEventArgs>
     UpdateToolTip

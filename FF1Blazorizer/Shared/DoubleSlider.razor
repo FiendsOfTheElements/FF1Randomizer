@@ -1,0 +1,101 @@
+﻿<div class="row">
+	<div class="col-md-5">
+		<p class="@DisabledClass @IndentClass">@ChildContent</p>
+	</div>
+	<div class="col-xs-6 col-md-3">
+		<label for="@Id" class="@DisabledClass">@DisplayText</label>
+	</div>
+	<div class="col-xs-6 col-md-4">
+		<div id="rc-@Id">
+			@(new MarkupString($@"<style>
+				#rc-{Id} > input[type='range'] {{
+					background: var(--track-background);
+					pointer-events: none;
+				}}
+				#rc-{Id} > input[name='low-range'] {{
+					position: absolute;
+				}}
+				#rc-{Id} > input[name='low-range']::-webkit-slider-thumb {{
+					position: relative;
+				}}
+				#rc-{Id} > input[name='high-range'] {{
+					position: relative;
+					--track-background: linear-gradient(to right, transparent {100 * (ValueLow - MinValue) / (MaxValue - MinValue) + 1}%, var(--range-color) 0, var(--range-color) {100 * (ValueHigh - MinValue) / (MaxValue - MinValue) - 1}%, transparent 0 ) no-repeat 0 45% / 100% 40%;
+					clip-path: polygon({(ValueLow + ValueHigh) / (MaxValue - MinValue) + 1}% 0, 100% 0, 100% 100%, {(ValueLow + ValueHigh) / (MaxValue - MinValue) + 1}% 100%);
+				}}
+				#rc-{Id} > input[type='range']::-webkit-slider-runnable-track {{
+					background: var(--track-background);
+				}}
+			</style>"))
+			<input name="low-range" type="range" min="@MinValue" max="@MaxValue" step="@Step" @bind="@ValueLow" @bind:event="onchange" />
+			<input name="high-range" type="range" min="@MinValue" max="@MaxValue" step="@Step" @bind="@ValueHigh" @bind:event="onchange" />
+		</div>
+	</div>
+</div>
+
+
+@code
+{
+
+	[Parameter]
+	public bool Indent { get; set; }
+	private string IndentClass => Indent ? "indent" : "";
+
+	[Parameter]
+	public bool? IsEnabled { get; set; } = true;
+	private bool Disabled => !(IsEnabled ?? true);
+	private string DisabledClass => (IsEnabled ?? true) ? "" : "disabled";
+
+	[Parameter]
+	public RenderFragment ChildContent { get; set; }
+	private string DisplayText => _valueLow + " - " + _valueHigh;
+
+	//slider fields
+	int _valueLow = 20;
+	int _valueHigh = 500;
+	[Parameter] public int MinValue { get; set; } = 20;
+	[Parameter] public int MaxValue { get; set; } = 500;
+	[Parameter] public int Step { get; set; } = 10;
+	[Parameter]
+	public int ValueLow
+	{
+		get => _valueLow;
+		set
+		{
+			if (_valueLow.Equals(value))
+				return;
+
+			if (value >= _valueHigh)
+			{
+				_valueLow = _valueHigh;
+			} else
+			{
+				_valueLow = value;
+			}
+			ValueLowChanged.InvokeAsync(_valueLow);
+		}
+	}
+	[Parameter]
+	public int ValueHigh
+	{
+		get => _valueHigh;
+		set
+		{
+			if (_valueHigh.Equals(value))
+				return;
+
+			if (value <= _valueLow)
+			{
+				_valueHigh = _valueLow;
+			} else
+			{
+				_valueHigh = value;
+			}
+			ValueHighChanged.InvokeAsync(_valueHigh);
+		}
+	}
+	[Parameter] public EventCallback<int> ValueLowChanged { get; set; }
+	[Parameter] public EventCallback<int> ValueHighChanged { get; set; }
+	[Parameter]
+	public string Id { get; set; }
+}

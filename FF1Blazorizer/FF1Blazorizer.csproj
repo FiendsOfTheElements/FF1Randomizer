@@ -13,44 +13,18 @@
 
 
 	<ItemGroup>
-		<PackageReference Include="Blazored.LocalStorage" Version="2.1.5" />
-		<PackageReference Include="BlazorStrap" Version="1.3.1" />
-		<PackageReference Include="Microsoft.AspNetCore.Blazor.HttpClient" Version="3.2.0-preview3.20168.3" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="3.2.0-rc1.20223.4" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Build" Version="3.2.0-rc1.20223.4" PrivateAssets="all" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="3.2.0-rc1.20223.4" PrivateAssets="all" />
+		<PackageReference Include="Blazored.LocalStorage" Version="2.1.6" />
+		<PackageReference Include="BlazorStrap" Version="1.3.2" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="3.2.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Build" Version="3.2.0" PrivateAssets="all" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="3.2.0" PrivateAssets="all" />
 		<PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
-		<PackageReference Include="System.Net.Http" Version="4.3.4" />
+		<PackageReference Include="System.Net.Http.Json" Version="3.2.0" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\FF1Lib\FF1Lib.csproj" />
 	</ItemGroup>
-
-
-	<ItemGroup>
-		<Content Update="wwwroot\presets\beginner.json">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</Content>
-		<Content Update="wwwroot\presets\debug.json">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</Content>
-		<Content Update="wwwroot\presets\default.json">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</Content>
-		<Content Update="wwwroot\presets\full-npc.json">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</Content>
-		<Content Update="wwwroot\presets\chaos-rush.json">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</Content>
-		<Content Update="wwwroot\presets\improved-vanilla.json">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</Content>
-	</ItemGroup>
-	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-		<Copy SourceFiles="$(OutDir)version.txt" DestinationFolder="$(OutDir)dist" />
-	</Target>
 
 	<ItemGroup>
 		<ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.published.js" />

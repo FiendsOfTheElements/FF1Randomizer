@@ -2,11 +2,11 @@
 
 /* import the relevent site css file, this line replaced when building by the circle config */
 @import url('main.css');
-
-
+@import url('slider.css');
+@import url('mainmenu.css');
 
 html, body {
-    font-family: monospace;
+    font-family: 'Lucida Console', Monaco, monospace;
     user-select: none;
 }
 
@@ -16,9 +16,13 @@ app {
     flex-direction: column;
 }
 
+input {
+    margin: 2px;
+}
+
 .top-row {
-    height: 3.5rem;
     display: flex;
+    padding: 1rem;
     align-items: center;
     z-index: 100;
     background: var(--DARK_BACKGROUND_COLOR);
@@ -32,41 +36,59 @@ app {
     flex: 1;
 }
 
+.update-notification {
+    background-color: #30bb6b;
+    border-radius: 15px;
+    position: fixed;
+    right: 2%;
+    margin-top: 1%;
+    max-width: 96%;
+    padding: 0.5rem;
+    font-family: 'Press Start 2P';
+    z-index: 101;
+}
+
+.update-notification:hover {
+    color: white;
+    cursor: url(https://unpkg.com/nes.css/assets/cursor-click.png),pointer;
+}
+
 .nav-item {
     font-size: 0.9rem;
     padding-bottom: 0.5rem;
 }
 
-    .nav-item a {
-        color: #d7d7d7;
-        border-radius: 4px;
-        height: 3rem;
-        display: flex;
-        align-items: center;
-        line-height: 3rem;
-    }
+.nav-item a {
+    color: #d7d7d7;
+    border-radius: 4px;
+    height: 3rem;
+    display: flex;
+    align-items: center;
+    line-height: 3rem;
+}
 
-        .nav-item a.active {
-            background-color: rgba(255,255,255,0.25);
-            color: white;
-        }
+.nav-item a:active {
+    background-color: rgba(255,255,255,0.25);
+    color: white;
+}
 
-        .nav-item a:hover {
-            background-color: rgba(255,255,255,0.1);
-            color: white;
-        }
+.nav-item a:hover {
+    background-color: rgba(255,255,255,0.1);
+    color: white;
+}
 
 .nes-btn {
     font-family: 'Press Start 2P';
     font-size: 14px;
 }
 
-    .nes-btn:active {
-        transform: translateY(2px);
-    }
+.nes-btn:active {
+    transform: translateY(2px);
+}
 
 .content {
     padding-top: 1.1rem;
+    padding-bottom: 1.1rem;
 }
 
 .loading {
@@ -90,10 +112,6 @@ h1 {
 @media (max-width: 849.98px) {
     .main .top-row {
         display: none;
-    }
-
-    app {
-        width: fit-content;
     }
 
     .table-wrapper {
@@ -146,10 +164,6 @@ body {
     text-align: center;
 }
 
-h1, h2, h4 {
-    font-family: 'Press Start 2P';
-}
-
 .nes-nav {
     display: block;
     margin-top: 14px;
@@ -160,12 +174,11 @@ h1, h2, h4 {
     margin-left: -2px;
 }
 
-    .nes-container::after {
-        border-radius: 0px;
-    }
+.nes-container::after {
+    border-radius: 0px;
+}
 
 .checkbox-cell {
-    font-family: monospace;
     white-space: nowrap;
     overflow: hidden;
     min-height: 20px;
@@ -173,12 +186,13 @@ h1, h2, h4 {
     padding: 0;
 }
 
-    .checkbox-cell label {
-        max-width: calc(100% - 64px);
-        text-overflow: ellipsis;
-        overflow-x: hidden;
-        vertical-align: top;
-    }
+.checkbox-cell label {
+    max-width: calc(100% - 64px);
+    text-overflow: ellipsis;
+    overflow-x: hidden;
+    vertical-align: top;
+    margin: 2px 0 5px 0;
+}
 
 .dropdown-cell {
     white-space: normal;
@@ -203,7 +217,7 @@ h1, h2, h4 {
 td {
     padding: 12px;
     text-align: center;
-    min-width: 96px;
+    min-width: 72px;
 }
 
 .right-bordered {
@@ -211,7 +225,7 @@ td {
 }
 
 input[type=checkbox] {
-    transform: scale(1.3);
+    transform: scale(1.3) translateY(-2px);
     margin-left: 2px;
     cursor: pointer;
 }
@@ -221,7 +235,7 @@ select {
 }
 
 tr.odd {
-    background: rgba(0, 0, 0, 0.05);
+    background: rgba(0, 0, 0, 0.2);
 }
 
 tr.bottom-borderd {
@@ -233,7 +247,8 @@ tr.bottom-borderd {
     font-family: 'Press Start 2P';
     padding: 6px;
     margin-right: 20px;
-    color: var(--TOPBAR_FONT_COLOR)
+    color: var(--TOPBAR_FONT_COLOR);
+    white-space: nowrap;
 }
 
     .ffr-nav:hover {
@@ -247,36 +262,6 @@ tr.bottom-borderd {
 
 .tinted {
     background: rgba(0, 0, 0, 0.5);
-}
-
-.main-menu {
-    margin: 50px auto;
-}
-
-.main-menu-row {
-    margin: 10px;
-    min-height: 60px;
-    font-family: 'Press Start 2P';
-    color: var(--TOPBAR_FONT_COLOR);
-}
-
-    .main-menu-row:hover {
-        background-color: rgba(0, 0, 0, 0.2);
-        color: #ffffff;
-    }
-
-.main-menu a {
-    display: flex;
-    align-content: center;
-}
-
-.discord-logo {
-    display: block;
-    background-image: url("/images/discord.png");
-    background-size: cover;
-    background-repeat: no-repeat;
-    width: 38px;
-    height: 38px;
 }
 
 .pokerchip-icon {
@@ -325,13 +310,79 @@ tr.bottom-borderd {
 }
 
 .btn-group-help {
-    opacity: 0.25;
+    opacity: 0.5;
 }
 
-    .btn-group-help:hover {
-        opacity: 0.75;
-    }
+.btn-group-help:hover {
+    opacity: 1;
+}
 
-p {
-    font-family: monospace;
+.job {
+    background-size: 48px;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.jobs {
+    height: 72px;
+}
+
+.job.fighter {
+    background-image: url("/images/classes/fighter.png");   
+}
+
+.job.thief {
+    background-image: url("/images/classes/thief.png");
+}
+
+.job.blackbelt {
+    background-image: url("/images/classes/blackbelt.png");
+}
+
+.job.redmage {
+    background-image: url("/images/classes/redmage.png");
+}
+
+.job.whitemage {
+    background-image: url("/images/classes/whitemage.png");
+}
+
+.job.blackmage {
+    background-image: url("/images/classes/blackmage.png");
+}
+
+.job.knight {
+    background-image: url("/images/classes/knight.png");   
+}
+
+.job.ninja {
+    background-image: url("/images/classes/ninja.png");
+}
+
+.job.master {
+    background-image: url("/images/classes/master.png");
+}
+
+.job.redwizard {
+    background-image: url("/images/classes/redwizard.png");
+}
+
+.job.whitewizard {
+    background-image: url("/images/classes/whitewizard.png");
+}
+
+.job.blackwizard {
+    background-image: url("/images/classes/blackwizard.png");
+}
+
+.preset-pill {
+    margin-left: -10px;
+}
+
+.nes-btn.is-huge {
+    font-size: 1.5em;
+}
+
+.nes-btn.is-tiny {
+    font-size: 0.5em;
 }

@@ -1,0 +1,50 @@
+﻿@using FF1Lib;
+
+<button type="button" class="@(IsOpen ? "nes-btn nes-nav is-success" : "nes-btn nes-nav is-warning")" @onclick="@(() => IsOpen = !IsOpen)">Enemies</button>
+<BSCollapse IsOpen="@IsOpen">
+	<div class="is-dark nes-container">
+		<div class="row">
+			<div class="col-md-4">
+				<h4>Formations</h4>
+				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyFormationsUnrunnableCheckBox" @bind-Value="Flags.EnemyFormationsUnrunnable">Shuffle Unrunnable Formations</TriStateCheckBox>
+				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnemyFormationsUnrunnable" Id="everythingUnrunnableCheckBox" @bind-Value="Flags.EverythingUnrunnable">All Encounters are Unrunnable</TriStateCheckBox>
+				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="unrunnablesStrikeFirstAndSurpriseCheckBox" @bind-Value="Flags.UnrunnablesStrikeFirstAndSurprise">Unrunnable First Strike &amp; Surprise</TriStateCheckBox>
+				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyFormationsSurpriseCheckBox" @bind-Value="Flags.EnemyFormationsSurprise">Shuffle Surprise Bonus</TriStateCheckBox>
+				<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="formationShuffleModeDropDown" TItem="FormationShuffleMode" IsEnabled="@(!Flags.RandomizeFormationEnemizer)" @bind-Value="Flags.FormationShuffleMode">Rarity:</EnumDropDown>
+				<div class="checkbox-cell"></div>
+				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="randomizeFormationEnemizer" @bind-Value="Flags.RandomizeFormationEnemizer">Enemizer - Generate Formations</TriStateCheckBox>
+			</div>
+			<div class="col-md-4">
+				<h4>Enemies</h4>
+				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyScriptsCheckBox" @bind-Value="Flags.EnemyScripts">Shuffle Scripts</TriStateCheckBox>
+				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnemyScripts" Id="allowUnsafePiratesCheckBox" @bind-Value="Flags.AllowUnsafePirates">Allow Unsafe Pirates</TriStateCheckBox>
+				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnemyScripts" Id="onlyShuffleBossScriptsCheckBox" @bind-Value="Flags.BossScriptsOnly">Only Shuffle Bosses</TriStateCheckBox>
+				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="enemySkillsSpellsCheckBox" @bind-Value="Flags.EnemySkillsSpells">Shuffle Skills &amp; Spells</TriStateCheckBox>
+				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnemySkillsSpells" Id="onlyShuffleBossSkillsCheckBox" @bind-Value="Flags.BossSkillsOnly">Only Shuffle Bosses</TriStateCheckBox>
+				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnemySkillsSpells" Id="enemySkillsSpellsTieredCheckBox" @bind-Value="Flags.EnemySkillsSpellsTiered">Generate Balanced Scripts</TriStateCheckBox>
+				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyStatusAttacksCheckBox" @bind-Value="Flags.EnemyStatusAttacks">Shuffle Status Attacks</TriStateCheckBox>
+				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnemyStatusAttacks" Id="enemyRandomAttacksCheckBox" @bind-Value="Flags.RandomStatusAttacks">Randomize Status Attacks</TriStateCheckBox>
+				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="disableStunTouchCheckBox" IsEnabled="@Flags.RandomStatusAttacks" @bind-Value="Flags.DisableStunTouch">Remove Stun Touch</TriStateCheckBox>
+				<div class="checkbox-cell"></div>
+				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="randomizeEnemizer" IsEnabled="@Flags.RandomizeFormationEnemizer" @bind-Value="Flags.RandomizeEnemizer">Enemizer - Generate Enemies</TriStateCheckBox>
+			</div>
+			<div class="col-md-4">
+				<h4>Bosses &amp; Trap Tiles</h4>
+				<p>Encounter 7 not enough WarMECH for you? Try a patrolling or required WarMECH instead!</p>
+				<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="WarMECHModeDropDown" TItem="WarMECHMode" @bind-Value="Flags.WarMECHMode">WarMECH Mode: </EnumDropDown>
+				<div class="checkbox-cell"></div>
+				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="swolePiratesCheckBox" @bind-Value="Flags.SwolePirates">Buffed Pirates</TriStateCheckBox>
+				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="shuffleAstosCheckBox" @bind-Value="Flags.ShuffleAstos">Shuffle Astos</TriStateCheckBox>
+				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="fiendShuffleCheckBox" @bind-Value="Flags.FiendShuffle">Shuffle the Original Fiends</TriStateCheckBox>
+				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyTrapTilesCheckBox" IsEnabled="@(!Flags.RandomizeFormationEnemizer)" @bind-Value="Flags.EnemyTrapTiles">Shuffle All Trap Tiles</TriStateCheckBox>
+				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="randomTrapFormationsCheckBox" IsEnabled="@Flags.EnemyTrapTiles" @bind-Value="Flags.RandomTrapFormations">Use Random Formations</TriStateCheckBox>
+			</div>
+		</div>
+	</div>
+</BSCollapse>
+
+@code {
+	[Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }
+	[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
+	[Parameter] public bool IsOpen { get; set; } = true;
+}

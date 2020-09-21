@@ -1,0 +1,53 @@
+﻿@using FF1Lib;
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+
+<button type="button" class="@(IsOpen ? "nes-btn nes-nav is-success" : "nes-btn nes-nav is-warning")" @onclick="@(() => IsOpen = !IsOpen)">Fun %</button>
+<BSCollapse IsOpen="@IsOpen">
+	<div class="is-dark nes-container">
+		<div class="row">
+			<div class="col-md-12">
+				<p>Fun flags are not part of the standard flags string since they do not impact gameplay. The buttons at the bottom can be used to store your preferred fun % settings within your browser so that they will be automatically restored each time you visit the site.</p>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-6">
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="funEnemyNamesCheckBox" @bind-Checked="Flags.FunEnemyNames">Fun Enemy Names</CheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="teamSteakCheckBox" @bind-Checked="Flags.TeamSteak">Team STEAK</CheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="changeLuteCheckBox" @bind-Checked="Flags.ChangeLute">Multi-instrumentalist Sara</CheckBox>
+				<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="hurrayDwarfFate" TItem="Fate" @bind-Value="Flags.HurrayDwarfFate">Hurray Dwarf's Fate</EnumDropDown>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="paletteSwapCheckBox" @bind-Checked="Flags.PaletteSwap">Palette Swap</CheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="modernBattlefieldCheckBox" @bind-Checked="Flags.ModernBattlefield">Modern Battlefield</CheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="thirdBattlePaletteCheckBox" @bind-Checked="Flags.ThirdBattlePalette">Three Battle Palettes</CheckBox>
+			</div>
+			<div class="col-md-6">
+				<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="partyMapmanSlot" TItem="MapmanSlot" @bind-Value="Flags.MapmanSlot">Mapman Slot</EnumDropDown>
+				<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="musicDropDown" TItem="MusicShuffle" @bind-Value="Flags.Music"></EnumDropDown>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="disableDamageTileFlickerCheckBox" @bind-Checked="Flags.DisableDamageTileFlicker">Disable Damage Tile Flicker</CheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="disableSpellCastFlashCheckBox" @bind-Checked="Flags.DisableSpellCastFlash">Disable Spell Cast Flash</CheckBox>
+				<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="menuColorDropDown" TItem="MenuColor" @bind-Value="Flags.MenuColor">Menu Color</EnumDropDown>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="renounceAutosortCheckBox" @bind-Checked="Flags.RenounceAutosort">Renounce Autosort</CheckBox>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-6">
+				<button type="button" class="nes-btn is-primary" @onclick="@SavePreferences">Save Preferences</button>
+			</div>
+		</div>
+	</div>
+</BSCollapse>
+
+@code {
+	[Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }
+	[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
+	[Parameter] public bool IsOpen { get; set; } = true;
+
+	protected override async void OnInitialized()
+	{
+		Flags.Preferences = await LocalStorage.GetItemAsync<Preferences>("preferences") ?? new Preferences();
+	}
+
+	async Task SavePreferences()
+	{
+		await LocalStorage.SetItemAsync("preferences", Flags.Preferences);
+	}
+}
