@@ -29,11 +29,7 @@
 		{
 			VersionString += " Beta";
 		}
-		else if (FF1Lib.FFRVersion.Branch == "alpha")
-		{
-			VersionString += " Alpha";
-		}
-		else
+		else if (FF1Lib.FFRVersion.Branch != "master")
 		{
 			VersionString = FF1Lib.FFRVersion.Branch;
 		}
