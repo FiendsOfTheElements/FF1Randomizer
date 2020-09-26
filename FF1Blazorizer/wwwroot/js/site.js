@@ -50,7 +50,7 @@ async function storePreset(name, json) {
 async function listLocalPresets() {
 	let presets;
 	try {
-		presets = JSON.parse(localStorage.getItem('presets'));
+		presets = JSON.parse(localStorage.getItem('presets')) ?? {};
 	} catch {
 		presets = {};
 	}
