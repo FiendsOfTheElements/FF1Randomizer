@@ -142,9 +142,17 @@ namespace FF1Lib
 
 		// Story pages. The first set is before the credits.
 		// The second set is the ending cinematic with counters.
-		// Intentionally left blank in case we want to use it again.
 		private static readonly List<string[]> BridgeStory = new List<string[]>
 		{
+			new []
+			{
+				"",
+				"",
+				" Final  Fantasy",
+				"",
+				"",
+				"   Randomizer",
+			},
 		};
 
 		private static readonly List<string[]> ThankYous = new List<string[]>
@@ -319,15 +327,6 @@ namespace FF1Lib
 			// leading spaces are used to increment the PPU ptr precisely to save ROM space.
 			List<string[]> texts = new List<string[]>
 			{
-				new []
-				{
-					"",
-					"",
-					" Final  Fantasy",
-					"",
-					"",
-					"   Randomizer",
-				},
 				new []
 				{
 					"",
