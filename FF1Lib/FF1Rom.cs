@@ -236,7 +236,7 @@ namespace FF1Lib
 
 			if ((bool)flags.ShortToFR)
 			{
-				ShortenToFR(maps, (bool)flags.PreserveFiendRefights, rng);
+				ShortenToFR(maps, (bool)flags.PreserveFiendRefights, (bool)flags.PreserveAllFiendRefights, rng);
 			}
 
 			if (((bool)flags.Treasures) && flags.ShardHunt && !flags.FreeOrbs)

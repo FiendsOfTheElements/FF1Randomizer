@@ -540,6 +540,12 @@
 		"description": "Adds the four Fiend refights to the Chaos floor. Two trap tiles will be found on either side south of the entrance, with the boss in each tile randomized for each seed."
 	},
 	{
+		"Id": "preserveAllFiendRefightsCheckBox",
+		"title": "Include All Fiend Tiles",
+		"screenshot": "preserveAllFiendRefightsCheckBox.png",
+		"description": "Now all four fiends are in both directions, and they must all be defeated to reach CHAOS."
+	},
+	{
 		"Id": "entrancesCheckBox",
 		"title": "Entrance Shuffle",
 		"screenshot": "entrancesCheckBox.gif",

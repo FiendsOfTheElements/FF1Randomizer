@@ -566,6 +566,24 @@ namespace FF1Lib
 			}
 		}
 
+		public bool? PreserveAllFiendRefights
+		{
+			get => Flags.PreserveAllFiendRefights;
+			set
+			{
+				Flags.PreserveAllFiendRefights = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("PreserveAllFiendRefights"));
+			}
+		}
+
+		public bool CanPreserveAllFiendRefights
+		{
+			get => (Flags.ShortToFR ?? true) && (Flags.PreserveFiendRefights ?? true);
+			set
+			{
+			}
+		}
+
 		public bool? MagicShops
 		{
 			get => Flags.MagicShops;
