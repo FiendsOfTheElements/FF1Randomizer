@@ -246,6 +246,11 @@
 		"description": "Shuffles trap tiles excepting Fiend Refights."
 	},
 	{
+		"Id": "removeTrapTilesCheckBox",
+		"title": "Remove All Trap Tiles",
+		"description": "Excluding the feight refights, remove all other trap tiles from the game."
+	},
+	{
 		"Id": "randomTrapFormationsCheckBox",
 		"title": "Use Random Formations",
 		"screenshot": "randomTrapFormationsCheckBox.png",

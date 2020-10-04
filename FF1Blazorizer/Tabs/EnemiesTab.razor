@@ -36,7 +36,9 @@
 				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="swolePiratesCheckBox" @bind-Value="Flags.SwolePirates">Buffed Pirates</TriStateCheckBox>
 				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="shuffleAstosCheckBox" @bind-Value="Flags.ShuffleAstos">Shuffle Astos</TriStateCheckBox>
 				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="fiendShuffleCheckBox" @bind-Value="Flags.FiendShuffle">Shuffle the Original Fiends</TriStateCheckBox>
-				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyTrapTilesCheckBox" IsEnabled="@(!Flags.RandomizeFormationEnemizer)" @bind-Value="Flags.EnemyTrapTiles">Shuffle All Trap Tiles</TriStateCheckBox>
+				<div class="checkbox-cell"></div>
+				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="removeTrapTilesCheckBox" @bind-Value="Flags.RemoveTrapTiles">Remove Trap Tiles</TriStateCheckBox>
+				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyTrapTilesCheckBox" IsEnabled="@Flags.CanShuffleTrapTiles" @bind-Value="Flags.EnemyTrapTiles">Shuffle Trap Tiles</TriStateCheckBox>
 				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="randomTrapFormationsCheckBox" IsEnabled="@Flags.EnemyTrapTiles" @bind-Value="Flags.RandomTrapFormations">Use Random Formations</TriStateCheckBox>
 			</div>
 		</div>

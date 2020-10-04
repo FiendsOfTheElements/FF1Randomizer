@@ -425,6 +425,11 @@ namespace FF1Lib
 				ShuffleEnemyFormations(rng, flags.FormationShuffleMode);
 			}
 
+			if ((bool)flags.RemoveTrapTiles)
+			{
+				RemoveTrapTiles();
+			}
+
 			if (((bool)flags.EnemyTrapTiles) && !flags.EnemizerEnabled)
 			{
 				ShuffleTrapTiles(rng, ((bool)flags.RandomTrapFormations));

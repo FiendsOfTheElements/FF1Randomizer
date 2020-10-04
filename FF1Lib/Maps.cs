@@ -157,19 +157,32 @@ namespace FF1Lib
 
 		const ushort TalkFight = 0x94AA;
 
+		bool IsBattleTile(Blob tuple) => tuple[0] == 0x0A;
+		bool IsRandomBattleTile(Blob tuple) => IsBattleTile(tuple) && (tuple[1] & 0x80) != 0x00;
+		bool IsNonBossTrapTile(Blob tuple) => IsBattleTile(tuple) && tuple[1] > 0 && tuple[1] < FirstBossEncounterIndex;
+
+		public void RemoveTrapTiles()
+		{
+			// This must be called before shuffle trap tiles since it uses the vanilla format for random encounters
+			var tilesets = Get(TilesetDataOffset, TilesetDataCount * TilesetDataSize * TilesetCount).Chunk(TilesetDataSize).ToList();
+			tilesets.ForEach(tile =>
+			{
+				if (IsNonBossTrapTile(tile))
+				{
+					tile[1] = 0x80;
+				}
+			});
+			Put(TilesetDataOffset, tilesets.SelectMany(tileset => tileset.ToBytes()).ToArray());
+		}
+
 		public void ShuffleTrapTiles(MT19337 rng, bool randomize)
 		{
 			// This is magic BNE code that enables formation 1 trap tiles but we have to change
 			// all the 0x0A 0x80 into 0x0A 0x00 and use 0x00 for random encounters instead of 0x80.
 			Data[0x7CDC5] = 0xD0;
-
-			bool IsBattleTile(Blob tuple) => tuple[0] == 0x0A;
-			bool IsRandomBattleTile(Blob tuple) => IsBattleTile(tuple) && (tuple[1] & 0x80) != 0x00;
-			bool IsNonBossTrapTile(Blob tuple) => IsBattleTile(tuple) && tuple[1] > 0 && tuple[1] < FirstBossEncounterIndex;
-
 			var tilesets = Get(TilesetDataOffset, TilesetDataCount * TilesetDataSize * TilesetCount).Chunk(TilesetDataSize).ToList();
-			List<byte> encounters;
 
+			List<byte> encounters;
 			if (randomize)
 			{
 				encounters = Enumerable.Range(128, FirstBossEncounterIndex).Select(value => (byte)value).ToList();

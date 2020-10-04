@@ -832,6 +832,8 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DisableStunTouch"));
 			}
 		}
+		public bool CanShuffleTrapTiles => !((Flags.RandomizeEnemizer ?? false) || (Flags.RemoveTrapTiles ?? false));
+
 		public bool? EnemyTrapTiles
 		{
 			get => Flags.EnemyTrapTiles;
@@ -848,6 +850,16 @@ namespace FF1Lib
 			{
 				Flags.RandomTrapFormations = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomTrapFormations"));
+			}
+		}
+
+		public bool? RemoveTrapTiles
+		{
+			get => Flags.RemoveTrapTiles;
+			set
+			{
+				Flags.RemoveTrapTiles = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RemoveTrapTiles"));
 			}
 		}
 
