@@ -107,6 +107,8 @@ namespace FF1Lib
 			SeparateUnrunnables();
 			UpdateDialogs();
 
+			if (flags.TournamentSafe) Put(0x3FFE3, Blob.FromHex("66696E616C2066616E74617379"));
+
 			flags = Flags.ConvertAllTriState(flags, rng);
 
 			TeleportShuffle teleporters = new TeleportShuffle();
@@ -331,7 +333,7 @@ namespace FF1Lib
 			{
 				EnableSaveOnDeath(flags);
 			}
-
+			
 			// Ordered before RNG shuffle. In the event that both flags are on, RNG shuffle depends on this.
 			if (((bool)flags.FixMissingBattleRngEntry))
 			{
@@ -748,6 +750,9 @@ namespace FF1Lib
 			}
 
 			// We have to do "fun" stuff last because it alters the RNG state.
+			// Back up Rng so that fun flags are uniform when different ones are selected
+			uint funRngSeed = rng.Next();
+
 			RollCredits(rng);
 
 			if (preferences.DisableDamageTileFlicker)
@@ -762,6 +767,7 @@ namespace FF1Lib
 
 			if (preferences.PaletteSwap && !flags.EnemizerEnabled)
 			{
+				rng = new MT19337(funRngSeed);
 				PaletteSwap(rng);
 			}
 
@@ -772,13 +778,17 @@ namespace FF1Lib
 
 			if (preferences.ChangeLute)
 			{
+				rng = new MT19337(funRngSeed);
 				ChangeLute(rng);
 			}
+
+			rng = new MT19337(funRngSeed);
 
 			HurrayDwarfFate(preferences.HurrayDwarfFate, rng);
 
 			if (preferences.Music != MusicShuffle.None)
 			{
+				rng = new MT19337(funRngSeed);
 				ShuffleMusic(preferences.Music, rng);
 			}
 

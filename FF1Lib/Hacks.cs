@@ -558,7 +558,7 @@ namespace FF1Lib
 				(0x00, ""),(0x00, ""),(0x00, ""),
 				(0x0C, "You found the HERB?\nCurses! The Elf Prince\nmust never awaken.\nOnly then shall I,\nAstos, become\nthe King of ALL Elves!"),
 				(0x0E, "Is this a dream?.. Are\nyou, the LIGHT WARRIORS?\nHA! Thank you for waking\nme! I am actually Astos,\nKing of ALL Elves! You\nwon't take my " + newastositem + "!"),
-				(0x12, "My CROWN! Oh, but it\ndoesn't go with this\noutfit at all. You keep\nit. But thanks! Here,\ntake this " + nwkingitem + " also!"),
+				(0x12, "My CROWN! Oh, but it\ndoesn't go with this\noutfit at all. You keep\nit. But thanks! Here,\ntake this also!\n\nReceived " + nwkingitem),
 				(0x14, "Oh, wonderful!\nNice work! Yes, this TNT\nis just what I need to\nblow open the vault.\nSoon more than\nthe " + newastositem + " will\nbelong to Astos,\nKing of Dark Dwarves!"),
 				(0x16, "ADAMANT!! Now let me\nmake this " + newastositem + "..\nAnd now that I have\nthis, you shall take a\nbeating from Astos,\nthe Dark Blacksmith!"),
 				(0x19, "You found my CRYSTAL and\nwant my " + newastositem + "? Oh!\nI can see!! And now, you\nwill see the wrath of\nAstos, the Dark Witch!"),
@@ -1002,36 +1002,39 @@ namespace FF1Lib
 				case PoolSize.Size8: size = 8; sizebyte = Blob.FromHex("FF"); break;
 			}
 
-			List<sbyte> availableClasses = new List<sbyte>();
+			var mainClassList = new List<FF1Class>();
 
-			if ((flags.FIGHTER1 ?? false) && (flags.FIGHTER2 ?? false) && (flags.FIGHTER3 ?? false) && (flags.FIGHTER4 ?? false))
-				availableClasses.Add((sbyte)FF1Class.Fighter);
-			if ((flags.THIEF1 ?? false) && (flags.THIEF2 ?? false) && (flags.THIEF3 ?? false) && (flags.THIEF4 ?? false))
-				availableClasses.Add((sbyte)FF1Class.Thief);
-			if ((flags.BLACK_BELT1 ?? false) && (flags.BLACK_BELT2 ?? false) && (flags.BLACK_BELT3 ?? false) && (flags.BLACK_BELT4 ?? false))
-				availableClasses.Add((sbyte)FF1Class.BlackBelt);
-			if ((flags.RED_MAGE1 ?? false) && (flags.RED_MAGE2 ?? false) && (flags.RED_MAGE3 ?? false) && (flags.RED_MAGE4 ?? false))
-				availableClasses.Add((sbyte)FF1Class.RedMage);
-			if ((flags.WHITE_MAGE1 ?? false) && (flags.WHITE_MAGE2 ?? false) && (flags.WHITE_MAGE3 ?? false) && (flags.WHITE_MAGE4 ?? false))
-				availableClasses.Add((sbyte)FF1Class.WhiteMage);
-			if ((flags.BLACK_MAGE1 ?? false) && (flags.BLACK_MAGE2 ?? false) && (flags.BLACK_MAGE3 ?? false) && (flags.BLACK_MAGE4 ?? false))
-				availableClasses.Add((sbyte)FF1Class.BlackMage);
-			if ((flags.KNIGHT1 ?? false) && (flags.KNIGHT2 ?? false) && (flags.KNIGHT3 ?? false) && (flags.KNIGHT4 ?? false))
-				availableClasses.Add((sbyte)FF1Class.Knight);
-			if ((flags.NINJA1 ?? false) && (flags.NINJA2 ?? false) && (flags.NINJA3 ?? false) && (flags.NINJA4 ?? false))
-				availableClasses.Add((sbyte)FF1Class.Ninja);
-			if ((flags.MASTER1 ?? false) && (flags.MASTER2 ?? false) && (flags.MASTER3 ?? false) && (flags.MASTER4 ?? false))
-				availableClasses.Add((sbyte)FF1Class.Master);
-			if ((flags.RED_WIZ1 ?? false) && (flags.RED_WIZ2 ?? false) && (flags.RED_WIZ3 ?? false) && (flags.RED_WIZ4 ?? false))
-				availableClasses.Add((sbyte)FF1Class.RedWiz);
-			if ((flags.WHITE_WIZ1 ?? false) && (flags.WHITE_WIZ2 ?? false) && (flags.WHITE_WIZ3 ?? false) && (flags.WHITE_WIZ4 ?? false))
-				availableClasses.Add((sbyte)FF1Class.WhiteWiz);
-			if ((flags.BLACK_WIZ1 ?? false) && (flags.BLACK_WIZ2 ?? false) && (flags.BLACK_WIZ3 ?? false) && (flags.BLACK_WIZ4 ?? false))
-				availableClasses.Add((sbyte)FF1Class.BlackWiz);
+			int fiCount = ((bool)flags.FIGHTER1 ? 1 : 0) + ((bool)flags.FIGHTER2 ? 1 : 0) + ((bool)flags.FIGHTER3 ? 1 : 0) + ((bool)flags.FIGHTER4 ? 1 : 0);
+			int thCount = ((bool)flags.THIEF1 ? 1 : 0) + ((bool)flags.THIEF2 ? 1 : 0) + ((bool)flags.THIEF3 ? 1 : 0) + ((bool)flags.THIEF4 ? 1 : 0);
+			int bbCount = ((bool)flags.BLACK_BELT1 ? 1 : 0) + ((bool)flags.BLACK_BELT2 ? 1 : 0) + ((bool)flags.BLACK_BELT3 ? 1 : 0) + ((bool)flags.BLACK_BELT4 ? 1 : 0);
+			int rmCount = ((bool)flags.RED_MAGE1 ? 1 : 0) + ((bool)flags.RED_MAGE2 ? 1 : 0) + ((bool)flags.RED_MAGE3 ? 1 : 0) + ((bool)flags.RED_MAGE4 ? 1 : 0);
+			int wmCount = ((bool)flags.WHITE_MAGE1 ? 1 : 0) + ((bool)flags.WHITE_MAGE2 ? 1 : 0) + ((bool)flags.WHITE_MAGE3 ? 1 : 0) + ((bool)flags.WHITE_MAGE4 ? 1 : 0);
+			int bmCount = ((bool)flags.BLACK_MAGE1 ? 1 : 0) + ((bool)flags.BLACK_MAGE2 ? 1 : 0) + ((bool)flags.BLACK_MAGE3 ? 1 : 0) + ((bool)flags.BLACK_MAGE4 ? 1 : 0);
+			int knCount = ((bool)flags.KNIGHT1 ? 1 : 0) + ((bool)flags.KNIGHT2 ? 1 : 0) + ((bool)flags.KNIGHT3 ? 1 : 0) + ((bool)flags.KNIGHT4 ? 1 : 0);
+			int niCount = ((bool)flags.NINJA1 ? 1 : 0) + ((bool)flags.NINJA2 ? 1 : 0) + ((bool)flags.NINJA3 ? 1 : 0) + ((bool)flags.NINJA4 ? 1 : 0);
+			int maCount = ((bool)flags.MASTER1 ? 1 : 0) + ((bool)flags.MASTER2 ? 1 : 0) + ((bool)flags.MASTER3 ? 1 : 0) + ((bool)flags.MASTER4 ? 1 : 0);
+			int rwCount = ((bool)flags.RED_WIZ1 ? 1 : 0) + ((bool)flags.RED_WIZ2 ? 1 : 0) + ((bool)flags.RED_WIZ3 ? 1 : 0) + ((bool)flags.RED_WIZ4 ? 1 : 0);
+			int wwCount = ((bool)flags.WHITE_WIZ1 ? 1 : 0) + ((bool)flags.WHITE_WIZ2 ? 1 : 0) + ((bool)flags.WHITE_WIZ3 ? 1 : 0) + ((bool)flags.WHITE_WIZ4 ? 1 : 0);
+			int bwCount = ((bool)flags.BLACK_WIZ1 ? 1 : 0) + ((bool)flags.BLACK_WIZ2 ? 1 : 0) + ((bool)flags.BLACK_WIZ3 ? 1 : 0) + ((bool)flags.BLACK_WIZ4 ? 1 : 0);
+
+			if (fiCount > 1) mainClassList.Add(FF1Class.Fighter);
+			if (thCount > 1) mainClassList.Add(FF1Class.Thief);
+			if (bbCount > 1) mainClassList.Add(FF1Class.BlackBelt);
+			if (rmCount > 1) mainClassList.Add(FF1Class.RedMage);
+			if (wmCount > 1) mainClassList.Add(FF1Class.WhiteMage);
+			if (bmCount > 1) mainClassList.Add(FF1Class.BlackMage);
+			if (knCount > 1) mainClassList.Add(FF1Class.Knight);
+			if (niCount > 1) mainClassList.Add(FF1Class.Ninja);
+			if (maCount > 1) mainClassList.Add(FF1Class.Master);
+			if (rwCount > 1) mainClassList.Add(FF1Class.RedWiz);
+			if (wwCount > 1) mainClassList.Add(FF1Class.WhiteWiz);
+			if (bwCount > 1) mainClassList.Add(FF1Class.BlackWiz);
+
+			if (mainClassList.Count == 0) mainClassList = new List<FF1Class> { FF1Class.Fighter, FF1Class.Thief, FF1Class.BlackBelt, FF1Class.RedMage, FF1Class.WhiteMage, FF1Class.BlackMage };
 
 			Blob pool = Blob.FromHex("");
 			for (int i = 0; i < size; i++)
-				pool += Blob.FromSBytes(new List<sbyte> { availableClasses.PickRandom(rng) }.ToArray());
+				pool += Blob.FromSBytes(new List<sbyte> { (sbyte)mainClassList.PickRandom(rng) }.ToArray());
 
 			// Pool size : 4 0xF0; 5 0xF8; 6 0xFC; 7 0xFE; 8 0xFF)
 			PutInBank(0x1E, 0x8650, Blob.FromHex("00") + sizebyte + pool);
@@ -1069,7 +1072,7 @@ namespace FF1Lib
 			var keyNpc = new List<TargetNpc> {
 				new TargetNpc(ObjectId.Princess1, MapId.ConeriaCastle2F, (0x0D, 0x05), true, true, "I won't rest until\nthe Princess is rescued!\n\n..What? Me?"),
 				new TargetNpc(ObjectId.Matoya, MapId.MatoyasCave, (0x06,0x03), true, false, "I'm Matoya's apprentice!\n..She only needs me for\nreading her grimoires."),
-				new TargetNpc(ObjectId.None, MapId.Pravoka, (0,0), false, true, "Hello!"),
+				new TargetNpc(ObjectId.Bikke, MapId.Pravoka, (0,0), false, true, "It is an evil voyage.\nIf Captain Bikke has his\nway, I will never see\nhome again.\n\nYet I do not fear Kraken.\nI fear the wrath of God."),
 				new TargetNpc(ObjectId.ElfDoc, MapId.ElflandCastle, (0x07, 0x05), true, false, "I swore to find a cure\nfor the Prince's curse.\nIf only I could find\nthat elusive Astos.."),
 				new TargetNpc(ObjectId.Astos, MapId.NorthwestCastle, (0x11,0x07), true, true, "While the Crown is\nmissing, I can attest\nthat this is indeed\nthe REAL King of\nNorthwest Castle."),
 				new TargetNpc(ObjectId.Unne, MapId.Melmond, (0x1D, 0x02), false, true, "I'm also trying\nto discover the secret\nof Lefeinish!"),
@@ -1091,7 +1094,7 @@ namespace FF1Lib
 			var selectList = new List<FF1Class>();
 			var classList = new List<FF1Class>();
 
-			var totalKeyNPC = (bool)flags.ClassAsNpcFiends ? Math.Min(flags.ClassAsNpcCount, 12) : 0;
+			var totalKeyNPC = (bool)flags.ClassAsNpcKeyNPC ? Math.Min(flags.ClassAsNpcCount, 12) : 0;
 			var totalAllNPC = ((bool)flags.ClassAsNpcFiends ? 4 : 0) + totalKeyNPC;
 
 			// Select promoted or base classes list
@@ -1139,15 +1142,16 @@ namespace FF1Lib
 					bool targetStationary = true;
 
 					// Bikke, Lefein and CanoeSage use local NPCs
-					if (npc.linkedNPC == ObjectId.None)
+					if (npc.linkedNPC == ObjectId.Bikke)
 					{
-						targetNpc = ObjectId.PravokaWoman;
+						targetNpc = ObjectId.PravokaMan2;
 						originMap = MapId.Pravoka;
 						var tempNpc = FindNpc(originMap, targetNpc);
+						var bikkeNpc = FindNpc(originMap, ObjectId.Bikke);
 						targetIndex = tempNpc.Index;
-						targetCoord = tempNpc.Coord;
+						targetCoord = (bikkeNpc.Coord.x-1, bikkeNpc.Coord.y-1);
 						targetInRoom = tempNpc.InRoom;
-						targetStationary = tempNpc.Stationary;
+						targetStationary = true;
 					}
 					else if (npc.linkedNPC == ObjectId.Unne && npc.targetMap == MapId.Lefein)
 					{

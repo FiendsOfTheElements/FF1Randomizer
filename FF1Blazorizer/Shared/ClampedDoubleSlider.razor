@@ -8,7 +8,8 @@
 				<input type="radio" name="@Name" value="2" checked="@checked2" hidden>
 				<input type="radio" name="@Name" value="1" checked="@checked1" hidden>
 				<input type="radio" name="@Name" value="0" checked="@checked0" hidden>
-				<input type="image" src="@image" @onclick="@onclick" id="@Id" class="tri-state" disabled="@(!IsEnabled)" />  <label for="@Id" class="@DisabledClass">@DisplayText</label>
+				<!-- <input type="image" src="@image" @onclick="@onclick" id="@Id" class="tri-state" disabled="@(!IsEnabled)" /> -->
+				<label for="@Id" class="@DisabledClass">@DisplayText</label>
 			</div>
 		</div>
 	</div>
@@ -94,7 +95,7 @@
 		Clamp == null ?
 			_valueLow + "% - " + _valueHigh + "% OR " +
 			ClampValue + "% - " + Math.Max(_valueHigh, ClampValue) + "%" :
-			((Clamp ?? true ? ClampValue : _valueLow).ToString() + "% - " + (Clamp ?? true ? Math.Max(_valueHigh, ClampValue) : _valueHigh)) + "%"
+			((Clamp ?? true ? ClampValue : _valueLow).ToString() + "% - " + (Clamp ?? true ? Math.Max(_valueHigh, ClampValue) : _valueHigh)) + "%" + " (" + (int)Math.Sqrt(_valueLow * _valueHigh) + "%)"
 		);
 
 	//slider fields
