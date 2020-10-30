@@ -459,7 +459,7 @@ namespace FF1Lib
 			var targetTalkScript = new List<Blob> { newTalk.Talk_Nerrick, newTalk.Talk_GiveItemOnFlag, newTalk.Talk_GiveItemOnItem, newTalk.Talk_TradeItems };
 			for (int i = 0; i < 0x20; i++)
 			{
-				if (targetTalkScript.Contains(npcScript[i]) && npcScriptValue[i][3] >= 0x6C)
+				if (targetTalkScript.Contains(npcScript[i]) && npcScriptValue[i][3] >= 0x6C && npcScriptValue[i][3] <= 0xAF)
 					npcScriptValue[i][3] = (byte)Item.Cabin;
 			}
 
