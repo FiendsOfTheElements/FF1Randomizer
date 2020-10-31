@@ -274,6 +274,13 @@ namespace FF1Lib
 
 			Put(FormationsOffset, encounterData.SelectMany(encounterData => encounterData.ToBytes()).ToArray());
 
+
+			// Make Chaos and WarMech Undead
+			var statsEnemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
+			statsEnemies[0x7F][0x10] |= 0x08; // Chaos
+			statsEnemies[0x76][0x10] |= 0x08; // WarMech
+			Put(EnemyOffset, statsEnemies.SelectMany(enemy => enemy.ToBytes()).ToArray());
+
 			//Update enemies names
 			var enemyText = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
 			enemyText[118] = "LICH?"; // WarMech > Lich?
