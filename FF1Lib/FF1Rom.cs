@@ -744,6 +744,12 @@ namespace FF1Lib
 				CannotSaveAtInns();
 			}
 
+			if (flags.SpookyFlag)
+			{
+				Spooky(rng, flags);
+			}
+			
+
 			if (flags.InventoryAutosort && !(preferences.RenounceAutosort))
 			{
 				EnableInventoryAutosort();

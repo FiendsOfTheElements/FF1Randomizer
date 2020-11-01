@@ -919,6 +919,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ConfusedOldMen"));
 			}
 		}
+		public bool SpookyFlag
+		{
+			get => Flags.SpookyFlag;
+			set
+			{
+				Flags.SpookyFlag = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SpookyFlag"));
+			}
+		}
 		public bool? AllowUnsafeMelmond
 		{
 			get => Flags.AllowUnsafeMelmond;
