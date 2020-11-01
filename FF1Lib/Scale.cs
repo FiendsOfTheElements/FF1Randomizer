@@ -196,7 +196,7 @@ namespace FF1Lib
 				double logDifference = Log(highPercent) - logLowPercent;
 				exponent = exponent * logDifference + logLowPercent; // For example for 50-200% a number from -0.69 to 0.69, for 200-400% a number from 0.69 to 1.38
 			}
-			double scaleValue = Exp(exponent); // A number from 0.5 to 2, or 2 to 4
+			double scaleValue = (rng != null) ? Exp(exponent) : ((highPercent - lowPercent) + 100) / 100; // A number from 0.5 to 2, or 2 to 4
 			double adjustedScale = scaleValue > 1 ? (scaleValue - 1) * adjustment + 1 : 1 - ((1 - scaleValue) * adjustment); // Tightens the scale so some stats are not changed by as much. For example for strength (adjustment of 0.25) this becomes 0.875 to 1.25, 1.25 to 1.75 while for hp (adjustment of 1) this stays 0.5 to 2, 2 to 4
 			return (int)(value * adjustedScale);
 		}
