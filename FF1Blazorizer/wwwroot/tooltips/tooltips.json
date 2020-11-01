@@ -1208,5 +1208,11 @@
 		"title": "Renounce Autosort",
 		"screenshot": "renounceAutosortCheckBox.png",
 		"description": "Forgo the Autosort Inventory feature if it's enabled."
+	},
+	{
+		"Id": "lichRevengeCheckBox",
+		"title": "Lich's Revenge - Halloween Special 2020",
+		"screenshot": "LichRevenge.png",
+		"description": "Lich is having its revenge and a zombie apocalypse is upon the world!\n-All NPCs are zombies\n-Key NPCs will attack you when giving their item\n-Buffed undead enemies\n-End boss Lich"
 	}
 ]
