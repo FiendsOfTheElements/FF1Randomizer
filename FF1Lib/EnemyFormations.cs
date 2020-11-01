@@ -309,9 +309,9 @@ namespace FF1Lib
 			ScaleSingleEnemyStats(0x44, 120, 120, false, false, null, false, 120, 120); // Zombie D
 			ScaleSingleEnemyStats(0x4F, 120, 120, false, false, null, false, 120, 120); // Mummy
 			ScaleSingleEnemyStats(0x50, 120, 120, false, false, null, false, 120, 120); // WzMummy
-			ScaleSingleEnemyStats(0x77, 120, 120, false, false, null, false, 120, 120); // Lich1
-			ScaleSingleEnemyStats(0x78, 120, 120, false, false, null, false, 120, 120); // Lich2
-			ScaleSingleEnemyStats(0x7F, 120, 120, false, false, null, false, 120, 120); // Chaos
+			ScaleSingleEnemyStats(0x77, 105, 110, false, false, null, false, 105, 110); // Lich1
+			ScaleSingleEnemyStats(0x78, 105, 110, false, false, null, false, 105, 110); // Lich2
+			//ScaleSingleEnemyStats(0x7F, 120, 120, false, false, null, false, 120, 120); // Chaos
 
 			// Intro
 			Blob intro = FF1Text.TextToStory(new string[]
