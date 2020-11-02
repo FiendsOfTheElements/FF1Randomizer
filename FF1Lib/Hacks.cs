@@ -1251,7 +1251,10 @@ namespace FF1Lib
 		{
 			const byte WarMECHEncounter = 0x56;
 			const byte bWarMECHEncounter = 0xFD;
+			const byte PhantomEncounter = 0x46;
+			const byte newPhantomEncounter = 0x58;
 			const byte FiendsEncounter = 0x77;
+
 			byte Lich1Encounter = 0x7A;
 			const byte Lich2Encounter = 0x73;
 			const byte ChaosEncounter = 0x7B;
@@ -1279,7 +1282,6 @@ namespace FF1Lib
 			encounterData[bWarMECHEncounter - 0x80][QuantityBOffset + 1] = 0x11;
 
 			// Single Vampire / WizVamp
-			encounterData[VampEncounter][PaletteAsignmentOffset] |= 0x01;
 			encounterData[VampEncounter][GFXOffset] = 0x00;          // Garland Garland Garland N/A
 			encounterData[VampEncounter][IDsOffset + 0] = 0x3D;      // Garland
 			encounterData[VampEncounter][IDsOffset + 1] = 0x3C;      // Chaos
@@ -1313,6 +1315,14 @@ namespace FF1Lib
 			// Single zombieD
 			encounterData[singleZombieD][QuantityOffset + 0] = 0x11;
 			encounterData[singleZombieD][PaletteAsignmentOffset] |= 0x01;
+
+			// Bahamut is Phantom
+			encounterData[newPhantomEncounter][GFXOffset] = 0x77;          // Garland Garland Garland N/A
+			encounterData[newPhantomEncounter][IDsOffset + 1] = 0x33;      // Chaos
+			encounterData[newPhantomEncounter][PalettesOffset + 1] = 0x16;
+			encounterData[newPhantomEncounter][QuantityOffset + 0] = 0x00;
+			encounterData[newPhantomEncounter][QuantityOffset + 1] = 0x11;
+			encounterData[newPhantomEncounter][PaletteAsignmentOffset] |= 0x41;
 
 			// Phantom is Lich1
 			for (int i = 0; i < 4; i++)
@@ -1351,6 +1361,10 @@ namespace FF1Lib
 
 			Put(FormationsOffset, encounterData.SelectMany(encounterData => encounterData.ToBytes()).ToArray());
 
+
+			if (Data[0x0FAD] == PhantomEncounter)
+				Data[0x0FAD] = newPhantomEncounter;
+
 			// Switch WarMechEncounter B formation to not get it in Sky
 			var FormationsLists = Get(ZoneFormationsOffset, ZoneFormationsSize * ZoneCount);
 
@@ -1358,17 +1372,23 @@ namespace FF1Lib
 			{
 				if (FormationsLists[i] == (WarMECHEncounter + 0x80))
 					FormationsLists[i] = 0xAF;
+
+				if (FormationsLists[i] == newPhantomEncounter)
+					FormationsLists[i] = newPhantomEncounter + 0x80;
 			}
 			Put(ZoneFormationsOffset, FormationsLists);
 
-			// Make Chaos and WarMech Undead
+			// Make Chaos and WarMech Undead, Phantom a Dragon
 			var statsEnemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
 			statsEnemies[0x7F][0x10] |= 0x08; // Chaos
 			statsEnemies[0x76][0x10] |= 0x08; // WarMech
+			statsEnemies[0x33][0x10] |= 0x02; // Phantom
 			Put(EnemyOffset, statsEnemies.SelectMany(enemy => enemy.ToBytes()).ToArray());
 
 			//Update enemies names
 			var enemyText = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
+
+			enemyText[0x33] = "DRACLICH"; //Phantom > to DrakLich?
 			enemyText[118] = "LICH?"; // WarMech > Lich?
 			enemyText[119] = "PHANTOM"; // Lich1 > Phantom
 			enemyText[120] = ""; // Lich2 > Phantom
@@ -1468,15 +1488,23 @@ namespace FF1Lib
 			evilDialogs.Add(0x02, "What is going on!? My\nguard tried to kill me!\nUgh.. this is a deep\nwound.. I don't feel so\nwell..\nGwooorrrgl!\n\nReceived #");
 			npcScriptValue[(int)ObjectId.King][1] = singleZombie;
 
-			evilDialogs.Add(0x06, "So, you are.. the..\nLIGHTarrgaar..\nWarglb..\n\nBraaaain...\n\nReceived #");
+			evilDialogs.Add(0x06, "So, you are.. the..\nLIGHTarrgaar..\nWarglb..\n\nBraaaain..\n\nReceived #");
 			npcScriptValue[(int)ObjectId.Princess2][1] = singleZombie;
-			//evilDialogs.Add(0x09, "Okay, you got me.\nTake this.\n\n\n\nReceived #");
+
+			evilDialogs.Add(0x08, "Aaaaarrr! The LIGHT\nWARRIORS have been\ncursed too!\n\nGet 'em, boys!");
+			evilDialogs.Add(0x09, "Okay then, guess I'll go\nto the pub, have a nice\ncold pint, and wait for\nall this to blow over.\n\nReceived #");
 
 			evilDialogs.Add(0x0E, "At last I wake up from\nmy eternal slumber.\nCome, LIGHT WARRIORS,\nembrace the darkness,\njoin me in death..\n\nReceived #");
 			npcScriptValue[(int)ObjectId.ElfPrince][1] = singleVamp;
 
 			evilDialogs.Add(0x0C, "Yes, yes, the master\nwill be pleased. Let's\nclean this place up\nbefore he wakes.\nStarting with you!");
 			npcScriptValue[(int)ObjectId.ElfDoc][1] = singleGeist;
+
+			if (npcScript[(int)ObjectId.Astos] != newTalk.Talk_Astos)
+			{
+				evilDialogs.Add(0x12, "Did you ever dance with\nthe devil in the pale\nmoonlight?\n\nReceived #");
+				npcScriptValue[(int)ObjectId.Astos][1] = singleVamp;
+			}
 
 			evilDialogs.Add(0x13, "The world is going to\nhell, but this won't\nstop me from digging\nmy canal!");
 			evilDialogs.Add(0x14, "Excellent! Finally,\nnow Lich's undead army\ncan flow through the\nrest of the world!\n\nReceived #");
@@ -1498,6 +1526,10 @@ namespace FF1Lib
 			evilDialogs.Add(0x1E, "I.. HUNGER!\n\nReceived #");
 			npcScriptValue[(int)ObjectId.Sarda][1] = singleZomBull;
 
+			evilDialogs.Add(0x20, "The TAIL! Impressive..\nYes, yes, you are indeed\nworthy..\n\nWorthy of dying by my\nown claws!");
+			npcScriptValue[(int)ObjectId.Bahamut][1] = newPhantomEncounter;
+			npcScriptValue[(int)ObjectId.Bahamut][3] = 0x1F;
+
 			evilDialogs.Add(0x23, "Come play with me,\nLIGHT WARRIORS.\nFor ever and ever\nand ever..\n\nReceived #");
 			npcScriptValue[(int)ObjectId.Fairy][1] = singleGhost;
 
@@ -1507,7 +1539,7 @@ namespace FF1Lib
 			evilDialogs.Add(0x2B, "My friends..\nMy colleagues..\nNow.. I join them..\n\nReceived #");
 			npcScriptValue[(int)ObjectId.CanoeSage][1] = singleZomBull;
 
-			evilDialogs.Add(0xCD, "Luuuuu... paaaargh!\n\n\n\nReceived #");
+			evilDialogs.Add(0xCD, "Luuuuu.. paaaargh!\n\n\n\nReceived #");
 			npcScriptValue[(int)ObjectId.Lefein][1] = singleZomBull;
 
 			evilDialogs.Add(0xFA, "Sorry, LIGHT WARRIORS,\nbut your LICH is in\nanother castle!\n\nMwahahahaha!");
@@ -1605,17 +1637,22 @@ namespace FF1Lib
 			}
 
 			// Update Talk Script to have them fight
+			PutInBank(0x0E, 0x93DD, Blob.FromHex("206A95")); // Talk_Bikke
 			PutInBank(0x0E, 0x93FE, Blob.FromHex("206095")); // Nerrick
+			PutInBank(0x0E, 0x941F, Blob.FromHex("206095")); // Bahamut
+			PutInBank(0x0E, 0x941A, Blob.FromHex("13")); // Bahamut
+			PutInBank(0x0E, 0x95AE + 20, Blob.FromHex("EAEA")); // Bahamut
 			PutInBank(0x0E, 0x943C, Blob.FromHex("206095")); // Unne
 			PutInBank(0x0E, 0x946C, Blob.FromHex("206095")); // Talk_GiveItemOnFlag
 			PutInBank(0x0E, 0x949D, Blob.FromHex("206095")); // Talk_TradeItems
 			PutInBank(0x0E, 0x94CA, Blob.FromHex("206095")); // Talk_GiveItemOnItem
 
+
 			// Talk_Replace
 			PutInBank(0x0E, 0x932E, Blob.FromHex("A41320A490A416206095A51260"));
 
 			// Fight Script 
-			PutInBank(0x0E, 0x9560, Blob.FromHex("A51185132073924C4393"));
+			PutInBank(0x0E, 0x9560, Blob.FromHex("A51185132073924C4393A416207F9020739260"));
 		}
 	}
 }
