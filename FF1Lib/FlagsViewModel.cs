@@ -649,6 +649,16 @@ namespace FF1Lib
 			}
 		}
 
+		public AutohitThreshold MagicAutohitThreshold
+		{
+			get => Flags.MagicAutohitThreshold;
+			set
+			{
+				Flags.MagicAutohitThreshold = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MagicAutohitThreshold"));
+			}
+		}
+
 		public bool? Rng
 		{
 			get => Flags.Rng;

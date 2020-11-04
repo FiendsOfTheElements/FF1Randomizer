@@ -39,6 +39,8 @@ namespace FF1Lib
 		public bool? MagicLevelsTiered { get; set; } = false;
 		public bool? MagicLevelsMixed { get; set; } = false;
 
+		public AutohitThreshold MagicAutohitThreshold { get; set; } = AutohitThreshold.Vanilla;
+
 		public bool? Rng { get; set; } = false;
 		public bool FixMissingBattleRngEntry { get; set; } = false;
 		public bool? EverythingUnrunnable { get; set; } = false;

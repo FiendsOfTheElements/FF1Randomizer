@@ -221,6 +221,8 @@ namespace FF1Lib
 				BuffHealingSpells();
 			}
 
+			UpdateMagicAutohitThreshold(rng, flags.MagicAutohitThreshold);
+
 			if ((bool)flags.GenerateNewSpellbook)
 			{
 				CraftNewSpellbook(rng, (bool)flags.SpellcrafterMixSpells, flags.LockMode, (bool)flags.MagicLevels, (bool)flags.SpellcrafterRetainPermissions);

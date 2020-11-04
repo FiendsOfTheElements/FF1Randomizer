@@ -17,6 +17,28 @@ namespace FF1Lib
 		AutoHit
 	}
 
+	public enum AutohitThreshold
+	{
+		[Description("300")]
+		Vanilla = 0,
+		[Description("600")]
+		Autohit600,
+		[Description("900")]
+		Autohit900,
+		[Description("1200")]
+		Autohit1200,
+		[Description("None")]
+		Autohit65535,
+		[Description("300 or 600")]
+		Autohit300to600,
+		[Description("300, 600, or 900")]
+		Autohit300to900,
+		[Description("300, 600, 900, or 1200")]
+		Autohit300to1200,
+		[Description("Any of the above")]
+		Any,
+	}
+
 	public partial class FF1Rom : NesRom
 	{
 		public const int MagicOffset = 0x301E0;
@@ -525,6 +547,32 @@ namespace FF1Lib
 			{
 				PutInBank(0x0C, 0xBA46, Blob.FromHex("2029B9AD856838ED7468B002A9008D85682085B860EAEAEAEAEAEAEAEAEAEAEAEAEA"));
 			}
+		}
+
+		public void UpdateMagicAutohitThreshold(MT19337 rng, AutohitThreshold threshold)
+		{
+			short limit = 300;
+			switch (threshold)
+			{
+				case AutohitThreshold.Vanilla: limit = 300; break;
+				case AutohitThreshold.Autohit600: limit = 600; break;
+				case AutohitThreshold.Autohit900: limit = 900; break;
+				case AutohitThreshold.Autohit1200: limit = 1200; break;
+				case AutohitThreshold.Autohit65535: limit = short.MaxValue; break;
+				case AutohitThreshold.Autohit300to600: limit = (short)(rng.Between(1, 2) * 300); break;
+				case AutohitThreshold.Autohit300to900: limit = (short)(rng.Between(1, 3) * 300); break;
+				case AutohitThreshold.Autohit300to1200: limit = (short)(rng.Between(1, 4) * 300); break;
+				case AutohitThreshold.Any:
+				{
+					short[] any = { 300, 600, 900, 1200, short.MaxValue };
+					limit = any.PickRandom(rng);
+					break;
+				}
+			}
+
+			// Set the low and high bytes of the limit which are then loaded and compared to the targets hp.
+			Data[0x33AE0] = (byte)(limit & 0x00ff);
+			Data[0x33AE5] = (byte)((limit >> 8) & 0x00ff);
 		}
 
 		List<MagicSpell> GetSpells() {

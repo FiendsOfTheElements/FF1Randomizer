@@ -1224,5 +1224,10 @@
 		"Id": "allRunnableCheckBox",
 		"title": "All Encounters are Runnable",
 		"description": "Makes all encounters runnable, except for bosses."
+	},
+	{
+		"Id": "magicAutohitThresholdDropDown",
+		"title": "Power Word HP Limit",
+		"description": "Changes the threshold at which BLND, STUN, and XXXX are effective.\nThe value will always be a multiple of 300, or unlimited."
 	}
 ]
