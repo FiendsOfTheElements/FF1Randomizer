@@ -1398,23 +1398,23 @@ namespace FF1Lib
 			Put(EnemyTextPointerOffset + 120 * 2, test);
 
 			// Scale Undeads
-			ScaleSingleEnemyStats(0x15, 150, 150, false, false, null, false, 150, 150); // Bone
-			ScaleSingleEnemyStats(0x16, 150, 150, false, false, null, false, 150, 150); // R.Bone
-			ScaleSingleEnemyStats(0x24, 150, 150, false, false, null, false, 150, 150); // ZomBull
-			ScaleSingleEnemyStats(0x27, 150, 150, false, false, null, false, 150, 150); // Shadow
-			ScaleSingleEnemyStats(0x28, 150, 150, false, false, null, false, 150, 150); // Image
-			ScaleSingleEnemyStats(0x29, 150, 150, false, false, null, false, 150, 150); // Wraith
-			ScaleSingleEnemyStats(0x2A, 150, 150, false, false, null, false, 150, 150); // Ghost
-			ScaleSingleEnemyStats(0x2B, 150, 150, false, false, null, false, 150, 150); // Zombie
-			ScaleSingleEnemyStats(0x2C, 150, 150, false, false, null, false, 150, 150); // Ghoul
-			ScaleSingleEnemyStats(0x2D, 150, 150, false, false, null, false, 150, 150); // Geist
-			ScaleSingleEnemyStats(0x2E, 150, 150, false, false, null, false, 150, 150); // Specter
-			ScaleSingleEnemyStats(0x33, 150, 150, false, false, null, false, 150, 150); // Phantom
-			ScaleSingleEnemyStats(0x3C, 150, 150, false, false, null, false, 150, 150); // Vampire
-			ScaleSingleEnemyStats(0x3D, 150, 150, false, false, null, false, 150, 150); // WzVampire
-			ScaleSingleEnemyStats(0x44, 150, 150, false, false, null, false, 150, 150); // Zombie D
-			ScaleSingleEnemyStats(0x4F, 150, 150, false, false, null, false, 150, 150); // Mummy
-			ScaleSingleEnemyStats(0x50, 150, 150, false, false, null, false, 150, 150); // WzMummy
+			ScaleSingleEnemyStats(0x15, 125, 125, false, false, null, false, 125, 125); // Bone
+			ScaleSingleEnemyStats(0x16, 125, 125, false, false, null, false, 125, 125); // R.Bone
+			ScaleSingleEnemyStats(0x24, 125, 125, false, false, null, false, 125, 125); // ZomBull
+			ScaleSingleEnemyStats(0x27, 125, 125, false, false, null, false, 125, 125); // Shadow
+			ScaleSingleEnemyStats(0x28, 125, 125, false, false, null, false, 125, 125); // Image
+			ScaleSingleEnemyStats(0x29, 125, 125, false, false, null, false, 125, 125); // Wraith
+			ScaleSingleEnemyStats(0x2A, 125, 125, false, false, null, false, 125, 125); // Ghost
+			ScaleSingleEnemyStats(0x2B, 125, 125, false, false, null, false, 125, 125); // Zombie
+			ScaleSingleEnemyStats(0x2C, 125, 125, false, false, null, false, 125, 125); // Ghoul
+			ScaleSingleEnemyStats(0x2D, 125, 125, false, false, null, false, 125, 125); // Geist
+			ScaleSingleEnemyStats(0x2E, 125, 125, false, false, null, false, 125, 125); // Specter
+			ScaleSingleEnemyStats(0x33, 125, 125, false, false, null, false, 125, 125); // Phantom
+			ScaleSingleEnemyStats(0x3C, 125, 125, false, false, null, false, 125, 125); // Vampire
+			ScaleSingleEnemyStats(0x3D, 125, 125, false, false, null, false, 125, 125); // WzVampire
+			ScaleSingleEnemyStats(0x44, 125, 125, false, false, null, false, 125, 125); // Zombie D
+			ScaleSingleEnemyStats(0x4F, 125, 125, false, false, null, false, 125, 125); // Mummy
+			ScaleSingleEnemyStats(0x50, 125, 125, false, false, null, false, 125, 125); // WzMummy
 			ScaleSingleEnemyStats(0x77, 120, 120, false, false, null, false, 120, 120); // Lich1
 			ScaleSingleEnemyStats(0x78, 120, 120, false, false, null, false, 120, 120); // Lich2
 			ScaleSingleEnemyStats(0x7F, 110, 110, false, false, null, false, 110, 110); // Chaos

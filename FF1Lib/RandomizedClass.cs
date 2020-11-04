@@ -587,7 +587,7 @@ namespace FF1Lib
 				Item.SilverShield, Item.FlameShield, Item.IceShield, Item.WoodenHelm, Item.IronHelm, Item.SilverHelm,
 				Item.CopperGauntlets, Item.IronGauntlets, Item.SilverGauntlets, Item.PowerGauntlets };
 
-			var equipRedMageArmor = new List<Item> { Item.WoodenArmor, Item.ChainArmor, Item.SilverArmor };
+			var equipRedMageArmor = new List<Item> { Item.WoodenArmor, Item.ChainArmor, Item.SilverArmor, Item.Buckler };
 
 			var equipKnightArmor = new List<Item>(equipFighterArmor) { Item.DragonArmor, Item.OpalArmor, Item.AegisShield, Item.OpalShield,
 				Item.HealHelm, Item.OpalHelm, Item.PowerGauntlets, Item.ZeusGauntlets, Item.OpalGauntlets };
@@ -605,17 +605,9 @@ namespace FF1Lib
 			// Spells lists
 			var nullSpells = Enumerable.Repeat(false, 4 * 8).ToList();
 
-			var lv1WhiteSpells = new List<bool>(nullSpells);
-			lv1WhiteSpells[0] = true;
-			lv1WhiteSpells[1] = true;
-			lv1WhiteSpells[2] = true;
-			lv1WhiteSpells[3] = true;
+			var lv1WhiteSpells = new List<bool>(classData[4].whitePermissions.GetRange(0,4).Concat(nullSpells.GetRange(0,28)));
 
-			var lv1BlackSpells = new List<bool>(nullSpells);
-			lv1BlackSpells[0] = true;
-			lv1BlackSpells[1] = true;
-			lv1BlackSpells[2] = true;
-			lv1BlackSpells[3] = true;
+			var lv1BlackSpells = new List<bool>(classData[5].blackPermissions.GetRange(0, 4).Concat(nullSpells.GetRange(0, 28)));
 
 			var lv3WhiteSpells = new List<bool>(classData[6].whitePermissions);
 			var lv4BlackSpells = new List<bool>(classData[7].blackPermissions);

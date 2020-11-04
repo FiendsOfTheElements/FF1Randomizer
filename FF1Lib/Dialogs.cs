@@ -918,7 +918,7 @@ namespace FF1Lib
 				List<ObjectId> mermaids = new List<ObjectId> { ObjectId.Mermaid1, ObjectId.Mermaid2, ObjectId.Mermaid4, ObjectId.Mermaid5, ObjectId.Mermaid6, ObjectId.Mermaid7, ObjectId.Mermaid8, ObjectId.Mermaid9, ObjectId.Mermaid10 };
 				var selectedMermaid = mermaids.PickRandom(rng);
 				Put(lut_MapObjTalkJumpTblAddress + (byte)selectedMermaid * NpcTalkSize, newTalk.Talk_norm);
-				Put(NpcTalkOffset + (byte)selectedMermaid * NpcTalkSize, Blob.FromHex("00B60000"));
+				Put(MapObjOffset + (byte)selectedMermaid * NpcTalkSize, Blob.FromHex("00B60000"));
 			}
 
 			return maps;
