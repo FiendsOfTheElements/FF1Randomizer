@@ -238,10 +238,11 @@
 						<Label Margin="5,5,0,0" FontWeight="Bold">Hints</Label>
 						<CheckBox x:Name="hintsVillagerCB" IsChecked="{Binding Flags.HintsVillage}" Content="Enable Procedural Floor Generation"/>
 						<CheckBox x:Name="hintsDungeonCB" IsChecked="{Binding Flags.HintsDungeon}" Content="Procgen Waterfall"/>
+						<CheckBox x:Name="hintsDungeonRandomCB" IsChecked="{Binding Flags.HintsRngDungeon}" Content="Procgen Waterfall"/>
 					</StackPanel>
 				</Grid>
 			</TabItem>
-			<TabItem Header="Scale">
+			<TabItem Header="Scale" HorizontalAlignment="Right" Width="43">
 				<Grid>
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="180*"/>

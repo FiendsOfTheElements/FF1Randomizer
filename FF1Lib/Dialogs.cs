@@ -907,18 +907,25 @@ namespace FF1Lib
 				SetNpc(MapId.MarshCaveB2, 0x0D, ObjectId.OnracPunk2, 0x37, 0x21, true, false);
 
 			// Mermaid hinter - Text 0xB6 - 0xA5 mermaid
-			SetNpc(MapId.SeaShrineB1, 2, ObjectId.None, 0x00, 0x00, true, false);
 			randomposition = randomize ? rng.Between(1, 3) : 1;
 			if (randomposition == 1)
+			{
+				SetNpc(MapId.SeaShrineB1, 2, ObjectId.None, 0x00, 0x00, true, false);
 				SetNpc(MapId.SeaShrineB4, 0, (ObjectId)0xA5, 0x16, 0x2C, true, false);
+			}
 			else if (randomposition == 2)
+			{
+				SetNpc(MapId.SeaShrineB1, 2, ObjectId.None, 0x00, 0x00, true, false);
 				SetNpc(MapId.SeaShrineB3, 0, (ObjectId)0xA5, 0x1A, 0x11, true, false);
+			}
 			else
 			{
 				List<ObjectId> mermaids = new List<ObjectId> { ObjectId.Mermaid1, ObjectId.Mermaid2, ObjectId.Mermaid4, ObjectId.Mermaid5, ObjectId.Mermaid6, ObjectId.Mermaid7, ObjectId.Mermaid8, ObjectId.Mermaid9, ObjectId.Mermaid10 };
-				var selectedMermaid = mermaids.PickRandom(rng);
-				Put(lut_MapObjTalkJumpTblAddress + (byte)selectedMermaid * NpcTalkSize, newTalk.Talk_norm);
-				Put(MapObjOffset + (byte)selectedMermaid * NpcTalkSize, Blob.FromHex("00B60000"));
+				var selectedMermaidId = mermaids.PickRandom(rng);
+				var selectedMermaid = FindNpc(MapId.SeaShrineB1, selectedMermaidId);
+				var hintMermaid = FindNpc(MapId.SeaShrineB1, ObjectId.Mermaid3);
+				SetNpc(MapId.SeaShrineB1, selectedMermaid.Index, ObjectId.Mermaid3, selectedMermaid.Coord.x, selectedMermaid.Coord.y, selectedMermaid.InRoom, selectedMermaid.Stationary);
+				SetNpc(MapId.SeaShrineB1, hintMermaid.Index, selectedMermaidId, hintMermaid.Coord.x, hintMermaid.Coord.y, hintMermaid.InRoom, hintMermaid.Stationary);
 			}
 
 			return maps;
