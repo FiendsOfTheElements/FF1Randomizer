@@ -75,6 +75,21 @@ namespace FF1Lib
 			List<Blob> formations = Get(FormationsOffset, FormationSize * NormalFormationCount).Chunk(FormationSize);
 			formations.ForEach(formation => formation[UnrunnableOffset] |= 0x03);
 			Put(FormationsOffset, formations.SelectMany(formation => formation.ToBytes()).ToArray());
+
+			List<Blob> lastFormations = Get(FormationsOffset + FormationSize * 0x7E, FormationSize * 2).Chunk(FormationSize);
+			lastFormations.ForEach(formation => formation[UnrunnableOffset] |= 0x02);
+			Put(FormationsOffset + FormationSize * 0x7E, lastFormations.SelectMany(formation => formation.ToBytes()).ToArray());
+		}
+
+		public void CompletelyRunnable()
+		{
+			List<Blob> formations = Get(FormationsOffset, FormationSize * NormalFormationCount).Chunk(FormationSize);
+			formations.ForEach(formation => formation[UnrunnableOffset] &= 0xFC);
+			Put(FormationsOffset, formations.SelectMany(formation => formation.ToBytes()).ToArray());
+
+			List<Blob> lastFormations = Get(FormationsOffset + FormationSize * 0x7E, FormationSize * 2).Chunk(FormationSize);
+			lastFormations.ForEach(formation => formation[UnrunnableOffset] &= 0xFD);
+			Put(FormationsOffset + FormationSize * 0x7E, lastFormations.SelectMany(formation => formation.ToBytes()).ToArray());
 		}
 
 		private void FiendShuffle(MT19337 rng)
@@ -177,6 +192,48 @@ namespace FF1Lib
 			Put(FormationsOffset + ChaosFormationIndex * FormationSize, finalBattle);
 		}
 
+		public void PacifistEnd()
+		{
+			// Remove ToFR Fiends tiles
+			var tilesets = Get(TilesetDataOffset, TilesetDataCount * TilesetDataSize * TilesetCount).Chunk(TilesetDataSize).ToList();
+			tilesets.ForEach(tile =>
+			{
+				if (IsBossTrapTile(tile))
+				{
+					tile[1] = 0x80;
+				}
+			});
+			Put(TilesetDataOffset, tilesets.SelectMany(tileset => tileset.ToBytes()).ToArray());
+
+			// Get all NPC scripts and script values to update them
+			var npcScript = new List<Blob>();
+
+			for (int i = 0; i < 0xD0; i++)
+				npcScript.Add(Get(0x390D3 + i * 2, 2));
+
+			var Talk_Ending = Blob.FromHex("4693");
+
+			for (int i = 0; i < 0xD0; i++)
+			{
+				if (npcScript[i] == newTalk.Talk_fight)
+					npcScript[i] = newTalk.Talk_CoOGuy;
+			}
+
+			// Update Chaos script
+			npcScript[0x1A] = Talk_Ending;
+
+			// Reinsert updated scripts
+			for (int i = 0; i < 0xD0; i++)
+				PutInBank(0x0E, 0x90D3 + i * 2, npcScript[i]);
+
+			//Update Talk_CooGuy and change Talk_fight to load End game
+			PutInBank(0x0E, 0x933B, Blob.FromHex("A416207F90209690A511604C38C9"));
+
+			//Update Astos and Bikke
+			PutInBank(0x0E, 0x93C0, Blob.FromHex("EAEAEA"));
+			PutInBank(0x0E, 0x9507, Blob.FromHex("EAEAEA"));
+
+		}
 	}
 
 }

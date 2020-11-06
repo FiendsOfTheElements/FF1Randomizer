@@ -685,6 +685,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EverythingUnrunnable"));
 			}
 		}
+		public bool? EverythingRunnable
+		{
+			get => Flags.EverythingRunnable;
+			set
+			{
+				Flags.EverythingRunnable = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EverythingRunnable"));
+			}
+		}
 		public bool? UnrunnablesStrikeFirstAndSurprise
 		{
 			get => Flags.UnrunnablesStrikeFirstAndSurprise;
@@ -2785,6 +2794,15 @@ namespace FF1Lib
 			{
 				Flags.SaveGameDWMode = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SaveGameDWMode"));
+			}
+		}
+		public bool PacifistMode
+		{
+			get => Flags.PacifistMode;
+			set
+			{
+				Flags.PacifistMode = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("PacifistMode"));
 			}
 		}
 		public bool? ShuffleAstos

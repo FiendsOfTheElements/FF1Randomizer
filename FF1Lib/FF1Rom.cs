@@ -381,6 +381,10 @@ namespace FF1Lib
 				{
 					CompletelyUnrunnable();
 				}
+				else if ((bool)flags.EverythingRunnable)
+				{
+					CompletelyRunnable();
+				}
 				else
 				{
 					ShuffleUnrunnable(rng);
@@ -743,6 +747,12 @@ namespace FF1Lib
 			{
 				CannotSaveAtInns();
 			}
+
+			if (flags.PacifistMode)
+			{
+				PacifistEnd();
+			}
+
 
 			if (flags.SpookyFlag)
 			{

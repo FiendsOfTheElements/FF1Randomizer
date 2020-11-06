@@ -160,6 +160,7 @@ namespace FF1Lib
 		bool IsBattleTile(Blob tuple) => tuple[0] == 0x0A;
 		bool IsRandomBattleTile(Blob tuple) => IsBattleTile(tuple) && (tuple[1] & 0x80) != 0x00;
 		bool IsNonBossTrapTile(Blob tuple) => IsBattleTile(tuple) && tuple[1] > 0 && tuple[1] < FirstBossEncounterIndex;
+		bool IsBossTrapTile(Blob tuple) => IsBattleTile(tuple) && tuple[1] > 0 && tuple[1] >= FirstBossEncounterIndex;
 
 		public void RemoveTrapTiles()
 		{

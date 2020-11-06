@@ -1214,5 +1214,15 @@
 		"title": "Lich's Revenge - Halloween Special 2020",
 		"screenshot": "LichRevenge.png",
 		"description": "Lich is having its revenge and a zombie apocalypse is upon the world!\n-All NPCs are zombies\n-Key NPCs will attack you when giving their item\n-Buffed undead enemies\n-End boss Lich"
+	},
+	{
+		"Id": "pacifistModeCheckBox",
+		"title": "Pacifist Bosses",
+		"description": "Skip all bosses' fight, including Chaos."
+	},
+	{
+		"Id": "allRunnableCheckBox",
+		"title": "All Encounters are Runnable",
+		"description": "Makes all encounters runnable, except for bosses."
 	}
 ]

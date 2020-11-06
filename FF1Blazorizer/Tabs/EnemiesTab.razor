@@ -7,7 +7,7 @@
 			<div class="col-md-4">
 				<h4>Formations</h4>
 				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyFormationsUnrunnableCheckBox" @bind-Value="Flags.EnemyFormationsUnrunnable">Shuffle Unrunnable Formations</TriStateCheckBox>
-				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnemyFormationsUnrunnable" Id="everythingUnrunnableCheckBox" @bind-Value="Flags.EverythingUnrunnable">All Encounters are Unrunnable</TriStateCheckBox>
+				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@(Flags.EnemyFormationsUnrunnable != false && Flags.EverythingRunnable != true)" Id="everythingUnrunnableCheckBox" @bind-Value="Flags.EverythingUnrunnable">All Encounters are Unrunnable</TriStateCheckBox>
 				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="unrunnablesStrikeFirstAndSurpriseCheckBox" @bind-Value="Flags.UnrunnablesStrikeFirstAndSurprise">Unrunnable First Strike &amp; Surprise</TriStateCheckBox>
 				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyFormationsSurpriseCheckBox" @bind-Value="Flags.EnemyFormationsSurprise">Shuffle Surprise Bonus</TriStateCheckBox>
 				<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="formationShuffleModeDropDown" TItem="FormationShuffleMode" IsEnabled="@(!Flags.RandomizeFormationEnemizer)" @bind-Value="Flags.FormationShuffleMode">Rarity:</EnumDropDown>

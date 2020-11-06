@@ -17,6 +17,9 @@
 				<CheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(!Flags.HintsDungeon)" Id="procGenEarth1" @bind-Checked="Flags.EFGEarth1">Generated Earth Cave B1</CheckBox>
 				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="procGenEarth2" @bind-Checked="Flags.EFGEarth2">Generated Earth Cave B2</CheckBox>
 				<div class="checkbox-cell"></div>
+				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="allRunnableCheckBox" IsEnabled="@(Flags.EnemyFormationsUnrunnable != false && Flags.EverythingUnrunnable != true)" @bind-Value="Flags.EverythingRunnable">All Encounters are Runnable</TriStateCheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="pacifistModeCheckBox" @bind-Checked="Flags.PacifistMode">Pacifist Bosses</CheckBox>
+				<div class="checkbox-cell"></div>
 				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="lichRevengeCheckBox" @bind-Checked="Flags.SpookyFlag">Lich's Revenge</CheckBox>
 			</div>
 			<div class="col-md-6">
