@@ -511,6 +511,11 @@ namespace FF1Lib
 				EnableFreeCanal((bool)flags.NPCItems);
 			}
 
+			if ((bool)flags.FreeCanoe)
+			{
+				EnableFreeCanoe();
+			}
+
 			if ((bool)flags.FreeLute)
 			{
 				EnableFreeLute();

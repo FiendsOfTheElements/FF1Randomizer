@@ -136,6 +136,7 @@ namespace FF1Lib
 		public bool FreeOrbs { get; set; } = false;
 		public bool EnableCritNumberDisplay { get; set; } = false;
 		public bool? FreeCanal { get; set; } = false;
+		public bool? FreeCanoe { get; set; } = false;
 		public bool EasyMode { get; set; } = false;
 
 		public bool HousesFillHp { get; set; } = false;
@@ -366,7 +367,7 @@ namespace FF1Lib
 		public bool? IncentivizeBottle => (!(NPCFetchItems ?? false) && (IncentivizeMainItems ?? false)) || ((NPCFetchItems ?? false) && (IncentivizeFetchItems ?? false));
 
 		public bool IncentivizeBridge => false;
-		public bool? IncentivizeCanoe => NPCItems & IncentivizeCanoeItem;
+		public bool? IncentivizeCanoe => NPCItems & IncentivizeCanoeItem & !FreeCanoe;
 		public bool? IncentivizeLute => NPCItems & !FreeLute & IncentivizeMainItems;
 		public bool? IncentivizeShip => NPCItems & IncentivizeShipAndCanal & !FreeShip;
 		public bool? IncentivizeRod => NPCItems & IncentivizeMainItems;
@@ -600,7 +601,7 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.ItemMagic);
 			sum = AddTriState(sum, flags.MagicLevelsTiered);
 			sum = AddTriState(sum, flags.MagicLevelsMixed);
-			sum = AddNumeric(sum, Enum.GetValues(typeof(AutohitThreshold)).Cast<int>().Max() + 1, (int)flags.AutohitThreshold);
+			sum = AddNumeric(sum, Enum.GetValues(typeof(AutohitThreshold)).Cast<int>().Max() + 1, (int)flags.MagicAutohitThreshold);
 			sum = AddTriState(sum, flags.Rng);
 			sum = AddBoolean(sum, flags.FixMissingBattleRngEntry);
 			sum = AddTriState(sum, flags.EverythingUnrunnable);
@@ -680,6 +681,7 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.FreeAirship);
 			sum = AddBoolean(sum, flags.FreeOrbs);
 			sum = AddBoolean(sum, flags.EnableCritNumberDisplay);
+			sum = AddTriState(sum, flags.FreeCanoe);
 			sum = AddTriState(sum, flags.FreeCanal);
 			sum = AddBoolean(sum, flags.EasyMode);
 			sum = AddBoolean(sum, flags.HousesFillHp);
@@ -1058,6 +1060,7 @@ namespace FF1Lib
 				HousesFillHp = GetBoolean(ref sum),
 				EasyMode = GetBoolean(ref sum),
 				FreeCanal = GetTriState(ref sum),
+				FreeCanoe = GetTriState(ref sum),
 				EnableCritNumberDisplay = GetBoolean(ref sum),
 				FreeOrbs = GetBoolean(ref sum),
 				FreeAirship = GetTriState(ref sum),

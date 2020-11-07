@@ -689,6 +689,11 @@ namespace FF1Lib
 				PutInBank(0x0E, 0x95D5 + (int)ObjectId.Nerrick * 4 + 3, new byte[] { (byte)Item.Cabin });
 		}
 
+		public void EnableFreeCanoe()
+		{
+			Data[0x3012] = 0x01;
+		}
+
 		public void EnableCanalBridge()
 		{
 			// Inline edit to draw the isthmus or the bridge, but never the open canal anymore.

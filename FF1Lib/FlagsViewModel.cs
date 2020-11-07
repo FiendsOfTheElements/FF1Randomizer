@@ -1434,6 +1434,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeCanal"));
 			}
 		}
+		public bool? FreeCanoe
+		{
+			get => Flags.FreeCanoe;
+			set
+			{
+				Flags.FreeCanoe = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeCanoe"));
+			}
+		}
 		public bool FreeOrbs
 		{
 			get => Flags.FreeOrbs;

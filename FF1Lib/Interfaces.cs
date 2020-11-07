@@ -126,6 +126,7 @@
 		bool? FreeAirship { get; }
 		bool? FreeShip { get; }
 		bool? FreeCanal { get; }
+		bool? FreeCanoe { get; }
 		bool? FreeLute { get; }
 		bool? FreeTail { get; }
 		bool? NoTail { get; }
