@@ -740,8 +740,8 @@ namespace FF1Lib
 
 			var descriptionList = new List<string>();
 
-			// Distribute bonuses and maluses
-			for (int i = 0; i < 6; i++)
+			// Distribute bonuses and maluses, we go backward (from BM to Fi) so we have enough malus for BM
+			for (int i = 5; i >= 0; i--)
 			{
 				var tempstring = new List<(int, string)>();
 
@@ -793,6 +793,9 @@ namespace FF1Lib
 
 				descriptionList.Add(string.Join("\n\n", tempstring.Where(x => x.Item1 == 0).Select(x => x.Item2)) + "\n\n\nMALUS\n\n" + string.Join("\n\n", tempstring.Where(x => x.Item1 == 1).Select(x => x.Item2)));
 			}
+
+			// Reverse description list so it's not backward
+			descriptionList.Reverse();
 
 			// Apply bonuses and maluses to stats
 			for (int i = 0; i < 6; i++)
