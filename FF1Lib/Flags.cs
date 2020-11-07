@@ -600,6 +600,7 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.ItemMagic);
 			sum = AddTriState(sum, flags.MagicLevelsTiered);
 			sum = AddTriState(sum, flags.MagicLevelsMixed);
+			sum = AddNumeric(sum, Enum.GetValues(typeof(AutohitThreshold)).Cast<int>().Max() + 1, (int)flags.AutohitThreshold);
 			sum = AddTriState(sum, flags.Rng);
 			sum = AddBoolean(sum, flags.FixMissingBattleRngEntry);
 			sum = AddTriState(sum, flags.EverythingUnrunnable);
@@ -1136,6 +1137,7 @@ namespace FF1Lib
 				EverythingUnrunnable = GetTriState(ref sum),
 				FixMissingBattleRngEntry = GetBoolean(ref sum),
 				Rng = GetTriState(ref sum),
+				MagicAutohitThreshold = (AutohitThreshold)GetNumeric(ref sum, Enum.GetValues(typeof(AutohitThreshold)).Cast<int>().Max() + 1),
 				MagicLevelsMixed = GetTriState(ref sum),
 				MagicLevelsTiered = GetTriState(ref sum),
 				ItemMagic = GetTriState(ref sum),
