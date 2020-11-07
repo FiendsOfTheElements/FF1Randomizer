@@ -1229,5 +1229,10 @@
 		"Id": "magicAutohitThresholdDropDown",
 		"title": "Power Word HP Limit",
 		"description": "Changes the threshold at which BLND, STUN, and XXXX are effective.\nThe value will always be a multiple of 300, or unlimited."
+	},
+	{
+		"Id": "freeCanoeCheckBox",
+		"title": "Free Canoe",
+		"description": "Begin the game well equipped for a proper arm workout."
 	}
 ]
