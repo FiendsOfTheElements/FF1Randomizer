@@ -544,8 +544,8 @@ namespace FF1Lib
 			if (fate == Fate.Spare)
 			{
 				// Protect Hurray Dwarf from NPC guillotine
-				Put(MapObjJumpTableOffset + 0x63 * JumpTablePointerSize, Blob.FromHex("A792"));
-				Put(MapObjOffset + 0x63 * MapObjSize, Blob.FromHex("01777700")); // Hurray!
+				PutInBank(newTalkRoutinesBank, lut_MapObjTalkJumpTbl + 0x63 * JumpTablePointerSize, Blob.FromHex("A792"));
+				PutInBank(newTalkRoutinesBank, lut_MapObjTalkData + 0x63 * MapObjSize, Blob.FromHex("01777700")); // Hurray!
 			}
 			else
 			{

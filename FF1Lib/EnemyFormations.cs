@@ -206,10 +206,7 @@ namespace FF1Lib
 			Put(TilesetDataOffset, tilesets.SelectMany(tileset => tileset.ToBytes()).ToArray());
 
 			// Get all NPC scripts and script values to update them
-			var npcScript = new List<Blob>();
-
-			for (int i = 0; i < 0xD0; i++)
-				npcScript.Add(Get(0x390D3 + i * 2, 2));
+			var npcScript = GetFromBank(newTalkRoutinesBank, lut_MapObjTalkJumpTbl, 0xD0 * 2).Chunk(2);
 
 			var Talk_Ending = Blob.FromHex("4693");
 
@@ -223,15 +220,14 @@ namespace FF1Lib
 			npcScript[0x1A] = Talk_Ending;
 
 			// Reinsert updated scripts
-			for (int i = 0; i < 0xD0; i++)
-				PutInBank(0x0E, 0x90D3 + i * 2, npcScript[i]);
+			PutInBank(newTalkRoutinesBank, lut_MapObjTalkJumpTbl, npcScript.SelectMany(script => script.ToBytes()).ToArray());
 
 			//Update Talk_CooGuy and change Talk_fight to load End game
-			PutInBank(0x0E, 0x933B, Blob.FromHex("A416207F90209690A511604C38C9"));
+			PutInBank(newTalkRoutinesBank, 0x933B, Blob.FromHex("A416207F90209690A511604C38C9"));
 
 			//Update Astos and Bikke
-			PutInBank(0x0E, 0x93C0, Blob.FromHex("EAEAEA"));
-			PutInBank(0x0E, 0x9507, Blob.FromHex("EAEAEA"));
+			PutInBank(newTalkRoutinesBank, 0x93C0, Blob.FromHex("EAEAEA"));
+			PutInBank(newTalkRoutinesBank, 0x9507, Blob.FromHex("EAEAEA"));
 
 		}
 	}

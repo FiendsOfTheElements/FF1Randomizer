@@ -18,6 +18,12 @@ namespace FF1Lib
 		public const int NpcTalkSize = 2;
 		public const int NpcVisFlagOffset = 0x2F00;
 
+		public const int lut_MapObjTalkJumpTbl = 0x90D3;
+		public const int lut_MapObjTalkData = 0x95D5;
+
+		public const int oldTalkRoutinesBank = 0x0E;
+		public const int newTalkRoutinesBank = 0x11;
+
 		public List<IRewardSource> generatedPlacement;
 		// All original talk scripts for reference
 		public static partial class originalTalk
@@ -207,12 +213,27 @@ namespace FF1Lib
 			// Insert dialogs
 			Put(dialogsPointerOffset, Blob.FromUShorts(pointers) + generatedText);
 		}
+		public void TransferTalkRoutines()
+		{
+			// Get Talk Routines from Bank E and put them in bank 11
+			PutInBank(newTalkRoutinesBank, 0x902B, Get(0x3902B, 0x8EA));
+
+			// Clear saved space
+			PutInBank(oldTalkRoutinesBank, 0x902B, new byte[0x8EA]);
+
+			// Update bank
+			Data[0x7C9F2] = newTalkRoutinesBank;
+
+			//PutInBank(0x1F, 0xC9F2, Blob.FromSBytes(newTalkRoutinesBank));
+
+		}
 
 		// Required for npc quest item randomizing
 		// Doesn't substantially change anything if EnableNPCsGiveAnyItem isn't called
 		public void CleanupNPCRoutines()
 		{
 			// Swap string pointer in index 2 and 3 for King, Bikke, Prince, and Lefein
+			/*
 			var temp = Data[ItemLocations.KingConeria.Address];
 			Data[ItemLocations.KingConeria.Address] = Data[ItemLocations.KingConeria.Address - 1];
 			Data[ItemLocations.KingConeria.Address - 1] = temp;
@@ -228,7 +249,7 @@ namespace FF1Lib
 			temp = Data[ItemLocations.Lefein.Address];
 			Data[ItemLocations.Lefein.Address] = Data[ItemLocations.Lefein.Address - 1];
 			Data[ItemLocations.Lefein.Address - 1] = temp;
-
+			*/
 			// And do the same swap in the vanilla routines so those still work if needed
 			Data[0x392A7] = 0x12;
 			Data[0x392AA] = 0x13;
@@ -363,25 +384,20 @@ namespace FF1Lib
 			CleanupNPCRoutines();
 			SplitOpenTreasureRoutine();
 			TransferDialogs();
+			TransferTalkRoutines();
 			AddNewChars();
 
 			// Get all NPC scripts and script values to update them
-			var npcScript = new List<Blob>();
-			var npcScriptValue = new List<Blob>();
-
-			for (int i = 0; i < 0xD0; i++)
-			{
-				npcScriptValue.Add(Get(MapObjOffset + i * 4, 4));
-				npcScript.Add(Get(0x390D3 + i * 2, 2));
-			}
+			var npcScriptValue = GetFromBank(newTalkRoutinesBank, lut_MapObjTalkData, 0xD0 * 4).Chunk(4);
+			var npcScript = GetFromBank(newTalkRoutinesBank, lut_MapObjTalkJumpTbl, 0xD0 * 2).Chunk(2);
 
 			// Insert new dialogs Talk routine, see 0E_9296_TalkRoutines.asm
 			//var newTalkRoutines = "60A51160A410209190B003A51160A51260A5106920A8B90060F003A51160A51260A012209190B008AD2160D003A51160A51260A410207990B003A51160A51260A0122091909008AD0860D003A51160A51260AD32602D33602D34602D3160F003A51160A51260AD2560F008AD2660D003A51160A51260A00C209190B008AD3160D003A51160A51260AD3160F008AD3260D003A51160A51260A416209690A41320A490A51160A416209690A51160A416207F90209690A51320C590A51160AD32602D33602D34602D3160F00CA0CA209690E67DE67DA51160A51260A416207F90209690A01220A490A93F20CC90A51160AD3060D003A51160A416209690A51260AD2960D003A51160CE2960A416209690A512E67D60A03F209190B01520A490A04020A490A04120A490A97E20C590A51160A416207990B015A513F011A41284142093DDB00AA416207F90A51460A51060AD2660F018A513F014A41284142093DDB00DCE2660A416207392A51460A51060A00E2079909003A51360AD2D60D003A51160CE2D60207F9020AE95E67DA51260A416207990B013BE8095BD2060F00EDE2060207F90E67DA51260A51160A51060A416207990B021B98095F006A82079909019A513F015A4128414182093DDB00DA416207F90A51460A51160A51060A416207990B023BE8095BD2060F01EA513F01AA41284142093DDB013A416BE8095DE2060207F90A51460A51160A51060A416207990B0F3BE8095F005BD2060F018A513F014A41284142093DDB00DA416207F90A51460A51160A51060A416BE8095F006EABD2060F02AA513F026A4128414182093DDB01E8467A5108D0E03A5118D0F03A416207F90207392A97D20C590A51460A51060A000209690A51160";
 			var newTalkRoutines = "60A51160A410209190B003A51160A51260A5106920A8B90060F003A51160A51260A012209190B008AD2160D003A51160A51260A410207990B003A51160A51260A0122091909008AD0860D003A51160A51260AD32602D33602D34602D3160F003A51160A51260AD2560F008AD2660D003A51160A51260A00C209190B008AD3160D003A51160A51260AD3160F008AD3260D003A51160A51260A416209690A41320A490A51160A416209690A51160A416207F90209690A51320C590A51160AD32602D33602D34602D3160F00CA0CA209690E67DE67DA51160A51260A416207F90209690A01220A490A93F20CC90A51160AD3060D003A51160A416209690A51260AD2960D003A51160CE2960A416209690A512E67D60A03F209190B01520A490A04020A490A04120A490A97E20C590A51160A416207990B016A513F012A4128414182093DDB00AA416207F90A51460A51060AD2660F01CA513F018A4128414182093DDB010CE2660A416207F90207392A51460A51060A00E2079909003A51360AD2D60D003A51160CE2D60207F9020AE95E67DA51260A416207990B013BE8095BD2060F00EDE2060207F90E67DA51260A51160A51060A416207990B021B98095F006A82079909019A513F015A4128414182093DDB00DA416207F90A51460A51160A51060A416207990B024BE8095BD2060F01FA513F01BA4128414182093DDB013A416BE8095DE2060207F90A51460A51160A51060A416207990B0F3BE8095F005BD2060F019A513F015A4128414182093DDB00DA416207F90A51460A51160A51060A416BE8095F006EABD2060F02AA513F026A4128414182093DDB01E8467A5108D0E03A5118D0F03A416207F90207392A97D20C590A51460A51060A000209690A51160";
-			PutInBank(0x0E, 0x9296, Blob.FromHex(newTalkRoutines));
+			PutInBank(newTalkRoutinesBank, 0x9296, Blob.FromHex(newTalkRoutines));
 
 			// Lut for required items check, only the first 32 NPCs can give an item with this, but it should be enough for now
-			PutInBank(0x0E, 0x9580, Blob.FromHex("000300000004050206070308000C0D0B10000000091100000000000000000000"));
+			PutInBank(newTalkRoutinesBank, 0x9580, Blob.FromHex("000300000004050206070308000C0D0B10000000091100000000000000000000"));
 
 			// Update all NPC's dialogs script, default behaviours are maintained
 			for (int i = 0; i < 0xD0; i++)
@@ -602,11 +618,8 @@ namespace FF1Lib
 			npcScriptValue[0x0F][3] = (byte)Item.Chime;
 
 			// Insert the updated talk scripts
-			for (int i = 0; i < 0xD0; i++)
-			{
-				PutInBank(0x0E, 0x90D3 + i * 2, npcScript[i]);
-				PutInBank(0x0E, 0x95D5 + i * 4, npcScriptValue[i]);
-			}
+			PutInBank(newTalkRoutinesBank, lut_MapObjTalkData, npcScriptValue.SelectMany(data => data.ToBytes()).ToArray());
+			PutInBank(newTalkRoutinesBank, lut_MapObjTalkJumpTbl, npcScript.SelectMany(script => script.ToBytes()).ToArray());
 
 			// Dialogue for Sarda if Early sarda is off
 			newDialogs.Add(0xB3, "I shall help only\nthe true LIGHT WARRIORS.\nProve yourself by\ndefeating the Vampire.");
@@ -1114,8 +1127,8 @@ namespace FF1Lib
 				// Set NPCs new dialogs
 				for (int i = 0; i < npcSelected.Count; i++)
 				{
-					Put(lut_MapObjTalkJumpTblAddress + (byte)npcSelected[i] * NpcTalkSize, newTalk.Talk_norm);
-					Put(MapObjOffset + (byte)npcSelected[i] * MapObjSize, Blob.FromSBytes(new sbyte[] { 0x00, (sbyte)dialogueID[i], 0x00, 0x00 }));
+					PutInBank(newTalkRoutinesBank, lut_MapObjTalkJumpTbl + (byte)npcSelected[i] * NpcTalkSize, newTalk.Talk_norm);
+					PutInBank(newTalkRoutinesBank, lut_MapObjTalkData + (byte)npcSelected[i] * MapObjSize, Blob.FromSBytes(new sbyte[] { 0x00, (sbyte)dialogueID[i], 0x00, 0x00 }));
 
 					hintDialogues.Add(dialogueID[i], hintsList.First());
 					hintsList.RemoveRange(0, 1);

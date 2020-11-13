@@ -51,12 +51,12 @@ namespace FF1Lib
 
 		public void EnableEarlySarda()
 		{
-			PutInBank(0x0E, 0x9580 + (int)ObjectId.Sarda, Blob.FromHex("00"));
+			PutInBank(newTalkRoutinesBank, 0x9580 + (int)ObjectId.Sarda, Blob.FromHex("00"));
 		}
 
 		public void EnableEarlySage()
 		{
-			PutInBank(0x0E, 0x9580 + (int)ObjectId.CanoeSage, Blob.FromHex("00"));
+			PutInBank(newTalkRoutinesBank, 0x9580 + (int)ObjectId.CanoeSage, Blob.FromHex("00"));
 			InsertDialogs(0x2B, "The FIENDS are waking.\nTake this and go defeat\nthem!\n\n\nReceived #");
 		}
 
@@ -238,8 +238,8 @@ namespace FF1Lib
 			PutInBank(0x0F, 0x8BF0, Blob.FromHex("ADCE6BAA6A6A6AA8B90061C9FFF0068A09808D8A6C60"));
 
 			// Rewrite class promotion to not promote NONEs, See 0E_95AE_DoClassChange.asm
-			PutInBank(0x0E, 0x95AE, Blob.FromHex("A203BCD095B900613006186906990061CA10EFE65660"));
-			PutInBank(0x0E, 0x95D0, Blob.FromHex("C0804000")); // lut used by the above code
+			PutInBank(newTalkRoutinesBank, 0x95AE, Blob.FromHex("A203BCD095B900613006186906990061CA10EFE65660"));
+			PutInBank(newTalkRoutinesBank, 0x95D0, Blob.FromHex("C0804000")); // lut used by the above code
 
 			// Spell level up change to allow any class to gain spell charges, see 1B_8818_LvlUp_LevelUp.asm
 			PutInBank(0x1B, 0x88D7, Blob.FromHex("AE8E68A001B182A02848B184DD02899005684A4CFA88684A900948B184186901918468C8C030D0E14C1C89000000090909040400090909"));
@@ -520,8 +520,8 @@ namespace FF1Lib
 
 		public void ShuffleAstos(Flags flags, MT19337 rng)
 		{
-			const int NpcTalkOffset = 0x390D3;
-			const int newTalk_AstosBank = 0x0E;
+			//const int NpcTalkOffset = 0x390D3;
+			const int newTalk_AstosBank = newTalkRoutinesBank;
 			const int NpcTalkSize = 2;
 			int Talk_Astos = newTalk.Talk_Astos[1] * 0x100 + newTalk.Talk_Astos[0];
 			var itemnames = ReadText(FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, 256);
@@ -538,17 +538,17 @@ namespace FF1Lib
 			if (newastos == ObjectId.Astos) return;
 
 			// If not get NPC talk routine, get NPC object
-			var talkscript = Get(NpcTalkOffset + (byte)newastos * NpcTalkSize, 2);
+			var talkscript = GetFromBank(newTalkRoutinesBank, lut_MapObjTalkJumpTbl + (byte)newastos * NpcTalkSize, 2);
 
 			// Switch astos to Talk_GiveItemOnItem;
-			Put(NpcTalkOffset + (byte)ObjectId.Astos * NpcTalkSize, newTalk.Talk_GiveItemOnItem);
+			PutInBank(newTalkRoutinesBank, lut_MapObjTalkJumpTbl + (byte)ObjectId.Astos * NpcTalkSize, newTalk.Talk_GiveItemOnItem);
 
 			// Swtich NPC to Astos
-			Put(NpcTalkOffset + (byte)newastos * NpcTalkSize, newTalk.Talk_Astos);
+			PutInBank(newTalkRoutinesBank, lut_MapObjTalkJumpTbl + (byte)newastos * NpcTalkSize, newTalk.Talk_Astos);
 
 			// Get items name
-			var newastositem = FormattedItemName((Item)Get(MapObjOffset + (byte)newastos * 4, 4)[3]);
-			var nwkingitem = FormattedItemName((Item)Get(MapObjOffset + (byte)ObjectId.Astos * 4, 4)[3]);
+			var newastositem = FormattedItemName((Item)GetFromBank(newTalkRoutinesBank, lut_MapObjTalkData + (byte)newastos * 4, 4)[3]);
+			var nwkingitem = FormattedItemName((Item)GetFromBank(newTalkRoutinesBank, lut_MapObjTalkData + (byte)ObjectId.Astos * 4, 4)[3]);
 
 			// Custom dialogs for Astos NPC and the Kindly Old King
 			List<(byte, string)> astosdialogs = new List<(byte, string)>
@@ -615,7 +615,7 @@ namespace FF1Lib
 
 				// DoClassChange reload the map to show the new class sprites, this break TalkBattle, so we stop it from reloading the map
 				// INC dlgflg_reentermap (E656) => NOPx2 (EAEA)
-				PutInBank(0x0E, 0x95AE + 20, Blob.FromHex("EAEA"));
+				PutInBank(newTalkRoutinesBank, 0x95AE + 20, Blob.FromHex("EAEA"));
 
 				// Modify GameOver routine for compatibility
 				if (flags.SaveGameWhenGameOver)
@@ -656,7 +656,7 @@ namespace FF1Lib
 		/// </summary>
 		public void EnableEarlyKing()
 		{
-			PutInBank(0x0E, 0x9580 + (int)ObjectId.King, Blob.FromHex("00"));
+			PutInBank(newTalkRoutinesBank, 0x9580 + (int)ObjectId.King, Blob.FromHex("00"));
 			InsertDialogs(0x02, "To aid you on your\nquest, please take this.\n\n\n\nReceived #");
 		}
 
@@ -686,7 +686,7 @@ namespace FF1Lib
 
 			// Put safeguard to prevent softlock if TNT is turned in (as it will remove the Canal)
 			if (!npcShuffleEnabled)
-				PutInBank(0x0E, 0x95D5 + (int)ObjectId.Nerrick * 4 + 3, new byte[] { (byte)Item.Cabin });
+				PutInBank(newTalkRoutinesBank, 0x95D5 + (int)ObjectId.Nerrick * 4 + 3, new byte[] { (byte)Item.Cabin });
 		}
 
 		public void EnableFreeCanoe()
@@ -934,9 +934,9 @@ namespace FF1Lib
 			PutInBank(0x1F, 0xC7CA, Blob.FromHex("B940B0"));
 
 			// New promotion routine to not bug out with already promoted classes and allow random promotion; works with Nones; see 0E_95AE_DoClassChange-2.asm
-			PutInBank(0x0E, 0x95AE, Blob.FromHex("A20020C595A24020C595A28020C595A2C020C595E65660BC00613006B9F09D9D006160"));
+			PutInBank(newTalkRoutinesBank, 0x95AE, Blob.FromHex("A20020C595A24020C595A28020C595A2C020C595E65660BC00613006B9F09D9D006160"));
 			// lut for standard promotion, can be modified or randomized
-			PutInBank(0x0E, 0x9DF0, Blob.FromHex("060708090A0B060708090A0B"));
+			PutInBank(newTalkRoutinesBank, 0x9DF0, Blob.FromHex("060708090A0B060708090A0B"));
 		}
 
 		public void EnableRandomPromotions(Flags flags, MT19337 rng)
@@ -960,7 +960,7 @@ namespace FF1Lib
 			}
 
 			// Insert randomized promotions
-			PutInBank(0x0E, 0x9DF0, Blob.FromSBytes(promotions.ToArray()));
+			PutInBank(newTalkRoutinesBank, 0x9DF0, Blob.FromSBytes(promotions.ToArray()));
 
 			// Change class names to spoil to what they randomly promote
 			if (flags.RandomPromotionsSpoilers ?? false)
@@ -1120,14 +1120,8 @@ namespace FF1Lib
 			}
 
 			// Get all NPC scripts and script values 
-			var npcScript = new List<Blob>();
-			var npcScriptValue = new List<Blob>();
-
-			for (int i = 0; i < 0xD0; i++)
-			{
-				npcScriptValue.Add(Get(MapObjOffset + i * 4, 4));
-				npcScript.Add(Get(0x390D3 + i * 2, 2));
-			}
+			var npcScriptValue = GetFromBank(newTalkRoutinesBank, lut_MapObjTalkData, 0xD0 * 4).Chunk(4);
+			var npcScript = GetFromBank(newTalkRoutinesBank, lut_MapObjTalkJumpTbl, 0xD0 * 2).Chunk(2);
 
 			Dictionary<int, string> newDialogs = new Dictionary<int, string>();
 
@@ -1238,20 +1232,35 @@ namespace FF1Lib
 			InsertDialogs(newDialogs);
 
 			// Insert the updated talk scripts
-			for (int i = 0; i < 0xD0; i++)
-			{
-				PutInBank(0x0E, 0x90D3 + i * 2, npcScript[i]);
-				PutInBank(0x0E, 0x95D5 + i * 4, npcScriptValue[i]);
-			}
+			PutInBank(newTalkRoutinesBank, lut_MapObjTalkData, npcScriptValue.SelectMany(data => data.ToBytes()).ToArray());
+			PutInBank(newTalkRoutinesBank, lut_MapObjTalkJumpTbl, npcScript.SelectMany(script => script.ToBytes()).ToArray());
 
 			// New talk routine to add class to 4th slot
-			PutInBank(0x0E, 0x9520, Blob.FromHex("A410F0052079909032A51148A2C0A5139D0061A9009D26619D01619D0B619D0D6120669F20509FA00E207990900320C59520829FA4162073926860A51260"));
+			PutInBank(newTalkRoutinesBank, 0x9520, Blob.FromHex("A410F0052079909032A51148A2C0A5139D0061A9009D26619D01619D0B619D0D6120669F20509FA00E207990900320C59520829FA4162073926860A51260"));
 
 			// Routines to switch the class (clear stats, equipment, new stats, levelup)
-			PutInBank(0x0E, 0x9F50, Blob.FromHex("A90E48A9FE48A90648A9C748A98248A2C0A9004C03FEA018B9C061297F99C061C8C01FD0F3A000A90099C063C8C02FD0F860A98748A9A948A9038510A91B4C03FE"));
+			//PutInBank(newTalkRoutinesBank, 0x9F50, Blob.FromHex("A91148A9FE48A90648A9C748A98248A2C0A9004C03FEA018B9C061297F99C061C8C01FD0F3A000A90099C063C8C02FD0F860A98748A9A948A9038510A91B4C03FE"));
+			PutInBank(newTalkRoutinesBank, 0x9F50, Blob.FromHex("A91148A9FE48A90648A9C748A98248A2C0A9004C03FEA018B9C061297F99C061C8C01FD0F3A000A90099C063C8C02FD0F860A91148A9FE48A90648A98748A9A948A9038510A91B4C03FE"));
 
 		}
+		public void ShopUpgrade()
+		{
+			PutInBank(0x0E, 0xAA04, Blob.FromHex("205191"));
+			PutInBank(0x0E, 0xAA0D, Blob.FromHex("205191"));
+			PutInBank(0x0E, 0xAA16, Blob.FromHex("205191"));
+			PutInBank(0x0E, 0xAA23, Blob.FromHex("4C5191"));
 
+			PutInBank(0x0E, 0xA931, Blob.FromHex("205090"));
+
+			PutInBank(0x0E, 0x9050, Blob.FromHex("A564C928F038A566C904B035C902B017A20020CE91A24020CE91A28020CE91A2C020CE914C9190A200208591A240208591A280208591A2C02085914C91902097902027A74C2092A9008DD66A8DDA6A8DDE6A8DE26A60"));
+			PutInBank(0x0E, 0x9150, Blob.FromHex("60AA4A8510BD0061A8B9A4EC8511BD0161F011C901F0E9C903F004A9038511A9144C7D91A5104A4A4AAABDD66A18651085104C24EC8A8515BD00610AAABD00AD8510BD01AD8511A662BD000338E9B0851229078513A5124A4A4AA8B1108514A613BD38AC2514F005A9004CBF91A90E8510A5154A4A4A4AAAA5109DD66A608A8515BD00610AAABDB9BC8512BDBABC8513A662BD000338C944B01638E91C0AAABD50BF25128510BD51BF251305104C1292E9440AAABDA0BF25128510BDA1BF25130510C9019005A9004CBF91A90E4CBF91A522F05AA564C928F054206E92A90E85572063E0A53E8512A53F8513A900853EA980853FA9118557A90E85582036DEA512853EA513853FA90085222027A7A520C561F0F7A9008522206E924C46E1A9018538A9128539A90E853CA90A853D60"));
+
+			//PutInBank(0x0E, 0x9050, Blob.FromHex("A566C904B041C902B01DA564C928F034A20020CE91A24020CE91A28020CE91A2C020CE914C9790A564C928F017A200208591A240208591A280208591A2C02085914C9790209A904C27A7A9008DD66A8DDA6A8DDE6A8DE26A60"));
+			//PutInBank(0x0E, 0x9150, Blob.FromHex("60AA4A8510BD0061A8B9A4EC8511BD0161F011C901F0E9C903F004A9038511A9144C7D91A5104A4A4AAABDD66A18651085104C24EC8A8515BD00610AAABD00AD8510BD01AD8511A662BD000338E9B0851229078513A5124A4A4AA8B1108514A613BD38AC2514F005A9004CBF91A90E8510A5154A4A4A4AAAA5109DD66A608A8515BD00610AAABDB9BC8512BDBABC8513A662BD000338C944B01638E91C0AAABD50BF25128510BD51BF251305104C1292E9440AAABDA0BF25128510BDA1BF25130510C9019005A9004CBF91A90E4CBF91"));
+
+			PutInBank(0x11, 0x8000, FF1Text.TextToBytes("This is\na test \nit's   \nvery   \nshort! "));
+
+		}
 		public void Spooky(MT19337 rng, Flags flags)
 		{
 			const byte WarMECHEncounter = 0x56;
@@ -1399,8 +1408,9 @@ namespace FF1Lib
 			enemyText[120] = ""; // Lich2 > Phantom
 			enemyText[127] = "LICH"; // Chaos > Lich
 			WriteText(enemyText, EnemyTextPointerOffset, EnemyTextPointerBase, EnemyTextOffset);
-			var test = Get(EnemyTextPointerOffset + 119 * 2, 2); // Lich2 point to Phantom1
-			Put(EnemyTextPointerOffset + 120 * 2, test);
+
+			var lich2name = Get(EnemyTextPointerOffset + 119 * 2, 2); // Lich2 point to Phantom1
+			Put(EnemyTextPointerOffset + 120 * 2, lich2name);
 
 			// Scale Undeads
 			ScaleSingleEnemyStats(0x15, 125, 125, false, false, null, false, 125, 125); // Bone
@@ -1444,14 +1454,8 @@ namespace FF1Lib
 			Put(0x37F20, intro);
 
 			// Get all NPC scripts and script values to update them
-			var npcScript = new List<Blob>();
-			var npcScriptValue = new List<Blob>();
-
-			for (int i = 0; i < 0xD0; i++)
-			{
-				npcScriptValue.Add(Get(MapObjOffset + i * 4, 4));
-				npcScript.Add(Get(0x390D3 + i * 2, 2));
-			}
+			var npcScriptValue = GetFromBank(newTalkRoutinesBank, lut_MapObjTalkData, 0xD0 * 4).Chunk(4);
+			var npcScript = GetFromBank(newTalkRoutinesBank, lut_MapObjTalkJumpTbl, 0xD0 * 2).Chunk(2);
 
 			var validTalk = new List<Blob> { newTalk.Talk_norm, newTalk.Talk_GoBridge, newTalk.Talk_ifearthfire, newTalk.Talk_ifearthvamp, newTalk.Talk_ifevent, newTalk.Talk_ifitem, newTalk.Talk_ifkeytnt, newTalk.Talk_ifvis, newTalk.Talk_Invis, newTalk.Talk_4Orb };
 			var invalidZombie = new List<ObjectId> { ObjectId.Bat, ObjectId.GaiaBroom, ObjectId.MatoyaBroom1, ObjectId.MatoyaBroom2, ObjectId.MatoyaBroom3, ObjectId.MatoyaBroom4, ObjectId.MirageRobot1, ObjectId.MirageRobot2, ObjectId.MirageRobot3, ObjectId.SkyRobot, ObjectId.LutePlate, ObjectId.RodPlate };
@@ -1635,29 +1639,26 @@ namespace FF1Lib
 			}
 
 			// Reinsert updated scripts
-			for (int i = 0; i < 0xD0; i++)
-			{
-				PutInBank(0x0E, 0x90D3 + i * 2, npcScript[i]);
-				PutInBank(0x0E, 0x95D5 + i * 4, npcScriptValue[i]);
-			}
+			PutInBank(newTalkRoutinesBank, lut_MapObjTalkData, npcScriptValue.SelectMany(data => data.ToBytes()).ToArray());
+			PutInBank(newTalkRoutinesBank, lut_MapObjTalkJumpTbl, npcScript.SelectMany(script => script.ToBytes()).ToArray());
 
 			// Update Talk Script to have them fight
-			PutInBank(0x0E, 0x93DD, Blob.FromHex("206A95")); // Talk_Bikke
-			PutInBank(0x0E, 0x93FE, Blob.FromHex("206095")); // Nerrick
-			PutInBank(0x0E, 0x941F, Blob.FromHex("206095")); // Bahamut
-			PutInBank(0x0E, 0x941A, Blob.FromHex("13")); // Bahamut
-			PutInBank(0x0E, 0x95AE + 20, Blob.FromHex("EAEA")); // Bahamut
-			PutInBank(0x0E, 0x943C, Blob.FromHex("206095")); // Unne
-			PutInBank(0x0E, 0x946C, Blob.FromHex("206095")); // Talk_GiveItemOnFlag
-			PutInBank(0x0E, 0x949D, Blob.FromHex("206095")); // Talk_TradeItems
-			PutInBank(0x0E, 0x94CA, Blob.FromHex("206095")); // Talk_GiveItemOnItem
+			PutInBank(newTalkRoutinesBank, 0x93DD, Blob.FromHex("206A95")); // Talk_Bikke
+			PutInBank(newTalkRoutinesBank, 0x93FE, Blob.FromHex("206095")); // Nerrick
+			PutInBank(newTalkRoutinesBank, 0x941F, Blob.FromHex("206095")); // Bahamut
+			PutInBank(newTalkRoutinesBank, 0x941A, Blob.FromHex("13")); // Bahamut
+			PutInBank(newTalkRoutinesBank, 0x95AE + 20, Blob.FromHex("EAEA")); // Bahamut
+			PutInBank(newTalkRoutinesBank, 0x943C, Blob.FromHex("206095")); // Unne
+			PutInBank(newTalkRoutinesBank, 0x946C, Blob.FromHex("206095")); // Talk_GiveItemOnFlag
+			PutInBank(newTalkRoutinesBank, 0x949D, Blob.FromHex("206095")); // Talk_TradeItems
+			PutInBank(newTalkRoutinesBank, 0x94CA, Blob.FromHex("206095")); // Talk_GiveItemOnItem
 
 
 			// Talk_Replace
-			PutInBank(0x0E, 0x932E, Blob.FromHex("A41320A490A416206095A51260"));
+			PutInBank(newTalkRoutinesBank, 0x932E, Blob.FromHex("A41320A490A416206095A51260"));
 
 			// Fight Script 
-			PutInBank(0x0E, 0x9560, Blob.FromHex("A51185132073924C4393A416207F9020739260"));
+			PutInBank(newTalkRoutinesBank, 0x9560, Blob.FromHex("A51185132073924C4393A416207F9020739260"));
 		}
 	}
 }

@@ -50,6 +50,28 @@ namespace FF1Lib
 			}
 
 		}
+		public Blob GetFromBank(int bank, int address, int length)
+		{
+			if (bank == 0x1F)
+			{
+				if ((address - 0xC000) + length >= 0x4000)
+				{
+					throw new Exception("Data is too large to fit within one bank.");
+				}
+				int offset = (bank * 0x4000) + (address - 0xC000);
+				return this.Get(offset, length);
+			}
+			else
+			{
+				if ((address - 0x8000) + length >= 0x4000)
+				{
+					throw new Exception("Data is too large to fit within one bank.");
+				}
+				int offset = (bank * 0x4000) + (address - 0x8000);
+				return this.Get(offset, length);
+			}
+		}
+
 		private Blob CreateLongJumpTableEntry(byte bank, ushort addr)
 		{
 			List<byte> tmp = new List<byte> { 0x20, 0xC8, 0xD7 }; // JSR $D7C8, beginning of each table entry
@@ -760,6 +782,7 @@ namespace FF1Lib
 				PacifistEnd();
 			}
 
+			//ShopUpgrade();
 
 			if (flags.SpookyFlag)
 			{
@@ -827,9 +850,9 @@ namespace FF1Lib
 		private void EnableNPCSwatter()
 		{
 			// Talk_norm is overwritten with unconditional jump to Talk_CoOGuy (say whatever then disappear)
-			PutInBank(0x0E, 0x9297, Blob.Concat(Blob.FromHex("4C"), newTalk.Talk_kill));
-			Put(MapObjJumpTableOffset + 0x16 * JumpTablePointerSize, Blob.FromHex("A792A792")); // overwrite map object jump table so that it calls "Talk_iftem"
-			Put(MapObjOffset + 0x16 * MapObjSize, Blob.FromHex("01FFFF0001FFFF00")); // and overwrite the data so that it prints message 0xFF regardless of whether you have the item or not
+			PutInBank(newTalkRoutinesBank, 0x9297, Blob.Concat(Blob.FromHex("4C"), newTalk.Talk_kill));
+			PutInBank(newTalkRoutinesBank, lut_MapObjTalkJumpTbl + 0x16 * JumpTablePointerSize, Blob.FromHex("A792A792")); // overwrite map object jump table so that it calls "Talk_iftem"
+			PutInBank(newTalkRoutinesBank, lut_MapObjTalkData + 0x16 * MapObjSize, Blob.FromHex("01FFFF0001FFFF00")); // and overwrite the data so that it prints message 0xFF regardless of whether you have the item or not
 		}
 
 		private void AssureSafe(MT19337 rng)

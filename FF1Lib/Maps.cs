@@ -461,11 +461,11 @@ namespace FF1Lib
 			const byte RobotGfx = 0x15;
 
 			// Set up the map object.
-			Put(MapObjOffset + (byte)ObjectId.WarMECH * MapObjSize, new[] { (byte)ObjectId.WarMECH, UnusedTextPointer, (byte)0x00, WarMECHEncounter });
+			PutInBank(newTalkRoutinesBank, lut_MapObjTalkData + (byte)ObjectId.WarMECH * MapObjSize, new[] { (byte)ObjectId.WarMECH, UnusedTextPointer, (byte)0x00, WarMECHEncounter });
 			Data[MapObjGfxOffset + (byte)ObjectId.WarMECH] = RobotGfx;
 
 			// Set the action when you talk to WarMECH.
-			Put(MapObjJumpTableOffset + (byte)ObjectId.WarMECH * JumpTablePointerSize, newTalk.Talk_fight);
+			PutInBank(newTalkRoutinesBank, lut_MapObjTalkJumpTbl + (byte)ObjectId.WarMECH * JumpTablePointerSize, newTalk.Talk_fight);
 
 			// Change the dialogue.
 			var dialogueStrings = new List<string>
