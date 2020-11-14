@@ -111,9 +111,7 @@ namespace FF1Lib
 				Blob hash = hasher.ComputeHash(SeedAndFlags);
 				rng = new MT19337(BitConverter.ToUInt32(hash, 0));
 			}
-			// Spoilers => different rng immediately
-			if (flags.Spoilers) rng = new MT19337(rng.Next());
-			if (flags.TournamentSafe) AssureSafe(rng);
+			if (flags.TournamentSafe) AssureSafe();
 
 			UpgradeToMMC3();
 			MakeSpace();
@@ -858,7 +856,7 @@ namespace FF1Lib
 			PutInBank(newTalkRoutinesBank, lut_MapObjTalkData + 0x16 * MapObjSize, Blob.FromHex("01FFFF0001FFFF00")); // and overwrite the data so that it prints message 0xFF regardless of whether you have the item or not
 		}
 
-		private void AssureSafe(MT19337 rng)
+		public void AssureSafe()
 		{
 			using (SHA256 hasher = SHA256.Create())
 			{
@@ -907,7 +905,6 @@ namespace FF1Lib
 					throw new TournamentSafeException("File has been modified");
 				}
 			}
-			rng.Next();
 		}
 
 		public class TournamentSafeException : Exception
