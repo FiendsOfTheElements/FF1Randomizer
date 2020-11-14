@@ -271,7 +271,7 @@ namespace FF1Lib
 
 			if ((bool)flags.TransformFinalFormation)
 			{
-				TransformFinalFormation((FinalFormation)rng.Between(0, Enum.GetValues(typeof(FinalFormation)).Length - 1));
+				TransformFinalFormation((FinalFormation)rng.Between(0, Enum.GetValues(typeof(FinalFormation)).Length - 1), flags.EvadeCap);
 			}
 
 			var maxRetries = 8;

@@ -332,6 +332,8 @@ namespace FF1Lib
 
 		public WorldWealthMode WorldWealth { get; set; } = WorldWealthMode.Normal;
 
+		public EvadeCapValues EvadeCap { get; set; } = EvadeCapValues.medium;
+
 		public bool? AllowUnsafeStartArea { get; set; } = false;
 
 		public bool? EarlierRuby { get; set; } = false;
@@ -580,6 +582,7 @@ namespace FF1Lib
 			sum = AddString(sum, 7, (FFRVersion.Sha.Length >= 7) ? FFRVersion.Sha.Substring(0,7) : FFRVersion.Sha.PadRight(7, 'X'));
 
 
+			sum = AddNumeric(sum, Enum.GetValues(typeof(EvadeCapValues)).Cast<int>().Max() + 1, (int)flags.EvadeCap);
 			sum = AddTriState(sum, flags.IncentivizeKatana);
 			sum = AddTriState(sum, flags.IncentivizeVorpal);
 			sum = AddTriState(sum, flags.Shops);
@@ -1166,6 +1169,7 @@ namespace FF1Lib
 				Shops = GetTriState(ref sum),
 				IncentivizeVorpal = GetTriState(ref sum),
 				IncentivizeKatana = GetTriState(ref sum),
+				EvadeCap = (EvadeCapValues)GetNumeric(ref sum, Enum.GetValues(typeof(EvadeCapValues)).Cast<int>().Max() + 1),
 			};
 			string EncodedSha = GetString(ref sum, 7);
 			if (((FFRVersion.Sha.Length >= 7) ? FFRVersion.Sha.Substring(0, 7) : FFRVersion.Sha.PadRight(7, 'X')) != EncodedSha)
