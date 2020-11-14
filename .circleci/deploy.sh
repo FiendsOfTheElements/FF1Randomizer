@@ -41,11 +41,11 @@ else
     --data-raw "{\"custom_domain\": \"${version}.finalfantasyrandomizer.com\", \"force_ssl\": \"true\"}")
     
     
-    errorsExist=$(echo "$deploy" | jq ".errors!=null")
-    if [ ! -z "$errorsExist" ]; then
-    	echo "errors encountered while creating site:"
-    	echo $(echo "$createdSite" | jq -r ".errors")
-    	exit 2
+    errorsExist=$(echo "$createdSite" | jq ".errors!=null")
+    if [ -n "$errorsExist" ]; then
+	    echo "errors encountered while creating site:"
+	    echo "$createdSite" | jq -r ".errors"
+	    exit 2
     fi
     
     id=$(echo "$createdSite" | jq -r ".site_id")
