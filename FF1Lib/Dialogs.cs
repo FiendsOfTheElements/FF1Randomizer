@@ -272,25 +272,28 @@ namespace FF1Lib
 		}
 
 		// Remove trailing spaces and return the right item for some generated text
-		public string FormattedItemName(Item item)
+		public string FormattedItemName(Item item, bool specialItem = true)
 		{
 			var itemnames = ReadText(FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, 256);
 			var formatted = itemnames[(byte)item].TrimEnd(' ');
 
-			switch (item)
-			{
-				case Item.Ship:
-					formatted = FF1Text.BytesToText(Get(0x2B5D0, 8)).TrimEnd(' ');
-					break;
-				case Item.Bridge:
-					formatted = FF1Text.BytesToText(Get(0x2B5D0 + 16, 8)).TrimEnd(' ');
-					break;
-				case Item.Canal:
-					formatted = FF1Text.BytesToText(Get(0x2B5D0 + 24, 8)).TrimEnd(' ');
-					break;
-				case Item.Canoe:
-					formatted = FF1Text.BytesToText(Get(0x2B5D0 + 36, 8)).TrimEnd(' ');
-					break;
+			if(specialItem)
+			{ 
+				switch (item)
+				{
+					case Item.Ship:
+						formatted = FF1Text.BytesToText(Get(0x2B5D0, 8)).TrimEnd(' ');
+						break;
+					case Item.Bridge:
+						formatted = FF1Text.BytesToText(Get(0x2B5D0 + 16, 8)).TrimEnd(' ');
+						break;
+					case Item.Canal:
+						formatted = FF1Text.BytesToText(Get(0x2B5D0 + 24, 8)).TrimEnd(' ');
+						break;
+					case Item.Canoe:
+						formatted = FF1Text.BytesToText(Get(0x2B5D0 + 36, 8)).TrimEnd(' ');
+						break;
+				}
 			}
 			return formatted;
 		}

@@ -147,6 +147,7 @@ namespace FF1Lib
 		public bool BuyTen { get; set; } = false;
 		public bool BuyTenOld { get; set; } = false;
 		public bool IdentifyTreasures { get; set; } = false;
+		public bool ShopInfo { get; set; } = false;
 		public bool WaitWhenUnrunnable { get; set; } = false;
 
 		public bool HouseMPRestoration { get; set; } = false;
@@ -691,6 +692,7 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.BuyTen);
 			sum = AddBoolean(sum, flags.BuyTenOld);
 			sum = AddBoolean(sum, flags.IdentifyTreasures);
+			sum = AddBoolean(sum, flags.ShopInfo);
 			sum = AddBoolean(sum, flags.WaitWhenUnrunnable);
 			sum = AddBoolean(sum, flags.HouseMPRestoration);
 			sum = AddBoolean(sum, flags.WeaponStats);
@@ -1051,6 +1053,7 @@ namespace FF1Lib
 				WeaponStats = GetBoolean(ref sum),
 				HouseMPRestoration = GetBoolean(ref sum),
 				WaitWhenUnrunnable = GetBoolean(ref sum),
+				ShopInfo = GetBoolean(ref sum),
 				IdentifyTreasures = GetBoolean(ref sum),
 				BuyTenOld = GetBoolean(ref sum),
 				BuyTen = GetBoolean(ref sum),

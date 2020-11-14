@@ -20,6 +20,17 @@ namespace FF1Lib
 		Size8,
 	}
 
+	public enum spellDataBytes
+	{
+		Accuracy,
+		Effect,
+		Element,
+		Target,
+		Routine,
+		GFX,
+		Palette,
+		Null
+	}
 	public partial class FF1Rom : NesRom
 	{
 		public const int Nop = 0xEA;
@@ -1253,13 +1264,162 @@ namespace FF1Lib
 			PutInBank(0x0E, 0xA931, Blob.FromHex("205090"));
 
 			PutInBank(0x0E, 0x9050, Blob.FromHex("A564C928F038A566C904B035C902B017A20020CE91A24020CE91A28020CE91A2C020CE914C9190A200208591A240208591A280208591A2C02085914C91902097902027A74C2092A9008DD66A8DDA6A8DDE6A8DE26A60"));
-			PutInBank(0x0E, 0x9150, Blob.FromHex("60AA4A8510BD0061A8B9A4EC8511BD0161F011C901F0E9C903F004A9038511A9144C7D91A5104A4A4AAABDD66A18651085104C24EC8A8515BD00610AAABD00AD8510BD01AD8511A662BD000338E9B0851229078513A5124A4A4AA8B1108514A613BD38AC2514F005A9004CBF91A90E8510A5154A4A4A4AAAA5109DD66A608A8515BD00610AAABDB9BC8512BDBABC8513A662BD000338C944B01638E91C0AAABD50BF25128510BD51BF251305104C1292E9440AAABDA0BF25128510BDA1BF25130510C9019005A9004CBF91A90E4CBF91A522F05AA564C928F054206E92A90E85572063E0A53E8512A53F8513A900853EA980853FA9118557A90E85582036DEA512853EA513853FA90085222027A7A520C561F0F7A9008522206E924C46E1A9018538A9128539A90E853CA90A853D60"));
+			PutInBank(0x0E, 0x9150, Blob.FromHex("60AA4A8510BD0061A8B9A4EC8511BD0161F011C901F0E9C903F004A9038511A9144C7D91A5104A4A4AAABDD66A18651085104C24EC8A8515BD00610AAABD00AD8510BD01AD8511A662BD000338E9B0851229078513A5124A4A4AA8B1108514A613BD38AC2514F005A9004CBF91A90E8510A5154A4A4A4AAAA5109DD66A608A8515BD00610AAABDB9BC8512BDBABC8513A662BD000338C944B01638E91C0AAABD50BF25128510BD51BF251305104C1292E9440AAABDA0BF25128510BDA1BF25130510C9019005A9004CBF91A90E4CBF91A522F073A564C928F06D208792A90E85572063E0A53E8512A53F8513A662BD0003380AAAB00DBD0093853EBD0193853F4C5D92BD0094853EBD0194853FA9118557A90E85582036DEA512853EA513853FA90085222027A7A520C561F0F7A90085222087924C46E1A9018538A9128539A90E853CA90A853D60"));
 
-			//PutInBank(0x0E, 0x9050, Blob.FromHex("A566C904B041C902B01DA564C928F034A20020CE91A24020CE91A28020CE91A2C020CE914C9790A564C928F017A200208591A240208591A280208591A2C02085914C9790209A904C27A7A9008DD66A8DDA6A8DDE6A8DE26A60"));
-			//PutInBank(0x0E, 0x9150, Blob.FromHex("60AA4A8510BD0061A8B9A4EC8511BD0161F011C901F0E9C903F004A9038511A9144C7D91A5104A4A4AAABDD66A18651085104C24EC8A8515BD00610AAABD00AD8510BD01AD8511A662BD000338E9B0851229078513A5124A4A4AA8B1108514A613BD38AC2514F005A9004CBF91A90E8510A5154A4A4A4AAAA5109DD66A608A8515BD00610AAABDB9BC8512BDBABC8513A662BD000338C944B01638E91C0AAABD50BF25128510BD51BF251305104C1292E9440AAABDA0BF25128510BDA1BF25130510C9019005A9004CBF91A90E4CBF91"));
+			const int weaponOffset = 0x1C; // $28 entries
+			const int armorOffset = 0x44; // $28 entries
+			const int spellOffset = 0xB0; // $40 entries
 
-			PutInBank(0x11, 0x8000, FF1Text.TextToBytes("This is\na test \nit's   \nvery   \nshort! "));
+			var weaponsData = new List<Weapon>();
+			var armorsData = new List<Armor>();
 
+			for (int i = 0; i < WeaponCount; i++)
+				weaponsData.Add(new Weapon(i, this));
+
+			for (int i = 0; i < ArmorCount; i++)
+				armorsData.Add(new Armor(i, this));
+
+			var spellsData = GetSpells();
+
+			// 12 char per row, 5 rows
+			var descriptionsList = new List<string>();
+
+			for (int i = 0; i < weaponOffset; i++)
+				descriptionsList.Add("");
+
+			for (int i = weaponOffset; i < armorOffset; i++)
+				descriptionsList.Add(FormattedItemName((Item)i) + "\n ATK +" + weaponsData[i - weaponOffset].Damage + "\n HIT +" + weaponsData[i - weaponOffset].HitBonus + "\n CRT +" + weaponsData[i - weaponOffset].Crit);
+
+			for (int i = armorOffset; i < (armorOffset + 0x28); i++)
+				descriptionsList.Add(FormattedItemName((Item)i) + "\n DEF +" + armorsData[i - armorOffset].Absorb + "\n EVA -" + armorsData[i - armorOffset].Weight);
+
+			for (int i = (armorOffset + 0x28); i < spellOffset; i++)
+				descriptionsList.Add("");
+
+			for (int i = spellOffset; i < spellOffset + 0x40; i++)
+				descriptionsList.Add(FormattedItemName((Item)i, false) + " " + GenerateSpellDescription(i, spellsData[i - spellOffset].Data));
+
+			// Convert all dialogs to bytes
+			int offset = 0xA000;
+			var pointers = new ushort[descriptionsList.Count()];
+			Blob generatedText = Blob.FromHex("");
+
+			for (int i = 0; i < descriptionsList.Count(); i++)
+			{
+				var blob = FF1Text.TextToBytes(descriptionsList[i], useDTE: true);
+				generatedText += blob;
+
+				pointers[i] = (ushort)(offset);
+				offset += blob.Length;
+			}
+
+			// Check if dialogs are too long
+			if (generatedText.Length > 0x2000)
+				throw new Exception("Dialogs maximum length exceeded.");
+
+			// Insert dialogs
+			PutInBank(0x11, 0xA000, generatedText);
+			PutInBank(0x0E, 0x9300, Blob.FromUShorts(pointers));
+
+		}
+		public string GenerateSpellDescription(int spellid, Blob spelldata)
+		{
+			var target = new List<(int, string)> { (0x01, "All Enemies"), (0x02, "Single Enemy"), (0x04, "Caster"), (0x08, "All Allies"), (0x10, "One Ally") };
+			var element = new List<(int, string, string)> { (0x00, "None", "None"), (0x01, "Status", "Stat"), (0x02, "Poison", "Pois"), (0x04, "Time", "Time"), (0x08, "Death", "Deat"), (0x10, "Fire", "Fire"), (0x20, "Ice", "Ice"), (0x40, "Lightng", "Lit."), (0x80, "Earth", "Eart") };
+			var status = new List<(int, string, string)> { (0x01, "Dead", "Dead"), (0x02, "Petrified", "Ptr."), (0x04, "Poisoned", "Pois"), (0x08, "Blind", "Blnd"), (0x10, "Paralyzed", "Para"), (0x20, "Asleep", "Slep"), (0x40, "Silenced", "Mute"), (0x80, "Confused", "Conf") };
+			var routine = new List<(int, string)> { (0x00, "Null"), (0x01, "Damage"), (0x02, "Dmg Undead"), (0x03, "Inflict Stat"), (0x04, "Halve Hits"), (0x05, "Reduce Moral"), (0x06, "Recover HP"), (0x07, "Recover HP"), (0x08, "Recover Stat"), (0x09, "Raise Def."), (0x0A, "Resist Elem."), (0x0C, "Double Hits"), (0x0D, "Raise Attack"), (0x0E, "Reduce Evade"), (0x0F, "Full Recover"), (0x10, "Raise Evade"), (0x11, "Void Resist."), (0x12, "PW Status") };
+			var oobroutine = new List<(int, string)> { (0x00, "Recover HP"), (0x01, "Recover HP"), (0x02, "Recover HP"), (0x03, "Full Recover"), (0x04, "Recover HP"), (0x05, "Recover HP"), (0x06, "Recover HP"), (0x07, "Heal Poison"), (0x08, "Revive"), (0x09, "Full Revive"), (0x0A, "Go one floor\n back"), (0x0B, "Heal Stoned"), (0x0C, "Teleport out\n of dungeons") };
+			var shortDelimiter = new List<string> { "\n ", ", ", "\n ", ", ", "\n ", ", " };
+			var oobSpells = new List<int>();
+
+			for(int i = 0; i < oobroutine.Count; i++)
+				oobSpells.Add(Get(MagicOutOfBattleOffset + MagicOutOfBattleSize * i, 1)[0]);
+
+			var routineDesc = "";
+			var activeElementStatus = new List<(int, string, string)>();
+
+			switch ((int)spelldata[(int)spellDataBytes.Routine])
+			{
+				case 0:
+					routineDesc = oobroutine.Find(x => x.Item1 == oobSpells.FindIndex(x => x == spellid)).Item2;
+					break;
+				case int n when (n >= 0x01 && n <= 0x02):
+					routineDesc = routine.Find(x => x.Item1 == spelldata[(int)spellDataBytes.Routine]).Item2 + "\n " + spelldata[(int)spellDataBytes.Effect] * 2 + "-" + spelldata[(int)spellDataBytes.Effect] * 4 + " DMG";
+					break;
+				case int n when (n == 0x03 || n == 0x08 || n == 0x12):
+					var tempStatus = "";
+
+					foreach ((int, string, string) effect in status)
+						if ((effect.Item1 & spelldata[(int)spellDataBytes.Effect]) > 0)
+							activeElementStatus.Add(effect);
+
+					if (activeElementStatus.Count == 0)
+						tempStatus = "\n None";
+					else if (activeElementStatus.Count <= 3)
+						tempStatus = string.Join(string.Empty, activeElementStatus.SelectMany(x => "\n " + x.Item2));
+					else if (activeElementStatus.Count <= 6)
+					{
+						for (int i = 0; i < activeElementStatus.Count; i++)
+							tempStatus += shortDelimiter[i] + activeElementStatus[i].Item3;
+					}
+					else if (activeElementStatus.Count == 7)
+					{
+						tempStatus = "\n All, except";
+						foreach ((int, string, string) effect in status)
+							tempStatus += (effect.Item1 & spelldata[(int)spellDataBytes.Effect]) == 0 ? ("\n " + effect.Item2) : "";
+					}
+					else
+						tempStatus = "\n All";
+
+					routineDesc = routine.Find(x => x.Item1 == spelldata[(int)spellDataBytes.Routine]).Item2 + tempStatus;
+					break;
+				case int n when (n == 0x04 || n == 0x0C || n == 0x0F || n == 0x11):
+					routineDesc = routine.Find(x => x.Item1 == spelldata[(int)spellDataBytes.Routine]).Item2;
+					break;
+				case int n when (n == 0x05 || n == 0x0E):
+					routineDesc = routine.Find(x => x.Item1 == spelldata[(int)spellDataBytes.Routine]).Item2 + "\n -" + spelldata[(int)spellDataBytes.Effect] + " pts";
+					break;
+				case int n when (n >= 0x06 && n <= 0x07):
+					routineDesc = routine.Find(x => x.Item1 == spelldata[(int)spellDataBytes.Routine]).Item2 + "\n " + spelldata[(int)spellDataBytes.Effect] + "-" + spelldata[(int)spellDataBytes.Effect] * 2 + " HP";
+					break;
+				case int n when (n == 0x09 || n == 0x10):
+					routineDesc = routine.Find(x => x.Item1 == spelldata[(int)spellDataBytes.Routine]).Item2 + "\n +" + spelldata[(int)spellDataBytes.Effect] + " pts";
+					break;
+				case int n when (n == 0x0A):
+					var temp = "";
+
+					foreach ((int, string, string) elem in element)
+						if((elem.Item1 & spelldata[(int)spellDataBytes.Effect]) > 0)
+							activeElementStatus.Add(elem);
+
+					if (activeElementStatus.Count == 0)
+						temp = "\n None";
+					else if (activeElementStatus.Count <= 3)
+						temp = string.Join(string.Empty, activeElementStatus.SelectMany(x => "\n " + x.Item2));
+					else if (activeElementStatus.Count <= 6)
+					{ 
+						for(int i = 0; i < activeElementStatus.Count; i++)
+							temp += shortDelimiter[i] + activeElementStatus[i].Item3;
+					}
+					else if (activeElementStatus.Count == 7)
+					{
+						temp = "\n All, except";
+						foreach ((int, string, string) elem in element)
+							temp += (elem.Item1 & spelldata[(int)spellDataBytes.Effect]) == 0 ? ("\n " + elem.Item2) : "";
+					}
+					else
+						temp = "\n All";
+
+					routineDesc = routine.Find(x => x.Item1 == spelldata[(int)spellDataBytes.Routine]).Item2 + temp;
+					break;
+				case int n when (n == 0x0D):
+					routineDesc = routine.Find(x => x.Item1 == spelldata[(int)spellDataBytes.Routine]).Item2 + "\n +" + spelldata[(int)spellDataBytes.Effect] + " ATK\n +" + spelldata[(int)spellDataBytes.Accuracy] + " HIT";
+					break;
+			}
+
+			var elementString = (spelldata[(int)spellDataBytes.Element] == 0x40 ? "" : " ") + element.Find(x => x.Item1 == spelldata[(int)spellDataBytes.Element]).Item2;
+			var spellstring = elementString + "\n" + target.Find(x => x.Item1 == spelldata[(int)spellDataBytes.Target]).Item2 + "\n\n" + routineDesc;
+			return spellstring;
 		}
 		public void Spooky(MT19337 rng, Flags flags)
 		{

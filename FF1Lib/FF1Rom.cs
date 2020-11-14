@@ -782,7 +782,10 @@ namespace FF1Lib
 				PacifistEnd();
 			}
 
-			//ShopUpgrade();
+			if (flags.ShopInfo)
+			{
+				ShopUpgrade();
+			}
 
 			if (flags.SpookyFlag)
 			{

@@ -1226,6 +1226,12 @@
 		"description": "Makes all encounters runnable, except for bosses."
 	},
 	{
+		"Id": "shopInfoCheckBox",
+		"title": "Shop Information",
+		"screenshot": "ShopInfoFlag.png",
+		"description": "In shops, characters will strike their victory pose it they can equip a piece of equipment or learn a spell.\nPress Select to show a description of an item or a spell."
+	},
+	{
 		"Id": "magicAutohitThresholdDropDown",
 		"title": "Power Word HP Limit",
 		"description": "Changes the threshold at which BLND, STUN, and XXXX are effective.\nThe value will always be a multiple of 300, or unlimited."

@@ -1547,6 +1547,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IdentifyTreasures"));
 			}
 		}
+		public bool ShopInfo
+		{
+			get => Flags.ShopInfo;
+			set
+			{
+				Flags.ShopInfo = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ShopInfo"));
+			}
+		}
 		public bool WaitWhenUnrunnable
 		{
 			get => Flags.WaitWhenUnrunnable;
