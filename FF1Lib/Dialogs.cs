@@ -218,13 +218,15 @@ namespace FF1Lib
 			// Get Talk Routines from Bank E and put them in bank 11
 			PutInBank(newTalkRoutinesBank, 0x902B, Get(0x3902B, 0x8EA));
 
-			// Backup HideMapObject because Lute and Rod use it
+			// Backup HideMapObject and showMapObject because Lute, Rod and Bottle use it
+			var showMapObject = GetFromBank(0x0E, 0x90A4, 0x30);
 			var hideMapObject = GetFromBank(0x0E, 0x9273, 0x30);
 
 			// Clear saved space
 			PutInBank(oldTalkRoutinesBank, 0x902B, new byte[0x8EA]);
 
-			// Put back HideMapObject
+			// Put back HideMapObject & showMapObject
+			PutInBank(0x0E, 0x90A4, showMapObject);
 			PutInBank(0x0E, 0x9273, hideMapObject);
 
 			// Update bank
