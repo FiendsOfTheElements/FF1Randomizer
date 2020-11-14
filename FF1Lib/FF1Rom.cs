@@ -8,6 +8,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using FF1Lib.Assembly;
+using System.Text.RegularExpressions;
 
 namespace FF1Lib
 {
@@ -111,9 +112,7 @@ namespace FF1Lib
 				Blob hash = hasher.ComputeHash(SeedAndFlags);
 				rng = new MT19337(BitConverter.ToUInt32(hash, 0));
 			}
-			// Spoilers => different rng immediately
-			if (flags.Spoilers) rng = new MT19337(rng.Next());
-			if (flags.TournamentSafe) AssureSafe(rng);
+			if (flags.TournamentSafe) AssureSafe();
 
 			UpgradeToMMC3();
 			MakeSpace();
@@ -858,7 +857,7 @@ namespace FF1Lib
 			PutInBank(newTalkRoutinesBank, lut_MapObjTalkData + 0x16 * MapObjSize, Blob.FromHex("01FFFF0001FFFF00")); // and overwrite the data so that it prints message 0xFF regardless of whether you have the item or not
 		}
 
-		private void AssureSafe(MT19337 rng)
+		public void AssureSafe()
 		{
 			using (SHA256 hasher = SHA256.Create())
 			{
@@ -907,7 +906,6 @@ namespace FF1Lib
 					throw new TournamentSafeException("File has been modified");
 				}
 			}
-			rng.Next();
 		}
 
 		public class TournamentSafeException : Exception
@@ -1127,10 +1125,11 @@ namespace FF1Lib
 				hashpart /= 12;
 			}
 
+			Regex rgx = new Regex("[^a-zA-Z0-9]");
 			// Put the new string data in a known location.
 			PutInBank(0x0F, 0x8900, Blob.Concat(
 				FF1Text.TextToCopyrightLine("Final Fantasy Randomizer " + FFRVersion.Version),
-				FF1Text.TextToCopyrightLine((FFRVersion.Branch == "master" ? "Seed " : FFRVersion.Branch + " BUILD ") + seed),
+				FF1Text.TextToCopyrightLine((FFRVersion.Branch == "master" ? "Seed " : rgx.Replace(FFRVersion.Branch, "") + " BUILD ") + seed),
 				hash));
 		}
 

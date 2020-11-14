@@ -15,7 +15,7 @@
 		<div class="row spaced-row">
 			<div class="col-md-6">
 				<p>@RomMessage</p>
-				<input type="file" id="fileInput" @onchange="@OnFileChanged" />
+				<input type="file" id="fileInput" accept=".nes" @onchange="@OnFileChanged" />
 			</div>
 			<div class="col-md-6">
 				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="rememberCheckBox" @bind-Checked="RememberROM">Remember ROM</CheckBox>
@@ -121,6 +121,24 @@
 	void SetFileData(string encoded)
 	{
 		_fileData = Convert.FromBase64String(encoded);
+		using (var stream = new MemoryStream(_fileData))
+		{
+			FF1Rom temprom = new FF1Rom(stream);
+			if( temprom.HeaderLength != 16)
+			{
+				RomMessage = "ROM header length is incorrect, try a different ROM";
+				return;
+			}
+			try
+			{
+
+				temprom.AssureSafe();
+			} catch (FF1Lib.FF1Rom.TournamentSafeException)
+			{
+				RomMessage = "Detected ROM hash does not match the expected hash.\nResults may vary.";
+			}
+
+		}
 	}
 
 	async Task SetQueryString()
