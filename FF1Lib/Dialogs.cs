@@ -218,14 +218,17 @@ namespace FF1Lib
 			// Get Talk Routines from Bank E and put them in bank 11
 			PutInBank(newTalkRoutinesBank, 0x902B, Get(0x3902B, 0x8EA));
 
+			// Backup HideMapObject because Lute and Rod use it
+			var hideMapObject = GetFromBank(0x0E, 0x9273, 0x30);
+
 			// Clear saved space
 			PutInBank(oldTalkRoutinesBank, 0x902B, new byte[0x8EA]);
 
+			// Put back HideMapObject
+			PutInBank(0x0E, 0x9273, hideMapObject);
+
 			// Update bank
 			Data[0x7C9F2] = newTalkRoutinesBank;
-
-			//PutInBank(0x1F, 0xC9F2, Blob.FromSBytes(newTalkRoutinesBank));
-
 		}
 
 		// Required for npc quest item randomizing
