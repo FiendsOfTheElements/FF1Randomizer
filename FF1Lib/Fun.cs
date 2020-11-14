@@ -550,7 +550,7 @@ namespace FF1Lib
 			else
 			{
 				// Whether NPC guillotine is on or not, kill Hurray Dwarf
-				Put(MapObjJumpTableOffset + 0x63 * JumpTablePointerSize, newTalk.Talk_kill);
+				PutInBank(newTalkRoutinesBank, lut_MapObjTalkJumpTbl + 0x63 * JumpTablePointerSize, newTalk.Talk_kill);
 
 				// Change the dialogue
 				var dialogueStrings = new List<string>
@@ -572,7 +572,7 @@ namespace FF1Lib
 
 				//Put new dialogue to E6 since another Dwarf also says hurray
 				InsertDialogs(0xE6, dialogueStrings.PickRandom(rng));
-				Put(MapObjOffset + 0x63 * MapObjSize, Blob.FromHex("00E60000"));
+				PutInBank(newTalkRoutinesBank, lut_MapObjTalkData + 0x63 * MapObjSize, Blob.FromHex("00E60000"));
 			}
 		}
 
