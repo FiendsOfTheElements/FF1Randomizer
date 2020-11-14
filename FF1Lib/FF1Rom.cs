@@ -8,6 +8,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using FF1Lib.Assembly;
+using System.Text.RegularExpressions;
 
 namespace FF1Lib
 {
@@ -1124,10 +1125,11 @@ namespace FF1Lib
 				hashpart /= 12;
 			}
 
+			Regex rgx = new Regex("[^a-zA-Z0-9]");
 			// Put the new string data in a known location.
 			PutInBank(0x0F, 0x8900, Blob.Concat(
 				FF1Text.TextToCopyrightLine("Final Fantasy Randomizer " + FFRVersion.Version),
-				FF1Text.TextToCopyrightLine((FFRVersion.Branch == "master" ? "Seed " : FFRVersion.Branch + " BUILD ") + seed),
+				FF1Text.TextToCopyrightLine((FFRVersion.Branch == "master" ? "Seed " : rgx.Replace(FFRVersion.Branch, "") + " BUILD ") + seed),
 				hash));
 		}
 
