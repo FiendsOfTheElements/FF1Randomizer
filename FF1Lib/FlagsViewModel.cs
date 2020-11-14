@@ -3255,5 +3255,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SwolePirates"));
 			}
 		}
+
+		public EvadeCapValues EvadeCap
+		{
+			get => Flags.EvadeCap;
+			set
+			{
+				Flags.EvadeCap = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EvadeCap"));
+			}
+		}
 	}
 }

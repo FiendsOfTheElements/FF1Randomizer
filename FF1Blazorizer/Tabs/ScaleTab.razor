@@ -14,6 +14,13 @@
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="separateBossHPScalingCheckBox" @bind-Value="Flags.SeparateBossHPScaling">Separate HP Scaling:</TriStateCheckBox>
 		</ClampedDoubleSlider>
 
+		<div class="row">
+			<div class="col-md-8 col-xs-6"><p>Evade Cap Value:</p></div>
+			<div class="col-md-4 col-xs-6">
+		<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="evadeCapDropDown" TItem="EvadeCapValues" @bind-Value="Flags.EvadeCap"></EnumDropDown>
+			</div>
+		</div>
+
 		<div class="slider-cell"></div>
 		<div class="row">
 			<div class="col-md-5">

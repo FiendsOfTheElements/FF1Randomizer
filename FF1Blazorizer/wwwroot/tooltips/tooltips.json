@@ -1240,5 +1240,10 @@
 		"Id": "freeCanoeCheckBox",
 		"title": "Free Canoe",
 		"description": "Begin the game well equipped for a proper arm workout."
+	},
+	{
+		"Id": "evadeCapDropDown",
+		"title": "Evade Cap",
+		"description":  "Caps the evade of enemies during scaling. When enemies have very high evade, it can become near impossible to hit them, this is especially an issue on Chaos and other endgame bosses."
 	}
 ]

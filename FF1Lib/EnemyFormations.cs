@@ -131,7 +131,7 @@ namespace FF1Lib
 			Put(FormationsOffset + FormationSize * WarMECHFormationIndex, warMECHFormation);
 		}
 
-		public void TransformFinalFormation(FinalFormation formation)
+		public void TransformFinalFormation(FinalFormation formation, EvadeCapValues evadeClampFlag)
 		{
 			Blob finalBattle = Get(FormationsOffset + ChaosFormationIndex * FormationSize, FormationSize);
 
@@ -171,8 +171,8 @@ namespace FF1Lib
 					finalBattle[PaletteAsignmentOffset] = 0x41; // Palette Assignment in top nibble, 1 in bottom for unrunnable.
 
 					// Scale up the Fundead enemies if we end up with them. They're too weak otherwise.
-					ScaleSingleEnemyStats(0x78, 140, 140, false, false, null, false, 100, 100);
-					ScaleSingleEnemyStats(0x33, 120, 120, false, false, null, false, 100, 100);
+					ScaleSingleEnemyStats(0x78, 140, 140, false, false, null, false, 100, 100, GetEvadeIntFromFlag(evadeClampFlag));
+					ScaleSingleEnemyStats(0x33, 120, 120, false, false, null, false, 100, 100, GetEvadeIntFromFlag(evadeClampFlag));
 					break;
 				case FinalFormation.TimeLoop:
 					finalBattle[TypeOffset] = 0x0B;         // 9Small + Garland pattern

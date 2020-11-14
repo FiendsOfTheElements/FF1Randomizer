@@ -171,7 +171,9 @@
 		"FORCED1": false,
 		"FORCED2": false,
 		"FORCED3": false,
-		"FORCED4": false
+		"FORCED4": false,
+
+		"EvadeCap":  4
 
 	}
 
