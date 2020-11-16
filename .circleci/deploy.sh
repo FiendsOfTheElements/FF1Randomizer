@@ -36,7 +36,7 @@ else
     fi
     
     createdSite=$(curl --location --request POST 'https://api.netlify.com/api/v1/sites' \
-    --header "Authorization: Bearer ${NETLIFY_TOKEN}" \
+    --header "Authorization: Bearer ${NETLIFY_AUTH_TOKEN}" \
     --header 'Content-Type: application/json' \
     --data-raw "{\"custom_domain\": \"${version}.finalfantasyrandomizer.com\", \"force_ssl\": \"true\"}")
     
