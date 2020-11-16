@@ -223,7 +223,7 @@ namespace FF1Lib
 			PutInBank(newTalkRoutinesBank, lut_MapObjTalkJumpTbl, npcScript.SelectMany(script => script.ToBytes()).ToArray());
 
 			//Update Talk_CooGuy and change Talk_fight to load End game
-			PutInBank(newTalkRoutinesBank, 0x933B, Blob.FromHex("A416207F90209690A511604C38C9"));
+			PutInBank(newTalkRoutinesBank, 0x933B, Blob.FromHex("A476207F90209690A571604C38C9"));
 
 			//Update Astos and Bikke
 			PutInBank(newTalkRoutinesBank, 0x93C0, Blob.FromHex("EAEAEA"));

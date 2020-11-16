@@ -592,7 +592,7 @@ namespace FF1Lib
 			if (talkscript == newTalk.Talk_Titan || talkscript == newTalk.Talk_ElfDocUnne)
 			{
 				// Skip giving item for Titan, ElfDoc or Unne
-				PutInBank(newTalk_AstosBank, Talk_Astos + 13, Blob.FromHex("A4128414EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
+				PutInBank(newTalk_AstosBank, Talk_Astos + 13, Blob.FromHex("A4728474EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
 
 				// No need to restore item
 				if (flags.SaveGameWhenGameOver)
@@ -613,13 +613,13 @@ namespace FF1Lib
 				var newroutine =
 					"AD2D60" +  // LDA item_tail - Load Tail
 					"F030" +    // BEQ @Default 
-					"A416" +    // LDY tmp+6 - Load this object instead of Astos
+					"A476" +    // LDY tmp+6 - Load this object instead of Astos
 					"207F90" +  // JSR SetEventFlag (207F90)
 					"207392" +  // JSR HideThisMapObject
 					"A97D" +    // LDA #BTL_ASTOS
 					"20C590" +  // JSR TalkBattle
 					"20AE95" +  // JSR DoClassChange
-					"A512" +    // LDA Load dialog
+					"A572" +    // LDA Load dialog
 					"60";       // RTS
 
 				PutInBank(newTalk_AstosBank, Talk_Astos, Blob.FromHex(newroutine));
@@ -1815,10 +1815,10 @@ namespace FF1Lib
 
 
 			// Talk_Replace
-			PutInBank(newTalkRoutinesBank, 0x932E, Blob.FromHex("A41320A490A416206095A51260"));
+			PutInBank(newTalkRoutinesBank, 0x932E, Blob.FromHex("A47320A490A476206095A57260"));
 
 			// Fight Script 
-			PutInBank(newTalkRoutinesBank, 0x9560, Blob.FromHex("A51185132073924C4393A416207F9020739260"));
+			PutInBank(newTalkRoutinesBank, 0x9560, Blob.FromHex("A57185732073924C4393A476207F9020739260"));
 		}
 	}
 }
