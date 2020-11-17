@@ -1269,6 +1269,24 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeSkyPalace"));
 			}
 		}
+		public bool? IncentivizeRandomChestInLocation
+		{
+			get => Flags.IncentivizeRandomChestInLocation;
+			set
+			{
+				Flags.IncentivizeRandomChestInLocation = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeRandomChestInLocation"));
+			}
+		}
+		public bool? IncentivizeRandomChestIncludeExtra
+		{
+			get => Flags.IncentivizeRandomChestIncludeExtra;
+			set
+			{
+				Flags.IncentivizeRandomChestIncludeExtra = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeRandomChestIncludeExtra"));
+			}
+		}
 
 		public bool? IncentivizeMasamune
 		{

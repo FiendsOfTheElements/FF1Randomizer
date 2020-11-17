@@ -21,6 +21,12 @@ namespace FF1Lib
 			new List<IRewardSource>{ MarshCave1, MarshCave2, MarshCave3, MarshCave4,
 			MarshCave5, MarshCave6, MarshCave7, MarshCave8, MarshCaveMajor,
 			MarshCave10, MarshCave11, MarshCave12, MarshCave13 };
+		public static readonly IReadOnlyCollection<IRewardSource> MarshCaveUnlocked =
+			new List<IRewardSource>{ MarshCave1, MarshCave2, MarshCave3, MarshCave4,
+			MarshCave5, MarshCave6, MarshCave7, MarshCave8, MarshCaveMajor,
+			MarshCave10};
+		public static readonly IReadOnlyCollection<IRewardSource> MarshCaveLocked =
+			new List<IRewardSource>{ MarshCave11, MarshCave12, MarshCave13 };
 		public static readonly IReadOnlyCollection<IRewardSource> NorthwestCastle =
 			new List<IRewardSource> { NorthwestCastle1, NorthwestCastle2, NorthwestCastle3 };
 		public static readonly IReadOnlyCollection<IRewardSource> DwarfCave =
@@ -60,6 +66,14 @@ namespace FF1Lib
 			SeaShrine5, SeaShrine6, SeaShrine7, SeaShrine8, SeaShrine9,
 			SeaShrine10, SeaShrine11, SeaShrine12, SeaShrine13, SeaShrine14,
 			SeaShrine15, SeaShrine16, SeaShrineLocked, SeaShrine18, SeaShrine19,
+			SeaShrine20, SeaShrine21, SeaShrine22, SeaShrine23, SeaShrine24,
+			SeaShrine25, SeaShrine26, SeaShrine27, SeaShrine28, SeaShrine29,
+			SeaShrine30, SeaShrine31, SeaShrineMajor };
+		public static readonly IReadOnlyCollection<IRewardSource> SeaShrineUnlocked =
+			new List<IRewardSource> { SeaShrine1, SeaShrine2, SeaShrine3, SeaShrine4,
+			SeaShrine5, SeaShrine6, SeaShrine7, SeaShrine8, SeaShrine9,
+			SeaShrine10, SeaShrine11, SeaShrine12, SeaShrine13, SeaShrine14,
+			SeaShrine15, SeaShrine16, SeaShrine18, SeaShrine19,
 			SeaShrine20, SeaShrine21, SeaShrine22, SeaShrine23, SeaShrine24,
 			SeaShrine25, SeaShrine26, SeaShrine27, SeaShrine28, SeaShrine29,
 			SeaShrine30, SeaShrine31, SeaShrineMajor };

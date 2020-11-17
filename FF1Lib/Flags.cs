@@ -106,6 +106,8 @@ namespace FF1Lib
 		public bool? IncentivizeMarshKeyLocked { get; set; } = false;
 		public bool? IncentivizeSkyPalace { get; set; } = false;
 		public bool? IncentivizeTitansTrove { get; set; } = false;
+		public bool? IncentivizeRandomChestInLocation { get; set; } = false;
+		public bool? IncentivizeRandomChestIncludeExtra { get; set; } = false;
 		public bool? BetterTrapChests { get; set; } = false;
 
 
@@ -668,6 +670,8 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.IncentivizeMarshKeyLocked);
 			sum = AddTriState(sum, flags.IncentivizeSkyPalace);
 			sum = AddTriState(sum, flags.IncentivizeTitansTrove);
+			sum = AddTriState(sum, flags.IncentivizeRandomChestInLocation);
+			sum = AddTriState(sum, flags.IncentivizeRandomChestIncludeExtra);
 			sum = AddTriState(sum, flags.BetterTrapChests);
 			sum = AddTriState(sum, flags.IncentivizeMasamune);
 			sum = AddTriState(sum, flags.IncentivizeOpal);
@@ -1092,6 +1096,8 @@ namespace FF1Lib
 				IncentivizeOpal = GetTriState(ref sum),
 				IncentivizeMasamune = GetTriState(ref sum),
 				BetterTrapChests = GetTriState(ref sum),
+				IncentivizeRandomChestIncludeExtra = GetTriState(ref sum),
+				IncentivizeRandomChestInLocation = GetTriState(ref sum),
 				IncentivizeTitansTrove = GetTriState(ref sum),
 				IncentivizeSkyPalace = GetTriState(ref sum),
 				IncentivizeMarshKeyLocked = GetTriState(ref sum),
