@@ -249,6 +249,11 @@ namespace FF1Lib
 				CraftNewSpellbook(rng, (bool)flags.SpellcrafterMixSpells, flags.LockMode, (bool)flags.MagicLevels, (bool)flags.SpellcrafterRetainPermissions);
 			}
 
+			if ((bool)flags.MagisizeWeapons)
+			{
+				MagisizeWeapons(rng, (bool)flags.MagisizeWeaponsBalanced);
+			}
+
 			if ((bool)flags.ItemMagic)
 			{
 				ShuffleItemMagic(rng, (bool)flags.BalancedItemMagicShuffle);
@@ -692,7 +697,7 @@ namespace FF1Lib
 
 				NPCHints(rng, flags, overworldMap);
 			}
-
+			
 			ExpGoldBoost(flags.ExpBonus, flags.ExpMultiplier);
 			ScalePrices(flags, itemText, rng, ((bool)flags.ClampMinimumPriceScale), shopItemLocation);
 			ScaleEncounterRate(flags.EncounterRate / 30.0, flags.DungeonEncounterRate / 30.0);

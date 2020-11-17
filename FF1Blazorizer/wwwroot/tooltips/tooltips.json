@@ -1232,6 +1232,18 @@
 		"description": "In shops, characters will strike their victory pose it they can equip a piece of equipment or learn a spell.\nPress Select to show a description of an item or a spell."
 	},
 	{
+		"Id": "magisizeWeaponsCheckBox",
+		"title": "All Weapons Cast Spells",
+		"screenshot": "magisizeWeapons.png",
+		"description": "All weapons can cast a randomly assigned spells."
+	},
+	{
+		"Id": "magisizeWeaponsBalancedCheckBox",
+		"title": "Balanced Spells",
+		"screenshot": "magisizeWeapons.png",
+		"description": "The rarer a weapon is, the stronger the spell assigned to it is."
+	},
+	{
 		"Id": "magicAutohitThresholdDropDown",
 		"title": "Power Word HP Limit",
 		"description": "Changes the threshold at which BLND, STUN, and XXXX are effective.\nThe value will always be a multiple of 300, or unlimited."
@@ -1244,6 +1256,6 @@
 	{
 		"Id": "evadeCapDropDown",
 		"title": "Evade Cap",
-		"description":  "Caps the evade of enemies during scaling. When enemies have very high evade, it can become near impossible to hit them, this is especially an issue on Chaos and other endgame bosses."
+		"description": "Caps the evade of enemies during scaling. When enemies have very high evade, it can become near impossible to hit them, this is especially an issue on Chaos and other endgame bosses."
 	}
 ]

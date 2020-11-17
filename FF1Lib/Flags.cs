@@ -36,6 +36,8 @@ namespace FF1Lib
 		public bool? MagicLevels { get; set; } = false;
 		public bool? MagicPermissions { get; set; } = false;
 		public bool? ItemMagic { get; set; } = false;
+		public bool? MagisizeWeapons { get; set; } = false;
+		public bool? MagisizeWeaponsBalanced { get; set; } = false;
 		public bool? MagicLevelsTiered { get; set; } = false;
 		public bool? MagicLevelsMixed { get; set; } = false;
 
@@ -603,6 +605,8 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.MagicLevels);
 			sum = AddTriState(sum, flags.MagicPermissions);
 			sum = AddTriState(sum, flags.ItemMagic);
+			sum = AddTriState(sum, flags.MagisizeWeapons);
+			sum = AddTriState(sum, flags.MagisizeWeaponsBalanced);
 			sum = AddTriState(sum, flags.MagicLevelsTiered);
 			sum = AddTriState(sum, flags.MagicLevelsMixed);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(AutohitThreshold)).Cast<int>().Max() + 1, (int)flags.MagicAutohitThreshold);
@@ -1149,6 +1153,8 @@ namespace FF1Lib
 				MagicAutohitThreshold = (AutohitThreshold)GetNumeric(ref sum, Enum.GetValues(typeof(AutohitThreshold)).Cast<int>().Max() + 1),
 				MagicLevelsMixed = GetTriState(ref sum),
 				MagicLevelsTiered = GetTriState(ref sum),
+				MagisizeWeaponsBalanced = GetTriState(ref sum),
+				MagisizeWeapons = GetTriState(ref sum),
 				ItemMagic = GetTriState(ref sum),
 				MagicPermissions = GetTriState(ref sum),
 				MagicLevels = GetTriState(ref sum),
