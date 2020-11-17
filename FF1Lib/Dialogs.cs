@@ -1043,7 +1043,7 @@ namespace FF1Lib
 			if (flags.HintsVillage ?? false)
 			{
 				npcSelected.AddRange(new List<ObjectId> { ObjectId.ConeriaOldMan, ObjectId.PravokaOldMan, ObjectId.ElflandScholar1, ObjectId.MelmondOldMan2, ObjectId.CrescentSage11, ObjectId.OnracOldMan2, ObjectId.GaiaWitch, ObjectId.LefeinMan12 });
-				dialogueID.AddRange(new List<byte> { 0x45, 0x53, 0x69, 0x82, 0x8C, 0xAA, 0xCB, 0xDC });
+				dialogueID.AddRange(new List<byte> { 0x45, 0x53, 0x69, 0x82, 0xA0, 0xAA, 0xCB, 0xDC });
 				MoveNpc(MapId.Lefein, 0x0C, 0x0E, 0x15, false, true);
 			}
 
