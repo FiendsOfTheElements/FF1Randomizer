@@ -26,9 +26,9 @@ netlifyID=$(echo "$config" | jq -r ".netlifyID")
 #
 #else
     #version=$(grep " Version.*" /root/ff1randomizer/FF1Lib/FFRVersion.cs | grep -Eo "[0-9\.]+" | tr '.' '-')
-    version="fake-version"
+    version="fake-version2"
     siteExists=$(curl --location --request GET 'https://api.netlify.com/api/v1/dns_zones/finalfantasyrandomizer_com/dns_records' \
-    --header "Authorization: Bearer ${NETLIFY_TOKEN}" \
+    --header "Authorization: Bearer ${NETLIFY_AUTH_TOKEN}" \
     --header 'Content-Type: application/json' | jq -r ".[].hostname" | grep -q "${version}" && echo true || echo false
     )
     
