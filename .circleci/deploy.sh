@@ -1,4 +1,6 @@
 #!/bin/sh
+set -x
+set -e
 
 
 config=$(jq -r ".branchConfig | map(select(if .branch == \"default\" then true elif .branch == \"${CIRCLE_BRANCH}\" then true else false end)) | .[0]" .circleci/configs/config.json)
