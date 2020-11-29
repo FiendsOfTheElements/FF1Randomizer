@@ -71,6 +71,7 @@ namespace FF1Lib
 		public bool? TitansTrove { get; set; } = false;
 		public bool? LefeinShops { get; set; } = false;
 		public bool? ConfusedOldMen { get; set; } = false;
+		public bool? FlipDungeons { get; set; } = false;
 		public bool SpookyFlag { get; set; } = false;
 		public bool? MapOpenProgression { get; set; } = false;
 		public bool? MapOpenProgressionDocks { get; set; } = false;
@@ -636,6 +637,7 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.TitansTrove);
 			sum = AddTriState(sum, flags.LefeinShops);
 			sum = AddTriState(sum, flags.ConfusedOldMen);
+			sum = AddTriState(sum, flags.FlipDungeons);
 			sum = AddBoolean(sum, flags.SpookyFlag);
 			sum = AddTriState(sum, flags.MapOpenProgression);
 			sum = AddTriState(sum, flags.MapOpenProgressionDocks);
@@ -1124,6 +1126,7 @@ namespace FF1Lib
 				MapOpenProgressionDocks = GetTriState(ref sum),
 				MapOpenProgression = GetTriState(ref sum),
 				SpookyFlag = GetBoolean(ref sum),
+				FlipDungeons = GetTriState(ref sum),
 				ConfusedOldMen = GetTriState(ref sum),
 				LefeinShops = GetTriState(ref sum),
 				TitansTrove = GetTriState(ref sum),

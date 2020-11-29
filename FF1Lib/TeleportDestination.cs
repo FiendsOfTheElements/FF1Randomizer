@@ -96,5 +96,10 @@ namespace FF1Lib
 			CoordinateX = coordinate.X;
 			CoordinateY = coordinate.Y;
 		}
+
+		public void FlipXcoordinate()
+		{
+			CoordinateX = (byte)(64 - CoordinateX - 1);
+		}
 	}
 }
