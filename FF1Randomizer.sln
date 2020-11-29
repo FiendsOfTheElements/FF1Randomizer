@@ -11,6 +11,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		.gitignore = .gitignore
+		.circleci\build.sh = .circleci\build.sh
+		.circleci\deploy.sh = .circleci\deploy.sh
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FF1Randomizer", "FF1Randomizer\FF1Randomizer.csproj", "{BEF4CF23-2F46-4A02-AE02-649299CDABD7}"
@@ -19,8 +21,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sandbox", "Sandbox\Sandbox.
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".circleci", ".circleci", "{E8698844-8DA6-44D4-9290-F816B135E44E}"
 	ProjectSection(SolutionItems) = preProject
-		build.sh = build.sh
+		.circleci\build.sh = .circleci\build.sh
+		.circleci\configs\config.json = .circleci\configs\config.json
 		.circleci\config.yml = .circleci\config.yml
+		.circleci\configs\configSchema.json = .circleci\configs\configSchema.json
+		.circleci\deploy.sh = .circleci\deploy.sh
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FF1Blazorizer", "FF1Blazorizer\FF1Blazorizer.csproj", "{43BF489E-8125-430E-8AA2-5BD850CB2567}"
@@ -29,13 +34,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FFR.Common", "FFR.Common\FF
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FFR.Common.Tests", "FFR.Common.Tests\FFR.Common.Tests.csproj", "{93FA510C-CC5D-4B74-A341-7CFE18357EF1}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BuildConfigs", "BuildConfigs", "{C785879B-F4EB-4715-A621-91610BAF23C9}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "configs", "configs", "{017DEFA2-6394-4C59-89FF-4220BE6F1F32}"
 	ProjectSection(SolutionItems) = preProject
-		ConfigSchema.json = ConfigSchema.json
-		Main.json = Main.json
-	EndProjectSection
-	ProjectSection(FolderGlobals) = preProject
-		C_5_4Users_4Steven_4dev_4FF1Randomizer_4main_1json__JsonSchema = ConfigSchema.json
+		.circleci\configs\config.json = .circleci\configs\config.json
+		.circleci\configs\configSchema.json = .circleci\configs\configSchema.json
 	EndProjectSection
 EndProject
 Global
@@ -78,7 +80,7 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{E8698844-8DA6-44D4-9290-F816B135E44E} = {F74A70F8-A938-4587-B083-8DC615B98D23}
-		{C785879B-F4EB-4715-A621-91610BAF23C9} = {E8698844-8DA6-44D4-9290-F816B135E44E}
+		{017DEFA2-6394-4C59-89FF-4220BE6F1F32} = {E8698844-8DA6-44D4-9290-F816B135E44E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B742F3AC-5BCA-469A-BBD4-A787AC019E72}
