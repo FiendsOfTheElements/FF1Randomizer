@@ -119,7 +119,7 @@
     "ChanceToRun": true,
     "SpellBugs": true,
     "BlackBeltAbsorb": true,
-    "NPCSwatter": true,
+    "NPCSwatter": false,
     "BattleMagicMenuWrapAround": true,
     "InventoryAutosort": false,
     "EnemyStatusAttackBug": true,
