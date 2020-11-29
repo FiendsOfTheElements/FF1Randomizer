@@ -26,11 +26,15 @@ set -x
 #
 #else
     #version=$(grep " Version.*" /root/ff1randomizer/FF1Lib/FFRVersion.cs | grep -Eo "[0-9\.]+" | tr '.' '-')
-    version="fake-version3"
+    version="fake-version6"
     siteExists=$(curl --location --request GET 'https://api.netlify.com/api/v1/dns_zones/finalfantasyrandomizer_com/dns_records' \
     --header "Authorization: Bearer ${NETLIFY_AUTH_TOKEN}" \
     --header 'Content-Type: application/json' | jq -r ".[].hostname" | grep -q "${version}" && echo true || echo false
     )
+    #siteExists=$(curl --location --request GET 'https://api.netlify.com/api/v1/dns_zones/stevenbir_com/dns_records' \
+    #--header "Authorization: Bearer ${NETLIFY_AUTH_TOKEN}" \
+    #--header 'Content-Type: application/json' | jq -r ".[].hostname" | grep -q "${version}" && echo true || echo false
+    #)
     
     
     if [ "${siteExists}" = true ]; then
@@ -38,16 +42,20 @@ set -x
     	exit 1
     fi
     
+    #createdSite=$(curl --location --request POST 'https://api.netlify.com/api/v1/sites' \
+    #--header "Authorization: Bearer ${NETLIFY_AUTH_TOKEN}" \
+    #--header 'Content-Type: application/json' \
+    #--data-raw "{\"custom_domain\": \"${version}.stevenbiro.com\", \"force_ssl\": \"true\"}")
     createdSite=$(curl --location --request POST 'https://api.netlify.com/api/v1/sites' \
     --header "Authorization: Bearer ${NETLIFY_AUTH_TOKEN}" \
     --header 'Content-Type: application/json' \
     --data-raw "{\"custom_domain\": \"${version}.finalfantasyrandomizer.com\", \"force_ssl\": \"true\"}")
     
     
-    errorsExist=$(echo "$createdSite" | jq ".errors!=null")
-    if [ "$errorsExist" ]; then
+    errors=$(echo "$createdSite" | jq ".errors")
+    if [ "$errors" -ne "null" ]; then
 	    echo "errors encountered while creating site:"
-	    echo "$createdSite" | jq -r ".errors"
+	    echo "$errors"
 	    exit 2
     fi
     
