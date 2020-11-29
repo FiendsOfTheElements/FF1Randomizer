@@ -143,6 +143,10 @@ namespace FF1Lib
 			{
 				placedItems = placedItems.Select(x => x.Item != Item.Canal ? x : NewItemPlacement(x, ReplacementItem)).ToList();
 			}
+			if ((bool)_flags.FreeCanoe)
+			{
+				placedItems = placedItems.Select(x => x.Item != Item.Canoe ? x : NewItemPlacement(x, ReplacementItem)).ToList();
+			}
 			if ((bool)_flags.FreeLute)
 			{
 				placedItems = placedItems.Select(x => x.Item != Item.Lute ? x : NewItemPlacement(x, ReplacementItem)).ToList();
@@ -332,6 +336,10 @@ namespace FF1Lib
 			if (victoryConditions.FreeCanal ?? false)
 			{
 				currentMapChanges |= MapChange.Canal;
+			}
+			if (victoryConditions.FreeCanoe ?? false)
+			{
+				currentMapChanges |= MapChange.Canoe;
 			}
 
 			IEnumerable<MapLocation> currentMapLocations()

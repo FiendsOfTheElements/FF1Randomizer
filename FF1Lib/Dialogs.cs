@@ -18,6 +18,12 @@ namespace FF1Lib
 		public const int NpcTalkSize = 2;
 		public const int NpcVisFlagOffset = 0x2F00;
 
+		public const int lut_MapObjTalkJumpTbl = 0x90D3;
+		public const int lut_MapObjTalkData = 0x95D5;
+
+		public const int oldTalkRoutinesBank = 0x0E;
+		public const int newTalkRoutinesBank = 0x11;
+
 		public List<IRewardSource> generatedPlacement;
 		// All original talk scripts for reference
 		public static partial class originalTalk
@@ -207,12 +213,35 @@ namespace FF1Lib
 			// Insert dialogs
 			Put(dialogsPointerOffset, Blob.FromUShorts(pointers) + generatedText);
 		}
+		public void TransferTalkRoutines()
+		{
+			// Get Talk Routines from Bank E and put them in bank 11
+			PutInBank(newTalkRoutinesBank, 0x902B, Get(0x3902B, 0x8EA));
+			
+			// Backup npc manpulation routines and showMapObject as various other routines use them
+			var npcManipulationRoutines = GetFromBank(0x0E, 0x9079, 0x60);
+			var hideMapObject = GetFromBank(0x0E, 0x9273, 0x30);
+
+			// Clear saved space
+			PutInBank(oldTalkRoutinesBank, 0x902B, new byte[0x8EA]);
+
+			// LoadPrice bank switching fix
+			PutInBank(0x1F, 0xECD5, Blob.FromHex("A558"));
+
+			// Put back HideMapObject & showMapObject
+			PutInBank(0x0E, 0x9079, npcManipulationRoutines);
+			PutInBank(0x0E, 0x9273, hideMapObject);
+
+			// Update bank
+			Data[0x7C9F2] = newTalkRoutinesBank;
+		}
 
 		// Required for npc quest item randomizing
 		// Doesn't substantially change anything if EnableNPCsGiveAnyItem isn't called
 		public void CleanupNPCRoutines()
 		{
 			// Swap string pointer in index 2 and 3 for King, Bikke, Prince, and Lefein
+			/*
 			var temp = Data[ItemLocations.KingConeria.Address];
 			Data[ItemLocations.KingConeria.Address] = Data[ItemLocations.KingConeria.Address - 1];
 			Data[ItemLocations.KingConeria.Address - 1] = temp;
@@ -228,7 +257,7 @@ namespace FF1Lib
 			temp = Data[ItemLocations.Lefein.Address];
 			Data[ItemLocations.Lefein.Address] = Data[ItemLocations.Lefein.Address - 1];
 			Data[ItemLocations.Lefein.Address - 1] = temp;
-
+			*/
 			// And do the same swap in the vanilla routines so those still work if needed
 			Data[0x392A7] = 0x12;
 			Data[0x392AA] = 0x13;
@@ -251,25 +280,28 @@ namespace FF1Lib
 		}
 
 		// Remove trailing spaces and return the right item for some generated text
-		public string FormattedItemName(Item item)
+		public string FormattedItemName(Item item, bool specialItem = true)
 		{
 			var itemnames = ReadText(FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, 256);
 			var formatted = itemnames[(byte)item].TrimEnd(' ');
 
-			switch (item)
-			{
-				case Item.Ship:
-					formatted = FF1Text.BytesToText(Get(0x2B5D0, 8)).TrimEnd(' ');
-					break;
-				case Item.Bridge:
-					formatted = FF1Text.BytesToText(Get(0x2B5D0 + 16, 8)).TrimEnd(' ');
-					break;
-				case Item.Canal:
-					formatted = FF1Text.BytesToText(Get(0x2B5D0 + 24, 8)).TrimEnd(' ');
-					break;
-				case Item.Canoe:
-					formatted = FF1Text.BytesToText(Get(0x2B5D0 + 36, 8)).TrimEnd(' ');
-					break;
+			if(specialItem)
+			{ 
+				switch (item)
+				{
+					case Item.Ship:
+						formatted = FF1Text.BytesToText(Get(0x2B5D0, 8)).TrimEnd(' ');
+						break;
+					case Item.Bridge:
+						formatted = FF1Text.BytesToText(Get(0x2B5D0 + 16, 8)).TrimEnd(' ');
+						break;
+					case Item.Canal:
+						formatted = FF1Text.BytesToText(Get(0x2B5D0 + 24, 8)).TrimEnd(' ');
+						break;
+					case Item.Canoe:
+						formatted = FF1Text.BytesToText(Get(0x2B5D0 + 36, 8)).TrimEnd(' ');
+						break;
+				}
 			}
 			return formatted;
 		}
@@ -359,29 +391,37 @@ namespace FF1Lib
 		{
 			Dictionary<int, string> newDialogs = new Dictionary<int, string>();
 
-			//FormatItems();
 			CleanupNPCRoutines();
 			SplitOpenTreasureRoutine();
 			TransferDialogs();
+			TransferTalkRoutines();
 			AddNewChars();
 
 			// Get all NPC scripts and script values to update them
-			var npcScript = new List<Blob>();
-			var npcScriptValue = new List<Blob>();
-
-			for (int i = 0; i < 0xD0; i++)
-			{
-				npcScriptValue.Add(Get(MapObjOffset + i * 4, 4));
-				npcScript.Add(Get(0x390D3 + i * 2, 2));
-			}
+			var npcScriptValue = GetFromBank(newTalkRoutinesBank, lut_MapObjTalkData, 0xD0 * 4).Chunk(4);
+			var npcScript = GetFromBank(newTalkRoutinesBank, lut_MapObjTalkJumpTbl, 0xD0 * 2).Chunk(2);
 
 			// Insert new dialogs Talk routine, see 0E_9296_TalkRoutines.asm
-			//var newTalkRoutines = "60A51160A410209190B003A51160A51260A5106920A8B90060F003A51160A51260A012209190B008AD2160D003A51160A51260A410207990B003A51160A51260A0122091909008AD0860D003A51160A51260AD32602D33602D34602D3160F003A51160A51260AD2560F008AD2660D003A51160A51260A00C209190B008AD3160D003A51160A51260AD3160F008AD3260D003A51160A51260A416209690A41320A490A51160A416209690A51160A416207F90209690A51320C590A51160AD32602D33602D34602D3160F00CA0CA209690E67DE67DA51160A51260A416207F90209690A01220A490A93F20CC90A51160AD3060D003A51160A416209690A51260AD2960D003A51160CE2960A416209690A512E67D60A03F209190B01520A490A04020A490A04120A490A97E20C590A51160A416207990B015A513F011A41284142093DDB00AA416207F90A51460A51060AD2660F018A513F014A41284142093DDB00DCE2660A416207392A51460A51060A00E2079909003A51360AD2D60D003A51160CE2D60207F9020AE95E67DA51260A416207990B013BE8095BD2060F00EDE2060207F90E67DA51260A51160A51060A416207990B021B98095F006A82079909019A513F015A4128414182093DDB00DA416207F90A51460A51160A51060A416207990B023BE8095BD2060F01EA513F01AA41284142093DDB013A416BE8095DE2060207F90A51460A51160A51060A416207990B0F3BE8095F005BD2060F018A513F014A41284142093DDB00DA416207F90A51460A51160A51060A416BE8095F006EABD2060F02AA513F026A4128414182093DDB01E8467A5108D0E03A5118D0F03A416207F90207392A97D20C590A51460A51060A000209690A51160";
-			var newTalkRoutines = "60A51160A410209190B003A51160A51260A5106920A8B90060F003A51160A51260A012209190B008AD2160D003A51160A51260A410207990B003A51160A51260A0122091909008AD0860D003A51160A51260AD32602D33602D34602D3160F003A51160A51260AD2560F008AD2660D003A51160A51260A00C209190B008AD3160D003A51160A51260AD3160F008AD3260D003A51160A51260A416209690A41320A490A51160A416209690A51160A416207F90209690A51320C590A51160AD32602D33602D34602D3160F00CA0CA209690E67DE67DA51160A51260A416207F90209690A01220A490A93F20CC90A51160AD3060D003A51160A416209690A51260AD2960D003A51160CE2960A416209690A512E67D60A03F209190B01520A490A04020A490A04120A490A97E20C590A51160A416207990B016A513F012A4128414182093DDB00AA416207F90A51460A51060AD2660F01CA513F018A4128414182093DDB010CE2660A416207F90207392A51460A51060A00E2079909003A51360AD2D60D003A51160CE2D60207F9020AE95E67DA51260A416207990B013BE8095BD2060F00EDE2060207F90E67DA51260A51160A51060A416207990B021B98095F006A82079909019A513F015A4128414182093DDB00DA416207F90A51460A51160A51060A416207990B024BE8095BD2060F01FA513F01BA4128414182093DDB013A416BE8095DE2060207F90A51460A51160A51060A416207990B0F3BE8095F005BD2060F019A513F015A4128414182093DDB00DA416207F90A51460A51160A51060A416BE8095F006EABD2060F02AA513F026A4128414182093DDB01E8467A5108D0E03A5118D0F03A416207F90207392A97D20C590A51460A51060A000209690A51160";
-			PutInBank(0x0E, 0x9296, Blob.FromHex(newTalkRoutines));
+			//			var newTalkRoutines = "60A51160A410209190B003A51160A51260A5106920A8B90060F003A51160A51260A012209190B008AD2160D003A51160A51260A410207990B003A51160A51260A0122091909008AD0860D003A51160A51260AD32602D33602D34602D3160F003A51160A51260AD2560F008AD2660D003A51160A51260A00C209190B008AD3160D003A51160A51260AD3160F008AD3260D003A51160A51260A416209690A41320A490A51160A416209690A51160A416207F90209690A51320C590A51160AD32602D33602D34602D3160F00CA0CA209690E67DE67DA51160A51260A416207F90209690A01220A490A93F20CC90A51160AD3060D003A51160A416209690A51260AD2960D003A51160CE2960A416209690A512E67D60A03F209190B01520A490A04020A490A04120A490A97E20C590A51160A416207990B016A513F012A4128414182093DDB00AA416207F90A51460A51060AD2660F01CA513F018A4128414182093DDB010CE2660A416207F90207392A51460A51060A00E2079909003A51360AD2D60D003A51160CE2D60207F9020AE95E67DA51260A416207990B013BE8095BD2060F00EDE2060207F90E67DA51260A51160A51060A416207990B021B98095F006A82079909019A513F015A4128414182093DDB00DA416207F90A51460A51160A51060A416207990B024BE8095BD2060F01FA513F01BA4128414182093DDB013A416BE8095DE2060207F90A51460A51160A51060A416207990B0F3BE8095F005BD2060F019A513F015A4128414182093DDB00DA416207F90A51460A51160A51060A416BE8095F006EABD2060F02AA513F026A4128414182093DDB01E8467A5108D0E03A5118D0F03A416207F90207392A97D20C590A51460A51060A000209690A51160";
+			var newTalkRoutines = "60A57160A470209190B003A57160A57260A5706920A8B90060F003A57160A57260A012209190B008AD2160D003A57160A57260A470207990B003A57160A57260A0122091909008AD0860D003A57160A57260AD32602D33602D34602D3160F003A57160A57260AD2560F008AD2660D003A57160A57260A00C209190B008AD3160D003A57160A57260AD3160F008AD3260D003A57160A57260A476209690A47320A490A57160A476209690A57160A476207F90209690A57320C590A57160AD32602D33602D34602D3160F00CA0CA209690E67DE67DA57160A57260A476207F90209690A01220A490A93F20CC90A57160AD3060D003A57160A476209690A57260AD2960D003A57160CE2960A476209690A572E67D60A03F209190B01520A490A04020A490A04120A490A97E20C590A57160A476207990B016A573F012A4728474182093DDB00AA476207F90A57460A57060AD2660F01CA573F018A4728474182093DDB010CE2660A476207F90207392A57460A57060A00E2079909003A57360AD2D60D003A57160CE2D60207F9020AE95E67DA57260A476207990B013BE8095BD2060F00EDE2060207F90E67DA57260A57160A57060A476207990B021B98095F006A82079909019A573F015A4728474182093DDB00DA476207F90A57460A57160A57060A476207990B024BE8095BD2060F01FA573F01BA4728474182093DDB013A476BE8095DE2060207F90A57460A57160A57060A476207990B020BE8095F005BD2060F019A573F015A4728474182093DDB00DA476207F90A57460A57160A57060A476BE8095F006EABD2060F02AA573F026A4728474182093DDB01E8467A5108D0E03A5118D0F03A476207F90207392A97D20C590A57460A57060A000209690A57160";
+
+			// Fix for bank change
+			newTalkRoutines = newTalkRoutines.Replace("2093DD", "20109F");
+			PutInBank(newTalkRoutinesBank, 0x9296, Blob.FromHex(newTalkRoutines));
+
+			// LoadPrice fix
+			PutInBank(newTalkRoutinesBank, 0x9F10, Blob.FromHex("A9118558A5734C93DD"));
+
+			// Load NPC scripts in zero page at $70 instead of $10
+			Data[0x4502F] = 0x76;
+			Data[0x45049] = 0x70;
+			Data[0x4504E] = 0x71;
+			Data[0x45053] = 0x72;
+			Data[0x45058] = 0x73;
+			Data[0x4505A] = 0x76;
 
 			// Lut for required items check, only the first 32 NPCs can give an item with this, but it should be enough for now
-			PutInBank(0x0E, 0x9580, Blob.FromHex("000300000004050206070308000C0D0B10000000091100000000000000000000"));
+			PutInBank(newTalkRoutinesBank, 0x9580, Blob.FromHex("000300000004050206070308000C0D0B10000000091100000000000000000000"));
 
 			// Update all NPC's dialogs script, default behaviours are maintained
 			for (int i = 0; i < 0xD0; i++)
@@ -602,11 +642,8 @@ namespace FF1Lib
 			npcScriptValue[0x0F][3] = (byte)Item.Chime;
 
 			// Insert the updated talk scripts
-			for (int i = 0; i < 0xD0; i++)
-			{
-				PutInBank(0x0E, 0x90D3 + i * 2, npcScript[i]);
-				PutInBank(0x0E, 0x95D5 + i * 4, npcScriptValue[i]);
-			}
+			PutInBank(newTalkRoutinesBank, lut_MapObjTalkData, npcScriptValue.SelectMany(data => data.ToBytes()).ToArray());
+			PutInBank(newTalkRoutinesBank, lut_MapObjTalkJumpTbl, npcScript.SelectMany(script => script.ToBytes()).ToArray());
 
 			// Dialogue for Sarda if Early sarda is off
 			newDialogs.Add(0xB3, "I shall help only\nthe true LIGHT WARRIORS.\nProve yourself by\ndefeating the Vampire.");
@@ -907,18 +944,25 @@ namespace FF1Lib
 				SetNpc(MapId.MarshCaveB2, 0x0D, ObjectId.OnracPunk2, 0x37, 0x21, true, false);
 
 			// Mermaid hinter - Text 0xB6 - 0xA5 mermaid
-			SetNpc(MapId.SeaShrineB1, 2, ObjectId.None, 0x00, 0x00, true, false);
 			randomposition = randomize ? rng.Between(1, 3) : 1;
 			if (randomposition == 1)
+			{
+				SetNpc(MapId.SeaShrineB1, 2, ObjectId.None, 0x00, 0x00, true, false);
 				SetNpc(MapId.SeaShrineB4, 0, (ObjectId)0xA5, 0x16, 0x2C, true, false);
+			}
 			else if (randomposition == 2)
+			{
+				SetNpc(MapId.SeaShrineB1, 2, ObjectId.None, 0x00, 0x00, true, false);
 				SetNpc(MapId.SeaShrineB3, 0, (ObjectId)0xA5, 0x1A, 0x11, true, false);
+			}
 			else
 			{
 				List<ObjectId> mermaids = new List<ObjectId> { ObjectId.Mermaid1, ObjectId.Mermaid2, ObjectId.Mermaid4, ObjectId.Mermaid5, ObjectId.Mermaid6, ObjectId.Mermaid7, ObjectId.Mermaid8, ObjectId.Mermaid9, ObjectId.Mermaid10 };
-				var selectedMermaid = mermaids.PickRandom(rng);
-				Put(lut_MapObjTalkJumpTblAddress + (byte)selectedMermaid * NpcTalkSize, newTalk.Talk_norm);
-				Put(NpcTalkOffset + (byte)selectedMermaid * NpcTalkSize, Blob.FromHex("00B60000"));
+				var selectedMermaidId = mermaids.PickRandom(rng);
+				var selectedMermaid = FindNpc(MapId.SeaShrineB1, selectedMermaidId);
+				var hintMermaid = FindNpc(MapId.SeaShrineB1, ObjectId.Mermaid3);
+				SetNpc(MapId.SeaShrineB1, selectedMermaid.Index, ObjectId.Mermaid3, selectedMermaid.Coord.x, selectedMermaid.Coord.y, selectedMermaid.InRoom, selectedMermaid.Stationary);
+				SetNpc(MapId.SeaShrineB1, hintMermaid.Index, selectedMermaidId, hintMermaid.Coord.x, hintMermaid.Coord.y, hintMermaid.InRoom, hintMermaid.Stationary);
 			}
 
 			return maps;
@@ -930,7 +974,7 @@ namespace FF1Lib
 			var hintschests = new List<string>() { "The $ is #.", "The $? It's # I believe.", "Did you know that the $ is #?", "My grandpa used to say 'The $ is #'.", "Did you hear? The $ is #!", "Wanna hear a secret? The $ is #!", "I've read somewhere that the $ is #.", "I used to have the $. I lost it #!", "I've hidden the $ #, can you find it?", "Interesting! This book says the $ is #!", "Duh, everyone knows that the $ is #!", "I saw the $ while I was #." };
 			var hintsnpc = new List<string>() { "& has the $.", "The $? Did you try asking &?", "The $? & will never part with it!", "& stole the $ from ME! I swear!", "& told me not to reveal he has the $.", "& is hiding something. I bet it's the $!" };
 			var hintsvendormed = new List<string>() { "The $ is for sale #.", "I used to have the $. I sold it #!", "There's a fire sale for the $ #.", "I almost bought the $ for sale #." };
-			var uselesshints = new List<string>() { "GET A SILK BAG FROM THE\nGRAVEYARD DUCK TO LIVE\nLONGER.", "You spoony bard!", "Press A to talk\nto NPCs!", "A crooked trader is\noffering bum deals in\nthis town.", "The game doesn't start\nuntil you say 'yes'.", "Thieves run away\nreally fast.", "No, I won't move quit\npushing me.", "Dr. Unnes instant\ntranslation services,\njust send one slab\nand 299 GP for\nprocessing.", "I am error.", "Kraken has a good chance\nto one-shot your knight.", "If NPC guillotine is on,\npress reset now or your\nemulator will crash!", "GET EQUIPPED WITH\nTED WOOLSEY." };
+			var uselesshints = new List<string>() { "GET A SILK BAG FROM THE\nGRAVEYARD DUCK TO LIVE\nLONGER.", "You spoony bard!", "Press A to talk\nto NPCs!", "A crooked trader is\noffering bum deals in\nthis town.", "The game doesn't start\nuntil you say 'yes'.", "Thieves run away\nreally fast.", "No, I won't move quit\npushing me.", "Dr. Unnes instant\ntranslation services,\njust send one slab\nand 299 GP for\nprocessing.", "I am error.", "Kraken has a good chance\nto one-shot your knight.", "If NPC guillotine is on,\npress reset now or your\nemulator will crash!", "GET EQUIPPED WITH\nTED WOOLSEY.", "8 and palm trees.\nGet it?" };
 
 			if (!RedMageHasLife())
 				uselesshints.Add("Red Mages have no life!");
@@ -987,7 +1031,7 @@ namespace FF1Lib
 			if (flags.FreeLute ?? false) incentivePool.Remove(Item.Lute);
 			if (flags.FreeShip ?? false) incentivePool.Remove(Item.Ship);
 			if ((flags.FreeTail ?? false) || (flags.NoTail ?? false)) incentivePool.Remove(Item.Tail);
-
+			
 			if (incentivePool.Count == 0)
 				incentivePool.Add(Item.Cabin);
 
@@ -999,7 +1043,7 @@ namespace FF1Lib
 			if (flags.HintsVillage ?? false)
 			{
 				npcSelected.AddRange(new List<ObjectId> { ObjectId.ConeriaOldMan, ObjectId.PravokaOldMan, ObjectId.ElflandScholar1, ObjectId.MelmondOldMan2, ObjectId.CrescentSage11, ObjectId.OnracOldMan2, ObjectId.GaiaWitch, ObjectId.LefeinMan12 });
-				dialogueID.AddRange(new List<byte> { 0x45, 0x53, 0x69, 0x82, 0x8C, 0xAA, 0xCB, 0xDC });
+				dialogueID.AddRange(new List<byte> { 0x45, 0x53, 0x69, 0x82, 0xA0, 0xAA, 0xCB, 0xDC });
 				MoveNpc(MapId.Lefein, 0x0C, 0x0E, 0x15, false, true);
 			}
 
@@ -1009,24 +1053,24 @@ namespace FF1Lib
 				dialogueID.AddRange(new List<byte> { 0x9D, 0x70, 0xE3, 0xE1, 0xB6 });
 			}
 
-			List<TreasureChest> incentivizedChests = new List<TreasureChest>();
+			var incentivizedChests = new List<string>();
 
-			if (flags.IncentivizeEarth ?? false) incentivizedChests.Add(ItemLocations.EarthCaveMajor);
-			if (flags.IncentivizeIceCave ?? false) incentivizedChests.Add(ItemLocations.IceCaveMajor);
-			if (flags.IncentivizeMarsh ?? false) incentivizedChests.Add(ItemLocations.MarshCaveMajor);
-			if (flags.IncentivizeMarshKeyLocked ?? false) incentivizedChests.Add(ItemLocations.MarshCave13);
-			if (flags.IncentivizeOrdeals ?? false) incentivizedChests.Add(ItemLocations.OrdealsMajor);
-			if (flags.IncentivizeSeaShrine ?? false) incentivizedChests.Add(ItemLocations.SeaShrineMajor);
-			if (flags.IncentivizeSkyPalace ?? false) incentivizedChests.Add(ItemLocations.SkyPalaceMajor);
-			if (flags.IncentivizeTitansTrove ?? false) incentivizedChests.Add(ItemLocations.TitansTunnel1);
-			if (flags.IncentivizeVolcano ?? false) incentivizedChests.Add(ItemLocations.VolcanoMajor);
-			if (flags.IncentivizeConeria ?? false) incentivizedChests.Add(ItemLocations.ConeriaMajor);
+			if (flags.IncentivizeEarth ?? false) incentivizedChests.Add(ItemLocations.EarthCaveMajor.Name);
+			if (flags.IncentivizeIceCave ?? false) incentivizedChests.Add(ItemLocations.IceCaveMajor.Name);
+			if (flags.IncentivizeMarsh ?? false) incentivizedChests.Add(ItemLocations.MarshCaveMajor.Name);
+			if (flags.IncentivizeMarshKeyLocked ?? false) incentivizedChests.Add(ItemLocations.MarshCave13.Name);
+			if (flags.IncentivizeOrdeals ?? false) incentivizedChests.Add(ItemLocations.OrdealsMajor.Name);
+			if (flags.IncentivizeSeaShrine ?? false) incentivizedChests.Add(ItemLocations.SeaShrineMajor.Name);
+			if (flags.IncentivizeSkyPalace ?? false) incentivizedChests.Add(ItemLocations.SkyPalaceMajor.Name);
+			if (flags.IncentivizeTitansTrove ?? false) incentivizedChests.Add(ItemLocations.TitansTunnel1.Name);
+			if (flags.IncentivizeVolcano ?? false) incentivizedChests.Add(ItemLocations.VolcanoMajor.Name);
+			if (flags.IncentivizeConeria ?? false) incentivizedChests.Add(ItemLocations.ConeriaMajor.Name);
 
 			var hintedItems = new List<Item>();
 			foreach (Item priorityitem in priorityList)
 			{
 				if (generatedPlacement.Find(x => x.Item == priorityitem) != null)
-					if (generatedPlacement.Find(x => x.Item == priorityitem).GetType().Equals(typeof(TreasureChest)) && !incentivizedChests.Contains((TreasureChest)generatedPlacement.Find(x => x.Item == priorityitem)))
+					if (generatedPlacement.Find(x => x.Item == priorityitem).GetType().Equals(typeof(TreasureChest)) && !incentivizedChests.Contains(generatedPlacement.Find(x => x.Item == priorityitem).Name))
 						hintedItems.Add(priorityitem);
 
 				if (hintedItems.Count == npcSelected.Count)
@@ -1107,8 +1151,8 @@ namespace FF1Lib
 				// Set NPCs new dialogs
 				for (int i = 0; i < npcSelected.Count; i++)
 				{
-					Put(lut_MapObjTalkJumpTblAddress + (byte)npcSelected[i] * NpcTalkSize, newTalk.Talk_norm);
-					Put(MapObjOffset + (byte)npcSelected[i] * MapObjSize, Blob.FromSBytes(new sbyte[] { 0x00, (sbyte)dialogueID[i], 0x00, 0x00 }));
+					PutInBank(newTalkRoutinesBank, lut_MapObjTalkJumpTbl + (byte)npcSelected[i] * NpcTalkSize, newTalk.Talk_norm);
+					PutInBank(newTalkRoutinesBank, lut_MapObjTalkData + (byte)npcSelected[i] * MapObjSize, Blob.FromSBytes(new sbyte[] { 0x00, (sbyte)dialogueID[i], 0x00, 0x00 }));
 
 					hintDialogues.Add(dialogueID[i], hintsList.First());
 					hintsList.RemoveRange(0, 1);

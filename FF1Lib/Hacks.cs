@@ -20,6 +20,17 @@ namespace FF1Lib
 		Size8,
 	}
 
+	public enum spellDataBytes
+	{
+		Accuracy,
+		Effect,
+		Element,
+		Target,
+		Routine,
+		GFX,
+		Palette,
+		Null
+	}
 	public partial class FF1Rom : NesRom
 	{
 		public const int Nop = 0xEA;
@@ -51,12 +62,12 @@ namespace FF1Lib
 
 		public void EnableEarlySarda()
 		{
-			PutInBank(0x0E, 0x9580 + (int)ObjectId.Sarda, Blob.FromHex("00"));
+			PutInBank(newTalkRoutinesBank, 0x9580 + (int)ObjectId.Sarda, Blob.FromHex("00"));
 		}
 
 		public void EnableEarlySage()
 		{
-			PutInBank(0x0E, 0x9580 + (int)ObjectId.CanoeSage, Blob.FromHex("00"));
+			PutInBank(newTalkRoutinesBank, 0x9580 + (int)ObjectId.CanoeSage, Blob.FromHex("00"));
 			InsertDialogs(0x2B, "The FIENDS are waking.\nTake this and go defeat\nthem!\n\n\nReceived #");
 		}
 
@@ -238,8 +249,8 @@ namespace FF1Lib
 			PutInBank(0x0F, 0x8BF0, Blob.FromHex("ADCE6BAA6A6A6AA8B90061C9FFF0068A09808D8A6C60"));
 
 			// Rewrite class promotion to not promote NONEs, See 0E_95AE_DoClassChange.asm
-			PutInBank(0x0E, 0x95AE, Blob.FromHex("A203BCD095B900613006186906990061CA10EFE65660"));
-			PutInBank(0x0E, 0x95D0, Blob.FromHex("C0804000")); // lut used by the above code
+			PutInBank(newTalkRoutinesBank, 0x95AE, Blob.FromHex("A203BCD095B900613006186906990061CA10EFE65660"));
+			PutInBank(newTalkRoutinesBank, 0x95D0, Blob.FromHex("C0804000")); // lut used by the above code
 
 			// Spell level up change to allow any class to gain spell charges, see 1B_8818_LvlUp_LevelUp.asm
 			PutInBank(0x1B, 0x88D7, Blob.FromHex("AE8E68A001B182A02848B184DD02899005684A4CFA88684A900948B184186901918468C8C030D0E14C1C89000000090909040400090909"));
@@ -507,7 +518,7 @@ namespace FF1Lib
 			// rewrite rando's GameOver routine to jump to a new section that will save the game data
 			PutInBank(0x1B, 0x801A, Blob.FromHex("4CF58F"));
 			// write new routine to save data at game over (the game will save when you clear the final textbox and not before)
-			PutInBank(0x1B, 0x8FF5, Blob.FromHex("20E38BA200BD0061C9FFF041BD0C619D0A61BD0D619D0B61BD28639D2063BD29639D2163BD2A639D2263BD2B639D2363BD2C639D2463BD2D639D2563BD2E639D2663BD2F639D2763A9009D01618A186940AAD0B1A56AC97FD006207B914CDC90C97ED01E207B91AD3F6229FE8D3F62AD406229FE8D4062AD416229FE8D41624CDC90C97DD009207B912090914CDC90C97CD006207B914CDC90C97AD006207B914CDC90C979D006207B914CDC90C978D006207B914CDC90C977D006207B914CDC90C956D006207B914CDC90C97BD018AD186209018D1862AD196229FE8D1962AD1A6229FE8D1A62AD0460D02EAD0060F04FAD0160CD0164D008AD0260CD0264F03FAD016038E9078D1060AD026038E9078D1160A9048D1460D026AD056038E9078D1060AD066038E9078D1160A9018D1460AD0060F00AA9988D0160A9A98D0260A200BD00609D0064BD00619D0065BD00629D0066BD00639D0067E8D0E5A9558DFE64A9AA8DFF64A9008DFD64A200187D00647D00657D00667D0067E8D0F149FF8DFD644C1D80A616BD0062090129FD9D0062600000000000000000A513186920C93CB00DAAC90CD004FE006060DE006060A513A467C96C901CAD1C6038ED0E038D1C60AD1D60ED0F038D1D60AD1E60E9008D1E6060C944B009BEE091A9009D006160BEF091A9009D00616018191A1B58595A5B98999A9BD8D9DADB1C1D1E1F5C5D5E5F9C9D9E9FDCDDDEDF"));
+			PutInBank(0x1B, 0x8FF5, Blob.FromHex("20E38BA200BD0061C9FFF041BD0C619D0A61BD0D619D0B61BD28639D2063BD29639D2163BD2A639D2263BD2B639D2363BD2C639D2463BD2D639D2563BD2E639D2663BD2F639D2763A9009D01618A186940AAD0B1A56AC97FD006207B914CDC90C97ED01E207B91AD3F6229FE8D3F62AD406229FE8D4062AD416229FE8D41624CDC90C97DD009207B912090914CDC90C97CD006207B914CDC90C97AD006207B914CDC90C979D006207B914CDC90C978D006207B914CDC90C977D006207B914CDC90C956D006207B914CDC90C97BD018AD186209018D1862AD196229FE8D1962AD1A6229FE8D1A62AD0460D02EAD0060F04FAD0160CD0164D008AD0260CD0264F03FAD016038E9078D1060AD026038E9078D1160A9048D1460D026AD056038E9078D1060AD066038E9078D1160A9018D1460AD0060F00AA9988D0160A9A98D0260A200BD00609D0064BD00619D0065BD00629D0066BD00639D0067E8D0E5A9558DFE64A9AA8DFF64A9008DFD64A200187D00647D00657D00667D0067E8D0F149FF8DFD644C1D80A676BD0062090129FD9D0062600000000000000000A513186920C93CB00DAAC90CD004FE006060DE006060A513A467C96C901CAD1C6038ED0E038D1C60AD1D60ED0F038D1D60AD1E60E9008D1E6060C944B009BEE091A9009D006160BEF091A9009D00616018191A1B58595A5B98999A9BD8D9DADB1C1D1E1F5C5D5E5F9C9D9E9FDCDDDEDF"));
 
 			// Don't reset on WarMech fight if it isn't a NPC
 			if (flags.WarMECHMode != WarMECHMode.Required && flags.WarMECHMode != WarMECHMode.Patrolling)
@@ -520,8 +531,8 @@ namespace FF1Lib
 
 		public void ShuffleAstos(Flags flags, MT19337 rng)
 		{
-			const int NpcTalkOffset = 0x390D3;
-			const int newTalk_AstosBank = 0x0E;
+			//const int NpcTalkOffset = 0x390D3;
+			const int newTalk_AstosBank = newTalkRoutinesBank;
 			const int NpcTalkSize = 2;
 			int Talk_Astos = newTalk.Talk_Astos[1] * 0x100 + newTalk.Talk_Astos[0];
 			var itemnames = ReadText(FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, 256);
@@ -538,17 +549,17 @@ namespace FF1Lib
 			if (newastos == ObjectId.Astos) return;
 
 			// If not get NPC talk routine, get NPC object
-			var talkscript = Get(NpcTalkOffset + (byte)newastos * NpcTalkSize, 2);
+			var talkscript = GetFromBank(newTalkRoutinesBank, lut_MapObjTalkJumpTbl + (byte)newastos * NpcTalkSize, 2);
 
 			// Switch astos to Talk_GiveItemOnItem;
-			Put(NpcTalkOffset + (byte)ObjectId.Astos * NpcTalkSize, newTalk.Talk_GiveItemOnItem);
+			PutInBank(newTalkRoutinesBank, lut_MapObjTalkJumpTbl + (byte)ObjectId.Astos * NpcTalkSize, newTalk.Talk_GiveItemOnItem);
 
 			// Swtich NPC to Astos
-			Put(NpcTalkOffset + (byte)newastos * NpcTalkSize, newTalk.Talk_Astos);
+			PutInBank(newTalkRoutinesBank, lut_MapObjTalkJumpTbl + (byte)newastos * NpcTalkSize, newTalk.Talk_Astos);
 
 			// Get items name
-			var newastositem = FormattedItemName((Item)Get(MapObjOffset + (byte)newastos * 4, 4)[3]);
-			var nwkingitem = FormattedItemName((Item)Get(MapObjOffset + (byte)ObjectId.Astos * 4, 4)[3]);
+			var newastositem = FormattedItemName((Item)GetFromBank(newTalkRoutinesBank, lut_MapObjTalkData + (byte)newastos * 4, 4)[3]);
+			var nwkingitem = FormattedItemName((Item)GetFromBank(newTalkRoutinesBank, lut_MapObjTalkData + (byte)ObjectId.Astos * 4, 4)[3]);
 
 			// Custom dialogs for Astos NPC and the Kindly Old King
 			List<(byte, string)> astosdialogs = new List<(byte, string)>
@@ -558,7 +569,7 @@ namespace FF1Lib
 				(0x00, ""),(0x00, ""),(0x00, ""),
 				(0x0C, "You found the HERB?\nCurses! The Elf Prince\nmust never awaken.\nOnly then shall I,\nAstos, become\nthe King of ALL Elves!"),
 				(0x0E, "Is this a dream?.. Are\nyou, the LIGHT WARRIORS?\nHA! Thank you for waking\nme! I am actually Astos,\nKing of ALL Elves! You\nwon't take my " + newastositem + "!"),
-				(0x12, "My CROWN! Oh, but it\ndoesn't go with this\noutfit at all. You keep\nit. But thanks! Here,\ntake this " + nwkingitem + " also!"),
+				(0x12, "My CROWN! Oh, but it\ndoesn't go with this\noutfit at all. You keep\nit. But thanks! Here,\ntake this also!\n\nReceived " + nwkingitem),
 				(0x14, "Oh, wonderful!\nNice work! Yes, this TNT\nis just what I need to\nblow open the vault.\nSoon more than\nthe " + newastositem + " will\nbelong to Astos,\nKing of Dark Dwarves!"),
 				(0x16, "ADAMANT!! Now let me\nmake this " + newastositem + "..\nAnd now that I have\nthis, you shall take a\nbeating from Astos,\nthe Dark Blacksmith!"),
 				(0x19, "You found my CRYSTAL and\nwant my " + newastositem + "? Oh!\nI can see!! And now, you\nwill see the wrath of\nAstos, the Dark Witch!"),
@@ -581,7 +592,7 @@ namespace FF1Lib
 			if (talkscript == newTalk.Talk_Titan || talkscript == newTalk.Talk_ElfDocUnne)
 			{
 				// Skip giving item for Titan, ElfDoc or Unne
-				PutInBank(newTalk_AstosBank, Talk_Astos + 13, Blob.FromHex("A4128414EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
+				PutInBank(newTalk_AstosBank, Talk_Astos + 13, Blob.FromHex("A4728474EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
 
 				// No need to restore item
 				if (flags.SaveGameWhenGameOver)
@@ -602,20 +613,20 @@ namespace FF1Lib
 				var newroutine =
 					"AD2D60" +  // LDA item_tail - Load Tail
 					"F030" +    // BEQ @Default 
-					"A416" +    // LDY tmp+6 - Load this object instead of Astos
+					"A476" +    // LDY tmp+6 - Load this object instead of Astos
 					"207F90" +  // JSR SetEventFlag (207F90)
 					"207392" +  // JSR HideThisMapObject
 					"A97D" +    // LDA #BTL_ASTOS
 					"20C590" +  // JSR TalkBattle
 					"20AE95" +  // JSR DoClassChange
-					"A512" +    // LDA Load dialog
+					"A572" +    // LDA Load dialog
 					"60";       // RTS
 
 				PutInBank(newTalk_AstosBank, Talk_Astos, Blob.FromHex(newroutine));
 
 				// DoClassChange reload the map to show the new class sprites, this break TalkBattle, so we stop it from reloading the map
 				// INC dlgflg_reentermap (E656) => NOPx2 (EAEA)
-				PutInBank(0x0E, 0x95AE + 20, Blob.FromHex("EAEA"));
+				PutInBank(newTalkRoutinesBank, 0x95AE + 20, Blob.FromHex("EAEA"));
 
 				// Modify GameOver routine for compatibility
 				if (flags.SaveGameWhenGameOver)
@@ -656,7 +667,7 @@ namespace FF1Lib
 		/// </summary>
 		public void EnableEarlyKing()
 		{
-			PutInBank(0x0E, 0x9580 + (int)ObjectId.King, Blob.FromHex("00"));
+			PutInBank(newTalkRoutinesBank, 0x9580 + (int)ObjectId.King, Blob.FromHex("00"));
 			InsertDialogs(0x02, "To aid you on your\nquest, please take this.\n\n\n\nReceived #");
 		}
 
@@ -686,7 +697,12 @@ namespace FF1Lib
 
 			// Put safeguard to prevent softlock if TNT is turned in (as it will remove the Canal)
 			if (!npcShuffleEnabled)
-				PutInBank(0x0E, 0x95D5 + (int)ObjectId.Nerrick * 4 + 3, new byte[] { (byte)Item.Cabin });
+				PutInBank(newTalkRoutinesBank, 0x95D5 + (int)ObjectId.Nerrick * 4 + 3, new byte[] { (byte)Item.Cabin });
+		}
+
+		public void EnableFreeCanoe()
+		{
+			Data[0x3012] = 0x01;
 		}
 
 		public void EnableCanalBridge()
@@ -929,9 +945,9 @@ namespace FF1Lib
 			PutInBank(0x1F, 0xC7CA, Blob.FromHex("B940B0"));
 
 			// New promotion routine to not bug out with already promoted classes and allow random promotion; works with Nones; see 0E_95AE_DoClassChange-2.asm
-			PutInBank(0x0E, 0x95AE, Blob.FromHex("A20020C595A24020C595A28020C595A2C020C595E65660BC00613006B9F09D9D006160"));
+			PutInBank(newTalkRoutinesBank, 0x95AE, Blob.FromHex("A20020C595A24020C595A28020C595A2C020C595E65660BC00613006B9F09D9D006160"));
 			// lut for standard promotion, can be modified or randomized
-			PutInBank(0x0E, 0x9DF0, Blob.FromHex("060708090A0B060708090A0B"));
+			PutInBank(newTalkRoutinesBank, 0x9DF0, Blob.FromHex("060708090A0B060708090A0B"));
 		}
 
 		public void EnableRandomPromotions(Flags flags, MT19337 rng)
@@ -955,7 +971,7 @@ namespace FF1Lib
 			}
 
 			// Insert randomized promotions
-			PutInBank(0x0E, 0x9DF0, Blob.FromSBytes(promotions.ToArray()));
+			PutInBank(newTalkRoutinesBank, 0x9DF0, Blob.FromSBytes(promotions.ToArray()));
 
 			// Change class names to spoil to what they randomly promote
 			if (flags.RandomPromotionsSpoilers ?? false)
@@ -1002,36 +1018,39 @@ namespace FF1Lib
 				case PoolSize.Size8: size = 8; sizebyte = Blob.FromHex("FF"); break;
 			}
 
-			List<sbyte> availableClasses = new List<sbyte>();
+			var mainClassList = new List<FF1Class>();
 
-			if ((flags.FIGHTER1 ?? false) && (flags.FIGHTER2 ?? false) && (flags.FIGHTER3 ?? false) && (flags.FIGHTER4 ?? false))
-				availableClasses.Add((sbyte)FF1Class.Fighter);
-			if ((flags.THIEF1 ?? false) && (flags.THIEF2 ?? false) && (flags.THIEF3 ?? false) && (flags.THIEF4 ?? false))
-				availableClasses.Add((sbyte)FF1Class.Thief);
-			if ((flags.BLACK_BELT1 ?? false) && (flags.BLACK_BELT2 ?? false) && (flags.BLACK_BELT3 ?? false) && (flags.BLACK_BELT4 ?? false))
-				availableClasses.Add((sbyte)FF1Class.BlackBelt);
-			if ((flags.RED_MAGE1 ?? false) && (flags.RED_MAGE2 ?? false) && (flags.RED_MAGE3 ?? false) && (flags.RED_MAGE4 ?? false))
-				availableClasses.Add((sbyte)FF1Class.RedMage);
-			if ((flags.WHITE_MAGE1 ?? false) && (flags.WHITE_MAGE2 ?? false) && (flags.WHITE_MAGE3 ?? false) && (flags.WHITE_MAGE4 ?? false))
-				availableClasses.Add((sbyte)FF1Class.WhiteMage);
-			if ((flags.BLACK_MAGE1 ?? false) && (flags.BLACK_MAGE2 ?? false) && (flags.BLACK_MAGE3 ?? false) && (flags.BLACK_MAGE4 ?? false))
-				availableClasses.Add((sbyte)FF1Class.BlackMage);
-			if ((flags.KNIGHT1 ?? false) && (flags.KNIGHT2 ?? false) && (flags.KNIGHT3 ?? false) && (flags.KNIGHT4 ?? false))
-				availableClasses.Add((sbyte)FF1Class.Knight);
-			if ((flags.NINJA1 ?? false) && (flags.NINJA2 ?? false) && (flags.NINJA3 ?? false) && (flags.NINJA4 ?? false))
-				availableClasses.Add((sbyte)FF1Class.Ninja);
-			if ((flags.MASTER1 ?? false) && (flags.MASTER2 ?? false) && (flags.MASTER3 ?? false) && (flags.MASTER4 ?? false))
-				availableClasses.Add((sbyte)FF1Class.Master);
-			if ((flags.RED_WIZ1 ?? false) && (flags.RED_WIZ2 ?? false) && (flags.RED_WIZ3 ?? false) && (flags.RED_WIZ4 ?? false))
-				availableClasses.Add((sbyte)FF1Class.RedWiz);
-			if ((flags.WHITE_WIZ1 ?? false) && (flags.WHITE_WIZ2 ?? false) && (flags.WHITE_WIZ3 ?? false) && (flags.WHITE_WIZ4 ?? false))
-				availableClasses.Add((sbyte)FF1Class.WhiteWiz);
-			if ((flags.BLACK_WIZ1 ?? false) && (flags.BLACK_WIZ2 ?? false) && (flags.BLACK_WIZ3 ?? false) && (flags.BLACK_WIZ4 ?? false))
-				availableClasses.Add((sbyte)FF1Class.BlackWiz);
+			int fiCount = ((bool)flags.FIGHTER1 ? 1 : 0) + ((bool)flags.FIGHTER2 ? 1 : 0) + ((bool)flags.FIGHTER3 ? 1 : 0) + ((bool)flags.FIGHTER4 ? 1 : 0);
+			int thCount = ((bool)flags.THIEF1 ? 1 : 0) + ((bool)flags.THIEF2 ? 1 : 0) + ((bool)flags.THIEF3 ? 1 : 0) + ((bool)flags.THIEF4 ? 1 : 0);
+			int bbCount = ((bool)flags.BLACK_BELT1 ? 1 : 0) + ((bool)flags.BLACK_BELT2 ? 1 : 0) + ((bool)flags.BLACK_BELT3 ? 1 : 0) + ((bool)flags.BLACK_BELT4 ? 1 : 0);
+			int rmCount = ((bool)flags.RED_MAGE1 ? 1 : 0) + ((bool)flags.RED_MAGE2 ? 1 : 0) + ((bool)flags.RED_MAGE3 ? 1 : 0) + ((bool)flags.RED_MAGE4 ? 1 : 0);
+			int wmCount = ((bool)flags.WHITE_MAGE1 ? 1 : 0) + ((bool)flags.WHITE_MAGE2 ? 1 : 0) + ((bool)flags.WHITE_MAGE3 ? 1 : 0) + ((bool)flags.WHITE_MAGE4 ? 1 : 0);
+			int bmCount = ((bool)flags.BLACK_MAGE1 ? 1 : 0) + ((bool)flags.BLACK_MAGE2 ? 1 : 0) + ((bool)flags.BLACK_MAGE3 ? 1 : 0) + ((bool)flags.BLACK_MAGE4 ? 1 : 0);
+			int knCount = ((bool)flags.KNIGHT1 ? 1 : 0) + ((bool)flags.KNIGHT2 ? 1 : 0) + ((bool)flags.KNIGHT3 ? 1 : 0) + ((bool)flags.KNIGHT4 ? 1 : 0);
+			int niCount = ((bool)flags.NINJA1 ? 1 : 0) + ((bool)flags.NINJA2 ? 1 : 0) + ((bool)flags.NINJA3 ? 1 : 0) + ((bool)flags.NINJA4 ? 1 : 0);
+			int maCount = ((bool)flags.MASTER1 ? 1 : 0) + ((bool)flags.MASTER2 ? 1 : 0) + ((bool)flags.MASTER3 ? 1 : 0) + ((bool)flags.MASTER4 ? 1 : 0);
+			int rwCount = ((bool)flags.RED_WIZ1 ? 1 : 0) + ((bool)flags.RED_WIZ2 ? 1 : 0) + ((bool)flags.RED_WIZ3 ? 1 : 0) + ((bool)flags.RED_WIZ4 ? 1 : 0);
+			int wwCount = ((bool)flags.WHITE_WIZ1 ? 1 : 0) + ((bool)flags.WHITE_WIZ2 ? 1 : 0) + ((bool)flags.WHITE_WIZ3 ? 1 : 0) + ((bool)flags.WHITE_WIZ4 ? 1 : 0);
+			int bwCount = ((bool)flags.BLACK_WIZ1 ? 1 : 0) + ((bool)flags.BLACK_WIZ2 ? 1 : 0) + ((bool)flags.BLACK_WIZ3 ? 1 : 0) + ((bool)flags.BLACK_WIZ4 ? 1 : 0);
+
+			if (fiCount > 1) mainClassList.Add(FF1Class.Fighter);
+			if (thCount > 1) mainClassList.Add(FF1Class.Thief);
+			if (bbCount > 1) mainClassList.Add(FF1Class.BlackBelt);
+			if (rmCount > 1) mainClassList.Add(FF1Class.RedMage);
+			if (wmCount > 1) mainClassList.Add(FF1Class.WhiteMage);
+			if (bmCount > 1) mainClassList.Add(FF1Class.BlackMage);
+			if (knCount > 1) mainClassList.Add(FF1Class.Knight);
+			if (niCount > 1) mainClassList.Add(FF1Class.Ninja);
+			if (maCount > 1) mainClassList.Add(FF1Class.Master);
+			if (rwCount > 1) mainClassList.Add(FF1Class.RedWiz);
+			if (wwCount > 1) mainClassList.Add(FF1Class.WhiteWiz);
+			if (bwCount > 1) mainClassList.Add(FF1Class.BlackWiz);
+
+			if (mainClassList.Count == 0) mainClassList = new List<FF1Class> { FF1Class.Fighter, FF1Class.Thief, FF1Class.BlackBelt, FF1Class.RedMage, FF1Class.WhiteMage, FF1Class.BlackMage };
 
 			Blob pool = Blob.FromHex("");
 			for (int i = 0; i < size; i++)
-				pool += Blob.FromSBytes(new List<sbyte> { availableClasses.PickRandom(rng) }.ToArray());
+				pool += Blob.FromSBytes(new List<sbyte> { (sbyte)mainClassList.PickRandom(rng) }.ToArray());
 
 			// Pool size : 4 0xF0; 5 0xF8; 6 0xFC; 7 0xFE; 8 0xFF)
 			PutInBank(0x1E, 0x8650, Blob.FromHex("00") + sizebyte + pool);
@@ -1069,7 +1088,7 @@ namespace FF1Lib
 			var keyNpc = new List<TargetNpc> {
 				new TargetNpc(ObjectId.Princess1, MapId.ConeriaCastle2F, (0x0D, 0x05), true, true, "I won't rest until\nthe Princess is rescued!\n\n..What? Me?"),
 				new TargetNpc(ObjectId.Matoya, MapId.MatoyasCave, (0x06,0x03), true, false, "I'm Matoya's apprentice!\n..She only needs me for\nreading her grimoires."),
-				new TargetNpc(ObjectId.None, MapId.Pravoka, (0,0), false, true, "Hello!"),
+				new TargetNpc(ObjectId.Bikke, MapId.Pravoka, (0,0), false, true, "It is an evil voyage.\nIf Captain Bikke has his\nway, I will never see\nhome again.\n\nYet I do not fear Kraken.\nI fear the wrath of God."),
 				new TargetNpc(ObjectId.ElfDoc, MapId.ElflandCastle, (0x07, 0x05), true, false, "I swore to find a cure\nfor the Prince's curse.\nIf only I could find\nthat elusive Astos.."),
 				new TargetNpc(ObjectId.Astos, MapId.NorthwestCastle, (0x11,0x07), true, true, "While the Crown is\nmissing, I can attest\nthat this is indeed\nthe REAL King of\nNorthwest Castle."),
 				new TargetNpc(ObjectId.Unne, MapId.Melmond, (0x1D, 0x02), false, true, "I'm also trying\nto discover the secret\nof Lefeinish!"),
@@ -1091,7 +1110,7 @@ namespace FF1Lib
 			var selectList = new List<FF1Class>();
 			var classList = new List<FF1Class>();
 
-			var totalKeyNPC = (bool)flags.ClassAsNpcFiends ? Math.Min(flags.ClassAsNpcCount, 12) : 0;
+			var totalKeyNPC = (bool)flags.ClassAsNpcKeyNPC ? Math.Min(flags.ClassAsNpcCount, 12) : 0;
 			var totalAllNPC = ((bool)flags.ClassAsNpcFiends ? 4 : 0) + totalKeyNPC;
 
 			// Select promoted or base classes list
@@ -1112,14 +1131,8 @@ namespace FF1Lib
 			}
 
 			// Get all NPC scripts and script values 
-			var npcScript = new List<Blob>();
-			var npcScriptValue = new List<Blob>();
-
-			for (int i = 0; i < 0xD0; i++)
-			{
-				npcScriptValue.Add(Get(MapObjOffset + i * 4, 4));
-				npcScript.Add(Get(0x390D3 + i * 2, 2));
-			}
+			var npcScriptValue = GetFromBank(newTalkRoutinesBank, lut_MapObjTalkData, 0xD0 * 4).Chunk(4);
+			var npcScript = GetFromBank(newTalkRoutinesBank, lut_MapObjTalkJumpTbl, 0xD0 * 2).Chunk(2);
 
 			Dictionary<int, string> newDialogs = new Dictionary<int, string>();
 
@@ -1139,15 +1152,16 @@ namespace FF1Lib
 					bool targetStationary = true;
 
 					// Bikke, Lefein and CanoeSage use local NPCs
-					if (npc.linkedNPC == ObjectId.None)
+					if (npc.linkedNPC == ObjectId.Bikke)
 					{
-						targetNpc = ObjectId.PravokaWoman;
+						targetNpc = ObjectId.PravokaMan2;
 						originMap = MapId.Pravoka;
 						var tempNpc = FindNpc(originMap, targetNpc);
+						var bikkeNpc = FindNpc(originMap, ObjectId.Bikke);
 						targetIndex = tempNpc.Index;
-						targetCoord = tempNpc.Coord;
+						targetCoord = (bikkeNpc.Coord.x-1, bikkeNpc.Coord.y-1);
 						targetInRoom = tempNpc.InRoom;
-						targetStationary = tempNpc.Stationary;
+						targetStationary = true;
 					}
 					else if (npc.linkedNPC == ObjectId.Unne && npc.targetMap == MapId.Lefein)
 					{
@@ -1229,18 +1243,582 @@ namespace FF1Lib
 			InsertDialogs(newDialogs);
 
 			// Insert the updated talk scripts
-			for (int i = 0; i < 0xD0; i++)
-			{
-				PutInBank(0x0E, 0x90D3 + i * 2, npcScript[i]);
-				PutInBank(0x0E, 0x95D5 + i * 4, npcScriptValue[i]);
-			}
+			PutInBank(newTalkRoutinesBank, lut_MapObjTalkData, npcScriptValue.SelectMany(data => data.ToBytes()).ToArray());
+			PutInBank(newTalkRoutinesBank, lut_MapObjTalkJumpTbl, npcScript.SelectMany(script => script.ToBytes()).ToArray());
 
 			// New talk routine to add class to 4th slot
-			PutInBank(0x0E, 0x9520, Blob.FromHex("A410F0052079909032A51148A2C0A5139D0061A9009D26619D01619D0B619D0D6120669F20509FA00E207990900320C59520829FA4162073926860A51260"));
+			PutInBank(newTalkRoutinesBank, 0x9520, Blob.FromHex("A470F0052079909032A57148A2C0A5739D0061A9009D26619D01619D0B619D0D6120669F20509FA00E207990900320C59520829FA4762073926860A57260"));
 
 			// Routines to switch the class (clear stats, equipment, new stats, levelup)
-			PutInBank(0x0E, 0x9F50, Blob.FromHex("A90E48A9FE48A90648A9C748A98248A2C0A9004C03FEA018B9C061297F99C061C8C01FD0F3A000A90099C063C8C02FD0F860A98748A9A948A9038510A91B4C03FE"));
+			PutInBank(newTalkRoutinesBank, 0x9F50, Blob.FromHex("A91148A9FE48A90648A9C748A98248A2C0A9004C03FEA018B9C061297F99C061C8C020D0F3A000A90099C063C8C02FD0F860A91148A9FE48A90648A98748A9A948A9038510A91B4C03FE"));
+		}
+		public void ShopUpgrade()
+		{
+			// Modify DrawShopPartySprites to use new DrawOBSprite routines, see 0E_9500_ShopUpgrade.asm
+			PutInBank(0x0E, 0xAA04, Blob.FromHex("205795"));
+			PutInBank(0x0E, 0xAA0D, Blob.FromHex("205795"));
+			PutInBank(0x0E, 0xAA16, Blob.FromHex("205795"));
+			PutInBank(0x0E, 0xAA23, Blob.FromHex("4C5795"));
 
+			// Insert new routines in Common Shop Loop 
+			PutInBank(0x0E, 0xA931, Blob.FromHex("200095"));
+
+			// Extra routines for Shops info, see 0E_9500_ShopUpgrade.asm
+			PutInBank(0x0E, 0x9500, Blob.FromHex("A564C928F038A566C904B035C902B017A20020D495A24020D495A28020D495A2C020D4954C4195A200208B95A240208B95A280208B95A2C0208B954C41952047952027A74C2696A9008DD66A8DDA6A8DDE6A8DE26A6060AA4A8510BD0061A8B9A4EC8511BD0161F011C901F0E9C903F004A9038511A9144C8395A5104A4A4AAABDD66A18651085104C24EC8A8515BD00610AAABD00AD8510BD01AD8511A662BD000338E9B0851229078513A5124A4A4AA8B1108514A613BD38AC2514F005A9004CC595A90E8510A5154A4A4A4AAAA5109DD66A608A8515BD00610AAABDB9BC8512BDBABC8513A662BD000338C944B01638E91C0AAABD50BF25128510BD51BF251305104C1896E9440AAABDA0BF25128510BDA1BF25130510C9019005A9004CC595A90E4CC595A522F073A564C928F06D208D96A90E85572063E0A53E8512A53F8513A662BD0003380AAAB00DBD0093853EBD0193853F4C6396BD0094853EBD0194853FA9118557A90E85582036DEA512853EA513853FA90085222027A7A520C561F0F7A9008522208D964C46E1A9018538A9128539A90E853CA90A853D60"));
+
+			const int weaponOffset = 0x1C; // $28 entries
+			const int armorOffset = 0x44; // $28 entries
+			const int spellOffset = 0xB0; // $40 entries
+
+			var weaponsData = new List<Weapon>();
+			var armorsData = new List<Armor>();
+
+			for (int i = 0; i < WeaponCount; i++)
+				weaponsData.Add(new Weapon(i, this));
+
+			for (int i = 0; i < ArmorCount; i++)
+				armorsData.Add(new Armor(i, this));
+
+			var spellsData = GetSpells();
+
+			// 12 char per row, 5 rows
+			var descriptionsList = new List<string>();
+
+			for (int i = 0; i < weaponOffset; i++)
+				descriptionsList.Add("");
+
+			for (int i = weaponOffset; i < armorOffset; i++)
+				descriptionsList.Add(FormattedItemName((Item)i) + "\n ATK +" + weaponsData[i - weaponOffset].Damage + "\n HIT +" + weaponsData[i - weaponOffset].HitBonus + "\n CRT +" + weaponsData[i - weaponOffset].Crit);
+
+			for (int i = armorOffset; i < (armorOffset + 0x28); i++)
+				descriptionsList.Add(FormattedItemName((Item)i) + "\n DEF +" + armorsData[i - armorOffset].Absorb + "\n EVA -" + armorsData[i - armorOffset].Weight);
+
+			for (int i = (armorOffset + 0x28); i < spellOffset; i++)
+				descriptionsList.Add("");
+
+			for (int i = spellOffset; i < spellOffset + 0x40; i++)
+				descriptionsList.Add(FormattedItemName((Item)i, false) + " " + GenerateSpellDescription(i, spellsData[i - spellOffset].Data));
+
+			// Convert all dialogs to bytes
+			int offset = 0xA000;
+			var pointers = new ushort[descriptionsList.Count()];
+			Blob generatedText = Blob.FromHex("");
+
+			for (int i = 0; i < descriptionsList.Count(); i++)
+			{
+				var blob = FF1Text.TextToBytes(descriptionsList[i], useDTE: true);
+				generatedText += blob;
+
+				pointers[i] = (ushort)(offset);
+				offset += blob.Length;
+			}
+
+			// Check if dialogs are too long
+			if (generatedText.Length > 0x2000)
+				throw new Exception("Dialogs maximum length exceeded.");
+
+			// Insert dialogs
+			PutInBank(0x11, 0xA000, generatedText);
+			PutInBank(0x0E, 0x9300, Blob.FromUShorts(pointers));
+
+		}
+		public string GenerateSpellDescription(int spellid, Blob spelldata)
+		{
+			var target = new List<(int, string)> { (0x01, "All Enemies"), (0x02, "Single Enemy"), (0x04, "Caster"), (0x08, "All Allies"), (0x10, "One Ally") };
+			var element = new List<(int, string, string)> { (0x00, "None", "None"), (0x01, "Status", "Stat"), (0x02, "Poison", "Pois"), (0x04, "Time", "Time"), (0x08, "Death", "Deat"), (0x10, "Fire", "Fire"), (0x20, "Ice", "Ice"), (0x40, "Lightng", "Lit."), (0x80, "Earth", "Eart") };
+			var status = new List<(int, string, string)> { (0x01, "Dead", "Dead"), (0x02, "Petrified", "Ptr."), (0x04, "Poisoned", "Pois"), (0x08, "Blind", "Blnd"), (0x10, "Paralyzed", "Para"), (0x20, "Asleep", "Slep"), (0x40, "Silenced", "Mute"), (0x80, "Confused", "Conf") };
+			var routine = new List<(int, string)> { (0x00, "Null"), (0x01, "Damage"), (0x02, "Dmg Undead"), (0x03, "Inflict Stat"), (0x04, "Halve Hits"), (0x05, "Reduce Moral"), (0x06, "Recover HP"), (0x07, "Recover HP"), (0x08, "Recover Stat"), (0x09, "Raise Def."), (0x0A, "Resist Elem."), (0x0C, "Double Hits"), (0x0D, "Raise Attack"), (0x0E, "Reduce Evade"), (0x0F, "Full Recover"), (0x10, "Raise Evade"), (0x11, "Void Resist."), (0x12, "PW Status") };
+			var oobroutine = new List<(int, string)> { (0x00, "Recover HP"), (0x01, "Recover HP"), (0x02, "Recover HP"), (0x03, "Full Recover"), (0x04, "Recover HP"), (0x05, "Recover HP"), (0x06, "Recover HP"), (0x07, "Heal Poison"), (0x08, "Revive"), (0x09, "Full Revive"), (0x0A, "Go one floor\n back"), (0x0B, "Heal Stoned"), (0x0C, "Teleport out\n of dungeons") };
+			var shortDelimiter = new List<string> { "\n ", ", ", "\n ", ", ", "\n ", ", " };
+			var oobSpells = new List<int>();
+
+			for(int i = 0; i < oobroutine.Count; i++)
+				oobSpells.Add(Get(MagicOutOfBattleOffset + MagicOutOfBattleSize * i, 1)[0]);
+
+			var routineDesc = "";
+			var activeElementStatus = new List<(int, string, string)>();
+
+			switch ((int)spelldata[(int)spellDataBytes.Routine])
+			{
+				case 0:
+					routineDesc = oobroutine.Find(x => x.Item1 == oobSpells.FindIndex(x => x == spellid)).Item2;
+					break;
+				case int n when (n >= 0x01 && n <= 0x02):
+					routineDesc = routine.Find(x => x.Item1 == spelldata[(int)spellDataBytes.Routine]).Item2 + "\n " + spelldata[(int)spellDataBytes.Effect] * 2 + "-" + spelldata[(int)spellDataBytes.Effect] * 4 + " DMG";
+					break;
+				case int n when (n == 0x03 || n == 0x08 || n == 0x12):
+					var tempStatus = "";
+
+					foreach ((int, string, string) effect in status)
+						if ((effect.Item1 & spelldata[(int)spellDataBytes.Effect]) > 0)
+							activeElementStatus.Add(effect);
+
+					if (activeElementStatus.Count == 0)
+						tempStatus = "\n None";
+					else if (activeElementStatus.Count <= 3)
+						tempStatus = string.Join(string.Empty, activeElementStatus.SelectMany(x => "\n " + x.Item2));
+					else if (activeElementStatus.Count <= 6)
+					{
+						for (int i = 0; i < activeElementStatus.Count; i++)
+							tempStatus += shortDelimiter[i] + activeElementStatus[i].Item3;
+					}
+					else if (activeElementStatus.Count == 7)
+					{
+						tempStatus = "\n All, except";
+						foreach ((int, string, string) effect in status)
+							tempStatus += (effect.Item1 & spelldata[(int)spellDataBytes.Effect]) == 0 ? ("\n " + effect.Item2) : "";
+					}
+					else
+						tempStatus = "\n All";
+
+					routineDesc = routine.Find(x => x.Item1 == spelldata[(int)spellDataBytes.Routine]).Item2 + tempStatus;
+					break;
+				case int n when (n == 0x04 || n == 0x0C || n == 0x0F || n == 0x11):
+					routineDesc = routine.Find(x => x.Item1 == spelldata[(int)spellDataBytes.Routine]).Item2;
+					break;
+				case int n when (n == 0x05 || n == 0x0E):
+					routineDesc = routine.Find(x => x.Item1 == spelldata[(int)spellDataBytes.Routine]).Item2 + "\n -" + spelldata[(int)spellDataBytes.Effect] + " pts";
+					break;
+				case int n when (n >= 0x06 && n <= 0x07):
+					routineDesc = routine.Find(x => x.Item1 == spelldata[(int)spellDataBytes.Routine]).Item2 + "\n " + spelldata[(int)spellDataBytes.Effect] + "-" + spelldata[(int)spellDataBytes.Effect] * 2 + " HP";
+					break;
+				case int n when (n == 0x09 || n == 0x10):
+					routineDesc = routine.Find(x => x.Item1 == spelldata[(int)spellDataBytes.Routine]).Item2 + "\n +" + spelldata[(int)spellDataBytes.Effect] + " pts";
+					break;
+				case int n when (n == 0x0A):
+					var temp = "";
+
+					foreach ((int, string, string) elem in element)
+						if((elem.Item1 & spelldata[(int)spellDataBytes.Effect]) > 0)
+							activeElementStatus.Add(elem);
+
+					if (activeElementStatus.Count == 0)
+						temp = "\n None";
+					else if (activeElementStatus.Count <= 3)
+						temp = string.Join(string.Empty, activeElementStatus.SelectMany(x => "\n " + x.Item2));
+					else if (activeElementStatus.Count <= 6)
+					{ 
+						for(int i = 0; i < activeElementStatus.Count; i++)
+							temp += shortDelimiter[i] + activeElementStatus[i].Item3;
+					}
+					else if (activeElementStatus.Count == 7)
+					{
+						temp = "\n All, except";
+						foreach ((int, string, string) elem in element)
+							temp += (elem.Item1 & spelldata[(int)spellDataBytes.Effect]) == 0 ? ("\n " + elem.Item2) : "";
+					}
+					else
+						temp = "\n All";
+
+					routineDesc = routine.Find(x => x.Item1 == spelldata[(int)spellDataBytes.Routine]).Item2 + temp;
+					break;
+				case int n when (n == 0x0D):
+					routineDesc = routine.Find(x => x.Item1 == spelldata[(int)spellDataBytes.Routine]).Item2 + "\n +" + spelldata[(int)spellDataBytes.Effect] + " ATK\n +" + spelldata[(int)spellDataBytes.Accuracy] + " HIT";
+					break;
+			}
+
+			var elementString = (spelldata[(int)spellDataBytes.Element] == 0x40 ? "" : " ") + element.Find(x => x.Item1 == spelldata[(int)spellDataBytes.Element]).Item2;
+			var spellstring = elementString + "\n" + target.Find(x => x.Item1 == spelldata[(int)spellDataBytes.Target]).Item2 + "\n\n" + routineDesc;
+			return spellstring;
+		}
+		public void Spooky(MT19337 rng, Flags flags)
+		{
+			const byte WarMECHEncounter = 0x56;
+			const byte bWarMECHEncounter = 0xFD;
+			const byte PhantomEncounter = 0x46;
+			const byte newPhantomEncounter = 0x58;
+			const byte FiendsEncounter = 0x77;
+
+			byte Lich1Encounter = 0x7A;
+			const byte Lich2Encounter = 0x73;
+			const byte ChaosEncounter = 0x7B;
+			const byte VampEncounter = 0x7C;
+
+			const byte singleVamp = 0xFC;
+			const byte singleZombie = 0x04;
+			const byte singleGhost = 0x46;
+			const byte singleGeist = 0x08;
+			const byte singleZomBull = 0xB2;
+			const byte singleZombieD = 0x4B;
+
+			var zombieDialog = new List<byte> { 0x32, 0x33, 0x34, 0x36 };
+
+			Dictionary<int, string> evilDialogs = new Dictionary<int, string>();
+
+			var encounterData = Get(FormationsOffset, FormationCount * FormationSize).Chunk(FormationSize);
+
+			// Replacement WarMech
+			encounterData[bWarMECHEncounter - 0x80][GFXOffset] = 0x0E;
+			encounterData[bWarMECHEncounter - 0x80][IDsOffset + 1] = 0x60;      // Chaos
+			encounterData[bWarMECHEncounter - 0x80][PalettesOffset + 1] = 0x2F;
+			encounterData[bWarMECHEncounter - 0x80][PaletteAsignmentOffset] = 0x73;
+			encounterData[bWarMECHEncounter - 0x80][QuantityBOffset + 0] = 0x00;
+			encounterData[bWarMECHEncounter - 0x80][QuantityBOffset + 1] = 0x11;
+
+			// Single Vampire / WizVamp
+			encounterData[VampEncounter][GFXOffset] = 0x00;          // Garland Garland Garland N/A
+			encounterData[VampEncounter][IDsOffset + 0] = 0x3D;      // Garland
+			encounterData[VampEncounter][IDsOffset + 1] = 0x3C;      // Chaos
+			encounterData[VampEncounter][QuantityOffset + 0] = 0x11;
+			encounterData[VampEncounter][QuantityOffset + 1] = 0x00;
+			encounterData[VampEncounter][PalettesOffset + 0] = 0x20;
+			encounterData[VampEncounter][PalettesOffset + 1] = 0x1F;
+			encounterData[VampEncounter][PaletteAsignmentOffset] = 0x73;
+			encounterData[VampEncounter][QuantityBOffset + 0] = 0x00;
+			encounterData[VampEncounter][QuantityBOffset + 1] = 0x11;
+
+			// Single Zombie
+			encounterData[singleZombie][QuantityOffset + 0] = 0x11;
+			encounterData[singleZombie][PaletteAsignmentOffset] |= 0x01;
+
+			// Single Ghost
+			encounterData[singleGhost][QuantityOffset + 0] = 0x11;
+			encounterData[singleGhost][QuantityOffset + 1] = 0x00;
+			encounterData[singleGhost][PaletteAsignmentOffset] |= 0x01;
+
+			// Single Geist
+			encounterData[singleGeist][QuantityOffset + 0] = 0x00;
+			encounterData[singleGeist][QuantityOffset + 1] = 0x11;
+			encounterData[singleGeist][PaletteAsignmentOffset] |= 0x01;
+
+			// Single zomBull
+			encounterData[singleZomBull - 0x80][QuantityBOffset + 0] = 0x11;
+			encounterData[singleZomBull - 0x80][QuantityBOffset + 1] = 0x00;
+			encounterData[singleZomBull - 0x80][PaletteAsignmentOffset] |= 0x02;
+
+			// Single zombieD
+			encounterData[singleZombieD][QuantityOffset + 0] = 0x11;
+			encounterData[singleZombieD][PaletteAsignmentOffset] |= 0x01;
+
+			// Bahamut is Phantom
+			encounterData[newPhantomEncounter][GFXOffset] = 0x77;          // Garland Garland Garland N/A
+			encounterData[newPhantomEncounter][IDsOffset + 1] = 0x33;      // Chaos
+			encounterData[newPhantomEncounter][PalettesOffset + 1] = 0x16;
+			encounterData[newPhantomEncounter][QuantityOffset + 0] = 0x00;
+			encounterData[newPhantomEncounter][QuantityOffset + 1] = 0x11;
+			encounterData[newPhantomEncounter][PaletteAsignmentOffset] |= 0x41;
+
+			// Phantom is Lich1
+			for (int i = 0; i < 4; i++)
+			{
+				if (encounterData[FiendsEncounter + i][IDsOffset + 0] == 0x77)
+					Lich1Encounter = (byte)(FiendsEncounter + i);
+			}
+
+			encounterData[Lich1Encounter][TypeOffset] = 0x24;
+			encounterData[Lich1Encounter][GFXOffset] = 0x03;
+			encounterData[Lich1Encounter][QuantityOffset + 0] = 0x11;
+			encounterData[Lich1Encounter][PalettesOffset + 0] = 0x16;
+
+			// Phantom is Lich2
+			encounterData[Lich2Encounter][TypeOffset] = 0x24;
+			encounterData[Lich2Encounter][GFXOffset] = 0x03;
+			encounterData[Lich2Encounter][QuantityOffset + 0] = 0x11;
+			encounterData[Lich2Encounter][PalettesOffset + 0] = 0x16;
+
+			// Lich is Chaos
+			encounterData[ChaosEncounter][TypeOffset] = 0x3D;
+			encounterData[ChaosEncounter][GFXOffset] = 0x01;
+			encounterData[ChaosEncounter][QuantityOffset + 0] = 0x11;
+			encounterData[ChaosEncounter][PalettesOffset + 0] = 0x36;
+			encounterData[ChaosEncounter][PalettesOffset + 1] = 0x37;
+
+			// Lich is Warmech
+			encounterData[WarMECHEncounter][TypeOffset] = 0x3D;
+			encounterData[WarMECHEncounter][GFXOffset] = 0x01;
+			encounterData[WarMECHEncounter][QuantityOffset + 0] = 0x11;
+			encounterData[WarMECHEncounter][PalettesOffset + 0] = 0x07;
+			encounterData[WarMECHEncounter][PalettesOffset + 1] = 0x07;
+			encounterData[WarMECHEncounter][QuantityBOffset + 0] = 0x11;
+			encounterData[WarMECHEncounter][QuantityBOffset + 1] = 0x00;
+			encounterData[WarMECHEncounter][PaletteAsignmentOffset] |= 0x02;
+
+			Put(FormationsOffset, encounterData.SelectMany(encounterData => encounterData.ToBytes()).ToArray());
+
+
+			if (Data[0x0FAD] == PhantomEncounter)
+				Data[0x0FAD] = newPhantomEncounter;
+
+			// Switch WarMechEncounter B formation to not get it in Sky
+			var FormationsLists = Get(ZoneFormationsOffset, ZoneFormationsSize * ZoneCount);
+
+			for (int i = 0; i < ZoneFormationsSize * ZoneCount; i++)
+			{
+				if (FormationsLists[i] == (WarMECHEncounter + 0x80))
+					FormationsLists[i] = 0xAF;
+
+				if (FormationsLists[i] == newPhantomEncounter)
+					FormationsLists[i] = newPhantomEncounter + 0x80;
+			}
+			Put(ZoneFormationsOffset, FormationsLists);
+
+			// Make Chaos and WarMech Undead, Phantom a Dragon
+			var statsEnemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
+			statsEnemies[0x7F][0x10] |= 0x08; // Chaos
+			statsEnemies[0x76][0x10] |= 0x08; // WarMech
+			statsEnemies[0x33][0x10] |= 0x02; // Phantom
+			Put(EnemyOffset, statsEnemies.SelectMany(enemy => enemy.ToBytes()).ToArray());
+
+			//Update enemies names
+			var enemyText = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
+
+			enemyText[0x33] = "DRACLICH"; //Phantom > to DrakLich?
+			enemyText[118] = "LICH?"; // WarMech > Lich?
+			enemyText[119] = "PHANTOM"; // Lich1 > Phantom
+			enemyText[120] = ""; // Lich2 > Phantom
+			enemyText[127] = "LICH"; // Chaos > Lich
+			WriteText(enemyText, EnemyTextPointerOffset, EnemyTextPointerBase, EnemyTextOffset);
+
+			var lich2name = Get(EnemyTextPointerOffset + 119 * 2, 2); // Lich2 point to Phantom1
+			Put(EnemyTextPointerOffset + 120 * 2, lich2name);
+
+			// Scale Undeads
+			ScaleSingleEnemyStats(0x15, 125, 125, false, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // Bone
+			ScaleSingleEnemyStats(0x16, 125, 125, false, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // R.Bone
+			ScaleSingleEnemyStats(0x24, 125, 125, false, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // ZomBull
+			ScaleSingleEnemyStats(0x27, 125, 125, false, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // Shadow
+			ScaleSingleEnemyStats(0x28, 125, 125, false, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // Image
+			ScaleSingleEnemyStats(0x29, 125, 125, false, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // Wraith
+			ScaleSingleEnemyStats(0x2A, 125, 125, false, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // Ghost
+			ScaleSingleEnemyStats(0x2B, 125, 125, false, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // Zombie
+			ScaleSingleEnemyStats(0x2C, 125, 125, false, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // Ghoul
+			ScaleSingleEnemyStats(0x2D, 125, 125, false, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // Geist
+			ScaleSingleEnemyStats(0x2E, 125, 125, false, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // Specter
+			ScaleSingleEnemyStats(0x33, 125, 125, false, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // Phantom
+			ScaleSingleEnemyStats(0x3C, 125, 125, false, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // Vampire
+			ScaleSingleEnemyStats(0x3D, 125, 125, false, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // WzVampire
+			ScaleSingleEnemyStats(0x44, 125, 125, false, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // Zombie D
+			ScaleSingleEnemyStats(0x4F, 125, 125, false, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // Mummy
+			ScaleSingleEnemyStats(0x50, 125, 125, false, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // WzMummy
+			ScaleSingleEnemyStats(0x77, 120, 120, false, false, null, false, 120, 120, GetEvadeIntFromFlag(flags.EvadeCap)); // Lich1
+			ScaleSingleEnemyStats(0x78, 120, 120, false, false, null, false, 120, 120, GetEvadeIntFromFlag(flags.EvadeCap)); // Lich2
+			ScaleSingleEnemyStats(0x7F, 110, 110, false, false, null, false, 110, 110, GetEvadeIntFromFlag(flags.EvadeCap)); // Chaos
+
+			// Intro
+			Blob intro = FF1Text.TextToStory(new string[]
+			{
+				"I was flipping through the", "",
+				"Book of Death when I thought", "",
+				"how marvelous it would be to", "",
+				"be a necromancer.", "",
+				"How fantastic.", "",
+				"To go beyond human.", "",
+				"A living corpse. An undead.", "",
+				"I am damned! I am evil!", "",
+				"I MAIM AND KILL.", "",
+				"I AM A BEAST OF BRUTAL WILL.", "",
+				"I AM DEATH..", "", "",
+				"I. AM. LICH."
+			});
+			System.Diagnostics.Debug.Assert(intro.Length <= 208);
+			Put(0x37F20, intro);
+
+			// Get all NPC scripts and script values to update them
+			var npcScriptValue = GetFromBank(newTalkRoutinesBank, lut_MapObjTalkData, 0xD0 * 4).Chunk(4);
+			var npcScript = GetFromBank(newTalkRoutinesBank, lut_MapObjTalkJumpTbl, 0xD0 * 2).Chunk(2);
+
+			var validTalk = new List<Blob> { newTalk.Talk_norm, newTalk.Talk_GoBridge, newTalk.Talk_ifearthfire, newTalk.Talk_ifearthvamp, newTalk.Talk_ifevent, newTalk.Talk_ifitem, newTalk.Talk_ifkeytnt, newTalk.Talk_ifvis, newTalk.Talk_Invis, newTalk.Talk_4Orb };
+			var invalidZombie = new List<ObjectId> { ObjectId.Bat, ObjectId.GaiaBroom, ObjectId.MatoyaBroom1, ObjectId.MatoyaBroom2, ObjectId.MatoyaBroom3, ObjectId.MatoyaBroom4, ObjectId.MirageRobot1, ObjectId.MirageRobot2, ObjectId.MirageRobot3, ObjectId.SkyRobot, ObjectId.LutePlate, ObjectId.RodPlate };
+			var validZombie = new List<ObjectId>();
+
+			if (flags.HintsVillage ?? false)
+				invalidZombie.AddRange(new List<ObjectId> { ObjectId.ConeriaOldMan, ObjectId.PravokaOldMan, ObjectId.ElflandScholar1, ObjectId.MelmondOldMan2, ObjectId.CrescentSage11, ObjectId.OnracOldMan2, ObjectId.GaiaWitch, ObjectId.LefeinMan12 });
+
+			if (flags.HintsDungeon ?? false)
+				invalidZombie.AddRange(new List<ObjectId> { ObjectId.OnracPunk2, ObjectId.DwarfcaveDwarf4, ObjectId.CardiaDragon2, ObjectId.SkyRobot, ObjectId.Mermaid3 });
+
+			// Change base NPCs' scripts to Talk_fight
+			for (int i = 0; i < 0xD0; i++)
+			{
+				if (validTalk.Contains(npcScript[i]) && !(invalidZombie.Contains((ObjectId)i)))
+				{
+					npcScript[i] = newTalk.Talk_fight;
+					if ((i >= 0x85 && i <= 0x90) || i == 0x9B)
+						npcScriptValue[i][3] = singleZombieD;
+					else
+						npcScriptValue[i][3] = singleZombie;
+
+					npcScriptValue[i][1] = zombieDialog.PickRandom(rng);
+					validZombie.Add((ObjectId)i);
+				}
+			}
+
+			// Update Garland's script
+			npcScript[(int)ObjectId.Garland] = newTalk.Talk_CoOGuy;
+
+			// Change dialogues
+			evilDialogs.Add(0x32, "Braaaaain!");
+			evilDialogs.Add(0x33, "Barf!");
+			evilDialogs.Add(0x34, "Uaaaaaargh!");
+			evilDialogs.Add(0x36, "Groaaarn!");
+
+			evilDialogs.Add(0x04, "What the hell!?\nThat princess is crazy,\nshe tried to bite me!\n\nThat's it. Screw that.\nI'm going home.");
+
+			evilDialogs.Add(0x02, "What is going on!? My\nguard tried to kill me!\nUgh.. this is a deep\nwound.. I don't feel so\nwell..\nGwooorrrgl!\n\nReceived #");
+			npcScriptValue[(int)ObjectId.King][1] = singleZombie;
+
+			evilDialogs.Add(0x06, "So, you are.. the..\nLIGHTarrgaar..\nWarglb..\n\nBraaaain..\n\nReceived #");
+			npcScriptValue[(int)ObjectId.Princess2][1] = singleZombie;
+
+			evilDialogs.Add(0x08, "Aaaaarrr! The LIGHT\nWARRIORS have been\ncursed too!\n\nGet 'em, boys!");
+			evilDialogs.Add(0x09, "Okay then, guess I'll go\nto the pub, have a nice\ncold pint, and wait for\nall this to blow over.\n\nReceived #");
+
+			evilDialogs.Add(0x0E, "At last I wake up from\nmy eternal slumber.\nCome, LIGHT WARRIORS,\nembrace the darkness,\njoin me in death..\n\nReceived #");
+			npcScriptValue[(int)ObjectId.ElfPrince][1] = singleVamp;
+
+			evilDialogs.Add(0x0C, "Yes, yes, the master\nwill be pleased. Let's\nclean this place up\nbefore he wakes.\nStarting with you!");
+			npcScriptValue[(int)ObjectId.ElfDoc][1] = singleGeist;
+
+			if (npcScript[(int)ObjectId.Astos] != newTalk.Talk_Astos)
+			{
+				evilDialogs.Add(0x12, "Did you ever dance with\nthe devil in the pale\nmoonlight?\n\nReceived #");
+				npcScriptValue[(int)ObjectId.Astos][1] = singleVamp;
+			}
+
+			evilDialogs.Add(0x13, "The world is going to\nhell, but this won't\nstop me from digging\nmy canal!");
+			evilDialogs.Add(0x14, "Excellent! Finally,\nnow Lich's undead army\ncan flow through the\nrest of the world!\n\nReceived #");
+			npcScriptValue[(int)ObjectId.Nerrick][1] = singleVamp;
+
+			evilDialogs.Add(0x15, "I never thought I'd\nhave to forge the\nweapon that would slay\nmy brothers. Bring me\nADAMANT, quick!");
+			evilDialogs.Add(0x16, "You were too slow,\nLIGHT WARRIORS. You have\nforsaken me!\nJoin my damned soul in\nthe afterworld!\n\nReceived #");
+			npcScriptValue[(int)ObjectId.Smith][1] = singleGhost;
+
+			evilDialogs.Add(0x17, "Pfah! Everyone else can\nrot in Hell for all\nI care, I'm  perfectly\nsafe here!");
+			evilDialogs.Add(0x19, "SCRIIIIIIIIIIIIIIIIIIII!\n\nReceived #");
+			npcScriptValue[(int)ObjectId.Matoya][1] = singleGeist;
+
+			evilDialogs.Add(0x1C, "Now, listen to me, a\nbasic word from\nLeifeinish is Lu..\nHack! Cough! Sorry,\nLu..lu..paaaargh!");
+			npcScriptValue[(int)ObjectId.Unne][1] = singleGeist;
+
+			evilDialogs.Add(0x1D, "Ah, humans who wish to\npay me tribute. What?\nYou miserable little\npile of secrets!\nEnough talk! Have at you!");
+
+			evilDialogs.Add(0x1E, "I.. HUNGER!\n\nReceived #");
+			npcScriptValue[(int)ObjectId.Sarda][1] = singleZomBull;
+
+			evilDialogs.Add(0x20, "The TAIL! Impressive..\nYes, yes, you are indeed\nworthy..\n\nWorthy of dying by my\nown claws!");
+			npcScriptValue[(int)ObjectId.Bahamut][1] = newPhantomEncounter;
+			npcScriptValue[(int)ObjectId.Bahamut][3] = 0x1F;
+
+			evilDialogs.Add(0x23, "Come play with me,\nLIGHT WARRIORS.\nFor ever and ever\nand ever..\n\nReceived #");
+			npcScriptValue[(int)ObjectId.Fairy][1] = singleGhost;
+
+			evilDialogs.Add(0x27, "Exterminate.\n\n\n\n\nReceived #");
+			npcScriptValue[(int)ObjectId.CubeBot][1] = bWarMECHEncounter;
+
+			evilDialogs.Add(0x2B, "My friends..\nMy colleagues..\nNow.. I join them..\n\nReceived #");
+			npcScriptValue[(int)ObjectId.CanoeSage][1] = singleZomBull;
+
+			evilDialogs.Add(0xCD, "Luuuuu.. paaaargh!\n\n\n\nReceived #");
+			npcScriptValue[(int)ObjectId.Lefein][1] = singleZomBull;
+
+			evilDialogs.Add(0xFA, "Sorry, LIGHT WARRIORS,\nbut your LICH is in\nanother castle!\n\nMwahahahaha!");
+			evilDialogs.Add(0x2F, "You did well fighting\nmy Army of Darkness,\nLIGHT WARRIORS! But it\nis for naught!\nI am UNSTOPPABLE!\nThis time, YOU are\nthe SPEEDBUMP!");
+			evilDialogs.Add(0x30, "HAHA! Alright, enough\nplaying around.");
+
+			InsertDialogs(evilDialogs);
+
+			// Update Chaos sprite
+			Put(0x2F00 + 0x18, Blob.FromHex("00"));
+			Put(0x2F00 + 0x19, Blob.FromHex("01"));
+			Put(0x2F00 + 0x1A, Blob.FromHex("00"));
+			Data[MapObjGfxOffset + 0x1A] = 0x0F;
+			Data[MapObjGfxOffset + 0x19] = 0x0F;
+			PutInBank(0x00, 0xA000 + ((byte)MapId.TempleOfFiendsRevisitedChaos * 0x30) + 0x18, Blob.FromHex("0F0F13300F0F1530"));
+
+			npcScriptValue[0x19][0] = 0x2F;
+			npcScriptValue[0x19][1] = WarMECHEncounter + 0x80;
+			npcScriptValue[0x19][2] = 0x2F;
+			npcScriptValue[0x19][3] = 0x1A;
+
+			// Switch princess
+			Data[MapSpriteOffset + ((byte)MapId.TempleOfFiends * MapSpriteCount + 1) * MapSpriteSize] = (byte)ObjectId.Princess2;
+			Data[MapSpriteOffset + ((byte)MapId.ConeriaCastle2F * MapSpriteCount + 1) * MapSpriteSize] = (byte)ObjectId.None;
+			Put(0x2F00 + 0x12, Blob.FromHex("01"));
+			Put(0x2F00 + 0x03, Blob.FromHex("02"));
+
+			// Change NPC's color 
+			Data[0x2000 + ((byte)MapId.Coneria * 0x30) + 0x18 + 0x03] = 0x3A;
+			Data[0x2000 + ((byte)MapId.Coneria * 0x30) + 0x18 + 0x07] = 0x3A;
+
+			Data[0x2000 + ((byte)MapId.ConeriaCastle1F * 0x30) + 0x18 + 0x03] = 0x3A;
+			Data[0x2000 + ((byte)MapId.ConeriaCastle1F * 0x30) + 0x18 + 0x07] = 0x3A;
+
+			Data[0x2000 + ((byte)MapId.ConeriaCastle2F * 0x30) + 0x18 + 0x03] = 0x3A;
+			Data[0x2000 + ((byte)MapId.ConeriaCastle2F * 0x30) + 0x18 + 0x07] = 0x3A;
+
+			Data[0x2000 + ((byte)MapId.Pravoka * 0x30) + 0x18 + 0x03] = 0x3A;
+			Data[0x2000 + ((byte)MapId.Pravoka * 0x30) + 0x18 + 0x07] = 0x3A;
+
+			Data[0x2000 + ((byte)MapId.Elfland * 0x30) + 0x18 + 0x03] = 0x3A;
+			Data[0x2000 + ((byte)MapId.Elfland * 0x30) + 0x18 + 0x07] = 0x3A;
+
+			Data[0x2000 + ((byte)MapId.ElflandCastle * 0x30) + 0x18 + 0x03] = 0x3A;
+			Data[0x2000 + ((byte)MapId.ElflandCastle * 0x30) + 0x18 + 0x07] = 0x3A;
+
+			Data[0x2000 + ((byte)MapId.DwarfCave * 0x30) + 0x18 + 0x03] = 0x3A;
+			Data[0x2000 + ((byte)MapId.DwarfCave * 0x30) + 0x18 + 0x07] = 0x3A;
+
+			Data[0x2000 + ((byte)MapId.Melmond * 0x30) + 0x18 + 0x03] = 0x3A;
+			Data[0x2000 + ((byte)MapId.Melmond * 0x30) + 0x18 + 0x07] = 0x3A;
+
+			Data[0x2000 + ((byte)MapId.CrescentLake * 0x30) + 0x18 + 0x03] = 0x3A;
+			Data[0x2000 + ((byte)MapId.CrescentLake * 0x30) + 0x18 + 0x07] = 0x3A;
+
+			Data[0x2000 + ((byte)MapId.Gaia * 0x30) + 0x18 + 0x03] = 0x3A;
+			Data[0x2000 + ((byte)MapId.Gaia * 0x30) + 0x18 + 0x07] = 0x3A;
+
+			Data[0x2000 + ((byte)MapId.Onrac * 0x30) + 0x18 + 0x03] = 0x3A;
+			Data[0x2000 + ((byte)MapId.Onrac * 0x30) + 0x18 + 0x07] = 0x3A;
+
+			Data[0x2000 + ((byte)MapId.SeaShrineB1 * 0x30) + 0x18 + 0x03] = 0x3A;
+			Data[0x2000 + ((byte)MapId.SeaShrineB1 * 0x30) + 0x18 + 0x07] = 0x3A;
+
+			Data[0x2000 + ((byte)MapId.Lefein * 0x30) + 0x18 + 0x03] = 0x3A;
+			Data[0x2000 + ((byte)MapId.Lefein * 0x30) + 0x18 + 0x07] = 0x3A;
+
+
+			// Let zombies roam free
+			var npcMap = new List<MapId> { MapId.Cardia, MapId.BahamutsRoomB2, MapId.Coneria, MapId.ConeriaCastle1F, MapId.ConeriaCastle2F, MapId.CrescentLake, MapId.DwarfCave, MapId.Elfland, MapId.ElflandCastle, MapId.Gaia, MapId.Lefein, MapId.Melmond, MapId.Onrac, MapId.Pravoka };
+
+			foreach (var map in npcMap)
+			{
+				for (var i = 0; i < 0x10; i++)
+				{
+					int offset = MapSpriteOffset + ((byte)map * MapSpriteCount + i) * MapSpriteSize;
+					if (validZombie.Contains((ObjectId)Data[offset]))
+						Data[offset + 1] &= 0b10111111;
+				}
+			}
+
+			// Ulgy fix to not bug battles because of money
+			var targetTalkScript = new List<Blob> { newTalk.Talk_Nerrick, newTalk.Talk_GiveItemOnFlag, newTalk.Talk_GiveItemOnItem, newTalk.Talk_TradeItems };
+			for (int i = 0; i < 0x20; i++)
+			{
+				if (targetTalkScript.Contains(npcScript[i]) && npcScriptValue[i][3] >= 0x6C && npcScriptValue[i][3] <= 0xAF)
+					npcScriptValue[i][3] = (byte)Item.Cabin;
+			}
+
+			// Reinsert updated scripts
+			PutInBank(newTalkRoutinesBank, lut_MapObjTalkData, npcScriptValue.SelectMany(data => data.ToBytes()).ToArray());
+			PutInBank(newTalkRoutinesBank, lut_MapObjTalkJumpTbl, npcScript.SelectMany(script => script.ToBytes()).ToArray());
+
+			// Update Talk Script to have them fight
+			PutInBank(newTalkRoutinesBank, 0x93DD, Blob.FromHex("206A95")); // Talk_Bikke
+			PutInBank(newTalkRoutinesBank, 0x93FE, Blob.FromHex("206095")); // Nerrick
+			PutInBank(newTalkRoutinesBank, 0x941F, Blob.FromHex("206095")); // Bahamut
+			PutInBank(newTalkRoutinesBank, 0x941A, Blob.FromHex("13")); // Bahamut
+			PutInBank(newTalkRoutinesBank, 0x95AE + 20, Blob.FromHex("EAEA")); // Bahamut
+			PutInBank(newTalkRoutinesBank, 0x943C, Blob.FromHex("206095")); // Unne
+			PutInBank(newTalkRoutinesBank, 0x946C, Blob.FromHex("206095")); // Talk_GiveItemOnFlag
+			PutInBank(newTalkRoutinesBank, 0x949D, Blob.FromHex("206095")); // Talk_TradeItems
+			PutInBank(newTalkRoutinesBank, 0x94CA, Blob.FromHex("206095")); // Talk_GiveItemOnItem
+
+
+			// Talk_Replace
+			PutInBank(newTalkRoutinesBank, 0x932E, Blob.FromHex("A47320A490A476206095A57260"));
+
+			// Fight Script 
+			PutInBank(newTalkRoutinesBank, 0x9560, Blob.FromHex("A57185732073924C4393A476207F9020739260"));
 		}
 	}
 }

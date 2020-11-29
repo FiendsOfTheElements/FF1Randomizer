@@ -566,6 +566,24 @@ namespace FF1Lib
 			}
 		}
 
+		public bool? PreserveAllFiendRefights
+		{
+			get => Flags.PreserveAllFiendRefights;
+			set
+			{
+				Flags.PreserveAllFiendRefights = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("PreserveAllFiendRefights"));
+			}
+		}
+
+		public bool CanPreserveAllFiendRefights
+		{
+			get => (Flags.ShortToFR ?? true) && (Flags.PreserveFiendRefights ?? true);
+			set
+			{
+			}
+		}
+
 		public bool? MagicShops
 		{
 			get => Flags.MagicShops;
@@ -612,6 +630,24 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ItemMagic"));
 			}
 		}
+		public bool? MagisizeWeapons
+		{
+			get => Flags.MagisizeWeapons;
+			set
+			{
+				Flags.MagisizeWeapons = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MagisizeWeapons"));
+			}
+		}
+		public bool? MagisizeWeaponsBalanced
+		{
+			get => Flags.MagisizeWeaponsBalanced;
+			set
+			{
+				Flags.MagisizeWeaponsBalanced = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MagisizeWeaponsBalanced"));
+			}
+		}
 		public bool? MagicLevelsTiered
 		{
 			get => Flags.MagicLevelsTiered;
@@ -628,6 +664,16 @@ namespace FF1Lib
 			{
 				Flags.MagicLevelsMixed = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MagicLevelsMixed"));
+			}
+		}
+
+		public AutohitThreshold MagicAutohitThreshold
+		{
+			get => Flags.MagicAutohitThreshold;
+			set
+			{
+				Flags.MagicAutohitThreshold = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MagicAutohitThreshold"));
 			}
 		}
 
@@ -665,6 +711,15 @@ namespace FF1Lib
 			{
 				Flags.EverythingUnrunnable = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EverythingUnrunnable"));
+			}
+		}
+		public bool? EverythingRunnable
+		{
+			get => Flags.EverythingRunnable;
+			set
+			{
+				Flags.EverythingRunnable = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EverythingRunnable"));
 			}
 		}
 		public bool? UnrunnablesStrikeFirstAndSurprise
@@ -814,6 +869,8 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DisableStunTouch"));
 			}
 		}
+		public bool CanShuffleTrapTiles => !((Flags.RandomizeEnemizer ?? false) || (Flags.RemoveTrapTiles ?? false));
+
 		public bool? EnemyTrapTiles
 		{
 			get => Flags.EnemyTrapTiles;
@@ -830,6 +887,16 @@ namespace FF1Lib
 			{
 				Flags.RandomTrapFormations = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomTrapFormations"));
+			}
+		}
+
+		public bool? RemoveTrapTiles
+		{
+			get => Flags.RemoveTrapTiles;
+			set
+			{
+				Flags.RemoveTrapTiles = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RemoveTrapTiles"));
 			}
 		}
 
@@ -887,6 +954,15 @@ namespace FF1Lib
 			{
 				Flags.ConfusedOldMen = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ConfusedOldMen"));
+			}
+		}
+		public bool SpookyFlag
+		{
+			get => Flags.SpookyFlag;
+			set
+			{
+				Flags.SpookyFlag = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SpookyFlag"));
 			}
 		}
 		public bool? AllowUnsafeMelmond
@@ -1376,6 +1452,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeCanal"));
 			}
 		}
+		public bool? FreeCanoe
+		{
+			get => Flags.FreeCanoe;
+			set
+			{
+				Flags.FreeCanoe = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeCanoe"));
+			}
+		}
 		public bool FreeOrbs
 		{
 			get => Flags.FreeOrbs;
@@ -1478,6 +1563,15 @@ namespace FF1Lib
 			{
 				Flags.IdentifyTreasures = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IdentifyTreasures"));
+			}
+		}
+		public bool ShopInfo
+		{
+			get => Flags.ShopInfo;
+			set
+			{
+				Flags.ShopInfo = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ShopInfo"));
 			}
 		}
 		public bool WaitWhenUnrunnable
@@ -2748,6 +2842,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SaveGameDWMode"));
 			}
 		}
+		public bool PacifistMode
+		{
+			get => Flags.PacifistMode;
+			set
+			{
+				Flags.PacifistMode = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("PacifistMode"));
+			}
+		}
 		public bool? ShuffleAstos
 		{
 			get => Flags.ShuffleAstos;
@@ -3168,6 +3271,16 @@ namespace FF1Lib
 			{
 				Flags.SwolePirates = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SwolePirates"));
+			}
+		}
+
+		public EvadeCapValues EvadeCap
+		{
+			get => Flags.EvadeCap;
+			set
+			{
+				Flags.EvadeCap = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EvadeCap"));
 			}
 		}
 	}

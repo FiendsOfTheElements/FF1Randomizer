@@ -29,22 +29,29 @@ namespace FF1Lib
 		public bool ChaosRush { get; set; } = false;
 		public bool? ShortToFR { get; set; } = false;
 		public bool? PreserveFiendRefights { get; set; } = false;
+		public bool? PreserveAllFiendRefights { get; set; } = false;
 
 		public bool? MagicShops { get; set; } = false;
 		public bool? MagicShopLocs { get; set; } = false;
 		public bool? MagicLevels { get; set; } = false;
 		public bool? MagicPermissions { get; set; } = false;
 		public bool? ItemMagic { get; set; } = false;
+		public bool? MagisizeWeapons { get; set; } = false;
+		public bool? MagisizeWeaponsBalanced { get; set; } = false;
 		public bool? MagicLevelsTiered { get; set; } = false;
 		public bool? MagicLevelsMixed { get; set; } = false;
+
+		public AutohitThreshold MagicAutohitThreshold { get; set; } = AutohitThreshold.Vanilla;
 
 		public bool? Rng { get; set; } = false;
 		public bool FixMissingBattleRngEntry { get; set; } = false;
 		public bool? EverythingUnrunnable { get; set; } = false;
+		public bool? EverythingRunnable { get; set; } = false;
 		public bool? EnemyFormationsUnrunnable { get; set; } = false;
 		public bool? EnemyFormationsSurprise { get; set; } = false;
 		public bool? UnrunnablesStrikeFirstAndSurprise { get; set; } = false;
 		public bool? EnemyTrapTiles { get; set; } = false;
+		public bool? RemoveTrapTiles { get; set; } = false;
 		public bool? RandomTrapFormations { get; set; } = false;
 
 		public bool? SwolePirates { get; set; } = false;
@@ -64,7 +71,7 @@ namespace FF1Lib
 		public bool? TitansTrove { get; set; } = false;
 		public bool? LefeinShops { get; set; } = false;
 		public bool? ConfusedOldMen { get; set; } = false;
-
+		public bool SpookyFlag { get; set; } = false;
 		public bool? MapOpenProgression { get; set; } = false;
 		public bool? MapOpenProgressionDocks { get; set; } = false;
 		public bool? Entrances { get; set; } = false;
@@ -131,6 +138,7 @@ namespace FF1Lib
 		public bool FreeOrbs { get; set; } = false;
 		public bool EnableCritNumberDisplay { get; set; } = false;
 		public bool? FreeCanal { get; set; } = false;
+		public bool? FreeCanoe { get; set; } = false;
 		public bool EasyMode { get; set; } = false;
 
 		public bool HousesFillHp { get; set; } = false;
@@ -141,6 +149,7 @@ namespace FF1Lib
 		public bool BuyTen { get; set; } = false;
 		public bool BuyTenOld { get; set; } = false;
 		public bool IdentifyTreasures { get; set; } = false;
+		public bool ShopInfo { get; set; } = false;
 		public bool WaitWhenUnrunnable { get; set; } = false;
 
 		public bool HouseMPRestoration { get; set; } = false;
@@ -272,6 +281,7 @@ namespace FF1Lib
 		public bool DisableInnSaving { get; set; } = false;
 		public bool SaveGameWhenGameOver { get; set; } = false;
 		public bool SaveGameDWMode { get; set; } = false;
+		public bool PacifistMode { get; set; } = false;
 		public bool? ShuffleAstos { get; set; } = false;
 		public bool? RandomizeEnemizer { get; set; } = false;
 		public bool? RandomizeFormationEnemizer { get; set; } = false;
@@ -324,6 +334,8 @@ namespace FF1Lib
 
 		public WorldWealthMode WorldWealth { get; set; } = WorldWealthMode.Normal;
 
+		public EvadeCapValues EvadeCap { get; set; } = EvadeCapValues.medium;
+
 		public bool? AllowUnsafeStartArea { get; set; } = false;
 
 		public bool? EarlierRuby { get; set; } = false;
@@ -360,7 +372,7 @@ namespace FF1Lib
 		public bool? IncentivizeBottle => (!(NPCFetchItems ?? false) && (IncentivizeMainItems ?? false)) || ((NPCFetchItems ?? false) && (IncentivizeFetchItems ?? false));
 
 		public bool IncentivizeBridge => false;
-		public bool? IncentivizeCanoe => NPCItems & IncentivizeCanoeItem;
+		public bool? IncentivizeCanoe => NPCItems & IncentivizeCanoeItem & !FreeCanoe;
 		public bool? IncentivizeLute => NPCItems & !FreeLute & IncentivizeMainItems;
 		public bool? IncentivizeShip => NPCItems & IncentivizeShipAndCanal & !FreeShip;
 		public bool? IncentivizeRod => NPCItems & IncentivizeMainItems;
@@ -572,6 +584,7 @@ namespace FF1Lib
 			sum = AddString(sum, 7, (FFRVersion.Sha.Length >= 7) ? FFRVersion.Sha.Substring(0,7) : FFRVersion.Sha.PadRight(7, 'X'));
 
 
+			sum = AddNumeric(sum, Enum.GetValues(typeof(EvadeCapValues)).Cast<int>().Max() + 1, (int)flags.EvadeCap);
 			sum = AddTriState(sum, flags.IncentivizeKatana);
 			sum = AddTriState(sum, flags.IncentivizeVorpal);
 			sum = AddTriState(sum, flags.Shops);
@@ -586,20 +599,26 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.ChaosRush);
 			sum = AddTriState(sum, flags.ShortToFR);
 			sum = AddTriState(sum, flags.PreserveFiendRefights);
+			sum = AddTriState(sum, flags.PreserveAllFiendRefights);
 			sum = AddTriState(sum, flags.MagicShops);
 			sum = AddTriState(sum, flags.MagicShopLocs);
 			sum = AddTriState(sum, flags.MagicLevels);
 			sum = AddTriState(sum, flags.MagicPermissions);
 			sum = AddTriState(sum, flags.ItemMagic);
+			sum = AddTriState(sum, flags.MagisizeWeapons);
+			sum = AddTriState(sum, flags.MagisizeWeaponsBalanced);
 			sum = AddTriState(sum, flags.MagicLevelsTiered);
 			sum = AddTriState(sum, flags.MagicLevelsMixed);
+			sum = AddNumeric(sum, Enum.GetValues(typeof(AutohitThreshold)).Cast<int>().Max() + 1, (int)flags.MagicAutohitThreshold);
 			sum = AddTriState(sum, flags.Rng);
 			sum = AddBoolean(sum, flags.FixMissingBattleRngEntry);
 			sum = AddTriState(sum, flags.EverythingUnrunnable);
+			sum = AddTriState(sum, flags.EverythingRunnable);
 			sum = AddTriState(sum, flags.EnemyFormationsUnrunnable);
 			sum = AddTriState(sum, flags.EnemyFormationsSurprise);
 			sum = AddTriState(sum, flags.UnrunnablesStrikeFirstAndSurprise);
 			sum = AddTriState(sum, flags.EnemyTrapTiles);
+			sum = AddTriState(sum, flags.RemoveTrapTiles);
 			sum = AddTriState(sum, flags.RandomTrapFormations);
 			sum = AddTriState(sum, flags.SwolePirates);
 			sum = AddTriState(sum, flags.EnemyScripts);
@@ -617,6 +636,7 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.TitansTrove);
 			sum = AddTriState(sum, flags.LefeinShops);
 			sum = AddTriState(sum, flags.ConfusedOldMen);
+			sum = AddBoolean(sum, flags.SpookyFlag);
 			sum = AddTriState(sum, flags.MapOpenProgression);
 			sum = AddTriState(sum, flags.MapOpenProgressionDocks);
 			sum = AddTriState(sum, flags.Entrances);
@@ -669,6 +689,7 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.FreeAirship);
 			sum = AddBoolean(sum, flags.FreeOrbs);
 			sum = AddBoolean(sum, flags.EnableCritNumberDisplay);
+			sum = AddTriState(sum, flags.FreeCanoe);
 			sum = AddTriState(sum, flags.FreeCanal);
 			sum = AddBoolean(sum, flags.EasyMode);
 			sum = AddBoolean(sum, flags.HousesFillHp);
@@ -678,6 +699,7 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.BuyTen);
 			sum = AddBoolean(sum, flags.BuyTenOld);
 			sum = AddBoolean(sum, flags.IdentifyTreasures);
+			sum = AddBoolean(sum, flags.ShopInfo);
 			sum = AddBoolean(sum, flags.WaitWhenUnrunnable);
 			sum = AddBoolean(sum, flags.HouseMPRestoration);
 			sum = AddBoolean(sum, flags.WeaponStats);
@@ -800,6 +822,7 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.ShuffleAstos);
 			sum = AddBoolean(sum, flags.SaveGameWhenGameOver);
 			sum = AddBoolean(sum, flags.SaveGameDWMode);
+			sum = AddBoolean(sum, flags.PacifistMode);
 			sum = AddTriState(sum, flags.RandomizeEnemizer);
 			sum = AddTriState(sum, flags.RandomizeFormationEnemizer);
 			sum = AddTriState(sum, flags.GenerateNewSpellbook);
@@ -914,6 +937,7 @@ namespace FF1Lib
 				GenerateNewSpellbook = GetTriState(ref sum),
 				RandomizeFormationEnemizer = GetTriState(ref sum),
 				RandomizeEnemizer = GetTriState(ref sum),
+				PacifistMode = GetBoolean(ref sum),
 				SaveGameDWMode = GetBoolean(ref sum),
 				SaveGameWhenGameOver = GetBoolean(ref sum),
 				ShuffleAstos = GetTriState(ref sum),
@@ -1036,6 +1060,7 @@ namespace FF1Lib
 				WeaponStats = GetBoolean(ref sum),
 				HouseMPRestoration = GetBoolean(ref sum),
 				WaitWhenUnrunnable = GetBoolean(ref sum),
+				ShopInfo = GetBoolean(ref sum),
 				IdentifyTreasures = GetBoolean(ref sum),
 				BuyTenOld = GetBoolean(ref sum),
 				BuyTen = GetBoolean(ref sum),
@@ -1045,6 +1070,7 @@ namespace FF1Lib
 				HousesFillHp = GetBoolean(ref sum),
 				EasyMode = GetBoolean(ref sum),
 				FreeCanal = GetTriState(ref sum),
+				FreeCanoe = GetTriState(ref sum),
 				EnableCritNumberDisplay = GetBoolean(ref sum),
 				FreeOrbs = GetBoolean(ref sum),
 				FreeAirship = GetTriState(ref sum),
@@ -1097,6 +1123,7 @@ namespace FF1Lib
 				Entrances = GetTriState(ref sum),
 				MapOpenProgressionDocks = GetTriState(ref sum),
 				MapOpenProgression = GetTriState(ref sum),
+				SpookyFlag = GetBoolean(ref sum),
 				ConfusedOldMen = GetTriState(ref sum),
 				LefeinShops = GetTriState(ref sum),
 				TitansTrove = GetTriState(ref sum),
@@ -1114,20 +1141,26 @@ namespace FF1Lib
 				EnemyScripts = GetTriState(ref sum),
 				SwolePirates = GetTriState(ref sum),
 				RandomTrapFormations = GetTriState(ref sum),
+				RemoveTrapTiles = GetTriState(ref sum),
 				EnemyTrapTiles = GetTriState(ref sum),
 				UnrunnablesStrikeFirstAndSurprise = GetTriState(ref sum),
 				EnemyFormationsSurprise = GetTriState(ref sum),
 				EnemyFormationsUnrunnable = GetTriState(ref sum),
+				EverythingRunnable = GetTriState(ref sum),
 				EverythingUnrunnable = GetTriState(ref sum),
 				FixMissingBattleRngEntry = GetBoolean(ref sum),
 				Rng = GetTriState(ref sum),
+				MagicAutohitThreshold = (AutohitThreshold)GetNumeric(ref sum, Enum.GetValues(typeof(AutohitThreshold)).Cast<int>().Max() + 1),
 				MagicLevelsMixed = GetTriState(ref sum),
 				MagicLevelsTiered = GetTriState(ref sum),
+				MagisizeWeaponsBalanced = GetTriState(ref sum),
+				MagisizeWeapons = GetTriState(ref sum),
 				ItemMagic = GetTriState(ref sum),
 				MagicPermissions = GetTriState(ref sum),
 				MagicLevels = GetTriState(ref sum),
 				MagicShopLocs = GetTriState(ref sum),
 				MagicShops = GetTriState(ref sum),
+				PreserveAllFiendRefights = GetTriState(ref sum),
 				PreserveFiendRefights = GetTriState(ref sum),
 				ShortToFR = GetTriState(ref sum),
 				ChaosRush = GetBoolean(ref sum),
@@ -1142,6 +1175,7 @@ namespace FF1Lib
 				Shops = GetTriState(ref sum),
 				IncentivizeVorpal = GetTriState(ref sum),
 				IncentivizeKatana = GetTriState(ref sum),
+				EvadeCap = (EvadeCapValues)GetNumeric(ref sum, Enum.GetValues(typeof(EvadeCapValues)).Cast<int>().Max() + 1),
 			};
 			string EncodedSha = GetString(ref sum, 7);
 			if (((FFRVersion.Sha.Length >= 7) ? FFRVersion.Sha.Substring(0, 7) : FFRVersion.Sha.PadRight(7, 'X')) != EncodedSha)

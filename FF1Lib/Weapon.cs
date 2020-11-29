@@ -136,6 +136,65 @@ namespace FF1Lib
 			flameChucks.setClassUsability((ushort)(EquipPermission.BlackBelt | EquipPermission.Master | EquipPermission.Ninja));
 			flameChucks.writeWeaponMemory(this);
 		}
+
+		public void MagisizeWeapons(MT19337 rng, bool balanced)
+		{
+			var Spells = GetSpells();
+
+			if (!balanced)
+			{
+				Spells.RemoveAll(spell => spell.Data[4] == 0);
+				foreach (Item weapon in ItemLists.AllWeapons)
+					WriteItemSpellData(Spells.SpliceRandom(rng), weapon);
+			}
+			else
+			{ 
+				var tieredSpells = new List<List<MagicSpell>> { Spells.GetRange(0, 16), Spells.GetRange(16, 16), Spells.GetRange(32, 16), Spells.GetRange(48, 16) };
+
+				var commonOdds = new List<int> { 0, 0, 0, 0, 1, 1, 1, 1, 2, 2 };
+				var rareOdds = new List<int> { 0, 1, 1, 1, 2, 2, 2, 3, 3, 3 };
+				var legendaryOdds = new List<int> { 1, 2, 2, 2, 3, 3, 3, 3, 3, 3 };
+
+				for (int i = 0; i < 4; i++)
+					tieredSpells[i].RemoveAll(spell => spell.Data[4] == 0);
+
+				foreach (Item weapon in ItemLists.CommonWeaponTier)
+				{
+					var selectedTier = commonOdds.PickRandom(rng);
+					while (tieredSpells[selectedTier].Count == 0)
+						selectedTier = commonOdds.PickRandom(rng);
+
+					WriteItemSpellData(tieredSpells[selectedTier].SpliceRandom(rng), weapon);
+				}
+
+				foreach (Item weapon in ItemLists.RareWeaponTier)
+				{
+					var selectedTier = rareOdds.PickRandom(rng);
+					while (tieredSpells[selectedTier].Count == 0)
+						selectedTier = rareOdds.PickRandom(rng);
+
+					WriteItemSpellData(tieredSpells[selectedTier].SpliceRandom(rng), weapon);
+				}
+
+				foreach (Item weapon in ItemLists.LegendaryWeaponTier)
+				{
+					var selectedTier = legendaryOdds.PickRandom(rng);
+					while (tieredSpells[selectedTier].Count == 0)
+						selectedTier = legendaryOdds.PickRandom(rng);
+
+					WriteItemSpellData(tieredSpells[selectedTier].SpliceRandom(rng), weapon);
+				}
+
+				foreach (Item weapon in ItemLists.UberTier)
+				{
+					var selectedTier = Rng.Between(rng, 0, 3);
+					while (tieredSpells[selectedTier].Count == 0)
+						selectedTier = Rng.Between(rng, 0, 3);
+
+					WriteItemSpellData(tieredSpells[selectedTier].SpliceRandom(rng), weapon);
+				}
+			}
+		}
 	}
 
 	public class Weapon
@@ -276,4 +335,5 @@ namespace FF1Lib
 			return matchedType;
 		}
 	}
+
 }

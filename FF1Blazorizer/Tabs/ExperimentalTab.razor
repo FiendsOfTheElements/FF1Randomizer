@@ -14,8 +14,17 @@
 				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="itemPlacementCheckBox" IsEnabled="@Flags.Treasures" @bind-Checked="Flags.ClassicItemPlacement">Use Older v2 Placement</CheckBox>
 				<CheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(!Flags.BuyTen)" Id="buyTenOldCheckBox" @bind-Checked="Flags.BuyTenOld">Buy Ten (old)</CheckBox>
 				<div class="checkbox-cell"></div>
-				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="procGenEarth1" @bind-Checked="Flags.EFGEarth1">Generated Earth Cave B1</CheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(!Flags.HintsDungeon)" Id="procGenEarth1" @bind-Checked="Flags.EFGEarth1">Generated Earth Cave B1</CheckBox>
 				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="procGenEarth2" @bind-Checked="Flags.EFGEarth2">Generated Earth Cave B2</CheckBox>
+				<div class="checkbox-cell"></div>
+				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="allRunnableCheckBox" IsEnabled="@(Flags.EnemyFormationsUnrunnable != false && Flags.EverythingUnrunnable != true)" @bind-Value="Flags.EverythingRunnable">All Encounters are Runnable</TriStateCheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="pacifistModeCheckBox" @bind-Checked="Flags.PacifistMode">Pacifist Bosses</CheckBox>
+				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="magisizeWeaponsCheckBox" @bind-Value="Flags.MagisizeWeapons">All Weapons Cast Spells</TriStateCheckBox>
+				<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="magisizeWeaponsBalancedCheckBox" IsEnabled="@Flags.MagisizeWeapons" @bind-Value="Flags.MagisizeWeaponsBalanced">Balanced Spells</TriStateCheckBox>
+				<div class="checkbox-cell"></div>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="shopInfoCheckBox" @bind-Checked="Flags.ShopInfo">Shop Information</CheckBox>
+				<div class="checkbox-cell"></div>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="lichRevengeCheckBox" @bind-Checked="Flags.SpookyFlag">Lich's Revenge</CheckBox>
 			</div>
 			<div class="col-md-6">
 				<div class="checkbox-cell"></div>

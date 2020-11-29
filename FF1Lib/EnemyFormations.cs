@@ -75,6 +75,21 @@ namespace FF1Lib
 			List<Blob> formations = Get(FormationsOffset, FormationSize * NormalFormationCount).Chunk(FormationSize);
 			formations.ForEach(formation => formation[UnrunnableOffset] |= 0x03);
 			Put(FormationsOffset, formations.SelectMany(formation => formation.ToBytes()).ToArray());
+
+			List<Blob> lastFormations = Get(FormationsOffset + FormationSize * 0x7E, FormationSize * 2).Chunk(FormationSize);
+			lastFormations.ForEach(formation => formation[UnrunnableOffset] |= 0x02);
+			Put(FormationsOffset + FormationSize * 0x7E, lastFormations.SelectMany(formation => formation.ToBytes()).ToArray());
+		}
+
+		public void CompletelyRunnable()
+		{
+			List<Blob> formations = Get(FormationsOffset, FormationSize * NormalFormationCount).Chunk(FormationSize);
+			formations.ForEach(formation => formation[UnrunnableOffset] &= 0xFC);
+			Put(FormationsOffset, formations.SelectMany(formation => formation.ToBytes()).ToArray());
+
+			List<Blob> lastFormations = Get(FormationsOffset + FormationSize * 0x7E, FormationSize * 2).Chunk(FormationSize);
+			lastFormations.ForEach(formation => formation[UnrunnableOffset] &= 0xFD);
+			Put(FormationsOffset + FormationSize * 0x7E, lastFormations.SelectMany(formation => formation.ToBytes()).ToArray());
 		}
 
 		private void FiendShuffle(MT19337 rng)
@@ -116,7 +131,7 @@ namespace FF1Lib
 			Put(FormationsOffset + FormationSize * WarMECHFormationIndex, warMECHFormation);
 		}
 
-		public void TransformFinalFormation(FinalFormation formation)
+		public void TransformFinalFormation(FinalFormation formation, EvadeCapValues evadeClampFlag)
 		{
 			Blob finalBattle = Get(FormationsOffset + ChaosFormationIndex * FormationSize, FormationSize);
 
@@ -156,8 +171,8 @@ namespace FF1Lib
 					finalBattle[PaletteAsignmentOffset] = 0x41; // Palette Assignment in top nibble, 1 in bottom for unrunnable.
 
 					// Scale up the Fundead enemies if we end up with them. They're too weak otherwise.
-					ScaleSingleEnemyStats(0x78, 140, 140, false, false, null, false, 100, 100);
-					ScaleSingleEnemyStats(0x33, 120, 120, false, false, null, false, 100, 100);
+					ScaleSingleEnemyStats(0x78, 140, 140, false, false, null, false, 100, 100, GetEvadeIntFromFlag(evadeClampFlag));
+					ScaleSingleEnemyStats(0x33, 120, 120, false, false, null, false, 100, 100, GetEvadeIntFromFlag(evadeClampFlag));
 					break;
 				case FinalFormation.TimeLoop:
 					finalBattle[TypeOffset] = 0x0B;         // 9Small + Garland pattern
@@ -175,6 +190,45 @@ namespace FF1Lib
 			}
 
 			Put(FormationsOffset + ChaosFormationIndex * FormationSize, finalBattle);
+		}
+
+		public void PacifistEnd()
+		{
+			// Remove ToFR Fiends tiles
+			var tilesets = Get(TilesetDataOffset, TilesetDataCount * TilesetDataSize * TilesetCount).Chunk(TilesetDataSize).ToList();
+			tilesets.ForEach(tile =>
+			{
+				if (IsBossTrapTile(tile))
+				{
+					tile[1] = 0x80;
+				}
+			});
+			Put(TilesetDataOffset, tilesets.SelectMany(tileset => tileset.ToBytes()).ToArray());
+
+			// Get all NPC scripts and script values to update them
+			var npcScript = GetFromBank(newTalkRoutinesBank, lut_MapObjTalkJumpTbl, 0xD0 * 2).Chunk(2);
+
+			var Talk_Ending = Blob.FromHex("4693");
+
+			for (int i = 0; i < 0xD0; i++)
+			{
+				if (npcScript[i] == newTalk.Talk_fight)
+					npcScript[i] = newTalk.Talk_CoOGuy;
+			}
+
+			// Update Chaos script
+			npcScript[0x1A] = Talk_Ending;
+
+			// Reinsert updated scripts
+			PutInBank(newTalkRoutinesBank, lut_MapObjTalkJumpTbl, npcScript.SelectMany(script => script.ToBytes()).ToArray());
+
+			//Update Talk_CooGuy and change Talk_fight to load End game
+			PutInBank(newTalkRoutinesBank, 0x933B, Blob.FromHex("A476207F90209690A571604C38C9"));
+
+			//Update Astos and Bikke
+			PutInBank(newTalkRoutinesBank, 0x93C0, Blob.FromHex("EAEAEA"));
+			PutInBank(newTalkRoutinesBank, 0x9507, Blob.FromHex("EAEAEA"));
+
 		}
 	}
 

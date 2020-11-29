@@ -246,6 +246,11 @@
 		"description": "Shuffles trap tiles excepting Fiend Refights."
 	},
 	{
+		"Id": "removeTrapTilesCheckBox",
+		"title": "Remove All Trap Tiles",
+		"description": "Excluding the feight refights, remove all other trap tiles from the game."
+	},
+	{
 		"Id": "randomTrapFormationsCheckBox",
 		"title": "Use Random Formations",
 		"screenshot": "randomTrapFormationsCheckBox.png",
@@ -538,6 +543,12 @@
 		"title": "Include Fiend Tiles",
 		"screenshot": "preserveFiendRefightsCheckBox.gif",
 		"description": "Adds the four Fiend refights to the Chaos floor. Two trap tiles will be found on either side south of the entrance, with the boss in each tile randomized for each seed."
+	},
+	{
+		"Id": "preserveAllFiendRefightsCheckBox",
+		"title": "Include All Fiend Tiles",
+		"screenshot": "preserveAllFiendRefightsCheckBox.png",
+		"description": "Now all four fiends are in both directions, and they must all be defeated to reach CHAOS."
 	},
 	{
 		"Id": "entrancesCheckBox",
@@ -1058,7 +1069,7 @@
 		"Id": "MDefModeDropDown",
 		"title": "MDef Mode Rebalancing",
 		"screenshot": "MDefModeDropDown.gif",
-		"description": "Adjusts the Magic Defense gains for classes on level up."
+		"description": "Changes how much MDef is gained at each level up.\nBB/Master +3/+4: This changes the BB to gain +3 MDef instead of +4 per level, and the Master +4 instead of +1 per level.\nFi = 3, Ki = 3, Th = 2 Ni = 2, BB = 3, Ma = 4, RM = 2, RW = 2, WM = 2, WW = 2, BM = 2, BW = 2\nInvert All: This takes the MDef growth of all promoted and unpromoted classes and sets them to: 5 - original MDef.\nFi = 2, Ki= 2, Th = 3, Ni = 3, BB = 1, Ma = 4, RM = 3, RW = 4, WM = 3, WW = 3, BM = 3, BW = 3"
 	},
 	{
 		"Id": "itemPlacementCheckBox",
@@ -1197,5 +1208,54 @@
 		"title": "Renounce Autosort",
 		"screenshot": "renounceAutosortCheckBox.png",
 		"description": "Forgo the Autosort Inventory feature if it's enabled."
+	},
+	{
+		"Id": "lichRevengeCheckBox",
+		"title": "Lich's Revenge - Halloween Special 2020",
+		"screenshot": "LichRevenge.png",
+		"description": "Lich is having its revenge and a zombie apocalypse is upon the world!\n-All NPCs are zombies\n-Key NPCs will attack you when giving their item\n-Buffed undead enemies\n-End boss Lich"
+	},
+	{
+		"Id": "pacifistModeCheckBox",
+		"title": "Pacifist Bosses",
+		"description": "Skip all bosses' fight, including Chaos."
+	},
+	{
+		"Id": "allRunnableCheckBox",
+		"title": "All Encounters are Runnable",
+		"description": "Makes all encounters runnable, except for bosses."
+	},
+	{
+		"Id": "shopInfoCheckBox",
+		"title": "Shop Information",
+		"screenshot": "ShopInfoFlag.png",
+		"description": "In shops, characters will strike their victory pose it they can equip a piece of equipment or learn a spell.\nPress Select to show a description of an item or a spell."
+	},
+	{
+		"Id": "magisizeWeaponsCheckBox",
+		"title": "All Weapons Cast Spells",
+		"screenshot": "magisizeWeapons.png",
+		"description": "All weapons can cast a randomly assigned spells."
+	},
+	{
+		"Id": "magisizeWeaponsBalancedCheckBox",
+		"title": "Balanced Spells",
+		"screenshot": "magisizeWeapons.png",
+		"description": "The rarer a weapon is, the stronger the spell assigned to it is."
+	},
+	{
+		"Id": "magicAutohitThresholdDropDown",
+		"title": "Power Word HP Limit",
+		"description": "Changes the threshold at which BLND, STUN, and XXXX are effective.\nThe value will always be a multiple of 300, or unlimited."
+	},
+	{
+		"Id": "freeCanoeCheckBox",
+		"title": "Free Canoe",
+		"description": "Begin the game well equipped for a proper arm workout."
+	},
+	{
+		"Id": "evadeCapDropDown",
+		"title": "Evade Cap",
+		"description": "Caps the evade of enemies during scaling. When enemies have very high evade, it can become near impossible to hit them, this is especially an issue on Chaos and other endgame bosses."
 	}
 ]

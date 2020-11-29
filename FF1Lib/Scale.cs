@@ -37,6 +37,26 @@ namespace FF1Lib
 		OrbProgressiveVFast,
 	}
 
+	public enum EvadeCapValues
+	{
+		[Description("Very low, 225")]
+		veryLow,
+		[Description("low, 230")]
+		low,
+		[Description("medium low, 235")]
+		medLow,
+		[Description("medium, 240")]
+		medium,
+		[Description("medium high, 245")]
+		medHigh,
+		[Description("high, 250")]
+		high,
+		[Description("extreme, 253")]
+		extreme,
+		[Description("insane, 255")]
+		insane,
+	}
+
 	public partial class FF1Rom : NesRom
 	{
 		public static readonly List<int> Bosses = new List<int> { Enemy.Garland, Enemy.Astos, Enemy.Pirate, Enemy.WarMech,
@@ -116,6 +136,44 @@ namespace FF1Lib
 
 		}
 
+		public int GetEvadeIntFromFlag(EvadeCapValues evadeCapFlag)
+		{
+			int evadeCap;
+			switch (evadeCapFlag)
+			{
+				case EvadeCapValues.veryLow:
+					evadeCap = 0xE1;
+					break;
+				case EvadeCapValues.low:
+					evadeCap = 0xE6;
+					break;
+				case EvadeCapValues.medLow:
+					evadeCap = 0xEB;
+					break;
+				case EvadeCapValues.medium:
+					evadeCap = 0xF0;
+					break;
+				case EvadeCapValues.medHigh:
+					evadeCap = 0xF5;
+					break;
+				case EvadeCapValues.high:
+					evadeCap = 0xFA;
+					break;
+				case EvadeCapValues.extreme:
+					evadeCap = 0xFC;
+					break;
+				case EvadeCapValues.insane:
+					evadeCap = 0xFF;
+					break;
+				default:
+					evadeCap = 0xF0;
+					break;
+			}
+
+			return evadeCap;
+
+		}
+
 		public void ScaleEnemyStats(MT19337 rng, Flags flags)
 		{
 			int minStats = (bool)flags.ClampMinimumStatScale ? 100 : flags.EnemyScaleStatsLow;
@@ -124,8 +182,9 @@ namespace FF1Lib
 			int highHp = (bool)flags.ClampEnemyHpScaling ? Math.Max(100, flags.EnemyScaleHpHigh) : flags.EnemyScaleHpHigh;
 
 			NonBossEnemies.ForEach(index => ScaleSingleEnemyStats(index, minStats, highStats, flags.WrapStatOverflow, flags.IncludeMorale, rng,
-				(bool)flags.SeparateEnemyHPScaling, minHp, highHp));
+				(bool)flags.SeparateEnemyHPScaling, minHp, highHp, GetEvadeIntFromFlag(flags.EvadeCap)));
 		}
+
 
 		public void ScaleBossStats(MT19337 rng, Flags flags)
 		{
@@ -133,13 +192,12 @@ namespace FF1Lib
 			int highStats = (bool)flags.ClampMinimumBossStatScale ? Math.Max(100, flags.BossScaleStatsHigh) : flags.BossScaleStatsHigh;
 			int minHp = (bool)flags.ClampBossHPScaling ? 100 : flags.BossScaleHpLow;
 			int highHp = (bool)flags.ClampBossHPScaling ? Math.Max(100, flags.BossScaleHpHigh) : flags.BossScaleHpHigh;
-
 			Bosses.ForEach(index => ScaleSingleEnemyStats(index, minStats, highStats, flags.WrapStatOverflow, flags.IncludeMorale, rng,
-				(bool)flags.SeparateBossHPScaling,  minHp, highHp));
+				(bool)flags.SeparateBossHPScaling, minHp, highHp, GetEvadeIntFromFlag(flags.EvadeCap)));
 		}
 
 		public void ScaleSingleEnemyStats(int index, int lowPercentStats, int highPercentStats, bool wrapOverflow, bool includeMorale, MT19337 rng,
-			bool separateHPScale, int lowPercentHp, int highPercentHp)
+			bool separateHPScale, int lowPercentHp, int highPercentHp, int evadeClamp)
 		{
 			double lowDecimalStats = (double)lowPercentStats / 100.0;
 			double highDecimalStats = (double)highPercentStats / 100.0;
@@ -176,7 +234,7 @@ namespace FF1Lib
 				newCrit = ((newCrit - 1) % 0xFF) + 1;
 			}
 			enemy[6] = (byte)Min(newMorale, 0xFF); // morale
-			enemy[8] = (byte)Min(newEvade, 0xF0); // evade clamped to 240
+			enemy[8] = (byte)Min(newEvade, evadeClamp); // evade
 			enemy[9] = (byte)Min(newDefense, 0xFF); // defense
 			enemy[10] = (byte)Max(Min(newHits, 0xFF), 1); // hits
 			enemy[11] = (byte)Min(newHitPercent, 0xFF); // hit%
@@ -187,6 +245,18 @@ namespace FF1Lib
 		}
 
 		private int RangeScale(double value, double lowPercent, double highPercent, double adjustment, MT19337 rng)
+		{
+			double exponent = (rng != null) ? (double)rng.Next() / uint.MaxValue : 1.0; // A number from 0 - 1
+			double logLowPercent = Log(lowPercent);
+			double logDifference = Log(highPercent) - logLowPercent;
+			exponent = exponent * logDifference + logLowPercent; // For example for 50-200% a number from -0.69 to 0.69, for 200-400% a number from 0.69 to 1.38
+	
+			double scaleValue = Exp(exponent); // A number from 0.5 to 2, or 2 to 4
+			double adjustedScale = scaleValue > 1 ? (scaleValue - 1) * adjustment + 1 : 1 - ((1 - scaleValue) * adjustment); // Tightens the scale so some stats are not changed by as much. For example for strength (adjustment of 0.25) this becomes 0.875 to 1.25, 1.25 to 1.75 while for hp (adjustment of 1) this stays 0.5 to 2, 2 to 4
+			return (int)(value * adjustedScale);
+		}
+		// Previous RangeScale(), delete if no bugs come up with new RangeScale() - 2020-10-27
+		private int oldRangeScale(double value, double lowPercent, double highPercent, double adjustment, MT19337 rng)
 		{
 			double range = highPercent - lowPercent;
 			double randomRangeScale = rng == null ? range : range * ((double)rng.Next() / uint.MaxValue);

@@ -8,6 +8,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using FF1Lib.Assembly;
+using System.Text.RegularExpressions;
 
 namespace FF1Lib
 {
@@ -50,6 +51,28 @@ namespace FF1Lib
 			}
 
 		}
+		public Blob GetFromBank(int bank, int address, int length)
+		{
+			if (bank == 0x1F)
+			{
+				if ((address - 0xC000) + length >= 0x4000)
+				{
+					throw new Exception("Data is too large to fit within one bank.");
+				}
+				int offset = (bank * 0x4000) + (address - 0xC000);
+				return this.Get(offset, length);
+			}
+			else
+			{
+				if ((address - 0x8000) + length >= 0x4000)
+				{
+					throw new Exception("Data is too large to fit within one bank.");
+				}
+				int offset = (bank * 0x4000) + (address - 0x8000);
+				return this.Get(offset, length);
+			}
+		}
+
 		private Blob CreateLongJumpTableEntry(byte bank, ushort addr)
 		{
 			List<byte> tmp = new List<byte> { 0x20, 0xC8, 0xD7 }; // JSR $D7C8, beginning of each table entry
@@ -89,9 +112,7 @@ namespace FF1Lib
 				Blob hash = hasher.ComputeHash(SeedAndFlags);
 				rng = new MT19337(BitConverter.ToUInt32(hash, 0));
 			}
-			// Spoilers => different rng immediately
-			if (flags.Spoilers) rng = new MT19337(rng.Next());
-			if (flags.TournamentSafe) AssureSafe(rng);
+			if (flags.TournamentSafe) AssureSafe();
 
 			UpgradeToMMC3();
 			MakeSpace();
@@ -106,6 +127,8 @@ namespace FF1Lib
 			FixWarpBug(); // The warp bug must be fixed for magic level shuffle and spellcrafter
 			SeparateUnrunnables();
 			UpdateDialogs();
+
+			if (flags.TournamentSafe) Put(0x3FFE3, Blob.FromHex("66696E616C2066616E74617379"));
 
 			flags = Flags.ConvertAllTriState(flags, rng);
 
@@ -219,9 +242,16 @@ namespace FF1Lib
 				BuffHealingSpells();
 			}
 
+			UpdateMagicAutohitThreshold(rng, flags.MagicAutohitThreshold);
+
 			if ((bool)flags.GenerateNewSpellbook)
 			{
 				CraftNewSpellbook(rng, (bool)flags.SpellcrafterMixSpells, flags.LockMode, (bool)flags.MagicLevels, (bool)flags.SpellcrafterRetainPermissions);
+			}
+
+			if ((bool)flags.MagisizeWeapons)
+			{
+				MagisizeWeapons(rng, (bool)flags.MagisizeWeaponsBalanced);
 			}
 
 			if ((bool)flags.ItemMagic)
@@ -236,7 +266,7 @@ namespace FF1Lib
 
 			if ((bool)flags.ShortToFR)
 			{
-				ShortenToFR(maps, (bool)flags.PreserveFiendRefights, rng);
+				ShortenToFR(maps, (bool)flags.PreserveFiendRefights, (bool)flags.PreserveAllFiendRefights, rng);
 			}
 
 			if (((bool)flags.Treasures) && flags.ShardHunt && !flags.FreeOrbs)
@@ -246,7 +276,7 @@ namespace FF1Lib
 
 			if ((bool)flags.TransformFinalFormation)
 			{
-				TransformFinalFormation((FinalFormation)rng.Between(0, Enum.GetValues(typeof(FinalFormation)).Length - 1));
+				TransformFinalFormation((FinalFormation)rng.Between(0, Enum.GetValues(typeof(FinalFormation)).Length - 1), flags.EvadeCap);
 			}
 
 			var maxRetries = 8;
@@ -331,7 +361,7 @@ namespace FF1Lib
 			{
 				EnableSaveOnDeath(flags);
 			}
-
+			
 			// Ordered before RNG shuffle. In the event that both flags are on, RNG shuffle depends on this.
 			if (((bool)flags.FixMissingBattleRngEntry))
 			{
@@ -379,6 +409,10 @@ namespace FF1Lib
 				{
 					CompletelyUnrunnable();
 				}
+				else if ((bool)flags.EverythingRunnable)
+				{
+					CompletelyRunnable();
+				}
 				else
 				{
 					ShuffleUnrunnable(rng);
@@ -423,6 +457,11 @@ namespace FF1Lib
 			if (flags.FormationShuffleMode != FormationShuffleMode.None && !flags.EnemizerEnabled)
 			{
 				ShuffleEnemyFormations(rng, flags.FormationShuffleMode);
+			}
+
+			if ((bool)flags.RemoveTrapTiles)
+			{
+				RemoveTrapTiles();
 			}
 
 			if (((bool)flags.EnemyTrapTiles) && !flags.EnemizerEnabled)
@@ -496,6 +535,11 @@ namespace FF1Lib
 			if ((bool)flags.FreeCanal)
 			{
 				EnableFreeCanal((bool)flags.NPCItems);
+			}
+
+			if ((bool)flags.FreeCanoe)
+			{
+				EnableFreeCanoe();
 			}
 
 			if ((bool)flags.FreeLute)
@@ -653,7 +697,7 @@ namespace FF1Lib
 
 				NPCHints(rng, flags, overworldMap);
 			}
-
+			
 			ExpGoldBoost(flags.ExpBonus, flags.ExpMultiplier);
 			ScalePrices(flags, itemText, rng, ((bool)flags.ClampMinimumPriceScale), shopItemLocation);
 			ScaleEncounterRate(flags.EncounterRate / 30.0, flags.DungeonEncounterRate / 30.0);
@@ -737,12 +781,31 @@ namespace FF1Lib
 				CannotSaveAtInns();
 			}
 
+			if (flags.PacifistMode)
+			{
+				PacifistEnd();
+			}
+
+			if (flags.ShopInfo)
+			{
+				ShopUpgrade();
+			}
+
+			if (flags.SpookyFlag)
+			{
+				Spooky(rng, flags);
+			}
+			
+
 			if (flags.InventoryAutosort && !(preferences.RenounceAutosort))
 			{
 				EnableInventoryAutosort();
 			}
 
 			// We have to do "fun" stuff last because it alters the RNG state.
+			// Back up Rng so that fun flags are uniform when different ones are selected
+			uint funRngSeed = rng.Next();
+
 			RollCredits(rng);
 
 			if (preferences.DisableDamageTileFlicker)
@@ -757,6 +820,7 @@ namespace FF1Lib
 
 			if (preferences.PaletteSwap && !flags.EnemizerEnabled)
 			{
+				rng = new MT19337(funRngSeed);
 				PaletteSwap(rng);
 			}
 
@@ -767,13 +831,17 @@ namespace FF1Lib
 
 			if (preferences.ChangeLute)
 			{
+				rng = new MT19337(funRngSeed);
 				ChangeLute(rng);
 			}
+
+			rng = new MT19337(funRngSeed);
 
 			HurrayDwarfFate(preferences.HurrayDwarfFate, rng);
 
 			if (preferences.Music != MusicShuffle.None)
 			{
+				rng = new MT19337(funRngSeed);
 				ShuffleMusic(preferences.Music, rng);
 			}
 
@@ -789,12 +857,12 @@ namespace FF1Lib
 		private void EnableNPCSwatter()
 		{
 			// Talk_norm is overwritten with unconditional jump to Talk_CoOGuy (say whatever then disappear)
-			PutInBank(0x0E, 0x9297, Blob.Concat(Blob.FromHex("4C"), newTalk.Talk_kill));
-			Put(MapObjJumpTableOffset + 0x16 * JumpTablePointerSize, Blob.FromHex("A792A792")); // overwrite map object jump table so that it calls "Talk_iftem"
-			Put(MapObjOffset + 0x16 * MapObjSize, Blob.FromHex("01FFFF0001FFFF00")); // and overwrite the data so that it prints message 0xFF regardless of whether you have the item or not
+			PutInBank(newTalkRoutinesBank, 0x9297, Blob.Concat(Blob.FromHex("4C"), newTalk.Talk_kill));
+			PutInBank(newTalkRoutinesBank, lut_MapObjTalkJumpTbl + 0x16 * JumpTablePointerSize, Blob.FromHex("A792A792")); // overwrite map object jump table so that it calls "Talk_iftem"
+			PutInBank(newTalkRoutinesBank, lut_MapObjTalkData + 0x16 * MapObjSize, Blob.FromHex("01FFFF0001FFFF00")); // and overwrite the data so that it prints message 0xFF regardless of whether you have the item or not
 		}
 
-		private void AssureSafe(MT19337 rng)
+		public void AssureSafe()
 		{
 			using (SHA256 hasher = SHA256.Create())
 			{
@@ -843,7 +911,6 @@ namespace FF1Lib
 					throw new TournamentSafeException("File has been modified");
 				}
 			}
-			rng.Next();
 		}
 
 		public class TournamentSafeException : Exception
@@ -1063,10 +1130,11 @@ namespace FF1Lib
 				hashpart /= 12;
 			}
 
+			Regex rgx = new Regex("[^a-zA-Z0-9]");
 			// Put the new string data in a known location.
 			PutInBank(0x0F, 0x8900, Blob.Concat(
 				FF1Text.TextToCopyrightLine("Final Fantasy Randomizer " + FFRVersion.Version),
-				FF1Text.TextToCopyrightLine((FFRVersion.Branch == "master" ? "Seed " : FFRVersion.Branch + " BUILD ") + seed),
+				FF1Text.TextToCopyrightLine((FFRVersion.Branch == "master" ? "Seed " : rgx.Replace(FFRVersion.Branch, "") + " BUILD ") + seed),
 				hash));
 		}
 

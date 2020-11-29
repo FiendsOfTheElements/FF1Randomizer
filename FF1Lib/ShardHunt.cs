@@ -69,7 +69,7 @@ namespace FF1Lib
 			Data[0x7EF45] = 0x11; // Skip over orbs and shards when printing the item menu
 		}
 
-		public void ShortenToFR(List<Map> maps, bool includeRefightTiles, MT19337 rng)
+		public void ShortenToFR(List<Map> maps, bool includeRefightTiles, bool refightAll, MT19337 rng)
 		{
 			// Black Orb tile Warp destination change straight to an edit Chaos floor with all the ToFR Chests.
 			Data[0x00D80] = 0x80; // Map edits
@@ -97,8 +97,15 @@ namespace FF1Lib
 			if (includeRefightTiles)
 			{
 				var battles = new List<byte> { 0x57, 0x58, 0x59, 0x5A };
-				battles.Shuffle(rng);
-				landingArea.Add(Blob.FromHex($"31{battles[0]:X2}3131{battles[1]:X2}31{battles[2]:X2}3131{battles[3]:X2}31"));
+				if (refightAll)
+				{
+					landingArea.Add(Blob.FromHex($"31{battles[3]:X2}{battles[2]:X2}{battles[1]:X2}{battles[0]:X2}31{battles[0]:X2}{battles[1]:X2}{battles[2]:X2}{battles[3]:X2}31"));
+				}
+				else
+				{
+					battles.Shuffle(rng);
+					landingArea.Add(Blob.FromHex($"31{battles[0]:X2}3131{battles[1]:X2}31{battles[2]:X2}3131{battles[3]:X2}31"));
+				}
 			}
 			maps[(int)MapId.TempleOfFiendsRevisitedChaos].Put((0x0A, 0x00), landingArea.ToArray());
 		}
@@ -140,7 +147,7 @@ namespace FF1Lib
 			Put(0x3B87D, Blob.FromHex($"A9{ppu & 0xFF:X2}8511A9{(ppu & 0xFF00) >> 8:X2}8512A977A00048AD0220A5128D0620A51118692085118D0620900DAD0220E612A5128D0620A5118D062068A200CC3560D002A976C0{goal:X2}D001608D0720C8E8E006D0EB1890C1"));
 
 			// Black Orb Override to check for shards rather than ORBs.
-			PutInBank(0x0E, newTalk.Talk_BlackOrb[1] * 0x100 + newTalk.Talk_BlackOrb[0], Blob.FromHex($"AD3560C9{goal:X2}300CA0CA209690E67DE67DA51160A51260"));
+			PutInBank(newTalkRoutinesBank, newTalk.Talk_BlackOrb[1] * 0x100 + newTalk.Talk_BlackOrb[0], Blob.FromHex($"AD3560C9{goal:X2}300CA0CA209690E67DE67DA57160A57260"));
 			Put(0x7CDB3, Blob.FromHex("08CE"));
 
 			// A little narrative overhaul.

@@ -101,11 +101,12 @@ namespace FF1Lib
 	}
 	public class MapObject : RewardSourceBase
 	{
-		private const int _mapObjectTalkDataAddress = 0x395D5;
+		//private const int _mapObjectTalkDataAddress = 0x395D5;
+		private const int _mapObjectTalkDataAddress = 0x455D5;
 		private const int _mapObjectTalkDataSize = 4;
 		private const int _giftItemIndex = 3;
 
-		private const int _mapObjTalkJumpTblAddress = 0x390D3;
+		private const int _mapObjTalkJumpTblAddress = 0x450D3;
 		private const int _mapObjTalkJumpTblDataSize = 2;
 		private readonly Blob _eventFlagRoutineAddress = Blob.FromHex("0393");
 		private readonly Blob _itemTradeRoutineAddress = Blob.FromHex("7893");
