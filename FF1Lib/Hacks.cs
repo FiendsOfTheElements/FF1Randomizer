@@ -53,6 +53,61 @@ namespace FF1Lib
 		public const string BattleBoxUndrawFrames = "04"; // 2/3 normal (Must  divide 12)
 		public const string BattleBoxUndrawRows = "03";
 
+		public const int SmokeSpriteReplaceStart = 0x317E9;
+		public const int SmokeSpriteReplaceEnd = 0x31A2C;
+		public const int Bank0BRandAXReplaceStart = 0x2DF1D;
+		public const int Bank0BRandAXReplaceEnd = 0x2DF3B;
+		public const int Bank0CRandAXReplaceStart = 0x32E5D;
+		public const int Bank0CRandAXReplaceEnd = 0x32E7B;
+		public const int CombatBoxReplaceStart = 0x320A2;
+		public const int CombatBoxReplaceEnd = 0x320CD;
+
+		public const int BattleRngCodeOffset = 0x7FCE7;
+
+		public void ReplaceBattleRNG(MT19337 rng)
+		{
+			// This moves some temporary memory locations used to draw the smoke effect sprites
+			// in battle to the same locations used to store attacker stats.  These can overwrite
+			// each other without issue, and it frees up some space for a few bytes of RNG state.
+			var smokeSpriteCode = Get(SmokeSpriteReplaceStart, SmokeSpriteReplaceEnd - SmokeSpriteReplaceStart);
+
+			// We only need 4 bytes, and moving the others seems to mess some stuff up.
+			smokeSpriteCode.ReplaceInPlace(Blob.FromUShorts(new ushort[] { 0x68AF }), Blob.FromUShorts(new ushort[] { 0x686C }));
+			smokeSpriteCode.ReplaceInPlace(Blob.FromUShorts(new ushort[] { 0x68B0 }), Blob.FromUShorts(new ushort[] { 0x686D }));
+			smokeSpriteCode.ReplaceInPlace(Blob.FromUShorts(new ushort[] { 0x68B1 }), Blob.FromUShorts(new ushort[] { 0x686E }));
+			smokeSpriteCode.ReplaceInPlace(Blob.FromUShorts(new ushort[] { 0x68B2 }), Blob.FromUShorts(new ushort[] { 0x686F }));
+			//smokeSpriteCode.ReplaceInPlace(Blob.FromUShorts(new ushort[] { 0x68B3 }), Blob.FromUShorts(new ushort[] { 0x6870 }));
+			//smokeSpriteCode.ReplaceInPlace(Blob.FromUShorts(new ushort[] { 0x68B4 }), Blob.FromUShorts(new ushort[] { 0x6871 }));
+			//smokeSpriteCode.ReplaceInPlace(Blob.FromUShorts(new ushort[] { 0x68B5 }), Blob.FromUShorts(new ushort[] { 0x6872 }));
+
+			Put(SmokeSpriteReplaceStart, smokeSpriteCode);
+
+			// RandAX uses these locations, too.
+			var randAX = Get(Bank0BRandAXReplaceStart, Bank0BRandAXReplaceEnd - Bank0BRandAXReplaceStart);
+			randAX.ReplaceInPlace(Blob.FromUShorts(new ushort[] { 0x68AF }), Blob.FromUShorts(new ushort[] { 0x686C }));
+			randAX.ReplaceInPlace(Blob.FromUShorts(new ushort[] { 0x68B0 }), Blob.FromUShorts(new ushort[] { 0x686D }));
+			Put(Bank0BRandAXReplaceStart, randAX);
+
+			// There are two copies of RandAX in different banks, so we have to do this again.
+			randAX = Get(Bank0CRandAXReplaceStart, Bank0CRandAXReplaceEnd - Bank0CRandAXReplaceStart);
+			randAX.ReplaceInPlace(Blob.FromUShorts(new ushort[] { 0x68AF }), Blob.FromUShorts(new ushort[] { 0x686C }));
+			randAX.ReplaceInPlace(Blob.FromUShorts(new ushort[] { 0x68B0 }), Blob.FromUShorts(new ushort[] { 0x686D }));
+			Put(Bank0CRandAXReplaceStart, randAX);
+
+			// One more usage of this space.
+			var combatBox = Get(CombatBoxReplaceStart, CombatBoxReplaceEnd - CombatBoxReplaceStart);
+			combatBox.ReplaceInPlace(Blob.FromUShorts(new ushort[] { 0x68B1 }), Blob.FromUShorts(new ushort[] { 0x686E }));
+			Put(CombatBoxReplaceStart, combatBox);
+
+			// Now the good stuff.  Write LCG.asm in place of BattleRNG.
+			Put(BattleRngCodeOffset, Blob.FromHex("8A48ADAF68AE51FD2059FD186D55FD9002E8188DAF688610ADB068AE52FD2059FD186D56FD9002E81865109002E8188DB0688610ADB168AE53FD2059FD186D57FD9002E81865109002E8188DB1688610ADB268AE54FD2059FD186D58FD186510188DB26868AAADB26860054B56AC0000000085118612A208A9008513461190031865126A6613CAD0F3AAA51360"));
+
+			// Choose a random odd number for c in the LCG.
+			uint c = rng.Next();
+			c |= 0x00000001;
+			Put(BattleRngCodeOffset + 0x6E, Blob.FromUInts(new[] { c }));
+		}
+
 		// Required for npc quest item randomizing
 		public void PermanentCaravan()
 		{
