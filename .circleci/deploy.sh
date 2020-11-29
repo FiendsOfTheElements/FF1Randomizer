@@ -1,10 +1,10 @@
 #!/bin/sh
-set -x
 set -e
+set -x
 
 
-config=$(jq -r ".branchConfig | map(select(if .branch == \"default\" then true elif .branch == \"${CIRCLE_BRANCH}\" then true else false end)) | .[0]" .circleci/configs/config.json)
-netlifyID=$(echo "$config" | jq -r ".netlifyID")
+#config=$(jq -r ".branchConfig | map(select(if .branch == \"default\" then true elif .branch == \"${CIRCLE_BRANCH}\" then true else false end)) | .[0]" .circleci/configs/config.json)
+#netlifyID=$(echo "$config" | jq -r ".netlifyID")
 #deployPreview=$(echo "$config" | jq -r ".deployPreview")
 
 
@@ -26,7 +26,7 @@ netlifyID=$(echo "$config" | jq -r ".netlifyID")
 #
 #else
     #version=$(grep " Version.*" /root/ff1randomizer/FF1Lib/FFRVersion.cs | grep -Eo "[0-9\.]+" | tr '.' '-')
-    version="fake-version2"
+    version="fake-version3"
     siteExists=$(curl --location --request GET 'https://api.netlify.com/api/v1/dns_zones/finalfantasyrandomizer_com/dns_records' \
     --header "Authorization: Bearer ${NETLIFY_AUTH_TOKEN}" \
     --header 'Content-Type: application/json' | jq -r ".[].hostname" | grep -q "${version}" && echo true || echo false
@@ -45,7 +45,7 @@ netlifyID=$(echo "$config" | jq -r ".netlifyID")
     
     
     errorsExist=$(echo "$createdSite" | jq ".errors!=null")
-    if [ -n "$errorsExist" ]; then
+    if [ "$errorsExist" ]; then
 	    echo "errors encountered while creating site:"
 	    echo "$createdSite" | jq -r ".errors"
 	    exit 2
@@ -55,6 +55,6 @@ netlifyID=$(echo "$config" | jq -r ".netlifyID")
     echo "$id"
     
     netlify deploy --dir=/root/ff1randomizer/FF1Blazorizer/output/wwwroot --prod --site="$id"
-    netlify deploy --dir=/root/ff1randomizer/FF1Blazorizer/output/wwwroot --prod --site="$netlifyID"
+    #netlify deploy --dir=/root/ff1randomizer/FF1Blazorizer/output/wwwroot --prod --site="$netlifyID"
 
 #fi
