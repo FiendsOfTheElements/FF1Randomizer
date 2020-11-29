@@ -1,10 +1,13 @@
 #!/bin/sh
-set -o errexit
+set -e
 set -x
+
 
 config=$(jq -r ".branchConfig | map(select(if .branch == \"default\" then true elif .branch == \"${CIRCLE_BRANCH}\" then true else false end)) | .[0]" .circleci/configs/config.json)
 netlifyID=$(echo "$config" | jq -r ".netlifyID")
 deployPreview=$(echo "$config" | jq -r ".deployPreview")
+
+
 if "$deployPreview"; then
     deploy_response=$(netlify deploy --json --dir=/root/ff1randomizer/FF1Blazorizer/output/wwwroot --site="$netlifyID")
     url=$(echo "$deploy_response" | jq -r ".deploy_url")
@@ -22,5 +25,35 @@ if "$deployPreview"; then
     curl -X POST -H "Accept: application/vnd.github.v3+json" -H "Content-Type:application/json" "$pr_comment_url" -u $GH_USER:"$GH_API" -d "$post_data"
 
 else
+    version=$(grep " Version.*" /root/ff1randomizer/FF1Lib/FFRVersion.cs | grep -Eo "[0-9\.]+" | tr '.' '-')
+    siteExists=$(curl --location --request GET 'https://api.netlify.com/api/v1/dns_zones/finalfantasyrandomizer_com/dns_records' \
+    --header "Authorization: Bearer ${NETLIFY_AUTH_TOKEN}" \
+    --header 'Content-Type: application/json' | jq -r ".[].hostname" | grep -q "${version}" && echo true || echo false
+    )
+    
+    
+    if [ "${siteExists}" = true ]; then
+    	echo "The version ${version} was found in the dns entries, make sure you increment the version in FF1Lib/FFRVersion.cs"
+    	exit 1
+    fi
+    
+    createdSite=$(curl --location --request POST 'https://api.netlify.com/api/v1/sites' \
+    --header "Authorization: Bearer ${NETLIFY_AUTH_TOKEN}" \
+    --header 'Content-Type: application/json' \
+    --data-raw "{\"custom_domain\": \"${version}.finalfantasyrandomizer.com\", \"force_ssl\": \"true\"}")
+    
+    
+    errors=$(echo "$createdSite" | jq ".errors")
+    if [ "$errors" -ne "null" ]; then
+	    echo "errors encountered while creating site:"
+	    echo "$errors"
+	    exit 2
+    fi
+    
+    id=$(echo "$createdSite" | jq -r ".site_id")
+    echo "$id"
+    
+    netlify deploy --dir=/root/ff1randomizer/FF1Blazorizer/output/wwwroot --prod --site="$id"
     netlify deploy --dir=/root/ff1randomizer/FF1Blazorizer/output/wwwroot --prod --site="$netlifyID"
+
 fi
