@@ -11,8 +11,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		.gitignore = .gitignore
-		.circleci\build.sh = .circleci\build.sh
-		.circleci\deploy.sh = .circleci\deploy.sh
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FF1Randomizer", "FF1Randomizer\FF1Randomizer.csproj", "{BEF4CF23-2F46-4A02-AE02-649299CDABD7}"
@@ -22,9 +20,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".circleci", ".circleci", "{E8698844-8DA6-44D4-9290-F816B135E44E}"
 	ProjectSection(SolutionItems) = preProject
 		.circleci\build.sh = .circleci\build.sh
-		.circleci\configs\config.json = .circleci\configs\config.json
 		.circleci\config.yml = .circleci\config.yml
-		.circleci\configs\configSchema.json = .circleci\configs\configSchema.json
 		.circleci\deploy.sh = .circleci\deploy.sh
 	EndProjectSection
 EndProject
@@ -38,6 +34,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "configs", "configs", "{017D
 	ProjectSection(SolutionItems) = preProject
 		.circleci\configs\config.json = .circleci\configs\config.json
 		.circleci\configs\configSchema.json = .circleci\configs\configSchema.json
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "netlify", "netlify", "{4734BB15-ADDA-41E0-AC30-6DBCEAE397D1}"
+	ProjectSection(SolutionItems) = preProject
+		netlify\Dockerfile.alpine = netlify\Dockerfile.alpine
+		netlify\Dockerfile.buster = netlify\Dockerfile.buster
 	EndProjectSection
 EndProject
 Global
@@ -81,6 +83,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{E8698844-8DA6-44D4-9290-F816B135E44E} = {F74A70F8-A938-4587-B083-8DC615B98D23}
 		{017DEFA2-6394-4C59-89FF-4220BE6F1F32} = {E8698844-8DA6-44D4-9290-F816B135E44E}
+		{4734BB15-ADDA-41E0-AC30-6DBCEAE397D1} = {F74A70F8-A938-4587-B083-8DC615B98D23}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B742F3AC-5BCA-469A-BBD4-A787AC019E72}
