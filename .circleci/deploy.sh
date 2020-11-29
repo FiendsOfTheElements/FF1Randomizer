@@ -25,7 +25,7 @@ if "$deployPreview"; then
     post_data='{"body": "Automatic deployment: '$url'"}'
     curl -X POST -H "Accept: application/vnd.github.v3+json" -H "Content-Type:application/json" "$pr_comment_url" -u $GH_USER:"$GH_API" -d "$post_data"
 else
-	if [ "$branch" == "master" ]; then 
+	if [ "$branch" = "master" ]; then 
 		version=$(grep " Version.*" /root/ff1randomizer/FF1Lib/FFRVersion.cs | grep -Eo "[0-9\.]+" | tr '.' '-')
 		siteExists=$(curl --location --request GET 'https://api.netlify.com/api/v1/dns_zones/finalfantasyrandomizer_com/dns_records' \
     		--header "Authorization: Bearer ${NETLIFY_AUTH_TOKEN}" \
