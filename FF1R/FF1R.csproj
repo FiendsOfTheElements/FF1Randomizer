@@ -13,15 +13,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="RomUtilities" Version="2.2.0" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.2.5" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\FF1Lib\FF1Lib.csproj" />
     <ProjectReference Include="..\FFR.Common\FFR.Common.csproj" />
   </ItemGroup>
 

@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30011.22
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FF1Lib", "FF1Lib\FF1Lib.csproj", "{C5F0CF19-C775-4133-AE81-43606C73CB4B}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FF1R", "FF1R\FF1R.csproj", "{20C8C330-152B-406B-9A2C-378D2AA91001}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F74A70F8-A938-4587-B083-8DC615B98D23}"
@@ -24,8 +22,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".circleci", ".circleci", "{
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FF1Blazorizer", "FF1Blazorizer\FF1Blazorizer.csproj", "{43BF489E-8125-430E-8AA2-5BD850CB2567}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FFR.Common", "FFR.Common\FFR.Common.csproj", "{9C1D0EB1-A5E1-408E-B569-478C20B64088}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FFR.Common.Tests", "FFR.Common.Tests\FFR.Common.Tests.csproj", "{93FA510C-CC5D-4B74-A341-7CFE18357EF1}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "configs", "configs", "{017DEFA2-6394-4C59-89FF-4220BE6F1F32}"
@@ -40,7 +36,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "netlify", "netlify", "{4734
 		netlify\Dockerfile.buster = netlify\Dockerfile.buster
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FF1Randomizer", "FF1Randomizer\FF1Randomizer.csproj", "{62534BEA-C1A8-4711-A4E8-F89EAC62655E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FF1Randomizer", "FF1Randomizer\FF1Randomizer.csproj", "{62534BEA-C1A8-4711-A4E8-F89EAC62655E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FFR.Common", "FFR.Common\FFR.Common.csproj", "{3889F6E5-223F-4357-8235-B1C61EBD665C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FF1Lib", "FF1Lib\FF1Lib.csproj", "{416AE051-B042-41D7-A86C-AA38976D27EC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -48,10 +48,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{C5F0CF19-C775-4133-AE81-43606C73CB4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C5F0CF19-C775-4133-AE81-43606C73CB4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C5F0CF19-C775-4133-AE81-43606C73CB4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C5F0CF19-C775-4133-AE81-43606C73CB4B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{20C8C330-152B-406B-9A2C-378D2AA91001}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{20C8C330-152B-406B-9A2C-378D2AA91001}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{20C8C330-152B-406B-9A2C-378D2AA91001}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -64,10 +60,6 @@ Global
 		{43BF489E-8125-430E-8AA2-5BD850CB2567}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{43BF489E-8125-430E-8AA2-5BD850CB2567}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{43BF489E-8125-430E-8AA2-5BD850CB2567}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9C1D0EB1-A5E1-408E-B569-478C20B64088}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9C1D0EB1-A5E1-408E-B569-478C20B64088}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9C1D0EB1-A5E1-408E-B569-478C20B64088}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9C1D0EB1-A5E1-408E-B569-478C20B64088}.Release|Any CPU.Build.0 = Release|Any CPU
 		{93FA510C-CC5D-4B74-A341-7CFE18357EF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{93FA510C-CC5D-4B74-A341-7CFE18357EF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{93FA510C-CC5D-4B74-A341-7CFE18357EF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -76,6 +68,14 @@ Global
 		{62534BEA-C1A8-4711-A4E8-F89EAC62655E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{62534BEA-C1A8-4711-A4E8-F89EAC62655E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{62534BEA-C1A8-4711-A4E8-F89EAC62655E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3889F6E5-223F-4357-8235-B1C61EBD665C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3889F6E5-223F-4357-8235-B1C61EBD665C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3889F6E5-223F-4357-8235-B1C61EBD665C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3889F6E5-223F-4357-8235-B1C61EBD665C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{416AE051-B042-41D7-A86C-AA38976D27EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{416AE051-B042-41D7-A86C-AA38976D27EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{416AE051-B042-41D7-A86C-AA38976D27EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{416AE051-B042-41D7-A86C-AA38976D27EC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
