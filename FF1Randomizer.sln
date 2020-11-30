@@ -13,8 +13,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.gitignore = .gitignore
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FF1Randomizer", "FF1Randomizer\FF1Randomizer.csproj", "{BEF4CF23-2F46-4A02-AE02-649299CDABD7}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sandbox", "Sandbox\Sandbox.csproj", "{137A7AAB-F962-4988-88E6-363CF49A702A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".circleci", ".circleci", "{E8698844-8DA6-44D4-9290-F816B135E44E}"
@@ -42,6 +40,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "netlify", "netlify", "{4734
 		netlify\Dockerfile.buster = netlify\Dockerfile.buster
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FF1Randomizer", "FF1Randomizer\FF1Randomizer.csproj", "{62534BEA-C1A8-4711-A4E8-F89EAC62655E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -56,10 +56,6 @@ Global
 		{20C8C330-152B-406B-9A2C-378D2AA91001}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{20C8C330-152B-406B-9A2C-378D2AA91001}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{20C8C330-152B-406B-9A2C-378D2AA91001}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BEF4CF23-2F46-4A02-AE02-649299CDABD7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BEF4CF23-2F46-4A02-AE02-649299CDABD7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BEF4CF23-2F46-4A02-AE02-649299CDABD7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BEF4CF23-2F46-4A02-AE02-649299CDABD7}.Release|Any CPU.Build.0 = Release|Any CPU
 		{137A7AAB-F962-4988-88E6-363CF49A702A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{137A7AAB-F962-4988-88E6-363CF49A702A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{137A7AAB-F962-4988-88E6-363CF49A702A}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -76,6 +72,10 @@ Global
 		{93FA510C-CC5D-4B74-A341-7CFE18357EF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{93FA510C-CC5D-4B74-A341-7CFE18357EF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{93FA510C-CC5D-4B74-A341-7CFE18357EF1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{62534BEA-C1A8-4711-A4E8-F89EAC62655E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{62534BEA-C1A8-4711-A4E8-F89EAC62655E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{62534BEA-C1A8-4711-A4E8-F89EAC62655E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{62534BEA-C1A8-4711-A4E8-F89EAC62655E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
