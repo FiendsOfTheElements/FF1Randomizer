@@ -1232,6 +1232,12 @@
 		"description": "In shops, characters will strike their victory pose it they can equip a piece of equipment or learn a spell.\nPress Select to show a description of an item or a spell."
 	},
 	{
+		"Id": "flipDungeonsCheckBox",
+		"title": "Flip Dungeons Horizontally",
+		"screenshot": "flipDungeons.png",
+		"description": "At random, dungeon floors are flipped horizontally."
+	},
+	{
 		"Id": "magisizeWeaponsCheckBox",
 		"title": "All Weapons Cast Spells",
 		"screenshot": "magisizeWeapons.png",

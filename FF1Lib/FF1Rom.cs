@@ -194,6 +194,10 @@ namespace FF1Lib
 					maps[(int)MapId.EarthCaveB2] = earthB2.Map;
 				}
 			}
+			if ((bool)flags.FlipDungeons)
+			{
+				HorizontalFlipDungeons(rng, maps, teleporters, overworldMap);
+			}
 
 			if ((bool)flags.RandomizeFormationEnemizer)
 			{
