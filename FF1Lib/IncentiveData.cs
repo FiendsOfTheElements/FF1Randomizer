@@ -326,8 +326,14 @@ namespace FF1Lib
 			}
 			if (flags.IncentivizeTitansTrove ?? false)
 			{
-				//incentiveLocationPool.Add(ItemLocations.TitansTunnel1);
-				incentiveLocationPool.Add(ItemLocations.TitansTunnel.ToList().SpliceRandom(rng));
+				if ((bool)flags.IncentivizeRandomChestInLocation)
+				{
+					incentiveLocationPool.Add(ItemLocations.TitansTunnel.ToList().SpliceRandom(rng));
+				}
+				else
+				{
+					incentiveLocationPool.Add(ItemLocations.TitansTunnel1);
+				}				
 			}
 			var itemLocationPool =
 				ItemLocations.AllTreasures.Concat(ItemLocations.AllNPCItemLocations)
