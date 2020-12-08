@@ -118,6 +118,39 @@ namespace FF1Lib
 			Fill(coord, size, (byte)fill);
 		}
 
+		public void FlipHorizontal()
+		{
+			Map map = this.Clone();
+			for (int y = 0; y < RowCount; ++y)
+			{
+				for (int x = 0; x < RowLength; ++x)
+				{
+					this[y, x] = map[y, (RowLength - x - 1)];
+				}
+			}
+		}
+		public void FlipVertical()
+		{
+			Map map = this.Clone();
+			for (int y = 0; y < RowCount; ++y)
+			{
+				for (int x = 0; x < RowLength; ++x)
+				{
+					this[y, x] = map[(RowLength - y - 1), x];
+				}
+			}
+		}
+		public void Replace(byte originaltile, byte newtile)
+		{
+			for (int y = 0; y < RowCount; ++y)
+			{
+				for (int x = 0; x < RowLength; ++x)
+				{
+					if (this[y, x] == originaltile)
+						this[y, x] = newtile;
+				}
+			}
+		}
 		public void Fill((int x, int y) coord, (int w, int h) size, byte fill)
 		{
 			for (int i = coord.x; i < coord.x + size.w; ++ i)

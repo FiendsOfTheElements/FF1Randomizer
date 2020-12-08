@@ -147,7 +147,7 @@ namespace FF1Lib
 			Put(0x3B87D, Blob.FromHex($"A9{ppu & 0xFF:X2}8511A9{(ppu & 0xFF00) >> 8:X2}8512A977A00048AD0220A5128D0620A51118692085118D0620900DAD0220E612A5128D0620A5118D062068A200CC3560D002A976C0{goal:X2}D001608D0720C8E8E006D0EB1890C1"));
 
 			// Black Orb Override to check for shards rather than ORBs.
-			PutInBank(newTalkRoutinesBank, newTalk.Talk_BlackOrb[1] * 0x100 + newTalk.Talk_BlackOrb[0], Blob.FromHex($"AD3560C9{goal:X2}300CA0CA209690E67DE67DA51160A51260"));
+			PutInBank(newTalkRoutinesBank, newTalk.Talk_BlackOrb[1] * 0x100 + newTalk.Talk_BlackOrb[0], Blob.FromHex($"AD3560C9{goal:X2}300CA0CA209690E67DE67DA57160A57260"));
 			Put(0x7CDB3, Blob.FromHex("08CE"));
 
 			// A little narrative overhaul.
