@@ -407,6 +407,18 @@
 		"description": "Incentivizes the bottom right chest of the final floor of Marsh Cave. This chest requires the KEY to access. One random item from your incentive item pool will be guaranteed in this chest, provided the number of incentive items matches or is less than the number of incentive locations."
 	},
 	{
+		"Id": "incentivizeRandomChestInLocationCheckBox",
+		"title": "Pick Random Chests At Location",
+		"screenshot": "",
+		"description": "Chooses a random chest in the selected locations to act like an incentivized chest. Mirage is not included in 'Sky Palace' and TFC is not included in 'Sea Shrine'"
+	},
+	{
+		"Id": "incentivizeRandomChestIncludeExtra",
+		"title": "Include Mirage and TFC",
+		"screenshot": "",
+		"description": "Adds mirage chests into 'Sky Palace' and TFC into 'Sea Shrine'. These are not included in the random chests originally to remove the chance of having to gamble on key-less sea or cube-less mirage."
+	},
+	{
 		"Id": "incentivizeMainItemsCheckBox",
 		"title": "Main Progression Items",
 		"screenshot": "incentivizeMainItemsCheckBox.png",
