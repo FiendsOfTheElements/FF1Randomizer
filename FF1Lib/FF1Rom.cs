@@ -634,7 +634,7 @@ namespace FF1Lib
 
 			if (flags.WeaponBonuses)
 			{
-				IncreaseWeaponBonus();
+				IncreaseWeaponBonus(flags.WeaponTypeBonusValue);
 			}
 
 			if (flags.WeaponStats)

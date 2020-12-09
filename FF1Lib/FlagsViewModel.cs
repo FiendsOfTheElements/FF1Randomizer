@@ -1647,6 +1647,17 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("WeaponBonuses"));
 			}
 		}
+
+		public int WeaponTypeBonusValue
+		{
+			get => Flags.WeaponTypeBonusValue;
+			set
+			{
+				Flags.WeaponTypeBonusValue = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("WeaponTypeBonusValue"));
+			}
+		}
+
 		public bool ChanceToRun
 		{
 			get => Flags.ChanceToRun;
