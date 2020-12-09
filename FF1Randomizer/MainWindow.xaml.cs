@@ -34,20 +34,20 @@ namespace FF1Randomizer
 
 		private void TryOpenSavedFilename()
 		{
-			if (String.IsNullOrEmpty(Properties.Settings.Default.RomFilename))
+			if (String.IsNullOrEmpty(Settings.Default.RomFilename))
 			{
 				return;
 			}
 
-			if (!File.Exists(Properties.Settings.Default.RomFilename))
+			if (!File.Exists(Settings.Default.RomFilename))
 			{
-				Properties.Settings.Default.RomFilename = null;
-				Properties.Settings.Default.Save();
+				Settings.Default.RomFilename = null;
+				Settings.Default.Save();
 
 				return;
 			}
 
-			ValidateRom(Properties.Settings.Default.RomFilename);
+			ValidateRom(Settings.Default.RomFilename);
 		}
 
 		private void GenerateSeed()
@@ -67,8 +67,8 @@ namespace FF1Randomizer
 			{
 				ValidateRom(openFileDialog.FileName);
 
-				Properties.Settings.Default.RomFilename = _model.Filename;
-				Properties.Settings.Default.Save();
+				Settings.Default.RomFilename = _model.Filename;
+				Settings.Default.Save();
 			}
 		}
 

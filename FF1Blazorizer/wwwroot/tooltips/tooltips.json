@@ -407,6 +407,18 @@
 		"description": "Incentivizes the bottom right chest of the final floor of Marsh Cave. This chest requires the KEY to access. One random item from your incentive item pool will be guaranteed in this chest, provided the number of incentive items matches or is less than the number of incentive locations."
 	},
 	{
+		"Id": "incentivizeRandomChestInLocationCheckBox",
+		"title": "Pick Random Chests At Location",
+		"screenshot": "",
+		"description": "Chooses a random chest in the selected locations to act like an incentivized chest. Mirage is not included in 'Sky Palace' and TFC is not included in 'Sea Shrine'"
+	},
+	{
+		"Id": "incentivizeRandomChestIncludeExtra",
+		"title": "Include Mirage and TFC",
+		"screenshot": "",
+		"description": "Adds mirage chests into 'Sky Palace' and TFC into 'Sea Shrine'. These are not included in the random chests originally to remove the chance of having to gamble on key-less sea or cube-less mirage."
+	},
+	{
 		"Id": "incentivizeMainItemsCheckBox",
 		"title": "Main Progression Items",
 		"screenshot": "incentivizeMainItemsCheckBox.png",
@@ -1069,7 +1081,7 @@
 		"Id": "MDefModeDropDown",
 		"title": "MDef Mode Rebalancing",
 		"screenshot": "MDefModeDropDown.gif",
-		"description": "Adjusts the Magic Defense gains for classes on level up."
+		"description": "Changes how much MDef is gained at each level up.\nBB/Master +3/+4: This changes the BB to gain +3 MDef instead of +4 per level, and the Master +4 instead of +1 per level.\nFi = 3, Ki = 3, Th = 2 Ni = 2, BB = 3, Ma = 4, RM = 2, RW = 2, WM = 2, WW = 2, BM = 2, BW = 2\nInvert All: This takes the MDef growth of all promoted and unpromoted classes and sets them to: 5 - original MDef.\nFi = 2, Ki= 2, Th = 3, Ni = 3, BB = 1, Ma = 4, RM = 3, RW = 4, WM = 3, WW = 3, BM = 3, BW = 3"
 	},
 	{
 		"Id": "itemPlacementCheckBox",
@@ -1230,6 +1242,12 @@
 		"title": "Shop Information",
 		"screenshot": "ShopInfoFlag.png",
 		"description": "In shops, characters will strike their victory pose it they can equip a piece of equipment or learn a spell.\nPress Select to show a description of an item or a spell."
+	},
+	{
+		"Id": "flipDungeonsCheckBox",
+		"title": "Flip Dungeons Horizontally",
+		"screenshot": "flipDungeons.png",
+		"description": "At random, dungeon floors are flipped horizontally."
 	},
 	{
 		"Id": "magisizeWeaponsCheckBox",

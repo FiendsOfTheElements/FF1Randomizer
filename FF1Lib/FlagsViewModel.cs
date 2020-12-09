@@ -956,6 +956,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ConfusedOldMen"));
 			}
 		}
+		public bool? FlipDungeons
+		{
+			get => Flags.FlipDungeons;
+			set
+			{
+				Flags.FlipDungeons = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FlipDungeons"));
+			}
+		}
 		public bool SpookyFlag
 		{
 			get => Flags.SpookyFlag;
@@ -1267,6 +1276,24 @@ namespace FF1Lib
 			{
 				Flags.IncentivizeSkyPalace = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeSkyPalace"));
+			}
+		}
+		public bool? IncentivizeRandomChestInLocation
+		{
+			get => Flags.IncentivizeRandomChestInLocation;
+			set
+			{
+				Flags.IncentivizeRandomChestInLocation = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeRandomChestInLocation"));
+			}
+		}
+		public bool? IncentivizeRandomChestIncludeExtra
+		{
+			get => Flags.IncentivizeRandomChestIncludeExtra;
+			set
+			{
+				Flags.IncentivizeRandomChestIncludeExtra = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeRandomChestIncludeExtra"));
 			}
 		}
 

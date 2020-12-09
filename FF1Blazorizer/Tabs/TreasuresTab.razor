@@ -40,6 +40,9 @@
 				<div class="checkbox-cell"></div>
 				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeConeriaCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeConeria">Coneria (locked)</TriStateCheckBox>
 				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeMarshKeyLockedCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeMarshKeyLocked">Marsh (locked)</TriStateCheckBox>
+				<div class="checkbox-cell"></div>
+				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeRandomChestInLocationCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeRandomChestInLocation">Pick Random Chest At Location</TriStateCheckBox>
+				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeRandomChestIncludeExtra" IsEnabled="@((Flags.Treasures != false) && (Flags.IncentivizeRandomChestInLocation != false))" @bind-Value="Flags.IncentivizeRandomChestIncludeExtra">Include Mirage and TFC</TriStateCheckBox>
 			</div>
 			<div class="col-md-4">
 				<h4>Items: @(Flags.Flags.IncentivizedItemCountMin) @((Flags.Flags.IncentivizedItemCountMin != Flags.Flags.IncentivizedItemCountMax) ? "- " + Flags.Flags.IncentivizedItemCountMax : "")</h4>
