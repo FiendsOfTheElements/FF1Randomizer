@@ -186,7 +186,7 @@ namespace FF1Lib
 			}
 			public void ReplaceChunk(newTalkRoutines oldroutine, Blob search, Blob replace)
 			{
-				_talkroutines[(int)oldroutine].ReplaceOutOfPlace(search, replace);
+				_talkroutines[(int)oldroutine].ReplaceInPlace(search, replace);
 			}
 			public int GetAddress(int talkid)
 			{

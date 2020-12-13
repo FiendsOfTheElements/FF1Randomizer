@@ -801,7 +801,7 @@ namespace FF1Lib
 			{
 				PacifistEnd(talkroutines, npcdata, (bool)flags.EnemyTrapTiles || flags.EnemizerEnabled);
 			}
-
+			
 			if (flags.ShopInfo)
 			{
 				ShopUpgrade();

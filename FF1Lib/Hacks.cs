@@ -1590,7 +1590,7 @@ namespace FF1Lib
 			//var npcScriptValue = GetFromBank(newTalkRoutinesBank, lut_MapObjTalkData, 0xD0 * 4).Chunk(4);
 			//var npcScript = GetFromBank(newTalkRoutinesBank, lut_MapObjTalkJumpTbl, 0xD0 * 2).Chunk(2);
 
-			var validTalk = new List<newTalkRoutines> { newTalkRoutines.Talk_norm, newTalkRoutines.Talk_GoBridge, newTalkRoutines.Talk_ifearthfire, newTalkRoutines.Talk_ifearthvamp, newTalkRoutines.Talk_ifevent, newTalkRoutines.Talk_ifitem, newTalkRoutines.Talk_ifkeytnt, newTalkRoutines.Talk_ifvis, newTalkRoutines.Talk_Invis, newTalkRoutines.Talk_4Orb };
+			var validTalk = new List<newTalkRoutines> { newTalkRoutines.Talk_norm, newTalkRoutines.Talk_GoBridge, newTalkRoutines.Talk_ifearthfire, newTalkRoutines.Talk_ifearthvamp, newTalkRoutines.Talk_ifevent, newTalkRoutines.Talk_ifitem, newTalkRoutines.Talk_ifkeytnt, newTalkRoutines.Talk_ifvis, newTalkRoutines.Talk_Invis, newTalkRoutines.Talk_4Orb, newTalkRoutines.Talk_kill };
 			var invalidZombie = new List<ObjectId> { ObjectId.Bat, ObjectId.GaiaBroom, ObjectId.MatoyaBroom1, ObjectId.MatoyaBroom2, ObjectId.MatoyaBroom3, ObjectId.MatoyaBroom4, ObjectId.MirageRobot1, ObjectId.MirageRobot2, ObjectId.MirageRobot3, ObjectId.SkyRobot, ObjectId.LutePlate, ObjectId.RodPlate };
 			var validZombie = new List<ObjectId>();
 
