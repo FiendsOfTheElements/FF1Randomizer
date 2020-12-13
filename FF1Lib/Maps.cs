@@ -154,13 +154,14 @@ namespace FF1Lib
 		public const int MapObjCount = 0xD0;
 
 		public const int FirstBossEncounterIndex = 0x73;
+		public const int LastBossEncounterIndex = 0x7F;
 
 		const ushort TalkFight = 0x94AA;
 
 		bool IsBattleTile(Blob tuple) => tuple[0] == 0x0A;
 		bool IsRandomBattleTile(Blob tuple) => IsBattleTile(tuple) && (tuple[1] & 0x80) != 0x00;
 		bool IsNonBossTrapTile(Blob tuple) => IsBattleTile(tuple) && tuple[1] > 0 && tuple[1] < FirstBossEncounterIndex;
-		bool IsBossTrapTile(Blob tuple) => IsBattleTile(tuple) && tuple[1] > 0 && tuple[1] >= FirstBossEncounterIndex;
+		bool IsBossTrapTile(Blob tuple) => IsBattleTile(tuple) && tuple[1] <= LastBossEncounterIndex && tuple[1] >= FirstBossEncounterIndex;
 
 		public void RemoveTrapTiles()
 		{
@@ -585,18 +586,19 @@ namespace FF1Lib
 
 			if (mapsToFlip.Contains(MapId.Waterfall)) teleporters.Waterfall.FlipXcoordinate(); overworld.PutOverworldTeleport(OverworldTeleportIndex.Waterfall, teleporters.Waterfall);
 		}
-		public void WarMECHNpc(WarMECHMode mode, MT19337 rng, List<Map> maps)
+		public void WarMECHNpc(WarMECHMode mode, NPCdata npcpdata, MT19337 rng, List<Map> maps)
 		{
 			const byte UnusedTextPointer = 0xF7;
 			const byte WarMECHEncounter = 0x56;
 			const byte RobotGfx = 0x15;
 
 			// Set up the map object.
-			PutInBank(newTalkRoutinesBank, lut_MapObjTalkData + (byte)ObjectId.WarMECH * MapObjSize, new[] { (byte)ObjectId.WarMECH, UnusedTextPointer, (byte)0x00, WarMECHEncounter });
+			npcpdata.GetTalkArray(ObjectId.WarMECH)[(int)TalkArrayPos.dialogue_2] = UnusedTextPointer;
+			npcpdata.GetTalkArray(ObjectId.WarMECH)[(int)TalkArrayPos.battle_id] = WarMECHEncounter;
 			Data[MapObjGfxOffset + (byte)ObjectId.WarMECH] = RobotGfx;
 
 			// Set the action when you talk to WarMECH.
-			PutInBank(newTalkRoutinesBank, lut_MapObjTalkJumpTbl + (byte)ObjectId.WarMECH * JumpTablePointerSize, newTalk.Talk_fight);
+			npcpdata.SetRoutine(ObjectId.WarMECH, newTalkRoutines.Talk_fight);
 
 			// Change the dialogue.
 			var dialogueStrings = new List<string>

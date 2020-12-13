@@ -192,7 +192,7 @@ namespace FF1Lib
 			Put(FormationsOffset + ChaosFormationIndex * FormationSize, finalBattle);
 		}
 
-		public void PacifistEnd()
+		public void PacifistEnd(TalkRoutines talkroutines, NPCdata npcdata, bool extendedtraptiles)
 		{
 			// Remove ToFR Fiends tiles
 			var tilesets = Get(TilesetDataOffset, TilesetDataCount * TilesetDataSize * TilesetCount).Chunk(TilesetDataSize).ToList();
@@ -200,35 +200,38 @@ namespace FF1Lib
 			{
 				if (IsBossTrapTile(tile))
 				{
-					tile[1] = 0x80;
+					tile[1] = extendedtraptiles ? 0x00 : 0x80;
 				}
 			});
 			Put(TilesetDataOffset, tilesets.SelectMany(tileset => tileset.ToBytes()).ToArray());
 
 			// Get all NPC scripts and script values to update them
-			var npcScript = GetFromBank(newTalkRoutinesBank, lut_MapObjTalkJumpTbl, 0xD0 * 2).Chunk(2);
+			//var npcScript = GetFromBank(newTalkRoutinesBank, lut_MapObjTalkJumpTbl, 0xD0 * 2).Chunk(2);
 
-			var Talk_Ending = Blob.FromHex("4693");
+			var Talk_Ending = talkroutines.Add(Blob.FromHex("4C38C9"));
+
+				//. Blob.FromHex("4693");
 
 			for (int i = 0; i < 0xD0; i++)
 			{
-				if (npcScript[i] == newTalk.Talk_fight)
-					npcScript[i] = newTalk.Talk_CoOGuy;
+				if (npcdata.GetRoutine((ObjectId)i) == newTalkRoutines.Talk_fight)
+					npcdata.SetRoutine((ObjectId)i, newTalkRoutines.Talk_CoOGuy);
 			}
 
 			// Update Chaos script
-			npcScript[0x1A] = Talk_Ending;
+			npcdata.SetRoutine((ObjectId)0x1A, (newTalkRoutines)Talk_Ending);
 
 			// Reinsert updated scripts
-			PutInBank(newTalkRoutinesBank, lut_MapObjTalkJumpTbl, npcScript.SelectMany(script => script.ToBytes()).ToArray());
+			//PutInBank(newTalkRoutinesBank, lut_MapObjTalkJumpTbl, npcScript.SelectMany(script => script.ToBytes()).ToArray());
 
 			//Update Talk_CooGuy and change Talk_fight to load End game
-			PutInBank(newTalkRoutinesBank, 0x933B, Blob.FromHex("A476207F90209690A571604C38C9"));
+			//PutInBank(newTalkRoutinesBank, 0x933B, Blob.FromHex("A476207F90209690A571604C38C9"));
+
 
 			//Update Astos and Bikke
-			PutInBank(newTalkRoutinesBank, 0x93C0, Blob.FromHex("EAEAEA"));
-			PutInBank(newTalkRoutinesBank, 0x9507, Blob.FromHex("EAEAEA"));
-
+			var battleJump = Blob.FromHex("200096");
+			talkroutines.ReplaceChunk(newTalkRoutines.Talk_Bikke, battleJump, Blob.FromHex("EAEAEA"));
+			talkroutines.ReplaceChunk(newTalkRoutines.Talk_Astos, battleJump, Blob.FromHex("EAEAEA"));
 		}
 	}
 

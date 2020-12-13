@@ -102,6 +102,238 @@ namespace FF1Lib
 			public static readonly Blob Talk_Astos = Blob.FromHex("D694");
 			public static readonly Blob Talk_kill = Blob.FromHex("1095");
 		}
+		public enum newTalkRoutines
+		{
+			Talk_None = 0,
+			Talk_norm = 1,
+			Talk_ifvis = 2,
+			Talk_ifitem = 3,
+			Talk_Invis,
+			Talk_ifevent,
+			Talk_GoBridge,
+			Talk_4Orb,
+			Talk_ifkeytnt,
+			Talk_ifearthvamp,
+			Talk_ifearthfire,
+			Talk_Replace,
+			Talk_CoOGuy,
+			Talk_fight,
+			Talk_BlackOrb,
+			Talk_Princess1,
+			Talk_SubEng,
+			Talk_Titan,
+			Talk_Bikke,
+			Talk_Nerrick,
+			Talk_Bahamut,
+			Talk_ElfDocUnne,
+			Talk_GiveItemOnFlag,
+			Talk_TradeItems,
+			Talk_GiveItemOnItem,
+			Talk_Astos,
+			Talk_kill,
+			Talk_Chaos
+		}
+		public class TalkRoutines
+		{
+			private List<Blob> _talkroutines = new List<Blob>();
+			private int TalkRoutinesOffset = 0x8200;
+			private int lut_MapObjTalkJumpTbl_new = 0x8000;
+
+			public TalkRoutines()
+			{
+				_talkroutines.Add(Blob.FromHex("60"));
+				_talkroutines.Add(Blob.FromHex("A57160"));
+				_talkroutines.Add(Blob.FromHex("A470209190B003A57160A57260"));
+				_talkroutines.Add(Blob.FromHex("A5706920A8B90060F003A57160A57260"));
+				_talkroutines.Add(Blob.FromHex("A012209190B008AD2160D003A57160A57260"));
+				_talkroutines.Add(Blob.FromHex("A470207990B003A57160A57260"));
+				_talkroutines.Add(Blob.FromHex("A0122091909008AD0860D003A57160A57260"));
+				_talkroutines.Add(Blob.FromHex("AD32602D33602D34602D3160F003A57160A57260"));
+				_talkroutines.Add(Blob.FromHex("AD2560F008AD2660D003A57160A57260"));
+				_talkroutines.Add(Blob.FromHex("A00C209190B008AD3160D003A57160A57260"));
+				_talkroutines.Add(Blob.FromHex("AD3160F008AD3260D003A57160A57260"));
+				_talkroutines.Add(Blob.FromHex("A476209690A47320A490A57160"));
+				_talkroutines.Add(Blob.FromHex("A476209690A57160"));
+				_talkroutines.Add(Blob.FromHex("A571203D96A575200096A476207F902073922018964C439660"));
+				_talkroutines.Add(Blob.FromHex("AD32602D33602D34602D3160F00CA0CA209690E67DE67DA57160A57260"));
+				_talkroutines.Add(Blob.FromHex("A476207F90209690A01220A490A93F20CC90A57160"));
+				_talkroutines.Add(Blob.FromHex("AD3060D003A57160A476209690A57260"));
+				_talkroutines.Add(Blob.FromHex("AD2960D003A57160CE2960A476209690A572E67D60"));
+				_talkroutines.Add(Blob.FromHex("A03F209190B01FA571203D96A575200096A03F20A490A04020A490A04120A4902018964C4396A476207990B012A573F00E1820109FB00AA476207F90A57260A57060")); // Talk_Bikke
+				_talkroutines.Add(Blob.FromHex("AD2660F018A573F0141820109FB010CE2660A476207F90207392A57260A57060"));
+				_talkroutines.Add(Blob.FromHex("A00E2079909003A57360AD2D60D003A57160CE2D60207F9020AE95E67DA57260"));
+				_talkroutines.Add(Blob.FromHex("A476207990B012A674BD2060F00EDE2060207F90E67DA57260A57160A57060"));
+				_talkroutines.Add(Blob.FromHex("A476207990B01BA474F0052079909015A573F0111820109FB00DA476207F90A57260A57160A57060"));
+				_talkroutines.Add(Blob.FromHex("A476207990B01EA674BD2060F01AA573F0161820109FB012A674DE2060A476207F90A57260A57160A57060"));
+				_talkroutines.Add(Blob.FromHex("A476207990B01BA674F005BD2060F015A573F0111820109FB00DA476207F90A57260A57160A57060"));
+				_talkroutines.Add(Blob.FromHex("A674F006BD2060F029A5738561202096F022E67DA572203D96A575200096A476207F90207392A5611820109F2018964C4396A57060")); // Talk_Astos
+				_talkroutines.Add(Blob.FromHex("A000209690A57160")); // Talk_Kill
+				_talkroutines.Add(Blob.FromHex("A57520C590A57160")); // Talk_Chaos
+			}
+			public Blob this[int talkid]
+			{
+				get => _talkroutines[talkid];
+				set => _talkroutines[talkid] = value;
+			}
+			public int Add(Blob newroutine)
+			{
+				_talkroutines.Add(newroutine);
+				return _talkroutines.Count - 1;
+			}
+			public void Replace(newTalkRoutines oldroutine, Blob newroutine)
+			{
+				_talkroutines[(int)oldroutine] = newroutine;
+			}
+			public void ReplaceChunk(newTalkRoutines oldroutine, Blob search, Blob replace)
+			{
+				_talkroutines[(int)oldroutine].ReplaceOutOfPlace(search, replace);
+			}
+			public int GetAddress(int talkid)
+			{
+				var pos = 0;
+				for (int i = 0; i < talkid; i++)
+				{
+					pos += _talkroutines[i].Length;
+				}
+
+				return TalkRoutinesOffset + pos;
+			}
+			public Blob GetAddressLE(int talkid)
+			{
+				var address = GetAddress(talkid);
+				sbyte[] addressLE = new sbyte[] { (sbyte)(address % 0x100), (sbyte)(address / 0x100) };
+
+				return Blob.FromSBytes(addressLE);
+			}
+			public void WriteRoutines(FF1Rom rom)
+			{
+				rom.PutInBank(newTalkRoutinesBank, TalkRoutinesOffset, Blob.FromSBytes(_talkroutines.SelectMany(talk => talk.ToSBytes()).ToArray()));
+			}
+
+			public void UpdateNPCRoutines(FF1Rom rom, NPCdata npcdata)
+			{
+				var tempblob = new byte[] { };
+
+				for (int i = 0; i < npcdata.GetNPCCount(); i++)
+				{
+					tempblob = tempblob.Concat(GetAddressLE((int)npcdata.GetRoutine((ObjectId)i)).ToBytes()).ToArray();
+				}
+
+				rom.PutInBank(newTalkRoutinesBank, lut_MapObjTalkJumpTbl_new, tempblob);
+			}
+		}
+
+		public class generalNPC
+		{
+			public byte sprite;
+			public Blob oldtalkroutine;
+			public newTalkRoutines talkroutine;
+			public byte[] talkarray;
+		}
+		public class NPCdata
+		{
+			private List<generalNPC> _npcs = new List<generalNPC>();
+
+			public NPCdata(FF1Rom rom)
+			{
+				for (int i = 0; i < 0xD0; i++)
+				{
+					_npcs.Add(new generalNPC { sprite = rom.Data[MapObjGfxOffset + i],
+						oldtalkroutine = rom.GetFromBank(oldTalkRoutinesBank, lut_MapObjTalkJumpTbl + i * 2, 2),
+						talkroutine = newTalkRoutines.Talk_None,
+						talkarray = rom.GetFromBank(oldTalkRoutinesBank, lut_MapObjTalkData + 0x04 * i, 4).ToBytes().Concat(new byte[] { 0x00, 0x00 }).ToArray()
+					});
+				}
+			}
+			public void SetSprite(ObjectId targetobject, byte targetsprite)
+			{
+				_npcs[(int)targetobject].sprite = targetsprite;
+			}
+			public Blob GetOldRoutine(ObjectId targetobject)
+			{
+				return _npcs[(int)targetobject].oldtalkroutine;
+			}
+			public void SetRoutine(ObjectId targetobject, newTalkRoutines targettalkroutine)
+			{
+				_npcs[(int)targetobject].talkroutine = targettalkroutine;
+			}
+			public newTalkRoutines GetRoutine(ObjectId targetobject)
+			{
+				return _npcs[(int)targetobject].talkroutine;
+			}
+			public byte[] GetTalkArray(ObjectId targetobject)
+			{
+				return _npcs[(int)targetobject].talkarray;
+			}
+			public int GetNPCCount()
+			{
+				return _npcs.Count;
+			}
+			public void UpdateItemPlacement(List<IRewardSource> itemplacement)
+			{
+				var targetnpc = itemplacement.Where(x => x.GetType().Equals(typeof(MapObject)));
+
+				foreach (var item in targetnpc)
+				{
+					switch (item.Name)
+					{
+						case "Astos":
+							_npcs[(int)ObjectId.Astos].talkarray[(int)TalkArrayPos.item_id] = (byte)item.Item;
+							break;
+						case "CubeBot":
+							_npcs[(int)ObjectId.CubeBot].talkarray[(int)TalkArrayPos.item_id] = (byte)item.Item;
+							break;
+						case "King":
+							_npcs[(int)ObjectId.King].talkarray[(int)TalkArrayPos.item_id] = (byte)item.Item;
+							break;
+						case "Princess2":
+							_npcs[(int)ObjectId.Princess2].talkarray[(int)TalkArrayPos.item_id] = (byte)item.Item;
+							break;
+						case "Matoya":
+							_npcs[(int)ObjectId.Matoya].talkarray[(int)TalkArrayPos.item_id] = (byte)item.Item;
+							break;
+						case "Bikke":
+							_npcs[(int)ObjectId.Bikke].talkarray[(int)TalkArrayPos.item_id] = (byte)item.Item;
+							break;
+						case "ElfPrince":
+							_npcs[(int)ObjectId.ElfPrince].talkarray[(int)TalkArrayPos.item_id] = (byte)item.Item;
+							break;
+						case "Sarda":
+							_npcs[(int)ObjectId.Sarda].talkarray[(int)TalkArrayPos.item_id] = (byte)item.Item;
+							break;
+						case "CanoeSage":
+							_npcs[(int)ObjectId.CanoeSage].talkarray[(int)TalkArrayPos.item_id] = (byte)item.Item;
+							break;
+						case "Fairy":
+							_npcs[(int)ObjectId.Fairy].talkarray[(int)TalkArrayPos.item_id] = (byte)item.Item;
+							break;
+						case "Lefein":
+							_npcs[(int)ObjectId.Lefein].talkarray[(int)TalkArrayPos.item_id] = (byte)item.Item;
+							break;
+						case "Nerrick":
+							_npcs[(int)ObjectId.Nerrick].talkarray[(int)TalkArrayPos.item_id] = (byte)item.Item;
+							break;
+						case "Smith":
+							_npcs[(int)ObjectId.Smith].talkarray[(int)TalkArrayPos.item_id] = (byte)item.Item;
+							break;
+					}
+				}
+			}
+			public void WriteNPCdata(FF1Rom rom)
+			{
+				var lut_MapObjTalkData_move = 0xBA00;
+				rom.PutInBank(newTalkRoutinesBank, lut_MapObjTalkData_move, _npcs.SelectMany(data => data.talkarray).ToArray());
+			}
+		}
+		public enum TalkArrayPos
+		{
+			dialogue_1 = 0,
+			dialogue_2 = 1,
+			dialogue_3 = 2,
+			item_id = 3,
+			requirement_id = 4,
+			battle_id = 5
+		}
 		public bool RedMageHasLife()
 		{
 			var itemnames = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
@@ -232,16 +464,26 @@ namespace FF1Lib
 			PutInBank(0x0E, 0x9079, npcManipulationRoutines);
 			PutInBank(0x0E, 0x9273, hideMapObject);
 
+			// New utilities for talk routines
+			PutInBank(newTalkRoutinesBank, 0x9600, Blob.FromHex("856A20CDD8A9008D01208D1540A002204A96A001204A9660A003204A964C0FE4C96CB015C944B00CC91C900D2034DDB0094C39962046DDB00118A9F160A000204A9660686868684CB6C88510A91148A9FE48A90648B9609648B9649648A51060CAF1E8CF02FFFF39"));
+
+			// TalkToObject Upgraded
+			PutInBank(newTalkRoutinesBank, 0x901B, Blob.FromHex("BD006F8576A00084150A26151865769002E6150A261569008514A9BA651585158612A900AAA8B1149570C8E8E006D0F6A612A5760AA8900DB900818516B9018185176C1600B900808516B9018085176C1600"));
+			Data[0x7C9F7] = 0x1B;
+
+			// LoadPrice fix
+			PutInBank(newTalkRoutinesBank, 0x9F10, Blob.FromHex("A9118558A5734C93DD"));
+
 			// Update bank
 			Data[0x7C9F2] = newTalkRoutinesBank;
 		}
 
 		// Required for npc quest item randomizing
 		// Doesn't substantially change anything if EnableNPCsGiveAnyItem isn't called
+		// Deprecated, delete if no bugs comes up - 2020-12-12
 		public void CleanupNPCRoutines()
 		{
 			// Swap string pointer in index 2 and 3 for King, Bikke, Prince, and Lefein
-			/*
 			var temp = Data[ItemLocations.KingConeria.Address];
 			Data[ItemLocations.KingConeria.Address] = Data[ItemLocations.KingConeria.Address - 1];
 			Data[ItemLocations.KingConeria.Address - 1] = temp;
@@ -257,7 +499,7 @@ namespace FF1Lib
 			temp = Data[ItemLocations.Lefein.Address];
 			Data[ItemLocations.Lefein.Address] = Data[ItemLocations.Lefein.Address - 1];
 			Data[ItemLocations.Lefein.Address - 1] = temp;
-			*/
+			
 			// And do the same swap in the vanilla routines so those still work if needed
 			Data[0x392A7] = 0x12;
 			Data[0x392AA] = 0x13;
@@ -384,266 +626,284 @@ namespace FF1Lib
 			NPCShuffleDialogs.Add(0x27, "Take this.\n\n\n\n\nReceived #");
 			NPCShuffleDialogs.Add(0x2B, "Great job vanquishing\nthe Earth FIEND.\nWith this, go and defeat\nthe other FIENDS!\n\nReceived #");
 			NPCShuffleDialogs.Add(0xCD, "With this, you can\navenge the SKY WARRIORS.\n\n\n\nReceived #");
+			NPCShuffleDialogs.Add(0xF0, "Received #");
 
 			InsertDialogs(NPCShuffleDialogs);
 		}
-		public void UpdateDialogs()
+		public void UpdateDialogs(NPCdata npcdata)
 		{
 			Dictionary<int, string> newDialogs = new Dictionary<int, string>();
 
-			CleanupNPCRoutines();
+			//CleanupNPCRoutines(); - Deprecated 2020-12-12
 			SplitOpenTreasureRoutine();
 			TransferDialogs();
 			TransferTalkRoutines();
 			AddNewChars();
 
-			// Get all NPC scripts and script values to update them
-			var npcScriptValue = GetFromBank(newTalkRoutinesBank, lut_MapObjTalkData, 0xD0 * 4).Chunk(4);
-			var npcScript = GetFromBank(newTalkRoutinesBank, lut_MapObjTalkJumpTbl, 0xD0 * 2).Chunk(2);
-
-			// Insert new dialogs Talk routine, see 0E_9296_TalkRoutines.asm
-			//			var newTalkRoutines = "60A51160A410209190B003A51160A51260A5106920A8B90060F003A51160A51260A012209190B008AD2160D003A51160A51260A410207990B003A51160A51260A0122091909008AD0860D003A51160A51260AD32602D33602D34602D3160F003A51160A51260AD2560F008AD2660D003A51160A51260A00C209190B008AD3160D003A51160A51260AD3160F008AD3260D003A51160A51260A416209690A41320A490A51160A416209690A51160A416207F90209690A51320C590A51160AD32602D33602D34602D3160F00CA0CA209690E67DE67DA51160A51260A416207F90209690A01220A490A93F20CC90A51160AD3060D003A51160A416209690A51260AD2960D003A51160CE2960A416209690A512E67D60A03F209190B01520A490A04020A490A04120A490A97E20C590A51160A416207990B016A513F012A4128414182093DDB00AA416207F90A51460A51060AD2660F01CA513F018A4128414182093DDB010CE2660A416207F90207392A51460A51060A00E2079909003A51360AD2D60D003A51160CE2D60207F9020AE95E67DA51260A416207990B013BE8095BD2060F00EDE2060207F90E67DA51260A51160A51060A416207990B021B98095F006A82079909019A513F015A4128414182093DDB00DA416207F90A51460A51160A51060A416207990B024BE8095BD2060F01FA513F01BA4128414182093DDB013A416BE8095DE2060207F90A51460A51160A51060A416207990B0F3BE8095F005BD2060F019A513F015A4128414182093DDB00DA416207F90A51460A51160A51060A416BE8095F006EABD2060F02AA513F026A4128414182093DDB01E8467A5108D0E03A5118D0F03A416207F90207392A97D20C590A51460A51060A000209690A51160";
-			var newTalkRoutines = "60A57160A470209190B003A57160A57260A5706920A8B90060F003A57160A57260A012209190B008AD2160D003A57160A57260A470207990B003A57160A57260A0122091909008AD0860D003A57160A57260AD32602D33602D34602D3160F003A57160A57260AD2560F008AD2660D003A57160A57260A00C209190B008AD3160D003A57160A57260AD3160F008AD3260D003A57160A57260A476209690A47320A490A57160A476209690A57160A476207F90209690A57320C590A57160AD32602D33602D34602D3160F00CA0CA209690E67DE67DA57160A57260A476207F90209690A01220A490A93F20CC90A57160AD3060D003A57160A476209690A57260AD2960D003A57160CE2960A476209690A572E67D60A03F209190B01520A490A04020A490A04120A490A97E20C590A57160A476207990B016A573F012A4728474182093DDB00AA476207F90A57460A57060AD2660F01CA573F018A4728474182093DDB010CE2660A476207F90207392A57460A57060A00E2079909003A57360AD2D60D003A57160CE2D60207F9020AE95E67DA57260A476207990B013BE8095BD2060F00EDE2060207F90E67DA57260A57160A57060A476207990B021B98095F006A82079909019A573F015A4728474182093DDB00DA476207F90A57460A57160A57060A476207990B024BE8095BD2060F01FA573F01BA4728474182093DDB013A476BE8095DE2060207F90A57460A57160A57060A476207990B020BE8095F005BD2060F019A573F015A4728474182093DDB00DA476207F90A57460A57160A57060A476BE8095F006EABD2060F02AA573F026A4728474182093DDB01E8467A5108D0E03A5118D0F03A476207F90207392A97D20C590A57460A57060A000209690A57160";
-
-			// Fix for bank change
-			newTalkRoutines = newTalkRoutines.Replace("2093DD", "20109F");
-			PutInBank(newTalkRoutinesBank, 0x9296, Blob.FromHex(newTalkRoutines));
-
-			// LoadPrice fix
-			PutInBank(newTalkRoutinesBank, 0x9F10, Blob.FromHex("A9118558A5734C93DD"));
-
-			// Load NPC scripts in zero page at $70 instead of $10
-			Data[0x4502F] = 0x76;
-			Data[0x45049] = 0x70;
-			Data[0x4504E] = 0x71;
-			Data[0x45053] = 0x72;
-			Data[0x45058] = 0x73;
-			Data[0x4505A] = 0x76;
-
-			// Lut for required items check, only the first 32 NPCs can give an item with this, but it should be enough for now
-			PutInBank(newTalkRoutinesBank, 0x9580, Blob.FromHex("000300000004050206070308000C0D0B10000000091100000000000000000000"));
-
 			// Update all NPC's dialogs script, default behaviours are maintained
 			for (int i = 0; i < 0xD0; i++)
 			{
-				if (npcScript[i] == originalTalk.Talk_4Orb)
+				if (npcdata.GetOldRoutine((ObjectId)i) == originalTalk.Talk_4Orb)
 				{
-					npcScript[i] = newTalk.Talk_4Orb;
+					npcdata.SetRoutine((ObjectId)i, newTalkRoutines.Talk_4Orb);
 				}
-				else if (npcScript[i] == originalTalk.Talk_Astos)
+				else if (npcdata.GetOldRoutine((ObjectId)i) == originalTalk.Talk_Astos)
 				{
 					//newDialogs.Add(0xBF, "I'm not quite dead yet.");
-					npcScript[i] = newTalk.Talk_Astos;
-					npcScriptValue[i] = Blob.FromHex("11181200");
-					npcScriptValue[i][3] = (byte)Item.Crystal;
+					npcdata.SetRoutine((ObjectId)i, newTalkRoutines.Talk_Astos);
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.dialogue_1] = npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.dialogue_2];
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.dialogue_2] = 0x18;
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.item_id] = (byte)Item.Crystal;
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.requirement_id] = (byte)Item.Crown;
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.battle_id] = 0x7D;
 				}
-				else if (npcScript[i] == originalTalk.Talk_Bahamut)
+				else if (npcdata.GetOldRoutine((ObjectId)i) == originalTalk.Talk_Bahamut)
 				{
-					npcScript[i] = newTalk.Talk_Bahamut;
+					npcdata.SetRoutine((ObjectId)i, newTalkRoutines.Talk_Bahamut);
 				}
-				else if (npcScript[i] == originalTalk.Talk_Bikke)
+				else if (npcdata.GetOldRoutine((ObjectId)i) == originalTalk.Talk_Bikke)
 				{
-					npcScript[i] = newTalk.Talk_Bikke;
-					npcScriptValue[i] = Blob.FromHex("0A080900");
-					npcScriptValue[i][3] = (byte)Item.Ship;
+					npcdata.SetRoutine((ObjectId)i, newTalkRoutines.Talk_Bikke);
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.dialogue_1] = 0x0A;
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.item_id] = (byte)Item.Ship;
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.battle_id] = 0x7E;
 				}
-				else if (npcScript[i] == originalTalk.Talk_BlackOrb)
+				else if (npcdata.GetOldRoutine((ObjectId)i) == originalTalk.Talk_BlackOrb)
 				{
-					npcScript[i] = newTalk.Talk_BlackOrb;
+					npcdata.SetRoutine((ObjectId)i, newTalkRoutines.Talk_BlackOrb);
 				}
-				else if (npcScript[i] == originalTalk.Talk_CanoeSage)
+				else if (npcdata.GetOldRoutine((ObjectId)i) == originalTalk.Talk_CanoeSage)
 				{
-					npcScript[i] = newTalk.Talk_GiveItemOnItem;
-					npcScriptValue[i] = Blob.FromHex("2C2C2B00");
-					npcScriptValue[i][3] = (byte)Item.Canoe;
+					npcdata.SetRoutine((ObjectId)i, newTalkRoutines.Talk_GiveItemOnItem);
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.dialogue_1] = npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.dialogue_3];
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.dialogue_3] = npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.dialogue_2];
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.dialogue_2] = npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.dialogue_1];
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.item_id] = (byte)Item.Canoe;
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.requirement_id] = (byte)Item.EarthOrb;
 				}
-				else if (npcScript[i] == originalTalk.Talk_Chime)
+				else if (npcdata.GetOldRoutine((ObjectId)i) == originalTalk.Talk_Chime)
 				{
-					npcScript[i] = newTalk.Talk_GiveItemOnFlag;
-					npcScriptValue[i] = Blob.FromHex("D0CECD00");
-					npcScriptValue[i][3] = (byte)Item.Chime;
+					npcdata.SetRoutine((ObjectId)i, newTalkRoutines.Talk_GiveItemOnFlag);
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.item_id] = (byte)Item.Chime;
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.requirement_id] = (byte)ObjectId.Unne;
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.battle_id] = 0x7D;
 				}
-				else if (npcScript[i] == originalTalk.Talk_CoOGuy)
+				else if (npcdata.GetOldRoutine((ObjectId)i) == originalTalk.Talk_CoOGuy)
 				{
-					npcScript[i] = newTalk.Talk_CoOGuy;
+					npcdata.SetRoutine((ObjectId)i, newTalkRoutines.Talk_CoOGuy);
 				}
-				else if (npcScript[i] == originalTalk.Talk_CubeBot)
+				else if (npcdata.GetOldRoutine((ObjectId)i) == originalTalk.Talk_CubeBot)
 				{
-					npcScript[i] = newTalk.Talk_GiveItemOnFlag;
-					npcScriptValue[i] = Blob.FromHex("00282700");
-					npcScriptValue[i][3] = (byte)Item.Cube;
+					npcdata.SetRoutine((ObjectId)i, newTalkRoutines.Talk_GiveItemOnFlag);
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.dialogue_1] = 0x00;
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.dialogue_2] = 0x28;
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.dialogue_3] = 0x27;
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.item_id] = (byte)Item.Cube;
 				}
-				else if (npcScript[i] == originalTalk.Talk_ElfDoc)
+				else if (npcdata.GetOldRoutine((ObjectId)i) == originalTalk.Talk_ElfDoc)
 				{
-					npcScript[i] = newTalk.Talk_ElfDocUnne;
-					npcScriptValue[i] = Blob.FromHex("0B0D0C00");
+					npcdata.SetRoutine((ObjectId)i, newTalkRoutines.Talk_ElfDocUnne);
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.dialogue_1] = 0x0B;
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.dialogue_2] = 0x0D;
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.dialogue_3] = 0x0C;
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.requirement_id] = (byte)Item.Herb;
 				}
-				else if (npcScript[i] == originalTalk.Talk_ElfPrince)
+				else if (npcdata.GetOldRoutine((ObjectId)i) == originalTalk.Talk_ElfPrince)
 				{
-					npcScript[i] = newTalk.Talk_GiveItemOnFlag;
-					npcScriptValue[i] = Blob.FromHex("100F0E00");
-					npcScriptValue[i][3] = (byte)Item.Key;
+					npcdata.SetRoutine((ObjectId)i, newTalkRoutines.Talk_GiveItemOnFlag);
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.dialogue_1] = 0x10;
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.dialogue_2] = 0x0F;
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.dialogue_3] = 0x0E;
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.item_id] = (byte)Item.Key;
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.requirement_id] = (byte)ObjectId.ElfDoc;
 				}
-				else if (npcScript[i] == originalTalk.Talk_Fairy)
+				else if (npcdata.GetOldRoutine((ObjectId)i) == originalTalk.Talk_Fairy)
 				{
-					npcScript[i] = newTalk.Talk_GiveItemOnFlag;
-					npcScriptValue[i] = Blob.FromHex("00242300");
-					npcScriptValue[i][3] = (byte)Item.Oxyale;
+					npcdata.SetRoutine((ObjectId)i, newTalkRoutines.Talk_GiveItemOnFlag);
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.dialogue_1] = 0x00;
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.dialogue_2] = 0x24;
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.dialogue_3] = 0x23;
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.item_id] = (byte)Item.Oxyale;
 				}
-				else if (npcScript[i] == originalTalk.Talk_fight)
+				else if (npcdata.GetOldRoutine((ObjectId)i) == originalTalk.Talk_fight)
 				{
-					npcScript[i] = newTalk.Talk_fight;
+					if (npcdata.GetTalkArray((ObjectId)i)[3] == 0x7B)
+						npcdata.SetRoutine((ObjectId)i, newTalkRoutines.Talk_Chaos);
+					else
+						npcdata.SetRoutine((ObjectId)i, newTalkRoutines.Talk_fight);
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.battle_id] = npcdata.GetTalkArray((ObjectId)i)[3];
 				}
-				else if (npcScript[i] == originalTalk.Talk_Garland)
+				else if (npcdata.GetOldRoutine((ObjectId)i) == originalTalk.Talk_Garland)
 				{
-					npcScript[i] = newTalk.Talk_fight;
-					npcScriptValue[i][3] = 0x7F;
+					npcdata.SetRoutine((ObjectId)i, newTalkRoutines.Talk_fight);
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.battle_id] = 0x7F;
 				}
-				else if (npcScript[i] == originalTalk.Talk_GoBridge)
+				else if (npcdata.GetOldRoutine((ObjectId)i) == originalTalk.Talk_GoBridge)
 				{
-					npcScript[i] = newTalk.Talk_GoBridge;
+					npcdata.SetRoutine((ObjectId)i, newTalkRoutines.Talk_GoBridge);
 				}
-				else if (npcScript[i] == originalTalk.Talk_ifairship)
+				else if (npcdata.GetOldRoutine((ObjectId)i) == originalTalk.Talk_ifairship)
 				{
-					npcScript[i] = newTalk.Talk_ifitem;
-					npcScriptValue[i][3] = 0xE4;
+					npcdata.SetRoutine((ObjectId)i, newTalkRoutines.Talk_ifitem);
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.requirement_id] = 0xE4;
 				}
-				else if (npcScript[i] == originalTalk.Talk_ifbridge)
+				else if (npcdata.GetOldRoutine((ObjectId)i) == originalTalk.Talk_ifbridge)
 				{
-					npcScript[i] = newTalk.Talk_ifitem;
-					npcScriptValue[i][0] = (byte)Item.Bridge;
+					npcdata.SetRoutine((ObjectId)i, newTalkRoutines.Talk_ifitem);
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.requirement_id] = (byte)Item.Bridge;
 				}
-				else if (npcScript[i] == originalTalk.Talk_ifcanal)
+				else if (npcdata.GetOldRoutine((ObjectId)i) == originalTalk.Talk_ifcanal)
 				{
-					npcScript[i] = newTalk.Talk_ifitem;
-					npcScriptValue[i][0] = (byte)Item.Canal;
-					var a = npcScriptValue[i][1];
-					npcScriptValue[i][1] = npcScriptValue[i][2];
-					npcScriptValue[i][2] = a;
+					npcdata.SetRoutine((ObjectId)i, newTalkRoutines.Talk_ifitem);
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.requirement_id] = (byte)Item.Canal;
+					var a = npcdata.GetTalkArray((ObjectId)i)[1];
+					npcdata.GetTalkArray((ObjectId)i)[1] = npcdata.GetTalkArray((ObjectId)i)[2];
+					npcdata.GetTalkArray((ObjectId)i)[2] = a;
 				}
-				else if (npcScript[i] == originalTalk.Talk_ifearthvamp)
+				else if (npcdata.GetOldRoutine((ObjectId)i) == originalTalk.Talk_ifearthvamp)
 				{
-					npcScript[i] = newTalk.Talk_ifearthvamp;
+					npcdata.SetRoutine((ObjectId)i, newTalkRoutines.Talk_ifearthvamp);
 				}
-				else if (npcScript[i] == originalTalk.Talk_ifevent)
+				else if (npcdata.GetOldRoutine((ObjectId)i) == originalTalk.Talk_ifevent)
 				{
-					npcScript[i] = newTalk.Talk_ifevent;
+					npcdata.SetRoutine((ObjectId)i, newTalkRoutines.Talk_ifevent);
 				}
-				else if (npcScript[i] == originalTalk.Talk_ifitem)
+				else if (npcdata.GetOldRoutine((ObjectId)i) == originalTalk.Talk_ifitem)
 				{
-					npcScript[i] = newTalk.Talk_ifitem;
+					npcdata.SetRoutine((ObjectId)i, newTalkRoutines.Talk_ifitem);
 				}
-				else if (npcScript[i] == originalTalk.Talk_ifkeytnt)
+				else if (npcdata.GetOldRoutine((ObjectId)i) == originalTalk.Talk_ifkeytnt)
 				{
-					npcScript[i] = newTalk.Talk_ifkeytnt;
+					npcdata.SetRoutine((ObjectId)i, newTalkRoutines.Talk_ifkeytnt);
 				}
-				else if (npcScript[i] == originalTalk.Talk_ifearthfire)
+				else if (npcdata.GetOldRoutine((ObjectId)i) == originalTalk.Talk_ifearthfire)
 				{
-					npcScript[i] = newTalk.Talk_ifearthfire;
+					npcdata.SetRoutine((ObjectId)i, newTalkRoutines.Talk_ifearthfire);
 				}
-				else if (npcScript[i] == originalTalk.Talk_ifvis)
+				else if (npcdata.GetOldRoutine((ObjectId)i) == originalTalk.Talk_ifvis)
 				{
-					npcScript[i] = newTalk.Talk_ifvis;
+					npcdata.SetRoutine((ObjectId)i, newTalkRoutines.Talk_ifvis);
 				}
-				else if (npcScript[i] == originalTalk.Talk_Invis)
+				else if (npcdata.GetOldRoutine((ObjectId)i) == originalTalk.Talk_Invis)
 				{
-					npcScript[i] = newTalk.Talk_Invis;
+					npcdata.SetRoutine((ObjectId)i, newTalkRoutines.Talk_Invis);
 				}
-				else if (npcScript[i] == originalTalk.Talk_KingConeria)
+				else if (npcdata.GetOldRoutine((ObjectId)i) == originalTalk.Talk_KingConeria)
 				{
-					npcScript[i] = newTalk.Talk_GiveItemOnFlag;
-					npcScriptValue[i] = Blob.FromHex("01030200");
-					npcScriptValue[i][3] = (byte)Item.Bridge;
+					npcdata.SetRoutine((ObjectId)i, newTalkRoutines.Talk_GiveItemOnFlag);
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.dialogue_1] = 0x01;
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.dialogue_2] = 0x03;
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.dialogue_3] = 0x02;
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.item_id] = (byte)Item.Bridge;
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.requirement_id] = (byte)ObjectId.Princess1;
 				}
-				else if (npcScript[i] == originalTalk.Talk_Matoya)
+				else if (npcdata.GetOldRoutine((ObjectId)i) == originalTalk.Talk_Matoya)
 				{
-					npcScript[i] = newTalk.Talk_TradeItems;
-					npcScriptValue[i] = Blob.FromHex("171A1900");
-					npcScriptValue[i][3] = (byte)Item.Herb;
+					npcdata.SetRoutine((ObjectId)i, newTalkRoutines.Talk_TradeItems);
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.dialogue_1] = 0x17;
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.dialogue_2] = 0x1A;
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.dialogue_3] = 0x19;
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.item_id] = (byte)Item.Herb;
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.requirement_id] = (byte)Item.Crystal;
 				}
-				else if (npcScript[i] == originalTalk.Talk_None)
+				else if (npcdata.GetOldRoutine((ObjectId)i) == originalTalk.Talk_None)
 				{
-					npcScript[i] = newTalk.Talk_None;
+					npcdata.SetRoutine((ObjectId)i, newTalkRoutines.Talk_None);
 				}
-				else if (npcScript[i] == originalTalk.Talk_norm)
+				else if (npcdata.GetOldRoutine((ObjectId)i) == originalTalk.Talk_norm)
 				{
-					npcScript[i] = newTalk.Talk_norm;
+					npcdata.SetRoutine((ObjectId)i, newTalkRoutines.Talk_norm);
 				}
-				else if (npcScript[i] == originalTalk.Talk_Princess1)
+				else if (npcdata.GetOldRoutine((ObjectId)i) == originalTalk.Talk_Princess1)
 				{
-					npcScript[i] = newTalk.Talk_Princess1;
+					npcdata.SetRoutine((ObjectId)i, newTalkRoutines.Talk_Princess1);
 				}
-				else if (npcScript[i] == originalTalk.Talk_Princess2)
+				else if (npcdata.GetOldRoutine((ObjectId)i) == originalTalk.Talk_Princess2)
 				{
-					npcScript[i] = newTalk.Talk_GiveItemOnFlag;
-					npcScriptValue[i] = Blob.FromHex("00070600");
-					npcScriptValue[i][3] = (byte)Item.Lute;
+					npcdata.SetRoutine((ObjectId)i, newTalkRoutines.Talk_GiveItemOnFlag);
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.dialogue_1] = 0x00;
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.dialogue_2] = 0x07;
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.dialogue_3] = 0x06;
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.item_id] = (byte)Item.Lute;
 				}
-				else if (npcScript[i] == originalTalk.Talk_Replace)
+				else if (npcdata.GetOldRoutine((ObjectId)i) == originalTalk.Talk_Replace)
 				{
-					npcScript[i] = newTalk.Talk_Replace;
+					npcdata.SetRoutine((ObjectId)i, newTalkRoutines.Talk_Replace);
 				}
-				else if (npcScript[i] == originalTalk.Talk_Sarda)
+				else if (npcdata.GetOldRoutine((ObjectId)i) == originalTalk.Talk_Sarda)
 				{
-					npcScript[i] = newTalk.Talk_GiveItemOnFlag;
-					npcScriptValue[i] = Blob.FromHex("B3181E00");
-					npcScriptValue[i][3] = (byte)Item.Rod;
+					npcdata.SetRoutine((ObjectId)i, newTalkRoutines.Talk_GiveItemOnFlag);
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.dialogue_1] = 0xB3;
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.dialogue_2] = 0x18;
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.dialogue_3] = 0x1E;
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.item_id] = (byte)Item.Rod;
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.requirement_id] = (byte)ObjectId.Vampire;
 				}
-				else if (npcScript[i] == originalTalk.Talk_SubEng)
+				else if (npcdata.GetOldRoutine((ObjectId)i) == originalTalk.Talk_SubEng)
 				{
-					npcScript[i] = newTalk.Talk_SubEng;
+					npcdata.SetRoutine((ObjectId)i, newTalkRoutines.Talk_SubEng);
 				}
-				else if (npcScript[i] == originalTalk.Talk_Titan)
+				else if (npcdata.GetOldRoutine((ObjectId)i) == originalTalk.Talk_Titan)
 				{
-					npcScript[i] = newTalk.Talk_Titan;
+					npcdata.SetRoutine((ObjectId)i, newTalkRoutines.Talk_Titan);
 				}
-				else if (npcScript[i] == originalTalk.Talk_Unne)
+				else if (npcdata.GetOldRoutine((ObjectId)i) == originalTalk.Talk_Unne)
 				{
-					npcScript[i] = newTalk.Talk_ElfDocUnne;
-					npcScriptValue[i] = Blob.FromHex("1B181C00");
+					npcdata.SetRoutine((ObjectId)i, newTalkRoutines.Talk_ElfDocUnne);
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.dialogue_1] = 0x1B;
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.dialogue_2] = 0x18;
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.dialogue_3] = 0x1C;
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.requirement_id] = (byte)Item.Slab;
 				}
-				else if (npcScript[i] == originalTalk.Talk_Unused)
+				else if (npcdata.GetOldRoutine((ObjectId)i) == originalTalk.Talk_Unused)
 				{
-					npcScript[i] = newTalk.Talk_None;
+					npcdata.SetRoutine((ObjectId)i, newTalkRoutines.Talk_None);
 				}
-				else if (npcScript[i] == originalTalk.Talk_Vampire)
+				else if (npcdata.GetOldRoutine((ObjectId)i) == originalTalk.Talk_Vampire)
 				{
-					npcScript[i] = newTalk.Talk_fight;
-					npcScriptValue[i][3] = 0x7C;
+					npcdata.SetRoutine((ObjectId)i, newTalkRoutines.Talk_fight);
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.battle_id] = 0x7C;
 				}
-
-				else if (npcScript[i] == originalTalk.Talk_ifcanoe)
+				else if (npcdata.GetOldRoutine((ObjectId)i) == originalTalk.Talk_ifcanoe)
 				{
-					npcScript[i] = newTalk.Talk_ifitem;
-					npcScriptValue[i][0] = (byte)Item.Canoe;
+					npcdata.SetRoutine((ObjectId)i, newTalkRoutines.Talk_ifitem);
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.requirement_id] = (byte)Item.Canoe;
 				}
-				else if (npcScript[i] == originalTalk.Talk_Nerrick)
+				else if (npcdata.GetOldRoutine((ObjectId)i) == originalTalk.Talk_Nerrick)
 				{
-					npcScript[i] = newTalk.Talk_Nerrick;
-					npcScriptValue[i] = Blob.FromHex("13001400");
-					npcScriptValue[i][3] = (byte)Item.Canal;
+					npcdata.SetRoutine((ObjectId)i, newTalkRoutines.Talk_Nerrick);
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.dialogue_1] = 0x13;
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.dialogue_2] = 0x00;
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.dialogue_3] = 0x14;
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.item_id] = (byte)Item.Canal;
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.requirement_id] = (byte)Item.Tnt;
 				}
-				else if (npcScript[i] == originalTalk.Talk_Smith)
+				else if (npcdata.GetOldRoutine((ObjectId)i) == originalTalk.Talk_Smith)
 				{
-					npcScript[i] = newTalk.Talk_TradeItems;
-					npcScriptValue[i] = Blob.FromHex("15181600");
-					npcScriptValue[i][3] = (byte)Item.Xcalber;
+					npcdata.SetRoutine((ObjectId)i, newTalkRoutines.Talk_TradeItems);
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.dialogue_1] = 0x15;
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.dialogue_2] = 0x18;
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.dialogue_3] = 0x16;
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.item_id] = (byte)Item.Xcalber;
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.requirement_id] = (byte)Item.Adamant;
 				}
+				else
+					npcdata.SetRoutine((ObjectId)i, newTalkRoutines.Talk_None);
 			}
 
 			// Replace sky warrior dialog that got taken over by "Nothing here".
-			npcScriptValue[0x3D] = Blob.FromHex("00DB4C00");
+			npcdata.GetTalkArray((ObjectId)0x3D)[(int)TalkArrayPos.dialogue_2] = 0xDB;
+			npcdata.GetTalkArray((ObjectId)0x3D)[(int)TalkArrayPos.dialogue_3] = 0x4C;
 
 			// Chime Lefein man is moved to ID 15 to keep him with all the other NPCs
 			Put(MapObjGfxOffset + 0x0F, Blob.FromHex("0E"));
 			Put(0x03400 + (int)MapId.Lefein * 48 + 0, Blob.FromHex("0F"));
-			npcScript[0x0F] = newTalk.Talk_GiveItemOnFlag;
-			npcScriptValue[0x0F] = Blob.FromHex("D0CECD00");
-			npcScriptValue[0x0F][3] = (byte)Item.Chime;
-
-			// Insert the updated talk scripts
-			PutInBank(newTalkRoutinesBank, lut_MapObjTalkData, npcScriptValue.SelectMany(data => data.ToBytes()).ToArray());
-			PutInBank(newTalkRoutinesBank, lut_MapObjTalkJumpTbl, npcScript.SelectMany(script => script.ToBytes()).ToArray());
+			npcdata.SetRoutine((ObjectId)0x0F, newTalkRoutines.Talk_GiveItemOnFlag);
+			npcdata.GetTalkArray((ObjectId)0x0F)[(int)TalkArrayPos.dialogue_1] = 0xD0;
+			npcdata.GetTalkArray((ObjectId)0x0F)[(int)TalkArrayPos.dialogue_2] = 0xCE;
+			npcdata.GetTalkArray((ObjectId)0x0F)[(int)TalkArrayPos.dialogue_3] = 0xCD;
+			npcdata.GetTalkArray((ObjectId)0x0F)[(int)TalkArrayPos.item_id] = (byte)Item.Chime;
+			npcdata.GetTalkArray((ObjectId)0x0F)[(int)TalkArrayPos.requirement_id] = (byte)ObjectId.Unne;
 
 			// Dialogue for Sarda if Early sarda is off
 			newDialogs.Add(0xB3, "I shall help only\nthe true LIGHT WARRIORS.\nProve yourself by\ndefeating the Vampire.");
@@ -967,7 +1227,7 @@ namespace FF1Lib
 
 			return maps;
 		}
-		public void NPCHints(MT19337 rng, Flags flags, OverworldMap overworldmap)
+		public void NPCHints(MT19337 rng, NPCdata npcdata, Flags flags, OverworldMap overworldmap)
 		{
 			// Het all game dialogs, get all item names, set dialog templates
 			var itemnames = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
@@ -1151,8 +1411,8 @@ namespace FF1Lib
 				// Set NPCs new dialogs
 				for (int i = 0; i < npcSelected.Count; i++)
 				{
-					PutInBank(newTalkRoutinesBank, lut_MapObjTalkJumpTbl + (byte)npcSelected[i] * NpcTalkSize, newTalk.Talk_norm);
-					PutInBank(newTalkRoutinesBank, lut_MapObjTalkData + (byte)npcSelected[i] * MapObjSize, Blob.FromSBytes(new sbyte[] { 0x00, (sbyte)dialogueID[i], 0x00, 0x00 }));
+					npcdata.GetTalkArray(npcSelected[i])[(int)TalkArrayPos.dialogue_2] = dialogueID[i];
+					npcdata.SetRoutine(npcSelected[i], newTalkRoutines.Talk_norm);
 
 					hintDialogues.Add(dialogueID[i], hintsList.First());
 					hintsList.RemoveRange(0, 1);

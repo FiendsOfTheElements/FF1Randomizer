@@ -102,8 +102,8 @@ namespace FF1Lib
 	public class MapObject : RewardSourceBase
 	{
 		//private const int _mapObjectTalkDataAddress = 0x395D5;
-		private const int _mapObjectTalkDataAddress = 0x455D5;
-		private const int _mapObjectTalkDataSize = 4;
+		private const int _mapObjectTalkDataAddress = 0x47A00;
+		private const int _mapObjectTalkDataSize = 6;
 		private const int _giftItemIndex = 3;
 
 		private const int _mapObjTalkJumpTblAddress = 0x450D3;
