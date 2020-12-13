@@ -161,17 +161,19 @@ namespace FF1Lib
 		bool IsBattleTile(Blob tuple) => tuple[0] == 0x0A;
 		bool IsRandomBattleTile(Blob tuple) => IsBattleTile(tuple) && (tuple[1] & 0x80) != 0x00;
 		bool IsNonBossTrapTile(Blob tuple) => IsBattleTile(tuple) && tuple[1] > 0 && tuple[1] < FirstBossEncounterIndex;
+		bool IsNonBossTrapTileEx(Blob tuple) => IsBattleTile(tuple) && ((tuple[1] > 0 && tuple[1] < FirstBossEncounterIndex) || tuple[1] > LastBossEncounterIndex);
 		bool IsBossTrapTile(Blob tuple) => IsBattleTile(tuple) && tuple[1] <= LastBossEncounterIndex && tuple[1] >= FirstBossEncounterIndex;
 
-		public void RemoveTrapTiles()
+		public void RemoveTrapTiles(bool extendedtraptiles)
 		{
 			// This must be called before shuffle trap tiles since it uses the vanilla format for random encounters
 			var tilesets = Get(TilesetDataOffset, TilesetDataCount * TilesetDataSize * TilesetCount).Chunk(TilesetDataSize).ToList();
 			tilesets.ForEach(tile =>
 			{
-				if (IsNonBossTrapTile(tile))
+				
+				if (extendedtraptiles ? IsNonBossTrapTileEx(tile) : IsNonBossTrapTile(tile))
 				{
-					tile[1] = 0x80;
+					tile[1] = extendedtraptiles ? 0x00 : 0x80;
 				}
 			});
 			Put(TilesetDataOffset, tilesets.SelectMany(tileset => tileset.ToBytes()).ToArray());

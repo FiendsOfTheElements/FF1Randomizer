@@ -477,7 +477,7 @@ namespace FF1Lib
 
 			if ((bool)flags.RemoveTrapTiles)
 			{
-				RemoveTrapTiles();
+				RemoveTrapTiles(flags.EnemizerEnabled);
 			}
 
 			if (((bool)flags.EnemyTrapTiles) && !flags.EnemizerEnabled)
