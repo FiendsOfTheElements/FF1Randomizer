@@ -141,6 +141,7 @@ namespace FF1Lib
 
 			public TalkRoutines()
 			{
+				// See 11_8200_TalkRoutines.asm
 				_talkroutines.Add(Blob.FromHex("60"));
 				_talkroutines.Add(Blob.FromHex("A57160"));
 				_talkroutines.Add(Blob.FromHex("A470209190B003A57160A57260"));
@@ -464,10 +465,10 @@ namespace FF1Lib
 			PutInBank(0x0E, 0x9079, npcManipulationRoutines);
 			PutInBank(0x0E, 0x9273, hideMapObject);
 
-			// New utilities for talk routines
+			// New utilities for talk routines, see 11_8200_TalkRoutines.asm
 			PutInBank(newTalkRoutinesBank, 0x9600, Blob.FromHex("856A20CDD8A9008D01208D1540A002204A96A001204A9660A003204A964C0FE4C96CB015C944B00CC91C900D2034DDB0094C39962046DDB00118A9F160A000204A9660686868684CB6C88510A91148A9FE48A90648B9609648B9649648A51060CAF1E8CF02FFFF39"));
 
-			// TalkToObject Upgraded
+			// TalkToObject Upgraded, see 11_8200_TalkRoutines.asm
 			PutInBank(newTalkRoutinesBank, 0x901B, Blob.FromHex("BD006F8576A00084150A26151865769002E6150A261569008514A9BA651585158612A900AAA8B1149570C8E8E006D0F6A612A5760AA8900DB900818516B9018185176C1600B900808516B9018085176C1600"));
 			Data[0x7C9F7] = 0x1B;
 
