@@ -67,10 +67,10 @@ namespace FF1Lib
 			Put(WeaponOffset, weapons.SelectMany(weapon => weapon.ToBytes()).ToArray());
 		}
 
-		public void IncreaseWeaponBonus()
+		public void IncreaseWeaponBonus(int weaponBonusValue)
 		{
-			// Change damage bonus from +4 to +10
-			Put(0x326F5, Blob.FromHex("0A"));
+			//change the weapon bonus from +4 to +X
+			Put(0x326F5, new byte[] { (byte) weaponBonusValue });
 		}
 
 		public void FixChanceToRun()

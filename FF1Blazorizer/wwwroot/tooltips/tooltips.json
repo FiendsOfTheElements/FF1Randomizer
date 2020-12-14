@@ -1051,7 +1051,7 @@
 		"Id": "increaseWepBonusesCheckBox",
 		"title": "Weapon Attack Bonuses",
 		"screenshot": "increaseWepBonusesCheckBox.png",
-		"description": "Increases elemental and type bonuses to weapons, improving the damage bonus from +4 to +10"
+		"description": "Increases elemental and type bonuses to weapons, improving the damage bonus from +4 (vanilla) to +X. Default is +10."
 	},
 	{
 		"Id": "thiefHitCheckBox",

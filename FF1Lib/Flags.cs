@@ -160,6 +160,7 @@ namespace FF1Lib
 		public bool BBCritRate { get; set; } = false;
 		public bool WeaponCritRate { get; set; } = false;
 		public bool WeaponBonuses { get; set; } = false;
+		public int WeaponTypeBonusValue { get; set; } = 10;
 		public bool ChanceToRun { get; set; } = false;
 		public bool SpellBugs { get; set; } = false;
 		public bool BlackBeltAbsorb { get; set; } = false;
@@ -712,6 +713,7 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.BBCritRate);
 			sum = AddBoolean(sum, flags.WeaponCritRate);
 			sum = AddBoolean(sum, flags.WeaponBonuses);
+			sum = AddNumeric(sum, 51, flags.WeaponTypeBonusValue);
 			sum = AddBoolean(sum, flags.ChanceToRun);
 			sum = AddBoolean(sum, flags.SpellBugs);
 			sum = AddBoolean(sum, flags.BlackBeltAbsorb);
@@ -1060,6 +1062,7 @@ namespace FF1Lib
 				BlackBeltAbsorb = GetBoolean(ref sum),
 				SpellBugs = GetBoolean(ref sum),
 				ChanceToRun = GetBoolean(ref sum),
+				WeaponTypeBonusValue = GetNumeric(ref sum, 51),
 				WeaponBonuses = GetBoolean(ref sum),
 				WeaponCritRate = GetBoolean(ref sum),
 				BBCritRate = GetBoolean(ref sum),
