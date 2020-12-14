@@ -517,8 +517,8 @@ namespace FF1Lib
 		{
 			// rewrite rando's GameOver routine to jump to a new section that will save the game data
 			PutInBank(0x1B, 0x801A, Blob.FromHex("4CF58F"));
-			// write new routine to save data at game over (the game will save when you clear the final textbox and not before)
 
+			// write new routine to save data at game over (the game will save when you clear the final textbox and not before)
 			var saveondeath_standardmid = "AD0460D02EAD0060F04FAD0160CD0164D008AD0260CD0264F03FAD016038E9078D1060AD026038E9078D1160A9048D1460D026AD056038E9078D1060AD066038E9078D1160A9018D1460AD0060F00AA9988D0160A9A98D0260";
 			var saveondeath_dwmodemid = "AD0460F00AA9998D0560A9A58D0660AD0060F00AA9988D0160A9A98D0260A9928D1060A99E8D11604E1E606E1D606E1C60EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA";
 			var saveondeath_part1 = "20E38BA200BD0061C9FFF041BD0C619D0A61BD0D619D0B61BD28639D2063BD29639D2163BD2A639D2263BD2B639D2363BD2C639D2463BD2D639D2563BD2E639D2663BD2F639D2763A9009D01618A186940AAD0B1";
@@ -531,12 +531,6 @@ namespace FF1Lib
 
 		public void ShuffleAstos(Flags flags, NPCdata npcdata, TalkRoutines talkroutines, MT19337 rng)
 		{
-			//const int NpcTalkOffset = 0x390D3;
-			//const int newTalk_AstosBank = newTalkRoutinesBank;
-			//const int NpcTalkSize = 2;
-			//int Talk_Astos = newTalk.Talk_Astos[1] * 0x100 + newTalk.Talk_Astos[0];
-			//var itemnames = ReadText(FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, 256);
-
 			// NPC pool to swap Astos with
 			List<ObjectId> npcpool = new List<ObjectId> { ObjectId.Astos, ObjectId.Bahamut, ObjectId.CanoeSage, ObjectId.CubeBot, ObjectId.ElfDoc,
 			ObjectId.Fairy, ObjectId.King, ObjectId.Matoya, ObjectId.Nerrick, ObjectId.Princess2, ObjectId.Smith,
@@ -550,11 +544,9 @@ namespace FF1Lib
 
 			// If not get NPC talk routine, get NPC object
 			var talkscript = npcdata.GetRoutine(newastos);
-			//var talkscript = GetFromBank(newTalkRoutinesBank, lut_MapObjTalkJumpTbl + (byte)newastos * NpcTalkSize, 2);
 
 			// Switch astos to Talk_GiveItemOnItem;
 			npcdata.SetRoutine(ObjectId.Astos, newTalkRoutines.Talk_GiveItemOnItem);
-			//PutInBank(newTalkRoutinesBank, lut_MapObjTalkJumpTbl + (byte)ObjectId.Astos * NpcTalkSize, newTalk.Talk_GiveItemOnItem);
 
 			// Get items name
 			var newastositem = FormattedItemName((Item)npcdata.GetTalkArray(newastos)[(int)TalkArrayPos.item_id]);
@@ -603,14 +595,9 @@ namespace FF1Lib
 			}
 
 			if (newastos == ObjectId.Bahamut)
-			{   // Change Talk_Astos to make it work with Bahamut, and also modify DoClassChange
-
+			{   
 				// Change routine to check for Tail, give promotion and trigger the battle at the same time
 				talkroutines.Replace(newTalkRoutines.Talk_Bahamut, Blob.FromHex("AD2D60D003A57160E67DA572203D96A575200096A476207F9020739220AE952018964C439660"));
-
-				// DoClassChange reload the map to show the new class sprites, this break TalkBattle, so we stop it from reloading the map
-				// INC dlgflg_reentermap (E656) => NOPx2 (EAEA)
-				//PutInBank(newTalkRoutinesBank, 0x95AE + 20, Blob.FromHex("EAEA"));
 			}
 
 			// Set battle
@@ -1111,10 +1098,6 @@ namespace FF1Lib
 					classList.Add(selectList.PickRandom(rng));
 			}
 
-			// Get all NPC scripts and script values 
-			//var npcScriptValue = GetFromBank(newTalkRoutinesBank, lut_MapObjTalkData, 0xD0 * 4).Chunk(4);
-			//var npcScript = GetFromBank(newTalkRoutinesBank, lut_MapObjTalkJumpTbl, 0xD0 * 2).Chunk(2);
-
 			Dictionary<int, string> newDialogs = new Dictionary<int, string>();
 
 			// Generate the new NPCs
@@ -1586,10 +1569,6 @@ namespace FF1Lib
 			System.Diagnostics.Debug.Assert(intro.Length <= 208);
 			Put(0x37F20, intro);
 
-			// Get all NPC scripts and script values to update them
-			//var npcScriptValue = GetFromBank(newTalkRoutinesBank, lut_MapObjTalkData, 0xD0 * 4).Chunk(4);
-			//var npcScript = GetFromBank(newTalkRoutinesBank, lut_MapObjTalkJumpTbl, 0xD0 * 2).Chunk(2);
-
 			var validTalk = new List<newTalkRoutines> { newTalkRoutines.Talk_norm, newTalkRoutines.Talk_GoBridge, newTalkRoutines.Talk_ifearthfire, newTalkRoutines.Talk_ifearthvamp, newTalkRoutines.Talk_ifevent, newTalkRoutines.Talk_ifitem, newTalkRoutines.Talk_ifkeytnt, newTalkRoutines.Talk_ifvis, newTalkRoutines.Talk_Invis, newTalkRoutines.Talk_4Orb, newTalkRoutines.Talk_kill };
 			var invalidZombie = new List<ObjectId> { ObjectId.Bat, ObjectId.GaiaBroom, ObjectId.MatoyaBroom1, ObjectId.MatoyaBroom2, ObjectId.MatoyaBroom3, ObjectId.MatoyaBroom4, ObjectId.MirageRobot1, ObjectId.MirageRobot2, ObjectId.MirageRobot3, ObjectId.SkyRobot, ObjectId.LutePlate, ObjectId.RodPlate };
 			var validZombie = new List<ObjectId>();
@@ -1616,12 +1595,12 @@ namespace FF1Lib
 				}
 			}
 
-			// Skip giving item for Titan, ElfDoc or Unne
+			// New routines to fight and give item
 			var battleUnne = talkroutines.Add(Blob.FromHex("A674F005BD2060F01AE67DA572203D96A575200096A476207F902073922018964C4396A57060"));
 			var battleGiveOnFlag = talkroutines.Add(Blob.FromHex("A474F0052079909027A5738561202096B020A572203D96A575200096A476207F90207392A5611820109F2018964C4396A9F060A57060"));
 			var battleGiveOnItem = talkroutines.Add(Blob.FromHex("A674F006EABD2060F029A5738561202096F022E67DA572203D96A575200096A476207F90207392A5611820109F2018964C4396A57060"));
 			var battleBahamut = talkroutines.Add(Blob.FromHex("AD2D60D003A57160E67DA572203D96A575200096A476207F9020739220AE952018964C439660"));
-			var runawayBikke = talkroutines.Add(Blob.FromHex("A03F209190B01FA571203D96A575200096A03F20A490A04020A490A04120A4902018964C4396A476207990B012A573F00E1820109FB00AA476207F90A572A47620969060A57060"));
+			talkroutines.ReplaceChunk(newTalkRoutines.Talk_Bikke, Blob.FromHex("A57260A57060"), Blob.FromHex("207392A57260"));
 
 			var lichReplace = talkroutines.Add(Blob.FromHex("A47320A490A476206095A57260"));
 
@@ -1647,7 +1626,6 @@ namespace FF1Lib
 
 			evilDialogs.Add(0x08, "Aaaaarrr! The LIGHT\nWARRIORS have been\ncursed too!\n\nGet 'em, boys!");
 			evilDialogs.Add(0x09, "Okay then, guess I'll go\nto the pub, have a nice\ncold pint, and wait for\nall this to blow over.\n\nReceived #");
-			npcdata.SetRoutine(ObjectId.Bikke, (newTalkRoutines)runawayBikke);
 
 			evilDialogs.Add(0x0E, "At last I wake up from\nmy eternal slumber.\nCome, LIGHT WARRIORS,\nembrace the darkness,\njoin me in death..\n\nReceived #");
 			npcdata.GetTalkArray(ObjectId.ElfPrince)[(int)TalkArrayPos.battle_id] = singleVamp;
@@ -1790,13 +1768,6 @@ namespace FF1Lib
 						Data[offset + 1] &= 0b10111111;
 				}
 			}
-
-			// Reinsert updated scripts
-			//PutInBank(newTalkRoutinesBank, lut_MapObjTalkData, npcScriptValue.SelectMany(data => data.ToBytes()).ToArray());
-			//PutInBank(newTalkRoutinesBank, lut_MapObjTalkJumpTbl, npcScript.SelectMany(script => script.ToBytes()).ToArray());
-
-			// Fight Script 
-			//PutInBank(newTalkRoutinesBank, 0x9560, Blob.FromHex("A57185732073924C4393A476207F9020739260"));
 		}
 	}
 }

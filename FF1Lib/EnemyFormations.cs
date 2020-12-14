@@ -205,13 +205,7 @@ namespace FF1Lib
 			});
 			Put(TilesetDataOffset, tilesets.SelectMany(tileset => tileset.ToBytes()).ToArray());
 
-			// Get all NPC scripts and script values to update them
-			//var npcScript = GetFromBank(newTalkRoutinesBank, lut_MapObjTalkJumpTbl, 0xD0 * 2).Chunk(2);
-
-			var Talk_Ending = talkroutines.Add(Blob.FromHex("4C38C9"));
-
-				//. Blob.FromHex("4693");
-
+			// Update Fiends and Garland
 			for (int i = 0; i < 0xD0; i++)
 			{
 				if (npcdata.GetRoutine((ObjectId)i) == newTalkRoutines.Talk_fight)
@@ -219,19 +213,16 @@ namespace FF1Lib
 			}
 
 			// Update Chaos script
+			var Talk_Ending = talkroutines.Add(Blob.FromHex("4C38C9"));
 			npcdata.SetRoutine((ObjectId)0x1A, (newTalkRoutines)Talk_Ending);
-
-			// Reinsert updated scripts
-			//PutInBank(newTalkRoutinesBank, lut_MapObjTalkJumpTbl, npcScript.SelectMany(script => script.ToBytes()).ToArray());
-
-			//Update Talk_CooGuy and change Talk_fight to load End game
-			//PutInBank(newTalkRoutinesBank, 0x933B, Blob.FromHex("A476207F90209690A571604C38C9"));
-
 
 			//Update Astos and Bikke
 			var battleJump = Blob.FromHex("200096");
+			var mapreload = Blob.FromHex("201896");
 			talkroutines.ReplaceChunk(newTalkRoutines.Talk_Bikke, battleJump, Blob.FromHex("EAEAEA"));
+			talkroutines.ReplaceChunk(newTalkRoutines.Talk_Bikke, mapreload, Blob.FromHex("EAEAEA"));
 			talkroutines.ReplaceChunk(newTalkRoutines.Talk_Astos, battleJump, Blob.FromHex("EAEAEA"));
+			talkroutines.ReplaceChunk(newTalkRoutines.Talk_Astos, mapreload, Blob.FromHex("EAEAEA"));
 		}
 	}
 
