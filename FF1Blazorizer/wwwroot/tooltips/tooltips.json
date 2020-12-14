@@ -338,7 +338,7 @@
 		"Id": "incentivizeFreeNPCsCheckBox",
 		"title": "Free NPCs",
 		"screenshot": "incentivizeFreeNPCsCheckBox.png",
-		"description": "Guarantees all \"Main Quest\" NPCs will hold an item from your incentive item pool. These NPCs include: the king, Princess Sara, Bikke, Sage Lukhan, Sarda and the Waterfall Cave Robot."
+		"description": "Guarantees all \"Main Quest\" NPCs will hold an item from your incentive item pool. These NPCs include: the King, Princess Sara, Bikke, the Canoe Sage, Sarda, the Waterfall Cave Robot and the Caravan Merchant."
 	},
 	{
 		"Id": "incentivizeFetchNPCsCheckBox",
