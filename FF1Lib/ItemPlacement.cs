@@ -200,8 +200,6 @@ namespace FF1Lib
 				incentivePool.Remove(placedItem.Item);
 			}
 			treasurePool.AddRange(incentivePool);
-			Console.WriteLine("xxx treasurePool count is " + treasurePool.Count());
-			Console.WriteLine("xxx itemLocationPool count is " + itemLocationPool.Count());
 			Debug.Assert(treasurePool.Count() == itemLocationPool.Count());
 
 			if ((bool)_flags.RandomLoot)
