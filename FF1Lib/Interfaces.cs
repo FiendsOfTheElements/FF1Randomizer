@@ -85,6 +85,7 @@
 		bool? BetterTrapChests { get; }
 		bool? EarlierRuby { get; }
 		bool? GuaranteedRuseItem { get; }
+		bool? GuaranteedMasamune { get; }
 		WorldWealthMode WorldWealth { get; }
 	}
 	public interface IItemShuffleFlags
