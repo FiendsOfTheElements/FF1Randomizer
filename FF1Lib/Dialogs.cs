@@ -272,6 +272,9 @@ namespace FF1Lib
 			}
 			public void UpdateItemPlacement(List<IRewardSource> itemplacement)
 			{
+				if (itemplacement == null) // Return if vanilla placement
+					return;
+
 				var targetnpc = itemplacement.Where(x => x.GetType().Equals(typeof(MapObject)));
 
 				foreach (var item in targetnpc)

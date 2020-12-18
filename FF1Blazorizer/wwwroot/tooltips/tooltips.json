@@ -548,7 +548,7 @@
 		"Id": "shortToFRCheckBox",
 		"title": "Shorten ToFR",
 		"screenshot": "shortToFRCheckBox.png",
-		"description": "Shortens the Temple of Fiends Revisted to lead straight to Chaos' Floor. The four Orbs are still required to enter the dungeon, excepting the use of other settings. Neither the KEY nor the LUTE will be requires if this box is checked."
+		"description": "Shortens the Temple of Fiends Revisited to lead straight to Chaos' Floor. The four Orbs are still required to enter the dungeon, excepting the use of other settings. Neither the KEY nor the LUTE will be requires if this box is checked."
 	},
 	{
 		"Id": "preserveFiendRefightsCheckBox",
@@ -752,7 +752,7 @@
 		"Id": "clampMinimumPriceScaleLable",
 		"title": "Price Scaling",
 		"screenshot": "clampMinimumPriceScaleLable.png",
-		"description": "Sets the scale of the prices of shop items and the value of gold treasure boxes you find.\nUnclamped prices have a mean of 100% of normal prices (accounting for XP/Gold scale, so with 4x XP baseline prices and gold treasures will be 25% their normal values).  Clamped prices have a mean halfway between 100% and the maximum for the selected multiplier."
+		"description": "Sets the scale of the prices of shop items and the value of gold treasure boxes you find.\nAn item's price is randomized by: (Original Price) / (XpGold Multiplier) x (Randomly choosen value between min and max percent).\nThe average cost of an item is (Original Price) / (XpGold Multiplier) x (Average Percent).\nExample: Silver Sword, 3.0x Exp/Gold Boost, 20-100%.\n4000 / 3 x 0.44 = 586g on average."
 	},
 	{
 		"Id": "clampMinimumStatScaleLable",
@@ -1142,6 +1142,18 @@
 		"title": "Remove Tail",
 		"screenshot": "NoTailCheckBox.png",
 		"description": "Remove the Tail from the items pool, disallowing class change."
+	},
+	{
+		"Id": "GuaranteedMasamuneCheckBox",
+		"title": "Guaranteed Endgame Masamune",
+		"screenshot": "guaranteedMasamuneCheckBox.png",
+		"description": "Guarantees the contents of the vanilla Masamune chest will be a Masamune.\nThis flag does not change the placement of other Masamune(s)."
+	},
+	{
+		"Id": "SendMasamuneHomeCheckBox",
+		"title": "Send Masamune Home",
+		"screenshot": "guaranteedMasamuneCheckBox.png",
+		"description": "Guarantees the contents of the vanilla Masamune chest will be a Masamune AND prevents placement of other Masamune(s).\nThis flag is ignored if there is an Incentive Masamune.\nThis flag will not remove Masamunes found in Shops."
 	},
 	{
 		"Id": "funEnemyNamesCheckBox",

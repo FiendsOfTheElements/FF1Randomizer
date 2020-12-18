@@ -176,10 +176,9 @@
 		<div class="row">
 			<div class="col-md-6">
 				<h4>Class Balance</h4>
-				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="EnableRandomPromotions" @bind-Value="Flags.linkedRandomPromo">Random Classes at Class Change</TriStateCheckBox>
+				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="EnableRandomPromotions" @bind-Value="Flags.EnableRandomPromotions">Random Classes at Class Change</TriStateCheckBox>
 				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnableRandomPromotions" Id="RPIncludeBaseClasses" @bind-Value="Flags.IncludeBaseClasses">Include Base Classes</TriStateCheckBox>
 				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnableRandomPromotions" Id="RPSpoilers" @bind-Value="Flags.RandomPromotionsSpoilers">Spoil Promotions</TriStateCheckBox>
-				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="checkboxLinearMPGrowth" @bind-Checked="Flags.LinearMPGrowth">Linear MP Growth</CheckBox>
 				<div class="checkbox-cell"></div>
 				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="RandomizeClassCheckBox" @bind-Value="Flags.RandomizeClass">Blursed Classes</TriStateCheckBox>
 				<IntSlider Indent Min="0" Max="4" Step="1" DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.RandomizeClass != false && (Flags.RandomizeClassChaos != true))" Id="RandomizeClassMaxBonusSlider" @bind-Value="@Flags.RandomizeClassMaxBonus">Bonuses:</IntSlider>

@@ -77,12 +77,17 @@ namespace FF1Lib
 		// instead of enemies giving more gold, so we don't overflow.
 		public void ScalePrices(IScaleFlags flags, string[] text, MT19337 rng, bool increaseOnly, ItemShopSlot shopItemLocation)
 		{
-			var scale = flags.PriceScaleFactor;
+			int rawScaleLow = increaseOnly ? 100 : flags.PriceScaleFactorLow;
+			int rawScaleHigh = increaseOnly ? Math.Max(100, flags.PriceScaleFactorHigh) : flags.PriceScaleFactorHigh;
+
+			double scaleLow = (double)rawScaleLow / 100.0;
+			double scaleHigh = (double)rawScaleHigh / 100.0;
+
 			var multiplier = flags.ExpMultiplier;
 			var prices = Get(PriceOffset, PriceSize * PriceCount).ToUShorts();
 			for (int i = 0; i < prices.Length; i++)
 			{
-				var newPrice = Scale(prices[i] / multiplier, scale, 1, rng, increaseOnly);
+				var newPrice = RangeScale(prices[i] / multiplier, scaleLow, scaleHigh, 1, rng);
 				prices[i] = (ushort)(flags.WrapPriceOverflow ? ((newPrice - 1) % 0xFFFF) + 1 : Min(newPrice, 0xFFFF));
 			}
 			var questItemPrice = prices[(int)Item.Bottle];
@@ -120,7 +125,7 @@ namespace FF1Lib
 					var priceBytes = Get(ShopPointerBase + pointers[i], 2);
 					var priceValue = BitConverter.ToUInt16(priceBytes, 0);
 
-					priceValue = (ushort)Scale(priceValue / multiplier, scale, 1, rng, increaseOnly);
+					priceValue = (ushort)RangeScale(priceValue / multiplier, scaleLow, scaleHigh, 1, rng);
 					priceBytes = BitConverter.GetBytes(priceValue);
 					Put(ShopPointerBase + pointers[i], priceBytes);
 				}
@@ -129,7 +134,7 @@ namespace FF1Lib
 			{
 				var startingGold = BitConverter.ToUInt16(Get(StartingGoldOffset, 2), 0);
 
-				startingGold = (ushort)Min(Scale(startingGold / multiplier, scale, 1, rng, increaseOnly), 0xFFFF);
+				startingGold = (ushort)Min(RangeScale(startingGold / multiplier, scaleLow, scaleHigh, 1, rng), 0xFFFF);
 
 				Put(StartingGoldOffset, BitConverter.GetBytes(startingGold));
 			}
@@ -253,7 +258,7 @@ namespace FF1Lib
 	
 			double scaleValue = Exp(exponent); // A number from 0.5 to 2, or 2 to 4
 			double adjustedScale = scaleValue > 1 ? (scaleValue - 1) * adjustment + 1 : 1 - ((1 - scaleValue) * adjustment); // Tightens the scale so some stats are not changed by as much. For example for strength (adjustment of 0.25) this becomes 0.875 to 1.25, 1.25 to 1.75 while for hp (adjustment of 1) this stays 0.5 to 2, 2 to 4
-			return (int)(value * adjustedScale);
+			return (int)Round(value * adjustedScale);
 		}
 		// Previous RangeScale(), delete if no bugs come up with new RangeScale() - 2020-10-27
 		private int oldRangeScale(double value, double lowPercent, double highPercent, double adjustment, MT19337 rng)

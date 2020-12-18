@@ -85,6 +85,8 @@
 		bool? BetterTrapChests { get; }
 		bool? EarlierRuby { get; }
 		bool? GuaranteedRuseItem { get; }
+		bool? GuaranteedMasamune { get; }
+		bool? SendMasamuneHome { get; }
 		WorldWealthMode WorldWealth { get; }
 	}
 	public interface IItemShuffleFlags
@@ -103,7 +105,8 @@
 		bool WrapPriceOverflow { get; }
 		bool WrapStatOverflow { get; }
 		double ExpMultiplier { get; }
-		double PriceScaleFactor { get; }
+		int PriceScaleFactorLow { get; }
+		int PriceScaleFactorHigh { get; }
 	}
 	public interface IFloorShuffleFlags
 	{

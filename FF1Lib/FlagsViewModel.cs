@@ -379,20 +379,6 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AllNones"));
 			}
 		}
-		public bool? linkedRandomPromo
-		{
-			get
-			{
-				return Flags.EnableRandomPromotions;
-			}
-			set
-			{
-				Flags.EnableRandomPromotions = value;
-				if (Flags.EnableRandomPromotions == true)
-					Flags.LinearMPGrowth = true;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("linkedRandomPromo"));
-			}
-		}
 		public bool Spoilers
 		{
 			get => Flags.Spoilers;
@@ -1851,15 +1837,26 @@ namespace FF1Lib
 			}
 		}
 
-		public double PriceScaleFactor
+		public int PriceScaleFactorLow
 		{
-			get => Flags.PriceScaleFactor;
+			get => Flags.PriceScaleFactorLow;
 			set
 			{
-				Flags.PriceScaleFactor = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("PriceScaleFactor"));
+				Flags.PriceScaleFactorLow = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("PriceScaleFactorLow"));
 			}
 		}
+
+		public int PriceScaleFactorHigh
+		{
+			get => Flags.PriceScaleFactorHigh;
+			set
+			{
+				Flags.PriceScaleFactorHigh = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("PriceScaleFactorHigh"));
+			}
+		}
+
 		public bool WrapPriceOverflow
 		{
 			get => Flags.WrapPriceOverflow;
@@ -1903,6 +1900,24 @@ namespace FF1Lib
 			{
 				Flags.NoTail = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NoTail"));
+			}
+		}
+		public bool? GuaranteedMasamune
+		{
+			get => Flags.GuaranteedMasamune;
+			set
+			{
+				Flags.GuaranteedMasamune = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("GuaranteedMasamune"));
+			}
+		}
+		public bool? SendMasamuneHome
+		{
+			get => Flags.SendMasamuneHome;
+			set
+			{
+				Flags.SendMasamuneHome = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SendMasamuneHome"));
 			}
 		}
 		public bool? ClassAsNpcFiends

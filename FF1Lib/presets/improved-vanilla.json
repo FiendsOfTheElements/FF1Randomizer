@@ -134,6 +134,8 @@
 		"EnemyScaleFactor": 1.0,
 		"BossScaleFactor": 1.0,
 		"PriceScaleFactor": 1.0,
+		"PriceScaleFactorLow": 100,
+		"PriceScaleFactorHigh": 100,
 		"ExpMultiplier": 1.5,
 		"ExpBonus": 150,
 		"ProgressiveScaleMode": 0,
