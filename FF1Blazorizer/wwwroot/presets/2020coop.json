@@ -84,7 +84,8 @@
 		"ConfusedOldMen": false,
 
 		"ClampMinimumPriceScale": false,
-		"PriceScaleFactor": 5.0,
+		"PriceScaleFactorLow": 20,
+		"PriceScaleFactorHigh": 500,
 
 		"SeparateEnemyHPScaling": true,
 		"ClampMinimumStatScale": true,

@@ -105,7 +105,8 @@
 		bool WrapPriceOverflow { get; }
 		bool WrapStatOverflow { get; }
 		double ExpMultiplier { get; }
-		double PriceScaleFactor { get; }
+		int PriceScaleFactorLow { get; }
+		int PriceScaleFactorHigh { get; }
 	}
 	public interface IFloorShuffleFlags
 	{

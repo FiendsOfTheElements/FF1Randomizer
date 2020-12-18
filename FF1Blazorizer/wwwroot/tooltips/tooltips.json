@@ -752,7 +752,7 @@
 		"Id": "clampMinimumPriceScaleLable",
 		"title": "Price Scaling",
 		"screenshot": "clampMinimumPriceScaleLable.png",
-		"description": "Sets the scale of the prices of shop items and the value of gold treasure boxes you find.\nUnclamped prices have a mean of 100% of normal prices (accounting for XP/Gold scale, so with 4x XP baseline prices and gold treasures will be 25% their normal values).  Clamped prices have a mean halfway between 100% and the maximum for the selected multiplier."
+		"description": "Sets the scale of the prices of shop items and the value of gold treasure boxes you find.\nAn item's price is randomized by: (Original Price) / (XpGold Multiplier) x (Randomly choosen value between min and max percent).\nThe average cost of an item is (Original Price) / (XpGold Multiplier) x (Average Percent).\nExample: Silver Sword, 3.0x Exp/Gold Boost, 20-100%.\n4000 / 3 x 0.44 = 586g on average."
 	},
 	{
 		"Id": "clampMinimumStatScaleLable",
