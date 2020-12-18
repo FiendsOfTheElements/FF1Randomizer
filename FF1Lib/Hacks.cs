@@ -248,17 +248,13 @@ namespace FF1Lib
 			PutInBank(0x1F, 0xC8AA, CreateLongJumpTableEntry(0x0F, 0x8BF0));
 			PutInBank(0x0F, 0x8BF0, Blob.FromHex("ADCE6BAA6A6A6AA8B90061C9FFF0068A09808D8A6C60"));
 
-			// Rewrite class promotion to not promote NONEs, See 0E_95AE_DoClassChange.asm
-			PutInBank(newTalkRoutinesBank, 0x95AE, Blob.FromHex("A203BCD095B900613006186906990061CA10EFE65660"));
-			PutInBank(newTalkRoutinesBank, 0x95D0, Blob.FromHex("C0804000")); // lut used by the above code
-
 			// Spell level up change to allow any class to gain spell charges, see 1B_8818_LvlUp_LevelUp.asm
 			PutInBank(0x1B, 0x88D7, Blob.FromHex("AE8E68A001B182A02848B184DD02899005684A4CFA88684A900948B184186901918468C8C030D0E14C1C89000000090909040400090909"));
 
 			// To allow all promoted classes
 			EnableTwelveClasses();
 		}
-
+		// Deprecated, delete if there's no revolt for it to come back 2020-12-17
 		public void LinearMPGrowth()
 		{
 			// Change MP growth to be linear (every 3 levels) as a fix for random promotion 
@@ -586,15 +582,18 @@ namespace FF1Lib
 				talkroutines.ReplaceChunk(newTalkRoutines.Talk_Astos, Blob.FromHex("20109F"), Blob.FromHex("EAEAEA"));
 				npcdata.SetRoutine(newastos, newTalkRoutines.Talk_Astos);
 			}
-
-			if (talkscript == newTalkRoutines.Talk_GiveItemOnFlag)
+			else if (talkscript == newTalkRoutines.Talk_GiveItemOnFlag)
 			{
 				// Check for a flag instead of an item
 				talkroutines.ReplaceChunk(newTalkRoutines.Talk_Astos, Blob.FromHex("A674F006BD2060"), Blob.FromHex("A474F006207990"));
 				npcdata.SetRoutine(newastos, newTalkRoutines.Talk_Astos);
 			}
-
-			if (newastos == ObjectId.Bahamut)
+			else if (talkscript == newTalkRoutines.Talk_Nerrick || talkscript == newTalkRoutines.Talk_GiveItemOnItem || talkscript == newTalkRoutines.Talk_TradeItems)
+			{
+				// Just set NPC to Astos routine
+				npcdata.SetRoutine(newastos, newTalkRoutines.Talk_Astos);
+			}
+			else if (talkscript == newTalkRoutines.Talk_Bahamut)
 			{
 				// Change routine to check for Tail, give promotion and trigger the battle at the same time, see 11_8200_TalkRoutines.asm
 				talkroutines.Replace(newTalkRoutines.Talk_Bahamut, Blob.FromHex("AD2D60D003A57160E67DA572203D96A575200096A476207F9020739220AE952018964C439660"));
@@ -906,8 +905,9 @@ namespace FF1Lib
 			// Starting magic for promoted classes. Instead of checking for the class ID of the characters, we compare with the unused class ID in the starting stats array.
 			PutInBank(0x1F, 0xC7CA, Blob.FromHex("B940B0"));
 
-			// New promotion routine to not bug out with already promoted classes and allow random promotion; works with Nones; see 0E_95AE_DoClassChange-2.asm
+			// New promotion routine to not bug out with already promoted classes and allow random promotion; works with Nones; see 11_95AE_DoClassChange.asm
 			PutInBank(newTalkRoutinesBank, 0x95AE, Blob.FromHex("A20020C595A24020C595A28020C595A2C020C595E65660BC00613006B9F09D9D006160"));
+
 			// lut for standard promotion, can be modified or randomized
 			PutInBank(newTalkRoutinesBank, 0x9DF0, Blob.FromHex("060708090A0B060708090A0B"));
 		}
@@ -918,6 +918,23 @@ namespace FF1Lib
 			// Promotions list & class names list
 			List<sbyte> promotions = new List<sbyte> { 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B };
 			List<string> className = new List<string> { "Fi", "Th", "BB", "RM", "WM", "BM", "Kn", "Ni", "Ma", "RW", "WW", "BW" };
+
+			var levelUpStats = Get(NewLevelUpDataOffset, 588).Chunk(49 * 2);
+			var iscaster = new List<bool>();
+
+			for (int i = 0; i < 6; i++)
+			{
+				if (levelUpStats[i][47 * 2 + 1] == 0)
+					iscaster.Add(false);
+				else if (levelUpStats[i][47 * 2 + 1] == 0xFF)
+					iscaster.Add(true);
+				else if ((levelUpStats[i][47 * 2 + 1] & 0x01) != 0)
+					iscaster.Add(false);
+				else
+					iscaster.Add(true);
+			}
+
+			iscaster.AddRange(iscaster);
 
 			// Include base classes
 			if (flags.IncludeBaseClasses ?? false)
@@ -932,6 +949,14 @@ namespace FF1Lib
 				promotions.AddRange(new List<sbyte> { 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B });
 			}
 
+			var recomp = new List<byte> { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+
+			for (int i = 0; i < 12; i++)
+			{
+				if (iscaster[i] == false && iscaster[promotions[i]] == true)
+					recomp[promotions[i]] = 0x01;
+			}
+
 			// Insert randomized promotions
 			PutInBank(newTalkRoutinesBank, 0x9DF0, Blob.FromSBytes(promotions.ToArray()));
 
@@ -943,6 +968,16 @@ namespace FF1Lib
 					itemNames[0xF0 + i] = className[i] + " - " + className[promotions[i]];
 				WriteText(itemNames, FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextOffset);
 			}
+
+			// Modify DoClassChange, see 1B_910F_ResetMP.asm
+			PutInBank(newTalkRoutinesBank, 0x95C8, Blob.FromHex("3009B9F09D9D006120D09D60"));
+			PutInBank(newTalkRoutinesBank, 0x9DD0, Blob.FromHex("A91148A9FE48A90648A99148A90F48A91B4C03FE"));
+
+			// MP Recomp Routine, see 1B_910F_ResetMP.asm
+			PutInBank(0x1B, 0x910F, Blob.FromHex("60BD0061A8B90091F0F6A96385858684A9281865848584A000A9029184C8A9009184C8C008D0F9BD00610AA8B9718A8582B9728A8583A9018510BD26618511E6118612BD0061AAA001B182A00048B184DD02899005684A4C7691684A900948B184186901918468C8C008D0E118A90265828582A90065838583E610A510C511D0C6A612A96385118610A9201865108510A000B1844A9110C8C008D0F660"));
+
+			// Recomp lut
+			PutInBank(0x1B, 0x9100, recomp.ToArray());
 		}
 
 		public void EnablePoolParty(Flags flags, MT19337 rng)
