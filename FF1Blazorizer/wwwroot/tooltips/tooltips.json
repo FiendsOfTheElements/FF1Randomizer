@@ -548,7 +548,7 @@
 		"Id": "shortToFRCheckBox",
 		"title": "Shorten ToFR",
 		"screenshot": "shortToFRCheckBox.png",
-		"description": "Shortens the Temple of Fiends Revisted to lead straight to Chaos' Floor. The four Orbs are still required to enter the dungeon, excepting the use of other settings. Neither the KEY nor the LUTE will be requires if this box is checked."
+		"description": "Shortens the Temple of Fiends Revisited to lead straight to Chaos' Floor. The four Orbs are still required to enter the dungeon, excepting the use of other settings. Neither the KEY nor the LUTE will be requires if this box is checked."
 	},
 	{
 		"Id": "preserveFiendRefightsCheckBox",
@@ -1142,6 +1142,18 @@
 		"title": "Remove Tail",
 		"screenshot": "NoTailCheckBox.png",
 		"description": "Remove the Tail from the items pool, disallowing class change."
+	},
+	{
+		"Id": "GuaranteedMasamuneCheckBox",
+		"title": "Guaranteed Endgame Masamune",
+		"screenshot": "guaranteedMasamuneCheckBox.png",
+		"description": "Guarantees the contents of the vanilla Masamune chest will be a Masamune.\nThis flag does not change the placement of other Masamune(s)."
+	},
+	{
+		"Id": "SendMasamuneHomeCheckBox",
+		"title": "Send Masamune Home",
+		"screenshot": "guaranteedMasamuneCheckBox.png",
+		"description": "Guarantees the contents of the vanilla Masamune chest will be a Masamune AND prevents placement of other Masamune(s).\nThis flag is ignored if there is an Incentive Masamune.\nThis flag will not remove Masamunes found in Shops."
 	},
 	{
 		"Id": "funEnemyNamesCheckBox",

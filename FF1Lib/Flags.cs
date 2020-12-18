@@ -179,6 +179,8 @@ namespace FF1Lib
 		public bool IncludeMorale { get; set; } = false;
 		public bool NoDanMode { get; set; } = false;
 		public bool? NoTail { get; set; } = false;
+		public bool? GuaranteedMasamune { get; set; } = false;
+		public bool? SendMasamuneHome { get; set; } = false;
 		public bool? ClassAsNpcFiends { get; set; } = false;
 		public bool? ClassAsNpcKeyNPC { get; set; } = false;
 		public int ClassAsNpcCount { get; set; } = 6;
@@ -733,6 +735,8 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.RandomWaresIncludesSpecialGear);
 			sum = AddBoolean(sum, flags.NoDanMode);
 			sum = AddTriState(sum, flags.NoTail);
+			sum = AddTriState(sum, flags.GuaranteedMasamune);
+			sum = AddTriState(sum, flags.SendMasamuneHome);
 			sum = AddTriState(sum, flags.ClassAsNpcFiends);
 			sum = AddTriState(sum, flags.ClassAsNpcKeyNPC);
 			sum = AddNumeric(sum, 14, flags.ClassAsNpcCount);
@@ -1047,6 +1051,8 @@ namespace FF1Lib
 				ClassAsNpcCount = GetNumeric(ref sum, 14),
 				ClassAsNpcKeyNPC = GetTriState(ref sum),
 				ClassAsNpcFiends = GetTriState(ref sum),
+				SendMasamuneHome = GetTriState(ref sum),
+				GuaranteedMasamune = GetTriState(ref sum),
 				NoTail = GetTriState(ref sum),
 				NoDanMode = GetBoolean(ref sum),
 				RandomWaresIncludesSpecialGear = GetTriState(ref sum),

@@ -187,6 +187,25 @@ namespace FF1Lib
 			// 8. Place all remaining unincentivized treasures or incentivized non-quest items that weren't placed
 			var itemLocationPool = _incentivesData.AllValidItemLocations.ToList();
 			itemLocationPool = itemLocationPool.Where(x => !x.IsUnused && !placedItems.Any(y => y.Address == x.Address)).ToList();
+
+			if ((bool)_flags.GuaranteedMasamune)
+			{
+				// Remove Masamune chest from shuffle, Remove Cabin from item pool
+				itemLocationPool = itemLocationPool.Where(x => !x.Equals(ItemLocations.ToFRMasmune)).ToList();
+				treasurePool.Remove(Item.Cabin);
+
+				// Send Masamune Home is ignored when Masamune is incentivized
+				if (!incentivePool.Contains(Item.Masamune))
+				{
+					if ((bool)_flags.SendMasamuneHome)
+					{
+						// Remove Masamune from treasure pool (This will also causes Masamune to not be placed by RandomLoot)
+						treasurePool.Remove(Item.Masamune);
+						treasurePool.Add(Item.Cabin);
+					}
+				}
+			}
+
 			foreach (var placedItem in placedItems)
 			{
 				incentivePool.Remove(placedItem.Item);
