@@ -738,11 +738,6 @@ namespace FF1Lib
 				ScaleBossStats(rng, flags);
 			}
 
-			if (flags.LinearMPGrowth)
-			{
-				LinearMPGrowth();
-			}
-			
 			PartyComposition(rng, flags, preferences);
 
 			if (((bool)flags.RecruitmentMode))
@@ -765,11 +760,6 @@ namespace FF1Lib
 				EnablePoolParty(flags, rng);
 			}
 
-			if ((bool)flags.EnableRandomPromotions)
-			{
-				EnableRandomPromotions(flags, rng);
-			}
-
 			if ((bool)flags.MapCanalBridge)
 			{
 				EnableCanalBridge();
@@ -785,6 +775,11 @@ namespace FF1Lib
 			if ((bool)flags.RandomizeClass)
 			{
 				RandomizeClass(rng, flags, oldItemNames);
+			}
+
+			if ((bool)flags.EnableRandomPromotions)
+			{
+				EnableRandomPromotions(flags, rng);
 			}
 
 			if (flags.DisableTentSaving)
