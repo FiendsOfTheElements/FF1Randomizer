@@ -3003,15 +3003,6 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("HintsDungeon"));
 			}
 		}
-		public bool? HintsRngDungeon
-		{
-			get => Flags.HintsRngDungeon;
-			set
-			{
-				Flags.HintsRngDungeon = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("HintsRngDungeon"));
-			}
-		}
 		public bool? HintsUseless
 		{
 			get => Flags.HintsUseless;
@@ -3272,15 +3263,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomPromotionsSpoilers"));
 			}
 		}
-		public bool LinearMPGrowth
-		{
-			get => Flags.LinearMPGrowth;
-			set
-			{
-				Flags.LinearMPGrowth = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("LinearMPGrowth"));
-			}
-		}
+
 		public bool? RandomizeClass
 		{
 			get => Flags.RandomizeClass;

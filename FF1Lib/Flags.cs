@@ -300,7 +300,6 @@ namespace FF1Lib
 		public bool? FreeTail { get; set; } = false;
 		public bool? HintsVillage { get; set; } = false;
 		public bool? HintsDungeon { get; set; } = false;
-		public bool? HintsRngDungeon { get; set; } = false;
 		public bool? HintsUseless { get; set; } = false;
 		public bool? SpellcrafterRetainPermissions { get; set; } = false;
 		public bool? RandomWeaponBonus { get; set; } = false;
@@ -321,7 +320,6 @@ namespace FF1Lib
 		public bool? EnableRandomPromotions { get; set; } = false;
 		public bool? IncludeBaseClasses { get; set; } = false;
 		public bool? RandomPromotionsSpoilers { get; set; } = false;
-		public bool LinearMPGrowth { get; set; } = false;
 		public bool? RandomizeClass { get; set; } = false;
 		public bool? RandomizeClassChaos { get; set; } = false;
 		public int RandomizeClassMaxBonus { get; set; } = 2;
@@ -847,7 +845,6 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.FreeTail);
 			sum = AddTriState(sum, flags.HintsVillage);
 			sum = AddTriState(sum, flags.HintsDungeon);
-			sum = AddTriState(sum, flags.HintsRngDungeon);
 			sum = AddTriState(sum, flags.HintsUseless);
 			sum = AddTriState(sum, flags.SpellcrafterRetainPermissions);
 			sum = AddTriState(sum, flags.RandomWeaponBonus);
@@ -875,7 +872,6 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.EnableRandomPromotions);
 			sum = AddTriState(sum, flags.IncludeBaseClasses);
 			sum = AddTriState(sum, flags.RandomPromotionsSpoilers);
-			sum = AddBoolean(sum, flags.LinearMPGrowth);
 			sum = AddTriState(sum, flags.RandomizeClass);
 			sum = AddTriState(sum, flags.RandomizeClassChaos);
 			sum = AddNumeric(sum, 5, flags.RandomizeClassMaxBonus);
@@ -912,7 +908,6 @@ namespace FF1Lib
 				RandomizeClassMaxBonus = GetNumeric(ref sum, 5),
 				RandomizeClassChaos = GetTriState(ref sum),
 				RandomizeClass = GetTriState(ref sum),
-				LinearMPGrowth = GetBoolean(ref sum),
 				RandomPromotionsSpoilers = GetTriState(ref sum),
 				IncludeBaseClasses = GetTriState(ref sum),
 				EnableRandomPromotions = GetTriState(ref sum),
@@ -940,7 +935,6 @@ namespace FF1Lib
 				RandomWeaponBonus = GetTriState(ref sum),
 				SpellcrafterRetainPermissions = GetTriState(ref sum),
 				HintsUseless = GetTriState(ref sum),
-				HintsRngDungeon = GetTriState(ref sum),
 				HintsDungeon = GetTriState(ref sum),
 				HintsVillage = GetTriState(ref sum),
 				FreeTail = GetTriState(ref sum),

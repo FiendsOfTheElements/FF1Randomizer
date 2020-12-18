@@ -1122,114 +1122,46 @@ namespace FF1Lib
 
 			return text;
 		}
-		public List<Map> SetDungeonNPC(List<Map> maps, MT19337 rng, bool randomize)
+		public void SetDungeonNPC(List<Map> maps, MT19337 rng)
 		{
-			// Earth modification
-			List<List<byte>> earthmod = new List<List<byte>> {
-				new List<byte> { 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E },
-				new List<byte> { 0x3E, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41 },
-				new List<byte> { 0x3E, 0x41, 0x00, 0x01, 0x02, 0x41, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E },
-				new List<byte> { 0x3E, 0x41, 0x03, 0x2E, 0x05, 0x41, 0x3E, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38 },
-				new List<byte> { 0x3E, 0x41, 0x06, 0x07, 0x08, 0x41, 0x3E, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38 },
-				new List<byte> { 0x3E, 0x41, 0x30, 0x36, 0x30, 0x41, 0x3E, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38 },
-				new List<byte> { 0x3E, 0x41, 0x41, 0x3A, 0x41, 0x41, 0x3E, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38 },
-				new List<byte> { 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38 },
-			};
+			bool earthB5flipped = false;
+			bool volcanoB3flipped = false;
+			bool sky3Fflipped = false;
+			bool marshB1flipped = false;
 
-			for (int y = 0; y < earthmod.Count; y++)
-			{
-				for (int x = 0; x < earthmod[y].Count; x++)
-				{
-					maps[(byte)MapId.EarthCaveB1][y + 35, x + 2] = earthmod[y][x];
-				}
-			}
-
-			// Seashrine modification
-			maps[(byte)MapId.SeaShrineB4][0x2E, 0x16] = 0x36;
-			maps[(byte)MapId.SeaShrineB4][0x2F, 0x16] = 0x3A;
+			// Check if maps are flipped
+			if (maps[(int)MapId.EarthCaveB5][(0x11, 0x17)].Value != 0x41) earthB5flipped = true;
+			if (maps[(int)MapId.GurguVolcanoB3][(0x01, 0x02)].Value != 0x41) volcanoB3flipped = true;
+			if (maps[(int)MapId.SkyPalace3F][(0x01, 0x13)].Value != 0x4B) sky3Fflipped = true;
+			if (maps[(int)MapId.MarshCaveB1][(0x01, 0x06)].Value != 0x40) marshB1flipped = true;
 
 			// Palettes changes
-			PutInBank(0x00, 0xA000 + ((byte)MapId.EarthCaveB1 * 0x30) + 0x18, Blob.FromHex("000F2736000F1A36"));
-			PutInBank(0x00, 0xA000 + ((byte)MapId.SeaShrineB4 * 0x30) + 0x18, Blob.FromHex("0F1527360F241536"));
-			PutInBank(0x00, 0xA000 + ((byte)MapId.SeaShrineB3 * 0x30) + 0x18, Blob.FromHex("0F1527360F241536"));
 			PutInBank(0x00, 0xA000 + ((byte)MapId.GurguVolcanoB3 * 0x30) + 0x18, Blob.FromHex("000F1716000F1716"));
-			PutInBank(0x00, 0xA000 + ((byte)MapId.GurguVolcanoB2 * 0x30) + 0x18, Blob.FromHex("000F1716000F1716"));
 			PutInBank(0x00, 0xA000 + ((byte)MapId.MarshCaveB1 * 0x30) + 0x18, Blob.FromHex("000F1C34000F1834"));
-			PutInBank(0x00, 0xA000 + ((byte)MapId.MarshCaveB2 * 0x30) + 0x18, Blob.FromHex("000F1C34000F1834"));
-			PutInBank(0x00, 0xA000 + ((byte)MapId.MarshCaveB3 * 0x30) + 0x18, Blob.FromHex("000F1C34000F1834"));
-			PutInBank(0x00, 0xA000 + ((byte)MapId.SkyPalace4F * 0x30) + 0x18, Blob.FromHex("0F0F18140F0F1714"));
-
-
-			int randomposition = randomize ? rng.Between(1, 3) : 1;
 
 			// Dwarf hinter - Earth - Text 0x70 - 0x5B - 5e
 			SetNpc(MapId.DwarfCave, 5, ObjectId.None, 0x12, 0x18, false, false);
-
-			if (randomposition == 1)
-				SetNpc(MapId.EarthCaveB5, 0x0B, (ObjectId)0x5B, 0x12, 0x18, false, false);
-			else if (randomposition == 2)
-				SetNpc(MapId.EarthCaveB1, 0, (ObjectId)0x5B, 0x05, 0x26, true, false);
-			else
-				SetNpc(MapId.EarthCaveB3, 2, (ObjectId)0x5B, 0x09, 0x09, true, false);
-
+			SetNpc(MapId.EarthCaveB5, 0x0B, (ObjectId)0x5B, earthB5flipped ? (0x3F - 0x12) : 0x12, 0x18, false, false);
 
 			// Robot hinter - Sky - Tex 0xE1 - 0xCF
 			SetNpc(MapId.SkyPalace3F, 0, ObjectId.None, 0x08, 0x1C, false, true);
-			randomposition = randomize ? rng.Between(1, 3) : 1;
-			if (randomposition == 1)
-				SetNpc(MapId.SkyPalace3F, 0, (ObjectId)0xCF, 0x1B, 0x34, true, false);
-			else if (randomposition == 2)
-				SetNpc(MapId.MirageTower2F, 1, (ObjectId)0xCF, 0x08, 0x1C, false, true);
-			else
-			{
-				var (x_robot, y_robot) = GetSkyCastleFloorTile(rng, maps[(byte)MapId.SkyPalace4F]);
-				SetNpc(MapId.SkyPalace4F, 1, (ObjectId)0xCF, x_robot, y_robot, inRoom: false, stationary: false);
-			}
+			SetNpc(MapId.SkyPalace3F, 0, (ObjectId)0xCF, sky3Fflipped ? (0x3F - 0x1B) : 0x1B, 0x34, true, false);
 
 			// Dragon hinter - Gurgu - Text 0xE3 - 0x86 dragon
 			SetNpc(MapId.Cardia, 1, ObjectId.None, 0x2D, 0x1A, false, false);
-			randomposition = randomize ? rng.Between(1, 3) : 1;
-			if (randomposition == 1)
-				SetNpc(MapId.GurguVolcanoB3, 1, (ObjectId)0x86, 0x04, 0x1D, false, false);
-			else if (randomposition == 2)
-				SetNpc(MapId.GurguVolcanoB2, 1, (ObjectId)0x86, 0x02, 0x02, true, false);
-			else
-				SetNpc(MapId.GurguVolcanoB5, 1, (ObjectId)0x86, 0x37, 0x08, true, false);
-			//SetNpc(MapId.GurguVolcanoB3, 1, (ObjectId)0x86, 0x01, 0x02, false, true);
+			SetNpc(MapId.GurguVolcanoB3, 1, (ObjectId)0x86, volcanoB3flipped ? (0x3F - 0x04) : 0x04, 0x1D, false, false);
 
 			// Punk hinter - Marsh - Text 0xAF - 0x9D punk
 			SetNpc(MapId.Onrac, 11, ObjectId.None, 0x2D, 0x1A, false, false);
-			randomposition = randomize ? rng.Between(1, 3) : 1;
-			if (randomposition == 1)
-				SetNpc(MapId.MarshCaveB1, 5, ObjectId.OnracPunk2, 0x2D, 0x1A, false, false);
-			else if (randomposition == 2)
-				SetNpc(MapId.MarshCaveB2, 0x0E, ObjectId.OnracPunk2, 0x0E, 0x34, true, false);
-			else
-				SetNpc(MapId.MarshCaveB2, 0x0D, ObjectId.OnracPunk2, 0x37, 0x21, true, false);
+			SetNpc(MapId.MarshCaveB1, 5, ObjectId.OnracPunk2, marshB1flipped ? (0x3F - 0x2D) : 0x2D, 0x1A, false, false);
 
 			// Mermaid hinter - Text 0xB6 - 0xA5 mermaid
-			randomposition = randomize ? rng.Between(1, 3) : 1;
-			if (randomposition == 1)
-			{
-				SetNpc(MapId.SeaShrineB1, 2, ObjectId.None, 0x00, 0x00, true, false);
-				SetNpc(MapId.SeaShrineB4, 0, (ObjectId)0xA5, 0x16, 0x2C, true, false);
-			}
-			else if (randomposition == 2)
-			{
-				SetNpc(MapId.SeaShrineB1, 2, ObjectId.None, 0x00, 0x00, true, false);
-				SetNpc(MapId.SeaShrineB3, 0, (ObjectId)0xA5, 0x1A, 0x11, true, false);
-			}
-			else
-			{
-				List<ObjectId> mermaids = new List<ObjectId> { ObjectId.Mermaid1, ObjectId.Mermaid2, ObjectId.Mermaid4, ObjectId.Mermaid5, ObjectId.Mermaid6, ObjectId.Mermaid7, ObjectId.Mermaid8, ObjectId.Mermaid9, ObjectId.Mermaid10 };
-				var selectedMermaidId = mermaids.PickRandom(rng);
-				var selectedMermaid = FindNpc(MapId.SeaShrineB1, selectedMermaidId);
-				var hintMermaid = FindNpc(MapId.SeaShrineB1, ObjectId.Mermaid3);
-				SetNpc(MapId.SeaShrineB1, selectedMermaid.Index, ObjectId.Mermaid3, selectedMermaid.Coord.x, selectedMermaid.Coord.y, selectedMermaid.InRoom, selectedMermaid.Stationary);
-				SetNpc(MapId.SeaShrineB1, hintMermaid.Index, selectedMermaidId, hintMermaid.Coord.x, hintMermaid.Coord.y, hintMermaid.InRoom, hintMermaid.Stationary);
-			}
-
-			return maps;
+			List<ObjectId> mermaids = new List<ObjectId> { ObjectId.Mermaid1, ObjectId.Mermaid2, ObjectId.Mermaid4, ObjectId.Mermaid5, ObjectId.Mermaid6, ObjectId.Mermaid7, ObjectId.Mermaid8, ObjectId.Mermaid9, ObjectId.Mermaid10 };
+			var selectedMermaidId = mermaids.PickRandom(rng);
+			var selectedMermaid = FindNpc(MapId.SeaShrineB1, selectedMermaidId);
+			var hintMermaid = FindNpc(MapId.SeaShrineB1, ObjectId.Mermaid3);
+			SetNpc(MapId.SeaShrineB1, selectedMermaid.Index, ObjectId.Mermaid3, selectedMermaid.Coord.x, selectedMermaid.Coord.y, selectedMermaid.InRoom, selectedMermaid.Stationary);
+			SetNpc(MapId.SeaShrineB1, hintMermaid.Index, selectedMermaidId, hintMermaid.Coord.x, hintMermaid.Coord.y, hintMermaid.InRoom, hintMermaid.Stationary);
 		}
 		public void NPCHints(MT19337 rng, NPCdata npcdata, Flags flags, OverworldMap overworldmap)
 		{

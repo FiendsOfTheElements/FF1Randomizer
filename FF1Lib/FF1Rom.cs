@@ -709,7 +709,7 @@ namespace FF1Lib
 			if ((bool)flags.HintsVillage || (bool)flags.HintsDungeon)
 			{
 				if ((bool)flags.HintsDungeon)
-					SetDungeonNPC(maps, rng, (bool)flags.HintsRngDungeon);
+					SetDungeonNPC(maps, rng);
 
 				NPCHints(rng, npcdata, flags, overworldMap);
 			}
