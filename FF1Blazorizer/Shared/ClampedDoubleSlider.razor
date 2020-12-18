@@ -37,8 +37,11 @@
 			</style>"))
 			<input name="low-range" type="range" min="@MinValue" max="@MaxValue" step="@Step" @bind="@ValueLow" @bind:event="onchange" />
 			<input name="high-range" type="range" min="@MinValue" max="@MaxValue" step="@Step" @bind="@ValueHigh" @bind:event="onchange" />
+			@if (!DisableTooltip)
+			{
+				<input type="image" src="/images/help.png" style="margin-left: 10px" class="btn-group-help" title="Show Help" @onclick="@ShowToolTip" id="@Id" />
+			}
 		</div>
-
 	</div>
 </div>
 
@@ -149,4 +152,22 @@
 	[Parameter] public EventCallback<int> ValueHighChanged { get; set; }
 	[Parameter]
 	public string Id { get; set; }
+
+	//tooltip section
+	[Parameter]
+	public bool DisableTooltip { get; set; }
+
+	private void ShowToolTip(MouseEventArgs e)
+	{
+		UpdateToolTip?.Invoke(Id, e);
+	}
+
+	private void HideToolTip(MouseEventArgs e)
+	{
+		UpdateToolTip?.Invoke("", e);
+	}
+
+
+	[Parameter]
+	public Action<string, MouseEventArgs> UpdateToolTip { get; set; }
 }

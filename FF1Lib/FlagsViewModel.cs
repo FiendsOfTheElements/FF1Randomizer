@@ -1837,15 +1837,26 @@ namespace FF1Lib
 			}
 		}
 
-		public double PriceScaleFactor
+		public int PriceScaleFactorLow
 		{
-			get => Flags.PriceScaleFactor;
+			get => Flags.PriceScaleFactorLow;
 			set
 			{
-				Flags.PriceScaleFactor = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("PriceScaleFactor"));
+				Flags.PriceScaleFactorLow = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("PriceScaleFactorLow"));
 			}
 		}
+
+		public int PriceScaleFactorHigh
+		{
+			get => Flags.PriceScaleFactorHigh;
+			set
+			{
+				Flags.PriceScaleFactorHigh = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("PriceScaleFactorHigh"));
+			}
+		}
+
 		public bool WrapPriceOverflow
 		{
 			get => Flags.WrapPriceOverflow;

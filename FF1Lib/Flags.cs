@@ -194,7 +194,8 @@ namespace FF1Lib
 		public int EnemyScaleHpLow { get; set; } = 50;
 		public int EnemyScaleHpHigh { get; set; } = 200;
 
-		public double PriceScaleFactor { get; set; } = 0;
+		public int PriceScaleFactorLow { get; set; } = 50;
+		public int PriceScaleFactorHigh { get; set; } = 200;
 
 		public double ExpMultiplier { get; set; } = 0;
 		public int ExpBonus { get; set; } = 0;
@@ -746,7 +747,8 @@ namespace FF1Lib
 			sum = AddNumeric(sum, 51, flags.BossScaleStatsHigh/ 10);
 			sum = AddNumeric(sum, 51, flags.BossScaleHpLow/ 10);
 			sum = AddNumeric(sum, 51, flags.BossScaleHpHigh/ 10);
-			sum = AddNumeric(sum, 41, (int)(10.0 * flags.PriceScaleFactor) - 10);
+			sum = AddNumeric(sum, 51, flags.PriceScaleFactorLow / 10);
+			sum = AddNumeric(sum, 51, flags.PriceScaleFactorHigh / 10);
 			sum = AddNumeric(sum, 41, (int)(10.0 * flags.ExpMultiplier) - 10);
 			sum = AddNumeric(sum, 51, (int)(flags.ExpBonus / 10.0));
 			sum = AddNumeric(sum, 46, (int)flags.EncounterRate);
@@ -1029,7 +1031,8 @@ namespace FF1Lib
 				EncounterRate = GetNumeric(ref sum, 46),
 				ExpBonus = GetNumeric(ref sum, 51) * 10,
 				ExpMultiplier = (GetNumeric(ref sum, 41) + 10) / 10.0,
-				PriceScaleFactor = (GetNumeric(ref sum, 41) + 10) / 10.0,
+				PriceScaleFactorHigh = GetNumeric(ref sum, 51) * 10,
+				PriceScaleFactorLow = GetNumeric(ref sum, 51) * 10,
 				BossScaleHpHigh = GetNumeric(ref sum, 51) * 10,
 				BossScaleHpLow = GetNumeric(ref sum, 51) * 10,
 				BossScaleStatsHigh = GetNumeric(ref sum, 51) * 10,
