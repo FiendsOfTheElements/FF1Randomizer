@@ -37,7 +37,8 @@
 				<CheckBox Indent UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.ClassAsNpcFiends != false || Flags.ClassAsNpcKeyNPC != false)" Id="classAsNpcDuplicateCheckBox" @bind-Checked="Flags.ClassAsNpcDuplicate">Allow Duplicates</CheckBox>
 				<CheckBox Indent UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.ClassAsNpcFiends != false || Flags.ClassAsNpcKeyNPC != false)" Id="classAsNpcPromoCheckBox" @bind-Checked="Flags.ClassAsNpcPromotion">Promoted Classes</CheckBox>
 				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(!Flags.FreeTail)" Id="NoTailCheckBox" @bind-Value="Flags.NoTail">Remove Tail</TriStateCheckBox>
-				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="GuaranteedMasamuneCheckBox" @bind-Value="Flags.GuaranteedMasamune">Guaranteed Masamune</TriStateCheckBox>
+				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="GuaranteedMasamuneCheckBox" @bind-Value="Flags.GuaranteedMasamune">Guaranteed Endgame Masamune</TriStateCheckBox>
+				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="SendMasamuneHomeCheckBox" IsEnabled="@(Flags.GuaranteedMasamune != false && Flags.IncentivizeMasamune == false)" @bind-Value="Flags.SendMasamuneHome">Send Masamune Home</TriStateCheckBox>
 			</div>
 		</div>
 	</div>

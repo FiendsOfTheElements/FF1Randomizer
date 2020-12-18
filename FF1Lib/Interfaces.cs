@@ -86,6 +86,7 @@
 		bool? EarlierRuby { get; }
 		bool? GuaranteedRuseItem { get; }
 		bool? GuaranteedMasamune { get; }
+		bool? SendMasamuneHome { get; }
 		WorldWealthMode WorldWealth { get; }
 	}
 	public interface IItemShuffleFlags

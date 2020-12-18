@@ -1914,6 +1914,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("GuaranteedMasamune"));
 			}
 		}
+		public bool? SendMasamuneHome
+		{
+			get => Flags.SendMasamuneHome;
+			set
+			{
+				Flags.SendMasamuneHome = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SendMasamuneHome"));
+			}
+		}
 		public bool? ClassAsNpcFiends
 		{
 			get => Flags.ClassAsNpcFiends;
