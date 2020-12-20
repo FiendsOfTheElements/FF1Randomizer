@@ -728,7 +728,7 @@
 		"Id": "hintsDungeon",
 		"title": "Hints from dungeon explorers",
 		"screenshot": "hintsDungeon.png",
-		"description": "Five NPC in dungeons reveals the location of an item. Down the dead end of Marsh Cave B1, on Lich's floor in Earth Cave, in the hallway of Gurgu Volcano B3, in a room on the left of Sea Shrine B4 and in the South room of Sky Palace 3F."
+		"description": "Five NPC in dungeons reveals the location of an item. Down the dead end of Marsh Cave B1, on Lich's floor in Earth Cave, in the hallway of Gurgu Volcano B3, one of the mermaids in Sea Shrine and in the South room of Sky Palace 3F."
 	},
 	{
 		"Id": "hintsRngDungeon",
