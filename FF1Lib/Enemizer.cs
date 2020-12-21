@@ -1151,12 +1151,20 @@ namespace FF1Lib
 					availablemons = en.enemiesInTileset[f.tileset].Where(mon => SmallAndNotFeatured(mon, f.Top)).ToList();
 					if (availablemons.Count == 0)
 						availablemons = en.enemiesInTileset[f.tileset].Where(mon => Small(mon) && mon != f.Top).ToList();
+
+					// Fix for when there's only 1 small mon in the pool and it already got top billing
+					if (availablemons.Count == 0)
+						availablemons = en.enemiesInTileset[f.tileset].Where(mon => Small(mon)).ToList();
 				}
 				else if (f.shape == 0x01)
 				{
 					availablemons = en.enemiesInTileset[f.tileset].Where(mon=> LargeAndNotFeatured(mon, f.Top)).ToList();
 					if (availablemons.Count == 0)
 						availablemons = en.enemiesInTileset[f.tileset].Where(mon => Large(mon) && mon != f.Top).ToList();
+
+					// Fix for when there's only 1 large mon in the pool and it already got top billing
+					if (availablemons.Count == 0)
+						availablemons = en.enemiesInTileset[f.tileset].Where(mon => Large(mon)).ToList();
 				}
 				else
 				{
