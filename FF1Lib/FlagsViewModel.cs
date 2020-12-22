@@ -681,31 +681,13 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FixMissingBattleRngEntry"));
 			}
 		}
-		public bool? EnemyFormationsUnrunnable
+		public Runnability Runnability
 		{
-			get => Flags.EnemyFormationsUnrunnable;
+			get => Flags.Runnability;
 			set
 			{
-				Flags.EnemyFormationsUnrunnable = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EnemyFormationsUnrunnable"));
-			}
-		}
-		public bool? EverythingUnrunnable
-		{
-			get => Flags.EverythingUnrunnable;
-			set
-			{
-				Flags.EverythingUnrunnable = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EverythingUnrunnable"));
-			}
-		}
-		public bool? EverythingRunnable
-		{
-			get => Flags.EverythingRunnable;
-			set
-			{
-				Flags.EverythingRunnable = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EverythingRunnable"));
+				Flags.Runnability = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Runnability"));
 			}
 		}
 		public bool? UnrunnablesStrikeFirstAndSurprise

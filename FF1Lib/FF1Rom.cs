@@ -419,21 +419,15 @@ namespace FF1Lib
 				}
 			}
 
-			if (((bool)flags.EnemyFormationsUnrunnable))
-			{
-				if (((bool)flags.EverythingUnrunnable))
-				{
-					CompletelyUnrunnable();
-				}
-				else if ((bool)flags.EverythingRunnable)
-				{
-					CompletelyRunnable();
-				}
-				else
-				{
-					ShuffleUnrunnable(rng);
-				}
-			}
+			if (flags.Runnability == Runnability.Random)
+				flags.Runnability = (Runnability)Rng.Between(rng,0,3);
+
+			if(flags.Runnability == Runnability.AllRunnable)
+				CompletelyRunnable();
+			else if(flags.Runnability == Runnability.AllUnrunnable)
+				CompletelyUnrunnable();
+			else if(flags.Runnability == Runnability.Shuffle)
+				ShuffleUnrunnable(rng);
 
 			// Always on to supply the correct changes for WaitWhenUnrunnable
 			AllowStrikeFirstAndSurprise(flags.WaitWhenUnrunnable, (bool)flags.UnrunnablesStrikeFirstAndSurprise);

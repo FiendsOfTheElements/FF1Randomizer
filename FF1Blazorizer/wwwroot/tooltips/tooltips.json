@@ -120,6 +120,12 @@
 		"description": "The vanilla Battle RNG table has two 00s out of 256 hex values. If checked, this flag replaces one of them with 0x95, the missing hex value."
 	},
 	{
+		"Id": "runnabilityDropDown",
+		"title": "Unrunnable Formations",
+		"screenshot": "enemyFormationsUnrunnableCheckBox.png",
+		"description": "Normal: Vanilla unrunnable formations.\n\nShuffle: Shuffles what formations are and are not runnable. Bosses and some other encounters will remain unrunnable.\n\nAll Unrunnable: Disables the ability to run from fights.\n\nAll Runnable: Makes all encounters runnable, except for bosses.\n\nRandom Choice: Select one of these options randomly."
+	},
+	{
 		"Id": "enemyFormationsUnrunnableCheckBox",
 		"title": "Enemy Unrunnable Formations",
 		"screenshot": "enemyFormationsUnrunnableCheckBox.png",

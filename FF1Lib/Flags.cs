@@ -45,9 +45,7 @@ namespace FF1Lib
 
 		public bool? Rng { get; set; } = false;
 		public bool FixMissingBattleRngEntry { get; set; } = false;
-		public bool? EverythingUnrunnable { get; set; } = false;
-		public bool? EverythingRunnable { get; set; } = false;
-		public bool? EnemyFormationsUnrunnable { get; set; } = false;
+		public Runnability Runnability { get; set; } = Runnability.Normal;
 		public bool? EnemyFormationsSurprise { get; set; } = false;
 		public bool? UnrunnablesStrikeFirstAndSurprise { get; set; } = false;
 		public bool? EnemyTrapTiles { get; set; } = false;
@@ -617,9 +615,7 @@ namespace FF1Lib
 			sum = AddNumeric(sum, Enum.GetValues(typeof(AutohitThreshold)).Cast<int>().Max() + 1, (int)flags.MagicAutohitThreshold);
 			sum = AddTriState(sum, flags.Rng);
 			sum = AddBoolean(sum, flags.FixMissingBattleRngEntry);
-			sum = AddTriState(sum, flags.EverythingUnrunnable);
-			sum = AddTriState(sum, flags.EverythingRunnable);
-			sum = AddTriState(sum, flags.EnemyFormationsUnrunnable);
+			sum = AddNumeric(sum, Enum.GetValues(typeof(Runnability)).Cast<int>().Max() + 1, (int)flags.Runnability);
 			sum = AddTriState(sum, flags.EnemyFormationsSurprise);
 			sum = AddTriState(sum, flags.UnrunnablesStrikeFirstAndSurprise);
 			sum = AddTriState(sum, flags.EnemyTrapTiles);
@@ -1160,9 +1156,7 @@ namespace FF1Lib
 				EnemyTrapTiles = GetTriState(ref sum),
 				UnrunnablesStrikeFirstAndSurprise = GetTriState(ref sum),
 				EnemyFormationsSurprise = GetTriState(ref sum),
-				EnemyFormationsUnrunnable = GetTriState(ref sum),
-				EverythingRunnable = GetTriState(ref sum),
-				EverythingUnrunnable = GetTriState(ref sum),
+				Runnability = (Runnability)GetNumeric(ref sum, Enum.GetValues(typeof(Runnability)).Cast<int>().Max() + 1),
 				FixMissingBattleRngEntry = GetBoolean(ref sum),
 				Rng = GetTriState(ref sum),
 				MagicAutohitThreshold = (AutohitThreshold)GetNumeric(ref sum, Enum.GetValues(typeof(AutohitThreshold)).Cast<int>().Max() + 1),
