@@ -24,8 +24,6 @@
 				<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="magisizeWeaponsBalancedCheckBox" IsEnabled="@Flags.MagisizeWeapons" @bind-Value="Flags.MagisizeWeaponsBalanced">Balanced Spells</TriStateCheckBox>
 				<div class="checkbox-cell"></div>
 				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="shopInfoCheckBox" @bind-Checked="Flags.ShopInfo">Shop Information</CheckBox>
-				<div class="checkbox-cell"></div>
-				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="lichRevengeCheckBox" @bind-Checked="Flags.SpookyFlag">Lich's Revenge</CheckBox>
 			</div>
 			<div class="col-md-6">
 				<div class="checkbox-cell"></div>
@@ -35,7 +33,6 @@
 				<IntSlider Indent Min="0" Max="12" Step="1" DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.ClassAsNpcKeyNPC != false)" Id="classAsNpcCountSlider" @bind-Value="@Flags.ClassAsNpcCount">Characters Count:</IntSlider>
 				<CheckBox Indent UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.ClassAsNpcFiends != false || Flags.ClassAsNpcKeyNPC != false)" Id="classAsNpcDuplicateCheckBox" @bind-Checked="Flags.ClassAsNpcDuplicate">Allow Duplicates</CheckBox>
 				<CheckBox Indent UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.ClassAsNpcFiends != false || Flags.ClassAsNpcKeyNPC != false)" Id="classAsNpcPromoCheckBox" @bind-Checked="Flags.ClassAsNpcPromotion">Promoted Classes</CheckBox>
-				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(!Flags.FreeTail)" Id="NoTailCheckBox" @bind-Value="Flags.NoTail">Remove Tail</TriStateCheckBox>
 				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="GuaranteedMasamuneCheckBox" @bind-Value="Flags.GuaranteedMasamune">Guaranteed Endgame Masamune</TriStateCheckBox>
 				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="SendMasamuneHomeCheckBox" IsEnabled="@(Flags.GuaranteedMasamune != false && Flags.IncentivizeMasamune == false)" @bind-Value="Flags.SendMasamuneHome">Send Masamune Home</TriStateCheckBox>
 			</div>

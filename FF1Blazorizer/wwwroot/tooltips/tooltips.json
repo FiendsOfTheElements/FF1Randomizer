@@ -522,9 +522,14 @@
 	},
 	{
 		"Id": "chaosRushCheckBox",
-		"title": "Chaos Rush",
+		"title": "Unlocked ToFR",
+		"description": "Unlock all locked doors in Temple of Fiends Revisited, allowing to reach Chaos without the KEY."
+	},
+	{
+		"Id": "FreeLute",
+		"title": "Free Lute",
 		"screenshot": "chaosRushCheckBox.png",
-		"description": "Enables Chaos Rush mode, allowing you to reach Chaos without needing the KEY to pass through the door in Temple of Fiends and adding the LUTE to your inventory at the start of the game. This setting does not automatically light the four Orbs, although other settings may change this behavior."
+		"description": "Starts the game with the LUTE in the inventory."
 	},
 	{
 		"Id": "freeOrbsCheckBox",
@@ -554,7 +559,7 @@
 		"Id": "shortToFRCheckBox",
 		"title": "Shorten ToFR",
 		"screenshot": "shortToFRCheckBox.png",
-		"description": "Shortens the Temple of Fiends Revisited to lead straight to Chaos' Floor. The four Orbs are still required to enter the dungeon, excepting the use of other settings. Neither the KEY nor the LUTE will be requires if this box is checked."
+		"description": "Shortens the Temple of Fiends Revisited to lead straight to Chaos' Floor. The four Orbs are still required to enter the dungeon, excepting the use of other settings. Neither the KEY nor the LUTE will be required if this box is checked."
 	},
 	{
 		"Id": "preserveFiendRefightsCheckBox",

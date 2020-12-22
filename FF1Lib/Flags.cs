@@ -136,6 +136,7 @@ namespace FF1Lib
 		public bool? FreeBridge { get; set; } = false;
 		public bool? FreeShip { get; set; } = false;
 		public bool? FreeAirship { get; set; } = false;
+		public bool? FreeLute { get; set; } = false;
 		public bool FreeOrbs { get; set; } = false;
 		public bool EnableCritNumberDisplay { get; set; } = false;
 		public bool? FreeCanal { get; set; } = false;
@@ -573,7 +574,7 @@ namespace FF1Lib
 
 		public bool? ImmediatePureAndSoftRequired => EnemyStatusAttacks | Entrances | MapOpenProgression | RandomizeFormationEnemizer | RandomizeEnemizer;
 
-		public bool? FreeLute => ChaosRush | ShortToFR;
+		//public bool? FreeLute => ChaosRush | ShortToFR;
 
 		public bool? DeepCastlesPossible => Entrances & Floors;
 		public bool? DeepTownsPossible => Towns & Entrances & Floors & EntrancesMixedWithTowns;
@@ -691,6 +692,7 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.FreeBridge);
 			sum = AddTriState(sum, flags.FreeShip);
 			sum = AddTriState(sum, flags.FreeAirship);
+			sum = AddTriState(sum, flags.FreeLute);
 			sum = AddBoolean(sum, flags.FreeOrbs);
 			sum = AddBoolean(sum, flags.EnableCritNumberDisplay);
 			sum = AddTriState(sum, flags.FreeCanoe);
@@ -1081,6 +1083,7 @@ namespace FF1Lib
 				FreeCanoe = GetTriState(ref sum),
 				EnableCritNumberDisplay = GetBoolean(ref sum),
 				FreeOrbs = GetBoolean(ref sum),
+				FreeLute = GetTriState(ref sum),
 				FreeAirship = GetTriState(ref sum),
 				FreeShip = GetTriState(ref sum),
 				FreeBridge = GetTriState(ref sum),

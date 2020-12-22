@@ -1466,6 +1466,16 @@ namespace FF1Lib
 			}
 		}
 
+		public bool? FreeLute
+		{
+			get => Flags.FreeLute;
+			set
+			{
+				Flags.FreeLute = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeLute"));
+			}
+		}
+
 		public bool FreeOrbsEnabled => !ShardHunt;
 
 		public bool StartingGold

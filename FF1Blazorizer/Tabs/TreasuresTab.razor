@@ -21,7 +21,14 @@
 				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="freeBridgeCheckBox" @bind-Value="Flags.FreeBridge">Free Bridge</TriStateCheckBox>
 				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="freeCanalCheckBox" @bind-Value="Flags.FreeCanal">Free Canal</TriStateCheckBox>
 				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="freeCanoeCheckBox" @bind-Value="Flags.FreeCanoe">Free Canoe</TriStateCheckBox>
+				<div class="checkbox-cell"></div>
+				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="FreeLute" @bind-Value="Flags.FreeLute">Free Lute</TriStateCheckBox>
 				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="FreeTail" IsEnabled="@(Flags.NoTail != true)" @bind-Value="Flags.FreeTail">Free Tail</TriStateCheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="freeOrbsCheckBox" IsEnabled="@Flags.FreeOrbsEnabled" @bind-Checked="Flags.FreeOrbs">Free Orbs</CheckBox>
+				<div class="checkbox-cell"></div>
+				<h4>Bans</h4>
+				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(!Flags.FreeTail)" Id="NoTailCheckBox" @bind-Value="Flags.NoTail">Remove Tail</TriStateCheckBox>
+
 			</div>
 			<div class="col-md-4">
 				<h4>Locations: @(Flags.Flags.IncentivizedLocationCountMin) @((Flags.Flags.IncentivizedLocationCountMin != Flags.Flags.IncentivizedLocationCountMax) ? "- " + Flags.Flags.IncentivizedLocationCountMax : "") </h4>
