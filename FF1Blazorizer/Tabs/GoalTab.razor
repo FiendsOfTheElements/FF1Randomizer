@@ -8,7 +8,7 @@
 				<h4>Temple of Fiends</h4>
 				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="transformFinalFormationCheckBox" IsEnabled="@(Flags.SpookyFlag != true)" @bind-Value="Flags.TransformFinalFormation">Alternate Final Boss</TriStateCheckBox>
 				<div class="checkbox-cell"></div>
-				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="chaosRushCheckBox" @bind-Checked="Flags.ChaosRush">Unlocked ToFR</CheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="chaosRushCheckBox" @bind-Value="Flags.ChaosRush">Unlocked ToFR</CheckBox>
 				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="shortToFRCheckBox" @bind-Value="Flags.ShortToFR">Shorten ToFR</TriStateCheckBox>
 				<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="preserveFiendRefightsCheckBox" IsEnabled="@Flags.ShortToFR" @bind-Value="Flags.PreserveFiendRefights">Include Fiend Tiles</TriStateCheckBox>
 				<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="preserveAllFiendRefightsCheckBox" IsEnabled="@Flags.CanPreserveAllFiendRefights" @bind-Value="Flags.PreserveAllFiendRefights">Refight All Fiends</TriStateCheckBox>
@@ -16,12 +16,12 @@
 			<div class="col-md-4">
 				<h4>Treasure Hunt</h4>
 				<p>A new adventure! Instead of lighting the four orbs to activate the BLACK ORB, the Light Warriors must seek out and collect several of a random treasure item.</p>
-				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="shardHuntCheckBox" IsEnabled="@Flags.ShardHuntEnabled" @bind-Checked="Flags.ShardHunt">Treasure Hunt</CheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="shardHuntCheckBox" IsEnabled="@Flags.ShardHuntEnabled" @bind-Value="Flags.ShardHunt">Treasure Hunt</CheckBox>
 				<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="shardCountDropDown" TItem="ShardCount" @bind-Value="Flags.ShardCount">Goal:</EnumDropDown>
 			</div>
 			<div class="col-md-4">
 				<h4>Events</h4>
-				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="lichRevengeCheckBox" @bind-Checked="Flags.SpookyFlag">Lich's Revenge</CheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="lichRevengeCheckBox" @bind-Value="Flags.SpookyFlag">Lich's Revenge</CheckBox>
 			</div>
 		</div>
 	</div>

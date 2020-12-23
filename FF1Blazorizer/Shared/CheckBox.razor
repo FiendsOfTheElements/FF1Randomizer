@@ -1,53 +1,78 @@
-﻿<div class="checkbox-cell @IndentClass @ValueClass">
-	<input type="checkbox" id="@Id" checked="@Checked" @onchange="onchange" disabled="@(!IsEnabled)" />  <label for="@Id" class="@DisabledClass">@ChildContent</label>
-	<input type="image" src="/images/help.png" class="btn-group-help" title="Show Help" @onclick="@ShowToolTip" id="@Id" />
+<div class="checkbox-cell">
+	<div class="btn-group-toggle @IndentClass @ValueClass @DisabledClass" data-toggle="buttons">
+		<input type="radio" name="@Name" value="0" checked="@checked0" hidden>
+		<input type="image" src="@image" id="@Id" class="tri-state" disabled="@(!IsEnabled)" @onclick="@onclick" /> <label for="@Id">@ChildContent</label>
+	@if (!DisableTooltip)
+	{
+		<input type="image" src="/images/help.png" class="btn-group-help" title="Show Help" @onclick="@ShowToolTip" id="@Id" />
+	}
+	</div>
 </div>
-
 
 @code
 {
-    [Parameter]
-    public EventCallback<bool> CheckedChanged { get; set; }
+	[Parameter]
+	public bool Value { get; set; } = false;
+	private string ValueClass => checked0 ? "tri-yes" : "tri-no";
+
+	[Parameter]
+	public EventCallback<bool> ValueChanged { get; set; }
+	private bool checked0 => Value;
+
+	private string image => checked0 ? "/images/truecheck.png" : "/images/false.png";
+
+	[Parameter]
+	public bool Name { get; set; }
+
+	Task onclick()
+	{
+		if (Disabled)
+		{
+			return Task.CompletedTask;
+		}
+
+		if (Value == false)
+		{
+			Value = true;
+		}
+		else
+		{
+			Value = false;
+		}
+		return ValueChanged.InvokeAsync(Value);
+
+	}
+
+	private void ShowToolTip(MouseEventArgs e)
+	{
+		UpdateToolTip?.Invoke(Id, e);
+	}
+
+	private void HideToolTip(MouseEventArgs e)
+	{
+		UpdateToolTip?.Invoke("", e);
+	}
 
 
-    [Parameter]
-    public bool Checked { get; set; }
+	[Parameter]
+	public Action<string, MouseEventArgs> UpdateToolTip { get; set; }
 
+	[Parameter]
+	public bool Indent { get; set; }
+	private string IndentClass => Indent ? "indent" : "";
 
-    private string ValueClass => Checked ? "tri-yes" : "tri-no";
+	[Parameter]
+	public bool? IsEnabled { get; set; } = true;
+	private bool Disabled => !(IsEnabled ?? true);
+	private string DisabledClass => (IsEnabled ?? true) ? "" : "disabled";
 
+	[Parameter]
+	public string Id { get; set; }
 
-    private Task onchange(ChangeEventArgs e)
-    {
-        Checked = (bool)e.Value;
-        return CheckedChanged.InvokeAsync(Checked);
-    }
+	[Parameter]
+	public RenderFragment ChildContent { get; set; }
 
-    private void ShowToolTip(MouseEventArgs e)
-    {
-        UpdateToolTip?.Invoke(Id, e);
-    }
-
-    private void HideToolTip(MouseEventArgs e)
-    {
-        UpdateToolTip?.Invoke("", e);
-    }
-
-    [Parameter]
-    public Action<string, MouseEventArgs> UpdateToolTip { get; set; }
-
-    [Parameter]
-    public bool Indent { get; set; }
-    private string IndentClass => Indent ? "indent" : "";
-
-    [Parameter]
-    public bool? IsEnabled { get; set; } = true;
-    private string DisabledClass => (IsEnabled ?? true) ? "" : "disabled";
-
-    [Parameter]
-    public string Id { get; set; }
-
-    [Parameter]
-    public RenderFragment ChildContent { get; set; }
+	[Parameter]
+	public bool DisableTooltip { get; set; }
 
 }

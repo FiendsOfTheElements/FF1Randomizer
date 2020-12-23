@@ -6,26 +6,26 @@
 		<div class="row">
 			<div class="col-md-6">
 				<h4>Bugs</h4>
-				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="houseMPRestorationCheckBox" @bind-Checked="Flags.HouseMPRestoration">House MP Restoration</CheckBox>
-				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="weaponStatsCheckBox" @bind-Checked="Flags.WeaponStats">Weapon Stats</CheckBox>
-				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="chanceToRunCheckBox" @bind-Checked="Flags.ChanceToRun">Chance to Run</CheckBox>
-				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="spellBugsCheckBox" @bind-Checked="Flags.SpellBugs">Spell Fixes</CheckBox>
-				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyStatusAttackBugCheckBox" @bind-Checked="Flags.EnemyStatusAttackBug">Enemy Status Attacks</CheckBox>
-				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="blackBeltAbsorbCheckBox" @bind-Checked="Flags.BlackBeltAbsorb">Bl. Belt & Master Absorb Calculation</CheckBox>
-				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyElementalResistancesCheckBox" @bind-Checked="Flags.EnemyElementalResistancesBug">Enemy Elemental Resistances</CheckBox>
-				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="enemySpellsTargetingAlliesCheckBox" @bind-Checked="Flags.EnemySpellsTargetingAllies">Enemy Spells Targeting Allies</CheckBox>
-				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="improveTurnOrderRandomizationCheckBox" @bind-Checked="Flags.ImproveTurnOrderRandomization">Improve Turn Order Randomization</CheckBox>
-				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="fixHitChanceCapCheckBox" @bind-Checked="Flags.FixHitChanceCap">Fix Hit % Cap</CheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="houseMPRestorationCheckBox" @bind-Value="Flags.HouseMPRestoration">House MP Restoration</CheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="weaponStatsCheckBox" @bind-Value="Flags.WeaponStats">Weapon Stats</CheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="chanceToRunCheckBox" @bind-Value="Flags.ChanceToRun">Chance to Run</CheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="spellBugsCheckBox" @bind-Value="Flags.SpellBugs">Spell Fixes</CheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyStatusAttackBugCheckBox" @bind-Value="Flags.EnemyStatusAttackBug">Enemy Status Attacks</CheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="blackBeltAbsorbCheckBox" @bind-Value="Flags.BlackBeltAbsorb">Bl. Belt & Master Absorb Calculation</CheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyElementalResistancesCheckBox" @bind-Value="Flags.EnemyElementalResistancesBug">Enemy Elemental Resistances</CheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="enemySpellsTargetingAlliesCheckBox" @bind-Value="Flags.EnemySpellsTargetingAllies">Enemy Spells Targeting Allies</CheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="improveTurnOrderRandomizationCheckBox" @bind-Value="Flags.ImproveTurnOrderRandomization">Improve Turn Order Randomization</CheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="fixHitChanceCapCheckBox" @bind-Value="Flags.FixHitChanceCap">Fix Hit % Cap</CheckBox>
 			</div>
 			<div class="col-md-6">
 				<h4>Balance</h4>
-				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="doubleBBCritCheckBox" @bind-Checked="Flags.BBCritRate">Halve BB Crit Rate</CheckBox>
-				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="doubleWeaponCritCheckBox" @bind-Checked="Flags.WeaponCritRate">Double Weapon Crit Rate</CheckBox>
-				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="increaseWepBonusesCheckBox" @bind-Checked="Flags.WeaponBonuses">Increase Weapon Elemental and Type Bonuses</CheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="doubleBBCritCheckBox" @bind-Value="Flags.BBCritRate">Halve BB Crit Rate</CheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="doubleWeaponCritCheckBox" @bind-Value="Flags.WeaponCritRate">Double Weapon Crit Rate</CheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="increaseWepBonusesCheckBox" @bind-Value="Flags.WeaponBonuses">Increase Weapon Elemental and Type Bonuses</CheckBox>
 				<IntSlider Indent Min="1" Max="50" Step="1" DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.WeaponBonuses" Id="WeaponTypeBonusValue" @bind-Value="@Flags.WeaponTypeBonusValue">Weapon Elemental/Type Damage Bonus:</IntSlider>
-				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="thiefHitCheckBox" @bind-Checked="Flags.ThiefHitRate">Double Thief &amp; Ninja Hit% growth.</CheckBox>
-				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="cureHealBuffCheckBox" @bind-Checked="Flags.BuffHealingSpells">Improve CURE, HEAL, LAMP, and AMUT spells</CheckBox>
-				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="housesFillHpCheckBox" @bind-Checked="Flags.HousesFillHP">House Full HP Restoration</CheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="thiefHitCheckBox" @bind-Value="Flags.ThiefHitRate">Double Thief &amp; Ninja Hit% growth.</CheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="cureHealBuffCheckBox" @bind-Value="Flags.BuffHealingSpells">Improve CURE, HEAL, LAMP, and AMUT spells</CheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="housesFillHpCheckBox" @bind-Value="Flags.HousesFillHP">House Full HP Restoration</CheckBox>
 				<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="LockMode" TItem="LockHitMode" @bind-Value="Flags.LockMode">LOCK and LOK2 Mode:</EnumDropDown>
 				<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="MDefModeDropDown" TItem="MDEFGrowthMode" @bind-Value="Flags.MDefMode">MDEF Growth:</EnumDropDown>
 			</div>
