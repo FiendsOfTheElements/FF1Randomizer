@@ -681,31 +681,13 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FixMissingBattleRngEntry"));
 			}
 		}
-		public bool? EnemyFormationsUnrunnable
+		public Runnability Runnability
 		{
-			get => Flags.EnemyFormationsUnrunnable;
+			get => Flags.Runnability;
 			set
 			{
-				Flags.EnemyFormationsUnrunnable = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EnemyFormationsUnrunnable"));
-			}
-		}
-		public bool? EverythingUnrunnable
-		{
-			get => Flags.EverythingUnrunnable;
-			set
-			{
-				Flags.EverythingUnrunnable = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EverythingUnrunnable"));
-			}
-		}
-		public bool? EverythingRunnable
-		{
-			get => Flags.EverythingRunnable;
-			set
-			{
-				Flags.EverythingRunnable = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EverythingRunnable"));
+				Flags.Runnability = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Runnability"));
 			}
 		}
 		public bool? UnrunnablesStrikeFirstAndSurprise
@@ -1481,6 +1463,16 @@ namespace FF1Lib
 			{
 				Flags.FreeOrbs = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeOrbs"));
+			}
+		}
+
+		public bool? FreeLute
+		{
+			get => Flags.FreeLute;
+			set
+			{
+				Flags.FreeLute = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeLute"));
 			}
 		}
 
@@ -3003,15 +2995,6 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("HintsDungeon"));
 			}
 		}
-		public bool? HintsRngDungeon
-		{
-			get => Flags.HintsRngDungeon;
-			set
-			{
-				Flags.HintsRngDungeon = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("HintsRngDungeon"));
-			}
-		}
 		public bool? HintsUseless
 		{
 			get => Flags.HintsUseless;
@@ -3272,15 +3255,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomPromotionsSpoilers"));
 			}
 		}
-		public bool LinearMPGrowth
-		{
-			get => Flags.LinearMPGrowth;
-			set
-			{
-				Flags.LinearMPGrowth = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("LinearMPGrowth"));
-			}
-		}
+
 		public bool? RandomizeClass
 		{
 			get => Flags.RandomizeClass;

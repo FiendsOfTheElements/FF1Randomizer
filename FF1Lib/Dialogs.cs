@@ -167,7 +167,7 @@ namespace FF1Lib
 				_talkroutines.Add(Blob.FromHex("A476207990B01BA474F0052079909015A573F0111820109FB00DA476207F90A57260A57160A57060"));
 				_talkroutines.Add(Blob.FromHex("A476207990B01EA674BD2060F01AA573F0161820109FB012A674DE2060A476207F90A57260A57160A57060"));
 				_talkroutines.Add(Blob.FromHex("A476207990B01BA674F005BD2060F015A573F0111820109FB00DA476207F90A57260A57160A57060"));
-				_talkroutines.Add(Blob.FromHex("A674F006BD2060F029A5738561202096F022E67DA572203D96A575200096A476207F90207392A5611820109F2018964C4396A57060")); // Talk_Astos
+				_talkroutines.Add(Blob.FromHex("A674F005BD2060F029A5738561202096F022E67DA572203D96A575200096A476207F90207392A5611820109F2018964C4396A57060")); // Talk_Astos
 				_talkroutines.Add(Blob.FromHex("A000209690A57160")); // Talk_Kill
 				_talkroutines.Add(Blob.FromHex("A57520C590A57160")); // Talk_Chaos
 			}
@@ -1068,13 +1068,178 @@ namespace FF1Lib
 				{(OverworldTeleportIndex)37,"the Sky Palace"},
 			};
 
-			var targetlocation = new OverworldTeleportIndex();
-			if (overworldmap.OverriddenOverworldLocations != null && overworldmap.OverriddenOverworldLocations.Where(x => x.Key == location).Any())
-				targetlocation = overworldmap.OverriddenOverworldLocations.Where(x => x.Key == location).First().Value;
-			else
-				targetlocation = StandardOverworldLocations.Where(x => x.Key == location).First().Value;
+			var floorlist = new List<(List<MapLocation>, string)> {
+				(new List<MapLocation> { MapLocation.Cardia1, MapLocation.Cardia2, MapLocation.Cardia4, MapLocation.Cardia5, MapLocation.Cardia6,
+					MapLocation.DwarfCave, MapLocation.DwarfCaveRoom3, MapLocation.ElflandCastle, MapLocation.ElflandCastleRoom1, MapLocation.MatoyasCave, MapLocation.NorthwestCastle,
+					MapLocation.NorthwestCastleRoom2, MapLocation.TitansTunnelEast, MapLocation.TitansTunnelRoom, MapLocation.TitansTunnelWest,
+					MapLocation.Waterfall },
+					""),
+				(new List<MapLocation> { MapLocation.Caravan },
+					""),
+				(new List<MapLocation> { MapLocation.ConeriaCastleRoom1, MapLocation.ConeriaCastleRoom2, MapLocation.MirageTower1,
+					MapLocation.SeaShrine1, MapLocation.SkyPalace1, MapLocation.TempleOfFiends1Room1, MapLocation.TempleOfFiends1Room2,
+					MapLocation.TempleOfFiends1Room3, MapLocation.TempleOfFiends1Room4, MapLocation.CastleOrdeals1, MapLocation.TempleOfFiends2,
+					MapLocation.EarthCave1, MapLocation.GurguVolcano1, MapLocation.IceCave1, MapLocation.MarshCave1 },
+					"on floor 1"),
+				(new List<MapLocation> { MapLocation.CastleOrdealsMaze, MapLocation.MirageTower2, MapLocation.SkyPalace2,
+					MapLocation.TempleOfFiends2, MapLocation.EarthCave2, MapLocation.GurguVolcano2, MapLocation.IceCave2, },
+					"on floor 2"),
+				(new List<MapLocation> { MapLocation.CastleOrdealsTop, MapLocation.MirageTower3, MapLocation.SkyPalace3, MapLocation.TempleOfFiends3,
+					MapLocation.EarthCaveVampire, MapLocation.GurguVolcano3, MapLocation.IceCave3 },
+					"on floor 3"),
+				(new List<MapLocation> { MapLocation.TempleOfFiendsPhantom,  MapLocation.SkyPalaceMaze, MapLocation.EarthCave4, MapLocation.GurguVolcano4,
+					MapLocation.IceCaveFloater, MapLocation.IceCavePitRoom }, "on floor 4"),
+				(new List<MapLocation> { MapLocation.EarthCaveLich, MapLocation.GurguVolcano5, MapLocation.SkyPalaceTiamat, MapLocation.TempleOfFiendsEarth,
+					MapLocation.IceCave5 }, "on floor 5"),
+				(new List<MapLocation> { MapLocation.GurguVolcano6, MapLocation.TempleOfFiendsFire, MapLocation.IceCaveBackExit }, "on floor 6"),
+				(new List<MapLocation> { MapLocation.GurguVolcanoKary, MapLocation.TempleOfFiendsWater }, "on floor 7"),
+				(new List<MapLocation> { MapLocation.TempleOfFiendsAir }, "on floor 8"),
+				(new List<MapLocation> { MapLocation.TempleOfFiendsChaos }, "on floor 9"),
 
-			return LocationNames.Where(x => x.Key == targetlocation).First().Value;
+				(new List<MapLocation> { MapLocation.MarshCaveTop }, "on floor 2, Top"),
+				(new List<MapLocation> { MapLocation.MarshCave3 }, "on floor 2, Bottom"),
+				(new List<MapLocation> { MapLocation.MarshCaveBottom, MapLocation.MarshCaveBottomRoom13, MapLocation.MarshCaveBottomRoom14,
+					MapLocation.MarshCaveBottomRoom16 }, "on floor 3, Bottom"),
+
+				(new List<MapLocation> { MapLocation.SeaShrine2, MapLocation.SeaShrine2Room2 }, "on floor 2, Right Side"),
+				(new List<MapLocation> { MapLocation.SeaShrineMermaids }, "on floor 3, Right Side"),
+				(new List<MapLocation> { MapLocation.SeaShrine7 }, "on floor 5, Left Side"),
+				(new List<MapLocation> { MapLocation.SeaShrine8 }, "on floor 6, Left Side"),
+				(new List<MapLocation> { MapLocation.SeaShrineKraken }, "on floor 7, Left Side"),
+			};
+
+			var parentfloor = new List<(MapLocation, MapLocation)> {
+				(MapLocation.ConeriaCastleRoom1, MapLocation.ConeriaCastle1),
+				(MapLocation.ConeriaCastleRoom2, MapLocation.ConeriaCastle1),
+				(MapLocation.DwarfCaveRoom3, MapLocation.DwarfCave),
+				(MapLocation.ElflandCastleRoom1, MapLocation.ElflandCastle),
+				(MapLocation.MarshCaveBottomRoom13, MapLocation.MarshCaveBottom),
+				(MapLocation.MarshCaveBottomRoom14, MapLocation.MarshCaveBottom),
+				(MapLocation.MarshCaveBottomRoom16, MapLocation.MarshCaveBottom),
+				(MapLocation.NorthwestCastleRoom2, MapLocation.NorthwestCastle),
+				(MapLocation.SeaShrine2Room2, MapLocation.SeaShrine2),
+				(MapLocation.TempleOfFiends1Room1, MapLocation.TempleOfFiends1),
+				(MapLocation.TempleOfFiends1Room2, MapLocation.TempleOfFiends1),
+				(MapLocation.TempleOfFiends1Room3, MapLocation.TempleOfFiends1),
+				(MapLocation.TempleOfFiends1Room4, MapLocation.TempleOfFiends1),
+				(MapLocation.TitansTunnelRoom, MapLocation.TitansTunnelEast),
+				(MapLocation.IceCaveFloater, MapLocation.IceCavePitRoom)
+			};
+
+			var invalidlocation = new List<MapLocation> { MapLocation.ConeriaCastleRoom1, MapLocation.ConeriaCastleRoom2, MapLocation.DwarfCaveRoom3,
+					MapLocation.ElflandCastleRoom1, MapLocation.MarshCaveBottomRoom13, MapLocation.MarshCaveBottomRoom14, MapLocation.MarshCaveBottomRoom16,
+					MapLocation.NorthwestCastleRoom2, MapLocation.SeaShrine2Room2, MapLocation.TempleOfFiends1Room1, MapLocation.TempleOfFiends1Room2,
+					MapLocation.TempleOfFiends1Room3, MapLocation.TempleOfFiends1Room4, MapLocation.TitansTunnelRoom, MapLocation.StartingLocation,
+					MapLocation.AirshipLocation
+			};
+
+			var deadends = new List<MapLocation> { MapLocation.BahamutCave2, MapLocation.Cardia1, MapLocation.Cardia2, MapLocation.Cardia4, MapLocation.Cardia5,
+					MapLocation.Cardia6, MapLocation.CastleOrdealsTop, MapLocation.ConeriaCastle2, MapLocation.Coneria, MapLocation.CrescentLake, MapLocation.DwarfCave,
+					MapLocation.EarthCaveLich, MapLocation.Elfland, MapLocation.ElflandCastle, MapLocation.Gaia, MapLocation.GurguVolcanoKary, MapLocation.IceCaveBackExit,
+					MapLocation.Lefein, MapLocation.MarshCaveBottom, MapLocation.MarshCaveTop, MapLocation.MatoyasCave, MapLocation.Melmond, MapLocation.NorthwestCastle,
+					MapLocation.Pravoka, MapLocation.SardasCave, MapLocation.SeaShrineKraken, MapLocation.SeaShrineMermaids, MapLocation.StartingLocation,
+					MapLocation.TempleOfFiendsChaos, MapLocation.TitansTunnelEast, MapLocation.TitansTunnelWest, MapLocation.Waterfall
+			};
+
+			var targetlocation = new OverworldTeleportIndex();
+			var finalstring = "";
+
+			// Check if first floor of Sea is flipped
+			var sea1flipped = false;
+			var maps = this.ReadMaps();
+			if(maps[(int)MapId.SeaShrineB3][(0x02, 0x04)].Value != 0x55) sea1flipped = true;
+
+			// Check if floor shuffle is on
+			if (overworldmap.OverriddenOverworldLocations != null && overworldmap.OverriddenOverworldLocations.Where(x => x.Key == location).Any())
+			{ 
+				var parentlocation = parentfloor.Find(x => x.Item1 == location).Item2;
+				var validlocation = location;
+
+				// If location is a room, set it to its parent location
+				if (parentlocation != MapLocation.StartingLocation)
+					validlocation = parentlocation;
+
+				// Get worldmap location
+				targetlocation = overworldmap.OverriddenOverworldLocations.Where(x => x.Key == validlocation).First().Value;
+
+				// Get all the floors from that world map location while removing the rooms
+				var dungeonfloors = overworldmap.OverriddenOverworldLocations.Where(x => x.Value == targetlocation && !invalidlocation.Contains(x.Key)).ToList();
+
+				// If there's a split, we need to compute the floor position
+				if (dungeonfloors.Select(x => x.Key).ToList().Contains(MapLocation.MarshCave1) || dungeonfloors.Select(x => x.Key).ToList().Contains(MapLocation.SeaShrine1))
+				{
+					var floornumber = new List<int> { 0, 0, 0 };
+					var splitindex = 0;
+					var description = new List<List<string>>();
+					var descriptionindexer = new List<int> { 0, 0 };
+					var descriptionindex = -1;
+					for (int i = 0; i < dungeonfloors.Count(); i++)
+					{
+						if (dungeonfloors[i].Key == validlocation)
+						{
+							floornumber[splitindex]++;
+							break;
+						}
+						else if (deadends.Contains(dungeonfloors[i].Key))
+						{
+							floornumber[splitindex] = 0;
+							descriptionindexer[descriptionindex]--;
+							if (descriptionindexer[descriptionindex] == 0)
+								descriptionindex--;
+							splitindex--;
+						}
+						else if (dungeonfloors[i].Key == MapLocation.MarshCave1)
+						{
+							description.Add(new List<string> { "", "Bottom", "Top" });
+							descriptionindex++;
+							descriptionindexer[descriptionindex] = 2;
+							floornumber[splitindex]++;
+							splitindex++;
+						}
+						else if (dungeonfloors[i].Key == MapLocation.SeaShrine1)
+						{
+							if (sea1flipped)
+								description.Add(new List<string> { "", "Right Side", "Left Side" });
+							else
+								description.Add(new List<string> { "", "Left Side", "Right Side" });
+							descriptionindex++;
+							descriptionindexer[descriptionindex] = 2;
+							floornumber[splitindex]++;
+							splitindex++;
+						}
+						else
+							floornumber[splitindex]++;
+					}
+
+					var finalfloor = 0;
+					for (int i = 0; i < 3; i++)
+					{
+						finalfloor += floornumber[i];
+					}
+
+					finalstring = "on floor " + finalfloor;
+
+					for (int i = 0; i < description.Count(); i++)
+					{
+						if (description[i][descriptionindexer[i]] != "")
+							finalstring += ", " + description[i][descriptionindexer[i]];
+					}
+				}
+				else // If there's no split, just get that floor index
+					finalstring = "on floor " + (dungeonfloors.FindIndex(x => x.Key == validlocation) + 1);
+			}
+			else // No E/F shuffle, use the floorlist
+			{
+				targetlocation = StandardOverworldLocations.Where(x => x.Key == location).First().Value;
+				finalstring = floorlist.Find(x => x.Item1.Contains(location)).Item2;
+			}
+
+			if(location == MapLocation.Caravan)
+				finalstring += "at " + LocationNames.Where(x => x.Key == targetlocation).First().Value;
+			else
+				finalstring += ((finalstring == "" || finalstring == null)? "in " : " of ") + LocationNames.Where(x => x.Key == targetlocation).First().Value;
+
+			return finalstring;
 		}
 
 		public static Dictionary<string, string> NiceNpcName = new Dictionary<string, string>
@@ -1122,114 +1287,46 @@ namespace FF1Lib
 
 			return text;
 		}
-		public List<Map> SetDungeonNPC(List<Map> maps, MT19337 rng, bool randomize)
+		public void SetDungeonNPC(List<Map> maps, MT19337 rng)
 		{
-			// Earth modification
-			List<List<byte>> earthmod = new List<List<byte>> {
-				new List<byte> { 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E },
-				new List<byte> { 0x3E, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41 },
-				new List<byte> { 0x3E, 0x41, 0x00, 0x01, 0x02, 0x41, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E },
-				new List<byte> { 0x3E, 0x41, 0x03, 0x2E, 0x05, 0x41, 0x3E, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38 },
-				new List<byte> { 0x3E, 0x41, 0x06, 0x07, 0x08, 0x41, 0x3E, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38 },
-				new List<byte> { 0x3E, 0x41, 0x30, 0x36, 0x30, 0x41, 0x3E, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38 },
-				new List<byte> { 0x3E, 0x41, 0x41, 0x3A, 0x41, 0x41, 0x3E, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38 },
-				new List<byte> { 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38, 0x38 },
-			};
+			bool earthB5flipped = false;
+			bool volcanoB3flipped = false;
+			bool sky3Fflipped = false;
+			bool marshB1flipped = false;
 
-			for (int y = 0; y < earthmod.Count; y++)
-			{
-				for (int x = 0; x < earthmod[y].Count; x++)
-				{
-					maps[(byte)MapId.EarthCaveB1][y + 35, x + 2] = earthmod[y][x];
-				}
-			}
-
-			// Seashrine modification
-			maps[(byte)MapId.SeaShrineB4][0x2E, 0x16] = 0x36;
-			maps[(byte)MapId.SeaShrineB4][0x2F, 0x16] = 0x3A;
+			// Check if maps are flipped
+			if (maps[(int)MapId.EarthCaveB5][(0x11, 0x17)].Value != 0x41) earthB5flipped = true;
+			if (maps[(int)MapId.GurguVolcanoB3][(0x01, 0x02)].Value != 0x41) volcanoB3flipped = true;
+			if (maps[(int)MapId.SkyPalace3F][(0x01, 0x13)].Value != 0x4B) sky3Fflipped = true;
+			if (maps[(int)MapId.MarshCaveB1][(0x01, 0x06)].Value != 0x40) marshB1flipped = true;
 
 			// Palettes changes
-			PutInBank(0x00, 0xA000 + ((byte)MapId.EarthCaveB1 * 0x30) + 0x18, Blob.FromHex("000F2736000F1A36"));
-			PutInBank(0x00, 0xA000 + ((byte)MapId.SeaShrineB4 * 0x30) + 0x18, Blob.FromHex("0F1527360F241536"));
-			PutInBank(0x00, 0xA000 + ((byte)MapId.SeaShrineB3 * 0x30) + 0x18, Blob.FromHex("0F1527360F241536"));
 			PutInBank(0x00, 0xA000 + ((byte)MapId.GurguVolcanoB3 * 0x30) + 0x18, Blob.FromHex("000F1716000F1716"));
-			PutInBank(0x00, 0xA000 + ((byte)MapId.GurguVolcanoB2 * 0x30) + 0x18, Blob.FromHex("000F1716000F1716"));
 			PutInBank(0x00, 0xA000 + ((byte)MapId.MarshCaveB1 * 0x30) + 0x18, Blob.FromHex("000F1C34000F1834"));
-			PutInBank(0x00, 0xA000 + ((byte)MapId.MarshCaveB2 * 0x30) + 0x18, Blob.FromHex("000F1C34000F1834"));
-			PutInBank(0x00, 0xA000 + ((byte)MapId.MarshCaveB3 * 0x30) + 0x18, Blob.FromHex("000F1C34000F1834"));
-			PutInBank(0x00, 0xA000 + ((byte)MapId.SkyPalace4F * 0x30) + 0x18, Blob.FromHex("0F0F18140F0F1714"));
-
-
-			int randomposition = randomize ? rng.Between(1, 3) : 1;
 
 			// Dwarf hinter - Earth - Text 0x70 - 0x5B - 5e
 			SetNpc(MapId.DwarfCave, 5, ObjectId.None, 0x12, 0x18, false, false);
-
-			if (randomposition == 1)
-				SetNpc(MapId.EarthCaveB5, 0x0B, (ObjectId)0x5B, 0x12, 0x18, false, false);
-			else if (randomposition == 2)
-				SetNpc(MapId.EarthCaveB1, 0, (ObjectId)0x5B, 0x05, 0x26, true, false);
-			else
-				SetNpc(MapId.EarthCaveB3, 2, (ObjectId)0x5B, 0x09, 0x09, true, false);
-
+			SetNpc(MapId.EarthCaveB5, 0x0B, (ObjectId)0x5B, earthB5flipped ? (0x3F - 0x12) : 0x12, 0x18, false, false);
 
 			// Robot hinter - Sky - Tex 0xE1 - 0xCF
 			SetNpc(MapId.SkyPalace3F, 0, ObjectId.None, 0x08, 0x1C, false, true);
-			randomposition = randomize ? rng.Between(1, 3) : 1;
-			if (randomposition == 1)
-				SetNpc(MapId.SkyPalace3F, 0, (ObjectId)0xCF, 0x1B, 0x34, true, false);
-			else if (randomposition == 2)
-				SetNpc(MapId.MirageTower2F, 1, (ObjectId)0xCF, 0x08, 0x1C, false, true);
-			else
-			{
-				var (x_robot, y_robot) = GetSkyCastleFloorTile(rng, maps[(byte)MapId.SkyPalace4F]);
-				SetNpc(MapId.SkyPalace4F, 1, (ObjectId)0xCF, x_robot, y_robot, inRoom: false, stationary: false);
-			}
+			SetNpc(MapId.SkyPalace3F, 0, (ObjectId)0xCF, sky3Fflipped ? (0x3F - 0x1B) : 0x1B, 0x34, true, false);
 
 			// Dragon hinter - Gurgu - Text 0xE3 - 0x86 dragon
 			SetNpc(MapId.Cardia, 1, ObjectId.None, 0x2D, 0x1A, false, false);
-			randomposition = randomize ? rng.Between(1, 3) : 1;
-			if (randomposition == 1)
-				SetNpc(MapId.GurguVolcanoB3, 1, (ObjectId)0x86, 0x04, 0x1D, false, false);
-			else if (randomposition == 2)
-				SetNpc(MapId.GurguVolcanoB2, 1, (ObjectId)0x86, 0x02, 0x02, true, false);
-			else
-				SetNpc(MapId.GurguVolcanoB5, 1, (ObjectId)0x86, 0x37, 0x08, true, false);
-			//SetNpc(MapId.GurguVolcanoB3, 1, (ObjectId)0x86, 0x01, 0x02, false, true);
+			SetNpc(MapId.GurguVolcanoB3, 1, (ObjectId)0x86, volcanoB3flipped ? (0x3F - 0x04) : 0x04, 0x1D, false, false);
 
 			// Punk hinter - Marsh - Text 0xAF - 0x9D punk
 			SetNpc(MapId.Onrac, 11, ObjectId.None, 0x2D, 0x1A, false, false);
-			randomposition = randomize ? rng.Between(1, 3) : 1;
-			if (randomposition == 1)
-				SetNpc(MapId.MarshCaveB1, 5, ObjectId.OnracPunk2, 0x2D, 0x1A, false, false);
-			else if (randomposition == 2)
-				SetNpc(MapId.MarshCaveB2, 0x0E, ObjectId.OnracPunk2, 0x0E, 0x34, true, false);
-			else
-				SetNpc(MapId.MarshCaveB2, 0x0D, ObjectId.OnracPunk2, 0x37, 0x21, true, false);
+			SetNpc(MapId.MarshCaveB1, 5, ObjectId.OnracPunk2, marshB1flipped ? (0x3F - 0x2D) : 0x2D, 0x1A, false, false);
 
 			// Mermaid hinter - Text 0xB6 - 0xA5 mermaid
-			randomposition = randomize ? rng.Between(1, 3) : 1;
-			if (randomposition == 1)
-			{
-				SetNpc(MapId.SeaShrineB1, 2, ObjectId.None, 0x00, 0x00, true, false);
-				SetNpc(MapId.SeaShrineB4, 0, (ObjectId)0xA5, 0x16, 0x2C, true, false);
-			}
-			else if (randomposition == 2)
-			{
-				SetNpc(MapId.SeaShrineB1, 2, ObjectId.None, 0x00, 0x00, true, false);
-				SetNpc(MapId.SeaShrineB3, 0, (ObjectId)0xA5, 0x1A, 0x11, true, false);
-			}
-			else
-			{
-				List<ObjectId> mermaids = new List<ObjectId> { ObjectId.Mermaid1, ObjectId.Mermaid2, ObjectId.Mermaid4, ObjectId.Mermaid5, ObjectId.Mermaid6, ObjectId.Mermaid7, ObjectId.Mermaid8, ObjectId.Mermaid9, ObjectId.Mermaid10 };
-				var selectedMermaidId = mermaids.PickRandom(rng);
-				var selectedMermaid = FindNpc(MapId.SeaShrineB1, selectedMermaidId);
-				var hintMermaid = FindNpc(MapId.SeaShrineB1, ObjectId.Mermaid3);
-				SetNpc(MapId.SeaShrineB1, selectedMermaid.Index, ObjectId.Mermaid3, selectedMermaid.Coord.x, selectedMermaid.Coord.y, selectedMermaid.InRoom, selectedMermaid.Stationary);
-				SetNpc(MapId.SeaShrineB1, hintMermaid.Index, selectedMermaidId, hintMermaid.Coord.x, hintMermaid.Coord.y, hintMermaid.InRoom, hintMermaid.Stationary);
-			}
-
-			return maps;
+			List<ObjectId> mermaids = new List<ObjectId> { ObjectId.Mermaid1, ObjectId.Mermaid2, ObjectId.Mermaid4, ObjectId.Mermaid5, ObjectId.Mermaid6, ObjectId.Mermaid7, ObjectId.Mermaid8, ObjectId.Mermaid9, ObjectId.Mermaid10 };
+			var selectedMermaidId = mermaids.PickRandom(rng);
+			var selectedMermaid = FindNpc(MapId.SeaShrineB1, selectedMermaidId);
+			var hintMermaid = FindNpc(MapId.SeaShrineB1, ObjectId.Mermaid3);
+			SetNpc(MapId.SeaShrineB1, selectedMermaid.Index, ObjectId.Mermaid3, selectedMermaid.Coord.x, selectedMermaid.Coord.y, selectedMermaid.InRoom, selectedMermaid.Stationary);
+			SetNpc(MapId.SeaShrineB1, hintMermaid.Index, selectedMermaidId, hintMermaid.Coord.x, hintMermaid.Coord.y, hintMermaid.InRoom, hintMermaid.Stationary);
 		}
 		public void NPCHints(MT19337 rng, NPCdata npcdata, Flags flags, OverworldMap overworldmap)
 		{
@@ -1290,6 +1387,7 @@ namespace FF1Lib
 			}
 
 			if (flags.FreeAirship ?? false) incentivePool.Remove(Item.Floater);
+			if (flags.FreeCanoe ?? false) incentivePool.Remove(Item.Canoe);
 			if (flags.FreeBridge ?? false) incentivePool.Remove(Item.Bridge);
 			if (flags.FreeCanal ?? false) incentivePool.Remove(Item.Canal);
 			if (flags.FreeLute ?? false) incentivePool.Remove(Item.Lute);
@@ -1373,7 +1471,7 @@ namespace FF1Lib
 						tempHint = hintschests.PickRandom(rng);
 						tempHint = tempHint.Split('$')[0] + tempName + tempHint.Split('$')[1];
 
-						tempHint = FormatText(tempHint.Split('#')[0] + "in " + LocationText(generatedPlacement.Find(x => x.Item == tempItem).MapLocation, overworldmap) + tempHint.Split('#')[1]);
+						tempHint = FormatText(tempHint.Split('#')[0] + LocationText(generatedPlacement.Find(x => x.Item == tempItem).MapLocation, overworldmap) + tempHint.Split('#')[1]);
 						hintsList.Add(tempHint);
 						hintedItems.RemoveRange(0, 1);
 					}
@@ -1389,7 +1487,7 @@ namespace FF1Lib
 					{
 						tempHint = hintsvendormed.PickRandom(rng);
 						tempHint = tempHint.Split('$')[0] + tempName + tempHint.Split('$')[1];
-						tempHint = FormatText(tempHint.Split('#')[0] + ((generatedPlacement.Find(x => x.Item == tempItem).MapLocation.Equals(MapLocation.Caravan)) ? "at " : "in ") + LocationText(generatedPlacement.Find(x => x.Item == tempItem).MapLocation, overworldmap) + tempHint.Split('#')[1]);
+						tempHint = FormatText(tempHint.Split('#')[0] + LocationText(generatedPlacement.Find(x => x.Item == tempItem).MapLocation, overworldmap) + tempHint.Split('#')[1]);
 						hintsList.Add(tempHint);
 						hintedItems.RemoveRange(0, 1);
 					}

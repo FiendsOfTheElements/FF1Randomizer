@@ -537,7 +537,7 @@ namespace FF1Lib
 
 			// If Astos, we're done here
 			if (newastos == ObjectId.Astos) return;
-
+			
 			// If not get NPC talk routine, get NPC object
 			var talkscript = npcdata.GetRoutine(newastos);
 
@@ -580,12 +580,13 @@ namespace FF1Lib
 			{
 				// Skip giving item for Titan, ElfDoc or Unne
 				talkroutines.ReplaceChunk(newTalkRoutines.Talk_Astos, Blob.FromHex("20109F"), Blob.FromHex("EAEAEA"));
+				talkroutines.ReplaceChunk(newTalkRoutines.Talk_Astos, Blob.FromHex("A9F060"), Blob.FromHex("4C4396"));
 				npcdata.SetRoutine(newastos, newTalkRoutines.Talk_Astos);
 			}
 			else if (talkscript == newTalkRoutines.Talk_GiveItemOnFlag)
 			{
-				// Check for a flag instead of an item
-				talkroutines.ReplaceChunk(newTalkRoutines.Talk_Astos, Blob.FromHex("A674F006BD2060"), Blob.FromHex("A474F006207990"));
+				// Check for a flag instead of an item                          
+				talkroutines.ReplaceChunk(newTalkRoutines.Talk_Astos, Blob.FromHex("A674F005BD2060F0"), Blob.FromHex("A474F00520799090"));
 				npcdata.SetRoutine(newastos, newTalkRoutines.Talk_Astos);
 			}
 			else if (talkscript == newTalkRoutines.Talk_Nerrick || talkscript == newTalkRoutines.Talk_GiveItemOnItem || talkscript == newTalkRoutines.Talk_TradeItems)

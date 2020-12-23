@@ -45,9 +45,7 @@ namespace FF1Lib
 
 		public bool? Rng { get; set; } = false;
 		public bool FixMissingBattleRngEntry { get; set; } = false;
-		public bool? EverythingUnrunnable { get; set; } = false;
-		public bool? EverythingRunnable { get; set; } = false;
-		public bool? EnemyFormationsUnrunnable { get; set; } = false;
+		public Runnability Runnability { get; set; } = Runnability.Normal;
 		public bool? EnemyFormationsSurprise { get; set; } = false;
 		public bool? UnrunnablesStrikeFirstAndSurprise { get; set; } = false;
 		public bool? EnemyTrapTiles { get; set; } = false;
@@ -138,6 +136,7 @@ namespace FF1Lib
 		public bool? FreeBridge { get; set; } = false;
 		public bool? FreeShip { get; set; } = false;
 		public bool? FreeAirship { get; set; } = false;
+		public bool? FreeLute { get; set; } = false;
 		public bool FreeOrbs { get; set; } = false;
 		public bool EnableCritNumberDisplay { get; set; } = false;
 		public bool? FreeCanal { get; set; } = false;
@@ -300,7 +299,6 @@ namespace FF1Lib
 		public bool? FreeTail { get; set; } = false;
 		public bool? HintsVillage { get; set; } = false;
 		public bool? HintsDungeon { get; set; } = false;
-		public bool? HintsRngDungeon { get; set; } = false;
 		public bool? HintsUseless { get; set; } = false;
 		public bool? SpellcrafterRetainPermissions { get; set; } = false;
 		public bool? RandomWeaponBonus { get; set; } = false;
@@ -321,7 +319,6 @@ namespace FF1Lib
 		public bool? EnableRandomPromotions { get; set; } = false;
 		public bool? IncludeBaseClasses { get; set; } = false;
 		public bool? RandomPromotionsSpoilers { get; set; } = false;
-		public bool LinearMPGrowth { get; set; } = false;
 		public bool? RandomizeClass { get; set; } = false;
 		public bool? RandomizeClassChaos { get; set; } = false;
 		public int RandomizeClassMaxBonus { get; set; } = 2;
@@ -577,7 +574,7 @@ namespace FF1Lib
 
 		public bool? ImmediatePureAndSoftRequired => EnemyStatusAttacks | Entrances | MapOpenProgression | RandomizeFormationEnemizer | RandomizeEnemizer;
 
-		public bool? FreeLute => ChaosRush | ShortToFR;
+		//public bool? FreeLute => ChaosRush | ShortToFR;
 
 		public bool? DeepCastlesPossible => Entrances & Floors;
 		public bool? DeepTownsPossible => Towns & Entrances & Floors & EntrancesMixedWithTowns;
@@ -619,9 +616,7 @@ namespace FF1Lib
 			sum = AddNumeric(sum, Enum.GetValues(typeof(AutohitThreshold)).Cast<int>().Max() + 1, (int)flags.MagicAutohitThreshold);
 			sum = AddTriState(sum, flags.Rng);
 			sum = AddBoolean(sum, flags.FixMissingBattleRngEntry);
-			sum = AddTriState(sum, flags.EverythingUnrunnable);
-			sum = AddTriState(sum, flags.EverythingRunnable);
-			sum = AddTriState(sum, flags.EnemyFormationsUnrunnable);
+			sum = AddNumeric(sum, Enum.GetValues(typeof(Runnability)).Cast<int>().Max() + 1, (int)flags.Runnability);
 			sum = AddTriState(sum, flags.EnemyFormationsSurprise);
 			sum = AddTriState(sum, flags.UnrunnablesStrikeFirstAndSurprise);
 			sum = AddTriState(sum, flags.EnemyTrapTiles);
@@ -697,6 +692,7 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.FreeBridge);
 			sum = AddTriState(sum, flags.FreeShip);
 			sum = AddTriState(sum, flags.FreeAirship);
+			sum = AddTriState(sum, flags.FreeLute);
 			sum = AddBoolean(sum, flags.FreeOrbs);
 			sum = AddBoolean(sum, flags.EnableCritNumberDisplay);
 			sum = AddTriState(sum, flags.FreeCanoe);
@@ -847,7 +843,6 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.FreeTail);
 			sum = AddTriState(sum, flags.HintsVillage);
 			sum = AddTriState(sum, flags.HintsDungeon);
-			sum = AddTriState(sum, flags.HintsRngDungeon);
 			sum = AddTriState(sum, flags.HintsUseless);
 			sum = AddTriState(sum, flags.SpellcrafterRetainPermissions);
 			sum = AddTriState(sum, flags.RandomWeaponBonus);
@@ -875,7 +870,6 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.EnableRandomPromotions);
 			sum = AddTriState(sum, flags.IncludeBaseClasses);
 			sum = AddTriState(sum, flags.RandomPromotionsSpoilers);
-			sum = AddBoolean(sum, flags.LinearMPGrowth);
 			sum = AddTriState(sum, flags.RandomizeClass);
 			sum = AddTriState(sum, flags.RandomizeClassChaos);
 			sum = AddNumeric(sum, 5, flags.RandomizeClassMaxBonus);
@@ -912,7 +906,6 @@ namespace FF1Lib
 				RandomizeClassMaxBonus = GetNumeric(ref sum, 5),
 				RandomizeClassChaos = GetTriState(ref sum),
 				RandomizeClass = GetTriState(ref sum),
-				LinearMPGrowth = GetBoolean(ref sum),
 				RandomPromotionsSpoilers = GetTriState(ref sum),
 				IncludeBaseClasses = GetTriState(ref sum),
 				EnableRandomPromotions = GetTriState(ref sum),
@@ -940,7 +933,6 @@ namespace FF1Lib
 				RandomWeaponBonus = GetTriState(ref sum),
 				SpellcrafterRetainPermissions = GetTriState(ref sum),
 				HintsUseless = GetTriState(ref sum),
-				HintsRngDungeon = GetTriState(ref sum),
 				HintsDungeon = GetTriState(ref sum),
 				HintsVillage = GetTriState(ref sum),
 				FreeTail = GetTriState(ref sum),
@@ -1091,6 +1083,7 @@ namespace FF1Lib
 				FreeCanoe = GetTriState(ref sum),
 				EnableCritNumberDisplay = GetBoolean(ref sum),
 				FreeOrbs = GetBoolean(ref sum),
+				FreeLute = GetTriState(ref sum),
 				FreeAirship = GetTriState(ref sum),
 				FreeShip = GetTriState(ref sum),
 				FreeBridge = GetTriState(ref sum),
@@ -1166,9 +1159,7 @@ namespace FF1Lib
 				EnemyTrapTiles = GetTriState(ref sum),
 				UnrunnablesStrikeFirstAndSurprise = GetTriState(ref sum),
 				EnemyFormationsSurprise = GetTriState(ref sum),
-				EnemyFormationsUnrunnable = GetTriState(ref sum),
-				EverythingRunnable = GetTriState(ref sum),
-				EverythingUnrunnable = GetTriState(ref sum),
+				Runnability = (Runnability)GetNumeric(ref sum, Enum.GetValues(typeof(Runnability)).Cast<int>().Max() + 1),
 				FixMissingBattleRngEntry = GetBoolean(ref sum),
 				Rng = GetTriState(ref sum),
 				MagicAutohitThreshold = (AutohitThreshold)GetNumeric(ref sum, Enum.GetValues(typeof(AutohitThreshold)).Cast<int>().Max() + 1),

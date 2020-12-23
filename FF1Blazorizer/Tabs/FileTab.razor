@@ -18,9 +18,9 @@
 				<input type="file" id="fileInput" accept=".nes" @onchange="@OnFileChanged" />
 			</div>
 			<div class="col-md-6">
-				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="rememberCheckBox" @bind-Checked="RememberROM">Remember ROM</CheckBox>
-				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="tournamentSafeCheckBox" @bind-Checked="Flags.TournamentSafe">Tournament Safe ROM</CheckBox>
-				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="spoilersCheckBox" @bind-Checked="Flags.Spoilers">Generate Spoiler Log!</CheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="rememberCheckBox" @bind-Value="RememberROM">Remember ROM</CheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="tournamentSafeCheckBox" @bind-Value="Flags.TournamentSafe">Tournament Safe ROM</CheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="spoilersCheckBox" @bind-Value="Flags.Spoilers">Generate Spoiler Log!</CheckBox>
 			</div>
 		</div>
 		<div class="row">&nbsp;</div>

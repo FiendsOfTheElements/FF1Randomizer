@@ -1,9 +1,23 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using RomUtilities;
+using System.ComponentModel;
 
 namespace FF1Lib
 {
+	public enum Runnability
+	{
+		[Description("Normal")]
+		Normal,
+		[Description("Shuffle")]
+		Shuffle,
+		[Description("All Unrunnable")]
+		AllUnrunnable,
+		[Description("All Runnable")]
+		AllRunnable,
+		[Description("Random Choice")]
+		Random
+	};
 	public partial class FF1Rom : NesRom
 	{
 		public enum FinalFormation

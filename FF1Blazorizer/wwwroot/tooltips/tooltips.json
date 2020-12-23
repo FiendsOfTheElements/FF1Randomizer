@@ -120,6 +120,12 @@
 		"description": "The vanilla Battle RNG table has two 00s out of 256 hex values. If checked, this flag replaces one of them with 0x95, the missing hex value."
 	},
 	{
+		"Id": "runnabilityDropDown",
+		"title": "Unrunnable Formations",
+		"screenshot": "enemyFormationsUnrunnableCheckBox.png",
+		"description": "Normal: Vanilla unrunnable formations.\n\nShuffle: Shuffles what formations are and are not runnable. Bosses and some other encounters will remain unrunnable.\n\nAll Unrunnable: Disables the ability to run from fights.\n\nAll Runnable: Makes all encounters runnable, except for bosses.\n\nRandom Choice: Select one of these options randomly."
+	},
+	{
 		"Id": "enemyFormationsUnrunnableCheckBox",
 		"title": "Enemy Unrunnable Formations",
 		"screenshot": "enemyFormationsUnrunnableCheckBox.png",
@@ -516,9 +522,14 @@
 	},
 	{
 		"Id": "chaosRushCheckBox",
-		"title": "Chaos Rush",
+		"title": "Unlocked ToFR",
+		"description": "Unlock all locked doors in Temple of Fiends Revisited, allowing to reach Chaos without the KEY."
+	},
+	{
+		"Id": "FreeLute",
+		"title": "Free Lute",
 		"screenshot": "chaosRushCheckBox.png",
-		"description": "Enables Chaos Rush mode, allowing you to reach Chaos without needing the KEY to pass through the door in Temple of Fiends and adding the LUTE to your inventory at the start of the game. This setting does not automatically light the four Orbs, although other settings may change this behavior."
+		"description": "Starts the game with the LUTE in the inventory."
 	},
 	{
 		"Id": "freeOrbsCheckBox",
@@ -548,7 +559,7 @@
 		"Id": "shortToFRCheckBox",
 		"title": "Shorten ToFR",
 		"screenshot": "shortToFRCheckBox.png",
-		"description": "Shortens the Temple of Fiends Revisited to lead straight to Chaos' Floor. The four Orbs are still required to enter the dungeon, excepting the use of other settings. Neither the KEY nor the LUTE will be requires if this box is checked."
+		"description": "Shortens the Temple of Fiends Revisited to lead straight to Chaos' Floor. The four Orbs are still required to enter the dungeon, excepting the use of other settings. Neither the KEY nor the LUTE will be required if this box is checked."
 	},
 	{
 		"Id": "preserveFiendRefightsCheckBox",
@@ -728,7 +739,7 @@
 		"Id": "hintsDungeon",
 		"title": "Hints from dungeon explorers",
 		"screenshot": "hintsDungeon.png",
-		"description": "Five NPC in dungeons reveals the location of an item. Down the dead end of Marsh Cave B1, on Lich's floor in Earth Cave, in the hallway of Gurgu Volcano B3, in a room on the left of Sea Shrine B4 and in the South room of Sky Palace 3F."
+		"description": "Five NPC in dungeons reveals the location of an item. Down the dead end of Marsh Cave B1, on Lich's floor in Earth Cave, in the hallway of Gurgu Volcano B3, one of the mermaids in Sea Shrine and in the South room of Sky Palace 3F."
 	},
 	{
 		"Id": "hintsRngDungeon",

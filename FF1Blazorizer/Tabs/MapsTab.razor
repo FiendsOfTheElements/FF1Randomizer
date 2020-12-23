@@ -31,14 +31,13 @@
 			</div>
 			<div class="col-md-4">
 				<h4>Saving and Hinting</h4>
-				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="disableTentSaving" @bind-Checked="Flags.DisableTentSaving">Disable Tent/Cabin/House Saving on Overworld</CheckBox>
-				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="disableInnSaving" @bind-Checked="Flags.DisableInnSaving">Disable Inn Saving</CheckBox>
-				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="saveGameWhenGameOverCheckBox" @bind-Checked="Flags.SaveGameWhenGameOver">Save Game When Game Over</CheckBox>
-				<CheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="saveGameDWModeCheckBox" IsEnabled="@Flags.SaveGameWhenGameOver" @bind-Checked="Flags.SaveGameDWMode">Dragon Warrior Mode</CheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="disableTentSaving" @bind-Value="Flags.DisableTentSaving">Disable Tent/Cabin/House Saving on Overworld</CheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="disableInnSaving" @bind-Value="Flags.DisableInnSaving">Disable Inn Saving</CheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="saveGameWhenGameOverCheckBox" @bind-Value="Flags.SaveGameWhenGameOver">Save Game When Game Over</CheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="saveGameDWModeCheckBox" IsEnabled="@Flags.SaveGameWhenGameOver" @bind-Value="Flags.SaveGameDWMode">Dragon Warrior Mode</CheckBox>
 				<div class="checkbox-cell"></div>
 				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.Treasures" Id="hintsVillage" @bind-Value="Flags.HintsVillage">Hint givers in villages</TriStateCheckBox>
 				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.Treasures" Id="hintsDungeon" @bind-Value="Flags.HintsDungeon">Hint givers in dungeons</TriStateCheckBox>
-				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.HintsDungeon" Id="hintsRngDungeon" @bind-Value="Flags.HintsRngDungeon">Shuffle location in dungeon</TriStateCheckBox>
 				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.HintsVillage != false || Flags.HintsDungeon != false)" Id="hintsUselessCheckBox" @bind-Value="Flags.HintsUseless">Useless Hints</TriStateCheckBox>
 			</div>
 		</div>
@@ -59,7 +58,7 @@
 			<div class="col-md-6">
 				<h4>Procedural Floor Generation</h4>
 				<p>Generate entire floors from whole cloth!</p>
-				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="procGenWaterfall" @bind-Checked="Flags.EFGWaterfall">Generated Waterfall Cave</CheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="procGenWaterfall" @bind-Value="Flags.EFGWaterfall">Generated Waterfall Cave</CheckBox>
 			</div>
 		</div>
 	</div>

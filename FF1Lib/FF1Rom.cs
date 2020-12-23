@@ -341,7 +341,7 @@ namespace FF1Lib
 			}
 
 			// Change Astos routine so item isn't lost in wall of text
-			if ((bool)flags.NPCItems || (bool)flags.NPCFetchItems)
+			if ((bool)flags.NPCItems || (bool)flags.NPCFetchItems || (bool)flags.ShuffleAstos)             
 				talkroutines.Replace(newTalkRoutines.Talk_Astos, Blob.FromHex("A674F005BD2060F027A5738561202096B020A572203D96A575200096A476207F90207392A5611820109F201896A9F060A57060"));
 
 			npcdata.UpdateItemPlacement(generatedPlacement);
@@ -419,21 +419,15 @@ namespace FF1Lib
 				}
 			}
 
-			if (((bool)flags.EnemyFormationsUnrunnable))
-			{
-				if (((bool)flags.EverythingUnrunnable))
-				{
-					CompletelyUnrunnable();
-				}
-				else if ((bool)flags.EverythingRunnable)
-				{
-					CompletelyRunnable();
-				}
-				else
-				{
-					ShuffleUnrunnable(rng);
-				}
-			}
+			if (flags.Runnability == Runnability.Random)
+				flags.Runnability = (Runnability)Rng.Between(rng,0,3);
+
+			if(flags.Runnability == Runnability.AllRunnable)
+				CompletelyRunnable();
+			else if(flags.Runnability == Runnability.AllUnrunnable)
+				CompletelyUnrunnable();
+			else if(flags.Runnability == Runnability.Shuffle)
+				ShuffleUnrunnable(rng);
 
 			// Always on to supply the correct changes for WaitWhenUnrunnable
 			AllowStrikeFirstAndSurprise(flags.WaitWhenUnrunnable, (bool)flags.UnrunnablesStrikeFirstAndSurprise);
@@ -709,7 +703,7 @@ namespace FF1Lib
 			if ((bool)flags.HintsVillage || (bool)flags.HintsDungeon)
 			{
 				if ((bool)flags.HintsDungeon)
-					SetDungeonNPC(maps, rng, (bool)flags.HintsRngDungeon);
+					SetDungeonNPC(maps, rng);
 
 				NPCHints(rng, npcdata, flags, overworldMap);
 			}
