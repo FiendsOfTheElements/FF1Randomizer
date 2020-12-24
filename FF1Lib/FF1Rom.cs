@@ -616,6 +616,11 @@ namespace FF1Lib
 				EnableEasyMode();
 			}
 
+			if ((bool)flags.TrappedChests)
+			{
+				MonsterInABox(rng);
+			}
+
 			if (flags.HouseMPRestoration || flags.HousesFillHp)
 			{
 				FixHouse(flags.HouseMPRestoration, flags.HousesFillHp);

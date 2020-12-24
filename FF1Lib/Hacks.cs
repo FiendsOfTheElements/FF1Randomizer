@@ -1059,7 +1059,31 @@ namespace FF1Lib
 			PutInBank(0x1E, 0x84CA, Blob.FromHex("FF"));
 			PutInBank(0x1E, 0x84DA, Blob.FromHex("FF"));
 		}
+		public void MonsterInABox(MT19337 rng)
+		{
+			// Replace OpenTreasureChest routine
+			PutInBank(0x1F, 0xDD78, Blob.FromHex("A9002003FEA645BD00B18561A9112003FE20B08E8A60"));
 
+			// Check for trapped monster routine
+			PutInBank(0x11, 0x8EB0, Blob.FromHex("A561202096B026A645BD008FF017856AA9C0203D96A56A20009620E18E201896A2F04CD88E20E18EA9004C03FEAA4CD88EA9118558A5612093DDA445B90062090499006260"));
+
+			InsertDialogs(0x110, "Monster-in-a-box!"); // 0xC0
+
+			// Select treasure
+			var chestList = ItemLocations.AllTreasures.ToList();
+			chestList.Shuffle(rng);
+			chestList.RemoveRange(0, chestList.Count() - 40);
+
+			var chestMonsterList = new byte[0x100];
+
+			foreach (var chest in chestList)
+			{
+				chestMonsterList[(chest.Address - 0x3100)] = (byte)Rng.Between(rng, 1, FirstBossEncounterIndex - 1);
+			}
+
+			// Insert trapped chest list
+			PutInBank(0x11, 0x8F00, chestMonsterList);
+		}
 		public class TargetNpc
 		{
 			public ObjectId linkedNPC { get; set; }

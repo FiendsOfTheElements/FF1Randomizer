@@ -857,7 +857,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomTrapFormations"));
 			}
 		}
-
+		public bool? TrappedChests
+		{
+			get => Flags.TrappedChests;
+			set
+			{
+				Flags.TrappedChests = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TrappedChests"));
+			}
+		}
 		public bool? RemoveTrapTiles
 		{
 			get => Flags.RemoveTrapTiles;

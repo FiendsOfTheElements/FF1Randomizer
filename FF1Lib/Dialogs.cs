@@ -71,37 +71,6 @@ namespace FF1Lib
 			public static readonly Blob Talk_CubeBotBad = Blob.FromHex("8695");
 			public static readonly Blob Talk_Chime = Blob.FromHex("9495");
 		}
-		// New talk scripts
-		public static partial class newTalk
-		{
-			public static readonly Blob Talk_None = Blob.FromHex("9692");
-			public static readonly Blob Talk_norm = Blob.FromHex("9792");
-			public static readonly Blob Talk_ifvis = Blob.FromHex("9A92");
-			public static readonly Blob Talk_ifitem = Blob.FromHex("A792");
-			public static readonly Blob Talk_Invis = Blob.FromHex("B792");
-			public static readonly Blob Talk_ifevent = Blob.FromHex("C992");
-			public static readonly Blob Talk_GoBridge = Blob.FromHex("D692");
-			public static readonly Blob Talk_4Orb = Blob.FromHex("E892");
-			public static readonly Blob Talk_ifkeytnt = Blob.FromHex("FC92");
-			public static readonly Blob Talk_ifearthvamp = Blob.FromHex("0C93");
-			public static readonly Blob Talk_ifearthfire = Blob.FromHex("1E93");
-			public static readonly Blob Talk_Replace = Blob.FromHex("2E93");
-			public static readonly Blob Talk_CoOGuy = Blob.FromHex("3B93");
-			public static readonly Blob Talk_fight = Blob.FromHex("4393");
-			public static readonly Blob Talk_BlackOrb = Blob.FromHex("5393");
-			public static readonly Blob Talk_Princess1 = Blob.FromHex("7093");
-			public static readonly Blob Talk_SubEng = Blob.FromHex("8593");
-			public static readonly Blob Talk_Titan = Blob.FromHex("9593");
-			public static readonly Blob Talk_Bikke = Blob.FromHex("AA93");
-			public static readonly Blob Talk_Nerrick = Blob.FromHex("E693");
-			public static readonly Blob Talk_Bahamut = Blob.FromHex("0A94");
-			public static readonly Blob Talk_ElfDocUnne = Blob.FromHex("2A94");
-			public static readonly Blob Talk_GiveItemOnFlag = Blob.FromHex("4A94");
-			public static readonly Blob Talk_TradeItems = Blob.FromHex("7894");
-			public static readonly Blob Talk_GiveItemOnItem = Blob.FromHex("A994");
-			public static readonly Blob Talk_Astos = Blob.FromHex("D694");
-			public static readonly Blob Talk_kill = Blob.FromHex("1095");
-		}
 		public enum newTalkRoutines
 		{
 			Talk_None = 0,
