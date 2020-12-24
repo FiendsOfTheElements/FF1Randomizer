@@ -23,7 +23,10 @@
 				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="magisizeWeaponsCheckBox" @bind-Value="Flags.MagisizeWeapons">All Weapons Cast Spells</TriStateCheckBox>
 				<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="magisizeWeaponsBalancedCheckBox" IsEnabled="@Flags.MagisizeWeapons" @bind-Value="Flags.MagisizeWeaponsBalanced">Balanced Spells</TriStateCheckBox>
 				<div class="checkbox-cell"></div>
-				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="trappedChestsCheckBox" @bind-Value="Flags.TrappedChests">Trapped Chests</TriStateCheckBox>
+				<p>Trapped Chests</p>
+				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="trappedChestsCheckBox" @bind-Value="Flags.TrappedChests">Random Chests</TriStateCheckBox>
+				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="masaGuardianCheckBox" @bind-Value="Flags.TCMasaGuardian">WarMech, Guardian of Masamune</TriStateCheckBox>
+				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="trappedShardsCheckBox"  IsEnabled="@Flags.ShardHunt" @bind-Value="Flags.TrappedShards">Trapped Shards</TriStateCheckBox>
 				<div class="checkbox-cell"></div>
 				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="shopInfoCheckBox" @bind-Value="Flags.ShopInfo">Shop Information</CheckBox>
 			</div>

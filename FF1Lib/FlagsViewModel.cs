@@ -866,6 +866,24 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TrappedChests"));
 			}
 		}
+		public bool? TCMasaGuardian
+		{
+			get => Flags.TCMasaGuardian;
+			set
+			{
+				Flags.TCMasaGuardian = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TCMasaGuardian"));
+			}
+		}
+		public bool? TrappedShards
+		{
+			get => Flags.TrappedShards;
+			set
+			{
+				Flags.TrappedShards = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TrappedShards"));
+			}
+		}
 		public bool? RemoveTrapTiles
 		{
 			get => Flags.RemoveTrapTiles;

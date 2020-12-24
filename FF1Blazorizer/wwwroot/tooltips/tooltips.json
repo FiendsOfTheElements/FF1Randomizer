@@ -1303,5 +1303,15 @@
 		"Id": "trappedChestsCheckBox",
 		"title": "Trapped Chests",
 		"description": "Select randomly 40 chests that will trigger a battle before getting their content."
+	},
+	{
+		"Id": "masaGuardianCheckBox",
+		"title": "WarMech, Guardian of Masamune",
+		"description": "Any chest containing a Masamune is protected by WarMech."
+	},
+	{
+		"Id": "trappedShardsCheckBox",
+		"title": "Trapped Shards",
+		"description": "In Shard Hunt mode, all shard chests are trapped."
 	}
 ]

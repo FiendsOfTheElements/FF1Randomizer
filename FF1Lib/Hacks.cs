@@ -1059,13 +1059,15 @@ namespace FF1Lib
 			PutInBank(0x1E, 0x84CA, Blob.FromHex("FF"));
 			PutInBank(0x1E, 0x84DA, Blob.FromHex("FF"));
 		}
-		public void MonsterInABox(MT19337 rng)
+		public void MonsterInABox(MT19337 rng, Flags flags)
 		{
-			// Replace OpenTreasureChest routine
-			PutInBank(0x1F, 0xDD78, Blob.FromHex("A9002003FEA645BD00B18561A9112003FE20B08E8A60"));
+			const int lut_TreasureOffset = 0x3100;
 
-			// Check for trapped monster routine
-			PutInBank(0x11, 0x8EB0, Blob.FromHex("A561202096B026A645BD008FF017856AA9C0203D96A56A20009620E18E201896A2F04CD88E20E18EA9004C03FEAA4CD88EA9118558A5612093DDA445B90062090499006260"));
+			// Replace OpenTreasureChest routine, see 11_8EC0_CheckTrap.asm
+			PutInBank(0x1F, 0xDD78, Blob.FromHex("A9002003FEA645BD00B18561A9112003FE20C08E8A60"));
+
+			// Check for trapped monster routine, see 11_8EC0_CheckTrap.asm
+			PutInBank(0x11, 0x8EC0, Blob.FromHex("A561202096B020A645BD008FF015856AA9C0203D96A56A20009620E98E201896A2F06020E98E60AA60A9118558A5612093DDA445B90062090499006260"));
 
 			InsertDialogs(0x110, "Monster-in-a-box!"); // 0xC0
 
@@ -1075,10 +1077,35 @@ namespace FF1Lib
 			chestList.RemoveRange(0, chestList.Count() - 40);
 
 			var chestMonsterList = new byte[0x100];
+			var treasureList = Get(lut_TreasureOffset, 0x100);
 
-			foreach (var chest in chestList)
+			// Get encounters
+			List<byte> encounters;
+			encounters = Enumerable.Range(128, FirstBossEncounterIndex).Select(value => (byte)value).ToList();
+			encounters.Add(0xFF); // IronGOL
+
+			if ((bool)flags.TrappedChests)
 			{
-				chestMonsterList[(chest.Address - 0x3100)] = (byte)Rng.Between(rng, 1, FirstBossEncounterIndex - 1);
+				foreach (var chest in chestList)
+					chestMonsterList[(chest.Address - lut_TreasureOffset)] = encounters.SpliceRandom(rng);
+			}
+
+			if ((bool)flags.TCMasaGuardian)
+			{
+				for (int i = 0; i < 0x100; i++)
+				{
+					if (treasureList[i] == (byte)Item.Masamune)
+						chestMonsterList[i] = (byte)WarMECHFormationIndex;
+				}
+			}
+
+			if ((bool)flags.TrappedShards)
+			{
+				for (int i = 0; i < 0x100; i++)
+				{
+					if (treasureList[i] == (byte)Item.Shard)
+						chestMonsterList[i] = encounters.SpliceRandom(rng);
+				}
 			}
 
 			// Insert trapped chest list

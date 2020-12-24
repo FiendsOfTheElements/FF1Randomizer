@@ -616,9 +616,9 @@ namespace FF1Lib
 				EnableEasyMode();
 			}
 
-			if ((bool)flags.TrappedChests)
+			if ((bool)flags.TrappedChests || (bool)flags.TCMasaGuardian || (bool)flags.TrappedShards)
 			{
-				MonsterInABox(rng);
+				MonsterInABox(rng, flags);
 			}
 
 			if (flags.HouseMPRestoration || flags.HousesFillHp)
