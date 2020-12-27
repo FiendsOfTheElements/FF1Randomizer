@@ -196,11 +196,13 @@ namespace FF1Lib
 				}
 			}
 
+			var flippedMaps = new List<MapId>();
+
 			if ((bool)flags.FlipDungeons)
 			{
-				HorizontalFlipDungeons(rng, maps, teleporters, overworldMap);
+				flippedMaps = HorizontalFlipDungeons(rng, maps, teleporters, overworldMap);
 			}
-			
+
 			if ((bool)flags.RandomizeFormationEnemizer)
 			{
 				DoEnemizer(rng, (bool)flags.RandomizeEnemizer, (bool)flags.RandomizeFormationEnemizer, flags.EnemizerDontMakeNewScripts);
@@ -456,7 +458,7 @@ namespace FF1Lib
 
 			if ((bool)flags.ClassAsNpcFiends || (bool)flags.ClassAsNpcKeyNPC)
 			{
-				ClassAsNPC(flags, talkroutines, npcdata, rng);
+				ClassAsNPC(flags, talkroutines, npcdata, flippedMaps, rng);
 			}
 
 			if ((bool)flags.FiendShuffle)
@@ -708,7 +710,7 @@ namespace FF1Lib
 			if ((bool)flags.HintsVillage || (bool)flags.HintsDungeon)
 			{
 				if ((bool)flags.HintsDungeon)
-					SetDungeonNPC(maps, rng);
+					SetDungeonNPC(flippedMaps, rng);
 
 				NPCHints(rng, npcdata, flags, overworldMap);
 			}

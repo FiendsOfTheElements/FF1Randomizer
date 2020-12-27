@@ -1256,18 +1256,13 @@ namespace FF1Lib
 
 			return text;
 		}
-		public void SetDungeonNPC(List<Map> maps, MT19337 rng)
+		public void SetDungeonNPC(List<MapId> flippedmaps, MT19337 rng)
 		{
-			bool earthB5flipped = false;
-			bool volcanoB3flipped = false;
-			bool sky3Fflipped = false;
-			bool marshB1flipped = false;
-
 			// Check if maps are flipped
-			if (maps[(int)MapId.EarthCaveB5][(0x11, 0x17)].Value != 0x41) earthB5flipped = true;
-			if (maps[(int)MapId.GurguVolcanoB3][(0x01, 0x02)].Value != 0x41) volcanoB3flipped = true;
-			if (maps[(int)MapId.SkyPalace3F][(0x01, 0x13)].Value != 0x4B) sky3Fflipped = true;
-			if (maps[(int)MapId.MarshCaveB1][(0x01, 0x06)].Value != 0x40) marshB1flipped = true;
+			bool earthB5flipped = flippedmaps.Contains(MapId.EarthCaveB5);
+			bool volcanoB3flipped = flippedmaps.Contains(MapId.GurguVolcanoB3);
+			bool sky3Fflipped = flippedmaps.Contains(MapId.SkyPalace3F);
+			bool marshB1flipped = flippedmaps.Contains(MapId.MarshCaveB1);
 
 			// Palettes changes
 			PutInBank(0x00, 0xA000 + ((byte)MapId.GurguVolcanoB3 * 0x30) + 0x18, Blob.FromHex("000F1716000F1716"));

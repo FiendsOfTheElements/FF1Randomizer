@@ -456,7 +456,7 @@ namespace FF1Lib
 			lefein[0x05, 0x15] = 0x1A; // Clinic Sign
 			lefein[0x06, 0x15] = 0x65; // Crescent Lake Clinic
 		}
-		public void HorizontalFlipDungeons(MT19337 rng, List<Map> maps, TeleportShuffle teleporters, OverworldMap overworld)
+		public List<MapId> HorizontalFlipDungeons(MT19337 rng, List<Map> maps, TeleportShuffle teleporters, OverworldMap overworld)
 		{
 			var validMaps = new List<MapId> { MapId.EarthCaveB1, MapId.EarthCaveB2, MapId.EarthCaveB3, MapId.EarthCaveB4, MapId.EarthCaveB5,
 				MapId.GurguVolcanoB1, MapId.GurguVolcanoB2, MapId.GurguVolcanoB3, MapId.GurguVolcanoB4, MapId.GurguVolcanoB5, MapId.IceCaveB1,
@@ -588,6 +588,8 @@ namespace FF1Lib
 			if (mapsToFlip.Contains(MapId.TempleOfFiends)) teleporters.TempleOfFiends.FlipXcoordinate(); overworld.PutOverworldTeleport(OverworldTeleportIndex.TempleOfFiends1, teleporters.TempleOfFiends);
 
 			if (mapsToFlip.Contains(MapId.Waterfall)) teleporters.Waterfall.FlipXcoordinate(); overworld.PutOverworldTeleport(OverworldTeleportIndex.Waterfall, teleporters.Waterfall);
+
+			return mapsToFlip;
 		}
 		public void WarMECHNpc(WarMECHMode mode, NPCdata npcpdata, MT19337 rng, List<Map> maps)
 		{
