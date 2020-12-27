@@ -1370,7 +1370,15 @@ namespace FF1Lib
 			routineFullRevive,
 			routineWarp,
 			routineHealStone,
-			routineTeleport
+			routineTeleport,
+			hurtSpecial,
+			hurtDragon,
+			hurtGiant,
+			hurtUndead,
+			hurtWere,
+			hurtWater,
+			hurtMage,
+			hurtRegen
 		}
 
 		public static List<string> shopInfoWordsList = new List<string> {
@@ -1380,7 +1388,7 @@ namespace FF1Lib
 			"Paralyzed", "Para", "Asleep", "Slep", "Silenced", "Mute", "Confused", "Conf", "Null", "Damage", "Dmg Undead", "Inflict Stat",
 			"Halve Hits", "Reduce Moral", "Recover HP", "Reduce Stat", "Raise Def.", "Resist Elem.", "Double Hits", "Raise Attack", "Reduce Evade",
 			"Full Recover", "Raise Evade", "Void Resist.", "PW Status", "Heal Poison", "Revive", "Full Revive", "Go one floor\n back",
-			"Heal Stoned", "Teleport out\n of dungeons"
+			"Heal Stoned", "Teleport out\n of dungeons", "Magical", "Dragon", "Giant", "Undead", "Were", "Water", "Mage", "Regen"
 		};
 		public void ShopUpgrade()
 		{
@@ -1445,12 +1453,13 @@ namespace FF1Lib
 			PutInBank(0x11, 0x9B00, generatedWords);
 			PutInBank(0x11, offsetWordsPointers, Blob.FromUShorts(pointersWords));
 
+			
 			// Build the info boxes
 			for (int i = weaponOffset; i < armorOffset; i++)
-				descriptionsList.Add("\n¤" + ((int)shopInfoWordsIndex.wpAtk).ToString("X2") + weaponsData[i - weaponOffset].Damage + "\n¤" + ((int)shopInfoWordsIndex.wpHit).ToString("X2") + weaponsData[i - weaponOffset].HitBonus + "\n¤" + ((int)shopInfoWordsIndex.wpCrt).ToString("X2") + weaponsData[i - weaponOffset].Crit);
+				descriptionsList.Add("\n" + GenerateWeaponDescription(i - weaponOffset));
 
 			for (int i = armorOffset; i < (armorOffset + 0x28); i++)
-				descriptionsList.Add("\n¤" + ((int)shopInfoWordsIndex.arDef).ToString("X2") + armorsData[i - armorOffset].Absorb + "\n¤" + ((int)shopInfoWordsIndex.arEva).ToString("X2") + armorsData[i - armorOffset].Weight);
+				descriptionsList.Add("\n" + GenerateArmorDescription(i - armorOffset));
 
 			for (int i = (armorOffset + 0x28); i < spellOffset; i++)
 				descriptionsList.Add("");
@@ -1458,7 +1467,7 @@ namespace FF1Lib
 			for (int i = spellOffset; i < spellOffset + 0x40; i++)
 				descriptionsList.Add(" " + GenerateSpellDescription(i, spellsData[i - spellOffset].Data));
 
-			// Convert all dialogs to bytes
+			// Convert all dialogues to bytes
 			int offset = 0xA000;
 			var pointers = new ushort[descriptionsList.Count()];
 			Blob generatedText = Blob.FromHex("");
@@ -1483,6 +1492,97 @@ namespace FF1Lib
 			PutInBank(0x11, 0xA000, generatedText);
 			PutInBank(0x0E, 0x9300, Blob.FromUShorts(pointers));
 
+		}
+		public string GenerateWeaponDescription(int weaponid)
+		{
+			const int spellOffset = 0xB0; // $40 entries
+
+			var element = new List<(int, string, string)> { (0x00, "¤" + ((int)shopInfoWordsIndex.elementNone).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementNoneShort).ToString("X2")), (0x01, "¤" + ((int)shopInfoWordsIndex.elementStatus).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementStatusShort).ToString("X2")), (0x02, "¤" + ((int)shopInfoWordsIndex.elementPoison).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementPoisonShort).ToString("X2")), (0x04, "¤" + ((int)shopInfoWordsIndex.elementTime).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementTimeShort).ToString("X2")), (0x08, "¤" + ((int)shopInfoWordsIndex.elementDeath).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementDeathShort).ToString("X2")), (0x10, "¤" + ((int)shopInfoWordsIndex.elementFire).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementFireShort).ToString("X2")), (0x20, "¤" + ((int)shopInfoWordsIndex.elementIce).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementIceShort).ToString("X2")), (0x40, "¤" + ((int)shopInfoWordsIndex.elementLit).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementLitShort).ToString("X2")), (0x80, "¤" + ((int)shopInfoWordsIndex.elementEarth).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementEarthShort).ToString("X2")) };
+			var hurt = new List<(int, string)> { (0x00, "¤" + ((int)shopInfoWordsIndex.elementNone).ToString("X2")), (0x01, "¤" + ((int)shopInfoWordsIndex.hurtSpecial).ToString("X2")), (0x02, "¤" + ((int)shopInfoWordsIndex.hurtDragon).ToString("X2")), (0x04, "¤" + ((int)shopInfoWordsIndex.hurtGiant).ToString("X2")), (0x08, "¤" + ((int)shopInfoWordsIndex.hurtUndead).ToString("X2")), (0x10, "¤" + ((int)shopInfoWordsIndex.hurtWere).ToString("X2")), (0x20, "¤" + ((int)shopInfoWordsIndex.hurtWater).ToString("X2")), (0x40, "¤" + ((int)shopInfoWordsIndex.hurtMage).ToString("X2")), (0x80, "¤" + ((int)shopInfoWordsIndex.hurtRegen).ToString("X2")) };
+			var shortDelimiter = new List<string> { "\n ", ", ", "\n ", ", ", "\n ", ", " };
+
+			var weapondata = new Weapon(weaponid, this);
+
+			var description = "¤" + ((int)shopInfoWordsIndex.wpAtk).ToString("X2") + weapondata.Damage + "\n¤" + ((int)shopInfoWordsIndex.wpHit).ToString("X2") + weapondata.HitBonus + "\n¤" + ((int)shopInfoWordsIndex.wpCrt).ToString("X2") + weapondata.Crit;
+
+			var activeElement = new List<(int, string, string)>();
+			var activeHurt = new List<(int, string)>();
+
+			foreach ((int, string, string) effect in element)
+				if ((effect.Item1 & weapondata.ElementalWeakness) > 0)
+					activeElement.Add(effect);
+
+			foreach ((int, string) effect in hurt)
+				if ((effect.Item1 & weapondata.TypeWeakness) > 0)
+					activeHurt.Add(effect);
+
+			bool showElement = (weapondata.SpellIndex == 0x00) || (activeHurt.Count == 0);
+
+			if (activeHurt.Count == 0)
+				description += "\n";
+			else if (activeHurt.Count >= 1 && activeHurt.Count <= 7)
+				description += "\n\nHurt " + activeHurt.First().Item2;
+			else if (activeHurt.Count == 8)
+				description += "\n\nHurt All";
+
+			if (activeElement.Count == 0)
+				description += "";
+			else if (activeElement.Count >= 1 && activeElement.Count <= 7 && showElement == true)
+				description += "\n" + activeElement.First().Item3 + " Element";
+			else if (activeElement.Count == 8 && showElement == true)
+				description += "\nAll Elements";
+
+			if (weapondata.SpellIndex != 0x00)
+				description += "\n" + "Cast $" + ((int)weapondata.SpellIndex + spellOffset - 1).ToString("X2");
+
+			return description;
+		}
+		public string GenerateArmorDescription(int armorid)
+		{
+			const int spellOffset = 0xB0; // $40 entries
+
+			var element = new List<(int, string, string)> { (0x00, "¤" + ((int)shopInfoWordsIndex.elementNone).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementNoneShort).ToString("X2")), (0x01, "¤" + ((int)shopInfoWordsIndex.elementStatus).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementStatusShort).ToString("X2")), (0x02, "¤" + ((int)shopInfoWordsIndex.elementPoison).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementPoisonShort).ToString("X2")), (0x04, "¤" + ((int)shopInfoWordsIndex.elementTime).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementTimeShort).ToString("X2")), (0x08, "¤" + ((int)shopInfoWordsIndex.elementDeath).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementDeathShort).ToString("X2")), (0x10, "¤" + ((int)shopInfoWordsIndex.elementFire).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementFireShort).ToString("X2")), (0x20, "¤" + ((int)shopInfoWordsIndex.elementIce).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementIceShort).ToString("X2")), (0x40, "¤" + ((int)shopInfoWordsIndex.elementLit).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementLitShort).ToString("X2")), (0x80, "¤" + ((int)shopInfoWordsIndex.elementEarth).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementEarthShort).ToString("X2")) };
+			var status = new List<(int, string, string)> { (0x01, "¤" + ((int)shopInfoWordsIndex.statusDead).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusDeadShort).ToString("X2")), (0x02, "¤" + ((int)shopInfoWordsIndex.statusStone).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusStoneShort).ToString("X2")), (0x04, "¤" + ((int)shopInfoWordsIndex.statusPoison).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusPoisonShort).ToString("X2")), (0x08, "¤" + ((int)shopInfoWordsIndex.statusBlind).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusBlindShort).ToString("X2")), (0x10, "¤" + ((int)shopInfoWordsIndex.statusStun).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusStunShort).ToString("X2")), (0x20, "¤" + ((int)shopInfoWordsIndex.statusSleep).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusSleepShort).ToString("X2")), (0x40, "¤" + ((int)shopInfoWordsIndex.statusMute).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusMuteShort).ToString("X2")), (0x80, "¤" + ((int)shopInfoWordsIndex.statusConfuse).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusConfuseShort).ToString("X2")) };
+			var shortDelimiter = new List<string> { "\n ", ", ", "\n ", ", ", "\n ", ", " };
+
+			var armordata = new Armor(armorid, this);
+
+			var description = "¤" + ((int)shopInfoWordsIndex.arDef).ToString("X2") + armordata.Absorb + "\n¤" + ((int)shopInfoWordsIndex.arEva).ToString("X2") + armordata.Weight;
+
+			var activeElementStatus = new List<(int, string, string)>();
+
+			foreach ((int, string, string) effect in element)
+				if ((effect.Item1 & armordata.ElementalResist) > 0)
+					activeElementStatus.Add(effect);
+
+			if (activeElementStatus.Count == 0)
+				description += "\n";
+			else if (activeElementStatus.Count == 1)
+				description += "\n\nResistance\n " + activeElementStatus[0].Item2;
+			else if (activeElementStatus.Count <= 3)
+			{
+				description += "\n\nResist " + activeElementStatus[0].Item3;
+
+				for (int i = 1; i < activeElementStatus.Count; i++)
+					description += shortDelimiter[i - 1] + activeElementStatus[i].Item3;
+			}
+			else if (activeElementStatus.Count <= 6)
+			{
+				description += "\n\nResist " + activeElementStatus[0].Item3 + "\n " + activeElementStatus[1].Item3 + "and " + (activeElementStatus.Count - 2) + "+";
+			}
+			else if (activeElementStatus.Count == 7)
+			{
+				description += "\n\nResist all\n except ";
+				foreach ((int, string, string) effect in status)
+					description += (effect.Item1 & armordata.ElementalResist) == 0 ? (effect.Item3) : "";
+			}
+			else
+				description += "\n\nResist all";
+
+			if (armordata.SpellIndex != 0x00)
+				description += "\n" + "Cast $" + ((int)armordata.SpellIndex + spellOffset - 1).ToString("X2");
+
+			return description;
 		}
 		public string GenerateSpellDescription(int spellid, Blob spelldata)
 		{

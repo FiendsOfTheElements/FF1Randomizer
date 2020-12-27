@@ -253,10 +253,16 @@ namespace FF1Lib
 			while (i < text.Length - 1)
 			{
 				var twoChars = text.Substring(i, 2);
-				if (twoChars[0] == '¤')
+				if (twoChars[0] == '¤') // Control Code 0x14 for second words table
 				{
 					bytes[j++] = 0x14;
 					bytes[j++] = Blob.FromHex(text.Substring(i+1,2))[0];
+					i += 3;
+				}
+				else if (twoChars[0] == '$') // Control code 0x02 for itemnames table
+				{
+					bytes[j++] = 0x02;
+					bytes[j++] = Blob.FromHex(text.Substring(i + 1, 2))[0];
 					i += 3;
 				}
 				else if (BytesByText.ContainsKey(twoChars) && (useDTE || twoChars[0] == '@'))
