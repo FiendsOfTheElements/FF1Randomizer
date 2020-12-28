@@ -1059,7 +1059,58 @@ namespace FF1Lib
 			PutInBank(0x1E, 0x84CA, Blob.FromHex("FF"));
 			PutInBank(0x1E, 0x84DA, Blob.FromHex("FF"));
 		}
+		public void MonsterInABox(MT19337 rng, Flags flags)
+		{
+			const int lut_TreasureOffset = 0x3100;
 
+			// Replace OpenTreasureChest routine, see 11_8EC0_CheckTrap.asm
+			PutInBank(0x1F, 0xDD78, Blob.FromHex("A9002003FEA645BD00B18561A9112003FE20C08E8A60"));
+
+			// Check for trapped monster routine, see 11_8EC0_CheckTrap.asm
+			PutInBank(0x11, 0x8EC0, Blob.FromHex("A561202096B020A645BD008FF015856AA9C0203D96A56A20009620E98E201896A2F06020E98E60AA60A9118558A5612093DDA445B90062090499006260"));
+
+			InsertDialogs(0x110, "Monster-in-a-box!"); // 0xC0
+
+			// Select treasure
+			var chestList = ItemLocations.AllTreasures.ToList();
+			chestList.Shuffle(rng);
+			chestList.RemoveRange(0, chestList.Count() - 40);
+
+			var chestMonsterList = new byte[0x100];
+			var treasureList = Get(lut_TreasureOffset, 0x100);
+
+			// Get encounters
+			List<byte> encounters;
+			encounters = Enumerable.Range(128, FirstBossEncounterIndex).Select(value => (byte)value).ToList();
+			encounters.Add(0xFF); // IronGOL
+
+			if ((bool)flags.TrappedChests)
+			{
+				foreach (var chest in chestList)
+					chestMonsterList[(chest.Address - lut_TreasureOffset)] = encounters.SpliceRandom(rng);
+			}
+
+			if ((bool)flags.TCMasaGuardian)
+			{
+				for (int i = 0; i < 0x100; i++)
+				{
+					if (treasureList[i] == (byte)Item.Masamune)
+						chestMonsterList[i] = (byte)WarMECHFormationIndex;
+				}
+			}
+
+			if ((bool)flags.TrappedShards)
+			{
+				for (int i = 0; i < 0x100; i++)
+				{
+					if (treasureList[i] == (byte)Item.Shard)
+						chestMonsterList[i] = encounters.SpliceRandom(rng);
+				}
+			}
+
+			// Insert trapped chest list
+			PutInBank(0x11, 0x8F00, chestMonsterList);
+		}
 		public class TargetNpc
 		{
 			public ObjectId linkedNPC { get; set; }
@@ -1080,7 +1131,7 @@ namespace FF1Lib
 			}
 		}
 
-		public void ClassAsNPC(Flags flags, TalkRoutines talkroutines, NPCdata npcdata, MT19337 rng)
+		public void ClassAsNPC(Flags flags, TalkRoutines talkroutines, NPCdata npcdata, List<MapId> flippedmaps, MT19337 rng)
 		{
 			var crescentSages = new List<ObjectId> { ObjectId.CrescentSage2, ObjectId.CrescentSage3, ObjectId.CrescentSage4, ObjectId.CrescentSage5, ObjectId.CrescentSage6, ObjectId.CrescentSage7, ObjectId.CrescentSage8, ObjectId.CrescentSage9, ObjectId.CrescentSage10 };
 			var keyNpc = new List<TargetNpc> {
@@ -1215,6 +1266,11 @@ namespace FF1Lib
 
 			if ((bool)flags.ClassAsNpcFiends)
 			{
+				// Check if maps are flipped
+				bool earthB5flipped = flippedmaps.Contains(MapId.EarthCaveB5);
+				bool volcanoB5flipped = flippedmaps.Contains(MapId.GurguVolcanoB5);
+				bool seaB5flipped = flippedmaps.Contains(MapId.SeaShrineB5);
+
 				var dungeonNpc = new List<ObjectId> { ObjectId.MelmondMan6, ObjectId.GaiaMan4, ObjectId.OnracPunk1, ObjectId.GaiaMan1 };
 
 				SetNpc(MapId.Melmond, 8, ObjectId.None, 0x12, 0x18, false, false);
@@ -1222,9 +1278,13 @@ namespace FF1Lib
 				SetNpc(MapId.Onrac, 6, ObjectId.None, 0x12, 0x18, false, false);
 				SetNpc(MapId.Gaia, 1, ObjectId.None, 0x12, 0x18, false, false);
 
-				SetNpc(MapId.EarthCaveB5, 0x0C, ObjectId.MelmondMan6, (bool)flags.ClassAsNpcForcedFiends ? 0x0C : 0x0D, 0x28, true, true);
-				SetNpc(MapId.GurguVolcanoB5, 0x02, ObjectId.GaiaMan4, (bool)flags.ClassAsNpcForcedFiends ? 0x07 : 0x05, 0x35, true, true);
-				SetNpc(MapId.SeaShrineB5, 0x01, ObjectId.OnracPunk1, (bool)flags.ClassAsNpcForcedFiends ? 0x0C : 0x0A, 0x07, true, true);
+				var earthX = earthB5flipped ? (0x3F - ((bool)flags.ClassAsNpcForcedFiends ? 0x0C : 0x0D)) : ((bool)flags.ClassAsNpcForcedFiends ? 0x0C : 0x0D);
+				var volcanoX = volcanoB5flipped ? (0x3F - ((bool)flags.ClassAsNpcForcedFiends ? 0x07 : 0x05)) : ((bool)flags.ClassAsNpcForcedFiends ? 0x07 : 0x05);
+				var seaX = seaB5flipped ? (0x3F - ((bool)flags.ClassAsNpcForcedFiends ? 0x0C : 0x0A)) : ((bool)flags.ClassAsNpcForcedFiends ? 0x0C : 0x0A);
+
+				SetNpc(MapId.EarthCaveB5, 0x0C, ObjectId.MelmondMan6, earthX, 0x28, true, true);
+				SetNpc(MapId.GurguVolcanoB5, 0x02, ObjectId.GaiaMan4, volcanoX, 0x35, true, true);
+				SetNpc(MapId.SeaShrineB5, 0x01, ObjectId.OnracPunk1, seaX, 0x07, true, true);
 				SetNpc(MapId.SkyPalace5F, 0x02, ObjectId.GaiaMan1, (bool)flags.ClassAsNpcForcedFiends ? 0x07 : 0x09, 0x03, true, true);
 
 				// Restore the default color if Required WarMech is enabled so Tiamat's NPC don't look too weird
@@ -1242,6 +1302,94 @@ namespace FF1Lib
 
 			InsertDialogs(newDialogs);
 		}
+		public enum shopInfoWordsIndex
+		{
+			wpAtk = 0,
+			wpHit,
+			wpCrt,
+			arDef,
+			arEva,
+			targetAllEnemies,
+			targetSingleEnemy,
+			targetCaster,
+			targetAllAllies,
+			targetOneAlly,
+			elementNone,
+			elementNoneShort,
+			elementStatus,
+			elementStatusShort,
+			elementPoison,
+			elementPoisonShort,
+			elementTime,
+			elementTimeShort,
+			elementDeath,
+			elementDeathShort,
+			elementFire,
+			elementFireShort,
+			elementIce,
+			elementIceShort,
+			elementLit,
+			elementLitShort,
+			elementEarth,
+			elementEarthShort,
+			statusDead,
+			statusDeadShort,
+			statusStone,
+			statusStoneShort,
+			statusPoison,
+			statusPoisonShort,
+			statusBlind,
+			statusBlindShort,
+			statusStun,
+			statusStunShort,
+			statusSleep,
+			statusSleepShort,
+			statusMute,
+			statusMuteShort,
+			statusConfuse,
+			statusConfuseShort,
+			routineNull,
+			routineDamage,
+			routineDmgUndead,
+			routineStats,
+			routineSlow,
+			routineFear,
+			routineCure,
+			routineHealStats,
+			routineDefense,
+			routineResistElement,
+			routineFast,
+			routineRaiseAttack,
+			routineReduceEvade,
+			routineFullCure,
+			routineRaiseEvade,
+			routineVoidResist,
+			routinePowerWord,
+			routineHealPoison,
+			routineRevive,
+			routineFullRevive,
+			routineWarp,
+			routineHealStone,
+			routineTeleport,
+			hurtSpecial,
+			hurtDragon,
+			hurtGiant,
+			hurtUndead,
+			hurtWere,
+			hurtWater,
+			hurtMage,
+			hurtRegen
+		}
+
+		public static List<string> shopInfoWordsList = new List<string> {
+			" ATK +", " HIT +", " CRT +", " DEF +", " EVA -", "All Enemies", "Single Enemy", "Caster",
+			"All Allies", "One Ally", "None", "None", "Status", "Stat", "Poison", "Pois", "Time", "Time", "Death", "Deat", "Fire", "Fire",
+			"Ice", "Ice", "Lightng", "Lit.", "Earth", "Eart", "Dead", "Dead", "Petrified", "Ptr.", "Poisoned", "Pois", "Blind", "Blnd",
+			"Paralyzed", "Para", "Asleep", "Slep", "Silenced", "Mute", "Confused", "Conf", "Null", "Damage", "Dmg Undead", "Inflict Stat",
+			"Halve Hits", "Reduce Moral", "Recover HP", "Reduce Stat", "Raise Def.", "Resist Elem.", "Double Hits", "Raise Attack", "Reduce Evade",
+			"Full Recover", "Raise Evade", "Void Resist.", "PW Status", "Heal Poison", "Revive", "Full Revive", "Go one floor\n back",
+			"Heal Stoned", "Teleport out\n of dungeons", "Magical", "Dragon", "Giant", "Undead", "Were", "Water", "Mage", "Regen"
+		};
 		public void ShopUpgrade()
 		{
 			// Modify DrawShopPartySprites to use new DrawOBSprite routines, see 0E_9500_ShopUpgrade.asm
@@ -1255,6 +1403,15 @@ namespace FF1Lib
 
 			// Extra routines for Shops info, see 0E_9500_ShopUpgrade.asm
 			PutInBank(0x0E, 0x9500, Blob.FromHex("A564C928F038A566C904B035C902B017A20020D495A24020D495A28020D495A2C020D4954C4195A200208B95A240208B95A280208B95A2C0208B954C41952047952027A74C2696A9008DD66A8DDA6A8DDE6A8DE26A6060AA4A8510BD0061A8B9A4EC8511BD0161F011C901F0E9C903F004A9038511A9144C8395A5104A4A4AAABDD66A18651085104C24EC8A8515BD00610AAABD00AD8510BD01AD8511A662BD000338E9B0851229078513A5124A4A4AA8B1108514A613BD38AC2514F005A9004CC595A90E8510A5154A4A4A4AAAA5109DD66A608A8515BD00610AAABDB9BC8512BDBABC8513A662BD000338C944B01638E91C0AAABD50BF25128510BD51BF251305104C1896E9440AAABDA0BF25128510BDA1BF25130510C9019005A9004CC595A90E4CC595A522F073A564C928F06D208D96A90E85572063E0A53E8512A53F8513A662BD0003380AAAB00DBD0093853EBD0193853F4C6396BD0094853EBD0194853FA9118557A90E85582036DEA512853EA513853FA90085222027A7A520C561F0F7A9008522208D964C46E1A9018538A9128539A90E853CA90A853D60"));
+
+			// Modify DrawComplexString, this sets control code 14-19 to use a new words table in bank 11
+			//  could be used to move some stuff in items name table and make some space
+			PutInBank(0x1F, 0xDEBC, Blob.FromHex("C910B005A2204C83DEC914B07B")); // Change branching to enable CC14
+			PutInBank(0x1F, 0xDF44, Blob.FromHex("4CCEDF")); // Jump to routine because we're too far, put in unused char weapons CC
+			PutInBank(0x1F, 0xDFCE, Blob.FromHex("A91185572003FE4CA099")); // Routine, put in unused char weapons routine
+
+			// Routine to load the right word from the new words table
+			PutInBank(0x11, 0x99A0, Blob.FromHex("A91185578558B13EE63ED002E63F203EE00AAAB00BBD009A853EBD019A4CC899BD009B853EBD019B853F2045DEA90E85584C4EE0"));
 
 			const int weaponOffset = 0x1C; // $28 entries
 			const int armorOffset = 0x44; // $28 entries
@@ -1277,26 +1434,50 @@ namespace FF1Lib
 			for (int i = 0; i < weaponOffset; i++)
 				descriptionsList.Add("");
 
+			// Insert the new words table
+			int offsetWordsPointers = 0x9A00;
+			int offsetWords = 0x9B00;
+			var pointersWords = new ushort[shopInfoWordsList.Count()];
+			Blob generatedWords = Blob.FromHex("");
+
+			for (int i = 0; i < shopInfoWordsList.Count(); i++)
+			{
+				var blob = FF1Text.TextToBytes(shopInfoWordsList[i], useDTE: true);
+
+				generatedWords += blob;
+
+				pointersWords[i] = (ushort)(offsetWords);
+				offsetWords += blob.Length;
+			}
+
+			PutInBank(0x11, 0x9B00, generatedWords);
+			PutInBank(0x11, offsetWordsPointers, Blob.FromUShorts(pointersWords));
+
+			
+			// Build the info boxes
 			for (int i = weaponOffset; i < armorOffset; i++)
-				descriptionsList.Add(FormattedItemName((Item)i) + "\n ATK +" + weaponsData[i - weaponOffset].Damage + "\n HIT +" + weaponsData[i - weaponOffset].HitBonus + "\n CRT +" + weaponsData[i - weaponOffset].Crit);
+				descriptionsList.Add("\n" + GenerateWeaponDescription(i - weaponOffset));
 
 			for (int i = armorOffset; i < (armorOffset + 0x28); i++)
-				descriptionsList.Add(FormattedItemName((Item)i) + "\n DEF +" + armorsData[i - armorOffset].Absorb + "\n EVA -" + armorsData[i - armorOffset].Weight);
+				descriptionsList.Add("\n" + GenerateArmorDescription(i - armorOffset));
 
 			for (int i = (armorOffset + 0x28); i < spellOffset; i++)
 				descriptionsList.Add("");
 
 			for (int i = spellOffset; i < spellOffset + 0x40; i++)
-				descriptionsList.Add(FormattedItemName((Item)i, false) + " " + GenerateSpellDescription(i, spellsData[i - spellOffset].Data));
+				descriptionsList.Add(" " + GenerateSpellDescription(i, spellsData[i - spellOffset].Data));
 
-			// Convert all dialogs to bytes
+			// Convert all dialogues to bytes
 			int offset = 0xA000;
 			var pointers = new ushort[descriptionsList.Count()];
 			Blob generatedText = Blob.FromHex("");
 
 			for (int i = 0; i < descriptionsList.Count(); i++)
 			{
-				var blob = FF1Text.TextToBytes(descriptionsList[i], useDTE: true);
+				var blob = new byte[] { 0x02, (byte)i } + FF1Text.TextToBytesInfo(descriptionsList[i], useDTE: true);
+				if (blob.Length <= 3)
+					blob = new byte[0];
+
 				generatedText += blob;
 
 				pointers[i] = (ushort)(offset);
@@ -1312,13 +1493,104 @@ namespace FF1Lib
 			PutInBank(0x0E, 0x9300, Blob.FromUShorts(pointers));
 
 		}
+		public string GenerateWeaponDescription(int weaponid)
+		{
+			const int spellOffset = 0xB0; // $40 entries
+
+			var element = new List<(int, string, string)> { (0x00, "¤" + ((int)shopInfoWordsIndex.elementNone).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementNoneShort).ToString("X2")), (0x01, "¤" + ((int)shopInfoWordsIndex.elementStatus).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementStatusShort).ToString("X2")), (0x02, "¤" + ((int)shopInfoWordsIndex.elementPoison).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementPoisonShort).ToString("X2")), (0x04, "¤" + ((int)shopInfoWordsIndex.elementTime).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementTimeShort).ToString("X2")), (0x08, "¤" + ((int)shopInfoWordsIndex.elementDeath).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementDeathShort).ToString("X2")), (0x10, "¤" + ((int)shopInfoWordsIndex.elementFire).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementFireShort).ToString("X2")), (0x20, "¤" + ((int)shopInfoWordsIndex.elementIce).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementIceShort).ToString("X2")), (0x40, "¤" + ((int)shopInfoWordsIndex.elementLit).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementLitShort).ToString("X2")), (0x80, "¤" + ((int)shopInfoWordsIndex.elementEarth).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementEarthShort).ToString("X2")) };
+			var hurt = new List<(int, string)> { (0x00, "¤" + ((int)shopInfoWordsIndex.elementNone).ToString("X2")), (0x01, "¤" + ((int)shopInfoWordsIndex.hurtSpecial).ToString("X2")), (0x02, "¤" + ((int)shopInfoWordsIndex.hurtDragon).ToString("X2")), (0x04, "¤" + ((int)shopInfoWordsIndex.hurtGiant).ToString("X2")), (0x08, "¤" + ((int)shopInfoWordsIndex.hurtUndead).ToString("X2")), (0x10, "¤" + ((int)shopInfoWordsIndex.hurtWere).ToString("X2")), (0x20, "¤" + ((int)shopInfoWordsIndex.hurtWater).ToString("X2")), (0x40, "¤" + ((int)shopInfoWordsIndex.hurtMage).ToString("X2")), (0x80, "¤" + ((int)shopInfoWordsIndex.hurtRegen).ToString("X2")) };
+			var shortDelimiter = new List<string> { "\n ", ", ", "\n ", ", ", "\n ", ", " };
+
+			var weapondata = new Weapon(weaponid, this);
+
+			var description = "¤" + ((int)shopInfoWordsIndex.wpAtk).ToString("X2") + weapondata.Damage + "\n¤" + ((int)shopInfoWordsIndex.wpHit).ToString("X2") + weapondata.HitBonus + "\n¤" + ((int)shopInfoWordsIndex.wpCrt).ToString("X2") + weapondata.Crit;
+
+			var activeElement = new List<(int, string, string)>();
+			var activeHurt = new List<(int, string)>();
+
+			foreach ((int, string, string) effect in element)
+				if ((effect.Item1 & weapondata.ElementalWeakness) > 0)
+					activeElement.Add(effect);
+
+			foreach ((int, string) effect in hurt)
+				if ((effect.Item1 & weapondata.TypeWeakness) > 0)
+					activeHurt.Add(effect);
+
+			bool showElement = (weapondata.SpellIndex == 0x00) || (activeHurt.Count == 0);
+
+			if (activeHurt.Count == 0)
+				description += "\n";
+			else if (activeHurt.Count >= 1 && activeHurt.Count <= 7)
+				description += "\n\nHurt " + activeHurt.First().Item2;
+			else if (activeHurt.Count == 8)
+				description += "\n\nHurt All";
+
+			if (activeElement.Count == 0)
+				description += "";
+			else if (activeElement.Count >= 1 && activeElement.Count <= 7 && showElement == true)
+				description += "\n" + activeElement.First().Item3 + " Element";
+			else if (activeElement.Count == 8 && showElement == true)
+				description += "\nAll Elements";
+
+			if (weapondata.SpellIndex != 0x00)
+				description += "\n" + "Cast $" + ((int)weapondata.SpellIndex + spellOffset - 1).ToString("X2");
+
+			return description;
+		}
+		public string GenerateArmorDescription(int armorid)
+		{
+			const int spellOffset = 0xB0; // $40 entries
+
+			var element = new List<(int, string, string)> { (0x00, "¤" + ((int)shopInfoWordsIndex.elementNone).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementNoneShort).ToString("X2")), (0x01, "¤" + ((int)shopInfoWordsIndex.elementStatus).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementStatusShort).ToString("X2")), (0x02, "¤" + ((int)shopInfoWordsIndex.elementPoison).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementPoisonShort).ToString("X2")), (0x04, "¤" + ((int)shopInfoWordsIndex.elementTime).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementTimeShort).ToString("X2")), (0x08, "¤" + ((int)shopInfoWordsIndex.elementDeath).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementDeathShort).ToString("X2")), (0x10, "¤" + ((int)shopInfoWordsIndex.elementFire).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementFireShort).ToString("X2")), (0x20, "¤" + ((int)shopInfoWordsIndex.elementIce).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementIceShort).ToString("X2")), (0x40, "¤" + ((int)shopInfoWordsIndex.elementLit).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementLitShort).ToString("X2")), (0x80, "¤" + ((int)shopInfoWordsIndex.elementEarth).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementEarthShort).ToString("X2")) };
+			var status = new List<(int, string, string)> { (0x01, "¤" + ((int)shopInfoWordsIndex.statusDead).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusDeadShort).ToString("X2")), (0x02, "¤" + ((int)shopInfoWordsIndex.statusStone).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusStoneShort).ToString("X2")), (0x04, "¤" + ((int)shopInfoWordsIndex.statusPoison).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusPoisonShort).ToString("X2")), (0x08, "¤" + ((int)shopInfoWordsIndex.statusBlind).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusBlindShort).ToString("X2")), (0x10, "¤" + ((int)shopInfoWordsIndex.statusStun).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusStunShort).ToString("X2")), (0x20, "¤" + ((int)shopInfoWordsIndex.statusSleep).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusSleepShort).ToString("X2")), (0x40, "¤" + ((int)shopInfoWordsIndex.statusMute).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusMuteShort).ToString("X2")), (0x80, "¤" + ((int)shopInfoWordsIndex.statusConfuse).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusConfuseShort).ToString("X2")) };
+			var shortDelimiter = new List<string> { "\n ", ", ", "\n ", ", ", "\n ", ", " };
+
+			var armordata = new Armor(armorid, this);
+
+			var description = "¤" + ((int)shopInfoWordsIndex.arDef).ToString("X2") + armordata.Absorb + "\n¤" + ((int)shopInfoWordsIndex.arEva).ToString("X2") + armordata.Weight;
+
+			var activeElementStatus = new List<(int, string, string)>();
+
+			foreach ((int, string, string) effect in element)
+				if ((effect.Item1 & armordata.ElementalResist) > 0)
+					activeElementStatus.Add(effect);
+
+			if (activeElementStatus.Count == 0)
+				description += "\n";
+			else if (activeElementStatus.Count == 1)
+				description += "\n\nResistance\n " + activeElementStatus[0].Item2;
+			else if (activeElementStatus.Count <= 3)
+			{
+				description += "\n\nResist " + activeElementStatus[0].Item3;
+
+				for (int i = 1; i < activeElementStatus.Count; i++)
+					description += shortDelimiter[i - 1] + activeElementStatus[i].Item3;
+			}
+			else if (activeElementStatus.Count <= 6)
+			{
+				description += "\n\nResist " + activeElementStatus[0].Item3 + "\n " + activeElementStatus[1].Item3 + "and " + (activeElementStatus.Count - 2) + "+";
+			}
+			else if (activeElementStatus.Count == 7)
+			{
+				description += "\n\nResist all\n except ";
+				foreach ((int, string, string) effect in status)
+					description += (effect.Item1 & armordata.ElementalResist) == 0 ? (effect.Item3) : "";
+			}
+			else
+				description += "\n\nResist all";
+
+			if (armordata.SpellIndex != 0x00)
+				description += "\n" + "Cast $" + ((int)armordata.SpellIndex + spellOffset - 1).ToString("X2");
+
+			return description;
+		}
 		public string GenerateSpellDescription(int spellid, Blob spelldata)
 		{
-			var target = new List<(int, string)> { (0x01, "All Enemies"), (0x02, "Single Enemy"), (0x04, "Caster"), (0x08, "All Allies"), (0x10, "One Ally") };
-			var element = new List<(int, string, string)> { (0x00, "None", "None"), (0x01, "Status", "Stat"), (0x02, "Poison", "Pois"), (0x04, "Time", "Time"), (0x08, "Death", "Deat"), (0x10, "Fire", "Fire"), (0x20, "Ice", "Ice"), (0x40, "Lightng", "Lit."), (0x80, "Earth", "Eart") };
-			var status = new List<(int, string, string)> { (0x01, "Dead", "Dead"), (0x02, "Petrified", "Ptr."), (0x04, "Poisoned", "Pois"), (0x08, "Blind", "Blnd"), (0x10, "Paralyzed", "Para"), (0x20, "Asleep", "Slep"), (0x40, "Silenced", "Mute"), (0x80, "Confused", "Conf") };
-			var routine = new List<(int, string)> { (0x00, "Null"), (0x01, "Damage"), (0x02, "Dmg Undead"), (0x03, "Inflict Stat"), (0x04, "Halve Hits"), (0x05, "Reduce Moral"), (0x06, "Recover HP"), (0x07, "Recover HP"), (0x08, "Recover Stat"), (0x09, "Raise Def."), (0x0A, "Resist Elem."), (0x0C, "Double Hits"), (0x0D, "Raise Attack"), (0x0E, "Reduce Evade"), (0x0F, "Full Recover"), (0x10, "Raise Evade"), (0x11, "Void Resist."), (0x12, "PW Status") };
-			var oobroutine = new List<(int, string)> { (0x00, "Recover HP"), (0x01, "Recover HP"), (0x02, "Recover HP"), (0x03, "Full Recover"), (0x04, "Recover HP"), (0x05, "Recover HP"), (0x06, "Recover HP"), (0x07, "Heal Poison"), (0x08, "Revive"), (0x09, "Full Revive"), (0x0A, "Go one floor\n back"), (0x0B, "Heal Stoned"), (0x0C, "Teleport out\n of dungeons") };
+			var target = new List<(int, string)> { (0x01, "¤" + ((int)shopInfoWordsIndex.targetAllEnemies).ToString("X2")), (0x02, "¤" + ((int)shopInfoWordsIndex.targetSingleEnemy).ToString("X2")), (0x04, "¤" + ((int)shopInfoWordsIndex.targetCaster).ToString("X2")), (0x08, "¤" + ((int)shopInfoWordsIndex.targetAllAllies).ToString("X2")), (0x10, "¤" + ((int)shopInfoWordsIndex.targetOneAlly).ToString("X2")) };
+			var element = new List<(int, string, string)> { (0x00, "¤" + ((int)shopInfoWordsIndex.elementNone).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementNoneShort).ToString("X2")), (0x01, "¤" + ((int)shopInfoWordsIndex.elementStatus).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementStatusShort).ToString("X2")), (0x02, "¤" + ((int)shopInfoWordsIndex.elementPoison).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementPoisonShort).ToString("X2")), (0x04, "¤" + ((int)shopInfoWordsIndex.elementTime).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementTimeShort).ToString("X2")), (0x08, "¤" + ((int)shopInfoWordsIndex.elementDeath).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementDeathShort).ToString("X2")), (0x10, "¤" + ((int)shopInfoWordsIndex.elementFire).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementFireShort).ToString("X2")), (0x20, "¤" + ((int)shopInfoWordsIndex.elementIce).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementIceShort).ToString("X2")), (0x40, "¤" + ((int)shopInfoWordsIndex.elementLit).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementLitShort).ToString("X2")), (0x80, "¤" + ((int)shopInfoWordsIndex.elementEarth).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementEarthShort).ToString("X2")) };
+			var status = new List<(int, string, string)> { (0x01, "¤" + ((int)shopInfoWordsIndex.statusDead).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusDeadShort).ToString("X2")), (0x02, "¤" + ((int)shopInfoWordsIndex.statusStone).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusStoneShort).ToString("X2")), (0x04, "¤" + ((int)shopInfoWordsIndex.statusPoison).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusPoisonShort).ToString("X2")), (0x08, "¤" + ((int)shopInfoWordsIndex.statusBlind).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusBlindShort).ToString("X2")), (0x10, "¤" + ((int)shopInfoWordsIndex.statusStun).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusStunShort).ToString("X2")), (0x20, "¤" + ((int)shopInfoWordsIndex.statusSleep).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusSleepShort).ToString("X2")), (0x40, "¤" + ((int)shopInfoWordsIndex.statusMute).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusMuteShort).ToString("X2")), (0x80, "¤" + ((int)shopInfoWordsIndex.statusConfuse).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusConfuseShort).ToString("X2")) };
+			var routine = new List<(int, string)> { (0x00, "¤" + ((int)shopInfoWordsIndex.routineNull).ToString("X2")), (0x01, "¤" + ((int)shopInfoWordsIndex.routineDamage).ToString("X2")), (0x02, "¤" + ((int)shopInfoWordsIndex.routineDmgUndead).ToString("X2")), (0x03, "¤" + ((int)shopInfoWordsIndex.routineStats).ToString("X2")), (0x04, "¤" + ((int)shopInfoWordsIndex.routineSlow).ToString("X2")), (0x05, "¤" + ((int)shopInfoWordsIndex.routineFear).ToString("X2")), (0x06, "¤" + ((int)shopInfoWordsIndex.routineCure).ToString("X2")), (0x07, "¤" + ((int)shopInfoWordsIndex.routineCure).ToString("X2")), (0x08, "¤" + ((int)shopInfoWordsIndex.routineHealStats).ToString("X2")), (0x09, "¤" + ((int)shopInfoWordsIndex.routineDefense).ToString("X2")), (0x0A, "¤" + ((int)shopInfoWordsIndex.routineResistElement).ToString("X2")), (0x0C, "¤" + ((int)shopInfoWordsIndex.routineFast).ToString("X2")), (0x0D, "¤" + ((int)shopInfoWordsIndex.routineRaiseAttack).ToString("X2")), (0x0E, "¤" + ((int)shopInfoWordsIndex.routineReduceEvade).ToString("X2")), (0x0F, "¤" + ((int)shopInfoWordsIndex.routineFullCure).ToString("X2")), (0x10, "¤" + ((int)shopInfoWordsIndex.routineRaiseEvade).ToString("X2")), (0x11, "¤" + ((int)shopInfoWordsIndex.routineVoidResist).ToString("X2")), (0x12, "¤" + ((int)shopInfoWordsIndex.routinePowerWord).ToString("X2")) };
+			var oobroutine = new List<(int, string)> { (0x00, "¤" + ((int)shopInfoWordsIndex.routineCure).ToString("X2")), (0x01, "¤" + ((int)shopInfoWordsIndex.routineCure).ToString("X2")), (0x02, "¤" + ((int)shopInfoWordsIndex.routineCure).ToString("X2")), (0x03, "¤" + ((int)shopInfoWordsIndex.routineFullCure).ToString("X2")), (0x04, "¤" + ((int)shopInfoWordsIndex.routineCure).ToString("X2")), (0x05, "¤" + ((int)shopInfoWordsIndex.routineCure).ToString("X2")), (0x06, "¤" + ((int)shopInfoWordsIndex.routineCure).ToString("X2")), (0x07, "¤" + ((int)shopInfoWordsIndex.routineHealPoison).ToString("X2")), (0x08, "¤" + ((int)shopInfoWordsIndex.routineRevive).ToString("X2")), (0x09, "¤" + ((int)shopInfoWordsIndex.routineFullRevive).ToString("X2")), (0x0A, "¤" + ((int)shopInfoWordsIndex.routineWarp).ToString("X2")), (0x0B, "¤" + ((int)shopInfoWordsIndex.routineHealStone).ToString("X2")), (0x0C, "¤" + ((int)shopInfoWordsIndex.routineTeleport).ToString("X2")) };
 			var shortDelimiter = new List<string> { "\n ", ", ", "\n ", ", ", "\n ", ", " };
 			var oobSpells = new List<int>();
 

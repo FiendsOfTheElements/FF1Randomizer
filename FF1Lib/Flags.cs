@@ -51,7 +51,9 @@ namespace FF1Lib
 		public bool? EnemyTrapTiles { get; set; } = false;
 		public bool? RemoveTrapTiles { get; set; } = false;
 		public bool? RandomTrapFormations { get; set; } = false;
-
+		public bool? TrappedChests { get; set; } = false;
+		public bool? TCMasaGuardian { get; set; } = false;
+		public bool? TrappedShards { get; set; } = false;
 		public bool? SwolePirates { get; set; } = false;
 		public bool? EnemyScripts { get; set; } = false;
 		public bool? BossScriptsOnly { get; set; } = false;
@@ -622,6 +624,9 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.EnemyTrapTiles);
 			sum = AddTriState(sum, flags.RemoveTrapTiles);
 			sum = AddTriState(sum, flags.RandomTrapFormations);
+			sum = AddTriState(sum, flags.TrappedChests);
+			sum = AddTriState(sum, flags.TCMasaGuardian);
+			sum = AddTriState(sum, flags.TrappedShards);
 			sum = AddTriState(sum, flags.SwolePirates);
 			sum = AddTriState(sum, flags.EnemyScripts);
 			sum = AddTriState(sum, flags.BossScriptsOnly);
@@ -1154,6 +1159,9 @@ namespace FF1Lib
 				BossScriptsOnly = GetTriState(ref sum),
 				EnemyScripts = GetTriState(ref sum),
 				SwolePirates = GetTriState(ref sum),
+				TrappedShards = GetTriState(ref sum),
+				TCMasaGuardian = GetTriState(ref sum),
+				TrappedChests = GetTriState(ref sum),
 				RandomTrapFormations = GetTriState(ref sum),
 				RemoveTrapTiles = GetTriState(ref sum),
 				EnemyTrapTiles = GetTriState(ref sum),

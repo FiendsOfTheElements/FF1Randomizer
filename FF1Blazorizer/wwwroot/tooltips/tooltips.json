@@ -258,7 +258,7 @@
 	},
 	{
 		"Id": "randomTrapFormationsCheckBox",
-		"title": "Use Random Formations",
+		"title": "Use Alternate Formations",
 		"screenshot": "randomTrapFormationsCheckBox.png",
 		"description": "Adds several formations into the shuffle pool for trap tiles, including formations that are not available in the original game."
 	},
@@ -1298,5 +1298,20 @@
 		"Id": "evadeCapDropDown",
 		"title": "Evade Cap",
 		"description": "Caps the evade of enemies during scaling. When enemies have very high evade, it can become near impossible to hit them, this is especially an issue on Chaos and other endgame bosses."
+	},
+	{
+		"Id": "trappedChestsCheckBox",
+		"title": "Trapped Chests",
+		"description": "Select randomly 40 chests that will trigger a battle before getting their content."
+	},
+	{
+		"Id": "masaGuardianCheckBox",
+		"title": "WarMech, Guardian of Masamune",
+		"description": "Any chest containing a Masamune is protected by WarMech."
+	},
+	{
+		"Id": "trappedShardsCheckBox",
+		"title": "Trapped Shards",
+		"description": "In Shard Hunt mode, all shard chests are trapped."
 	}
 ]

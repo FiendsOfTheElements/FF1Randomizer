@@ -71,37 +71,6 @@ namespace FF1Lib
 			public static readonly Blob Talk_CubeBotBad = Blob.FromHex("8695");
 			public static readonly Blob Talk_Chime = Blob.FromHex("9495");
 		}
-		// New talk scripts
-		public static partial class newTalk
-		{
-			public static readonly Blob Talk_None = Blob.FromHex("9692");
-			public static readonly Blob Talk_norm = Blob.FromHex("9792");
-			public static readonly Blob Talk_ifvis = Blob.FromHex("9A92");
-			public static readonly Blob Talk_ifitem = Blob.FromHex("A792");
-			public static readonly Blob Talk_Invis = Blob.FromHex("B792");
-			public static readonly Blob Talk_ifevent = Blob.FromHex("C992");
-			public static readonly Blob Talk_GoBridge = Blob.FromHex("D692");
-			public static readonly Blob Talk_4Orb = Blob.FromHex("E892");
-			public static readonly Blob Talk_ifkeytnt = Blob.FromHex("FC92");
-			public static readonly Blob Talk_ifearthvamp = Blob.FromHex("0C93");
-			public static readonly Blob Talk_ifearthfire = Blob.FromHex("1E93");
-			public static readonly Blob Talk_Replace = Blob.FromHex("2E93");
-			public static readonly Blob Talk_CoOGuy = Blob.FromHex("3B93");
-			public static readonly Blob Talk_fight = Blob.FromHex("4393");
-			public static readonly Blob Talk_BlackOrb = Blob.FromHex("5393");
-			public static readonly Blob Talk_Princess1 = Blob.FromHex("7093");
-			public static readonly Blob Talk_SubEng = Blob.FromHex("8593");
-			public static readonly Blob Talk_Titan = Blob.FromHex("9593");
-			public static readonly Blob Talk_Bikke = Blob.FromHex("AA93");
-			public static readonly Blob Talk_Nerrick = Blob.FromHex("E693");
-			public static readonly Blob Talk_Bahamut = Blob.FromHex("0A94");
-			public static readonly Blob Talk_ElfDocUnne = Blob.FromHex("2A94");
-			public static readonly Blob Talk_GiveItemOnFlag = Blob.FromHex("4A94");
-			public static readonly Blob Talk_TradeItems = Blob.FromHex("7894");
-			public static readonly Blob Talk_GiveItemOnItem = Blob.FromHex("A994");
-			public static readonly Blob Talk_Astos = Blob.FromHex("D694");
-			public static readonly Blob Talk_kill = Blob.FromHex("1095");
-		}
 		public enum newTalkRoutines
 		{
 			Talk_None = 0,
@@ -1287,18 +1256,13 @@ namespace FF1Lib
 
 			return text;
 		}
-		public void SetDungeonNPC(List<Map> maps, MT19337 rng)
+		public void SetDungeonNPC(List<MapId> flippedmaps, MT19337 rng)
 		{
-			bool earthB5flipped = false;
-			bool volcanoB3flipped = false;
-			bool sky3Fflipped = false;
-			bool marshB1flipped = false;
-
 			// Check if maps are flipped
-			if (maps[(int)MapId.EarthCaveB5][(0x11, 0x17)].Value != 0x41) earthB5flipped = true;
-			if (maps[(int)MapId.GurguVolcanoB3][(0x01, 0x02)].Value != 0x41) volcanoB3flipped = true;
-			if (maps[(int)MapId.SkyPalace3F][(0x01, 0x13)].Value != 0x4B) sky3Fflipped = true;
-			if (maps[(int)MapId.MarshCaveB1][(0x01, 0x06)].Value != 0x40) marshB1flipped = true;
+			bool earthB5flipped = flippedmaps.Contains(MapId.EarthCaveB5);
+			bool volcanoB3flipped = flippedmaps.Contains(MapId.GurguVolcanoB3);
+			bool sky3Fflipped = flippedmaps.Contains(MapId.SkyPalace3F);
+			bool marshB1flipped = flippedmaps.Contains(MapId.MarshCaveB1);
 
 			// Palettes changes
 			PutInBank(0x00, 0xA000 + ((byte)MapId.GurguVolcanoB3 * 0x30) + 0x18, Blob.FromHex("000F1716000F1716"));

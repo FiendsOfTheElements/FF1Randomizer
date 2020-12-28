@@ -1,4 +1,4 @@
-;;  TalkRoutines - 2020-12-13
+;;  TalkRoutines - 2020-12-24
 ;;
 ;;  This create 3 new talk routines and modify others
 ;;   - Talk_GiveItemOnFlag : Allow a NPC to give any item if the required flag is enabled
@@ -100,14 +100,14 @@ lut_MapObjTalkJumpTbl_moved = $8000
 ;;  OUT:       A = ID of dialogue text to print onscreen
 TalkToObject:
     LDA mapobj_id, X    ; get the ID of the object they're talking to
-    STA talk_tmp+6           ; back the ID up for later
+    STA talkarray+6           ; back the ID up for later
 
     LDY #0              ; mulitply the ID by 6 (6 bytes of talk data per object)
     STY tmp+5
     ASL
     ROL tmp+5
     CLC
-    ADC talk_tmp+6
+    ADC talkarray+6
     BCC NoCarry
       INC tmp+5
 NoCarry:
@@ -645,7 +645,6 @@ EndG:
 Talk_Astos:
   LDX required_id                 ; Check required item
   BEQ NoReq_As
-    NOP
     LDA items, X
     BEQ Default_As                ; Do we have it?
 NoReq_As:    
@@ -792,20 +791,49 @@ lut_TargetJump_Lo:
  
 ; Alternative routine when Shuffle Astos select Bahamut 
 Talk_Astos_Bahamut:
-  LDA item_tail          ; he hasn't promoted you yet... so check to see if you have the tail
-  BNE ClassChange_As5        ; if you don't...
-    LDA dialogue_2       ; ... print [1]
-    RTS
-ClassChange_As5:             ; otherwise (have tail), do the class change!
-  INC dlgsfx              ; Play jingle
-  LDA dialogue_3 
+  LDA item_tail		; he hasn't promoted you yet... so check to see if you have the tail
+  BNE ClassChange_As5	; if you don't...
+    LDA dialogue_2	; Show dialogue_2
+    RTS                  
+ClassChange_As5:	; otherwise (have tail), do the class change!
+  INC dlgsfx		; Play jingle
+  LDA dialogue_3	; Show dialogue_3
   JSR InTalkDialogueBox
-  LDA battle_id                 ;BTL_ASTOS          = $7D
-  JSR InTalkBattle
-  LDY object_id                 ; Load this object
-  JSR SetGameEventFlag      ; Set its flag
-  JSR HideMapObject         ; Hide it  
-  JSR DoClassChange       ; do class change
-  JSR InTalkReenterMap
-  JMP SkipDialogueBox
+  LDA battle_id		; Load battle ID
+  JSR InTalkBattle	; Trigger the battle
+  LDY object_id		; Load this object
+  JSR SetGameEventFlag	; Set its flag
+  JSR HideMapObject	; Hide it  
+  JSR DoClassChange	; do class change
+  JSR InTalkReenterMap  ; Reenter the map
+  JMP SkipDialogueBox	; Skip extra dialogue box
+  RTS
+
+; Alternative Astos when NPC Items, Fetch Quest Items or Shuffle Astos are enabled
+Talk_Astos_Fetch:
+  LDX required_id
+  BEQ NoReq_As6 
+    LDA items, X		; Check required item
+    BEQ Default_As6		; Do we have it?
+NoReq_As6:    
+  LDA item_id			; If yes, load item
+  STA dlg_itemid 		; And make sure we have the inventory space for  it
+  JSR CheckCanTake
+  BCS End_As6			; If inventory is full, skip
+    LDA dialogue_3		; Otherwise show dialogue_3 
+    JSR InTalkDialogueBox
+    LDA battle_id		; Load battle ID
+    JSR InTalkBattle		; Tigger the battle
+    LDY object_id		; Load this object
+    JSR SetGameEventFlag	; Set its flag
+    JSR HideMapObject		; Hide it
+    LDA dlg_itemid		; Reload the item
+    CLC
+    JSR GiveItem		; And actualy give it
+    JSR InTalkReenterMap	; Reenter the map
+    LDA #$F0			; Load dialogue for "Received..."
+    RTS
+Default_As6:
+  LDA dialogue_1		; Show default dialog
+End_As6:
   RTS
