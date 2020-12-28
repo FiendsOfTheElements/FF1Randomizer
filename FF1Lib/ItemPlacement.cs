@@ -188,7 +188,13 @@ namespace FF1Lib
 			var itemLocationPool = _incentivesData.AllValidItemLocations.ToList();
 			itemLocationPool = itemLocationPool.Where(x => !x.IsUnused && !placedItems.Any(y => y.Address == x.Address)).ToList();
 
-			if ((bool)_flags.GuaranteedMasamune)
+			if ((bool)_flags.NoMasamune)
+			{
+				// Remove Masamune chest from shuffle
+				treasurePool.Remove(Item.Masamune);
+				treasurePool.Add(Item.Cabin);
+			}
+			else if((bool)_flags.GuaranteedMasamune)
 			{
 				// Remove Masamune chest from shuffle, Remove Cabin from item pool
 				itemLocationPool = itemLocationPool.Where(x => !x.Equals(ItemLocations.ToFRMasmune)).ToList();
