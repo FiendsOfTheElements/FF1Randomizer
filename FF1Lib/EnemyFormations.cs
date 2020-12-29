@@ -219,20 +219,15 @@ namespace FF1Lib
 			});
 			Put(TilesetDataOffset, tilesets.SelectMany(tileset => tileset.ToBytes()).ToArray());
 
-			// Update Fiends and Garland
-			for (int i = 0; i < 0xD0; i++)
-			{
-				if (npcdata.GetRoutine((ObjectId)i) == newTalkRoutines.Talk_fight)
-					npcdata.SetRoutine((ObjectId)i, newTalkRoutines.Talk_CoOGuy);
-			}
-
 			// Update Chaos script
 			var Talk_Ending = talkroutines.Add(Blob.FromHex("4C38C9"));
 			npcdata.SetRoutine((ObjectId)0x1A, (newTalkRoutines)Talk_Ending);
 
-			//Update Astos and Bikke
+			//Update Fiends, Garland, Vampire, Astos and Bikke
 			var battleJump = Blob.FromHex("200096");
 			var mapreload = Blob.FromHex("201896");
+			talkroutines.ReplaceChunk(newTalkRoutines.Talk_fight, battleJump, Blob.FromHex("EAEAEA"));
+			talkroutines.ReplaceChunk(newTalkRoutines.Talk_fight, mapreload, Blob.FromHex("EAEAEA"));
 			talkroutines.ReplaceChunk(newTalkRoutines.Talk_Bikke, battleJump, Blob.FromHex("EAEAEA"));
 			talkroutines.ReplaceChunk(newTalkRoutines.Talk_Bikke, mapreload, Blob.FromHex("EAEAEA"));
 			talkroutines.ReplaceChunk(newTalkRoutines.Talk_Astos, battleJump, Blob.FromHex("EAEAEA"));
