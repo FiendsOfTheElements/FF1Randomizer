@@ -1938,6 +1938,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SendMasamuneHome"));
 			}
 		}
+		public bool? NoMasamune
+		{
+			get => Flags.NoMasamune;
+			set
+			{
+				Flags.NoMasamune = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NoMasamune"));
+			}
+		}
 		public bool? ClassAsNpcFiends
 		{
 			get => Flags.ClassAsNpcFiends;

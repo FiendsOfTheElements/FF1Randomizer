@@ -324,6 +324,11 @@ namespace FF1Lib
 								excludeItemsFromRandomShops.Add(Item.PowerRod);
 						}
 
+						if((bool)flags.NoMasamune)
+						{
+							excludeItemsFromRandomShops.Add(Item.Masamune);
+						}
+
 						shopItemLocation = ShuffleShops(rng, (bool)flags.ImmediatePureAndSoftRequired, ((bool)flags.RandomWares), excludeItemsFromRandomShops, flags.WorldWealth);
 						incentivesData = new IncentiveData(rng, flags, overworldMap, shopItemLocation);
 					}

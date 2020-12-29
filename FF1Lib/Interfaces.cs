@@ -64,6 +64,7 @@
 		bool? IncentivizeOpal { get; }
 		bool Incentivize65K { get; }
 		bool IncentivizeBad { get; }
+		bool? NoMasamune { get; }
 	}
 	public interface IMapEditFlags : IItemPlacementFlags
 	{
@@ -87,6 +88,7 @@
 		bool? GuaranteedRuseItem { get; }
 		bool? GuaranteedMasamune { get; }
 		bool? SendMasamuneHome { get; }
+		bool? NoMasamune { get; }
 		WorldWealthMode WorldWealth { get; }
 	}
 	public interface IItemShuffleFlags

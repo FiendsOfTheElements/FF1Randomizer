@@ -182,6 +182,7 @@ namespace FF1Lib
 		public bool? NoTail { get; set; } = false;
 		public bool? GuaranteedMasamune { get; set; } = false;
 		public bool? SendMasamuneHome { get; set; } = false;
+		public bool? NoMasamune { get; set; } = false;
 		public bool? ClassAsNpcFiends { get; set; } = false;
 		public bool? ClassAsNpcKeyNPC { get; set; } = false;
 		public int ClassAsNpcCount { get; set; } = 6;
@@ -398,7 +399,7 @@ namespace FF1Lib
 
 		public int IncentivizedItemCountMin => 0
 			+ ((IncentivizePromotion ?? false) ? 1 : 0)
-			+ ((IncentivizeMasamune ?? false) ? 1 : 0)
+			+ ((IncentivizeMasamune & !NoMasamune ?? false) ? 1 : 0)
 			+ ((IncentivizeKatana ?? false) ? 1 : 0)
 			+ ((IncentivizeVorpal ?? false) ? 1 : 0)
 			+ ((IncentivizeOpal ?? false) ? 1 : 0)
@@ -432,7 +433,7 @@ namespace FF1Lib
 
 		public int IncentivizedItemCountMax => 0
 			+ ((IncentivizePromotion ?? true) ? 1 : 0)
-			+ ((IncentivizeMasamune ?? true) ? 1 : 0)
+			+ ((IncentivizeMasamune & !NoMasamune ?? true) ? 1 : 0)
 			+ ((IncentivizeKatana ?? true) ? 1 : 0)
 			+ ((IncentivizeVorpal ?? true) ? 1 : 0)
 			+ ((IncentivizeOpal ?? true) ? 1 : 0)
@@ -486,7 +487,7 @@ namespace FF1Lib
 			+ ((IncentivizeSlab != null) ? (IncentivizeSlab ?? false ? "Slab " : "") : ("Slab? "))
 			+ ((IncentivizePromotion != null) ? (IncentivizePromotion ?? false ? "Tail " : "") : ("Tail? "))
 			+ ((IncentivizeTnt != null) ? (IncentivizeTnt ?? false ? "Tnt " : "") : ("Tnt? "))
-			+ ((IncentivizeMasamune != null) ? (IncentivizeMasamune ?? false ? "Masmune\U0001F5E1 " : "") : ("Masmune?\U0001F5E1 "))
+			+ (((IncentivizeMasamune & !NoMasamune) != null) ? ((IncentivizeMasamune & !NoMasamune) ?? false ? "Masmune\U0001F5E1 " : "") : ("Masmune?\U0001F5E1 "))
 			+ ((IncentivizeKatana != null) ? (IncentivizeKatana ?? false ? "Katana\U0001F5E1 " : "") : ("Katana?\U0001F5E1 "))
 			+ ((IncentivizeVorpal != null) ? (IncentivizeVorpal ?? false ? "Vorpal\U0001F5E1 " : "") : ("Vorpal?\U0001F5E1 "))
 			+ ((IncentivizeXcalber != null) ? (IncentivizeXcalber ?? false ? "XCalber\U0001F5E1 " : "") : ("XCalber?\U0001F5E1 "))
@@ -738,6 +739,7 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.NoTail);
 			sum = AddTriState(sum, flags.GuaranteedMasamune);
 			sum = AddTriState(sum, flags.SendMasamuneHome);
+			sum = AddTriState(sum, flags.NoMasamune);
 			sum = AddTriState(sum, flags.ClassAsNpcFiends);
 			sum = AddTriState(sum, flags.ClassAsNpcKeyNPC);
 			sum = AddNumeric(sum, 14, flags.ClassAsNpcCount);
@@ -1048,6 +1050,7 @@ namespace FF1Lib
 				ClassAsNpcCount = GetNumeric(ref sum, 14),
 				ClassAsNpcKeyNPC = GetTriState(ref sum),
 				ClassAsNpcFiends = GetTriState(ref sum),
+				NoMasamune = GetTriState(ref sum),
 				SendMasamuneHome = GetTriState(ref sum),
 				GuaranteedMasamune = GetTriState(ref sum),
 				NoTail = GetTriState(ref sum),

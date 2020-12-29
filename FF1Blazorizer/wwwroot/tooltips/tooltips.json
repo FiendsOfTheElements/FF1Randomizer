@@ -1155,6 +1155,12 @@
 		"description": "Remove the Tail from the items pool, disallowing class change."
 	},
 	{
+		"Id": "NoMasamuneCheckBox",
+		"title": "Remove Masamune",
+		"screenshot": "",
+		"description": "Removes the Masamune from the items pool, from shops if elite gear is turned on, from incentive locations if Masamune is incentivized."
+	},
+	{
 		"Id": "GuaranteedMasamuneCheckBox",
 		"title": "Guaranteed Endgame Masamune",
 		"screenshot": "guaranteedMasamuneCheckBox.png",

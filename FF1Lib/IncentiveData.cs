@@ -99,12 +99,11 @@ namespace FF1Lib
 			{
 				incentivePool.Add(Item.Canoe);
 			}
-
 			if (flags.IncentivizeXcalber ?? false)
 			{
 				incentivePool.Add(Item.Xcalber);
 			}
-			if (flags.IncentivizeMasamune ?? false)
+			if (flags.IncentivizeMasamune & !flags.NoMasamune ?? false)
 			{
 				incentivePool.Add(Item.Masamune);
 			}
