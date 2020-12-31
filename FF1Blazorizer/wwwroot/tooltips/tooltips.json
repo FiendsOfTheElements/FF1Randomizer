@@ -1282,7 +1282,7 @@
 		"Id": "magisizeWeaponsCheckBox",
 		"title": "All Weapons Cast Spells",
 		"screenshot": "magisizeWeapons.png",
-		"description": "All weapons can cast a randomly assigned spells."
+		"description": "All weapons can cast a randomly assigned spells. Exclude standard casting weapons."
 	},
 	{
 		"Id": "magisizeWeaponsBalancedCheckBox",

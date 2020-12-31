@@ -77,9 +77,6 @@ namespace FF1Lib
 			Data[0x02D41] = 0x03;
 			Data[0x02D81] = 0x3B;
 
-			// Free, useless LUTE, for completeness sake.
-			Data[0x03021] = 0x01;
-
 			// ToFR Map Hack
 			List<Blob> landingArea = new List<Blob>
 			{
