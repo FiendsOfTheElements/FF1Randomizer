@@ -462,6 +462,358 @@
 					</StackPanel>
 				</Grid>
 			</TabItem>
+			<TabItem Header="Hints">
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="1*"/>
+						<ColumnDefinition Width="1*"/>
+						<ColumnDefinition Width="1*"/>
+						<ColumnDefinition Width="1*"/>
+						<ColumnDefinition Width="1*"/>
+						<ColumnDefinition Width="1*"/>
+						<ColumnDefinition Width="1*"/>
+						<ColumnDefinition Width="1*"/>
+						<ColumnDefinition Width="1*"/>
+						<ColumnDefinition Width="1*"/>
+						<ColumnDefinition Width="1*"/>
+						<ColumnDefinition Width="1*"/>
+						<ColumnDefinition Width="1*"/>
+						<ColumnDefinition Width="1*"/>
+						<ColumnDefinition Width="1*"/>
+						<ColumnDefinition Width="1*"/>
+						<ColumnDefinition Width="1*"/>
+					</Grid.ColumnDefinitions>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="26" />
+						<RowDefinition Height="26"/>
+						<RowDefinition Height="26"/>
+						<RowDefinition Height="26"/>
+						<RowDefinition Height="26"/>
+						<RowDefinition Height="26"/>
+						<RowDefinition Height="26"/>
+						<RowDefinition Height="26"/>
+						<RowDefinition Height="26"/>
+					</Grid.RowDefinitions>
+
+					<CheckBox IsChecked="{Binding Flags.ExtensiveHints_Enable}" Content="Enable Extensive Hints" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="6"/>
+
+					<Label MinHeight="26" Content="Catrgory" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Center"/>
+					<Label MinHeight="26" Content="Order" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center"/>
+					<Label MinHeight="26" Content="Coverage" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Center"/>
+
+
+					<Label MinHeight="26" Content="ConeriaCastle" Grid.Row="2" Grid.Column="3" HorizontalAlignment="Center"/>
+					<Label MinHeight="26" Content="Coneria" Grid.Row="2" Grid.Column="4" HorizontalAlignment="Center"/>
+					<Label MinHeight="26" Content="Pravoka" Grid.Row="2" Grid.Column="5" HorizontalAlignment="Center"/>
+					<Label MinHeight="26" Content="ElflandCastle" Grid.Row="2" Grid.Column="6" HorizontalAlignment="Center"/>
+					<Label MinHeight="26" Content="Elfland" Grid.Row="2" Grid.Column="7" HorizontalAlignment="Center"/>
+					<Label MinHeight="26" Content="Dwarfcave" Grid.Row="2" Grid.Column="8" HorizontalAlignment="Center"/>
+					<Label MinHeight="26" Content="Matoya" Grid.Row="2" Grid.Column="9" HorizontalAlignment="Center"/>
+					<Label MinHeight="26" Content="Melmond" Grid.Row="2" Grid.Column="10" HorizontalAlignment="Center"/>
+					<Label MinHeight="26" Content="CrescentLake" Grid.Row="2" Grid.Column="11" HorizontalAlignment="Center"/>
+					<Label MinHeight="26" Content="Cardia" Grid.Row="2" Grid.Column="12" HorizontalAlignment="Center"/>
+					<Label MinHeight="26" Content="Onrac" Grid.Row="2" Grid.Column="13" HorizontalAlignment="Center"/>
+					<Label MinHeight="26" Content="Mermaid" Grid.Row="2" Grid.Column="14" HorizontalAlignment="Center"/>
+					<Label MinHeight="26" Content="Gaia" Grid.Row="2" Grid.Column="15" HorizontalAlignment="Center"/>
+					<Label MinHeight="26" Content="Lefein" Grid.Row="2" Grid.Column="16" HorizontalAlignment="Center"/>
+
+
+					<Label MinHeight="26" Content="Loose Floor" Grid.Row="3" Grid.Column="0"/>
+					<Label MinHeight="26" Content="Loose Name" Grid.Row="4" Grid.Column="0"/>
+					<Label MinHeight="26" Content="Incentive Name" Grid.Row="5" Grid.Column="0"/>
+					<Label MinHeight="26" Content="Floor Hints" Grid.Row="6" Grid.Column="0"/>
+					<Label MinHeight="26" Content="Equipment Floor" Grid.Row="7" Grid.Column="0"/>
+					<Label MinHeight="26" Content="Equipment Name" Grid.Row="8" Grid.Column="0"/>
+
+					<ComboBox SelectedValue="{Binding Flags.ExtensiveHints_LooseItemFloorOrder}" MaxHeight="26" MaxWidth="50" Grid.Row="3" Grid.Column="1" ToolTip="Processing Order of Hints(0: first - 15: last)" SelectedValuePath="Tag">
+						<ComboBoxItem Tag="HintCategoryOrder00">0</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder01">1</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder02">2</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder03">3</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder04">4</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder05">5</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder06">6</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder07">7</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder08">8</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder09">9</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder10">10</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder11">11</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder12">12</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder13">13</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder14">14</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder15">15</ComboBoxItem>
+					</ComboBox>
+
+					<ComboBox SelectedValue="{Binding Flags.ExtensiveHints_LooseItemNameOrder}" MaxHeight="26" MaxWidth="50" Grid.Row="4" Grid.Column="1" ToolTip="Processing Order of Hints(0: first - 15: last)" SelectedValuePath="Tag">
+						<ComboBoxItem Tag="HintCategoryOrder00">0</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder01">1</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder02">2</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder03">3</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder04">4</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder05">5</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder06">6</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder07">7</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder08">8</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder09">9</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder10">10</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder11">11</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder12">12</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder13">13</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder14">14</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder15">15</ComboBoxItem>
+					</ComboBox>
+
+					<ComboBox SelectedValue="{Binding Flags.ExtensiveHints_IncentiveItemNameOrder}" MaxHeight="26" MaxWidth="50" Grid.Row="5" Grid.Column="1" ToolTip="Processing Order of Hints(0: first - 15: last)" SelectedValuePath="Tag">
+						<ComboBoxItem Tag="HintCategoryOrder00">0</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder01">1</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder02">2</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder03">3</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder04">4</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder05">5</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder06">6</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder07">7</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder08">8</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder09">9</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder10">10</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder11">11</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder12">12</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder13">13</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder14">14</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder15">15</ComboBoxItem>
+					</ComboBox>
+
+					<ComboBox SelectedValue="{Binding Flags.ExtensiveHints_FloorHintOrder}" MaxHeight="26" MaxWidth="50" Grid.Row="6" Grid.Column="1" ToolTip="Processing Order of Hints(0: first - 15: last)" SelectedValuePath="Tag">
+						<ComboBoxItem Tag="HintCategoryOrder00">0</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder01">1</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder02">2</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder03">3</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder04">4</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder05">5</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder06">6</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder07">7</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder08">8</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder09">9</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder10">10</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder11">11</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder12">12</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder13">13</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder14">14</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder15">15</ComboBoxItem>
+					</ComboBox>
+
+					<ComboBox SelectedValue="{Binding Flags.ExtensiveHints_EquipmentFloorOrder}" MaxHeight="26" MaxWidth="50" Grid.Row="7" Grid.Column="1" ToolTip="Processing Order of Hints(0: first - 15: last)" SelectedValuePath="Tag">
+						<ComboBoxItem Tag="HintCategoryOrder00">0</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder01">1</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder02">2</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder03">3</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder04">4</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder05">5</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder06">6</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder07">7</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder08">8</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder09">9</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder10">10</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder11">11</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder12">12</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder13">13</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder14">14</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder15">15</ComboBoxItem>
+					</ComboBox>
+
+					<ComboBox SelectedValue="{Binding Flags.ExtensiveHints_EquipmentNameOrder}" MaxHeight="26" MaxWidth="50" Grid.Row="8" Grid.Column="1" ToolTip="Processing Order of Hints(0: first - 15: last)" SelectedValuePath="Tag">
+						<ComboBoxItem Tag="HintCategoryOrder00">0</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder01">1</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder02">2</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder03">3</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder04">4</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder05">5</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder06">6</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder07">7</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder08">8</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder09">9</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder10">10</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder11">11</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder12">12</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder13">13</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder14">14</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryOrder15">15</ComboBoxItem>
+					</ComboBox>
+
+					<ComboBox SelectedValue="{Binding Flags.ExtensiveHints_LooseItemFloorCoverage}" MaxHeight="26" MaxWidth="50" Grid.Row="3" Grid.Column="2" ToolTip="Coverage of Hints(0: none - 10: all" SelectedValuePath="Tag">
+						<ComboBoxItem Tag="HintCategoryCoverage00">0</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage01">1</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage02">2</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage03">3</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage04">4</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage05">5</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage06">6</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage07">7</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage08">8</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage09">9</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage10">10</ComboBoxItem>
+					</ComboBox>
+
+					<ComboBox SelectedValue="{Binding Flags.ExtensiveHints_LooseItemNameCoverage}" MaxHeight="26" MaxWidth="50" Grid.Row="4" Grid.Column="2" ToolTip="Coverage of Hints(0: none - 10: all" SelectedValuePath="Tag">
+						<ComboBoxItem Tag="HintCategoryCoverage00">0</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage01">1</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage02">2</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage03">3</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage04">4</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage05">5</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage06">6</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage07">7</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage08">8</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage09">9</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage10">10</ComboBoxItem>
+					</ComboBox>
+
+					<ComboBox SelectedValue="{Binding Flags.ExtensiveHints_IncentiveItemNameCoverage}" MaxHeight="26" MaxWidth="50" Grid.Row="5" Grid.Column="2" ToolTip="Coverage of Hints(0: none - 10: all" SelectedValuePath="Tag">
+						<ComboBoxItem Tag="HintCategoryCoverage00">0</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage01">1</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage02">2</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage03">3</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage04">4</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage05">5</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage06">6</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage07">7</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage08">8</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage09">9</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage10">10</ComboBoxItem>
+					</ComboBox>
+
+					<ComboBox SelectedValue="{Binding Flags.ExtensiveHints_FloorHintCoverage}" MaxHeight="26" MaxWidth="50" Grid.Row="6" Grid.Column="2" ToolTip="Coverage of Hints(0: none - 10: all" SelectedValuePath="Tag">
+						<ComboBoxItem Tag="HintCategoryCoverage00">0</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage01">1</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage02">2</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage03">3</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage04">4</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage05">5</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage06">6</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage07">7</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage08">8</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage09">9</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage10">10</ComboBoxItem>
+					</ComboBox>
+
+					<ComboBox SelectedValue="{Binding Flags.ExtensiveHints_EquipmentFloorCoverage}" MaxHeight="26" MaxWidth="50" Grid.Row="7" Grid.Column="2" ToolTip="Coverage of Hints(0: none - 10: all" SelectedValuePath="Tag">
+						<ComboBoxItem Tag="HintCategoryCoverage00">0</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage01">1</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage02">2</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage03">3</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage04">4</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage05">5</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage06">6</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage07">7</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage08">8</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage09">9</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage10">10</ComboBoxItem>
+					</ComboBox>
+
+					<ComboBox SelectedValue="{Binding Flags.ExtensiveHints_EquipmentNameCoverage}" MaxHeight="26" MaxWidth="50" Grid.Row="8" Grid.Column="2" ToolTip="Coverage of Hints(0: none - 10: all" SelectedValuePath="Tag">
+						<ComboBoxItem Tag="HintCategoryCoverage00">0</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage01">1</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage02">2</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage03">3</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage04">4</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage05">5</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage06">6</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage07">7</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage08">8</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage09">9</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage10">10</ComboBoxItem>
+					</ComboBox>
+
+					<CheckBox MinHeight="20" Grid.Column="3" Grid.Row="3"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[0][0].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="4" Grid.Row="3"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[0][1].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="5" Grid.Row="3"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[0][2].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="6" Grid.Row="3"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[0][3].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="7" Grid.Row="3"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[0][4].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="8" Grid.Row="3"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[0][5].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="9" Grid.Row="3"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[0][6].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="10" Grid.Row="3"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[0][7].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="11" Grid.Row="3"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[0][8].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="12" Grid.Row="3"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[0][9].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="13" Grid.Row="3"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[0][10].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="14" Grid.Row="3"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[0][11].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="15" Grid.Row="3"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[0][12].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="16" Grid.Row="3"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[0][13].Value}"/>
+
+					<CheckBox MinHeight="20" Grid.Column="3" Grid.Row="4"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[1][0].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="4" Grid.Row="4"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[1][1].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="5" Grid.Row="4"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[1][2].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="6" Grid.Row="4"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[1][3].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="7" Grid.Row="4"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[1][4].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="8" Grid.Row="4"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[1][5].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="9" Grid.Row="4"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[1][6].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="10" Grid.Row="4"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[1][7].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="11" Grid.Row="4"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[1][8].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="12" Grid.Row="4"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[1][9].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="13" Grid.Row="4"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[1][10].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="14" Grid.Row="4"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[1][11].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="15" Grid.Row="4"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[1][12].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="16" Grid.Row="4"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[1][13].Value}"/>
+
+					<CheckBox MinHeight="20" Grid.Column="3" Grid.Row="5"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[2][0].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="4" Grid.Row="5"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[2][1].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="5" Grid.Row="5"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[2][2].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="6" Grid.Row="5"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[2][3].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="7" Grid.Row="5"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[2][4].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="8" Grid.Row="5"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[2][5].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="9" Grid.Row="5"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[2][6].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="10" Grid.Row="5"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[2][7].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="11" Grid.Row="5"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[2][8].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="12" Grid.Row="5"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[2][9].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="13" Grid.Row="5"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[2][10].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="14" Grid.Row="5"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[2][11].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="15" Grid.Row="5"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[2][12].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="16" Grid.Row="5"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[2][13].Value}"/>
+
+					<CheckBox MinHeight="20" Grid.Column="3" Grid.Row="6"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[3][0].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="4" Grid.Row="6"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[3][1].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="5" Grid.Row="6"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[3][2].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="6" Grid.Row="6"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[3][3].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="7" Grid.Row="6"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[3][4].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="8" Grid.Row="6"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[3][5].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="9" Grid.Row="6"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[3][6].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="10" Grid.Row="6"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[3][7].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="11" Grid.Row="6"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[3][8].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="12" Grid.Row="6"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[3][9].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="13" Grid.Row="6"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[3][10].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="14" Grid.Row="6"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[3][11].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="15" Grid.Row="6"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[3][12].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="16" Grid.Row="6"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[3][13].Value}"/>
+
+					<CheckBox MinHeight="20" Grid.Column="3" Grid.Row="7"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[4][0].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="4" Grid.Row="7"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[4][1].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="5" Grid.Row="7"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[4][2].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="6" Grid.Row="7"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[4][3].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="7" Grid.Row="7"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[4][4].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="8" Grid.Row="7"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[4][5].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="9" Grid.Row="7"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[4][6].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="10" Grid.Row="7"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[4][7].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="11" Grid.Row="7"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[4][8].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="12" Grid.Row="7"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[4][9].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="13" Grid.Row="7"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[4][10].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="14" Grid.Row="7"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[4][11].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="15" Grid.Row="7"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[4][12].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="16" Grid.Row="7"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[4][13].Value}"/>
+
+					<CheckBox MinHeight="20" Grid.Column="3" Grid.Row="8"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[5][0].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="4" Grid.Row="8"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[5][1].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="5" Grid.Row="8"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[5][2].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="6" Grid.Row="8"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[5][3].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="7" Grid.Row="8"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[5][4].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="8" Grid.Row="8"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[5][5].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="9" Grid.Row="8"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[5][6].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="10" Grid.Row="8"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[5][7].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="11" Grid.Row="8"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[5][8].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="12" Grid.Row="8"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[5][9].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="13" Grid.Row="8"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[5][10].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="14" Grid.Row="8"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[5][11].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="15" Grid.Row="8"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[5][12].Value}"/>
+					<CheckBox MinHeight="20" Grid.Column="16" Grid.Row="8"  HorizontalAlignment="Center" IsChecked="{Binding Flags.ExtensiveHints_BinMatrix[5][13].Value}"/>
+				</Grid>
+			</TabItem>
 		</TabControl>
 	</Grid>
 </Window>

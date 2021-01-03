@@ -3,7 +3,7 @@
 @using Microsoft.AspNetCore.Components.Web
 
 <div class="content px-4 tinted">
-    <a href="https://en.wikipedia.org/wiki/George_Floyd" style="color: yellow; font-weight: bold; font-size: 24px; display: table; margin-left: auto; margin-right: auto;">#icantbreathe</a>
+	<a href="https://en.wikipedia.org/wiki/George_Floyd" style="color: yellow; font-weight: bold; font-size: 24px; display: table; margin-left: auto; margin-right: auto;">#icantbreathe</a>
 	<ToolTip @ref="ToolTipElement" ToolTipId="@ToolTipId" />
 
 	<FileTab Flags="@Flags" StatusMessage="@StatusMessage" SetStatusMessage="@SetStatusMessage" UpdateToolTipID="@UpdateToolTipID" />
@@ -19,6 +19,7 @@
 	<BugFixesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
 	<ExperimentalTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
 	<FunTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
+	<HintsTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
 </div>
 
 @code {

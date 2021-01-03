@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace FF1Lib
@@ -31,11 +32,17 @@ namespace FF1Lib
 			Flags = new Flags();
 			Preferences = new Preferences();
 			AllClasses = new AllClasses();
+			InitializeBinMatrix();
 		}
 
 		public string Encoded => Flags.EncodeFlagsText(Flags);
 
 		public event PropertyChangedEventHandler PropertyChanged;
+
+		private void RaisePropertyChanged([CallerMemberName] string property = null)
+		{
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
+		}
 
 		// At least this trick saves us from having to declare backing fields, and having to write a conversion from FlagsViewModel to Flags.
 		private Flags _flags;
@@ -3127,7 +3134,7 @@ namespace FF1Lib
 			}
 		}
 
-		public bool ?SeparateBossHPScaling
+		public bool? SeparateBossHPScaling
 		{
 			get => Flags.SeparateBossHPScaling;
 			set
@@ -3137,7 +3144,7 @@ namespace FF1Lib
 			}
 		}
 
-		public bool ?SeparateEnemyHPScaling
+		public bool? SeparateEnemyHPScaling
 		{
 			get => Flags.SeparateEnemyHPScaling;
 			set
@@ -3147,7 +3154,7 @@ namespace FF1Lib
 			}
 		}
 
-		public bool ?ClampBossHPScaling
+		public bool? ClampBossHPScaling
 		{
 			get => Flags.ClampBossHPScaling;
 			set
@@ -3157,7 +3164,7 @@ namespace FF1Lib
 			}
 		}
 
-		public bool ?ClampEnemyHpScaling
+		public bool? ClampEnemyHpScaling
 		{
 			get => Flags.ClampEnemyHpScaling;
 			set
@@ -3345,6 +3352,186 @@ namespace FF1Lib
 				Flags.EvadeCap = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EvadeCap"));
 			}
+		}
+
+		public bool ExtensiveHints_Enable
+		{
+			get => Flags.ExtensiveHints_Enable;
+			set
+			{
+				Flags.ExtensiveHints_Enable = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public HintCategoryOrder ExtensiveHints_LooseItemFloorOrder
+		{
+			get => Flags.ExtensiveHints_LooseItemFloorOrder;
+			set
+			{
+				Flags.ExtensiveHints_LooseItemFloorOrder = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public HintCategoryOrder ExtensiveHints_LooseItemNameOrder
+		{
+			get => Flags.ExtensiveHints_LooseItemNameOrder;
+			set
+			{
+				Flags.ExtensiveHints_LooseItemNameOrder = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public HintCategoryOrder ExtensiveHints_IncentiveItemNameOrder
+		{
+			get => Flags.ExtensiveHints_IncentiveItemNameOrder;
+			set
+			{
+				Flags.ExtensiveHints_IncentiveItemNameOrder = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public HintCategoryOrder ExtensiveHints_FloorHintOrder
+		{
+			get => Flags.ExtensiveHints_FloorHintOrder;
+			set
+			{
+				Flags.ExtensiveHints_FloorHintOrder = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public HintCategoryOrder ExtensiveHints_EquipmentFloorOrder
+		{
+			get => Flags.ExtensiveHints_EquipmentFloorOrder;
+			set
+			{
+				Flags.ExtensiveHints_EquipmentFloorOrder = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public HintCategoryOrder ExtensiveHints_EquipmentNameOrder
+		{
+			get => Flags.ExtensiveHints_EquipmentNameOrder;
+			set
+			{
+				Flags.ExtensiveHints_EquipmentNameOrder = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public HintCategoryCoverage ExtensiveHints_LooseItemFloorCoverage
+		{
+			get => Flags.ExtensiveHints_LooseItemFloorCoverage;
+			set
+			{
+				Flags.ExtensiveHints_LooseItemFloorCoverage = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public HintCategoryCoverage ExtensiveHints_LooseItemNameCoverage
+		{
+			get => Flags.ExtensiveHints_LooseItemNameCoverage;
+			set
+			{
+				Flags.ExtensiveHints_LooseItemNameCoverage = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public HintCategoryCoverage ExtensiveHints_IncentiveItemNameCoverage
+		{
+			get => Flags.ExtensiveHints_IncentiveItemNameCoverage;
+			set
+			{
+				Flags.ExtensiveHints_IncentiveItemNameCoverage = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public HintCategoryCoverage ExtensiveHints_FloorHintCoverage
+		{
+			get => Flags.ExtensiveHints_FloorHintCoverage;
+			set
+			{
+				Flags.ExtensiveHints_FloorHintCoverage = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public HintCategoryCoverage ExtensiveHints_EquipmentFloorCoverage
+		{
+			get => Flags.ExtensiveHints_EquipmentFloorCoverage;
+			set
+			{
+				Flags.ExtensiveHints_EquipmentFloorCoverage = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public HintCategoryCoverage ExtensiveHints_EquipmentNameCoverage
+		{
+			get => Flags.ExtensiveHints_EquipmentNameCoverage;
+			set
+			{
+				Flags.ExtensiveHints_EquipmentNameCoverage = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public ExtensiveHinst_BinEntryVM[][] ExtensiveHints_BinMatrix { get; private set; }
+
+		private void InitializeBinMatrix()
+		{
+			ExtensiveHints_BinMatrix = new ExtensiveHinst_BinEntryVM[Flags.ExtensiveHints_BinMatrix.Length][];
+			for (int i = 0; i < Flags.ExtensiveHints_BinMatrix.Length; i++)
+			{
+				ExtensiveHints_BinMatrix[i] = new ExtensiveHinst_BinEntryVM[Flags.ExtensiveHints_BinMatrix[i].Length];
+				for (int j = 0; j < Flags.ExtensiveHints_BinMatrix[i].Length; j++)
+				{
+					ExtensiveHints_BinMatrix[i][j] = new ExtensiveHinst_BinEntryVM(this, i, j);
+					ExtensiveHints_BinMatrix[i][j].PropertyChanged += (sender, args) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ExtensiveHints_BinMatrix"));
+				}
+			}
+		}
+
+		public class ExtensiveHinst_BinEntryVM : INotifyPropertyChanged
+		{
+			private FlagsViewModel FlagsVM;
+
+			public int Category;
+
+			public int Location;
+
+			public bool Value
+			{
+				get => FlagsVM.Flags.ExtensiveHints_BinMatrix[Category][Location];
+				set
+				{
+					FlagsVM.Flags.ExtensiveHints_BinMatrix[Category][Location] = value;
+					RaisePropertyChanged();
+				}
+			}
+
+			public event PropertyChangedEventHandler PropertyChanged;
+
+			public ExtensiveHinst_BinEntryVM(FlagsViewModel flagsVM, int category, int location)
+			{
+				FlagsVM = flagsVM;
+				Category = category;
+				Location = location;
+			}
+
+			private void RaisePropertyChanged([CallerMemberName] string property = null)
+			{
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
+			}
+
 		}
 	}
 }

@@ -1,6 +1,8 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 
 namespace FF1Lib
 {
@@ -472,5 +474,15 @@ namespace FF1Lib
 			{OverworldTeleportIndex.Cardia5, MapLocation.Cardia5},
 			{OverworldTeleportIndex.Cardia6, MapLocation.Cardia6},
 		};
+
+		public static Dictionary<MapLocation, List<TreasureChest>> GetTreasureDictionary()
+		{
+			var fields = typeof(ItemLocations).GetFields(BindingFlags.Public | BindingFlags.Static);
+			return fields.Where(f => f.FieldType == typeof(TreasureChest))
+				.Select(f => f.GetValue(null) as TreasureChest)
+				.Where(t => t != null)
+				.GroupBy(t => t.MapLocation)
+				.ToDictionary(g => g.Key, g => g.ToList());
+		}
 	}
 }
