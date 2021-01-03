@@ -199,8 +199,8 @@ namespace FF1Lib
 
 		public void FixHitChanceCap()
 		{
-			Put(0x2DE1D, Blob.FromHex("FF"));
-			Put(0x2DE21, Blob.FromHex("FF"));
+			Put(0x6CA9A, Blob.FromHex("FB"));
+			Put(0x6CA9E, Blob.FromHex("FA"));
 		}
 
 		public void FixEnemyPalettes()
