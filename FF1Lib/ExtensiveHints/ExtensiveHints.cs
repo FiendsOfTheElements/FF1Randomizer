@@ -182,7 +182,7 @@ namespace FF1Lib
 				}
 			}
 
-			return hints;
+			return hints.Distinct().ToList();
 		}
 
 		private List<string> GenerateLooseItemNameHints()
@@ -204,7 +204,7 @@ namespace FF1Lib
 				}
 			}
 
-			return hints;
+			return hints.Distinct().ToList();
 		}
 
 		private List<string> GenerateIncentiveItemNameHints()
@@ -235,7 +235,7 @@ namespace FF1Lib
 				}
 			}
 
-			return hints;
+			return hints.Distinct().ToList();
 		}
 
 		private List<string> GenerateFloorHints()
@@ -274,7 +274,7 @@ namespace FF1Lib
 				}
 			}
 
-			return hints;
+			return hints.Distinct().ToList();
 		}
 
 		private List<string> GenerateEquipmentFloorHints()
@@ -302,7 +302,7 @@ namespace FF1Lib
 				}
 			}
 
-			return hints;
+			return hints.Distinct().ToList();
 		}
 		private List<string> GenerateEquipmentNameHints()
 		{
@@ -322,7 +322,7 @@ namespace FF1Lib
 				}
 			}
 
-			return hints;
+			return hints.Distinct().ToList();
 		}
 
 		private List<Item> GetIncentivePool(Flags flags)
