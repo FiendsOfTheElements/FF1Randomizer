@@ -27,10 +27,10 @@ namespace FF1Lib
 			rom = _rom;
 
 			translator = new Translator(rom);
-		}
+		}		
 
 		public void Generate()
-		{
+		{	
 			var bins = new List<string>[]
 			{
 				GenerateLooseItemFloorHints(),
@@ -64,24 +64,80 @@ namespace FF1Lib
 			binorder = binorder.OrderBy(x => x.Item2 * 100 + (int)x.Item1).ToArray();
 
 			HashSet<ObjectId> usedIds = new HashSet<ObjectId>();
-			Dictionary<int, string> dialogs = new Dictionary<int, string>();
+			Dictionary<ObjectId, string> hintPlacement = new Dictionary<ObjectId, string>();
 
 			foreach (var b in binorder)
 			{
 				var c = b.Item1;
-				PlaceCategory(rng, bins[(int)c], bincoverages[(int)c], flags.ExtensiveHints_BinMatrix[(int)c], usedIds, dialogs);
+				PlaceCategory(rng, bins[(int)c], bincoverages[(int)c], flags.ExtensiveHints_BinMatrix[(int)c], usedIds, hintPlacement);
 			}
 
-			foreach (var e in dialogs)
+			var availableIDs = ScavengeDialogIds(hintPlacement.Keys);
+
+			Dictionary<int, string> dialogs = new Dictionary<int, string>();
+			int i = 0;
+
+			//If we didn't scavenge enough Ids, make a placeholder text.
+			if (hintPlacement.Count > availableIDs.Count)
 			{
-				npcData.GetTalkArray((ObjectId)e.Key)[(int)TalkArrayPos.dialogue_2] = (byte)e.Key;
-				npcData.SetRoutine((ObjectId)e.Key, newTalkRoutines.Talk_norm);
+				dialogs.Add(availableIDs[0], "I dont know what to say.\nMy master gave my TextId\nto someone else.");
+				i++;
 			}
+
+			foreach (var e in hintPlacement)
+			{
+				if (i < availableIDs.Count)
+				{
+					npcData.GetTalkArray((ObjectId)e.Key)[(int)TalkArrayPos.dialogue_1] = 0;
+					npcData.GetTalkArray((ObjectId)e.Key)[(int)TalkArrayPos.dialogue_2] = (byte)availableIDs[i];
+					npcData.GetTalkArray((ObjectId)e.Key)[(int)TalkArrayPos.dialogue_3] = 0;
+					npcData.SetRoutine((ObjectId)e.Key, newTalkRoutines.Talk_norm);
+					dialogs.Add(availableIDs[i], e.Value);
+				}
+				else
+				{
+					npcData.GetTalkArray((ObjectId)e.Key)[(int)TalkArrayPos.dialogue_1] = 0;
+					npcData.GetTalkArray((ObjectId)e.Key)[(int)TalkArrayPos.dialogue_2] = (byte)availableIDs[0];
+					npcData.GetTalkArray((ObjectId)e.Key)[(int)TalkArrayPos.dialogue_3] = 0;
+					npcData.SetRoutine((ObjectId)e.Key, newTalkRoutines.Talk_norm);
+				}
+			}
+
+			//That one has got to be in there
+			dialogs.Add(0, "Please stop bothering\nthe static scenery.\nThank You.");
 
 			rom.InsertDialogs(dialogs);
 		}
 
-		private void PlaceCategory(MT19337 rng, List<string> hints, int coverage, bool[] matrix, HashSet<ObjectId> usedIds, Dictionary<int, string> dialogs)
+		private List<int> ScavengeDialogIds(IEnumerable<ObjectId> usedNPCs)
+		{
+			HashSet<ObjectId> usedNPCSet = new HashSet<ObjectId>(usedNPCs);
+			List<int> usedDialogs = new List<int>();
+			List<int> everythingElse = new List<int>();
+
+			for (int i = 0; i < 208; i++)
+			{
+				if (usedNPCSet.Contains((ObjectId)i))
+				{
+					usedDialogs.Add(npcData.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.dialogue_1]);
+					usedDialogs.Add(npcData.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.dialogue_2]);
+					usedDialogs.Add(npcData.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.dialogue_3]);
+				}
+				else
+				{
+					everythingElse.Add(npcData.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.dialogue_1]);
+					everythingElse.Add(npcData.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.dialogue_2]);
+					everythingElse.Add(npcData.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.dialogue_3]);
+				}
+			}
+
+			var usedDialogSet = new HashSet<int>(usedDialogs.Distinct());
+			foreach (var d in everythingElse) if (usedDialogSet.Contains(d)) usedDialogSet.Remove(d);
+
+			return usedDialogSet.ToList();
+		}
+
+		private void PlaceCategory(MT19337 rng, List<string> hints, int coverage, bool[] matrix, HashSet<ObjectId> usedIds, Dictionary<ObjectId, string> dialogs)
 		{
 			if (hints.Count == 0) return;
 
@@ -100,7 +156,7 @@ namespace FF1Lib
 				while (j < pool.Count && usedIds.Contains(pool[j])) j++;
 				if (j >= pool.Count) break;
 
-				dialogs.Add((int)pool[j], hints[i]);
+				dialogs.Add(pool[j], hints[i]);
 				usedIds.Add(pool[j]);
 			}
 		}
@@ -305,7 +361,7 @@ namespace FF1Lib
 			if (flags.IncentivizeChime ?? false) incentivePool.Add(Item.Chime);
 			if (flags.IncentivizeXcalber ?? false) incentivePool.Add(Item.Xcalber);
 
-			return incentivePool;
+			return incentivePool.Concat(ItemLists.AllQuestItems).Distinct().ToList();
 		}
 
 		private List<string> GetIncentiveChests(Flags flags)
