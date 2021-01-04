@@ -93,6 +93,7 @@ namespace FF1Lib
 					npcData.GetTalkArray((ObjectId)e.Key)[(int)TalkArrayPos.dialogue_3] = 0;
 					npcData.SetRoutine((ObjectId)e.Key, newTalkRoutines.Talk_norm);
 					dialogs.Add(availableIDs[i], e.Value);
+					i++;
 				}
 				else
 				{
@@ -104,7 +105,8 @@ namespace FF1Lib
 			}
 
 			//That one has got to be in there
-			dialogs.Add(0, "Please stop bothering\nthe static scenery.\nThank You.");
+			dialogs.Add(0, "Please stop bothering\nthe static scenery.\n\nThank You.");
+			dialogs.Add(80, "Please stop bothering\nthe static scenery.\n\nThank You.");
 
 			rom.InsertDialogs(dialogs);
 		}
