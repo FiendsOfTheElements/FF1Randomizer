@@ -602,6 +602,15 @@ namespace FF1Lib
 			var equipThiefWeapon = new List<Item> { Item.SmallKnife, Item.Rapier, Item.Scimitar, Item.LargeKnife, Item.Sabre, Item.Falchon, Item.SilverKnife, Item.DragonSword,
 				Item.CoralSword, Item.RuneSword, Item.Masamune };
 
+			// Create exceptions for hit bonus
+			var hitBonusClass = new List<AuthClass>();
+
+			for (int i = 0; i < 6; i++)
+			{
+				if (classData[i].HitGrowth < 4)
+					hitBonusClass.Add((AuthClass)i);
+			}
+			
 			// Spells lists
 			var nullSpells = Enumerable.Repeat(false, 4 * 8).ToList();
 
@@ -645,9 +654,9 @@ namespace FF1Lib
 				new BonusMalus(BonusMalusAction.HpMod, "+20 HP", mod: 20),
 				new BonusMalus(BonusMalusAction.HpMod, "+30 HP", mod: 30),
 				new BonusMalus(BonusMalusAction.HpMod, "+40 HP", mod: 40),
-				new BonusMalus(BonusMalusAction.HitMod, "+10 Hit%", mod: 10),
-				new BonusMalus(BonusMalusAction.HitMod, "+15 Hit%", mod: 15),
-				new BonusMalus(BonusMalusAction.HitMod, "+20 Hit%", mod: 20),
+				new BonusMalus(BonusMalusAction.HitMod, "+10 Hit%", mod: 10, authclass: hitBonusClass ),
+				new BonusMalus(BonusMalusAction.HitMod, "+15 Hit%", mod: 15, authclass: hitBonusClass ),
+				new BonusMalus(BonusMalusAction.HitMod, "+20 Hit%", mod: 20, authclass: hitBonusClass ),
 				new BonusMalus(BonusMalusAction.MDefMod, "+10 MDef", mod: 10),
 				new BonusMalus(BonusMalusAction.MDefMod, "+15 MDef", mod: 15),
 				new BonusMalus(BonusMalusAction.MDefMod, "+20 MDef", mod: 20),
@@ -678,7 +687,6 @@ namespace FF1Lib
 				new BonusMalus(BonusMalusAction.VitMod, "+40 Vit.", mod: 40),
 				new BonusMalus(BonusMalusAction.LckMod, "+15 Luck", mod: 15),
 				new BonusMalus(BonusMalusAction.HpMod, "+80 HP", mod: 80),
-				new BonusMalus(BonusMalusAction.HitGrowth, "+2 Hit%/Lv", mod: 2),
 				new BonusMalus(BonusMalusAction.MDefGrowth, "+2 MDef/Lv", mod: 2),
 				new BonusMalus(BonusMalusAction.WeaponAdd, "+Fighter @S", equipment: equipFighterWeapon, authclass: new List<AuthClass> { AuthClass.Thief, AuthClass.BlackBelt, AuthClass.WhiteMage, AuthClass.BlackMage } ),
 				new BonusMalus(BonusMalusAction.ArmorAdd, "+Fighter @A", equipment: equipFighterArmor, authclass: new List<AuthClass> { AuthClass.Thief, AuthClass.BlackBelt, AuthClass.WhiteMage, AuthClass.BlackMage, AuthClass.RedMage } ),

@@ -1042,9 +1042,9 @@
 	},
 	{
 		"Id": "fixHitChanceCapCheckBox",
-		"title": "Fix Hit % Cap",
+		"title": "Raise Hit % Cap",
 		"screenshot": "fixHitChanceCapCheckBox.png",
-		"description": "Changes the max Hit % from 200 to 255."
+		"description": "Changes the max Hit % from 200 to 250, so an extra hit can be gained."
 	},
 	{
 		"Id": "doubleBBCritCheckBox",
