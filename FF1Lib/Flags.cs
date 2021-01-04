@@ -549,7 +549,7 @@ namespace FF1Lib
 
 		#region ExtensiveHints
 
-		public bool ExtensiveHints_Enable { get; set; } = true;
+		public bool ExtensiveHints_Enable { get; set; } = false;
 
 		public HintCategoryOrder ExtensiveHints_LooseItemFloorOrder { get; set; } = HintCategoryOrder.HintCategoryOrder00;
 
@@ -1025,7 +1025,6 @@ namespace FF1Lib
 
 			for (int i = 0; i < tempExtensiveHints_BinMatrix.Length; i++) tempExtensiveHints_BinMatrix[i] = new bool[Enum.GetValues(typeof(HintLocation)).Length];
 
-			//You've got to be fucking shitting me. I have to do it in reverse?
 			for (int i = tempExtensiveHints_BinMatrix.Length - 1; i >= 0; i--)
 				for (int j = tempExtensiveHints_BinMatrix[i].Length - 1; j >= 0; j--)
 					tempExtensiveHints_BinMatrix[i][j] = GetBoolean(ref sum);
