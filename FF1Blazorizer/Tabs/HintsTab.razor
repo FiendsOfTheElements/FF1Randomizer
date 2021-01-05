@@ -9,142 +9,44 @@
 				<br />
 				<div class="table-wrapper">
 					<table>
-						<tr class="jobs">
-							<td class="right-bordered">Category</td>
-							<td class="right-bordered">Order</td>
-							<td class="right-bordered">Coverage</td>
-							<td>ConeriaCastle</td>
-							<td>Coneria</td>
-							<td>Pravoka</td>
-							<td>ElflandCastle</td>
-							<td>Elfland</td>
-							<td>Dwarfcave</td>
-							<td>Matoya</td>
-							<td>Melmond</td>
-							<td>CrescentLake</td>
-							<td>Cardia</td>
-							<td>Onrac</td>
-							<td>Mermaid</td>
-							<td>Gaia</td>
-							<td>Lefein</td>
+						<tr>
+							<td style="text-align:left">Category</td>
+							<td>Coverage</td>
+							<td>Placement</td>
 						</tr>
 						<tr>
-							<td>Loose Floor</td>
-							<td><EnumDropDown TItem="HintCategoryOrder" @bind-Value="Flags.ExtensiveHints_LooseItemFloorOrder" /></td>
+							<td style="text-align:left">Loose on Floor</td>
 							<td><EnumDropDown TItem="HintCategoryCoverage" @bind-Value="Flags.ExtensiveHints_LooseItemFloorCoverage" /></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[0][0].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[0][1].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[0][2].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[0][3].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[0][4].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[0][5].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[0][6].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[0][7].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[0][8].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[0][9].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[0][10].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[0][11].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[0][12].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[0][13].Value"></CheckBox></td>
+							<td><EnumDropDown TItem="HintPlacementStrategy" @bind-Value="Flags.ExtensiveHints_LooseItemFloorPlacement" /></td>
 						</tr>
 						<tr>
-							<td>Loose Name</td>
-							<td><EnumDropDown TItem="HintCategoryOrder" @bind-Value="Flags.ExtensiveHints_LooseItemNameOrder" /></td>
+							<td style="text-align:left">Loose Name in Location</td>
 							<td><EnumDropDown TItem="HintCategoryCoverage" @bind-Value="Flags.ExtensiveHints_LooseItemNameCoverage" /></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[1][0].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[1][1].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[1][2].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[1][3].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[1][4].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[1][5].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[1][6].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[1][7].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[1][8].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[1][9].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[1][10].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[1][11].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[1][12].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[1][13].Value"></CheckBox></td>
+							<td><EnumDropDown TItem="HintPlacementStrategy" @bind-Value="Flags.ExtensiveHints_LooseItemNamePlacement" /></td>
 						</tr>
 
 						<tr>
-							<td>Inc. Name</td>
-							<td><EnumDropDown TItem="HintCategoryOrder" @bind-Value="Flags.ExtensiveHints_IncentiveItemNameOrder" /></td>
+							<td style="text-align:left">Incentivized Name in Location</td>
 							<td><EnumDropDown TItem="HintCategoryCoverage" @bind-Value="Flags.ExtensiveHints_IncentiveItemNameCoverage" /></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[2][0].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[2][1].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[2][2].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[2][3].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[2][4].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[2][5].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[2][6].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[2][7].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[2][8].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[2][9].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[2][10].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[2][11].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[2][12].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[2][13].Value"></CheckBox></td>
+							<td><EnumDropDown TItem="HintPlacementStrategy" @bind-Value="Flags.ExtensiveHints_IncentiveItemNamePlacement" /></td>
 						</tr>
 
 						<tr>
-							<td>Floor Hints</td>
-							<td><EnumDropDown TItem="HintCategoryOrder" @bind-Value="Flags.ExtensiveHints_FloorHintOrder" /></td>
+							<td style="text-align:left">Floor Hints</td>
 							<td><EnumDropDown TItem="HintCategoryCoverage" @bind-Value="Flags.ExtensiveHints_FloorHintCoverage" /></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[3][0].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[3][1].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[3][2].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[3][3].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[3][4].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[3][5].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[3][6].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[3][7].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[3][8].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[3][9].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[3][10].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[3][11].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[3][12].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[3][13].Value"></CheckBox></td>
+							<td><EnumDropDown TItem="HintPlacementStrategy" @bind-Value="Flags.ExtensiveHints_FloorHintPlacement" /></td>
 						</tr>
 
 						<tr>
-							<td>Eq. Floor</td>
-							<td><EnumDropDown TItem="HintCategoryOrder" @bind-Value="Flags.ExtensiveHints_EquipmentFloorOrder" /></td>
+							<td style="text-align:left">Equipment on Floor</td>
 							<td><EnumDropDown TItem="HintCategoryCoverage" @bind-Value="Flags.ExtensiveHints_EquipmentFloorCoverage" /></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[4][0].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[4][1].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[4][2].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[4][3].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[4][4].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[4][5].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[4][6].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[4][7].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[4][8].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[4][9].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[4][10].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[4][11].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[4][12].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[4][13].Value"></CheckBox></td>
+							<td><EnumDropDown TItem="HintPlacementStrategy" @bind-Value="Flags.ExtensiveHints_EquipmentFloorPlacement" /></td>
 						</tr>
 
 						<tr>
-							<td>Eq. Name</td>
-							<td><EnumDropDown TItem="HintCategoryOrder" @bind-Value="Flags.ExtensiveHints_EquipmentNameOrder" /></td>
+							<td style="text-align:left">Equipment Name in Location</td>
 							<td><EnumDropDown TItem="HintCategoryCoverage" @bind-Value="Flags.ExtensiveHints_EquipmentNameCoverage" /></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[5][0].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[5][1].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[5][2].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[5][3].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[5][4].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[5][5].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[5][6].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[5][7].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[5][8].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[5][9].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[5][10].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[5][11].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[5][12].Value"></CheckBox></td>
-							<td><CheckBox @bind-Value="Flags.ExtensiveHints_BinMatrix[5][13].Value"></CheckBox></td>
+							<td><EnumDropDown TItem="HintPlacementStrategy" @bind-Value="Flags.ExtensiveHints_EquipmentNamePlacement" /></td>
 						</tr>
 					</table>
 				</div>

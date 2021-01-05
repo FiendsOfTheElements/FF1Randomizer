@@ -551,96 +551,30 @@ namespace FF1Lib
 
 		public bool ExtensiveHints_Enable { get; set; } = false;
 
-		public HintCategoryOrder ExtensiveHints_LooseItemFloorOrder { get; set; } = HintCategoryOrder.HintCategoryOrder00;
+		public HintCategoryCoverage ExtensiveHints_LooseItemFloorCoverage { get; set; } = HintCategoryCoverage.HintCategoryCoveragePrioritized;
 
-		public HintCategoryOrder ExtensiveHints_LooseItemNameOrder { get; set; } = HintCategoryOrder.HintCategoryOrder03;
+		public HintCategoryCoverage ExtensiveHints_LooseItemNameCoverage { get; set; } = HintCategoryCoverage.HintCategoryCoverage40;
 
-		public HintCategoryOrder ExtensiveHints_IncentiveItemNameOrder { get; set; } = HintCategoryOrder.HintCategoryOrder02;
+		public HintCategoryCoverage ExtensiveHints_IncentiveItemNameCoverage { get; set; } = HintCategoryCoverage.HintCategoryCoverage40;
 
-		public HintCategoryOrder ExtensiveHints_FloorHintOrder { get; set; } = HintCategoryOrder.HintCategoryOrder01;
+		public HintCategoryCoverage ExtensiveHints_FloorHintCoverage { get; set; } = HintCategoryCoverage.HintCategoryCoverage60;
 
-		public HintCategoryOrder ExtensiveHints_EquipmentFloorOrder { get; set; } = HintCategoryOrder.HintCategoryOrder04;
+		public HintCategoryCoverage ExtensiveHints_EquipmentFloorCoverage { get; set; } = HintCategoryCoverage.HintCategoryCoverage60;
 
-		public HintCategoryOrder ExtensiveHints_EquipmentNameOrder { get; set; } = HintCategoryOrder.HintCategoryOrder05;
+		public HintCategoryCoverage ExtensiveHints_EquipmentNameCoverage { get; set; } = HintCategoryCoverage.HintCategoryCoverage40;
 
-		public HintCategoryCoverage ExtensiveHints_LooseItemFloorCoverage { get; set; } = HintCategoryCoverage.HintCategoryCoverage10;
+		public HintPlacementStrategy ExtensiveHints_LooseItemFloorPlacement { get; set; } = HintPlacementStrategy.InnerSea;
 
-		public HintCategoryCoverage ExtensiveHints_LooseItemNameCoverage { get; set; } = HintCategoryCoverage.HintCategoryCoverage03;
+		public HintPlacementStrategy ExtensiveHints_LooseItemNamePlacement { get; set; } = HintPlacementStrategy.ElflandToCrescent;
 
-		public HintCategoryCoverage ExtensiveHints_IncentiveItemNameCoverage { get; set; } = HintCategoryCoverage.HintCategoryCoverage03;
+		public HintPlacementStrategy ExtensiveHints_IncentiveItemNamePlacement { get; set; } = HintPlacementStrategy.ConeriaToCrescent;
 
-		public HintCategoryCoverage ExtensiveHints_FloorHintCoverage { get; set; } = HintCategoryCoverage.HintCategoryCoverage07;
+		public HintPlacementStrategy ExtensiveHints_FloorHintPlacement { get; set; } = HintPlacementStrategy.Everywhere;
 
-		public HintCategoryCoverage ExtensiveHints_EquipmentFloorCoverage { get; set; } = HintCategoryCoverage.HintCategoryCoverage05;
+		public HintPlacementStrategy ExtensiveHints_EquipmentFloorPlacement { get; set; } = HintPlacementStrategy.MelmondPlus;
 
-		public HintCategoryCoverage ExtensiveHints_EquipmentNameCoverage { get; set; } = HintCategoryCoverage.HintCategoryCoverage05;
-
-		public bool[][] ExtensiveHints_BinMatrix { get; set; }
-
-		private void InitializeBinMatrixDefault()
-		{
-			ExtensiveHints_BinMatrix = new bool[Enum.GetValues(typeof(HintCategory)).Length][];
-
-			for (int i = 0; i < ExtensiveHints_BinMatrix.Length; i++) ExtensiveHints_BinMatrix[i] = new bool[Enum.GetValues(typeof(HintLocation)).Length];
-
-
-			for (int i = 0; i < ExtensiveHints_BinMatrix.Length; i++)
-				for (int j = 0; j < ExtensiveHints_BinMatrix[i].Length; j++)
-					ExtensiveHints_BinMatrix[i][j] = false;
-
-			ExtensiveHints_BinMatrix[(int)HintCategory.LooseItemFloor][(int)HintLocation.Coneria] = true;
-			ExtensiveHints_BinMatrix[(int)HintCategory.LooseItemFloor][(int)HintLocation.ConeriaCastle] = true;
-			ExtensiveHints_BinMatrix[(int)HintCategory.LooseItemFloor][(int)HintLocation.Pravoka] = true;
-			ExtensiveHints_BinMatrix[(int)HintCategory.LooseItemFloor][(int)HintLocation.Elfland] = true;
-			ExtensiveHints_BinMatrix[(int)HintCategory.LooseItemFloor][(int)HintLocation.ElflandCastle] = true;
-			ExtensiveHints_BinMatrix[(int)HintCategory.LooseItemFloor][(int)HintLocation.Dwarfcave] = true;
-			ExtensiveHints_BinMatrix[(int)HintCategory.LooseItemFloor][(int)HintLocation.Matoya] = true;
-
-
-			ExtensiveHints_BinMatrix[(int)HintCategory.LooseItemName][(int)HintLocation.Elfland] = true;
-			ExtensiveHints_BinMatrix[(int)HintCategory.LooseItemName][(int)HintLocation.ElflandCastle] = true;
-			ExtensiveHints_BinMatrix[(int)HintCategory.LooseItemName][(int)HintLocation.Dwarfcave] = true;
-			ExtensiveHints_BinMatrix[(int)HintCategory.LooseItemName][(int)HintLocation.Melmond] = true;
-			ExtensiveHints_BinMatrix[(int)HintCategory.LooseItemName][(int)HintLocation.CrescentLake] = true;
-
-
-			ExtensiveHints_BinMatrix[(int)HintCategory.IncentiveItemName][(int)HintLocation.Elfland] = true;
-			ExtensiveHints_BinMatrix[(int)HintCategory.IncentiveItemName][(int)HintLocation.ElflandCastle] = true;
-			ExtensiveHints_BinMatrix[(int)HintCategory.IncentiveItemName][(int)HintLocation.Dwarfcave] = true;
-			ExtensiveHints_BinMatrix[(int)HintCategory.IncentiveItemName][(int)HintLocation.Melmond] = true;
-			ExtensiveHints_BinMatrix[(int)HintCategory.IncentiveItemName][(int)HintLocation.CrescentLake] = true;
-			ExtensiveHints_BinMatrix[(int)HintCategory.IncentiveItemName][(int)HintLocation.Onrac] = true;
-			ExtensiveHints_BinMatrix[(int)HintCategory.IncentiveItemName][(int)HintLocation.Cardia] = true;
-			ExtensiveHints_BinMatrix[(int)HintCategory.IncentiveItemName][(int)HintLocation.Mermaid] = true;
-			ExtensiveHints_BinMatrix[(int)HintCategory.IncentiveItemName][(int)HintLocation.Gaia] = true;
-			ExtensiveHints_BinMatrix[(int)HintCategory.IncentiveItemName][(int)HintLocation.Lefein] = true;
-
-			ExtensiveHints_BinMatrix[(int)HintCategory.FloorHint][(int)HintLocation.Coneria] = true;
-			ExtensiveHints_BinMatrix[(int)HintCategory.FloorHint][(int)HintLocation.ConeriaCastle] = true;
-			ExtensiveHints_BinMatrix[(int)HintCategory.FloorHint][(int)HintLocation.Pravoka] = true;
-			ExtensiveHints_BinMatrix[(int)HintCategory.FloorHint][(int)HintLocation.Elfland] = true;
-			ExtensiveHints_BinMatrix[(int)HintCategory.FloorHint][(int)HintLocation.ElflandCastle] = true;
-			ExtensiveHints_BinMatrix[(int)HintCategory.FloorHint][(int)HintLocation.Dwarfcave] = true;
-			ExtensiveHints_BinMatrix[(int)HintCategory.FloorHint][(int)HintLocation.Melmond] = true;
-			ExtensiveHints_BinMatrix[(int)HintCategory.FloorHint][(int)HintLocation.CrescentLake] = true;
-			ExtensiveHints_BinMatrix[(int)HintCategory.FloorHint][(int)HintLocation.Onrac] = true;
-			ExtensiveHints_BinMatrix[(int)HintCategory.FloorHint][(int)HintLocation.Cardia] = true;
-			ExtensiveHints_BinMatrix[(int)HintCategory.FloorHint][(int)HintLocation.Mermaid] = true;
-			ExtensiveHints_BinMatrix[(int)HintCategory.FloorHint][(int)HintLocation.Gaia] = true;
-			ExtensiveHints_BinMatrix[(int)HintCategory.FloorHint][(int)HintLocation.Lefein] = true;
-
-			ExtensiveHints_BinMatrix[(int)HintCategory.EquipmentFloor][(int)HintLocation.Cardia] = true;
-			ExtensiveHints_BinMatrix[(int)HintCategory.EquipmentFloor][(int)HintLocation.Mermaid] = true;
-			ExtensiveHints_BinMatrix[(int)HintCategory.EquipmentFloor][(int)HintLocation.Gaia] = true;
-			ExtensiveHints_BinMatrix[(int)HintCategory.EquipmentFloor][(int)HintLocation.Lefein] = true;
-
-
-			ExtensiveHints_BinMatrix[(int)HintCategory.EquipmentName][(int)HintLocation.Cardia] = true;
-			ExtensiveHints_BinMatrix[(int)HintCategory.EquipmentName][(int)HintLocation.Mermaid] = true;
-			ExtensiveHints_BinMatrix[(int)HintCategory.EquipmentName][(int)HintLocation.Gaia] = true;
-			ExtensiveHints_BinMatrix[(int)HintCategory.EquipmentName][(int)HintLocation.Lefein] = true;
-		}
-
+		public HintPlacementStrategy ExtensiveHints_EquipmentNamePlacement { get; set; } = HintPlacementStrategy.FloaterRequired;
+			
 		#endregion
 
 		private static bool ConvertTriState(bool? tristate, MT19337 rng)
@@ -663,20 +597,12 @@ namespace FF1Lib
 				}
 			}
 
-			for (int i = 0; i < flags.ExtensiveHints_BinMatrix.Length; i++)
-				for (int j = 0; j < flags.ExtensiveHints_BinMatrix[i].Length; j++)
-					newflags.ExtensiveHints_BinMatrix[i][j] = ConvertTriState(flags.ExtensiveHints_BinMatrix[i][j], rng);
-
 			return newflags;
 		}
 
 		private Flags ShallowCopy()
 		{
 			var newflags = (Flags)this.MemberwiseClone();
-
-			for (int i = 0; i < ExtensiveHints_BinMatrix.Length; i++)
-				for (int j = 0; j < ExtensiveHints_BinMatrix[i].Length; j++)
-					newflags.ExtensiveHints_BinMatrix[i][j] = ExtensiveHints_BinMatrix[i][j];
 
 			return newflags;
 		}
@@ -997,22 +923,18 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.TournamentSafe);
 			sum = AddBoolean(sum, flags.Spoilers);
 			sum = AddBoolean(sum, flags.ExtensiveHints_Enable);
-			sum = AddNumeric(sum, 16, (int)flags.ExtensiveHints_LooseItemFloorOrder);
-			sum = AddNumeric(sum, 16, (int)flags.ExtensiveHints_LooseItemNameOrder);
-			sum = AddNumeric(sum, 16, (int)flags.ExtensiveHints_IncentiveItemNameOrder);
-			sum = AddNumeric(sum, 16, (int)flags.ExtensiveHints_FloorHintOrder);
-			sum = AddNumeric(sum, 16, (int)flags.ExtensiveHints_EquipmentFloorOrder);
-			sum = AddNumeric(sum, 16, (int)flags.ExtensiveHints_EquipmentNameOrder);
-			sum = AddNumeric(sum, 11, (int)flags.ExtensiveHints_LooseItemFloorCoverage);
-			sum = AddNumeric(sum, 11, (int)flags.ExtensiveHints_LooseItemNameCoverage);
-			sum = AddNumeric(sum, 11, (int)flags.ExtensiveHints_IncentiveItemNameCoverage);
-			sum = AddNumeric(sum, 11, (int)flags.ExtensiveHints_FloorHintCoverage);
-			sum = AddNumeric(sum, 11, (int)flags.ExtensiveHints_EquipmentFloorCoverage);
-			sum = AddNumeric(sum, 11, (int)flags.ExtensiveHints_EquipmentNameCoverage);
-
-			for (int i = 0; i < flags.ExtensiveHints_BinMatrix.Length; i++)
-				for (int j = 0; j < flags.ExtensiveHints_BinMatrix[i].Length; j++)
-					sum = AddBoolean(sum, flags.ExtensiveHints_BinMatrix[i][j]);
+			sum = AddEnum(sum, flags.ExtensiveHints_LooseItemFloorPlacement);
+			sum = AddEnum(sum, flags.ExtensiveHints_LooseItemNamePlacement);
+			sum = AddEnum(sum, flags.ExtensiveHints_IncentiveItemNamePlacement);
+			sum = AddEnum(sum, flags.ExtensiveHints_FloorHintPlacement);
+			sum = AddEnum(sum, flags.ExtensiveHints_EquipmentFloorPlacement);
+			sum = AddEnum(sum, flags.ExtensiveHints_EquipmentNamePlacement);
+			sum = AddEnum(sum, flags.ExtensiveHints_LooseItemFloorCoverage);
+			sum = AddEnum(sum, flags.ExtensiveHints_LooseItemNameCoverage);
+			sum = AddEnum(sum, flags.ExtensiveHints_IncentiveItemNameCoverage);
+			sum = AddEnum(sum, flags.ExtensiveHints_FloorHintCoverage);
+			sum = AddEnum(sum, flags.ExtensiveHints_EquipmentFloorCoverage);
+			sum = AddEnum(sum, flags.ExtensiveHints_EquipmentNameCoverage);
 
 			return BigIntegerToString(sum);
 		}
@@ -1021,28 +943,20 @@ namespace FF1Lib
 		{
 			var sum = StringToBigInteger(text);
 
-			var tempExtensiveHints_BinMatrix = new bool[Enum.GetValues(typeof(HintCategory)).Length][];
-
-			for (int i = 0; i < tempExtensiveHints_BinMatrix.Length; i++) tempExtensiveHints_BinMatrix[i] = new bool[Enum.GetValues(typeof(HintLocation)).Length];
-
-			for (int i = tempExtensiveHints_BinMatrix.Length - 1; i >= 0; i--)
-				for (int j = tempExtensiveHints_BinMatrix[i].Length - 1; j >= 0; j--)
-					tempExtensiveHints_BinMatrix[i][j] = GetBoolean(ref sum);
-
 			var flags = new Flags
 			{
-				ExtensiveHints_EquipmentNameCoverage = (HintCategoryCoverage)GetNumeric(ref sum, 11),
-				ExtensiveHints_EquipmentFloorCoverage = (HintCategoryCoverage)GetNumeric(ref sum, 11),
-				ExtensiveHints_FloorHintCoverage = (HintCategoryCoverage)GetNumeric(ref sum, 11),
-				ExtensiveHints_IncentiveItemNameCoverage = (HintCategoryCoverage)GetNumeric(ref sum, 11),
-				ExtensiveHints_LooseItemNameCoverage = (HintCategoryCoverage)GetNumeric(ref sum, 11),
-				ExtensiveHints_LooseItemFloorCoverage = (HintCategoryCoverage)GetNumeric(ref sum, 11),
-				ExtensiveHints_EquipmentNameOrder = (HintCategoryOrder)GetNumeric(ref sum, 16),
-				ExtensiveHints_EquipmentFloorOrder = (HintCategoryOrder)GetNumeric(ref sum, 16),
-				ExtensiveHints_FloorHintOrder = (HintCategoryOrder)GetNumeric(ref sum, 16),
-				ExtensiveHints_IncentiveItemNameOrder = (HintCategoryOrder)GetNumeric(ref sum, 16),
-				ExtensiveHints_LooseItemNameOrder = (HintCategoryOrder)GetNumeric(ref sum, 16),
-				ExtensiveHints_LooseItemFloorOrder = (HintCategoryOrder)GetNumeric(ref sum, 16),
+				ExtensiveHints_EquipmentNameCoverage = GetEnum<HintCategoryCoverage>(ref sum),
+				ExtensiveHints_EquipmentFloorCoverage = GetEnum<HintCategoryCoverage>(ref sum),
+				ExtensiveHints_FloorHintCoverage = GetEnum<HintCategoryCoverage>(ref sum),
+				ExtensiveHints_IncentiveItemNameCoverage = GetEnum<HintCategoryCoverage>(ref sum),
+				ExtensiveHints_LooseItemNameCoverage = GetEnum<HintCategoryCoverage>(ref sum),
+				ExtensiveHints_LooseItemFloorCoverage = GetEnum<HintCategoryCoverage>(ref sum),
+				ExtensiveHints_EquipmentNamePlacement = GetEnum<HintPlacementStrategy>(ref sum),
+				ExtensiveHints_EquipmentFloorPlacement = GetEnum<HintPlacementStrategy>(ref sum),
+				ExtensiveHints_FloorHintPlacement = GetEnum<HintPlacementStrategy>(ref sum),
+				ExtensiveHints_IncentiveItemNamePlacement = GetEnum<HintPlacementStrategy>(ref sum),
+				ExtensiveHints_LooseItemNamePlacement = GetEnum<HintPlacementStrategy>(ref sum),
+				ExtensiveHints_LooseItemFloorPlacement = GetEnum<HintPlacementStrategy>(ref sum),
 				ExtensiveHints_Enable = GetBoolean(ref sum),
 				Spoilers = GetBoolean(ref sum),
 				TournamentSafe = GetBoolean(ref sum),
@@ -1345,8 +1259,6 @@ namespace FF1Lib
 				EvadeCap = (EvadeCapValues)GetNumeric(ref sum, Enum.GetValues(typeof(EvadeCapValues)).Cast<int>().Max() + 1),				
 			};
 
-			flags.ExtensiveHints_BinMatrix = tempExtensiveHints_BinMatrix;
-
 			string EncodedSha = GetString(ref sum, 7);
 			if (((FFRVersion.Sha.Length >= 7) ? FFRVersion.Sha.Substring(0, 7) : FFRVersion.Sha.PadRight(7, 'X')) != EncodedSha)
 			{
@@ -1355,6 +1267,8 @@ namespace FF1Lib
 
 			return flags;
 		}
+
+		private static BigInteger AddEnum(BigInteger sum, object value) => AddNumeric(sum, Enum.GetValues(value.GetType()).Length + 1, Convert.ToInt32(value));
 
 		private static BigInteger AddNumeric(BigInteger sum, int radix, int value) => sum * radix + value;
 		private static BigInteger AddString(BigInteger sum, int length, string str)
@@ -1370,6 +1284,11 @@ namespace FF1Lib
 		private static BigInteger AddBoolean(BigInteger sum, bool value) => AddNumeric(sum, 2, value ? 1 : 0);
 		private static int TriStateValue(bool? value) => value.HasValue ? (value.Value ? 1 : 0) : 2;
 		private static BigInteger AddTriState(BigInteger sum, bool? value) => AddNumeric(sum, 3, TriStateValue(value));
+
+		private static T GetEnum<T>(ref BigInteger sum)
+		{
+			return (T)(object)GetNumeric(ref sum, Enum.GetValues(typeof(T)).Length + 1);
+		}
 
 		private static int GetNumeric(ref BigInteger sum, int radix)
 		{
@@ -1428,10 +1347,5 @@ namespace FF1Lib
 		}
 
 		public static Flags FromJson(string json) => JsonConvert.DeserializeObject<Preset>(json).Flags;
-
-		public Flags()
-		{
-			InitializeBinMatrixDefault();
-		}
 	}
 }

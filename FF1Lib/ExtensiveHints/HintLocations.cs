@@ -239,5 +239,118 @@ namespace FF1Lib
 			{ HintLocation.Gaia, Gaia },
 			{ HintLocation.Lefein, Lefein },
 		};
+
+		public static Dictionary<HintPlacementStrategy, HintLocation[]> StrategyDic = new Dictionary<HintPlacementStrategy, HintLocation[]>
+		{
+			{
+				HintPlacementStrategy.InnerSea, new HintLocation[]
+				{
+					HintLocation.Coneria,
+					HintLocation.ConeriaCastle,
+					HintLocation.Pravoka,
+					HintLocation.Elfland,
+					HintLocation.ElflandCastle,
+					HintLocation.Matoya,
+					HintLocation.Dwarfcave
+				}
+			},
+			{
+				HintPlacementStrategy.ConeriaToCrescent, new HintLocation[]
+				{
+					HintLocation.Coneria,
+					HintLocation.ConeriaCastle,
+					HintLocation.Pravoka,
+					HintLocation.Elfland,
+					HintLocation.ElflandCastle,
+					HintLocation.Matoya,
+					HintLocation.Dwarfcave,
+					HintLocation.Melmond,
+					HintLocation.CrescentLake
+				}
+			},
+			{
+				HintPlacementStrategy.ElflandToCrescent, new HintLocation[]
+				{
+					HintLocation.Elfland,
+					HintLocation.ElflandCastle,
+					HintLocation.Matoya,
+					HintLocation.Dwarfcave,
+					HintLocation.Melmond,
+					HintLocation.CrescentLake
+				}
+			},
+			{
+				HintPlacementStrategy.ElflandPlus, new HintLocation[]
+				{
+					HintLocation.Elfland,
+					HintLocation.ElflandCastle,
+					HintLocation.Matoya,
+					HintLocation.Dwarfcave,
+					HintLocation.Melmond,
+					HintLocation.CrescentLake,
+					HintLocation.Onrac,
+					HintLocation.Mermaid,
+					HintLocation.Cardia,
+					HintLocation.Lefein,
+					HintLocation.Gaia
+				}
+			},
+			{
+				HintPlacementStrategy.MelmondOnrac, new HintLocation[]
+				{
+					HintLocation.Melmond,
+					HintLocation.CrescentLake,
+					HintLocation.Onrac,
+				}
+			},
+			{
+				HintPlacementStrategy.MelmondMermaids, new HintLocation[]
+				{
+					HintLocation.Melmond,
+					HintLocation.CrescentLake,
+					HintLocation.Onrac,
+					HintLocation.Mermaid
+				}
+			},
+			{
+				HintPlacementStrategy.MelmondPlus, new HintLocation[]
+				{
+					HintLocation.Melmond,
+					HintLocation.CrescentLake,
+					HintLocation.Onrac,
+					HintLocation.Mermaid,
+					HintLocation.Cardia,
+					HintLocation.Lefein,
+					HintLocation.Gaia
+				}
+			},
+			{
+				HintPlacementStrategy.FloaterRequired, new HintLocation[]
+				{
+					HintLocation.Cardia,
+					HintLocation.Lefein,
+					HintLocation.Gaia
+				}
+			},
+			{
+				HintPlacementStrategy.Everywhere, new HintLocation[]
+				{
+					HintLocation.Coneria,
+					HintLocation.ConeriaCastle,
+					HintLocation.Pravoka,
+					HintLocation.Elfland,
+					HintLocation.ElflandCastle,
+					HintLocation.Matoya,
+					HintLocation.Dwarfcave,
+					HintLocation.Melmond,
+					HintLocation.CrescentLake,
+					HintLocation.Onrac,
+					HintLocation.Mermaid,
+					HintLocation.Cardia,
+					HintLocation.Lefein,
+					HintLocation.Gaia
+				}
+			},
+		};
 	}
 }

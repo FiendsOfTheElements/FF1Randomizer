@@ -32,7 +32,6 @@ namespace FF1Lib
 			Flags = new Flags();
 			Preferences = new Preferences();
 			AllClasses = new AllClasses();
-			InitializeBinMatrix();
 		}
 
 		public string Encoded => Flags.EncodeFlagsText(Flags);
@@ -3364,62 +3363,62 @@ namespace FF1Lib
 			}
 		}
 
-		public HintCategoryOrder ExtensiveHints_LooseItemFloorOrder
+		public HintPlacementStrategy ExtensiveHints_LooseItemFloorPlacement
 		{
-			get => Flags.ExtensiveHints_LooseItemFloorOrder;
+			get => Flags.ExtensiveHints_LooseItemFloorPlacement;
 			set
 			{
-				Flags.ExtensiveHints_LooseItemFloorOrder = value;
+				Flags.ExtensiveHints_LooseItemFloorPlacement = value;
 				RaisePropertyChanged();
 			}
 		}
 
-		public HintCategoryOrder ExtensiveHints_LooseItemNameOrder
+		public HintPlacementStrategy ExtensiveHints_LooseItemNamePlacement
 		{
-			get => Flags.ExtensiveHints_LooseItemNameOrder;
+			get => Flags.ExtensiveHints_LooseItemNamePlacement;
 			set
 			{
-				Flags.ExtensiveHints_LooseItemNameOrder = value;
+				Flags.ExtensiveHints_LooseItemNamePlacement = value;
 				RaisePropertyChanged();
 			}
 		}
 
-		public HintCategoryOrder ExtensiveHints_IncentiveItemNameOrder
+		public HintPlacementStrategy ExtensiveHints_IncentiveItemNamePlacement
 		{
-			get => Flags.ExtensiveHints_IncentiveItemNameOrder;
+			get => Flags.ExtensiveHints_IncentiveItemNamePlacement;
 			set
 			{
-				Flags.ExtensiveHints_IncentiveItemNameOrder = value;
+				Flags.ExtensiveHints_IncentiveItemNamePlacement = value;
 				RaisePropertyChanged();
 			}
 		}
 
-		public HintCategoryOrder ExtensiveHints_FloorHintOrder
+		public HintPlacementStrategy ExtensiveHints_FloorHintPlacement
 		{
-			get => Flags.ExtensiveHints_FloorHintOrder;
+			get => Flags.ExtensiveHints_FloorHintPlacement;
 			set
 			{
-				Flags.ExtensiveHints_FloorHintOrder = value;
+				Flags.ExtensiveHints_FloorHintPlacement = value;
 				RaisePropertyChanged();
 			}
 		}
 
-		public HintCategoryOrder ExtensiveHints_EquipmentFloorOrder
+		public HintPlacementStrategy ExtensiveHints_EquipmentFloorPlacement
 		{
-			get => Flags.ExtensiveHints_EquipmentFloorOrder;
+			get => Flags.ExtensiveHints_EquipmentFloorPlacement;
 			set
 			{
-				Flags.ExtensiveHints_EquipmentFloorOrder = value;
+				Flags.ExtensiveHints_EquipmentFloorPlacement = value;
 				RaisePropertyChanged();
 			}
 		}
 
-		public HintCategoryOrder ExtensiveHints_EquipmentNameOrder
+		public HintPlacementStrategy ExtensiveHints_EquipmentNamePlacement
 		{
-			get => Flags.ExtensiveHints_EquipmentNameOrder;
+			get => Flags.ExtensiveHints_EquipmentNamePlacement;
 			set
 			{
-				Flags.ExtensiveHints_EquipmentNameOrder = value;
+				Flags.ExtensiveHints_EquipmentNamePlacement = value;
 				RaisePropertyChanged();
 			}
 		}
@@ -3482,56 +3481,6 @@ namespace FF1Lib
 				Flags.ExtensiveHints_EquipmentNameCoverage = value;
 				RaisePropertyChanged();
 			}
-		}
-
-		public ExtensiveHinst_BinEntryVM[][] ExtensiveHints_BinMatrix { get; private set; }
-
-		private void InitializeBinMatrix()
-		{
-			ExtensiveHints_BinMatrix = new ExtensiveHinst_BinEntryVM[Flags.ExtensiveHints_BinMatrix.Length][];
-			for (int i = 0; i < Flags.ExtensiveHints_BinMatrix.Length; i++)
-			{
-				ExtensiveHints_BinMatrix[i] = new ExtensiveHinst_BinEntryVM[Flags.ExtensiveHints_BinMatrix[i].Length];
-				for (int j = 0; j < Flags.ExtensiveHints_BinMatrix[i].Length; j++)
-				{
-					ExtensiveHints_BinMatrix[i][j] = new ExtensiveHinst_BinEntryVM(this, i, j);
-					ExtensiveHints_BinMatrix[i][j].PropertyChanged += (sender, args) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ExtensiveHints_BinMatrix"));
-				}
-			}
-		}
-
-		public class ExtensiveHinst_BinEntryVM : INotifyPropertyChanged
-		{
-			private FlagsViewModel FlagsVM;
-
-			public int Category;
-
-			public int Location;
-
-			public bool Value
-			{
-				get => FlagsVM.Flags.ExtensiveHints_BinMatrix[Category][Location];
-				set
-				{
-					FlagsVM.Flags.ExtensiveHints_BinMatrix[Category][Location] = value;
-					RaisePropertyChanged();
-				}
-			}
-
-			public event PropertyChangedEventHandler PropertyChanged;
-
-			public ExtensiveHinst_BinEntryVM(FlagsViewModel flagsVM, int category, int location)
-			{
-				FlagsVM = flagsVM;
-				Category = category;
-				Location = location;
-			}
-
-			private void RaisePropertyChanged([CallerMemberName] string property = null)
-			{
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
-			}
-
-		}
+		}		
 	}
 }
