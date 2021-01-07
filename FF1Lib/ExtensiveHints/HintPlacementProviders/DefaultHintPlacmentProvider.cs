@@ -1,8 +1,10 @@
-﻿using System;
+﻿using RomUtilities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static FF1Lib.FF1Rom;
 
 namespace FF1Lib
 {
@@ -24,9 +26,101 @@ namespace FF1Lib
 		Lefein
 	}
 
-	public static class HintNPCs
+	public class DefaultHintPlacmentProvider : BaseHintPlacementProvider
 	{
-		public static ObjectId LooseCountNpc = ObjectId.ConeriaOldMan;
+		Dictionary<HintPlacementStrategy, List<ObjectId>> PlacementPools;
+
+		public DefaultHintPlacmentProvider(MT19337 _rng, NPCdata _npcData, Flags _flags, OverworldMap _overworldMap, FF1Rom _rom) : base (_rng, _npcData, _flags, _overworldMap, _rom)
+		{
+			PlacementPools = StrategyDic.Select(s => (key: s.Key, values: s.Value.SelectMany(l => LocationDic[l]))).ToDictionary(s => s.key, s => s.values.ToList());
+		}
+
+		public override IEnumerable<HintPlacementStrategy> SupportedStrategies => new HintPlacementStrategy[]
+		{
+			HintPlacementStrategy.InnerSea,
+			HintPlacementStrategy.ConeriaToCrescent,
+			HintPlacementStrategy.ElflandToCrescent,
+			HintPlacementStrategy.ElflandPlus,
+			HintPlacementStrategy.MelmondOnrac,
+			HintPlacementStrategy.MelmondMermaids,
+			HintPlacementStrategy.MelmondPlus,
+			HintPlacementStrategy.FloaterRequired,
+			HintPlacementStrategy.Everywhere,
+			HintPlacementStrategy.Tiered,
+			HintPlacementStrategy.InnerSeaTownsAndDwarfCave
+		};
+
+		public override List<ObjectId> GetNpcPool(GeneratedHint hint, HashSet<ObjectId> usedIds)
+		{
+			var strategy = hint.PlacementStrategy;
+
+			if (strategy == HintPlacementStrategy.Tiered)
+			{
+				var location = ItemLocations.MapLocationToStandardOverworldLocations[hint.MapLocation];
+
+				switch (location)
+				{
+					case OverworldTeleportIndex.Coneria:
+					case OverworldTeleportIndex.ConeriaCastle1:
+					case OverworldTeleportIndex.TempleOfFiends1:
+					case OverworldTeleportIndex.Pravoka:
+					case OverworldTeleportIndex.Elfland:
+					case OverworldTeleportIndex.ElflandCastle:
+					case OverworldTeleportIndex.NorthwestCastle:
+					case OverworldTeleportIndex.MarshCave1:
+					case OverworldTeleportIndex.MatoyasCave:
+					case OverworldTeleportIndex.DwarfCave:
+						strategy = HintPlacementStrategy.InnerSea;
+						break;
+					case OverworldTeleportIndex.Melmond:
+					case OverworldTeleportIndex.EarthCave1:
+					case OverworldTeleportIndex.TitansTunnelEast:
+					case OverworldTeleportIndex.TitansTunnelWest:
+					case OverworldTeleportIndex.SardasCave:
+					case OverworldTeleportIndex.CrescentLake:
+					case OverworldTeleportIndex.GurguVolcano1:
+						strategy = HintPlacementStrategy.ElflandToCrescent;
+						break;
+					case OverworldTeleportIndex.IceCave1:
+					case OverworldTeleportIndex.Onrac:
+					case OverworldTeleportIndex.Waterfall:
+					case OverworldTeleportIndex.CastleOrdeals1:
+					case OverworldTeleportIndex.MirageTower1:
+						strategy = HintPlacementStrategy.MelmondOnrac;
+						break;
+					case OverworldTeleportIndex.Gaia:
+					case OverworldTeleportIndex.Lefein:
+					case OverworldTeleportIndex.Cardia1:
+					case OverworldTeleportIndex.BahamutCave1:
+					case OverworldTeleportIndex.Cardia2:
+					case OverworldTeleportIndex.Cardia4:
+					case OverworldTeleportIndex.Cardia5:
+					case OverworldTeleportIndex.Cardia6:
+					case OverworldTeleportIndex.Unused1:
+					case OverworldTeleportIndex.Unused2:
+						strategy = HintPlacementStrategy.MelmondMermaids;
+						break;
+					case (OverworldTeleportIndex)35:
+						strategy = HintPlacementStrategy.MelmondOnrac;
+						break;
+					case (OverworldTeleportIndex)36:
+						strategy = HintPlacementStrategy.MelmondOnrac;
+						break;
+					case (OverworldTeleportIndex)37:
+						strategy = HintPlacementStrategy.MelmondMermaids;
+						break;
+					default:
+						strategy = HintPlacementStrategy.Everywhere;
+						break;
+				}
+
+				return PlacementPools[strategy].Where(x => !usedIds.Contains(x)).ToList();
+			}
+			else
+			{
+				return PlacementPools[strategy].Where(x => !usedIds.Contains(x)).ToList();
+			}
+		}
 
 		public static IReadOnlyCollection<ObjectId> ConeriaCastle = new ObjectId[]
 		{
@@ -52,6 +146,7 @@ namespace FF1Lib
 			ObjectId.ConeriaOldWoman,
 			ObjectId.ConeriaWoman2,
 			ObjectId.ConeriaMan,
+			ObjectId.ConeriaOldMan,
 		};
 
 		public static IReadOnlyCollection<ObjectId> Pravoka = new ObjectId[]

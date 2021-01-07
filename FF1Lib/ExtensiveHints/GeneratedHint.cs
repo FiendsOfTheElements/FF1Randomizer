@@ -8,10 +8,14 @@ namespace FF1Lib
 {
 	public class GeneratedHint
 	{
-		public HintCategory Category { get; set; }
+		public virtual HintCategoryCoverage Coverage { get; set; }
 
-		public MapLocation MapLocation { get; set; }
+		public virtual HintPlacementStrategy PlacementStrategy { get; set; }
 
-		public string Text { get; set; }
+		public virtual ObjectId FixedNpc { get; set; }
+
+		public virtual MapLocation MapLocation { get; set; }
+
+		public virtual string Text { get; set; }	
 	}
 }

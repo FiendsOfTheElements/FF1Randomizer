@@ -7,43 +7,6 @@ using System.Threading.Tasks;
 
 namespace FF1Lib
 {
-	public enum HintCategory
-	{
-		LooseItemFloor, //Loose in MarshTop
-		LooseItemName, //Lute in Earth
-		IncentiveItemName, //Lute in Earth
-		FloorHint, //Earth1 is a Dud
-		EquipmentFloor, //Legendary Weapon in Earth2
-		EquipmentName //Masamune in Sky
-	}
-
-	public enum HintCategoryCoverage
-	{
-		[Description("None - Guaranteed")]
-		HintCategoryCoverageNone = 0,
-
-		[Description("20% - Best Effort")]
-		HintCategoryCoverage20,
-
-		[Description("40% - Best Effort")]
-		HintCategoryCoverage40,
-
-		[Description("60% - Best Effort")]
-		HintCategoryCoverage60,
-
-		[Description("80% - Best Effort")]
-		HintCategoryCoverage80,
-
-		[Description("All - Best Effort")]
-		HintCategoryCoverageAll,
-
-		[Description("All - Prioritized")]
-		HintCategoryCoveragePrioritized,
-
-		[Description("All - Least Effort")]
-		HintCategoryCoverageFill,
-	}
-
 	public enum HintPlacementStrategy
 	{
 		[Description("Coneria - DwarfCave")]
@@ -78,5 +41,12 @@ namespace FF1Lib
 
 		[Description("Inner Sea Towns and Dwarf Cave")]
 		InnerSeaTownsAndDwarfCave,
+	}
+
+	public interface IHintPlacementProvider
+	{
+		IEnumerable<HintPlacementStrategy> SupportedStrategies { get; }
+
+		List<ObjectId> GetNpcPool(GeneratedHint hint, HashSet<ObjectId> usedIds); 
 	}
 }
