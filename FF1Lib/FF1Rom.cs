@@ -712,7 +712,6 @@ namespace FF1Lib
 			var itemText = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
 			itemText[(int)Item.Ribbon] = itemText[(int)Item.Ribbon].Remove(7);
 
-
 			if (flags.ExtensiveHints_Enable)
 			{
 				new ExtensiveHints(rng, npcdata, flags, overworldMap, this).Generate();

@@ -26,6 +26,8 @@ namespace FF1Lib
 
 	public static class HintNPCs
 	{
+		public static ObjectId LooseCountNpc = ObjectId.ConeriaOldMan;
+
 		public static IReadOnlyCollection<ObjectId> ConeriaCastle = new ObjectId[]
 		{
 			ObjectId.ConeriaCastle1FGuard1,
@@ -45,7 +47,6 @@ namespace FF1Lib
 		{
 			ObjectId.ConeriaGuard1,
 			ObjectId.ConeriaGuard2,
-			ObjectId.ConeriaOldMan,
 			ObjectId.ConeriaDancer,
 			ObjectId.ConeriaWoman1,
 			ObjectId.ConeriaOldWoman,
@@ -146,7 +147,7 @@ namespace FF1Lib
 			ObjectId.CardiaDragon2,
 			ObjectId.CardiaDragon3,
 			ObjectId.CardiaDragon4,
-			ObjectId.CardiaDragon5,
+			//ObjectId.CardiaDragon5, does not exist on map???
 			ObjectId.CardiaDragon6,
 			ObjectId.CardiaDragon7,
 			ObjectId.CardiaDragon8,
@@ -349,6 +350,15 @@ namespace FF1Lib
 					HintLocation.Cardia,
 					HintLocation.Lefein,
 					HintLocation.Gaia
+				}
+			},
+			{
+				HintPlacementStrategy.InnerSeaTownsAndDwarfCave, new HintLocation[]
+				{
+					HintLocation.Coneria,
+					HintLocation.Pravoka,
+					HintLocation.Elfland,
+					HintLocation.Dwarfcave
 				}
 			},
 		};

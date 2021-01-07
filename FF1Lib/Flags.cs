@@ -553,28 +553,28 @@ namespace FF1Lib
 
 		public HintCategoryCoverage ExtensiveHints_LooseItemFloorCoverage { get; set; } = HintCategoryCoverage.HintCategoryCoveragePrioritized;
 
-		public HintCategoryCoverage ExtensiveHints_LooseItemNameCoverage { get; set; } = HintCategoryCoverage.HintCategoryCoverage40;
+		public HintCategoryCoverage ExtensiveHints_LooseItemNameCoverage { get; set; } = HintCategoryCoverage.HintCategoryCoverageNone;
 
-		public HintCategoryCoverage ExtensiveHints_IncentiveItemNameCoverage { get; set; } = HintCategoryCoverage.HintCategoryCoverage40;
+		public HintCategoryCoverage ExtensiveHints_IncentiveItemNameCoverage { get; set; } = HintCategoryCoverage.HintCategoryCoverage80;
 
-		public HintCategoryCoverage ExtensiveHints_FloorHintCoverage { get; set; } = HintCategoryCoverage.HintCategoryCoverage60;
+		public HintCategoryCoverage ExtensiveHints_FloorHintCoverage { get; set; } = HintCategoryCoverage.HintCategoryCoverageFill;
 
-		public HintCategoryCoverage ExtensiveHints_EquipmentFloorCoverage { get; set; } = HintCategoryCoverage.HintCategoryCoverage60;
+		public HintCategoryCoverage ExtensiveHints_EquipmentFloorCoverage { get; set; } = HintCategoryCoverage.HintCategoryCoverage80;
 
-		public HintCategoryCoverage ExtensiveHints_EquipmentNameCoverage { get; set; } = HintCategoryCoverage.HintCategoryCoverage40;
+		public HintCategoryCoverage ExtensiveHints_EquipmentNameCoverage { get; set; } = HintCategoryCoverage.HintCategoryCoverageNone;
 
-		public HintPlacementStrategy ExtensiveHints_LooseItemFloorPlacement { get; set; } = HintPlacementStrategy.InnerSea;
+		public HintPlacementStrategy ExtensiveHints_LooseItemFloorPlacement { get; set; } = HintPlacementStrategy.InnerSeaTownsAndDwarfCave;
 
 		public HintPlacementStrategy ExtensiveHints_LooseItemNamePlacement { get; set; } = HintPlacementStrategy.ElflandToCrescent;
 
-		public HintPlacementStrategy ExtensiveHints_IncentiveItemNamePlacement { get; set; } = HintPlacementStrategy.ConeriaToCrescent;
+		public HintPlacementStrategy ExtensiveHints_IncentiveItemNamePlacement { get; set; } = HintPlacementStrategy.InnerSeaTownsAndDwarfCave;
 
 		public HintPlacementStrategy ExtensiveHints_FloorHintPlacement { get; set; } = HintPlacementStrategy.Everywhere;
 
-		public HintPlacementStrategy ExtensiveHints_EquipmentFloorPlacement { get; set; } = HintPlacementStrategy.MelmondPlus;
+		public HintPlacementStrategy ExtensiveHints_EquipmentFloorPlacement { get; set; } = HintPlacementStrategy.ConeriaToCrescent;
 
-		public HintPlacementStrategy ExtensiveHints_EquipmentNamePlacement { get; set; } = HintPlacementStrategy.FloaterRequired;
-			
+		public HintPlacementStrategy ExtensiveHints_EquipmentNamePlacement { get; set; } = HintPlacementStrategy.ConeriaToCrescent;
+
 		#endregion
 
 		private static bool ConvertTriState(bool? tristate, MT19337 rng)

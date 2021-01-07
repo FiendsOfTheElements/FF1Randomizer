@@ -20,6 +20,8 @@ namespace FF1Lib
 
 		Dictionary<HintPlacementStrategy, List<ObjectId>> PlacementPools;
 
+		int LooseCount;
+
 		public ExtensiveHints(MT19337 _rng, NPCdata _npcData, Flags _flags, OverworldMap _overworldMap, FF1Rom _rom)
 		{
 			rng = _rng;
@@ -37,20 +39,22 @@ namespace FF1Lib
 		{
 			List<GeneratedHint> hints = new List<GeneratedHint>();
 
+			LooseCount = 0;
+
 			hints.AddRange(GenerateLooseItemFloorHints());
 			hints.AddRange(GenerateLooseItemNameHints());
 			hints.AddRange(GenerateIncentiveItemNameHints());
 			hints.AddRange(GenerateFloorHints());
 			hints.AddRange(GenerateEquipmentFloorHints());
-			hints.AddRange(GenerateEquipmentNameHints());
 
-			var (prioritized, common) = ProcessCoverage(hints);
+			var (prioritized, common, fill) = ProcessCoverage(hints);
 
 			HashSet<ObjectId> usedIds = new HashSet<ObjectId>();
 			Dictionary<ObjectId, string> hintPlacement = new Dictionary<ObjectId, string>();
 
 			PlaceBin(rng, prioritized, usedIds, hintPlacement);
 			PlaceBin(rng, common, usedIds, hintPlacement);
+			PlaceBin(rng, fill, usedIds, hintPlacement);
 
 			var availableIDs = ScavengeDialogIds(hintPlacement.Keys);
 
@@ -60,27 +64,23 @@ namespace FF1Lib
 			//If we didn't scavenge enough Ids, make a placeholder text.
 			if (hintPlacement.Count > availableIDs.Count)
 			{
-				dialogs.Add(availableIDs[0], "I dont know what to say.\nMy master gave my TextId\nto someone else.");
+				dialogs.Add(availableIDs[i], "I dont know what to say.\nMy master gave my TextId\nto someone else.");
 				i++;
 			}
+
+			SetNpcHint(HintNPCs.LooseCountNpc, availableIDs[i], "I think there are " + LooseCount.ToString() + "\nLoose in the world.\n\nHappy Hunting!", dialogs);
+			i++;
 
 			foreach (var e in hintPlacement)
 			{
 				if (i < availableIDs.Count)
 				{
-					npcData.GetTalkArray((ObjectId)e.Key)[(int)TalkArrayPos.dialogue_1] = 0;
-					npcData.GetTalkArray((ObjectId)e.Key)[(int)TalkArrayPos.dialogue_2] = (byte)availableIDs[i];
-					npcData.GetTalkArray((ObjectId)e.Key)[(int)TalkArrayPos.dialogue_3] = 0;
-					npcData.SetRoutine((ObjectId)e.Key, newTalkRoutines.Talk_norm);
-					dialogs.Add(availableIDs[i], e.Value);
+					SetNpcHint((ObjectId)e.Key, availableIDs[i], e.Value, dialogs);
 					i++;
 				}
 				else
 				{
-					npcData.GetTalkArray((ObjectId)e.Key)[(int)TalkArrayPos.dialogue_1] = 0;
-					npcData.GetTalkArray((ObjectId)e.Key)[(int)TalkArrayPos.dialogue_2] = (byte)availableIDs[0];
-					npcData.GetTalkArray((ObjectId)e.Key)[(int)TalkArrayPos.dialogue_3] = 0;
-					npcData.SetRoutine((ObjectId)e.Key, newTalkRoutines.Talk_norm);
+					SetNpcHint((ObjectId)e.Key, availableIDs[0], null, dialogs);
 				}
 			}
 
@@ -91,11 +91,25 @@ namespace FF1Lib
 			rom.InsertDialogs(dialogs);
 		}
 
+		private void SetNpcHint(ObjectId npc, int textId, string text, Dictionary<int, string> dialogs)
+		{
+			npcData.GetTalkArray(npc)[(int)TalkArrayPos.dialogue_1] = 0;
+			npcData.GetTalkArray(npc)[(int)TalkArrayPos.dialogue_2] = (byte)textId;
+			npcData.GetTalkArray(npc)[(int)TalkArrayPos.dialogue_3] = 0;
+			npcData.SetRoutine(npc, newTalkRoutines.Talk_norm);
+			if (text != null) dialogs.Add(textId, text);
 
-		private (List<GeneratedHint>, List<GeneratedHint>) ProcessCoverage(IEnumerable<GeneratedHint> hints)
+			if (rom.FindNpc(npc, out var mapId, out var npcdefinition))
+			{
+				rom.SetNpc(mapId, npcdefinition.Index, npc, npcdefinition.Coord.x, npcdefinition.Coord.y, npcdefinition.InRoom, true);
+			}
+		}
+
+		private (List<GeneratedHint>, List<GeneratedHint>, List<GeneratedHint>) ProcessCoverage(IEnumerable<GeneratedHint> hints)
 		{
 			var prioritized = new List<GeneratedHint>();
 			var common = new List<GeneratedHint>();
+			var fill = new List<GeneratedHint>();
 			foreach (var category in Enum.GetValues<HintCategory>())
 			{
 				var cathints = hints.Where(h => h.Category == category).ToList();
@@ -107,13 +121,17 @@ namespace FF1Lib
 				{
 					prioritized.AddRange(cathints.Take(cnt));
 				}
+				else if (GetCoverage(category) == HintCategoryCoverage.HintCategoryCoverageFill)
+				{
+					fill.AddRange(cathints.Take(cnt));
+				}
 				else
 				{
 					common.AddRange(cathints.Take(cnt));
 				}
 			}
 
-			return (prioritized, common);
+			return (prioritized, common, fill);
 		}
 
 		public HintCategoryCoverage GetCoverage(HintCategory category)
@@ -143,6 +161,7 @@ namespace FF1Lib
 				case HintCategoryCoverage.HintCategoryCoverage80: return 80;
 				case HintCategoryCoverage.HintCategoryCoverageAll: return 100;
 				case HintCategoryCoverage.HintCategoryCoveragePrioritized: return 100;
+				case HintCategoryCoverage.HintCategoryCoverageFill: return 100;
 				default: return 0;
 			}
 		}
@@ -290,17 +309,20 @@ namespace FF1Lib
 				{
 					if (placement is TreasureChest && !incentiveChests.Contains(placement.Name))
 					{
+						LooseCount++;
 						hints.Add(new GeneratedHint
 						{
 							Category = HintCategory.LooseItemFloor,
 							MapLocation = placement.MapLocation,
-							Text = "Loose\nis found in\n" + translator.TranslateFloor(placement.MapLocation) + "!"
+							Text = "There is {0} Loose\nfound in\n" + translator.TranslateFloor(placement.MapLocation) + "!"
 						});
 					}
 				}
 			}
 
-			return hints.Distinct().ToList();
+			return hints.GroupBy(h => h.Text).Select(h => new GeneratedHint { Category = h.First().Category, MapLocation = h.First().MapLocation, Text = h.First().Text.Replace("{0}", h.Count().ToString()) }).ToList();
+
+			//return hints.Distinct().ToList();
 		}
 
 		private List<GeneratedHint> GenerateLooseItemNameHints()
@@ -453,46 +475,9 @@ namespace FF1Lib
 
 		private List<GeneratedHint> GenerateEquipmentFloorHints()
 		{
-			List<Item> WowItems = ItemLists.UberTier.Concat(ItemLists.LegendaryWeaponTier).Concat(ItemLists.LegendaryArmorTier).ToList();
+			List<Item> WowItems = ItemLists.UberTier.Concat(ItemLists.LegendaryWeaponTier).Concat(ItemLists.LegendaryArmorTier).Concat(ItemLists.RareWeaponTier).Concat(ItemLists.RareArmorTier).ToList();
 
 			List<GeneratedHint> hints = new List<GeneratedHint>();
-
-			foreach (var item in WowItems)
-			{
-				var placement = rom.generatedPlacement.Find(x => x.Item == item);
-				if (placement != null)
-				{
-					if (placement is TreasureChest)
-					{
-						if (ItemLists.UberTier.Contains(placement.Item) || ItemLists.LegendaryWeaponTier.Contains(placement.Item))
-						{
-							hints.Add(new GeneratedHint
-							{
-								Category = HintCategory.EquipmentFloor,
-								MapLocation = placement.MapLocation,
-								Text = "L. Weapon\nis found in\n" + translator.TranslateFloor(placement.MapLocation) + "!"
-							});
-						}
-						else
-						{
-							hints.Add(new GeneratedHint
-							{
-								Category = HintCategory.EquipmentFloor,
-								MapLocation = placement.MapLocation,
-								Text = "L. Armor\nis found in\n" + translator.TranslateFloor(placement.MapLocation) + "!"
-							});
-						}
-					}
-				}
-			}
-
-			return hints.Distinct().ToList();
-		}
-		private List<GeneratedHint> GenerateEquipmentNameHints()
-		{
-			List<GeneratedHint> hints = new List<GeneratedHint>();
-
-			List<Item> WowItems = ItemLists.UberTier.Concat(ItemLists.LegendaryWeaponTier).Concat(ItemLists.LegendaryArmorTier).ToList();
 
 			foreach (var item in WowItems)
 			{
@@ -503,9 +488,9 @@ namespace FF1Lib
 					{
 						hints.Add(new GeneratedHint
 						{
-							Category = HintCategory.EquipmentName,
+							Category = HintCategory.EquipmentFloor,
 							MapLocation = placement.MapLocation,
-							Text = translator.TranslateItem(placement.Item) + "\nis found in\n" + translator.TranslateOverWorldLocation(placement.MapLocation) + "!"
+							Text = translator.TranslateItem(placement.Item) + "\nis found in\n" + translator.TranslateFloor(placement.MapLocation) + "!"
 						});
 					}
 				}

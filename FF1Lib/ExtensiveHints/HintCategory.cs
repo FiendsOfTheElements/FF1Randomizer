@@ -39,6 +39,9 @@ namespace FF1Lib
 
 		[Description("All - Prioritized")]
 		HintCategoryCoveragePrioritized,
+
+		[Description("All - Least Effort")]
+		HintCategoryCoverageFill,
 	}
 
 	public enum HintPlacementStrategy
@@ -72,5 +75,8 @@ namespace FF1Lib
 
 		[Description("Depending on Dungeon")]
 		Tiered,
+
+		[Description("Inner Sea Towns and Dwarf Cave")]
+		InnerSeaTownsAndDwarfCave,
 	}
 }
