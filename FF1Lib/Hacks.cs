@@ -1072,7 +1072,7 @@ namespace FF1Lib
 			InsertDialogs(0x110, "Monster-in-a-box!"); // 0xC0
 
 			// Select treasure
-			var chestList = ItemLocations.AllTreasures.Where(x => !ItemLists.AllQuestItems.Contains(x.Item)).ToList();
+			var chestList = ItemLocations.AllTreasures.Where(x => x.IsUnused == false && !ItemLists.AllQuestItems.Contains(x.Item)).ToList();
 			chestList.Shuffle(rng);
 			chestList.RemoveRange(0, chestList.Count() - 40);
 

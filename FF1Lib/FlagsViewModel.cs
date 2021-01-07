@@ -3309,6 +3309,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomizeClassChaos"));
 			}
 		}
+		public bool? RandomizeClassNoCasting
+		{
+			get => Flags.RandomizeClassNoCasting;
+			set
+			{
+				Flags.RandomizeClassNoCasting = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomizeClassNoCasting"));
+			}
+		}
 		public int RandomizeClassMaxBonus
 		{
 			get => Flags.RandomizeClassMaxBonus;

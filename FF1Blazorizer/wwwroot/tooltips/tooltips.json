@@ -910,6 +910,12 @@
 		"description": "Give bonuses and maluses at random to each class. Press Select at Party selection screen and A at Status screen to reveal the modifiers."
 	},
 	{
+		"Id": "RandomizeClassNoCastingCheckBox",
+		"title": "Exclude Casting Bonuses",
+		"screenshot": "RandomizeClassNoCasting.png",
+		"description": "Exclude bonuses granting spellcasting abilities from other classes."
+	},
+	{
 		"Id": "RandomizeClassChaosCheckBox",
 		"title": "Chaos Mode",
 		"screenshot": "RandomizeClassChaosCheckBox.png",
