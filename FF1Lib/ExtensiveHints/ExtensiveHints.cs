@@ -99,9 +99,9 @@ namespace FF1Lib
 			npcData.SetRoutine(npc, newTalkRoutines.Talk_norm);
 			if (text != null) dialogs.Add(textId, text);
 
-			if (rom.FindNpc(npc, out var mapId, out var npcdefinition))
+			foreach(var npcinstance in rom.FindNpc(npc))
 			{
-				rom.SetNpc(mapId, npcdefinition.Index, npc, npcdefinition.Coord.x, npcdefinition.Coord.y, npcdefinition.InRoom, true);
+				rom.SetNpc(npcinstance.Item1, npcinstance.Item2.Index, npc, npcinstance.Item2.Coord.x, npcinstance.Item2.Coord.y, npcinstance.Item2.InRoom, true);
 			}
 		}
 

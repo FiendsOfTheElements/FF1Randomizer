@@ -696,9 +696,9 @@ namespace FF1Lib
 			return tempNPC;
 		}
 
-		public bool FindNpc(ObjectId mapObjId, out MapId mapId, out NPC tempNPC)
+		public IEnumerable<(MapId, NPC)> FindNpc(ObjectId mapObjId)
 		{
-			tempNPC = new NPC();
+			var tempNPC = new NPC();
 
 			//not good, but quick
 			foreach (var mid in Enum.GetValues<MapId>())
@@ -714,15 +714,10 @@ namespace FF1Lib
 						tempNPC.InRoom = (Data[offset + 1] & 0x80) > 0;
 						tempNPC.Stationary = (Data[offset + 1] & 0x40) > 0;
 
-						mapId = mid;
-						return true;
+						yield return (mid, tempNPC);
 					}
 				}
 			}
-
-			mapId = MapId.Coneria;
-			tempNPC = default;
-			return false;
 		}
 
 
