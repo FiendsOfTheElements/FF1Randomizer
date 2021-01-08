@@ -10,8 +10,11 @@ namespace FF1Lib
 {
 	public class FloorHintsHintSource : BaseHintSource
 	{
+		ItemPrices Prices;
+
 		public FloorHintsHintSource(MT19337 _rng, NPCdata _npcData, Flags _flags, OverworldMap _overworldMap, FF1Rom _rom) : base(_rng, _npcData, _flags, _overworldMap, _rom)
 		{
+			Prices = new ItemPrices(_rom);
 		}
 
 		public override List<GeneratedHint> GetHints()
@@ -27,7 +30,7 @@ namespace FF1Lib
 
 			HashSet<Item> WowItems = new HashSet<Item>(ItemLists.UberTier.Concat(ItemLists.LegendaryWeaponTier).Concat(ItemLists.LegendaryArmorTier).Concat(ItemLists.AllQuestItems).Distinct());
 			HashSet<Item> MehItems = new HashSet<Item>(ItemLists.RareWeaponTier.Concat(ItemLists.RareArmorTier).Distinct());
-			HashSet<Item> SparkleItems = new HashSet<Item>(ItemLists.BigGoldTreasure);
+			HashSet<Item> SparkleItems = new HashSet<Item>(ItemLists.AllGoldTreasure);
 
 			var locations = rom.generatedPlacement.Where(p => p is TreasureChest).GroupBy(p => p.MapLocation);
 
@@ -35,7 +38,7 @@ namespace FF1Lib
 			{
 				bool wow = location.FirstOrDefault(p => WowItems.Contains(p.Item)) != null;
 				bool meh = location.FirstOrDefault(p => MehItems.Contains(p.Item)) != null;
-				bool sparkle = location.FirstOrDefault(p => SparkleItems.Contains(p.Item)) != null;
+				bool sparkle = location.Where(p => SparkleItems.Contains(p.Item)).Sum(p => Prices[p.Item]) < 10000;
 
 				if (wow && sparkle)
 				{
