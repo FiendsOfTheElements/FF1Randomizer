@@ -1067,7 +1067,7 @@ namespace FF1Lib
 			PutInBank(0x1F, 0xDD78, Blob.FromHex("A9002003FEA645BD00B18561A9112003FE20B08E8A60"));
 
 			// Check for trapped monster routine, see 11_8EC0_CheckTrap.asm
-			PutInBank(0x11, 0x8EB0, Blob.FromHex("A561202096B02DA645BD008FF022856AA9C0203D96A56A200096A903CD866BD0062018964C439620E68E201896A2F06020E68E60AA60A9118558A5612093DDA445B90062090499006260"));
+			PutInBank(0x11, 0x8EB0, Blob.FromHex("A561202096B02DA645BD008FF022856AA9C0203D96A56A200096A903CD866BD0062018964C439620E68E201896A2F06020E68E60AA60A911855818A5612093DDA445B90062090499006260"));
 
 			InsertDialogs(0x110, "Monster-in-a-box!"); // 0xC0
 
@@ -1683,135 +1683,188 @@ namespace FF1Lib
 			var spellstring = elementString + "\n" + target.Find(x => x.Item1 == spelldata[(int)spellDataBytes.Target]).Item2 + "\n\n" + routineDesc;
 			return spellstring;
 		}
+
 		public void Spooky(TalkRoutines talkroutines, NPCdata npcdata, MT19337 rng, Flags flags)
 		{
-			const byte WarMECHEncounter = 0x56;
-			const byte bWarMECHEncounter = 0xFD;
-			const byte PhantomEncounter = 0x46;
-			const byte newPhantomEncounter = 0x58;
 			const byte FiendsEncounter = 0x77;
 
-			byte Lich1Encounter = 0x7A;
-			const byte Lich2Encounter = 0x73;
-			const byte ChaosEncounter = 0x7B;
-			const byte VampEncounter = 0x7C;
+			byte encLich1 = 0x7A;
+			const byte encLich2 = 0x73;
 
-			const byte singleVamp = 0xFC;
-			const byte singleZombie = 0x04;
-			const byte singleGhost = 0x46;
-			const byte singleGeist = 0x08;
-			const byte singleZomBull = 0xB2;
-			const byte singleZombieD = 0x4B;
+			const byte bossVamp = 0xFC;
+			const byte bossZombie = 0x04;
+			const byte bossGhost = 0x46;
+			const byte bossGeist = 0x0F;
+			const byte bossZomBull = 0xB2;
+			const byte bossZombieD = 0xCB;
+			const byte bossDracolich = 0x58;
+			const byte bossSentinel = 0xFD;
+			const byte bossLichMech = 0x7A;
+
+			const byte encVampire = 0x7C;
+			const byte encChaos = 0x7B;
+			const byte encZombieGhoul = 0x04;
+			const byte encGhoulGeist = 0x08;
+			const byte encSpecGeist = 0x0F;
+			const byte encPhantomGhost = 0x46;
+			const byte encAstos = 0x7D;
+			const byte encIronGol = 0x58;
+			const byte encZombullTroll = 0x32;
+			const byte encZombieD = 0x4B;
+			const byte encWarMech = 0x56;
 
 			var zombieDialog = new List<byte> { 0x32, 0x33, 0x34, 0x36 };
 
 			Dictionary<int, string> evilDialogs = new Dictionary<int, string>();
 
-			var encounterData = Get(FormationsOffset, FormationCount * FormationSize).Chunk(FormationSize);
+			var encountersData = new Encounters(this);
 
-			// Replacement WarMech
-			encounterData[bWarMECHEncounter - 0x80][GFXOffset] = 0x0E;
-			encounterData[bWarMECHEncounter - 0x80][IDsOffset + 1] = 0x60;      // Chaos
-			encounterData[bWarMECHEncounter - 0x80][PalettesOffset + 1] = 0x2F;
-			encounterData[bWarMECHEncounter - 0x80][PaletteAsignmentOffset] = 0x73;
-			encounterData[bWarMECHEncounter - 0x80][QuantityBOffset + 0] = 0x00;
-			encounterData[bWarMECHEncounter - 0x80][QuantityBOffset + 1] = 0x11;
-
-			// Single Vampire / WizVamp
-			encounterData[VampEncounter][GFXOffset] = 0x00;          // Garland Garland Garland N/A
-			encounterData[VampEncounter][IDsOffset + 0] = 0x3D;      // Garland
-			encounterData[VampEncounter][IDsOffset + 1] = 0x3C;      // Chaos
-			encounterData[VampEncounter][QuantityOffset + 0] = 0x11;
-			encounterData[VampEncounter][QuantityOffset + 1] = 0x00;
-			encounterData[VampEncounter][PalettesOffset + 0] = 0x20;
-			encounterData[VampEncounter][PalettesOffset + 1] = 0x1F;
-			encounterData[VampEncounter][PaletteAsignmentOffset] = 0x73;
-			encounterData[VampEncounter][QuantityBOffset + 0] = 0x00;
-			encounterData[VampEncounter][QuantityBOffset + 1] = 0x11;
-
-			// Single Zombie
-			encounterData[singleZombie][QuantityOffset + 0] = 0x11;
-			encounterData[singleZombie][PaletteAsignmentOffset] |= 0x01;
-
-			// Single Ghost
-			encounterData[singleGhost][QuantityOffset + 0] = 0x11;
-			encounterData[singleGhost][QuantityOffset + 1] = 0x00;
-			encounterData[singleGhost][PaletteAsignmentOffset] |= 0x01;
-
-			// Single Geist
-			encounterData[singleGeist][QuantityOffset + 0] = 0x00;
-			encounterData[singleGeist][QuantityOffset + 1] = 0x11;
-			encounterData[singleGeist][PaletteAsignmentOffset] |= 0x01;
-
-			// Single zomBull
-			encounterData[singleZomBull - 0x80][QuantityBOffset + 0] = 0x11;
-			encounterData[singleZomBull - 0x80][QuantityBOffset + 1] = 0x00;
-			encounterData[singleZomBull - 0x80][PaletteAsignmentOffset] |= 0x02;
-
-			// Single zombieD
-			encounterData[singleZombieD][QuantityOffset + 0] = 0x11;
-			encounterData[singleZombieD][PaletteAsignmentOffset] |= 0x01;
-
-			// Bahamut is Phantom
-			encounterData[newPhantomEncounter][GFXOffset] = 0x77;          // Garland Garland Garland N/A
-			encounterData[newPhantomEncounter][IDsOffset + 1] = 0x33;      // Chaos
-			encounterData[newPhantomEncounter][PalettesOffset + 1] = 0x16;
-			encounterData[newPhantomEncounter][QuantityOffset + 0] = 0x00;
-			encounterData[newPhantomEncounter][QuantityOffset + 1] = 0x11;
-			encounterData[newPhantomEncounter][PaletteAsignmentOffset] |= 0x41;
-
-			// Phantom is Lich1
 			for (int i = 0; i < 4; i++)
 			{
-				if (encounterData[FiendsEncounter + i][IDsOffset + 0] == 0x77)
-					Lich1Encounter = (byte)(FiendsEncounter + i);
+				if (encountersData.formations[FiendsEncounter + i].enemy1 == 0x77)
+					encLich1 = (byte)(FiendsEncounter + i);
 			}
 
-			encounterData[Lich1Encounter][TypeOffset] = 0x24;
-			encounterData[Lich1Encounter][GFXOffset] = 0x03;
-			encounterData[Lich1Encounter][QuantityOffset + 0] = 0x11;
-			encounterData[Lich1Encounter][PalettesOffset + 0] = 0x16;
+			// Phantom is Lich, and put Lich1 as Lich2 b-side
+			encountersData.formations[encLich2].pattern = FormationPattern.Mixed;
+			encountersData.formations[encLich2].spriteSheet = FormationSpriteSheet.ImageGeistWormEye;
+			encountersData.formations[encLich2].enemy2 = 0x77;
+			encountersData.formations[encLich2].gfxOffset1 = (int)FormationGFX.Sprite4;
+			encountersData.formations[encLich2].gfxOffset2 = (int)FormationGFX.Sprite4;
+			encountersData.formations[encLich2].palette1 = 0x16;
+			encountersData.formations[encLich2].paletteAssign1 = 0;
+			encountersData.formations[encLich2].paletteAssign2 = 0;
+			encountersData.formations[encLich2].minmax1 = (1, 1);
+			encountersData.formations[encLich2].minmax2 = (0, 0);
+			encountersData.formations[encLich2].minmaxB1 = (0, 0);
+			encountersData.formations[encLich2].minmaxB2 = (1, 1);
+			encountersData.formations[encLich2].unrunnableB = true;
 
-			// Phantom is Lich2
-			encounterData[Lich2Encounter][TypeOffset] = 0x24;
-			encounterData[Lich2Encounter][GFXOffset] = 0x03;
-			encounterData[Lich2Encounter][QuantityOffset + 0] = 0x11;
-			encounterData[Lich2Encounter][PalettesOffset + 0] = 0x16;
+			// Add WzVamp to Vampire encounter
+			encountersData.formations[encVampire].enemy1 = 0x3D;
+			encountersData.formations[encVampire].enemy2 = 0x3C;
+			encountersData.formations[encVampire].minmax1 = (1, 1);
+			encountersData.formations[encVampire].minmax2 = (0, 0);
+			encountersData.formations[encVampire].palette1 = 0x20;
+			encountersData.formations[encVampire].palette2 = 0x1F;
+			encountersData.formations[encVampire].paletteAssign1 = 0;
+			encountersData.formations[encVampire].paletteAssign2 = 1;
+			encountersData.formations[encVampire].minmaxB1 = (0, 0);
+			encountersData.formations[encVampire].minmaxB2 = (1, 1);
+			encountersData.formations[encVampire].unrunnableA = true;
+			encountersData.formations[encVampire].unrunnableB = true;
+
+			// Add Sentinel boss (w WarMech sprite) to Astos encounter
+			encountersData.formations[encAstos].enemy2 = 0x60;
+			encountersData.formations[encAstos].pattern = FormationPattern.Mixed;
+			encountersData.formations[encAstos].gfxOffset2 = (int)FormationGFX.Sprite4;
+			encountersData.formations[encAstos].palette2 = 0x2F;
+			encountersData.formations[encAstos].paletteAssign2 = 1;
+			encountersData.formations[encAstos].minmaxB1 = (0, 0);
+			encountersData.formations[encAstos].minmaxB2 = (1, 1);
+			encountersData.formations[encAstos].unrunnableB = true;
+
+			// Create new zombie encounters to make space, make Geist/Zombie bosses
+			encountersData.formations[encZombieGhoul].minmax1 = (1, 1);
+			encountersData.formations[encZombieGhoul].minmax2 = (0, 0);
+			encountersData.formations[encZombieGhoul].unrunnableA = true;
+
+			encountersData.formations[encGhoulGeist].minmax1 = (0, 0);
+			encountersData.formations[encGhoulGeist].minmax2 = (0, 2);
+			encountersData.formations[encGhoulGeist].minmax3 = (1, 3);
+			encountersData.formations[encGhoulGeist].enemy3 = 0x2B;
+			encountersData.formations[encGhoulGeist].gfxOffset3 = (int)FormationGFX.Sprite2;
+			encountersData.formations[encGhoulGeist].paletteAssign3 = 1;
+			encountersData.formations[encGhoulGeist].minmaxB1 = (0, 3);
+			encountersData.formations[encGhoulGeist].minmaxB2 = (1, 4);
+
+			encountersData.formations[encSpecGeist].minmax1 = (0, 0);
+			encountersData.formations[encSpecGeist].minmax2 = (1, 1);
+			encountersData.formations[encSpecGeist].unrunnableA = true;
+
+			// Replace Phantom with Ghost boss
+			encountersData.formations[encPhantomGhost].minmax1 = (1, 1);
+			encountersData.formations[encPhantomGhost].minmax2 = (0, 0);
+			encountersData.formations[encPhantomGhost].unrunnableA = true;
+
+			// Modify zomBull encounter for zomBull boss
+			encountersData.formations[encZombullTroll].minmax1 = (1, 4);
+			encountersData.formations[encZombullTroll].minmax2 = (0, 0);
+			encountersData.formations[encZombullTroll].minmaxB1 = (1, 1);
+			encountersData.formations[encZombullTroll].minmaxB2 = (0, 0);
+			encountersData.formations[encZombullTroll].unrunnableB = true;
+
+			// Modify zombieD encounter for zombieD boss
+			encountersData.formations[encZombieD].minmax1 = (2, 4);
+			encountersData.formations[encZombieD].minmaxB1 = (1, 1);
+			encountersData.formations[encZombieD].unrunnableB = true;
+
+			// Modify ironGol encounter for Dracolich (Phantom) boss
+			encountersData.formations[encIronGol].enemy2 = Enemy.Phantom;
+			encountersData.formations[encIronGol].gfxOffset2 = (int)FormationGFX.Sprite3;
+			encountersData.formations[encIronGol].palette2 = 0x16;
+			encountersData.formations[encIronGol].paletteAssign2 = 1;
+			encountersData.formations[encIronGol].minmax1 = (0, 0);
+			encountersData.formations[encIronGol].minmax2 = (1, 1);
+			encountersData.formations[encIronGol].unrunnableA = true;
+
+			// Modify Lich1 encounter for Lich? (WarMech) boss
+			encountersData.formations[encLich1].pattern = FormationPattern.Fiends;
+			encountersData.formations[encLich1].spriteSheet = FormationSpriteSheet.KaryLich;
+			encountersData.formations[encLich1].gfxOffset1 = (int)FormationGFX.Sprite3;
+			encountersData.formations[encLich1].enemy1 = Enemy.WarMech;
+			encountersData.formations[encLich1].minmax1 = (1, 1);
+			encountersData.formations[encLich1].palette1 = 0x07;
+			encountersData.formations[encLich1].palette2 = 0x07;
+			encountersData.formations[encLich1].unrunnableA = true;
 
 			// Lich is Chaos
-			encounterData[ChaosEncounter][TypeOffset] = 0x3D;
-			encounterData[ChaosEncounter][GFXOffset] = 0x01;
-			encounterData[ChaosEncounter][QuantityOffset + 0] = 0x11;
-			encounterData[ChaosEncounter][PalettesOffset + 0] = 0x36;
-			encounterData[ChaosEncounter][PalettesOffset + 1] = 0x37;
+			encountersData.formations[encChaos].pattern = FormationPattern.Fiends;
+			encountersData.formations[encChaos].spriteSheet = FormationSpriteSheet.KaryLich;
+			encountersData.formations[encChaos].gfxOffset1 = 0x01;
+			encountersData.formations[encChaos].gfxOffset2 = 0x00;
+			encountersData.formations[encChaos].palette1 = 0x36;
+			encountersData.formations[encChaos].palette2 = 0x37;
 
-			// Lich is Warmech
-			encounterData[WarMECHEncounter][TypeOffset] = 0x3D;
-			encounterData[WarMECHEncounter][GFXOffset] = 0x01;
-			encounterData[WarMECHEncounter][QuantityOffset + 0] = 0x11;
-			encounterData[WarMECHEncounter][PalettesOffset + 0] = 0x07;
-			encounterData[WarMECHEncounter][PalettesOffset + 1] = 0x07;
-			encounterData[WarMECHEncounter][QuantityBOffset + 0] = 0x11;
-			encounterData[WarMECHEncounter][QuantityBOffset + 1] = 0x00;
-			encounterData[WarMECHEncounter][PaletteAsignmentOffset] |= 0x02;
+			encountersData.Write(this);
 
-			Put(FormationsOffset, encounterData.SelectMany(encounterData => encounterData.ToBytes()).ToArray());
-
-
-			if (Data[0x0FAD] == PhantomEncounter)
-				Data[0x0FAD] = newPhantomEncounter;
+			// Update Phantom trap tile
+			if (Data[0x0FAD] == encPhantomGhost)
+				Data[0x0FAD] = bossDracolich;
 
 			// Switch WarMechEncounter B formation to not get it in Sky
 			var FormationsLists = Get(ZoneFormationsOffset, ZoneFormationsSize * ZoneCount);
 
 			for (int i = 0; i < ZoneFormationsSize * ZoneCount; i++)
 			{
-				if (FormationsLists[i] == (WarMECHEncounter + 0x80))
-					FormationsLists[i] = 0xAF;
-
-				if (FormationsLists[i] == newPhantomEncounter)
-					FormationsLists[i] = newPhantomEncounter + 0x80;
+				switch (FormationsLists[i])
+				{
+					case bossZombie:
+						FormationsLists[i] = encGhoulGeist;
+						break;
+					case bossGeist:
+						FormationsLists[i] = encGhoulGeist + 0x80;
+						break;
+					case bossZombieD:
+						FormationsLists[i] = encZombieD;
+						break;
+					case bossZomBull:
+						FormationsLists[i] = encZombullTroll;
+						break;
+					case bossGhost:
+						FormationsLists[i] = bossDracolich;
+						break;
+					case encWarMech:
+						FormationsLists[i] = bossLichMech;
+						break;
+					case bossDracolich:
+						FormationsLists[i] = encIronGol + 0x80;
+						break;
+				}
 			}
+
+			// Change WarMech encounter in dialogue
+
 			Put(ZoneFormationsOffset, FormationsLists);
 
 			// Make Chaos and WarMech Undead, Phantom a Dragon
@@ -1894,9 +1947,9 @@ namespace FF1Lib
 				{
 					npcdata.SetRoutine((ObjectId)i, newTalkRoutines.Talk_fight);
 					if ((i >= 0x85 && i <= 0x90) || i == 0x9B)
-						npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.battle_id] = singleZombieD;
+						npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.battle_id] = bossZombieD;
 					else
-						npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.battle_id] = singleZombie;
+						npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.battle_id] = bossZombie;
 
 					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.dialogue_2] = zombieDialog.PickRandom(rng);
 					validZombie.Add((ObjectId)i);
@@ -1910,7 +1963,7 @@ namespace FF1Lib
 			var battleBahamut = talkroutines.Add(Blob.FromHex("AD2D60D003A57160E67DA572203D96A575200096A476207F9020739220AE952018964C439660"));
 			talkroutines.ReplaceChunk(newTalkRoutines.Talk_Bikke, Blob.FromHex("A57260A57060"), Blob.FromHex("207392A57260"));
 
-			var lichReplace = talkroutines.Add(Blob.FromHex("A47320A490A476206095A57260"));
+			var lichReplace = talkroutines.Add(Blob.FromHex("A572203D96A575200096A476207F90207392A47320A4902018964C4396"));
 
 			// Update Garland's script
 			npcdata.SetRoutine(ObjectId.Garland, newTalkRoutines.Talk_CoOGuy);
@@ -1925,75 +1978,75 @@ namespace FF1Lib
 			evilDialogs.Add(0x04, "What the hell!?\nThat princess is crazy,\nshe tried to bite me!\n\nThat's it. Screw that.\nI'm going home.");
 
 			evilDialogs.Add(0x02, "What is going on!? My\nguard tried to kill me!\nUgh.. this is a deep\nwound.. I don't feel so\nwell..\nGwooorrrgl!\n\nReceived #");
-			npcdata.GetTalkArray(ObjectId.King)[(int)TalkArrayPos.battle_id] = singleZombie;
+			npcdata.GetTalkArray(ObjectId.King)[(int)TalkArrayPos.battle_id] = bossZombie;
 			npcdata.SetRoutine(ObjectId.King, (newTalkRoutines)battleGiveOnFlag);
 
 			evilDialogs.Add(0x06, "So, you are.. the..\nLIGHTarrgaar..\nWarglb..\n\nBraaaain..\n\nReceived #");
-			npcdata.GetTalkArray(ObjectId.Princess2)[(int)TalkArrayPos.battle_id] = singleZombie;
+			npcdata.GetTalkArray(ObjectId.Princess2)[(int)TalkArrayPos.battle_id] = bossZombie;
 			npcdata.SetRoutine(ObjectId.Princess2, (newTalkRoutines)battleGiveOnItem);
 
 			evilDialogs.Add(0x08, "Aaaaarrr! The LIGHT\nWARRIORS have been\ncursed too!\n\nGet 'em, boys!");
 			evilDialogs.Add(0x09, "Okay then, guess I'll go\nto the pub, have a nice\ncold pint, and wait for\nall this to blow over.\n\nReceived #");
 
 			evilDialogs.Add(0x0E, "At last I wake up from\nmy eternal slumber.\nCome, LIGHT WARRIORS,\nembrace the darkness,\njoin me in death..\n\nReceived #");
-			npcdata.GetTalkArray(ObjectId.ElfPrince)[(int)TalkArrayPos.battle_id] = singleVamp;
+			npcdata.GetTalkArray(ObjectId.ElfPrince)[(int)TalkArrayPos.battle_id] = bossVamp;
 			npcdata.SetRoutine(ObjectId.ElfPrince, (newTalkRoutines)battleGiveOnFlag);
 
 			evilDialogs.Add(0x0C, "Yes, yes, the master\nwill be pleased. Let's\nclean this place up\nbefore he wakes.\nStarting with you!");
-			npcdata.GetTalkArray(ObjectId.ElfDoc)[(int)TalkArrayPos.battle_id] = singleGeist;
+			npcdata.GetTalkArray(ObjectId.ElfDoc)[(int)TalkArrayPos.battle_id] = bossGeist;
 			npcdata.SetRoutine(ObjectId.ElfDoc, (newTalkRoutines)battleUnne);
 
 			if (npcdata.GetRoutine(ObjectId.Astos) != newTalkRoutines.Talk_Astos)
 			{
 				evilDialogs.Add(0x12, "Did you ever dance with\nthe devil in the pale\nmoonlight?\n\nReceived #");
-				npcdata.GetTalkArray(ObjectId.Astos)[(int)TalkArrayPos.battle_id] = singleVamp;
+				npcdata.GetTalkArray(ObjectId.Astos)[(int)TalkArrayPos.battle_id] = bossVamp;
 				npcdata.SetRoutine(ObjectId.Astos, (newTalkRoutines)battleGiveOnItem);
 			}
 
 			evilDialogs.Add(0x13, "The world is going to\nhell, but this won't\nstop me from digging\nmy canal!");
 			evilDialogs.Add(0x14, "Excellent! Finally,\nnow Lich's undead army\ncan flow through the\nrest of the world!\n\nReceived #");
-			npcdata.GetTalkArray(ObjectId.Nerrick)[(int)TalkArrayPos.battle_id] = singleVamp;
+			npcdata.GetTalkArray(ObjectId.Nerrick)[(int)TalkArrayPos.battle_id] = bossVamp;
 			npcdata.SetRoutine(ObjectId.Nerrick, (newTalkRoutines)battleGiveOnItem);
 
 			evilDialogs.Add(0x15, "I never thought I'd\nhave to forge the\nweapon that would slay\nmy brothers. Bring me\nADAMANT, quick!");
 			evilDialogs.Add(0x16, "You were too slow,\nLIGHT WARRIORS. You have\nforsaken me!\nJoin my damned soul in\nthe afterworld!\n\nReceived #");
-			npcdata.GetTalkArray(ObjectId.Smith)[(int)TalkArrayPos.battle_id] = singleGhost;
+			npcdata.GetTalkArray(ObjectId.Smith)[(int)TalkArrayPos.battle_id] = bossGhost;
 			npcdata.SetRoutine(ObjectId.Smith, (newTalkRoutines)battleGiveOnItem);
 
 			evilDialogs.Add(0x17, "Pfah! Everyone else can\nrot in Hell for all\nI care, I'm  perfectly\nsafe here!");
 			evilDialogs.Add(0x19, "SCRIIIIIIIIIIIIIIIIIIII!\n\nReceived #");
-			npcdata.GetTalkArray(ObjectId.Matoya)[(int)TalkArrayPos.battle_id] = singleGeist;
+			npcdata.GetTalkArray(ObjectId.Matoya)[(int)TalkArrayPos.battle_id] = bossGeist;
 			npcdata.SetRoutine(ObjectId.Matoya, (newTalkRoutines)battleGiveOnItem);
 
 			evilDialogs.Add(0x1C, "Now, listen to me, a\nbasic word from\nLeifeinish is Lu..\nHack! Cough! Sorry,\nLu..lu..paaaargh!");
-			npcdata.GetTalkArray(ObjectId.Unne)[(int)TalkArrayPos.battle_id] = singleGeist;
+			npcdata.GetTalkArray(ObjectId.Unne)[(int)TalkArrayPos.battle_id] = bossGeist;
 			npcdata.SetRoutine(ObjectId.Unne, (newTalkRoutines)battleUnne);
 
 			evilDialogs.Add(0x1D, "Ah, humans who wish to\npay me tribute. What?\nYou miserable little\npile of secrets!\nEnough talk! Have at you!");
 
 			evilDialogs.Add(0x1E, "I.. HUNGER!\n\nReceived #");
-			npcdata.GetTalkArray(ObjectId.Sarda)[(int)TalkArrayPos.battle_id] = singleZomBull;
+			npcdata.GetTalkArray(ObjectId.Sarda)[(int)TalkArrayPos.battle_id] = bossZomBull;
 			npcdata.SetRoutine(ObjectId.Sarda, (newTalkRoutines)battleGiveOnFlag);
 
 			evilDialogs.Add(0x20, "The TAIL! Impressive..\nYes, yes, you are indeed\nworthy..\n\nWorthy of dying by my\nown claws!");
-			npcdata.GetTalkArray(ObjectId.Bahamut)[(int)TalkArrayPos.battle_id] = newPhantomEncounter;
+			npcdata.GetTalkArray(ObjectId.Bahamut)[(int)TalkArrayPos.battle_id] = bossDracolich;
 			npcdata.GetTalkArray(ObjectId.Bahamut)[3] = 0x1F;
 			npcdata.SetRoutine(ObjectId.Bahamut, (newTalkRoutines)battleBahamut);
 
 			evilDialogs.Add(0x23, "Come play with me,\nLIGHT WARRIORS.\nFor ever and ever\nand ever..\n\nReceived #");
-			npcdata.GetTalkArray(ObjectId.Fairy)[(int)TalkArrayPos.battle_id] = singleGhost;
+			npcdata.GetTalkArray(ObjectId.Fairy)[(int)TalkArrayPos.battle_id] = bossGhost;
 			npcdata.SetRoutine(ObjectId.Fairy, (newTalkRoutines)battleGiveOnItem);
 
 			evilDialogs.Add(0x27, "Exterminate.\n\n\n\n\nReceived #");
-			npcdata.GetTalkArray(ObjectId.CubeBot)[(int)TalkArrayPos.battle_id] = bWarMECHEncounter;
+			npcdata.GetTalkArray(ObjectId.CubeBot)[(int)TalkArrayPos.battle_id] = bossSentinel;
 			npcdata.SetRoutine(ObjectId.CubeBot, (newTalkRoutines)battleGiveOnItem);
 
 			evilDialogs.Add(0x2B, "My friends..\nMy colleagues..\nNow.. I join them..\n\nReceived #");
-			npcdata.GetTalkArray(ObjectId.CanoeSage)[(int)TalkArrayPos.battle_id] = singleZomBull;
+			npcdata.GetTalkArray(ObjectId.CanoeSage)[(int)TalkArrayPos.battle_id] = bossZomBull;
 			npcdata.SetRoutine(ObjectId.CanoeSage, (newTalkRoutines)battleGiveOnItem);
 
 			evilDialogs.Add(0xCD, "Luuuuu.. paaaargh!\n\n\n\nReceived #");
-			npcdata.GetTalkArray(ObjectId.Lefein)[(int)TalkArrayPos.battle_id] = singleZomBull;
+			npcdata.GetTalkArray(ObjectId.Lefein)[(int)TalkArrayPos.battle_id] = bossZomBull;
 			npcdata.SetRoutine(ObjectId.Lefein, (newTalkRoutines)battleGiveOnFlag);
 
 			evilDialogs.Add(0xFA, "Sorry, LIGHT WARRIORS,\nbut your LICH is in\nanother castle!\n\nMwahahahaha!");
@@ -2012,10 +2065,18 @@ namespace FF1Lib
 
 			npcdata.SetRoutine((ObjectId)0x19, (newTalkRoutines)lichReplace);
 
+			for (int i = 0; i < 4; i++)
+			{
+				if (npcdata.GetTalkArray((ObjectId)(0x1B + i))[(int)TalkArrayPos.battle_id] == encLich1)
+					npcdata.GetTalkArray((ObjectId)(0x1B + i))[(int)TalkArrayPos.battle_id] = encLich2 + 0x80;
+			}
+
 			npcdata.GetTalkArray((ObjectId)0x19)[0] = 0x2F;
-			npcdata.GetTalkArray((ObjectId)0x19)[(int)TalkArrayPos.battle_id] = WarMECHEncounter + 0x80;
+			npcdata.GetTalkArray((ObjectId)0x19)[(int)TalkArrayPos.battle_id] = bossLichMech;
 			npcdata.GetTalkArray((ObjectId)0x19)[2] = 0x2F;
 			npcdata.GetTalkArray((ObjectId)0x19)[3] = 0x1A;
+
+			npcdata.GetTalkArray(ObjectId.WarMECH)[(int)TalkArrayPos.battle_id] = bossLichMech;
 
 			// Switch princess
 			Data[MapSpriteOffset + ((byte)MapId.TempleOfFiends * MapSpriteCount + 1) * MapSpriteSize] = (byte)ObjectId.Princess2;
@@ -2079,3 +2140,4 @@ namespace FF1Lib
 		}
 	}
 }
+

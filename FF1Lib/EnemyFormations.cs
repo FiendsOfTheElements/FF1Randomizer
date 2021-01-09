@@ -233,6 +233,156 @@ namespace FF1Lib
 			talkroutines.ReplaceChunk(newTalkRoutines.Talk_Astos, battleJump, Blob.FromHex("EAEAEA"));
 			talkroutines.ReplaceChunk(newTalkRoutines.Talk_Astos, mapreload, Blob.FromHex("EAEAEA"));
 		}
+
+		public enum FormationPattern
+		{
+			Small9 = 0,
+			Large4 = 1,
+			Mixed = 2,
+			Fiends = 3,
+			Chaos = 4
+		}
+
+		public enum FormationSpriteSheet
+		{
+			ImpWolfIguanaGiant = 0,
+			SahagPirateSharkBigEye = 1,
+			BoneCreepHyenaOgre = 2,
+			AspLobsterBullTroll = 3,
+			ImageGeistWormEye = 4,
+			MedusaCatmanPedeTiger = 5,
+			VampGargoyleEarthDragon1 = 6,
+			SlimeSpiderManticorAnkylo = 7,
+			MummyCoctricWyvernTyro = 8,
+			CaribeGatorOchoHydra = 9,
+			SentryWaterNagaChimera = 10,
+			WizardGarlandDragon2Golem = 11,
+			BadmanAstosMadponyWarmech = 12,
+			KaryLich = 13,
+			KrakenTiamat = 14,
+			Chaos = 15
+		}
+		public enum FormationGFX
+		{
+			Sprite1 = 0,
+			Sprite2 = 2,
+			Sprite3 = 1,
+			Sprite4 = 3
+		}
+		public class Encounters
+		{
+			public List<FormationData> formations = new List<FormationData>();
+
+			public class FormationData
+			{
+				public FormationPattern pattern { get; set; }
+				public FormationSpriteSheet spriteSheet { get; set; }
+				public int palette1 { get; set; }
+				public int palette2 { get; set; }
+				public int enemy1 { get; set; }
+				public int enemy2 { get; set; }
+				public int enemy3 { get; set; }
+				public int enemy4 { get; set; }
+				public int gfxOffset1 { get; set; }
+				public int gfxOffset2 { get; set; }
+				public int gfxOffset3 { get; set; }
+				public int gfxOffset4 { get; set; }
+				public (int, int) minmax1 { get; set; }
+				public (int, int) minmax2 { get; set; }
+				public (int, int) minmax3 { get; set; }
+				public (int, int) minmax4 { get; set; }
+				public int paletteAssign1 { get; set; }
+				public int paletteAssign2 { get; set; }
+				public int paletteAssign3 { get; set; }
+				public int paletteAssign4 { get; set; }
+				public bool unrunnableA { get; set; }
+				public bool unrunnableB { get; set; }
+				public (int, int) minmaxB1 { get; set; }
+				public (int, int) minmaxB2 { get; set; }
+				public int supriseFactor { get; set; }
+
+
+				public FormationData(byte[] formationdata)
+				{
+					LoadData(formationdata);
+				}
+
+				public void LoadData(byte[] formationdata)
+				{
+					pattern = (FormationPattern)(formationdata[TypeOffset] / 0x10);
+					spriteSheet = (FormationSpriteSheet)(formationdata[TypeOffset] & 0x0F);
+					gfxOffset1 = formationdata[GFXOffset] & 0x03;
+					gfxOffset2 = (formationdata[GFXOffset] / 0x04) & 0x03;
+					gfxOffset3 = (formationdata[GFXOffset] / 0x10) & 0x03;
+					gfxOffset4 = (formationdata[GFXOffset] / 0x40) & 0x03;
+					enemy1 = formationdata[IDsOffset + 0];
+					enemy2 = formationdata[IDsOffset + 1];
+					enemy3 = formationdata[IDsOffset + 2];
+					enemy4 = formationdata[IDsOffset + 3];
+					minmax1 = (formationdata[QuantityOffset + 0] / 0x10, formationdata[QuantityOffset + 0] & 0x0F);
+					minmax2 = (formationdata[QuantityOffset + 1] / 0x10, formationdata[QuantityOffset + 1] & 0x0F);
+					minmax3 = (formationdata[QuantityOffset + 2] / 0x10, formationdata[QuantityOffset + 2] & 0x0F);
+					minmax4 = (formationdata[QuantityOffset + 3] / 0x10, formationdata[QuantityOffset + 3] & 0x0F);
+					palette1 = formationdata[PalettesOffset + 0];
+					palette2 = formationdata[PalettesOffset + 1];
+					paletteAssign1 = formationdata[PaletteAsignmentOffset] & 0x80;
+					paletteAssign2 = formationdata[PaletteAsignmentOffset] & 0x40;
+					paletteAssign3 = formationdata[PaletteAsignmentOffset] & 0x20;
+					paletteAssign4 = formationdata[PaletteAsignmentOffset] & 0x10;
+					unrunnableA = (formationdata[PaletteAsignmentOffset] & 0x01) == 0 ? false : true;
+					unrunnableB = (formationdata[PaletteAsignmentOffset] & 0x02) == 0 ? false : true;
+					minmaxB1 = (formationdata[QuantityBOffset + 0] / 0x10, formationdata[QuantityBOffset + 0] & 0x0F);
+					minmaxB2 = (formationdata[QuantityBOffset + 1] / 0x10, formationdata[QuantityBOffset + 1] & 0x0F);
+					supriseFactor = formationdata[0x0C];
+				}
+
+				public Blob OutputBlob()
+				{
+					var formationdata = new byte[0x10];
+
+					formationdata[TypeOffset] = (byte)((int)pattern * 0x10 + (int)spriteSheet);      // Chaos
+					formationdata[GFXOffset] = (byte)(gfxOffset1 + gfxOffset2 * 0x04 + gfxOffset3 * 0x10 + gfxOffset4 * 0x40);
+
+					formationdata[IDsOffset + 0] = (byte)enemy1;      // Chaos
+					formationdata[IDsOffset + 1] = (byte)enemy2;      // Chaos
+					formationdata[IDsOffset + 2] = (byte)enemy3;      // Chaos
+					formationdata[IDsOffset + 3] = (byte)enemy4;      // Chaos
+
+					formationdata[QuantityOffset + 0] = (byte)(minmax1.Item1 * 0x10 + minmax1.Item2);      // Chaos
+					formationdata[QuantityOffset + 1] = (byte)(minmax2.Item1 * 0x10 + minmax2.Item2);      // Chaos
+					formationdata[QuantityOffset + 2] = (byte)(minmax3.Item1 * 0x10 + minmax3.Item2);      // Chaos
+					formationdata[QuantityOffset + 3] = (byte)(minmax4.Item1 * 0x10 + minmax4.Item2);      // Chaos
+
+					formationdata[PalettesOffset + 0] = (byte)palette1;      // Chaos
+					formationdata[PalettesOffset + 1] = (byte)palette2;
+
+					formationdata[PaletteAsignmentOffset] = (byte)(paletteAssign1 * 0x80 + paletteAssign2 * 0x40 + paletteAssign3 * 0x20 + paletteAssign4 * 0x10
+						+ (unrunnableB ? 0x02 : 0x00) + (unrunnableA ? 0x01 : 0x00));      // Chaos
+
+					formationdata[QuantityBOffset + 0] = (byte)(minmaxB1.Item1 * 0x10 + minmaxB1.Item2);      // Chaos
+					formationdata[QuantityBOffset + 1] = (byte)(minmaxB2.Item1 * 0x10 + minmaxB2.Item2);      // Chaos
+
+					formationdata[0x0C] = (byte)supriseFactor;
+
+					return formationdata;
+				}
+			}
+
+			public Encounters(FF1Rom rom)
+			{
+				var encounterData = rom.Get(FormationsOffset, FormationCount * FormationSize).Chunk(FormationSize);
+
+				foreach (var formation in encounterData)
+				{
+					formations.Add(new FormationData(formation));
+				}
+			}
+
+			public void Write(FF1Rom rom)
+			{
+				rom.Put(FormationsOffset, formations.SelectMany(encounterData => encounterData.OutputBlob().ToBytes()).ToArray());
+			}
+		}
 	}
 
 }
