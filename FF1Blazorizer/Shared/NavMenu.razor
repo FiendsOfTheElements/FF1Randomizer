@@ -9,27 +9,10 @@
 		</div>
 
 		<nav id="site-nav">
-			<span class="nav-item" id="randomize"><a href="Randomize">Randomize</a></span>
-			<span class="nav-item" id="about"><a href="About">About</a></span>
-			<span class="nav-item" id="help"><a href="WhatsNew">Help</a></span>
-			<span class="nav-item" id="issues"><a href="https://github.com/FiendsOfTheElements/FF1Randomizer/issues">Issues</a></span>
-			<span class="nav-item" id="install"><a href="javascript:showPWAInstall()">Install</a></span>
+			<span class="nav-item-main" id="randomize"><a href="Randomize">Randomize</a></span>
+			<span class="nav-item-main" id="about"><a href="About">About</a></span>
+			<span class="nav-item-main" id="help"><a href="WhatsNew">Help</a></span>
+			<span class="nav-item-main" id="issues"><a href="https://github.com/FiendsOfTheElements/FF1Randomizer/issues">Issues</a></span>
+			<span class="nav-item-main" id="install"><a href="javascript:showPWAInstall()">Install</a></span>
 		</nav>
 	</div>
-
-	@code {
-		string VersionString = "";
-		protected override void OnInitialized()
-		{
-			VersionString = FF1Lib.FFRVersion.Version;
-			if (FF1Lib.FFRVersion.Branch == "dev")
-			{
-				VersionString += " Beta";
-			}
-			else if (FF1Lib.FFRVersion.Branch != "master")
-			{
-				VersionString = FF1Lib.FFRVersion.Branch;
-			}
-			StateHasChanged();
-		}
-	}

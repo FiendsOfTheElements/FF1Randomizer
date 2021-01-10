@@ -2,14 +2,13 @@
 @inject HttpClient  Http
 
 <div class="ffr-tooltip" style="@css">
-	<button type="button" class="nes-btn is-error ffr-tooltip-close" @onclick="@HideToolTip"> X </button>
-	<button type="button" class="nes-btn" @onclick="@HideToolTip">@Title</button>
-	<div class="is-dark nes-container" @onmousedown=@StartDrag @onmousemove=@Drag @onmouseup=@EndDrag @onmouseout=@Drag>
+	<button type="button" class="main-button" @onclick="@HideToolTip">@Title</button>
+	<button type="button" class="main-button" @onclick="@HideToolTip"> X </button>
+	<div class="framed-content" @onmousedown=@StartDrag @onmousemove=@Drag @onmouseup=@EndDrag @onmouseout=@Drag>
 		<div class="ffr-tooltip-screenshot" style="@(ScreenshotStyle())"></div>
 		@foreach (var paragraph in Description.Split("\n"))
 		{
-			<p class="ffr-tooltip-text">@paragraph</p>
-		}
+<p class="ffr-tooltip-text">@paragraph</p>}
 		<p style="clear: both"></p>
 	</div>
 </div>

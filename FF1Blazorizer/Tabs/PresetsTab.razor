@@ -20,11 +20,10 @@
 		<p>
 			@foreach (var preset in localPresets)
 			{
-				<span style="white-space:nowrap">
-					<a class="preset-button" @onclick="@(() => LoadLocalPreset(@preset))">@preset</a>
-					<a class="preset-button" @onclick="@(() => DeleteLocalPreset(@preset))">X</a>
-				</span>
-			}
+	<span style="white-space:nowrap">
+		<a class="preset-button" @onclick="@(() => LoadLocalPreset(@preset))">@preset</a>
+		<a class="preset-button" @onclick="@(() => DeleteLocalPreset(@preset))">X</a>
+	</span>}
 		</p>
 
 		<p>
@@ -41,6 +40,7 @@
 			Load from JSON:
 			<input type="file" id="presetInput" @onchange="OnPresetChanged" />
 		</p>
+		<div class="clear-it"></div>
 	</div>
 </BSTabContent>
 

@@ -1,7 +1,7 @@
 @using System.Net.Http.Json
 @inherits LayoutComponentBase
 
-<div id="main" onload="defaulttab()">
+<div id="main">
 
 	<div id="wrapper">
 		<div id="banner-holder"></div>
@@ -25,29 +25,10 @@
 
 	<div id="header">
 		<div id="banner">
-			<div id="logo">
-				<span class="nav-text">Final Fantasy Randomizer</span>
-			</div>
-
-			<aside id="version">v3.2.0</aside>
+			<NavBanner />
 
 			<div id="header-contents">
-				<div id="top-nav">
-					<div id="orbs">
-						<span class="orb-image"></span>
-						<span class="orb-image"></span>
-						<span class="orb-image"></span>
-						<span class="orb-image"></span>
-					</div>
-
-					<nav id="site-nav">
-						<span class="nav-item-main" id="randomize"><a href="Randomize">Randomize</a></span>
-						<span class="nav-item-main" id="about"><a href="#">About</a></span>
-						<span class="nav-item-main" id="help"><a href="#">Help</a></span>
-						<span class="nav-item-main" id="issues"><a href="#">Issues</a></span>
-						<span class="nav-item-main" id="install"><a href="javascript:showPWAInstall()">Install</a></span>
-					</nav>
-				</div>
+				<NavMenu />
 			</div>
 		</div>
 	</div>

@@ -1,25 +1,25 @@
-﻿<button type="button" class="@(IsOpen ? "nes-btn nes-nav is-success" : "nes-btn nes-nav is-warning")" @onclick="@(() => IsOpen = !IsOpen)">Conveniences</button>
-<BSCollapse IsOpen="@IsOpen">
-	<div class="is-dark nes-container">
-		<div class="row">
-			<div class="col-md-12">
-				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="noPartyShuffleCheckBox" @bind-Value="Flags.NoPartyShuffle">No Party Shuffle</CheckBox>
-				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="speedHacksCheckBox" @bind-Value="Flags.SpeedHacks">Speed Hacks</CheckBox>
-				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="identifyTreasuresCheckBox" @bind-Value="Flags.IdentifyTreasures">Identify Treasures</CheckBox>
-				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="dashCheckBox" @bind-Value="Flags.Dash">Enable Dash</CheckBox>
-				<CheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(!Flags.BuyTenOld)" Id="buyTenCheckBox" @bind-Value="Flags.BuyTen">Buy Quantity</CheckBox>
-				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="waitWhenUnrunnableCheckBox" @bind-Value="Flags.WaitWhenUnrunnable">Change Unrunnable RUN to WAIT</CheckBox>
-				<CheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.SpeedHacks" Id="enableCritNumberDisplayCheckBox" @bind-Value="Flags.EnableCritNumberDisplay">Critical Hit Count Display</CheckBox>
-				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="battleMagicMenuWrapAroundCheckBox" @bind-Value="Flags.BattleMagicMenuWrapAround">Battle Magic Menu Wrap Around</CheckBox>
-				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="inventoryAutosortCheckBox" @bind-Value="Flags.InventoryAutosort">Autosort Inventory</CheckBox>
-				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="npcSwatterCheckBox" @bind-Value="Flags.NPCSwatter">NPC Guillotine</CheckBox>
-			</div>
+﻿<BSTabLabel>Conveniences</BSTabLabel>
+<BSTabContent>
+	<div id="Conveniences" class="tabcontent framed-content">
+		<h3>Conveniences</h3>
+		<div class="col1">
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="noPartyShuffleCheckBox" @bind-Value="Flags.NoPartyShuffle">No Party Shuffle</CheckBox>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="speedHacksCheckBox" @bind-Value="Flags.SpeedHacks">Speed Hacks</CheckBox>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="identifyTreasuresCheckBox" @bind-Value="Flags.IdentifyTreasures">Identify Treasures</CheckBox>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="dashCheckBox" @bind-Value="Flags.Dash">Enable Dash</CheckBox>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(!Flags.BuyTenOld)" Id="buyTenCheckBox" @bind-Value="Flags.BuyTen">Buy Quantity</CheckBox>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="waitWhenUnrunnableCheckBox" @bind-Value="Flags.WaitWhenUnrunnable">Change Unrunnable RUN to WAIT</CheckBox>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.SpeedHacks" Id="enableCritNumberDisplayCheckBox" @bind-Value="Flags.EnableCritNumberDisplay">Critical Hit Count Display</CheckBox>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="battleMagicMenuWrapAroundCheckBox" @bind-Value="Flags.BattleMagicMenuWrapAround">Battle Magic Menu Wrap Around</CheckBox>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="inventoryAutosortCheckBox" @bind-Value="Flags.InventoryAutosort">Autosort Inventory</CheckBox>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="npcSwatterCheckBox" @bind-Value="Flags.NPCSwatter">NPC Guillotine</CheckBox>
 		</div>
+		<div class="clear-it"></div>
 	</div>
-</BSCollapse>
+</BSTabContent>
 
-@code {
-	[Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }
-	[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
-	[Parameter] public bool IsOpen { get; set; } = true;
-}
+	@code {
+		[Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }
+		[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
+		[Parameter] public bool IsOpen { get; set; } = true;
+	}

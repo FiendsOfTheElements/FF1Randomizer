@@ -1,8 +1,14 @@
 ﻿@using FF1Lib;
 
-<button type="button" class="@(IsOpen ? "nes-btn nes-nav is-success" : "nes-btn nes-nav is-warning")" @onclick="@(() => IsOpen = !IsOpen)">Scale</button>
-<BSCollapse IsOpen="@IsOpen">
-	<div class="is-dark nes-container">
+<BSTabLabel>Scale</BSTabLabel>
+<BSTabContent>
+	<div id="Scale" class="tabcontent framed-content">
+
+		<h3>Scale</h3>
+		<div class="row">
+			It's a test where we right a lot of sttuff and say blablabla so we can ssee hjpw foar thgings will goo theen when theyhh warapdskdna around no I say.
+		</div>
+
 		<ClampedDoubleSlider Id="clampMinimumPriceScaleLable" UpdateToolTip="@UpdateToolTipID" MinValue="20" MaxValue="500" @bind-ValueHigh="Flags.PriceScaleFactorHigh" @bind-ValueLow="Flags.PriceScaleFactorLow" @bind-Clamp="Flags.ClampMinimumPriceScale">Prices:</ClampedDoubleSlider>
 		<ClampedDoubleSlider Id="enemyStatsDoubleSlider" MinValue="20" MaxValue="500" @bind-ValueHigh="Flags.EnemyScaleStatsHigh" @bind-ValueLow="Flags.EnemyScaleStatsLow" @bind-Clamp="Flags.ClampEnemies" DisableTooltip>Enemy Stats:</ClampedDoubleSlider>
 		<ClampedDoubleSlider Id="enemyHpDoubleSlider" Indent IsEnabled="Flags.SeparateEnemyHPScaling" MinValue="20" MaxValue="500" @bind-ValueHigh="Flags.EnemyScaleHpHigh" @bind-ValueLow="Flags.EnemyScaleHpLow" @bind-Clamp="Flags.ClampEnemyHpScaling" DisableTooltip>
@@ -15,8 +21,8 @@
 		</ClampedDoubleSlider>
 
 		<div class="row">
-			<div class="col-md-8 col-xs-6"><p>Evade Cap Value:</p></div>
-			<div class="col-md-4 col-xs-6">
+			<div class="col1"><p>Evade Cap Value:</p></div>
+			<div class="col2">
 				<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="evadeCapDropDown" TItem="EvadeCapValues" @bind-Value="Flags.EvadeCap"></EnumDropDown>
 			</div>
 		</div>
@@ -87,8 +93,10 @@
 				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="easyModeCheckBox" @bind-Value="Flags.EasyMode">Easy Mode</CheckBox>
 			</div>
 		</div>
+		<div class="clear-it"></div>
 	</div>
-</BSCollapse>
+	
+</BSTabContent>
 
 	@code { [Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }
 				[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
