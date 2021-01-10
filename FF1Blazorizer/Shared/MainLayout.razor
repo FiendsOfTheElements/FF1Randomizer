@@ -1,11 +1,54 @@
+@using System.Net.Http.Json
 @inherits LayoutComponentBase
 
-<div class="main">
-    <div class="top-row px-4">
-		<NavMenu />
-    </div>
-	<UpdateNotification/>
-    <div>
-        @Body
-    </div>
+<div id="main" onload="defaulttab()">
+
+	<div id="wrapper">
+		<div id="banner-holder"></div>
+
+		<div id="nav-holder"></div>
+
+		<div>
+			@Body
+		</div>
+
+		<footer id="main-footer">
+			<div id="garland"></div>
+			<div id="warriors"></div>
+
+			<nav id="footer-links">
+				FFR Links: <a href="https://discord.gg/95gbpFd">Community Discord</a> <a href="https://discord.gg/s7CRejk">Development Discord</a> <a href="#">Preset Archive</a> <a href="#">Player Resources</a>
+				<span id="hidden-nav">Menu: <a href="#">Randomize</a> <a href="#">About</a> <a href="#">Help</a> <a href="#">Issues</a> <a href="#">Install</a></span>
+			</nav>
+		</footer>
+	</div>
+
+	<div id="header">
+		<div id="banner">
+			<div id="logo">
+				<span class="nav-text">Final Fantasy Randomizer</span>
+			</div>
+
+			<aside id="version">v3.2.0</aside>
+
+			<div id="header-contents">
+				<div id="top-nav">
+					<div id="orbs">
+						<span class="orb-image"></span>
+						<span class="orb-image"></span>
+						<span class="orb-image"></span>
+						<span class="orb-image"></span>
+					</div>
+
+					<nav id="site-nav">
+						<span class="nav-item-main" id="randomize"><a href="Randomize">Randomize</a></span>
+						<span class="nav-item-main" id="about"><a href="#">About</a></span>
+						<span class="nav-item-main" id="help"><a href="#">Help</a></span>
+						<span class="nav-item-main" id="issues"><a href="#">Issues</a></span>
+						<span class="nav-item-main" id="install"><a href="javascript:showPWAInstall()">Install</a></span>
+					</nav>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>

@@ -2,31 +2,39 @@
 @using FF1Lib;
 @using Microsoft.AspNetCore.Components.Web
 
-<div class="content px-4 tinted">
-    <a href="https://en.wikipedia.org/wiki/George_Floyd" style="color: yellow; font-weight: bold; font-size: 24px; display: table; margin-left: auto; margin-right: auto;">#icantbreathe</a>
+<div id="main-content">
 	<ToolTip @ref="ToolTipElement" ToolTipId="@ToolTipId" />
+	<aside id="left-column">
+		<FileTab Flags="@Flags" StatusMessage="@StatusMessage" SetStatusMessage="@SetStatusMessage" UpdateToolTipID="@UpdateToolTipID" />
+		<FunTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
+	</aside>
 
-	<FileTab Flags="@Flags" StatusMessage="@StatusMessage" SetStatusMessage="@SetStatusMessage" UpdateToolTipID="@UpdateToolTipID" />
-	<PresetsTab Flags="@Flags" SetStatusMessage="@SetStatusMessage" />
-	<ShopsTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
-	<EnemiesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
-	<TreasuresTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
-	<GoalTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
-	<MapsTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
-	<ScaleTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
-	<PartyTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
-	<ConveniencesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
-	<BugFixesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
-	<ExperimentalTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
-	<FunTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
+	<main id="right-column">
+		<h1>Final Fantasy Randomizer</h1>
+		
+		<BSTabGroup ShowEvent="@Show" HiddenEvent="@Hidden" HideEvent="@Hide" ShownEvent="@Shown">
+			<div class="tab">
+				<BSTabList IsVertical="true">
+					<BSTab>
+						<PresetsTab Flags="@Flags" SetStatusMessage="@SetStatusMessage" />
+					</BSTab>
+					<BSTab>
+						<ShopsTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
+					</BSTab>
+					</BSTabList>
+				</div>
+			<BSTabSelectedContent />
+		</BSTabGroup>
+	</main>
 </div>
 
 @code {
 	private FlagsViewModel Flags { get; set; } = new FlagsViewModel();
-
-	private string StatusMessage = "";
+	//[Parameter] public Action<string> SetStatusMessage { get; set; }
+	//[Parameter] public string StatusMessage { get; set; }
 	private string ToolTipId = "unupdated";
 	private ToolTip ToolTipElement;
+	private string StatusMessage = "";
 
 	protected override void OnInitialized()
 	{
@@ -46,5 +54,22 @@
 		StatusMessage = message;
 		StateHasChanged();
 	}
-}
+
+	private void Show(BSTabEvent e)
+	{
+		Console.WriteLine($"Show   -> Activated: {e.Activated?.Id.ToString()} , Deactivated: {e.Deactivated?.Id.ToString()}");
+	}
+	private void Shown(BSTabEvent e)
+	{
+		Console.WriteLine($"Shown  -> Activated: {e.Activated?.Id.ToString()} , Deactivated: {e.Deactivated?.Id.ToString()}");
+	}
+	private void Hide(BSTabEvent e)
+	{
+		Console.WriteLine($"Hide   ->  Activated: {e.Activated?.Id.ToString()} , Deactivated: {e.Deactivated?.Id.ToString()}");
+	}
+	private void Hidden(BSTabEvent e)
+	{
+		Console.WriteLine($"Hidden -> Activated: {e.Activated?.Id.ToString()} , Deactivated: {e.Deactivated?.Id.ToString()}");
+	}
+ }
 

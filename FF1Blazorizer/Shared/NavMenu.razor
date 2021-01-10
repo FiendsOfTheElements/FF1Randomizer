@@ -1,38 +1,35 @@
 ﻿@using System.Net.Http.Json
 @inject HttpClient  Http
-<div>
-	<NavLink class="ffr-nav" href="" Match=NavLinkMatch.All>
-		@(VersionString)
-	</NavLink>
-	<NavLink class="ffr-nav" href="Randomize">
-		<span class="oi oi-random" aria-hidden="true"></span> Randomize
-	</NavLink>
-	<NavLink class="ffr-nav" href="WhatsNew">
-		<span class="oi oi-puzzle-piece" aria-hidden="true"></span> Help
-	</NavLink>
-	<NavLink class="ffr-nav" href="javascript:showPWAInstall()">
-		<span class="oi oi-hard-drive" aria-hidden="true"></span> Install
-	</NavLink>
-	<NavLink class="ffr-nav" href="https://github.com/FiendsOfTheElements/FF1Randomizer/issues">
-		<span class="oi oi-bug" aria-hidden="true"></span> Issues
-	</NavLink>
-	<NavLink class="ffr-nav" href="About">
-		<span class="oi oi-book" aria-hidden="true"></span> About
-	</NavLink>
-</div>
-@code {
-	string VersionString = "";
-	protected override void OnInitialized()
-	{
-		VersionString = FF1Lib.FFRVersion.Version;
-		if (FF1Lib.FFRVersion.Branch == "dev")
+	<div id="top-nav">
+		<div id="orbs">
+			<span class="orb-image"></span>
+			<span class="orb-image"></span>
+			<span class="orb-image"></span>
+			<span class="orb-image"></span>
+		</div>
+
+		<nav id="site-nav">
+			<span class="nav-item" id="randomize"><a href="Randomize">Randomize</a></span>
+			<span class="nav-item" id="about"><a href="About">About</a></span>
+			<span class="nav-item" id="help"><a href="WhatsNew">Help</a></span>
+			<span class="nav-item" id="issues"><a href="https://github.com/FiendsOfTheElements/FF1Randomizer/issues">Issues</a></span>
+			<span class="nav-item" id="install"><a href="javascript:showPWAInstall()">Install</a></span>
+		</nav>
+	</div>
+
+	@code {
+		string VersionString = "";
+		protected override void OnInitialized()
 		{
-			VersionString += " Beta";
+			VersionString = FF1Lib.FFRVersion.Version;
+			if (FF1Lib.FFRVersion.Branch == "dev")
+			{
+				VersionString += " Beta";
+			}
+			else if (FF1Lib.FFRVersion.Branch != "master")
+			{
+				VersionString = FF1Lib.FFRVersion.Branch;
+			}
+			StateHasChanged();
 		}
-		else if (FF1Lib.FFRVersion.Branch != "master")
-		{
-			VersionString = FF1Lib.FFRVersion.Branch;
-		}
-		StateHasChanged();
 	}
-}
