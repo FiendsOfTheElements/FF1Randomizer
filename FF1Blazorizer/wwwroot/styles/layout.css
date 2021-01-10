@@ -38,12 +38,12 @@ clear: both;
 
 #left-column{
 float: left;
-width: 210px;
+width: 280px;
 }
 
 #right-column{
-max-width: 1280px;
-margin-left: 220px;
+max-width: 1210px;
+margin-left: 290px;
 }
 
 .framed-content{
