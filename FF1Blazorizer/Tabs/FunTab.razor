@@ -17,9 +17,7 @@
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="disableSpellCastFlashCheckBox" @bind-Value="Flags.DisableSpellCastFlash">Disable Spell Cast Flash</CheckBox>
 	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="menuColorDropDown" TItem="MenuColor" @bind-Value="Flags.MenuColor">Menu Color</EnumDropDown>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="renounceAutosortCheckBox" @bind-Value="Flags.RenounceAutosort">Renounce Autosort</CheckBox>
-	<div class="row">&nbsp;</div>
-	<a class="preset-button" @onclick="@SavePreferences">Save Preferences</a>
-	<div class="clear-it"></div>
+	<a class="styled-button" @onclick="@SavePreferences">Save Preferences</a>
 </div>
 
 

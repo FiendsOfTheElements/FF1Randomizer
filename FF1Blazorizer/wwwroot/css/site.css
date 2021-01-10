@@ -310,7 +310,12 @@ tr.bottom-borderd {
 
 .ffr-tooltip-close {
     position: absolute;
+    background-color: #e76e55;
     right: 2px;
+}
+
+.ffr-tooltip-close:hover {
+    background-color: #d75e45;
 }
 
 .btn-group-help {

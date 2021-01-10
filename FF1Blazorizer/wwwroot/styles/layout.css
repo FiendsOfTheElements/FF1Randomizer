@@ -31,7 +31,11 @@ text-align: center;
 }
 
 .clear-it{
-clear: both;
+clear: right;
+}
+
+.clearfix {
+    overflow: auto;
 }
 
 /* Main Content */
@@ -98,9 +102,12 @@ margin-left: 2%;
 }
 
 .preset-button{
-display: block;
 float: left;
-margin: 0 5px 0 0 ;	
+}
+
+.styled-button {
+    display: inline-block;
+    margin: 0 5px 0 0;
 }
 
 .preset-paragraph{

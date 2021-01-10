@@ -21,18 +21,17 @@
 	<p>
 		Seed:
 		<input type="text" style="width: calc(100% - 10px);" class="nes-input @(_seedInputClass)" id="seedInput" @onchange="@OnSeedInputChanged" value="@(_seed)" />
+		<a class="styled-button" @onclick="@OnNewSeed">New</a>
 	</p>
-	<a class="preset-button" @onclick="@OnNewSeed">New</a>
-	<div class="row">&nbsp;</div>
+
 	<p>
 		Flags:
 		<input style="width: calc(100% - 10px);" type="text" class="nes-input" value="@Flags.Encoded" @onchange="@OnFlagsInputChanged" />
 	</p>
-	<a class="preset-button" @onclick="@OnCopyToClipboard">Export</a>
-	<a class="preset-button" @onclick="@OnRandomize">Generate ROM</a>
+	<a class="styled-button" @onclick="@OnCopyToClipboard">Export</a>
+	<a class="styled-button" @onclick="@OnRandomize">Generate ROM</a>
 	<div class="row">&nbsp;</div>
 	<p>@StatusMessage</p>
-	<div class="clear-it"></div>
 </div>
 
 

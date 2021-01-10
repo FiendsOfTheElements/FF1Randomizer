@@ -2,8 +2,8 @@
 @inject HttpClient  Http
 
 <div class="ffr-tooltip" style="@css">
-	<button type="button" class="main-button" @onclick="@HideToolTip">@Title</button>
-	<button type="button" class="main-button" @onclick="@HideToolTip"> X </button>
+	<a class="styled-button" @onclick="@HideToolTip">@Title</a>
+	<a class="styled-button ffr-tooltip-close" @onclick="@HideToolTip"> X </a>
 	<div class="framed-content" @onmousedown=@StartDrag @onmousemove=@Drag @onmouseup=@EndDrag @onmouseout=@Drag>
 		<div class="ffr-tooltip-screenshot" style="@(ScreenshotStyle())"></div>
 		@foreach (var paragraph in Description.Split("\n"))

@@ -29,7 +29,7 @@ color: #ffffff;
 text-decoration: none;
 }
 
-h1, h2, h3, h4, h5, h6, button, a.preset-button, #version, .nav-item-main, .nav-item{
+h1, h2, h3, h4, h5, h6, button, a.styled-button, #version, .nav-item-main, .nav-item{
 font-family: chicago, arial, sans-serif;
 }
 
@@ -113,7 +113,7 @@ border-right: 4px solid #ffffff;
 border-image: url(../images/site-border-tabs.png) 4;
 }
 
-a.preset-button {
+a.styled-button {
     background-color: #0081db;
     border: 1px solid #ffffff;
     border-radius: 2px;
@@ -123,7 +123,7 @@ a.preset-button {
     cursor: pointer;
 }
 
-a.preset-button:hover{
+a.styled-button:hover{
 background-color: #005896;
 }
 
