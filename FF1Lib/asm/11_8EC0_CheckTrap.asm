@@ -17,6 +17,8 @@ btlformation    = $6A
 talkarray 	= $70
 dlgsfx 		= $7D
 
+btl_result      = $6B86
+
 BANK_TREASURE	 	= $00
 BANK_TALKROUTINE	= $11
 
@@ -48,7 +50,7 @@ SwapPRG_L 		= $FE03
   TXA                      ; X has the dialog ID, either Can't hold or In this chest you found
   RTS
 
- .ORG $8EC0
+ .ORG $8EB0
   
 CheckTrap:
   LDA dlg_itemid              ; Load item and check if we have
@@ -62,6 +64,12 @@ CheckTrap:
       JSR InTalkDialogueBox   
       LDA btlformation        ; Get back battle formation
       JSR InTalkBattle        ; Trigger the battle
+      LDA #$03
+      CMP btl_result          ; Check if we ran from battle
+      BNE WonBattle           ; If we did
+        JSR InTalkReenterMap  ; Skip giving the item
+        JMP SkipDialogueBox
+WonBattle:      
       JSR GiveItem            ; Give the item
       JSR InTalkReenterMap    ; And reenter the map
       LDX #$F0                ; Load "In this chest you've found..."

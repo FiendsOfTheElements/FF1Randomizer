@@ -323,6 +323,7 @@ namespace FF1Lib
 		public bool? IncludeBaseClasses { get; set; } = false;
 		public bool? RandomPromotionsSpoilers { get; set; } = false;
 		public bool? RandomizeClass { get; set; } = false;
+		public bool? RandomizeClassNoCasting { get; set; } = false;
 		public bool? RandomizeClassChaos { get; set; } = false;
 		public int RandomizeClassMaxBonus { get; set; } = 2;
 		public int RandomizeClassMaxMalus { get; set; } = 1;
@@ -879,6 +880,7 @@ namespace FF1Lib
 			sum = AddTriState(sum, flags.RandomPromotionsSpoilers);
 			sum = AddTriState(sum, flags.RandomizeClass);
 			sum = AddTriState(sum, flags.RandomizeClassChaos);
+			sum = AddTriState(sum, flags.RandomizeClassNoCasting);
 			sum = AddNumeric(sum, 5, flags.RandomizeClassMaxBonus);
 			sum = AddNumeric(sum, 5, flags.RandomizeClassMaxMalus);
 			sum = AddNumeric(sum, Enum.GetValues(typeof(FormationShuffleMode)).Cast<int>().Max() + 1, (int)flags.FormationShuffleMode);
@@ -912,6 +914,7 @@ namespace FF1Lib
 				RandomizeClassMaxMalus = GetNumeric(ref sum, 5),
 				RandomizeClassMaxBonus = GetNumeric(ref sum, 5),
 				RandomizeClassChaos = GetTriState(ref sum),
+				RandomizeClassNoCasting = GetTriState(ref sum),
 				RandomizeClass = GetTriState(ref sum),
 				RandomPromotionsSpoilers = GetTriState(ref sum),
 				IncludeBaseClasses = GetTriState(ref sum),

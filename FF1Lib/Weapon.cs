@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 using RomUtilities;
 using FF1Lib;
 
@@ -144,7 +145,7 @@ namespace FF1Lib
 			if (!balanced)
 			{
 				Spells.RemoveAll(spell => spell.Data[4] == 0);
-				foreach (Item weapon in ItemLists.AllWeapons)
+				foreach (Item weapon in ItemLists.AllWeapons.Except(ItemLists.AllMagicItem).ToList())
 					WriteItemSpellData(Spells.SpliceRandom(rng), weapon);
 			}
 			else
@@ -167,7 +168,7 @@ namespace FF1Lib
 					WriteItemSpellData(tieredSpells[selectedTier].SpliceRandom(rng), weapon);
 				}
 
-				foreach (Item weapon in ItemLists.RareWeaponTier)
+				foreach (Item weapon in ItemLists.RareWeaponTier.Except(ItemLists.AllMagicItem).ToList())
 				{
 					var selectedTier = rareOdds.PickRandom(rng);
 					while (tieredSpells[selectedTier].Count == 0)

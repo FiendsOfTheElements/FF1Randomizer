@@ -910,6 +910,12 @@
 		"description": "Give bonuses and maluses at random to each class. Press Select at Party selection screen and A at Status screen to reveal the modifiers."
 	},
 	{
+		"Id": "RandomizeClassNoCastingCheckBox",
+		"title": "Exclude Casting Bonuses",
+		"screenshot": "RandomizeClassNoCasting.png",
+		"description": "Exclude bonuses granting spellcasting abilities from other classes."
+	},
+	{
 		"Id": "RandomizeClassChaosCheckBox",
 		"title": "Chaos Mode",
 		"screenshot": "RandomizeClassChaosCheckBox.png",
@@ -1042,9 +1048,9 @@
 	},
 	{
 		"Id": "fixHitChanceCapCheckBox",
-		"title": "Fix Hit % Cap",
+		"title": "Raise Hit % Cap",
 		"screenshot": "fixHitChanceCapCheckBox.png",
-		"description": "Changes the max Hit % from 200 to 255."
+		"description": "Changes the max Hit % from 200 to 250, so an extra hit can be gained."
 	},
 	{
 		"Id": "doubleBBCritCheckBox",
@@ -1282,7 +1288,7 @@
 		"Id": "magisizeWeaponsCheckBox",
 		"title": "All Weapons Cast Spells",
 		"screenshot": "magisizeWeapons.png",
-		"description": "All weapons can cast a randomly assigned spells."
+		"description": "All weapons can cast a randomly assigned spells. Exclude standard casting weapons."
 	},
 	{
 		"Id": "magisizeWeaponsBalancedCheckBox",
