@@ -127,6 +127,17 @@ a.styled-button:hover{
 background-color: #005896;
 }
 
+a.ffr-tooltip-close {
+    position: absolute;
+    background-color: #e76e55;
+    padding: 3px 8px 3px 8px;
+    right: 2px;
+}
+
+a.ffr-tooltip-close:hover {
+   background-color: #d75e45;
+}
+
 button.main-button {
     color: #ffffff;
     border-right: 4px solid #ffffff;

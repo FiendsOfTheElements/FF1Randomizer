@@ -15,23 +15,26 @@
 
 	<p>@RomMessage</p>
 	<input type="file" id="fileInput" accept=".nes" @onchange="@OnFileChanged" />
+	<div class="checkbox-cell"></div>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="rememberCheckBox" @bind-Value="RememberROM">Remember ROM</CheckBox>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="tournamentSafeCheckBox" @bind-Value="Flags.TournamentSafe">Tournament Safe ROM</CheckBox>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="spoilersCheckBox" @bind-Value="Flags.Spoilers">Generate Spoiler Log!</CheckBox>
 	<p>
 		Seed:
-		<input type="text" style="width: calc(100% - 10px);" class="nes-input @(_seedInputClass)" id="seedInput" @onchange="@OnSeedInputChanged" value="@(_seed)" />
+		<br>
+		<input type="text" style="width: calc(100% - 80px);" class="nes-input @(_seedInputClass)" id="seedInput" @onchange="@OnSeedInputChanged" value="@(_seed)" />
 		<a class="styled-button" @onclick="@OnNewSeed">New</a>
 	</p>
 
 	<p>
 		Flags:
-		<input style="width: calc(100% - 10px);" type="text" class="nes-input" value="@Flags.Encoded" @onchange="@OnFlagsInputChanged" />
+		<br>
+		<input style="width: calc(100% - 80px);" type="text" class="nes-input" value="@Flags.Encoded" @onchange="@OnFlagsInputChanged" />
+		<a class="styled-button" @onclick="@OnCopyToClipboard">Export</a>
 	</p>
-	<a class="styled-button" @onclick="@OnCopyToClipboard">Export</a>
-	<a class="styled-button" @onclick="@OnRandomize">Generate ROM</a>
-	<div class="row">&nbsp;</div>
 	<p>@StatusMessage</p>
+	<div class="row">&nbsp;</div>
+	<a class="styled-button generate-button" @onclick="@OnRandomize">Generate ROM</a>
 </div>
 
 

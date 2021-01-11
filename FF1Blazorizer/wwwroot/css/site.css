@@ -195,7 +195,7 @@ body { */
     text-overflow: ellipsis;
     overflow-x: hidden;
     vertical-align: top;
-    margin: 2px 0 5px 0;
+    margin: 2px 6px 5px 0;
 }
 
 .dropdown-cell {
@@ -287,11 +287,11 @@ tr.bottom-borderd {
 }
 
 .tri-yes {
-    color: #54bc52;
+    color: #b1ffbc;
 }
 
 .tri-maybe {
-    color: #c8916e;
+    color: #ffddb1;
 }
 
 .ffr-tooltip {

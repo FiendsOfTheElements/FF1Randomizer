@@ -67,7 +67,7 @@ margin-top: 10px;
 
 .tabcontent{
 margin-left: 130px;
-min-height: 400px;
+min-height: 440px;
 }
 
 .tab button{
@@ -110,6 +110,9 @@ float: left;
     margin: 0 5px 0 0;
 }
 
+.generate-button {
+   font-size: 150%;
+}
 .preset-paragraph{
 margin-left: 65px;
 }
