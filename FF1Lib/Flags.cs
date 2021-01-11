@@ -547,6 +547,38 @@ namespace FF1Lib
 			+ ((IncentivizeTitansTrove ?? true) ? 1 : 0)
 			+ ((IncentivizeSkyPalace ?? true) ? 1 : 0);
 
+		#region ShopKiller
+
+		public ShopKillMode ShopKillMode_Weapons { get; set; } = ShopKillMode.None;
+		public ShopKillMode ShopKillMode_Armor { get; set; } = ShopKillMode.None;
+		public ShopKillMode ShopKillMode_Item { get; set; } = ShopKillMode.None;
+		public ShopKillMode ShopKillMode_Black { get; set; } = ShopKillMode.None;
+		public ShopKillMode ShopKillMode_White { get; set; } = ShopKillMode.None;
+
+		public ShopKillFactor ShopKillFactor_Weapons { get; set; } = ShopKillFactor.Kill20Percent;
+		public ShopKillFactor ShopKillFactor_Armor { get; set; } = ShopKillFactor.Kill20Percent;
+		public ShopKillFactor ShopKillFactor_Item { get; set; } = ShopKillFactor.Kill20Percent;
+		public ShopKillFactor ShopKillFactor_Black { get; set; } = ShopKillFactor.Kill20Percent;
+		public ShopKillFactor ShopKillFactor_White { get; set; } = ShopKillFactor.Kill20Percent;
+
+		public bool ShopKillExcludeConeria_Weapons { get; set; } = false;
+		public bool ShopKillExcludeConeria_Armor { get; set; } = false;
+		public bool ShopKillExcludeConeria_Item { get; set; } = false;
+		public bool ShopKillExcludeConeria_Black { get; set; } = false;
+		public bool ShopKillExcludeConeria_White { get; set; } = false;
+
+		#endregion
+
+		#region StartingInventory
+
+		public StartingItemCount StartingInventory_Tent { get; set; } = StartingItemCount.None;
+		public StartingItemCount StartingInventory_Cabin { get; set; } = StartingItemCount.None;
+		public StartingItemCount StartingInventory_House { get; set; } = StartingItemCount.None;
+		public StartingItemCount StartingInventory_Heal { get; set; } = StartingItemCount.None;
+		public StartingItemCount StartingInventory_Pure { get; set; } = StartingItemCount.None;
+		public StartingItemCount StartingInventory_Soft { get; set; } = StartingItemCount.None;
+
+		#endregion
 
 		private static bool ConvertTriState(bool? tristate, MT19337 rng)
 		{
@@ -891,6 +923,31 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.TournamentSafe);
 			sum = AddBoolean(sum, flags.Spoilers);
 
+			sum = AddEnum(sum, flags.ShopKillMode_Weapons);
+			sum = AddEnum(sum, flags.ShopKillMode_Armor);
+			sum = AddEnum(sum, flags.ShopKillMode_Item);
+			sum = AddEnum(sum, flags.ShopKillMode_Black);
+			sum = AddEnum(sum, flags.ShopKillMode_White);
+
+			sum = AddEnum(sum, flags.ShopKillFactor_Weapons);
+			sum = AddEnum(sum, flags.ShopKillFactor_Armor);
+			sum = AddEnum(sum, flags.ShopKillFactor_Item);
+			sum = AddEnum(sum, flags.ShopKillFactor_Black);
+			sum = AddEnum(sum, flags.ShopKillFactor_White);
+
+			sum = AddBoolean(sum, flags.ShopKillExcludeConeria_Weapons);
+			sum = AddBoolean(sum, flags.ShopKillExcludeConeria_Armor);
+			sum = AddBoolean(sum, flags.ShopKillExcludeConeria_Item);
+			sum = AddBoolean(sum, flags.ShopKillExcludeConeria_Black);
+			sum = AddBoolean(sum, flags.ShopKillExcludeConeria_White);
+
+			sum = AddEnum(sum, flags.StartingInventory_Tent);
+			sum = AddEnum(sum, flags.StartingInventory_Cabin);
+			sum = AddEnum(sum, flags.StartingInventory_House);
+			sum = AddEnum(sum, flags.StartingInventory_Heal);
+			sum = AddEnum(sum, flags.StartingInventory_Pure);
+			sum = AddEnum(sum, flags.StartingInventory_Soft);
+
 			return BigIntegerToString(sum);
 		}
 
@@ -900,6 +957,27 @@ namespace FF1Lib
 
 			var flags = new Flags
 			{
+				StartingInventory_Soft = GetEnum<StartingItemCount>(ref sum),
+				StartingInventory_Pure = GetEnum<StartingItemCount>(ref sum),
+				StartingInventory_Heal = GetEnum<StartingItemCount>(ref sum),
+				StartingInventory_House = GetEnum<StartingItemCount>(ref sum),
+				StartingInventory_Cabin = GetEnum<StartingItemCount>(ref sum),
+				StartingInventory_Tent = GetEnum<StartingItemCount>(ref sum),
+				ShopKillExcludeConeria_White = GetBoolean(ref sum),
+				ShopKillExcludeConeria_Black = GetBoolean(ref sum),
+				ShopKillExcludeConeria_Item = GetBoolean(ref sum),
+				ShopKillExcludeConeria_Armor = GetBoolean(ref sum),
+				ShopKillExcludeConeria_Weapons = GetBoolean(ref sum),
+				ShopKillFactor_White = GetEnum<ShopKillFactor>(ref sum),
+				ShopKillFactor_Black = GetEnum<ShopKillFactor>(ref sum),
+				ShopKillFactor_Item = GetEnum<ShopKillFactor>(ref sum),
+				ShopKillFactor_Armor = GetEnum<ShopKillFactor>(ref sum),
+				ShopKillFactor_Weapons = GetEnum<ShopKillFactor>(ref sum),
+				ShopKillMode_White = GetEnum<ShopKillMode>(ref sum),
+				ShopKillMode_Black = GetEnum<ShopKillMode>(ref sum),
+				ShopKillMode_Item = GetEnum<ShopKillMode>(ref sum),
+				ShopKillMode_Armor = GetEnum<ShopKillMode>(ref sum),
+				ShopKillMode_Weapons = GetEnum<ShopKillMode>(ref sum),
 				Spoilers = GetBoolean(ref sum),
 				TournamentSafe = GetBoolean(ref sum),
 				DisableStunTouch = GetTriState(ref sum),
@@ -1209,7 +1287,10 @@ namespace FF1Lib
 			return flags;
 		}
 
+		private static BigInteger AddEnum<T>(BigInteger sum, T value) => AddNumeric(sum, Enum.GetValues(typeof(T)).Cast<int>().Max() + 1, Convert.ToInt32(value));
+
 		private static BigInteger AddNumeric(BigInteger sum, int radix, int value) => sum * radix + value;
+
 		private static BigInteger AddString(BigInteger sum, int length, string str)
 		{
 			Encoding AsciiEncoding = Encoding.ASCII;
@@ -1223,6 +1304,8 @@ namespace FF1Lib
 		private static BigInteger AddBoolean(BigInteger sum, bool value) => AddNumeric(sum, 2, value ? 1 : 0);
 		private static int TriStateValue(bool? value) => value.HasValue ? (value.Value ? 1 : 0) : 2;
 		private static BigInteger AddTriState(BigInteger sum, bool? value) => AddNumeric(sum, 3, TriStateValue(value));
+
+		private static T GetEnum<T>(ref BigInteger sum) where T : Enum => (T)(object)GetNumeric(ref sum, Enum.GetValues(typeof(T)).Cast<int>().Max() + 1);
 
 		private static int GetNumeric(ref BigInteger sum, int radix)
 		{

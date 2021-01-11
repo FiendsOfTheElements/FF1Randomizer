@@ -115,21 +115,15 @@ namespace FF1Lib
 				text[i] = prices[i].ToString() + " G";
 			}
 
-			var pointers = Get(ShopPointerOffset, ShopPointerCount * ShopPointerSize).ToUShorts();
-			RepackShops(pointers);
+			ShopData shopData = new ShopData(this);
+			shopData.LoadData();
 
-			for (int i = (int)ShopType.Clinic; i < (int)ShopType.Inn + ShopSectionSize; i++)
-			{
-				if (pointers[i] != ShopNullPointer)
-				{
-					var priceBytes = Get(ShopPointerBase + pointers[i], 2);
-					var priceValue = BitConverter.ToUInt16(priceBytes, 0);
+			var InnsAndClinics = shopData.Shops.Where(s => s.Type == ShopType.Inn || s.Type == ShopType.Clinic);
 
-					priceValue = (ushort)RangeScale(priceValue / multiplier, scaleLow, scaleHigh, 1, rng);
-					priceBytes = BitConverter.GetBytes(priceValue);
-					Put(ShopPointerBase + pointers[i], priceBytes);
-				}
-			}
+			foreach (var shop in InnsAndClinics) shop.Price = (ushort)RangeScale(shop.Price / multiplier, scaleLow, scaleHigh, 1, rng);
+
+			shopData.StoreData();
+
 			if (flags.StartingGold)
 			{
 				var startingGold = BitConverter.ToUInt16(Get(StartingGoldOffset, 2), 0);

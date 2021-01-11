@@ -34,6 +34,43 @@
 				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="fixMissingBattleRngEntry" @bind-Value="Flags.FixMissingBattleRngEntry">Fix Missing Battle RNG Entry</CheckBox>
 			</div>
 		</div>
+		<div class="row">
+			<div class="table-wrapper">
+				<h4>Shop Reduction</h4>
+				<table>
+					<tr>
+						<td style="text-align:left">Weapon Shops:</td>
+						<td><EnumDropDown UpdateToolTip="@UpdateToolTipID" TItem="ShopKillMode" @bind-Value="Flags.ShopKillMode_Weapons"></EnumDropDown></td>
+						<td><EnumDropDown UpdateToolTip="@UpdateToolTipID" TItem="ShopKillFactor" @bind-Value="Flags.ShopKillFactor_Weapons"></EnumDropDown></td>
+						<td style="min-width:300px;text-align:left"><CheckBox UpdateToolTip="@UpdateToolTipID" @bind-Value="Flags.ShopKillExcludeConeria_Weapons">Exclude Coneria</CheckBox></td>
+					</tr>
+					<tr>
+						<td style="text-align:left">Armor Shops:</td>
+						<td><EnumDropDown UpdateToolTip="@UpdateToolTipID" TItem="ShopKillMode" @bind-Value="Flags.ShopKillMode_Armor"></EnumDropDown></td>
+						<td><EnumDropDown UpdateToolTip="@UpdateToolTipID" TItem="ShopKillFactor" @bind-Value="Flags.ShopKillFactor_Armor"></EnumDropDown></td>
+						<td style="min-width:300px;text-align:left"><CheckBox UpdateToolTip="@UpdateToolTipID" @bind-Value="Flags.ShopKillExcludeConeria_Armor">Exclude Coneria</CheckBox></td>
+					</tr>
+					<tr>
+						<td style="text-align:left">Item Shops:</td>
+						<td><EnumDropDown UpdateToolTip="@UpdateToolTipID" TItem="ShopKillMode" @bind-Value="Flags.ShopKillMode_Item"></EnumDropDown></td>
+						<td><EnumDropDown UpdateToolTip="@UpdateToolTipID" TItem="ShopKillFactor" @bind-Value="Flags.ShopKillFactor_Item"></EnumDropDown></td>
+						<td style="min-width:300px;text-align:left"><CheckBox UpdateToolTip="@UpdateToolTipID" @bind-Value="Flags.ShopKillExcludeConeria_Item">Exclude Coneria</CheckBox></td>
+					</tr>
+					<tr>
+						<td style="text-align:left">Black Magic:</td>
+						<td><EnumDropDown UpdateToolTip="@UpdateToolTipID" TItem="ShopKillMode" @bind-Value="Flags.ShopKillMode_Black"></EnumDropDown></td>
+						<td><EnumDropDown UpdateToolTip="@UpdateToolTipID" TItem="ShopKillFactor" @bind-Value="Flags.ShopKillFactor_Black"></EnumDropDown></td>
+						<td style="min-width:300px;text-align:left"><CheckBox UpdateToolTip="@UpdateToolTipID" @bind-Value="Flags.ShopKillExcludeConeria_Black">Exclude Coneria</CheckBox></td>
+					</tr>
+					<tr>
+						<td style="text-align:left">White Magic:</td>
+						<td><EnumDropDown UpdateToolTip="@UpdateToolTipID" TItem="ShopKillMode" @bind-Value="Flags.ShopKillMode_White"></EnumDropDown></td>
+						<td><EnumDropDown UpdateToolTip="@UpdateToolTipID" TItem="ShopKillFactor" @bind-Value="Flags.ShopKillFactor_White"></EnumDropDown></td>
+						<td style="min-width:300px;text-align:left"><CheckBox UpdateToolTip="@UpdateToolTipID" @bind-Value="Flags.ShopKillExcludeConeria_White">Exclude Coneria</CheckBox></td>
+					</tr>
+				</table>
+			</div>
+		</div>
 	</div>
 </BSCollapse>
 

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FF1Randomizer"
         mc:Ignorable="d"
-        Title="{Binding WindowTitle}" Height="540" Width="900">
+        Title="{Binding WindowTitle}" Height="580" Width="900">
 	<Window.Resources>
 		<local:FlagsToStringConverter x:Key="FlagsToStringConverter"/>
 		<Style TargetType="CheckBox">
@@ -260,6 +260,12 @@
 						<Label MinHeight="26" x:Name="ProgressiveScaleLabel" Content="Progressive Scale:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
 						<Label MinHeight="26" x:Name="OverworldEncounterRateLabel" Content="Overworld Encounter Rate:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
 						<Label MinHeight="26" x:Name="DungeonEncounterRateLabel" Content="Dungeon Encounter Rate:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+						<Label MinHeight="26" Content="Starting Tents:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+						<Label MinHeight="26" Content="Starting Cabins:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+						<Label MinHeight="26" Content="Starting Houses:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+						<Label MinHeight="26" Content="Starting Heals:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+						<Label MinHeight="26" Content="Starting Pures:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+						<Label MinHeight="26" Content="Starting Softs:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
 					</StackPanel>
 					<StackPanel Grid.Column="1">
 						<CheckBox MinHeight="20" x:Name="ClampPricesCheckBox" IsChecked="{Binding Flags.ClampPrices}" ToolTip="Clamp Minimum to 100%" Checked="ClampPricesCheckBox_ValueChanged" Unchecked="ClampPricesCheckBox_ValueChanged"/>
@@ -294,6 +300,96 @@
 						</ComboBox>
 						<Slider MinHeight="20" x:Name="EncounterRateSlider" Value="{Binding Flags.EncounterRate}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Minimum="0" Maximum="45" TickPlacement="BottomRight" TickFrequency="5" LargeChange="1" SmallChange="1" ValueChanged="EncounterRate_ValueChanged"/>
 						<Slider MinHeight="20" x:Name="DungeonEncounterRateSlider" Value="{Binding Flags.DungeonEncounterRate}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Minimum="0" Maximum="45" TickPlacement="BottomRight" TickFrequency="5" LargeChange="1" SmallChange="1" ValueChanged="DungeonEncounterRate_ValueChanged"/>
+						<ComboBox MinHeight="26" SelectedValue="{Binding Flags.StartingInventory_Tent}" Width="150" HorizontalAlignment="Left" SelectedValuePath="Tag">
+							<ComboBoxItem Content="0" Tag="None"/>
+							<ComboBoxItem Content="1" Tag="One"/>
+							<ComboBoxItem Content="2" Tag="Two"/>
+							<ComboBoxItem Content="5" Tag="Five"/>
+							<ComboBoxItem Content="10" Tag="Ten"/>
+							<ComboBoxItem Content="25" Tag="TwentyFive"/>
+							<ComboBoxItem Content="50" Tag="Fifty"/>
+							<ComboBoxItem Content="99" Tag="NinetyNine"/>
+							<ComboBoxItem Content="0 - 10" Tag="Random0To10"/>
+							<ComboBoxItem Content="0 - 25" Tag="Random0To25"/>
+							<ComboBoxItem Content="0 - 99" Tag="Random0To99"/>
+							<ComboBoxItem Content="10 - 50" Tag="Random10To50"/>
+							<ComboBoxItem Content="10 - 99" Tag="Random10To99"/>
+						</ComboBox>
+						<ComboBox MinHeight="26" SelectedValue="{Binding Flags.StartingInventory_Cabin}" Width="150" HorizontalAlignment="Left" SelectedValuePath="Tag">
+							<ComboBoxItem Content="0" Tag="None"/>
+							<ComboBoxItem Content="1" Tag="One"/>
+							<ComboBoxItem Content="2" Tag="Two"/>
+							<ComboBoxItem Content="5" Tag="Five"/>
+							<ComboBoxItem Content="10" Tag="Ten"/>
+							<ComboBoxItem Content="25" Tag="TwentyFive"/>
+							<ComboBoxItem Content="50" Tag="Fifty"/>
+							<ComboBoxItem Content="99" Tag="NinetyNine"/>
+							<ComboBoxItem Content="0 - 10" Tag="Random0To10"/>
+							<ComboBoxItem Content="0 - 25" Tag="Random0To25"/>
+							<ComboBoxItem Content="0 - 99" Tag="Random0To99"/>
+							<ComboBoxItem Content="10 - 50" Tag="Random10To50"/>
+							<ComboBoxItem Content="10 - 99" Tag="Random10To99"/>
+						</ComboBox>
+						<ComboBox MinHeight="26" SelectedValue="{Binding Flags.StartingInventory_House}" Width="150" HorizontalAlignment="Left" SelectedValuePath="Tag">
+							<ComboBoxItem Content="0" Tag="None"/>
+							<ComboBoxItem Content="1" Tag="One"/>
+							<ComboBoxItem Content="2" Tag="Two"/>
+							<ComboBoxItem Content="5" Tag="Five"/>
+							<ComboBoxItem Content="10" Tag="Ten"/>
+							<ComboBoxItem Content="25" Tag="TwentyFive"/>
+							<ComboBoxItem Content="50" Tag="Fifty"/>
+							<ComboBoxItem Content="99" Tag="NinetyNine"/>
+							<ComboBoxItem Content="0 - 10" Tag="Random0To10"/>
+							<ComboBoxItem Content="0 - 25" Tag="Random0To25"/>
+							<ComboBoxItem Content="0 - 99" Tag="Random0To99"/>
+							<ComboBoxItem Content="10 - 50" Tag="Random10To50"/>
+							<ComboBoxItem Content="10 - 99" Tag="Random10To99"/>
+						</ComboBox>
+						<ComboBox MinHeight="26" SelectedValue="{Binding Flags.StartingInventory_Heal}" Width="150" HorizontalAlignment="Left" SelectedValuePath="Tag">
+							<ComboBoxItem Content="0" Tag="None"/>
+							<ComboBoxItem Content="1" Tag="One"/>
+							<ComboBoxItem Content="2" Tag="Two"/>
+							<ComboBoxItem Content="5" Tag="Five"/>
+							<ComboBoxItem Content="10" Tag="Ten"/>
+							<ComboBoxItem Content="25" Tag="TwentyFive"/>
+							<ComboBoxItem Content="50" Tag="Fifty"/>
+							<ComboBoxItem Content="99" Tag="NinetyNine"/>
+							<ComboBoxItem Content="0 - 10" Tag="Random0To10"/>
+							<ComboBoxItem Content="0 - 25" Tag="Random0To25"/>
+							<ComboBoxItem Content="0 - 99" Tag="Random0To99"/>
+							<ComboBoxItem Content="10 - 50" Tag="Random10To50"/>
+							<ComboBoxItem Content="10 - 99" Tag="Random10To99"/>
+						</ComboBox>
+						<ComboBox MinHeight="26" SelectedValue="{Binding Flags.StartingInventory_Pure}" Width="150" HorizontalAlignment="Left" SelectedValuePath="Tag">
+							<ComboBoxItem Content="0" Tag="None"/>
+							<ComboBoxItem Content="1" Tag="One"/>
+							<ComboBoxItem Content="2" Tag="Two"/>
+							<ComboBoxItem Content="5" Tag="Five"/>
+							<ComboBoxItem Content="10" Tag="Ten"/>
+							<ComboBoxItem Content="25" Tag="TwentyFive"/>
+							<ComboBoxItem Content="50" Tag="Fifty"/>
+							<ComboBoxItem Content="99" Tag="NinetyNine"/>
+							<ComboBoxItem Content="0 - 10" Tag="Random0To10"/>
+							<ComboBoxItem Content="0 - 25" Tag="Random0To25"/>
+							<ComboBoxItem Content="0 - 99" Tag="Random0To99"/>
+							<ComboBoxItem Content="10 - 50" Tag="Random10To50"/>
+							<ComboBoxItem Content="10 - 99" Tag="Random10To99"/>
+						</ComboBox>
+						<ComboBox MinHeight="26" SelectedValue="{Binding Flags.StartingInventory_Soft}" Width="150" HorizontalAlignment="Left" SelectedValuePath="Tag">
+							<ComboBoxItem Content="0" Tag="None"/>
+							<ComboBoxItem Content="1" Tag="One"/>
+							<ComboBoxItem Content="2" Tag="Two"/>
+							<ComboBoxItem Content="5" Tag="Five"/>
+							<ComboBoxItem Content="10" Tag="Ten"/>
+							<ComboBoxItem Content="25" Tag="TwentyFive"/>
+							<ComboBoxItem Content="50" Tag="Fifty"/>
+							<ComboBoxItem Content="99" Tag="NinetyNine"/>
+							<ComboBoxItem Content="0 - 10" Tag="Random0To10"/>
+							<ComboBoxItem Content="0 - 25" Tag="Random0To25"/>
+							<ComboBoxItem Content="0 - 99" Tag="Random0To99"/>
+							<ComboBoxItem Content="10 - 50" Tag="Random10To50"/>
+							<ComboBoxItem Content="10 - 99" Tag="Random10To99"/>
+						</ComboBox>
 					</StackPanel>
 					<StackPanel Grid.Column="4">
 						<CheckBox x:Name="PricesScaleOverflowCheckBox" IsChecked="{Binding Flags.WrapPriceOverflow}" Content="Wrap Overflowing Prices"/>
@@ -460,6 +556,133 @@
 						</ComboBox>
 						<CheckBox x:Name="DisableDamageTileFlicker" IsChecked="{Binding Flags.DisableDamageTileFlicker}" Content="Disable Damage Tile Flicker"/>
 					</StackPanel>
+				</Grid>
+			</TabItem>
+			<TabItem Header="Shop Reduction">
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="1*"/>
+						<ColumnDefinition Width="1*"/>
+						<ColumnDefinition Width="1*"/>
+						<ColumnDefinition Width="2*"/>
+						<ColumnDefinition Width="4*"/>
+					</Grid.ColumnDefinitions>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="*"/>
+						<RowDefinition Height="*"/>
+						<RowDefinition Height="*"/>
+						<RowDefinition Height="*"/>
+						<RowDefinition Height="*"/>
+						<RowDefinition Height="*"/>
+						<RowDefinition Height="4*"/>
+					</Grid.RowDefinitions>
+
+					<Label MinHeight="26" Content="Shops" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"/>
+					<Label MinHeight="26" Content="Mode" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center"/>
+					<Label MinHeight="26" Content="Reduction" Grid.Row="0" Grid.Column="2" VerticalAlignment="Center"/>
+					<Label MinHeight="26" Content="" Grid.Row="0" Grid.Column="3" VerticalAlignment="Center"/>
+
+					<Label MinHeight="26" Content="Weapon Shops" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"/>
+					<Label MinHeight="26" Content="Armor Shops" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center"/>
+					<Label MinHeight="26" Content="Item Shops" Grid.Row="3" Grid.Column="0" VerticalAlignment="Center"/>
+					<Label MinHeight="26" Content="Black Magic" Grid.Row="4" Grid.Column="0" VerticalAlignment="Center"/>
+					<Label MinHeight="26" Content="White Magic" Grid.Row="5" Grid.Column="0" VerticalAlignment="Center"/>
+
+					<ComboBox SelectedValue="{Binding Flags.ShopKillMode_Weapons}" MaxHeight="26" Grid.Row="1" Grid.Column="1" SelectedValuePath="Tag">
+						<ComboBoxItem Tag="None">None</ComboBoxItem>
+						<ComboBoxItem Tag="WholeShops">Whole Shops</ComboBoxItem>
+						<ComboBoxItem Tag="AllItemsOfAKind">All Items of a Kind</ComboBoxItem>
+						<ComboBoxItem Tag="Spread">Spread</ComboBoxItem>
+						<ComboBoxItem Tag="Chaos">Unequal</ComboBoxItem>
+						<ComboBoxItem Tag="Random">Random</ComboBoxItem>
+					</ComboBox>
+
+					<ComboBox SelectedValue="{Binding Flags.ShopKillMode_Armor}" MaxHeight="26" Grid.Row="2" Grid.Column="1" SelectedValuePath="Tag">
+						<ComboBoxItem Tag="None">None</ComboBoxItem>
+						<ComboBoxItem Tag="WholeShops">Whole Shops</ComboBoxItem>
+						<ComboBoxItem Tag="AllItemsOfAKind">All Items of a Kind</ComboBoxItem>
+						<ComboBoxItem Tag="Spread">Spread</ComboBoxItem>
+						<ComboBoxItem Tag="Chaos">Unequal</ComboBoxItem>
+						<ComboBoxItem Tag="Random">Random</ComboBoxItem>
+					</ComboBox>
+
+					<ComboBox SelectedValue="{Binding Flags.ShopKillMode_Item}" MaxHeight="26" Grid.Row="3" Grid.Column="1" SelectedValuePath="Tag">
+						<ComboBoxItem Tag="None">None</ComboBoxItem>
+						<ComboBoxItem Tag="WholeShops">Whole Shops</ComboBoxItem>
+						<ComboBoxItem Tag="AllItemsOfAKind">All Items of a Kind</ComboBoxItem>
+						<ComboBoxItem Tag="Spread">Spread</ComboBoxItem>
+						<ComboBoxItem Tag="Chaos">Unequal</ComboBoxItem>
+						<ComboBoxItem Tag="Random">Random</ComboBoxItem>
+					</ComboBox>
+
+					<ComboBox SelectedValue="{Binding Flags.ShopKillMode_Black}" MaxHeight="26" Grid.Row="4" Grid.Column="1" SelectedValuePath="Tag">
+						<ComboBoxItem Tag="None">None</ComboBoxItem>
+						<ComboBoxItem Tag="WholeShops">Whole Shops</ComboBoxItem>
+						<ComboBoxItem Tag="AllItemsOfAKind">All Items of a Kind</ComboBoxItem>
+						<ComboBoxItem Tag="Spread">Spread</ComboBoxItem>
+						<ComboBoxItem Tag="Chaos">Unequal</ComboBoxItem>
+						<ComboBoxItem Tag="Random">Random</ComboBoxItem>
+					</ComboBox>
+
+					<ComboBox SelectedValue="{Binding Flags.ShopKillMode_White}" MaxHeight="26" Grid.Row="5" Grid.Column="1" SelectedValuePath="Tag">
+						<ComboBoxItem Tag="None">None</ComboBoxItem>
+						<ComboBoxItem Tag="WholeShops">Whole Shops</ComboBoxItem>
+						<ComboBoxItem Tag="AllItemsOfAKind">All Items of a Kind</ComboBoxItem>
+						<ComboBoxItem Tag="Spread">Spread</ComboBoxItem>
+						<ComboBoxItem Tag="Chaos">Unequal</ComboBoxItem>
+						<ComboBoxItem Tag="Random">Random</ComboBoxItem>
+					</ComboBox>
+
+					<ComboBox SelectedValue="{Binding Flags.ShopKillFactor_Weapons}" MaxHeight="26" Grid.Row="1" Grid.Column="2" SelectedValuePath="Tag">
+						<ComboBoxItem Tag="Kill20Percent">Remove 20%</ComboBoxItem>
+						<ComboBoxItem Tag="Kill40Percent">Remove 40%</ComboBoxItem>
+						<ComboBoxItem Tag="Kill60Percent">Remove 60%</ComboBoxItem>
+						<ComboBoxItem Tag="Kill80Percent">Remove 80%</ComboBoxItem>
+						<ComboBoxItem Tag="KillAll">Remove All</ComboBoxItem>
+						<ComboBoxItem Tag="KillRandom">Random</ComboBoxItem>
+					</ComboBox>
+
+					<ComboBox SelectedValue="{Binding Flags.ShopKillFactor_Armor}" MaxHeight="26" Grid.Row="2" Grid.Column="2" SelectedValuePath="Tag">
+						<ComboBoxItem Tag="Kill20Percent">Remove 20%</ComboBoxItem>
+						<ComboBoxItem Tag="Kill40Percent">Remove 40%</ComboBoxItem>
+						<ComboBoxItem Tag="Kill60Percent">Remove 60%</ComboBoxItem>
+						<ComboBoxItem Tag="Kill80Percent">Remove 80%</ComboBoxItem>
+						<ComboBoxItem Tag="KillAll">Remove All</ComboBoxItem>
+						<ComboBoxItem Tag="KillRandom">Random</ComboBoxItem>
+					</ComboBox>
+
+					<ComboBox SelectedValue="{Binding Flags.ShopKillFactor_Item}" MaxHeight="26" Grid.Row="3" Grid.Column="2" SelectedValuePath="Tag">
+						<ComboBoxItem Tag="Kill20Percent">Remove 20%</ComboBoxItem>
+						<ComboBoxItem Tag="Kill40Percent">Remove 40%</ComboBoxItem>
+						<ComboBoxItem Tag="Kill60Percent">Remove 60%</ComboBoxItem>
+						<ComboBoxItem Tag="Kill80Percent">Remove 80%</ComboBoxItem>
+						<ComboBoxItem Tag="KillAll">Remove All</ComboBoxItem>
+						<ComboBoxItem Tag="KillRandom">Random</ComboBoxItem>
+					</ComboBox>
+
+					<ComboBox SelectedValue="{Binding Flags.ShopKillFactor_Black}" MaxHeight="26" Grid.Row="4" Grid.Column="2" SelectedValuePath="Tag">
+						<ComboBoxItem Tag="Kill20Percent">Remove 20%</ComboBoxItem>
+						<ComboBoxItem Tag="Kill40Percent">Remove 40%</ComboBoxItem>
+						<ComboBoxItem Tag="Kill60Percent">Remove 60%</ComboBoxItem>
+						<ComboBoxItem Tag="Kill80Percent">Remove 80%</ComboBoxItem>
+						<ComboBoxItem Tag="KillAll">Remove All</ComboBoxItem>
+						<ComboBoxItem Tag="KillRandom">Random</ComboBoxItem>
+					</ComboBox>
+
+					<ComboBox SelectedValue="{Binding Flags.ShopKillFactor_White}" MaxHeight="26" Grid.Row="5" Grid.Column="2" SelectedValuePath="Tag">
+						<ComboBoxItem Tag="Kill20Percent">Remove 20%</ComboBoxItem>
+						<ComboBoxItem Tag="Kill40Percent">Remove 40%</ComboBoxItem>
+						<ComboBoxItem Tag="Kill60Percent">Remove 60%</ComboBoxItem>
+						<ComboBoxItem Tag="Kill80Percent">Remove 80%</ComboBoxItem>
+						<ComboBoxItem Tag="KillAll">Remove All</ComboBoxItem>
+						<ComboBoxItem Tag="KillRandom">Random</ComboBoxItem>
+					</ComboBox>
+
+					<CheckBox IsChecked="{Binding Flags.ShopKillExcludeConeria_Weapons}" Content="Exclude Coneria" Grid.Row="1" Grid.Column="3" VerticalAlignment="Center"/>
+					<CheckBox IsChecked="{Binding Flags.ShopKillExcludeConeria_Armor}" Content="Exclude Coneria" Grid.Row="2" Grid.Column="3" VerticalAlignment="Center"/>
+					<CheckBox IsChecked="{Binding Flags.ShopKillExcludeConeria_Item}" Content="Exclude Coneria" Grid.Row="3" Grid.Column="3" VerticalAlignment="Center"/>
+					<CheckBox IsChecked="{Binding Flags.ShopKillExcludeConeria_Black}" Content="Exclude Coneria" Grid.Row="4" Grid.Column="3" VerticalAlignment="Center"/>
+					<CheckBox IsChecked="{Binding Flags.ShopKillExcludeConeria_White}" Content="Exclude Coneria" Grid.Row="5" Grid.Column="3" VerticalAlignment="Center"/>
 				</Grid>
 			</TabItem>
 		</TabControl>
