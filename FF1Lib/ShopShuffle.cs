@@ -28,10 +28,6 @@ namespace FF1Lib
 
 		public IncentiveData ShuffleShops(IncentiveData incentivesData)
 		{
-			ShopData.LoadData();
-			ShopData.StoreData();
-			ShopData.LoadData();
-
 			if (((bool)flags.Shops))
 			{
 				var excludeItemsFromRandomShops = new List<Item>();
