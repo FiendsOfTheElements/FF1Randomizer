@@ -194,11 +194,6 @@ namespace FF1Lib
 		Canoe = 242
 	}
 
-	public enum Spell : byte
-	{
-		ARUB = 176,
-	}
-
 	public static class UnsramIndex
 	{
 		public const byte ShipVis = 0;
