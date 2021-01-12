@@ -260,12 +260,6 @@
 						<Label MinHeight="26" x:Name="ProgressiveScaleLabel" Content="Progressive Scale:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
 						<Label MinHeight="26" x:Name="OverworldEncounterRateLabel" Content="Overworld Encounter Rate:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
 						<Label MinHeight="26" x:Name="DungeonEncounterRateLabel" Content="Dungeon Encounter Rate:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-						<Label MinHeight="26" Content="Starting Tents:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-						<Label MinHeight="26" Content="Starting Cabins:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-						<Label MinHeight="26" Content="Starting Houses:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-						<Label MinHeight="26" Content="Starting Heals:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-						<Label MinHeight="26" Content="Starting Pures:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-						<Label MinHeight="26" Content="Starting Softs:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
 					</StackPanel>
 					<StackPanel Grid.Column="1">
 						<CheckBox MinHeight="20" x:Name="ClampPricesCheckBox" IsChecked="{Binding Flags.ClampPrices}" ToolTip="Clamp Minimum to 100%" Checked="ClampPricesCheckBox_ValueChanged" Unchecked="ClampPricesCheckBox_ValueChanged"/>
@@ -300,96 +294,6 @@
 						</ComboBox>
 						<Slider MinHeight="20" x:Name="EncounterRateSlider" Value="{Binding Flags.EncounterRate}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Minimum="0" Maximum="45" TickPlacement="BottomRight" TickFrequency="5" LargeChange="1" SmallChange="1" ValueChanged="EncounterRate_ValueChanged"/>
 						<Slider MinHeight="20" x:Name="DungeonEncounterRateSlider" Value="{Binding Flags.DungeonEncounterRate}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Minimum="0" Maximum="45" TickPlacement="BottomRight" TickFrequency="5" LargeChange="1" SmallChange="1" ValueChanged="DungeonEncounterRate_ValueChanged"/>
-						<ComboBox MinHeight="26" SelectedValue="{Binding Flags.StartingInventory_Tent}" Width="150" HorizontalAlignment="Left" SelectedValuePath="Tag">
-							<ComboBoxItem Content="0" Tag="None"/>
-							<ComboBoxItem Content="1" Tag="One"/>
-							<ComboBoxItem Content="2" Tag="Two"/>
-							<ComboBoxItem Content="5" Tag="Five"/>
-							<ComboBoxItem Content="10" Tag="Ten"/>
-							<ComboBoxItem Content="25" Tag="TwentyFive"/>
-							<ComboBoxItem Content="50" Tag="Fifty"/>
-							<ComboBoxItem Content="99" Tag="NinetyNine"/>
-							<ComboBoxItem Content="0 - 10" Tag="Random0To10"/>
-							<ComboBoxItem Content="0 - 25" Tag="Random0To25"/>
-							<ComboBoxItem Content="0 - 99" Tag="Random0To99"/>
-							<ComboBoxItem Content="10 - 50" Tag="Random10To50"/>
-							<ComboBoxItem Content="10 - 99" Tag="Random10To99"/>
-						</ComboBox>
-						<ComboBox MinHeight="26" SelectedValue="{Binding Flags.StartingInventory_Cabin}" Width="150" HorizontalAlignment="Left" SelectedValuePath="Tag">
-							<ComboBoxItem Content="0" Tag="None"/>
-							<ComboBoxItem Content="1" Tag="One"/>
-							<ComboBoxItem Content="2" Tag="Two"/>
-							<ComboBoxItem Content="5" Tag="Five"/>
-							<ComboBoxItem Content="10" Tag="Ten"/>
-							<ComboBoxItem Content="25" Tag="TwentyFive"/>
-							<ComboBoxItem Content="50" Tag="Fifty"/>
-							<ComboBoxItem Content="99" Tag="NinetyNine"/>
-							<ComboBoxItem Content="0 - 10" Tag="Random0To10"/>
-							<ComboBoxItem Content="0 - 25" Tag="Random0To25"/>
-							<ComboBoxItem Content="0 - 99" Tag="Random0To99"/>
-							<ComboBoxItem Content="10 - 50" Tag="Random10To50"/>
-							<ComboBoxItem Content="10 - 99" Tag="Random10To99"/>
-						</ComboBox>
-						<ComboBox MinHeight="26" SelectedValue="{Binding Flags.StartingInventory_House}" Width="150" HorizontalAlignment="Left" SelectedValuePath="Tag">
-							<ComboBoxItem Content="0" Tag="None"/>
-							<ComboBoxItem Content="1" Tag="One"/>
-							<ComboBoxItem Content="2" Tag="Two"/>
-							<ComboBoxItem Content="5" Tag="Five"/>
-							<ComboBoxItem Content="10" Tag="Ten"/>
-							<ComboBoxItem Content="25" Tag="TwentyFive"/>
-							<ComboBoxItem Content="50" Tag="Fifty"/>
-							<ComboBoxItem Content="99" Tag="NinetyNine"/>
-							<ComboBoxItem Content="0 - 10" Tag="Random0To10"/>
-							<ComboBoxItem Content="0 - 25" Tag="Random0To25"/>
-							<ComboBoxItem Content="0 - 99" Tag="Random0To99"/>
-							<ComboBoxItem Content="10 - 50" Tag="Random10To50"/>
-							<ComboBoxItem Content="10 - 99" Tag="Random10To99"/>
-						</ComboBox>
-						<ComboBox MinHeight="26" SelectedValue="{Binding Flags.StartingInventory_Heal}" Width="150" HorizontalAlignment="Left" SelectedValuePath="Tag">
-							<ComboBoxItem Content="0" Tag="None"/>
-							<ComboBoxItem Content="1" Tag="One"/>
-							<ComboBoxItem Content="2" Tag="Two"/>
-							<ComboBoxItem Content="5" Tag="Five"/>
-							<ComboBoxItem Content="10" Tag="Ten"/>
-							<ComboBoxItem Content="25" Tag="TwentyFive"/>
-							<ComboBoxItem Content="50" Tag="Fifty"/>
-							<ComboBoxItem Content="99" Tag="NinetyNine"/>
-							<ComboBoxItem Content="0 - 10" Tag="Random0To10"/>
-							<ComboBoxItem Content="0 - 25" Tag="Random0To25"/>
-							<ComboBoxItem Content="0 - 99" Tag="Random0To99"/>
-							<ComboBoxItem Content="10 - 50" Tag="Random10To50"/>
-							<ComboBoxItem Content="10 - 99" Tag="Random10To99"/>
-						</ComboBox>
-						<ComboBox MinHeight="26" SelectedValue="{Binding Flags.StartingInventory_Pure}" Width="150" HorizontalAlignment="Left" SelectedValuePath="Tag">
-							<ComboBoxItem Content="0" Tag="None"/>
-							<ComboBoxItem Content="1" Tag="One"/>
-							<ComboBoxItem Content="2" Tag="Two"/>
-							<ComboBoxItem Content="5" Tag="Five"/>
-							<ComboBoxItem Content="10" Tag="Ten"/>
-							<ComboBoxItem Content="25" Tag="TwentyFive"/>
-							<ComboBoxItem Content="50" Tag="Fifty"/>
-							<ComboBoxItem Content="99" Tag="NinetyNine"/>
-							<ComboBoxItem Content="0 - 10" Tag="Random0To10"/>
-							<ComboBoxItem Content="0 - 25" Tag="Random0To25"/>
-							<ComboBoxItem Content="0 - 99" Tag="Random0To99"/>
-							<ComboBoxItem Content="10 - 50" Tag="Random10To50"/>
-							<ComboBoxItem Content="10 - 99" Tag="Random10To99"/>
-						</ComboBox>
-						<ComboBox MinHeight="26" SelectedValue="{Binding Flags.StartingInventory_Soft}" Width="150" HorizontalAlignment="Left" SelectedValuePath="Tag">
-							<ComboBoxItem Content="0" Tag="None"/>
-							<ComboBoxItem Content="1" Tag="One"/>
-							<ComboBoxItem Content="2" Tag="Two"/>
-							<ComboBoxItem Content="5" Tag="Five"/>
-							<ComboBoxItem Content="10" Tag="Ten"/>
-							<ComboBoxItem Content="25" Tag="TwentyFive"/>
-							<ComboBoxItem Content="50" Tag="Fifty"/>
-							<ComboBoxItem Content="99" Tag="NinetyNine"/>
-							<ComboBoxItem Content="0 - 10" Tag="Random0To10"/>
-							<ComboBoxItem Content="0 - 25" Tag="Random0To25"/>
-							<ComboBoxItem Content="0 - 99" Tag="Random0To99"/>
-							<ComboBoxItem Content="10 - 50" Tag="Random10To50"/>
-							<ComboBoxItem Content="10 - 99" Tag="Random10To99"/>
-						</ComboBox>
 					</StackPanel>
 					<StackPanel Grid.Column="4">
 						<CheckBox x:Name="PricesScaleOverflowCheckBox" IsChecked="{Binding Flags.WrapPriceOverflow}" Content="Wrap Overflowing Prices"/>

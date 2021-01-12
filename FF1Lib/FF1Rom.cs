@@ -341,8 +341,6 @@ namespace FF1Lib
 
 			new ShopKiller(rng, flags, maps, this).KillShops();
 
-			new StartingInventory(rng, flags, this).SetStartingInventory();
-
 			/*
 			if (flags.WeaponPermissions)
 			{

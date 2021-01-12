@@ -569,17 +569,6 @@ namespace FF1Lib
 
 		#endregion
 
-		#region StartingInventory
-
-		public StartingItemCount StartingInventory_Tent { get; set; } = StartingItemCount.None;
-		public StartingItemCount StartingInventory_Cabin { get; set; } = StartingItemCount.None;
-		public StartingItemCount StartingInventory_House { get; set; } = StartingItemCount.None;
-		public StartingItemCount StartingInventory_Heal { get; set; } = StartingItemCount.None;
-		public StartingItemCount StartingInventory_Pure { get; set; } = StartingItemCount.None;
-		public StartingItemCount StartingInventory_Soft { get; set; } = StartingItemCount.None;
-
-		#endregion
-
 		private static bool ConvertTriState(bool? tristate, MT19337 rng)
 		{
 			int rngval = rng.Between(0, 1);
@@ -941,13 +930,6 @@ namespace FF1Lib
 			sum = AddBoolean(sum, flags.ShopKillExcludeConeria_Black);
 			sum = AddBoolean(sum, flags.ShopKillExcludeConeria_White);
 
-			sum = AddEnum(sum, flags.StartingInventory_Tent);
-			sum = AddEnum(sum, flags.StartingInventory_Cabin);
-			sum = AddEnum(sum, flags.StartingInventory_House);
-			sum = AddEnum(sum, flags.StartingInventory_Heal);
-			sum = AddEnum(sum, flags.StartingInventory_Pure);
-			sum = AddEnum(sum, flags.StartingInventory_Soft);
-
 			return BigIntegerToString(sum);
 		}
 
@@ -956,13 +938,7 @@ namespace FF1Lib
 			var sum = StringToBigInteger(text);
 
 			var flags = new Flags
-			{
-				StartingInventory_Soft = GetEnum<StartingItemCount>(ref sum),
-				StartingInventory_Pure = GetEnum<StartingItemCount>(ref sum),
-				StartingInventory_Heal = GetEnum<StartingItemCount>(ref sum),
-				StartingInventory_House = GetEnum<StartingItemCount>(ref sum),
-				StartingInventory_Cabin = GetEnum<StartingItemCount>(ref sum),
-				StartingInventory_Tent = GetEnum<StartingItemCount>(ref sum),
+			{ 
 				ShopKillExcludeConeria_White = GetBoolean(ref sum),
 				ShopKillExcludeConeria_Black = GetBoolean(ref sum),
 				ShopKillExcludeConeria_Item = GetBoolean(ref sum),

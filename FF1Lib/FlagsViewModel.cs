@@ -3501,66 +3501,6 @@ namespace FF1Lib
 				Flags.ShopKillExcludeConeria_White = value;
 				RaisePropertyChanged();
 			}
-		}
-
-		public StartingItemCount StartingInventory_Tent
-		{
-			get => Flags.StartingInventory_Tent;
-			set
-			{
-				Flags.StartingInventory_Tent = value;
-				RaisePropertyChanged();
-			}
-		}
-
-		public StartingItemCount StartingInventory_Cabin
-		{
-			get => Flags.StartingInventory_Cabin;
-			set
-			{
-				Flags.StartingInventory_Cabin = value;
-				RaisePropertyChanged();
-			}
-		}
-
-		public StartingItemCount StartingInventory_House
-		{
-			get => Flags.StartingInventory_House;
-			set
-			{
-				Flags.StartingInventory_House = value;
-				RaisePropertyChanged();
-			}
-		}
-
-		public StartingItemCount StartingInventory_Heal
-		{
-			get => Flags.StartingInventory_Heal;
-			set
-			{
-				Flags.StartingInventory_Heal = value;
-				RaisePropertyChanged();
-			}
-		}
-
-		public StartingItemCount StartingInventory_Pure
-		{
-			get => Flags.StartingInventory_Pure;
-			set
-			{
-				Flags.StartingInventory_Pure = value;
-				RaisePropertyChanged();
-			}
-		}
-
-		public StartingItemCount StartingInventory_Soft
-		{
-			get => Flags.StartingInventory_Soft;
-			set
-			{
-				Flags.StartingInventory_Soft = value;
-				RaisePropertyChanged();
-			}
-		}
+		}	
 	}
 }

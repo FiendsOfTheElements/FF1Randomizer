@@ -86,18 +86,7 @@
 				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="startingGoldCheckBox" @bind-Value="Flags.StartingGold">Scale Starting Gold</CheckBox>
 				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="easyModeCheckBox" @bind-Value="Flags.EasyMode">Easy Mode</CheckBox>
 			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-12">
-				<h4>Starting Inventory</h4>
-				<EnumDropDown UpdateToolTip="@UpdateToolTipID" TItem="StartingItemCount" @bind-Value="Flags.StartingInventory_Tent">Tents:</EnumDropDown>
-				<EnumDropDown UpdateToolTip="@UpdateToolTipID" TItem="StartingItemCount" @bind-Value="Flags.StartingInventory_Cabin">Cabins:</EnumDropDown>
-				<EnumDropDown UpdateToolTip="@UpdateToolTipID" TItem="StartingItemCount" @bind-Value="Flags.StartingInventory_House">Houses:</EnumDropDown>
-				<EnumDropDown UpdateToolTip="@UpdateToolTipID" TItem="StartingItemCount" @bind-Value="Flags.StartingInventory_Heal">Heals:</EnumDropDown>
-				<EnumDropDown UpdateToolTip="@UpdateToolTipID" TItem="StartingItemCount" @bind-Value="Flags.StartingInventory_Pure">Pures:</EnumDropDown>
-				<EnumDropDown UpdateToolTip="@UpdateToolTipID" TItem="StartingItemCount" @bind-Value="Flags.StartingInventory_Soft">Softs:</EnumDropDown>
-			</div>
-		</div>
+		</div>		
 	</div>
 </BSCollapse>
 
