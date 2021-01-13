@@ -1,16 +1,22 @@
 ﻿@using Microsoft.AspNetCore.Components.Web
 
-@if(DoubleCol)
+@if (DoubleCol)
 {
 	<BSContainer>
 		<BSRow>
 			<BSCol LG="4" Class="noleftpadding">
-				<div class="@DisabledClass @IndentClass">@ChildContent</div>
+				<div class="@DisabledClass @IndentClass">
+					@ChildContent
+					@if (!DisableTooltip)
+					{
+						<input type="image" src="/images/help.png" style="margin-left: 10px" class="btn-group-help" title="Show Help" @onclick="@ShowToolTip" id="@Id" />
+					}
+				</div>
 			</BSCol>
-			<BSCol LG="2">
+			<BSCol LG="4">
 				<div class="alloneline">@DisplayText</div>
 			</BSCol>
-			<BSCol LG="6">
+			<BSCol LG="4">
 				<div id="rc-@Id">
 					@(new MarkupString($@"<style>
 				#rc-{Id} > input[type='range'] {{
@@ -43,7 +49,18 @@ else
 {
 	<BSContainer>
 		<BSRow>
-			<span class="@DisabledClass @IndentClass alloneline">@ChildContent @DisplayText</span>
+			<BSCol LG="6" Class="noleftpadding">
+				<div class="@DisabledClass @IndentClass">
+					@ChildContent
+					@if (!DisableTooltip)
+					{
+						<input type="image" src="/images/help.png" style="margin-left: 10px" class="btn-group-help" title="Show Help" @onclick="@ShowToolTip" id="@Id" />
+					}
+				</div>
+			</BSCol>
+			<BSCol LG="6">
+				<div class="alloneline">@DisplayText</div>
+			</BSCol>
 		</BSRow>
 		<BSRow>
 			<div id="rc-@Id">
@@ -75,7 +92,8 @@ else
 }
 
 @code
-{ [Parameter]
+{
+	[Parameter]
 	public bool Indent { get; set; }
 	private string IndentClass => Indent ? "indent" : "";
 
@@ -86,10 +104,12 @@ else
 
 	[Parameter]
 	public bool DoubleCol { get; set; }
+	[Parameter]
+	public bool ShowMedian { get; set; }
 
 	[Parameter]
 	public RenderFragment ChildContent { get; set; }
-	private string DisplayText => _valueLow + " - " + _valueHigh;
+	private string DisplayText => !ShowMedian ? ((_valueLow > 0) ? ("+" + _valueLow) : _valueLow) + " - " + ((_valueHigh > 0) ? ("+" + _valueHigh) : _valueHigh) : (_valueLow + "% - " + _valueHigh + "%" + " (" + (int)Math.Sqrt(_valueLow * _valueHigh) + "%)");
 
 	//slider fields
 	int _valueLow = 20;
@@ -140,4 +160,23 @@ else
 	[Parameter] public EventCallback<int> ValueLowChanged { get; set; }
 	[Parameter] public EventCallback<int> ValueHighChanged { get; set; }
 	[Parameter]
-	public string Id { get; set; } }
+	public string Id { get; set; }
+
+	//tooltip section
+	[Parameter]
+	public bool DisableTooltip { get; set; }
+
+	private void ShowToolTip(MouseEventArgs e)
+	{
+		UpdateToolTip?.Invoke(Id, e);
+	}
+
+	private void HideToolTip(MouseEventArgs e)
+	{
+		UpdateToolTip?.Invoke("", e);
+	}
+
+
+	[Parameter]
+	public Action<string, MouseEventArgs> UpdateToolTip { get; set; }
+	}
