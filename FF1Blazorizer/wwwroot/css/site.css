@@ -1,16 +1,29 @@
 ﻿/* @import url('open-iconic/font/css/open-iconic-bootstrap.min.css'); */
 
 /* import the relevent site css file, this line replaced when building by the circle config */
-/* @import url('main.css');
+/* @import url('main.css');*/
 @import url('slider.css');
 @import url('mainmenu.css');
-    */
-/*
+    
+
 html, body {
+    all: unset;
     font-family: 'Lucida Console', Monaco, monospace;
     user-select: none;
 }
 
+.row {
+    margin-left: 0px;
+    margin-right: 0px;
+}
+
+/*
+*, ::after, ::before {
+    box-sizing: unset;
+}
+    */
+
+    /*
 app {
     position: relative;
     display: flex;
@@ -111,6 +124,14 @@ h1 {
     background-color: rgba(255, 255, 255, 0.1);
 }
 
+.alloneline {
+    display: inline;
+}
+
+.oneline {
+    display: inline-block;
+}
+
 @media (max-width: 849.98px) {
     .main .top-row {
         display: none;
@@ -142,7 +163,13 @@ h1 {
 .container {
     margin-left: 0;
     margin-right: 0;
-    margin-top: 15px;
+    margin-top: 0px;
+    margin-bottom: 5px;
+    padding-left: 0px;
+}
+
+div.noleftpadding {
+    padding-left: 0px;
 }
 
 /* FFR */
