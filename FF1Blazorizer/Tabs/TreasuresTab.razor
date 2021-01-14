@@ -29,7 +29,6 @@
 				<h4>Bans</h4>
 				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(!Flags.FreeTail)" Id="NoTailCheckBox" @bind-Value="Flags.NoTail">Remove Tail</TriStateCheckBox>
 				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="NoMasamuneCheckBox" @bind-Value="Flags.NoMasamune">Remove Masamune</TriStateCheckBox>
-
 			</div>
 			<div class="col-md-4">
 				<h4>Locations: @(Flags.Flags.IncentivizedLocationCountMin) @((Flags.Flags.IncentivizedLocationCountMin != Flags.Flags.IncentivizedLocationCountMax) ? "- " + Flags.Flags.IncentivizedLocationCountMax : "") </h4>
@@ -73,6 +72,12 @@
 				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeOffCastArmorCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeOffCastArmor">Black Shirt</TriStateCheckBox>
 				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeRibbonCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeRibbon">Ribbon</TriStateCheckBox>
 			</div>
+		</div>
+		<div class="checkbox-cell"></div>
+		<h4>Consumables</h4>
+		<div class="row">
+
+			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Indent TItem="TreasureStackSize" @bind-Value="Flags.ConsumableTreasureStackSize">TreasureChest Stacks: </EnumDropDown>
 		</div>
 	</div>
 </BSCollapse>

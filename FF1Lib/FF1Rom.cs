@@ -872,6 +872,8 @@ namespace FF1Lib
 			talkroutines.WriteRoutines(this);
 			talkroutines.UpdateNPCRoutines(this, npcdata);
 
+			new TreasureStacks(this, flags).SetTreasureStacks();
+
 			WriteSeedAndFlags(seed.ToHex(), Flags.EncodeFlagsText(flags));
 			ExtraTrackingAndInitCode(flags);
 		}

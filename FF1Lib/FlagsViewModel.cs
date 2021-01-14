@@ -3371,5 +3371,15 @@ namespace FF1Lib
 				RaisePropertyChanged();
 			}
 		}
+
+		public TreasureStackSize ConsumableTreasureStackSize
+		{
+			get => Flags.ConsumableTreasureStackSize;
+			set
+			{
+				Flags.ConsumableTreasureStackSize = value;
+				RaisePropertyChanged();
+			}
+		}
 	}
 }
