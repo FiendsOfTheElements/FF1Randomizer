@@ -14,10 +14,9 @@
 				</div>
 			</BSCol>
 			<BSCol LG="4">
-				<div class="alloneline">@DisplayText</div>
+				<div class="@DisabledClass alloneline">@DisplayText</div>
 			</BSCol>
-			<BSCol LG="4">
-				<div id="rc-@Id">
+				<div class="col-slider" id="rc-@Id">
 					@(new MarkupString($@"<style>
 				#rc-{Id} > input[type='range'] {{
 					background: var(--track-background);
@@ -41,7 +40,6 @@
 					<input name="low-range" type="range" min="@MinValue" max="@MaxValue" step="@Step" @bind="@ValueLow" @bind:event="onchange" />
 					<input name="high-range" type="range" min="@MinValue" max="@MaxValue" step="@Step" @bind="@ValueHigh" @bind:event="onchange" />
 				</div>
-			</BSCol>
 		</BSRow>
 	</BSContainer>
 }
@@ -59,11 +57,11 @@ else
 				</div>
 			</BSCol>
 			<BSCol LG="6">
-				<div class="alloneline">@DisplayText</div>
+				<div class="@DisabledClass alloneline">@DisplayText</div>
 			</BSCol>
 		</BSRow>
 		<BSRow>
-			<div id="rc-@Id">
+			<div class="col-slider" id="rc-@Id">
 				@(new MarkupString($@"<style>
 				#rc-{Id} > input[type='range'] {{
 					background: var(--track-background);
