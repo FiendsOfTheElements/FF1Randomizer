@@ -55,6 +55,7 @@ namespace FF1Lib
 		public bool? TCMasaGuardian { get; set; } = false;
 		public bool? TrappedShards { get; set; } = false;
 		public bool? SwolePirates { get; set; } = false;
+		public bool? ScaryImps { get; set; } = false;
 		public bool? EnemyScripts { get; set; } = false;
 		public bool? BossScriptsOnly { get; set; } = false;
 		public bool? EnemySkillsSpells { get; set; } = false;

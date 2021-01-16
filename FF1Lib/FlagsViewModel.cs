@@ -3351,7 +3351,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SwolePirates"));
 			}
 		}
-
+		public bool? ScaryImps
+		{
+			get => Flags.ScaryImps;
+			set
+			{
+				Flags.ScaryImps = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ScaryImps"));
+			}
+		}
 		public EvadeCapValues EvadeCap
 		{
 			get => Flags.EvadeCap;
