@@ -185,6 +185,11 @@ namespace FF1Lib
 		public bool? NoTail { get; set; } = false;
 		public bool? GuaranteedMasamune { get; set; } = false;
 		public bool? SendMasamuneHome { get; set; } = false;
+
+		public bool? MoreTentChests { get; set; } = false;
+		public bool? MoreHealChests { get; set; } = false;
+		public bool? EverMoreHealChests { get; set; } = false;
+
 		public bool? NoMasamune { get; set; } = false;
 		public bool? ClassAsNpcFiends { get; set; } = false;
 		public bool? ClassAsNpcKeyNPC { get; set; } = false;

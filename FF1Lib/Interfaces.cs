@@ -90,6 +90,9 @@
 		bool? SendMasamuneHome { get; }
 		bool? NoMasamune { get; }
 		WorldWealthMode WorldWealth { get; }
+		bool? MoreTentChests { get; }
+		bool? MoreHealChests { get; }
+		bool? EverMoreHealChests { get; }
 	}
 	public interface IItemShuffleFlags
 	{

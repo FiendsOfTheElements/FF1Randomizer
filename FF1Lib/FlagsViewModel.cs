@@ -3379,5 +3379,35 @@ namespace FF1Lib
 				RaisePropertyChanged();
 			}
 		}
+
+		public bool? MoreTentChests
+		{
+			get => Flags.MoreTentChests;
+			set
+			{
+				Flags.MoreTentChests = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool? MoreHealChests
+		{
+			get => Flags.MoreHealChests;
+			set
+			{
+				Flags.MoreHealChests = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool? EverMoreHealChests
+		{
+			get => Flags.EverMoreHealChests;
+			set
+			{
+				Flags.EverMoreHealChests = value;
+				RaisePropertyChanged();
+			}
+		}
 	}
 }
