@@ -118,6 +118,7 @@ border-right: 4px solid #ffffff;
 border-image: url(../images/site-border-tabs.png) 4;
 }
 
+
 a.styled-button {
     background-color: #0081db;
     border: 1px solid #ffffff;
@@ -130,6 +131,18 @@ a.styled-button {
 
 a.styled-button:hover{
 background-color: #005896;
+}
+
+a.preset-close {
+    position: relative;
+    background-color: #e76e55;
+    padding: 1px 8px 3px 8px;
+    right: 7px;
+    margin: 0px 0px 0px 0px;
+}
+
+a.preset-close:hover {
+        background-color: #d75e45;
 }
 
 a.ffr-tooltip-close {

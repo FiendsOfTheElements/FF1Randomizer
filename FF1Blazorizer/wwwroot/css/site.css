@@ -228,7 +228,7 @@ body { */
 }
 
 .checkbox-cell {
-    white-space: nowrap;
+    white-space: normal;
     overflow: hidden;
     min-height: 20px;
     margin: 0;
