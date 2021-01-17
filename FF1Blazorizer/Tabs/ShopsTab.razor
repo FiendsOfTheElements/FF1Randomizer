@@ -32,6 +32,13 @@
 				<h4>RNG</h4>
 				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="rngCheckBox" @bind-Value="Flags.Rng">RNG Tables</TriStateCheckBox>
 				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="fixMissingBattleRngEntry" @bind-Value="Flags.FixMissingBattleRngEntry">Fix Missing Battle RNG Entry</CheckBox>
+				<div class="checkbox-cell"></div>
+				<h4>Legendary Shops</h4>
+				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" @bind-Value="Flags.LegendaryWeaponShop">Weapon Shop</TriStateCheckBox>
+				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" @bind-Value="Flags.LegendaryArmorShop">Armor Shop</TriStateCheckBox>
+				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" @bind-Value="Flags.LegendaryBlackShop">Black Magic</TriStateCheckBox>
+				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" @bind-Value="Flags.LegendaryWhiteShop">White Magic</TriStateCheckBox>
+				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" @bind-Value="Flags.LegendaryItemShop">Item Shop</TriStateCheckBox>
 			</div>
 		</div>
 	</div>

@@ -3379,5 +3379,55 @@ namespace FF1Lib
 				RaisePropertyChanged();
 			}
 		}
+
+		public bool? LegendaryWeaponShop
+		{
+			get => Flags.LegendaryWeaponShop;
+			set
+			{
+				Flags.LegendaryWeaponShop = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool? LegendaryArmorShop
+		{
+			get => Flags.LegendaryArmorShop;
+			set
+			{
+				Flags.LegendaryArmorShop = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool? LegendaryWhiteShop
+		{
+			get => Flags.LegendaryWhiteShop;
+			set
+			{
+				Flags.LegendaryWhiteShop = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool? LegendaryBlackShop
+		{
+			get => Flags.LegendaryBlackShop;
+			set
+			{
+				Flags.LegendaryBlackShop = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool? LegendaryItemShop
+		{
+			get => Flags.LegendaryItemShop;
+			set
+			{
+				Flags.LegendaryItemShop = value;
+				RaisePropertyChanged();
+			}
+		}
 	}
 }

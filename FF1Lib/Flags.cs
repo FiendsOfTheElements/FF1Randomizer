@@ -13,6 +13,12 @@ namespace FF1Lib
 {
 	public class Flags : IIncentiveFlags, IMapEditFlags, IScaleFlags, IFloorShuffleFlags
 	{
+		public bool? LegendaryWeaponShop { get; set; } = false;
+		public bool? LegendaryArmorShop { get; set; } = false;
+		public bool? LegendaryBlackShop { get; set; } = false;
+		public bool? LegendaryWhiteShop { get; set; } = false;
+		public bool? LegendaryItemShop { get; set; } = false;
+
 		public bool Spoilers { get; set; } = false;
 		public bool TournamentSafe { get; set; } = false;
 		public bool? Shops { get; set; } = false;
