@@ -283,6 +283,12 @@ input[type=checkbox] {
     cursor: pointer;
 }
 
+input[type="file"] {
+    white-space: normal;
+    word-wrap: break-word;
+    width: 95%;
+}
+
 select {
     margin-bottom: 6px;
 }

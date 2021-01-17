@@ -73,16 +73,9 @@
 		await UpdatePresets();
 	}
 
-	protected override async Task OnAfterRenderAsync(bool firstRender)
-	{
-		Console.WriteLine(String.Join(',', localPresets));
-		await Task.Delay(1000);
-	}
-
 	async Task UpdatePresets()
 	{
 		localPresets = await JSRuntime.InvokeAsync<string[]>("listLocalPresets");
-		Console.WriteLine(String.Join(',', localPresets));
 	}
 
 	async Task LoadStandardPreset(string name)
