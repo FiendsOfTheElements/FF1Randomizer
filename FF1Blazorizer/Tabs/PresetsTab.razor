@@ -3,8 +3,7 @@
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 @using FF1Lib;
 
-<BSTabLabel>Presets</BSTabLabel>
-<BSTabContent>
+
 	<div id="presets" class="tabcontent framed-content clearfix">
 		<h3>Start a Game</h3>
 		<p>These presets allow you to get into the game and start playing instantly.</p>
@@ -20,10 +19,10 @@
 		<p>
 			@foreach (var preset in localPresets)
 			{
-	<span style="white-space:nowrap">
-		<a class="preset-button styled-button" @onclick="@(() => LoadLocalPreset(@preset))">@preset</a>
-		<a class="preset-button styled-button preset-close" @onclick="@(() => DeleteLocalPreset(@preset))">X</a>
-	</span>}
+				<span style="white-space:nowrap" @key="preset" class="oneline">
+					<a class="preset-button styled-button" @onclick="@(() => LoadLocalPreset(@preset))">@preset</a>
+					<a class="preset-button styled-button preset-close" @onclick="@(() => DeleteLocalPreset(@preset))">X</a>
+				</span>}
 		</p>
 
 		<p>
@@ -42,106 +41,125 @@
 		</p>
 		<div class="clear-it"></div>
 	</div>
-</BSTabContent>
 
-	@code { [Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }
-		[Parameter] public Action<string> SetStatusMessage { get; set; }
-		[Parameter] public string StatusMessage { get; set; }
-		[Parameter] public bool IsOpen { get; set; } = true;
 
-		private string presetName = "Untitled";
-		private string[] localPresets = { };
+@code { [Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }
+	[Parameter] public Action<string> SetStatusMessage { get; set; }
+	[Parameter] public string StatusMessage { get; set; }
+	[Parameter] public bool IsOpen { get; set; } = true;
+	[Parameter] public string[] localPresets { get; set; } = { };
 
-		protected override async void OnInitialized()
+	private string presetName = "Untitled";
+	//public string[] localPresets = { };
+
+	protected override async void OnInitialized()
+	{
+		var uri = new Uri(NavigationManager.Uri);
+		if (!QueryHelpers.ParseQuery(uri.Query).TryGetValue("f", out var flags))
 		{
-			var uri = new Uri(NavigationManager.Uri);
-			if (!QueryHelpers.ParseQuery(uri.Query).TryGetValue("f", out var flags))
+			await LoadStandardPreset("default");
+		}
+
+		await UpdatePresets();
+	}
+
+	protected override async Task OnInitializedAsync()
+	{
+		var uri = new Uri(NavigationManager.Uri);
+		if (!QueryHelpers.ParseQuery(uri.Query).TryGetValue("f", out var flags))
+		{
+			await LoadStandardPreset("default");
+		}
+
+		await UpdatePresets();
+	}
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		Console.WriteLine(String.Join(',', localPresets));
+		await Task.Delay(1000);
+	}
+
+	async Task UpdatePresets()
+	{
+		localPresets = await JSRuntime.InvokeAsync<string[]>("listLocalPresets");
+		Console.WriteLine(String.Join(',', localPresets));
+	}
+
+	async Task LoadStandardPreset(string name)
+	{
+		var json = await JSRuntime.InvokeAsync<string>("computePreset", name);
+		LoadFromJson(json);
+	}
+
+	async Task LoadLocalPreset(string name)
+	{
+		var json = await JSRuntime.InvokeAsync<string>("loadLocalPreset", name);
+		LoadFromJson(json);
+	}
+
+	public void LoadFromJson(string json)
+	{
+		Flags.Preset preset = System.Text.Json.JsonSerializer.Deserialize<Flags.Preset>(json);
+		Flags.Flags = preset.Flags;
+		SetStatusMessage.Invoke(preset.Name + " preset successfully loaded.");
+		presetName = preset.Name;
+		StateHasChanged();
+	}
+
+	async Task DeleteLocalPreset(string presetName)
+	{
+		await JSRuntime.InvokeAsync<string>("deleteLocalPreset", presetName);
+		SetStatusMessage.Invoke(presetName + " local preset deleted.");
+		await UpdatePresets();
+	}
+
+	async Task SavePreset(bool download)
+	{
+		System.Text.Json.JsonSerializerOptions options = new System.Text.Json.JsonSerializerOptions();
+		options.IgnoreReadOnlyProperties = true;
+		options.WriteIndented = true;
+
+		Flags.Preset preset = new Flags.Preset();
+		preset.Name = presetName;
+		preset.Flags = Flags.Flags;
+
+		var json = System.Text.Json.JsonSerializer.Serialize(preset, options);
+		var encoded = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(json));
+
+		if (download)
+		{
+			await JSRuntime.InvokeAsync<object>("downloadROM", $"{presetName}.json", encoded);
+		}
+		else
+		{
+			await JSRuntime.InvokeAsync<object>("storePreset", presetName, json);
+			if (localPresets.Contains(presetName))
 			{
-				await LoadStandardPreset("default");
-			}
-
-			await UpdatePresets();
-		}
-
-		async Task UpdatePresets()
-		{
-			localPresets = await JSRuntime.InvokeAsync<string[]>("listLocalPresets");
-			StateHasChanged();
-		}
-
-		async Task LoadStandardPreset(string name)
-		{
-			var json = await JSRuntime.InvokeAsync<string>("computePreset", name);
-			LoadFromJson(json);
-		}
-
-		async Task LoadLocalPreset(string name)
-		{
-			var json = await JSRuntime.InvokeAsync<string>("loadLocalPreset", name);
-			LoadFromJson(json);
-		}
-
-		public void LoadFromJson(string json)
-		{
-			Flags.Preset preset = System.Text.Json.JsonSerializer.Deserialize<Flags.Preset>(json);
-			Flags.Flags = preset.Flags;
-			SetStatusMessage.Invoke(preset.Name + " preset successfully loaded.");
-			presetName = preset.Name;
-			StateHasChanged();
-		}
-
-		async Task DeleteLocalPreset(string presetName)
-		{
-			await JSRuntime.InvokeAsync<string>("deleteLocalPreset", presetName);
-			SetStatusMessage.Invoke(presetName + " local preset deleted.");
-			await UpdatePresets();
-		}
-
-		async Task SavePreset(bool download)
-		{
-			System.Text.Json.JsonSerializerOptions options = new System.Text.Json.JsonSerializerOptions();
-			options.IgnoreReadOnlyProperties = true;
-			options.WriteIndented = true;
-
-			Flags.Preset preset = new Flags.Preset();
-			preset.Name = presetName;
-			preset.Flags = Flags.Flags;
-
-			var json = System.Text.Json.JsonSerializer.Serialize(preset, options);
-			var encoded = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(json));
-
-			if (download)
-			{
-				await JSRuntime.InvokeAsync<object>("downloadROM", $"{presetName}.json", encoded);
+				SetStatusMessage.Invoke($"Saved preset {presetName} updated.");
 			}
 			else
 			{
-				await JSRuntime.InvokeAsync<object>("storePreset", presetName, json);
-				if (localPresets.Contains(presetName))
-				{
-					SetStatusMessage.Invoke($"Saved preset {presetName} updated.");
-				}
-				else
-				{
-					SetStatusMessage.Invoke($"Saved {presetName} to local presets.");
-				}
-				await UpdatePresets();
+				SetStatusMessage.Invoke($"Saved {presetName} to local presets.");
 			}
+			await UpdatePresets();
 		}
+	}
 
-		async Task OnPresetChanged(ChangeEventArgs e)
+	async Task OnPresetChanged(ChangeEventArgs e)
+	{
+		try
 		{
-			try
-			{
-				var json = await JSRuntime.InvokeAsync<string>("handlePresetSelect", "presetInput");
-				var preset = System.Text.Json.JsonSerializer.Deserialize<Flags.Preset>(json);
-				Flags.Flags = preset.Flags;
-				presetName = preset.Name;
-				SetStatusMessage.Invoke($"{preset.Name} preset successfully loaded from json file.");
-			}
-			catch (Exception ex)
-			{
-				SetStatusMessage.Invoke("Preset load failed: " + ex.ToString());
-			}
-			StateHasChanged();
-		} }
+			var json = await JSRuntime.InvokeAsync<string>("handlePresetSelect", "presetInput");
+			var preset = System.Text.Json.JsonSerializer.Deserialize<Flags.Preset>(json);
+			Flags.Flags = preset.Flags;
+			presetName = preset.Name;
+			SetStatusMessage.Invoke($"{preset.Name} preset successfully loaded from json file.");
+		}
+		catch (Exception ex)
+		{
+			SetStatusMessage.Invoke("Preset load failed: " + ex.ToString());
+		}
+		StateHasChanged();
+	}
+}

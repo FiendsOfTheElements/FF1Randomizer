@@ -168,6 +168,7 @@ top: 0;
 #banner{
 padding: 6px 0;
 height: 32px;
+box-sizing: content-box;
 }
 
 #logo{

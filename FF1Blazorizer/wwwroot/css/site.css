@@ -58,7 +58,8 @@ input {
     margin-top: 1%;
     max-width: 96%;
     padding: 0.5rem;
-    font-family: 'Press Start 2P';
+    font-size: 1rem;
+    font-weight: bold;
     z-index: 101;
 }
 
@@ -345,6 +346,7 @@ tr.bottom-borderd {
 .ffr-tooltip {
     position: fixed;
     z-index: 1000;
+
 }
 
 .ffr-tooltip-screenshot {
@@ -366,6 +368,9 @@ tr.bottom-borderd {
     background-color: #d75e45;
 }
 
+.ffr-tooltip-content.framed-content {
+    background-color: #002050;
+}
 .btn-group-help {
     opacity: 0.5;
 }

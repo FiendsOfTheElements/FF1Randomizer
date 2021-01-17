@@ -4,7 +4,7 @@
 <div class="ffr-tooltip" style="@css">
 	<a class="styled-button" @onclick="@HideToolTip">@Title</a>
 	<a class="styled-button ffr-tooltip-close" @onclick="@HideToolTip"> X </a>
-	<div class="framed-content" @onmousedown=@StartDrag @onmousemove=@Drag @onmouseup=@EndDrag @onmouseout=@Drag>
+	<div class="framed-content ffr-tooltip-content" @onmousedown=@StartDrag @onmousemove=@Drag @onmouseup=@EndDrag @onmouseout=@Drag>
 		<div class="ffr-tooltip-screenshot" style="@(ScreenshotStyle())"></div>
 		@foreach (var paragraph in Description.Split("\n"))
 		{
@@ -37,8 +37,8 @@
 	private int Width = 800;
 	private bool Enabled { get; set; } = false;
 	private string Visible => (Enabled ? "visibility:visible;" : "visibility:hidden;");
-	private double PosTop { get; set; } = 75;
-	private double PosLeft { get; set; } = 25;
+	private double PosTop { get; set; } = 200;
+	private double PosLeft { get; set; } = 80;
 	private string css =>
 		$"left: {PosLeft}px; top: {PosTop}px; width: {Width}px; {Visible}";
 

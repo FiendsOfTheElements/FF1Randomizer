@@ -198,6 +198,8 @@ background: url(../images/orb.png) no-repeat;
 
 .nav-item-main {
     font-size: 150%;
+    margin: 5px 5px;
+    display: inline-block;
 }
 
 .nav-item-main a, .nav-item-main a.link, .nav-item-main a.active, .nav-item-main a.visited{

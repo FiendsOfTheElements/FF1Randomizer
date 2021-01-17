@@ -17,40 +17,76 @@
 			<div class="tab">
 				<BSTabList IsVertical="true">
 					<BSTab>
-						<PresetsTab Flags="@Flags" SetStatusMessage="@SetStatusMessage" />
+						<BSTabLabel>Presets</BSTabLabel>
+						<BSTabContent>
+							<PresetsTab Flags="@Flags" SetStatusMessage="@SetStatusMessage" />
+						</BSTabContent>
 					</BSTab>
 					<BSTab>
-						<ShopsTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
+						<BSTabLabel>Shops</BSTabLabel>
+						<BSTabContent>
+							<ShopsTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
+						</BSTabContent>
 					</BSTab>
 					<BSTab>
-						<EnemiesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
+						<BSTabLabel>Enemies</BSTabLabel>
+						<BSTabContent>
+							<EnemiesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
+							</BSTabContent>
 					</BSTab>
 					<BSTab>
-						<TreasuresTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
+						<BSTabLabel>Treasures</BSTabLabel>
+						<BSTabContent>
+							<TreasuresTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
+						</BSTabContent>
 					</BSTab>
 					<BSTab>
-						<IncentivesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
+						<BSTabLabel>Incentives</BSTabLabel>
+						<BSTabContent>
+							<IncentivesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
+						</BSTabContent>
 					</BSTab>
 					<BSTab>
-						<GoalTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
+						<BSTabLabel>Goal</BSTabLabel>
+						<BSTabContent>
+							<GoalTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
+						</BSTabContent>
 					</BSTab>
 					<BSTab>
-						<MapsTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
+						<BSTabLabel>Maps</BSTabLabel>
+						<BSTabContent>
+							<MapsTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
+						</BSTabContent>
 					</BSTab>
 					<BSTab>
-						<ScaleTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
+						<BSTabLabel>Scale</BSTabLabel>
+						<BSTabContent>
+							<ScaleTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
+						</BSTabContent>
 					</BSTab>
 					<BSTab>
-						<PartyTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
+						<BSTabLabel>Party</BSTabLabel>
+						<BSTabContent>
+							<PartyTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
+						</BSTabContent>
 					</BSTab>
 					<BSTab>
-						<ConveniencesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
+						<BSTabLabel>Conveniences</BSTabLabel>
+						<BSTabContent>
+							<ConveniencesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
+							</BSTabContent>
 					</BSTab>
 					<BSTab>
-						<BugFixesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
+						<BSTabLabel>Bugs Fixes</BSTabLabel>
+						<BSTabContent>
+							<BugFixesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
+						</BSTabContent>
 					</BSTab>
 					<BSTab>
-						<ExperimentalTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
+						<BSTabLabel>Beta</BSTabLabel>
+						<BSTabContent>
+							<ExperimentalTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" />
+						</BSTabContent>
 					</BSTab>
 				</BSTabList>
 				</div>
@@ -61,8 +97,6 @@
 
 @code {
 	private FlagsViewModel Flags { get; set; } = new FlagsViewModel();
-	//[Parameter] public Action<string> SetStatusMessage { get; set; }
-	//[Parameter] public string StatusMessage { get; set; }
 	private string ToolTipId = "unupdated";
 	private ToolTip ToolTipElement;
 	private string StatusMessage = "";
