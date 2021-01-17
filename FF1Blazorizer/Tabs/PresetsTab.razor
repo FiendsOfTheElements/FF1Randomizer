@@ -45,31 +45,28 @@
 
 @code { [Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }
 	[Parameter] public Action<string> SetStatusMessage { get; set; }
+	[Parameter] public Action SetDefaultLoaded { get; set; }
 	[Parameter] public string StatusMessage { get; set; }
-	[Parameter] public bool IsOpen { get; set; } = true;
+	[Parameter] public bool loadDefault { get; set; }
 	[Parameter] public string[] localPresets { get; set; } = { };
 
 	private string presetName = "Untitled";
 
 	protected override async void OnInitialized()
 	{
-		var uri = new Uri(NavigationManager.Uri);
-		if (!QueryHelpers.ParseQuery(uri.Query).TryGetValue("f", out var flags))
+		if(loadDefault)
 		{
-			await LoadStandardPreset("default");
+			var uri = new Uri(NavigationManager.Uri);
+			if (!QueryHelpers.ParseQuery(uri.Query).TryGetValue("f", out var flags))
+			{
+				await LoadStandardPreset("default");
+			}
+			SetDefaultLoaded();
 		}
-
-		await UpdatePresets();
 	}
 
 	protected override async Task OnInitializedAsync()
 	{
-		var uri = new Uri(NavigationManager.Uri);
-		if (!QueryHelpers.ParseQuery(uri.Query).TryGetValue("f", out var flags))
-		{
-			await LoadStandardPreset("default");
-		}
-
 		await UpdatePresets();
 	}
 
