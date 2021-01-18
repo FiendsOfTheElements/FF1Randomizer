@@ -37,8 +37,23 @@ border-image: url(../images/site-border-large.png) 4;
 width: 132px;
 }
 
-.hidden{
-display: block;
+a.nav-link.nav-item {
+    border-right: 4px solid #ffffff;
+    width: 132px;
+    display: inline-block;
+}
+
+a.nav-link.nav-item.active {
+    border-image: url(../images/site-border-large.png) 4;
+    width: 132px;
+}
+
+.nav.nav-tabs.flex-column {
+    display: block;
+}
+
+.hidden {
+    display: block;
 }
 
 .col1, .col2{
