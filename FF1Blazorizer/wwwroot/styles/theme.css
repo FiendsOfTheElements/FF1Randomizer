@@ -165,10 +165,26 @@ button.main-button {
 button.main-button:hover {
     background-color: #005896;
 }
+
+.expand-collapse-button {
+    text-align: left;
+    display: flex;
+    align-items: center;
+    margin-left: 0px;
+}
+
+.expand-collapse-button.tabbed {
+    margin-left: 130px;
+}
+
+.expand-collapse-text {
+    margin-left: 5px;
+    cursor: pointer;
+}
 /* Footer */
 
-#main-footer{
-background: url(../images/footer-bg.png) repeat-x center top;
+#main-footer {
+    background: url(../images/footer-bg.png) repeat-x center top;
 }
 
 #garland{

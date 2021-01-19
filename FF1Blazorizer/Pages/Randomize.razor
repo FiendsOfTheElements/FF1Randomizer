@@ -1,31 +1,33 @@
 @page "/Randomize"
-@page "/" 
+@page "/"
 @using FF1Lib;
 @using Microsoft.AspNetCore.Components.Web
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 
 <div id="main-content">
 	<ToolTip @ref="ToolTipElement" ToolTipId="@ToolTipId" />
 	<aside id="left-column">
 		<FileTab Flags="@Flags" StatusMessage="@StatusMessage" SetStatusMessage="@SetStatusMessage" UpdateToolTipID="@UpdateToolTipID" />
-		<FunTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" SetStatusMessage="@SetStatusMessage" SetTabLayout="@SetTabLayout"/>
+		<FunTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" SetStatusMessage="@SetStatusMessage" />
 	</aside>
 
 	<main id="right-column">
 		<h1>Final Fantasy Randomizer</h1>
 		@if (noTabLayout)
 		{
-			<PresetsTab Flags="@Flags" SetStatusMessage="@SetStatusMessage" loadDefault="@loadDefault" SetDefaultLoaded="@SetDefaultLoaded" noTabLayout="@noTabLayout"/>
-			<ShopsTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout"/>
-			<EnemiesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout"/>
+			<PresetsTab Flags="@Flags" SetStatusMessage="@SetStatusMessage" loadDefault="@loadDefault" SetDefaultLoaded="@SetDefaultLoaded" noTabLayout="@noTabLayout" />
+			<ShopsTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
+			<EnemiesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
 			<TreasuresTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
 			<IncentivesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
-			<GoalTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout"/>
-			<MapsTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout"/>
-			<ScaleTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout"/>
-			<PartyTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout"/>
-			<ConveniencesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout"/>
-			<BugFixesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout"/>
-			<ExperimentalTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout"/>
+			<GoalTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
+			<MapsTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
+			<ScaleTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
+			<PartyTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
+			<ConveniencesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
+			<BugFixesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
+			<ExperimentalTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
+			<ExpandArrow noTabLayout="@noTabLayout" SetTabLayout="@SetTabLayout" />
 		}
 		else
 		{
@@ -47,13 +49,13 @@
 						<BSTab>
 							<BSTabLabel>Enemies</BSTabLabel>
 							<BSTabContent>
-								<EnemiesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout"/>
+								<EnemiesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
 							</BSTabContent>
 						</BSTab>
 						<BSTab>
 							<BSTabLabel>Treasures</BSTabLabel>
 							<BSTabContent>
-								<TreasuresTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout"/>
+								<TreasuresTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
 							</BSTabContent>
 						</BSTab>
 						<BSTab>
@@ -71,7 +73,7 @@
 						<BSTab>
 							<BSTabLabel>Maps</BSTabLabel>
 							<BSTabContent>
-								<MapsTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout"/>
+								<MapsTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
 							</BSTabContent>
 						</BSTab>
 						<BSTab>
@@ -83,13 +85,13 @@
 						<BSTab>
 							<BSTabLabel>Party</BSTabLabel>
 							<BSTabContent>
-								<PartyTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout"/>
+								<PartyTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
 							</BSTabContent>
 						</BSTab>
 						<BSTab>
 							<BSTabLabel>Conveniences</BSTabLabel>
 							<BSTabContent>
-								<ConveniencesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout"/>
+								<ConveniencesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
 							</BSTabContent>
 						</BSTab>
 						<BSTab>
@@ -101,30 +103,32 @@
 						<BSTab>
 							<BSTabLabel>Beta</BSTabLabel>
 							<BSTabContent>
-								<ExperimentalTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout"/>
+								<ExperimentalTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
 							</BSTabContent>
 						</BSTab>
 					</BSTabList>
 				</div>
 				<BSTabSelectedContent />
 			</BSTabGroup>
+			<ExpandArrow noTabLayout="@noTabLayout" SetTabLayout="@SetTabLayout" />
 		}
 	</main>
 </div>
 
-@code {
-	private FlagsViewModel Flags { get; set; } = new FlagsViewModel();
+@code { private FlagsViewModel Flags { get; set; } = new FlagsViewModel();
 	private string ToolTipId = "unupdated";
 	private ToolTip ToolTipElement;
 	private string StatusMessage = "";
 	private bool loadDefault = true;
 	private bool noTabLayout = false;
 
-	protected override void OnInitialized()
+	protected override async void OnInitialized()
 	{
+		noTabLayout = await LocalStorage.GetItemAsync<bool>("tablayout");
 		Flags.PropertyChanged += (sender, args) => StateHasChanged();
 		StateHasChanged();
 	}
+
 
 	private void UpdateToolTipID(string Id, MouseEventArgs e)
 	{
@@ -165,6 +169,5 @@
 	private void Hidden(BSTabEvent e)
 	{
 		//Console.WriteLine($"Hidden -> Activated: {e.Activated?.Id.ToString()} , Deactivated: {e.Deactivated?.Id.ToString()}");
-	}
- }
+	} }
 

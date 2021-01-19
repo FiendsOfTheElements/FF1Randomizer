@@ -17,16 +17,6 @@
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="disableSpellCastFlashCheckBox" @bind-Value="Flags.DisableSpellCastFlash">Disable Spell Cast Flash</CheckBox>
 	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="menuColorDropDown" TItem="MenuColor" @bind-Value="Flags.MenuColor">Menu Color</EnumDropDown>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="renounceAutosortCheckBox" @bind-Value="Flags.RenounceAutosort">Renounce Autosort</CheckBox>
-	<div class="checkbox-cell"></div>
-	@if (Flags.NoTabLayout)
-	{
-		<a class="styled-button" @onclick="@SetTabLayoutFlag">Tabbed Layout</a>
-	}
-	else
-	{
-		<a class="styled-button" @onclick="@SetTabLayoutFlag">Expand All Layout</a>
-	}
-	<div class="checkbox-cell"></div>
 	<a class="styled-button" @onclick="@SavePreferences">Save Preferences</a>
 </div>
 
@@ -35,19 +25,10 @@
 	[Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }
 	[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
 	[Parameter] public Action<string> SetStatusMessage { get; set; }
-	[Parameter] public Action<bool> SetTabLayout { get; set; }
-	[Parameter] public bool noTabLayout { get; set; }
 
 	protected override async void OnInitialized()
 	{
 		Flags.Preferences = await LocalStorage.GetItemAsync<Preferences>("preferences") ?? new Preferences();
-		SetTabLayout(Flags.NoTabLayout);
-	}
-
-	void SetTabLayoutFlag()
-	{
-		Flags.NoTabLayout = !Flags.NoTabLayout;
-		SetTabLayout(Flags.NoTabLayout);
 	}
 
 	async Task SavePreferences()
