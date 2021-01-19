@@ -78,11 +78,21 @@ a.nav-link.nav-item.active {
 display: block;
 }
 
-.col1, .col2{
-float: none;
-width: 100%;
-min-width: 100%;
-margin-left: 0;
+.ffr-tooltip {
+    left: 0px !important;
+    top: 0px !important;
+    width: 100vw !important;
+}
+
+.ffr-tooltip-screenshot {
+    float: none;
+}
+
+.col1, .col2 {
+    float: none;
+    width: 100%;
+    min-width: 100%;
+    margin-left: 0;
 }
 
 /* Header */

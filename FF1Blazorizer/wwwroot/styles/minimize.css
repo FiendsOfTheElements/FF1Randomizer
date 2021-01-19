@@ -52,6 +52,11 @@ a.nav-link.nav-item.active {
     display: block;
 }
 
+.ffr-tooltip {
+
+    width: 80vw !important;
+}
+
 .hidden {
     display: block;
 }
