@@ -4,7 +4,7 @@
 @using FF1Lib;
 
 
-<div id="presets" class="tabcontent framed-content clearfix">
+<div id="presets" class="tabcontent framed-content clearfix @(noTabLayout ? "no-tab" : "")">
 	<h3>Start a Game</h3>
 	<p>These presets allow you to get into the game and start playing instantly.</p>
 
@@ -61,6 +61,7 @@
 	[Parameter] public string StatusMessage { get; set; }
 	[Parameter] public bool loadDefault { get; set; }
 	[Parameter] public string[] localPresets { get; set; } = { };
+	[Parameter] public bool noTabLayout { get; set; }
 
 	private string presetName = "Untitled";
 

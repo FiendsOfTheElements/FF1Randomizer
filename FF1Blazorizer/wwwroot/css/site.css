@@ -377,6 +377,10 @@ tr.bottom-borderd {
 .ffr-tooltip-content.framed-content {
     background-color: #002050;
 }
+
+.tabcontent.no-tab {
+    margin-left: 0px;
+}
 .btn-group-help {
     opacity: 0.5;
 }

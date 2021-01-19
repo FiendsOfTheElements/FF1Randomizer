@@ -1,7 +1,7 @@
 ﻿@using FF1Lib;
 
 
-	<div id="Enemies" class="tabcontent framed-content clearfix">
+	<div id="Enemies" class="tabcontent framed-content clearfix @(noTabLayout ? "no-tab" : "")">
 		<h3>Enemies, Formations, and Bosses</h3>
 		<div class="col1">
 			<h4>Formations</h4>
@@ -46,5 +46,5 @@
 	@code {
 		[Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }
 		[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
-		[Parameter] public bool IsOpen { get; set; } = true;
+		[Parameter] public bool noTabLayout { get; set; }
 	}

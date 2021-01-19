@@ -1,7 +1,7 @@
 ﻿@using FF1Lib;
 
 
-	<div id="Treasures" class="tabcontent framed-content clearfix">
+	<div id="Treasures" class="tabcontent framed-content clearfix @(noTabLayout ? "no-tab" : "")">
 		<h3>Treasures and Freebies</h3>
 		<div class="col1">
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="treasuresCheckBox" @bind-Value="Flags.Treasures">Treasures</TriStateCheckBox>
@@ -36,5 +36,5 @@
 
 	@code { [Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }
 				[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
-				[Parameter] public bool IsOpen { get; set; } = true; }
+				[Parameter] public bool noTabLayout { get; set; } }
 

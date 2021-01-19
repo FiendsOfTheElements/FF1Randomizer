@@ -1,7 +1,7 @@
 ﻿@using FF1Lib;
 
 
-	<div id="Party" class="tabcontent framed-content clearfix">
+	<div id="Party" class="tabcontent framed-content clearfix @(noTabLayout ? "no-tab" : "")">
 		<h3>Party Composition</h3>
 		<div class="col1 full">
 			<h4>Allowed Classes</h4>
@@ -242,4 +242,4 @@
 
 	@code { [Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }
 		[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
-		[Parameter] public bool IsOpen { get; set; } = true; }
+		[Parameter] public bool noTabLayout { get; set; } }
