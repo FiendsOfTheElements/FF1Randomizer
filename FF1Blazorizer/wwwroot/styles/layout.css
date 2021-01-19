@@ -119,6 +119,7 @@ float: left;
 }
 .preset-paragraph{
 margin-left: 65px;
+min-height: 30px;
 }
 
 /* Footer */

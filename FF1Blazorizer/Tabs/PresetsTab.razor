@@ -4,43 +4,55 @@
 @using FF1Lib;
 
 
-	<div id="presets" class="tabcontent framed-content clearfix">
-		<h3>Start a Game</h3>
-		<p>These presets allow you to get into the game and start playing instantly.</p>
+<div id="presets" class="tabcontent framed-content clearfix">
+	<h3>Start a Game</h3>
+	<p>These presets allow you to get into the game and start playing instantly.</p>
 
-		<h4>Standard Presets</h4>
-		<a class="preset-button styled-button" @onclick="@(() => LoadStandardPreset("default"))">Select</a>
-		<p class="preset-paragraph"><strong>New Player Experience:</strong> Good for first-time players as it crafts an easy-to-understand run for those looking to get into randomizers.</p>
+	<h4>Standard Presets</h4>
+	<a class="preset-button styled-button" @onclick="@(() => LoadStandardPreset("default"))">Select</a>
+	<p class="preset-paragraph"><strong>Default:</strong> Good for first-time players as it crafts an easy-to-understand run for those looking to get into randomizers.</p>
 
-		<a class="preset-button styled-button" @onclick="@(() => LoadStandardPreset("improved-vanilla"))">Select</a>
-		<p class="preset-paragraph"><strong>Improved Vanilla:</strong> Puts in bug fixes to the original game but maintains the overall basic FF experience.</p>
+	<a class="preset-button styled-button" @onclick="@(() => LoadStandardPreset("improved-vanilla"))">Select</a>
+	<p class="preset-paragraph"><strong>Improved Vanilla:</strong> Puts in bug fixes to the original game but maintains the overall basic FF experience.</p>
 
-		<h4>User Presets</h4>
-		<p>
-			@foreach (var preset in localPresets)
-			{
-				<span style="white-space:nowrap" @key="preset" class="oneline">
-					<a class="preset-button styled-button" @onclick="@(() => LoadLocalPreset(@preset))">@preset</a>
-					<a class="preset-button styled-button preset-close" @onclick="@(() => DeleteLocalPreset(@preset))">X</a>
-				</span>}
-		</p>
+	<a class="preset-button styled-button" @onclick="@(() => LoadStandardPreset("entranceshuffle"))">Select</a>
+	<p class="preset-paragraph"><strong>Floor and Entrance Shuffle:</strong> Mixes things up by shuffling all entrances and floors.</p>
 
-		<p>
-			Current:
-			<input type="text" id="presetNameInput" @bind="presetName" />
-		</p>
+	<a class="preset-button styled-button" @onclick="@(() => LoadStandardPreset("shardhunt"))">Select</a>
+	<p class="preset-paragraph"><strong>Shard Hunt:</strong> Instead of lighting the fours orbs, seek out and collect shards hidden in random treasure chests to remove the Black Orb.</p>
 
-		<p>
-			<a class="styled-button" @onclick="@(() => SavePreset(false))">Save Preset</a>
-			<a class="styled-button" @onclick="@(() => SavePreset(true))">Export to JSON</a>
-		</p>
+	<a class="preset-button styled-button" @onclick="@(() => LoadStandardPreset("chaos-rush"))">Select</a>
+	<p class="preset-paragraph"><strong>Chaos Rush:</strong> Gives you free orbs, removes the requirement for Key and Lute, and tasks you with simply getting to Chaos, and killing them, as fast as possible.</p>
 
-		<p>
-			Load from JSON:
-			<input type="file" id="presetInput" @onchange="OnPresetChanged" />
-		</p>
-		<div class="clear-it"></div>
-	</div>
+	<a class="preset-button styled-button" @onclick="@(() => LoadStandardPreset("freeenterprise"))">Select</a>
+	<p class="preset-paragraph"><strong>Free Enterprise:</strong> Starts with the Airship right away, opening up the whole worldmap to explore.</p>
+
+	<h4>User Presets</h4>
+	<p>
+		@foreach (var preset in localPresets)
+		{
+<span style="white-space:nowrap" @key="preset" class="oneline">
+	<a class="preset-button styled-button" @onclick="@(() => LoadLocalPreset(@preset))">@preset</a>
+	<a class="preset-button styled-button preset-close" @onclick="@(() => DeleteLocalPreset(@preset))">X</a>
+</span>}
+	</p>
+
+	<p>
+		Current:
+		<input type="text" id="presetNameInput" @bind="presetName" />
+	</p>
+
+	<p>
+		<a class="styled-button" @onclick="@(() => SavePreset(false))">Save Preset</a>
+		<a class="styled-button" @onclick="@(() => SavePreset(true))">Export to JSON</a>
+	</p>
+
+	<p>
+		Load from JSON:
+		<input type="file" id="presetInput" @onchange="OnPresetChanged" />
+	</p>
+	<div class="clear-it"></div>
+</div>
 
 
 @code { [Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }

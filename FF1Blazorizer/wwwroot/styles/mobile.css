@@ -79,9 +79,9 @@ display: block;
 }
 
 .ffr-tooltip {
-    left: 0px !important;
-    top: 0px !important;
-    width: 100vw !important;
+    left: 1vw !important;
+    top: 20px !important;
+    width: 98vw !important;
 }
 
 .ffr-tooltip-screenshot {
