@@ -61,6 +61,14 @@ a.nav-link.nav-item.active {
     display: block;
 }
 
+.expand-collapse-button {
+    justify-content: center;
+}
+
+.expand-collapse-button.tabbed {
+    margin-left: 0px;
+}
+
 .col1, .col2{
 float: none;
 width: 100%;
