@@ -12,6 +12,12 @@
 		"description": "Verifies that the ROM provided is an original Final Fantasy 1 ROM."
 	},
 	{
+		"Id": "blindseedCheckBox",
+		"title": "Make Blind Seed",
+		"screenshot": "blindseed.png",
+		"description": "Hides all flags to create a mystery flagset to distribute.\nThis flag cannot be disabled once clicked. Save flagset before use."
+	},
+	{
 		"Id": "spoilersCheckBox",
 		"title": "Generate Spoiler Log!",
 		"screenshot": "spoilerCheckBox.png",

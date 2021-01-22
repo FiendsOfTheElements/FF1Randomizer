@@ -15,6 +15,7 @@ namespace FF1Lib
 	{
 		public bool Spoilers { get; set; } = false;
 		public bool TournamentSafe { get; set; } = false;
+		public bool BlindSeed { get; set; } = false;
 		public bool? Shops { get; set; } = false;
 		public bool? Treasures { get; set; } = false;
 		public bool? NPCItems { get; set; } = false;

@@ -13,7 +13,11 @@
 
 	<main id="right-column">
 		<h1>Final Fantasy Randomizer</h1>
-		@if (noTabLayout)
+		@if (Flags.BlindSeed)
+		{
+			<BlindSeedTab Flags="@Flags" StatusMessage="@StatusMessage" SetStatusMessage="@SetStatusMessage" noTabLayout="@true"/>
+		}
+		else if (noTabLayout)
 		{
 			<PresetsTab Flags="@Flags" SetStatusMessage="@SetStatusMessage" loadDefault="@loadDefault" SetDefaultLoaded="@SetDefaultLoaded" noTabLayout="@noTabLayout" />
 			<ShopsTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
