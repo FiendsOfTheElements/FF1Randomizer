@@ -7,6 +7,10 @@
      width: 200px;
 }
 
+input[type='range'].indent {
+        margin-left: 20px;
+}
+
 input[type='range']::-webkit-slider-thumb {
     pointer-events: all;
     z-index: 2;

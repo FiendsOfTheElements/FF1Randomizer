@@ -2172,6 +2172,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ChangeLute"));
 			}
 		}
+		public bool NoTabLayout
+		{
+			get => Preferences.NoTabLayout;
+			set
+			{
+				Preferences.NoTabLayout = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NoTabLayout"));
+			}
+		}
 		public Fate HurrayDwarfFate
 		{
 			get => Preferences.HurrayDwarfFate;
@@ -2181,6 +2190,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("HurrayDwarfFate"));
 			}
 		}
+
 		public MapmanSlot MapmanSlot
 		{
 			get => Preferences.MapmanSlot;

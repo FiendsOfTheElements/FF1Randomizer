@@ -19,5 +19,6 @@ namespace FF1Lib
 		public bool ChangeLute { get; set; } = false;
 		public Fate HurrayDwarfFate { get; set; } = Fate.Spare;
 		public bool RenounceAutosort { get; set; } = false;
+		public bool NoTabLayout { get; set; } = false;
 	}
 }
