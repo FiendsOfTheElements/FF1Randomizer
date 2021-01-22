@@ -1159,11 +1159,20 @@ namespace FF1Lib
 			var selectList = new List<FF1Class>();
 			var classList = new List<FF1Class>();
 
-			// New talk routine to add class to 4th slot
-			var talk_class = talkroutines.Add(Blob.FromHex("A470F0052079909032A57148A2C0A5739D0061A9009D26619D01619D0B619D0D6120669F20509FA00E207990900320C59520829FA4762073926860A57260"));
+			// Repurpose the LineupMenu to select which character get replaced
+			// New Routine when coming from a dialogue
+			PutInBank(0x0E, 0x98C0, Blob.FromHex("A565F0034C149AA525D034A524D023A520290CC564F02C8564290CF026C908F007A561186908D005A56138E908291F856160A9008524A8A5610A0A0AAA9002A425686860")); 
+			PutInBank(0x0E, 0x9911, Blob.FromHex("A5228565")); // Store joy_select to read it
+			PutInBank(0x0E, 0x99D7, Blob.FromHex("20C098")); // Hijack LineupMenu_ProcessJoy
+			PutInBank(0x1F, 0xCA5C, Blob.FromHex("201199")); // Jump a bit earlier SM
+			PutInBank(0x1F, 0xC1BC, Blob.FromHex("201199")); // Jump a bit earlier OW
+			PutInBank(0x1F, 0xCA4E, Blob.FromHex("EAEAEAEA")); // Don't zero out joy_select
+
+			// New talk routine to add class
+			var talk_class = talkroutines.Add(Blob.FromHex("A470F005207990903DA571203D9620A49FC000D02BA5739D0061A9009D26619D01619D0B619D0D6120649F20509FA00E207990900320C59520879FA4762073922018964C4396A57260"));
 
 			// Routines to switch the class (clear stats, equipment, new stats, levelup)
-			PutInBank(newTalkRoutinesBank, 0x9F50, Blob.FromHex("A91148A9FE48A90648A9C748A98248A2C0A9004C03FEA018B9C061297F99C061C8C020D0F3A000A90099C063C8C02FD0F860A91148A9FE48A90648A98748A9A948A9038510A91B4C03FE"));
+			PutInBank(newTalkRoutinesBank, 0x9F50, Blob.FromHex("A91148A9FE48A90648A9C748A98248A9004C03FEA0188610A9618511B110297F9110C8C020D0F5A000A9638511A9009110C8C02FD0F960A91148A9FE48A90648A98748A9A9488A4A4A4A4A4A4A8510A91B4C03FEA91148A9FE48A90648A99948A91048A9008565A90E4C03FE"));
 
 			var totalKeyNPC = (bool)flags.ClassAsNpcKeyNPC ? Math.Min(flags.ClassAsNpcCount, 12) : 0;
 			var totalAllNPC = ((bool)flags.ClassAsNpcFiends ? 4 : 0) + totalKeyNPC;

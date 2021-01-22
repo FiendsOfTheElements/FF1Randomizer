@@ -234,6 +234,12 @@
 		"description": "Increases the stats of Bikke's pirates considerably, roughly to the equivalent of a level 6 Fighter with a cheap but decent sword and iron armor, and increases the XP and gold yield from them by a factor of 20.  This is done before stat scaling, and also increases the level of script they can carry when generating balanced scripts (if Allow Unsafe Pirates is on)."
 	},
 	{
+		"Id": "scaryImpsCheckBox",
+		"title": "Scary Imps",
+		"screenshot": "enemySkillsSpellsCheckBox.png",
+		"description": "When shuffling scripts, add Imps to the same pool as ToFR Fiends, WarMech and Chaos."
+	},
+	{
 		"Id": "shuffleAstosCheckBox",
 		"title": "Shuffle Astos",
 		"screenshot": "shuffleAstosCheckBox.png",
@@ -1128,19 +1134,19 @@
 		"Id": "classAsNpcFiendsCheckBox",
 		"title": "Characters gated by Fiends",
 		"screenshot": "classAsNpcFiendsCheckBox.png",
-		"description": "A new character (from a random class) is behind each Fiend. When talked to, that character replaces the 4th slot party member."
+		"description": "A new character (from a random class) is behind each Fiend. When talked to, that character replaces the selected party member. Push B at selection screen to cancel."
 	},
 	{
 		"Id": "classAsNpcForcedFiendsCheckBox",
 		"title": "Forced Characters",
 		"screenshot": "classAsNpcForcedFiendsCheckBox.png",
-		"description": "This places this new character in front of the orb before a fiend battle, forcing the party to pick up the new character (replacing the fourth member in this party) before they can fight the fiend and light the orb."
+		"description": "This places this new character in front of the altar, forcing the party to pick up the new character before they can light the orb."
 	},
 	{
 		"Id": "classAsNpcKeyNpcCheckBox",
 		"title": "Characters linked to Key NPCs",
 		"screenshot": "classAsNpcKeyNpcCheckBox.png",
-		"description": "A new character (from a random class) is linked to a key NPC. If that key NPC requirement is fulfilled, the linked character replaces the 4th slot party member.\nPossible key NPCs: Princess Sara, Matoya, Bikke, King of the Northwest Castle, Elf Prince, Smith, Nerrick, Dr. Unne, Sarda, Canoe Sage, Fairy, Lefeinish Man."
+		"description": "A new character (from a random class) is linked to a key NPC. If that key NPC requirement is fulfilled, the linked character replaces the selected party member. Push B at selection screen to cancel.\nPossible key NPCs: Princess Sara, Matoya, Bikke, King of the Northwest Castle, Elf Prince, Smith, Nerrick, Dr. Unne, Sarda, Canoe Sage, Fairy, Lefeinish Man."
 	},
 	{
 		"Id": "classAsNpcDuplicateCheckBox",
