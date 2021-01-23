@@ -15,7 +15,7 @@
 		<h1>Final Fantasy Randomizer</h1>
 		@if (Flags.BlindSeed)
 		{
-			<BlindSeedTab Flags="@Flags" StatusMessage="@StatusMessage" SetStatusMessage="@SetStatusMessage" noTabLayout="@true"/>
+			<BlindSeedTab Flags="@Flags" StatusMessage="@StatusMessage" SetStatusMessage="@SetStatusMessage" noTabLayout="@true" />
 		}
 		else if (noTabLayout)
 		{
@@ -28,6 +28,7 @@
 			<MapsTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
 			<ScaleTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
 			<PartyTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
+			<ClassesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
 			<ConveniencesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
 			<BugFixesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
 			<ExperimentalTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
@@ -90,6 +91,12 @@
 							<BSTabLabel>Party</BSTabLabel>
 							<BSTabContent>
 								<PartyTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
+							</BSTabContent>
+						</BSTab>
+						<BSTab>
+							<BSTabLabel>Classes</BSTabLabel>
+							<BSTabContent>
+								<ClassesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
 							</BSTabContent>
 						</BSTab>
 						<BSTab>

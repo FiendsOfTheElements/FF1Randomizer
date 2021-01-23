@@ -16,7 +16,14 @@
 						<td class="job redmage" title="Red Mage"></td>
 						<td class="job whitemage" title="White Mage"></td>
 						<td class="job blackmage right-bordered" title="Black Mage"></td>
+						<td class="job knight" title="Knight"></td>
+						<td class="job ninja" title="Ninja"></td>
+						<td class="job master" title="Master"></td>
+						<td class="job redwizard" title="Red Wizard"></td>
+						<td class="job whitewizard" title="White Wizard"></td>
+						<td class="job blackwizard right-bordered" title="Black Wizard"></td>
 						<td>None!</td>
+
 					</tr>
 					<tr class="odd bottom-borderd">
 						<td class="right-bordered">All</td>
@@ -27,149 +34,89 @@
 						<td><TriStateCheckBox DisableTooltip Id="partyRedMageAll" @bind-Value="@Flags.AllRedMages"></TriStateCheckBox></td>
 						<td><TriStateCheckBox DisableTooltip Id="partyWhiteMageAll" @bind-Value="@Flags.AllWhiteMages"></TriStateCheckBox></td>
 						<td class="right-bordered"><TriStateCheckBox DisableTooltip Id="partyBlackMageAll" @bind-Value="@Flags.AllBlackMages"></TriStateCheckBox></td>
-						<td><TriStateCheckBox DisableTooltip Id="partyNoneAll" @bind-Value="@Flags.AllNones" IsEnabled="@(Flags.EnablePoolParty != true)"></TriStateCheckBox></td>
-					</tr>
-				</table>
-				<BSCollapse IsOpen=@(Flags.EnablePoolParty != true)>
-					<table>
-						<tr class="odd jobs" style="visibility: collapse;">
-							<td class="right-bordered">Permitted Classes</td>
-							<td>Forced?</td>
-							<td class="job fighter" title="Fighter"></td>
-							<td class="job thief" title="Thief"></td>
-							<td class="job blackbelt" title="Black Belt"></td>
-							<td class="job redmage" title="Red Mage"></td>
-							<td class="job whitemage" title="White Mage"></td>
-							<td class="job blackmage right-bordered" title="Black Mage"></td>
-							<td>None!</td>
-						</tr>
-						<tr>
-							<td class="right-bordered">#1</td>
-							<td><TriStateCheckBox DisableTooltip Id="partyForced1" @bind-Value="@Flags.FORCED1"></TriStateCheckBox></td>
-							<td><TriStateCheckBox DisableTooltip Id="partyFighter1" @bind-Value="@Flags.FIGHTER1"></TriStateCheckBox></td>
-							<td><TriStateCheckBox DisableTooltip Id="partyThief1" @bind-Value="@Flags.THIEF1"></TriStateCheckBox></td>
-							<td><TriStateCheckBox DisableTooltip Id="partyBlackBelt1" @bind-Value="@Flags.BLACK_BELT1"></TriStateCheckBox></td>
-							<td><TriStateCheckBox DisableTooltip Id="partyRedMage1" @bind-Value="@Flags.RED_MAGE1"></TriStateCheckBox></td>
-							<td><TriStateCheckBox DisableTooltip Id="partyWhiteMage1" @bind-Value="@Flags.WHITE_MAGE1"></TriStateCheckBox></td>
-							<td class="right-bordered"><TriStateCheckBox DisableTooltip Id="partyBlackMage1" @bind-Value="@Flags.BLACK_MAGE1"></TriStateCheckBox></td>
-							<td></td>
-						</tr>
-						<tr class="odd">
-							<td class="right-bordered">#2</td>
-							<td><TriStateCheckBox DisableTooltip Id="partyForced2" @bind-Value="@Flags.FORCED2"></TriStateCheckBox></td>
-							<td><TriStateCheckBox DisableTooltip Id="partyFighter2" @bind-Value="@Flags.FIGHTER2"></TriStateCheckBox></td>
-							<td><TriStateCheckBox DisableTooltip Id="partyThief2" @bind-Value="@Flags.THIEF2"></TriStateCheckBox></td>
-							<td><TriStateCheckBox DisableTooltip Id="partyBlackBelt2" @bind-Value="@Flags.BLACK_BELT2"></TriStateCheckBox></td>
-							<td><TriStateCheckBox DisableTooltip Id="partyRedMage2" @bind-Value="@Flags.RED_MAGE2"></TriStateCheckBox></td>
-							<td><TriStateCheckBox DisableTooltip Id="partyWhiteMage2" @bind-Value="@Flags.WHITE_MAGE2"></TriStateCheckBox></td>
-							<td class="right-bordered"><TriStateCheckBox DisableTooltip Id="partyBlackMage2" @bind-Value="@Flags.BLACK_MAGE2"></TriStateCheckBox></td>
-							<td><TriStateCheckBox DisableTooltip Id="partyNone2" @bind-Value="@Flags.NONE_CLASS2"></TriStateCheckBox></td>
-						</tr>
-						<tr>
-							<td class="right-bordered">#3</td>
-							<td><TriStateCheckBox DisableTooltip Id="partyForced3" @bind-Value="@Flags.FORCED3"></TriStateCheckBox></td>
-							<td><TriStateCheckBox DisableTooltip Id="partyFighter3" @bind-Value="@Flags.FIGHTER3"></TriStateCheckBox></td>
-							<td><TriStateCheckBox DisableTooltip Id="partyThief3" @bind-Value="@Flags.THIEF3"></TriStateCheckBox></td>
-							<td><TriStateCheckBox DisableTooltip Id="partyBlackBelt3" @bind-Value="@Flags.BLACK_BELT3"></TriStateCheckBox></td>
-							<td><TriStateCheckBox DisableTooltip Id="partyRedMage3" @bind-Value="@Flags.RED_MAGE3"></TriStateCheckBox></td>
-							<td><TriStateCheckBox DisableTooltip Id="partyWhiteMage3" @bind-Value="@Flags.WHITE_MAGE3"></TriStateCheckBox></td>
-							<td class="right-bordered"><TriStateCheckBox DisableTooltip Id="partyBlackMage3" @bind-Value="@Flags.BLACK_MAGE3"></TriStateCheckBox></td>
-							<td><TriStateCheckBox DisableTooltip Id="partyNone3" @bind-Value="@Flags.NONE_CLASS3"></TriStateCheckBox></td>
-						</tr>
-						<tr class="odd">
-							<td class="right-bordered">#4</td>
-							<td><TriStateCheckBox DisableTooltip Id="partyForced4" @bind-Value="@Flags.FORCED4"></TriStateCheckBox></td>
-							<td><TriStateCheckBox DisableTooltip Id="partyFighter4" @bind-Value="@Flags.FIGHTER4"></TriStateCheckBox></td>
-							<td><TriStateCheckBox DisableTooltip Id="partyThief4" @bind-Value="@Flags.THIEF4"></TriStateCheckBox></td>
-							<td><TriStateCheckBox DisableTooltip Id="partyBlackBelt4" @bind-Value="@Flags.BLACK_BELT4"></TriStateCheckBox></td>
-							<td><TriStateCheckBox DisableTooltip Id="partyRedMage4" @bind-Value="@Flags.RED_MAGE4"></TriStateCheckBox></td>
-							<td><TriStateCheckBox DisableTooltip Id="partyWhiteMage4" @bind-Value="@Flags.WHITE_MAGE4"></TriStateCheckBox></td>
-							<td class="right-bordered"><TriStateCheckBox DisableTooltip Id="partyBlackMage4" @bind-Value="@Flags.BLACK_MAGE4"></TriStateCheckBox></td>
-							<td><TriStateCheckBox DisableTooltip Id="partyNone4" @bind-Value="@Flags.NONE_CLASS4"></TriStateCheckBox></td>
-						</tr>
-					</table>
-
-				</BSCollapse>
-			</div>
-			<div class="table-wrapper">
-				<table>
-					<tr class="jobs">
-						<td class="right-bordered">Classes</td>
-						<td>Forced?</td>
-						<td class="job knight" title="Knight"></td>
-						<td class="job ninja" title="Ninja"></td>
-						<td class="job master" title="Master"></td>
-						<td class="job redwizard" title="Red Wizard"></td>
-						<td class="job whitewizard" title="White Wizard"></td>
-						<td class="job blackwizard" title="Black Wizard"></td>
-					</tr>
-					<tr class="odd bottom-borderd">
-						<td class="right-bordered">All</td>
-						<td><TriStateCheckBox DisableTooltip Id="partyForcedAll" @bind-Value="@Flags.AllForced" IsEnabled="@(Flags.EnablePoolParty != true)"></TriStateCheckBox></td>
 						<td><TriStateCheckBox DisableTooltip Id="partyKnightAll" @bind-Value="@Flags.AllKnights"></TriStateCheckBox></td>
 						<td><TriStateCheckBox DisableTooltip Id="partyNinjaAll" @bind-Value="@Flags.AllNinjas"></TriStateCheckBox></td>
 						<td><TriStateCheckBox DisableTooltip Id="partyMasterAll" @bind-Value="@Flags.AllMasters"></TriStateCheckBox></td>
 						<td><TriStateCheckBox DisableTooltip Id="partyRedWizAll" @bind-Value="@Flags.AllRedWizards"></TriStateCheckBox></td>
 						<td><TriStateCheckBox DisableTooltip Id="partyWhiteWizAll" @bind-Value="@Flags.AllWhiteWizards"></TriStateCheckBox></td>
-						<td><TriStateCheckBox DisableTooltip Id="partyBlackWizAll" @bind-Value="@Flags.AllBlackWizards"></TriStateCheckBox></td>
+						<td class="right-bordered"><TriStateCheckBox DisableTooltip Id="partyBlackWizAll" @bind-Value="@Flags.AllBlackWizards"></TriStateCheckBox></td>
+						<td><TriStateCheckBox DisableTooltip Id="partyNoneAll" @bind-Value="@Flags.AllNones" IsEnabled="@(Flags.EnablePoolParty != true)"></TriStateCheckBox></td>
 					</tr>
-				</table>
-				<BSCollapse IsOpen=@(Flags.EnablePoolParty != true)>
-					<table>
-						<tr class="odd jobs" style="visibility: collapse;">
-							<td class="right-bordered">Permitted Classes</td>
-							<td>Forced?</td>
-							<td class="job knight" title="Knight"></td>
-							<td class="job ninja" title="Ninja"></td>
-							<td class="job master" title="Master"></td>
-							<td class="job redwizard" title="Red Wizard"></td>
-							<td class="job whitewizard" title="White Wizard"></td>
-							<td class="job blackwizard" title="Black Wizard"></td>
-						</tr>
-						<tr>
-							<td class="right-bordered">#1</td>
-							<td><TriStateCheckBox DisableTooltip Id="partyForced1" @bind-Value="@Flags.FORCED1"></TriStateCheckBox></td>
-							<td><TriStateCheckBox DisableTooltip Id="partyKnight1" @bind-Value="@Flags.KNIGHT1"></TriStateCheckBox></td>
-							<td><TriStateCheckBox DisableTooltip Id="partyNinja1" @bind-Value="@Flags.NINJA1"></TriStateCheckBox></td>
-							<td><TriStateCheckBox DisableTooltip Id="partyMaster1" @bind-Value="@Flags.MASTER1"></TriStateCheckBox></td>
-							<td><TriStateCheckBox DisableTooltip Id="partyRedWiz1" @bind-Value="@Flags.RED_WIZ1"></TriStateCheckBox></td>
-							<td><TriStateCheckBox DisableTooltip Id="partyWhiteWiz1" @bind-Value="@Flags.WHITE_WIZ1"></TriStateCheckBox></td>
-							<td><TriStateCheckBox DisableTooltip Id="partyBlackWiz1" @bind-Value="@Flags.BLACK_WIZ1"></TriStateCheckBox></td>
-							<td></td>
-						</tr>
-						<tr class="odd">
-							<td class="right-bordered">#2</td>
-							<td><TriStateCheckBox DisableTooltip Id="partyForced2" @bind-Value="@Flags.FORCED2"></TriStateCheckBox></td>
-							<td><TriStateCheckBox DisableTooltip Id="partyKnight2" @bind-Value="@Flags.KNIGHT2"></TriStateCheckBox></td>
-							<td><TriStateCheckBox DisableTooltip Id="partyNinja2" @bind-Value="@Flags.NINJA2"></TriStateCheckBox></td>
-							<td><TriStateCheckBox DisableTooltip Id="partyMaster2" @bind-Value="@Flags.MASTER2"></TriStateCheckBox></td>
-							<td><TriStateCheckBox DisableTooltip Id="partyRedWiz2" @bind-Value="@Flags.RED_WIZ2"></TriStateCheckBox></td>
-							<td><TriStateCheckBox DisableTooltip Id="partyWhiteWiz2" @bind-Value="@Flags.WHITE_WIZ2"></TriStateCheckBox></td>
-							<td><TriStateCheckBox DisableTooltip Id="partyBlackWiz2" @bind-Value="@Flags.BLACK_WIZ2"></TriStateCheckBox></td>
-						</tr>
-						<tr>
-							<td class="right-bordered">#3</td>
-							<td><TriStateCheckBox DisableTooltip Id="partyForced3" @bind-Value="@Flags.FORCED3"></TriStateCheckBox></td>
-							<td><TriStateCheckBox DisableTooltip Id="partyKnight3" @bind-Value="@Flags.KNIGHT3"></TriStateCheckBox></td>
-							<td><TriStateCheckBox DisableTooltip Id="partyNinja3" @bind-Value="@Flags.NINJA3"></TriStateCheckBox></td>
-							<td><TriStateCheckBox DisableTooltip Id="partyMaster3" @bind-Value="@Flags.MASTER3"></TriStateCheckBox></td>
-							<td><TriStateCheckBox DisableTooltip Id="partyRedWiz3" @bind-Value="@Flags.RED_WIZ3"></TriStateCheckBox></td>
-							<td><TriStateCheckBox DisableTooltip Id="partyWhiteWiz3" @bind-Value="@Flags.WHITE_WIZ3"></TriStateCheckBox></td>
-							<td><TriStateCheckBox DisableTooltip Id="partyBlackWiz3" @bind-Value="@Flags.BLACK_WIZ3"></TriStateCheckBox></td>
-						</tr>
-						<tr class="odd">
-							<td class="right-bordered">#4</td>
-							<td><TriStateCheckBox DisableTooltip Id="partyForced4" @bind-Value="@Flags.FORCED4"></TriStateCheckBox></td>
-							<td><TriStateCheckBox DisableTooltip Id="partyKnight4" @bind-Value="@Flags.KNIGHT4"></TriStateCheckBox></td>
-							<td><TriStateCheckBox DisableTooltip Id="partyNinja4" @bind-Value="@Flags.NINJA4"></TriStateCheckBox></td>
-							<td><TriStateCheckBox DisableTooltip Id="partyMaster4" @bind-Value="@Flags.MASTER4"></TriStateCheckBox></td>
-							<td><TriStateCheckBox DisableTooltip Id="partyRedWiz4" @bind-Value="@Flags.RED_WIZ4"></TriStateCheckBox></td>
-							<td><TriStateCheckBox DisableTooltip Id="partyWhiteWiz4" @bind-Value="@Flags.WHITE_WIZ4"></TriStateCheckBox></td>
-							<td><TriStateCheckBox DisableTooltip Id="partyBlackWiz4" @bind-Value="@Flags.BLACK_WIZ4"></TriStateCheckBox></td>
-						</tr>
-					</table>
-				</BSCollapse>
-			</div>
+					@if (Flags.EnablePoolParty != true)
+					{
+				<tr>
+					<td class="right-bordered">#1</td>
+					<td><TriStateCheckBox DisableTooltip Id="partyForced1" @bind-Value="@Flags.FORCED1"></TriStateCheckBox></td>
+					<td><TriStateCheckBox DisableTooltip Id="partyFighter1" @bind-Value="@Flags.FIGHTER1"></TriStateCheckBox></td>
+					<td><TriStateCheckBox DisableTooltip Id="partyThief1" @bind-Value="@Flags.THIEF1"></TriStateCheckBox></td>
+					<td><TriStateCheckBox DisableTooltip Id="partyBlackBelt1" @bind-Value="@Flags.BLACK_BELT1"></TriStateCheckBox></td>
+					<td><TriStateCheckBox DisableTooltip Id="partyRedMage1" @bind-Value="@Flags.RED_MAGE1"></TriStateCheckBox></td>
+					<td><TriStateCheckBox DisableTooltip Id="partyWhiteMage1" @bind-Value="@Flags.WHITE_MAGE1"></TriStateCheckBox></td>
+					<td class="right-bordered"><TriStateCheckBox DisableTooltip Id="partyBlackMage1" @bind-Value="@Flags.BLACK_MAGE1"></TriStateCheckBox></td>
+					<td><TriStateCheckBox DisableTooltip Id="partyKnight1" @bind-Value="@Flags.KNIGHT1"></TriStateCheckBox></td>
+					<td><TriStateCheckBox DisableTooltip Id="partyNinja1" @bind-Value="@Flags.NINJA1"></TriStateCheckBox></td>
+					<td><TriStateCheckBox DisableTooltip Id="partyMaster1" @bind-Value="@Flags.MASTER1"></TriStateCheckBox></td>
+					<td><TriStateCheckBox DisableTooltip Id="partyRedWiz1" @bind-Value="@Flags.RED_WIZ1"></TriStateCheckBox></td>
+					<td><TriStateCheckBox DisableTooltip Id="partyWhiteWiz1" @bind-Value="@Flags.WHITE_WIZ1"></TriStateCheckBox></td>
+					<td class="right-bordered"><TriStateCheckBox DisableTooltip Id="partyBlackWiz1" @bind-Value="@Flags.BLACK_WIZ1"></TriStateCheckBox></td>
+					<td></td>
+				</tr>
+				<tr class="odd">
+					<td class="right-bordered">#2</td>
+					<td><TriStateCheckBox DisableTooltip Id="partyForced2" @bind-Value="@Flags.FORCED2"></TriStateCheckBox></td>
+					<td><TriStateCheckBox DisableTooltip Id="partyFighter2" @bind-Value="@Flags.FIGHTER2"></TriStateCheckBox></td>
+					<td><TriStateCheckBox DisableTooltip Id="partyThief2" @bind-Value="@Flags.THIEF2"></TriStateCheckBox></td>
+					<td><TriStateCheckBox DisableTooltip Id="partyBlackBelt2" @bind-Value="@Flags.BLACK_BELT2"></TriStateCheckBox></td>
+					<td><TriStateCheckBox DisableTooltip Id="partyRedMage2" @bind-Value="@Flags.RED_MAGE2"></TriStateCheckBox></td>
+					<td><TriStateCheckBox DisableTooltip Id="partyWhiteMage2" @bind-Value="@Flags.WHITE_MAGE2"></TriStateCheckBox></td>
+					<td class="right-bordered"><TriStateCheckBox DisableTooltip Id="partyBlackMage2" @bind-Value="@Flags.BLACK_MAGE2"></TriStateCheckBox></td>
+					<td><TriStateCheckBox DisableTooltip Id="partyKnight2" @bind-Value="@Flags.KNIGHT2"></TriStateCheckBox></td>
+					<td><TriStateCheckBox DisableTooltip Id="partyNinja2" @bind-Value="@Flags.NINJA2"></TriStateCheckBox></td>
+					<td><TriStateCheckBox DisableTooltip Id="partyMaster2" @bind-Value="@Flags.MASTER2"></TriStateCheckBox></td>
+					<td><TriStateCheckBox DisableTooltip Id="partyRedWiz2" @bind-Value="@Flags.RED_WIZ2"></TriStateCheckBox></td>
+					<td><TriStateCheckBox DisableTooltip Id="partyWhiteWiz2" @bind-Value="@Flags.WHITE_WIZ2"></TriStateCheckBox></td>
+					<td class="right-bordered"><TriStateCheckBox DisableTooltip Id="partyBlackWiz2" @bind-Value="@Flags.BLACK_WIZ2"></TriStateCheckBox></td>
+					<td><TriStateCheckBox DisableTooltip Id="partyNone2" @bind-Value="@Flags.NONE_CLASS2"></TriStateCheckBox></td>
+				</tr>
+				<tr>
+					<td class="right-bordered">#3</td>
+					<td><TriStateCheckBox DisableTooltip Id="partyForced3" @bind-Value="@Flags.FORCED3"></TriStateCheckBox></td>
+					<td><TriStateCheckBox DisableTooltip Id="partyFighter3" @bind-Value="@Flags.FIGHTER3"></TriStateCheckBox></td>
+					<td><TriStateCheckBox DisableTooltip Id="partyThief3" @bind-Value="@Flags.THIEF3"></TriStateCheckBox></td>
+					<td><TriStateCheckBox DisableTooltip Id="partyBlackBelt3" @bind-Value="@Flags.BLACK_BELT3"></TriStateCheckBox></td>
+					<td><TriStateCheckBox DisableTooltip Id="partyRedMage3" @bind-Value="@Flags.RED_MAGE3"></TriStateCheckBox></td>
+					<td><TriStateCheckBox DisableTooltip Id="partyWhiteMage3" @bind-Value="@Flags.WHITE_MAGE3"></TriStateCheckBox></td>
+					<td class="right-bordered"><TriStateCheckBox DisableTooltip Id="partyBlackMage3" @bind-Value="@Flags.BLACK_MAGE3"></TriStateCheckBox></td>
+					<td><TriStateCheckBox DisableTooltip Id="partyKnight3" @bind-Value="@Flags.KNIGHT3"></TriStateCheckBox></td>
+					<td><TriStateCheckBox DisableTooltip Id="partyNinja3" @bind-Value="@Flags.NINJA3"></TriStateCheckBox></td>
+					<td><TriStateCheckBox DisableTooltip Id="partyMaster3" @bind-Value="@Flags.MASTER3"></TriStateCheckBox></td>
+					<td><TriStateCheckBox DisableTooltip Id="partyRedWiz3" @bind-Value="@Flags.RED_WIZ3"></TriStateCheckBox></td>
+					<td><TriStateCheckBox DisableTooltip Id="partyWhiteWiz3" @bind-Value="@Flags.WHITE_WIZ3"></TriStateCheckBox></td>
+					<td class="right-bordered"><TriStateCheckBox DisableTooltip Id="partyBlackWiz3" @bind-Value="@Flags.BLACK_WIZ3"></TriStateCheckBox></td>
+					<td><TriStateCheckBox DisableTooltip Id="partyNone3" @bind-Value="@Flags.NONE_CLASS3"></TriStateCheckBox></td>
+				</tr>
+				<tr class="odd">
+					<td class="right-bordered">#4</td>
+					<td><TriStateCheckBox DisableTooltip Id="partyForced4" @bind-Value="@Flags.FORCED4"></TriStateCheckBox></td>
+					<td><TriStateCheckBox DisableTooltip Id="partyFighter4" @bind-Value="@Flags.FIGHTER4"></TriStateCheckBox></td>
+					<td><TriStateCheckBox DisableTooltip Id="partyThief4" @bind-Value="@Flags.THIEF4"></TriStateCheckBox></td>
+					<td><TriStateCheckBox DisableTooltip Id="partyBlackBelt4" @bind-Value="@Flags.BLACK_BELT4"></TriStateCheckBox></td>
+					<td><TriStateCheckBox DisableTooltip Id="partyRedMage4" @bind-Value="@Flags.RED_MAGE4"></TriStateCheckBox></td>
+					<td><TriStateCheckBox DisableTooltip Id="partyWhiteMage4" @bind-Value="@Flags.WHITE_MAGE4"></TriStateCheckBox></td>
+					<td class="right-bordered"><TriStateCheckBox DisableTooltip Id="partyBlackMage4" @bind-Value="@Flags.BLACK_MAGE4"></TriStateCheckBox></td>
+					<td><TriStateCheckBox DisableTooltip Id="partyKnight4" @bind-Value="@Flags.KNIGHT4"></TriStateCheckBox></td>
+					<td><TriStateCheckBox DisableTooltip Id="partyNinja4" @bind-Value="@Flags.NINJA4"></TriStateCheckBox></td>
+					<td><TriStateCheckBox DisableTooltip Id="partyMaster4" @bind-Value="@Flags.MASTER4"></TriStateCheckBox></td>
+					<td><TriStateCheckBox DisableTooltip Id="partyRedWiz4" @bind-Value="@Flags.RED_WIZ4"></TriStateCheckBox></td>
+					<td><TriStateCheckBox DisableTooltip Id="partyWhiteWiz4" @bind-Value="@Flags.WHITE_WIZ4"></TriStateCheckBox></td>
+					<td class="right-bordered"><TriStateCheckBox DisableTooltip Id="partyBlackWiz4" @bind-Value="@Flags.BLACK_WIZ4"></TriStateCheckBox></td>
+					<td><TriStateCheckBox DisableTooltip Id="partyNone4" @bind-Value="@Flags.NONE_CLASS4"></TriStateCheckBox></td>
+				</tr>
+					}
+			</table>
+
+				
+		</div>
 
 			<br />
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="EnablePoolParty" @bind-Value="Flags.EnablePoolParty">Party Draft</TriStateCheckBox>
@@ -206,36 +153,7 @@
 					</tr>
 				</table>
 			</div>
-			<div class="row">
-				&nbsp;
-			</div>
-			<div class="row">
-				<div class="col1">
-					<h4>Class Balance</h4>
-					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="EnableRandomPromotions" @bind-Value="Flags.EnableRandomPromotions">Random Classes at Class Change</TriStateCheckBox>
-					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnableRandomPromotions" Id="RPIncludeBaseClasses" @bind-Value="Flags.IncludeBaseClasses">Include Base Classes</TriStateCheckBox>
-					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnableRandomPromotions" Id="RPSpoilers" @bind-Value="Flags.RandomPromotionsSpoilers">Spoil Promotions</TriStateCheckBox>
-					<div class="checkbox-cell"></div>
-					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="RandomizeClassCheckBox" @bind-Value="Flags.RandomizeClass">Blursed Classes</TriStateCheckBox>
-					<IntSlider Indent Min="0" Max="4" Step="1" DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.RandomizeClass != false && (Flags.RandomizeClassChaos != true))" Id="RandomizeClassMaxBonusSlider" @bind-Value="@Flags.RandomizeClassMaxBonus">Bonuses:</IntSlider>
-					<IntSlider Indent Min="0" Max="4" Step="1" DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.RandomizeClass != false && (Flags.RandomizeClassChaos != true))" Id="RandomizeClassMaxMalusSlider" @bind-Value="@Flags.RandomizeClassMaxMalus">Maluses:</IntSlider>
-					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@(Flags.RandomizeClass != false && (Flags.RandomizeClassChaos != true))" Id="RandomizeClassNoCastingCheckBox" @bind-Value="Flags.RandomizeClassNoCasting">Exclude Spellcasting Bonuses</TriStateCheckBox>
-					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.RandomizeClass" Id="RandomizeClassChaosCheckBox" @bind-Value="Flags.RandomizeClassChaos">Chaos Mode</TriStateCheckBox>
-					<div class="checkbox-cell"></div>
-				</div>
-				<div class="col2">
-					<h4>Magic Charges</h4>
-					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="ChangeMaxMP" @bind-Value="@Flags.ChangeMaxMP">Max MP</TriStateCheckBox>
-					<IntSlider Indent Min="1" Max="9" Step="1" DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.ChangeMaxMP" Id="RedMageMaxMP" @bind-Value="@Flags.RedMageMaxMP">Red Mage Max MP:</IntSlider>
-					<IntSlider Indent Min="1" Max="9" Step="1" DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.ChangeMaxMP" Id="WhiteMageMaxMP" @bind-Value="@Flags.WhiteMageMaxMP">White Mage Max MP:</IntSlider>
-					<IntSlider Indent Min="1" Max="9" Step="1" DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.ChangeMaxMP" Id="BlackMageMaxMP" @bind-Value="@Flags.BlackMageMaxMP">Black Mage Max MP:</IntSlider>
-					<IntSlider Indent Min="1" Max="9" Step="1" DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.ChangeMaxMP" Id="KnightMaxMP" @bind-Value="@Flags.KnightMaxMP">Knight Max MP:</IntSlider>
-					<IntSlider Indent Min="1" Max="9" Step="1" DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.ChangeMaxMP" Id="NinjaMaxMP" @bind-Value="@Flags.NinjaMaxMP">Ninja Max MP:</IntSlider>
-					<div class="checkbox-cell"></div>
-					<CheckBox UpdateToolTip="@UpdateToolTipID" Id="AllSpellLevelsForKnightNinja" @bind-Value="Flags.AllSpellLevelsForKnightNinja">Knight and Ninja Gain Charges in All Levels</CheckBox>
-				</div>
-				<div class="clear-it"></div>
-			</div>
+			<div class="clear-it"></div>
 		</div>
 	</div>
 

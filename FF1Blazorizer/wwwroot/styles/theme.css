@@ -213,6 +213,22 @@ background: url(../images/ffr-logo.png) no-repeat;
 background: url(../images/orb.png) no-repeat;
 }
 
+.orb-image.litUL {
+    background: url(../images/orbUL.png) no-repeat;
+}
+
+.orb-image.litUR {
+    background: url(../images/orbUR.png) no-repeat;
+}
+
+.orb-image.litLL {
+    background: url(../images/orbLL.png) no-repeat;
+}
+
+.orb-image.litLR {
+    background: url(../images/orbLR.png) no-repeat;
+}
+
 .nav-item-main {
     font-size: 150%;
     margin: 5px 5px;
