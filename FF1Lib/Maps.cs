@@ -579,7 +579,7 @@ namespace FF1Lib
 
 		public void EnableGaiaShortcut(List<Map> maps)
 		{
-			// Trim trees
+			// Place grass tiles, creating shortcut
 			for (int x = 41; x <= 43; x++)
 			{
 				for (int y = 36; y <= 47; y++)
@@ -592,7 +592,7 @@ namespace FF1Lib
 				maps[(byte)MapId.Gaia][y, 40] = (byte)Tile.TownGrass;
 			}
 
-			// Restore building shadow that got mowed away
+			// Restore building shadow
 			maps[(byte)MapId.Gaia][39, 41] = (byte)Tile.TownGrassShadow;
 			maps[(byte)MapId.Gaia][40, 41] = (byte)Tile.TownGrassShadowDiagonal;
 
@@ -607,51 +607,6 @@ namespace FF1Lib
 			maps[(byte)MapId.Gaia][45, 43] = (byte)Tile.TownTree;
 			maps[(byte)MapId.Gaia][45, 40] = (byte)Tile.TownBushes;
 			maps[(byte)MapId.Gaia][46, 40] = (byte)Tile.TownTree;
-
-			// Coneria has 2 MShops
-			maps[(byte)MapId.Coneria][ 4,  2] = 0x3F; // Change a Map thing (Coneria Black Magic)
-			maps[(byte)MapId.Coneria][ 4,  6] = 0x3F; // Change a Map thing (Coneria White Magic)
-
-			// Pravoka has 2 MShops
-			maps[(byte)MapId.Pravoka][17, 34] = 0x3F; // Change a Map thing (Pravoka Black Magic)
-			maps[(byte)MapId.Pravoka][ 5, 32] = 0x3F; // Change a Map thing (Pravoka White Magic)
-
-			// Elfland has 4 MShops
-			maps[(byte)MapId.Elfland][19, 27] = 0x3F; // Change a Map thing (Elfland Black Magic L3)
-			maps[(byte)MapId.Elfland][14, 27] = 0x3F; // Change a Map thing (Elfland White Magic L3)
-
-			maps[(byte)MapId.Elfland][ 4,  1] = 0x3F; // Change a Map thing (Elfland Black Magic L4)
-			maps[(byte)MapId.Elfland][ 4, 12] = 0x3F; // Change a Map thing (Elfland White Magic L4)
-
-			// Melmond has 2 MShops
-			maps[(byte)MapId.Melmond][24, 19] = 0x3F; // Change a Map thing (Melmond Black Magic)
-			maps[(byte)MapId.Melmond][19, 14] = 0x3F; // Change a Map thing (Melmond White Magic)
-
-			// CrescentLake has 2 MShops
-			maps[(byte)MapId.CrescentLake][4, 16] = 0x3F; // Change a Map thing (CrescentLake Black Magic)
-			maps[(byte)MapId.CrescentLake][4, 12] = 0x3F; // Change a Map thing (CrescentLake White Magic)
-
-			// Onrac has 2 MShops
-			maps[(byte)MapId.Onrac][20, 25] = 0x3F; // Change a Map thing (Onrac Black Magic L7)
-			maps[(byte)MapId.Onrac][20, 19] = 0x3F; // Change a Map thing (Onrac White Magic L7)
-
-			// Gaia has 4 MShops, Possible Better Sign Location
-			maps[(byte)MapId.Gaia][52, 55] = 0x3F; // Change a Map thing (Gaia Black Magic L7)
-			maps[(byte)MapId.Gaia][52, 46] = 0x3F; // Change a Map thing (Gaia White Magic L7)
-
-			maps[(byte)MapId.Gaia][40, 38] = 0x3F; // Change a Map thing (Gaia Black Magic L8)
-			maps[(byte)MapId.Gaia][40, 36] = 0x3F; // Change a Map thing (Gaia White Magic L8)
-
-			maps[(byte)MapId.Gaia][44, 13] = 0x3F; // Change a Map thing (Gaia Black Magic L8 Convenient)
-			maps[(byte)MapId.Gaia][44, 12] = 0x3F; // Change a Map thing (Gaia White Magic L8 Convenient)
-
-			// Lefein has 2 MShops, Possible Better Sign Location
-			maps[(byte)MapId.Lefein][3, 56] = 0x3F; // Change a Map thing (Lefein Black Magic L8)
-			maps[(byte)MapId.Lefein][3, 53] = 0x3F; // Change a Map thing (Lefein White Magic L8)
-
-			maps[(byte)MapId.Lefein][3, 36] = 0x3F; // Change a Map thing (Lefein Black Magic L8 Convenient)
-			maps[(byte)MapId.Lefein][3, 35] = 0x3F; // Change a Map thing (Lefein White Magic L8 Convenient)
-
 		}
 
 		public void MoveGaiaItemShop(List<Map> maps, MT19337 rng)
