@@ -72,6 +72,8 @@
 		bool? MapOnracDock { get; }
 		bool? MapMirageDock { get; }
 		bool? TitansTrove { get; }
+		bool? GaiaShortcut { get; }
+		bool? MoveGaiaItemShop { get; }
 	}
 	public interface IItemPlacementFlags : IItemShuffleFlags, IVictoryConditionFlags
 	{
