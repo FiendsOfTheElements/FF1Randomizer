@@ -154,13 +154,13 @@ h1 {
      
 }
 
-@media (max-width: 1100px) {
+
     .table-wrapper {
         overflow-x: auto;
         max-width: calc(100vw);
         margin: 0 auto;
     }
-}
+
 
 @media (min-width: 850px) {
     app {
@@ -267,7 +267,7 @@ body { */
 td {
     padding: 12px;
     text-align: center;
-    min-width: 72px;
+    min-width: 42px;
     padding-left: 5px;
     padding-right: 5px;
     max-width:72px;
@@ -390,7 +390,7 @@ tr.bottom-borderd {
 }
 
 .job {
-    background-size: 48px;
+    background-size: 32px;
     background-repeat: no-repeat;
     background-position: center;
 }
