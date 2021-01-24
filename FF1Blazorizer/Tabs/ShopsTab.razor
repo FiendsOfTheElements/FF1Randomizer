@@ -34,6 +34,10 @@
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="generateNewSpellbook" @bind-Value="Flags.GenerateNewSpellbook">Generate New Spellbooks</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="spellcrafterRetainPermissions" Indent IsEnabled="@Flags.GenerateNewSpellbook" @bind-Value="Flags.SpellcrafterRetainPermissions">Retain Old Permissions</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="spellcrafterMixSpells" Indent IsEnabled="@Flags.GenerateNewSpellbook" @bind-Value="Flags.SpellcrafterMixSpells">Mix Spellbooks</TriStateCheckBox>
+			<div class="checkbox-cell"></div>
+
+			<h4>Consumables</h4>
+			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="startingItemsDropDown" TItem="StartingItemSet" @bind-Value="Flags.StartingItemSet">Starting Inventory:</EnumDropDown>
 		</div>
 		<div class="clear-it"></div>
 	</div>
