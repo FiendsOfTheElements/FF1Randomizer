@@ -33,8 +33,9 @@ GiveReward:                    ; (8 bytes)
     CMP #$0C                   ; then check for canal C90C
     BNE :+                     ; If canal then D005
       DEC unsram, X            ; decrement DE0060
-      BCS @OpenChest           ; and open it B003
+      BCS @WasCanal           ; and open it B003
 :   INC unsram, X              ; otherwise give them one of this item FE0060
+  @WasCanal
     CMP #$31                   ; if >= item_canoe (shard) then play regular jingle C936
     BCS @ClearChest            ; B02A
     BCC @OpenChest             ; 902B

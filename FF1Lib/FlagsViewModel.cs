@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace FF1Lib
@@ -36,6 +37,11 @@ namespace FF1Lib
 		public string Encoded => Flags.EncodeFlagsText(Flags);
 
 		public event PropertyChangedEventHandler PropertyChanged;
+
+		private void RaisePropertyChanged([CallerMemberName] string property = null)
+		{
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
+		}
 
 		// At least this trick saves us from having to declare backing fields, and having to write a conversion from FlagsViewModel to Flags.
 		private Flags _flags;
@@ -386,6 +392,15 @@ namespace FF1Lib
 			{
 				Flags.Spoilers = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Spoilers"));
+			}
+		}
+		public bool BlindSeed
+		{
+			get => Flags.BlindSeed;
+			set
+			{
+				Flags.BlindSeed = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BlindSeed"));
 			}
 		}
 
@@ -2166,6 +2181,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ChangeLute"));
 			}
 		}
+		public bool NoTabLayout
+		{
+			get => Preferences.NoTabLayout;
+			set
+			{
+				Preferences.NoTabLayout = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NoTabLayout"));
+			}
+		}
 		public Fate HurrayDwarfFate
 		{
 			get => Preferences.HurrayDwarfFate;
@@ -2175,6 +2199,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("HurrayDwarfFate"));
 			}
 		}
+
 		public MapmanSlot MapmanSlot
 		{
 			get => Preferences.MapmanSlot;
@@ -3345,7 +3370,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SwolePirates"));
 			}
 		}
-
+		public bool? ScaryImps
+		{
+			get => Flags.ScaryImps;
+			set
+			{
+				Flags.ScaryImps = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ScaryImps"));
+			}
+		}
 		public EvadeCapValues EvadeCap
 		{
 			get => Flags.EvadeCap;
@@ -3353,6 +3386,16 @@ namespace FF1Lib
 			{
 				Flags.EvadeCap = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EvadeCap"));
+			}
+		}
+
+		public StartingItemSet StartingItemSet
+		{
+			get => Flags.StartingItemSet;
+			set
+			{
+				Flags.StartingItemSet = value;
+				RaisePropertyChanged();
 			}
 		}
 	}
