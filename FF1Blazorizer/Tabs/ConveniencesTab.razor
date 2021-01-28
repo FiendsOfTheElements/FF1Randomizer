@@ -8,6 +8,7 @@
 	@if(IsOpen)
 	{ 
 		<div class="col1">
+			<h4>Basic</h4>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="noPartyShuffleCheckBox" @bind-Value="Flags.NoPartyShuffle">No Party Shuffle</CheckBox>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="speedHacksCheckBox" @bind-Value="Flags.SpeedHacks">Speed Hacks</CheckBox>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="identifyTreasuresCheckBox" @bind-Value="Flags.IdentifyTreasures">Identify Treasures</CheckBox>
@@ -19,8 +20,10 @@
 			<div class="checkbox-cell"></div>
 		</div>
 		<div class="col2">
+			<h4>Advanced</h4>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="npcSwatterCheckBox" @bind-Value="Flags.NPCSwatter">NPC Guillotine</CheckBox>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="inventoryAutosortCheckBox" @bind-Value="Flags.InventoryAutosort">Autosort Inventory</CheckBox>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="shopInfoCheckBox" @bind-Value="Flags.ShopInfo">Shop Information</CheckBox>
 		</div>
 		<div class="clear-it"></div>
 	}
