@@ -34,8 +34,8 @@
 			<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.ClassAsNpcFiends != false)" Id="classAsNpcForcedFiendsCheckBox" @bind-Value="Flags.ClassAsNpcForcedFiends">Forced Characters</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="classAsNpcKeyNpcCheckBox" @bind-Value="Flags.ClassAsNpcKeyNPC">Characters linked to Key NPCs</TriStateCheckBox>
 			<IntSlider Indent Min="0" Max="12" Step="1" DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.ClassAsNpcKeyNPC != false)" Id="classAsNpcCountSlider" @bind-Value="@Flags.ClassAsNpcCount">Characters Count:</IntSlider>
-			<CheckBox Indent UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.ClassAsNpcFiends != false || Flags.ClassAsNpcKeyNPC != false)" Id="classAsNpcDuplicateCheckBox" @bind-Value="Flags.ClassAsNpcDuplicate">Allow Duplicates</CheckBox>
-			<CheckBox Indent UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.ClassAsNpcFiends != false || Flags.ClassAsNpcKeyNPC != false)" Id="classAsNpcPromoCheckBox" @bind-Value="Flags.ClassAsNpcPromotion">Promoted Classes</CheckBox>
+			<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.ClassAsNpcFiends != false || Flags.ClassAsNpcKeyNPC != false)" Id="classAsNpcDuplicateCheckBox" @bind-Value="Flags.ClassAsNpcDuplicate">Allow Duplicates</TriStateCheckBox>
+			<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.ClassAsNpcFiends != false || Flags.ClassAsNpcKeyNPC != false)" Id="classAsNpcPromoCheckBox" @bind-Value="Flags.ClassAsNpcPromotion">Promoted Classes</TriStateCheckBox>
 			<div class="checkbox-cell"></div>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="GuaranteedMasamuneCheckBox" IsEnabled="@(Flags.NoMasamune != true)" @bind-Value="Flags.GuaranteedMasamune">Guaranteed Endgame Masamune</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="SendMasamuneHomeCheckBox" IsEnabled="@((Flags.NoMasamune != true) && Flags.GuaranteedMasamune != false && Flags.IncentivizeMasamune == false)" @bind-Value="Flags.SendMasamuneHome">Send Masamune Home</TriStateCheckBox>

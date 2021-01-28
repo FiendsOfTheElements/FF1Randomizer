@@ -23,7 +23,7 @@
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="freeCanalCheckBox" @bind-Value="Flags.FreeCanal">Free Canal</TriStateCheckBox>
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="freeCanoeCheckBox" @bind-Value="Flags.FreeCanoe">Free Canoe</TriStateCheckBox>
 		<div class="checkbox-cell"></div>
-		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="FreeLute" @bind-Value="Flags.FreeLute">Free Lute</TriStateCheckBox>
+		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="FreeLute" IsEnabled="@(!Flags.ShortToFR)" @bind-Value="Flags.FreeLuteFlag">Free Lute</TriStateCheckBox>
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="FreeTail" IsEnabled="@(Flags.NoTail != true)" @bind-Value="Flags.FreeTail">Free Tail</TriStateCheckBox>
 		<CheckBox UpdateToolTip="@UpdateToolTipID" Id="freeOrbsCheckBox" IsEnabled="@Flags.FreeOrbsEnabled" @bind-Value="Flags.FreeOrbs">Free Orbs</CheckBox>
 		<div class="checkbox-cell"></div>

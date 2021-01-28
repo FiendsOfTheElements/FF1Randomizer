@@ -571,7 +571,7 @@
 		"Id": "shortToFRCheckBox",
 		"title": "Shorten ToFR",
 		"screenshot": "shortToFRCheckBox.png",
-		"description": "Shortens the Temple of Fiends Revisited to lead straight to Chaos' Floor. The four Orbs are still required to enter the dungeon, excepting the use of other settings. Neither the KEY nor the LUTE will be required if this box is checked."
+		"description": "Shortens the Temple of Fiends Revisited to lead straight to Chaos' Floor. The four Orbs are still required to enter the dungeon, excepting the use of other settings. Neither the KEY nor the LUTE will be required if this box is checked. Starts with the LUTE in the inventory."
 	},
 	{
 		"Id": "preserveFiendRefightsCheckBox",
