@@ -1,7 +1,9 @@
 ﻿@using FF1Lib;
 
-	<div id="Enemies" class="tabcontent framed-content clearfix @(noTabLayout ? "no-tab" : "")">
-		<h3>Enemies, Formations, and Bosses</h3>
+	<div id="Enemies" class="tabcontent framed-content clearfix @(noTabLayout ? "no-tab" : "") @(IsOpen ? "" : "collapsed")">
+		<h3 class="@(IsOpen ? "" : "h3-collapsed")"><a class="@(noTabLayout ? "collapsible-header" : "")" @onclick="(() => IsOpen = (!noTabLayout || !IsOpen))">Enemies, Formations, and Bosses</a></h3>
+		@if(IsOpen)
+		{ 
 		<div class="col1">
 			<h4>Formations</h4>
 			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="runnabilityDropDown" TItem="Runnability" @bind-Value="Flags.Runnability">Unrunnable Formations:</EnumDropDown>
@@ -40,6 +42,7 @@
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="randomTrapFormationsCheckBox" IsEnabled="@Flags.EnemyTrapTiles" @bind-Value="Flags.RandomTrapFormations">Use Alternate Formations</TriStateCheckBox>
 		</div>
 		<div class="clear-it"></div>
+		}
 	</div>
 
 
@@ -47,4 +50,5 @@
 		[Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }
 		[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
 		[Parameter] public bool noTabLayout { get; set; }
+		[Parameter] public bool IsOpen { get; set; } = true;
 	}

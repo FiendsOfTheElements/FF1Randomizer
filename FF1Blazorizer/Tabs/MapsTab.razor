@@ -1,8 +1,10 @@
 ﻿@using FF1Lib;
 
 
-	<div id="Maps" class="tabcontent framed-content clearfix @(noTabLayout ? "no-tab" : "")">
-		<h3>Maps and Routing</h3>
+	<div id="Maps" class="tabcontent framed-content clearfix @(noTabLayout ? "no-tab" : "") @(IsOpen ? "" : "collapsed")">
+		<h3 class="@(IsOpen ? "" : "h3-collapsed")"><a class="@(noTabLayout ? "collapsible-header" : "")" @onclick="(() => IsOpen = (!noTabLayout || !IsOpen))">Maps and Routing</a></h3>
+		@if (IsOpen)
+		{ 
 		<div class="col1">
 			<h4>Entrance Shuffle</h4>
 			<p>Try shuffling dungeon entrances, floors, and towns to create a completely new world to explore!</p>
@@ -53,6 +55,7 @@
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.HintsVillage != false || Flags.HintsDungeon != false)" Id="hintsUselessCheckBox" @bind-Value="Flags.HintsUseless">Useless Hints</TriStateCheckBox>
 		</div>
 		<div class="clear-it"></div>
+		}
 	</div>
 
 
@@ -60,4 +63,5 @@
 		[Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }
 		[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
 		[Parameter] public bool noTabLayout { get; set; }
+		[Parameter] public bool IsOpen { get; set; } = true;
 	}

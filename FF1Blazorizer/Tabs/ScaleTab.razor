@@ -1,9 +1,11 @@
 ﻿@using FF1Lib;
 
 
-	<div id="Scale" class="tabcontent framed-content clearfix @(noTabLayout ? "no-tab" : "")">
+	<div id="Scale" class="tabcontent framed-content clearfix @(noTabLayout ? "no-tab" : "") @(IsOpen ? "" : "collapsed")">
 
-		<h3>Scale</h3>
+		<h3 class="@(IsOpen ? "" : "h3-collapsed")"><a class="@(noTabLayout ? "collapsible-header" : "")" @onclick="(() => IsOpen = (!noTabLayout || !IsOpen))">Scale</a></h3>
+		@if (IsOpen)
+		{ 
 		<div class="col1 full">
 			<DoubleSlider ShowMedian DoubleCol Id="clampMinimumPriceScaleLable" UpdateToolTip="@UpdateToolTipID" MinValue="20" MaxValue="500" @bind-ValueHigh="Flags.PriceScaleFactorHigh" @bind-ValueLow="Flags.PriceScaleFactorLow">Prices:</DoubleSlider>
 			<div class="row-seperator"></div>
@@ -63,9 +65,12 @@
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="easyModeCheckBox" @bind-Value="Flags.EasyMode">Easy Mode</CheckBox>			
 			<div class="clear-it"></div>
 		</div>
+		}
 	</div>
 
 
 	@code { [Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }
-				[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
-				[Parameter] public bool noTabLayout { get; set; }  }
+			[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
+			[Parameter] public bool noTabLayout { get; set; }
+			[Parameter] public bool IsOpen { get; set; } = true;
+		}

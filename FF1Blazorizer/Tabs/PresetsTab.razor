@@ -4,8 +4,10 @@
 @using FF1Lib;
 
 
-<div id="presets" class="tabcontent framed-content clearfix @(noTabLayout ? "no-tab" : "")">
-	<h3>Start a Game</h3>
+<div id="presets" class="tabcontent framed-content clearfix @(noTabLayout ? "no-tab" : "") @(IsOpen ? "" : "collapsed")">
+	<h3 class="@(IsOpen ? "" : "h3-collapsed")"><a class="@(noTabLayout ? "collapsible-header" : "")" @onclick="(() => IsOpen = (!noTabLayout || !IsOpen))">Start a Game</a></h3>
+	@if(IsOpen)
+	{ 
 	<p>These presets allow you to get into the game and start playing instantly.</p>
 
 	<h4>Standard Presets</h4>
@@ -52,6 +54,7 @@
 		<input type="file" id="presetInput" @onchange="OnPresetChanged" />
 	</p>
 	<div class="clear-it"></div>
+	}
 </div>
 
 
@@ -62,6 +65,7 @@
 	[Parameter] public bool loadDefault { get; set; }
 	[Parameter] public string[] localPresets { get; set; } = { };
 	[Parameter] public bool noTabLayout { get; set; }
+	[Parameter] public bool IsOpen { get; set; } = true;
 
 	private string presetName = "Untitled";
 

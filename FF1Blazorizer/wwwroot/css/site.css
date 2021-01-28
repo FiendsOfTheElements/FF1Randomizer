@@ -248,7 +248,24 @@ body { */
     white-space: normal;
 }
 
+.collapsing {
+    height: auto;
+}
 
+.tabcontent.collapsed {
+    min-height: 40px;
+    max-height: 40px;
+}
+
+.h3-collapsed {
+    border-bottom: none;
+    padding-bottom: 0px;
+    margin-bottom: 0px;
+}
+
+.collapsible-header {
+    cursor: pointer;
+}
 .slider-cell {
     height: 35px;
     margin: 0;

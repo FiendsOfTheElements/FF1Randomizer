@@ -1,10 +1,12 @@
 ﻿@using FF1Lib;
 
 
-	<div id="Party" class="tabcontent framed-content clearfix @(noTabLayout ? "no-tab" : "")">
-		<h3>Party Composition</h3>
+	<div id="Party" class="tabcontent framed-content clearfix @(noTabLayout ? "no-tab" : "") @(IsOpen ? "" : "collapsed")">
+		<h3 class="@(IsOpen ? "" : "h3-collapsed")"><a class="@(noTabLayout ? "collapsible-header" : "")" @onclick="(() => IsOpen = (!noTabLayout || !IsOpen))">Party Composition</a></h3>
+		@if (IsOpen)
+		{ 
 		<div class="col1 full">
-			<h4>Allowed Classes</h4>
+			<h4>Allowed Starting Classes</h4>
 			<div class="table-wrapper">
 				<table>
 					<tr class="jobs">
@@ -155,9 +157,12 @@
 			</div>
 			<div class="clear-it"></div>
 		</div>
+		}
 	</div>
 
 
 	@code { [Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }
 		[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
-		[Parameter] public bool noTabLayout { get; set; } }
+		[Parameter] public bool noTabLayout { get; set; }
+		[Parameter] public bool IsOpen { get; set; } = true;
+		}

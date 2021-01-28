@@ -1,6 +1,12 @@
-﻿
-	<div id="Conveniences" class="tabcontent framed-content clearfix @(noTabLayout ? "no-tab" : "")">
-		<h3>Conveniences</h3>
+﻿@using BlazorStrap
+@using Microsoft.AspNetCore.Components.Web
+
+<div id="Conveniences" class="tabcontent framed-content clearfix @(noTabLayout ? "no-tab" : "") @(IsOpen ? "" : "collapsed")">
+
+	<h3 class="@(IsOpen ? "" : "h3-collapsed")"><a class="@(noTabLayout ? "collapsible-header" : "")" @onclick="(() => IsOpen = (!noTabLayout || !IsOpen))">Conveniences</a></h3>
+
+	@if(IsOpen)
+	{ 
 		<div class="col1">
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="noPartyShuffleCheckBox" @bind-Value="Flags.NoPartyShuffle">No Party Shuffle</CheckBox>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="speedHacksCheckBox" @bind-Value="Flags.SpeedHacks">Speed Hacks</CheckBox>
@@ -17,11 +23,13 @@
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="inventoryAutosortCheckBox" @bind-Value="Flags.InventoryAutosort">Autosort Inventory</CheckBox>
 		</div>
 		<div class="clear-it"></div>
-	</div>
-
-
-	@code {
-		[Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }
-		[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
-		[Parameter] public bool noTabLayout { get; set; }
 	}
+</div>
+
+
+@code {
+	[Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }
+	[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
+	[Parameter] public bool noTabLayout { get; set; }
+	[Parameter] public bool IsOpen { get; set; } = true;
+}
