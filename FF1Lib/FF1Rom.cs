@@ -282,7 +282,7 @@ namespace FF1Lib
 				EnableShardHunt(rng, talkroutines, flags.ShardCount);
 			}
 			
-			if ((bool)flags.TransformFinalFormation)
+			if ((bool)flags.TransformFinalFormation && !flags.SpookyFlag)
 			{
 				TransformFinalFormation((FinalFormation)rng.Between(0, Enum.GetValues(typeof(FinalFormation)).Length - 1), flags.EvadeCap);
 			}
@@ -800,7 +800,7 @@ namespace FF1Lib
 				CannotSaveAtInns();
 			}
 
-			if (flags.PacifistMode)
+			if (flags.PacifistMode && !flags.SpookyFlag)
 			{
 				PacifistEnd(talkroutines, npcdata, (bool)flags.EnemyTrapTiles || flags.EnemizerEnabled);
 			}
