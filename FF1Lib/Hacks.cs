@@ -1778,8 +1778,8 @@ namespace FF1Lib
 			encountersData.formations[encZombieGhoul].minmax2 = (0, 0);
 			encountersData.formations[encZombieGhoul].unrunnableA = true;
 
-			encountersData.formations[encGhoulGeist].minmax1 = (0, 0);
-			encountersData.formations[encGhoulGeist].minmax2 = (0, 2);
+			encountersData.formations[encGhoulGeist].minmax1 = (0, 2);
+			encountersData.formations[encGhoulGeist].minmax2 = (0, 0);
 			encountersData.formations[encGhoulGeist].minmax3 = (1, 3);
 			encountersData.formations[encGhoulGeist].enemy3 = 0x2B;
 			encountersData.formations[encGhoulGeist].gfxOffset3 = (int)FormationGFX.Sprite2;
