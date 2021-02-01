@@ -1,8 +1,10 @@
 ﻿@using FF1Lib;
 
 
-	<div id="Incentives" class="tabcontent framed-content clearfix @(noTabLayout ? "no-tab" : "")">
-		<h3>Incentivized Locations and Items</h3>
+	<div id="Incentives" class="tabcontent framed-content clearfix @(noTabLayout ? "no-tab" : "") @(IsOpen ? "" : "collapsed")">
+		<h3 class="@(IsOpen ? "" : "h3-collapsed")"><a class="@(noTabLayout ? "collapsible-header" : "")" @onclick="(() => IsOpen = (!noTabLayout || !IsOpen))">Incentivized Locations and Items</a></h3>
+		@if (IsOpen)
+		{ 
 		<div class="col1">
 			<h4>Locations: @(Flags.Flags.IncentivizedLocationCountMin) @((Flags.Flags.IncentivizedLocationCountMin != Flags.Flags.IncentivizedLocationCountMax) ? "- " + Flags.Flags.IncentivizedLocationCountMax : "") </h4>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeFreeNPCsCheckBox" IsEnabled="@Flags.IncentivizeFreeNPCsEnabled" @bind-Value="Flags.IncentivizeFreeNPCs">Main NPCs</TriStateCheckBox>
@@ -22,7 +24,7 @@
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeMarshKeyLockedCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeMarshKeyLocked">Marsh (locked)</TriStateCheckBox>
 			<div class="checkbox-cell"></div>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeRandomChestInLocationCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeRandomChestInLocation">Pick Random Chest At Location</TriStateCheckBox>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeRandomChestIncludeExtra" IsEnabled="@((Flags.Treasures != false) && (Flags.IncentivizeRandomChestInLocation != false))" @bind-Value="Flags.IncentivizeRandomChestIncludeExtra">Include Mirage and TFC</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="incentivizeRandomChestIncludeExtra" IsEnabled="@((Flags.Treasures != false) && (Flags.IncentivizeRandomChestInLocation != false))" @bind-Value="Flags.IncentivizeRandomChestIncludeExtra">Include Mirage and TFC</TriStateCheckBox>
 			<div class="checkbox-cell"></div>
 		</div>
 		<div class="col2">
@@ -48,10 +50,13 @@
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeRibbonCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeRibbon">Ribbon</TriStateCheckBox>
 		</div>
 		<div class="clear-it"></div>
+		}
 	</div>
 
 
 	@code { [Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }
 				[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
-				[Parameter] public bool noTabLayout { get; set; } }
+				[Parameter] public bool noTabLayout { get; set; }
+				[Parameter] public bool IsOpen { get; set; } = true;
+		}
 

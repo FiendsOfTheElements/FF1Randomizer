@@ -1525,15 +1525,17 @@ namespace FF1Lib
 			}
 		}
 
-		public bool? FreeLute
+		public bool? FreeLuteFlag
 		{
-			get => Flags.FreeLute;
+			get => Flags.FreeLuteFlag;
 			set
 			{
-				Flags.FreeLute = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeLute"));
+				Flags.FreeLuteFlag = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeLuteFlag"));
 			}
 		}
+
+		public bool? FreeLute => FreeLuteFlag | ShortToFR;
 
 		public bool FreeOrbsEnabled => !ShardHunt;
 
@@ -2007,7 +2009,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ClassAsNpcCount"));
 			}
 		}
-		public bool ClassAsNpcDuplicate
+		public bool? ClassAsNpcDuplicate
 		{
 			get => Flags.ClassAsNpcDuplicate;
 			set
@@ -2025,7 +2027,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ClassAsNpcForcedFiends"));
 			}
 		}
-		public bool ClassAsNpcPromotion
+		public bool? ClassAsNpcPromotion
 		{
 			get => Flags.ClassAsNpcPromotion;
 			set

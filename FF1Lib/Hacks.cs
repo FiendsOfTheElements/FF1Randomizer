@@ -1067,7 +1067,7 @@ namespace FF1Lib
 			PutInBank(0x1F, 0xDD78, Blob.FromHex("A9002003FEA645BD00B18561A9112003FE20B08E8A60"));
 
 			// Check for trapped monster routine, see 11_8EC0_CheckTrap.asm
-			PutInBank(0x11, 0x8EB0, Blob.FromHex("A561202096B02DA645BD008FF022856AA9C0203D96A56A200096A903CD866BD0062018964C439620E68E201896A2F06020E68E60AA60A911855818A5612093DDA445B90062090499006260"));
+			PutInBank(0x11, 0x8EB0, Blob.FromHex("A561202096B030A645BD008FF025856AA9C0203D96A56A200096A903CD866BD00820189668684C43961820E98E201896A2F06020E98E60AA60A911855818A5612093DDA445B90062090499006260"));
 
 			InsertDialogs(0x110, "Monster-in-a-box!"); // 0xC0
 
@@ -1778,8 +1778,8 @@ namespace FF1Lib
 			encountersData.formations[encZombieGhoul].minmax2 = (0, 0);
 			encountersData.formations[encZombieGhoul].unrunnableA = true;
 
-			encountersData.formations[encGhoulGeist].minmax1 = (0, 0);
-			encountersData.formations[encGhoulGeist].minmax2 = (0, 2);
+			encountersData.formations[encGhoulGeist].minmax1 = (0, 2);
+			encountersData.formations[encGhoulGeist].minmax2 = (0, 0);
 			encountersData.formations[encGhoulGeist].minmax3 = (1, 3);
 			encountersData.formations[encGhoulGeist].enemy3 = 0x2B;
 			encountersData.formations[encGhoulGeist].gfxOffset3 = (int)FormationGFX.Sprite2;

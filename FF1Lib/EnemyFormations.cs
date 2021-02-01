@@ -325,10 +325,10 @@ namespace FF1Lib
 					minmax4 = (formationdata[QuantityOffset + 3] / 0x10, formationdata[QuantityOffset + 3] & 0x0F);
 					palette1 = formationdata[PalettesOffset + 0];
 					palette2 = formationdata[PalettesOffset + 1];
-					paletteAssign1 = formationdata[PaletteAsignmentOffset] & 0x80;
-					paletteAssign2 = formationdata[PaletteAsignmentOffset] & 0x40;
-					paletteAssign3 = formationdata[PaletteAsignmentOffset] & 0x20;
-					paletteAssign4 = formationdata[PaletteAsignmentOffset] & 0x10;
+					paletteAssign1 = ((formationdata[PaletteAsignmentOffset] & 0x80) > 0) ? 1 : 0;
+					paletteAssign2 = ((formationdata[PaletteAsignmentOffset] & 0x40) > 0) ? 1 : 0;
+					paletteAssign3 = ((formationdata[PaletteAsignmentOffset] & 0x20) > 0) ? 1 : 0;
+					paletteAssign4 = ((formationdata[PaletteAsignmentOffset] & 0x10) > 0) ? 1 : 0;
 					unrunnableA = (formationdata[PaletteAsignmentOffset] & 0x01) == 0 ? false : true;
 					unrunnableB = (formationdata[PaletteAsignmentOffset] & 0x02) == 0 ? false : true;
 					minmaxB1 = (formationdata[QuantityBOffset + 0] / 0x10, formationdata[QuantityBOffset + 0] & 0x0F);
@@ -340,27 +340,27 @@ namespace FF1Lib
 				{
 					var formationdata = new byte[0x10];
 
-					formationdata[TypeOffset] = (byte)((int)pattern * 0x10 + (int)spriteSheet);      // Chaos
+					formationdata[TypeOffset] = (byte)((int)pattern * 0x10 + (int)spriteSheet);
 					formationdata[GFXOffset] = (byte)(gfxOffset1 + gfxOffset2 * 0x04 + gfxOffset3 * 0x10 + gfxOffset4 * 0x40);
 
-					formationdata[IDsOffset + 0] = (byte)enemy1;      // Chaos
-					formationdata[IDsOffset + 1] = (byte)enemy2;      // Chaos
-					formationdata[IDsOffset + 2] = (byte)enemy3;      // Chaos
-					formationdata[IDsOffset + 3] = (byte)enemy4;      // Chaos
+					formationdata[IDsOffset + 0] = (byte)enemy1; 
+					formationdata[IDsOffset + 1] = (byte)enemy2;
+					formationdata[IDsOffset + 2] = (byte)enemy3;
+					formationdata[IDsOffset + 3] = (byte)enemy4;
 
-					formationdata[QuantityOffset + 0] = (byte)(minmax1.Item1 * 0x10 + minmax1.Item2);      // Chaos
-					formationdata[QuantityOffset + 1] = (byte)(minmax2.Item1 * 0x10 + minmax2.Item2);      // Chaos
-					formationdata[QuantityOffset + 2] = (byte)(minmax3.Item1 * 0x10 + minmax3.Item2);      // Chaos
-					formationdata[QuantityOffset + 3] = (byte)(minmax4.Item1 * 0x10 + minmax4.Item2);      // Chaos
+					formationdata[QuantityOffset + 0] = (byte)(minmax1.Item1 * 0x10 + minmax1.Item2);
+					formationdata[QuantityOffset + 1] = (byte)(minmax2.Item1 * 0x10 + minmax2.Item2);
+					formationdata[QuantityOffset + 2] = (byte)(minmax3.Item1 * 0x10 + minmax3.Item2);
+					formationdata[QuantityOffset + 3] = (byte)(minmax4.Item1 * 0x10 + minmax4.Item2);
 
-					formationdata[PalettesOffset + 0] = (byte)palette1;      // Chaos
+					formationdata[PalettesOffset + 0] = (byte)palette1;
 					formationdata[PalettesOffset + 1] = (byte)palette2;
 
 					formationdata[PaletteAsignmentOffset] = (byte)(paletteAssign1 * 0x80 + paletteAssign2 * 0x40 + paletteAssign3 * 0x20 + paletteAssign4 * 0x10
-						+ (unrunnableB ? 0x02 : 0x00) + (unrunnableA ? 0x01 : 0x00));      // Chaos
+						+ (unrunnableB ? 0x02 : 0x00) + (unrunnableA ? 0x01 : 0x00));
 
-					formationdata[QuantityBOffset + 0] = (byte)(minmaxB1.Item1 * 0x10 + minmaxB1.Item2);      // Chaos
-					formationdata[QuantityBOffset + 1] = (byte)(minmaxB2.Item1 * 0x10 + minmaxB2.Item2);      // Chaos
+					formationdata[QuantityBOffset + 0] = (byte)(minmaxB1.Item1 * 0x10 + minmaxB1.Item2);
+					formationdata[QuantityBOffset + 1] = (byte)(minmaxB2.Item1 * 0x10 + minmaxB2.Item2);
 
 					formationdata[0x0C] = (byte)supriseFactor;
 

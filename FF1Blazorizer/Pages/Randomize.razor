@@ -19,7 +19,7 @@
 		}
 		else if (noTabLayout)
 		{
-			<PresetsTab Flags="@Flags" SetStatusMessage="@SetStatusMessage" loadDefault="@loadDefault" SetDefaultLoaded="@SetDefaultLoaded" noTabLayout="@noTabLayout" />
+			<PresetsTab Flags="@Flags" SetStatusMessage="@SetStatusMessage" loadDefault="@loadDefault" SetDefaultLoaded="@SetDefaultLoaded" noTabLayout="@noTabLayout" presetName="@presetName" SetPresetName="@SetPresetName" />
 			<ShopsTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
 			<EnemiesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
 			<TreasuresTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
@@ -42,7 +42,7 @@
 						<BSTab>
 							<BSTabLabel>Presets</BSTabLabel>
 							<BSTabContent>
-								<PresetsTab Flags="@Flags" SetStatusMessage="@SetStatusMessage" loadDefault="@loadDefault" SetDefaultLoaded="@SetDefaultLoaded" noTabLayout="@noTabLayout" />
+								<PresetsTab Flags="@Flags" SetStatusMessage="@SetStatusMessage" loadDefault="@loadDefault" SetDefaultLoaded="@SetDefaultLoaded" noTabLayout="@noTabLayout" presetName="@presetName" SetPresetName="@SetPresetName"/>
 							</BSTabContent>
 						</BSTab>
 						<BSTab>
@@ -132,6 +132,7 @@
 	private string StatusMessage = "";
 	private bool loadDefault = true;
 	private bool noTabLayout = false;
+	private string presetName = "Untitled";
 
 	protected override async void OnInitialized()
 	{
@@ -163,6 +164,11 @@
 	{
 		noTabLayout = notab;
 		StateHasChanged();
+	}
+
+	void SetPresetName(string preset)
+	{
+		presetName = preset;
 	}
 
 	private void Show(BSTabEvent e)

@@ -142,7 +142,7 @@ namespace FF1Lib
 		public bool? FreeBridge { get; set; } = false;
 		public bool? FreeShip { get; set; } = false;
 		public bool? FreeAirship { get; set; } = false;
-		public bool? FreeLute { get; set; } = false;
+		public bool? FreeLuteFlag { get; set; } = false;
 		public bool FreeOrbs { get; set; } = false;
 		public bool EnableCritNumberDisplay { get; set; } = false;
 		public bool? FreeCanal { get; set; } = false;
@@ -194,9 +194,9 @@ namespace FF1Lib
 
 		[IntegerFlag(0, 13)]
 		public int ClassAsNpcCount { get; set; } = 6;
-		public bool ClassAsNpcDuplicate { get; set; } = false;
+		public bool? ClassAsNpcDuplicate { get; set; } = false;
 		public bool? ClassAsNpcForcedFiends { get; set; } = false;
-		public bool ClassAsNpcPromotion { get; set; } = false;
+		public bool? ClassAsNpcPromotion { get; set; } = false;
 
 		[IntegerFlag(0, 500, 10)]
 		public int BossScaleStatsLow { get; set; } = 50;
@@ -636,7 +636,8 @@ namespace FF1Lib
 
 		public bool? ImmediatePureAndSoftRequired => EnemyStatusAttacks | Entrances | MapOpenProgression | RandomizeFormationEnemizer | RandomizeEnemizer;
 
-		//public bool? FreeLute => ChaosRush | ShortToFR;
+
+		public bool? FreeLute => FreeLuteFlag | ShortToFR;
 
 		public bool? DeepCastlesPossible => Entrances & Floors;
 		public bool? DeepTownsPossible => Towns & Entrances & Floors & EntrancesMixedWithTowns;
