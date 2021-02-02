@@ -589,7 +589,7 @@
 		"Id": "entrancesCheckBox",
 		"title": "Entrance Shuffle",
 		"screenshot": "entrancesCheckBox.gif",
-		"description": "Overworld entrances, except for towns, are shuffled, so that the entrance to Earth Cave may be at Waterfall, Volcano at the Cardia Islands, etc.  Required for floor shuffle.  Requires NPC Shuffle."
+		"description": "Overworld entrances, except for towns, are shuffled, so that the entrance to Earth Cave may be at Waterfall, Volcano at the Cardia Islands, etc.  Required for floor shuffle.\nTreasures shuffle and Main NPC Items shuffle must be enabled."
 	},
 	{
 		"Id": "allowUnsafeStartAreaCheckBox",
@@ -619,7 +619,7 @@
 		"Id": "townsCheckBox",
 		"title": "Shuffle Towns",
 		"screenshot": "townsCheckBox.gif",
-		"description": "Whether to shuffle town entrances. When town entrances are shuffled, all towns, aside from Corneria, could appear at any other town, such that the town at Pravoka could be Lefein or vice-versa."
+		"description": "Whether to shuffle town entrances. When town entrances are shuffled, all towns, aside from Corneria, could appear at any other town, such that the town at Pravoka could be Lefein or vice-versa.\nTreasures shuffle and Main NPC Items shuffle must be enabled."
 	},
 	{
 		"Id": "mixEntrancesCheckBox",
