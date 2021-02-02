@@ -1928,6 +1928,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NoDanMode"));
 			}
 		}
+		public bool NonesGainXP
+		{
+			get => Flags.NonesGainXP;
+			set
+			{
+				Flags.NonesGainXP = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NonesGainXP"));
+			}
+		}
 		public bool? NoTail
 		{
 			get => Flags.NoTail;
