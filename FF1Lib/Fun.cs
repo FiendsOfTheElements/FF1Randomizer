@@ -9,11 +9,11 @@ namespace FF1Lib
 {
 	public enum MusicShuffle
 	{
-		[Description("No Music Shuffle")]
+		[Description("None")]
 		None = 0,
-		[Description("Standard Music Shuffle")]
+		[Description("Standard")]
 		Standard,
-		[Description("Nonsensical Music Shuffle")]
+		[Description("Nonsensical")]
 		Nonsensical,
 		[Description("Disable Music")]
 		MusicDisabled

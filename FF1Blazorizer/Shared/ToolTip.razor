@@ -2,14 +2,13 @@
 @inject HttpClient  Http
 
 <div class="ffr-tooltip" style="@css">
-	<button type="button" class="nes-btn is-error ffr-tooltip-close" @onclick="@HideToolTip"> X </button>
-	<button type="button" class="nes-btn" @onclick="@HideToolTip">@Title</button>
-	<div class="is-dark nes-container" @onmousedown=@StartDrag @onmousemove=@Drag @onmouseup=@EndDrag @onmouseout=@Drag>
+	<a class="styled-button" @onclick="@HideToolTip">@Title</a>
+	<a class="styled-button ffr-tooltip-close" @onclick="@HideToolTip"> X </a>
+	<div class="framed-content ffr-tooltip-content" @onmousedown=@StartDrag @onmousemove=@Drag @onmouseup=@EndDrag @onmouseout=@Drag>
 		<div class="ffr-tooltip-screenshot" style="@(ScreenshotStyle())"></div>
 		@foreach (var paragraph in Description.Split("\n"))
 		{
-			<p class="ffr-tooltip-text">@paragraph</p>
-		}
+<p class="ffr-tooltip-text">@paragraph</p>}
 		<p style="clear: both"></p>
 	</div>
 </div>
@@ -38,8 +37,8 @@
 	private int Width = 800;
 	private bool Enabled { get; set; } = false;
 	private string Visible => (Enabled ? "visibility:visible;" : "visibility:hidden;");
-	private double PosTop { get; set; } = 75;
-	private double PosLeft { get; set; } = 25;
+	private double PosTop { get; set; } = 200;
+	private double PosLeft { get; set; } = 80;
 	private string css =>
 		$"left: {PosLeft}px; top: {PosTop}px; width: {Width}px; {Visible}";
 

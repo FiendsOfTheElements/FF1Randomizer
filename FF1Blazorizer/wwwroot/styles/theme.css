@@ -1,0 +1,246 @@
+@font-face {
+  font-family: chicago;
+  src: url(../fonts/chicago.ttf);
+}
+
+@font-face {
+  font-family: liberation;
+  src: url(../fonts/liberation_mono.ttf);
+}
+
+body{
+background-color: #000000;
+color: #ffffff;
+font-family: liberation, monospace;
+font-size: 85%;
+}
+
+a, a:link, a:active{
+color: #6dc3ff;
+text-decoration: underline;
+}
+
+a:visited{
+color: #aaaaaa;
+}
+
+a:hover{
+color: #ffffff;
+text-decoration: none;
+}
+
+h1, h2, h3, h4, h5, h6, button, a.styled-button, #version, .nav-item-main, .nav-item{
+font-family: chicago, arial, sans-serif;
+}
+
+h1{
+font-size: 190%;
+}
+
+h2{
+font-size: 170%;
+}
+
+h3{
+font-size: 140%;
+border-bottom: 1px solid #ffffff;
+padding-bottom: 5px;
+}
+
+h4{
+font-size: 125%;
+}
+
+h5{
+font-size: 115%;
+}
+
+h6{
+font-size: 105%;
+}
+
+/* Main Content */
+
+.framed-content, #orbs, .nav-item-main{
+border: 4px solid #ffffff;
+border-image: url(../images/site-border-large.png) 4;
+border-image-outset: 2px;
+background-color: #002d71;
+}
+
+.framed-content li{
+list-style-type: square;
+}
+
+button{
+border: 4px solid #ffffff;
+border-image: url(../images/site-border-large-fade.png) 4;
+background-color: #002050;
+border-right: none;
+border-image-outset: 0px;
+color: #999999;
+}
+
+a.nav-link.nav-item {
+    border: 4px solid #ffffff;
+    border-image: url(../images/site-border-large-fade.png) 4;
+    background-color: #002050;
+    border-right: none;
+    border-image-outset: 0px;
+    color: #999999;
+    display: block;
+    width: 125px;
+    margin: 0px;
+    margin-bottom: 7px;
+    padding: 2px;
+    text-align: left;
+    box-sizing: border-box;
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+    text-decoration: none;
+}
+
+nav.nav-tabs {
+    border-bottom: 0px none;
+}
+
+a.nav-link.nav-item.active {
+    background-color: #002d71;
+    color: #ffffff;
+    border-right: 4px solid #ffffff;
+    border-image: url(../images/site-border-tabs.png) 4;
+    width: 132px;
+}
+
+button.active{
+background-color: #002d71;
+color: #ffffff;
+border-right: 4px solid #ffffff;
+border-image: url(../images/site-border-tabs.png) 4;
+}
+
+
+a.styled-button {
+    background-color: #0081db;
+    border: 1px solid #ffffff;
+    border-radius: 2px;
+    color: #ffffff;
+    padding: 1px 3px 3px 3px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+a.styled-button:hover{
+background-color: #005896;
+}
+
+a.preset-close {
+    position: relative;
+    background-color: #e76e55;
+    padding: 1px 8px 3px 8px;
+    right: 7px;
+    margin: 0px 0px 0px 0px;
+}
+
+a.preset-close:hover {
+        background-color: #d75e45;
+}
+
+a.ffr-tooltip-close {
+    position: absolute;
+    background-color: #e76e55;
+    padding: 3px 8px 3px 8px;
+    right: 2px;
+}
+
+a.ffr-tooltip-close:hover {
+   background-color: #d75e45;
+}
+
+button.main-button {
+    color: #ffffff;
+    border-right: 4px solid #ffffff;
+}
+
+button.main-button:hover {
+    background-color: #005896;
+}
+
+.expand-collapse-button {
+    text-align: left;
+    display: flex;
+    align-items: center;
+    margin-left: 0px;
+}
+
+.expand-collapse-button.tabbed {
+    margin-left: 130px;
+}
+
+.expand-collapse-text {
+    margin-left: 5px;
+    cursor: pointer;
+}
+/* Footer */
+
+#main-footer {
+    background: url(../images/footer-bg.png) repeat-x left top;
+}
+
+#garland{
+background: url(../images/garland.png) no-repeat;
+}
+
+#warriors{
+background: url(../images/warriors.png) no-repeat;
+}
+
+#footer-links{
+border-top: 1px solid #4d7fc9;
+}
+
+/* Header */
+
+#banner{
+background-color: #002d71;
+}
+
+#logo{
+background: url(../images/ffr-logo.png) no-repeat;
+}
+
+.orb-image{
+background: url(../images/orb.png) no-repeat;
+}
+
+.orb-image.litUL {
+    background: url(../images/orbUL.png) no-repeat;
+}
+
+.orb-image.litUR {
+    background: url(../images/orbUR.png) no-repeat;
+}
+
+.orb-image.litLL {
+    background: url(../images/orbLL.png) no-repeat;
+}
+
+.orb-image.litLR {
+    background: url(../images/orbLR.png) no-repeat;
+}
+
+.nav-item-main {
+    font-size: 150%;
+    margin: 5px 5px;
+    display: inline-block;
+}
+
+.nav-item-main a, .nav-item-main a.link, .nav-item-main a.active, .nav-item-main a.visited{
+color: #ffffff;
+text-decoration: none;
+}
+
+.nav-item-main:hover{
+background-color: #005896;
+text-decoration: none;
+}

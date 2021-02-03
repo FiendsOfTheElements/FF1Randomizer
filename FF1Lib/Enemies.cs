@@ -181,12 +181,17 @@ namespace FF1Lib
 		{
 			var oldEnemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
 			var newEnemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
-
+			
 			if(doNormals)
 			{
 				var normalOldEnemies = oldEnemies.Take(EnemyCount - 10).ToList(); // all but WarMECH, fiends, fiends revisited, and CHAOS
+				if (!AllowUnsafePirates) normalOldEnemies.RemoveAt(Enemy.Pirate);
+				if (excludeImps) normalOldEnemies.RemoveAt(Enemy.Imp);
 				normalOldEnemies.Shuffle(rng);
-				for (int i = excludeImps ? 1 : 0; i < EnemyCount - 10; i++)
+				if (excludeImps) normalOldEnemies.Insert(Enemy.Imp, oldEnemies[Enemy.Imp]);
+				if (!AllowUnsafePirates) normalOldEnemies.Insert(Enemy.Pirate, oldEnemies[Enemy.Pirate]);
+
+				for (int i = 0; i < EnemyCount - 10; i++)
 				{
 					newEnemies[i][7] = normalOldEnemies[i][7];
 				}
@@ -225,16 +230,6 @@ namespace FF1Lib
 			newEnemies[Enemy.Tiamat2][7] = oldBigBosses[4][7];
 			newEnemies[Enemy.Chaos][7] = oldBigBosses[5][7];
 			if (scaryImps) newEnemies[Enemy.Imp][7] = oldBigBosses[6][7];
-
-			if (!AllowUnsafePirates)
-			{
-				if (newEnemies[Enemy.Pirate][7] < 0xFF)
-				{
-					int swapEnemy = newEnemies.IndexOf(newEnemies.Skip(1).First((enemy) => enemy[7] == 0xFF));
-					newEnemies[swapEnemy][7] = newEnemies[Enemy.Pirate][7];
-					newEnemies[Enemy.Pirate][7] = 0xFF;
-				}
-			}
 
 			Put(EnemyOffset, newEnemies.SelectMany(enemy => enemy.ToBytes()).ToArray());
 		}

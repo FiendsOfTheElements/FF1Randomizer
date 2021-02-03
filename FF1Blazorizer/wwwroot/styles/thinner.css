@@ -1,0 +1,21 @@
+/* Main Content */
+
+#left-column{
+width: 25%;
+}
+
+.col1, .col2{
+float: none;
+width: 100%;
+min-width: 100%;
+margin-left: 0;
+}
+
+#right-column{
+max-width: 1280px;
+margin-left: 26%;
+}
+
+.ffr-tooltip {
+    width: 600px !important;
+}

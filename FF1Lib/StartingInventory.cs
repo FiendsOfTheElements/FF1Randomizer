@@ -13,46 +13,46 @@ namespace FF1Lib
 		[Description("None")]
 		None,
 
-		[Description("SafetyBit (1 Tent, 1 Pure, 1 Soft)")]
+		[Description("SafetyBit")]
 		SafetyBit,
 
-		[Description("Beggars Choice (5 Tents, 20 Heals, 2 Pures, 1 Softs)")]
+		[Description("Beggars Choice")]
 		BeggarsChoice,
 
-		[Description("Just Tents (10 Tents)")]
+		[Description("Just Tents")]
 		JustTents,
 
-		[Description("Explorer Starting Pack (10 Tents, 50 Heals, 4 Pures, 2 Softs)")]
+		[Description("Explorer Starting Pack")]
 		ExplorerStartingPack,
 
-		[Description("Real Estate (15 Tents, 3 Cabins, 1 House)")]
+		[Description("Real Estate")]
 		RealEstate,
 
-		[Description("Warriors Standard (15 Tents, 3 Cabins, 1 House, 50 Heals, 6 Pures, 3 Softs)")]
+		[Description("Warriors Standard")]
 		WarriorsStandard,
 
-		[Description("Royal Packmule (50 Tents, 15 Cabins, 5 Houses, 99 Heals, 10 Pures, 5 Softs)")]
+		[Description("Royal Packmule")]
 		RoyalPackmule,
 
-		[Description("Duckling Boon (99 Tents, 99 Cabins, 99 Houses, 99 Heals, 99 Pures, 99 Softs)")]
+		[Description("Duckling Boon")]
 		DucklingBoon,
 
-		[Description("R. Beggars Choice (0-5 Tents, 0-20 Heals, 0-2 Pures, 0-1 Softs)")]
+		[Description("R. Beggars Choice")]
 		RandomizedBeggarsChoice,
 
-		[Description("R. Explorer Starting Pack (1-10 Tents, 0-50 Heals, 0-4 Pures, 0-2 Softs)")]
+		[Description("R. Explorer Starting Pack")]
 		RandomizedExplorerStartingPack,
 
-		[Description("R. Warriors Standard (3-15 Tents, 0-3 Cabins, 0-1 House, 20-50 Heals, 2-6 Pures, 1-3 Softs)")]
+		[Description("R. Warriors Standard")]
 		RandomizedWarriorsStandard,
 
-		[Description("R. Royal Packmule (10-50 Tents, 5-15 Cabins, 1-5 Houses, 30-99 Heals, 5-10 Pures, 2-5 Softs)")]
+		[Description("R. Royal Packmule")]
 		RandomizedRoyalPackmule,
 
-		[Description("R. High Rolling (35-99 Tents, 10-25 Cabins, 5-10 Houses, 30-99 Heals, 10-20 Pures, 5-10 Softs)")]
+		[Description("R. High Rolling")]
 		RandomizedHighRolling,
 
-		[Description("Randomized (0-99 Tents, 0-99 Cabins, 0-99 Houses, 0-99 Heals, 0-20 Pures, 0-10 Softs)")]
+		[Description("Randomized")]
 		Randomized,
 	}
 

@@ -1067,7 +1067,7 @@ namespace FF1Lib
 			PutInBank(0x1F, 0xDD78, Blob.FromHex("A9002003FEA645BD00B18561A9112003FE20B08E8A60"));
 
 			// Check for trapped monster routine, see 11_8EC0_CheckTrap.asm
-			PutInBank(0x11, 0x8EB0, Blob.FromHex("A561202096B02DA645BD008FF022856AA9C0203D96A56A200096A903CD866BD0062018964C439620E68E201896A2F06020E68E60AA60A911855818A5612093DDA445B90062090499006260"));
+			PutInBank(0x11, 0x8EB0, Blob.FromHex("A561202096B030A645BD008FF025856AA9C0203D96A56A200096A903CD866BD00820189668684C43961820E98E201896A2F06020E98E60AA60A911855818A5612093DDA445B90062090499006260"));
 
 			InsertDialogs(0x110, "Monster-in-a-box!"); // 0xC0
 
@@ -1159,11 +1159,20 @@ namespace FF1Lib
 			var selectList = new List<FF1Class>();
 			var classList = new List<FF1Class>();
 
-			// New talk routine to add class to 4th slot
-			var talk_class = talkroutines.Add(Blob.FromHex("A470F0052079909032A57148A2C0A5739D0061A9009D26619D01619D0B619D0D6120669F20509FA00E207990900320C59520829FA4762073926860A57260"));
+			// Repurpose the LineupMenu to select which character get replaced
+			// New Routine when coming from a dialogue
+			PutInBank(0x0E, 0x98C0, Blob.FromHex("A565F0034C149AA525D034A524D023A520290CC564F02C8564290CF026C908F007A561186908D005A56138E908291F856160A9008524A8A5610A0A0AAA9002A425686860")); 
+			PutInBank(0x0E, 0x9911, Blob.FromHex("A5228565")); // Store joy_select to read it
+			PutInBank(0x0E, 0x99D7, Blob.FromHex("20C098")); // Hijack LineupMenu_ProcessJoy
+			PutInBank(0x1F, 0xCA5C, Blob.FromHex("201199")); // Jump a bit earlier SM
+			PutInBank(0x1F, 0xC1BC, Blob.FromHex("201199")); // Jump a bit earlier OW
+			PutInBank(0x1F, 0xCA4E, Blob.FromHex("EAEAEAEA")); // Don't zero out joy_select
+
+			// New talk routine to add class
+			var talk_class = talkroutines.Add(Blob.FromHex("A470F005207990903DA571203D9620A49FC000D02BA5739D0061A9009D26619D01619D0B619D0D6120649F20509FA00E207990900320C59520879FA4762073922018964C4396A57260"));
 
 			// Routines to switch the class (clear stats, equipment, new stats, levelup)
-			PutInBank(newTalkRoutinesBank, 0x9F50, Blob.FromHex("A91148A9FE48A90648A9C748A98248A2C0A9004C03FEA018B9C061297F99C061C8C020D0F3A000A90099C063C8C02FD0F860A91148A9FE48A90648A98748A9A948A9038510A91B4C03FE"));
+			PutInBank(newTalkRoutinesBank, 0x9F50, Blob.FromHex("A91148A9FE48A90648A9C748A98248A9004C03FEA0188610A9618511B110297F9110C8C020D0F5A000A9638511A9009110C8C02FD0F960A91148A9FE48A90648A98748A9A9488A4A4A4A4A4A4A8510A91B4C03FEA91148A9FE48A90648A99948A91048A9008565A90E4C03FE"));
 
 			var totalKeyNPC = (bool)flags.ClassAsNpcKeyNPC ? Math.Min(flags.ClassAsNpcCount, 12) : 0;
 			var totalAllNPC = ((bool)flags.ClassAsNpcFiends ? 4 : 0) + totalKeyNPC;
@@ -1406,6 +1415,7 @@ namespace FF1Lib
 
 			// Modify DrawComplexString, this sets control code 14-19 to use a new words table in bank 11
 			//  could be used to move some stuff in items name table and make some space
+			//  see 1F_DEBC_DrawComplexString.asm
 			PutInBank(0x1F, 0xDEBC, Blob.FromHex("C910B005A2204C83DEC914B07B")); // Change branching to enable CC14
 			PutInBank(0x1F, 0xDF44, Blob.FromHex("4CCEDF")); // Jump to routine because we're too far, put in unused char weapons CC
 			PutInBank(0x1F, 0xDFCE, Blob.FromHex("A91185572003FE4CA099")); // Routine, put in unused char weapons routine
@@ -1769,8 +1779,8 @@ namespace FF1Lib
 			encountersData.formations[encZombieGhoul].minmax2 = (0, 0);
 			encountersData.formations[encZombieGhoul].unrunnableA = true;
 
-			encountersData.formations[encGhoulGeist].minmax1 = (0, 0);
-			encountersData.formations[encGhoulGeist].minmax2 = (0, 2);
+			encountersData.formations[encGhoulGeist].minmax1 = (0, 2);
+			encountersData.formations[encGhoulGeist].minmax2 = (0, 0);
 			encountersData.formations[encGhoulGeist].minmax3 = (1, 3);
 			encountersData.formations[encGhoulGeist].enemy3 = 0x2B;
 			encountersData.formations[encGhoulGeist].gfxOffset3 = (int)FormationGFX.Sprite2;
