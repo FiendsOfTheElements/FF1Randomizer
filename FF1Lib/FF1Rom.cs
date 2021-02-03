@@ -714,6 +714,14 @@ namespace FF1Lib
 			var itemText = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
 			itemText[(int)Item.Ribbon] = itemText[(int)Item.Ribbon].Remove(7);
 
+			if (flags.Etherizer && !flags.HouseMPRestoration && !flags.HousesFillHp)
+			{
+				Etherizer();
+				itemText[(int)Item.Tent] = "ETHR@p";
+				itemText[(int)Item.Cabin] = "DRY@p ";
+				itemText[(int)Item.House] = "XETH@p";
+			}
+
 			if ((bool)flags.HintsVillage || (bool)flags.HintsDungeon)
 			{
 				if ((bool)flags.HintsDungeon)

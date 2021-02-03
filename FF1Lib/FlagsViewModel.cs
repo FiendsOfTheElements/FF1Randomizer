@@ -1641,6 +1641,15 @@ namespace FF1Lib
 			}
 		}
 
+		public bool Etherizer
+		{
+			get => Flags.Etherizer;
+			set
+			{
+				Flags.Etherizer = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Etherizer"));
+			}
+		}
 		public bool HouseMPRestoration
 		{
 			get => Flags.HouseMPRestoration;

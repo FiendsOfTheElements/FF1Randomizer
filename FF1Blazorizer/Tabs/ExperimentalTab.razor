@@ -35,6 +35,8 @@
 			<div class="checkbox-cell"></div>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="GuaranteedMasamuneCheckBox" IsEnabled="@(Flags.NoMasamune != true)" @bind-Value="Flags.GuaranteedMasamune">Guaranteed Endgame Masamune</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="SendMasamuneHomeCheckBox" IsEnabled="@((Flags.NoMasamune != true) && Flags.GuaranteedMasamune != false && Flags.IncentivizeMasamune == false)" @bind-Value="Flags.SendMasamuneHome">Send Masamune Home</TriStateCheckBox>
+			<div class="checkbox-cell"></div>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="etherizerCheckBox" IsEnabled="@(Flags.HouseMPRestoration != true && Flags.HousesFillHP != true)" @bind-Value="Flags.Etherizer">Turn shelters into ethers</CheckBox>
 		</div>
 		<div class="clear-it"></div>
 		}
