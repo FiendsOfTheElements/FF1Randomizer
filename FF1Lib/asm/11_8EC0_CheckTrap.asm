@@ -1,5 +1,5 @@
 ; 
-; TrappedChests - 2020-12-24
+; TrappedChests - 2021-01-31
 ;
 ; Modify OpenTreasureChest to check for traps
 ;  and trigger a battle if there's one for a
@@ -17,6 +17,8 @@ btlformation    = $6A
 talkarray 	= $70
 dlgsfx 		= $7D
 
+btl_result      = $6B86
+
 BANK_TREASURE	 	= $00
 BANK_TALKROUTINE	= $11
 
@@ -30,7 +32,7 @@ InTalkReenterMap 	= $9618
 CheckCanTake		= $9620
 InTalkDialogueBox	= $963D
 SkipDialogueBox		= $9643
-GiveItem_L 		= $DD93
+GiveReward 		= $DD93
 SwapPRG_L 		= $FE03
 
  .ORG $DD78
@@ -48,7 +50,7 @@ SwapPRG_L 		= $FE03
   TXA                      ; X has the dialog ID, either Can't hold or In this chest you found
   RTS
 
- .ORG $8EC0
+ .ORG $8EB0
   
 CheckTrap:
   LDA dlg_itemid              ; Load item and check if we have
@@ -62,6 +64,15 @@ CheckTrap:
       JSR InTalkDialogueBox   
       LDA btlformation        ; Get back battle formation
       JSR InTalkBattle        ; Trigger the battle
+      LDA #$03
+      CMP btl_result          ; Check if we ran from battle
+      BNE WonBattle           ; If we did
+        JSR InTalkReenterMap  ; Skip giving the item
+        PLA                   ; Clear an extra address in the stack
+        PLA                   ;  since we're one routine deeper
+        JMP SkipDialogueBox   
+WonBattle:      
+      CLC
       JSR GiveItem            ; Give the item
       JSR InTalkReenterMap    ; And reenter the map
       LDX #$F0                ; Load "In this chest you've found..."
@@ -76,8 +87,9 @@ CantTake:
 GiveItem:
   LDA #BANK_TALKROUTINE    ; Get return bank
   STA ret_bank             ;  for LoadPrice
+  CLC
   LDA dlg_itemid           ; Get item
-  JSR GiveItem_L           ; Give item as normal
+  JSR GiveReward           ; Give item as normal
   LDY tileprop+1           ; get the ID of this chest A445
   LDA game_flags, Y        ; flip on the TCOPEN flag to mark this TC as open
   ORA #GMFLG_TCOPEN  

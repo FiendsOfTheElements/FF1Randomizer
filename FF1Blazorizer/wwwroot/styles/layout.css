@@ -1,0 +1,226 @@
+body{
+margin: 0;
+}
+
+h1, h2, h3, h4, h5, h6{
+margin: 0 0 .5em 0;
+}
+
+#wrapper, #header-contents{
+margin: auto;
+max-width: 1200px;
+min-width: 300px;
+padding: 0 10px;
+}
+
+#banner-holder{
+height: 45px;
+}
+
+#nav-holder{
+height: 120px;
+}
+
+.nav-text{
+position: absolute;
+margin-left: -9999px;
+}
+
+.centered{
+text-align: center;
+}
+
+.clear-it{
+clear: right;
+}
+
+.clearfix {
+    overflow: auto;
+}
+
+/* Main Content */
+
+#left-column{
+float: left;
+width: 280px;
+}
+
+#right-column{
+max-width: 1210px;
+margin-left: 290px;
+}
+
+.framed-content{
+margin-bottom: 10px;
+padding: 5px;
+}
+
+#right-column h1{
+display: none;
+}
+
+.tab{
+width: 125px;
+float: left;
+margin-top: 10px;
+}
+
+.tabcontent{
+margin-left: 130px;
+min-height: 520px;
+}
+
+.tab button{
+display: block;
+width: 125px;
+margin-bottom: 7px;
+padding: 2px;
+text-align: left;
+}
+
+.tab button.active{
+width: 132px;
+}
+
+.tab nav-item {
+    display: block;
+    width: 125px;
+    margin-bottom: 7px;
+    padding: 2px;
+    text-align: left;
+}
+
+.tab nav-item.active {
+        width: 132px;
+}
+
+.col1, .col2{
+float: left;
+width: 45%;
+min-width: 250px;
+margin-left: 2%;
+}
+
+.col1.full {
+    width: 95%;
+}
+
+.preset-button{
+float: left;
+}
+
+.styled-button {
+    display: inline-block;
+    margin: 0 5px 0 0;
+}
+
+.generate-button {
+   font-size: 150%;
+}
+.preset-paragraph{
+margin-left: 65px;
+min-height: 30px;
+}
+
+/* Footer */
+
+#main-footer{
+clear: both;
+padding-top: 70px;
+}
+
+#garland{
+width: 46px;
+height: 44px;
+float: left;
+margin-left: 100px;
+position: relative;
+margin-top: -44px;
+}
+
+#warriors{
+width: 117px;
+height: 44px;
+float: right;
+margin-right: 100px;
+position: relative;
+margin-top: -44px;
+}
+
+#footer-links {
+    clear: both;
+    text-align: center;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+#hidden-nav{
+display: none;	
+}
+
+/* Header */
+
+#header{
+position: absolute;
+width: 100%;
+top: 0;
+}
+
+#banner{
+padding: 6px 0;
+height: 32px;
+box-sizing: content-box;
+}
+
+#logo{
+width: 258px;
+height: 29px;
+margin: auto;
+}
+
+#version{
+position: relative;
+top: 10px;
+display: block;
+width: 258px;
+text-align: right;
+margin: auto;
+}
+
+#nav-holder{
+height: 120px;
+}
+
+#orbs{
+width: 70px;
+height: 70px;
+margin-top: 4px;
+padding: 10px 10px 10px 10px;
+text-align: center;
+float: left;
+box-sizing: content-box;
+}
+
+.orb-image{
+display: inline-block;
+width: 32px;
+height: 32px;
+}
+
+
+#site-nav{
+margin: 0 80px;
+text-align: center;
+padding-top: 15px;
+}
+
+.nav-item{
+margin: 5px 5px;
+display: inline-block;
+}
+
+.nav-item a{
+display: block;
+}

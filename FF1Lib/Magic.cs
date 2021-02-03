@@ -27,7 +27,7 @@ namespace FF1Lib
 		Autohit900,
 		[Description("1200")]
 		Autohit1200,
-		[Description("None")]
+		[Description("Unlimited")]
 		Autohit65535,
 		[Description("300 or 600")]
 		Autohit300to600,

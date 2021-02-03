@@ -1,0 +1,37 @@
+﻿@using FF1Lib;
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+
+
+<div id="Beta" class="tabcontent framed-content clearfix @(noTabLayout ? "no-tab" : "")">
+	<h3>Blind Seed</h3>
+	<p>This is a mystery seed; flags have been hidden.</p>
+	<a class="styled-button" @onclick="@(() => LoadStandardPreset("default"))">Reset</a>
+	<input hidden type="text" id="presetNameInput" />
+	<div class="clear-it"></div>
+</div>
+
+
+@code {
+	[Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }
+	[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
+	[Parameter] public bool noTabLayout { get; set; }
+	[Parameter] public Action<string> SetStatusMessage { get; set; }
+	[Parameter] public string StatusMessage { get; set; }
+
+	async Task LoadStandardPreset(string name)
+	{
+		var json = await JSRuntime.InvokeAsync<string>("computePreset", name);
+		Flags.BlindSeed = false;
+		LoadFromJson(json);
+	}
+
+	public void LoadFromJson(string json)
+	{
+		Flags.Preset preset = System.Text.Json.JsonSerializer.Deserialize<Flags.Preset>(json);
+		Flags.Flags = preset.Flags;
+		SetStatusMessage.Invoke(preset.Name + " preset successfully loaded.");
+		StateHasChanged();
+	}
+}

@@ -260,6 +260,7 @@
 						<Label MinHeight="26" x:Name="ProgressiveScaleLabel" Content="Progressive Scale:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
 						<Label MinHeight="26" x:Name="OverworldEncounterRateLabel" Content="Overworld Encounter Rate:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
 						<Label MinHeight="26" x:Name="DungeonEncounterRateLabel" Content="Dungeon Encounter Rate:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+						<Label MinHeight="26" Content="Starting Inventory:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
 					</StackPanel>
 					<StackPanel Grid.Column="1">
 						<CheckBox MinHeight="20" x:Name="ClampPricesCheckBox" IsChecked="{Binding Flags.ClampPrices}" ToolTip="Clamp Minimum to 100%" Checked="ClampPricesCheckBox_ValueChanged" Unchecked="ClampPricesCheckBox_ValueChanged"/>
@@ -294,6 +295,23 @@
 						</ComboBox>
 						<Slider MinHeight="20" x:Name="EncounterRateSlider" Value="{Binding Flags.EncounterRate}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Minimum="0" Maximum="45" TickPlacement="BottomRight" TickFrequency="5" LargeChange="1" SmallChange="1" ValueChanged="EncounterRate_ValueChanged"/>
 						<Slider MinHeight="20" x:Name="DungeonEncounterRateSlider" Value="{Binding Flags.DungeonEncounterRate}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Minimum="0" Maximum="45" TickPlacement="BottomRight" TickFrequency="5" LargeChange="1" SmallChange="1" ValueChanged="DungeonEncounterRate_ValueChanged"/>
+						<ComboBox MinHeight="26" SelectedValue="{Binding Flags.StartingItemSet}" Width="150" HorizontalAlignment="Left" SelectedValuePath="Tag">
+							<ComboBoxItem Content="None" Tag="None"/>
+							<ComboBoxItem Content="SafetyBit" Tag="SafetyBit"/>
+							<ComboBoxItem Content="BeggarsChoice" Tag="BeggarsChoice"/>
+							<ComboBoxItem Content="JustTents" Tag="JustTents"/>
+							<ComboBoxItem Content="ExplorerStartingPack" Tag="ExplorerStartingPack"/>
+							<ComboBoxItem Content="RealEstate" Tag="RealEstate"/>
+							<ComboBoxItem Content="WarriorsStandard" Tag="WarriorsStandard"/>
+							<ComboBoxItem Content="RoyalPackmule" Tag="RoyalPackmule"/>
+							<ComboBoxItem Content="DucklingBoon" Tag="DucklingBoon"/>
+							<ComboBoxItem Content="R. BeggarsChoice" Tag="RandomizedBeggarsChoice"/>
+							<ComboBoxItem Content="R. ExplorerStartingPack" Tag="RandomizedExplorerStartingPack"/>
+							<ComboBoxItem Content="R. WarriorsStandard" Tag="RandomizedWarriorsStandard"/>
+							<ComboBoxItem Content="R. RoyalPackmule" Tag="RandomizedRoyalPackmule"/>
+							<ComboBoxItem Content="R. HighRolling" Tag="RandomizedHighRolling"/>
+							<ComboBoxItem Content="Randomized" Tag="Randomized"/>
+						</ComboBox>
 					</StackPanel>
 					<StackPanel Grid.Column="4">
 						<CheckBox x:Name="PricesScaleOverflowCheckBox" IsChecked="{Binding Flags.WrapPriceOverflow}" Content="Wrap Overflowing Prices"/>

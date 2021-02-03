@@ -222,7 +222,7 @@ namespace FF1Lib
 			{
 				EnableLefeinShops(maps);
 			}
-			
+			// stuff
 			// This has to be done before we shuffle spell levels.
 			if (flags.SpellBugs)
 			{
@@ -282,7 +282,7 @@ namespace FF1Lib
 				EnableShardHunt(rng, talkroutines, flags.ShardCount);
 			}
 			
-			if ((bool)flags.TransformFinalFormation)
+			if ((bool)flags.TransformFinalFormation && !flags.SpookyFlag)
 			{
 				TransformFinalFormation((FinalFormation)rng.Between(0, Enum.GetValues(typeof(FinalFormation)).Length - 1), flags.EvadeCap);
 			}
@@ -338,6 +338,8 @@ namespace FF1Lib
 			{
 				ShuffleMagicLevels(rng, ((bool)flags.MagicPermissions), (bool)flags.MagicLevelsTiered, (bool)flags.MagicLevelsMixed, (bool)!flags.GenerateNewSpellbook);
 			}
+			
+			new StartingInventory(rng, flags, this).SetStartingInventory();
 
 			new ShopKiller(rng, flags, maps, this).KillShops();
 
@@ -371,7 +373,7 @@ namespace FF1Lib
 
 			if (((bool)flags.EnemyScripts))
 			{
-				ShuffleEnemyScripts(rng, (bool)flags.AllowUnsafePirates, (bool)!flags.BossScriptsOnly);
+				ShuffleEnemyScripts(rng, (bool)flags.AllowUnsafePirates, (bool)!flags.BossScriptsOnly, ((bool)flags.EnemySkillsSpellsTiered || (bool)flags.ScaryImps), (bool)flags.ScaryImps);
 			}
 
 			if (((bool)flags.EnemySkillsSpells))
@@ -771,7 +773,7 @@ namespace FF1Lib
 				CannotSaveAtInns();
 			}
 
-			if (flags.PacifistMode)
+			if (flags.PacifistMode && !flags.SpookyFlag)
 			{
 				PacifistEnd(talkroutines, npcdata, (bool)flags.EnemyTrapTiles || flags.EnemizerEnabled);
 			}

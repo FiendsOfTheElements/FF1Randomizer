@@ -394,6 +394,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Spoilers"));
 			}
 		}
+		public bool BlindSeed
+		{
+			get => Flags.BlindSeed;
+			set
+			{
+				Flags.BlindSeed = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BlindSeed"));
+			}
+		}
 
 		public bool TournamentSafe
 		{
@@ -1498,15 +1507,17 @@ namespace FF1Lib
 			}
 		}
 
-		public bool? FreeLute
+		public bool? FreeLuteFlag
 		{
-			get => Flags.FreeLute;
+			get => Flags.FreeLuteFlag;
 			set
 			{
-				Flags.FreeLute = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeLute"));
+				Flags.FreeLuteFlag = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeLuteFlag"));
 			}
 		}
+
+		public bool? FreeLute => FreeLuteFlag | ShortToFR;
 
 		public bool FreeOrbsEnabled => !ShardHunt;
 
@@ -1980,7 +1991,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ClassAsNpcCount"));
 			}
 		}
-		public bool ClassAsNpcDuplicate
+		public bool? ClassAsNpcDuplicate
 		{
 			get => Flags.ClassAsNpcDuplicate;
 			set
@@ -1998,7 +2009,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ClassAsNpcForcedFiends"));
 			}
 		}
-		public bool ClassAsNpcPromotion
+		public bool? ClassAsNpcPromotion
 		{
 			get => Flags.ClassAsNpcPromotion;
 			set
@@ -2172,6 +2183,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ChangeLute"));
 			}
 		}
+		public bool NoTabLayout
+		{
+			get => Preferences.NoTabLayout;
+			set
+			{
+				Preferences.NoTabLayout = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NoTabLayout"));
+			}
+		}
 		public Fate HurrayDwarfFate
 		{
 			get => Preferences.HurrayDwarfFate;
@@ -2181,6 +2201,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("HurrayDwarfFate"));
 			}
 		}
+
 		public MapmanSlot MapmanSlot
 		{
 			get => Preferences.MapmanSlot;
@@ -3315,6 +3336,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomizeClassChaos"));
 			}
 		}
+		public bool? RandomizeClassNoCasting
+		{
+			get => Flags.RandomizeClassNoCasting;
+			set
+			{
+				Flags.RandomizeClassNoCasting = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomizeClassNoCasting"));
+			}
+		}
 		public int RandomizeClassMaxBonus
 		{
 			get => Flags.RandomizeClassMaxBonus;
@@ -3342,7 +3372,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SwolePirates"));
 			}
 		}
-
+		public bool? ScaryImps
+		{
+			get => Flags.ScaryImps;
+			set
+			{
+				Flags.ScaryImps = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ScaryImps"));
+			}
+		}
 		public EvadeCapValues EvadeCap
 		{
 			get => Flags.EvadeCap;
@@ -3350,6 +3388,16 @@ namespace FF1Lib
 			{
 				Flags.EvadeCap = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EvadeCap"));
+			}
+		}
+
+		public StartingItemSet StartingItemSet
+		{
+			get => Flags.StartingItemSet;
+			set
+			{
+				Flags.StartingItemSet = value;
+				RaisePropertyChanged();
 			}
 		}
 
