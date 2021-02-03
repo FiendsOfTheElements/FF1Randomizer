@@ -74,7 +74,7 @@ namespace FF1Lib
 		public const int ShopSectionSize = 10;
 		public const ushort ShopNullPointer = 0x838E;
 
-		private static Dictionary<int, Shop> ShopPrototypes = new Dictionary<int, Shop>
+		private Dictionary<int, Shop> ShopPrototypes = new Dictionary<int, Shop>
 		{
 			{ 0, new Shop(0, ShopType.Weapon, MapLocation.Coneria, MapId.Coneria ,30, "Coneria Weapon", null) },
 			{ 1, new Shop(1, ShopType.Weapon, MapLocation.Pravoka, MapId.Pravoka ,31, "Pravoka Weapon", null) },
@@ -152,40 +152,39 @@ namespace FF1Lib
 			}
 		}
 
-		public void StoreData()
+		public int StoreData()
 		{
-			var allEntries = new List<byte>();
-			var pointer = Index.Data[0];
-			for (int shopType = 0; shopType < (int)ShopType.Item + ShopSectionSize; shopType += ShopSectionSize)
+			var shopdic = Shops.ToDictionary(s => s.Index);
+			var shopdata = new List<byte>();
+
+			for (int i = 0; i < 70; i++)
 			{
-				var shopSizes = new List<int>();
-				var sectionShops = Shops.Where(s => s.Type == (ShopType)shopType).ToList();
-				for (int i = 0; i < sectionShops.Count; i++)
+				if (shopdic.TryGetValue(i, out var shop))
 				{
-					if ((ShopType)shopType == ShopType.Clinic || (ShopType)shopType == ShopType.Inn)
+					Index.Data[i] = (ushort)(ShopNullPointer + 1 + shopdata.Count);
+
+					if (shop.Type == ShopType.Clinic || shop.Type == ShopType.Inn)
 					{
-						allEntries.Add((byte)(sectionShops[i].Price & 0xFF));
-						allEntries.Add((byte)((sectionShops[i].Price >> 8) & 0xFF));
-						allEntries.Add(0);
-						shopSizes.Add(3);
+						shopdata.Add((byte)(shop.Price & 0xFF));
+						shopdata.Add((byte)((shop.Price >> 8) & 0xFF));
+						shopdata.Add(0);
 					}
 					else
 					{
-						allEntries.AddRange(sectionShops[i].Entries.Cast<byte>());
-						allEntries.Add(0);
-						shopSizes.Add(sectionShops[i].Entries.Count + 1);
+						shopdata.AddRange(shop.Entries.Cast<byte>());
+						shopdata.Add(0);
 					}
 				}
-
-				for (int i = 0; i < sectionShops.Count; i++)
+				else
 				{
-					Index.Data[sectionShops[i].Index] = pointer;
-					pointer += (ushort)(shopSizes[i]);
+					Index.Data[i] = ShopNullPointer;
 				}
+
+				Index.StoreTable();
+				rom.Put(ShopPointerBase + ShopNullPointer + 1, shopdata.Cast<byte>().ToArray());
 			}
 
-			Index.StoreTable();
-			rom.Put(ShopPointerBase + Index.Data[0], allEntries.Cast<byte>().ToArray());
+			return 241 - shopdata.Count();
 		}
 
 		private List<Shop> GetShops(ShopType shopType)

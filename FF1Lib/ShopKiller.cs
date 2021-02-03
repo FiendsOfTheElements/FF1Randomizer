@@ -124,7 +124,7 @@ namespace FF1Lib
 
 			foreach (var shop in shopsToRemove)
 			{
-				shop.Entries = shop.Entries.Where(e => !QuestItems.Contains(e)).ToList();
+				shop.Entries = shop.Entries.Where(e => QuestItems.Contains(e)).ToList();
 				if (shop.Entries.Count == 0)
 				{
 					shop.Entries.Add(GetDefaultItem(shopType));
@@ -210,6 +210,9 @@ namespace FF1Lib
 
 		private void RemoveShopFromMap(Shop shop)
 		{
+			//Caravan
+			if (shop.Index == 69) return;
+
 			var map = maps[(int)shop.MapId];
 
 			if (map.FindFirst(shop.TileId, out var x, out var y))

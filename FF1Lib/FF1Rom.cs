@@ -308,7 +308,30 @@ namespace FF1Lib
 					}
 
 					IncentiveData incentivesData = new IncentiveData(rng, flags, overworldMap, shopItemLocation);
-					incentivesData = new ShopShuffle(rng, flags, this).ShuffleShops(incentivesData);					
+
+					if (((bool)flags.Shops))
+					{
+						var excludeItemsFromRandomShops = new List<Item>();
+						if ((bool)flags.Treasures)
+						{
+							excludeItemsFromRandomShops = incentivesData.ForcedItemPlacements.Select(x => x.Item).Concat(incentivesData.IncentiveItems).ToList();
+						}
+
+						if (!((bool)flags.RandomWaresIncludesSpecialGear))
+						{
+							excludeItemsFromRandomShops.AddRange(ItemLists.SpecialGear);
+							if ((bool)flags.GuaranteedRuseItem)
+								excludeItemsFromRandomShops.Add(Item.PowerRod);
+						}
+
+						if((bool)flags.NoMasamune)
+						{
+							excludeItemsFromRandomShops.Add(Item.Masamune);
+						}
+
+						shopItemLocation = ShuffleShops(rng, (bool)flags.ImmediatePureAndSoftRequired, ((bool)flags.RandomWares), excludeItemsFromRandomShops, flags.WorldWealth);
+						incentivesData = new IncentiveData(rng, flags, overworldMap, shopItemLocation);
+					}
 
 					if ((bool)flags.Treasures)
 					{
@@ -330,9 +353,15 @@ namespace FF1Lib
 
 			npcdata.UpdateItemPlacement(generatedPlacement);
 
-			new ShopShuffle(rng, flags, this).ShuffleMagicLocations();
+			if ((bool)flags.MagicShopLocs)
+			{
+				ShuffleMagicLocations(rng);
+			}
 
-			new ShopShuffle(rng, flags, this).ShuffleMagicShops();
+			if (((bool)flags.MagicShops))
+			{
+				ShuffleMagicShops(rng);
+			}
 
 			if (((bool)flags.MagicLevels))
 			{
