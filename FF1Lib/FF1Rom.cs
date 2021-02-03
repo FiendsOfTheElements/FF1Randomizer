@@ -222,7 +222,7 @@ namespace FF1Lib
 			{
 				EnableLefeinShops(maps);
 			}
-			
+			// stuff
 			// This has to be done before we shuffle spell levels.
 			if (flags.SpellBugs)
 			{
