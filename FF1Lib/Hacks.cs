@@ -1415,6 +1415,7 @@ namespace FF1Lib
 
 			// Modify DrawComplexString, this sets control code 14-19 to use a new words table in bank 11
 			//  could be used to move some stuff in items name table and make some space
+			//  see 1F_DEBC_DrawComplexString.asm
 			PutInBank(0x1F, 0xDEBC, Blob.FromHex("C910B005A2204C83DEC914B07B")); // Change branching to enable CC14
 			PutInBank(0x1F, 0xDF44, Blob.FromHex("4CCEDF")); // Jump to routine because we're too far, put in unused char weapons CC
 			PutInBank(0x1F, 0xDFCE, Blob.FromHex("A91185572003FE4CA099")); // Routine, put in unused char weapons routine
