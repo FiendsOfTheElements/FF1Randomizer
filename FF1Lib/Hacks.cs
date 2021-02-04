@@ -254,53 +254,6 @@ namespace FF1Lib
 			// To allow all promoted classes
 			EnableTwelveClasses();
 		}
-		// Deprecated, delete if there's no revolt for it to come back 2020-12-17
-		public void LinearMPGrowth()
-		{
-			// Change MP growth to be linear (every 3 levels) as a fix for random promotion 
-			var levelUpStats = Get(NewLevelUpDataOffset, 588).Chunk(49 * 2);
-			var rmArray = Enumerable.Repeat((byte)0x00, 49).ToList();
-			var wbmArray = Enumerable.Repeat((byte)0x00, 49).ToList();
-			var rmCount = new List<int> { 2, 2, 2, 2, 2, 2, 2, 2 };
-			var wbmCount = new List<int> { 2, 2, 2, 2, 2, 2, 2, 2 };
-			var rmMinLevel = new List<int> { 2, 2, 6, 10, 15, 20, 25, 31 };
-			var wbmMinLevel = new List<int> { 2, 2, 5, 8, 12, 16, 20, 25 };
-			var bitArray = new List<byte> { 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80 };
-
-			for (int i = 0; i < 49; i++)
-			{
-				for (int j = 0; j < 8; j++)
-				{
-					if (rmMinLevel[j] <= i + 2)
-						rmCount[j]++;
-
-					if (rmCount[j] >= 3)
-					{
-						rmArray[i] |= bitArray[j];
-						rmCount[j] = 0;
-					}
-
-					if (wbmMinLevel[j] <= i + 2)
-						wbmCount[j]++;
-
-					if (wbmCount[j] >= 3)
-					{
-						wbmArray[i] |= bitArray[j];
-						wbmCount[j] = 0;
-					}
-				}
-			}
-
-			for (int i = 0; i < 49; i++)
-			{
-				levelUpStats[3][i * 2 + 1] = rmArray[i];
-				levelUpStats[4][i * 2 + 1] = wbmArray[i];
-				levelUpStats[5][i * 2 + 1] = wbmArray[i];
-			}
-
-			// Insert level up data
-			Put(NewLevelUpDataOffset, levelUpStats.SelectMany(x => (byte[])x).ToArray());
-		}
 
 		public void PubReplaceClinic(MT19337 rng, Flags flags)
 		{
