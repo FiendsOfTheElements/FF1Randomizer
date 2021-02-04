@@ -4,18 +4,27 @@
 	<h3 class="@(IsOpen ? "" : "h3-collapsed")"><a class="@(noTabLayout ? "collapsible-header" : "")" @onclick="(() => IsOpen = (!noTabLayout || !IsOpen))">Treasures and Freebies</a></h3>
 	@if (IsOpen)
 	{
-	<div class="col1">
-		<h4>Item Shuffle</h4>
-		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="treasuresCheckBox" @bind-Value="Flags.Treasures">Treasures</TriStateCheckBox>
-		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="randomLootCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.RandomLoot">Randomize Treasures</TriStateCheckBox>
-		<EnumDropDown UpdateToolTip="@UpdateToolTipID" Indent Id="worldWealthDropDown" TItem="WorldWealthMode" IsEnabled="@Flags.Treasures" @bind-Value="Flags.WorldWealth">Random Wealth: </EnumDropDown>
-		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="betterTrapTreasureCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.BetterTrapTreasure">Better Trap Treasure</TriStateCheckBox>
-		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="earlierRubyCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.EarlierRuby">Earlier Ruby</TriStateCheckBox>
-		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="npcItemsCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.NPCItems">Main NPC Items</TriStateCheckBox>
-		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="npcFetchItemsCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.NPCFetchItems">Fetch Quest Rewards</TriStateCheckBox>
-		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="shuffleObjectiveNPCsCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.ShuffleObjectiveNPCs">Objective NPCs</TriStateCheckBox>
-		<div class="checkbox-cell"></div>
-	</div>
+<div class="col1">
+	<h4>Item Shuffle</h4>
+	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="treasuresCheckBox" @bind-Value="Flags.Treasures">Treasures</TriStateCheckBox>
+	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="randomLootCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.RandomLoot">Randomize Treasures</TriStateCheckBox>
+	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Indent Id="worldWealthDropDown" TItem="WorldWealthMode" IsEnabled="@Flags.Treasures" @bind-Value="Flags.WorldWealth">Random Wealth: </EnumDropDown>
+	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="betterTrapTreasureCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.BetterTrapTreasure">Better Trap Treasure</TriStateCheckBox>
+	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="earlierRubyCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.EarlierRuby">Earlier Ruby</TriStateCheckBox>
+	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="npcItemsCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.NPCItems">Main NPC Items</TriStateCheckBox>
+	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="npcFetchItemsCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.NPCFetchItems">Fetch Quest Rewards</TriStateCheckBox>
+	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="shuffleObjectiveNPCsCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.ShuffleObjectiveNPCs">Objective NPCs</TriStateCheckBox>
+	<div class="checkbox-cell"></div>
+	<h4>Trapped Chests</h4>
+	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="trappedChestsCheckBox" @bind-Value="Flags.TrappedChests">Random Chests</TriStateCheckBox>
+	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="masaGuardianCheckBox" @bind-Value="Flags.TCMasaGuardian">WarMech, Guardian of Masamune</TriStateCheckBox>
+	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="trappedShardsCheckBox" IsEnabled="@Flags.ShardHunt" @bind-Value="Flags.TrappedShards">Trapped Shards</TriStateCheckBox>
+	<div class="checkbox-cell"></div>
+	<h4>Masamune</h4>
+	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="GuaranteedMasamuneCheckBox" IsEnabled="@(Flags.NoMasamune != true)" @bind-Value="Flags.GuaranteedMasamune">Guaranteed Endgame Masamune</TriStateCheckBox>
+	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="SendMasamuneHomeCheckBox" IsEnabled="@((Flags.NoMasamune != true) && Flags.GuaranteedMasamune != false && Flags.IncentivizeMasamune == false)" @bind-Value="Flags.SendMasamuneHome">Send Masamune Home</TriStateCheckBox>
+	<div class="checkbox-cell"></div>
+</div>
 	<div class="col2">
 		<h4>Freebies</h4>
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="freeShipCheckBox" @bind-Value="Flags.FreeShip">Free Ship</TriStateCheckBox>
