@@ -589,7 +589,7 @@
 		"Id": "entrancesCheckBox",
 		"title": "Entrance Shuffle",
 		"screenshot": "entrancesCheckBox.gif",
-		"description": "Overworld entrances, except for towns, are shuffled, so that the entrance to Earth Cave may be at Waterfall, Volcano at the Cardia Islands, etc.  Required for floor shuffle.  Requires NPC Shuffle."
+		"description": "Overworld entrances, except for towns, are shuffled, so that the entrance to Earth Cave may be at Waterfall, Volcano at the Cardia Islands, etc.  Required for floor shuffle.\nTreasures shuffle and Main NPC Items shuffle must be enabled."
 	},
 	{
 		"Id": "allowUnsafeStartAreaCheckBox",
@@ -619,7 +619,7 @@
 		"Id": "townsCheckBox",
 		"title": "Shuffle Towns",
 		"screenshot": "townsCheckBox.gif",
-		"description": "Whether to shuffle town entrances. When town entrances are shuffled, all towns, aside from Corneria, could appear at any other town, such that the town at Pravoka could be Lefein or vice-versa."
+		"description": "Whether to shuffle town entrances. When town entrances are shuffled, all towns, aside from Corneria, could appear at any other town, such that the town at Pravoka could be Lefein or vice-versa.\nTreasures shuffle and Main NPC Items shuffle must be enabled."
 	},
 	{
 		"Id": "mixEntrancesCheckBox",
@@ -1128,7 +1128,7 @@
 		"Id": "itemPlacementCheckBox",
 		"title": "Use Older v2 Placement",
 		"screenshot": "itemPlacementCheckBox.png",
-		"description": "Uses an older algorithm for key item placement which favored having the Ship and Canal in the inner sea, even if the Airship could be obtained early."
+		"description": "Uses an older algorithm for key item placement.\nBesides accounting for incentivization, items are placed almost completely randomly. This results in a lot more early game FLOATER and obsolete late game SHIP, CANAL, etc. as compared to the newer placement.\nBy contrast, the newer algorithm sacrifices a bit of randomness to elevate the likelihood major progression items like the SHIP are found while they are still relevant."
 	},
 	{
 		"Id": "buyTenOldCheckBox",

@@ -155,7 +155,6 @@ namespace FF1Lib
 		public bool NoPartyShuffle { get; set; } = false;
 		public bool Dash { get; set; } = false;
 		public bool BuyTen { get; set; } = false;
-		public bool BuyTenOld { get; set; } = false;
 		public bool IdentifyTreasures { get; set; } = false;
 		public bool ShopInfo { get; set; } = false;
 		public bool WaitWhenUnrunnable { get; set; } = false;

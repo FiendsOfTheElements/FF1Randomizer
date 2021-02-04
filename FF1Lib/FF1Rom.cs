@@ -604,10 +604,6 @@ namespace FF1Lib
 			{
 				EnableBuyQuantity();
 			}
-			else if (flags.BuyTenOld)
-			{
-				EnableBuyTen();
-			}
 
 			if (flags.WaitWhenUnrunnable)
 			{
