@@ -203,6 +203,11 @@ namespace FF1Lib
 				flippedMaps = HorizontalFlipDungeons(rng, maps, teleporters, overworldMap);
 			}
 
+			if (flags.DeepDungeon)
+			{
+				DeepDungeon(rng, overworldMap, maps);
+			}
+
 			if ((bool)flags.RandomizeFormationEnemizer)
 			{
 				DoEnemizer(rng, (bool)flags.RandomizeEnemizer, (bool)flags.RandomizeFormationEnemizer, flags.EnemizerDontMakeNewScripts);
