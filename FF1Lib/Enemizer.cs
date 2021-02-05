@@ -3575,10 +3575,11 @@ namespace FF1Lib
 				script[i] = new EnemyScriptInfo();
 				script[i].decompressData(Get(ScriptOffset + i * ScriptSize, ScriptSize));
 			}
+
 			EnemyInfo[] enemy = new EnemyInfo[EnemyCount]; // list of enemies, including information that is either inferred from formation inspection or tier lists that I have just made up
 			// set enemy default tier list.  these tier rankings are different from the enemizer basis, but show the kind of skills/spells that are prioritized
 			// when a script lands on that monster.  the final 10 enemies are warmech, the fiends, and chaos.
-			int[] enemyTierList = new int[] {     0, 1, 1, 1, 1, 2, 1, 3, 3, 2, 3, 3, 1, 1, 3, 1,
+			int[] enemyTierList = new int[] {     -1, 1, 1, 1, 1, 2, 1, 3, 3, 2, 3, 3, 1, 1, 3, 1,
 												  1, 1, 3, 1, 4, 1, 1, 1, 1, 1, 2, 1, 1, 3, 1, 1,
 												  3, 1, 2, 2, 2, 2, 3, 1, 1, 2, 3, 1, 1, 1, 1, 4,
 												  3, 2, 3, 5, 3, 3, 2, 3, 2, 3, 2, 3, 3, 4, 1, 3,
@@ -3602,7 +3603,7 @@ namespace FF1Lib
 				scriptRepeat[i] = false;
 				scriptLowestTier[i] = 10;
 			}
-			for(int i = 0; i < EnemyCount - 10; ++i)
+			for(int i = 1; i < EnemyCount - 10; ++i)
 			{
 				if (enemy[i].AIscript == 0xFF)
 					continue; // skip any enemy without a script
@@ -3617,7 +3618,6 @@ namespace FF1Lib
 				switch (enemy[i].tier)
 				{
 					case 0:
-						enemy[i].AIscript = 0xFF; // disable scripts if they land on IMP
 						break;
 					case 1:
 						// enemy will only have weak spells and skills
@@ -3658,8 +3658,6 @@ namespace FF1Lib
 						tierchance[4] = 2;
 						break;
 				}
-				if (enemy[i].tier == 0)
-					continue; // no need to roll for tier 0 enemies (imps) since we simply remove their script
 				// cycle through skills, replacing each skill with a tier appropriate skill
 				for(byte j = 0; j < 4; ++j)
 				{

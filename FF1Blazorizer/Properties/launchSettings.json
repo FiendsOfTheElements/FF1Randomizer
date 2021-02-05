@@ -11,6 +11,7 @@
 		"IIS Express": {
 			"commandName": "IISExpress",
 			"launchBrowser": true,
+			"launchUrl": "Randomize",
 			"inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}",
 			"environmentVariables": {
 				"ASPNETCORE_ENVIRONMENT": "Development"
@@ -19,6 +20,7 @@
 		"FF1Blazorizer": {
 			"commandName": "Project",
 			"launchBrowser": true,
+			"launchUrl": "Randomize",
 			"inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}",
 			"applicationUrl": "https://localhost:5001;http://localhost:5000",
 			"environmentVariables": {

@@ -1,25 +1,38 @@
-﻿<button type="button" class="@(IsOpen ? "nes-btn nes-nav is-success" : "nes-btn nes-nav is-warning")" @onclick="@(() => IsOpen = !IsOpen)">Conveniences</button>
-<BSCollapse IsOpen="@IsOpen">
-	<div class="is-dark nes-container">
-		<div class="row">
-			<div class="col-md-12">
-				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="noPartyShuffleCheckBox" @bind-Value="Flags.NoPartyShuffle">No Party Shuffle</CheckBox>
-				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="speedHacksCheckBox" @bind-Value="Flags.SpeedHacks">Speed Hacks</CheckBox>
-				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="identifyTreasuresCheckBox" @bind-Value="Flags.IdentifyTreasures">Identify Treasures</CheckBox>
-				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="dashCheckBox" @bind-Value="Flags.Dash">Enable Dash</CheckBox>
-				<CheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(!Flags.BuyTenOld)" Id="buyTenCheckBox" @bind-Value="Flags.BuyTen">Buy Quantity</CheckBox>
-				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="waitWhenUnrunnableCheckBox" @bind-Value="Flags.WaitWhenUnrunnable">Change Unrunnable RUN to WAIT</CheckBox>
-				<CheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.SpeedHacks" Id="enableCritNumberDisplayCheckBox" @bind-Value="Flags.EnableCritNumberDisplay">Critical Hit Count Display</CheckBox>
-				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="battleMagicMenuWrapAroundCheckBox" @bind-Value="Flags.BattleMagicMenuWrapAround">Battle Magic Menu Wrap Around</CheckBox>
-				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="inventoryAutosortCheckBox" @bind-Value="Flags.InventoryAutosort">Autosort Inventory</CheckBox>
-				<CheckBox UpdateToolTip="@UpdateToolTipID" Id="npcSwatterCheckBox" @bind-Value="Flags.NPCSwatter">NPC Guillotine</CheckBox>
-			</div>
+﻿@using BlazorStrap
+@using Microsoft.AspNetCore.Components.Web
+
+<div id="Conveniences" class="tabcontent framed-content clearfix @(noTabLayout ? "no-tab" : "") @(IsOpen ? "" : "collapsed")">
+
+	<h3 class="@(IsOpen ? "" : "h3-collapsed")"><a class="@(noTabLayout ? "collapsible-header" : "")" @onclick="(() => IsOpen = (!noTabLayout || !IsOpen))">Conveniences</a></h3>
+
+	@if(IsOpen)
+	{ 
+		<div class="col1">
+			<h4>Basic</h4>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="noPartyShuffleCheckBox" @bind-Value="Flags.NoPartyShuffle">No Party Shuffle</CheckBox>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="speedHacksCheckBox" @bind-Value="Flags.SpeedHacks">Speed Hacks</CheckBox>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="identifyTreasuresCheckBox" @bind-Value="Flags.IdentifyTreasures">Identify Treasures</CheckBox>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="dashCheckBox" @bind-Value="Flags.Dash">Enable Dash</CheckBox>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="buyTenCheckBox" @bind-Value="Flags.BuyTen">Buy Quantity</CheckBox>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="waitWhenUnrunnableCheckBox" @bind-Value="Flags.WaitWhenUnrunnable">Change Unrunnable RUN to WAIT</CheckBox>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.SpeedHacks" Id="enableCritNumberDisplayCheckBox" @bind-Value="Flags.EnableCritNumberDisplay">Critical Hit Count Display</CheckBox>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="battleMagicMenuWrapAroundCheckBox" @bind-Value="Flags.BattleMagicMenuWrapAround">Battle Magic Menu Wrap Around</CheckBox>
+			<div class="checkbox-cell"></div>
 		</div>
-	</div>
-</BSCollapse>
+		<div class="col2">
+			<h4>Advanced</h4>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="npcSwatterCheckBox" @bind-Value="Flags.NPCSwatter">NPC Guillotine</CheckBox>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="inventoryAutosortCheckBox" @bind-Value="Flags.InventoryAutosort">Autosort Inventory</CheckBox>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="shopInfoCheckBox" @bind-Value="Flags.ShopInfo">Shop Information</CheckBox>
+		</div>
+		<div class="clear-it"></div>
+	}
+</div>
+
 
 @code {
 	[Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }
 	[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
+	[Parameter] public bool noTabLayout { get; set; }
 	[Parameter] public bool IsOpen { get; set; } = true;
 }

@@ -34,12 +34,9 @@ namespace FF1Lib
 			{
 				T* pBuffer = (T*)p;
 
-				fixed (T* pData = Data)
+				for (int i = 0; i < count; i++)
 				{
-					for (int i = 0; i < count; i++)
-					{
-						pData[i] = pBuffer[i];
-					}
+					Data[i] = pBuffer[i];
 				}
 			}
 		}
@@ -52,12 +49,9 @@ namespace FF1Lib
 			{
 				T* pBuffer = (T*)p;
 
-				fixed (T* pData = Data)
+				for (int i = 0; i < count; i++)
 				{
-					for (int i = 0; i < count; i++)
-					{
-						pBuffer[i] = pData[i];
-					}
+					pBuffer[i] = Data[i];
 				}
 			}
 
