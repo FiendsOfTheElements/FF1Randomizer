@@ -78,7 +78,6 @@
 	public interface IItemPlacementFlags : IItemShuffleFlags, IVictoryConditionFlags
 	{
 		bool Spoilers { get; }
-		bool ClassicItemPlacement { get; }
 		bool? MapCanalBridge { get; }
 		bool? MapConeriaDwarves { get; }
 		bool? MapVolcanoIceRiver { get; }
