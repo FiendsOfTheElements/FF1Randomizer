@@ -376,7 +376,7 @@ NotAllLit:
   NOP
   NOP
 ;; Kidnapped Princess (in the ToF)
-Talk_Princess1:
+Talk_Princess1: 
   LDY talkarray+6              ; Load this object (the princess)
   JSR SetGameEventFlag         ; Set its flag
   JSR HideThisMapObject        ; Hide it

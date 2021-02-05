@@ -125,6 +125,7 @@ namespace FF1Lib
 
 	public struct NPC
 	{
+		public ObjectId ObjectId;
 		public int Index;
 		public (int x, int y) Coord;
 		public bool InRoom;
@@ -686,6 +687,7 @@ namespace FF1Lib
 
 				if (Data[offset] == (byte)mapObjId)
 				{
+					tempNPC.ObjectId = (ObjectId)Data[offset];
 					tempNPC.Index = i;
 					tempNPC.Coord = (Data[offset + 1] & 0x3F, Data[offset + 2]);
 					tempNPC.InRoom = (Data[offset + 1] & 0x80) > 0;
@@ -701,6 +703,7 @@ namespace FF1Lib
 
 			int offset = MapSpriteOffset + ((byte)mapId * MapSpriteCount + position) * MapSpriteSize;
 
+			tempNPC.ObjectId = (ObjectId)Data[offset];
 			tempNPC.Index = position;
 			tempNPC.Coord = (Data[offset + 1] & 0x3F, Data[offset + 2]);
 			tempNPC.InRoom = (Data[offset + 1] & 0x80) > 0;

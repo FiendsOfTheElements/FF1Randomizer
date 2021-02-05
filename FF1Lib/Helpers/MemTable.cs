@@ -57,6 +57,18 @@ namespace FF1Lib
 
 			rom.Put(address, buffer);
 		}
+
+		public T this[int idx]
+		{
+			get
+			{
+				return Data[idx];
+			}
+			set
+			{
+				Data[idx] = value;
+			}
+		}
 	}
 
 	public class MemTable<T, I> : MemTable<T> where T : unmanaged where I : Enum

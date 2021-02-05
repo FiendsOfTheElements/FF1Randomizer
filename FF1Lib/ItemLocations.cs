@@ -471,6 +471,6 @@ namespace FF1Lib
 			{OverworldTeleportIndex.Cardia4, MapLocation.Cardia4},
 			{OverworldTeleportIndex.Cardia5, MapLocation.Cardia5},
 			{OverworldTeleportIndex.Cardia6, MapLocation.Cardia6},
-		};
+		};		
 	}
 }

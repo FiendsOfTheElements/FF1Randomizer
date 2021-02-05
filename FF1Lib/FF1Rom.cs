@@ -333,6 +333,8 @@ namespace FF1Lib
 						incentivesData = new IncentiveData(rng, flags, overworldMap, shopItemLocation);
 					}
 
+					Sanity.SanityChecker c = new Sanity.SanityChecker(maps, overworldMap, npcdata, this);
+
 					if ((bool)flags.Treasures)
 					{
 						generatedPlacement = ShuffleTreasures(rng, flags, incentivesData, shopItemLocation, overworldMap, teleporters);
