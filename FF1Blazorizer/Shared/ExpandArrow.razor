@@ -1,0 +1,29 @@
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+
+<container class="expand-collapse-button @(noTabLayout ? "" : "tabbed")">
+	@if (!noTabLayout)
+	{
+		<input style="vertical-align: bottom;" type="image" src="/images/arrow.png" title="Expand All" @onclick="@SetTabLayoutFlag" />
+		<a class="expand-collapse-text" @onclick="(() => SetTabLayoutFlag())">Expand All</a>
+	}
+	else
+	{
+		<input style="vertical-align: bottom; transform: scaleY(-1)" type="image" src="/images/arrow.png" title="Collapse All" @onclick="@SetTabLayoutFlag" />
+		<a class="expand-collapse-text" @onclick="(() => SetTabLayoutFlag())">Collapse All</a>
+	}
+
+</container>
+
+@code
+{
+	[Parameter] public Action<bool> SetTabLayout { get; set; }
+	[Parameter] public bool noTabLayout { get; set; }
+
+	async Task SetTabLayoutFlag()
+	{
+		noTabLayout = !noTabLayout;
+		await LocalStorage.SetItemAsync("tablayout", noTabLayout);
+		SetTabLayout(noTabLayout);
+	}
+
+}

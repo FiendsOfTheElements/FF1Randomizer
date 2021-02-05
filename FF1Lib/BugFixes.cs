@@ -26,7 +26,7 @@ namespace FF1Lib
 
 			if (MPfix)
 			{
-				Put(0x03B2CE, Blob.FromHex("20F3ABA91E20E0B2"));
+				Put(0x03B2CE, Blob.FromHex("20F3ABA91E20E0B2EAEA"));
 				Put(0x038816, Blob.FromHex("203B42A4AAACA6FF23A6B23223A7C0059C8A9F8EC5FFFFFFFFFFFFFF"));
 			}
 
@@ -67,10 +67,10 @@ namespace FF1Lib
 			Put(WeaponOffset, weapons.SelectMany(weapon => weapon.ToBytes()).ToArray());
 		}
 
-		public void IncreaseWeaponBonus()
+		public void IncreaseWeaponBonus(int weaponBonusValue)
 		{
-			// Change damage bonus from +4 to +10
-			Put(0x326F5, Blob.FromHex("0A"));
+			//change the weapon bonus from +4 to +X
+			Put(0x326F5, new byte[] { (byte) weaponBonusValue });
 		}
 
 		public void FixChanceToRun()
@@ -199,8 +199,8 @@ namespace FF1Lib
 
 		public void FixHitChanceCap()
 		{
-			Put(0x2DE1D, Blob.FromHex("FF"));
-			Put(0x2DE21, Blob.FromHex("FF"));
+			Put(0x6CA9A, Blob.FromHex("FB"));
+			Put(0x6CA9E, Blob.FromHex("FA"));
 		}
 
 		public void FixEnemyPalettes()

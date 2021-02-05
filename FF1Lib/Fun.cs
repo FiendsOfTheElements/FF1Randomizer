@@ -9,11 +9,11 @@ namespace FF1Lib
 {
 	public enum MusicShuffle
 	{
-		[Description("No Music Shuffle")]
+		[Description("None")]
 		None = 0,
-		[Description("Standard Music Shuffle")]
+		[Description("Standard")]
 		Standard,
-		[Description("Nonsensical Music Shuffle")]
+		[Description("Nonsensical")]
 		Nonsensical,
 		[Description("Disable Music")]
 		MusicDisabled
@@ -539,18 +539,17 @@ namespace FF1Lib
 			WriteText(itemnames, ItemTextPointerOffset, ItemTextPointerBase, ItemTextOffset);
 		}
 
-		public void HurrayDwarfFate(Fate fate, MT19337 rng)
+		public void HurrayDwarfFate(Fate fate, NPCdata npcdata, MT19337 rng)
 		{
 			if (fate == Fate.Spare)
 			{
 				// Protect Hurray Dwarf from NPC guillotine
-				PutInBank(newTalkRoutinesBank, lut_MapObjTalkJumpTbl + 0x63 * JumpTablePointerSize, Blob.FromHex("A792"));
-				PutInBank(newTalkRoutinesBank, lut_MapObjTalkData + 0x63 * MapObjSize, Blob.FromHex("01777700")); // Hurray!
+				npcdata.SetRoutine(ObjectId.DwarfcaveDwarfHurray, newTalkRoutines.Talk_norm);
 			}
 			else
 			{
 				// Whether NPC guillotine is on or not, kill Hurray Dwarf
-				PutInBank(newTalkRoutinesBank, lut_MapObjTalkJumpTbl + 0x63 * JumpTablePointerSize, newTalk.Talk_kill);
+				npcdata.SetRoutine(ObjectId.DwarfcaveDwarfHurray, newTalkRoutines.Talk_kill);
 
 				// Change the dialogue
 				var dialogueStrings = new List<string>
@@ -572,7 +571,9 @@ namespace FF1Lib
 
 				//Put new dialogue to E6 since another Dwarf also says hurray
 				InsertDialogs(0xE6, dialogueStrings.PickRandom(rng));
-				PutInBank(newTalkRoutinesBank, lut_MapObjTalkData + 0x63 * MapObjSize, Blob.FromHex("00E60000"));
+				npcdata.GetTalkArray(ObjectId.DwarfcaveDwarfHurray)[(int)TalkArrayPos.dialogue_1] = 0xE6;
+				npcdata.GetTalkArray(ObjectId.DwarfcaveDwarfHurray)[(int)TalkArrayPos.dialogue_2] = 0xE6;
+				npcdata.GetTalkArray(ObjectId.DwarfcaveDwarfHurray)[(int)TalkArrayPos.dialogue_3] = 0xE6;
 			}
 		}
 

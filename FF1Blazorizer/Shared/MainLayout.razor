@@ -1,11 +1,37 @@
+@using System.Net.Http.Json
 @inherits LayoutComponentBase
 
-<div class="main">
-    <div class="top-row px-4">
-		<NavMenu />
-    </div>
-	<UpdateNotification/>
-    <div>
-        @Body
-    </div>
-</div>
+<div id="main">
+
+	<div id="wrapper">
+		<div id="banner-holder"></div>
+
+		<div id="nav-holder"></div>
+		<div>
+			@Body
+		</div>
+
+		<footer id="main-footer">
+			<div id="garland"></div>
+			<div id="warriors"></div>
+
+			<nav id="footer-links">
+				FFR Links: <a href="https://discord.gg/95gbpFd">Community Discord</a> <a href="https://discord.gg/s7CRejk">Development Discord</a>
+				<!-- <a href="#">Preset Archive</a> <a href="#">Player Resources</a> -->
+					<span id="hidden-nav">Menu: <a href="Randomize">Randomize</a> <a href="About">About</a> <a href="WhatsNew">Help</a> <a href="https://github.com/FiendsOfTheElements/FF1Randomizer/issues">Issues</a> <a href="javascript:showPWAInstall()">Install</a></span>
+					<br />
+				</nav>
+			</footer>
+		</div>
+
+		<div id="header">
+			<div id="banner">
+				<NavBanner />
+
+				<div id="header-contents">
+					<NavMenu />
+					<UpdateNotification />
+				</div>
+			</div>
+		</div>
+	</div>

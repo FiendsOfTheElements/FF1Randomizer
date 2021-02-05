@@ -99,12 +99,11 @@ namespace FF1Lib
 			{
 				incentivePool.Add(Item.Canoe);
 			}
-
 			if (flags.IncentivizeXcalber ?? false)
 			{
 				incentivePool.Add(Item.Xcalber);
 			}
-			if (flags.IncentivizeMasamune ?? false)
+			if (flags.IncentivizeMasamune & !flags.NoMasamune ?? false)
 			{
 				incentivePool.Add(Item.Masamune);
 			}
@@ -216,39 +215,109 @@ namespace FF1Lib
 			}
 			if (flags.IncentivizeVolcano ?? false)
 			{
-				incentiveLocationPool.Add(ItemLocations.VolcanoMajor);
+				if((bool)flags.IncentivizeRandomChestInLocation) {
+					incentiveLocationPool.Add(ItemLocations.Volcano.ToList().SpliceRandom(rng));
+				} else {
+					incentiveLocationPool.Add(ItemLocations.VolcanoMajor);
+				}				
 			}
 			if (flags.IncentivizeEarth ?? false)
 			{
-				incentiveLocationPool.Add(ItemLocations.EarthCaveMajor);
+				if ((bool)flags.IncentivizeRandomChestInLocation)
+				{
+					incentiveLocationPool.Add(ItemLocations.EarthCave.ToList().SpliceRandom(rng));
+				}
+				else
+				{
+					incentiveLocationPool.Add(ItemLocations.EarthCaveMajor);
+				}				
 			}
 			if (flags.IncentivizeMarsh ?? false)
 			{
-				incentiveLocationPool.Add(ItemLocations.MarshCaveMajor);
+				if ((bool)flags.IncentivizeRandomChestInLocation)
+				{
+					incentiveLocationPool.Add(ItemLocations.MarshCaveUnlocked.ToList().SpliceRandom(rng));
+				}
+				else
+				{
+					incentiveLocationPool.Add(ItemLocations.MarshCaveMajor);
+				}				
 			}
 			if (flags.IncentivizeMarshKeyLocked ?? false)
 			{
-				incentiveLocationPool.Add(ItemLocations.MarshCave13);
+				if ((bool)flags.IncentivizeRandomChestInLocation)
+				{
+					incentiveLocationPool.Add(ItemLocations.MarshCaveLocked.ToList().SpliceRandom(rng));
+				}
+				else
+				{
+					incentiveLocationPool.Add(ItemLocations.MarshCave13);
+				}
 			}
 			if (flags.IncentivizeSkyPalace ?? false)
 			{
-				incentiveLocationPool.Add(ItemLocations.SkyPalaceMajor);
+				if ((bool)flags.IncentivizeRandomChestInLocation)
+				{
+					if ((bool)flags.IncentivizeRandomChestIncludeExtra)
+					{
+						incentiveLocationPool.Add(ItemLocations.SkyPalace.Concat(ItemLocations.MirageTower).ToList().SpliceRandom(rng));
+					} else {
+						incentiveLocationPool.Add(ItemLocations.SkyPalace.ToList().SpliceRandom(rng));
+					}
+				}
+				else
+				{
+					incentiveLocationPool.Add(ItemLocations.SkyPalaceMajor);
+				}				
 			}
 			if (flags.IncentivizeSeaShrine ?? false)
 			{
-				incentiveLocationPool.Add(ItemLocations.SeaShrineMajor);
+				if ((bool)flags.IncentivizeRandomChestInLocation)
+				{
+					if((bool)flags.IncentivizeRandomChestIncludeExtra)
+					{
+						incentiveLocationPool.Add(ItemLocations.SeaShrine.ToList().SpliceRandom(rng));
+					} else {
+						incentiveLocationPool.Add(ItemLocations.SeaShrineUnlocked.ToList().SpliceRandom(rng));
+					}
+				}
+				else
+				{
+					incentiveLocationPool.Add(ItemLocations.SeaShrineMajor);
+				}				
 			}
 			if (flags.IncentivizeConeria ?? false)
 			{
-				incentiveLocationPool.Add(ItemLocations.ConeriaMajor);
+				if ((bool)flags.IncentivizeRandomChestInLocation)
+				{
+					incentiveLocationPool.Add(ItemLocations.Coneria.ToList().SpliceRandom(rng));
+				}
+				else
+				{
+					incentiveLocationPool.Add(ItemLocations.ConeriaMajor);
+				}				
 			}
 			if (flags.IncentivizeIceCave ?? false)
 			{
-				incentiveLocationPool.Add(ItemLocations.IceCaveMajor);
+				if ((bool)flags.IncentivizeRandomChestInLocation)
+				{
+					incentiveLocationPool.Add(ItemLocations.IceCave.ToList().SpliceRandom(rng));
+				}
+				else
+				{
+					incentiveLocationPool.Add(ItemLocations.IceCaveMajor);
+				}				
 			}
 			if (flags.IncentivizeOrdeals ?? false)
 			{
-				incentiveLocationPool.Add(ItemLocations.OrdealsMajor);
+				if ((bool)flags.IncentivizeRandomChestInLocation)
+				{
+					incentiveLocationPool.Add(ItemLocations.Ordeals.ToList().SpliceRandom(rng));
+				}
+				else
+				{
+					incentiveLocationPool.Add(ItemLocations.OrdealsMajor);
+				}
 			}
 			if (flags.IncentivizeCaravan)
 			{
@@ -256,7 +325,14 @@ namespace FF1Lib
 			}
 			if (flags.IncentivizeTitansTrove ?? false)
 			{
-				incentiveLocationPool.Add(ItemLocations.TitansTunnel1);
+				if ((bool)flags.IncentivizeRandomChestInLocation)
+				{
+					incentiveLocationPool.Add(ItemLocations.TitansTunnel.ToList().SpliceRandom(rng));
+				}
+				else
+				{
+					incentiveLocationPool.Add(ItemLocations.TitansTunnel1);
+				}				
 			}
 			var itemLocationPool =
 				ItemLocations.AllTreasures.Concat(ItemLocations.AllNPCItemLocations)

@@ -12,6 +12,12 @@
 		"description": "Verifies that the ROM provided is an original Final Fantasy 1 ROM."
 	},
 	{
+		"Id": "blindseedCheckBox",
+		"title": "Make Blind Seed",
+		"screenshot": "blindseed.png",
+		"description": "Hides all flags to create a mystery flagset to distribute.\nThis flag cannot be disabled once clicked. Save flagset before use."
+	},
+	{
 		"Id": "spoilersCheckBox",
 		"title": "Generate Spoiler Log!",
 		"screenshot": "spoilerCheckBox.png",
@@ -118,6 +124,12 @@
 		"title": "Fix Missing Battle RNG Entry",
 		"screenshot": "fixMissingBattleRngEntry.gif",
 		"description": "The vanilla Battle RNG table has two 00s out of 256 hex values. If checked, this flag replaces one of them with 0x95, the missing hex value."
+	},
+	{
+		"Id": "runnabilityDropDown",
+		"title": "Unrunnable Formations",
+		"screenshot": "enemyFormationsUnrunnableCheckBox.png",
+		"description": "Normal: Vanilla unrunnable formations.\n\nShuffle: Shuffles what formations are and are not runnable. Bosses and some other encounters will remain unrunnable.\n\nAll Unrunnable: Disables the ability to run from fights.\n\nAll Runnable: Makes all encounters runnable, except for bosses.\n\nRandom Choice: Select one of these options randomly."
 	},
 	{
 		"Id": "enemyFormationsUnrunnableCheckBox",
@@ -228,6 +240,12 @@
 		"description": "Increases the stats of Bikke's pirates considerably, roughly to the equivalent of a level 6 Fighter with a cheap but decent sword and iron armor, and increases the XP and gold yield from them by a factor of 20.  This is done before stat scaling, and also increases the level of script they can carry when generating balanced scripts (if Allow Unsafe Pirates is on)."
 	},
 	{
+		"Id": "scaryImpsCheckBox",
+		"title": "Scary Imps",
+		"screenshot": "enemySkillsSpellsCheckBox.png",
+		"description": "When shuffling scripts, add Imps to the same pool as ToFR Fiends, WarMech and Chaos."
+	},
+	{
 		"Id": "shuffleAstosCheckBox",
 		"title": "Shuffle Astos",
 		"screenshot": "shuffleAstosCheckBox.png",
@@ -248,11 +266,11 @@
 	{
 		"Id": "removeTrapTilesCheckBox",
 		"title": "Remove All Trap Tiles",
-		"description": "Excluding the feight refights, remove all other trap tiles from the game."
+		"description": "Excluding the Fiend refights, remove all other trap tiles from the game."
 	},
 	{
 		"Id": "randomTrapFormationsCheckBox",
-		"title": "Use Random Formations",
+		"title": "Use Alternate Formations",
 		"screenshot": "randomTrapFormationsCheckBox.png",
 		"description": "Adds several formations into the shuffle pool for trap tiles, including formations that are not available in the original game."
 	},
@@ -338,7 +356,7 @@
 		"Id": "incentivizeFreeNPCsCheckBox",
 		"title": "Free NPCs",
 		"screenshot": "incentivizeFreeNPCsCheckBox.png",
-		"description": "Guarantees all \"Main Quest\" NPCs will hold an item from your incentive item pool. These NPCs include: the king, Princess Sara, Bikke, Sage Lukhan, Sarda and the Waterfall Cave Robot."
+		"description": "Guarantees all \"Main Quest\" NPCs will hold an item from your incentive item pool. These NPCs include: the King, Princess Sara, Bikke, the Canoe Sage, Sarda, the Waterfall Cave Robot and the Caravan Merchant."
 	},
 	{
 		"Id": "incentivizeFetchNPCsCheckBox",
@@ -405,6 +423,18 @@
 		"title": "Marsh KEY Locked Incentive Chest",
 		"screenshot": "incentivizeMarshKeyLockedCheckBox.png",
 		"description": "Incentivizes the bottom right chest of the final floor of Marsh Cave. This chest requires the KEY to access. One random item from your incentive item pool will be guaranteed in this chest, provided the number of incentive items matches or is less than the number of incentive locations."
+	},
+	{
+		"Id": "incentivizeRandomChestInLocationCheckBox",
+		"title": "Pick Random Chests At Location",
+		"screenshot": "",
+		"description": "Chooses a random chest in the selected locations to act like an incentivized chest. Mirage is not included in 'Sky Palace' and TFC is not included in 'Sea Shrine'"
+	},
+	{
+		"Id": "incentivizeRandomChestIncludeExtra",
+		"title": "Include Mirage and TFC",
+		"screenshot": "",
+		"description": "Adds mirage chests into 'Sky Palace' and TFC into 'Sea Shrine'. These are not included in the random chests originally to remove the chance of having to gamble on key-less sea or cube-less mirage."
 	},
 	{
 		"Id": "incentivizeMainItemsCheckBox",
@@ -504,9 +534,14 @@
 	},
 	{
 		"Id": "chaosRushCheckBox",
-		"title": "Chaos Rush",
+		"title": "Unlocked ToFR",
+		"description": "Unlock all locked doors in Temple of Fiends Revisited, allowing to reach Chaos without the KEY."
+	},
+	{
+		"Id": "FreeLute",
+		"title": "Free Lute",
 		"screenshot": "chaosRushCheckBox.png",
-		"description": "Enables Chaos Rush mode, allowing you to reach Chaos without needing the KEY to pass through the door in Temple of Fiends and adding the LUTE to your inventory at the start of the game. This setting does not automatically light the four Orbs, although other settings may change this behavior."
+		"description": "Starts the game with the LUTE in the inventory."
 	},
 	{
 		"Id": "freeOrbsCheckBox",
@@ -536,7 +571,7 @@
 		"Id": "shortToFRCheckBox",
 		"title": "Shorten ToFR",
 		"screenshot": "shortToFRCheckBox.png",
-		"description": "Shortens the Temple of Fiends Revisted to lead straight to Chaos' Floor. The four Orbs are still required to enter the dungeon, excepting the use of other settings. Neither the KEY nor the LUTE will be requires if this box is checked."
+		"description": "Shortens the Temple of Fiends Revisited to lead straight to Chaos' Floor. The four Orbs are still required to enter the dungeon, excepting the use of other settings. Neither the KEY nor the LUTE will be required if this box is checked. Starts with the LUTE in the inventory."
 	},
 	{
 		"Id": "preserveFiendRefightsCheckBox",
@@ -554,7 +589,7 @@
 		"Id": "entrancesCheckBox",
 		"title": "Entrance Shuffle",
 		"screenshot": "entrancesCheckBox.gif",
-		"description": "Overworld entrances, except for towns, are shuffled, so that the entrance to Earth Cave may be at Waterfall, Volcano at the Cardia Islands, etc.  Required for floor shuffle.  Requires NPC Shuffle."
+		"description": "Overworld entrances, except for towns, are shuffled, so that the entrance to Earth Cave may be at Waterfall, Volcano at the Cardia Islands, etc.  Required for floor shuffle.\nTreasures shuffle and Main NPC Items shuffle must be enabled."
 	},
 	{
 		"Id": "allowUnsafeStartAreaCheckBox",
@@ -584,7 +619,7 @@
 		"Id": "townsCheckBox",
 		"title": "Shuffle Towns",
 		"screenshot": "townsCheckBox.gif",
-		"description": "Whether to shuffle town entrances. When town entrances are shuffled, all towns, aside from Corneria, could appear at any other town, such that the town at Pravoka could be Lefein or vice-versa."
+		"description": "Whether to shuffle town entrances. When town entrances are shuffled, all towns, aside from Corneria, could appear at any other town, such that the town at Pravoka could be Lefein or vice-versa.\nTreasures shuffle and Main NPC Items shuffle must be enabled."
 	},
 	{
 		"Id": "mixEntrancesCheckBox",
@@ -716,7 +751,7 @@
 		"Id": "hintsDungeon",
 		"title": "Hints from dungeon explorers",
 		"screenshot": "hintsDungeon.png",
-		"description": "Five NPC in dungeons reveals the location of an item. Down the dead end of Marsh Cave B1, on Lich's floor in Earth Cave, in the hallway of Gurgu Volcano B3, in a room on the left of Sea Shrine B4 and in the South room of Sky Palace 3F."
+		"description": "Five NPC in dungeons reveals the location of an item. Down the dead end of Marsh Cave B1, on Lich's floor in Earth Cave, in the hallway of Gurgu Volcano B3, one of the mermaids in Sea Shrine and in the South room of Sky Palace 3F."
 	},
 	{
 		"Id": "hintsRngDungeon",
@@ -740,7 +775,7 @@
 		"Id": "clampMinimumPriceScaleLable",
 		"title": "Price Scaling",
 		"screenshot": "clampMinimumPriceScaleLable.png",
-		"description": "Sets the scale of the prices of shop items and the value of gold treasure boxes you find.\nUnclamped prices have a mean of 100% of normal prices (accounting for XP/Gold scale, so with 4x XP baseline prices and gold treasures will be 25% their normal values).  Clamped prices have a mean halfway between 100% and the maximum for the selected multiplier."
+		"description": "Sets the scale of the prices of shop items and the value of gold treasure boxes you find.\nAn item's price is randomized by: (Original Price) / (XpGold Multiplier) x (Randomly choosen value between min and max percent).\nThe average cost of an item is (Original Price) / (XpGold Multiplier) x (Average Percent).\nExample: Silver Sword, 3.0x Exp/Gold Boost, 20-100%.\n4000 / 3 x 0.44 = 586g on average."
 	},
 	{
 		"Id": "clampMinimumStatScaleLable",
@@ -887,6 +922,12 @@
 		"description": "Give bonuses and maluses at random to each class. Press Select at Party selection screen and A at Status screen to reveal the modifiers."
 	},
 	{
+		"Id": "RandomizeClassNoCastingCheckBox",
+		"title": "Exclude Casting Bonuses",
+		"screenshot": "RandomizeClassNoCasting.png",
+		"description": "Exclude bonuses granting spellcasting abilities from other classes."
+	},
+	{
 		"Id": "RandomizeClassChaosCheckBox",
 		"title": "Chaos Mode",
 		"screenshot": "RandomizeClassChaosCheckBox.png",
@@ -1019,9 +1060,9 @@
 	},
 	{
 		"Id": "fixHitChanceCapCheckBox",
-		"title": "Fix Hit % Cap",
+		"title": "Raise Hit % Cap",
 		"screenshot": "fixHitChanceCapCheckBox.png",
-		"description": "Changes the max Hit % from 200 to 255."
+		"description": "Changes the max Hit % from 200 to 250, so an extra hit can be gained."
 	},
 	{
 		"Id": "doubleBBCritCheckBox",
@@ -1039,7 +1080,7 @@
 		"Id": "increaseWepBonusesCheckBox",
 		"title": "Weapon Attack Bonuses",
 		"screenshot": "increaseWepBonusesCheckBox.png",
-		"description": "Increases elemental and type bonuses to weapons, improving the damage bonus from +4 to +10"
+		"description": "Increases elemental and type bonuses to weapons, improving the damage bonus from +4 (vanilla) to +X. Default is +10."
 	},
 	{
 		"Id": "thiefHitCheckBox",
@@ -1075,7 +1116,7 @@
 		"Id": "itemPlacementCheckBox",
 		"title": "Use Older v2 Placement",
 		"screenshot": "itemPlacementCheckBox.png",
-		"description": "Uses an older algorithm for key item placement which favored having the Ship and Canal in the inner sea, even if the Airship could be obtained early."
+		"description": "Uses an older algorithm for key item placement.\nBesides accounting for incentivization, items are placed almost completely randomly. This results in a lot more early game FLOATER and obsolete late game SHIP, CANAL, etc. as compared to the newer placement.\nBy contrast, the newer algorithm sacrifices a bit of randomness to elevate the likelihood major progression items like the SHIP are found while they are still relevant."
 	},
 	{
 		"Id": "buyTenOldCheckBox",
@@ -1099,19 +1140,19 @@
 		"Id": "classAsNpcFiendsCheckBox",
 		"title": "Characters gated by Fiends",
 		"screenshot": "classAsNpcFiendsCheckBox.png",
-		"description": "A new character (from a random class) is behind each Fiend. When talked to, that character replaces the 4th slot party member."
+		"description": "A new character (from a random class) is behind each Fiend. When talked to, that character replaces the selected party member. Push B at selection screen to cancel."
 	},
 	{
 		"Id": "classAsNpcForcedFiendsCheckBox",
 		"title": "Forced Characters",
 		"screenshot": "classAsNpcForcedFiendsCheckBox.png",
-		"description": "This places this new character in front of the orb before a fiend battle, forcing the party to pick up the new character (replacing the fourth member in this party) before they can fight the fiend and light the orb."
+		"description": "This places this new character in front of the altar, forcing the party to pick up the new character before they can light the orb."
 	},
 	{
 		"Id": "classAsNpcKeyNpcCheckBox",
 		"title": "Characters linked to Key NPCs",
 		"screenshot": "classAsNpcKeyNpcCheckBox.png",
-		"description": "A new character (from a random class) is linked to a key NPC. If that key NPC requirement is fulfilled, the linked character replaces the 4th slot party member.\nPossible key NPCs: Princess Sara, Matoya, Bikke, King of the Northwest Castle, Elf Prince, Smith, Nerrick, Dr. Unne, Sarda, Canoe Sage, Fairy, Lefeinish Man."
+		"description": "A new character (from a random class) is linked to a key NPC. If that key NPC requirement is fulfilled, the linked character replaces the selected party member. Push B at selection screen to cancel.\nPossible key NPCs: Princess Sara, Matoya, Bikke, King of the Northwest Castle, Elf Prince, Smith, Nerrick, Dr. Unne, Sarda, Canoe Sage, Fairy, Lefeinish Man."
 	},
 	{
 		"Id": "classAsNpcDuplicateCheckBox",
@@ -1130,6 +1171,24 @@
 		"title": "Remove Tail",
 		"screenshot": "NoTailCheckBox.png",
 		"description": "Remove the Tail from the items pool, disallowing class change."
+	},
+	{
+		"Id": "NoMasamuneCheckBox",
+		"title": "Remove Masamune",
+		"screenshot": "",
+		"description": "Removes the Masamune from the items pool, from shops if elite gear is turned on, from incentive locations if Masamune is incentivized."
+	},
+	{
+		"Id": "GuaranteedMasamuneCheckBox",
+		"title": "Guaranteed Endgame Masamune",
+		"screenshot": "guaranteedMasamuneCheckBox.png",
+		"description": "Guarantees the contents of the vanilla Masamune chest will be a Masamune.\nThis flag does not change the placement of other Masamune(s)."
+	},
+	{
+		"Id": "SendMasamuneHomeCheckBox",
+		"title": "Send Masamune Home",
+		"screenshot": "guaranteedMasamuneCheckBox.png",
+		"description": "Guarantees the contents of the vanilla Masamune chest will be a Masamune AND prevents placement of other Masamune(s).\nThis flag is ignored if there is an Incentive Masamune.\nThis flag will not remove Masamunes found in Shops."
 	},
 	{
 		"Id": "funEnemyNamesCheckBox",
@@ -1232,10 +1291,16 @@
 		"description": "In shops, characters will strike their victory pose it they can equip a piece of equipment or learn a spell.\nPress Select to show a description of an item or a spell."
 	},
 	{
+		"Id": "flipDungeonsCheckBox",
+		"title": "Flip Dungeons Horizontally",
+		"screenshot": "flipDungeons.png",
+		"description": "At random, dungeon floors are flipped horizontally."
+	},
+	{
 		"Id": "magisizeWeaponsCheckBox",
 		"title": "All Weapons Cast Spells",
 		"screenshot": "magisizeWeapons.png",
-		"description": "All weapons can cast a randomly assigned spells."
+		"description": "All weapons can cast a randomly assigned spells. Exclude standard casting weapons."
 	},
 	{
 		"Id": "magisizeWeaponsBalancedCheckBox",
@@ -1257,5 +1322,26 @@
 		"Id": "evadeCapDropDown",
 		"title": "Evade Cap",
 		"description": "Caps the evade of enemies during scaling. When enemies have very high evade, it can become near impossible to hit them, this is especially an issue on Chaos and other endgame bosses."
+	},
+	{
+		"Id": "trappedChestsCheckBox",
+		"title": "Trapped Chests",
+		"description": "Select randomly 40 chests that will trigger a battle before getting their content."
+	},
+	{
+		"Id": "masaGuardianCheckBox",
+		"title": "WarMech, Guardian of Masamune",
+		"description": "Any chest containing a Masamune is protected by WarMech."
+	},
+	{
+		"Id": "trappedShardsCheckBox",
+		"title": "Trapped Shards",
+		"description": "In Shard Hunt mode, all shard chests are trapped."
+	},
+	{
+		"Id": "startingItemsDropDown",
+		"title": "Starting Inventory",
+		"screenshot": "startinginventory.png",
+		"description": "Starts the game with a set of consumable items.\nSafetyBit: 1 Tent, 1 Pure, 1 Soft\nBeggars Choice: 5 Tents, 20 Heals, 2 Pures, 1 Softs\nJust Tents: 10 Tents\nExplorer Starting Pack: 10 Tents, 50 Heals, 4 Pures, 2 Softs\nReal Estate: 15 Tents, 3 Cabins, 1 House\nWarriors Standard: 15 Tents, 3 Cabins, 1 House, 50 Heals, 6 Pures, 3 Softs\nRoyal Packmule: 50 Tents, 15 Cabins, 5 Houses, 99 Heals, 10 Pures, 5 Softs\nDuckling Boon: 99 Tents, 99 Cabins, 99 Houses, 99 Heals, 99 Pures, 99 Softs\nR. Beggars Choice: 0-5 Tents, 0-20 Heals, 0-2 Pures, 0-1 Softs\nR. Explorer Starting Pack: 1-10 Tents, 0-50 Heals, 0-4 Pures, 0-2 Softs\nR. Warriors Standard: 3-15 Tents, 0-3 Cabins, 0-1 House, 20-50 Heals, 2-6 Pures, 1-3 Softs\nR. Royal Packmule: 10-50 Tents, 5-15 Cabins, 1-5 Houses, 30-99 Heals, 5-10 Pures, 2-5 Softs\nR. High Rolling: 35-99 Tents, 10-25 Cabins, 5-10 Houses, 30-99 Heals, 10-20 Pures, 5-10 Softs\nRandomized: 0-99 Tents, 0-99 Cabins, 0-99 Houses, 0-99 Heals, 0-20 Pures, 0-10 Softs"
 	}
 ]

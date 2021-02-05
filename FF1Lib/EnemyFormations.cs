@@ -1,9 +1,23 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using RomUtilities;
+using System.ComponentModel;
 
 namespace FF1Lib
 {
+	public enum Runnability
+	{
+		[Description("Normal")]
+		Normal,
+		[Description("Shuffle")]
+		Shuffle,
+		[Description("All Unrunnable")]
+		AllUnrunnable,
+		[Description("All Runnable")]
+		AllRunnable,
+		[Description("Random Choice")]
+		Random
+	};
 	public partial class FF1Rom : NesRom
 	{
 		public enum FinalFormation
@@ -192,7 +206,7 @@ namespace FF1Lib
 			Put(FormationsOffset + ChaosFormationIndex * FormationSize, finalBattle);
 		}
 
-		public void PacifistEnd()
+		public void PacifistEnd(TalkRoutines talkroutines, NPCdata npcdata, bool extendedtraptiles)
 		{
 			// Remove ToFR Fiends tiles
 			var tilesets = Get(TilesetDataOffset, TilesetDataCount * TilesetDataSize * TilesetCount).Chunk(TilesetDataSize).ToList();
@@ -200,35 +214,174 @@ namespace FF1Lib
 			{
 				if (IsBossTrapTile(tile))
 				{
-					tile[1] = 0x80;
+					tile[1] = extendedtraptiles ? 0x00 : 0x80;
 				}
 			});
 			Put(TilesetDataOffset, tilesets.SelectMany(tileset => tileset.ToBytes()).ToArray());
 
-			// Get all NPC scripts and script values to update them
-			var npcScript = GetFromBank(newTalkRoutinesBank, lut_MapObjTalkJumpTbl, 0xD0 * 2).Chunk(2);
+			// Update Chaos script
+			var Talk_Ending = talkroutines.Add(Blob.FromHex("4C38C9"));
+			npcdata.SetRoutine((ObjectId)0x1A, (newTalkRoutines)Talk_Ending);
 
-			var Talk_Ending = Blob.FromHex("4693");
+			//Update Fiends, Garland, Vampire, Astos and Bikke
+			var battleJump = Blob.FromHex("200096");
+			var mapreload = Blob.FromHex("201896");
+			talkroutines.ReplaceChunk(newTalkRoutines.Talk_fight, battleJump, Blob.FromHex("EAEAEA"));
+			talkroutines.ReplaceChunk(newTalkRoutines.Talk_fight, mapreload, Blob.FromHex("EAEAEA"));
+			talkroutines.ReplaceChunk(newTalkRoutines.Talk_Bikke, battleJump, Blob.FromHex("EAEAEA"));
+			talkroutines.ReplaceChunk(newTalkRoutines.Talk_Bikke, mapreload, Blob.FromHex("EAEAEA"));
+			talkroutines.ReplaceChunk(newTalkRoutines.Talk_Astos, battleJump, Blob.FromHex("EAEAEA"));
+			talkroutines.ReplaceChunk(newTalkRoutines.Talk_Astos, mapreload, Blob.FromHex("EAEAEA"));
+		}
 
-			for (int i = 0; i < 0xD0; i++)
+		public enum FormationPattern
+		{
+			Small9 = 0,
+			Large4 = 1,
+			Mixed = 2,
+			Fiends = 3,
+			Chaos = 4
+		}
+
+		public enum FormationSpriteSheet
+		{
+			ImpWolfIguanaGiant = 0,
+			SahagPirateSharkBigEye = 1,
+			BoneCreepHyenaOgre = 2,
+			AspLobsterBullTroll = 3,
+			ImageGeistWormEye = 4,
+			MedusaCatmanPedeTiger = 5,
+			VampGargoyleEarthDragon1 = 6,
+			SlimeSpiderManticorAnkylo = 7,
+			MummyCoctricWyvernTyro = 8,
+			CaribeGatorOchoHydra = 9,
+			SentryWaterNagaChimera = 10,
+			WizardGarlandDragon2Golem = 11,
+			BadmanAstosMadponyWarmech = 12,
+			KaryLich = 13,
+			KrakenTiamat = 14,
+			Chaos = 15
+		}
+		public enum FormationGFX
+		{
+			Sprite1 = 0,
+			Sprite2 = 2,
+			Sprite3 = 1,
+			Sprite4 = 3
+		}
+		public class Encounters
+		{
+			public List<FormationData> formations = new List<FormationData>();
+
+			public class FormationData
 			{
-				if (npcScript[i] == newTalk.Talk_fight)
-					npcScript[i] = newTalk.Talk_CoOGuy;
+				public FormationPattern pattern { get; set; }
+				public FormationSpriteSheet spriteSheet { get; set; }
+				public int palette1 { get; set; }
+				public int palette2 { get; set; }
+				public int enemy1 { get; set; }
+				public int enemy2 { get; set; }
+				public int enemy3 { get; set; }
+				public int enemy4 { get; set; }
+				public int gfxOffset1 { get; set; }
+				public int gfxOffset2 { get; set; }
+				public int gfxOffset3 { get; set; }
+				public int gfxOffset4 { get; set; }
+				public (int, int) minmax1 { get; set; }
+				public (int, int) minmax2 { get; set; }
+				public (int, int) minmax3 { get; set; }
+				public (int, int) minmax4 { get; set; }
+				public int paletteAssign1 { get; set; }
+				public int paletteAssign2 { get; set; }
+				public int paletteAssign3 { get; set; }
+				public int paletteAssign4 { get; set; }
+				public bool unrunnableA { get; set; }
+				public bool unrunnableB { get; set; }
+				public (int, int) minmaxB1 { get; set; }
+				public (int, int) minmaxB2 { get; set; }
+				public int supriseFactor { get; set; }
+
+
+				public FormationData(byte[] formationdata)
+				{
+					LoadData(formationdata);
+				}
+
+				public void LoadData(byte[] formationdata)
+				{
+					pattern = (FormationPattern)(formationdata[TypeOffset] / 0x10);
+					spriteSheet = (FormationSpriteSheet)(formationdata[TypeOffset] & 0x0F);
+					gfxOffset1 = formationdata[GFXOffset] & 0x03;
+					gfxOffset2 = (formationdata[GFXOffset] / 0x04) & 0x03;
+					gfxOffset3 = (formationdata[GFXOffset] / 0x10) & 0x03;
+					gfxOffset4 = (formationdata[GFXOffset] / 0x40) & 0x03;
+					enemy1 = formationdata[IDsOffset + 0];
+					enemy2 = formationdata[IDsOffset + 1];
+					enemy3 = formationdata[IDsOffset + 2];
+					enemy4 = formationdata[IDsOffset + 3];
+					minmax1 = (formationdata[QuantityOffset + 0] / 0x10, formationdata[QuantityOffset + 0] & 0x0F);
+					minmax2 = (formationdata[QuantityOffset + 1] / 0x10, formationdata[QuantityOffset + 1] & 0x0F);
+					minmax3 = (formationdata[QuantityOffset + 2] / 0x10, formationdata[QuantityOffset + 2] & 0x0F);
+					minmax4 = (formationdata[QuantityOffset + 3] / 0x10, formationdata[QuantityOffset + 3] & 0x0F);
+					palette1 = formationdata[PalettesOffset + 0];
+					palette2 = formationdata[PalettesOffset + 1];
+					paletteAssign1 = ((formationdata[PaletteAsignmentOffset] & 0x80) > 0) ? 1 : 0;
+					paletteAssign2 = ((formationdata[PaletteAsignmentOffset] & 0x40) > 0) ? 1 : 0;
+					paletteAssign3 = ((formationdata[PaletteAsignmentOffset] & 0x20) > 0) ? 1 : 0;
+					paletteAssign4 = ((formationdata[PaletteAsignmentOffset] & 0x10) > 0) ? 1 : 0;
+					unrunnableA = (formationdata[PaletteAsignmentOffset] & 0x01) == 0 ? false : true;
+					unrunnableB = (formationdata[PaletteAsignmentOffset] & 0x02) == 0 ? false : true;
+					minmaxB1 = (formationdata[QuantityBOffset + 0] / 0x10, formationdata[QuantityBOffset + 0] & 0x0F);
+					minmaxB2 = (formationdata[QuantityBOffset + 1] / 0x10, formationdata[QuantityBOffset + 1] & 0x0F);
+					supriseFactor = formationdata[0x0C];
+				}
+
+				public Blob OutputBlob()
+				{
+					var formationdata = new byte[0x10];
+
+					formationdata[TypeOffset] = (byte)((int)pattern * 0x10 + (int)spriteSheet);
+					formationdata[GFXOffset] = (byte)(gfxOffset1 + gfxOffset2 * 0x04 + gfxOffset3 * 0x10 + gfxOffset4 * 0x40);
+
+					formationdata[IDsOffset + 0] = (byte)enemy1; 
+					formationdata[IDsOffset + 1] = (byte)enemy2;
+					formationdata[IDsOffset + 2] = (byte)enemy3;
+					formationdata[IDsOffset + 3] = (byte)enemy4;
+
+					formationdata[QuantityOffset + 0] = (byte)(minmax1.Item1 * 0x10 + minmax1.Item2);
+					formationdata[QuantityOffset + 1] = (byte)(minmax2.Item1 * 0x10 + minmax2.Item2);
+					formationdata[QuantityOffset + 2] = (byte)(minmax3.Item1 * 0x10 + minmax3.Item2);
+					formationdata[QuantityOffset + 3] = (byte)(minmax4.Item1 * 0x10 + minmax4.Item2);
+
+					formationdata[PalettesOffset + 0] = (byte)palette1;
+					formationdata[PalettesOffset + 1] = (byte)palette2;
+
+					formationdata[PaletteAsignmentOffset] = (byte)(paletteAssign1 * 0x80 + paletteAssign2 * 0x40 + paletteAssign3 * 0x20 + paletteAssign4 * 0x10
+						+ (unrunnableB ? 0x02 : 0x00) + (unrunnableA ? 0x01 : 0x00));
+
+					formationdata[QuantityBOffset + 0] = (byte)(minmaxB1.Item1 * 0x10 + minmaxB1.Item2);
+					formationdata[QuantityBOffset + 1] = (byte)(minmaxB2.Item1 * 0x10 + minmaxB2.Item2);
+
+					formationdata[0x0C] = (byte)supriseFactor;
+
+					return formationdata;
+				}
 			}
 
-			// Update Chaos script
-			npcScript[0x1A] = Talk_Ending;
+			public Encounters(FF1Rom rom)
+			{
+				var encounterData = rom.Get(FormationsOffset, FormationCount * FormationSize).Chunk(FormationSize);
 
-			// Reinsert updated scripts
-			PutInBank(newTalkRoutinesBank, lut_MapObjTalkJumpTbl, npcScript.SelectMany(script => script.ToBytes()).ToArray());
+				foreach (var formation in encounterData)
+				{
+					formations.Add(new FormationData(formation));
+				}
+			}
 
-			//Update Talk_CooGuy and change Talk_fight to load End game
-			PutInBank(newTalkRoutinesBank, 0x933B, Blob.FromHex("A476207F90209690A571604C38C9"));
-
-			//Update Astos and Bikke
-			PutInBank(newTalkRoutinesBank, 0x93C0, Blob.FromHex("EAEAEA"));
-			PutInBank(newTalkRoutinesBank, 0x9507, Blob.FromHex("EAEAEA"));
-
+			public void Write(FF1Rom rom)
+			{
+				rom.Put(FormationsOffset, formations.SelectMany(encounterData => encounterData.OutputBlob().ToBytes()).ToArray());
+			}
 		}
 	}
 

@@ -1,0 +1,102 @@
+#wrapper, #header-contents{
+margin: auto;
+max-width: 600px;
+min-width: 300px;
+}
+
+/* Main Content */
+
+#left-column, #right-column{
+width: 100%;
+max-width: 100%;
+margin-left: 0;
+float: none;
+}
+
+.tab{
+float: none;
+text-align: center;
+width: 100%;
+}
+
+.tabcontent{
+margin-left: 0px;
+min-height: auto;
+float: none;
+}
+
+.tab button{
+border: 4px solid #ffffff;
+border-image: url(../images/site-border-large-fade.png) 4;
+width: 132px;
+display: inline-block;
+}
+
+.tab button.active{
+border-image: url(../images/site-border-large.png) 4;
+width: 132px;
+}
+
+a.nav-link.nav-item {
+    border-right: 4px solid #ffffff;
+    width: 132px;
+    display: inline-block;
+}
+
+a.nav-link.nav-item.active {
+    border-image: url(../images/site-border-large.png) 4;
+    width: 132px;
+}
+
+.nav.nav-tabs.flex-column {
+    display: block;
+}
+
+.ffr-tooltip {
+
+    width: 80vw !important;
+}
+
+.hidden {
+    display: block;
+}
+
+.expand-collapse-button {
+    justify-content: center;
+}
+
+.expand-collapse-button.tabbed {
+    margin-left: 0px;
+}
+
+.col1, .col2{
+float: none;
+width: 100%;
+min-width: 100%;
+margin-left: 0;
+}
+
+/* Footer */
+
+#hidden-nav{
+display: block;
+margin: 1em 0;
+}
+
+#garland{
+margin-left: 5px;
+}
+
+#warriors{
+margin-right: 5px;
+}
+
+/* Header */
+
+#nav-holder{
+height: 30px;
+}
+
+#site-nav, #orbs{
+display: none;
+}

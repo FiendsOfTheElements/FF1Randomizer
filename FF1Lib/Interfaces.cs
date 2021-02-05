@@ -26,6 +26,8 @@
 		bool? IncentivizeTitansTrove { get; }
 		bool? IncentivizeEarth { get; }
 		bool? IncentivizeSeaShrine { get; }
+		bool? IncentivizeRandomChestInLocation { get; }
+		bool? IncentivizeRandomChestIncludeExtra { get; }
 
 		bool? IncentivizeXcalber { get; }
 		bool? IncentivizeMasamune { get; }
@@ -62,6 +64,7 @@
 		bool? IncentivizeOpal { get; }
 		bool Incentivize65K { get; }
 		bool IncentivizeBad { get; }
+		bool? NoMasamune { get; }
 	}
 	public interface IMapEditFlags : IItemPlacementFlags
 	{
@@ -73,7 +76,6 @@
 	public interface IItemPlacementFlags : IItemShuffleFlags, IVictoryConditionFlags
 	{
 		bool Spoilers { get; }
-		bool ClassicItemPlacement { get; }
 		bool? MapCanalBridge { get; }
 		bool? MapConeriaDwarves { get; }
 		bool? MapVolcanoIceRiver { get; }
@@ -83,6 +85,9 @@
 		bool? BetterTrapChests { get; }
 		bool? EarlierRuby { get; }
 		bool? GuaranteedRuseItem { get; }
+		bool? GuaranteedMasamune { get; }
+		bool? SendMasamuneHome { get; }
+		bool? NoMasamune { get; }
 		WorldWealthMode WorldWealth { get; }
 	}
 	public interface IItemShuffleFlags
@@ -101,7 +106,8 @@
 		bool WrapPriceOverflow { get; }
 		bool WrapStatOverflow { get; }
 		double ExpMultiplier { get; }
-		double PriceScaleFactor { get; }
+		int PriceScaleFactorLow { get; }
+		int PriceScaleFactorHigh { get; }
 	}
 	public interface IFloorShuffleFlags
 	{
