@@ -1122,7 +1122,7 @@
 		"Id": "itemPlacementCheckBox",
 		"title": "Use Older v2 Placement",
 		"screenshot": "itemPlacementCheckBox.png",
-		"description": "Uses an older algorithm for key item placement which favored having the Ship and Canal in the inner sea, even if the Airship could be obtained early."
+		"description": "Uses an older algorithm for key item placement.\nBesides accounting for incentivization, items are placed almost completely randomly. This results in a lot more early game FLOATER and obsolete late game SHIP, CANAL, etc. as compared to the newer placement.\nBy contrast, the newer algorithm sacrifices a bit of randomness to elevate the likelihood major progression items like the SHIP are found while they are still relevant."
 	},
 	{
 		"Id": "buyTenOldCheckBox",

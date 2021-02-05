@@ -96,7 +96,6 @@ namespace FF1Lib
 		public bool? IncentivizeCanoeItem { get; set; } = false;
 		public bool? IncentivizeAirship { get; set; } = false;
 		public bool? IncentivizeShipAndCanal { get; set; } = false;
-		public bool ClassicItemPlacement { get; set; } = false;
 
 		public bool? IncentivizeMarsh { get; set; } = false;
 		public bool? IncentivizeEarth { get; set; } = false;
@@ -153,7 +152,6 @@ namespace FF1Lib
 		public bool NoPartyShuffle { get; set; } = false;
 		public bool Dash { get; set; } = false;
 		public bool BuyTen { get; set; } = false;
-		public bool BuyTenOld { get; set; } = false;
 		public bool IdentifyTreasures { get; set; } = false;
 		public bool ShopInfo { get; set; } = false;
 		public bool WaitWhenUnrunnable { get; set; } = false;
