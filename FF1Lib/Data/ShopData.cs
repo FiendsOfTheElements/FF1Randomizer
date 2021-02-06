@@ -133,12 +133,12 @@ namespace FF1Lib
 		public List<Shop> Shops { get; private set; }
 
 		FF1Rom rom;
-		MemTable<ushort> Index;
+		MemTable<Item> Index;
 
 		public ShopData(FF1Rom _rom)
 		{
 			rom = _rom;
-			Index = new MemTable<ushort>(rom, ShopPointerOffset, ShopPointerCount);
+			Index = new MemTable<Item>(rom, ShopPointerOffset, ShopPointerCount, 2);
 		}
 
 		public void LoadData()
@@ -161,7 +161,7 @@ namespace FF1Lib
 			{
 				if (shopdic.TryGetValue(i, out var shop))
 				{
-					Index.Data[i] = (ushort)(ShopNullPointer + 1 + shopdata.Count);
+					Index.Table[i] = new byte[] { (byte)((ShopNullPointer + 1 + shopdata.Count) / 0x100), (byte)((ShopNullPointer + 1 + shopdata.Count) % 0x100) };
 
 					if (shop.Type == ShopType.Clinic || shop.Type == ShopType.Inn)
 					{
@@ -177,7 +177,7 @@ namespace FF1Lib
 				}
 				else
 				{
-					Index.Data[i] = ShopNullPointer;
+					Index.Table[i] = new byte[] { ShopNullPointer / 0x100, ShopNullPointer % 0x100 };
 				}
 
 				Index.StoreTable();
@@ -192,19 +192,19 @@ namespace FF1Lib
 			var shops = new List<Shop>();
 			for (int i = 0; i < ShopSectionSize; i++)
 			{
-				if (Index.Data[(int)shopType + i] != ShopNullPointer)
+				if (Index.Table[(int)shopType + i].ToUShorts()[0] != ShopNullPointer)
 				{
 					var prototype = ShopPrototypes[(int)shopType + i];
 
 					if (shopType == ShopType.Clinic || shopType == ShopType.Inn)
 					{
-						ushort price = rom.Get(ShopPointerBase + Index.Data[(int)shopType + i], 2).ToUShorts()[0];
+						ushort price = rom.Get(ShopPointerBase + Index.Table[(int)shopType + i].ToUShorts()[0], 2).ToUShorts()[0];
 						shops.Add(new Shop(prototype.Index, prototype.Type, prototype.Location, prototype.MapId, prototype.TileId, prototype.Name, price));
 					}
 					else
 					{
 						var entries = new List<byte>();
-						var shopEntries = rom.Get(ShopPointerBase + Index.Data[(int)shopType + i], 5);
+						var shopEntries = rom.Get(ShopPointerBase + Index.Table[(int)shopType + i].ToUShorts()[0], 5);
 
 						for (int j = 0; j < 5 && shopEntries[j] != 0; j++)
 						{
@@ -221,7 +221,7 @@ namespace FF1Lib
 
 		public int GetShopEntryPointer(Shop shop, int index)
 		{
-			return ShopPointerBase + Index.Data[shop.Index] + index;
+			return ShopPointerBase + Index.Table[shop.Index].ToUShorts()[0] + index;
 		}
 
 		public void SetShops(IEnumerable<Shop> newShops)
