@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace FF1Lib
 {
-	public class ItemPrices : MemTable<Item>
+	public class ItemPrices : MemTable<ushort, Item>
 	{
-		public ItemPrices(FF1Rom _rom) : base(_rom, 0x37C00, 240, 2)
+		public ItemPrices(FF1Rom _rom) : base(_rom, 0x37C00, 240)
 		{
 		}
 	}

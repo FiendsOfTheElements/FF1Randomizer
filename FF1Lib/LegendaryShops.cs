@@ -18,7 +18,7 @@ namespace FF1Lib
 		ShopData ShopData;
 		TileSet[] TileSets = new TileSet[8];
 
-		//Dictionary<byte, List<byte>> UnusedTilesbyTileSet;
+		Dictionary<byte, List<byte>> UnusedTilesbyTileSet;
 		Dictionary<string, MagicSpell> Spells;
 
 		//MapId, X, Y, UL Tile, UR Tile, BL Tile, BR Tile, Pallette
@@ -47,7 +47,7 @@ namespace FF1Lib
 		{
 			byte[] possibleTileIds = new byte[128];
 			for (byte i = 0; i < 128; i++) possibleTileIds[i] = i;
-			/*
+
 			UnusedTilesbyTileSet = Enum.GetValues<MapId>()
 				.GroupBy(m => MapTileSets[m])
 				.Select(t => (t.Key, t.Select(m => maps[(int)m]
@@ -57,7 +57,6 @@ namespace FF1Lib
 					.ToDictionary(x => x)))
 				.Select(t => (t.Key, possibleTileIds.Where(i => !t.Item2.ContainsKey(i)).ToList()))
 				.ToDictionary(t => t.Key, t => t.Item2);
-			*/
 		}
 
 		public void PlaceShops()
@@ -176,7 +175,7 @@ namespace FF1Lib
 		}
 
 		private byte CreateTile(MapId mapId, int ShopId, byte ul, byte ur, byte bl, byte br, byte pi)
-		{/*
+		{
 			var tileSet = TileSets[MapTileSets[mapId]];
 			var tile = UnusedTilesbyTileSet[MapTileSets[mapId]][0];
 			UnusedTilesbyTileSet[MapTileSets[mapId]].RemoveAt(0);
@@ -187,8 +186,7 @@ namespace FF1Lib
 			tileSet.TopRightTiles[tile] = ur;
 			tileSet.BottemLeftTiles[tile] = bl;
 			tileSet.BottemRightTiles[tile] = br;
-			*/
-			byte tile = 0x00;
+
 			return tile;
 		}
 

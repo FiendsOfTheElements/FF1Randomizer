@@ -33,7 +33,7 @@ namespace FF1Lib
 		public bool ShopKillExcludeConeria_Black { get; set; } = false;
 		public bool ShopKillExcludeConeria_White { get; set; } = false;
     
-    #endregion
+		#endregion
 
 		#region ExtensiveHints
 

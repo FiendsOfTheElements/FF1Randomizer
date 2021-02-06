@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 
 namespace FF1Lib
 {
-	[StructLayout(LayoutKind.Sequential, Pack = 1)]
 	public struct TileProp
 	{
 		public byte Byte1;
@@ -28,27 +27,27 @@ namespace FF1Lib
 
 	public class TileSet
 	{
-		public MemTable<Item> TileProperties;
-		public MemTable<Item> TileAttributes;
-		public MemTable<Item> TopLeftTiles;
-		public MemTable<Item> TopRightTiles;
-		public MemTable<Item> BottemLeftTiles;
-		public MemTable<Item> BottemRightTiles;
+		public TilePropTable TileProperties;
+		public MemTable<byte> TileAttributes;
+		public MemTable<byte> TopLeftTiles;
+		public MemTable<byte> TopRightTiles;
+		public MemTable<byte> BottemLeftTiles;
+		public MemTable<byte> BottemRightTiles;
 
 		public TileSet(FF1Rom _rom, byte idx)
 		{
-			TileProperties = new MemTable<Item>(_rom, 0x800 + 0x100 * idx, 128, 1);
-			TileAttributes = new MemTable<Item>(_rom, 0x400 + 0x80 * idx, 128, 1);
+			TileProperties = new TilePropTable(_rom, idx);
+			TileAttributes = new MemTable<byte>(_rom, 0x400 + 0x80 * idx, 128);
 
-			TopLeftTiles = new MemTable<Item>(_rom, 0x1000 + 0x200 * idx, 128, 1);
-			TopRightTiles = new MemTable<Item>(_rom, 0x1080 + 0x200 * idx, 128, 1);
-			BottemLeftTiles = new MemTable<Item>(_rom, 0x1100 + 0x200 * idx, 128, 1);
-			BottemRightTiles = new MemTable<Item>(_rom, 0x1180 + 0x200 * idx, 128, 1);
+			TopLeftTiles = new MemTable<byte>(_rom, 0x1000 + 0x200 * idx, 128);
+			TopRightTiles = new MemTable<byte>(_rom, 0x1080 + 0x200 * idx, 128);
+			BottemLeftTiles = new MemTable<byte>(_rom, 0x1100 + 0x200 * idx, 128);
+			BottemRightTiles = new MemTable<byte>(_rom, 0x1180 + 0x200 * idx, 128);
 		}
 
 		public void LoadData()
 		{
-			TileProperties.LoadTable();
+			TileProperties.LoadData();
 			TileAttributes.LoadTable();
 			TopLeftTiles.LoadTable();
 			TopRightTiles.LoadTable();
@@ -58,7 +57,7 @@ namespace FF1Lib
 
 		public void StoreData()
 		{
-			TileProperties.StoreTable();
+			TileProperties.StoreData();
 			TileAttributes.StoreTable();
 			TopLeftTiles.StoreTable();
 			TopRightTiles.StoreTable();
