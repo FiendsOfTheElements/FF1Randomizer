@@ -39,6 +39,14 @@ namespace FF1Lib
 		Any,
 	}
 
+	public struct MagicSpell
+	{
+		public byte Index;
+		public Blob Data;
+		public Blob Name;
+		public byte TextPointer;
+	}
+
 	public partial class FF1Rom : NesRom
 	{
 		public const int MagicOffset = 0x301E0;
@@ -70,13 +78,6 @@ namespace FF1Lib
 		public const int ArmorSize = 4;
 		public const int ArmorCount = 40;
 
-		private struct MagicSpell
-		{
-			public byte Index;
-			public Blob Data;
-			public Blob Name;
-			public byte TextPointer;
-		}
 
 		public void BuffHealingSpells()
 		{
@@ -575,7 +576,7 @@ namespace FF1Lib
 			Data[0x33AE5] = (byte)((limit >> 8) & 0x00ff);
 		}
 
-		List<MagicSpell> GetSpells() {
+		public List<MagicSpell> GetSpells() {
 			var spells = Get(MagicOffset, MagicSize * MagicCount).Chunk(MagicSize);
 			var names = Get(MagicNamesOffset, MagicNameSize * MagicCount).Chunk(MagicNameSize);
 			var pointers = Get(MagicTextPointersOffset, MagicCount);

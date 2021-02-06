@@ -376,6 +376,8 @@ namespace FF1Lib
 			{
 				ShuffleMagicLevels(rng, ((bool)flags.MagicPermissions), (bool)flags.MagicLevelsTiered, (bool)flags.MagicLevelsMixed, (bool)!flags.GenerateNewSpellbook);
 			}
+
+			new LegendaryShops(rng, flags, maps, this).PlaceShops();
 			
 			new StartingInventory(rng, flags, this).SetStartingInventory();
 

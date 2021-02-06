@@ -47,6 +47,18 @@ namespace FF1Lib
 				Data[idx] = value;
 			}
 		}
+
+		public T this[int idx]
+		{
+			get
+			{
+				return Data[idx];
+			}
+			set
+			{
+				Data[idx] = value;
+			}
+		}
 	}
 
 	public class MemTable<T> : MemTable where T : Enum

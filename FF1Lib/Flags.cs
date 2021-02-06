@@ -420,6 +420,12 @@ namespace FF1Lib
 		public bool? RandomizeClassNoCasting { get; set; } = false;
 		public bool? RandomizeClassChaos { get; set; } = false;
 
+		public bool? LegendaryWeaponShop { get; set; } = false;
+		public bool? LegendaryArmorShop { get; set; } = false;
+		public bool? LegendaryBlackShop { get; set; } = false;
+		public bool? LegendaryWhiteShop { get; set; } = false;
+		public bool? LegendaryItemShop { get; set; } = false;
+    
 		[IntegerFlag(0, 4)]
 		public int RandomizeClassMaxBonus { get; set; } = 2;
 
