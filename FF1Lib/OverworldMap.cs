@@ -414,8 +414,18 @@ namespace FF1Lib
 
 			if ((bool)flags.DeepTownsPossible && (bool)flags.AllowDeepTowns)
 			{
+				// If we're shuffling Coneria in with the towns we keep one aside to put in the Coneria entrance.
+				// The first element of Towns has an Inn, Item Shop, and Clinic, which we ensured above.
+				List<TeleportDestination> startingTown = new List<TeleportDestination>();
+				if ((bool)flags.IncludeConeria)
+				{
+					startingTown.Add(towns.First());
+					towns.RemoveAt(0);
+				}
+
 				subfloors.AddRange(towns);
 				towns.Clear();
+				towns.AddRange(startingTown);
 			}
 
 			// Shuffle again now that we've removed some to be placed at the end. Maybe unnecessary.
@@ -451,11 +461,12 @@ namespace FF1Lib
 				// with town entrances we just keep them at the front of shuffleEntrances too.
 				if ((bool)flags.EntrancesMixedWithTowns)
 				{
-					bool shuffleConeria = shuffleTowns.Remove(OverworldTeleportIndex.Coneria);
+					bool removedConeria = shuffleTowns.Remove(OverworldTeleportIndex.Coneria);
+					Debug.Assert(removedConeria);
+
 					shuffleEntrances = shuffleTowns.Concat(shuffleEntrances).ToList();
 					shuffleEntrances.Shuffle(rng);
-					if (shuffleConeria)
-						shuffleEntrances.Insert(0, OverworldTeleportIndex.Coneria);
+					shuffleEntrances.Insert(0, OverworldTeleportIndex.Coneria);
 				}
 				else
 				{
