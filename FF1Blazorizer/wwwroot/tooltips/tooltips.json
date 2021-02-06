@@ -625,7 +625,7 @@
 		"Id": "includeConeriaCheckBox",
 		"title": "Include Coneria",
 		"screenshot": "includeConeriaCheckBox.png",
-		"description": "Include Coneria in Town Shuffle.\nThe Coneria entrance will always lead to a town, even when all entrances are mixed together.\nOnly towns with item shops and clinics are permitted, thus exlcuding Melmond and Lefein.\nIf other flags guaranteed Coneria's item shop to have PURE and SOFT the replacement town's item shop will have these instead."
+		"description": "Include Coneria in Town Shuffle.\nOnly towns with item shops and clinics are permitted, thus exlcuding Melmond and Lefein.\nThe Coneria entrance will always lead to a town, even when all entrances are mixed together, even if deep towns are enabled.\nIf other flags guaranteed Coneria's item shop to have PURE and SOFT the replacement town's item shop will have these instead."
 	},
 	{
 		"Id": "mixEntrancesCheckBox",
