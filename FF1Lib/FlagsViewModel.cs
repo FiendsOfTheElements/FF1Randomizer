@@ -956,6 +956,24 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ConfusedOldMen"));
 			}
 		}
+		public bool? GaiaShortcut
+		{
+			get => Flags.GaiaShortcut;
+			set
+			{
+				Flags.GaiaShortcut = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("GaiaShortcut"));
+			}
+		}
+		public bool? MoveGaiaItemShop
+		{
+			get => Flags.MoveGaiaItemShop;
+			set
+			{
+				Flags.MoveGaiaItemShop = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MoveGaiaItemShop"));
+			}
+		}
 		public bool? FlipDungeons
 		{
 			get => Flags.FlipDungeons;
