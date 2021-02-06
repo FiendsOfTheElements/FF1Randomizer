@@ -35,30 +35,6 @@ namespace FF1Lib
 		{
 			rom.Put(address, Blob.Concat(Table));
 		}
-
-		public T this[int idx]
-		{
-			get
-			{
-				return Data[idx];
-			}
-			set
-			{
-				Data[idx] = value;
-			}
-		}
-
-		public T this[int idx]
-		{
-			get
-			{
-				return Data[idx];
-			}
-			set
-			{
-				Data[idx] = value;
-			}
-		}
 	}
 
 	public class MemTable<T> : MemTable where T : Enum
