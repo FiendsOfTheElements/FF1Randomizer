@@ -262,7 +262,7 @@ namespace FF1Lib
 		XXXX = 0xB0 + 0x3F
 	}
 
-	public static class UnsramIndex
+public static class UnsramIndex
 	{
 		public const byte ShipVis = 0;
 		public const byte ShipX = 1;

@@ -1,38 +1,118 @@
 ﻿@using FF1Lib;
 
 
-	<div id="Beta" class="tabcontent framed-content clearfix @(noTabLayout ? "no-tab" : "") @(IsOpen ? "" : "collapsed")">
-		<h3 class="@(IsOpen ? "" : "h3-collapsed")"><a class="@(noTabLayout ? "collapsible-header" : "")" @onclick="(() => IsOpen = (!noTabLayout || !IsOpen))">Experimental Beta Flags</a></h3>
-		@if(IsOpen)
-		{ 
+<div id="Beta" class="tabcontent framed-content clearfix @(noTabLayout ? "no-tab" : "") @(IsOpen ? "" : "collapsed")">
+	<h3 class="@(IsOpen ? "" : "h3-collapsed")"><a class="@(noTabLayout ? "collapsible-header" : "")" @onclick="(() => IsOpen = (!noTabLayout || !IsOpen))">Experimental Beta Flags</a></h3>
+	@if (IsOpen)
+	{
 		<p>Test out features from 2000 years in the future - at your own risk!</p>
 		<div class="col1">
-			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="itemPlacementCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.ClassicItemPlacement">Use Older v2 Placement</CheckBox>
-			<div class="checkbox-cell"></div>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="procGenEarth1" @bind-Value="Flags.EFGEarth1">Generated Earth Cave B1</CheckBox>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="procGenEarth2" @bind-Value="Flags.EFGEarth2">Generated Earth Cave B2</CheckBox>
 			<div class="checkbox-cell"></div>
-			<p>Legendary Shops</p>
+		</div>
+		<div class="col2">
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="gaiaShortcutCheckBox" @bind-Value="Flags.GaiaShortcut">Add Gaia Shortcut</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="moveGaiaItemShopCheckBox" IsEnabled="@(Flags.GaiaShortcut == true)" @bind-Value="Flags.MoveGaiaItemShop">Move Gaia Item Shop</TriStateCheckBox>
+			<div class="checkbox-cell"></div>
+      <p>Legendary Shops</p>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="legendaryWeaponShopCheckBox" @bind-Value="Flags.LegendaryWeaponShop">L. Weapon Shop</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="legendaryArmorShopCheckBox" @bind-Value="Flags.LegendaryArmorShop">L. Armor Shop</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="legendaryBlackShopCheckBox" @bind-Value="Flags.LegendaryBlackShop">L. Black Shop</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="legendaryWhiteShopCheckBox" @bind-Value="Flags.LegendaryWhiteShop">L. White Shop</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="legendaryItemShopCheckBox" @bind-Value="Flags.LegendaryItemShop">L. Item Shop</TriStateCheckBox>
-
-		</div>
-		<div class="col2">
-
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="magisizeWeaponsCheckBox" @bind-Value="Flags.MagisizeWeapons">All Weapons Cast Spells</TriStateCheckBox>
-			<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="magisizeWeaponsBalancedCheckBox" IsEnabled="@Flags.MagisizeWeapons" @bind-Value="Flags.MagisizeWeaponsBalanced">Balanced Spells</TriStateCheckBox>
 		</div>
 		<div class="clear-it"></div>
-		}
-	</div>
-
-
-	@code {
-		[Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }
-		[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
-		[Parameter] public bool noTabLayout { get; set; }
-		[Parameter] public bool IsOpen { get; set; } = true;
+		<div class="col-12">
+			<table>
+				<tr><td colspan="2" style="text-align:left"><p>Shop Reduction</p></td></tr>
+				<tr>
+					<td style="text-align:left">Weapon Shops:</td>
+					<td style="min-width:220px"><EnumDropDown UpdateToolTip="@UpdateToolTipID" TItem="ShopKillMode" @bind-Value="Flags.ShopKillMode_Weapons"></EnumDropDown></td>
+					<td style="min-width:150px"><EnumDropDown UpdateToolTip="@UpdateToolTipID" TItem="ShopKillFactor" @bind-Value="Flags.ShopKillFactor_Weapons"></EnumDropDown></td>
+					<td style="min-width:140px;text-align:left"><CheckBox UpdateToolTip="@UpdateToolTipID" @bind-Value="Flags.ShopKillExcludeConeria_Weapons">Exclude Coneria</CheckBox></td>
+				</tr>
+				<tr>
+					<td style="text-align:left">Armor Shops:</td>
+					<td><EnumDropDown UpdateToolTip="@UpdateToolTipID" TItem="ShopKillMode" @bind-Value="Flags.ShopKillMode_Armor"></EnumDropDown></td>
+					<td><EnumDropDown UpdateToolTip="@UpdateToolTipID" TItem="ShopKillFactor" @bind-Value="Flags.ShopKillFactor_Armor"></EnumDropDown></td>
+					<td style="text-align:left"><CheckBox UpdateToolTip="@UpdateToolTipID" @bind-Value="Flags.ShopKillExcludeConeria_Armor">Exclude Coneria</CheckBox></td>
+				</tr>
+				<tr>
+					<td style="text-align:left">Item Shops:</td>
+					<td><EnumDropDown UpdateToolTip="@UpdateToolTipID" TItem="ShopKillMode" @bind-Value="Flags.ShopKillMode_Item"></EnumDropDown></td>
+					<td><EnumDropDown UpdateToolTip="@UpdateToolTipID" TItem="ShopKillFactor" @bind-Value="Flags.ShopKillFactor_Item"></EnumDropDown></td>
+					<td style="text-align:left"><CheckBox UpdateToolTip="@UpdateToolTipID" @bind-Value="Flags.ShopKillExcludeConeria_Item">Exclude Coneria</CheckBox></td>
+				</tr>
+				<tr>
+					<td style="text-align:left">Black Magic:</td>
+					<td><EnumDropDown UpdateToolTip="@UpdateToolTipID" TItem="ShopKillMode" @bind-Value="Flags.ShopKillMode_Black"></EnumDropDown></td>
+					<td><EnumDropDown UpdateToolTip="@UpdateToolTipID" TItem="ShopKillFactor" @bind-Value="Flags.ShopKillFactor_Black"></EnumDropDown></td>
+					<td style="text-align:left"><CheckBox UpdateToolTip="@UpdateToolTipID" @bind-Value="Flags.ShopKillExcludeConeria_Black">Exclude Coneria</CheckBox></td>
+				</tr>
+				<tr>
+					<td style="text-align:left">White Magic:</td>
+					<td><EnumDropDown UpdateToolTip="@UpdateToolTipID" TItem="ShopKillMode" @bind-Value="Flags.ShopKillMode_White"></EnumDropDown></td>
+					<td><EnumDropDown UpdateToolTip="@UpdateToolTipID" TItem="ShopKillFactor" @bind-Value="Flags.ShopKillFactor_White"></EnumDropDown></td>
+					<td style="text-align:left"><CheckBox UpdateToolTip="@UpdateToolTipID" @bind-Value="Flags.ShopKillExcludeConeria_White">Exclude Coneria</CheckBox></td>
+				</tr>
+			</table>
+			<div class="clear-it"></div>
+		</div>
 	}
+</div>
+		<div class="col1 full">
+			<div class="clear-it"></div><CheckBox @bind-Value="Flags.ExtensiveHints_Enable">Enable Hints</CheckBox>
+			<div>
+				<table>
+					<tr>
+						<td style="text-align:left;min-width:150px">Category</td>
+						<td style="min-width:220px">Coverage</td>
+						<td style="min-width:340px">Placement</td>
+					</tr>
+					<tr>
+						<td style="text-align:left">Loose on Floor</td>
+						<td><EnumDropDown TItem="HintCategoryCoverage" @bind-Value="Flags.ExtensiveHints_LooseItemFloorCoverage" /></td>
+						<td><EnumDropDown TItem="HintPlacementStrategy" @bind-Value="Flags.ExtensiveHints_LooseItemFloorPlacement" /></td>
+					</tr>
+					<tr>
+						<td style="text-align:left">Loose Name in Location</td>
+						<td><EnumDropDown TItem="HintCategoryCoverage" @bind-Value="Flags.ExtensiveHints_LooseItemNameCoverage" /></td>
+						<td><EnumDropDown TItem="HintPlacementStrategy" @bind-Value="Flags.ExtensiveHints_LooseItemNamePlacement" /></td>
+					</tr>
+
+					<tr>
+						<td style="text-align:left">Incentivized Name in Location</td>
+						<td><EnumDropDown TItem="HintCategoryCoverage" @bind-Value="Flags.ExtensiveHints_IncentiveItemNameCoverage" /></td>
+						<td><EnumDropDown TItem="HintPlacementStrategy" @bind-Value="Flags.ExtensiveHints_IncentiveItemNamePlacement" /></td>
+					</tr>
+					<tr>
+						<td style="text-align:left">Floor Hints</td>
+						<td><EnumDropDown TItem="HintCategoryCoverage" @bind-Value="Flags.ExtensiveHints_FloorHintCoverage" /></td>
+						<td><EnumDropDown TItem="HintPlacementStrategy" @bind-Value="Flags.ExtensiveHints_FloorHintPlacement" /></td>
+					</tr>
+
+					<tr>
+						<td style="text-align:left">Equipment on Floor</td>
+						<td><EnumDropDown TItem="HintCategoryCoverage" @bind-Value="Flags.ExtensiveHints_EquipmentFloorCoverage" /></td>
+						<td><EnumDropDown TItem="HintPlacementStrategy" @bind-Value="Flags.ExtensiveHints_EquipmentFloorPlacement" /></td>
+					</tr>
+
+					<tr>
+						<td style="text-align:left">Equipment Name in Location</td>
+						<td><EnumDropDown TItem="HintCategoryCoverage" @bind-Value="Flags.ExtensiveHints_EquipmentNameCoverage" /></td>
+						<td><EnumDropDown TItem="HintPlacementStrategy" @bind-Value="Flags.ExtensiveHints_EquipmentNamePlacement" /></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	}
+</div>
+
+
+		@code {
+			[Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }
+			[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
+			[Parameter] public bool noTabLayout { get; set; }
+			[Parameter] public bool IsOpen { get; set; } = true;
+		}

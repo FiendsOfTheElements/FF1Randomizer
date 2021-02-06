@@ -670,6 +670,18 @@
 		"description": "The circle of sages in Cresent Lake is no longer a circle, but each of the sages will walk around."
 	},
 	{
+		"Id": "gaiaShortcutCheckBox",
+		"title": "Add Gaia Shortcut",
+		"screenshot": "gaiaShortcut.png",
+		"description": "Adds a Shortcut in Gaia that connects the L8 Magic Shops, Fairy Spring, and Front Entrance."
+	},
+	{
+		"Id": "moveGaiaItemShopCheckBox",
+		"title": "Move Gaia Item Shop",
+		"screenshot": "gaiaShortcutMoveItemShop.png",
+		"description": "Moves the Item Shop next to the Gaia Shortcut.\nThis flag is ignored if Add Gaia Shortcut is disabled."
+	},
+	{
 		"Id": "mapOpenProgressionCheckBox",
 		"title": "Early Open Progression",
 		"screenshot": "mapOpenProgressionCheckBox.png",

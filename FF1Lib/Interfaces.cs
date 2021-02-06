@@ -72,11 +72,12 @@
 		bool? MapOnracDock { get; }
 		bool? MapMirageDock { get; }
 		bool? TitansTrove { get; }
+		bool? GaiaShortcut { get; }
+		bool? MoveGaiaItemShop { get; }
 	}
 	public interface IItemPlacementFlags : IItemShuffleFlags, IVictoryConditionFlags
 	{
 		bool Spoilers { get; }
-		bool ClassicItemPlacement { get; }
 		bool? MapCanalBridge { get; }
 		bool? MapConeriaDwarves { get; }
 		bool? MapVolcanoIceRiver { get; }

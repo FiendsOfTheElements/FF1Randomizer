@@ -223,6 +223,15 @@ namespace FF1Lib
 				EnableLefeinShops(maps);
 			}
 
+			if ((bool)flags.GaiaShortcut)
+			{
+				EnableGaiaShortcut(maps);
+				if ((bool)flags.MoveGaiaItemShop)
+				{
+					MoveGaiaItemShop(maps, rng);
+				}
+			}
+
 			// This has to be done before we shuffle spell levels.
 			if (flags.SpellBugs)
 			{
@@ -371,6 +380,8 @@ namespace FF1Lib
 			new LegendaryShops(rng, flags, maps, this).PlaceShops();
 			
 			new StartingInventory(rng, flags, this).SetStartingInventory();
+
+			new ShopKiller(rng, flags, maps, this).KillShops();
 
 			/*
 			if (flags.WeaponPermissions)
@@ -712,7 +723,11 @@ namespace FF1Lib
 			var itemText = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
 			itemText[(int)Item.Ribbon] = itemText[(int)Item.Ribbon].Remove(7);
 
-			if ((bool)flags.HintsVillage || (bool)flags.HintsDungeon)
+			if (flags.ExtensiveHints_Enable)
+			{
+				new ExtensiveHints(rng, npcdata, flags, overworldMap, this).Generate();
+			}
+			else if ((bool)flags.HintsVillage || (bool)flags.HintsDungeon)
 			{
 				if ((bool)flags.HintsDungeon)
 					SetDungeonNPC(flippedMaps, rng);
