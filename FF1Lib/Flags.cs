@@ -13,6 +13,58 @@ namespace FF1Lib
 {
 	public class Flags : IIncentiveFlags, IMapEditFlags, IScaleFlags, IFloorShuffleFlags
 	{
+		#region ShopKiller
+
+		public ShopKillMode ShopKillMode_Weapons { get; set; } = ShopKillMode.None;
+		public ShopKillMode ShopKillMode_Armor { get; set; } = ShopKillMode.None;
+		public ShopKillMode ShopKillMode_Item { get; set; } = ShopKillMode.None;
+		public ShopKillMode ShopKillMode_Black { get; set; } = ShopKillMode.None;
+		public ShopKillMode ShopKillMode_White { get; set; } = ShopKillMode.None;
+
+		public ShopKillFactor ShopKillFactor_Weapons { get; set; } = ShopKillFactor.Kill20Percent;
+		public ShopKillFactor ShopKillFactor_Armor { get; set; } = ShopKillFactor.Kill20Percent;
+		public ShopKillFactor ShopKillFactor_Item { get; set; } = ShopKillFactor.Kill20Percent;
+		public ShopKillFactor ShopKillFactor_Black { get; set; } = ShopKillFactor.Kill20Percent;
+		public ShopKillFactor ShopKillFactor_White { get; set; } = ShopKillFactor.Kill20Percent;
+
+		public bool ShopKillExcludeConeria_Weapons { get; set; } = false;
+		public bool ShopKillExcludeConeria_Armor { get; set; } = false;
+		public bool ShopKillExcludeConeria_Item { get; set; } = false;
+		public bool ShopKillExcludeConeria_Black { get; set; } = false;
+		public bool ShopKillExcludeConeria_White { get; set; } = false;
+    
+    #endregion
+
+		#region ExtensiveHints
+
+		public bool ExtensiveHints_Enable { get; set; } = false;
+
+		public HintCategoryCoverage ExtensiveHints_LooseItemFloorCoverage { get; set; } = HintCategoryCoverage.HintCategoryCoveragePrioritized;
+
+		public HintCategoryCoverage ExtensiveHints_LooseItemNameCoverage { get; set; } = HintCategoryCoverage.HintCategoryCoverageNone;
+
+		public HintCategoryCoverage ExtensiveHints_IncentiveItemNameCoverage { get; set; } = HintCategoryCoverage.HintCategoryCoverage80;
+
+		public HintCategoryCoverage ExtensiveHints_FloorHintCoverage { get; set; } = HintCategoryCoverage.HintCategoryCoverageFill;
+
+		public HintCategoryCoverage ExtensiveHints_EquipmentFloorCoverage { get; set; } = HintCategoryCoverage.HintCategoryCoverage80;
+
+		public HintCategoryCoverage ExtensiveHints_EquipmentNameCoverage { get; set; } = HintCategoryCoverage.HintCategoryCoverageNone;
+
+		public HintPlacementStrategy ExtensiveHints_LooseItemFloorPlacement { get; set; } = HintPlacementStrategy.InnerSeaTownsAndDwarfCave;
+
+		public HintPlacementStrategy ExtensiveHints_LooseItemNamePlacement { get; set; } = HintPlacementStrategy.ElflandToCrescent;
+
+		public HintPlacementStrategy ExtensiveHints_IncentiveItemNamePlacement { get; set; } = HintPlacementStrategy.InnerSeaTownsAndDwarfCave;
+
+		public HintPlacementStrategy ExtensiveHints_FloorHintPlacement { get; set; } = HintPlacementStrategy.Everywhere;
+
+		public HintPlacementStrategy ExtensiveHints_EquipmentFloorPlacement { get; set; } = HintPlacementStrategy.ConeriaToCrescent;
+
+		public HintPlacementStrategy ExtensiveHints_EquipmentNamePlacement { get; set; } = HintPlacementStrategy.ConeriaToCrescent;
+
+    #endregion
+		
 		public bool Spoilers { get; set; } = false;
 		public bool TournamentSafe { get; set; } = false;
 		public bool BlindSeed { get; set; } = false;
@@ -73,6 +125,8 @@ namespace FF1Lib
 		public bool? TitansTrove { get; set; } = false;
 		public bool? LefeinShops { get; set; } = false;
 		public bool? ConfusedOldMen { get; set; } = false;
+		public bool? GaiaShortcut { get; set; } = false;
+		public bool? MoveGaiaItemShop { get; set; } = false;
 		public bool? FlipDungeons { get; set; } = false;
 		public bool SpookyFlag { get; set; } = false;
 		public bool? MapOpenProgression { get; set; } = false;
@@ -96,7 +150,6 @@ namespace FF1Lib
 		public bool? IncentivizeCanoeItem { get; set; } = false;
 		public bool? IncentivizeAirship { get; set; } = false;
 		public bool? IncentivizeShipAndCanal { get; set; } = false;
-		public bool ClassicItemPlacement { get; set; } = false;
 
 		public bool? IncentivizeMarsh { get; set; } = false;
 		public bool? IncentivizeEarth { get; set; } = false;
@@ -153,7 +206,6 @@ namespace FF1Lib
 		public bool NoPartyShuffle { get; set; } = false;
 		public bool Dash { get; set; } = false;
 		public bool BuyTen { get; set; } = false;
-		public bool BuyTenOld { get; set; } = false;
 		public bool IdentifyTreasures { get; set; } = false;
 		public bool ShopInfo { get; set; } = false;
 		public bool WaitWhenUnrunnable { get; set; } = false;
@@ -183,7 +235,7 @@ namespace FF1Lib
 		public bool WrapPriceOverflow { get; set; } = false;
 		public bool IncludeMorale { get; set; } = false;
 		public bool NoDanMode { get; set; } = false;
-		public bool NonesGainXP { get; set; } = false;
+    public bool NonesGainXP { get; set; } = false;
 		public bool? NoTail { get; set; } = false;
 		public bool? GuaranteedMasamune { get; set; } = false;
 		public bool? SendMasamuneHome { get; set; } = false;
@@ -369,6 +421,12 @@ namespace FF1Lib
 		public bool? RandomizeClassNoCasting { get; set; } = false;
 		public bool? RandomizeClassChaos { get; set; } = false;
 
+		public bool? LegendaryWeaponShop { get; set; } = false;
+		public bool? LegendaryArmorShop { get; set; } = false;
+		public bool? LegendaryBlackShop { get; set; } = false;
+		public bool? LegendaryWhiteShop { get; set; } = false;
+		public bool? LegendaryItemShop { get; set; } = false;
+    
 		[IntegerFlag(0, 4)]
 		public int RandomizeClassMaxBonus { get; set; } = 2;
 
@@ -815,3 +873,4 @@ namespace FF1Lib
 		public static Flags FromJson(string json) => JsonConvert.DeserializeObject<Preset>(json).Flags;
 	}
 }
+
