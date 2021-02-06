@@ -223,6 +223,15 @@ namespace FF1Lib
 				EnableLefeinShops(maps);
 			}
 
+			if ((bool)flags.GaiaShortcut)
+			{
+				EnableGaiaShortcut(maps);
+				if ((bool)flags.MoveGaiaItemShop)
+				{
+					MoveGaiaItemShop(maps, rng);
+				}
+			}
+
 			// This has to be done before we shuffle spell levels.
 			if (flags.SpellBugs)
 			{
