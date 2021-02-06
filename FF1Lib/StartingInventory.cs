@@ -81,7 +81,7 @@ namespace FF1Lib
 			{
 				if (e.Cnt.HasValue)
 				{
-					ItemData[e.Item] = Blob.FromInts(new int[1] { (int)e.Cnt });
+					ItemData[e.Item] = new byte[1] { (byte)e.Cnt };
 				}
 				else
 				{
@@ -90,7 +90,7 @@ namespace FF1Lib
 					var rmin = e.RMin ?? min;
 					var rmax = e.RMax ?? max;
 
-					ItemData[e.Item] = Blob.FromInts( new int[1] { Math.Min(Math.Max(rng.Between(rmin, rmax), min), max) });
+					ItemData[e.Item] =  new byte[1] { (byte)Math.Min(Math.Max(rng.Between(rmin, rmax), min), max) };
 				}
 			}
 
