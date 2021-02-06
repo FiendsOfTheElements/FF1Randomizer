@@ -15,6 +15,21 @@ namespace FF1Lib
 		private List<byte> domainlist = new List<byte>();
 		private byte[] tilesetmappings = new byte[61];
 
+		private struct TileGraphic
+		{
+			public byte topleft;
+			public byte topright;
+			public byte botleft;
+			public byte botright;
+
+			public TileGraphic(byte tl, byte tr, byte bl, byte br)
+			{
+				topleft = tl;
+				topright = tr;
+				botleft = bl;
+				botright = br;
+			}
+		}
 		private struct Tileset
 		{
 			public byte abysstile;
@@ -36,6 +51,9 @@ namespace FF1Lib
 			public byte roomright;
 			public byte doortile;
 			public byte closedoortile;
+			public TileGraphic warpgraphic;
+			public TileGraphic teleportgraphic;
+			public TileGraphic laddergraphic;
 			public List<byte> teleportdeck;
 
 			public byte[] Solids()
@@ -82,6 +100,18 @@ namespace FF1Lib
 			tilesets[1].roomright = 0x05;
 			tilesets[1].doortile = 0x36;
 			tilesets[1].closedoortile = 0x3A;
+			tilesets[1].warpgraphic.topleft = 0x28;
+			tilesets[1].warpgraphic.topright = 0x29;
+			tilesets[1].warpgraphic.botleft = 0x38;
+			tilesets[1].warpgraphic.botright = 0x39;
+			tilesets[1].teleportgraphic.topleft = 0x26;
+			tilesets[1].teleportgraphic.topright = 0x27;
+			tilesets[1].teleportgraphic.botleft = 0x36;
+			tilesets[1].teleportgraphic.botright = 0x37;
+			tilesets[1].laddergraphic.topleft = 0x10;
+			tilesets[1].laddergraphic.topright = 0x2F;
+			tilesets[1].laddergraphic.botleft = 0x10;
+			tilesets[1].laddergraphic.botright = 0x2F;
 			tilesets[1].teleportdeck = new List<byte>();
 			tilesets[1].teleportdeck.Add(0x44);
 			tilesets[1].teleportdeck.Add(0x45);
@@ -117,6 +147,18 @@ namespace FF1Lib
 			tilesets[2].roomright = 0x05;
 			tilesets[2].doortile = 0x36;
 			tilesets[2].closedoortile = 0x3A;
+			tilesets[2].warpgraphic.topleft = 0x28;
+			tilesets[2].warpgraphic.topright = 0x29;
+			tilesets[2].warpgraphic.botleft = 0x38;
+			tilesets[2].warpgraphic.botright = 0x39;
+			tilesets[2].teleportgraphic.topleft = 0x26;
+			tilesets[2].teleportgraphic.topright = 0x27;
+			tilesets[2].teleportgraphic.botleft = 0x36;
+			tilesets[2].teleportgraphic.botright = 0x37;
+			tilesets[2].laddergraphic.topleft = 0x10;
+			tilesets[2].laddergraphic.topright = 0x6A;
+			tilesets[2].laddergraphic.botleft = 0x10;
+			tilesets[2].laddergraphic.botright = 0x6A;
 			tilesets[2].teleportdeck = new List<byte>();
 			tilesets[2].teleportdeck.Add(0x15);
 			tilesets[2].teleportdeck.Add(0x16);
@@ -151,6 +193,18 @@ namespace FF1Lib
 			tilesets[3].roomright = 0x05;
 			tilesets[3].doortile = 0x36;
 			tilesets[3].closedoortile = 0x3A;
+			tilesets[3].warpgraphic.topleft = 0x28;
+			tilesets[3].warpgraphic.topright = 0x29;
+			tilesets[3].warpgraphic.botleft = 0x38;
+			tilesets[3].warpgraphic.botright = 0x39;
+			tilesets[3].teleportgraphic.topleft = 0x26;
+			tilesets[3].teleportgraphic.topright = 0x27;
+			tilesets[3].teleportgraphic.botleft = 0x36;
+			tilesets[3].teleportgraphic.botright = 0x37;
+			tilesets[3].laddergraphic.topleft = 0x4C;
+			tilesets[3].laddergraphic.topright = 0x4D;
+			tilesets[3].laddergraphic.botleft = 0x5C;
+			tilesets[3].laddergraphic.botright = 0x5D;
 			tilesets[3].teleportdeck = new List<byte>();
 			tilesets[3].teleportdeck.Add(0x19);
 			tilesets[3].teleportdeck.Add(0x1A);
@@ -180,6 +234,18 @@ namespace FF1Lib
 			tilesets[4].roomright = 0x05;
 			tilesets[4].doortile = 0x36;
 			tilesets[4].closedoortile = 0x3A;
+			tilesets[4].warpgraphic.topleft = 0x28;
+			tilesets[4].warpgraphic.topright = 0x29;
+			tilesets[4].warpgraphic.botleft = 0x38;
+			tilesets[4].warpgraphic.botright = 0x39;
+			tilesets[4].teleportgraphic.topleft = 0x26;
+			tilesets[4].teleportgraphic.topright = 0x27;
+			tilesets[4].teleportgraphic.botleft = 0x36;
+			tilesets[4].teleportgraphic.botright = 0x37;
+			tilesets[4].laddergraphic.topleft = 0x10;
+			tilesets[4].laddergraphic.topright = 0x61;
+			tilesets[4].laddergraphic.botleft = 0x10;
+			tilesets[4].laddergraphic.botright = 0x61;
 			tilesets[4].teleportdeck = new List<byte>();
 			tilesets[4].teleportdeck.Add(0x20);
 			tilesets[4].teleportdeck.Add(0x22);
@@ -206,6 +272,18 @@ namespace FF1Lib
 			tilesets[5].roomright = 0x05;
 			tilesets[5].doortile = 0x36;
 			tilesets[5].closedoortile = 0x3A;
+			tilesets[5].warpgraphic.topleft = 0x28;
+			tilesets[5].warpgraphic.topright = 0x29;
+			tilesets[5].warpgraphic.botleft = 0x38;
+			tilesets[5].warpgraphic.botright = 0x39;
+			tilesets[5].teleportgraphic.topleft = 0x26;
+			tilesets[5].teleportgraphic.topright = 0x27;
+			tilesets[5].teleportgraphic.botleft = 0x36;
+			tilesets[5].teleportgraphic.botright = 0x37;
+			tilesets[5].laddergraphic.topleft = 0x44;
+			tilesets[5].laddergraphic.topright = 0x45;
+			tilesets[5].laddergraphic.botleft = 0x54;
+			tilesets[5].laddergraphic.botright = 0x55;
 			tilesets[5].teleportdeck = new List<byte>();
 			tilesets[5].teleportdeck.Add(0x43);
 			tilesets[5].teleportdeck.Add(0x44);
@@ -236,6 +314,18 @@ namespace FF1Lib
 			tilesets[6].roomright = 0x05;
 			tilesets[6].doortile = 0x36;
 			tilesets[6].closedoortile = 0x3A;
+			tilesets[6].warpgraphic.topleft = 0x62;
+			tilesets[6].warpgraphic.topright = 0x63;
+			tilesets[6].warpgraphic.botleft = 0x72;
+			tilesets[6].warpgraphic.botright = 0x73;
+			tilesets[6].teleportgraphic.topleft = 0x26;
+			tilesets[6].teleportgraphic.topright = 0x27;
+			tilesets[6].teleportgraphic.botleft = 0x36;
+			tilesets[6].teleportgraphic.botright = 0x37;
+			tilesets[6].laddergraphic.topleft = 0x28;
+			tilesets[6].laddergraphic.topright = 0x29;
+			tilesets[6].laddergraphic.botleft = 0x38;
+			tilesets[6].laddergraphic.botright = 0x39;
 			tilesets[6].teleportdeck = new List<byte>();
 			tilesets[6].teleportdeck.Add(0x41);
 			tilesets[6].teleportdeck.Add(0x42);
@@ -262,6 +352,18 @@ namespace FF1Lib
 			tilesets[7].roomright = 0x05;
 			tilesets[7].doortile = 0x36;
 			tilesets[7].closedoortile = 0x3A;
+			tilesets[7].warpgraphic.topleft = 0x28;
+			tilesets[7].warpgraphic.topright = 0x29;
+			tilesets[7].warpgraphic.botleft = 0x38;
+			tilesets[7].warpgraphic.botright = 0x39;
+			tilesets[7].teleportgraphic.topleft = 0x26;
+			tilesets[7].teleportgraphic.topright = 0x27;
+			tilesets[7].teleportgraphic.botleft = 0x36;
+			tilesets[7].teleportgraphic.botright = 0x37;
+			tilesets[7].laddergraphic.topleft = 0x10;
+			tilesets[7].laddergraphic.topright = 0x6E;
+			tilesets[7].laddergraphic.botleft = 0x10;
+			tilesets[7].laddergraphic.botright = 0x6E;
 			tilesets[7].teleportdeck = new List<byte>();
 			tilesets[7].teleportdeck.Add(0x42);
 			tilesets[7].teleportdeck.Add(0x43);
@@ -276,6 +378,23 @@ namespace FF1Lib
 
 			// Read which maps have which tilesets
 			tilesetmappings = Get(0x2CC0, 61).ToBytes();
+
+			// Correct the tile graphics so that "back" stairs look like they go down and
+			// "forward" stairs look like they go up.
+			for (int i = 1; i < 8; i++)
+			{
+				Put(0x1000 + i * 0x200 + tilesets[i].warptile + 0x000, Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].warpgraphic.topleft })));
+				Put(0x1000 + i * 0x200 + tilesets[i].warptile + 0x080, Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].warpgraphic.topright })));
+				Put(0x1000 + i * 0x200 + tilesets[i].warptile + 0x100, Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].warpgraphic.botleft })));
+				Put(0x1000 + i * 0x200 + tilesets[i].warptile + 0x180, Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].warpgraphic.botright })));
+				for (int j = 0; j < tilesets[i].teleportdeck.Count(); j++)
+				{
+					Put(0x1000 + i * 0x200 + 0x000 + tilesets[i].teleportdeck[j], Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].teleportgraphic.topleft })));
+					Put(0x1000 + i * 0x200 + 0x080 + tilesets[i].teleportdeck[j], Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].teleportgraphic.topright })));
+					Put(0x1000 + i * 0x200 + 0x100 + tilesets[i].teleportdeck[j], Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].teleportgraphic.botleft })));
+					Put(0x1000 + i * 0x200 + 0x180 + tilesets[i].teleportdeck[j], Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].teleportgraphic.botright })));
+				}
+			}
 		}
 		public void CreateDomains(MT19337 rng, List<Map> maps) 
 		{
@@ -442,10 +561,10 @@ namespace FF1Lib
 							if (right) m[j, i] = t.roomlowerright;
 							if (j < 63)
 							{
-								if (m[j + 1, i] != t.roomtile && m[j + 1, i] != t.doortile)
-								{
-									m[j + 1, i] = t.walltile;
-								}
+								//if (m[j + 1, i] != t.roomtile && m[j + 1, i] != t.doortile)
+								//{
+								//	m[j + 1, i] = t.walltile;
+								//}
 							}
 						}
 						else if (left)
@@ -461,54 +580,48 @@ namespace FF1Lib
 			}
 		}
 
-		private bool Traversible(Map m, Tileset t, int x, int y, int w, int h)
+		private bool Traversible(Map m, Tileset t, int x, int y, int w, int h, bool inside = false)
 		{
 			// To determine if placing a feature in a potential location preserves map
 			// traversibility, this function traces around the perimeter of the feature.
 			// While tracing, if it flips from solid to walkable and back more than twice,
 			// it breaks traversibility and rejects it.
 			bool result = true;
-			bool solid = t.Solids().Contains(m[y - 1, x - 1]);
+			byte[] solids = t.Solids();
+			if (!inside) solids.Append(t.roomtile);
+			bool solid = solids.Contains(m[y - 1, x - 1]);
 			int flips = 0;
 			for (int i = x - 1; i < x + w; i++)
 			{
-				if (solid != t.Solids().Contains(m[y - 1, i]))
+				if (solid != solids.Contains(m[y - 1, i]))
 				{
 					flips++;
 					solid = !solid;
-					//m[i, y - 1] = (byte)flips;
 				}
-				//else m[i, y - 1] = 0x21;
 			}
 			for (int i = y - 1; i < y + h; i++)
 			{
-				if (solid != t.Solids().Contains(m[i, x + w]))
+				if (solid != solids.Contains(m[i, x + w]))
 				{
 					flips++;
 					solid = !solid;
-					//m[x + w, i] = (byte)flips;
 				}
-				//else m[x + w, i] = 0x21;
 			}
 			for (int i = x + w; i >= x - 1; i--)
 			{
-				if (solid != t.Solids().Contains(m[y + h, i]))
+				if (solid != solids.Contains(m[y + h, i]))
 				{
 					flips++;
 					solid = !solid;
-					//m[i, y + h] = (byte)flips;
 				}
-				//else m[i, y + h] = 0x21;
 			}
 			for (int i = y + h; i >= y - 1; i--)
 			{
-				if (solid != t.Solids().Contains(m[i, x - 1]))
+				if (solid != solids.Contains(m[i, x - 1]))
 				{
 					flips++;
 					solid = !solid;
-					//m[x - 1, i] = (byte)flips;
 				}
-				//else m[x - 1, i] = 0x21;
 			}
 			if (flips > 2) result = false;
 			return result;
@@ -577,6 +690,7 @@ namespace FF1Lib
 			if (result)
 			{
 				m.Fill((x, y), (w, h - 1), t.roomtile);
+				m.Fill((x, y + h - 1), (w, 1), t.walltile);
 			}
 			return result;
 		}
@@ -614,6 +728,7 @@ namespace FF1Lib
 		private byte PlaceExit(MT19337 rng, Map m, Tileset t)
 		{
 			List<Candidate> candidates = new List<Candidate>();
+			Candidate c;
 			byte exittile = 0;
 			if (t.teleportdeck.Count() > 0)
 			{
@@ -624,11 +739,11 @@ namespace FF1Lib
 					{
 						if (m[j, i] == t.floortile)
 						{
-							candidates.Add(new Candidate(i, j));
+							if (Traversible(m, t, i, j, 1, 1)) candidates.Add(new Candidate(i, j));
 						}
 					}
 				}
-				Candidate c = DrawCard<Candidate>(rng, candidates);
+				c = DrawCard<Candidate>(rng, candidates);
 				m[c.y, c.x] = exittile;
 			}
 			return exittile;
