@@ -884,6 +884,32 @@ namespace FF1Lib
 			}
 			return tempNPC;
 		}
+
+		public IEnumerable<(MapId, NPC)> FindNpc(ObjectId mapObjId)
+		{
+			var tempNPC = new NPC();
+
+			//not good, but quick
+			foreach (var mid in Enum.GetValues<MapId>())
+			{
+				for (int i = 0; i < MapSpriteCount; i++)
+				{
+					int offset = MapSpriteOffset + ((byte)mid * MapSpriteCount + i) * MapSpriteSize;
+
+					if (Data[offset] == (byte)mapObjId)
+					{
+						tempNPC.Index = i;
+						tempNPC.Coord = (Data[offset + 1] & 0x3F, Data[offset + 2]);
+						tempNPC.InRoom = (Data[offset + 1] & 0x80) > 0;
+						tempNPC.Stationary = (Data[offset + 1] & 0x40) > 0;
+
+						yield return (mid, tempNPC);
+					}
+				}
+			}
+		}
+
+
 		public NPC GetNpc(MapId mapId, int position)
 		{
 			var tempNPC = new NPC();

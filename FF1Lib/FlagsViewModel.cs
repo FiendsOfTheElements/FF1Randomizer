@@ -3154,7 +3154,7 @@ namespace FF1Lib
 			}
 		}
 
-		public bool ?SeparateBossHPScaling
+		public bool? SeparateBossHPScaling
 		{
 			get => Flags.SeparateBossHPScaling;
 			set
@@ -3164,7 +3164,7 @@ namespace FF1Lib
 			}
 		}
 
-		public bool ?SeparateEnemyHPScaling
+		public bool? SeparateEnemyHPScaling
 		{
 			get => Flags.SeparateEnemyHPScaling;
 			set
@@ -3174,7 +3174,7 @@ namespace FF1Lib
 			}
 		}
 
-		public bool ?ClampBossHPScaling
+		public bool? ClampBossHPScaling
 		{
 			get => Flags.ClampBossHPScaling;
 			set
@@ -3184,7 +3184,7 @@ namespace FF1Lib
 			}
 		}
 
-		public bool ?ClampEnemyHpScaling
+		public bool? ClampEnemyHpScaling
 		{
 			get => Flags.ClampEnemyHpScaling;
 			set
@@ -3400,5 +3400,135 @@ namespace FF1Lib
 				RaisePropertyChanged();
 			}
 		}
+
+		public bool ExtensiveHints_Enable
+		{
+			get => Flags.ExtensiveHints_Enable;
+			set
+			{
+				Flags.ExtensiveHints_Enable = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public HintPlacementStrategy ExtensiveHints_LooseItemFloorPlacement
+		{
+			get => Flags.ExtensiveHints_LooseItemFloorPlacement;
+			set
+			{
+				Flags.ExtensiveHints_LooseItemFloorPlacement = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public HintPlacementStrategy ExtensiveHints_LooseItemNamePlacement
+		{
+			get => Flags.ExtensiveHints_LooseItemNamePlacement;
+			set
+			{
+				Flags.ExtensiveHints_LooseItemNamePlacement = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public HintPlacementStrategy ExtensiveHints_IncentiveItemNamePlacement
+		{
+			get => Flags.ExtensiveHints_IncentiveItemNamePlacement;
+			set
+			{
+				Flags.ExtensiveHints_IncentiveItemNamePlacement = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public HintPlacementStrategy ExtensiveHints_FloorHintPlacement
+		{
+			get => Flags.ExtensiveHints_FloorHintPlacement;
+			set
+			{
+				Flags.ExtensiveHints_FloorHintPlacement = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public HintPlacementStrategy ExtensiveHints_EquipmentFloorPlacement
+		{
+			get => Flags.ExtensiveHints_EquipmentFloorPlacement;
+			set
+			{
+				Flags.ExtensiveHints_EquipmentFloorPlacement = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public HintPlacementStrategy ExtensiveHints_EquipmentNamePlacement
+		{
+			get => Flags.ExtensiveHints_EquipmentNamePlacement;
+			set
+			{
+				Flags.ExtensiveHints_EquipmentNamePlacement = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public HintCategoryCoverage ExtensiveHints_LooseItemFloorCoverage
+		{
+			get => Flags.ExtensiveHints_LooseItemFloorCoverage;
+			set
+			{
+				Flags.ExtensiveHints_LooseItemFloorCoverage = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public HintCategoryCoverage ExtensiveHints_LooseItemNameCoverage
+		{
+			get => Flags.ExtensiveHints_LooseItemNameCoverage;
+			set
+			{
+				Flags.ExtensiveHints_LooseItemNameCoverage = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public HintCategoryCoverage ExtensiveHints_IncentiveItemNameCoverage
+		{
+			get => Flags.ExtensiveHints_IncentiveItemNameCoverage;
+			set
+			{
+				Flags.ExtensiveHints_IncentiveItemNameCoverage = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public HintCategoryCoverage ExtensiveHints_FloorHintCoverage
+		{
+			get => Flags.ExtensiveHints_FloorHintCoverage;
+			set
+			{
+				Flags.ExtensiveHints_FloorHintCoverage = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public HintCategoryCoverage ExtensiveHints_EquipmentFloorCoverage
+		{
+			get => Flags.ExtensiveHints_EquipmentFloorCoverage;
+			set
+			{
+				Flags.ExtensiveHints_EquipmentFloorCoverage = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public HintCategoryCoverage ExtensiveHints_EquipmentNameCoverage
+		{
+			get => Flags.ExtensiveHints_EquipmentNameCoverage;
+			set
+			{
+				Flags.ExtensiveHints_EquipmentNameCoverage = value;
+				RaisePropertyChanged();
+			}
+		}		
 	}
 }

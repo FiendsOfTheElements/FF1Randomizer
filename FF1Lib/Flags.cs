@@ -13,6 +13,36 @@ namespace FF1Lib
 {
 	public class Flags : IIncentiveFlags, IMapEditFlags, IScaleFlags, IFloorShuffleFlags
 	{
+		#region ExtensiveHints
+
+		public bool ExtensiveHints_Enable { get; set; } = false;
+
+		public HintCategoryCoverage ExtensiveHints_LooseItemFloorCoverage { get; set; } = HintCategoryCoverage.HintCategoryCoveragePrioritized;
+
+		public HintCategoryCoverage ExtensiveHints_LooseItemNameCoverage { get; set; } = HintCategoryCoverage.HintCategoryCoverageNone;
+
+		public HintCategoryCoverage ExtensiveHints_IncentiveItemNameCoverage { get; set; } = HintCategoryCoverage.HintCategoryCoverage80;
+
+		public HintCategoryCoverage ExtensiveHints_FloorHintCoverage { get; set; } = HintCategoryCoverage.HintCategoryCoverageFill;
+
+		public HintCategoryCoverage ExtensiveHints_EquipmentFloorCoverage { get; set; } = HintCategoryCoverage.HintCategoryCoverage80;
+
+		public HintCategoryCoverage ExtensiveHints_EquipmentNameCoverage { get; set; } = HintCategoryCoverage.HintCategoryCoverageNone;
+
+		public HintPlacementStrategy ExtensiveHints_LooseItemFloorPlacement { get; set; } = HintPlacementStrategy.InnerSeaTownsAndDwarfCave;
+
+		public HintPlacementStrategy ExtensiveHints_LooseItemNamePlacement { get; set; } = HintPlacementStrategy.ElflandToCrescent;
+
+		public HintPlacementStrategy ExtensiveHints_IncentiveItemNamePlacement { get; set; } = HintPlacementStrategy.InnerSeaTownsAndDwarfCave;
+
+		public HintPlacementStrategy ExtensiveHints_FloorHintPlacement { get; set; } = HintPlacementStrategy.Everywhere;
+
+		public HintPlacementStrategy ExtensiveHints_EquipmentFloorPlacement { get; set; } = HintPlacementStrategy.ConeriaToCrescent;
+
+		public HintPlacementStrategy ExtensiveHints_EquipmentNamePlacement { get; set; } = HintPlacementStrategy.ConeriaToCrescent;
+
+		#endregion
+		
 		public bool Spoilers { get; set; } = false;
 		public bool TournamentSafe { get; set; } = false;
 		public bool BlindSeed { get; set; } = false;

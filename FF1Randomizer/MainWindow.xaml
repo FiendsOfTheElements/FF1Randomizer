@@ -480,6 +480,189 @@
 					</StackPanel>
 				</Grid>
 			</TabItem>
+			<TabItem Header="Hints">
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="1*"/>
+						<ColumnDefinition Width="1*"/>
+						<ColumnDefinition Width="1*"/>
+						<ColumnDefinition Width="3*"/>
+					</Grid.ColumnDefinitions>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="26" />
+						<RowDefinition Height="1"/>
+						<RowDefinition Height="26"/>
+						<RowDefinition Height="26"/>
+						<RowDefinition Height="26"/>
+						<RowDefinition Height="26"/>
+						<RowDefinition Height="26"/>
+						<RowDefinition Height="26"/>
+						<RowDefinition Height="26"/>
+					</Grid.RowDefinitions>
+
+					<CheckBox IsChecked="{Binding Flags.ExtensiveHints_Enable}" Content="Enable Extensive Hints" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="6"/>
+
+					<Label MinHeight="26" Content="Hint Coverage" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center"/>
+					<Label MinHeight="26" Content="Hint Placement" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Center"/>
+
+					<Label MinHeight="26" Content="Loose Floor" Grid.Row="3" Grid.Column="0"/>
+					<Label MinHeight="26" Content="Loose Name" Grid.Row="4" Grid.Column="0"/>
+					<Label MinHeight="26" Content="Incentive Name" Grid.Row="5" Grid.Column="0"/>
+					<Label MinHeight="26" Content="Floor Hints" Grid.Row="6" Grid.Column="0"/>
+					<Label MinHeight="26" Content="Equipment Floor" Grid.Row="7" Grid.Column="0"/>
+					<Label MinHeight="26" Content="Equipment Name" Grid.Row="8" Grid.Column="0"/>
+					
+					<ComboBox SelectedValue="{Binding Flags.ExtensiveHints_LooseItemFloorCoverage}" MaxHeight="26" Grid.Row="3" Grid.Column="1" SelectedValuePath="Tag">
+						<ComboBoxItem Tag="HintCategoryCoverageNone">None - Guaranteed</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage20">20% - Best Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage40">40% - Best Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage60">60% - Best Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage80">80% - Best Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverageFill">All - Least Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverageAll">All - Best Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoveragePrioritized">All - Prioritized</ComboBoxItem>
+					</ComboBox>
+
+					<ComboBox SelectedValue="{Binding Flags.ExtensiveHints_LooseItemFloorPlacement}" MaxHeight="26" Grid.Row="3" Grid.Column="2" SelectedValuePath="Tag">
+						<ComboBoxItem Tag="InnerSea">Coneria - DwarfCave</ComboBoxItem>
+						<ComboBoxItem Tag="ConeriaToCrescent">Coneria - CrescentLake</ComboBoxItem>
+						<ComboBoxItem Tag="ElflandToCrescent">Elfland - CrescentLake</ComboBoxItem>
+						<ComboBoxItem Tag="ElflandPlus">Elfland - Gaia</ComboBoxItem>
+						<ComboBoxItem Tag="MelmondOnrac">Melmond - Onrac</ComboBoxItem>
+						<ComboBoxItem Tag="MelmondMermaids">Melmond - Mermaids</ComboBoxItem>
+						<ComboBoxItem Tag="MelmondPlus">Melmond - Gaia</ComboBoxItem>
+						<ComboBoxItem Tag="FloaterRequired">Cardia, Lefane, Gaia</ComboBoxItem>
+						<ComboBoxItem Tag="Everywhere">Everywhere</ComboBoxItem>
+						<ComboBoxItem Tag="Tiered">Depending on Dungeon</ComboBoxItem>
+						<ComboBoxItem Tag="InnerSeaTownsAndDwarfCave">Inner Sea Towns and Dwarf Cave</ComboBoxItem>
+					</ComboBox>
+
+					<ComboBox SelectedValue="{Binding Flags.ExtensiveHints_LooseItemNameCoverage}" MaxHeight="26" Grid.Row="4" Grid.Column="1" SelectedValuePath="Tag">
+						<ComboBoxItem Tag="HintCategoryCoverageNone">None - Guaranteed</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage20">20% - Best Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage40">40% - Best Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage60">60% - Best Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage80">80% - Best Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverageFill">All - Least Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverageAll">All - Best Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoveragePrioritized">All - Prioritized</ComboBoxItem>
+					</ComboBox>
+
+					<ComboBox SelectedValue="{Binding Flags.ExtensiveHints_LooseItemNamePlacement}" MaxHeight="26" Grid.Row="4" Grid.Column="2" SelectedValuePath="Tag">
+						<ComboBoxItem Tag="InnerSea">Coneria - DwarfCave</ComboBoxItem>
+						<ComboBoxItem Tag="ConeriaToCrescent">Coneria - CrescentLake</ComboBoxItem>
+						<ComboBoxItem Tag="ElflandToCrescent">Elfland - CrescentLake</ComboBoxItem>
+						<ComboBoxItem Tag="ElflandPlus">Elfland - Gaia</ComboBoxItem>
+						<ComboBoxItem Tag="MelmondOnrac">Melmond - Onrac</ComboBoxItem>
+						<ComboBoxItem Tag="MelmondMermaids">Melmond - Mermaids</ComboBoxItem>
+						<ComboBoxItem Tag="MelmondPlus">Melmond - Gaia</ComboBoxItem>
+						<ComboBoxItem Tag="FloaterRequired">Cardia, Lefane, Gaia</ComboBoxItem>
+						<ComboBoxItem Tag="Everywhere">Everywhere</ComboBoxItem>
+						<ComboBoxItem Tag="Tiered">Depending on Dungeon</ComboBoxItem>
+						<ComboBoxItem Tag="InnerSeaTownsAndDwarfCave">Inner Sea Towns and Dwarf Cave</ComboBoxItem>
+					</ComboBox>
+
+					<ComboBox SelectedValue="{Binding Flags.ExtensiveHints_IncentiveItemNameCoverage}" MaxHeight="26" Grid.Row="5" Grid.Column="1" SelectedValuePath="Tag">
+						<ComboBoxItem Tag="HintCategoryCoverageNone">None - Guaranteed</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage20">20% - Best Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage40">40% - Best Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage60">60% - Best Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage80">80% - Best Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverageFill">All - Least Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverageAll">All - Best Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoveragePrioritized">All - Prioritized</ComboBoxItem>
+					</ComboBox>
+
+					<ComboBox SelectedValue="{Binding Flags.ExtensiveHints_IncentiveItemNamePlacement}" MaxHeight="26" Grid.Row="5" Grid.Column="2" SelectedValuePath="Tag">
+						<ComboBoxItem Tag="InnerSea">Coneria - DwarfCave</ComboBoxItem>
+						<ComboBoxItem Tag="ConeriaToCrescent">Coneria - CrescentLake</ComboBoxItem>
+						<ComboBoxItem Tag="ElflandToCrescent">Elfland - CrescentLake</ComboBoxItem>
+						<ComboBoxItem Tag="ElflandPlus">Elfland - Gaia</ComboBoxItem>
+						<ComboBoxItem Tag="MelmondOnrac">Melmond - Onrac</ComboBoxItem>
+						<ComboBoxItem Tag="MelmondMermaids">Melmond - Mermaids</ComboBoxItem>
+						<ComboBoxItem Tag="MelmondPlus">Melmond - Gaia</ComboBoxItem>
+						<ComboBoxItem Tag="FloaterRequired">Cardia, Lefane, Gaia</ComboBoxItem>
+						<ComboBoxItem Tag="Everywhere">Everywhere</ComboBoxItem>
+						<ComboBoxItem Tag="Tiered">Depending on Dungeon</ComboBoxItem>
+						<ComboBoxItem Tag="InnerSeaTownsAndDwarfCave">Inner Sea Towns and Dwarf Cave</ComboBoxItem>
+					</ComboBox>
+
+					<ComboBox SelectedValue="{Binding Flags.ExtensiveHints_FloorHintCoverage}" MaxHeight="26" Grid.Row="6" Grid.Column="1" SelectedValuePath="Tag">
+						<ComboBoxItem Tag="HintCategoryCoverageNone">None - Guaranteed</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage20">20% - Best Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage40">40% - Best Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage60">60% - Best Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage80">80% - Best Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverageFill">All - Least Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverageAll">All - Best Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoveragePrioritized">All - Prioritized</ComboBoxItem>
+					</ComboBox>
+
+					<ComboBox SelectedValue="{Binding Flags.ExtensiveHints_FloorHintPlacement}" MaxHeight="26" Grid.Row="6" Grid.Column="2" SelectedValuePath="Tag">
+						<ComboBoxItem Tag="InnerSea">Coneria - DwarfCave</ComboBoxItem>
+						<ComboBoxItem Tag="ConeriaToCrescent">Coneria - CrescentLake</ComboBoxItem>
+						<ComboBoxItem Tag="ElflandToCrescent">Elfland - CrescentLake</ComboBoxItem>
+						<ComboBoxItem Tag="ElflandPlus">Elfland - Gaia</ComboBoxItem>
+						<ComboBoxItem Tag="MelmondOnrac">Melmond - Onrac</ComboBoxItem>
+						<ComboBoxItem Tag="MelmondMermaids">Melmond - Mermaids</ComboBoxItem>
+						<ComboBoxItem Tag="MelmondPlus">Melmond - Gaia</ComboBoxItem>
+						<ComboBoxItem Tag="FloaterRequired">Cardia, Lefane, Gaia</ComboBoxItem>
+						<ComboBoxItem Tag="Everywhere">Everywhere</ComboBoxItem>
+						<ComboBoxItem Tag="Tiered">Depending on Dungeon</ComboBoxItem>
+						<ComboBoxItem Tag="InnerSeaTownsAndDwarfCave">Inner Sea Towns and Dwarf Cave</ComboBoxItem>
+					</ComboBox>
+
+					<ComboBox SelectedValue="{Binding Flags.ExtensiveHints_EquipmentFloorCoverage}" MaxHeight="26" Grid.Row="7" Grid.Column="1" SelectedValuePath="Tag">
+						<ComboBoxItem Tag="HintCategoryCoverageNone">None - Guaranteed</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage20">20% - Best Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage40">40% - Best Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage60">60% - Best Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage80">80% - Best Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverageFill">All - Least Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverageAll">All - Best Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoveragePrioritized">All - Prioritized</ComboBoxItem>
+					</ComboBox>
+
+					<ComboBox SelectedValue="{Binding Flags.ExtensiveHints_EquipmentFloorPlacement}" MaxHeight="26" Grid.Row="7" Grid.Column="2" SelectedValuePath="Tag">
+						<ComboBoxItem Tag="InnerSea">Coneria - DwarfCave</ComboBoxItem>
+						<ComboBoxItem Tag="ConeriaToCrescent">Coneria - CrescentLake</ComboBoxItem>
+						<ComboBoxItem Tag="ElflandToCrescent">Elfland - CrescentLake</ComboBoxItem>
+						<ComboBoxItem Tag="ElflandPlus">Elfland - Gaia</ComboBoxItem>
+						<ComboBoxItem Tag="MelmondOnrac">Melmond - Onrac</ComboBoxItem>
+						<ComboBoxItem Tag="MelmondMermaids">Melmond - Mermaids</ComboBoxItem>
+						<ComboBoxItem Tag="MelmondPlus">Melmond - Gaia</ComboBoxItem>
+						<ComboBoxItem Tag="FloaterRequired">Cardia, Lefane, Gaia</ComboBoxItem>
+						<ComboBoxItem Tag="Everywhere">Everywhere</ComboBoxItem>
+						<ComboBoxItem Tag="Tiered">Depending on Dungeon</ComboBoxItem>
+						<ComboBoxItem Tag="InnerSeaTownsAndDwarfCave">Inner Sea Towns and Dwarf Cave</ComboBoxItem>
+					</ComboBox>
+
+					<ComboBox SelectedValue="{Binding Flags.ExtensiveHints_EquipmentNameCoverage}" MaxHeight="26" Grid.Row="8" Grid.Column="1" SelectedValuePath="Tag">
+						<ComboBoxItem Tag="HintCategoryCoverageNone">None - Guaranteed</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage20">20% - Best Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage40">40% - Best Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage60">60% - Best Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage80">80% - Best Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverageFill">All - Least Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverageAll">All - Best Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoveragePrioritized">All - Prioritized</ComboBoxItem>
+					</ComboBox>
+
+					<ComboBox SelectedValue="{Binding Flags.ExtensiveHints_EquipmentNamePlacement}" MaxHeight="26" Grid.Row="8" Grid.Column="2" SelectedValuePath="Tag">
+						<ComboBoxItem Tag="InnerSea">Coneria - DwarfCave</ComboBoxItem>
+						<ComboBoxItem Tag="ConeriaToCrescent">Coneria - CrescentLake</ComboBoxItem>
+						<ComboBoxItem Tag="ElflandToCrescent">Elfland - CrescentLake</ComboBoxItem>
+						<ComboBoxItem Tag="ElflandPlus">Elfland - Gaia</ComboBoxItem>
+						<ComboBoxItem Tag="MelmondOnrac">Melmond - Onrac</ComboBoxItem>
+						<ComboBoxItem Tag="MelmondMermaids">Melmond - Mermaids</ComboBoxItem>
+						<ComboBoxItem Tag="MelmondPlus">Melmond - Gaia</ComboBoxItem>
+						<ComboBoxItem Tag="FloaterRequired">Cardia, Lefane, Gaia</ComboBoxItem>
+						<ComboBoxItem Tag="Everywhere">Everywhere</ComboBoxItem>
+						<ComboBoxItem Tag="Tiered">Depending on Dungeon</ComboBoxItem>
+						<ComboBoxItem Tag="InnerSeaTownsAndDwarfCave">Inner Sea Towns and Dwarf Cave</ComboBoxItem>
+					</ComboBox>
+				</Grid>
+			</TabItem>
 		</TabControl>
 	</Grid>
 </Window>
