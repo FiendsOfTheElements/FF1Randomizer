@@ -16,6 +16,45 @@
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="moveGaiaItemShopCheckBox" IsEnabled="@(Flags.GaiaShortcut == true)" @bind-Value="Flags.MoveGaiaItemShop">Move Gaia Item Shop</TriStateCheckBox>
 			<div class="checkbox-cell"></div>
 		</div>
+		<div class="clear-it"></div>
+		<div class="col-12">
+			<table>
+				<tr><td colspan="2" style="text-align:left"><p>Shop Reduction</p></td></tr>
+				<tr>
+					<td style="text-align:left">Weapon Shops:</td>
+					<td style="min-width:220px"><EnumDropDown UpdateToolTip="@UpdateToolTipID" TItem="ShopKillMode" @bind-Value="Flags.ShopKillMode_Weapons"></EnumDropDown></td>
+					<td style="min-width:150px"><EnumDropDown UpdateToolTip="@UpdateToolTipID" TItem="ShopKillFactor" @bind-Value="Flags.ShopKillFactor_Weapons"></EnumDropDown></td>
+					<td style="min-width:140px;text-align:left"><CheckBox UpdateToolTip="@UpdateToolTipID" @bind-Value="Flags.ShopKillExcludeConeria_Weapons">Exclude Coneria</CheckBox></td>
+				</tr>
+				<tr>
+					<td style="text-align:left">Armor Shops:</td>
+					<td><EnumDropDown UpdateToolTip="@UpdateToolTipID" TItem="ShopKillMode" @bind-Value="Flags.ShopKillMode_Armor"></EnumDropDown></td>
+					<td><EnumDropDown UpdateToolTip="@UpdateToolTipID" TItem="ShopKillFactor" @bind-Value="Flags.ShopKillFactor_Armor"></EnumDropDown></td>
+					<td style="text-align:left"><CheckBox UpdateToolTip="@UpdateToolTipID" @bind-Value="Flags.ShopKillExcludeConeria_Armor">Exclude Coneria</CheckBox></td>
+				</tr>
+				<tr>
+					<td style="text-align:left">Item Shops:</td>
+					<td><EnumDropDown UpdateToolTip="@UpdateToolTipID" TItem="ShopKillMode" @bind-Value="Flags.ShopKillMode_Item"></EnumDropDown></td>
+					<td><EnumDropDown UpdateToolTip="@UpdateToolTipID" TItem="ShopKillFactor" @bind-Value="Flags.ShopKillFactor_Item"></EnumDropDown></td>
+					<td style="text-align:left"><CheckBox UpdateToolTip="@UpdateToolTipID" @bind-Value="Flags.ShopKillExcludeConeria_Item">Exclude Coneria</CheckBox></td>
+				</tr>
+				<tr>
+					<td style="text-align:left">Black Magic:</td>
+					<td><EnumDropDown UpdateToolTip="@UpdateToolTipID" TItem="ShopKillMode" @bind-Value="Flags.ShopKillMode_Black"></EnumDropDown></td>
+					<td><EnumDropDown UpdateToolTip="@UpdateToolTipID" TItem="ShopKillFactor" @bind-Value="Flags.ShopKillFactor_Black"></EnumDropDown></td>
+					<td style="text-align:left"><CheckBox UpdateToolTip="@UpdateToolTipID" @bind-Value="Flags.ShopKillExcludeConeria_Black">Exclude Coneria</CheckBox></td>
+				</tr>
+				<tr>
+					<td style="text-align:left">White Magic:</td>
+					<td><EnumDropDown UpdateToolTip="@UpdateToolTipID" TItem="ShopKillMode" @bind-Value="Flags.ShopKillMode_White"></EnumDropDown></td>
+					<td><EnumDropDown UpdateToolTip="@UpdateToolTipID" TItem="ShopKillFactor" @bind-Value="Flags.ShopKillFactor_White"></EnumDropDown></td>
+					<td style="text-align:left"><CheckBox UpdateToolTip="@UpdateToolTipID" @bind-Value="Flags.ShopKillExcludeConeria_White">Exclude Coneria</CheckBox></td>
+				</tr>
+			</table>
+			<div class="clear-it"></div>
+		</div>
+	}
+</div>
 		<div class="col1 full">
 			<div class="clear-it"></div><CheckBox @bind-Value="Flags.ExtensiveHints_Enable">Enable Hints</CheckBox>
 			<div>
@@ -41,7 +80,6 @@
 						<td><EnumDropDown TItem="HintCategoryCoverage" @bind-Value="Flags.ExtensiveHints_IncentiveItemNameCoverage" /></td>
 						<td><EnumDropDown TItem="HintPlacementStrategy" @bind-Value="Flags.ExtensiveHints_IncentiveItemNamePlacement" /></td>
 					</tr>
-
 					<tr>
 						<td style="text-align:left">Floor Hints</td>
 						<td><EnumDropDown TItem="HintCategoryCoverage" @bind-Value="Flags.ExtensiveHints_FloorHintCoverage" /></td>

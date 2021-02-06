@@ -7,8 +7,12 @@ namespace FF1Lib
 {
 	public class IncentiveData
 	{
+		public OverworldMap OverworldMap { get; private set; }
+
 		public IncentiveData(MT19337 rng, IIncentiveFlags flags, OverworldMap map, ItemShopSlot shopSlot)
 		{
+			OverworldMap = map;
+
 			Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullLocationRequirements = map.FullLocationRequirements;
 			var forcedItemPlacements = ItemLocations.AllOtherItemLocations.ToList();
 			if (!(flags.NPCItems ?? false))

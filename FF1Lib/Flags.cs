@@ -13,6 +13,28 @@ namespace FF1Lib
 {
 	public class Flags : IIncentiveFlags, IMapEditFlags, IScaleFlags, IFloorShuffleFlags
 	{
+		#region ShopKiller
+
+		public ShopKillMode ShopKillMode_Weapons { get; set; } = ShopKillMode.None;
+		public ShopKillMode ShopKillMode_Armor { get; set; } = ShopKillMode.None;
+		public ShopKillMode ShopKillMode_Item { get; set; } = ShopKillMode.None;
+		public ShopKillMode ShopKillMode_Black { get; set; } = ShopKillMode.None;
+		public ShopKillMode ShopKillMode_White { get; set; } = ShopKillMode.None;
+
+		public ShopKillFactor ShopKillFactor_Weapons { get; set; } = ShopKillFactor.Kill20Percent;
+		public ShopKillFactor ShopKillFactor_Armor { get; set; } = ShopKillFactor.Kill20Percent;
+		public ShopKillFactor ShopKillFactor_Item { get; set; } = ShopKillFactor.Kill20Percent;
+		public ShopKillFactor ShopKillFactor_Black { get; set; } = ShopKillFactor.Kill20Percent;
+		public ShopKillFactor ShopKillFactor_White { get; set; } = ShopKillFactor.Kill20Percent;
+
+		public bool ShopKillExcludeConeria_Weapons { get; set; } = false;
+		public bool ShopKillExcludeConeria_Armor { get; set; } = false;
+		public bool ShopKillExcludeConeria_Item { get; set; } = false;
+		public bool ShopKillExcludeConeria_Black { get; set; } = false;
+		public bool ShopKillExcludeConeria_White { get; set; } = false;
+    
+    #endregion
+
 		#region ExtensiveHints
 
 		public bool ExtensiveHints_Enable { get; set; } = false;
@@ -41,7 +63,7 @@ namespace FF1Lib
 
 		public HintPlacementStrategy ExtensiveHints_EquipmentNamePlacement { get; set; } = HintPlacementStrategy.ConeriaToCrescent;
 
-		#endregion
+    #endregion
 		
 		public bool Spoilers { get; set; } = false;
 		public bool TournamentSafe { get; set; } = false;

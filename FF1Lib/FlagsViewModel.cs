@@ -3401,6 +3401,156 @@ namespace FF1Lib
 			}
 		}
 
+		public ShopKillMode ShopKillMode_Weapons
+		{
+			get => Flags.ShopKillMode_Weapons;
+			set
+			{
+				Flags.ShopKillMode_Weapons = value;
+        RaisePropertyChanged();
+			}
+		}
+
+		public ShopKillMode ShopKillMode_Armor
+		{
+			get => Flags.ShopKillMode_Armor;
+			set
+			{
+				Flags.ShopKillMode_Armor = value;
+        RaisePropertyChanged();
+			}
+		}
+    
+    public ShopKillMode ShopKillMode_Item
+		{
+			get => Flags.ShopKillMode_Item;
+			set
+			{
+				Flags.ShopKillMode_Item = value;
+        RaisePropertyChanged();
+			}
+		}
+
+		public ShopKillMode ShopKillMode_Black
+		{
+			get => Flags.ShopKillMode_Black;
+			set
+			{
+				Flags.ShopKillMode_Black = value;
+        RaisePropertyChanged();
+			}
+		}      
+
+		public ShopKillMode ShopKillMode_White
+		{
+			get => Flags.ShopKillMode_White;
+			set
+			{
+				Flags.ShopKillMode_White = value;
+        RaisePropertyChanged();
+			}
+		}   
+
+		public ShopKillFactor ShopKillFactor_Weapons
+		{
+			get => Flags.ShopKillFactor_Weapons;
+			set
+			{
+				Flags.ShopKillFactor_Weapons = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public ShopKillFactor ShopKillFactor_Armor
+		{
+			get => Flags.ShopKillFactor_Armor;
+			set
+			{
+				Flags.ShopKillFactor_Armor = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public ShopKillFactor ShopKillFactor_Item
+		{
+			get => Flags.ShopKillFactor_Item;
+			set
+			{
+				Flags.ShopKillFactor_Item = value;
+				RaisePropertyChanged();
+			}
+		}
+
+    public ShopKillFactor ShopKillFactor_Black
+		{
+			get => Flags.ShopKillFactor_Black;
+			set
+			{
+				Flags.ShopKillFactor_Black = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public ShopKillFactor ShopKillFactor_White
+		{
+			get => Flags.ShopKillFactor_White;
+			set
+			{
+				Flags.ShopKillFactor_White = value;
+				RaisePropertyChanged();
+			}
+		}
+    
+		public bool ShopKillExcludeConeria_Weapons
+		{
+			get => Flags.ShopKillExcludeConeria_Weapons;
+			set
+			{
+				Flags.ShopKillExcludeConeria_Weapons = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool ShopKillExcludeConeria_Armor
+		{
+			get => Flags.ShopKillExcludeConeria_Armor;
+			set
+			{
+				Flags.ShopKillExcludeConeria_Armor = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool ShopKillExcludeConeria_Item
+		{
+			get => Flags.ShopKillExcludeConeria_Item;
+			set
+			{
+				Flags.ShopKillExcludeConeria_Item = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool ShopKillExcludeConeria_Black
+		{
+			get => Flags.ShopKillExcludeConeria_Black;
+			set
+			{
+				Flags.ShopKillExcludeConeria_Black = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool ShopKillExcludeConeria_White
+		{
+			get => Flags.ShopKillExcludeConeria_White;
+			set
+			{
+				Flags.ShopKillExcludeConeria_White = value;
+				RaisePropertyChanged();
+			}
+		}	
+    
 		public bool ExtensiveHints_Enable
 		{
 			get => Flags.ExtensiveHints_Enable;
@@ -3431,7 +3581,7 @@ namespace FF1Lib
 			}
 		}
 
-		public HintPlacementStrategy ExtensiveHints_IncentiveItemNamePlacement
+    public HintPlacementStrategy ExtensiveHints_IncentiveItemNamePlacement
 		{
 			get => Flags.ExtensiveHints_IncentiveItemNamePlacement;
 			set

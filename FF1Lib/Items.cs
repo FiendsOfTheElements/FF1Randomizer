@@ -193,6 +193,7 @@ namespace FF1Lib
 		Canal = 236,
 		Canoe = 242
 	}
+
 	public static class UnsramIndex
 	{
 		public const byte ShipVis = 0;
