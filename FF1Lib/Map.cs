@@ -308,6 +308,22 @@ namespace FF1Lib
 			return GetRandomElement(rng, tempTarget);
 		}
 
+		public bool FindFirst(byte tile, out int x, out int y)
+		{
+			for (y = 0; y < RowCount; y++)
+			{
+				for (x = 0; x < RowLength; x++)
+				{
+					if (_map[y, x] == tile) return true;
+				}
+			}
+
+			x = 0;
+			y = 0;
+
+			return false;
+		}
+
 		/// <summary>
 		/// Enumerates the MapElements in this Map. Writing to a MapElement's Value will set the value in this Map.
 		/// </summary>

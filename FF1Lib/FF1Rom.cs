@@ -223,6 +223,15 @@ namespace FF1Lib
 				EnableLefeinShops(maps);
 			}
 
+			if ((bool)flags.GaiaShortcut)
+			{
+				EnableGaiaShortcut(maps);
+				if ((bool)flags.MoveGaiaItemShop)
+				{
+					MoveGaiaItemShop(maps, rng);
+				}
+			}
+
 			// This has to be done before we shuffle spell levels.
 			if (flags.SpellBugs)
 			{
@@ -367,8 +376,12 @@ namespace FF1Lib
 			{
 				ShuffleMagicLevels(rng, ((bool)flags.MagicPermissions), (bool)flags.MagicLevelsTiered, (bool)flags.MagicLevelsMixed, (bool)!flags.GenerateNewSpellbook);
 			}
+
+			new LegendaryShops(rng, flags, maps, this).PlaceShops();
 			
 			new StartingInventory(rng, flags, this).SetStartingInventory();
+
+			new ShopKiller(rng, flags, maps, this).KillShops();
 
 			/*
 			if (flags.WeaponPermissions)
@@ -718,7 +731,11 @@ namespace FF1Lib
 				itemText[(int)Item.House] = "XETH@p";
 			}
 
-			if ((bool)flags.HintsVillage || (bool)flags.HintsDungeon)
+			if (flags.ExtensiveHints_Enable)
+			{
+				new ExtensiveHints(rng, npcdata, flags, overworldMap, this).Generate();
+			}
+			else if ((bool)flags.HintsVillage || (bool)flags.HintsDungeon)
 			{
 				if ((bool)flags.HintsDungeon)
 					SetDungeonNPC(flippedMaps, rng);
@@ -775,6 +792,11 @@ namespace FF1Lib
 			if ((bool)flags.MapCanalBridge)
 			{
 				EnableCanalBridge();
+			}
+
+			if (flags.NonesGainXP)
+			{
+				NonesGainXP();
 			}
 
 			if (flags.NoDanMode)

@@ -7,73 +7,75 @@ using System.Threading.Tasks;
 
 namespace FF1Lib
 {
-	public class MemTable<T> where T : unmanaged
+	public class MemTable
 	{
 		private FF1Rom rom;
 		private int address;
 		private int count;
+		private int size;
 
-		public T[] Data { get; private set; }
+		public List<Blob> Table { get; private set; }
 
-		public MemTable(FF1Rom _rom, int _address, int _count)
+		public MemTable(FF1Rom _rom, int _address, int _count, int _size)
 		{
 			rom = _rom;
 			address = _address;
 			count = _count;
+			size = _size;
 
 			LoadTable();
 		}
 
-		public unsafe void LoadTable()
+		public void LoadTable()
 		{
-			Data = new T[count];
-
-			byte[] buffer = rom.Get(address, count * sizeof(T));
-
-			fixed (byte* p = buffer)
-			{
-				T* pBuffer = (T*)p;
-
-				for (int i = 0; i < count; i++)
-				{
-					Data[i] = pBuffer[i];
-				}
-			}
+			Table = rom.Get(address, count).Chunk(size);
 		}
 
-		public unsafe void StoreTable()
+		public void StoreTable()
 		{
-			byte[] buffer = new byte[count * sizeof(T)];
-
-			fixed (byte* p = buffer)
-			{
-				T* pBuffer = (T*)p;
-
-				for (int i = 0; i < count; i++)
-				{
-					pBuffer[i] = Data[i];
-				}
-			}
-
-			rom.Put(address, buffer);
-		}
-	}
-
-	public class MemTable<T, I> : MemTable<T> where T : unmanaged where I : Enum
-	{
-		public MemTable(FF1Rom _rom, int _address, int _count) : base (_rom, _address, _count)
-		{
+			rom.Put(address, Blob.Concat(Table));
 		}
 
-		public T this[I idx]
+		public T this[int idx]
 		{
 			get
 			{
-				return Data[Convert.ToInt32(idx)];
+				return Data[idx];
 			}
 			set
 			{
-				Data[Convert.ToInt32(idx)] = value;
+				Data[idx] = value;
+			}
+		}
+
+		public T this[int idx]
+		{
+			get
+			{
+				return Data[idx];
+			}
+			set
+			{
+				Data[idx] = value;
+			}
+		}
+	}
+
+	public class MemTable<T> : MemTable where T : Enum
+	{
+		public MemTable(FF1Rom _rom, int _address, int _count, int _size) : base (_rom, _address, _count, _size)
+		{
+		}
+
+		public Blob this[T idx]
+		{
+			get
+			{
+				return Table[Convert.ToInt32(idx)];
+			}
+			set
+			{
+				Table[Convert.ToInt32(idx)] = value;
 			}
 		}
 	}

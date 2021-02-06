@@ -756,6 +756,21 @@ namespace FF1Lib
 
 		}
 
+		public void NonesGainXP()
+		{
+			// New routine to see if character can get XP LvlUp_AwardExp
+			PutInBank(0x1B, 0x8710, Blob.FromHex("A000B186C9FFF010A001B1862903F006C903F00218603860AD78688588AD7968858920608820A08A1860"));
+
+			// Have LvlUp_AwardExp reroute to new routine
+			PutInBank(0x1B, 0x8826, Blob.FromHex("201087B00860"));
+
+			// New routine to count nones for DivideRewardBySurvivors
+			PutInBank(0x1B, 0x8D20, Blob.FromHex("A000AD0168C9FFD001C8AD1368C9FFD001C8AD2568C9FFD001C8AD3768C9FFD001C8A20460"));
+
+			// Have DivideRewardBySurvivors reroute to new routine to count nones
+			PutInBank(0x1B, 0x8B43, Blob.FromHex("20208DEA"));
+		}
+
 		public void ShuffleWeaponPermissions(MT19337 rng)
 		{
 			const int WeaponPermissionsOffset = 0x3BF50;
