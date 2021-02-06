@@ -17,6 +17,8 @@
  			<div class="checkbox-cell"></div>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="nonesGainXPcheckBox" @bind-Value="Flags.NonesGainXP">Nones Gain XP</CheckBox>
 			<div class="checkbox-cell"></div>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="etherizerCheckBox" IsEnabled="@(Flags.HouseMPRestoration != true && Flags.HousesFillHP != true)" @bind-Value="Flags.Etherizer">Turn shelters into ethers</CheckBox>
+      <div class="checkbox-cell"></div>
       <p>Legendary Shops</p>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="legendaryWeaponShopCheckBox" @bind-Value="Flags.LegendaryWeaponShop">L. Weapon Shop</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="legendaryArmorShopCheckBox" @bind-Value="Flags.LegendaryArmorShop">L. Armor Shop</TriStateCheckBox>

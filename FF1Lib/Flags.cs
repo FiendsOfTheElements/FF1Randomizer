@@ -209,7 +209,7 @@ namespace FF1Lib
 		public bool IdentifyTreasures { get; set; } = false;
 		public bool ShopInfo { get; set; } = false;
 		public bool WaitWhenUnrunnable { get; set; } = false;
-
+    public bool Etherizer { get; set; } = false;
 		public bool HouseMPRestoration { get; set; } = false;
 		public bool WeaponStats { get; set; } = false;
 		public bool BBCritRate { get; set; } = false;
@@ -873,4 +873,3 @@ namespace FF1Lib
 		public static Flags FromJson(string json) => JsonConvert.DeserializeObject<Preset>(json).Flags;
 	}
 }
-

@@ -3740,7 +3740,16 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NonesGainXP"));
 			}
 		}
+    
+    public bool Etherizer
+		{
+			get => Flags.Etherizer;
+			set
+			{
+				Flags.Etherizer = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Etherizer"));
+			}
+		}
 	}
 }
-
 
