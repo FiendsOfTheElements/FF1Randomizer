@@ -38,7 +38,7 @@ namespace FF1Lib
 			{
 				bool wow = location.FirstOrDefault(p => WowItems.Contains(p.Item)) != null;
 				bool meh = location.FirstOrDefault(p => MehItems.Contains(p.Item)) != null;
-				bool sparkle = location.Where(p => SparkleItems.Contains(p.Item)).Sum(p => Prices[p.Item].ToLongs()[0]) < 10000;
+				bool sparkle = location.Where(p => SparkleItems.Contains(p.Item)).Sum(p => Prices[p.Item]) < 10000;
 
 				if (wow && sparkle)
 				{
