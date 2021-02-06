@@ -3730,6 +3730,17 @@ namespace FF1Lib
 				RaisePropertyChanged();
 			}
 		}
+    
+   	public bool NonesGainXP
+		{
+			get => Flags.NonesGainXP;
+			set
+			{
+				Flags.NonesGainXP = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NonesGainXP"));
+			}
+		}
 	}
 }
+
 

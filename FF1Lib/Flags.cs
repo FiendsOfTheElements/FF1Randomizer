@@ -235,6 +235,7 @@ namespace FF1Lib
 		public bool WrapPriceOverflow { get; set; } = false;
 		public bool IncludeMorale { get; set; } = false;
 		public bool NoDanMode { get; set; } = false;
+    public bool NonesGainXP { get; set; } = false;
 		public bool? NoTail { get; set; } = false;
 		public bool? GuaranteedMasamune { get; set; } = false;
 		public bool? SendMasamuneHome { get; set; } = false;
@@ -872,3 +873,4 @@ namespace FF1Lib
 		public static Flags FromJson(string json) => JsonConvert.DeserializeObject<Preset>(json).Flags;
 	}
 }
+

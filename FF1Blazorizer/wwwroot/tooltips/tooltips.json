@@ -862,6 +862,11 @@
 		"description": "When enabled, all experience received by enemies is always distributed as if there were 4 Light Warriors, rahter than dividing the total EXP between those Light Warriors alive at the end of battle."
 	},
 	{
+		"Id": "nonesGainXPcheckBox",
+		"title": "Nones Gain XP",
+		"description": "When enabled, None characters will count as live characters for XP calculation and gain their share of XP."
+	},
+	{
 		"Id": "startingGoldCheckBox",
 		"title": "Scale Starting Gold",
 		"screenshot": "startingGoldCheckBox.png",
