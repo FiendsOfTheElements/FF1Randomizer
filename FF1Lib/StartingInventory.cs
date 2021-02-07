@@ -37,7 +37,7 @@ namespace FF1Lib
 		[Description("Duckling Boon")]
 		DucklingBoon,
 
-		[Description("R. Beggar\'s Choice")]
+		[Description("R. Beggars Choice")]
 		RandomizedBeggarsChoice,
 
 		[Description("R. Explorer Starting Pack")]
