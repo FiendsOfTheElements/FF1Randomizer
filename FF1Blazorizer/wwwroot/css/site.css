@@ -103,6 +103,11 @@ input {
 }
 */
 
+.tighter {
+    padding-right: 5px;
+    padding-left: 5px;
+}
+
 .col-slider {
     max-width: 200px;
     min-width: 200px;
