@@ -14,6 +14,8 @@ namespace FF1Lib
 		private const byte CityWall = 0x7C;
 		private List<byte> domainlist = new List<byte>();
 		private byte[] tilesetmappings = new byte[61];
+		List<byte> fullteleportdeck = new List<byte>();
+		List<byte> tilesetspinner = new List<byte>();
 
 		private struct TileGraphic
 		{
@@ -58,7 +60,10 @@ namespace FF1Lib
 
 			public byte[] Solids()
 			{
-				byte[] result = { walltile, leftwalltile, rightwalltile, wallupperleft, wallupperright, abysstile };
+				byte[] result = {
+					walltile, leftwalltile, rightwalltile, wallupperleft, wallupperright, abysstile,
+					roomright, roomleft, roomupper, roomupperright, roomupperleft, roomlowerright, roomlowerleft
+				};
 				return result;
 			}
 		}
@@ -77,7 +82,27 @@ namespace FF1Lib
 				dirs = new List<byte>();
 			}
 		}
+		private struct FormationLevel
+		{
+			public byte index;
+			public int level;
+			public Encounters.FormationData formation;
 
+		}
+		private int MonsterLevel(EnemyInfo monster)
+		{
+			int result = 0;
+			if (monster.exp == 1 && monster.gp == 1)
+			{
+				result = (int)Math.Pow(32000, 2) * 2;
+			}
+			else
+			{
+				result += (int)Math.Pow(monster.exp, 2);
+				result += (int)Math.Pow(monster.gp, 2);
+			}
+			return result;
+		}
 		public void InitializeTilesets()
 		{
 			// Castle
@@ -172,6 +197,9 @@ namespace FF1Lib
 			tilesets[2].teleportdeck.Add(0x2A);
 			tilesets[2].teleportdeck.Add(0x2B);
 			tilesets[2].teleportdeck.Add(0x2C);
+			tilesets[2].teleportdeck.Add(0x09 + 0x80);
+			tilesets[2].teleportdeck.Add(0x0F + 0x80);
+			tilesets[2].teleportdeck.Add(0x1F + 0x80);
 
 			// Ice Cave
 			tilesets[3].abysstile = 0x3C;
@@ -213,6 +241,8 @@ namespace FF1Lib
 			tilesets[3].teleportdeck.Add(0x2A);
 			tilesets[3].teleportdeck.Add(0x2B);
 			tilesets[3].teleportdeck.Add(0x2C);
+			tilesets[3].teleportdeck.Add(0x2D + 0x80);
+			tilesets[3].teleportdeck.Add(0x2E + 0x80);
 
 			// Marsh/Tower
 			tilesets[4].abysstile = 0x3F;
@@ -251,6 +281,7 @@ namespace FF1Lib
 			tilesets[4].teleportdeck.Add(0x22);
 			tilesets[4].teleportdeck.Add(0x27);
 			tilesets[4].teleportdeck.Add(0x28);
+			tilesets[4].teleportdeck.Add(0x09 + 0x80);
 
 			// Shrine/Temple
 			tilesets[5].abysstile = 0x39;
@@ -293,6 +324,8 @@ namespace FF1Lib
 			tilesets[5].teleportdeck.Add(0x4C);
 			tilesets[5].teleportdeck.Add(0x4E);
 			tilesets[5].teleportdeck.Add(0x4F);
+			tilesets[5].teleportdeck.Add(0x0F + 0x80);
+			tilesets[5].teleportdeck.Add(0x40 + 0x80);
 
 			// Sky
 			tilesets[6].abysstile = 0x39;
@@ -331,6 +364,7 @@ namespace FF1Lib
 			tilesets[6].teleportdeck.Add(0x42);
 			tilesets[6].teleportdeck.Add(0x43);
 			tilesets[6].teleportdeck.Add(0x44);
+			tilesets[6].teleportdeck.Add(0x40 + 0x80);
 
 			// Final dungeon
 			tilesets[7].abysstile = 0x3F;
@@ -375,6 +409,8 @@ namespace FF1Lib
 			tilesets[7].teleportdeck.Add(0x51);
 			tilesets[7].teleportdeck.Add(0x52);
 			tilesets[7].teleportdeck.Add(0x53);
+			tilesets[7].teleportdeck.Add(0x09 + 0x80);
+			tilesets[7].teleportdeck.Add(0x40 + 0x80);
 
 			// Read which maps have which tilesets
 			tilesetmappings = Get(0x2CC0, 61).ToBytes();
@@ -389,23 +425,82 @@ namespace FF1Lib
 				Put(0x1000 + i * 0x200 + tilesets[i].warptile + 0x180, Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].warpgraphic.botright })));
 				for (int j = 0; j < tilesets[i].teleportdeck.Count(); j++)
 				{
-					Put(0x1000 + i * 0x200 + 0x000 + tilesets[i].teleportdeck[j], Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].teleportgraphic.topleft })));
-					Put(0x1000 + i * 0x200 + 0x080 + tilesets[i].teleportdeck[j], Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].teleportgraphic.topright })));
-					Put(0x1000 + i * 0x200 + 0x100 + tilesets[i].teleportdeck[j], Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].teleportgraphic.botleft })));
-					Put(0x1000 + i * 0x200 + 0x180 + tilesets[i].teleportdeck[j], Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].teleportgraphic.botright })));
+					if (tilesets[i].teleportdeck[j] >= 0x80)
+					{
+						Put(0x1000 + i * 0x200 + 0x000 + (tilesets[i].teleportdeck[j] % 0x80), Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].laddergraphic.topleft })));
+						Put(0x1000 + i * 0x200 + 0x080 + (tilesets[i].teleportdeck[j] % 0x80), Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].laddergraphic.topright })));
+						Put(0x1000 + i * 0x200 + 0x100 + (tilesets[i].teleportdeck[j] % 0x80), Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].laddergraphic.botleft })));
+						Put(0x1000 + i * 0x200 + 0x180 + (tilesets[i].teleportdeck[j] % 0x80), Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].laddergraphic.botright })));
+					}
+					else
+					{
+						Put(0x1000 + i * 0x200 + 0x000 + tilesets[i].teleportdeck[j], Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].teleportgraphic.topleft })));
+						Put(0x1000 + i * 0x200 + 0x080 + tilesets[i].teleportdeck[j], Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].teleportgraphic.topright })));
+						Put(0x1000 + i * 0x200 + 0x100 + tilesets[i].teleportdeck[j], Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].teleportgraphic.botleft })));
+						Put(0x1000 + i * 0x200 + 0x180 + tilesets[i].teleportdeck[j], Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].teleportgraphic.botright })));
+					}
 				}
+			}
+
+			for (int i = 1; i < 8; i++)
+			{
+				tilesetspinner.Add((byte)i);
 			}
 		}
 		public void CreateDomains(MT19337 rng, List<Map> maps) 
 		{
+			// It's 0x72 because we want to exclude the "boss battles".
+			FormationLevel[] formationlevels = new FormationLevel[0x72 * 2];
+			EnemyInfo[] monsters = new EnemyInfo[EnemyCount];
+			var enemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
+			var formations = Get(FormationDataOffset, FormationDataSize * 0x72).Chunk(FormationDataSize);
+
+			// Get the data for all the individual monsters so we can examine their rewards.
+			for (int i = 0; i < EnemyCount; i++)
+			{
+				monsters[i] = new EnemyInfo();
+				monsters[i].decompressData(enemies[i]);
+			}
+
+			// Determine the level of each encounter (both sides) based on the monsters it contains.
+			for (int i = 0; i < 0x72; i++)
+			{
+				formationlevels[i] = new FormationLevel();
+				formationlevels[i].formation = new Encounters.FormationData(formations[i]);
+				formationlevels[i].level = 0;
+				formationlevels[i].index = (byte)i;
+				formationlevels[i].level += MonsterLevel(monsters[formationlevels[i].formation.enemy1]) * (formationlevels[i].formation.minmax1.Item1 + formationlevels[i].formation.minmax1.Item2) / 2;
+				formationlevels[i].level += MonsterLevel(monsters[formationlevels[i].formation.enemy2]) * (formationlevels[i].formation.minmax2.Item1 + formationlevels[i].formation.minmax2.Item2) / 2;
+				formationlevels[i].level += MonsterLevel(monsters[formationlevels[i].formation.enemy3]) * (formationlevels[i].formation.minmax3.Item1 + formationlevels[i].formation.minmax3.Item2) / 2;
+				formationlevels[i].level += MonsterLevel(monsters[formationlevels[i].formation.enemy4]) * (formationlevels[i].formation.minmax4.Item1 + formationlevels[i].formation.minmax4.Item2) / 2;
+				formationlevels[i + 0x72] = new FormationLevel();
+				formationlevels[i + 0x72].formation = new Encounters.FormationData(formations[i]);
+				formationlevels[i + 0x72].level = 0;
+				formationlevels[i + 0x72].index = (byte)(i + 0x80);
+				formationlevels[i + 0x72].level += MonsterLevel(monsters[formationlevels[i + 0x72].formation.enemy1]) * (formationlevels[i + 0x72].formation.minmaxB1.Item1 + formationlevels[i + 0x72].formation.minmaxB1.Item2) / 2;
+				formationlevels[i + 0x72].level += MonsterLevel(monsters[formationlevels[i + 0x72].formation.enemy2]) * (formationlevels[i + 0x72].formation.minmaxB2.Item1 + formationlevels[i + 0x72].formation.minmaxB2.Item2) / 2;
+			}
+
+			// Sort the list by level.
+			Array.Sort(formationlevels, (x, y) => x.level.CompareTo(y.level));
+
+			// Assign random formations of appropriate level to each floor.
+			var lowest = 0;
+			for (int i = 8; i < 61; i++)
+			{
+				lowest = (i - 8) * ((0x72 * 2 - 8) / 52);
+				FormationLevel[] spinner = new FormationLevel[12];
+				Array.Copy(formationlevels, lowest, spinner, 0, 12);
+				for (int j = 0; j < 8; j++)
+				{
+					Put(0x2C200 + i * 8 + j, Blob.FromHex(Convert.ToHexString(new byte[] { spinner.PickRandom(rng).index })));
+				}
+			}
 
 		}
 		public void DeepDungeon(MT19337 rng, OverworldMap overworldMap, List<Map> maps)
 		{
 			InitializeTilesets();
-
-			// Evaluate the monster formations and create domains accordingly.
-			CreateDomains(rng, maps);
 
 			// Close the city wall around Coneria to prevent exploring the world normally.
 			overworldMap.MapEditsToApply.Add(new List<MapEdit>
@@ -423,23 +518,45 @@ namespace FF1Lib
 			// "back" stairs for floor 1 of the Deep Dungeon.
 			overworldMap.PutOverworldTeleport(OverworldTeleportIndex.ConeriaCastle1, new TeleportDestination(MapLocation.ConeriaCastle1, MapIndex.ConeriaCastle1F, new Coordinate(0x20, 0x20, CoordinateLocale.Standard)));
 
-			// Kill all the NPCs
+			// Kill all the NPCs.
 			KillNPCs();
 
-			// Generate the map layouts
+			// Generate new monster domains based on "estimated power level"
+			CreateDomains(rng, maps);
+
+			// Generate the map layouts.
 			for (int i = 8; i < 61; i++)
 			{
-				Put(0x2CC00 + i, Blob.FromHex("08")); // Set the encounter rate
-				WipeMap(maps[i], tilesets[tilesetmappings[i]]); // Start from a clean slate
-				GenerateMapBoxStyle(rng, maps[i], tilesets[tilesetmappings[i]]); // Which algorithm to use; right now it's the only one
-				Beautify(maps[i], tilesets[tilesetmappings[i]]); // Make the tiles look right
-				// Connect it to the next map
+				// Set the encounter rate.
+				Put(0x2CC00 + i, Blob.FromHex("08"));
+
+				// Pick a tileset with unused exit tiles.
+				tilesetmappings[i] = tilesetspinner.PickRandom(rng);
+				Put(0x2CC0 + i, Blob.FromHex(Convert.ToHexString(new byte[] { tilesetmappings[i] })));
+				overworldMap.PutPalette(OverworldTeleportIndex.ConeriaCastle1, (MapIndex)i);
+
+				// Start from a clean slate.
+				WipeMap(maps[i], tilesets[tilesetmappings[i]]);
+
+				// Which algorithm to use; right now it's the only one.
+				GenerateMapBoxStyle(rng, maps[i], tilesets[tilesetmappings[i]]);
+
+				// Make the tiles look right.
+				Beautify(maps[i], tilesets[tilesetmappings[i]]);
+
+				// Connect it to the next map.
 				if (i < 60)
 				{
 					Put(0x800 + tilesetmappings[i] * 0x100 + 2 * PlaceExit(rng, maps[i], tilesets[tilesetmappings[i]]), Blob.FromHex("80" + Convert.ToHexString(new byte[]{(byte)(i - 8)})));
 					Put(0x2D00 + i - 8, Blob.FromHex("20"));
-					Put(0x2D40 + i - 8, Blob.FromHex("20"));
+					Put(0x2D40 + i - 8, Blob.FromHex("A0"));
 					Put(0x2D80 + i - 8, Blob.FromHex(Convert.ToHexString(new byte[] { (byte)(i + 1) })));
+				}
+
+				// If all its exits are now used, remove the tileset from the list of available ones.
+				if (tilesets[tilesetmappings[i]].teleportdeck.Count() == 0)
+				{
+					tilesetspinner.Remove(tilesetmappings[i]);
 				}
 			}
 
@@ -455,14 +572,6 @@ namespace FF1Lib
 			{
 				result += rng.Between(1, sides);
 			}
-			return result;
-		}
-		private T DrawCard<T>(MT19337 rng, List<T> list)
-		{
-			// Pick a random element from the list, remove it, and return it.
-			int roll = rng.Between(0, list.Count - 1);
-			T result = list[roll];
-			list.RemoveAt(roll);
 			return result;
 		}
 		private void WipeMap(Map m, Tileset t)
@@ -712,7 +821,8 @@ namespace FF1Lib
 			int attempts = 40;
 			for (int attempt = 0; attempt < attempts; attempt++)
 			{
-				c = DrawCard<Candidate>(rng, candidates);
+				//c = DrawCard<Candidate>(rng, candidates);
+				c = candidates.SpliceRandom(rng);
 				w = RollDice(rng, 3, 4);
 				h = RollDice(rng, 3, 4) + 1;
 				x = c.x - RollDice(rng, 1, w - 2);
@@ -729,13 +839,19 @@ namespace FF1Lib
 		{
 			List<Candidate> candidates = new List<Candidate>();
 			Candidate c;
-			byte exittile = 0;
-			if (t.teleportdeck.Count() > 0)
+			byte exittile = t.teleportdeck.SpliceRandom(rng);
+			for (int i = 0; i < 64; i++)
 			{
-				exittile = DrawCard<byte>(rng, t.teleportdeck);
-				for (int i = 0; i < 64; i++)
+				for (int j = 0; j < 64; j++)
 				{
-					for (int j = 0; j < 64; j++)
+					if (exittile >= 0x80)
+					{
+						if (m[j, i] == t.roomtile)
+						{
+							if (Traversible(m, t, i, j, 1, 1, true)) candidates.Add(new Candidate(i, j));
+						}
+					}
+					else
 					{
 						if (m[j, i] == t.floortile)
 						{
@@ -743,9 +859,10 @@ namespace FF1Lib
 						}
 					}
 				}
-				c = DrawCard<Candidate>(rng, candidates);
-				m[c.y, c.x] = exittile;
 			}
+			c = candidates.SpliceRandom(rng);
+			exittile = (byte)(exittile % 0x80);
+			m[c.y, c.x] = exittile;
 			return exittile;
 		}
 		private void GenerateMapBoxStyle(MT19337 rng, Map m, Tileset t)
@@ -782,8 +899,10 @@ namespace FF1Lib
 				}
 
 				// Select a candidate at random and attach a box to it in a random legal direction
-				c = DrawCard<Candidate>(rng, candidates);
-				byte d = DrawCard<byte>(rng, c.dirs);
+				//c = DrawCard<Candidate>(rng, candidates);
+				c = candidates.SpliceRandom(rng);
+				//byte d = DrawCard<byte>(rng, c.dirs);
+				byte d = c.dirs.SpliceRandom(rng);
 				w = RollDice(rng, 3, 4);
 				h = RollDice(rng, 3, 4);
 				switch (d)
