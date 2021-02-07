@@ -524,6 +524,29 @@ namespace FF1Lib
 			// Generate new monster domains based on "estimated power level"
 			CreateDomains(rng, maps);
 
+			// Pre-determine what floors will have town branches
+			int[] townfloors = new int[7];
+			Candidate[] towndestinations = new Candidate[7];
+			var nexttown = 0;
+			for (int i = 0; i < 7; i++)
+			{
+				townfloors[i] = RollDice(rng, 2, 3) + i * 7 + 7;
+			}
+			towndestinations[0].x = 0x13;
+			towndestinations[0].y = 0x20;
+			towndestinations[1].x = 0x29;
+			towndestinations[1].y = 0x16;
+			towndestinations[2].x = 0x01;
+			towndestinations[2].y = 0x10;
+			towndestinations[3].x = 0x0B;
+			towndestinations[3].y = 0x17;
+			towndestinations[4].x = 0x3D;
+			towndestinations[4].y = 0x3D;
+			towndestinations[5].x = 0x01;
+			towndestinations[5].y = 0x0C;
+			towndestinations[6].x = 0x13;
+			towndestinations[6].y = 0x17;
+
 			// Generate the map layouts.
 			for (int i = 8; i < 61; i++)
 			{
@@ -532,6 +555,13 @@ namespace FF1Lib
 
 				// Pick a tileset with unused exit tiles.
 				tilesetmappings[i] = tilesetspinner.PickRandom(rng);
+				if (townfloors[nexttown] == i)
+				{
+					if (tilesets[tilesetmappings[i]].teleportdeck.Count() == 0)
+					{
+						townfloors[nexttown]++;
+					}
+				}
 				Put(0x2CC0 + i, Blob.FromHex(Convert.ToHexString(new byte[] { tilesetmappings[i] })));
 				overworldMap.PutPalette(OverworldTeleportIndex.ConeriaCastle1, (MapIndex)i);
 
@@ -551,6 +581,14 @@ namespace FF1Lib
 					Put(0x2D00 + i - 8, Blob.FromHex("20"));
 					Put(0x2D40 + i - 8, Blob.FromHex("A0"));
 					Put(0x2D80 + i - 8, Blob.FromHex(Convert.ToHexString(new byte[] { (byte)(i + 1) })));
+					if (townfloors[nexttown] == i)
+					{
+						Put(0x800 + tilesetmappings[i] * 0x100 + 2 * PlaceExit(rng, maps[i], tilesets[tilesetmappings[i]]), Blob.FromHex("80" + Convert.ToHexString(new byte[] { (byte)(nexttown + 53) })));
+						Put(0x2D00 + nexttown + 53, Blob.FromHex(Convert.ToHexString(new byte[] { (byte)towndestinations[nexttown].x })));
+						Put(0x2D40 + nexttown + 53, Blob.FromHex(Convert.ToHexString(new byte[] { (byte)(towndestinations[nexttown].y + 0x80) })));
+						Put(0x2D80 + nexttown + 53, Blob.FromHex(Convert.ToHexString(new byte[] { (byte)(nexttown + 1) })));
+						if (nexttown < 6) nexttown++;
+					}
 				}
 
 				// If all its exits are now used, remove the tileset from the list of available ones.
@@ -700,7 +738,7 @@ namespace FF1Lib
 			if (!inside) solids.Append(t.roomtile);
 			bool solid = solids.Contains(m[y - 1, x - 1]);
 			int flips = 0;
-			for (int i = x - 1; i < x + w; i++)
+			for (int i = x - 1; i <= x + w; i++)
 			{
 				if (solid != solids.Contains(m[y - 1, i]))
 				{
@@ -708,7 +746,7 @@ namespace FF1Lib
 					solid = !solid;
 				}
 			}
-			for (int i = y - 1; i < y + h; i++)
+			for (int i = y - 1; i <= y + h; i++)
 			{
 				if (solid != solids.Contains(m[i, x + w]))
 				{
@@ -767,7 +805,7 @@ namespace FF1Lib
 					}
 					if (!result) break;
 				}
-				if (result && obstacle) result = Traversible(m, t, x, y, w, h);
+				if (result) if (obstacle) result = Traversible(m, t, x, y, w, h);
 			}
 			return result;
 		}
@@ -805,23 +843,23 @@ namespace FF1Lib
 		}
 		private void GenerateRooms(MT19337 rng, Map m, Tileset t)
 		{
-			List<Candidate> candidates = new List<Candidate>();
+			List<Candidate> candidates; // = new List<Candidate>();
 			Candidate c;
 			int x;
 			int y;
 			int w;
 			int h;
-			for (int i = 0; i < 63; i++)
-			{
-				for (int j = 0; j < 63; j++)
-				{
-					if (m[j, i] == t.floortile) candidates.Add(new Candidate(i, j));
-				}
-			}
 			int attempts = 40;
 			for (int attempt = 0; attempt < attempts; attempt++)
 			{
-				//c = DrawCard<Candidate>(rng, candidates);
+				candidates = new List<Candidate>();
+				for (int i = 0; i < 63; i++)
+				{
+					for (int j = 0; j < 63; j++)
+					{
+						if (m[j, i] == t.floortile) candidates.Add(new Candidate(i, j));
+					}
+				}
 				c = candidates.SpliceRandom(rng);
 				w = RollDice(rng, 3, 4);
 				h = RollDice(rng, 3, 4) + 1;
