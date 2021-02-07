@@ -377,18 +377,6 @@ namespace FF1Lib
 				towns.Add(towns.First());
 				towns.RemoveAt(0);
 			}
-			if ((bool)flags.Towns && (bool)flags.IncludeConeria)
-			{
-				switch (towns.First().Destination)
-				{
-					case MapLocation.Pravoka: ConeriaTownEntranceItemShopIndex = 1;	break;
-					case MapLocation.Elfland: ConeriaTownEntranceItemShopIndex = 2;	break;
-					case MapLocation.CrescentLake: ConeriaTownEntranceItemShopIndex = 3; break;
-					case MapLocation.Gaia: ConeriaTownEntranceItemShopIndex = 4; break; // Gaia before Onrac!
-					case MapLocation.Onrac: ConeriaTownEntranceItemShopIndex = 5; break;
-					default: ConeriaTownEntranceItemShopIndex = 0; break;
-				}
-			}
 
 			topfloors.Shuffle(rng);
 			subfloors.Shuffle(rng);
@@ -417,7 +405,7 @@ namespace FF1Lib
 				// If we're shuffling Coneria in with the towns we keep one aside to put in the Coneria entrance.
 				// The first element of Towns has an Inn, Item Shop, and Clinic, which we ensured above.
 				List<TeleportDestination> startingTown = new List<TeleportDestination>();
-				if ((bool)flags.IncludeConeria)
+				if ((bool)flags.IncludeConeria && !(bool)flags.AllowUnsafeStartArea)
 				{
 					startingTown.Add(towns.First());
 					towns.RemoveAt(0);
@@ -461,12 +449,20 @@ namespace FF1Lib
 				// with town entrances we just keep them at the front of shuffleEntrances too.
 				if ((bool)flags.EntrancesMixedWithTowns)
 				{
-					bool removedConeria = shuffleTowns.Remove(OverworldTeleportIndex.Coneria);
-					Debug.Assert(removedConeria);
+					// If we're keeping the start area safe, move the Coneria entrance to the start
+					// of shuffleEntrances so that it always gets matched with the first, good town.
+					bool removedConeria = false;
+					if (!(bool)flags.AllowUnsafeStartArea)
+					{
+						removedConeria = shuffleTowns.Remove(OverworldTeleportIndex.Coneria);
+						Debug.Assert(removedConeria);
+					}
 
 					shuffleEntrances = shuffleTowns.Concat(shuffleEntrances).ToList();
 					shuffleEntrances.Shuffle(rng);
-					shuffleEntrances.Insert(0, OverworldTeleportIndex.Coneria);
+
+					if (removedConeria)
+						shuffleEntrances.Insert(0, OverworldTeleportIndex.Coneria);
 				}
 				else
 				{
@@ -509,6 +505,18 @@ namespace FF1Lib
 					}
 				}
 			} while (!CheckEntranceSanity(shuffled, (bool)flags.AllowUnsafeStartArea));
+
+			// If the Coneria Entrance goes *directly* to a town, we make its index the one that
+			// gets the guaranteed PURE and SOFT. 
+			switch (shuffled[OverworldTeleportIndex.Coneria].Destination)
+			{
+				case MapLocation.Pravoka: ConeriaTownEntranceItemShopIndex = 1;	break;
+				case MapLocation.Elfland: ConeriaTownEntranceItemShopIndex = 2;	break;
+				case MapLocation.CrescentLake: ConeriaTownEntranceItemShopIndex = 3; break;
+				case MapLocation.Gaia: ConeriaTownEntranceItemShopIndex = 4; break; // Gaia before Onrac!
+				case MapLocation.Onrac: ConeriaTownEntranceItemShopIndex = 5; break;
+				default: ConeriaTownEntranceItemShopIndex = 0; break;
+			}
 
 			if (flags.Spoilers || Debugger.IsAttached)
 			{
@@ -686,7 +694,8 @@ namespace FF1Lib
 				return shuffledEntrances.Any(x => x.Key == owti && SafeLocations.Contains(x.Value.Destination));
 			}
 
-			int dangerCount = 5;
+			int dangerCount = 6;
+			if (isSafe(OverworldTeleportIndex.Coneria)) --dangerCount;
 			if (isSafe(OverworldTeleportIndex.ConeriaCastle1)) --dangerCount;
 			if (isSafe(OverworldTeleportIndex.TempleOfFiends1)) --dangerCount;
 			if (isSafe(OverworldTeleportIndex.DwarfCave)) --dangerCount;
@@ -889,7 +898,7 @@ namespace FF1Lib
 				OverworldTeleportIndex.Onrac
 			};
 		private static readonly List<OverworldTeleportIndex> StartingLocations = new List<OverworldTeleportIndex> {
-				OverworldTeleportIndex.ConeriaCastle1, OverworldTeleportIndex.TempleOfFiends1
+				OverworldTeleportIndex.Coneria, OverworldTeleportIndex.ConeriaCastle1, OverworldTeleportIndex.TempleOfFiends1
 			};
 
 		private static readonly Dictionary<MapLocation, (int x, int y)> ObjectiveNPCPositions = new Dictionary<MapLocation, (int x, int y)>
