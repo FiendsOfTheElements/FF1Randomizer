@@ -1,7 +1,7 @@
 <div class="checkbox-cell">
 	<div class="btn-group-toggle @IndentClass @ValueClass @DisabledClass" data-toggle="buttons">
 		<input type="radio" name="@Name" value="0" checked="@checked0" hidden>
-		<input type="image" src="@image" id="@Id" class="tri-state" disabled="@(!IsEnabled)" @onclick="@onclick" /> <label for="@Id">@ChildContent</label>
+		<input type="image" src="@image" id="@Id" class="tri-state" disabled="@(!IsEnabled)" @onclick="@onclick" /><label for="@Id">@ChildContent</label>
 	@if (!DisableTooltip)
 	{
 		<input type="image" src="/images/help.png" class="btn-group-help" title="Show Help" @onclick="@ShowToolTip" id="@Id" />
