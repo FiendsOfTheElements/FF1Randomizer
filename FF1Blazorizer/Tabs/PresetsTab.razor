@@ -11,7 +11,7 @@
 		<p>These presets allow you to get into the game and start playing instantly.</p>
 
 		<h4>Standard Presets</h4>
-		<a class="preset-button styled-button @((selectedPresetId == "Default") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Default"))">Select</a>
+		<a class="preset-button styled-button @((selectedPresetId == "Beginner") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Beginner"))">Select</a>
 		<p class="preset-paragraph"><strong>Beginner:</strong> Good for first-time players as it crafts an easy-to-understand run for those looking to get into randomizers.</p>
 
 		<a class="preset-button styled-button @((selectedPresetId == "Improved_Vanilla") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Improved_Vanilla"))">Select</a>
