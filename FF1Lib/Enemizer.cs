@@ -3444,7 +3444,7 @@ namespace FF1Lib
 			tilesets.ForEach(tile => { if (IsRandomBattleTile(tile)) tile[1] = 0x00; });
 			Put(TilesetDataOffset, tilesets.SelectMany(tileset => tileset.ToBytes()).ToArray());// set all random battle tiles to zero
 
-			SpellInfo[] spell = new SpellInfo[MagicCount]; // list of spells and their appropriate tiers
+			SpellInfo[] spell = LoadSpells(); // list of spells and their appropriate tiers
 			EnemySkillInfo[] skill = new EnemySkillInfo[EnemySkillCount]; // list of enemy skills and their appropriate tiers
 			EnemyScriptInfo[] script = new EnemyScriptInfo[ScriptCount]; // list of enemy scripts
 			
@@ -3453,12 +3453,6 @@ namespace FF1Lib
 			{
 				3, 2, 3, 1, 2, 1, 4, 3, 3, 4, 4, 4, 5, 3, 4, 3, 4, 4, 4, 1, 5, 2, 2, 1, 5, 5
 			};
-			for (int i = 0; i < MagicCount; ++i)
-			{
-				spell[i] = new SpellInfo();
-				spell[i].decompressData(Get(MagicOffset + i * MagicSize, MagicSize));
-				spell[i].calc_Enemy_SpellTier();
-			}
 			for(int i = 0; i < EnemySkillCount; ++i)
 			{
 				skill[i] = new EnemySkillInfo();
@@ -3739,6 +3733,19 @@ namespace FF1Lib
 			{
 				Put(ScriptOffset + ScriptSize * i, script[i].compressData()); // and move the modified scripts as well
 			}
+		}
+
+		public SpellInfo[] LoadSpells()
+		{
+			var spell = new SpellInfo[MagicCount];
+			for (int i = 0; i < MagicCount; ++i)
+			{
+				spell[i] = new SpellInfo();
+				spell[i].decompressData(Get(MagicOffset + i * MagicSize, MagicSize));
+				spell[i].calc_Enemy_SpellTier();
+			}
+
+			return spell;
 		}
 	}
 }
