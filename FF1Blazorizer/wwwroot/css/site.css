@@ -361,6 +361,7 @@ tr.bottom-borderd {
     width: 15px;
     cursor: default;
     border-radius: 2px;
+    margin: 2px;
 }
 
 .tri-yes {
@@ -374,7 +375,6 @@ tr.bottom-borderd {
 .ffr-tooltip {
     position: fixed;
     z-index: 1000;
-
 }
 
 .ffr-tooltip-screenshot {
