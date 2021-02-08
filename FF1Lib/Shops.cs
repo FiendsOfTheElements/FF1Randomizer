@@ -64,12 +64,11 @@ namespace FF1Lib
 			Put(ShopPointerOffset, Blob.FromUShorts(pointers));
 		}
 
-		private void ShuffleMagicLocations(MT19337 rng)
+		private void ShuffleMagicLocations(MT19337 rng, bool keepPairs)
 		{
 			var pointers = Get(ShopPointerOffset, ShopPointerCount * ShopPointerSize).ToUShorts();
 
 			RepackShops(pointers);
-			var WhiteShops = GetShops(ShopType.White, pointers);
 
 			List<ushort> WhitePointers = new List<ushort>(9);
 			List<ushort> BlackPointers = new List<ushort>(9);
@@ -82,10 +81,22 @@ namespace FF1Lib
 			WhitePointers.Shuffle(rng);
 			BlackPointers.Shuffle(rng);
 
+			// calc offset for White and Black Magic Shops of the same town/level for pairing
+			int whiteToBlackOffset = pointers[(int)ShopType.Black] - pointers[(int)ShopType.White]; ;
+
 			for (int i = 0; i < 9; i++)
 			{
 				pointers[(int)ShopType.White + i + 1] = WhitePointers[i];
-				pointers[(int)ShopType.Black + i + 1] = BlackPointers[i];
+				if (keepPairs)
+				{
+					// Black Magic Shop Locations are calculated from WhitePointers shuffle
+					pointers[(int)ShopType.Black + i + 1] = (ushort)(WhitePointers[i] + whiteToBlackOffset);
+				}
+				else
+				{
+					// use BlackPointers shuffle
+					pointers[(int)ShopType.Black + i + 1] = BlackPointers[i];
+				}
 			}
 
 			Put(ShopPointerOffset, Blob.FromUShorts(pointers));

@@ -364,7 +364,7 @@ namespace FF1Lib
 
 			if ((bool)flags.MagicShopLocs)
 			{
-				ShuffleMagicLocations(rng);
+				ShuffleMagicLocations(rng, (bool)flags.MagicShopLocationPairs);
 			}
 
 			if (((bool)flags.MagicShops))
