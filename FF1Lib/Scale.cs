@@ -87,8 +87,17 @@ namespace FF1Lib
 			var prices = Get(PriceOffset, PriceSize * PriceCount).ToUShorts();
 			for (int i = 0; i < prices.Length; i++)
 			{
-				var newPrice = RangeScale(prices[i] / multiplier, scaleLow, scaleHigh, 1, rng);
-				prices[i] = (ushort)(flags.WrapPriceOverflow ? ((newPrice - 1) % 0xFFFF) + 1 : Min(newPrice, 0xFFFF));
+				if (flags.ExcludeGoldFromScaling)
+				{
+					var price = (int)prices[i];
+					var newPrice = price + rng.Between(-price / 10, price / 10);
+					prices[i] = (ushort)Math.Min(Math.Max(newPrice, 1), 65535);
+				}
+				else
+				{
+					var newPrice = RangeScale(prices[i] / multiplier, scaleLow, scaleHigh, 1, rng);
+					prices[i] = (ushort)(flags.WrapPriceOverflow ? ((newPrice - 1) % 0xFFFF) + 1 : Min(newPrice, 0xFFFF));
+				}
 			}
 			var questItemPrice = prices[(int)Item.Bottle];
 			// If we don't do this before checking for the item shop location factor, Ribbons and Shirts will end up being really cheap

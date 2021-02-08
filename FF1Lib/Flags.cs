@@ -63,8 +63,9 @@ namespace FF1Lib
 
 		public HintPlacementStrategy ExtensiveHints_EquipmentNamePlacement { get; set; } = HintPlacementStrategy.ConeriaToCrescent;
 
-    #endregion
-		
+		#endregion
+
+		public bool ExcludeGoldFromScaling { get; set; } = true;
 		public bool Spoilers { get; set; } = false;
 		public bool TournamentSafe { get; set; } = false;
 		public bool BlindSeed { get; set; } = false;

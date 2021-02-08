@@ -3759,6 +3759,16 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Etherizer"));
 			}
 		}
+
+		public bool ExcludeGoldFromScaling
+		{
+			get => Flags.ExcludeGoldFromScaling;
+			set
+			{
+				Flags.ExcludeGoldFromScaling = value;
+				RaisePropertyChanged();
+			}
+		}
 	}
 }
 
