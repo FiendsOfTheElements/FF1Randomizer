@@ -110,7 +110,6 @@
 		double ExpMultiplier { get; }
 		int PriceScaleFactorLow { get; }
 		int PriceScaleFactorHigh { get; }
-		bool ExcludeGoldFromScaling { get; }
 	}
 	public interface IFloorShuffleFlags
 	{

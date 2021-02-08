@@ -75,7 +75,7 @@ namespace FF1Lib
 
 		// Scale is the geometric scale factor used with RNG.  Multiplier is where we make everything cheaper
 		// instead of enemies giving more gold, so we don't overflow.
-		public void ScalePrices(IScaleFlags flags, string[] text, MT19337 rng, bool increaseOnly, ItemShopSlot shopItemLocation)
+		public void ScalePrices(IScaleFlags flags, string[] text, MT19337 rng, bool increaseOnly, ItemShopSlot shopItemLocation, bool separateGoldScaling, double separateGoldScalingFactor)
 		{
 			int rawScaleLow = increaseOnly ? 100 : flags.PriceScaleFactorLow;
 			int rawScaleHigh = increaseOnly ? Math.Max(100, flags.PriceScaleFactorHigh) : flags.PriceScaleFactorHigh;
@@ -87,10 +87,10 @@ namespace FF1Lib
 			var prices = Get(PriceOffset, PriceSize * PriceCount).ToUShorts();
 			for (int i = 0; i < prices.Length; i++)
 			{
-				if (flags.ExcludeGoldFromScaling && ItemLists.AllGoldTreasure.Contains((Item)i))
+				if (separateGoldScaling && ItemLists.AllGoldTreasure.Contains((Item)i))
 				{
-					var price = (int)prices[i];
-					var newPrice = price + rng.Between(-price / 10, price / 10);
+					var scaledPrice = (int)((double)prices[i] * separateGoldScalingFactor);
+					var newPrice = scaledPrice + rng.Between(-scaledPrice / 10, scaledPrice / 10);
 					prices[i] = (ushort)Math.Min(Math.Max(newPrice, 1), 65535);
 				}
 				else
@@ -372,7 +372,7 @@ namespace FF1Lib
 			}
 		}
 
-		public void ExpGoldBoost(double bonus, double multiplier)
+		public void ExpGoldBoost(double bonus, double multiplier, bool separateGoldScaling, double separateGoldScalingFactor, MT19337 rng)
 		{
 			var enemyBlob = Get(EnemyOffset, EnemySize * EnemyCount);
 			var enemies = enemyBlob.Chunk(EnemySize);
@@ -383,7 +383,17 @@ namespace FF1Lib
 				var gold = BitConverter.ToUInt16(enemy, 2);
 
 				exp += (ushort)(bonus / multiplier);
-				gold += (ushort)(bonus / multiplier);
+
+				if (separateGoldScaling)
+				{
+					var scaledGold = (int)((double)gold * separateGoldScalingFactor);
+					var newGold = scaledGold + rng.Between(-scaledGold / 10, scaledGold / 10);
+					gold = (ushort)Math.Min(Math.Max(newGold, 1), 65535);
+				}
+				else
+				{
+					gold += (ushort)(bonus / multiplier);
+				}
 
 				var expBytes = BitConverter.GetBytes(exp);
 				var goldBytes = BitConverter.GetBytes(gold);

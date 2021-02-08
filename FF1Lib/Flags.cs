@@ -65,7 +65,14 @@ namespace FF1Lib
 
 		#endregion
 
-		public bool ExcludeGoldFromScaling { get; set; } = false;
+		public bool SeparateGoldScaling { get; set; } = false;
+
+		[IntegerFlag(10, 500, 10)]
+		public int SeparateGoldScalingFactorMin { get; set; } = 50;
+
+		[IntegerFlag(10, 500, 10)]
+		public int SeparateGoldScalingFactorMax { get; set; } = 200;
+
 		public bool Spoilers { get; set; } = false;
 		public bool TournamentSafe { get; set; } = false;
 		public bool BlindSeed { get; set; } = false;
