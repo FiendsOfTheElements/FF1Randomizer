@@ -14,6 +14,7 @@
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="floorsCheckBox" IsEnabled="@Flags.Entrances" @bind-Value="Flags.Floors">Floors</TriStateCheckBox>
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="allowDeepCastlesCheckBox" IsEnabled="@Flags.DeepCastlesPossible" @bind-Value="Flags.AllowDeepCastles">Deep ToFR</TriStateCheckBox>
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="townsCheckBox" IsEnabled="@(Flags.Treasures & Flags.NPCItems)" @bind-Value="Flags.Towns">Towns</TriStateCheckBox>
+		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="includeConeriaCheckBox" IsEnabled="@(Flags.Towns)" @bind-Value="Flags.IncludeConeria">Include Coneria</TriStateCheckBox>
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="mixEntrancesCheckBox" IsEnabled="@(Flags.Towns & Flags.Entrances)" @bind-Value="Flags.EntrancesMixedWithTowns">Mix All Entrances Together</TriStateCheckBox>
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="deepTownsCheckBox" IsEnabled="@(Flags.DeepTownsPossible)" @bind-Value="Flags.AllowDeepTowns">Deep Towns</TriStateCheckBox>
 		<div class="checkbox-cell"></div>

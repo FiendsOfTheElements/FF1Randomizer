@@ -16,7 +16,7 @@ namespace FF1Lib
 		[Description("SafetyBit")]
 		SafetyBit,
 
-		[Description("Beggars Choice")]
+		[Description("Beggar's Choice")]
 		BeggarsChoice,
 
 		[Description("Just Tents")]
@@ -28,7 +28,7 @@ namespace FF1Lib
 		[Description("Real Estate")]
 		RealEstate,
 
-		[Description("Warriors Standard")]
+		[Description("Warrior's Standard")]
 		WarriorsStandard,
 
 		[Description("Royal Packmule")]
@@ -37,13 +37,13 @@ namespace FF1Lib
 		[Description("Duckling Boon")]
 		DucklingBoon,
 
-		[Description("R. Beggars Choice")]
+		[Description("R. Beggar's Choice")]
 		RandomizedBeggarsChoice,
 
 		[Description("R. Explorer Starting Pack")]
 		RandomizedExplorerStartingPack,
 
-		[Description("R. Warriors Standard")]
+		[Description("R. Warrior's Standard")]
 		RandomizedWarriorsStandard,
 
 		[Description("R. Royal Packmule")]
@@ -81,7 +81,7 @@ namespace FF1Lib
 			{
 				if (e.Cnt.HasValue)
 				{
-					ItemData[e.Item] = new byte[1] { (byte)e.Cnt };
+					ItemData[e.Item] = (byte)e.Cnt;
 				}
 				else
 				{
@@ -90,7 +90,7 @@ namespace FF1Lib
 					var rmin = e.RMin ?? min;
 					var rmax = e.RMax ?? max;
 
-					ItemData[e.Item] =  new byte[1] { (byte)Math.Min(Math.Max(rng.Between(rmin, rmax), min), max) };
+					ItemData[e.Item] = (byte)Math.Min(Math.Max(rng.Between(rmin, rmax), min), max);
 				}
 			}
 

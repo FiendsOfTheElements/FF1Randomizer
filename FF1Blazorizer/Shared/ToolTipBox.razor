@@ -1,0 +1,43 @@
+<div  class="checkbox-cell">
+	<label for="@Id">@ChildContent</label><input type="image" src="/images/help.png" class="btn-group-help" title="Show Help" @onclick="@ShowToolTip" id="@Id" />
+</div>
+
+@code
+{
+
+	[Parameter]
+	public bool Name { get; set; }
+
+	private void ShowToolTip(MouseEventArgs e)
+	{
+		UpdateToolTip?.Invoke(Id, e);
+	}
+
+	private void HideToolTip(MouseEventArgs e)
+	{
+		UpdateToolTip?.Invoke("", e);
+	}
+
+
+	[Parameter]
+	public Action<string, MouseEventArgs> UpdateToolTip { get; set; }
+
+	[Parameter]
+	public bool Indent { get; set; }
+	private string IndentClass => Indent ? "indent" : "";
+
+	[Parameter]
+	public bool? IsEnabled { get; set; } = true;
+	private bool Disabled => !(IsEnabled ?? true);
+	private string DisabledClass => (IsEnabled ?? true) ? "" : "disabled";
+
+	[Parameter]
+	public string Id { get; set; }
+
+	[Parameter]
+	public RenderFragment ChildContent { get; set; }
+
+	[Parameter]
+	public bool DisableTooltip { get; set; }
+
+}

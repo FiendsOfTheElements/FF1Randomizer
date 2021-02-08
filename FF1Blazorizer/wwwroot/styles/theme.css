@@ -134,6 +134,10 @@ a.styled-button:hover{
 background-color: #005896;
 }
 
+a.styled-button.clicked {
+    background-color: #005896;
+}
+
 a.preset-close {
     position: relative;
     background-color: #e76e55;

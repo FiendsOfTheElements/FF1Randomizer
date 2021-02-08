@@ -33,7 +33,7 @@ namespace FF1Lib
 		public bool ShopKillExcludeConeria_Black { get; set; } = false;
 		public bool ShopKillExcludeConeria_White { get; set; } = false;
     
-    #endregion
+		#endregion
 
 		#region ExtensiveHints
 
@@ -133,6 +133,7 @@ namespace FF1Lib
 		public bool? MapOpenProgressionDocks { get; set; } = false;
 		public bool? Entrances { get; set; } = false;
 		public bool? Towns { get; set; } = false;
+		public bool? IncludeConeria { get; set; } = false;
 		public bool? Floors { get; set; } = false;
 		public bool? AllowDeepCastles { get; set; } = false;
 		public bool? AllowDeepTowns { get; set; } = false;

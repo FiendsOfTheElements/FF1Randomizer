@@ -19,90 +19,86 @@
 			<div class="checkbox-cell"></div>
 		</div>
 		<div class="col2">
-			<!--
 			<h4>Legendary Shops</h4>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="legendaryWeaponShopCheckBox" @bind-Value="Flags.LegendaryWeaponShop">L. Weapon Shop</TriStateCheckBox>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="legendaryArmorShopCheckBox" @bind-Value="Flags.LegendaryArmorShop">L. Armor Shop</TriStateCheckBox>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="legendaryBlackShopCheckBox" @bind-Value="Flags.LegendaryBlackShop">L. Black Shop</TriStateCheckBox>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="legendaryWhiteShopCheckBox" @bind-Value="Flags.LegendaryWhiteShop">L. White Shop</TriStateCheckBox>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="legendaryItemShopCheckBox" @bind-Value="Flags.LegendaryItemShop">L. Item Shop</TriStateCheckBox>
-			-->
+			<ToolTipBox UpdateToolTip="@UpdateToolTipID" Id="legendaryShopsGroup">Create legendary shops in dungeons</ToolTipBox>
+			<TriStateCheckBox DisableTooltip Id="legendaryWeaponShopCheckBox" @bind-Value="Flags.LegendaryWeaponShop">Legendary Weapon Shop</TriStateCheckBox>
+			<TriStateCheckBox DisableTooltip Id="legendaryArmorShopCheckBox" @bind-Value="Flags.LegendaryArmorShop">Legendary Armor Shop</TriStateCheckBox>
+			<TriStateCheckBox DisableTooltip Id="legendaryBlackShopCheckBox" @bind-Value="Flags.LegendaryBlackShop">Legendary Black Shop</TriStateCheckBox>
+			<TriStateCheckBox DisableTooltip Id="legendaryWhiteShopCheckBox" @bind-Value="Flags.LegendaryWhiteShop">Legendary White Shop</TriStateCheckBox>
+			<TriStateCheckBox DisableTooltip Id="legendaryItemShopCheckBox" @bind-Value="Flags.LegendaryItemShop">Legendary Item Shop</TriStateCheckBox>
 		</div>
-		<!--
-				<div class="col1 full">
-					<h4>Shop Reduction</h4>
-					<table>
-						<tr>
-							<td style="text-align:left">Weapon Shops:</td>
-							<td style="min-width:220px"><EnumDropDown UpdateToolTip="@UpdateToolTipID" TItem="ShopKillMode" @bind-Value="Flags.ShopKillMode_Weapons"></EnumDropDown></td>
-							<td style="min-width:150px"><EnumDropDown UpdateToolTip="@UpdateToolTipID" TItem="ShopKillFactor" @bind-Value="Flags.ShopKillFactor_Weapons"></EnumDropDown></td>
-							<td style="min-width:140px;text-align:left"><CheckBox UpdateToolTip="@UpdateToolTipID" @bind-Value="Flags.ShopKillExcludeConeria_Weapons">Exclude Coneria</CheckBox></td>
-						</tr>
-						<tr>
-							<td style="text-align:left">Armor Shops:</td>
-							<td><EnumDropDown UpdateToolTip="@UpdateToolTipID" TItem="ShopKillMode" @bind-Value="Flags.ShopKillMode_Armor"></EnumDropDown></td>
-							<td><EnumDropDown UpdateToolTip="@UpdateToolTipID" TItem="ShopKillFactor" @bind-Value="Flags.ShopKillFactor_Armor"></EnumDropDown></td>
-							<td style="text-align:left"><CheckBox UpdateToolTip="@UpdateToolTipID" @bind-Value="Flags.ShopKillExcludeConeria_Armor">Exclude Coneria</CheckBox></td>
-						</tr>
-						<tr>
-							<td style="text-align:left">Item Shops:</td>
-							<td><EnumDropDown UpdateToolTip="@UpdateToolTipID" TItem="ShopKillMode" @bind-Value="Flags.ShopKillMode_Item"></EnumDropDown></td>
-							<td><EnumDropDown UpdateToolTip="@UpdateToolTipID" TItem="ShopKillFactor" @bind-Value="Flags.ShopKillFactor_Item"></EnumDropDown></td>
-							<td style="text-align:left"><CheckBox UpdateToolTip="@UpdateToolTipID" @bind-Value="Flags.ShopKillExcludeConeria_Item">Exclude Coneria</CheckBox></td>
-						</tr>
-						<tr>
-							<td style="text-align:left">Black Magic:</td>
-							<td><EnumDropDown UpdateToolTip="@UpdateToolTipID" TItem="ShopKillMode" @bind-Value="Flags.ShopKillMode_Black"></EnumDropDown></td>
-							<td><EnumDropDown UpdateToolTip="@UpdateToolTipID" TItem="ShopKillFactor" @bind-Value="Flags.ShopKillFactor_Black"></EnumDropDown></td>
-							<td style="text-align:left"><CheckBox UpdateToolTip="@UpdateToolTipID" @bind-Value="Flags.ShopKillExcludeConeria_Black">Exclude Coneria</CheckBox></td>
-						</tr>
-						<tr>
-							<td style="text-align:left">White Magic:</td>
-							<td><EnumDropDown UpdateToolTip="@UpdateToolTipID" TItem="ShopKillMode" @bind-Value="Flags.ShopKillMode_White"></EnumDropDown></td>
-							<td><EnumDropDown UpdateToolTip="@UpdateToolTipID" TItem="ShopKillFactor" @bind-Value="Flags.ShopKillFactor_White"></EnumDropDown></td>
-							<td style="text-align:left"><CheckBox UpdateToolTip="@UpdateToolTipID" @bind-Value="Flags.ShopKillExcludeConeria_White">Exclude Coneria</CheckBox></td>
-						</tr>
-					</table>
-					<CheckBox @bind-Value="Flags.ExtensiveHints_Enable">Enable Hints</CheckBox>
-					<table>
-						<tr>
-							<td style="text-align:left;min-width:150px">Category</td>
-							<td style="min-width:220px">Coverage</td>
-							<td style="min-width:340px">Placement</td>
-						</tr>
-						<tr>
-							<td style="text-align:left">Loose on Floor</td>
-							<td><EnumDropDown TItem="HintCategoryCoverage" @bind-Value="Flags.ExtensiveHints_LooseItemFloorCoverage" /></td>
-							<td><EnumDropDown TItem="HintPlacementStrategy" @bind-Value="Flags.ExtensiveHints_LooseItemFloorPlacement" /></td>
-						</tr>
-						<tr>
-							<td style="text-align:left">Loose Name in Location</td>
-							<td><EnumDropDown TItem="HintCategoryCoverage" @bind-Value="Flags.ExtensiveHints_LooseItemNameCoverage" /></td>
-							<td><EnumDropDown TItem="HintPlacementStrategy" @bind-Value="Flags.ExtensiveHints_LooseItemNamePlacement" /></td>
-						</tr>
-						<tr>
-							<td style="text-align:left">Incentivized Name in Location</td>
-							<td><EnumDropDown TItem="HintCategoryCoverage" @bind-Value="Flags.ExtensiveHints_IncentiveItemNameCoverage" /></td>
-							<td><EnumDropDown TItem="HintPlacementStrategy" @bind-Value="Flags.ExtensiveHints_IncentiveItemNamePlacement" /></td>
-						</tr>
-						<tr>
-							<td style="text-align:left">Floor Hints</td>
-							<td><EnumDropDown TItem="HintCategoryCoverage" @bind-Value="Flags.ExtensiveHints_FloorHintCoverage" /></td>
-							<td><EnumDropDown TItem="HintPlacementStrategy" @bind-Value="Flags.ExtensiveHints_FloorHintPlacement" /></td>
-						</tr>
-						<tr>
-							<td style="text-align:left">Equipment on Floor</td>
-							<td><EnumDropDown TItem="HintCategoryCoverage" @bind-Value="Flags.ExtensiveHints_EquipmentFloorCoverage" /></td>
-							<td><EnumDropDown TItem="HintPlacementStrategy" @bind-Value="Flags.ExtensiveHints_EquipmentFloorPlacement" /></td>
-						</tr>
-						<tr>
-							<td style="text-align:left">Equipment Name in Location</td>
-							<td><EnumDropDown TItem="HintCategoryCoverage" @bind-Value="Flags.ExtensiveHints_EquipmentNameCoverage" /></td>
-							<td><EnumDropDown TItem="HintPlacementStrategy" @bind-Value="Flags.ExtensiveHints_EquipmentNamePlacement" /></td>
-						</tr>
-					</table>
-				</div>
-		-->
+		<div class="col1 full">
+			<h4>Shop Reduction</h4>
+			<ToolTipBox UpdateToolTip="@UpdateToolTipID" Id="shopReductionTable">Remove shops from towns</ToolTipBox>
+			<div class="row">
+				<div class="col-lg-2 tighter noleftpadding">Weapon Shops:</div>
+				<div class="col-lg-4 tighter"><EnumDropDown DisableTooltip TItem="ShopKillMode" @bind-Value="Flags.ShopKillMode_Weapons"></EnumDropDown></div>
+				<div class="col-lg-2 tighter"><EnumDropDown DisableTooltip TItem="ShopKillFactor" @bind-Value="Flags.ShopKillFactor_Weapons"></EnumDropDown></div>
+				<div class="col-lg-4 tighter"><CheckBox DisableTooltip @bind-Value="Flags.ShopKillExcludeConeria_Weapons">Exclude Coneria</CheckBox></div>
+			</div>
+			<div class="row">
+				<div class="col-lg-2 tighter noleftpadding">Armor Shops:</div>
+				<div class="col-lg-4 tighter"><EnumDropDown DisableTooltip TItem="ShopKillMode" @bind-Value="Flags.ShopKillMode_Armor"></EnumDropDown></div>
+				<div class="col-lg-2 tighter"><EnumDropDown DisableTooltip TItem="ShopKillFactor" @bind-Value="Flags.ShopKillFactor_Armor"></EnumDropDown></div>
+				<div class="col-lg-4 tighter"><CheckBox DisableTooltip @bind-Value="Flags.ShopKillExcludeConeria_Armor">Exclude Coneria</CheckBox></div>
+			</div>
+			<div class="row">
+				<div class="col-lg-2 tighter noleftpadding">Item Shops:</div>
+				<div class="col-lg-4 tighter"><EnumDropDown DisableTooltip TItem="ShopKillMode" @bind-Value="Flags.ShopKillMode_Item"></EnumDropDown></div>
+				<div class="col-lg-2 tighter"><EnumDropDown DisableTooltip TItem="ShopKillFactor" @bind-Value="Flags.ShopKillFactor_Item"></EnumDropDown></div>
+				<div class="col-lg-4 tighter"><CheckBox DisableTooltip @bind-Value="Flags.ShopKillExcludeConeria_Item">Exclude Coneria</CheckBox></div>
+			</div>
+			<div class="row">
+				<div class="col-lg-2 tighter noleftpadding">Black Magic:</div>
+				<div class="col-lg-4 tighter"><EnumDropDown DisableTooltip TItem="ShopKillMode" @bind-Value="Flags.ShopKillMode_Black"></EnumDropDown></div>
+				<div class="col-lg-2 tighter"><EnumDropDown DisableTooltip TItem="ShopKillFactor" @bind-Value="Flags.ShopKillFactor_Black"></EnumDropDown></div>
+				<div class="col-lg-4 tighter"><CheckBox DisableTooltip @bind-Value="Flags.ShopKillExcludeConeria_Black">Exclude Coneria</CheckBox></div>
+			</div>
+			<div class="row">
+				<div class="col-lg-2 tighter noleftpadding">White Magic:</div>
+				<div class="col-lg-4 tighter"><EnumDropDown DisableTooltip TItem="ShopKillMode" @bind-Value="Flags.ShopKillMode_White"></EnumDropDown></div>
+				<div class="col-lg-2 tighter"><EnumDropDown DisableTooltip TItem="ShopKillFactor" @bind-Value="Flags.ShopKillFactor_White"></EnumDropDown></div>
+				<div class="col-lg-4 tighter"><CheckBox DisableTooltip @bind-Value="Flags.ShopKillExcludeConeria_White">Exclude Coneria</CheckBox></div>
+			</div>
+			<div class="checkbox-cell"></div>
+			<h4>Extensive Hints</h4>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="extendedHintsCheckBox" @bind-Value="Flags.ExtensiveHints_Enable">Enable Extensive Hints</CheckBox>
+			<div class="row">
+				<div class="col-lg-3 tighter noleftpadding">Loose on Floor:</div>
+				<div class="col-lg-4 tighter"><EnumDropDown DisableTooltip TItem="HintCategoryCoverage" @bind-Value="Flags.ExtensiveHints_LooseItemFloorCoverage" /></div>
+				<div class="col-lg-5 tighter"><EnumDropDown DisableTooltip TItem="HintPlacementStrategy" @bind-Value="Flags.ExtensiveHints_LooseItemFloorPlacement" /></div>
+			</div>
+			<div class="checkbox-cell"></div>
+			<div class="row">
+				<div class="col-lg-3 tighter noleftpadding">Loose Name in Location:</div>
+				<div class="col-lg-4 tighter"><EnumDropDown DisableTooltip TItem="HintCategoryCoverage" @bind-Value="Flags.ExtensiveHints_LooseItemNameCoverage" /></div>
+				<div class="col-lg-5 tighter"><EnumDropDown DisableTooltip TItem="HintPlacementStrategy" @bind-Value="Flags.ExtensiveHints_LooseItemNamePlacement" /></div>
+			</div>
+			<div class="checkbox-cell"></div>
+			<div class="row">
+				<div class="col-lg-3 tighter noleftpadding">Incentivized Name in Location:</div>
+				<div class="col-lg-4 tighter"><EnumDropDown DisableTooltip TItem="HintCategoryCoverage" @bind-Value="Flags.ExtensiveHints_IncentiveItemNameCoverage" /></div>
+				<div class="col-lg-5 tighter"><EnumDropDown DisableTooltip TItem="HintPlacementStrategy" @bind-Value="Flags.ExtensiveHints_IncentiveItemNamePlacement" /></div>
+			</div>
+			<div class="checkbox-cell"></div>
+			<div class="row">
+				<div class="col-lg-3 tighter noleftpadding">Floor Hints:</div>
+				<div class="col-lg-4 tighter"><EnumDropDown DisableTooltip TItem="HintCategoryCoverage" @bind-Value="Flags.ExtensiveHints_FloorHintCoverage" /></div>
+				<div class="col-lg-5 tighter"><EnumDropDown DisableTooltip TItem="HintPlacementStrategy" @bind-Value="Flags.ExtensiveHints_FloorHintPlacement" /></div>
+			</div>
+			<div class="checkbox-cell"></div>
+			<div class="row">
+				<div class="col-lg-3 tighter noleftpadding">Equipment on Floor:</div>
+				<div class="col-lg-4 tighter"><EnumDropDown DisableTooltip TItem="HintCategoryCoverage" @bind-Value="Flags.ExtensiveHints_EquipmentFloorCoverage" /></div>
+				<div class="col-lg-5 tighter"><EnumDropDown DisableTooltip TItem="HintPlacementStrategy" @bind-Value="Flags.ExtensiveHints_EquipmentFloorPlacement" /></div>
+			</div>
+			<div class="checkbox-cell"></div>
+			<div class="row">
+				<div class="col-lg-3 tighter noleftpadding">Equipment Name in Location:</div>
+				<div class="col-lg-4 tighter"><EnumDropDown DisableTooltip TItem="HintCategoryCoverage" @bind-Value="Flags.ExtensiveHints_EquipmentNameCoverage" /></div>
+				<div class="col-lg-5 tighter"><EnumDropDown DisableTooltip TItem="HintPlacementStrategy" @bind-Value="Flags.ExtensiveHints_EquipmentNamePlacement" /></div>
+			</div>
+		</div>
 		<div class="clear-it"></div>
 	}
 </div>

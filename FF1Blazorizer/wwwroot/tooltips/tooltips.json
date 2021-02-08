@@ -808,6 +808,12 @@
 		"description": "Shuffles the town entrances amongst themselves. When town entrances are shuffled, all towns, aside from Corneria, could appear at any other town, such that the town at Pravoka could be Lefein (or vice-versa).\nTreasures shuffle and Main NPC Items shuffle must be enabled for this flag to function."
 	},
 	{
+		"Id": "includeConeriaCheckBox",
+		"title": "Include Coneria",
+		"screenshot": "includeConeriaCheckBox.png",
+		"description": "Include Coneria in Town Shuffle.\nOnly towns with item shops and clinics are permitted, thus exlcuding Melmond and Lefein.\nUnless Allow Unsafe Start Area is enabled the Coneria entrance will always lead to a town.\nIf other flags guaranteed Coneria's item shop to have PURE and SOFT and the Coneria entrance leads immediately to a town that town's item shop will have these instead."
+	},
+	{
 		"Id": "mixEntrancesCheckBox",
 		"title": "Mix All Entrances Together",
 		"screenshot": "mixEntrancesCheckBox.gif",
@@ -1247,6 +1253,12 @@
 		"title": "Inventory Autosort",
 		"screenshot": "inventoryAutosortCheckBox.png",
 		"description": "If enabled, HEAL, PURE, and SOFT potions are automatically moved to the first row of the item menu, followed by saving items (TENTs, CABINs, and HOUSEs) on the second row, then all other key items in your inventory."
+  },
+  {
+		"Id": "etherizerCheckBox",
+		"title": "Turn shelters into ethers",
+		"screenshot": "etherizerCheckBox.png",
+		"description": "Tents, Cabins, and Houses become ethers. Instead of restoring HP and saving on the overworld, they resore MP and can be used anywhere.\nEthers (ETHR) restore a charge for L1-L2. Dry Ethers (DRY) restore a charge for L1-L4. X Ethers (XETH) restore a charge for L1-L8.\nIncompatible with the House bug fix flags."
 	},
 	{
 		"Id": "shopInfoCheckBox",

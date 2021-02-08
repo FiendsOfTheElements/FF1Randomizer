@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static FF1Lib.FF1Rom;
 
 namespace FF1Lib
 {
@@ -18,8 +19,10 @@ namespace FF1Lib
 		ShopData ShopData;
 		TileSet[] TileSets = new TileSet[8];
 
-		//Dictionary<byte, List<byte>> UnusedTilesbyTileSet;
+		Dictionary<byte, List<byte>> UnusedTilesbyTileSet;
 		Dictionary<string, MagicSpell> Spells;
+
+		List<SpellInfo> SpellInfos;
 
 		//MapId, X, Y, UL Tile, UR Tile, BL Tile, BR Tile, Pallette
 		private List<(MapId, int, int, byte, byte, byte, byte, byte)> Locations = new List<(MapId, int, int, byte, byte, byte, byte, byte)>
@@ -41,13 +44,14 @@ namespace FF1Lib
 
 			MapTileSets = new MapTileSets(rom);
 			ShopData = new ShopData(rom);
+			SpellInfos = rom.LoadSpells().ToList();
 		}
 
 		private void LoadUnusedTileIds()
 		{
 			byte[] possibleTileIds = new byte[128];
 			for (byte i = 0; i < 128; i++) possibleTileIds[i] = i;
-			/*
+
 			UnusedTilesbyTileSet = Enum.GetValues<MapId>()
 				.GroupBy(m => MapTileSets[m])
 				.Select(t => (t.Key, t.Select(m => maps[(int)m]
@@ -57,7 +61,6 @@ namespace FF1Lib
 					.ToDictionary(x => x)))
 				.Select(t => (t.Key, possibleTileIds.Where(i => !t.Item2.ContainsKey(i)).ToList()))
 				.ToDictionary(t => t.Key, t => t.Item2);
-			*/
 		}
 
 		public void PlaceShops()
@@ -176,7 +179,7 @@ namespace FF1Lib
 		}
 
 		private byte CreateTile(MapId mapId, int ShopId, byte ul, byte ur, byte bl, byte br, byte pi)
-		{/*
+		{
 			var tileSet = TileSets[MapTileSets[mapId]];
 			var tile = UnusedTilesbyTileSet[MapTileSets[mapId]][0];
 			UnusedTilesbyTileSet[MapTileSets[mapId]].RemoveAt(0);
@@ -187,8 +190,7 @@ namespace FF1Lib
 			tileSet.TopRightTiles[tile] = ur;
 			tileSet.BottemLeftTiles[tile] = bl;
 			tileSet.BottemRightTiles[tile] = br;
-			*/
-			byte tile = 0x00;
+
 			return tile;
 		}
 
@@ -259,28 +261,105 @@ namespace FF1Lib
 
 		private List<Item> GetWhiteShopInventory(int slots)
 		{
-			var spells = new List<Spell> { Spell.RUSE, Spell.INVS, Spell.PURE, Spell.CUR3, Spell.LIFE, Spell.HRM3, Spell.SOFT, Spell.EXIT, Spell.INV2, Spell.CUR4, Spell.HRM4, Spell.HEL3, Spell.LIF2, Spell.FADE, Spell.WALL};
-			var items = spells.Where(s => Spells.ContainsKey(s.ToString())).Select(s => Convert.ToByte(Spells[s.ToString()].Index + 176)).Cast<Item>().ToList();
+			if (flags.GenerateNewSpellbook ?? false)
+			{
+				return GetCraftedSpellInventory(slots, false);
+			}
+			else
+			{
+				var spells = new List<Spell> { Spell.RUSE, Spell.INVS, Spell.PURE, Spell.CUR3, Spell.LIFE, Spell.HRM3, Spell.SOFT, Spell.EXIT, Spell.INV2, Spell.CUR4, Spell.HRM4, Spell.HEL3, Spell.LIF2, Spell.FADE, Spell.WALL };
+				var items = spells.Where(s => Spells.ContainsKey(s.ToString())).Select(s => Convert.ToByte(Spells[s.ToString()].Index + 176)).Cast<Item>().ToList();
 
-			List<Item> result = new List<Item>();
+				List<Item> result = new List<Item>();
 
-			items.Shuffle(rng);
-			result.AddRange(items.Take(slots));
+				items.Shuffle(rng);
+				result.AddRange(items.Take(slots));
 
-			return result;
+				return result;
+			}
 		}
 
 		private List<Item> GetBlackShopInventory(int slots)
 		{
-			var spells = new List<Spell> { Spell.LOCK, Spell.TMPR, Spell.FIR2, Spell.LIT2, Spell.LOK2, Spell.FAST, Spell.ICE2, Spell.FIR3, Spell.BANE, Spell.WARP, Spell.LIT3, Spell.QAKE, Spell.ICE3, Spell.BRAK, Spell.SABR, Spell.NUKE, Spell.ZAP, Spell.XXXX };
-			var items = spells.Where(s => Spells.ContainsKey(s.ToString())).Select(s => Convert.ToByte(Spells[s.ToString()].Index + 176)).Cast<Item>().ToList();
+			if (flags.GenerateNewSpellbook ?? false)
+			{
+				return GetCraftedSpellInventory(slots, true);
+			}
+			else
+			{
+				var spells = new List<Spell> { Spell.LOCK, Spell.TMPR, Spell.FIR2, Spell.LIT2, Spell.LOK2, Spell.FAST, Spell.ICE2, Spell.FIR3, Spell.BANE, Spell.WARP, Spell.LIT3, Spell.QAKE, Spell.ICE3, Spell.BRAK, Spell.SABR, Spell.NUKE, Spell.ZAP, Spell.XXXX };
+				var items = spells.Where(s => Spells.ContainsKey(s.ToString())).Select(s => Convert.ToByte(Spells[s.ToString()].Index + 176)).Cast<Item>().ToList();
+
+				List<Item> result = new List<Item>();
+
+				items.Shuffle(rng);
+				result.AddRange(items.Take(slots));
+
+				return result;
+			}
+		}
+
+		private List<Item> GetCraftedSpellInventory(int slots, bool black)
+		{
+			var stDamSpells = SpellInfos.Where(s => s.routine == 0x01 && s.targeting == 0x01).Where(s => s.tier >= 3).OrderBy(s => -s.tier).Take(3);
+			var aoeDamSpells = SpellInfos.Where(s => s.routine == 0x01 && s.targeting != 0x01).OrderBy(s => -s.tier).Take(6);
+
+			var stHarmSpells = SpellInfos.Where(s => s.routine == 0x02 && s.targeting == 0x01).OrderBy(s => -s.tier).Take(1);
+			var aoeHarmSpells = SpellInfos.Where(s => s.routine == 0x02 && s.targeting != 0x01).OrderBy(s => -s.tier).Take(1);
+
+			var stHealSpells = SpellInfos.Where(s => (s.routine == 0x07 || s.routine == 0x0F) && s.targeting != 0x08).OrderBy(s => -s.tier).Take(2);
+			var aoeHealSpells = SpellInfos.Where(s => (s.routine == 0x07 || s.routine == 0x0F) && s.targeting != 0x08).OrderBy(s => -s.tier).Take(2);
+
+			var WallSpells = SpellInfos.Where(s => s.routine == 0x0A && s.effect == 0xFF).Take(1);
+			var FastSpells = SpellInfos.Where(s => s.routine == 0x0C).OrderBy(s => -s.tier).Take(2);
+			var SabrSpells = SpellInfos.Where(s => s.routine == 0x0D).OrderBy(s => -s.tier).Take(2);
+			var LockSpells = SpellInfos.Where(s => s.routine == 0x0E).OrderBy(s => -s.tier).Take(2);
+			var RuseSpells = SpellInfos.Where(s => s.routine == 0x10).OrderBy(s => -s.tier).Take(2);
+			var WordSpells = SpellInfos.Where(s => s.routine == 0x12 && s.effect == 0b00000001).Take(1);
+			var WordSpells2 = SpellInfos.Where(s => s.routine == 0x03 && (s.effect == 0b00000010 || s.effect == 0b00000001)).Take(3);
+
+			var spells = stDamSpells
+				.Concat(aoeDamSpells)
+				.Concat(aoeHarmSpells)
+				.Concat(stHealSpells)
+				.Concat(aoeHealSpells)
+				.Concat(WallSpells)
+				.Concat(FastSpells)
+				.Concat(SabrSpells)
+				.Concat(LockSpells)
+				.Concat(RuseSpells)
+				.Concat(WordSpells)
+				.Concat(WordSpells2)
+				.Select(s => Convert.ToByte(SpellInfos.IndexOf(s)));
+
+
+			var specialSpells = Spells.Where(s => s.Key.StartsWith("LIF"))
+			.Concat(Spells.Where(s => s.Key.StartsWith("WARP")))
+			.Concat(Spells.Where(s => s.Key.StartsWith("WRP")))
+			.Concat(Spells.Where(s => s.Key.StartsWith("EXIT")))
+			.Concat(Spells.Where(s => s.Key.StartsWith("EXT")))
+			.Concat(Spells.Where(s => s.Key.StartsWith("SOFT")))
+			.Concat(Spells.Where(s => s.Key.StartsWith("SFT")))
+			.Concat(Spells.Where(s => s.Key.StartsWith("PURE")))
+			.Concat(Spells.Where(s => s.Key.StartsWith("PUR")))
+			.Select(s => Convert.ToByte(s.Value.Index));
+
+
+			var items = spells
+				.Concat(specialSpells)
+				.Where(s => BlackSpell(s) ^ !black)
+				.ToList();
+
+			var spellnames = Spells.Where(s => items.Contains(s.Value.Index)).Select(s => s.Key).ToList();
 
 			List<Item> result = new List<Item>();
 
 			items.Shuffle(rng);
-			result.AddRange(items.Take(slots));
+			result.AddRange(items.Take(slots).Select(i => (Item)Convert.ToByte(i + 0xB0)));
 
 			return result;
 		}
+
+		bool BlackSpell(int id) => id % 8 > 3;
 	}
 }

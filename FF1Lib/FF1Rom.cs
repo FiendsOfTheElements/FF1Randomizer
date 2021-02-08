@@ -338,7 +338,7 @@ namespace FF1Lib
 							excludeItemsFromRandomShops.Add(Item.Masamune);
 						}
 
-						shopItemLocation = ShuffleShops(rng, (bool)flags.ImmediatePureAndSoftRequired, ((bool)flags.RandomWares), excludeItemsFromRandomShops, flags.WorldWealth);
+						shopItemLocation = ShuffleShops(rng, (bool)flags.ImmediatePureAndSoftRequired, ((bool)flags.RandomWares), excludeItemsFromRandomShops, flags.WorldWealth, overworldMap.ConeriaTownEntranceItemShopIndex);
 						incentivesData = new IncentiveData(rng, flags, overworldMap, shopItemLocation);
 					}
 
@@ -376,12 +376,12 @@ namespace FF1Lib
 			{
 				ShuffleMagicLevels(rng, ((bool)flags.MagicPermissions), (bool)flags.MagicLevelsTiered, (bool)flags.MagicLevelsMixed, (bool)!flags.GenerateNewSpellbook);
 			}
-
-			new LegendaryShops(rng, flags, maps, this).PlaceShops();
 			
 			new StartingInventory(rng, flags, this).SetStartingInventory();
 
 			new ShopKiller(rng, flags, maps, this).KillShops();
+
+			new LegendaryShops(rng, flags, maps, this).PlaceShops();
 
 			/*
 			if (flags.WeaponPermissions)
