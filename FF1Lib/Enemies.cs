@@ -410,5 +410,86 @@ namespace FF1Lib
 
 			Put(EnemyOffset, enemies.SelectMany(enemy => enemy.ToBytes()).ToArray());
 		}
+
+		public void AlternativeFiends(MT19337 rng, bool AllowUnsafePirates, bool doNormals, bool excludeImps, bool scaryImps)
+		{
+			/*
+			const int FiendsIndex = 0x77;
+			var oldFiends = Get(EnemyOffset + EnemySize * FiendsIndex, EnemySize * 8).Chunk(EnemySize);
+			var newFiends = Get(EnemyOffset + EnemySize * FiendsIndex, EnemySize * 8).Chunk(EnemySize);
+			*/
+			// Enemies
+			// 1. Set weakness
+			// 2. AND weakness out of resistance
+			// 3. Set type
+			//
+			// SkillSets
+			// 1. Set Spells/Skills
+			// 2. 0? set to 64, else keep original
+			//
+			// Formations
+			// 1. Set type
+			// 2. Sprite
+			// 3. Palette
+			// 4. Qty?
+			// 
+			// Name table
+			// 1. Change name
+			// 2. Pointer to first name for more space
+
+			/*
+
+			if (doNormals)
+			{
+				var normalOldEnemies = oldEnemies.Take(EnemyCount - 10).ToList(); // all but WarMECH, fiends, fiends revisited, and CHAOS
+				if (!AllowUnsafePirates) normalOldEnemies.RemoveAt(Enemy.Pirate);
+				if (excludeImps) normalOldEnemies.RemoveAt(Enemy.Imp);
+				normalOldEnemies.Shuffle(rng);
+				if (excludeImps) normalOldEnemies.Insert(Enemy.Imp, oldEnemies[Enemy.Imp]);
+				if (!AllowUnsafePirates) normalOldEnemies.Insert(Enemy.Pirate, oldEnemies[Enemy.Pirate]);
+
+				for (int i = 0; i < EnemyCount - 10; i++)
+				{
+					newEnemies[i][7] = normalOldEnemies[i][7];
+				}
+			}
+
+			var oldBosses = new List<Blob>
+			{
+				oldEnemies[Enemy.Lich],
+				oldEnemies[Enemy.Kary],
+				oldEnemies[Enemy.Kraken],
+				oldEnemies[Enemy.Tiamat]
+			};
+			oldBosses.Shuffle(rng);
+
+			newEnemies[Enemy.Lich][7] = oldBosses[0][7];
+			newEnemies[Enemy.Kary][7] = oldBosses[1][7];
+			newEnemies[Enemy.Kraken][7] = oldBosses[2][7];
+			newEnemies[Enemy.Tiamat][7] = oldBosses[3][7];
+
+			var oldBigBosses = new List<Blob>
+			{
+				oldEnemies[Enemy.WarMech],
+				oldEnemies[Enemy.Lich2],
+				oldEnemies[Enemy.Kary2],
+				oldEnemies[Enemy.Kraken2],
+				oldEnemies[Enemy.Tiamat2],
+				oldEnemies[Enemy.Chaos]
+			};
+			if (scaryImps) oldBigBosses.Add(oldEnemies[Enemy.Imp]);
+			oldBigBosses.Shuffle(rng);
+
+			newEnemies[Enemy.WarMech][7] = oldBigBosses[0][7];
+			newEnemies[Enemy.Lich2][7] = oldBigBosses[1][7];
+			newEnemies[Enemy.Kary2][7] = oldBigBosses[2][7];
+			newEnemies[Enemy.Kraken2][7] = oldBigBosses[3][7];
+			newEnemies[Enemy.Tiamat2][7] = oldBigBosses[4][7];
+			newEnemies[Enemy.Chaos][7] = oldBigBosses[5][7];
+			if (scaryImps) newEnemies[Enemy.Imp][7] = oldBigBosses[6][7];
+
+			Put(EnemyOffset, newEnemies.SelectMany(enemy => enemy.ToBytes()).ToArray());
+			*/
+		}
 	}
 }
