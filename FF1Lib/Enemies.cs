@@ -413,17 +413,83 @@ namespace FF1Lib
 
 		public void AlternativeFiends(MT19337 rng, bool AllowUnsafePirates, bool doNormals, bool excludeImps, bool scaryImps)
 		{
-			/*
+			
 			const int FiendsIndex = 0x77;
-			var oldFiends = Get(EnemyOffset + EnemySize * FiendsIndex, EnemySize * 8).Chunk(EnemySize);
-			var newFiends = Get(EnemyOffset + EnemySize * FiendsIndex, EnemySize * 8).Chunk(EnemySize);
-			*/
-			// Enemies
+			//const int FiendsFormationIndex = 0x73; // Lich2 to Tiamat2, and then Tiamat to lich
+			const int FiendsScriptIndex = 0x23;
+			var fiendsFormationOrder = new List<int> { 0x7A, 0x73, 0x79, 0x74, 0x78, 0x75, 0x77, 0x76 };
+
+			var encountersData = new Encounters(this);
+
+			EnemyInfo[] fiends = new EnemyInfo[8];
+			EnemyScriptInfo[] fiendsScript = new EnemyScriptInfo[8];
+
+			for (int i = 0; i < 8; i++)
+			{
+				fiends[i] = new EnemyInfo();
+				fiends[i].decompressData(Get(EnemyOffset + (FiendsIndex + i) * EnemySize, EnemySize));
+				fiendsScript[i] = new EnemyScriptInfo();
+				fiendsScript[i].decompressData(Get(ScriptOffset + (FiendsScriptIndex + i) * ScriptSize, ScriptSize));
+			}
+
+
+
+			// Shuffle alternate
+
+			for (int i = 0; i < 8; i++)
+			{
+				fiends[i].monster_type = 0x00;
+				fiends[i].elem_weakness = 0x00;
+				fiends[i].elem_resist = (byte)(fiends[i].elem_resist & 0xFF);
+
+				if (fiendsScript[i].skill_chance == 0x00 && true)
+					fiendsScript[i].skill_chance = 0x40;
+				else
+					fiendsScript[i].skill_chance = 0xFF;
+
+				fiendsScript[i].skill_list = new byte[] { 0x00 };
+
+				if (fiendsScript[i].spell_chance == 0x00 && true)
+					fiendsScript[i].spell_chance = 0x40;
+				else
+					fiendsScript[i].spell_chance = 0xFF;
+
+				fiendsScript[i].spell_list = new byte[] { 0x00 };
+
+				encountersData.formations[fiendsFormationOrder[i]].pattern = FormationPattern.Mixed;
+				encountersData.formations[fiendsFormationOrder[i]].spriteSheet = FormationSpriteSheet.KaryLich;
+				encountersData.formations[fiendsFormationOrder[i]].palette1 = 0x10;
+				encountersData.formations[fiendsFormationOrder[i]].palette2 = 0x10;
+			}
+
+			encountersData.Write(this);
+
+
+			//Update enemies names
+			var enemyText = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
+
+			for (int i = 0; i < 4; i++)
+			{
+				enemyText[119 + (i * 2)] = "FIEND";
+				enemyText[120 + (i * 2)] = "";
+			}
+
+			WriteText(enemyText, EnemyTextPointerOffset, EnemyTextPointerBase, EnemyTextOffset);
+
+			for (int i = 0; i < 4; i++)
+			{
+				var namepointer = Get(EnemyTextPointerOffset + (119 + (i * 2)) * 2, 2);
+				Put(EnemyTextPointerOffset + (120 + (i * 2)) * 2, namepointer);
+			}
+
+
+
+			// Enemies EnemyInfo
 			// 1. Set weakness
 			// 2. AND weakness out of resistance
 			// 3. Set type
 			//
-			// SkillSets
+			// SkillSets EnemySkillInfo
 			// 1. Set Spells/Skills
 			// 2. 0? set to 64, else keep original
 			//
