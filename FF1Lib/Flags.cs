@@ -65,7 +65,7 @@ namespace FF1Lib
 
 		#endregion
 
-		public bool ExcludeGoldFromScaling { get; set; } = true;
+		public bool ExcludeGoldFromScaling { get; set; } = false;
 		public bool Spoilers { get; set; } = false;
 		public bool TournamentSafe { get; set; } = false;
 		public bool BlindSeed { get; set; } = false;
