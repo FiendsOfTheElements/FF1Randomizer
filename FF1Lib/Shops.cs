@@ -82,7 +82,7 @@ namespace FF1Lib
 			BlackPointers.Shuffle(rng);
 
 			// calc offset for White and Black Magic Shops of the same town/level for pairing
-			int whiteToBlackOffset = pointers[(int)ShopType.Black] - pointers[(int)ShopType.White]; ;
+			int whiteToBlackOffset = pointers[(int)ShopType.Black] - pointers[(int)ShopType.White];
 
 			for (int i = 0; i < 9; i++)
 			{
