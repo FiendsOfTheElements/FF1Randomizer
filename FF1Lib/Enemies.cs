@@ -411,14 +411,150 @@ namespace FF1Lib
 			Put(EnemyOffset, enemies.SelectMany(enemy => enemy.ToBytes()).ToArray());
 		}
 
+		public enum EnemySkills : byte
+		{
+			None = 0x00,
+			Frost = 0x01,
+			Heat = 0x02,
+			Glance = 0x03,
+			Gaze = 0x04,
+			Flash = 0x05,
+			Scorch = 0x06,
+			Crack = 0x07,
+			Squint = 0x08,
+			Stare = 0x09,
+			Glare = 0x0A,
+			Blizzard = 0x0B,
+			Blaze = 0x0C,
+			Inferno = 0x0D,
+			Cremate = 0x0E,
+			Poison_Stone = 0x0F,
+			Trance = 0x10,
+			Poison_Damage = 0x11,
+			Thunder = 0x12,
+			Toxic = 0x13,
+			Snorting = 0x14,
+			Nuclear = 0x15,
+			Ink = 0x16,
+			Stinger = 0x17,
+			Dazzle = 0x18,
+			Swirl = 0x19,
+			Tornado = 0x1A
+		}
+
+		public enum SpellByte : byte
+		{
+			CURE = 0x00,
+			HARM = 0x01,
+			FOG = 0x02,
+			RUSE = 0x03,
+			FIRE = 0x04,
+			SLEP = 0x05,
+			LOCK = 0x06,
+			LIT = 0x07,
+			LAMP = 0x08,
+			MUTE = 0x09,
+			ALIT = 0x0A,
+			INVS = 0x0B,
+			ICE = 0x0C,
+			DARK = 0x0D,
+			TMPR = 0x0E,
+			SLOW = 0x0F,
+			CUR2 = 0x10,
+			HRM2 = 0x11,
+			AFIR = 0x12,
+			HEAL = 0x13,
+			FIR2 = 0x14,
+			HOLD = 0x15,
+			LIT2 = 0x16,
+			LOK2 = 0x17,
+			PURE = 0x18,
+			FEAR = 0x19,
+			AICE = 0x1A,
+			AMUT = 0x1B,
+			SLP2 = 0x1C,
+			FAST = 0x1D,
+			CONF = 0x1E,
+			ICE2 = 0x1F,
+			CUR3 = 0x20,
+			LIFE = 0x21,
+			HRM3 = 0x22,
+			HEL2 = 0x23,
+			FIR3 = 0x24,
+			BANE = 0x25,
+			WARP = 0x26,
+			SLO2 = 0x27,
+			SOFT = 0x28,
+			EXIT = 0x29,
+			FOG2 = 0x2A,
+			INV2 = 0x2B,
+			LIT3 = 0x2C,
+			RUB = 0x2D,
+			QAKE = 0x2E,
+			STUN = 0x2F,
+			CUR4 = 0x30,
+			HRM4 = 0x31,
+			ARUB = 0x32,
+			HEL3 = 0x33,
+			ICE3 = 0x34,
+			BRAK = 0x35,
+			SABR = 0x36,
+			BLND = 0x37,
+			LIF2 = 0x38,
+			FADE = 0x39,
+			WALL = 0x3A,
+			XFER = 0x3B,
+			NUKE = 0x3C,
+			STOP = 0x3D,
+			ZAP = 0x3E,
+			XXXX = 0x3F
+		}
+
+		public struct AlternateFiends
+		{
+			public string Name;
+			public List<byte> Spells1;
+			public List<byte> Skills1;
+			public byte SpellChance1;
+			public byte SkillChance1;
+			public List<byte> Spells2;
+			public List<byte> Skills2;
+			public byte SpellChance2;
+			public byte SkillChance2;
+			public MonsterType MonsterType;
+			public Element ElementalWeakness;
+			public FormationSpriteSheet SpriteSheet;
+			public FormationPattern FormationPattern;
+			public int Palette1;
+			public int Palette2;
+			public FormationGFX GFXOffset;
+		}
 		public void AlternativeFiends(MT19337 rng, bool AllowUnsafePirates, bool doNormals, bool excludeImps, bool scaryImps)
 		{
-			
 			const int FiendsIndex = 0x77;
 			//const int FiendsFormationIndex = 0x73; // Lich2 to Tiamat2, and then Tiamat to lich
 			const int FiendsScriptIndex = 0x23;
 			var fiendsFormationOrder = new List<int> { 0x7A, 0x73, 0x79, 0x74, 0x78, 0x75, 0x77, 0x76 };
-
+			var alternateFiendsList = new List<AlternateFiends> {
+				new AlternateFiends {
+					Name = "ASTAROTH",
+					SpriteSheet = FormationSpriteSheet.BadmanAstosMadponyWarmech,
+					FormationPattern = FormationPattern.Mixed,
+					GFXOffset = FormationGFX.Sprite2,
+					Palette1 = 0x00,
+					Palette2 = 0x00,
+					ElementalWeakness = Element.FIRE,
+					MonsterType = MonsterType.MAGE,
+					SpellChance1 = 0x40,
+					Spells1 = new List<byte> { (byte)SpellByte.FIRE, (byte)SpellByte.FIRE, (byte)SpellByte.BRAK, (byte)SpellByte.FIRE, (byte)SpellByte.FIRE, (byte)SpellByte.FIRE, (byte)SpellByte.BRAK, (byte)SpellByte.FIRE },
+					SkillChance1 = 0x40,
+					Skills1 = new List<byte> { (byte)EnemySkills.Heat, (byte)EnemySkills.Heat, (byte)EnemySkills.Heat, (byte)EnemySkills.Poison_Stone },
+					SpellChance2 = 0x40,
+					Spells2 = new List<byte> { (byte)SpellByte.FIR2, (byte)SpellByte.FIR3, (byte)SpellByte.FIR2, (byte)SpellByte.BRAK, (byte)SpellByte.FIR2, (byte)SpellByte.FIR3, (byte)SpellByte.FIR2, (byte)SpellByte.BANE },
+					SkillChance2 = 0x40,
+					Skills2 = new List<byte> { (byte)EnemySkills.Scorch, (byte)EnemySkills.Poison_Damage, (byte)EnemySkills.Blaze, (byte)EnemySkills.Poison_Stone },
+				}
+			};
 			var encountersData = new Encounters(this);
 
 			EnemyInfo[] fiends = new EnemyInfo[8];
@@ -436,11 +572,14 @@ namespace FF1Lib
 
 			// Shuffle alternate
 
-			for (int i = 0; i < 8; i++)
+			for (int i = 0; i < 4; i++)
 			{
 				fiends[i].monster_type = 0x00;
+				fiends[i + 4].monster_type = 0x00;
 				fiends[i].elem_weakness = 0x00;
+				fiends[i + 4].elem_weakness = 0x00;
 				fiends[i].elem_resist = (byte)(fiends[i].elem_resist & 0xFF);
+				fiends[i + +4].elem_resist = (byte)(fiends[i + 4].elem_resist & 0xFF);
 
 				if (fiendsScript[i].skill_chance == 0x00 && true)
 					fiendsScript[i].skill_chance = 0x40;
@@ -458,6 +597,7 @@ namespace FF1Lib
 
 				encountersData.formations[fiendsFormationOrder[i]].pattern = FormationPattern.Mixed;
 				encountersData.formations[fiendsFormationOrder[i]].spriteSheet = FormationSpriteSheet.KaryLich;
+				encountersData.formations[fiendsFormationOrder[i]].gfxOffset1 = 0x00;
 				encountersData.formations[fiendsFormationOrder[i]].palette1 = 0x10;
 				encountersData.formations[fiendsFormationOrder[i]].palette2 = 0x10;
 			}
