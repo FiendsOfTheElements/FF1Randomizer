@@ -87,7 +87,7 @@ namespace FF1Lib
 			var prices = Get(PriceOffset, PriceSize * PriceCount).ToUShorts();
 			for (int i = 0; i < prices.Length; i++)
 			{
-				if (flags.ExcludeGoldFromScaling)
+				if (flags.ExcludeGoldFromScaling && ItemLists.AllGoldTreasure.Contains((Item)i))
 				{
 					var price = (int)prices[i];
 					var newPrice = price + rng.Between(-price / 10, price / 10);
