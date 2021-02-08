@@ -205,7 +205,7 @@ namespace FF1Lib
 
 			if (flags.DeepDungeon)
 			{
-				DeepDungeon(rng, overworldMap, maps);
+				DeepDungeon(rng, overworldMap, maps, flags);
 			}
 
 			if ((bool)flags.RandomizeFormationEnemizer)

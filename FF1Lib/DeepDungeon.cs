@@ -555,7 +555,7 @@ namespace FF1Lib
 			}
 
 		}
-		public void DeepDungeon(MT19337 rng, OverworldMap overworldMap, List<Map> maps)
+		public void DeepDungeon(MT19337 rng, OverworldMap overworldMap, List<Map> maps, Flags flags)
 		{
 			InitializeTilesets();
 
@@ -607,17 +607,16 @@ namespace FF1Lib
 			// Generate the map layouts.
 			for (int i = 8; i < 61; i++)
 			{
-				Console.WriteLine("Map " + i);
+				//Console.WriteLine("Map " + i);
 				// Set the encounter rate.
-				Console.WriteLine(" Setting encounter rate");
 				Put(0x2CC00 + i, Blob.FromHex("08"));
 
 				// Pick a tileset with unused exit tiles.
-				Console.WriteLine(" Selecting tileset");
 				tilesetmappings[i] = tilesetspinner.PickRandom(rng);
+				Console.WriteLine("Map " + i + " using tileset " + tilesetmappings[i] + " with exits remaining: " + tilesets[tilesetmappings[i]].teleportdeck.Count());
 				if (townfloors[nexttown] == i)
 				{
-					if (tilesets[tilesetmappings[i]].teleportdeck.Count() == 0)
+					if (tilesets[tilesetmappings[i]].teleportdeck.Count() < 2)
 					{
 						townfloors[nexttown]++;
 					}
@@ -626,21 +625,17 @@ namespace FF1Lib
 				overworldMap.PutPalette(OverworldTeleportIndex.ConeriaCastle1, (MapIndex)i);
 
 				// Start from a clean slate.
-				Console.WriteLine(" Erasing existing map layout");
 				WipeMap(maps[i], tilesets[tilesetmappings[i]]);
 
 				// Which algorithm to use; right now it's the only one.
-				Console.WriteLine(" Generating new layout");
 				GenerateMapBoxStyle(rng, maps[i], tilesets[tilesetmappings[i]]);
 
 				// Make the tiles look right.
-				Console.WriteLine(" Fixing corners");
 				Beautify(maps[i], tilesets[tilesetmappings[i]]);
 
 				// Connect it to the next map.
 				if (i < 60)
 				{
-					Console.WriteLine(" Placing exit");
 					Put(0x800 + tilesetmappings[i] * 0x100 + 2 * PlaceExit(rng, maps[i], tilesets[tilesetmappings[i]]), Blob.FromHex("80" + Convert.ToHexString(new byte[] { (byte)(i - 8) })));
 					Put(0x2D00 + i - 8, Blob.FromHex("20"));
 					Put(0x2D40 + i - 8, Blob.FromHex("A0"));
@@ -656,24 +651,24 @@ namespace FF1Lib
 				}
 				else
 				{
-					Console.WriteLine(" Placing final boss");
 					PlaceChaos(rng, maps[i], tilesets[tilesetmappings[i]]);
 				}
 
 				// If all its exits are now used, remove the tileset from the list of available ones.
 				if (tilesets[tilesetmappings[i]].teleportdeck.Count() == 0)
 				{
-					Console.WriteLine(" Out of teleports, removing tileset from options");
+					Console.WriteLine(" Out of teleports, removing tileset " + tilesetmappings[i]);
 					tilesetspinner.Remove(tilesetmappings[i]);
+					Console.WriteLine("  Tileset spinner now contains " + tilesetspinner.Count() + " items");
 				}
 			}
 
 			// Distribute chests and put treasure in them.
 			Console.WriteLine("Distributing treasure");
-			DistributeTreasure(rng, maps);
+			DistributeTreasure(rng, maps, flags);
 
 			// Put Bahamut and a TAIL somewhere in the dungeon.
-			Console.WriteLine("Placing Bahamut & Tail");
+			Console.WriteLine("Placing Bahamut and tail");
 			PlaceBahamut(rng, maps);
 
 			// Commit the overworld edits.
@@ -681,15 +676,14 @@ namespace FF1Lib
 			overworldMap.ApplyMapEdits();
 		}
 
-		public void DistributeTreasure(MT19337 rng, List<Map> maps)
-		{ 
-
+		public void DistributeTreasure(MT19337 rng, List<Map> maps, Flags flags)
+		{
+			Console.WriteLine(" Placing chests");
 			List<byte> mapspinner;
 			List<Candidate> candidates;
 			List<byte> currentdeck;
 			Candidate c;
 			List<byte> accessibleroomtiles;
-			Console.WriteLine(" Placing chests");
 			for (int i = 1; i <= 7; i++)
 			{
 				accessibleroomtiles = new List<byte>();
@@ -743,7 +737,8 @@ namespace FF1Lib
 					}
 				}
 			}
-			Console.WriteLine(" Creating treasure spinners");
+			Console.WriteLine(" Populating chests");
+			Console.WriteLine("  Creating potion spinners");
 			Item[] potionspinner1 =
 			{
 				Item.Heal, Item.Heal, Item.Heal, Item.Heal,
@@ -765,22 +760,51 @@ namespace FF1Lib
 				Item.House, Item.House,
 				Item.Heal
 			};
+			Console.WriteLine("  Reading treasure prices");
 			var v = Get(0x37C00, 0x200).Chunk(2);
 			for (int i = 0x1C; i <= 0xAF; i++)
 			{
 				treasures.Add(new Treasure(v[i][0] + v[i][1] * 0x100, (byte)i));
 			}
+			Console.WriteLine("  Sorting treasures by price");
 			treasures.Sort((x, y) => x.value.CompareTo(y.value));
-			Console.WriteLine(" Total treasures: " + treasures.Count());
-			Console.WriteLine(" Populating chests");
+			var treasurediesize = 30;
 			var chestsdropped = 0;
+			double lowest = 0;
+			Console.WriteLine("  Putting treasures in chests");
 			for (int i = 8; i < 61; i++)
 			{
-				Treasure[] spinner = new Treasure[28];
-				double lowest = (i - 8) * ((treasures.Count() - 28) / 52);
-				treasures.CopyTo((int)lowest, spinner, 0, 28);
-				//Console.WriteLine("  Lowest: " + lowest + " / " + spinner[0].value);
-				Console.WriteLine("  Count: " + spinner.Count());
+				//Treasure[] spinner = new Treasure[28];
+				switch (i)
+				{
+					case 8:
+						lowest += 0;
+						break;
+					case 9:
+						lowest += 6;
+						break;
+					case 10:
+					case 11:
+						lowest += 5;
+						break;
+					case 12:
+					case 13:
+					case 14:
+						lowest += 4;
+						break;
+					case 15:
+					case 16:
+					case 17:
+					case 18:
+						lowest += 3;
+						break;
+					default:
+						lowest += 2;
+						break;
+				}
+				lowest = Math.Min(lowest, treasures.Count() - treasurediesize - 1);
+				//Console.WriteLine(" Copying 28 treasures starting at item " + lowest);
+				//treasures.CopyTo((int)lowest, spinner, 0, 28);
 				for (int j = 0; j < 64; j++)
 				{
 					for (int k = 0; k < 64; k++)
@@ -807,16 +831,23 @@ namespace FF1Lib
 							}
 							else
 							{
-								Treasure picked = spinner.PickRandom(rng);
-								//spunitem = (byte)spinner.PickRandom(rng).index;
-								spunitem = (byte)picked.index;
-								Console.WriteLine("   " + picked.value);
+								//Treasure picked = spinner.PickRandom(rng);
+								Treasure picked = treasures[RollDice(rng, 1, treasurediesize)];
+								spunitem = picked.index;
 							}
 							Put(0x3100 + chestsdropped, Blob.FromHex(Convert.ToHexString(new byte[] { spunitem })));
 						}
 					}
 				}
 				chestsonfloor[i] = (byte)chestsdropped;
+			}
+			Console.WriteLine("  Placing ribbons");
+			for (int i = 1; i <= 3; i++)
+			{
+				var ribbonfloor = RollDice(rng, 1, 8) + 8 + i * 8;
+				while (chestsonfloor[ribbonfloor] - chestsonfloor[ribbonfloor - 1] == 0) ribbonfloor++;
+				var chestindex = RollDice(rng, 1, chestsonfloor[ribbonfloor] - chestsonfloor[ribbonfloor - 1]) + chestsonfloor[ribbonfloor - 1];
+				Put(0x3100 + chestindex, Blob.FromHex("63")); // 0x63 is the Ribbon item index
 			}
 
 		}
@@ -1163,6 +1194,7 @@ namespace FF1Lib
 			}
 			c = candidates.SpliceRandom(rng);
 			SetNpc((MapId)bahamutfloor, 0, ObjectId.Bahamut, c.x, c.y, true, true);
+			while (chestsonfloor[tailfloor] - chestsonfloor[tailfloor - 1] == 0) tailfloor++;
 			var chestindex = RollDice(rng, 1, chestsonfloor[tailfloor] - chestsonfloor[tailfloor - 1]) + chestsonfloor[tailfloor - 1];
 			Put(0x3100 + chestindex, Blob.FromHex("0D")); // 0D is the TAIL item index
 		}
