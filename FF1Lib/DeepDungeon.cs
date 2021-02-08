@@ -107,13 +107,13 @@ namespace FF1Lib
 		private struct FormationLevel
 		{
 			public byte index;
-			public int level;
+			public long level;
 			public Encounters.FormationData formation;
 
 		}
-		private int MonsterLevel(EnemyInfo monster)
+		private long MonsterLevel(EnemyInfo monster)
 		{
-			int result = 0;
+			long result = 0;
 			if (monster.exp == 1 && monster.gp == 1)
 			{
 				result = (int)Math.Pow(32000, 2) * 2;
@@ -613,7 +613,7 @@ namespace FF1Lib
 
 				// Pick a tileset with unused exit tiles.
 				tilesetmappings[i] = tilesetspinner.PickRandom(rng);
-				Console.WriteLine("Map " + i + " using tileset " + tilesetmappings[i] + " with exits remaining: " + tilesets[tilesetmappings[i]].teleportdeck.Count());
+				//Console.WriteLine("Map " + i + " using tileset " + tilesetmappings[i] + " with exits remaining: " + tilesets[tilesetmappings[i]].teleportdeck.Count());
 				if (townfloors[nexttown] == i)
 				{
 					if (tilesets[tilesetmappings[i]].teleportdeck.Count() < 2)
@@ -657,28 +657,42 @@ namespace FF1Lib
 				// If all its exits are now used, remove the tileset from the list of available ones.
 				if (tilesets[tilesetmappings[i]].teleportdeck.Count() == 0)
 				{
-					Console.WriteLine(" Out of teleports, removing tileset " + tilesetmappings[i]);
+					//Console.WriteLine(" Out of teleports, removing tileset " + tilesetmappings[i]);
 					tilesetspinner.Remove(tilesetmappings[i]);
-					Console.WriteLine("  Tileset spinner now contains " + tilesetspinner.Count() + " items");
+					//Console.WriteLine("  Tileset spinner now contains " + tilesetspinner.Count() + " items");
 				}
 			}
 
 			// Distribute chests and put treasure in them.
-			Console.WriteLine("Distributing treasure");
+			//Console.WriteLine("Distributing treasure");
 			DistributeTreasure(rng, maps, flags);
 
 			// Put Bahamut and a TAIL somewhere in the dungeon.
-			Console.WriteLine("Placing Bahamut and tail");
+			//Console.WriteLine("Placing Bahamut and tail");
 			PlaceBahamut(rng, maps);
 
 			// Commit the overworld edits.
-			Console.WriteLine("Committing changes");
+			//Console.WriteLine("Committing changes");
 			overworldMap.ApplyMapEdits();
 		}
 
+		//private void TestTraversibility(Map m, Tileset t)
+		//{
+		//	for (int x = 0; x < 64; x++)
+		//	{
+		//		for (int y = 0; y < 64; y++)
+		//		{
+		//			if (m[y, x] == t.roomtile && Traversible(m, t, x, y, 1, 1, true))
+		//			{
+		//				m[y, x] = t.floortile;
+		//			}
+		//		}
+		//	}
+		//}
+
 		public void DistributeTreasure(MT19337 rng, List<Map> maps, Flags flags)
 		{
-			Console.WriteLine(" Placing chests");
+			//Console.WriteLine(" Placing chests");
 			List<byte> mapspinner;
 			List<Candidate> candidates;
 			List<byte> currentdeck;
@@ -737,8 +751,6 @@ namespace FF1Lib
 					}
 				}
 			}
-			Console.WriteLine(" Populating chests");
-			Console.WriteLine("  Creating potion spinners");
 			Item[] potionspinner1 =
 			{
 				Item.Heal, Item.Heal, Item.Heal, Item.Heal,
@@ -760,42 +772,43 @@ namespace FF1Lib
 				Item.House, Item.House,
 				Item.Heal
 			};
-			Console.WriteLine("  Reading treasure prices");
 			var v = Get(0x37C00, 0x200).Chunk(2);
 			for (int i = 0x1C; i <= 0xAF; i++)
 			{
 				treasures.Add(new Treasure(v[i][0] + v[i][1] * 0x100, (byte)i));
 			}
-			Console.WriteLine("  Sorting treasures by price");
+			//Console.WriteLine("  Sorting treasures by price");
 			treasures.Sort((x, y) => x.value.CompareTo(y.value));
 			var treasurediesize = 30;
 			var chestsdropped = 0;
 			double lowest = 0;
-			Console.WriteLine("  Putting treasures in chests");
+			//Console.WriteLine("  Putting treasures in chests");
 			for (int i = 8; i < 61; i++)
 			{
-				//Treasure[] spinner = new Treasure[28];
 				switch (i)
 				{
 					case 8:
 						lowest += 0;
 						break;
 					case 9:
-						lowest += 6;
+						lowest += 10;
 						break;
 					case 10:
 					case 11:
+					case 12:
 						lowest += 5;
 						break;
-					case 12:
 					case 13:
 					case 14:
-						lowest += 4;
-						break;
 					case 15:
 					case 16:
+						lowest += 4;
+						break;
 					case 17:
 					case 18:
+					case 19:
+					case 20:
+					case 21:
 						lowest += 3;
 						break;
 					default:
@@ -803,8 +816,6 @@ namespace FF1Lib
 						break;
 				}
 				lowest = Math.Min(lowest, treasures.Count() - treasurediesize - 1);
-				//Console.WriteLine(" Copying 28 treasures starting at item " + lowest);
-				//treasures.CopyTo((int)lowest, spinner, 0, 28);
 				for (int j = 0; j < 64; j++)
 				{
 					for (int k = 0; k < 64; k++)
@@ -831,8 +842,7 @@ namespace FF1Lib
 							}
 							else
 							{
-								//Treasure picked = spinner.PickRandom(rng);
-								Treasure picked = treasures[RollDice(rng, 1, treasurediesize)];
+								Treasure picked = treasures[RollDice(rng, 1, treasurediesize) + (int)lowest];
 								spunitem = picked.index;
 							}
 							Put(0x3100 + chestsdropped, Blob.FromHex(Convert.ToHexString(new byte[] { spunitem })));
@@ -841,7 +851,7 @@ namespace FF1Lib
 				}
 				chestsonfloor[i] = (byte)chestsdropped;
 			}
-			Console.WriteLine("  Placing ribbons");
+			//Console.WriteLine("  Placing ribbons");
 			for (int i = 1; i <= 3; i++)
 			{
 				var ribbonfloor = RollDice(rng, 1, 8) + 8 + i * 8;
@@ -984,8 +994,24 @@ namespace FF1Lib
 			// While tracing, if it flips from solid to walkable and back more than twice,
 			// it breaks traversibility and rejects it.
 			bool result = true;
-			byte[] solids = t.Solids();
-			if (!inside) solids.Append(t.roomtile);
+			List<byte> solids = new List<byte>(t.treasuredeck);
+			solids.Add(t.walltile);
+			solids.Add(t.leftwalltile);
+			solids.Add(t.rightwalltile);
+			solids.Add(t.wallupperleft);
+			solids.Add(t.wallupperright);
+			solids.Add(t.abysstile);
+			solids.Add(t.roomleft);
+			solids.Add(t.roomright);
+			solids.Add(t.roomupper);
+			solids.Add(t.roomupperleft);
+			solids.Add(t.roomupperright);
+			solids.Add(t.roomlowerleft);
+			solids.Add(t.roomlowerright);
+			if (!inside)
+			{
+				solids.Add(t.roomtile);
+			}
 			bool solid = solids.Contains(m[y - 1, x - 1]);
 			int flips = 0;
 			for (int i = x - 1; i <= x + w; i++)
@@ -1021,6 +1047,38 @@ namespace FF1Lib
 				}
 			}
 			if (flips > 2) result = false;
+			// Make sure it's not blocking the only access to a neighbouring chest.
+			if (result && inside)
+			{
+				if (t.treasuredeck.Contains(m[y - 1, x]))
+				{
+					if (m[y - 2, x] != t.roomtile && m[y - 1, x - 1] != t.roomtile && m[y - 1, x + 1] != t.roomtile)
+					{
+						result = false;
+					}
+				}
+				if (t.treasuredeck.Contains(m[y + 1, x]))
+				{
+					if (m[y + 2, x] != t.roomtile && m[y + 1, x - 1] != t.roomtile && m[y + 1, x + 1] != t.roomtile)
+					{
+						result = false;
+					}
+				}
+				if (t.treasuredeck.Contains(m[y, x - 1]))
+				{
+					if (m[y, x - 2] != t.roomtile && m[y + 1, x - 1] != t.roomtile && m[y - 1, x - 1] != t.roomtile)
+					{
+						result = false;
+					}
+				}
+				if (t.treasuredeck.Contains(m[y, x + 1]))
+				{
+					if (m[y, x + 2] != t.roomtile && m[y + 1, x + 1] != t.roomtile && m[y - 1, x + 1] != t.roomtile)
+					{
+						result = false;
+					}
+				}
+			}
 			return result;
 		}
 
