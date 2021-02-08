@@ -285,7 +285,12 @@ namespace FF1Lib
 			{
 				ShortenToFR(maps, (bool)flags.PreserveFiendRefights, (bool)flags.PreserveAllFiendRefights, rng);
 			}
-			
+
+			if ((bool)flags.ExitToFR)
+			{
+				EnableToFRExit(maps, (bool)flags.ShortToFR);
+			}
+
 			if (((bool)flags.Treasures) && flags.ShardHunt && !flags.FreeOrbs)
 			{
 				EnableShardHunt(rng, talkroutines, flags.ShardCount);
