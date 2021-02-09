@@ -1,0 +1,49 @@
+﻿@using System.ComponentModel;
+@using System.IO;
+@using RomUtilities;
+@using FF1Lib;
+@using System.Text.Json;
+@using BlazorStrap
+@using Microsoft.AspNetCore.Components.Web
+@inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+
+<div id="announcement" class="framed-content ffr-tooltip-content">
+	<a class="styled-button ffr-tooltip-close-announcement" @onclick="@onclick"> X </a>
+	<h3 class="centered">Winter DAB Tournament 2021</h3>
+	<p>
+		Registrations are closed for the Winter DAB Tournament 2021, but you can still follow along the brackets and cheer for our participants!
+	</p>
+	<p>
+		Reveal stream on Friday, February 12 at 5pm EST.
+	</p>
+	<p>
+		Tournament starts Monday, February 15.
+	</p>
+	<div class="row">&nbsp;</div>
+	<div class="centered" style="margin: auto; max-width: 80%">
+		<a class="styled-button announcement" href="https://challonge.com/ffrdab2021">TOURNAMENT BRACKETS</a>
+		<a class="styled-button announcement" href="https://discord.gg/95gbpFd">COMMUNITY DISCORD</a>
+	</div>
+</div>
+
+
+
+@code {
+	[Parameter] public Action<bool> SetHideAnnouncement { get; set; }
+
+	async Task onclick()
+	{
+		// Announcement ID needs to be changed for each new events, also need to be changed in Randomizer.razor
+		//  both need to match
+		await LocalStorage.SetItemAsync("announcement_dab2021", true);
+		SetHideAnnouncement(true);
+	}
+
+
+
+
+
+
+	}
