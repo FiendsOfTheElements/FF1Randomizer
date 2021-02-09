@@ -42,6 +42,9 @@ The randomizer is hosted on github and therefore some level of git knowledge is 
  - rebase or merge: Methods of taking changes that are in a repo and combining them with your local work
  - pull and push: transferring files from the repo to your local stuff or the other way around.
  - clone: The action of setting up a local git directory that is a clone of a specific repo.
+ - checkout: Swap to a different branch or commit
+
+ - use `git status` to see what the current situation in your local git directory is.
 
 
 #### Github
@@ -62,7 +65,92 @@ A company that provides git hosting services.
 5. Follow the instructions [here](https://docs.github.com/en/github/getting-started-with-github/set-up-git#next-steps-authenticating-with-github-from-git) to authenticate with Github.
 6. Fork the FFR repo. Click on the "Fork" button at the top right, and follow any instructions.
 7. Now in your forked repo, clone it. Click on the "Code" button at the top of this page and select your relevant clone type (https or ssh) and copy that url. Then in your terminal/command line, navigate to the directory where you want the FFR directory to reside in, then type: `git clone <url you copied, without the angled brackets here>`
-8. Go back to the main FFR repo, [link here](https://github.com/FiendsOfTheElements/FF1Randomizer) and copy the url used to clone it. Add the main FFR repo as a remote using this command: `git remote add <some name you can remember like "main" or whatever> <the url you copied>`
+8. Go back to the main FFR repo, [link here](https://github.com/FiendsOfTheElements/FF1Randomizer) and copy the url used to clone it. Add the main FFR repo as a remote using this command: `git remote add <some name you can remember like "main" or "upstream" or whatever> <the url you copied>` -- note that we will be using "upstream" in this documentation, you can sub in your own name you choose.
 9. Get yourself a drink and celebrate having setup everything you need to start contributing to FFR!
 
 ### Working on a feature
+
+So now you want to work on a new feature or fix a bug! How do you start?
+
+#### First time setup:
+
+1. run `git fetch --all` this will update your local git with the knowledge of what the remotes have
+2. run `git checkout upstream/dev --track` this checkout the main development branch of the upstream repo, and track it for changes.
+
+#### Each time you start a feature or bugfix:
+
+1. run `git checkout -b <some branch name>` this will create a new local branch with any name you choose.
+2. run `git push origin -u HEAD` this will setup your forked repo to have a copy the local branch you just created.
+3. get to work on some feature code!
+4. when you have some work done, or are going to stop for a while, run one of the following `git add` commands:
+
+   `git add -u` adds updated files
+
+   `git add -p` interactively adds updated files
+
+   `git add .` adds all the files in the current directory and its sub directories
+
+   `git add -A` adds all files in the git directory and its sub directories
+
+   `git add relative/path/to/file` adds the file specified
+
+5. then run `git commit` and type in a commit message, this can be anything but try to make it obvious what is contained in that commit by just the message. `git commit -m "some message"` is a shortcut to add small commit messages.
+
+
+#### Occasionally while working on your feature
+ensure all current work is stored in a commit, so its easy to recover if something bad happens
+- run `git push` - this will update your remote with the commits you have made, and will be a backup incase anything happens.
+- run `git fetch upstream` then `git rebase upstream/dev` - this rebase command will find a common history point (when you created this branch) and then take all the commits since the, and place them on top of the current upstream/dev. What this means is git will try to make it like you just wrote all this code after the stuff in upstream/dev, even the new things. You might have conflicts, this is ok. Look at the Merging and Rebasing section below for help.
+
+
+#### When you are ready for feedback
+At this point you should have been talking with people in the dev discord and have something functional that maybe still needs some polish, but is ready for feedback, if not ready to be included in the beta site yet.
+
+1. rebase, as covered in the section immediately above this one.
+2. run `git push origin`
+3. go to github and head to your fork
+4. select the branch name you have been working with in the drop down on the middle left at the top.
+5. click the "Pull request" button on the middle right at the top
+6. this should open a window comparing the changes in your branch and the main repo's dev branch.
+7. add a title and write up a description of your changes.
+8. if your not ready to have this merged in, click on the arrow beside the "Create pull request" button, and change this to a draft pull request.
+9. if you want feed back from people in particular, select the gear by reviewers on the top right.
+10. once you are satisfied with the title, description, and reviewers, click the create pull request (or draft pull request) button.
+11. If you created a draft PR, once you think it is ready to be merged, come back here and change it to a regular PR
+12. Once it is approved and ready, one of the maintainers will merge it in for you, if you find you are waiting a lot, please reach out in the dev discord. We might be gearing up for a release and just holding off, or we might have forgotten, you wont know unless you reach out.
+13. Brag about how you contributed to one of the coolest video game projects on github.
+
+#### Merging and Rebasing
+
+When you are working, other people will also be working and we need a way to combine the changes.
+We can do this in two ways, _merge_ the changes or _rebase_ your changes. A key difference between merges and rebases is the commit history. In a merge, there will be a _merge commit_, this is a commit that has two parent commits. In a rebase, there will not be any merge commit, instead all the upstream work will be in your branch's history, before your work. Generally try to do a rebase unless the rebase is giving you trouble, then try a merge. Keeping the history linear is not worth a huge hassle.
+
+##### rebasing:
+ - have your work commited then run `git fetch upstream`
+ - `git rebase upstream/dev` will rebase you on the dev branch of the main repo
+ - you will see status updates about applying commits, it might stop before finishing, if this is the case, it will tell you about conflicts. See Resolving Conflicts below.
+
+
+##### merging:
+ - have your work commited then run `git fetch upstream`
+ - `git merge upstream/dev` will merge your work with the dev branch of the main repo
+ - you might have conflicts to resolve, see Resolving Conflicts below.
+
+
+##### Resolving Conflicts:
+So you have rebased or merged and need to fix a conflict? And what even is a conflict?
+Well a conflict is when you change something and someone else changes the same thing, git doesnt know which is correct, or if there needs to be reworking of the code to make stuff work with both pieces.
+
+First you will want to do `git status` - this will show you what is labeled as "both modified". The term "ours" refers to the main branch or the one being rebased onto, and the "theirs" refers to the branch you made changes in, usually. This will be where you have conflicts to resolve. So open up those files and find the areas with "<<<<<<< HEAD". This is the start of a conflict. You need to look at the two pieces of code and fix it up to work as expected with your changes **AND** the changes that were made by others since you started your work.
+
+The first section with be after the "<<<<<<< HEAD" until the "=======" and the second section will be from the "=======" until the ">>>>>>> <some branch name>"
+
+Go through each of these and fix them up, (try searching <<<<<<< HEAD to be sure you got them all), then run `git add -u` followed by:
+ - if you did a rebase: `git rebase --continue`, you might have more conflicts as more of your commits are applied.
+ - if you did a merge: `git merge --continue`, you will see a commit screen with a prefilled message, just leave the message and exit out as normal with commits.
+
+If you have issues with resolving a conflict and making stuff work afterwards (either your work or the other work), don't be afraid to reach out in the dev discord for help.
+
+And now your conflict should be resolved!
+
+
