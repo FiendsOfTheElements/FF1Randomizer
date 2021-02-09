@@ -3770,12 +3770,12 @@ namespace FF1Lib
 			}
 		}
 
-		public bool ExcludeVendorItemFromScaling
+		public bool CheapVendorItem
 		{
-			get => Flags.ExcludeVendorItemFromScaling;
+			get => Flags.CheapVendorItem;
 			set
 			{
-				Flags.ExcludeVendorItemFromScaling = value;
+				Flags.CheapVendorItem = value;
 				RaisePropertyChanged();
 			}
 		}

@@ -64,7 +64,7 @@
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="startingGoldCheckBox" @bind-Value="Flags.StartingGold">Scale Starting Gold</CheckBox>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="easyModeCheckBox" @bind-Value="Flags.EasyMode">Easy Mode</CheckBox>			
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="excludeGoldFromScalingCheckBox" @bind-Value="Flags.ExcludeGoldFromScaling">Exclude Gold from scaling</TriStateCheckBox>
-			<CheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="excludeVendorItemFromScalingCheckBox" @bind-Value="Flags.ExcludeVendorItemFromScaling" IsEnabled="Flags.ExcludeGoldFromScaling">Vendor Item scales with Gold</CheckBox>
+			<CheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="cheapVendorItemCheckBox" @bind-Value="Flags.CheapVendorItem" IsEnabled="Flags.ExcludeGoldFromScaling">Cheap Vendor Item</CheckBox>
 			<CheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="applyExpBoostToGoldCheckBox" @bind-Value="Flags.ApplyExpBoostToGold" IsEnabled="Flags.ExcludeGoldFromScaling">Apply flat Gold Boost to Enemies</CheckBox>
 			<div class="clear-it"></div>
 		</div>

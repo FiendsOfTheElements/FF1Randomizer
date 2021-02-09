@@ -79,9 +79,10 @@ namespace FF1Lib
 		{
 			IEnumerable<Item> tmpExcludedItems = Array.Empty<Item>() ;
 			if (flags.ExcludeGoldFromScaling ?? false) tmpExcludedItems = tmpExcludedItems.Concat(ItemLists.AllGoldTreasure);
-			if (flags.ExcludeVendorItemFromScaling) tmpExcludedItems = tmpExcludedItems.Concat(ItemLists.AllQuestItems);
+			if (flags.CheapVendorItem) tmpExcludedItems = tmpExcludedItems.Concat(ItemLists.AllQuestItems);
 
 			HashSet<Item> excludedItems = new HashSet<Item>(tmpExcludedItems);
+			HashSet<Item> questItems = new HashSet<Item>(ItemLists.AllQuestItems);
 
 			int rawScaleLow = increaseOnly ? 100 : flags.PriceScaleFactorLow;
 			int rawScaleHigh = increaseOnly ? Math.Max(100, flags.PriceScaleFactorHigh) : flags.PriceScaleFactorHigh;
@@ -96,6 +97,9 @@ namespace FF1Lib
 				if (excludedItems.Contains((Item)i))
 				{
 					var price = (int)prices[i];
+
+					if (flags.CheapVendorItem && questItems.Contains((Item)i)) price = 20000;
+
 					var newPrice = price + rng.Between(-price / 10, price / 10);
 					prices[i] = (ushort)Math.Min(Math.Max(newPrice, 1), 65535);
 				}

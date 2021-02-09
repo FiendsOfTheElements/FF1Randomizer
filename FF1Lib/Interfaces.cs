@@ -111,7 +111,7 @@
 		int PriceScaleFactorLow { get; }
 		int PriceScaleFactorHigh { get; }
 		bool? ExcludeGoldFromScaling { get; }
-		bool ExcludeVendorItemFromScaling { get; }
+		bool CheapVendorItem { get; }
 	}
 	public interface IFloorShuffleFlags
 	{
