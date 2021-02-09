@@ -742,10 +742,9 @@ namespace FF1Lib
 
 				NPCHints(rng, npcdata, flags, overworldMap);
 			}
-
-			double separateGoldScalingFactor = RangeScale(1.0, flags.SeparateGoldScalingFactorMin, flags.SeparateGoldScalingFactorMax, 1.0, rng) / 100.0;
-			ExpGoldBoost(flags.ExpBonus, flags.ExpMultiplier, flags.SeparateGoldScaling, separateGoldScalingFactor, rng);
-			ScalePrices(flags, itemText, rng, ((bool)flags.ClampMinimumPriceScale), shopItemLocation, flags.SeparateGoldScaling, separateGoldScalingFactor);
+			
+			ExpGoldBoost(flags);
+			ScalePrices(flags, itemText, rng, ((bool)flags.ClampMinimumPriceScale), shopItemLocation);
 			ScaleEncounterRate(flags.EncounterRate / 30.0, flags.DungeonEncounterRate / 30.0);
 
 			overworldMap.ApplyMapEdits();

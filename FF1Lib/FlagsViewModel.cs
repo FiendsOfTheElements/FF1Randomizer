@@ -3760,32 +3760,32 @@ namespace FF1Lib
 			}
 		}
 
-		public bool SeparateGoldScaling
+		public bool? ExcludeGoldFromScaling
 		{
-			get => Flags.SeparateGoldScaling;
+			get => Flags.ExcludeGoldFromScaling;
 			set
 			{
-				Flags.SeparateGoldScaling = value;
+				Flags.ExcludeGoldFromScaling = value;
 				RaisePropertyChanged();
 			}
 		}
 
-		public int SeparateGoldScalingFactorMin
+		public bool ExcludeVendorItemFromScaling
 		{
-			get => Flags.SeparateGoldScalingFactorMin;
+			get => Flags.ExcludeVendorItemFromScaling;
 			set
 			{
-				Flags.SeparateGoldScalingFactorMin = value;
+				Flags.ExcludeVendorItemFromScaling = value;
 				RaisePropertyChanged();
 			}
 		}
 
-		public int SeparateGoldScalingFactorMax
+		public bool ApplyExpBoostToGold
 		{
-			get => Flags.SeparateGoldScalingFactorMax;
+			get => Flags.ApplyExpBoostToGold;
 			set
 			{
-				Flags.SeparateGoldScalingFactorMax = value;
+				Flags.ApplyExpBoostToGold = value;
 				RaisePropertyChanged();
 			}
 		}

@@ -8,18 +8,15 @@
 		{ 
 	<div class="col1 full">
 		<DoubleSlider ShowMedian DoubleCol Id="clampMinimumPriceScaleLable" UpdateToolTip="@UpdateToolTipID" MinValue="20" MaxValue="500" @bind-ValueHigh="Flags.PriceScaleFactorHigh" @bind-ValueLow="Flags.PriceScaleFactorLow">Prices:</DoubleSlider>
-		<DoubleSlider ShowMedian DoubleCol Id="separategoldScalingDoubleSlider" Indent IsEnabled="Flags.SeparateBossHPScaling" MinValue="10" MaxValue="500" @bind-ValueHigh="Flags.SeparateGoldScalingFactorMax" @bind-ValueLow="Flags.SeparateGoldScalingFactorMin" DisableTooltip>
-			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="separateGoldScalingCheckBox" @bind-Value="Flags.SeparateGoldScaling">Separate Gold Scaling:</CheckBox>
-		</DoubleSlider>
 		<div class="row-seperator"></div>
 		<DoubleSlider ShowMedian DoubleCol Id="enemyStatsDoubleSlider" MinValue="20" MaxValue="500" @bind-ValueHigh="Flags.EnemyScaleStatsHigh" @bind-ValueLow="Flags.EnemyScaleStatsLow" DisableTooltip>Enemy Stats:</DoubleSlider>
 		<DoubleSlider ShowMedian DoubleCol Id="enemyHpDoubleSlider" Indent IsEnabled="Flags.SeparateEnemyHPScaling" MinValue="20" MaxValue="500" @bind-ValueHigh="Flags.EnemyScaleHpHigh" @bind-ValueLow="Flags.EnemyScaleHpLow" DisableTooltip>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="separateEnemyHPScalingCheckBox" @bind-Value="Flags.SeparateEnemyHPScaling">Separate HP&nbspScaling:</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="separateEnemyHPScalingCheckBox" @bind-Value="Flags.SeparateEnemyHPScaling">Separate HP Scaling:</TriStateCheckBox>
 		</DoubleSlider>
 		<div class="row-seperator"></div>
 		<DoubleSlider ShowMedian DoubleCol Id="bossStatsDoubleSlider" MinValue="20" MaxValue="500" @bind-ValueHigh="Flags.BossScaleStatsHigh" @bind-ValueLow="Flags.BossScaleStatsLow" DisableTooltip>Boss Stats:</DoubleSlider>
 		<DoubleSlider ShowMedian DoubleCol Id="bossHpDoubleSlider" Indent IsEnabled="Flags.SeparateBossHPScaling" MinValue="20" MaxValue="500" @bind-ValueHigh="Flags.BossScaleHpHigh" @bind-ValueLow="Flags.BossScaleHpLow" DisableTooltip>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="separateBossHPScalingCheckBox" @bind-Value="Flags.SeparateBossHPScaling">Separate HP&nbspScaling:</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="separateBossHPScalingCheckBox" @bind-Value="Flags.SeparateBossHPScaling">Separate HP Scaling:</TriStateCheckBox>
 		</DoubleSlider>
 		<div class="row-seperator"></div>
 		<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="evadeCapDropDown" TItem="EvadeCapValues" @bind-Value="Flags.EvadeCap">Evade Cap Value:</EnumDropDown>
@@ -66,6 +63,9 @@
 		<CheckBox UpdateToolTip="@UpdateToolTipID" Id="noDanModeCheckBox" @bind-Value="Flags.NoDanMode">Static EXP Distribution</CheckBox>
 		<CheckBox UpdateToolTip="@UpdateToolTipID" Id="startingGoldCheckBox" @bind-Value="Flags.StartingGold">Scale Starting Gold</CheckBox>
 		<CheckBox UpdateToolTip="@UpdateToolTipID" Id="easyModeCheckBox" @bind-Value="Flags.EasyMode">Easy Mode</CheckBox>
+		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="excludeGoldFromScalingCheckBox" @bind-Value="Flags.ExcludeGoldFromScaling">Exclude Gold Treasure from scaling</TriStateCheckBox>
+		<CheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="excludeVendorItemFromScalingCheckBox" @bind-Value="Flags.ExcludeVendorItemFromScaling" IsEnabled="Flags.ExcludeGoldFromScaling">Vendor Item scales with Gold</CheckBox>
+		<CheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="applyExpBoostToGoldCheckBox" @bind-Value="Flags.ApplyExpBoostToGold" IsEnabled="Flags.ExcludeGoldFromScaling">Apply flat Gold Boost to Enemies</CheckBox>
 		<div class="clear-it"></div>
 	</div>
 		}

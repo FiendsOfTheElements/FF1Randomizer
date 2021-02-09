@@ -75,22 +75,28 @@ namespace FF1Lib
 
 		// Scale is the geometric scale factor used with RNG.  Multiplier is where we make everything cheaper
 		// instead of enemies giving more gold, so we don't overflow.
-		public void ScalePrices(IScaleFlags flags, string[] text, MT19337 rng, bool increaseOnly, ItemShopSlot shopItemLocation, bool separateGoldScaling, double separateGoldScalingFactor)
+		public void ScalePrices(IScaleFlags flags, string[] text, MT19337 rng, bool increaseOnly, ItemShopSlot shopItemLocation)
 		{
+			IEnumerable<Item> tmpExcludedItems = Array.Empty<Item>() ;
+			if (flags.ExcludeGoldFromScaling ?? false) tmpExcludedItems = tmpExcludedItems.Concat(ItemLists.AllGoldTreasure);
+			if (flags.ExcludeVendorItemFromScaling) tmpExcludedItems = tmpExcludedItems.Concat(ItemLists.AllQuestItems);
+
+			HashSet<Item> excludedItems = new HashSet<Item>(tmpExcludedItems);
+
 			int rawScaleLow = increaseOnly ? 100 : flags.PriceScaleFactorLow;
 			int rawScaleHigh = increaseOnly ? Math.Max(100, flags.PriceScaleFactorHigh) : flags.PriceScaleFactorHigh;
 
 			double scaleLow = (double)rawScaleLow / 100.0;
 			double scaleHigh = (double)rawScaleHigh / 100.0;
 
-			var multiplier = flags.ExpMultiplier;
+			var multiplier = flags.ExcludeGoldFromScaling ?? false ? 1.0 : flags.ExpMultiplier;
 			var prices = Get(PriceOffset, PriceSize * PriceCount).ToUShorts();
 			for (int i = 0; i < prices.Length; i++)
 			{
-				if (separateGoldScaling && ItemLists.AllGoldTreasure.Contains((Item)i))
+				if (excludedItems.Contains((Item)i))
 				{
-					var scaledPrice = (int)((double)prices[i] * separateGoldScalingFactor);
-					var newPrice = scaledPrice + rng.Between(-scaledPrice / 10, scaledPrice / 10);
+					var price = (int)prices[i];
+					var newPrice = price + rng.Between(-price / 10, price / 10);
 					prices[i] = (ushort)Math.Min(Math.Max(newPrice, 1), 65535);
 				}
 				else
@@ -372,7 +378,7 @@ namespace FF1Lib
 			}
 		}
 
-		public void ExpGoldBoost(double bonus, double multiplier, bool separateGoldScaling, double separateGoldScalingFactor, MT19337 rng)
+		public void ExpGoldBoost(Flags flags)
 		{
 			var enemyBlob = Get(EnemyOffset, EnemySize * EnemyCount);
 			var enemies = enemyBlob.Chunk(EnemySize);
@@ -382,23 +388,22 @@ namespace FF1Lib
 				var exp = BitConverter.ToUInt16(enemy, 0);
 				var gold = BitConverter.ToUInt16(enemy, 2);
 
-				exp += (ushort)(bonus / multiplier);
-
-				if (separateGoldScaling)
-				{
-					var scaledGold = (int)((double)gold * separateGoldScalingFactor);
-					var newGold = scaledGold + rng.Between(-scaledGold / 10, scaledGold / 10);
-					gold = (ushort)Math.Min(Math.Max(newGold, 1), 65535);
-				}
-				else
-				{
-					gold += (ushort)(bonus / multiplier);
-				}
+				exp += (ushort)(flags.ExpBonus / flags.ExpMultiplier);
 
 				var expBytes = BitConverter.GetBytes(exp);
 				var goldBytes = BitConverter.GetBytes(gold);
-				Array.Copy(expBytes, 0, enemy, 0, 2);
+
+				if (!(flags.ExcludeGoldFromScaling ?? false))
+				{
+					gold += (ushort)(flags.ExpBonus / flags.ExpMultiplier);
+				}
+				else if (flags.ApplyExpBoostToGold)
+				{
+					gold += (ushort)(flags.ExpBonus);
+				}
+
 				Array.Copy(goldBytes, 0, enemy, 2, 2);
+				Array.Copy(expBytes, 0, enemy, 0, 2);
 			}
 
 			enemyBlob = Blob.Concat(enemies);
@@ -409,7 +414,7 @@ namespace FF1Lib
 			var levelRequirementsBytes = levelRequirementsBlob.Chunk(3).Select(threeBytes => new byte[] { threeBytes[0], threeBytes[1], threeBytes[2], 0 }).ToList();
 			for (int i = 0; i < LevelRequirementsCount; i++)
 			{
-				uint levelRequirement = (uint)(BitConverter.ToUInt32(levelRequirementsBytes[i], 0) / multiplier);
+				uint levelRequirement = (uint)(BitConverter.ToUInt32(levelRequirementsBytes[i], 0) / flags.ExpMultiplier);
 				levelRequirementsBytes[i] = BitConverter.GetBytes(levelRequirement);
 			}
 
@@ -417,7 +422,7 @@ namespace FF1Lib
 
 			// A dirty, ugly, evil piece of code that sets the level requirement for level 2, even though that's already defined in the above table.
 			byte firstLevelRequirement = Data[0x7C04B];
-			firstLevelRequirement = (byte)(firstLevelRequirement / multiplier);
+			firstLevelRequirement = (byte)(firstLevelRequirement / flags.ExpMultiplier);
 			Data[0x7C04B] = firstLevelRequirement;
 		}
 

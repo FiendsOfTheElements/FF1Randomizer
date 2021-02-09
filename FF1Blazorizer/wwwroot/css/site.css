@@ -246,8 +246,7 @@ body { */
     text-overflow: ellipsis;
     overflow-x: hidden;
     vertical-align: top;
-    margin: 3px 6px 5px 0;
-    text-align: justify;
+    margin: 2px 6px 5px 0;
 }
 
 .dropdown-cell {
@@ -314,7 +313,6 @@ input[type="file"] {
 
 select {
     margin-bottom: 6px;
-    margin-right: 6px;
 }
 
 tr.odd {
@@ -407,7 +405,6 @@ tr.bottom-borderd {
 }
 .btn-group-help {
     opacity: 0.5;
-    margin: 2px;
 }
 
 .btn-group-help:hover {
