@@ -139,7 +139,7 @@ We can do this in two ways, _merge_ the changes or _rebase_ your changes. A key 
 
 ##### Resolving Conflicts:
 So you have rebased or merged and need to fix a conflict? And what even is a conflict?
-Well a conflict is when you change something and someone else changes the same thing, git doesnt know which is correct, or if there needs to be reworking of the code to make stuff work with both pieces.
+Well a conflict is when you change something and someone else changes the same thing, git doesn't know which is correct, or if there needs to be reworking of the code to make stuff work with both pieces.
 
 First you will want to do `git status` - this will show you what is labeled as "both modified". The term "ours" refers to the main branch or the one being rebased onto, and the "theirs" refers to the branch you made changes in, usually. This will be where you have conflicts to resolve. So open up those files and find the areas with "<<<<<<< HEAD". This is the start of a conflict. You need to look at the two pieces of code and fix it up to work as expected with your changes **AND** the changes that were made by others since you started your work.
 
@@ -147,10 +147,19 @@ The first section with be after the "<<<<<<< HEAD" until the "=======" and the s
 
 Go through each of these and fix them up, (try searching <<<<<<< HEAD to be sure you got them all), then run `git add -u` followed by:
  - if you did a rebase: `git rebase --continue`, you might have more conflicts as more of your commits are applied.
- - if you did a merge: `git merge --continue`, you will see a commit screen with a prefilled message, just leave the message and exit out as normal with commits.
+ - if you did a merge: `git merge --continue`, you will see a commit screen with a pre-filled message, just leave the message and exit out as normal with commits.
 
 If you have issues with resolving a conflict and making stuff work afterwards (either your work or the other work), don't be afraid to reach out in the dev discord for help.
 
 And now your conflict should be resolved!
 
+## Deployment
 
+Our deployments utilize CircleCi and Netlify.
+The deployment config can be found in the .circleci folder in the config.yml file. This defines a series of jobs that need to run for our deployment process, first we build with the build.sh file, then we deploy to netlify using the deploy.sh file. The build process modifies a couple values depending on if this is a beta and real release. The deploy process will deploy previews for PRs from maintainers working in the main repo, as well as deploy to either the beta or main site, depending on the branch.
+
+If you are a maintainer working in the main repo, in order to get deployment previews, you need to pass the hold job in circleci, just look in the pinned resources in dev discord to see how to do this.
+
+Beta is updated basically whenever. Never feel bad about updating beta, if the flags break and it ruin's someone's race, its ok.
+
+The main site is updated ever month or 3 (or when we get around to it). This *generally* has a 2 week waiting period where beta is frozen, except for bug fixes and the like. If this is the case, your PRs will be sitting there waiting until the release happens.
