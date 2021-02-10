@@ -1,6 +1,6 @@
 # FF1 Randomizer
 
-This is a randomizer for Final Fantasy 1 for the NES. It currently operates on the US version of the ROM only.
+This is a randomizer for Final Fantasy 1 for the NES. It currently operates on the US version of the ROM only. A randomizer takes certain elements of a game and randomize them, creating a whole new gameplay experience.
 
 ## Project Structure
 
@@ -36,13 +36,13 @@ The randomizer is hosted on github and therefore some level of git knowledge is 
  A version control system. This will control a folder or directory for you, managing the files inside it so you can swap between versions of those files.
 
 #### Git Terms
- - commit: A discrete piece of history in the version control system
+ - commit: A discrete piece of history in the version control system.
  - branch: A distinct history of the files in the git directory. This can have a history that shares a common ancestor with another branch (the usual case) or be fully separate. Usually features/bugfixes start with a new branch off the main branch.
- - repo, repository, or remote: a remote server that facilitates distributed development through being a synchronized source of truth for the files in the git directory. There can be multiple repos.
- - rebase or merge: Methods of taking changes that are in a repo and combining them with your local work
- - pull and push: transferring files from the repo to your local stuff or the other way around.
+ - repo, repository, or remote: A remote server that facilitates distributed development through being a synchronized source of truth for the files in the git directory. There can be multiple repos.
+ - rebase or merge: Methods of taking changes that are in a repo and combining them with your local work.
+ - pull and push: Rransferring files from the repo to your local stuff or the other way around.
  - clone: The action of setting up a local git directory that is a clone of a specific repo.
- - checkout: Swap to a different branch or commit
+ - checkout: Swap to a different branch or commit.
 
  - use `git status` to see what the current situation in your local git directory is.
 
@@ -59,8 +59,8 @@ A company that provides git hosting services.
 ### Getting started
 
 1. Make a github account.
-2. Head over to [the git main page](https://git-scm.com/downloads) and install git, there will be instructions for linux and mac here too
-3. Follow the instructions [here](https://docs.github.com/en/github/using-git/setting-your-username-in-git) to set your username in git
+2. Head over to [the git main page](https://git-scm.com/downloads) and install git, there will be instructions for linux and mac here too.
+3. Follow the instructions [here](https://docs.github.com/en/github/using-git/setting-your-username-in-git) to set your username in git.
 4. Follow the instructions [here](https://docs.github.com/en/github/setting-up-and-managing-your-github-user-account/setting-your-commit-email-address#setting-your-commit-email-address-in-git) to set your email that will be attached to your git commits. You may also want to follow the earlier parts of this page to set your github email.
 5. Follow the instructions [here](https://docs.github.com/en/github/getting-started-with-github/set-up-git#next-steps-authenticating-with-github-from-git) to authenticate with Github.
 6. Fork the FFR repo. Click on the "Fork" button at the top right, and follow any instructions.
@@ -74,15 +74,15 @@ So now you want to work on a new feature or fix a bug! How do you start?
 
 #### First time setup:
 
-1. run `git fetch --all` this will update your local git with the knowledge of what the remotes have
-2. run `git checkout upstream/dev --track` this checkout the main development branch of the upstream repo, and track it for changes.
+1. Run `git fetch --all` this will update your local git with the knowledge of what the remotes have.
+2. Run `git checkout upstream/dev --track` this checkout the main development branch of the upstream repo, and track it for changes.
 
 #### Each time you start a feature or bugfix:
 
-1. run `git checkout -b <some branch name>` this will create a new local branch with any name you choose.
-2. run `git push origin -u HEAD` this will setup your forked repo to have a copy the local branch you just created.
-3. get to work on some feature code!
-4. when you have some work done, or are going to stop for a while, run one of the following `git add` commands:
+1. Run `git checkout -b <some branch name>` this will create a new local branch with any name you choose.
+2. Run `git push origin -u HEAD` this will setup your forked repo to have a copy the local branch you just created.
+3. Get to work on some feature code!
+4. When you have some work done, or are going to stop for a while, run one of the following `git add` commands:
 
    `git add -u` adds updated files
 
@@ -94,30 +94,30 @@ So now you want to work on a new feature or fix a bug! How do you start?
 
    `git add relative/path/to/file` adds the file specified
 
-5. then run `git commit` and type in a commit message, this can be anything but try to make it obvious what is contained in that commit by just the message. `git commit -m "some message"` is a shortcut to add small commit messages.
+5. Then run `git commit` and type in a commit message, this can be anything but try to make it obvious what is contained in that commit by just the message. `git commit -m "some message"` is a shortcut to add small commit messages.
 
 
 #### Occasionally while working on your feature
-ensure all current work is stored in a commit, so its easy to recover if something bad happens
+Ensure all current work is stored in a commit, so its easy to recover if something bad happens.
 - run `git push` - this will update your remote with the commits you have made, and will be a backup incase anything happens.
-- run `git fetch upstream` then `git rebase upstream/dev` - this rebase command will find a common history point (when you created this branch) and then take all the commits since the, and place them on top of the current upstream/dev. What this means is git will try to make it like you just wrote all this code after the stuff in upstream/dev, even the new things. You might have conflicts, this is ok. Look at the Merging and Rebasing section below for help.
+- run `git fetch upstream` then `git rebase upstream/dev` - this rebase command will find a common history point (when you created this branch) and then take all the commits since then, and place them on top of the current upstream/dev. What this means is git will try to make it like you just wrote all this code after the stuff in upstream/dev, even the new things. You might have conflicts, this is ok. Look at the Merging and Rebasing section below for help.
 
 
 #### When you are ready for feedback
 At this point you should have been talking with people in the dev discord and have something functional that maybe still needs some polish, but is ready for feedback, if not ready to be included in the beta site yet.
 
-1. rebase, as covered in the section immediately above this one.
-2. run `git push origin`
-3. go to github and head to your fork
-4. select the branch name you have been working with in the drop down on the middle left at the top.
-5. click the "Pull request" button on the middle right at the top
-6. this should open a window comparing the changes in your branch and the main repo's dev branch.
-7. add a title and write up a description of your changes.
-8. if your not ready to have this merged in, click on the arrow beside the "Create pull request" button, and change this to a draft pull request.
-9. if you want feed back from people in particular, select the gear by reviewers on the top right.
-10. once you are satisfied with the title, description, and reviewers, click the create pull request (or draft pull request) button.
-11. If you created a draft PR, once you think it is ready to be merged, come back here and change it to a regular PR
-12. Once it is approved and ready, one of the maintainers will merge it in for you, if you find you are waiting a lot, please reach out in the dev discord. We might be gearing up for a release and just holding off, or we might have forgotten, you wont know unless you reach out.
+1.Rrebase, as covered in the section immediately above this one.
+2. Run `git push origin`
+3. Go to github and head to your fork.
+4. Select the branch name you have been working with in the drop down on the middle left at the top.
+5. Click the "Pull request" button on the middle right at the top.
+6. This should open a window comparing the changes in your branch and the main repo's dev branch.
+7. Add a title and write up a description of your changes.
+8. If your not ready to have this merged in, click on the arrow beside the "Create pull request" button, and change this to a draft pull request.
+9. If you want feed back from people in particular, select the gear by reviewers on the top right.
+10. Once you are satisfied with the title, description, and reviewers, click the create pull request (or draft pull request) button.
+11. If you created a draft PR, once you think it is ready to be merged, come back here and change it to a regular PR.
+12. Once it is approved and ready, one of the maintainers will merge it in for you. If you find you are waiting a lot, please reach out in the dev discord: we might be gearing up for a release and just holding off, or we might have forgotten, you wont know unless you reach out.
 13. Brag about how you contributed to one of the coolest video game projects on github.
 
 #### Merging and Rebasing
@@ -158,8 +158,8 @@ And now your conflict should be resolved!
 Our deployments utilize CircleCi and Netlify.
 The deployment config can be found in the .circleci folder in the config.yml file. This defines a series of jobs that need to run for our deployment process, first we build with the build.sh file, then we deploy to netlify using the deploy.sh file. The build process modifies a couple values depending on if this is a beta and real release. The deploy process will deploy previews for PRs from maintainers working in the main repo, as well as deploy to either the beta or main site, depending on the branch.
 
-If you are a maintainer working in the main repo, in order to get deployment previews, you need to pass the hold job in circleci, just look in the pinned resources in dev discord to see how to do this.
+If you are a maintainer working in the main repo, in order to get deployment previews, you need to pass the hold job in circleci: just look in the pinned resources in dev discord to see how to do this.
 
 Beta is updated basically whenever. Never feel bad about updating beta, if the flags break and it ruin's someone's race, its ok.
 
-The main site is updated ever month or 3 (or when we get around to it). This *generally* has a 2 week waiting period where beta is frozen, except for bug fixes and the like. If this is the case, your PRs will be sitting there waiting until the release happens.
+The main site is updated every month or 3 (or when we get around to it). This *generally* has a 2 week waiting period where beta is frozen, except for bug fixes and the like. If this is the case, your PRs will be sitting there waiting until the release happens.
