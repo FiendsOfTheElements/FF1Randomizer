@@ -222,7 +222,16 @@ namespace FF1Lib
 			{
 				EnableLefeinShops(maps);
 			}
-			
+
+			if ((bool)flags.GaiaShortcut)
+			{
+				EnableGaiaShortcut(maps);
+				if ((bool)flags.MoveGaiaItemShop)
+				{
+					MoveGaiaItemShop(maps, rng);
+				}
+			}
+
 			// This has to be done before we shuffle spell levels.
 			if (flags.SpellBugs)
 			{
@@ -282,7 +291,7 @@ namespace FF1Lib
 				EnableShardHunt(rng, talkroutines, flags.ShardCount);
 			}
 			
-			if ((bool)flags.TransformFinalFormation)
+			if ((bool)flags.TransformFinalFormation && !flags.SpookyFlag)
 			{
 				TransformFinalFormation((FinalFormation)rng.Between(0, Enum.GetValues(typeof(FinalFormation)).Length - 1), flags.EvadeCap);
 			}
@@ -329,7 +338,7 @@ namespace FF1Lib
 							excludeItemsFromRandomShops.Add(Item.Masamune);
 						}
 
-						shopItemLocation = ShuffleShops(rng, (bool)flags.ImmediatePureAndSoftRequired, ((bool)flags.RandomWares), excludeItemsFromRandomShops, flags.WorldWealth);
+						shopItemLocation = ShuffleShops(rng, (bool)flags.ImmediatePureAndSoftRequired, ((bool)flags.RandomWares), excludeItemsFromRandomShops, flags.WorldWealth, overworldMap.ConeriaTownEntranceItemShopIndex);
 						incentivesData = new IncentiveData(rng, flags, overworldMap, shopItemLocation);
 					}
 
@@ -369,6 +378,10 @@ namespace FF1Lib
 			}
 			
 			new StartingInventory(rng, flags, this).SetStartingInventory();
+
+			new ShopKiller(rng, flags, maps, this).KillShops();
+
+			new LegendaryShops(rng, flags, maps, this).PlaceShops();
 
 			/*
 			if (flags.WeaponPermissions)
@@ -595,10 +608,6 @@ namespace FF1Lib
 			{
 				EnableBuyQuantity();
 			}
-			else if (flags.BuyTenOld)
-			{
-				EnableBuyTen();
-			}
 
 			if (flags.WaitWhenUnrunnable)
 			{
@@ -714,7 +723,19 @@ namespace FF1Lib
 			var itemText = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
 			itemText[(int)Item.Ribbon] = itemText[(int)Item.Ribbon].Remove(7);
 
-			if ((bool)flags.HintsVillage || (bool)flags.HintsDungeon)
+			if (flags.Etherizer && !flags.HouseMPRestoration && !flags.HousesFillHp)
+			{
+				Etherizer();
+				itemText[(int)Item.Tent] = "ETHR@p";
+				itemText[(int)Item.Cabin] = "DRY@p ";
+				itemText[(int)Item.House] = "XETH@p";
+			}
+
+			if (flags.ExtensiveHints_Enable)
+			{
+				new ExtensiveHints(rng, npcdata, flags, overworldMap, this).Generate();
+			}
+			else if ((bool)flags.HintsVillage || (bool)flags.HintsDungeon)
 			{
 				if ((bool)flags.HintsDungeon)
 					SetDungeonNPC(flippedMaps, rng);
@@ -773,6 +794,11 @@ namespace FF1Lib
 				EnableCanalBridge();
 			}
 
+			if (flags.NonesGainXP)
+			{
+				NonesGainXP();
+			}
+
 			if (flags.NoDanMode)
 			{
 				NoDanMode();
@@ -800,7 +826,7 @@ namespace FF1Lib
 				CannotSaveAtInns();
 			}
 
-			if (flags.PacifistMode)
+			if (flags.PacifistMode && !flags.SpookyFlag)
 			{
 				PacifistEnd(talkroutines, npcdata, (bool)flags.EnemyTrapTiles || flags.EnemizerEnabled);
 			}

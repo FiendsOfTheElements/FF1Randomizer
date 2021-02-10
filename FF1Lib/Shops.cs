@@ -32,7 +32,7 @@ namespace FF1Lib
 			Item = 60
 		}
 
-		public ItemShopSlot ShuffleShops(MT19337 rng, bool earlyAilments, bool randomizeWeaponsAndArmor, IEnumerable<Item> excludeItemsFromRandomShops, WorldWealthMode wealth)
+		public ItemShopSlot ShuffleShops(MT19337 rng, bool earlyAilments, bool randomizeWeaponsAndArmor, IEnumerable<Item> excludeItemsFromRandomShops, WorldWealthMode wealth, int coneriaEntranceShopIndex)
 		{
 			var pointers = Get(ShopPointerOffset, ShopPointerCount * ShopPointerSize).ToUShorts();
 
@@ -44,7 +44,7 @@ namespace FF1Lib
 			do
 			{
 				result = ShuffleShopType(ShopType.Item, pointers, rng);
-			} while (earlyAilments && !AilmentsCovered(pointers));
+			} while (earlyAilments && !AilmentsCovered(pointers, coneriaEntranceShopIndex));
             if (result == null)
                 throw new InvalidOperationException("Shop Location for Bottle was not set");
 
@@ -91,13 +91,13 @@ namespace FF1Lib
 			Put(ShopPointerOffset, Blob.FromUShorts(pointers));
 		}
 
-		private bool AilmentsCovered(ushort[] pointers)
+		private bool AilmentsCovered(ushort[] pointers, int coneriaEntraceShopIndex)
 		{
 			var shops = GetShops(ShopType.Item, pointers);
 
 			const byte Pure = 0x1A;
 			const byte Soft = 0x1B;
-			return shops[0].Contains(Pure) && shops[0].Contains(Soft);
+			return shops[coneriaEntraceShopIndex].Contains(Pure) && shops[coneriaEntraceShopIndex].Contains(Soft);
 		}
 
 		private void RepackShops(ushort[] pointers)

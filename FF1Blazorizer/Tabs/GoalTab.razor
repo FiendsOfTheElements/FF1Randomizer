@@ -1,8 +1,10 @@
 ﻿@using FF1Lib;
 
 
-	<div id="Goal" class="tabcontent framed-content clearfix @(noTabLayout ? "no-tab" : "")">
-		<h3>Goal</h3>
+	<div id="Goal" class="tabcontent framed-content clearfix @(noTabLayout ? "no-tab" : "") @(IsOpen ? "" : "collapsed")">
+		<h3 class="@(IsOpen ? "" : "h3-collapsed")"><a class="@(noTabLayout ? "collapsible-header" : "")" @onclick="(() => IsOpen = (!noTabLayout || !IsOpen))">Goal</a></h3>
+		@if (IsOpen)
+		{ 
 		<div class="col1">
 			<h4>Temple of Fiends</h4>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="transformFinalFormationCheckBox" IsEnabled="@(Flags.SpookyFlag != true)" @bind-Value="Flags.TransformFinalFormation">Alternate Final Boss</TriStateCheckBox>
@@ -23,6 +25,7 @@
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="lichRevengeCheckBox" @bind-Value="Flags.SpookyFlag">Lich's Revenge</CheckBox>
 		</div>
 		<div class="clear-it"></div>
+		}
 	</div>
 
 
@@ -30,4 +33,5 @@
 		[Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }
 		[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
 		[Parameter] public bool noTabLayout { get; set; }
+		[Parameter] public bool IsOpen { get; set; } = true;
 	}

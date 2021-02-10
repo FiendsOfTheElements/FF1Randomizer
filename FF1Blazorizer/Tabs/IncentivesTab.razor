@@ -1,8 +1,10 @@
 ﻿@using FF1Lib;
 
 
-	<div id="Incentives" class="tabcontent framed-content clearfix @(noTabLayout ? "no-tab" : "")">
-		<h3>Incentivized Locations and Items</h3>
+	<div id="Incentives" class="tabcontent framed-content clearfix @(noTabLayout ? "no-tab" : "") @(IsOpen ? "" : "collapsed")">
+		<h3 class="@(IsOpen ? "" : "h3-collapsed")"><a class="@(noTabLayout ? "collapsible-header" : "")" @onclick="(() => IsOpen = (!noTabLayout || !IsOpen))">Incentivized Locations and Items</a></h3>
+		@if (IsOpen)
+		{ 
 		<div class="col1">
 			<h4>Locations: @(Flags.Flags.IncentivizedLocationCountMin) @((Flags.Flags.IncentivizedLocationCountMin != Flags.Flags.IncentivizedLocationCountMax) ? "- " + Flags.Flags.IncentivizedLocationCountMax : "") </h4>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeFreeNPCsCheckBox" IsEnabled="@Flags.IncentivizeFreeNPCsEnabled" @bind-Value="Flags.IncentivizeFreeNPCs">Main NPCs</TriStateCheckBox>
@@ -48,10 +50,13 @@
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeRibbonCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeRibbon">Ribbon</TriStateCheckBox>
 		</div>
 		<div class="clear-it"></div>
+		}
 	</div>
 
 
 	@code { [Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }
 				[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
-				[Parameter] public bool noTabLayout { get; set; } }
+				[Parameter] public bool noTabLayout { get; set; }
+				[Parameter] public bool IsOpen { get; set; } = true;
+		}
 

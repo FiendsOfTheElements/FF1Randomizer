@@ -254,53 +254,6 @@ namespace FF1Lib
 			// To allow all promoted classes
 			EnableTwelveClasses();
 		}
-		// Deprecated, delete if there's no revolt for it to come back 2020-12-17
-		public void LinearMPGrowth()
-		{
-			// Change MP growth to be linear (every 3 levels) as a fix for random promotion 
-			var levelUpStats = Get(NewLevelUpDataOffset, 588).Chunk(49 * 2);
-			var rmArray = Enumerable.Repeat((byte)0x00, 49).ToList();
-			var wbmArray = Enumerable.Repeat((byte)0x00, 49).ToList();
-			var rmCount = new List<int> { 2, 2, 2, 2, 2, 2, 2, 2 };
-			var wbmCount = new List<int> { 2, 2, 2, 2, 2, 2, 2, 2 };
-			var rmMinLevel = new List<int> { 2, 2, 6, 10, 15, 20, 25, 31 };
-			var wbmMinLevel = new List<int> { 2, 2, 5, 8, 12, 16, 20, 25 };
-			var bitArray = new List<byte> { 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80 };
-
-			for (int i = 0; i < 49; i++)
-			{
-				for (int j = 0; j < 8; j++)
-				{
-					if (rmMinLevel[j] <= i + 2)
-						rmCount[j]++;
-
-					if (rmCount[j] >= 3)
-					{
-						rmArray[i] |= bitArray[j];
-						rmCount[j] = 0;
-					}
-
-					if (wbmMinLevel[j] <= i + 2)
-						wbmCount[j]++;
-
-					if (wbmCount[j] >= 3)
-					{
-						wbmArray[i] |= bitArray[j];
-						wbmCount[j] = 0;
-					}
-				}
-			}
-
-			for (int i = 0; i < 49; i++)
-			{
-				levelUpStats[3][i * 2 + 1] = rmArray[i];
-				levelUpStats[4][i * 2 + 1] = wbmArray[i];
-				levelUpStats[5][i * 2 + 1] = wbmArray[i];
-			}
-
-			// Insert level up data
-			Put(NewLevelUpDataOffset, levelUpStats.SelectMany(x => (byte[])x).ToArray());
-		}
 
 		public void PubReplaceClinic(MT19337 rng, Flags flags)
 		{
@@ -803,6 +756,21 @@ namespace FF1Lib
 
 		}
 
+		public void NonesGainXP()
+		{
+			// New routine to see if character can get XP LvlUp_AwardExp
+			PutInBank(0x1B, 0x8710, Blob.FromHex("A000B186C9FFF010A001B1862903F006C903F00218603860AD78688588AD7968858920608820A08A1860"));
+
+			// Have LvlUp_AwardExp reroute to new routine
+			PutInBank(0x1B, 0x8826, Blob.FromHex("201087B00860"));
+
+			// New routine to count nones for DivideRewardBySurvivors
+			PutInBank(0x1B, 0x8D20, Blob.FromHex("A000AD0168C9FFD001C8AD1368C9FFD001C8AD2568C9FFD001C8AD3768C9FFD001C8A20460"));
+
+			// Have DivideRewardBySurvivors reroute to new routine to count nones
+			PutInBank(0x1B, 0x8B43, Blob.FromHex("20208DEA"));
+		}
+
 		public void ShuffleWeaponPermissions(MT19337 rng)
 		{
 			const int WeaponPermissionsOffset = 0x3BF50;
@@ -1067,7 +1035,7 @@ namespace FF1Lib
 			PutInBank(0x1F, 0xDD78, Blob.FromHex("A9002003FEA645BD00B18561A9112003FE20B08E8A60"));
 
 			// Check for trapped monster routine, see 11_8EC0_CheckTrap.asm
-			PutInBank(0x11, 0x8EB0, Blob.FromHex("A561202096B02DA645BD008FF022856AA9C0203D96A56A200096A903CD866BD0062018964C439620E68E201896A2F06020E68E60AA60A911855818A5612093DDA445B90062090499006260"));
+			PutInBank(0x11, 0x8EB0, Blob.FromHex("A561202096B030A645BD008FF025856AA9C0203D96A56A200096A903CD866BD00820189668684C43961820E98E201896A2F06020E98E60AA60A911855818A5612093DDA445B90062090499006260"));
 
 			InsertDialogs(0x110, "Monster-in-a-box!"); // 0xC0
 
@@ -1415,6 +1383,7 @@ namespace FF1Lib
 
 			// Modify DrawComplexString, this sets control code 14-19 to use a new words table in bank 11
 			//  could be used to move some stuff in items name table and make some space
+			//  see 1F_DEBC_DrawComplexString.asm
 			PutInBank(0x1F, 0xDEBC, Blob.FromHex("C910B005A2204C83DEC914B07B")); // Change branching to enable CC14
 			PutInBank(0x1F, 0xDF44, Blob.FromHex("4CCEDF")); // Jump to routine because we're too far, put in unused char weapons CC
 			PutInBank(0x1F, 0xDFCE, Blob.FromHex("A91185572003FE4CA099")); // Routine, put in unused char weapons routine
@@ -1778,8 +1747,8 @@ namespace FF1Lib
 			encountersData.formations[encZombieGhoul].minmax2 = (0, 0);
 			encountersData.formations[encZombieGhoul].unrunnableA = true;
 
-			encountersData.formations[encGhoulGeist].minmax1 = (0, 0);
-			encountersData.formations[encGhoulGeist].minmax2 = (0, 2);
+			encountersData.formations[encGhoulGeist].minmax1 = (0, 2);
+			encountersData.formations[encGhoulGeist].minmax2 = (0, 0);
 			encountersData.formations[encGhoulGeist].minmax3 = (1, 3);
 			encountersData.formations[encGhoulGeist].enemy3 = 0x2B;
 			encountersData.formations[encGhoulGeist].gfxOffset3 = (int)FormationGFX.Sprite2;

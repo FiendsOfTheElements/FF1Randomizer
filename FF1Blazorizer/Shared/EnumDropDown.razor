@@ -1,16 +1,21 @@
 ﻿@typeparam TItem
 
 <div class="checkbox-cell dropdown-cell @DisabledClass">
-	<div class="alloneline">
-		<span id="@Id" class="@IndentClass @DisabledClass">@ChildContent</span>
-		<input type="image" src="/images/help.png" class="btn-group-help" title="Show Help" @onclick="@ShowToolTip" id="@Id" />
-	</div>
-	<select class="@IndentClass" value="@Value" @onchange="@onchange" disabled="@(!IsEnabled)">
-		@foreach (var value in Enum.GetValues(typeof(TItem)))
+
+	<span id="@Id" class="@IndentClass @DisabledClass">@ChildContent</span>
+
+	<div class="oneline">
+		<select value="@Value" @onchange="@onchange" disabled="@(!IsEnabled)">
+			@foreach (var value in Enum.GetValues(typeof(TItem)))
+			{
+				<option value="@value">@(((Enum)value).ToName())</option>
+			}
+		</select>
+		@if (!DisableTooltip)
 		{
-			<option value="@value">@(((Enum)value).ToName())</option>
+			<input type="image" src="/images/help.png" class="btn-group-help" style="vertical-align: middle" title="Show Help" @onclick="@ShowToolTip" id="@Id" />
 		}
-	</select>
+	</div>
 </div>
 
 @code
@@ -53,5 +58,8 @@
 
 	[Parameter]
 	public RenderFragment ChildContent { get; set; }
+
+	[Parameter]
+	public bool DisableTooltip { get; set; }
 
 }
