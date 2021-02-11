@@ -4,14 +4,18 @@
 @using Microsoft.AspNetCore.Components.Web
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 
+<div id="orbs">
+	<div class="orb-image @(litOrbs[0] ? "litUL" : "")" @onclick="@(() => SwitchOrb(0))"></div><div class="orb-image @(litOrbs[1] ? "litUR" : "")" @onclick="@(() => SwitchOrb(1))"></div><span class="orb-image @(litOrbs[2] ? "litLL" : "")" @onclick="@(() => SwitchOrb(2))"></span><span class="orb-image @(litOrbs[3] ? "litLR" : "")" @onclick="@(() => SwitchOrb(3))"></span>
+</div>
+
 <div id="main-content">
 	<ToolTip @ref="ToolTipElement" ToolTipId="@ToolTipId" />
 	<aside id="left-column">
-		@if(!hideAnnouncement)
-		{ 
+		@if (!hideAnnouncement)
+		{
 			<AnnouncementBox SetHideAnnouncement="@SetHideAnnouncement" />
 		}
-		<FileTab Flags="@Flags" StatusMessage="@StatusMessage" SetStatusMessage="@SetStatusMessage" UpdateToolTipID="@UpdateToolTipID" />
+		<FileTab Flags="@Flags" StatusMessage="@StatusMessage" SetStatusMessage="@SetStatusMessage" UpdateToolTipID="@UpdateToolTipID" showChaos="@showChaos" />
 		<FunTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" SetStatusMessage="@SetStatusMessage" />
 	</aside>
 
@@ -46,7 +50,7 @@
 						<BSTab>
 							<BSTabLabel>Presets</BSTabLabel>
 							<BSTabContent>
-								<PresetsTab Flags="@Flags" SetStatusMessage="@SetStatusMessage" loadDefault="@loadDefault" SetDefaultLoaded="@SetDefaultLoaded" noTabLayout="@noTabLayout" presetName="@presetName" SetPresetName="@SetPresetName"/>
+								<PresetsTab Flags="@Flags" SetStatusMessage="@SetStatusMessage" loadDefault="@loadDefault" SetDefaultLoaded="@SetDefaultLoaded" noTabLayout="@noTabLayout" presetName="@presetName" SetPresetName="@SetPresetName" />
 							</BSTabContent>
 						</BSTab>
 						<BSTab>
@@ -130,7 +134,45 @@
 	</main>
 </div>
 
-@code { private FlagsViewModel Flags { get; set; } = new FlagsViewModel();
+@code {
+
+	private bool showChaos { get; set; }
+
+	private bool[] litOrbs = { false, false, false, false };
+
+	private List<int> orbOrder = new List<int>();
+
+	private int[] orbsToMatch = { 4, 7, 0, 5, 4, 6, 3, 7 };
+	private void SwitchOrb(int orb)
+	{
+		litOrbs[orb] = !litOrbs[orb];
+		orbOrder.Add(litOrbs[orb] ? orb + 4 : orb);
+
+		Console.WriteLine("so far: ");
+
+		orbOrder.ForEach(delegate (int orb)
+		{
+			Console.WriteLine(orb);
+
+		});
+		Console.WriteLine("needed to match: ");
+		for (int i = 0; i < orbsToMatch.Length; i++)
+		{
+			Console.WriteLine(orbsToMatch[i]);
+		}
+		Console.WriteLine(orbOrder.SequenceEqual(orbsToMatch));
+		if (orbOrder.SequenceEqual(orbsToMatch))
+		{
+			Console.WriteLine("matches!");
+			showChaos = true;
+
+		}
+		Console.WriteLine("done");
+		StateHasChanged();
+	}
+
+
+	private FlagsViewModel Flags { get; set; } = new FlagsViewModel();
 	private string ToolTipId = "unupdated";
 	private ToolTip ToolTipElement;
 	private string StatusMessage = "";

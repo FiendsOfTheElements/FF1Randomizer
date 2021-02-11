@@ -11,6 +11,14 @@
 
 
 <div id="generate" class="framed-content">
+	@if(showChaos)
+	{
+		<h3 class="centered">You spawned Chaos!</h3>
+		<p>You REALLY love clicking orbs...</p>
+		<img src="/images/orbs-easter-egg.png"/>
+	}
+
+
 	<h3 class="centered">Randomize</h3>
 
 	<p>@RomMessage</p>
@@ -45,6 +53,7 @@
 		[Parameter] public string StatusMessage { get; set; }
 		[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
 		[Parameter] public bool IsOpen { get; set; } = true;
+		[Parameter] public bool showChaos { get; set; }
 
 		private string RomMessage = "Upload Rom:";
 		private bool RememberROM = false;

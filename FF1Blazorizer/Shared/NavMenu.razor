@@ -1,9 +1,6 @@
 ﻿@using System.Net.Http.Json
 @inject HttpClient  Http
 <div id="top-nav">
-	<div id="orbs">
-		<div class="orb-image @(litOrbs[0] ? "litUL" : "")" @onclick="@(() => SwitchOrb(0))"></div><div class="orb-image @(litOrbs[1] ? "litUR" : "")" @onclick="@(() => SwitchOrb(1))"></div><span class="orb-image @(litOrbs[2] ? "litLL" : "")" @onclick="@(() => SwitchOrb(2))"></span><span class="orb-image @(litOrbs[3] ? "litLR" : "")" @onclick="@(() => SwitchOrb(3))"></span>
-	</div>
 
 	<nav id="site-nav">
 		<span class="nav-item-main" id="randomize"><a href="Randomize">Randomize</a></span>
@@ -13,19 +10,3 @@
 		<span class="nav-item-main" id="install"><a href="javascript:showPWAInstall()">Install</a></span>
 	</nav>
 </div>
-@code {
-	[Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }
-	[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
-	[Parameter] public bool noTabLayout { get; set; }
-
-	private bool[] litOrbs = { false, false, false, false };
-
-	private void SwitchOrb(int orb)
-	{
-		litOrbs[orb] = !litOrbs[orb];
-		StateHasChanged();
-	}
-
-
-
-}
