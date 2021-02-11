@@ -27,7 +27,7 @@ namespace FF1Lib
 
 		public const int GoldItemOffset = 108; // 108 items before gold chests
 		public const int GoldItemCount = 68;
-		public static readonly List<int> UnusedGoldItems = new List<int> { 110, 111, 112, 113, 114, 116, 120, 121, 122, 124, 125, 127, 132, 158, 165, 166, 167, 168, 170, 171, 172 };
+		public static List<int> UnusedGoldItems = new List<int> { 110, 111, 112, 113, 114, 116, 120, 121, 122, 124, 125, 127, 132, 158, 165, 166, 167, 168, 170, 171, 172 };
 
 		public void PutInBank(int bank, int address, Blob data)
 		{
@@ -206,6 +206,7 @@ namespace FF1Lib
 			if (flags.DeepDungeon)
 			{
 				DeepDungeon(rng, overworldMap, maps, flags);
+				UnusedGoldItems = new List<int> { };
 			}
 
 			if ((bool)flags.RandomizeFormationEnemizer)

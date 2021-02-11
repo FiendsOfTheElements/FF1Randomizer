@@ -70,6 +70,7 @@ namespace FF1Lib
 			public byte roomright;
 			public byte doortile;
 			public byte closedoortile;
+			public byte obstacletile;
 			public TileGraphic warpgraphic;
 			public TileGraphic teleportgraphic;
 			public TileGraphic laddergraphic;
@@ -91,17 +92,69 @@ namespace FF1Lib
 		}
 
 		private Tileset[] tilesets = new Tileset[8];
+
 		private struct Candidate
 		{
 			public int x;
 			public int y;
 			public List<byte> dirs;
-
 			public Candidate(int newx, int newy)
 			{
 				x = newx;
 				y = newy;
 				dirs = new List<byte>();
+			}
+		}
+		private class SnakeHead
+		{
+			public int x;
+			public int y;
+			public int facing;
+
+			public SnakeHead(int newx, int newy, int newfacing = 0)
+			{
+				x = newx;
+				y = newy;
+				facing = (newfacing + 8) % 8;
+			}
+			public void Rotate(int amount)
+			{
+				facing = (facing + amount + 8) % 8;
+			}
+			public void Step()
+			{
+				switch (facing)
+				{
+					case 0:
+						y--;
+						break;
+					case 1:
+						x++;
+						y--;
+						break;
+					case 2:
+						x++;
+						break;
+					case 3:
+						x++;
+						y++;
+						break;
+					case 4:
+						y++;
+						break;
+					case 5:
+						x--;
+						y++;
+						break;
+					case 6:
+						x--;
+						break;
+					case 7:
+						x--;
+						y--;
+						break;
+				}
+
 			}
 		}
 		private struct FormationLevel
@@ -147,6 +200,7 @@ namespace FF1Lib
 			tilesets[1].roomright = 0x05;
 			tilesets[1].doortile = 0x36;
 			tilesets[1].closedoortile = 0x3A;
+			tilesets[1].obstacletile = 0x38;
 			tilesets[1].warpgraphic.topleft = 0x28;
 			tilesets[1].warpgraphic.topright = 0x29;
 			tilesets[1].warpgraphic.botleft = 0x38;
@@ -199,6 +253,7 @@ namespace FF1Lib
 			tilesets[2].roomright = 0x05;
 			tilesets[2].doortile = 0x36;
 			tilesets[2].closedoortile = 0x3A;
+			tilesets[2].obstacletile = 0x3E;
 			tilesets[2].warpgraphic.topleft = 0x28;
 			tilesets[2].warpgraphic.topright = 0x29;
 			tilesets[2].warpgraphic.botleft = 0x38;
@@ -253,6 +308,7 @@ namespace FF1Lib
 			tilesets[3].roomright = 0x05;
 			tilesets[3].doortile = 0x36;
 			tilesets[3].closedoortile = 0x3A;
+			tilesets[3].obstacletile = 0x3D;
 			tilesets[3].warpgraphic.topleft = 0x28;
 			tilesets[3].warpgraphic.topright = 0x29;
 			tilesets[3].warpgraphic.botleft = 0x38;
@@ -301,6 +357,7 @@ namespace FF1Lib
 			tilesets[4].roomright = 0x05;
 			tilesets[4].doortile = 0x36;
 			tilesets[4].closedoortile = 0x3A;
+			tilesets[4].obstacletile = 0x39;
 			tilesets[4].warpgraphic.topleft = 0x28;
 			tilesets[4].warpgraphic.topright = 0x29;
 			tilesets[4].warpgraphic.botleft = 0x38;
@@ -345,6 +402,7 @@ namespace FF1Lib
 			tilesets[5].roomright = 0x05;
 			tilesets[5].doortile = 0x36;
 			tilesets[5].closedoortile = 0x3A;
+			tilesets[5].obstacletile = 0x38;
 			tilesets[5].warpgraphic.topleft = 0x28;
 			tilesets[5].warpgraphic.topright = 0x29;
 			tilesets[5].warpgraphic.botleft = 0x38;
@@ -394,6 +452,7 @@ namespace FF1Lib
 			tilesets[6].roomright = 0x05;
 			tilesets[6].doortile = 0x36;
 			tilesets[6].closedoortile = 0x3A;
+			tilesets[6].obstacletile = 0x39;
 			tilesets[6].warpgraphic.topleft = 0x62;
 			tilesets[6].warpgraphic.topright = 0x63;
 			tilesets[6].warpgraphic.botleft = 0x72;
@@ -438,6 +497,7 @@ namespace FF1Lib
 			tilesets[7].roomright = 0x05;
 			tilesets[7].doortile = 0x36;
 			tilesets[7].closedoortile = 0x3A;
+			tilesets[7].obstacletile = 0x38;
 			tilesets[7].warpgraphic.topleft = 0x28;
 			tilesets[7].warpgraphic.topright = 0x29;
 			tilesets[7].warpgraphic.botleft = 0x38;
@@ -581,6 +641,14 @@ namespace FF1Lib
 			// Generate new monster domains based on "estimated power level"
 			CreateDomains(rng, maps);
 
+			// Gaia and Onrac should really be encountered in the other order.
+			var temp = maps[5];
+			maps[5] = maps[6];
+			maps[6] = temp;
+
+			// Speaking of which, let's get rid of the submarine.
+			maps[5][0x1E, 0x2E] = 0x27;
+
 			// Pre-determine what floors will have town branches
 			int[] townfloors = new int[7];
 			Candidate[] towndestinations = new Candidate[7];
@@ -597,23 +665,21 @@ namespace FF1Lib
 			towndestinations[2].y = 0x10;
 			towndestinations[3].x = 0x0B;
 			towndestinations[3].y = 0x17;
-			towndestinations[4].x = 0x3D;
-			towndestinations[4].y = 0x3D;
-			towndestinations[5].x = 0x01;
-			towndestinations[5].y = 0x0C;
+			towndestinations[4].x = 0x01;
+			towndestinations[4].y = 0x0C;
+			towndestinations[5].x = 0x3D;
+			towndestinations[5].y = 0x3D;
 			towndestinations[6].x = 0x13;
 			towndestinations[6].y = 0x17;
 
 			// Generate the map layouts.
 			for (int i = 8; i < 61; i++)
 			{
-				//Console.WriteLine("Map " + i);
 				// Set the encounter rate.
 				Put(0x2CC00 + i, Blob.FromHex("08"));
 
 				// Pick a tileset with unused exit tiles.
 				tilesetmappings[i] = tilesetspinner.PickRandom(rng);
-				//Console.WriteLine("Map " + i + " using tileset " + tilesetmappings[i] + " with exits remaining: " + tilesets[tilesetmappings[i]].teleportdeck.Count());
 				if (townfloors[nexttown] == i)
 				{
 					if (tilesets[tilesetmappings[i]].teleportdeck.Count() < 2)
@@ -622,13 +688,20 @@ namespace FF1Lib
 					}
 				}
 				Put(0x2CC0 + i, Blob.FromHex(Convert.ToHexString(new byte[] { tilesetmappings[i] })));
-				overworldMap.PutPalette(OverworldTeleportIndex.ConeriaCastle1, (MapIndex)i);
 
 				// Start from a clean slate.
 				WipeMap(maps[i], tilesets[tilesetmappings[i]]);
 
-				// Which algorithm to use; right now it's the only one.
-				GenerateMapBoxStyle(rng, maps[i], tilesets[tilesetmappings[i]]);
+				// Which algorithm to use.
+				switch (RollDice(rng, 1, 3))
+				{
+					case 1:
+						GenerateMapSnakeStyle(rng, maps[i], tilesets[tilesetmappings[i]]);
+						break;
+					default:
+						GenerateMapBoxStyle(rng, maps[i], tilesets[tilesetmappings[i]]);
+						break;
+				}
 
 				// Make the tiles look right.
 				Beautify(maps[i], tilesets[tilesetmappings[i]]);
@@ -657,23 +730,44 @@ namespace FF1Lib
 				// If all its exits are now used, remove the tileset from the list of available ones.
 				if (tilesets[tilesetmappings[i]].teleportdeck.Count() == 0)
 				{
-					//Console.WriteLine(" Out of teleports, removing tileset " + tilesetmappings[i]);
 					tilesetspinner.Remove(tilesetmappings[i]);
-					//Console.WriteLine("  Tileset spinner now contains " + tilesetspinner.Count() + " items");
 				}
 			}
 
 			// Distribute chests and put treasure in them.
-			//Console.WriteLine("Distributing treasure");
 			DistributeTreasure(rng, maps, flags);
 
 			// Put Bahamut and a TAIL somewhere in the dungeon.
-			//Console.WriteLine("Placing Bahamut and tail");
 			PlaceBahamut(rng, maps);
 
+			// Assign random palettes to the maps.
+			SpinPalettes(rng, maps);
+
 			// Commit the overworld edits.
-			//Console.WriteLine("Committing changes");
 			overworldMap.ApplyMapEdits();
+		}
+
+		public void SpinPalettes(MT19337 rng, List<Map> maps) 
+		{
+			// Assigns the inner map with the given index a random palette.
+			var palettes = OverworldMap.GeneratePalettes(Get(OverworldMap.MapPaletteOffset, MapCount * OverworldMap.MapPaletteSize).Chunk(OverworldMap.MapPaletteSize));
+			for (int i = 8; i < 61; i++)
+			{
+				var pal = palettes[(OverworldMap.Palette)rng.Between(1, palettes.Count() - 1)];
+				if (tilesetmappings[i] == 1)
+				{
+					Put(OverworldMap.MapPaletteOffset + i * OverworldMap.MapPaletteSize + 8, pal.SubBlob(8, 8));
+					Put(OverworldMap.MapPaletteOffset + i * OverworldMap.MapPaletteSize + 40, pal.SubBlob(40, 8));
+				}
+				else
+				{
+					var paletteIndex = 32;
+					Put(OverworldMap.MapPaletteOffset + i * OverworldMap.MapPaletteSize + paletteIndex, pal.SubBlob(paletteIndex, 48 - paletteIndex));
+					Put(OverworldMap.MapPaletteOffset + i * OverworldMap.MapPaletteSize, pal.SubBlob(0, 16));
+				}
+				// Make NPC palette look right
+				Put(OverworldMap.MapPaletteOffset + i * OverworldMap.MapPaletteSize + 24, Blob.FromHex("0F0F27360F0F1436"));
+			}
 		}
 
 		//private void TestTraversibility(Map m, Tileset t)
@@ -773,7 +867,7 @@ namespace FF1Lib
 				Item.Heal
 			};
 			var v = Get(0x37C00, 0x200).Chunk(2);
-			for (int i = 0x1C; i <= 0xAF; i++)
+			for (int i = 0x1C; i < 0xAF; i++)
 			{
 				treasures.Add(new Treasure(v[i][0] + v[i][1] * 0x100, (byte)i));
 			}
@@ -864,7 +958,6 @@ namespace FF1Lib
 
 		public int RollDice(MT19337 rng, int dice, int sides)
 		{
-			// I can't believe this isn't already a function...
 			int result = 0;
 			for (int i = 0; i < dice; i++)
 			{
@@ -928,6 +1021,37 @@ namespace FF1Lib
 							if (m[j + 1, i] == t.floortile)
 							{
 								m[j, i] = t.walltile;
+							}
+						}
+					}
+					else if (m[j, i] == t.abysstile)
+					{
+						if (j > 0)
+						{
+							if (m[j - 1, i] == t.floortile || m[j - 1, i] == t.closedoortile)
+							{
+								m[j, i] = t.obstacletile;
+							}
+						}
+						if (j < 63)
+						{
+							if (m[j + 1, i] == t.floortile || m[j + 1, i] == t.closedoortile)
+							{
+								m[j, i] = t.obstacletile;
+							}
+						}
+						if (i > 0)
+						{
+							if (m[j, i - 1] == t.floortile || m[j, i - 1] == t.closedoortile)
+							{
+								m[j, i] = t.obstacletile;
+							}
+						}
+						if (i < 63)
+						{
+							if (m[j, i + 1] == t.floortile || m[j, i + 1] == t.closedoortile)
+							{
+								m[j, i] = t.obstacletile;
 							}
 						}
 					}
@@ -1093,9 +1217,9 @@ namespace FF1Lib
 			}
 			else
 			{
-				for (int i = x; i < x + w; i++)
+				for (int i = x; i <= x + w; i++)
 				{
-					for (int j = y; j < y + h; j++)
+					for (int j = y; j <= y + h; j++)
 					{
 						if (obstacle)
 						{
@@ -1185,7 +1309,6 @@ namespace FF1Lib
 		{
 			List<Candidate> candidates = new List<Candidate>();
 			Candidate c;
-			if (t.teleportdeck.Count() == 0) Console.WriteLine("EMPTY DECK");
 			byte exittile = t.teleportdeck.SpliceRandom(rng);
 			for (int i = 0; i < 64; i++)
 			{
@@ -1207,6 +1330,7 @@ namespace FF1Lib
 					}
 				}
 			}
+			if (candidates.Count() == 0) Console.WriteLine("Can't place exit");
 			c = candidates.SpliceRandom(rng);
 			exittile = (byte)(exittile % 0x80);
 			m[c.y, c.x] = exittile;
@@ -1264,7 +1388,7 @@ namespace FF1Lib
 			CarveBox(m, t, 32 - w / 2, 32 - h / 2, w, h);
 			m[32, 32] = t.warptile;
 
-			int attempts = 40;
+			int attempts = 120;
 			for (int attempt = 0; attempt < attempts; attempt++)
 			{
 				// Determine which tiles are suitable for attaching a new box.
@@ -1315,5 +1439,52 @@ namespace FF1Lib
 			}
 			GenerateRooms(rng, m, t);
 		}
+		private void GenerateMapSnakeStyle(MT19337 rng, Map m, Tileset t)
+		{
+			var totalpushes = 100;
+			var minheads = 2;
+			var maxheads = 6;
+			var newheadchance = 400;
+			var killheadchance = 25;
+			List<SnakeHead> heads = new List<SnakeHead>();
+			List<SnakeHead> newheadlist;
+			heads.Add(new SnakeHead(0x20, 0x20, RollDice(rng, 1, 8) - 1));
+			heads.Add(new SnakeHead(0x20, 0x20, heads[0].facing + 4));
+			m.Fill((0x20 - 1, 0x20 - 1), (3, 3), t.floortile);
+			for (int p = 0; p < totalpushes; p++)
+			{
+				newheadlist = new List<SnakeHead>();
+				//Console.WriteLine("Heads: " + heads.Count());
+				for (int i = 0; i < heads.Count(); i++)
+				{
+					heads[i].Step();
+					if (heads[i].x > 1 && heads[i].y > 1 && heads[i].x < 62 && heads[i].y < 62)
+					{
+						m.Fill((heads[i].x - 1, heads[i].y - 1), (3, 3), t.floortile);
+						if (heads.Count() < maxheads && RollDice(rng, 1, newheadchance) == 1)
+						{
+							newheadlist.Add(new SnakeHead(heads[i].x, heads[i].y, heads[i].facing + 2));
+							heads[i].Rotate(-2);
+						}
+						else
+						{
+							heads[i].Rotate(RollDice(rng, 2, 3) - 4);
+						}
+						if (!(heads.Count() > minheads && RollDice(rng, 1, killheadchance) == 1))
+						{
+							newheadlist.Add(heads[i]);
+						}
+					}
+				}
+				heads = new List<SnakeHead>();
+				foreach (SnakeHead s in newheadlist)
+				{
+					heads.Add(s);
+				}
+			}
+			m[0x20, 0x20] = t.warptile;
+			GenerateRooms(rng, m, t);
+		}
+
 	}
 }
