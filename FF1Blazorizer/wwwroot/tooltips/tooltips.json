@@ -715,9 +715,6 @@
 		"screenshot": "incentivizeRibbonCheckBox.png",
 		"description": "Adds ONE Ribbon to the incentive pool to be distributed in the selected incentive locations."
 	},
-
-
-
 	{
 		"Id": "transformFinalFormationCheckBox",
 		"title": "Alternate Final Boss",
@@ -781,7 +778,7 @@
 		"Id": "allowUnsafeStartAreaCheckBox",
 		"title": "Allow Unsafe Start Area",
 		"screenshot": "allowUnsafeStartAreaCheckBox.gif",
-		"description": "Entrance shuffle normally requires at least 3 safe locations amongst the Coneria Castle, Dwarf Cave, Temple of Fiends, Matoya's Cave, and Pravoka entrances. This flag removes that safety net."
+		"description": "When shuffling entrances, FFR normally guarantees 4 'safe' entrances amongst Coneria, Coneria Castle, Dwarf Cave, Temple of Fiends, Matoya's Cave, and Pravoka entrances. This flag removes that safety net.\nFurthermore, if shuffling all entrances together and including Coneria, this flag also removes the guarantee that the Coneria entrance will be a town at all."
 	},
 	{
 		"Id": "deadEndsCheckBox",
