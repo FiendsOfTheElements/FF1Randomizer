@@ -619,7 +619,8 @@ namespace FF1Lib
 		{
 			InitializeTilesets();
 
-			// Close the city wall around Coneria to prevent exploring the world normally.
+			// Close the city wall around Coneria to prevent exploring the world normally, as that
+			// breaks things horribly.
 			overworldMap.MapEditsToApply.Add(new List<MapEdit>
 			{
 				new MapEdit { X = 0x97, Y = 0xA3, Tile = CityWall },
@@ -638,7 +639,7 @@ namespace FF1Lib
 			// Kill all the NPCs.
 			KillNPCs();
 
-			// Generate new monster domains based on "estimated power level"
+			// Generate new monster domains based on "estimated power level".
 			CreateDomains(rng, maps);
 
 			// Gaia and Onrac should really be encountered in the other order.
@@ -646,7 +647,7 @@ namespace FF1Lib
 			maps[5] = maps[6];
 			maps[6] = temp;
 
-			// Speaking of which, let's get rid of the submarine.
+			// Speaking of Onrac, let's get rid of the submarine, as that breaks things horribly too.
 			maps[5][0x1E, 0x2E] = 0x27;
 
 			// Pre-determine what floors will have town branches
@@ -682,6 +683,8 @@ namespace FF1Lib
 				tilesetmappings[i] = tilesetspinner.PickRandom(rng);
 				if (townfloors[nexttown] == i)
 				{
+					// If it's a town branch floor we need at least two exits available.
+					// If there aren't, we bump the town up to the next floor.
 					if (tilesets[tilesetmappings[i]].teleportdeck.Count() < 2)
 					{
 						townfloors[nexttown]++;
@@ -692,7 +695,13 @@ namespace FF1Lib
 				// Start from a clean slate.
 				WipeMap(maps[i], tilesets[tilesetmappings[i]]);
 
-				// Which algorithm to use.
+				// Which layout generation algorithm to use:
+				//  "Box Style" looks a bit like earth/volcano lower floors where you have
+				//              interconnecting boxes.
+				//  "Snake Style" looks a bit like marsh B1 where you have a long meandering
+				//                path that may branch.
+				//  I have other ideas for styles to implement but I want to get something
+				//  working out the door first and then gradually improve it later. Baby steps.
 				switch (RollDice(rng, 1, 3))
 				{
 					case 1:
@@ -770,38 +779,29 @@ namespace FF1Lib
 			}
 		}
 
-		//private void TestTraversibility(Map m, Tileset t)
-		//{
-		//	for (int x = 0; x < 64; x++)
-		//	{
-		//		for (int y = 0; y < 64; y++)
-		//		{
-		//			if (m[y, x] == t.roomtile && Traversible(m, t, x, y, 1, 1, true))
-		//			{
-		//				m[y, x] = t.floortile;
-		//			}
-		//		}
-		//	}
-		//}
-
 		public void DistributeTreasure(MT19337 rng, List<Map> maps, Flags flags)
 		{
-			//Console.WriteLine(" Placing chests");
 			List<byte> mapspinner;
 			List<Candidate> candidates;
 			List<byte> currentdeck;
 			Candidate c;
 			List<byte> accessibleroomtiles;
+
+			// First we distribute the actual treasure box tiles, not caring what's in them.
+			// The boxes are organized by tileset, so we deal with them one tileset at a time.
 			for (int i = 1; i <= 7; i++)
 			{
 				accessibleroomtiles = new List<byte>();
 				accessibleroomtiles.Add(tilesets[i].roomtile);
 				accessibleroomtiles.Add(tilesets[i].roomlower);
+				// Create a "deck" of the tileset's treasure tiles.
 				currentdeck = new List<byte>();
 				for (int j = 0; j < tilesets[i].treasuredeck.Count(); j++)
 				{
 					currentdeck.Add(tilesets[i].treasuredeck[j]);
 				}
+				// Next we need a "spinner" (list) of all the maps that have that tileset where we
+				// can put the boxes.
 				mapspinner = new List<byte>();
 				for (int j = 8; j < 61; j++)
 				{
@@ -810,9 +810,14 @@ namespace FF1Lib
 						mapspinner.Add((byte)j);
 					}
 				}
+				// Keep dropping boxes until there are no boxes left to drop or no maps left with
+				// available spots to put boxes.
 				while (mapspinner.Count() > 0 && currentdeck.Count() > 0)
 				{
 					var currentmap = mapspinner.PickRandom(rng);
+					// Create a list of legal places to put boxes.
+					// This has to be done each time a box is placed because boxes are solid and
+					// thus could block the way to previously available tiles.
 					candidates = new List<Candidate>();
 					for (int j = 1; j < 63; j++)
 					{
@@ -820,6 +825,8 @@ namespace FF1Lib
 						{
 							if (maps[currentmap][k, j] == tilesets[i].roomtile)
 							{
+								// To be a viable candidate, the spot has to not only not block
+								// the path, but also be accessible by one of the cardinal directions.
 								if (accessibleroomtiles.Contains(maps[currentmap][k - 1, j]) ||
 									accessibleroomtiles.Contains(maps[currentmap][k + 1, j]) ||
 									accessibleroomtiles.Contains(maps[currentmap][k, j - 1]) ||
@@ -834,6 +841,8 @@ namespace FF1Lib
 							}
 						}
 					}
+					// If the list of candidates is empty, this is no longer a viable tileset for
+					// placing treasures in.
 					if (candidates.Count() == 0)
 					{
 						mapspinner.Remove(currentmap);
@@ -845,6 +854,12 @@ namespace FF1Lib
 					}
 				}
 			}
+			// Next we put treasures in the boxes.
+			// Each box could contain a potion or something else.
+			// The potions are done in three tiers, giving a greater chance of heals in the early game,
+			// pures in the mid game, and softs in the late game.
+			// The tents are placeholders for ethers, and I plan to integrate the ether flag into this
+			// routine and only include those items if it is checked.
 			Item[] potionspinner1 =
 			{
 				Item.Heal, Item.Heal, Item.Heal, Item.Heal,
@@ -866,17 +881,24 @@ namespace FF1Lib
 				Item.House, Item.House,
 				Item.Heal
 			};
+			// For the non-potion items, we read all the potential treasure contents and sort them
+			// by price. The "Treasure" constructor looks at the index to determine if something is
+			// an end game item with an absurdly low price and adjust accordingly. That way you can
+			// set the price scaling to whatever you want without having to worry about if you made
+			// something cost 2 GP and thus end up in late game chests the way the standalone
+			// executable version does.
 			var v = Get(0x37C00, 0x200).Chunk(2);
 			for (int i = 0x1C; i < 0xAF; i++)
 			{
 				treasures.Add(new Treasure(v[i][0] + v[i][1] * 0x100, (byte)i));
 			}
-			//Console.WriteLine("  Sorting treasures by price");
 			treasures.Sort((x, y) => x.value.CompareTo(y.value));
+			// For each floor, we determine a "lowest" index in the sorted treasure contents list
+			// that could appear on that floor. This index increases faster in the beginning to get
+			// past the chaff and then tapers off in the later floors.
 			var treasurediesize = 30;
 			var chestsdropped = 0;
 			double lowest = 0;
-			//Console.WriteLine("  Putting treasures in chests");
 			for (int i = 8; i < 61; i++)
 			{
 				switch (i)
@@ -916,6 +938,12 @@ namespace FF1Lib
 					{
 						if (tilesets[tilesetmappings[i]].treasuredeck.Contains(maps[i][k, j]))
 						{
+							// There's a 20% chance per chest that chest will contain a potion;
+							// otherwise it will contain something from the main treasure table.
+							// If it's a potion, we spin the appropriate spinner to the tier of
+							// the dungeon we're on (early, mid, or late).
+							// If it's not, we roll 1d30 and add the "lowest" index and put the
+							// corresponding treasure in the box.
 							byte spunitem = 0;
 							chestsdropped++;
 							Put(0x800 + tilesetmappings[i] * 0x100 + maps[i][k, j] * 2, Blob.FromHex("09" + Convert.ToHexString(new byte[] { (byte)chestsdropped })));
@@ -943,9 +971,11 @@ namespace FF1Lib
 						}
 					}
 				}
+				// Tracking the cumulative number of chests "as of" each floor is important for other
+				// things later.
 				chestsonfloor[i] = (byte)chestsdropped;
 			}
-			//Console.WriteLine("  Placing ribbons");
+			// Three chests in three disjoint parts of the dungeon are replaced with Ribbon.
 			for (int i = 1; i <= 3; i++)
 			{
 				var ribbonfloor = RollDice(rng, 1, 8) + 8 + i * 8;
@@ -958,6 +988,7 @@ namespace FF1Lib
 
 		public int RollDice(MT19337 rng, int dice, int sides)
 		{
+			// Roll a number of dice and add up their results.
 			int result = 0;
 			for (int i = 0; i < dice; i++)
 			{
@@ -1090,13 +1121,6 @@ namespace FF1Lib
 							m[j, i] = t.roomlower;
 							if (left) m[j, i] = t.roomlowerleft;
 							if (right) m[j, i] = t.roomlowerright;
-							if (j < 63)
-							{
-								//if (m[j + 1, i] != t.roomtile && m[j + 1, i] != t.doortile)
-								//{
-								//	m[j + 1, i] = t.walltile;
-								//}
-							}
 						}
 						else if (left)
 						{
@@ -1117,6 +1141,7 @@ namespace FF1Lib
 			// traversibility, this function traces around the perimeter of the feature.
 			// While tracing, if it flips from solid to walkable and back more than twice,
 			// it breaks traversibility and rejects it.
+			// Don't ask me to explain the logic about why that works but trust me it does.
 			bool result = true;
 			List<byte> solids = new List<byte>(t.treasuredeck);
 			solids.Add(t.walltile);
@@ -1243,6 +1268,7 @@ namespace FF1Lib
 		}
 		private bool CarveBox(Map m, Tileset t, int x, int y, int w, int h)
 		{
+			// This creates one of the "boxes" in the box style algorithm.
 			bool result = Legal(m, t, x, y, w, h);
 			if (result)
 			{
@@ -1265,6 +1291,9 @@ namespace FF1Lib
 
 		private bool CarveRoom(Map m, Tileset t, int x, int y, int w, int h)
 		{
+			// This tries to create an "inner room".
+			// While creating rooms, only the "center" room tiles are created; a separate
+			// routine takes care of giving it sides and corners later.
 			bool result = Legal(m, t, x, y, w, h, true);
 			if (result)
 			{
@@ -1275,7 +1304,8 @@ namespace FF1Lib
 		}
 		private void GenerateRooms(MT19337 rng, Map m, Tileset t)
 		{
-			List<Candidate> candidates; // = new List<Candidate>();
+			// This attempts to create a variety of "inner rooms" to populate the floor.
+			List<Candidate> candidates;
 			Candidate c;
 			int x;
 			int y;
@@ -1307,6 +1337,7 @@ namespace FF1Lib
 
 		private byte PlaceExit(MT19337 rng, Map m, Tileset t)
 		{
+			// This places a teleport to the next floor in a random place.
 			List<Candidate> candidates = new List<Candidate>();
 			Candidate c;
 			byte exittile = t.teleportdeck.SpliceRandom(rng);
@@ -1339,6 +1370,7 @@ namespace FF1Lib
 
 		private void PlaceChaos(MT19337 rng, Map m, Tileset t)
 		{
+			// Puts the final boss somewhere in a room on the final floor.
 			List<Candidate> candidates = new List<Candidate>();
 			Candidate c;
 			for (int i = 0; i < 64; i++)
@@ -1347,7 +1379,14 @@ namespace FF1Lib
 				{
 					if (m[j, i] == t.roomtile)
 					{
-						if (Traversible(m, t, i, j, 1, 1, true)) candidates.Add(new Candidate(i, j));
+						// You have to be able to talk to Chaos so he needs a place next to him open.
+						if (m[j - 1, i] == t.roomtile ||
+							m[j + 1, i] == t.roomtile ||
+							m[j, i - 1] == t.roomtile ||
+							m[j, i + 1] == t.roomtile)
+						{
+							if (Traversible(m, t, i, j, 1, 1, true)) candidates.Add(new Candidate(i, j));
+						}
 					}
 				}
 			}
@@ -1358,19 +1397,30 @@ namespace FF1Lib
 		}
 		private void PlaceBahamut(MT19337 rng, List<Map> maps)
 		{
+			// Puts Bahamut in a room somewhere and the TAIL in a random chest.
+			// The floor for each is 4d6 + 6, rolled independently.
+			// This means each could be as low as floor 10 or as high as floor 30, but with
+			// weighting towards floor 20.
 			List<Candidate> candidates = new List<Candidate>();
 			Candidate c;
 			var bahamutfloor = RollDice(rng, 4, 6) + 6 + 8;
 			var tailfloor = RollDice(rng, 4, 6) + 6 + 8;
 			Map m = maps[bahamutfloor];
 			Tileset t = tilesets[tilesetmappings[bahamutfloor]];
-			for (int i = 0; i < 64; i++)
+			for (int i = 1; i < 63; i++)
 			{
-				for (int j = 0; j < 64; j++)
+				for (int j = 1; j < 63; j++)
 				{
 					if (m[j, i] == t.roomtile)
 					{
-						if (Traversible(m, t, i, j, 1, 1, true)) candidates.Add(new Candidate(i, j));
+						// You have to be able to talk to Bahamut so he needs a place next to him open.
+						if (m[j - 1, i] == t.roomtile ||
+							m[j + 1, i] == t.roomtile ||
+							m[j, i - 1] == t.roomtile ||
+							m[j, i + 1] == t.roomtile)
+						{
+							if (Traversible(m, t, i, j, 1, 1, true)) candidates.Add(new Candidate(i, j));
+						}
 					}
 				}
 			}
@@ -1414,9 +1464,7 @@ namespace FF1Lib
 				}
 
 				// Select a candidate at random and attach a box to it in a random legal direction
-				//c = DrawCard<Candidate>(rng, candidates);
 				c = candidates.SpliceRandom(rng);
-				//byte d = DrawCard<byte>(rng, c.dirs);
 				byte d = c.dirs.SpliceRandom(rng);
 				w = RollDice(rng, 3, 4);
 				h = RollDice(rng, 3, 4);
@@ -1448,40 +1496,54 @@ namespace FF1Lib
 			var killheadchance = 25;
 			List<SnakeHead> heads = new List<SnakeHead>();
 			List<SnakeHead> newheadlist;
+
+			// We start with two "heads" for the snake that move independently.
+			// They start facing in opposite directions.
 			heads.Add(new SnakeHead(0x20, 0x20, RollDice(rng, 1, 8) - 1));
 			heads.Add(new SnakeHead(0x20, 0x20, heads[0].facing + 4));
 			m.Fill((0x20 - 1, 0x20 - 1), (3, 3), t.floortile);
 			for (int p = 0; p < totalpushes; p++)
 			{
+				// Each iteration, we create a new list of heads based on whether the existing
+				// heads split and/or got cut off.
 				newheadlist = new List<SnakeHead>();
-				//Console.WriteLine("Heads: " + heads.Count());
 				for (int i = 0; i < heads.Count(); i++)
 				{
+					// Move the head one tile in the direction it's facing.
 					heads[i].Step();
+					// If it's out of bounds, we don't draw anything and it doesn't survive into
+					// the next iteration.
 					if (heads[i].x > 1 && heads[i].y > 1 && heads[i].x < 62 && heads[i].y < 62)
 					{
+						// Draw a 3x3 box of floor at the head's current location.
 						m.Fill((heads[i].x - 1, heads[i].y - 1), (3, 3), t.floortile);
 						if (heads.Count() < maxheads && RollDice(rng, 1, newheadchance) == 1)
 						{
+							// Split the head into two, each facing right angles to each other.
 							newheadlist.Add(new SnakeHead(heads[i].x, heads[i].y, heads[i].facing + 2));
 							heads[i].Rotate(-2);
 						}
 						else
 						{
+							// The head might rotate up to two steps in either direction, weighted
+							// towards staying in the same facing.
 							heads[i].Rotate(RollDice(rng, 2, 3) - 4);
 						}
 						if (!(heads.Count() > minheads && RollDice(rng, 1, killheadchance) == 1))
 						{
+							// If the head wasn't killed, it survives into the next iteration.
 							newheadlist.Add(heads[i]);
 						}
 					}
 				}
+				// Copy the new list over.
 				heads = new List<SnakeHead>();
 				foreach (SnakeHead s in newheadlist)
 				{
 					heads.Add(s);
 				}
 			}
+			// The process above erases the original warp tile so let's put it back ^_^;
 			m[0x20, 0x20] = t.warptile;
 			GenerateRooms(rng, m, t);
 		}
