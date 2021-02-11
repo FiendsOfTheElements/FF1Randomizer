@@ -610,15 +610,14 @@
 		"Id": "incentivizeRandomChestInLocationCheckBox",
 		"title": "Pick Random Chests At Location",
 		"screenshot": "incentivizeRandomChestInLocationCheckBox.gif",
-		"description": "Chooses a random chest in the selected locations to act like an incentivized chest. Mirage is not included in 'Sky Palace' and TFC is not included in 'Sea Shrine'"
+		"description": "Chooses a random chest in the selected location to act like an incentivized chest. Mirage is not included in 'Sky Palace', TFC is not included in 'Sea Shrine', Earth 1-3 is not included in 'Earth Cave'"
 	},
 	{
 		"Id": "incentivizeRandomChestIncludeExtra",
-		"title": "Include Mirage and TFC",
+		"title": "All Chests At Location",
 		"screenshot": "incentivizeRandomChestIncludeExtra.gif",
-		"description": "Adds mirage chests into 'Sky Palace' and TFC into 'Sea Shrine'. These are not included in the random chests originally to remove the chance of having to gamble on key-less sea or cube-less mirage."
+		"description": "Adds mirage chests into 'Sky Palace', TFC into 'Sea Shrine', and Earth floors 1-3. These are not included in the random chests originally to remove the chance of going to a location without the required item to get to an incentive chest. e.g. key-less sea, cube-less mirage, rod-less earth."
 	},
-
 	{
 		"Id": "incentivizeMainItemsCheckBox",
 		"title": "Main Progression Items",

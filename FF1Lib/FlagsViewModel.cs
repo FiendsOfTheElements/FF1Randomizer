@@ -1259,6 +1259,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeIceCave"));
 			}
 		}
+
 		public bool? IncentivizeOrdeals
 		{
 			get => Flags.IncentivizeOrdeals;
@@ -1268,6 +1269,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeOrdeals"));
 			}
 		}
+
 		public bool? IncentivizeSeaShrine
 		{
 			get => Flags.IncentivizeSeaShrine;
@@ -1305,22 +1307,122 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeSkyPalace"));
 			}
 		}
-		public bool? IncentivizeRandomChestInLocation
+
+		public bool? RandomIncentiveOrdeals
 		{
-			get => Flags.IncentivizeRandomChestInLocation;
+			get => Flags.RandomIncentiveOrdeals;
 			set
 			{
-				Flags.IncentivizeRandomChestInLocation = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeRandomChestInLocation"));
+				Flags.RandomIncentiveOrdeals = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomIncentiveOrdeals"));
 			}
 		}
-		public bool? IncentivizeRandomChestIncludeExtra
+		public bool? RandomIncentiveIceCave
 		{
-			get => Flags.IncentivizeRandomChestIncludeExtra;
+			get => Flags.RandomIncentiveIceCave;
 			set
 			{
-				Flags.IncentivizeRandomChestIncludeExtra = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeRandomChestIncludeExtra"));
+				Flags.RandomIncentiveIceCave = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomIncentiveIceCave"));
+			}
+		}
+		public bool? RandomIncentiveMarsh
+		{
+			get => Flags.RandomIncentiveMarsh;
+			set
+			{
+				Flags.RandomIncentiveMarsh = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomIncentiveMarsh"));
+			}
+		}
+		public bool? RandomIncentiveTitans
+		{
+			get => Flags.RandomIncentiveTitans;
+			set
+			{
+				Flags.RandomIncentiveTitans = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomIncentiveTitans"));
+			}
+		}
+		public bool? RandomIncentiveEarth
+		{
+			get => Flags.RandomIncentiveEarth;
+			set
+			{
+				Flags.RandomIncentiveEarth = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomIncentiveEarth"));
+			}
+		}
+		public bool? RandomIncentiveVolcano
+		{
+			get => Flags.RandomIncentiveVolcano;
+			set
+			{
+				Flags.RandomIncentiveVolcano = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomIncentiveVolcano"));
+			}
+		}
+		public bool? RandomIncentiveSeaShrine
+		{
+			get => Flags.RandomIncentiveSeaShrine;
+			set
+			{
+				Flags.RandomIncentiveSeaShrine = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomIncentiveSeaShrine"));
+			}
+		}
+		public bool? RandomIncentiveSkyPalace
+		{
+			get => Flags.RandomIncentiveSkyPalace;
+			set
+			{
+				Flags.RandomIncentiveSkyPalace = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomIncentiveSkyPalace"));
+			}
+		}
+		public bool? RandomIncentiveConeria
+		{
+			get => Flags.RandomIncentiveConeria;
+			set
+			{
+				Flags.RandomIncentiveConeria = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomIncentiveConeria"));
+			}
+		}
+		public bool? RandomIncentiveMarshKeyLocked
+		{
+			get => Flags.RandomIncentiveMarshKeyLocked;
+			set
+			{
+				Flags.RandomIncentiveMarshKeyLocked = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomIncentiveMarshKeyLocked"));
+			}
+		}
+		public bool? IncludeEarth
+		{
+			get => Flags.IncludeEarth;
+			set
+			{
+				Flags.IncludeEarth = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncludeEarth"));
+			}
+		}
+		public bool? IncludeSeaShrine
+		{
+			get => Flags.IncludeSeaShrine;
+			set
+			{
+				Flags.IncludeSeaShrine = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncludeSeaShrine"));
+			}
+		}
+		public bool? IncludeSkyPalace
+		{
+			get => Flags.IncludeSkyPalace;
+			set
+			{
+				Flags.IncludeSkyPalace = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncludeSkyPalace"));
 			}
 		}
 

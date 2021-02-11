@@ -158,16 +158,25 @@ namespace FF1Lib
 		public bool? IncentivizeIceCave { get; set; } = false;
 		public bool? IncentivizeOrdeals { get; set; } = false;
 		public bool? IncentivizeSeaShrine { get; set; } = false;
-
 		public bool? IncentivizeConeria { get; set; } = false;
 		public bool? IncentivizeMarshKeyLocked { get; set; } = false;
 		public bool? IncentivizeSkyPalace { get; set; } = false;
 		public bool? IncentivizeTitansTrove { get; set; } = false;
-		public bool? IncentivizeRandomChestInLocation { get; set; } = false;
-		public bool? IncentivizeRandomChestIncludeExtra { get; set; } = false;
+		public bool? RandomIncentiveIceCave { get; set; } = false;
+		public bool? RandomIncentiveOrdeals { get; set; } = false;
+		public bool? RandomIncentiveMarsh { get; set; } = false;
+		public bool? RandomIncentiveTitans { get; set; } = false;
+		public bool? RandomIncentiveEarth { get; set; } = false;
+		public bool? RandomIncentiveVolcano { get; set; } = false;
+		public bool? RandomIncentiveSeaShrine { get; set; } = false;
+		public bool? RandomIncentiveSkyPalace { get; set; } = false;
+		public bool? RandomIncentiveConeria { get; set; } = false;
+		public bool? RandomIncentiveMarshKeyLocked { get; set; } = false;
+		public bool? IncludeEarth { get; set; } = false;
+		public bool? IncludeSeaShrine { get; set; } = false;
+		public bool? IncludeSkyPalace { get; set; } = false;
+
 		public bool? BetterTrapChests { get; set; } = false;
-
-
 		public bool? IncentivizeMasamune { get; set; } = false;
 		public bool? IncentivizeKatana { get; set; } = false;
 		public bool? IncentivizeVorpal { get; set; } = false;

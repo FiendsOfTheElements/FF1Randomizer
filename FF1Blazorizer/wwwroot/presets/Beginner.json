@@ -88,8 +88,6 @@
     "IncentivizeMarshKeyLocked": false,
     "IncentivizeSkyPalace": true,
     "IncentivizeTitansTrove": false,
-    "IncentivizeRandomChestInLocation": false,
-    "IncentivizeRandomChestIncludeExtra": false,
     "BetterTrapChests": false,
     "IncentivizeMasamune": true,
     "IncentivizeKatana": false,

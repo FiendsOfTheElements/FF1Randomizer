@@ -219,7 +219,7 @@ namespace FF1Lib
 			}
 			if (flags.IncentivizeVolcano ?? false)
 			{
-				if((bool)flags.IncentivizeRandomChestInLocation) {
+				if((bool)flags.RandomIncentiveVolcano) {
 					incentiveLocationPool.Add(ItemLocations.Volcano.ToList().SpliceRandom(rng));
 				} else {
 					incentiveLocationPool.Add(ItemLocations.VolcanoMajor);
@@ -227,9 +227,16 @@ namespace FF1Lib
 			}
 			if (flags.IncentivizeEarth ?? false)
 			{
-				if ((bool)flags.IncentivizeRandomChestInLocation)
+				if ((bool)flags.RandomIncentiveEarth)
 				{
-					incentiveLocationPool.Add(ItemLocations.EarthCave.ToList().SpliceRandom(rng));
+					if ((bool)flags.IncludeEarth)
+					{
+						incentiveLocationPool.Add(ItemLocations.EarthCave.ToList().SpliceRandom(rng));
+					}
+					else
+					{
+						incentiveLocationPool.Add(ItemLocations.EarthCaveFloor4.ToList().SpliceRandom(rng));
+					}
 				}
 				else
 				{
@@ -238,7 +245,7 @@ namespace FF1Lib
 			}
 			if (flags.IncentivizeMarsh ?? false)
 			{
-				if ((bool)flags.IncentivizeRandomChestInLocation)
+				if ((bool)flags.RandomIncentiveMarsh)
 				{
 					incentiveLocationPool.Add(ItemLocations.MarshCaveUnlocked.ToList().SpliceRandom(rng));
 				}
@@ -249,7 +256,7 @@ namespace FF1Lib
 			}
 			if (flags.IncentivizeMarshKeyLocked ?? false)
 			{
-				if ((bool)flags.IncentivizeRandomChestInLocation)
+				if ((bool)flags.RandomIncentiveMarshKeyLocked)
 				{
 					incentiveLocationPool.Add(ItemLocations.MarshCaveLocked.ToList().SpliceRandom(rng));
 				}
@@ -260,9 +267,9 @@ namespace FF1Lib
 			}
 			if (flags.IncentivizeSkyPalace ?? false)
 			{
-				if ((bool)flags.IncentivizeRandomChestInLocation)
+				if ((bool)flags.RandomIncentiveSkyPalace)
 				{
-					if ((bool)flags.IncentivizeRandomChestIncludeExtra)
+					if ((bool)flags.IncludeSkyPalace)
 					{
 						incentiveLocationPool.Add(ItemLocations.SkyPalace.Concat(ItemLocations.MirageTower).ToList().SpliceRandom(rng));
 					} else {
@@ -276,9 +283,9 @@ namespace FF1Lib
 			}
 			if (flags.IncentivizeSeaShrine ?? false)
 			{
-				if ((bool)flags.IncentivizeRandomChestInLocation)
+				if ((bool)flags.RandomIncentiveSeaShrine)
 				{
-					if((bool)flags.IncentivizeRandomChestIncludeExtra)
+					if((bool)flags.IncludeSeaShrine)
 					{
 						incentiveLocationPool.Add(ItemLocations.SeaShrine.ToList().SpliceRandom(rng));
 					} else {
@@ -292,7 +299,7 @@ namespace FF1Lib
 			}
 			if (flags.IncentivizeConeria ?? false)
 			{
-				if ((bool)flags.IncentivizeRandomChestInLocation)
+				if ((bool)flags.RandomIncentiveConeria)
 				{
 					incentiveLocationPool.Add(ItemLocations.Coneria.ToList().SpliceRandom(rng));
 				}
@@ -303,7 +310,7 @@ namespace FF1Lib
 			}
 			if (flags.IncentivizeIceCave ?? false)
 			{
-				if ((bool)flags.IncentivizeRandomChestInLocation)
+				if ((bool)flags.RandomIncentiveIceCave)
 				{
 					incentiveLocationPool.Add(ItemLocations.IceCave.ToList().SpliceRandom(rng));
 				}
@@ -314,7 +321,7 @@ namespace FF1Lib
 			}
 			if (flags.IncentivizeOrdeals ?? false)
 			{
-				if ((bool)flags.IncentivizeRandomChestInLocation)
+				if ((bool)flags.RandomIncentiveOrdeals)
 				{
 					incentiveLocationPool.Add(ItemLocations.Ordeals.ToList().SpliceRandom(rng));
 				}
@@ -329,7 +336,7 @@ namespace FF1Lib
 			}
 			if (flags.IncentivizeTitansTrove ?? false)
 			{
-				if ((bool)flags.IncentivizeRandomChestInLocation)
+				if ((bool)flags.RandomIncentiveTitans)
 				{
 					incentiveLocationPool.Add(ItemLocations.TitansTunnel.ToList().SpliceRandom(rng));
 				}

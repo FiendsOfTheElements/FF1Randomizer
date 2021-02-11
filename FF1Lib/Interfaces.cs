@@ -26,8 +26,19 @@
 		bool? IncentivizeTitansTrove { get; }
 		bool? IncentivizeEarth { get; }
 		bool? IncentivizeSeaShrine { get; }
-		bool? IncentivizeRandomChestInLocation { get; }
-		bool? IncentivizeRandomChestIncludeExtra { get; }
+		bool? RandomIncentiveIceCave { get;}
+		bool? RandomIncentiveOrdeals { get;}
+		bool? RandomIncentiveMarsh { get;}
+		bool? RandomIncentiveTitans { get;}
+		bool? RandomIncentiveEarth { get;}
+		bool? RandomIncentiveVolcano { get;}
+		bool? RandomIncentiveSeaShrine { get;}
+		bool? RandomIncentiveSkyPalace { get;}
+		bool? RandomIncentiveConeria { get;}
+		bool? RandomIncentiveMarshKeyLocked { get;}
+		bool? IncludeEarth { get;}
+		bool? IncludeSeaShrine { get;}
+		bool? IncludeSkyPalace { get;}
 
 		bool? IncentivizeXcalber { get; }
 		bool? IncentivizeMasamune { get; }
