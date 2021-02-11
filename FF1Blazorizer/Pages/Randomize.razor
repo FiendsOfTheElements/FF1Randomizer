@@ -168,12 +168,12 @@
 
 	protected override async void OnInitialized()
 	{
-		string orbsOrder = "orbs easter egg order:\n";
-		for (int i = 0; i < orbsToMatch.Length; i++)
-		{
-			orbsOrder += ((orbsToMatch[i] < 4) ? "turn off " + (orbsToMatch[i] + 1).ToString() : "turn on " + (orbsToMatch[i] - 3).ToString()) + "\n";
-		}
-		Console.WriteLine(orbsOrder);
+		//string orbsOrder = "orbs easter egg order:\n";
+		//for (int i = 0; i < orbsToMatch.Length; i++)
+		//{
+		//	orbsOrder += ((orbsToMatch[i] < 4) ? "turn off " + (orbsToMatch[i] + 1).ToString() : "turn on " + (orbsToMatch[i] - 3).ToString()) + "\n";
+		//}
+		//Console.WriteLine(orbsOrder);
 
 
 		noTabLayout = await LocalStorage.GetItemAsync<bool>("tablayout");
