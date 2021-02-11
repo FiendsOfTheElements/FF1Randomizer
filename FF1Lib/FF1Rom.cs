@@ -333,7 +333,7 @@ namespace FF1Lib
 						incentivesData = new IncentiveData(rng, flags, overworldMap, shopItemLocation);
 					}
 
-					Sanity.SanityChecker c = new Sanity.SanityChecker(maps, overworldMap, npcdata, this);
+					Sanity.SCMain c = new Sanity.SCMain(maps, overworldMap, npcdata, this);
 
 					if ((bool)flags.Treasures)
 					{

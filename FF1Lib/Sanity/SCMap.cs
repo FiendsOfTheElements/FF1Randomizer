@@ -52,7 +52,6 @@ namespace FF1Lib.Sanity
 			ProcessTiles();
 			ProcessNPCs();
 			ProcessTeleporters();
-			SetSpecialBits();
 			ProcessPointsOfInterest();
 			ComposeAreas();
 		}
@@ -68,7 +67,7 @@ namespace FF1Lib.Sanity
 					var tileId = map[y, x];
 					var tileDef = tileSet.Tiles[tileId];
 
-					Tiles[x, y] = new SCTile(tileDef);
+					Tiles[x, y] = new SCTile(tileDef.BitFlags);
 
 					ProcessSpecialTileProps(x, y, tileId, tileDef);
 				}
@@ -268,14 +267,6 @@ namespace FF1Lib.Sanity
 				{
 					PointsOfInterest.Add(new SCPointOfInterest { Coords = new SCCoords { X = t.X, Y = t.Y }, Type = SCPointOfInterestType.SmEntrance });
 				}
-			}
-		}
-
-		private void SetSpecialBits()
-		{
-			foreach (var p in PointsOfInterest)
-			{
-				Tiles[p.Coords.X, p.Coords.Y].Tile |= SCBitFlags.Special;
 			}
 		}
 

@@ -135,16 +135,6 @@ namespace FF1Lib.Sanity
 			return (left & SCBitFlags.Done) > 0;
 		}
 
-		public static bool IsSpecial(this SCBitFlags left)
-		{
-			return (left & SCBitFlags.Special) > 0;
-		}
-
-		public static bool IsComplex(this SCBitFlags left)
-		{
-			return (left & SCBitFlags.Complex) > 0;
-		}
-
 		public static bool IsBlocked(this SCBitFlags left)
 		{
 			return (left & SCBitFlags.Blocked) > 0;

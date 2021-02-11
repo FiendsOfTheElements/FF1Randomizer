@@ -69,12 +69,6 @@ namespace FF1Lib.Sanity
 
 				if (changed)
 				{
-					/*
-					if (dungeonpoi.Type == SCPointOfInterestType.OwEntrance)
-					{
-						AddEnterTele(new SCTeleport { TargetMap = entrance.Map.MapId, TargetCoords = dungeonpoi.Coords, Type = SCPointOfInterestType.OwEntrance });
-					}
-					else*/
 					if (dungeonpoi.Type == SCPointOfInterestType.Tele)
 					{
 						AddTele(dungeonpoi.Teleport, dungeonpoi.BitFlagSet, false);

@@ -27,6 +27,7 @@ namespace FF1Lib.Sanity
 			if ((TileProp.TilePropFunc & (TilePropFunc.TP_SPEC_MASK | TilePropFunc.TP_NOMOVE)) == TilePropFunc.TP_NOMOVE)
 			{
 				BitFlags = SCBitFlags.Blocked;
+				OWBitFlags = SCBitFlags.Blocked;
 			}
 			else if ((TileProp.TilePropFunc & (TilePropFunc.TP_SPEC_DOOR | TilePropFunc.TP_SPEC_LOCKED)) == TilePropFunc.TP_SPEC_LOCKED)
 			{
@@ -53,12 +54,6 @@ namespace FF1Lib.Sanity
 			{
 				SpBitFlags = SCBitFlags.UseLute;
 			}
-			/*
-			else if ((TileProp.TilePropFunc & TilePropFunc.OWTP_SPEC_MASK) == TilePropFunc.OWTP_SPEC_FLOATER)
-			{
-				SpBitFlags = SCBitFlags.UseFloater;
-			}
-			*/
 			else if ((TileProp.TilePropFunc & TilePropFunc.TP_TELE_MASK) == TilePropFunc.TP_TELE_WARP)
 			{
 				SpBitFlags = SCBitFlags.Warp;
@@ -69,7 +64,9 @@ namespace FF1Lib.Sanity
 			}
 			else if ((TileProp.TilePropFunc & TilePropFunc.TP_TELE_MASK) == TilePropFunc.TP_TELE_EXIT)
 			{
+				//they share the same code
 				SpBitFlags = SCBitFlags.Exit;
+				SpBitFlags = SCBitFlags.UseFloater;
 			}
 			else if ((TileProp.TilePropFunc & TilePropFunc.TP_SPEC_MASK) == TilePropFunc.TP_SPEC_TREASURE)
 			{
@@ -104,10 +101,16 @@ namespace FF1Lib.Sanity
 			{
 				OWBitFlags = SCBitFlags.Ocean;
 			}
+			else
+			{
+				OWBitFlags = SCBitFlags.Blocked;
+			}
 
-			if ((TileProp.TilePropFunc & TilePropFunc.OWTP_DOCKAIRSHIP) != 0) OWBitFlags |= SCBitFlags.AirDock;
+			if ((TileProp.TilePropFunc & TilePropFunc.OWTP_DOCKAIRSHIP) == 0) OWBitFlags |= SCBitFlags.AirDock;
 			if ((TileProp.TilePropFunc & TilePropFunc.OWTP_DOCKSHIP) != 0) OWBitFlags |= SCBitFlags.ShipDock;
 			if ((TileProp.TilePropFunc & TilePropFunc.OWTP_SPEC_MASK) ==  TilePropFunc.OWTP_SPEC_CHIME) OWBitFlags |= SCBitFlags.Chime;
+			if ((TileProp.TilePropFunc & TilePropFunc.OWTP_SPEC_MASK) == TilePropFunc.OWTP_SPEC_CARAVAN) OWBitFlags |= SCBitFlags.Caravan;
+			if (TileProp.Byte2 >= (byte)0x80) OWBitFlags |= SCBitFlags.Enter;
 		}
 	}
 }

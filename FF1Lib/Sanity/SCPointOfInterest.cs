@@ -55,7 +55,7 @@ namespace FF1Lib.Sanity
 
 		public override string ToString()
 		{
-			return Type.ToString() + " " + Coords.ToString() + " - " + BitFlagSet.ToString();
+			return Type.ToString() + " " + Coords.ToString() + " - " + (BitFlagSet?.ToString() ?? "");
 		}
 	}
 

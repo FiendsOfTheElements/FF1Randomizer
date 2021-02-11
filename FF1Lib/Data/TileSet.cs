@@ -73,6 +73,8 @@ namespace FF1Lib
 
 	public class TileSet
 	{
+		public const byte OverworldIndex = 0xFF;
+
 		public MemTable<TileProp> TileProperties;
 		public MemTable<byte> TileAttributes;
 		public MemTable<byte> TopLeftTiles;
@@ -82,13 +84,27 @@ namespace FF1Lib
 
 		public TileSet(FF1Rom _rom, byte idx)
 		{
-			TileProperties = new MemTable<TileProp>(_rom, 0x800 + 0x100 * idx, 128);
-			TileAttributes = new MemTable<byte>(_rom, 0x400 + 0x80 * idx, 128);
+			if (idx == OverworldIndex)
+			{
+				TileProperties = new MemTable<TileProp>(_rom, 0x0000, 128);
 
-			TopLeftTiles = new MemTable<byte>(_rom, 0x1000 + 0x200 * idx, 128);
-			TopRightTiles = new MemTable<byte>(_rom, 0x1080 + 0x200 * idx, 128);
-			BottemLeftTiles = new MemTable<byte>(_rom, 0x1100 + 0x200 * idx, 128);
-			BottemRightTiles = new MemTable<byte>(_rom, 0x1180 + 0x200 * idx, 128);
+				TopLeftTiles = new MemTable<byte>(_rom, 0x0100, 128);
+				TopRightTiles = new MemTable<byte>(_rom, 0x0180, 128);
+				BottemLeftTiles = new MemTable<byte>(_rom, 0x0200, 128);
+				BottemRightTiles = new MemTable<byte>(_rom, 0x0280, 128);
+
+				TileAttributes = new MemTable<byte>(_rom, 0x0300, 128);
+			}
+			else
+			{
+				TileProperties = new MemTable<TileProp>(_rom, 0x800 + 0x100 * idx, 128);
+				TileAttributes = new MemTable<byte>(_rom, 0x400 + 0x80 * idx, 128);
+
+				TopLeftTiles = new MemTable<byte>(_rom, 0x1000 + 0x200 * idx, 128);
+				TopRightTiles = new MemTable<byte>(_rom, 0x1080 + 0x200 * idx, 128);
+				BottemLeftTiles = new MemTable<byte>(_rom, 0x1100 + 0x200 * idx, 128);
+				BottemRightTiles = new MemTable<byte>(_rom, 0x1180 + 0x200 * idx, 128);
+			}
 		}
 
 		public void LoadData()

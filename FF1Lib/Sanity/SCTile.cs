@@ -7,39 +7,30 @@ using System.Threading.Tasks;
 
 namespace FF1Lib.Sanity
 {
-	[StructLayout(LayoutKind.Explicit, Size = 16)]
+	[StructLayout(LayoutKind.Sequential, Pack = 1)]
 	public unsafe struct SCTile
 	{
-		[FieldOffset(0)]
+		private const int ExtFlagCount = 5;
+
 		public SCBitFlags Tile;
 
-		[FieldOffset(2)]
-		public SCBitFlags Flags;
+		public fixed ushort ExtFlags[ExtFlagCount];
 
-		[FieldOffset(2)]
-		public fixed ushort ExtFlags[7];
-
-		public SCTile(SCTileDef tileDef)
+		public SCTile(SCBitFlags bitflags)
 		{
-			Tile = tileDef.BitFlags;
-			Flags = SCBitFlags.None;
+			Tile = bitflags;
 
-			ExtFlags[1] = (ushort)SCBitFlags.None;
-			ExtFlags[2] = (ushort)SCBitFlags.None;
-			ExtFlags[3] = (ushort)SCBitFlags.None;
-			ExtFlags[4] = (ushort)SCBitFlags.None;
-			ExtFlags[5] = (ushort)SCBitFlags.None;
-			ExtFlags[6] = (ushort)SCBitFlags.None;
+			for (int i = 1; i < ExtFlagCount; i++) ExtFlags[i] = (ushort)SCBitFlags.None;
 		}
 
 		public override string ToString()
 		{
-			return Flags.ToString("X") + ":" + Tile.ToString("X");
+			return ExtFlags[0].ToString("X") + ":" + Tile.ToString("X");
 		}
 
 		public void AddExtFlag(SCBitFlags req)
 		{
-			for (int i = 1; i < 7; i++)
+			for (int i = 1; i < ExtFlagCount; i++)
 			{
 				if (ExtFlags[i] == (ushort)SCBitFlags.None)
 				{
@@ -56,7 +47,7 @@ namespace FF1Lib.Sanity
 			bool orthogonal = true;
 			int i = 0;
 
-			for (; i < 7; i++)
+			for (; i < ExtFlagCount; i++)
 			{
 				if (ExtFlags[i] == (ushort)SCBitFlags.None) break;
 				if (((SCBitFlags)ExtFlags[i]).IsStrictSupersetOf(req))
@@ -70,9 +61,9 @@ namespace FF1Lib.Sanity
 				}
 			}
 
-			if (orthogonal && i >= 7) i = CompactFlags();
+			if (orthogonal && i >= ExtFlagCount) i = CompactFlags();
 
-			if (orthogonal && i < 7)
+			if (orthogonal && i < ExtFlagCount)
 			{
 				ExtFlags[i] = (ushort)req;
 				result = true;
@@ -83,8 +74,8 @@ namespace FF1Lib.Sanity
 
 		private int CompactFlags()
 		{
-			int result = 7;
-			for (int i = 6; i > 0; i--)
+			int result = ExtFlagCount;
+			for (int i = ExtFlagCount - 1; i > 0; i--)
 				for (int j = i - 1; j >= 0; j--)
 				{
 					if (((SCBitFlags)ExtFlags[i]).IsSupersetOf((SCBitFlags)ExtFlags[j]))
@@ -94,7 +85,7 @@ namespace FF1Lib.Sanity
 					}
 				}
 
-			if (result == 7)
+			if (result == ExtFlagCount)
 			{
 				throw new MadnessException("There are more the 7 orthogonal requirements for a tile!");
 			}
@@ -104,7 +95,7 @@ namespace FF1Lib.Sanity
 
 		public bool IsSubsetOf(SCBitFlags req)
 		{
-			for (int i = 0; i < 7; i++)
+			for (int i = 0; i < ExtFlagCount; i++)
 			{
 				var flags = (SCBitFlags)ExtFlags[i];
 
@@ -120,7 +111,7 @@ namespace FF1Lib.Sanity
 			CompactFlags();
 
 			SCBitFlagSet result = new SCBitFlagSet();
-			for (int i = 0; i < 7; i++)
+			for (int i = 0; i < ExtFlagCount; i++)
 			{
 				if (ExtFlags[i] == (ushort)SCBitFlags.None) break;
 				result.Add((SCBitFlags)ExtFlags[i]);
@@ -131,7 +122,7 @@ namespace FF1Lib.Sanity
 
 		public bool IsOrthogonalTo(SCBitFlags req)
 		{
-			for (int i = 1; i < 7; i++)
+			for (int i = 1; i < ExtFlagCount; i++)
 			{
 				var flags = (SCBitFlags)ExtFlags[i];
 
@@ -144,7 +135,7 @@ namespace FF1Lib.Sanity
 
 		public bool IsSupersetOf(SCBitFlags req)
 		{
-			for (int i = 1; i < 7; i++)
+			for (int i = 1; i < ExtFlagCount; i++)
 			{
 				var flags = (SCBitFlags)ExtFlags[i];
 

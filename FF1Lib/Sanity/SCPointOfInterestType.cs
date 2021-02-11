@@ -17,5 +17,8 @@ namespace FF1Lib.Sanity
 		Orb,
 		OwEntrance,
 		SmEntrance,
+		Ship,
+		AirShip,
+		Start
 	}
 }

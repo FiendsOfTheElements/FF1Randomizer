@@ -9,7 +9,7 @@ using static FF1Lib.FF1Rom;
 
 namespace FF1Lib.Sanity
 {
-	public class SanityChecker
+	public class SCMain
 	{
 		FF1Rom rom;
 		List<Map> maps;
@@ -18,6 +18,7 @@ namespace FF1Lib.Sanity
 
 		MapTileSets mapTileSets;
 		SCTileSet[] tileSets = new SCTileSet[8];
+		SCTileSet owtileset;
 
 		EnterTeleData enter;
 		ExitTeleData exit;
@@ -25,10 +26,11 @@ namespace FF1Lib.Sanity
 		NPCdata npcdata;
 
 		Dictionary<MapId, SCMap> scmaps;
+		SCOwMap owmap;
 
-		public List<SCDungeon> Dungeons { get; private set; } = new List<SCDungeon>();
+		public List<SCDungeon> Dungeons { get; private set; } = new List<SCDungeon>();		
 
-		public SanityChecker(List<Map> _maps, OverworldMap _overworldMap, NPCdata _npcdata, FF1Rom _rom)
+		public SCMain(List<Map> _maps, OverworldMap _overworldMap, NPCdata _npcdata, FF1Rom _rom)
 		{
 			maps = _maps;
 			overworldMap = _overworldMap;
@@ -42,6 +44,8 @@ namespace FF1Lib.Sanity
 
 			for (int i = 0; i < 8; i++) tileSets[i] = new SCTileSet(rom, (byte)i);
 
+			owtileset = new SCTileSet(rom, TileSet.OverworldIndex);
+
 			Stopwatch w = Stopwatch.StartNew();
 
 			ConcurrentBag<SCMap> tmpscmaps = new ConcurrentBag<SCMap>();
@@ -49,6 +53,14 @@ namespace FF1Lib.Sanity
 			scmaps = tmpscmaps.ToDictionary(m => m.MapId);
 
 			ComposeDungeons();
+
+			SCCoords start = new SCCoords(0x99, 0xA5);
+			SCCoords ship = new SCCoords(0xD2, 0x99);
+			SCCoords airShip = new SCCoords(0xDD, 0xED);
+
+			SCCoords bridge = new SCCoords(0x98, 0x98);
+			SCCoords canal = new SCCoords(0x66, 0xA4);
+			owmap = new SCOwMap(overworldMap, SCMapCheckFlags.None, _rom, owtileset, enter, exit, bridge, canal);
 
 			w.Stop();
 		}

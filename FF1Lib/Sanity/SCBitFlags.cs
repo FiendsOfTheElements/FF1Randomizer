@@ -22,17 +22,18 @@ namespace FF1Lib.Sanity
 		Bridge =	0x0400,
 		Canal =		0x0600,
 		Canoe =		0x0800,
-		Blocked =	0x1000,
 
-		Done =		0x2000,
-		Special =	0x4000,
-		Complex =	0x8000,
+		Blocked =	0x4000,
+		Done =		0x8000,
 
 		Land =		0x0001,
 		River =		0x0002,
 		Ocean =		0x0004,
 		AirDock =	0x0008,
 		ShipDock =	0x0010,
+		Chime2 = 0x0020,
+		Enter =0x0040,
+		Caravan =	0x0080,
 
 		UseRod = 0x0001,
 		UseLute = 0x0002,
