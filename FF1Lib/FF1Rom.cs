@@ -1220,5 +1220,6 @@ namespace FF1Lib
 			Put(BattleRngOffset, battleRng.SelectMany(blob => blob.ToBytes()).ToArray());
 		}
 
+
 	}
 }
