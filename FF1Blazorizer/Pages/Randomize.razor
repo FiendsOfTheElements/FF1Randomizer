@@ -143,31 +143,16 @@
 	private List<int> orbOrder = new List<int>();
 
 	private int[] orbsToMatch = { 4, 7, 0, 5, 4, 6, 3, 7 };
+
+
 	private void SwitchOrb(int orb)
 	{
 		litOrbs[orb] = !litOrbs[orb];
 		orbOrder.Add(litOrbs[orb] ? orb + 4 : orb);
-
-		Console.WriteLine("so far: ");
-
-		orbOrder.ForEach(delegate (int orb)
-		{
-			Console.WriteLine(orb);
-
-		});
-		Console.WriteLine("needed to match: ");
-		for (int i = 0; i < orbsToMatch.Length; i++)
-		{
-			Console.WriteLine(orbsToMatch[i]);
-		}
-		Console.WriteLine(orbOrder.SequenceEqual(orbsToMatch));
 		if (orbOrder.SequenceEqual(orbsToMatch))
 		{
-			Console.WriteLine("matches!");
 			showChaos = true;
-
 		}
-		Console.WriteLine("done");
 		StateHasChanged();
 	}
 
@@ -183,6 +168,14 @@
 
 	protected override async void OnInitialized()
 	{
+		string orbsOrder = "orbs easter egg order:\n";
+		for (int i = 0; i < orbsToMatch.Length; i++)
+		{
+			orbsOrder += ((orbsToMatch[i] < 4) ? "turn off " + (orbsToMatch[i] + 1).ToString() : "turn on " + (orbsToMatch[i] - 3).ToString()) + "\n";
+		}
+		Console.WriteLine(orbsOrder);
+
+
 		noTabLayout = await LocalStorage.GetItemAsync<bool>("tablayout");
 		// Announcement ID needs to be changed for each new events, also need to be changed in Randomizer.razor
 		//  both need to match
