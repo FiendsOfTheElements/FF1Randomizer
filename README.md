@@ -40,7 +40,7 @@ The randomizer is hosted on github and therefore some level of git knowledge is 
  - branch: A distinct history of the files in the git directory. This can have a history that shares a common ancestor with another branch (the usual case) or be fully separate. Usually features/bugfixes start with a new branch off the main branch.
  - repo, repository, or remote: A remote server that facilitates distributed development through being a synchronized source of truth for the files in the git directory. There can be multiple repos.
  - rebase or merge: Methods of taking changes that are in a repo and combining them with your local work.
- - pull and push: Rransferring files from the repo to your local stuff or the other way around.
+ - pull and push: Transferring files from the repo to your local stuff or the other way around.
  - clone: The action of setting up a local git directory that is a clone of a specific repo.
  - checkout: Swap to a different branch or commit.
 
@@ -106,14 +106,14 @@ Ensure all current work is stored in a commit, so its easy to recover if somethi
 #### When you are ready for feedback
 At this point you should have been talking with people in the dev discord and have something functional that maybe still needs some polish, but is ready for feedback, if not ready to be included in the beta site yet.
 
-1.Rrebase, as covered in the section immediately above this one.
+1.Rebase, as covered in the section immediately below this one.
 2. Run `git push origin`
 3. Go to github and head to your fork.
 4. Select the branch name you have been working with in the drop down on the middle left at the top.
 5. Click the "Pull request" button on the middle right at the top.
 6. This should open a window comparing the changes in your branch and the main repo's dev branch.
 7. Add a title and write up a description of your changes.
-8. If your not ready to have this merged in, click on the arrow beside the "Create pull request" button, and change this to a draft pull request.
+8. If you're not ready to have this merged in, click on the arrow beside the "Create pull request" button, and change this to a draft pull request.
 9. If you want feed back from people in particular, select the gear by reviewers on the top right.
 10. Once you are satisfied with the title, description, and reviewers, click the create pull request (or draft pull request) button.
 11. If you created a draft PR, once you think it is ready to be merged, come back here and change it to a regular PR.
