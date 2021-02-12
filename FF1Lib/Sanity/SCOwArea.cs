@@ -31,8 +31,8 @@ namespace FF1Lib.Sanity
 			if ((Tile & SCBitFlags.Blocked) > 0 || (area.Tile & SCBitFlags.Blocked) > 0) return;
 
 			//One is Ocean
-			if ((Tile & SCBitFlags.Ocean) > 0 && (area.Tile & (SCBitFlags.River | SCBitFlags.ShipDock)) == 0) return;
-			if ((area.Tile & SCBitFlags.Ocean) > 0 && (Tile & (SCBitFlags.River | SCBitFlags.ShipDock)) == 0) return;
+			if ((Tile & SCBitFlags.Ocean) > 0 && (area.Tile & (SCBitFlags.River | SCBitFlags.ShipDock | SCBitFlags.Canal | SCBitFlags.Bridge)) == 0) return;
+			if ((area.Tile & SCBitFlags.Ocean) > 0 && (Tile & (SCBitFlags.River | SCBitFlags.ShipDock | SCBitFlags.Canal | SCBitFlags.Bridge)) == 0) return;
 
 			area.Links.Add(Index);
 			Links.Add(area.Index);

@@ -63,6 +63,18 @@ namespace FF1Lib.Sanity
 			return result;
 		}
 
+		public List<AccessRequirement> ToRequirements()
+		{
+			List<AccessRequirement> flags = new List<AccessRequirement>();
+
+			foreach (var bitflags in this)
+			{
+				flags.Add(bitflags.ToRequirements());
+			}
+
+			return flags;
+		}
+
 		public static SCBitFlagSet NoRequirements { get; } = new SCBitFlagSet(SCBitFlags.None);
 	}
 
@@ -138,6 +150,32 @@ namespace FF1Lib.Sanity
 		public static bool IsBlocked(this SCBitFlags left)
 		{
 			return (left & SCBitFlags.Blocked) > 0;
+		}
+
+		public static AccessRequirement ToRequirements(this SCBitFlags left)
+		{
+			AccessRequirement flags = AccessRequirement.None;
+
+			if ((left & SCBitFlags.Lute) > 0) flags |= AccessRequirement.Lute;
+			if ((left & SCBitFlags.Crown) > 0) flags |= AccessRequirement.Crown;
+			if ((left & SCBitFlags.Key) > 0) flags |= AccessRequirement.Key;
+			if ((left & SCBitFlags.Ruby) > 0) flags |= AccessRequirement.Ruby;
+			if ((left & SCBitFlags.Rod) > 0) flags |= AccessRequirement.Rod;
+			if ((left & SCBitFlags.Cube) > 0) flags |= AccessRequirement.Cube;
+			if ((left & SCBitFlags.Oxyale) > 0) flags |= AccessRequirement.Oxyale;
+			if ((left & SCBitFlags.Orbs) > 0) flags |= AccessRequirement.EarthOrb | AccessRequirement.FireOrb | AccessRequirement.WaterOrb | AccessRequirement.AirOrb;
+
+			return flags;
+		}
+
+		public static bool IsAccessible(this List<AccessRequirement> flags, AccessRequirement req)
+		{
+			foreach (var flag in flags)
+			{
+				if ((flag & req) == flag) return true;
+			}
+
+			return false;
 		}
 	}
 }

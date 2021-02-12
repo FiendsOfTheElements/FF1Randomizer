@@ -18,6 +18,7 @@ namespace FF1Lib.Sanity
 		Cube =		0x0040,
 		Oxyale =	0x0080,
 		Orbs =		0x0100,
+
 		Ship =		0x0200,
 		Bridge =	0x0400,
 		Canal =		0x0600,

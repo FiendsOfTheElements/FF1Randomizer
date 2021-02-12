@@ -117,6 +117,8 @@ namespace FF1Lib
 		private readonly Item _requiredItemTrade;
 		private readonly bool _useVanillaRoutineAddress;
 
+		public ObjectId ObjectId { get; private set; }
+
 		public MapLocation SecondLocation { get; protected set; } = MapLocation.StartingLocation;
 
 		public MapObject(ObjectId objectId, MapLocation mapLocation, Item item,
@@ -132,6 +134,8 @@ namespace FF1Lib
 				   item,
 				   accessRequirement)
 		{
+			ObjectId = objectId;
+
 			_objectRoutineAddress = (byte)objectId * _mapObjTalkJumpTblDataSize + _mapObjTalkJumpTblAddress;
 			_requiredGameEventFlag = requiredGameEventFlag;
 			_requiredItemTrade = requiredItemTrade;
@@ -147,6 +151,9 @@ namespace FF1Lib
 		{
 			if (!(copyFromRewardSource is MapObject copyFromMapObject))
 				return;
+
+
+			ObjectId = copyFromMapObject.ObjectId;
 
 			_objectRoutineAddress = copyFromMapObject._objectRoutineAddress;
 			_requiredGameEventFlag = copyFromMapObject._requiredGameEventFlag;
@@ -183,11 +190,19 @@ namespace FF1Lib
 
 	public class ItemShopSlot : RewardSourceBase
 	{
-		public ItemShopSlot(int address, string name, MapLocation mapLocation, Item item)
-			: base(address, name, mapLocation, item) { }
+		public byte ShopIndex { get; private set; }
 
-		public ItemShopSlot(IRewardSource copyFromRewardSource, Item item)
-			: base(copyFromRewardSource, item) { }
+		public ItemShopSlot(int address, string name, MapLocation mapLocation, Item item, byte shopIndex)
+			: base(address, name, mapLocation, item)
+		{
+			ShopIndex = shopIndex;
+		}
+
+		public ItemShopSlot(ItemShopSlot copyFromRewardSource, Item item)
+			: base(copyFromRewardSource, item)
+		{
+			ShopIndex = copyFromRewardSource.ShopIndex;
+		}
 
 		public override void Put(FF1Rom rom)
 		{

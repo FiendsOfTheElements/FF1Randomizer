@@ -310,7 +310,6 @@ namespace FF1Lib
 
 
 					ISanityChecker checker = new SanityCheckerV1();
-					Sanity.SCMain c = new Sanity.SCMain(maps, overworldMap, npcdata, this);
 
 					IncentiveData incentivesData = new IncentiveData(rng, flags, overworldMap, shopItemLocation, checker);
 
@@ -342,6 +341,10 @@ namespace FF1Lib
 					if ((bool)flags.Treasures)
 					{
 						generatedPlacement = ShuffleTreasures(rng, flags, incentivesData, shopItemLocation, overworldMap, teleporters, checker);
+
+
+						SanityCheckerV2 c = new SanityCheckerV2(maps, overworldMap, npcdata, this);
+						c.CheckSanity(generatedPlacement, null, flags);
 					}
 					break;
 				}

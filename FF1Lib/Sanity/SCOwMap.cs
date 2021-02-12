@@ -34,7 +34,7 @@ namespace FF1Lib.Sanity
 		ExitTeleData exit;
 
 
-		List<SCOwArea> areadic;
+		public List<SCOwArea> areadic;
 		Queue<SCOwTileQueueEntry> immediatequeue = new Queue<SCOwTileQueueEntry>(256);
 		Queue<SCOwTileQueueEntry> deferredqueue = new Queue<SCOwTileQueueEntry>(1024);
 
@@ -48,6 +48,9 @@ namespace FF1Lib.Sanity
 
 			enter = _enter;
 			exit = _exit;
+
+			Bridge = bridge;
+			Canal = canal;
 
 			ProcessTiles();
 			ProcessTeleporters();
@@ -91,7 +94,7 @@ namespace FF1Lib.Sanity
 			if ((tileDef.OWBitFlags & SCBitFlags.Enter) > 0)
 			{
 				var overworldTeleport = (OverworldTeleportIndex)(tileDef.TileProp.Byte2 & 0x3F);
-				var teleDef = enter[overworldTeleport];
+				var teleDef = enter[(int)overworldTeleport];
 				var t = new SCTeleport { Coords = poi.Coords, Type = SCPointOfInterestType.OwEntrance, TargetMap = teleDef.Map, TargetCoords = new SCCoords { X = teleDef.X, Y = teleDef.Y }, OverworldTeleport = overworldTeleport };
 				Exits.Add(t);
 

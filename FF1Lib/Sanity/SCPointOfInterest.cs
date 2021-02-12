@@ -36,6 +36,8 @@ namespace FF1Lib.Sanity
 
 		public SCBitFlagSet BitFlagSet { get;  set; }
 
+		public List<AccessRequirement> Requirements { get; set; }
+
 		public SCPointOfInterest Clone()
 		{
 			return new SCPointOfInterest
