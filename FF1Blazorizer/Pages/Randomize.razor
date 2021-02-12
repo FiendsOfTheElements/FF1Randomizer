@@ -4,10 +4,6 @@
 @using Microsoft.AspNetCore.Components.Web
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 
-<div id="orbs">
-	<div class="orb-image @(litOrbs[0] ? "litUL" : "")" @onclick="@(() => SwitchOrb(0))"></div><div class="orb-image @(litOrbs[1] ? "litUR" : "")" @onclick="@(() => SwitchOrb(1))"></div><span class="orb-image @(litOrbs[2] ? "litLL" : "")" @onclick="@(() => SwitchOrb(2))"></span><span class="orb-image @(litOrbs[3] ? "litLR" : "")" @onclick="@(() => SwitchOrb(3))"></span>
-</div>
-
 <div id="main-content">
 	<ToolTip @ref="ToolTipElement" ToolTipId="@ToolTipId" />
 	<aside id="left-column">
@@ -136,25 +132,16 @@
 
 @code {
 
-	private bool showChaos { get; set; }
+	[CascadingParameter] public bool showChaos { get; set; }
+	//[Parameter] public bool showChaos { get; set; } = false;
 
-	private bool[] litOrbs = { false, false, false, false };
+	//private bool showChaos { get; set; }
 
-	private List<int> orbOrder = new List<int>();
-
-	private int[] orbsToMatch = { 4, 7, 0, 5, 4, 6, 3, 7 };
-
-
-	private void SwitchOrb(int orb)
-	{
-		litOrbs[orb] = !litOrbs[orb];
-		orbOrder.Add(litOrbs[orb] ? orb + 4 : orb);
-		if (orbOrder.SequenceEqual(orbsToMatch))
-		{
-			showChaos = true;
-		}
-		StateHasChanged();
-	}
+	//void ShowChaos()
+	//{
+	//	showChaos = true;
+	//	StateHasChanged();
+	//}
 
 
 	private FlagsViewModel Flags { get; set; } = new FlagsViewModel();
@@ -165,6 +152,7 @@
 	private bool noTabLayout = false;
 	private bool hideAnnouncement = false;
 	private string presetName = "Untitled";
+
 
 	protected override async void OnInitialized()
 	{

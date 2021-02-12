@@ -1,6 +1,9 @@
 ﻿@using System.Net.Http.Json
 @inject HttpClient  Http
 <div id="top-nav">
+	<div id="orbs">
+		<div class="orb-image @(litOrbs[0] ? "litUL" : "")" @onclick="@(() => SwitchOrb(0))"></div><div class="orb-image @(litOrbs[1] ? "litUR" : "")" @onclick="@(() => SwitchOrb(1))"></div><span class="orb-image @(litOrbs[2] ? "litLL" : "")" @onclick="@(() => SwitchOrb(2))"></span><span class="orb-image @(litOrbs[3] ? "litLR" : "")" @onclick="@(() => SwitchOrb(3))"></span>
+	</div>
 
 	<nav id="site-nav">
 		<span class="nav-item-main" id="randomize"><a href="Randomize">Randomize</a></span>
@@ -10,3 +13,31 @@
 		<span class="nav-item-main" id="install"><a href="javascript:showPWAInstall()">Install</a></span>
 	</nav>
 </div>
+
+@code {
+	[Parameter] public EventCallback<bool> ChaosTriggered { get; set; }
+
+	private bool[] litOrbs = { false, false, false, false };
+
+	private List<int> orbOrder = new List<int>();
+
+	private int[] orbsToMatch = { 4, 7, 0, 5, 4, 6, 3, 7 };
+
+	private void SwitchOrb(int orb)
+	{
+		litOrbs[orb] = !litOrbs[orb];
+		orbOrder.Add(litOrbs[orb] ? orb + 4 : orb);
+		if (orbOrder.SequenceEqual(orbsToMatch))
+		{
+			OnChaosTrigerred();
+
+		}
+		StateHasChanged();
+	}
+
+	private Task OnChaosTrigerred()
+	{
+		return ChaosTriggered.InvokeAsync(true);
+	}
+
+}
