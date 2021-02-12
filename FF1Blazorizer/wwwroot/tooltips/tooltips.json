@@ -808,6 +808,12 @@
 		"description": "Shuffles the town entrances amongst themselves. When town entrances are shuffled, all towns, aside from Corneria, could appear at any other town, such that the town at Pravoka could be Lefein (or vice-versa).\nTreasures shuffle and Main NPC Items shuffle must be enabled for this flag to function."
 	},
 	{
+		"Id": "includeConeriaCheckBox",
+		"title": "Include Coneria",
+		"screenshot": "includeConeriaCheckBox.png",
+		"description": "Include Coneria in Town Shuffle.\nOnly towns with item shops and clinics are permitted, thus exlcuding Melmond and Lefein.\nUnless Allow Unsafe Start Area is enabled the Coneria entrance will always lead to a town.\nIf other flags guaranteed Coneria's item shop to have PURE and SOFT and the Coneria entrance leads immediately to a town that town's item shop will have these instead."
+	},
+	{
 		"Id": "mixEntrancesCheckBox",
 		"title": "Mix All Entrances Together",
 		"screenshot": "mixEntrancesCheckBox.gif",
@@ -1415,3 +1421,4 @@
 		"description": "Replace NPCs' dialogues with hints. There a 6 Hint Categories:\nLoose Floor: provides the floor where a loose is located\nLoose Name: provides the name of the loose and the dungeon\nIncentive Name: provides the name of the incentive and the dungeon, npc or town\nEquipment Floor: States on what floors legendery items are\nEquipment Name: Gives the name of the Equipment and the dungeon name\nFloor Hints: Wow: Quest or legendary; Meh: Rare Equipment; Sparkle: more than 5kgold treasure; Dud: none of the above\n\nThe hint categories are placed in the order specified. If there are no valid places left, remaining hints are not placed anymore."
 	}
 ]
+
