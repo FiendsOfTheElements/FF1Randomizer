@@ -111,8 +111,6 @@ namespace FF1Lib
 			const int lut_PtyGenBuf = 0x784AA;       // offset for party generation buffer LUT
 			const int lut_ClassPreferences = 0x78114;  // classes LUT
 
-			var i = slotNumber - 1;
-
 			if (forced) // if forced
 			{
 				FF1Class forcedclass;
@@ -129,18 +127,25 @@ namespace FF1Lib
 				options.Add(forcedclass);
 			}
 
-			// don't make any changes if there's nothing to do
-			if (!options.Any()) return;
+			// Just update allowed bitmasks for default classes if no selection, then exit
+			if (!options.Any())
+			{
+				foreach (FF1Class option in DefaultChoices)
+				{
+					Data[lut_ClassPreferences + (int)option + 1] |= AllowedSlotBitmasks[(slotNumber - 1)];
+				}
+				return;
+			}
 
 			//byte allowedFlags = 0b0000_0000;
 			foreach (FF1Class option in options)
 			{
-				Data[lut_ClassPreferences + (((int)option == 12) ? 0 : (int)option + 1)] |= AllowedSlotBitmasks[i];
+				Data[lut_ClassPreferences + (((int)option == 12) ? 0 : (int)option + 1)] |= AllowedSlotBitmasks[(slotNumber - 1)];
 			}
 
 			// set default member
 			var defaultclass = (forced || !DefaultChoices.SequenceEqual(options)) ? (int)options.PickRandom(rng) : slotNumber - 1;
-			Data[lut_PtyGenBuf + i * 0x10] = defaultclass == 12 ? (byte)0xFF : (byte)defaultclass;
+			Data[lut_PtyGenBuf + (slotNumber - 1) * 0x10] = defaultclass == 12 ? (byte)0xFF : (byte)defaultclass;
 
 			options.Clear();
 		}
