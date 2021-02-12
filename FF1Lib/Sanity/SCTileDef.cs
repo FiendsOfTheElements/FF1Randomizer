@@ -29,7 +29,7 @@ namespace FF1Lib.Sanity
 				BitFlags = SCBitFlags.Blocked;
 				OWBitFlags = SCBitFlags.Blocked;
 			}
-			else if ((TileProp.TilePropFunc & (TilePropFunc.TP_SPEC_DOOR | TilePropFunc.TP_SPEC_LOCKED)) == TilePropFunc.TP_SPEC_LOCKED)
+			else if ((TileProp.TilePropFunc & (TilePropFunc.TP_SPEC_DOOR | TilePropFunc.TP_SPEC_LOCKED | TilePropFunc.TP_NOMOVE)) == (TilePropFunc.TP_SPEC_LOCKED | TilePropFunc.TP_NOMOVE))
 			{
 				BitFlags = SCBitFlags.Key;
 			}

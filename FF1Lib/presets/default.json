@@ -85,9 +85,9 @@
 		"IncentivizeOffCastWeapon": false,
 		"IncentivizeOtherCastWeapon": false,
 
-		"EarlySarda": true,
-		"EarlySage": true,
-		"EarlyOrdeals": true,
+		"EarlySarda": false,
+		"EarlySage": false,
+		"EarlyOrdeals": false,
 		"ShuffleObjectiveNPCs": false,
 		"OnlyRequireGameIsBeatable": false,
 

@@ -208,6 +208,12 @@ namespace FF1Lib.Sanity
 				case newTalkRoutines.Talk_Chaos:
 					ProcessQuestNpc(ref npc);
 					break;
+				default:
+					if (npc.ObjectId == ObjectId.Princess1 || npc.ObjectId == ObjectId.Vampire || npc.ObjectId == ObjectId.ElfDoc || npc.ObjectId == ObjectId.Unne)
+					{
+						ProcessQuestNpc(ref npc);
+					}
+					break;
 			}
 		}
 
@@ -227,7 +233,7 @@ namespace FF1Lib.Sanity
 
 			PointsOfInterest.Add(poi);
 
-			Tiles[poi.Coords.X, poi.Coords.Y].Tile |= SCBitFlags.Blocked;
+			//if (blocked) Tiles[poi.Coords.X, poi.Coords.Y].Tile |= SCBitFlags.Blocked;
 		}
 
 		private void CheckUseLuteRodSanity(int x, int y, SCBitFlags check, ObjectId plate)

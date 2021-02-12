@@ -19,6 +19,10 @@ namespace FF1Lib
 		short shipDockAreaIndex;
 		bool airShipLocationAccessible;
 		bool slabTranslated;
+		bool herbCheckedIn;
+		bool princessRescued;
+		bool vampireAccessible;
+		bool airShipLiftOff;
 
 		HashSet<short> processedAreas;
 		List<IRewardSource> rewardSources;
@@ -77,6 +81,9 @@ namespace FF1Lib
 			rewardSources = new List<IRewardSource>();
 			shipDockAreaIndex = -1;
 			slabTranslated = false;
+			herbCheckedIn = false;
+			princessRescued = false;
+			vampireAccessible = false;
 
 			BuildInitialRequirements(victoryConditions);
 
@@ -95,14 +102,22 @@ namespace FF1Lib
 				ProcessImmediateAreas();
 			}
 
+			//don't know why, but this helps
+			for(int i = 0; i < 10; i++) ProcessDeferredPointsOfInterest();
+
 			w.Stop();
+
+			if (changes != MapChange.All || requirements != AccessRequirement.All)
+			{
+				vampireAccessible = false;
+			}
 
 			return (rewardSources, requirements, changes);
 		}
 
 		private bool ProcessDeferredAreas()
 		{
-			ProcessDeferredPointsOfInterest();
+			for (int i = 0; i < 10; i++) while (ProcessDeferredPointsOfInterest()) ;
 
 			//default is link from 0 to 0, which is illegal anyway, so it cannot appear in the HashSet
 			var entry = deferredAreas.FirstOrDefault(e => CheckDeferredArea(e));
@@ -110,7 +125,7 @@ namespace FF1Lib
 			return deferredAreas.Remove(entry);
 		}
 
-		private void ProcessDeferredPointsOfInterest()
+		private bool ProcessDeferredPointsOfInterest()
 		{
 			var dcount = deferredPointOfInterests.Count;
 			for(int i = 0; i< dcount;i++)
@@ -126,6 +141,8 @@ namespace FF1Lib
 					deferredPointOfInterests.Enqueue(poi);
 				}
 			}
+
+			return dcount < deferredPointOfInterests.Count;
 		}
 
 		private bool CheckDeferredArea(SCDeferredAreaQueueEntry e)
@@ -152,6 +169,12 @@ namespace FF1Lib
 					CrawlOwArea(nextArea);
 				}
 			}
+
+			//not sure
+			if (airShipLocationAccessible && (changes & MapChange.Airship) > 0 && !airShipLiftOff)
+			{
+				LiftOff();
+			}
 		}
 
 		private void CrawlOwArea(SCOwArea area)
@@ -168,7 +191,7 @@ namespace FF1Lib
 				if(!CheckLink(area, link)) deferredAreas.Add(new SCDeferredAreaQueueEntry(area.Index, link));
 			}
 
-			if (airShipLocationAccessible && (changes & MapChange.Airship) > 0)
+			if (airShipLocationAccessible && (changes & MapChange.Airship) > 0 && !airShipLiftOff)
 			{
 				LiftOff();
 			}
@@ -176,6 +199,7 @@ namespace FF1Lib
 
 		private void LiftOff()
 		{
+			airShipLiftOff = true;
 			foreach (var area in main.Overworld.Areas.Values)
 			{
 				if (!processedAreas.Contains(area.Index) && (area.Tile & SCBitFlags.AirDock) > 0) immediateAreas.Add(area.Index);
@@ -228,7 +252,7 @@ namespace FF1Lib
 				{
 					ProcessSmPointOfInterest(dpoi);
 				}
-				else
+				else if (dpoi.Type == SCPointOfInterestType.Treasure || dpoi.Type == SCPointOfInterestType.Shop || dpoi.Type == SCPointOfInterestType.Orb || dpoi.Type == SCPointOfInterestType.QuestNpc || dpoi.Type == SCPointOfInterestType.Exit)
 				{
 					deferredPointOfInterests.Enqueue(dpoi);
 				}
@@ -256,6 +280,11 @@ namespace FF1Lib
 				{
 					deferredPointOfInterests.Enqueue(poi);
 				}
+			}
+			else if (poi.Type == SCPointOfInterestType.Exit)
+			{
+				var area = main.Overworld.Tiles[poi.Teleport.TargetCoords.X, poi.Teleport.TargetCoords.Y].Area;
+				if (!processedAreas.Contains(area)) immediateAreas.Add(area);
 			}
 		}
 
@@ -372,12 +401,33 @@ namespace FF1Lib
 
 		private bool ProcessQuestNpc(SCPointOfInterest poi)
 		{
-			if (poi.TalkRoutine == newTalkRoutines.Talk_ElfDocUnne)
+			if (poi.Npc.ObjectId == ObjectId.Princess1)
 			{
-				if (requirements.HasFlag(AccessRequirement.Slab))
+				princessRescued = true;
+				return true;
+			}
+			else if (poi.Npc.ObjectId == ObjectId.Vampire)
+			{
+				vampireAccessible = true;
+				return true;
+			}
+			else if (poi.TalkRoutine == newTalkRoutines.Talk_ElfDocUnne)
+			{
+				if (poi.TalkArray[(int)TalkArrayPos.requirement_id] == (byte)Item.Herb)
 				{
-					slabTranslated = true;
-					return true;
+					if (requirements.HasFlag(AccessRequirement.Herb))
+					{
+						herbCheckedIn = true;
+						return true;
+					}
+				}
+				else if (poi.TalkArray[(int)TalkArrayPos.requirement_id] == (byte)Item.Slab)
+				{
+					if (requirements.HasFlag(AccessRequirement.Slab))
+					{
+						slabTranslated = true;
+						return true;
+					}
 				}
 			}
 			else if (npcs.TryGetValue(poi.Npc.ObjectId, out var npc))
@@ -388,7 +438,7 @@ namespace FF1Lib
 						ProcessItem(npc.Item);
 						return true;
 					case newTalkRoutines.Talk_GiveItemOnFlag:
-					//?
+						return ProcessItemOnFlag(poi, npc);
 					case newTalkRoutines.Talk_Nerrick:
 					case newTalkRoutines.Talk_TradeItems:
 					case newTalkRoutines.Talk_GiveItemOnItem:
@@ -399,7 +449,54 @@ namespace FF1Lib
 							return true;
 						}
 						break;
+					default:
+						return true;
 				}
+			}
+
+			return false;
+		}
+
+		private bool ProcessItemOnFlag(SCPointOfInterest poi, MapObject npc)
+		{
+			var flag = (ObjectId)poi.TalkArray[(int)TalkArrayPos.requirement_id];
+
+			if (flag == ObjectId.Unne)
+			{
+				if (slabTranslated)
+				{
+					ProcessItem(npc.Item);
+					return true;
+				}
+			}
+			else if (flag == ObjectId.ElfDoc)
+			{
+				if (herbCheckedIn)
+				{
+					ProcessItem(npc.Item);
+					return true;
+				}
+			}
+			else if (flag == ObjectId.Princess1)
+			{
+				if (princessRescued)
+				{
+					ProcessItem(npc.Item);
+					return true;
+				}
+			}
+			else if (flag == ObjectId.Vampire)
+			{
+				if (vampireAccessible)
+				{
+					ProcessItem(npc.Item);
+					return true;
+				}
+			}
+			else if (flag == ObjectId.None)
+			{
+				ProcessItem(npc.Item);
+				return true;
 			}
 
 			return false;
@@ -435,6 +532,7 @@ namespace FF1Lib
 					break;
 				case Item.Ruby:
 					requirements |= AccessRequirement.Ruby;
+					changes |= MapChange.TitanFed;
 					break;
 				case Item.Rod:
 					requirements |= AccessRequirement.Rod;

@@ -57,6 +57,7 @@ namespace FF1Lib.Sanity
 		{
 			foreach (var poi in entrance.PointsOfInterest.Where(p => p.BitFlagSet.Count > 0))
 			{
+				poi.MapId = entrance.Map.MapId;
 				SCPointOfInterest dungeonpoi;
 				if (!poiDic.TryGetValue(poi, out dungeonpoi))
 				{

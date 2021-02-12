@@ -93,8 +93,13 @@ namespace FF1Randomizer
 
 		private void GenerateButton_Click(object sender, RoutedEventArgs e)
 		{
-			var rom = new FF1Rom(_model.Filename);
-			rom.Randomize(Blob.FromHex(_model.Seed), _model.Flags.Flags, _model.Flags.Preferences);
+			FF1Rom rom = null;
+			for (int i = 0; i < 1000; i++)
+			{
+				GenerateSeed();
+				rom = new FF1Rom(_model.Filename);
+				rom.Randomize(Blob.FromHex(_model.Seed), _model.Flags.Flags, _model.Flags.Preferences);
+			}
 
 			var fileRoot = _model.Filename.Substring(0, _model.Filename.LastIndexOf("."));
 			var outputFilename = $"{fileRoot}_{_model.Seed}_{FlagsTextBox.Text}.nes";
