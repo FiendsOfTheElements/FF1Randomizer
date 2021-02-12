@@ -19,6 +19,8 @@ namespace FF1Lib.Sanity
 
 		public SCBitFlagSet BitFlagSet { get; set; }
 
+		public OverworldTeleportIndex OverworldTeleport { get; set; }
+
 		public SCTeleport()
 		{
 		}

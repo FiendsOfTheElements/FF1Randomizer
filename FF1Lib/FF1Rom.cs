@@ -287,6 +287,7 @@ namespace FF1Lib
 				TransformFinalFormation((FinalFormation)rng.Between(0, Enum.GetValues(typeof(FinalFormation)).Length - 1), flags.EvadeCap);
 			}
 
+
 			var maxRetries = 8;
 			for (var i = 0; i < maxRetries; i++)
 			{
@@ -307,7 +308,11 @@ namespace FF1Lib
 						overworldMap.ShuffleObjectiveNPCs(rng);
 					}
 
-					IncentiveData incentivesData = new IncentiveData(rng, flags, overworldMap, shopItemLocation);
+
+					ISanityChecker checker = new SanityCheckerV1();
+					Sanity.SCMain c = new Sanity.SCMain(maps, overworldMap, npcdata, this);
+
+					IncentiveData incentivesData = new IncentiveData(rng, flags, overworldMap, shopItemLocation, checker);
 
 					if (((bool)flags.Shops))
 					{
@@ -330,14 +335,13 @@ namespace FF1Lib
 						}
 
 						shopItemLocation = ShuffleShops(rng, (bool)flags.ImmediatePureAndSoftRequired, ((bool)flags.RandomWares), excludeItemsFromRandomShops, flags.WorldWealth);
-						incentivesData = new IncentiveData(rng, flags, overworldMap, shopItemLocation);
+						incentivesData = new IncentiveData(rng, flags, overworldMap, shopItemLocation, checker);
 					}
 
-					Sanity.SCMain c = new Sanity.SCMain(maps, overworldMap, npcdata, this);
 
 					if ((bool)flags.Treasures)
 					{
-						generatedPlacement = ShuffleTreasures(rng, flags, incentivesData, shopItemLocation, overworldMap, teleporters);
+						generatedPlacement = ShuffleTreasures(rng, flags, incentivesData, shopItemLocation, overworldMap, teleporters, checker);
 					}
 					break;
 				}

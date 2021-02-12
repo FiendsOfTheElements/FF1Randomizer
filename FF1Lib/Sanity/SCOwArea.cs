@@ -16,6 +16,8 @@ namespace FF1Lib.Sanity
 
 		public SCCoords Start { get; set; }
 
+		public List<SCPointOfInterest> PointsOfInterest { get; private set; } = new List<SCPointOfInterest>();
+
 		public SCOwArea(short index, SCBitFlags tile)
 		{
 			Index = index;

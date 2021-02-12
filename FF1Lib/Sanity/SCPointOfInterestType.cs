@@ -18,7 +18,6 @@ namespace FF1Lib.Sanity
 		OwEntrance,
 		SmEntrance,
 		Ship,
-		AirShip,
-		Start
+		AirShip
 	}
 }

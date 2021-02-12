@@ -55,6 +55,8 @@ namespace FF1Lib.Sanity
 
 			DoPathing();
 
+			ProcessPointsOfInterest();
+
 			FilterAreas();
 		}
 
@@ -88,8 +90,9 @@ namespace FF1Lib.Sanity
 
 			if ((tileDef.OWBitFlags & SCBitFlags.Enter) > 0)
 			{
-				var teleDef = enter[tileDef.TileProp.Byte2 & 0x3F];
-				var t = new SCTeleport { Coords = poi.Coords, Type = SCPointOfInterestType.OwEntrance, TargetMap = teleDef.Map, TargetCoords = new SCCoords { X = teleDef.X, Y = teleDef.Y } };
+				var overworldTeleport = (OverworldTeleportIndex)(tileDef.TileProp.Byte2 & 0x3F);
+				var teleDef = enter[overworldTeleport];
+				var t = new SCTeleport { Coords = poi.Coords, Type = SCPointOfInterestType.OwEntrance, TargetMap = teleDef.Map, TargetCoords = new SCCoords { X = teleDef.X, Y = teleDef.Y }, OverworldTeleport = overworldTeleport };
 				Exits.Add(t);
 
 				poi.Type = SCPointOfInterestType.Tele;
@@ -99,7 +102,7 @@ namespace FF1Lib.Sanity
 			else if ((tileDef.OWBitFlags & SCBitFlags.Caravan) > 0)
 			{
 				poi.Type = SCPointOfInterestType.Shop;
-				poi.ShopId = tileDef.TileProp.ShopId;
+				poi.ShopId = 69;
 				PointsOfInterest.Add(poi);
 			}
 		}
@@ -195,6 +198,15 @@ namespace FF1Lib.Sanity
 			else
 			{
 				deferredqueue.Enqueue(new SCOwTileQueueEntry { Coords = coords, Area = area });
+			}
+		}
+
+		private void ProcessPointsOfInterest()
+		{
+			foreach (var poi in PointsOfInterest)
+			{
+				var areaIndex = Tiles[poi.Coords.X, poi.Coords.Y].Area;
+				areadic[areaIndex].PointsOfInterest.Add(poi);
 			}
 		}
 

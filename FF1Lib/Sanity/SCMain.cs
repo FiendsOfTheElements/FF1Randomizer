@@ -26,9 +26,10 @@ namespace FF1Lib.Sanity
 		NPCdata npcdata;
 
 		Dictionary<MapId, SCMap> scmaps;
-		SCOwMap owmap;
 
-		public List<SCDungeon> Dungeons { get; private set; } = new List<SCDungeon>();		
+		public List<SCDungeon> Dungeons { get; private set; } = new List<SCDungeon>();
+
+		public SCOwMap Overworld { get; private set; }
 
 		public SCMain(List<Map> _maps, OverworldMap _overworldMap, NPCdata _npcdata, FF1Rom _rom)
 		{
@@ -54,13 +55,9 @@ namespace FF1Lib.Sanity
 
 			ComposeDungeons();
 
-			SCCoords start = new SCCoords(0x99, 0xA5);
-			SCCoords ship = new SCCoords(0xD2, 0x99);
-			SCCoords airShip = new SCCoords(0xDD, 0xED);
-
 			SCCoords bridge = new SCCoords(0x98, 0x98);
 			SCCoords canal = new SCCoords(0x66, 0xA4);
-			owmap = new SCOwMap(overworldMap, SCMapCheckFlags.None, _rom, owtileset, enter, exit, bridge, canal);
+			Overworld = new SCOwMap(overworldMap, SCMapCheckFlags.None, _rom, owtileset, enter, exit, bridge, canal);
 
 			w.Stop();
 		}
