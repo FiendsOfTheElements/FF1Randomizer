@@ -7,9 +7,11 @@
 		<div id="banner-holder"></div>
 
 		<div id="nav-holder"></div>
+		<CascadingValue Value="@showChaos">
 		<div>
 			@Body
 		</div>
+		</CascadingValue>
 
 		<footer id="main-footer">
 			<div id="garland"></div>
@@ -29,9 +31,20 @@
 				<NavBanner />
 
 				<div id="header-contents">
-					<NavMenu />
+					<NavMenu ChaosTriggered="@TriggerChaos" />
 					<UpdateNotification />
 				</div>
 			</div>
 		</div>
 	</div>
+@code
+{
+	bool showChaos { get; set; } = false;
+
+	private void TriggerChaos(bool chaostriggered)
+	{
+		showChaos = chaostriggered;
+		StateHasChanged();
+	}
+
+}
