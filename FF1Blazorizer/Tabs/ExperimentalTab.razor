@@ -1,4 +1,4 @@
-﻿@using FF1Lib;
+@using FF1Lib;
 
 
 <div id="Beta" class="tabcontent framed-content clearfix @(noTabLayout ? "no-tab" : "") @(IsOpen ? "" : "collapsed")">
@@ -27,6 +27,7 @@
 			<TriStateCheckBox DisableTooltip Id="legendaryWhiteShopCheckBox" @bind-Value="Flags.LegendaryWhiteShop">Legendary White Shop</TriStateCheckBox>
 			<TriStateCheckBox DisableTooltip Id="legendaryItemShopCheckBox" @bind-Value="Flags.LegendaryItemShop">Legendary Item Shop</TriStateCheckBox>
 			<div class="checkbox-cell"></div>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="deepdungeon" @bind-Value="Flags.DeepDungeon">Deep Dungeon</CheckBox>
 		</div>
 		<div class="col1 full">
 			<h4>Shop Reduction</h4>
