@@ -27,6 +27,7 @@
 			<TriStateCheckBox DisableTooltip Id="legendaryWhiteShopCheckBox" @bind-Value="Flags.LegendaryWhiteShop">Legendary White Shop</TriStateCheckBox>
 			<TriStateCheckBox DisableTooltip Id="legendaryItemShopCheckBox" @bind-Value="Flags.LegendaryItemShop">Legendary Item Shop</TriStateCheckBox>
 			<div class="checkbox-cell"></div>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="deepdungeon" @bind-Value="Flags.DeepDungeon">Deep Dungeon</CheckBox>
 		</div>
 		<div class="col1 full">
 			<h4>Shop Reduction</h4>
@@ -111,32 +112,3 @@
 				[Parameter] public bool noTabLayout { get; set; }
 				[Parameter] public bool IsOpen { get; set; } = true;
 			}
-=======
-﻿@using FF1Lib;
-
-
-	<div id="Beta" class="tabcontent framed-content clearfix @(noTabLayout ? "no-tab" : "") @(IsOpen ? "" : "collapsed")">
-		<h3 class="@(IsOpen ? "" : "h3-collapsed")"><a class="@(noTabLayout ? "collapsible-header" : "")" @onclick="(() => IsOpen = (!noTabLayout || !IsOpen))">Experimental Beta Flags</a></h3>
-		@if(IsOpen)
-		{ 
-		<p>Test out features from 2000 years in the future - at your own risk!</p>
-		<div class="col1">
-			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="procGenEarth1" @bind-Value="Flags.EFGEarth1">Generated Earth Cave B1</CheckBox>
-			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="procGenEarth2" @bind-Value="Flags.EFGEarth2">Generated Earth Cave B2</CheckBox>
-			<div class="checkbox-cell"></div>
-		</div>
-		<div class="col2">
-			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="deepdungeon" @bind-Value="Flags.DeepDungeon">Deep Dungeon</CheckBox>
-		</div>
-		<div class="clear-it"></div>
-		}
-	</div>
-
-
-	@code {
-		[Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }
-		[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
-		[Parameter] public bool noTabLayout { get; set; }
-		[Parameter] public bool IsOpen { get; set; } = true;
-	}
->>>>>>> c784e09... Added flag for Deep Dungeon
