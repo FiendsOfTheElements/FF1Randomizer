@@ -29,7 +29,7 @@ namespace FF1Lib.Sanity
 		{
 			Type = type;
 			TargetMap = t.Map;
-			TargetCoords = new SCCoords(t.X, t.Y);
+			TargetCoords = new SCCoords(t.X, t.Y).SmClamp;
 		}
 
 		public override string ToString()

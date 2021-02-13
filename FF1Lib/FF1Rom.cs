@@ -287,6 +287,10 @@ namespace FF1Lib
 				TransformFinalFormation((FinalFormation)rng.Between(0, Enum.GetValues(typeof(FinalFormation)).Length - 1), flags.EvadeCap);
 			}
 
+			if ((bool)flags.EarlyOrdeals)
+			{
+				EnableEarlyOrdeals();
+			}
 
 			var maxRetries = 8;
 			for (var i = 0; i < maxRetries; i++)
@@ -341,10 +345,6 @@ namespace FF1Lib
 					if ((bool)flags.Treasures)
 					{
 						generatedPlacement = ShuffleTreasures(rng, flags, incentivesData, shopItemLocation, overworldMap, teleporters, checker);
-
-
-						SanityCheckerV2 c = new SanityCheckerV2(maps, overworldMap, npcdata, this);
-						c.CheckSanity(generatedPlacement, null, flags);
 					}
 					break;
 				}
@@ -514,11 +514,6 @@ namespace FF1Lib
 			if ((bool)flags.ConfusedOldMen)
 			{
 				EnableConfusedOldMen(rng);
-			}
-
-			if ((bool)flags.EarlyOrdeals)
-			{
-				EnableEarlyOrdeals();
 			}
 
 			if (flags.ChaosRush)
@@ -883,6 +878,10 @@ namespace FF1Lib
 
 			WriteSeedAndFlags(seed.ToHex(), Flags.EncodeFlagsText(flags));
 			ExtraTrackingAndInitCode(flags);
+
+
+			SanityCheckerV2 c = new SanityCheckerV2(maps, overworldMap, npcdata, this);
+			c.CheckSanity(generatedPlacement, null, flags);
 		}
 
 		private void EnableNPCSwatter(NPCdata npcdata)

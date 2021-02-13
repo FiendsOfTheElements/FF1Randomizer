@@ -36,6 +36,8 @@ namespace FF1Lib
 		Dictionary<ObjectId, MapObject> npcs;
 		ItemShopSlot shopslot;
 
+		List<IRewardSource> treasurePlacements;
+
 		int maxqueue = 0;
 		public SanityCheckerV2(List<Map> _maps, OverworldMap _overworldMap, NPCdata _npcdata, FF1Rom _rom)
 		{
@@ -51,8 +53,10 @@ namespace FF1Lib
 			throw new NotImplementedException();
 		}
 
-		public (bool Complete, List<MapLocation> MapLocations, AccessRequirement Requirements) CheckSanity(List<IRewardSource> treasurePlacements, Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullLocationRequirements, IVictoryConditionFlags victoryConditions)
+		public (bool Complete, List<MapLocation> MapLocations, AccessRequirement Requirements) CheckSanity(List<IRewardSource> _treasurePlacements, Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullLocationRequirements, IVictoryConditionFlags victoryConditions)
 		{
+			treasurePlacements = _treasurePlacements;
+
 			//kids, don't try this at home. Calculating an index from an address is usually not the way to go.
 			chests = treasurePlacements.Select(r => r as TreasureChest).Where(r => r != null).ToDictionary(r => (byte)(r.Address - 0x3100));
 			npcs = treasurePlacements.Select(r => r as MapObject).Where(r => r != null).ToDictionary(r => r.ObjectId);
@@ -102,8 +106,8 @@ namespace FF1Lib
 				ProcessImmediateAreas();
 			}
 
-			//don't know why, but this helps
-			for(int i = 0; i < 10; i++) ProcessDeferredPointsOfInterest();
+			//that for just means, that there's a fault in the function. Actually the mere existence of the call is a fault  in the above functions
+			for (int i = 0; i < 10; i++) ProcessDeferredPointsOfInterest();
 
 			w.Stop();
 
@@ -117,6 +121,7 @@ namespace FF1Lib
 
 		private bool ProcessDeferredAreas()
 		{
+			//that for just means, that there's a fault in the function
 			for (int i = 0; i < 10; i++) while (ProcessDeferredPointsOfInterest()) ;
 
 			//default is link from 0 to 0, which is illegal anyway, so it cannot appear in the HashSet
@@ -127,6 +132,8 @@ namespace FF1Lib
 
 		private bool ProcessDeferredPointsOfInterest()
 		{
+			//thats a problem...
+			deferredPointOfInterests = new Queue<SCPointOfInterest>(deferredPointOfInterests.Distinct());
 			var dcount = deferredPointOfInterests.Count;
 			for(int i = 0; i< dcount;i++)
 			{
@@ -170,7 +177,7 @@ namespace FF1Lib
 				}
 			}
 
-			//not sure
+			//not sure, but helps
 			if (airShipLocationAccessible && (changes & MapChange.Airship) > 0 && !airShipLiftOff)
 			{
 				LiftOff();
@@ -245,8 +252,9 @@ namespace FF1Lib
 		private void ProcessEnterTele(SCOwArea area, SCPointOfInterest poi)
 		{
 			var dungeon = main.Dungeons.First(d => d.OverworldTeleport == poi.Teleport.OverworldTeleport);
+			dungeon.Done = true;
 
-			foreach(var dpoi in dungeon.PointsOfInterest)
+			foreach (var dpoi in dungeon.PointsOfInterest)
 			{
 				if (dpoi.Requirements.IsAccessible(requirements))
 				{
@@ -370,6 +378,8 @@ namespace FF1Lib
 			{
 				ProcessItem(shopslot.Item);
 			}
+
+			poi.Done = true;
 		}
 
 		private void ProcessTreasure(SCPointOfInterest poi)
@@ -377,6 +387,7 @@ namespace FF1Lib
 			if (chests.TryGetValue(poi.TreasureId, out var chest))
 			{
 				ProcessItem(chest.Item);
+				poi.Done = true;
 			}
 		}
 
@@ -397,6 +408,8 @@ namespace FF1Lib
 					requirements |= AccessRequirement.AirOrb;
 					break;
 			}
+
+			poi.Done = true;
 		}
 
 		private bool ProcessQuestNpc(SCPointOfInterest poi)
@@ -404,11 +417,13 @@ namespace FF1Lib
 			if (poi.Npc.ObjectId == ObjectId.Princess1)
 			{
 				princessRescued = true;
+				poi.Done = true;
 				return true;
 			}
 			else if (poi.Npc.ObjectId == ObjectId.Vampire)
 			{
 				vampireAccessible = true;
+				poi.Done = true;
 				return true;
 			}
 			else if (poi.TalkRoutine == newTalkRoutines.Talk_ElfDocUnne)
@@ -418,6 +433,7 @@ namespace FF1Lib
 					if (requirements.HasFlag(AccessRequirement.Herb))
 					{
 						herbCheckedIn = true;
+						poi.Done = true;
 						return true;
 					}
 				}
@@ -426,6 +442,7 @@ namespace FF1Lib
 					if (requirements.HasFlag(AccessRequirement.Slab))
 					{
 						slabTranslated = true;
+						poi.Done = true;
 						return true;
 					}
 				}
@@ -436,6 +453,7 @@ namespace FF1Lib
 				{
 					case newTalkRoutines.Talk_Bikke:
 						ProcessItem(npc.Item);
+						poi.Done = true;
 						return true;
 					case newTalkRoutines.Talk_GiveItemOnFlag:
 						return ProcessItemOnFlag(poi, npc);
@@ -446,6 +464,7 @@ namespace FF1Lib
 						if (requirements.HasFlag(npc.AccessRequirement))
 						{
 							ProcessItem(npc.Item);
+							poi.Done = true;
 							return true;
 						}
 						break;
@@ -466,6 +485,7 @@ namespace FF1Lib
 				if (slabTranslated)
 				{
 					ProcessItem(npc.Item);
+					poi.Done = true;
 					return true;
 				}
 			}
@@ -474,6 +494,7 @@ namespace FF1Lib
 				if (herbCheckedIn)
 				{
 					ProcessItem(npc.Item);
+					poi.Done = true;
 					return true;
 				}
 			}
@@ -482,6 +503,7 @@ namespace FF1Lib
 				if (princessRescued)
 				{
 					ProcessItem(npc.Item);
+					poi.Done = true;
 					return true;
 				}
 			}
@@ -496,6 +518,7 @@ namespace FF1Lib
 			else if (flag == ObjectId.None)
 			{
 				ProcessItem(npc.Item);
+				poi.Done = true;
 				return true;
 			}
 

@@ -41,6 +41,8 @@ namespace FF1Lib.Sanity
 
 		public SCCoords OwDown => new SCCoords(X, (Y + 1) & 0xFF);
 
+		public SCCoords SmClamp => new SCCoords(X & 0x3F, Y & 0x3F);
+
 		public static bool operator ==(SCCoords a, SCCoords b)
 		{
 			return a.X == b.X && a.Y == b.Y;

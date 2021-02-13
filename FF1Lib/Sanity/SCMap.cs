@@ -102,14 +102,14 @@ namespace FF1Lib.Sanity
 			else if (tileDef.SpBitFlags == SCBitFlags.Teleport)
 			{
 				var teleDef = tele[tileDef.TileProp.Byte2];
-				var t = new SCTeleport { Coords = poi.Coords, Type = SCPointOfInterestType.Tele, TargetMap = teleDef.Map, TargetCoords = new SCCoords { X = teleDef.X, Y = teleDef.Y } };
+				var t = new SCTeleport { Coords = poi.Coords, Type = SCPointOfInterestType.Tele, TargetMap = teleDef.Map, TargetCoords = new SCCoords { X = teleDef.X, Y = teleDef.Y }.SmClamp };
 				Exits.Add(t);
 
 				poi.Type = SCPointOfInterestType.Tele;
 				poi.Teleport = t;
 				PointsOfInterest.Add(poi);
 			}
-			else if (tileDef.SpBitFlags == SCBitFlags.Exit)
+			else if ((tileDef.SpBitFlags & SCBitFlags.Exit) == SCBitFlags.Exit)
 			{
 				var teleDef = exit[tileDef.TileProp.Byte2];
 				var t = new SCTeleport { Coords = poi.Coords, Type = SCPointOfInterestType.Exit, TargetMap = teleDef.Map, TargetCoords = new SCCoords { X = teleDef.X, Y = teleDef.Y } };
@@ -260,7 +260,7 @@ namespace FF1Lib.Sanity
 			{
 				if (t.Map == MapId)
 				{
-					PointsOfInterest.Add(new SCPointOfInterest { Coords = new SCCoords { X = t.X, Y = t.Y }, Type = SCPointOfInterestType.OwEntrance });
+					PointsOfInterest.Add(new SCPointOfInterest { Coords = new SCCoords { X = t.X, Y = t.Y }.SmClamp, Type = SCPointOfInterestType.OwEntrance });
 				}
 			}
 		}
@@ -271,7 +271,7 @@ namespace FF1Lib.Sanity
 			{
 				if (t.Map == MapId)
 				{
-					PointsOfInterest.Add(new SCPointOfInterest { Coords = new SCCoords { X = t.X, Y = t.Y }, Type = SCPointOfInterestType.SmEntrance });
+					PointsOfInterest.Add(new SCPointOfInterest { Coords = new SCCoords { X = t.X, Y = t.Y }.SmClamp, Type = SCPointOfInterestType.SmEntrance });
 				}
 			}
 		}

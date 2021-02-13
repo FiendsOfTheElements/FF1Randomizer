@@ -21,6 +21,8 @@ namespace FF1Lib.Sanity
 		HashSet<SCTeleport> entrances = new HashSet<SCTeleport>();
 		HashSet<SCTeleport> exits = new HashSet<SCTeleport>();
 
+		public bool Done { get; set; }
+
 		public SCDungeon(SCTeleport et, OverworldTeleportIndex overworldTeleport, Dictionary<MapId, SCMap> _scmaps, HashSet<SCTeleport> _usedEnterTeles)
 		{
 			scmaps = _scmaps;
@@ -89,7 +91,7 @@ namespace FF1Lib.Sanity
 
 		public override string ToString()
 		{
-			return OverworldTeleport.ToString();
+			return OverworldTeleport.ToString() + "->" + Areas.First().Map.MapId.ToString() + (Done ? " - Done" : "");
 		}
 	}
 }

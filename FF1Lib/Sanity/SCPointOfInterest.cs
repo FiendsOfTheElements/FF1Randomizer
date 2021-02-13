@@ -38,6 +38,8 @@ namespace FF1Lib.Sanity
 
 		public List<AccessRequirement> Requirements { get; set; }
 
+		public bool Done { get; set; }
+
 		public SCPointOfInterest Clone()
 		{
 			return new SCPointOfInterest
@@ -57,7 +59,7 @@ namespace FF1Lib.Sanity
 
 		public override string ToString()
 		{
-			return Type.ToString() + " " + Coords.ToString() + " - " + (BitFlagSet?.ToString() ?? "");
+			return Type.ToString() + " " + Coords.ToString() + " - " + (BitFlagSet?.ToString() ?? "") + (Done ? " - Done" : "");
 		}
 	}
 

@@ -50,7 +50,10 @@ namespace FF1Lib.Sanity
 			Stopwatch w = Stopwatch.StartNew();
 
 			ConcurrentBag<SCMap> tmpscmaps = new ConcurrentBag<SCMap>();
-			Parallel.ForEach(Enum.GetValues<MapId>(), mapid => ProcessMap(mapid, tmpscmaps));
+			//Parallel.ForEach(Enum.GetValues<MapId>(), mapid => ProcessMap(mapid, tmpscmaps));
+
+			foreach(var mapid in Enum.GetValues<MapId>()) ProcessMap(mapid, tmpscmaps);
+
 			scmaps = tmpscmaps.ToDictionary(m => m.MapId);
 
 			ComposeDungeons();

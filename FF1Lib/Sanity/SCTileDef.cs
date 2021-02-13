@@ -66,7 +66,7 @@ namespace FF1Lib.Sanity
 			{
 				//they share the same code
 				SpBitFlags = SCBitFlags.Exit;
-				SpBitFlags = SCBitFlags.UseFloater;
+				SpBitFlags |= SCBitFlags.UseFloater;
 			}
 			else if ((TileProp.TilePropFunc & TilePropFunc.TP_SPEC_MASK) == TilePropFunc.TP_SPEC_TREASURE)
 			{
