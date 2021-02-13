@@ -106,7 +106,7 @@ Ensure all current work is stored in a commit, so its easy to recover if somethi
 #### When you are ready for feedback
 At this point you should have been talking with people in the dev discord and have something functional that maybe still needs some polish, but is ready for feedback, if not ready to be included in the beta site yet.
 
-1.Rebase, as covered in the section immediately below this one.
+1. Rebase, as covered in the section immediately below this one.
 2. Run `git push origin`
 3. Go to github and head to your fork.
 4. Select the branch name you have been working with in the drop down on the middle left at the top.
