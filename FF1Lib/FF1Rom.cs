@@ -229,7 +229,7 @@ namespace FF1Lib
 				EnableLefeinShops(maps);
 			}
             
-            if ((bool)flags.MelmondClinic)
+            if ((bool)flags.MelmondClinic && !(bool)flags.RecruitmentMode)
             {
                 EnableMelmondClinic(maps);
             }
