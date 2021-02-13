@@ -17,6 +17,8 @@
 			<div class="checkbox-cell"></div>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="etherizerCheckBox" IsEnabled="@(Flags.HouseMPRestoration != true && Flags.HousesFillHP != true)" @bind-Value="Flags.Etherizer">Turn shelters into ethers</CheckBox>
 			<div class="checkbox-cell"></div>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="melmondClinicCheckBox" @bind-Value="Flags.MelmondClinic">Melmondish Hospitality</TriStateCheckBox>
+			<div class="checkbox-cell"></div>            
 		</div>
 		<div class="col2">
 			<h4>Legendary Shops</h4>
