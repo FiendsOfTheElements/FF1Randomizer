@@ -7,7 +7,11 @@
 <div id="main-content">
 	<ToolTip @ref="ToolTipElement" ToolTipId="@ToolTipId" />
 	<aside id="left-column">
-		<FileTab Flags="@Flags" StatusMessage="@StatusMessage" SetStatusMessage="@SetStatusMessage" UpdateToolTipID="@UpdateToolTipID" />
+		@if (!hideAnnouncement)
+		{
+			<AnnouncementBox SetHideAnnouncement="@SetHideAnnouncement" />
+		}
+		<FileTab Flags="@Flags" StatusMessage="@StatusMessage" SetStatusMessage="@SetStatusMessage" UpdateToolTipID="@UpdateToolTipID" showChaos="@showChaos" />
 		<FunTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" SetStatusMessage="@SetStatusMessage" />
 	</aside>
 
@@ -42,7 +46,7 @@
 						<BSTab>
 							<BSTabLabel>Presets</BSTabLabel>
 							<BSTabContent>
-								<PresetsTab Flags="@Flags" SetStatusMessage="@SetStatusMessage" loadDefault="@loadDefault" SetDefaultLoaded="@SetDefaultLoaded" noTabLayout="@noTabLayout" presetName="@presetName" SetPresetName="@SetPresetName"/>
+								<PresetsTab Flags="@Flags" SetStatusMessage="@SetStatusMessage" loadDefault="@loadDefault" SetDefaultLoaded="@SetDefaultLoaded" noTabLayout="@noTabLayout" presetName="@presetName" SetPresetName="@SetPresetName" />
 							</BSTabContent>
 						</BSTab>
 						<BSTab>
@@ -126,21 +130,47 @@
 	</main>
 </div>
 
-@code { private FlagsViewModel Flags { get; set; } = new FlagsViewModel();
+@code {
+
+	[CascadingParameter] public bool showChaos { get; set; }
+	//[Parameter] public bool showChaos { get; set; } = false;
+
+	//private bool showChaos { get; set; }
+
+	//void ShowChaos()
+	//{
+	//	showChaos = true;
+	//	StateHasChanged();
+	//}
+
+
+	private FlagsViewModel Flags { get; set; } = new FlagsViewModel();
 	private string ToolTipId = "unupdated";
 	private ToolTip ToolTipElement;
 	private string StatusMessage = "";
 	private bool loadDefault = true;
 	private bool noTabLayout = false;
+	private bool hideAnnouncement = false;
 	private string presetName = "Untitled";
+
 
 	protected override async void OnInitialized()
 	{
+		//string orbsOrder = "orbs easter egg order:\n";
+		//for (int i = 0; i < orbsToMatch.Length; i++)
+		//{
+		//	orbsOrder += ((orbsToMatch[i] < 4) ? "turn off " + (orbsToMatch[i] + 1).ToString() : "turn on " + (orbsToMatch[i] - 3).ToString()) + "\n";
+		//}
+		//Console.WriteLine(orbsOrder);
+
+
 		noTabLayout = await LocalStorage.GetItemAsync<bool>("tablayout");
+		// Announcement ID needs to be changed for each new events, also need to be changed in Randomizer.razor
+		//  both need to match
+		hideAnnouncement = await LocalStorage.GetItemAsync<bool>("announcement_dab2021");
 		Flags.PropertyChanged += (sender, args) => StateHasChanged();
 		StateHasChanged();
 	}
-
 
 	private void UpdateToolTipID(string Id, MouseEventArgs e)
 	{
@@ -163,6 +193,12 @@
 	void SetTabLayout(bool notab)
 	{
 		noTabLayout = notab;
+		StateHasChanged();
+	}
+
+	void SetHideAnnouncement(bool switchannouncement)
+	{
+		hideAnnouncement = switchannouncement;
 		StateHasChanged();
 	}
 

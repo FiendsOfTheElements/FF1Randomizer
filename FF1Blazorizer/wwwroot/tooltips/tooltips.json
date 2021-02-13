@@ -715,9 +715,6 @@
 		"screenshot": "incentivizeRibbonCheckBox.png",
 		"description": "Adds ONE Ribbon to the incentive pool to be distributed in the selected incentive locations."
 	},
-
-
-
 	{
 		"Id": "transformFinalFormationCheckBox",
 		"title": "Alternate Final Boss",
@@ -781,7 +778,7 @@
 		"Id": "allowUnsafeStartAreaCheckBox",
 		"title": "Allow Unsafe Start Area",
 		"screenshot": "allowUnsafeStartAreaCheckBox.gif",
-		"description": "Entrance shuffle normally requires at least 3 safe locations amongst the Coneria Castle, Dwarf Cave, Temple of Fiends, Matoya's Cave, and Pravoka entrances. This flag removes that safety net."
+		"description": "When shuffling entrances, FFR normally guarantees 4 'safe' entrances amongst Coneria, Coneria Castle, Dwarf Cave, Temple of Fiends, Matoya's Cave, and Pravoka entrances. This flag removes that safety net.\nFurthermore, if shuffling all entrances together and including Coneria, this flag also removes the guarantee that the Coneria entrance will be a town at all."
 	},
 	{
 		"Id": "deadEndsCheckBox",
@@ -1413,7 +1410,12 @@
 		"screenshot": "shopReductionTable.png",
 		"description": "Reduces the number of Items/Magic sold in Shops, or removes Shops entirely.\nModes:\nNone, do not remove anything\nWhole Shops, removes the specified amount of shops as a whole\nAll Items Of A Kind, selects the specified amount of distinct Items and removes all instances of them (eg. all Heals)\nSpread, applies the reduction for each shop individually (eg. each shop gets a 40% reduction)\nUnequal, removes the amount from all entries (eg. some shops will be full, some might be half full, some might be removed)"
 	},
-
+	{
+		"Id": "deepdungeon",
+		"title": "Deep Dungeon",
+		"screenshot": "deepdungeon.png",
+		"description": "Turns Coneria Castle into a 52-floor completely procedurally generated dungeon.\nAs you go deeper, the treasures get better and the monster encounters get stronger. Every so often there will be a branch to the next town, but dying or restoring a save will return you to the overworld.\nSomewhere within the dungeon is a TAIL and Bahamut; you could encounter them in either order. There are also three guaranteed Ribbons, and there may be more near the end of the dungeon.\nTreasures are rolled independently, not shuffled, so there could be no Masamunes, or you could find so many you're throwing them on the ground."
+	},
 	{
 		"Id": "extendedHintsCheckBox",
 		"title": "Extensive Hints",
