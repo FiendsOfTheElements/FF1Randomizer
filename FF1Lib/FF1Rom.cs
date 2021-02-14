@@ -237,6 +237,13 @@ namespace FF1Lib
 					MoveGaiaItemShop(maps, rng);
 				}
 			}
+            
+            if ((bool)flags.CutSilverSword && !(bool)flags.Shops) {
+                CutSilverSword((bool)flags.SwapSilverSword);
+                if ((bool)flags.AddSilverSword) {
+                    AddSilverSword();
+                }
+            }
 
 			// This has to be done before we shuffle spell levels.
 			if (flags.SpellBugs)

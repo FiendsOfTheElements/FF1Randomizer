@@ -17,6 +17,9 @@
 			<div class="checkbox-cell"></div>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="etherizerCheckBox" IsEnabled="@(Flags.HouseMPRestoration != true && Flags.HousesFillHP != true)" @bind-Value="Flags.Etherizer">Turn shelters into ethers</CheckBox>
 			<div class="checkbox-cell"></div>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="cutSilverSwordCheckBox" IsEnabled="@(Flags.Shops != true)" @bind-Value="Flags.CutSilverSword">Remove Silver Sword from Elfland</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="swapSilverSwordCheckBox" IsEnabled="@(Flags.CutSilverSword == true && Flags.Shops != true)" @bind-Value="Flags.SwapSilverSword">And replace it with Long Sword</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="addSilverSwordCheckBox" IsEnabled="@(Flags.CutSilverSword == true && Flags.Shops != true)" @bind-Value="Flags.AddSilverSword">And replace Melmond's Long Sword with Silver Sword</TriStateCheckBox>
 		</div>
 		<div class="col2">
 			<h4>Legendary Shops</h4>

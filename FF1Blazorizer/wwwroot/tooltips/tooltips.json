@@ -1421,5 +1421,23 @@
 		"title": "Extensive Hints",
 		"screenshot": "extendedHintsCheckBox.png",
 		"description": "Replace NPCs' dialogues with hints. There a 6 Hint Categories:\nLoose Floor: provides the floor where a loose is located\nLoose Name: provides the name of the loose and the dungeon\nIncentive Name: provides the name of the incentive and the dungeon, npc or town\nEquipment Floor: States on what floors legendery items are\nEquipment Name: Gives the name of the Equipment and the dungeon name\nFloor Hints: Wow: Quest or legendary; Meh: Rare Equipment; Sparkle: more than 5kgold treasure; Dud: none of the above\n\nThe hint categories are placed in the order specified. If there are no valid places left, remaining hints are not placed anymore."
+	},
+	{
+		"Id": "cutSilverSwordCheckBox",
+		"title": "Remove Silver Sword from Elfland",
+		"screenshot": "cutSilverSwordCheckBox.png",
+		"description": "The Silver Sword in Elfland obsoletes many weapons found around the same time, or even quite a while after. This flag removes it from that shop.\nHas no effect when shop shuffle is enabled."
+	},
+	{
+		"Id": "swapSilverSwordCheckBox",
+		"title": "Replace Elfland's Silver Sword with Long Sword",
+		"screenshot": "swapSilverSwordCheckBox.png",
+		"description": "Replaces Elfland's Silver Sword with a Long Sword. Still a strong expensive weapon for where you find it, but not to the same degree."
+	},
+	{
+		"Id": "addSilverSwordCheckBox",
+		"title": "Replace Melmond's Long Sword with Silver Sword",
+		"screenshot": "addSilverSwordCheckBox.png",
+		"description": "Replaces Melmond's Long Sword with a Silver Sword. When combined with the above flags, it essentially trades Melmond's Long Sword for Elfland's Silver Sword."
 	}
 ]

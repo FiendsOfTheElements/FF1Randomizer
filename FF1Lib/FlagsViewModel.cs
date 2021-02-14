@@ -413,6 +413,33 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TournamentSafe"));
 			}
 		}
+		public bool? CutSilverSword
+		{
+			get => Flags.CutSilverSword;
+			set
+			{
+				Flags.CutSilverSword = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CutSilverSword"));
+			}
+		}
+		public bool? AddSilverSword
+		{
+			get => Flags.AddSilverSword;
+			set
+			{
+				Flags.AddSilverSword = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AddSilverSword"));
+			}
+		}
+		public bool? SwapSilverSword
+		{
+			get => Flags.SwapSilverSword;
+			set
+			{
+				Flags.SwapSilverSword = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SwapSilverSword"));
+			}
+		}
 		public bool? Shops
 		{
 			get => Flags.Shops;

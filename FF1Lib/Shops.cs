@@ -228,6 +228,16 @@ namespace FF1Lib
 			}
             return result;
 		}
+        
+        public void CutSilverSword(bool swapForLong = false)
+        {
+            Put(0x383D1, Blob.FromHex((swapForLong ? "28" : "00")));
+        }
+        
+        public void AddSilverSword()
+        {
+            Put(0x383FB, Blob.FromHex("2C"));
+        }
 
 		private List<byte>[] GetShops(ShopType shopType, ushort[] pointers)
 		{

@@ -231,6 +231,9 @@ namespace FF1Lib
 		public bool ImproveTurnOrderRandomization { get; set; } = false;
 		public bool FixHitChanceCap { get; set; } = false;
 
+        public bool? CutSilverSword { get; set; } = false;
+        public bool? AddSilverSword { get; set; } = false;
+        public bool? SwapSilverSword { get; set; } = false;
 		public bool DeepDungeon { get; set; } = false;
 		public bool StartingGold { get; set; } = false;
 		public bool WrapStatOverflow { get; set; } = false;
