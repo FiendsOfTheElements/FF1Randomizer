@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using FF1Lib.Assembly;
 using System.Text.RegularExpressions;
+using System.Diagnostics;
 
 namespace FF1Lib
 {
@@ -102,8 +103,10 @@ namespace FF1Lib
 			return rom;
 		}
 
-		public void Randomize(Blob seed, Flags flags, Preferences preferences)
+		public string Randomize(Blob seed, Flags flags, Preferences preferences)
 		{
+			Stopwatch w = Stopwatch.StartNew();
+
 			MT19337 rng;
 			using (SHA256 hasher = SHA256.Create())
 			{
@@ -344,7 +347,7 @@ namespace FF1Lib
 
 					if ((bool)flags.Treasures)
 					{
-						generatedPlacement = ShuffleTreasures(rng, flags, incentivesData, shopItemLocation, overworldMap, teleporters, checker);
+						//generatedPlacement = ShuffleTreasures(rng, flags, incentivesData, shopItemLocation, overworldMap, teleporters, checker);
 					}
 					break;
 				}
@@ -879,9 +882,42 @@ namespace FF1Lib
 			WriteSeedAndFlags(seed.ToHex(), Flags.EncodeFlagsText(flags));
 			ExtraTrackingAndInitCode(flags);
 
+			w.Stop();
 
-			SanityCheckerV2 c = new SanityCheckerV2(maps, overworldMap, npcdata, this);
-			c.CheckSanity(generatedPlacement, null, flags);
+			Stopwatch w2 = Stopwatch.StartNew();
+
+			ValidateChecker(overworldMap, maps, npcdata, flags, rng, shopItemLocation, teleporters);
+
+			w2.Stop();
+
+			return w2.Elapsed.TotalMilliseconds.ToString();
+		}
+
+		private void ValidateChecker(OverworldMap overworldMap, List<Map> maps, NPCdata npcdata, Flags flags, MT19337 rng, ItemShopSlot shopItemLocation, TeleportShuffle teleporters)
+		{
+			var maxRetries = 8;
+			for (var i = 0; i < maxRetries; i++)
+			{
+				try
+				{		
+					ISanityChecker checker = new SanityCheckerV1();
+					SanityCheckerV2 checker2 = new SanityCheckerV2(maps, overworldMap, npcdata, this, shopItemLocation);
+
+					IncentiveData incentivesData = new IncentiveData(rng, flags, overworldMap, shopItemLocation, checker);
+
+					if ((bool)flags.Treasures)
+					{
+						generatedPlacement = ShuffleTreasures(rng, flags, incentivesData, shopItemLocation, overworldMap, teleporters, checker, checker2);
+					}
+					break;
+				}
+				catch (InsaneException e)
+				{
+					Console.WriteLine(e.Message);
+					if (maxRetries > (i + 1)) continue;
+					throw new InvalidOperationException(e.Message);
+				}
+			}
 		}
 
 		private void EnableNPCSwatter(NPCdata npcdata)

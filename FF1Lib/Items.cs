@@ -466,4 +466,25 @@ namespace FF1Lib
 		public static byte[] Pravoka = new byte[] { 0xD2, 0x99 };
 		public static byte[] Elfland = new byte[] { 0x8D, 0xD3 };
 	};
+
+	public static class ItemExtensions
+	{
+		public static AccessRequirement ToAccessRequirement(this Item item)
+		{
+			switch (item)
+			{
+				case Item.None: return AccessRequirement.None;
+				case Item.Crown: return AccessRequirement.Crown;
+				case Item.Crystal: return AccessRequirement.Crystal;
+				case Item.Herb: return AccessRequirement.Herb;
+				case Item.Key: return AccessRequirement.Key;
+				case Item.Tnt: return AccessRequirement.Tnt;
+				case Item.Adamant: return AccessRequirement.Adamant;
+				case Item.Slab: return AccessRequirement.Slab;
+				case Item.Ruby: return AccessRequirement.Ruby;
+				case Item.Bottle: return AccessRequirement.Bottle;
+				default: return AccessRequirement.None;
+			}
+		}
+	}
 }

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using RomUtilities;
 
@@ -47,7 +49,7 @@ namespace FF1Lib
 		public string Name { get; protected set; }
 		public MapLocation MapLocation { get; protected set; }
 		public Item Item { get; protected set; }
-		public AccessRequirement AccessRequirement { get; protected set; }
+		public AccessRequirement AccessRequirement { get; set; }
 		public bool IsUnused { get; protected set; }
 
 		public virtual bool IsTreasure => false;
@@ -224,5 +226,18 @@ namespace FF1Lib
 				address = 0x80000;
 		}
 		public override void Put(FF1Rom rom) => throw new NotImplementedException();
+	}
+
+	public class RewardSourceEqualityComparer : IEqualityComparer<IRewardSource>
+	{
+		public bool Equals(IRewardSource x, IRewardSource y)
+		{
+			return x.Address == y.Address;
+		}
+
+		public int GetHashCode([DisallowNull] IRewardSource obj)
+		{
+			return obj.Address;
+		}
 	}
 }

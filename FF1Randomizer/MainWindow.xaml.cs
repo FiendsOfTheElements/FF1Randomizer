@@ -2,6 +2,7 @@
 using Microsoft.Win32;
 using RomUtilities;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -93,6 +94,8 @@ namespace FF1Randomizer
 
 		private void GenerateButton_Click(object sender, RoutedEventArgs e)
 		{
+			Stopwatch w = Stopwatch.StartNew();
+
 			FF1Rom rom = null;
 			for (int i = 0; i < 1000; i++)
 			{
@@ -104,6 +107,8 @@ namespace FF1Randomizer
 			var fileRoot = _model.Filename.Substring(0, _model.Filename.LastIndexOf("."));
 			var outputFilename = $"{fileRoot}_{_model.Seed}_{FlagsTextBox.Text}.nes";
 			rom.Save(outputFilename);
+
+			w.Stop();
 
 			MessageBox.Show($"Finished generating new ROM: {outputFilename}", "Done");
 		}

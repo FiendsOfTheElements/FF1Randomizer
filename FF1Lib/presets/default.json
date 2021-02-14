@@ -50,10 +50,10 @@
 
 		"MapOpenProgression": true,
 		"MapOpenProgressionExtended": true,
-		"Entrances": true,
-		"Floors": true,
-		"AllowDeepCastles": true,
-		"Towns": true,
+		"Entrances": false,
+		"Floors": false,
+		"AllowDeepCastles": false,
+		"Towns": false,
 
 		"IncentivizeFreeNPCs": true,
 		"IncentivizeFetchNPCs": false,
@@ -85,9 +85,9 @@
 		"IncentivizeOffCastWeapon": false,
 		"IncentivizeOtherCastWeapon": false,
 
-		"EarlySarda": true,
-		"EarlySage": true,
-		"EarlyOrdeals": true,
+		"EarlySarda": false,
+		"EarlySage": false,
+		"EarlyOrdeals": false,
 		"ShuffleObjectiveNPCs": true,
 		"OnlyRequireGameIsBeatable": false,
 
