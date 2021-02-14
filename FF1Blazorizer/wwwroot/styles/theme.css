@@ -130,8 +130,24 @@ a.styled-button {
     cursor: pointer;
 }
 
+a.styled-button.announcement {
+    background-color: #0081db;
+    border: 1px solid #ffffff;
+    border-radius: 2px;
+    color: #ffffff;
+    padding: 1px 3px 3px 3px;
+    text-decoration: none;
+    cursor: pointer;
+    display: block;
+    margin: 6px 0px 0px 0px;
+}
+
 a.styled-button:hover{
 background-color: #005896;
+}
+
+a.styled-button.clicked {
+    background-color: #005896;
 }
 
 a.preset-close {
@@ -154,7 +170,19 @@ a.ffr-tooltip-close {
 }
 
 a.ffr-tooltip-close:hover {
-   background-color: #d75e45;
+    background-color: #d75e45;
+}
+
+a.ffr-tooltip-close-announcement {
+    position: relative;
+    background-color: #e76e55;
+    padding: 3px 8px 3px 8px;
+    right: -5px;
+    float: right;
+}
+
+a.ffr-tooltip-close-announcement:hover {
+    background-color: #d75e45;
 }
 
 button.main-button {
