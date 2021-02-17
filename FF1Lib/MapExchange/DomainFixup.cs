@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FF1Lib.Sanity
+namespace FF1Lib
 {
-	public struct AccessFlags
+	public class DomainFixup
 	{
-		public AccessRequirement Requirements;
+		public byte From { get; set; }
 
-		public MapChange Changes;
+		public byte To { get; set; }
 	}
 }

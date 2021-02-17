@@ -581,9 +581,26 @@ namespace FF1Lib
 				}
 
 				// 7. Check sanity and loop if needed
-			} while (!_checker.CheckSanity(placedItems, fullLocationRequirements, _flags).Complete);
+			} while (!IsComplete(placedItems, fullLocationRequirements, _flags));
 
 			return new ItemPlacementResult { PlacedItems = placedItems, RemainingTreasures = treasurePool };
+		}
+
+		private bool IsComplete(List<IRewardSource> placedItems,
+										Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullLocationRequirements,
+										IVictoryConditionFlags _flags)
+		{
+			if (_checker2 != null)
+			{
+				var result1 = _checker.CheckSanity(placedItems, fullLocationRequirements, _flags).Complete;
+				var result2 = _checker2.CheckSanity(placedItems, fullLocationRequirements, _flags).Complete;
+
+				return result1;
+			}
+			else
+			{
+				return _checker.CheckSanity(placedItems, fullLocationRequirements, _flags).Complete;
+			}
 		}
 
 		private bool IsAccessible(IRewardSource x, List<MapLocation> mapLocations, AccessRequirement requirements)
@@ -593,10 +610,14 @@ namespace FF1Lib
 				var result1 = _checker.IsRewardSourceAccessible(x, requirements, mapLocations);
 				var result2 = _checker2.IsRewardSourceAccessible(x, requirements, mapLocations);
 
+				if (x.MapLocation == MapLocation.TitansTunnelRoom) return result1;
+
+				/*
 				if (result1 != result2)
 				{
 					result1 = result2;
 				}
+				*/
 
 				return result1;
 			}
@@ -618,11 +639,12 @@ namespace FF1Lib
 				//var firstNotSecond = mapLocations.Except(mapLocations2).ToList();
 				//var secondNotFirst = mapLocations2.Except(mapLocations).ToList();
 
+				/*
 				if (complete != complete2 || requirements != requirements2)
 				{
-
-					return (complete2, mapLocations2, requirements2);
+					return (complete, mapLocations, requirements);
 				}
+				*/
 
 				return (complete, mapLocations, requirements);
 			}

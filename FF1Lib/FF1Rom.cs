@@ -140,6 +140,12 @@ namespace FF1Lib
 			TeleportShuffle teleporters = new TeleportShuffle();
 			var palettes = OverworldMap.GeneratePalettes(Get(OverworldMap.MapPaletteOffset, MapCount * OverworldMap.MapPaletteSize).Chunk(OverworldMap.MapPaletteSize));
 			var overworldMap = new OverworldMap(this, flags, palettes, teleporters);
+
+			var owMapExchange = new OwMapExchange(this, overworldMap, "melmond_start");
+			owMapExchange.ExecuteStep1();
+
+			var shipLocations = owMapExchange.ShipLocations;
+
 			var maps = ReadMaps();
 			var shopItemLocation = ItemLocations.CaravanItemShop1;
 			var oldItemNames = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
@@ -295,6 +301,82 @@ namespace FF1Lib
 				EnableEarlyOrdeals();
 			}
 
+			if ((bool)flags.OrdealsPillars)
+			{
+				ShuffleOrdeals(rng, maps);
+			}
+
+			if (flags.SkyCastle4FMazeMode == SkyCastle4FMazeMode.Maze)
+			{
+				DoSkyCastle4FMaze(rng, maps);
+			}
+			else if (flags.SkyCastle4FMazeMode == SkyCastle4FMazeMode.Teleporters)
+			{
+				ShuffleSkyCastle4F(rng, maps);
+			}
+
+			if ((bool)flags.EarlyKing)
+			{
+				EnableEarlyKing(npcdata);
+			}
+
+			if ((bool)flags.EarlySarda)
+			{
+				EnableEarlySarda(npcdata);
+			}
+
+			if ((bool)flags.EarlySage)
+			{
+				EnableEarlySage(npcdata);
+			}
+
+			if (flags.ChaosRush)
+			{
+				EnableChaosRush();
+			}
+
+			if ((bool)flags.FreeBridge)
+			{
+				EnableFreeBridge();
+			}
+
+			if ((bool)flags.FreeAirship)
+			{
+				EnableFreeAirship();
+			}
+
+			if ((bool)flags.FreeShip)
+			{
+				EnableFreeShip();
+			}
+
+			if (flags.FreeOrbs)
+			{
+				EnableFreeOrbs();
+			}
+
+			if ((bool)flags.FreeCanal)
+			{
+				EnableFreeCanal((bool)flags.NPCItems, npcdata);
+			}
+
+			if ((bool)flags.FreeCanoe)
+			{
+				EnableFreeCanoe();
+			}
+
+			if ((bool)flags.FreeLute)
+			{
+				EnableFreeLute();
+			}
+
+			if ((bool)flags.FreeTail && !(bool)flags.NoTail)
+			{
+				EnableFreeTail();
+			}
+
+			overworldMap.ApplyMapEdits();
+
 			var maxRetries = 8;
 			for (var i = 0; i < maxRetries; i++)
 			{
@@ -344,11 +426,13 @@ namespace FF1Lib
 						incentivesData = new IncentiveData(rng, flags, overworldMap, shopItemLocation, checker);
 					}
 
-
 					if ((bool)flags.Treasures)
 					{
-						//generatedPlacement = ShuffleTreasures(rng, flags, incentivesData, shopItemLocation, overworldMap, teleporters, checker);
+						SanityCheckerV2 checker2 = new SanityCheckerV2(maps, overworldMap, npcdata, this, shopItemLocation, shipLocations);
+
+						generatedPlacement = ShuffleTreasures(rng, flags, incentivesData, shopItemLocation, overworldMap, teleporters, checker2);
 					}
+
 					break;
 				}
 				catch (InsaneException e)
@@ -500,82 +584,9 @@ namespace FF1Lib
 				ShuffleTrapTiles(rng, ((bool)flags.RandomTrapFormations));
 			}
 
-			if ((bool)flags.OrdealsPillars)
-			{
-				ShuffleOrdeals(rng, maps);
-			}
-
-			if (flags.SkyCastle4FMazeMode == SkyCastle4FMazeMode.Maze)
-			{
-				DoSkyCastle4FMaze(rng, maps);
-			}
-			else if (flags.SkyCastle4FMazeMode == SkyCastle4FMazeMode.Teleporters)
-			{
-				ShuffleSkyCastle4F(rng, maps);
-			}
-
 			if ((bool)flags.ConfusedOldMen)
 			{
 				EnableConfusedOldMen(rng);
-			}
-
-			if (flags.ChaosRush)
-			{
-				EnableChaosRush();
-			}
-			if ((bool)flags.EarlyKing)
-			{
-				EnableEarlyKing(npcdata);
-			}
-			
-			if ((bool)flags.EarlySarda)
-			{
-				EnableEarlySarda(npcdata);
-			}
-
-			if ((bool)flags.EarlySage)
-			{
-				EnableEarlySage(npcdata);
-			}
-
-			if ((bool)flags.FreeBridge)
-			{
-				EnableFreeBridge();
-			}
-
-			if ((bool)flags.FreeAirship)
-			{
-				EnableFreeAirship();
-			}
-
-			if ((bool)flags.FreeShip)
-			{
-				EnableFreeShip();
-			}
-
-			if (flags.FreeOrbs)
-			{
-				EnableFreeOrbs();
-			}
-
-			if ((bool)flags.FreeCanal)
-			{
-				EnableFreeCanal((bool)flags.NPCItems, npcdata);
-			}
-
-			if ((bool)flags.FreeCanoe)
-			{
-				EnableFreeCanoe();
-			}
-
-			if ((bool)flags.FreeLute)
-			{
-				EnableFreeLute();
-			}
-
-			if ((bool)flags.FreeTail && !(bool)flags.NoTail)
-			{
-				EnableFreeTail();
 			}
 
 			if (flags.NoPartyShuffle)
@@ -733,7 +744,6 @@ namespace FF1Lib
 			ScalePrices(flags, itemText, rng, ((bool)flags.ClampMinimumPriceScale), shopItemLocation);
 			ScaleEncounterRate(flags.EncounterRate / 30.0, flags.DungeonEncounterRate / 30.0);
 
-			overworldMap.ApplyMapEdits();
 			WriteMaps(maps);
 
 			WriteText(itemText, ItemTextPointerOffset, ItemTextPointerBase, ItemTextOffset, UnusedGoldItems);
@@ -874,7 +884,9 @@ namespace FF1Lib
 			{
 				DisableSpellCastScreenFlash();
 			}
-			
+
+			owMapExchange.ExecuteStep2();
+
 			npcdata.WriteNPCdata(this);
 			talkroutines.WriteRoutines(this);
 			talkroutines.UpdateNPCRoutines(this, npcdata);
@@ -884,15 +896,11 @@ namespace FF1Lib
 
 			w.Stop();
 
-			Stopwatch w2 = Stopwatch.StartNew();
 
-			ValidateChecker(overworldMap, maps, npcdata, flags, rng, shopItemLocation, teleporters);
-
-			w2.Stop();
-
-			return w2.Elapsed.TotalMilliseconds.ToString();
+			return w.Elapsed.TotalMilliseconds.ToString();
 		}
 
+		/*
 		private void ValidateChecker(OverworldMap overworldMap, List<Map> maps, NPCdata npcdata, Flags flags, MT19337 rng, ItemShopSlot shopItemLocation, TeleportShuffle teleporters)
 		{
 			var maxRetries = 8;
@@ -919,6 +927,7 @@ namespace FF1Lib
 				}
 			}
 		}
+		*/
 
 		private void EnableNPCSwatter(NPCdata npcdata)
 		{

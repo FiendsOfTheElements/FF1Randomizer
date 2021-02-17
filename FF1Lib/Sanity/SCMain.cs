@@ -43,6 +43,11 @@ namespace FF1Lib.Sanity
 			tele = new NormTeleData(rom);
 			exit = new ExitTeleData(rom);
 
+			mapTileSets.LoadTable();
+			enter.LoadData();
+			tele.LoadData();
+			exit.LoadData();
+
 			for (int i = 0; i < 8; i++) tileSets[i] = new SCTileSet(rom, (byte)i);
 
 			owtileset = new SCTileSet(rom, TileSet.OverworldIndex);

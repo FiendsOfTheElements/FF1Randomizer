@@ -40,6 +40,8 @@ namespace FF1Lib.Sanity
 
 		public bool Done { get; set; }
 
+		public byte DungeonIndex { get; set; }
+
 		public SCPointOfInterest Clone()
 		{
 			return new SCPointOfInterest

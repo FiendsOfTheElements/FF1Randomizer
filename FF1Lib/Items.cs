@@ -207,7 +207,7 @@ namespace FF1Lib
 		public const byte CanalVis = 12;
 		public const byte CanalX = 13;
 		public const byte CanalY = 14;
-		//OverworldScrollX = 16
+		public const byte OverworldScrollX = 16;
 		//OverworldScrollY = 17
 		//HasCanoe = 18 // Replaced by Items.Canoe
 		//Vehicle = 20
