@@ -177,7 +177,7 @@ namespace FF1Lib
 			Put(ZoneFormationsOffset, newFormations.ToArray());
 		}
 
-		public void ShuffleEnemyScripts(MT19337 rng, bool AllowUnsafePirates, bool doNormals, bool excludeImps, bool scaryImps)
+		public void ShuffleEnemyScripts(MT19337 rng, bool AllowUnsafePirates, bool doNormals, bool doBosses, bool excludeImps, bool scaryImps)
 		{
 			var oldEnemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
 			var newEnemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
@@ -197,44 +197,47 @@ namespace FF1Lib
 				}
 			}
 
-			var oldBosses = new List<Blob>
-			{
-				oldEnemies[Enemy.Lich],
-				oldEnemies[Enemy.Kary],
-				oldEnemies[Enemy.Kraken],
-				oldEnemies[Enemy.Tiamat]
-			};
-			oldBosses.Shuffle(rng);
+			if(doBosses)
+			{ 
+				var oldBosses = new List<Blob>
+				{
+					oldEnemies[Enemy.Lich],
+					oldEnemies[Enemy.Kary],
+					oldEnemies[Enemy.Kraken],
+					oldEnemies[Enemy.Tiamat]
+				};
+				oldBosses.Shuffle(rng);
 
-			newEnemies[Enemy.Lich][7] = oldBosses[0][7];
-			newEnemies[Enemy.Kary][7] = oldBosses[1][7];
-			newEnemies[Enemy.Kraken][7] = oldBosses[2][7];
-			newEnemies[Enemy.Tiamat][7] = oldBosses[3][7];
+				newEnemies[Enemy.Lich][7] = oldBosses[0][7];
+				newEnemies[Enemy.Kary][7] = oldBosses[1][7];
+				newEnemies[Enemy.Kraken][7] = oldBosses[2][7];
+				newEnemies[Enemy.Tiamat][7] = oldBosses[3][7];
 
-			var oldBigBosses = new List<Blob>
-			{
-				oldEnemies[Enemy.WarMech],
-				oldEnemies[Enemy.Lich2],
-				oldEnemies[Enemy.Kary2],
-				oldEnemies[Enemy.Kraken2],
-				oldEnemies[Enemy.Tiamat2],
-				oldEnemies[Enemy.Chaos]
-			};
-			if (scaryImps) oldBigBosses.Add(oldEnemies[Enemy.Imp]);
-			oldBigBosses.Shuffle(rng);
+				var oldBigBosses = new List<Blob>
+				{
+					oldEnemies[Enemy.WarMech],
+					oldEnemies[Enemy.Lich2],
+					oldEnemies[Enemy.Kary2],
+					oldEnemies[Enemy.Kraken2],
+					oldEnemies[Enemy.Tiamat2],
+					oldEnemies[Enemy.Chaos]
+				};
+				if (scaryImps) oldBigBosses.Add(oldEnemies[Enemy.Imp]);
+				oldBigBosses.Shuffle(rng);
 
-			newEnemies[Enemy.WarMech][7] = oldBigBosses[0][7];
-			newEnemies[Enemy.Lich2][7] = oldBigBosses[1][7];
-			newEnemies[Enemy.Kary2][7] = oldBigBosses[2][7];
-			newEnemies[Enemy.Kraken2][7] = oldBigBosses[3][7];
-			newEnemies[Enemy.Tiamat2][7] = oldBigBosses[4][7];
-			newEnemies[Enemy.Chaos][7] = oldBigBosses[5][7];
-			if (scaryImps) newEnemies[Enemy.Imp][7] = oldBigBosses[6][7];
+				newEnemies[Enemy.WarMech][7] = oldBigBosses[0][7];
+				newEnemies[Enemy.Lich2][7] = oldBigBosses[1][7];
+				newEnemies[Enemy.Kary2][7] = oldBigBosses[2][7];
+				newEnemies[Enemy.Kraken2][7] = oldBigBosses[3][7];
+				newEnemies[Enemy.Tiamat2][7] = oldBigBosses[4][7];
+				newEnemies[Enemy.Chaos][7] = oldBigBosses[5][7];
+				if (scaryImps) newEnemies[Enemy.Imp][7] = oldBigBosses[6][7];
+			}
 
 			Put(EnemyOffset, newEnemies.SelectMany(enemy => enemy.ToBytes()).ToArray());
 		}
 
-		public void ShuffleEnemySkillsSpells(MT19337 rng, bool doNormals)
+		public void ShuffleEnemySkillsSpells(MT19337 rng, bool doNormals, bool doBosses)
 		{
 			var scriptBytes = Get(ScriptOffset, ScriptSize * ScriptCount).Chunk(ScriptSize);
 
@@ -252,8 +255,12 @@ namespace FF1Lib
 
 			if(doNormals)
 				ShuffleIndexedSkillsSpells(scriptBytes, normalIndices, rng);
-			ShuffleIndexedSkillsSpells(scriptBytes, bossIndices, rng);
-			ShuffleIndexedSkillsSpells(scriptBytes, bigBossIndices, rng);
+
+			if(doBosses)
+			{ 
+				ShuffleIndexedSkillsSpells(scriptBytes, bossIndices, rng);
+				ShuffleIndexedSkillsSpells(scriptBytes, bigBossIndices, rng);
+			}
 
 			Put(ScriptOffset, scriptBytes.SelectMany(script => script.ToBytes()).ToArray());
 		}

@@ -1362,6 +1362,18 @@
 		"description": "In Shard Hunt mode, all shard chests are trapped."
 	},
 	{
+		"Id": "alternateFiendsCheckBox",
+		"title": "Alternate Fiends",
+		"screenshot": "AlternateFiends.png",
+		"description": "Replace all four Fiends with new Fiends with their own weaknesses and skills/spells lists."
+	},
+	{
+		"Id": "noBossSkillScriptShuffleCheckBox",
+		"title": "Don't Shuffle Bosses' Scripts, Skills & Spells",
+		"screenshot": "NoBossScriptSkillShuffle.png",
+		"description": "When shuffling ennemies' scripts or spells/skills, exclude the four Fiends, WarMech and Chaos."
+	},
+	{
 		"Id": "startingItemsDropDown",
 		"title": "Starting Inventory",
 		"screenshot": "startinginventory.png",

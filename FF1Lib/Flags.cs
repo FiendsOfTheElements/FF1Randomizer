@@ -420,6 +420,8 @@ namespace FF1Lib
 		public bool? RandomizeClass { get; set; } = false;
 		public bool? RandomizeClassNoCasting { get; set; } = false;
 		public bool? RandomizeClassChaos { get; set; } = false;
+		public bool? AlternateFiends { get; set; } = false;
+		public bool? NoBossSkillScriptShuffle { get; set; } = false;
 
 		public bool? LegendaryWeaponShop { get; set; } = false;
 		public bool? LegendaryArmorShop { get; set; } = false;
