@@ -1045,10 +1045,7 @@ namespace FF1Lib
 			InsertDialogs(0x110, "Monster-in-a-box!"); // 0xC0
 
 			// Select treasure
-			var chestList = ItemLocations.AllTreasures.Where(x => x.IsUnused == false && !ItemLists.AllQuestItems.Contains(x.Item)).ToList();
-			chestList.Shuffle(rng);
-			chestList.RemoveRange(0, chestList.Count() - 40);
-
+			var chestList = ItemLocations.AllTreasures.ToList();
 			var chestMonsterList = new byte[0x100];
 			var treasureList = Get(lut_TreasureOffset, 0x100);
 
@@ -1056,9 +1053,18 @@ namespace FF1Lib
 			List<byte> encounters;
 			encounters = Enumerable.Range(128, FirstBossEncounterIndex).Select(value => (byte)value).ToList();
 			encounters.Add(0xFF); // IronGOL
-
+			
 			if ((bool)flags.TrappedChests)
 			{
+				for (int i = 1; i < 0x100; i++)
+				{
+					if (treasureList[i] < (int)Item.Tent || treasureList[i] > (int)Item.Gold65000)
+						chestList.Remove(chestList.Where(x => x.Address == lut_TreasureOffset + i).First());
+				}
+
+				chestList.Shuffle(rng);
+				chestList.RemoveRange(0, chestList.Count() - 40);
+
 				foreach (var chest in chestList)
 					chestMonsterList[(chest.Address - lut_TreasureOffset)] = encounters.SpliceRandom(rng);
 			}
