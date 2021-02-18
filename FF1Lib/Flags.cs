@@ -86,6 +86,7 @@ namespace FF1Lib
 
 		public bool? MagicShops { get; set; } = false;
 		public bool? MagicShopLocs { get; set; } = false;
+		public bool? MagicShopLocationPairs { get; set; } = false;
 		public bool? MagicLevels { get; set; } = false;
 		public bool? MagicPermissions { get; set; } = false;
 		public bool? ItemMagic { get; set; } = false;

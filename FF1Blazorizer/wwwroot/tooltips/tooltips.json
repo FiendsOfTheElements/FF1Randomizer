@@ -137,7 +137,12 @@
 		"screenshot": "magicShopLocsCheckBox.gif",
 		"description": "Shuffles the locations of magic shops except Coneria (Level 1), so that any town's magic shop could show up anywhere else, such as Pravoka's magic shop can be in Melmond, etc.\n Note: magic shops are not coupled together, so if you use this flag you could end up with a Level 3 Black Magic Shop and a Level 6 White Magic Shop at Pravoka, or four different levels of shops at Elfland."
 	},
-
+	{
+		"Id": "magicShopLocationPairsCheckBox",
+		"title": "Paired Shuffle",
+		"screenshot": "magicShopLocationPairsCheckBox.gif",
+		"description": "When shuffling the locations of magic shops, they are moved in pairs so spells of a certain level are found together."
+	},
 	{
 		"Id": "startingItemsDropDown",
 		"title": "Starting Inventory",
