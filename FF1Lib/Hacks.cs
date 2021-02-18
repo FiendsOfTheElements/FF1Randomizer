@@ -111,8 +111,6 @@ namespace FF1Lib
 			const int lut_PtyGenBuf = 0x784AA;       // offset for party generation buffer LUT
 			const int lut_ClassPreferences = 0x78114;  // classes LUT
 
-			var i = slotNumber - 1;
-
 			if (forced) // if forced
 			{
 				FF1Class forcedclass;
@@ -129,18 +127,25 @@ namespace FF1Lib
 				options.Add(forcedclass);
 			}
 
-			// don't make any changes if there's nothing to do
-			if (!options.Any()) return;
+			// Just update allowed bitmasks for default classes if no selection, then exit
+			if (!options.Any())
+			{
+				foreach (FF1Class option in DefaultChoices)
+				{
+					Data[lut_ClassPreferences + (int)option + 1] |= AllowedSlotBitmasks[(slotNumber - 1)];
+				}
+				return;
+			}
 
 			//byte allowedFlags = 0b0000_0000;
 			foreach (FF1Class option in options)
 			{
-				Data[lut_ClassPreferences + (((int)option == 12) ? 0 : (int)option + 1)] |= AllowedSlotBitmasks[i];
+				Data[lut_ClassPreferences + (((int)option == 12) ? 0 : (int)option + 1)] |= AllowedSlotBitmasks[(slotNumber - 1)];
 			}
 
 			// set default member
 			var defaultclass = (forced || !DefaultChoices.SequenceEqual(options)) ? (int)options.PickRandom(rng) : slotNumber - 1;
-			Data[lut_PtyGenBuf + i * 0x10] = defaultclass == 12 ? (byte)0xFF : (byte)defaultclass;
+			Data[lut_PtyGenBuf + (slotNumber - 1) * 0x10] = defaultclass == 12 ? (byte)0xFF : (byte)defaultclass;
 
 			options.Clear();
 		}
@@ -1936,8 +1941,8 @@ namespace FF1Lib
 
 			// New routines to fight and give item
 			var battleUnne = talkroutines.Add(Blob.FromHex("A674F005BD2060F01AE67DA572203D96A575200096A476207F902073922018964C4396A57060"));
-			var battleGiveOnFlag = talkroutines.Add(Blob.FromHex("A474F0052079909027A5738561202096B020A572203D96A575200096A476207F90207392A5611820109F2018964C4396A9F060A57060"));
-			var battleGiveOnItem = talkroutines.Add(Blob.FromHex("A674F006EABD2060F029A5738561202096F022E67DA572203D96A575200096A476207F90207392A5611820109F2018964C4396A57060"));
+			var battleGiveOnFlag = talkroutines.Add(Blob.FromHex("A474F0052079909029A5738561202096B022E67DA572203D96A575200096A476207F90207392A5611820109F2018964C4396A57060"));
+			var battleGiveOnItem = talkroutines.Add(Blob.FromHex("A674F005BD2060F029A5738561202096B022E67DA572203D96A575200096A476207F90207392A5611820109F2018964C4396A57060"));
 			var battleBahamut = talkroutines.Add(Blob.FromHex("AD2D60D003A57160E67DA572203D96A575200096A476207F9020739220AE952018964C439660"));
 			talkroutines.ReplaceChunk(newTalkRoutines.Talk_Bikke, Blob.FromHex("A57260A57060"), Blob.FromHex("207392A57260"));
 

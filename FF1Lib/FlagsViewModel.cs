@@ -1548,6 +1548,15 @@ namespace FF1Lib
 
 		public bool FreeOrbsEnabled => !ShardHunt;
 
+		public bool DeepDungeon
+		{
+			get => Flags.DeepDungeon;
+			set
+			{
+				Flags.DeepDungeon = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DeepDungeon"));
+			}
+		}
 		public bool StartingGold
 		{
 			get => Flags.StartingGold;
