@@ -7,9 +7,29 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Reflection;
+using System.ComponentModel;
+using RomUtilities;
 
 namespace FF1Lib
 {
+	public enum OwMapExchanges
+	{
+		[Description("None(Default)")]
+		None,
+
+		[Description("Melmond Start")]
+		MelmondStart,
+
+		[Description("Elfland Start")]
+		ElflandStart,
+
+		[Description("Crescent Start")]
+		CrecsentStart,
+
+		[Description("Random")]
+		Random
+	}
+
 	public class OwMapExchange
 	{
 		OwMapExchangeData data;
@@ -33,7 +53,7 @@ namespace FF1Lib
 			locations = new OwLocationData(rom);
 			domains = new DomainData(rom);
 
-			LoadJson();
+			data = LoadJson(name);
 
 			ShipLocations = new ShipLocations(locations, data.ShipLocations);
 		}
@@ -64,16 +84,43 @@ namespace FF1Lib
 			locations.StoreData();
 		}
 
-		private void LoadJson()
+		private static OwMapExchangeData LoadJson(string _name)
 		{
-			var assembly = System.Reflection.Assembly.GetExecutingAssembly();			
-			var resourcePath = assembly.GetManifestResourceNames().First(str => str.EndsWith(name + ".json"));
+			var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+			var resourcePath = assembly.GetManifestResourceNames().First(str => str.EndsWith(_name + ".json"));
 
 			using (Stream stream = assembly.GetManifestResourceStream(resourcePath))
 			using (StreamReader rd = new StreamReader(stream))
 			{
-				data = JsonConvert.DeserializeObject<OwMapExchangeData>(rd.ReadToEnd());
+				return JsonConvert.DeserializeObject<OwMapExchangeData>(rd.ReadToEnd());
 			}
+		}
+
+		public static OwMapExchange FromFlags(FF1Rom _rom, OverworldMap _overworldMap, Flags flags, MT19337 rng)
+		{
+			var mx = flags.OwMapExchange;
+			if (mx == OwMapExchanges.Random) mx = (OwMapExchanges)rng.Between(0, 3);
+
+			switch (mx)
+			{
+				case OwMapExchanges.None:
+					return null;
+				case OwMapExchanges.MelmondStart:
+					return new OwMapExchange(_rom, _overworldMap, "melmond_start");
+				case OwMapExchanges.ElflandStart:
+					return new OwMapExchange(_rom, _overworldMap, "elfland_start");
+				case OwMapExchanges.CrecsentStart:
+					return new OwMapExchange(_rom, _overworldMap, "crescent_start");
+			}
+
+			throw new Exception("oops");
+		}
+
+		public static ShipLocations GetDefaultShipLocations(FF1Rom _rom)
+		{
+			var data = LoadJson("default");
+
+			return new ShipLocations(new OwLocationData(_rom), data.ShipLocations);
 		}
 	}
 }

@@ -460,11 +460,11 @@ namespace FF1Lib
 
 	public static class Dock
 	{
-		public static byte[] Coneria = new byte[] { 0x98, 0xA9 };
-		public static byte[] DwarfCave = new byte[] { 0x79, 0x8B };
-		public static byte[] MatoyasCave = new byte[] { 0x9E, 0x8E };
-		public static byte[] Pravoka = new byte[] { 0xD2, 0x99 };
-		public static byte[] Elfland = new byte[] { 0x8D, 0xD3 };
+		public static byte[] Coneria = new byte[] { 0x98, 0xA9 }; //152, 196
+		public static byte[] DwarfCave = new byte[] { 0x79, 0x8B }; //121, 139
+		public static byte[] MatoyasCave = new byte[] { 0x9E, 0x8E }; //158, 142
+		public static byte[] Pravoka = new byte[] { 0xD2, 0x99 }; //210, 153
+		public static byte[] Elfland = new byte[] { 0x8D, 0xD3 }; //141, 211
 	};
 
 	public static class ItemExtensions

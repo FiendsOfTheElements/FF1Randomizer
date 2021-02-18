@@ -13,6 +13,8 @@ namespace FF1Lib
 {
 	public class Flags : IIncentiveFlags, IMapEditFlags, IScaleFlags, IFloorShuffleFlags
 	{
+		public OwMapExchanges OwMapExchange { get; set; } = OwMapExchanges.Random;
+
 		public bool Spoilers { get; set; } = true;
 		public bool TournamentSafe { get; set; } = false;
 		public bool BlindSeed { get; set; } = false;

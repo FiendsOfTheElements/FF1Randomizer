@@ -3398,5 +3398,15 @@ namespace FF1Lib
 				RaisePropertyChanged();
 			}
 		}
+
+		public OwMapExchanges OwMapExchange
+		{
+			get => Flags.OwMapExchange;
+			set
+			{
+				Flags.OwMapExchange = value;
+				RaisePropertyChanged();
+			}
+		}
 	}
 }

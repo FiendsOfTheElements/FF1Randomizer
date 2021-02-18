@@ -141,10 +141,10 @@ namespace FF1Lib
 			var palettes = OverworldMap.GeneratePalettes(Get(OverworldMap.MapPaletteOffset, MapCount * OverworldMap.MapPaletteSize).Chunk(OverworldMap.MapPaletteSize));
 			var overworldMap = new OverworldMap(this, flags, palettes, teleporters);
 
-			var owMapExchange = new OwMapExchange(this, overworldMap, "melmond_start");
-			owMapExchange.ExecuteStep1();
+			var owMapExchange = OwMapExchange.FromFlags(this, overworldMap, flags, rng);
+			owMapExchange?.ExecuteStep1();
 
-			var shipLocations = owMapExchange.ShipLocations;
+			var shipLocations = owMapExchange?.ShipLocations ?? OwMapExchange.GetDefaultShipLocations(this);
 
 			var maps = ReadMaps();
 			var shopItemLocation = ItemLocations.CaravanItemShop1;
@@ -885,7 +885,7 @@ namespace FF1Lib
 				DisableSpellCastScreenFlash();
 			}
 
-			owMapExchange.ExecuteStep2();
+			owMapExchange?.ExecuteStep2();
 
 			npcdata.WriteNPCdata(this);
 			talkroutines.WriteRoutines(this);

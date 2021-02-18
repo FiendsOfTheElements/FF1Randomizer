@@ -13,7 +13,6 @@ namespace FF1Lib
 
 		OwLocationData locations;
 
-
 		public ShipLocations(OwLocationData _locations, ShipLocation[] _data)
 		{
 			locations = _locations;

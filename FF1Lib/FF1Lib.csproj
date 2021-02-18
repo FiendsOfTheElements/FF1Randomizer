@@ -14,11 +14,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="maps\crescent_start.ffm" />
+    <None Remove="maps\crescent_start.json" />
+    <None Remove="maps\default.json" />
+    <None Remove="maps\elfland_start.ffm" />
+    <None Remove="maps\elfland_start.json" />
     <None Remove="maps\melmond_start.ffm" />
     <None Remove="maps\melmond_start.json" />
   </ItemGroup>
 
   <ItemGroup>
+		<EmbeddedResource Include="maps\crescent_start.ffm" />
+    <EmbeddedResource Include="maps\crescent_start.json" />
+    <EmbeddedResource Include="maps\default.json" />
+    <EmbeddedResource Include="maps\elfland_start.ffm" />
+    <EmbeddedResource Include="maps\elfland_start.json" />
     <EmbeddedResource Include="maps\melmond_start.ffm">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
@@ -31,6 +41,10 @@
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="Patcher6502" Version="0.3.0" />
     <PackageReference Include="RomUtilities" Version="3.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="maps\crescent_start.ffm" />
   </ItemGroup>
 
   <ItemGroup>
