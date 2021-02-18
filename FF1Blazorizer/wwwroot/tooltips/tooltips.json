@@ -1401,7 +1401,18 @@
 		"screenshot": "etherizerCheckBox.png",
 		"description": "Tents, Cabins, and Houses become ethers. Instead of restoring HP and saving on the overworld, they resore MP and can be used anywhere.\nEthers (ETHR) restore a charge for L1-L2. Dry Ethers (DRY) restore a charge for L1-L4. X Ethers (XETH) restore a charge for L1-L8.\nIncompatible with the House bug fix flags."
 	},
-
+	{
+		"Id": "alternateFiendsCheckBox",
+		"title": "Alternate Fiends",
+		"screenshot": "AlternateFiends.png",
+		"description": "Replace all four Fiends with new Fiends with their own weaknesses and skills/spells lists."
+	},
+	{
+		"Id": "noBossSkillScriptShuffleCheckBox",
+		"title": "Don't Shuffle Bosses' Scripts, Skills & Spells",
+		"screenshot": "NoBossScriptSkillShuffle.png",
+		"description": "When shuffling ennemies' scripts or spells/skills, exclude the four Fiends, WarMech and Chaos."
+	},
 	{
 		"Id": "legendaryShopsGroup",
 		"title": "Legendary Shops",
@@ -1428,3 +1439,4 @@
 		"description": "Replace NPCs' dialogues with hints. There a 6 Hint Categories:\nLoose Floor: provides the floor where a loose is located\nLoose Name: provides the name of the loose and the dungeon\nIncentive Name: provides the name of the incentive and the dungeon, npc or town\nEquipment Floor: States on what floors legendery items are\nEquipment Name: Gives the name of the Equipment and the dungeon name\nFloor Hints: Wow: Quest or legendary; Meh: Rare Equipment; Sparkle: more than 5kgold treasure; Dud: none of the above\n\nThe hint categories are placed in the order specified. If there are no valid places left, remaining hints are not placed anymore."
 	}
 ]
+
