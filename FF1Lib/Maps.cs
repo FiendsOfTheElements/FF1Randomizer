@@ -647,15 +647,10 @@ namespace FF1Lib
 			lefein[0x06, 0x15] = 0x65; // Crescent Lake Clinic
 		}
 
-		public void EnableToFRExit(List<Map> maps, bool shortToFR)
+		public void EnableToFRExit(List<Map> maps)
 		{
 			// add warp portal to ToFR 1st floor
 			maps[(byte)MapId.TempleOfFiendsRevisited1F][17, 20] = (byte)Tile.PortalWarp;
-			if (shortToFR)
-			{
-				// add warp portal to ToFR alternate Chaos floor
-				maps[(byte)MapId.TempleOfFiendsRevisitedChaos][3, 15] = (byte)Tile.PortalWarp;
-			}
 		}
 		public List<MapId> HorizontalFlipDungeons(MT19337 rng, List<Map> maps, TeleportShuffle teleporters, OverworldMap overworld)
 		{
