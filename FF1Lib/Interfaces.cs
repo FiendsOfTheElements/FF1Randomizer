@@ -118,6 +118,7 @@
 		bool? EntrancesIncludesDeadEnds { get; }
 		bool? EntrancesMixedWithTowns { get; }
 		bool? Towns { get; }
+		bool? IncludeConeria { get; }
 		bool? Floors { get; }
 		bool? DeepCastlesPossible { get; }
 		bool? AllowDeepCastles { get; }

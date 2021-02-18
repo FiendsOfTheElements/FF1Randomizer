@@ -1117,6 +1117,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Towns"));
 			}
 		}
+		public bool? IncludeConeria
+		{
+			get => Flags.IncludeConeria;
+			set
+			{
+				Flags.IncludeConeria = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncludeConeria"));
+			}
+		}
 		public bool? EntrancesIncludesDeadEnds
 		{
 			get => Flags.EntrancesIncludesDeadEnds;
@@ -1530,6 +1539,15 @@ namespace FF1Lib
 
 		public bool FreeOrbsEnabled => !ShardHunt;
 
+		public bool DeepDungeon
+		{
+			get => Flags.DeepDungeon;
+			set
+			{
+				Flags.DeepDungeon = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DeepDungeon"));
+			}
+		}
 		public bool StartingGold
 		{
 			get => Flags.StartingGold;
