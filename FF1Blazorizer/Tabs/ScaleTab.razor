@@ -1,20 +1,22 @@
 ﻿@using FF1Lib;
 
 
-	<div id="Scale" class="tabcontent framed-content clearfix @(noTabLayout ? "no-tab" : "")">
+	<div id="Scale" class="tabcontent framed-content clearfix @(noTabLayout ? "no-tab" : "") @(IsOpen ? "" : "collapsed")">
 
-		<h3>Scale</h3>
+		<h3 class="@(IsOpen ? "" : "h3-collapsed")"><a class="@(noTabLayout ? "collapsible-header" : "")" @onclick="(() => IsOpen = (!noTabLayout || !IsOpen))">Scale</a></h3>
+		@if (IsOpen)
+		{ 
 		<div class="col1 full">
 			<DoubleSlider ShowMedian DoubleCol Id="clampMinimumPriceScaleLable" UpdateToolTip="@UpdateToolTipID" MinValue="20" MaxValue="500" @bind-ValueHigh="Flags.PriceScaleFactorHigh" @bind-ValueLow="Flags.PriceScaleFactorLow">Prices:</DoubleSlider>
 			<div class="row-seperator"></div>
 			<DoubleSlider ShowMedian DoubleCol Id="enemyStatsDoubleSlider" MinValue="20" MaxValue="500" @bind-ValueHigh="Flags.EnemyScaleStatsHigh" @bind-ValueLow="Flags.EnemyScaleStatsLow" DisableTooltip>Enemy Stats:</DoubleSlider>
 			<DoubleSlider ShowMedian DoubleCol Id="enemyHpDoubleSlider" Indent IsEnabled="Flags.SeparateEnemyHPScaling" MinValue="20" MaxValue="500" @bind-ValueHigh="Flags.EnemyScaleHpHigh" @bind-ValueLow="Flags.EnemyScaleHpLow" DisableTooltip>
-				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="separateEnemyHPScalingCheckBox" @bind-Value="Flags.SeparateEnemyHPScaling">Separate HP Scaling:</TriStateCheckBox>
+				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="separateEnemyHPScalingCheckBox" @bind-Value="Flags.SeparateEnemyHPScaling">Separate HP&nbspScaling:</TriStateCheckBox>
 			</DoubleSlider>
 			<div class="row-seperator"></div>
 			<DoubleSlider ShowMedian DoubleCol Id="bossStatsDoubleSlider" MinValue="20" MaxValue="500" @bind-ValueHigh="Flags.BossScaleStatsHigh" @bind-ValueLow="Flags.BossScaleStatsLow" DisableTooltip>Boss Stats:</DoubleSlider>
 			<DoubleSlider ShowMedian DoubleCol Id="bossHpDoubleSlider" Indent IsEnabled="Flags.SeparateBossHPScaling" MinValue="20" MaxValue="500" @bind-ValueHigh="Flags.BossScaleHpHigh" @bind-ValueLow="Flags.BossScaleHpLow" DisableTooltip>
-				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="separateBossHPScalingCheckBox" @bind-Value="Flags.SeparateBossHPScaling">Separate HP Scaling:</TriStateCheckBox>
+				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="separateBossHPScalingCheckBox" @bind-Value="Flags.SeparateBossHPScaling">Separate HP&nbspScaling:</TriStateCheckBox>
 			</DoubleSlider>
 			<div class="row-seperator"></div>
 			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="evadeCapDropDown" TItem="EvadeCapValues" @bind-Value="Flags.EvadeCap">Evade Cap Value:</EnumDropDown>
@@ -63,9 +65,12 @@
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="easyModeCheckBox" @bind-Value="Flags.EasyMode">Easy Mode</CheckBox>			
 			<div class="clear-it"></div>
 		</div>
+		}
 	</div>
 
 
 	@code { [Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }
-				[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
-				[Parameter] public bool noTabLayout { get; set; }  }
+			[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
+			[Parameter] public bool noTabLayout { get; set; }
+			[Parameter] public bool IsOpen { get; set; } = true;
+		}

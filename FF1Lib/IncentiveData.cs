@@ -7,10 +7,13 @@ namespace FF1Lib
 {
 	public class IncentiveData
 	{
+		public OverworldMap OverworldMap { get; private set; }
+
 		ISanityChecker _checker;
 
 		public IncentiveData(MT19337 rng, IIncentiveFlags flags, OverworldMap map, ItemShopSlot shopSlot, ISanityChecker checker)
 		{
+			OverworldMap = map;
 			_checker = checker;
 
 			Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullLocationRequirements = map.FullLocationRequirements;

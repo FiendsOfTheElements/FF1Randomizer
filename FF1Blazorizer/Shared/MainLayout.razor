@@ -7,30 +7,44 @@
 		<div id="banner-holder"></div>
 
 		<div id="nav-holder"></div>
+		<CascadingValue Value="@showChaos">
 		<div>
 			@Body
 		</div>
+		</CascadingValue>
 
 		<footer id="main-footer">
 			<div id="garland"></div>
 			<div id="warriors"></div>
 
 			<nav id="footer-links">
-				FFR Links: <a href="https://discord.gg/95gbpFd">Community Discord</a> <a href="https://discord.gg/s7CRejk">Development Discord</a> <a href="#">Preset Archive</a> <a href="#">Player Resources</a>
-				<span id="hidden-nav">Menu: <a href="Randomize">Randomize</a> <a href="About">About</a> <a href="WhatsNew">Help</a> <a href="https://github.com/FiendsOfTheElements/FF1Randomizer/issues">Issues</a> <a href="javascript:showPWAInstall()">Install</a></span>
-				<br />
-			</nav>
-		</footer>
-	</div>
+				FFR Links: <a href="https://discord.gg/95gbpFd">Community Discord</a> <a href="https://discord.gg/s7CRejk">Development Discord</a>
+				<!-- <a href="#">Preset Archive</a> <a href="#">Player Resources</a> -->
+					<span id="hidden-nav">Menu: <a href="Randomize">Randomize</a> <a href="About">About</a> <a href="Resources">Resources</a> <a href="WhatsNew">What's New</a> <a href="https://github.com/FiendsOfTheElements/FF1Randomizer/issues">Issues</a> <a href="javascript:showPWAInstall()">Install</a></span>
+					<br />
+				</nav>
+			</footer>
+		</div>
 
-	<div id="header">
-		<div id="banner">
-			<NavBanner />
+		<div id="header">
+			<div id="banner">
+				<NavBanner />
 
-			<div id="header-contents">
-				<NavMenu />
-				<UpdateNotification />
+				<div id="header-contents">
+					<NavMenu ChaosTriggered="@TriggerChaos" />
+					<UpdateNotification />
+				</div>
 			</div>
 		</div>
 	</div>
-</div>
+@code
+{
+	bool showChaos { get; set; } = false;
+
+	private void TriggerChaos(bool chaostriggered)
+	{
+		showChaos = chaostriggered;
+		StateHasChanged();
+	}
+
+}

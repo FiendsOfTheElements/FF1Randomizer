@@ -105,7 +105,137 @@ namespace FF1Lib
 		EarthCaveRandomEncounters = 0x41,
 		WaterfallInside = 0x46,
 		WaterfallSpikeTile = 0x48,
-		WaterfallRandomEncounters = 0x49
+		WaterfallRandomEncounters = 0x49,
+		PortalWarp = 0x40,
+		// Begin Town Tiles
+		TownGrass = 0x00,
+		TownGrassShadow = 0x01,
+		TownGrassShadowDiagonal = 0x02,
+		TownHorizontalWallLeft = 0x03,
+		TownHorizontalWallCenter = 0x04,
+		TownHorizontalWallRight = 0x05,
+		TownHorizontalWallOffsetLeft = 0x06,
+		TownHorizontalWallOffsetCenter = 0x07,
+		TownHorizontalWallOffsetRight = 0x08,
+		TownHorizontalWallOffsetRightShadow = 0x09,
+		TownVerticalWallRight = 0x0A,
+		TownVerticalWallLeftShadowTopCorner = 0x0B,
+		TownVerticalWallLeftShadow = 0x0C,
+		TownVerticalWallLeftBottomCorner = 0x0D,
+		TownTree = 0x0E,
+		TownBushes = 0x0F,
+		TownStonePath = 0x10,
+		TownStonePathRoundedTL = 0x11,
+		TownStonePathRoundedTR = 0x12,
+		TownStonePathRoundedBL = 0x13,
+		TownStonePathRoundedBR = 0x14,
+		TownStonePathShadowCorner = 0x15,
+		TownStonePathShadowEdge = 0x16,
+		TownBuildingRoofTopLeftEdge = 0x17,
+		TownBuildingRoof = 0x18,
+		TownBuildingRoofTopRightEdge = 0x19, // may be identical to 0x17
+		TownSignClinic = 0x1A,
+		TownBuildingRoofPitched = 0x1B,
+		TownBuildingWindow = 0x1C,
+		TownBuildingWindowDouble = 0x1D,
+		TownDoor1 = 0x1E, // weapon shop, coneria
+		TownDoor2 = 0x1F, // weapon shop, pravoka
+		TownSignItem = 0x20,
+		TownSignWeapon = 0x21,
+		TownSignArmor = 0x22,
+		TownSignWhiteMagic = 0x23,
+		TownSignBlackMagic = 0x24,
+		TownSignInn = 0x25,
+		TownDoor3 = 0x26, // weapon shop, elfland
+		TownWaterway = 0x27,
+		TownWaterwayShadow = 0x28,
+		TownWaterwayShadowDiagonal = 0x29,
+		TownHorizonalBridge = 0x2A,
+		TownVerticalBridge = 0x2B,
+		TownBoardwalk = 0x2C, // unused?
+		TownDoor4 = 0x2D, // weapon shop, melmond
+		TownFountain = 0x2E,
+		TownTomb1 = 0x2F, // ordinary tomb
+		TownFence = 0x30,
+		TownWell = 0x31,
+		TownSand = 0x32,
+		TownFlowers = 0x33,
+		TownPalmTrees = 0x34, // unused?
+		TownBoardwalk2 = 0x35, // unused? // may be identical to 0x2C
+		TownDoor5 = 0x36, // weapon shop, crescent lake
+		TownDoorOpen = 0x37,
+		TownStonePath2 = 0x38, // may be identical to 0x10
+		TownGrass2 = 0x39, // may be identical to 0x00
+		TownVerticalBridge2 = 0x3A, // may be identical to 0x2B
+		TownWaterway2 = 0x3B, // may be identical to 0x27
+		TownSand2 = 0x3C, // may be identical to 0x32
+		TownFlowers2 = 0x3D, // may be identical to 0x33
+		TownDoor6 = 0x3E, // weapon shop, gaia
+		TownDoor7 = 0x3F, // weapon shop, empty #1
+		TownDoor8 = 0x40, // weapon shop, empty #2
+		TownDoor9 = 0x41, // weapon shop, empty #3
+		TownDoor10 = 0x42, // armor shop, empty #1
+		TownDoor11 = 0x43, // armor shop, coneria
+		TownDoor12 = 0x44, // armor shop, pravoka
+		TownDoor13 = 0x45, // armor shop, elfland
+		TownDoor14 = 0x46, // armor shop, melmond
+		TownGrassWarp = 0x47,
+		TownSubmarineWarp = 0x48,
+		TownDoor15 = 0x49, // armor shop, crescent lake
+		TownDoor16 = 0x4A, // armor shop, gaia
+		TownDoor17 = 0x4B, // armor shop, empty #2
+		TownDoor18 = 0x4C, // armor shop, empty #3
+		TownDoor19 = 0x4D, // armor shop, empty #4
+		TownDoor20 = 0x4E, // armor shop, empty #5
+		TownDoor21 = 0x4F, // white magic shop, L1 coneria
+		TownDoor22 = 0x50, // white magic shop, L2 pravoka
+		TownDoor23 = 0x51, // white magic shop, L3 elfland
+		TownDoor24 = 0x52, // white magic shop, L5 melmond
+		TownDoor25 = 0x53, // white magic shop, L6 crescent lake
+		TownDoor26 = 0x54, // white magic shop, L4 elfland
+		TownDoor27 = 0x55, // white magic shop, L7 gaia
+		TownDoor28 = 0x56, // white magic shop, L8 gaia
+		TownDoor29 = 0x57, // white magic shop, L7 onrac
+		TownDoor30 = 0x58, // white magic shop, L8 lefein
+		TownDoor31 = 0x59, // black magic shop, L1 coneria
+		TownDoor32 = 0x5A, // black magic shop, L2 pravoka
+		TownDoor33 = 0x5B, // black magic shop, L3 elfland
+		TownDoor34 = 0x5C, // black magic shop, L5 melmond
+		TownDoor35 = 0x5D, // black magic shop, L6 crescent lake
+		TownDoor36 = 0x5E, // black magic shop, L4 elfland
+		TownDoor37 = 0x5F, // black magic shop, L7 gaia
+		TownDoor38 = 0x60, // black magic shop, L8 gaia
+		TownDoor39 = 0x61, // black magic shop, L7 onrac
+		TownDoor40 = 0x62, // black magic shop, L8 lefein
+		TownDoor41 = 0x63, // clinic, coneria
+		TownDoor42 = 0x64, // clinic, elfland
+		TownDoor43 = 0x65, // clinic, crescent lake
+		TownDoor44 = 0x66, // clinic, gaia
+		TownDoor45 = 0x67, // clinic, onrac
+		TownDoor46 = 0x68, // clinic, pravoka
+		TownDoor47 = 0x69, // clinic, unused #1
+		TownDoor48 = 0x6A, // clinic, unused #2
+		TownDoor49 = 0x6B, // clinic, unused #3
+		TownDoor50 = 0x6C, // clinic, unused #4
+		TownDoor51 = 0x6D, // inn, coneria
+		TownDoor52 = 0x6E, // inn, pravoka
+		TownDoor53 = 0x6F, // inn, elfland
+		TownDoor54 = 0x70, // inn, melmond
+		TownDoor55 = 0x71, // inn, crescent lake
+		TownDoor56 = 0x72, // inn, gaia
+		TownDoor57 = 0x73, // inn, onrac
+		TownDoor58 = 0x74, // inn, unused #1
+		TownDoor59 = 0x75, // inn, unused #2
+		TownDoor60 = 0x76, // inn, unused #3
+		TownDoor61 = 0x77, // item shop, coneria
+		TownDoor62 = 0x78, // item shop, pravoka
+		TownDoor63 = 0x79, // item shop, elfland
+		TownDoor64 = 0x7A, // item shop, crescent lake
+		TownDoor65 = 0x7B, // item shop, gaia
+		TownDoor66 = 0x7C, // item shop, onrac
+		TownDoor67 = 0x7D, // item shop, empty #1
+		TownDoor68 = 0x7E, // item shop, empty #2
+		TownTomb2 = 0x7F, // easter egg tomb
 	}
 
 	public enum WarMECHMode
@@ -449,6 +579,66 @@ namespace FF1Lib
 			maps[(byte)MapId.TitansTunnel][9, 3] = 0x3F; // Block the tunnel
 		}
 
+		public void EnableGaiaShortcut(List<Map> maps)
+		{
+			// Place grass tiles, creating shortcut
+			for (int x = 41; x <= 43; x++)
+			{
+				for (int y = 36; y <= 47; y++)
+				{
+					maps[(byte)MapId.Gaia][y, x] = (byte)Tile.TownGrass;
+				}
+			}
+			for (int y = 44; y <= 47; y++)
+			{
+				maps[(byte)MapId.Gaia][y, 40] = (byte)Tile.TownGrass;
+			}
+
+			// Restore building shadow
+			maps[(byte)MapId.Gaia][39, 41] = (byte)Tile.TownGrassShadow;
+			maps[(byte)MapId.Gaia][40, 41] = (byte)Tile.TownGrassShadowDiagonal;
+
+			// In the spirit of Gaia's original landscaping, add some trees
+			// (Without these it looked like a too perfectly trimmed pathway)
+			for (int y = 41; y <= 44; y++)
+			{
+				maps[(byte)MapId.Gaia][y, 43] = (byte)Tile.TownBushes;
+			}
+			maps[(byte)MapId.Gaia][36, 41] = (byte)Tile.TownTree;
+			maps[(byte)MapId.Gaia][38, 43] = (byte)Tile.TownTree;
+			maps[(byte)MapId.Gaia][45, 43] = (byte)Tile.TownTree;
+			maps[(byte)MapId.Gaia][45, 40] = (byte)Tile.TownBushes;
+			maps[(byte)MapId.Gaia][46, 40] = (byte)Tile.TownTree;
+		}
+
+		public void MoveGaiaItemShop(List<Map> maps, MT19337 rng)
+		{
+			// Top left corner of original Item Shop Location
+			const int yItemShop = 33;
+			const int xItemShop = 10;
+
+			// How much to move it
+			int yDisplacement = 11;
+			int xDisplacement = 33;
+
+			// place a tree in the old Item Shop grid first, it often looks better in the moved location
+			maps[(byte)MapId.Gaia][yItemShop, xItemShop + 4] = (byte)Tile.TownTree;
+
+			// something to put in place of the old item shop
+			var replacementTileOptions = new List<Tile> { Tile.TownWaterway, Tile.TownFlowers, Tile.TownGrass, Tile.TownStonePath, Tile.TownSand, Tile.TownTomb1, Tile.TownTree };
+			Tile replacementTile = replacementTileOptions.PickRandom(rng);
+
+			for (int y = yItemShop; y <= yItemShop + 3; y++)
+			{
+				for (int x = xItemShop; x <= xItemShop + 4; x++)
+				{
+					// lift and shift
+					maps[(byte)MapId.Gaia][y + yDisplacement, x + xDisplacement] = maps[(byte)MapId.Gaia][y, x];
+					maps[(byte)MapId.Gaia][y, x] = (byte)replacementTile;
+				}
+			}
+		}
+
 		public void EnableLefeinShops(List<Map> maps)
 		{
 			var lefein = maps[(byte)MapId.Lefein];
@@ -456,6 +646,12 @@ namespace FF1Lib
 			lefein[0x06, 0x11] = 0x71; // Crescent Lake Inn
 			lefein[0x05, 0x15] = 0x1A; // Clinic Sign
 			lefein[0x06, 0x15] = 0x65; // Crescent Lake Clinic
+		}
+
+		public void EnableToFRExit(List<Map> maps)
+		{
+			// add warp portal to ToFR 1st floor
+			maps[(byte)MapId.TempleOfFiendsRevisited1F][17, 20] = (byte)Tile.PortalWarp;
 		}
 		public List<MapId> HorizontalFlipDungeons(MT19337 rng, List<Map> maps, TeleportShuffle teleporters, OverworldMap overworld)
 		{
@@ -697,6 +893,32 @@ namespace FF1Lib
 			}
 			return tempNPC;
 		}
+
+		public IEnumerable<(MapId, NPC)> FindNpc(ObjectId mapObjId)
+		{
+			var tempNPC = new NPC();
+
+			//not good, but quick
+			foreach (var mid in Enum.GetValues<MapId>())
+			{
+				for (int i = 0; i < MapSpriteCount; i++)
+				{
+					int offset = MapSpriteOffset + ((byte)mid * MapSpriteCount + i) * MapSpriteSize;
+
+					if (Data[offset] == (byte)mapObjId)
+					{
+						tempNPC.Index = i;
+						tempNPC.Coord = (Data[offset + 1] & 0x3F, Data[offset + 2]);
+						tempNPC.InRoom = (Data[offset + 1] & 0x80) > 0;
+						tempNPC.Stationary = (Data[offset + 1] & 0x40) > 0;
+
+						yield return (mid, tempNPC);
+					}
+				}
+			}
+		}
+
+
 		public NPC GetNpc(MapId mapId, int position)
 		{
 			var tempNPC = new NPC();

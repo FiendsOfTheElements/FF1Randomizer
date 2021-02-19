@@ -4,54 +4,61 @@
 @using FF1Lib;
 
 
-<div id="presets" class="tabcontent framed-content clearfix @(noTabLayout ? "no-tab" : "")">
-	<h3>Start a Game</h3>
-	<p>These presets allow you to get into the game and start playing instantly.</p>
+<div id="presets" class="tabcontent framed-content clearfix @(noTabLayout ? "no-tab" : "") @(IsOpen ? "" : "collapsed")">
+	<h3 class="@(IsOpen ? "" : "h3-collapsed")"><a class="@(noTabLayout ? "collapsible-header" : "")" @onclick="(() => IsOpen = (!noTabLayout || !IsOpen))">Start a Game</a></h3>
+	@if (IsOpen)
+	{
+		<p>These presets allow you to get into the game and start playing instantly.</p>
 
-	<h4>Standard Presets</h4>
-	<a class="preset-button styled-button" @onclick="@(() => LoadStandardPreset("default"))">Select</a>
-	<p class="preset-paragraph"><strong>Default:</strong> Good for first-time players as it crafts an easy-to-understand run for those looking to get into randomizers.</p>
+		<h4>Standard Presets</h4>
+		<a class="preset-button styled-button @((selectedPresetId == "Beginner") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Beginner"))">Select</a>
+		<p class="preset-paragraph"><strong>Beginner:</strong> Good for first-time players as it crafts an easy-to-understand run for those looking to get into randomizers.</p>
 
-	<a class="preset-button styled-button" @onclick="@(() => LoadStandardPreset("improved-vanilla"))">Select</a>
-	<p class="preset-paragraph"><strong>Improved Vanilla:</strong> Puts in bug fixes to the original game but maintains the overall basic FF experience.</p>
+		<a class="preset-button styled-button @((selectedPresetId == "Improved_Vanilla") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Improved_Vanilla"))">Select</a>
+		<p class="preset-paragraph"><strong>Improved Vanilla:</strong> Puts in bug fixes to the original game but maintains the overall basic FF experience.</p>
 
-	<a class="preset-button styled-button" @onclick="@(() => LoadStandardPreset("entranceshuffle"))">Select</a>
-	<p class="preset-paragraph"><strong>Floor and Entrance Shuffle:</strong> Mixes things up by shuffling all entrances and floors.</p>
+		<a class="preset-button styled-button @((selectedPresetId == "Entrance_Floor_Shuffle") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Entrance_Floor_Shuffle"))">Select</a>
+		<p class="preset-paragraph"><strong>Floor and Entrance Shuffle:</strong> Mixes things up by shuffling all entrances and floors.</p>
 
-	<a class="preset-button styled-button" @onclick="@(() => LoadStandardPreset("shardhunt"))">Select</a>
-	<p class="preset-paragraph"><strong>Shard Hunt:</strong> Instead of lighting the fours orbs, seek out and collect shards hidden in random treasure chests to remove the Black Orb.</p>
+		<a class="preset-button styled-button @((selectedPresetId == "Shard_Hunt") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Shard_Hunt"))">Select</a>
+		<p class="preset-paragraph"><strong>Shard Hunt:</strong> Instead of lighting the fours orbs, seek out and collect shards hidden in random treasure chests to remove the Black Orb.</p>
 
-	<a class="preset-button styled-button" @onclick="@(() => LoadStandardPreset("chaos-rush"))">Select</a>
-	<p class="preset-paragraph"><strong>Chaos Rush:</strong> Gives you free orbs, removes the requirement for Key and Lute, and tasks you with simply getting to Chaos, and killing them, as fast as possible.</p>
+		<a class="preset-button styled-button @((selectedPresetId == "Chaos_Rush") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Chaos_Rush"))">Select</a>
+		<p class="preset-paragraph"><strong>Chaos Rush:</strong> Gives you free orbs, removes the requirement for Key and Lute, and tasks you with simply getting to Chaos, and killing them, as fast as possible.</p>
 
-	<a class="preset-button styled-button" @onclick="@(() => LoadStandardPreset("freeenterprise"))">Select</a>
-	<p class="preset-paragraph"><strong>Free Enterprise:</strong> Starts with the Airship right away, opening up the whole worldmap to explore.</p>
+		<a class="preset-button styled-button @((selectedPresetId == "Chaos_Rampage") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Chaos_Rampage"))">Select</a>
+		<p class="preset-paragraph"><strong>Chaos Rampage:</strong> Similar to Chaos Rush, but all four fiends need to be defeated.</p>
 
-	<h4>User Presets</h4>
-	<p>
-		@foreach (var preset in localPresets)
-		{
-<span style="white-space:nowrap" @key="preset" class="oneline">
-	<a class="preset-button styled-button" @onclick="@(() => LoadLocalPreset(@preset))">@preset</a>
-	<a class="preset-button styled-button preset-close" @onclick="@(() => DeleteLocalPreset(@preset))">X</a>
-</span>}
-	</p>
+		<a class="preset-button styled-button @((selectedPresetId == "Anti_Double_Bingo") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Anti_Double_Bingo"))">Select</a>
+		<p class="preset-paragraph"><strong>Double-Anti Bingo:</strong> Light and fast flags that, when paired with the FFR Winter DAB Bingo Board (available on the <a href="https://bingosync.com/">Bingosync site</a>) put an emphasis on exploration and strategy to complete your DAB requirements.</p>
 
-	<p>
-		Current:
-		<input type="text" id="presetNameInput" @bind="presetName" />
-	</p>
+		<h4>User Presets</h4>
+		<p>
+			@foreach (var preset in localPresets)
+			{
+				<span style="white-space:nowrap" @key="preset" class="oneline">
+					<a class="preset-button styled-button @((selectedPresetId == @preset) ? "clicked" : "")" @onclick="@(() => LoadLocalPreset(@preset))">@preset</a>
+					<a class="preset-button styled-button preset-close" @onclick="@(() => DeleteLocalPreset(@preset))">X</a>
+				</span>
+			}
+		</p>
 
-	<p>
-		<a class="styled-button" @onclick="@(() => SavePreset(false))">Save Preset</a>
-		<a class="styled-button" @onclick="@(() => SavePreset(true))">Export to JSON</a>
-	</p>
+		<p>
+			Current:
+			<input type="text" id="presetNameInput" @bind="presetName" />
+		</p>
 
-	<p>
-		Load from JSON:
-		<input type="file" id="presetInput" @onchange="OnPresetChanged" />
-	</p>
-	<div class="clear-it"></div>
+		<p>
+			<a class="styled-button" @onclick="@(() => SavePreset(false))">Save Preset</a>
+			<a class="styled-button" @onclick="@(() => SavePreset(true))">Export to JSON</a>
+		</p>
+
+		<p>
+			Load from JSON:
+			<input type="file" id="presetInput" @onchange="OnPresetChanged" />
+		</p>
+		<div class="clear-it"></div>
+	}
 </div>
 
 
@@ -62,8 +69,11 @@
 	[Parameter] public bool loadDefault { get; set; }
 	[Parameter] public string[] localPresets { get; set; } = { };
 	[Parameter] public bool noTabLayout { get; set; }
+	[Parameter] public bool IsOpen { get; set; } = true;
+	[Parameter] public Action<string> SetPresetName { get; set; }
+	[Parameter] public string presetName { get; set; }
 
-	private string presetName = "Untitled";
+	private string selectedPresetId = "";
 
 	protected override async void OnInitialized()
 	{
@@ -90,12 +100,14 @@
 
 	async Task LoadStandardPreset(string name)
 	{
+		selectedPresetId = name;
 		var json = await JSRuntime.InvokeAsync<string>("computePreset", name);
 		LoadFromJson(json);
 	}
 
 	async Task LoadLocalPreset(string name)
 	{
+		selectedPresetId = name;
 		var json = await JSRuntime.InvokeAsync<string>("loadLocalPreset", name);
 		LoadFromJson(json);
 	}
@@ -106,6 +118,7 @@
 		Flags.Flags = preset.Flags;
 		SetStatusMessage.Invoke(preset.Name + " preset successfully loaded.");
 		presetName = preset.Name;
+		SetPresetName(presetName);
 		StateHasChanged();
 	}
 
@@ -124,6 +137,7 @@
 
 		Flags.Preset preset = new Flags.Preset();
 		preset.Name = presetName;
+		SetPresetName(presetName);
 		preset.Flags = Flags.Flags;
 
 		var json = System.Text.Json.JsonSerializer.Serialize(preset, options);
@@ -156,6 +170,7 @@
 			var preset = System.Text.Json.JsonSerializer.Deserialize<Flags.Preset>(json);
 			Flags.Flags = preset.Flags;
 			presetName = preset.Name;
+			SetPresetName(presetName);
 			SetStatusMessage.Invoke($"{preset.Name} preset successfully loaded from json file.");
 		}
 		catch (Exception ex)

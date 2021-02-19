@@ -28,7 +28,7 @@ namespace FF1Lib
 
 		public const int GoldItemOffset = 108; // 108 items before gold chests
 		public const int GoldItemCount = 68;
-		public static readonly List<int> UnusedGoldItems = new List<int> { 110, 111, 112, 113, 114, 116, 120, 121, 122, 124, 125, 127, 132, 158, 165, 166, 167, 168, 170, 171, 172 };
+		public static List<int> UnusedGoldItems = new List<int> { 110, 111, 112, 113, 114, 116, 120, 121, 122, 124, 125, 127, 132, 158, 165, 166, 167, 168, 170, 171, 172 };
 
 		public void PutInBank(int bank, int address, Blob data)
 		{
@@ -212,88 +212,103 @@ namespace FF1Lib
 				flippedMaps = HorizontalFlipDungeons(rng, maps, teleporters, overworldMap);
 			}
 
+			if (flags.DeepDungeon)
+			{
+				DeepDungeon(rng, overworldMap, maps, flags);
+				UnusedGoldItems = new List<int> { };
+			}
+
 			if ((bool)flags.RandomizeFormationEnemizer)
 			{
 				DoEnemizer(rng, (bool)flags.RandomizeEnemizer, (bool)flags.RandomizeFormationEnemizer, flags.EnemizerDontMakeNewScripts);
 			}
-			
+
 			if (preferences.ModernBattlefield)
 			{
 				EnableModernBattlefield();
 			}
-			
+
 			if ((bool)flags.TitansTrove)
 			{
 				EnableTitansTrove(maps);
 			}
-			
+
 			if ((bool)flags.LefeinShops)
 			{
 				EnableLefeinShops(maps);
 			}
-			
+
+			if ((bool)flags.GaiaShortcut)
+			{
+				EnableGaiaShortcut(maps);
+				if ((bool)flags.MoveGaiaItemShop)
+				{
+					MoveGaiaItemShop(maps, rng);
+				}
+			}
+
 			// This has to be done before we shuffle spell levels.
 			if (flags.SpellBugs)
 			{
 				FixSpellBugs();
 			}
-			
+
 			//must be done before spells get shuffled around otherwise we'd be changing a spell that isnt lock
 			if (flags.LockMode != LockHitMode.Vanilla)
 			{
 				ChangeLockMode(flags.LockMode);
 			}
-			
+
 			if (flags.EnemySpellsTargetingAllies)
 			{
 				FixEnemyAOESpells();
 			}
-			
+
 			if (flags.AllSpellLevelsForKnightNinja)
 			{
 				KnightNinjaChargesForAllLevels();
 			}
-			
+
 			if (flags.BuffHealingSpells)
 			{
 				BuffHealingSpells();
 			}
-			
+
 			UpdateMagicAutohitThreshold(rng, flags.MagicAutohitThreshold);
-			
+
 			if ((bool)flags.GenerateNewSpellbook)
 			{
 				CraftNewSpellbook(rng, (bool)flags.SpellcrafterMixSpells, flags.LockMode, (bool)flags.MagicLevels, (bool)flags.SpellcrafterRetainPermissions);
 			}
-			
+
 			if ((bool)flags.MagisizeWeapons)
 			{
 				MagisizeWeapons(rng, (bool)flags.MagisizeWeaponsBalanced);
 			}
-			
+
 			if ((bool)flags.ItemMagic)
 			{
 				ShuffleItemMagic(rng, (bool)flags.BalancedItemMagicShuffle);
 			}
-			
+
 			if ((bool)flags.GuaranteedRuseItem)
 			{
 				CraftRuseItem();
 			}
-			
+
 			if ((bool)flags.ShortToFR)
 			{
-				ShortenToFR(maps, (bool)flags.PreserveFiendRefights, (bool)flags.PreserveAllFiendRefights, rng);
+				ShortenToFR(maps, (bool)flags.PreserveFiendRefights, (bool)flags.PreserveAllFiendRefights, (bool)flags.ExitToFR, rng);
 			}
-			
+
 			if (((bool)flags.Treasures) && flags.ShardHunt && !flags.FreeOrbs)
 			{
 				EnableShardHunt(rng, talkroutines, flags.ShardCount);
 			}
-			
-			if ((bool)flags.TransformFinalFormation)
+
+			if (flags.TransformFinalFormation != FinalFormation.None && !flags.SpookyFlag)
 			{
-				TransformFinalFormation((FinalFormation)rng.Between(0, Enum.GetValues(typeof(FinalFormation)).Length - 1), flags.EvadeCap);
+				TransformFinalFormation(flags.TransformFinalFormation, flags.EvadeCap, rng);
 			}
 
 			if ((bool)flags.EarlyOrdeals)
@@ -417,14 +432,13 @@ namespace FF1Lib
 								excludeItemsFromRandomShops.Add(Item.PowerRod);
 						}
 
-						if((bool)flags.NoMasamune)
+						if ((bool)flags.NoMasamune)
 						{
 							excludeItemsFromRandomShops.Add(Item.Masamune);
 						}
 
-						shopItemLocation = ShuffleShops(rng, (bool)flags.ImmediatePureAndSoftRequired, ((bool)flags.RandomWares), excludeItemsFromRandomShops, flags.WorldWealth);
-						incentivesData = new IncentiveData(rng, flags, overworldMap, shopItemLocation, checker);
-					}
+						shopItemLocation = ShuffleShops(rng, (bool)flags.ImmediatePureAndSoftRequired, ((bool)flags.RandomWares), excludeItemsFromRandomShops, flags.WorldWealth, overworldMap.ConeriaTownEntranceItemShopIndex);
+						incentivesData = new IncentiveData(rng, flags, overworldMap, shopItemLocation, checker);					}
 
 					if ((bool)flags.Treasures)
 					{
@@ -449,9 +463,13 @@ namespace FF1Lib
 
 			npcdata.UpdateItemPlacement(generatedPlacement);
 
+			if ((bool)flags.AlternateFiends && !flags.SpookyFlag)
+			{
+				AlternativeFiends(rng);
+			}
 			if ((bool)flags.MagicShopLocs)
 			{
-				ShuffleMagicLocations(rng);
+				ShuffleMagicLocations(rng, (bool)flags.MagicShopLocationPairs);
 			}
 
 			if (((bool)flags.MagicShops))
@@ -466,6 +484,9 @@ namespace FF1Lib
 			
 			new StartingInventory(rng, flags, this).SetStartingInventory();
 
+			new ShopKiller(rng, flags, maps, this).KillShops();
+
+			new LegendaryShops(rng, flags, maps, this).PlaceShops();
 			/*
 			if (flags.WeaponPermissions)
 			{
@@ -496,7 +517,7 @@ namespace FF1Lib
 
 			if (((bool)flags.EnemyScripts))
 			{
-				ShuffleEnemyScripts(rng, (bool)flags.AllowUnsafePirates, (bool)!flags.BossScriptsOnly, ((bool)flags.EnemySkillsSpellsTiered || (bool)flags.ScaryImps), (bool)flags.ScaryImps);
+				ShuffleEnemyScripts(rng, (bool)flags.AllowUnsafePirates, (bool)!flags.BossScriptsOnly, (bool)!flags.NoBossSkillScriptShuffle, ((bool)flags.EnemySkillsSpellsTiered || (bool)flags.ScaryImps), (bool)flags.ScaryImps);
 			}
 
 			if (((bool)flags.EnemySkillsSpells))
@@ -504,14 +525,14 @@ namespace FF1Lib
 				if ((bool)flags.EnemySkillsSpellsTiered && (bool)!flags.BossSkillsOnly)
 				{
 					GenerateBalancedEnemyScripts(rng, (bool)flags.SwolePirates);
-					ShuffleEnemySkillsSpells(rng, false);
+					ShuffleEnemySkillsSpells(rng, false, (bool)!flags.NoBossSkillScriptShuffle);
 				}
 				else
 				{
-					ShuffleEnemySkillsSpells(rng, (bool)!flags.BossSkillsOnly);
+					ShuffleEnemySkillsSpells(rng, (bool)!flags.BossSkillsOnly, (bool)!flags.NoBossSkillScriptShuffle);
 				}
 			}
-			
+
 			if (((bool)flags.EnemyStatusAttacks))
 			{
 				if (((bool)flags.RandomStatusAttacks))
@@ -525,13 +546,13 @@ namespace FF1Lib
 			}
 
 			if (flags.Runnability == Runnability.Random)
-				flags.Runnability = (Runnability)Rng.Between(rng,0,3);
+				flags.Runnability = (Runnability)Rng.Between(rng, 0, 3);
 
-			if(flags.Runnability == Runnability.AllRunnable)
+			if (flags.Runnability == Runnability.AllRunnable)
 				CompletelyRunnable();
-			else if(flags.Runnability == Runnability.AllUnrunnable)
+			else if (flags.Runnability == Runnability.AllUnrunnable)
 				CompletelyUnrunnable();
-			else if(flags.Runnability == Runnability.Shuffle)
+			else if (flags.Runnability == Runnability.Shuffle)
 				ShuffleUnrunnable(rng);
 
 			// Always on to supply the correct changes for WaitWhenUnrunnable
@@ -613,11 +634,7 @@ namespace FF1Lib
 			{
 				EnableBuyQuantity();
 			}
-			else if (flags.BuyTenOld)
-			{
-				EnableBuyTen();
-			}
-
+			
 			if (flags.WaitWhenUnrunnable)
 			{
 				ChangeUnrunnableRunToWait();
@@ -732,7 +749,19 @@ namespace FF1Lib
 			var itemText = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
 			itemText[(int)Item.Ribbon] = itemText[(int)Item.Ribbon].Remove(7);
 
-			if ((bool)flags.HintsVillage || (bool)flags.HintsDungeon)
+			if (flags.Etherizer && !flags.HouseMPRestoration && !flags.HousesFillHp)
+			{
+				Etherizer();
+				itemText[(int)Item.Tent] = "ETHR@p";
+				itemText[(int)Item.Cabin] = "DRY@p ";
+				itemText[(int)Item.House] = "XETH@p";
+			}
+
+			if (flags.ExtensiveHints_Enable)
+			{
+				new ExtensiveHints(rng, npcdata, flags, overworldMap, this).Generate();
+			}
+			else if ((bool)flags.HintsVillage || (bool)flags.HintsDungeon)
 			{
 				if ((bool)flags.HintsDungeon)
 					SetDungeonNPC(flippedMaps, rng);
@@ -790,6 +819,10 @@ namespace FF1Lib
 				EnableCanalBridge();
 			}
 
+			if (flags.NonesGainXP)
+			{
+				NonesGainXP();
+			}
 			if (flags.NoDanMode)
 			{
 				NoDanMode();
@@ -817,7 +850,7 @@ namespace FF1Lib
 				CannotSaveAtInns();
 			}
 
-			if (flags.PacifistMode)
+			if (flags.PacifistMode && !flags.SpookyFlag)
 			{
 				PacifistEnd(talkroutines, npcdata, (bool)flags.EnemyTrapTiles || flags.EnemizerEnabled);
 			}
@@ -899,35 +932,6 @@ namespace FF1Lib
 
 			return w.Elapsed.TotalMilliseconds.ToString();
 		}
-
-		/*
-		private void ValidateChecker(OverworldMap overworldMap, List<Map> maps, NPCdata npcdata, Flags flags, MT19337 rng, ItemShopSlot shopItemLocation, TeleportShuffle teleporters)
-		{
-			var maxRetries = 8;
-			for (var i = 0; i < maxRetries; i++)
-			{
-				try
-				{		
-					ISanityChecker checker = new SanityCheckerV1();
-					SanityCheckerV2 checker2 = new SanityCheckerV2(maps, overworldMap, npcdata, this, shopItemLocation);
-
-					IncentiveData incentivesData = new IncentiveData(rng, flags, overworldMap, shopItemLocation, checker);
-
-					if ((bool)flags.Treasures)
-					{
-						generatedPlacement = ShuffleTreasures(rng, flags, incentivesData, shopItemLocation, overworldMap, teleporters, checker, checker2);
-					}
-					break;
-				}
-				catch (InsaneException e)
-				{
-					Console.WriteLine(e.Message);
-					if (maxRetries > (i + 1)) continue;
-					throw new InvalidOperationException(e.Message);
-				}
-			}
-		}
-		*/
 
 		private void EnableNPCSwatter(NPCdata npcdata)
 		{

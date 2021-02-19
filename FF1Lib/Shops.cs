@@ -32,7 +32,7 @@ namespace FF1Lib
 			Item = 60
 		}
 
-		public ItemShopSlot ShuffleShops(MT19337 rng, bool earlyAilments, bool randomizeWeaponsAndArmor, IEnumerable<Item> excludeItemsFromRandomShops, WorldWealthMode wealth)
+		public ItemShopSlot ShuffleShops(MT19337 rng, bool earlyAilments, bool randomizeWeaponsAndArmor, IEnumerable<Item> excludeItemsFromRandomShops, WorldWealthMode wealth, int coneriaEntranceShopIndex)
 		{
 			var pointers = Get(ShopPointerOffset, ShopPointerCount * ShopPointerSize).ToUShorts();
 
@@ -44,7 +44,7 @@ namespace FF1Lib
 			do
 			{
 				result = ShuffleShopType(ShopType.Item, pointers, rng);
-			} while (earlyAilments && !AilmentsCovered(pointers));
+			} while (earlyAilments && !AilmentsCovered(pointers, coneriaEntranceShopIndex));
             if (result == null)
                 throw new InvalidOperationException("Shop Location for Bottle was not set");
 
@@ -64,12 +64,11 @@ namespace FF1Lib
 			Put(ShopPointerOffset, Blob.FromUShorts(pointers));
 		}
 
-		private void ShuffleMagicLocations(MT19337 rng)
+		private void ShuffleMagicLocations(MT19337 rng, bool keepPairs)
 		{
 			var pointers = Get(ShopPointerOffset, ShopPointerCount * ShopPointerSize).ToUShorts();
 
 			RepackShops(pointers);
-			var WhiteShops = GetShops(ShopType.White, pointers);
 
 			List<ushort> WhitePointers = new List<ushort>(9);
 			List<ushort> BlackPointers = new List<ushort>(9);
@@ -82,22 +81,34 @@ namespace FF1Lib
 			WhitePointers.Shuffle(rng);
 			BlackPointers.Shuffle(rng);
 
+			// calc offset for White and Black Magic Shops of the same town/level for pairing
+			int whiteToBlackOffset = pointers[(int)ShopType.Black] - pointers[(int)ShopType.White];
+
 			for (int i = 0; i < 9; i++)
 			{
 				pointers[(int)ShopType.White + i + 1] = WhitePointers[i];
-				pointers[(int)ShopType.Black + i + 1] = BlackPointers[i];
+				if (keepPairs)
+				{
+					// Black Magic Shop Locations are calculated from WhitePointers shuffle
+					pointers[(int)ShopType.Black + i + 1] = (ushort)(WhitePointers[i] + whiteToBlackOffset);
+				}
+				else
+				{
+					// use BlackPointers shuffle
+					pointers[(int)ShopType.Black + i + 1] = BlackPointers[i];
+				}
 			}
 
 			Put(ShopPointerOffset, Blob.FromUShorts(pointers));
 		}
 
-		private bool AilmentsCovered(ushort[] pointers)
+		private bool AilmentsCovered(ushort[] pointers, int coneriaEntraceShopIndex)
 		{
 			var shops = GetShops(ShopType.Item, pointers);
 
 			const byte Pure = 0x1A;
 			const byte Soft = 0x1B;
-			return shops[0].Contains(Pure) && shops[0].Contains(Soft);
+			return shops[coneriaEntraceShopIndex].Contains(Pure) && shops[coneriaEntraceShopIndex].Contains(Soft);
 		}
 
 		private void RepackShops(ushort[] pointers)

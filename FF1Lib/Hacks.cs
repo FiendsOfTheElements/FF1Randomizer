@@ -111,8 +111,6 @@ namespace FF1Lib
 			const int lut_PtyGenBuf = 0x784AA;       // offset for party generation buffer LUT
 			const int lut_ClassPreferences = 0x78114;  // classes LUT
 
-			var i = slotNumber - 1;
-
 			if (forced) // if forced
 			{
 				FF1Class forcedclass;
@@ -129,18 +127,25 @@ namespace FF1Lib
 				options.Add(forcedclass);
 			}
 
-			// don't make any changes if there's nothing to do
-			if (!options.Any()) return;
+			// Just update allowed bitmasks for default classes if no selection, then exit
+			if (!options.Any())
+			{
+				foreach (FF1Class option in DefaultChoices)
+				{
+					Data[lut_ClassPreferences + (int)option + 1] |= AllowedSlotBitmasks[(slotNumber - 1)];
+				}
+				return;
+			}
 
 			//byte allowedFlags = 0b0000_0000;
 			foreach (FF1Class option in options)
 			{
-				Data[lut_ClassPreferences + (((int)option == 12) ? 0 : (int)option + 1)] |= AllowedSlotBitmasks[i];
+				Data[lut_ClassPreferences + (((int)option == 12) ? 0 : (int)option + 1)] |= AllowedSlotBitmasks[(slotNumber - 1)];
 			}
 
 			// set default member
 			var defaultclass = (forced || !DefaultChoices.SequenceEqual(options)) ? (int)options.PickRandom(rng) : slotNumber - 1;
-			Data[lut_PtyGenBuf + i * 0x10] = defaultclass == 12 ? (byte)0xFF : (byte)defaultclass;
+			Data[lut_PtyGenBuf + (slotNumber - 1) * 0x10] = defaultclass == 12 ? (byte)0xFF : (byte)defaultclass;
 
 			options.Clear();
 		}
@@ -253,53 +258,6 @@ namespace FF1Lib
 
 			// To allow all promoted classes
 			EnableTwelveClasses();
-		}
-		// Deprecated, delete if there's no revolt for it to come back 2020-12-17
-		public void LinearMPGrowth()
-		{
-			// Change MP growth to be linear (every 3 levels) as a fix for random promotion 
-			var levelUpStats = Get(NewLevelUpDataOffset, 588).Chunk(49 * 2);
-			var rmArray = Enumerable.Repeat((byte)0x00, 49).ToList();
-			var wbmArray = Enumerable.Repeat((byte)0x00, 49).ToList();
-			var rmCount = new List<int> { 2, 2, 2, 2, 2, 2, 2, 2 };
-			var wbmCount = new List<int> { 2, 2, 2, 2, 2, 2, 2, 2 };
-			var rmMinLevel = new List<int> { 2, 2, 6, 10, 15, 20, 25, 31 };
-			var wbmMinLevel = new List<int> { 2, 2, 5, 8, 12, 16, 20, 25 };
-			var bitArray = new List<byte> { 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80 };
-
-			for (int i = 0; i < 49; i++)
-			{
-				for (int j = 0; j < 8; j++)
-				{
-					if (rmMinLevel[j] <= i + 2)
-						rmCount[j]++;
-
-					if (rmCount[j] >= 3)
-					{
-						rmArray[i] |= bitArray[j];
-						rmCount[j] = 0;
-					}
-
-					if (wbmMinLevel[j] <= i + 2)
-						wbmCount[j]++;
-
-					if (wbmCount[j] >= 3)
-					{
-						wbmArray[i] |= bitArray[j];
-						wbmCount[j] = 0;
-					}
-				}
-			}
-
-			for (int i = 0; i < 49; i++)
-			{
-				levelUpStats[3][i * 2 + 1] = rmArray[i];
-				levelUpStats[4][i * 2 + 1] = wbmArray[i];
-				levelUpStats[5][i * 2 + 1] = wbmArray[i];
-			}
-
-			// Insert level up data
-			Put(NewLevelUpDataOffset, levelUpStats.SelectMany(x => (byte[])x).ToArray());
 		}
 
 		public void PubReplaceClinic(MT19337 rng, Flags flags)
@@ -803,6 +761,21 @@ namespace FF1Lib
 
 		}
 
+		public void NonesGainXP()
+		{
+			// New routine to see if character can get XP LvlUp_AwardExp
+			PutInBank(0x1B, 0x8710, Blob.FromHex("A000B186C9FFF010A001B1862903F006C903F00218603860AD78688588AD7968858920608820A08A1860"));
+
+			// Have LvlUp_AwardExp reroute to new routine
+			PutInBank(0x1B, 0x8826, Blob.FromHex("201087B00860"));
+
+			// New routine to count nones for DivideRewardBySurvivors
+			PutInBank(0x1B, 0x8D20, Blob.FromHex("A000AD0168C9FFD001C8AD1368C9FFD001C8AD2568C9FFD001C8AD3768C9FFD001C8A20460"));
+
+			// Have DivideRewardBySurvivors reroute to new routine to count nones
+			PutInBank(0x1B, 0x8B43, Blob.FromHex("20208DEA"));
+		}
+
 		public void ShuffleWeaponPermissions(MT19337 rng)
 		{
 			const int WeaponPermissionsOffset = 0x3BF50;
@@ -1067,15 +1040,12 @@ namespace FF1Lib
 			PutInBank(0x1F, 0xDD78, Blob.FromHex("A9002003FEA645BD00B18561A9112003FE20B08E8A60"));
 
 			// Check for trapped monster routine, see 11_8EC0_CheckTrap.asm
-			PutInBank(0x11, 0x8EB0, Blob.FromHex("A561202096B02DA645BD008FF022856AA9C0203D96A56A200096A903CD866BD0062018964C439620E68E201896A2F06020E68E60AA60A911855818A5612093DDA445B90062090499006260"));
+			PutInBank(0x11, 0x8EB0, Blob.FromHex("A561202096B030A645BD008FF025856AA9C0203D96A56A200096A903CD866BD00820189668684C43961820E98E201896A2F06020E98E60AA60A911855818A5612093DDA445B90062090499006260"));
 
 			InsertDialogs(0x110, "Monster-in-a-box!"); // 0xC0
 
 			// Select treasure
-			var chestList = ItemLocations.AllTreasures.Where(x => x.IsUnused == false && !ItemLists.AllQuestItems.Contains(x.Item)).ToList();
-			chestList.Shuffle(rng);
-			chestList.RemoveRange(0, chestList.Count() - 40);
-
+			var chestList = ItemLocations.AllTreasures.ToList();
 			var chestMonsterList = new byte[0x100];
 			var treasureList = Get(lut_TreasureOffset, 0x100);
 
@@ -1083,9 +1053,18 @@ namespace FF1Lib
 			List<byte> encounters;
 			encounters = Enumerable.Range(128, FirstBossEncounterIndex).Select(value => (byte)value).ToList();
 			encounters.Add(0xFF); // IronGOL
-
+			
 			if ((bool)flags.TrappedChests)
 			{
+				for (int i = 1; i < 0x100; i++)
+				{
+					if (treasureList[i] < (int)Item.Tent || treasureList[i] > (int)Item.Gold65000)
+						chestList.Remove(chestList.Where(x => x.Address == lut_TreasureOffset + i).First());
+				}
+
+				chestList.Shuffle(rng);
+				chestList.RemoveRange(0, chestList.Count() - 40);
+
 				foreach (var chest in chestList)
 					chestMonsterList[(chest.Address - lut_TreasureOffset)] = encounters.SpliceRandom(rng);
 			}
@@ -1415,6 +1394,7 @@ namespace FF1Lib
 
 			// Modify DrawComplexString, this sets control code 14-19 to use a new words table in bank 11
 			//  could be used to move some stuff in items name table and make some space
+			//  see 1F_DEBC_DrawComplexString.asm
 			PutInBank(0x1F, 0xDEBC, Blob.FromHex("C910B005A2204C83DEC914B07B")); // Change branching to enable CC14
 			PutInBank(0x1F, 0xDF44, Blob.FromHex("4CCEDF")); // Jump to routine because we're too far, put in unused char weapons CC
 			PutInBank(0x1F, 0xDFCE, Blob.FromHex("A91185572003FE4CA099")); // Routine, put in unused char weapons routine
@@ -1778,8 +1758,8 @@ namespace FF1Lib
 			encountersData.formations[encZombieGhoul].minmax2 = (0, 0);
 			encountersData.formations[encZombieGhoul].unrunnableA = true;
 
-			encountersData.formations[encGhoulGeist].minmax1 = (0, 0);
-			encountersData.formations[encGhoulGeist].minmax2 = (0, 2);
+			encountersData.formations[encGhoulGeist].minmax1 = (0, 2);
+			encountersData.formations[encGhoulGeist].minmax2 = (0, 0);
 			encountersData.formations[encGhoulGeist].minmax3 = (1, 3);
 			encountersData.formations[encGhoulGeist].enemy3 = 0x2B;
 			encountersData.formations[encGhoulGeist].gfxOffset3 = (int)FormationGFX.Sprite2;
@@ -1967,8 +1947,8 @@ namespace FF1Lib
 
 			// New routines to fight and give item
 			var battleUnne = talkroutines.Add(Blob.FromHex("A674F005BD2060F01AE67DA572203D96A575200096A476207F902073922018964C4396A57060"));
-			var battleGiveOnFlag = talkroutines.Add(Blob.FromHex("A474F0052079909027A5738561202096B020A572203D96A575200096A476207F90207392A5611820109F2018964C4396A9F060A57060"));
-			var battleGiveOnItem = talkroutines.Add(Blob.FromHex("A674F006EABD2060F029A5738561202096F022E67DA572203D96A575200096A476207F90207392A5611820109F2018964C4396A57060"));
+			var battleGiveOnFlag = talkroutines.Add(Blob.FromHex("A474F0052079909029A5738561202096B022E67DA572203D96A575200096A476207F90207392A5611820109F2018964C4396A57060"));
+			var battleGiveOnItem = talkroutines.Add(Blob.FromHex("A674F005BD2060F029A5738561202096B022E67DA572203D96A575200096A476207F90207392A5611820109F2018964C4396A57060"));
 			var battleBahamut = talkroutines.Add(Blob.FromHex("AD2D60D003A57160E67DA572203D96A575200096A476207F9020739220AE952018964C439660"));
 			talkroutines.ReplaceChunk(newTalkRoutines.Talk_Bikke, Blob.FromHex("A57260A57060"), Blob.FromHex("207392A57260"));
 
