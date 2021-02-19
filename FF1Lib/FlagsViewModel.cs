@@ -596,6 +596,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MagicShopLocs"));
 			}
 		}
+		public bool? MagicShopLocationPairs
+		{
+			get => Flags.MagicShopLocationPairs;
+			set
+			{
+				Flags.MagicShopLocationPairs = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MagicShopLocationPairs"));
+			}
+		}
 		public bool? MagicLevels
 		{
 			get => Flags.MagicLevels;
@@ -3380,6 +3389,24 @@ namespace FF1Lib
 			{
 				Flags.RandomizeClassMaxMalus = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomizeClassMaxMalus"));
+			}
+		}
+		public bool? AlternateFiends
+		{
+			get => Flags.AlternateFiends;
+			set
+			{
+				Flags.AlternateFiends = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AlternateFiends"));
+			}
+		}
+		public bool? NoBossSkillScriptShuffle
+		{
+			get => Flags.NoBossSkillScriptShuffle;
+			set
+			{
+				Flags.NoBossSkillScriptShuffle = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NoBossSkillScriptShuffle"));
 			}
 		}
 		public bool? SwolePirates

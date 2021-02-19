@@ -87,6 +87,7 @@ namespace FF1Lib
 
 		public bool? MagicShops { get; set; } = false;
 		public bool? MagicShopLocs { get; set; } = false;
+		public bool? MagicShopLocationPairs { get; set; } = false;
 		public bool? MagicLevels { get; set; } = false;
 		public bool? MagicPermissions { get; set; } = false;
 		public bool? ItemMagic { get; set; } = false;
@@ -423,6 +424,8 @@ namespace FF1Lib
 		public bool? RandomizeClass { get; set; } = false;
 		public bool? RandomizeClassNoCasting { get; set; } = false;
 		public bool? RandomizeClassChaos { get; set; } = false;
+		public bool? AlternateFiends { get; set; } = false;
+		public bool? NoBossSkillScriptShuffle { get; set; } = false;
 
 		public bool? LegendaryWeaponShop { get; set; } = false;
 		public bool? LegendaryArmorShop { get; set; } = false;
