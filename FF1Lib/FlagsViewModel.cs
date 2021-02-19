@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text;
+using static FF1Lib.FF1Rom;
 
 namespace FF1Lib
 {
@@ -530,7 +531,7 @@ namespace FF1Lib
 
 		public bool ExtraShardsEnabled => ShardHunt && !FreeOrbs;
 
-		public bool? TransformFinalFormation
+		public FinalFormation TransformFinalFormation
 		{
 			get => Flags.TransformFinalFormation;
 			set
@@ -3452,7 +3453,7 @@ namespace FF1Lib
 			set
 			{
 				Flags.ShopKillMode_Weapons = value;
-        RaisePropertyChanged();
+				RaisePropertyChanged();
 			}
 		}
 
@@ -3462,17 +3463,17 @@ namespace FF1Lib
 			set
 			{
 				Flags.ShopKillMode_Armor = value;
-        RaisePropertyChanged();
+				RaisePropertyChanged();
 			}
 		}
-    
-    public ShopKillMode ShopKillMode_Item
+
+		public ShopKillMode ShopKillMode_Item
 		{
 			get => Flags.ShopKillMode_Item;
 			set
 			{
 				Flags.ShopKillMode_Item = value;
-        RaisePropertyChanged();
+				RaisePropertyChanged();
 			}
 		}
 
@@ -3482,9 +3483,9 @@ namespace FF1Lib
 			set
 			{
 				Flags.ShopKillMode_Black = value;
-        RaisePropertyChanged();
+				RaisePropertyChanged();
 			}
-		}      
+		}
 
 		public ShopKillMode ShopKillMode_White
 		{
@@ -3492,9 +3493,9 @@ namespace FF1Lib
 			set
 			{
 				Flags.ShopKillMode_White = value;
-        RaisePropertyChanged();
+				RaisePropertyChanged();
 			}
-		}   
+		}
 
 		public ShopKillFactor ShopKillFactor_Weapons
 		{
@@ -3526,7 +3527,7 @@ namespace FF1Lib
 			}
 		}
 
-    public ShopKillFactor ShopKillFactor_Black
+		public ShopKillFactor ShopKillFactor_Black
 		{
 			get => Flags.ShopKillFactor_Black;
 			set
@@ -3545,7 +3546,7 @@ namespace FF1Lib
 				RaisePropertyChanged();
 			}
 		}
-    
+
 		public bool ShopKillExcludeConeria_Weapons
 		{
 			get => Flags.ShopKillExcludeConeria_Weapons;
@@ -3594,8 +3595,8 @@ namespace FF1Lib
 				Flags.ShopKillExcludeConeria_White = value;
 				RaisePropertyChanged();
 			}
-		}	
-    
+		}
+
 		public bool ExtensiveHints_Enable
 		{
 			get => Flags.ExtensiveHints_Enable;
@@ -3626,7 +3627,7 @@ namespace FF1Lib
 			}
 		}
 
-    public HintPlacementStrategy ExtensiveHints_IncentiveItemNamePlacement
+		public HintPlacementStrategy ExtensiveHints_IncentiveItemNamePlacement
 		{
 			get => Flags.ExtensiveHints_IncentiveItemNamePlacement;
 			set
@@ -3725,8 +3726,8 @@ namespace FF1Lib
 				RaisePropertyChanged();
 			}
 		}
-    
-    public bool? LegendaryWeaponShop
+
+		public bool? LegendaryWeaponShop
 		{
 			get => Flags.LegendaryWeaponShop;
 			set
@@ -3775,8 +3776,8 @@ namespace FF1Lib
 				RaisePropertyChanged();
 			}
 		}
-    
-   	public bool NonesGainXP
+
+		public bool NonesGainXP
 		{
 			get => Flags.NonesGainXP;
 			set
@@ -3785,8 +3786,8 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NonesGainXP"));
 			}
 		}
-    
-    public bool Etherizer
+
+		public bool Etherizer
 		{
 			get => Flags.Etherizer;
 			set

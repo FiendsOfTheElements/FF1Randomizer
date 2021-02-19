@@ -8,6 +8,7 @@ using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Schema;
 using RomUtilities;
+using static FF1Lib.FF1Rom;
 
 namespace FF1Lib
 {
@@ -32,7 +33,7 @@ namespace FF1Lib
 		public bool ShopKillExcludeConeria_Item { get; set; } = false;
 		public bool ShopKillExcludeConeria_Black { get; set; } = false;
 		public bool ShopKillExcludeConeria_White { get; set; } = false;
-    
+
 		#endregion
 
 		#region ExtensiveHints
@@ -63,8 +64,8 @@ namespace FF1Lib
 
 		public HintPlacementStrategy ExtensiveHints_EquipmentNamePlacement { get; set; } = HintPlacementStrategy.ConeriaToCrescent;
 
-    #endregion
-		
+		#endregion
+
 		public bool Spoilers { get; set; } = false;
 		public bool TournamentSafe { get; set; } = false;
 		public bool BlindSeed { get; set; } = false;
@@ -78,7 +79,7 @@ namespace FF1Lib
 
 		public bool ShardHunt { get; set; } = false;
 		public ShardCount ShardCount { get; set; } = ShardCount.Count16;
-		public bool? TransformFinalFormation { get; set; } = false;
+		public FinalFormation TransformFinalFormation { get; set; } = FinalFormation.None;
 		public bool ChaosRush { get; set; } = false;
 		public bool? ShortToFR { get; set; } = false;
 		public bool? PreserveFiendRefights { get; set; } = false;
@@ -211,7 +212,7 @@ namespace FF1Lib
 		public bool IdentifyTreasures { get; set; } = false;
 		public bool ShopInfo { get; set; } = false;
 		public bool WaitWhenUnrunnable { get; set; } = false;
-    public bool Etherizer { get; set; } = false;
+		public bool Etherizer { get; set; } = false;
 		public bool HouseMPRestoration { get; set; } = false;
 		public bool WeaponStats { get; set; } = false;
 		public bool BBCritRate { get; set; } = false;
@@ -238,7 +239,7 @@ namespace FF1Lib
 		public bool WrapPriceOverflow { get; set; } = false;
 		public bool IncludeMorale { get; set; } = false;
 		public bool NoDanMode { get; set; } = false;
-    public bool NonesGainXP { get; set; } = false;
+		public bool NonesGainXP { get; set; } = false;
 		public bool? NoTail { get; set; } = false;
 		public bool? GuaranteedMasamune { get; set; } = false;
 		public bool? SendMasamuneHome { get; set; } = false;
@@ -431,7 +432,7 @@ namespace FF1Lib
 		public bool? LegendaryBlackShop { get; set; } = false;
 		public bool? LegendaryWhiteShop { get; set; } = false;
 		public bool? LegendaryItemShop { get; set; } = false;
-    
+
 		[IntegerFlag(0, 4)]
 		public int RandomizeClassMaxBonus { get; set; } = 2;
 

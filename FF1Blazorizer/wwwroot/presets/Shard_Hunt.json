@@ -13,7 +13,7 @@
     "RandomLoot": false,
     "ShardHunt": true,
     "ShardCount": 3,
-    "TransformFinalFormation": false,
+    "TransformFinalFormation": 0,
     "ChaosRush": false,
     "ShortToFR": false,
     "PreserveFiendRefights": false,
