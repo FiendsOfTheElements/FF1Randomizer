@@ -40,6 +40,19 @@ clear: right;
 
 /* Main Content */
 
+#orbs{
+width: 70px;
+height: 70px;
+margin-top: 4px;
+padding: 10px 10px 10px 10px;
+text-align: center;
+float: left;
+box-sizing: content-box;
+position: absolute;
+top: 53px;
+z-index: 1; /* force the orbs to appear above the nav bar to allow for events to reach the orbs */
+}
+
 #left-column{
 float: left;
 width: 280px;
@@ -193,15 +206,6 @@ margin: auto;
 height: 120px;
 }
 
-#orbs{
-width: 70px;
-height: 70px;
-margin-top: 4px;
-padding: 10px 10px 10px 10px;
-text-align: center;
-float: left;
-box-sizing: content-box;
-}
 
 .orb-image{
 display: inline-block;
@@ -211,7 +215,7 @@ height: 32px;
 
 
 #site-nav{
-margin: 0 80px;
+margin: 0 100px;
 text-align: center;
 padding-top: 15px;
 }

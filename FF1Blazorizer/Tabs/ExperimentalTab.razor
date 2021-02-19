@@ -1,4 +1,4 @@
-﻿@using FF1Lib;
+@using FF1Lib;
 
 
 <div id="Beta" class="tabcontent framed-content clearfix @(noTabLayout ? "no-tab" : "") @(IsOpen ? "" : "collapsed")">
@@ -18,6 +18,9 @@
 			<div class="checkbox-cell"></div>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="etherizerCheckBox" IsEnabled="@(Flags.HouseMPRestoration != true && Flags.HousesFillHP != true)" @bind-Value="Flags.Etherizer">Turn shelters into ethers</CheckBox>
 			<div class="checkbox-cell"></div>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="alternateFiendsCheckBox" IsEnabled="@(!Flags.SpookyFlag)" @bind-Value="Flags.AlternateFiends">Alternate Fiends</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="noBossSkillScriptShuffleCheckBox" IsEnabled="@(Flags.EnemyScripts != false || Flags.EnemySkillsSpells != false)" @bind-Value="Flags.NoBossSkillScriptShuffle">Don't Shuffle Bosses' Scripts, Skills & Spells</TriStateCheckBox>
+			<div class="checkbox-cell"></div>
 		</div>
 		<div class="col2">
 			<h4>Legendary Shops</h4>
@@ -27,6 +30,12 @@
 			<TriStateCheckBox DisableTooltip Id="legendaryBlackShopCheckBox" @bind-Value="Flags.LegendaryBlackShop">Legendary Black Shop</TriStateCheckBox>
 			<TriStateCheckBox DisableTooltip Id="legendaryWhiteShopCheckBox" @bind-Value="Flags.LegendaryWhiteShop">Legendary White Shop</TriStateCheckBox>
 			<TriStateCheckBox DisableTooltip Id="legendaryItemShopCheckBox" @bind-Value="Flags.LegendaryItemShop">Legendary Item Shop</TriStateCheckBox>
+			<div class="checkbox-cell"></div>
+			<h4>Deep Dungeon</h4>
+			<p>Deep Dungeon should be considered extremely experimental at this time. The rest of the flags and tooltips are not properly adjusted to play nicely with it yet.</p>
+			<p>While it should work with many flags, such as scaling and Blursed items, map edits and Floor shuffle will either fail to generate a ROM, or create an unpleasant experience.</p>
+			<p>Please try it out and provide feedback!</p>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="deepdungeon" @bind-Value="Flags.DeepDungeon">Deep Dungeon</CheckBox>
 		</div>
 		<div class="col1 full">
 			<h4>Shop Reduction</h4>
@@ -104,10 +113,9 @@
 	}
 </div>
 
-
-			@code {
-				[Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }
-				[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
-				[Parameter] public bool noTabLayout { get; set; }
-				[Parameter] public bool IsOpen { get; set; } = true;
-			}
+@code {
+	[Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }
+	[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
+	[Parameter] public bool noTabLayout { get; set; }
+	[Parameter] public bool IsOpen { get; set; } = true;
+}
