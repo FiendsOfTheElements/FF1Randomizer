@@ -137,7 +137,12 @@
 		"screenshot": "magicShopLocsCheckBox.gif",
 		"description": "Shuffles the locations of magic shops except Coneria (Level 1), so that any town's magic shop could show up anywhere else, such as Pravoka's magic shop can be in Melmond, etc.\n Note: magic shops are not coupled together, so if you use this flag you could end up with a Level 3 Black Magic Shop and a Level 6 White Magic Shop at Pravoka, or four different levels of shops at Elfland."
 	},
-
+	{
+		"Id": "magicShopLocationPairsCheckBox",
+		"title": "Paired Shuffle",
+		"screenshot": "magicShopLocationPairsCheckBox.gif",
+		"description": "When shuffling the locations of magic shops, they are moved in pairs so spells of a certain level are found together."
+	},
 	{
 		"Id": "startingItemsDropDown",
 		"title": "Starting Inventory",
@@ -871,7 +876,12 @@
 		"screenshot": "gaiaShortcutMoveItemShop.png",
 		"description": "Moves the Item Shop next to the Gaia Shortcut.\nThis flag is ignored if Add Gaia Shortcut is disabled."
 	},
-
+	{
+		"Id": "exitToFRCheckBox",
+		"title": "Add ToFR Exit",
+		"screenshot": "exitToFR.gif",
+		"description": "Adds a Warp Portal in ToFR that lets you exit the dungeon, without needing an EXIT or WARP spell.\nThis flag also works with Shorten ToFR."
+	},
 	{
 		"Id": "procGenWaterfall",
 		"title": "Generated Waterfall Cave",
@@ -1396,7 +1406,18 @@
 		"screenshot": "etherizerCheckBox.png",
 		"description": "Tents, Cabins, and Houses become ethers. Instead of restoring HP and saving on the overworld, they resore MP and can be used anywhere.\nEthers (ETHR) restore a charge for L1-L2. Dry Ethers (DRY) restore a charge for L1-L4. X Ethers (XETH) restore a charge for L1-L8.\nIncompatible with the House bug fix flags."
 	},
-
+	{
+		"Id": "alternateFiendsCheckBox",
+		"title": "Alternate Fiends",
+		"screenshot": "AlternateFiends.png",
+		"description": "Replace all four Fiends with new Fiends with their own weaknesses and skills/spells lists."
+	},
+	{
+		"Id": "noBossSkillScriptShuffleCheckBox",
+		"title": "Don't Shuffle Bosses' Scripts, Skills & Spells",
+		"screenshot": "NoBossScriptSkillShuffle.png",
+		"description": "When shuffling ennemies' scripts or spells/skills, exclude the four Fiends, WarMech and Chaos."
+	},
 	{
 		"Id": "legendaryShopsGroup",
 		"title": "Legendary Shops",
@@ -1423,3 +1444,4 @@
 		"description": "Replace NPCs' dialogues with hints. There a 6 Hint Categories:\nLoose Floor: provides the floor where a loose is located\nLoose Name: provides the name of the loose and the dungeon\nIncentive Name: provides the name of the incentive and the dungeon, npc or town\nEquipment Floor: States on what floors legendery items are\nEquipment Name: Gives the name of the Equipment and the dungeon name\nFloor Hints: Wow: Quest or legendary; Meh: Rare Equipment; Sparkle: more than 5kgold treasure; Dud: none of the above\n\nThe hint categories are placed in the order specified. If there are no valid places left, remaining hints are not placed anymore."
 	}
 ]
+

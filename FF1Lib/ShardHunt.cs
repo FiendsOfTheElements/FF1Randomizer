@@ -69,7 +69,7 @@ namespace FF1Lib
 			Data[0x7EF45] = 0x11; // Skip over orbs and shards when printing the item menu
 		}
 
-		public void ShortenToFR(List<Map> maps, bool includeRefightTiles, bool refightAll, MT19337 rng)
+		public void ShortenToFR(List<Map> maps, bool includeRefightTiles, bool refightAll, bool addExitTile, MT19337 rng)
 		{
 			// Black Orb tile Warp destination change straight to an edit Chaos floor with all the ToFR Chests.
 			Data[0x00D80] = 0x80; // Map edits
@@ -105,6 +105,12 @@ namespace FF1Lib
 				}
 			}
 			maps[(int)MapId.TempleOfFiendsRevisitedChaos].Put((0x0A, 0x00), landingArea.ToArray());
+
+			if (addExitTile)
+			{
+				// add warp portal to alternate map, allowing player to Exit ToFR
+				maps[(byte)MapId.TempleOfFiendsRevisitedChaos][3, 15] = (byte)Tile.PortalWarp;
+			}
 		}
 
 		private static readonly List<string> ShardNames = new List<string>
