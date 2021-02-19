@@ -1308,121 +1308,103 @@ namespace FF1Lib
 			}
 		}
 
-		public bool? RandomIncentiveOrdeals
+		public IncentivePlacementType IceCaveIncentivePlacementType
 		{
-			get => Flags.RandomIncentiveOrdeals;
+			get => Flags.IceCaveIncentivePlacementType;
 			set
 			{
-				Flags.RandomIncentiveOrdeals = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomIncentiveOrdeals"));
+				Flags.IceCaveIncentivePlacementType = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IceCaveIncentivePlacementType"));
 			}
 		}
-		public bool? RandomIncentiveIceCave
+
+		public IncentivePlacementType OrdealsIncentivePlacementType
 		{
-			get => Flags.RandomIncentiveIceCave;
+			get => Flags.OrdealsIncentivePlacementType;
 			set
 			{
-				Flags.RandomIncentiveIceCave = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomIncentiveIceCave"));
+				Flags.OrdealsIncentivePlacementType = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("OrdealsIncentivePlacementType"));
 			}
 		}
-		public bool? RandomIncentiveMarsh
+
+		public IncentivePlacementType MarshIncentivePlacementType
 		{
-			get => Flags.RandomIncentiveMarsh;
+			get => Flags.MarshIncentivePlacementType;
 			set
 			{
-				Flags.RandomIncentiveMarsh = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomIncentiveMarsh"));
+				Flags.MarshIncentivePlacementType = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MarshIncentivePlacementType"));
 			}
 		}
-		public bool? RandomIncentiveTitans
+
+		public IncentivePlacementType TitansIncentivePlacementType
 		{
-			get => Flags.RandomIncentiveTitans;
+			get => Flags.TitansIncentivePlacementType;
 			set
 			{
-				Flags.RandomIncentiveTitans = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomIncentiveTitans"));
+				Flags.TitansIncentivePlacementType = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TitansIncentivePlacementType"));
 			}
 		}
-		public bool? RandomIncentiveEarth
+
+		public IncentivePlacementTypeGated EarthIncentivePlacementType
 		{
-			get => Flags.RandomIncentiveEarth;
+			get => Flags.EarthIncentivePlacementType;
 			set
 			{
-				Flags.RandomIncentiveEarth = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomIncentiveEarth"));
+				Flags.EarthIncentivePlacementType = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EarthIncentivePlacementType"));
 			}
 		}
-		public bool? RandomIncentiveVolcano
+
+		public IncentivePlacementType VolcanoIncentivePlacementType
 		{
-			get => Flags.RandomIncentiveVolcano;
+			get => Flags.VolcanoIncentivePlacementType;
 			set
 			{
-				Flags.RandomIncentiveVolcano = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomIncentiveVolcano"));
+				Flags.VolcanoIncentivePlacementType = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("VolcanoIncentivePlacementType"));
 			}
 		}
-		public bool? RandomIncentiveSeaShrine
+
+		public IncentivePlacementTypeGated SeaShrineIncentivePlacementType
 		{
-			get => Flags.RandomIncentiveSeaShrine;
+			get => Flags.SeaShrineIncentivePlacementType;
 			set
 			{
-				Flags.RandomIncentiveSeaShrine = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomIncentiveSeaShrine"));
+				Flags.SeaShrineIncentivePlacementType = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SeaShrineIncentivePlacementType"));
 			}
 		}
-		public bool? RandomIncentiveSkyPalace
+
+		public IncentivePlacementTypeGated SkyPalaceIncentivePlacementType
 		{
-			get => Flags.RandomIncentiveSkyPalace;
+			get => Flags.SkyPalaceIncentivePlacementType;
 			set
 			{
-				Flags.RandomIncentiveSkyPalace = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomIncentiveSkyPalace"));
+				Flags.SkyPalaceIncentivePlacementType = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SkyPalaceIncentivePlacementType"));
 			}
 		}
-		public bool? RandomIncentiveConeria
+
+		public IncentivePlacementType CorneriaIncentivePlacementType
 		{
-			get => Flags.RandomIncentiveConeria;
+			get => Flags.CorneriaIncentivePlacementType;
 			set
 			{
-				Flags.RandomIncentiveConeria = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomIncentiveConeria"));
+				Flags.CorneriaIncentivePlacementType = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CorneriaIncentivePlacementType"));
 			}
 		}
-		public bool? RandomIncentiveMarshKeyLocked
+
+		public IncentivePlacementType MarshLockedIncentivePlacementType
 		{
-			get => Flags.RandomIncentiveMarshKeyLocked;
+			get => Flags.MarshLockedIncentivePlacementType;
 			set
 			{
-				Flags.RandomIncentiveMarshKeyLocked = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomIncentiveMarshKeyLocked"));
-			}
-		}
-		public bool? IncludeEarth
-		{
-			get => Flags.IncludeEarth;
-			set
-			{
-				Flags.IncludeEarth = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncludeEarth"));
-			}
-		}
-		public bool? IncludeSeaShrine
-		{
-			get => Flags.IncludeSeaShrine;
-			set
-			{
-				Flags.IncludeSeaShrine = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncludeSeaShrine"));
-			}
-		}
-		public bool? IncludeSkyPalace
-		{
-			get => Flags.IncludeSkyPalace;
-			set
-			{
-				Flags.IncludeSkyPalace = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncludeSkyPalace"));
+				Flags.MarshLockedIncentivePlacementType = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MarshLockedIncentivePlacementType"));
 			}
 		}
 

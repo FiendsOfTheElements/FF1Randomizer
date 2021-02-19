@@ -26,19 +26,16 @@
 		bool? IncentivizeTitansTrove { get; }
 		bool? IncentivizeEarth { get; }
 		bool? IncentivizeSeaShrine { get; }
-		bool? RandomIncentiveIceCave { get;}
-		bool? RandomIncentiveOrdeals { get;}
-		bool? RandomIncentiveMarsh { get;}
-		bool? RandomIncentiveTitans { get;}
-		bool? RandomIncentiveEarth { get;}
-		bool? RandomIncentiveVolcano { get;}
-		bool? RandomIncentiveSeaShrine { get;}
-		bool? RandomIncentiveSkyPalace { get;}
-		bool? RandomIncentiveConeria { get;}
-		bool? RandomIncentiveMarshKeyLocked { get;}
-		bool? IncludeEarth { get;}
-		bool? IncludeSeaShrine { get;}
-		bool? IncludeSkyPalace { get;}
+		IncentivePlacementType IceCaveIncentivePlacementType { get; }
+		IncentivePlacementType OrdealsIncentivePlacementType { get; }
+		IncentivePlacementType MarshIncentivePlacementType { get; }
+		IncentivePlacementType TitansIncentivePlacementType { get; }
+		IncentivePlacementTypeGated EarthIncentivePlacementType { get; }
+		IncentivePlacementType VolcanoIncentivePlacementType { get; }
+		IncentivePlacementTypeGated SeaShrineIncentivePlacementType { get; }
+		IncentivePlacementTypeGated SkyPalaceIncentivePlacementType { get; }
+		IncentivePlacementType CorneriaIncentivePlacementType { get; }
+		IncentivePlacementType MarshLockedIncentivePlacementType { get; }
 
 		bool? IncentivizeXcalber { get; }
 		bool? IncentivizeMasamune { get; }
