@@ -9,7 +9,6 @@ using System.Text;
 using System.Threading.Tasks;
 using FF1Lib.Assembly;
 using System.Text.RegularExpressions;
-using System.Diagnostics;
 
 namespace FF1Lib
 {
@@ -103,15 +102,13 @@ namespace FF1Lib
 			return rom;
 		}
 
-		public string Randomize(Blob seed, Flags flags, Preferences preferences)
+		public void Randomize(Blob seed, Flags flags, Preferences preferences)
 		{
-			Stopwatch w = Stopwatch.StartNew();
-
 			MT19337 rng;
 			using (SHA256 hasher = SHA256.Create())
 			{
 				Blob FlagsBlob = Encoding.UTF8.GetBytes(Flags.EncodeFlagsText(flags));
-				Blob SeedAndFlags = Blob.Concat( new Blob[] { FlagsBlob, seed });
+				Blob SeedAndFlags = Blob.Concat(new Blob[] { FlagsBlob, seed });
 				Blob hash = hasher.ComputeHash(SeedAndFlags);
 				rng = new MT19337(BitConverter.ToUInt32(hash, 0));
 			}
@@ -414,7 +411,6 @@ namespace FF1Lib
 
 
 					ISanityChecker checker = new SanityCheckerV1();
-
 					IncentiveData incentivesData = new IncentiveData(rng, flags, overworldMap, shopItemLocation, checker);
 
 					if (((bool)flags.Shops))
@@ -438,13 +434,13 @@ namespace FF1Lib
 						}
 
 						shopItemLocation = ShuffleShops(rng, (bool)flags.ImmediatePureAndSoftRequired, ((bool)flags.RandomWares), excludeItemsFromRandomShops, flags.WorldWealth, overworldMap.ConeriaTownEntranceItemShopIndex);
-						incentivesData = new IncentiveData(rng, flags, overworldMap, shopItemLocation, checker);					}
+						incentivesData = new IncentiveData(rng, flags, overworldMap, shopItemLocation, checker);
+					}
 
 					if ((bool)flags.Treasures)
 					{
-						SanityCheckerV2 checker2 = new SanityCheckerV2(maps, overworldMap, npcdata, this, shopItemLocation, shipLocations);
-
-						generatedPlacement = ShuffleTreasures(rng, flags, incentivesData, shopItemLocation, overworldMap, teleporters, checker2);
+						if(flags.SanityCheckerV2) checker = new SanityCheckerV2(maps, overworldMap, npcdata, this, shopItemLocation, shipLocations);
+						generatedPlacement = ShuffleTreasures(rng, flags, incentivesData, shopItemLocation, overworldMap, teleporters, checker);
 					}
 
 					break;
@@ -458,7 +454,7 @@ namespace FF1Lib
 			}
 
 			// Change Astos routine so item isn't lost in wall of text
-			if ((bool)flags.NPCItems || (bool)flags.NPCFetchItems || (bool)flags.ShuffleAstos)             
+			if ((bool)flags.NPCItems || (bool)flags.NPCFetchItems || (bool)flags.ShuffleAstos)
 				talkroutines.Replace(newTalkRoutines.Talk_Astos, Blob.FromHex("A674F005BD2060F027A5738561202096B020A572203D96A575200096A476207F90207392A5611820109F201896A9F060A57060"));
 
 			npcdata.UpdateItemPlacement(generatedPlacement);
@@ -481,7 +477,7 @@ namespace FF1Lib
 			{
 				ShuffleMagicLevels(rng, ((bool)flags.MagicPermissions), (bool)flags.MagicLevelsTiered, (bool)flags.MagicLevelsMixed, (bool)!flags.GenerateNewSpellbook);
 			}
-			
+
 			new StartingInventory(rng, flags, this).SetStartingInventory();
 
 			new ShopKiller(rng, flags, maps, this).KillShops();
@@ -503,7 +499,7 @@ namespace FF1Lib
 			{
 				EnableSaveOnDeath(flags);
 			}
-			
+
 			// Ordered before RNG shuffle. In the event that both flags are on, RNG shuffle depends on this.
 			if (((bool)flags.FixMissingBattleRngEntry))
 			{
@@ -634,7 +630,7 @@ namespace FF1Lib
 			{
 				EnableBuyQuantity();
 			}
-			
+
 			if (flags.WaitWhenUnrunnable)
 			{
 				ChangeUnrunnableRunToWait();
@@ -685,7 +681,7 @@ namespace FF1Lib
 			{
 				RandomWeaponBonus(rng, flags.RandomWeaponBonusLow, flags.RandomWeaponBonusHigh, (bool)flags.RandomWeaponBonusExcludeMasa);
 			}
-			
+
 			if ((bool)flags.RandomArmorBonus)
 			{
 				RandomArmorBonus(rng, flags.RandomArmorBonusLow, flags.RandomArmorBonusHigh);
@@ -768,7 +764,7 @@ namespace FF1Lib
 
 				NPCHints(rng, npcdata, flags, overworldMap);
 			}
-			
+
 			ExpGoldBoost(flags.ExpBonus, flags.ExpMultiplier);
 			ScalePrices(flags, itemText, rng, ((bool)flags.ClampMinimumPriceScale), shopItemLocation);
 			ScaleEncounterRate(flags.EncounterRate / 30.0, flags.DungeonEncounterRate / 30.0);
@@ -854,7 +850,7 @@ namespace FF1Lib
 			{
 				PacifistEnd(talkroutines, npcdata, (bool)flags.EnemyTrapTiles || flags.EnemizerEnabled);
 			}
-			
+
 			if (flags.ShopInfo)
 			{
 				ShopUpgrade();
@@ -885,7 +881,7 @@ namespace FF1Lib
 			{
 				UseVariablePaletteForCursorAndStone();
 			}
-			
+
 			if (preferences.PaletteSwap && !flags.EnemizerEnabled)
 			{
 				rng = new MT19337(funRngSeed);
@@ -926,11 +922,6 @@ namespace FF1Lib
 
 			WriteSeedAndFlags(seed.ToHex(), Flags.EncodeFlagsText(flags));
 			ExtraTrackingAndInitCode(flags);
-
-			w.Stop();
-
-
-			return w.Elapsed.TotalMilliseconds.ToString();
 		}
 
 		private void EnableNPCSwatter(NPCdata npcdata)

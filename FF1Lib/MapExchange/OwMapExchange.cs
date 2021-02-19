@@ -98,6 +98,8 @@ namespace FF1Lib
 
 		public static OwMapExchange FromFlags(FF1Rom _rom, OverworldMap _overworldMap, Flags flags, MT19337 rng)
 		{
+			if (!flags.SanityCheckerV2) return null;
+
 			var mx = flags.OwMapExchange;
 			if (mx == OwMapExchanges.Random) mx = (OwMapExchanges)rng.Between(0, 3);
 

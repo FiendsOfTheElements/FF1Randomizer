@@ -3815,6 +3815,17 @@ namespace FF1Lib
 				RaisePropertyChanged();
 			}
 		}
+
+
+		public bool SanityCheckerV2
+		{
+			get => Flags.SanityCheckerV2;
+			set
+			{
+				Flags.SanityCheckerV2 = value;
+				RaisePropertyChanged();
+			}
+		}
 	}
 }
 

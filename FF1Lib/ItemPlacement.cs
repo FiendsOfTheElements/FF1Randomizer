@@ -36,7 +36,7 @@ namespace FF1Lib
 			ItemLocations.SkyPalace33, // Top chest B3, vanilla Pro-Ring
 		};
 
-		public static ItemPlacement Create(IItemPlacementFlags flags, IncentiveData incentivesData, List<Item> allTreasures, ItemShopSlot caravanItemLocation, OverworldMap overworldMap, ISanityChecker checker, ISanityChecker checker2 = null)
+		public static ItemPlacement Create(IItemPlacementFlags flags, IncentiveData incentivesData, List<Item> allTreasures, ItemShopSlot caravanItemLocation, OverworldMap overworldMap, ISanityChecker checker)
 		{
 			ItemPlacement placement;
 			placement = new GuidedItemPlacement();
@@ -47,7 +47,6 @@ namespace FF1Lib
 			placement._caravanItemLocation = caravanItemLocation;
 			placement._overworldMap = overworldMap;
 			placement._checker = checker;
-			placement._checker2 = checker2;
 
 			return placement;
 		}
@@ -73,7 +72,6 @@ namespace FF1Lib
 		protected ItemShopSlot _caravanItemLocation;
 		protected OverworldMap _overworldMap;
 		protected ISanityChecker _checker;
-		protected ISanityChecker _checker2;
 
 		protected abstract ItemPlacementResult DoSanePlacement(MT19337 rng, ItemPlacementContext ctx);
 
@@ -526,7 +524,7 @@ namespace FF1Lib
 							continue;
 						}
 
-						var (_, mapLocations, requirements) = CheckSanity(placedItems, fullLocationRequirements, _flags);
+						var (_, mapLocations, requirements) = _checker.CheckSanity(placedItems, fullLocationRequirements, _flags);
 
 						var isIncentive = incentives.Contains(item);
 						var locationPool = isIncentive ? incentiveLocationPool : preBlackOrbUnincentivizedLocationPool;
@@ -537,7 +535,7 @@ namespace FF1Lib
 						// Can we find a home for this item at this point in the exploration?
 						var rewardSources = locationPool.Where(x => !placedItems.Any(y => y.Address == x.Address)
 							&& x.Address != ItemLocations.CaravanItemShop1.Address
-							&& (unrestricted.Contains(item) || IsAccessible(x, mapLocations, requirements)))
+							&& (unrestricted.Contains(item) || _checker.IsRewardSourceAccessible(x, requirements, mapLocations)))
 							.ToList();
 
 						// If we can great, if not, we'll revisit after we get through everything.
@@ -574,77 +572,9 @@ namespace FF1Lib
 				}
 
 				// 7. Check sanity and loop if needed
-			} while (!IsComplete(placedItems, fullLocationRequirements, _flags));
+			} while (!_checker.CheckSanity(placedItems, fullLocationRequirements, _flags).Complete);
 
 			return new ItemPlacementResult { PlacedItems = placedItems, RemainingTreasures = treasurePool };
-		}
-
-		private bool IsComplete(List<IRewardSource> placedItems,
-										Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullLocationRequirements,
-										IVictoryConditionFlags _flags)
-		{
-			if (_checker2 != null)
-			{
-				var result1 = _checker.CheckSanity(placedItems, fullLocationRequirements, _flags).Complete;
-				var result2 = _checker2.CheckSanity(placedItems, fullLocationRequirements, _flags).Complete;
-
-				return result1;
-			}
-			else
-			{
-				return _checker.CheckSanity(placedItems, fullLocationRequirements, _flags).Complete;
-			}
-		}
-
-		private bool IsAccessible(IRewardSource x, List<MapLocation> mapLocations, AccessRequirement requirements)
-		{
-			if (_checker2 != null)
-			{
-				var result1 = _checker.IsRewardSourceAccessible(x, requirements, mapLocations);
-				var result2 = _checker2.IsRewardSourceAccessible(x, requirements, mapLocations);
-
-				if (x.MapLocation == MapLocation.TitansTunnelRoom) return result1;
-
-				/*
-				if (result1 != result2)
-				{
-					result1 = result2;
-				}
-				*/
-
-				return result1;
-			}
-			else
-			{
-				return _checker.IsRewardSourceAccessible(x, requirements, mapLocations);
-			}
-		}
-
-		private (bool Complete, List<MapLocation> MapLocations, AccessRequirement Requirements) CheckSanity(List<IRewardSource> placedItems,
-										Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullLocationRequirements,
-										IVictoryConditionFlags _flags)
-		{
-			if (_checker2 != null)
-			{
-				var (complete, mapLocations, requirements) = _checker.CheckSanity(placedItems, fullLocationRequirements, _flags);
-				var (complete2, mapLocations2, requirements2) = _checker2.CheckSanity(placedItems, fullLocationRequirements, _flags);
-
-				//var firstNotSecond = mapLocations.Except(mapLocations2).ToList();
-				//var secondNotFirst = mapLocations2.Except(mapLocations).ToList();
-
-				/*
-				if (complete != complete2 || requirements != requirements2)
-				{
-					return (complete, mapLocations, requirements);
-				}
-				*/
-
-				return (complete, mapLocations, requirements);
-			}
-			else
-			{
-				return _checker.CheckSanity(placedItems, fullLocationRequirements, _flags);
-			}
 		}
 	}
 }

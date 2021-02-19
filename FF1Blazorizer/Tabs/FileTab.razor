@@ -5,7 +5,6 @@
 @using System.Text.Json;
 @using BlazorStrap
 @using Microsoft.AspNetCore.Components.Web
-@using System.Diagnostics;
 @inject IJSRuntime JSRuntime
 @inject NavigationManager NavigationManager
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
@@ -207,8 +206,6 @@
 
 		async Task OnRandomize(MouseEventArgs e)
 		{
-			Stopwatch w = Stopwatch.StartNew();
-
 			if (_fileData == null)
 			{
 				SetStatusMessage("Generate Failed: No ROM File Selected!");
@@ -233,17 +230,11 @@
 			SetStatusMessage("Generating Final Fantasy Randomizer ROM ... Please Wait ... ");
 			StateHasChanged();
 
-			string time = await Task.Run(DoRandomize);
-
-			w.Stop();
-
-			SetStatusMessage(time);
+			await Task.Run(DoRandomize);
 		}
 
-		async Task<string> DoRandomize()
+		async Task DoRandomize()
 		{
-			string result = "";
-
 			Blob seed;
 			try
 			{
@@ -257,12 +248,12 @@
 			{
 				SetStatusMessage("Generate Failed: Invalid Seed Format");
 				StateHasChanged();
-				return "";
+				return;
 			}
 
 			try
 			{
-				result = _rom.Randomize(seed, Flags.Flags, Flags.Preferences);
+				_rom.Randomize(seed, Flags.Flags, Flags.Preferences);
 
 				var data = new byte[512 * 1024 + 16];
 				using (var stream = new MemoryStream(data, true))
@@ -288,8 +279,6 @@
 				SetStatusMessage(StatusMessage + "FAILURE: " + e.Message);
 				StateHasChanged();
 			}
-
-			return result;
 		}
 
 

@@ -278,7 +278,7 @@ namespace FF1Lib.Sanity
 
 		private void ProcessPointsOfInterest()
 		{
-			if (PointsOfInterest.Count > 100) throw new NoYouDonTException(MapId, "Excess PointsOfInterest found.");
+			if (PointsOfInterest.Count > 100) throw new NoYouDon_LowerCaseT_Exception(MapId, "Excess PointsOfInterest found.");
 
 			var conflicts = PointsOfInterest.Where(p => p.Type < SCPointOfInterestType.OwEntrance).GroupBy(p => p.Coords, new SCCoordsEqualityComparer()).Where(g => g.Count() > 1);
 			if (conflicts.Any()) throw new NopeException(MapId, "There is a PointOfInterest conflict.");
