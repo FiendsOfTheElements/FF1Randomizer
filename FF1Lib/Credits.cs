@@ -147,11 +147,12 @@ namespace FF1Lib
 			new []
 			{
 				"",
-				"",
 				" Final  Fantasy",
-				"",
-				"",
 				"   Randomizer",
+				"",
+				"",
+				"    Version",
+				"     " + FFRVersion.Version
 			},
 		};
 
@@ -161,11 +162,11 @@ namespace FF1Lib
 			{
 				"",
 				" Final  Fantasy",
-				"",
 				"   Randomizer",
 				"",
 				"",
-				" Special Thanks",
+				"  Credits and",
+				"Acknowledgements",
 			},
 			new [] {
 				" Final Fantasy",
@@ -177,16 +178,38 @@ namespace FF1Lib
 				" Kenji Terada",
 				" Square A-Team",
 			},
+			new [] {
+				"SlickProductions",
+				"",
+				"   FFHackster",
+				"",
+				"  Complete ROM",
+				"  Dissassembly",
+				"",
+				"     Disch",
+			},
 			new []
 			{
-				" FFR Community",
+				" FFR Developers",
 				"",
-				"  Czardia",
-				"  Edgeworth",
-				"  ichbinmiah",
-				"  Taralyn",
-				"  Trinton",
-				"  xIceBlue",
+				" Entroper",
+				" MeridianBC",
+				" nitz",
+				" Septimus",
+				" tartopan",
+				" wildham",
+			},
+			new []
+			{
+				" Contributors",
+				"",
+				"artea, pinkpuff",
+				"drcat, MadMartin",
+				" leggystarscream",
+				" nic0lette",
+				" splitpunched",
+				" onefineday",
+				" Darkmoon",
 			},
 			new []
 			{
@@ -200,7 +223,8 @@ namespace FF1Lib
 				"  theCubeMiser",
 				"  Beefucurry",
 			},
-			new [] {
+			new []
+			{
 				"  Playtesting",
 				"",
 				"  Xarnax42",
@@ -214,7 +238,7 @@ namespace FF1Lib
 			{
 				" Special Thanks",
 				"",
-				"fcoughlin, Disch",
+				"fcoughlin, Gyre",
 				"Paulygon, anomie",
 				"Derangedsquirrel",
 				"AstralEsper, and",
@@ -223,7 +247,7 @@ namespace FF1Lib
 				"    Community   ",
 			},
 			new []
-				{
+			{
 				"",
 				"",
 				"      AND",
@@ -327,31 +351,7 @@ namespace FF1Lib
 			// leading spaces are used to increment the PPU ptr precisely to save ROM space.
 			List<string[]> texts = new List<string[]>
 			{
-				new []
-				{
-					"",
-					"Lead Development",
-					"",
-					" Entroper",
-					" MeridianBC",
-					" nitz",
-					" Septimus",
-					" tartopan",
-					" wildham",
-				},
-				new []
-				{
-					"",
-					"  Contributors",
-					"",
-					" artea",
-					" drcatdoctor",
-					" leggystarscream",
-					" nic0lette",
-					" splitpunched",
-					" onefineday",
-					" Darkmoon",
-				},
+
 				new []
 				{
 					"",
@@ -386,6 +386,11 @@ namespace FF1Lib
 
 			pages.Insert(0, Blob.FromUShorts(ptrs.ToArray()));
 			return Blob.Concat(pages);
+		}
+
+		private void DebugJumpToCreditsUponEnteringAnyMap()
+		{
+			Put(0x7C8B6, Blob.FromHex("2038C9"));
 		}
 	}
 }
