@@ -82,6 +82,7 @@ namespace FF1Lib
 		public FinalFormation TransformFinalFormation { get; set; } = FinalFormation.None;
 		public bool ChaosRush { get; set; } = false;
 		public bool? ShortToFR { get; set; } = false;
+		public bool? ExitToFR { get; set; } = false;
 		public bool? PreserveFiendRefights { get; set; } = false;
 		public bool? PreserveAllFiendRefights { get; set; } = false;
 

@@ -876,7 +876,12 @@
 		"screenshot": "gaiaShortcutMoveItemShop.png",
 		"description": "Moves the Item Shop next to the Gaia Shortcut.\nThis flag is ignored if Add Gaia Shortcut is disabled."
 	},
-
+	{
+		"Id": "exitToFRCheckBox",
+		"title": "Add ToFR Exit",
+		"screenshot": "exitToFR.gif",
+		"description": "Adds a Warp Portal in ToFR that lets you exit the dungeon, without needing an EXIT or WARP spell.\nThis flag also works with Shorten ToFR."
+	},
 	{
 		"Id": "procGenWaterfall",
 		"title": "Generated Waterfall Cave",

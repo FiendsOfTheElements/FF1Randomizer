@@ -549,6 +549,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ShortToFR"));
 			}
 		}
+		public bool? ExitToFR
+		{
+			get => Flags.ExitToFR;
+			set
+			{
+				Flags.ExitToFR = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ExitToFR"));
+			}
+		}
 		public bool? PreserveFiendRefights
 		{
 			get => Flags.PreserveFiendRefights;
