@@ -346,23 +346,6 @@ namespace FF1Lib
 		{
 			return GetEnumerator();
 		}
-
-		public void Export(MapId mapid, byte tileset)
-		{
-			FileStream fs = new FileStream("D:\\private\\maps\\" + tileset.ToString() + "_" + ((int)mapid).ToString("00") + "_" + mapid.ToString() + ".ffh", FileMode.OpenOrCreate);
-			BinaryWriter wr = new BinaryWriter(fs);
-
-			for (int y = 0; y < RowCount; y++)
-			{
-				for (int x = 0; x < RowLength; x++)
-				{
-					wr.Write(_map[y, x]);
-				}
-			}
-
-			wr.Close();
-			fs.Close();
-		}
 	}
 
 	public enum Direction
