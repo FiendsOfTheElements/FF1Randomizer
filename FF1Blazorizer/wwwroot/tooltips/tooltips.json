@@ -1412,6 +1412,12 @@
 		"description": "When shuffling ennemies' scripts or spells/skills, exclude the four Fiends, WarMech and Chaos."
 	},
 	{
+		"Id": "LooseExcludePlacedDungeonsCheckBox",
+		"title": "No Loose Items in Incentivized Dungeons",
+		"screenshot": "LooseExcludePlacedDungeons.png",
+		"description": "If a dungeon is incentivized, loose items and unincentivized key items won't be placed inside."
+	},
+	{
 		"Id": "legendaryShopsGroup",
 		"title": "Legendary Shops",
 		"screenshot": "legendaryShopsGroup.png",
