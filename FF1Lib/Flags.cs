@@ -162,16 +162,22 @@ namespace FF1Lib
 		public bool? IncentivizeIceCave { get; set; } = false;
 		public bool? IncentivizeOrdeals { get; set; } = false;
 		public bool? IncentivizeSeaShrine { get; set; } = false;
-
 		public bool? IncentivizeConeria { get; set; } = false;
 		public bool? IncentivizeMarshKeyLocked { get; set; } = false;
 		public bool? IncentivizeSkyPalace { get; set; } = false;
 		public bool? IncentivizeTitansTrove { get; set; } = false;
-		public bool? IncentivizeRandomChestInLocation { get; set; } = false;
-		public bool? IncentivizeRandomChestIncludeExtra { get; set; } = false;
+		public IncentivePlacementType IceCaveIncentivePlacementType { get; set; } = IncentivePlacementType.Vanilla;
+		public IncentivePlacementType OrdealsIncentivePlacementType { get; set; } = IncentivePlacementType.Vanilla;
+		public IncentivePlacementType MarshIncentivePlacementType { get; set; } = IncentivePlacementType.Vanilla;
+		public IncentivePlacementType TitansIncentivePlacementType { get; set; } = IncentivePlacementType.Vanilla;
+		public IncentivePlacementTypeGated EarthIncentivePlacementType { get; set; } = IncentivePlacementTypeGated.Vanilla;
+		public IncentivePlacementType VolcanoIncentivePlacementType { get; set; } = IncentivePlacementType.Vanilla;
+		public IncentivePlacementTypeGated SeaShrineIncentivePlacementType { get; set; } = IncentivePlacementTypeGated.Vanilla;
+		public IncentivePlacementTypeGated SkyPalaceIncentivePlacementType { get; set; } = IncentivePlacementTypeGated.Vanilla;
+		public IncentivePlacementType CorneriaIncentivePlacementType { get; set; } = IncentivePlacementType.Vanilla;
+		public IncentivePlacementType MarshLockedIncentivePlacementType { get; set; } = IncentivePlacementType.Vanilla;
+
 		public bool? BetterTrapChests { get; set; } = false;
-
-
 		public bool? IncentivizeMasamune { get; set; } = false;
 		public bool? IncentivizeKatana { get; set; } = false;
 		public bool? IncentivizeVorpal { get; set; } = false;
@@ -187,7 +193,7 @@ namespace FF1Lib
 		public bool? IncentivizeDefCastWeapon { get; set; } = false;
 		public bool? IncentivizeOffCastWeapon { get; set; } = false;
 		public bool IncentivizeOtherCastWeapon { get; set; } = false;
-
+		public bool? LooseExcludePlacedDungeons { get; set; } = false;
 		public bool? EarlyKing { get; set; } = false;
 		public bool? EarlySarda { get; set; } = false;
 		public bool? EarlySage { get; set; } = false;
@@ -235,7 +241,8 @@ namespace FF1Lib
 		public bool ImproveTurnOrderRandomization { get; set; } = false;
 		public bool FixHitChanceCap { get; set; } = false;
 
-		public bool DeepDungeon { get; set; } = false;
+		public bool? MelmondClinic { get; set; } = false;
+        public bool DeepDungeon { get; set; } = false;
 		public bool StartingGold { get; set; } = false;
 		public bool WrapStatOverflow { get; set; } = false;
 		public bool WrapPriceOverflow { get; set; } = false;

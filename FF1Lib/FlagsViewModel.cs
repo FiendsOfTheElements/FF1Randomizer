@@ -1287,6 +1287,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeIceCave"));
 			}
 		}
+
 		public bool? IncentivizeOrdeals
 		{
 			get => Flags.IncentivizeOrdeals;
@@ -1296,6 +1297,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeOrdeals"));
 			}
 		}
+
 		public bool? IncentivizeSeaShrine
 		{
 			get => Flags.IncentivizeSeaShrine;
@@ -1333,22 +1335,104 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeSkyPalace"));
 			}
 		}
-		public bool? IncentivizeRandomChestInLocation
+
+		public IncentivePlacementType IceCaveIncentivePlacementType
 		{
-			get => Flags.IncentivizeRandomChestInLocation;
+			get => Flags.IceCaveIncentivePlacementType;
 			set
 			{
-				Flags.IncentivizeRandomChestInLocation = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeRandomChestInLocation"));
+				Flags.IceCaveIncentivePlacementType = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IceCaveIncentivePlacementType"));
 			}
 		}
-		public bool? IncentivizeRandomChestIncludeExtra
+
+		public IncentivePlacementType OrdealsIncentivePlacementType
 		{
-			get => Flags.IncentivizeRandomChestIncludeExtra;
+			get => Flags.OrdealsIncentivePlacementType;
 			set
 			{
-				Flags.IncentivizeRandomChestIncludeExtra = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeRandomChestIncludeExtra"));
+				Flags.OrdealsIncentivePlacementType = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("OrdealsIncentivePlacementType"));
+			}
+		}
+
+		public IncentivePlacementType MarshIncentivePlacementType
+		{
+			get => Flags.MarshIncentivePlacementType;
+			set
+			{
+				Flags.MarshIncentivePlacementType = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MarshIncentivePlacementType"));
+			}
+		}
+
+		public IncentivePlacementType TitansIncentivePlacementType
+		{
+			get => Flags.TitansIncentivePlacementType;
+			set
+			{
+				Flags.TitansIncentivePlacementType = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TitansIncentivePlacementType"));
+			}
+		}
+
+		public IncentivePlacementTypeGated EarthIncentivePlacementType
+		{
+			get => Flags.EarthIncentivePlacementType;
+			set
+			{
+				Flags.EarthIncentivePlacementType = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EarthIncentivePlacementType"));
+			}
+		}
+
+		public IncentivePlacementType VolcanoIncentivePlacementType
+		{
+			get => Flags.VolcanoIncentivePlacementType;
+			set
+			{
+				Flags.VolcanoIncentivePlacementType = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("VolcanoIncentivePlacementType"));
+			}
+		}
+
+		public IncentivePlacementTypeGated SeaShrineIncentivePlacementType
+		{
+			get => Flags.SeaShrineIncentivePlacementType;
+			set
+			{
+				Flags.SeaShrineIncentivePlacementType = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SeaShrineIncentivePlacementType"));
+			}
+		}
+
+		public IncentivePlacementTypeGated SkyPalaceIncentivePlacementType
+		{
+			get => Flags.SkyPalaceIncentivePlacementType;
+			set
+			{
+				Flags.SkyPalaceIncentivePlacementType = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SkyPalaceIncentivePlacementType"));
+			}
+		}
+
+		public IncentivePlacementType CorneriaIncentivePlacementType
+		{
+			get => Flags.CorneriaIncentivePlacementType;
+			set
+			{
+				Flags.CorneriaIncentivePlacementType = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CorneriaIncentivePlacementType"));
+			}
+		}
+
+		public IncentivePlacementType MarshLockedIncentivePlacementType
+		{
+			get => Flags.MarshLockedIncentivePlacementType;
+			set
+			{
+				Flags.MarshLockedIncentivePlacementType = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MarshLockedIncentivePlacementType"));
 			}
 		}
 
@@ -1461,6 +1545,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeShipAndCanal"));
 			}
 		}
+		public bool? LooseExcludePlacedDungeons
+		{
+			get => Flags.LooseExcludePlacedDungeons;
+			set
+			{
+				Flags.LooseExcludePlacedDungeons = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("LooseExcludePlacedDungeons"));
+			}
+		}
 		public bool? EarlyKing
 		{
 			get => Flags.EarlyKing;
@@ -1567,7 +1660,17 @@ namespace FF1Lib
 
 		public bool FreeOrbsEnabled => !ShardHunt;
 
-		public bool DeepDungeon
+		public bool? MelmondClinic
+        {
+            get => Flags.MelmondClinic;
+            set
+            {
+                Flags.MelmondClinic = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MelmondClinic"));
+            }
+        }
+        
+        public bool DeepDungeon
 		{
 			get => Flags.DeepDungeon;
 			set

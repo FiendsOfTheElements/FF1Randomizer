@@ -147,7 +147,7 @@
 		"Id": "startingItemsDropDown",
 		"title": "Starting Inventory",
 		"screenshot": "startinginventory.png",
-		"description": "Starts the game with a set of consumable items.\n SafetyBit: 1 Tent, 1 Pure, 1 Soft \n Beggar's Choice: 5 Tents, 20 Heals, 2 Pures, 1 Soft \n Just Tents: 10 Tents \n Explorer Starting Pack: 10 Tents, 50 Heals, 4 Pures, 2 Softs \n Real Estate: 15 Tents, 3 Cabins, 1 House \n Warrior's Standard: 15 Tents, 3 Cabins, 1 House, 50 Heals, 6 Pures, 3 Softs \n Royal Packmule: 50 Tents, 15 Cabins, 5 Houses, 99 Heals, 10 Pures, 5 Softs \n Duckling Boon: 99 Tents, 99 Cabins, 99 Houses, 99 Heals, 99 Pures, 99 Softs \n R. Beggar's Choice: 0-5 Tents, 0-20 Heals, 0-2 Pures, 0-1 Softs \n R. Explorer Starting Pack: 1-10 Tents, 0-50 Heals, 0-4 Pures, 0-2 Softs \n R. Warrior's Standard: 3-15 Tents, 0-3 Cabins, 0-1 House, 20-50 Heals, 2-6 Pures, 1-3 Softs \n R. Royal Packmule: 10-50 Tents, 5-15 Cabins, 1-5 Houses, 30-99 Heals, 5-10 Pures, 2-5 Softs \n R. High Rolling: 35-99 Tents, 10-25 Cabins, 5-10 Houses, 30-99 Heals, 10-20 Pures, 5-10 Softs \n Randomized: 0-99 Tents, 0-99 Cabins, 0-99 Houses, 0-99 Heals, 0-20 Pures, 0-10 Softs"
+		"description": "Starts the game with a set of consumable items.\n[grid][r]{i}Option|{i}Tent|{i}Cabin|{i}House|{i}Heal|{i}Pure|{i}Soft[r]{l}SafetyBit|1||||1|1[r]{l}Beggar's Choice|5|||20|2|1[r]{l}Just Tents|10|||||[r]{l}Explorer Starting Pack|10|||50|4|2[r]{l}Real Estate|15|3|1|||[r]{l}Warrior's Standard|15|3|1|50|6|3[r]{l}Royal Packmule|50|15|5|99|10|5[r]{l}Duckling Boon|99|99|99|99|99|99[r]{l}R. Beggar's Choice|0-5|||0-20|0-2|0-1[r]{l}R. Explorer Starting Pack|1-10|||0-50|0-4|0-2[r]{l}R. Warrior's Standard|3-15|0-3|0-1|20-50|2-6|1-3[r]{l}R. Royal Packmule|10-50|5-15|1-5|30-99|5-10|2-5[r]{l}R. High Rolling|35-99|10-25|5-10|30-99|10-20|5-10[r]{l}Randomized|0-99|0-99|0-99|0-99|0-20|0-10\n"
 	},
 
 	{
@@ -612,18 +612,11 @@
 		"description": "Incentivizes the bottom right chest of the final floor of Marsh Cave. This chest requires the KEY to access.\nOne random item from your incentive item pool will be guaranteed in this chest, provided the number of incentive items matches or is less than the number of incentive locations."
 	},
 	{
-		"Id": "incentivizeRandomChestInLocationCheckBox",
-		"title": "Pick Random Chests At Location",
+		"Id": "incentivePlacementType",
+		"title": "Incentive Placement Types",
 		"screenshot": "incentivizeRandomChestInLocationCheckBox.gif",
-		"description": "Chooses a random chest in the selected locations to act like an incentivized chest. Mirage is not included in 'Sky Palace' and TFC is not included in 'Sea Shrine'"
+		"description": "Vanilla - Sets the incentive chest to be the one shown in the tooltip for a given location.\nRandom - Chooses a random chest at the selected location to act as an incentive chest.\nBefore Gating - Chooses a chest on a floor that comes before gating. e.g Earth Cave Floors 1-3, Mirage Tower, All of Sea Shrine minus TFC.\nBehind Gating - Chooses a chest on a floor that comes after gating. e.g. Earth Cave Floor 4, Sky Palace, Sea Shrine TFC Chest."
 	},
-	{
-		"Id": "incentivizeRandomChestIncludeExtra",
-		"title": "Include Mirage and TFC",
-		"screenshot": "incentivizeRandomChestIncludeExtra.gif",
-		"description": "Adds mirage chests into 'Sky Palace' and TFC into 'Sea Shrine'. These are not included in the random chests originally to remove the chance of having to gamble on key-less sea or cube-less mirage."
-	},
-
 	{
 		"Id": "incentivizeMainItemsCheckBox",
 		"title": "Main Progression Items",
@@ -1419,6 +1412,12 @@
 		"description": "When shuffling ennemies' scripts or spells/skills, exclude the four Fiends, WarMech and Chaos."
 	},
 	{
+		"Id": "LooseExcludePlacedDungeonsCheckBox",
+		"title": "No Loose Items in Incentivized Dungeons",
+		"screenshot": "LooseExcludePlacedDungeons.png",
+		"description": "If a dungeon is incentivized, loose items and unincentivized key items won't be placed inside."
+	},
+	{
 		"Id": "legendaryShopsGroup",
 		"title": "Legendary Shops",
 		"screenshot": "legendaryShopsGroup.png",
@@ -1442,6 +1441,12 @@
 		"title": "Extensive Hints",
 		"screenshot": "extendedHintsCheckBox.png",
 		"description": "Replace NPCs' dialogues with hints. There a 6 Hint Categories:\nLoose Floor: provides the floor where a loose is located\nLoose Name: provides the name of the loose and the dungeon\nIncentive Name: provides the name of the incentive and the dungeon, npc or town\nEquipment Floor: States on what floors legendery items are\nEquipment Name: Gives the name of the Equipment and the dungeon name\nFloor Hints: Wow: Quest or legendary; Meh: Rare Equipment; Sparkle: more than 5kgold treasure; Dud: none of the above\n\nThe hint categories are placed in the order specified. If there are no valid places left, remaining hints are not placed anymore."
-	}
+	},
+    {
+        "Id": "melmondClinicCheckBox",
+        "title": "Melmondish Hospitality",
+        "screenshot": "melmondClinicCheckBox.png",
+        "description": "Adds a clinic to Melmond."
+    }
 ]
 

@@ -26,8 +26,16 @@
 		bool? IncentivizeTitansTrove { get; }
 		bool? IncentivizeEarth { get; }
 		bool? IncentivizeSeaShrine { get; }
-		bool? IncentivizeRandomChestInLocation { get; }
-		bool? IncentivizeRandomChestIncludeExtra { get; }
+		IncentivePlacementType IceCaveIncentivePlacementType { get; }
+		IncentivePlacementType OrdealsIncentivePlacementType { get; }
+		IncentivePlacementType MarshIncentivePlacementType { get; }
+		IncentivePlacementType TitansIncentivePlacementType { get; }
+		IncentivePlacementTypeGated EarthIncentivePlacementType { get; }
+		IncentivePlacementType VolcanoIncentivePlacementType { get; }
+		IncentivePlacementTypeGated SeaShrineIncentivePlacementType { get; }
+		IncentivePlacementTypeGated SkyPalaceIncentivePlacementType { get; }
+		IncentivePlacementType CorneriaIncentivePlacementType { get; }
+		IncentivePlacementType MarshLockedIncentivePlacementType { get; }
 
 		bool? IncentivizeXcalber { get; }
 		bool? IncentivizeMasamune { get; }
@@ -139,5 +147,6 @@
 		bool? FreeLute { get; }
 		bool? FreeTail { get; }
 		bool? NoTail { get; }
+		bool? LooseExcludePlacedDungeons { get; }
 	}
 }
