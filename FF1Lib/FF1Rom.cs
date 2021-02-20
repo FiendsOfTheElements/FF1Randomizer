@@ -234,6 +234,11 @@ namespace FF1Lib
                 EnableMelmondClinic(maps);
             }
 
+			if ((bool)flags.RandomVampAttack)
+			{
+				RandomVampireAttack(maps, rng);
+			}
+
 			if ((bool)flags.GaiaShortcut)
 			{
 				EnableGaiaShortcut(maps);
