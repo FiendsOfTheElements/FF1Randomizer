@@ -229,7 +229,7 @@ namespace FF1Lib
 				EnableLefeinShops(maps);
 			}
 
-			if (flags.RandomVampAttack)
+			if ((bool)flags.RandomVampAttack)
 			{
 				RandomVampireAttack(maps, rng);
 			}

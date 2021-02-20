@@ -21,7 +21,7 @@
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="alternateFiendsCheckBox" IsEnabled="@(!Flags.SpookyFlag)" @bind-Value="Flags.AlternateFiends">Alternate Fiends</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="noBossSkillScriptShuffleCheckBox" IsEnabled="@(Flags.EnemyScripts != false || Flags.EnemySkillsSpells != false)" @bind-Value="Flags.NoBossSkillScriptShuffle">Don't Shuffle Bosses' Scripts, Skills & Spells</TriStateCheckBox>
 			<div class="checkbox-cell"></div>
-			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="randomVampAttackCheckBox" @bind-Value="Flags.RandomVampAttack">Vampire attacks a random town</CheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="randomVampAttackCheckBox" @bind-Value="Flags.RandomVampAttack">Vampire attacks a random town</TriStateCheckBox>
 			<div class="checkbox-cell"></div>
 		</div>
 		<div class="col2">

@@ -966,7 +966,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("LefeinShops"));
 			}
 		}
-		public bool RandomVampAttack
+		public bool? RandomVampAttack
 		{
 			get => Flags.RandomVampAttack;
 			set

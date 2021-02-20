@@ -127,7 +127,7 @@ namespace FF1Lib
 		public SkyCastle4FMazeMode SkyCastle4FMazeMode { get; set; } = SkyCastle4FMazeMode.Normal;
 		public bool? TitansTrove { get; set; } = false;
 		public bool? LefeinShops { get; set; } = false;
-		public bool RandomVampAttack { get; set; } = false;
+		public bool? RandomVampAttack { get; set; } = false;
 		public bool? ConfusedOldMen { get; set; } = false;
 		public bool? GaiaShortcut { get; set; } = false;
 		public bool? MoveGaiaItemShop { get; set; } = false;
