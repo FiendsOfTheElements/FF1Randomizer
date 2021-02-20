@@ -229,6 +229,11 @@ namespace FF1Lib
 				EnableLefeinShops(maps);
 			}
 
+			if (flags.RandomVampAttack)
+			{
+				RandomVampireAttack(maps, rng);
+			}
+
 			if ((bool)flags.GaiaShortcut)
 			{
 				EnableGaiaShortcut(maps);
