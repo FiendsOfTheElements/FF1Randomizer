@@ -184,7 +184,7 @@ namespace FF1Lib
 		public bool? IncentivizeDefCastWeapon { get; set; } = false;
 		public bool? IncentivizeOffCastWeapon { get; set; } = false;
 		public bool IncentivizeOtherCastWeapon { get; set; } = false;
-
+		public bool? LooseExcludePlacedDungeons { get; set; } = false;
 		public bool? EarlyKing { get; set; } = false;
 		public bool? EarlySarda { get; set; } = false;
 		public bool? EarlySage { get; set; } = false;

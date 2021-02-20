@@ -1442,6 +1442,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeShipAndCanal"));
 			}
 		}
+		public bool? LooseExcludePlacedDungeons
+		{
+			get => Flags.LooseExcludePlacedDungeons;
+			set
+			{
+				Flags.LooseExcludePlacedDungeons = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("LooseExcludePlacedDungeons"));
+			}
+		}
 		public bool? EarlyKing
 		{
 			get => Flags.EarlyKing;
