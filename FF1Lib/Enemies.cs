@@ -950,19 +950,19 @@ namespace FF1Lib
 				fiends[(i * 2)].elem_resist = (byte)(fiends[(i * 2)].elem_resist & ~(byte)alternateFiendsList[i].ElementalWeakness);
 				fiends[(i * 2) + 1].elem_resist = (byte)(fiends[(i * 2) + 1].elem_resist & ~(byte)alternateFiendsList[i].ElementalWeakness);
 
-				if (fiendsScript[(i * 2)].skill_chance == 0x00)
+				if (fiendsScript[(i * 2)].skill_chance == 0x00 || alternateFiendsList[i].SkillChance1 == 0x00)
 					fiendsScript[(i * 2)].skill_chance = alternateFiendsList[i].SkillChance1;
 
-				if (fiendsScript[(i * 2) + 1].skill_chance == 0x00)
+				if (fiendsScript[(i * 2) + 1].skill_chance == 0x00 || alternateFiendsList[i].SkillChance2 == 0x00)
 					fiendsScript[(i * 2) + 1].skill_chance = alternateFiendsList[i].SkillChance2;
 
 				fiendsScript[(i * 2)].skill_list = alternateFiendsList[i].Skills1.ToArray();
 				fiendsScript[(i * 2) + 1].skill_list = alternateFiendsList[i].Skills2.ToArray();
 
-				if (fiendsScript[(i * 2)].spell_chance == 0x00)
+				if (fiendsScript[(i * 2)].spell_chance == 0x00 || alternateFiendsList[i].SpellChance1 == 0x00)
 					fiendsScript[(i * 2)].spell_chance = alternateFiendsList[i].SpellChance1;
 
-				if (fiendsScript[(i * 2) + 1].spell_chance == 0x00)
+				if (fiendsScript[(i * 2) + 1].spell_chance == 0x00 || alternateFiendsList[i].SpellChance2 == 0x00)
 					fiendsScript[(i * 2) + 1].spell_chance = alternateFiendsList[i].SpellChance2;
 
 				fiendsScript[(i * 2)].spell_list = alternateFiendsList[i].Spells1.ToArray();

@@ -108,7 +108,7 @@ namespace FF1Lib
 			using (SHA256 hasher = SHA256.Create())
 			{
 				Blob FlagsBlob = Encoding.UTF8.GetBytes(Flags.EncodeFlagsText(flags));
-				Blob SeedAndFlags = Blob.Concat( new Blob[] { FlagsBlob, seed });
+				Blob SeedAndFlags = Blob.Concat(new Blob[] { FlagsBlob, seed });
 				Blob hash = hasher.ComputeHash(SeedAndFlags);
 				rng = new MT19337(BitConverter.ToUInt32(hash, 0));
 			}
@@ -213,17 +213,17 @@ namespace FF1Lib
 			{
 				DoEnemizer(rng, (bool)flags.RandomizeEnemizer, (bool)flags.RandomizeFormationEnemizer, flags.EnemizerDontMakeNewScripts);
 			}
-			
+
 			if (preferences.ModernBattlefield)
 			{
 				EnableModernBattlefield();
 			}
-			
+
 			if ((bool)flags.TitansTrove)
 			{
 				EnableTitansTrove(maps);
 			}
-			
+
 			if ((bool)flags.LefeinShops)
 			{
 				EnableLefeinShops(maps);
@@ -243,63 +243,68 @@ namespace FF1Lib
 			{
 				FixSpellBugs();
 			}
-			
+
 			//must be done before spells get shuffled around otherwise we'd be changing a spell that isnt lock
 			if (flags.LockMode != LockHitMode.Vanilla)
 			{
 				ChangeLockMode(flags.LockMode);
 			}
-			
+
 			if (flags.EnemySpellsTargetingAllies)
 			{
 				FixEnemyAOESpells();
 			}
-			
+
 			if (flags.AllSpellLevelsForKnightNinja)
 			{
 				KnightNinjaChargesForAllLevels();
 			}
-			
+
 			if (flags.BuffHealingSpells)
 			{
 				BuffHealingSpells();
 			}
-			
+
 			UpdateMagicAutohitThreshold(rng, flags.MagicAutohitThreshold);
-			
+
 			if ((bool)flags.GenerateNewSpellbook)
 			{
 				CraftNewSpellbook(rng, (bool)flags.SpellcrafterMixSpells, flags.LockMode, (bool)flags.MagicLevels, (bool)flags.SpellcrafterRetainPermissions);
 			}
-			
+
 			if ((bool)flags.MagisizeWeapons)
 			{
 				MagisizeWeapons(rng, (bool)flags.MagisizeWeaponsBalanced);
 			}
-			
+
 			if ((bool)flags.ItemMagic)
 			{
 				ShuffleItemMagic(rng, (bool)flags.BalancedItemMagicShuffle);
 			}
-			
+
 			if ((bool)flags.GuaranteedRuseItem)
 			{
 				CraftRuseItem();
 			}
-			
+
 			if ((bool)flags.ShortToFR)
 			{
-				ShortenToFR(maps, (bool)flags.PreserveFiendRefights, (bool)flags.PreserveAllFiendRefights, rng);
+				ShortenToFR(maps, (bool)flags.PreserveFiendRefights, (bool)flags.PreserveAllFiendRefights, (bool)flags.ExitToFR, rng);
 			}
-			
+
+			if ((bool)flags.ExitToFR)
+			{
+				EnableToFRExit(maps);
+			}
+
 			if (((bool)flags.Treasures) && flags.ShardHunt && !flags.FreeOrbs)
 			{
 				EnableShardHunt(rng, talkroutines, flags.ShardCount);
 			}
-			
-			if ((bool)flags.TransformFinalFormation && !flags.SpookyFlag)
+
+			if (flags.TransformFinalFormation != FinalFormation.None && !flags.SpookyFlag)
 			{
-				TransformFinalFormation((FinalFormation)rng.Between(0, Enum.GetValues(typeof(FinalFormation)).Length - 1), flags.EvadeCap);
+				TransformFinalFormation(flags.TransformFinalFormation, flags.EvadeCap, rng);
 			}
 
 			var maxRetries = 8;
@@ -339,7 +344,7 @@ namespace FF1Lib
 								excludeItemsFromRandomShops.Add(Item.PowerRod);
 						}
 
-						if((bool)flags.NoMasamune)
+						if ((bool)flags.NoMasamune)
 						{
 							excludeItemsFromRandomShops.Add(Item.Masamune);
 						}
@@ -363,7 +368,7 @@ namespace FF1Lib
 			}
 
 			// Change Astos routine so item isn't lost in wall of text
-			if ((bool)flags.NPCItems || (bool)flags.NPCFetchItems || (bool)flags.ShuffleAstos)             
+			if ((bool)flags.NPCItems || (bool)flags.NPCFetchItems || (bool)flags.ShuffleAstos)
 				talkroutines.Replace(newTalkRoutines.Talk_Astos, Blob.FromHex("A674F005BD2060F027A5738561202096B020A572203D96A575200096A476207F90207392A5611820109F201896A9F060A57060"));
 
 			npcdata.UpdateItemPlacement(generatedPlacement);
@@ -387,7 +392,7 @@ namespace FF1Lib
 			{
 				ShuffleMagicLevels(rng, ((bool)flags.MagicPermissions), (bool)flags.MagicLevelsTiered, (bool)flags.MagicLevelsMixed, (bool)!flags.GenerateNewSpellbook);
 			}
-			
+
 			new StartingInventory(rng, flags, this).SetStartingInventory();
 
 			new ShopKiller(rng, flags, maps, this).KillShops();
@@ -410,7 +415,7 @@ namespace FF1Lib
 			{
 				EnableSaveOnDeath(flags);
 			}
-			
+
 			// Ordered before RNG shuffle. In the event that both flags are on, RNG shuffle depends on this.
 			if (((bool)flags.FixMissingBattleRngEntry))
 			{
@@ -439,7 +444,7 @@ namespace FF1Lib
 					ShuffleEnemySkillsSpells(rng, (bool)!flags.BossSkillsOnly, (bool)!flags.NoBossSkillScriptShuffle);
 				}
 			}
-			
+
 			if (((bool)flags.EnemyStatusAttacks))
 			{
 				if (((bool)flags.RandomStatusAttacks))
@@ -453,13 +458,13 @@ namespace FF1Lib
 			}
 
 			if (flags.Runnability == Runnability.Random)
-				flags.Runnability = (Runnability)Rng.Between(rng,0,3);
+				flags.Runnability = (Runnability)Rng.Between(rng, 0, 3);
 
-			if(flags.Runnability == Runnability.AllRunnable)
+			if (flags.Runnability == Runnability.AllRunnable)
 				CompletelyRunnable();
-			else if(flags.Runnability == Runnability.AllUnrunnable)
+			else if (flags.Runnability == Runnability.AllUnrunnable)
 				CompletelyUnrunnable();
-			else if(flags.Runnability == Runnability.Shuffle)
+			else if (flags.Runnability == Runnability.Shuffle)
 				ShuffleUnrunnable(rng);
 
 			// Always on to supply the correct changes for WaitWhenUnrunnable
@@ -544,7 +549,7 @@ namespace FF1Lib
 			{
 				EnableEarlyKing(npcdata);
 			}
-			
+
 			if ((bool)flags.EarlySarda)
 			{
 				EnableEarlySarda(npcdata);
@@ -670,7 +675,7 @@ namespace FF1Lib
 			{
 				RandomWeaponBonus(rng, flags.RandomWeaponBonusLow, flags.RandomWeaponBonusHigh, (bool)flags.RandomWeaponBonusExcludeMasa);
 			}
-			
+
 			if ((bool)flags.RandomArmorBonus)
 			{
 				RandomArmorBonus(rng, flags.RandomArmorBonusLow, flags.RandomArmorBonusHigh);
@@ -753,7 +758,7 @@ namespace FF1Lib
 
 				NPCHints(rng, npcdata, flags, overworldMap);
 			}
-			
+
 			ExpGoldBoost(flags.ExpBonus, flags.ExpMultiplier);
 			ScalePrices(flags, itemText, rng, ((bool)flags.ClampMinimumPriceScale), shopItemLocation);
 			ScaleEncounterRate(flags.EncounterRate / 30.0, flags.DungeonEncounterRate / 30.0);
@@ -841,7 +846,7 @@ namespace FF1Lib
 			{
 				PacifistEnd(talkroutines, npcdata, (bool)flags.EnemyTrapTiles || flags.EnemizerEnabled);
 			}
-			
+
 			if (flags.ShopInfo)
 			{
 				ShopUpgrade();
@@ -872,7 +877,7 @@ namespace FF1Lib
 			{
 				UseVariablePaletteForCursorAndStone();
 			}
-			
+
 			if (preferences.PaletteSwap && !flags.EnemizerEnabled)
 			{
 				rng = new MT19337(funRngSeed);
@@ -904,7 +909,7 @@ namespace FF1Lib
 			{
 				DisableSpellCastScreenFlash();
 			}
-			
+
 			npcdata.WriteNPCdata(this);
 			talkroutines.WriteRoutines(this);
 			talkroutines.UpdateNPCRoutines(this, npcdata);
