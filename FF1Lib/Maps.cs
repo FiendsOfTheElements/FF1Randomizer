@@ -106,6 +106,7 @@ namespace FF1Lib
 		WaterfallInside = 0x46,
 		WaterfallSpikeTile = 0x48,
 		WaterfallRandomEncounters = 0x49,
+		PortalWarp = 0x40,
 		// Begin Town Tiles
 		TownGrass = 0x00,
 		TownGrassShadow = 0x01,
@@ -646,24 +647,29 @@ namespace FF1Lib
 			lefein[0x06, 0x15] = 0x65; // Crescent Lake Clinic
 		}
         
-        public void EnableMelmondClinic(List<Map> maps)
-        {
-            var melmond = maps[(byte)MapId.Melmond];
-            melmond[0x09, 0x1A] = 0x17; // Roof top
-            melmond[0x09, 0x1B] = 0x17;
-            melmond[0x09, 0x1C] = 0x17;
-            melmond[0x0A, 0x1A] = 0x18; // Roof middle
-            melmond[0x0A, 0x1B] = 0x1A; // Clinic sign
-            melmond[0x0A, 0x1C] = 0x18;
-            melmond[0x0A, 0x1D] = 0x01; // Full shadow
-            melmond[0x0B, 0x1A] = 0x1D; // Building front, two windows
-            melmond[0x0B, 0x1B] = 0x65; // Crescent Lake clinic
-            melmond[0x0B, 0x1C] = 0x1D; 
-            melmond[0x0B, 0x1D] = 0x02; // Corner shadow
-            Console.WriteLine("Melmond clinic added");
-        }
+    public void EnableMelmondClinic(List<Map> maps)
+    {
+        var melmond = maps[(byte)MapId.Melmond];
+        melmond[0x09, 0x1A] = 0x17; // Roof top
+        melmond[0x09, 0x1B] = 0x17;
+        melmond[0x09, 0x1C] = 0x17;
+        melmond[0x0A, 0x1A] = 0x18; // Roof middle
+        melmond[0x0A, 0x1B] = 0x1A; // Clinic sign
+        melmond[0x0A, 0x1C] = 0x18;
+        melmond[0x0A, 0x1D] = 0x01; // Full shadow
+        melmond[0x0B, 0x1A] = 0x1D; // Building front, two windows
+        melmond[0x0B, 0x1B] = 0x65; // Crescent Lake clinic
+        melmond[0x0B, 0x1C] = 0x1D; 
+        melmond[0x0B, 0x1D] = 0x02; // Corner shadow
+    }
         
-		public List<MapId> HorizontalFlipDungeons(MT19337 rng, List<Map> maps, TeleportShuffle teleporters, OverworldMap overworld)
+		public void EnableToFRExit(List<Map> maps)
+		{
+			// add warp portal to ToFR 1st floor
+			maps[(byte)MapId.TempleOfFiendsRevisited1F][17, 20] = (byte)Tile.PortalWarp;
+		}
+
+    public List<MapId> HorizontalFlipDungeons(MT19337 rng, List<Map> maps, TeleportShuffle teleporters, OverworldMap overworld)
 		{
 			var validMaps = new List<MapId> { MapId.EarthCaveB1, MapId.EarthCaveB2, MapId.EarthCaveB3, MapId.EarthCaveB4, MapId.EarthCaveB5,
 				MapId.GurguVolcanoB1, MapId.GurguVolcanoB2, MapId.GurguVolcanoB3, MapId.GurguVolcanoB4, MapId.GurguVolcanoB5, MapId.IceCaveB1,
