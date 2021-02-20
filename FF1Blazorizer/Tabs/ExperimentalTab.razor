@@ -23,6 +23,8 @@
 			<div class="checkbox-cell"></div>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="LooseExcludePlacedDungeonsCheckBox" IsEnabled="@(Flags.Treasures != false)" @bind-Value="Flags.LooseExcludePlacedDungeons">No Loose Items in Incentivized Dungeons</TriStateCheckBox>
 			<div class="checkbox-cell"></div>
+      <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="melmondClinicCheckBox" @bind-Value="Flags.MelmondClinic">Melmondish Hospitality</TriStateCheckBox>
+			<div class="checkbox-cell"></div>    
 		</div>
 		<div class="col2">
 			<h4>Legendary Shops</h4>
