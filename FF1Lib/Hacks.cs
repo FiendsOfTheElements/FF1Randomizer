@@ -287,12 +287,16 @@ namespace FF1Lib
 
 			if (options.Count == 0) options = new List<byte> { 0x0, 0x1, 0x2, 0x3, 0x4, 0x5 };
 			List<byte> pub_lut = new List<byte> { };
-			while (pub_lut.Count < 7)
+			while (pub_lut.Count < 8)
 			{
 				options.Shuffle(rng);
 				pub_lut.AddRange(options);
 			}
-			pub_lut.Insert(3, (byte)0xFF); // Will break if Melmond ever gets a clinic, Nones will need to be hired dead, this results in them being alive.
+			if (!(bool)flags.MelmondClinic)
+			{
+				pub_lut.Insert(3, (byte)0xFF);
+			}
+
 			Put(0x38066, Blob.FromHex("9D8A9F8E9B97")); // Replaces "CLINIC" with "TAVERN"
 														// EnterClinic
 			PutInBank(0x0E, 0xA5A1, Blob.FromHex("60A9008524852520589DA902856318201C9DB0ECAD62008D0D0320EDA6B0034C6CA620D7A6B0DAAD62008D0C03209BAA20C2A8B0CCAD6200D0C72089A6AD0C03186D0C036D0C03AABD10036A6A6A29C0AAAD0D03F0458A690A8510A96185118A488512A9638513A000A90091109112C8C00A30F7C040D0F59D266120E99CA448B90A9D9D00612071C2A00E20799068AA900918BD006169069D0061A9019D0A61A9009D016120349D200CE92078A7A921205BAA2043A7A5240525F0F74CA2A52043A7A5240525F0F74CA1A5A923205BAAA9008D24008D25004C60A6EAEAEAEAEAEAEAEAEAEAEAEAEA"));
@@ -495,7 +499,7 @@ namespace FF1Lib
 
 			// If Astos, we're done here
 			if (newastos == ObjectId.Astos) return;
-			
+
 			// If not get NPC talk routine, get NPC object
 			var talkscript = npcdata.GetRoutine(newastos);
 
@@ -1125,7 +1129,7 @@ namespace FF1Lib
 			var eventNpc = new List<(ObjectId, MapId)> { (ObjectId.ElflandCastleElf3, MapId.ElflandCastle), (ObjectId.MelmondMan1, MapId.Melmond), (ObjectId.MelmondMan3, MapId.Melmond), (ObjectId.MelmondMan4, MapId.Melmond), (ObjectId.MelmondMan8, MapId.Melmond), (ObjectId.DwarfcaveDwarf6, MapId.DwarfCave), (ObjectId.ConeriaCastle1FWoman2, MapId.ConeriaCastle1F), (ObjectId.ElflandElf2, MapId.Elfland), (ObjectId.ElflandElf5, MapId.Elfland) };
 			var classSprite = new List<byte> { 0xEE, 0xEF, 0xF0, 0xF1, 0xF2, 0xF3, 0xF4, 0xF5, 0xF6, 0xF7, 0xF8, 0xF9 };
 			var classNames = new List<string> { "Fighter", "Thief", "Black Belt", "Red Mage", "White Mage", "Black Mage", "Knight", "Ninja", "Master", "Red Wizard", "White Wizard", "Black Wizard" };
-			var readyString = new List<string> { "Well, that's that.\nLet's go.", "Onward to new\nadventures!", "I knew you'd come back\nfor me!", "......", "I'm the leader now,\nright?", "The Reaper is always\njust a step behind me..", "O.. Okay.. I hope it's\nnot too scary out there.", "Yes!\nI made it on the team!", "A bold choice, let's\nsee if it pays off.", "Alright, let's do this!", "I obey, master.", "They say I'm the best.", "I see, we have the same\ngoal. Let's join forces.", "My.. name? Huh..", "Just don't put me first\nagainst Kraken.", "I'm taking care of the\nGPs from now on!", "It's Saturday night.\nI've got no date, a\nbottle of Shasta, and\nmy all Rush mixtape.\nLet's rock.", "Life insurance?\nNo, I don't have any.\nWhy?", "Let's put an end to\nthis madness.", "Finally, some action!", "You convinced me. I will\njoin your noble cause.", "Evil never rests. I will\nfight by your side.", "Edward wants to join\nthe party."};
+			var readyString = new List<string> { "Well, that's that.\nLet's go.", "Onward to new\nadventures!", "I knew you'd come back\nfor me!", "......", "I'm the leader now,\nright?", "The Reaper is always\njust a step behind me..", "O.. Okay.. I hope it's\nnot too scary out there.", "Yes!\nI made it on the team!", "A bold choice, let's\nsee if it pays off.", "Alright, let's do this!", "I obey, master.", "They say I'm the best.", "I see, we have the same\ngoal. Let's join forces.", "My.. name? Huh..", "Just don't put me first\nagainst Kraken.", "I'm taking care of the\nGPs from now on!", "It's Saturday night.\nI've got no date, a\nbottle of Shasta, and\nmy all Rush mixtape.\nLet's rock.", "Life insurance?\nNo, I don't have any.\nWhy?", "Let's put an end to\nthis madness.", "Finally, some action!", "You convinced me. I will\njoin your noble cause.", "Evil never rests. I will\nfight by your side.", "Edward wants to join\nthe party." };
 
 			var baseClassList = new List<FF1Class> { FF1Class.Fighter, FF1Class.Thief, FF1Class.BlackBelt, FF1Class.RedMage, FF1Class.WhiteMage, FF1Class.BlackMage };
 			var promoClassList = new List<FF1Class> { FF1Class.Knight, FF1Class.Ninja, FF1Class.Master, FF1Class.RedWiz, FF1Class.WhiteWiz, FF1Class.BlackWiz };
@@ -1134,7 +1138,7 @@ namespace FF1Lib
 
 			// Repurpose the LineupMenu to select which character get replaced
 			// New Routine when coming from a dialogue
-			PutInBank(0x0E, 0x98C0, Blob.FromHex("A565F0034C149AA525D034A524D023A520290CC564F02C8564290CF026C908F007A561186908D005A56138E908291F856160A9008524A8A5610A0A0AAA9002A425686860")); 
+			PutInBank(0x0E, 0x98C0, Blob.FromHex("A565F0034C149AA525D034A524D023A520290CC564F02C8564290CF026C908F007A561186908D005A56138E908291F856160A9008524A8A5610A0A0AAA9002A425686860"));
 			PutInBank(0x0E, 0x9911, Blob.FromHex("A5228565")); // Store joy_select to read it
 			PutInBank(0x0E, 0x99D7, Blob.FromHex("20C098")); // Hijack LineupMenu_ProcessJoy
 			PutInBank(0x1F, 0xCA5C, Blob.FromHex("201199")); // Jump a bit earlier SM
@@ -1192,7 +1196,7 @@ namespace FF1Lib
 						var tempNpc = FindNpc(originMap, targetNpc);
 						var bikkeNpc = FindNpc(originMap, ObjectId.Bikke);
 						targetIndex = tempNpc.Index;
-						targetCoord = (bikkeNpc.Coord.x-1, bikkeNpc.Coord.y-1);
+						targetCoord = (bikkeNpc.Coord.x - 1, bikkeNpc.Coord.y - 1);
 						targetInRoom = tempNpc.InRoom;
 						targetStationary = true;
 					}
@@ -1270,7 +1274,7 @@ namespace FF1Lib
 				SetNpc(MapId.SkyPalace5F, 0x02, ObjectId.GaiaMan1, (bool)flags.ClassAsNpcForcedFiends ? 0x07 : 0x09, 0x03, true, true);
 
 				// Restore the default color if Required WarMech is enabled so Tiamat's NPC don't look too weird
-				Data[0x029AB] = 0x30; 
+				Data[0x029AB] = 0x30;
 
 				for (int i = 0; i < 4; i++)
 				{
@@ -1436,7 +1440,7 @@ namespace FF1Lib
 			PutInBank(0x11, 0x9B00, generatedWords);
 			PutInBank(0x11, offsetWordsPointers, Blob.FromUShorts(pointersWords));
 
-			
+
 			// Build the info boxes
 			for (int i = weaponOffset; i < armorOffset; i++)
 				descriptionsList.Add("\n" + GenerateWeaponDescription(i - weaponOffset));
@@ -1577,7 +1581,7 @@ namespace FF1Lib
 			var shortDelimiter = new List<string> { "\n ", ", ", "\n ", ", ", "\n ", ", " };
 			var oobSpells = new List<int>();
 
-			for(int i = 0; i < oobroutine.Count; i++)
+			for (int i = 0; i < oobroutine.Count; i++)
 				oobSpells.Add(Get(MagicOutOfBattleOffset + MagicOutOfBattleSize * i, 1)[0]);
 
 			var routineDesc = "";
@@ -1634,7 +1638,7 @@ namespace FF1Lib
 					var temp = "";
 
 					foreach ((int, string, string) elem in element)
-						if((elem.Item1 & spelldata[(int)spellDataBytes.Effect]) > 0)
+						if ((elem.Item1 & spelldata[(int)spellDataBytes.Effect]) > 0)
 							activeElementStatus.Add(elem);
 
 					if (activeElementStatus.Count == 0)
@@ -1642,8 +1646,8 @@ namespace FF1Lib
 					else if (activeElementStatus.Count <= 3)
 						temp = string.Join(string.Empty, activeElementStatus.SelectMany(x => "\n " + x.Item2));
 					else if (activeElementStatus.Count <= 6)
-					{ 
-						for(int i = 0; i < activeElementStatus.Count; i++)
+					{
+						for (int i = 0; i < activeElementStatus.Count; i++)
 							temp += shortDelimiter[i] + activeElementStatus[i].Item3;
 					}
 					else if (activeElementStatus.Count == 7)
@@ -1957,7 +1961,7 @@ namespace FF1Lib
 			evilDialogs.Add(0x34, "Uaaaaaargh!");
 			evilDialogs.Add(0x36, "Groaaarn!");
 
-			
+
 			evilDialogs.Add(0x04, "What the hell!?\nThat princess is crazy,\nshe tried to bite me!\n\nThat's it. Screw that.\nI'm going home.");
 
 			evilDialogs.Add(0x02, "What is going on!? My\nguard tried to kill me!\nUgh.. this is a deep\nwound.. I don't feel so\nwell..\nGwooorrrgl!\n\nReceived #");
