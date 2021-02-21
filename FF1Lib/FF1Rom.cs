@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using FF1Lib.Assembly;
 using System.Text.RegularExpressions;
+using RomUtilities;
 
 namespace FF1Lib
 {
