@@ -38,3 +38,5 @@ dotnet_diagnostic.IDE0046.severity = suggestion
 
 # IDE0058: Expression value is never used
 dotnet_diagnostic.IDE0058.severity = none
+
+dotnet_diagnostic.IDE0078.severity = none
