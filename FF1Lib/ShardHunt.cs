@@ -187,7 +187,7 @@ namespace FF1Lib
 			List<Item> trash = new List<Item> { Item.Heal, Item.Pure, Item.SmallKnife, Item.LargeKnife,
 				Item.WoodenRod, Item.Cloth, Item.WoodenShield, Item.Cap, Item.WoodenHelm, Item.Gloves };
 
-			return (trash.Contains(item) || item >= Item.Gold20 && item <= Item.Gold350) ? Item.Shard : item;
+			return (trash.Contains(item) || (item >= Item.Gold20 && item <= Item.Gold350)) ? Item.Shard : item;
 		}
 	}
 }

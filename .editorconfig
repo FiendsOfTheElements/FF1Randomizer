@@ -39,10 +39,11 @@ dotnet_diagnostic.IDE0046.severity = suggestion
 # IDE0058: Expression value is never used
 dotnet_diagnostic.IDE0058.severity = none
 
+# IDE0078: Use pattern matching
 dotnet_diagnostic.IDE0078.severity = none
 
 # IDE0066: Convert switch statement to expression
 dotnet_diagnostic.IDE0066.severity = suggestion
 
-
+# IDE0045: Use conditional expression for assignment
 dotnet_diagnostic.IDE0045.severity = suggestion
