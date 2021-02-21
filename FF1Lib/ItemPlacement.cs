@@ -464,6 +464,8 @@ namespace FF1Lib
 			var incentiveLocationPool = _incentivesData.IncentiveLocations.ToList();
 			var preBlackOrbLocationPool = _incentivesData.AllValidPreBlackOrbItemLocations.ToList();
 			var preBlackOrbUnincentivizedLocationPool = preBlackOrbLocationPool.Where(x => !incentiveLocationPool.Any(y => y.Address == x.Address)).ToList();
+			if ((bool)_flags.LooseExcludePlacedDungeons)
+				preBlackOrbUnincentivizedLocationPool = IncentivizedDungeons();
 
 			Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullLocationRequirements = _overworldMap.FullLocationRequirements;
 			Dictionary<MapLocation, OverworldTeleportIndex> overridenOverworld = _overworldMap.OverriddenOverworldLocations;
@@ -565,7 +567,12 @@ namespace FF1Lib
 				// 6. Then place remanining incentive items and unincentivized quest items in any other chest before ToFR
 				var leftoverItems = incentives.Concat(nonincentives).ToList();
 				leftoverItems.Shuffle(rng);
+
 				var leftoverItemLocations = preBlackOrbLocationPool.Where(x => !placedItems.Any(y => y.Address == x.Address)).ToList();
+
+				if ((bool)_flags.LooseExcludePlacedDungeons)
+					leftoverItemLocations = preBlackOrbUnincentivizedLocationPool.Where(x => !placedItems.Any(y => y.Address == x.Address)).ToList();
+				
 				foreach (var leftoverItem in leftoverItems)
 				{
 					placedItems.Add(NewItemPlacement(leftoverItemLocations.SpliceRandom(rng), leftoverItem));
@@ -575,6 +582,19 @@ namespace FF1Lib
 			} while (!_checker.CheckSanity(placedItems, fullLocationRequirements, _flags).Complete);
 
 			return new ItemPlacementResult { PlacedItems = placedItems, RemainingTreasures = treasurePool };
+		}
+
+		private List<IRewardSource> IncentivizedDungeons()
+		{
+			var placedDungeons = new List<IRewardSource>();
+
+			foreach (var incentiveLocation in _incentivesData.IncentiveLocations.ToList())
+			{
+				if(incentiveLocation.GetType().Equals(typeof(TreasureChest)))
+					placedDungeons.AddRange(_incentivesData.AllValidPreBlackOrbItemLocations.Where(x => ItemLocations.MapLocationToOverworldLocations[x.MapLocation] == ItemLocations.MapLocationToOverworldLocations[incentiveLocation.MapLocation] && x.GetType().Equals(typeof(TreasureChest))));
+			}
+
+			return _incentivesData.AllValidPreBlackOrbItemLocations.Where(x => !placedDungeons.Contains(x)).ToList();
 		}
 	}
 }

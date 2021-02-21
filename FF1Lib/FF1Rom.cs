@@ -234,6 +234,16 @@ namespace FF1Lib
 			{
 				EnableLefeinShops(maps);
 			}
+            
+            if ((bool)flags.MelmondClinic)
+            {
+                EnableMelmondClinic(maps);
+            }
+
+			if ((bool)flags.RandomVampAttack)
+			{
+				RandomVampireAttack(maps, rng);
+			}
 
 			if ((bool)flags.GaiaShortcut)
 			{
