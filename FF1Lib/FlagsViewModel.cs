@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text;
+using static FF1Lib.FF1Rom;
 
 namespace FF1Lib
 {
@@ -530,7 +531,7 @@ namespace FF1Lib
 
 		public bool ExtraShardsEnabled => ShardHunt && !FreeOrbs;
 
-		public bool? TransformFinalFormation
+		public FinalFormation TransformFinalFormation
 		{
 			get => Flags.TransformFinalFormation;
 			set
@@ -546,6 +547,15 @@ namespace FF1Lib
 			{
 				Flags.ShortToFR = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ShortToFR"));
+			}
+		}
+		public bool? ExitToFR
+		{
+			get => Flags.ExitToFR;
+			set
+			{
+				Flags.ExitToFR = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ExitToFR"));
 			}
 		}
 		public bool? PreserveFiendRefights
@@ -593,6 +603,15 @@ namespace FF1Lib
 			{
 				Flags.MagicShopLocs = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MagicShopLocs"));
+			}
+		}
+		public bool? MagicShopLocationPairs
+		{
+			get => Flags.MagicShopLocationPairs;
+			set
+			{
+				Flags.MagicShopLocationPairs = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MagicShopLocationPairs"));
 			}
 		}
 		public bool? MagicLevels
@@ -947,6 +966,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("LefeinShops"));
 			}
 		}
+		public bool? RandomVampAttack
+		{
+			get => Flags.RandomVampAttack;
+			set
+			{
+				Flags.RandomVampAttack = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomVampAttack"));
+			}
+		}
 		public bool? ConfusedOldMen
 		{
 			get => Flags.ConfusedOldMen;
@@ -1259,6 +1287,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeIceCave"));
 			}
 		}
+
 		public bool? IncentivizeOrdeals
 		{
 			get => Flags.IncentivizeOrdeals;
@@ -1268,6 +1297,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeOrdeals"));
 			}
 		}
+
 		public bool? IncentivizeSeaShrine
 		{
 			get => Flags.IncentivizeSeaShrine;
@@ -1305,22 +1335,104 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeSkyPalace"));
 			}
 		}
-		public bool? IncentivizeRandomChestInLocation
+
+		public IncentivePlacementType IceCaveIncentivePlacementType
 		{
-			get => Flags.IncentivizeRandomChestInLocation;
+			get => Flags.IceCaveIncentivePlacementType;
 			set
 			{
-				Flags.IncentivizeRandomChestInLocation = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeRandomChestInLocation"));
+				Flags.IceCaveIncentivePlacementType = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IceCaveIncentivePlacementType"));
 			}
 		}
-		public bool? IncentivizeRandomChestIncludeExtra
+
+		public IncentivePlacementType OrdealsIncentivePlacementType
 		{
-			get => Flags.IncentivizeRandomChestIncludeExtra;
+			get => Flags.OrdealsIncentivePlacementType;
 			set
 			{
-				Flags.IncentivizeRandomChestIncludeExtra = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeRandomChestIncludeExtra"));
+				Flags.OrdealsIncentivePlacementType = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("OrdealsIncentivePlacementType"));
+			}
+		}
+
+		public IncentivePlacementType MarshIncentivePlacementType
+		{
+			get => Flags.MarshIncentivePlacementType;
+			set
+			{
+				Flags.MarshIncentivePlacementType = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MarshIncentivePlacementType"));
+			}
+		}
+
+		public IncentivePlacementType TitansIncentivePlacementType
+		{
+			get => Flags.TitansIncentivePlacementType;
+			set
+			{
+				Flags.TitansIncentivePlacementType = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TitansIncentivePlacementType"));
+			}
+		}
+
+		public IncentivePlacementTypeGated EarthIncentivePlacementType
+		{
+			get => Flags.EarthIncentivePlacementType;
+			set
+			{
+				Flags.EarthIncentivePlacementType = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EarthIncentivePlacementType"));
+			}
+		}
+
+		public IncentivePlacementType VolcanoIncentivePlacementType
+		{
+			get => Flags.VolcanoIncentivePlacementType;
+			set
+			{
+				Flags.VolcanoIncentivePlacementType = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("VolcanoIncentivePlacementType"));
+			}
+		}
+
+		public IncentivePlacementTypeGated SeaShrineIncentivePlacementType
+		{
+			get => Flags.SeaShrineIncentivePlacementType;
+			set
+			{
+				Flags.SeaShrineIncentivePlacementType = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SeaShrineIncentivePlacementType"));
+			}
+		}
+
+		public IncentivePlacementTypeGated SkyPalaceIncentivePlacementType
+		{
+			get => Flags.SkyPalaceIncentivePlacementType;
+			set
+			{
+				Flags.SkyPalaceIncentivePlacementType = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SkyPalaceIncentivePlacementType"));
+			}
+		}
+
+		public IncentivePlacementType CorneriaIncentivePlacementType
+		{
+			get => Flags.CorneriaIncentivePlacementType;
+			set
+			{
+				Flags.CorneriaIncentivePlacementType = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CorneriaIncentivePlacementType"));
+			}
+		}
+
+		public IncentivePlacementType MarshLockedIncentivePlacementType
+		{
+			get => Flags.MarshLockedIncentivePlacementType;
+			set
+			{
+				Flags.MarshLockedIncentivePlacementType = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MarshLockedIncentivePlacementType"));
 			}
 		}
 
@@ -1433,6 +1545,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeShipAndCanal"));
 			}
 		}
+		public bool? LooseExcludePlacedDungeons
+		{
+			get => Flags.LooseExcludePlacedDungeons;
+			set
+			{
+				Flags.LooseExcludePlacedDungeons = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("LooseExcludePlacedDungeons"));
+			}
+		}
 		public bool? EarlyKing
 		{
 			get => Flags.EarlyKing;
@@ -1539,6 +1660,25 @@ namespace FF1Lib
 
 		public bool FreeOrbsEnabled => !ShardHunt;
 
+		public bool? MelmondClinic
+        {
+            get => Flags.MelmondClinic;
+            set
+            {
+                Flags.MelmondClinic = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MelmondClinic"));
+            }
+        }
+        
+        public bool DeepDungeon
+		{
+			get => Flags.DeepDungeon;
+			set
+			{
+				Flags.DeepDungeon = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DeepDungeon"));
+			}
+		}
 		public bool StartingGold
 		{
 			get => Flags.StartingGold;
@@ -3372,6 +3512,24 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomizeClassMaxMalus"));
 			}
 		}
+		public bool? AlternateFiends
+		{
+			get => Flags.AlternateFiends;
+			set
+			{
+				Flags.AlternateFiends = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AlternateFiends"));
+			}
+		}
+		public bool? NoBossSkillScriptShuffle
+		{
+			get => Flags.NoBossSkillScriptShuffle;
+			set
+			{
+				Flags.NoBossSkillScriptShuffle = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NoBossSkillScriptShuffle"));
+			}
+		}
 		public bool? SwolePirates
 		{
 			get => Flags.SwolePirates;
@@ -3416,7 +3574,7 @@ namespace FF1Lib
 			set
 			{
 				Flags.ShopKillMode_Weapons = value;
-        RaisePropertyChanged();
+				RaisePropertyChanged();
 			}
 		}
 
@@ -3426,17 +3584,17 @@ namespace FF1Lib
 			set
 			{
 				Flags.ShopKillMode_Armor = value;
-        RaisePropertyChanged();
+				RaisePropertyChanged();
 			}
 		}
-    
-    public ShopKillMode ShopKillMode_Item
+
+		public ShopKillMode ShopKillMode_Item
 		{
 			get => Flags.ShopKillMode_Item;
 			set
 			{
 				Flags.ShopKillMode_Item = value;
-        RaisePropertyChanged();
+				RaisePropertyChanged();
 			}
 		}
 
@@ -3446,9 +3604,9 @@ namespace FF1Lib
 			set
 			{
 				Flags.ShopKillMode_Black = value;
-        RaisePropertyChanged();
+				RaisePropertyChanged();
 			}
-		}      
+		}
 
 		public ShopKillMode ShopKillMode_White
 		{
@@ -3456,9 +3614,9 @@ namespace FF1Lib
 			set
 			{
 				Flags.ShopKillMode_White = value;
-        RaisePropertyChanged();
+				RaisePropertyChanged();
 			}
-		}   
+		}
 
 		public ShopKillFactor ShopKillFactor_Weapons
 		{
@@ -3490,7 +3648,7 @@ namespace FF1Lib
 			}
 		}
 
-    public ShopKillFactor ShopKillFactor_Black
+		public ShopKillFactor ShopKillFactor_Black
 		{
 			get => Flags.ShopKillFactor_Black;
 			set
@@ -3509,7 +3667,7 @@ namespace FF1Lib
 				RaisePropertyChanged();
 			}
 		}
-    
+
 		public bool ShopKillExcludeConeria_Weapons
 		{
 			get => Flags.ShopKillExcludeConeria_Weapons;
@@ -3558,8 +3716,8 @@ namespace FF1Lib
 				Flags.ShopKillExcludeConeria_White = value;
 				RaisePropertyChanged();
 			}
-		}	
-    
+		}
+
 		public bool ExtensiveHints_Enable
 		{
 			get => Flags.ExtensiveHints_Enable;
@@ -3590,7 +3748,7 @@ namespace FF1Lib
 			}
 		}
 
-    public HintPlacementStrategy ExtensiveHints_IncentiveItemNamePlacement
+		public HintPlacementStrategy ExtensiveHints_IncentiveItemNamePlacement
 		{
 			get => Flags.ExtensiveHints_IncentiveItemNamePlacement;
 			set
@@ -3689,8 +3847,8 @@ namespace FF1Lib
 				RaisePropertyChanged();
 			}
 		}
-    
-    public bool? LegendaryWeaponShop
+
+		public bool? LegendaryWeaponShop
 		{
 			get => Flags.LegendaryWeaponShop;
 			set
@@ -3739,8 +3897,8 @@ namespace FF1Lib
 				RaisePropertyChanged();
 			}
 		}
-    
-   	public bool NonesGainXP
+
+		public bool NonesGainXP
 		{
 			get => Flags.NonesGainXP;
 			set
@@ -3749,8 +3907,8 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NonesGainXP"));
 			}
 		}
-    
-    public bool Etherizer
+
+		public bool Etherizer
 		{
 			get => Flags.Etherizer;
 			set

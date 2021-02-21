@@ -1,12 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.ComponentModel;
 using RomUtilities;
 
 namespace FF1Lib
 {
+	public enum IncentivePlacementType
+	{
+		[Description("Vanilla")]
+		Vanilla,
+		[Description("Random")]
+		RandomAtLocation
+	}
+
+	public enum IncentivePlacementTypeGated
+	{
+		[Description("Vanilla")]
+		Vanilla,
+		[Description("Random")]
+		RandomAtLocation,
+		[Description("Before Gating")]
+		RandomNoGating,
+		[Description("Behind Gating")]
+		RandomBehindGating
+	}
+
 	public class IncentiveData
 	{
+
 		public OverworldMap OverworldMap { get; private set; }
 
 		public IncentiveData(MT19337 rng, IIncentiveFlags flags, OverworldMap map, ItemShopSlot shopSlot)
@@ -219,7 +241,7 @@ namespace FF1Lib
 			}
 			if (flags.IncentivizeVolcano ?? false)
 			{
-				if((bool)flags.IncentivizeRandomChestInLocation) {
+				if(flags.VolcanoIncentivePlacementType == IncentivePlacementType.RandomAtLocation) {
 					incentiveLocationPool.Add(ItemLocations.Volcano.ToList().SpliceRandom(rng));
 				} else {
 					incentiveLocationPool.Add(ItemLocations.VolcanoMajor);
@@ -227,18 +249,24 @@ namespace FF1Lib
 			}
 			if (flags.IncentivizeEarth ?? false)
 			{
-				if ((bool)flags.IncentivizeRandomChestInLocation)
+				if (flags.EarthIncentivePlacementType == IncentivePlacementTypeGated.RandomAtLocation)
 				{
 					incentiveLocationPool.Add(ItemLocations.EarthCave.ToList().SpliceRandom(rng));
 				}
-				else
+				else if (flags.EarthIncentivePlacementType == IncentivePlacementTypeGated.RandomBehindGating)
 				{
+					incentiveLocationPool.Add(ItemLocations.EarthCaveFloor4.ToList().SpliceRandom(rng));
+				}
+				else if(flags.EarthIncentivePlacementType == IncentivePlacementTypeGated.RandomNoGating)
+				{
+					incentiveLocationPool.Add(ItemLocations.EarthCavePreRod.ToList().SpliceRandom(rng));
+				} else {
 					incentiveLocationPool.Add(ItemLocations.EarthCaveMajor);
-				}				
+				}	
 			}
 			if (flags.IncentivizeMarsh ?? false)
 			{
-				if ((bool)flags.IncentivizeRandomChestInLocation)
+				if (flags.MarshIncentivePlacementType == IncentivePlacementType.RandomAtLocation)
 				{
 					incentiveLocationPool.Add(ItemLocations.MarshCaveUnlocked.ToList().SpliceRandom(rng));
 				}
@@ -249,8 +277,8 @@ namespace FF1Lib
 			}
 			if (flags.IncentivizeMarshKeyLocked ?? false)
 			{
-				if ((bool)flags.IncentivizeRandomChestInLocation)
-				{
+				if (flags.MarshLockedIncentivePlacementType == IncentivePlacementType.RandomAtLocation)
+				{ 
 					incentiveLocationPool.Add(ItemLocations.MarshCaveLocked.ToList().SpliceRandom(rng));
 				}
 				else
@@ -260,40 +288,46 @@ namespace FF1Lib
 			}
 			if (flags.IncentivizeSkyPalace ?? false)
 			{
-				if ((bool)flags.IncentivizeRandomChestInLocation)
+				if (flags.SkyPalaceIncentivePlacementType == IncentivePlacementTypeGated.RandomAtLocation)
 				{
-					if ((bool)flags.IncentivizeRandomChestIncludeExtra)
-					{
-						incentiveLocationPool.Add(ItemLocations.SkyPalace.Concat(ItemLocations.MirageTower).ToList().SpliceRandom(rng));
-					} else {
-						incentiveLocationPool.Add(ItemLocations.SkyPalace.ToList().SpliceRandom(rng));
-					}
+					incentiveLocationPool.Add(ItemLocations.SkyPalace.Concat(ItemLocations.MirageTower).ToList().SpliceRandom(rng));
+				}
+				else if (flags.SkyPalaceIncentivePlacementType == IncentivePlacementTypeGated.RandomBehindGating)
+				{
+					incentiveLocationPool.Add(ItemLocations.SkyPalace.ToList().SpliceRandom(rng));
+				}
+				else if (flags.SkyPalaceIncentivePlacementType == IncentivePlacementTypeGated.RandomNoGating)
+				{
+					incentiveLocationPool.Add(ItemLocations.MirageTower.ToList().SpliceRandom(rng));
 				}
 				else
 				{
 					incentiveLocationPool.Add(ItemLocations.SkyPalaceMajor);
-				}				
+				}
 			}
 			if (flags.IncentivizeSeaShrine ?? false)
 			{
-				if ((bool)flags.IncentivizeRandomChestInLocation)
+				if (flags.SeaShrineIncentivePlacementType == IncentivePlacementTypeGated.RandomAtLocation)
 				{
-					if((bool)flags.IncentivizeRandomChestIncludeExtra)
-					{
-						incentiveLocationPool.Add(ItemLocations.SeaShrine.ToList().SpliceRandom(rng));
-					} else {
-						incentiveLocationPool.Add(ItemLocations.SeaShrineUnlocked.ToList().SpliceRandom(rng));
-					}
+					incentiveLocationPool.Add(ItemLocations.SeaShrine.ToList().SpliceRandom(rng));
+				}
+				else if (flags.SeaShrineIncentivePlacementType == IncentivePlacementTypeGated.RandomBehindGating)
+				{
+					incentiveLocationPool.Add(ItemLocations.SeaShrineLocked);
+				}
+				else if (flags.SeaShrineIncentivePlacementType == IncentivePlacementTypeGated.RandomNoGating)
+				{
+					incentiveLocationPool.Add(ItemLocations.SeaShrineUnlocked.ToList().SpliceRandom(rng));
 				}
 				else
 				{
 					incentiveLocationPool.Add(ItemLocations.SeaShrineMajor);
-				}				
+				}
 			}
 			if (flags.IncentivizeConeria ?? false)
 			{
-				if ((bool)flags.IncentivizeRandomChestInLocation)
-				{
+				if (flags.CorneriaIncentivePlacementType == IncentivePlacementType.RandomAtLocation)
+				{ 
 					incentiveLocationPool.Add(ItemLocations.Coneria.ToList().SpliceRandom(rng));
 				}
 				else
@@ -303,7 +337,7 @@ namespace FF1Lib
 			}
 			if (flags.IncentivizeIceCave ?? false)
 			{
-				if ((bool)flags.IncentivizeRandomChestInLocation)
+				if (flags.IceCaveIncentivePlacementType == IncentivePlacementType.RandomAtLocation)
 				{
 					incentiveLocationPool.Add(ItemLocations.IceCave.ToList().SpliceRandom(rng));
 				}
@@ -312,9 +346,10 @@ namespace FF1Lib
 					incentiveLocationPool.Add(ItemLocations.IceCaveMajor);
 				}				
 			}
+			
 			if (flags.IncentivizeOrdeals ?? false)
 			{
-				if ((bool)flags.IncentivizeRandomChestInLocation)
+				if (flags.OrdealsIncentivePlacementType == IncentivePlacementType.RandomAtLocation)
 				{
 					incentiveLocationPool.Add(ItemLocations.Ordeals.ToList().SpliceRandom(rng));
 				}
@@ -329,7 +364,7 @@ namespace FF1Lib
 			}
 			if (flags.IncentivizeTitansTrove ?? false)
 			{
-				if ((bool)flags.IncentivizeRandomChestInLocation)
+				if (flags.TitansIncentivePlacementType == IncentivePlacementType.RandomAtLocation)
 				{
 					incentiveLocationPool.Add(ItemLocations.TitansTunnel.ToList().SpliceRandom(rng));
 				}
