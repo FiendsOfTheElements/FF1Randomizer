@@ -723,7 +723,7 @@ namespace FF1Lib
 				new BonusMalus(BonusMalusAction.HpMod, "-20 HP", mod: -20),
 				new BonusMalus(BonusMalusAction.HpMod, "-20 HP", mod: -20),
 				new BonusMalus(BonusMalusAction.HpMod, "-30 HP", mod: -30),
-				new BonusMalus(BonusMalusAction.HpGrowth, "BlackM HP", binarylist: classData[(int)AuthClass.BlackMage].HpGrowth, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.BlackBelt }),
+				new BonusMalus(BonusMalusAction.HpGrowth, "BlackM HP", binarylist: classData[(int)AuthClass.BlackMage].HpGrowth, authclass: new List<AuthClass> { AuthClass.Fighter }),
 				new BonusMalus(BonusMalusAction.HitMod, "-10 Hit%", mod: -10),
 				new BonusMalus(BonusMalusAction.MDefMod, "-10 MDef", mod: -10),
 				new BonusMalus(BonusMalusAction.HitGrowth, "-1 Hit%/Lv", mod: -1),

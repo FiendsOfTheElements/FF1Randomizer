@@ -27,7 +27,7 @@ namespace FF1Lib
 		Autohit900,
 		[Description("1200")]
 		Autohit1200,
-		[Description("None")]
+		[Description("Unlimited")]
 		Autohit65535,
 		[Description("300 or 600")]
 		Autohit300to600,
@@ -37,6 +37,14 @@ namespace FF1Lib
 		Autohit300to1200,
 		[Description("Any of the above")]
 		Any,
+	}
+
+	public struct MagicSpell
+	{
+		public byte Index;
+		public Blob Data;
+		public Blob Name;
+		public byte TextPointer;
 	}
 
 	public partial class FF1Rom : NesRom
@@ -70,13 +78,6 @@ namespace FF1Lib
 		public const int ArmorSize = 4;
 		public const int ArmorCount = 40;
 
-		private struct MagicSpell
-		{
-			public byte Index;
-			public Blob Data;
-			public Blob Name;
-			public byte TextPointer;
-		}
 
 		public void BuffHealingSpells()
 		{
@@ -575,7 +576,7 @@ namespace FF1Lib
 			Data[0x33AE5] = (byte)((limit >> 8) & 0x00ff);
 		}
 
-		List<MagicSpell> GetSpells() {
+		public List<MagicSpell> GetSpells() {
 			var spells = Get(MagicOffset, MagicSize * MagicCount).Chunk(MagicSize);
 			var names = Get(MagicNamesOffset, MagicNameSize * MagicCount).Chunk(MagicNameSize);
 			var pointers = Get(MagicTextPointersOffset, MagicCount);

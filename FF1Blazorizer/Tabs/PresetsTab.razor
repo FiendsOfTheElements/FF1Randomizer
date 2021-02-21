@@ -3,153 +3,180 @@
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 @using FF1Lib;
 
-<button type="button" class="@(IsOpen ? "nes-btn nes-nav is-success" : "nes-btn nes-nav is-warning")" @onclick="@(() => IsOpen = !IsOpen)">Presets</button>
-<BSCollapse IsOpen="@IsOpen">
-	<div class="is-dark nes-container">
-		<div class="row">
-			<div class="col-md-12">
-				<p>
-					Standard:
-					<button type="button" class="nes-btn is-primary is-tiny" @onclick="@(() => LoadStandardPreset("default"))">Default</button>
-					<button type="button" class="nes-btn is-primary is-tiny" @onclick="@(() => LoadStandardPreset("entranceshuffle"))">Floor Shuffle</button>
-					<button type="button" class="nes-btn is-primary is-tiny" @onclick="@(() => LoadStandardPreset("shardhunt"))">Shard Hunt</button>
-					<button type="button" class="nes-btn is-primary is-tiny" @onclick="@(() => LoadStandardPreset("chaos-rush"))">Chaos Rush</button>
-					<button type="button" class="nes-btn is-primary is-tiny" @onclick="@(() => LoadStandardPreset("freeenterprise"))">Free Enterprise</button>
-					<button type="button" class="nes-btn is-primary is-tiny" @onclick="@(() => LoadStandardPreset("improved-vanilla"))">Improved Vanilla</button>
-				</p>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-12">
-				<p>
-					Saved: @foreach (var preset in localPresets)
-					{
-	<span style="white-space:nowrap">
-		<button type="button" class="nes-btn is-primary is-tiny" @onclick="@(() => LoadLocalPreset(@preset))">@preset</button>
-		<button type="button" class="nes-btn is-error is-tiny preset-pill" @onclick="@(() => DeleteLocalPreset(@preset))">X</button>
-	</span>				}
-				</p>
-			</div>
-		</div>
-		<div class="row">&nbsp;</div>
-		<div class="row">
-			<div class="col-md-12">
-				<p>
-					Current:
-					<input type="text" id="presetNameInput" @bind="presetName" />
-					<button type="button" class="nes-btn is-primary" @onclick="@(() => SavePreset(false))">Save Preset</button>
-					<button type="button" class="nes-btn is-primary" @onclick="@(() => SavePreset(true))">Export to JSON</button>
-				</p>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-12">
-				<p>
-					Load from JSON:
-					<input type="file" id="presetInput" @onchange="OnPresetChanged" />
-				</p>
-			</div>
-		</div>
-	</div>
-</BSCollapse>
 
-	@code { [Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }
-				[Parameter] public Action<string> SetStatusMessage { get; set; }
-				[Parameter] public bool IsOpen { get; set; } = true;
+<div id="presets" class="tabcontent framed-content clearfix @(noTabLayout ? "no-tab" : "") @(IsOpen ? "" : "collapsed")">
+	<h3 class="@(IsOpen ? "" : "h3-collapsed")"><a class="@(noTabLayout ? "collapsible-header" : "")" @onclick="(() => IsOpen = (!noTabLayout || !IsOpen))">Start a Game</a></h3>
+	@if (IsOpen)
+	{
+		<p>These presets allow you to get into the game and start playing instantly.</p>
 
-				private string presetName = "Untitled";
-				private string[] localPresets = { };
+		<h4>Standard Presets</h4>
+		<a class="preset-button styled-button @((selectedPresetId == "Beginner") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Beginner"))">Select</a>
+		<p class="preset-paragraph"><strong>Beginner:</strong> Good for first-time players as it crafts an easy-to-understand run for those looking to get into randomizers.</p>
 
-				protected override async void OnInitialized()
-				{
-					var uri = new Uri(NavigationManager.Uri);
-					if (!QueryHelpers.ParseQuery(uri.Query).TryGetValue("f", out var flags))
-					{
-						await LoadStandardPreset("default");
-					}
+		<a class="preset-button styled-button @((selectedPresetId == "Improved_Vanilla") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Improved_Vanilla"))">Select</a>
+		<p class="preset-paragraph"><strong>Improved Vanilla:</strong> Puts in bug fixes to the original game but maintains the overall basic FF experience.</p>
 
-					await UpdatePresets();
-				}
+		<a class="preset-button styled-button @((selectedPresetId == "Entrance_Floor_Shuffle") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Entrance_Floor_Shuffle"))">Select</a>
+		<p class="preset-paragraph"><strong>Floor and Entrance Shuffle:</strong> Mixes things up by shuffling all entrances and floors.</p>
 
-				async Task UpdatePresets()
-				{
-					localPresets = await JSRuntime.InvokeAsync<string[]>("listLocalPresets");
-					StateHasChanged();
-				}
+		<a class="preset-button styled-button @((selectedPresetId == "Shard_Hunt") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Shard_Hunt"))">Select</a>
+		<p class="preset-paragraph"><strong>Shard Hunt:</strong> Instead of lighting the fours orbs, seek out and collect shards hidden in random treasure chests to remove the Black Orb.</p>
 
-				async Task LoadStandardPreset(string name)
-				{
-					var json = await JSRuntime.InvokeAsync<string>("computePreset", name);
-					LoadFromJson(json);
-				}
+		<a class="preset-button styled-button @((selectedPresetId == "Chaos_Rush") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Chaos_Rush"))">Select</a>
+		<p class="preset-paragraph"><strong>Chaos Rush:</strong> Gives you free orbs, removes the requirement for Key and Lute, and tasks you with simply getting to Chaos, and killing them, as fast as possible.</p>
 
-				async Task LoadLocalPreset(string name)
-				{
-					var json = await JSRuntime.InvokeAsync<string>("loadLocalPreset", name);
-					LoadFromJson(json);
-				}
+		<a class="preset-button styled-button @((selectedPresetId == "Chaos_Rampage") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Chaos_Rampage"))">Select</a>
+		<p class="preset-paragraph"><strong>Chaos Rampage:</strong> Similar to Chaos Rush, but all four fiends need to be defeated.</p>
 
-				public void LoadFromJson(string json)
-				{
-					Flags.Preset preset = System.Text.Json.JsonSerializer.Deserialize<Flags.Preset>(json);
-					Flags.Flags = preset.Flags;
-					SetStatusMessage.Invoke(preset.Name + " preset successfully loaded.");
-					presetName = preset.Name;
-					StateHasChanged();
-				}
+		<a class="preset-button styled-button @((selectedPresetId == "Anti_Double_Bingo") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Anti_Double_Bingo"))">Select</a>
+		<p class="preset-paragraph"><strong>Double-Anti Bingo:</strong> Light and fast flags that, when paired with the FFR Winter DAB Bingo Board (available on the <a href="https://bingosync.com/">Bingosync site</a>) put an emphasis on exploration and strategy to complete your DAB requirements.</p>
 
-				async Task DeleteLocalPreset(string presetName)
-				{
-					await JSRuntime.InvokeAsync<string>("deleteLocalPreset", presetName);
-					SetStatusMessage.Invoke(presetName + " local preset deleted.");
-					await UpdatePresets();
-				}
+		<h4>User Presets</h4>
+		<p>
+			@foreach (var preset in localPresets)
+			{
+				<span style="white-space:nowrap" @key="preset" class="oneline">
+					<a class="preset-button styled-button @((selectedPresetId == @preset) ? "clicked" : "")" @onclick="@(() => LoadLocalPreset(@preset))">@preset</a>
+					<a class="preset-button styled-button preset-close" @onclick="@(() => DeleteLocalPreset(@preset))">X</a>
+				</span>
+			}
+		</p>
 
-				async Task SavePreset(bool download)
-				{
-					System.Text.Json.JsonSerializerOptions options = new System.Text.Json.JsonSerializerOptions();
-					options.IgnoreReadOnlyProperties = true;
-					options.WriteIndented = true;
+		<p>
+			Current:
+			<input type="text" id="presetNameInput" @bind="presetName" />
+		</p>
 
-					Flags.Preset preset = new Flags.Preset();
-					preset.Name = presetName;
-					preset.Flags = Flags.Flags;
+		<p>
+			<a class="styled-button" @onclick="@(() => SavePreset(false))">Save Preset</a>
+			<a class="styled-button" @onclick="@(() => SavePreset(true))">Export to JSON</a>
+		</p>
 
-					var json = System.Text.Json.JsonSerializer.Serialize(preset, options);
-					var encoded = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(json));
+		<p>
+			Load from JSON:
+			<input type="file" id="presetInput" @onchange="OnPresetChanged" />
+		</p>
+		<div class="clear-it"></div>
+	}
+</div>
 
-					if (download)
-					{
-						await JSRuntime.InvokeAsync<object>("downloadROM", $"{presetName}.json", encoded);
-					}
-					else
-					{
-						await JSRuntime.InvokeAsync<object>("storePreset", presetName, json);
-						if (localPresets.Contains(presetName))
-						{
-							SetStatusMessage.Invoke($"Saved preset {presetName} updated.");
-						}
-						else
-						{
-							SetStatusMessage.Invoke($"Saved {presetName} to local presets.");
-						}
-						await UpdatePresets();
-					}
-				}
 
-				async Task OnPresetChanged(ChangeEventArgs e)
-				{
-					try
-					{
-						var json = await JSRuntime.InvokeAsync<string>("handlePresetSelect", "presetInput");
-						var preset = System.Text.Json.JsonSerializer.Deserialize<Flags.Preset>(json);
-						Flags.Flags = preset.Flags;
-						presetName = preset.Name;
-						SetStatusMessage.Invoke($"{preset.Name} preset successfully loaded from json file.");
-					}
-					catch (Exception ex)
-					{
-						SetStatusMessage.Invoke("Preset load failed: " + ex.ToString());
-					}
-					StateHasChanged();
-				} }
+@code { [Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }
+	[Parameter] public Action<string> SetStatusMessage { get; set; }
+	[Parameter] public Action SetDefaultLoaded { get; set; }
+	[Parameter] public string StatusMessage { get; set; }
+	[Parameter] public bool loadDefault { get; set; }
+	[Parameter] public string[] localPresets { get; set; } = { };
+	[Parameter] public bool noTabLayout { get; set; }
+	[Parameter] public bool IsOpen { get; set; } = true;
+	[Parameter] public Action<string> SetPresetName { get; set; }
+	[Parameter] public string presetName { get; set; }
+
+	private string selectedPresetId = "";
+
+	protected override async void OnInitialized()
+	{
+		if(loadDefault)
+		{
+			var uri = new Uri(NavigationManager.Uri);
+			if (!QueryHelpers.ParseQuery(uri.Query).TryGetValue("f", out var flags))
+			{
+				await LoadStandardPreset("default");
+			}
+			SetDefaultLoaded();
+		}
+	}
+
+	protected override async Task OnInitializedAsync()
+	{
+		await UpdatePresets();
+	}
+
+	async Task UpdatePresets()
+	{
+		localPresets = await JSRuntime.InvokeAsync<string[]>("listLocalPresets");
+	}
+
+	async Task LoadStandardPreset(string name)
+	{
+		selectedPresetId = name;
+		var json = await JSRuntime.InvokeAsync<string>("computePreset", name);
+		LoadFromJson(json);
+	}
+
+	async Task LoadLocalPreset(string name)
+	{
+		selectedPresetId = name;
+		var json = await JSRuntime.InvokeAsync<string>("loadLocalPreset", name);
+		LoadFromJson(json);
+	}
+
+	public void LoadFromJson(string json)
+	{
+		Flags.Preset preset = System.Text.Json.JsonSerializer.Deserialize<Flags.Preset>(json);
+		Flags.Flags = preset.Flags;
+		SetStatusMessage.Invoke(preset.Name + " preset successfully loaded.");
+		presetName = preset.Name;
+		SetPresetName(presetName);
+		StateHasChanged();
+	}
+
+	async Task DeleteLocalPreset(string presetName)
+	{
+		await JSRuntime.InvokeAsync<string>("deleteLocalPreset", presetName);
+		SetStatusMessage.Invoke(presetName + " local preset deleted.");
+		await UpdatePresets();
+	}
+
+	async Task SavePreset(bool download)
+	{
+		System.Text.Json.JsonSerializerOptions options = new System.Text.Json.JsonSerializerOptions();
+		options.IgnoreReadOnlyProperties = true;
+		options.WriteIndented = true;
+
+		Flags.Preset preset = new Flags.Preset();
+		preset.Name = presetName;
+		SetPresetName(presetName);
+		preset.Flags = Flags.Flags;
+
+		var json = System.Text.Json.JsonSerializer.Serialize(preset, options);
+		var encoded = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(json));
+
+		if (download)
+		{
+			await JSRuntime.InvokeAsync<object>("downloadROM", $"{presetName}.json", encoded);
+		}
+		else
+		{
+			await JSRuntime.InvokeAsync<object>("storePreset", presetName, json);
+			if (localPresets.Contains(presetName))
+			{
+				SetStatusMessage.Invoke($"Saved preset {presetName} updated.");
+			}
+			else
+			{
+				SetStatusMessage.Invoke($"Saved {presetName} to local presets.");
+			}
+			await UpdatePresets();
+		}
+	}
+
+	async Task OnPresetChanged(ChangeEventArgs e)
+	{
+		try
+		{
+			var json = await JSRuntime.InvokeAsync<string>("handlePresetSelect", "presetInput");
+			var preset = System.Text.Json.JsonSerializer.Deserialize<Flags.Preset>(json);
+			Flags.Flags = preset.Flags;
+			presetName = preset.Name;
+			SetPresetName(presetName);
+			SetStatusMessage.Invoke($"{preset.Name} preset successfully loaded from json file.");
+		}
+		catch (Exception ex)
+		{
+			SetStatusMessage.Invoke("Preset load failed: " + ex.ToString());
+		}
+		StateHasChanged();
+	}
+}

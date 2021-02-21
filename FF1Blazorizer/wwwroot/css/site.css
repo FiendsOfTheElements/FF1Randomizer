@@ -1,15 +1,29 @@
-﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
+﻿/* @import url('open-iconic/font/css/open-iconic-bootstrap.min.css'); */
 
 /* import the relevent site css file, this line replaced when building by the circle config */
-@import url('main.css');
+/* @import url('main.css');*/
 @import url('slider.css');
 @import url('mainmenu.css');
+    
 
 html, body {
+    all: unset;
     font-family: 'Lucida Console', Monaco, monospace;
     user-select: none;
 }
 
+.row {
+    margin-left: 0px;
+    margin-right: 0px;
+}
+
+/*
+*, ::after, ::before {
+    box-sizing: unset;
+}
+    */
+
+    /*
 app {
     position: relative;
     display: flex;
@@ -35,7 +49,7 @@ input {
 .main {
     flex: 1;
 }
-
+*/
 .update-notification {
     background-color: #30bb6b;
     border-radius: 15px;
@@ -44,7 +58,8 @@ input {
     margin-top: 1%;
     max-width: 96%;
     padding: 0.5rem;
-    font-family: 'Press Start 2P';
+    font-size: 1rem;
+    font-weight: bold;
     z-index: 101;
 }
 
@@ -53,6 +68,7 @@ input {
     cursor: url(https://unpkg.com/nes.css/assets/cursor-click.png),pointer;
 }
 
+/*
 .nav-item {
     font-size: 0.9rem;
     padding-bottom: 0.5rem;
@@ -85,7 +101,26 @@ input {
 .nes-btn:active {
     transform: translateY(2px);
 }
+*/
 
+.tighter {
+    padding-right: 5px;
+    padding-left: 5px;
+}
+
+.col-slider {
+    max-width: 200px;
+    min-width: 200px;
+    position: relative;
+    width: 100%;
+    min-height: 1px;
+    padding-right: 0px;
+    padding-left: 0px;
+}
+
+.row-seperator {
+    height: 10px;
+}
 .content {
     padding-top: 1.1rem;
     padding-bottom: 1.1rem;
@@ -109,17 +144,28 @@ h1 {
     background-color: rgba(255, 255, 255, 0.1);
 }
 
+.alloneline {
+    display: inline;
+}
+
+.oneline {
+    display: inline-block;
+}
+
 @media (max-width: 849.98px) {
     .main .top-row {
         display: none;
     }
+     
+}
+
 
     .table-wrapper {
         overflow-x: auto;
         max-width: calc(100vw);
         margin: 0 auto;
     }
-}
+
 
 @media (min-width: 850px) {
     app {
@@ -140,16 +186,28 @@ h1 {
 .container {
     margin-left: 0;
     margin-right: 0;
-    margin-top: 15px;
+    margin-top: 0px;
+    margin-bottom: 5px;
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+div.noleftpadding {
+    padding-left: 0px;
+}
+
+div.norightpadding {
+    padding-right: 0px;
 }
 
 /* FFR */
-
-body {
+/*
+body { */
     /*
     background-color: #3cbcfc;
     background-image: url("/images/bg.jpg");
         */
+/*
     background-color: #000000;
     background-size: cover;
     background-repeat: no-repeat;
@@ -157,7 +215,8 @@ body {
     background-attachment: fixed;
     line-height: initial;
     font-size: 18px;
-}
+}*/
+
 
 #welcome {
     margin-top: 100px;
@@ -179,7 +238,7 @@ body {
 }
 
 .checkbox-cell {
-    white-space: nowrap;
+    white-space: normal;
     overflow: hidden;
     min-height: 20px;
     margin: 0;
@@ -191,14 +250,32 @@ body {
     text-overflow: ellipsis;
     overflow-x: hidden;
     vertical-align: top;
-    margin: 2px 0 5px 0;
+    margin: 3px 6px 5px 0;
+    text-align: justify;
 }
 
 .dropdown-cell {
     white-space: normal;
 }
 
+.collapsing {
+    height: auto;
+}
 
+.tabcontent.collapsed {
+    min-height: 40px;
+    max-height: 40px;
+}
+
+.h3-collapsed {
+    border-bottom: none;
+    padding-bottom: 0px;
+    margin-bottom: 0px;
+}
+
+.collapsible-header {
+    cursor: pointer;
+}
 .slider-cell {
     height: 35px;
     margin: 0;
@@ -214,10 +291,13 @@ body {
     color: grey;
 }
 
-td {
+.td-party{
     padding: 12px;
     text-align: center;
-    min-width: 72px;
+    min-width: 42px;
+    padding-left: 5px;
+    padding-right: 5px;
+    max-width:72px;
 }
 
 .right-bordered {
@@ -230,8 +310,15 @@ input[type=checkbox] {
     cursor: pointer;
 }
 
+input[type="file"] {
+    white-space: normal;
+    word-wrap: break-word;
+    width: 95%;
+}
+
 select {
     margin-bottom: 6px;
+    margin-right: 6px;
 }
 
 tr.odd {
@@ -280,14 +367,15 @@ tr.bottom-borderd {
     width: 15px;
     cursor: default;
     border-radius: 2px;
+    margin: 2px;
 }
 
 .tri-yes {
-    color: #54bc52;
+    color: #b1ffbc;
 }
 
 .tri-maybe {
-    color: #c8916e;
+    color: #ffddb1;
 }
 
 .ffr-tooltip {
@@ -306,11 +394,24 @@ tr.bottom-borderd {
 
 .ffr-tooltip-close {
     position: absolute;
+    background-color: #e76e55;
     right: 2px;
 }
 
+.ffr-tooltip-close:hover {
+    background-color: #d75e45;
+}
+
+.ffr-tooltip-content.framed-content {
+    background-color: #002050;
+}
+
+.tabcontent.no-tab {
+    margin-left: 0px;
+}
 .btn-group-help {
     opacity: 0.5;
+    margin: 2px;
 }
 
 .btn-group-help:hover {
@@ -318,7 +419,7 @@ tr.bottom-borderd {
 }
 
 .job {
-    background-size: 48px;
+    background-size: 32px;
     background-repeat: no-repeat;
     background-position: center;
 }
