@@ -1,38 +1,44 @@
 ﻿@using System.Net.Http.Json
 @inject HttpClient  Http
-<div>
-	<NavLink class="ffr-nav" href="" Match=NavLinkMatch.All>
-		@(VersionString)
-	</NavLink>
-	<NavLink class="ffr-nav" href="Randomize">
-		<span class="oi oi-random" aria-hidden="true"></span> Randomize
-	</NavLink>
-	<NavLink class="ffr-nav" href="WhatsNew">
-		<span class="oi oi-puzzle-piece" aria-hidden="true"></span> Help
-	</NavLink>
-	<NavLink class="ffr-nav" href="javascript:showPWAInstall()">
-		<span class="oi oi-hard-drive" aria-hidden="true"></span> Install
-	</NavLink>
-	<NavLink class="ffr-nav" href="https://github.com/FiendsOfTheElements/FF1Randomizer/issues">
-		<span class="oi oi-bug" aria-hidden="true"></span> Issues
-	</NavLink>
-	<NavLink class="ffr-nav" href="About">
-		<span class="oi oi-book" aria-hidden="true"></span> About
-	</NavLink>
+<div id="top-nav">
+	<div id="orbs">
+		<div class="orb-image @(litOrbs[0] ? "litUL" : "")" @onclick="@(() => SwitchOrb(0))"></div><div class="orb-image @(litOrbs[1] ? "litUR" : "")" @onclick="@(() => SwitchOrb(1))"></div><span class="orb-image @(litOrbs[2] ? "litLL" : "")" @onclick="@(() => SwitchOrb(2))"></span><span class="orb-image @(litOrbs[3] ? "litLR" : "")" @onclick="@(() => SwitchOrb(3))"></span>
+	</div>
+
+	<nav id="site-nav">
+		<span class="nav-item-main" id="randomize"><a href="Randomize">Randomize</a></span>
+		<span class="nav-item-main" id="about"><a href="About">About</a></span>
+		<span class="nav-item-main" id="help"><a href="Resources">Resources</a></span>
+		<span class="nav-item-main" id="help"><a href="WhatsNew">What's New</a></span>
+		<span class="nav-item-main" id="issues"><a href="https://github.com/FiendsOfTheElements/FF1Randomizer/issues">Issues</a></span>
+		<span class="nav-item-main" id="install"><a href="javascript:showPWAInstall()">Install</a></span>
+	</nav>
 </div>
+
 @code {
-	string VersionString = "";
-	protected override void OnInitialized()
+	[Parameter] public EventCallback<bool> ChaosTriggered { get; set; }
+
+	private bool[] litOrbs = { false, false, false, false };
+
+	private List<int> orbOrder = new List<int>();
+
+	private int[] orbsToMatch = { 4, 7, 0, 5, 4, 6, 3, 7 };
+
+	private void SwitchOrb(int orb)
 	{
-		VersionString = FF1Lib.FFRVersion.Version;
-		if (FF1Lib.FFRVersion.Branch == "dev")
+		litOrbs[orb] = !litOrbs[orb];
+		orbOrder.Add(litOrbs[orb] ? orb + 4 : orb);
+		if (orbOrder.SequenceEqual(orbsToMatch))
 		{
-			VersionString += " Beta";
-		}
-		else if (FF1Lib.FFRVersion.Branch != "master")
-		{
-			VersionString = FF1Lib.FFRVersion.Branch;
+			OnChaosTrigerred();
+
 		}
 		StateHasChanged();
 	}
+
+	private Task OnChaosTrigerred()
+	{
+		return ChaosTriggered.InvokeAsync(true);
+	}
+
 }

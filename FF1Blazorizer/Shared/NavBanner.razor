@@ -1,0 +1,24 @@
+﻿@using System.Net.Http.Json
+@inject HttpClient  Http
+	<div id="logo">
+		<span class="nav-text">Final Fantasy Randomizer</span>
+	</div>
+
+	<aside id="version">@VersionString</aside>
+
+	@code {
+		string VersionString = "";
+		protected override void OnInitialized()
+		{
+			VersionString = "v" + FF1Lib.FFRVersion.Version;
+			if (FF1Lib.FFRVersion.Branch == "dev")
+			{
+				VersionString += " Beta";
+			}
+			else if (FF1Lib.FFRVersion.Branch != "master")
+			{
+				VersionString = FF1Lib.FFRVersion.Branch;
+			}
+			StateHasChanged();
+		}
+	}

@@ -17,7 +17,7 @@
 
 		"ShardHunt": false,
 		"ExtraShards": false,
-		"TransformFinalFormation": false,
+		"TransformFinalFormation": 0,
 		"ChaosRush": false,
 		"ShortToFR": false,
 		"PreserveFiendRefights": false,
