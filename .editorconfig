@@ -40,3 +40,6 @@ dotnet_diagnostic.IDE0046.severity = suggestion
 dotnet_diagnostic.IDE0058.severity = none
 
 dotnet_diagnostic.IDE0078.severity = none
+
+# IDE0066: Convert switch statement to expression
+dotnet_diagnostic.IDE0066.severity = suggestion
