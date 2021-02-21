@@ -1,14 +1,5 @@
 root = true
 
-[*]
-insert_final_newline = true
-trim_trailing_whitespace = true
-
-# Default severity for analyzer diagnostics with category 'Style' (escalated to build warnings)
-dotnet_analyzer_diagnostic.category-Style.severity = error
-# IDE0005: Using directive is unnecessary.
-dotnet_diagnostic.IDE0005.severity = suggestion
-
 [*.{cs,xaml,cshtml,razor}]
 indent_size = 4
 indent_style = tab
@@ -32,3 +23,18 @@ end_of_line = lf
 [*.{sh}]
 end_of_line = lf
 
+[*]
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# Default severity for analyzer diagnostics with category 'Style' (escalated to build warnings)
+dotnet_analyzer_diagnostic.category-Style.severity = error
+
+# IDE0005: Using directive is unnecessary.
+dotnet_diagnostic.IDE0005.severity = suggestion
+
+# IDE0046: Convert to conditional expression
+dotnet_diagnostic.IDE0046.severity = suggestion
+
+# IDE0058: Expression value is never used
+dotnet_diagnostic.IDE0058.severity = none
