@@ -289,6 +289,8 @@ namespace FF1Lib
 						case "Smith":
 							_npcs[(int)ObjectId.Smith].talkarray[(int)TalkArrayPos.item_id] = (byte)item.Item;
 							break;
+						default:
+							break;
 					}
 				}
 			}
@@ -501,8 +503,10 @@ namespace FF1Lib
 			var formatted = itemnames[(byte)item].TrimEnd(' ');
 
 			if(specialItem)
-			{ 
+			{
+#pragma warning disable IDE0010 // Add missing cases
 				switch (item)
+#pragma warning restore IDE0010 // Add missing cases
 				{
 					case Item.Ship:
 						formatted = FF1Text.BytesToText(Get(0x2B5D0, 8)).TrimEnd(' ');

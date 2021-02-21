@@ -121,7 +121,8 @@ namespace FF1Lib
 		public void EnableShardHunt(MT19337 rng, TalkRoutines talkroutines, ShardCount count)
 		{
 			int goal = 16;
-			switch (count) {
+			switch (count)
+			{
 				case ShardCount.Count16: goal = 16; break;
 				case ShardCount.Count20: goal = 20; break;
 				case ShardCount.Count24: goal = 24; break;
@@ -131,6 +132,8 @@ namespace FF1Lib
 				case ShardCount.Range16_24: goal = rng.Between(16, 24); break;
 				case ShardCount.Range24_32: goal = rng.Between(24, 32); break;
 				case ShardCount.Range16_36: goal = rng.Between(16, 36); break;
+				default:
+					break;
 			}
 
 			string shardName = ShardNames.PickRandom(rng);

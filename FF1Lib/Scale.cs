@@ -317,7 +317,7 @@ namespace FF1Lib
 					ScaleFactor = 5;
 					break;
 				case ProgressiveScaleMode.OrbProgressiveSlow:
-					ScaleFactor = (byte) (8 * ShardMultiplier); // +12.5 per orb
+					ScaleFactor = (byte)(8 * ShardMultiplier); // +12.5 per orb
 					break;
 				case ProgressiveScaleMode.OrbProgressiveMedium:
 					ScaleFactor = (byte)(4 * ShardMultiplier); // +25 per orb
@@ -327,6 +327,8 @@ namespace FF1Lib
 					break;
 				case ProgressiveScaleMode.OrbProgressiveVFast:
 					ScaleFactor = ShardMultiplier; // +100 per orb
+					break;
+				default:
 					break;
 			}
 

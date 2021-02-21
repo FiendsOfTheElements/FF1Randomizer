@@ -991,6 +991,8 @@ namespace FF1Lib
 				case PoolSize.Size6: size = 6; sizebyte = Blob.FromHex("FC"); break;
 				case PoolSize.Size7: size = 7; sizebyte = Blob.FromHex("FE"); break;
 				case PoolSize.Size8: size = 8; sizebyte = Blob.FromHex("FF"); break;
+				default:
+					break;
 			}
 
 			var mainClassList = new List<FF1Class>();
@@ -1670,6 +1672,8 @@ namespace FF1Lib
 				case int n when (n == 0x0D):
 					routineDesc = routine.Find(x => x.Item1 == spelldata[(int)spellDataBytes.Routine]).Item2 + "\n +" + spelldata[(int)spellDataBytes.Effect] + " ATK\n +" + spelldata[(int)spellDataBytes.Accuracy] + " HIT";
 					break;
+				default:
+					break;
 			}
 
 			var elementString = (spelldata[(int)spellDataBytes.Element] == 0x40 ? "" : " ") + element.Find(x => x.Item1 == spelldata[(int)spellDataBytes.Element]).Item2;
@@ -1852,6 +1856,8 @@ namespace FF1Lib
 						break;
 					case bossDracolich:
 						FormationsLists[i] = encIronGol + 0x80;
+						break;
+					default:
 						break;
 				}
 			}

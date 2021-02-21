@@ -508,16 +508,17 @@ namespace FF1Lib
 
 			// If the Coneria Entrance goes *directly* to a town, we make its index the one that
 			// gets the guaranteed PURE and SOFT. 
-			switch (shuffled[OverworldTeleportIndex.Coneria].Destination)
+#pragma warning disable IDE0072 // Add missing cases
+			ConeriaTownEntranceItemShopIndex = shuffled[OverworldTeleportIndex.Coneria].Destination switch
+#pragma warning restore IDE0072 // Add missing cases
 			{
-				case MapLocation.Pravoka: ConeriaTownEntranceItemShopIndex = 1;	break;
-				case MapLocation.Elfland: ConeriaTownEntranceItemShopIndex = 2;	break;
-				case MapLocation.CrescentLake: ConeriaTownEntranceItemShopIndex = 3; break;
-				case MapLocation.Gaia: ConeriaTownEntranceItemShopIndex = 4; break; // Gaia before Onrac!
-				case MapLocation.Onrac: ConeriaTownEntranceItemShopIndex = 5; break;
-				default: ConeriaTownEntranceItemShopIndex = 0; break;
-			}
-
+				MapLocation.Pravoka => 1,
+				MapLocation.Elfland => 2,
+				MapLocation.CrescentLake => 3,
+				MapLocation.Gaia => 4,
+				MapLocation.Onrac => 5,
+				_ => 0,
+			};
 			if (flags.Spoilers || Debugger.IsAttached)
 			{
 				Console.WriteLine($"OverworldMap::ShuffleEntrancesAndFloors() required {sanity} iterations.");

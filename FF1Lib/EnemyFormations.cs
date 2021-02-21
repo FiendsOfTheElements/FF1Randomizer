@@ -215,6 +215,12 @@ namespace FF1Lib
 					finalBattle[PalettesOffset + 1] = 0x00;
 					finalBattle[PaletteAsignmentOffset] = 0x01; // Palette Assignment in top nibble, 1 in bottom for unrunnable.
 					break;
+				case FinalFormation.None:
+					break;
+				case FinalFormation.Random:
+					break;
+				default:
+					break;
 			}
 
 			Put(FormationsOffset + ChaosFormationIndex * FormationSize, finalBattle);

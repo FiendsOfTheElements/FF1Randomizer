@@ -564,11 +564,14 @@ namespace FF1Lib
 				case AutohitThreshold.Autohit300to900: limit = (short)(rng.Between(1, 3) * 300); break;
 				case AutohitThreshold.Autohit300to1200: limit = (short)(rng.Between(1, 4) * 300); break;
 				case AutohitThreshold.Any:
-				{
-					short[] any = { 300, 600, 900, 1200, short.MaxValue };
-					limit = any.PickRandom(rng);
+					{
+						short[] any = { 300, 600, 900, 1200, short.MaxValue };
+						limit = any.PickRandom(rng);
+						break;
+					}
+
+				default:
 					break;
-				}
 			}
 
 			// Set the low and high bytes of the limit which are then loaded and compared to the targets hp.

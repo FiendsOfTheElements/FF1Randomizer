@@ -1082,7 +1082,7 @@ namespace FF1Lib
 				if (i == en.imp_encounter || i == en.phantom_encounter || i == en.warmech_encounter)
 					continue; // don't do these encounters (we will roll them as special exceptions)
 				FormationInfo f = new FormationInfo(); // this is the formation we are hoping to write
-				// we will start narrowing down the list of monsters we can feature
+													   // we will start narrowing down the list of monsters we can feature
 				List<byte> availablemons = new List<byte> { };
 				// first, we check if all monsters have been featured yet
 				if (uniqueEnemyIDs.Where(NotFeatured).Count() == 0)
@@ -1094,7 +1094,8 @@ namespace FF1Lib
 					}
 				}
 				// first, we determine which zones we have yet to reach the minimum for.  if they have yet to reach the minimum, they can join the union if the mon hasn't been featured yet
-				for (int j = 0; j < en.zone.Count; ++j)			{
+				for (int j = 0; j < en.zone.Count; ++j)
+				{
 					if (en.zone[j].forms.Count < en.zone[j].min)
 					{
 						availablemons = availablemons.Union(en.zone[j].zonemons.Where(NotFeatured)).ToList();
@@ -1124,7 +1125,7 @@ namespace FF1Lib
 				// now we pick one of the availablemons at random as our first mon
 				f.Top = availablemons.PickRandom(rng);
 				f.tileset = enemy[f.Top].tileset; // and we pick the corresponding tileset
-				// we need to select which zone we are aiming to fill on the B-Side (and if we require a Large-only or Small-only formation to do that, we set the shape of the formation accordingly)
+												  // we need to select which zone we are aiming to fill on the B-Side (and if we require a Large-only or Small-only formation to do that, we set the shape of the formation accordingly)
 				List<int> availablezones = en.enemyZones[f.Top].Where(index => en.zone[index].forms.Count < en.zone[index].min).ToList();
 				if (availablezones.Count == 0) // if there are no zones available that haven't reached their mincount, check for maxcount instead
 					availablezones = en.enemyZones[f.Top].Where(index => en.zone[index].forms.Count < en.zone[index].max).ToList();
@@ -1158,7 +1159,7 @@ namespace FF1Lib
 				}
 				else if (f.shape == 0x01)
 				{
-					availablemons = en.enemiesInTileset[f.tileset].Where(mon=> LargeAndNotFeatured(mon, f.Top)).ToList();
+					availablemons = en.enemiesInTileset[f.tileset].Where(mon => LargeAndNotFeatured(mon, f.Top)).ToList();
 					if (availablemons.Count == 0)
 						availablemons = en.enemiesInTileset[f.tileset].Where(mon => Large(mon) && mon != f.Top).ToList();
 
@@ -1173,7 +1174,7 @@ namespace FF1Lib
 						availablemons = en.enemiesInTileset[f.tileset].Where(mon => mon != f.Top).ToList(); // if all other mons in this tileset have been featured, all mons in this tileset are eligible as a second mon
 				}
 				f.id[1] = availablemons.PickRandom(rng); // and pick a random mon from the available IDs to be mon 2 (and the primary monster of the A-side)
-				// we will attempt to hit a zone with the A-Side but if we can't we'll just try to make an encounter as close as possible to the goal
+														 // we will attempt to hit a zone with the A-Side but if we can't we'll just try to make an encounter as close as possible to the goal
 				availablezones = en.enemyZones[f.id[1]].Where(index => en.zone[index].forms.Count < en.zone[index].min).ToList();
 				if (availablezones.Count == 0) // if there are no zones available that haven't reached their mincount, check for maxcount instead
 					availablezones = en.enemyZones[f.id[1]].Where(index => en.zone[index].forms.Count < en.zone[index].max).ToList();
@@ -1205,6 +1206,8 @@ namespace FF1Lib
 						break;
 					case 0x01:
 						availablemons = availablemons.Where(Large).ToList();
+						break;
+					default:
 						break;
 				}
 				if (availablemons.Count > 0)
@@ -1485,6 +1488,8 @@ namespace FF1Lib
 					smallLimit = 6;
 					largeLimit = 2;
 					break;
+				default:
+					break;
 			}
 			if (Large(f.id[p]))
 				largeLimit--;
@@ -1649,7 +1654,7 @@ namespace FF1Lib
 			f.shape = shape;
 			f.monMin[2] = count;
 			f.monMax[2] = count; // always produce the necessary number of enemies
-			// draw mons for B-Side
+								 // draw mons for B-Side
 			List<byte> availablemons = en.enemiesInTileset[f.tileset].ToList();
 			switch (f.shape)
 			{
@@ -1658,6 +1663,8 @@ namespace FF1Lib
 					break;
 				case 0x01:
 					availablemons = availablemons.Where(Large).ToList();
+					break;
+				default:
 					break;
 			}
 			if (availablemons.Count > 0)
@@ -1721,6 +1728,8 @@ namespace FF1Lib
 				case 0x01:
 					availablemons = availablemons.Where(Large).ToList();
 					break;
+				default:
+					break;
 			}
 			f.id[1] = availablemons.PickRandom(rng);
 			f.pal1 = enemy[f.Top].pal;
@@ -1733,6 +1742,8 @@ namespace FF1Lib
 					break;
 				case 0x01:
 					availablemons = availablemons.Where(Large).ToList();
+					break;
+				default:
 					break;
 			}
 			if (availablemons.Count > 0)
@@ -1750,7 +1761,7 @@ namespace FF1Lib
 			f.surprise = 4;
 			f.unrunnable_a = rng.Between(0, EnemizerUnrunnabilityWeight) + zoneA >= EnemizerUnrunnabilityWeight + 3 ? true : false;
 			f.unrunnable_b = true; // the trap side is always unrunnable
-			// put on the finishing touches and log and compress this formation
+								   // put on the finishing touches and log and compress this formation
 			ENF_AssignPicAndPaletteBytes(enemy, f);
 			en.LogFeatured(f);
 			return f.compressData();
@@ -1822,7 +1833,7 @@ namespace FF1Lib
 			enemy.num_hits = rng.Between(1, 1 + (enemy.tier > 5 ? 5 : enemy.tier));
 			// roll valid damage tiers based on num_hits
 			int minDamageTier = 4 + enemy.tier / 3 - enemy.num_hits;
-			if(minDamageTier < 1)
+			if (minDamageTier < 1)
 				minDamageTier = 1;
 			int maxDamageTier = 8 - enemy.num_hits;
 			if (enemy.Large)
@@ -2520,7 +2531,11 @@ namespace FF1Lib
 								case 51:
 									enemyNames[i] = "WarMECH";
 									break;
+								default:
+									break;
 							}
+							break;
+						default:
 							break;
 					}
 				}
@@ -2982,6 +2997,8 @@ namespace FF1Lib
 									case 2:
 										enemy[i].elem_resist &= 0b11101111;
 										break;
+									default:
+										break;
 								}
 							}
 							enemy[i].elem_weakness = 0b00000000;
@@ -3009,6 +3026,8 @@ namespace FF1Lib
 							enemy[i].monster_type = 0b10000000;
 							enemy[i].elem_resist = 0b00111011;
 							enemy[i].elem_weakness = 0b01000000;
+							break;
+						default:
 							break;
 					}
 					// generate perk eligibility
@@ -3106,6 +3125,8 @@ namespace FF1Lib
 									enemy[i].atk_elem = 0b00000010;
 									enemy[i].monster_type |= 0b10010000;
 									break;
+								default:
+									break;
 							}
 							enemyNames[i] = classModifier + enemyNames[i]; // change the enemy's name
 							monsterClassVariants[newEnemyImageLUT[enemy[i].image]].Remove(classModifier); // remove this variant from the list of variants available for this enemy image
@@ -3139,6 +3160,8 @@ namespace FF1Lib
 												enemy[i].absorb *= 11;
 												enemy[i].absorb /= 10;
 												break;
+											default:
+												break;
 										}
 										enemy[i].exp *= 103;
 										enemy[i].exp /= 100;
@@ -3157,6 +3180,8 @@ namespace FF1Lib
 											case 2:
 												enemy[i].absorb *= 9;
 												enemy[i].absorb /= 10;
+												break;
+											default:
 												break;
 										}
 										enemy[i].exp *= 97;
@@ -3189,6 +3214,8 @@ namespace FF1Lib
 												else
 													enemy[i].elem_resist |= 0b00010000;
 												break;
+											default:
+												break;
 										}
 										enemy[i].exp *= 104;
 										enemy[i].exp /= 100;
@@ -3220,6 +3247,8 @@ namespace FF1Lib
 												else
 													enemy[i].elem_weakness |= 0b00010000;
 												break;
+											default:
+												break;
 										}
 										if (didPerkRoll)
 										{
@@ -3245,6 +3274,8 @@ namespace FF1Lib
 											case 3:
 												enemy[i].elem_resist |= 0b00000001;
 												enemy[i].elem_weakness &= 0b11111110;
+												break;
+											default:
 												break;
 										}
 										enemy[i].exp *= 103;
@@ -3276,6 +3307,8 @@ namespace FF1Lib
 													enemy[i].elem_resist &= 0b11111110;
 												else
 													enemy[i].elem_weakness |= 0b00000001;
+												break;
+											default:
 												break;
 										}
 										if (didPerkRoll)
@@ -3330,6 +3363,10 @@ namespace FF1Lib
 											enemy[i].exp *= 51;
 											enemy[i].exp /= 50;
 										}
+										break;
+									case MonsterPerks.NUM_PERKS:
+										break;
+									default:
 										break;
 								}
 								num_perks++;
@@ -3608,7 +3645,7 @@ namespace FF1Lib
 				int[] tierchance = new int[5];
 				int[] skilltierchance = new int[4];
 				tierchance[0] = 0; tierchance[1] = 0; tierchance[2] = 0; tierchance[3] = 0; tierchance[4] = 0;
-				skilltierchance[0] = 0; skilltierchance[1] = 0; skilltierchance[2] = 0; skilltierchance[3] = 0; 
+				skilltierchance[0] = 0; skilltierchance[1] = 0; skilltierchance[2] = 0; skilltierchance[3] = 0;
 				switch (enemy[i].tier)
 				{
 					case 0:
@@ -3651,9 +3688,11 @@ namespace FF1Lib
 						tierchance[3] = 7;
 						tierchance[4] = 2;
 						break;
+					default:
+						break;
 				}
 				// cycle through skills, replacing each skill with a tier appropriate skill
-				for(byte j = 0; j < 4; ++j)
+				for (byte j = 0; j < 4; ++j)
 				{
 					if (script[enemy[i].AIscript].skill_list[j] == 0xFF)
 						continue; // skip blank skills

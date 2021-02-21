@@ -106,6 +106,10 @@ namespace FF1Lib
 				case ShopKillMode.Chaos:
 					KillChaos(shopType, factor, excludeConeria);
 					break;
+				case ShopKillMode.None:
+					break;
+				case ShopKillMode.Random:
+					break;
 				default:
 					break;
 			}
@@ -231,6 +235,8 @@ namespace FF1Lib
 				case ShopKillFactor.Kill60Percent: return 60;
 				case ShopKillFactor.Kill80Percent: return 80;
 				case ShopKillFactor.KillAll: return 100;
+				case ShopKillFactor.KillRandom:
+					break;
 				default: return 0;
 			}
 		}
@@ -244,6 +250,10 @@ namespace FF1Lib
 				case ShopType.Item: return Item.Soft;
 				case ShopType.White: return (Item)184;//Lamp
 				case ShopType.Black: return (Item)189;//Dark
+				case ShopType.Clinic:
+					break;
+				case ShopType.Inn:
+					break;
 				default: return Item.None;
 			}
 		}

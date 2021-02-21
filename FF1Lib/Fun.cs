@@ -286,6 +286,10 @@ namespace FF1Lib
 					}
 
 					break;
+				case MusicShuffle.None:
+					break;
+				default:
+					break;
 			}
 		}
 

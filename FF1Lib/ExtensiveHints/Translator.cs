@@ -19,7 +19,9 @@ namespace FF1Lib
 
 		public string TranslateItem(Item item)
 		{
+#pragma warning disable IDE0010 // Add missing cases
 			switch (item)
+#pragma warning restore IDE0010 // Add missing cases
 			{
 				case Item.Ship: return FF1Text.BytesToText(rom.Get(0x2B5D0, 4));
 				case Item.Bridge: return FF1Text.BytesToText(rom.Get(0x2B5D0 + 16, 6));

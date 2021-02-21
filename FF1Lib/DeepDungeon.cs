@@ -153,6 +153,8 @@ namespace FF1Lib
 						x--;
 						y--;
 						break;
+					default:
+						break;
 				}
 
 			}
@@ -960,6 +962,8 @@ namespace FF1Lib
 									case 2:
 										spunitem = (byte)potionspinner3.PickRandom(rng);
 										break;
+									default:
+										break;
 								}
 							}
 							else
@@ -1481,6 +1485,8 @@ namespace FF1Lib
 						break;
 					case eastdir:
 						if (CarveBox(m, t, c.x + 1, c.y - h / 2, w, h)) m[c.y, c.x + 1] = t.floortile;
+						break;
+					default:
 						break;
 				}
 

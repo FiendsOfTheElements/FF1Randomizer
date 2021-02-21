@@ -863,39 +863,39 @@ namespace FF1Lib
 							break;
 						case BonusMalusAction.HitGrowth:
 							classData[i].HitGrowth = (byte)Math.Max(classData[i].HitGrowth + bonusmalus.StatMod, 0);
-							classData[i+6].HitGrowth = (byte)Math.Max(classData[i+6].HitGrowth + bonusmalus.StatMod, 0);
+							classData[i + 6].HitGrowth = (byte)Math.Max(classData[i + 6].HitGrowth + bonusmalus.StatMod, 0);
 							break;
 						case BonusMalusAction.MDefGrowth:
 							classData[i].MDefGrowth = (byte)Math.Max(classData[i].MDefGrowth + bonusmalus.StatMod, 0);
-							classData[i+6].MDefGrowth = (byte)Math.Max(classData[i+6].MDefGrowth + bonusmalus.StatMod, 0);
+							classData[i + 6].MDefGrowth = (byte)Math.Max(classData[i + 6].MDefGrowth + bonusmalus.StatMod, 0);
 							break;
 						case BonusMalusAction.WeaponAdd:
 							classData[i].wpPermissions.AddRange(bonusmalus.Equipment);
-							classData[i+6].wpPermissions.AddRange(bonusmalus.Equipment);
+							classData[i + 6].wpPermissions.AddRange(bonusmalus.Equipment);
 							break;
 						case BonusMalusAction.WeaponRemove:
 							classData[i].wpPermissions = classData[i].wpPermissions.Except(bonusmalus.Equipment).ToList();
-							classData[i+6].wpPermissions = classData[i+6].wpPermissions.Except(bonusmalus.Equipment).ToList();
+							classData[i + 6].wpPermissions = classData[i + 6].wpPermissions.Except(bonusmalus.Equipment).ToList();
 							break;
 						case BonusMalusAction.WeaponReplace:
 							classData[i].wpPermissions = bonusmalus.Equipment;
-							classData[i+6].wpPermissions = bonusmalus.Equipment;
+							classData[i + 6].wpPermissions = bonusmalus.Equipment;
 							break;
 						case BonusMalusAction.ArmorAdd:
 							classData[i].arPermissions.AddRange(bonusmalus.Equipment);
-							classData[i+6].arPermissions.AddRange(bonusmalus.Equipment);
+							classData[i + 6].arPermissions.AddRange(bonusmalus.Equipment);
 							break;
 						case BonusMalusAction.ArmorRemove:
 							classData[i].arPermissions = classData[i].arPermissions.Except(bonusmalus.Equipment).ToList();
-							classData[i+6].arPermissions = classData[i+6].arPermissions.Except(bonusmalus.Equipment).ToList();
+							classData[i + 6].arPermissions = classData[i + 6].arPermissions.Except(bonusmalus.Equipment).ToList();
 							break;
 						case BonusMalusAction.ArmorReplace:
 							classData[i].arPermissions = bonusmalus.Equipment;
-							classData[i+6].arPermissions = bonusmalus.Equipment;
+							classData[i + 6].arPermissions = bonusmalus.Equipment;
 							break;
 						case BonusMalusAction.SpcMod:
 							classData[i].SpCStarting = (byte)Math.Max(classData[i].SpCStarting + bonusmalus.StatMod, 0);
-							classData[i+6].SpCStarting = (byte)Math.Max(classData[i+6].SpCStarting + bonusmalus.StatMod, 0);
+							classData[i + 6].SpCStarting = (byte)Math.Max(classData[i + 6].SpCStarting + bonusmalus.StatMod, 0);
 							break;
 						case BonusMalusAction.WhiteSpellcaster:
 							if (classData[i].SpCStarting < (byte)bonusmalus.StatMod)
@@ -929,7 +929,7 @@ namespace FF1Lib
 							break;
 						case BonusMalusAction.SpcMax:
 							classData[i].MaxSpC = (byte)Math.Max(classData[i].MaxSpC + bonusmalus.StatMod, 1);
-							classData[i+6].MaxSpC = (byte)Math.Max(classData[i+6].MaxSpC + bonusmalus.StatMod, 1);
+							classData[i + 6].MaxSpC = (byte)Math.Max(classData[i + 6].MaxSpC + bonusmalus.StatMod, 1);
 							break;
 						case BonusMalusAction.SpcGrowth:
 							classData[i].SpCGrowth = bonusmalus.SpcGrowth;
@@ -946,6 +946,10 @@ namespace FF1Lib
 							classData[i + 6].blackPermissions = bonusmalus.SpellList;
 							classData[i + 6].MaxSpC = 0;
 							classData[i + 6].SpCStarting = 0;
+							break;
+						case BonusMalusAction.None:
+							break;
+						default:
 							break;
 					}
 				}
@@ -1159,12 +1163,14 @@ namespace FF1Lib
 						magicRanks[i] = Rank.A;
 						magicRanks[i + 6] = Rank.S;
 						break;
+					default:
+						break;
 				}
 
 				switch (shuffleBlackPermissions[i])
 				{
 					case 1:
-						magicRanks[i+18] = Rank.B;
+						magicRanks[i + 18] = Rank.B;
 						break;
 					case 3:
 						magicRanks[i + 12] = Rank.B;
@@ -1173,6 +1179,8 @@ namespace FF1Lib
 					case 5:
 						magicRanks[i + 12] = Rank.A;
 						magicRanks[i + 18] = Rank.S;
+						break;
+					default:
 						break;
 				}
 			}

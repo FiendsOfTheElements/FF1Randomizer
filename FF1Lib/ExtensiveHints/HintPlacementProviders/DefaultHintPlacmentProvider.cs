@@ -58,7 +58,9 @@ namespace FF1Lib
 			{
 				var location = ItemLocations.MapLocationToStandardOverworldLocations[hint.MapLocation];
 
+#pragma warning disable IDE0066 // Convert switch statement to expression
 				switch (location)
+#pragma warning restore IDE0066 // Convert switch statement to expression
 				{
 					case OverworldTeleportIndex.Coneria:
 					case OverworldTeleportIndex.ConeriaCastle1:
