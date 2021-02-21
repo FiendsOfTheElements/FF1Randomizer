@@ -16,4 +16,8 @@
     <ProjectReference Include="..\FFR.Common\FFR.Common.csproj" />
   </ItemGroup>
 
+  <PropertyGroup>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+  </PropertyGroup>
+
 </Project>

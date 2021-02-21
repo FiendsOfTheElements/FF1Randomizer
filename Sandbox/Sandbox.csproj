@@ -10,4 +10,8 @@
     <ProjectReference Include="..\FF1Lib\FF1Lib.csproj" />
   </ItemGroup>
 
+  <PropertyGroup>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+  </PropertyGroup>
+
 </Project>
