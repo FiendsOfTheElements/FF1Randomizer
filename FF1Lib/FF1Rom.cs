@@ -228,6 +228,16 @@ namespace FF1Lib
 			{
 				EnableLefeinShops(maps);
 			}
+            
+            if ((bool)flags.MelmondClinic)
+            {
+                EnableMelmondClinic(maps);
+            }
+
+			if ((bool)flags.RandomVampAttack)
+			{
+				RandomVampireAttack(maps, rng);
+			}
 
 			if ((bool)flags.GaiaShortcut)
 			{
@@ -852,7 +862,7 @@ namespace FF1Lib
 				ShopUpgrade();
 			}
 
-			if (flags.SpookyFlag)
+			if (flags.SpookyFlag && !(bool)flags.RandomizeFormationEnemizer)
 			{
 				Spooky(talkroutines, npcdata, rng, flags);
 			}
