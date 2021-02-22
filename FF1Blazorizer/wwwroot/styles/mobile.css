@@ -89,7 +89,7 @@ display: block;
 }
 
 .ffr-tooltip-content.framed-content {
-    max-height: 150vw;
+    max-height: 90vh;
     overflow: auto;
     border-bottom: inset;
 }
