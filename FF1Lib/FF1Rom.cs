@@ -862,7 +862,7 @@ namespace FF1Lib
 				ShopUpgrade();
 			}
 
-			if (flags.SpookyFlag)
+			if (flags.SpookyFlag && !(bool)flags.RandomizeFormationEnemizer)
 			{
 				Spooky(talkroutines, npcdata, rng, flags);
 			}

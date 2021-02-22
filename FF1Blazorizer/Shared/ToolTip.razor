@@ -9,7 +9,7 @@
 		<div class="ffr-tooltip-screenshot" style="@(ScreenshotStyle())"></div>
 		@foreach (var paragraph in Description.Split("\n"))
 		{
-			@if (paragraph.Length >= 6 && paragraph.Trim().Substring(0,6).Equals("[grid]"))
+			@if (paragraph.Length >= 6 && paragraph.Trim().Substring(0, 6).Equals("[grid]"))
 			{
 				/* [grid] Markup Example
 
@@ -30,21 +30,27 @@
 				[r]{r}right |  center |{l}left  |{b}bold
 
 				*/
-				<table border="1"><tbody>
-					@foreach (var rowData in paragraph.Substring(6).Split("[r]"))
-					{
-						@if (rowData.Length > 0)
-						{
-							<tr>
-								@foreach (var cellData in rowData.Split("|"))
+				<div style="overflow: auto">
+					<table border="1">
+						<tbody>
+							@foreach (var rowData in paragraph.Substring(6).Split("[r]"))
+							{
+								@if (rowData.Length > 0)
 								{
-									<td style="@(CellStyle(cellData))">@Regex.Replace(cellData,"{.}","")</td>
+									<tr>
+										@foreach (var cellData in rowData.Split("|"))
+										{
+											<td style="@(CellStyle(cellData))">@Regex.Replace(cellData, "{.}", "")</td>
+										}
+									</tr>
 								}
-							</tr>
-						}
-					}
-				</tbody></table>
-			} else {
+							}
+						</tbody>
+					</table>
+				</div>
+			}
+			else
+			{
 				// handle regular tooltip text
 				<p class="ffr-tooltip-text">@paragraph</p>
 			}
