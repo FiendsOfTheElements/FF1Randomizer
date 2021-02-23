@@ -1,3 +1,7 @@
+
+BANK_TALKROUTINE	= $11
+ret_bank        = $58
+
 ;; Bank 11 $B006
 ;; New jump point for NPC-only items:
 ;; IN:
@@ -7,6 +11,8 @@
 ;;       'X' Dialog ID
 ;;       'A' Also Dialog ID
 GiveReward:                    ; (8 bytes)
+    LDY #BANK_TALKROUTINE      ; Get return bank AC 11 00
+    STY ret_bank               ; for LoadPrice 8C 58 00
     STA dlg_itemid             ; record that as the item id so it can be printed in the dialogue box 8561
     ADC #$20                   ; Add 0x20 to account for the 'items' offset 6920
     CMP #$3C                   ; see if the ID is >= item_stop C93C
@@ -38,7 +44,7 @@ GiveReward:                    ; (8 bytes)
     BCC :+                     ; Continue if gold 9009
      JSR LoadPrice             ; get the price of the item (the amount of gold in the chest) 20B9EC
      JSR AddGPToParty          ; add that price to the party's GP 20EADD
-     JMP @ClearChest           ; then mark the chest as open, and exit 4CDEDD
+     JMP @ClearChest           ; then mark the chest as open, and exit 4C63B0
 :   CMP #$44                   ; >= 68 means it's armor C944
     BCS :+                     ; B009
       JSR FindEmptyWeaponSlot  ; Find an available slot to place this weapon in 2034DD

@@ -660,6 +660,8 @@ namespace FF1Lib
 				EnableEasyMode();
 			}
 
+			new TreasureStacks(this, flags).SetTreasureStacks();
+
 			if ((bool)flags.TrappedChests || (bool)flags.TCMasaGuardian || (bool)flags.TrappedShards)
 			{
 				MonsterInABox(rng, flags);
@@ -923,8 +925,6 @@ namespace FF1Lib
 			npcdata.WriteNPCdata(this);
 			talkroutines.WriteRoutines(this);
 			talkroutines.UpdateNPCRoutines(this, npcdata);
-
-			new TreasureStacks(this, flags).SetTreasureStacks();
 
 			WriteSeedAndFlags(seed.ToHex(), Flags.EncodeFlagsText(flags));
 			ExtraTrackingAndInitCode(flags);
