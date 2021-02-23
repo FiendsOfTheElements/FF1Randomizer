@@ -542,6 +542,44 @@ namespace FF1Lib
 			WriteText(itemnames, ItemTextPointerOffset, ItemTextPointerBase, ItemTextOffset);
 		}
 
+		public void HurrayDwarfFate(Fate fate, NPCdata npcdata, MT19337 rng)
+		{
+			if (fate == Fate.Spare)
+			{
+				// Protect Hurray Dwarf from NPC guillotine
+				npcdata.SetRoutine(ObjectId.DwarfcaveDwarfHurray, newTalkRoutines.Talk_norm);
+			}
+			else
+			{
+				// Whether NPC guillotine is on or not, kill Hurray Dwarf
+				npcdata.SetRoutine(ObjectId.DwarfcaveDwarfHurray, newTalkRoutines.Talk_kill);
+
+				// Change the dialogue
+				var dialogueStrings = new List<string>
+				{
+				    "No! I'm gonna disappear.\nYou'll never see\nme again. Please,\nI don't want to die.",
+					"If you strike me down,\nI shall become more\npowerful than you can\npossibly imagine.",
+					"Freeeeedom!!",
+					"I've seen things you\npeople wouldn't believe.\nAll those moments will\nbe lost in time..\nlike tears in rain..\nTime to die.",
+					"Become vengeance, David.\nBecome wrath.",
+					"My only regret..\nis that I have boneitis.",
+					"No, not the bees!\nNOT THE BEES!\nAAAAAAAAGH!\nTHEY'RE IN MY EYES!\nMY EYES! AAAAAAAAAAGH!",
+					"This is blasphemy!\nThis is madness!",
+					"Not like this..\nnot like this..",
+					"Suicide squad, attack!\n\n\n\nThat showed 'em, huh?",
+					"Well, what are you\nwaiting for?\nDo it. DO IT!!",
+					"The path you walk on has\nno end. Each step you\ntake is paved with the\ncorpses of your enemies.\nTheir souls will haunt\nyou forever. Hear me!\nMy spirit will be\nwatching you!",
+					"K-Kefka..!\nY-you're insane.."
+				};
+
+				//Put new dialogue to E6 since another Dwarf also says hurray
+				InsertDialogs(0xE6, dialogueStrings.PickRandom(rng));
+				npcdata.GetTalkArray(ObjectId.DwarfcaveDwarfHurray)[(int)TalkArrayPos.dialogue_1] = 0xE6;
+				npcdata.GetTalkArray(ObjectId.DwarfcaveDwarfHurray)[(int)TalkArrayPos.dialogue_2] = 0xE6;
+				npcdata.GetTalkArray(ObjectId.DwarfcaveDwarfHurray)[(int)TalkArrayPos.dialogue_3] = 0xE6;
+			}
+		}
+
 		public void TitanSnack(TitanSnack snack, NPCdata npcdata, MT19337 rng)
 		{
 			if (snack == FF1Lib.TitanSnack.Ruby)
@@ -550,7 +588,7 @@ namespace FF1Lib
 			}
 
 			var snackOptions = new List<string>(); // { "NEWRUBY;NEWRUBYPLURALIZED;IS/ARE(relating to plural form);DESCRIPTOR(max 6 characters);ONOMATOPOEIA(max 6 chars, how ingestion sounds)" }
-			var mineralSnacks = new List<string>  { "DIAMOND;DIAMONDS;ARE;SWEET;CRUNCH", "GEODE;GEODES;ARE;SWEET;CRUNCH", "COAL;COAL;IS;SMOKY;CRUNCH", "PEARL;PEARLS;ARE;SWEET;CRUNCH", "FOSSIL;FOSSILS;ARE;SWEET;CRUNCH", "EMERALD;EMERALDS;ARE;SWEET;CRUNCH", "TOPAZ;TOPAZ;IS;SWEET;CRUNCH", "QUARTZ;QUARTZ;IS;SWEET;CRUNCH", "ONYX;ONYXES;ARE;SWEET;CRUNCH", "MARBLE;MARBLE;IS;SWEET;CRUNCH" };
+			var mineralSnacks = new List<string> { "DIAMOND;DIAMONDS;ARE;SWEET;CRUNCH", "GEODE;GEODES;ARE;SWEET;CRUNCH", "COAL;COAL;IS;SMOKY;CRUNCH", "PEARL;PEARLS;ARE;SWEET;CRUNCH", "FOSSIL;FOSSILS;ARE;SWEET;CRUNCH", "EMERALD;EMERALDS;ARE;SWEET;CRUNCH", "TOPAZ;TOPAZ;IS;SWEET;CRUNCH", "QUARTZ;QUARTZ;IS;SWEET;CRUNCH", "ONYX;ONYXES;ARE;SWEET;CRUNCH", "MARBLE;MARBLE;IS;SWEET;CRUNCH" };
 			var junkFoodSnacks = new List<string> { "DANISH;DANISHES;ARE;SWEET;MUNCH", "HOT DOG;HOT DOGS;ARE;GREAT;MUNCH", "TACO;TACOS;ARE;GREAT;MUNCH", "SUB;SUBS;ARE;GREAT;MUNCH", "PIZZA;PIZZA;IS;YUMMY;MUNCH", "BURGER;BURGERS;ARE;YUMMY;MUNCH", "EGGROLL;EGGROLLS;ARE;YUMMY;MUNCH", "BISCUIT;BISCUITS;ARE;YUMMY;MUNCH", "WAFFLE;WAFFLES;ARE;YUMMY;MUNCH", "CAKE;CAKE;IS;SWEET;MUNCH", "PIE;PIE;IS;SWEET;MUNCH", "DONUT;DONUTS;ARE;SWEET;MUNCH", "FRIES;FRIES;ARE;SALTY;MUNCH", "CHIPS;CHIPS;ARE;SALTY;CRUNCH", "CANDY;CANDY;IS;SWEET;MUNCH", "PANCAKE;PANCAKES;ARE;SWEET;MUNCH", "ICECREAM;ICECREAM;IS;YUMMY;MUNCH", "PUDDING;PUDDING;IS;YUMMY;MUNCH", "BROWNIE;BROWNIES;ARE;SWEET;MUNCH", "CRAYON;CRAYONS;ARE;GREAT;MUNCH", "LASAGNA;LASAGNA;IS;YUMMY;MUNCH", "POUTINE;POUTINE;IS;GREAT;MUNCH", "PASTA;PASTA;IS;YUMMY;MUNCH", "RAMEN;RAMEN;IS;GREAT;MUNCH", "STEAK;STEAK;IS;GREAT;MUNCH", "NACHOS;NACHOS;ARE;SALTY;CRUNCH", "BACON;BACON;IS;SALTY;MUNCH", "MUTTON;MUTTON;IS;GREAT;MUNCH" };
 			var healthySnacks = new List<string> { "EDAMAME;EDAMAME;IS;SALTY;MUNCH", "SALAD;SALAD;IS;GREAT;MUNCH", "APPLE;APPLES;ARE;SWEET;CRUNCH", "PEAR;PEARS;ARE;SWEET;MUNCH", "MELON;MELONS;ARE;SWEET;MUNCH", "YOGURT;YOGURT;IS;GREAT;MUNCH", "GRANOLA;GRANOLA;IS;GREAT;CRUNCH", "SPINACH;SPINACH;IS;YUMMY;MUNCH", "EGG;EGGS;ARE;YUMMY;MUNCH", "GRAPES;GRAPES;ARE;YUMMY;MUNCH", "OATMEAL;OATMEAL;IS;GREAT;MUNCH", "TOFU;TOFU;IS;WEIRD;MUNCH" };
 			var beverages = new List<string> { "BEER;BEER;IS;SMOOTH;GULP", "WINE;WINE;IS;RICH;GULP", "TEA;TEA;IS;FRESH;GULP", "COFFEE;COFFEE;IS;FRESH;GULP", "COLA;COLA;IS;SWEET;GULP", "COCOA;COCOA;IS;SWEET;GULP" };
@@ -591,7 +629,8 @@ namespace FF1Lib
 			{
 				newRubyItemDescription = "A tasty drink.";
 				newTitanCraving = "is thirsty.";
-			} else if (mineralSnacks.Contains(randomRuby))
+			}
+			else if (mineralSnacks.Contains(randomRuby))
 			{
 				newRubyItemDescription = "Feels heavy.";
 			}
@@ -610,7 +649,7 @@ namespace FF1Lib
 			var dialogsUpdate = SubstituteKeyItemInExtraNPCDialogues("RUBY", newRuby, dialogs);
 
 			// begin substitute phrase parts
-			var titanDialogue = dialogs[0x2A].Split(new string[] { "RUBY","Crunch, crunch, crunch,","sweet","Rubies are" }, System.StringSplitOptions.RemoveEmptyEntries);
+			var titanDialogue = dialogs[0x2A].Split(new string[] { "RUBY", "Crunch, crunch, crunch,", "sweet", "Rubies are" }, System.StringSplitOptions.RemoveEmptyEntries);
 			var melmondManDialogue = dialogs[0x7B].Split(new string[] { "eats gems.", "RUBIES" }, System.StringSplitOptions.RemoveEmptyEntries);
 
 			// If you want pass, give
@@ -624,7 +663,8 @@ namespace FF1Lib
 					+ CapitalizeFirstLowercaseRest(newRubyOnomatopoeia) + ", " + newRubyOnomatopoeia.ToLower() + ", " + newRubyOnomatopoeia.ToLower() + "," + titanDialogue[2]
 					+ newRubyTastes.ToLower() + titanDialogue[3]
 					+ CapitalizeFirstLowercaseRest(newRubyPluralized) + " " + newRubySubjectVerbAgreement.ToLower() + titanDialogue[4]);
-			} else if (titanDialogue.Length > 1)
+			}
+			else if (titanDialogue.Length > 1)
 			{
 				// handle Shuffle Astos, alternate Titan dialog "If you want pass, give\nme the RUBY..\nHa, it mine! Now, you in\ntrouble. Me am Astos,\nKing of the Titans!"
 				dialogsUpdate.Add(0x2A, titanDialogue[0] + newRuby + titanDialogue[1]);
@@ -642,44 +682,6 @@ namespace FF1Lib
 			// substitute key item
 			itemnames[(int)Item.Ruby] = newRuby;
 			WriteText(itemnames, ItemTextPointerOffset, ItemTextPointerBase, ItemTextOffset);
-		}
-
-		public void HurrayDwarfFate(Fate fate, NPCdata npcdata, MT19337 rng)
-		{
-			if (fate == Fate.Spare)
-			{
-				// Protect Hurray Dwarf from NPC guillotine
-				npcdata.SetRoutine(ObjectId.DwarfcaveDwarfHurray, newTalkRoutines.Talk_norm);
-			}
-			else
-			{
-				// Whether NPC guillotine is on or not, kill Hurray Dwarf
-				npcdata.SetRoutine(ObjectId.DwarfcaveDwarfHurray, newTalkRoutines.Talk_kill);
-
-				// Change the dialogue
-				var dialogueStrings = new List<string>
-				{
-				    "No! I'm gonna disappear.\nYou'll never see\nme again. Please,\nI don't want to die.",
-					"If you strike me down,\nI shall become more\npowerful than you can\npossibly imagine.",
-					"Freeeeedom!!",
-					"I've seen things you\npeople wouldn't believe.\nAll those moments will\nbe lost in time..\nlike tears in rain..\nTime to die.",
-					"Become vengeance, David.\nBecome wrath.",
-					"My only regret..\nis that I have boneitis.",
-					"No, not the bees!\nNOT THE BEES!\nAAAAAAAAGH!\nTHEY'RE IN MY EYES!\nMY EYES! AAAAAAAAAAGH!",
-					"This is blasphemy!\nThis is madness!",
-					"Not like this..\nnot like this..",
-					"Suicide squad, attack!\n\n\n\nThat showed 'em, huh?",
-					"Well, what are you\nwaiting for?\nDo it. DO IT!!",
-					"The path you walk on has\nno end. Each step you\ntake is paved with the\ncorpses of your enemies.\nTheir souls will haunt\nyou forever. Hear me!\nMy spirit will be\nwatching you!",
-					"K-Kefka..!\nY-you're insane.."
-				};
-
-				//Put new dialogue to E6 since another Dwarf also says hurray
-				InsertDialogs(0xE6, dialogueStrings.PickRandom(rng));
-				npcdata.GetTalkArray(ObjectId.DwarfcaveDwarfHurray)[(int)TalkArrayPos.dialogue_1] = 0xE6;
-				npcdata.GetTalkArray(ObjectId.DwarfcaveDwarfHurray)[(int)TalkArrayPos.dialogue_2] = 0xE6;
-				npcdata.GetTalkArray(ObjectId.DwarfcaveDwarfHurray)[(int)TalkArrayPos.dialogue_3] = 0xE6;
-			}
 		}
 
 		private Dictionary <int,String> SubstituteKeyItemInExtraNPCDialogues(string original, string replacement, string[] dialogs)
