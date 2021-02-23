@@ -60,6 +60,21 @@ namespace FF1Lib
 		[Description("Fourth")]
 		Fourth = 0x03,
 	}
+	public enum TitanSnack
+	{
+		[Description("Ruby")]
+		Ruby = 0,
+		[Description("Other Minerals")]
+		Minerals = 1,
+		[Description("Junk Food")]
+		Junk = 2,
+		[Description("Healthy Food")]
+		Healthy = 3,
+		[Description("Beverages")]
+		Beverages = 4,
+		[Description("All")]
+		All = 5,
+	}
 
 	public enum Fate
 	{
@@ -509,7 +524,8 @@ namespace FF1Lib
 			var dialogs = ReadText(dialogsPointerOffset, dialogsPointerBase, dialogsPointerCount);
 
 			var newLute = newInstruments.PickRandom(rng);
-			var dialogsUpdate = new Dictionary<int, string>();
+			// handle extra dialogues that might contain the LUTE if the NPChints flag is enabled or if Astos Shuffle is enabled
+			var dialogsUpdate = SubstituteKeyItemInExtraNPCDialogues("LUTE", newLute, dialogs); ;
 			var princessDialogue = dialogs[0x06].Split(new string[] { "LUTE" }, System.StringSplitOptions.RemoveEmptyEntries);
 			var monkDialogue = dialogs[0x35].Split(new string[] { "LUTE" }, System.StringSplitOptions.RemoveEmptyEntries);
 			
@@ -519,23 +535,112 @@ namespace FF1Lib
 			if (monkDialogue.Length > 1)
 				dialogsUpdate.Add(0x35, monkDialogue[0] + newLute + monkDialogue[1].Substring(0,14) + "\n" + monkDialogue[1].Substring(15, 10).Replace('\n',' '));
 
-			// Add extra dialogues that might contain the LUTE if the NPChints flag is enabled or if Astos Shuffle is enabled
-			var otherNPCs = new List<byte> {
-				0x45, 0x53, 0x69, 0x82, 0x8C, 0xAA, 0xCB, 0xDC, 0x9D, 0x70, 0xE3, 0xE1, 0xB6, // NPChints
-				0x02, 0x0E, 0x12, 0x14, 0x16, 0x19, 0x1E, 0xCD, 0x27, 0x23, 0x2B // SuffleAstos
-			};
-
-			for (int i = 0; i < otherNPCs.Count(); i++)
-			{
-				var tempDialogue = dialogs[otherNPCs[i]].Split(new string[] { "LUTE" }, System.StringSplitOptions.RemoveEmptyEntries);
-				if (tempDialogue.Length > 1)
-					dialogsUpdate.Add(otherNPCs[i], tempDialogue[0] + newLute + tempDialogue[1]);
-			}
-
 			if (dialogsUpdate.Count > 0)
 				InsertDialogs(dialogsUpdate);
 
 			itemnames[(int)Item.Lute] = newLute;
+			WriteText(itemnames, ItemTextPointerOffset, ItemTextPointerBase, ItemTextOffset);
+		}
+
+		public void TitanSnack(TitanSnack snack, NPCdata npcdata, MT19337 rng)
+		{
+			if (snack == FF1Lib.TitanSnack.Ruby)
+			{
+				return;
+			}
+
+			var snackOptions = new List<string>(); // { "NEWRUBY;NEWRUBYPLURALIZED;IS/ARE(relating to plural form);DESCRIPTOR(max 6 characters);ONOMATOPOEIA(max 6 chars, how ingestion sounds)" }
+			var mineralSnacks = new List<string>  { "DIAMOND;DIAMONDS;ARE;SWEET;CRUNCH", "GEODE;GEODES;ARE;SWEET;CRUNCH", "COAL;COAL;IS;SMOKY;CRUNCH", "PEARL;PEARLS;ARE;SWEET;CRUNCH", "FOSSIL;FOSSILS;ARE;SWEET;CRUNCH", "EMERALD;EMERALDS;ARE;SWEET;CRUNCH", "TOPAZ;TOPAZ;IS;SWEET;CRUNCH", "QUARTZ;QUARTZ;IS;SWEET;CRUNCH", "ONYX;ONYXES;ARE;SWEET;CRUNCH", "MARBLE;MARBLE;IS;SWEET;CRUNCH" };
+			var junkFoodSnacks = new List<string> { "DANISH;DANISHES;ARE;SWEET;MUNCH", "HOT DOG;HOT DOGS;ARE;GREAT;MUNCH", "TACO;TACOS;ARE;GREAT;MUNCH", "SUB;SUBS;ARE;GREAT;MUNCH", "PIZZA;PIZZA;IS;YUMMY;MUNCH", "BURGER;BURGERS;ARE;YUMMY;MUNCH", "EGGROLL;EGGROLLS;ARE;YUMMY;MUNCH", "BISCUIT;BISCUITS;ARE;YUMMY;MUNCH", "WAFFLE;WAFFLES;ARE;YUMMY;MUNCH", "CAKE;CAKE;IS;SWEET;MUNCH", "PIE;PIE;IS;SWEET;MUNCH", "DONUT;DONUTS;ARE;SWEET;MUNCH", "FRIES;FRIES;ARE;SALTY;MUNCH", "CHIPS;CHIPS;ARE;SALTY;CRUNCH", "CANDY;CANDY;IS;SWEET;MUNCH", "PANCAKE;PANCAKES;ARE;SWEET;MUNCH", "ICECREAM;ICECREAM;IS;YUMMY;MUNCH", "PUDDING;PUDDING;IS;YUMMY;MUNCH", "BROWNIE;BROWNIES;ARE;SWEET;MUNCH", "CRAYON;CRAYONS;ARE;GREAT;MUNCH", "LASAGNA;LASAGNA;IS;YUMMY;MUNCH", "POUTINE;POUTINE;IS;GREAT;MUNCH", "PASTA;PASTA;IS;YUMMY;MUNCH", "RAMEN;RAMEN;IS;GREAT;MUNCH", "STEAK;STEAK;IS;GREAT;MUNCH", "NACHOS;NACHOS;ARE;SALTY;CRUNCH", "BACON;BACON;IS;SALTY;MUNCH", "MUTTON;MUTTON;IS;GREAT;MUNCH" };
+			var healthySnacks = new List<string> { "EDAMAME;EDAMAME;IS;SALTY;MUNCH", "SALAD;SALAD;IS;GREAT;MUNCH", "APPLE;APPLES;ARE;SWEET;CRUNCH", "PEAR;PEARS;ARE;SWEET;MUNCH", "MELON;MELONS;ARE;SWEET;MUNCH", "YOGURT;YOGURT;IS;GREAT;MUNCH", "GRANOLA;GRANOLA;IS;GREAT;CRUNCH", "SPINACH;SPINACH;IS;YUMMY;MUNCH", "EGG;EGGS;ARE;YUMMY;MUNCH", "GRAPES;GRAPES;ARE;YUMMY;MUNCH", "OATMEAL;OATMEAL;IS;GREAT;MUNCH", "TOFU;TOFU;IS;WEIRD;MUNCH" };
+			var beverages = new List<string> { "BEER;BEER;IS;SMOOTH;GULP", "WINE;WINE;IS;RICH;GULP", "TEA;TEA;IS;FRESH;GULP", "COFFEE;COFFEE;IS;FRESH;GULP", "COLA;COLA;IS;SWEET;GULP", "COCOA;COCOA;IS;SWEET;GULP" };
+
+			switch (snack)
+			{
+				case FF1Lib.TitanSnack.Minerals:
+					snackOptions = mineralSnacks;
+					break;
+				case FF1Lib.TitanSnack.Junk:
+					snackOptions = junkFoodSnacks;
+					break;
+				case FF1Lib.TitanSnack.Healthy:
+					snackOptions = healthySnacks;
+					break;
+				case FF1Lib.TitanSnack.Beverages:
+					snackOptions = beverages;
+					break;
+				case FF1Lib.TitanSnack.All:
+					// combine all lists together
+					foreach (string mineral in mineralSnacks) { snackOptions.Add(mineral); }
+					foreach (string junkFood in junkFoodSnacks) { snackOptions.Add(junkFood); }
+					foreach (string healthySnack in healthySnacks) { snackOptions.Add(healthySnack); }
+					foreach (string beverage in beverages) { snackOptions.Add(beverage); }
+					break;
+				default:
+					return;
+			}
+
+			var itemnames = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
+			var dialogs = ReadText(dialogsPointerOffset, dialogsPointerBase, dialogsPointerCount);
+
+			var randomRuby = snackOptions.PickRandom(rng);
+
+			var newRubyItemDescription = "A tasty treat."; // Replaces "A large red stone." (can't be too long else it'll overwrite next phrase: "The plate shatters,")
+			var newTitanCraving = "is hungry."; // replaces "eat gems." (can't be too long or will appear outside window)
+			if (beverages.Contains(randomRuby))
+			{
+				newRubyItemDescription = "A tasty drink.";
+				newTitanCraving = "is thirsty.";
+			} else if (mineralSnacks.Contains(randomRuby))
+			{
+				newRubyItemDescription = "Feels heavy.";
+			}
+			// replace "A red stone." item description (0x38671) originally "8AFFAF2FAA1A23A724285AC000"
+			Put(0x38671, FF1Text.TextToBytes(newRubyItemDescription, useDTE: true));
+
+			// phrase parts
+			var newRubyContent = randomRuby.Split(";");
+			var newRuby = newRubyContent[0];
+			var newRubyPluralized = newRubyContent[1];
+			var newRubySubjectVerbAgreement = newRubyContent[2];
+			var newRubyTastes = newRubyContent[3];
+			var newRubyOnomatopoeia = newRubyContent[4];
+
+			// handle extra dialogues that might contain the RUBY if the NPChints flag is enabled
+			var dialogsUpdate = SubstituteKeyItemInExtraNPCDialogues("RUBY", newRuby, dialogs);
+
+			// begin substitute phrase parts
+			var titanDialogue = dialogs[0x2A].Split(new string[] { "RUBY","Crunch, crunch, crunch,","sweet","Rubies are" }, System.StringSplitOptions.RemoveEmptyEntries);
+			var melmondManDialogue = dialogs[0x7B].Split(new string[] { "eats gems.", "RUBIES" }, System.StringSplitOptions.RemoveEmptyEntries);
+
+			// If you want pass, give
+			// me the {newRuby}..
+			// {Onomatopoeia}, {onomatopoeia}, {onomatopoeia},
+			// mmm, it tastes so {newRubyTastes}.
+			// {newRubyPluralized} {newRubySubjectVerbAgreement} my favorite.
+			if (titanDialogue.Length > 3)
+			{
+				dialogsUpdate.Add(0x2A, titanDialogue[0] + newRuby + titanDialogue[1]
+					+ CapitalizeFirstLowercaseRest(newRubyOnomatopoeia) + ", " + newRubyOnomatopoeia.ToLower() + ", " + newRubyOnomatopoeia.ToLower() + "," + titanDialogue[2]
+					+ newRubyTastes.ToLower() + titanDialogue[3]
+					+ CapitalizeFirstLowercaseRest(newRubyPluralized) + " " + newRubySubjectVerbAgreement.ToLower() + titanDialogue[4]);
+			} else if (titanDialogue.Length > 1)
+			{
+				// handle Shuffle Astos, alternate Titan dialog "If you want pass, give\nme the RUBY..\nHa, it mine! Now, you in\ntrouble. Me am Astos,\nKing of the Titans!"
+				dialogsUpdate.Add(0x2A, titanDialogue[0] + newRuby + titanDialogue[1]);
+			}
+			// The Titan who lives in
+			// the tunnel {newTitanCraving}
+			// He loves {newRubyPluralized}.
+			if (melmondManDialogue.Length > 2)
+				dialogsUpdate.Add(0x7B, melmondManDialogue[0] + newTitanCraving + melmondManDialogue[1] + newRubyPluralized + melmondManDialogue[2]);
+			// end substitute phrase parts
+
+			if (dialogsUpdate.Count > 0)
+				InsertDialogs(dialogsUpdate);
+
+			// substitute key item
+			itemnames[(int)Item.Ruby] = newRuby;
 			WriteText(itemnames, ItemTextPointerOffset, ItemTextPointerBase, ItemTextOffset);
 		}
 
@@ -575,6 +680,30 @@ namespace FF1Lib
 				npcdata.GetTalkArray(ObjectId.DwarfcaveDwarfHurray)[(int)TalkArrayPos.dialogue_2] = 0xE6;
 				npcdata.GetTalkArray(ObjectId.DwarfcaveDwarfHurray)[(int)TalkArrayPos.dialogue_3] = 0xE6;
 			}
+		}
+
+		private Dictionary <int,String> SubstituteKeyItemInExtraNPCDialogues(string original, string replacement, string[] dialogs)
+		{
+			var dialogsUpdate = new Dictionary<int, string>();
+			// Add extra dialogues that might contain the {original} if the NPChints flag is enabled or if Astos Shuffle is enabled
+			var otherNPCs = new List<byte> {
+				0x45, 0x53, 0x69, 0x82, 0x8C, 0xAA, 0xCB, 0xDC, 0x9D, 0x70, 0xE3, 0xE1, 0xB6, // NPChints
+				0x02, 0x0E, 0x12, 0x14, 0x16, 0x19, 0x1E, 0xCD, 0x27, 0x23, 0x2B // ShuffleAstos
+			};
+
+			for (int i = 0; i < otherNPCs.Count(); i++)
+			{
+				var tempDialogue = dialogs[otherNPCs[i]].Split(new string[] { original.ToUpper().Trim() }, System.StringSplitOptions.RemoveEmptyEntries);
+				if (tempDialogue.Length > 1)
+					dialogsUpdate.Add(otherNPCs[i], tempDialogue[0] + replacement.ToUpper().Trim() + tempDialogue[1]);
+			}
+
+			return dialogsUpdate;
+		}
+
+		private static string CapitalizeFirstLowercaseRest(string s)
+		{
+			return String.Format("{0}{1}", s.First().ToString().ToUpper(), s.Substring(1).ToLower());
 		}
 
 	}

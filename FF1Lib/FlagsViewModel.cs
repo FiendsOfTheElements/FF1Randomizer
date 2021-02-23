@@ -2341,6 +2341,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NoTabLayout"));
 			}
 		}
+		public TitanSnack TitanSnack
+		{
+			get => Preferences.TitanSnack;
+			set
+			{
+				Preferences.TitanSnack = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TitanSnack"));
+			}
+		}
 		public Fate HurrayDwarfFate
 		{
 			get => Preferences.HurrayDwarfFate;

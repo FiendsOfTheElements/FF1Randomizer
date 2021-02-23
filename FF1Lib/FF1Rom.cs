@@ -907,6 +907,8 @@ namespace FF1Lib
 
 			rng = new MT19337(funRngSeed);
 
+			TitanSnack(preferences.TitanSnack, npcdata, rng);
+
 			HurrayDwarfFate(preferences.HurrayDwarfFate, npcdata, rng);
 
 			if (preferences.Music != MusicShuffle.None)
