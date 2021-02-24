@@ -20,7 +20,7 @@ namespace FF1Lib.Procgen
 				Map = new Map((byte)Tile.WaterfallInside)
 			};
 			//(57,56)
-			(int x, int y) = (x: 0x39, y: 0x38);
+			(int x, int y) = (0x39, 0x38);
 
 			var startingX = rng.Between(-3, 0) + x;
 			var startingY = rng.Between(-4, -1) + y;

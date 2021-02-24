@@ -89,7 +89,7 @@ namespace FF1Lib
 			public byte palette = 0;
 			public int tier = 0;
 
-			public byte[] compressData()
+			public byte[] CompressData()
 			{
 				byte[] spellInfo = new byte[8];
 				spellInfo[0] = accuracy;
@@ -103,7 +103,7 @@ namespace FF1Lib
 				return spellInfo;
 			}
 
-			public void decompressData(byte[] data)
+			public void DecompressData(byte[] data)
 			{
 				if (data.Length != MagicSize)
 				{
@@ -128,7 +128,7 @@ namespace FF1Lib
 				}
 			}
 
-			public void calc_Enemy_SpellTier() // calculates the usefulness of a spell (from the perspective of a generic random encounter enemy)
+			public void CalcEnemySpellTier() // calculates the usefulness of a spell (from the perspective of a generic random encounter enemy)
 			{
 				tier = 0; // if no value is assigned by this routine, assume the spell is worthless
 				if (routine == 0x01) // inflict damage
@@ -789,7 +789,7 @@ namespace FF1Lib
 			public byte routine = 0;
 			public int tier = 0;
 
-			public byte[] compressData()
+			public byte[] CompressData()
 			{
 				byte[] spellInfo = new byte[8];
 				spellInfo[0] = accuracy;
@@ -803,7 +803,7 @@ namespace FF1Lib
 				return spellInfo;
 			}
 
-			public void decompressData(byte[] data)
+			public void DecompressData(byte[] data)
 			{
 				if (data.Length != EnemySkillSize)
 				{
@@ -848,15 +848,15 @@ namespace FF1Lib
 			public byte image; // the image used by this image, of the 52 unique monster images available to normal enemies (does not include fiends or chaos).
 			public byte pal; // the palette normally used by this enemy.  this and the enemy's image are not stored in game data directly, rather they are implied by data in the formations
 
-			public byte tileset => (byte)((image >> 2) & 0b00001111);
+			public byte Tileset => (byte)((image >> 2) & 0b00001111);
 
-			public byte pic => (byte)(image & 0b00000011);
+			public byte Pic => (byte)(image & 0b00000011);
 
 			public bool Large => (image & 1) == 1;
 
 			public bool Small => (image & 1) == 0;
 
-			public byte[] compressData() // compresses the information of the enemy into an array of bytes to be placed in the game code
+			public byte[] CompressData() // compresses the information of the enemy into an array of bytes to be placed in the game code
 			{
 				byte[] enemyInfo = new byte[20];
 				enemyInfo[0] = (byte)(exp & 0xFF); // experience bytes are inverted from the usual format
@@ -882,7 +882,7 @@ namespace FF1Lib
 				return enemyInfo;
 			}
 
-			public void decompressData(byte[] data)
+			public void DecompressData(byte[] data)
 			{
 				if (data.Length != EnemySize)
 				{
@@ -916,7 +916,7 @@ namespace FF1Lib
 			public byte[] spell_list = new byte[8];
 			public byte[] skill_list = new byte[4];
 
-			public byte[] compressData()
+			public byte[] CompressData()
 			{
 				byte[] scriptData = new byte[16];
 				scriptData[0] = spell_chance;
@@ -938,7 +938,7 @@ namespace FF1Lib
 				return scriptData;
 			}
 
-			public void decompressData(byte[] data)
+			public void DecompressData(byte[] data)
 			{
 				if (data.Length != ScriptSize)
 				{
@@ -983,7 +983,7 @@ namespace FF1Lib
 				set => id[0] = value;
 			}
 
-			public byte[] compressData() // compresses the information in the formation into an array of bytes to be placed in the game code
+			public byte[] CompressData() // compresses the information in the formation into an array of bytes to be placed in the game code
 			{
 				for (int i = 0; i < 4; ++i)
 				{
@@ -1023,7 +1023,7 @@ namespace FF1Lib
 				return formationData;
 			}
 
-			public void decompressData(byte[] data)
+			public void DecompressData(byte[] data)
 			{
 				if (data.Length != FormationDataSize)
 				{
@@ -1289,7 +1289,7 @@ namespace FF1Lib
 					f.paletteassignment |= (byte)(0b00010000 << (3 - i));
 				}
 
-				f.pics |= (byte)(enemy[f.id[i]].pic << (i * 2));
+				f.pics |= (byte)(enemy[f.id[i]].Pic << (i * 2));
 			}
 		}
 
@@ -1538,7 +1538,7 @@ namespace FF1Lib
 				}
 				// now we pick one of the availablemons at random as our first mon
 				f.Top = availablemons.PickRandom(rng);
-				f.tileset = enemy[f.Top].tileset; // and we pick the corresponding tileset
+				f.tileset = enemy[f.Top].Tileset; // and we pick the corresponding tileset
 												  // we need to select which zone we are aiming to fill on the B-Side (and if we require a Large-only or Small-only formation to do that, we set the shape of the formation accordingly)
 				List<int> availablezones = en.enemyZones[f.Top].Where(index => en.zone[index].forms.Count < en.zone[index].min).ToList();
 				if (availablezones.Count == 0) // if there are no zones available that haven't reached their mincount, check for maxcount instead
@@ -1684,8 +1684,8 @@ namespace FF1Lib
 				// assign the pic and palette bytes to each monster slot
 				ENF_AssignPicAndPaletteBytes(enemy, f);
 				// set surprise rate and unrunnability flags
-				f.unrunnable_a = rng.Between(0, EnemizerUnrunnabilityWeight) + zoneA >= EnemizerUnrunnabilityWeight + 3 ? true : false; // unrunnable chance is higher for later zones
-				f.unrunnable_b = rng.Between(0, EnemizerUnrunnabilityWeight) + zoneB >= EnemizerUnrunnabilityWeight + 3 ? true : false;
+				f.unrunnable_a = rng.Between(0, EnemizerUnrunnabilityWeight) + zoneA >= EnemizerUnrunnabilityWeight + 3; // unrunnable chance is higher for later zones
+				f.unrunnable_b = rng.Between(0, EnemizerUnrunnabilityWeight) + zoneB >= EnemizerUnrunnabilityWeight + 3;
 				if (f.unrunnable_a && f.unrunnable_b)
 				{
 					f.surprise = (byte)rng.Between(3, 30);
@@ -1769,7 +1769,7 @@ namespace FF1Lib
 				en.zone[zoneB].forms.Add((byte)(i | 0x80));
 				// log and compress this formation
 				en.LogFeatured(f);
-				formationData[i] = f.compressData();
+				formationData[i] = f.CompressData();
 			}
 			en.PrintFormationInfo();
 			// now we will place enemies in their proper domains
@@ -2169,10 +2169,10 @@ namespace FF1Lib
 					return_value = acceptableValues.Max();
 				}
 			}
-			return ENF_ApproveFormation(f, return_value);
+			return ENF_ApproveFormation(return_value);
 		}
 
-		public int ENF_ApproveFormation(FormationInfo f, int zone)
+		public int ENF_ApproveFormation(int zone)
 		{
 			// approves a formation based on the zone it has been assigned.  this will be used to rule out formations that might be problematic
 			// for now this function does nothing but it will be used in future to reject certain formations
@@ -2198,7 +2198,7 @@ namespace FF1Lib
 
 			FormationInfo f = new();
 			f.id[2] = id; // we place the boss monster in the third slot
-			f.tileset = enemy[id].tileset;
+			f.tileset = enemy[id].Tileset;
 			f.pal1 = enemy[id].pal;
 			f.shape = shape;
 			f.monMin[2] = count;
@@ -2232,7 +2232,7 @@ namespace FF1Lib
 					en.zone[zoneB].forms.Add((byte)(formid | 0x80)); // if for some reason we didn't fill any valid zone from the B-side, we simply don't add it to any zones (and thus it will never be seen)
 				}
 
-				f.unrunnable_b = rng.Between(0, EnemizerUnrunnabilityWeight) + zoneB >= EnemizerUnrunnabilityWeight + 3 ? true : false;
+				f.unrunnable_b = rng.Between(0, EnemizerUnrunnabilityWeight) + zoneB >= EnemizerUnrunnabilityWeight + 3;
 			}
 			else
 			{
@@ -2243,7 +2243,7 @@ namespace FF1Lib
 			f.unrunnable_a = unrunnable;
 			f.surprise = surprise;
 			en.LogFeatured(f);
-			return f.compressData();
+			return f.CompressData();
 		}
 
 		public byte[] ENF_DrawForcedSingleFight(EnemizerTrackingInfo en, MT19337 rng, EnemyInfo[] enemy, int zoneB, byte formid)
@@ -2260,7 +2260,7 @@ namespace FF1Lib
 
 			FormationInfo f = new();
 			f.Top = en.zone[zoneB].zonemons.PickRandom(rng);
-			f.tileset = enemy[f.Top].tileset;
+			f.tileset = enemy[f.Top].Tileset;
 			int limit = Large(f.Top) ? 2 : 6;
 			if (enemy[f.Top].exp * limit < en.zone[zoneB].maxXP)
 			{
@@ -2338,12 +2338,12 @@ namespace FF1Lib
 			}
 
 			f.surprise = 4;
-			f.unrunnable_a = rng.Between(0, EnemizerUnrunnabilityWeight) + zoneA >= EnemizerUnrunnabilityWeight + 3 ? true : false;
+			f.unrunnable_a = rng.Between(0, EnemizerUnrunnabilityWeight) + zoneA >= EnemizerUnrunnabilityWeight + 3;
 			f.unrunnable_b = true; // the trap side is always unrunnable
 								   // put on the finishing touches and log and compress this formation
 			ENF_AssignPicAndPaletteBytes(enemy, f);
 			en.LogFeatured(f);
-			return f.compressData();
+			return f.CompressData();
 		}
 
 		public int ENE_rollEnemyStrength(int tier, int level)
@@ -2874,13 +2874,13 @@ namespace FF1Lib
 					default:
 						if (enemy[i].tier != -1)
 						{
-							en.enemiesInTileset[enemy[i].tileset].Add(i); // add enemy to enemiesInTileset unless it is a boss
+							en.enemiesInTileset[enemy[i].Tileset].Add(i); // add enemy to enemiesInTileset unless it is a boss
 						}
 
-						List<byte> acceptablepalettes = en.palettesInTileset[enemy[i].tileset].Except(enemyImagePalettes[enemy[i].image]).ToList();
+						List<byte> acceptablepalettes = en.palettesInTileset[enemy[i].Tileset].Except(enemyImagePalettes[enemy[i].image]).ToList();
 						if (acceptablepalettes.Count == 0)
 						{
-							acceptablepalettes = en.palettesInTileset[enemy[i].tileset].ToList();
+							acceptablepalettes = en.palettesInTileset[enemy[i].Tileset].ToList();
 						}
 
 						enemy[i].pal = acceptablepalettes.PickRandom(rng);
@@ -2914,7 +2914,7 @@ namespace FF1Lib
 			}
 		}
 
-		private bool DoEnemizer_Enemies(MT19337 rng, EnemyInfo[] enemy, byte[] patterntabledata, SpellInfo[] spell, EnemySkillInfo[] skill, EnemyScriptInfo[] script, string[] enemyNames, string[] skillNames, bool shuffledSkillsOn, EnemizerTrackingInfo en)
+		private bool DoEnemizer_Enemies(MT19337 rng, EnemyInfo[] enemy, byte[] patterntabledata, SpellInfo[] spell, EnemySkillInfo[] skill, EnemyScriptInfo[] script, string[] enemyNames, bool shuffledSkillsOn, EnemizerTrackingInfo en)
 		{
 			List<byte> enemyImageLUT = new()
 			{
@@ -3220,16 +3220,16 @@ namespace FF1Lib
 			{
 				List<MonsterPerks> perks = new() { MonsterPerks.PERK_GAINSTAT10, MonsterPerks.PERK_LOSESTAT10 }; // list of perks this monster is eligible to receive
 				enemy[i].image = enemyImageLUT[enemyImages[i]]; // assign the monster's pic
-				if (enemy[i].tileset >= GenericTilesetsCount)
+				if (enemy[i].Tileset >= GenericTilesetsCount)
 				{
 					return false; // enemy was outside the boundaries for acceptable tilesets - abort enemizer
 				}
 
 				bool oldSize = enemy[i].Large; // remember if enemy was small (false) or large (true)
-				List<byte> acceptablepalettes = en.palettesInTileset[enemy[i].tileset].Except(enemyImagePalettes[enemy[i].image]).ToList();
+				List<byte> acceptablepalettes = en.palettesInTileset[enemy[i].Tileset].Except(enemyImagePalettes[enemy[i].image]).ToList();
 				if (acceptablepalettes.Count == 0)
 				{
-					acceptablepalettes = en.palettesInTileset[enemy[i].tileset].ToList();
+					acceptablepalettes = en.palettesInTileset[enemy[i].Tileset].ToList();
 				}
 
 				enemy[i].pal = acceptablepalettes.PickRandom(rng);
@@ -3428,7 +3428,7 @@ namespace FF1Lib
 				}
 				else
 				{
-					en.enemiesInTileset[enemy[i].tileset].Add(i); // add enemy to enemiesInTileset unless it is a boss
+					en.enemiesInTileset[enemy[i].Tileset].Add(i); // add enemy to enemiesInTileset unless it is a boss
 																  // adjust HP, EXP, and GP if enemy changes size
 					if (oldSize && enemy[i].Small) // large became small
 					{
@@ -4501,13 +4501,13 @@ namespace FF1Lib
 			for (int i = 0; i < EnemySkillCount; ++i)
 			{
 				skill[i] = new EnemySkillInfo();
-				skill[i].decompressData(Get(EnemySkillOffset + (i * EnemySkillSize), EnemySkillSize));
+				skill[i].DecompressData(Get(EnemySkillOffset + (i * EnemySkillSize), EnemySkillSize));
 				skill[i].tier = skilltiers_enemy[i];
 			}
 			for (int i = 0; i < ScriptCount; ++i)
 			{
 				script[i] = new EnemyScriptInfo();
-				script[i].decompressData(Get(ScriptOffset + (i * ScriptSize), ScriptSize));
+				script[i].DecompressData(Get(ScriptOffset + (i * ScriptSize), ScriptSize));
 			}
 			EnemyInfo[] enemy = new EnemyInfo[EnemyCount]; // list of enemies, including information that is either inferred from formation inspection or tier lists that I have just made up
 			EnemizerTrackingInfo en = new(); // structure that contains many lists and other information that is helpful for managing formation generation efficiently
@@ -4524,7 +4524,7 @@ namespace FF1Lib
 			for (int i = 0; i < EnemyCount; ++i)
 			{
 				enemy[i] = new EnemyInfo();
-				enemy[i].decompressData(Get(EnemyOffset + (i * EnemySize), EnemySize));
+				enemy[i].DecompressData(Get(EnemyOffset + (i * EnemySize), EnemySize));
 				enemy[i].tier = enemyTierList[i];
 			}
 			string[] enemyNames = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount); // load all the enemy names into the array for use by enemizer
@@ -4532,7 +4532,7 @@ namespace FF1Lib
 			for (int i = 0; i < FormationCount; ++i) // we need to scour the formations list for enemy information, and to give the enemizer tracking info construct information it can work with
 			{
 				FormationInfo f = new();
-				f.decompressData(Get(FormationDataOffset + (i * FormationSize), FormationSize));
+				f.DecompressData(Get(FormationDataOffset + (i * FormationSize), FormationSize));
 				en.ReadEnemyDataFromFormation(f, enemy);
 			}
 			en.PurgeIDFromEnemyTilesetList(Enemy.Imp);
@@ -4545,17 +4545,17 @@ namespace FF1Lib
 			{
 				byte[] patterntabledata = Get(EnemyPatternTablesOffset, 0x6800); // each pattern table is 0x800 bytes and there are 13 pattern tables that we will edit
 																				 // do enemizer stuff
-				if (DoEnemizer_Enemies(rng, enemy, patterntabledata, spell, skill, script, enemyNames, skillNames, shuffledSkillsOn, en))
+				if (DoEnemizer_Enemies(rng, enemy, patterntabledata, spell, skill, script, enemyNames, shuffledSkillsOn, en))
 				{
 					doFormations = true; // must use formation generator with enemizer
 					for (int i = 0; i < EnemyCount; ++i)
 					{
-						Put(EnemyOffset + (EnemySize * i), enemy[i].compressData()); // move every entry from the enemizer to the ROM
+						Put(EnemyOffset + (EnemySize * i), enemy[i].CompressData()); // move every entry from the enemizer to the ROM
 					}
 					Put(EnemyPatternTablesOffset, patterntabledata); // write the new pattern tables as a chunk
 					for (int i = 0; i < ScriptCount; ++i)
 					{
-						Put(ScriptOffset + (ScriptSize * i), script[i].compressData()); // and move the modified scripts as well
+						Put(ScriptOffset + (ScriptSize * i), script[i].CompressData()); // and move the modified scripts as well
 					}
 					string[] enemyTextPart1 = enemyNames.Take(2).ToArray();
 					string[] enemyTextPart2 = enemyNames.Skip(2).ToArray();
@@ -4600,19 +4600,19 @@ namespace FF1Lib
 			for (int i = 0; i < MagicCount; ++i)
 			{
 				spell[i] = new SpellInfo();
-				spell[i].decompressData(Get(MagicOffset + (i * MagicSize), MagicSize));
-				spell[i].calc_Enemy_SpellTier();
+				spell[i].DecompressData(Get(MagicOffset + (i * MagicSize), MagicSize));
+				spell[i].CalcEnemySpellTier();
 			}
 			for (int i = 0; i < EnemySkillCount; ++i)
 			{
 				skill[i] = new EnemySkillInfo();
-				skill[i].decompressData(Get(EnemySkillOffset + (i * EnemySkillSize), EnemySkillSize));
+				skill[i].DecompressData(Get(EnemySkillOffset + (i * EnemySkillSize), EnemySkillSize));
 				skill[i].tier = skilltiers_enemy[i];
 			}
 			for (int i = 0; i < ScriptCount; ++i)
 			{
 				script[i] = new EnemyScriptInfo();
-				script[i].decompressData(Get(ScriptOffset + (i * ScriptSize), ScriptSize));
+				script[i].DecompressData(Get(ScriptOffset + (i * ScriptSize), ScriptSize));
 			}
 
 			EnemyInfo[] enemy = new EnemyInfo[EnemyCount]; // list of enemies, including information that is either inferred from formation inspection or tier lists that I have just made up
@@ -4634,7 +4634,7 @@ namespace FF1Lib
 			for (int i = 0; i < EnemyCount; ++i)
 			{
 				enemy[i] = new EnemyInfo();
-				enemy[i].decompressData(Get(EnemyOffset + (i * EnemySize), EnemySize));
+				enemy[i].DecompressData(Get(EnemyOffset + (i * EnemySize), EnemySize));
 				enemy[i].tier = enemyTierList[i];
 			}
 
@@ -4811,7 +4811,7 @@ namespace FF1Lib
 			// write the modified scripts to ROM
 			for (int i = 0; i < ScriptCount; ++i)
 			{
-				Put(ScriptOffset + (ScriptSize * i), script[i].compressData()); // and move the modified scripts as well
+				Put(ScriptOffset + (ScriptSize * i), script[i].CompressData()); // and move the modified scripts as well
 			}
 		}
 
@@ -4821,8 +4821,8 @@ namespace FF1Lib
 			for (int i = 0; i < MagicCount; ++i)
 			{
 				spell[i] = new SpellInfo();
-				spell[i].decompressData(Get(MagicOffset + (i * MagicSize), MagicSize));
-				spell[i].calc_Enemy_SpellTier();
+				spell[i].DecompressData(Get(MagicOffset + (i * MagicSize), MagicSize));
+				spell[i].CalcEnemySpellTier();
 			}
 
 			return spell;

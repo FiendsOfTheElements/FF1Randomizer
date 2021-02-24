@@ -259,7 +259,6 @@ namespace FF1Lib
 				case ShopKillFactor.Kill80Percent: return 80;
 				case ShopKillFactor.KillAll: return 100;
 				case ShopKillFactor.KillRandom:
-					break;
 				default: return 0;
 			}
 		}
@@ -274,9 +273,7 @@ namespace FF1Lib
 				case ShopType.White: return (Item)184;//Lamp
 				case ShopType.Black: return (Item)189;//Dark
 				case ShopType.Clinic:
-					break;
 				case ShopType.Inn:
-					break;
 				default: return Item.None;
 			}
 		}

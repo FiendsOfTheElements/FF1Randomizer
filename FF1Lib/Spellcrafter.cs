@@ -53,10 +53,10 @@ namespace FF1Lib
 			for (int i = 0; i < MagicCount; ++i)
 			{
 				spell[i] = new SpellInfo();
-				spell[i].decompressData(Get(MagicOffset + (MagicSize * i), MagicSize));
-				spell[i].calc_Enemy_SpellTier();
+				spell[i].DecompressData(Get(MagicOffset + (MagicSize * i), MagicSize));
+				spell[i].CalcEnemySpellTier();
 				oldTiers[i] = spell[i].tier;
-				spell[i].decompressData(new byte[] { }); // reset
+				spell[i].DecompressData(new byte[] { }); // reset
 				spellNames[i] = ""; // no name until we assign one
 				spellMessages[i] = 0; // no message until we assign one
 			}
@@ -108,7 +108,7 @@ namespace FF1Lib
 			for (int i = 0; i < ScriptCount; ++i)
 			{
 				script[i] = new EnemyScriptInfo();
-				script[i].decompressData(Get(ScriptOffset + (ScriptSize * i), ScriptSize));
+				script[i].DecompressData(Get(ScriptOffset + (ScriptSize * i), ScriptSize));
 			}
 
 			List<int> spellindex = Enumerable.Range(0, 64).ToList(); // a list of spell indexes (0-63)
@@ -270,7 +270,7 @@ namespace FF1Lib
 
 			// draw guaranteed spells
 			int rusespell = spellindex.Where(id => WhiteSpell(id) && id < 32).ToList().PickRandom(rng); // guaranteed RUSE, we will keep track of this when assigning spells to items
-			SPCR_CraftEvasionSpell(rng, spell[rusespell], SpellTier(rusespell), 0x04);
+			SPCR_CraftEvasionSpell(spell[rusespell], SpellTier(rusespell), 0x04);
 			spellMessages[rusespell] = 0x03; // Evasion up
 			SPCR_SetPermissionFalse(spellPermissions, rusespell, 3); // red mage banned
 			spellindex.Remove(rusespell);
@@ -1392,7 +1392,7 @@ namespace FF1Lib
 								continue;
 							}
 						}
-						SPCR_CraftEvasionSpell(rng, spell[index], SpellTier(index), targeting);
+						SPCR_CraftEvasionSpell(spell[index], SpellTier(index), targeting);
 						if (spell[index].targeting == 0x04)
 						{
 							SPCR_SetPermissionFalse(spellPermissions, index, 3); // red mage banned
@@ -1937,14 +1937,14 @@ namespace FF1Lib
 			// write all spell data to the ROM
 			for (int i = 0; i < MagicCount; ++i)
 			{
-				Put(MagicOffset + (MagicSize * i), spell[i].compressData());
+				Put(MagicOffset + (MagicSize * i), spell[i].CompressData());
 				while (spellNames[i].Length < 4)
 				{
 					spellNames[i] += " ";
 				}
 
 				Put(MagicNamesOffset + (MagicNameSize * i), FF1Text.TextToBytes(spellNames[i]));
-				spell[i].calc_Enemy_SpellTier();
+				spell[i].CalcEnemySpellTier();
 			}
 			if (!keepPermissions)
 			{
@@ -2154,7 +2154,7 @@ namespace FF1Lib
 
 			for (int i = 0; i < ScriptCount; ++i) // write the new scripts to ROM
 			{
-				Put(ScriptOffset + (ScriptSize * i), script[i].compressData());
+				Put(ScriptOffset + (ScriptSize * i), script[i].CompressData());
 			}
 		}
 
@@ -2417,7 +2417,7 @@ namespace FF1Lib
 			spell.routine = 0x02;
 		}
 
-		public void SPCR_CraftEvasionSpell(MT19337 rng, SpellInfo spell, int tier, byte targeting)
+		public void SPCR_CraftEvasionSpell(SpellInfo spell, int tier, byte targeting)
 		{
 			spell.targeting = targeting;
 			if (tier == 7)

@@ -103,7 +103,6 @@ namespace FF1Lib.Procgen
 				{ TransposeFilter(pattern6), TransposeFilter(replacement6) }
 			};
 
-			bool tetst = filter.ContainsKey(pattern1);
 			return map.Filter(filter, (x: 3, y: 3));
 		}
 

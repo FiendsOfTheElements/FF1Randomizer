@@ -43,7 +43,7 @@ namespace FF1R.Commands
 			[Argument(1, Description = "The flag string to give the new preset")]
 			public string FlagString { get; }
 
-			private int OnExecute(IConsole console)
+			private int OnExecute()
 			{
 				FFR.Common.Presets.Add(Name, FlagString);
 				return 0;

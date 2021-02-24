@@ -723,7 +723,7 @@ namespace FF1Lib
 			List<PropertyInfo> flagproperties = properties.Where(p => p.CanWrite).OrderBy(p => p.Name).ToList();
 
 			BigInteger sum = 0;
-			sum = AddString(sum, 7, (FFRVersion.Sha.Length >= 7) ? FFRVersion.Sha.Substring(0, 7) : FFRVersion.Sha.PadRight(7, 'X'));
+			sum = AddString(sum, (FFRVersion.Sha.Length >= 7) ? FFRVersion.Sha.Substring(0, 7) : FFRVersion.Sha.PadRight(7, 'X'));
 
 			foreach (PropertyInfo p in flagproperties)
 			{
@@ -819,7 +819,7 @@ namespace FF1Lib
 			return (sum * radix) + value;
 		}
 
-		private static BigInteger AddString(BigInteger sum, int length, string str)
+		private static BigInteger AddString(BigInteger sum, string str)
 		{
 			Encoding AsciiEncoding = Encoding.ASCII;
 			byte[] bytes = AsciiEncoding.GetBytes(str);

@@ -503,21 +503,21 @@ namespace FF1Lib
 			// at the corners.
 			foreach (Maze.Wall wall in walls)
 			{
-				if (wall.one.Item.y == wall.two.Item.y) // vertical wall
+				if (wall.One.Item.Y == wall.Two.Item.Y) // vertical wall
 				{
 					int x;
-					int y = 8 * wall.one.Item.y;
+					int y = 8 * wall.One.Item.Y;
 					byte tile;
 
 					// The first item will always have the lower coordinate, unless it's a wraparound.
-					if (wall.one.Item.x % 2 == 0)
+					if (wall.One.Item.X % 2 == 0)
 					{
-						x = (8 * wall.one.Item.x) + 7;
+						x = (8 * wall.One.Item.X) + 7;
 						tile = 0x33;
 					}
 					else
 					{
-						x = ((8 * wall.one.Item.x) + 8) % 64;
+						x = ((8 * wall.One.Item.X) + 8) % 64;
 						tile = 0x32;
 					}
 
@@ -530,10 +530,10 @@ namespace FF1Lib
 
 			foreach (Maze.Wall wall in walls)
 			{
-				if (wall.one.Item.x == wall.two.Item.x) // horizontal wall
+				if (wall.One.Item.X == wall.Two.Item.X) // horizontal wall
 				{
-					int x = 8 * wall.one.Item.x;
-					int y = ((8 * wall.one.Item.y) + 8) % 64;
+					int x = 8 * wall.One.Item.X;
+					int y = ((8 * wall.One.Item.Y) + 8) % 64;
 
 					map[y, x] = 0x34;
 					for (int i = 1; i < 7; i++)
@@ -932,7 +932,7 @@ namespace FF1Lib
 			Data[MapObjGfxOffset + (byte)ObjectId.WarMECH] = RobotGfx;
 
 			// Set the action when you talk to WarMECH.
-			npcpdata.SetRoutine(ObjectId.WarMECH, newTalkRoutines.Talk_fight);
+			npcpdata.SetRoutine(ObjectId.WarMECH, NewTalkRoutines.Talk_fight);
 
 			// Change the dialogue.
 			List<string> dialogueStrings = new List<string>

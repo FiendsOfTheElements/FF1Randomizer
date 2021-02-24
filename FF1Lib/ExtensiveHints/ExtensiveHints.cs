@@ -120,7 +120,7 @@ namespace FF1Lib
 			npcData.GetTalkArray(npc)[(int)TalkArrayPos.dialogue_1] = 0;
 			npcData.GetTalkArray(npc)[(int)TalkArrayPos.dialogue_2] = (byte)textId;
 			npcData.GetTalkArray(npc)[(int)TalkArrayPos.dialogue_3] = 0;
-			npcData.SetRoutine(npc, newTalkRoutines.Talk_norm);
+			npcData.SetRoutine(npc, NewTalkRoutines.Talk_norm);
 			if (text != null)
 			{
 				dialogs.Add(textId, text);

@@ -258,17 +258,17 @@ namespace FF1Lib
 
 			// Update Chaos script
 			int Talk_Ending = talkroutines.Add(Blob.FromHex("4C38C9"));
-			npcdata.SetRoutine((ObjectId)0x1A, (newTalkRoutines)Talk_Ending);
+			npcdata.SetRoutine((ObjectId)0x1A, (NewTalkRoutines)Talk_Ending);
 
 			//Update Fiends, Garland, Vampire, Astos and Bikke
-			var battleJump = Blob.FromHex("200096");
-			var mapreload = Blob.FromHex("201896");
-			talkroutines.ReplaceChunk(newTalkRoutines.Talk_fight, battleJump, Blob.FromHex("EAEAEA"));
-			talkroutines.ReplaceChunk(newTalkRoutines.Talk_fight, mapreload, Blob.FromHex("EAEAEA"));
-			talkroutines.ReplaceChunk(newTalkRoutines.Talk_Bikke, battleJump, Blob.FromHex("EAEAEA"));
-			talkroutines.ReplaceChunk(newTalkRoutines.Talk_Bikke, mapreload, Blob.FromHex("EAEAEA"));
-			talkroutines.ReplaceChunk(newTalkRoutines.Talk_Astos, battleJump, Blob.FromHex("EAEAEA"));
-			talkroutines.ReplaceChunk(newTalkRoutines.Talk_Astos, mapreload, Blob.FromHex("EAEAEA"));
+			Blob battleJump = Blob.FromHex("200096");
+			Blob mapreload = Blob.FromHex("201896");
+			talkroutines.ReplaceChunk(NewTalkRoutines.Talk_fight, battleJump, Blob.FromHex("EAEAEA"));
+			talkroutines.ReplaceChunk(NewTalkRoutines.Talk_fight, mapreload, Blob.FromHex("EAEAEA"));
+			talkroutines.ReplaceChunk(NewTalkRoutines.Talk_Bikke, battleJump, Blob.FromHex("EAEAEA"));
+			talkroutines.ReplaceChunk(NewTalkRoutines.Talk_Bikke, mapreload, Blob.FromHex("EAEAEA"));
+			talkroutines.ReplaceChunk(NewTalkRoutines.Talk_Astos, battleJump, Blob.FromHex("EAEAEA"));
+			talkroutines.ReplaceChunk(NewTalkRoutines.Talk_Astos, mapreload, Blob.FromHex("EAEAEA"));
 		}
 
 		public enum FormationPattern
@@ -312,31 +312,31 @@ namespace FF1Lib
 
 			public class FormationData
 			{
-				public FormationPattern pattern { get; set; }
-				public FormationSpriteSheet spriteSheet { get; set; }
-				public int palette1 { get; set; }
-				public int palette2 { get; set; }
-				public int enemy1 { get; set; }
-				public int enemy2 { get; set; }
-				public int enemy3 { get; set; }
-				public int enemy4 { get; set; }
-				public int gfxOffset1 { get; set; }
-				public int gfxOffset2 { get; set; }
-				public int gfxOffset3 { get; set; }
-				public int gfxOffset4 { get; set; }
-				public (int, int) minmax1 { get; set; }
-				public (int, int) minmax2 { get; set; }
-				public (int, int) minmax3 { get; set; }
-				public (int, int) minmax4 { get; set; }
-				public int paletteAssign1 { get; set; }
-				public int paletteAssign2 { get; set; }
-				public int paletteAssign3 { get; set; }
-				public int paletteAssign4 { get; set; }
-				public bool unrunnableA { get; set; }
-				public bool unrunnableB { get; set; }
-				public (int, int) minmaxB1 { get; set; }
-				public (int, int) minmaxB2 { get; set; }
-				public int supriseFactor { get; set; }
+				public FormationPattern Pattern { get; set; }
+				public FormationSpriteSheet SpriteSheet { get; set; }
+				public int Palette1 { get; set; }
+				public int Palette2 { get; set; }
+				public int Enemy1 { get; set; }
+				public int Enemy2 { get; set; }
+				public int Enemy3 { get; set; }
+				public int Enemy4 { get; set; }
+				public int GfxOffset1 { get; set; }
+				public int GfxOffset2 { get; set; }
+				public int GfxOffset3 { get; set; }
+				public int GfxOffset4 { get; set; }
+				public (int, int) Minmax1 { get; set; }
+				public (int, int) Minmax2 { get; set; }
+				public (int, int) Minmax3 { get; set; }
+				public (int, int) Minmax4 { get; set; }
+				public int PaletteAssign1 { get; set; }
+				public int PaletteAssign2 { get; set; }
+				public int PaletteAssign3 { get; set; }
+				public int PaletteAssign4 { get; set; }
+				public bool UnrunnableA { get; set; }
+				public bool UnrunnableB { get; set; }
+				public (int, int) MinmaxB1 { get; set; }
+				public (int, int) MinmaxB2 { get; set; }
+				public int SupriseFactor { get; set; }
 
 
 				public FormationData(byte[] formationdata)
@@ -346,60 +346,60 @@ namespace FF1Lib
 
 				public void LoadData(byte[] formationdata)
 				{
-					pattern = (FormationPattern)(formationdata[TypeOffset] / 0x10);
-					spriteSheet = (FormationSpriteSheet)(formationdata[TypeOffset] & 0x0F);
-					gfxOffset1 = formationdata[GFXOffset] & 0x03;
-					gfxOffset2 = (formationdata[GFXOffset] / 0x04) & 0x03;
-					gfxOffset3 = (formationdata[GFXOffset] / 0x10) & 0x03;
-					gfxOffset4 = (formationdata[GFXOffset] / 0x40) & 0x03;
-					enemy1 = formationdata[IDsOffset + 0];
-					enemy2 = formationdata[IDsOffset + 1];
-					enemy3 = formationdata[IDsOffset + 2];
-					enemy4 = formationdata[IDsOffset + 3];
-					minmax1 = (formationdata[QuantityOffset + 0] / 0x10, formationdata[QuantityOffset + 0] & 0x0F);
-					minmax2 = (formationdata[QuantityOffset + 1] / 0x10, formationdata[QuantityOffset + 1] & 0x0F);
-					minmax3 = (formationdata[QuantityOffset + 2] / 0x10, formationdata[QuantityOffset + 2] & 0x0F);
-					minmax4 = (formationdata[QuantityOffset + 3] / 0x10, formationdata[QuantityOffset + 3] & 0x0F);
-					palette1 = formationdata[PalettesOffset + 0];
-					palette2 = formationdata[PalettesOffset + 1];
-					paletteAssign1 = ((formationdata[PaletteAsignmentOffset] & 0x80) > 0) ? 1 : 0;
-					paletteAssign2 = ((formationdata[PaletteAsignmentOffset] & 0x40) > 0) ? 1 : 0;
-					paletteAssign3 = ((formationdata[PaletteAsignmentOffset] & 0x20) > 0) ? 1 : 0;
-					paletteAssign4 = ((formationdata[PaletteAsignmentOffset] & 0x10) > 0) ? 1 : 0;
-					unrunnableA = (formationdata[PaletteAsignmentOffset] & 0x01) == 0 ? false : true;
-					unrunnableB = (formationdata[PaletteAsignmentOffset] & 0x02) == 0 ? false : true;
-					minmaxB1 = (formationdata[QuantityBOffset + 0] / 0x10, formationdata[QuantityBOffset + 0] & 0x0F);
-					minmaxB2 = (formationdata[QuantityBOffset + 1] / 0x10, formationdata[QuantityBOffset + 1] & 0x0F);
-					supriseFactor = formationdata[0x0C];
+					Pattern = (FormationPattern)(formationdata[TypeOffset] / 0x10);
+					SpriteSheet = (FormationSpriteSheet)(formationdata[TypeOffset] & 0x0F);
+					GfxOffset1 = formationdata[GFXOffset] & 0x03;
+					GfxOffset2 = (formationdata[GFXOffset] / 0x04) & 0x03;
+					GfxOffset3 = (formationdata[GFXOffset] / 0x10) & 0x03;
+					GfxOffset4 = (formationdata[GFXOffset] / 0x40) & 0x03;
+					Enemy1 = formationdata[IDsOffset + 0];
+					Enemy2 = formationdata[IDsOffset + 1];
+					Enemy3 = formationdata[IDsOffset + 2];
+					Enemy4 = formationdata[IDsOffset + 3];
+					Minmax1 = (formationdata[QuantityOffset + 0] / 0x10, formationdata[QuantityOffset + 0] & 0x0F);
+					Minmax2 = (formationdata[QuantityOffset + 1] / 0x10, formationdata[QuantityOffset + 1] & 0x0F);
+					Minmax3 = (formationdata[QuantityOffset + 2] / 0x10, formationdata[QuantityOffset + 2] & 0x0F);
+					Minmax4 = (formationdata[QuantityOffset + 3] / 0x10, formationdata[QuantityOffset + 3] & 0x0F);
+					Palette1 = formationdata[PalettesOffset + 0];
+					Palette2 = formationdata[PalettesOffset + 1];
+					PaletteAssign1 = ((formationdata[PaletteAsignmentOffset] & 0x80) > 0) ? 1 : 0;
+					PaletteAssign2 = ((formationdata[PaletteAsignmentOffset] & 0x40) > 0) ? 1 : 0;
+					PaletteAssign3 = ((formationdata[PaletteAsignmentOffset] & 0x20) > 0) ? 1 : 0;
+					PaletteAssign4 = ((formationdata[PaletteAsignmentOffset] & 0x10) > 0) ? 1 : 0;
+					UnrunnableA = (formationdata[PaletteAsignmentOffset] & 0x01) != 0;
+					UnrunnableB = (formationdata[PaletteAsignmentOffset] & 0x02) != 0;
+					MinmaxB1 = (formationdata[QuantityBOffset + 0] / 0x10, formationdata[QuantityBOffset + 0] & 0x0F);
+					MinmaxB2 = (formationdata[QuantityBOffset + 1] / 0x10, formationdata[QuantityBOffset + 1] & 0x0F);
+					SupriseFactor = formationdata[0x0C];
 				}
 
 				public Blob OutputBlob()
 				{
 					byte[] formationdata = new byte[0x10];
 
-					formationdata[TypeOffset] = (byte)(((int)pattern * 0x10) + (int)spriteSheet);
-					formationdata[GFXOffset] = (byte)(gfxOffset1 + (gfxOffset2 * 0x04) + (gfxOffset3 * 0x10) + (gfxOffset4 * 0x40));
+					formationdata[TypeOffset] = (byte)(((int)Pattern * 0x10) + (int)SpriteSheet);
+					formationdata[GFXOffset] = (byte)(GfxOffset1 + (GfxOffset2 * 0x04) + (GfxOffset3 * 0x10) + (GfxOffset4 * 0x40));
 
-					formationdata[IDsOffset + 0] = (byte)enemy1;
-					formationdata[IDsOffset + 1] = (byte)enemy2;
-					formationdata[IDsOffset + 2] = (byte)enemy3;
-					formationdata[IDsOffset + 3] = (byte)enemy4;
+					formationdata[IDsOffset + 0] = (byte)Enemy1;
+					formationdata[IDsOffset + 1] = (byte)Enemy2;
+					formationdata[IDsOffset + 2] = (byte)Enemy3;
+					formationdata[IDsOffset + 3] = (byte)Enemy4;
 
-					formationdata[QuantityOffset + 0] = (byte)((minmax1.Item1 * 0x10) + minmax1.Item2);
-					formationdata[QuantityOffset + 1] = (byte)((minmax2.Item1 * 0x10) + minmax2.Item2);
-					formationdata[QuantityOffset + 2] = (byte)((minmax3.Item1 * 0x10) + minmax3.Item2);
-					formationdata[QuantityOffset + 3] = (byte)((minmax4.Item1 * 0x10) + minmax4.Item2);
+					formationdata[QuantityOffset + 0] = (byte)((Minmax1.Item1 * 0x10) + Minmax1.Item2);
+					formationdata[QuantityOffset + 1] = (byte)((Minmax2.Item1 * 0x10) + Minmax2.Item2);
+					formationdata[QuantityOffset + 2] = (byte)((Minmax3.Item1 * 0x10) + Minmax3.Item2);
+					formationdata[QuantityOffset + 3] = (byte)((Minmax4.Item1 * 0x10) + Minmax4.Item2);
 
-					formationdata[PalettesOffset + 0] = (byte)palette1;
-					formationdata[PalettesOffset + 1] = (byte)palette2;
+					formationdata[PalettesOffset + 0] = (byte)Palette1;
+					formationdata[PalettesOffset + 1] = (byte)Palette2;
 
-					formationdata[PaletteAsignmentOffset] = (byte)((paletteAssign1 * 0x80) + (paletteAssign2 * 0x40) + (paletteAssign3 * 0x20) + (paletteAssign4 * 0x10)
-						+ (unrunnableB ? 0x02 : 0x00) + (unrunnableA ? 0x01 : 0x00));
+					formationdata[PaletteAsignmentOffset] = (byte)((PaletteAssign1 * 0x80) + (PaletteAssign2 * 0x40) + (PaletteAssign3 * 0x20) + (PaletteAssign4 * 0x10)
+						+ (UnrunnableB ? 0x02 : 0x00) + (UnrunnableA ? 0x01 : 0x00));
 
-					formationdata[QuantityBOffset + 0] = (byte)((minmaxB1.Item1 * 0x10) + minmaxB1.Item2);
-					formationdata[QuantityBOffset + 1] = (byte)((minmaxB2.Item1 * 0x10) + minmaxB2.Item2);
+					formationdata[QuantityBOffset + 0] = (byte)((MinmaxB1.Item1 * 0x10) + MinmaxB1.Item2);
+					formationdata[QuantityBOffset + 1] = (byte)((MinmaxB2.Item1 * 0x10) + MinmaxB2.Item2);
 
-					formationdata[0x0C] = (byte)supriseFactor;
+					formationdata[0x0C] = (byte)SupriseFactor;
 
 					return formationdata;
 				}

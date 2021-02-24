@@ -581,12 +581,12 @@ namespace FF1Lib
 			if (fate == Fate.Spare)
 			{
 				// Protect Hurray Dwarf from NPC guillotine
-				npcdata.SetRoutine(ObjectId.DwarfcaveDwarfHurray, newTalkRoutines.Talk_norm);
+				npcdata.SetRoutine(ObjectId.DwarfcaveDwarfHurray, NewTalkRoutines.Talk_norm);
 			}
 			else
 			{
 				// Whether NPC guillotine is on or not, kill Hurray Dwarf
-				npcdata.SetRoutine(ObjectId.DwarfcaveDwarfHurray, newTalkRoutines.Talk_kill);
+				npcdata.SetRoutine(ObjectId.DwarfcaveDwarfHurray, NewTalkRoutines.Talk_kill);
 
 				// Change the dialogue
 				List<string> dialogueStrings = new List<string>

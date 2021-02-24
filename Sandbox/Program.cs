@@ -14,7 +14,7 @@ namespace Sandbox
 	{
 		// private static FF1Rom rom;
 
-		private static async Task Main(string[] args)
+		private static async Task Main()
 		{
 			//var filename = "ff1.nes";
 			//var fs = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read);

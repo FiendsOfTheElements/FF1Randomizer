@@ -9,7 +9,6 @@ using System.Text;
 using System.Threading.Tasks;
 using FF1Lib.Assembly;
 using System.Text.RegularExpressions;
-using RomUtilities;
 
 namespace FF1Lib
 {
@@ -212,7 +211,7 @@ namespace FF1Lib
 
 			if (flags.DeepDungeon)
 			{
-				DeepDungeon(rng, overworldMap, maps, flags);
+				DeepDungeon(rng, overworldMap, maps);
 				UnusedGoldItems = new List<int> { };
 			}
 
@@ -332,7 +331,7 @@ namespace FF1Lib
 						// Disable the Princess Warp back to Castle Coneria
 						if ((bool)flags.Entrances || (bool)flags.Floors)
 						{
-							talkroutines.ReplaceChunk(newTalkRoutines.Talk_Princess1, Blob.FromHex("20CC90"), Blob.FromHex("EAEAEA"));
+							talkroutines.ReplaceChunk(NewTalkRoutines.Talk_Princess1, Blob.FromHex("20CC90"), Blob.FromHex("EAEAEA"));
 						}
 					}
 
@@ -390,7 +389,7 @@ namespace FF1Lib
 			// Change Astos routine so item isn't lost in wall of text
 			if ((bool)flags.NPCItems || (bool)flags.NPCFetchItems || (bool)flags.ShuffleAstos)
 			{
-				talkroutines.Replace(newTalkRoutines.Talk_Astos, Blob.FromHex("A674F005BD2060F027A5738561202096B020A572203D96A575200096A476207F90207392A5611820109F201896A9F060A57060"));
+				talkroutines.Replace(NewTalkRoutines.Talk_Astos, Blob.FromHex("A674F005BD2060F027A5738561202096B020A572203D96A575200096A476207F90207392A5611820109F201896A9F060A57060"));
 			}
 
 			npcdata.UpdateItemPlacement(generatedPlacement);
@@ -829,7 +828,7 @@ namespace FF1Lib
 
 			if ((bool)flags.ShuffleAstos)
 			{
-				ShuffleAstos(flags, npcdata, talkroutines, rng);
+				ShuffleAstos(npcdata, talkroutines, rng);
 			}
 
 			if ((bool)flags.EnablePoolParty)
@@ -954,15 +953,15 @@ namespace FF1Lib
 		{
 			for (int i = 0; i < npcdata.GetNPCCount(); i++)
 			{
-				if (npcdata.GetRoutine((ObjectId)i) == newTalkRoutines.Talk_norm)
+				if (npcdata.GetRoutine((ObjectId)i) == NewTalkRoutines.Talk_norm)
 				{
-					npcdata.SetRoutine((ObjectId)i, newTalkRoutines.Talk_kill);
+					npcdata.SetRoutine((ObjectId)i, NewTalkRoutines.Talk_kill);
 				}
 			}
 
 			// Protect Lute and Rod Plate
-			npcdata.SetRoutine(ObjectId.LutePlate, newTalkRoutines.Talk_norm);
-			npcdata.SetRoutine(ObjectId.RodPlate, newTalkRoutines.Talk_norm);
+			npcdata.SetRoutine(ObjectId.LutePlate, NewTalkRoutines.Talk_norm);
+			npcdata.SetRoutine(ObjectId.RodPlate, NewTalkRoutines.Talk_norm);
 		}
 
 		public void AssureSafe()

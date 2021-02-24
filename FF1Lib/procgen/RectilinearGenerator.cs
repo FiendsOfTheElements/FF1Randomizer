@@ -206,12 +206,12 @@ namespace FF1Lib.procgen
 			{
 				for (int j = 0; j < dimensions.w; ++j)
 				{
-					Update(map[(coord.x + j, coord.y + i)], HallwayTile((j, i), dimensions, center), center);
+					Update(map[(coord.x + j, coord.y + i)], HallwayTile((j, i), dimensions, center));
 				}
 			}
 		}
 
-		private void Update(MapElement last, Tile next, Tile floor)
+		private void Update(MapElement last, Tile next)
 		{
 			if (last.Value == SentinelAlive)
 			{

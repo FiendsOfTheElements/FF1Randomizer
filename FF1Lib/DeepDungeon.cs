@@ -580,7 +580,7 @@ namespace FF1Lib
 				tilesetspinner.Add((byte)i);
 			}
 		}
-		public void CreateDomains(MT19337 rng, List<Map> maps)
+		public void CreateDomains(MT19337 rng)
 		{
 			// It's 0x72 because we want to exclude the "boss battles".
 			FormationLevel[] formationlevels = new FormationLevel[0x72 * 2];
@@ -592,7 +592,7 @@ namespace FF1Lib
 			for (int i = 0; i < EnemyCount; i++)
 			{
 				monsters[i] = new EnemyInfo();
-				monsters[i].decompressData(enemies[i]);
+				monsters[i].DecompressData(enemies[i]);
 			}
 
 			// Determine the level of each encounter (both sides) based on the monsters it contains.
@@ -604,18 +604,18 @@ namespace FF1Lib
 					level = 0,
 					index = (byte)i
 				};
-				formationlevels[i].level += MonsterLevel(monsters[formationlevels[i].formation.enemy1]) * (formationlevels[i].formation.minmax1.Item1 + formationlevels[i].formation.minmax1.Item2) / 2;
-				formationlevels[i].level += MonsterLevel(monsters[formationlevels[i].formation.enemy2]) * (formationlevels[i].formation.minmax2.Item1 + formationlevels[i].formation.minmax2.Item2) / 2;
-				formationlevels[i].level += MonsterLevel(monsters[formationlevels[i].formation.enemy3]) * (formationlevels[i].formation.minmax3.Item1 + formationlevels[i].formation.minmax3.Item2) / 2;
-				formationlevels[i].level += MonsterLevel(monsters[formationlevels[i].formation.enemy4]) * (formationlevels[i].formation.minmax4.Item1 + formationlevels[i].formation.minmax4.Item2) / 2;
+				formationlevels[i].level += MonsterLevel(monsters[formationlevels[i].formation.Enemy1]) * (formationlevels[i].formation.Minmax1.Item1 + formationlevels[i].formation.Minmax1.Item2) / 2;
+				formationlevels[i].level += MonsterLevel(monsters[formationlevels[i].formation.Enemy2]) * (formationlevels[i].formation.Minmax2.Item1 + formationlevels[i].formation.Minmax2.Item2) / 2;
+				formationlevels[i].level += MonsterLevel(monsters[formationlevels[i].formation.Enemy3]) * (formationlevels[i].formation.Minmax3.Item1 + formationlevels[i].formation.Minmax3.Item2) / 2;
+				formationlevels[i].level += MonsterLevel(monsters[formationlevels[i].formation.Enemy4]) * (formationlevels[i].formation.Minmax4.Item1 + formationlevels[i].formation.Minmax4.Item2) / 2;
 				formationlevels[i + 0x72] = new FormationLevel
 				{
 					formation = new Encounters.FormationData(formations[i]),
 					level = 0,
 					index = (byte)(i + 0x80)
 				};
-				formationlevels[i + 0x72].level += MonsterLevel(monsters[formationlevels[i + 0x72].formation.enemy1]) * (formationlevels[i + 0x72].formation.minmaxB1.Item1 + formationlevels[i + 0x72].formation.minmaxB1.Item2) / 2;
-				formationlevels[i + 0x72].level += MonsterLevel(monsters[formationlevels[i + 0x72].formation.enemy2]) * (formationlevels[i + 0x72].formation.minmaxB2.Item1 + formationlevels[i + 0x72].formation.minmaxB2.Item2) / 2;
+				formationlevels[i + 0x72].level += MonsterLevel(monsters[formationlevels[i + 0x72].formation.Enemy1]) * (formationlevels[i + 0x72].formation.MinmaxB1.Item1 + formationlevels[i + 0x72].formation.MinmaxB1.Item2) / 2;
+				formationlevels[i + 0x72].level += MonsterLevel(monsters[formationlevels[i + 0x72].formation.Enemy2]) * (formationlevels[i + 0x72].formation.MinmaxB2.Item1 + formationlevels[i + 0x72].formation.MinmaxB2.Item2) / 2;
 			}
 
 			// Sort the list by level.
@@ -635,7 +635,7 @@ namespace FF1Lib
 			}
 
 		}
-		public void DeepDungeon(MT19337 rng, OverworldMap overworldMap, List<Map> maps, Flags flags)
+		public void DeepDungeon(MT19337 rng, OverworldMap overworldMap, List<Map> maps)
 		{
 			InitializeTilesets();
 
@@ -660,7 +660,7 @@ namespace FF1Lib
 			KillNPCs();
 
 			// Generate new monster domains based on "estimated power level".
-			CreateDomains(rng, maps);
+			CreateDomains(rng);
 
 			// Gaia and Onrac should really be encountered in the other order.
 			Map temp = maps[5];
@@ -767,19 +767,19 @@ namespace FF1Lib
 			}
 
 			// Distribute chests and put treasure in them.
-			DistributeTreasure(rng, maps, flags);
+			DistributeTreasure(rng, maps);
 
 			// Put Bahamut and a TAIL somewhere in the dungeon.
 			PlaceBahamut(rng, maps);
 
 			// Assign random palettes to the maps.
-			SpinPalettes(rng, maps);
+			SpinPalettes(rng);
 
 			// Commit the overworld edits.
 			overworldMap.ApplyMapEdits();
 		}
 
-		public void SpinPalettes(MT19337 rng, List<Map> maps)
+		public void SpinPalettes(MT19337 rng)
 		{
 			// Assigns the inner map with the given index a random palette.
 			Dictionary<OverworldMap.Palette, Blob> palettes = OverworldMap.GeneratePalettes(Get(OverworldMap.MapPaletteOffset, MapCount * OverworldMap.MapPaletteSize).Chunk(OverworldMap.MapPaletteSize));
@@ -802,7 +802,7 @@ namespace FF1Lib
 			}
 		}
 
-		public void DistributeTreasure(MT19337 rng, List<Map> maps, Flags flags)
+		public void DistributeTreasure(MT19337 rng, List<Map> maps)
 		{
 			List<byte> mapspinner;
 			List<Candidate> candidates;
@@ -1047,21 +1047,17 @@ namespace FF1Lib
 
 		private void Beautify(Map m, Tileset t)
 		{
-			// The map generator algorithms are a bit rough around the edges so this
-			// is here to make sure the corner tiles look correct and the rooms are
-			// properly bordered and such.
-			bool upper = false;
-			bool lower = false;
-			bool left = false;
-			bool right = false;
 			for (int i = 0; i < 64; i++)
 			{
 				for (int j = 0; j < 64; j++)
 				{
-					upper = false;
-					lower = false;
-					left = false;
-					right = false;
+					// The map generator algorithms are a bit rough around the edges so this
+					// is here to make sure the corner tiles look correct and the rooms are
+					// properly bordered and such.
+					bool upper = false;
+					bool lower = false;
+					bool left = false;
+					bool right = false;
 					if (m[j, i] == t.walltile)
 					{
 						if (j < 63)

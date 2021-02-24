@@ -1043,12 +1043,11 @@ namespace FF1Lib
 
 		public List<List<byte>> DecompressMapRows(List<List<byte>> compressedRows)
 		{
-			List<List<byte>> mapRows = new List<List<byte>>();
-			int run = 0;
+			List<List<byte>> mapRows = new();
 			foreach (List<byte> compressedRow in compressedRows)
 			{
-				byte tile = 0;
-				List<byte> row = new List<byte>();
+				byte tile;
+				List<byte> row = new();
 				int tileIndex = 0;
 				while (row.Count() < 256)
 				{
@@ -1067,7 +1066,7 @@ namespace FF1Lib
 					else
 					{
 						tileIndex++;
-						run = compressedRow[tileIndex];
+						int run = compressedRow[tileIndex];
 						if (run == 0)
 						{
 							run = 256;
@@ -1125,8 +1124,7 @@ namespace FF1Lib
 			List<List<byte>> outputMap = new List<List<byte>>();
 			foreach (List<byte> row in decompressedRows)
 			{
-				List<byte> outputRow = new List<byte>();
-				byte tile = 0;
+				List<byte> outputRow = new();
 				byte runCount = 1;
 				//if (row.Distinct().Count() == 1)
 				//{
@@ -1135,7 +1133,7 @@ namespace FF1Lib
 				//}
 				for (int tileIndex = 0; tileIndex < 256; tileIndex++)
 				{
-					tile = row[tileIndex];
+					byte tile = row[tileIndex];
 					if (tileIndex != 255 && tile == row[tileIndex + 1])
 					{
 						runCount++;

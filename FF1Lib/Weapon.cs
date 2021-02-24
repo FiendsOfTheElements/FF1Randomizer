@@ -124,7 +124,7 @@ namespace FF1Lib
 							currentWeapon.NameBytes[iconIndex - j] = bonusBytes[bonusBytes.Length - 2 - j];
 						}
 
-						currentWeapon.writeWeaponMemory(this);
+						currentWeapon.WriteWeaponMemory(this);
 					}
 				}
 			}
@@ -134,8 +134,8 @@ namespace FF1Lib
 		public void ExpandWeapon()
 		{
 			Weapon flameChucks = new(0, FF1Text.TextToBytes("Flame"), WeaponIcon.CHUCK, 20, 26, 10, 0, (byte)Element.FIRE, 0, WeaponSprite.CHUCK, 0x25);
-			flameChucks.setClassUsability((ushort)(EquipPermission.BlackBelt | EquipPermission.Master | EquipPermission.Ninja));
-			flameChucks.writeWeaponMemory(this);
+			flameChucks.SetClassUsability((ushort)(EquipPermission.BlackBelt | EquipPermission.Master | EquipPermission.Ninja));
+			flameChucks.WriteWeaponMemory(this);
 		}
 
 		public void MagisizeWeapons(MT19337 rng, bool balanced)
@@ -245,7 +245,7 @@ namespace FF1Lib
 			ElementalWeakness = rom.Get(weaponBaseOffset + 4, 1).ToBytes()[0];
 			TypeWeakness = rom.Get(weaponBaseOffset + 5, 1).ToBytes()[0];
 			byte weaponSpriteTypeHolder = rom.Get(weaponBaseOffset + 6, 1).ToBytes()[0];
-			WeaponTypeSprite = getWeaponSpriteFromByte(weaponSpriteTypeHolder);
+			WeaponTypeSprite = GetWeaponSpriteFromByte(weaponSpriteTypeHolder);
 			WeaponSpritePaletteColor = rom.Get(weaponBaseOffset + 7, 1).ToBytes()[0];
 
 			//read permissions
@@ -274,7 +274,7 @@ namespace FF1Lib
 				if (currentValue > 200)
 				{
 					//check for icon
-					Icon = getWeaponIconFromByte(currentValue);
+					Icon = GetWeaponIconFromByte(currentValue);
 				}
 			}
 		}
@@ -299,12 +299,12 @@ namespace FF1Lib
 			WeaponSpritePaletteColor = weaponSpritePaletteColor;
 		}
 
-		public void setClassUsability(ushort classUsability)
+		public void SetClassUsability(ushort classUsability)
 		{
 			ClassUsability = classUsability;
 		}
 
-		public void writeWeaponMemory(NesRom rom)
+		public void WriteWeaponMemory(NesRom rom)
 		{
 			//weapon stats
 			int weaponBaseOffset = FF1Rom.WeaponOffset + (WeaponIndex * FF1Rom.WeaponSize);
@@ -320,7 +320,7 @@ namespace FF1Lib
 			rom.Put(weaponBaseNameOffset, NameBytes);
 		}
 
-		private WeaponIcon getWeaponIconFromByte(byte icon)
+		private WeaponIcon GetWeaponIconFromByte(byte icon)
 		{
 			WeaponIcon matchedType = WeaponIcon.NONE;
 			foreach (WeaponIcon temp in (WeaponIcon[])Enum.GetValues(typeof(WeaponIcon)))
@@ -334,7 +334,7 @@ namespace FF1Lib
 			return matchedType;
 		}
 
-		private WeaponSprite getWeaponSpriteFromByte(byte sprite)
+		private WeaponSprite GetWeaponSpriteFromByte(byte sprite)
 		{
 			WeaponSprite matchedType = WeaponSprite.NONE;
 			foreach (WeaponSprite temp in (WeaponSprite[])Enum.GetValues(typeof(WeaponSprite)))

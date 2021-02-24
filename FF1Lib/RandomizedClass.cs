@@ -133,11 +133,11 @@ namespace FF1Lib
 		public class ClassData
 		{
 			// Indivdual class stats container
-			public List<Item> wpPermissions { get; set; }
-			public List<Item> arPermissions { get; set; }
-			public List<bool> whitePermissions { get; set; }
-			public List<bool> blackPermissions { get; set; }
-			public byte equipmentBit { get; set; }
+			public List<Item> WeaponPermissions { get; set; }
+			public List<Item> ArmourPermissions { get; set; }
+			public List<bool> WhitePermissions { get; set; }
+			public List<bool> BlackPermissions { get; set; }
+			public byte EquipmentBit { get; set; }
 			public bool Promoted { get; set; }
 			public byte ClassID { get; set; }
 			public byte HpStarting { get; set; }
@@ -188,10 +188,10 @@ namespace FF1Lib
 				VitGrowth = Enumerable.Repeat(false, 49).ToList();
 				LckGrowth = Enumerable.Repeat(false, 49).ToList();
 				SpCGrowth = Enumerable.Repeat((byte)0x00, 49).ToList();
-				whitePermissions = Enumerable.Repeat(false, 4 * 8).ToList();
-				blackPermissions = Enumerable.Repeat(false, 4 * 8).ToList();
-				arPermissions = new List<Item>();
-				wpPermissions = new List<Item>();
+				WhitePermissions = Enumerable.Repeat(false, 4 * 8).ToList();
+				BlackPermissions = Enumerable.Repeat(false, 4 * 8).ToList();
+				ArmourPermissions = new List<Item>();
+				WeaponPermissions = new List<Item>();
 				MagicRanks = new List<string> { "- ", "- ", "- " };
 				Ranks = Enumerable.Repeat((Rank)0, Enum.GetNames(typeof(RankedType)).Length).ToList();
 			}
@@ -259,12 +259,12 @@ namespace FF1Lib
 			{
 				for (int j = 0; j < 49; j++)
 				{
-					HpGrowth[j] = (levelUpStats[j * 2] & 0x20) == 0 ? false : true;
-					StrGrowth[j] = (levelUpStats[j * 2] & 0x10) == 0 ? false : true;
-					AgiGrowth[j] = (levelUpStats[j * 2] & 0x08) == 0 ? false : true;
-					IntGrowth[j] = (levelUpStats[j * 2] & 0x04) == 0 ? false : true;
-					VitGrowth[j] = (levelUpStats[j * 2] & 0x02) == 0 ? false : true;
-					LckGrowth[j] = (levelUpStats[j * 2] & 0x01) == 0 ? false : true;
+					HpGrowth[j] = (levelUpStats[j * 2] & 0x20) != 0;
+					StrGrowth[j] = (levelUpStats[j * 2] & 0x10) != 0;
+					AgiGrowth[j] = (levelUpStats[j * 2] & 0x08) != 0;
+					IntGrowth[j] = (levelUpStats[j * 2] & 0x04) != 0;
+					VitGrowth[j] = (levelUpStats[j * 2] & 0x02) != 0;
+					LckGrowth[j] = (levelUpStats[j * 2] & 0x01) != 0;
 					SpCGrowth[j] = levelUpStats[(j * 2) + 1];
 				}
 			}
@@ -287,8 +287,8 @@ namespace FF1Lib
 				{
 					for (int j = 0; j < 4; j++)
 					{
-						whitePermissions[(i * 4) + j] = ((~magicPermissions[i] & whiteArray[j]) > 0) ? true : false;
-						blackPermissions[(i * 4) + j] = ((~magicPermissions[i] & blackArray[j]) > 0) ? true : false;
+						WhitePermissions[(i * 4) + j] = (~magicPermissions[i] & whiteArray[j]) > 0;
+						BlackPermissions[(i * 4) + j] = (~magicPermissions[i] & blackArray[j]) > 0;
 					}
 				}
 			}
@@ -304,12 +304,12 @@ namespace FF1Lib
 					int tempPermission = 0x00;
 					for (int j = 0; j < 4; j++)
 					{
-						if (whitePermissions[(i * 4) + j])
+						if (WhitePermissions[(i * 4) + j])
 						{
 							tempPermission |= whiteArray[j];
 						}
 
-						if (blackPermissions[(i * 4) + j])
+						if (BlackPermissions[(i * 4) + j])
 						{
 							tempPermission |= blackArray[j];
 						}
@@ -415,12 +415,12 @@ namespace FF1Lib
 				{
 					if ((~wpPermissions[i] & equipmentPermissionBit[j]) > 0)
 					{
-						classData[j].wpPermissions.Add((Item)(i + 28));
+						classData[j].WeaponPermissions.Add((Item)(i + 28));
 					}
 
 					if ((~arPermissions[i] & equipmentPermissionBit[j]) > 0)
 					{
-						classData[j].arPermissions.Add((Item)(i + 68));
+						classData[j].ArmourPermissions.Add((Item)(i + 68));
 					}
 				}
 			}
@@ -442,12 +442,12 @@ namespace FF1Lib
 			{
 				for (int j = 0; j < 12; j++)
 				{
-					if (classData[j].wpPermissions.Contains((Item)(i + 28)))
+					if (classData[j].WeaponPermissions.Contains((Item)(i + 28)))
 					{
 						wpNewPermissions[i] |= equipmentPermissionBit[j];
 					}
 
-					if (classData[j].arPermissions.Contains((Item)(i + 68)))
+					if (classData[j].ArmourPermissions.Contains((Item)(i + 68)))
 					{
 						arNewPermissions[i] |= equipmentPermissionBit[j];
 					}
@@ -650,18 +650,18 @@ namespace FF1Lib
 			// Spells lists
 			List<bool> nullSpells = Enumerable.Repeat(false, 4 * 8).ToList();
 
-			List<bool> lv1WhiteSpells = new List<bool>(classData[4].whitePermissions.GetRange(0, 4).Concat(nullSpells.GetRange(0, 28)));
+			List<bool> lv1WhiteSpells = new(classData[4].WhitePermissions.GetRange(0, 4).Concat(nullSpells.GetRange(0, 28)));
 
-			List<bool> lv1BlackSpells = new List<bool>(classData[5].blackPermissions.GetRange(0, 4).Concat(nullSpells.GetRange(0, 28)));
+			List<bool> lv1BlackSpells = new(classData[5].BlackPermissions.GetRange(0, 4).Concat(nullSpells.GetRange(0, 28)));
 
-			List<bool> lv3WhiteSpells = new List<bool>(classData[6].whitePermissions);
-			List<bool> lv4BlackSpells = new List<bool>(classData[7].blackPermissions);
+			List<bool> lv3WhiteSpells = new(classData[6].WhitePermissions);
+			List<bool> lv4BlackSpells = new(classData[7].BlackPermissions);
 
-			List<bool> wmWhiteSpells = new List<bool>(classData[4].whitePermissions);
-			List<bool> bmBlackSpells = new List<bool>(classData[5].blackPermissions);
+			List<bool> wmWhiteSpells = new(classData[4].WhitePermissions);
+			List<bool> bmBlackSpells = new(classData[5].BlackPermissions);
 
-			List<bool> wwWhiteSpells = new List<bool>(classData[10].whitePermissions);
-			List<bool> bwBlackSpells = new List<bool>(classData[11].blackPermissions);
+			List<bool> wwWhiteSpells = new(classData[10].WhitePermissions);
+			List<bool> bwBlackSpells = new(classData[11].BlackPermissions);
 
 			// MP Growth Lists
 			List<byte> rmMPlist = new List<byte>(classData[3].SpCGrowth);
@@ -920,28 +920,28 @@ namespace FF1Lib
 							classData[i + 6].MDefGrowth = (byte)Math.Max(classData[i + 6].MDefGrowth + bonusmalus.StatMod, 0);
 							break;
 						case BonusMalusAction.WeaponAdd:
-							classData[i].wpPermissions.AddRange(bonusmalus.Equipment);
-							classData[i + 6].wpPermissions.AddRange(bonusmalus.Equipment);
+							classData[i].WeaponPermissions.AddRange(bonusmalus.Equipment);
+							classData[i + 6].WeaponPermissions.AddRange(bonusmalus.Equipment);
 							break;
 						case BonusMalusAction.WeaponRemove:
-							classData[i].wpPermissions = classData[i].wpPermissions.Except(bonusmalus.Equipment).ToList();
-							classData[i + 6].wpPermissions = classData[i + 6].wpPermissions.Except(bonusmalus.Equipment).ToList();
+							classData[i].WeaponPermissions = classData[i].WeaponPermissions.Except(bonusmalus.Equipment).ToList();
+							classData[i + 6].WeaponPermissions = classData[i + 6].WeaponPermissions.Except(bonusmalus.Equipment).ToList();
 							break;
 						case BonusMalusAction.WeaponReplace:
-							classData[i].wpPermissions = bonusmalus.Equipment;
-							classData[i + 6].wpPermissions = bonusmalus.Equipment;
+							classData[i].WeaponPermissions = bonusmalus.Equipment;
+							classData[i + 6].WeaponPermissions = bonusmalus.Equipment;
 							break;
 						case BonusMalusAction.ArmorAdd:
-							classData[i].arPermissions.AddRange(bonusmalus.Equipment);
-							classData[i + 6].arPermissions.AddRange(bonusmalus.Equipment);
+							classData[i].ArmourPermissions.AddRange(bonusmalus.Equipment);
+							classData[i + 6].ArmourPermissions.AddRange(bonusmalus.Equipment);
 							break;
 						case BonusMalusAction.ArmorRemove:
-							classData[i].arPermissions = classData[i].arPermissions.Except(bonusmalus.Equipment).ToList();
-							classData[i + 6].arPermissions = classData[i + 6].arPermissions.Except(bonusmalus.Equipment).ToList();
+							classData[i].ArmourPermissions = classData[i].ArmourPermissions.Except(bonusmalus.Equipment).ToList();
+							classData[i + 6].ArmourPermissions = classData[i + 6].ArmourPermissions.Except(bonusmalus.Equipment).ToList();
 							break;
 						case BonusMalusAction.ArmorReplace:
-							classData[i].arPermissions = bonusmalus.Equipment;
-							classData[i + 6].arPermissions = bonusmalus.Equipment;
+							classData[i].ArmourPermissions = bonusmalus.Equipment;
+							classData[i + 6].ArmourPermissions = bonusmalus.Equipment;
 							break;
 						case BonusMalusAction.SpcMod:
 							classData[i].SpCStarting = (byte)Math.Max(classData[i].SpCStarting + bonusmalus.StatMod, 0);
@@ -973,8 +973,8 @@ namespace FF1Lib
 								classData[i + 6].MaxSpC = (byte)bonusmalus.StatMod2;
 							}
 
-							classData[i].whitePermissions = classData[i].whitePermissions.Zip(bonusmalus.SpellList, (x, y) => x || y).ToList();
-							classData[i + 6].whitePermissions = classData[i + 6].whitePermissions.Zip(bonusmalus.SpellList, (x, y) => x || y).ToList();
+							classData[i].WhitePermissions = classData[i].WhitePermissions.Zip(bonusmalus.SpellList, (x, y) => x || y).ToList();
+							classData[i + 6].WhitePermissions = classData[i + 6].WhitePermissions.Zip(bonusmalus.SpellList, (x, y) => x || y).ToList();
 							break;
 						case BonusMalusAction.BlackSpellcaster:
 							if (classData[i].SpCStarting < (byte)bonusmalus.StatMod)
@@ -1002,8 +1002,8 @@ namespace FF1Lib
 								classData[i + 6].MaxSpC = (byte)bonusmalus.StatMod2;
 							}
 
-							classData[i].blackPermissions = classData[i].blackPermissions.Zip(bonusmalus.SpellList, (x, y) => x || y).ToList();
-							classData[i + 6].blackPermissions = classData[i + 6].blackPermissions.Zip(bonusmalus.SpellList, (x, y) => x || y).ToList();
+							classData[i].BlackPermissions = classData[i].BlackPermissions.Zip(bonusmalus.SpellList, (x, y) => x || y).ToList();
+							classData[i + 6].BlackPermissions = classData[i + 6].BlackPermissions.Zip(bonusmalus.SpellList, (x, y) => x || y).ToList();
 							break;
 						case BonusMalusAction.SpcMax:
 							classData[i].MaxSpC = (byte)Math.Max(classData[i].MaxSpC + bonusmalus.StatMod, 1);
@@ -1014,14 +1014,14 @@ namespace FF1Lib
 							classData[i + 6].SpCGrowth = bonusmalus.SpcGrowth;
 							break;
 						case BonusMalusAction.PowerRW:
-							classData[i].whitePermissions = bonusmalus.SpellList.GetRange(0, 32);
-							classData[i].blackPermissions = bonusmalus.SpellList.GetRange(32, 32);
-							classData[i + 6].whitePermissions = bonusmalus.SpellList.GetRange(64, 32);
-							classData[i + 6].blackPermissions = bonusmalus.SpellList.GetRange(96, 32);
+							classData[i].WhitePermissions = bonusmalus.SpellList.GetRange(0, 32);
+							classData[i].BlackPermissions = bonusmalus.SpellList.GetRange(32, 32);
+							classData[i + 6].WhitePermissions = bonusmalus.SpellList.GetRange(64, 32);
+							classData[i + 6].BlackPermissions = bonusmalus.SpellList.GetRange(96, 32);
 							break;
 						case BonusMalusAction.NoPromoMagic:
-							classData[i + 6].whitePermissions = bonusmalus.SpellList;
-							classData[i + 6].blackPermissions = bonusmalus.SpellList;
+							classData[i + 6].WhitePermissions = bonusmalus.SpellList;
+							classData[i + 6].BlackPermissions = bonusmalus.SpellList;
 							classData[i + 6].MaxSpC = 0;
 							classData[i + 6].SpCStarting = 0;
 							break;
@@ -1155,12 +1155,12 @@ namespace FF1Lib
 
 			List<KeyValuePair<byte, byte>> shuffleMDef = Enumerable.Zip(mdefGrowthBase, mdefGrowthPromo, (mdefGrowthBase, mdefGrowthPromo) => new KeyValuePair<byte, byte>(mdefGrowthBase, mdefGrowthPromo)).ToList();
 
-			List<List<bool>> whitePermBase = classData.GetRange(0, 6).Select(x => x.whitePermissions).ToList();
-			List<List<bool>> whitePermPromo = classData.GetRange(6, 6).Select(x => x.whitePermissions).ToList();
-			List<List<bool>> blackPermBase = classData.GetRange(0, 6).Select(x => x.blackPermissions).ToList();
-			List<List<bool>> blackPermPromo = classData.GetRange(6, 6).Select(x => x.blackPermissions).ToList();
-			List<int> shuffleWhitePermissions = new List<int> { 0, 1, 2, 3, 4, 5 };
-			List<int> shuffleBlackPermissions = new List<int> { 0, 1, 2, 3, 4, 5 };
+			List<List<bool>> whitePermBase = classData.GetRange(0, 6).Select(x => x.WhitePermissions).ToList();
+			List<List<bool>> whitePermPromo = classData.GetRange(6, 6).Select(x => x.WhitePermissions).ToList();
+			List<List<bool>> blackPermBase = classData.GetRange(0, 6).Select(x => x.BlackPermissions).ToList();
+			List<List<bool>> blackPermPromo = classData.GetRange(6, 6).Select(x => x.BlackPermissions).ToList();
+			List<int> shuffleWhitePermissions = new() { 0, 1, 2, 3, 4, 5 };
+			List<int> shuffleBlackPermissions = new() { 0, 1, 2, 3, 4, 5 };
 
 			// Actual Shuffle
 			shuffleStartingStats.Shuffle(rng);
@@ -1310,8 +1310,8 @@ namespace FF1Lib
 				classData[i].MDefGrowth = shuffleMDef[i].Key;
 				classData[i + 6].MDefGrowth = shuffleMDef[i].Value;
 
-				classData[i].whitePermissions = whitePermBase[shuffleWhitePermissions[i]];
-				classData[i + 6].whitePermissions = whitePermPromo[shuffleWhitePermissions[i]];
+				classData[i].WhitePermissions = whitePermBase[shuffleWhitePermissions[i]];
+				classData[i + 6].WhitePermissions = whitePermPromo[shuffleWhitePermissions[i]];
 				classData[i].Ranks[(int)RankedType.White] = magicRanks[i];
 				if (magicRanks[i] > Rank.F)
 				{
@@ -1324,8 +1324,8 @@ namespace FF1Lib
 					classData[i + 6].MagicRanks[0] = classPromoString[shuffleWhitePermissions[i]];
 				}
 
-				classData[i].blackPermissions = blackPermBase[shuffleBlackPermissions[i]];
-				classData[i + 6].blackPermissions = blackPermPromo[shuffleBlackPermissions[i]];
+				classData[i].BlackPermissions = blackPermBase[shuffleBlackPermissions[i]];
+				classData[i + 6].BlackPermissions = blackPermPromo[shuffleBlackPermissions[i]];
 				classData[i].Ranks[(int)RankedType.Black] = magicRanks[i + 12];
 				if (magicRanks[i + 12] > Rank.F)
 				{
@@ -1531,26 +1531,26 @@ namespace FF1Lib
 			// Add individual equipment for each equipment right
 			for (int i = 0; i < 12; i++)
 			{
-				classData[i].wpPermissions.Clear();
-				classData[i].wpPermissions.AddRange(wpSword[(int)classData[i].Ranks[(int)RankedType.Swords]]);
-				classData[i].wpPermissions.AddRange(wpHammer[(int)classData[i].Ranks[(int)RankedType.Hammers]]);
-				classData[i].wpPermissions.AddRange(wpKnife[(int)classData[i].Ranks[(int)RankedType.Knives]]);
-				classData[i].wpPermissions.AddRange(wpAxe[(int)classData[i].Ranks[(int)RankedType.Axes]]);
-				classData[i].wpPermissions.AddRange(wpStaff[(int)classData[i].Ranks[(int)RankedType.Staves]]);
-				classData[i].wpPermissions.AddRange(wpNunchuck[(int)classData[i].Ranks[(int)RankedType.Nunchucks]]);
-				classData[i].wpPermissions.Add(Item.Masamune);
-				classData[i].arPermissions.Clear();
-				classData[i].arPermissions.AddRange(arArmor[(int)classData[i].Ranks[(int)RankedType.Armors]]);
-				classData[i].arPermissions.AddRange(arShield[(int)classData[i].Ranks[(int)RankedType.Shields]]);
-				classData[i].arPermissions.AddRange(arHelmet[(int)classData[i].Ranks[(int)RankedType.Helmets]]);
-				classData[i].arPermissions.AddRange(arGauntlet[(int)classData[i].Ranks[(int)RankedType.Gauntlets]]);
+				classData[i].WeaponPermissions.Clear();
+				classData[i].WeaponPermissions.AddRange(wpSword[(int)classData[i].Ranks[(int)RankedType.Swords]]);
+				classData[i].WeaponPermissions.AddRange(wpHammer[(int)classData[i].Ranks[(int)RankedType.Hammers]]);
+				classData[i].WeaponPermissions.AddRange(wpKnife[(int)classData[i].Ranks[(int)RankedType.Knives]]);
+				classData[i].WeaponPermissions.AddRange(wpAxe[(int)classData[i].Ranks[(int)RankedType.Axes]]);
+				classData[i].WeaponPermissions.AddRange(wpStaff[(int)classData[i].Ranks[(int)RankedType.Staves]]);
+				classData[i].WeaponPermissions.AddRange(wpNunchuck[(int)classData[i].Ranks[(int)RankedType.Nunchucks]]);
+				classData[i].WeaponPermissions.Add(Item.Masamune);
+				classData[i].ArmourPermissions.Clear();
+				classData[i].ArmourPermissions.AddRange(arArmor[(int)classData[i].Ranks[(int)RankedType.Armors]]);
+				classData[i].ArmourPermissions.AddRange(arShield[(int)classData[i].Ranks[(int)RankedType.Shields]]);
+				classData[i].ArmourPermissions.AddRange(arHelmet[(int)classData[i].Ranks[(int)RankedType.Helmets]]);
+				classData[i].ArmourPermissions.AddRange(arGauntlet[(int)classData[i].Ranks[(int)RankedType.Gauntlets]]);
 			}
 
 			// Add class exclusive equipment
-			classData[6].wpPermissions.Add(Item.Xcalber);
-			classData[7].wpPermissions.Add(Item.Katana);
-			classData[10].arPermissions.Add(Item.WhiteShirt);
-			classData[11].arPermissions.Add(Item.BlackShirt);
+			classData[6].WeaponPermissions.Add(Item.Xcalber);
+			classData[7].WeaponPermissions.Add(Item.Katana);
+			classData[10].ArmourPermissions.Add(Item.WhiteShirt);
+			classData[11].ArmourPermissions.Add(Item.BlackShirt);
 
 		}
 	}

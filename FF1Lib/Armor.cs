@@ -53,7 +53,7 @@ namespace FF1Lib
 						currentArmor.NameBytes[iconIndex - j] = bonusBytes[bonusBytes.Length - 2 - j];
 					}
 
-					currentArmor.writeArmorMemory(this);
+					currentArmor.WriteArmorMemory(this);
 				}
 			}
 		}
@@ -62,7 +62,7 @@ namespace FF1Lib
 		public void ExpandArmor()
 		{
 			Armor platinumBracelet = new(12, FF1Text.TextToBytes("Plat"), ArmorIcon.BRACELET, 1, 42, 0, 0);
-			platinumBracelet.setClassUsability((ushort)(
+			platinumBracelet.SetClassUsability((ushort)(
 				EquipPermission.BlackBelt |
 				EquipPermission.BlackMage |
 				EquipPermission.BlackWizard |
@@ -75,7 +75,7 @@ namespace FF1Lib
 				EquipPermission.Thief |
 				EquipPermission.WhiteMage |
 				EquipPermission.WhiteWizard));
-			platinumBracelet.writeArmorMemory(this);
+			platinumBracelet.WriteArmorMemory(this);
 		}
 	}
 
@@ -152,17 +152,17 @@ namespace FF1Lib
 				if (currentValue > 200)
 				{
 					//check for icon
-					Icon = getArmorIconFromByte(currentValue);
+					Icon = GetArmorIconFromByte(currentValue);
 				}
 			}
 		}
 
-		public void setClassUsability(ushort classUsability)
+		public void SetClassUsability(ushort classUsability)
 		{
 			ClassUsability = classUsability;
 		}
 
-		public void writeArmorMemory(NesRom rom)
+		public void WriteArmorMemory(NesRom rom)
 		{
 			//armor stats
 			int armorBaseOffset = FF1Rom.ArmorOffset + (ArmorIndex * FF1Rom.ArmorSize);
@@ -178,7 +178,7 @@ namespace FF1Lib
 			rom.Put(armorBaseNameOffset, NameBytes);
 		}
 
-		private ArmorIcon getArmorIconFromByte(byte icon)
+		private ArmorIcon GetArmorIconFromByte(byte icon)
 		{
 			ArmorIcon matchedType = ArmorIcon.NONE;
 			foreach (ArmorIcon temp in (ArmorIcon[])Enum.GetValues(typeof(ArmorIcon)))

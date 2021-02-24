@@ -62,33 +62,33 @@ namespace FF1Lib.Assembly
 		/// </summary>
 		public static class AsDictionaries
 		{
-			private static Dictionary<string, TValue> _staticFieldsDictionaryForType<TValue>(Type containingType)
+			private static Dictionary<string, TValue> StaticFieldsDictionaryForType<TValue>(Type containingType)
 			{
 				IList<FieldInfo> list = containingType.GetFields();
 				return list.ToDictionary(field => field.Name, field => (TValue)field.GetValue(null));
 			}
 
-			private static void _setStaticFieldsInType<TValue>(Type containingType, Dictionary<string, TValue> dictionary)
+			private static void SetStaticFieldsInType<TValue>(Type containingType, Dictionary<string, TValue> dictionary)
 			{
 				dictionary.ToList().ForEach(entry => containingType.GetField(entry.Key).SetValue(null, entry.Value));
 			}
 
 			public static Dictionary<string, BA> Labels
 			{
-				get => _staticFieldsDictionaryForType<BA>(typeof(Labels));
-				set => _setStaticFieldsInType(typeof(Labels), value);
+				get => StaticFieldsDictionaryForType<BA>(typeof(Labels));
+				set => SetStaticFieldsInType(typeof(Labels), value);
 			}
 
 			public static Dictionary<string, int> Constants
 			{
-				get => _staticFieldsDictionaryForType<int>(typeof(Constants));
-				set => _setStaticFieldsInType(typeof(Constants), value);
+				get => StaticFieldsDictionaryForType<int>(typeof(Constants));
+				set => SetStaticFieldsInType(typeof(Constants), value);
 			}
 
 			public static Dictionary<string, int> Variables
 			{
-				get => _staticFieldsDictionaryForType<int>(typeof(Variables));
-				set => _setStaticFieldsInType(typeof(Constants), value);
+				get => StaticFieldsDictionaryForType<int>(typeof(Variables));
+				set => SetStaticFieldsInType(typeof(Constants), value);
 			}
 
 			public static Dictionary<string, int> VariablesAndConstants

@@ -47,7 +47,7 @@ namespace FF1Lib
 
 			ShuffleShopType(ShopType.Weapon, pointers, rng, randomizeWeaponsAndArmor, excludeItemsFromRandomShops, wealth);
 			ShuffleShopType(ShopType.Armor, pointers, rng, randomizeWeaponsAndArmor, excludeItemsFromRandomShops, wealth);
-			ItemShopSlot result = null;
+			ItemShopSlot result;
 			do
 			{
 				result = ShuffleShopType(ShopType.Item, pointers, rng);
@@ -233,7 +233,7 @@ namespace FF1Lib
 						newShops[i]
 							.Select((item, index) => (item, index))
 							.FirstOrDefault(x => ((Item)x.item) == Item.Bottle);
-					if (bottle != null)
+					if (bottle != default((byte, int)))
 					{
 						MapLocation location = ShopMapLocationsByIndex[i];
 						result = new ItemShopSlot(ShopPointerBase + pointer + bottle.index,

@@ -959,9 +959,9 @@ namespace FF1Lib
 			for (int i = 0; i < 8; i++)
 			{
 				fiends[i] = new EnemyInfo();
-				fiends[i].decompressData(Get(EnemyOffset + ((FiendsIndex + i) * EnemySize), EnemySize));
+				fiends[i].DecompressData(Get(EnemyOffset + ((FiendsIndex + i) * EnemySize), EnemySize));
 				fiendsScript[i] = new EnemyScriptInfo();
-				fiendsScript[i].decompressData(Get(ScriptOffset + ((FiendsScriptIndex + i) * ScriptSize), ScriptSize));
+				fiendsScript[i].DecompressData(Get(ScriptOffset + ((FiendsScriptIndex + i) * ScriptSize), ScriptSize));
 			}
 
 			// Shuffle alternate
@@ -1003,25 +1003,25 @@ namespace FF1Lib
 				fiendsScript[i * 2].spell_list = alternateFiendsList[i].Spells1.ToArray();
 				fiendsScript[(i * 2) + 1].spell_list = alternateFiendsList[i].Spells2.ToArray();
 
-				encountersData.formations[fiendsFormationOrder[i * 2]].pattern = alternateFiendsList[i].FormationPattern;
-				encountersData.formations[fiendsFormationOrder[i * 2]].spriteSheet = alternateFiendsList[i].SpriteSheet;
-				encountersData.formations[fiendsFormationOrder[i * 2]].gfxOffset1 = (int)alternateFiendsList[i].GFXOffset;
-				encountersData.formations[fiendsFormationOrder[i * 2]].palette1 = alternateFiendsList[i].Palette1;
-				encountersData.formations[fiendsFormationOrder[i * 2]].palette2 = alternateFiendsList[i].Palette2;
+				encountersData.formations[fiendsFormationOrder[i * 2]].Pattern = alternateFiendsList[i].FormationPattern;
+				encountersData.formations[fiendsFormationOrder[i * 2]].SpriteSheet = alternateFiendsList[i].SpriteSheet;
+				encountersData.formations[fiendsFormationOrder[i * 2]].GfxOffset1 = (int)alternateFiendsList[i].GFXOffset;
+				encountersData.formations[fiendsFormationOrder[i * 2]].Palette1 = alternateFiendsList[i].Palette1;
+				encountersData.formations[fiendsFormationOrder[i * 2]].Palette2 = alternateFiendsList[i].Palette2;
 
-				encountersData.formations[fiendsFormationOrder[(i * 2) + 1]].pattern = alternateFiendsList[i].FormationPattern;
-				encountersData.formations[fiendsFormationOrder[(i * 2) + 1]].spriteSheet = alternateFiendsList[i].SpriteSheet;
-				encountersData.formations[fiendsFormationOrder[(i * 2) + 1]].gfxOffset1 = (int)alternateFiendsList[i].GFXOffset;
-				encountersData.formations[fiendsFormationOrder[(i * 2) + 1]].palette1 = alternateFiendsList[i].Palette1;
-				encountersData.formations[fiendsFormationOrder[(i * 2) + 1]].palette2 = alternateFiendsList[i].Palette2;
+				encountersData.formations[fiendsFormationOrder[(i * 2) + 1]].Pattern = alternateFiendsList[i].FormationPattern;
+				encountersData.formations[fiendsFormationOrder[(i * 2) + 1]].SpriteSheet = alternateFiendsList[i].SpriteSheet;
+				encountersData.formations[fiendsFormationOrder[(i * 2) + 1]].GfxOffset1 = (int)alternateFiendsList[i].GFXOffset;
+				encountersData.formations[fiendsFormationOrder[(i * 2) + 1]].Palette1 = alternateFiendsList[i].Palette1;
+				encountersData.formations[fiendsFormationOrder[(i * 2) + 1]].Palette2 = alternateFiendsList[i].Palette2;
 			}
 
 			encountersData.Write(this);
 
 			for (int i = 0; i < 8; i++)
 			{
-				Put(EnemyOffset + ((FiendsIndex + i) * EnemySize), fiends[i].compressData());
-				Put(ScriptOffset + ((FiendsScriptIndex + i) * ScriptSize), fiendsScript[i].compressData());
+				Put(EnemyOffset + ((FiendsIndex + i) * EnemySize), fiends[i].CompressData());
+				Put(ScriptOffset + ((FiendsScriptIndex + i) * ScriptSize), fiendsScript[i].CompressData());
 			}
 
 			//Update fiends names, we stack Fiend1 and Fiend2's names to get more space for names

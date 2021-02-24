@@ -9,25 +9,25 @@ namespace FF1Lib.Procgen
 	{
 		public struct Cell
 		{
-			public int x { get; }
-			public int y { get; }
+			public int X { get; }
+			public int Y { get; }
 
 			public Cell(int x, int y)
 			{
-				this.x = x;
-				this.y = y;
+				X = x;
+				Y = y;
 			}
 		}
 
 		public struct Wall
 		{
-			public EquivalenceNode<Cell> one { get; }
-			public EquivalenceNode<Cell> two { get; }
+			public EquivalenceNode<Cell> One { get; }
+			public EquivalenceNode<Cell> Two { get; }
 
 			public Wall(EquivalenceNode<Cell> one, EquivalenceNode<Cell> two)
 			{
-				this.one = one;
-				this.two = two;
+				One = one;
+				Two = two;
 			}
 		}
 
@@ -80,9 +80,9 @@ namespace FF1Lib.Procgen
 
 			for (int i = 0; i < walls.Count;)
 			{
-				if (!walls[i].one.IsEquivalentTo(walls[i].two))
+				if (!walls[i].One.IsEquivalentTo(walls[i].Two))
 				{
-					walls[i].one.MakeEquivalentTo(walls[i].two);
+					walls[i].One.MakeEquivalentTo(walls[i].Two);
 					walls.RemoveAt(i);
 				}
 				else

@@ -23,7 +23,7 @@ namespace FF1Lib
 		// The coordinate version of the accessor has the params in the normal order.
 		public MapElement this[(int x, int y) coord]
 		{
-			get => new(this, coord.x, coord.y, this[coord.y, coord.x]);
+			get => new(this, coord.x, coord.y);
 			set => this[coord.y, coord.x] = value.Value;
 		}
 
@@ -172,7 +172,7 @@ namespace FF1Lib
 				(int x, int y) = coords[i];
 
 				// Recurse if our callback returns true.
-				if (action(new MapElement(this, x, y, _map[y, x])))
+				if (action(new MapElement(this, x, y)))
 				{
 					if (!coords.Contains(((RowLength + x - 1) % RowLength, y))) { coords.Add(((RowLength + x - 1) % RowLength, y)); }
 					if (!coords.Contains(((RowLength + x + 1) % RowLength, y))) { coords.Add(((RowLength + x + 1) % RowLength, y)); }
@@ -288,15 +288,15 @@ namespace FF1Lib
 		//Return a random map element
 		public MapElement GetRandomElement(MT19337 rng)
 		{
-			var newX = rng.Between(0, RowLength - 1);
-			var newY = rng.Between(0, RowCount - 1);
-			return new MapElement(this, newX, newY, _map[newY, newX]);
+			int newX = rng.Between(0, RowLength - 1);
+			int newY = rng.Between(0, RowCount - 1);
+			return new MapElement(this, newX, newY);
 		}
 
 		//Return a random element such that its value equals target
 		public MapElement GetRandomElement(MT19337 rng, byte target)
 		{
-			MapElement element = null;
+			MapElement element;
 			do
 			{
 				element = GetRandomElement(rng);
@@ -339,7 +339,7 @@ namespace FF1Lib
 			{
 				for (int x = 0; x < RowLength; x++)
 				{
-					yield return new MapElement(this, x, y, _map[y, x]);
+					yield return new MapElement(this, x, y);
 				}
 			}
 		}
@@ -381,7 +381,7 @@ namespace FF1Lib
 			set => Map[Y, X] = (byte)value;
 		}
 
-		public MapElement(Map map, int x, int y, byte value)
+		public MapElement(Map map, int x, int y)
 		{
 			Map = map;
 			X = x;
@@ -398,7 +398,7 @@ namespace FF1Lib
 			int y = direction == Direction.Up ? ((Map.RowCount + Y - 1) % Map.RowCount)
 				: direction == Direction.Down ? ((Y + 1) % Map.RowCount)
 				: Y;
-			return new MapElement(Map, x, y, Map[y, x]);
+			return new MapElement(Map, x, y);
 		}
 
 		public MapElement Up() { return Neighbor(Direction.Up); }

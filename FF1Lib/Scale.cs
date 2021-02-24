@@ -276,7 +276,7 @@ namespace FF1Lib
 			return (int)Round(value * adjustedScale);
 		}
 		// Previous RangeScale(), delete if no bugs come up with new RangeScale() - 2020-10-27
-		private int oldRangeScale(double value, double lowPercent, double highPercent, double adjustment, MT19337 rng)
+		private int OldRangeScale(double value, double lowPercent, double highPercent, double adjustment, MT19337 rng)
 		{
 			double range = highPercent - lowPercent;
 			double randomRangeScale = rng == null ? range : range * ((double)rng.Next() / uint.MaxValue);
@@ -426,7 +426,7 @@ namespace FF1Lib
 		public void EnableSwolePirates()
 		{
 			EnemyInfo newPirate = new();
-			newPirate.decompressData(Get(EnemyOffset + (EnemySize * Enemy.Pirate), EnemySize));
+			newPirate.DecompressData(Get(EnemyOffset + (EnemySize * Enemy.Pirate), EnemySize));
 			newPirate.exp = 800;
 			newPirate.gp = 800;
 			newPirate.hp = 160;
@@ -437,7 +437,7 @@ namespace FF1Lib
 			newPirate.accuracy = 35;
 			newPirate.critrate = 5;
 			newPirate.agility = 24;
-			Put(EnemyOffset + (EnemySize * Enemy.Pirate), newPirate.compressData());
+			Put(EnemyOffset + (EnemySize * Enemy.Pirate), newPirate.CompressData());
 		}
 	}
 }
