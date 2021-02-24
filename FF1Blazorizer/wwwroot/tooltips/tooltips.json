@@ -54,7 +54,7 @@
 		"Id": "titanSnack",
 		"title": "Titan's Favorite Snack",
 		"screenshot": "titanSnack.png",
-		"description": "Randomly change Titan's Ruby to another snack from different community-contributed lists.\n[grid][r]{l}{i}Ruby|{l}Default/Vanilla[r]{l}{i}Other Minerals|{l}Rocks or similar Titan cuisine[r]{l}{i}Junk Food|{l}Human food to eat in moderation[r]{l}{i}Healthy Food|{l}Human food of a healthier variety[r]{l}{i}Beverages|{l}Drinks[r]{l}{i}All|{l}All of the above except Ruby\n"
+		"description": "Randomly change Titan's Ruby to another snack from 100 different, community-contributed options.\n[grid][r]{l}{i}Ruby|{l}Default/Vanilla[r]{l}{i}Other Minerals|{l}Rocks or similar Titan cuisine[r]{l}{i}Junk Food|{l}Human food to eat in moderation[r]{l}{i}Healthy Food|{l}Human food of a healthier variety[r]{l}{i}Beverages|{l}Drinks[r]{l}{i}All|{l}All of the above except Ruby\n"
 	},
 	{
 		"Id": "paletteSwapCheckBox",
