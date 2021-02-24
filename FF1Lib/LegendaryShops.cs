@@ -10,7 +10,7 @@ namespace FF1Lib
 {
 	public class LegendaryShops
 	{
-		private MT19337 rng;
+		private readonly MT19337 rng;
 		private readonly Flags flags;
 		private readonly FF1Rom rom;
 		private readonly List<Map> maps;
@@ -187,7 +187,7 @@ namespace FF1Lib
 
 		private void PlaceShop(int index, List<(MapId, int, int, byte, byte, byte, byte, byte)> pool)
 		{
-			var locidx = rng.Between(0, pool.Count - 1);
+			int locidx = rng.Between(0, pool.Count - 1);
 			(MapId, int, int, byte, byte, byte, byte, byte) loc = pool[locidx];
 			pool.RemoveAt(locidx);
 

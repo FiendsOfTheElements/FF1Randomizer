@@ -1320,8 +1320,8 @@ namespace FF1Lib
 				return Large(mon) && NotFeatured(mon) && mon != id;
 			}
 
-			var formationData = Get(FormationDataOffset, FormationDataSize * FormationDataCount).Chunk(FormationDataSize); // load base information from the ROM into chunks we can manipulate
-			var dom = Get(ZoneFormationsOffset, ZoneFormationsSize * ZoneCount); // however, we are going to adjust the domain data directly
+			List<Blob> formationData = Get(FormationDataOffset, FormationDataSize * FormationDataCount).Chunk(FormationDataSize); // load base information from the ROM into chunks we can manipulate
+			Blob dom = Get(ZoneFormationsOffset, ZoneFormationsSize * ZoneCount); // however, we are going to adjust the domain data directly
 			List<byte> uniqueEnemyIDs = new()
 			{
 				0x00,
@@ -4485,7 +4485,7 @@ namespace FF1Lib
 				return IsBattleTile(tuple) && (tuple[1] & 0x80) != 0x00;
 			}
 
-			var tilesets = Get(TilesetDataOffset, TilesetDataCount * TilesetDataSize * TilesetCount).Chunk(TilesetDataSize).ToList();
+			List<Blob> tilesets = Get(TilesetDataOffset, TilesetDataCount * TilesetDataSize * TilesetCount).Chunk(TilesetDataSize).ToList();
 			tilesets.ForEach(tile => { if (IsRandomBattleTile(tile)) { tile[1] = 0x00; } });
 			Put(TilesetDataOffset, tilesets.SelectMany(tileset => tileset.ToBytes()).ToArray());// set all random battle tiles to zero
 

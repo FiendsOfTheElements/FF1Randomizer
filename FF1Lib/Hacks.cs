@@ -145,7 +145,7 @@ namespace FF1Lib
 
 			// set default member
 			int defaultclass = (forced || !DefaultChoices.SequenceEqual(options)) ? (int)options.PickRandom(rng) : slotNumber - 1;
-			Data[lut_PtyGenBuf + ((slotNumber - 1) * 0x10)] = defaultclass == 12 ? 0xFF : defaultclass;
+			Data[lut_PtyGenBuf + ((slotNumber - 1) * 0x10)] = defaultclass == 12 ? 0xFF : (byte)defaultclass;
 
 			options.Clear();
 		}
@@ -832,8 +832,8 @@ namespace FF1Lib
 		private void EnableEasyMode()
 		{
 			ScaleEncounterRate(0.20, 0.20);
-			var enemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
-			foreach (var enemy in enemies)
+			List<Blob> enemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
+			foreach (Blob enemy in enemies)
 			{
 				ushort hp = BitConverter.ToUInt16(enemy, 4);
 				hp = (ushort)(hp * 0.1);
@@ -971,7 +971,7 @@ namespace FF1Lib
 			Put(0x313D3, Blob.FromHex("03")); // changes AND #$01 to AND #$03 when checking start of battle for unrunnability
 											  // the second change is done in AllowStrikeFirstAndSurprise, which checks the unrunnability in battle
 											  // alter the default formation data to set unrunnability of a formation to both sides if the unrunnable flag is set
-			var formData = Get(FormationDataOffset, FormationDataSize * FormationCount).Chunk(FormationDataSize);
+			List<Blob> formData = Get(FormationDataOffset, FormationDataSize * FormationCount).Chunk(FormationDataSize);
 			for (int i = 0; i < NormalFormationCount; ++i)
 			{
 				if ((formData[i][UnrunnableOffset] & 0x01) != 0)
@@ -1072,8 +1072,8 @@ namespace FF1Lib
 			List<int> order = Enumerable.Range(0, 6).ToList();
 			order.Shuffle(rng);
 
-			var oldPermissions = Get(offset, PermissionsSize * PermissionsCount).ToUShorts();
-			var newPermissions = oldPermissions.Select(item =>
+			ushort[] oldPermissions = Get(offset, PermissionsSize * PermissionsCount).ToUShorts();
+			IEnumerable<ushort> newPermissions = oldPermissions.Select(item =>
 			{
 				ushort shuffled = 0x0000;
 				for (int i = 0; i < 6; ++i)
@@ -1140,7 +1140,7 @@ namespace FF1Lib
 			PutInBank(0x1E, 0x8373, Blob.FromHex("EA"));
 
 			// New CHRLoad routine so we can load promoted classes' sprites in memory by only loading one row of sprites instead of two
-			var newfCHRLoad = Blob.FromHex("A000B1108D0720C8D0F8E611E611CAD0F160");
+			Blob newfCHRLoad = Blob.FromHex("A000B1108D0720C8D0F8E611E611CAD0F160");
 
 			// Put new CHRLoad routine
 			PutInBank(0x1F, 0xEAD5, Blob.FromHex("20EBFE"));
@@ -1166,7 +1166,7 @@ namespace FF1Lib
 			List<sbyte> promotions = new() { 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B };
 			List<string> className = new() { "Fi", "Th", "BB", "RM", "WM", "BM", "Kn", "Ni", "Ma", "RW", "WW", "BW" };
 
-			var levelUpStats = Get(NewLevelUpDataOffset, 588).Chunk(49 * 2);
+			List<Blob> levelUpStats = Get(NewLevelUpDataOffset, 588).Chunk(49 * 2);
 			List<bool> iscaster = new();
 
 			for (int i = 0; i < 6; i++)
@@ -1387,7 +1387,7 @@ namespace FF1Lib
 			// Select treasure
 			List<IRewardSource> chestList = ItemLocations.AllTreasures.ToList();
 			byte[] chestMonsterList = new byte[0x100];
-			var treasureList = Get(lut_TreasureOffset, 0x100);
+			Blob treasureList = Get(lut_TreasureOffset, 0x100);
 
 			// Get encounters
 			List<byte> encounters;
@@ -1862,7 +1862,7 @@ namespace FF1Lib
 
 			for (int i = 0; i < shopInfoWordsList.Count(); i++)
 			{
-				var blob = FF1Text.TextToBytes(shopInfoWordsList[i], useDTE: true);
+				Blob blob = FF1Text.TextToBytes(shopInfoWordsList[i], useDTE: true);
 
 				generatedWords += blob;
 
@@ -1902,7 +1902,7 @@ namespace FF1Lib
 
 			for (int i = 0; i < descriptionsList.Count(); i++)
 			{
-				var blob = new byte[] { 0x02, (byte)i } + FF1Text.TextToBytesInfo(descriptionsList[i], useDTE: true);
+				Blob blob = new byte[] { 0x02, (byte)i } + FF1Text.TextToBytesInfo(descriptionsList[i], useDTE: true);
 				if (blob.Length <= 3)
 				{
 					blob = new byte[0];
@@ -2339,7 +2339,7 @@ namespace FF1Lib
 			}
 
 			// Switch WarMechEncounter B formation to not get it in Sky
-			var FormationsLists = Get(ZoneFormationsOffset, ZoneFormationsSize * ZoneCount);
+			Blob FormationsLists = Get(ZoneFormationsOffset, ZoneFormationsSize * ZoneCount);
 
 			for (int i = 0; i < ZoneFormationsSize * ZoneCount; i++)
 			{
@@ -2376,7 +2376,7 @@ namespace FF1Lib
 			Put(ZoneFormationsOffset, FormationsLists);
 
 			// Make Chaos and WarMech Undead, Phantom a Dragon
-			var statsEnemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
+			List<Blob> statsEnemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
 			statsEnemies[0x7F][0x10] |= 0x08; // Chaos
 			statsEnemies[0x76][0x10] |= 0x08; // WarMech
 			statsEnemies[0x33][0x10] |= 0x02; // Phantom
@@ -2392,7 +2392,7 @@ namespace FF1Lib
 			enemyText[127] = "LICH"; // Chaos > Lich
 			WriteText(enemyText, EnemyTextPointerOffset, EnemyTextPointerBase, EnemyTextOffset);
 
-			var lich2name = Get(EnemyTextPointerOffset + (119 * 2), 2); // Lich2 point to Phantom1
+			Blob lich2name = Get(EnemyTextPointerOffset + (119 * 2), 2); // Lich2 point to Phantom1
 			Put(EnemyTextPointerOffset + (120 * 2), lich2name);
 
 			// Scale Undeads

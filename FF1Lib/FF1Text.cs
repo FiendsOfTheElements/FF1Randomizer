@@ -313,8 +313,8 @@ namespace FF1Lib
 
 			if (buffers.Count != 0)
 			{
-				var lastBuffer = buffers[^1];
-				lastBuffer[lastBuffer.Length - 1] = (byte)Delimiter.Null;
+				Blob lastBuffer = buffers[^1];
+				lastBuffer[^1] = (byte)Delimiter.Null;
 			}
 
 			return Blob.Concat(buffers);
@@ -331,8 +331,8 @@ namespace FF1Lib
 
 			if (buffers.Count != 0)
 			{
-				var lastBuffer = buffers[^1];
-				lastBuffer[lastBuffer.Length - 1] = (byte)Delimiter.Null;
+				Blob lastBuffer = buffers[^1];
+				lastBuffer[^1] = (byte)Delimiter.Null;
 			}
 
 			return Blob.Concat(buffers);

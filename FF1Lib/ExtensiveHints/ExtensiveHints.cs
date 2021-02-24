@@ -38,7 +38,7 @@ namespace FF1Lib
 
 	public class ExtensiveHints
 	{
-		private MT19337 rng;
+		private readonly MT19337 rng;
 		private readonly NPCdata npcData;
 		private readonly Flags flags;
 		private readonly OverworldMap overworldMap;

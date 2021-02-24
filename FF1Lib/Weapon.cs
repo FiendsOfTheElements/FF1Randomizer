@@ -198,7 +198,7 @@ namespace FF1Lib
 
 				foreach (Item weapon in ItemLists.UberTier)
 				{
-					var selectedTier = Rng.Between(rng, 0, 3);
+					int selectedTier = Rng.Between(rng, 0, 3);
 					while (tieredSpells[selectedTier].Count == 0)
 					{
 						selectedTier = Rng.Between(rng, 0, 3);

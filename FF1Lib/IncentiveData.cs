@@ -519,7 +519,7 @@ namespace FF1Lib
 				List<MapLocation> validKeyMapLocations = ItemPlacement.AccessibleMapLocations(~(AccessRequirement.BlackOrb | AccessRequirement.Key), MapChange.All, fullLocationRequirements);
 				validKeyLocations = itemLocationPool.Where(x => validKeyMapLocations.Contains(x.MapLocation) &&
 					validKeyMapLocations.Contains((x as MapObject)?.SecondLocation ?? MapLocation.StartingLocation)).ToList();
-				var keyPlacementRank = rng.Between(1, incentivePool.Count);
+				int keyPlacementRank = rng.Between(1, incentivePool.Count);
 				if (incentivePool.Contains(Item.Key) && incentiveLocationPool.Any(x => validKeyLocations.Any(y => y.Address == x.Address)) && keyPlacementRank <= incentiveLocationPool.Count)
 				{
 					validKeyLocations = validKeyLocations.Where(x => incentiveLocationPool.Any(y => y.Address == x.Address)).ToList();
@@ -548,7 +548,7 @@ namespace FF1Lib
 					itemLocationPool.Where(x => validCanoeMapLocations.Contains(x.MapLocation) &&
 						validCanoeMapLocations.Contains((x as MapObject)?.SecondLocation ?? MapLocation.StartingLocation)).ToList();
 
-				var canoePlacementRank = rng.Between(1, incentivePool.Count);
+				int canoePlacementRank = rng.Between(1, incentivePool.Count);
 				List<IRewardSource> validCanoeIncentives = validCanoeLocations.Where(x => incentiveLocationPool.Any(y => y.Address == x.Address)).ToList();
 				if (incentivePool.Contains(Item.Canoe) && canoePlacementRank <= incentiveLocationPool.Count &&
 					validKeyLocations.Union(validCanoeIncentives).Count() > 1) // The Key can be placed in at least one place more than than the Canoe

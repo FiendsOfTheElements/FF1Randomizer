@@ -110,7 +110,7 @@ namespace FF1Lib
 
 		public void PaletteSwap(MT19337 rng)
 		{
-			var palettes = Get(PaletteOffset, PaletteSize * PaletteCount).Chunk(PaletteSize);
+			List<Blob> palettes = Get(PaletteOffset, PaletteSize * PaletteCount).Chunk(PaletteSize);
 
 			palettes.Shuffle(rng);
 

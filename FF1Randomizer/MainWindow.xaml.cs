@@ -34,7 +34,7 @@ namespace FF1Randomizer
 
 		private void TryOpenSavedFilename()
 		{
-			if (String.IsNullOrEmpty(Settings.Default.RomFilename))
+			if (string.IsNullOrEmpty(Settings.Default.RomFilename))
 			{
 				return;
 			}
@@ -57,12 +57,12 @@ namespace FF1Randomizer
 
 		private void RomButton_Click(object sender, RoutedEventArgs e)
 		{
-			var openFileDialog = new OpenFileDialog
+			OpenFileDialog openFileDialog = new()
 			{
 				Filter = "NES ROM files (*.nes)|*.nes"
 			};
 
-			var result = openFileDialog.ShowDialog(this);
+			bool? result = openFileDialog.ShowDialog(this);
 			if (result == true)
 			{
 				ValidateRom(openFileDialog.FileName);
@@ -74,15 +74,15 @@ namespace FF1Randomizer
 
 		private void ValidateRom(string filename)
 		{
-			var rom = new FF1Rom(filename);
+			FF1Rom rom = new(filename);
 			if (!rom.Validate())
 			{
 				MessageBox.Show("ROM does not appear to be valid.  Proceed at your own risk.", "Validation Error");
 			}
 
 			_model.Filename = filename;
-			var slashIndex = filename.LastIndexOfAny(new[] { '/', '\\' });
-			RomTextBox.Text = filename.Substring(slashIndex + 1);
+			int slashIndex = filename.LastIndexOfAny(new[] { '/', '\\' });
+			RomTextBox.Text = filename[(slashIndex + 1)..];
 			GenerateButton.IsEnabled = true;
 		}
 
@@ -93,11 +93,11 @@ namespace FF1Randomizer
 
 		private void GenerateButton_Click(object sender, RoutedEventArgs e)
 		{
-			var rom = new FF1Rom(_model.Filename);
+			FF1Rom rom = new(_model.Filename);
 			rom.Randomize(Blob.FromHex(_model.Seed), _model.Flags.Flags, _model.Flags.Preferences);
 
-			var fileRoot = _model.Filename.Substring(0, _model.Filename.LastIndexOf("."));
-			var outputFilename = $"{fileRoot}_{_model.Seed}_{FlagsTextBox.Text}.nes";
+			string fileRoot = _model.Filename.Substring(0, _model.Filename.LastIndexOf("."));
+			string outputFilename = $"{fileRoot}_{_model.Seed}_{FlagsTextBox.Text}.nes";
 			rom.Save(outputFilename);
 
 			MessageBox.Show($"Finished generating new ROM: {outputFilename}", "Done");
@@ -112,8 +112,8 @@ namespace FF1Randomizer
 
 		private void PasteButton_Click(object sender, RoutedEventArgs e)
 		{
-			var text = Clipboard.GetText();
-			var parts = text.Split('=');
+			string text = Clipboard.GetText();
+			string[] parts = text.Split('=');
 			if (parts.Length != 3 || parts[1].Length < 8 || parts[2].Length < 32)
 			{
 				MessageBox.Show("Format not recognized.  Paste should look like (url)?s=SSSSSSSS&f=FFFFFFFFFFFFFFFFFFFFFFFFFFF", "Invalid Format");
@@ -127,8 +127,8 @@ namespace FF1Randomizer
 
 		private void SetScaleFactorLabel(Slider slider, Label label, CheckBox clamp)
 		{
-			var lower = (bool)clamp.IsChecked ? 100 : Math.Round(100 / slider.Value);
-			var upper = Math.Round(100 * slider.Value);
+			double lower = (bool)clamp.IsChecked ? 100 : Math.Round(100 / slider.Value);
+			double upper = Math.Round(100 * slider.Value);
 
 			label.Content = $"{lower}% - {upper}%";
 		}
@@ -143,7 +143,7 @@ namespace FF1Randomizer
 
 		private void AboutButton_Click(object sender, RoutedEventArgs e)
 		{
-			var aboutWindow = new AboutWindow(FFRVersion.Version) { Owner = this };
+			AboutWindow aboutWindow = new(FFRVersion.Version) { Owner = this };
 
 			aboutWindow.ShowDialog();
 		}
@@ -190,13 +190,13 @@ namespace FF1Randomizer
 
 		private void LoadPreset(object sender, RoutedEventArgs e)
 		{
-			var openFileDialog = new OpenFileDialog
+			OpenFileDialog openFileDialog = new()
 			{
 				Filter = "JSON files (*.json)|*.json",
-				InitialDirectory = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "presets"),
+				InitialDirectory = Path.Combine(Directory.GetCurrentDirectory(), "presets"),
 			};
 
-			var result = openFileDialog.ShowDialog(this);
+			bool? result = openFileDialog.ShowDialog(this);
 			if (result == true)
 			{
 				_model.Flags.Flags = Flags.FromJson(File.ReadAllText(openFileDialog.FileName));

@@ -204,13 +204,13 @@ namespace FF1Lib.Procgen
 				}
 
 				// the room can be between 3 x 3 tiles to the size of the leaf - 2.
-				var roomWidth = rng.Between(BSPTreeEngine.MIN_ROOM_WIDTH, Width - 2);
-				var roomHeight = rng.Between(BSPTreeEngine.MIN_ROOM_HEIGHT, Height - 2);
+				int roomWidth = rng.Between(BSPTreeEngine.MIN_ROOM_WIDTH, Width - 2);
+				int roomHeight = rng.Between(BSPTreeEngine.MIN_ROOM_HEIGHT, Height - 2);
 
 				// place the room within the BSPMapNode, but don't put it right 
 				// against the side of the BSPMapNode (that would merge rooms together)
-				var roomStartX = rng.Between(1, Width - roomWidth - 1);
-				var roomStartY = rng.Between(1, Height - roomHeight - 1);
+				int roomStartX = rng.Between(1, Width - roomWidth - 1);
+				int roomStartY = rng.Between(1, Height - roomHeight - 1);
 				WalkableSpace = new Rectangle(X + roomStartX, Y + roomStartY, roomWidth, roomHeight);
 				return;
 			}

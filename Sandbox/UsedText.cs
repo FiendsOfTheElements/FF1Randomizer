@@ -24,8 +24,8 @@ namespace Sandbox
 
 			SortedSet<byte> usedText = new();
 
-			var jumpTable = rom.Get(MapObjJumpTableOffset, JumpSize * MapObjCount).ToUShorts();
-			var mapObjs = rom.Get(MapObjOffset, MapObjSize * MapObjCount).Chunk(MapObjSize);
+			ushort[] jumpTable = rom.Get(MapObjJumpTableOffset, JumpSize * MapObjCount).ToUShorts();
+			List<RomUtilities.Blob> mapObjs = rom.Get(MapObjOffset, MapObjSize * MapObjCount).Chunk(MapObjSize);
 
 			for (int i = 0; i < MapObjCount; i++)
 			{

@@ -58,7 +58,7 @@ namespace FF1Lib
 
 	public class StartingInventory
 	{
-		private MT19337 rng;
+		private readonly MT19337 rng;
 		private readonly Flags flags;
 		private readonly FF1Rom rom;
 		private readonly StartingItems ItemData;

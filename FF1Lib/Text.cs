@@ -24,7 +24,7 @@ namespace FF1Lib
 
 		public string[] ReadText(int pointerOffset, int pointerBase, int count)
 		{
-			var pointers = Get(pointerOffset, 2 * count).ToUShorts().ToList();
+			List<ushort> pointers = Get(pointerOffset, 2 * count).ToUShorts().ToList();
 
 			string[] texts = new string[count];
 			for (int i = 0; i < pointers.Count; i++)
@@ -53,7 +53,7 @@ namespace FF1Lib
 				}
 				else
 				{
-					var blob = FF1Text.TextToBytes(texts[i], useDTE: false);
+					Blob blob = FF1Text.TextToBytes(texts[i], useDTE: false);
 					Put(offset, blob);
 
 					pointers[i] = (ushort)(offset - pointerBase);

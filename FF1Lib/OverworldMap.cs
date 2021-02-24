@@ -1024,10 +1024,10 @@ namespace FF1Lib
 		public List<List<byte>> GetCompressedMapRows()
 		{
 
-			var pointers = _rom.Get(bankStart, 512).ToUShorts().Select(x => x - bankStart);
-			var mapRows = pointers.Select(x =>
+			IEnumerable<int> pointers = _rom.Get(bankStart, 512).ToUShorts().Select(x => x - bankStart);
+			List<List<byte>> mapRows = pointers.Select(x =>
 			{
-				var mapRow = _rom.Get(x, 256).ToBytes();
+				byte[] mapRow = _rom.Get(x, 256).ToBytes();
 				List<byte> result = new();
 				int index = 0;
 				while (index < 256 && mapRow[index] != 255)

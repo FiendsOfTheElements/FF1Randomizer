@@ -386,21 +386,21 @@ namespace FF1Lib
 			}
 			else
 			{
-				var partypermissions = Get(0x78110, 0x11);
+				Blob partypermissions = Get(0x78110, 0x11);
 				PutInBank(0x1E, 0x80C1, Blob.FromHex("A6678A4A4A4A4AA8B9B085859020A480A9008522200F82A522F0034C0088A524D049A525F0023860A520290FC561F0E08561C900F0DAA667BD0003186901C90CD002A9FF9D0003A8C8B9B4852490F0E8A901853720B0824CD180"));
 				PutInBank(0x1E, 0x85B0, partypermissions);
 			}
 
 			// Get data
-			var startingStats = Get(StartingStatsOffset, 0x60).Chunk(0x10);
-			var levelUpStats = Get(NewLevelUpDataOffset, 588).Chunk(49 * 2);
-			var hitGrowth = Get(lut_LvlUpHitRateBonus, 12).ToBytes().ToList();
-			var mdefGrowthBase = Get(lut_LvlUpMagDefBonus, 6).ToBytes().ToList();
-			var mdefGrowthPromo = Get(lut_LvlUpMagDefBonus + 6, 6).ToBytes().ToList();
-			var magicPermissions = Get(MagicPermissionsOffset, 8 * 12).Chunk(8);
-			var maxChargeList = Get(lut_MaxMP, 12);
-			var wpPermissions = Get(lut_WeaponPermissions, 80).ToUShorts();
-			var arPermissions = Get(lut_ArmorPermissions, 80).ToUShorts();
+			List<Blob> startingStats = Get(StartingStatsOffset, 0x60).Chunk(0x10);
+			List<Blob> levelUpStats = Get(NewLevelUpDataOffset, 588).Chunk(49 * 2);
+			List<byte> hitGrowth = Get(lut_LvlUpHitRateBonus, 12).ToBytes().ToList();
+			List<byte> mdefGrowthBase = Get(lut_LvlUpMagDefBonus, 6).ToBytes().ToList();
+			List<byte> mdefGrowthPromo = Get(lut_LvlUpMagDefBonus + 6, 6).ToBytes().ToList();
+			List<Blob> magicPermissions = Get(MagicPermissionsOffset, 8 * 12).Chunk(8);
+			Blob maxChargeList = Get(lut_MaxMP, 12);
+			ushort[] wpPermissions = Get(lut_WeaponPermissions, 80).ToUShorts();
+			ushort[] arPermissions = Get(lut_ArmorPermissions, 80).ToUShorts();
 
 			// Populate stats
 			for (int i = 0; i < 6; i++)
@@ -497,7 +497,7 @@ namespace FF1Lib
 			// dataScreen
 			int totalByte = 0;
 			string templateScreen = "";
-			var screenBlob = Blob.FromHex("00");
+			Blob screenBlob = Blob.FromHex("00");
 			List<string> dataScreen = new();
 
 			// Generate template
@@ -611,7 +611,7 @@ namespace FF1Lib
 			// Insert class data screen
 			for (int i = 0; i < 12; i++)
 			{
-				var tempBlob = FF1Text.TextToBytes(dataScreen[i], true, FF1Text.Delimiter.Null);
+				Blob tempBlob = FF1Text.TextToBytes(dataScreen[i], true, FF1Text.Delimiter.Null);
 				PutInBank(0x1E, 0x8970 + totalByte, tempBlob);
 				int tempAddress = 0x8970 + totalByte;
 				PutInBank(0x1E, 0x8950 + (i * 2), new byte[] { (byte)(tempAddress % 0x100), (byte)(tempAddress / 0x100) });
@@ -1018,7 +1018,7 @@ namespace FF1Lib
 			malusNormal.Shuffle(rng);
 
 			// Select one incentivized class that will received a strong bonus
-			var luckyDude = Rng.Between(rng, 0, 5);
+			int luckyDude = Rng.Between(rng, 0, 5);
 
 			List<string> descriptionList = new();
 

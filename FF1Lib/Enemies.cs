@@ -69,20 +69,20 @@ namespace FF1Lib
 			if (shuffleMode == FormationShuffleMode.Intrazone)
 			{
 				// intra-zone shuffle, does not change which formations are in zomes.
-				var oldFormations = Get(ZoneFormationsOffset, ZoneFormationsSize * ZoneCount).Chunk(ZoneFormationsSize);
-				var newFormations = Get(ZoneFormationsOffset, ZoneFormationsSize * ZoneCount).Chunk(ZoneFormationsSize);
+				List<Blob> oldFormations = Get(ZoneFormationsOffset, ZoneFormationsSize * ZoneCount).Chunk(ZoneFormationsSize);
+				List<Blob> newFormations = Get(ZoneFormationsOffset, ZoneFormationsSize * ZoneCount).Chunk(ZoneFormationsSize);
 
 				for (int i = 0; i < ZoneCount; i++)
 				{
 
-					var lowFormations = oldFormations[i].Chunk(4)[0].Chunk(1); // shuffle the first 4 formations first
+					List<Blob> lowFormations = oldFormations[i].Chunk(4)[0].Chunk(1); // shuffle the first 4 formations first
 					lowFormations.Shuffle(rng);
 					newFormations[i][0] = lowFormations[0][0];
 					newFormations[i][1] = lowFormations[1][0];
 					newFormations[i][2] = lowFormations[2][0];
 					newFormations[i][3] = lowFormations[3][0];
 
-					var shuffleFormations = newFormations[i].SubBlob(2, 6).Chunk(1); // get formations 2-8
+					List<Blob> shuffleFormations = newFormations[i].SubBlob(2, 6).Chunk(1); // get formations 2-8
 					shuffleFormations.Shuffle(rng);
 					for (int j = 2; j < 8; j++)
 					{
@@ -107,7 +107,7 @@ namespace FF1Lib
 					{
 						continue;
 					}
-					var zone = Get(ZoneFormationsOffset + (i * ZoneFormationsSize), ZoneFormationsSize);
+					Blob zone = Get(ZoneFormationsOffset + (i * ZoneFormationsSize), ZoneFormationsSize);
 					if (zone.ToLongs()[0] == 0)
 					{
 						//some unused overworld zones are zero filled so we catch them here to not pollute the formations list
@@ -123,7 +123,7 @@ namespace FF1Lib
 				// after shuffling, put original starting zones in so only one write is required
 				foreach (byte i in exclusionZones)
 				{
-					var startZone = Get(ZoneFormationsOffset + (i * ZoneFormationsSize), ZoneFormationsSize).Chunk(1);
+					List<Blob> startZone = Get(ZoneFormationsOffset + (i * ZoneFormationsSize), ZoneFormationsSize).Chunk(1);
 					newFormations.InsertRange(i * ZoneFormationsSize, startZone);
 				}
 				Put(ZoneFormationsOffset, newFormations.SelectMany(formation => formation.ToBytes()).ToArray());
@@ -132,8 +132,8 @@ namespace FF1Lib
 			if (shuffleMode == FormationShuffleMode.Randomize)
 			{
 				// no-pants mode
-				var oldFormations = Get(ZoneFormationsOffset, ZoneFormationsSize * ZoneCount).Chunk(ZoneFormationsSize);
-				var newFormations = Get(ZoneFormationsOffset, ZoneFormationsSize * ZoneCount).Chunk(ZoneFormationsSize);
+				List<Blob> oldFormations = Get(ZoneFormationsOffset, ZoneFormationsSize * ZoneCount).Chunk(ZoneFormationsSize);
+				List<Blob> newFormations = Get(ZoneFormationsOffset, ZoneFormationsSize * ZoneCount).Chunk(ZoneFormationsSize);
 				List<int> allowableEncounters = Enumerable.Range(0, 256).ToList();
 				List<int> unallowableEncounters = new() { 0x73, 0x74, 0x75, 0x76, 0x77, 0x78, 0x79, 0x7A, 0x7B, 0x7C, 0x7D, 0x7E, 0x7F, 0xF3, 0xF4, 0xF5, 0xF6, 0xF7, 0xF8, 0xF9, 0xFA, 0xFB, 0xFC, 0xFD };
 				allowableEncounters.RemoveAll(x => unallowableEncounters.Contains(x));
@@ -157,12 +157,12 @@ namespace FF1Lib
 			const int WarMECHsToAdd = 1;
 			const int WarMECHIndex = 6;
 			const byte WarMECHEncounter = 0x56;
-			var oldFormations = Get(ZoneFormationsOffset, ZoneFormationsSize * ZoneCount).Chunk(ZoneFormationsSize);
+			List<Blob> oldFormations = Get(ZoneFormationsOffset, ZoneFormationsSize * ZoneCount).Chunk(ZoneFormationsSize);
 			List<byte> newFormations = new();
 
-			foreach (var zone in oldFormations)
+			foreach (Blob zone in oldFormations)
 			{
-				var bytes = zone.ToBytes().ToList();
+				List<byte> bytes = zone.ToBytes().ToList();
 				if (!bytes.Any(x => x > 0))
 				{
 					newFormations.AddRange(bytes);
@@ -179,12 +179,12 @@ namespace FF1Lib
 
 		public void ShuffleEnemyScripts(MT19337 rng, bool AllowUnsafePirates, bool doNormals, bool doBosses, bool excludeImps, bool scaryImps)
 		{
-			var oldEnemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
-			var newEnemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
+			List<Blob> oldEnemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
+			List<Blob> newEnemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
 
 			if (doNormals)
 			{
-				var normalOldEnemies = oldEnemies.Take(EnemyCount - 10).ToList(); // all but WarMECH, fiends, fiends revisited, and CHAOS
+				List<Blob> normalOldEnemies = oldEnemies.Take(EnemyCount - 10).ToList(); // all but WarMECH, fiends, fiends revisited, and CHAOS
 				if (!AllowUnsafePirates)
 				{
 					normalOldEnemies.RemoveAt(Enemy.Pirate);
@@ -261,7 +261,7 @@ namespace FF1Lib
 
 		public void ShuffleEnemySkillsSpells(MT19337 rng, bool doNormals, bool doBosses)
 		{
-			var scriptBytes = Get(ScriptOffset, ScriptSize * ScriptCount).Chunk(ScriptSize);
+			List<Blob> scriptBytes = Get(ScriptOffset, ScriptSize * ScriptCount).Chunk(ScriptSize);
 
 			// Remove two instances each of CRACK and TOXIC since they're likely to get spread out to several enemies.
 			const int SandW = 7; // CRACK
@@ -293,23 +293,23 @@ namespace FF1Lib
 		{
 			List<Blob> scripts = indices.Select(i => scriptBytes[i]).ToList();
 
-			var spellBytes = scripts.SelectMany(script => script.SubBlob(2, 8).ToBytes()).Where(b => b != 0xFF).ToList();
-			var skillBytes = scripts.SelectMany(script => script.SubBlob(11, 4).ToBytes()).Where(b => b != 0xFF).ToList();
+			List<byte> spellBytes = scripts.SelectMany(script => script.SubBlob(2, 8).ToBytes()).Where(b => b != 0xFF).ToList();
+			List<byte> skillBytes = scripts.SelectMany(script => script.SubBlob(11, 4).ToBytes()).Where(b => b != 0xFF).ToList();
 			spellBytes.Shuffle(rng);
 			skillBytes.Shuffle(rng);
 
 			List<List<byte>> spellBuckets = Bucketize(spellBytes, scripts.Count(script => script[0] != 0), 8, rng);
 			List<List<byte>> skillBuckets = Bucketize(skillBytes, scripts.Count(script => script[1] != 0), 4, rng);
 
-			List<object> spellChances = scripts.Select(script => script[0]).ToList();
-			List<object> skillChances = scripts.Select(script => script[1]).ToList();
+			List<byte> spellChances = scripts.Select(script => script[0]).ToList();
+			List<byte> skillChances = scripts.Select(script => script[1]).ToList();
 			spellChances.Shuffle(rng);
 			skillChances.Shuffle(rng);
 
 			int spellBucketIndex = 0, skillBucketIndex = 0;
 			for (int i = 0; i < scripts.Count; i++)
 			{
-				var script = scriptBytes[indices[i]];
+				Blob script = scriptBytes[indices[i]];
 				script[0] = spellChances[i];
 				script[1] = skillChances[i];
 
@@ -351,7 +351,7 @@ namespace FF1Lib
 			}
 			while (index < bytes.Count)
 			{
-				var bucket = rng.Between(0, buckets.Count - 1);
+				int bucket = rng.Between(0, buckets.Count - 1);
 				if (buckets[bucket].Count < bucketSize)
 				{
 					buckets[bucket].Add(bytes[index++]);
@@ -363,8 +363,8 @@ namespace FF1Lib
 
 		public void ShuffleEnemyStatusAttacks(MT19337 rng, bool AllowUnsafePirates)
 		{
-			var oldEnemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
-			var newEnemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
+			List<Blob> oldEnemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
+			List<Blob> newEnemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
 
 			oldEnemies.Shuffle(rng);
 
@@ -387,7 +387,7 @@ namespace FF1Lib
 
 		public void RandomEnemyStatusAttacks(MT19337 rng, bool AllowUnsafePirates, bool DisableStunTouch)
 		{
-			var enemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
+			List<Blob> enemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
 
 			List<(byte touch, byte element)> statusElements = new()
 			{
@@ -1060,7 +1060,7 @@ namespace FF1Lib
 			// Rewrite point so Fiend2's name is Fiend1 name
 			for (int i = 0; i < 4; i++)
 			{
-				var namepointer = Get(EnemyTextPointerOffset + ((119 + (i * 2)) * 2), 2);
+				Blob namepointer = Get(EnemyTextPointerOffset + ((119 + (i * 2)) * 2), 2);
 				Put(EnemyTextPointerOffset + ((120 + (i * 2)) * 2), namepointer);
 			}
 		}

@@ -585,8 +585,8 @@ namespace FF1Lib
 			// It's 0x72 because we want to exclude the "boss battles".
 			FormationLevel[] formationlevels = new FormationLevel[0x72 * 2];
 			EnemyInfo[] monsters = new EnemyInfo[EnemyCount];
-			var enemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
-			var formations = Get(FormationDataOffset, FormationDataSize * 0x72).Chunk(FormationDataSize);
+			List<Blob> enemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
+			List<Blob> formations = Get(FormationDataOffset, FormationDataSize * 0x72).Chunk(FormationDataSize);
 
 			// Get the data for all the individual monsters so we can examine their rewards.
 			for (int i = 0; i < EnemyCount; i++)
@@ -785,7 +785,7 @@ namespace FF1Lib
 			Dictionary<OverworldMap.Palette, Blob> palettes = OverworldMap.GeneratePalettes(Get(OverworldMap.MapPaletteOffset, MapCount * OverworldMap.MapPaletteSize).Chunk(OverworldMap.MapPaletteSize));
 			for (int i = 8; i < 61; i++)
 			{
-				var pal = palettes[(OverworldMap.Palette)rng.Between(1, palettes.Count() - 1)];
+				Blob pal = palettes[(OverworldMap.Palette)rng.Between(1, palettes.Count() - 1)];
 				if (tilesetmappings[i] == 1)
 				{
 					Put(OverworldMap.MapPaletteOffset + (i * OverworldMap.MapPaletteSize) + 8, pal.SubBlob(8, 8));
@@ -912,7 +912,7 @@ namespace FF1Lib
 			// set the price scaling to whatever you want without having to worry about if you made
 			// something cost 2 GP and thus end up in late game chests the way the standalone
 			// executable version does.
-			var v = Get(0x37C00, 0x200).Chunk(2);
+			List<Blob> v = Get(0x37C00, 0x200).Chunk(2);
 			for (int i = 0x1C; i < 0xAF; i++)
 			{
 				treasures.Add(new Treasure(v[i][0] + (v[i][1] * 0x100), (byte)i));

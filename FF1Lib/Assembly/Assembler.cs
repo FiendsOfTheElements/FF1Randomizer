@@ -13,7 +13,7 @@ namespace FF1Lib.Assembly
 
 		public static byte[] Assemble(BA origin, string name, string src)
 		{
-			PatchAssembler assembler = new PatchAssembler();
+			PatchAssembler assembler = new();
 
 			return assembler.Assemble(origin.Addr, name, src, variables: Symbols.AsDictionaries.VariablesAndConstants, labels: Symbols.AsDictionaries.LabelsWithRunAddresses);
 		}

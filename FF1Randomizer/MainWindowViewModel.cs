@@ -59,7 +59,14 @@ namespace FF1Randomizer
 
 	public class FlagsToStringConverter : IValueConverter
 	{
-		public object Convert(object value, Type targetType, object parameter, CultureInfo culture) => Flags.EncodeFlagsText(((FlagsViewModel)value).Flags);
-		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => new FlagsViewModel { Flags = Flags.DecodeFlagsText((string)value) };
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			return Flags.EncodeFlagsText(((FlagsViewModel)value).Flags);
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			return new FlagsViewModel { Flags = Flags.DecodeFlagsText((string)value) };
+		}
 	}
 }

@@ -88,7 +88,7 @@ namespace FF1R.Commands
 				? GenerateDefaultFilename(RomPath, settings)
 				: OutFile;
 
-			var rom = new FF1Rom(RomPath);
+			FF1Rom rom = new(RomPath);
 			rom.Randomize(settings.Seed, settings.Flags, settings.Preferences);
 			rom.Save(outFile);
 

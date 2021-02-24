@@ -59,8 +59,8 @@ namespace FF1Lib
 		public void DoubleWeaponCritRates()
 		{
 			// Increase crit rate of all weapons
-			var weapons = Get(WeaponOffset, WeaponSize * WeaponCount).Chunk(WeaponSize);
-			foreach (var weapon in weapons)
+			List<Blob> weapons = Get(WeaponOffset, WeaponSize * WeaponCount).Chunk(WeaponSize);
+			foreach (Blob weapon in weapons)
 			{
 				weapon[2] *= 2;
 			}

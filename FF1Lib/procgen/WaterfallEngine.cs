@@ -22,8 +22,8 @@ namespace FF1Lib.Procgen
 			//(57,56)
 			(int x, int y) = (0x39, 0x38);
 
-			var startingX = rng.Between(-3, 0) + x;
-			var startingY = rng.Between(-4, -1) + y;
+			int startingX = rng.Between(-3, 0) + x;
+			int startingY = rng.Between(-4, -1) + y;
 
 			Region startRegion = new(startingX, startingY, 4, 5, Tile.WaterfallRandomEncounters);
 
@@ -400,9 +400,9 @@ namespace FF1Lib.Procgen
 
 		public Region CreateAdjacent(MT19337 rng, Region cell)
 		{
-			var dx = rng.Between(-4, 3);
-			var dy = rng.Between(-4, 4);
-			var manhat = Math.Abs(dx) + Math.Abs(dy);
+			int dx = rng.Between(-4, 3);
+			int dy = rng.Between(-4, 4);
+			int manhat = Math.Abs(dx) + Math.Abs(dy);
 
 			while (manhat < 2 || manhat > 7)
 			{

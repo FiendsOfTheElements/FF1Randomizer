@@ -38,7 +38,7 @@ namespace FF1Lib
 					throw new Exception("Data is too large to fit within its bank.");
 				}
 				int offset = (bank * 0x4000) + (address - 0xC000);
-				this.Put(offset, data);
+				Put(offset, data);
 			}
 			else
 			{
@@ -47,7 +47,7 @@ namespace FF1Lib
 					throw new Exception("Data is too large to fit within its bank.");
 				}
 				int offset = (bank * 0x4000) + (address - 0x8000);
-				this.Put(offset, data);
+				Put(offset, data);
 			}
 
 		}
@@ -60,7 +60,7 @@ namespace FF1Lib
 					throw new Exception("Data is too large to fit within one bank.");
 				}
 				int offset = (bank * 0x4000) + (address - 0xC000);
-				return this.Get(offset, length);
+				return Get(offset, length);
 			}
 			else
 			{
@@ -69,7 +69,7 @@ namespace FF1Lib
 					throw new Exception("Data is too large to fit within one bank.");
 				}
 				int offset = (bank * 0x4000) + (address - 0x8000);
-				return this.Get(offset, length);
+				return Get(offset, length);
 			}
 		}
 
@@ -1245,7 +1245,7 @@ namespace FF1Lib
 		{
 			// of the 256 entries in the battle RNG table, the 98th entry (index 97) is a duplicate '00' where '95' hex / 149 int is absent.
 			// you could arbitrarily choose the other '00', the 111th entry (index 110), to replace instead
-			var battleRng = Get(BattleRngOffset, RngSize).Chunk(1).ToList();
+			List<Blob> battleRng = Get(BattleRngOffset, RngSize).Chunk(1).ToList();
 			battleRng[97] = Blob.FromHex("95");
 
 			Put(BattleRngOffset, battleRng.SelectMany(blob => blob.ToBytes()).ToArray());
@@ -1253,12 +1253,12 @@ namespace FF1Lib
 
 		public void ShuffleRng(MT19337 rng)
 		{
-			var rngTable = Get(RngOffset, RngSize).Chunk(1).ToList();
+			List<Blob> rngTable = Get(RngOffset, RngSize).Chunk(1).ToList();
 			rngTable.Shuffle(rng);
 
 			Put(RngOffset, rngTable.SelectMany(blob => blob.ToBytes()).ToArray());
 
-			var battleRng = Get(BattleRngOffset, RngSize).Chunk(1).ToList();
+			List<Blob> battleRng = Get(BattleRngOffset, RngSize).Chunk(1).ToList();
 			battleRng.Shuffle(rng);
 
 			Put(BattleRngOffset, battleRng.SelectMany(blob => blob.ToBytes()).ToArray());

@@ -20,7 +20,7 @@ namespace Sandbox
 				json = await sr.ReadToEndAsync();
 			}
 
-			var seeds = Enumerable.Range(0, 1000).Select(x => Blob.Random(4)).ToList();
+			List<Blob> seeds = Enumerable.Range(0, 1000).Select(x => Blob.Random(4)).ToList();
 
 			Flags flags = Flags.FromJson(json);
 			flags.Entrances = true;

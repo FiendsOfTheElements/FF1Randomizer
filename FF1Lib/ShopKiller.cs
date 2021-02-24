@@ -54,7 +54,7 @@ namespace FF1Lib
 	{
 		private const byte DoorReplacementTile = 29;
 		private const byte SignReplacementTile = 24;
-		private MT19337 rng;
+		private readonly MT19337 rng;
 		private readonly Flags flags;
 		private readonly FF1Rom rom;
 		private readonly List<Map> maps;

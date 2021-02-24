@@ -26,8 +26,8 @@ namespace FF1Lib.procgen
 				int hallwayCount = rng.Between(24, 30);
 				for (int i = 0; i < hallwayCount; ++i)
 				{
-					(object, object) dimensions = ((rng.Between(2, 8) * 2) + 1, (rng.Between(2, 5) * 2) + 1);
-					(object, object) pos = (rng.Between(0, LocalMax - dimensions.Item1) / 2 * 2, rng.Between(0, LocalMax - dimensions.Item2) / 2 * 2);
+					(int, int) dimensions = ((rng.Between(2, 8) * 2) + 1, (rng.Between(2, 5) * 2) + 1);
+					(int, int) pos = (rng.Between(0, LocalMax - dimensions.Item1) / 2 * 2, rng.Between(0, LocalMax - dimensions.Item2) / 2 * 2);
 					PlaceHallway(complete.Map, pos, dimensions, reqs.Floor);
 				}
 
@@ -157,11 +157,11 @@ namespace FF1Lib.procgen
 
 				for (int i = 0; i < 4 && i < positions.Count(); ++i)
 				{
-					(object w, object h) dimensions = (w: (rng.Between(4, 6) * 2) + 1, h: (rng.Between(2, 3) * 2) + 1);
+					(int w, int h) dimensions = (w: (rng.Between(4, 6) * 2) + 1, h: (rng.Between(2, 3) * 2) + 1);
 					int doorX = (rng.Between(0, (dimensions.w - 2) / 2) * 2) + 1;
 					byte[,] room = CreateEmptyRoom(dimensions, doorX);
 
-					(int, object) roomTarget = (positions[i].X - doorX, positions[i].Y - dimensions.h + 1);
+					(int, int) roomTarget = (positions[i].X - doorX, positions[i].Y - dimensions.h + 1);
 					rooms.Put(roomTarget, room);
 					++roomsAdded;
 				}

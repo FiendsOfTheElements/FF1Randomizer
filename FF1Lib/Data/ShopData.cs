@@ -204,7 +204,7 @@ namespace FF1Lib
 					else
 					{
 						List<byte> entries = new();
-						var shopEntries = rom.Get(ShopPointerBase + Index.Data[(int)shopType + i], 5);
+						RomUtilities.Blob shopEntries = rom.Get(ShopPointerBase + Index.Data[(int)shopType + i], 5);
 
 						for (int j = 0; j < 5 && shopEntries[j] != 0; j++)
 						{

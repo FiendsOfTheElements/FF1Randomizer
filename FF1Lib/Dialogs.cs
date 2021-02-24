@@ -316,7 +316,7 @@ namespace FF1Lib
 		public bool RedMageHasLife()
 		{
 			string[] itemnames = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
-			var magicPermissions = Get(MagicPermissionsOffset, 8 * 12).Chunk(8);
+			List<Blob> magicPermissions = Get(MagicPermissionsOffset, 8 * 12).Chunk(8);
 			List<byte> magicArray = new() { 0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01 };
 
 			int firstLifeIndex = itemnames.ToList().FindIndex(x => x.ToLower().Contains("lif")) - 176;
@@ -410,7 +410,7 @@ namespace FF1Lib
 
 			for (int i = 0; i < dialogs.Length; i++)
 			{
-				var blob = FF1Text.TextToBytes(dialogs[i], useDTE: true);
+				Blob blob = FF1Text.TextToBytes(dialogs[i], useDTE: true);
 				generatedText += blob;
 
 				pointers[i] = (ushort)(offset - dialogsPointerBase);
@@ -432,8 +432,8 @@ namespace FF1Lib
 			PutInBank(newTalkRoutinesBank, 0x902B, Get(0x3902B, 0x8EA));
 
 			// Backup npc manpulation routines and showMapObject as various other routines use them
-			var npcManipulationRoutines = GetFromBank(0x0E, 0x9079, 0x60);
-			var hideMapObject = GetFromBank(0x0E, 0x9273, 0x30);
+			Blob npcManipulationRoutines = GetFromBank(0x0E, 0x9079, 0x60);
+			Blob hideMapObject = GetFromBank(0x0E, 0x9273, 0x30);
 
 			// Clear saved space
 			PutInBank(oldTalkRoutinesBank, 0x902B, new byte[0x8EA]);
@@ -465,7 +465,7 @@ namespace FF1Lib
 		public void CleanupNPCRoutines()
 		{
 			// Swap string pointer in index 2 and 3 for King, Bikke, Prince, and Lefein
-			var temp = Data[ItemLocations.KingConeria.Address];
+			byte temp = Data[ItemLocations.KingConeria.Address];
 			Data[ItemLocations.KingConeria.Address] = Data[ItemLocations.KingConeria.Address - 1];
 			Data[ItemLocations.KingConeria.Address - 1] = temp;
 			temp = Data[ItemLocations.Bikke.Address];
@@ -546,7 +546,7 @@ namespace FF1Lib
 
 			for (int i = 0; i < dialogs.Length; i++)
 			{
-				var blob = FF1Text.TextToBytes(dialogs[i], useDTE: true);
+				Blob blob = FF1Text.TextToBytes(dialogs[i], useDTE: true);
 				generatedText += blob;
 
 				pointers[i] = (ushort)(offset - dialogsPointerBase);
@@ -581,7 +581,7 @@ namespace FF1Lib
 
 			for (int i = 0; i < dialogs.Length; i++)
 			{
-				var blob = FF1Text.TextToBytes(dialogs[i], useDTE: true);
+				Blob blob = FF1Text.TextToBytes(dialogs[i], useDTE: true);
 				generatedText += blob;
 
 				pointers[i] = (ushort)(offset - dialogsPointerBase);

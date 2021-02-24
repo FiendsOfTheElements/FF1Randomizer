@@ -417,7 +417,7 @@ namespace FF1Lib
 				// Shuffle the permissions the same way the spells were shuffled.
 				for (int c = 0; c < MagicPermissionsCount; c++)
 				{
-					var oldPermissions = Get(MagicPermissionsOffset + (c * MagicPermissionsSize), MagicPermissionsSize);
+					Blob oldPermissions = Get(MagicPermissionsOffset + (c * MagicPermissionsSize), MagicPermissionsSize);
 
 					byte[] newPermissions = new byte[MagicPermissionsSize];
 					for (int i = 0; i < 8; i++)
@@ -425,7 +425,7 @@ namespace FF1Lib
 						for (int j = 0; j < 8; j++)
 						{
 							byte oldIndex = shuffledSpells[(8 * i) + j].Index;
-							var oldPermission = (oldPermissions[oldIndex / 8] & (0x80 >> (oldIndex % 8))) >> (7 - (oldIndex % 8));
+							int oldPermission = (oldPermissions[oldIndex / 8] & (0x80 >> (oldIndex % 8))) >> (7 - (oldIndex % 8));
 							newPermissions[i] |= (byte)(oldPermission << (7 - j));
 						}
 					}
@@ -442,8 +442,8 @@ namespace FF1Lib
 			}
 
 			// Fix enemy spell pointers to point to where the spells are now.
-			var scripts = Get(ScriptOffset, ScriptSize * ScriptCount).Chunk(ScriptSize);
-			foreach (var script in scripts)
+			List<Blob> scripts = Get(ScriptOffset, ScriptSize * ScriptCount).Chunk(ScriptSize);
+			foreach (Blob script in scripts)
 			{
 				// Bytes 2-9 are magic spells.
 				for (int i = 2; i < 10; i++)
@@ -457,8 +457,8 @@ namespace FF1Lib
 			Put(ScriptOffset, scripts.SelectMany(script => script.ToBytes()).ToArray());
 
 			// Fix weapon and armor spell pointers to point to where the spells are now.
-			var weapons = Get(WeaponOffset, WeaponSize * WeaponCount).Chunk(WeaponSize);
-			foreach (var weapon in weapons)
+			List<Blob> weapons = Get(WeaponOffset, WeaponSize * WeaponCount).Chunk(WeaponSize);
+			foreach (Blob weapon in weapons)
 			{
 				if (weapon[3] != 0x00)
 				{
@@ -467,8 +467,8 @@ namespace FF1Lib
 			}
 			Put(WeaponOffset, weapons.SelectMany(weapon => weapon.ToBytes()).ToArray());
 
-			var armors = Get(ArmorOffset, ArmorSize * ArmorCount).Chunk(ArmorSize);
-			foreach (var armor in armors)
+			List<Blob> armors = Get(ArmorOffset, ArmorSize * ArmorCount).Chunk(ArmorSize);
+			foreach (Blob armor in armors)
 			{
 				if (armor[3] != 0x00)
 				{
@@ -481,7 +481,7 @@ namespace FF1Lib
 			int outOfBattleSpellOffset = MagicOutOfBattleOffset;
 			for (int i = 0; i < MagicOutOfBattleCount; i++)
 			{
-				var oldSpellIndex = Data[outOfBattleSpellOffset] - 0xB0;
+				int oldSpellIndex = Data[outOfBattleSpellOffset] - 0xB0;
 				byte newSpellIndex = newIndices[oldSpellIndex];
 
 				Put(outOfBattleSpellOffset, new[] { (byte)(newSpellIndex + 0xB0) });
@@ -581,9 +581,9 @@ namespace FF1Lib
 
 		public List<MagicSpell> GetSpells()
 		{
-			var spells = Get(MagicOffset, MagicSize * MagicCount).Chunk(MagicSize);
-			var names = Get(MagicNamesOffset, MagicNameSize * MagicCount).Chunk(MagicNameSize);
-			var pointers = Get(MagicTextPointersOffset, MagicCount);
+			List<Blob> spells = Get(MagicOffset, MagicSize * MagicCount).Chunk(MagicSize);
+			List<Blob> names = Get(MagicNamesOffset, MagicNameSize * MagicCount).Chunk(MagicNameSize);
+			Blob pointers = Get(MagicTextPointersOffset, MagicCount);
 
 			return spells.Select((spell, i) => new MagicSpell
 			{

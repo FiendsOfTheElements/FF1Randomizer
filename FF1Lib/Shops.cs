@@ -41,7 +41,7 @@ namespace FF1Lib
 
 		public ItemShopSlot ShuffleShops(MT19337 rng, bool earlyAilments, bool randomizeWeaponsAndArmor, IEnumerable<Item> excludeItemsFromRandomShops, WorldWealthMode wealth, int coneriaEntranceShopIndex)
 		{
-			var pointers = Get(ShopPointerOffset, ShopPointerCount * ShopPointerSize).ToUShorts();
+			ushort[] pointers = Get(ShopPointerOffset, ShopPointerCount * ShopPointerSize).ToUShorts();
 
 			RepackShops(pointers);
 
@@ -63,7 +63,7 @@ namespace FF1Lib
 
 		public void ShuffleMagicShops(MT19337 rng)
 		{
-			var pointers = Get(ShopPointerOffset, ShopPointerCount * ShopPointerSize).ToUShorts();
+			ushort[] pointers = Get(ShopPointerOffset, ShopPointerCount * ShopPointerSize).ToUShorts();
 
 			RepackShops(pointers);
 
@@ -75,7 +75,7 @@ namespace FF1Lib
 
 		private void ShuffleMagicLocations(MT19337 rng, bool keepPairs)
 		{
-			var pointers = Get(ShopPointerOffset, ShopPointerCount * ShopPointerSize).ToUShorts();
+			ushort[] pointers = Get(ShopPointerOffset, ShopPointerCount * ShopPointerSize).ToUShorts();
 
 			RepackShops(pointers);
 
@@ -264,7 +264,7 @@ namespace FF1Lib
 					}
 					else
 					{
-						var shopEntries = Get(ShopPointerBase + pointers[(int)shopType + i], 5);
+						Blob shopEntries = Get(ShopPointerBase + pointers[(int)shopType + i], 5);
 						for (int j = 0; j < 5 && shopEntries[j] != 0; j++)
 						{
 							shops[i].Add(shopEntries[j]);

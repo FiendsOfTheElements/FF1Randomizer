@@ -315,7 +315,7 @@ namespace FF1Lib
 		public void RemoveTrapTiles(bool extendedtraptiles)
 		{
 			// This must be called before shuffle trap tiles since it uses the vanilla format for random encounters
-			var tilesets = Get(TilesetDataOffset, TilesetDataCount * TilesetDataSize * TilesetCount).Chunk(TilesetDataSize).ToList();
+			List<Blob> tilesets = Get(TilesetDataOffset, TilesetDataCount * TilesetDataSize * TilesetCount).Chunk(TilesetDataSize).ToList();
 			tilesets.ForEach(tile =>
 			{
 
@@ -332,7 +332,7 @@ namespace FF1Lib
 			// This is magic BNE code that enables formation 1 trap tiles but we have to change
 			// all the 0x0A 0x80 into 0x0A 0x00 and use 0x00 for random encounters instead of 0x80.
 			Data[0x7CDC5] = 0xD0;
-			var tilesets = Get(TilesetDataOffset, TilesetDataCount * TilesetDataSize * TilesetCount).Chunk(TilesetDataSize).ToList();
+			List<Blob> tilesets = Get(TilesetDataOffset, TilesetDataCount * TilesetDataSize * TilesetCount).Chunk(TilesetDataSize).ToList();
 
 			List<byte> encounters;
 			if (randomize)
@@ -342,7 +342,7 @@ namespace FF1Lib
 			}
 			else
 			{
-				var traps = tilesets.Where(IsNonBossTrapTile).ToList();
+				List<Blob> traps = tilesets.Where(IsNonBossTrapTile).ToList();
 				encounters = traps.Select(trap => trap[1]).ToList();
 			}
 
@@ -455,7 +455,7 @@ namespace FF1Lib
 				if (rooms[i].Teleporters.Count == 1)
 				{
 					(int x, int y) = rooms[i].Teleporters[0];
-					var backDestination = rng.Between(0, i);
+					int backDestination = rng.Between(0, i);
 					map[y, x] = rooms[backDestination].Entrance;
 				}
 				// Special rules for the 4-pad room: two teleporters go back, one goes to a totally random room,
@@ -465,11 +465,11 @@ namespace FF1Lib
 					rooms[i].Teleporters.Shuffle(rng);
 
 					(int x, int y) = rooms[i].Teleporters[0];
-					var backDestination = rng.Between(0, i);
+					int backDestination = rng.Between(0, i);
 					map[y, x] = rooms[backDestination].Entrance;
 
 					(x, y) = rooms[i].Teleporters[1];
-					var otherBackDestination = backDestination;
+					int otherBackDestination = backDestination;
 					while (otherBackDestination == backDestination)
 					{
 						otherBackDestination = rng.Between(0, i);
@@ -477,7 +477,7 @@ namespace FF1Lib
 					map[y, x] = rooms[otherBackDestination].Entrance;
 
 					(x, y) = rooms[i].Teleporters[2];
-					var randomDestination = backDestination;
+					int randomDestination = backDestination;
 					while (randomDestination == backDestination || randomDestination == otherBackDestination || randomDestination == i + 1)
 					{
 						randomDestination = rng.Between(0, rooms.Count - 1);
@@ -582,7 +582,7 @@ namespace FF1Lib
 			// Remove CROWN requirement for Ordeals.
 			const int OrdealsTileset = 1;
 			int ordealsTilesetOffset = TilesetDataOffset + (OrdealsTileset * TilesetDataCount * TilesetDataSize);
-			var ordealsTilesetData = Get(ordealsTilesetOffset, TilesetDataCount * TilesetDataSize).ToUShorts();
+			ushort[] ordealsTilesetData = Get(ordealsTilesetOffset, TilesetDataCount * TilesetDataSize).ToUShorts();
 
 			// The 4 masked-out bits are special flags for a tile.  We wipe the flags for the two throne teleportation tiles,
 			// which normally indicate that the CROWN is required to use them.
@@ -976,7 +976,7 @@ namespace FF1Lib
 
 			// Get rid of random WarMECH encounters.  Group 8 is now also group 7.
 			int formationOffset = ZoneFormationsOffset + (ZoneFormationsSize * (64 + (byte)MapId.SkyPalace5F));
-			var formations = Get(formationOffset, ZoneFormationsSize);
+			Blob formations = Get(formationOffset, ZoneFormationsSize);
 			formations[6] = formations[7];
 			Put(formationOffset, formations);
 
@@ -1092,7 +1092,7 @@ namespace FF1Lib
 		}
 		public List<Map> ReadMaps()
 		{
-			var pointers = Get(MapPointerOffset, MapCount * MapPointerSize).ToUShorts();
+			ushort[] pointers = Get(MapPointerOffset, MapCount * MapPointerSize).ToUShorts();
 
 			return pointers.Select(pointer => new Map(Get(MapPointerOffset + pointer, Map.RowCount * Map.RowLength))).ToList();
 		}

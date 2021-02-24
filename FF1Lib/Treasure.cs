@@ -40,7 +40,7 @@ namespace FF1Lib
 				NPCShuffleDialogs();
 			}
 
-			var treasureBlob = Get(TreasureOffset, TreasureSize * TreasureCount);
+			Blob treasureBlob = Get(TreasureOffset, TreasureSize * TreasureCount);
 			List<Item> treasurePool = UsedTreasureIndices.Select(x => (Item)treasureBlob[x])
 							.Concat(ItemLists.AllNonTreasureChestItems).ToList();
 

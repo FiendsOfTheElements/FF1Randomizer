@@ -246,7 +246,7 @@ namespace FF1Lib
 		public void PacifistEnd(TalkRoutines talkroutines, NPCdata npcdata, bool extendedtraptiles)
 		{
 			// Remove ToFR Fiends tiles
-			var tilesets = Get(TilesetDataOffset, TilesetDataCount * TilesetDataSize * TilesetCount).Chunk(TilesetDataSize).ToList();
+			List<Blob> tilesets = Get(TilesetDataOffset, TilesetDataCount * TilesetDataSize * TilesetCount).Chunk(TilesetDataSize).ToList();
 			tilesets.ForEach(tile =>
 			{
 				if (IsBossTrapTile(tile))
@@ -407,9 +407,9 @@ namespace FF1Lib
 
 			public Encounters(FF1Rom rom)
 			{
-				var encounterData = rom.Get(FormationsOffset, FormationCount * FormationSize).Chunk(FormationSize);
+				List<Blob> encounterData = rom.Get(FormationsOffset, FormationCount * FormationSize).Chunk(FormationSize);
 
-				foreach (var formation in encounterData)
+				foreach (Blob formation in encounterData)
 				{
 					formations.Add(new FormationData(formation));
 				}
