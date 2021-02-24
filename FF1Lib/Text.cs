@@ -66,7 +66,7 @@ namespace FF1Lib
 
 		public Blob ReadUntil(int offset, byte delimiter)
 		{
-			List<byte> bytes = new List<byte>();
+			List<byte> bytes = new();
 			while (Data[offset] != delimiter && offset < Data.Length)
 			{
 				bytes.Add(Data[offset++]);

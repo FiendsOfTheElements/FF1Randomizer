@@ -152,7 +152,7 @@ namespace FF1Lib
 
 		public void PartyComposition(MT19337 rng, Flags flags, Preferences preferences)
 		{
-			List<FF1Class> options = new List<FF1Class>();
+			List<FF1Class> options = new();
 
 			// Set bitmask for each slots (AllowedSlotBitmasks)
 			PutInBank(0x1E, 0x8110, Blob.FromHex("01020408"));
@@ -634,7 +634,7 @@ namespace FF1Lib
 			Put(0x3BFF0, Blob.FromHex("A90785FA60")); // Set respondrate to 7
 
 			// Faster Lineup Modifications
-			List<int> animationOffsets = new List<int> { 0x39AA0, 0x39AB4, 0x39B10, 0x39B17, 0x39B20, 0x39B27 };
+			List<int> animationOffsets = new() { 0x39AA0, 0x39AB4, 0x39B10, 0x39B17, 0x39B20, 0x39B27 };
 			animationOffsets.ForEach(addr => Data[addr] = 0x04);
 
 			// Move NPCs out of the way.
@@ -1167,7 +1167,7 @@ namespace FF1Lib
 			List<string> className = new() { "Fi", "Th", "BB", "RM", "WM", "BM", "Kn", "Ni", "Ma", "RW", "WW", "BW" };
 
 			var levelUpStats = Get(NewLevelUpDataOffset, 588).Chunk(49 * 2);
-			List<bool> iscaster = new List<bool>();
+			List<bool> iscaster = new();
 
 			for (int i = 0; i < 6; i++)
 			{
@@ -1204,7 +1204,7 @@ namespace FF1Lib
 				promotions.AddRange(new List<sbyte> { 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B });
 			}
 
-			List<byte> recomp = new List<byte> { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+			List<byte> recomp = new() { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 
 			for (int i = 0; i < 12; i++)
 			{
@@ -1277,7 +1277,7 @@ namespace FF1Lib
 					break;
 			}
 
-			List<FF1Class> mainClassList = new List<FF1Class>();
+			List<FF1Class> mainClassList = new();
 
 			int fiCount = ((bool)flags.FIGHTER1 ? 1 : 0) + ((bool)flags.FIGHTER2 ? 1 : 0) + ((bool)flags.FIGHTER3 ? 1 : 0) + ((bool)flags.FIGHTER4 ? 1 : 0);
 			int thCount = ((bool)flags.THIEF1 ? 1 : 0) + ((bool)flags.THIEF2 ? 1 : 0) + ((bool)flags.THIEF3 ? 1 : 0) + ((bool)flags.THIEF4 ? 1 : 0);
@@ -1460,26 +1460,27 @@ namespace FF1Lib
 
 		public void ClassAsNPC(Flags flags, TalkRoutines talkroutines, NPCdata npcdata, List<MapId> flippedmaps, MT19337 rng)
 		{
-			List<ObjectId> crescentSages = new List<ObjectId> { ObjectId.CrescentSage2, ObjectId.CrescentSage3, ObjectId.CrescentSage4, ObjectId.CrescentSage5, ObjectId.CrescentSage6, ObjectId.CrescentSage7, ObjectId.CrescentSage8, ObjectId.CrescentSage9, ObjectId.CrescentSage10 };
-			List<TargetNpc> keyNpc = new List<TargetNpc> {
+			List<ObjectId> crescentSages = new() { ObjectId.CrescentSage2, ObjectId.CrescentSage3, ObjectId.CrescentSage4, ObjectId.CrescentSage5, ObjectId.CrescentSage6, ObjectId.CrescentSage7, ObjectId.CrescentSage8, ObjectId.CrescentSage9, ObjectId.CrescentSage10 };
+			List<TargetNpc> keyNpc = new()
+			{
 				new TargetNpc(ObjectId.Princess1, MapId.ConeriaCastle2F, (0x0D, 0x05), true, true, "I won't rest until\nthe Princess is rescued!\n\n..What? Me?"),
-				new TargetNpc(ObjectId.Matoya, MapId.MatoyasCave, (0x06,0x03), true, false, "I'm Matoya's apprentice!\n..She only needs me for\nreading her grimoires."),
-				new TargetNpc(ObjectId.Bikke, MapId.Pravoka, (0,0), false, true, "It is an evil voyage.\nIf Captain Bikke has his\nway, I will never see\nhome again.\n\nYet I do not fear Kraken.\nI fear the wrath of God."),
+				new TargetNpc(ObjectId.Matoya, MapId.MatoyasCave, (0x06, 0x03), true, false, "I'm Matoya's apprentice!\n..She only needs me for\nreading her grimoires."),
+				new TargetNpc(ObjectId.Bikke, MapId.Pravoka, (0, 0), false, true, "It is an evil voyage.\nIf Captain Bikke has his\nway, I will never see\nhome again.\n\nYet I do not fear Kraken.\nI fear the wrath of God."),
 				new TargetNpc(ObjectId.ElfDoc, MapId.ElflandCastle, (0x07, 0x05), true, false, "I swore to find a cure\nfor the Prince's curse.\nIf only I could find\nthat elusive Astos.."),
-				new TargetNpc(ObjectId.Astos, MapId.NorthwestCastle, (0x11,0x07), true, true, "While the Crown is\nmissing, I can attest\nthat this is indeed\nthe REAL King of\nNorthwest Castle."),
+				new TargetNpc(ObjectId.Astos, MapId.NorthwestCastle, (0x11, 0x07), true, true, "While the Crown is\nmissing, I can attest\nthat this is indeed\nthe REAL King of\nNorthwest Castle."),
 				new TargetNpc(ObjectId.Unne, MapId.Melmond, (0x1D, 0x02), false, true, "I'm also trying\nto discover the secret\nof Lefeinish!"),
-				new TargetNpc(ObjectId.Unne, MapId.Lefein, (0,0), false, false, "Lu..pa..?\nLu..pa..?"),
+				new TargetNpc(ObjectId.Unne, MapId.Lefein, (0, 0), false, false, "Lu..pa..?\nLu..pa..?"),
 				new TargetNpc(ObjectId.Vampire, MapId.SardasCave, (0x14, 0x01), true, false, "Sarda told me to sort\nthese garlic pots and\nvases until the Vampire\nis killed."),
-				new TargetNpc(ObjectId.CanoeSage, MapId.CrescentLake, (0,0), false, true, "I came here to learn\neverything about the\nFiend of Earth. You got\nto respect such a\ndangerous adversary."),
+				new TargetNpc(ObjectId.CanoeSage, MapId.CrescentLake, (0, 0), false, true, "I came here to learn\neverything about the\nFiend of Earth. You got\nto respect such a\ndangerous adversary."),
 				new TargetNpc(ObjectId.Fairy, MapId.Gaia, (0x2F, 0x14), false, true, "I'm trying to get\nwhat's at the bottom\nof the pond.\n\nMaybe if I drained it.."),
 				new TargetNpc(ObjectId.Smith, MapId.DwarfCave, (0x08, 0x02), true, false, "I'm sure it will be a\nbadass sword! Like with\na huge blade, and a gun\nas the hilt, and you can\ntrigger it..\nI can't wait!"),
 				new TargetNpc(ObjectId.Nerrick, MapId.DwarfCave, (0x0F, 0x2D), false, true, "Digging a canal is hard\nbut honest work.\n\n..Can't wait to be done\nwith it."),
 			};
 
-			List<(ObjectId, MapId)> eventNpc = new List<(ObjectId, MapId)> { (ObjectId.ElflandCastleElf3, MapId.ElflandCastle), (ObjectId.MelmondMan1, MapId.Melmond), (ObjectId.MelmondMan3, MapId.Melmond), (ObjectId.MelmondMan4, MapId.Melmond), (ObjectId.MelmondMan8, MapId.Melmond), (ObjectId.DwarfcaveDwarf6, MapId.DwarfCave), (ObjectId.ConeriaCastle1FWoman2, MapId.ConeriaCastle1F), (ObjectId.ElflandElf2, MapId.Elfland), (ObjectId.ElflandElf5, MapId.Elfland) };
-			List<byte> classSprite = new List<byte> { 0xEE, 0xEF, 0xF0, 0xF1, 0xF2, 0xF3, 0xF4, 0xF5, 0xF6, 0xF7, 0xF8, 0xF9 };
-			List<string> classNames = new List<string> { "Fighter", "Thief", "Black Belt", "Red Mage", "White Mage", "Black Mage", "Knight", "Ninja", "Master", "Red Wizard", "White Wizard", "Black Wizard" };
-			List<string> readyString = new List<string> { "Well, that's that.\nLet's go.", "Onward to new\nadventures!", "I knew you'd come back\nfor me!", "......", "I'm the leader now,\nright?", "The Reaper is always\njust a step behind me..", "O.. Okay.. I hope it's\nnot too scary out there.", "Yes!\nI made it on the team!", "A bold choice, let's\nsee if it pays off.", "Alright, let's do this!", "I obey, master.", "They say I'm the best.", "I see, we have the same\ngoal. Let's join forces.", "My.. name? Huh..", "Just don't put me first\nagainst Kraken.", "I'm taking care of the\nGPs from now on!", "It's Saturday night.\nI've got no date, a\nbottle of Shasta, and\nmy all Rush mixtape.\nLet's rock.", "Life insurance?\nNo, I don't have any.\nWhy?", "Let's put an end to\nthis madness.", "Finally, some action!", "You convinced me. I will\njoin your noble cause.", "Evil never rests. I will\nfight by your side.", "Edward wants to join\nthe party." };
+			List<(ObjectId, MapId)> eventNpc = new() { (ObjectId.ElflandCastleElf3, MapId.ElflandCastle), (ObjectId.MelmondMan1, MapId.Melmond), (ObjectId.MelmondMan3, MapId.Melmond), (ObjectId.MelmondMan4, MapId.Melmond), (ObjectId.MelmondMan8, MapId.Melmond), (ObjectId.DwarfcaveDwarf6, MapId.DwarfCave), (ObjectId.ConeriaCastle1FWoman2, MapId.ConeriaCastle1F), (ObjectId.ElflandElf2, MapId.Elfland), (ObjectId.ElflandElf5, MapId.Elfland) };
+			List<byte> classSprite = new() { 0xEE, 0xEF, 0xF0, 0xF1, 0xF2, 0xF3, 0xF4, 0xF5, 0xF6, 0xF7, 0xF8, 0xF9 };
+			List<string> classNames = new() { "Fighter", "Thief", "Black Belt", "Red Mage", "White Mage", "Black Mage", "Knight", "Ninja", "Master", "Red Wizard", "White Wizard", "Black Wizard" };
+			List<string> readyString = new() { "Well, that's that.\nLet's go.", "Onward to new\nadventures!", "I knew you'd come back\nfor me!", "......", "I'm the leader now,\nright?", "The Reaper is always\njust a step behind me..", "O.. Okay.. I hope it's\nnot too scary out there.", "Yes!\nI made it on the team!", "A bold choice, let's\nsee if it pays off.", "Alright, let's do this!", "I obey, master.", "They say I'm the best.", "I see, we have the same\ngoal. Let's join forces.", "My.. name? Huh..", "Just don't put me first\nagainst Kraken.", "I'm taking care of the\nGPs from now on!", "It's Saturday night.\nI've got no date, a\nbottle of Shasta, and\nmy all Rush mixtape.\nLet's rock.", "Life insurance?\nNo, I don't have any.\nWhy?", "Let's put an end to\nthis madness.", "Finally, some action!", "You convinced me. I will\njoin your noble cause.", "Evil never rests. I will\nfight by your side.", "Edward wants to join\nthe party." };
 
 			List<FF1Class> baseClassList = new() { FF1Class.Fighter, FF1Class.Thief, FF1Class.BlackBelt, FF1Class.RedMage, FF1Class.WhiteMage, FF1Class.BlackMage };
 			List<FF1Class> promoClassList = new() { FF1Class.Knight, FF1Class.Ninja, FF1Class.Master, FF1Class.RedWiz, FF1Class.WhiteWiz, FF1Class.BlackWiz };
@@ -1614,7 +1615,7 @@ namespace FF1Lib
 				bool volcanoB5flipped = flippedmaps.Contains(MapId.GurguVolcanoB5);
 				bool seaB5flipped = flippedmaps.Contains(MapId.SeaShrineB5);
 
-				List<ObjectId> dungeonNpc = new List<ObjectId> { ObjectId.MelmondMan6, ObjectId.GaiaMan4, ObjectId.OnracPunk1, ObjectId.GaiaMan1 };
+				List<ObjectId> dungeonNpc = new() { ObjectId.MelmondMan6, ObjectId.GaiaMan4, ObjectId.OnracPunk1, ObjectId.GaiaMan1 };
 
 				SetNpc(MapId.Melmond, 8, ObjectId.None, 0x12, 0x18, false, false);
 				SetNpc(MapId.Gaia, FindNpc(MapId.Gaia, ObjectId.GaiaMan4).Index, ObjectId.None, 0x12, 0x18, false, false);
@@ -1830,8 +1831,8 @@ namespace FF1Lib
 			const int armorOffset = 0x44; // $28 entries
 			const int spellOffset = 0xB0; // $40 entries
 
-			List<Weapon> weaponsData = new List<Weapon>();
-			List<Armor> armorsData = new List<Armor>();
+			List<Weapon> weaponsData = new();
+			List<Armor> armorsData = new();
 
 			for (int i = 0; i < WeaponCount; i++)
 			{
@@ -1846,7 +1847,7 @@ namespace FF1Lib
 			List<MagicSpell> spellsData = GetSpells();
 
 			// 12 char per row, 5 rows
-			List<string> descriptionsList = new List<string>();
+			List<string> descriptionsList = new();
 
 			for (int i = 0; i < weaponOffset; i++)
 			{
@@ -1932,12 +1933,12 @@ namespace FF1Lib
 			List<(int, string)> hurt = new() { (0x00, "¤" + ((int)ShopInfoWordsIndex.elementNone).ToString("X2")), (0x01, "¤" + ((int)ShopInfoWordsIndex.hurtSpecial).ToString("X2")), (0x02, "¤" + ((int)ShopInfoWordsIndex.hurtDragon).ToString("X2")), (0x04, "¤" + ((int)ShopInfoWordsIndex.hurtGiant).ToString("X2")), (0x08, "¤" + ((int)ShopInfoWordsIndex.hurtUndead).ToString("X2")), (0x10, "¤" + ((int)ShopInfoWordsIndex.hurtWere).ToString("X2")), (0x20, "¤" + ((int)ShopInfoWordsIndex.hurtWater).ToString("X2")), (0x40, "¤" + ((int)ShopInfoWordsIndex.hurtMage).ToString("X2")), (0x80, "¤" + ((int)ShopInfoWordsIndex.hurtRegen).ToString("X2")) };
 			// List<string> shortDelimiter = new() { "\n ", ", ", "\n ", ", ", "\n ", ", " };
 
-			Weapon weapondata = new Weapon(weaponid, this);
+			Weapon weapondata = new(weaponid, this);
 
 			string description = "¤" + ((int)ShopInfoWordsIndex.wpAtk).ToString("X2") + weapondata.Damage + "\n¤" + ((int)ShopInfoWordsIndex.wpHit).ToString("X2") + weapondata.HitBonus + "\n¤" + ((int)ShopInfoWordsIndex.wpCrt).ToString("X2") + weapondata.Crit;
 
-			List<(int, string, string)> activeElement = new List<(int, string, string)>();
-			List<(int, string)> activeHurt = new List<(int, string)>();
+			List<(int, string, string)> activeElement = new();
+			List<(int, string)> activeHurt = new();
 
 			foreach ((int, string, string) effect in element)
 			{
@@ -1998,11 +1999,11 @@ namespace FF1Lib
 			List<(int, string, string)> status = new() { (0x01, "¤" + ((int)ShopInfoWordsIndex.statusDead).ToString("X2"), "¤" + ((int)ShopInfoWordsIndex.statusDeadShort).ToString("X2")), (0x02, "¤" + ((int)ShopInfoWordsIndex.statusStone).ToString("X2"), "¤" + ((int)ShopInfoWordsIndex.statusStoneShort).ToString("X2")), (0x04, "¤" + ((int)ShopInfoWordsIndex.statusPoison).ToString("X2"), "¤" + ((int)ShopInfoWordsIndex.statusPoisonShort).ToString("X2")), (0x08, "¤" + ((int)ShopInfoWordsIndex.statusBlind).ToString("X2"), "¤" + ((int)ShopInfoWordsIndex.statusBlindShort).ToString("X2")), (0x10, "¤" + ((int)ShopInfoWordsIndex.statusStun).ToString("X2"), "¤" + ((int)ShopInfoWordsIndex.statusStunShort).ToString("X2")), (0x20, "¤" + ((int)ShopInfoWordsIndex.statusSleep).ToString("X2"), "¤" + ((int)ShopInfoWordsIndex.statusSleepShort).ToString("X2")), (0x40, "¤" + ((int)ShopInfoWordsIndex.statusMute).ToString("X2"), "¤" + ((int)ShopInfoWordsIndex.statusMuteShort).ToString("X2")), (0x80, "¤" + ((int)ShopInfoWordsIndex.statusConfuse).ToString("X2"), "¤" + ((int)ShopInfoWordsIndex.statusConfuseShort).ToString("X2")) };
 			List<string> shortDelimiter = new() { "\n ", ", ", "\n ", ", ", "\n ", ", " };
 
-			Armor armordata = new Armor(armorid, this);
+			Armor armordata = new(armorid, this);
 
 			string description = "¤" + ((int)ShopInfoWordsIndex.arDef).ToString("X2") + armordata.Absorb + "\n¤" + ((int)ShopInfoWordsIndex.arEva).ToString("X2") + armordata.Weight;
 
-			List<(int, string, string)> activeElementStatus = new List<(int, string, string)>();
+			List<(int, string, string)> activeElementStatus = new();
 
 			foreach ((int, string, string) effect in element)
 			{
@@ -2069,7 +2070,7 @@ namespace FF1Lib
 			}
 
 			string routineDesc = "";
-			List<(int, string, string)> activeElementStatus = new List<(int, string, string)>();
+			List<(int, string, string)> activeElementStatus = new();
 
 			switch (spelldata[(int)SpellDataBytes.Routine])
 			{
@@ -2214,11 +2215,11 @@ namespace FF1Lib
 			const byte encZombieD = 0x4B;
 			const byte encWarMech = 0x56;
 
-			List<byte> zombieDialog = new List<byte> { 0x32, 0x33, 0x34, 0x36 };
+			List<byte> zombieDialog = new() { 0x32, 0x33, 0x34, 0x36 };
 
 			Dictionary<int, string> evilDialogs = new();
 
-			Encounters encountersData = new Encounters(this);
+			Encounters encountersData = new(this);
 
 			for (int i = 0; i < 4; i++)
 			{
@@ -2643,7 +2644,7 @@ namespace FF1Lib
 
 
 			// Let zombies roam free
-			List<MapId> npcMap = new List<MapId> { MapId.Cardia, MapId.BahamutsRoomB2, MapId.Coneria, MapId.ConeriaCastle1F, MapId.ConeriaCastle2F, MapId.CrescentLake, MapId.DwarfCave, MapId.Elfland, MapId.ElflandCastle, MapId.Gaia, MapId.Lefein, MapId.Melmond, MapId.Onrac, MapId.Pravoka };
+			List<MapId> npcMap = new() { MapId.Cardia, MapId.BahamutsRoomB2, MapId.Coneria, MapId.ConeriaCastle1F, MapId.ConeriaCastle2F, MapId.CrescentLake, MapId.DwarfCave, MapId.Elfland, MapId.ElflandCastle, MapId.Gaia, MapId.Lefein, MapId.Melmond, MapId.Onrac, MapId.Pravoka };
 
 			foreach (MapId map in npcMap)
 			{

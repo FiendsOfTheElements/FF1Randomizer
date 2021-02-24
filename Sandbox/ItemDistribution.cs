@@ -113,7 +113,7 @@ namespace Sandbox
 
 		private static string PrintStats(int maxIterations, Dictionary<Item, List<int>> incentiveLocations, Dictionary<Item, List<string>> incentiveZones, Dictionary<Item, int> requirements)
 		{
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = new();
 			sb.Append("Location         ,");
 			foreach (Item item in incentiveLocations.Keys)
 			{

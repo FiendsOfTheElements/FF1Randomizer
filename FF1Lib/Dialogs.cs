@@ -317,7 +317,7 @@ namespace FF1Lib
 		{
 			string[] itemnames = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
 			var magicPermissions = Get(MagicPermissionsOffset, 8 * 12).Chunk(8);
-			List<byte> magicArray = new List<byte> { 0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01 };
+			List<byte> magicArray = new() { 0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01 };
 
 			int firstLifeIndex = itemnames.ToList().FindIndex(x => x.ToLower().Contains("lif")) - 176;
 			int secondLifeIndex = itemnames.ToList().FindIndex(firstLifeIndex + 177, x => x.ToLower().Contains("lif")) - 176;
@@ -966,7 +966,8 @@ namespace FF1Lib
 				{ (OverworldTeleportIndex)37, "the Sky Palace" },
 			};
 
-			List<(List<MapLocation>, string)> floorlist = new List<(List<MapLocation>, string)> {
+			List<(List<MapLocation>, string)> floorlist = new()
+			{
 				(new List<MapLocation> { MapLocation.Cardia1, MapLocation.Cardia2, MapLocation.Cardia4, MapLocation.Cardia5, MapLocation.Cardia6,
 					MapLocation.DwarfCave, MapLocation.DwarfCaveRoom3, MapLocation.ElflandCastle, MapLocation.ElflandCastleRoom1, MapLocation.MatoyasCave, MapLocation.NorthwestCastle,
 					MapLocation.NorthwestCastleRoom2, MapLocation.TitansTunnelEast, MapLocation.TitansTunnelRoom, MapLocation.TitansTunnelWest,
@@ -1006,7 +1007,8 @@ namespace FF1Lib
 				(new List<MapLocation> { MapLocation.SeaShrineKraken }, "on floor 7, Left Side"),
 			};
 
-			List<(MapLocation, MapLocation)> parentfloor = new List<(MapLocation, MapLocation)> {
+			List<(MapLocation, MapLocation)> parentfloor = new()
+			{
 				(MapLocation.ConeriaCastleRoom1, MapLocation.ConeriaCastle1),
 				(MapLocation.ConeriaCastleRoom2, MapLocation.ConeriaCastle1),
 				(MapLocation.DwarfCaveRoom3, MapLocation.DwarfCave),
@@ -1024,22 +1026,63 @@ namespace FF1Lib
 				(MapLocation.IceCaveFloater, MapLocation.IceCavePitRoom)
 			};
 
-			List<MapLocation> invalidlocation = new List<MapLocation> { MapLocation.ConeriaCastleRoom1, MapLocation.ConeriaCastleRoom2, MapLocation.DwarfCaveRoom3,
-					MapLocation.ElflandCastleRoom1, MapLocation.MarshCaveBottomRoom13, MapLocation.MarshCaveBottomRoom14, MapLocation.MarshCaveBottomRoom16,
-					MapLocation.NorthwestCastleRoom2, MapLocation.SeaShrine2Room2, MapLocation.TempleOfFiends1Room1, MapLocation.TempleOfFiends1Room2,
-					MapLocation.TempleOfFiends1Room3, MapLocation.TempleOfFiends1Room4, MapLocation.TitansTunnelRoom, MapLocation.StartingLocation,
-					MapLocation.AirshipLocation
+			List<MapLocation> invalidlocation = new()
+			{
+				MapLocation.ConeriaCastleRoom1,
+				MapLocation.ConeriaCastleRoom2,
+				MapLocation.DwarfCaveRoom3,
+				MapLocation.ElflandCastleRoom1,
+				MapLocation.MarshCaveBottomRoom13,
+				MapLocation.MarshCaveBottomRoom14,
+				MapLocation.MarshCaveBottomRoom16,
+				MapLocation.NorthwestCastleRoom2,
+				MapLocation.SeaShrine2Room2,
+				MapLocation.TempleOfFiends1Room1,
+				MapLocation.TempleOfFiends1Room2,
+				MapLocation.TempleOfFiends1Room3,
+				MapLocation.TempleOfFiends1Room4,
+				MapLocation.TitansTunnelRoom,
+				MapLocation.StartingLocation,
+				MapLocation.AirshipLocation
 			};
 
-			List<MapLocation> deadends = new List<MapLocation> { MapLocation.BahamutCave2, MapLocation.Cardia1, MapLocation.Cardia2, MapLocation.Cardia4, MapLocation.Cardia5,
-					MapLocation.Cardia6, MapLocation.CastleOrdealsTop, MapLocation.ConeriaCastle2, MapLocation.Coneria, MapLocation.CrescentLake, MapLocation.DwarfCave,
-					MapLocation.EarthCaveLich, MapLocation.Elfland, MapLocation.ElflandCastle, MapLocation.Gaia, MapLocation.GurguVolcanoKary, MapLocation.IceCaveBackExit,
-					MapLocation.Lefein, MapLocation.MarshCaveBottom, MapLocation.MarshCaveTop, MapLocation.MatoyasCave, MapLocation.Melmond, MapLocation.NorthwestCastle,
-					MapLocation.Pravoka, MapLocation.SardasCave, MapLocation.SeaShrineKraken, MapLocation.SeaShrineMermaids, MapLocation.StartingLocation,
-					MapLocation.TempleOfFiendsChaos, MapLocation.TitansTunnelEast, MapLocation.TitansTunnelWest, MapLocation.Waterfall
+			List<MapLocation> deadends = new()
+			{
+				MapLocation.BahamutCave2,
+				MapLocation.Cardia1,
+				MapLocation.Cardia2,
+				MapLocation.Cardia4,
+				MapLocation.Cardia5,
+				MapLocation.Cardia6,
+				MapLocation.CastleOrdealsTop,
+				MapLocation.ConeriaCastle2,
+				MapLocation.Coneria,
+				MapLocation.CrescentLake,
+				MapLocation.DwarfCave,
+				MapLocation.EarthCaveLich,
+				MapLocation.Elfland,
+				MapLocation.ElflandCastle,
+				MapLocation.Gaia,
+				MapLocation.GurguVolcanoKary,
+				MapLocation.IceCaveBackExit,
+				MapLocation.Lefein,
+				MapLocation.MarshCaveBottom,
+				MapLocation.MarshCaveTop,
+				MapLocation.MatoyasCave,
+				MapLocation.Melmond,
+				MapLocation.NorthwestCastle,
+				MapLocation.Pravoka,
+				MapLocation.SardasCave,
+				MapLocation.SeaShrineKraken,
+				MapLocation.SeaShrineMermaids,
+				MapLocation.StartingLocation,
+				MapLocation.TempleOfFiendsChaos,
+				MapLocation.TitansTunnelEast,
+				MapLocation.TitansTunnelWest,
+				MapLocation.Waterfall
 			};
 
-			OverworldTeleportIndex targetlocation = new OverworldTeleportIndex();
+			OverworldTeleportIndex targetlocation = new();
 			string finalstring = "";
 
 			// Check if first floor of Sea is flipped
@@ -1071,10 +1114,10 @@ namespace FF1Lib
 				// If there's a split, we need to compute the floor position
 				if (dungeonfloors.Select(x => x.Key).ToList().Contains(MapLocation.MarshCave1) || dungeonfloors.Select(x => x.Key).ToList().Contains(MapLocation.SeaShrine1))
 				{
-					List<int> floornumber = new List<int> { 0, 0, 0 };
+					List<int> floornumber = new() { 0, 0, 0 };
 					int splitindex = 0;
-					List<List<string>> description = new List<List<string>>();
-					List<int> descriptionindexer = new List<int> { 0, 0 };
+					List<List<string>> description = new();
+					List<int> descriptionindexer = new() { 0, 0 };
 					int descriptionindex = -1;
 					for (int i = 0; i < dungeonfloors.Count(); i++)
 					{
@@ -1251,10 +1294,10 @@ namespace FF1Lib
 		{
 			// Het all game dialogs, get all item names, set dialog templates
 			string[] itemnames = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
-			List<string> hintschests = new List<string>() { "The $ is #.", "The $? It's # I believe.", "Did you know that the $ is #?", "My grandpa used to say 'The $ is #'.", "Did you hear? The $ is #!", "Wanna hear a secret? The $ is #!", "I've read somewhere that the $ is #.", "I used to have the $. I lost it #!", "I've hidden the $ #, can you find it?", "Interesting! This book says the $ is #!", "Duh, everyone knows that the $ is #!", "I saw the $ while I was #." };
-			List<string> hintsnpc = new List<string>() { "& has the $.", "The $? Did you try asking &?", "The $? & will never part with it!", "& stole the $ from ME! I swear!", "& told me not to reveal he has the $.", "& is hiding something. I bet it's the $!" };
-			List<string> hintsvendormed = new List<string>() { "The $ is for sale #.", "I used to have the $. I sold it #!", "There's a fire sale for the $ #.", "I almost bought the $ for sale #." };
-			List<string> uselesshints = new List<string>() { "GET A SILK BAG FROM THE\nGRAVEYARD DUCK TO LIVE\nLONGER.", "You spoony bard!", "Press A to talk\nto NPCs!", "A crooked trader is\noffering bum deals in\nthis town.", "The game doesn't start\nuntil you say 'yes'.", "Thieves run away\nreally fast.", "No, I won't move quit\npushing me.", "Dr. Unnes instant\ntranslation services,\njust send one slab\nand 299 GP for\nprocessing.", "I am error.", "Kraken has a good chance\nto one-shot your knight.", "If NPC guillotine is on,\npress reset now or your\nemulator will crash!", "GET EQUIPPED WITH\nTED WOOLSEY.", "8 and palm trees.\nGet it?" };
+			List<string> hintschests = new() { "The $ is #.", "The $? It's # I believe.", "Did you know that the $ is #?", "My grandpa used to say 'The $ is #'.", "Did you hear? The $ is #!", "Wanna hear a secret? The $ is #!", "I've read somewhere that the $ is #.", "I used to have the $. I lost it #!", "I've hidden the $ #, can you find it?", "Interesting! This book says the $ is #!", "Duh, everyone knows that the $ is #!", "I saw the $ while I was #." };
+			List<string> hintsnpc = new() { "& has the $.", "The $? Did you try asking &?", "The $? & will never part with it!", "& stole the $ from ME! I swear!", "& told me not to reveal he has the $.", "& is hiding something. I bet it's the $!" };
+			List<string> hintsvendormed = new() { "The $ is for sale #.", "I used to have the $. I sold it #!", "There's a fire sale for the $ #.", "I almost bought the $ for sale #." };
+			List<string> uselesshints = new() { "GET A SILK BAG FROM THE\nGRAVEYARD DUCK TO LIVE\nLONGER.", "You spoony bard!", "Press A to talk\nto NPCs!", "A crooked trader is\noffering bum deals in\nthis town.", "The game doesn't start\nuntil you say 'yes'.", "Thieves run away\nreally fast.", "No, I won't move quit\npushing me.", "Dr. Unnes instant\ntranslation services,\njust send one slab\nand 299 GP for\nprocessing.", "I am error.", "Kraken has a good chance\nto one-shot your knight.", "If NPC guillotine is on,\npress reset now or your\nemulator will crash!", "GET EQUIPPED WITH\nTED WOOLSEY.", "8 and palm trees.\nGet it?" };
 
 			if (!RedMageHasLife())
 			{
@@ -1262,7 +1305,7 @@ namespace FF1Lib
 			}
 
 			// Set item pool from flags, we only give hints for randomized items
-			List<Item> incentivePool = new List<Item>();
+			List<Item> incentivePool = new();
 
 			if (flags.Treasures ?? false)
 			{
@@ -1348,10 +1391,10 @@ namespace FF1Lib
 			}
 
 			// Select NPCs from flags
-			List<Item> priorityList = new List<Item> { Item.Lute, Item.Key, Item.Rod, Item.Oxyale, Item.Chime, Item.Cube, Item.Floater, Item.Canoe, Item.Ship, Item.Bridge, Item.Canal, Item.Bottle, Item.Slab, Item.Ruby, Item.Crown, Item.Crystal, Item.Herb, Item.Tnt, Item.Tail };
+			List<Item> priorityList = new() { Item.Lute, Item.Key, Item.Rod, Item.Oxyale, Item.Chime, Item.Cube, Item.Floater, Item.Canoe, Item.Ship, Item.Bridge, Item.Canal, Item.Bottle, Item.Slab, Item.Ruby, Item.Crown, Item.Crystal, Item.Herb, Item.Tnt, Item.Tail };
 
-			List<ObjectId> npcSelected = new List<ObjectId>();
-			List<byte> dialogueID = new List<byte>();
+			List<ObjectId> npcSelected = new();
+			List<byte> dialogueID = new();
 			if (flags.HintsVillage ?? false)
 			{
 				npcSelected.AddRange(new List<ObjectId> { ObjectId.ConeriaOldMan, ObjectId.PravokaOldMan, ObjectId.ElflandScholar1, ObjectId.MelmondOldMan2, ObjectId.CrescentSage11, ObjectId.OnracOldMan2, ObjectId.GaiaWitch, ObjectId.LefeinMan12 });
@@ -1365,7 +1408,7 @@ namespace FF1Lib
 				dialogueID.AddRange(new List<byte> { 0x9D, 0x70, 0xE3, 0xE1, 0xB6 });
 			}
 
-			List<string> incentivizedChests = new List<string>();
+			List<string> incentivizedChests = new();
 
 			if (flags.IncentivizeEarth ?? false)
 			{
@@ -1417,7 +1460,7 @@ namespace FF1Lib
 				incentivizedChests.Add(ItemLocations.ConeriaMajor.Name);
 			}
 
-			List<Item> hintedItems = new List<Item>();
+			List<Item> hintedItems = new();
 			foreach (Item priorityitem in priorityList)
 			{
 				if (generatedPlacement.Find(x => x.Item == priorityitem) != null)
@@ -1444,7 +1487,7 @@ namespace FF1Lib
 			}
 
 			// Declare hints string for each hinted at item
-			List<string> hintsList = new List<string>();
+			List<string> hintsList = new();
 
 			// Create hint for a random item in the pool for each NPC
 			int attempts = 0;

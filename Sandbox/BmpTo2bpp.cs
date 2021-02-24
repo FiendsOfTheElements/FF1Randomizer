@@ -13,7 +13,7 @@ namespace Sandbox
 		{
 			byte[,] pixels;
 
-			using (FileStream inStream = new FileStream(inputFilename, FileMode.Open, FileAccess.Read, FileShare.Read))
+			using (FileStream inStream = new(inputFilename, FileMode.Open, FileAccess.Read, FileShare.Read))
 			{
 				byte[] buffer = new byte[4];
 
@@ -48,7 +48,7 @@ namespace Sandbox
 				}
 			}
 
-			using (FileStream outStream = new FileStream(outputFilename, FileMode.Create, FileAccess.Write, FileShare.None))
+			using (FileStream outStream = new(outputFilename, FileMode.Create, FileAccess.Write, FileShare.None))
 			{
 				byte[] buffer = new byte[16];
 
@@ -56,8 +56,8 @@ namespace Sandbox
 				{
 					for (int x = 5; x >= 0; x--) // ???
 					{
-						BitArray lowBits = new BitArray(64);
-						BitArray highBits = new BitArray(64);
+						BitArray lowBits = new(64);
+						BitArray highBits = new(64);
 						for (int j = 0; j < 8; j++)
 						{
 							for (int i = 0; i < 8; i++)

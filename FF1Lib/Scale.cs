@@ -110,7 +110,8 @@ namespace FF1Lib
 			prices[(int)Item.WhiteShirt] = (ushort)(questItemPrice / 2);
 			prices[(int)Item.BlackShirt] = (ushort)(questItemPrice / 2);
 			prices[(int)Item.Ribbon] = questItemPrice;
-			Dictionary<MapLocation, int> itemShopFactor = new Dictionary<MapLocation, int>() {
+			Dictionary<MapLocation, int> itemShopFactor = new()
+			{
 				{ MapLocation.Coneria, 8 },
 				{ MapLocation.Pravoka, 2 }
 			};

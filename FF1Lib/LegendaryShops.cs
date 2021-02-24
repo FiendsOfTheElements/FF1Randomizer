@@ -255,7 +255,7 @@ namespace FF1Lib
 
 		private List<Item> GetItemShopInventory(int slots)
 		{
-			List<Item> items = new List<Item> { Item.Cabin, Item.House, Item.Heal, Item.Pure, Item.Soft };
+			List<Item> items = new() { Item.Cabin, Item.House, Item.Heal, Item.Pure, Item.Soft };
 
 			List<Item> result = new();
 			if (slots > 0)
@@ -274,7 +274,7 @@ namespace FF1Lib
 
 		private List<Item> GetWeaponShopInventory(int slots)
 		{
-			List<Item> items = new List<Item> { Item.Vorpal, Item.Katana, Item.Xcalber, Item.Defense, Item.FlameSword, Item.IceSword, Item.CoralSword, Item.SunSword, Item.BaneSword, Item.CatClaw, Item.ThorHammer, Item.WizardRod, Item.MageRod, Item.HealRod, Item.LightAxe };
+			List<Item> items = new() { Item.Vorpal, Item.Katana, Item.Xcalber, Item.Defense, Item.FlameSword, Item.IceSword, Item.CoralSword, Item.SunSword, Item.BaneSword, Item.CatClaw, Item.ThorHammer, Item.WizardRod, Item.MageRod, Item.HealRod, Item.LightAxe };
 
 			List<Item> result = new();
 
@@ -304,7 +304,7 @@ namespace FF1Lib
 			}
 			else
 			{
-				List<Spell> spells = new List<Spell> { Spell.RUSE, Spell.INVS, Spell.PURE, Spell.CUR3, Spell.LIFE, Spell.HRM3, Spell.SOFT, Spell.EXIT, Spell.INV2, Spell.CUR4, Spell.HRM4, Spell.HEL3, Spell.LIF2, Spell.FADE, Spell.WALL };
+				List<Spell> spells = new() { Spell.RUSE, Spell.INVS, Spell.PURE, Spell.CUR3, Spell.LIFE, Spell.HRM3, Spell.SOFT, Spell.EXIT, Spell.INV2, Spell.CUR4, Spell.HRM4, Spell.HEL3, Spell.LIF2, Spell.FADE, Spell.WALL };
 				List<Item> items = spells.Where(s => Spells.ContainsKey(s.ToString())).Select(s => Convert.ToByte(Spells[s.ToString()].Index + 176)).Cast<Item>().ToList();
 
 				List<Item> result = new();
@@ -324,7 +324,7 @@ namespace FF1Lib
 			}
 			else
 			{
-				List<Spell> spells = new List<Spell> { Spell.LOCK, Spell.TMPR, Spell.FIR2, Spell.LIT2, Spell.LOK2, Spell.FAST, Spell.ICE2, Spell.FIR3, Spell.BANE, Spell.WARP, Spell.LIT3, Spell.QAKE, Spell.ICE3, Spell.BRAK, Spell.SABR, Spell.NUKE, Spell.ZAP, Spell.XXXX };
+				List<Spell> spells = new() { Spell.LOCK, Spell.TMPR, Spell.FIR2, Spell.LIT2, Spell.LOK2, Spell.FAST, Spell.ICE2, Spell.FIR3, Spell.BANE, Spell.WARP, Spell.LIT3, Spell.QAKE, Spell.ICE3, Spell.BRAK, Spell.SABR, Spell.NUKE, Spell.ZAP, Spell.XXXX };
 				List<Item> items = spells.Where(s => Spells.ContainsKey(s.ToString())).Select(s => Convert.ToByte(Spells[s.ToString()].Index + 176)).Cast<Item>().ToList();
 
 				List<Item> result = new();

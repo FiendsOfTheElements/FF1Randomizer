@@ -11,7 +11,7 @@ namespace Sandbox
 	{
 		public static void Test()
 		{
-			Flags flags = new Flags
+			Flags flags = new()
 			{
 				Treasures = true,
 				IncentivizeIceCave = false,
@@ -47,7 +47,7 @@ namespace Sandbox
 				ExpBonus = 0
 			};
 
-			Preferences preferences = new Preferences
+			Preferences preferences = new()
 			{
 				FunEnemyNames = false,
 				PaletteSwap = false,
@@ -57,14 +57,14 @@ namespace Sandbox
 			};
 
 			string filename = "ff1.nes";
-			MemoryStream memoryStream = new MemoryStream();
-			using (FileStream fs = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read))
+			MemoryStream memoryStream = new();
+			using (FileStream fs = new(filename, FileMode.Open, FileAccess.Read, FileShare.Read))
 			{
 				fs.CopyTo(memoryStream);
 			}
 
 			memoryStream.Seek(0, SeekOrigin.Begin);
-			FF1Rom rom = new FF1Rom(memoryStream);
+			FF1Rom rom = new(memoryStream);
 			for (int i = 0; i < 10000; i++)
 			{
 				RandomNumberGenerator rng = RandomNumberGenerator.Create();

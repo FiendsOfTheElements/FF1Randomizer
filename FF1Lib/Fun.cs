@@ -528,17 +528,81 @@ namespace FF1Lib
 
 		public void ChangeLute(MT19337 rng)
 		{
-			List<string> newInstruments = new List<string> {"BASS", "LYRE", "HARP", "VIOLA", "CELLO", "PIANO", "ORGAN", "FLUTE", "OBOE", "PICCOLO", "FLUTE", "WHISTLE", "HORN", "TRUMPET",
-				"BAGPIPE", "DRUM", "VIOLIN", "DBLBASS", "GUITAR", "BANJO", "FIDDLE", "MNDOLIN", "CLARNET", "BASSOON", "TROMBON", "TUBA", "BUGLE", "MARIMBA", "XYLOPHN","SNARE D",
-				"BASS D", "TMBRINE", "CYMBALS", "TRIANGL", "COWBELL", "GONG", "TRUMPET", "SAX", "TIMPANI", "B GRAND", "HURDY G", "FLUGEL", "SONG", "KAZOO", "FOGHORN", "AIRHORN",
-				"VUVUZLA", "OCARINA", "PANFLUT", "SITAR", "HRMNICA", "UKULELE", "THREMIN", "DITTY", "JINGLE", "LIMRICK", "POEM", "HAIKU", "OCTBASS", "HRPSCRD", "FLUBA", "AEOLUS",
-				"TESLA", "STLDRUM", "DGDRIDO", "WNDCHIM" };
+			List<string> newInstruments = new()
+			{
+				"BASS",
+				"LYRE",
+				"HARP",
+				"VIOLA",
+				"CELLO",
+				"PIANO",
+				"ORGAN",
+				"FLUTE",
+				"OBOE",
+				"PICCOLO",
+				"FLUTE",
+				"WHISTLE",
+				"HORN",
+				"TRUMPET",
+				"BAGPIPE",
+				"DRUM",
+				"VIOLIN",
+				"DBLBASS",
+				"GUITAR",
+				"BANJO",
+				"FIDDLE",
+				"MNDOLIN",
+				"CLARNET",
+				"BASSOON",
+				"TROMBON",
+				"TUBA",
+				"BUGLE",
+				"MARIMBA",
+				"XYLOPHN",
+				"SNARE D",
+				"BASS D",
+				"TMBRINE",
+				"CYMBALS",
+				"TRIANGL",
+				"COWBELL",
+				"GONG",
+				"TRUMPET",
+				"SAX",
+				"TIMPANI",
+				"B GRAND",
+				"HURDY G",
+				"FLUGEL",
+				"SONG",
+				"KAZOO",
+				"FOGHORN",
+				"AIRHORN",
+				"VUVUZLA",
+				"OCARINA",
+				"PANFLUT",
+				"SITAR",
+				"HRMNICA",
+				"UKULELE",
+				"THREMIN",
+				"DITTY",
+				"JINGLE",
+				"LIMRICK",
+				"POEM",
+				"HAIKU",
+				"OCTBASS",
+				"HRPSCRD",
+				"FLUBA",
+				"AEOLUS",
+				"TESLA",
+				"STLDRUM",
+				"DGDRIDO",
+				"WNDCHIM"
+			};
 
 			string[] itemnames = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
 			string[] dialogs = ReadText(dialogsPointerOffset, dialogsPointerBase, dialogsPointerCount);
 
 			string newLute = newInstruments.PickRandom(rng);
-			Dictionary<int, string> dialogsUpdate = new Dictionary<int, string>();
+			Dictionary<int, string> dialogsUpdate = new();
 			string[] princessDialogue = dialogs[0x06].Split(new string[] { "LUTE" }, StringSplitOptions.RemoveEmptyEntries);
 			string[] monkDialogue = dialogs[0x35].Split(new string[] { "LUTE" }, StringSplitOptions.RemoveEmptyEntries);
 
@@ -553,9 +617,32 @@ namespace FF1Lib
 			}
 
 			// Add extra dialogues that might contain the LUTE if the NPChints flag is enabled or if Astos Shuffle is enabled
-			List<byte> otherNPCs = new List<byte> {
-				0x45, 0x53, 0x69, 0x82, 0x8C, 0xAA, 0xCB, 0xDC, 0x9D, 0x70, 0xE3, 0xE1, 0xB6, // NPChints
-				0x02, 0x0E, 0x12, 0x14, 0x16, 0x19, 0x1E, 0xCD, 0x27, 0x23, 0x2B // SuffleAstos
+			List<byte> otherNPCs = new()
+			{
+				0x45,
+				0x53,
+				0x69,
+				0x82,
+				0x8C,
+				0xAA,
+				0xCB,
+				0xDC,
+				0x9D,
+				0x70,
+				0xE3,
+				0xE1,
+				0xB6, // NPChints
+				0x02,
+				0x0E,
+				0x12,
+				0x14,
+				0x16,
+				0x19,
+				0x1E,
+				0xCD,
+				0x27,
+				0x23,
+				0x2B // SuffleAstos
 			};
 
 			for (int i = 0; i < otherNPCs.Count(); i++)
@@ -589,7 +676,7 @@ namespace FF1Lib
 				npcdata.SetRoutine(ObjectId.DwarfcaveDwarfHurray, NewTalkRoutines.Talk_kill);
 
 				// Change the dialogue
-				List<string> dialogueStrings = new List<string>
+				List<string> dialogueStrings = new()
 				{
 					"No! I'm gonna disappear.\nYou'll never see\nme again. Please,\nI don't want to die.",
 					"If you strike me down,\nI shall become more\npowerful than you can\npossibly imagine.",

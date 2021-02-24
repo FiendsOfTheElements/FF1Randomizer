@@ -238,7 +238,7 @@ namespace FF1Lib
 					.Concat(ItemLists.RareWeaponTier)
 					.Concat(ItemLists.RareArmorTier);
 				// Convert the list to a HashSet since we'll be doing lookups in it.
-				HashSet<Item> notableTreasure = new HashSet<Item>(notableTreasureList);
+				HashSet<Item> notableTreasure = new(notableTreasureList);
 
 				// We sort the treasure pool based on value (sort of) and pull out the highest ranked ones to put
 				// in the trap chests we picked out.
@@ -382,7 +382,7 @@ namespace FF1Lib
 			}
 
 			AccessRequirement requiredAccess = AccessRequirement.All;
-			List<MapChange> requiredMapChanges = new List<MapChange> { MapChange.All };
+			List<MapChange> requiredMapChanges = new() { MapChange.All };
 
 			int accessibleLocationCount = 0;
 			while (!currentAccess.HasFlag(requiredAccess) ||
@@ -866,7 +866,7 @@ namespace FF1Lib
 
 		private List<IRewardSource> IncentivizedDungeons()
 		{
-			List<IRewardSource> placedDungeons = new List<IRewardSource>();
+			List<IRewardSource> placedDungeons = new();
 
 			foreach (IRewardSource incentiveLocation in _incentivesData.IncentiveLocations.ToList())
 			{

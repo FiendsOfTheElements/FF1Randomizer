@@ -159,7 +159,7 @@ namespace FF1Lib
 
 			int cnt = (int)Math.Round(dinstinctEntries.Count * GetKillFactor(factor) / 100.0f, 0);
 
-			HashSet<Item> dinstinctToRemove = new HashSet<Item>(dinstinctEntries.Take(cnt));
+			HashSet<Item> dinstinctToRemove = new(dinstinctEntries.Take(cnt));
 
 			foreach (Shop shop in shops)
 			{

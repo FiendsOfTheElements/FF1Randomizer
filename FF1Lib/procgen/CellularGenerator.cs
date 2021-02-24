@@ -131,7 +131,7 @@ namespace FF1Lib.Procgen
 
 					// Carve out a door to all the accessible room tiles.
 					IEnumerable<MapElement> roomTiles = rooms.Where(el => el.Tile == Tile.RoomCenter);
-					List<MapElement> doorways = new List<MapElement> { };
+					List<MapElement> doorways = new() { };
 
 					foreach (MapElement innerTile in roomTiles)
 					{

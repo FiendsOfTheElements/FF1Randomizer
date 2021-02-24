@@ -373,7 +373,7 @@ namespace FF1Lib
 			// The last one is not normally accessible in the game.  We'll rewrite the teleporter located in that
 			// room to go TO that room, and then shuffle it into one of the other locations so that you can go
 			// through that room.
-			List<OrdealsRoom> rooms = new List<OrdealsRoom>
+			List<OrdealsRoom> rooms = new()
 			{
 				new OrdealsRoom
 				{
@@ -645,7 +645,7 @@ namespace FF1Lib
 			maps[(byte)MapId.Gaia][yItemShop, xItemShop + 4] = (byte)Tile.TownTree;
 
 			// something to put in place of the old item shop
-			List<Tile> replacementTileOptions = new List<Tile> { Tile.TownWaterway, Tile.TownFlowers, Tile.TownGrass, Tile.TownStonePath, Tile.TownSand, Tile.TownTomb1, Tile.TownTree };
+			List<Tile> replacementTileOptions = new() { Tile.TownWaterway, Tile.TownFlowers, Tile.TownGrass, Tile.TownStonePath, Tile.TownSand, Tile.TownTomb1, Tile.TownTree };
 			Tile replacementTile = replacementTileOptions.PickRandom(rng);
 
 			for (int y = yItemShop; y <= yItemShop + 3; y++)
@@ -692,11 +692,36 @@ namespace FF1Lib
 
 		public List<MapId> HorizontalFlipDungeons(MT19337 rng, List<Map> maps, TeleportShuffle teleporters, OverworldMap overworld)
 		{
-			List<MapId> validMaps = new List<MapId> { MapId.EarthCaveB1, MapId.EarthCaveB2, MapId.EarthCaveB3, MapId.EarthCaveB4, MapId.EarthCaveB5,
-				MapId.GurguVolcanoB1, MapId.GurguVolcanoB2, MapId.GurguVolcanoB3, MapId.GurguVolcanoB4, MapId.GurguVolcanoB5, MapId.IceCaveB1,
-				MapId.IceCaveB2, MapId.IceCaveB3, MapId.MarshCaveB1, MapId.MarshCaveB2, MapId.MarshCaveB3, MapId.MirageTower1F, MapId.MirageTower2F,
-				MapId.SeaShrineB1, MapId.SeaShrineB2, MapId.SeaShrineB3, MapId.SeaShrineB4, MapId.SeaShrineB5, MapId.SkyPalace1F,
-				MapId.SkyPalace2F, MapId.SkyPalace3F, MapId.Waterfall, MapId.TempleOfFiends,
+			List<MapId> validMaps = new()
+			{
+				MapId.EarthCaveB1,
+				MapId.EarthCaveB2,
+				MapId.EarthCaveB3,
+				MapId.EarthCaveB4,
+				MapId.EarthCaveB5,
+				MapId.GurguVolcanoB1,
+				MapId.GurguVolcanoB2,
+				MapId.GurguVolcanoB3,
+				MapId.GurguVolcanoB4,
+				MapId.GurguVolcanoB5,
+				MapId.IceCaveB1,
+				MapId.IceCaveB2,
+				MapId.IceCaveB3,
+				MapId.MarshCaveB1,
+				MapId.MarshCaveB2,
+				MapId.MarshCaveB3,
+				MapId.MirageTower1F,
+				MapId.MirageTower2F,
+				MapId.SeaShrineB1,
+				MapId.SeaShrineB2,
+				MapId.SeaShrineB3,
+				MapId.SeaShrineB4,
+				MapId.SeaShrineB5,
+				MapId.SkyPalace1F,
+				MapId.SkyPalace2F,
+				MapId.SkyPalace3F,
+				MapId.Waterfall,
+				MapId.TempleOfFiends,
 				// No teleporter definitions for ToFR
 				// MapId.TempleOfFiendsRevisited1F, MapId.TempleOfFiendsRevisited2F, MapId.TempleOfFiendsRevisited3F, MapId.TempleOfFiendsRevisitedAir,
 				// MapId.TempleOfFiendsRevisitedEarth,	MapId.TempleOfFiendsRevisitedFire, MapId.TempleOfFiendsRevisitedWater
@@ -935,7 +960,7 @@ namespace FF1Lib
 			npcpdata.SetRoutine(ObjectId.WarMECH, NewTalkRoutines.Talk_fight);
 
 			// Change the dialogue.
-			List<string> dialogueStrings = new List<string>
+			List<string> dialogueStrings = new()
 			{
 				"I. aM. WarMECH.",
 				"I think you ought to\nknow, I'm feeling very\ndepressed.",
@@ -1009,7 +1034,7 @@ namespace FF1Lib
 
 		public NPC FindNpc(MapId mapId, ObjectId mapObjId)
 		{
-			NPC tempNPC = new NPC();
+			NPC tempNPC = new();
 
 			for (int i = 0; i < MapSpriteCount; i++)
 			{
@@ -1029,7 +1054,7 @@ namespace FF1Lib
 
 		public IEnumerable<(MapId, NPC)> FindNpc(ObjectId mapObjId)
 		{
-			NPC tempNPC = new NPC();
+			NPC tempNPC = new();
 
 			//not good, but quick
 			foreach (MapId mid in Enum.GetValues<MapId>())
@@ -1054,7 +1079,7 @@ namespace FF1Lib
 
 		public NPC GetNpc(MapId mapId, int position)
 		{
-			NPC tempNPC = new NPC();
+			NPC tempNPC = new();
 
 			int offset = MapSpriteOffset + ((((byte)mapId * MapSpriteCount) + position) * MapSpriteSize);
 

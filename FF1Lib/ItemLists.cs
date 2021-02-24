@@ -160,7 +160,7 @@ namespace FF1Lib
 
 		public static List<Item> GetIncentivePool(Flags flags)
 		{
-			List<Item> incentivePool = new List<Item>();
+			List<Item> incentivePool = new();
 
 			if (flags.IncentivizeMasamune ?? false)
 			{
@@ -322,7 +322,7 @@ namespace FF1Lib
 
 		public static List<string> GetIncentiveChests(Flags flags)
 		{
-			List<string> incentivizedChests = new List<string>();
+			List<string> incentivizedChests = new();
 
 			if (flags.IncentivizeEarth ?? false)
 			{

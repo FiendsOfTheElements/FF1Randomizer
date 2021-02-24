@@ -21,7 +21,7 @@ namespace FFR.Common.StringExtensions
 			const int maxlen = 80;
 			int len = title.Length;
 			bool prevdash = false;
-			StringBuilder sb = new StringBuilder(len);
+			StringBuilder sb = new(len);
 			char c;
 
 			for (int i = 0; i < len; i++)

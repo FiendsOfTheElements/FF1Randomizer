@@ -143,7 +143,7 @@ namespace FF1Lib.procgen
 				Map rooms = complete.Map;
 				int roomsAdded = 0;
 
-				List<MapElement> positions = new List<MapElement>();
+				List<MapElement> positions = new();
 				List<MapElement> potentialEntrances = possibilties.Where(el => el.Left().Tile == Tile.InsideWall && el.Right().Tile == Tile.InsideWall
 					&& el.Down().Tile == reqs.Floor && el.Tile == Tile.InsideWall).ToList();
 				while (potentialEntrances.Any())
@@ -173,7 +173,7 @@ namespace FF1Lib.procgen
 
 				// Place chests now
 				List<MapElement> chestLocations = rooms.Where(el => el.Up().Tile == Tile.RoomBackCenter).ToList();
-				List<MapElement> trapLocations = new List<MapElement>();
+				List<MapElement> trapLocations = new();
 				if (reqs.Objects.Count() > chestLocations.Count())
 				{
 					continue;

@@ -26,7 +26,7 @@ namespace FF1Lib.Procgen
 
 		public CompleteMap Generate(MT19337 rng, MapRequirements reqs)
 		{
-			Map map = new Map((byte)reqs.Barrier);
+			Map map = new((byte)reqs.Barrier);
 
 			GenerateTree(rng);
 
@@ -84,7 +84,7 @@ namespace FF1Lib.Procgen
 
 			while (true)
 			{
-				List<BSPMapNode> new_leafs = new List<BSPMapNode>();
+				List<BSPMapNode> new_leafs = new();
 
 				foreach (BSPMapNode split_leaf in leaf_nodes.ToList().
 					Where(l => l.Width > MAX_LEAF_SIZE || l.Height > MAX_LEAF_SIZE || rng.Between(0, 3) < 3).  // always split if too big, or on a 3/4 chance.
@@ -238,8 +238,8 @@ namespace FF1Lib.Procgen
 				? rng.Between(1, BSPTreeEngine.MAX_HALLWAY_WIDTH)
 				: BSPTreeEngine.MAX_HALLWAY_WIDTH;
 
-			Point point1 = new Point(rng.Between(l.Left, l.Right - hallway_width), rng.Between(l.Top, l.Bottom - hallway_width));
-			Point point2 = new Point(rng.Between(r.Left, r.Right - hallway_width), rng.Between(r.Top, r.Bottom - hallway_width));
+			Point point1 = new(rng.Between(l.Left, l.Right - hallway_width), rng.Between(l.Top, l.Bottom - hallway_width));
+			Point point2 = new(rng.Between(r.Left, r.Right - hallway_width), rng.Between(r.Top, r.Bottom - hallway_width));
 			int x_difference = point2.X - point1.X;
 			int y_difference = point2.Y - point1.Y;
 

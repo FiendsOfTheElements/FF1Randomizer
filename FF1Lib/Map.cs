@@ -253,7 +253,7 @@ namespace FF1Lib
 
 		public byte[] GetCompressedData()
 		{
-			List<byte> compressedData = new List<byte>();
+			List<byte> compressedData = new();
 
 			byte[] data = new byte[_map.Length];
 			Buffer.BlockCopy(_map, 0, data, 0, _map.Length);

@@ -103,7 +103,7 @@ namespace FFR.Common
 		/// </summary>
 		public static void Add(string name, Flags flags)
 		{
-			Preset preset = new Preset(name, flags);
+			Preset preset = new(name, flags);
 
 			UserSettings.WriteFile(
 				$"{preset.Name.ToSlug()}.json",

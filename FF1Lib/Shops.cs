@@ -122,7 +122,7 @@ namespace FF1Lib
 
 		private void RepackShops(ushort[] pointers)
 		{
-			List<byte> allEntries = new List<byte>();
+			List<byte> allEntries = new();
 			ushort pointer = pointers[0];
 			for (int shopType = 0; shopType < (int)ShopType.Item + ShopSectionSize; shopType += ShopSectionSize)
 			{
@@ -177,7 +177,7 @@ namespace FF1Lib
 
 				while (entry < allEntries.Count)
 				{
-					List<int> eligibleShops = new List<int>();
+					List<int> eligibleShops = new();
 					for (int i = 0; i < newShops.Length; i++)
 					{
 						if (newShops[i].Count > 0 && newShops[i].Count < 5 && !newShops[i].Contains(allEntries[entry]))
@@ -229,7 +229,7 @@ namespace FF1Lib
 			{
 				if (newShops[i].Count > 1)
 				{
-					var bottle =
+					(byte item, int index) bottle =
 						newShops[i]
 							.Select((item, index) => (item, index))
 							.FirstOrDefault(x => ((Item)x.item) == Item.Bottle);

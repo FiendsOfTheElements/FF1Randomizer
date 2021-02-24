@@ -766,7 +766,7 @@ namespace FF1Lib
 			List<PropertyInfo> flagproperties = properties.Where(p => p.CanWrite).OrderBy(p => p.Name).Reverse().ToList();
 
 			BigInteger sum = StringToBigInteger(text);
-			Flags flags = new Flags();
+			Flags flags = new();
 
 			foreach (PropertyInfo p in flagproperties)
 			{
@@ -897,7 +897,7 @@ namespace FF1Lib
 
 		private static BigInteger StringToBigInteger(string s)
 		{
-			BigInteger sum = new BigInteger(0);
+			BigInteger sum = new(0);
 
 			foreach (char c in s.Reverse())
 			{

@@ -206,7 +206,7 @@ namespace FF1Lib
 
 		public static string BytesToText(byte[] bytes)
 		{
-			StringBuilder builder = new StringBuilder();
+			StringBuilder builder = new();
 			foreach (byte b in bytes)
 			{
 				builder.Append(TextByBytes[b]);
@@ -347,8 +347,8 @@ namespace FF1Lib
 				//throw new ArgumentOutOfRangeException();
 			}
 
-			string flagLeft = new string(' ', (int)Math.Ceiling((32 - text.Length) / 2.0));
-			string flagRight = new string(' ', (int)Math.Floor((32 - text.Length) / 2.0));
+			string flagLeft = new(' ', (int)Math.Ceiling((32 - text.Length) / 2.0));
+			string flagRight = new(' ', (int)Math.Floor((32 - text.Length) / 2.0));
 
 			return TextToBytes(flagLeft + text + flagRight, false, Delimiter.Empty);
 		}

@@ -134,10 +134,10 @@ namespace FF1Lib
 
 		private (List<GeneratedHint>, List<GeneratedHint>, List<GeneratedHint>, List<GeneratedHint>) ProcessCoverage(IEnumerable<GeneratedHint> hints)
 		{
-			List<GeneratedHint> forced = new List<GeneratedHint>();
-			List<GeneratedHint> prioritized = new List<GeneratedHint>();
-			List<GeneratedHint> common = new List<GeneratedHint>();
-			List<GeneratedHint> fill = new List<GeneratedHint>();
+			List<GeneratedHint> forced = new();
+			List<GeneratedHint> prioritized = new();
+			List<GeneratedHint> common = new();
+			List<GeneratedHint> fill = new();
 
 
 			foreach (IGrouping<HintCategoryCoverage, GeneratedHint> category in hints.GroupBy(h => h.Coverage))
@@ -209,7 +209,7 @@ namespace FF1Lib
 				}
 			}
 
-			HashSet<int> usedDialogSet = new HashSet<int>(usedDialogs.Distinct());
+			HashSet<int> usedDialogSet = new(usedDialogs.Distinct());
 			foreach (int d in everythingElse)
 			{
 				if (usedDialogSet.Contains(d))

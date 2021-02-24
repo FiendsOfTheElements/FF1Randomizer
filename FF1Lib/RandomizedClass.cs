@@ -198,7 +198,7 @@ namespace FF1Lib
 
 			public byte[] StartingStatsArray()
 			{
-				List<byte> startingStatsArray = new List<byte> { ClassID, HpStarting, StrStarting, AgiStarting, IntStarting, VitStarting, LckStarting, DmgStarting, HitStarting, EvaStarting, MDefStarting, SpCStarting, 0x00, 0x00, 0x00, 0x00 };
+				List<byte> startingStatsArray = new() { ClassID, HpStarting, StrStarting, AgiStarting, IntStarting, VitStarting, LckStarting, DmgStarting, HitStarting, EvaStarting, MDefStarting, SpCStarting, 0x00, 0x00, 0x00, 0x00 };
 				return startingStatsArray.ToArray();
 			}
 
@@ -237,7 +237,7 @@ namespace FF1Lib
 
 			public byte[] LevelUpArray()
 			{
-				List<byte> levelUp = new List<byte>();
+				List<byte> levelUp = new();
 
 				for (int j = 0; j < 49; j++)
 				{
@@ -280,8 +280,8 @@ namespace FF1Lib
 			public void GetMagicPermissions(byte[] magicPermissions)
 			{
 
-				List<byte> whiteArray = new List<byte> { 0x80, 0x40, 0x20, 0x10 };
-				List<byte> blackArray = new List<byte> { 0x08, 0x04, 0x02, 0x01 };
+				List<byte> whiteArray = new() { 0x80, 0x40, 0x20, 0x10 };
+				List<byte> blackArray = new() { 0x08, 0x04, 0x02, 0x01 };
 
 				for (int i = 0; i < 8; i++)
 				{
@@ -295,9 +295,9 @@ namespace FF1Lib
 
 			public byte[] MagicPermissions()
 			{
-				List<byte> whiteArray = new List<byte> { 0x80, 0x40, 0x20, 0x10 };
-				List<byte> blackArray = new List<byte> { 0x08, 0x04, 0x02, 0x01 };
-				List<byte> magicpermissions = new List<byte>();
+				List<byte> whiteArray = new() { 0x80, 0x40, 0x20, 0x10 };
+				List<byte> blackArray = new() { 0x08, 0x04, 0x02, 0x01 };
+				List<byte> magicpermissions = new();
 
 				for (int i = 0; i < 8; i++)
 				{
@@ -323,9 +323,20 @@ namespace FF1Lib
 		}
 		public void RandomizeClass(MT19337 rng, Flags flags, string[] itemnames)
 		{
-			List<ClassData> classData = new List<ClassData> {
-				new ClassData(), new ClassData(), new ClassData(), new ClassData(), new ClassData(), new ClassData(),
-				new ClassData(), new ClassData(), new ClassData(), new ClassData(), new ClassData(), new ClassData()
+			List<ClassData> classData = new()
+			{
+				new ClassData(),
+				new ClassData(),
+				new ClassData(),
+				new ClassData(),
+				new ClassData(),
+				new ClassData(),
+				new ClassData(),
+				new ClassData(),
+				new ClassData(),
+				new ClassData(),
+				new ClassData(),
+				new ClassData()
 			};
 
 			// Permission bit for each class
@@ -487,7 +498,7 @@ namespace FF1Lib
 			int totalByte = 0;
 			string templateScreen = "";
 			var screenBlob = Blob.FromHex("00");
-			List<string> dataScreen = new List<string>();
+			List<string> dataScreen = new();
 
 			// Generate template
 			if ((bool)flags.RandomizeClassChaos)
@@ -616,28 +627,96 @@ namespace FF1Lib
 		public List<string> DoRandomizeClassNormalMode(ref List<ClassData> classData, MT19337 rng, string[] itemnames, int maxbonus, int maxmalus, bool noCastingBonus)
 		{
 			// Equipment lists
-			List<Item> equipFighterArmor = new List<Item> { Item.WoodenArmor, Item.ChainArmor, Item.SilverArmor, Item.IronArmor,
-				Item.FlameArmor, Item.IceArmor, Item.SteelArmor, Item.Buckler, Item.WoodenShield, Item.IronShield, Item.ProCape,
-				Item.SilverShield, Item.FlameShield, Item.IceShield, Item.WoodenHelm, Item.IronHelm, Item.SilverHelm,
-				Item.CopperGauntlets, Item.IronGauntlets, Item.SilverGauntlets, Item.PowerGauntlets };
+			List<Item> equipFighterArmor = new()
+			{
+				Item.WoodenArmor,
+				Item.ChainArmor,
+				Item.SilverArmor,
+				Item.IronArmor,
+				Item.FlameArmor,
+				Item.IceArmor,
+				Item.SteelArmor,
+				Item.Buckler,
+				Item.WoodenShield,
+				Item.IronShield,
+				Item.ProCape,
+				Item.SilverShield,
+				Item.FlameShield,
+				Item.IceShield,
+				Item.WoodenHelm,
+				Item.IronHelm,
+				Item.SilverHelm,
+				Item.CopperGauntlets,
+				Item.IronGauntlets,
+				Item.SilverGauntlets,
+				Item.PowerGauntlets
+			};
 
-			List<Item> equipRedMageArmor = new List<Item> { Item.WoodenArmor, Item.ChainArmor, Item.SilverArmor, Item.Buckler, Item.ProCape };
+			List<Item> equipRedMageArmor = new() { Item.WoodenArmor, Item.ChainArmor, Item.SilverArmor, Item.Buckler, Item.ProCape };
 
-			List<Item> equipKnightArmor = new List<Item>(equipFighterArmor) { Item.DragonArmor, Item.OpalArmor, Item.AegisShield, Item.OpalShield,
-				Item.HealHelm, Item.OpalHelm, Item.PowerGauntlets, Item.ZeusGauntlets, Item.OpalGauntlets };
+			List<Item> equipKnightArmor = new(equipFighterArmor)
+			{
+				Item.DragonArmor,
+				Item.OpalArmor,
+				Item.AegisShield,
+				Item.OpalShield,
+				Item.HealHelm,
+				Item.OpalHelm,
+				Item.PowerGauntlets,
+				Item.ZeusGauntlets,
+				Item.OpalGauntlets
+			};
 
-			List<Item> equipFighterWeapon = new List<Item> { Item.Rapier, Item.Scimitar, Item.ShortSword, Item.LongSword, Item.Falchon, Item.Sabre, Item.SilverSword,
-				Item.WereSword, Item.RuneSword, Item.DragonSword, Item.CoralSword, Item.GiantSword, Item.FlameSword, Item.IceSword, Item.SunSword,
-				Item.SmallKnife, Item.WoodenRod, Item.IronHammer, Item.HandAxe, Item.LargeKnife, Item.IronStaff, Item.GreatAxe, Item.SilverAxe, Item.SilverKnife,
-				Item.SilverHammer, Item.PowerRod, Item.LightAxe };
+			List<Item> equipFighterWeapon = new()
+			{
+				Item.Rapier,
+				Item.Scimitar,
+				Item.ShortSword,
+				Item.LongSword,
+				Item.Falchon,
+				Item.Sabre,
+				Item.SilverSword,
+				Item.WereSword,
+				Item.RuneSword,
+				Item.DragonSword,
+				Item.CoralSword,
+				Item.GiantSword,
+				Item.FlameSword,
+				Item.IceSword,
+				Item.SunSword,
+				Item.SmallKnife,
+				Item.WoodenRod,
+				Item.IronHammer,
+				Item.HandAxe,
+				Item.LargeKnife,
+				Item.IronStaff,
+				Item.GreatAxe,
+				Item.SilverAxe,
+				Item.SilverKnife,
+				Item.SilverHammer,
+				Item.PowerRod,
+				Item.LightAxe
+			};
 
-			List<Item> equipKnightWeapon = new List<Item>(equipFighterWeapon) { Item.Defense, Item.Vorpal, Item.CatClaw, Item.ThorHammer, Item.BaneSword, Item.Xcalber };
+			List<Item> equipKnightWeapon = new(equipFighterWeapon) { Item.Defense, Item.Vorpal, Item.CatClaw, Item.ThorHammer, Item.BaneSword, Item.Xcalber };
 
-			List<Item> equipThiefWeapon = new List<Item> { Item.SmallKnife, Item.Rapier, Item.Scimitar, Item.LargeKnife, Item.Sabre, Item.Falchon, Item.SilverKnife, Item.DragonSword,
-				Item.CoralSword, Item.RuneSword, Item.Masamune };
+			List<Item> equipThiefWeapon = new()
+			{
+				Item.SmallKnife,
+				Item.Rapier,
+				Item.Scimitar,
+				Item.LargeKnife,
+				Item.Sabre,
+				Item.Falchon,
+				Item.SilverKnife,
+				Item.DragonSword,
+				Item.CoralSword,
+				Item.RuneSword,
+				Item.Masamune
+			};
 
 			// Create exceptions for hit bonus
-			List<AuthClass> hitBonusClass = new List<AuthClass>();
+			List<AuthClass> hitBonusClass = new();
 
 			for (int i = 0; i < 6; i++)
 			{
@@ -664,17 +743,168 @@ namespace FF1Lib
 			List<bool> bwBlackSpells = new(classData[11].BlackPermissions);
 
 			// MP Growth Lists
-			List<byte> rmMPlist = new List<byte>(classData[3].SpCGrowth);
+			List<byte> rmMPlist = new(classData[3].SpCGrowth);
 
-			List<byte> improvedMPlist = new List<byte> { 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF,
-				0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00 };
-			List<byte> exKnightMPlist = new List<byte> { 0x00, 0x07, 0x00, 0x07, 0x00, 0x07, 0x00, 0x07, 0x00, 0x07, 0x00, 0x07, 0x00, 0x07, 0x00, 0x07, 0x00, 0x07, 0x00, 0x07, 0x00, 0x07, 0x00, 0x07,
-				0x00, 0x07, 0x00, 0x07, 0x00, 0x07, 0x00, 0x07, 0x00, 0x07, 0x00, 0x07, 0x00, 0x07, 0x00, 0x07, 0x00, 0x07, 0x00, 0x07, 0x00, 0x07, 0x00, 0x07, 0x00 };
-			List<byte> exNinjaMPlist = new List<byte> { 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F,
-				0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00 };
+			List<byte> improvedMPlist = new()
+			{
+				0x00,
+				0xFF,
+				0x00,
+				0xFF,
+				0x00,
+				0xFF,
+				0x00,
+				0xFF,
+				0x00,
+				0xFF,
+				0x00,
+				0xFF,
+				0x00,
+				0xFF,
+				0x00,
+				0xFF,
+				0x00,
+				0xFF,
+				0x00,
+				0xFF,
+				0x00,
+				0xFF,
+				0x00,
+				0xFF,
+				0x00,
+				0xFF,
+				0x00,
+				0xFF,
+				0x00,
+				0xFF,
+				0x00,
+				0xFF,
+				0x00,
+				0xFF,
+				0x00,
+				0xFF,
+				0x00,
+				0xFF,
+				0x00,
+				0xFF,
+				0x00,
+				0xFF,
+				0x00,
+				0xFF,
+				0x00,
+				0xFF,
+				0x00,
+				0xFF,
+				0x00
+			};
+			List<byte> exKnightMPlist = new()
+			{
+				0x00,
+				0x07,
+				0x00,
+				0x07,
+				0x00,
+				0x07,
+				0x00,
+				0x07,
+				0x00,
+				0x07,
+				0x00,
+				0x07,
+				0x00,
+				0x07,
+				0x00,
+				0x07,
+				0x00,
+				0x07,
+				0x00,
+				0x07,
+				0x00,
+				0x07,
+				0x00,
+				0x07,
+				0x00,
+				0x07,
+				0x00,
+				0x07,
+				0x00,
+				0x07,
+				0x00,
+				0x07,
+				0x00,
+				0x07,
+				0x00,
+				0x07,
+				0x00,
+				0x07,
+				0x00,
+				0x07,
+				0x00,
+				0x07,
+				0x00,
+				0x07,
+				0x00,
+				0x07,
+				0x00,
+				0x07,
+				0x00
+			};
+			List<byte> exNinjaMPlist = new()
+			{
+				0x00,
+				0x0F,
+				0x00,
+				0x0F,
+				0x00,
+				0x0F,
+				0x00,
+				0x0F,
+				0x00,
+				0x0F,
+				0x00,
+				0x0F,
+				0x00,
+				0x0F,
+				0x00,
+				0x0F,
+				0x00,
+				0x0F,
+				0x00,
+				0x0F,
+				0x00,
+				0x0F,
+				0x00,
+				0x0F,
+				0x00,
+				0x0F,
+				0x00,
+				0x0F,
+				0x00,
+				0x0F,
+				0x00,
+				0x0F,
+				0x00,
+				0x0F,
+				0x00,
+				0x0F,
+				0x00,
+				0x0F,
+				0x00,
+				0x0F,
+				0x00,
+				0x0F,
+				0x00,
+				0x0F,
+				0x00,
+				0x0F,
+				0x00,
+				0x0F,
+				0x00
+			};
 
 			// Normal Bonuses List
-			List<BonusMalus> bonusNormal = new List<BonusMalus> {
+			List<BonusMalus> bonusNormal = new()
+			{
 				new BonusMalus(BonusMalusAction.StrMod, "+10 Str.", mod: 10),
 				new BonusMalus(BonusMalusAction.StrMod, "+15 Str.", mod: 15),
 				new BonusMalus(BonusMalusAction.StrMod, "+20 Str.", mod: 20),
@@ -690,39 +920,40 @@ namespace FF1Lib
 				new BonusMalus(BonusMalusAction.HpMod, "+20 HP", mod: 20),
 				new BonusMalus(BonusMalusAction.HpMod, "+30 HP", mod: 30),
 				new BonusMalus(BonusMalusAction.HpMod, "+40 HP", mod: 40),
-				new BonusMalus(BonusMalusAction.HitMod, "+10 Hit%", mod: 10, authclass: hitBonusClass ),
-				new BonusMalus(BonusMalusAction.HitMod, "+15 Hit%", mod: 15, authclass: hitBonusClass ),
-				new BonusMalus(BonusMalusAction.HitMod, "+20 Hit%", mod: 20, authclass: hitBonusClass ),
+				new BonusMalus(BonusMalusAction.HitMod, "+10 Hit%", mod: 10, authclass: hitBonusClass),
+				new BonusMalus(BonusMalusAction.HitMod, "+15 Hit%", mod: 15, authclass: hitBonusClass),
+				new BonusMalus(BonusMalusAction.HitMod, "+20 Hit%", mod: 20, authclass: hitBonusClass),
 				new BonusMalus(BonusMalusAction.MDefMod, "+10 MDef", mod: 10),
 				new BonusMalus(BonusMalusAction.MDefMod, "+15 MDef", mod: 15),
 				new BonusMalus(BonusMalusAction.MDefMod, "+20 MDef", mod: 20),
-				new BonusMalus(BonusMalusAction.WeaponAdd, "+" + itemnames[(int)Item.ThorHammer], equipment: new List<Item> {  Item.ThorHammer }),
-				new BonusMalus(BonusMalusAction.WeaponAdd, "+" + itemnames[(int)Item.Vorpal], equipment: new List<Item> {  Item.Vorpal }),
-				new BonusMalus(BonusMalusAction.WeaponAdd, "+" + itemnames[(int)Item.Defense], equipment: new List<Item> {  Item.Defense }),
-				new BonusMalus(BonusMalusAction.WeaponAdd, "+" + itemnames[(int)Item.Katana], equipment: new List<Item> {  Item.Katana }),
-				new BonusMalus(BonusMalusAction.WeaponAdd, "+" + itemnames[(int)Item.Xcalber], equipment: new List<Item> {  Item.Xcalber }),
-				new BonusMalus(BonusMalusAction.ArmorAdd, "+" + itemnames[(int)Item.WhiteShirt], equipment: new List<Item> {  Item.WhiteShirt }),
-				new BonusMalus(BonusMalusAction.ArmorAdd, "+" + itemnames[(int)Item.BlackShirt], equipment: new List<Item> {  Item.BlackShirt }),
+				new BonusMalus(BonusMalusAction.WeaponAdd, "+" + itemnames[(int)Item.ThorHammer], equipment: new List<Item> { Item.ThorHammer }),
+				new BonusMalus(BonusMalusAction.WeaponAdd, "+" + itemnames[(int)Item.Vorpal], equipment: new List<Item> { Item.Vorpal }),
+				new BonusMalus(BonusMalusAction.WeaponAdd, "+" + itemnames[(int)Item.Defense], equipment: new List<Item> { Item.Defense }),
+				new BonusMalus(BonusMalusAction.WeaponAdd, "+" + itemnames[(int)Item.Katana], equipment: new List<Item> { Item.Katana }),
+				new BonusMalus(BonusMalusAction.WeaponAdd, "+" + itemnames[(int)Item.Xcalber], equipment: new List<Item> { Item.Xcalber }),
+				new BonusMalus(BonusMalusAction.ArmorAdd, "+" + itemnames[(int)Item.WhiteShirt], equipment: new List<Item> { Item.WhiteShirt }),
+				new BonusMalus(BonusMalusAction.ArmorAdd, "+" + itemnames[(int)Item.BlackShirt], equipment: new List<Item> { Item.BlackShirt }),
 				new BonusMalus(BonusMalusAction.StrGrowth, "Fightr Str.", binarylist: classData[(int)AuthClass.Fighter].StrGrowth, authclass: new List<AuthClass> { AuthClass.Thief, AuthClass.BlackBelt, AuthClass.RedMage, AuthClass.WhiteMage, AuthClass.BlackMage }),
 				new BonusMalus(BonusMalusAction.LckGrowth, "Thief Luck", binarylist: classData[(int)AuthClass.Thief].LckGrowth, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.BlackBelt, AuthClass.RedMage, AuthClass.WhiteMage, AuthClass.BlackMage }),
 				new BonusMalus(BonusMalusAction.VitGrowth, "B.Belt Vit.", binarylist: classData[(int)AuthClass.BlackBelt].VitGrowth, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief, AuthClass.RedMage, AuthClass.WhiteMage, AuthClass.BlackMage }),
-				new BonusMalus(BonusMalusAction.WeaponAdd, "+Thief @S", equipment: equipThiefWeapon, authclass: new List<AuthClass> { AuthClass.BlackBelt, AuthClass.WhiteMage, AuthClass.BlackMage } ),
-				new BonusMalus(BonusMalusAction.ArmorAdd, "+Red Mage @A", equipment: equipRedMageArmor, authclass: new List<AuthClass> { AuthClass.Thief, AuthClass.BlackBelt, AuthClass.WhiteMage, AuthClass.BlackMage } ),
+				new BonusMalus(BonusMalusAction.WeaponAdd, "+Thief @S", equipment: equipThiefWeapon, authclass: new List<AuthClass> { AuthClass.BlackBelt, AuthClass.WhiteMage, AuthClass.BlackMage }),
+				new BonusMalus(BonusMalusAction.ArmorAdd, "+Red Mage @A", equipment: equipRedMageArmor, authclass: new List<AuthClass> { AuthClass.Thief, AuthClass.BlackBelt, AuthClass.WhiteMage, AuthClass.BlackMage }),
 				new BonusMalus(BonusMalusAction.SpcMod, "+2 Lv1 MP", mod: 2, authclass: new List<AuthClass> { AuthClass.RedMage, AuthClass.WhiteMage, AuthClass.BlackMage }),
 				new BonusMalus(BonusMalusAction.SpcMod, "+2 Lv1 MP", mod: 2, authclass: new List<AuthClass> { AuthClass.RedMage, AuthClass.WhiteMage, AuthClass.BlackMage }),
 			};
 
 			// Strong Bonuses List
-			List<BonusMalus> bonusStrong = new List<BonusMalus> {
+			List<BonusMalus> bonusStrong = new()
+			{
 				new BonusMalus(BonusMalusAction.StrMod, "+40 Str.", mod: 40),
 				new BonusMalus(BonusMalusAction.AgiMod, "+40 Agi.", mod: 40),
 				new BonusMalus(BonusMalusAction.VitMod, "+40 Vit.", mod: 40),
 				new BonusMalus(BonusMalusAction.LckMod, "+15 Luck", mod: 15),
 				new BonusMalus(BonusMalusAction.HpMod, "+80 HP", mod: 80),
 				new BonusMalus(BonusMalusAction.MDefGrowth, "+2 MDef/Lv", mod: 2),
-				new BonusMalus(BonusMalusAction.WeaponAdd, "+Fighter @S", equipment: equipFighterWeapon, authclass: new List<AuthClass> { AuthClass.Thief, AuthClass.BlackBelt, AuthClass.WhiteMage, AuthClass.BlackMage } ),
-				new BonusMalus(BonusMalusAction.ArmorAdd, "+Fighter @A", equipment: equipFighterArmor, authclass: new List<AuthClass> { AuthClass.Thief, AuthClass.BlackBelt, AuthClass.WhiteMage, AuthClass.BlackMage, AuthClass.RedMage } ),
-				new BonusMalus(BonusMalusAction.SpcGrowth, "Improved MP", bytelist: improvedMPlist, authclass: new List<AuthClass> { AuthClass.RedMage, AuthClass.WhiteMage, AuthClass.BlackMage } ),
+				new BonusMalus(BonusMalusAction.WeaponAdd, "+Fighter @S", equipment: equipFighterWeapon, authclass: new List<AuthClass> { AuthClass.Thief, AuthClass.BlackBelt, AuthClass.WhiteMage, AuthClass.BlackMage }),
+				new BonusMalus(BonusMalusAction.ArmorAdd, "+Fighter @A", equipment: equipFighterArmor, authclass: new List<AuthClass> { AuthClass.Thief, AuthClass.BlackBelt, AuthClass.WhiteMage, AuthClass.BlackMage, AuthClass.RedMage }),
+				new BonusMalus(BonusMalusAction.SpcGrowth, "Improved MP", bytelist: improvedMPlist, authclass: new List<AuthClass> { AuthClass.RedMage, AuthClass.WhiteMage, AuthClass.BlackMage }),
 				new BonusMalus(BonusMalusAction.PowerRW, "Sage Class", binarylist: wmWhiteSpells.Concat(bmBlackSpells).Concat(wwWhiteSpells).Concat(bwBlackSpells).ToList(), authclass: new List<AuthClass> { AuthClass.RedMage }),
 				new BonusMalus(BonusMalusAction.WhiteSpellcaster, "White W. Sp", binarylist: wwWhiteSpells, authclass: new List<AuthClass> { AuthClass.WhiteMage }),
 				new BonusMalus(BonusMalusAction.BlackSpellcaster, "Black W. Sp", binarylist: bwBlackSpells, authclass: new List<AuthClass> { AuthClass.BlackMage }),
@@ -740,7 +971,8 @@ namespace FF1Lib
 			}
 
 			// Maluses List
-			List<BonusMalus> malusNormal = new List<BonusMalus> {
+			List<BonusMalus> malusNormal = new()
+			{
 				new BonusMalus(BonusMalusAction.StrMod, "-10 Str.", mod: -10),
 				new BonusMalus(BonusMalusAction.StrMod, "-10 Str.", mod: -10),
 				new BonusMalus(BonusMalusAction.StrMod, "-15 Str.", mod: -15),
@@ -767,8 +999,8 @@ namespace FF1Lib
 				new BonusMalus(BonusMalusAction.ArmorRemove, "-" + itemnames[(int)Item.Ribbon], equipment: new List<Item> { Item.Ribbon }),
 				new BonusMalus(BonusMalusAction.ArmorRemove, "-" + itemnames[(int)Item.ProRing], equipment: new List<Item> { Item.ProRing }),
 				new BonusMalus(BonusMalusAction.ArmorRemove, "No @B", equipment: new List<Item> { Item.Gold, Item.Opal, Item.Silver, Item.Copper }),
-				new BonusMalus(BonusMalusAction.WeaponReplace, "Thief @S", equipment: equipThiefWeapon, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.RedMage } ),
-				new BonusMalus(BonusMalusAction.SpcMax, "-4 Max MP", mod: -4, authclass: new List<AuthClass> {  AuthClass.RedMage, AuthClass.WhiteMage, AuthClass.BlackMage }),
+				new BonusMalus(BonusMalusAction.WeaponReplace, "Thief @S", equipment: equipThiefWeapon, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.RedMage }),
+				new BonusMalus(BonusMalusAction.SpcMax, "-4 Max MP", mod: -4, authclass: new List<AuthClass> { AuthClass.RedMage, AuthClass.WhiteMage, AuthClass.BlackMage }),
 				new BonusMalus(BonusMalusAction.NoPromoMagic, "No Promo Sp", mod: 0, mod2: 0, binarylist: nullSpells, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief }),
 				//new BonusMalus(BonusMalusAction.BlackNewSpellcaster, "Black Mage\n Spells", mod: 2, mod2: 9, binarylist: bmBlackSpells, bytelist: rmMPlist, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief, AuthClass.BlackBelt }),
 			};
@@ -778,7 +1010,7 @@ namespace FF1Lib
 				malusNormal.Add(new BonusMalus(BonusMalusAction.IntMod, "+80 Int.", mod: 80));
 			}
 
-			List<List<BonusMalus>> assignedBonusMalus = new List<List<BonusMalus>> { new List<BonusMalus>(), new List<BonusMalus>(), new List<BonusMalus>(), new List<BonusMalus>(), new List<BonusMalus>(), new List<BonusMalus>() };
+			List<List<BonusMalus>> assignedBonusMalus = new() { new List<BonusMalus>(), new List<BonusMalus>(), new List<BonusMalus>(), new List<BonusMalus>(), new List<BonusMalus>(), new List<BonusMalus>() };
 
 			// Shuffle bonuses and maluses
 			bonusNormal.Shuffle(rng);
@@ -788,12 +1020,12 @@ namespace FF1Lib
 			// Select one incentivized class that will received a strong bonus
 			var luckyDude = Rng.Between(rng, 0, 5);
 
-			List<string> descriptionList = new List<string>();
+			List<string> descriptionList = new();
 
 			// Distribute bonuses and maluses, we go backward (from BM to Fi) so we have enough malus for BM
 			for (int i = 5; i >= 0; i--)
 			{
-				List<(int, string)> tempstring = new List<(int, string)>();
+				List<(int, string)> tempstring = new();
 
 				if (i == luckyDude && maxbonus > 0)
 				{
@@ -1094,26 +1326,27 @@ namespace FF1Lib
 			wpSword.Add(new List<Item>(wpSword[5]) { Item.Vorpal, Item.BaneSword, Item.Defense });
 
 			// Spell charge ranks to distribute
-			List<Rank> startSpellcharges = new List<Rank> { Rank.A, Rank.A, Rank.S, Rank.S, Rank.S, Rank.A };
-			List<Rank> promoSpellcharges = new List<Rank> { Rank.B, Rank.C, Rank.B, Rank.C, Rank.B, Rank.C };
+			List<Rank> startSpellcharges = new() { Rank.A, Rank.A, Rank.S, Rank.S, Rank.S, Rank.A };
+			List<Rank> promoSpellcharges = new() { Rank.B, Rank.C, Rank.B, Rank.C, Rank.B, Rank.C };
 
 			// Equipment ranks to distribute
-			List<(RankedType, Rank)> startWeapons = new List<(RankedType, Rank)> { (RankedType.Swords, Rank.A), (RankedType.Swords, Rank.A), (RankedType.Swords, Rank.B), (RankedType.Nunchucks, Rank.S), (RankedType.Axes, Rank.S), (RankedType.Axes, Rank.S), (RankedType.Hammers, Rank.S), (RankedType.Hammers, Rank.S), (RankedType.Knives, Rank.S), (RankedType.Knives, Rank.S), (RankedType.Staves, Rank.S), (RankedType.Staves, Rank.S) };
-			List<(RankedType, Rank)> promoWeapons = new List<(RankedType, Rank)> { (RankedType.Swords, Rank.S), (RankedType.Swords, Rank.S), (RankedType.Swords, Rank.S), (RankedType.Nunchucks, Rank.S), (RankedType.Axes, Rank.S), (RankedType.Hammers, Rank.S), (RankedType.Knives, Rank.S), (RankedType.Staves, Rank.S) };
+			List<(RankedType, Rank)> startWeapons = new() { (RankedType.Swords, Rank.A), (RankedType.Swords, Rank.A), (RankedType.Swords, Rank.B), (RankedType.Nunchucks, Rank.S), (RankedType.Axes, Rank.S), (RankedType.Axes, Rank.S), (RankedType.Hammers, Rank.S), (RankedType.Hammers, Rank.S), (RankedType.Knives, Rank.S), (RankedType.Knives, Rank.S), (RankedType.Staves, Rank.S), (RankedType.Staves, Rank.S) };
+			List<(RankedType, Rank)> promoWeapons = new() { (RankedType.Swords, Rank.S), (RankedType.Swords, Rank.S), (RankedType.Swords, Rank.S), (RankedType.Nunchucks, Rank.S), (RankedType.Axes, Rank.S), (RankedType.Hammers, Rank.S), (RankedType.Knives, Rank.S), (RankedType.Staves, Rank.S) };
 
-			List<(RankedType, Rank)> startArmors = new List<(RankedType, Rank)> { (RankedType.Armors, Rank.A), (RankedType.Armors, Rank.B), (RankedType.Armors, Rank.C), (RankedType.Armors, Rank.C), (RankedType.Armors, Rank.D), (RankedType.Armors, Rank.D) };
-			List<(RankedType, Rank)> promoArmors = new List<(RankedType, Rank)> { (RankedType.Armors, Rank.A), (RankedType.Armors, Rank.S) };
+			List<(RankedType, Rank)> startArmors = new() { (RankedType.Armors, Rank.A), (RankedType.Armors, Rank.B), (RankedType.Armors, Rank.C), (RankedType.Armors, Rank.C), (RankedType.Armors, Rank.D), (RankedType.Armors, Rank.D) };
+			List<(RankedType, Rank)> promoArmors = new() { (RankedType.Armors, Rank.A), (RankedType.Armors, Rank.S) };
 
-			List<(RankedType, Rank)> startShields = new List<(RankedType, Rank)> { (RankedType.Shields, Rank.A), (RankedType.Shields, Rank.B), (RankedType.Shields, Rank.B), (RankedType.Shields, Rank.C), (RankedType.Shields, Rank.C) };
-			List<(RankedType, Rank)> promoShields = new List<(RankedType, Rank)> { (RankedType.Shields, Rank.A), (RankedType.Shields, Rank.S) };
+			List<(RankedType, Rank)> startShields = new() { (RankedType.Shields, Rank.A), (RankedType.Shields, Rank.B), (RankedType.Shields, Rank.B), (RankedType.Shields, Rank.C), (RankedType.Shields, Rank.C) };
+			List<(RankedType, Rank)> promoShields = new() { (RankedType.Shields, Rank.A), (RankedType.Shields, Rank.S) };
 
-			List<(RankedType, Rank)> startHelmets = new List<(RankedType, Rank)> { (RankedType.Helmets, Rank.B), (RankedType.Helmets, Rank.C), (RankedType.Helmets, Rank.C), (RankedType.Helmets, Rank.C), (RankedType.Helmets, Rank.C), (RankedType.Helmets, Rank.C) };
-			List<(RankedType, Rank)> promoHelmets = new List<(RankedType, Rank)> { (RankedType.Helmets, Rank.A), (RankedType.Helmets, Rank.S) };
+			List<(RankedType, Rank)> startHelmets = new() { (RankedType.Helmets, Rank.B), (RankedType.Helmets, Rank.C), (RankedType.Helmets, Rank.C), (RankedType.Helmets, Rank.C), (RankedType.Helmets, Rank.C), (RankedType.Helmets, Rank.C) };
+			List<(RankedType, Rank)> promoHelmets = new() { (RankedType.Helmets, Rank.A), (RankedType.Helmets, Rank.S) };
 
-			List<(RankedType, Rank)> startGauntlets = new List<(RankedType, Rank)> { (RankedType.Gauntlets, Rank.B), (RankedType.Gauntlets, Rank.C), (RankedType.Gauntlets, Rank.C), (RankedType.Gauntlets, Rank.C), (RankedType.Gauntlets, Rank.C), (RankedType.Gauntlets, Rank.C) };
-			List<(RankedType, Rank)> promoGauntlets = new List<(RankedType, Rank)> { (RankedType.Gauntlets, Rank.A), (RankedType.Gauntlets, Rank.S) };
+			List<(RankedType, Rank)> startGauntlets = new() { (RankedType.Gauntlets, Rank.B), (RankedType.Gauntlets, Rank.C), (RankedType.Gauntlets, Rank.C), (RankedType.Gauntlets, Rank.C), (RankedType.Gauntlets, Rank.C), (RankedType.Gauntlets, Rank.C) };
+			List<(RankedType, Rank)> promoGauntlets = new() { (RankedType.Gauntlets, Rank.A), (RankedType.Gauntlets, Rank.S) };
 
-			List<(Rank, Rank, int, int)> chargesRank = new List<(Rank, Rank, int, int)> {
+			List<(Rank, Rank, int, int)> chargesRank = new()
+			{
 				(Rank.F, Rank.B, 0, 6),
 				(Rank.F, Rank.B, 1, 7),
 				(Rank.F, Rank.F, 2, 8),
@@ -1126,14 +1359,14 @@ namespace FF1Lib
 			List<string> classPromoString = new() { "Kn", "Ni", "Ma", "Rw", "Ww", "Bw" };
 
 			// new arrays
-			List<List<byte>> newChargeList = new List<List<byte>>();
+			List<List<byte>> newChargeList = new();
 			byte[] newMaxChargeList = Enumerable.Repeat((byte)0x00, 12).ToArray();
 
 			// Get shuffle data 
-			List<byte> shuffleStartingStats = new List<byte>();
-			List<List<bool>> shuffleLevelUp = new List<List<bool>>();
-			List<List<bool>> shuffleHP = new List<List<bool>>();
-			List<byte> shuffleHit = new List<byte>();
+			List<byte> shuffleStartingStats = new();
+			List<List<bool>> shuffleLevelUp = new();
+			List<List<bool>> shuffleHP = new();
+			List<byte> shuffleHit = new();
 
 			shuffleStartingStats.AddRange(classData.GetRange(0, 6).Select(x => x.StrStarting).ToList());
 			shuffleStartingStats.AddRange(classData.GetRange(0, 6).Select(x => x.AgiStarting).ToList());
@@ -1190,8 +1423,8 @@ namespace FF1Lib
 			int minLvHp = 255;
 			int spreadLvHp = (maxLvHp - minLvHp) / 4;
 
-			List<Rank> statsRanks = new List<Rank>();
-			List<Rank> hpRanks = new List<Rank>();
+			List<Rank> statsRanks = new();
+			List<Rank> hpRanks = new();
 			Rank[] magicRanks = Enumerable.Repeat(Rank.F, 24).ToArray();
 
 			for (int i = 0; i < shuffleLevelUp.Count(); i++)

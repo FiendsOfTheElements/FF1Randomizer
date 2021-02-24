@@ -152,11 +152,11 @@ namespace FF1Lib
 			}
 			else
 			{
-				List<List<MagicSpell>> tieredSpells = new List<List<MagicSpell>> { Spells.GetRange(0, 16), Spells.GetRange(16, 16), Spells.GetRange(32, 16), Spells.GetRange(48, 16) };
+				List<List<MagicSpell>> tieredSpells = new() { Spells.GetRange(0, 16), Spells.GetRange(16, 16), Spells.GetRange(32, 16), Spells.GetRange(48, 16) };
 
-				List<int> commonOdds = new List<int> { 0, 0, 0, 0, 1, 1, 1, 1, 2, 2 };
-				List<int> rareOdds = new List<int> { 0, 1, 1, 1, 2, 2, 2, 3, 3, 3 };
-				List<int> legendaryOdds = new List<int> { 1, 2, 2, 2, 3, 3, 3, 3, 3, 3 };
+				List<int> commonOdds = new() { 0, 0, 0, 0, 1, 1, 1, 1, 2, 2 };
+				List<int> rareOdds = new() { 0, 1, 1, 1, 2, 2, 2, 3, 3, 3 };
+				List<int> legendaryOdds = new() { 1, 2, 2, 2, 3, 3, 3, 3, 3, 3 };
 
 				for (int i = 0; i < 4; i++)
 				{

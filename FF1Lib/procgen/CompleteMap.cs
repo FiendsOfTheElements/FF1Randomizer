@@ -52,12 +52,12 @@ namespace FF1Lib.Procgen
 			StringBuilder sb = new(MapRequirements.Height * MapRequirements.Width);
 
 			int y, x;
-			Dictionary<int, char> otherCharMap = new Dictionary<int, char>();
-			HashSet<int> seenValues = new HashSet<int>();
+			Dictionary<int, char> otherCharMap = new();
+			HashSet<int> seenValues = new();
 
 			// other chars to pull from when automatically mapping byte values to chars
 			// just letters obviously. someone smart can come up with a better idea.
-			Stack<char> otherChars = new Stack<char>("ABCDFGHIJKLMNPRSTUVWYZxabcdefghijklmnopqrstuwvz");
+			Stack<char> otherChars = new("ABCDFGHIJKLMNPRSTUVWYZxabcdefghijklmnopqrstuwvz");
 
 			sb.Append($"Map {Requirements.MapId}\n");
 

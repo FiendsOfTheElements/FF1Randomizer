@@ -11,7 +11,7 @@ namespace Sandbox
 		{
 			// Text F7 seems unused.
 
-			FF1Rom rom = new FF1Rom("ff1.nes");
+			FF1Rom rom = new("ff1.nes");
 
 			const int MapObjJumpTableOffset = 0x390D3;
 			const int JumpSize = 2;
@@ -22,7 +22,7 @@ namespace Sandbox
 			const int TalkReplace = 0x9495;
 			const int TalkFight = 0x94AA;
 
-			SortedSet<byte> usedText = new SortedSet<byte>();
+			SortedSet<byte> usedText = new();
 
 			var jumpTable = rom.Get(MapObjJumpTableOffset, JumpSize * MapObjCount).ToUShorts();
 			var mapObjs = rom.Get(MapObjOffset, MapObjSize * MapObjCount).Chunk(MapObjSize);

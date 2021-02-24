@@ -135,7 +135,7 @@ namespace FF1Lib
 				var oldFormations = Get(ZoneFormationsOffset, ZoneFormationsSize * ZoneCount).Chunk(ZoneFormationsSize);
 				var newFormations = Get(ZoneFormationsOffset, ZoneFormationsSize * ZoneCount).Chunk(ZoneFormationsSize);
 				List<int> allowableEncounters = Enumerable.Range(0, 256).ToList();
-				List<int> unallowableEncounters = new List<int>() { 0x73, 0x74, 0x75, 0x76, 0x77, 0x78, 0x79, 0x7A, 0x7B, 0x7C, 0x7D, 0x7E, 0x7F, 0xF3, 0xF4, 0xF5, 0xF6, 0xF7, 0xF8, 0xF9, 0xFA, 0xFB, 0xFC, 0xFD };
+				List<int> unallowableEncounters = new() { 0x73, 0x74, 0x75, 0x76, 0x77, 0x78, 0x79, 0x7A, 0x7B, 0x7C, 0x7D, 0x7E, 0x7F, 0xF3, 0xF4, 0xF5, 0xF6, 0xF7, 0xF8, 0xF9, 0xFA, 0xFB, 0xFC, 0xFD };
 				allowableEncounters.RemoveAll(x => unallowableEncounters.Contains(x));
 				for (byte i = 0; i < ZoneCount; i++)
 				{
@@ -158,7 +158,7 @@ namespace FF1Lib
 			const int WarMECHIndex = 6;
 			const byte WarMECHEncounter = 0x56;
 			var oldFormations = Get(ZoneFormationsOffset, ZoneFormationsSize * ZoneCount).Chunk(ZoneFormationsSize);
-			List<byte> newFormations = new List<byte>();
+			List<byte> newFormations = new();
 
 			foreach (var zone in oldFormations)
 			{
@@ -214,7 +214,7 @@ namespace FF1Lib
 
 			if (doBosses)
 			{
-				List<Blob> oldBosses = new List<Blob>
+				List<Blob> oldBosses = new()
 				{
 					oldEnemies[Enemy.Lich],
 					oldEnemies[Enemy.Kary],
@@ -228,7 +228,7 @@ namespace FF1Lib
 				newEnemies[Enemy.Kraken][7] = oldBosses[2][7];
 				newEnemies[Enemy.Tiamat][7] = oldBosses[3][7];
 
-				List<Blob> oldBigBosses = new List<Blob>
+				List<Blob> oldBigBosses = new()
 				{
 					oldEnemies[Enemy.WarMech],
 					oldEnemies[Enemy.Lich2],
@@ -272,8 +272,8 @@ namespace FF1Lib
 			scriptBytes[IronGol][14] = 0xFF;
 
 			List<int> normalIndices = Enumerable.Range(0, 32).Concat(new[] { 33, 43 }).ToList();
-			List<int> bossIndices = new List<int> { 34, 36, 38, 40 };
-			List<int> bigBossIndices = new List<int> { 32, 35, 37, 39, 41, 42 };
+			List<int> bossIndices = new() { 34, 36, 38, 40 };
+			List<int> bigBossIndices = new() { 32, 35, 37, 39, 41, 42 };
 
 			if (doNormals)
 			{
@@ -338,7 +338,7 @@ namespace FF1Lib
 
 		private List<List<byte>> Bucketize(List<byte> bytes, int bucketCount, int bucketSize, MT19337 rng)
 		{
-			List<List<byte>> buckets = new List<List<byte>>();
+			List<List<byte>> buckets = new();
 			for (int i = 0; i < bucketCount; i++)
 			{
 				buckets.Add(new List<byte>());
@@ -568,10 +568,12 @@ namespace FF1Lib
 		{
 			const int FiendsIndex = 0x77;
 			const int FiendsScriptIndex = 0x22;
-			List<int> fiendsFormationOrder = new List<int> { 0x7A, 0x73, 0x79, 0x74, 0x78, 0x75, 0x77, 0x76 };
+			List<int> fiendsFormationOrder = new() { 0x7A, 0x73, 0x79, 0x74, 0x78, 0x75, 0x77, 0x76 };
 
-			List<AlternateFiends> alternateFiendsList = new List<AlternateFiends> {
-				new AlternateFiends {
+			List<AlternateFiends> alternateFiendsList = new()
+			{
+				new AlternateFiends
+				{
 					Name = "ASTAROTH",
 					SpriteSheet = FormationSpriteSheet.BadmanAstosMadponyWarmech,
 					FormationPattern = FormationPattern.Mixed,
@@ -589,7 +591,8 @@ namespace FF1Lib
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Scorch, (byte)EnemySkills.Poison_Damage, (byte)EnemySkills.Blaze, (byte)EnemySkills.Poison_Stone },
 				},
-				new AlternateFiends {
+				new AlternateFiends
+				{
 					Name = "ASURA",
 					SpriteSheet = FormationSpriteSheet.BoneCreepHyenaOgre,
 					FormationPattern = FormationPattern.Large4,
@@ -607,7 +610,8 @@ namespace FF1Lib
 					SkillChance2 = 0x00,
 					Skills2 = new List<byte> { (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None },
 				},
-				new AlternateFiends {
+				new AlternateFiends
+				{
 					Name = "BARBRICA",
 					SpriteSheet = FormationSpriteSheet.SentryWaterNagaChimera,
 					FormationPattern = FormationPattern.Mixed,
@@ -625,7 +629,8 @@ namespace FF1Lib
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Flash, (byte)EnemySkills.Thunder, (byte)EnemySkills.Glare, (byte)EnemySkills.Thunder },
 				},
-				new AlternateFiends {
+				new AlternateFiends
+				{
 					Name = "BELZEBUB",
 					SpriteSheet = FormationSpriteSheet.SlimeSpiderManticorAnkylo,
 					FormationPattern = FormationPattern.Mixed,
@@ -643,7 +648,8 @@ namespace FF1Lib
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Nuclear, (byte)EnemySkills.Flash, (byte)EnemySkills.Dazzle, (byte)EnemySkills.Inferno },
 				},
-				new AlternateFiends {
+				new AlternateFiends
+				{
 					Name = "BEHEMOTH",
 					SpriteSheet = FormationSpriteSheet.BoneCreepHyenaOgre,
 					FormationPattern = FormationPattern.Large4,
@@ -661,7 +667,8 @@ namespace FF1Lib
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Snorting, (byte)EnemySkills.Snorting, (byte)EnemySkills.Snorting, (byte)EnemySkills.Blaze },
 				},
-				new AlternateFiends {
+				new AlternateFiends
+				{
 					Name = "B.KNIGHT",
 					SpriteSheet = FormationSpriteSheet.BadmanAstosMadponyWarmech,
 					FormationPattern = FormationPattern.Mixed,
@@ -679,7 +686,8 @@ namespace FF1Lib
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Trance, (byte)EnemySkills.Flash, (byte)EnemySkills.Ink, (byte)EnemySkills.Glare },
 				},
-				new AlternateFiends {
+				new AlternateFiends
+				{
 					Name = "CAGNAZZO",
 					SpriteSheet = FormationSpriteSheet.SlimeSpiderManticorAnkylo,
 					FormationPattern = FormationPattern.Large4,
@@ -697,7 +705,8 @@ namespace FF1Lib
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Frost, (byte)EnemySkills.Dazzle, (byte)EnemySkills.Frost, (byte)EnemySkills.Blizzard },
 				},
-				new AlternateFiends {
+				new AlternateFiends
+				{
 					Name = "CARBUNCL",
 					SpriteSheet = FormationSpriteSheet.SentryWaterNagaChimera,
 					FormationPattern = FormationPattern.Large4,
@@ -715,7 +724,8 @@ namespace FF1Lib
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Stinger, (byte)EnemySkills.Gaze, (byte)EnemySkills.Glance, (byte)EnemySkills.Dazzle },
 				},
-				new AlternateFiends {
+				new AlternateFiends
+				{
 					Name = "DJINN",
 					SpriteSheet = FormationSpriteSheet.SentryWaterNagaChimera,
 					FormationPattern = FormationPattern.Large4,
@@ -733,7 +743,8 @@ namespace FF1Lib
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Blaze, (byte)EnemySkills.Scorch, (byte)EnemySkills.Scorch, (byte)EnemySkills.Inferno },
 				},
-				new AlternateFiends {
+				new AlternateFiends
+				{
 					Name = "ECHIDNA",
 					SpriteSheet = FormationSpriteSheet.KaryLich,
 					FormationPattern = FormationPattern.Fiends,
@@ -751,7 +762,8 @@ namespace FF1Lib
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Crack, (byte)EnemySkills.Trance, (byte)EnemySkills.Crack, (byte)EnemySkills.Gaze },
 				},
-				new AlternateFiends {
+				new AlternateFiends
+				{
 					Name = "GILGAMSH",
 					SpriteSheet = FormationSpriteSheet.WizardGarlandDragon2Golem,
 					FormationPattern = FormationPattern.Mixed,
@@ -769,7 +781,8 @@ namespace FF1Lib
 					SkillChance2 = 0x00,
 					Skills2 = new List<byte> { (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None },
 				},
-				new AlternateFiends {
+				new AlternateFiends
+				{
 					Name = "IFRIT",
 					SpriteSheet = FormationSpriteSheet.VampGargoyleEarthDragon1,
 					FormationPattern = FormationPattern.Large4,
@@ -787,7 +800,8 @@ namespace FF1Lib
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Inferno, (byte)EnemySkills.Flash, (byte)EnemySkills.Blaze, (byte)EnemySkills.Nuclear },
 				},
-				new AlternateFiends {
+				new AlternateFiends
+				{
 					Name = "LEVIATHN",
 					SpriteSheet = FormationSpriteSheet.ImageGeistWormEye,
 					FormationPattern = FormationPattern.Large4,
@@ -805,7 +819,8 @@ namespace FF1Lib
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Frost, (byte)EnemySkills.Swirl, (byte)EnemySkills.Blizzard, (byte)EnemySkills.Swirl },
 				},
-				new AlternateFiends {
+				new AlternateFiends
+				{
 					Name = "MEDUSAE",
 					SpriteSheet = FormationSpriteSheet.KaryLich,
 					FormationPattern = FormationPattern.Fiends,
@@ -823,7 +838,8 @@ namespace FF1Lib
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Glare, (byte)EnemySkills.Glance, (byte)EnemySkills.Glare, (byte)EnemySkills.Poison_Stone },
 				},
-				new AlternateFiends {
+				new AlternateFiends
+				{
 					Name = "ODIN",
 					SpriteSheet = FormationSpriteSheet.ImpWolfIguanaGiant,
 					FormationPattern = FormationPattern.Large4,
@@ -841,7 +857,8 @@ namespace FF1Lib
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Crack, (byte)EnemySkills.Gaze, (byte)EnemySkills.Flash, (byte)EnemySkills.Dazzle },
 				},
-				new AlternateFiends {
+				new AlternateFiends
+				{
 					Name = "RUBICANT",
 					SpriteSheet = FormationSpriteSheet.VampGargoyleEarthDragon1,
 					FormationPattern = FormationPattern.Large4,
@@ -859,7 +876,8 @@ namespace FF1Lib
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Scorch, (byte)EnemySkills.Heat, (byte)EnemySkills.Blaze, (byte)EnemySkills.Nuclear },
 				},
-				new AlternateFiends {
+				new AlternateFiends
+				{
 					Name = "SALAMAND",
 					SpriteSheet = FormationSpriteSheet.WizardGarlandDragon2Golem,
 					FormationPattern = FormationPattern.Large4,
@@ -877,7 +895,8 @@ namespace FF1Lib
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Scorch, (byte)EnemySkills.Blaze, (byte)EnemySkills.Heat, (byte)EnemySkills.Inferno },
 				},
-				new AlternateFiends {
+				new AlternateFiends
+				{
 					Name = "SCARMLIO",
 					SpriteSheet = FormationSpriteSheet.BoneCreepHyenaOgre,
 					FormationPattern = FormationPattern.Mixed,
@@ -895,7 +914,8 @@ namespace FF1Lib
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Crack, (byte)EnemySkills.Snorting, (byte)EnemySkills.Crack, (byte)EnemySkills.Snorting },
 				},
-				new AlternateFiends {
+				new AlternateFiends
+				{
 					Name = "SCYLLA",
 					SpriteSheet = FormationSpriteSheet.KrakenTiamat,
 					FormationPattern = FormationPattern.Fiends,
@@ -913,7 +933,8 @@ namespace FF1Lib
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Thunder, (byte)EnemySkills.Dazzle, (byte)EnemySkills.Tornado, (byte)EnemySkills.Flash },
 				},
-				new AlternateFiends {
+				new AlternateFiends
+				{
 					Name = "SHIVA",
 					SpriteSheet = FormationSpriteSheet.KaryLich,
 					FormationPattern = FormationPattern.Fiends,
@@ -931,7 +952,8 @@ namespace FF1Lib
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Frost, (byte)EnemySkills.Flash, (byte)EnemySkills.Blizzard, (byte)EnemySkills.Gaze },
 				},
-				new AlternateFiends {
+				new AlternateFiends
+				{
 					Name = "TITAN",
 					SpriteSheet = FormationSpriteSheet.ImpWolfIguanaGiant,
 					FormationPattern = FormationPattern.Large4,
@@ -951,7 +973,7 @@ namespace FF1Lib
 				},
 			};
 
-			Encounters encountersData = new Encounters(this);
+			Encounters encountersData = new(this);
 
 			EnemyInfo[] fiends = new EnemyInfo[8];
 			EnemyScriptInfo[] fiendsScript = new EnemyScriptInfo[8];

@@ -95,7 +95,7 @@ namespace FF1Lib.Assembly
 			{
 				get
 				{
-					Dictionary<string, int> both = new Dictionary<string, int>();
+					Dictionary<string, int> both = new();
 
 					// this is apparently a good and fast way to combine dictionaries, even if it looks a little stupid.
 					Constants.ToList().ForEach(x => both.Add(x.Key, x.Value));
@@ -117,7 +117,7 @@ namespace FF1Lib.Assembly
 			{
 				get
 				{
-					Dictionary<string, int> everything = new Dictionary<string, int>();
+					Dictionary<string, int> everything = new();
 
 					// this is apparently a good and fast way to combine dictionaries, even if it looks a little stupid.
 					Constants.ToList().ForEach(x => everything.Add(x.Key, x.Value));

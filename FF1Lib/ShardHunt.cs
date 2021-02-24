@@ -94,7 +94,7 @@ namespace FF1Lib
 
 			if (includeRefightTiles)
 			{
-				List<byte> battles = new List<byte> { 0x57, 0x58, 0x59, 0x5A };
+				List<byte> battles = new() { 0x57, 0x58, 0x59, 0x5A };
 				if (refightAll)
 				{
 					landingArea.Add(Blob.FromHex($"31{battles[3]:X2}{battles[2]:X2}{battles[1]:X2}{battles[0]:X2}31{battles[0]:X2}{battles[1]:X2}{battles[2]:X2}{battles[3]:X2}31"));

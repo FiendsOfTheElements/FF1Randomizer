@@ -52,7 +52,7 @@ namespace FF1Lib
 				forcedItemPlacements.AddRange(ItemLocations.AllTreasures);
 			}
 
-			List<Item> incentivePool = new List<Item>();
+			List<Item> incentivePool = new();
 			if (flags.IncentivizeBridge)
 			{
 				incentivePool.Add(Item.Bridge);
@@ -194,7 +194,7 @@ namespace FF1Lib
 				incentivePool.Add(Item.BaneSword);
 			}
 
-			List<IRewardSource> incentiveLocationPool = new List<IRewardSource>();
+			List<IRewardSource> incentiveLocationPool = new();
 			if (flags.IncentivizeKingConeria)
 			{
 				incentiveLocationPool.Add(ItemLocations.KingConeria);
@@ -508,10 +508,10 @@ namespace FF1Lib
 				incentivePool.Remove(item);
 			}
 
-			List<IRewardSource> validKeyLocations = new List<IRewardSource> { ItemLocations.ElfPrince };
-			List<IRewardSource> validBridgeLocations = new List<IRewardSource> { ItemLocations.KingConeria };
-			List<IRewardSource> validShipLocations = new List<IRewardSource> { ItemLocations.Bikke };
-			List<IRewardSource> validCanoeLocations = new List<IRewardSource> { ItemLocations.CanoeSage };
+			List<IRewardSource> validKeyLocations = new() { ItemLocations.ElfPrince };
+			List<IRewardSource> validBridgeLocations = new() { ItemLocations.KingConeria };
+			List<IRewardSource> validShipLocations = new() { ItemLocations.Bikke };
+			List<IRewardSource> validCanoeLocations = new() { ItemLocations.CanoeSage };
 			AccessRequirement everythingButOrbs = ~AccessRequirement.BlackOrb;
 
 			if (flags.NPCFetchItems ?? false)

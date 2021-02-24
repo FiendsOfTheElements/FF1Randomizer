@@ -330,7 +330,7 @@ namespace FF1Lib
 			// Anything removed from these will get shuffled, anything remaining is considered fixed in place.
 			Dictionary<OverworldTeleportIndex, TeleportDestination> placedMaps = _teleporters.VanillaOverworldTeleports.ToDictionary(x => x.Key, x => x.Value);
 			Dictionary<TeleportIndex, TeleportDestination> placedFloors = _teleporters.VanillaStandardTeleports.ToDictionary(x => x.Key, x => x.Value);
-			Dictionary<ExitTeleportIndex, Coordinate> placedExits = new Dictionary<ExitTeleportIndex, Coordinate>();
+			Dictionary<ExitTeleportIndex, Coordinate> placedExits = new();
 			if ((bool)flags.Towns)
 			{
 				if ((bool)flags.IncludeConeria)
@@ -379,7 +379,7 @@ namespace FF1Lib
 			List<TeleportDestination> towns = _teleporters.TownTeleports.Where(x => !placedDestinations.Contains(x.Destination)).ToList();
 			List<TeleportDestination> topfloors = _teleporters.NonTownForcedTopFloors.Where(x => !placedDestinations.Contains(x.Destination)).ToList();
 			List<TeleportDestination> subfloors = _teleporters.FreePlacementFloors.Where(x => !placedDestinations.Contains(x.Destination)).ToList();
-			List<TeleportDestination> deadEnds = new List<TeleportDestination>();
+			List<TeleportDestination> deadEnds = new();
 
 			towns.Shuffle(rng);
 			// Don't allow Lefein or Melmond to be the first town since we need an item shop.
@@ -453,7 +453,7 @@ namespace FF1Lib
 				shuffled = new Dictionary<OverworldTeleportIndex, TeleportDestination>();
 				shuffledFloors = new Dictionary<TeleportIndex, TeleportDestination>();
 				shuffledExits = new Dictionary<ExitTeleportIndex, Coordinate>();
-				List<TeleportIndex> teleports = new List<TeleportIndex>();
+				List<TeleportIndex> teleports = new();
 
 				// Overworld to First Floor Shuffle Loop
 				List<OverworldTeleportIndex> shuffleTowns = townEntrances.ToList();
@@ -1028,7 +1028,7 @@ namespace FF1Lib
 			var mapRows = pointers.Select(x =>
 			{
 				var mapRow = _rom.Get(x, 256).ToBytes();
-				List<byte> result = new List<byte>();
+				List<byte> result = new();
 				int index = 0;
 				while (index < 256 && mapRow[index] != 255)
 				{
@@ -1121,7 +1121,7 @@ namespace FF1Lib
 
 		public List<List<byte>> CompressMapRows(List<List<byte>> decompressedRows)
 		{
-			List<List<byte>> outputMap = new List<List<byte>>();
+			List<List<byte>> outputMap = new();
 			foreach (List<byte> row in decompressedRows)
 			{
 				List<byte> outputRow = new();

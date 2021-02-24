@@ -25,7 +25,7 @@ namespace FF1Lib.Procgen
 			var startingX = rng.Between(-3, 0) + x;
 			var startingY = rng.Between(-4, -1) + y;
 
-			Region startRegion = new Region(startingX, startingY, 4, 5, Tile.WaterfallRandomEncounters);
+			Region startRegion = new(startingX, startingY, 4, 5, Tile.WaterfallRandomEncounters);
 
 			List<Region> regionList = new()
 			{

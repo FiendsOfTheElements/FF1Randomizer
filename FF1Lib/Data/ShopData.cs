@@ -155,7 +155,7 @@ namespace FF1Lib
 		public int StoreData()
 		{
 			Dictionary<int, Shop> shopdic = Shops.ToDictionary(s => s.Index);
-			List<byte> shopdata = new List<byte>();
+			List<byte> shopdata = new();
 
 			for (int i = 0; i < 70; i++)
 			{
@@ -189,7 +189,7 @@ namespace FF1Lib
 
 		private List<Shop> GetShops(ShopType shopType)
 		{
-			List<Shop> shops = new List<Shop>();
+			List<Shop> shops = new();
 			for (int i = 0; i < ShopSectionSize; i++)
 			{
 				if (Index.Data[(int)shopType + i] != ShopNullPointer)
@@ -203,7 +203,7 @@ namespace FF1Lib
 					}
 					else
 					{
-						List<byte> entries = new List<byte>();
+						List<byte> entries = new();
 						var shopEntries = rom.Get(ShopPointerBase + Index.Data[(int)shopType + i], 5);
 
 						for (int j = 0; j < 5 && shopEntries[j] != 0; j++)

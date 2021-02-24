@@ -394,7 +394,7 @@ namespace FF1Lib
 			}
 
 			// Now we re-interleave the spells.
-			List<MagicSpell> shuffledSpells = new List<MagicSpell>();
+			List<MagicSpell> shuffledSpells = new();
 			for (int i = 0; i < MagicCount; i++)
 			{
 				int sourceIndex = (4 * (i / 8)) + (i % 4);

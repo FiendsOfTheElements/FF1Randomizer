@@ -45,7 +45,7 @@ namespace FF1Lib.Procgen
 				}
 			}
 
-			List<Wall> walls = new List<Wall>();
+			List<Wall> walls = new();
 			for (int i = 0; i < 8; i += 2)
 			{
 				for (int j = 0; j < 8; j++)

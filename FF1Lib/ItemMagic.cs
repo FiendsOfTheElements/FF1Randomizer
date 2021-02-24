@@ -61,7 +61,7 @@ namespace FF1Lib
 			}
 			Spells.Shuffle(rng); // Shuffle all spells remaining, then assign to each item that can cast a spell
 
-			foreach (var item in Spells.Zip(ItemLists.AllMagicItem, (s, i) => (Spell: s, Item: i)))
+			foreach ((MagicSpell Spell, Item Item) item in Spells.Zip(ItemLists.AllMagicItem, (s, i) => (Spell: s, Item: i)))
 			{
 				WriteItemSpellData(item.Spell, item.Item);
 			}

@@ -96,7 +96,7 @@ namespace FF1Lib
 
 		public static async Task<FF1Rom> CreateAsync(Stream readStream)
 		{
-			FF1Rom rom = new FF1Rom();
+			FF1Rom rom = new();
 			await rom.LoadAsync(readStream);
 
 			return rom;
@@ -129,8 +129,8 @@ namespace FF1Lib
 			FixEnemyPalettes(); // fixes a bug in the original game's programming that causes third enemy slot's palette to render incorrectly
 			FixWarpBug(); // The warp bug must be fixed for magic level shuffle and spellcrafter
 			SeparateUnrunnables();
-			TalkRoutines talkroutines = new TalkRoutines();
-			NPCdata npcdata = new NPCdata(this);
+			TalkRoutines talkroutines = new();
+			NPCdata npcdata = new(this);
 			UpdateDialogs(npcdata);
 
 			if (flags.TournamentSafe)
@@ -142,7 +142,7 @@ namespace FF1Lib
 
 			TeleportShuffle teleporters = new();
 			Dictionary<OverworldMap.Palette, Blob> palettes = OverworldMap.GeneratePalettes(Get(OverworldMap.MapPaletteOffset, MapCount * OverworldMap.MapPaletteSize).Chunk(OverworldMap.MapPaletteSize));
-			OverworldMap overworldMap = new OverworldMap(this, flags, palettes, teleporters);
+			OverworldMap overworldMap = new(this, flags, palettes, teleporters);
 			List<Map> maps = ReadMaps();
 			ItemShopSlot shopItemLocation = ItemLocations.CaravanItemShop1;
 			string[] oldItemNames = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
@@ -202,7 +202,7 @@ namespace FF1Lib
 				}
 			}
 
-			List<MapId> flippedMaps = new List<MapId>();
+			List<MapId> flippedMaps = new();
 
 			if ((bool)flags.FlipDungeons)
 			{
@@ -344,7 +344,7 @@ namespace FF1Lib
 
 					if ((bool)flags.Shops)
 					{
-						List<Item> excludeItemsFromRandomShops = new List<Item>();
+						List<Item> excludeItemsFromRandomShops = new();
 						if ((bool)flags.Treasures)
 						{
 							excludeItemsFromRandomShops = incentivesData.ForcedItemPlacements.Select(x => x.Item).Concat(incentivesData.IncentiveItems).ToList();
