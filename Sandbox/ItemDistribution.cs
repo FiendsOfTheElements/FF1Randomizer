@@ -10,8 +10,8 @@ namespace Sandbox
 {
 	public static class ItemDistribution
 	{
-		private static List<MapLocation> ItemShops =
-			new List<MapLocation>
+		private static readonly List<MapLocation> ItemShops =
+			new()
 			{
 				MapLocation.Coneria,
 				MapLocation.Pravoka,
@@ -100,7 +100,7 @@ namespace Sandbox
 		//			if (!ItemPlacement.CheckSanity(placedItems.Where(x => x.Item != item).ToList(), fullLocationRequirements, new Flags{OnlyRequireGameIsBeatable =true}))
 		//				requirementChecks[item]++;
 		//		}
-				
+
 		//	}
 
 		//	if (iterations > 10)
@@ -113,22 +113,22 @@ namespace Sandbox
 
 		private static string PrintStats(int maxIterations, Dictionary<Item, List<int>> incentiveLocations, Dictionary<Item, List<string>> incentiveZones, Dictionary<Item, int> requirements)
 		{
-			var sb = new StringBuilder();
+			StringBuilder sb = new StringBuilder();
 			sb.Append("Location         ,");
 			foreach (Item item in incentiveLocations.Keys)
 			{
-				var name = Enum.GetName(typeof(Item), item);
+				string name = Enum.GetName(typeof(Item), item);
 				name = $"{string.Join("", Enumerable.Repeat(" ", Math.Max(1, 9 - name.Length)))}{name},";
 				sb.Append(name.Substring(0, Math.Min(12, name.Length)));
 			}
 			sb.Append("\n");
-			foreach (var rewardSource in ItemLocations.AllQuestItemLocations.Where(x => x.Address < 0x80000)) // && x.Address > 0x31FF))
+			foreach (IRewardSource rewardSource in ItemLocations.AllQuestItemLocations.Where(x => x.Address < 0x80000)) // && x.Address > 0x31FF))
 			{
 				sb.Append($"{rewardSource.Name}" +
 						  $"{string.Join("", Enumerable.Repeat(" ", Math.Max(1, 17 - rewardSource.Name.Length)))},");
-				foreach (var itemPlacements in incentiveLocations.Values)
+				foreach (List<int> itemPlacements in incentiveLocations.Values)
 				{
-					var percentage = $"   {100.0 * itemPlacements.Count(x => x == rewardSource.Address) / maxIterations:g2}";
+					string percentage = $"   {100.0 * itemPlacements.Count(x => x == rewardSource.Address) / maxIterations:g2}";
 					percentage = $"{string.Join("", Enumerable.Repeat(" ", Math.Max(1, 9 - percentage.Length)))}{percentage},";
 					sb.Append(percentage);
 				}
@@ -137,14 +137,18 @@ namespace Sandbox
 			sb.Append("\n");
 			foreach (MapLocation zone in Enum.GetValues(typeof(MapLocation)))
 			{
-				var zoneName = Enum.GetName(typeof(MapLocation), zone);
-				var locationCount = ItemLocations.AllQuestItemLocations.Count(x => x.Address < 0x80000 && x.MapLocation == zone);
-				if (locationCount <= 0) continue;
+				string zoneName = Enum.GetName(typeof(MapLocation), zone);
+				int locationCount = ItemLocations.AllQuestItemLocations.Count(x => x.Address < 0x80000 && x.MapLocation == zone);
+				if (locationCount <= 0)
+				{
+					continue;
+				}
+
 				sb.Append($"{zoneName}" +
 						  $"{string.Join("", Enumerable.Repeat(" ", Math.Max(1, 17 - zoneName.Length)))},");
-				foreach (var itemPlacements in incentiveZones.Values)
+				foreach (List<string> itemPlacements in incentiveZones.Values)
 				{
-					var percentage = $"   {100.0 * (itemPlacements.Count(x => x == zoneName) / locationCount) / maxIterations:g2}";
+					string percentage = $"   {100.0 * (itemPlacements.Count(x => x == zoneName) / locationCount) / maxIterations:g2}";
 					percentage = $"{string.Join("", Enumerable.Repeat(" ", Math.Max(1, 9 - percentage.Length)))}{percentage},";
 					sb.Append(percentage);
 				}
@@ -152,9 +156,9 @@ namespace Sandbox
 			}
 			sb.Append("\n");
 			sb.Append($"Required         ,");
-			foreach (var requiredCount in requirements.Values)
+			foreach (int requiredCount in requirements.Values)
 			{
-				var percentage = $"   {100.0 * requiredCount / maxIterations:g2}";
+				string percentage = $"   {100.0 * requiredCount / maxIterations:g2}";
 				percentage = $"{string.Join("", Enumerable.Repeat(" ", Math.Max(1, 9 - percentage.Length)))}{percentage},";
 				sb.Append(percentage);
 			}

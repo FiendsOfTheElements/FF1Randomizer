@@ -1,11 +1,12 @@
+using System;
+
 namespace FFR.Common
 {
-	using System;
-
 	/// <summary>
 	/// Represents versioning information for a module or program.
 	/// </summary>
-	public struct VersionInfo {
+	public struct VersionInfo
+	{
 		public int Major { get; }
 		public int Minor { get; }
 		public int Revision { get; }
@@ -21,7 +22,7 @@ namespace FFR.Common
 
 		public override string ToString()
 		{
-			var semantics = $"{Major}.{Minor}.{Revision}";
+			string semantics = $"{Major}.{Minor}.{Revision}";
 
 			return string.IsNullOrEmpty(Tag)
 				? semantics

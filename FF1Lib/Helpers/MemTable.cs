@@ -10,9 +10,9 @@ namespace FF1Lib
 {
 	public class MemTable<T> where T : unmanaged
 	{
-		private FF1Rom rom;
-		private int address;
-		private int count;
+		private readonly FF1Rom rom;
+		private readonly int address;
+		private readonly int count;
 
 		public T[] Data { get; private set; }
 
@@ -45,33 +45,21 @@ namespace FF1Lib
 
 		public T this[int idx]
 		{
-			get
-			{
-				return Data[idx];
-			}
-			set
-			{
-				Data[idx] = value;
-			}
+			get => Data[idx];
+			set => Data[idx] = value;
 		}
 	}
 
 	public class MemTable<T, I> : MemTable<T> where T : unmanaged where I : Enum
 	{
-		public MemTable(FF1Rom _rom, int _address, int _count) : base (_rom, _address, _count)
+		public MemTable(FF1Rom _rom, int _address, int _count) : base(_rom, _address, _count)
 		{
 		}
 
 		public T this[I idx]
 		{
-			get
-			{
-				return Data[Convert.ToInt32(idx)];
-			}
-			set
-			{
-				Data[Convert.ToInt32(idx)] = value;
-			}
+			get => Data[Convert.ToInt32(idx)];
+			set => Data[Convert.ToInt32(idx)] = value;
 		}
 	}
 }

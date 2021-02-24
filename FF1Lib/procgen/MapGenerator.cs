@@ -140,10 +140,10 @@ namespace FF1Lib.Procgen
 			}
 
 			// Free NPC placement doesn't require the engine
-			var locations = map.Map.Where(element => element.Tile == reqs.Floor).ToList();
+			List<MapElement> locations = map.Map.Where(element => element.Tile == reqs.Floor).ToList();
 			reqs.FreeNPCs.ToList().ForEach(npc =>
 			{
-				var location = locations.SpliceRandom(rng);
+				MapElement location = locations.SpliceRandom(rng);
 				reqs.Rom.MoveNpc(reqs.MapId, npc, location.X, location.Y, false, false);
 			});
 

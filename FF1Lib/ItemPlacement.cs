@@ -16,7 +16,7 @@ namespace FF1Lib
 	{
 		private const Item ReplacementItem = Item.Cabin;
 
-		private List<IRewardSource> TrapChests = new List<IRewardSource>()
+		private readonly List<IRewardSource> TrapChests = new()
 		{
 			ItemLocations.ToFTopRight2, // In-Out trap tile forced
 			ItemLocations.ToFBottomRight, // Locked trap tile
@@ -39,13 +39,14 @@ namespace FF1Lib
 		public static ItemPlacement Create(IItemPlacementFlags flags, IncentiveData incentivesData, List<Item> allTreasures, ItemShopSlot caravanItemLocation, OverworldMap overworldMap)
 		{
 			ItemPlacement placement;
-			placement = new GuidedItemPlacement();
-
-			placement._flags = flags;
-			placement._incentivesData = incentivesData;
-			placement._allTreasures = allTreasures;
-			placement._caravanItemLocation = caravanItemLocation;
-			placement._overworldMap = overworldMap;
+			placement = new GuidedItemPlacement
+			{
+				_flags = flags,
+				_incentivesData = incentivesData,
+				_allTreasures = allTreasures,
+				_caravanItemLocation = caravanItemLocation,
+				_overworldMap = overworldMap
+			};
 
 			return placement;
 		}
@@ -75,31 +76,31 @@ namespace FF1Lib
 
 		public List<IRewardSource> PlaceSaneItems(MT19337 rng)
 		{
-			var incentivePool = _incentivesData.IncentiveItems.Where(x => _allTreasures.Contains(x)).ToList();
-			var forcedItems = _incentivesData.ForcedItemPlacements.ToList();
+			List<Item> incentivePool = _incentivesData.IncentiveItems.Where(x => _allTreasures.Contains(x)).ToList();
+			List<IRewardSource> forcedItems = _incentivesData.ForcedItemPlacements.ToList();
 
-			var unincentivizedQuestItems =
+			List<Item> unincentivizedQuestItems =
 				ItemLists.AllQuestItems
 					.Where(x => !incentivePool.Contains(x) &&
 								_allTreasures.Contains(x) &&
 								!forcedItems.Any(y => y.Item == x))
 								.ToList();
 
-			var treasurePool = _allTreasures.ToList();
+			List<Item> treasurePool = _allTreasures.ToList();
 
 			if ((bool)_flags.GuaranteedRuseItem)
 			{
 				unincentivizedQuestItems.Add(Item.PowerRod);
 			}
-			foreach (var incentive in incentivePool)
+			foreach (Item incentive in incentivePool)
 			{
 				treasurePool.Remove(incentive);
 			}
-			foreach (var placement in forcedItems)
+			foreach (IRewardSource placement in forcedItems)
 			{
 				treasurePool.Remove(placement.Item);
 			}
-			foreach (var questItem in unincentivizedQuestItems)
+			foreach (Item questItem in unincentivizedQuestItems)
 			{
 				treasurePool.Remove(questItem);
 			}
@@ -108,7 +109,7 @@ namespace FF1Lib
 				unincentivizedQuestItems.Add(Item.Shard);
 			}
 
-			ItemPlacementContext ctx = new ItemPlacementContext
+			ItemPlacementContext ctx = new()
 			{
 				Forced = forcedItems,
 				Incentivized = incentivePool,
@@ -117,7 +118,7 @@ namespace FF1Lib
 			};
 
 			ItemPlacementResult result = DoSanePlacement(rng, ctx);
-			var placedItems = result.PlacedItems;
+			List<IRewardSource> placedItems = result.PlacedItems;
 			treasurePool = result.RemainingTreasures;
 
 			if ((bool)_flags.FreeBridge)
@@ -156,29 +157,29 @@ namespace FF1Lib
 				Console.WriteLine("Item     Entrance  ->  Floor  ->  Source                             Requirements");
 				Console.WriteLine("----------------------------------------------------------------------------------------------------");
 
-				var sorted = placedItems.Where(item => item.Item != Item.Shard).ToList();
+				List<IRewardSource> sorted = placedItems.Where(item => item.Item != Item.Shard).ToList();
 				sorted.Sort((IRewardSource lhs, IRewardSource rhs) => lhs.Item.ToString().CompareTo(rhs.Item.ToString()));
 				sorted.ForEach(item =>
 				{
-					if (_overworldMap.FullLocationRequirements.TryGetValue(item.MapLocation, out var flr))
+					if (_overworldMap.FullLocationRequirements.TryGetValue(item.MapLocation, out Tuple<List<MapChange>, AccessRequirement> flr))
 					{
-						var overworldLocation = item.MapLocation.ToString();
-						if (_overworldMap.OverriddenOverworldLocations != null && _overworldMap.OverriddenOverworldLocations.TryGetValue(item.MapLocation, out var overriden))
+						string overworldLocation = item.MapLocation.ToString();
+						if (_overworldMap.OverriddenOverworldLocations != null && _overworldMap.OverriddenOverworldLocations.TryGetValue(item.MapLocation, out OverworldTeleportIndex overriden))
 						{
 							overworldLocation = overriden.ToString();
 						}
 
-						var itemStr = item.Item.ToString().PadRight(9);
-						var locStr = $"{overworldLocation} -> {item.MapLocation} -> {item.Name} ".PadRight(60);
-						var changes = $"({String.Join(" OR ", flr.Item1.Select(mapChange => mapChange.ToString()).ToArray())})";
-						var reqs = flr.Item2.ToString().CompareTo("None") == 0 ? "" : $" AND {flr.Item2.ToString()}";
+						string itemStr = item.Item.ToString().PadRight(9);
+						string locStr = $"{overworldLocation} -> {item.MapLocation} -> {item.Name} ".PadRight(60);
+						string changes = $"({string.Join(" OR ", flr.Item1.Select(mapChange => mapChange.ToString()).ToArray())})";
+						string reqs = flr.Item2.ToString().CompareTo("None") == 0 ? "" : $" AND {flr.Item2}";
 						Console.WriteLine($"{itemStr}{locStr}{changes}{reqs}");
 					}
 				});
 			}
 
 			// 8. Place all remaining unincentivized treasures or incentivized non-quest items that weren't placed
-			var itemLocationPool = _incentivesData.AllValidItemLocations.ToList();
+			List<IRewardSource> itemLocationPool = _incentivesData.AllValidItemLocations.ToList();
 			itemLocationPool = itemLocationPool.Where(x => !x.IsUnused && !placedItems.Any(y => y.Address == x.Address)).ToList();
 
 			if ((bool)_flags.NoMasamune)
@@ -187,7 +188,7 @@ namespace FF1Lib
 				treasurePool.Remove(Item.Masamune);
 				treasurePool.Add(Item.Cabin);
 			}
-			else if((bool)_flags.GuaranteedMasamune)
+			else if ((bool)_flags.GuaranteedMasamune)
 			{
 				// Remove Masamune chest from shuffle, Remove Cabin from item pool
 				itemLocationPool = itemLocationPool.Where(x => !x.Equals(ItemLocations.ToFRMasmune)).ToList();
@@ -205,7 +206,7 @@ namespace FF1Lib
 				}
 			}
 
-			foreach (var placedItem in placedItems)
+			foreach (IRewardSource placedItem in placedItems)
 			{
 				incentivePool.Remove(placedItem.Item);
 			}
@@ -217,42 +218,45 @@ namespace FF1Lib
 			{
 				// We want to leave out anything incentivized (and thus already placed), but
 				// add all the other stuff that you can't find in vanilla.
-				var randomTreasure = treasurePool.ToList();
+				List<Item> randomTreasure = treasurePool.ToList();
 				randomTreasure.AddRange(ItemLists.CommonWeaponTier);
 				randomTreasure.AddRange(ItemLists.CommonArmorTier);
 				randomTreasure.Add(Item.CatClaw);
 				randomTreasure.Add(Item.SteelArmor);
 
-				ItemGenerator generator = new ItemGenerator(randomTreasure, _flags.WorldWealth);
+				ItemGenerator generator = new(randomTreasure, _flags.WorldWealth);
 				treasurePool = treasurePool.Select(treasure => generator.GetItem(rng)).ToList();
 			}
 
 			if ((bool)_flags.BetterTrapChests)
 			{
 				// First we'll make a list of all 'notable' treasure.
-				var notableTreasureList = new List<Item>()
+				IEnumerable<Item> notableTreasureList = new List<Item>()
 					.Concat(ItemLists.UberTier)
 					.Concat(ItemLists.LegendaryWeaponTier)
 					.Concat(ItemLists.LegendaryArmorTier)
 					.Concat(ItemLists.RareWeaponTier)
 					.Concat(ItemLists.RareArmorTier);
 				// Convert the list to a HashSet since we'll be doing lookups in it.
-				var notableTreasure = new HashSet<Item>(notableTreasureList);
+				HashSet<Item> notableTreasure = new HashSet<Item>(notableTreasureList);
 
 				// We sort the treasure pool based on value (sort of) and pull out the highest ranked ones to put
 				// in the trap chests we picked out.
-				var notableTreasurePool = treasurePool.Where(item => notableTreasure.Contains(item)).ToList();
+				List<Item> notableTreasurePool = treasurePool.Where(item => notableTreasure.Contains(item)).ToList();
 
 				// Since some chests might be incentivized, remove those that aren't in the pool.
-				var trapChestPool = TrapChests.Where(chest => itemLocationPool.Contains(chest));
+				IEnumerable<IRewardSource> trapChestPool = TrapChests.Where(chest => itemLocationPool.Contains(chest));
 
-				foreach (var chest in trapChestPool)
+				foreach (IRewardSource chest in trapChestPool)
 				{
 					// It seems unlikely that is possible, but just in case.
-					if (!notableTreasurePool.Any()) break;
+					if (!notableTreasurePool.Any())
+					{
+						break;
+					}
 
 					// Pick a random treasure and place it.
-					var treasure = notableTreasurePool.SpliceRandom(rng);
+					Item treasure = notableTreasurePool.SpliceRandom(rng);
 					placedItems.Add(NewItemPlacement(chest, treasure));
 
 					// Since it was placed, remove both the item and location from the remaining pool.
@@ -267,17 +271,20 @@ namespace FF1Lib
 			treasurePool.Shuffle(rng);
 			itemLocationPool.Shuffle(rng);
 
-			var leftovers = treasurePool.Zip(itemLocationPool, (treasure, location) => NewItemPlacement(location, treasure));
+			IEnumerable<IRewardSource> leftovers = treasurePool.Zip(itemLocationPool, (treasure, location) => NewItemPlacement(location, treasure));
 			placedItems.AddRange(leftovers);
 			return placedItems;
 		}
 
 		public Item SelectVendorItem(List<Item> incentives, List<Item> nonincentives, List<Item> treasurePool, List<IRewardSource> incentiveLocationPool, MT19337 rng)
 		{
-			if (!(bool)_flags.NPCItems) return Item.Bottle;
+			if (!(bool)_flags.NPCItems)
+			{
+				return Item.Bottle;
+			}
 
-			var itemShopItem = Item.Cabin;
-			var validShopIncentives = incentives.Where(x => x > Item.None && x <= Item.Soft).ToList();
+			Item itemShopItem = Item.Cabin;
+			List<Item> validShopIncentives = incentives.Where(x => x > Item.None && x <= Item.Soft).ToList();
 			if (validShopIncentives.Any() && incentiveLocationPool.Any(x => x.Address == ItemLocations.CaravanItemShop1.Address))
 			{
 				itemShopItem = validShopIncentives.PickRandom(rng);
@@ -331,14 +338,14 @@ namespace FF1Lib
 
 		{
 			const int maxIterations = 20;
-			var currentIteration = 0;
-			var currentAccess = AccessRequirement.None;
+			int currentIteration = 0;
+			AccessRequirement currentAccess = AccessRequirement.None;
 			if ((bool)victoryConditions.FreeLute)
 			{
 				currentAccess |= AccessRequirement.Lute;
 			}
 
-			var currentMapChanges = MapChange.None;
+			MapChange currentMapChanges = MapChange.None;
 			if (victoryConditions.FreeBridge ?? false)
 			{
 				currentMapChanges |= MapChange.Bridge;
@@ -366,7 +373,7 @@ namespace FF1Lib
 			}
 			IEnumerable<IRewardSource> currentItemLocations()
 			{
-				var locations = currentMapLocations().ToList();
+				List<MapLocation> locations = currentMapLocations().ToList();
 				return treasurePlacements.Where(x =>
 				{
 					return locations.Contains(x.MapLocation) && currentAccess.HasFlag(x.AccessRequirement) &&
@@ -374,10 +381,10 @@ namespace FF1Lib
 				});
 			}
 
-			var requiredAccess = AccessRequirement.All;
-			var requiredMapChanges = new List<MapChange> { MapChange.All };
+			AccessRequirement requiredAccess = AccessRequirement.All;
+			List<MapChange> requiredMapChanges = new List<MapChange> { MapChange.All };
 
-			var accessibleLocationCount = 0;
+			int accessibleLocationCount = 0;
 			while (!currentAccess.HasFlag(requiredAccess) ||
 				   !requiredMapChanges.Any(x => currentMapChanges.HasFlag(x)))
 			{
@@ -387,46 +394,76 @@ namespace FF1Lib
 				}
 
 				currentIteration++;
-				var accessibleLocations = currentItemLocations().ToList();
+				List<IRewardSource> accessibleLocations = currentItemLocations().ToList();
 				if (accessibleLocations.Count <= accessibleLocationCount)
 				{
 					return (false, currentMapLocations().ToList(), currentAccess);
 				}
 
 				accessibleLocationCount = accessibleLocations.Count;
-				var currentItems = accessibleLocations.Select(x => x.Item).ToList();
+				List<Item> currentItems = accessibleLocations.Select(x => x.Item).ToList();
 
 				if (!currentAccess.HasFlag(AccessRequirement.Key) &&
 					currentItems.Contains(Item.Key))
+				{
 					currentAccess |= AccessRequirement.Key;
+				}
+
 				if (!currentMapChanges.HasFlag(MapChange.Bridge) &&
 					currentItems.Contains(Item.Bridge))
+				{
 					currentMapChanges |= MapChange.Bridge;
+				}
+
 				if (!currentAccess.HasFlag(AccessRequirement.Crown) &&
 					currentItems.Contains(Item.Crown))
+				{
 					currentAccess |= AccessRequirement.Crown;
+				}
+
 				if (!currentAccess.HasFlag(AccessRequirement.Crystal) &&
 					currentItems.Contains(Item.Crystal))
+				{
 					currentAccess |= AccessRequirement.Crystal;
+				}
+
 				if (!currentAccess.HasFlag(AccessRequirement.Herb) &&
 					currentItems.Contains(Item.Herb))
+				{
 					currentAccess |= AccessRequirement.Herb;
+				}
+
 				if (!currentMapChanges.HasFlag(MapChange.Canoe) &&
 					currentItems.Contains(Item.Canoe))
+				{
 					currentMapChanges |= MapChange.Canoe;
+				}
+
 				if (!currentMapChanges.HasFlag(MapChange.Ship) &&
 					currentItems.Contains(Item.Ship))
+				{
 					currentMapChanges |= MapChange.Ship;
+				}
+
 				if (!currentAccess.HasFlag(AccessRequirement.Tnt) &&
 					currentItems.Contains(Item.Tnt))
+				{
 					currentAccess |= AccessRequirement.Tnt;
+				}
+
 				if (!currentAccess.HasFlag(AccessRequirement.Adamant) &&
 					currentItems.Contains(Item.Adamant))
+				{
 					currentAccess |= AccessRequirement.Adamant;
+				}
+
 				if (!currentMapChanges.HasFlag(MapChange.Canal) &&
 					currentItems.Contains(Item.Canal) &&
 					currentMapChanges.HasFlag(MapChange.Ship))
+				{
 					currentMapChanges |= MapChange.Canal;
+				}
+
 				if (!currentMapChanges.HasFlag(MapChange.TitanFed) &&
 					currentItems.Contains(Item.Ruby) &&
 					(currentMapLocations().Contains(MapLocation.TitansTunnelEast) ||
@@ -437,41 +474,76 @@ namespace FF1Lib
 				}
 				if (!currentAccess.HasFlag(AccessRequirement.Rod) &&
 					currentItems.Contains(Item.Rod))
+				{
 					currentAccess |= AccessRequirement.Rod;
+				}
+
 				if (!currentAccess.HasFlag(AccessRequirement.Slab) &&
 					currentItems.Contains(Item.Slab))
+				{
 					currentAccess |= AccessRequirement.Slab;
+				}
+
 				if (!currentMapChanges.HasFlag(MapChange.Airship) &&
-					(currentItems.Contains(Item.Floater)) &&
+					currentItems.Contains(Item.Floater) &&
 					currentMapLocations().Contains(MapLocation.AirshipLocation))
+				{
 					currentMapChanges |= MapChange.Airship;
+				}
+
 				if (!currentAccess.HasFlag(AccessRequirement.Bottle) &&
 					currentItems.Contains(Item.Bottle))
+				{
 					currentAccess |= AccessRequirement.Bottle;
+				}
+
 				if (!currentAccess.HasFlag(AccessRequirement.Oxyale) &&
 					currentItems.Contains(Item.Oxyale))
+				{
 					currentAccess |= AccessRequirement.Oxyale;
+				}
+
 				if (!currentMapChanges.HasFlag(MapChange.Chime) &&
 					currentItems.Contains(Item.Chime))
+				{
 					currentMapChanges |= MapChange.Chime;
+				}
+
 				if (!currentAccess.HasFlag(AccessRequirement.Cube) &&
 					currentItems.Contains(Item.Cube))
+				{
 					currentAccess |= AccessRequirement.Cube;
+				}
+
 				if (!currentAccess.HasFlag(AccessRequirement.EarthOrb) &&
 					currentItems.Contains(Item.EarthOrb))
+				{
 					currentAccess |= AccessRequirement.EarthOrb;
+				}
+
 				if (!currentAccess.HasFlag(AccessRequirement.FireOrb) &&
 					currentItems.Contains(Item.FireOrb))
+				{
 					currentAccess |= AccessRequirement.FireOrb;
+				}
+
 				if (!currentAccess.HasFlag(AccessRequirement.WaterOrb) &&
 					currentItems.Contains(Item.WaterOrb))
+				{
 					currentAccess |= AccessRequirement.WaterOrb;
+				}
+
 				if (!currentAccess.HasFlag(AccessRequirement.AirOrb) &&
 					currentItems.Contains(Item.AirOrb))
+				{
 					currentAccess |= AccessRequirement.AirOrb;
+				}
+
 				if (!currentAccess.HasFlag(AccessRequirement.Lute) &&
 					currentItems.Contains(Item.Lute))
+				{
 					currentAccess |= AccessRequirement.Lute;
+				}
 			}
 
 			return (true, currentMapLocations().ToList(), currentAccess);
@@ -482,37 +554,40 @@ namespace FF1Lib
 	{
 		protected override ItemPlacementResult DoSanePlacement(MT19337 rng, ItemPlacementContext ctx)
 		{
-			var itemLocationPool = _incentivesData.AllValidItemLocations.ToList();
-			var incentiveLocationPool = _incentivesData.IncentiveLocations.ToList();
-			var keyLocations = _incentivesData.KeyLocations.ToList();
-			var canoeLocations = _incentivesData.CanoeLocations.ToList();
-			var bridgeLocations = _incentivesData.BridgeLocations.ToList();
-			var shipLocations = _incentivesData.ShipLocations.ToList();
+			List<IRewardSource> itemLocationPool = _incentivesData.AllValidItemLocations.ToList();
+			List<IRewardSource> incentiveLocationPool = _incentivesData.IncentiveLocations.ToList();
+			List<IRewardSource> keyLocations = _incentivesData.KeyLocations.ToList();
+			List<IRewardSource> canoeLocations = _incentivesData.CanoeLocations.ToList();
+			List<IRewardSource> bridgeLocations = _incentivesData.BridgeLocations.ToList();
+			List<IRewardSource> shipLocations = _incentivesData.ShipLocations.ToList();
 
-			var canoeObsoletesBridge = (bool)_flags.MapCanalBridge && (bool)_flags.MapConeriaDwarves;
-			var canoeObsoletesShip = (bool)_flags.MapCanalBridge ? ((bool)_flags.MapConeriaDwarves || (bool)_flags.MapVolcanoIceRiver) : ((bool)_flags.MapConeriaDwarves && (bool)_flags.MapVolcanoIceRiver);
+			bool canoeObsoletesBridge = (bool)_flags.MapCanalBridge && (bool)_flags.MapConeriaDwarves;
+			bool canoeObsoletesShip = (bool)_flags.MapCanalBridge ? ((bool)_flags.MapConeriaDwarves || (bool)_flags.MapVolcanoIceRiver) : ((bool)_flags.MapConeriaDwarves && (bool)_flags.MapVolcanoIceRiver);
 
 			Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullLocationRequirements = _overworldMap.FullLocationRequirements;
 			Dictionary<MapLocation, OverworldTeleportIndex> overridenOverworld = _overworldMap.OverriddenOverworldLocations;
 
-			var startingPotentialAccess = _overworldMap.StartingPotentialAccess;
-			var startingMapLocations = AccessibleMapLocations(startingPotentialAccess, MapChange.None, fullLocationRequirements);
-			var earlyMapLocations = AccessibleMapLocations(startingPotentialAccess | AccessRequirement.Crystal, MapChange.Bridge, fullLocationRequirements);
+			AccessRequirement startingPotentialAccess = _overworldMap.StartingPotentialAccess;
+			List<MapLocation> startingMapLocations = AccessibleMapLocations(startingPotentialAccess, MapChange.None, fullLocationRequirements);
+			List<MapLocation> earlyMapLocations = AccessibleMapLocations(startingPotentialAccess | AccessRequirement.Crystal, MapChange.Bridge, fullLocationRequirements);
 
 			List<IRewardSource> placedItems = null;
 			List<Item> treasurePool = null;
-			var itemShopItem = Item.Bottle;
+			Item itemShopItem = Item.Bottle;
 
 			_sanityCounter = 0;
 
 			do
 			{
 				_sanityCounter++;
-				if (_sanityCounter > 20) throw new InsaneException("RandomItemPlacement Failure!");
+				if (_sanityCounter > 20)
+				{
+					throw new InsaneException("RandomItemPlacement Failure!");
+				}
 				// 1. (Re)Initialize lists inside of loop
 				placedItems = ctx.Forced.ToList();
-				var incentives = ctx.Incentivized.ToList();
-				var nonincentives = ctx.Unincentivized.ToList();
+				List<Item> incentives = ctx.Incentivized.ToList();
+				List<Item> nonincentives = ctx.Unincentivized.ToList();
 				treasurePool = ctx.AllTreasures.ToList();
 				incentives.Shuffle(rng);
 				nonincentives.Shuffle(rng);
@@ -533,25 +608,29 @@ namespace FF1Lib
 						placedItems.Add(NewItemPlacement(canoeLocations.Where(x => !placedItems.Any(y => y.Address == x.Address)).ToList().PickRandom(rng), Item.Canoe));
 					}
 
-					var startingCanoeAvailable =
+					bool startingCanoeAvailable =
 						placedItems.Any(x => x.Item == Item.Canoe && startingMapLocations.Contains(x.MapLocation) &&
 							startingMapLocations.Contains((x as MapObject)?.SecondLocation ?? MapLocation.StartingLocation));
-					var earlyCanoeAvailable =
+					bool earlyCanoeAvailable =
 						placedItems.Any(x => x.Item == Item.Canoe && earlyMapLocations.Contains(x.MapLocation) &&
 							earlyMapLocations.Contains((x as MapObject)?.SecondLocation ?? MapLocation.StartingLocation));
-					var earlyKeyAvailable =
+					bool earlyKeyAvailable =
 						placedItems.Any(x => x.Item == Item.Key && earlyMapLocations.Contains(x.MapLocation) &&
 							earlyMapLocations.Contains((x as MapObject)?.SecondLocation ?? MapLocation.StartingLocation));
 
 					// 4. Place Bridge and Ship next since the valid location lists are so small, unless canoe is available and map edits are applied
 					if (!earlyCanoeAvailable || !canoeObsoletesShip)
 					{
-						var remainingShipLocations =
+						List<IRewardSource> remainingShipLocations =
 							shipLocations
 								.Where(x => !placedItems.Any(y => y.Address == x.Address) &&
 										(earlyKeyAvailable || !x.AccessRequirement.HasFlag(AccessRequirement.Key)))
 								.ToList();
-						if (!remainingShipLocations.Any()) continue;
+						if (!remainingShipLocations.Any())
+						{
+							continue;
+						}
+
 						if (incentives.Remove(Item.Ship) && remainingShipLocations.Any(x => incentiveLocationPool.Any(y => y.Address == x.Address)))
 						{
 							remainingShipLocations =
@@ -563,22 +642,26 @@ namespace FF1Lib
 						placedItems.Add(NewItemPlacement(remainingShipLocations.PickRandom(rng), Item.Ship));
 					}
 
-					var startingShipAvailable =
+					bool startingShipAvailable =
 						placedItems.Any(x => x.Item == Item.Ship && startingMapLocations.Contains(x.MapLocation) &&
 							startingMapLocations.Contains((x as MapObject)?.SecondLocation ?? MapLocation.StartingLocation));
 
-					if (!(startingCanoeAvailable && canoeObsoletesBridge) && !startingShipAvailable && !((bool)_flags.FreeBridge))
+					if (!(startingCanoeAvailable && canoeObsoletesBridge) && !startingShipAvailable && !(bool)_flags.FreeBridge)
 					{
-						var startingKeyAvailable =
+						bool startingKeyAvailable =
 							earlyKeyAvailable && placedItems.Any(x => x.Item == Item.Key && startingMapLocations.Contains(x.MapLocation) &&
 								startingMapLocations.Contains((x as MapObject)?.SecondLocation ?? MapLocation.StartingLocation));
 
-						var remainingBridgeLocations =
+						List<IRewardSource> remainingBridgeLocations =
 							bridgeLocations
 								.Where(x => !placedItems.Any(y => y.Address == x.Address) &&
 										(startingKeyAvailable || !x.AccessRequirement.HasFlag(AccessRequirement.Key)))
 								.ToList();
-						if (!remainingBridgeLocations.Any()) continue;
+						if (!remainingBridgeLocations.Any())
+						{
+							continue;
+						}
+
 						if (incentives.Remove(Item.Bridge) && remainingBridgeLocations.Any(x => incentiveLocationPool.Any(y => y.Address == x.Address)))
 						{
 							remainingBridgeLocations =
@@ -592,23 +675,27 @@ namespace FF1Lib
 				}
 
 				// 5. Then place all incentive locations that don't have special logic
-				var incentiveLocations = incentiveLocationPool.Where(x => !placedItems.Any(y => y.Address == x.Address) && x.Address != ItemLocations.CaravanItemShop1.Address).ToList();
+				List<IRewardSource> incentiveLocations = incentiveLocationPool.Where(x => !placedItems.Any(y => y.Address == x.Address) && x.Address != ItemLocations.CaravanItemShop1.Address).ToList();
 				incentiveLocations.Shuffle(rng);
-				foreach (var incentiveLocation in incentiveLocations)
+				foreach (IRewardSource incentiveLocation in incentiveLocations)
 				{
-					if (!incentives.Any()) break;
+					if (!incentives.Any())
+					{
+						break;
+					}
+
 					placedItems.Add(NewItemPlacement(incentiveLocation, incentives.SpliceRandom(rng)));
 				}
 
 				// 6. Then place remanining incentive items and unincentivized quest items in any other chest before ToFR
-				var leftoverItems = incentives.Concat(nonincentives).ToList();
+				List<Item> leftoverItems = incentives.Concat(nonincentives).ToList();
 				leftoverItems.Shuffle(rng);
-				var leftoverItemLocations =
+				List<IRewardSource> leftoverItemLocations =
 					itemLocationPool
 						 .Where(x => !ItemLocations.ToFR.Any(y => y.Address == x.Address) &&
 								!x.IsUnused && !placedItems.Any(y => y.Address == x.Address))
 						 .ToList();
-				foreach (var leftoverItem in leftoverItems)
+				foreach (Item leftoverItem in leftoverItems)
 				{
 					placedItems.Add(NewItemPlacement(leftoverItemLocations.SpliceRandom(rng), leftoverItem));
 				}
@@ -625,27 +712,32 @@ namespace FF1Lib
 		protected override ItemPlacementResult DoSanePlacement(MT19337 rng, ItemPlacementContext ctx)
 		{
 			_sanityCounter = 0;
-			var incentiveLocationPool = _incentivesData.IncentiveLocations.ToList();
-			var preBlackOrbLocationPool = _incentivesData.AllValidPreBlackOrbItemLocations.ToList();
-			var preBlackOrbUnincentivizedLocationPool = preBlackOrbLocationPool.Where(x => !incentiveLocationPool.Any(y => y.Address == x.Address)).ToList();
+			List<IRewardSource> incentiveLocationPool = _incentivesData.IncentiveLocations.ToList();
+			List<IRewardSource> preBlackOrbLocationPool = _incentivesData.AllValidPreBlackOrbItemLocations.ToList();
+			List<IRewardSource> preBlackOrbUnincentivizedLocationPool = preBlackOrbLocationPool.Where(x => !incentiveLocationPool.Any(y => y.Address == x.Address)).ToList();
 			if ((bool)_flags.LooseExcludePlacedDungeons)
+			{
 				preBlackOrbUnincentivizedLocationPool = IncentivizedDungeons();
+			}
 
 			Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullLocationRequirements = _overworldMap.FullLocationRequirements;
 			Dictionary<MapLocation, OverworldTeleportIndex> overridenOverworld = _overworldMap.OverriddenOverworldLocations;
 
 			List<IRewardSource> placedItems = null;
 			List<Item> treasurePool = null;
-			var itemShopItem = Item.Bottle;
+			Item itemShopItem = Item.Bottle;
 
 			do
 			{
 				_sanityCounter++;
-				if (_sanityCounter > 20) throw new InsaneException("Item Placement could not meet incentivization requirements!");
+				if (_sanityCounter > 20)
+				{
+					throw new InsaneException("Item Placement could not meet incentivization requirements!");
+				}
 				// 1. (Re)Initialize lists inside of loop
 				placedItems = ctx.Forced.ToList();
-				var incentives = ctx.Incentivized.ToList();
-				var nonincentives = ctx.Unincentivized.ToList();
+				List<Item> incentives = ctx.Incentivized.ToList();
+				List<Item> nonincentives = ctx.Unincentivized.ToList();
 				treasurePool = ctx.AllTreasures.ToList();
 				incentives.Shuffle(rng);
 				nonincentives.Shuffle(rng);
@@ -661,27 +753,46 @@ namespace FF1Lib
 					itemShopItem = SelectVendorItem(incentives, nonincentives, treasurePool, incentiveLocationPool, rng);
 
 					// unrestricted items can get placed anywhere in the game. Everything else will only be placed where we can reach at this point.
-					List<Item> unrestricted = new List<Item> { Item.Key, Item.Canoe, Item.Floater };
+					List<Item> unrestricted = new() { Item.Key, Item.Canoe, Item.Floater };
 
 					// We will place these items in this very order so that we can ensure the bridge is early, and we don't need the floater to find the ship.
-					List<Item> fixedPlacements = new List<Item> { Item.Key, Item.Bridge, Item.Canoe };
-					List<Item> nextPlacements = new List<Item> { Item.Ship, Item.Canal };
-					List<Item> lastPlacements = new List<Item> { Item.Floater, Item.Lute, Item.Crown, Item.Crystal, Item.Herb, Item.Tnt, Item.Adamant,
-						Item.Slab, Item.Ruby, Item.Rod, Item.Chime, Item.Tail, Item.Cube, Item.Bottle, Item.Oxyale };
+					List<Item> fixedPlacements = new() { Item.Key, Item.Bridge, Item.Canoe };
+					List<Item> nextPlacements = new() { Item.Ship, Item.Canal };
+					List<Item> lastPlacements = new()
+					{
+						Item.Floater,
+						Item.Lute,
+						Item.Crown,
+						Item.Crystal,
+						Item.Herb,
+						Item.Tnt,
+						Item.Adamant,
+						Item.Slab,
+						Item.Ruby,
+						Item.Rod,
+						Item.Chime,
+						Item.Tail,
+						Item.Cube,
+						Item.Bottle,
+						Item.Oxyale
+					};
 
-					if ((bool)_flags.EarlierRuby) {
+					if ((bool)_flags.EarlierRuby)
+					{
 						nextPlacements.Add(Item.Ruby);
 						lastPlacements.Remove(Item.Ruby);
 					}
 
 					nextPlacements.Shuffle(rng);
 					lastPlacements.Shuffle(rng);
-					var allPlacements = fixedPlacements.Concat(nextPlacements).Concat(lastPlacements);
+					IEnumerable<Item> allPlacements = fixedPlacements.Concat(nextPlacements).Concat(lastPlacements);
 
-					foreach (var item in allPlacements)
+					foreach (Item item in allPlacements)
 					{
 						if (placedItems.Any(x => x.Item == item))
+						{
 							continue;
+						}
 
 						if (item == itemShopItem)
 						{
@@ -690,15 +801,15 @@ namespace FF1Lib
 							continue;
 						}
 
-						var (_, mapLocations, requirements) = CheckSanity(placedItems, fullLocationRequirements, _flags);
-						var isIncentive = incentives.Contains(item);
-						var locationPool = isIncentive ? incentiveLocationPool : preBlackOrbUnincentivizedLocationPool;
-						var itemPool = isIncentive ? incentives : nonincentives;
+						(bool _, List<MapLocation> mapLocations, AccessRequirement requirements) = CheckSanity(placedItems, fullLocationRequirements, _flags);
+						bool isIncentive = incentives.Contains(item);
+						List<IRewardSource> locationPool = isIncentive ? incentiveLocationPool : preBlackOrbUnincentivizedLocationPool;
+						List<Item> itemPool = isIncentive ? incentives : nonincentives;
 
-						System.Diagnostics.Debug.Assert(itemPool.Contains(item));
+						Debug.Assert(itemPool.Contains(item));
 
 						// Can we find a home for this item at this point in the exploration?
-						var rewardSources = locationPool.Where(x => !placedItems.Any(y => y.Address == x.Address)
+						List<IRewardSource> rewardSources = locationPool.Where(x => !placedItems.Any(y => y.Address == x.Address)
 							&& x.Address != ItemLocations.CaravanItemShop1.Address
 							&& (unrestricted.Contains(item) || IsRewardSourceAccessible(x, requirements, mapLocations)))
 							.ToList();
@@ -719,24 +830,30 @@ namespace FF1Lib
 				}
 
 				// 5. Then place all incentive locations that don't have special logic
-				var incentiveLocations = incentiveLocationPool.Where(x => !placedItems.Any(y => y.Address == x.Address) && x.Address != ItemLocations.CaravanItemShop1.Address).ToList();
+				List<IRewardSource> incentiveLocations = incentiveLocationPool.Where(x => !placedItems.Any(y => y.Address == x.Address) && x.Address != ItemLocations.CaravanItemShop1.Address).ToList();
 				incentiveLocations.Shuffle(rng);
-				foreach (var incentiveLocation in incentiveLocations)
+				foreach (IRewardSource incentiveLocation in incentiveLocations)
 				{
-					if (!incentives.Any()) break;
+					if (!incentives.Any())
+					{
+						break;
+					}
+
 					placedItems.Add(NewItemPlacement(incentiveLocation, incentives.SpliceRandom(rng)));
 				}
 
 				// 6. Then place remanining incentive items and unincentivized quest items in any other chest before ToFR
-				var leftoverItems = incentives.Concat(nonincentives).ToList();
+				List<Item> leftoverItems = incentives.Concat(nonincentives).ToList();
 				leftoverItems.Shuffle(rng);
 
-				var leftoverItemLocations = preBlackOrbLocationPool.Where(x => !placedItems.Any(y => y.Address == x.Address)).ToList();
+				List<IRewardSource> leftoverItemLocations = preBlackOrbLocationPool.Where(x => !placedItems.Any(y => y.Address == x.Address)).ToList();
 
 				if ((bool)_flags.LooseExcludePlacedDungeons)
+				{
 					leftoverItemLocations = preBlackOrbUnincentivizedLocationPool.Where(x => !placedItems.Any(y => y.Address == x.Address)).ToList();
-				
-				foreach (var leftoverItem in leftoverItems)
+				}
+
+				foreach (Item leftoverItem in leftoverItems)
 				{
 					placedItems.Add(NewItemPlacement(leftoverItemLocations.SpliceRandom(rng), leftoverItem));
 				}
@@ -749,12 +866,14 @@ namespace FF1Lib
 
 		private List<IRewardSource> IncentivizedDungeons()
 		{
-			var placedDungeons = new List<IRewardSource>();
+			List<IRewardSource> placedDungeons = new List<IRewardSource>();
 
-			foreach (var incentiveLocation in _incentivesData.IncentiveLocations.ToList())
+			foreach (IRewardSource incentiveLocation in _incentivesData.IncentiveLocations.ToList())
 			{
-				if(incentiveLocation.GetType().Equals(typeof(TreasureChest)))
+				if (incentiveLocation.GetType().Equals(typeof(TreasureChest)))
+				{
 					placedDungeons.AddRange(_incentivesData.AllValidPreBlackOrbItemLocations.Where(x => ItemLocations.MapLocationToOverworldLocations[x.MapLocation] == ItemLocations.MapLocationToOverworldLocations[incentiveLocation.MapLocation] && x.GetType().Equals(typeof(TreasureChest))));
+				}
 			}
 
 			return _incentivesData.AllValidPreBlackOrbItemLocations.Where(x => !placedDungeons.Contains(x)).ToList();

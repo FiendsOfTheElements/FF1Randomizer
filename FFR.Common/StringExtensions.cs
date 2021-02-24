@@ -1,91 +1,154 @@
 // Shamelessly lifted from Jeff Atwood & StackOverflow's codebase.
-namespace FFR.Common.StringExtensions {
-	using System;
-	using System.Text;
+using System;
+using System.Text;
 
-	public static class SlugifyExtension {
+namespace FFR.Common.StringExtensions
+{
+	public static class SlugifyExtension
+	{
 		/// <summary>
 		/// Produces optional, URL-friendly version of a title, "like-this-one".
 		/// hand-tuned for speed, reflects performance refactoring contributed
 		/// by John Gietzen (user otac0n)
 		/// </summary>
-		public static string ToSlug(this string title) {
-			if (title == null) return "";
+		public static string ToSlug(this string title)
+		{
+			if (title == null)
+			{
+				return "";
+			}
 
 			const int maxlen = 80;
 			int len = title.Length;
 			bool prevdash = false;
-			var sb = new StringBuilder(len);
+			StringBuilder sb = new StringBuilder(len);
 			char c;
 
-			for (int i = 0; i < len; i++) {
+			for (int i = 0; i < len; i++)
+			{
 				c = title[i];
-				if ((c >= 'a' && c <= 'z') || (c >= '0' && c <= '9')) {
+				if ((c >= 'a' && c <= 'z') || (c >= '0' && c <= '9'))
+				{
 					sb.Append(c);
 					prevdash = false;
-				} else if (c >= 'A' && c <= 'Z') {
+				}
+				else if (c >= 'A' && c <= 'Z')
+				{
 					// tricky way to convert to lowercase
 					sb.Append((char)(c | 32));
 					prevdash = false;
-				} else if (c == ' ' || c == ',' || c == '.' || c == '/' ||
-					  c == '\\' || c == '-' || c == '_' || c == '=') {
-					if (!prevdash && sb.Length > 0) {
+				}
+				else if (c == ' ' || c == ',' || c == '.' || c == '/' ||
+					c == '\\' || c == '-' || c == '_' || c == '=')
+				{
+					if (!prevdash && sb.Length > 0)
+					{
 						sb.Append('-');
 						prevdash = true;
 					}
-				} else if ((int)c >= 128) {
+				}
+				else if (c >= 128)
+				{
 					int prevlen = sb.Length;
 					sb.Append(RemapInternationalCharToAscii(c));
-					if (prevlen != sb.Length) prevdash = false;
+					if (prevlen != sb.Length)
+					{
+						prevdash = false;
+					}
 				}
-				if (i == maxlen) break;
+				if (i == maxlen)
+				{
+					break;
+				}
 			}
 
 			if (prevdash)
+			{
 				return sb.ToString().Substring(0, sb.Length - 1);
+			}
 			else
+			{
 				return sb.ToString();
+			}
 		}
 
-		static string RemapInternationalCharToAscii(char c) {
+		private static string RemapInternationalCharToAscii(char c)
+		{
 			string s = c.ToString().ToLowerInvariant();
-			if ("àåáâäãåą".Contains(s)) {
+			if ("àåáâäãåą".Contains(s))
+			{
 				return "a";
-			} else if ("èéêëę".Contains(s)) {
+			}
+			else if ("èéêëę".Contains(s))
+			{
 				return "e";
-			} else if ("ìíîïı".Contains(s)) {
+			}
+			else if ("ìíîïı".Contains(s))
+			{
 				return "i";
-			} else if ("òóôõöøőð".Contains(s)) {
+			}
+			else if ("òóôõöøőð".Contains(s))
+			{
 				return "o";
-			} else if ("ùúûüŭů".Contains(s)) {
+			}
+			else if ("ùúûüŭů".Contains(s))
+			{
 				return "u";
-			} else if ("çćčĉ".Contains(s)) {
+			}
+			else if ("çćčĉ".Contains(s))
+			{
 				return "c";
-			} else if ("żźž".Contains(s)) {
+			}
+			else if ("żźž".Contains(s))
+			{
 				return "z";
-			} else if ("śşšŝ".Contains(s)) {
+			}
+			else if ("śşšŝ".Contains(s))
+			{
 				return "s";
-			} else if ("ñń".Contains(s)) {
+			}
+			else if ("ñń".Contains(s))
+			{
 				return "n";
-			} else if ("ýÿ".Contains(s)) {
+			}
+			else if ("ýÿ".Contains(s))
+			{
 				return "y";
-			} else if ("ğĝ".Contains(s)) {
+			}
+			else if ("ğĝ".Contains(s))
+			{
 				return "g";
-			} else if (c == 'ř') {
+			}
+			else if (c == 'ř')
+			{
 				return "r";
-			} else if (c == 'ł') {
+			}
+			else if (c == 'ł')
+			{
 				return "l";
-			} else if (c == 'đ') {
+			}
+			else if (c == 'đ')
+			{
 				return "d";
-			} else if (c == 'ß') {
+			}
+			else if (c == 'ß')
+			{
 				return "ss";
-			} else if (c == 'Þ') {
+			}
+			else if (c == 'Þ')
+			{
 				return "th";
-			} else if (c == 'ĥ') {
+			}
+			else if (c == 'ĥ')
+			{
 				return "h";
-			} else if (c == 'ĵ') {
+			}
+			else if (c == 'ĵ')
+			{
 				return "j";
-			} else {
+			}
+			else
+			{
 				return "";
 			}
 		}

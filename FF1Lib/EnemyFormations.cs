@@ -62,15 +62,28 @@ namespace FF1Lib
 			for (int i = 0; i < FormationCount; ++i)
 			{
 				if (i >= NormalFormationCount && i <= ChaosFormationIndex)
+				{
 					continue; // skip fiends and Chaos on both sides
+				}
+
 				if ((formations[i][UnrunnableOffset] & 0x01) == 0x01 && i < NormalFormationCount)
+				{
 					unrunnableAcount++; // only add normal formations to the count for a-side
+				}
+
 				if ((formations[i][UnrunnableOffset] & 0x02) == 0x02 && (i < NormalFormationCount || i > ChaosFormationIndex))
+				{
 					unrunnableBcount++; // only add the b-sides that are not fiend/chaos fights
+				}
+
 				if (i > ChaosFormationIndex)
+				{
 					formations[i][UnrunnableOffset] &= 0xFD; // the last four fights only mark the B-side as runnable
+				}
 				else
+				{
 					formations[i][UnrunnableOffset] &= 0xFC; // while everything else in the normal encounter range is marked unrunnable
+				}
 			}
 			// Generate a shuffled list of ids for encounters
 			// We include - all normal formation A-Sides except encounter 00 (imps), all normal formation B-Sides, and the four B-sides at the end
@@ -80,9 +93,13 @@ namespace FF1Lib
 			foreach (int id in ids)
 			{
 				if (id < FormationCount)
+				{
 					formations[id][UnrunnableOffset] |= 0x01; // last bit is A-Side unrunnability
+				}
 				else
+				{
 					formations[id - FormationCount][UnrunnableOffset] |= 0x02; // and second-to-last bit is B-Side unrunnability
+				}
 			}
 			Put(FormationsOffset, formations.SelectMany(formation => formation.ToBytes()).ToArray()); // and put it all back in the ROM
 		}
@@ -240,7 +257,7 @@ namespace FF1Lib
 			Put(TilesetDataOffset, tilesets.SelectMany(tileset => tileset.ToBytes()).ToArray());
 
 			// Update Chaos script
-			var Talk_Ending = talkroutines.Add(Blob.FromHex("4C38C9"));
+			int Talk_Ending = talkroutines.Add(Blob.FromHex("4C38C9"));
 			npcdata.SetRoutine((ObjectId)0x1A, (newTalkRoutines)Talk_Ending);
 
 			//Update Fiends, Garland, Vampire, Astos and Bikke
@@ -291,7 +308,7 @@ namespace FF1Lib
 		}
 		public class Encounters
 		{
-			public List<FormationData> formations = new List<FormationData>();
+			public List<FormationData> formations = new();
 
 			public class FormationData
 			{
@@ -358,7 +375,7 @@ namespace FF1Lib
 
 				public Blob OutputBlob()
 				{
-					var formationdata = new byte[0x10];
+					byte[] formationdata = new byte[0x10];
 
 					formationdata[TypeOffset] = (byte)(((int)pattern * 0x10) + (int)spriteSheet);
 					formationdata[GFXOffset] = (byte)(gfxOffset1 + (gfxOffset2 * 0x04) + (gfxOffset3 * 0x10) + (gfxOffset4 * 0x40));

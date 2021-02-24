@@ -33,25 +33,48 @@ namespace FF1Lib.Procgen
 
 		public static List<Wall> DoSkyCastle4FMaze(MT19337 rng)
 		{
-			var cells = new EquivalenceNode<Cell>[8, 8];
+			EquivalenceNode<Cell>[,] cells = new EquivalenceNode<Cell>[8, 8];
 			for (int i = 0; i < 8; i++)
+			{
 				for (int j = 0; j < 8; j++)
+				{
 					if (i % 2 == 0 || j % 2 == 0)
+					{
 						cells[j, i] = new EquivalenceNode<Cell>(new Cell(i, j));
+					}
+				}
+			}
 
-			var walls = new List<Wall>();
+			List<Wall> walls = new List<Wall>();
 			for (int i = 0; i < 8; i += 2)
+			{
 				for (int j = 0; j < 8; j++)
+				{
 					if (j == 7)
+					{
 						walls.Add(new Wall(cells[j, i], cells[0, i]));
+					}
 					else
+					{
 						walls.Add(new Wall(cells[j, i], cells[j + 1, i]));
+					}
+				}
+			}
+
 			for (int j = 0; j < 8; j += 2)
+			{
 				for (int i = 0; i < 8; i++)
+				{
 					if (i == 7)
+					{
 						walls.Add(new Wall(cells[j, i], cells[j, 0]));
+					}
 					else
+					{
 						walls.Add(new Wall(cells[j, i], cells[j, i + 1]));
+					}
+				}
+			}
 
 			walls.Shuffle(rng);
 

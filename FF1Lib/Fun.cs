@@ -79,7 +79,7 @@ namespace FF1Lib
 
 		public void FunEnemyNames(bool teamSteak)
 		{
-			var enemyText = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
+			string[] enemyText = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
 
 			enemyText[1] = "GrUMP";
 			enemyText[2] = "RURURU"; // +2
@@ -102,8 +102,8 @@ namespace FF1Lib
 			enemyText[111] = "OKAYMAN"; // +1
 
 			// Moving IMP and GrIMP gives me another 10 bytes, for a total of 19 extra bytes, of which I'm using 16.
-			var enemyTextPart1 = enemyText.Take(2).ToArray();
-			var enemyTextPart2 = enemyText.Skip(2).ToArray();
+			string[] enemyTextPart1 = enemyText.Take(2).ToArray();
+			string[] enemyTextPart2 = enemyText.Skip(2).ToArray();
 			WriteText(enemyTextPart1, EnemyTextPointerOffset, EnemyTextPointerBase, 0x2CFEC);
 			WriteText(enemyTextPart2, EnemyTextPointerOffset + 4, EnemyTextPointerBase, EnemyTextOffset);
 		}
@@ -147,9 +147,9 @@ namespace FF1Lib
 			switch (mode)
 			{
 				case MusicShuffle.Standard:
-					List<byte> overworldTracks = new List<byte> { 0x41, 0x42, 0x44, 0x45, 0x46, 0x47, 0x4A, 0x4F };
-					List<byte> townTracks = new List<byte> { 0x41, 0x42, 0x45, 0x46, 0x47, 0x48, 0x4A, 0x4F, 0x51 };
-					List<byte> dungeonTracks = new List<byte> { 0x41, 0x42, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4A, 0x4B, 0x4C, 0x4D, 0x4E, 0x52, 0x53 };
+					List<byte> overworldTracks = new() { 0x41, 0x42, 0x44, 0x45, 0x46, 0x47, 0x4A, 0x4F };
+					List<byte> townTracks = new() { 0x41, 0x42, 0x45, 0x46, 0x47, 0x48, 0x4A, 0x4F, 0x51 };
+					List<byte> dungeonTracks = new() { 0x41, 0x42, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4A, 0x4B, 0x4C, 0x4D, 0x4E, 0x52, 0x53 };
 
 					overworldTracks.Shuffle(rng);
 					townTracks.Shuffle(rng);
@@ -170,7 +170,7 @@ namespace FF1Lib
 					Data[0x7C761] = overworldTracks[2];
 
 					//Remove used songs from other pools
-					var usedTracks = overworldTracks.Take(3).ToList();
+					List<byte> usedTracks = overworldTracks.Take(3).ToList();
 					townTracks = townTracks.Except(usedTracks).ToList();
 
 					//Town
@@ -204,7 +204,7 @@ namespace FF1Lib
 					break;
 
 				case MusicShuffle.Nonsensical: //They asked for it...
-					List<byte> tracks = new List<byte> { 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4A, 0x4B, 0x4C, 0x4D, 0x4E, 0x4F, 0x51, 0x52, 0x53, 0x55 };
+					List<byte> tracks = new() { 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4A, 0x4B, 0x4C, 0x4D, 0x4E, 0x4F, 0x51, 0x52, 0x53, 0x55 };
 					tracks.Shuffle(rng);
 
 					//Overworld
@@ -271,13 +271,38 @@ namespace FF1Lib
 					//Overwrite beginning of crystal theme with a song that initializes properly but plays no notes
 					Put(0x340C0, Blob.FromHex("FDF805E0D8C7D0C480"));
 
-					List<int> AllSongs = new List<int>
+					List<int> AllSongs = new()
 					{
-						0x7C649, 0x7C6F9, 0x7C75A, 0x7C75B, 0x7C62D, 0x7C75D,
-						0x7C235, 0x7C761, 0x7CFC3, 0x7CFC4, 0x7CFC5, 0x7CFC6,
-						0x7CFC7, 0x7CFC8, 0x7CFC9, 0x7CFCA, 0x3A226, 0x3A351,
-						0x3A56E, 0x3A597, 0x3ADB4, 0x3B677, 0x3997F, 0x37804,
-						0x3784E, 0x31E44, 0x3C5EF, 0x2D9C1, 0x36E86, 0x27C0D
+						0x7C649,
+						0x7C6F9,
+						0x7C75A,
+						0x7C75B,
+						0x7C62D,
+						0x7C75D,
+						0x7C235,
+						0x7C761,
+						0x7CFC3,
+						0x7CFC4,
+						0x7CFC5,
+						0x7CFC6,
+						0x7CFC7,
+						0x7CFC8,
+						0x7CFC9,
+						0x7CFCA,
+						0x3A226,
+						0x3A351,
+						0x3A56E,
+						0x3A597,
+						0x3ADB4,
+						0x3B677,
+						0x3997F,
+						0x37804,
+						0x3784E,
+						0x31E44,
+						0x3C5EF,
+						0x2D9C1,
+						0x36E86,
+						0x27C0D
 					};
 					//Set all music playback calls to play the new empty song
 					foreach (int address in AllSongs)
@@ -420,7 +445,7 @@ namespace FF1Lib
 			for (int i = 0; i < 8; ++i)
 			{
 				Data[0x31F85 + (i * 2)] = (byte)(xCoord - 0x10);            // X Coord of Character targeting cursor
-				Data[0x31F86 + (i * 2)] = (byte)(yCoord + 4 + ((i % 4) * 0x1C));  // Y Coord of Character targeting cursor
+				Data[0x31F86 + (i * 2)] = (byte)(yCoord + 4 + (i % 4 * 0x1C));  // Y Coord of Character targeting cursor
 				Data[0x31F76 + (i * 2)] = (byte)(0xA7 + (Math.Min(i, 4) % 4 * 0x10)); // Y Coord of Command Menu cursor (last four are identical)
 			}
 
@@ -503,41 +528,49 @@ namespace FF1Lib
 
 		public void ChangeLute(MT19337 rng)
 		{
-			var newInstruments = new List<string> {"BASS", "LYRE", "HARP", "VIOLA", "CELLO", "PIANO", "ORGAN", "FLUTE", "OBOE", "PICCOLO", "FLUTE", "WHISTLE", "HORN", "TRUMPET",
+			List<string> newInstruments = new List<string> {"BASS", "LYRE", "HARP", "VIOLA", "CELLO", "PIANO", "ORGAN", "FLUTE", "OBOE", "PICCOLO", "FLUTE", "WHISTLE", "HORN", "TRUMPET",
 				"BAGPIPE", "DRUM", "VIOLIN", "DBLBASS", "GUITAR", "BANJO", "FIDDLE", "MNDOLIN", "CLARNET", "BASSOON", "TROMBON", "TUBA", "BUGLE", "MARIMBA", "XYLOPHN","SNARE D",
 				"BASS D", "TMBRINE", "CYMBALS", "TRIANGL", "COWBELL", "GONG", "TRUMPET", "SAX", "TIMPANI", "B GRAND", "HURDY G", "FLUGEL", "SONG", "KAZOO", "FOGHORN", "AIRHORN",
 				"VUVUZLA", "OCARINA", "PANFLUT", "SITAR", "HRMNICA", "UKULELE", "THREMIN", "DITTY", "JINGLE", "LIMRICK", "POEM", "HAIKU", "OCTBASS", "HRPSCRD", "FLUBA", "AEOLUS",
 				"TESLA", "STLDRUM", "DGDRIDO", "WNDCHIM" };
 
-			var itemnames = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
-			var dialogs = ReadText(dialogsPointerOffset, dialogsPointerBase, dialogsPointerCount);
+			string[] itemnames = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
+			string[] dialogs = ReadText(dialogsPointerOffset, dialogsPointerBase, dialogsPointerCount);
 
-			var newLute = newInstruments.PickRandom(rng);
-			var dialogsUpdate = new Dictionary<int, string>();
-			var princessDialogue = dialogs[0x06].Split(new string[] { "LUTE" }, System.StringSplitOptions.RemoveEmptyEntries);
-			var monkDialogue = dialogs[0x35].Split(new string[] { "LUTE" }, System.StringSplitOptions.RemoveEmptyEntries);
-			
+			string newLute = newInstruments.PickRandom(rng);
+			Dictionary<int, string> dialogsUpdate = new Dictionary<int, string>();
+			string[] princessDialogue = dialogs[0x06].Split(new string[] { "LUTE" }, StringSplitOptions.RemoveEmptyEntries);
+			string[] monkDialogue = dialogs[0x35].Split(new string[] { "LUTE" }, StringSplitOptions.RemoveEmptyEntries);
+
 			if (princessDialogue.Length > 1)
+			{
 				dialogsUpdate.Add(0x06, princessDialogue[0] + newLute + princessDialogue[1]);
+			}
 
 			if (monkDialogue.Length > 1)
-				dialogsUpdate.Add(0x35, monkDialogue[0] + newLute + monkDialogue[1].Substring(0,14) + "\n" + monkDialogue[1].Substring(15, 10).Replace('\n',' '));
+			{
+				dialogsUpdate.Add(0x35, monkDialogue[0] + newLute + monkDialogue[1].Substring(0, 14) + "\n" + monkDialogue[1].Substring(15, 10).Replace('\n', ' '));
+			}
 
 			// Add extra dialogues that might contain the LUTE if the NPChints flag is enabled or if Astos Shuffle is enabled
-			var otherNPCs = new List<byte> {
+			List<byte> otherNPCs = new List<byte> {
 				0x45, 0x53, 0x69, 0x82, 0x8C, 0xAA, 0xCB, 0xDC, 0x9D, 0x70, 0xE3, 0xE1, 0xB6, // NPChints
 				0x02, 0x0E, 0x12, 0x14, 0x16, 0x19, 0x1E, 0xCD, 0x27, 0x23, 0x2B // SuffleAstos
 			};
 
 			for (int i = 0; i < otherNPCs.Count(); i++)
 			{
-				var tempDialogue = dialogs[otherNPCs[i]].Split(new string[] { "LUTE" }, System.StringSplitOptions.RemoveEmptyEntries);
+				string[] tempDialogue = dialogs[otherNPCs[i]].Split(new string[] { "LUTE" }, StringSplitOptions.RemoveEmptyEntries);
 				if (tempDialogue.Length > 1)
+				{
 					dialogsUpdate.Add(otherNPCs[i], tempDialogue[0] + newLute + tempDialogue[1]);
+				}
 			}
 
 			if (dialogsUpdate.Count > 0)
+			{
 				InsertDialogs(dialogsUpdate);
+			}
 
 			itemnames[(int)Item.Lute] = newLute;
 			WriteText(itemnames, ItemTextPointerOffset, ItemTextPointerBase, ItemTextOffset);
@@ -556,9 +589,9 @@ namespace FF1Lib
 				npcdata.SetRoutine(ObjectId.DwarfcaveDwarfHurray, newTalkRoutines.Talk_kill);
 
 				// Change the dialogue
-				var dialogueStrings = new List<string>
+				List<string> dialogueStrings = new List<string>
 				{
-				    "No! I'm gonna disappear.\nYou'll never see\nme again. Please,\nI don't want to die.",
+					"No! I'm gonna disappear.\nYou'll never see\nme again. Please,\nI don't want to die.",
 					"If you strike me down,\nI shall become more\npowerful than you can\npossibly imagine.",
 					"Freeeeedom!!",
 					"I've seen things you\npeople wouldn't believe.\nAll those moments will\nbe lost in time..\nlike tears in rain..\nTime to die.",

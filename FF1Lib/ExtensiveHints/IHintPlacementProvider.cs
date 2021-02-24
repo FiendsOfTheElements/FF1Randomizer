@@ -47,6 +47,6 @@ namespace FF1Lib
 	{
 		IEnumerable<HintPlacementStrategy> SupportedStrategies { get; }
 
-		List<ObjectId> GetNpcPool(GeneratedHint hint, HashSet<ObjectId> usedIds); 
+		List<ObjectId> GetNpcPool(GeneratedHint hint, HashSet<ObjectId> usedIds);
 	}
 }

@@ -6,7 +6,7 @@ using System.Text;
 
 namespace FF1Lib.Procgen
 {
-	class WaterfallEngine : IMapGeneratorEngine
+	internal class WaterfallEngine : IMapGeneratorEngine
 	{
 		public CompleteMap Generate(MT19337 rng, MapRequirements reqs)
 		{
@@ -15,54 +15,56 @@ namespace FF1Lib.Procgen
 
 			//((List<RoomSpec>)reqs.Rooms)[0].Tiledata = ((List<RoomSpec>)reqs.Rooms)[0].Tiledata;
 
-			CompleteMap complete = new CompleteMap
+			CompleteMap complete = new()
 			{
 				Map = new Map((byte)Tile.WaterfallInside)
 			};
 			//(57,56)
-			var startLoc = (x: 0x39, y: 0x38);
+			(int x, int y) = (x: 0x39, y: 0x38);
 
-			var startingX = rng.Between(-3, 0) + startLoc.x;
-			var startingY = rng.Between(-4, -1) + startLoc.y;
+			var startingX = rng.Between(-3, 0) + x;
+			var startingY = rng.Between(-4, -1) + y;
 
-			var startRegion = new Region(startingX, startingY, 4, 5, Tile.WaterfallRandomEncounters);
+			Region startRegion = new Region(startingX, startingY, 4, 5, Tile.WaterfallRandomEncounters);
 
-			List<Region> regionList = new List<Region>();
-			regionList.Add(startRegion);
-
-			List<Region> endingRegions = new List<Region>();
-			for (var i = 0; i < iteration_count; i++)
+			List<Region> regionList = new()
 			{
-				var startPoint = regionList[rng.Between(0, regionList.Count - 1)];
-				var newRegions = RegionChain(rng, startPoint, regionList, 30 - i);
+				startRegion
+			};
+
+			List<Region> endingRegions = new();
+			for (int i = 0; i < iteration_count; i++)
+			{
+				Region startPoint = regionList[rng.Between(0, regionList.Count - 1)];
+				List<Region> newRegions = RegionChain(rng, startPoint, regionList, 30 - i);
 				regionList.AddRange(newRegions);
 				if (newRegions.Count > 0)
 				{
-					endingRegions.Add(newRegions[newRegions.Count - 1]);
+					endingRegions.Add(newRegions[^1]);
 				}
 			}
 
-			var foundRoomPlace = false;
-			var room = ((List<RoomSpec>)reqs.Rooms)[0];
-			var room_x = -1;
-			var room_y = -1;
+			bool foundRoomPlace = false;
+			RoomSpec room = ((List<RoomSpec>)reqs.Rooms)[0];
+			int room_x = -1;
+			int room_y = -1;
 
 			while (!foundRoomPlace && endingRegions.Count > 0)
 			{
-				var borderRegion = endingRegions.PickRandom(rng);
+				Region borderRegion = endingRegions.PickRandom(rng);
 
-				var base_x = (borderRegion.x - (room.Width - 1) + 64) % 64;
+				int base_x = (borderRegion.x - (room.Width - 1) + 64) % 64;
 				room_y = (borderRegion.y - room.Height + 64) % 64;
-				var x_offset = 1;
-				List<int> valid_offsets = new List<int>();
+				int x_offset = 1;
+				List<int> valid_offsets = new();
 
 				while (x_offset < room.Width)
 				{
 					room_x = (base_x + x_offset) % 64;
-					var validRoomPlace = true;
+					bool validRoomPlace = true;
 					foreach (Region r in regionList)
 					{
-						var testVal = validRoomPlace && !r.IntersectsRoom(room, room_x, room_y);
+						bool testVal = validRoomPlace && !r.IntersectsRoom(room, room_x, room_y);
 						if (!testVal && validRoomPlace)
 						{
 							//Console.WriteLine(room_x);
@@ -79,7 +81,7 @@ namespace FF1Lib.Procgen
 				if (valid_offsets.Count != 0)
 				{
 					foundRoomPlace = true;
-					room_x = (base_x + valid_offsets[rng.Between(0, valid_offsets.Count - 1)]);
+					room_x = base_x + valid_offsets[rng.Between(0, valid_offsets.Count - 1)];
 				}
 
 				endingRegions.Remove(borderRegion);
@@ -92,19 +94,19 @@ namespace FF1Lib.Procgen
 				{
 					int regionIdx = idxs.PickRandom(rng);
 
-					var borderRegion = regionList[regionIdx];
-					var base_x = (borderRegion.x - (room.Width - 1) + 64) % 64;
+					Region borderRegion = regionList[regionIdx];
+					int base_x = (borderRegion.x - (room.Width - 1) + 64) % 64;
 					room_y = (borderRegion.y - (room.Height - 1) + 64) % 64;
-					var x_offset = 1;
-					List<int> valid_offsets = new List<int>();
+					int x_offset = 1;
+					List<int> valid_offsets = new();
 
 					while (x_offset < room.Width)
 					{
 						room_x = (base_x + x_offset) % 64;
-						var validRoomPlace = true;
+						bool validRoomPlace = true;
 						foreach (Region r in regionList)
 						{
-							var testVal = validRoomPlace && !r.IntersectsRoom(room, room_x, room_y);
+							bool testVal = validRoomPlace && !r.IntersectsRoom(room, room_x, room_y);
 							if (!testVal && validRoomPlace)
 							{
 								//Console.WriteLine(room_x);
@@ -121,7 +123,7 @@ namespace FF1Lib.Procgen
 					if (valid_offsets.Count != 0)
 					{
 						foundRoomPlace = true;
-						room_x = (base_x + valid_offsets[rng.Between(0, valid_offsets.Count - 1)]);
+						room_x = base_x + valid_offsets[rng.Between(0, valid_offsets.Count - 1)];
 					}
 
 					idxs.Remove(regionIdx);
@@ -140,14 +142,14 @@ namespace FF1Lib.Procgen
 				r.DrawRegion(complete);
 			}
 
-			Region waterfallRoom = new Region(room_x, room_y, room);
+			Region waterfallRoom = new(room_x, room_y, room);
 			waterfallRoom.DrawRegion(complete);
 
 
 			int doorYPos = (room_y + room.Height) % 64;
 
-			List<int> possibleDoors = new List<int>();
-			for (var i = 0; i < room.Width; i++)
+			List<int> possibleDoors = new();
+			for (int i = 0; i < room.Width; i++)
 			{
 				if (complete.Map[((room_x + i) % 64, doorYPos)].Tile == Tile.WaterfallRandomEncounters)
 				{
@@ -178,7 +180,7 @@ namespace FF1Lib.Procgen
 			complete = CleanUp(complete);
 
 			//Now, place the door (so it doesn't get in the way of the cleanup)
-			int doorPos = (possibleDoors[rng.Between(0, possibleDoors.Count - 1)] + room_x)%64;
+			int doorPos = (possibleDoors[rng.Between(0, possibleDoors.Count - 1)] + room_x) % 64;
 
 			complete.Map[(doorPos, doorYPos)].Tile = Tile.Door;
 			complete.Map[(doorPos, doorYPos)].Neighbor(Direction.Down).Tile = Tile.Doorway;
@@ -187,15 +189,15 @@ namespace FF1Lib.Procgen
 			//NPC management
 			reqs.Rooms.First().NPCs.ToList().ForEach(npc =>
 			{
-				npc.Coord.x = (npc.Coord.x + room_x)%64;
+				npc.Coord.x = (npc.Coord.x + room_x) % 64;
 				npc.Coord.y = (npc.Coord.y + room_y) % 64;
 				reqs.Rom.MoveNpc(reqs.MapId, npc);
 			});
 
 
 			//Stuff to do at the end~
-			complete.Map[(startLoc.x, startLoc.y)].Tile = Tile.WarpUp;
-			complete.Entrance = new Coordinate((byte)startLoc.x, (byte)startLoc.y, CoordinateLocale.Standard);
+			complete.Map[(x, y)].Tile = Tile.WarpUp;
+			complete.Entrance = new Coordinate((byte)x, (byte)y, CoordinateLocale.Standard);
 
 			return complete;
 		}
@@ -253,7 +255,7 @@ namespace FF1Lib.Procgen
 				}
 			}
 
-			Dictionary<(int x, int y), Tile> replaceDict = new Dictionary<(int x, int y), Tile>();
+			Dictionary<(int x, int y), Tile> replaceDict = new();
 
 			// Now, add the top wall bits
 
@@ -263,7 +265,7 @@ namespace FF1Lib.Procgen
 				if (cell.Tile == Tile.WaterfallRandomEncounters)
 				{
 					Tile upperCell = cell.Neighbor(Direction.Up).Tile;
-					bool replaceCell = (upperCell == Tile.WaterfallInside);
+					bool replaceCell = upperCell == Tile.WaterfallInside;
 					replaceCell = replaceCell || upperCell == Tile.RoomFrontLeft;
 					replaceCell = replaceCell || upperCell == Tile.RoomFrontRight;
 					replaceCell = replaceCell || upperCell == Tile.RoomFrontCenter;
@@ -379,11 +381,11 @@ namespace FF1Lib.Procgen
 
 		public List<Region> RegionChain(MT19337 rng, Region startCell, List<Region> curList, int iterations)
 		{
-			List<Region> outList = new List<Region>();
+			List<Region> outList = new();
 
-			var curCell = startCell;
+			Region curCell = startCell;
 
-			for (var i = 0; i < iterations; i++)
+			for (int i = 0; i < iterations; i++)
 			{
 				Region nextCell = CreateAdjacent(rng, curCell);
 				if (nextCell.GetAdjacents(outList).Count + nextCell.GetAdjacents(curList).Count == 1)

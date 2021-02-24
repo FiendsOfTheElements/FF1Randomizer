@@ -14,8 +14,8 @@ namespace FF1Lib
 
 		public byte ShopId
 		{
-			get { return Byte2; }
-			set { Byte2 = value; }
+			get => Byte2;
+			set => Byte2 = value;
 		}
 
 		public TileProp(byte p1, byte p2)

@@ -43,7 +43,8 @@ namespace FF1Lib
 
 			// Now anyplace that refers to orb_earth in the assembly outside of the above code
 			// is going to need updating to the new address. Earth Orb is pretty popular actually.
-			List<int> earthOrbPtrsLowBytes = new List<int> {
+			List<int> earthOrbPtrsLowBytes = new()
+			{
 				0x39483, // Canoe Sage when not using Early Canoe
 				0x3950C, // Talk_BlackOrb
 				0x39529, // Talk_4Orb (bats in ToF)
@@ -59,7 +60,7 @@ namespace FF1Lib
 				System.Diagnostics.Debug.Assert(Data[address] == 0x35);
 				Data[address] = 0x31;
 			});
-			
+
 			// Fix for four NPCs checking for the Earth Orb in the wrong position (1 in Dwarf Cave, 3 in Melmond)
 			Data[MapObjOffset + (0x5D * MapObjSize)] = 0x11;
 			Data[MapObjOffset + (0x6B * MapObjSize)] = 0x11;
@@ -78,7 +79,7 @@ namespace FF1Lib
 			Data[0x02D81] = 0x3B;
 
 			// ToFR Map Hack
-			List<Blob> landingArea = new List<Blob>
+			List<Blob> landingArea = new()
 			{
 				Blob.FromHex("3F3F000101010101023F3F"),
 				Blob.FromHex("3F00045D5E5F606104023F"),
@@ -93,7 +94,7 @@ namespace FF1Lib
 
 			if (includeRefightTiles)
 			{
-				var battles = new List<byte> { 0x57, 0x58, 0x59, 0x5A };
+				List<byte> battles = new List<byte> { 0x57, 0x58, 0x59, 0x5A };
 				if (refightAll)
 				{
 					landingArea.Add(Blob.FromHex($"31{battles[3]:X2}{battles[2]:X2}{battles[1]:X2}{battles[0]:X2}31{battles[0]:X2}{battles[1]:X2}{battles[2]:X2}{battles[3]:X2}31"));
@@ -113,9 +114,21 @@ namespace FF1Lib
 			}
 		}
 
-		private static readonly List<string> ShardNames = new List<string>
+		private static readonly List<string> ShardNames = new()
 		{
-			"SHARD", "JEWEL", "PIECE", "CHUNK", "PRISM", "STONE", "SLICE", "WEDGE", "BIGGS", "SLIVR", "ORBLT", "ESPER", "FORCE",
+			"SHARD",
+			"JEWEL",
+			"PIECE",
+			"CHUNK",
+			"PRISM",
+			"STONE",
+			"SLICE",
+			"WEDGE",
+			"BIGGS",
+			"SLIVR",
+			"ORBLT",
+			"ESPER",
+			"FORCE",
 		};
 
 		public void EnableShardHunt(MT19337 rng, TalkRoutines talkroutines, ShardCount count)
@@ -147,7 +160,7 @@ namespace FF1Lib
 			Put(0x37760, Blob.FromHex("001C22414141221CFFE3DDBEBEBEDDE3001C3E7F7F7F3E1CFFFFE3CFDFDFFFFF"));
 
 			int ppu = 0x2043;
-			ppu = ppu + (goal <= 24 ? 0x20 : 0x00);
+			ppu += goal <= 24 ? 0x20 : 0x00;
 
 			// Fancy shard drawing code, see 0E_B8D7_DrawShardBox.asm
 			Put(0x3B87D, Blob.FromHex($"A9{ppu & 0xFF:X2}8511A9{(ppu & 0xFF00) >> 8:X2}8512A977A00048AD0220A5128D0620A51118692085118D0620900DAD0220E612A5128D0620A5118D062068A200CC3560D002A976C0{goal:X2}D001608D0720C8E8E006D0EB1890C1"));
@@ -184,8 +197,19 @@ namespace FF1Lib
 		public Item ShardHuntTreasureSelector(Item item)
 		{
 			// The following pile of trash, plus Gold chests from 20 to 400 inclusive amount to precisely 32 chests.
-			List<Item> trash = new List<Item> { Item.Heal, Item.Pure, Item.SmallKnife, Item.LargeKnife,
-				Item.WoodenRod, Item.Cloth, Item.WoodenShield, Item.Cap, Item.WoodenHelm, Item.Gloves };
+			List<Item> trash = new()
+			{
+				Item.Heal,
+				Item.Pure,
+				Item.SmallKnife,
+				Item.LargeKnife,
+				Item.WoodenRod,
+				Item.Cloth,
+				Item.WoodenShield,
+				Item.Cap,
+				Item.WoodenHelm,
+				Item.Gloves
+			};
 
 			return (trash.Contains(item) || (item >= Item.Gold20 && item <= Item.Gold350)) ? Item.Shard : item;
 		}

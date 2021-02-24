@@ -38,14 +38,13 @@ namespace FF1Lib
 
 	public class ExtensiveHints
 	{
-		MT19337 rng;
-		NPCdata npcData;
-		Flags flags;
-		OverworldMap overworldMap;
-		FF1Rom rom;
-
-		IHintSource[] hintSources;
-		IHintPlacementProvider[] hintPlacementProviders;
+		private MT19337 rng;
+		private readonly NPCdata npcData;
+		private readonly Flags flags;
+		private readonly OverworldMap overworldMap;
+		private readonly FF1Rom rom;
+		private readonly IHintSource[] hintSources;
+		private readonly IHintPlacementProvider[] hintPlacementProviders;
 
 		public ExtensiveHints(MT19337 _rng, NPCdata _npcData, Flags _flags, OverworldMap _overworldMap, FF1Rom _rom)
 		{
@@ -74,19 +73,19 @@ namespace FF1Lib
 		{
 			List<GeneratedHint> hints = hintSources.SelectMany(s => s.GetHints()).ToList();
 
-			var (forced, prioritized, common, fill) = ProcessCoverage(hints);
+			(List<GeneratedHint> forced, List<GeneratedHint> prioritized, List<GeneratedHint> common, List<GeneratedHint> fill) = ProcessCoverage(hints);
 
-			HashSet<ObjectId> usedIds = new HashSet<ObjectId>();
-			Dictionary<ObjectId, string> hintPlacement = new Dictionary<ObjectId, string>();
+			HashSet<ObjectId> usedIds = new();
+			Dictionary<ObjectId, string> hintPlacement = new();
 
 			PlaceBin(rng, forced, usedIds, hintPlacement);
 			PlaceBin(rng, prioritized, usedIds, hintPlacement);
 			PlaceBin(rng, common, usedIds, hintPlacement);
 			PlaceBin(rng, fill, usedIds, hintPlacement);
 
-			var availableIDs = ScavengeDialogIds(hintPlacement.Keys);
+			List<int> availableIDs = ScavengeDialogIds(hintPlacement.Keys);
 
-			Dictionary<int, string> dialogs = new Dictionary<int, string>();
+			Dictionary<int, string> dialogs = new();
 			int i = 0;
 
 			//If we didn't scavenge enough Ids, make a placeholder text.
@@ -96,16 +95,16 @@ namespace FF1Lib
 				i++;
 			}
 
-			foreach (var e in hintPlacement)
+			foreach (KeyValuePair<ObjectId, string> e in hintPlacement)
 			{
 				if (i < availableIDs.Count)
 				{
-					SetNpcHint((ObjectId)e.Key, availableIDs[i], e.Value, dialogs);
+					SetNpcHint(e.Key, availableIDs[i], e.Value, dialogs);
 					i++;
 				}
 				else
 				{
-					SetNpcHint((ObjectId)e.Key, availableIDs[0], null, dialogs);
+					SetNpcHint(e.Key, availableIDs[0], null, dialogs);
 				}
 			}
 
@@ -122,9 +121,12 @@ namespace FF1Lib
 			npcData.GetTalkArray(npc)[(int)TalkArrayPos.dialogue_2] = (byte)textId;
 			npcData.GetTalkArray(npc)[(int)TalkArrayPos.dialogue_3] = 0;
 			npcData.SetRoutine(npc, newTalkRoutines.Talk_norm);
-			if (text != null) dialogs.Add(textId, text);
+			if (text != null)
+			{
+				dialogs.Add(textId, text);
+			}
 
-			foreach(var npcinstance in rom.FindNpc(npc))
+			foreach ((MapId, NPC) npcinstance in rom.FindNpc(npc))
 			{
 				rom.SetNpc(npcinstance.Item1, npcinstance.Item2.Index, npc, npcinstance.Item2.Coord.x, npcinstance.Item2.Coord.y, npcinstance.Item2.InRoom, true);
 			}
@@ -132,24 +134,24 @@ namespace FF1Lib
 
 		private (List<GeneratedHint>, List<GeneratedHint>, List<GeneratedHint>, List<GeneratedHint>) ProcessCoverage(IEnumerable<GeneratedHint> hints)
 		{
-			var forced = new List<GeneratedHint>();
-			var prioritized = new List<GeneratedHint>();
-			var common = new List<GeneratedHint>();
-			var fill = new List<GeneratedHint>();
+			List<GeneratedHint> forced = new List<GeneratedHint>();
+			List<GeneratedHint> prioritized = new List<GeneratedHint>();
+			List<GeneratedHint> common = new List<GeneratedHint>();
+			List<GeneratedHint> fill = new List<GeneratedHint>();
 
 
-			foreach (var category in hints.GroupBy(h => h.Coverage))
+			foreach (IGrouping<HintCategoryCoverage, GeneratedHint> category in hints.GroupBy(h => h.Coverage))
 			{
-				var cathints = category.ToList();
+				List<GeneratedHint> cathints = category.ToList();
 				int cnt = cathints.Count * GetCoveragePercent(category.Key) / 100;
 
 				cathints.Shuffle(rng);
 
-				var taken = cathints.Take(cnt).ToList();
+				List<GeneratedHint> taken = cathints.Take(cnt).ToList();
 
 				//Take the ones with fixedNpc out, they need to be placed first
 				forced.AddRange(taken.Where(h => h.FixedNpc != ObjectId.None));
-				var rest = taken.Where(h => h.FixedNpc == ObjectId.None);
+				IEnumerable<GeneratedHint> rest = taken.Where(h => h.FixedNpc == ObjectId.None);
 
 				//put the rest into the priority bins
 				if (category.Key == HintCategoryCoverage.HintCategoryCoveragePrioritized)
@@ -187,9 +189,9 @@ namespace FF1Lib
 
 		private List<int> ScavengeDialogIds(IEnumerable<ObjectId> usedNPCs)
 		{
-			HashSet<ObjectId> usedNPCSet = new HashSet<ObjectId>(usedNPCs);
-			List<int> usedDialogs = new List<int>();
-			List<int> everythingElse = new List<int>();
+			HashSet<ObjectId> usedNPCSet = new(usedNPCs);
+			List<int> usedDialogs = new();
+			List<int> everythingElse = new();
 
 			for (int i = 0; i < 208; i++)
 			{
@@ -207,17 +209,26 @@ namespace FF1Lib
 				}
 			}
 
-			var usedDialogSet = new HashSet<int>(usedDialogs.Distinct());
-			foreach (var d in everythingElse) if (usedDialogSet.Contains(d)) usedDialogSet.Remove(d);
+			HashSet<int> usedDialogSet = new HashSet<int>(usedDialogs.Distinct());
+			foreach (int d in everythingElse)
+			{
+				if (usedDialogSet.Contains(d))
+				{
+					usedDialogSet.Remove(d);
+				}
+			}
 
 			return usedDialogSet.ToList();
 		}
 
 		private void PlaceBin(MT19337 rng, List<GeneratedHint> hints, HashSet<ObjectId> usedIds, Dictionary<ObjectId, string> dialogs)
 		{
-			if (hints.Count == 0) return;
+			if (hints.Count == 0)
+			{
+				return;
+			}
 
-			foreach (var hint in hints)
+			foreach (GeneratedHint hint in hints)
 			{
 				if (hint.FixedNpc != ObjectId.None && !usedIds.Contains(hint.FixedNpc))
 				{
@@ -226,16 +237,16 @@ namespace FF1Lib
 				}
 				else
 				{
-					var placementProvider = hintPlacementProviders.First(p => p.SupportedStrategies.Contains(hint.PlacementStrategy));
-					var pool = placementProvider.GetNpcPool(hint, usedIds);
+					IHintPlacementProvider placementProvider = hintPlacementProviders.First(p => p.SupportedStrategies.Contains(hint.PlacementStrategy));
+					List<ObjectId> pool = placementProvider.GetNpcPool(hint, usedIds);
 					if (pool.Count > 0)
 					{
-						var npc = pool.PickRandom(rng);
+						ObjectId npc = pool.PickRandom(rng);
 						dialogs.Add(npc, hint.Text);
 						usedIds.Add(npc);
 					}
 				}
 			}
-		}		
+		}
 	}
 }

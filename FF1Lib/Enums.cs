@@ -300,8 +300,8 @@ namespace FF1Lib
 		River = 0x0A,
 		Tower = 0x0B,
 		SeaShrine = 0x0C,
-		IceCave	= 0x0D,
-		Volcano	= 0x0E,
+		IceCave = 0x0D,
+		Volcano = 0x0E,
 		Waterfall = 0x0F,
 	}
 }

@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace FF1Lib.procgen
 {
-	class RectilinearGenerator : IMapGeneratorEngine
+	internal class RectilinearGenerator : IMapGeneratorEngine
 	{
 		private readonly byte SentinelAlive = 0xFF;
 
@@ -17,7 +17,7 @@ namespace FF1Lib.procgen
 			int sanity = 0;
 			while (++sanity < 500)
 			{
-				CompleteMap complete = new CompleteMap
+				CompleteMap complete = new()
 				{
 					Map = new Map(SentinelAlive),
 					Requirements = reqs,
@@ -26,12 +26,12 @@ namespace FF1Lib.procgen
 				int hallwayCount = rng.Between(24, 30);
 				for (int i = 0; i < hallwayCount; ++i)
 				{
-					var dimensions = ((rng.Between(2, 8) * 2) + 1, (rng.Between(2, 5) * 2) + 1);
-					var pos = (rng.Between(0, LocalMax - dimensions.Item1) / 2 * 2, rng.Between(0, LocalMax - dimensions.Item2) / 2 * 2);
+					(object, object) dimensions = ((rng.Between(2, 8) * 2) + 1, (rng.Between(2, 5) * 2) + 1);
+					(object, object) pos = (rng.Between(0, LocalMax - dimensions.Item1) / 2 * 2, rng.Between(0, LocalMax - dimensions.Item2) / 2 * 2);
 					PlaceHallway(complete.Map, pos, dimensions, reqs.Floor);
 				}
 
-				foreach (var side in complete.Map.Where(el => (el.Tile == Tile.HallwayLeft || el.Tile == Tile.HallwayRight) && el.Left().Tile == reqs.Floor && el.Right().Tile == reqs.Floor))
+				foreach (MapElement side in complete.Map.Where(el => (el.Tile == Tile.HallwayLeft || el.Tile == Tile.HallwayRight) && el.Left().Tile == reqs.Floor && el.Right().Tile == reqs.Floor))
 				{
 					if (rng.Between(0, 2) == 0 && side.Up().Tile != reqs.Floor && side.Down().Tile != reqs.Floor)
 					{
@@ -39,7 +39,7 @@ namespace FF1Lib.procgen
 					}
 				}
 
-				foreach (var side in complete.Map.Where(el => el.Tile == Tile.InsideWall && el.Up().Tile == reqs.Floor && el.Down().Tile == reqs.Floor))
+				foreach (MapElement side in complete.Map.Where(el => el.Tile == Tile.InsideWall && el.Up().Tile == reqs.Floor && el.Down().Tile == reqs.Floor))
 				{
 					if (rng.Between(0, 2) == 0 && side.Left().Tile != reqs.Floor && side.Right().Tile != reqs.Floor)
 					{
@@ -47,10 +47,10 @@ namespace FF1Lib.procgen
 					}
 				}
 
-				var locations = complete.Map.Where(element => element.Tile == reqs.Floor).ToList();
+				List<MapElement> locations = complete.Map.Where(element => element.Tile == reqs.Floor).ToList();
 				Dictionary<Tile, List<MapElement>> results = null;
 
-				var start = locations.SpliceRandom(rng);
+				MapElement start = locations.SpliceRandom(rng);
 				results = FloodFill(complete.Map, start.Coord, new List<Tile> { reqs.Floor, Tile.WarpUp, Tile.Doorway });
 				if (results[reqs.Floor].Count() < 500)
 				{
@@ -62,7 +62,7 @@ namespace FF1Lib.procgen
 				MapElement entrance = null;
 				reqs.Portals.ToList().ForEach(portal =>
 				{
-					var location = locations.SpliceRandom(rng);
+					MapElement location = locations.SpliceRandom(rng);
 					complete.Map[location.Y, location.X] = portal;
 
 					if (portal == (byte)Tile.WarpUp)
@@ -86,7 +86,7 @@ namespace FF1Lib.procgen
 
 				PolishWalls(complete.Map, reqs);
 
-				foreach (var el in complete.Map.Where(el => el.Value == SentinelAlive))
+				foreach (MapElement el in complete.Map.Where(el => el.Value == SentinelAlive))
 				{
 					el.Tile = Tile.EarthCaveOOB;
 				}
@@ -100,8 +100,9 @@ namespace FF1Lib.procgen
 		private byte[,] CreateEmptyRoom((int w, int h) dimensions, int doorX)
 		{
 			if (dimensions.w < 3 || dimensions.h < 3)
+			{
 				throw new ArgumentOutOfRangeException();
-
+			}
 
 			byte[,] room = new byte[dimensions.h, dimensions.w];
 			for (int y = 1; y < dimensions.h - 2; ++y)
@@ -139,15 +140,15 @@ namespace FF1Lib.procgen
 			int sanity = 0;
 			while (++sanity < 100)
 			{
-				var rooms = complete.Map;
-				var roomsAdded = 0;
+				Map rooms = complete.Map;
+				int roomsAdded = 0;
 
-				var positions = new List<MapElement>();
-				var potentialEntrances = possibilties.Where(el => el.Left().Tile == Tile.InsideWall && el.Right().Tile == Tile.InsideWall
+				List<MapElement> positions = new List<MapElement>();
+				List<MapElement> potentialEntrances = possibilties.Where(el => el.Left().Tile == Tile.InsideWall && el.Right().Tile == Tile.InsideWall
 					&& el.Down().Tile == reqs.Floor && el.Tile == Tile.InsideWall).ToList();
 				while (potentialEntrances.Any())
 				{
-					var potential = potentialEntrances.SpliceRandom(rng);
+					MapElement potential = potentialEntrances.SpliceRandom(rng);
 					if (!positions.Any(pos => Math.Abs(pos.X - potential.X) < 12 || Math.Abs(pos.Y - potential.Y) < 12))
 					{
 						positions.Add(potential);
@@ -156,23 +157,23 @@ namespace FF1Lib.procgen
 
 				for (int i = 0; i < 4 && i < positions.Count(); ++i)
 				{
-					var dimensions = (w: (rng.Between(4, 6) * 2) + 1, h: (rng.Between(2, 3) * 2) + 1);
+					(object w, object h) dimensions = (w: (rng.Between(4, 6) * 2) + 1, h: (rng.Between(2, 3) * 2) + 1);
 					int doorX = (rng.Between(0, (dimensions.w - 2) / 2) * 2) + 1;
 					byte[,] room = CreateEmptyRoom(dimensions, doorX);
 
-					var roomTarget = (positions[i].X - doorX, positions[i].Y - dimensions.h + 1);
+					(int, object) roomTarget = (positions[i].X - doorX, positions[i].Y - dimensions.h + 1);
 					rooms.Put(roomTarget, room);
 					++roomsAdded;
 				}
 
-				foreach (var door in rooms.Where(el => el.Tile == Tile.Door))
+				foreach (MapElement door in rooms.Where(el => el.Tile == Tile.Door))
 				{
 					door.Down().Tile = Tile.Doorway;
 				}
 
 				// Place chests now
-				var chestLocations = rooms.Where(el => el.Up().Tile == Tile.RoomBackCenter).ToList();
-				var trapLocations = new List<MapElement>();
+				List<MapElement> chestLocations = rooms.Where(el => el.Up().Tile == Tile.RoomBackCenter).ToList();
+				List<MapElement> trapLocations = new List<MapElement>();
 				if (reqs.Objects.Count() > chestLocations.Count())
 				{
 					continue;
@@ -180,7 +181,7 @@ namespace FF1Lib.procgen
 
 				foreach (byte chest in reqs.Objects)
 				{
-					var location = chestLocations.SpliceRandom(rng);
+					MapElement location = chestLocations.SpliceRandom(rng);
 					location.Value = chest;
 					trapLocations.Add(location.Down());
 				}
@@ -188,7 +189,7 @@ namespace FF1Lib.procgen
 				trapLocations.AddRange(rooms.Where(el => el.Down().Tile == Tile.Door));
 				foreach (byte trap in reqs.Traps)
 				{
-					var location = trapLocations.SpliceRandom(rng);
+					MapElement location = trapLocations.SpliceRandom(rng);
 					location.Value = trap;
 				}
 
@@ -230,7 +231,7 @@ namespace FF1Lib.procgen
 
 		private void PolishWalls(Map map, MapRequirements reqs)
 		{
-			foreach (var tile in map.Where(tile => tile.Tile == Tile.WallLeft))
+			foreach (MapElement tile in map.Where(tile => tile.Tile == Tile.WallLeft))
 			{
 				if (tile.Down().Tile == Tile.HallwayRight)
 				{
@@ -245,7 +246,7 @@ namespace FF1Lib.procgen
 					tile.Tile = Tile.HallwayLeft;
 				}
 			}
-			foreach (var tile in map.Where(tile => tile.Tile == Tile.WallRight))
+			foreach (MapElement tile in map.Where(tile => tile.Tile == Tile.WallRight))
 			{
 				if (tile.Down().Tile == Tile.HallwayLeft)
 				{
@@ -260,7 +261,7 @@ namespace FF1Lib.procgen
 					tile.Tile = Tile.HallwayRight;
 				}
 			}
-			foreach (var tile in map.Where(tile => tile.Tile == Tile.InsideWall))
+			foreach (MapElement tile in map.Where(tile => tile.Tile == Tile.InsideWall))
 			{
 				if (tile.Down().Tile == Tile.HallwayLeft)
 				{
@@ -276,21 +277,41 @@ namespace FF1Lib.procgen
 
 		private Tile HallwayTile((int x, int y) coord, (int w, int h) dimensions, Tile center)
 		{
-			if (coord.y == dimensions.h - 1) return Tile.InsideWall;
-			if (coord.y == 0)
+			if (coord.y == dimensions.h - 1)
 			{
-				if (coord.x == 0) return Tile.WallLeft;
-				if (coord.x == dimensions.w - 1) return Tile.WallRight;
 				return Tile.InsideWall;
 			}
-			if (coord.x == 0) return Tile.HallwayLeft;
-			if (coord.x == dimensions.w - 1) return Tile.HallwayRight;
+
+			if (coord.y == 0)
+			{
+				if (coord.x == 0)
+				{
+					return Tile.WallLeft;
+				}
+
+				if (coord.x == dimensions.w - 1)
+				{
+					return Tile.WallRight;
+				}
+
+				return Tile.InsideWall;
+			}
+			if (coord.x == 0)
+			{
+				return Tile.HallwayLeft;
+			}
+
+			if (coord.x == dimensions.w - 1)
+			{
+				return Tile.HallwayRight;
+			}
+
 			return center;
 		}
 
 		private Dictionary<Tile, List<MapElement>> FloodFill(Map map, (int, int) coord, IEnumerable<Tile> counts, IEnumerable<Tile> finds = null, Tile replace = Tile.FloorSafe)
 		{
-			var results = counts.ToDictionary(tile => tile, tile => new List<MapElement> { });
+			Dictionary<Tile, List<MapElement>> results = counts.ToDictionary(tile => tile, tile => new List<MapElement> { });
 			FloodFill(results, map, coord, counts, finds, replace);
 			return results;
 		}

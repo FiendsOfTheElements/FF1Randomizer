@@ -8,10 +8,10 @@ using RomUtilities;
 
 namespace Sandbox
 {
-    public class FF1MapperRom : FF1Rom
-    {
-	    public FF1MapperRom(string filename) : base(filename)
-	    {}
+	public class FF1MapperRom : FF1Rom
+	{
+		public FF1MapperRom(string filename) : base(filename)
+		{ }
 
 		public void UpgradeToMMC5()
 		{

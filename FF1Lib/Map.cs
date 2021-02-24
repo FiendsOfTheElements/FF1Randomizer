@@ -23,7 +23,7 @@ namespace FF1Lib
 		// The coordinate version of the accessor has the params in the normal order.
 		public MapElement this[(int x, int y) coord]
 		{
-			get => new MapElement(this, coord.x, coord.y, this[coord.y, coord.x]);
+			get => new(this, coord.x, coord.y, this[coord.y, coord.x]);
 			set => this[coord.y, coord.x] = value.Value;
 		}
 
@@ -80,7 +80,7 @@ namespace FF1Lib
 
 		public Map Clone()
 		{
-			Map map = new Map(0);
+			Map map = new(0);
 			for (int y = 0; y < RowCount; ++y)
 			{
 				for (int x = 0; x < RowLength; ++x)
@@ -120,23 +120,23 @@ namespace FF1Lib
 
 		public void FlipHorizontal()
 		{
-			Map map = this.Clone();
+			Map map = Clone();
 			for (int y = 0; y < RowCount; ++y)
 			{
 				for (int x = 0; x < RowLength; ++x)
 				{
-					this[y, x] = map[y, (RowLength - x - 1)];
+					this[y, x] = map[y, RowLength - x - 1];
 				}
 			}
 		}
 		public void FlipVertical()
 		{
-			Map map = this.Clone();
+			Map map = Clone();
 			for (int y = 0; y < RowCount; ++y)
 			{
 				for (int x = 0; x < RowLength; ++x)
 				{
-					this[y, x] = map[(RowLength - y - 1), x];
+					this[y, x] = map[RowLength - y - 1, x];
 				}
 			}
 		}
@@ -147,13 +147,15 @@ namespace FF1Lib
 				for (int x = 0; x < RowLength; ++x)
 				{
 					if (this[y, x] == originaltile)
+					{
 						this[y, x] = newtile;
+					}
 				}
 			}
 		}
 		public void Fill((int x, int y) coord, (int w, int h) size, byte fill)
 		{
-			for (int i = coord.x; i < coord.x + size.w; ++ i)
+			for (int i = coord.x; i < coord.x + size.w; ++i)
 			{
 				for (int j = coord.y; j < coord.y + size.h; ++j)
 				{
@@ -164,7 +166,7 @@ namespace FF1Lib
 
 		public void Flood((int x, int y) coord, Func<MapElement, bool> action)
 		{
-			List<(int x, int y)> coords = new List<(int x, int y)> { coord };
+			List<(int x, int y)> coords = new() { coord };
 			for (int i = 0; i < coords.Count(); ++i)
 			{
 				(int x, int y) = coords[i];
@@ -195,10 +197,10 @@ namespace FF1Lib
 
 		public bool Filter(Dictionary<byte[,], byte[,]> filter, (int x, int y) filterSize)
 		{
-			var rVal = false;
-			for (int x = 0; x < Map.RowLength - filterSize.x; x++)
+			bool rVal = false;
+			for (int x = 0; x < RowLength - filterSize.x; x++)
 			{
-				for (int y = 0; y < Map.RowCount - filterSize.y; y++)
+				for (int y = 0; y < RowCount - filterSize.y; y++)
 				{
 					byte[,] section = GetSection((x, y), filterSize);
 					if (filter.ContainsKey(section))
@@ -214,8 +216,9 @@ namespace FF1Lib
 		public static byte[,] CreateEmptyRoom((int w, int h) dimensions, int doorX)
 		{
 			if (dimensions.w < 3 || dimensions.h < 3)
+			{
 				throw new ArgumentOutOfRangeException();
-
+			}
 
 			byte[,] room = new byte[dimensions.h, dimensions.w];
 			for (int y = 1; y < dimensions.h - 2; ++y)
@@ -250,15 +253,15 @@ namespace FF1Lib
 
 		public byte[] GetCompressedData()
 		{
-			var compressedData = new List<byte>();
+			List<byte> compressedData = new List<byte>();
 
-			var data = new byte[_map.Length];
+			byte[] data = new byte[_map.Length];
 			Buffer.BlockCopy(_map, 0, data, 0, _map.Length);
 
 			int dataOffset = 0;
 			while (dataOffset < data.Length)
 			{
-				var tile = data[dataOffset++];
+				byte tile = data[dataOffset++];
 				if (dataOffset >= data.Length || data[dataOffset] != tile)
 				{
 					compressedData.Add(tile);
@@ -285,8 +288,8 @@ namespace FF1Lib
 		//Return a random map element
 		public MapElement GetRandomElement(MT19337 rng)
 		{
-			var newX = rng.Between(0, Map.RowLength - 1);
-			var newY = rng.Between(0, Map.RowCount - 1);
+			var newX = rng.Between(0, RowLength - 1);
+			var newY = rng.Between(0, RowCount - 1);
 			return new MapElement(this, newX, newY, _map[newY, newX]);
 		}
 
@@ -314,7 +317,10 @@ namespace FF1Lib
 			{
 				for (x = 0; x < RowLength; x++)
 				{
-					if (_map[y, x] == tile) return true;
+					if (_map[y, x] == tile)
+					{
+						return true;
+					}
 				}
 			}
 
@@ -365,16 +371,16 @@ namespace FF1Lib
 
 		public byte Value
 		{
-			get { return Map[Y, X]; }
-			set { Map[Y, X] = value; }
+			get => Map[Y, X];
+			set => Map[Y, X] = value;
 		}
 
 		public Tile Tile
 		{
-			get { return (Tile)Map[Y, X]; }
-			set { Map[Y, X] = (byte)value; }
+			get => (Tile)Map[Y, X];
+			set => Map[Y, X] = (byte)value;
 		}
-		
+
 		public MapElement(Map map, int x, int y, byte value)
 		{
 			Map = map;
@@ -405,8 +411,8 @@ namespace FF1Lib
 		/// </summary>
 		public IEnumerable<MapElement> Surrounding()
 		{
-			var up = Up();
-			var down = Down();
+			MapElement up = Up();
+			MapElement down = Down();
 
 			return new List<MapElement> { up.Left(), up, up.Right(), Left(), Right(), down.Left(), down, down.Right() };
 		}

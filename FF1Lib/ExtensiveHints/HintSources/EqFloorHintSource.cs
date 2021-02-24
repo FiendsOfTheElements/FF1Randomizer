@@ -25,11 +25,11 @@ namespace FF1Lib
 		{
 			List<Item> WowItems = ItemLists.UberTier.Concat(ItemLists.LegendaryWeaponTier).Concat(ItemLists.LegendaryArmorTier).Concat(ItemLists.RareWeaponTier).Concat(ItemLists.RareArmorTier).ToList();
 
-			List<GeneratedHint> hints = new List<GeneratedHint>();
+			List<GeneratedHint> hints = new();
 
-			foreach (var item in WowItems)
+			foreach (Item item in WowItems)
 			{
-				var placement = rom.generatedPlacement.Find(x => x.Item == item);
+				IRewardSource placement = rom.generatedPlacement.Find(x => x.Item == item);
 				if (placement != null)
 				{
 					if (placement is TreasureChest)

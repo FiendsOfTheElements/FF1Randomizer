@@ -5,7 +5,7 @@ using RomUtilities;
 
 namespace FF1Lib
 {
-	enum ArmorIcon : byte
+	internal enum ArmorIcon : byte
 	{
 		NONE = 0x00,
 		ARMOR = 0xDA,
@@ -61,7 +61,7 @@ namespace FF1Lib
 		//sample function for creating new armor
 		public void ExpandArmor()
 		{
-			Armor platinumBracelet = new Armor(12, FF1Text.TextToBytes("Plat"), ArmorIcon.BRACELET, 1, 42, 0, 0);
+			Armor platinumBracelet = new(12, FF1Text.TextToBytes("Plat"), ArmorIcon.BRACELET, 1, 42, 0, 0);
 			platinumBracelet.setClassUsability((ushort)(
 				EquipPermission.BlackBelt |
 				EquipPermission.BlackMage |
@@ -79,7 +79,7 @@ namespace FF1Lib
 		}
 	}
 
-	class Armor
+	internal class Armor
 	{
 
 		//offset lookups

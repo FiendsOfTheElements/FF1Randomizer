@@ -17,8 +17,8 @@ namespace FF1Lib.Procgen
 
 		public bool IsEquivalentTo(EquivalenceNode<T> other)
 		{
-			var thisRoot = FindRoot();
-			var otherRoot = other.FindRoot();
+			EquivalenceNode<T> thisRoot = FindRoot();
+			EquivalenceNode<T> otherRoot = other.FindRoot();
 
 			return ReferenceEquals(thisRoot, otherRoot);
 		}
@@ -26,16 +26,18 @@ namespace FF1Lib.Procgen
 		private EquivalenceNode<T> FindRoot()
 		{
 			if (_parent == null)
+			{
 				return this;
+			}
 
-			var root = _parent.FindRoot();
+			EquivalenceNode<T> root = _parent.FindRoot();
 			_parent = root;
 			return root;
 		}
 
 		public void MakeEquivalentTo(EquivalenceNode<T> other)
 		{
-			var root = FindRoot();
+			EquivalenceNode<T> root = FindRoot();
 			root._parent = other;
 		}
 	}

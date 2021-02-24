@@ -75,9 +75,15 @@ namespace FF1Lib
 			AccessRequirement = copyFromRewardSource.AccessRequirement;
 			IsUnused = false;
 		}
-		public override int GetHashCode() => Address.GetHashCode();
+		public override int GetHashCode()
+		{
+			return Address.GetHashCode();
+		}
 
-		public virtual void Put(FF1Rom rom) => rom.Put(Address, new[] { (byte)Item });
+		public virtual void Put(FF1Rom rom)
+		{
+			rom.Put(Address, new[] { (byte)Item });
+		}
 	}
 
 	public class TreasureChest : RewardSourceBase
@@ -138,15 +144,19 @@ namespace FF1Lib
 			_useVanillaRoutineAddress = useVanillaRoutineAddress;
 			SecondLocation = requiredSecondLocation;
 			if (_requiredGameEventFlag != ObjectId.None && _requiredItemTrade != Item.None)
+			{
 				throw new InvalidOperationException(
 					$"Attempted to Put invalid npc item placement: \n{SpoilerText}");
+			}
 		}
 
 		public MapObject(MapObject copyFromRewardSource, Item item)
 			: base(copyFromRewardSource, item)
 		{
 			if (!(copyFromRewardSource is MapObject copyFromMapObject))
+			{
 				return;
+			}
 
 			_objectRoutineAddress = copyFromMapObject._objectRoutineAddress;
 			_requiredGameEventFlag = copyFromMapObject._requiredGameEventFlag;
@@ -154,8 +164,10 @@ namespace FF1Lib
 			_useVanillaRoutineAddress = copyFromMapObject._useVanillaRoutineAddress;
 			SecondLocation = copyFromMapObject.SecondLocation;
 			if (_requiredGameEventFlag != ObjectId.None && _requiredItemTrade != Item.None)
+			{
 				throw new InvalidOperationException(
 					$"Attempted to Put invalid npc item placement: \n{SpoilerText}");
+			}
 		}
 
 		public override void Put(FF1Rom rom)
@@ -192,8 +204,11 @@ namespace FF1Lib
 		public override void Put(FF1Rom rom)
 		{
 			if (Item > Item.Soft)
+			{
 				throw new InvalidOperationException(
 					$"Attempted to Put invalid item shop placement: \n{SpoilerText}");
+			}
+
 			base.Put(rom);
 		}
 	}
@@ -206,8 +221,13 @@ namespace FF1Lib
 			: base(address++, name, mapLocation, item, accessRequirement)
 		{
 			if (address >= int.MaxValue)
+			{
 				address = 0x80000;
+			}
 		}
-		public override void Put(FF1Rom rom) => throw new NotImplementedException();
+		public override void Put(FF1Rom rom)
+		{
+			throw new NotImplementedException();
+		}
 	}
 }

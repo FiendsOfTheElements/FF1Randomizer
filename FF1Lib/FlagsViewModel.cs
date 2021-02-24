@@ -1652,16 +1652,16 @@ namespace FF1Lib
 		public bool FreeOrbsEnabled => !ShardHunt;
 
 		public bool? MelmondClinic
-        {
-            get => Flags.MelmondClinic;
-            set
-            {
-                Flags.MelmondClinic = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MelmondClinic"));
-            }
-        }
-        
-        public bool DeepDungeon
+		{
+			get => Flags.MelmondClinic;
+			set
+			{
+				Flags.MelmondClinic = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MelmondClinic"));
+			}
+		}
+
+		public bool DeepDungeon
 		{
 			get => Flags.DeepDungeon;
 			set

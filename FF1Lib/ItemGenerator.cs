@@ -50,15 +50,15 @@ namespace FF1Lib
 			Gold
 		}
 
-		private List<List<Item>> _pool;
+		private readonly List<List<Item>> _pool;
 
 		public ItemGenerator(List<Item> seedPool, WorldWealthMode wealth)
 		{
 			// Make a copy
-			var treasurePool = seedPool.ToList();
+			List<Item> treasurePool = seedPool.ToList();
 
 			// Make sure we copy all the input lists so we don't modify anything static.
-			List<List<Item>> tiers = new List<List<Item>>
+			List<List<Item>> tiers = new()
 			{
 				ItemLists.UberTier.Where(item => treasurePool.Remove(item)).ToList(),
 				ItemLists.LegendaryWeaponTier.Where(item => treasurePool.Remove(item)).ToList(),
@@ -82,7 +82,9 @@ namespace FF1Lib
 				for (int j = 0; j < ratios[i]; ++j)
 				{
 					if (tiers[i].Any())
+					{
 						_pool.Add(tiers[i]);
+					}
 				}
 			}
 

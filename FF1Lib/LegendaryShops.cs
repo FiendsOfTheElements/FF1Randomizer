@@ -10,22 +10,19 @@ namespace FF1Lib
 {
 	public class LegendaryShops
 	{
-		MT19337 rng;
-		Flags flags;
-		FF1Rom rom;
-		List<Map> maps;
-
-		MapTileSets MapTileSets;
-		ShopData ShopData;
-		TileSet[] TileSets = new TileSet[8];
-
-		Dictionary<byte, List<byte>> UnusedTilesbyTileSet;
-		Dictionary<string, MagicSpell> Spells;
-
-		List<SpellInfo> SpellInfos;
+		private MT19337 rng;
+		private readonly Flags flags;
+		private readonly FF1Rom rom;
+		private readonly List<Map> maps;
+		private readonly MapTileSets MapTileSets;
+		private readonly ShopData ShopData;
+		private readonly TileSet[] TileSets = new TileSet[8];
+		private Dictionary<byte, List<byte>> UnusedTilesbyTileSet;
+		private Dictionary<string, MagicSpell> Spells;
+		private readonly List<SpellInfo> SpellInfos;
 
 		//MapId, X, Y, UL Tile, UR Tile, BL Tile, BR Tile, Pallette
-		private List<(MapId, int, int, byte, byte, byte, byte, byte)> Locations = new List<(MapId, int, int, byte, byte, byte, byte, byte)>
+		private readonly List<(MapId, int, int, byte, byte, byte, byte, byte)> Locations = new()
 		{
 			(MapId.EarthCaveB2, 20, 34, 0x22, 0x23, 0x32, 0x33, 0xFF),
 			(MapId.MarshCaveB2, 13, 44, 0x22, 0x23, 0x32, 0x33, 0xAA),
@@ -50,7 +47,10 @@ namespace FF1Lib
 		private void LoadUnusedTileIds()
 		{
 			byte[] possibleTileIds = new byte[128];
-			for (byte i = 0; i < 128; i++) possibleTileIds[i] = i;
+			for (byte i = 0; i < 128; i++)
+			{
+				possibleTileIds[i] = i;
+			}
 
 			UnusedTilesbyTileSet = Enum.GetValues<MapId>()
 				.GroupBy(m => MapTileSets[m])
@@ -79,8 +79,8 @@ namespace FF1Lib
 
 			LoadUnusedTileIds();
 
-			var allocatedslots = AllocateSlots();
-			var pool = Locations.Take(allocatedslots.Where(s => s > 0).Count() + 1).ToList();
+			int[] allocatedslots = AllocateSlots();
+			List<(MapId, int, int, byte, byte, byte, byte, byte)> pool = Locations.Take(allocatedslots.Where(s => s > 0).Count() + 1).ToList();
 			pool.Shuffle(rng);
 
 			CreateWeaponShop(allocatedslots[0], pool);
@@ -91,7 +91,10 @@ namespace FF1Lib
 
 			ShopData.StoreData();
 
-			for (int i = 0; i < 8; i++) TileSets[i].StoreData();
+			for (int i = 0; i < 8; i++)
+			{
+				TileSets[i].StoreData();
+			}
 
 			rom.PutInBank(0x1F, 0xEBBD, Blob.FromHex("03"));//Set ShopType
 			rom.PutInBank(0x1F, 0xEBC7, Blob.FromHex("02"));//Set ShopType
@@ -104,9 +107,12 @@ namespace FF1Lib
 
 		private void CreateWeaponShop(int slots, List<(MapId, int, int, byte, byte, byte, byte, byte)> pool)
 		{
-			if (slots <= 0) return;
+			if (slots <= 0)
+			{
+				return;
+			}
 
-			Shop shop = new Shop(6, ShopType.Weapon, MapLocation.Coneria, MapId.Coneria, 0, string.Empty, GetWeaponShopInventory(slots));
+			Shop shop = new(6, ShopType.Weapon, MapLocation.Coneria, MapId.Coneria, 0, string.Empty, GetWeaponShopInventory(slots));
 
 			if (shop.Entries.Count > 0)
 			{
@@ -117,9 +123,12 @@ namespace FF1Lib
 
 		private void CreateArmorShop(int slots, List<(MapId, int, int, byte, byte, byte, byte, byte)> pool)
 		{
-			if (slots <= 0) return;
+			if (slots <= 0)
+			{
+				return;
+			}
 
-			Shop shop = new Shop(16, ShopType.Armor, MapLocation.Coneria, MapId.Coneria, 0, string.Empty, GetArmorShopInventory(slots));
+			Shop shop = new(16, ShopType.Armor, MapLocation.Coneria, MapId.Coneria, 0, string.Empty, GetArmorShopInventory(slots));
 
 			if (shop.Entries.Count > 0)
 			{
@@ -130,9 +139,12 @@ namespace FF1Lib
 
 		private void CreateBlackShop(int slots, List<(MapId, int, int, byte, byte, byte, byte, byte)> pool)
 		{
-			if (slots <= 0) return;
+			if (slots <= 0)
+			{
+				return;
+			}
 
-			Shop shop = new Shop(7, ShopType.Black, MapLocation.Coneria, MapId.Coneria, 0, string.Empty, GetBlackShopInventory(slots));
+			Shop shop = new(7, ShopType.Black, MapLocation.Coneria, MapId.Coneria, 0, string.Empty, GetBlackShopInventory(slots));
 
 			if (shop.Entries.Count > 0)
 			{
@@ -143,9 +155,12 @@ namespace FF1Lib
 
 		private void CreateWhiteShop(int slots, List<(MapId, int, int, byte, byte, byte, byte, byte)> pool)
 		{
-			if (slots <= 0) return;
+			if (slots <= 0)
+			{
+				return;
+			}
 
-			Shop shop = new Shop(17, ShopType.White, MapLocation.Coneria, MapId.Coneria, 0, string.Empty, GetWhiteShopInventory(slots));
+			Shop shop = new(17, ShopType.White, MapLocation.Coneria, MapId.Coneria, 0, string.Empty, GetWhiteShopInventory(slots));
 
 			if (shop.Entries.Count > 0)
 			{
@@ -156,9 +171,12 @@ namespace FF1Lib
 
 		private void CreateItemShop(int slots, List<(MapId, int, int, byte, byte, byte, byte, byte)> pool)
 		{
-			if (slots <= 0) return;
+			if (slots <= 0)
+			{
+				return;
+			}
 
-			Shop shop = new Shop(66, ShopType.Item, MapLocation.Coneria, MapId.Coneria, 0, string.Empty, GetItemShopInventory(slots));
+			Shop shop = new(66, ShopType.Item, MapLocation.Coneria, MapId.Coneria, 0, string.Empty, GetItemShopInventory(slots));
 
 			if (shop.Entries.Count > 0)
 			{
@@ -170,18 +188,18 @@ namespace FF1Lib
 		private void PlaceShop(int index, List<(MapId, int, int, byte, byte, byte, byte, byte)> pool)
 		{
 			var locidx = rng.Between(0, pool.Count - 1);
-			var loc = pool[locidx];
+			(MapId, int, int, byte, byte, byte, byte, byte) loc = pool[locidx];
 			pool.RemoveAt(locidx);
 
-			var tile = CreateTile(loc.Item1, index + 1, loc.Item4, loc.Item5, loc.Item6, loc.Item7, loc.Item8);
+			byte tile = CreateTile(loc.Item1, index + 1, loc.Item4, loc.Item5, loc.Item6, loc.Item7, loc.Item8);
 
 			maps[(int)loc.Item1][loc.Item3, loc.Item2] = tile;
 		}
 
 		private byte CreateTile(MapId mapId, int ShopId, byte ul, byte ur, byte bl, byte br, byte pi)
 		{
-			var tileSet = TileSets[MapTileSets[mapId]];
-			var tile = UnusedTilesbyTileSet[MapTileSets[mapId]][0];
+			TileSet tileSet = TileSets[MapTileSets[mapId]];
+			byte tile = UnusedTilesbyTileSet[MapTileSets[mapId]][0];
 			UnusedTilesbyTileSet[MapTileSets[mapId]].RemoveAt(0);
 
 			tileSet.TileAttributes[tile] = pi;
@@ -200,11 +218,30 @@ namespace FF1Lib
 
 			int[] result = new int[] { 0, 0, 0, 0, 0 };
 
-			if (flags.LegendaryBlackShop ?? false) result[2] = Allocate(ref slots, 5);//Black
-			if (flags.LegendaryArmorShop ?? false) result[1] = Allocate(ref slots, 5);//Armor
-			if (flags.LegendaryWhiteShop ?? false) result[3] = Allocate(ref slots, 4);//White
-			if (flags.LegendaryWeaponShop ?? false) result[0] = Allocate(ref slots, 3);//Weapon
-			if (flags.LegendaryItemShop ?? false) result[4] = Allocate(ref slots, 3);//Item
+			if (flags.LegendaryBlackShop ?? false)
+			{
+				result[2] = Allocate(ref slots, 5);//Black
+			}
+
+			if (flags.LegendaryArmorShop ?? false)
+			{
+				result[1] = Allocate(ref slots, 5);//Armor
+			}
+
+			if (flags.LegendaryWhiteShop ?? false)
+			{
+				result[3] = Allocate(ref slots, 4);//White
+			}
+
+			if (flags.LegendaryWeaponShop ?? false)
+			{
+				result[0] = Allocate(ref slots, 3);//Weapon
+			}
+
+			if (flags.LegendaryItemShop ?? false)
+			{
+				result[4] = Allocate(ref slots, 3);//Item
+			}
 
 			return result;
 		}
@@ -218,9 +255,9 @@ namespace FF1Lib
 
 		private List<Item> GetItemShopInventory(int slots)
 		{
-			var items = new List<Item> { Item.Cabin, Item.House, Item.Heal, Item.Pure, Item.Soft };
+			List<Item> items = new List<Item> { Item.Cabin, Item.House, Item.Heal, Item.Pure, Item.Soft };
 
-			List<Item> result = new List<Item>();
+			List<Item> result = new();
 			if (slots > 0)
 			{
 				Item save = (Item)rng.Between((int)Item.Cabin, (int)Item.House);
@@ -237,9 +274,9 @@ namespace FF1Lib
 
 		private List<Item> GetWeaponShopInventory(int slots)
 		{
-			var items = new List<Item> { Item.Vorpal, Item.Katana, Item.Xcalber, Item.Defense, Item.FlameSword, Item.IceSword, Item.CoralSword, Item.SunSword, Item.BaneSword, Item.CatClaw, Item.ThorHammer, Item.WizardRod, Item.MageRod, Item.HealRod, Item.LightAxe };
+			List<Item> items = new List<Item> { Item.Vorpal, Item.Katana, Item.Xcalber, Item.Defense, Item.FlameSword, Item.IceSword, Item.CoralSword, Item.SunSword, Item.BaneSword, Item.CatClaw, Item.ThorHammer, Item.WizardRod, Item.MageRod, Item.HealRod, Item.LightAxe };
 
-			List<Item> result = new List<Item>();
+			List<Item> result = new();
 
 			items.Shuffle(rng);
 			result.AddRange(items.Take(slots));
@@ -249,9 +286,9 @@ namespace FF1Lib
 
 		private List<Item> GetArmorShopInventory(int slots)
 		{
-			var items = ItemLists.LegendaryArmorTier.Concat(ItemLists.RareArmorTier).Distinct().ToList();
+			List<Item> items = ItemLists.LegendaryArmorTier.Concat(ItemLists.RareArmorTier).Distinct().ToList();
 
-			List<Item> result = new List<Item>();
+			List<Item> result = new();
 
 			items.Shuffle(rng);
 			result.AddRange(items.Take(slots));
@@ -267,10 +304,10 @@ namespace FF1Lib
 			}
 			else
 			{
-				var spells = new List<Spell> { Spell.RUSE, Spell.INVS, Spell.PURE, Spell.CUR3, Spell.LIFE, Spell.HRM3, Spell.SOFT, Spell.EXIT, Spell.INV2, Spell.CUR4, Spell.HRM4, Spell.HEL3, Spell.LIF2, Spell.FADE, Spell.WALL };
-				var items = spells.Where(s => Spells.ContainsKey(s.ToString())).Select(s => Convert.ToByte(Spells[s.ToString()].Index + 176)).Cast<Item>().ToList();
+				List<Spell> spells = new List<Spell> { Spell.RUSE, Spell.INVS, Spell.PURE, Spell.CUR3, Spell.LIFE, Spell.HRM3, Spell.SOFT, Spell.EXIT, Spell.INV2, Spell.CUR4, Spell.HRM4, Spell.HEL3, Spell.LIF2, Spell.FADE, Spell.WALL };
+				List<Item> items = spells.Where(s => Spells.ContainsKey(s.ToString())).Select(s => Convert.ToByte(Spells[s.ToString()].Index + 176)).Cast<Item>().ToList();
 
-				List<Item> result = new List<Item>();
+				List<Item> result = new();
 
 				items.Shuffle(rng);
 				result.AddRange(items.Take(slots));
@@ -287,10 +324,10 @@ namespace FF1Lib
 			}
 			else
 			{
-				var spells = new List<Spell> { Spell.LOCK, Spell.TMPR, Spell.FIR2, Spell.LIT2, Spell.LOK2, Spell.FAST, Spell.ICE2, Spell.FIR3, Spell.BANE, Spell.WARP, Spell.LIT3, Spell.QAKE, Spell.ICE3, Spell.BRAK, Spell.SABR, Spell.NUKE, Spell.ZAP, Spell.XXXX };
-				var items = spells.Where(s => Spells.ContainsKey(s.ToString())).Select(s => Convert.ToByte(Spells[s.ToString()].Index + 176)).Cast<Item>().ToList();
+				List<Spell> spells = new List<Spell> { Spell.LOCK, Spell.TMPR, Spell.FIR2, Spell.LIT2, Spell.LOK2, Spell.FAST, Spell.ICE2, Spell.FIR3, Spell.BANE, Spell.WARP, Spell.LIT3, Spell.QAKE, Spell.ICE3, Spell.BRAK, Spell.SABR, Spell.NUKE, Spell.ZAP, Spell.XXXX };
+				List<Item> items = spells.Where(s => Spells.ContainsKey(s.ToString())).Select(s => Convert.ToByte(Spells[s.ToString()].Index + 176)).Cast<Item>().ToList();
 
-				List<Item> result = new List<Item>();
+				List<Item> result = new();
 
 				items.Shuffle(rng);
 				result.AddRange(items.Take(slots));
@@ -301,24 +338,24 @@ namespace FF1Lib
 
 		private List<Item> GetCraftedSpellInventory(int slots, bool black)
 		{
-			var stDamSpells = SpellInfos.Where(s => s.routine == 0x01 && s.targeting == 0x01).Where(s => s.tier >= 3).OrderBy(s => -s.tier).Take(3);
-			var aoeDamSpells = SpellInfos.Where(s => s.routine == 0x01 && s.targeting != 0x01).OrderBy(s => -s.tier).Take(6);
+			IEnumerable<SpellInfo> stDamSpells = SpellInfos.Where(s => s.routine == 0x01 && s.targeting == 0x01).Where(s => s.tier >= 3).OrderBy(s => -s.tier).Take(3);
+			IEnumerable<SpellInfo> aoeDamSpells = SpellInfos.Where(s => s.routine == 0x01 && s.targeting != 0x01).OrderBy(s => -s.tier).Take(6);
 
-			var stHarmSpells = SpellInfos.Where(s => s.routine == 0x02 && s.targeting == 0x01).OrderBy(s => -s.tier).Take(1);
-			var aoeHarmSpells = SpellInfos.Where(s => s.routine == 0x02 && s.targeting != 0x01).OrderBy(s => -s.tier).Take(1);
+			IEnumerable<SpellInfo> stHarmSpells = SpellInfos.Where(s => s.routine == 0x02 && s.targeting == 0x01).OrderBy(s => -s.tier).Take(1);
+			IEnumerable<SpellInfo> aoeHarmSpells = SpellInfos.Where(s => s.routine == 0x02 && s.targeting != 0x01).OrderBy(s => -s.tier).Take(1);
 
-			var stHealSpells = SpellInfos.Where(s => (s.routine == 0x07 || s.routine == 0x0F) && s.targeting != 0x08).OrderBy(s => -s.tier).Take(2);
-			var aoeHealSpells = SpellInfos.Where(s => (s.routine == 0x07 || s.routine == 0x0F) && s.targeting != 0x08).OrderBy(s => -s.tier).Take(2);
+			IEnumerable<SpellInfo> stHealSpells = SpellInfos.Where(s => (s.routine == 0x07 || s.routine == 0x0F) && s.targeting != 0x08).OrderBy(s => -s.tier).Take(2);
+			IEnumerable<SpellInfo> aoeHealSpells = SpellInfos.Where(s => (s.routine == 0x07 || s.routine == 0x0F) && s.targeting != 0x08).OrderBy(s => -s.tier).Take(2);
 
-			var WallSpells = SpellInfos.Where(s => s.routine == 0x0A && s.effect == 0xFF).Take(1);
-			var FastSpells = SpellInfos.Where(s => s.routine == 0x0C).OrderBy(s => -s.tier).Take(2);
-			var SabrSpells = SpellInfos.Where(s => s.routine == 0x0D).OrderBy(s => -s.tier).Take(2);
-			var LockSpells = SpellInfos.Where(s => s.routine == 0x0E).OrderBy(s => -s.tier).Take(2);
-			var RuseSpells = SpellInfos.Where(s => s.routine == 0x10).OrderBy(s => -s.tier).Take(2);
-			var WordSpells = SpellInfos.Where(s => s.routine == 0x12 && s.effect == 0b00000001).Take(1);
-			var WordSpells2 = SpellInfos.Where(s => s.routine == 0x03 && (s.effect == 0b00000010 || s.effect == 0b00000001)).Take(3);
+			IEnumerable<SpellInfo> WallSpells = SpellInfos.Where(s => s.routine == 0x0A && s.effect == 0xFF).Take(1);
+			IEnumerable<SpellInfo> FastSpells = SpellInfos.Where(s => s.routine == 0x0C).OrderBy(s => -s.tier).Take(2);
+			IEnumerable<SpellInfo> SabrSpells = SpellInfos.Where(s => s.routine == 0x0D).OrderBy(s => -s.tier).Take(2);
+			IEnumerable<SpellInfo> LockSpells = SpellInfos.Where(s => s.routine == 0x0E).OrderBy(s => -s.tier).Take(2);
+			IEnumerable<SpellInfo> RuseSpells = SpellInfos.Where(s => s.routine == 0x10).OrderBy(s => -s.tier).Take(2);
+			IEnumerable<SpellInfo> WordSpells = SpellInfos.Where(s => s.routine == 0x12 && s.effect == 0b00000001).Take(1);
+			IEnumerable<SpellInfo> WordSpells2 = SpellInfos.Where(s => s.routine == 0x03 && (s.effect == 0b00000010 || s.effect == 0b00000001)).Take(3);
 
-			var spells = stDamSpells
+			IEnumerable<byte> spells = stDamSpells
 				.Concat(aoeDamSpells)
 				.Concat(aoeHarmSpells)
 				.Concat(stHealSpells)
@@ -333,7 +370,7 @@ namespace FF1Lib
 				.Select(s => Convert.ToByte(SpellInfos.IndexOf(s)));
 
 
-			var specialSpells = Spells.Where(s => s.Key.StartsWith("LIF"))
+			IEnumerable<byte> specialSpells = Spells.Where(s => s.Key.StartsWith("LIF"))
 			.Concat(Spells.Where(s => s.Key.StartsWith("WARP")))
 			.Concat(Spells.Where(s => s.Key.StartsWith("WRP")))
 			.Concat(Spells.Where(s => s.Key.StartsWith("EXIT")))
@@ -345,14 +382,14 @@ namespace FF1Lib
 			.Select(s => Convert.ToByte(s.Value.Index));
 
 
-			var items = spells
+			List<byte> items = spells
 				.Concat(specialSpells)
 				.Where(s => BlackSpell(s) ^ !black)
 				.ToList();
 
-			var spellnames = Spells.Where(s => items.Contains(s.Value.Index)).Select(s => s.Key).ToList();
+			List<string> spellnames = Spells.Where(s => items.Contains(s.Value.Index)).Select(s => s.Key).ToList();
 
-			List<Item> result = new List<Item>();
+			List<Item> result = new();
 
 			items.Shuffle(rng);
 			result.AddRange(items.Take(slots).Select(i => (Item)Convert.ToByte(i + 0xB0)));
@@ -360,6 +397,9 @@ namespace FF1Lib
 			return result;
 		}
 
-		bool BlackSpell(int id) => id % 8 > 3;
+		private bool BlackSpell(int id)
+		{
+			return id % 8 > 3;
+		}
 	}
 }

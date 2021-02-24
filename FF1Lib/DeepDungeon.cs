@@ -12,12 +12,12 @@ namespace FF1Lib
 		private const byte westdir = 2;
 		private const byte eastdir = 3;
 		private const byte CityWall = 0x7C;
-		private List<byte> domainlist = new List<byte>();
+		private readonly List<byte> domainlist = new();
 		private byte[] tilesetmappings = new byte[61];
-		private List<byte> fullteleportdeck = new List<byte>();
-		private List<byte> tilesetspinner = new List<byte>();
-		private byte[] chestsonfloor = new byte[61];
-		private List<Treasure> treasures = new List<Treasure>();
+		private readonly List<byte> fullteleportdeck = new();
+		private readonly List<byte> tilesetspinner = new();
+		private readonly byte[] chestsonfloor = new byte[61];
+		private readonly List<Treasure> treasures = new();
 
 		private struct Treasure
 		{
@@ -91,7 +91,7 @@ namespace FF1Lib
 			}
 		}
 
-		private Tileset[] tilesets = new Tileset[8];
+		private readonly Tileset[] tilesets = new Tileset[8];
 
 		private struct Candidate
 		{
@@ -215,20 +215,22 @@ namespace FF1Lib
 			tilesets[1].laddergraphic.topright = 0x2F;
 			tilesets[1].laddergraphic.botleft = 0x10;
 			tilesets[1].laddergraphic.botright = 0x2F;
-			tilesets[1].teleportdeck = new List<byte>();
-			tilesets[1].teleportdeck.Add(0x44);
-			tilesets[1].teleportdeck.Add(0x45);
-			tilesets[1].teleportdeck.Add(0x49);
-			tilesets[1].teleportdeck.Add(0x4C);
-			tilesets[1].teleportdeck.Add(0x4D);
-			tilesets[1].teleportdeck.Add(0x4E);
-			tilesets[1].teleportdeck.Add(0x4F);
-			tilesets[1].teleportdeck.Add(0x50);
-			tilesets[1].teleportdeck.Add(0x51);
-			tilesets[1].teleportdeck.Add(0x52);
-			tilesets[1].teleportdeck.Add(0x53);
-			tilesets[1].teleportdeck.Add(0x54);
-			tilesets[1].teleportdeck.Add(0x55);
+			tilesets[1].teleportdeck = new List<byte>
+			{
+				0x44,
+				0x45,
+				0x49,
+				0x4C,
+				0x4D,
+				0x4E,
+				0x4F,
+				0x50,
+				0x51,
+				0x52,
+				0x53,
+				0x54,
+				0x55
+			};
 			tilesets[1].treasuredeck = new List<byte>();
 			for (int i = 0x63; i <= 0x78; i++)
 			{
@@ -268,22 +270,24 @@ namespace FF1Lib
 			tilesets[2].laddergraphic.topright = 0x6A;
 			tilesets[2].laddergraphic.botleft = 0x10;
 			tilesets[2].laddergraphic.botright = 0x6A;
-			tilesets[2].teleportdeck = new List<byte>();
-			tilesets[2].teleportdeck.Add(0x15);
-			tilesets[2].teleportdeck.Add(0x16);
-			tilesets[2].teleportdeck.Add(0x19);
-			tilesets[2].teleportdeck.Add(0x24);
-			tilesets[2].teleportdeck.Add(0x25);
-			tilesets[2].teleportdeck.Add(0x26);
-			tilesets[2].teleportdeck.Add(0x27);
-			tilesets[2].teleportdeck.Add(0x28);
-			tilesets[2].teleportdeck.Add(0x29);
-			tilesets[2].teleportdeck.Add(0x2A);
-			tilesets[2].teleportdeck.Add(0x2B);
-			tilesets[2].teleportdeck.Add(0x2C);
-			tilesets[2].teleportdeck.Add(0x09 + 0x80);
-			tilesets[2].teleportdeck.Add(0x0F + 0x80);
-			tilesets[2].teleportdeck.Add(0x1F + 0x80);
+			tilesets[2].teleportdeck = new List<byte>
+			{
+				0x15,
+				0x16,
+				0x19,
+				0x24,
+				0x25,
+				0x26,
+				0x27,
+				0x28,
+				0x29,
+				0x2A,
+				0x2B,
+				0x2C,
+				0x09 + 0x80,
+				0x0F + 0x80,
+				0x1F + 0x80
+			};
 			tilesets[2].treasuredeck = new List<byte>();
 			for (int i = 0x42; i <= 0x7E; i++)
 			{
@@ -323,16 +327,18 @@ namespace FF1Lib
 			tilesets[3].laddergraphic.topright = 0x4D;
 			tilesets[3].laddergraphic.botleft = 0x5C;
 			tilesets[3].laddergraphic.botright = 0x5D;
-			tilesets[3].teleportdeck = new List<byte>();
-			tilesets[3].teleportdeck.Add(0x19);
-			tilesets[3].teleportdeck.Add(0x1A);
-			tilesets[3].teleportdeck.Add(0x1B);
-			tilesets[3].teleportdeck.Add(0x29);
-			tilesets[3].teleportdeck.Add(0x2A);
-			tilesets[3].teleportdeck.Add(0x2B);
-			tilesets[3].teleportdeck.Add(0x2C);
-			tilesets[3].teleportdeck.Add(0x2D + 0x80);
-			tilesets[3].teleportdeck.Add(0x2E + 0x80);
+			tilesets[3].teleportdeck = new List<byte>
+			{
+				0x19,
+				0x1A,
+				0x1B,
+				0x29,
+				0x2A,
+				0x2B,
+				0x2C,
+				0x2D + 0x80,
+				0x2E + 0x80
+			};
 			tilesets[3].treasuredeck = new List<byte>();
 			for (int i = 0x4B; i <= 0x7E; i++)
 			{
@@ -372,12 +378,14 @@ namespace FF1Lib
 			tilesets[4].laddergraphic.topright = 0x61;
 			tilesets[4].laddergraphic.botleft = 0x10;
 			tilesets[4].laddergraphic.botright = 0x61;
-			tilesets[4].teleportdeck = new List<byte>();
-			tilesets[4].teleportdeck.Add(0x20);
-			tilesets[4].teleportdeck.Add(0x22);
-			tilesets[4].teleportdeck.Add(0x27);
-			tilesets[4].teleportdeck.Add(0x28);
-			tilesets[4].teleportdeck.Add(0x09 + 0x80);
+			tilesets[4].teleportdeck = new List<byte>
+			{
+				0x20,
+				0x22,
+				0x27,
+				0x28,
+				0x09 + 0x80
+			};
 			tilesets[4].treasuredeck = new List<byte>();
 			for (int i = 0x41; i <= 0x67; i++)
 			{
@@ -417,17 +425,19 @@ namespace FF1Lib
 			tilesets[5].laddergraphic.topright = 0x45;
 			tilesets[5].laddergraphic.botleft = 0x54;
 			tilesets[5].laddergraphic.botright = 0x55;
-			tilesets[5].teleportdeck = new List<byte>();
-			tilesets[5].teleportdeck.Add(0x43);
-			tilesets[5].teleportdeck.Add(0x44);
-			tilesets[5].teleportdeck.Add(0x45);
-			tilesets[5].teleportdeck.Add(0x46);
-			tilesets[5].teleportdeck.Add(0x4B);
-			tilesets[5].teleportdeck.Add(0x4C);
-			tilesets[5].teleportdeck.Add(0x4E);
-			tilesets[5].teleportdeck.Add(0x4F);
-			tilesets[5].teleportdeck.Add(0x0F + 0x80);
-			tilesets[5].teleportdeck.Add(0x40 + 0x80);
+			tilesets[5].teleportdeck = new List<byte>
+			{
+				0x43,
+				0x44,
+				0x45,
+				0x46,
+				0x4B,
+				0x4C,
+				0x4E,
+				0x4F,
+				0x0F + 0x80,
+				0x40 + 0x80
+			};
 			tilesets[5].treasuredeck = new List<byte>();
 			for (int i = 0x56; i <= 0x7B; i++)
 			{
@@ -467,12 +477,14 @@ namespace FF1Lib
 			tilesets[6].laddergraphic.topright = 0x29;
 			tilesets[6].laddergraphic.botleft = 0x38;
 			tilesets[6].laddergraphic.botright = 0x39;
-			tilesets[6].teleportdeck = new List<byte>();
-			tilesets[6].teleportdeck.Add(0x41);
-			tilesets[6].teleportdeck.Add(0x42);
-			tilesets[6].teleportdeck.Add(0x43);
-			tilesets[6].teleportdeck.Add(0x44);
-			tilesets[6].teleportdeck.Add(0x40 + 0x80);
+			tilesets[6].teleportdeck = new List<byte>
+			{
+				0x41,
+				0x42,
+				0x43,
+				0x44,
+				0x40 + 0x80
+			};
 			tilesets[6].treasuredeck = new List<byte>();
 			for (int i = 0x4C; i <= 0x6D; i++)
 			{
@@ -512,19 +524,21 @@ namespace FF1Lib
 			tilesets[7].laddergraphic.topright = 0x6E;
 			tilesets[7].laddergraphic.botleft = 0x10;
 			tilesets[7].laddergraphic.botright = 0x6E;
-			tilesets[7].teleportdeck = new List<byte>();
-			tilesets[7].teleportdeck.Add(0x42);
-			tilesets[7].teleportdeck.Add(0x43);
-			tilesets[7].teleportdeck.Add(0x4B);
-			tilesets[7].teleportdeck.Add(0x4C);
-			tilesets[7].teleportdeck.Add(0x4D);
-			tilesets[7].teleportdeck.Add(0x4E);
-			tilesets[7].teleportdeck.Add(0x50);
-			tilesets[7].teleportdeck.Add(0x51);
-			tilesets[7].teleportdeck.Add(0x52);
-			tilesets[7].teleportdeck.Add(0x53);
-			tilesets[7].teleportdeck.Add(0x09 + 0x80);
-			tilesets[7].teleportdeck.Add(0x40 + 0x80);
+			tilesets[7].teleportdeck = new List<byte>
+			{
+				0x42,
+				0x43,
+				0x4B,
+				0x4C,
+				0x4D,
+				0x4E,
+				0x50,
+				0x51,
+				0x52,
+				0x53,
+				0x09 + 0x80,
+				0x40 + 0x80
+			};
 			tilesets[7].treasuredeck = new List<byte>();
 			for (int i = 0x5D; i <= 0x64; i++)
 			{
@@ -566,7 +580,7 @@ namespace FF1Lib
 				tilesetspinner.Add((byte)i);
 			}
 		}
-		public void CreateDomains(MT19337 rng, List<Map> maps) 
+		public void CreateDomains(MT19337 rng, List<Map> maps)
 		{
 			// It's 0x72 because we want to exclude the "boss battles".
 			FormationLevel[] formationlevels = new FormationLevel[0x72 * 2];
@@ -584,18 +598,22 @@ namespace FF1Lib
 			// Determine the level of each encounter (both sides) based on the monsters it contains.
 			for (int i = 0; i < 0x72; i++)
 			{
-				formationlevels[i] = new FormationLevel();
-				formationlevels[i].formation = new Encounters.FormationData(formations[i]);
-				formationlevels[i].level = 0;
-				formationlevels[i].index = (byte)i;
+				formationlevels[i] = new FormationLevel
+				{
+					formation = new Encounters.FormationData(formations[i]),
+					level = 0,
+					index = (byte)i
+				};
 				formationlevels[i].level += MonsterLevel(monsters[formationlevels[i].formation.enemy1]) * (formationlevels[i].formation.minmax1.Item1 + formationlevels[i].formation.minmax1.Item2) / 2;
 				formationlevels[i].level += MonsterLevel(monsters[formationlevels[i].formation.enemy2]) * (formationlevels[i].formation.minmax2.Item1 + formationlevels[i].formation.minmax2.Item2) / 2;
 				formationlevels[i].level += MonsterLevel(monsters[formationlevels[i].formation.enemy3]) * (formationlevels[i].formation.minmax3.Item1 + formationlevels[i].formation.minmax3.Item2) / 2;
 				formationlevels[i].level += MonsterLevel(monsters[formationlevels[i].formation.enemy4]) * (formationlevels[i].formation.minmax4.Item1 + formationlevels[i].formation.minmax4.Item2) / 2;
-				formationlevels[i + 0x72] = new FormationLevel();
-				formationlevels[i + 0x72].formation = new Encounters.FormationData(formations[i]);
-				formationlevels[i + 0x72].level = 0;
-				formationlevels[i + 0x72].index = (byte)(i + 0x80);
+				formationlevels[i + 0x72] = new FormationLevel
+				{
+					formation = new Encounters.FormationData(formations[i]),
+					level = 0,
+					index = (byte)(i + 0x80)
+				};
 				formationlevels[i + 0x72].level += MonsterLevel(monsters[formationlevels[i + 0x72].formation.enemy1]) * (formationlevels[i + 0x72].formation.minmaxB1.Item1 + formationlevels[i + 0x72].formation.minmaxB1.Item2) / 2;
 				formationlevels[i + 0x72].level += MonsterLevel(monsters[formationlevels[i + 0x72].formation.enemy2]) * (formationlevels[i + 0x72].formation.minmaxB2.Item1 + formationlevels[i + 0x72].formation.minmaxB2.Item2) / 2;
 			}
@@ -604,7 +622,7 @@ namespace FF1Lib
 			Array.Sort(formationlevels, (x, y) => x.level.CompareTo(y.level));
 
 			// Assign random formations of appropriate level to each floor.
-			var lowest = 0;
+			int lowest = 0;
 			for (int i = 8; i < 61; i++)
 			{
 				lowest = (i - 8) * (((0x72 * 2) - 8) / 52);
@@ -645,7 +663,7 @@ namespace FF1Lib
 			CreateDomains(rng, maps);
 
 			// Gaia and Onrac should really be encountered in the other order.
-			var temp = maps[5];
+			Map temp = maps[5];
 			maps[5] = maps[6];
 			maps[6] = temp;
 
@@ -655,7 +673,7 @@ namespace FF1Lib
 			// Pre-determine what floors will have town branches
 			int[] townfloors = new int[7];
 			Candidate[] towndestinations = new Candidate[7];
-			var nexttown = 0;
+			int nexttown = 0;
 			for (int i = 0; i < 7; i++)
 			{
 				townfloors[i] = RollDice(rng, 2, 3) + (i * 7) + 7;
@@ -730,7 +748,10 @@ namespace FF1Lib
 						Put(0x2D00 + nexttown + 53, Blob.FromHex(Convert.ToHexString(new byte[] { (byte)towndestinations[nexttown].x })));
 						Put(0x2D40 + nexttown + 53, Blob.FromHex(Convert.ToHexString(new byte[] { (byte)(towndestinations[nexttown].y + 0x80) })));
 						Put(0x2D80 + nexttown + 53, Blob.FromHex(Convert.ToHexString(new byte[] { (byte)(nexttown + 1) })));
-						if (nexttown < 6) nexttown++;
+						if (nexttown < 6)
+						{
+							nexttown++;
+						}
 					}
 				}
 				else
@@ -758,10 +779,10 @@ namespace FF1Lib
 			overworldMap.ApplyMapEdits();
 		}
 
-		public void SpinPalettes(MT19337 rng, List<Map> maps) 
+		public void SpinPalettes(MT19337 rng, List<Map> maps)
 		{
 			// Assigns the inner map with the given index a random palette.
-			var palettes = OverworldMap.GeneratePalettes(Get(OverworldMap.MapPaletteOffset, MapCount * OverworldMap.MapPaletteSize).Chunk(OverworldMap.MapPaletteSize));
+			Dictionary<OverworldMap.Palette, Blob> palettes = OverworldMap.GeneratePalettes(Get(OverworldMap.MapPaletteOffset, MapCount * OverworldMap.MapPaletteSize).Chunk(OverworldMap.MapPaletteSize));
 			for (int i = 8; i < 61; i++)
 			{
 				var pal = palettes[(OverworldMap.Palette)rng.Between(1, palettes.Count() - 1)];
@@ -772,7 +793,7 @@ namespace FF1Lib
 				}
 				else
 				{
-					var paletteIndex = 32;
+					int paletteIndex = 32;
 					Put(OverworldMap.MapPaletteOffset + (i * OverworldMap.MapPaletteSize) + paletteIndex, pal.SubBlob(paletteIndex, 48 - paletteIndex));
 					Put(OverworldMap.MapPaletteOffset + (i * OverworldMap.MapPaletteSize), pal.SubBlob(0, 16));
 				}
@@ -793,9 +814,11 @@ namespace FF1Lib
 			// The boxes are organized by tileset, so we deal with them one tileset at a time.
 			for (int i = 1; i <= 7; i++)
 			{
-				accessibleroomtiles = new List<byte>();
-				accessibleroomtiles.Add(tilesets[i].roomtile);
-				accessibleroomtiles.Add(tilesets[i].roomlower);
+				accessibleroomtiles = new List<byte>
+				{
+					tilesets[i].roomtile,
+					tilesets[i].roomlower
+				};
 				// Create a "deck" of the tileset's treasure tiles.
 				currentdeck = new List<byte>();
 				for (int j = 0; j < tilesets[i].treasuredeck.Count(); j++)
@@ -816,7 +839,7 @@ namespace FF1Lib
 				// available spots to put boxes.
 				while (mapspinner.Count() > 0 && currentdeck.Count() > 0)
 				{
-					var currentmap = mapspinner.PickRandom(rng);
+					byte currentmap = mapspinner.PickRandom(rng);
 					// Create a list of legal places to put boxes.
 					// This has to be done each time a box is placed because boxes are solid and
 					// thus could block the way to previously available tiles.
@@ -898,8 +921,8 @@ namespace FF1Lib
 			// For each floor, we determine a "lowest" index in the sorted treasure contents list
 			// that could appear on that floor. This index increases faster in the beginning to get
 			// past the chaff and then tapers off in the later floors.
-			var treasurediesize = 30;
-			var chestsdropped = 0;
+			int treasurediesize = 30;
+			int chestsdropped = 0;
 			double lowest = 0;
 			for (int i = 8; i < 61; i++)
 			{
@@ -982,9 +1005,13 @@ namespace FF1Lib
 			// Three chests in three disjoint parts of the dungeon are replaced with Ribbon.
 			for (int i = 1; i <= 3; i++)
 			{
-				var ribbonfloor = RollDice(rng, 1, 8) + 8 + (i * 8);
-				while (chestsonfloor[ribbonfloor] - chestsonfloor[ribbonfloor - 1] == 0) ribbonfloor++;
-				var chestindex = RollDice(rng, 1, chestsonfloor[ribbonfloor] - chestsonfloor[ribbonfloor - 1]) + chestsonfloor[ribbonfloor - 1];
+				int ribbonfloor = RollDice(rng, 1, 8) + 8 + (i * 8);
+				while (chestsonfloor[ribbonfloor] - chestsonfloor[ribbonfloor - 1] == 0)
+				{
+					ribbonfloor++;
+				}
+
+				int chestindex = RollDice(rng, 1, chestsonfloor[ribbonfloor] - chestsonfloor[ribbonfloor - 1]) + chestsonfloor[ribbonfloor - 1];
 				Put(0x3100 + chestindex, Blob.FromHex("63")); // 0x63 is the Ribbon item index
 			}
 
@@ -1101,7 +1128,10 @@ namespace FF1Lib
 						}
 						if (j < 63)
 						{
-							if (m[j + 1, i] != t.roomtile) lower = true;
+							if (m[j + 1, i] != t.roomtile)
+							{
+								lower = true;
+							}
 						}
 						if (i > 0)
 						{
@@ -1112,19 +1142,36 @@ namespace FF1Lib
 						}
 						if (i < 63)
 						{
-							if (m[j, i + 1] != t.roomtile) right = true;
+							if (m[j, i + 1] != t.roomtile)
+							{
+								right = true;
+							}
 						}
 						if (upper)
 						{
 							m[j, i] = t.roomupper;
-							if (left) m[j, i] = t.roomupperleft;
-							if (right) m[j, i] = t.roomupperright;
+							if (left)
+							{
+								m[j, i] = t.roomupperleft;
+							}
+
+							if (right)
+							{
+								m[j, i] = t.roomupperright;
+							}
 						}
 						else if (lower)
 						{
 							m[j, i] = t.roomlower;
-							if (left) m[j, i] = t.roomlowerleft;
-							if (right) m[j, i] = t.roomlowerright;
+							if (left)
+							{
+								m[j, i] = t.roomlowerleft;
+							}
+
+							if (right)
+							{
+								m[j, i] = t.roomlowerright;
+							}
 						}
 						else if (left)
 						{
@@ -1147,20 +1194,22 @@ namespace FF1Lib
 			// it breaks traversibility and rejects it.
 			// Don't ask me to explain the logic about why that works but trust me it does.
 			bool result = true;
-			List<byte> solids = new List<byte>(t.treasuredeck);
-			solids.Add(t.walltile);
-			solids.Add(t.leftwalltile);
-			solids.Add(t.rightwalltile);
-			solids.Add(t.wallupperleft);
-			solids.Add(t.wallupperright);
-			solids.Add(t.abysstile);
-			solids.Add(t.roomleft);
-			solids.Add(t.roomright);
-			solids.Add(t.roomupper);
-			solids.Add(t.roomupperleft);
-			solids.Add(t.roomupperright);
-			solids.Add(t.roomlowerleft);
-			solids.Add(t.roomlowerright);
+			List<byte> solids = new(t.treasuredeck)
+			{
+				t.walltile,
+				t.leftwalltile,
+				t.rightwalltile,
+				t.wallupperleft,
+				t.wallupperright,
+				t.abysstile,
+				t.roomleft,
+				t.roomright,
+				t.roomupper,
+				t.roomupperleft,
+				t.roomupperright,
+				t.roomlowerleft,
+				t.roomlowerright
+			};
 			if (!inside)
 			{
 				solids.Add(t.roomtile);
@@ -1199,7 +1248,10 @@ namespace FF1Lib
 					solid = !solid;
 				}
 			}
-			if (flips > 2) result = false;
+			if (flips > 2)
+			{
+				result = false;
+			}
 			// Make sure it's not blocking the only access to a neighbouring chest.
 			if (result && inside)
 			{
@@ -1264,9 +1316,18 @@ namespace FF1Lib
 							break;
 						}
 					}
-					if (!result) break;
+					if (!result)
+					{
+						break;
+					}
 				}
-				if (result) if (obstacle) result = Traversible(m, t, x, y, w, h);
+				if (result)
+				{
+					if (obstacle)
+					{
+						result = Traversible(m, t, x, y, w, h);
+					}
+				}
 			}
 			return result;
 		}
@@ -1323,7 +1384,10 @@ namespace FF1Lib
 				{
 					for (int j = 0; j < 63; j++)
 					{
-						if (m[j, i] == t.floortile) candidates.Add(new Candidate(i, j));
+						if (m[j, i] == t.floortile)
+						{
+							candidates.Add(new Candidate(i, j));
+						}
 					}
 				}
 				c = candidates.SpliceRandom(rng);
@@ -1342,7 +1406,7 @@ namespace FF1Lib
 		private byte PlaceExit(MT19337 rng, Map m, Tileset t)
 		{
 			// This places a teleport to the next floor in a random place.
-			List<Candidate> candidates = new List<Candidate>();
+			List<Candidate> candidates = new();
 			Candidate c;
 			byte exittile = t.teleportdeck.SpliceRandom(rng);
 			for (int i = 0; i < 64; i++)
@@ -1353,19 +1417,29 @@ namespace FF1Lib
 					{
 						if (m[j, i] == t.roomtile)
 						{
-							if (Traversible(m, t, i, j, 1, 1, true)) candidates.Add(new Candidate(i, j));
+							if (Traversible(m, t, i, j, 1, 1, true))
+							{
+								candidates.Add(new Candidate(i, j));
+							}
 						}
 					}
 					else
 					{
 						if (m[j, i] == t.floortile)
 						{
-							if (Traversible(m, t, i, j, 1, 1)) candidates.Add(new Candidate(i, j));
+							if (Traversible(m, t, i, j, 1, 1))
+							{
+								candidates.Add(new Candidate(i, j));
+							}
 						}
 					}
 				}
 			}
-			if (candidates.Count() == 0) Console.WriteLine("Can't place exit");
+			if (candidates.Count() == 0)
+			{
+				Console.WriteLine("Can't place exit");
+			}
+
 			c = candidates.SpliceRandom(rng);
 			exittile = (byte)(exittile % 0x80);
 			m[c.y, c.x] = exittile;
@@ -1375,7 +1449,7 @@ namespace FF1Lib
 		private void PlaceChaos(MT19337 rng, Map m, Tileset t)
 		{
 			// Puts the final boss somewhere in a room on the final floor.
-			List<Candidate> candidates = new List<Candidate>();
+			List<Candidate> candidates = new();
 			Candidate c;
 			for (int i = 0; i < 64; i++)
 			{
@@ -1389,7 +1463,10 @@ namespace FF1Lib
 							m[j, i - 1] == t.roomtile ||
 							m[j, i + 1] == t.roomtile)
 						{
-							if (Traversible(m, t, i, j, 1, 1, true)) candidates.Add(new Candidate(i, j));
+							if (Traversible(m, t, i, j, 1, 1, true))
+							{
+								candidates.Add(new Candidate(i, j));
+							}
 						}
 					}
 				}
@@ -1405,10 +1482,10 @@ namespace FF1Lib
 			// The floor for each is 4d6 + 6, rolled independently.
 			// This means each could be as low as floor 10 or as high as floor 30, but with
 			// weighting towards floor 20.
-			List<Candidate> candidates = new List<Candidate>();
+			List<Candidate> candidates = new();
 			Candidate c;
-			var bahamutfloor = RollDice(rng, 4, 6) + 6 + 8;
-			var tailfloor = RollDice(rng, 4, 6) + 6 + 8;
+			int bahamutfloor = RollDice(rng, 4, 6) + 6 + 8;
+			int tailfloor = RollDice(rng, 4, 6) + 6 + 8;
 			Map m = maps[bahamutfloor];
 			Tileset t = tilesets[tilesetmappings[bahamutfloor]];
 			for (int i = 1; i < 63; i++)
@@ -1423,15 +1500,22 @@ namespace FF1Lib
 							m[j, i - 1] == t.roomtile ||
 							m[j, i + 1] == t.roomtile)
 						{
-							if (Traversible(m, t, i, j, 1, 1, true)) candidates.Add(new Candidate(i, j));
+							if (Traversible(m, t, i, j, 1, 1, true))
+							{
+								candidates.Add(new Candidate(i, j));
+							}
 						}
 					}
 				}
 			}
 			c = candidates.SpliceRandom(rng);
 			SetNpc((MapId)bahamutfloor, 0, ObjectId.Bahamut, c.x, c.y, true, true);
-			while (chestsonfloor[tailfloor] - chestsonfloor[tailfloor - 1] == 0) tailfloor++;
-			var chestindex = RollDice(rng, 1, chestsonfloor[tailfloor] - chestsonfloor[tailfloor - 1]) + chestsonfloor[tailfloor - 1];
+			while (chestsonfloor[tailfloor] - chestsonfloor[tailfloor - 1] == 0)
+			{
+				tailfloor++;
+			}
+
+			int chestindex = RollDice(rng, 1, chestsonfloor[tailfloor] - chestsonfloor[tailfloor - 1]) + chestsonfloor[tailfloor - 1];
 			Put(0x3100 + chestindex, Blob.FromHex("0D")); // 0D is the TAIL item index
 		}
 		private void GenerateMapBoxStyle(MT19337 rng, Map m, Tileset t)
@@ -1446,7 +1530,7 @@ namespace FF1Lib
 			for (int attempt = 0; attempt < attempts; attempt++)
 			{
 				// Determine which tiles are suitable for attaching a new box.
-				List<Candidate> candidates = new List<Candidate>();
+				List<Candidate> candidates = new();
 				Candidate c;
 				for (int i = 1; i < 63; i++)
 				{
@@ -1457,10 +1541,26 @@ namespace FF1Lib
 							if (m[j - 1, i] != t.floortile || m[j + 1, i] != t.floortile || m[j, i - 1] != t.floortile || m[j, i + 1] != t.floortile)
 							{
 								c = new Candidate(i, j);
-								if (m[j - 1, i] != t.floortile) c.dirs.Add(northdir);
-								if (m[j + 1, i] != t.floortile) c.dirs.Add(southdir);
-								if (m[j, i - 1] != t.floortile) c.dirs.Add(westdir);
-								if (m[j, i + 1] != t.floortile) c.dirs.Add(eastdir);
+								if (m[j - 1, i] != t.floortile)
+								{
+									c.dirs.Add(northdir);
+								}
+
+								if (m[j + 1, i] != t.floortile)
+								{
+									c.dirs.Add(southdir);
+								}
+
+								if (m[j, i - 1] != t.floortile)
+								{
+									c.dirs.Add(westdir);
+								}
+
+								if (m[j, i + 1] != t.floortile)
+								{
+									c.dirs.Add(eastdir);
+								}
+
 								candidates.Add(c);
 							}
 						}
@@ -1475,16 +1575,32 @@ namespace FF1Lib
 				switch (d)
 				{
 					case northdir:
-						if (CarveBox(m, t, c.x - (w / 2), c.y - h, w, h)) m[c.y - 1, c.x] = t.floortile;
+						if (CarveBox(m, t, c.x - (w / 2), c.y - h, w, h))
+						{
+							m[c.y - 1, c.x] = t.floortile;
+						}
+
 						break;
 					case southdir:
-						if (CarveBox(m, t, c.x - (w / 2), c.y + 1, w, h)) m[c.y + 1, c.x] = t.floortile;
+						if (CarveBox(m, t, c.x - (w / 2), c.y + 1, w, h))
+						{
+							m[c.y + 1, c.x] = t.floortile;
+						}
+
 						break;
 					case westdir:
-						if (CarveBox(m, t, c.x - w, c.y - (h / 2), w, h)) m[c.y, c.x - 1] = t.floortile;
+						if (CarveBox(m, t, c.x - w, c.y - (h / 2), w, h))
+						{
+							m[c.y, c.x - 1] = t.floortile;
+						}
+
 						break;
 					case eastdir:
-						if (CarveBox(m, t, c.x + 1, c.y - (h / 2), w, h)) m[c.y, c.x + 1] = t.floortile;
+						if (CarveBox(m, t, c.x + 1, c.y - (h / 2), w, h))
+						{
+							m[c.y, c.x + 1] = t.floortile;
+						}
+
 						break;
 					default:
 						break;
@@ -1495,12 +1611,12 @@ namespace FF1Lib
 		}
 		private void GenerateMapSnakeStyle(MT19337 rng, Map m, Tileset t)
 		{
-			var totalpushes = 100;
-			var minheads = 2;
-			var maxheads = 6;
-			var newheadchance = 400;
-			var killheadchance = 25;
-			List<SnakeHead> heads = new List<SnakeHead>();
+			int totalpushes = 100;
+			int minheads = 2;
+			int maxheads = 6;
+			int newheadchance = 400;
+			int killheadchance = 25;
+			List<SnakeHead> heads = new();
 			List<SnakeHead> newheadlist;
 
 			// We start with two "heads" for the snake that move independently.

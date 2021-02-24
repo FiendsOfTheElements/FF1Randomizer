@@ -28,9 +28,9 @@ namespace FF1Lib
 
 	public class DefaultHintPlacmentProvider : BaseHintPlacementProvider
 	{
-		Dictionary<HintPlacementStrategy, List<ObjectId>> PlacementPools;
+		private readonly Dictionary<HintPlacementStrategy, List<ObjectId>> PlacementPools;
 
-		public DefaultHintPlacmentProvider(MT19337 _rng, NPCdata _npcData, Flags _flags, OverworldMap _overworldMap, FF1Rom _rom) : base (_rng, _npcData, _flags, _overworldMap, _rom)
+		public DefaultHintPlacmentProvider(MT19337 _rng, NPCdata _npcData, Flags _flags, OverworldMap _overworldMap, FF1Rom _rom) : base(_rng, _npcData, _flags, _overworldMap, _rom)
 		{
 			PlacementPools = StrategyDic.Select(s => (key: s.Key, values: s.Value.SelectMany(l => LocationDic[l]))).ToDictionary(s => s.key, s => s.values.ToList());
 		}
@@ -52,11 +52,11 @@ namespace FF1Lib
 
 		public override List<ObjectId> GetNpcPool(GeneratedHint hint, HashSet<ObjectId> usedIds)
 		{
-			var strategy = hint.PlacementStrategy;
+			HintPlacementStrategy strategy = hint.PlacementStrategy;
 
 			if (strategy == HintPlacementStrategy.Tiered)
 			{
-				var location = ItemLocations.MapLocationToStandardOverworldLocations[hint.MapLocation];
+				OverworldTeleportIndex location = ItemLocations.MapLocationToStandardOverworldLocations[hint.MapLocation];
 
 #pragma warning disable IDE0066 // Convert switch statement to expression
 				switch (location)
@@ -338,10 +338,11 @@ namespace FF1Lib
 			{ HintLocation.Lefein, Lefein },
 		};
 
-		public static Dictionary<HintPlacementStrategy, HintLocation[]> StrategyDic = new Dictionary<HintPlacementStrategy, HintLocation[]>
+		public static Dictionary<HintPlacementStrategy, HintLocation[]> StrategyDic = new()
 		{
 			{
-				HintPlacementStrategy.InnerSea, new HintLocation[]
+				HintPlacementStrategy.InnerSea,
+				new HintLocation[]
 				{
 					HintLocation.Coneria,
 					HintLocation.ConeriaCastle,
@@ -353,7 +354,8 @@ namespace FF1Lib
 				}
 			},
 			{
-				HintPlacementStrategy.ConeriaToCrescent, new HintLocation[]
+				HintPlacementStrategy.ConeriaToCrescent,
+				new HintLocation[]
 				{
 					HintLocation.Coneria,
 					HintLocation.ConeriaCastle,
@@ -367,7 +369,8 @@ namespace FF1Lib
 				}
 			},
 			{
-				HintPlacementStrategy.ElflandToCrescent, new HintLocation[]
+				HintPlacementStrategy.ElflandToCrescent,
+				new HintLocation[]
 				{
 					HintLocation.Elfland,
 					HintLocation.ElflandCastle,
@@ -378,7 +381,8 @@ namespace FF1Lib
 				}
 			},
 			{
-				HintPlacementStrategy.ElflandPlus, new HintLocation[]
+				HintPlacementStrategy.ElflandPlus,
+				new HintLocation[]
 				{
 					HintLocation.Elfland,
 					HintLocation.ElflandCastle,
@@ -394,7 +398,8 @@ namespace FF1Lib
 				}
 			},
 			{
-				HintPlacementStrategy.MelmondOnrac, new HintLocation[]
+				HintPlacementStrategy.MelmondOnrac,
+				new HintLocation[]
 				{
 					HintLocation.Melmond,
 					HintLocation.CrescentLake,
@@ -402,7 +407,8 @@ namespace FF1Lib
 				}
 			},
 			{
-				HintPlacementStrategy.MelmondMermaids, new HintLocation[]
+				HintPlacementStrategy.MelmondMermaids,
+				new HintLocation[]
 				{
 					HintLocation.Melmond,
 					HintLocation.CrescentLake,
@@ -411,7 +417,8 @@ namespace FF1Lib
 				}
 			},
 			{
-				HintPlacementStrategy.MelmondPlus, new HintLocation[]
+				HintPlacementStrategy.MelmondPlus,
+				new HintLocation[]
 				{
 					HintLocation.Melmond,
 					HintLocation.CrescentLake,
@@ -423,7 +430,8 @@ namespace FF1Lib
 				}
 			},
 			{
-				HintPlacementStrategy.FloaterRequired, new HintLocation[]
+				HintPlacementStrategy.FloaterRequired,
+				new HintLocation[]
 				{
 					HintLocation.Cardia,
 					HintLocation.Lefein,
@@ -431,7 +439,8 @@ namespace FF1Lib
 				}
 			},
 			{
-				HintPlacementStrategy.Everywhere, new HintLocation[]
+				HintPlacementStrategy.Everywhere,
+				new HintLocation[]
 				{
 					HintLocation.Coneria,
 					HintLocation.ConeriaCastle,
@@ -450,7 +459,8 @@ namespace FF1Lib
 				}
 			},
 			{
-				HintPlacementStrategy.InnerSeaTownsAndDwarfCave, new HintLocation[]
+				HintPlacementStrategy.InnerSeaTownsAndDwarfCave,
+				new HintLocation[]
 				{
 					HintLocation.Coneria,
 					HintLocation.Pravoka,

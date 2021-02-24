@@ -10,7 +10,7 @@ namespace FF1Lib
 {
 	public class LooseFloorHintSource : BaseHintSource
 	{
-		int LooseCount;
+		private int LooseCount;
 
 		public LooseFloorHintSource(MT19337 _rng, NPCdata _npcData, Flags _flags, OverworldMap _overworldMap, FF1Rom _rom) : base(_rng, _npcData, _flags, _overworldMap, _rom)
 		{
@@ -26,14 +26,14 @@ namespace FF1Lib
 
 		private List<GeneratedHint> GenerateLooseItemFloorHints()
 		{
-			List<GeneratedHint> hints = new List<GeneratedHint>();
+			List<GeneratedHint> hints = new();
 
-			var incentivePool = ItemLists.GetIncentivePool(flags);
-			var incentiveChests = ItemLists.GetIncentiveChests(flags);
+			List<Item> incentivePool = ItemLists.GetIncentivePool(flags);
+			List<string> incentiveChests = ItemLists.GetIncentiveChests(flags);
 
-			foreach (var item in incentivePool)
+			foreach (Item item in incentivePool)
 			{
-				var placement = rom.generatedPlacement.Find(x => x.Item == item);
+				IRewardSource placement = rom.generatedPlacement.Find(x => x.Item == item);
 				if (placement != null)
 				{
 					if (placement is TreasureChest && !incentiveChests.Contains(placement.Name))

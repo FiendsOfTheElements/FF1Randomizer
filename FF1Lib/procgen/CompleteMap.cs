@@ -13,7 +13,7 @@ namespace FF1Lib.Procgen
 
 		/* -- The rest of this is text map drawing. -- */
 
-		static private Dictionary<Tile, char> asciiTileMap = new Dictionary<Tile, char>
+		private static readonly Dictionary<Tile, char> asciiTileMap = new()
 		{
 			{ Tile.RoomBackLeft, '/' },
 			{ Tile.RoomBackCenter, '=' },
@@ -49,15 +49,15 @@ namespace FF1Lib.Procgen
 
 		public string AsText()
 		{
-			StringBuilder sb = new StringBuilder(MapRequirements.Height * MapRequirements.Width);
+			StringBuilder sb = new(MapRequirements.Height * MapRequirements.Width);
 
 			int y, x;
-			var otherCharMap = new Dictionary<int, char>();
-			var seenValues = new HashSet<int>();
+			Dictionary<int, char> otherCharMap = new Dictionary<int, char>();
+			HashSet<int> seenValues = new HashSet<int>();
 
 			// other chars to pull from when automatically mapping byte values to chars
 			// just letters obviously. someone smart can come up with a better idea.
-			var otherChars = new Stack<char>("ABCDFGHIJKLMNPRSTUVWYZxabcdefghijklmnopqrstuwvz");
+			Stack<char> otherChars = new Stack<char>("ABCDFGHIJKLMNPRSTUVWYZxabcdefghijklmnopqrstuwvz");
 
 			sb.Append($"Map {Requirements.MapId}\n");
 
@@ -67,10 +67,14 @@ namespace FF1Lib.Procgen
 				for (x = 0; x < MapRequirements.Width; x++)
 				{
 					int value = Map[y, x];
-					if (asciiTileMap.ContainsKey((Tile) value))
-						sb.Append(asciiTileMap[(Tile) value]);
+					if (asciiTileMap.ContainsKey((Tile)value))
+					{
+						sb.Append(asciiTileMap[(Tile)value]);
+					}
 					else if (otherCharMap.ContainsKey(value))
+					{
 						sb.Append(otherCharMap[value]);
+					}
 					else
 					{
 						char newchar = otherChars.Pop();
@@ -79,12 +83,16 @@ namespace FF1Lib.Procgen
 					}
 
 					seenValues.Add(value);
-					if (value == (int) Tile.WarpUp)
+					if (value == (int)Tile.WarpUp)
+					{
 						seenEntrance = true;
+					}
 				}
 
 				if (seenEntrance)
+				{
 					sb.Append("\t <-- Entrance this row");
+				}
 
 				sb.Append("\n");
 			}
@@ -93,12 +101,12 @@ namespace FF1Lib.Procgen
 
 			// make a nice little table
 			int index = 0;
-			var legend_groups = asciiTileMap.
-				Where(entry => seenValues.Contains((int) entry.Key)).
-				Select(entry => String.Format("{0,-30}  {1,2}", entry.Key, entry.Value)).
+			List<IGrouping<int, string>> legend_groups = asciiTileMap.
+				Where(entry => seenValues.Contains((int)entry.Key)).
+				Select(entry => string.Format("{0,-30}  {1,2}", entry.Key, entry.Value)).
 				GroupBy(str => index++ / 2).ToList();
 			legend_groups.ForEach(grouping =>
-				sb.Append("\t").Append(String.Join("\t\t\t", grouping)).Append("\n")
+				sb.Append("\t").Append(string.Join("\t\t\t", grouping)).Append("\n")
 			);
 			sb.AppendLine();
 
@@ -107,7 +115,7 @@ namespace FF1Lib.Procgen
 				Select(entry => $"{entry.Key:X2}        {entry.Value}").
 				GroupBy(str => index++ / 4).ToList();
 			legend_groups.ForEach(grouping =>
-				sb.Append("\t").Append(String.Join("\t\t", grouping)).Append("\n")
+				sb.Append("\t").Append(string.Join("\t\t", grouping)).Append("\n")
 			);
 
 			return sb.ToString();

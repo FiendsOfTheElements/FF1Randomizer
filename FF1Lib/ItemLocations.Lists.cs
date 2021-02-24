@@ -26,7 +26,7 @@ namespace FF1Lib
 			MarshCave5, MarshCave6, MarshCave7, MarshCave8, MarshCaveMajor,
 			MarshCave10};
 		public static readonly IReadOnlyCollection<IRewardSource> MarshCaveLocked =
-			new List<IRewardSource>{ MarshCave11, MarshCave12, MarshCave13 };
+			new List<IRewardSource> { MarshCave11, MarshCave12, MarshCave13 };
 		public static readonly IReadOnlyCollection<IRewardSource> NorthwestCastle =
 			new List<IRewardSource> { NorthwestCastle1, NorthwestCastle2, NorthwestCastle3 };
 		public static readonly IReadOnlyCollection<IRewardSource> DwarfCave =

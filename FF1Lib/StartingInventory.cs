@@ -58,11 +58,10 @@ namespace FF1Lib
 
 	public class StartingInventory
 	{
-		MT19337 rng;
-		Flags flags;
-		FF1Rom rom;
-
-		StartingItems ItemData;
+		private MT19337 rng;
+		private readonly Flags flags;
+		private readonly FF1Rom rom;
+		private readonly StartingItems ItemData;
 
 		public StartingInventory(MT19337 _rng, Flags _flags, FF1Rom _rom)
 		{
@@ -77,7 +76,7 @@ namespace FF1Lib
 		{
 			ItemData.LoadTable();
 
-			foreach (var e in StartingItemSetDic[flags.StartingItemSet])
+			foreach (StartingItem e in StartingItemSetDic[flags.StartingItemSet])
 			{
 				if (e.Cnt.HasValue)
 				{
@@ -85,10 +84,10 @@ namespace FF1Lib
 				}
 				else
 				{
-					var min = e.Min;
-					var max = e.Max;
-					var rmin = e.RMin ?? min;
-					var rmax = e.RMax ?? max;
+					int min = e.Min;
+					int max = e.Max;
+					int rmin = e.RMin ?? min;
+					int rmax = e.RMax ?? max;
 
 					ItemData[e.Item] = (byte)Math.Min(Math.Max(rng.Between(rmin, rmax), min), max);
 				}
@@ -113,17 +112,21 @@ namespace FF1Lib
 			public int? RMax { get; set; }
 		}
 
-		private static Dictionary<StartingItemSet, StartingItem[]> StartingItemSetDic = new System.Collections.Generic.Dictionary<StartingItemSet, StartingItem[]>
+		private static readonly Dictionary<StartingItemSet, StartingItem[]> StartingItemSetDic = new()
 		{
 			{ StartingItemSet.None, Array.Empty<StartingItem>() },
-			{ StartingItemSet.SafetyBit, new StartingItem[]
+			{
+				StartingItemSet.SafetyBit,
+				new StartingItem[]
 				{
 					new StartingItem { Item = Item.Tent, Cnt = 1 },
 					new StartingItem { Item = Item.Pure, Cnt = 1 },
 					new StartingItem { Item = Item.Soft, Cnt = 1 },
 				}
 			},
-			{ StartingItemSet.BeggarsChoice, new StartingItem[]
+			{
+				StartingItemSet.BeggarsChoice,
+				new StartingItem[]
 				{
 					new StartingItem { Item = Item.Tent, Cnt = 5 },
 					new StartingItem { Item = Item.Heal, Cnt = 20 },
@@ -131,12 +134,16 @@ namespace FF1Lib
 					new StartingItem { Item = Item.Soft, Cnt = 1 },
 				}
 			},
-			{ StartingItemSet.JustTents, new StartingItem[]
+			{
+				StartingItemSet.JustTents,
+				new StartingItem[]
 				{
 					new StartingItem { Item = Item.Tent, Cnt = 10 },
 				}
 			},
-			{ StartingItemSet.ExplorerStartingPack, new StartingItem[]
+			{
+				StartingItemSet.ExplorerStartingPack,
+				new StartingItem[]
 				{
 					new StartingItem { Item = Item.Tent, Cnt = 10 },
 					new StartingItem { Item = Item.Heal, Cnt = 50 },
@@ -144,14 +151,18 @@ namespace FF1Lib
 					new StartingItem { Item = Item.Soft, Cnt = 2 },
 				}
 			},
-			{ StartingItemSet.RealEstate, new StartingItem[]
+			{
+				StartingItemSet.RealEstate,
+				new StartingItem[]
 				{
 					new StartingItem { Item = Item.Tent, Cnt = 15 },
 					new StartingItem { Item = Item.Cabin, Cnt = 5 },
 					new StartingItem { Item = Item.House, Cnt = 1 },
 				}
 			},
-			{ StartingItemSet.WarriorsStandard, new StartingItem[]
+			{
+				StartingItemSet.WarriorsStandard,
+				new StartingItem[]
 				{
 					new StartingItem { Item = Item.Tent, Cnt = 15 },
 					new StartingItem { Item = Item.Cabin, Cnt = 5 },
@@ -161,7 +172,9 @@ namespace FF1Lib
 					new StartingItem { Item = Item.Soft, Cnt = 3 },
 				}
 			},
-			{ StartingItemSet.RoyalPackmule, new StartingItem[]
+			{
+				StartingItemSet.RoyalPackmule,
+				new StartingItem[]
 				{
 					new StartingItem { Item = Item.Tent, Cnt = 50 },
 					new StartingItem { Item = Item.Cabin, Cnt = 15 },
@@ -171,7 +184,9 @@ namespace FF1Lib
 					new StartingItem { Item = Item.Soft, Cnt = 5 },
 				}
 			},
-			{ StartingItemSet.DucklingBoon, new StartingItem[]
+			{
+				StartingItemSet.DucklingBoon,
+				new StartingItem[]
 				{
 					new StartingItem { Item = Item.Tent, Cnt = 99 },
 					new StartingItem { Item = Item.Cabin, Cnt = 99 },
@@ -181,7 +196,9 @@ namespace FF1Lib
 					new StartingItem { Item = Item.Soft, Cnt = 99 },
 				}
 			},
-			{ StartingItemSet.RandomizedBeggarsChoice, new StartingItem[]
+			{
+				StartingItemSet.RandomizedBeggarsChoice,
+				new StartingItem[]
 				{
 					new StartingItem { Item = Item.Tent, Min = 0, Max = 5, RMin = -1, RMax = 6 },
 					new StartingItem { Item = Item.Heal, Min = 0, Max = 20 },
@@ -189,7 +206,9 @@ namespace FF1Lib
 					new StartingItem { Item = Item.Soft, Min = 0, Max = 1 },
 				}
 			},
-			{ StartingItemSet.RandomizedExplorerStartingPack, new StartingItem[]
+			{
+				StartingItemSet.RandomizedExplorerStartingPack,
+				new StartingItem[]
 				{
 					new StartingItem { Item = Item.Tent, Min = 1, Max = 10, RMin = -2, RMax = 12 },
 					new StartingItem { Item = Item.Heal, Min = 0, Max = 50 },
@@ -197,7 +216,9 @@ namespace FF1Lib
 					new StartingItem { Item = Item.Soft, Min = 0, Max = 2 },
 				}
 			},
-			{ StartingItemSet.RandomizedWarriorsStandard, new StartingItem[]
+			{
+				StartingItemSet.RandomizedWarriorsStandard,
+				new StartingItem[]
 				{
 					new StartingItem { Item = Item.Tent, Min = 3, Max = 15 },
 					new StartingItem { Item = Item.Cabin, Min = 0, Max = 3 },
@@ -207,7 +228,9 @@ namespace FF1Lib
 					new StartingItem { Item = Item.Soft, Min = 1, Max = 3 },
 				}
 			},
-			{ StartingItemSet.RandomizedRoyalPackmule, new StartingItem[]
+			{
+				StartingItemSet.RandomizedRoyalPackmule,
+				new StartingItem[]
 				{
 					new StartingItem { Item = Item.Tent, Min = 10, Max = 50 },
 					new StartingItem { Item = Item.Cabin, Min = 5, Max = 15 },
@@ -217,7 +240,9 @@ namespace FF1Lib
 					new StartingItem { Item = Item.Soft, Min = 2, Max = 5 },
 				}
 			},
-			{ StartingItemSet.RandomizedHighRolling, new StartingItem[]
+			{
+				StartingItemSet.RandomizedHighRolling,
+				new StartingItem[]
 				{
 					new StartingItem { Item = Item.Tent, Min = 30, Max = 99 },
 					new StartingItem { Item = Item.Cabin, Min = 10, Max = 25 },
@@ -227,7 +252,9 @@ namespace FF1Lib
 					new StartingItem { Item = Item.Soft, Min = 5, Max = 10 },
 				}
 			},
-			{ StartingItemSet.Randomized, new StartingItem[]
+			{
+				StartingItemSet.Randomized,
+				new StartingItem[]
 				{
 					new StartingItem { Item = Item.Tent, Min = 0, Max = 99, RMin = -30, RMax = 114 },
 					new StartingItem { Item = Item.Cabin, Min = 0, Max = 99, RMin = -30, RMax = 114 },

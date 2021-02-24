@@ -250,7 +250,7 @@ namespace FF1Lib
 
 			// LvlUp_LevelUp
 			PutInBank(0x1B, 0x8881, Get(0x2DC14, 0x151));
-			PutInBank(0x1B, 0x8881, Blob.FromHex("206A84EAEAEAEAEA"));	
+			PutInBank(0x1B, 0x8881, Blob.FromHex("206A84EAEAEAEAEA"));
 			PutInBank(0x1B, 0x889E, Blob.FromHex("718A"));
 			PutInBank(0x1B, 0x88A7, Blob.FromHex("728A"));
 			PutInBank(0x1B, 0x88C3, Blob.FromHex("598A20998A"));
@@ -288,7 +288,7 @@ namespace FF1Lib
 
 			// RespondDelay, WaitForAnyInput, and MusicPlay
 			PutInBank(0x1B, 0x8C02, Get(0x2DF66, 0x33));
-			
+
 			PutInBank(0x1B, 0x8C0C, MusicPlay);
 			PutInBank(0x1B, 0x8C15, GetJoyInput);
 			PutInBank(0x1B, 0x8C1C, MusicPlay);
@@ -299,7 +299,7 @@ namespace FF1Lib
 			// more luts
 			PutInBank(0x1B, 0x8C32, Blob.FromHex("468C4B8C4E8C538C588C5E8C618C688C6B8C718C0F3D0F3C000F49000C786899009098958D000C76689000000F3000"));
 			PutInBank(0x1B, 0x8C61, Get(0x2D950, 0x16));
-			
+
 			// SubtractOneFromVal
 			PutInBank(0x1B, 0x8C77, Get(0x2D999, 0xA));
 

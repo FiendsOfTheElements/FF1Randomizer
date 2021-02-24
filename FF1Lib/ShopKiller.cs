@@ -54,14 +54,12 @@ namespace FF1Lib
 	{
 		private const byte DoorReplacementTile = 29;
 		private const byte SignReplacementTile = 24;
-
-		MT19337 rng;
-		Flags flags;
-		FF1Rom rom;
-		List<Map> maps;
-
-		ShopData ShopData;
-		HashSet<Item> QuestItems;
+		private MT19337 rng;
+		private readonly Flags flags;
+		private readonly FF1Rom rom;
+		private readonly List<Map> maps;
+		private readonly ShopData ShopData;
+		private readonly HashSet<Item> QuestItems;
 
 		public ShopKiller(MT19337 _rng, Flags _flags, List<Map> _maps, FF1Rom _rom)
 		{
@@ -89,8 +87,15 @@ namespace FF1Lib
 
 		private void KillShops(ShopType shopType, ShopKillMode mode, ShopKillFactor factor, bool excludeConeria)
 		{
-			if (mode == ShopKillMode.Random) mode = (ShopKillMode)Math.Max(rng.Between(-3, 4), 0);
-			if (factor == ShopKillFactor.KillRandom) factor = (ShopKillFactor)rng.Between(0, 4);
+			if (mode == ShopKillMode.Random)
+			{
+				mode = (ShopKillMode)Math.Max(rng.Between(-3, 4), 0);
+			}
+
+			if (factor == ShopKillFactor.KillRandom)
+			{
+				factor = (ShopKillFactor)rng.Between(0, 4);
+			}
 
 			switch (mode)
 			{
@@ -117,16 +122,19 @@ namespace FF1Lib
 
 		private void KillWholeShops(ShopType shopType, ShopKillFactor factor, bool excludeConeria)
 		{
-			var shops = ShopData.Shops.Where(s => s.Type == shopType).ToList();
-			if (excludeConeria) shops = shops.Where(s => s.Location != MapLocation.Coneria).ToList();
+			List<Shop> shops = ShopData.Shops.Where(s => s.Type == shopType).ToList();
+			if (excludeConeria)
+			{
+				shops = shops.Where(s => s.Location != MapLocation.Coneria).ToList();
+			}
 
 			shops.Shuffle(rng);
 
-			var cnt = (int)Math.Round(shops.Count * GetKillFactor(factor) / 100.0f, 0);
+			int cnt = (int)Math.Round(shops.Count * GetKillFactor(factor) / 100.0f, 0);
 
-			var shopsToRemove = shops.Take(cnt).ToList();
+			List<Shop> shopsToRemove = shops.Take(cnt).ToList();
 
-			foreach (var shop in shopsToRemove)
+			foreach (Shop shop in shopsToRemove)
 			{
 				shop.Entries = shop.Entries.Where(e => QuestItems.Contains(e)).ToList();
 				if (shop.Entries.Count == 0)
@@ -139,18 +147,21 @@ namespace FF1Lib
 
 		private void KillAllItemsOfAKind(ShopType shopType, ShopKillFactor factor, bool excludeConeria)
 		{
-			var shops = ShopData.Shops.Where(s => s.Type == shopType).ToList();
-			if (excludeConeria) shops = shops.Where(s => s.Location != MapLocation.Coneria).ToList();
+			List<Shop> shops = ShopData.Shops.Where(s => s.Type == shopType).ToList();
+			if (excludeConeria)
+			{
+				shops = shops.Where(s => s.Location != MapLocation.Coneria).ToList();
+			}
 
-			var dinstinctEntries = shops.SelectMany(s => s.Entries).Distinct().Where(e => !QuestItems.Contains(e)).ToList();
+			List<Item> dinstinctEntries = shops.SelectMany(s => s.Entries).Distinct().Where(e => !QuestItems.Contains(e)).ToList();
 
 			dinstinctEntries.Shuffle(rng);
 
-			var cnt = (int)Math.Round(dinstinctEntries.Count * GetKillFactor(factor) / 100.0f, 0);
+			int cnt = (int)Math.Round(dinstinctEntries.Count * GetKillFactor(factor) / 100.0f, 0);
 
-			var dinstinctToRemove = new HashSet<Item>(dinstinctEntries.Take(cnt));
+			HashSet<Item> dinstinctToRemove = new HashSet<Item>(dinstinctEntries.Take(cnt));
 
-			foreach (var shop in shops)
+			foreach (Shop shop in shops)
 			{
 				shop.Entries = shop.Entries.Where(e => !dinstinctToRemove.Contains(e)).ToList();
 
@@ -164,20 +175,26 @@ namespace FF1Lib
 
 		private void KillSpreads(ShopType shopType, ShopKillFactor factor, bool excludeConeria)
 		{
-			var shops = ShopData.Shops.Where(s => s.Type == shopType).ToList();
-			if (excludeConeria) shops = shops.Where(s => s.Location != MapLocation.Coneria).ToList();
-
-			foreach (var shop in shops)
+			List<Shop> shops = ShopData.Shops.Where(s => s.Type == shopType).ToList();
+			if (excludeConeria)
 			{
-				var entries = shop.Entries.Where(e => !QuestItems.Contains(e)).ToList();
+				shops = shops.Where(s => s.Location != MapLocation.Coneria).ToList();
+			}
+
+			foreach (Shop shop in shops)
+			{
+				List<Item> entries = shop.Entries.Where(e => !QuestItems.Contains(e)).ToList();
 
 				entries.Shuffle(rng);
 
-				var cnt = (int)Math.Round(shop.Entries.Count * GetKillFactor(factor) / 100.0f, 0);
+				int cnt = (int)Math.Round(shop.Entries.Count * GetKillFactor(factor) / 100.0f, 0);
 
-				var entriesToRemove = entries.Take(cnt).ToList();
+				List<Item> entriesToRemove = entries.Take(cnt).ToList();
 
-				foreach (var e in entriesToRemove) shop.Entries.Remove(e);
+				foreach (Item e in entriesToRemove)
+				{
+					shop.Entries.Remove(e);
+				}
 
 				if (shop.Entries.Count == 0)
 				{
@@ -189,25 +206,28 @@ namespace FF1Lib
 
 		private void KillChaos(ShopType shopType, ShopKillFactor factor, bool excludeConeria)
 		{
-			var shops = ShopData.Shops.Where(s => s.Type == shopType).ToList();
-			if (excludeConeria) shops = shops.Where(s => s.Location != MapLocation.Coneria).ToList();
+			List<Shop> shops = ShopData.Shops.Where(s => s.Type == shopType).ToList();
+			if (excludeConeria)
+			{
+				shops = shops.Where(s => s.Location != MapLocation.Coneria).ToList();
+			}
 
-			var allEntries = shops.Select(s => s.Entries.Select(e => (s, e))).SelectMany(x => x).Where(e => !QuestItems.Contains(e.e)).ToList();
+			List<(Shop s, Item e)> allEntries = shops.Select(s => s.Entries.Select(e => (s, e))).SelectMany(x => x).Where(e => !QuestItems.Contains(e.e)).ToList();
 
 			allEntries.Shuffle(rng);
 
-			var cnt = (int)Math.Round(allEntries.Count * GetKillFactor(factor) / 100.0f, 0);
+			int cnt = (int)Math.Round(allEntries.Count * GetKillFactor(factor) / 100.0f, 0);
 
-			var entriesToRemove = allEntries.Take(cnt).ToList();
+			List<(Shop s, Item e)> entriesToRemove = allEntries.Take(cnt).ToList();
 
-			foreach (var entry in entriesToRemove)
+			foreach ((Shop s, Item e) in entriesToRemove)
 			{
-				entry.s.Entries.Remove(entry.e);
+				s.Entries.Remove(e);
 
-				if (entry.s.Entries.Count == 0)
+				if (s.Entries.Count == 0)
 				{
-					entry.s.Entries.Add(GetDefaultItem(shopType));
-					RemoveShopFromMap(entry.s);
+					s.Entries.Add(GetDefaultItem(shopType));
+					RemoveShopFromMap(s);
 				}
 			}
 		}
@@ -215,11 +235,14 @@ namespace FF1Lib
 		private void RemoveShopFromMap(Shop shop)
 		{
 			//Caravan
-			if (shop.Index == 69) return;
+			if (shop.Index == 69)
+			{
+				return;
+			}
 
-			var map = maps[(int)shop.MapId];
+			Map map = maps[(int)shop.MapId];
 
-			if (map.FindFirst(shop.TileId, out var x, out var y))
+			if (map.FindFirst(shop.TileId, out int x, out int y))
 			{
 				map[y, x] = DoorReplacementTile;
 				//map[y - 1, x] = SignReplacementTile;

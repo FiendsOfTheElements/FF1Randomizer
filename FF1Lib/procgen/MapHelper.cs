@@ -4,14 +4,14 @@ using System.Text;
 
 namespace FF1Lib.Procgen
 {
-	static class MapHelper
+	internal static class MapHelper
 	{
 		private static T[,] TransposeFilter<T>(T[,] filter)
 		{
 			T[,] newFilter = (T[,])filter.Clone();
-			for (var i = 0; i < filter.GetLength(0); i++)
+			for (int i = 0; i < filter.GetLength(0); i++)
 			{
-				for (var j = 0; j < filter.GetLength(1); j++)
+				for (int j = 0; j < filter.GetLength(1); j++)
 				{
 					newFilter[j, i] = filter[i, j];
 				}
@@ -88,7 +88,7 @@ namespace FF1Lib.Procgen
 				{ bgTile, bgTile, bgTile },
 				{ bgTile, bgTile, bgTile } };
 
-			Dictionary<byte[,], byte[,]> filter = new Dictionary<byte[,], byte[,]>(new Equality2DArrayComparer())
+			Dictionary<byte[,], byte[,]> filter = new(new Equality2DArrayComparer())
 			{
 				{ pattern1, replacement1 },
 				{ pattern2, replacement2 },
@@ -103,12 +103,12 @@ namespace FF1Lib.Procgen
 				{ TransposeFilter(pattern6), TransposeFilter(replacement6) }
 			};
 
-			var tetst = filter.ContainsKey(pattern1);
+			bool tetst = filter.ContainsKey(pattern1);
 			return map.Filter(filter, (x: 3, y: 3));
 		}
 
 		//A class that allows us to actually compare two byte[,] arrays
-		class Equality2DArrayComparer : IEqualityComparer<byte[,]>
+		private class Equality2DArrayComparer : IEqualityComparer<byte[,]>
 		{
 			public bool Equals(byte[,] x, byte[,] y)
 			{
@@ -116,12 +116,14 @@ namespace FF1Lib.Procgen
 				{
 					return false;
 				}
-				for (var i = 0; i < x.GetLength(0); i++)
+				for (int i = 0; i < x.GetLength(0); i++)
 				{
-					for (var j = 0; j < x.GetLength(1); j++)
+					for (int j = 0; j < x.GetLength(1); j++)
 					{
 						if (x[i, j] != y[i, j])
+						{
 							return false;
+						}
 					}
 				}
 				return true;
@@ -133,10 +135,12 @@ namespace FF1Lib.Procgen
 				for (int i = 0; i < obj.GetLength(0); i++)
 				{
 					for (int j = 0; j < obj.GetLength(1); j++)
+					{
 						unchecked
 						{
 							result = (result * 23) + obj[i, j];
 						}
+					}
 				}
 				return result;
 			}

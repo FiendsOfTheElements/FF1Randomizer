@@ -16,6 +16,6 @@ namespace FF1Lib
 
 		public virtual MapLocation MapLocation { get; set; }
 
-		public virtual string Text { get; set; }	
+		public virtual string Text { get; set; }
 	}
 }

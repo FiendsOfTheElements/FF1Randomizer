@@ -23,14 +23,14 @@ namespace FF1Lib
 
 		private List<GeneratedHint> GenerateLooseItemNameHints()
 		{
-			List<GeneratedHint> hints = new List<GeneratedHint>();
+			List<GeneratedHint> hints = new();
 
-			var incentivePool = ItemLists.GetIncentivePool(flags);
-			var incentiveChests = ItemLists.GetIncentiveChests(flags);
+			List<Item> incentivePool = ItemLists.GetIncentivePool(flags);
+			List<string> incentiveChests = ItemLists.GetIncentiveChests(flags);
 
-			foreach (var item in incentivePool)
+			foreach (Item item in incentivePool)
 			{
-				var placement = rom.generatedPlacement.Find(x => x.Item == item);
+				IRewardSource placement = rom.generatedPlacement.Find(x => x.Item == item);
 				if (placement != null)
 				{
 					if (placement is TreasureChest && !incentiveChests.Contains(placement.Name))

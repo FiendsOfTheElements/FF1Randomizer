@@ -86,31 +86,31 @@ namespace FF1Lib
 			// CURE
 			Put(MagicOffset + 1, new byte[] { 0x20 }); // replace CURE effectivity with 32 (was 16)
 			Put(0x3AF5F, Blob.FromHex("1F0920")); // changing the oob code for CURE to reflect new values
-			// CUR2
+												  // CUR2
 			Put(MagicOffset + (MagicSize * 16) + 1, new byte[] { 0x40 }); // replace CUR2 effectivity with 64 (was 32)
 			Put(0x3AF67, Blob.FromHex("3F0940")); // changing the oob code for CUR2 to reflect the above effect
-			// CUR3
+												  // CUR3
 			Put(MagicOffset + (MagicSize * 32) + 1, new byte[] { 0x80 }); // replace CUR3 effectivity with 128 (was 64)
 			Put(0x3AF6F, Blob.FromHex("7F0980")); // changing the oob code for CUR3 to reflect the above effect
-			// HEAL
+												  // HEAL
 			Put(MagicOffset + (MagicSize * 19) + 1, new byte[] { 0x10 }); // replace HEAL effectivity with 16 (was 12)
 			Put(0x3AFDF, Blob.FromHex("0F")); // changing the oob code for HEAL to reflect the above effect
-			// HEL2
+											  // HEL2
 			Put(MagicOffset + (MagicSize * 35) + 1, new byte[] { 0x20 }); // replace HEL2 effectivity with 32 (was 24)
 			Put(0x3AFE8, Blob.FromHex("1F")); // changing the oob code for HEL2 to reflect the above effect
-			// HEL3
+											  // HEL3
 			Put(MagicOffset + (MagicSize * 51) + 1, new byte[] { 0x40 }); // replace HEL2 effectivity with 64 (was 48)
 			Put(0x3AFF1, Blob.FromHex("3F")); // changing the oob code for HEL3 to reflect the above effect
-			// LAMP
+											  // LAMP
 			Put(MagicOffset + (MagicSize * 8) + 1, new byte[] { 0x18 }); // LAMP heals paralysis as well as darkness
-			// AMUT
+																		 // AMUT
 			Put(MagicOffset + (MagicSize * 27) + 1, new byte[] { 0x50 }); // AMUT heals paralysis as well as silence
 		}
 
 		public void ShuffleMagicLevels(MT19337 rng, bool keepPermissions, bool tieredShuffle, bool mixSpellbooks, bool noSpellcrafter)
 		{
-			var magicSpells = GetSpells();
-			if(tieredShuffle && noSpellcrafter)
+			List<MagicSpell> magicSpells = GetSpells();
+			if (tieredShuffle && noSpellcrafter)
 			{
 				// if we are doing a tiered shuffle, swap the position of TMPR and SABR before further shuffling for balance purposes
 				MagicSpell tmpTMPR = magicSpells[14];
@@ -119,24 +119,24 @@ namespace FF1Lib
 			}
 
 			// First we have to un-interleave white and black spells.
-			var whiteSpells = magicSpells.Where((spell, i) => (i / 4) % 2 == 0).ToList();
-			var blackSpells = magicSpells.Where((spell, i) => (i / 4) % 2 == 1).ToList();
+			List<MagicSpell> whiteSpells = magicSpells.Where((spell, i) => i / 4 % 2 == 0).ToList();
+			List<MagicSpell> blackSpells = magicSpells.Where((spell, i) => i / 4 % 2 == 1).ToList();
 
-			if(tieredShuffle)
+			if (tieredShuffle)
 			{
 				// weigh spell probability of landing in a tier based on where it was in the original game
-				var whiteSpellList = new List<MagicSpell>[3];
-				var blackSpellList = new List<MagicSpell>[3];
-				var whiteSpellFinalList = new List<MagicSpell>[3];
-				var blackSpellFinalList = new List<MagicSpell>[3];
+				List<MagicSpell>[] whiteSpellList = new List<MagicSpell>[3];
+				List<MagicSpell>[] blackSpellList = new List<MagicSpell>[3];
+				List<MagicSpell>[] whiteSpellFinalList = new List<MagicSpell>[3];
+				List<MagicSpell>[] blackSpellFinalList = new List<MagicSpell>[3];
 				int mergedSpellDoubler = 1;
-				whiteSpellList[0] = magicSpells.Where((spell, i) => (i / 4) % 2 == 0 && i < 24).ToList();
-				whiteSpellList[1] = magicSpells.Where((spell, i) => (i / 4) % 2 == 0 && i < 48 && i >= 24).ToList();
-				whiteSpellList[2] = magicSpells.Where((spell, i) => (i / 4) % 2 == 0 && i >= 48).ToList();
-				blackSpellList[0] = magicSpells.Where((spell, i) => (i / 4) % 2 == 1 && i < 24).ToList();
-				blackSpellList[1] = magicSpells.Where((spell, i) => (i / 4) % 2 == 1 && i < 48 && i >= 24).ToList();
-				blackSpellList[2] = magicSpells.Where((spell, i) => (i / 4) % 2 == 1 && i >= 48).ToList();
-				if(mixSpellbooks)
+				whiteSpellList[0] = magicSpells.Where((spell, i) => i / 4 % 2 == 0 && i < 24).ToList();
+				whiteSpellList[1] = magicSpells.Where((spell, i) => i / 4 % 2 == 0 && i < 48 && i >= 24).ToList();
+				whiteSpellList[2] = magicSpells.Where((spell, i) => i / 4 % 2 == 0 && i >= 48).ToList();
+				blackSpellList[0] = magicSpells.Where((spell, i) => i / 4 % 2 == 1 && i < 24).ToList();
+				blackSpellList[1] = magicSpells.Where((spell, i) => i / 4 % 2 == 1 && i < 48 && i >= 24).ToList();
+				blackSpellList[2] = magicSpells.Where((spell, i) => i / 4 % 2 == 1 && i >= 48).ToList();
+				if (mixSpellbooks)
 				{
 					whiteSpellList[0] = whiteSpellList[0].Concat(blackSpellList[0]).ToList();
 					whiteSpellList[1] = whiteSpellList[1].Concat(blackSpellList[1]).ToList();
@@ -155,7 +155,7 @@ namespace FF1Lib
 				{
 					// 70% chance of tier 7-8, 25% chance of tier 4-6, 5% chance of tier 1-3
 					int diceRoll = rng.Between(0, 19);
-					if(diceRoll < 14)
+					if (diceRoll < 14)
 					{
 						whiteSpellFinalList[2].Add(spell);
 					}
@@ -173,11 +173,11 @@ namespace FF1Lib
 					// 60% chance of tier 4-6, 25% chance of tier 1-3, 15% chance of tier 7-8
 					// if a section of the final list is full, move to another section
 					int diceRoll = rng.Between(0, 19);
-					if(diceRoll < 12)
+					if (diceRoll < 12)
 					{
-						if(whiteSpellFinalList[1].Count >= 12 * mergedSpellDoubler)
+						if (whiteSpellFinalList[1].Count >= 12 * mergedSpellDoubler)
 						{
-							if(whiteSpellFinalList[0].Count >= 12 * mergedSpellDoubler)
+							if (whiteSpellFinalList[0].Count >= 12 * mergedSpellDoubler)
 							{
 								whiteSpellFinalList[2].Add(spell);
 							}
@@ -193,9 +193,9 @@ namespace FF1Lib
 					}
 					else if (diceRoll < 17)
 					{
-						if(whiteSpellFinalList[0].Count >= 12 * mergedSpellDoubler)
+						if (whiteSpellFinalList[0].Count >= 12 * mergedSpellDoubler)
 						{
-							if(whiteSpellFinalList[1].Count >= 12 * mergedSpellDoubler)
+							if (whiteSpellFinalList[1].Count >= 12 * mergedSpellDoubler)
 							{
 								whiteSpellFinalList[2].Add(spell);
 							}
@@ -211,9 +211,9 @@ namespace FF1Lib
 					}
 					else
 					{
-						if(whiteSpellFinalList[2].Count >= 8 * mergedSpellDoubler)
+						if (whiteSpellFinalList[2].Count >= 8 * mergedSpellDoubler)
 						{
-							if(whiteSpellFinalList[1].Count >= 12 * mergedSpellDoubler)
+							if (whiteSpellFinalList[1].Count >= 12 * mergedSpellDoubler)
 							{
 								whiteSpellFinalList[0].Add(spell);
 							}
@@ -228,12 +228,12 @@ namespace FF1Lib
 						}
 					}
 				}
-				foreach(MagicSpell spell in whiteSpellList[0])
+				foreach (MagicSpell spell in whiteSpellList[0])
 				{
 					// fill the remaining tiers with the tier 1-3 base magic
-					if(whiteSpellFinalList[0].Count >= 12 * mergedSpellDoubler)
+					if (whiteSpellFinalList[0].Count >= 12 * mergedSpellDoubler)
 					{
-						if(whiteSpellFinalList[1].Count >= 12 * mergedSpellDoubler)
+						if (whiteSpellFinalList[1].Count >= 12 * mergedSpellDoubler)
 						{
 							whiteSpellFinalList[2].Add(spell);
 						}
@@ -248,7 +248,7 @@ namespace FF1Lib
 					}
 				}
 				// and repeat the process for black magic if we didn't mix spellbooks
-				if(mixSpellbooks)
+				if (mixSpellbooks)
 				{
 					// if we mixed spellbooks, split the white (merged) spellbook in halves to set the black spell list
 					blackSpellFinalList[0] = whiteSpellFinalList[0].Take(12).ToList();
@@ -356,13 +356,13 @@ namespace FF1Lib
 							blackSpellFinalList[0].Add(spell);
 						}
 					}
-				}		
+				}
 				// shuffle each of the final lists
-				foreach(List<MagicSpell> spellList in whiteSpellFinalList)
+				foreach (List<MagicSpell> spellList in whiteSpellFinalList)
 				{
 					spellList.Shuffle(rng);
 				}
-				if(!mixSpellbooks)
+				if (!mixSpellbooks)
 				{
 					foreach (List<MagicSpell> spellList in blackSpellFinalList)
 					{
@@ -379,12 +379,12 @@ namespace FF1Lib
 			}
 			else
 			{
-				if(mixSpellbooks)
+				if (mixSpellbooks)
 				{
-					var mergedList = magicSpells.ToList();
+					List<MagicSpell> mergedList = magicSpells.ToList();
 					mergedList.Shuffle(rng);
-					whiteSpells = mergedList.Where((spell, i) => (i / 4) % 2 == 0).ToList();
-					blackSpells = mergedList.Where((spell, i) => (i / 4) % 2 == 1).ToList();
+					whiteSpells = mergedList.Where((spell, i) => i / 4 % 2 == 0).ToList();
+					blackSpells = mergedList.Where((spell, i) => i / 4 % 2 == 1).ToList();
 				}
 				else
 				{
@@ -394,11 +394,11 @@ namespace FF1Lib
 			}
 
 			// Now we re-interleave the spells.
-			var shuffledSpells = new List<MagicSpell>();
+			List<MagicSpell> shuffledSpells = new List<MagicSpell>();
 			for (int i = 0; i < MagicCount; i++)
 			{
-				var sourceIndex = (4 * (i / 8)) + (i % 4);
-				if ((i / 4) % 2 == 0)
+				int sourceIndex = (4 * (i / 8)) + (i % 4);
+				if (i / 4 % 2 == 0)
 				{
 					shuffledSpells.Add(whiteSpells[sourceIndex]);
 				}
@@ -419,12 +419,12 @@ namespace FF1Lib
 				{
 					var oldPermissions = Get(MagicPermissionsOffset + (c * MagicPermissionsSize), MagicPermissionsSize);
 
-					var newPermissions = new byte[MagicPermissionsSize];
+					byte[] newPermissions = new byte[MagicPermissionsSize];
 					for (int i = 0; i < 8; i++)
 					{
 						for (int j = 0; j < 8; j++)
 						{
-							var oldIndex = shuffledSpells[(8 * i) + j].Index;
+							byte oldIndex = shuffledSpells[(8 * i) + j].Index;
 							var oldPermission = (oldPermissions[oldIndex / 8] & (0x80 >> (oldIndex % 8))) >> (7 - (oldIndex % 8));
 							newPermissions[i] |= (byte)(oldPermission << (7 - j));
 						}
@@ -435,7 +435,7 @@ namespace FF1Lib
 			}
 
 			// Map old indices to new indices.
-			var newIndices = new byte[MagicCount];
+			byte[] newIndices = new byte[MagicCount];
 			for (byte i = 0; i < MagicCount; i++)
 			{
 				newIndices[shuffledSpells[i].Index] = i;
@@ -478,11 +478,11 @@ namespace FF1Lib
 			Put(ArmorOffset, armors.SelectMany(armor => armor.ToBytes()).ToArray());
 
 			// Fix the crazy out of battle spell system.
-			var outOfBattleSpellOffset = MagicOutOfBattleOffset;
+			int outOfBattleSpellOffset = MagicOutOfBattleOffset;
 			for (int i = 0; i < MagicOutOfBattleCount; i++)
 			{
 				var oldSpellIndex = Data[outOfBattleSpellOffset] - 0xB0;
-				var newSpellIndex = newIndices[oldSpellIndex];
+				byte newSpellIndex = newIndices[oldSpellIndex];
 
 				Put(outOfBattleSpellOffset, new[] { (byte)(newSpellIndex + 0xB0) });
 
@@ -490,7 +490,7 @@ namespace FF1Lib
 			}
 
 			// Confused enemies are supposed to cast FIRE, so figure out where FIRE ended up.
-			var newFireSpellIndex = shuffledSpells.FindIndex(spell => spell.Data == magicSpells[FireSpellIndex].Data);
+			int newFireSpellIndex = shuffledSpells.FindIndex(spell => spell.Data == magicSpells[FireSpellIndex].Data);
 			Put(ConfusedSpellIndexOffset, new[] { (byte)newFireSpellIndex });
 		}
 
@@ -509,7 +509,7 @@ namespace FF1Lib
 			//0 0 0 0 1 0 0 0 would mean gaining a level 4 spell slot that level
 
 			//brute force way... count the number of spells and rewrite it to not gain any more after the max
-			List<int> spellCount = new List<int> { 2, 0, 0, 0, 0, 0, 0, 0 };
+			List<int> spellCount = new() { 2, 0, 0, 0, 0, 0, 0, 0 };
 			for (int i = 0; i < 49; i++)
 			{
 				int currentOffset = NewLevelUpDataOffset + (49 * classIndex * 2) + (i * 2) + 1;
@@ -579,7 +579,8 @@ namespace FF1Lib
 			Data[0x33AE5] = (byte)((limit >> 8) & 0x00ff);
 		}
 
-		public List<MagicSpell> GetSpells() {
+		public List<MagicSpell> GetSpells()
+		{
 			var spells = Get(MagicOffset, MagicSize * MagicCount).Chunk(MagicSize);
 			var names = Get(MagicNamesOffset, MagicNameSize * MagicCount).Chunk(MagicNameSize);
 			var pointers = Get(MagicTextPointersOffset, MagicCount);

@@ -9,7 +9,7 @@ namespace FF1Lib
 {
 	public partial class FF1Rom : NesRom
 	{
-		enum OOBSpellEffects
+		private enum OOBSpellEffects
 		{
 			OOBSPELL_CURE,
 			OOBSPELL_CUR2,
@@ -29,9 +29,20 @@ namespace FF1Lib
 
 		public void CraftNewSpellbook(MT19337 rng, bool mixWhiteBlack, LockHitMode lockMode, bool levelShuffle, bool keepPermissions) // generates a new spellbook and does all necessary steps to ensure that the new spells are assigned where they need to be for the game to work properly
 		{
-			bool WhiteSpell(int id) => mixWhiteBlack || id % 8 < 4;
-			bool BlackSpell(int id) => mixWhiteBlack || id % 8 > 3;
-			int SpellTier(int id) => id / 8;
+			bool WhiteSpell(int id)
+			{
+				return mixWhiteBlack || id % 8 < 4;
+			}
+
+			bool BlackSpell(int id)
+			{
+				return mixWhiteBlack || id % 8 > 3;
+			}
+
+			int SpellTier(int id)
+			{
+				return id / 8;
+			}
 
 			SpellInfo[] spell = new SpellInfo[MagicCount]; // the spells we are creating.  every 4 indices split between white magic and black magic.
 			EnemyScriptInfo[] script = new EnemyScriptInfo[ScriptCount]; // enemy scripts (we will need to modify these after the spell list has been created)
@@ -51,27 +62,48 @@ namespace FF1Lib
 			}
 			spellNames[MagicCount] = "";
 			if (levelShuffle)
+			{
 				spellNames[MagicCount] = "L";
+			}
+
 			for (int i = 0; i < MagicPermissionsCount * MagicPermissionsSize; ++i)
 			{
 				if (i >= 24 && i < 28)
+				{
 					spellPermissions[i] = 0x00; // red mage can learn all white and black magic between tiers 1 and 4 except WARP, EXIT, CUR4, and LIF2 (but many permissions are taken away from them)
+				}
 				else if (i >= 32 && i < 38)
+				{
 					spellPermissions[i] = 0x0F; // white mage can learn all white magic between tiers 1 and 6 except WARP, EXIT, CUR4, LIF2 and some tier 7 spell effects
+				}
 				else if (i >= 40 && i < 46)
+				{
 					spellPermissions[i] = 0xF0; // black mage can learn all black magic between tiers 1 and 6 except WARP, EXIT, CUR4, LIF2 and some tier 7 spell effects
+				}
 				else if (i >= 48 && i < 51)
+				{
 					spellPermissions[i] = 0x0F; // knight can learn all white magic between tiers 1 and 3 (their permissions will never be revoked)
+				}
 				else if (i >= 56 && i < 60)
+				{
 					spellPermissions[i] = 0xF0; // ninja can learn all black magic between tiers 1 and 4 (their permissions will never be revoked)
+				}
 				else if (i >= 72 && i < 79)
+				{
 					spellPermissions[i] = 0x00; // red wizard can learn all white and black magic up to tier 7 (but many permissions are taken from away from them)
+				}
 				else if (i >= 80 && i < 88)
+				{
 					spellPermissions[i] = 0x0F; // white wizard can learn all white magic spells
+				}
 				else if (i >= 88)
+				{
 					spellPermissions[i] = 0xF0; // black wizard can learn all black magic spells
+				}
 				else
+				{
 					spellPermissions[i] = 0XFF; // all others can not learn any magic (fighter, thief, black belt, master)
+				}
 			}
 			for (int i = 0; i < ScriptCount; ++i)
 			{
@@ -271,19 +303,19 @@ namespace FF1Lib
 			bool rollMoraleSpell = true; // we only allow one morale spell to be drawn
 			int sleepspell = -1; // we only allow two sleep spells to be drawn.  spells which apply another status DO count
 			int lockspell = -1; ; // we only allow two lock spells to be drawn
-			List<int> stunspell = new List<int> { }; // track which spells have paralysis as a status infliction, and ensure that paralysis spells are either two tiers apart or in the opposite color family
-			List<int> mutespell = new List<int> { }; // we maintain the same restriction for silencing spells
+			List<int> stunspell = new() { }; // track which spells have paralysis as a status infliction, and ensure that paralysis spells are either two tiers apart or in the opposite color family
+			List<int> mutespell = new() { }; // we maintain the same restriction for silencing spells
 			bool rollDarknessSpell = true; // we only allow one spell to roll darkness as the ONLY status effect
 			bool rollConfusionSpell = true; // we only allow one spell to roll confusion, unless that spell is also attached to Silence or Paralysis effects
 			bool rollSecondFast = true; // if we rolled a second FAST, we disallow rolling another such spell (in either spell realm)
 			bool rollDispel = true; // we only allow one XFER-type spell to be drawn
 			bool rollEsuna = true; // we allow one status recovery spell outside of PURE and SOFT to roll
-			List<int> killspell = new List<int> { }; // do not allow duplication of death/stone spells that have the same element and targeting byte
+			List<int> killspell = new() { }; // do not allow duplication of death/stone spells that have the same element and targeting byte
 			bool powerWordKill = true; // we only allow one power word kill (with a few exceptions)
 			bool powerWordStun = true; // we only allow one power word stun
 			bool powerWordConf = true; // we allow power word confusion (even if a confusion spell has already been drawn)
 			bool powerWordMute = true; // we allow power word mute
-			List<int> harmspell = new List<int> { }; // harm spells when drawn must be separated by two tiers or be in the opposite color family, and cannot exist alongside a damage spell of the same family
+			List<int> harmspell = new() { }; // harm spells when drawn must be separated by two tiers or be in the opposite color family, and cannot exist alongside a damage spell of the same family
 			List<int>[] elemSpell = new List<int>[9]; // lists of elemental damage spells.  damage spells of the same element cannot be in the same tier
 			elemSpell[0] = new List<int> { }; // status
 			elemSpell[1] = new List<int> { }; // poison
@@ -294,13 +326,13 @@ namespace FF1Lib
 			elemSpell[6] = new List<int> { elemspell[4], elemspell[5] }; // lit
 			elemSpell[7] = new List<int> { }; // earth
 			elemSpell[8] = elemSpell[2]; // non-elemntal list points to the time elemental list
-			List<byte> resistelems = new List<byte> { }; // do not allow duplication of resistance spells
+			List<byte> resistelems = new() { }; // do not allow duplication of resistance spells
 			bool rollWall = true; // we can only roll one WALL spell
-			List<int> defenseupspell = new List<int> { }; // defense raising spells must be separated by three tiers (except self-targeting spells, which are under the same restriction with each other)
-			List<int> selfdefenseupspell = new List<int> { };
-			List<int> evasionspell = new List<int> { }; // same deal for evasion increase spells
-			List<int> selfevasionspell = new List<int> { rusespell };
-			List<int> attackupspell = new List<int> { sabrspell }; // attack increasing spells must be separated by three tiers regardless of targeting, whether they are white or black magic
+			List<int> defenseupspell = new() { }; // defense raising spells must be separated by three tiers (except self-targeting spells, which are under the same restriction with each other)
+			List<int> selfdefenseupspell = new() { };
+			List<int> evasionspell = new() { }; // same deal for evasion increase spells
+			List<int> selfevasionspell = new() { rusespell };
+			List<int> attackupspell = new() { sabrspell }; // attack increasing spells must be separated by three tiers regardless of targeting, whether they are white or black magic
 
 			spellindex.Shuffle(rng);
 
@@ -308,7 +340,7 @@ namespace FF1Lib
 			foreach (int index in spellindex)
 			{
 				// first, we determine the routines we can select in the first place
-				List<byte> validroutines = new List<byte> { 0x01, 0x03 };
+				List<byte> validroutines = new() { 0x01, 0x03 };
 				if (WhiteSpell(index))
 				{
 					validroutines.Add(0x02);
@@ -317,7 +349,9 @@ namespace FF1Lib
 					validroutines.Add(0x0A);
 					validroutines.Add(0x10);
 					if (SpellTier(index) > SpellTier(purespell) && rollEsuna && SpellTier(index) < 6)
+					{
 						validroutines.Add(0x08);
+					}
 				}
 				if (BlackSpell(index))
 				{
@@ -325,24 +359,39 @@ namespace FF1Lib
 					if (lockspell != -2 && SpellTier(index) < 6 && SpellTier(lockspell) != SpellTier(index))
 					{
 						if (lockspell == -1)
+						{
 							validroutines.Add(0x0E);
+						}
 						else
 						{
 							if (Math.Abs(SpellTier(lockspell) - SpellTier(index)) > 2)
+							{
 								validroutines.Add(0x0E);
+							}
 						}
 					}
 					if (rollSecondSlow && SpellTier(index) < 4)
+					{
 						validroutines.Add(0x04);
+					}
+
 					if (rollSecondFast)
+					{
 						validroutines.Add(0x0C);
+					}
 				}
 				if (rollMoraleSpell && SpellTier(index) < 4)
+				{
 					validroutines.Add(0x05);
+				}
+
 				if (SpellTier(index) > 3)
 				{
 					if (rollDispel)
+					{
 						validroutines.Add(0x11);
+					}
+
 					validroutines.Add(0x12);
 				}
 				bool looping = true;
@@ -371,18 +420,26 @@ namespace FF1Lib
 							if (SpellTier(index) < 5)
 							{
 								if (rng.Between(0, 1) == 0)
+								{
 									elem = 7;
+								}
 								else
+								{
 									elem = 8;
+								}
 							}
 							else
+							{
 								elem = 8; // tier 6 and up are always non-elemental
+							}
 						}
 						else
 						{
 							elem = rng.Between(0, mixWhiteBlack ? 8 : 7);
 							if (!mixWhiteBlack && elem == 7)
+							{
 								elem = 8;
+							}
 						}
 						if (SpellTier(index) < 4) // do not allow fire/ice/lit elementals in the first four tiers, since we have guaranteed spells for those anyway
 						{
@@ -390,13 +447,21 @@ namespace FF1Lib
 							{
 								elem = rng.Between(4, 9); // can roll any other element, with 9 being converted to 0 for earth element
 								if (elem == 9)
+								{
 									elem = 0;
+								}
+
 								if (elem == 7 && !mixWhiteBlack)
+								{
 									elem = 8;
+								}
 							}
 						}
 						if (elemSpell[elem].Exists(i => BlackSpell(index) == BlackSpell(i) && SpellTier(index) == SpellTier(i)))
+						{
 							continue; // return to start if this spell is in the same realm and at the same tier as another spell of the same element
+						}
+
 						SPCR_CraftDamageSpell(rng, spell[index], SpellTier(index), (byte)(0b10000000 >> elem), WhiteSpell(index) && !mixWhiteBlack, false);
 						if (elem == 4 || elem == 5 || elem == 8)
 						{
@@ -404,7 +469,10 @@ namespace FF1Lib
 							SPCR_SetPermissionFalse(spellPermissions, index, 9); // red wizard banned
 						}
 						if (SpellTier(index) > 5)
+						{
 							SPCR_SetPermissionFalse(spellPermissions, index, 9); // red wizard banned
+						}
+
 						elemSpell[elem].Add(index);
 					}
 					if (routine == 0x02) // damage undead (or other enemy type)
@@ -422,19 +490,37 @@ namespace FF1Lib
 					}
 					if (routine == 0x03) // inflict negative effect
 					{
-						List<byte> validStatuses = new List<byte> { };
+						List<byte> validStatuses = new() { };
 						if (rollConfusionSpell && SpellTier(index) < 4)
+						{
 							validStatuses.Add(0b10000000);
+						}
+
 						if (rollDarknessSpell && BlackSpell(index) && SpellTier(index) < 2)
+						{
 							validStatuses.Add(0b00001000);
+						}
+
 						if (!stunspell.Exists(id => Math.Abs(SpellTier(index) - SpellTier(id)) < 2) && SpellTier(index) > 1 && BlackSpell(index))
+						{
 							validStatuses.Add(0b00010000);
+						}
+
 						if (SpellTier(index) < 4 && sleepspell != -2 && SpellTier(sleepspell) != SpellTier(index))
+						{
 							validStatuses.Add(0b00100000);
+						}
+
 						if (SpellTier(index) < 4 && !mutespell.Exists(id => Math.Abs(SpellTier(index) - SpellTier(id)) < 2))
+						{
 							validStatuses.Add(0b01000000);
+						}
+
 						if (SpellTier(index) > 2 && BlackSpell(index) && !killspell.Exists(id => SpellTier(id) == SpellTier(index) && BlackSpell(index) == BlackSpell(index)))
+						{
 							validStatuses.Add(0b00000001);
+						}
+
 						if (validStatuses.Count == 0)
 						{
 							validroutines.Remove(0x03);
@@ -442,7 +528,7 @@ namespace FF1Lib
 						}
 						byte effect = validStatuses.PickRandom(rng);
 						byte elem = 0;
-						List<byte> validElements = new List<byte> { };
+						List<byte> validElements = new() { };
 						switch (effect)
 						{
 							case 0b00000001: // death / stone
@@ -453,9 +539,15 @@ namespace FF1Lib
 									validElements.Add(0b00000010);
 								}
 								if (SpellTier(index) > 4)
+								{
 									validElements.Add(0b00000100);
+								}
+
 								if (SpellTier(index) > 5)
+								{
 									validElements.Add(0b00100000);
+								}
+
 								if (SpellTier(index) > 6)
 								{
 									validElements.Add(0b01000000);
@@ -463,7 +555,10 @@ namespace FF1Lib
 								}
 								elem = validElements.PickRandom(rng);
 								if (killspell.Exists(id => Math.Abs(SpellTier(id) - SpellTier(index)) < 2 && spell[id].elem == elem))
+								{
 									continue; // continue if there is a kill spell of the same element within this or an adjacent tier
+								}
+
 								SPCR_SetPermissionFalse(spellPermissions, index, 3); // red mage banned
 								SPCR_SetPermissionFalse(spellPermissions, index, 9); // red wizard banned
 								killspell.Add(index);
@@ -813,9 +908,14 @@ namespace FF1Lib
 										break;
 								}
 								if (sleepspell == -1)
+								{
 									sleepspell = index;
+								}
 								else
+								{
 									sleepspell = -2;
+								}
+
 								break;
 							case 0b00001000: // (sigh) darkness
 								switch (SpellTier(index))
@@ -845,15 +945,27 @@ namespace FF1Lib
 					}
 					if (routine == 0x12) // inflict negative effect if hp < 300
 					{
-						List<byte> validStatuses = new List<byte> { };
+						List<byte> validStatuses = new() { };
 						if (powerWordConf && SpellTier(index) < 7)
+						{
 							validStatuses.Add(0b10000000);
+						}
+
 						if (powerWordMute && SpellTier(index) < 7)
+						{
 							validStatuses.Add(0b01000000);
+						}
+
 						if (powerWordStun && SpellTier(index) < 7 && BlackSpell(index))
+						{
 							validStatuses.Add(0b00010000);
+						}
+
 						if (powerWordKill && SpellTier(index) > 5 && BlackSpell(index))
+						{
 							validStatuses.Add(0b00000001);
+						}
+
 						if (validStatuses.Count == 0)
 						{
 							validroutines.Remove(0x12);
@@ -1040,9 +1152,15 @@ namespace FF1Lib
 								break;
 						}
 						if (targeting == 0x08 && SpellTier(index) < 4)
+						{
 							targeting = 0x10;
+						}
+
 						if (SpellTier(index) == 7)
+						{
 							targeting = 0x04;
+						}
+
 						if (targeting == 0x04 && SpellTier(index) != 7)
 						{
 							if (selfdefenseupspell.Exists(id => Math.Abs(SpellTier(id) - SpellTier(index)) < 3))
@@ -1062,22 +1180,32 @@ namespace FF1Lib
 						spell[index].targeting = targeting;
 						spell[index].effect = (byte)(spell[index].targeting == 0x08 ? (SpellTier(index) - 3) * 8 : (SpellTier(index) + 2) * 4);
 						if (spell[index].targeting == 0x04)
+						{
 							spell[index].effect = (byte)(spell[index].effect + (spell[index].effect / 2));
+						}
+
 						if (SpellTier(index) == 7)
+						{
 							spell[index].targeting = 0x08;
+						}
+
 						spell[index].routine = routine;
 						spellMessages[index] = 0x02; // Armor up
 						if (spell[index].targeting == 0x04)
+						{
 							selfdefenseupspell.Add(index);
+						}
 						else
+						{
 							defenseupspell.Add(index);
+						}
 					}
 					if (routine == 0x0A) // resist elements
 					{
 						byte resistances = 0x00;
 						if (SpellTier(index) < 4)
 						{
-							List<byte> validElements = new List<byte> { 0b01000000, 0b00100000, 0b00010000, 0b00000010, 0b00000001 };
+							List<byte> validElements = new() { 0b01000000, 0b00100000, 0b00010000, 0b00000010, 0b00000001 };
 							validElements = validElements.Except(resistelems).ToList();
 							if (validElements.Count == 0)
 							{
@@ -1114,7 +1242,7 @@ namespace FF1Lib
 						}
 						else if (SpellTier(index) < 7)
 						{
-							List<byte> validElements = new List<byte> { 0b01110000, 0b10001001, 0b10000101, 0b11111111 };
+							List<byte> validElements = new() { 0b01110000, 0b10001001, 0b10000101, 0b11111111 };
 							validElements = validElements.Except(resistelems).ToList();
 							if (validElements.Count == 0)
 							{
@@ -1203,15 +1331,22 @@ namespace FF1Lib
 						spell[index].targeting = (byte)rng.Between(1, 2);
 						spell[index].effect = (byte)(20 * (SpellTier(index) + 1) * spell[index].targeting);
 						if (lockMode == LockHitMode.AutoHit)
+						{
 							spell[index].effect >>= 1; // LSR effect byte by one (divide by two) if lock fix is on
+						}
+
 						spell[index].accuracy = 107; // max accuracy for LOCK spells
 						spell[index].routine = routine;
 						spellMessages[index] = 0x05; // Easy to hit
 						SPCR_SetPermissionFalse(spellPermissions, index, 3); // red mage banned
 						if (lockspell == -1)
+						{
 							lockspell = index;
+						}
 						else
+						{
 							lockspell = -2;
+						}
 					}
 					if (routine == 0x10) // increase evade (INVS)
 					{
@@ -1237,7 +1372,10 @@ namespace FF1Lib
 								break;
 						}
 						if (SpellTier(index) < 4 && targeting == 0x08)
+						{
 							targeting = 0x10;
+						}
+
 						if (targeting == 0x04 || SpellTier(index) == 7)
 						{
 							if (selfevasionspell.Exists(id => Math.Abs(SpellTier(id) - SpellTier(index)) < 3))
@@ -1256,12 +1394,19 @@ namespace FF1Lib
 						}
 						SPCR_CraftEvasionSpell(rng, spell[index], SpellTier(index), targeting);
 						if (spell[index].targeting == 0x04)
+						{
 							SPCR_SetPermissionFalse(spellPermissions, index, 3); // red mage banned
+						}
+
 						spellMessages[index] = 0x03; // Easy to dodge
 						if (spell[index].targeting == 0x04)
+						{
 							selfevasionspell.Add(index);
+						}
 						else
+						{
 							evasionspell.Add(index);
+						}
 					}
 					if (routine == 0x11) // remove resistances (XFER)
 					{
@@ -1330,18 +1475,28 @@ namespace FF1Lib
 								if (i % 8 < 4)
 								{
 									if (SpellTier(i) < 5)
+									{
 										SPCR_SetName(spellNames, i, "RAY", "RAY");
+									}
 									else
+									{
 										SPCR_SetName(spellNames, i, "FADE", "FAD");
+									}
+
 									spell[i].gfx = 0xC8;
 									spell[i].palette = 0x24;
 								}
 								else
 								{
 									if (SpellTier(i) < 5)
+									{
 										SPCR_SetName(spellNames, i, "BOMB", "BOM");
+									}
 									else
+									{
 										SPCR_SetName(spellNames, i, "NUKE", "NUK");
+									}
+
 									spell[i].gfx = 0xD0;
 									spell[i].palette = 0x28;
 								}
@@ -1361,25 +1516,40 @@ namespace FF1Lib
 								break;
 							case 0b01000000:
 								if (SpellTier(i) < 2)
+								{
 									SPCR_SetName(spellNames, i, "LIT", "LIT");
+								}
 								else
+								{
 									SPCR_SetName(spellNames, i, "BOLT", "BLT");
+								}
+
 								spell[i].gfx = 0xC8;
 								spell[i].palette = 0x28;
 								break;
 							case 0b00100000:
 								if (SpellTier(i) < 2)
+								{
 									SPCR_SetName(spellNames, i, "ICE", "ICE");
+								}
 								else
+								{
 									SPCR_SetName(spellNames, i, "SNOW", "SNO");
+								}
+
 								spell[i].gfx = 0xD0;
 								spell[i].palette = 0x21;
 								break;
 							case 0b00010000:
 								if (SpellTier(i) < 2)
+								{
 									SPCR_SetName(spellNames, i, "FIRE", "FIR");
+								}
 								else
+								{
 									SPCR_SetName(spellNames, i, "BURN", "BRN");
+								}
+
 								spell[i].gfx = 0xD0;
 								spell[i].palette = 0x26;
 								break;
@@ -1407,18 +1577,28 @@ namespace FF1Lib
 								if (i % 8 < 4)
 								{
 									if (SpellTier(i) < 5)
+									{
 										SPCR_SetName(spellNames, i, "WORD", "WRD");
+									}
 									else
+									{
 										SPCR_SetName(spellNames, i, "HOLY", "HLY");
+									}
+
 									spell[i].gfx = 0xC8;
 									spell[i].palette = 0x24;
 								}
 								else
 								{
 									if (SpellTier(i) < 5)
+									{
 										SPCR_SetName(spellNames, i, "MG.M", "M.M");
+									}
 									else
+									{
 										SPCR_SetName(spellNames, i, "FLAR", "FLA");
+									}
+
 									spell[i].gfx = 0xD0;
 									spell[i].palette = 0x28;
 								}
@@ -1439,9 +1619,14 @@ namespace FF1Lib
 					if ((spell[i].effect & 0b10000000) != 0)
 					{
 						if (spell[i].effect == 0b10000000)
+						{
 							SPCR_SetName(spellNames, i, "CONF", "CNF");
+						}
 						else
+						{
 							SPCR_SetName(spellNames, i, "CHRM", "CHM");
+						}
+
 						spell[i].gfx = 0xE8;
 						spell[i].palette = 0x26;
 					}
@@ -1460,13 +1645,22 @@ namespace FF1Lib
 					else if ((spell[i].effect & 0b00010000) != 0)
 					{
 						if (spell[i].elem == 0b00000001)
+						{
 							SPCR_SetName(spellNames, i, "HOLD", "HLD");
+						}
 						else if (spell[i].elem == 0b00000100)
+						{
 							SPCR_SetName(spellNames, i, "STOP", "STP");
+						}
 						else if (spell[i].elem == 0)
+						{
 							SPCR_SetName(spellNames, i, "HALT", "HLT");
+						}
 						else if (spell[i].elem == 0b10000000)
+						{
 							SPCR_SetName(spellNames, i, "TNGL", "TGL");
+						}
+
 						spell[i].gfx = 0xE8;
 						spell[i].palette = 0x20;
 					}
@@ -1545,59 +1739,99 @@ namespace FF1Lib
 				if (spell[i].routine == 0x07 || spell[i].routine == 0x0F)
 				{
 					if (spell[i].targeting == 0x08)
+					{
 						SPCR_SetName(spellNames, i, "HEAL", "HEL");
+					}
 					else
+					{
 						SPCR_SetName(spellNames, i, "CURE", "CUR");
+					}
 				}
 				if (spell[i].routine == 0x08)
 				{
 					if ((spell[i].effect & 0b01000000) != 0)
+					{
 						SPCR_SetName(spellNames, i, "VOX", "VOX");
+					}
 					else
+					{
 						SPCR_SetName(spellNames, i, "PURE", "PUR");
+					}
+
 					spell[i].gfx = 0xE0;
 					spell[i].palette = 0x2C;
 				}
 				if (spell[i].routine == 0x09)
 				{
 					if (spell[i].targeting == 0x04)
+					{
 						SPCR_SetName(spellNames, i, "GARD", "GRD");
+					}
 					else
+					{
 						SPCR_SetName(spellNames, i, "FOG", "FOG");
+					}
+
 					spell[i].gfx = 0xB0;
 					spell[i].palette = 0x29;
 				}
 				if (spell[i].routine == 0x0A)
 				{
 					if (spell[i].effect == 0xFF)
+					{
 						SPCR_SetName(spellNames, i, "WALL", "WAL");
+					}
 					else if (spell[i].effect == 0b01000000)
+					{
 						SPCR_SetName(spellNames, i, "ALIT", "ALT");
+					}
 					else if (spell[i].effect == 0b00100000)
+					{
 						SPCR_SetName(spellNames, i, "AICE", "AIC");
+					}
 					else if (spell[i].effect == 0b00010000)
+					{
 						SPCR_SetName(spellNames, i, "AFIR", "AFR");
+					}
 					else if (spell[i].effect == 0b00000010)
+					{
 						SPCR_SetName(spellNames, i, "APSN", "APS");
+					}
 					else if (spell[i].effect == 0b00000001)
+					{
 						SPCR_SetName(spellNames, i, "ASTA", "AST");
+					}
 					else if (spell[i].effect == 0b01110000)
+					{
 						SPCR_SetName(spellNames, i, "AMAG", "AMG");
+					}
 					else if (spell[i].effect == 0b10001001)
+					{
 						SPCR_SetName(spellNames, i, "ARUB", "ARB");
+					}
 					else if (spell[i].effect == 0b10000101)
+					{
 						SPCR_SetName(spellNames, i, "ATIM", "ATI");
+					}
 					else
+					{
 						SPCR_SetName(spellNames, i, "AMAG", "AMG");
+					}
+
 					spell[i].gfx = 0xB0;
 					spell[i].palette = 0x20;
 				}
 				if (spell[i].routine == 0x0C)
 				{
 					if (spell[i].targeting == 0x04)
+					{
 						SPCR_SetName(spellNames, i, "QUIK", "QIK");
+					}
 					else
+					{
 						SPCR_SetName(spellNames, i, "FAST", "FST");
+					}
+
 					spell[i].gfx = 0xB8;
 					spell[i].palette = 0x2A;
 				}
@@ -1626,9 +1860,14 @@ namespace FF1Lib
 				if (spell[i].routine == 0x10)
 				{
 					if (spell[i].targeting == 0x04)
+					{
 						SPCR_SetName(spellNames, i, "RUSE", "RUS");
+					}
 					else
+					{
 						SPCR_SetName(spellNames, i, "INVS", "INV");
+					}
+
 					spell[i].gfx = 0xB0;
 					spell[i].palette = 0x22;
 				}
@@ -1700,12 +1939,18 @@ namespace FF1Lib
 			{
 				Put(MagicOffset + (MagicSize * i), spell[i].compressData());
 				while (spellNames[i].Length < 4)
+				{
 					spellNames[i] += " ";
+				}
+
 				Put(MagicNamesOffset + (MagicNameSize * i), FF1Text.TextToBytes(spellNames[i]));
 				spell[i].calc_Enemy_SpellTier();
 			}
 			if (!keepPermissions)
+			{
 				Put(MagicPermissionsOffset, spellPermissions); // write the permissions as one giant chunk
+			}
+
 			Put(MagicTextPointersOffset, spellMessages); // write the spell messages as one giant chunk
 
 			// modify spellcasting items
@@ -1713,21 +1958,24 @@ namespace FF1Lib
 			// ensure the Power Gauntlet is turned into an item that increases attack power on self (or single ally), or some other appropriate effect, otherwise it will cast a random level 3-5 black magic spell
 			// all other items receive a random level 3-5 spell, either white magic or black magic, that is fit to cast in battle
 
-			var Spells = GetSpells(); // we have to do it this way because what's the rest of the randomizer lol
+			List<MagicSpell> Spells = GetSpells(); // we have to do it this way because what's the rest of the randomizer lol
 			WriteItemSpellData(Spells[elemspell[1]], Item.MageRod); // write our FIR2 to the Mage Staff
 			WriteItemSpellData(Spells[elemspell[3]], Item.BlackShirt); // write our ICE2 to the Black Shirt
 			WriteItemSpellData(Spells[elemspell[5]], Item.ThorHammer); // write our LIT2 to the Thor Hammer
 			WriteItemSpellData(Spells[healspell], Item.HealHelm); // write our HEAL to the Heal Helmet
 			WriteItemSpellData(Spells[rusespell], Item.Defense); // write our RUSE to the Defense Sword
 			WriteItemSpellData(Spells[sabrspell], Item.PowerGauntlets); // write our SABR tp the Power Gauntlets
-			var goodspells = spellindex.Where(id => (spell[id].routine == 0x01 && spell[id].effect < 50 * spell[id].targeting && spell[id].effect > 20 * spell[id].targeting && spell[id].elem != 0) ||
+			List<int> goodspells = spellindex.Where(id => (spell[id].routine == 0x01 && spell[id].effect < 50 * spell[id].targeting && spell[id].effect > 20 * spell[id].targeting && spell[id].elem != 0) ||
 				(spell[id].routine == 0x02 && spell[id].effect < 80) ||
 				(spell[id].routine == 0x03 && (spell[id].effect & 0b11001011) != 0 && id < 48) ||
 				spell[id].routine == 0x04 || (spell[id].routine == 0x07 && spell[id].targeting == 0x10) ||
 				(spell[id].routine == 0x09 && id < 48) || (spell[id].routine == 0x0A && id < 56) ||
 				spell[id].routine == 0x0E || (spell[id].routine == 0x10 && id < 48)).ToList();
 			if (goodspells.Count < 6) // if we don't have enough spells for the remaining items, expand the eligibility criteria to include ALL spells except the guaranteed ones and those that have no effect
+			{
 				goodspells = spellindex.Where(id => spell[id].routine != 0x00).ToList();
+			}
+
 			goodspells.Shuffle(rng);
 			WriteItemSpellData(Spells[goodspells[0]], Item.ZeusGauntlets);
 			WriteItemSpellData(Spells[goodspells[1]], Item.HealRod);
@@ -1735,11 +1983,15 @@ namespace FF1Lib
 			WriteItemSpellData(Spells[goodspells[3]], Item.WizardRod);
 			WriteItemSpellData(Spells[goodspells[4]], Item.BaneSword);
 			goodspells = goodspells.Skip(5).ToList();
-			var goodcolorspells = goodspells.Where(id => WhiteSpell(id) && SpellTier(id) > 3).ToList();
+			List<int> goodcolorspells = goodspells.Where(id => WhiteSpell(id) && SpellTier(id) > 3).ToList();
 			if (goodcolorspells.Count() > 0)
+			{
 				WriteItemSpellData(Spells[goodcolorspells.PickRandom(rng)], Item.WhiteShirt);
+			}
 			else
+			{
 				WriteItemSpellData(Spells[goodspells[0]], Item.WhiteShirt);
+			}
 
 			// fill enemy scripts with tier-equivalent skills (using enemizer's calc_Enemy_SpellTier feature)
 			// we use special rules for Warmech, Fiend, and Astos scripts
@@ -1750,55 +2002,87 @@ namespace FF1Lib
 				for (byte j = 0; j < 8; ++j)
 				{
 					if (script[i].spell_list[j] == 0xFF)
+					{
 						continue; // skip blank spells
+					}
+
 					int whichTier = oldTiers[script[i].spell_list[j]];
 					if (whichTier == 0)
+					{
 						whichTier = 1; // don't allow tier 0s to exist
-					List<byte> eligibleSpellIDs = new List<byte> { };
+					}
+
+					List<byte> eligibleSpellIDs = new() { };
 					while (eligibleSpellIDs.Count == 0 && whichTier > 0)
 					{
 						for (byte k = 0; k < 64; ++k)
 						{
 							if (spell[k].tier == whichTier)
+							{
 								eligibleSpellIDs.Add(k);
+							}
 						}
 						--whichTier;
 					}
 					if (eligibleSpellIDs.Count == 0)
+					{
 						eligibleSpellIDs.Add(4); // force FIRE if no other spell is available for some reason
+					}
+
 					script[i].spell_list[j] = eligibleSpellIDs.PickRandom(rng);
 				}
 			}
 			spellindex = Enumerable.Range(0, 64).ToList(); // refilling the spell indexes to include all spells again
-			var middamagespells = spellindex.Where(id => spell[id].routine == 0x01 && spell[id].tier == 3).ToList(); // this will include some of the guaranteed spells, so there will always be entries
-			var highdamagespells = spellindex.Where(id => spell[id].routine == 0x01 && spell[id].tier == 4).ToList();
+			List<int> middamagespells = spellindex.Where(id => spell[id].routine == 0x01 && spell[id].tier == 3).ToList(); // this will include some of the guaranteed spells, so there will always be entries
+			List<int> highdamagespells = spellindex.Where(id => spell[id].routine == 0x01 && spell[id].tier == 4).ToList();
 			if (highdamagespells.Count() == 0)
+			{
 				highdamagespells = middamagespells.ToList(); // if there are no tier 4 damage spells, use tier 3s instead
-			var statusspells = spellindex.Where(id => (spell[id].routine == 0x03 || spell[id].routine == 0x12) && (spell[id].effect & 0b00000011) == 0 && spell[id].tier <= 3 && spell[id].tier > 0).ToList();
+			}
+
+			List<int> statusspells = spellindex.Where(id => (spell[id].routine == 0x03 || spell[id].routine == 0x12) && (spell[id].effect & 0b00000011) == 0 && spell[id].tier <= 3 && spell[id].tier > 0).ToList();
 			if (statusspells.Count() == 0)
+			{
 				statusspells = spellindex.Where(id => spell[id].routine == 0x01 && spell[id].tier > 0 && spell[id].tier < 3).ToList(); // this includes guarantees so it is fine
-			var instakills = spellindex.Where(id => (spell[id].routine == 0x03 || spell[id].routine == 0x12) && (spell[id].effect & 0b00000011) != 0 && spell[id].tier != 5).ToList();
+			}
+
+			List<int> instakills = spellindex.Where(id => (spell[id].routine == 0x03 || spell[id].routine == 0x12) && (spell[id].effect & 0b00000011) != 0 && spell[id].tier != 5).ToList();
 			if (instakills.Count() == 0)
+			{
 				instakills = middamagespells.Union(highdamagespells).ToList();
-			var single_instas = instakills.Where(id => spell[id].targeting == 0x02).ToList();
+			}
+
+			List<int> single_instas = instakills.Where(id => spell[id].targeting == 0x02).ToList();
 			if (single_instas.Count() == 0)
+			{
 				single_instas = middamagespells.ToList();
-			var multi_instas = instakills.Where(id => spell[id].targeting == 0x01).ToList();
+			}
+
+			List<int> multi_instas = instakills.Where(id => spell[id].targeting == 0x01).ToList();
 			if (multi_instas.Count() == 0)
+			{
 				multi_instas = highdamagespells.ToList();
-			var tier5 = spellindex.Where(id => spell[id].tier == 5).ToList();
+			}
+
+			List<int> tier5 = spellindex.Where(id => spell[id].tier == 5).ToList();
 			int highesttier = 7;
-			var toptierblack = spellindex.Where(id => BlackSpell(id) && id >= highesttier * 8 && spell[id].tier > 0).Except(tier5).ToList();
+			List<int> toptierblack = spellindex.Where(id => BlackSpell(id) && id >= highesttier * 8 && spell[id].tier > 0).Except(tier5).ToList();
 			while (toptierblack.Count() < 3 && highesttier > 0)
 			{
 				toptierblack = spellindex.Where(id => BlackSpell(id) && id >= highesttier * 8 && spell[id].tier > 0).Except(tier5).ToList();
 				--highesttier;
 			}
 			if (tier5.Count() == 0)
+			{
 				tier5 = highdamagespells.ToList();
+			}
+
 			if (toptierblack.Count() == 0)
+			{
 				toptierblack = highdamagespells.ToList();
-			var slowingspell = spellindex.Where(id => spell[id].routine == 0x04).ToList(); // this will always include the guaranteed slow spell
+			}
+
+			List<int> slowingspell = spellindex.Where(id => spell[id].routine == 0x04).ToList(); // this will always include the guaranteed slow spell
 
 			// Lich 1 script
 			script[34].spell_list[0] = (byte)middamagespells.PickRandom(rng);
@@ -1838,7 +2122,9 @@ namespace FF1Lib
 			script[37].spell_list[7] = (byte)statusspells.PickRandom(rng);
 			// Kraken 2 script
 			for (int i = 0; i < 8; ++i)
+			{
 				script[39].spell_list[i] = (byte)middamagespells.PickRandom(rng);
+			}
 			// Tiamat 2 script
 			for (int i = 0; i < 8; i += 4)
 			{
@@ -1867,12 +2153,14 @@ namespace FF1Lib
 			script[43].spell_list[7] = (byte)statusspells.PickRandom(rng);
 
 			for (int i = 0; i < ScriptCount; ++i) // write the new scripts to ROM
+			{
 				Put(ScriptOffset + (ScriptSize * i), script[i].compressData());
+			}
 		}
 
 		private void SPCR_SetName(string[] spellnames, int index, string initialname, string altname)
 		{
-			if(spellnames[MagicCount] == "L")
+			if (spellnames[MagicCount] == "L")
 			{
 				spellnames[index] = altname + ((index >> 3) + 1).ToString();
 			}
@@ -1882,20 +2170,27 @@ namespace FF1Lib
 				{
 					int i = 2;
 					while (SPCR_ContainsName(spellnames, altname + i.ToString()))
+					{
 						++i;
+					}
+
 					spellnames[index] = altname + i.ToString();
 				}
 				else
+				{
 					spellnames[index] = initialname;
+				}
 			}
 		}
 
 		private bool SPCR_ContainsName(string[] spellnames, string check)
 		{
-			foreach(string name in spellnames)
+			foreach (string name in spellnames)
 			{
 				if (name == check)
+				{
 					return true;
+				}
 			}
 			return false;
 		}
@@ -1908,17 +2203,23 @@ namespace FF1Lib
 		public void SPCR_CraftDamageSpell(MT19337 rng, SpellInfo spell, int tier, byte element, bool whiteMagic, bool forceAoE)
 		{
 			if (forceAoE)
+			{
 				spell.targeting = 0x01;
+			}
 			else
 			{
 				if (tier < 2)
+				{
 					spell.targeting = 0x02;
+				}
 				else
+				{
 					spell.targeting = (byte)(rng.Between(0, 2) == 0 ? 0x02 : 0x01);
+				}
 			}
-			if(spell.targeting == 0x01)
+			if (spell.targeting == 0x01)
 			{
-				if((element & 0b11111011) != 0)
+				if ((element & 0b11111011) != 0)
 				{
 					switch (tier)
 					{
@@ -1998,9 +2299,13 @@ namespace FF1Lib
 							break;
 					}
 					if (tier < 5)
+					{
 						spell.accuracy = 40;
+					}
 					else
+					{
 						spell.accuracy = 107;
+					}
 				}
 			}
 			else
@@ -2070,9 +2375,13 @@ namespace FF1Lib
 							break;
 					}
 					if (tier > 4 && spell.elem == 0)
+					{
 						spell.accuracy = 107;
+					}
 					else
+					{
 						spell.accuracy = 64;
+					}
 				}
 			}
 			if (whiteMagic)
@@ -2089,7 +2398,7 @@ namespace FF1Lib
 					spell.accuracy = 24;
 				}
 			}
-				
+
 			spell.routine = 0x01;
 			spell.elem = element;
 		}
@@ -2100,7 +2409,10 @@ namespace FF1Lib
 			spell.accuracy = 40;
 			spell.effect = (byte)(20 * (tier + 1));
 			if (tier == 7)
+			{
 				spell.effect = (byte)(spell.effect + (spell.effect / 2));
+			}
+
 			spell.targeting = 0x01;
 			spell.routine = 0x02;
 		}
@@ -2109,51 +2421,88 @@ namespace FF1Lib
 		{
 			spell.targeting = targeting;
 			if (tier == 7)
+			{
 				spell.targeting = 0x04; // use singletargeting effect for all tier 8 spells
+			}
+
 			spell.effect = (byte)(spell.targeting == 0x08 ? tier * 10 : (tier + 2) * 12);
 			if (tier > 3 && targeting != 0x08)
+			{
 				spell.effect += 12;
+			}
+
 			if (spell.targeting == 0x04)
+			{
 				spell.effect = (byte)(spell.effect + (spell.effect / 2)); // increase buff by 50% for self-cast
+			}
+
 			if (tier == 7)
+			{
 				spell.targeting = 0x08; // tier 8 spells target all allies with +240 evasion
+			}
+
 			spell.routine = 0x10;
 		}
 
 		public void SPCR_CraftAttackUpSpell(MT19337 rng, SpellInfo spell, int tier, bool forceSelfTarget)
 		{
 			if (forceSelfTarget)
+			{
 				spell.targeting = 0x04;
+			}
 			else if (tier < 3)
+			{
 				spell.targeting = (byte)(rng.Between(0, 2) == 0 ? 0x10 : 0x04);
+			}
 			else if (tier == 7)
+			{
 				spell.targeting = 0x10;
+			}
 			else
 			{
 				int choice = rng.Between(0, 8);
 				if (choice < 3)
+				{
 					spell.targeting = 0x04;
+				}
 				else if (choice < 6)
+				{
 					spell.targeting = 0x10;
+				}
 				else
+				{
 					spell.targeting = 0x08;
+				}
 			}
 			spell.effect = (byte)(spell.targeting == 0x08 ? (tier * 3) - 2 : ((tier + 2) * 3) + 1);
 			if (spell.targeting == 0x04)
+			{
 				spell.effect = (byte)(spell.effect + (spell.effect / 2));
+			}
+
 			if (tier == 7)
+			{
 				spell.targeting = 0x08; // tier 8 targets all allies with the strength of a SABR spell
+			}
+
 			spell.routine = 0x0D;
 		}
 
 		public void SPCR_CraftFastSpell(SpellInfo spell, int tier)
 		{
 			if (tier < 3)
+			{
 				spell.targeting = 0x04;
+			}
 			else if (tier < 6)
+			{
 				spell.targeting = 0x10;
+			}
 			else
+			{
 				spell.targeting = 0x08;
+			}
+
 			spell.routine = 0x0C;
 		}
 
@@ -2161,10 +2510,12 @@ namespace FF1Lib
 		{
 			// generates a random byte with the flags of the input determining whether the bit is rolled or is always 0
 			byte returnValue = 0x00;
-			for(int i = 0; i < 8; ++i)
+			for (int i = 0; i < 8; ++i)
 			{
-				if(rng.Between(0, 1) == 1)
+				if (rng.Between(0, 1) == 1)
+				{
 					returnValue |= (byte)(input & (1 << i));
+				}
 			}
 			return returnValue;
 		}
@@ -2172,10 +2523,12 @@ namespace FF1Lib
 		public byte PickSingleBit(byte input, MT19337 rng)
 		{
 			if (input == 0x00)
+			{
 				return 0; // return zero if the input is zero
+			}
 			// picks a random single bit from the input bits
 			byte returnValue = 0x00;
-			while(returnValue == 0x00)
+			while (returnValue == 0x00)
 			{
 				returnValue = (byte)(input & (1 << rng.Between(0, 7)));
 			}
@@ -2186,10 +2539,12 @@ namespace FF1Lib
 		{
 			// counts the number of bits turned on
 			int returnValue = 0;
-			for(int i = 0; i < 8; ++i)
+			for (int i = 0; i < 8; ++i)
 			{
 				if ((input & (1 << i)) != 0)
+				{
 					returnValue++;
+				}
 			}
 			return returnValue;
 		}

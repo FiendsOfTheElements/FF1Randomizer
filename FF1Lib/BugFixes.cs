@@ -70,7 +70,7 @@ namespace FF1Lib
 		public void IncreaseWeaponBonus(int weaponBonusValue)
 		{
 			//change the weapon bonus from +4 to +X
-			Put(0x326F5, new byte[] { (byte) weaponBonusValue });
+			Put(0x326F5, new byte[] { (byte)weaponBonusValue });
 		}
 
 		public void FixChanceToRun()
@@ -180,10 +180,12 @@ namespace FF1Lib
 
 		public void KnightNinjaChargesForAllLevels()
 		{
-			for(int cur_pointer = NewLevelUpDataOffset; cur_pointer < NewLevelUpDataOffset + 196; cur_pointer += 2) // we need to cycle through the 49 levelups for Fighter and the 49 levelups for Thief, each are two bytes
+			for (int cur_pointer = NewLevelUpDataOffset; cur_pointer < NewLevelUpDataOffset + 196; cur_pointer += 2) // we need to cycle through the 49 levelups for Fighter and the 49 levelups for Thief, each are two bytes
 			{
 				if (Data[cur_pointer + 1] != 0)
+				{
 					Data[cur_pointer + 1] = 0xFF; // every spell charge gain that isn't equal to 0 is changed to FF, so each spell level will gain a charge instead of just the first three / four
+				}
 			}
 		}
 

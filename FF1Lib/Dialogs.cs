@@ -104,9 +104,9 @@ namespace FF1Lib
 		}
 		public class TalkRoutines
 		{
-			private List<Blob> _talkroutines = new List<Blob>();
-			private int TalkRoutinesOffset = 0x8200;
-			private int lut_MapObjTalkJumpTbl_new = 0x8000;
+			private readonly List<Blob> _talkroutines = new();
+			private readonly int TalkRoutinesOffset = 0x8200;
+			private readonly int lut_MapObjTalkJumpTbl_new = 0x8000;
 
 			public TalkRoutines()
 			{
@@ -160,7 +160,7 @@ namespace FF1Lib
 			}
 			public int GetAddress(int talkid)
 			{
-				var pos = 0;
+				int pos = 0;
 				for (int i = 0; i < talkid; i++)
 				{
 					pos += _talkroutines[i].Length;
@@ -170,7 +170,7 @@ namespace FF1Lib
 			}
 			public Blob GetAddressLE(int talkid)
 			{
-				var address = GetAddress(talkid);
+				int address = GetAddress(talkid);
 				sbyte[] addressLE = new sbyte[] { (sbyte)(address % 0x100), (sbyte)(address / 0x100) };
 
 				return Blob.FromSBytes(addressLE);
@@ -182,7 +182,7 @@ namespace FF1Lib
 
 			public void UpdateNPCRoutines(FF1Rom rom, NPCdata npcdata)
 			{
-				var tempblob = new byte[] { };
+				byte[] tempblob = new byte[] { };
 
 				for (int i = 0; i < npcdata.GetNPCCount(); i++)
 				{
@@ -202,13 +202,15 @@ namespace FF1Lib
 		}
 		public class NPCdata
 		{
-			private List<generalNPC> _npcs = new List<generalNPC>();
+			private readonly List<generalNPC> _npcs = new();
 
 			public NPCdata(FF1Rom rom)
 			{
 				for (int i = 0; i < 0xD0; i++)
 				{
-					_npcs.Add(new generalNPC { sprite = rom.Data[MapObjGfxOffset + i],
+					_npcs.Add(new generalNPC
+					{
+						sprite = rom.Data[MapObjGfxOffset + i],
 						oldtalkroutine = rom.GetFromBank(oldTalkRoutinesBank, lut_MapObjTalkJumpTbl + (i * 2), 2),
 						talkroutine = newTalkRoutines.Talk_None,
 						talkarray = rom.GetFromBank(oldTalkRoutinesBank, lut_MapObjTalkData + (0x04 * i), 4).ToBytes().Concat(new byte[] { 0x00, 0x00 }).ToArray()
@@ -242,11 +244,13 @@ namespace FF1Lib
 			public void UpdateItemPlacement(List<IRewardSource> itemplacement)
 			{
 				if (itemplacement == null) // Return if vanilla placement
+				{
 					return;
+				}
 
-				var targetnpc = itemplacement.Where(x => x.GetType().Equals(typeof(MapObject)));
+				IEnumerable<IRewardSource> targetnpc = itemplacement.Where(x => x.GetType().Equals(typeof(MapObject)));
 
-				foreach (var item in targetnpc)
+				foreach (IRewardSource item in targetnpc)
 				{
 					switch (item.Name)
 					{
@@ -296,7 +300,7 @@ namespace FF1Lib
 			}
 			public void WriteNPCdata(FF1Rom rom)
 			{
-				var lut_MapObjTalkData_move = 0xBA00;
+				int lut_MapObjTalkData_move = 0xBA00;
 				rom.PutInBank(newTalkRoutinesBank, lut_MapObjTalkData_move, _npcs.SelectMany(data => data.talkarray).ToArray());
 			}
 		}
@@ -311,17 +315,17 @@ namespace FF1Lib
 		}
 		public bool RedMageHasLife()
 		{
-			var itemnames = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
+			string[] itemnames = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
 			var magicPermissions = Get(MagicPermissionsOffset, 8 * 12).Chunk(8);
-			var magicArray = new List<byte> { 0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01 };
+			List<byte> magicArray = new List<byte> { 0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01 };
 
-			var firstLifeIndex = itemnames.ToList().FindIndex(x => x.ToLower().Contains("lif")) - 176;
-			var secondLifeIndex = itemnames.ToList().FindIndex(firstLifeIndex + 177, x => x.ToLower().Contains("lif")) - 176;
+			int firstLifeIndex = itemnames.ToList().FindIndex(x => x.ToLower().Contains("lif")) - 176;
+			int secondLifeIndex = itemnames.ToList().FindIndex(firstLifeIndex + 177, x => x.ToLower().Contains("lif")) - 176;
 
-			var firstlife = firstLifeIndex >= 0 ? (((~magicPermissions[3][firstLifeIndex / 8] & magicArray[firstLifeIndex % 8]) > 0) ? true : false) : false;
-			var secondlife = secondLifeIndex >= 0 ? (((~magicPermissions[3][secondLifeIndex / 8] & magicArray[secondLifeIndex % 8]) > 0) ? true : false) : false;
+			bool firstlife = firstLifeIndex >= 0 ? (((~magicPermissions[3][firstLifeIndex / 8] & magicArray[firstLifeIndex % 8]) > 0) ? true : false) : false;
+			bool secondlife = secondLifeIndex >= 0 ? (((~magicPermissions[3][secondLifeIndex / 8] & magicArray[secondLifeIndex % 8]) > 0) ? true : false) : false;
 
-			return (firstlife || secondlife);
+			return firstlife || secondlife;
 		}
 		public void AddNewChars()
 		{
@@ -354,7 +358,7 @@ namespace FF1Lib
 			PutInBank(0x0A, 0x8000, new byte[0x3600]);
 
 			// Get dialogs
-			var dialogs = ReadText(0x40000, 0x38000, 0x150);
+			string[] dialogs = ReadText(0x40000, 0x38000, 0x150);
 
 			// Zero out the 0x50 extra dialogs we added
 			for (int i = 0x0; i < 0x50; i++)
@@ -401,7 +405,7 @@ namespace FF1Lib
 
 			// Reinsert updated dialogs with updated pointers
 			int offset = dialogsOffset;
-			var pointers = new ushort[dialogs.Length];
+			ushort[] pointers = new ushort[dialogs.Length];
 			Blob generatedText = Blob.FromHex("");
 
 			for (int i = 0; i < dialogs.Length; i++)
@@ -415,7 +419,9 @@ namespace FF1Lib
 
 			// Check if dialogs are too long
 			if ((pointers.Length * 2) + generatedText.Length > 0x4000)
+			{
 				throw new Exception("Dialogs maximum length exceeded.");
+			}
 
 			// Insert dialogs
 			Put(dialogsPointerOffset, Blob.FromUShorts(pointers) + generatedText);
@@ -424,7 +430,7 @@ namespace FF1Lib
 		{
 			// Get Talk Routines from Bank E and put them in bank 11
 			PutInBank(newTalkRoutinesBank, 0x902B, Get(0x3902B, 0x8EA));
-			
+
 			// Backup npc manpulation routines and showMapObject as various other routines use them
 			var npcManipulationRoutines = GetFromBank(0x0E, 0x9079, 0x60);
 			var hideMapObject = GetFromBank(0x0E, 0x9273, 0x30);
@@ -474,7 +480,7 @@ namespace FF1Lib
 			temp = Data[ItemLocations.Lefein.Address];
 			Data[ItemLocations.Lefein.Address] = Data[ItemLocations.Lefein.Address - 1];
 			Data[ItemLocations.Lefein.Address - 1] = temp;
-			
+
 			// And do the same swap in the vanilla routines so those still work if needed
 			Data[0x392A7] = 0x12;
 			Data[0x392AA] = 0x13;
@@ -499,10 +505,10 @@ namespace FF1Lib
 		// Remove trailing spaces and return the right item for some generated text
 		public string FormattedItemName(Item item, bool specialItem = true)
 		{
-			var itemnames = ReadText(FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, 256);
-			var formatted = itemnames[(byte)item].TrimEnd(' ');
+			string[] itemnames = ReadText(ItemTextPointerOffset, ItemTextPointerBase, 256);
+			string formatted = itemnames[(byte)item].TrimEnd(' ');
 
-			if(specialItem)
+			if (specialItem)
 			{
 #pragma warning disable IDE0010 // Add missing cases
 				switch (item)
@@ -528,14 +534,14 @@ namespace FF1Lib
 		public void InsertDialogs(int dialogID, string dialogtext)
 		{
 			// Get dialogs
-			var dialogs = ReadText(dialogsPointerOffset, dialogsPointerBase, dialogsPointerCount);
+			string[] dialogs = ReadText(dialogsPointerOffset, dialogsPointerBase, dialogsPointerCount);
 
 			// Insert the new dialog string at the right position
 			dialogs[dialogID] = dialogtext;
 
 			// Convert all dialogs to bytes
 			int offset = dialogsOffset;
-			var pointers = new ushort[dialogs.Length];
+			ushort[] pointers = new ushort[dialogs.Length];
 			Blob generatedText = Blob.FromHex("");
 
 			for (int i = 0; i < dialogs.Length; i++)
@@ -549,7 +555,9 @@ namespace FF1Lib
 
 			// Check if dialogs are too long
 			if ((pointers.Length * 2) + generatedText.Length > 0x4000)
+			{
 				throw new Exception("Dialogs maximum length exceeded.");
+			}
 
 			// Insert dialogs
 			Put(dialogsPointerOffset, Blob.FromUShorts(pointers) + generatedText);
@@ -558,15 +566,17 @@ namespace FF1Lib
 		public void InsertDialogs(Dictionary<int, string> dialogsdict)
 		{
 			// Get dialogs
-			var dialogs = ReadText(dialogsPointerOffset, dialogsPointerBase, dialogsPointerCount);
+			string[] dialogs = ReadText(dialogsPointerOffset, dialogsPointerBase, dialogsPointerCount);
 
 			// Insert at the right position each dictionary entry
-			foreach (var x in dialogsdict)
+			foreach (KeyValuePair<int, string> x in dialogsdict)
+			{
 				dialogs[x.Key] = x.Value;
+			}
 
 			// Convert all dialogs to bytes
 			int offset = dialogsOffset;
-			var pointers = new ushort[dialogs.Length];
+			ushort[] pointers = new ushort[dialogs.Length];
 			Blob generatedText = Blob.FromHex("");
 
 			for (int i = 0; i < dialogs.Length; i++)
@@ -580,7 +590,9 @@ namespace FF1Lib
 
 			// Check if dialogs are too long
 			if ((pointers.Length * 2) + generatedText.Length > 0x4000)
+			{
 				throw new Exception("Dialogs maximum length exceeded.");
+			}
 
 			// Insert dialogs
 			Put(dialogsPointerOffset, Blob.FromUShorts(pointers) + generatedText);
@@ -588,28 +600,29 @@ namespace FF1Lib
 		public void NPCShuffleDialogs()
 		{
 			// Update all NPC dialogs for NPC shuffle so we can show what item they're giving.
-			Dictionary<int, string> NPCShuffleDialogs = new Dictionary<int, string>();
-
-			NPCShuffleDialogs.Add(0x02, "Thank you for saving the\nPrincess. To aid your\nquest, please take this.\n\n\nReceived #");
-			NPCShuffleDialogs.Add(0x06, "This heirloom has been\npassed down from Queen\nto Princess for 2000\nyears. Please take it.\n\nReceived #");
-			NPCShuffleDialogs.Add(0x09, "Okay, you got me.\nTake this.\n\n\n\nReceived #");
-			NPCShuffleDialogs.Add(0x0E, "Is this a dream?.. Are\nyou the LIGHT WARRIORS?\nSo, as legend says,\nI give you this.\n\nReceived #");
-			NPCShuffleDialogs.Add(0x12, "HA, HA, HA! I am Astos,\nKing of the Dark Elves.\nI have the #\nand you shall give me\nthat CROWN, now!!!");
-			NPCShuffleDialogs.Add(0x14, "Yes, yes indeed,\nthis TNT is just what I\nneed to finish my work.\nTake this in return!\n\nReceived #");
-			NPCShuffleDialogs.Add(0x16, "ADAMANT!! Now let me\nforge this for you..\nHere, the best work\nI've ever done.\n\nReceived #");
-			NPCShuffleDialogs.Add(0x19, "I'll trade my most\npowerful charm to get\nmy CRYSTAL back..\nOh! I can see!!\n\nReceived #");
-			NPCShuffleDialogs.Add(0x1E, "Take this.\nIt will help you\nfight the source of the\nearth's rot.\n\nReceived #");
-			NPCShuffleDialogs.Add(0x23, "That pirate trapped me\nin the BOTTLE. I will\nget what's at the bottom\nof the spring for you.\n\nReceived #");
-			NPCShuffleDialogs.Add(0x27, "Take this.\n\n\n\n\nReceived #");
-			NPCShuffleDialogs.Add(0x2B, "Great job vanquishing\nthe Earth FIEND.\nWith this, go and defeat\nthe other FIENDS!\n\nReceived #");
-			NPCShuffleDialogs.Add(0xCD, "With this, you can\navenge the SKY WARRIORS.\n\n\n\nReceived #");
-			NPCShuffleDialogs.Add(0xF0, "Received #");
+			Dictionary<int, string> NPCShuffleDialogs = new()
+			{
+				{ 0x02, "Thank you for saving the\nPrincess. To aid your\nquest, please take this.\n\n\nReceived #" },
+				{ 0x06, "This heirloom has been\npassed down from Queen\nto Princess for 2000\nyears. Please take it.\n\nReceived #" },
+				{ 0x09, "Okay, you got me.\nTake this.\n\n\n\nReceived #" },
+				{ 0x0E, "Is this a dream?.. Are\nyou the LIGHT WARRIORS?\nSo, as legend says,\nI give you this.\n\nReceived #" },
+				{ 0x12, "HA, HA, HA! I am Astos,\nKing of the Dark Elves.\nI have the #\nand you shall give me\nthat CROWN, now!!!" },
+				{ 0x14, "Yes, yes indeed,\nthis TNT is just what I\nneed to finish my work.\nTake this in return!\n\nReceived #" },
+				{ 0x16, "ADAMANT!! Now let me\nforge this for you..\nHere, the best work\nI've ever done.\n\nReceived #" },
+				{ 0x19, "I'll trade my most\npowerful charm to get\nmy CRYSTAL back..\nOh! I can see!!\n\nReceived #" },
+				{ 0x1E, "Take this.\nIt will help you\nfight the source of the\nearth's rot.\n\nReceived #" },
+				{ 0x23, "That pirate trapped me\nin the BOTTLE. I will\nget what's at the bottom\nof the spring for you.\n\nReceived #" },
+				{ 0x27, "Take this.\n\n\n\n\nReceived #" },
+				{ 0x2B, "Great job vanquishing\nthe Earth FIEND.\nWith this, go and defeat\nthe other FIENDS!\n\nReceived #" },
+				{ 0xCD, "With this, you can\navenge the SKY WARRIORS.\n\n\n\nReceived #" },
+				{ 0xF0, "Received #" }
+			};
 
 			InsertDialogs(NPCShuffleDialogs);
 		}
 		public void UpdateDialogs(NPCdata npcdata)
 		{
-			Dictionary<int, string> newDialogs = new Dictionary<int, string>();
+			Dictionary<int, string> newDialogs = new();
 
 			//CleanupNPCRoutines(); - Deprecated 2020-12-12
 			SplitOpenTreasureRoutine();
@@ -705,9 +718,14 @@ namespace FF1Lib
 				else if (npcdata.GetOldRoutine((ObjectId)i) == originalTalk.Talk_fight)
 				{
 					if (npcdata.GetTalkArray((ObjectId)i)[3] == 0x7B)
+					{
 						npcdata.SetRoutine((ObjectId)i, newTalkRoutines.Talk_Chaos);
+					}
 					else
+					{
 						npcdata.SetRoutine((ObjectId)i, newTalkRoutines.Talk_fight);
+					}
+
 					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.battle_id] = npcdata.GetTalkArray((ObjectId)i)[3];
 				}
 				else if (npcdata.GetOldRoutine((ObjectId)i) == originalTalk.Talk_Garland)
@@ -733,7 +751,7 @@ namespace FF1Lib
 				{
 					npcdata.SetRoutine((ObjectId)i, newTalkRoutines.Talk_ifitem);
 					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.requirement_id] = (byte)Item.Canal;
-					var a = npcdata.GetTalkArray((ObjectId)i)[1];
+					byte a = npcdata.GetTalkArray((ObjectId)i)[1];
 					npcdata.GetTalkArray((ObjectId)i)[1] = npcdata.GetTalkArray((ObjectId)i)[2];
 					npcdata.GetTalkArray((ObjectId)i)[2] = a;
 				}
@@ -865,7 +883,9 @@ namespace FF1Lib
 					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.requirement_id] = (byte)Item.Adamant;
 				}
 				else
+				{
 					npcdata.SetRoutine((ObjectId)i, newTalkRoutines.Talk_None);
+				}
 			}
 
 			// Replace sky warrior dialog that got taken over by "Nothing here".
@@ -891,7 +911,7 @@ namespace FF1Lib
 			InsertDialogs(newDialogs);
 
 			// SHIP, BRIDGE, CANAL, CANOE and AIRSHIP text so they can be given by NPCs
-			var gameVariableText =
+			string gameVariableText =
 				"9C91929900000000" + // SHIP
 				"8A929B9C91929900" + // AIRSHIP
 				"8B9B928D908E0000" + // BRIDGE
@@ -901,7 +921,7 @@ namespace FF1Lib
 			Put(0x2B5D0, Blob.FromHex(gameVariableText));
 
 			// Update to DrawDialogueString, see 1F_DB64_DrawDialogueString.asm
-			var newDrawDialogueString = "AAA91085572003FEA9808597A567C9F0D0068AA2A04C7FDB8AA2002007FCA594853EA595853FA90A85172000FEA538853AA539853B2080DCA000B13EF0BEE63ED002E63FC91A904AC97A90168D0720A53A186901293F853A291FD0DC2080DC4C9CDB38E91AAA48BDA0F08D0720204EDC68AABD50F08D0720204EDCC617D0B920A1CC2069C62000FEA90A85172080DC4C9CDBC903D04EA53E48A53F48A90A85572003FEA5616920900D0A69D0853EA9B5853F184C2DDCA9B78597A561A2002007FCA594853EA595853F209CDBA91085572003FE68853F68853E4C9CDB0000000000000000205FDC4C9CDB";
+			string newDrawDialogueString = "AAA91085572003FEA9808597A567C9F0D0068AA2A04C7FDB8AA2002007FCA594853EA595853FA90A85172000FEA538853AA539853B2080DCA000B13EF0BEE63ED002E63FC91A904AC97A90168D0720A53A186901293F853A291FD0DC2080DC4C9CDB38E91AAA48BDA0F08D0720204EDC68AABD50F08D0720204EDCC617D0B920A1CC2069C62000FEA90A85172080DC4C9CDBC903D04EA53E48A53F48A90A85572003FEA5616920900D0A69D0853EA9B5853F184C2DDCA9B78597A561A2002007FCA594853EA595853F209CDBA91085572003FE68853F68853E4C9CDB0000000000000000205FDC4C9CDB";
 			Put(0x7DB64, Blob.FromHex(newDrawDialogueString));
 		}
 
@@ -909,44 +929,44 @@ namespace FF1Lib
 		{
 			Dictionary<MapLocation, OverworldTeleportIndex> StandardOverworldLocations = ItemLocations.MapLocationToStandardOverworldLocations;
 
-			Dictionary<OverworldTeleportIndex, string> LocationNames = new Dictionary<OverworldTeleportIndex, string>
+			Dictionary<OverworldTeleportIndex, string> LocationNames = new()
 			{
-				{OverworldTeleportIndex.Coneria,"Coneria"},
-				{OverworldTeleportIndex.Pravoka,"Pravoka"},
-				{OverworldTeleportIndex.Elfland,"Elfland"},
-				{OverworldTeleportIndex.Melmond,"Melmond"},
-				{OverworldTeleportIndex.CrescentLake,"Crescent Lake"},
-				{OverworldTeleportIndex.Gaia,"Gaia"},
-				{OverworldTeleportIndex.Onrac,"Onrac"},
-				{OverworldTeleportIndex.Lefein,"Lefein"},
-				{OverworldTeleportIndex.ConeriaCastle1,"Coneria Castle"},
-				{OverworldTeleportIndex.ElflandCastle,"the Castle of Efland"},
-				{OverworldTeleportIndex.NorthwestCastle,"Northwest Castle"},
-				{OverworldTeleportIndex.CastleOrdeals1,"the Castle of Ordeals"},
-				{OverworldTeleportIndex.TempleOfFiends1,"the Temple of Fiends"},
-				{OverworldTeleportIndex.EarthCave1,"the Earth Cave"},
-				{OverworldTeleportIndex.GurguVolcano1,"Gurgu Volcano"},
-				{OverworldTeleportIndex.IceCave1,"the Ice Cave"},
-				{OverworldTeleportIndex.Cardia1,"the Northernemost Cave of Cardia"}, // To check
-				{OverworldTeleportIndex.Cardia2,"the Western plains of Cardia"},
-				{OverworldTeleportIndex.BahamutCave1,"Bahamut's Cave"},
-				{OverworldTeleportIndex.Cardia4,"the Marshes of Cardia"},
-				{OverworldTeleportIndex.Cardia5,"the Tiny island's Cave of Cardia"}, // To check
-				{OverworldTeleportIndex.Cardia6,"the Eastern forest of Cardia"},
-				{OverworldTeleportIndex.Waterfall,"the Waterfall"},
-				{OverworldTeleportIndex.DwarfCave,"the Dwarves' Cave"},
-				{OverworldTeleportIndex.MatoyasCave,"Matoya's Cave"},
-				{OverworldTeleportIndex.SardasCave,"Sarda's Cave"},
-				{OverworldTeleportIndex.MarshCave1,"the Marsh Cave"},
-				{OverworldTeleportIndex.MirageTower1,"the Mirage Tower"},
-				{OverworldTeleportIndex.TitansTunnelEast,"the Titan's tunnel"},
-				{OverworldTeleportIndex.TitansTunnelWest,"the Titan's tunnel"},
-				{(OverworldTeleportIndex)35,"the Sea Shrine"},
-				{(OverworldTeleportIndex)36,"the Caravan"},
-				{(OverworldTeleportIndex)37,"the Sky Palace"},
+				{ OverworldTeleportIndex.Coneria, "Coneria" },
+				{ OverworldTeleportIndex.Pravoka, "Pravoka" },
+				{ OverworldTeleportIndex.Elfland, "Elfland" },
+				{ OverworldTeleportIndex.Melmond, "Melmond" },
+				{ OverworldTeleportIndex.CrescentLake, "Crescent Lake" },
+				{ OverworldTeleportIndex.Gaia, "Gaia" },
+				{ OverworldTeleportIndex.Onrac, "Onrac" },
+				{ OverworldTeleportIndex.Lefein, "Lefein" },
+				{ OverworldTeleportIndex.ConeriaCastle1, "Coneria Castle" },
+				{ OverworldTeleportIndex.ElflandCastle, "the Castle of Efland" },
+				{ OverworldTeleportIndex.NorthwestCastle, "Northwest Castle" },
+				{ OverworldTeleportIndex.CastleOrdeals1, "the Castle of Ordeals" },
+				{ OverworldTeleportIndex.TempleOfFiends1, "the Temple of Fiends" },
+				{ OverworldTeleportIndex.EarthCave1, "the Earth Cave" },
+				{ OverworldTeleportIndex.GurguVolcano1, "Gurgu Volcano" },
+				{ OverworldTeleportIndex.IceCave1, "the Ice Cave" },
+				{ OverworldTeleportIndex.Cardia1, "the Northernemost Cave of Cardia" }, // To check
+				{ OverworldTeleportIndex.Cardia2, "the Western plains of Cardia" },
+				{ OverworldTeleportIndex.BahamutCave1, "Bahamut's Cave" },
+				{ OverworldTeleportIndex.Cardia4, "the Marshes of Cardia" },
+				{ OverworldTeleportIndex.Cardia5, "the Tiny island's Cave of Cardia" }, // To check
+				{ OverworldTeleportIndex.Cardia6, "the Eastern forest of Cardia" },
+				{ OverworldTeleportIndex.Waterfall, "the Waterfall" },
+				{ OverworldTeleportIndex.DwarfCave, "the Dwarves' Cave" },
+				{ OverworldTeleportIndex.MatoyasCave, "Matoya's Cave" },
+				{ OverworldTeleportIndex.SardasCave, "Sarda's Cave" },
+				{ OverworldTeleportIndex.MarshCave1, "the Marsh Cave" },
+				{ OverworldTeleportIndex.MirageTower1, "the Mirage Tower" },
+				{ OverworldTeleportIndex.TitansTunnelEast, "the Titan's tunnel" },
+				{ OverworldTeleportIndex.TitansTunnelWest, "the Titan's tunnel" },
+				{ (OverworldTeleportIndex)35, "the Sea Shrine" },
+				{ (OverworldTeleportIndex)36, "the Caravan" },
+				{ (OverworldTeleportIndex)37, "the Sky Palace" },
 			};
 
-			var floorlist = new List<(List<MapLocation>, string)> {
+			List<(List<MapLocation>, string)> floorlist = new List<(List<MapLocation>, string)> {
 				(new List<MapLocation> { MapLocation.Cardia1, MapLocation.Cardia2, MapLocation.Cardia4, MapLocation.Cardia5, MapLocation.Cardia6,
 					MapLocation.DwarfCave, MapLocation.DwarfCaveRoom3, MapLocation.ElflandCastle, MapLocation.ElflandCastleRoom1, MapLocation.MatoyasCave, MapLocation.NorthwestCastle,
 					MapLocation.NorthwestCastleRoom2, MapLocation.TitansTunnelEast, MapLocation.TitansTunnelRoom, MapLocation.TitansTunnelWest,
@@ -986,7 +1006,7 @@ namespace FF1Lib
 				(new List<MapLocation> { MapLocation.SeaShrineKraken }, "on floor 7, Left Side"),
 			};
 
-			var parentfloor = new List<(MapLocation, MapLocation)> {
+			List<(MapLocation, MapLocation)> parentfloor = new List<(MapLocation, MapLocation)> {
 				(MapLocation.ConeriaCastleRoom1, MapLocation.ConeriaCastle1),
 				(MapLocation.ConeriaCastleRoom2, MapLocation.ConeriaCastle1),
 				(MapLocation.DwarfCaveRoom3, MapLocation.DwarfCave),
@@ -1004,14 +1024,14 @@ namespace FF1Lib
 				(MapLocation.IceCaveFloater, MapLocation.IceCavePitRoom)
 			};
 
-			var invalidlocation = new List<MapLocation> { MapLocation.ConeriaCastleRoom1, MapLocation.ConeriaCastleRoom2, MapLocation.DwarfCaveRoom3,
+			List<MapLocation> invalidlocation = new List<MapLocation> { MapLocation.ConeriaCastleRoom1, MapLocation.ConeriaCastleRoom2, MapLocation.DwarfCaveRoom3,
 					MapLocation.ElflandCastleRoom1, MapLocation.MarshCaveBottomRoom13, MapLocation.MarshCaveBottomRoom14, MapLocation.MarshCaveBottomRoom16,
 					MapLocation.NorthwestCastleRoom2, MapLocation.SeaShrine2Room2, MapLocation.TempleOfFiends1Room1, MapLocation.TempleOfFiends1Room2,
 					MapLocation.TempleOfFiends1Room3, MapLocation.TempleOfFiends1Room4, MapLocation.TitansTunnelRoom, MapLocation.StartingLocation,
 					MapLocation.AirshipLocation
 			};
 
-			var deadends = new List<MapLocation> { MapLocation.BahamutCave2, MapLocation.Cardia1, MapLocation.Cardia2, MapLocation.Cardia4, MapLocation.Cardia5,
+			List<MapLocation> deadends = new List<MapLocation> { MapLocation.BahamutCave2, MapLocation.Cardia1, MapLocation.Cardia2, MapLocation.Cardia4, MapLocation.Cardia5,
 					MapLocation.Cardia6, MapLocation.CastleOrdealsTop, MapLocation.ConeriaCastle2, MapLocation.Coneria, MapLocation.CrescentLake, MapLocation.DwarfCave,
 					MapLocation.EarthCaveLich, MapLocation.Elfland, MapLocation.ElflandCastle, MapLocation.Gaia, MapLocation.GurguVolcanoKary, MapLocation.IceCaveBackExit,
 					MapLocation.Lefein, MapLocation.MarshCaveBottom, MapLocation.MarshCaveTop, MapLocation.MatoyasCave, MapLocation.Melmond, MapLocation.NorthwestCastle,
@@ -1019,38 +1039,43 @@ namespace FF1Lib
 					MapLocation.TempleOfFiendsChaos, MapLocation.TitansTunnelEast, MapLocation.TitansTunnelWest, MapLocation.Waterfall
 			};
 
-			var targetlocation = new OverworldTeleportIndex();
-			var finalstring = "";
+			OverworldTeleportIndex targetlocation = new OverworldTeleportIndex();
+			string finalstring = "";
 
 			// Check if first floor of Sea is flipped
-			var sea1flipped = false;
-			var maps = this.ReadMaps();
-			if(maps[(int)MapId.SeaShrineB3][(0x02, 0x04)].Value != 0x55) sea1flipped = true;
+			bool sea1flipped = false;
+			List<Map> maps = ReadMaps();
+			if (maps[(int)MapId.SeaShrineB3][(0x02, 0x04)].Value != 0x55)
+			{
+				sea1flipped = true;
+			}
 
 			// Check if floor shuffle is on
-			if (overworldmap.OverriddenOverworldLocations != null && overworldmap.OverriddenOverworldLocations.Where(x => x.Key == location).Any())
-			{ 
-				var parentlocation = parentfloor.Find(x => x.Item1 == location).Item2;
-				var validlocation = location;
+			if (overworldmap.OverriddenOverworldLocations != null && overworldmap.OverriddenOverworldLocations.Any(x => x.Key == location))
+			{
+				MapLocation parentlocation = parentfloor.Find(x => x.Item1 == location).Item2;
+				MapLocation validlocation = location;
 
 				// If location is a room, set it to its parent location
 				if (parentlocation != MapLocation.StartingLocation)
+				{
 					validlocation = parentlocation;
+				}
 
 				// Get worldmap location
-				targetlocation = overworldmap.OverriddenOverworldLocations.Where(x => x.Key == validlocation).First().Value;
+				targetlocation = overworldmap.OverriddenOverworldLocations.First(x => x.Key == validlocation).Value;
 
 				// Get all the floors from that world map location while removing the rooms
-				var dungeonfloors = overworldmap.OverriddenOverworldLocations.Where(x => x.Value == targetlocation && !invalidlocation.Contains(x.Key)).ToList();
+				List<KeyValuePair<MapLocation, OverworldTeleportIndex>> dungeonfloors = overworldmap.OverriddenOverworldLocations.Where(x => x.Value == targetlocation && !invalidlocation.Contains(x.Key)).ToList();
 
 				// If there's a split, we need to compute the floor position
 				if (dungeonfloors.Select(x => x.Key).ToList().Contains(MapLocation.MarshCave1) || dungeonfloors.Select(x => x.Key).ToList().Contains(MapLocation.SeaShrine1))
 				{
-					var floornumber = new List<int> { 0, 0, 0 };
-					var splitindex = 0;
-					var description = new List<List<string>>();
-					var descriptionindexer = new List<int> { 0, 0 };
-					var descriptionindex = -1;
+					List<int> floornumber = new List<int> { 0, 0, 0 };
+					int splitindex = 0;
+					List<List<string>> description = new List<List<string>>();
+					List<int> descriptionindexer = new List<int> { 0, 0 };
+					int descriptionindex = -1;
 					for (int i = 0; i < dungeonfloors.Count(); i++)
 					{
 						if (dungeonfloors[i].Key == validlocation)
@@ -1063,7 +1088,10 @@ namespace FF1Lib
 							floornumber[splitindex] = 0;
 							descriptionindexer[descriptionindex]--;
 							if (descriptionindexer[descriptionindex] == 0)
+							{
 								descriptionindex--;
+							}
+
 							splitindex--;
 						}
 						else if (dungeonfloors[i].Key == MapLocation.MarshCave1)
@@ -1077,19 +1105,26 @@ namespace FF1Lib
 						else if (dungeonfloors[i].Key == MapLocation.SeaShrine1)
 						{
 							if (sea1flipped)
+							{
 								description.Add(new List<string> { "", "Right Side", "Left Side" });
+							}
 							else
+							{
 								description.Add(new List<string> { "", "Left Side", "Right Side" });
+							}
+
 							descriptionindex++;
 							descriptionindexer[descriptionindex] = 2;
 							floornumber[splitindex]++;
 							splitindex++;
 						}
 						else
+						{
 							floornumber[splitindex]++;
+						}
 					}
 
-					var finalfloor = 0;
+					int finalfloor = 0;
 					for (int i = 0; i < 3; i++)
 					{
 						finalfloor += floornumber[i];
@@ -1100,48 +1135,56 @@ namespace FF1Lib
 					for (int i = 0; i < description.Count(); i++)
 					{
 						if (description[i][descriptionindexer[i]] != "")
+						{
 							finalstring += ", " + description[i][descriptionindexer[i]];
+						}
 					}
 				}
 				else // If there's no split, just get that floor index
+				{
 					finalstring = "on floor " + (dungeonfloors.FindIndex(x => x.Key == validlocation) + 1);
+				}
 			}
 			else // No E/F shuffle, use the floorlist
 			{
-				targetlocation = StandardOverworldLocations.Where(x => x.Key == location).First().Value;
+				targetlocation = StandardOverworldLocations.First(x => x.Key == location).Value;
 				finalstring = floorlist.Find(x => x.Item1.Contains(location)).Item2;
 			}
 
-			if(location == MapLocation.Caravan)
-				finalstring += "at " + LocationNames.Where(x => x.Key == targetlocation).First().Value;
+			if (location == MapLocation.Caravan)
+			{
+				finalstring += "at " + LocationNames.First(x => x.Key == targetlocation).Value;
+			}
 			else
-				finalstring += ((finalstring == "" || finalstring == null)? "in " : " of ") + LocationNames.Where(x => x.Key == targetlocation).First().Value;
+			{
+				finalstring += ((finalstring == "" || finalstring == null) ? "in " : " of ") + LocationNames.First(x => x.Key == targetlocation).Value;
+			}
 
 			return finalstring;
 		}
 
-		public static Dictionary<string, string> NiceNpcName = new Dictionary<string, string>
+		public static Dictionary<string, string> NiceNpcName = new()
 		{
-			{ItemLocations.Astos.Name, "the kindly old King from Northwest Castle"},
-			{ItemLocations.Bikke.Name, "Bikke the Pirate"},
-			{ItemLocations.CanoeSage.Name, "the Sage from Crescent Lake"},
-			{ItemLocations.CubeBot.Name, "a Robot in the Waterfall"},
-			{ItemLocations.ElfPrince.Name, "the Elf Prince"},
-			{ItemLocations.Fairy.Name, "a Fairy in a Bottle"},
-			{ItemLocations.KingConeria.Name, "the King of Coneria"},
-			{ItemLocations.Lefein.Name, "a man in Lefein"},
-			{ItemLocations.Matoya.Name, "Matoya the Witch"},
-			{ItemLocations.Nerrick.Name, "Nerrick the Dwarf"},
-			{ItemLocations.Princess.Name, "the Princess of Coneria"},
-			{ItemLocations.Sarda.Name, "Sarda the Sage"},
-			{ItemLocations.Smith.Name, "the Blacksmith"},
+			{ ItemLocations.Astos.Name, "the kindly old King from Northwest Castle" },
+			{ ItemLocations.Bikke.Name, "Bikke the Pirate" },
+			{ ItemLocations.CanoeSage.Name, "the Sage from Crescent Lake" },
+			{ ItemLocations.CubeBot.Name, "a Robot in the Waterfall" },
+			{ ItemLocations.ElfPrince.Name, "the Elf Prince" },
+			{ ItemLocations.Fairy.Name, "a Fairy in a Bottle" },
+			{ ItemLocations.KingConeria.Name, "the King of Coneria" },
+			{ ItemLocations.Lefein.Name, "a man in Lefein" },
+			{ ItemLocations.Matoya.Name, "Matoya the Witch" },
+			{ ItemLocations.Nerrick.Name, "Nerrick the Dwarf" },
+			{ ItemLocations.Princess.Name, "the Princess of Coneria" },
+			{ ItemLocations.Sarda.Name, "Sarda the Sage" },
+			{ ItemLocations.Smith.Name, "the Blacksmith" },
 		};
 		public string FormatText(string text)
 		{
-			var tempstring = text.Split(' ');
-			var tempchars = tempstring[0].ToArray();
+			string[] tempstring = text.Split(' ');
+			char[] tempchars = tempstring[0].ToArray();
 			tempchars[0] = char.ToUpper(tempchars[0]);
-			tempstring[0] = new String(tempchars);
+			tempstring[0] = new string(tempchars);
 
 			string[] templines = new string[7];
 			int linenumber = 0;
@@ -1158,7 +1201,10 @@ namespace FF1Lib
 				else
 				{ templines[linenumber] += " " + tempstring[j]; }
 
-				if (linenumber > 5) break;
+				if (linenumber > 5)
+				{
+					break;
+				}
 			}
 
 			text = string.Concat(templines);
@@ -1194,27 +1240,29 @@ namespace FF1Lib
 			SetNpc(MapId.MarshCaveB1, 5, ObjectId.OnracPunk2, marshB1flipped ? (0x3F - 0x2D) : 0x2D, 0x1A, false, false);
 
 			// Mermaid hinter - Text 0xB6 - 0xA5 mermaid
-			List<ObjectId> mermaids = new List<ObjectId> { ObjectId.Mermaid1, ObjectId.Mermaid2, ObjectId.Mermaid4, ObjectId.Mermaid5, ObjectId.Mermaid6, ObjectId.Mermaid7, ObjectId.Mermaid8, ObjectId.Mermaid9, ObjectId.Mermaid10 };
-			var selectedMermaidId = mermaids.PickRandom(rng);
-			var selectedMermaid = FindNpc(MapId.SeaShrineB1, selectedMermaidId);
-			var hintMermaid = FindNpc(MapId.SeaShrineB1, ObjectId.Mermaid3);
+			List<ObjectId> mermaids = new() { ObjectId.Mermaid1, ObjectId.Mermaid2, ObjectId.Mermaid4, ObjectId.Mermaid5, ObjectId.Mermaid6, ObjectId.Mermaid7, ObjectId.Mermaid8, ObjectId.Mermaid9, ObjectId.Mermaid10 };
+			ObjectId selectedMermaidId = mermaids.PickRandom(rng);
+			NPC selectedMermaid = FindNpc(MapId.SeaShrineB1, selectedMermaidId);
+			NPC hintMermaid = FindNpc(MapId.SeaShrineB1, ObjectId.Mermaid3);
 			SetNpc(MapId.SeaShrineB1, selectedMermaid.Index, ObjectId.Mermaid3, selectedMermaid.Coord.x, selectedMermaid.Coord.y, selectedMermaid.InRoom, selectedMermaid.Stationary);
 			SetNpc(MapId.SeaShrineB1, hintMermaid.Index, selectedMermaidId, hintMermaid.Coord.x, hintMermaid.Coord.y, hintMermaid.InRoom, hintMermaid.Stationary);
 		}
 		public void NPCHints(MT19337 rng, NPCdata npcdata, Flags flags, OverworldMap overworldmap)
 		{
 			// Het all game dialogs, get all item names, set dialog templates
-			var itemnames = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
-			var hintschests = new List<string>() { "The $ is #.", "The $? It's # I believe.", "Did you know that the $ is #?", "My grandpa used to say 'The $ is #'.", "Did you hear? The $ is #!", "Wanna hear a secret? The $ is #!", "I've read somewhere that the $ is #.", "I used to have the $. I lost it #!", "I've hidden the $ #, can you find it?", "Interesting! This book says the $ is #!", "Duh, everyone knows that the $ is #!", "I saw the $ while I was #." };
-			var hintsnpc = new List<string>() { "& has the $.", "The $? Did you try asking &?", "The $? & will never part with it!", "& stole the $ from ME! I swear!", "& told me not to reveal he has the $.", "& is hiding something. I bet it's the $!" };
-			var hintsvendormed = new List<string>() { "The $ is for sale #.", "I used to have the $. I sold it #!", "There's a fire sale for the $ #.", "I almost bought the $ for sale #." };
-			var uselesshints = new List<string>() { "GET A SILK BAG FROM THE\nGRAVEYARD DUCK TO LIVE\nLONGER.", "You spoony bard!", "Press A to talk\nto NPCs!", "A crooked trader is\noffering bum deals in\nthis town.", "The game doesn't start\nuntil you say 'yes'.", "Thieves run away\nreally fast.", "No, I won't move quit\npushing me.", "Dr. Unnes instant\ntranslation services,\njust send one slab\nand 299 GP for\nprocessing.", "I am error.", "Kraken has a good chance\nto one-shot your knight.", "If NPC guillotine is on,\npress reset now or your\nemulator will crash!", "GET EQUIPPED WITH\nTED WOOLSEY.", "8 and palm trees.\nGet it?" };
+			string[] itemnames = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
+			List<string> hintschests = new List<string>() { "The $ is #.", "The $? It's # I believe.", "Did you know that the $ is #?", "My grandpa used to say 'The $ is #'.", "Did you hear? The $ is #!", "Wanna hear a secret? The $ is #!", "I've read somewhere that the $ is #.", "I used to have the $. I lost it #!", "I've hidden the $ #, can you find it?", "Interesting! This book says the $ is #!", "Duh, everyone knows that the $ is #!", "I saw the $ while I was #." };
+			List<string> hintsnpc = new List<string>() { "& has the $.", "The $? Did you try asking &?", "The $? & will never part with it!", "& stole the $ from ME! I swear!", "& told me not to reveal he has the $.", "& is hiding something. I bet it's the $!" };
+			List<string> hintsvendormed = new List<string>() { "The $ is for sale #.", "I used to have the $. I sold it #!", "There's a fire sale for the $ #.", "I almost bought the $ for sale #." };
+			List<string> uselesshints = new List<string>() { "GET A SILK BAG FROM THE\nGRAVEYARD DUCK TO LIVE\nLONGER.", "You spoony bard!", "Press A to talk\nto NPCs!", "A crooked trader is\noffering bum deals in\nthis town.", "The game doesn't start\nuntil you say 'yes'.", "Thieves run away\nreally fast.", "No, I won't move quit\npushing me.", "Dr. Unnes instant\ntranslation services,\njust send one slab\nand 299 GP for\nprocessing.", "I am error.", "Kraken has a good chance\nto one-shot your knight.", "If NPC guillotine is on,\npress reset now or your\nemulator will crash!", "GET EQUIPPED WITH\nTED WOOLSEY.", "8 and palm trees.\nGet it?" };
 
 			if (!RedMageHasLife())
+			{
 				uselesshints.Add("Red Mages have no life!");
+			}
 
 			// Set item pool from flags, we only give hints for randomized items
-			var incentivePool = new List<Item>();
+			List<Item> incentivePool = new List<Item>();
 
 			if (flags.Treasures ?? false)
 			{
@@ -1259,22 +1307,51 @@ namespace FF1Lib
 				incentivePool.Add(Item.Xcalber);
 			}
 
-			if (flags.FreeAirship ?? false) incentivePool.Remove(Item.Floater);
-			if (flags.FreeCanoe ?? false) incentivePool.Remove(Item.Canoe);
-			if (flags.FreeBridge ?? false) incentivePool.Remove(Item.Bridge);
-			if (flags.FreeCanal ?? false) incentivePool.Remove(Item.Canal);
-			if (flags.FreeLute ?? false) incentivePool.Remove(Item.Lute);
-			if (flags.FreeShip ?? false) incentivePool.Remove(Item.Ship);
-			if ((flags.FreeTail ?? false) || (flags.NoTail ?? false)) incentivePool.Remove(Item.Tail);
-			
+			if (flags.FreeAirship ?? false)
+			{
+				incentivePool.Remove(Item.Floater);
+			}
+
+			if (flags.FreeCanoe ?? false)
+			{
+				incentivePool.Remove(Item.Canoe);
+			}
+
+			if (flags.FreeBridge ?? false)
+			{
+				incentivePool.Remove(Item.Bridge);
+			}
+
+			if (flags.FreeCanal ?? false)
+			{
+				incentivePool.Remove(Item.Canal);
+			}
+
+			if (flags.FreeLute ?? false)
+			{
+				incentivePool.Remove(Item.Lute);
+			}
+
+			if (flags.FreeShip ?? false)
+			{
+				incentivePool.Remove(Item.Ship);
+			}
+
+			if ((flags.FreeTail ?? false) || (flags.NoTail ?? false))
+			{
+				incentivePool.Remove(Item.Tail);
+			}
+
 			if (incentivePool.Count == 0)
+			{
 				incentivePool.Add(Item.Cabin);
+			}
 
 			// Select NPCs from flags
-			var priorityList = new List<Item> { Item.Lute, Item.Key, Item.Rod, Item.Oxyale, Item.Chime, Item.Cube, Item.Floater, Item.Canoe, Item.Ship, Item.Bridge, Item.Canal, Item.Bottle, Item.Slab, Item.Ruby, Item.Crown, Item.Crystal, Item.Herb, Item.Tnt, Item.Tail };
+			List<Item> priorityList = new List<Item> { Item.Lute, Item.Key, Item.Rod, Item.Oxyale, Item.Chime, Item.Cube, Item.Floater, Item.Canoe, Item.Ship, Item.Bridge, Item.Canal, Item.Bottle, Item.Slab, Item.Ruby, Item.Crown, Item.Crystal, Item.Herb, Item.Tnt, Item.Tail };
 
-			var npcSelected = new List<ObjectId>();
-			var dialogueID = new List<byte>();
+			List<ObjectId> npcSelected = new List<ObjectId>();
+			List<byte> dialogueID = new List<byte>();
 			if (flags.HintsVillage ?? false)
 			{
 				npcSelected.AddRange(new List<ObjectId> { ObjectId.ConeriaOldMan, ObjectId.PravokaOldMan, ObjectId.ElflandScholar1, ObjectId.MelmondOldMan2, ObjectId.CrescentSage11, ObjectId.OnracOldMan2, ObjectId.GaiaWitch, ObjectId.LefeinMan12 });
@@ -1288,56 +1365,118 @@ namespace FF1Lib
 				dialogueID.AddRange(new List<byte> { 0x9D, 0x70, 0xE3, 0xE1, 0xB6 });
 			}
 
-			var incentivizedChests = new List<string>();
+			List<string> incentivizedChests = new List<string>();
 
-			if (flags.IncentivizeEarth ?? false) incentivizedChests.Add(ItemLocations.EarthCaveMajor.Name);
-			if (flags.IncentivizeIceCave ?? false) incentivizedChests.Add(ItemLocations.IceCaveMajor.Name);
-			if (flags.IncentivizeMarsh ?? false) incentivizedChests.Add(ItemLocations.MarshCaveMajor.Name);
-			if (flags.IncentivizeMarshKeyLocked ?? false) incentivizedChests.Add(ItemLocations.MarshCave13.Name);
-			if (flags.IncentivizeOrdeals ?? false) incentivizedChests.Add(ItemLocations.OrdealsMajor.Name);
-			if (flags.IncentivizeSeaShrine ?? false) incentivizedChests.Add(ItemLocations.SeaShrineMajor.Name);
-			if (flags.IncentivizeSkyPalace ?? false) incentivizedChests.Add(ItemLocations.SkyPalaceMajor.Name);
-			if (flags.IncentivizeTitansTrove ?? false) incentivizedChests.Add(ItemLocations.TitansTunnel1.Name);
-			if (flags.IncentivizeVolcano ?? false) incentivizedChests.Add(ItemLocations.VolcanoMajor.Name);
-			if (flags.IncentivizeConeria ?? false) incentivizedChests.Add(ItemLocations.ConeriaMajor.Name);
+			if (flags.IncentivizeEarth ?? false)
+			{
+				incentivizedChests.Add(ItemLocations.EarthCaveMajor.Name);
+			}
 
-			var hintedItems = new List<Item>();
+			if (flags.IncentivizeIceCave ?? false)
+			{
+				incentivizedChests.Add(ItemLocations.IceCaveMajor.Name);
+			}
+
+			if (flags.IncentivizeMarsh ?? false)
+			{
+				incentivizedChests.Add(ItemLocations.MarshCaveMajor.Name);
+			}
+
+			if (flags.IncentivizeMarshKeyLocked ?? false)
+			{
+				incentivizedChests.Add(ItemLocations.MarshCave13.Name);
+			}
+
+			if (flags.IncentivizeOrdeals ?? false)
+			{
+				incentivizedChests.Add(ItemLocations.OrdealsMajor.Name);
+			}
+
+			if (flags.IncentivizeSeaShrine ?? false)
+			{
+				incentivizedChests.Add(ItemLocations.SeaShrineMajor.Name);
+			}
+
+			if (flags.IncentivizeSkyPalace ?? false)
+			{
+				incentivizedChests.Add(ItemLocations.SkyPalaceMajor.Name);
+			}
+
+			if (flags.IncentivizeTitansTrove ?? false)
+			{
+				incentivizedChests.Add(ItemLocations.TitansTunnel1.Name);
+			}
+
+			if (flags.IncentivizeVolcano ?? false)
+			{
+				incentivizedChests.Add(ItemLocations.VolcanoMajor.Name);
+			}
+
+			if (flags.IncentivizeConeria ?? false)
+			{
+				incentivizedChests.Add(ItemLocations.ConeriaMajor.Name);
+			}
+
+			List<Item> hintedItems = new List<Item>();
 			foreach (Item priorityitem in priorityList)
 			{
 				if (generatedPlacement.Find(x => x.Item == priorityitem) != null)
+				{
 					if (generatedPlacement.Find(x => x.Item == priorityitem).GetType().Equals(typeof(TreasureChest)) && !incentivizedChests.Contains(generatedPlacement.Find(x => x.Item == priorityitem).Name))
+					{
 						hintedItems.Add(priorityitem);
+					}
+				}
 
 				if (hintedItems.Count == npcSelected.Count)
+				{
 					break;
+				}
 			}
 
 			while (hintedItems.Count < npcSelected.Count)
 			{
-				var tempItem = incentivePool.PickRandom(rng);
+				Item tempItem = incentivePool.PickRandom(rng);
 				if (generatedPlacement.Find(x => x.Item == tempItem) != null)
+				{
 					hintedItems.Add(tempItem);
+				}
 			}
 
 			// Declare hints string for each hinted at item
-			var hintsList = new List<string>();
+			List<string> hintsList = new List<string>();
 
 			// Create hint for a random item in the pool for each NPC
-			var attempts = 0;
+			int attempts = 0;
 			while (++attempts < 50)
 			{
 				for (int i = 0; i < npcSelected.Count; i++)
 				{
-					var tempItem = hintedItems.First();
+					Item tempItem = hintedItems.First();
 					string tempHint;
 					string tempName;
 
-					if (tempItem.Equals(Item.Ship)) tempName = FF1Text.BytesToText(Get(0x2B5D0, 4));
+					if (tempItem.Equals(Item.Ship))
+					{
+						tempName = FF1Text.BytesToText(Get(0x2B5D0, 4));
+					}
 					//else if (tempRndItem.Equals(Item.Airship)) tempName = FF1Text.BytesToText((byte[])Get(0x285C+8, 7));
-					else if (tempItem.Equals(Item.Bridge)) tempName = FF1Text.BytesToText(Get(0x2B5D0 + 16, 6));
-					else if (tempItem.Equals(Item.Canal)) tempName = FF1Text.BytesToText(Get(0x2B5D0 + 24, 5));
-					else if (tempItem.Equals(Item.Canoe)) tempName = FF1Text.BytesToText(Get(0x2B5D0 + 36, 5));
-					else tempName = itemnames[(int)tempItem].Replace(" ", "");
+					else if (tempItem.Equals(Item.Bridge))
+					{
+						tempName = FF1Text.BytesToText(Get(0x2B5D0 + 16, 6));
+					}
+					else if (tempItem.Equals(Item.Canal))
+					{
+						tempName = FF1Text.BytesToText(Get(0x2B5D0 + 24, 5));
+					}
+					else if (tempItem.Equals(Item.Canoe))
+					{
+						tempName = FF1Text.BytesToText(Get(0x2B5D0 + 36, 5));
+					}
+					else
+					{
+						tempName = itemnames[(int)tempItem].Replace(" ", "");
+					}
 
 					if (generatedPlacement.Find(x => x.Item == tempItem).GetType().Equals(typeof(TreasureChest)))
 					{
@@ -1365,23 +1504,27 @@ namespace FF1Lib
 						hintedItems.RemoveRange(0, 1);
 					}
 					else
+					{
 						tempHint = "I am error.";
+					}
 				}
 
 				if (flags.HintsUseless != false)
 				{
 					uselesshints.Shuffle(rng);
 					hintsList.Reverse();
-					var uselessHintsCount = hintsList.Count() / 2;
+					int uselessHintsCount = hintsList.Count() / 2;
 					hintsList.RemoveRange(0, uselessHintsCount);
 
 					for (int i = 0; i < uselessHintsCount; i++)
+					{
 						hintsList.Add(uselesshints[i]);
+					}
 				}
 				//var hintsList = hints.ToList();
 				hintsList.Shuffle(rng);
 
-				Dictionary<int, string> hintDialogues = new Dictionary<int, string>();
+				Dictionary<int, string> hintDialogues = new();
 
 				// Set NPCs new dialogs
 				for (int i = 0; i < npcSelected.Count; i++)
@@ -1400,9 +1543,15 @@ namespace FF1Lib
 				catch (Exception e)
 				{
 					if (e == new Exception("Dialogs maximum length exceeded."))
+					{
 						continue;
+					}
 				}
-				if(attempts > 1) Console.WriteLine($"NPC Hints generated in {attempts} attempts.");
+				if (attempts > 1)
+				{
+					Console.WriteLine($"NPC Hints generated in {attempts} attempts.");
+				}
+
 				return;
 			}
 			throw new Exception("Couldn't generate hints in 50 tries.");

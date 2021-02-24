@@ -4,7 +4,7 @@ using System.Diagnostics;
 
 namespace FF1Lib
 {
-	partial class FF1Rom
+	public partial class FF1Rom
 	{
 
 		public void DemoPatchAssembler()
@@ -38,18 +38,21 @@ namespace FF1Lib
 			Console.WriteLine("result:");
 			Console.WriteLine(result_hex);
 
-			var rom_address = bank_and_address.ToRomLocation();
-			var size_guess = Symbols.Calculate.SpaceToNextLabel("EnterMainMenu");
+			int rom_address = bank_and_address.ToRomLocation();
+			int size_guess = Symbols.Calculate.SpaceToNextLabel("EnterMainMenu");
 			byte[] from_actual_rom = Get(rom_address, size_guess);
 			string rom_hex = BitConverter.ToString(from_actual_rom).Replace("-", string.Empty);
 			Console.WriteLine("from rom:");
 			Console.WriteLine(rom_hex);
 
 			if (rom_hex == result_hex)
+			{
 				Console.WriteLine("MATCH");
+			}
 			else
+			{
 				Console.WriteLine("mismatch");
-
+			}
 		}
 	}
 }

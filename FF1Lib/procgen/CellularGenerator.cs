@@ -7,7 +7,7 @@ using RomUtilities;
 
 namespace FF1Lib.Procgen
 {
-	class CellularGenerator : IMapGeneratorEngine
+	internal class CellularGenerator : IMapGeneratorEngine
 	{
 		public int Steps = 5;
 
@@ -24,11 +24,13 @@ namespace FF1Lib.Procgen
 			while (true)
 			{
 				if (++sanity == 500)
+				{
 					throw new InsaneException("Failed to generate map!");
+				}
 
 				try
 				{
-					CompleteMap complete = new CompleteMap
+					CompleteMap complete = new()
 					{
 						Map = new Map(SentinelDead),
 						Requirements = reqs,
@@ -60,12 +62,12 @@ namespace FF1Lib.Procgen
 					complete.Map = rooms;
 					Console.Write(complete.AsText());
 
-					var clone = rooms.Clone();
-					foreach (var el in clone.Where(el => el.Value == SentinelDead))
+					Map clone = rooms.Clone();
+					foreach (MapElement el in clone.Where(el => el.Value == SentinelDead))
 					{
-						var roomTile = rooms[el.Coord];
+						MapElement roomTile = rooms[el.Coord];
 
-						foreach (var newTile in roomTile.Surrounding().Concat(roomTile.Left().Surrounding()))
+						foreach (MapElement newTile in roomTile.Surrounding().Concat(roomTile.Left().Surrounding()))
 						{
 							newTile.Value = SentinelDead;
 						}
@@ -77,9 +79,9 @@ namespace FF1Lib.Procgen
 					Console.Write(complete.AsText());
 
 					clone = rooms.Clone();
-					foreach (var el in clone.Where(el => el.Value == SentinelDead))
+					foreach (MapElement el in clone.Where(el => el.Value == SentinelDead))
 					{
-						var roomTile = rooms[el.Coord];
+						MapElement roomTile = rooms[el.Coord];
 						if (el.Left().Value == SentinelAlive)
 						{
 							if (el.Up().Value == SentinelAlive)
@@ -128,22 +130,23 @@ namespace FF1Lib.Procgen
 					}
 
 					// Carve out a door to all the accessible room tiles.
-					var roomTiles = rooms.Where(el => el.Tile == Tile.RoomCenter);
-					var doorways = new List<MapElement> { };
+					IEnumerable<MapElement> roomTiles = rooms.Where(el => el.Tile == Tile.RoomCenter);
+					List<MapElement> doorways = new List<MapElement> { };
 
-					foreach(var innerTile in roomTiles)
+					foreach (MapElement innerTile in roomTiles)
 					{
-						var results = FloodFill(rooms, innerTile.Coord, new List<Tile> { Tile.RoomCenter, Tile.RoomFrontCenter, Tile.Door });
-						if (results[Tile.Door].Any()) {
+						Dictionary<Tile, List<MapElement>> results = FloodFill(rooms, innerTile.Coord, new List<Tile> { Tile.RoomCenter, Tile.RoomFrontCenter, Tile.Door });
+						if (results[Tile.Door].Any())
+						{
 							continue;
 						}
 
-						var potentialDoorways = results[Tile.RoomFrontCenter];
+						List<MapElement> potentialDoorways = results[Tile.RoomFrontCenter];
 						if (potentialDoorways.Any())
 						{
-							var entryway = potentialDoorways.SpliceRandom(rng);
-							var door = entryway.Down();
-							var doorway = door.Down();
+							MapElement entryway = potentialDoorways.SpliceRandom(rng);
+							MapElement door = entryway.Down();
+							MapElement doorway = door.Down();
 
 							System.Diagnostics.Debug.Assert(door.Tile == Tile.InsideWall);
 
@@ -160,11 +163,13 @@ namespace FF1Lib.Procgen
 					}
 
 					// Place chests now
-					var chestLocations = roomTiles.Where(el => el.Up().Tile == Tile.RoomBackCenter).ToList();
+					List<MapElement> chestLocations = roomTiles.Where(el => el.Up().Tile == Tile.RoomBackCenter).ToList();
 					if (reqs.Objects.Count() > chestLocations.Count())
+					{
 						throw new InsaneException("Not enough chest locations.");
+					}
 
-					foreach(byte chest in reqs.Objects)
+					foreach (byte chest in reqs.Objects)
 					{
 						chestLocations.SpliceRandom(rng).Value = chest;
 					}
@@ -235,23 +240,23 @@ namespace FF1Lib.Procgen
 
 					// All the tiles we're editing are now either SentinelAlive or SentinelDead.
 					// Time to map those to real values now.
-					foreach (var el in complete.Map.Where(el => el.Value == SentinelAlive)) { el.Tile = reqs.Floor; }
+					foreach (MapElement el in complete.Map.Where(el => el.Value == SentinelAlive)) { el.Tile = reqs.Floor; }
 
 					Console.WriteLine($"Room map has {complete.Map.Count(element => element.Tile == reqs.Floor)} walkable tiles.");
 					Console.Write(complete.AsText());
 
 					// Pad all the Alive tiles
-					var locations = complete.Map.Where(element => element.Tile == reqs.Floor).ToList();
+					List<MapElement> locations = complete.Map.Where(element => element.Tile == reqs.Floor).ToList();
 					reqs.Portals.ToList().ForEach(portal =>
 					{
-						var location = locations.SpliceRandom(rng);
+						MapElement location = locations.SpliceRandom(rng);
 						complete.Map[location.Y, location.X] = portal;
 
 						if (portal == (byte)Tile.WarpUp)
 						{
 							complete.Entrance = new Coordinate((byte)location.X, (byte)location.Y, CoordinateLocale.Standard);
 
-							var finalResult = FloodFill(complete.Map, location.Coord, new List<Tile> { reqs.Floor, Tile.WarpUp, Tile.Doorway, Tile.Door, Tile.RoomCenter, Tile.RoomFrontCenter });
+							Dictionary<Tile, List<MapElement>> finalResult = FloodFill(complete.Map, location.Coord, new List<Tile> { reqs.Floor, Tile.WarpUp, Tile.Doorway, Tile.Door, Tile.RoomCenter, Tile.RoomFrontCenter });
 							if (finalResult[Tile.Door].Count() < doorways.Count())
 							{
 								throw new InsaneException("Can't reach all rooms.");
@@ -261,8 +266,9 @@ namespace FF1Lib.Procgen
 
 					Console.Write(complete.AsText());
 					return complete;
-				
-				} catch(InsaneException e)
+
+				}
+				catch (InsaneException e)
 				{
 					Console.WriteLine(e.ToString());
 				}
@@ -277,7 +283,7 @@ namespace FF1Lib.Procgen
 
 		private Dictionary<Tile, List<MapElement>> FloodFill(Map map, (int, int) coord, IEnumerable<Tile> counts, IEnumerable<Tile> finds = null, Tile replace = Tile.FloorSafe)
 		{
-			var results = counts.ToDictionary(tile => tile, tile => new List<MapElement> { });
+			Dictionary<Tile, List<MapElement>> results = counts.ToDictionary(tile => tile, tile => new List<MapElement> { });
 			FloodFill(results, map, coord, counts, finds, replace);
 			return results;
 		}
@@ -311,7 +317,7 @@ namespace FF1Lib.Procgen
 				Map map = old.Clone();
 				// Loop over each row and column of the map
 
-				foreach (var element in old)
+				foreach (MapElement element in old)
 				{
 					int x = element.X;
 					int y = element.Y;
@@ -360,11 +366,14 @@ namespace FF1Lib.Procgen
 			{
 				for (int j = -1; j < 2; j++)
 				{
-					if (i == 0 && j == 0) continue;
+					if (i == 0 && j == 0)
+					{
+						continue;
+					}
 
 					if (map[(y + j + MapRequirements.Height) % MapRequirements.Height, (x + i + MapRequirements.Width) % MapRequirements.Width] == SentinelAlive)
 					{
-						count = count + 1;
+						count++;
 					}
 				}
 			}

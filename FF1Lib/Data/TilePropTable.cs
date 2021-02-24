@@ -8,7 +8,7 @@ namespace FF1Lib
 {
 	public class TilePropTable
 	{
-		MemTable<byte> TileProperties;
+		private readonly MemTable<byte> TileProperties;
 
 		public TileProp[] Data { get; private set; } = new TileProp[128];
 
@@ -40,14 +40,8 @@ namespace FF1Lib
 
 		public TileProp this[int idx]
 		{
-			get
-			{
-				return Data[idx];
-			}
-			set
-			{
-				Data[idx] = value;
-			}
+			get => Data[idx];
+			set => Data[idx] = value;
 		}
 	}
 }

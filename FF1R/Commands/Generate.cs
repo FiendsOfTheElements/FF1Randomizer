@@ -1,13 +1,13 @@
+using System;
+using McMaster.Extensions.CommandLineUtils;
+
+using FF1Lib;
+using FFR.Common;
+
 namespace FF1R.Commands
 {
-	using System;
-	using McMaster.Extensions.CommandLineUtils;
-
-	using FF1Lib;
-	using FFR.Common;
-
 	[Command("generate", Description = "Randomize a Final Fantasy ROM")]
-	class Generate
+	internal class Generate
 	{
 		[Argument(0, Description = "Final Fantasy ROM to randomize")]
 		[FileExists]
@@ -39,10 +39,10 @@ namespace FF1R.Commands
 			ShortName = "v")]
 		public bool Verbose { get; }
 
-		int OnExecute(IConsole console)
+		private int OnExecute(IConsole console)
 		{
 			RandomizerSettings settings;
-			if (!String.IsNullOrEmpty(Preset))
+			if (!string.IsNullOrEmpty(Preset))
 			{
 				try
 				{
@@ -52,13 +52,13 @@ namespace FF1R.Commands
 						new Preferences()
 					);
 				}
-				catch(System.IO.FileNotFoundException)
+				catch (System.IO.FileNotFoundException)
 				{
 					console.Error.WriteLine($"Preset not found: '{Preset}'");
 					return 1;
 				}
 			}
-			else if (!String.IsNullOrEmpty(Import))
+			else if (!string.IsNullOrEmpty(Import))
 			{
 				try
 				{
@@ -76,7 +76,7 @@ namespace FF1R.Commands
 				{
 					settings = new RandomizerSettings(Seed, FlagString);
 				}
-				catch(Exception e)
+				catch (Exception e)
 				{
 					console.Error.WriteLine(e.ToString());
 					console.Error.WriteLine("Ensure that you are using an 8 character hexadecimal string as a seed and a valid base64 encoded set of flags.");
@@ -84,15 +84,16 @@ namespace FF1R.Commands
 				}
 			}
 
-			var outFile = String.IsNullOrEmpty(OutFile)
+			string outFile = string.IsNullOrEmpty(OutFile)
 				? GenerateDefaultFilename(RomPath, settings)
 				: OutFile;
-      
+
 			var rom = new FF1Rom(RomPath);
 			rom.Randomize(settings.Seed, settings.Flags, settings.Preferences);
 			rom.Save(outFile);
 
-			if (Verbose) {
+			if (Verbose)
+			{
 				console.WriteLine($"Seed: {settings.Seed.ToHex()}");
 				console.WriteLine($"Flags: {Flags.EncodeFlagsText(settings.Flags)}");
 				console.WriteLine($"ROM created at: {outFile}");
@@ -101,9 +102,9 @@ namespace FF1R.Commands
 			return 0;
 		}
 
-		string GenerateDefaultFilename(string rom, RandomizerSettings settings)
+		private string GenerateDefaultFilename(string rom, RandomizerSettings settings)
 		{
-			var baseName = rom.Substring(
+			string baseName = rom.Substring(
 				0,
 				rom.LastIndexOf(".", StringComparison.InvariantCulture)
 			);

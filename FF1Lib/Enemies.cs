@@ -97,8 +97,8 @@ namespace FF1Lib
 			{
 				// Inter-zone shuffle
 				// Get all encounters from zones not surrounding starting area
-				List<Blob> newFormations = new List<Blob>();
-				SortedSet<byte> exclusionZones = new SortedSet<byte>();
+				List<Blob> newFormations = new();
+				SortedSet<byte> exclusionZones = new();
 				exclusionZones.UnionWith(StartingZones);
 
 				for (byte i = 0; i < ZoneCount; i++)
@@ -134,8 +134,8 @@ namespace FF1Lib
 				// no-pants mode
 				var oldFormations = Get(ZoneFormationsOffset, ZoneFormationsSize * ZoneCount).Chunk(ZoneFormationsSize);
 				var newFormations = Get(ZoneFormationsOffset, ZoneFormationsSize * ZoneCount).Chunk(ZoneFormationsSize);
-				var allowableEncounters = Enumerable.Range(0, 256).ToList();
-				var unallowableEncounters = new List<int>() { 0x73, 0x74, 0x75, 0x76, 0x77, 0x78, 0x79, 0x7A, 0x7B, 0x7C, 0x7D, 0x7E, 0x7F, 0xF3, 0xF4, 0xF5, 0xF6, 0xF7, 0xF8, 0xF9, 0xFA, 0xFB, 0xFC, 0xFD };
+				List<int> allowableEncounters = Enumerable.Range(0, 256).ToList();
+				List<int> unallowableEncounters = new List<int>() { 0x73, 0x74, 0x75, 0x76, 0x77, 0x78, 0x79, 0x7A, 0x7B, 0x7C, 0x7D, 0x7E, 0x7F, 0xF3, 0xF4, 0xF5, 0xF6, 0xF7, 0xF8, 0xF9, 0xFA, 0xFB, 0xFC, 0xFD };
 				allowableEncounters.RemoveAll(x => unallowableEncounters.Contains(x));
 				for (byte i = 0; i < ZoneCount; i++)
 				{
@@ -158,9 +158,9 @@ namespace FF1Lib
 			const int WarMECHIndex = 6;
 			const byte WarMECHEncounter = 0x56;
 			var oldFormations = Get(ZoneFormationsOffset, ZoneFormationsSize * ZoneCount).Chunk(ZoneFormationsSize);
-			var newFormations = new List<byte>();
+			List<byte> newFormations = new List<byte>();
 
-			foreach(var zone in oldFormations)
+			foreach (var zone in oldFormations)
 			{
 				var bytes = zone.ToBytes().ToList();
 				if (!bytes.Any(x => x > 0))
@@ -181,15 +181,30 @@ namespace FF1Lib
 		{
 			var oldEnemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
 			var newEnemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
-			
-			if(doNormals)
+
+			if (doNormals)
 			{
 				var normalOldEnemies = oldEnemies.Take(EnemyCount - 10).ToList(); // all but WarMECH, fiends, fiends revisited, and CHAOS
-				if (!AllowUnsafePirates) normalOldEnemies.RemoveAt(Enemy.Pirate);
-				if (excludeImps) normalOldEnemies.RemoveAt(Enemy.Imp);
+				if (!AllowUnsafePirates)
+				{
+					normalOldEnemies.RemoveAt(Enemy.Pirate);
+				}
+
+				if (excludeImps)
+				{
+					normalOldEnemies.RemoveAt(Enemy.Imp);
+				}
+
 				normalOldEnemies.Shuffle(rng);
-				if (excludeImps) normalOldEnemies.Insert(Enemy.Imp, oldEnemies[Enemy.Imp]);
-				if (!AllowUnsafePirates) normalOldEnemies.Insert(Enemy.Pirate, oldEnemies[Enemy.Pirate]);
+				if (excludeImps)
+				{
+					normalOldEnemies.Insert(Enemy.Imp, oldEnemies[Enemy.Imp]);
+				}
+
+				if (!AllowUnsafePirates)
+				{
+					normalOldEnemies.Insert(Enemy.Pirate, oldEnemies[Enemy.Pirate]);
+				}
 
 				for (int i = 0; i < EnemyCount - 10; i++)
 				{
@@ -197,9 +212,9 @@ namespace FF1Lib
 				}
 			}
 
-			if(doBosses)
-			{ 
-				var oldBosses = new List<Blob>
+			if (doBosses)
+			{
+				List<Blob> oldBosses = new List<Blob>
 				{
 					oldEnemies[Enemy.Lich],
 					oldEnemies[Enemy.Kary],
@@ -213,7 +228,7 @@ namespace FF1Lib
 				newEnemies[Enemy.Kraken][7] = oldBosses[2][7];
 				newEnemies[Enemy.Tiamat][7] = oldBosses[3][7];
 
-				var oldBigBosses = new List<Blob>
+				List<Blob> oldBigBosses = new List<Blob>
 				{
 					oldEnemies[Enemy.WarMech],
 					oldEnemies[Enemy.Lich2],
@@ -222,7 +237,11 @@ namespace FF1Lib
 					oldEnemies[Enemy.Tiamat2],
 					oldEnemies[Enemy.Chaos]
 				};
-				if (scaryImps) oldBigBosses.Add(oldEnemies[Enemy.Imp]);
+				if (scaryImps)
+				{
+					oldBigBosses.Add(oldEnemies[Enemy.Imp]);
+				}
+
 				oldBigBosses.Shuffle(rng);
 
 				newEnemies[Enemy.WarMech][7] = oldBigBosses[0][7];
@@ -231,7 +250,10 @@ namespace FF1Lib
 				newEnemies[Enemy.Kraken2][7] = oldBigBosses[3][7];
 				newEnemies[Enemy.Tiamat2][7] = oldBigBosses[4][7];
 				newEnemies[Enemy.Chaos][7] = oldBigBosses[5][7];
-				if (scaryImps) newEnemies[Enemy.Imp][7] = oldBigBosses[6][7];
+				if (scaryImps)
+				{
+					newEnemies[Enemy.Imp][7] = oldBigBosses[6][7];
+				}
 			}
 
 			Put(EnemyOffset, newEnemies.SelectMany(enemy => enemy.ToBytes()).ToArray());
@@ -249,15 +271,17 @@ namespace FF1Lib
 			scriptBytes[IronGol][13] = 0xFF;
 			scriptBytes[IronGol][14] = 0xFF;
 
-			var normalIndices = Enumerable.Range(0, 32).Concat(new[] { 33, 43 }).ToList();
-			var bossIndices = new List<int> { 34, 36, 38, 40 };
-			var bigBossIndices = new List<int> { 32, 35, 37, 39, 41, 42 };
+			List<int> normalIndices = Enumerable.Range(0, 32).Concat(new[] { 33, 43 }).ToList();
+			List<int> bossIndices = new List<int> { 34, 36, 38, 40 };
+			List<int> bigBossIndices = new List<int> { 32, 35, 37, 39, 41, 42 };
 
-			if(doNormals)
+			if (doNormals)
+			{
 				ShuffleIndexedSkillsSpells(scriptBytes, normalIndices, rng);
+			}
 
-			if(doBosses)
-			{ 
+			if (doBosses)
+			{
 				ShuffleIndexedSkillsSpells(scriptBytes, bossIndices, rng);
 				ShuffleIndexedSkillsSpells(scriptBytes, bigBossIndices, rng);
 			}
@@ -267,18 +291,18 @@ namespace FF1Lib
 
 		private void ShuffleIndexedSkillsSpells(List<Blob> scriptBytes, List<int> indices, MT19337 rng)
 		{
-			var scripts = indices.Select(i => scriptBytes[i]).ToList();
+			List<Blob> scripts = indices.Select(i => scriptBytes[i]).ToList();
 
 			var spellBytes = scripts.SelectMany(script => script.SubBlob(2, 8).ToBytes()).Where(b => b != 0xFF).ToList();
 			var skillBytes = scripts.SelectMany(script => script.SubBlob(11, 4).ToBytes()).Where(b => b != 0xFF).ToList();
 			spellBytes.Shuffle(rng);
 			skillBytes.Shuffle(rng);
 
-			var spellBuckets = Bucketize(spellBytes, scripts.Count(script => script[0] != 0), 8, rng);
-			var skillBuckets = Bucketize(skillBytes, scripts.Count(script => script[1] != 0), 4, rng);
+			List<List<byte>> spellBuckets = Bucketize(spellBytes, scripts.Count(script => script[0] != 0), 8, rng);
+			List<List<byte>> skillBuckets = Bucketize(skillBytes, scripts.Count(script => script[1] != 0), 4, rng);
 
-			var spellChances = scripts.Select(script => script[0]).ToList();
-			var skillChances = scripts.Select(script => script[1]).ToList();
+			List<object> spellChances = scripts.Select(script => script[0]).ToList();
+			List<object> skillChances = scripts.Select(script => script[1]).ToList();
 			spellChances.Shuffle(rng);
 			skillChances.Shuffle(rng);
 
@@ -314,7 +338,7 @@ namespace FF1Lib
 
 		private List<List<byte>> Bucketize(List<byte> bytes, int bucketCount, int bucketSize, MT19337 rng)
 		{
-			var buckets = new List<List<byte>>();
+			List<List<byte>> buckets = new List<List<byte>>();
 			for (int i = 0; i < bucketCount; i++)
 			{
 				buckets.Add(new List<byte>());
@@ -365,7 +389,7 @@ namespace FF1Lib
 		{
 			var enemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
 
-			List<(byte touch, byte element)> statusElements = new List<(byte touch, byte element)>()
+			List<(byte touch, byte element)> statusElements = new()
 			{
 				(0x04, 0x02), //Poison Touch = Poison
 				(0x08, 0x01), //Dark Touch = Status
@@ -374,7 +398,10 @@ namespace FF1Lib
 				(0x40, 0x01), //Mute Touch = Status
 			};
 
-			if (DisableStunTouch) statusElements.Remove((0x10, 0x01));
+			if (DisableStunTouch)
+			{
+				statusElements.Remove((0x10, 0x01));
+			}
 
 			(byte touch, byte element) deathElement = (0x01, 0x08); //Death Touch = Death Element
 			(byte touch, byte element) stoneElement = (0x02, 0x02); //Stone Touch = Poison
@@ -393,17 +420,17 @@ namespace FF1Lib
 				if (roll < 1) //1 vanilla death toucher
 				{
 					//Death Touch
-					var (touch, element) = deathElement;
-					
+					(byte touch, byte element) = deathElement;
+
 				}
 				else if (roll < 2) //1 vanilla stone toucher
 				{
 					//Stone Touch
-					var (touch, element) = stoneElement;
+					(byte touch, byte element) = stoneElement;
 				}
 				else if (roll < 37) //35 enemies with other assorted status touches
 				{
-					var (touch, element) = statusElements.PickRandom(rng);
+					(byte touch, byte element) = statusElements.PickRandom(rng);
 					enemies[i][15] = touch;
 					enemies[i][14] = element;
 				}
@@ -541,9 +568,9 @@ namespace FF1Lib
 		{
 			const int FiendsIndex = 0x77;
 			const int FiendsScriptIndex = 0x22;
-			var fiendsFormationOrder = new List<int> { 0x7A, 0x73, 0x79, 0x74, 0x78, 0x75, 0x77, 0x76 };
+			List<int> fiendsFormationOrder = new List<int> { 0x7A, 0x73, 0x79, 0x74, 0x78, 0x75, 0x77, 0x76 };
 
-			var alternateFiendsList = new List<AlternateFiends> {
+			List<AlternateFiends> alternateFiendsList = new List<AlternateFiends> {
 				new AlternateFiends {
 					Name = "ASTAROTH",
 					SpriteSheet = FormationSpriteSheet.BadmanAstosMadponyWarmech,
@@ -924,7 +951,7 @@ namespace FF1Lib
 				},
 			};
 
-			var encountersData = new Encounters(this);
+			Encounters encountersData = new Encounters(this);
 
 			EnemyInfo[] fiends = new EnemyInfo[8];
 			EnemyScriptInfo[] fiendsScript = new EnemyScriptInfo[8];
@@ -943,36 +970,44 @@ namespace FF1Lib
 			// Replace the 4 fiends and their 2nd version at the same time
 			for (int i = 0; i < 4; i++)
 			{
-				fiends[(i * 2)].monster_type = (byte)alternateFiendsList[i].MonsterType;
+				fiends[i * 2].monster_type = (byte)alternateFiendsList[i].MonsterType;
 				fiends[(i * 2) + 1].monster_type = (byte)alternateFiendsList[i].MonsterType;
-				fiends[(i * 2)].elem_weakness = (byte)alternateFiendsList[i].ElementalWeakness;
+				fiends[i * 2].elem_weakness = (byte)alternateFiendsList[i].ElementalWeakness;
 				fiends[(i * 2) + 1].elem_weakness = 0x00;
-				fiends[(i * 2)].elem_resist = (byte)(fiends[(i * 2)].elem_resist & ~(byte)alternateFiendsList[i].ElementalWeakness);
+				fiends[i * 2].elem_resist = (byte)(fiends[i * 2].elem_resist & ~(byte)alternateFiendsList[i].ElementalWeakness);
 				fiends[(i * 2) + 1].elem_resist = (byte)(fiends[(i * 2) + 1].elem_resist & ~(byte)alternateFiendsList[i].ElementalWeakness);
 
-				if (fiendsScript[(i * 2)].skill_chance == 0x00 || alternateFiendsList[i].SkillChance1 == 0x00)
-					fiendsScript[(i * 2)].skill_chance = alternateFiendsList[i].SkillChance1;
+				if (fiendsScript[i * 2].skill_chance == 0x00 || alternateFiendsList[i].SkillChance1 == 0x00)
+				{
+					fiendsScript[i * 2].skill_chance = alternateFiendsList[i].SkillChance1;
+				}
 
 				if (fiendsScript[(i * 2) + 1].skill_chance == 0x00 || alternateFiendsList[i].SkillChance2 == 0x00)
+				{
 					fiendsScript[(i * 2) + 1].skill_chance = alternateFiendsList[i].SkillChance2;
+				}
 
-				fiendsScript[(i * 2)].skill_list = alternateFiendsList[i].Skills1.ToArray();
+				fiendsScript[i * 2].skill_list = alternateFiendsList[i].Skills1.ToArray();
 				fiendsScript[(i * 2) + 1].skill_list = alternateFiendsList[i].Skills2.ToArray();
 
-				if (fiendsScript[(i * 2)].spell_chance == 0x00 || alternateFiendsList[i].SpellChance1 == 0x00)
-					fiendsScript[(i * 2)].spell_chance = alternateFiendsList[i].SpellChance1;
+				if (fiendsScript[i * 2].spell_chance == 0x00 || alternateFiendsList[i].SpellChance1 == 0x00)
+				{
+					fiendsScript[i * 2].spell_chance = alternateFiendsList[i].SpellChance1;
+				}
 
 				if (fiendsScript[(i * 2) + 1].spell_chance == 0x00 || alternateFiendsList[i].SpellChance2 == 0x00)
+				{
 					fiendsScript[(i * 2) + 1].spell_chance = alternateFiendsList[i].SpellChance2;
+				}
 
-				fiendsScript[(i * 2)].spell_list = alternateFiendsList[i].Spells1.ToArray();
+				fiendsScript[i * 2].spell_list = alternateFiendsList[i].Spells1.ToArray();
 				fiendsScript[(i * 2) + 1].spell_list = alternateFiendsList[i].Spells2.ToArray();
 
-				encountersData.formations[fiendsFormationOrder[(i * 2)]].pattern = alternateFiendsList[i].FormationPattern;
-				encountersData.formations[fiendsFormationOrder[(i * 2)]].spriteSheet = alternateFiendsList[i].SpriteSheet;
-				encountersData.formations[fiendsFormationOrder[(i * 2)]].gfxOffset1 = (int)alternateFiendsList[i].GFXOffset;
-				encountersData.formations[fiendsFormationOrder[(i * 2)]].palette1 = alternateFiendsList[i].Palette1;
-				encountersData.formations[fiendsFormationOrder[(i * 2)]].palette2 = alternateFiendsList[i].Palette2;
+				encountersData.formations[fiendsFormationOrder[i * 2]].pattern = alternateFiendsList[i].FormationPattern;
+				encountersData.formations[fiendsFormationOrder[i * 2]].spriteSheet = alternateFiendsList[i].SpriteSheet;
+				encountersData.formations[fiendsFormationOrder[i * 2]].gfxOffset1 = (int)alternateFiendsList[i].GFXOffset;
+				encountersData.formations[fiendsFormationOrder[i * 2]].palette1 = alternateFiendsList[i].Palette1;
+				encountersData.formations[fiendsFormationOrder[i * 2]].palette2 = alternateFiendsList[i].Palette2;
 
 				encountersData.formations[fiendsFormationOrder[(i * 2) + 1]].pattern = alternateFiendsList[i].FormationPattern;
 				encountersData.formations[fiendsFormationOrder[(i * 2) + 1]].spriteSheet = alternateFiendsList[i].SpriteSheet;
@@ -990,7 +1025,7 @@ namespace FF1Lib
 			}
 
 			//Update fiends names, we stack Fiend1 and Fiend2's names to get more space for names
-			var enemyText = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
+			string[] enemyText = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
 
 			for (int i = 0; i < 4; i++)
 			{

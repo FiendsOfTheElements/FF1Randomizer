@@ -10,7 +10,7 @@ namespace FF1Lib
 {
 	public class FloorHintsHintSource : BaseHintSource
 	{
-		ItemPrices Prices;
+		private readonly ItemPrices Prices;
 
 		public FloorHintsHintSource(MT19337 _rng, NPCdata _npcData, Flags _flags, OverworldMap _overworldMap, FF1Rom _rom) : base(_rng, _npcData, _flags, _overworldMap, _rom)
 		{
@@ -26,15 +26,15 @@ namespace FF1Lib
 
 		private List<GeneratedHint> GenerateFloorHints()
 		{
-			List<GeneratedHint> hints = new List<GeneratedHint>();
+			List<GeneratedHint> hints = new();
 
-			HashSet<Item> WowItems = new HashSet<Item>(ItemLists.UberTier.Concat(ItemLists.LegendaryWeaponTier).Concat(ItemLists.LegendaryArmorTier).Concat(ItemLists.AllQuestItems).Distinct());
-			HashSet<Item> MehItems = new HashSet<Item>(ItemLists.RareWeaponTier.Concat(ItemLists.RareArmorTier).Distinct());
-			HashSet<Item> SparkleItems = new HashSet<Item>(ItemLists.AllGoldTreasure);
+			HashSet<Item> WowItems = new(ItemLists.UberTier.Concat(ItemLists.LegendaryWeaponTier).Concat(ItemLists.LegendaryArmorTier).Concat(ItemLists.AllQuestItems).Distinct());
+			HashSet<Item> MehItems = new(ItemLists.RareWeaponTier.Concat(ItemLists.RareArmorTier).Distinct());
+			HashSet<Item> SparkleItems = new(ItemLists.AllGoldTreasure);
 
-			var locations = rom.generatedPlacement.Where(p => p is TreasureChest).GroupBy(p => p.MapLocation);
+			IEnumerable<IGrouping<MapLocation, IRewardSource>> locations = rom.generatedPlacement.Where(p => p is TreasureChest).GroupBy(p => p.MapLocation);
 
-			foreach (var location in locations)
+			foreach (IGrouping<MapLocation, IRewardSource> location in locations)
 			{
 				bool wow = location.FirstOrDefault(p => WowItems.Contains(p.Item)) != null;
 				bool meh = location.FirstOrDefault(p => MehItems.Contains(p.Item)) != null;

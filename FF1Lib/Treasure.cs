@@ -34,14 +34,14 @@ namespace FF1Lib
 			Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullFloorRequirements = overworldMap.FullLocationRequirements;
 			Dictionary<MapLocation, OverworldTeleportIndex> overridenOverworld = overworldMap.OverriddenOverworldLocations;
 
-			var vanillaNPCs = !(flags.NPCItems ?? false) && !(flags.NPCFetchItems ?? false);
+			bool vanillaNPCs = !(flags.NPCItems ?? false) && !(flags.NPCFetchItems ?? false);
 			if (!vanillaNPCs)
 			{
 				NPCShuffleDialogs();
 			}
 
 			var treasureBlob = Get(TreasureOffset, TreasureSize * TreasureCount);
-			var treasurePool = UsedTreasureIndices.Select(x => (Item)treasureBlob[x])
+			List<Item> treasurePool = UsedTreasureIndices.Select(x => (Item)treasureBlob[x])
 							.Concat(ItemLists.AllNonTreasureChestItems).ToList();
 
 			if (flags.ShardHunt)
@@ -52,10 +52,10 @@ namespace FF1Lib
 			}
 
 			ItemPlacement placement = ItemPlacement.Create(flags, incentivesData, treasurePool, caravanItemLocation, overworldMap);
-			var placedItems = placement.PlaceSaneItems(rng);
-			
+			List<IRewardSource> placedItems = placement.PlaceSaneItems(rng);
+
 			// Output the results to the ROM
-			foreach (var item in placedItems.Where(x => !x.IsUnused && x.Address < 0x80000 && (!vanillaNPCs || x is TreasureChest)))
+			foreach (IRewardSource item in placedItems.Where(x => !x.IsUnused && x.Address < 0x80000 && (!vanillaNPCs || x is TreasureChest)))
 			{
 				//Debug.WriteLine(item.SpoilerText);
 				item.Put(this);
@@ -64,9 +64,9 @@ namespace FF1Lib
 			if (!(flags.FreeShip ?? false))
 			{
 				MapLocation shipLocation = placedItems.Find(reward => reward.Item == Item.Ship).MapLocation;
-				if (overridenOverworld != null && overridenOverworld.TryGetValue(shipLocation, out var overworldIndex))
+				if (overridenOverworld != null && overridenOverworld.TryGetValue(shipLocation, out OverworldTeleportIndex overworldIndex))
 				{
-					shipLocation = teleporters.OverworldMapLocations.TryGetValue(overworldIndex, out var vanillaShipLocation) ? vanillaShipLocation : shipLocation;
+					shipLocation = teleporters.OverworldMapLocations.TryGetValue(overworldIndex, out MapLocation vanillaShipLocation) ? vanillaShipLocation : shipLocation;
 				}
 				MoveShipToRewardSource(shipLocation);
 			}
@@ -75,7 +75,7 @@ namespace FF1Lib
 		private void SplitOpenTreasureRoutine()
 		{
 			// Replace "OpenTreasureChest" routine
-			var openTreasureChest =
+			string openTreasureChest =
 				$"A9002003FEA645BD00B120{giveRewardRoutineAddress}" +
 				"B00AA445B9006209049900628A60"; // 27 bytes
 			Put(0x7DD78, Blob.FromHex(openTreasureChest));
@@ -92,7 +92,7 @@ namespace FF1Lib
 				"65619D0061"; // 40 bytes
 			const string openChest =
 				"18E67DE67DA2F09004EEB960E88A60"; // 12 bytes
-			var giveRewardRoutine =
+			string giveRewardRoutine =
 				$"{checkItem}{notItem}{openChest}";
 			Put(0x7DD93, Blob.FromHex(giveRewardRoutine));
 			// See source: ~/asm/1F_DD78_OpenTreasureChestRewrite.asm
@@ -110,8 +110,8 @@ namespace FF1Lib
 
 		public void CraftRuseItem()
 		{
-			var newspell = GetSpells();
-			WriteItemSpellData(newspell.Where(x => x.Data[4] == 0x10 && x.Data[3] == 0x04).First(), Item.PowerRod);
+			List<MagicSpell> newspell = GetSpells();
+			WriteItemSpellData(newspell.First(x => x.Data[4] == 0x10 && x.Data[3] == 0x04), Item.PowerRod);
 		}
 	}
 }

@@ -17,12 +17,12 @@ namespace FF1Lib
 		private const int SpellNamesSize = 5;
 		private const int SpellNamesCount = 64;
 
-		private int WeaponStart = (byte)ItemLists.AllWeapons.ElementAt(0);
-		private int ArmorStart = (byte)ItemLists.AllArmor.ElementAt(0);
+		private readonly int WeaponStart = (byte)ItemLists.AllWeapons.ElementAt(0);
+		private readonly int ArmorStart = (byte)ItemLists.AllArmor.ElementAt(0);
 
 		public void ShuffleItemMagic(MT19337 rng, bool balancedShuffle)
 		{
-			var Spells = GetSpells();
+			List<MagicSpell> Spells = GetSpells();
 
 			// Remove out of battle only spells (spells where the effect is 0)
 			Spells.RemoveAll(spell => spell.Data[4] == 0);
@@ -61,7 +61,7 @@ namespace FF1Lib
 			}
 			Spells.Shuffle(rng); // Shuffle all spells remaining, then assign to each item that can cast a spell
 
-			foreach (var item in Spells.Zip(ItemLists.AllMagicItem, (s, i) => new { Spell = s, Item = i }))
+			foreach (var item in Spells.Zip(ItemLists.AllMagicItem, (s, i) => (Spell: s, Item: i)))
 			{
 				WriteItemSpellData(item.Spell, item.Item);
 			}
@@ -70,7 +70,7 @@ namespace FF1Lib
 		private void WriteItemSpellData(MagicSpell Spell, Item item)
 		{
 			// Set the spell an item casts
-			var offset = WeaponOffset + (0x8 * Math.Min((byte)item - WeaponStart, ArmorStart - WeaponStart)) + (0x4 * Math.Max(0, (byte)item - ArmorStart)) + MagicBitOffset;
+			int offset = WeaponOffset + (0x8 * Math.Min((byte)item - WeaponStart, ArmorStart - WeaponStart)) + (0x4 * Math.Max(0, (byte)item - ArmorStart)) + MagicBitOffset;
 			Data[offset] = (byte)(Spell.Index + 1);
 
 			// Setup the text of the item's name to include the spell name.

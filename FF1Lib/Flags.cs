@@ -241,7 +241,7 @@ namespace FF1Lib
 		public bool FixHitChanceCap { get; set; } = false;
 
 		public bool? MelmondClinic { get; set; } = false;
-        public bool DeepDungeon { get; set; } = false;
+		public bool DeepDungeon { get; set; } = false;
 		public bool StartingGold { get; set; } = false;
 		public bool WrapStatOverflow { get; set; } = false;
 		public bool WrapPriceOverflow { get; set; } = false;
@@ -596,39 +596,39 @@ namespace FF1Lib
 			+ ((IncentivizeXcalber ?? true) ? 1 : 0);
 
 		public string IncentivizedItems => ""
-			+ ((IncentivizeAdamant != null) ? (IncentivizeAdamant ?? false ? "Adamant " : "") : ("Adamant? "))
+			+ ((IncentivizeAdamant != null) ? (IncentivizeAdamant ?? false ? "Adamant " : "") : "Adamant? ")
 			+ (IncentivizeBridge ? "Bridge " : "")
-			+ ((IncentivizeBottle != null) ? (IncentivizeBottle ?? false ? "Bottle " : "") : ("Bottle? "))
-			+ ((IncentivizeCanal != null) ? (IncentivizeCanal ?? false ? "Canal " : "") : ("Canal? "))
-			+ ((IncentivizeCanoe != null) ? (IncentivizeCanoe ?? false ? "Canoe " : "") : ("Canoe? "))
-			+ ((IncentivizeChime != null) ? (IncentivizeChime ?? false ? "Chime " : "") : ("Chime? "))
+			+ ((IncentivizeBottle != null) ? (IncentivizeBottle ?? false ? "Bottle " : "") : "Bottle? ")
+			+ ((IncentivizeCanal != null) ? (IncentivizeCanal ?? false ? "Canal " : "") : "Canal? ")
+			+ ((IncentivizeCanoe != null) ? (IncentivizeCanoe ?? false ? "Canoe " : "") : "Canoe? ")
+			+ ((IncentivizeChime != null) ? (IncentivizeChime ?? false ? "Chime " : "") : "Chime? ")
 			+ (IncentivizeBad ? "Cloth " : "")
-			+ ((IncentivizeCrown != null) ? (IncentivizeCrown ?? false ? "Crown " : "") : ("Crown? "))
-			+ ((IncentivizeCrystal != null) ? (IncentivizeCrystal ?? false ? "Crystal " : "") : ("Crystal? "))
-			+ ((IncentivizeCube != null) ? (IncentivizeCube ?? false ? "Cube " : "") : ("Cube? "))
-			+ ((IncentivizeFloater != null) ? (IncentivizeFloater ?? false ? "Floater " : "") : ("Floater? "))
-			+ ((IncentivizeHerb != null) ? (IncentivizeHerb ?? false ? "Herb " : "") : ("Herb? "))
-			+ ((IncentivizeKey != null) ? (IncentivizeKey ?? false ? "Key " : "") : ("Key? "))
-			+ ((IncentivizeLute != null) ? (IncentivizeLute ?? false ? "Lute " : "") : ("Lute? "))
-			+ ((IncentivizeOxyale != null) ? (IncentivizeOxyale ?? false ? "Oxyale " : "") : ("Oxyale? "))
-			+ ((IncentivizeRod != null) ? (IncentivizeRod ?? false ? "Rod " : "") : ("Rod? "))
-			+ ((IncentivizeRuby != null) ? (IncentivizeRuby ?? false ? "Ruby " : "") : ("Ruby? "))
-			+ ((IncentivizeShip != null) ? (IncentivizeShip ?? false ? "Ship " : "") : ("Ship? "))
-			+ ((IncentivizeSlab != null) ? (IncentivizeSlab ?? false ? "Slab " : "") : ("Slab? "))
-			+ ((IncentivizePromotion != null) ? (IncentivizePromotion ?? false ? "Tail " : "") : ("Tail? "))
-			+ ((IncentivizeTnt != null) ? (IncentivizeTnt ?? false ? "Tnt " : "") : ("Tnt? "))
-			+ (((IncentivizeMasamune & !NoMasamune) != null) ? ((IncentivizeMasamune & !NoMasamune) ?? false ? "Masmune\U0001F5E1 " : "") : ("Masmune?\U0001F5E1 "))
-			+ ((IncentivizeKatana != null) ? (IncentivizeKatana ?? false ? "Katana\U0001F5E1 " : "") : ("Katana?\U0001F5E1 "))
-			+ ((IncentivizeVorpal != null) ? (IncentivizeVorpal ?? false ? "Vorpal\U0001F5E1 " : "") : ("Vorpal?\U0001F5E1 "))
-			+ ((IncentivizeXcalber != null) ? (IncentivizeXcalber ?? false ? "XCalber\U0001F5E1 " : "") : ("XCalber?\U0001F5E1 "))
-			+ ((IncentivizeDefCastWeapon != null) ? (IncentivizeDefCastWeapon ?? false ? "Defense\U0001F5E1 " : "") : ("Defense?\U0001F5E1 "))
+			+ ((IncentivizeCrown != null) ? (IncentivizeCrown ?? false ? "Crown " : "") : "Crown? ")
+			+ ((IncentivizeCrystal != null) ? (IncentivizeCrystal ?? false ? "Crystal " : "") : "Crystal? ")
+			+ ((IncentivizeCube != null) ? (IncentivizeCube ?? false ? "Cube " : "") : "Cube? ")
+			+ ((IncentivizeFloater != null) ? (IncentivizeFloater ?? false ? "Floater " : "") : "Floater? ")
+			+ ((IncentivizeHerb != null) ? (IncentivizeHerb ?? false ? "Herb " : "") : "Herb? ")
+			+ ((IncentivizeKey != null) ? (IncentivizeKey ?? false ? "Key " : "") : "Key? ")
+			+ ((IncentivizeLute != null) ? (IncentivizeLute ?? false ? "Lute " : "") : "Lute? ")
+			+ ((IncentivizeOxyale != null) ? (IncentivizeOxyale ?? false ? "Oxyale " : "") : "Oxyale? ")
+			+ ((IncentivizeRod != null) ? (IncentivizeRod ?? false ? "Rod " : "") : "Rod? ")
+			+ ((IncentivizeRuby != null) ? (IncentivizeRuby ?? false ? "Ruby " : "") : "Ruby? ")
+			+ ((IncentivizeShip != null) ? (IncentivizeShip ?? false ? "Ship " : "") : "Ship? ")
+			+ ((IncentivizeSlab != null) ? (IncentivizeSlab ?? false ? "Slab " : "") : "Slab? ")
+			+ ((IncentivizePromotion != null) ? (IncentivizePromotion ?? false ? "Tail " : "") : "Tail? ")
+			+ ((IncentivizeTnt != null) ? (IncentivizeTnt ?? false ? "Tnt " : "") : "Tnt? ")
+			+ (((IncentivizeMasamune & !NoMasamune) != null) ? ((IncentivizeMasamune & !NoMasamune) ?? false ? "Masmune\U0001F5E1 " : "") : "Masmune?\U0001F5E1 ")
+			+ ((IncentivizeKatana != null) ? (IncentivizeKatana ?? false ? "Katana\U0001F5E1 " : "") : "Katana?\U0001F5E1 ")
+			+ ((IncentivizeVorpal != null) ? (IncentivizeVorpal ?? false ? "Vorpal\U0001F5E1 " : "") : "Vorpal?\U0001F5E1 ")
+			+ ((IncentivizeXcalber != null) ? (IncentivizeXcalber ?? false ? "XCalber\U0001F5E1 " : "") : "XCalber?\U0001F5E1 ")
+			+ ((IncentivizeDefCastWeapon != null) ? (IncentivizeDefCastWeapon ?? false ? "Defense\U0001F5E1 " : "") : "Defense?\U0001F5E1 ")
 			+ (IncentivizeOtherCastWeapon ? "Mage\U0001F9D9 " : "")
-			+ ((IncentivizeOffCastWeapon != null) ? (IncentivizeOffCastWeapon ?? false ? "Thor\U0001F528 " : "") : ("Thor?\U0001F528 "))
-			+ ((IncentivizeOpal != null) ? (IncentivizeOpal ?? false ? "Opal\U0001F48D " : "") : ("Opal?\U0001F48D "))
-			+ ((IncentivizeOtherCastArmor != null) ? (IncentivizeOtherCastArmor ?? false ? "Power\U0001F94A " : "") : ("Power?\U0001F94A "))
-			+ ((IncentivizeOffCastArmor != null) ? (IncentivizeOffCastArmor ?? false ? "Black\U0001F9E5 " : "") : ("Black?\U0001F9E5 "))
-			+ ((IncentivizeDefCastArmor != null) ? (IncentivizeDefCastArmor ?? false ? "White\U0001F455 " : "") : ("White?\U0001F455 "))
-			+ ((IncentivizeRibbon != null) ? (IncentivizeRibbon ?? false ? "Ribbon\U0001F380 " : "") : ("Ribbon?\U0001F380 "))
+			+ ((IncentivizeOffCastWeapon != null) ? (IncentivizeOffCastWeapon ?? false ? "Thor\U0001F528 " : "") : "Thor?\U0001F528 ")
+			+ ((IncentivizeOpal != null) ? (IncentivizeOpal ?? false ? "Opal\U0001F48D " : "") : "Opal?\U0001F48D ")
+			+ ((IncentivizeOtherCastArmor != null) ? (IncentivizeOtherCastArmor ?? false ? "Power\U0001F94A " : "") : "Power?\U0001F94A ")
+			+ ((IncentivizeOffCastArmor != null) ? (IncentivizeOffCastArmor ?? false ? "Black\U0001F9E5 " : "") : "Black?\U0001F9E5 ")
+			+ ((IncentivizeDefCastArmor != null) ? (IncentivizeDefCastArmor ?? false ? "White\U0001F455 " : "") : "White?\U0001F455 ")
+			+ ((IncentivizeRibbon != null) ? (IncentivizeRibbon ?? false ? "Ribbon\U0001F380 " : "") : "Ribbon?\U0001F380 ")
 			+ (IncentivizeRibbon2 ? "Ribbon\U0001F380 " : "")
 			+ (Incentivize65K ? "65000G " : "");
 
@@ -689,7 +689,7 @@ namespace FF1Lib
 		{
 			Flags newflags = flags.ShallowCopy();
 			PropertyInfo[] properties = newflags.GetType().GetProperties();
-			foreach (var property in properties)
+			foreach (PropertyInfo property in properties)
 			{
 				if (property.PropertyType == typeof(bool?) && property.GetValue(newflags) == null)
 				{
@@ -702,7 +702,7 @@ namespace FF1Lib
 
 		private Flags ShallowCopy()
 		{
-			return (Flags)this.MemberwiseClone();
+			return (Flags)MemberwiseClone();
 		}
 
 		public bool? ImmediatePureAndSoftRequired => EnemyStatusAttacks | Entrances | MapOpenProgression | RandomizeFormationEnemizer | RandomizeEnemizer;
@@ -719,13 +719,13 @@ namespace FF1Lib
 
 		public static string EncodeFlagsText(Flags flags)
 		{
-			var properties = typeof(Flags).GetProperties(BindingFlags.Instance | BindingFlags.Public);
-			var flagproperties = properties.Where(p => p.CanWrite).OrderBy(p => p.Name).ToList();
+			PropertyInfo[] properties = typeof(Flags).GetProperties(BindingFlags.Instance | BindingFlags.Public);
+			List<PropertyInfo> flagproperties = properties.Where(p => p.CanWrite).OrderBy(p => p.Name).ToList();
 
 			BigInteger sum = 0;
 			sum = AddString(sum, 7, (FFRVersion.Sha.Length >= 7) ? FFRVersion.Sha.Substring(0, 7) : FFRVersion.Sha.PadRight(7, 'X'));
 
-			foreach (var p in flagproperties)
+			foreach (PropertyInfo p in flagproperties)
 			{
 				if (Nullable.GetUnderlyingType(p.PropertyType) == typeof(bool))
 				{
@@ -742,17 +742,17 @@ namespace FF1Lib
 				else if (p.PropertyType == typeof(int))
 				{
 					IntegerFlagAttribute ia = p.GetCustomAttribute<IntegerFlagAttribute>();
-					var radix = ((ia.Max - ia.Min) / ia.Step) + 1;
-					var val = (int)p.GetValue(flags);
-					var raw_val = (val - ia.Min) / ia.Step;
+					int radix = ((ia.Max - ia.Min) / ia.Step) + 1;
+					int val = (int)p.GetValue(flags);
+					int raw_val = (val - ia.Min) / ia.Step;
 					sum = AddNumeric(sum, radix, raw_val);
 				}
 				else if (p.PropertyType == typeof(double))
 				{
 					DoubleFlagAttribute ia = p.GetCustomAttribute<DoubleFlagAttribute>();
-					var radix = (int)Math.Ceiling((ia.Max - ia.Min) / ia.Step) + 1;
-					var val = (double)p.GetValue(flags);
-					var raw_val = (int)Math.Round((val - ia.Min) / ia.Step);
+					int radix = (int)Math.Ceiling((ia.Max - ia.Min) / ia.Step) + 1;
+					double val = (double)p.GetValue(flags);
+					int raw_val = (int)Math.Round((val - ia.Min) / ia.Step);
 					sum = AddNumeric(sum, radix, raw_val);
 				}
 			}
@@ -762,13 +762,13 @@ namespace FF1Lib
 
 		public static Flags DecodeFlagsText(string text)
 		{
-			var properties = typeof(Flags).GetProperties(BindingFlags.Instance | BindingFlags.Public);
-			var flagproperties = properties.Where(p => p.CanWrite).OrderBy(p => p.Name).Reverse().ToList();
+			PropertyInfo[] properties = typeof(Flags).GetProperties(BindingFlags.Instance | BindingFlags.Public);
+			List<PropertyInfo> flagproperties = properties.Where(p => p.CanWrite).OrderBy(p => p.Name).Reverse().ToList();
 
-			var sum = StringToBigInteger(text);
-			var flags = new Flags();
+			BigInteger sum = StringToBigInteger(text);
+			Flags flags = new Flags();
 
-			foreach (var p in flagproperties)
+			foreach (PropertyInfo p in flagproperties)
 			{
 				if (Nullable.GetUnderlyingType(p.PropertyType) == typeof(bool))
 				{
@@ -785,17 +785,17 @@ namespace FF1Lib
 				else if (p.PropertyType == typeof(int))
 				{
 					IntegerFlagAttribute ia = p.GetCustomAttribute<IntegerFlagAttribute>();
-					var radix = ((ia.Max - ia.Min) / ia.Step) + 1;
-					var raw_val = GetNumeric(ref sum, radix);
-					var val = (raw_val * ia.Step) + ia.Min;
+					int radix = ((ia.Max - ia.Min) / ia.Step) + 1;
+					int raw_val = GetNumeric(ref sum, radix);
+					int val = (raw_val * ia.Step) + ia.Min;
 					p.SetValue(flags, val);
 				}
 				else if (p.PropertyType == typeof(double))
 				{
 					DoubleFlagAttribute ia = p.GetCustomAttribute<DoubleFlagAttribute>();
-					var radix = (int)Math.Ceiling((ia.Max - ia.Min) / ia.Step) + 1;
-					var raw_val = GetNumeric(ref sum, radix);
-					var val = Math.Min(Math.Max((raw_val * ia.Step) + ia.Min, ia.Min), ia.Max);
+					int radix = (int)Math.Ceiling((ia.Max - ia.Min) / ia.Step) + 1;
+					int raw_val = GetNumeric(ref sum, radix);
+					double val = Math.Min(Math.Max((raw_val * ia.Step) + ia.Min, ia.Min), ia.Max);
 					p.SetValue(flags, val);
 				}
 			}
@@ -809,34 +809,55 @@ namespace FF1Lib
 			return flags;
 		}
 
-		private static BigInteger AddEnum<T>(BigInteger sum, T value) => AddNumeric(sum, Enum.GetValues(typeof(T)).Cast<int>().Max() + 1, Convert.ToInt32(value));
+		private static BigInteger AddEnum<T>(BigInteger sum, T value)
+		{
+			return AddNumeric(sum, Enum.GetValues(typeof(T)).Cast<int>().Max() + 1, Convert.ToInt32(value));
+		}
 
-		private static BigInteger AddNumeric(BigInteger sum, int radix, int value) => (sum * radix) + value;
+		private static BigInteger AddNumeric(BigInteger sum, int radix, int value)
+		{
+			return (sum * radix) + value;
+		}
+
 		private static BigInteger AddString(BigInteger sum, int length, string str)
 		{
 			Encoding AsciiEncoding = Encoding.ASCII;
 			byte[] bytes = AsciiEncoding.GetBytes(str);
-			BigInteger StringAsBigInt = new BigInteger(bytes);
-			BigInteger LargestInt = new BigInteger(Math.Pow(0xFF, bytes.Length) - 1);
+			BigInteger StringAsBigInt = new(bytes);
+			BigInteger LargestInt = new(Math.Pow(0xFF, bytes.Length) - 1);
 
 
 			return (sum * LargestInt) + StringAsBigInt;
 		}
-		private static BigInteger AddBoolean(BigInteger sum, bool value) => AddNumeric(sum, 2, value ? 1 : 0);
-		private static int TriStateValue(bool? value) => value.HasValue ? (value.Value ? 1 : 0) : 2;
-		private static BigInteger AddTriState(BigInteger sum, bool? value) => AddNumeric(sum, 3, TriStateValue(value));
+		private static BigInteger AddBoolean(BigInteger sum, bool value)
+		{
+			return AddNumeric(sum, 2, value ? 1 : 0);
+		}
 
-		private static T GetEnum<T>(ref BigInteger sum) where T : Enum => (T)(object)GetNumeric(ref sum, Enum.GetValues(typeof(T)).Cast<int>().Max() + 1);
+		private static int TriStateValue(bool? value)
+		{
+			return value.HasValue ? (value.Value ? 1 : 0) : 2;
+		}
+
+		private static BigInteger AddTriState(BigInteger sum, bool? value)
+		{
+			return AddNumeric(sum, 3, TriStateValue(value));
+		}
+
+		private static T GetEnum<T>(ref BigInteger sum) where T : Enum
+		{
+			return (T)(object)GetNumeric(ref sum, Enum.GetValues(typeof(T)).Cast<int>().Max() + 1);
+		}
 
 		private static int GetNumeric(ref BigInteger sum, int radix)
 		{
-			sum = BigInteger.DivRem(sum, radix, out var value);
+			sum = BigInteger.DivRem(sum, radix, out BigInteger value);
 
 			return (int)value;
 		}
 		private static string GetString(ref BigInteger sum, int length)
 		{
-			BigInteger LargestInt = new BigInteger(Math.Pow(0xFF, length) - 1);
+			BigInteger LargestInt = new(Math.Pow(0xFF, length) - 1);
 			sum = BigInteger.DivRem(sum, LargestInt, out BigInteger value);
 			Encoding AsciiEncoding = Encoding.ASCII;
 			byte[] bytes = value.ToByteArray();
@@ -844,19 +865,30 @@ namespace FF1Lib
 
 			return str;
 		}
-		private static bool GetBoolean(ref BigInteger sum) => GetNumeric(ref sum, 2) != 0;
-		private static bool? ValueTriState(int value) => value == 0 ? (bool?)false : value == 1 ? (bool?)true : null;
-		private static bool? GetTriState(ref BigInteger sum) => ValueTriState(GetNumeric(ref sum, 3));
+		private static bool GetBoolean(ref BigInteger sum)
+		{
+			return GetNumeric(ref sum, 2) != 0;
+		}
+
+		private static bool? ValueTriState(int value)
+		{
+			return value == 0 ? false : value == 1 ? true : null;
+		}
+
+		private static bool? GetTriState(ref BigInteger sum)
+		{
+			return ValueTriState(GetNumeric(ref sum, 3));
+		}
 
 		private const string Base64Chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.-";
 
 		private static string BigIntegerToString(BigInteger sum)
 		{
-			var s = "";
+			string s = "";
 
 			while (sum > 0)
 			{
-				var digit = GetNumeric(ref sum, 64);
+				int digit = GetNumeric(ref sum, 64);
 				s += Base64Chars[digit];
 			}
 
@@ -865,12 +897,15 @@ namespace FF1Lib
 
 		private static BigInteger StringToBigInteger(string s)
 		{
-			var sum = new BigInteger(0);
+			BigInteger sum = new BigInteger(0);
 
 			foreach (char c in s.Reverse())
 			{
 				int index = Base64Chars.IndexOf(c);
-				if (index < 0) throw new IndexOutOfRangeException($"{c} is not valid FFR-style Base64.");
+				if (index < 0)
+				{
+					throw new IndexOutOfRangeException($"{c} is not valid FFR-style Base64.");
+				}
 
 				sum = AddNumeric(sum, 64, index);
 			}
@@ -884,6 +919,9 @@ namespace FF1Lib
 			public Flags Flags { get; set; }
 		}
 
-		public static Flags FromJson(string json) => JsonConvert.DeserializeObject<Preset>(json).Flags;
+		public static Flags FromJson(string json)
+		{
+			return JsonConvert.DeserializeObject<Preset>(json).Flags;
+		}
 	}
 }

@@ -21,7 +21,7 @@ namespace FF1Lib
 		}
 
 		private static readonly string[] TextByBytes;
-		private static readonly Dictionary<string, byte> BytesByText = new Dictionary<string, byte>
+		private static readonly Dictionary<string, byte> BytesByText = new()
 		{
 			{ "#", 0x03 },
 			{ "\n", 0x05 },
@@ -196,7 +196,7 @@ namespace FF1Lib
 		static FF1Text()
 		{
 			TextByBytes = new string[256];
-			foreach (var key in BytesByText.Keys)
+			foreach (string key in BytesByText.Keys)
 			{
 				TextByBytes[BytesByText[key]] = key;
 			}
@@ -206,8 +206,8 @@ namespace FF1Lib
 
 		public static string BytesToText(byte[] bytes)
 		{
-			var builder = new StringBuilder();
-			foreach (var b in bytes)
+			StringBuilder builder = new StringBuilder();
+			foreach (byte b in bytes)
 			{
 				builder.Append(TextByBytes[b]);
 			}
@@ -221,7 +221,7 @@ namespace FF1Lib
 			int i = 0, j = 0;
 			while (i < text.Length - 1)
 			{
-				var twoChars = text.Substring(i, 2);
+				string twoChars = text.Substring(i, 2);
 				if (BytesByText.ContainsKey(twoChars) && (useDTE || twoChars[0] == '@'))
 				{
 					bytes[j++] = BytesByText[twoChars];
@@ -252,11 +252,11 @@ namespace FF1Lib
 			int i = 0, j = 0;
 			while (i < text.Length - 1)
 			{
-				var twoChars = text.Substring(i, 2);
+				string twoChars = text.Substring(i, 2);
 				if (twoChars[0] == '¤') // Control Code 0x14 for second words table
 				{
 					bytes[j++] = 0x14;
-					bytes[j++] = Blob.FromHex(text.Substring(i+1,2))[0];
+					bytes[j++] = Blob.FromHex(text.Substring(i + 1, 2))[0];
 					i += 3;
 				}
 				else if (twoChars[0] == '$') // Control code 0x02 for itemnames table
@@ -296,7 +296,7 @@ namespace FF1Lib
 			// Each line is 0x20 total characters.
 			ushort topLeftOfBox = 0x20A5;
 
-			List<Blob> buffers = new List<Blob>();
+			List<Blob> buffers = new();
 			for (int i = 0; i < lines.Length; ++i)
 			{
 				string line = lines[i].Trim();
@@ -313,7 +313,7 @@ namespace FF1Lib
 
 			if (buffers.Count != 0)
 			{
-				var lastBuffer = buffers[buffers.Count - 1];
+				var lastBuffer = buffers[^1];
 				lastBuffer[lastBuffer.Length - 1] = (byte)Delimiter.Null;
 			}
 
@@ -323,7 +323,7 @@ namespace FF1Lib
 		// This wraps TextToBytes for use with Story pages (Before Credits and End of Game).
 		public static Blob TextToStory(string[] lines)
 		{
-			List<Blob> buffers = new List<Blob>();
+			List<Blob> buffers = new();
 			for (int i = 0; i < lines.Length; ++i)
 			{
 				buffers.Add(TextToBytes(lines[i], useDTE: true, delimiter: Delimiter.Line));
@@ -331,7 +331,7 @@ namespace FF1Lib
 
 			if (buffers.Count != 0)
 			{
-				var lastBuffer = buffers[buffers.Count - 1];
+				var lastBuffer = buffers[^1];
 				lastBuffer[lastBuffer.Length - 1] = (byte)Delimiter.Null;
 			}
 
@@ -347,8 +347,8 @@ namespace FF1Lib
 				//throw new ArgumentOutOfRangeException();
 			}
 
-			var flagLeft = new string(' ', (int)Math.Ceiling((32 - text.Length) / 2.0));
-			var flagRight = new string(' ', (int)Math.Floor((32 - text.Length) / 2.0));
+			string flagLeft = new string(' ', (int)Math.Ceiling((32 - text.Length) / 2.0));
+			string flagRight = new string(' ', (int)Math.Floor((32 - text.Length) / 2.0));
 
 			return TextToBytes(flagLeft + text + flagRight, false, Delimiter.Empty);
 		}

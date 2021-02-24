@@ -20,7 +20,7 @@ namespace FF1Lib
 
 		public const int EnemizerUnrunnabilityWeight = 31; // weight given to determine unrunnability.  for the highest level of encounters, this means 8/32 probability of a formation being unrunnable
 
-		enum MonsterPerks
+		private enum MonsterPerks
 		{
 			PERK_GAINSTAT10, // increases a minor stat by 10%, +2% XP
 			PERK_LOSESTAT10, // reduces a minor stat by 10%, -2% XP
@@ -35,7 +35,7 @@ namespace FF1Lib
 			NUM_PERKS // total number of perks that are available for seletion
 		};
 
-		enum TrapTiles
+		private enum TrapTiles
 		{
 			TRAP_IMAGES,
 			TRAP_MUMMIES,
@@ -138,41 +138,71 @@ namespace FF1Lib
 						if (elem == 0) // non-elemental tiers
 						{
 							if (effect < 8)
+							{
 								tier = 1;
+							}
 							else if (effect < 16)
+							{
 								tier = 2;
+							}
 							else if (effect < 36)
+							{
 								tier = 3;
+							}
 							else if (effect < 68)
+							{
 								tier = 4;
+							}
 							else
+							{
 								tier = 5;
+							}
 						}
 						else if ((elem & 0b01111000) != 0) // fire/ice/lit/death elemental - these elements are the easiest to find resistance against so they are the lowest value
 						{
 							if (effect < 12)
+							{
 								tier = 1;
+							}
 							else if (effect < 25)
+							{
 								tier = 2;
+							}
 							else if (effect < 50)
+							{
 								tier = 3;
+							}
 							else if (effect < 140)
+							{
 								tier = 4;
+							}
 							else
+							{
 								tier = 5;
+							}
 						}
 						else if ((elem & 0b10000111) != 0) // earth/time/poison/status element - these elements are harder for the player to resist so their value is increased
 						{
 							if (effect < 10)
+							{
 								tier = 1;
+							}
 							else if (effect < 20)
+							{
 								tier = 2;
+							}
 							else if (effect < 50)
+							{
 								tier = 3;
+							}
 							else if (effect < 140)
+							{
 								tier = 4;
+							}
 							else
+							{
 								tier = 5;
+							}
 						}
 					}
 					else if (targeting == 0x02) // single enemy
@@ -180,46 +210,79 @@ namespace FF1Lib
 						if (elem == 0) // non-elemental tiers
 						{
 							if (effect < 15)
+							{
 								tier = 1;
+							}
 							else if (effect < 30)
+							{
 								tier = 2;
+							}
 							else if (effect < 60)
+							{
 								tier = 3;
+							}
 							else if (effect < 120)
+							{
 								tier = 4;
+							}
 							else
+							{
 								tier = 5;
+							}
 						}
 						else if ((elem & 0b01111000) != 0) // fire/ice/lit/death elemental - these elements are the easiest to find resistance against so they are the lowest value
 						{
 							if (effect < 20)
+							{
 								tier = 1;
+							}
 							else if (effect < 45)
+							{
 								tier = 2;
+							}
 							else if (effect < 90)
+							{
 								tier = 3;
+							}
 							else if (effect < 180)
+							{
 								tier = 4;
+							}
 							else
+							{
 								tier = 5;
+							}
 						}
 						else if ((elem & 0b10000111) != 0) // earth/time/poison/status element - these elements are harder for the player to resist so their value is increased
 						{
 							if (effect < 20)
+							{
 								tier = 1;
+							}
 							else if (effect < 40)
+							{
 								tier = 2;
+							}
 							else if (effect < 80)
+							{
 								tier = 3;
+							}
 							else if (effect < 160)
+							{
 								tier = 4;
+							}
 							else
+							{
 								tier = 5;
+							}
 						}
 					}
 				}
 				if (routine == 0x02)
+				{
 					tier = 0; // HARM spells are always tier 0
+				}
+
 				if (routine == 0x03 || routine == 0x12) // negative status effect OR power word spells (both are judged by the same criteria)
 				{
 					if ((effect & 0b11) != 0) // death/stone overrides all other statuses
@@ -227,9 +290,13 @@ namespace FF1Lib
 						if (targeting == 0x01) // all enemies
 						{
 							if (elem == 0) // non-elemental tiers
+							{
 								tier = 5; // all non-blockable instakills that target all are tier 5
+							}
 							else
+							{
 								tier = 4; // otherwise they are tier 4
+							}
 						}
 						else if (targeting == 0x02) // single enemy
 						{
@@ -240,9 +307,13 @@ namespace FF1Lib
 							else // elemental single targets are tier 3 if they have low accuracy, and tier 4 if their accuracy is decent
 							{
 								if (accuracy < 32 && routine != 0x12)
+								{
 									tier = 3;
+								}
 								else
+								{
 									tier = 4;
+								}
 							}
 						}
 					}
@@ -255,9 +326,13 @@ namespace FF1Lib
 						else if (targeting == 0x02) // single enemy
 						{
 							if (elem == 0) // non-elemental tiers
+							{
 								tier = 4;
+							}
 							else
+							{
 								tier = 3; // paralysis spells are always at least tier 3
+							}
 						}
 					}
 					else if ((effect & 0b01000000) != 0) // next is mute
@@ -265,20 +340,30 @@ namespace FF1Lib
 						if (targeting == 0x01) // all enemies
 						{
 							if (elem == 0) // non-elemental tiers
+							{
 								tier = 3; // all non-elemental mute is tier 3
+							}
 							else if ((elem & 0b01111000) != 0) // fire/ice/lit/death elemental - these elements are the easiest to find resistance against so they are the lowest value
 							{
 								if (routine == 0x12)
+								{
 									tier = 3;
+								}
 								else
+								{
 									tier = 2;
+								}
 							}
 							else if ((elem & 0b10000111) != 0) // earth/time/poison/status element - these elements are harder for the player to resist so their value is increased
 							{
 								if (routine == 0x12)
+								{
 									tier = 3;
+								}
 								else
+								{
 									tier = 2;
+								}
 							}
 						}
 						else if (targeting == 0x02) // single enemy
@@ -286,143 +371,231 @@ namespace FF1Lib
 							if (elem == 0) // non-elemental tiers
 							{
 								if (routine == 0x12)
+								{
 									tier = 3;
+								}
 								else
+								{
 									tier = 2;
+								}
 							}
 							else
+							{
 								tier = 1;
+							}
 						}
 					}
 					else if ((effect & 0b00100000) != 0) // then sleep
 					{
 						if (targeting == 0x01) // all enemies
+						{
 							tier = 2;
+						}
 						else if (targeting == 0x02) // single enemy
+						{
 							tier = 1;
+						}
 					}
 					else if ((effect & 0b00001000) != 0) // darkness rates lowest of the useful effects
+					{
 						tier = 1;
+					}
 					else
+					{
 						tier = 0; // and the AI doesn't care about inflicting poison or confusion through spells
+					}
 				}
-				if(routine == 0x04) // decrease speed (SLOW)
+				if (routine == 0x04) // decrease speed (SLOW)
 				{
 					if (elem == 0) // only non-elemental slow gets preferential treatment, and it doesn't care about targeting
 					{
 						if (accuracy >= 48)
+						{
 							tier = 3;
+						}
 						else
+						{
 							tier = 2;
+						}
 					}
 					else
+					{
 						tier = 2;
+					}
 				}
-				if(routine == 0x07 || routine == 0x06) // HP Up (CURE, HEAL)
+				if (routine == 0x07 || routine == 0x06) // HP Up (CURE, HEAL)
 				{
 					if (targeting == 0x04) // single caster
 					{
 						if (effect < 10)
+						{
 							tier = 0;
+						}
 						else if (effect < 30)
+						{
 							tier = 1;
+						}
 						else if (effect < 60)
+						{
 							tier = 2;
+						}
 						else if (effect < 120)
+						{
 							tier = 3;
+						}
 						else
+						{
 							tier = 4;
+						}
 					}
 					else if (targeting == 0x08) // all party
 					{
 						if (effect < 10)
+						{
 							tier = 0;
+						}
 						else if (effect < 20)
+						{
 							tier = 1;
+						}
 						else if (effect < 40)
+						{
 							tier = 2;
+						}
 						else if (effect < 80)
+						{
 							tier = 3;
+						}
 						else
+						{
 							tier = 4;
+						}
 					}
 					else if (targeting == 0x10)
 					{
 						if (effect < 10)
+						{
 							tier = 0;
+						}
 						else if (effect < 30)
+						{
 							tier = 1;
+						}
 						else if (effect < 60)
+						{
 							tier = 2;
+						}
 						else if (effect < 120)
+						{
 							tier = 3;
+						}
 						else
+						{
 							tier = 4;
+						}
 					}
 				}
-				if(routine == 0x08) // neutralize status
+				if (routine == 0x08) // neutralize status
 				{
 					if (targeting == 0x08)
 					{
 						if ((effect & 0b11010000) != 0)
+						{
 							tier = 2; // removing confuse, mute, or stun on the party is a tier 2
+						}
 					}
 					else if (targeting == 0x10)
 					{
 						if ((effect & 0b11010000) != 0)
+						{
 							tier = 1; // removing confuse, mute, or stun on a single target is a tier 1
+						}
 					}
 				}
-				if(routine == 0x09) // armor up
+				if (routine == 0x09) // armor up
 				{
 					if (targeting == 0x04)
 					{
 						if (effect < 8)
+						{
 							tier = 0;
+						}
 						else if (effect < 16)
+						{
 							tier = 1;
+						}
 						else if (effect < 24)
+						{
 							tier = 2;
+						}
 						else if (effect < 40)
+						{
 							tier = 3;
+						}
 						else
+						{
 							tier = 4;
+						}
 					}
 					else if (targeting == 0x08)
 					{
 						if (effect < 4)
+						{
 							tier = 0;
+						}
 						else if (effect < 8)
+						{
 							tier = 1;
+						}
 						else if (effect < 16)
+						{
 							tier = 2;
+						}
 						else if (effect < 30)
+						{
 							tier = 3;
+						}
 						else
+						{
 							tier = 4;
+						}
 					}
 					else if (targeting == 0x10)
 					{
 						if (effect < 8)
+						{
 							tier = 0;
+						}
 						else if (effect < 16)
+						{
 							tier = 1;
+						}
 						else if (effect < 24)
+						{
 							tier = 2;
+						}
 						else if (effect < 40)
+						{
 							tier = 3;
+						}
 						else
+						{
 							tier = 4;
+						}
 					}
 				}
-				if(routine == 0x0A) // resist element
+				if (routine == 0x0A) // resist element
 				{
-					if(targeting == 0x04) // self caster: resist all elements is tier 3, all other elements are tier 1
+					if (targeting == 0x04) // self caster: resist all elements is tier 3, all other elements are tier 1
 					{
 						if (effect == 0xFF)
+						{
 							tier = 3;
+						}
 						else if (effect != 0x00)
+						{
 							tier = 1;
+						}
 					}
 					if (targeting == 0x08) // whole party: resist 6+ elements is tier 4, three resists or two base resists is tier 3, otherwise tier 2 unless no element
 					{
@@ -439,107 +612,169 @@ namespace FF1Lib
 							resists += (elem & (0b10000000 >> i)) != 0 ? 1 : 0;
 						}
 						if (resists > 5)
+						{
 							tier = 4;
+						}
 						else if (baseresists > 1 || resists > 2)
+						{
 							tier = 3;
+						}
 						else if (resists > 0)
+						{
 							tier = 2;
+						}
 					}
 					else if (targeting == 0x10) // single target: resist all elements is tier 4, all other elements are tier 2
 					{
 						if (effect == 0xFF)
+						{
 							tier = 4;
+						}
 						else if (effect != 0x00)
+						{
 							tier = 2;
+						}
 					}
 					else
+					{
 						tier = 0; // spells which assist the enemy are useless
+					}
 				}
-				if(routine == 0x0C) // FAST
+				if (routine == 0x0C) // FAST
 				{
 					if (targeting == 0x04 || targeting == 0x10)
+					{
 						tier = 3; // tier 3 fast is fair for a regular monster
+					}
 					else if (targeting == 0x08)
+					{
 						tier = 4; // multi-target fast is tier 4 though
+					}
 				}
-				if(routine == 0x0D) // attack up
+				if (routine == 0x0D) // attack up
 				{
 					if (targeting == 0x04 || targeting == 0x10)
 					{
 						if (effect < 6)
+						{
 							tier = 0;
+						}
 						else if (effect < 12)
+						{
 							tier = 1;
+						}
 						else if (effect < 20)
+						{
 							tier = 2;
+						}
 						else if (effect < 35)
+						{
 							tier = 3;
+						}
 						else
+						{
 							tier = 4;
+						}
 					}
 					else if (targeting == 0x08)
 					{
 						if (effect < 4)
+						{
 							tier = 0;
+						}
 						else if (effect < 12)
+						{
 							tier = 2;
+						}
 						else if (effect < 20)
+						{
 							tier = 3;
+						}
 						else
+						{
 							tier = 4;
+						}
 					}
 				}
-				if(routine == 0x0E) // reduce evasion (LOCK)
+				if (routine == 0x0E) // reduce evasion (LOCK)
 				{
 					if (targeting == 0x04 || targeting == 0x08 || targeting == 0x10)
 					{
 						if (effect == 0)
+						{
 							tier = 0;
+						}
 						else if (effect < 25)
+						{
 							tier = 1;
+						}
 						else if (effect < 80)
+						{
 							tier = 2;
+						}
 						else if (elem == 0x00)
+						{
 							tier = 3; // only allow tier 3 for extremely strong locks with no element
+						}
 					}
 				}
-				if(routine == 0x0F) // HP Max (CUR4)
+				if (routine == 0x0F) // HP Max (CUR4)
 				{
 					tier = 4; // CUR4 is always tier 4 from an enemy's perspective
 				}
-				if(routine == 0x10) // increase evasion (RUSE, INVS)
+				if (routine == 0x10) // increase evasion (RUSE, INVS)
 				{
 					if (targeting == 0x04 || targeting == 0x10)
 					{
 						if (effect == 0)
+						{
 							tier = 0;
+						}
 						else if (effect < 25)
+						{
 							tier = 1;
+						}
 						else if (effect < 80)
+						{
 							tier = 2;
+						}
 						else
+						{
 							tier = 3; // only allow tier 3 for extremely strong evasion
+						}
 					}
 					else if (targeting == 0x08)
 					{
 						if (effect == 0)
+						{
 							tier = 0;
+						}
 						else if (effect < 25)
+						{
 							tier = 2;
+						}
 						else if (effect < 80)
+						{
 							tier = 3;
+						}
 						else
+						{
 							tier = 4;
+						}
 					}
 				}
-				if(routine == 0x11) // remove resistance (XFER)
+				if (routine == 0x11) // remove resistance (XFER)
 				{
 					if (targeting == 0x04 || targeting == 0x08 || targeting == 0x10)
 					{
 						if (elem == 0) // we only care about the element, it can target whatever it likes as long as it isn't a friendly
+						{
 							tier = 4;
+						}
 						else
-							tier = 3; 
+						{
+							tier = 3;
+						}
 					}
 				}
 			}
@@ -613,25 +848,13 @@ namespace FF1Lib
 			public byte image; // the image used by this image, of the 52 unique monster images available to normal enemies (does not include fiends or chaos).
 			public byte pal; // the palette normally used by this enemy.  this and the enemy's image are not stored in game data directly, rather they are implied by data in the formations
 
-			public byte tileset
-			{
-				get => (byte)((image >> 2) & 0b00001111);
-			}
+			public byte tileset => (byte)((image >> 2) & 0b00001111);
 
-			public byte pic
-			{
-				get => (byte)(image & 0b00000011);
-			}
+			public byte pic => (byte)(image & 0b00000011);
 
-			public bool Large
-			{
-				get => (image & 1) == 1;
-			}
+			public bool Large => (image & 1) == 1;
 
-			public bool Small
-			{
-				get => (image & 1) == 0;
-			}
+			public bool Small => (image & 1) == 0;
 
 			public byte[] compressData() // compresses the information of the enemy into an array of bytes to be placed in the game code
 			{
@@ -662,7 +885,10 @@ namespace FF1Lib
 			public void decompressData(byte[] data)
 			{
 				if (data.Length != EnemySize)
+				{
 					return; // don't bother decompressing data of invalid size
+				}
+
 				exp = data[0] + (data[1] * 256);
 				gp = data[2] + (data[3] * 256);
 				hp = data[4] + (data[5] * 256);
@@ -715,7 +941,10 @@ namespace FF1Lib
 			public void decompressData(byte[] data)
 			{
 				if (data.Length != ScriptSize)
+				{
 					return; // don't do anything if this is not a valid script
+				}
+
 				spell_chance = data[0];
 				skill_chance = data[1];
 				spell_list[0] = data[2];
@@ -759,7 +988,9 @@ namespace FF1Lib
 				for (int i = 0; i < 4; ++i)
 				{
 					if (id[i] == 0xFF)
+					{
 						id[i] = 0; // set empty slots to IMPs
+					}
 				}
 				byte[] formationData = new byte[16];
 				formationData[0] = unchecked((byte)(shape << 4));
@@ -778,9 +1009,15 @@ namespace FF1Lib
 				formationData[12] = surprise;
 				formationData[13] = paletteassignment;
 				if (unrunnable_a)
+				{
 					formationData[13] |= 0x01;
+				}
+
 				if (unrunnable_b)
+				{
 					formationData[13] |= 0x02;
+				}
+
 				formationData[14] = (byte)((monMin[4] << 4) | monMax[4]);
 				formationData[15] = (byte)((monMin[5] << 4) | monMax[5]);
 				return formationData;
@@ -789,7 +1026,10 @@ namespace FF1Lib
 			public void decompressData(byte[] data)
 			{
 				if (data.Length != FormationDataSize)
+				{
 					return; // do nothing if this data isn't the right size
+				}
+
 				shape = (data[0] & 0xF0) >> 4;
 				tileset = (byte)(data[0] & 0x0F);
 				pics = data[1];
@@ -838,12 +1078,12 @@ namespace FF1Lib
 		}
 
 		public class EnemizerTrackingInfo
-		{		
+		{
 			public List<byte>[] enemiesInTileset = new List<byte>[GenericTilesetsCount];
 			public List<byte>[] palettesInTileset = new List<byte>[GenericTilesetsCount];
 			public List<int>[] enemyZones = new List<int>[EnemyCount];
 			public bool[] featured = new bool[EnemyCount];
-			public List<Enemizer_Zone> zone = new List<Enemizer_Zone> { };
+			public List<Enemizer_Zone> zone = new() { };
 			public int[][] zoneclone; // list of addresses which are clones of other domain addresses - the first entry in the array is the base to read from, the other entries will copy that
 			public byte imp_encounter = 0x00; // note the location of the imp encounter
 			public byte wizard_encounter = 0x1C; // note the location of the wizard encounter
@@ -865,7 +1105,7 @@ namespace FF1Lib
 					enemiesInTileset[i] = new List<byte> { };
 					palettesInTileset[i] = new List<byte> { };
 				}
-				for(int i = 0; i < EnemyCount; ++i)
+				for (int i = 0; i < EnemyCount; ++i)
 				{
 					enemyZones[i] = new List<int> { };
 					featured[i] = false;
@@ -917,21 +1157,31 @@ namespace FF1Lib
 			{
 				// pull information about the enemy's graphical data and other things that are held in formation data rather than the enemy data proper
 				if (f.tileset < 0x00 || f.tileset >= GenericTilesetsCount)
+				{
 					return; // we don't care about extracting formation information from fiends or chaos
+				}
+
 				for (int i = 0; i < 4; ++i)
 				{
 					if (i < 2)
 					{
 						if (f.monMax[i] == 0 && f.monMax[i + 4] == 0)
+						{
 							continue; // do not bother reading info for enemies that don't have a maxcount
+						}
 					}
 					else
 					{
 						if (f.monMax[i] == 0)
+						{
 							continue; // same as the above
+						}
 					}
 					if (f.id[i] >= EnemyCount)
+					{
 						continue; // don't use IDs that exceed the maximum number of enemies
+					}
+
 					if (!enemiesInTileset[f.tileset].Contains(f.id[i]))
 					{
 						// place enemy in appropriate tileset
@@ -941,27 +1191,42 @@ namespace FF1Lib
 						enemystats[f.id[i]].image = (byte)((f.tileset << 2) | pict);
 						bool paletteassigned = (f.paletteassignment & (0b10000000 >> i)) != 0;
 						if (paletteassigned)
+						{
 							enemystats[f.id[i]].pal = f.pal2;
+						}
 						else
+						{
 							enemystats[f.id[i]].pal = f.pal1;
+						}
+
 						if (!palettesInTileset[f.tileset].Contains(f.pal1))
+						{
 							palettesInTileset[f.tileset].Add(f.pal1);
+						}
+
 						if (!palettesInTileset[f.tileset].Contains(f.pal2))
+						{
 							palettesInTileset[f.tileset].Add(f.pal2);
+						}
 					}
 				}
 			}
 
 			public void LogFeatured(FormationInfo f)
 			{
-				for(int i = 0; i < 3; i++)
+				for (int i = 0; i < 3; i++)
 				{
 					if (f.monMin[i] > 0)
+					{
 						featured[f.id[i]] = true;
-					if(i < 2)
+					}
+
+					if (i < 2)
 					{
 						if (f.monMin[i + 4] > 0)
+						{
 							featured[f.id[i]] = true;
+						}
 					}
 				}
 			}
@@ -985,15 +1250,24 @@ namespace FF1Lib
 				{
 					case 0x00:
 						if (!size)
+						{
 							return 9;
+						}
+
 						return 0;
 					case 0x01:
 						if (size)
+						{
 							return 4;
+						}
+
 						return 0;
 					case 0x02:
 						if (size)
+						{
 							return 2;
+						}
+
 						return 6;
 					default:
 						return 0;
@@ -1006,28 +1280,165 @@ namespace FF1Lib
 			for (int i = 0; i < 4; ++i)
 			{
 				if (f.id[i] == 0xFF)
+				{
 					continue;
+				}
+
 				if (enemy[f.id[i]].pal == f.pal2)
+				{
 					f.paletteassignment |= (byte)(0b00010000 << (3 - i));
+				}
+
 				f.pics |= (byte)(enemy[f.id[i]].pic << (i * 2));
 			}
 		}
 
 		private bool DoEnemizer_Formations(MT19337 rng, EnemyInfo[] enemy, EnemizerTrackingInfo en)
 		{
-			bool NotFeatured(byte mon) => !en.featured[mon];
-			bool Small(byte mon) => enemy[mon].Small;
-			bool Large(byte mon) => enemy[mon].Large;
-			bool SmallAndNotFeatured(byte mon, byte id) => Small(mon) && NotFeatured(mon) && mon != id;
-			bool LargeAndNotFeatured(byte mon, byte id) => Large(mon) && NotFeatured(mon) && mon != id;
+			bool NotFeatured(byte mon)
+			{
+				return !en.featured[mon];
+			}
+
+			bool Small(byte mon)
+			{
+				return enemy[mon].Small;
+			}
+
+			bool Large(byte mon)
+			{
+				return enemy[mon].Large;
+			}
+
+			bool SmallAndNotFeatured(byte mon, byte id)
+			{
+				return Small(mon) && NotFeatured(mon) && mon != id;
+			}
+
+			bool LargeAndNotFeatured(byte mon, byte id)
+			{
+				return Large(mon) && NotFeatured(mon) && mon != id;
+			}
 
 			var formationData = Get(FormationDataOffset, FormationDataSize * FormationDataCount).Chunk(FormationDataSize); // load base information from the ROM into chunks we can manipulate
 			var dom = Get(ZoneFormationsOffset, ZoneFormationsSize * ZoneCount); // however, we are going to adjust the domain data directly
-			List<byte> uniqueEnemyIDs = new List<byte> { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19,
-			  0x1A, 0x1B, 0x1C, 0x1D, 0x1E, 0x1F, 0x20, 0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28, 0x29, 0x2A, 0x2B, 0x2C, 0x2D, 0x2E, 0x2F, 0x30, 0x31, 0x32, 0x34,
-			  0x35, 0x36, 0x37, 0x38, 0x39, 0x3A, 0x3B, 0x3C, 0x3D, 0x3E, 0x3F, 0x40, 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4A, 0x4B, 0x4C, 0x4D,
-			  0x4E, 0x4F, 0x50, 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58, 0x59, 0x5A, 0x5B, 0x5C, 0x5D, 0x5E, 0x5F, 0x60, 0x61, 0x62, 0x63, 0x64, 0x65, 0x66, 0x67,
-			  0x68, 0x6A, 0x6B, 0x6C, 0x6D, 0x6E, 0x6F, 0x70, 0x72, 0x73, 0x74, 0x75 };
+			List<byte> uniqueEnemyIDs = new()
+			{
+				0x00,
+				0x01,
+				0x02,
+				0x03,
+				0x04,
+				0x05,
+				0x06,
+				0x07,
+				0x08,
+				0x09,
+				0x0A,
+				0x0B,
+				0x0C,
+				0x0D,
+				0x0E,
+				0x10,
+				0x11,
+				0x12,
+				0x13,
+				0x14,
+				0x15,
+				0x16,
+				0x17,
+				0x18,
+				0x19,
+				0x1A,
+				0x1B,
+				0x1C,
+				0x1D,
+				0x1E,
+				0x1F,
+				0x20,
+				0x21,
+				0x22,
+				0x23,
+				0x24,
+				0x25,
+				0x26,
+				0x27,
+				0x28,
+				0x29,
+				0x2A,
+				0x2B,
+				0x2C,
+				0x2D,
+				0x2E,
+				0x2F,
+				0x30,
+				0x31,
+				0x32,
+				0x34,
+				0x35,
+				0x36,
+				0x37,
+				0x38,
+				0x39,
+				0x3A,
+				0x3B,
+				0x3C,
+				0x3D,
+				0x3E,
+				0x3F,
+				0x40,
+				0x41,
+				0x42,
+				0x43,
+				0x44,
+				0x45,
+				0x46,
+				0x47,
+				0x48,
+				0x49,
+				0x4A,
+				0x4B,
+				0x4C,
+				0x4D,
+				0x4E,
+				0x4F,
+				0x50,
+				0x51,
+				0x52,
+				0x53,
+				0x54,
+				0x55,
+				0x56,
+				0x57,
+				0x58,
+				0x59,
+				0x5A,
+				0x5B,
+				0x5C,
+				0x5D,
+				0x5E,
+				0x5F,
+				0x60,
+				0x61,
+				0x62,
+				0x63,
+				0x64,
+				0x65,
+				0x66,
+				0x67,
+				0x68,
+				0x6A,
+				0x6B,
+				0x6C,
+				0x6D,
+				0x6E,
+				0x6F,
+				0x70,
+				0x72,
+				0x73,
+				0x74,
+				0x75
+			};
 			byte[] traptile_formations = new byte[(int)TrapTiles.NUM_TRAP_TILES]; // formation pointers for each trap tile
 			int[] traptile_addresses = new int[(int)TrapTiles.TRAP_LICH2]; // ROM addresses of trap tiles (excluding Lich2 and after
 			foreach (byte mon in uniqueEnemyIDs) // sort an enemy into its zone
@@ -1035,17 +1446,17 @@ namespace FF1Lib
 				int limit = enemy[mon].Large ? 4 : 9;
 				for (int i = 0; i < en.zone.Count; ++i)
 				{
-					if (enemy[mon].exp <= (en.zone[i].maxXP * 2) / 3 && enemy[mon].exp * limit >= en.zone[i].midXP && enemy[mon].skilltier <= en.zone[i].zoneskillmax)
+					if (enemy[mon].exp <= en.zone[i].maxXP * 2 / 3 && enemy[mon].exp * limit >= en.zone[i].midXP && enemy[mon].skilltier <= en.zone[i].zoneskillmax)
 					{
 						en.zone[i].zonemons.Add(mon);
 						en.enemyZones[mon].Add(i);
 					}
 				}
-				if(en.enemyZones[mon].Count == 0)
+				if (en.enemyZones[mon].Count == 0)
 				{
 					for (int i = 0; i < en.zone.Count; ++i)
 					{
-						if (enemy[mon].exp <= (en.zone[i].maxXP * 2) / 3 && enemy[mon].exp * limit >= en.zone[i].midXP)
+						if (enemy[mon].exp <= en.zone[i].maxXP * 2 / 3 && enemy[mon].exp * limit >= en.zone[i].midXP)
 						{
 							en.zone[i].zonemons.Add(mon);
 							en.enemyZones[mon].Add(i);
@@ -1080,10 +1491,13 @@ namespace FF1Lib
 			for (byte i = regularformations; i < bossformations; ++i) // general loop for formation generation
 			{
 				if (i == en.imp_encounter || i == en.phantom_encounter || i == en.warmech_encounter)
+				{
 					continue; // don't do these encounters (we will roll them as special exceptions)
-				FormationInfo f = new FormationInfo(); // this is the formation we are hoping to write
-													   // we will start narrowing down the list of monsters we can feature
-				List<byte> availablemons = new List<byte> { };
+				}
+
+				FormationInfo f = new(); // this is the formation we are hoping to write
+										 // we will start narrowing down the list of monsters we can feature
+				List<byte> availablemons = new() { };
 				// first, we check if all monsters have been featured yet
 				if (uniqueEnemyIDs.Where(NotFeatured).Count() == 0)
 				{
@@ -1128,9 +1542,15 @@ namespace FF1Lib
 												  // we need to select which zone we are aiming to fill on the B-Side (and if we require a Large-only or Small-only formation to do that, we set the shape of the formation accordingly)
 				List<int> availablezones = en.enemyZones[f.Top].Where(index => en.zone[index].forms.Count < en.zone[index].min).ToList();
 				if (availablezones.Count == 0) // if there are no zones available that haven't reached their mincount, check for maxcount instead
+				{
 					availablezones = en.enemyZones[f.Top].Where(index => en.zone[index].forms.Count < en.zone[index].max).ToList();
+				}
+
 				if (availablezones.Count == 0) // and if we've filled mincount and maxcount, just list all available zones
+				{
 					availablezones = en.enemyZones[f.Top].ToList();
+				}
+
 				if (availablezones.Count == 0) // and if by some freak chance the enemy has not been assigned any zones, write an error report to Console and abort Formation shuffle
 				{
 					return false;
@@ -1138,48 +1558,70 @@ namespace FF1Lib
 				int zoneB = availablezones.PickRandom(rng); // the B-Side zone we are trying to fill
 				int limit = Large(f.Top) ? 2 : 6;
 				if (enemy[f.Top].exp * limit < en.zone[zoneB].midXP)
+				{
 					f.shape = Large(f.Top) ? 0x01 : 0x00;
+				}
 				else
 				{
 					if (rng.Between(0, 2) == 0)
+					{
 						f.shape = Large(f.Top) ? 0x01 : 0x00;
+					}
 					else
+					{
 						f.shape = 0x02;
+					}
 				}
 				// now we look for what we can pick for the second mon
 				if (f.shape == 0x00)
 				{
 					availablemons = en.enemiesInTileset[f.tileset].Where(mon => SmallAndNotFeatured(mon, f.Top)).ToList();
 					if (availablemons.Count == 0)
+					{
 						availablemons = en.enemiesInTileset[f.tileset].Where(mon => Small(mon) && mon != f.Top).ToList();
+					}
 
 					// Fix for when there's only 1 small mon in the pool and it already got top billing
 					if (availablemons.Count == 0)
+					{
 						availablemons = en.enemiesInTileset[f.tileset].Where(mon => Small(mon)).ToList();
+					}
 				}
 				else if (f.shape == 0x01)
 				{
 					availablemons = en.enemiesInTileset[f.tileset].Where(mon => LargeAndNotFeatured(mon, f.Top)).ToList();
 					if (availablemons.Count == 0)
+					{
 						availablemons = en.enemiesInTileset[f.tileset].Where(mon => Large(mon) && mon != f.Top).ToList();
+					}
 
 					// Fix for when there's only 1 large mon in the pool and it already got top billing
 					if (availablemons.Count == 0)
+					{
 						availablemons = en.enemiesInTileset[f.tileset].Where(mon => Large(mon)).ToList();
+					}
 				}
 				else
 				{
 					availablemons = en.enemiesInTileset[f.tileset].Where(mon => NotFeatured(mon) && mon != f.Top).ToList();
 					if (availablemons.Count == 0)
+					{
 						availablemons = en.enemiesInTileset[f.tileset].Where(mon => mon != f.Top).ToList(); // if all other mons in this tileset have been featured, all mons in this tileset are eligible as a second mon
+					}
 				}
 				f.id[1] = availablemons.PickRandom(rng); // and pick a random mon from the available IDs to be mon 2 (and the primary monster of the A-side)
 														 // we will attempt to hit a zone with the A-Side but if we can't we'll just try to make an encounter as close as possible to the goal
 				availablezones = en.enemyZones[f.id[1]].Where(index => en.zone[index].forms.Count < en.zone[index].min).ToList();
 				if (availablezones.Count == 0) // if there are no zones available that haven't reached their mincount, check for maxcount instead
+				{
 					availablezones = en.enemyZones[f.id[1]].Where(index => en.zone[index].forms.Count < en.zone[index].max).ToList();
+				}
+
 				if (availablezones.Count == 0) // and if we've filled mincount and maxcount, just list all available zones
+				{
 					availablezones = en.enemyZones[f.id[1]].ToList();
+				}
+
 				if (availablezones.Count == 0) // and if by some freak chance the enemy has not been assigned any zones, write an error report to Console and abort Formation shuffle
 				{
 					return false;
@@ -1188,14 +1630,20 @@ namespace FF1Lib
 				// now we set the palettes
 				f.pal1 = enemy[f.Top].pal;
 				if (enemy[f.Top].pal != enemy[f.id[1]].pal)
+				{
 					f.pal2 = enemy[f.id[1]].pal;
+				}
 				else // if first and second enemies in the formation have the same palette, draw a second palette at random
 				{
 					List<byte> availablepalettes = en.palettesInTileset[f.tileset].Where(pal => pal != f.pal1).ToList();
 					if (availablepalettes.Count == 0)
+					{
 						f.pal2 = f.pal1; // if there is only one palette in the tileset, just set the second palette to the same value as the first
+					}
 					else
+					{
 						f.pal2 = availablepalettes.PickRandom(rng);
+					}
 				}
 				// and we draw any monsters that conform to both the tileset and palette choices as the third and fourth monsters (if there are more than two, they are dropped after a shuffle of the list)
 				availablemons = en.enemiesInTileset[f.tileset].Where(mon => mon != f.Top && mon != f.id[1] && (enemy[mon].pal == f.pal1 || enemy[mon].pal == f.pal2)).ToList();
@@ -1215,12 +1663,17 @@ namespace FF1Lib
 					availablemons.Shuffle(rng);
 					f.id[2] = availablemons[0];
 					if (availablemons.Count > 1)
+					{
 						f.id[3] = availablemons[1];
+					}
 				}
 				// now we can decide how many monsters to aim for in the formation.  we call two functions, one to draw the B-side, and another to draw the A-side
 				zoneB = ENF_Picker_Generic(en, enemy, rng, f, zoneB, 0, true);
 				if (zoneB != -1)
+				{
 					zoneA = ENF_Picker_Generic(en, enemy, rng, f, zoneA, 1, false);
+				}
+
 				if (zoneA == -1 || zoneB == -1)
 				{
 					en.featured[f.Top] = true;
@@ -1234,7 +1687,9 @@ namespace FF1Lib
 				f.unrunnable_a = rng.Between(0, EnemizerUnrunnabilityWeight) + zoneA >= EnemizerUnrunnabilityWeight + 3 ? true : false; // unrunnable chance is higher for later zones
 				f.unrunnable_b = rng.Between(0, EnemizerUnrunnabilityWeight) + zoneB >= EnemizerUnrunnabilityWeight + 3 ? true : false;
 				if (f.unrunnable_a && f.unrunnable_b)
+				{
 					f.surprise = (byte)rng.Between(3, 30);
+				}
 				else
 				{
 					if (bossformations - surpcount.Sum() <= i)
@@ -1243,13 +1698,22 @@ namespace FF1Lib
 						int s_roll = rng.Between(1, surpcount.Sum());
 						int s_tier = -1;
 						if (s_roll <= surpcount[0])
+						{
 							s_tier = 0;
+						}
 						else if (s_roll <= surpcount[0] + surpcount[1] && s_roll > surpcount[0])
+						{
 							s_tier = 1;
+						}
 						else if (s_roll <= surpcount[0] + surpcount[1] + surpcount[2] && s_roll > surpcount[0] + surpcount[1])
+						{
 							s_tier = 2;
+						}
 						else if (s_roll <= surpcount[0] + surpcount[1] + surpcount[2] + surpcount[3] && s_roll > surpcount[0] + surpcount[1] + surpcount[2])
+						{
 							s_tier = 3;
+						}
+
 						if (s_tier == -1)
 						{
 							f.surprise = (byte)rng.Between(3, 9);
@@ -1266,13 +1730,22 @@ namespace FF1Lib
 						int s_tier = -1;
 						int s_roll = rng.Between(regularformations, bossformations);
 						if (s_roll > bossformations - surp4)
+						{
 							s_tier = 3;
+						}
 						else if (s_roll > bossformations - surp4 - surp3)
+						{
 							s_tier = 2;
+						}
 						else if (s_roll > bossformations - surp4 - surp3 - surp2)
+						{
 							s_tier = 1;
+						}
 						else if (s_roll > bossformations - surp4 - surp3 - surp2 - surp1)
+						{
 							s_tier = 0;
+						}
+
 						if (s_tier == -1)
 						{
 							f.surprise = (byte)rng.Between(3, 9);
@@ -1372,13 +1845,13 @@ namespace FF1Lib
 			traptile_formations[(int)TrapTiles.TRAP_SLIMES] = en.zone[9].forms[1];
 			traptile_formations[(int)TrapTiles.TRAP_PHANTOM] = en.phantom_encounter;
 			// proceed to place mons in all zones
-			foreach(Enemizer_Zone zone in en.zone)
+			foreach (Enemizer_Zone zone in en.zone)
 			{
 				zone.forms.Shuffle(rng);
 				int loop = 0;
 				int f = 0;
 				int a = 0;
-				while(f < zone.forms.Count)
+				while (f < zone.forms.Count)
 				{
 					if (loop == 0)
 					{
@@ -1421,7 +1894,9 @@ namespace FF1Lib
 						a = 0;
 						loop++;
 						if (loop == 8)
+						{
 							break; // place no more than 8 encounters per domain even if formations are left to be placed (this should basically never happen)
+						}
 					}
 				}
 			}
@@ -1446,9 +1921,12 @@ namespace FF1Lib
 			dom[0x160] = en.imp_encounter; dom[0x161] = en.imp_encounter; dom[0x162] = en.imp_encounter; dom[0x123] = en.imp_encounter;
 			dom[0x39E] = en.warmech_encounter; // replace 7th encounter on sky 5F with warmech
 			for (int i = 0; i < FormationDataCount; ++i) // write formation info to ROM
+			{
 				Put(FormationDataOffset + (i * FormationDataSize), formationData[i]);
+			}
+
 			Put(ZoneFormationsOffset, dom); // write the domain data as one big chunk
-			// write trap tile information
+											// write trap tile information
 			for (int i = 0; i < traptile_addresses.Length; ++i)
 			{
 				Data[TilesetDataOffset + traptile_addresses[i]] = traptile_formations[i];
@@ -1458,15 +1936,31 @@ namespace FF1Lib
 
 		public int ENF_Picker_Generic(EnemizerTrackingInfo en, EnemyInfo[] enemy, MT19337 rng, FormationInfo f, int zone, int p, bool sideB)
 		{
-			bool Small(byte mon) => enemy[mon].Small;
-			bool Large(byte mon) => enemy[mon].Large;
+			bool Small(byte mon)
+			{
+				return enemy[mon].Small;
+			}
+
+			bool Large(byte mon)
+			{
+				return enemy[mon].Large;
+			}
 			// draw A-Side formation, prioritizing the priority monster (defaults to f.id[0] if given an invalid priority)
 			if (p < 0 || p > 3)
+			{
 				p = 0;
+			}
+
 			if (f.id[p] == 0xFF)
+			{
 				p = 0;
+			}
+
 			if (f.id[p] == 0xFF)
+			{
 				return -1; // do not draw mons if there is no valid mon as priority
+			}
+
 			int o = sideB ? 4 : 0; // increase offset by 4 when placing a side B encounter
 			int s = sideB ? 1 : 3; // indicates where we stop looping through ids (stop at 1 for sideB since ids 2 and 3 cannot be placed in side B encounters, stop at 3 otherwise)
 			f.monMin[p + o] = 1; // there will always be at least one mon of the priority
@@ -1492,20 +1986,32 @@ namespace FF1Lib
 					break;
 			}
 			if (Large(f.id[p]))
+			{
 				largeLimit--;
+			}
 			else
+			{
 				smallLimit--;
-			List<int> validindices = new List<int> { }; // no weighting selection towards priority in A-Side
-			List<int> trashindices = new List<int> { }; // list of "trash mons" that may be optionally added in after general mon selection
+			}
+
+			List<int> validindices = new() { }; // no weighting selection towards priority in A-Side
+			List<int> trashindices = new() { }; // list of "trash mons" that may be optionally added in after general mon selection
 			for (int i = 0; i < s; ++i)
 			{
 				if (f.id[i] == 0xFF)
+				{
 					continue; // don't include mons with an invalid index
+				}
+
 				int sizeFactor = Large(f.id[i]) ? 6 : 12;
 				if (enemy[f.id[i]].exp > en.zone[zone].maxXP / sizeFactor)
+				{
 					validindices.Add(i); // valid monsters must contribute significant experience for their size
+				}
 				else if (Small(f.id[i]))
+				{
 					trashindices.Add(i);
+				}
 			}
 			if (validindices.Count == 0) // if we have no valid indices (possible if some zones), we use the minimum-maximum instead of total max
 			{
@@ -1513,27 +2019,41 @@ namespace FF1Lib
 				for (int i = 0; i < s; ++i)
 				{
 					if (f.id[i] == 0xFF)
+					{
 						continue; // don't include mons with an invalid index
+					}
+
 					int sizeFactor = Large(f.id[i]) ? 6 : 12;
 					if (enemy[f.id[i]].exp > en.zone[zone].midXP / sizeFactor)
+					{
 						validindices.Add(i); // valid monsters must contribute experience equal to 1/12th of the xp cap for this zone
+					}
 					else if (Small(f.id[i]))
+					{
 						trashindices.Add(i);
+					}
 				}
 			}
 			while ((smallLimit > 0 || largeLimit > 0) && validindices.Count > 0)
 			{
 				if (rng.Between(0, 14) == 0 && maxXP > en.zone[zone].midXP)
+				{
 					break; // 6.66% chance of ending the while loop if we have already met the minimum-maximum
+				}
+
 				int index = validindices.PickRandom(rng);
 				if (maxXP + enemy[f.id[index]].exp <= en.zone[zone].maxXP && ((Large(f.id[index]) && largeLimit > 0) || (Small(f.id[index]) && smallLimit > 0)))
 				{
 					f.monMax[index + o]++;
 					maxXP += enemy[f.id[index]].exp;
 					if (Large(f.id[index]))
+					{
 						largeLimit--;
+					}
 					else
+					{
 						smallLimit--;
+					}
 				}
 				else
 				{
@@ -1545,9 +2065,14 @@ namespace FF1Lib
 			for (int i = 0; i < s; ++i)
 			{
 				if (f.id[i] == 0xFF)
+				{
 					continue;
+				}
+
 				if (f.monMax[i + o] > 0)
+				{
 					validindices.Add(i); // add any monster that has a maxcount
+				}
 			}
 			while (minXP < en.zone[zone].minXP && validindices.Count > 0)
 			{
@@ -1558,7 +2083,9 @@ namespace FF1Lib
 					minXP += enemy[f.id[index]].exp;
 				}
 				else
+				{
 					validindices.Remove(index);
+				}
 			}
 			// set the minimums to a random number between the current minimum and the maximum
 			for (int i = 0; i < s; ++i)
@@ -1601,14 +2128,17 @@ namespace FF1Lib
 		{
 			// calculates a zone for the encounter to fit if we couldn't reach our goal zone (return -1 if the zone is completely invalid)
 			int return_value = -1;
-			List<int> acceptableValues = new List<int> { };
+			List<int> acceptableValues = new() { };
 			int minXP = 0, maxXP = 0;
 			int o = sideB ? 4 : 0;
 			int s = sideB ? 1 : 3;
 			for (int i = 0; i < s; ++i)
 			{
 				if (f.id[i] == 0xFF)
+				{
 					continue;
+				}
+
 				if (f.monMax[i + o] > 0)
 				{
 					minXP += f.monMin[i + o] * enemy[f.id[i]].exp;
@@ -1618,17 +2148,26 @@ namespace FF1Lib
 			for (int i = 0; i < en.zone.Count; ++i)
 			{
 				if (minXP >= en.zone[i].minXP && maxXP >= en.zone[i].midXP && maxXP <= en.zone[i].maxXP)
+				{
 					acceptableValues.Add(i);
+				}
 			}
 			List<int> mincountValues = acceptableValues.Where(id => en.zone[id].forms.Count < en.zone[id].min).ToList();
 			if (mincountValues.Count == 0)
+			{
 				mincountValues = acceptableValues.Where(id => en.zone[id].forms.Count < en.zone[id].max).ToList();
+			}
+
 			if (mincountValues.Count > 0)
+			{
 				return_value = mincountValues.Max();
+			}
 			else
 			{
 				if (acceptableValues.Count > 0)
+				{
 					return_value = acceptableValues.Max();
+				}
 			}
 			return ENF_ApproveFormation(f, return_value);
 		}
@@ -1638,16 +2177,26 @@ namespace FF1Lib
 			// approves a formation based on the zone it has been assigned.  this will be used to rule out formations that might be problematic
 			// for now this function does nothing but it will be used in future to reject certain formations
 			if (zone == -1)
+			{
 				return zone; // formations which have already been calculated as failed will be rejected
+			}
+
 			return zone;
 		}
 
 		private byte[] ENF_DrawBossEncounter(EnemizerTrackingInfo en, MT19337 rng, EnemyInfo[] enemy, byte id, int count, int shape, bool unrunnable, byte surprise, byte formid)
 		{
-			bool Small(byte mon) => enemy[mon].Small;
-			bool Large(byte mon) => enemy[mon].Large;
+			bool Small(byte mon)
+			{
+				return enemy[mon].Small;
+			}
 
-			FormationInfo f = new FormationInfo();
+			bool Large(byte mon)
+			{
+				return enemy[mon].Large;
+			}
+
+			FormationInfo f = new();
 			f.id[2] = id; // we place the boss monster in the third slot
 			f.tileset = enemy[id].tileset;
 			f.pal1 = enemy[id].pal;
@@ -1679,11 +2228,16 @@ namespace FF1Lib
 				int zoneB = en.enemyZones[f.Top].PickRandom(rng);
 				zoneB = ENF_Picker_Generic(en, enemy, rng, f, zoneB, 0, true);
 				if (zoneB != -1)
+				{
 					en.zone[zoneB].forms.Add((byte)(formid | 0x80)); // if for some reason we didn't fill any valid zone from the B-side, we simply don't add it to any zones (and thus it will never be seen)
+				}
+
 				f.unrunnable_b = rng.Between(0, EnemizerUnrunnabilityWeight) + zoneB >= EnemizerUnrunnabilityWeight + 3 ? true : false;
 			}
 			else
+			{
 				f.unrunnable_b = false;
+			}
 			// if for some reason there were no available mons, then a B-Side is not drawn at all and no formation is added to the zones, so this slot will remain unused.  this shouldn't happen, though
 			ENF_AssignPicAndPaletteBytes(enemy, f);
 			f.unrunnable_a = unrunnable;
@@ -1694,30 +2248,50 @@ namespace FF1Lib
 
 		public byte[] ENF_DrawForcedSingleFight(EnemizerTrackingInfo en, MT19337 rng, EnemyInfo[] enemy, int zoneB, byte formid)
 		{
-			bool Small(byte mon) => enemy[mon].Small;
-			bool Large(byte mon) => enemy[mon].Large;
+			bool Small(byte mon)
+			{
+				return enemy[mon].Small;
+			}
 
-			FormationInfo f = new FormationInfo();
+			bool Large(byte mon)
+			{
+				return enemy[mon].Large;
+			}
+
+			FormationInfo f = new();
 			f.Top = en.zone[zoneB].zonemons.PickRandom(rng);
 			f.tileset = enemy[f.Top].tileset;
 			int limit = Large(f.Top) ? 2 : 6;
 			if (enemy[f.Top].exp * limit < en.zone[zoneB].maxXP)
+			{
 				f.shape = Large(f.Top) ? 0x01 : 0x00;
+			}
 			else
+			{
 				f.shape = 0x02;
+			}
+
 			f.monMax[4] = en.zone[zoneB].maxXP / enemy[f.Top].exp;
 			if (f.monMax[4] > en.GetMonLimit(Large(f.Top), f.shape))
+			{
 				f.monMax[4] = en.GetMonLimit(Large(f.Top), f.shape);
+			}
+
 			f.monMin[4] = en.zone[zoneB].midXP / enemy[f.Top].exp;
 			if (f.monMin[4] > f.monMax[4])
+			{
 				f.monMin[4] = f.monMax[4];
+			}
+
 			if (f.monMax[4] == 0) // this should never execute but just in case
 			{
 				f.monMin[4] = 1;
 				f.monMax[4] = 1;
 			}
 			if (f.monMin[4] == 0)
+			{
 				f.monMin[4] = 1;
+			}
 			// draw all potential mons for A-Side
 			List<byte> availablemons = en.enemiesInTileset[f.tileset].Where(mon => mon != f.Top).ToList();
 			switch (f.shape)
@@ -1751,13 +2325,18 @@ namespace FF1Lib
 				availablemons.Shuffle(rng);
 				f.id[2] = availablemons[0];
 				if (availablemons.Count > 1)
+				{
 					f.id[3] = availablemons[1];
+				}
 			}
 			int zoneA = en.enemyZones[f.id[1]].PickRandom(rng); // pick a random zone to aim for from the second mon
 			zoneA = ENF_Picker_Generic(en, enemy, rng, f, zoneA, 1, false); // now we actually run the generic picker
 			en.zone[zoneB].forms.Add((byte)(formid | 0x80));
 			if (zoneA != -1)
+			{
 				en.zone[zoneA].forms.Add(formid); // if for some reason we didn't fill any valid zone from the A-side, we simply don't add it to any zones (and thus it will never be seen)
+			}
+
 			f.surprise = 4;
 			f.unrunnable_a = rng.Between(0, EnemizerUnrunnabilityWeight) + zoneA >= EnemizerUnrunnabilityWeight + 3 ? true : false;
 			f.unrunnable_b = true; // the trap side is always unrunnable
@@ -1778,7 +2357,10 @@ namespace FF1Lib
 					{ 10, 18, 25, 31, 38, 47, 60, 70, 82, 100},
 					{ 12, 20, 28, 35, 42, 53, 70, 85, 95, 110} };
 			if (tier < 0 || level < 1 || tier > 9 || level > 7)
+			{
 				return 0; // return 0 if the tier/level are out of bounds
+			}
+
 			return returnValue[level - 1, tier];
 		}
 
@@ -1793,7 +2375,10 @@ namespace FF1Lib
 					{ 10, 18, 25, 31, 38, 47, 60, 70, 82, 100},
 					{ 12, 20, 30, 40, 50, 60, 70, 85, 95, 110} };
 			if (tier < 0 || level < 1 || tier > 9 || level > 7)
+			{
 				return 0; // return 0 if the tier/level are out of bounds
+			}
+
 			return returnValue[level - 1, tier];
 		}
 
@@ -1808,7 +2393,10 @@ namespace FF1Lib
 					{ 8, 12, 16, 20, 25, 30, 35, 40, 45, 53},
 					{ 10, 14, 19, 25, 30, 36, 42, 49, 56, 68 } };
 			if (tier < 0 || level < 1 || tier > 9 || level > 7)
+			{
 				return 0; // return 0 if the tier/level are out of bounds
+			}
+
 			return returnValue[level - 1, tier];
 		}
 
@@ -1823,7 +2411,10 @@ namespace FF1Lib
 					{ 36, 42, 48, 54, 60, 66, 72, 78, 90, 102},
 					{ 48, 54, 64, 72, 80, 90, 100, 115, 125, 140} };
 			if (tier < 0 || level < 1 || tier > 9 || level > 7)
+			{
 				return 0; // return 0 if the tier/level are out of bounds
+			}
+
 			return returnValue[level - 1, tier];
 		}
 
@@ -1834,16 +2425,31 @@ namespace FF1Lib
 			// roll valid damage tiers based on num_hits
 			int minDamageTier = 4 + (enemy.tier / 3) - enemy.num_hits;
 			if (minDamageTier < 1)
+			{
 				minDamageTier = 1;
+			}
+
 			int maxDamageTier = 8 - enemy.num_hits;
 			if (enemy.Large)
+			{
 				maxDamageTier++;
+			}
+
 			if (enemy.num_hits > 1 && maxDamageTier == 7)
+			{
 				maxDamageTier = 6;
+			}
+
 			if (maxDamageTier < minDamageTier)
+			{
 				maxDamageTier = minDamageTier;
+			}
+
 			if (maxDamageTier > 7)
+			{
 				maxDamageTier = 7;
+			}
+
 			int finalDamageTier = rng.Between(minDamageTier, maxDamageTier);
 			enemy.damage = ENE_rollEnemyStrength(enemy.tier, finalDamageTier);
 			// roll accuracy based on tier
@@ -2068,33 +2674,135 @@ namespace FF1Lib
 				}
 			}
 			else if (tier >= 8 && tier <= 9)
+			{
 				return 0x1C; // tier 8-9 uses EVILMAN script
+			}
 			else
+			{
 				return 0xFF; // invalid tier returns no script
+			}
 		}
 
 		private void DoEnemizer_EnemyPatternTablesOnly(MT19337 rng, byte[] patterntabledata, EnemyInfo[] enemy, EnemizerTrackingInfo en)
 		{
 			// in this function we shuffle the pattern tables and enemy palettes only (we shuffle palettes because otherwise eligible formations would be even more constrained)
-			List<byte> smallImages = new List<byte> {   0b00000000, 0b00000010, 0b00000100, 0b00000110, 0b00001000, 0b00001010, 0b00001100, 0b00001110,
-														0b00010000, 0b00010010, 0b00010100, 0b00010110, 0b00011000, 0b00011010, 0b00011100, 0b00011110,
-														0b00100000, 0b00100010, 0b00100100, 0b00100110, 0b00101000, 0b00101010, 0b00101100, 0b00101110,
-														0b00110000, 0b00110010 };
-			List<byte> largeImages = new List<byte> {   0b00000001, 0b00000011, 0b00000101, 0b00000111, 0b00001001, 0b00001011, 0b00001101, 0b00001111,
-														0b00010001, 0b00010011, 0b00010101, 0b00010111, 0b00011001, 0b00011011, 0b00011101, 0b00011111,
-														0b00100001, 0b00100011, 0b00100101, 0b00100111, 0b00101001, 0b00101011, 0b00101101, 0b00101111,
-														0b00110001, 0b00110011 };
+			List<byte> smallImages = new()
+			{
+				0b00000000,
+				0b00000010,
+				0b00000100,
+				0b00000110,
+				0b00001000,
+				0b00001010,
+				0b00001100,
+				0b00001110,
+				0b00010000,
+				0b00010010,
+				0b00010100,
+				0b00010110,
+				0b00011000,
+				0b00011010,
+				0b00011100,
+				0b00011110,
+				0b00100000,
+				0b00100010,
+				0b00100100,
+				0b00100110,
+				0b00101000,
+				0b00101010,
+				0b00101100,
+				0b00101110,
+				0b00110000,
+				0b00110010
+			};
+			List<byte> largeImages = new()
+			{
+				0b00000001,
+				0b00000011,
+				0b00000101,
+				0b00000111,
+				0b00001001,
+				0b00001011,
+				0b00001101,
+				0b00001111,
+				0b00010001,
+				0b00010011,
+				0b00010101,
+				0b00010111,
+				0b00011001,
+				0b00011011,
+				0b00011101,
+				0b00011111,
+				0b00100001,
+				0b00100011,
+				0b00100101,
+				0b00100111,
+				0b00101001,
+				0b00101011,
+				0b00101101,
+				0b00101111,
+				0b00110001,
+				0b00110011
+			};
 			smallImages.Shuffle(rng);
 			largeImages.Shuffle(rng);
 			byte[] newPatternTableData = new byte[0x6800];
 			patterntabledata.CopyTo(newPatternTableData, 0);
-			List<byte> newEnemyImageLUT = new List<byte> {  0, 2, 1, 3, 4, 6, 5, 7,
-															8, 10, 9, 11, 12, 14, 13, 15,
-															16, 18, 17, 19, 20, 22, 21, 23,
-															24, 26, 25, 27, 28, 30, 29, 31,
-															32, 34, 33, 35, 36, 38, 37, 39,
-															40, 42, 41, 43, 44, 46, 45, 47,
-															48, 50, 49, 51 };
+			List<byte> newEnemyImageLUT = new()
+			{
+				0,
+				2,
+				1,
+				3,
+				4,
+				6,
+				5,
+				7,
+				8,
+				10,
+				9,
+				11,
+				12,
+				14,
+				13,
+				15,
+				16,
+				18,
+				17,
+				19,
+				20,
+				22,
+				21,
+				23,
+				24,
+				26,
+				25,
+				27,
+				28,
+				30,
+				29,
+				31,
+				32,
+				34,
+				33,
+				35,
+				36,
+				38,
+				37,
+				39,
+				40,
+				42,
+				41,
+				43,
+				44,
+				46,
+				45,
+				47,
+				48,
+				50,
+				49,
+				51
+			};
 			for (int i = 0; i < 13; ++i)
 			{
 				int small1offset = (0x800 * (smallImages[i * 2] / 4)) + (smallImages[i * 2] % 4 == 0 ? 0x120 : 0x220);
@@ -2131,15 +2839,24 @@ namespace FF1Lib
 				{
 					int newPal = rng.Between(0, 0x3F);
 					if (en.palettesInTileset[i].Contains((byte)newPal))
+					{
 						continue;
+					}
+
 					en.palettesInTileset[i].Add((byte)newPal);
 				}
 			}
 			for (int i = 0; i < GenericTilesetsCount; ++i)// clear the list of enemies in each tileset
+			{
 				en.enemiesInTileset[i].Clear();
+			}
+
 			List<byte>[] enemyImagePalettes = new List<byte>[52]; // create lists of palettes used for each enemy image
 			for (int i = 0; i < 52; ++i)
+			{
 				enemyImagePalettes[i] = new List<byte> { };
+			}
+
 			for (byte i = 0; i < Enemy.Lich; ++i) // reassign enemy images to the appropriate image in the pattern table and pick a random palette of those that were drawn
 			{
 				enemy[i].image = (byte)newEnemyImageLUT.IndexOf(enemy[i].image); // assign the enemy's image to the appropriate pattern table
@@ -2156,10 +2873,16 @@ namespace FF1Lib
 						break;
 					default:
 						if (enemy[i].tier != -1)
+						{
 							en.enemiesInTileset[enemy[i].tileset].Add(i); // add enemy to enemiesInTileset unless it is a boss
+						}
+
 						List<byte> acceptablepalettes = en.palettesInTileset[enemy[i].tileset].Except(enemyImagePalettes[enemy[i].image]).ToList();
 						if (acceptablepalettes.Count == 0)
+						{
 							acceptablepalettes = en.palettesInTileset[enemy[i].tileset].ToList();
+						}
+
 						enemy[i].pal = acceptablepalettes.PickRandom(rng);
 						enemyImagePalettes[enemy[i].image].Add(enemy[i].pal);
 						break;
@@ -2167,7 +2890,7 @@ namespace FF1Lib
 			}
 			for (int i = 0; i < GenericTilesetsCount; ++i) // remove palettes from tilesets where there are no mons using those palettes
 			{
-				List<byte> palRemoveList = new List<byte> { };
+				List<byte> palRemoveList = new() { };
 				foreach (byte pal in en.palettesInTileset[i])
 				{
 					bool nopalettematch = true;
@@ -2193,42 +2916,188 @@ namespace FF1Lib
 
 		private bool DoEnemizer_Enemies(MT19337 rng, EnemyInfo[] enemy, byte[] patterntabledata, SpellInfo[] spell, EnemySkillInfo[] skill, EnemyScriptInfo[] script, string[] enemyNames, string[] skillNames, bool shuffledSkillsOn, EnemizerTrackingInfo en)
 		{
-			List<byte> enemyImageLUT = new List<byte> { 0b00000000, 0b00000010, 0b00000001, 0b00000011, 0b00000100, 0b00000110, 0b00000101, 0b00000111,
-														0b00001000, 0b00001010, 0b00001001, 0b00001011, 0b00001100, 0b00001110, 0b00001101, 0b00001111,
-														0b00010000, 0b00010010, 0b00010001, 0b00010011, 0b00010100, 0b00010110, 0b00010101, 0b00010111,
-														0b00011000, 0b00011010, 0b00011001, 0b00011011, 0b00011100, 0b00011110, 0b00011101, 0b00011111,
-														0b00100000, 0b00100010, 0b00100001, 0b00100011, 0b00100100, 0b00100110, 0b00100101, 0b00100111,
-														0b00101000, 0b00101010, 0b00101001, 0b00101011, 0b00101100, 0b00101110, 0b00101101, 0b00101111,
-														0b00110000, 0b00110010, 0b00110001, 0b00110011 }; // these are the default tilesets + pics of the enemies we wish to shuffle
-			// first, we shuffle what images appear in which pattern tables.  small enemies can replace small enemies, and large enemies can replace large
-			List<byte> smallImages = new List<byte> {	0b00000000, 0b00000010, 0b00000100, 0b00000110, 0b00001000, 0b00001010, 0b00001100, 0b00001110,
-														0b00010000, 0b00010010, 0b00010100, 0b00010110, 0b00011000, 0b00011010, 0b00011100, 0b00011110,
-														0b00100000, 0b00100010, 0b00100100, 0b00100110, 0b00101000, 0b00101010, 0b00101100, 0b00101110,
-														0b00110000, 0b00110010 };
-			List<byte> largeImages = new List<byte> {   0b00000001, 0b00000011, 0b00000101, 0b00000111, 0b00001001, 0b00001011, 0b00001101, 0b00001111,
-														0b00010001, 0b00010011, 0b00010101, 0b00010111, 0b00011001, 0b00011011, 0b00011101, 0b00011111,
-														0b00100001, 0b00100011, 0b00100101, 0b00100111, 0b00101001, 0b00101011, 0b00101101, 0b00101111,
-														0b00110001, 0b00110011 };
+			List<byte> enemyImageLUT = new()
+			{
+				0b00000000,
+				0b00000010,
+				0b00000001,
+				0b00000011,
+				0b00000100,
+				0b00000110,
+				0b00000101,
+				0b00000111,
+				0b00001000,
+				0b00001010,
+				0b00001001,
+				0b00001011,
+				0b00001100,
+				0b00001110,
+				0b00001101,
+				0b00001111,
+				0b00010000,
+				0b00010010,
+				0b00010001,
+				0b00010011,
+				0b00010100,
+				0b00010110,
+				0b00010101,
+				0b00010111,
+				0b00011000,
+				0b00011010,
+				0b00011001,
+				0b00011011,
+				0b00011100,
+				0b00011110,
+				0b00011101,
+				0b00011111,
+				0b00100000,
+				0b00100010,
+				0b00100001,
+				0b00100011,
+				0b00100100,
+				0b00100110,
+				0b00100101,
+				0b00100111,
+				0b00101000,
+				0b00101010,
+				0b00101001,
+				0b00101011,
+				0b00101100,
+				0b00101110,
+				0b00101101,
+				0b00101111,
+				0b00110000,
+				0b00110010,
+				0b00110001,
+				0b00110011
+			}; // these are the default tilesets + pics of the enemies we wish to shuffle
+			   // first, we shuffle what images appear in which pattern tables.  small enemies can replace small enemies, and large enemies can replace large
+			List<byte> smallImages = new()
+			{
+				0b00000000,
+				0b00000010,
+				0b00000100,
+				0b00000110,
+				0b00001000,
+				0b00001010,
+				0b00001100,
+				0b00001110,
+				0b00010000,
+				0b00010010,
+				0b00010100,
+				0b00010110,
+				0b00011000,
+				0b00011010,
+				0b00011100,
+				0b00011110,
+				0b00100000,
+				0b00100010,
+				0b00100100,
+				0b00100110,
+				0b00101000,
+				0b00101010,
+				0b00101100,
+				0b00101110,
+				0b00110000,
+				0b00110010
+			};
+			List<byte> largeImages = new()
+			{
+				0b00000001,
+				0b00000011,
+				0b00000101,
+				0b00000111,
+				0b00001001,
+				0b00001011,
+				0b00001101,
+				0b00001111,
+				0b00010001,
+				0b00010011,
+				0b00010101,
+				0b00010111,
+				0b00011001,
+				0b00011011,
+				0b00011101,
+				0b00011111,
+				0b00100001,
+				0b00100011,
+				0b00100101,
+				0b00100111,
+				0b00101001,
+				0b00101011,
+				0b00101101,
+				0b00101111,
+				0b00110001,
+				0b00110011
+			};
 			smallImages.Shuffle(rng);
 			largeImages.Shuffle(rng);
 			byte[] newPatternTableData = new byte[0x6800];
 			patterntabledata.CopyTo(newPatternTableData, 0);
-			List<byte> newEnemyImageLUT = new List<byte> {	0, 2, 1, 3, 4, 6, 5, 7,
-															8, 10, 9, 11, 12, 14, 13, 15,
-															16, 18, 17, 19, 20, 22, 21, 23,
-															24, 26, 25, 27, 28, 30, 29, 31,
-															32, 34, 33, 35, 36, 38, 37, 39,
-															40, 42, 41, 43, 44, 46, 45, 47,
-															48, 50, 49, 51 };
-			for(int i = 0; i < 13; ++i)
+			List<byte> newEnemyImageLUT = new()
+			{
+				0,
+				2,
+				1,
+				3,
+				4,
+				6,
+				5,
+				7,
+				8,
+				10,
+				9,
+				11,
+				12,
+				14,
+				13,
+				15,
+				16,
+				18,
+				17,
+				19,
+				20,
+				22,
+				21,
+				23,
+				24,
+				26,
+				25,
+				27,
+				28,
+				30,
+				29,
+				31,
+				32,
+				34,
+				33,
+				35,
+				36,
+				38,
+				37,
+				39,
+				40,
+				42,
+				41,
+				43,
+				44,
+				46,
+				45,
+				47,
+				48,
+				50,
+				49,
+				51
+			};
+			for (int i = 0; i < 13; ++i)
 			{
 				int small1offset = (0x800 * (smallImages[i * 2] / 4)) + (smallImages[i * 2] % 4 == 0 ? 0x120 : 0x220);
 				int small2offset = (0x800 * (smallImages[(i * 2) + 1] / 4)) + (smallImages[(i * 2) + 1] % 4 == 0 ? 0x120 : 0x220);
 				int large1offset = (0x800 * (largeImages[i * 2] / 4)) + (largeImages[i * 2] % 4 == 1 ? 0x320 : 0x560);
 				int large2offset = (0x800 * (largeImages[(i * 2) + 1] / 4)) + (largeImages[(i * 2) + 1] % 4 == 1 ? 0x320 : 0x560);
 				newEnemyImageLUT[i * 4] = smallImages[i * 2];
-				for(int j = 0; j < 0x100; ++j)
-				{ 
+				for (int j = 0; j < 0x100; ++j)
+				{
 					newPatternTableData[(i * 0x800) + 0x120 + j] = patterntabledata[small1offset + j];
 				}
 				newEnemyImageLUT[(i * 4) + 2] = smallImages[(i * 2) + 1];
@@ -2248,9 +3117,12 @@ namespace FF1Lib
 				}
 			}
 			newPatternTableData.CopyTo(patterntabledata, 0);
-			List<byte> enemyImages = new List<byte> { };
+			List<byte> enemyImages = new() { };
 			for (int i = 0; i < Enemy.Lich; ++i)
+			{
 				enemyImages.Add(enemy[i].image); // we are reproducing the iamge array because we only want to shuffle the images, not the monsters themselves
+			}
+
 			List<string>[] monsterClassVariants = new List<string>[52]; // monster class modifiers that have effects on stats
 			monsterClassVariants[0] = new List<string> { "Fr", "R.", "Z.", "Wr", "Wz", "Sea" }; // imp variants with special perks
 			monsterClassVariants[1] = new List<string> { "Fr", "R.", "Z.", "Wz", "Sea" }; // iguana variants with special perks
@@ -2324,29 +3196,44 @@ namespace FF1Lib
 				{
 					int newPal = rng.Between(0, 0x3F);
 					if (en.palettesInTileset[i].Contains((byte)newPal))
+					{
 						continue;
+					}
+
 					en.palettesInTileset[i].Add((byte)newPal);
 				}
 			}
 			for (int i = 0; i < GenericTilesetsCount; ++i)// clear the list of enemies in each tileset
+			{
 				en.enemiesInTileset[i].Clear();
-			List<int> elementalsSelected = new List<int> { 0, 1, 2, 3, 4, 5, 6, 7, 8 }; // List of elementals already selected
-			List<int> dragonsSelected = new List<int> { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
+			}
+
+			List<int> elementalsSelected = new() { 0, 1, 2, 3, 4, 5, 6, 7, 8 }; // List of elementals already selected
+			List<int> dragonsSelected = new() { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
 			List<byte>[] enemyImagePalettes = new List<byte>[52]; // create lists of palettes used for each enemy image
 			for (int i = 0; i < 52; ++i)
+			{
 				enemyImagePalettes[i] = new List<byte> { };
+			}
+
 			for (byte i = 0; i < Enemy.Lich; ++i) // now start generating the enemies themselves.  we stop before Lich and make special exceptions for various monsters
 			{
-				List<MonsterPerks> perks = new List<MonsterPerks> { MonsterPerks.PERK_GAINSTAT10, MonsterPerks.PERK_LOSESTAT10 }; // list of perks this monster is eligible to receive
+				List<MonsterPerks> perks = new() { MonsterPerks.PERK_GAINSTAT10, MonsterPerks.PERK_LOSESTAT10 }; // list of perks this monster is eligible to receive
 				enemy[i].image = enemyImageLUT[enemyImages[i]]; // assign the monster's pic
 				if (enemy[i].tileset >= GenericTilesetsCount)
+				{
 					return false; // enemy was outside the boundaries for acceptable tilesets - abort enemizer
+				}
+
 				bool oldSize = enemy[i].Large; // remember if enemy was small (false) or large (true)
 				List<byte> acceptablepalettes = en.palettesInTileset[enemy[i].tileset].Except(enemyImagePalettes[enemy[i].image]).ToList();
-				if(acceptablepalettes.Count == 0)
+				if (acceptablepalettes.Count == 0)
+				{
 					acceptablepalettes = en.palettesInTileset[enemy[i].tileset].ToList();
+				}
+
 				enemy[i].pal = acceptablepalettes.PickRandom(rng);
-				enemyImagePalettes[enemy[i].image].Add(enemy[i].pal);				
+				enemyImagePalettes[enemy[i].image].Add(enemy[i].pal);
 				// generate the stats for each monster
 				if (enemy[i].tier == -1)
 				{
@@ -2542,7 +3429,7 @@ namespace FF1Lib
 				else
 				{
 					en.enemiesInTileset[enemy[i].tileset].Add(i); // add enemy to enemiesInTileset unless it is a boss
-					// adjust HP, EXP, and GP if enemy changes size
+																  // adjust HP, EXP, and GP if enemy changes size
 					if (oldSize && enemy[i].Small) // large became small
 					{
 						enemy[i].hp *= 4;
@@ -2562,9 +3449,9 @@ namespace FF1Lib
 						enemy[i].gp /= 9;
 					}
 					int elemental = 9; // track elemental affinity for certain classes of monsters (elementals and dragons)
-					// generate monster's base elemental weakness/resist, type, and base name based on the monster image type
+									   // generate monster's base elemental weakness/resist, type, and base name based on the monster image type
 					enemy[i].critrate = 1; // default crit rate of 1 for most enemies
-					// generate most enemy BASE stats
+										   // generate most enemy BASE stats
 					ENE_rollEnemyStats(rng, enemy[i]);
 					switch (newEnemyImageLUT[enemy[i].image])
 					{
@@ -2722,7 +3609,10 @@ namespace FF1Lib
 							break;
 						case 25: // Large Elemental
 							if (elementalsSelected.Count > 0)
+							{
 								elemental = elementalsSelected.PickRandom(rng);
+							}
+
 							ENE_rollLargeElemental(rng, ref enemy[i], elemental);
 							switch (elemental)
 							{
@@ -2755,7 +3645,10 @@ namespace FF1Lib
 									break;
 							}
 							if (elemental != 9)
+							{
 								elementalsSelected.Remove(elemental);
+							}
+
 							break;
 						case 26: // Gargoyle
 							enemyNames[i] = "GOYLE";
@@ -2765,7 +3658,10 @@ namespace FF1Lib
 							break;
 						case 27: // Dragon Type 1
 							if (dragonsSelected.Count > 0)
+							{
 								elemental = dragonsSelected.PickRandom(rng);
+							}
+
 							ENE_rollDragon(rng, ref enemy[i], elemental);
 							switch (elemental)
 							{
@@ -2798,7 +3694,10 @@ namespace FF1Lib
 									break;
 							}
 							if (elemental != 9)
+							{
 								dragonsSelected.Remove(elemental);
+							}
+
 							break;
 						case 28: // Slime
 							enemyNames[i] = "FLAN";
@@ -2806,7 +3705,10 @@ namespace FF1Lib
 							enemy[i].elem_weakness = (byte)(rng.Between(1, 6) << 4); // can be fire, ice, fire+ice, lit, fire+lit, or ice+lit weak
 							enemy[i].elem_resist = (byte)((0b11111111 ^ enemy[i].elem_weakness) & 0b11111011); // resist all other elements except time
 							if (rng.Between(0, 1) == 1)
+							{
 								enemy[i].absorb = 255; // 50% chance of max absorb for this enemy type
+							}
+
 							break;
 						case 29: // Manticore
 							enemyNames[i] = "MANT";
@@ -2890,7 +3792,10 @@ namespace FF1Lib
 						case 42: // Small Elemental
 							enemyNames[i] = "AIR";
 							if (elementalsSelected.Count > 0)
+							{
 								elemental = elementalsSelected.PickRandom(rng);
+							}
+
 							ENE_rollSmallElemental(rng, ref enemy[i], elemental);
 							switch (elemental)
 							{
@@ -2923,7 +3828,10 @@ namespace FF1Lib
 									break;
 							}
 							if (elemental != 9)
+							{
 								elementalsSelected.Remove(elemental);
+							}
+
 							break;
 						case 43: // Chimera
 							enemyNames[i] = "BEAST";
@@ -2939,7 +3847,10 @@ namespace FF1Lib
 							break;
 						case 45: // Dragon Type 2
 							if (dragonsSelected.Count > 0)
+							{
 								elemental = dragonsSelected.PickRandom(rng);
+							}
+
 							ENE_rollDragon(rng, ref enemy[i], elemental);
 							switch (elemental)
 							{
@@ -2972,7 +3883,10 @@ namespace FF1Lib
 									break;
 							}
 							if (elemental != 9)
+							{
 								dragonsSelected.Remove(elemental);
+							}
+
 							break;
 						case 46: // Knight Type 1
 							enemyNames[i] = "KNIGHT";
@@ -3061,7 +3975,10 @@ namespace FF1Lib
 						enemy[i].atk_elem = 0b00000010;
 						enemy[i].atk_ailment = 0b00000010;
 						if (enemy[i].num_hits > 1)
+						{
 							enemy[i].num_hits--;
+						}
+
 						hasGlobalPerk = true;
 					}
 					else if (i == Enemy.Sorceror)
@@ -3192,27 +4109,47 @@ namespace FF1Lib
 										{
 											case 0:
 												if ((enemy[i].elem_weakness & 0b10000000) == 0b10000000)
+												{
 													enemy[i].elem_weakness &= 0b01111111;
+												}
 												else
+												{
 													enemy[i].elem_resist |= 0b10000000;
+												}
+
 												break;
 											case 1:
 												if ((enemy[i].elem_weakness & 0b01000000) == 0b01000000)
+												{
 													enemy[i].elem_weakness &= 0b10111111;
+												}
 												else
+												{
 													enemy[i].elem_resist |= 0b01000000;
+												}
+
 												break;
 											case 2:
 												if ((enemy[i].elem_weakness & 0b00100000) == 0b00100000)
+												{
 													enemy[i].elem_weakness &= 0b11011111;
+												}
 												else
+												{
 													enemy[i].elem_resist |= 0b00100000;
+												}
+
 												break;
 											case 3:
 												if ((enemy[i].elem_weakness & 0b00010000) == 0b00001000)
+												{
 													enemy[i].elem_weakness &= 0b11101111;
+												}
 												else
+												{
 													enemy[i].elem_resist |= 0b00010000;
+												}
+
 												break;
 											default:
 												break;
@@ -3225,27 +4162,47 @@ namespace FF1Lib
 										{
 											case 0:
 												if ((enemy[i].elem_resist & 0b10000000) == 0b10000000)
+												{
 													didPerkRoll = false;
+												}
 												else
+												{
 													enemy[i].elem_weakness |= 0b10000000;
+												}
+
 												break;
 											case 1:
 												if ((enemy[i].elem_resist & 0b01000000) == 0b01000000)
+												{
 													enemy[i].elem_resist &= 0b10111111;
+												}
 												else
+												{
 													enemy[i].elem_weakness |= 0b01000000;
+												}
+
 												break;
 											case 2:
 												if ((enemy[i].elem_resist & 0b00100000) == 0b00100000)
+												{
 													enemy[i].elem_resist &= 0b11011111;
+												}
 												else
+												{
 													enemy[i].elem_weakness |= 0b00100000;
+												}
+
 												break;
 											case 3:
 												if ((enemy[i].elem_resist & 0b00010000) == 0b00010000)
+												{
 													enemy[i].elem_resist &= 0b11101111;
+												}
 												else
+												{
 													enemy[i].elem_weakness |= 0b00010000;
+												}
+
 												break;
 											default:
 												break;
@@ -3286,27 +4243,47 @@ namespace FF1Lib
 										{
 											case 0:
 												if ((enemy[i].elem_resist & 0b00001000) == 0b00001000)
+												{
 													enemy[i].elem_resist &= 0b11110111;
+												}
 												else
+												{
 													enemy[i].elem_weakness |= 0b00001000;
+												}
+
 												break;
 											case 1:
 												if ((enemy[i].elem_resist & 0b00000100) == 0b00000100)
+												{
 													enemy[i].elem_resist &= 0b11111011;
+												}
 												else
+												{
 													enemy[i].elem_weakness |= 0b00000100;
+												}
+
 												break;
 											case 2:
 												if ((enemy[i].elem_resist & 0b00000010) == 0b00000010)
+												{
 													enemy[i].elem_resist &= 0b11111101;
+												}
 												else
+												{
 													enemy[i].elem_weakness |= 0b00000010;
+												}
+
 												break;
 											case 3:
 												if ((enemy[i].elem_resist & 0b00000001) == 0b00000001)
+												{
 													enemy[i].elem_resist &= 0b11111110;
+												}
 												else
+												{
 													enemy[i].elem_weakness |= 0b00000001;
+												}
+
 												break;
 											default:
 												break;
@@ -3349,7 +4326,7 @@ namespace FF1Lib
 									case MonsterPerks.PERK_STUNSLEEPTOUCH: // adds stun or sleep touch if enemy has no atk_ailment already
 										if (enemy[i].atk_ailment == 0)
 										{
-											enemy[i].atk_ailment = rng.Between(0, 1) == 0 ? (byte)0b00100000 : (byte)0b00010000;
+											enemy[i].atk_ailment = rng.Between(0, 1) == 0 ? 0b00100000 : 0b00010000;
 											enemy[i].atk_elem = 0b00000001;
 											enemy[i].exp *= 103;
 											enemy[i].exp /= 100;
@@ -3382,11 +4359,16 @@ namespace FF1Lib
 								monsterNameVariants[newEnemyImageLUT[enemy[i].image]].Remove(nameModifier);
 							}
 							else
+							{
 								monsterBaseNameUsed[newEnemyImageLUT[enemy[i].image]] = true;
+							}
 						}
 					}
 					if (enemy[i].AIscript != 0xFF) // set monster type to Mage if it has a script
+					{
 						enemy[i].monster_type |= 0b01000000;
+					}
+
 					for (int j = 1; j < enemy[i].num_hits; ++j) // for each hit past the first, reduce the base damage by one for every 15 points of damage rating
 					{
 						enemy[i].damage = enemy[i].damage - (enemy[i].damage / 15);
@@ -3400,23 +4382,33 @@ namespace FF1Lib
 					enemy[i].hp = rng.Between(enemy[i].hp - (enemy[i].hp / 30), enemy[i].hp + (enemy[i].hp / 30)); // variance for hp rating
 					enemy[i].gp = rng.Between(enemy[i].gp - (enemy[i].gp / 20), enemy[i].gp + (enemy[i].gp / 20)); // variance for gp reward
 					enemy[i].exp = rng.Between(enemy[i].exp - (enemy[i].exp / 40), enemy[i].exp + (enemy[i].exp / 40)); // variance for exp reward
-					if(enemy[i].AIscript != 0xFF)
+					if (enemy[i].AIscript != 0xFF)
 					{
 						// determine skill tier
 						int highestTier = 0;
-						foreach(byte id in script[enemy[i].AIscript].skill_list)
+						foreach (byte id in script[enemy[i].AIscript].skill_list)
 						{
 							if (id == 0xFF)
+							{
 								continue;
+							}
+
 							if (skill[id].tier > highestTier)
+							{
 								highestTier = skill[id].tier;
+							}
 						}
-						foreach(byte id in script[enemy[i].AIscript].spell_list)
+						foreach (byte id in script[enemy[i].AIscript].spell_list)
 						{
 							if (id == 0xFF)
+							{
 								continue;
+							}
+
 							if (spell[id].tier > highestTier)
+							{
 								highestTier = spell[id].tier;
+							}
 						}
 						enemy[i].skilltier = highestTier;
 					}
@@ -3424,7 +4416,7 @@ namespace FF1Lib
 			}
 			for (int i = 0; i < GenericTilesetsCount; ++i) // remove palettes from tilesets where there are no mons using those palettes
 			{
-				List<byte> palRemoveList = new List<byte> { };
+				List<byte> palRemoveList = new() { };
 				foreach (byte pal in en.palettesInTileset[i])
 				{
 					bool nopalettematch = true;
@@ -3455,15 +4447,23 @@ namespace FF1Lib
 				for (byte j = 0; j < 8; ++j)
 				{
 					if (script[i].spell_list[j] == 0xFF)
+					{
 						continue; // skip blank spells
+					}
+
 					int whichTier = spell[script[i].spell_list[j]].tier;
 					if (whichTier == 0)
+					{
 						whichTier = 1; // tier 0 becomes tier 1
-					List<byte> eligibleSpellIDs = new List<byte> { };
+					}
+
+					List<byte> eligibleSpellIDs = new() { };
 					for (byte k = 0; k < 64; ++k)
 					{
 						if (spell[k].tier == whichTier)
+						{
 							eligibleSpellIDs.Add(k);
+						}
 					}
 					script[i].spell_list[j] = eligibleSpellIDs.PickRandom(rng);
 				}
@@ -3475,22 +4475,30 @@ namespace FF1Lib
 		{
 			// code modification to allow any formation except 0x00 to be a trap (lifted from ShuffleTrapTiles)
 			Data[0x7CDC5] = 0xD0; // changes the game's programming
-			bool IsBattleTile(Blob tuple) => tuple[0] == 0x0A;
-			bool IsRandomBattleTile(Blob tuple) => IsBattleTile(tuple) && (tuple[1] & 0x80) != 0x00;
+			bool IsBattleTile(Blob tuple)
+			{
+				return tuple[0] == 0x0A;
+			}
+
+			bool IsRandomBattleTile(Blob tuple)
+			{
+				return IsBattleTile(tuple) && (tuple[1] & 0x80) != 0x00;
+			}
+
 			var tilesets = Get(TilesetDataOffset, TilesetDataCount * TilesetDataSize * TilesetCount).Chunk(TilesetDataSize).ToList();
-			tilesets.ForEach(tile => { if (IsRandomBattleTile(tile)) tile[1] = 0x00; });
+			tilesets.ForEach(tile => { if (IsRandomBattleTile(tile)) { tile[1] = 0x00; } });
 			Put(TilesetDataOffset, tilesets.SelectMany(tileset => tileset.ToBytes()).ToArray());// set all random battle tiles to zero
 
 			SpellInfo[] spell = LoadSpells(); // list of spells and their appropriate tiers
 			EnemySkillInfo[] skill = new EnemySkillInfo[EnemySkillCount]; // list of enemy skills and their appropriate tiers
 			EnemyScriptInfo[] script = new EnemyScriptInfo[ScriptCount]; // list of enemy scripts
-			
+
 			// load vanilla values from ROM into the enemizer
 			byte[] skilltiers_enemy = new byte[]
 			{
 				3, 2, 3, 1, 2, 1, 4, 3, 3, 4, 4, 4, 5, 3, 4, 3, 4, 4, 4, 1, 5, 2, 2, 1, 5, 5
 			};
-			for(int i = 0; i < EnemySkillCount; ++i)
+			for (int i = 0; i < EnemySkillCount; ++i)
 			{
 				skill[i] = new EnemySkillInfo();
 				skill[i].decompressData(Get(EnemySkillOffset + (i * EnemySkillSize), EnemySkillSize));
@@ -3500,12 +4508,12 @@ namespace FF1Lib
 			{
 				script[i] = new EnemyScriptInfo();
 				script[i].decompressData(Get(ScriptOffset + (i * ScriptSize), ScriptSize));
-			}	
+			}
 			EnemyInfo[] enemy = new EnemyInfo[EnemyCount]; // list of enemies, including information that is either inferred from formation inspection or tier lists that I have just made up
-			EnemizerTrackingInfo en = new EnemizerTrackingInfo(); // structure that contains many lists and other information that is helpful for managing formation generation efficiently
-			// set enemy default tier list.  these listings are based on a combination of where the enemy is placed in the game, its xp yield, its rough difficulty, whether it has a script or not, and gut feels
-			// -1 indicates a monster with special rules for enemy generation (usually a boss_
-			int[] enemyTierList = new int[] {	 -1, 0, 0, 1, 1, 3, 1, 6, 5, 4, 6, 6, 0, 1, 4, -1,
+			EnemizerTrackingInfo en = new(); // structure that contains many lists and other information that is helpful for managing formation generation efficiently
+											 // set enemy default tier list.  these listings are based on a combination of where the enemy is placed in the game, its xp yield, its rough difficulty, whether it has a script or not, and gut feels
+											 // -1 indicates a monster with special rules for enemy generation (usually a boss_
+			int[] enemyTierList = new int[] {    -1, 0, 0, 1, 1, 3, 1, 6, 5, 4, 6, 6, 0, 1, 4, -1,
 												  1, 2, 5, 0, 7, 0, 3, 1, 2, 2, 4, 2, 2, 5, 1, 2,
 												  5, 2, 5, 3, 4, 4, 5, 1, 2, 3, 5, 0, 1, 1, 2, 8,
 												  5, 5, 7, -1, 4, 5, 4, 4, 4, 5, 3, 4, 5, 7, 1, 3,
@@ -3518,12 +4526,12 @@ namespace FF1Lib
 				enemy[i] = new EnemyInfo();
 				enemy[i].decompressData(Get(EnemyOffset + (i * EnemySize), EnemySize));
 				enemy[i].tier = enemyTierList[i];
-			}		
+			}
 			string[] enemyNames = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount); // load all the enemy names into the array for use by enemizer
 			string[] skillNames = ReadText(EnemySkillTextPointerOffset, EnemySkillTextPointerBase, EnemySkillCount); // load all the names of enemy skills
 			for (int i = 0; i < FormationCount; ++i) // we need to scour the formations list for enemy information, and to give the enemizer tracking info construct information it can work with
 			{
-				FormationInfo f = new FormationInfo();
+				FormationInfo f = new();
 				f.decompressData(Get(FormationDataOffset + (i * FormationSize), FormationSize));
 				en.ReadEnemyDataFromFormation(f, enemy);
 			}
@@ -3536,8 +4544,8 @@ namespace FF1Lib
 			if (doEnemies)
 			{
 				byte[] patterntabledata = Get(EnemyPatternTablesOffset, 0x6800); // each pattern table is 0x800 bytes and there are 13 pattern tables that we will edit
-				// do enemizer stuff
-				if(DoEnemizer_Enemies(rng, enemy, patterntabledata, spell, skill, script, enemyNames, skillNames, shuffledSkillsOn, en))
+																				 // do enemizer stuff
+				if (DoEnemizer_Enemies(rng, enemy, patterntabledata, spell, skill, script, enemyNames, skillNames, shuffledSkillsOn, en))
 				{
 					doFormations = true; // must use formation generator with enemizer
 					for (int i = 0; i < EnemyCount; ++i)
@@ -3549,8 +4557,8 @@ namespace FF1Lib
 					{
 						Put(ScriptOffset + (ScriptSize * i), script[i].compressData()); // and move the modified scripts as well
 					}
-					var enemyTextPart1 = enemyNames.Take(2).ToArray();
-					var enemyTextPart2 = enemyNames.Skip(2).ToArray();
+					string[] enemyTextPart1 = enemyNames.Take(2).ToArray();
+					string[] enemyTextPart2 = enemyNames.Skip(2).ToArray();
 					WriteText(enemyTextPart1, EnemyTextPointerOffset, EnemyTextPointerBase, 0x2CFEC);
 					WriteText(enemyTextPart2, EnemyTextPointerOffset + 4, EnemyTextPointerBase, EnemyTextOffset);
 					WriteText(skillNames, EnemySkillTextPointerOffset, EnemySkillTextPointerBase, EnemySkillTextOffset);
@@ -3561,7 +4569,7 @@ namespace FF1Lib
 					throw new InsaneException("Something went wrong with Enemy Generation (Enemizer)!");
 				}
 			}
-			if(doFormations)
+			if (doFormations)
 			{
 				if (!doEnemies)
 				{
@@ -3569,8 +4577,8 @@ namespace FF1Lib
 					DoEnemizer_EnemyPatternTablesOnly(rng, patterntabledata, enemy, en); // rewrite the pattern tables and enemy palette assignments
 					Put(EnemyPatternTablesOffset, patterntabledata); // write the new pattern tables as a chunk
 				}
-					
-				if(!DoEnemizer_Formations(rng, enemy, en))
+
+				if (!DoEnemizer_Formations(rng, enemy, en))
 				{
 					Console.WriteLine("Fission Mailed - Abort Formation Shuffle");
 					throw new InsaneException("Something went wrong with Formation Generation (Enemizer)!");
@@ -3608,8 +4616,8 @@ namespace FF1Lib
 			}
 
 			EnemyInfo[] enemy = new EnemyInfo[EnemyCount]; // list of enemies, including information that is either inferred from formation inspection or tier lists that I have just made up
-			// set enemy default tier list.  these tier rankings are different from the enemizer basis, but show the kind of skills/spells that are prioritized
-			// when a script lands on that monster.  the final 10 enemies are warmech, the fiends, and chaos.
+														   // set enemy default tier list.  these tier rankings are different from the enemizer basis, but show the kind of skills/spells that are prioritized
+														   // when a script lands on that monster.  the final 10 enemies are warmech, the fiends, and chaos.
 			int[] enemyTierList = new int[] {     -1, 1, 1, 1, 1, 2, 1, 3, 3, 2, 3, 3, 1, 1, 3, 1,
 												  1, 1, 3, 1, 4, 1, 1, 1, 1, 1, 2, 1, 1, 3, 1, 1,
 												  3, 1, 2, 2, 2, 2, 3, 1, 1, 2, 3, 1, 1, 1, 1, 4,
@@ -3619,7 +4627,10 @@ namespace FF1Lib
 												  4, 3, 3, 3, 4, 3, 4, 1, 3, 1, 4, 4, 3, 3, 5, 3,
 												  4, 3, 3, 4, 1, 3, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
 			if (swolePirates)
+			{
 				enemyTierList[Enemy.Pirate] = 3;
+			}
+
 			for (int i = 0; i < EnemyCount; ++i)
 			{
 				enemy[i] = new EnemyInfo();
@@ -3629,17 +4640,23 @@ namespace FF1Lib
 
 			bool[] scriptRepeat = new bool[ScriptCount];
 			int[] scriptLowestTier = new int[ScriptCount];
-			for(int i = 0; i < ScriptCount; ++i)
+			for (int i = 0; i < ScriptCount; ++i)
 			{
 				scriptRepeat[i] = false;
 				scriptLowestTier[i] = 10;
 			}
-			for(int i = 1; i < EnemyCount - 10; ++i)
+			for (int i = 1; i < EnemyCount - 10; ++i)
 			{
 				if (enemy[i].AIscript == 0xFF)
+				{
 					continue; // skip any enemy without a script
+				}
+
 				if (scriptRepeat[enemy[i].AIscript] && enemy[i].tier >= scriptLowestTier[enemy[i].AIscript])
+				{
 					continue; // skip medusa script if this enemy is stronger than another monster with the medusa script
+				}
+
 				scriptRepeat[enemy[i].AIscript] = true;
 				scriptLowestTier[enemy[i].AIscript] = enemy[i].tier;
 				int[] tierchance = new int[5];
@@ -3695,58 +4712,76 @@ namespace FF1Lib
 				for (byte j = 0; j < 4; ++j)
 				{
 					if (script[enemy[i].AIscript].skill_list[j] == 0xFF)
+					{
 						continue; // skip blank skills
+					}
+
 					int diceRoll = rng.Between(0, 9);
-					List<byte> eligibleSkillIDs = new List<byte> { };
+					List<byte> eligibleSkillIDs = new() { };
 					int sumRoll = 0;
-					for(int k = 0; k < 4; ++k)
+					for (int k = 0; k < 4; ++k)
 					{
 						sumRoll += skilltierchance[k];
-						if(diceRoll < sumRoll)
+						if (diceRoll < sumRoll)
 						{
-							for(byte l = 0; l < EnemySkillCount; ++l)
+							for (byte l = 0; l < EnemySkillCount; ++l)
 							{
 								if (skill[l].tier == k + 1)
+								{
 									eligibleSkillIDs.Add(l);
+								}
 							}
 							break;
 						}
 					}
 					if (eligibleSkillIDs.Count == 0)
+					{
 						script[enemy[i].AIscript].skill_list[j] = 0xFF;
+					}
 					else
+					{
 						script[enemy[i].AIscript].skill_list[j] = eligibleSkillIDs.PickRandom(rng);
+					}
 				}
 				// cycle through spells, replacing each spell with a tier appropriate skill (first slot will always be the dominant spell tier for this enemy tier)
 				if (script[enemy[i].AIscript].spell_list[0] != 0xFF)
 				{
-					List<byte> eligibleSpellIDs = new List<byte> { };
+					List<byte> eligibleSpellIDs = new() { };
 					int bestTier = 1;
 					int bestValue = -1;
-					for(int j = 0; j < 5; ++j)
+					for (int j = 0; j < 5; ++j)
 					{
-						if(tierchance[j] > bestValue)
+						if (tierchance[j] > bestValue)
 						{
 							bestValue = tierchance[j];
 							bestTier = j + 1;
 						}
 					}
-					for(byte j = 0; j < MagicCount; ++j)
+					for (byte j = 0; j < MagicCount; ++j)
 					{
 						if (spell[j].tier == bestTier)
+						{
 							eligibleSpellIDs.Add(j);
+						}
 					}
 					if (eligibleSpellIDs.Count == 0)
+					{
 						script[enemy[i].AIscript].spell_list[0] = 0xFF;
+					}
 					else
+					{
 						script[enemy[i].AIscript].spell_list[0] = eligibleSpellIDs.PickRandom(rng);
+					}
 				}
 				for (byte j = 1; j < 8; ++j)
 				{
 					if (script[enemy[i].AIscript].spell_list[j] == 0xFF)
+					{
 						continue; // skip blank skills
+					}
+
 					int diceRoll = rng.Between(0, 9);
-					List<byte> eligibleSpellIDs = new List<byte> { };
+					List<byte> eligibleSpellIDs = new() { };
 					int sumRoll = 0;
 					for (int k = 0; k < 5; ++k)
 					{
@@ -3756,15 +4791,21 @@ namespace FF1Lib
 							for (byte l = 0; l < MagicCount; ++l)
 							{
 								if (spell[l].tier == k + 1)
+								{
 									eligibleSpellIDs.Add(l);
+								}
 							}
 							break;
 						}
 					}
 					if (eligibleSpellIDs.Count == 0)
+					{
 						script[enemy[i].AIscript].spell_list[j] = 0xFF;
+					}
 					else
+					{
 						script[enemy[i].AIscript].spell_list[j] = eligibleSpellIDs.PickRandom(rng);
+					}
 				}
 			}
 			// write the modified scripts to ROM
@@ -3776,7 +4817,7 @@ namespace FF1Lib
 
 		public SpellInfo[] LoadSpells()
 		{
-			var spell = new SpellInfo[MagicCount];
+			SpellInfo[] spell = new SpellInfo[MagicCount];
 			for (int i = 0; i < MagicCount; ++i)
 			{
 				spell[i] = new SpellInfo();

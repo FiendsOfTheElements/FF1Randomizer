@@ -7,7 +7,7 @@ namespace FF1Lib
 	public partial class FF1Rom : NesRom
 	{
 		// A fun list of initial victory pages. Classic mistranslations.
-		private static readonly List<string[]> VictoryMessages = new List<string[]>
+		private static readonly List<string[]> VictoryMessages = new()
 		{
 			new[] // Punchout
 			{
@@ -19,7 +19,7 @@ namespace FF1Lib
 				"SUCH FINGER",
 				"SPEED BEFORE.",
 			},
-			new [] // Contra
+			new[] // Contra
 			{
 				"CONGRATULATIONS!",
 				"YOU'VE DESTROYED",
@@ -30,7 +30,7 @@ namespace FF1Lib
 				"CONSIDER",
 				"YOURSELF HEROES.",
 			},
-			new [] // SMB
+			new[] // SMB
 			{
 				"",
 				"THANK YOU",
@@ -40,7 +40,7 @@ namespace FF1Lib
 				"IS IN ANOTHER",
 				"TIMELINE!",
 			},
-			new [] // Snow Brothers
+			new[] // Snow Brothers
 			{
 				"",
 				"Congratulation!",
@@ -48,14 +48,14 @@ namespace FF1Lib
 				"    Let's  Go",
 				"     Stage 2",
 			},
-			new [] // Pro Wrestling
+			new[] // Pro Wrestling
 			{
 				"",
 				"  Ranked No. 1",
 				"",
 				"A Winner Is You",
 			},
-			new [] // Ghostbusters
+			new[] // Ghostbusters
 			{
 				"Conglaturation!!",
 				"",
@@ -65,13 +65,13 @@ namespace FF1Lib
 				"justice of our",
 				"culture.",
 			},
-			new [] // Castlevania
+			new[] // Castlevania
 			{
 				"YOU PLAYED THE",
 				"GREATEST ROLE",
 				"IN THIS STORY."
 			},
-			new [] // Bad Dudes
+			new[] // Bad Dudes
 			{
 				"HEY WARRIORS,",
 				"THANKS FOR",
@@ -80,7 +80,7 @@ namespace FF1Lib
 				"BURGER....",
 				"HA! HA! HA! HA!"
 			},
-			new [] // Metroid
+			new[] // Metroid
 			{
 				"GREAT !!",
 				"YOU FULFILED",
@@ -93,7 +93,7 @@ namespace FF1Lib
 				//"PRAY FOR A TRUE",
 				//"PEACE IN SPACE!"
 			},
-			new [] // Dragon Warrior
+			new[] // Dragon Warrior
 			{
 				"And thus the",
 				"tale comes to an",
@@ -101,7 +101,7 @@ namespace FF1Lib
 				"Garland returns",
 				"again."
 			},
-			new [] // Guardian Legend
+			new[] // Guardian Legend
 			{
 				"MISSION",
 				"  COMPLETE.",
@@ -110,7 +110,7 @@ namespace FF1Lib
 				"  GREATEST",
 				"     PLAYER."
 			},
-			new [] // Zelda
+			new[] // Zelda
 			{
 				"YOU ARE GREAT!",
 				"YOU HAVE AN",
@@ -120,14 +120,14 @@ namespace FF1Lib
 				"'FINAL FANTASY",
 				"1 RANDOMIZER'"
 			},
-			new [] // Ghosts and Goblins
+			new[] // Ghosts and Goblins
 			{
 				"CONGRATURATION",
 				"THIS STORY IS",
 				"HAPPY END.",
 				"THANK YOU."
 			},
-			new [] // Friday the 13th
+			new[] // Friday the 13th
 			{
 				"YOU HAVE FINALLY",
 				"MANAGED TO",
@@ -142,9 +142,9 @@ namespace FF1Lib
 
 		// Story pages. The first set is before the credits.
 		// The second set is the ending cinematic with counters.
-		private static readonly List<string[]> BridgeStory = new List<string[]>
+		private static readonly List<string[]> BridgeStory = new()
 		{
-			new []
+			new[]
 			{
 				"",
 				" Final  Fantasy",
@@ -156,9 +156,9 @@ namespace FF1Lib
 			},
 		};
 
-		private static readonly List<string[]> ThankYous = new List<string[]>
+		private static readonly List<string[]> ThankYous = new()
 		{
-			new []
+			new[]
 			{
 				"",
 				" Final  Fantasy",
@@ -168,7 +168,7 @@ namespace FF1Lib
 				"  Credits and",
 				"Acknowledgements",
 			},
-			new [] {
+			new[] {
 				" Final Fantasy",
 				" Original Team",
 				"",
@@ -178,7 +178,7 @@ namespace FF1Lib
 				" Kenji Terada",
 				" Square A-Team",
 			},
-			new [] {
+			new[] {
 				"SlickProductions",
 				"",
 				"   FFHackster",
@@ -188,7 +188,7 @@ namespace FF1Lib
 				"",
 				"     Disch",
 			},
-			new []
+			new[]
 			{
 				" FFR Developers",
 				"",
@@ -199,7 +199,7 @@ namespace FF1Lib
 				" tartopan",
 				" wildham",
 			},
-			new []
+			new[]
 			{
 				" Contributors",
 				"",
@@ -211,7 +211,7 @@ namespace FF1Lib
 				" onefineday",
 				" Darkmoon",
 			},
-			new []
+			new[]
 			{
 				"  Playtesting",
 				"",
@@ -223,7 +223,7 @@ namespace FF1Lib
 				"  theCubeMiser",
 				"  Beefucurry",
 			},
-			new []
+			new[]
 			{
 				"  Playtesting",
 				"",
@@ -234,7 +234,7 @@ namespace FF1Lib
 				"  Buffalax",
 				"  crimsonavix",
 			},
-			new []
+			new[]
 			{
 				" Special Thanks",
 				"",
@@ -246,7 +246,7 @@ namespace FF1Lib
 				" The Entire FFR ",
 				"    Community   ",
 			},
-			new []
+			new[]
 			{
 				"",
 				"",
@@ -269,7 +269,7 @@ namespace FF1Lib
 			// Setup DrawComplexString hijack for a particular escape sequence. See Credits.asm.
 			Put(0x7DFA8, Blob.FromHex("A000A200B13EE63ED002E63F9510E8E003D0F18C1D608C1E60B111991C60C8C410D0F64C45DE"));
 
-			List<Blob> pages = new List<Blob>();
+			List<Blob> pages = new();
 			BridgeStory.ForEach(story => pages.Add(FF1Text.TextToStory(story)));
 
 			// An unused escape code from DrawComplexString is overridden allowing the following:
@@ -336,7 +336,7 @@ namespace FF1Lib
 			System.Diagnostics.Debug.Assert(storyText.Length <= 0x0500, "Story text too large!");
 
 			Put(0x36800, storyText);
-			Data[0x36E00] = (byte)(BridgeStory.Count);
+			Data[0x36E00] = (byte)BridgeStory.Count;
 			Data[0x36E01] = (byte)(pages.Count - 1);
 		}
 
@@ -349,10 +349,10 @@ namespace FF1Lib
 			// The lines have zero padding on all sides, and 16 usable characters in length.
 			// Don't worry about the inefficiency of spaces as they are all trimmed and the
 			// leading spaces are used to increment the PPU ptr precisely to save ROM space.
-			List<string[]> texts = new List<string[]>
+			List<string[]> texts = new()
 			{
 
-				new []
+				new[]
 				{
 					"",
 					"",
@@ -364,7 +364,7 @@ namespace FF1Lib
 			};
 
 			// Accumulate all our Credits pages before we set up the string pointer array.
-			List<Blob> pages = new List<Blob>();
+			List<Blob> pages = new();
 			texts.ForEach(text => pages.Add(FF1Text.TextToCredits(text)));
 
 			// Clobber the number of pages to render before we insert in the pointers.
@@ -378,7 +378,7 @@ namespace FF1Lib
 		private Blob PackageTextBlob(List<Blob> pages, ushort baseAddr)
 		{
 			// The first pointer is immediately after the pointer table.
-			List<ushort> ptrs = new List<ushort> { (ushort)(baseAddr + (pages.Count * 2)) };
+			List<ushort> ptrs = new() { (ushort)(baseAddr + (pages.Count * 2)) };
 			for (int i = 1; i < pages.Count; ++i)
 			{
 				ptrs.Add((ushort)(ptrs.Last() + pages[i - 1].Length));

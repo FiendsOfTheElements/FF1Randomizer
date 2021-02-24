@@ -1,10 +1,10 @@
+using System;
+using Xunit;
+
+using FFR.Common;
+
 namespace FFR.Common.Tests
 {
-	using System;
-	using Xunit;
-
-	using FFR.Common;
-
 	public class PresetTests
 	{
 		[Theory]
@@ -14,7 +14,7 @@ namespace FFR.Common.Tests
 		{
 			Presets.Add(name, flags);
 
-			var loaded = Presets.Load(name);
+			Preset loaded = Presets.Load(name);
 
 			Assert.Equal(name, loaded.Name);
 			Assert.Equal(flags, loaded.FlagString);
