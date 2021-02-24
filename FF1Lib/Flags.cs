@@ -742,7 +742,7 @@ namespace FF1Lib
 				else if (p.PropertyType == typeof(int))
 				{
 					IntegerFlagAttribute ia = p.GetCustomAttribute<IntegerFlagAttribute>();
-					var radix = (ia.Max - ia.Min) / ia.Step + 1;
+					var radix = ((ia.Max - ia.Min) / ia.Step) + 1;
 					var val = (int)p.GetValue(flags);
 					var raw_val = (val - ia.Min) / ia.Step;
 					sum = AddNumeric(sum, radix, raw_val);
@@ -785,9 +785,9 @@ namespace FF1Lib
 				else if (p.PropertyType == typeof(int))
 				{
 					IntegerFlagAttribute ia = p.GetCustomAttribute<IntegerFlagAttribute>();
-					var radix = (ia.Max - ia.Min) / ia.Step + 1;
+					var radix = ((ia.Max - ia.Min) / ia.Step) + 1;
 					var raw_val = GetNumeric(ref sum, radix);
-					var val = raw_val * ia.Step + ia.Min;
+					var val = (raw_val * ia.Step) + ia.Min;
 					p.SetValue(flags, val);
 				}
 				else if (p.PropertyType == typeof(double))
@@ -795,7 +795,7 @@ namespace FF1Lib
 					DoubleFlagAttribute ia = p.GetCustomAttribute<DoubleFlagAttribute>();
 					var radix = (int)Math.Ceiling((ia.Max - ia.Min) / ia.Step) + 1;
 					var raw_val = GetNumeric(ref sum, radix);
-					var val = Math.Min(Math.Max(raw_val * ia.Step + ia.Min, ia.Min), ia.Max);
+					var val = Math.Min(Math.Max((raw_val * ia.Step) + ia.Min, ia.Min), ia.Max);
 					p.SetValue(flags, val);
 				}
 			}
@@ -811,7 +811,7 @@ namespace FF1Lib
 
 		private static BigInteger AddEnum<T>(BigInteger sum, T value) => AddNumeric(sum, Enum.GetValues(typeof(T)).Cast<int>().Max() + 1, Convert.ToInt32(value));
 
-		private static BigInteger AddNumeric(BigInteger sum, int radix, int value) => sum * radix + value;
+		private static BigInteger AddNumeric(BigInteger sum, int radix, int value) => (sum * radix) + value;
 		private static BigInteger AddString(BigInteger sum, int length, string str)
 		{
 			Encoding AsciiEncoding = Encoding.ASCII;
@@ -820,7 +820,7 @@ namespace FF1Lib
 			BigInteger LargestInt = new BigInteger(Math.Pow(0xFF, bytes.Length) - 1);
 
 
-			return sum * LargestInt + StringAsBigInt;
+			return (sum * LargestInt) + StringAsBigInt;
 		}
 		private static BigInteger AddBoolean(BigInteger sum, bool value) => AddNumeric(sum, 2, value ? 1 : 0);
 		private static int TriStateValue(bool? value) => value.HasValue ? (value.Value ? 1 : 0) : 2;

@@ -538,25 +538,25 @@ namespace FF1Lib
 			// "forward" stairs look like they go up.
 			for (int i = 1; i < 8; i++)
 			{
-				Put(0x1000 + i * 0x200 + tilesets[i].warptile + 0x000, Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].warpgraphic.topleft })));
-				Put(0x1000 + i * 0x200 + tilesets[i].warptile + 0x080, Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].warpgraphic.topright })));
-				Put(0x1000 + i * 0x200 + tilesets[i].warptile + 0x100, Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].warpgraphic.botleft })));
-				Put(0x1000 + i * 0x200 + tilesets[i].warptile + 0x180, Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].warpgraphic.botright })));
+				Put(0x1000 + (i * 0x200) + tilesets[i].warptile + 0x000, Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].warpgraphic.topleft })));
+				Put(0x1000 + (i * 0x200) + tilesets[i].warptile + 0x080, Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].warpgraphic.topright })));
+				Put(0x1000 + (i * 0x200) + tilesets[i].warptile + 0x100, Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].warpgraphic.botleft })));
+				Put(0x1000 + (i * 0x200) + tilesets[i].warptile + 0x180, Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].warpgraphic.botright })));
 				for (int j = 0; j < tilesets[i].teleportdeck.Count(); j++)
 				{
 					if (tilesets[i].teleportdeck[j] >= 0x80)
 					{
-						Put(0x1000 + i * 0x200 + 0x000 + (tilesets[i].teleportdeck[j] % 0x80), Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].laddergraphic.topleft })));
-						Put(0x1000 + i * 0x200 + 0x080 + (tilesets[i].teleportdeck[j] % 0x80), Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].laddergraphic.topright })));
-						Put(0x1000 + i * 0x200 + 0x100 + (tilesets[i].teleportdeck[j] % 0x80), Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].laddergraphic.botleft })));
-						Put(0x1000 + i * 0x200 + 0x180 + (tilesets[i].teleportdeck[j] % 0x80), Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].laddergraphic.botright })));
+						Put(0x1000 + (i * 0x200) + 0x000 + (tilesets[i].teleportdeck[j] % 0x80), Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].laddergraphic.topleft })));
+						Put(0x1000 + (i * 0x200) + 0x080 + (tilesets[i].teleportdeck[j] % 0x80), Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].laddergraphic.topright })));
+						Put(0x1000 + (i * 0x200) + 0x100 + (tilesets[i].teleportdeck[j] % 0x80), Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].laddergraphic.botleft })));
+						Put(0x1000 + (i * 0x200) + 0x180 + (tilesets[i].teleportdeck[j] % 0x80), Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].laddergraphic.botright })));
 					}
 					else
 					{
-						Put(0x1000 + i * 0x200 + 0x000 + tilesets[i].teleportdeck[j], Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].teleportgraphic.topleft })));
-						Put(0x1000 + i * 0x200 + 0x080 + tilesets[i].teleportdeck[j], Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].teleportgraphic.topright })));
-						Put(0x1000 + i * 0x200 + 0x100 + tilesets[i].teleportdeck[j], Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].teleportgraphic.botleft })));
-						Put(0x1000 + i * 0x200 + 0x180 + tilesets[i].teleportdeck[j], Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].teleportgraphic.botright })));
+						Put(0x1000 + (i * 0x200) + 0x000 + tilesets[i].teleportdeck[j], Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].teleportgraphic.topleft })));
+						Put(0x1000 + (i * 0x200) + 0x080 + tilesets[i].teleportdeck[j], Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].teleportgraphic.topright })));
+						Put(0x1000 + (i * 0x200) + 0x100 + tilesets[i].teleportdeck[j], Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].teleportgraphic.botleft })));
+						Put(0x1000 + (i * 0x200) + 0x180 + tilesets[i].teleportdeck[j], Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].teleportgraphic.botright })));
 					}
 				}
 			}
@@ -607,12 +607,12 @@ namespace FF1Lib
 			var lowest = 0;
 			for (int i = 8; i < 61; i++)
 			{
-				lowest = (i - 8) * ((0x72 * 2 - 8) / 52);
+				lowest = (i - 8) * (((0x72 * 2) - 8) / 52);
 				FormationLevel[] spinner = new FormationLevel[12];
 				Array.Copy(formationlevels, lowest, spinner, 0, 12);
 				for (int j = 0; j < 8; j++)
 				{
-					Put(0x2C200 + i * 8 + j, Blob.FromHex(Convert.ToHexString(new byte[] { spinner.PickRandom(rng).index })));
+					Put(0x2C200 + (i * 8) + j, Blob.FromHex(Convert.ToHexString(new byte[] { spinner.PickRandom(rng).index })));
 				}
 			}
 
@@ -658,7 +658,7 @@ namespace FF1Lib
 			var nexttown = 0;
 			for (int i = 0; i < 7; i++)
 			{
-				townfloors[i] = RollDice(rng, 2, 3) + i * 7 + 7;
+				townfloors[i] = RollDice(rng, 2, 3) + (i * 7) + 7;
 			}
 			towndestinations[0].x = 0x13;
 			towndestinations[0].y = 0x20;
@@ -720,13 +720,13 @@ namespace FF1Lib
 				// Connect it to the next map.
 				if (i < 60)
 				{
-					Put(0x800 + tilesetmappings[i] * 0x100 + 2 * PlaceExit(rng, maps[i], tilesets[tilesetmappings[i]]), Blob.FromHex("80" + Convert.ToHexString(new byte[] { (byte)(i - 8) })));
+					Put(0x800 + (tilesetmappings[i] * 0x100) + (2 * PlaceExit(rng, maps[i], tilesets[tilesetmappings[i]])), Blob.FromHex("80" + Convert.ToHexString(new byte[] { (byte)(i - 8) })));
 					Put(0x2D00 + i - 8, Blob.FromHex("20"));
 					Put(0x2D40 + i - 8, Blob.FromHex("A0"));
 					Put(0x2D80 + i - 8, Blob.FromHex(Convert.ToHexString(new byte[] { (byte)(i + 1) })));
 					if (townfloors[nexttown] == i)
 					{
-						Put(0x800 + tilesetmappings[i] * 0x100 + 2 * PlaceExit(rng, maps[i], tilesets[tilesetmappings[i]]), Blob.FromHex("80" + Convert.ToHexString(new byte[] { (byte)(nexttown + 53) })));
+						Put(0x800 + (tilesetmappings[i] * 0x100) + (2 * PlaceExit(rng, maps[i], tilesets[tilesetmappings[i]])), Blob.FromHex("80" + Convert.ToHexString(new byte[] { (byte)(nexttown + 53) })));
 						Put(0x2D00 + nexttown + 53, Blob.FromHex(Convert.ToHexString(new byte[] { (byte)towndestinations[nexttown].x })));
 						Put(0x2D40 + nexttown + 53, Blob.FromHex(Convert.ToHexString(new byte[] { (byte)(towndestinations[nexttown].y + 0x80) })));
 						Put(0x2D80 + nexttown + 53, Blob.FromHex(Convert.ToHexString(new byte[] { (byte)(nexttown + 1) })));
@@ -767,17 +767,17 @@ namespace FF1Lib
 				var pal = palettes[(OverworldMap.Palette)rng.Between(1, palettes.Count() - 1)];
 				if (tilesetmappings[i] == 1)
 				{
-					Put(OverworldMap.MapPaletteOffset + i * OverworldMap.MapPaletteSize + 8, pal.SubBlob(8, 8));
-					Put(OverworldMap.MapPaletteOffset + i * OverworldMap.MapPaletteSize + 40, pal.SubBlob(40, 8));
+					Put(OverworldMap.MapPaletteOffset + (i * OverworldMap.MapPaletteSize) + 8, pal.SubBlob(8, 8));
+					Put(OverworldMap.MapPaletteOffset + (i * OverworldMap.MapPaletteSize) + 40, pal.SubBlob(40, 8));
 				}
 				else
 				{
 					var paletteIndex = 32;
-					Put(OverworldMap.MapPaletteOffset + i * OverworldMap.MapPaletteSize + paletteIndex, pal.SubBlob(paletteIndex, 48 - paletteIndex));
-					Put(OverworldMap.MapPaletteOffset + i * OverworldMap.MapPaletteSize, pal.SubBlob(0, 16));
+					Put(OverworldMap.MapPaletteOffset + (i * OverworldMap.MapPaletteSize) + paletteIndex, pal.SubBlob(paletteIndex, 48 - paletteIndex));
+					Put(OverworldMap.MapPaletteOffset + (i * OverworldMap.MapPaletteSize), pal.SubBlob(0, 16));
 				}
 				// Make NPC palette look right
-				Put(OverworldMap.MapPaletteOffset + i * OverworldMap.MapPaletteSize + 24, Blob.FromHex("0F0F27360F0F1436"));
+				Put(OverworldMap.MapPaletteOffset + (i * OverworldMap.MapPaletteSize) + 24, Blob.FromHex("0F0F27360F0F1436"));
 			}
 		}
 
@@ -892,7 +892,7 @@ namespace FF1Lib
 			var v = Get(0x37C00, 0x200).Chunk(2);
 			for (int i = 0x1C; i < 0xAF; i++)
 			{
-				treasures.Add(new Treasure(v[i][0] + v[i][1] * 0x100, (byte)i));
+				treasures.Add(new Treasure(v[i][0] + (v[i][1] * 0x100), (byte)i));
 			}
 			treasures.Sort((x, y) => x.value.CompareTo(y.value));
 			// For each floor, we determine a "lowest" index in the sorted treasure contents list
@@ -948,7 +948,7 @@ namespace FF1Lib
 							// corresponding treasure in the box.
 							byte spunitem = 0;
 							chestsdropped++;
-							Put(0x800 + tilesetmappings[i] * 0x100 + maps[i][k, j] * 2, Blob.FromHex("09" + Convert.ToHexString(new byte[] { (byte)chestsdropped })));
+							Put(0x800 + (tilesetmappings[i] * 0x100) + (maps[i][k, j] * 2), Blob.FromHex("09" + Convert.ToHexString(new byte[] { (byte)chestsdropped })));
 							if (RollDice(rng, 1, 5) == 1)
 							{
 								switch ((i - 8) / 17)
@@ -982,7 +982,7 @@ namespace FF1Lib
 			// Three chests in three disjoint parts of the dungeon are replaced with Ribbon.
 			for (int i = 1; i <= 3; i++)
 			{
-				var ribbonfloor = RollDice(rng, 1, 8) + 8 + i * 8;
+				var ribbonfloor = RollDice(rng, 1, 8) + 8 + (i * 8);
 				while (chestsonfloor[ribbonfloor] - chestsonfloor[ribbonfloor - 1] == 0) ribbonfloor++;
 				var chestindex = RollDice(rng, 1, chestsonfloor[ribbonfloor] - chestsonfloor[ribbonfloor - 1]) + chestsonfloor[ribbonfloor - 1];
 				Put(0x3100 + chestindex, Blob.FromHex("63")); // 0x63 is the Ribbon item index
@@ -1439,7 +1439,7 @@ namespace FF1Lib
 			// Draw the initial box containing the "back" staircase.
 			int w = RollDice(rng, 3, 4);
 			int h = RollDice(rng, 3, 4);
-			CarveBox(m, t, 32 - w / 2, 32 - h / 2, w, h);
+			CarveBox(m, t, 32 - (w / 2), 32 - (h / 2), w, h);
 			m[32, 32] = t.warptile;
 
 			int attempts = 120;
@@ -1475,16 +1475,16 @@ namespace FF1Lib
 				switch (d)
 				{
 					case northdir:
-						if (CarveBox(m, t, c.x - w / 2, c.y - h, w, h)) m[c.y - 1, c.x] = t.floortile;
+						if (CarveBox(m, t, c.x - (w / 2), c.y - h, w, h)) m[c.y - 1, c.x] = t.floortile;
 						break;
 					case southdir:
-						if (CarveBox(m, t, c.x - w / 2, c.y + 1, w, h)) m[c.y + 1, c.x] = t.floortile;
+						if (CarveBox(m, t, c.x - (w / 2), c.y + 1, w, h)) m[c.y + 1, c.x] = t.floortile;
 						break;
 					case westdir:
-						if (CarveBox(m, t, c.x - w, c.y - h / 2, w, h)) m[c.y, c.x - 1] = t.floortile;
+						if (CarveBox(m, t, c.x - w, c.y - (h / 2), w, h)) m[c.y, c.x - 1] = t.floortile;
 						break;
 					case eastdir:
-						if (CarveBox(m, t, c.x + 1, c.y - h / 2, w, h)) m[c.y, c.x + 1] = t.floortile;
+						if (CarveBox(m, t, c.x + 1, c.y - (h / 2), w, h)) m[c.y, c.x + 1] = t.floortile;
 						break;
 					default:
 						break;

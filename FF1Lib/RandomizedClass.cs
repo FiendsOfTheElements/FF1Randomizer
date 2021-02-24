@@ -256,7 +256,7 @@ namespace FF1Lib
 					IntGrowth[j] = (levelUpStats[j * 2] & (byte)0x04) == 0 ? false : true;
 					VitGrowth[j] = (levelUpStats[j * 2] & (byte)0x02) == 0 ? false : true;
 					LckGrowth[j] = (levelUpStats[j * 2] & (byte)0x01) == 0 ? false : true;
-					SpCGrowth[j] = levelUpStats[j * 2 + 1];
+					SpCGrowth[j] = levelUpStats[(j * 2) + 1];
 				}
 			}
 
@@ -278,8 +278,8 @@ namespace FF1Lib
 				{
 					for (int j = 0; j < 4; j++)
 					{
-						whitePermissions[i*4+j] = (((~magicPermissions[i] & whiteArray[j]) > 0) ? true : false);
-						blackPermissions[i*4+j] = (((~magicPermissions[i] & blackArray[j]) > 0) ? true : false);
+						whitePermissions[(i*4)+j] = (((~magicPermissions[i] & whiteArray[j]) > 0) ? true : false);
+						blackPermissions[(i*4)+j] = (((~magicPermissions[i] & blackArray[j]) > 0) ? true : false);
 					}
 				}
 			}
@@ -295,10 +295,10 @@ namespace FF1Lib
 					var tempPermission = 0x00;
 					for (int j = 0; j < 4; j++)
 					{
-						if (whitePermissions[i * 4 + j])
+						if (whitePermissions[(i * 4) + j])
 							tempPermission |= whiteArray[j];
 
-						if (blackPermissions[i * 4 + j])
+						if (blackPermissions[(i * 4) + j])
 							tempPermission |= blackArray[j];
 					}
 					magicpermissions.Add((byte)~tempPermission);
@@ -1116,13 +1116,13 @@ namespace FF1Lib
 			{
 				if (shuffleStartingStats[i] + shuffleLevelUp[i].GetRange(0, 24).Where(x => x == true).Count() > (maxLvStats + maxStats - spreadStats))
 					statsRanks.Add(Rank.S);
-				else if (shuffleStartingStats[i] + shuffleLevelUp[i].GetRange(0, 24).Where(x => x == true).Count() > (maxLvStats + maxStats - spreadStats * 2))
+				else if (shuffleStartingStats[i] + shuffleLevelUp[i].GetRange(0, 24).Where(x => x == true).Count() > (maxLvStats + maxStats - (spreadStats * 2)))
 					statsRanks.Add(Rank.A);
-				else if (shuffleStartingStats[i] + shuffleLevelUp[i].GetRange(0, 24).Where(x => x == true).Count() > (maxLvStats + maxStats - spreadStats * 3))
+				else if (shuffleStartingStats[i] + shuffleLevelUp[i].GetRange(0, 24).Where(x => x == true).Count() > (maxLvStats + maxStats - (spreadStats * 3)))
 					statsRanks.Add(Rank.B);
-				else if (shuffleStartingStats[i] + shuffleLevelUp[i].GetRange(0, 24).Where(x => x == true).Count() > (maxLvStats + maxStats - spreadStats * 4))
+				else if (shuffleStartingStats[i] + shuffleLevelUp[i].GetRange(0, 24).Where(x => x == true).Count() > (maxLvStats + maxStats - (spreadStats * 4)))
 					statsRanks.Add(Rank.C);
-				else if (shuffleStartingStats[i] + shuffleLevelUp[i].GetRange(0, 24).Where(x => x == true).Count() > (maxLvStats + maxStats - spreadStats * 5))
+				else if (shuffleStartingStats[i] + shuffleLevelUp[i].GetRange(0, 24).Where(x => x == true).Count() > (maxLvStats + maxStats - (spreadStats * 5)))
 					statsRanks.Add(Rank.D);
 				else
 					statsRanks.Add(Rank.E);
@@ -1132,17 +1132,17 @@ namespace FF1Lib
 			{
 				var hpAverage25 = classData[i].HpStarting +
 					(shuffleHP[i].GetRange(0, 24).Where(x => x == true).Count() * 23) +
-					(shuffleStartingStats[i*7+3]/4 + shuffleLevelUp[i*5+3].Where(x => x == true).Count()/8)*24;
+					(((shuffleStartingStats[(i*7)+3]/4) + (shuffleLevelUp[(i*5)+3].Where(x => x == true).Count()/8))*24);
 
 				if (hpAverage25 > (maxLvHp))
 					hpRanks.Add(Rank.S);
 				else if (hpAverage25 > (maxLvHp - spreadLvHp))
 					hpRanks.Add(Rank.A);
-				else if (hpAverage25 > (maxLvHp - spreadLvHp * 2))
+				else if (hpAverage25 > (maxLvHp - (spreadLvHp * 2)))
 					hpRanks.Add(Rank.B);
-				else if (hpAverage25 > (maxLvHp - spreadLvHp * 3))
+				else if (hpAverage25 > (maxLvHp - (spreadLvHp * 3)))
 					hpRanks.Add(Rank.C);
-				else if (hpAverage25 > (maxLvHp - spreadLvHp * 4))
+				else if (hpAverage25 > (maxLvHp - (spreadLvHp * 4)))
 					hpRanks.Add(Rank.D);
 				else
 					hpRanks.Add(Rank.E);

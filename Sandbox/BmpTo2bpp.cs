@@ -62,9 +62,9 @@ namespace Sandbox
 					    {
 						    for (int i = 0; i < 8; i++)
 						    {
-							    var pixel = pixels[8 * x + i, 8 * y + j];
-							    lowBits[8 * j + i] = (pixel & 0x01) != 0;
-							    highBits[8 * j + i] = (pixel & 0x02) != 0;
+							    var pixel = pixels[(8 * x) + i, (8 * y) + j];
+							    lowBits[(8 * j) + i] = (pixel & 0x01) != 0;
+							    highBits[(8 * j) + i] = (pixel & 0x02) != 0;
 						    }
 						}
 

@@ -663,9 +663,9 @@ namespace FF1Lib
 			{
 				if (data.Length != EnemySize)
 					return; // don't bother decompressing data of invalid size
-				exp = data[0] + data[1] * 256;
-				gp = data[2] + data[3] * 256;
-				hp = data[4] + data[5] * 256;
+				exp = data[0] + (data[1] * 256);
+				gp = data[2] + (data[3] * 256);
+				hp = data[4] + (data[5] * 256);
 				morale = data[6];
 				AIscript = data[7];
 				agility = data[8];
@@ -938,7 +938,7 @@ namespace FF1Lib
 						enemiesInTileset[f.tileset].Add(f.id[i]);
 						// determine which pic is being used
 						int pict = (f.pics >> (i * 2)) & 0b00000011;
-						enemystats[f.id[i]].image = (byte)(f.tileset << 2 | pict);
+						enemystats[f.id[i]].image = (byte)((f.tileset << 2) | pict);
 						bool paletteassigned = (f.paletteassignment & (0b10000000 >> i)) != 0;
 						if (paletteassigned)
 							enemystats[f.id[i]].pal = f.pal2;
@@ -1446,7 +1446,7 @@ namespace FF1Lib
 			dom[0x160] = en.imp_encounter; dom[0x161] = en.imp_encounter; dom[0x162] = en.imp_encounter; dom[0x123] = en.imp_encounter;
 			dom[0x39E] = en.warmech_encounter; // replace 7th encounter on sky 5F with warmech
 			for (int i = 0; i < FormationDataCount; ++i) // write formation info to ROM
-				Put(FormationDataOffset + i * FormationDataSize, formationData[i]);
+				Put(FormationDataOffset + (i * FormationDataSize), formationData[i]);
 			Put(ZoneFormationsOffset, dom); // write the domain data as one big chunk
 			// write trap tile information
 			for (int i = 0; i < traptile_addresses.Length; ++i)
@@ -1832,7 +1832,7 @@ namespace FF1Lib
 			// roll number of hits
 			enemy.num_hits = rng.Between(1, 1 + (enemy.tier > 5 ? 5 : enemy.tier));
 			// roll valid damage tiers based on num_hits
-			int minDamageTier = 4 + enemy.tier / 3 - enemy.num_hits;
+			int minDamageTier = 4 + (enemy.tier / 3) - enemy.num_hits;
 			if (minDamageTier < 1)
 				minDamageTier = 1;
 			int maxDamageTier = 8 - enemy.num_hits;
@@ -2097,29 +2097,29 @@ namespace FF1Lib
 															48, 50, 49, 51 };
 			for (int i = 0; i < 13; ++i)
 			{
-				int small1offset = 0x800 * (smallImages[i * 2] / 4) + (smallImages[i * 2] % 4 == 0 ? 0x120 : 0x220);
-				int small2offset = 0x800 * (smallImages[i * 2 + 1] / 4) + (smallImages[i * 2 + 1] % 4 == 0 ? 0x120 : 0x220);
-				int large1offset = 0x800 * (largeImages[i * 2] / 4) + (largeImages[i * 2] % 4 == 1 ? 0x320 : 0x560);
-				int large2offset = 0x800 * (largeImages[i * 2 + 1] / 4) + (largeImages[i * 2 + 1] % 4 == 1 ? 0x320 : 0x560);
+				int small1offset = (0x800 * (smallImages[i * 2] / 4)) + (smallImages[i * 2] % 4 == 0 ? 0x120 : 0x220);
+				int small2offset = (0x800 * (smallImages[(i * 2) + 1] / 4)) + (smallImages[(i * 2) + 1] % 4 == 0 ? 0x120 : 0x220);
+				int large1offset = (0x800 * (largeImages[i * 2] / 4)) + (largeImages[i * 2] % 4 == 1 ? 0x320 : 0x560);
+				int large2offset = (0x800 * (largeImages[(i * 2) + 1] / 4)) + (largeImages[(i * 2) + 1] % 4 == 1 ? 0x320 : 0x560);
 				newEnemyImageLUT[i * 4] = smallImages[i * 2];
 				for (int j = 0; j < 0x100; ++j)
 				{
-					newPatternTableData[i * 0x800 + 0x120 + j] = patterntabledata[small1offset + j];
+					newPatternTableData[(i * 0x800) + 0x120 + j] = patterntabledata[small1offset + j];
 				}
-				newEnemyImageLUT[i * 4 + 2] = smallImages[i * 2 + 1];
+				newEnemyImageLUT[(i * 4) + 2] = smallImages[(i * 2) + 1];
 				for (int j = 0; j < 0x100; ++j)
 				{
-					newPatternTableData[i * 0x800 + 0x220 + j] = patterntabledata[small2offset + j];
+					newPatternTableData[(i * 0x800) + 0x220 + j] = patterntabledata[small2offset + j];
 				}
-				newEnemyImageLUT[i * 4 + 1] = largeImages[i * 2];
+				newEnemyImageLUT[(i * 4) + 1] = largeImages[i * 2];
 				for (int j = 0; j < 0x240; ++j)
 				{
-					newPatternTableData[i * 0x800 + 0x320 + j] = patterntabledata[large1offset + j];
+					newPatternTableData[(i * 0x800) + 0x320 + j] = patterntabledata[large1offset + j];
 				}
-				newEnemyImageLUT[i * 4 + 3] = largeImages[i * 2 + 1];
+				newEnemyImageLUT[(i * 4) + 3] = largeImages[(i * 2) + 1];
 				for (int j = 0; j < 0x240; ++j)
 				{
-					newPatternTableData[i * 0x800 + 0x560 + j] = patterntabledata[large2offset + j];
+					newPatternTableData[(i * 0x800) + 0x560 + j] = patterntabledata[large2offset + j];
 				}
 			}
 			newPatternTableData.CopyTo(patterntabledata, 0);
@@ -2222,29 +2222,29 @@ namespace FF1Lib
 															48, 50, 49, 51 };
 			for(int i = 0; i < 13; ++i)
 			{
-				int small1offset = 0x800 * (smallImages[i * 2] / 4) + (smallImages[i * 2] % 4 == 0 ? 0x120 : 0x220);
-				int small2offset = 0x800 * (smallImages[i * 2 + 1] / 4) + (smallImages[i * 2 + 1] % 4 == 0 ? 0x120 : 0x220);
-				int large1offset = 0x800 * (largeImages[i * 2] / 4) + (largeImages[i * 2] % 4 == 1 ? 0x320 : 0x560);
-				int large2offset = 0x800 * (largeImages[i * 2 + 1] / 4) + (largeImages[i * 2 + 1] % 4 == 1 ? 0x320 : 0x560);
+				int small1offset = (0x800 * (smallImages[i * 2] / 4)) + (smallImages[i * 2] % 4 == 0 ? 0x120 : 0x220);
+				int small2offset = (0x800 * (smallImages[(i * 2) + 1] / 4)) + (smallImages[(i * 2) + 1] % 4 == 0 ? 0x120 : 0x220);
+				int large1offset = (0x800 * (largeImages[i * 2] / 4)) + (largeImages[i * 2] % 4 == 1 ? 0x320 : 0x560);
+				int large2offset = (0x800 * (largeImages[(i * 2) + 1] / 4)) + (largeImages[(i * 2) + 1] % 4 == 1 ? 0x320 : 0x560);
 				newEnemyImageLUT[i * 4] = smallImages[i * 2];
 				for(int j = 0; j < 0x100; ++j)
 				{ 
-					newPatternTableData[i * 0x800 + 0x120 + j] = patterntabledata[small1offset + j];
+					newPatternTableData[(i * 0x800) + 0x120 + j] = patterntabledata[small1offset + j];
 				}
-				newEnemyImageLUT[i * 4 + 2] = smallImages[i * 2 + 1];
+				newEnemyImageLUT[(i * 4) + 2] = smallImages[(i * 2) + 1];
 				for (int j = 0; j < 0x100; ++j)
 				{
-					newPatternTableData[i * 0x800 + 0x220 + j] = patterntabledata[small2offset + j];
+					newPatternTableData[(i * 0x800) + 0x220 + j] = patterntabledata[small2offset + j];
 				}
-				newEnemyImageLUT[i * 4 + 1] = largeImages[i * 2];
+				newEnemyImageLUT[(i * 4) + 1] = largeImages[i * 2];
 				for (int j = 0; j < 0x240; ++j)
 				{
-					newPatternTableData[i * 0x800 + 0x320 + j] = patterntabledata[large1offset + j];
+					newPatternTableData[(i * 0x800) + 0x320 + j] = patterntabledata[large1offset + j];
 				}
-				newEnemyImageLUT[i * 4 + 3] = largeImages[i * 2 + 1];
+				newEnemyImageLUT[(i * 4) + 3] = largeImages[(i * 2) + 1];
 				for (int j = 0; j < 0x240; ++j)
 				{
-					newPatternTableData[i * 0x800 + 0x560 + j] = patterntabledata[large2offset + j];
+					newPatternTableData[(i * 0x800) + 0x560 + j] = patterntabledata[large2offset + j];
 				}
 			}
 			newPatternTableData.CopyTo(patterntabledata, 0);
@@ -3389,17 +3389,17 @@ namespace FF1Lib
 						enemy[i].monster_type |= 0b01000000;
 					for (int j = 1; j < enemy[i].num_hits; ++j) // for each hit past the first, reduce the base damage by one for every 15 points of damage rating
 					{
-						enemy[i].damage = enemy[i].damage - enemy[i].damage / 15;
+						enemy[i].damage = enemy[i].damage - (enemy[i].damage / 15);
 					}
 					if ((enemy[i].monster_type & 0b00001000) != 0)
 					{
 						enemy[i].elem_resist |= 0b00001000; // force death resist on undead enemies
 						enemy[i].elem_weakness &= 0b11110111; // and remove weakness to death
 					}
-					enemy[i].damage = rng.Between(enemy[i].damage - enemy[i].damage / 25, enemy[i].damage + enemy[i].damage / 25); // variance for damage rating
-					enemy[i].hp = rng.Between(enemy[i].hp - enemy[i].hp / 30, enemy[i].hp + enemy[i].hp / 30); // variance for hp rating
-					enemy[i].gp = rng.Between(enemy[i].gp - enemy[i].gp / 20, enemy[i].gp + enemy[i].gp / 20); // variance for gp reward
-					enemy[i].exp = rng.Between(enemy[i].exp - enemy[i].exp / 40, enemy[i].exp + enemy[i].exp / 40); // variance for exp reward
+					enemy[i].damage = rng.Between(enemy[i].damage - (enemy[i].damage / 25), enemy[i].damage + (enemy[i].damage / 25)); // variance for damage rating
+					enemy[i].hp = rng.Between(enemy[i].hp - (enemy[i].hp / 30), enemy[i].hp + (enemy[i].hp / 30)); // variance for hp rating
+					enemy[i].gp = rng.Between(enemy[i].gp - (enemy[i].gp / 20), enemy[i].gp + (enemy[i].gp / 20)); // variance for gp reward
+					enemy[i].exp = rng.Between(enemy[i].exp - (enemy[i].exp / 40), enemy[i].exp + (enemy[i].exp / 40)); // variance for exp reward
 					if(enemy[i].AIscript != 0xFF)
 					{
 						// determine skill tier
@@ -3493,13 +3493,13 @@ namespace FF1Lib
 			for(int i = 0; i < EnemySkillCount; ++i)
 			{
 				skill[i] = new EnemySkillInfo();
-				skill[i].decompressData(Get(EnemySkillOffset + i * EnemySkillSize, EnemySkillSize));
+				skill[i].decompressData(Get(EnemySkillOffset + (i * EnemySkillSize), EnemySkillSize));
 				skill[i].tier = skilltiers_enemy[i];
 			}
 			for (int i = 0; i < ScriptCount; ++i)
 			{
 				script[i] = new EnemyScriptInfo();
-				script[i].decompressData(Get(ScriptOffset + i * ScriptSize, ScriptSize));
+				script[i].decompressData(Get(ScriptOffset + (i * ScriptSize), ScriptSize));
 			}	
 			EnemyInfo[] enemy = new EnemyInfo[EnemyCount]; // list of enemies, including information that is either inferred from formation inspection or tier lists that I have just made up
 			EnemizerTrackingInfo en = new EnemizerTrackingInfo(); // structure that contains many lists and other information that is helpful for managing formation generation efficiently
@@ -3516,7 +3516,7 @@ namespace FF1Lib
 			for (int i = 0; i < EnemyCount; ++i)
 			{
 				enemy[i] = new EnemyInfo();
-				enemy[i].decompressData(Get(EnemyOffset + i * EnemySize, EnemySize));
+				enemy[i].decompressData(Get(EnemyOffset + (i * EnemySize), EnemySize));
 				enemy[i].tier = enemyTierList[i];
 			}		
 			string[] enemyNames = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount); // load all the enemy names into the array for use by enemizer
@@ -3524,7 +3524,7 @@ namespace FF1Lib
 			for (int i = 0; i < FormationCount; ++i) // we need to scour the formations list for enemy information, and to give the enemizer tracking info construct information it can work with
 			{
 				FormationInfo f = new FormationInfo();
-				f.decompressData(Get(FormationDataOffset + i * FormationSize, FormationSize));
+				f.decompressData(Get(FormationDataOffset + (i * FormationSize), FormationSize));
 				en.ReadEnemyDataFromFormation(f, enemy);
 			}
 			en.PurgeIDFromEnemyTilesetList(Enemy.Imp);
@@ -3542,12 +3542,12 @@ namespace FF1Lib
 					doFormations = true; // must use formation generator with enemizer
 					for (int i = 0; i < EnemyCount; ++i)
 					{
-						Put(EnemyOffset + EnemySize * i, enemy[i].compressData()); // move every entry from the enemizer to the ROM
+						Put(EnemyOffset + (EnemySize * i), enemy[i].compressData()); // move every entry from the enemizer to the ROM
 					}
 					Put(EnemyPatternTablesOffset, patterntabledata); // write the new pattern tables as a chunk
 					for (int i = 0; i < ScriptCount; ++i)
 					{
-						Put(ScriptOffset + ScriptSize * i, script[i].compressData()); // and move the modified scripts as well
+						Put(ScriptOffset + (ScriptSize * i), script[i].compressData()); // and move the modified scripts as well
 					}
 					var enemyTextPart1 = enemyNames.Take(2).ToArray();
 					var enemyTextPart2 = enemyNames.Skip(2).ToArray();
@@ -3592,19 +3592,19 @@ namespace FF1Lib
 			for (int i = 0; i < MagicCount; ++i)
 			{
 				spell[i] = new SpellInfo();
-				spell[i].decompressData(Get(MagicOffset + i * MagicSize, MagicSize));
+				spell[i].decompressData(Get(MagicOffset + (i * MagicSize), MagicSize));
 				spell[i].calc_Enemy_SpellTier();
 			}
 			for (int i = 0; i < EnemySkillCount; ++i)
 			{
 				skill[i] = new EnemySkillInfo();
-				skill[i].decompressData(Get(EnemySkillOffset + i * EnemySkillSize, EnemySkillSize));
+				skill[i].decompressData(Get(EnemySkillOffset + (i * EnemySkillSize), EnemySkillSize));
 				skill[i].tier = skilltiers_enemy[i];
 			}
 			for (int i = 0; i < ScriptCount; ++i)
 			{
 				script[i] = new EnemyScriptInfo();
-				script[i].decompressData(Get(ScriptOffset + i * ScriptSize, ScriptSize));
+				script[i].decompressData(Get(ScriptOffset + (i * ScriptSize), ScriptSize));
 			}
 
 			EnemyInfo[] enemy = new EnemyInfo[EnemyCount]; // list of enemies, including information that is either inferred from formation inspection or tier lists that I have just made up
@@ -3623,7 +3623,7 @@ namespace FF1Lib
 			for (int i = 0; i < EnemyCount; ++i)
 			{
 				enemy[i] = new EnemyInfo();
-				enemy[i].decompressData(Get(EnemyOffset + i * EnemySize, EnemySize));
+				enemy[i].decompressData(Get(EnemyOffset + (i * EnemySize), EnemySize));
 				enemy[i].tier = enemyTierList[i];
 			}
 
@@ -3770,7 +3770,7 @@ namespace FF1Lib
 			// write the modified scripts to ROM
 			for (int i = 0; i < ScriptCount; ++i)
 			{
-				Put(ScriptOffset + ScriptSize * i, script[i].compressData()); // and move the modified scripts as well
+				Put(ScriptOffset + (ScriptSize * i), script[i].compressData()); // and move the modified scripts as well
 			}
 		}
 
@@ -3780,7 +3780,7 @@ namespace FF1Lib
 			for (int i = 0; i < MagicCount; ++i)
 			{
 				spell[i] = new SpellInfo();
-				spell[i].decompressData(Get(MagicOffset + i * MagicSize, MagicSize));
+				spell[i].decompressData(Get(MagicOffset + (i * MagicSize), MagicSize));
 				spell[i].calc_Enemy_SpellTier();
 			}
 

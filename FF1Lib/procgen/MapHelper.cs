@@ -135,7 +135,7 @@ namespace FF1Lib.Procgen
 					for (int j = 0; j < obj.GetLength(1); j++)
 						unchecked
 						{
-							result = result * 23 + obj[i, j];
+							result = (result * 23) + obj[i, j];
 						}
 				}
 				return result;

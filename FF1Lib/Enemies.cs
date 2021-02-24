@@ -932,9 +932,9 @@ namespace FF1Lib
 			for (int i = 0; i < 8; i++)
 			{
 				fiends[i] = new EnemyInfo();
-				fiends[i].decompressData(Get(EnemyOffset + (FiendsIndex + i) * EnemySize, EnemySize));
+				fiends[i].decompressData(Get(EnemyOffset + ((FiendsIndex + i) * EnemySize), EnemySize));
 				fiendsScript[i] = new EnemyScriptInfo();
-				fiendsScript[i].decompressData(Get(ScriptOffset + (FiendsScriptIndex + i) * ScriptSize, ScriptSize));
+				fiendsScript[i].decompressData(Get(ScriptOffset + ((FiendsScriptIndex + i) * ScriptSize), ScriptSize));
 			}
 
 			// Shuffle alternate
@@ -985,8 +985,8 @@ namespace FF1Lib
 
 			for (int i = 0; i < 8; i++)
 			{
-				Put(EnemyOffset + (FiendsIndex + i) * EnemySize, fiends[i].compressData());
-				Put(ScriptOffset + (FiendsScriptIndex + i) * ScriptSize, fiendsScript[i].compressData());
+				Put(EnemyOffset + ((FiendsIndex + i) * EnemySize), fiends[i].compressData());
+				Put(ScriptOffset + ((FiendsScriptIndex + i) * ScriptSize), fiendsScript[i].compressData());
 			}
 
 			//Update fiends names, we stack Fiend1 and Fiend2's names to get more space for names
@@ -1003,8 +1003,8 @@ namespace FF1Lib
 			// Rewrite point so Fiend2's name is Fiend1 name
 			for (int i = 0; i < 4; i++)
 			{
-				var namepointer = Get(EnemyTextPointerOffset + (119 + (i * 2)) * 2, 2);
-				Put(EnemyTextPointerOffset + (120 + (i * 2)) * 2, namepointer);
+				var namepointer = Get(EnemyTextPointerOffset + ((119 + (i * 2)) * 2), 2);
+				Put(EnemyTextPointerOffset + ((120 + (i * 2)) * 2), namepointer);
 			}
 		}
 	}

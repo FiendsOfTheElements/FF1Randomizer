@@ -209,7 +209,7 @@ namespace FF1Lib
 			double lowDecimalHp = (double)lowPercentHp / 100.0;
 			double highDecimalHp = (double)highPercentHp / 100.0;
 
-			var enemy = Get(EnemyOffset + index * EnemySize, EnemySize);
+			var enemy = Get(EnemyOffset + (index * EnemySize), EnemySize);
 
 			var hp = BitConverter.ToUInt16(enemy, 4);
 			if(separateHPScale)
@@ -246,7 +246,7 @@ namespace FF1Lib
 			enemy[12] = (byte)Min(newStrength, 0xFF); // strength
 			enemy[13] = (byte)Min(newCrit, 0xFF); // critical%
 
-			Put(EnemyOffset + index * EnemySize, enemy);
+			Put(EnemyOffset + (index * EnemySize), enemy);
 		}
 
 		private int RangeScale(double value, double lowPercent, double highPercent, double adjustment, MT19337 rng)
@@ -254,10 +254,10 @@ namespace FF1Lib
 			double exponent = (rng != null) ? (double)rng.Next() / uint.MaxValue : 1.0; // A number from 0 - 1
 			double logLowPercent = Log(lowPercent);
 			double logDifference = Log(highPercent) - logLowPercent;
-			exponent = exponent * logDifference + logLowPercent; // For example for 50-200% a number from -0.69 to 0.69, for 200-400% a number from 0.69 to 1.38
+			exponent = (exponent * logDifference) + logLowPercent; // For example for 50-200% a number from -0.69 to 0.69, for 200-400% a number from 0.69 to 1.38
 	
 			double scaleValue = Exp(exponent); // A number from 0.5 to 2, or 2 to 4
-			double adjustedScale = scaleValue > 1 ? (scaleValue - 1) * adjustment + 1 : 1 - ((1 - scaleValue) * adjustment); // Tightens the scale so some stats are not changed by as much. For example for strength (adjustment of 0.25) this becomes 0.875 to 1.25, 1.25 to 1.75 while for hp (adjustment of 1) this stays 0.5 to 2, 2 to 4
+			double adjustedScale = scaleValue > 1 ? ((scaleValue - 1) * adjustment) + 1 : 1 - ((1 - scaleValue) * adjustment); // Tightens the scale so some stats are not changed by as much. For example for strength (adjustment of 0.25) this becomes 0.875 to 1.25, 1.25 to 1.75 while for hp (adjustment of 1) this stays 0.5 to 2, 2 to 4
 			return (int)Round(value * adjustedScale);
 		}
 		// Previous RangeScale(), delete if no bugs come up with new RangeScale() - 2020-10-27
@@ -266,7 +266,7 @@ namespace FF1Lib
 			double range = highPercent - lowPercent;
 			double randomRangeScale = rng == null ? range : range * ((double)rng.Next() / uint.MaxValue);
 			double actualScale = lowPercent + randomRangeScale;
-			double adjustedScale = actualScale > 1 ? (actualScale - 1) * adjustment + 1 : 1 - ((1 - actualScale) * adjustment);
+			double adjustedScale = actualScale > 1 ? ((actualScale - 1) * adjustment) + 1 : 1 - ((1 - actualScale) * adjustment);
 			return (int)(adjustedScale * value);
 		}
 
@@ -276,9 +276,9 @@ namespace FF1Lib
 			if (rng != null)
 			{
 				exponent = (double)rng.Next() / uint.MaxValue;
-				exponent = increaseOnly ? exponent : exponent * 2.0 - 1.0;
+				exponent = increaseOnly ? exponent : (exponent * 2.0) - 1.0;
 			}
-			double adjustedScale = 1.0 + adjustment * (scale - 1.0);
+			double adjustedScale = 1.0 + (adjustment * (scale - 1.0));
 			return (int)Round(Pow(adjustedScale, exponent) * value);
 		}
 
@@ -407,7 +407,7 @@ namespace FF1Lib
 		public void EnableSwolePirates()
 		{
 			EnemyInfo newPirate = new EnemyInfo();
-			newPirate.decompressData(Get(EnemyOffset + EnemySize * Enemy.Pirate, EnemySize));
+			newPirate.decompressData(Get(EnemyOffset + (EnemySize * Enemy.Pirate), EnemySize));
 			newPirate.exp = 800;
 			newPirate.gp = 800;
 			newPirate.hp = 160;
@@ -418,7 +418,7 @@ namespace FF1Lib
 			newPirate.accuracy = 35;
 			newPirate.critrate = 5;
 			newPirate.agility = 24;
-			Put(EnemyOffset + EnemySize * Enemy.Pirate, newPirate.compressData());
+			Put(EnemyOffset + (EnemySize * Enemy.Pirate), newPirate.compressData());
 		}
 	}
 }

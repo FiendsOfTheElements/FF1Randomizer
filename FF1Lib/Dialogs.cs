@@ -209,9 +209,9 @@ namespace FF1Lib
 				for (int i = 0; i < 0xD0; i++)
 				{
 					_npcs.Add(new generalNPC { sprite = rom.Data[MapObjGfxOffset + i],
-						oldtalkroutine = rom.GetFromBank(oldTalkRoutinesBank, lut_MapObjTalkJumpTbl + i * 2, 2),
+						oldtalkroutine = rom.GetFromBank(oldTalkRoutinesBank, lut_MapObjTalkJumpTbl + (i * 2), 2),
 						talkroutine = newTalkRoutines.Talk_None,
-						talkarray = rom.GetFromBank(oldTalkRoutinesBank, lut_MapObjTalkData + 0x04 * i, 4).ToBytes().Concat(new byte[] { 0x00, 0x00 }).ToArray()
+						talkarray = rom.GetFromBank(oldTalkRoutinesBank, lut_MapObjTalkData + (0x04 * i), 4).ToBytes().Concat(new byte[] { 0x00, 0x00 }).ToArray()
 					});
 				}
 			}
@@ -414,7 +414,7 @@ namespace FF1Lib
 			}
 
 			// Check if dialogs are too long
-			if (pointers.Length * 2 + generatedText.Length > 0x4000)
+			if ((pointers.Length * 2) + generatedText.Length > 0x4000)
 				throw new Exception("Dialogs maximum length exceeded.");
 
 			// Insert dialogs
@@ -548,7 +548,7 @@ namespace FF1Lib
 			}
 
 			// Check if dialogs are too long
-			if (pointers.Length * 2 + generatedText.Length > 0x4000)
+			if ((pointers.Length * 2) + generatedText.Length > 0x4000)
 				throw new Exception("Dialogs maximum length exceeded.");
 
 			// Insert dialogs
@@ -579,7 +579,7 @@ namespace FF1Lib
 			}
 
 			// Check if dialogs are too long
-			if (pointers.Length * 2 + generatedText.Length > 0x4000)
+			if ((pointers.Length * 2) + generatedText.Length > 0x4000)
 				throw new Exception("Dialogs maximum length exceeded.");
 
 			// Insert dialogs
@@ -874,7 +874,7 @@ namespace FF1Lib
 
 			// Chime Lefein man is moved to ID 15 to keep him with all the other NPCs
 			Put(MapObjGfxOffset + 0x0F, Blob.FromHex("0E"));
-			Put(0x03400 + (int)MapId.Lefein * 48 + 0, Blob.FromHex("0F"));
+			Put(0x03400 + ((int)MapId.Lefein * 48) + 0, Blob.FromHex("0F"));
 			npcdata.SetRoutine((ObjectId)0x0F, newTalkRoutines.Talk_GiveItemOnFlag);
 			npcdata.GetTalkArray((ObjectId)0x0F)[(int)TalkArrayPos.dialogue_1] = 0xD0;
 			npcdata.GetTalkArray((ObjectId)0x0F)[(int)TalkArrayPos.dialogue_2] = 0xCE;

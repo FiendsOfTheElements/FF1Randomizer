@@ -1201,7 +1201,7 @@ namespace FF1Lib
 			for (int i = 8; i < 24; i += 2)
 			{
 				// 0xD4 through 0xDF are good symbols to use.
-				hash[i] = (byte)(0xD4 + hashpart % 12);
+				hash[i] = (byte)(0xD4 + (hashpart % 12));
 				hashpart /= 12;
 			}
 

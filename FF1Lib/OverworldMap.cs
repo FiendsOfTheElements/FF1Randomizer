@@ -231,24 +231,24 @@ namespace FF1Lib
 				// Towns are given arbitrary palettes to help provide color when dungeons take their place.
 				if (source != OverworldTeleportIndex.Coneria)
 				{
-					_rom.Put(MapPaletteOffset + (int)index * MapPaletteSize + 1, _palettes[palette].SubBlob(9, 2));
-					_rom.Put(MapPaletteOffset + (int)index * MapPaletteSize + 6, _palettes[palette].SubBlob(9, 1));
-					_rom.Put(MapPaletteOffset + (int)index * MapPaletteSize + 33, _palettes[palette].SubBlob(9, 2));
-					_rom.Put(MapPaletteOffset + (int)index * MapPaletteSize + 38, _palettes[palette].SubBlob(9, 1));
+					_rom.Put(MapPaletteOffset + ((int)index * MapPaletteSize) + 1, _palettes[palette].SubBlob(9, 2));
+					_rom.Put(MapPaletteOffset + ((int)index * MapPaletteSize) + 6, _palettes[palette].SubBlob(9, 1));
+					_rom.Put(MapPaletteOffset + ((int)index * MapPaletteSize) + 33, _palettes[palette].SubBlob(9, 2));
+					_rom.Put(MapPaletteOffset + ((int)index * MapPaletteSize) + 38, _palettes[palette].SubBlob(9, 1));
 				}
 			}
 			else if (index < MapIndex.EarthCaveB1) // Castles - just tint the lawns.
 			{
-				_rom.Put(MapPaletteOffset + (int)index * MapPaletteSize + 8, _palettes[palette].SubBlob(8, 8));
-				_rom.Put(MapPaletteOffset + (int)index * MapPaletteSize + 40, _palettes[palette].SubBlob(40, 8));
+				_rom.Put(MapPaletteOffset + ((int)index * MapPaletteSize) + 8, _palettes[palette].SubBlob(8, 8));
+				_rom.Put(MapPaletteOffset + ((int)index * MapPaletteSize) + 40, _palettes[palette].SubBlob(40, 8));
 			}
 			else // Dungeons
 			{
-				_rom.Put(MapPaletteOffset + (int)index * MapPaletteSize, _palettes[palette].SubBlob(0, 16));
+				_rom.Put(MapPaletteOffset + ((int)index * MapPaletteSize), _palettes[palette].SubBlob(0, 16));
 
 				// Some maps have greyscale objects (Chests / Pillars) that look wrong when tinted (usually brown).
 				var paletteIndex = FixedObjectPaletteDestinations.Contains(index) ? 36 : 32;
-				_rom.Put(MapPaletteOffset + (int)index * MapPaletteSize + paletteIndex, _palettes[palette].SubBlob(paletteIndex, 48 - paletteIndex));
+				_rom.Put(MapPaletteOffset + ((int)index * MapPaletteSize) + paletteIndex, _palettes[palette].SubBlob(paletteIndex, 48 - paletteIndex));
 			}
 		}
 
@@ -1091,7 +1091,7 @@ namespace FF1Lib
 			for (int i = 0; i < compressedRows.Count; i++)
 			{
 				var outputRow = compressedRows[i];
-				_rom.Put(pointerBase + i * 2, Blob.FromUShorts(new ushort[] { (ushort)(outputBase + pointerBase + outputOffset) }));
+				_rom.Put(pointerBase + (i * 2), Blob.FromUShorts(new ushort[] { (ushort)(outputBase + pointerBase + outputOffset) }));
 				_rom.Put(outputBase + outputOffset, outputRow.ToArray());
 				outputOffset += outputRow.Count;
 			}

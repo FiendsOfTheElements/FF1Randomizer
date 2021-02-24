@@ -145,7 +145,7 @@ namespace FF1Lib
 
 			// set default member
 			var defaultclass = (forced || !DefaultChoices.SequenceEqual(options)) ? (int)options.PickRandom(rng) : slotNumber - 1;
-			Data[lut_PtyGenBuf + (slotNumber - 1) * 0x10] = defaultclass == 12 ? (byte)0xFF : (byte)defaultclass;
+			Data[lut_PtyGenBuf + ((slotNumber - 1) * 0x10)] = defaultclass == 12 ? (byte)0xFF : (byte)defaultclass;
 
 			options.Clear();
 		}
@@ -902,11 +902,11 @@ namespace FF1Lib
 
 			for (int i = 0; i < 6; i++)
 			{
-				if (levelUpStats[i][47 * 2 + 1] == 0)
+				if (levelUpStats[i][(47 * 2) + 1] == 0)
 					iscaster.Add(false);
-				else if (levelUpStats[i][47 * 2 + 1] == 0xFF)
+				else if (levelUpStats[i][(47 * 2) + 1] == 0xFF)
 					iscaster.Add(true);
-				else if ((levelUpStats[i][47 * 2 + 1] & 0x01) != 0)
+				else if ((levelUpStats[i][(47 * 2) + 1] & 0x01) != 0)
 					iscaster.Add(false);
 				else
 					iscaster.Add(true);
@@ -1590,7 +1590,7 @@ namespace FF1Lib
 			var oobSpells = new List<int>();
 
 			for (int i = 0; i < oobroutine.Count; i++)
-				oobSpells.Add(Get(MagicOutOfBattleOffset + MagicOutOfBattleSize * i, 1)[0]);
+				oobSpells.Add(Get(MagicOutOfBattleOffset + (MagicOutOfBattleSize * i), 1)[0]);
 
 			var routineDesc = "";
 			var activeElementStatus = new List<(int, string, string)>();
@@ -1601,7 +1601,7 @@ namespace FF1Lib
 					routineDesc = oobroutine.Find(x => x.Item1 == oobSpells.FindIndex(x => x == spellid)).Item2;
 					break;
 				case int n when (n >= 0x01 && n <= 0x02):
-					routineDesc = routine.Find(x => x.Item1 == spelldata[(int)spellDataBytes.Routine]).Item2 + "\n " + spelldata[(int)spellDataBytes.Effect] * 2 + "-" + spelldata[(int)spellDataBytes.Effect] * 4 + " DMG";
+					routineDesc = routine.Find(x => x.Item1 == spelldata[(int)spellDataBytes.Routine]).Item2 + "\n " + (spelldata[(int)spellDataBytes.Effect] * 2) + "-" + (spelldata[(int)spellDataBytes.Effect] * 4) + " DMG";
 					break;
 				case int n when (n == 0x03 || n == 0x08 || n == 0x12):
 					var tempStatus = "";
@@ -1637,7 +1637,7 @@ namespace FF1Lib
 					routineDesc = routine.Find(x => x.Item1 == spelldata[(int)spellDataBytes.Routine]).Item2 + "\n -" + spelldata[(int)spellDataBytes.Effect] + " pts";
 					break;
 				case int n when (n >= 0x06 && n <= 0x07):
-					routineDesc = routine.Find(x => x.Item1 == spelldata[(int)spellDataBytes.Routine]).Item2 + "\n " + spelldata[(int)spellDataBytes.Effect] + "-" + spelldata[(int)spellDataBytes.Effect] * 2 + " HP";
+					routineDesc = routine.Find(x => x.Item1 == spelldata[(int)spellDataBytes.Routine]).Item2 + "\n " + spelldata[(int)spellDataBytes.Effect] + "-" + (spelldata[(int)spellDataBytes.Effect] * 2) + " HP";
 					break;
 				case int n when (n == 0x09 || n == 0x10):
 					routineDesc = routine.Find(x => x.Item1 == spelldata[(int)spellDataBytes.Routine]).Item2 + "\n +" + spelldata[(int)spellDataBytes.Effect] + " pts";
@@ -1883,8 +1883,8 @@ namespace FF1Lib
 			enemyText[127] = "LICH"; // Chaos > Lich
 			WriteText(enemyText, EnemyTextPointerOffset, EnemyTextPointerBase, EnemyTextOffset);
 
-			var lich2name = Get(EnemyTextPointerOffset + 119 * 2, 2); // Lich2 point to Phantom1
-			Put(EnemyTextPointerOffset + 120 * 2, lich2name);
+			var lich2name = Get(EnemyTextPointerOffset + (119 * 2), 2); // Lich2 point to Phantom1
+			Put(EnemyTextPointerOffset + (120 * 2), lich2name);
 
 			// Scale Undeads
 			ScaleSingleEnemyStats(0x15, 125, 125, false, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // Bone
@@ -2078,8 +2078,8 @@ namespace FF1Lib
 			npcdata.GetTalkArray(ObjectId.WarMECH)[(int)TalkArrayPos.battle_id] = bossLichMech;
 
 			// Switch princess
-			Data[MapSpriteOffset + ((byte)MapId.TempleOfFiends * MapSpriteCount + 1) * MapSpriteSize] = (byte)ObjectId.Princess2;
-			Data[MapSpriteOffset + ((byte)MapId.ConeriaCastle2F * MapSpriteCount + 1) * MapSpriteSize] = (byte)ObjectId.None;
+			Data[MapSpriteOffset + ((((byte)MapId.TempleOfFiends * MapSpriteCount) + 1) * MapSpriteSize)] = (byte)ObjectId.Princess2;
+			Data[MapSpriteOffset + ((((byte)MapId.ConeriaCastle2F * MapSpriteCount) + 1) * MapSpriteSize)] = (byte)ObjectId.None;
 			Put(0x2F00 + 0x12, Blob.FromHex("01"));
 			Put(0x2F00 + 0x03, Blob.FromHex("02"));
 
@@ -2131,7 +2131,7 @@ namespace FF1Lib
 			{
 				for (var i = 0; i < 0x10; i++)
 				{
-					int offset = MapSpriteOffset + ((byte)map * MapSpriteCount + i) * MapSpriteSize;
+					int offset = MapSpriteOffset + ((((byte)map * MapSpriteCount) + i) * MapSpriteSize);
 					if (validZombie.Contains((ObjectId)Data[offset]))
 						Data[offset + 1] &= 0b10111111;
 				}

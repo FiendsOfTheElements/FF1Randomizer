@@ -42,7 +42,7 @@ namespace FF1Lib
 			for (int i = 0; i < MagicCount; ++i)
 			{
 				spell[i] = new SpellInfo();
-				spell[i].decompressData(Get(MagicOffset + MagicSize * i, MagicSize));
+				spell[i].decompressData(Get(MagicOffset + (MagicSize * i), MagicSize));
 				spell[i].calc_Enemy_SpellTier();
 				oldTiers[i] = spell[i].tier;
 				spell[i].decompressData(new byte[] { }); // reset
@@ -76,7 +76,7 @@ namespace FF1Lib
 			for (int i = 0; i < ScriptCount; ++i)
 			{
 				script[i] = new EnemyScriptInfo();
-				script[i].decompressData(Get(ScriptOffset + ScriptSize * i, ScriptSize));
+				script[i].decompressData(Get(ScriptOffset + (ScriptSize * i), ScriptSize));
 			}
 
 			List<int> spellindex = Enumerable.Range(0, 64).ToList(); // a list of spell indexes (0-63)
@@ -129,7 +129,7 @@ namespace FF1Lib
 			spellMessages[selected] = 0x01; // HP up!
 			SPCR_SetPermissionFalse(spellPermissions, selected, 3); // red mage banned
 			Put(0x3AF6F, Blob.FromHex("7F0980")); // changing the oob code for CUR3 to reflect the above effect
-			Put(MagicOutOfBattleOffset + MagicOutOfBattleSize * 2, new[] { (byte)(selected + 0xB0) });
+			Put(MagicOutOfBattleOffset + (MagicOutOfBattleSize * 2), new[] { (byte)(selected + 0xB0) });
 			spellindex.Remove(selected);
 			int cur4spell = spellindex.Where(id => WhiteSpell(id) && id < 56 && id > 39).ToList().PickRandom(rng);
 			spell[cur4spell].targeting = 0x10;
@@ -141,7 +141,7 @@ namespace FF1Lib
 			SPCR_SetPermissionFalse(spellPermissions, cur4spell, 4); // white mage banned
 			SPCR_SetPermissionFalse(spellPermissions, cur4spell, 5); // black mage banned
 			SPCR_SetPermissionFalse(spellPermissions, cur4spell, 9); // red wizard banned
-			Put(MagicOutOfBattleOffset + MagicOutOfBattleSize * 3, new[] { (byte)(cur4spell + 0xB0) });
+			Put(MagicOutOfBattleOffset + (MagicOutOfBattleSize * 3), new[] { (byte)(cur4spell + 0xB0) });
 			spellindex.Remove(cur4spell);
 			int healspell = spellindex.Where(id => WhiteSpell(id) && id < 24).ToList().PickRandom(rng); // we store the index to assign to spellcasting items
 			spell[healspell].targeting = 0x08;
@@ -152,11 +152,11 @@ namespace FF1Lib
 			spellMessages[healspell] = 0x01; // HP up!
 			SPCR_SetPermissionFalse(spellPermissions, healspell, 3); // red mage banned
 			SPCR_SetPermissionFalse(spellPermissions, healspell, 9); // red wizard banned
-			Put(MagicOutOfBattleOffset + MagicOutOfBattleSize * 4, new[] { (byte)(healspell + 0xB0) });
+			Put(MagicOutOfBattleOffset + (MagicOutOfBattleSize * 4), new[] { (byte)(healspell + 0xB0) });
 			Put(0x3AFDF, Blob.FromHex("0F")); // changing the oob code for HEAL to reflect the above effect
 			spellindex.Remove(healspell);
 			int healspellLevel = healspell / 8;
-			selected = spellindex.Where(id => WhiteSpell(id) && id < healspellLevel * 8 + 24 && id > healspellLevel * 8 + 7).ToList().PickRandom(rng);
+			selected = spellindex.Where(id => WhiteSpell(id) && id < (healspellLevel * 8) + 24 && id > (healspellLevel * 8) + 7).ToList().PickRandom(rng);
 			spell[selected].targeting = 0x08;
 			spell[selected].effect = 32;
 			spell[selected].routine = 0x07;
@@ -166,10 +166,10 @@ namespace FF1Lib
 			SPCR_SetPermissionFalse(spellPermissions, selected, 3); // red mage banned
 			SPCR_SetPermissionFalse(spellPermissions, selected, 9); // red wizard banned
 			Put(0x3AFE8, Blob.FromHex("1F")); // changing the oob code for HEL2 to reflect the above effect
-			Put(MagicOutOfBattleOffset + MagicOutOfBattleSize * 6, new[] { (byte)(selected + 0xB0) });
+			Put(MagicOutOfBattleOffset + (MagicOutOfBattleSize * 6), new[] { (byte)(selected + 0xB0) });
 			spellindex.Remove(selected);
 			healspellLevel = selected / 8;
-			selected = spellindex.Where(id => WhiteSpell(id) && id < healspellLevel * 8 + 24 && id > healspellLevel * 8 + 7).ToList().PickRandom(rng);
+			selected = spellindex.Where(id => WhiteSpell(id) && id < (healspellLevel * 8) + 24 && id > (healspellLevel * 8) + 7).ToList().PickRandom(rng);
 			spell[selected].targeting = 0x08;
 			spell[selected].effect = 64;
 			spell[selected].routine = 0x07;
@@ -178,7 +178,7 @@ namespace FF1Lib
 			spellMessages[selected] = 0x01; // HP up!
 			SPCR_SetPermissionFalse(spellPermissions, selected, 3); // red mage banned
 			SPCR_SetPermissionFalse(spellPermissions, selected, 9); // red wizard banned
-			Put(MagicOutOfBattleOffset + MagicOutOfBattleSize * 5, new[] { (byte)(selected + 0xB0) });
+			Put(MagicOutOfBattleOffset + (MagicOutOfBattleSize * 5), new[] { (byte)(selected + 0xB0) });
 			Put(0x3AFF1, Blob.FromHex("3F")); // changing the oob code for HEL3 to reflect the above effect
 			spellindex.Remove(selected);
 
@@ -188,7 +188,7 @@ namespace FF1Lib
 			spell[purespell].routine = 0x08;
 			spell[purespell].gfx = 0xE0;
 			spell[purespell].palette = 0x2A;
-			Put(MagicOutOfBattleOffset + MagicOutOfBattleSize * 7, new[] { (byte)(purespell + 0xB0) });
+			Put(MagicOutOfBattleOffset + (MagicOutOfBattleSize * 7), new[] { (byte)(purespell + 0xB0) });
 			spellindex.Remove(purespell);
 			selected = spellindex.Where(id => WhiteSpell(id) && id < 40 && id > 15).ToList().PickRandom(rng);
 			spell[selected].accuracy = 0xFF;
@@ -197,7 +197,7 @@ namespace FF1Lib
 			SPCR_SetPermissionFalse(spellPermissions, selected, 6); // knight banned
 			SPCR_SetPermissionFalse(spellPermissions, selected, 7); // ninja banned
 			SPCR_SetPermissionFalse(spellPermissions, selected, 3); // red mage banned
-			Put(MagicOutOfBattleOffset + MagicOutOfBattleSize * 8, new[] { (byte)(selected + 0xB0) });
+			Put(MagicOutOfBattleOffset + (MagicOutOfBattleSize * 8), new[] { (byte)(selected + 0xB0) });
 			spellindex.Remove(selected);
 			selected = spellindex.Where(id => WhiteSpell(id) && id > 47).ToList().PickRandom(rng);
 			spell[selected].accuracy = 0xFF;
@@ -207,7 +207,7 @@ namespace FF1Lib
 			SPCR_SetPermissionFalse(spellPermissions, selected, 4); // white mage banned
 			SPCR_SetPermissionFalse(spellPermissions, selected, 5); // black mage banned
 			SPCR_SetPermissionFalse(spellPermissions, selected, 9); // red wizard banned
-			Put(MagicOutOfBattleOffset + MagicOutOfBattleSize * 9, new[] { (byte)(selected + 0xB0) });
+			Put(MagicOutOfBattleOffset + (MagicOutOfBattleSize * 9), new[] { (byte)(selected + 0xB0) });
 			spellindex.Remove(selected);
 			selected = spellindex.Where(id => id % 8 > 3 && id > 15).ToList().PickRandom(rng); // warp will appear in black magic regardless of whether we mix spells or not
 			spell[selected].accuracy = 0xFF;
@@ -216,7 +216,7 @@ namespace FF1Lib
 			SPCR_SetPermissionFalse(spellPermissions, selected, 3); // red mage banned
 			SPCR_SetPermissionFalse(spellPermissions, selected, 4); // white mage banned
 			SPCR_SetPermissionFalse(spellPermissions, selected, 5); // black mage banned
-			Put(MagicOutOfBattleOffset + MagicOutOfBattleSize * 10, new[] { (byte)(selected + 0xB0) });
+			Put(MagicOutOfBattleOffset + (MagicOutOfBattleSize * 10), new[] { (byte)(selected + 0xB0) });
 			spellindex.Remove(selected);
 			selected = spellindex.Where(id => WhiteSpell(id) && id < 48).ToList().PickRandom(rng);
 			spell[selected].accuracy = 0xFF;
@@ -224,7 +224,7 @@ namespace FF1Lib
 			spellMessages[selected] = 0x4A; // Ineffective now
 			SPCR_SetPermissionFalse(spellPermissions, selected, 3); // red mage banned
 			SPCR_SetPermissionFalse(spellPermissions, selected, 9); // red wizard banned
-			Put(MagicOutOfBattleOffset + MagicOutOfBattleSize * 11, new[] { (byte)(selected + 0xB0) });
+			Put(MagicOutOfBattleOffset + (MagicOutOfBattleSize * 11), new[] { (byte)(selected + 0xB0) });
 			spellindex.Remove(selected);
 			selected = spellindex.Where(id => id % 8 < 4 && id > 15).ToList().PickRandom(rng); // exit will appear in white magic regardless of whether we mix spells or not
 			spell[selected].accuracy = 0xFF;
@@ -233,7 +233,7 @@ namespace FF1Lib
 			SPCR_SetPermissionFalse(spellPermissions, selected, 3); // red mage banned
 			SPCR_SetPermissionFalse(spellPermissions, selected, 4); // white mage banned
 			SPCR_SetPermissionFalse(spellPermissions, selected, 5); // black mage banned
-			Put(MagicOutOfBattleOffset + MagicOutOfBattleSize * 12, new[] { (byte)(selected + 0xB0) });
+			Put(MagicOutOfBattleOffset + (MagicOutOfBattleSize * 12), new[] { (byte)(selected + 0xB0) });
 			spellindex.Remove(selected);
 
 			// draw guaranteed spells
@@ -1062,7 +1062,7 @@ namespace FF1Lib
 						spell[index].targeting = targeting;
 						spell[index].effect = (byte)(spell[index].targeting == 0x08 ? (SpellTier(index) - 3) * 8 : (SpellTier(index) + 2) * 4);
 						if (spell[index].targeting == 0x04)
-							spell[index].effect = (byte)(spell[index].effect + spell[index].effect / 2);
+							spell[index].effect = (byte)(spell[index].effect + (spell[index].effect / 2));
 						if (SpellTier(index) == 7)
 							spell[index].targeting = 0x08;
 						spell[index].routine = routine;
@@ -1266,7 +1266,7 @@ namespace FF1Lib
 					if (routine == 0x11) // remove resistances (XFER)
 					{
 						spell[index].targeting = (byte)(SpellTier(index) == 7 ? 0x01 : 0x02);
-						spell[index].accuracy = (byte)(37 + SpellTier(index) * 10);
+						spell[index].accuracy = (byte)(37 + (SpellTier(index) * 10));
 						spell[index].routine = routine;
 						spellMessages[index] = 0x1D; // Defenseless
 						SPCR_SetPermissionFalse(spellPermissions, index, 3); // red mage banned
@@ -1698,10 +1698,10 @@ namespace FF1Lib
 			// write all spell data to the ROM
 			for (int i = 0; i < MagicCount; ++i)
 			{
-				Put(MagicOffset + MagicSize * i, spell[i].compressData());
+				Put(MagicOffset + (MagicSize * i), spell[i].compressData());
 				while (spellNames[i].Length < 4)
 					spellNames[i] += " ";
-				Put(MagicNamesOffset + MagicNameSize * i, FF1Text.TextToBytes(spellNames[i]));
+				Put(MagicNamesOffset + (MagicNameSize * i), FF1Text.TextToBytes(spellNames[i]));
 				spell[i].calc_Enemy_SpellTier();
 			}
 			if (!keepPermissions)
@@ -1867,7 +1867,7 @@ namespace FF1Lib
 			script[43].spell_list[7] = (byte)statusspells.PickRandom(rng);
 
 			for (int i = 0; i < ScriptCount; ++i) // write the new scripts to ROM
-				Put(ScriptOffset + ScriptSize * i, script[i].compressData());
+				Put(ScriptOffset + (ScriptSize * i), script[i].compressData());
 		}
 
 		private void SPCR_SetName(string[] spellnames, int index, string initialname, string altname)
@@ -2077,7 +2077,7 @@ namespace FF1Lib
 			}
 			if (whiteMagic)
 			{
-				spell.effect = (byte)(spell.effect - spell.effect / 4);
+				spell.effect = (byte)(spell.effect - (spell.effect / 4));
 			}
 			if (tier == 1)
 			{
@@ -2100,7 +2100,7 @@ namespace FF1Lib
 			spell.accuracy = 40;
 			spell.effect = (byte)(20 * (tier + 1));
 			if (tier == 7)
-				spell.effect = (byte)(spell.effect + spell.effect / 2);
+				spell.effect = (byte)(spell.effect + (spell.effect / 2));
 			spell.targeting = 0x01;
 			spell.routine = 0x02;
 		}
@@ -2114,7 +2114,7 @@ namespace FF1Lib
 			if (tier > 3 && targeting != 0x08)
 				spell.effect += 12;
 			if (spell.targeting == 0x04)
-				spell.effect = (byte)(spell.effect + spell.effect / 2); // increase buff by 50% for self-cast
+				spell.effect = (byte)(spell.effect + (spell.effect / 2)); // increase buff by 50% for self-cast
 			if (tier == 7)
 				spell.targeting = 0x08; // tier 8 spells target all allies with +240 evasion
 			spell.routine = 0x10;
@@ -2138,9 +2138,9 @@ namespace FF1Lib
 				else
 					spell.targeting = 0x08;
 			}
-			spell.effect = (byte)(spell.targeting == 0x08 ? tier * 3 - 2 : (tier + 2) * 3 + 1);
+			spell.effect = (byte)(spell.targeting == 0x08 ? (tier * 3) - 2 : ((tier + 2) * 3) + 1);
 			if (spell.targeting == 0x04)
-				spell.effect = (byte)(spell.effect + spell.effect / 2);
+				spell.effect = (byte)(spell.effect + (spell.effect / 2));
 			if (tier == 7)
 				spell.targeting = 0x08; // tier 8 targets all allies with the strength of a SABR spell
 			spell.routine = 0x0D;
@@ -2164,7 +2164,7 @@ namespace FF1Lib
 			for(int i = 0; i < 8; ++i)
 			{
 				if(rng.Between(0, 1) == 1)
-					returnValue |= (byte)(input & 1 << i);
+					returnValue |= (byte)(input & (1 << i));
 			}
 			return returnValue;
 		}
@@ -2177,7 +2177,7 @@ namespace FF1Lib
 			byte returnValue = 0x00;
 			while(returnValue == 0x00)
 			{
-				returnValue = (byte)(input & 1 << rng.Between(0, 7));
+				returnValue = (byte)(input & (1 << rng.Between(0, 7)));
 			}
 			return returnValue;
 		}
@@ -2188,7 +2188,7 @@ namespace FF1Lib
 			int returnValue = 0;
 			for(int i = 0; i < 8; ++i)
 			{
-				if ((input & 1 << i) != 0)
+				if ((input & (1 << i)) != 0)
 					returnValue++;
 			}
 			return returnValue;

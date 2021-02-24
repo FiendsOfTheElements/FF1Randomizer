@@ -87,24 +87,24 @@ namespace FF1Lib
 			Put(MagicOffset + 1, new byte[] { 0x20 }); // replace CURE effectivity with 32 (was 16)
 			Put(0x3AF5F, Blob.FromHex("1F0920")); // changing the oob code for CURE to reflect new values
 			// CUR2
-			Put(MagicOffset + MagicSize * 16 + 1, new byte[] { 0x40 }); // replace CUR2 effectivity with 64 (was 32)
+			Put(MagicOffset + (MagicSize * 16) + 1, new byte[] { 0x40 }); // replace CUR2 effectivity with 64 (was 32)
 			Put(0x3AF67, Blob.FromHex("3F0940")); // changing the oob code for CUR2 to reflect the above effect
 			// CUR3
-			Put(MagicOffset + MagicSize * 32 + 1, new byte[] { 0x80 }); // replace CUR3 effectivity with 128 (was 64)
+			Put(MagicOffset + (MagicSize * 32) + 1, new byte[] { 0x80 }); // replace CUR3 effectivity with 128 (was 64)
 			Put(0x3AF6F, Blob.FromHex("7F0980")); // changing the oob code for CUR3 to reflect the above effect
 			// HEAL
-			Put(MagicOffset + MagicSize * 19 + 1, new byte[] { 0x10 }); // replace HEAL effectivity with 16 (was 12)
+			Put(MagicOffset + (MagicSize * 19) + 1, new byte[] { 0x10 }); // replace HEAL effectivity with 16 (was 12)
 			Put(0x3AFDF, Blob.FromHex("0F")); // changing the oob code for HEAL to reflect the above effect
 			// HEL2
-			Put(MagicOffset + MagicSize * 35 + 1, new byte[] { 0x20 }); // replace HEL2 effectivity with 32 (was 24)
+			Put(MagicOffset + (MagicSize * 35) + 1, new byte[] { 0x20 }); // replace HEL2 effectivity with 32 (was 24)
 			Put(0x3AFE8, Blob.FromHex("1F")); // changing the oob code for HEL2 to reflect the above effect
 			// HEL3
-			Put(MagicOffset + MagicSize * 51 + 1, new byte[] { 0x40 }); // replace HEL2 effectivity with 64 (was 48)
+			Put(MagicOffset + (MagicSize * 51) + 1, new byte[] { 0x40 }); // replace HEL2 effectivity with 64 (was 48)
 			Put(0x3AFF1, Blob.FromHex("3F")); // changing the oob code for HEL3 to reflect the above effect
 			// LAMP
-			Put(MagicOffset + MagicSize * 8 + 1, new byte[] { 0x18 }); // LAMP heals paralysis as well as darkness
+			Put(MagicOffset + (MagicSize * 8) + 1, new byte[] { 0x18 }); // LAMP heals paralysis as well as darkness
 			// AMUT
-			Put(MagicOffset + MagicSize * 27 + 1, new byte[] { 0x50 }); // AMUT heals paralysis as well as silence
+			Put(MagicOffset + (MagicSize * 27) + 1, new byte[] { 0x50 }); // AMUT heals paralysis as well as silence
 		}
 
 		public void ShuffleMagicLevels(MT19337 rng, bool keepPermissions, bool tieredShuffle, bool mixSpellbooks, bool noSpellcrafter)
@@ -397,7 +397,7 @@ namespace FF1Lib
 			var shuffledSpells = new List<MagicSpell>();
 			for (int i = 0; i < MagicCount; i++)
 			{
-				var sourceIndex = 4 * (i / 8) + i % 4;
+				var sourceIndex = (4 * (i / 8)) + (i % 4);
 				if ((i / 4) % 2 == 0)
 				{
 					shuffledSpells.Add(whiteSpells[sourceIndex]);
@@ -417,20 +417,20 @@ namespace FF1Lib
 				// Shuffle the permissions the same way the spells were shuffled.
 				for (int c = 0; c < MagicPermissionsCount; c++)
 				{
-					var oldPermissions = Get(MagicPermissionsOffset + c * MagicPermissionsSize, MagicPermissionsSize);
+					var oldPermissions = Get(MagicPermissionsOffset + (c * MagicPermissionsSize), MagicPermissionsSize);
 
 					var newPermissions = new byte[MagicPermissionsSize];
 					for (int i = 0; i < 8; i++)
 					{
 						for (int j = 0; j < 8; j++)
 						{
-							var oldIndex = shuffledSpells[8 * i + j].Index;
-							var oldPermission = (oldPermissions[oldIndex / 8] & (0x80 >> oldIndex % 8)) >> (7 - oldIndex % 8);
+							var oldIndex = shuffledSpells[(8 * i) + j].Index;
+							var oldPermission = (oldPermissions[oldIndex / 8] & (0x80 >> (oldIndex % 8))) >> (7 - (oldIndex % 8));
 							newPermissions[i] |= (byte)(oldPermission << (7 - j));
 						}
 					}
 
-					Put(MagicPermissionsOffset + c * MagicPermissionsSize, newPermissions);
+					Put(MagicPermissionsOffset + (c * MagicPermissionsSize), newPermissions);
 				}
 			}
 

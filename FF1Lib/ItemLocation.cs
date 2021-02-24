@@ -126,13 +126,13 @@ namespace FF1Lib
 						 MapLocation requiredSecondLocation = MapLocation.StartingLocation,
 						bool useVanillaRoutineAddress = true)
 			: base(_mapObjectTalkDataAddress + _giftItemIndex +
-				   _mapObjectTalkDataSize * (byte)objectId,
+				   (_mapObjectTalkDataSize * (byte)objectId),
 				   Enum.GetName(typeof(ObjectId), objectId),
 				   mapLocation,
 				   item,
 				   accessRequirement)
 		{
-			_objectRoutineAddress = (byte)objectId * _mapObjTalkJumpTblDataSize + _mapObjTalkJumpTblAddress;
+			_objectRoutineAddress = ((byte)objectId * _mapObjTalkJumpTblDataSize) + _mapObjTalkJumpTblAddress;
 			_requiredGameEventFlag = requiredGameEventFlag;
 			_requiredItemTrade = requiredItemTrade;
 			_useVanillaRoutineAddress = useVanillaRoutineAddress;

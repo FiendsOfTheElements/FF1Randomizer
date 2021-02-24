@@ -30,7 +30,7 @@ namespace FF1Lib
 				}
 			}
 
-			_identityValue = (short)(x * 256 + y);
+			_identityValue = (short)((x * 256) + y);
 		}
 	}
 	public struct LocationRequirement

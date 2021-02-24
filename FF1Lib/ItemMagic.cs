@@ -70,11 +70,11 @@ namespace FF1Lib
 		private void WriteItemSpellData(MagicSpell Spell, Item item)
 		{
 			// Set the spell an item casts
-			var offset = WeaponOffset + 0x8 * Math.Min((byte)item - WeaponStart, ArmorStart - WeaponStart) + 0x4 * Math.Max(0, (byte)item - ArmorStart) + MagicBitOffset;
+			var offset = WeaponOffset + (0x8 * Math.Min((byte)item - WeaponStart, ArmorStart - WeaponStart)) + (0x4 * Math.Max(0, (byte)item - ArmorStart)) + MagicBitOffset;
 			Data[offset] = (byte)(Spell.Index + 1);
 
 			// Setup the text of the item's name to include the spell name.
-			offset = GearTextOffset + ((byte)item > (byte)Item.Ribbon ? 1 : 0) + GearTextSize * ((byte)item - WeaponStart);
+			offset = GearTextOffset + ((byte)item > (byte)Item.Ribbon ? 1 : 0) + (GearTextSize * ((byte)item - WeaponStart));
 			if (Get(offset, 1)[0] > 200)
 			{
 				offset++; // If the first byte is in the icon range, bump the pointer to overwrite after it.

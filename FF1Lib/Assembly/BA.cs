@@ -32,7 +32,7 @@ namespace FF1Lib.Assembly
 
 		public int ToRomLocation()
 		{
-			return Bank * 0x4000 + (Addr - (Bank == LastBank() ? 0xC000 : 0x8000));
+			return (Bank * 0x4000) + (Addr - (Bank == LastBank() ? 0xC000 : 0x8000));
 		}
 
 		public static int TopOfBank(int bank)
@@ -64,7 +64,7 @@ namespace FF1Lib.Assembly
 			else
 			{
 				bank = romOffset / 0x4000;
-				addr = romOffset % 0x4000 + 0x8000;
+				addr = (romOffset % 0x4000) + 0x8000;
 			}
 			return new BA(bank, addr);
 		}

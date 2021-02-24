@@ -378,7 +378,7 @@ namespace FF1Lib
 		private Blob PackageTextBlob(List<Blob> pages, ushort baseAddr)
 		{
 			// The first pointer is immediately after the pointer table.
-			List<ushort> ptrs = new List<ushort> { (ushort)(baseAddr + pages.Count * 2) };
+			List<ushort> ptrs = new List<ushort> { (ushort)(baseAddr + (pages.Count * 2)) };
 			for (int i = 1; i < pages.Count; ++i)
 			{
 				ptrs.Add((ushort)(ptrs.Last() + pages[i - 1].Length));

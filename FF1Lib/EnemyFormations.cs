@@ -93,9 +93,9 @@ namespace FF1Lib
 			formations.ForEach(formation => formation[UnrunnableOffset] |= 0x03);
 			Put(FormationsOffset, formations.SelectMany(formation => formation.ToBytes()).ToArray());
 
-			List<Blob> lastFormations = Get(FormationsOffset + FormationSize * 0x7E, FormationSize * 2).Chunk(FormationSize);
+			List<Blob> lastFormations = Get(FormationsOffset + (FormationSize * 0x7E), FormationSize * 2).Chunk(FormationSize);
 			lastFormations.ForEach(formation => formation[UnrunnableOffset] |= 0x02);
-			Put(FormationsOffset + FormationSize * 0x7E, lastFormations.SelectMany(formation => formation.ToBytes()).ToArray());
+			Put(FormationsOffset + (FormationSize * 0x7E), lastFormations.SelectMany(formation => formation.ToBytes()).ToArray());
 		}
 
 		public void CompletelyRunnable()
@@ -104,9 +104,9 @@ namespace FF1Lib
 			formations.ForEach(formation => formation[UnrunnableOffset] &= 0xFC);
 			Put(FormationsOffset, formations.SelectMany(formation => formation.ToBytes()).ToArray());
 
-			List<Blob> lastFormations = Get(FormationsOffset + FormationSize * 0x7E, FormationSize * 2).Chunk(FormationSize);
+			List<Blob> lastFormations = Get(FormationsOffset + (FormationSize * 0x7E), FormationSize * 2).Chunk(FormationSize);
 			lastFormations.ForEach(formation => formation[UnrunnableOffset] &= 0xFD);
-			Put(FormationsOffset + FormationSize * 0x7E, lastFormations.SelectMany(formation => formation.ToBytes()).ToArray());
+			Put(FormationsOffset + (FormationSize * 0x7E), lastFormations.SelectMany(formation => formation.ToBytes()).ToArray());
 		}
 
 		private void FiendShuffle(MT19337 rng)
@@ -114,9 +114,9 @@ namespace FF1Lib
 			//Shuffle the four Fiend1 fights.
 			//Specifically, shuffle what fight triggers during dialog with each of the Elemental Orbs
 			int Fiend1Offset = 119;
-			List<Blob> fiendFormations = Get(FormationsOffset + FormationSize * Fiend1Offset, FormationSize * 4).Chunk(FormationSize);
+			List<Blob> fiendFormations = Get(FormationsOffset + (FormationSize * Fiend1Offset), FormationSize * 4).Chunk(FormationSize);
 			fiendFormations.Shuffle(rng);
-			Put(FormationsOffset + FormationSize * Fiend1Offset, fiendFormations.SelectMany(formation => formation.ToBytes()).ToArray());
+			Put(FormationsOffset + (FormationSize * Fiend1Offset), fiendFormations.SelectMany(formation => formation.ToBytes()).ToArray());
 		}
 
 		public void ShuffleSurpriseBonus(MT19337 rng)
@@ -143,9 +143,9 @@ namespace FF1Lib
 		public void MakeWarMECHUnrunnable()
 		{
 			// This needs to be called after ShuffleUnrunnable, otherwise it will shuffle away this unrunnability.
-			Blob warMECHFormation = Get(FormationsOffset + FormationSize * WarMECHFormationIndex, FormationSize);
+			Blob warMECHFormation = Get(FormationsOffset + (FormationSize * WarMECHFormationIndex), FormationSize);
 			warMECHFormation[UnrunnableOffset] |= 0x01;
-			Put(FormationsOffset + FormationSize * WarMECHFormationIndex, warMECHFormation);
+			Put(FormationsOffset + (FormationSize * WarMECHFormationIndex), warMECHFormation);
 		}
 
 		public void TransformFinalFormation(FinalFormation formation, EvadeCapValues evadeClampFlag, MT19337 rng)
@@ -155,7 +155,7 @@ namespace FF1Lib
 				return;
 			}
 
-			Blob finalBattle = Get(FormationsOffset + ChaosFormationIndex * FormationSize, FormationSize);
+			Blob finalBattle = Get(FormationsOffset + (ChaosFormationIndex * FormationSize), FormationSize);
 			if (formation == FinalFormation.Random)
 			{
 				formation = (FinalFormation)rng.Between(1, Enum.GetValues(typeof(FinalFormation)).Length - 2); // First is None, last is Random
@@ -223,7 +223,7 @@ namespace FF1Lib
 					break;
 			}
 
-			Put(FormationsOffset + ChaosFormationIndex * FormationSize, finalBattle);
+			Put(FormationsOffset + (ChaosFormationIndex * FormationSize), finalBattle);
 		}
 
 		public void PacifistEnd(TalkRoutines talkroutines, NPCdata npcdata, bool extendedtraptiles)
@@ -360,27 +360,27 @@ namespace FF1Lib
 				{
 					var formationdata = new byte[0x10];
 
-					formationdata[TypeOffset] = (byte)((int)pattern * 0x10 + (int)spriteSheet);
-					formationdata[GFXOffset] = (byte)(gfxOffset1 + gfxOffset2 * 0x04 + gfxOffset3 * 0x10 + gfxOffset4 * 0x40);
+					formationdata[TypeOffset] = (byte)(((int)pattern * 0x10) + (int)spriteSheet);
+					formationdata[GFXOffset] = (byte)(gfxOffset1 + (gfxOffset2 * 0x04) + (gfxOffset3 * 0x10) + (gfxOffset4 * 0x40));
 
 					formationdata[IDsOffset + 0] = (byte)enemy1;
 					formationdata[IDsOffset + 1] = (byte)enemy2;
 					formationdata[IDsOffset + 2] = (byte)enemy3;
 					formationdata[IDsOffset + 3] = (byte)enemy4;
 
-					formationdata[QuantityOffset + 0] = (byte)(minmax1.Item1 * 0x10 + minmax1.Item2);
-					formationdata[QuantityOffset + 1] = (byte)(minmax2.Item1 * 0x10 + minmax2.Item2);
-					formationdata[QuantityOffset + 2] = (byte)(minmax3.Item1 * 0x10 + minmax3.Item2);
-					formationdata[QuantityOffset + 3] = (byte)(minmax4.Item1 * 0x10 + minmax4.Item2);
+					formationdata[QuantityOffset + 0] = (byte)((minmax1.Item1 * 0x10) + minmax1.Item2);
+					formationdata[QuantityOffset + 1] = (byte)((minmax2.Item1 * 0x10) + minmax2.Item2);
+					formationdata[QuantityOffset + 2] = (byte)((minmax3.Item1 * 0x10) + minmax3.Item2);
+					formationdata[QuantityOffset + 3] = (byte)((minmax4.Item1 * 0x10) + minmax4.Item2);
 
 					formationdata[PalettesOffset + 0] = (byte)palette1;
 					formationdata[PalettesOffset + 1] = (byte)palette2;
 
-					formationdata[PaletteAsignmentOffset] = (byte)(paletteAssign1 * 0x80 + paletteAssign2 * 0x40 + paletteAssign3 * 0x20 + paletteAssign4 * 0x10
+					formationdata[PaletteAsignmentOffset] = (byte)((paletteAssign1 * 0x80) + (paletteAssign2 * 0x40) + (paletteAssign3 * 0x20) + (paletteAssign4 * 0x10)
 						+ (unrunnableB ? 0x02 : 0x00) + (unrunnableA ? 0x01 : 0x00));
 
-					formationdata[QuantityBOffset + 0] = (byte)(minmaxB1.Item1 * 0x10 + minmaxB1.Item2);
-					formationdata[QuantityBOffset + 1] = (byte)(minmaxB2.Item1 * 0x10 + minmaxB2.Item2);
+					formationdata[QuantityBOffset + 0] = (byte)((minmaxB1.Item1 * 0x10) + minmaxB1.Item2);
+					formationdata[QuantityBOffset + 1] = (byte)((minmaxB2.Item1 * 0x10) + minmaxB2.Item2);
 
 					formationdata[0x0C] = (byte)supriseFactor;
 

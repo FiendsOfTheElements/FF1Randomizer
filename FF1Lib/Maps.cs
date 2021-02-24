@@ -494,12 +494,12 @@ namespace FF1Lib
 					// The first item will always have the lower coordinate, unless it's a wraparound.
 					if (wall.one.Item.x % 2 == 0)
 					{
-						x = 8 * wall.one.Item.x + 7;
+						x = (8 * wall.one.Item.x) + 7;
 						tile = 0x33;
 					}
 					else
 					{
-						x = (8 * wall.one.Item.x + 8) % 64;
+						x = ((8 * wall.one.Item.x) + 8) % 64;
 						tile = 0x32;
 					}
 
@@ -515,7 +515,7 @@ namespace FF1Lib
 				if (wall.one.Item.x == wall.two.Item.x) // horizontal wall
 				{
 					int x = 8 * wall.one.Item.x;
-					int y = (8 * wall.one.Item.y + 8) % 64;
+					int y = ((8 * wall.one.Item.y) + 8) % 64;
 
 					map[y, x] = 0x34;
 					for (int i = 1; i < 7; i++)
@@ -560,7 +560,7 @@ namespace FF1Lib
 		{
 			// Remove CROWN requirement for Ordeals.
 			const int OrdealsTileset = 1;
-			var ordealsTilesetOffset = TilesetDataOffset + OrdealsTileset * TilesetDataCount * TilesetDataSize;
+			var ordealsTilesetOffset = TilesetDataOffset + (OrdealsTileset * TilesetDataCount * TilesetDataSize);
 			var ordealsTilesetData = Get(ordealsTilesetOffset, TilesetDataCount * TilesetDataSize).ToUShorts();
 
 			// The 4 masked-out bits are special flags for a tile.  We wipe the flags for the two throne teleportation tiles,
@@ -834,7 +834,7 @@ namespace FF1Lib
 			InsertDialogs(UnusedTextPointer, dialogueStrings.PickRandom(rng));
 
 			// Get rid of random WarMECH encounters.  Group 8 is now also group 7.
-			var formationOffset = ZoneFormationsOffset + ZoneFormationsSize * (64 + (byte)MapId.SkyPalace5F);
+			var formationOffset = ZoneFormationsOffset + (ZoneFormationsSize * (64 + (byte)MapId.SkyPalace5F));
 			var formations = Get(formationOffset, ZoneFormationsSize);
 			formations[6] = formations[7];
 			Put(formationOffset, formations);
@@ -866,7 +866,7 @@ namespace FF1Lib
 
 		public void MoveNpc(MapId mapId, int mapNpcIndex, int x, int y, bool inRoom, bool stationary)
 		{
-			int offset = MapSpriteOffset + ((byte)mapId * MapSpriteCount + mapNpcIndex) * MapSpriteSize;
+			int offset = MapSpriteOffset + ((((byte)mapId * MapSpriteCount) + mapNpcIndex) * MapSpriteSize);
 
 			byte firstByte = (byte)x;
 			firstByte |= (byte)(inRoom ? 0x80 : 0x00);
@@ -878,7 +878,7 @@ namespace FF1Lib
 
 		public void SetNpc(MapId mapId, int mapNpcIndex, ObjectId mapObjId, int x, int y, bool inRoom, bool stationary)
 		{
-			int offset = MapSpriteOffset + ((byte)mapId * MapSpriteCount + mapNpcIndex) * MapSpriteSize;
+			int offset = MapSpriteOffset + ((((byte)mapId * MapSpriteCount) + mapNpcIndex) * MapSpriteSize);
 
 			byte firstByte = (byte)x;
 			firstByte |= (byte)(inRoom ? 0x80 : 0x00);
@@ -895,7 +895,7 @@ namespace FF1Lib
 
 			for (int i = 0; i < MapSpriteCount; i++)
 			{
-				int offset = MapSpriteOffset + ((byte)mapId * MapSpriteCount + i) * MapSpriteSize;
+				int offset = MapSpriteOffset + ((((byte)mapId * MapSpriteCount) + i) * MapSpriteSize);
 
 				if (Data[offset] == (byte)mapObjId)
 				{
@@ -918,7 +918,7 @@ namespace FF1Lib
 			{
 				for (int i = 0; i < MapSpriteCount; i++)
 				{
-					int offset = MapSpriteOffset + ((byte)mid * MapSpriteCount + i) * MapSpriteSize;
+					int offset = MapSpriteOffset + ((((byte)mid * MapSpriteCount) + i) * MapSpriteSize);
 
 					if (Data[offset] == (byte)mapObjId)
 					{
@@ -938,7 +938,7 @@ namespace FF1Lib
 		{
 			var tempNPC = new NPC();
 
-			int offset = MapSpriteOffset + ((byte)mapId * MapSpriteCount + position) * MapSpriteSize;
+			int offset = MapSpriteOffset + ((((byte)mapId * MapSpriteCount) + position) * MapSpriteSize);
 
 			tempNPC.Index = position;
 			tempNPC.Coord = (Data[offset + 1] & 0x3F, Data[offset + 2]);
