@@ -660,6 +660,8 @@ namespace FF1Lib
 				EnableEasyMode();
 			}
 
+			new TreasureStacks(this, flags).SetTreasureStacks();
+
 			if ((bool)flags.TrappedChests || (bool)flags.TCMasaGuardian || (bool)flags.TrappedShards)
 			{
 				MonsterInABox(rng, flags);

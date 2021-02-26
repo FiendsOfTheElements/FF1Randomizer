@@ -445,7 +445,7 @@ namespace FF1Lib
 			Data[0x7C9F7] = 0x1B;
 
 			// LoadPrice fix
-			PutInBank(newTalkRoutinesBank, 0x9F10, Blob.FromHex("A9118558A5734C93DD"));
+			PutInBank(newTalkRoutinesBank, 0x9F10, Blob.FromHex("A9118558A5734C06B0"));
 
 			// Update bank
 			Data[0x7C9F2] = newTalkRoutinesBank;
@@ -608,7 +608,6 @@ namespace FF1Lib
 			Dictionary<int, string> newDialogs = new Dictionary<int, string>();
 
 			//CleanupNPCRoutines(); - Deprecated 2020-12-12
-			SplitOpenTreasureRoutine();
 			TransferDialogs();
 			TransferTalkRoutines();
 			AddNewChars();
