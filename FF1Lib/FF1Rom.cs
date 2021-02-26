@@ -228,6 +228,16 @@ namespace FF1Lib
 			{
 				EnableLefeinShops(maps);
 			}
+            
+            if ((bool)flags.MelmondClinic)
+            {
+                EnableMelmondClinic(maps);
+            }
+
+			if ((bool)flags.RandomVampAttack)
+			{
+				RandomVampireAttack(maps, rng);
+			}
 
 			if ((bool)flags.GaiaShortcut)
 			{
@@ -650,6 +660,8 @@ namespace FF1Lib
 				EnableEasyMode();
 			}
 
+			new TreasureStacks(this, flags).SetTreasureStacks();
+
 			if ((bool)flags.TrappedChests || (bool)flags.TCMasaGuardian || (bool)flags.TrappedShards)
 			{
 				MonsterInABox(rng, flags);
@@ -852,7 +864,7 @@ namespace FF1Lib
 				ShopUpgrade();
 			}
 
-			if (flags.SpookyFlag)
+			if (flags.SpookyFlag && !(bool)flags.RandomizeFormationEnemizer)
 			{
 				Spooky(talkroutines, npcdata, rng, flags);
 			}
@@ -894,6 +906,10 @@ namespace FF1Lib
 				rng = new MT19337(funRngSeed);
 				ChangeLute(rng);
 			}
+
+			rng = new MT19337(funRngSeed);
+
+			TitanSnack(preferences.TitanSnack, npcdata, rng);
 
 			rng = new MT19337(funRngSeed);
 
