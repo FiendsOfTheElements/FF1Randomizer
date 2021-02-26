@@ -13,16 +13,16 @@ namespace FF1Lib
 		[Description("Default")]
 		Default,
 
-		[Description("Stingy (2 Tents, 5 Heals)")]
+		[Description("Stingy")]
 		Stingy,
 
-		[Description("Adequat (3 Tents, 2 Cabins, 10 Heals, 2 Pures, 2 Softs)")]
+		[Description("Adequat")]
 		Adequat,
 
-		[Description("Generous (5 Tents, 3 Cabins, 2 Houses, 20 Heals, 3 Pures, 2 Softs))")]
+		[Description("Generous")]
 		Generous,
 
-		[Description("Ridiculous (10 Tents, 5 Cabins, 3 Houses, 50 Heals, 5 Pures, 5 Softs))")]
+		[Description("Ridiculous")]
 		Ridiculous
 	}
 
