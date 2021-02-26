@@ -14,7 +14,7 @@ namespace FF1Lib
 		public const int TreasureCount = 256;
 
 		public const int lut_MapObjTalkJumpTblAddress = 0x390D3;
-		public const string giveRewardRoutineAddress = "93DD";
+		public const string giveRewardRoutineAddress = "06B0";
 		public static readonly List<int> UnusedTreasureIndices =
 			Enumerable.Range(0, 1).Concat(
 			Enumerable.Range(145, 4)).Concat(
@@ -71,31 +71,6 @@ namespace FF1Lib
 				MoveShipToRewardSource(shipLocation);
 			}
 			return placedItems;
-		}
-		private void SplitOpenTreasureRoutine()
-		{
-			// Replace "OpenTreasureChest" routine
-			var openTreasureChest =
-				$"A9002003FEA645BD00B120{giveRewardRoutineAddress}" +
-				"B00AA445B9006209049900628A60"; // 27 bytes
-			Put(0x7DD78, Blob.FromHex(openTreasureChest));
-			// See source: ~/asm/1F_DD78_OpenTreasureChestRewrite.asm
-
-			// New "GiveReward" routine
-			const string checkItem =
-				"85616920C93CB013AAC90CD005" +
-				"DE0060B003FE0060C931B02A902B"; // 27 bytes
-			const string notItem =
-				"A561C96C900920B9EC20EADD4CD6DD" +
-				"C944B0092034DDB007A9E59007" +
-				"2046DDB00CA9BD" +
-				"65619D0061"; // 40 bytes
-			const string openChest =
-				"18E67DE67DA2F09004EEB960E88A60"; // 12 bytes
-			var giveRewardRoutine =
-				$"{checkItem}{notItem}{openChest}";
-			Put(0x7DD93, Blob.FromHex(giveRewardRoutine));
-			// See source: ~/asm/1F_DD78_OpenTreasureChestRewrite.asm
 		}
 
 		private void MoveShipToRewardSource(MapLocation vanillaMapLocation)

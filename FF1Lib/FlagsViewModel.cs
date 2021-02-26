@@ -3917,6 +3917,16 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Etherizer"));
 			}
 		}
+		
+		public TreasureStackSize ConsumableTreasureStackSize
+		{
+			get => Flags.ConsumableTreasureStackSize;
+			set
+			{
+				Flags.ConsumableTreasureStackSize = value;
+				RaisePropertyChanged();
+			}
+		}
 	}
 }
 
