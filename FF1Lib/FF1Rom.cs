@@ -203,15 +203,15 @@ namespace FF1Lib
 				flippedMaps = HorizontalFlipDungeons(rng, maps, teleporters, overworldMap);
 			}
 
+			if ((bool)flags.RandomizeFormationEnemizer)
+			{
+				DoEnemizer(rng, (bool)flags.RandomizeEnemizer, (bool)flags.RandomizeFormationEnemizer, flags.EnemizerDontMakeNewScripts);
+			}
+
 			if (flags.DeepDungeon)
 			{
 				DeepDungeon(rng, overworldMap, maps, flags);
 				UnusedGoldItems = new List<int> { };
-			}
-
-			if ((bool)flags.RandomizeFormationEnemizer)
-			{
-				DoEnemizer(rng, (bool)flags.RandomizeEnemizer, (bool)flags.RandomizeFormationEnemizer, flags.EnemizerDontMakeNewScripts);
 			}
 
 			if (preferences.ModernBattlefield)

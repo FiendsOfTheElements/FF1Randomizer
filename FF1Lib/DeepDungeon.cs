@@ -858,29 +858,38 @@ namespace FF1Lib
 			// Each box could contain a potion or something else.
 			// The potions are done in three tiers, giving a greater chance of heals in the early game,
 			// pures in the mid game, and softs in the late game.
-			// The tents are placeholders for ethers, and I plan to integrate the ether flag into this
-			// routine and only include those items if it is checked.
-			Item[] potionspinner1 =
+			//Item[] potionspinner1 =
+			List<Item> potionspinner1 = new List<Item>() 
 			{
 				Item.Heal, Item.Heal, Item.Heal, Item.Heal,
 				Item.Pure, Item.Pure, Item.Pure,
-				Item.Tent, Item.Tent,
 				Item.Soft
 			};
-			Item[] potionspinner2 =
+			//Item[] potionspinner2 =
+			List<Item> potionspinner2 = new List<Item>()
 			{
 				Item.Pure, Item.Pure, Item.Pure, Item.Pure,
 				Item.Heal, Item.Heal, Item.Heal,
-				Item.Cabin, Item.Cabin,
 				Item.Soft
 			};
-			Item[] potionspinner3 =
+			//Item[] potionspinner3 =
+			List<Item> potionspinner3 = new List<Item>()
 			{
 				Item.Soft, Item.Soft, Item.Soft, Item.Soft,
 				Item.Pure, Item.Pure, Item.Pure,
-				Item.House, Item.House,
 				Item.Heal
 			};
+			// The shelters are placeholders for ethers.
+			// It will only include those if the ether flag is checked.
+			if (flags.Etherizer)
+			{
+				potionspinner1.Add(Item.Tent);
+				potionspinner1.Add(Item.Tent);
+				potionspinner2.Add(Item.Cabin);
+				potionspinner2.Add(Item.Cabin);
+				potionspinner3.Add(Item.House);
+				potionspinner3.Add(Item.House);
+			}
 			// For the non-potion items, we read all the potential treasure contents and sort them
 			// by price. The "Treasure" constructor looks at the index to determine if something is
 			// an end game item with an absurdly low price and adjust accordingly. That way you can
@@ -947,9 +956,9 @@ namespace FF1Lib
 							byte spunitem = 0;
 							chestsdropped++;
 							Put(0x800 + tilesetmappings[i] * 0x100 + maps[i][k, j] * 2, Blob.FromHex("09" + Convert.ToHexString(new byte[] { (byte)chestsdropped })));
-							if (RollDice(rng, 1, 5) == 1)
+							if (true) //(RollDice(rng, 1, 5) == 1)
 							{
-								switch ((i - 8) / 17)
+								switch ((i - 8) / 13)
 								{
 									case 0:
 										spunitem = (byte)potionspinner1.PickRandom(rng);
@@ -957,16 +966,16 @@ namespace FF1Lib
 									case 1:
 										spunitem = (byte)potionspinner2.PickRandom(rng);
 										break;
-									case 2:
+									default:
 										spunitem = (byte)potionspinner3.PickRandom(rng);
 										break;
 								}
 							}
-							else
-							{
-								Treasure picked = treasures[RollDice(rng, 1, treasurediesize) + (int)lowest];
-								spunitem = picked.index;
-							}
+							//else
+							//{
+							//	Treasure picked = treasures[RollDice(rng, 1, treasurediesize) + (int)lowest];
+							//	spunitem = picked.index;
+							//}
 							Put(0x3100 + chestsdropped, Blob.FromHex(Convert.ToHexString(new byte[] { spunitem })));
 						}
 					}
