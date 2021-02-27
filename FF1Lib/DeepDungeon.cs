@@ -858,21 +858,22 @@ namespace FF1Lib
 			// Each box could contain a potion or something else.
 			// The potions are done in three tiers, giving a greater chance of heals in the early game,
 			// pures in the mid game, and softs in the late game.
-			//Item[] potionspinner1 =
+			List<Item> potionspinner0 = new List<Item>()
+			{
+				Item.Heal, Item.Pure, Item.Soft
+			};
 			List<Item> potionspinner1 = new List<Item>() 
 			{
 				Item.Heal, Item.Heal, Item.Heal, Item.Heal,
 				Item.Pure, Item.Pure, Item.Pure,
 				Item.Soft
 			};
-			//Item[] potionspinner2 =
 			List<Item> potionspinner2 = new List<Item>()
 			{
 				Item.Pure, Item.Pure, Item.Pure, Item.Pure,
 				Item.Heal, Item.Heal, Item.Heal,
 				Item.Soft
 			};
-			//Item[] potionspinner3 =
 			List<Item> potionspinner3 = new List<Item>()
 			{
 				Item.Soft, Item.Soft, Item.Soft, Item.Soft,
@@ -883,6 +884,9 @@ namespace FF1Lib
 			// It will only include those if the ether flag is checked.
 			if (flags.Etherizer)
 			{
+				potionspinner0.Add(Item.Tent);
+				potionspinner0.Add(Item.Cabin);
+				potionspinner0.Add(Item.House);
 				potionspinner1.Add(Item.Tent);
 				potionspinner1.Add(Item.Tent);
 				potionspinner2.Add(Item.Cabin);
@@ -940,7 +944,12 @@ namespace FF1Lib
 						lowest += 2;
 						break;
 				}
-				lowest = Math.Min(lowest, treasures.Count() - treasurediesize - 1);
+				lowest = Math.Min(lowest, treasures.Count() - treasurediesize - 2);
+				if (flags.DDEvenTreasureDistribution)
+				{
+					lowest = 0;
+					treasurediesize = treasures.Count() - 1;
+				}
 				for (int j = 0; j < 64; j++)
 				{
 					for (int k = 0; k < 64; k++)
@@ -956,26 +965,33 @@ namespace FF1Lib
 							byte spunitem = 0;
 							chestsdropped++;
 							Put(0x800 + tilesetmappings[i] * 0x100 + maps[i][k, j] * 2, Blob.FromHex("09" + Convert.ToHexString(new byte[] { (byte)chestsdropped })));
-							if (true) //(RollDice(rng, 1, 5) == 1)
+							if (RollDice(rng, 1, 5) == 1)
 							{
-								switch ((i - 8) / 13)
+								if (flags.DDEvenTreasureDistribution)
 								{
-									case 0:
-										spunitem = (byte)potionspinner1.PickRandom(rng);
-										break;
-									case 1:
-										spunitem = (byte)potionspinner2.PickRandom(rng);
-										break;
-									default:
-										spunitem = (byte)potionspinner3.PickRandom(rng);
-										break;
+									spunitem = (byte)potionspinner0.PickRandom(rng);
+								}
+								else
+								{
+									switch ((i - 8) / 13)
+									{
+										case 0:
+											spunitem = (byte)potionspinner1.PickRandom(rng);
+											break;
+										case 1:
+											spunitem = (byte)potionspinner2.PickRandom(rng);
+											break;
+										default:
+											spunitem = (byte)potionspinner3.PickRandom(rng);
+											break;
+									}
 								}
 							}
-							//else
-							//{
-							//	Treasure picked = treasures[RollDice(rng, 1, treasurediesize) + (int)lowest];
-							//	spunitem = picked.index;
-							//}
+							else
+							{
+								Treasure picked = treasures[RollDice(rng, 1, treasurediesize) + (int)lowest];
+								spunitem = picked.index;
+							}
 							Put(0x3100 + chestsdropped, Blob.FromHex(Convert.ToHexString(new byte[] { spunitem })));
 						}
 					}
