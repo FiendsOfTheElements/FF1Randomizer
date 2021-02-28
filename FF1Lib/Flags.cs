@@ -255,7 +255,6 @@ namespace FF1Lib
 
 		public bool? MoreTentChests { get; set; } = false;
 		public bool? MoreHealChests { get; set; } = false;
-		public bool? EverMoreHealChests { get; set; } = false;
 
 		public bool? NoMasamune { get; set; } = false;
 		public bool? ClassAsNpcFiends { get; set; } = false;

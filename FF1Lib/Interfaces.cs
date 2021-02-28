@@ -101,7 +101,6 @@
 		WorldWealthMode WorldWealth { get; }
 		bool? MoreTentChests { get; }
 		bool? MoreHealChests { get; }
-		bool? EverMoreHealChests { get; }
 	}
 	public interface IItemShuffleFlags
 	{

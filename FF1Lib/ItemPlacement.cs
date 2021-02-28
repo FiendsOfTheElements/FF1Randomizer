@@ -296,18 +296,15 @@ namespace FF1Lib
 				if (treasurePool.Remove(Item.Gold3400)) i++;
 				if (treasurePool.Remove(Item.Gold4150)) i++;
 				if (treasurePool.Remove(Item.Gold1520)) i++;
-
-				for (; i > 0; i--) treasurePool.Add(Item.Heal);
-			}
-
-			if (flags.EverMoreHealChests ?? false)
-			{
-				int i = 0;				
 				if (treasurePool.Remove(Item.Gold5000)) i++;
 				if (treasurePool.Remove(Item.Gold7340)) i++;
 				if (treasurePool.Remove(Item.Gold7900)) i++;
 				if (treasurePool.Remove(Item.Gold8135)) i++;
 				if (treasurePool.Remove(Item.Gold9500)) i++;
+				if (treasurePool.Remove(Item.Gold9900)) i++;
+				if (treasurePool.Remove(Item.Gold10000)) i++;
+				if (treasurePool.Remove(Item.Gold12350)) i++;
+				if (treasurePool.Remove(Item.Gold13000)) i++;
 
 				for (; i > 0; i--) treasurePool.Add(Item.Heal);
 			}

@@ -3937,16 +3937,6 @@ namespace FF1Lib
 				RaisePropertyChanged();
 			}
 		}
-
-		public bool? EverMoreHealChests
-		{
-			get => Flags.EverMoreHealChests;
-			set
-			{
-				Flags.EverMoreHealChests = value;
-				RaisePropertyChanged();
-			}
-		}
 	}
 }
 
