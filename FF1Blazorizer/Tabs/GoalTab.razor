@@ -23,7 +23,7 @@
 			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="shardCountDropDown" TItem="ShardCount" @bind-Value="Flags.ShardCount">Goal:</EnumDropDown>
 			<div class="checkbox-cell"></div>
 			<h4>Events</h4>
-			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="lichRevengeCheckBox" @bind-Value="Flags.SpookyFlag">Lich's Revenge</CheckBox>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="lichRevengeCheckBox" IsEnabled="@(Flags.RandomizeFormationEnemizer != true)" @bind-Value="Flags.SpookyFlag">Lich's Revenge</CheckBox>
 		</div>
 		<div class="clear-it"></div>
 	}

@@ -311,6 +311,8 @@ namespace FF1Lib
 
 		public StartingItemSet StartingItemSet { get; set; } = StartingItemSet.None;
 
+		public TreasureStackSize ConsumableTreasureStackSize { get; set; } = TreasureStackSize.Default;
+
 		public bool? FIGHTER1 { get; set; } = false;
 		public bool? THIEF1 { get; set; } = false;
 		public bool? BLACK_BELT1 { get; set; } = false;

@@ -114,6 +114,16 @@
 						<CheckBox x:Name="FreeTailCheckBox" IsChecked="{Binding Flags.FreeTail}" IsThreeState="True" Content="Free Tail" ToolTip="The rat's tail required for promotion is in your inventory at the start of the game."/>
 						<Label Margin="5,5,0,0"/>
 						<CheckBox x:Name="UseOlderPlacementCheckBox" IsChecked="{Binding Flags.ClassicItemPlacement}" Content="Use v2 logic for placing treasures" ToolTip="Uses an older version of the logic to place items"/>
+						<StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+							<Label >Consumable Treasurechest Stacks:</Label>
+							<ComboBox SelectedValue="{Binding Flags.ConsumableTreasureStackSize}" MinWidth="100" HorizontalAlignment="Left" SelectedValuePath="Tag">
+								<ComboBoxItem Tag="Default">Default</ComboBoxItem>
+								<ComboBoxItem Tag="Stingy">Stingy</ComboBoxItem>
+								<ComboBoxItem Tag="Adequat">Adequat</ComboBoxItem>
+								<ComboBoxItem Tag="Generous">Generous</ComboBoxItem>
+								<ComboBoxItem Tag="Ridiculous">Ridiculous</ComboBoxItem>
+							</ComboBox>
+						</StackPanel>
 					</StackPanel>
 					<StackPanel Orientation="Vertical" Grid.ColumnSpan="3" Margin="239,0,0,0">
 						<Label Margin="5,5,0,0" FontWeight="Bold">Incentivized Locations:</Label>
