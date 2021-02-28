@@ -768,7 +768,7 @@ namespace FF1Lib
 
 					for (int j = 1; j < maxbonus; j++)
 					{
-						while (!bonusNormal.First().ClassList.Contains((AuthClass)i))
+						while (!bonusNormal.First().ClassList.Contains((AuthClass)i) || assignedBonusMalus[i].Where(x => x.Action == bonusNormal.First().Action).Any())
 							bonusNormal.Shuffle(rng);
 
 						assignedBonusMalus[i].Add(bonusNormal.First());
@@ -780,7 +780,7 @@ namespace FF1Lib
 				{
 					for (int j = 0; j < maxbonus; j++)
 					{
-						while (!bonusNormal.First().ClassList.Contains((AuthClass)i))
+						while (!bonusNormal.First().ClassList.Contains((AuthClass)i) || assignedBonusMalus[i].Where(x => x.Action == bonusNormal.First().Action).Any())
 							bonusNormal.Shuffle(rng);
 
 						assignedBonusMalus[i].Add(bonusNormal.First());

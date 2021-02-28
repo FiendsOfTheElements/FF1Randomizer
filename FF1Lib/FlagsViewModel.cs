@@ -2341,6 +2341,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NoTabLayout"));
 			}
 		}
+		public TitanSnack TitanSnack
+		{
+			get => Preferences.TitanSnack;
+			set
+			{
+				Preferences.TitanSnack = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TitanSnack"));
+			}
+		}
 		public Fate HurrayDwarfFate
 		{
 			get => Preferences.HurrayDwarfFate;
@@ -3915,6 +3924,16 @@ namespace FF1Lib
 			{
 				Flags.Etherizer = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Etherizer"));
+			}
+		}
+		
+		public TreasureStackSize ConsumableTreasureStackSize
+		{
+			get => Flags.ConsumableTreasureStackSize;
+			set
+			{
+				Flags.ConsumableTreasureStackSize = value;
+				RaisePropertyChanged();
 			}
 		}
 

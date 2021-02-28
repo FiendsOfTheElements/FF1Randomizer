@@ -24,6 +24,24 @@
 		"description": "Hides all flags to create a mystery flagset that can then be distributed. Useful for tournament and challenge race settings.\n This flag cannot be disabled once clicked; you will need to hit the Reset button to restore functionality to the site (and this will, in turn, wipe the blind flags selected). Make sure to save your flagset before you use this flag."
 	},
 
+	{
+		"Id": "excludeGoldFromScalingCheckBox",
+		"title": "Exclude Gold from scaling",
+		"screenshot": null,
+		"description": "Gold treasures will only roll to +-10% of their vanilla value instead of scaling with prices. Removes the flat gold boost from 'Exp. Gold Boost' to enemy rewards. Also removes the inverse 'Exp. & Gold Boost' multiplier to prices."
+	},
+	{
+		"Id": "cheapVendorItemCheckBox",
+		"title": "Cheap Vendor Item",
+		"screenshot": null,
+		"description": "Makes the vendor item roll to 20000 +-10%"
+	},
+	{
+		"Id": "applyExpBoostToGoldCheckBox",
+		"title": "Apply flat Gold Boost to Enemies",
+		"screenshot": null,
+		"description": "Applies the flat gold boost from 'Exp & Gold Boost' to enemy rewards. Makes early gold grinds more satisfying."
+	},
 
 
 	{
@@ -49,6 +67,12 @@
 		"title": "Hurray Dwarf's Fate",
 		"screenshot": "hurrayDwarfFate.png",
 		"description": "Choose if Hurray Dwarf (one of the NPCs in the Dwarf Cave) is spared or killed when NPC Guillotine is turned on. If you choose to kill the Dwarf, he will say one of a number of different random dialogue options before meeting his untimely fate."
+	},
+	{
+		"Id": "titanSnack",
+		"title": "Titan's Favorite Snack",
+		"screenshot": "titanSnack.png",
+		"description": "Randomly change Titan's Ruby to another snack from 100 different, community-contributed options.\n[grid][r]{l}{i}Ruby|{l}Default/Vanilla[r]{l}{i}Other Minerals|{l}Rocks or similar Titan cuisine[r]{l}{i}Junk Food|{l}Human food to eat in moderation[r]{l}{i}Healthy Food|{l}Human food of a healthier variety[r]{l}{i}Beverages|{l}Drinks[r]{l}{i}All|{l}All of the above except Ruby\n"
 	},
 	{
 		"Id": "paletteSwapCheckBox",
@@ -148,6 +172,12 @@
 		"title": "Starting Inventory",
 		"screenshot": "startinginventory.png",
 		"description": "Starts the game with a set of consumable items.\n[grid][r]{i}Option|{i}Tent|{i}Cabin|{i}House|{i}Heal|{i}Pure|{i}Soft[r]{l}SafetyBit|1||||1|1[r]{l}Beggar's Choice|5|||20|2|1[r]{l}Just Tents|10|||||[r]{l}Explorer Starting Pack|10|||50|4|2[r]{l}Real Estate|15|3|1|||[r]{l}Warrior's Standard|15|3|1|50|6|3[r]{l}Royal Packmule|50|15|5|99|10|5[r]{l}Duckling Boon|99|99|99|99|99|99[r]{l}R. Beggar's Choice|0-5|||0-20|0-2|0-1[r]{l}R. Explorer Starting Pack|1-10|||0-50|0-4|0-2[r]{l}R. Warrior's Standard|3-15|0-3|0-1|20-50|2-6|1-3[r]{l}R. Royal Packmule|10-50|5-15|1-5|30-99|5-10|2-5[r]{l}R. High Rolling|35-99|10-25|5-10|30-99|10-20|5-10[r]{l}Randomized|0-99|0-99|0-99|0-99|0-20|0-10\n"
+	},
+	{
+		"Id": "consumableTreasureStackSizeDropDown",
+		"title": "Consumable Treasure Stack Size",
+		"screenshot": null,
+		"description": "Every consumable rewart(chest, npc) may give you more that one item.\n[grid][r]{i}Option|{i}Tent|{i}Cabin|{i}House|{i}Heal|{i}Pure|{i}Soft[r]{l}Stingy|2|||5||[r]{l}Adequat|3|2||10|2|2[r]{l}Generous|5|3|2|20|3|2[r]{l}Ridiculous|10|5|3|50|5|5\n"
 	},
 
 	{
@@ -1442,11 +1472,11 @@
 		"screenshot": "extendedHintsCheckBox.png",
 		"description": "Replace NPCs' dialogues with hints. There a 6 Hint Categories:\nLoose Floor: provides the floor where a loose is located\nLoose Name: provides the name of the loose and the dungeon\nIncentive Name: provides the name of the incentive and the dungeon, npc or town\nEquipment Floor: States on what floors legendery items are\nEquipment Name: Gives the name of the Equipment and the dungeon name\nFloor Hints: Wow: Quest or legendary; Meh: Rare Equipment; Sparkle: more than 5kgold treasure; Dud: none of the above\n\nThe hint categories are placed in the order specified. If there are no valid places left, remaining hints are not placed anymore."
 	},
-    {
-        "Id": "melmondClinicCheckBox",
-        "title": "Melmondish Hospitality",
-        "screenshot": "melmondClinicCheckBox.png",
-        "description": "Adds a clinic to Melmond."
-    }
+	{
+		"Id": "melmondClinicCheckBox",
+		"title": "Melmondish Hospitality",
+		"screenshot": "melmondClinicCheckBox.png",
+		"description": "Adds a clinic to Melmond."
+	}
 ]
 
