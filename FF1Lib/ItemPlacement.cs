@@ -301,10 +301,10 @@ namespace FF1Lib
 				if (treasurePool.Remove(Item.Gold7900)) i++;
 				if (treasurePool.Remove(Item.Gold8135)) i++;
 				if (treasurePool.Remove(Item.Gold9500)) i++;
-				if (treasurePool.Remove(Item.Gold9900)) i++;
-				if (treasurePool.Remove(Item.Gold10000)) i++;
-				if (treasurePool.Remove(Item.Gold12350)) i++;
-				if (treasurePool.Remove(Item.Gold13000)) i++;
+				//if (treasurePool.Remove(Item.Gold9900)) i++;
+				//if (treasurePool.Remove(Item.Gold10000)) i++;
+				//if (treasurePool.Remove(Item.Gold12350)) i++;
+				//if (treasurePool.Remove(Item.Gold13000)) i++;
 
 				for (; i > 0; i--) treasurePool.Add(Item.Heal);
 			}
