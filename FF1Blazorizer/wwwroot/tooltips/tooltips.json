@@ -888,6 +888,12 @@
 		"description": "Adds a Warp Portal in ToFR that lets you exit the dungeon, without needing an EXIT or WARP spell.\nThis flag also works with Shorten ToFR."
 	},
 	{
+		"Id": "lutePlateInShortToFRCheckBox",
+		"title": "Include Lute Plate",
+		"screenshot": "LutePlateInShortToFR.png",
+		"description": "Adds a Plate obstacle in Short ToFR.\nWhen enabled, LUTE is required to enter the boss room."
+	},
+	{
 		"Id": "procGenWaterfall",
 		"title": "Generated Waterfall Cave",
 		"screenshot": "procGenWaterfall.png",
