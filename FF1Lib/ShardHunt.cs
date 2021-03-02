@@ -136,6 +136,10 @@ namespace FF1Lib
 
 				// replace "The tune plays,\nrevealing a stairway." text (0x385BA) originally "9DAB1AB7B8B11AB3AFA4BCB6BF05B5A8B92BAF1FAA2024B7A4ACB55DBCC000"
 				Put(0x385BA, FF1Text.TextToBytes("The tune plays,\nopening the pathway.", useDTE: true));
+
+				// make lute plate a single color
+				MakeGarlandsBorderTransparent(); // so lute plate change doesn't conflict with Garland, he'll look the same on a black background
+				Put(0x02B2D, Blob.FromHex("27")); // change bottom lute plate palette
 			}
 		}
 
@@ -211,6 +215,16 @@ namespace FF1Lib
 				Item.WoodenRod, Item.Cloth, Item.WoodenShield, Item.Cap, Item.WoodenHelm, Item.Gloves };
 
 			return (trash.Contains(item) || item >= Item.Gold20 && item <= Item.Gold350) ? Item.Shard : item;
+		}
+
+		private void MakeGarlandsBorderTransparent()
+		{
+			// replaces the outline of Garland, stuff that normally displays in dark blue or black
+			// with transparency, for use with making a single color lute plate
+			Put(0x0B400, Blob.FromHex("0000000601050703"));
+			Put(0x0B410, Blob.FromHex("0000006080A0E0C0"));
+			Put(0x0B420, Blob.FromHex("0000006060000000"));
+			Put(0x0B430, Blob.FromHex("0006060000000000"));
 		}
 	}
 }
