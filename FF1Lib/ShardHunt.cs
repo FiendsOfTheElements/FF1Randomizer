@@ -69,7 +69,7 @@ namespace FF1Lib
 			Data[0x7EF45] = 0x11; // Skip over orbs and shards when printing the item menu
 		}
 
-		public void ShortenToFR(List<Map> maps, bool includeRefightTiles, bool refightAll, bool addExitTile, MT19337 rng)
+		public void ShortenToFR(List<Map> maps, bool includeRefightTiles, bool refightAll, bool addExitTile, bool addLutePlate, MT19337 rng)
 		{
 			// Black Orb tile Warp destination change straight to an edit Chaos floor with all the ToFR Chests.
 			Data[0x00D80] = 0x80; // Map edits
@@ -110,6 +110,32 @@ namespace FF1Lib
 			{
 				// add warp portal to alternate map, allowing player to Exit ToFR
 				maps[(byte)MapId.TempleOfFiendsRevisitedChaos][3, 15] = (byte)Tile.PortalWarp;
+			}
+
+			if (addLutePlate)
+			{
+				// add lute plate (can't use mapNpcIndex 0-2, those belong to Garland)
+				SetNpc(MapId.TempleOfFiendsRevisitedChaos, mapNpcIndex: 3, ObjectId.LutePlate, 15, 5, inRoom: true, stationary: true);
+
+				// set walkable black tiles near lute plate to "lute usable" tiles
+				for (int y = 2; y <= 4; y++)
+				{
+					for (int x = 13; x <= 17; x++)
+					{
+						if (maps[(byte)MapId.TempleOfFiendsRevisitedChaos][y, x].Equals((byte)0x04))
+						{
+							maps[(byte)MapId.TempleOfFiendsRevisitedChaos][y, x] = (byte)0x20;
+						}
+					}
+
+				}
+
+				// add statue decorations
+				maps[(byte)MapId.TempleOfFiendsRevisitedChaos][6, 14] = (byte)0x10;
+				maps[(byte)MapId.TempleOfFiendsRevisitedChaos][6, 16] = (byte)0x11;
+
+				// replace "The tune plays,\nrevealing a stairway." text (0x385BA) originally "9DAB1AB7B8B11AB3AFA4BCB6BF05B5A8B92BAF1FAA2024B7A4ACB55DBCC000"
+				Put(0x385BA, FF1Text.TextToBytes("The tune plays,\nopening the pathway.", useDTE: true));
 			}
 		}
 
