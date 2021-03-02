@@ -1655,17 +1655,15 @@ namespace FF1Lib
 			}
 		}
 
-		public bool? FreeLuteFlag
+		public bool? FreeLute
 		{
-			get => Flags.FreeLuteFlag;
+			get => Flags.FreeLute;
 			set
 			{
-				Flags.FreeLuteFlag = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeLuteFlag"));
+				Flags.FreeLute = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeLute"));
 			}
 		}
-
-		public bool? FreeLute => FreeLuteFlag | ShortToFR;
 
 		public bool FreeOrbsEnabled => !ShardHunt;
 
