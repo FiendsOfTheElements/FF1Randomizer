@@ -864,7 +864,7 @@ namespace FF1Lib
 				ShopUpgrade();
 			}
 
-			if ((bool)flags.FightBahamut)
+			if ((bool)flags.FightBahamut && !flags.SpookyFlag)
 			{
 				FightBahamut(talkroutines, npcdata, (bool)flags.NoTail, flags.EvadeCap);
 			}

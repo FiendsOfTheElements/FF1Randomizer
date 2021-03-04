@@ -494,6 +494,11 @@ namespace FF1Lib
 			ObjectId.Fairy, ObjectId.King, ObjectId.Matoya, ObjectId.Nerrick, ObjectId.Princess2, ObjectId.Smith,
 			ObjectId.Titan, ObjectId.Unne, ObjectId.Sarda, ObjectId.ElfPrince, ObjectId.Lefein };
 
+			if ((bool)flags.FightBahamut)
+			{
+				npcpool.Remove(ObjectId.Bahamut);
+			}
+
 			// Select random npc
 			ObjectId newastos = npcpool.PickRandom(rng);
 
