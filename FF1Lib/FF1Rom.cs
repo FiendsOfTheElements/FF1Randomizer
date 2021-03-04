@@ -524,7 +524,7 @@ namespace FF1Lib
 
 			if (((bool)flags.EnemyTrapTiles) && !flags.EnemizerEnabled)
 			{
-				ShuffleTrapTiles(rng, ((bool)flags.RandomTrapFormations));
+				ShuffleTrapTiles(rng, (bool)flags.RandomTrapFormations, (bool)flags.FightBahamut);
 			}
 
 			if ((bool)flags.OrdealsPillars)
@@ -862,6 +862,11 @@ namespace FF1Lib
 			if (flags.ShopInfo)
 			{
 				ShopUpgrade();
+			}
+
+			if ((bool)flags.FightBahamut)
+			{
+				FightBahamut(talkroutines, npcdata, (bool)flags.NoTail, flags.EvadeCap);
 			}
 
 			if (flags.SpookyFlag && !(bool)flags.RandomizeFormationEnemizer)

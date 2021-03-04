@@ -2131,6 +2131,72 @@ namespace FF1Lib
 				}
 			}
 		}
+
+		public void FightBahamut(TalkRoutines talkroutines, NPCdata npcdata, bool removeTail, EvadeCapValues evadeClampFlag)
+		{
+			const byte offsetAtoB = 0x80; // diff between A side and B side
+
+			const byte encAnkylo = 0x71; // ANKYLO
+			const byte encCerbWzOgre = 0x22; // CEREBUS + WzOGRE
+			const byte encTyroWyvern = 0x3D + offsetAtoB; // TYRO + WYVERN
+
+			// Turn Ankylo into Bahamut
+			var encountersData = new Encounters(this);
+			encountersData.formations[encAnkylo].pattern = FormationPattern.Large4;
+			encountersData.formations[encAnkylo].spriteSheet = FormationSpriteSheet.WizardGarlandDragon2Golem;
+			encountersData.formations[encAnkylo].gfxOffset1 = (int)FormationGFX.Sprite3;
+			encountersData.formations[encAnkylo].palette1 = 0x1C;
+			encountersData.formations[encAnkylo].paletteAssign1 = 0;
+			encountersData.formations[encAnkylo].minmax1 = (1, 1);
+			encountersData.formations[encAnkylo].unrunnableA = true;
+			encountersData.Write(this);
+
+			// Update name
+			var enemyText = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
+			enemyText[78] = "BAHAMUT"; // +1 byte compared to ANKYLO, is this an issue?
+			WriteText(enemyText, EnemyTextPointerOffset, EnemyTextPointerBase, EnemyTextOffset);
+
+			// Remove Ankylo from the Overworld, with appropriate substitutions
+			SubstituteFormationTableEncounter(oldEncounter: encAnkylo, newEncounter: encCerbWzOgre); // handle Ankylo A side (single Ankylo)
+			SubstituteFormationTableEncounter(oldEncounter: encAnkylo + offsetAtoB, newEncounter: encTyroWyvern); // handle Ankylo B side (two Ankylos)
+
+			// Update Bahamut behavior
+			String asmNoTailPromote = "EE7D00AD7200203D96AD7500200096AC7600207F9020739220AE952018964C439660"; // 11_820 LichsRevenge ASM : ClassChange_bB
+			String asmTailRequiredPromote = "AD2D60D003A57160E67DA572203D96A575200096A476207F9020739220AE952018964C439660"; // 11_820 LichsRevenge ASM : Talk_battleBahamut
+			String asm = "";
+			String bahamutDialogue = "";
+			if (removeTail)
+			{
+				asm = asmNoTailPromote;
+				bahamutDialogue = "To prove your worth..\nYou must show me your\nstrength..\n\nCome at me WARRIORS,\nor die by my claws!";
+			}
+			else
+			{
+				asm = asmTailRequiredPromote;
+				bahamutDialogue = "The TAIL! Impressive..\nNow show me your true\nstrength..\n\nCome at me WARRIORS,\nor die by my claws!";
+			}
+			var fightBahamut = talkroutines.Add(Blob.FromHex(asm));
+			npcdata.GetTalkArray(ObjectId.Bahamut)[(int)TalkArrayPos.battle_id] = encAnkylo;
+			npcdata.SetRoutine(ObjectId.Bahamut, (newTalkRoutines)fightBahamut);
+
+			// Update Dragon dialogs
+			Dictionary<int, string> dialogs = new Dictionary<int, string>();
+			dialogs.Add(0x20, bahamutDialogue);
+			dialogs.Add(0xE9, "Have you met BAHAMUT,\nthe Dragon King? He\nfights those with\ncourage as true\nwarriors."); // Cardia Tiny
+			dialogs.Add(0xE5, "You are not afraid of\nBAHAMUT??\nYou will be!"); // Cardia Forest
+			dialogs.Add(0xAB, "Many have searched\nfor BAHAMUT, but,\nnone that found him\nsurvived."); // Onrac Pre-Promo
+			dialogs.Add(0xAC, "Well, well..\nI see you have\nslayed the dragon."); // Onrac Post-Promo
+			InsertDialogs(dialogs);
+
+			// Change Bahamut Dragon NPCs to the "Onrac Dragon" so they will change what they say post promotion
+			SetNpc(MapId.BahamutsRoomB2, mapNpcIndex: 1, ObjectId.OnracDragon, 19, 7, inRoom: true, stationary: true);
+			SetNpc(MapId.BahamutsRoomB2, mapNpcIndex: 2, ObjectId.OnracDragon, 23, 7, inRoom: true, stationary: true);
+
+			// Scale Difficulty Up, approx 700hp
+			ScaleSingleEnemyStats(78, 120, 120, wrapOverflow: false, includeMorale: false, rng: null, separateHPScale: true, lowPercentHp: 200, highPercentHp: 200, GetEvadeIntFromFlag(evadeClampFlag));
+		}
+
+
 	}
 }
 
