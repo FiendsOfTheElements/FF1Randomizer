@@ -1,6 +1,7 @@
 ﻿using RomUtilities;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 
@@ -181,7 +182,7 @@ namespace FF1Lib
 			var itemLocationPool = _incentivesData.AllValidItemLocations.ToList();
 			itemLocationPool = itemLocationPool.Where(x => !x.IsUnused && !placedItems.Any(y => y.Address == x.Address)).ToList();
 
-			MoreConsumableChests(_flags, treasurePool);
+			MoreConsumableChests.Work(_flags, treasurePool, rng);
 
 			if ((bool)_flags.NoMasamune)
 			{
@@ -272,42 +273,6 @@ namespace FF1Lib
 			var leftovers = treasurePool.Zip(itemLocationPool, (treasure, location) => NewItemPlacement(location, treasure));
 			placedItems.AddRange(leftovers);
 			return placedItems;
-		}
-
-		private void MoreConsumableChests(IItemPlacementFlags flags, List<Item> treasurePool)
-		{
-			if (flags.MoreTentChests ?? false)
-			{
-				int i = 0;
-				if (treasurePool.Remove(Item.Gold10)) i++;
-				if (treasurePool.Remove(Item.Gold180)) i++;
-				if (treasurePool.Remove(Item.Gold450)) i++;
-				if (treasurePool.Remove(Item.Gold575)) i++;
-				if (treasurePool.Remove(Item.Gold880)) i++;
-
-				for (; i > 0; i--) treasurePool.Add(Item.Tent);
-			}
-
-			if (flags.MoreHealChests ?? false)
-			{
-				int i = 0;
-				if (treasurePool.Remove(Item.Gold2000)) i++;
-				if (treasurePool.Remove(Item.Gold2750)) i++;
-				if (treasurePool.Remove(Item.Gold3400)) i++;
-				if (treasurePool.Remove(Item.Gold4150)) i++;
-				if (treasurePool.Remove(Item.Gold1520)) i++;
-				if (treasurePool.Remove(Item.Gold5000)) i++;
-				if (treasurePool.Remove(Item.Gold7340)) i++;
-				if (treasurePool.Remove(Item.Gold7900)) i++;
-				if (treasurePool.Remove(Item.Gold8135)) i++;
-				if (treasurePool.Remove(Item.Gold9500)) i++;
-				//if (treasurePool.Remove(Item.Gold9900)) i++;
-				//if (treasurePool.Remove(Item.Gold10000)) i++;
-				//if (treasurePool.Remove(Item.Gold12350)) i++;
-				//if (treasurePool.Remove(Item.Gold13000)) i++;
-
-				for (; i > 0; i--) treasurePool.Add(Item.Heal);
-			}
 		}
 
 		public Item SelectVendorItem(List<Item> incentives, List<Item> nonincentives, List<Item> treasurePool, List<IRewardSource> incentiveLocationPool, MT19337 rng)
@@ -514,6 +479,8 @@ namespace FF1Lib
 
 			return (true, currentMapLocations().ToList(), currentAccess);
 		}
+
+		
 	}
 
 	public class RandomItemPlacement : ItemPlacement

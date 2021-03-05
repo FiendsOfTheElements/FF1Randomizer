@@ -253,8 +253,7 @@ namespace FF1Lib
 		public bool? GuaranteedMasamune { get; set; } = false;
 		public bool? SendMasamuneHome { get; set; } = false;
 
-		public bool? MoreTentChests { get; set; } = false;
-		public bool? MoreHealChests { get; set; } = false;
+		public ConsumableChestSet MoreConsumableChests { get; set; } = ConsumableChestSet.Vanilla;
 
 		public bool? NoMasamune { get; set; } = false;
 		public bool? ClassAsNpcFiends { get; set; } = false;

@@ -3937,22 +3937,12 @@ namespace FF1Lib
 			}
 		}
 		
-		public bool? MoreTentChests
+		public ConsumableChestSet MoreConsumableChests
 		{
-			get => Flags.MoreTentChests;
+			get => Flags.MoreConsumableChests;
 			set
 			{
-				Flags.MoreTentChests = value;
-				RaisePropertyChanged();
-			}
-		}
-
-		public bool? MoreHealChests
-		{
-			get => Flags.MoreHealChests;
-			set
-			{
-				Flags.MoreHealChests = value;
+				Flags.MoreConsumableChests = value;
 				RaisePropertyChanged();
 			}
 		}

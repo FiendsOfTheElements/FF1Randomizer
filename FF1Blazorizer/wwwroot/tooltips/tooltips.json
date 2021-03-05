@@ -25,16 +25,10 @@
 	},
 
 	{
-		"Id": "moreTentChestsCheckBox",
-		"title": "More Tent Chests",
+		"Id": "consumableChestSetDropDown",
+		"title": "Consumable Chests",
 		"screenshot": null,
-		"description": "Transforms 5 gold chests into tent chests. Effectively gives you 7 save item chests of each type."
-	},
-	{
-		"Id": "moreHealChestsCheckBox",
-		"title": "More Heal Chests",
-		"screenshot": null,
-		"description": "Transforms 14 gold chests into heal potion chests. Effectively gives you 24 heal chests."
+		"description": "Changes the amount of chests that contain consumable items. May remove a lot of gold and eats into gear at one point.\n[grid][r]{i}Option|{i}Tent|{i}Cabin|{i}House|{i}Heal|{i}Pure|{i}Soft[r]{l}Vanilla|2|7|7|10|5|5[r]{l}Low|4|3|3|10|10|10[r]{l}Medium|7|4|4|15|15|15[r]{l}High|8|6|6|20|20|20[r]{l}Extreme|10|10|10|30|30|30[r]{l}The ..... Party Pack|||||99|99[r]{l}Random Low|0-10|0-10|0-10|0-30|0-30|0-30[r]{l}Random|0-33|0-33|0-33|0-99|0-99|0-99\n"
 	},
 
 
