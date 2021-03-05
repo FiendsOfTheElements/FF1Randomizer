@@ -110,11 +110,11 @@ else
 	private string DisplayText => !ShowMedian ? ((_valueLow > 0) ? ("+" + _valueLow) : _valueLow) + " - " + ((_valueHigh > 0) ? ("+" + _valueHigh) : _valueHigh) : (_valueLow + "% - " + _valueHigh + "%" + " (" + (int)Math.Sqrt(_valueLow * _valueHigh) + "%)");
 
 	//slider fields
-	int _valueLow = 20;
-	int _valueHigh = 500;
-	[Parameter] public int MinValue { get; set; } = 20;
-	[Parameter] public int MaxValue { get; set; } = 500;
-	[Parameter] public int Step { get; set; } = 10;
+	int _valueLow = 0;
+	int _valueHigh = 0;
+	[Parameter] public int MinValue { get; set; };
+	[Parameter] public int MaxValue { get; set; };
+	[Parameter] public int Step { get; set; };
 	[Parameter]
 	public int ValueLow
 	{
