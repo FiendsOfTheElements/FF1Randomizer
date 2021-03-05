@@ -83,6 +83,7 @@ namespace FF1Lib
 		public bool ChaosRush { get; set; } = false;
 		public bool? ShortToFR { get; set; } = false;
 		public bool? ExitToFR { get; set; } = false;
+		public bool? LutePlateInShortToFR { get; set; } = false;
 		public bool? PreserveFiendRefights { get; set; } = false;
 		public bool? PreserveAllFiendRefights { get; set; } = false;
 
@@ -204,7 +205,7 @@ namespace FF1Lib
 		public bool? FreeBridge { get; set; } = false;
 		public bool? FreeShip { get; set; } = false;
 		public bool? FreeAirship { get; set; } = false;
-		public bool? FreeLuteFlag { get; set; } = false;
+		public bool? FreeLute { get; set; } = false;
 		public bool FreeOrbs { get; set; } = false;
 		public bool EnableCritNumberDisplay { get; set; } = false;
 		public bool? FreeCanal { get; set; } = false;
@@ -709,13 +710,8 @@ namespace FF1Lib
 		}
 
 		public bool? ImmediatePureAndSoftRequired => EnemyStatusAttacks | Entrances | MapOpenProgression | RandomizeFormationEnemizer | RandomizeEnemizer;
-
-
-		public bool? FreeLute => FreeLuteFlag | ShortToFR;
-
 		public bool? DeepCastlesPossible => Entrances & Floors;
 		public bool? DeepTownsPossible => Towns & Entrances & Floors & EntrancesMixedWithTowns;
-
 		public bool EnemizerEnabled => (bool)RandomizeFormationEnemizer | (bool)RandomizeEnemizer;
 		public bool EnemizerDontMakeNewScripts => (bool)EnemySkillsSpells & !((bool)BossSkillsOnly | (bool)EnemySkillsSpellsTiered);
 
