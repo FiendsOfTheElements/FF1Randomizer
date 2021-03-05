@@ -747,7 +747,7 @@
 		"Id": "shortToFRCheckBox",
 		"title": "Shorten ToFR",
 		"screenshot": "shortToFRCheckBox.png",
-		"description": "Shortens the Temple of Fiends Revisited to lead straight to Chaos' Floor. The four Orbs are still required to enter the dungeon (excepting the use of other settings that change this requirement). Neither the KEY nor the LUTE will be required to enter the final floor if this box is checked. Starts with the LUTE in the party's inventory."
+		"description": "Shortens the Temple of Fiends Revisited to lead straight to Chaos' Floor. The four Orbs are still required to enter the dungeon (excepting the use of other settings that change this requirement). Neither the KEY nor the LUTE will be required to enter the final floor if this box is checked."
 	},
 	{
 		"Id": "preserveFiendRefightsCheckBox",
@@ -892,6 +892,12 @@
 		"title": "Add ToFR Exit",
 		"screenshot": "exitToFR.gif",
 		"description": "Adds a Warp Portal in ToFR that lets you exit the dungeon, without needing an EXIT or WARP spell.\nThis flag also works with Shorten ToFR."
+	},
+	{
+		"Id": "lutePlateInShortToFRCheckBox",
+		"title": "Include Lute Plate",
+		"screenshot": "LutePlateInShortToFR.png",
+		"description": "Adds a Plate obstacle in Short ToFR.\nWhen enabled, LUTE is required to enter the boss room."
 	},
 	{
 		"Id": "procGenWaterfall",
