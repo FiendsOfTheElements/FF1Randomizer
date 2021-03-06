@@ -1,0 +1,28 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "blazorwasm",
+            "browser": "chrome",
+            "name": "chrome Launch and Debug Blazor WebAssembly Application",
+            "request": "launch",
+            "program": "${workspaceFolder}/FF1Blazorizer/FF1Blazorizer.csproj"
+        },
+        {
+            "type": "blazorwasm",
+            "browser": "edge",
+            "name": "Launch and Debug Blazor WebAssembly Application",
+            "request": "launch"
+        },
+        {
+            "name": "test dev.sh",
+            "preLaunchTask": "test dev.sh",
+            "request": "launch",
+            "type": "pwa-chrome",
+            "url": "https://localhost:5001",
+        }
+    ]
+}
