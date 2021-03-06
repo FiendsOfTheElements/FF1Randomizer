@@ -230,7 +230,9 @@ namespace FF1Lib
 
 		[IntegerFlag(0, 50)]
 		public int WeaponTypeBonusValue { get; set; } = 10;
-		public bool ChanceToRun { get; set; } = false;
+
+		public ChanceToRunMode ChanceToRun { get; set; } = ChanceToRunMode.Vanilla;
+
 		public bool SpellBugs { get; set; } = false;
 		public bool BlackBeltAbsorb { get; set; } = false;
 		public bool NPCSwatter { get; set; } = false;

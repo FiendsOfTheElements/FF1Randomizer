@@ -73,11 +73,6 @@ namespace FF1Lib
 			Put(0x326F5, new byte[] { (byte) weaponBonusValue });
 		}
 
-		public void FixChanceToRun()
-		{
-			Put(0x323EF, new byte[] { 0x82 });
-		}
-
 		public void FixWarpBug()
 		{
 			Put(0x3AEF3, Blob.FromHex("187D0063")); // Allows last slot in a spell level to be used outside of battle

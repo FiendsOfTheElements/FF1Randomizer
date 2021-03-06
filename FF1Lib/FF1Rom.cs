@@ -703,10 +703,7 @@ namespace FF1Lib
 				FixWeaponStats();
 			}
 
-			if (flags.ChanceToRun)
-			{
-				FixChanceToRun();
-			}
+			new ChanceToRun(this, flags).FixChanceToRun();
 
 			if (flags.EnemyStatusAttackBug)
 			{
