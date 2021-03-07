@@ -494,6 +494,11 @@ namespace FF1Lib
 			ObjectId.Fairy, ObjectId.King, ObjectId.Matoya, ObjectId.Nerrick, ObjectId.Princess2, ObjectId.Smith,
 			ObjectId.Titan, ObjectId.Unne, ObjectId.Sarda, ObjectId.ElfPrince, ObjectId.Lefein };
 
+			if ((bool)flags.FightBahamut)
+			{
+				npcpool.Remove(ObjectId.Bahamut);
+			}
+
 			// Select random npc
 			ObjectId newastos = npcpool.PickRandom(rng);
 
@@ -1125,7 +1130,7 @@ namespace FF1Lib
 				new TargetNpc(ObjectId.Astos, MapId.NorthwestCastle, (0x11,0x07), true, true, "While the Crown is\nmissing, I can attest\nthat this is indeed\nthe REAL King of\nNorthwest Castle."),
 				new TargetNpc(ObjectId.Unne, MapId.Melmond, (0x1D, 0x02), false, true, "I'm also trying\nto discover the secret\nof Lefeinish!"),
 				new TargetNpc(ObjectId.Unne, MapId.Lefein, (0,0), false, false, "Lu..pa..?\nLu..pa..?"),
-				new TargetNpc(ObjectId.Vampire, MapId.SardasCave, (0x14, 0x01), true, false, "Sarda told me to sort\nthese garlic pots and\nvases until the Vampire\nis killed."),
+				new TargetNpc(ObjectId.Vampire, MapId.SardasCave, (0x04, 0x02), true, true, "The Vampire put a curse\non me, it will only be\nlifted on his death.\nAnd I can't do anything\nwhile you fight.\nIt's a shame."),
 				new TargetNpc(ObjectId.CanoeSage, MapId.CrescentLake, (0,0), false, true, "I came here to learn\neverything about the\nFiend of Earth. You got\nto respect such a\ndangerous adversary."),
 				new TargetNpc(ObjectId.Fairy, MapId.Gaia, (0x2F, 0x14), false, true, "I'm trying to get\nwhat's at the bottom\nof the pond.\n\nMaybe if I drained it.."),
 				new TargetNpc(ObjectId.Smith, MapId.DwarfCave, (0x08, 0x02), true, false, "I'm sure it will be a\nbadass sword! Like with\na huge blade, and a gun\nas the hilt, and you can\ntrigger it..\nI can't wait!"),
@@ -2131,6 +2136,72 @@ namespace FF1Lib
 				}
 			}
 		}
+
+		public void FightBahamut(TalkRoutines talkroutines, NPCdata npcdata, bool removeTail, EvadeCapValues evadeClampFlag)
+		{
+			const byte offsetAtoB = 0x80; // diff between A side and B side
+
+			const byte encAnkylo = 0x71; // ANKYLO
+			const byte encCerbWzOgre = 0x22; // CEREBUS + WzOGRE
+			const byte encTyroWyvern = 0x3D + offsetAtoB; // TYRO + WYVERN
+
+			// Turn Ankylo into Bahamut
+			var encountersData = new Encounters(this);
+			encountersData.formations[encAnkylo].pattern = FormationPattern.Large4;
+			encountersData.formations[encAnkylo].spriteSheet = FormationSpriteSheet.WizardGarlandDragon2Golem;
+			encountersData.formations[encAnkylo].gfxOffset1 = (int)FormationGFX.Sprite3;
+			encountersData.formations[encAnkylo].palette1 = 0x1C;
+			encountersData.formations[encAnkylo].paletteAssign1 = 0;
+			encountersData.formations[encAnkylo].minmax1 = (1, 1);
+			encountersData.formations[encAnkylo].unrunnableA = true;
+			encountersData.Write(this);
+
+			// Update name
+			var enemyText = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
+			enemyText[78] = "BAHAMUT"; // +1 byte compared to ANKYLO, is this an issue?
+			WriteText(enemyText, EnemyTextPointerOffset, EnemyTextPointerBase, EnemyTextOffset);
+
+			// Remove Ankylo from the Overworld, with appropriate substitutions
+			SubstituteFormationTableEncounter(oldEncounter: encAnkylo, newEncounter: encCerbWzOgre); // handle Ankylo A side (single Ankylo)
+			SubstituteFormationTableEncounter(oldEncounter: encAnkylo + offsetAtoB, newEncounter: encTyroWyvern); // handle Ankylo B side (two Ankylos)
+
+			// Update Bahamut behavior
+			String asmNoTailPromote = "EE7D00AD7200203D96AD7500200096AC7600207F9020739220AE952018964C439660"; // 11_820 LichsRevenge ASM : ClassChange_bB
+			String asmTailRequiredPromote = "AD2D60D003A57160E67DA572203D96A575200096A476207F9020739220AE952018964C439660"; // 11_820 LichsRevenge ASM : Talk_battleBahamut
+			String asm = "";
+			String bahamutDialogue = "";
+			if (removeTail)
+			{
+				asm = asmNoTailPromote;
+				bahamutDialogue = "To prove your worth..\nYou must show me your\nstrength..\n\nCome at me WARRIORS,\nor die by my claws!";
+			}
+			else
+			{
+				asm = asmTailRequiredPromote;
+				bahamutDialogue = "The TAIL! Impressive..\nNow show me your true\nstrength..\n\nCome at me WARRIORS,\nor die by my claws!";
+			}
+			var fightBahamut = talkroutines.Add(Blob.FromHex(asm));
+			npcdata.GetTalkArray(ObjectId.Bahamut)[(int)TalkArrayPos.battle_id] = encAnkylo;
+			npcdata.SetRoutine(ObjectId.Bahamut, (newTalkRoutines)fightBahamut);
+
+			// Update Dragon dialogs
+			Dictionary<int, string> dialogs = new Dictionary<int, string>();
+			dialogs.Add(0x20, bahamutDialogue);
+			dialogs.Add(0xE9, "Have you met BAHAMUT,\nthe Dragon King? He\nfights those with\ncourage as true\nwarriors."); // Cardia Tiny
+			dialogs.Add(0xE5, "You are not afraid of\nBAHAMUT??\nYou will be!"); // Cardia Forest
+			dialogs.Add(0xAB, "Many have searched\nfor BAHAMUT, but,\nnone that found him\nsurvived."); // Onrac Pre-Promo
+			dialogs.Add(0xAC, "Well, well..\nI see you have\nslayed the dragon."); // Onrac Post-Promo
+			InsertDialogs(dialogs);
+
+			// Change Bahamut Dragon NPCs to the "Onrac Dragon" so they will change what they say post promotion
+			SetNpc(MapId.BahamutsRoomB2, mapNpcIndex: 1, ObjectId.OnracDragon, 19, 7, inRoom: true, stationary: true);
+			SetNpc(MapId.BahamutsRoomB2, mapNpcIndex: 2, ObjectId.OnracDragon, 23, 7, inRoom: true, stationary: true);
+
+			// Scale Difficulty Up, approx 700hp
+			ScaleSingleEnemyStats(78, 120, 120, wrapOverflow: false, includeMorale: false, rng: null, separateHPScale: true, lowPercentHp: 200, highPercentHp: 200, GetEvadeIntFromFlag(evadeClampFlag));
+		}
+
+
 	}
 }
 

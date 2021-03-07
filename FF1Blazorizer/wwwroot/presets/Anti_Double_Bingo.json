@@ -125,7 +125,7 @@
     "BBCritRate": false,
     "WeaponCritRate": true,
     "WeaponBonuses": true,
-    "ChanceToRun": true,
+    "ChanceToRun": 1,
     "SpellBugs": true,
     "BlackBeltAbsorb": true,
     "NPCSwatter": true,

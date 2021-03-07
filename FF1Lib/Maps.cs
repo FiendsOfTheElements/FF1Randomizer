@@ -300,16 +300,16 @@ namespace FF1Lib
 			var tilesets = Get(TilesetDataOffset, TilesetDataCount * TilesetDataSize * TilesetCount).Chunk(TilesetDataSize).ToList();
 			tilesets.ForEach(tile =>
 			{
-				
+
 				if (extendedtraptiles ? IsNonBossTrapTileEx(tile) : IsNonBossTrapTile(tile))
 				{
-					tile[1] = extendedtraptiles ? 0x00 : 0x80;
+					tile[1] = (byte)(extendedtraptiles ? 0x00 : 0x80);
 				}
 			});
 			Put(TilesetDataOffset, tilesets.SelectMany(tileset => tileset.ToBytes()).ToArray());
 		}
 
-		public void ShuffleTrapTiles(MT19337 rng, bool randomize)
+		public void ShuffleTrapTiles(MT19337 rng, bool randomize, bool fightBahamut)
 		{
 			// This is magic BNE code that enables formation 1 trap tiles but we have to change
 			// all the 0x0A 0x80 into 0x0A 0x00 and use 0x00 for random encounters instead of 0x80.
@@ -321,6 +321,10 @@ namespace FF1Lib
 			{
 				encounters = Enumerable.Range(128, FirstBossEncounterIndex).Select(value => (byte)value).ToList();
 				encounters.Add(0xFF); // IronGOL
+				if (fightBahamut)
+				{
+					encounters.Remove(0x71); // ANKYLO (used for Bahamut)
+				}
 			}
 			else
 			{

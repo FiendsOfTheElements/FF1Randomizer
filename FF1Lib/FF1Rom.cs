@@ -203,15 +203,15 @@ namespace FF1Lib
 				flippedMaps = HorizontalFlipDungeons(rng, maps, teleporters, overworldMap);
 			}
 
+			if ((bool)flags.RandomizeFormationEnemizer)
+			{
+				DoEnemizer(rng, (bool)flags.RandomizeEnemizer, (bool)flags.RandomizeFormationEnemizer, flags.EnemizerDontMakeNewScripts);
+			}
+
 			if (flags.DeepDungeon)
 			{
 				DeepDungeon(rng, overworldMap, maps, flags);
 				UnusedGoldItems = new List<int> { };
-			}
-
-			if ((bool)flags.RandomizeFormationEnemizer)
-			{
-				DoEnemizer(rng, (bool)flags.RandomizeEnemizer, (bool)flags.RandomizeFormationEnemizer, flags.EnemizerDontMakeNewScripts);
 			}
 
 			if (preferences.ModernBattlefield)
@@ -299,7 +299,7 @@ namespace FF1Lib
 
 			if ((bool)flags.ShortToFR)
 			{
-				ShortenToFR(maps, (bool)flags.PreserveFiendRefights, (bool)flags.PreserveAllFiendRefights, (bool)flags.ExitToFR, rng);
+				ShortenToFR(maps, (bool)flags.PreserveFiendRefights, (bool)flags.PreserveAllFiendRefights, (bool)flags.ExitToFR, (bool)flags.LutePlateInShortToFR, rng);
 			}
 
 			if ((bool)flags.ExitToFR)
@@ -524,7 +524,7 @@ namespace FF1Lib
 
 			if (((bool)flags.EnemyTrapTiles) && !flags.EnemizerEnabled)
 			{
-				ShuffleTrapTiles(rng, ((bool)flags.RandomTrapFormations));
+				ShuffleTrapTiles(rng, (bool)flags.RandomTrapFormations, (bool)flags.FightBahamut);
 			}
 
 			if ((bool)flags.OrdealsPillars)
@@ -703,10 +703,7 @@ namespace FF1Lib
 				FixWeaponStats();
 			}
 
-			if (flags.ChanceToRun)
-			{
-				FixChanceToRun();
-			}
+			new ChanceToRun(this, flags).FixChanceToRun();
 
 			if (flags.EnemyStatusAttackBug)
 			{
@@ -862,6 +859,11 @@ namespace FF1Lib
 			if (flags.ShopInfo)
 			{
 				ShopUpgrade();
+			}
+
+			if ((bool)flags.FightBahamut && !flags.SpookyFlag && !(bool)flags.RandomizeFormationEnemizer)
+			{
+				FightBahamut(talkroutines, npcdata, (bool)flags.NoTail, flags.EvadeCap);
 			}
 
 			if (flags.SpookyFlag && !(bool)flags.RandomizeFormationEnemizer)

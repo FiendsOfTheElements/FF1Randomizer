@@ -73,11 +73,6 @@ namespace FF1Lib
 			Put(0x326F5, new byte[] { (byte) weaponBonusValue });
 		}
 
-		public void FixChanceToRun()
-		{
-			Put(0x323EF, new byte[] { 0x82 });
-		}
-
 		public void FixWarpBug()
 		{
 			Put(0x3AEF3, Blob.FromHex("187D0063")); // Allows last slot in a spell level to be used outside of battle
@@ -173,9 +168,11 @@ namespace FF1Lib
 
 		public void ThiefHitRate()
 		{
-			//Thief & Ninja growth rates are separate
-			Put(0x6CA5A, Blob.FromHex("04"));
-			Put(0x6CA60, Blob.FromHex("04"));
+		    //Thief & Ninja growth rates are separate
+		    var classData = ReadClassData();
+		    classData[(int)AuthClass.Thief].HitGrowth = 4;
+		    classData[(int)AuthClass.Ninja].HitGrowth = 4;
+		    WriteClassData(classData);
 		}
 
 		public void KnightNinjaChargesForAllLevels()
@@ -189,12 +186,20 @@ namespace FF1Lib
 
 		public void RemakeStyleMasterMDEF()
 		{
-			Put(0x6CA65, Blob.FromHex("030203020202030204020202"));
+		    //Black Belt & Master growth rates are separate
+		    var classData = ReadClassData();
+		    classData[(int)AuthClass.BlackBelt].MDefGrowth = 3;
+		    classData[(int)AuthClass.Master].MDefGrowth = 4;
+		    WriteClassData(classData);
 		}
 
 		public void InvertedMDEF()
 		{
-			Put(0x6CA65, Blob.FromHex("020301030303020304030303"));
+		    var classData = ReadClassData();
+		    for (int i = 0; i < 12; i++) {
+			classData[i].MDefGrowth = (byte)(5 - classData[i].MDefGrowth);
+		    }
+		    WriteClassData(classData);
 		}
 
 		public void FixHitChanceCap()
