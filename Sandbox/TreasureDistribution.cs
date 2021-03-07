@@ -37,7 +37,7 @@ namespace Sandbox
 
 			    HouseMPRestoration = false,
 			    WeaponStats = false,
-			    ChanceToRun = false,
+			    ChanceToRun = ChanceToRunMode.Vanilla,
 			    SpellBugs = false,
 			    EnemyStatusAttackBug = false,
 

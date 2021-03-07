@@ -1862,13 +1862,13 @@ namespace FF1Lib
 			}
 		}
 
-		public bool ChanceToRun
+		public ChanceToRunMode ChanceToRun
 		{
 			get => Flags.ChanceToRun;
 			set
 			{
 				Flags.ChanceToRun = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ChanceToRun"));
+				RaisePropertyChanged();
 			}
 		}
 		public bool SpellBugs
