@@ -299,7 +299,7 @@ namespace FF1Lib
 
 			if ((bool)flags.ShortToFR)
 			{
-				ShortenToFR(maps, (bool)flags.PreserveFiendRefights, (bool)flags.PreserveAllFiendRefights, (bool)flags.ExitToFR, rng);
+				ShortenToFR(maps, (bool)flags.PreserveFiendRefights, (bool)flags.PreserveAllFiendRefights, (bool)flags.ExitToFR, (bool)flags.LutePlateInShortToFR, rng);
 			}
 
 			if ((bool)flags.ExitToFR)
@@ -703,10 +703,7 @@ namespace FF1Lib
 				FixWeaponStats();
 			}
 
-			if (flags.ChanceToRun)
-			{
-				FixChanceToRun();
-			}
+			new ChanceToRun(this, flags).FixChanceToRun();
 
 			if (flags.EnemyStatusAttackBug)
 			{
