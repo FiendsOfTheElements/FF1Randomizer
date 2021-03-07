@@ -129,7 +129,7 @@
     "WeaponCritRate": true,
     "WeaponBonuses": true,
     "WeaponTypeBonusValue": 10,
-    "ChanceToRun": true,
+    "ChanceToRun": 1,
     "SpellBugs": true,
     "BlackBeltAbsorb": true,
     "NPCSwatter": true,

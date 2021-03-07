@@ -24,6 +24,12 @@
 		"description": "Hides all flags to create a mystery flagset that can then be distributed. Useful for tournament and challenge race settings.\n This flag cannot be disabled once clicked; you will need to hit the Reset button to restore functionality to the site (and this will, in turn, wipe the blind flags selected). Make sure to save your flagset before you use this flag."
 	},
 
+	{
+		"Id": "consumableChestSetDropDown",
+		"title": "Consumable Chests",
+		"screenshot": null,
+		"description": "Changes the amount of chests that contain consumable items. May remove a lot of gold and eats into gear at one point.\n[grid][r]{i}Option|{i}Tent|{i}Cabin|{i}House|{i}Heal|{i}Pure|{i}Soft[r]{l}Vanilla|2|7|7|10|5|5[r]{l}Low|4|3|3|10|10|10[r]{l}Medium|7|4|4|15|15|15[r]{l}High|8|6|6|20|20|20[r]{l}Extreme|10|10|10|30|30|30[r]{l}The ..... Party Pack|||||99|99[r]{l}Random Low|0-10|0-10|0-10|0-30|0-30|0-30[r]{l}Random|0-33|0-33|0-33|0-99|0-99|0-99\n"
+	},
 
 
 	{
@@ -747,7 +753,7 @@
 		"Id": "shortToFRCheckBox",
 		"title": "Shorten ToFR",
 		"screenshot": "shortToFRCheckBox.png",
-		"description": "Shortens the Temple of Fiends Revisited to lead straight to Chaos' Floor. The four Orbs are still required to enter the dungeon (excepting the use of other settings that change this requirement). Neither the KEY nor the LUTE will be required to enter the final floor if this box is checked. Starts with the LUTE in the party's inventory."
+		"description": "Shortens the Temple of Fiends Revisited to lead straight to Chaos' Floor. The four Orbs are still required to enter the dungeon (excepting the use of other settings that change this requirement). Neither the KEY nor the LUTE will be required to enter the final floor if this box is checked."
 	},
 	{
 		"Id": "preserveFiendRefightsCheckBox",
@@ -892,6 +898,12 @@
 		"title": "Add ToFR Exit",
 		"screenshot": "exitToFR.gif",
 		"description": "Adds a Warp Portal in ToFR that lets you exit the dungeon, without needing an EXIT or WARP spell.\nThis flag also works with Shorten ToFR."
+	},
+	{
+		"Id": "lutePlateInShortToFRCheckBox",
+		"title": "Include Lute Plate",
+		"screenshot": "LutePlateInShortToFR.png",
+		"description": "Adds a Plate obstacle in Short ToFR.\nWhen enabled, LUTE is required to enter the boss room."
 	},
 	{
 		"Id": "procGenWaterfall",
@@ -1453,6 +1465,11 @@
 		"title": "Deep Dungeon",
 		"screenshot": "deepdungeon.png",
 		"description": "Turns Coneria Castle into a 52-floor completely procedurally generated dungeon.\nAs you go deeper, the treasures get better and the monster encounters get stronger. Every so often there will be a branch to the next town, but dying or restoring a save will return you to the overworld.\nSomewhere within the dungeon is a TAIL and Bahamut; you could encounter them in either order. There are also three guaranteed Ribbons, and there may be more near the end of the dungeon.\nTreasures are rolled independently, not shuffled, so there could be no Masamunes, or you could find so many you're throwing them on the ground."
+	},
+	{
+		"Id": "DDEvenTreasureDistribution",
+		"title": "Distribute Treasure Evenly",
+		"description": "Instead of the value of treasure chest contents increasing as you progress deeper into the dungeon, each box has the same chance of having any kind of contents regardless of where in the dungeon you encounter it."
 	},
 	{
 		"Id": "extendedHintsCheckBox",

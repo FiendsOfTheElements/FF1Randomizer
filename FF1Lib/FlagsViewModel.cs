@@ -558,6 +558,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ExitToFR"));
 			}
 		}
+		public bool? LutePlateInShortToFR
+		{
+			get => Flags.LutePlateInShortToFR;
+			set
+			{
+				Flags.LutePlateInShortToFR = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("LutePlateInShortToFR"));
+			}
+		}
 		public bool? PreserveFiendRefights
 		{
 			get => Flags.PreserveFiendRefights;
@@ -1655,17 +1664,15 @@ namespace FF1Lib
 			}
 		}
 
-		public bool? FreeLuteFlag
+		public bool? FreeLute
 		{
-			get => Flags.FreeLuteFlag;
+			get => Flags.FreeLute;
 			set
 			{
-				Flags.FreeLuteFlag = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeLuteFlag"));
+				Flags.FreeLute = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeLute"));
 			}
 		}
-
-		public bool? FreeLute => FreeLuteFlag | ShortToFR;
 
 		public bool FreeOrbsEnabled => !ShardHunt;
 
@@ -1686,6 +1693,15 @@ namespace FF1Lib
 			{
 				Flags.DeepDungeon = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DeepDungeon"));
+			}
+		}
+		public bool DDEvenTreasureDistribution
+		{
+			get => Flags.DDEvenTreasureDistribution;
+			set
+			{
+				Flags.DDEvenTreasureDistribution = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DDEvenTreasureDistribution"));
 			}
 		}
 		public bool StartingGold
@@ -1864,13 +1880,13 @@ namespace FF1Lib
 			}
 		}
 
-		public bool ChanceToRun
+		public ChanceToRunMode ChanceToRun
 		{
 			get => Flags.ChanceToRun;
 			set
 			{
 				Flags.ChanceToRun = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ChanceToRun"));
+				RaisePropertyChanged();
 			}
 		}
 		public bool SpellBugs
@@ -3942,6 +3958,16 @@ namespace FF1Lib
 			set
 			{
 				Flags.ConsumableTreasureStackSize = value;
+				RaisePropertyChanged();
+			}
+		}
+		
+		public ConsumableChestSet MoreConsumableChests
+		{
+			get => Flags.MoreConsumableChests;
+			set
+			{
+				Flags.MoreConsumableChests = value;
 				RaisePropertyChanged();
 			}
 		}

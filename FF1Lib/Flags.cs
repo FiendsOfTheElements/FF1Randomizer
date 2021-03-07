@@ -83,6 +83,7 @@ namespace FF1Lib
 		public bool ChaosRush { get; set; } = false;
 		public bool? ShortToFR { get; set; } = false;
 		public bool? ExitToFR { get; set; } = false;
+		public bool? LutePlateInShortToFR { get; set; } = false;
 		public bool? PreserveFiendRefights { get; set; } = false;
 		public bool? PreserveAllFiendRefights { get; set; } = false;
 
@@ -205,7 +206,7 @@ namespace FF1Lib
 		public bool? FreeBridge { get; set; } = false;
 		public bool? FreeShip { get; set; } = false;
 		public bool? FreeAirship { get; set; } = false;
-		public bool? FreeLuteFlag { get; set; } = false;
+		public bool? FreeLute { get; set; } = false;
 		public bool FreeOrbs { get; set; } = false;
 		public bool EnableCritNumberDisplay { get; set; } = false;
 		public bool? FreeCanal { get; set; } = false;
@@ -230,7 +231,9 @@ namespace FF1Lib
 
 		[IntegerFlag(0, 50)]
 		public int WeaponTypeBonusValue { get; set; } = 10;
-		public bool ChanceToRun { get; set; } = false;
+
+		public ChanceToRunMode ChanceToRun { get; set; } = ChanceToRunMode.Vanilla;
+
 		public bool SpellBugs { get; set; } = false;
 		public bool BlackBeltAbsorb { get; set; } = false;
 		public bool NPCSwatter { get; set; } = false;
@@ -244,6 +247,7 @@ namespace FF1Lib
 
 		public bool? MelmondClinic { get; set; } = false;
         public bool DeepDungeon { get; set; } = false;
+		public bool DDEvenTreasureDistribution { get; set; } = false;
 		public bool StartingGold { get; set; } = false;
 		public bool WrapStatOverflow { get; set; } = false;
 		public bool WrapPriceOverflow { get; set; } = false;
@@ -253,6 +257,9 @@ namespace FF1Lib
 		public bool? NoTail { get; set; } = false;
 		public bool? GuaranteedMasamune { get; set; } = false;
 		public bool? SendMasamuneHome { get; set; } = false;
+
+		public ConsumableChestSet MoreConsumableChests { get; set; } = ConsumableChestSet.Vanilla;
+
 		public bool? NoMasamune { get; set; } = false;
 		public bool? ClassAsNpcFiends { get; set; } = false;
 		public bool? ClassAsNpcKeyNPC { get; set; } = false;
@@ -710,13 +717,8 @@ namespace FF1Lib
 		}
 
 		public bool? ImmediatePureAndSoftRequired => EnemyStatusAttacks | Entrances | MapOpenProgression | RandomizeFormationEnemizer | RandomizeEnemizer;
-
-
-		public bool? FreeLute => FreeLuteFlag | ShortToFR;
-
 		public bool? DeepCastlesPossible => Entrances & Floors;
 		public bool? DeepTownsPossible => Towns & Entrances & Floors & EntrancesMixedWithTowns;
-
 		public bool EnemizerEnabled => (bool)RandomizeFormationEnemizer | (bool)RandomizeEnemizer;
 		public bool EnemizerDontMakeNewScripts => (bool)EnemySkillsSpells & !((bool)BossSkillsOnly | (bool)EnemySkillsSpellsTiered);
 

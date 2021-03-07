@@ -300,10 +300,10 @@ namespace FF1Lib
 			var tilesets = Get(TilesetDataOffset, TilesetDataCount * TilesetDataSize * TilesetCount).Chunk(TilesetDataSize).ToList();
 			tilesets.ForEach(tile =>
 			{
-				
+
 				if (extendedtraptiles ? IsNonBossTrapTileEx(tile) : IsNonBossTrapTile(tile))
 				{
-					tile[1] = extendedtraptiles ? 0x00 : 0x80;
+					tile[1] = (byte)(extendedtraptiles ? 0x00 : 0x80);
 				}
 			});
 			Put(TilesetDataOffset, tilesets.SelectMany(tileset => tileset.ToBytes()).ToArray());

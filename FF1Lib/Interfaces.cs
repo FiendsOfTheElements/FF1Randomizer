@@ -99,6 +99,7 @@
 		bool? SendMasamuneHome { get; }
 		bool? NoMasamune { get; }
 		WorldWealthMode WorldWealth { get; }
+		ConsumableChestSet MoreConsumableChests { get; }
 	}
 	public interface IItemShuffleFlags
 	{

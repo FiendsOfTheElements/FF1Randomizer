@@ -13,6 +13,7 @@
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="gaiaShortcutCheckBox" @bind-Value="Flags.GaiaShortcut">Add Gaia Shortcut</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="moveGaiaItemShopCheckBox" IsEnabled="@(Flags.GaiaShortcut == true)" @bind-Value="Flags.MoveGaiaItemShop">Move Gaia Item Shop</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="exitToFRCheckBox" @bind-Value="Flags.ExitToFR">Add ToFR Exit</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="lutePlateInShortToFRCheckBox" IsEnabled="@(Flags.ShortToFR != false)" @bind-Value="Flags.LutePlateInShortToFR">Include Lute Plate in Short ToFR</TriStateCheckBox>
 			<div class="checkbox-cell"></div>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="nonesGainXPcheckBox" @bind-Value="Flags.NonesGainXP">Nones Gain XP</CheckBox>
 			<div class="checkbox-cell"></div>
@@ -44,6 +45,7 @@
 			<p>While it should work with many flags, such as scaling and Blursed items, map edits and Floor shuffle will either fail to generate a ROM, or create an unpleasant experience.</p>
 			<p>Please try it out and provide feedback!</p>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="deepdungeon" @bind-Value="Flags.DeepDungeon">Deep Dungeon</CheckBox>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="DDEvenTreasureDistribution" @bind-Value="Flags.DDEvenTreasureDistribution">Distribute treasure evenly</CheckBox>
 		</div>
 		<div class="col1 full">
 			<h4>Shop Reduction</h4>
