@@ -1686,6 +1686,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DeepDungeon"));
 			}
 		}
+		public bool DDEvenTreasureDistribution
+		{
+			get => Flags.DDEvenTreasureDistribution;
+			set
+			{
+				Flags.DDEvenTreasureDistribution = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DDEvenTreasureDistribution"));
+			}
+		}
 		public bool StartingGold
 		{
 			get => Flags.StartingGold;

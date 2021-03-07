@@ -1461,6 +1461,11 @@
 		"description": "Turns Coneria Castle into a 52-floor completely procedurally generated dungeon.\nAs you go deeper, the treasures get better and the monster encounters get stronger. Every so often there will be a branch to the next town, but dying or restoring a save will return you to the overworld.\nSomewhere within the dungeon is a TAIL and Bahamut; you could encounter them in either order. There are also three guaranteed Ribbons, and there may be more near the end of the dungeon.\nTreasures are rolled independently, not shuffled, so there could be no Masamunes, or you could find so many you're throwing them on the ground."
 	},
 	{
+		"Id": "DDEvenTreasureDistribution",
+		"title": "Distribute Treasure Evenly",
+		"description": "Instead of the value of treasure chest contents increasing as you progress deeper into the dungeon, each box has the same chance of having any kind of contents regardless of where in the dungeon you encounter it."
+	},
+	{
 		"Id": "extendedHintsCheckBox",
 		"title": "Extensive Hints",
 		"screenshot": "extendedHintsCheckBox.png",
