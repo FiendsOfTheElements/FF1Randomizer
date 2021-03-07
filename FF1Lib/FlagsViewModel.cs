@@ -984,6 +984,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomVampAttack"));
 			}
 		}
+		public bool? FightBahamut
+		{
+			get => Flags.FightBahamut;
+			set
+			{
+				Flags.FightBahamut = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FightBahamut"));
+			}
+		}
 		public bool? ConfusedOldMen
 		{
 			get => Flags.ConfusedOldMen;
