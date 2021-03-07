@@ -24,6 +24,12 @@
 		"description": "Hides all flags to create a mystery flagset that can then be distributed. Useful for tournament and challenge race settings.\n This flag cannot be disabled once clicked; you will need to hit the Reset button to restore functionality to the site (and this will, in turn, wipe the blind flags selected). Make sure to save your flagset before you use this flag."
 	},
 
+	{
+		"Id": "consumableChestSetDropDown",
+		"title": "Consumable Chests",
+		"screenshot": null,
+		"description": "Changes the amount of chests that contain consumable items. May remove a lot of gold and eats into gear at one point.\n[grid][r]{i}Option|{i}Tent|{i}Cabin|{i}House|{i}Heal|{i}Pure|{i}Soft[r]{l}Vanilla|2|7|7|10|5|5[r]{l}Low|4|3|3|10|10|10[r]{l}Medium|7|4|4|15|15|15[r]{l}High|8|6|6|20|20|20[r]{l}Extreme|10|10|10|30|30|30[r]{l}The ..... Party Pack|||||99|99[r]{l}Random Low|0-10|0-10|0-10|0-30|0-30|0-30[r]{l}Random|0-33|0-33|0-33|0-99|0-99|0-99\n"
+	},
 
 
 	{
