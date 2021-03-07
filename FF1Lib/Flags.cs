@@ -66,6 +66,9 @@ namespace FF1Lib
 
 		#endregion
 
+
+		public StartingLevel StartingLevel { get; set; }
+
 		public bool Spoilers { get; set; } = false;
 		public bool TournamentSafe { get; set; } = false;
 		public bool BlindSeed { get; set; } = false;
@@ -714,7 +717,6 @@ namespace FF1Lib
 		public bool? DeepTownsPossible => Towns & Entrances & Floors & EntrancesMixedWithTowns;
 		public bool EnemizerEnabled => (bool)RandomizeFormationEnemizer | (bool)RandomizeEnemizer;
 		public bool EnemizerDontMakeNewScripts => (bool)EnemySkillsSpells & !((bool)BossSkillsOnly | (bool)EnemySkillsSpellsTiered);
-
 
 		public static string EncodeFlagsText(Flags flags)
 		{
