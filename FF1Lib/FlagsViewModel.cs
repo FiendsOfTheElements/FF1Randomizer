@@ -3943,6 +3943,16 @@ namespace FF1Lib
 				RaisePropertyChanged();
 			}
 		}
+		
+		public ConsumableChestSet MoreConsumableChests
+		{
+			get => Flags.MoreConsumableChests;
+			set
+			{
+				Flags.MoreConsumableChests = value;
+				RaisePropertyChanged();
+			}
+		}
 	}
 }
 

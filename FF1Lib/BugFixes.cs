@@ -168,9 +168,11 @@ namespace FF1Lib
 
 		public void ThiefHitRate()
 		{
-			//Thief & Ninja growth rates are separate
-			Put(0x6CA5A, Blob.FromHex("04"));
-			Put(0x6CA60, Blob.FromHex("04"));
+		    //Thief & Ninja growth rates are separate
+		    var classData = ReadClassData();
+		    classData[(int)AuthClass.Thief].HitGrowth = 4;
+		    classData[(int)AuthClass.Ninja].HitGrowth = 4;
+		    WriteClassData(classData);
 		}
 
 		public void KnightNinjaChargesForAllLevels()
@@ -184,12 +186,20 @@ namespace FF1Lib
 
 		public void RemakeStyleMasterMDEF()
 		{
-			Put(0x6CA65, Blob.FromHex("030203020202030204020202"));
+		    //Black Belt & Master growth rates are separate
+		    var classData = ReadClassData();
+		    classData[(int)AuthClass.BlackBelt].MDefGrowth = 3;
+		    classData[(int)AuthClass.Master].MDefGrowth = 4;
+		    WriteClassData(classData);
 		}
 
 		public void InvertedMDEF()
 		{
-			Put(0x6CA65, Blob.FromHex("020301030303020304030303"));
+		    var classData = ReadClassData();
+		    for (int i = 0; i < 12; i++) {
+			classData[i].MDefGrowth = (byte)(5 - classData[i].MDefGrowth);
+		    }
+		    WriteClassData(classData);
 		}
 
 		public void FixHitChanceCap()
