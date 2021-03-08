@@ -91,6 +91,10 @@ namespace FF1Lib
 				MapEditsToApply.Add(AirshipDock);
 				mapLocationRequirements[MapLocation.AirshipLocation].Add(MapChange.Ship | MapChange.Canal);
 			}
+			if ((bool)flags.MapBahamutCardiaDock)
+			{
+				MapEditsToApply.Add(BahamutCardiaDock);
+			}
 			if ((bool)flags.MapVolcanoIceRiver)
 			{
 				MapEditsToApply.Add(VolcanoIceRiver);
@@ -807,6 +811,19 @@ namespace FF1Lib
 				new MapEdit{X = 104, Y = 171, Tile = GrassTile},
 				new MapEdit{X = 105, Y = 171, Tile = GrassTile},
 				new MapEdit{X = 106, Y = 171, Tile = CoastLeft}
+			};
+		public static List<MapEdit> BahamutCardiaDock =
+			new List<MapEdit>
+			{
+			    new MapEdit{X = 0x5f, Y = 0x33, Tile = ForestBottomRight},
+			    new MapEdit{X = 0x5f, Y = 0x34, Tile = GrassTile},
+			    new MapEdit{X = 0x60, Y = 0x34, Tile = GrassTile},
+			    new MapEdit{X = 0x61, Y = 0x34, Tile = GrassTile},
+			    new MapEdit{X = 0x62, Y = 0x34, Tile = GrassTile},
+			    new MapEdit{X = 0x60, Y = 0x35, Tile = GrassTile},
+			    new MapEdit{X = 0x61, Y = 0x35, Tile = DockBottomMid},
+			    new MapEdit{X = 0x62, Y = 0x35, Tile = DockBottomMid},
+			    new MapEdit{X = 0x63, Y = 0x35, Tile = GrassTile},
 			};
 		public static Dictionary<OverworldTeleportIndex, Palette> OverworldToPalette =
 			new Dictionary<OverworldTeleportIndex, Palette>
