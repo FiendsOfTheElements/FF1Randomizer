@@ -94,6 +94,8 @@ namespace FF1Lib
 			if ((bool)flags.MapBahamutCardiaDock)
 			{
 				MapEditsToApply.Add(BahamutCardiaDock);
+				mapLocationRequirements[MapLocation.BahamutCave1].Add(MapChange.Ship | MapChange.Canal);
+				mapLocationRequirements[MapLocation.Cardia1].Add(MapChange.Ship | MapChange.Canal);
 			}
 			if ((bool)flags.MapVolcanoIceRiver)
 			{
