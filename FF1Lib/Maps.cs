@@ -323,7 +323,7 @@ namespace FF1Lib
 				encounters.Add(0xFF); // IronGOL
 				if (fightBahamut)
 				{
-					encounters.Remove(0x71); // ANKYLO (used for Bahamut)
+					encounters.Remove(0x80 + 0x71); // ANKYLO (used for Bahamut)
 				}
 			}
 			else
