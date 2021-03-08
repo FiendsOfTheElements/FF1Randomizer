@@ -323,24 +323,42 @@ namespace FF1Lib
 		}
 		public void AddNewChars()
 		{
-			// New characters, frees up 5 characters at 0xCA, 0xCE, 0xE6, 0xE8, 0xE9
-			// STATUS, use normal S and draw AT closer
-			// Put(0x385A1, Blob.FromHex("9CCBCCCD9C"));
-			// Put(0x24CC0, Blob.FromHex("00DFC66666E63636"));
-			// Put(0x24CD0, Blob.FromHex("00B333333333331E"));
+			const int statusCharOffset = 0x37000;
+			const int tilesetOffset = 0x0C000;
+			const int tilesetSize = 0x800;
+			const int tilesetCount = 8;
+			const int battleTilesetOffset = 0x1C000;
+			const int battleTilesetSize = 0x800;
+			const int battleTilesetCount = 16;
+			const int shopTilesetOffset = 0x24000;
 
-			// Stone ailment, use normal S and e, use Poison's "on"
-			Put(0x6C360, Blob.FromHex("9CE7E5A8")); // Stone
+			// There's 5 unused characters available on every tileset, 0x7B to 0x7F
+			//  new chars must be added to the BytesByText list in FF1Text.cs
+			var newChars = new List<(byte, string)>
+			{
+				(0x7B, "000008083E080800") // + sign
+			};
 
-			// White out free chars
-			//Put(0x24CA0, Blob.FromHex("FFFFFFFFFFFFFFFF"));
-			//Put(0x24CE0, Blob.FromHex("FFFFFFFFFFFFFFFF"));
-			Put(0x24E60, Blob.FromHex("FFFFFFFFFFFFFFFF"));
-			Put(0x24E80, Blob.FromHex("FFFFFFFFFFFFFFFF"));
-			Put(0x24E90, Blob.FromHex("FFFFFFFFFFFFFFFF"));
 
-			// Add plus sign at 0xC1
-			Put(0x24C10, Blob.FromHex("000008083E080800"));
+			foreach (var newchar in newChars)
+			{
+				// Menu screen tilset
+				Put(statusCharOffset + newchar.Item1 * 0x10, Blob.FromHex(newchar.Item2));
+				// Shop tileset
+				Put(shopTilesetOffset + newchar.Item1 * 0x10, Blob.FromHex(newchar.Item2));
+
+				// Map tilesets
+				for (int i = 0; i < tilesetCount; i++)
+				{
+					Put(tilesetOffset + tilesetSize * i + newchar.Item1 * 0x10, Blob.FromHex(newchar.Item2));
+				}
+
+				// Battle tilesets
+				for (int i = 0; i < battleTilesetCount; i++)
+				{
+					Put(battleTilesetOffset + battleTilesetSize * i + newchar.Item1 * 0x10, Blob.FromHex(newchar.Item2));
+				}
+			}
 		}
 
 		public void TransferDialogs()
