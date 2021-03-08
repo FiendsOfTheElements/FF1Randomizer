@@ -229,6 +229,7 @@ namespace FF1Lib
 		public bool BBCritRate { get; set; } = false;
 		public bool WeaponCritRate { get; set; } = false;
 		public bool WeaponBonuses { get; set; } = false;
+		public bool ThiefAgilityBuff { get; set; } = false;
 
 		[IntegerFlag(0, 50)]
 		public int WeaponTypeBonusValue { get; set; } = 10;
