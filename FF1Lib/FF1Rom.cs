@@ -248,6 +248,11 @@ namespace FF1Lib
 				}
 			}
 
+			if ((bool)flags.LefeinSuperStore)
+			{
+				EnableLefeinSuperStore(maps);
+			}
+
 			// This has to be done before we shuffle spell levels.
 			if (flags.SpellBugs)
 			{
