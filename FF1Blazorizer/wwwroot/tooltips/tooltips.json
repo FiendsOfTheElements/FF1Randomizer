@@ -1486,7 +1486,7 @@
 	{
 		"Id": "bahamutCardiaDockCheckBox",
 		"title": "Bahamut Cardia dock",
-		"screenshot": "bahamut_cardia_dock.png",
+		"screenshot": "bahamutCardiaDock.png",
 		"description": "Adds a dock to Bahamut's island so that the Airship is not required for class change."
 	}
 ]
