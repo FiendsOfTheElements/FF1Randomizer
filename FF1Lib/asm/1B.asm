@@ -201,9 +201,9 @@ LvlUp_CheckIfMax:
 ;; Heals all characters afterwards
 ;; Really bad hack with the lute
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    LDA item_lute ;AD2160 basically i set bit 7 of item_lute here, because i din't want to use up a byte of sram and i'm pretty sure it's never set again ever.
+    LDA game_flags ;AD0062 basically i set bit 7 of item_lute here, because i din't want to use up a byte of sram and i'm pretty sure it's never set again ever.
 	ORA #$80 ;0980
-	STA item_lute ;8D2160
+	STA game_flags ;8D0062
 
 	LDA #$10 ; A910
 	STA eob_gp_reward ;8D7668 just a loop counter, eob_gp_reward isn't used here anyway
@@ -227,9 +227,9 @@ loop:
 	DEC eob_gp_reward ;CE7668 loop stuff
 	BNE loop ;D0E7
 	
-	LDA item_lute ;AD2160 clear bit 7 of the item_lute, it shall never be set of the rest of the game, i hope.
+	LDA game_flags ;AD0062 clear bit 7 of the item_lute, it shall never be set of the rest of the game, i hope.
 	AND #$7F ;297F
-	STA item_lute ;8D2160
+	STA game_flags ;8D0062
 	
 	LDX #$00 ;A200 heal all characters, crappy code i know
 	LDA ch_maxhp, X; BD0C619D0A61BD0D619D0B61
@@ -264,7 +264,7 @@ loop:
 ;;
 ;; Routine to en/disable LvlUp_Display. If the bit 7 of item_lute is set, we are at gamestart and don't want LvlUp_Display to be called, because it crashes the game.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-	LDA item_lute ;AD2160 
+	LDA game_flags ;AD0062 
 	AND #$80 ;2980
 	BNE exit ;D003
 	JSR LvlUp_Display ;20E389
