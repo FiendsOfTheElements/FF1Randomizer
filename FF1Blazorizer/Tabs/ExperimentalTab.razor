@@ -16,7 +16,7 @@
 			<div class="checkbox-cell"></div>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="exitToFRCheckBox" @bind-Value="Flags.ExitToFR">Add ToFR Exit</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="lutePlateInShortToFRCheckBox" IsEnabled="@(Flags.ShortToFR != false)" @bind-Value="Flags.LutePlateInShortToFR">Include Lute Plate in Short ToFR</TriStateCheckBox>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="lefeinSuperStoreCheckBox" @bind-Value="Flags.LefeinSuperStore">Add Lefein SuperStore</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="lefeinSuperStoreCheckBox" IsEnabled="@Flags.LefeinSuperStoreEnabled" @bind-Value="Flags.LefeinSuperStore">Add Lefein SuperStore</TriStateCheckBox>
 			<div class="checkbox-cell"></div>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="bahamutCardiaDockCheckBox" @bind-Value="Flags.MapBahamutCardiaDock">Bahamut Cardia Dock</TriStateCheckBox>
 			<div class="checkbox-cell"></div>

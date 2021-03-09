@@ -248,7 +248,7 @@ namespace FF1Lib
 				}
 			}
 
-			if ((bool)flags.LefeinSuperStore)
+			if ((bool)flags.LefeinSuperStore && (flags.ShopKillMode_White == ShopKillMode.None && flags.ShopKillMode_Black == ShopKillMode.None))
 			{
 				EnableLefeinSuperStore(maps);
 			}
