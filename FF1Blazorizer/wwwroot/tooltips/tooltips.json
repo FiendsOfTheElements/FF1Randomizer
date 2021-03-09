@@ -906,6 +906,12 @@
 		"description": "Adds a Plate obstacle in Short ToFR.\nWhen enabled, LUTE is required to enter the boss room."
 	},
 	{
+		"Id": "lefeinSuperStoreCheckBox",
+		"title": "Add Lefein SuperStore",
+		"screenshot": "lefeinSuperStore.gif",
+		"description": "Upgrades the L8 Magic Shops in Lefein to include additional L1-L8 Magic Shops from around the world.\nDoes not include L7 and L8 Magic Shops from the neighboring town Gaia.\nNote: This flag is ignored if Shop Reduction for Magic Shops is enabled."
+	},
+	{
 		"Id": "procGenWaterfall",
 		"title": "Generated Waterfall Cave",
 		"screenshot": "procGenWaterfall.png",
