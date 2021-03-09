@@ -1145,6 +1145,16 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MapAirshipDock"));
 			}
 		}
+		public bool? MapBahamutCardiaDock
+		{
+			get => Flags.MapBahamutCardiaDock;
+			set
+			{
+				Flags.MapBahamutCardiaDock = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MapBahamutCardiaDock"));
+			}
+		}
+
 		public bool? Entrances
 		{
 			get => Flags.Entrances;

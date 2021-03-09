@@ -146,6 +146,7 @@ namespace FF1Lib
 		public bool? MapOpenProgressionExtended { get; set; } = false;
 		public bool? MapDwarvesNorthwest { get; set; } = false;
 		public bool? MapAirshipDock { get; set; } = false;
+		public bool? MapBahamutCardiaDock  { get; set; } = false;
 		public bool? EntrancesIncludesDeadEnds { get; set; } = false;
 		public bool? EntrancesMixedWithTowns { get; set; } = false;
 
