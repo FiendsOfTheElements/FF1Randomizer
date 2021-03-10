@@ -1484,6 +1484,18 @@
 		"description": "Adds a clinic to Melmond."
 	},
 	{
+		"Id": "randomVampAttackCheckBox",
+		"title": "Vampire attacks a random town",
+		"screenshot": "vampAttack.png",
+		"description": "Causes the Vampire to attack a random town.\nThe attacked town will not have an Item Shop or Clinic.\nNote: The Vampire will not attack the starting town, Coneria."
+	},
+	{
+		"Id": "randomVampAttackIncludesConeriaCheckBox",
+		"title": "Vampire attacks a random town - Include Coneria",
+		"screenshot": "vampAttackIncludesConeria.png",
+		"description": "Allows the Vampire to attack Coneria."
+	},
+	{
 		"Id": "bahamutCardiaDockCheckBox",
 		"title": "Bahamut Cardia dock",
 		"screenshot": "bahamutCardiaDock.png",

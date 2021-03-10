@@ -236,7 +236,7 @@ namespace FF1Lib
 
 			if ((bool)flags.RandomVampAttack)
 			{
-				RandomVampireAttack(maps, rng);
+				RandomVampireAttack(maps, (bool)flags.LefeinShops, (bool)flags.RandomVampAttackIncludesConeria, rng);
 			}
 
 			if ((bool)flags.GaiaShortcut)

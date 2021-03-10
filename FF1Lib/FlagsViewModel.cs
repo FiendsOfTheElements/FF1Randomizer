@@ -984,6 +984,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomVampAttack"));
 			}
 		}
+		public bool? RandomVampAttackIncludesConeria
+		{
+			get => Flags.RandomVampAttackIncludesConeria;
+			set
+			{
+				Flags.RandomVampAttackIncludesConeria = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomVampAttackIncludesConeria"));
+			}
+		}    
 		public bool? FightBahamut
 		{
 			get => Flags.FightBahamut;
@@ -4000,4 +4009,3 @@ namespace FF1Lib
 		}
 	}
 }
-
