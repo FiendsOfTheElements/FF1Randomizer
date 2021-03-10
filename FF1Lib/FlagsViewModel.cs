@@ -1879,15 +1879,6 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("WeaponBonuses"));
 			}
 		}
-		public  bool ThiefAgilityBuff
-		{
-		    get => Flags.ThiefAgilityBuff;
-		    set
-		    {
-			Flags.ThiefAgilityBuff = value;
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ThiefAgilityBuff"));
-		    }
-		}
 
 		public int WeaponTypeBonusValue
 		{
@@ -3980,7 +3971,15 @@ namespace FF1Lib
 				RaisePropertyChanged();
 			}
 		}
-		
+		public StartingLevel StartingLevel
+		{
+			get => Flags.StartingLevel;
+			set
+			{
+				Flags.StartingLevel = value;
+				RaisePropertyChanged();
+			}
+		}        
 		public ConsumableChestSet MoreConsumableChests
 		{
 			get => Flags.MoreConsumableChests;
@@ -3989,6 +3988,15 @@ namespace FF1Lib
 				Flags.MoreConsumableChests = value;
 				RaisePropertyChanged();
 			}
+		}
+    public  bool ThiefAgilityBuff
+		{
+		    get => Flags.ThiefAgilityBuff;
+		    set
+		    {
+			Flags.ThiefAgilityBuff = value;
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ThiefAgilityBuff"));
+		    }
 		}
 	}
 }
