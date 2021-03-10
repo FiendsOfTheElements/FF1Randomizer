@@ -175,7 +175,7 @@ namespace FF1Lib
 		    WriteClassData(classData);
 		}
 
-	        public void BuffThiefAGI() {
+	    public void BuffThiefAGI() {
 		    // Increase thief starting agility, agility
 		    // growth, and starting evade to make it more
 		    // viable as a first-slot character.
@@ -184,7 +184,8 @@ namespace FF1Lib
 		    classData[(int)AuthClass.Thief].AgiStarting = 120;
 		    classData[(int)AuthClass.Thief].AgiGrowth = Enumerable.Repeat(true, 49).ToList();
 		    classData[(int)AuthClass.Thief].EvaStarting = (byte)Math.Min(classData[(int)AuthClass.Thief].AgiStarting + 48, 255);
-		    WriteClassData(classData);}
+		    WriteClassData(classData);
+		}
 
 
 		public void KnightNinjaChargesForAllLevels()
