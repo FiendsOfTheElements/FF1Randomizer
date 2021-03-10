@@ -726,6 +726,11 @@ namespace FF1Lib
 				ThiefHitRate();
 			}
 
+			if (flags.ThiefAgilityBuff)
+			{
+			        BuffThiefAGI();
+			}
+
 			if (flags.ImproveTurnOrderRandomization)
 			{
 				ImproveTurnOrderRandomization(rng);

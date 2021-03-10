@@ -3989,6 +3989,15 @@ namespace FF1Lib
 				RaisePropertyChanged();
 			}
 		}
+    public  bool ThiefAgilityBuff
+		{
+		    get => Flags.ThiefAgilityBuff;
+		    set
+		    {
+			Flags.ThiefAgilityBuff = value;
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ThiefAgilityBuff"));
+		    }
+		}
 	}
 }
 
