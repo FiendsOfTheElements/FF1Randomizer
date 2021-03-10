@@ -984,6 +984,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomVampAttack"));
 			}
 		}
+		public bool? FightBahamut
+		{
+			get => Flags.FightBahamut;
+			set
+			{
+				Flags.FightBahamut = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FightBahamut"));
+			}
+		}
 		public bool? ConfusedOldMen
 		{
 			get => Flags.ConfusedOldMen;
@@ -1136,6 +1145,16 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MapAirshipDock"));
 			}
 		}
+		public bool? MapBahamutCardiaDock
+		{
+			get => Flags.MapBahamutCardiaDock;
+			set
+			{
+				Flags.MapBahamutCardiaDock = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MapBahamutCardiaDock"));
+			}
+		}
+
 		public bool? Entrances
 		{
 			get => Flags.Entrances;
@@ -1686,6 +1705,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DeepDungeon"));
 			}
 		}
+		public bool DDEvenTreasureDistribution
+		{
+			get => Flags.DDEvenTreasureDistribution;
+			set
+			{
+				Flags.DDEvenTreasureDistribution = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DDEvenTreasureDistribution"));
+			}
+		}
 		public bool StartingGold
 		{
 			get => Flags.StartingGold;
@@ -1862,13 +1890,13 @@ namespace FF1Lib
 			}
 		}
 
-		public bool ChanceToRun
+		public ChanceToRunMode ChanceToRun
 		{
 			get => Flags.ChanceToRun;
 			set
 			{
 				Flags.ChanceToRun = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ChanceToRun"));
+				RaisePropertyChanged();
 			}
 		}
 		public bool SpellBugs
@@ -3943,13 +3971,21 @@ namespace FF1Lib
 				RaisePropertyChanged();
 			}
 		}
-
 		public StartingLevel StartingLevel
 		{
 			get => Flags.StartingLevel;
 			set
 			{
 				Flags.StartingLevel = value;
+				RaisePropertyChanged();
+			}
+		}        
+		public ConsumableChestSet MoreConsumableChests
+		{
+			get => Flags.MoreConsumableChests;
+			set
+			{
+				Flags.MoreConsumableChests = value;
 				RaisePropertyChanged();
 			}
 		}

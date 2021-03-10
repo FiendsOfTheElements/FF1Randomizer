@@ -1007,5 +1007,22 @@ namespace FF1Lib
 				Put(EnemyTextPointerOffset + (120 + (i * 2)) * 2, namepointer);
 			}
 		}
+
+		public void SubstituteFormationTableEncounter(byte oldEncounter, byte newEncounter)
+		{
+			var oldFormations = Get(ZoneFormationsOffset, ZoneFormationsSize * ZoneCount).Chunk(ZoneFormationsSize);
+			var newFormations = Get(ZoneFormationsOffset, ZoneFormationsSize * ZoneCount).Chunk(ZoneFormationsSize);
+			for (byte i = 0; i < ZoneCount; i++)
+			{
+				for (int j = 0; j < ZoneFormationsSize; j++)
+				{
+					if (newFormations[i][j].Equals(oldEncounter))
+					{
+						newFormations[i][j] = newEncounter;
+					}
+				}
+			}
+			Put(ZoneFormationsOffset, newFormations.SelectMany(formation => formation.ToBytes()).ToArray());
+		}
 	}
 }

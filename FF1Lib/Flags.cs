@@ -132,6 +132,7 @@ namespace FF1Lib
 		public bool? TitansTrove { get; set; } = false;
 		public bool? LefeinShops { get; set; } = false;
 		public bool? RandomVampAttack { get; set; } = false;
+		public bool? FightBahamut { get; set; } = false;
 		public bool? ConfusedOldMen { get; set; } = false;
 		public bool? GaiaShortcut { get; set; } = false;
 		public bool? MoveGaiaItemShop { get; set; } = false;
@@ -148,6 +149,7 @@ namespace FF1Lib
 		public bool? MapOpenProgressionExtended { get; set; } = false;
 		public bool? MapDwarvesNorthwest { get; set; } = false;
 		public bool? MapAirshipDock { get; set; } = false;
+		public bool? MapBahamutCardiaDock  { get; set; } = false;
 		public bool? EntrancesIncludesDeadEnds { get; set; } = false;
 		public bool? EntrancesMixedWithTowns { get; set; } = false;
 
@@ -233,7 +235,9 @@ namespace FF1Lib
 
 		[IntegerFlag(0, 50)]
 		public int WeaponTypeBonusValue { get; set; } = 10;
-		public bool ChanceToRun { get; set; } = false;
+
+		public ChanceToRunMode ChanceToRun { get; set; } = ChanceToRunMode.Vanilla;
+
 		public bool SpellBugs { get; set; } = false;
 		public bool BlackBeltAbsorb { get; set; } = false;
 		public bool NPCSwatter { get; set; } = false;
@@ -247,6 +251,7 @@ namespace FF1Lib
 
 		public bool? MelmondClinic { get; set; } = false;
         public bool DeepDungeon { get; set; } = false;
+		public bool DDEvenTreasureDistribution { get; set; } = false;
 		public bool StartingGold { get; set; } = false;
 		public bool WrapStatOverflow { get; set; } = false;
 		public bool WrapPriceOverflow { get; set; } = false;
@@ -256,6 +261,9 @@ namespace FF1Lib
 		public bool? NoTail { get; set; } = false;
 		public bool? GuaranteedMasamune { get; set; } = false;
 		public bool? SendMasamuneHome { get; set; } = false;
+
+		public ConsumableChestSet MoreConsumableChests { get; set; } = ConsumableChestSet.Vanilla;
+
 		public bool? NoMasamune { get; set; } = false;
 		public bool? ClassAsNpcFiends { get; set; } = false;
 		public bool? ClassAsNpcKeyNPC { get; set; } = false;

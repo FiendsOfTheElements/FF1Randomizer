@@ -24,6 +24,12 @@
 		"description": "Hides all flags to create a mystery flagset that can then be distributed. Useful for tournament and challenge race settings.\n This flag cannot be disabled once clicked; you will need to hit the Reset button to restore functionality to the site (and this will, in turn, wipe the blind flags selected). Make sure to save your flagset before you use this flag."
 	},
 
+	{
+		"Id": "consumableChestSetDropDown",
+		"title": "Consumable Chests",
+		"screenshot": null,
+		"description": "Changes the amount of chests that contain consumable items. May remove a lot of gold and eats into gear at one point.\n[grid][r]{i}Option|{i}Tent|{i}Cabin|{i}House|{i}Heal|{i}Pure|{i}Soft[r]{l}Vanilla|2|7|7|10|5|5[r]{l}Low|4|3|3|10|10|10[r]{l}Medium|7|4|4|15|15|15[r]{l}High|8|6|6|20|20|20[r]{l}Extreme|10|10|10|30|30|30[r]{l}The ..... Party Pack|||||99|99[r]{l}Random Low|0-10|0-10|0-10|0-30|0-30|0-30[r]{l}Random|0-33|0-33|0-33|0-99|0-99|0-99\n"
+	},
 
 
 	{
@@ -279,7 +285,7 @@
 		"Id": "formationShuffleModeDropDown",
 		"title": "Enemy Formation Shuffle Mode",
 		"screenshot": "formationShuffleModeDropDown.gif",
-		"description": "Shuffles the encounters that appear in enemy domains.\nVanilla: Enemy groups remain as they exist in the original game. This allows players to predict encounters in a dungeon if they know the vanilla values.\n Shuffle Rarity: Enemy groups are shuffled within a zone, so that Group 1 fights can appear as Group 6, etc. This removes the ability to 'scout' the encounter table and know which fights will appear without having to re-learn the process for each new dungeon.\n Shuffle Across Zones: Shuffles the domains so that Ice Cave groups can appear in Gurgu Volcano etc., but does not alter the contents of the domains themselves.\n Totally Random: Draws at random and populates the encounter table, excepting fiends, plot-triggered encounters, and empty encounters. These encounters can appear in any zone except the starting zones.\n Note: his feature is disabled when generating new enemy formations (via Enemizer)."
+		"description": "Shuffles the encounters that appear in enemy domains.\nVanilla: Enemy groups remain as they exist in the original game. This allows players to predict encounters in a dungeon if they know the vanilla values.\n Shuffle Rarity: Enemy groups are shuffled within a zone, so that Group 1 fights can appear as Group 6, etc. This removes the ability to 'scout' the encounter table and know which fights will appear without having to re-learn the process for each new dungeon.\n Shuffle Across Zones: Shuffles the domains so that Ice Cave groups can appear in Gurgu Volcano etc., but does not alter the contents of the domains themselves.\n Totally Random: Draws at random and populates the encounter table, excepting fiends, plot-triggered encounters, and empty encounters. These encounters can appear in any zone except the starting zones.\n Note: this feature is disabled when generating new enemy formations (via Enemizer)."
 	},
 	{
 		"Id": "randomizeFormationEnemizer",
@@ -541,6 +547,12 @@
 		"title": "Remove Tail",
 		"screenshot": "NoTailCheckBox.png",
 		"description": "Remove the TAIL from the items pool, disallowing class change. Bahamut wants nothing to do with you."
+	},
+	{
+		"Id": "fightBahamutCheckBox",
+		"title": "Fight Bahamut",
+		"screenshot": "fightBahamutCheckBox.gif",
+		"description": "Turning in the TAIL is not the only requirement for class change. You must also defeat Bahamut to prove your courage.\nIf Remove Tail is enabled, the only requirement for class change is to defeat Bahamut."
 	},
 	{
 		"Id": "NoMasamuneCheckBox",
@@ -1455,6 +1467,11 @@
 		"description": "Turns Coneria Castle into a 52-floor completely procedurally generated dungeon.\nAs you go deeper, the treasures get better and the monster encounters get stronger. Every so often there will be a branch to the next town, but dying or restoring a save will return you to the overworld.\nSomewhere within the dungeon is a TAIL and Bahamut; you could encounter them in either order. There are also three guaranteed Ribbons, and there may be more near the end of the dungeon.\nTreasures are rolled independently, not shuffled, so there could be no Masamunes, or you could find so many you're throwing them on the ground."
 	},
 	{
+		"Id": "DDEvenTreasureDistribution",
+		"title": "Distribute Treasure Evenly",
+		"description": "Instead of the value of treasure chest contents increasing as you progress deeper into the dungeon, each box has the same chance of having any kind of contents regardless of where in the dungeon you encounter it."
+	},
+	{
 		"Id": "extendedHintsCheckBox",
 		"title": "Extensive Hints",
 		"screenshot": "extendedHintsCheckBox.png",
@@ -1465,6 +1482,11 @@
 		"title": "Melmondish Hospitality",
 		"screenshot": "melmondClinicCheckBox.png",
 		"description": "Adds a clinic to Melmond."
+	},
+	{
+		"Id": "bahamutCardiaDockCheckBox",
+		"title": "Bahamut Cardia dock",
+		"screenshot": "bahamutCardiaDock.png",
+		"description": "Adds a dock to Bahamut's island so that the Airship is not required for class change."
 	}
 ]
-

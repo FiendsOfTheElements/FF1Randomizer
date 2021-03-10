@@ -79,6 +79,7 @@
 		bool? MapAirshipDock { get; }
 		bool? MapOnracDock { get; }
 		bool? MapMirageDock { get; }
+		bool? MapBahamutCardiaDock { get; }
 		bool? TitansTrove { get; }
 		bool? GaiaShortcut { get; }
 		bool? MoveGaiaItemShop { get; }
@@ -99,6 +100,7 @@
 		bool? SendMasamuneHome { get; }
 		bool? NoMasamune { get; }
 		WorldWealthMode WorldWealth { get; }
+		ConsumableChestSet MoreConsumableChests { get; }
 	}
 	public interface IItemShuffleFlags
 	{

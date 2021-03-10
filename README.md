@@ -27,6 +27,12 @@ The general project structure is as follows:
 3. Clone the randomizer (git specific information below)
 4. All done!
 
+### Developing on Linux
+
+1. [Download and install the .NET 5.0 SDK](https://docs.microsoft.com/en-us/dotnet/core/install/linux)
+2. `cd FF1Blazorizer && dotnet publish -c Debug -o output`
+3. `cd output/wwwroot && python3 -m http.server 8000`
+
 ## Git workflow
 
 The randomizer is hosted on github and therefore some level of git knowledge is required in order to contribute. In order to help get anyone ready to contribute, this will assume no prior git knowledge. Please skip past any steps you have already done, or this entire section if you are already familiar with git and able to rebase, merge, deal with multiple repos, bisect, and handle PRs on github.

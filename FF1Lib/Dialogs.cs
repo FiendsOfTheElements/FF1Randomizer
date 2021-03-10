@@ -323,24 +323,42 @@ namespace FF1Lib
 		}
 		public void AddNewChars()
 		{
-			// New characters, frees up 5 characters at 0xCA, 0xCE, 0xE6, 0xE8, 0xE9
-			// STATUS, use normal S and draw AT closer
-			// Put(0x385A1, Blob.FromHex("9CCBCCCD9C"));
-			// Put(0x24CC0, Blob.FromHex("00DFC66666E63636"));
-			// Put(0x24CD0, Blob.FromHex("00B333333333331E"));
+			const int statusCharOffset = 0x37000;
+			const int tilesetOffset = 0x0C000;
+			const int tilesetSize = 0x800;
+			const int tilesetCount = 8;
+			const int battleTilesetOffset = 0x1C000;
+			const int battleTilesetSize = 0x800;
+			const int battleTilesetCount = 16;
+			const int shopTilesetOffset = 0x24000;
 
-			// Stone ailment, use normal S and e, use Poison's "on"
-			Put(0x6C360, Blob.FromHex("9CE7E5A8")); // Stone
+			// There's 5 unused characters available on every tileset, 0x7B to 0x7F
+			//  new chars must be added to the BytesByText list in FF1Text.cs
+			var newChars = new List<(byte, string)>
+			{
+				(0x7B, "000008083E080800") // + sign
+			};
 
-			// White out free chars
-			//Put(0x24CA0, Blob.FromHex("FFFFFFFFFFFFFFFF"));
-			//Put(0x24CE0, Blob.FromHex("FFFFFFFFFFFFFFFF"));
-			Put(0x24E60, Blob.FromHex("FFFFFFFFFFFFFFFF"));
-			Put(0x24E80, Blob.FromHex("FFFFFFFFFFFFFFFF"));
-			Put(0x24E90, Blob.FromHex("FFFFFFFFFFFFFFFF"));
 
-			// Add plus sign at 0xC1
-			Put(0x24C10, Blob.FromHex("000008083E080800"));
+			foreach (var newchar in newChars)
+			{
+				// Menu screen tilset
+				Put(statusCharOffset + newchar.Item1 * 0x10, Blob.FromHex(newchar.Item2));
+				// Shop tileset
+				Put(shopTilesetOffset + newchar.Item1 * 0x10, Blob.FromHex(newchar.Item2));
+
+				// Map tilesets
+				for (int i = 0; i < tilesetCount; i++)
+				{
+					Put(tilesetOffset + tilesetSize * i + newchar.Item1 * 0x10, Blob.FromHex(newchar.Item2));
+				}
+
+				// Battle tilesets
+				for (int i = 0; i < battleTilesetCount; i++)
+				{
+					Put(battleTilesetOffset + battleTilesetSize * i + newchar.Item1 * 0x10, Blob.FromHex(newchar.Item2));
+				}
+			}
 		}
 
 		public void TransferDialogs()
@@ -1201,7 +1219,7 @@ namespace FF1Lib
 			// Het all game dialogs, get all item names, set dialog templates
 			var itemnames = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
 			var hintschests = new List<string>() { "The $ is #.", "The $? It's # I believe.", "Did you know that the $ is #?", "My grandpa used to say 'The $ is #'.", "Did you hear? The $ is #!", "Wanna hear a secret? The $ is #!", "I've read somewhere that the $ is #.", "I used to have the $. I lost it #!", "I've hidden the $ #, can you find it?", "Interesting! This book says the $ is #!", "Duh, everyone knows that the $ is #!", "I saw the $ while I was #." };
-			var hintsnpc = new List<string>() { "& has the $.", "The $? Did you try asking &?", "The $? & will never part with it!", "& stole the $ from ME! I swear!", "& told me not to reveal he has the $.", "& is hiding something. I bet it's the $!" };
+			var hintsnpc = new List<string>() { "& has the $.", "The $? Did you try asking &?", "The $? & will never part with it!", "& stole the $ from ME! I swear!", "& told me not to reveal they have the $.", "& is hiding something. I bet it's the $!" };
 			var hintsvendormed = new List<string>() { "The $ is for sale #.", "I used to have the $. I sold it #!", "There's a fire sale for the $ #.", "I almost bought the $ for sale #." };
 			var uselesshints = new List<string>() { "GET A SILK BAG FROM THE\nGRAVEYARD DUCK TO LIVE\nLONGER.", "You spoony bard!", "Press A to talk\nto NPCs!", "A crooked trader is\noffering bum deals in\nthis town.", "The game doesn't start\nuntil you say 'yes'.", "Thieves run away\nreally fast.", "No, I won't move quit\npushing me.", "Dr. Unnes instant\ntranslation services,\njust send one slab\nand 299 GP for\nprocessing.", "I am error.", "Kraken has a good chance\nto one-shot your knight.", "If NPC guillotine is on,\npress reset now or your\nemulator will crash!", "GET EQUIPPED WITH\nTED WOOLSEY.", "8 and palm trees.\nGet it?" };
 
