@@ -7,37 +7,38 @@
 	{
 		<p>Test out features from 2000 years in the future - at your own risk!</p>
 		<div class="col1">
-			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="procGenEarth1" @bind-Value="Flags.EFGEarth1">Generated Earth Cave B1</CheckBox>
-			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="procGenEarth2" @bind-Value="Flags.EFGEarth2">Generated Earth Cave B2</CheckBox>
-			<div class="checkbox-cell"></div>
+			<h4>Maps</h4>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="gaiaShortcutCheckBox" @bind-Value="Flags.GaiaShortcut">Add Gaia Shortcut</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="moveGaiaItemShopCheckBox" IsEnabled="@(Flags.GaiaShortcut == true)" @bind-Value="Flags.MoveGaiaItemShop">Move Gaia Item Shop</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="melmondClinicCheckBox" @bind-Value="Flags.MelmondClinic">Melmondish Hospitality</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="randomVampAttackCheckBox" @bind-Value="Flags.RandomVampAttack">Vampire attacks a random town</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="randomVampAttackIncludesConeriaCheckBox" IsEnabled="@(Flags.RandomVampAttack != false)" @bind-Value="Flags.RandomVampAttackIncludesConeria">Include Coneria</TriStateCheckBox>
+			<div class="checkbox-cell"></div>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="exitToFRCheckBox" @bind-Value="Flags.ExitToFR">Add ToFR Exit</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="lutePlateInShortToFRCheckBox" IsEnabled="@(Flags.ShortToFR != false)" @bind-Value="Flags.LutePlateInShortToFR">Include Lute Plate in Short ToFR</TriStateCheckBox>
 			<div class="checkbox-cell"></div>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="bahamutCardiaDockCheckBox" @bind-Value="Flags.MapBahamutCardiaDock">Bahamut Cardia dock</TriStateCheckBox>
+			<div class="checkbox-cell"></div>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="procGenEarth1" @bind-Value="Flags.EFGEarth1">Generated Earth Cave B1</CheckBox>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="procGenEarth2" @bind-Value="Flags.EFGEarth2">Generated Earth Cave B2</CheckBox>
+			<div class="checkbox-cell"></div>
+			<h4>Balance</h4>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="nonesGainXPcheckBox" @bind-Value="Flags.NonesGainXP">Nones Gain XP</CheckBox>
-			<div class="checkbox-cell"></div>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="thiefAgilityBuffCheckBox" @bind-Value="Flags.ThiefAgilityBuff">Thief Agility Buff</CheckBox>
-      <div class="checkbox-cell"></div>
-			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="etherizerCheckBox" IsEnabled="@(Flags.HouseMPRestoration != true && Flags.HousesFillHP != true)" @bind-Value="Flags.Etherizer">Turn shelters into ethers</CheckBox>
+			<EnumDropDown DisableTooltip TItem="StartingLevel" @bind-Value="Flags.StartingLevel">Starting Level:</EnumDropDown>
 			<div class="checkbox-cell"></div>
+			<h4>Enemies</h4>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="alternateFiendsCheckBox" IsEnabled="@(!Flags.SpookyFlag)" @bind-Value="Flags.AlternateFiends">Alternate Fiends</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="noBossSkillScriptShuffleCheckBox" IsEnabled="@(Flags.EnemyScripts != false || Flags.EnemySkillsSpells != false)" @bind-Value="Flags.NoBossSkillScriptShuffle">Don't Shuffle Bosses' Scripts, Skills & Spells</TriStateCheckBox>
 			<div class="checkbox-cell"></div>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="randomVampAttackCheckBox" @bind-Value="Flags.RandomVampAttack">Vampire attacks a random town</TriStateCheckBox>
-      <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="randomVampAttackIncludesConeriaCheckBox" IsEnabled="@(Flags.RandomVampAttack != false)" @bind-Value="Flags.RandomVampAttackIncludesConeria">Include Coneria</TriStateCheckBox>
-			<div class="checkbox-cell"></div>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="fightBahamutCheckBox" IsEnabled="@(Flags.SpookyFlag != true && Flags.RandomizeFormationEnemizer != true)" @bind-Value="Flags.FightBahamut">Fight Bahamut</TriStateCheckBox>
 			<div class="checkbox-cell"></div>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="LooseExcludePlacedDungeonsCheckBox" IsEnabled="@(Flags.Treasures != false)" @bind-Value="Flags.LooseExcludePlacedDungeons">No Loose Items in Incentivized Dungeons</TriStateCheckBox>
-			<div class="checkbox-cell"></div>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="melmondClinicCheckBox" @bind-Value="Flags.MelmondClinic">Melmondish Hospitality</TriStateCheckBox>
-			<div class="checkbox-cell"></div>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="bahamutCardiaDockCheckBox" @bind-Value="Flags.MapBahamutCardiaDock">Bahamut Cardia dock</TriStateCheckBox>
-			<div class="checkbox-cell"></div>
-      <EnumDropDown DisableTooltip TItem="StartingLevel" @bind-Value="Flags.StartingLevel">Starting Level:</EnumDropDown>      
 		</div>
 		<div class="col2">
+			<h4>Other</h4>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="etherizerCheckBox" IsEnabled="@(Flags.HouseMPRestoration != true && Flags.HousesFillHP != true)" @bind-Value="Flags.Etherizer">Turn shelters into ethers</CheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="LooseExcludePlacedDungeonsCheckBox" IsEnabled="@(Flags.Treasures != false)" @bind-Value="Flags.LooseExcludePlacedDungeons">No Loose Items in Incentivized Dungeons</TriStateCheckBox>
+			<div class="checkbox-cell"></div>
 			<h4>Legendary Shops</h4>
 			<ToolTipBox UpdateToolTip="@UpdateToolTipID" Id="legendaryShopsGroup">Create legendary shops in dungeons</ToolTipBox>
 			<TriStateCheckBox DisableTooltip Id="legendaryWeaponShopCheckBox" @bind-Value="Flags.LegendaryWeaponShop">Legendary Weapon Shop</TriStateCheckBox>

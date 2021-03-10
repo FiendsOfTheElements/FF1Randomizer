@@ -28,7 +28,7 @@
 		"Id": "consumableChestSetDropDown",
 		"title": "Consumable Chests",
 		"screenshot": null,
-		"description": "Changes the amount of chests that contain consumable items. May remove a lot of gold and eats into gear at one point.\n[grid][r]{i}Option|{i}Tent|{i}Cabin|{i}House|{i}Heal|{i}Pure|{i}Soft[r]{l}Vanilla|2|7|7|10|5|5[r]{l}Low|4|3|3|10|10|10[r]{l}Medium|7|4|4|15|15|15[r]{l}High|8|6|6|20|20|20[r]{l}Extreme|10|10|10|30|30|30[r]{l}The ..... Party Pack|||||99|99[r]{l}Random Low|0-10|0-10|0-10|0-30|0-30|0-30[r]{l}Random|0-33|0-33|0-33|0-99|0-99|0-99\n"
+		"description": "Changes the amount of chests that contain consumable items, removing gold rewards and gear.\n[grid][r]{i}Option|{i}Tent|{i}Cabin|{i}House|{i}Heal|{i}Pure|{i}Soft[r]{l}Vanilla|2|7|7|10|5|5[r]{l}Low|4|3|3|10|10|10[r]{l}Medium|7|4|4|15|15|15[r]{l}High|8|6|6|20|20|20[r]{l}Extreme|10|10|10|30|30|30[r]{l}The ..... Party Pack|||||99|99[r]{l}Random Low|0-10|0-10|0-10|0-30|0-30|0-30[r]{l}Random|0-33|0-33|0-33|0-99|0-99|0-99\n"
 	},
 
 
@@ -165,7 +165,7 @@
 		"Id": "consumableTreasureStackSizeDropDown",
 		"title": "Consumable Treasure Stack Size",
 		"screenshot": null,
-		"description": "Every consumable rewart(chest, npc) may give you more that one item.\n[grid][r]{i}Option|{i}Tent|{i}Cabin|{i}House|{i}Heal|{i}Pure|{i}Soft[r]{l}Stingy|2|||5||[r]{l}Adequat|3|2||10|2|2[r]{l}Generous|5|3|2|20|3|2[r]{l}Ridiculous|10|5|3|50|5|5\n"
+		"description": "Consumable rewards from chests and npcs may give you more than one item.\n[grid][r]{i}Option|{i}Tent|{i}Cabin|{i}House|{i}Heal|{i}Pure|{i}Soft[r]{l}Stingy|2|||5||[r]{l}Adequate|3|2||10|2|2[r]{l}Generous|5|3|2|20|3|2[r]{l}Ridiculous|10|5|3|50|5|5\n"
 	},
 
 	{
@@ -1439,7 +1439,7 @@
 		"Id": "noBossSkillScriptShuffleCheckBox",
 		"title": "Don't Shuffle Bosses' Scripts, Skills & Spells",
 		"screenshot": "NoBossScriptSkillShuffle.png",
-		"description": "When shuffling ennemies' scripts or spells/skills, exclude the four Fiends, WarMech and Chaos."
+		"description": "When shuffling enemies' scripts or spells/skills, exclude the four Fiends, WarMech and Chaos."
 	},
 	{
 		"Id": "LooseExcludePlacedDungeonsCheckBox",
@@ -1501,10 +1501,10 @@
 		"screenshot": "bahamutCardiaDock.png",
 		"description": "Adds a dock to Bahamut's island so that the Airship is not required for class change."
 	},
-        {
-                "Id": "thiefAgilityBuffCheckBox",
-                "title": "Thief Agility Buff",
-                "screenshot": "thiefAgilityBuff.png",
-                "description": "Buff the thief starting agility to 120 and starting evade to 168, and make it so that the thief gains agility and evade on every level.\nThis makes the thief more likely to evade melee attacks from monsters. When the thief is in the lead slot, this also increases the chance of getting first strike and reduces the chance of being suprised."
-        }
+    {
+         "Id": "thiefAgilityBuffCheckBox",
+         "title": "Thief Agility Buff",
+         "screenshot": "thiefAgilityBuff.png",
+         "description": "Buff the thief starting agility to 120 and starting evade to 168, and make it so that the thief gains agility and evade on every level.\nThis makes the thief more likely to evade melee attacks from monsters. When the thief is in the lead slot, this also increases the chance of getting first strike and reduces the chance of being suprised."
+    }
 ]

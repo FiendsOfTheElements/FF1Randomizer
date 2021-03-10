@@ -16,7 +16,7 @@ namespace FF1Lib
 		[Description("Stingy")]
 		Stingy,
 
-		[Description("Adequat")]
+		[Description("Adequate")]
 		Adequat,
 
 		[Description("Generous")]
