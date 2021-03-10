@@ -1,13 +1,14 @@
 ﻿@using FF1Lib;
+@using static FF1Lib.FF1Rom;
 
 
-	<div id="Goal" class="tabcontent framed-content clearfix @(noTabLayout ? "no-tab" : "") @(IsOpen ? "" : "collapsed")">
-		<h3 class="@(IsOpen ? "" : "h3-collapsed")"><a class="@(noTabLayout ? "collapsible-header" : "")" @onclick="(() => IsOpen = (!noTabLayout || !IsOpen))">Goal</a></h3>
-		@if (IsOpen)
-		{ 
+<div id="Goal" class="tabcontent framed-content clearfix @(noTabLayout ? "no-tab" : "") @(IsOpen ? "" : "collapsed")">
+	<h3 class="@(IsOpen ? "" : "h3-collapsed")"><a class="@(noTabLayout ? "collapsible-header" : "")" @onclick="(() => IsOpen = (!noTabLayout || !IsOpen))">Goal</a></h3>
+	@if (IsOpen)
+	{
 		<div class="col1">
 			<h4>Temple of Fiends</h4>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="transformFinalFormationCheckBox" IsEnabled="@(Flags.SpookyFlag != true)" @bind-Value="Flags.TransformFinalFormation">Alternate Final Boss</TriStateCheckBox>
+			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="transformFinalFormationCheckBox" TItem="FinalFormation" IsEnabled="@(Flags.SpookyFlag != true)" @bind-Value="Flags.TransformFinalFormation">Alternate Final Boss</EnumDropDown>
 			<div class="checkbox-cell"></div>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="chaosRushCheckBox" @bind-Value="Flags.ChaosRush">Unlocked ToFR</CheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="shortToFRCheckBox" @bind-Value="Flags.ShortToFR">Shorten ToFR</TriStateCheckBox>
@@ -22,16 +23,16 @@
 			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="shardCountDropDown" TItem="ShardCount" @bind-Value="Flags.ShardCount">Goal:</EnumDropDown>
 			<div class="checkbox-cell"></div>
 			<h4>Events</h4>
-			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="lichRevengeCheckBox" @bind-Value="Flags.SpookyFlag">Lich's Revenge</CheckBox>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="lichRevengeCheckBox" IsEnabled="@(Flags.RandomizeFormationEnemizer != true)" @bind-Value="Flags.SpookyFlag">Lich's Revenge</CheckBox>
 		</div>
 		<div class="clear-it"></div>
-		}
-	</div>
-
-
-	@code {
-		[Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }
-		[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
-		[Parameter] public bool noTabLayout { get; set; }
-		[Parameter] public bool IsOpen { get; set; } = true;
 	}
+</div>
+
+
+@code {
+	[Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }
+	[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
+	[Parameter] public bool noTabLayout { get; set; }
+	[Parameter] public bool IsOpen { get; set; } = true;
+}

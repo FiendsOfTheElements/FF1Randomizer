@@ -39,6 +39,16 @@ namespace FF1Lib
 			EarthCave10, EarthCave11, EarthCave12, EarthCave13, EarthCave14,
 			EarthCave15, EarthCaveMajor, EarthCave17, EarthCave18, EarthCave19,
 			EarthCave20, EarthCave21, EarthCave22, EarthCave23, EarthCave24 };
+		public static readonly IReadOnlyCollection<IRewardSource> EarthCavePreRod =
+			new List<IRewardSource> {
+			EarthCave1, EarthCave2, EarthCave3, EarthCave4,
+			EarthCave5, EarthCave6, EarthCave7, EarthCave8, EarthCave9,
+			EarthCave10, EarthCave11, EarthCave12, EarthCave13, EarthCave14,
+			EarthCave15, EarthCaveMajor
+		};
+		public static readonly IReadOnlyCollection<IRewardSource> EarthCaveFloor4 =
+			new List<IRewardSource> { EarthCave17, EarthCave18, EarthCave19,
+			EarthCave20, EarthCave21, EarthCave22, EarthCave23, EarthCave24};
 		public static readonly IReadOnlyCollection<IRewardSource> TitansTunnel =
 			new List<IRewardSource> { TitansTunnel1, TitansTunnel2, TitansTunnel3, TitansTunnel4 };
 		public static readonly IReadOnlyCollection<IRewardSource> Volcano =

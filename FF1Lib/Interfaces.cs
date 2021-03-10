@@ -26,8 +26,16 @@
 		bool? IncentivizeTitansTrove { get; }
 		bool? IncentivizeEarth { get; }
 		bool? IncentivizeSeaShrine { get; }
-		bool? IncentivizeRandomChestInLocation { get; }
-		bool? IncentivizeRandomChestIncludeExtra { get; }
+		IncentivePlacementType IceCaveIncentivePlacementType { get; }
+		IncentivePlacementType OrdealsIncentivePlacementType { get; }
+		IncentivePlacementType MarshIncentivePlacementType { get; }
+		IncentivePlacementType TitansIncentivePlacementType { get; }
+		IncentivePlacementTypeGated EarthIncentivePlacementType { get; }
+		IncentivePlacementType VolcanoIncentivePlacementType { get; }
+		IncentivePlacementTypeGated SeaShrineIncentivePlacementType { get; }
+		IncentivePlacementTypeGated SkyPalaceIncentivePlacementType { get; }
+		IncentivePlacementType CorneriaIncentivePlacementType { get; }
+		IncentivePlacementType MarshLockedIncentivePlacementType { get; }
 
 		bool? IncentivizeXcalber { get; }
 		bool? IncentivizeMasamune { get; }
@@ -71,7 +79,10 @@
 		bool? MapAirshipDock { get; }
 		bool? MapOnracDock { get; }
 		bool? MapMirageDock { get; }
+		bool? MapBahamutCardiaDock { get; }
 		bool? TitansTrove { get; }
+		bool? GaiaShortcut { get; }
+		bool? MoveGaiaItemShop { get; }
 	}
 	public interface IItemPlacementFlags : IItemShuffleFlags, IVictoryConditionFlags
 	{
@@ -89,6 +100,7 @@
 		bool? SendMasamuneHome { get; }
 		bool? NoMasamune { get; }
 		WorldWealthMode WorldWealth { get; }
+		ConsumableChestSet MoreConsumableChests { get; }
 	}
 	public interface IItemShuffleFlags
 	{
@@ -116,6 +128,7 @@
 		bool? EntrancesIncludesDeadEnds { get; }
 		bool? EntrancesMixedWithTowns { get; }
 		bool? Towns { get; }
+		bool? IncludeConeria { get; }
 		bool? Floors { get; }
 		bool? DeepCastlesPossible { get; }
 		bool? AllowDeepCastles { get; }
@@ -136,5 +149,6 @@
 		bool? FreeLute { get; }
 		bool? FreeTail { get; }
 		bool? NoTail { get; }
+		bool? LooseExcludePlacedDungeons { get; }
 	}
 }

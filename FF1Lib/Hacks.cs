@@ -111,8 +111,6 @@ namespace FF1Lib
 			const int lut_PtyGenBuf = 0x784AA;       // offset for party generation buffer LUT
 			const int lut_ClassPreferences = 0x78114;  // classes LUT
 
-			var i = slotNumber - 1;
-
 			if (forced) // if forced
 			{
 				FF1Class forcedclass;
@@ -129,18 +127,25 @@ namespace FF1Lib
 				options.Add(forcedclass);
 			}
 
-			// don't make any changes if there's nothing to do
-			if (!options.Any()) return;
+			// Just update allowed bitmasks for default classes if no selection, then exit
+			if (!options.Any())
+			{
+				foreach (FF1Class option in DefaultChoices)
+				{
+					Data[lut_ClassPreferences + (int)option + 1] |= AllowedSlotBitmasks[(slotNumber - 1)];
+				}
+				return;
+			}
 
 			//byte allowedFlags = 0b0000_0000;
 			foreach (FF1Class option in options)
 			{
-				Data[lut_ClassPreferences + (((int)option == 12) ? 0 : (int)option + 1)] |= AllowedSlotBitmasks[i];
+				Data[lut_ClassPreferences + (((int)option == 12) ? 0 : (int)option + 1)] |= AllowedSlotBitmasks[(slotNumber - 1)];
 			}
 
 			// set default member
 			var defaultclass = (forced || !DefaultChoices.SequenceEqual(options)) ? (int)options.PickRandom(rng) : slotNumber - 1;
-			Data[lut_PtyGenBuf + i * 0x10] = defaultclass == 12 ? (byte)0xFF : (byte)defaultclass;
+			Data[lut_PtyGenBuf + (slotNumber - 1) * 0x10] = defaultclass == 12 ? (byte)0xFF : (byte)defaultclass;
 
 			options.Clear();
 		}
@@ -282,12 +287,16 @@ namespace FF1Lib
 
 			if (options.Count == 0) options = new List<byte> { 0x0, 0x1, 0x2, 0x3, 0x4, 0x5 };
 			List<byte> pub_lut = new List<byte> { };
-			while (pub_lut.Count < 7)
+			while (pub_lut.Count < 8)
 			{
 				options.Shuffle(rng);
 				pub_lut.AddRange(options);
 			}
-			pub_lut.Insert(3, (byte)0xFF); // Will break if Melmond ever gets a clinic, Nones will need to be hired dead, this results in them being alive.
+			if (!(bool)flags.MelmondClinic)
+			{
+				pub_lut.Insert(3, (byte)0xFF);
+			}
+
 			Put(0x38066, Blob.FromHex("9D8A9F8E9B97")); // Replaces "CLINIC" with "TAVERN"
 														// EnterClinic
 			PutInBank(0x0E, 0xA5A1, Blob.FromHex("60A9008524852520589DA902856318201C9DB0ECAD62008D0D0320EDA6B0034C6CA620D7A6B0DAAD62008D0C03209BAA20C2A8B0CCAD6200D0C72089A6AD0C03186D0C036D0C03AABD10036A6A6A29C0AAAD0D03F0458A690A8510A96185118A488512A9638513A000A90091109112C8C00A30F7C040D0F59D266120E99CA448B90A9D9D00612071C2A00E20799068AA900918BD006169069D0061A9019D0A61A9009D016120349D200CE92078A7A921205BAA2043A7A5240525F0F74CA2A52043A7A5240525F0F74CA1A5A923205BAAA9008D24008D25004C60A6EAEAEAEAEAEAEAEAEAEAEAEAEA"));
@@ -485,12 +494,17 @@ namespace FF1Lib
 			ObjectId.Fairy, ObjectId.King, ObjectId.Matoya, ObjectId.Nerrick, ObjectId.Princess2, ObjectId.Smith,
 			ObjectId.Titan, ObjectId.Unne, ObjectId.Sarda, ObjectId.ElfPrince, ObjectId.Lefein };
 
+			if ((bool)flags.FightBahamut)
+			{
+				npcpool.Remove(ObjectId.Bahamut);
+			}
+
 			// Select random npc
 			ObjectId newastos = npcpool.PickRandom(rng);
 
 			// If Astos, we're done here
 			if (newastos == ObjectId.Astos) return;
-			
+
 			// If not get NPC talk routine, get NPC object
 			var talkscript = npcdata.GetRoutine(newastos);
 
@@ -754,6 +768,21 @@ namespace FF1Lib
 			// EA EA EA EA EA EA (sports)
 			Put(0x6CB43, Blob.FromHex("A204A004EAEAEAEAEAEAEAEAEAEAEAEAEA"));
 
+		}
+
+		public void NonesGainXP()
+		{
+			// New routine to see if character can get XP LvlUp_AwardExp
+			PutInBank(0x1B, 0x8710, Blob.FromHex("A000B186C9FFF010A001B1862903F006C903F00218603860AD78688588AD7968858920608820A08A1860"));
+
+			// Have LvlUp_AwardExp reroute to new routine
+			PutInBank(0x1B, 0x8826, Blob.FromHex("201087B00860"));
+
+			// New routine to count nones for DivideRewardBySurvivors
+			PutInBank(0x1B, 0x8D20, Blob.FromHex("A000AD0168C9FFD001C8AD1368C9FFD001C8AD2568C9FFD001C8AD3768C9FFD001C8A20460"));
+
+			// Have DivideRewardBySurvivors reroute to new routine to count nones
+			PutInBank(0x1B, 0x8B43, Blob.FromHex("20208DEA"));
 		}
 
 		public void ShuffleWeaponPermissions(MT19337 rng)
@@ -1020,15 +1049,12 @@ namespace FF1Lib
 			PutInBank(0x1F, 0xDD78, Blob.FromHex("A9002003FEA645BD00B18561A9112003FE20B08E8A60"));
 
 			// Check for trapped monster routine, see 11_8EC0_CheckTrap.asm
-			PutInBank(0x11, 0x8EB0, Blob.FromHex("A561202096B030A645BD008FF025856AA9C0203D96A56A200096A903CD866BD00820189668684C43961820E98E201896A2F06020E98E60AA60A911855818A5612093DDA445B90062090499006260"));
+			PutInBank(0x11, 0x8EB0, Blob.FromHex("A561202096B030A645BD008FF025856AA9C0203D96A56A200096A903CD866BD00820189668684C43961820E98E201896A2F06020E98E60AA60A911855818A5612006B0A445B90062090499006260"));
 
 			InsertDialogs(0x110, "Monster-in-a-box!"); // 0xC0
 
 			// Select treasure
-			var chestList = ItemLocations.AllTreasures.Where(x => x.IsUnused == false && !ItemLists.AllQuestItems.Contains(x.Item)).ToList();
-			chestList.Shuffle(rng);
-			chestList.RemoveRange(0, chestList.Count() - 40);
-
+			var chestList = ItemLocations.AllTreasures.ToList();
 			var chestMonsterList = new byte[0x100];
 			var treasureList = Get(lut_TreasureOffset, 0x100);
 
@@ -1036,9 +1062,18 @@ namespace FF1Lib
 			List<byte> encounters;
 			encounters = Enumerable.Range(128, FirstBossEncounterIndex).Select(value => (byte)value).ToList();
 			encounters.Add(0xFF); // IronGOL
-
+			
 			if ((bool)flags.TrappedChests)
 			{
+				for (int i = 1; i < 0x100; i++)
+				{
+					if (treasureList[i] < (int)Item.Tent || treasureList[i] > (int)Item.Gold65000)
+						chestList.Remove(chestList.Where(x => x.Address == lut_TreasureOffset + i).First());
+				}
+
+				chestList.Shuffle(rng);
+				chestList.RemoveRange(0, chestList.Count() - 40);
+
 				foreach (var chest in chestList)
 					chestMonsterList[(chest.Address - lut_TreasureOffset)] = encounters.SpliceRandom(rng);
 			}
@@ -1095,7 +1130,7 @@ namespace FF1Lib
 				new TargetNpc(ObjectId.Astos, MapId.NorthwestCastle, (0x11,0x07), true, true, "While the Crown is\nmissing, I can attest\nthat this is indeed\nthe REAL King of\nNorthwest Castle."),
 				new TargetNpc(ObjectId.Unne, MapId.Melmond, (0x1D, 0x02), false, true, "I'm also trying\nto discover the secret\nof Lefeinish!"),
 				new TargetNpc(ObjectId.Unne, MapId.Lefein, (0,0), false, false, "Lu..pa..?\nLu..pa..?"),
-				new TargetNpc(ObjectId.Vampire, MapId.SardasCave, (0x14, 0x01), true, false, "Sarda told me to sort\nthese garlic pots and\nvases until the Vampire\nis killed."),
+				new TargetNpc(ObjectId.Vampire, MapId.SardasCave, (0x04, 0x02), true, true, "The Vampire put a curse\non me, it will only be\nlifted on his death.\nAnd I can't do anything\nwhile you fight.\nIt's a shame."),
 				new TargetNpc(ObjectId.CanoeSage, MapId.CrescentLake, (0,0), false, true, "I came here to learn\neverything about the\nFiend of Earth. You got\nto respect such a\ndangerous adversary."),
 				new TargetNpc(ObjectId.Fairy, MapId.Gaia, (0x2F, 0x14), false, true, "I'm trying to get\nwhat's at the bottom\nof the pond.\n\nMaybe if I drained it.."),
 				new TargetNpc(ObjectId.Smith, MapId.DwarfCave, (0x08, 0x02), true, false, "I'm sure it will be a\nbadass sword! Like with\na huge blade, and a gun\nas the hilt, and you can\ntrigger it..\nI can't wait!"),
@@ -1105,7 +1140,7 @@ namespace FF1Lib
 			var eventNpc = new List<(ObjectId, MapId)> { (ObjectId.ElflandCastleElf3, MapId.ElflandCastle), (ObjectId.MelmondMan1, MapId.Melmond), (ObjectId.MelmondMan3, MapId.Melmond), (ObjectId.MelmondMan4, MapId.Melmond), (ObjectId.MelmondMan8, MapId.Melmond), (ObjectId.DwarfcaveDwarf6, MapId.DwarfCave), (ObjectId.ConeriaCastle1FWoman2, MapId.ConeriaCastle1F), (ObjectId.ElflandElf2, MapId.Elfland), (ObjectId.ElflandElf5, MapId.Elfland) };
 			var classSprite = new List<byte> { 0xEE, 0xEF, 0xF0, 0xF1, 0xF2, 0xF3, 0xF4, 0xF5, 0xF6, 0xF7, 0xF8, 0xF9 };
 			var classNames = new List<string> { "Fighter", "Thief", "Black Belt", "Red Mage", "White Mage", "Black Mage", "Knight", "Ninja", "Master", "Red Wizard", "White Wizard", "Black Wizard" };
-			var readyString = new List<string> { "Well, that's that.\nLet's go.", "Onward to new\nadventures!", "I knew you'd come back\nfor me!", "......", "I'm the leader now,\nright?", "The Reaper is always\njust a step behind me..", "O.. Okay.. I hope it's\nnot too scary out there.", "Yes!\nI made it on the team!", "A bold choice, let's\nsee if it pays off.", "Alright, let's do this!", "I obey, master.", "They say I'm the best.", "I see, we have the same\ngoal. Let's join forces.", "My.. name? Huh..", "Just don't put me first\nagainst Kraken.", "I'm taking care of the\nGPs from now on!", "It's Saturday night.\nI've got no date, a\nbottle of Shasta, and\nmy all Rush mixtape.\nLet's rock.", "Life insurance?\nNo, I don't have any.\nWhy?", "Let's put an end to\nthis madness.", "Finally, some action!", "You convinced me. I will\njoin your noble cause.", "Evil never rests. I will\nfight by your side.", "Edward wants to join\nthe party."};
+			var readyString = new List<string> { "Well, that's that.\nLet's go.", "Onward to new\nadventures!", "I knew you'd come back\nfor me!", "......", "I'm the leader now,\nright?", "The Reaper is always\njust a step behind me..", "O.. Okay.. I hope it's\nnot too scary out there.", "Yes!\nI made it on the team!", "A bold choice, let's\nsee if it pays off.", "Alright, let's do this!", "I obey, master.", "They say I'm the best.", "I see, we have the same\ngoal. Let's join forces.", "My.. name? Huh..", "Just don't put me first\nagainst Kraken.", "I'm taking care of the\nGPs from now on!", "It's Saturday night.\nI've got no date, a\nbottle of Shasta, and\nmy all Rush mixtape.\nLet's rock.", "Life insurance?\nNo, I don't have any.\nWhy?", "Let's put an end to\nthis madness.", "Finally, some action!", "You convinced me. I will\njoin your noble cause.", "Evil never rests. I will\nfight by your side.", "Edward wants to join\nthe party." };
 
 			var baseClassList = new List<FF1Class> { FF1Class.Fighter, FF1Class.Thief, FF1Class.BlackBelt, FF1Class.RedMage, FF1Class.WhiteMage, FF1Class.BlackMage };
 			var promoClassList = new List<FF1Class> { FF1Class.Knight, FF1Class.Ninja, FF1Class.Master, FF1Class.RedWiz, FF1Class.WhiteWiz, FF1Class.BlackWiz };
@@ -1114,7 +1149,7 @@ namespace FF1Lib
 
 			// Repurpose the LineupMenu to select which character get replaced
 			// New Routine when coming from a dialogue
-			PutInBank(0x0E, 0x98C0, Blob.FromHex("A565F0034C149AA525D034A524D023A520290CC564F02C8564290CF026C908F007A561186908D005A56138E908291F856160A9008524A8A5610A0A0AAA9002A425686860")); 
+			PutInBank(0x0E, 0x98C0, Blob.FromHex("A565F0034C149AA525D034A524D023A520290CC564F02C8564290CF026C908F007A561186908D005A56138E908291F856160A9008524A8A5610A0A0AAA9002A425686860"));
 			PutInBank(0x0E, 0x9911, Blob.FromHex("A5228565")); // Store joy_select to read it
 			PutInBank(0x0E, 0x99D7, Blob.FromHex("20C098")); // Hijack LineupMenu_ProcessJoy
 			PutInBank(0x1F, 0xCA5C, Blob.FromHex("201199")); // Jump a bit earlier SM
@@ -1172,7 +1207,7 @@ namespace FF1Lib
 						var tempNpc = FindNpc(originMap, targetNpc);
 						var bikkeNpc = FindNpc(originMap, ObjectId.Bikke);
 						targetIndex = tempNpc.Index;
-						targetCoord = (bikkeNpc.Coord.x-1, bikkeNpc.Coord.y-1);
+						targetCoord = (bikkeNpc.Coord.x - 1, bikkeNpc.Coord.y - 1);
 						targetInRoom = tempNpc.InRoom;
 						targetStationary = true;
 					}
@@ -1250,7 +1285,7 @@ namespace FF1Lib
 				SetNpc(MapId.SkyPalace5F, 0x02, ObjectId.GaiaMan1, (bool)flags.ClassAsNpcForcedFiends ? 0x07 : 0x09, 0x03, true, true);
 
 				// Restore the default color if Required WarMech is enabled so Tiamat's NPC don't look too weird
-				Data[0x029AB] = 0x30; 
+				Data[0x029AB] = 0x30;
 
 				for (int i = 0; i < 4; i++)
 				{
@@ -1416,7 +1451,7 @@ namespace FF1Lib
 			PutInBank(0x11, 0x9B00, generatedWords);
 			PutInBank(0x11, offsetWordsPointers, Blob.FromUShorts(pointersWords));
 
-			
+
 			// Build the info boxes
 			for (int i = weaponOffset; i < armorOffset; i++)
 				descriptionsList.Add("\n" + GenerateWeaponDescription(i - weaponOffset));
@@ -1557,7 +1592,7 @@ namespace FF1Lib
 			var shortDelimiter = new List<string> { "\n ", ", ", "\n ", ", ", "\n ", ", " };
 			var oobSpells = new List<int>();
 
-			for(int i = 0; i < oobroutine.Count; i++)
+			for (int i = 0; i < oobroutine.Count; i++)
 				oobSpells.Add(Get(MagicOutOfBattleOffset + MagicOutOfBattleSize * i, 1)[0]);
 
 			var routineDesc = "";
@@ -1614,7 +1649,7 @@ namespace FF1Lib
 					var temp = "";
 
 					foreach ((int, string, string) elem in element)
-						if((elem.Item1 & spelldata[(int)spellDataBytes.Effect]) > 0)
+						if ((elem.Item1 & spelldata[(int)spellDataBytes.Effect]) > 0)
 							activeElementStatus.Add(elem);
 
 					if (activeElementStatus.Count == 0)
@@ -1622,8 +1657,8 @@ namespace FF1Lib
 					else if (activeElementStatus.Count <= 3)
 						temp = string.Join(string.Empty, activeElementStatus.SelectMany(x => "\n " + x.Item2));
 					else if (activeElementStatus.Count <= 6)
-					{ 
-						for(int i = 0; i < activeElementStatus.Count; i++)
+					{
+						for (int i = 0; i < activeElementStatus.Count; i++)
 							temp += shortDelimiter[i] + activeElementStatus[i].Item3;
 					}
 					else if (activeElementStatus.Count == 7)
@@ -1921,8 +1956,8 @@ namespace FF1Lib
 
 			// New routines to fight and give item
 			var battleUnne = talkroutines.Add(Blob.FromHex("A674F005BD2060F01AE67DA572203D96A575200096A476207F902073922018964C4396A57060"));
-			var battleGiveOnFlag = talkroutines.Add(Blob.FromHex("A474F0052079909027A5738561202096B020A572203D96A575200096A476207F90207392A5611820109F2018964C4396A9F060A57060"));
-			var battleGiveOnItem = talkroutines.Add(Blob.FromHex("A674F006EABD2060F029A5738561202096F022E67DA572203D96A575200096A476207F90207392A5611820109F2018964C4396A57060"));
+			var battleGiveOnFlag = talkroutines.Add(Blob.FromHex("A474F0052079909029A5738561202096B022E67DA572203D96A575200096A476207F90207392A5611820109F2018964C4396A57060"));
+			var battleGiveOnItem = talkroutines.Add(Blob.FromHex("A674F005BD2060F029A5738561202096B022E67DA572203D96A575200096A476207F90207392A5611820109F2018964C4396A57060"));
 			var battleBahamut = talkroutines.Add(Blob.FromHex("AD2D60D003A57160E67DA572203D96A575200096A476207F9020739220AE952018964C439660"));
 			talkroutines.ReplaceChunk(newTalkRoutines.Talk_Bikke, Blob.FromHex("A57260A57060"), Blob.FromHex("207392A57260"));
 
@@ -1937,7 +1972,7 @@ namespace FF1Lib
 			evilDialogs.Add(0x34, "Uaaaaaargh!");
 			evilDialogs.Add(0x36, "Groaaarn!");
 
-			
+
 			evilDialogs.Add(0x04, "What the hell!?\nThat princess is crazy,\nshe tried to bite me!\n\nThat's it. Screw that.\nI'm going home.");
 
 			evilDialogs.Add(0x02, "What is going on!? My\nguard tried to kill me!\nUgh.. this is a deep\nwound.. I don't feel so\nwell..\nGwooorrrgl!\n\nReceived #");
@@ -2101,6 +2136,72 @@ namespace FF1Lib
 				}
 			}
 		}
+
+		public void FightBahamut(TalkRoutines talkroutines, NPCdata npcdata, bool removeTail, EvadeCapValues evadeClampFlag)
+		{
+			const byte offsetAtoB = 0x80; // diff between A side and B side
+
+			const byte encAnkylo = 0x71; // ANKYLO
+			const byte encCerbWzOgre = 0x22; // CEREBUS + WzOGRE
+			const byte encTyroWyvern = 0x3D + offsetAtoB; // TYRO + WYVERN
+
+			// Turn Ankylo into Bahamut
+			var encountersData = new Encounters(this);
+			encountersData.formations[encAnkylo].pattern = FormationPattern.Large4;
+			encountersData.formations[encAnkylo].spriteSheet = FormationSpriteSheet.WizardGarlandDragon2Golem;
+			encountersData.formations[encAnkylo].gfxOffset1 = (int)FormationGFX.Sprite3;
+			encountersData.formations[encAnkylo].palette1 = 0x1C;
+			encountersData.formations[encAnkylo].paletteAssign1 = 0;
+			encountersData.formations[encAnkylo].minmax1 = (1, 1);
+			encountersData.formations[encAnkylo].unrunnableA = true;
+			encountersData.Write(this);
+
+			// Update name
+			var enemyText = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
+			enemyText[78] = "BAHAMUT"; // +1 byte compared to ANKYLO, is this an issue?
+			WriteText(enemyText, EnemyTextPointerOffset, EnemyTextPointerBase, EnemyTextOffset);
+
+			// Remove Ankylo from the Overworld, with appropriate substitutions
+			SubstituteFormationTableEncounter(oldEncounter: encAnkylo, newEncounter: encCerbWzOgre); // handle Ankylo A side (single Ankylo)
+			SubstituteFormationTableEncounter(oldEncounter: encAnkylo + offsetAtoB, newEncounter: encTyroWyvern); // handle Ankylo B side (two Ankylos)
+
+			// Update Bahamut behavior
+			String asmNoTailPromote = "EE7D00AD7200203D96AD7500200096AC7600207F9020739220AE952018964C439660"; // 11_820 LichsRevenge ASM : ClassChange_bB
+			String asmTailRequiredPromote = "AD2D60D003A57160E67DA572203D96A575200096A476207F9020739220AE952018964C439660"; // 11_820 LichsRevenge ASM : Talk_battleBahamut
+			String asm = "";
+			String bahamutDialogue = "";
+			if (removeTail)
+			{
+				asm = asmNoTailPromote;
+				bahamutDialogue = "To prove your worth..\nYou must show me your\nstrength..\n\nCome at me WARRIORS,\nor die by my claws!";
+			}
+			else
+			{
+				asm = asmTailRequiredPromote;
+				bahamutDialogue = "The TAIL! Impressive..\nNow show me your true\nstrength..\n\nCome at me WARRIORS,\nor die by my claws!";
+			}
+			var fightBahamut = talkroutines.Add(Blob.FromHex(asm));
+			npcdata.GetTalkArray(ObjectId.Bahamut)[(int)TalkArrayPos.battle_id] = encAnkylo;
+			npcdata.SetRoutine(ObjectId.Bahamut, (newTalkRoutines)fightBahamut);
+
+			// Update Dragon dialogs
+			Dictionary<int, string> dialogs = new Dictionary<int, string>();
+			dialogs.Add(0x20, bahamutDialogue);
+			dialogs.Add(0xE9, "Have you met BAHAMUT,\nthe Dragon King? He\nfights those with\ncourage as true\nwarriors."); // Cardia Tiny
+			dialogs.Add(0xE5, "You are not afraid of\nBAHAMUT??\nYou will be!"); // Cardia Forest
+			dialogs.Add(0xAB, "Many have searched\nfor BAHAMUT, but,\nnone that found him\nsurvived."); // Onrac Pre-Promo
+			dialogs.Add(0xAC, "Well, well..\nI see you have\nslayed the dragon."); // Onrac Post-Promo
+			InsertDialogs(dialogs);
+
+			// Change Bahamut Dragon NPCs to the "Onrac Dragon" so they will change what they say post promotion
+			SetNpc(MapId.BahamutsRoomB2, mapNpcIndex: 1, ObjectId.OnracDragon, 19, 7, inRoom: true, stationary: true);
+			SetNpc(MapId.BahamutsRoomB2, mapNpcIndex: 2, ObjectId.OnracDragon, 23, 7, inRoom: true, stationary: true);
+
+			// Scale Difficulty Up, approx 700hp
+			ScaleSingleEnemyStats(78, 120, 120, wrapOverflow: false, includeMorale: false, rng: null, separateHPScale: true, lowPercentHp: 200, highPercentHp: 200, GetEvadeIntFromFlag(evadeClampFlag));
+		}
+
+
 	}
 }
 

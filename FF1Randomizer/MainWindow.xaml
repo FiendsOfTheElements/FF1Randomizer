@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FF1Randomizer"
         mc:Ignorable="d"
-        Title="{Binding WindowTitle}" Height="540" Width="900">
+        Title="{Binding WindowTitle}" Height="580" Width="900">
 	<Window.Resources>
 		<local:FlagsToStringConverter x:Key="FlagsToStringConverter"/>
 		<Style TargetType="CheckBox">
@@ -114,6 +114,16 @@
 						<CheckBox x:Name="FreeTailCheckBox" IsChecked="{Binding Flags.FreeTail}" IsThreeState="True" Content="Free Tail" ToolTip="The rat's tail required for promotion is in your inventory at the start of the game."/>
 						<Label Margin="5,5,0,0"/>
 						<CheckBox x:Name="UseOlderPlacementCheckBox" IsChecked="{Binding Flags.ClassicItemPlacement}" Content="Use v2 logic for placing treasures" ToolTip="Uses an older version of the logic to place items"/>
+						<StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+							<Label >Consumable Treasurechest Stacks:</Label>
+							<ComboBox SelectedValue="{Binding Flags.ConsumableTreasureStackSize}" MinWidth="100" HorizontalAlignment="Left" SelectedValuePath="Tag">
+								<ComboBoxItem Tag="Default">Default</ComboBoxItem>
+								<ComboBoxItem Tag="Stingy">Stingy</ComboBoxItem>
+								<ComboBoxItem Tag="Adequat">Adequat</ComboBoxItem>
+								<ComboBoxItem Tag="Generous">Generous</ComboBoxItem>
+								<ComboBoxItem Tag="Ridiculous">Ridiculous</ComboBoxItem>
+							</ComboBox>
+						</StackPanel>
 					</StackPanel>
 					<StackPanel Orientation="Vertical" Grid.ColumnSpan="3" Margin="239,0,0,0">
 						<Label Margin="5,5,0,0" FontWeight="Bold">Incentivized Locations:</Label>
@@ -478,6 +488,319 @@
 						</ComboBox>
 						<CheckBox x:Name="DisableDamageTileFlicker" IsChecked="{Binding Flags.DisableDamageTileFlicker}" Content="Disable Damage Tile Flicker"/>
 					</StackPanel>
+				</Grid>
+			</TabItem>
+
+			<TabItem Header="Shop Reduction">
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="1*"/>
+						<ColumnDefinition Width="1*"/>
+						<ColumnDefinition Width="1*"/>
+						<ColumnDefinition Width="2*"/>
+						<ColumnDefinition Width="4*"/>
+					</Grid.ColumnDefinitions>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="*"/>
+						<RowDefinition Height="*"/>
+						<RowDefinition Height="*"/>
+						<RowDefinition Height="*"/>
+						<RowDefinition Height="*"/>
+						<RowDefinition Height="*"/>
+						<RowDefinition Height="4*"/>
+					</Grid.RowDefinitions>
+
+					<Label MinHeight="26" Content="Shops" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"/>
+					<Label MinHeight="26" Content="Mode" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center"/>
+					<Label MinHeight="26" Content="Reduction" Grid.Row="0" Grid.Column="2" VerticalAlignment="Center"/>
+					<Label MinHeight="26" Content="" Grid.Row="0" Grid.Column="3" VerticalAlignment="Center"/>
+
+					<Label MinHeight="26" Content="Weapon Shops" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"/>
+					<Label MinHeight="26" Content="Armor Shops" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center"/>
+					<Label MinHeight="26" Content="Item Shops" Grid.Row="3" Grid.Column="0" VerticalAlignment="Center"/>
+					<Label MinHeight="26" Content="Black Magic" Grid.Row="4" Grid.Column="0" VerticalAlignment="Center"/>
+					<Label MinHeight="26" Content="White Magic" Grid.Row="5" Grid.Column="0" VerticalAlignment="Center"/>
+
+					<ComboBox SelectedValue="{Binding Flags.ShopKillMode_Weapons}" MaxHeight="26" Grid.Row="1" Grid.Column="1" SelectedValuePath="Tag">
+						<ComboBoxItem Tag="None">None</ComboBoxItem>
+						<ComboBoxItem Tag="WholeShops">Whole Shops</ComboBoxItem>
+						<ComboBoxItem Tag="AllItemsOfAKind">All Items of a Kind</ComboBoxItem>
+						<ComboBoxItem Tag="Spread">Spread</ComboBoxItem>
+						<ComboBoxItem Tag="Chaos">Unequal</ComboBoxItem>
+						<ComboBoxItem Tag="Random">Random</ComboBoxItem>
+					</ComboBox>
+
+					<ComboBox SelectedValue="{Binding Flags.ShopKillMode_Armor}" MaxHeight="26" Grid.Row="2" Grid.Column="1" SelectedValuePath="Tag">
+						<ComboBoxItem Tag="None">None</ComboBoxItem>
+						<ComboBoxItem Tag="WholeShops">Whole Shops</ComboBoxItem>
+						<ComboBoxItem Tag="AllItemsOfAKind">All Items of a Kind</ComboBoxItem>
+						<ComboBoxItem Tag="Spread">Spread</ComboBoxItem>
+						<ComboBoxItem Tag="Chaos">Unequal</ComboBoxItem>
+						<ComboBoxItem Tag="Random">Random</ComboBoxItem>
+					</ComboBox>
+
+					<ComboBox SelectedValue="{Binding Flags.ShopKillMode_Item}" MaxHeight="26" Grid.Row="3" Grid.Column="1" SelectedValuePath="Tag">
+						<ComboBoxItem Tag="None">None</ComboBoxItem>
+						<ComboBoxItem Tag="WholeShops">Whole Shops</ComboBoxItem>
+						<ComboBoxItem Tag="AllItemsOfAKind">All Items of a Kind</ComboBoxItem>
+						<ComboBoxItem Tag="Spread">Spread</ComboBoxItem>
+						<ComboBoxItem Tag="Chaos">Unequal</ComboBoxItem>
+						<ComboBoxItem Tag="Random">Random</ComboBoxItem>
+					</ComboBox>
+
+					<ComboBox SelectedValue="{Binding Flags.ShopKillMode_Black}" MaxHeight="26" Grid.Row="4" Grid.Column="1" SelectedValuePath="Tag">
+						<ComboBoxItem Tag="None">None</ComboBoxItem>
+						<ComboBoxItem Tag="WholeShops">Whole Shops</ComboBoxItem>
+						<ComboBoxItem Tag="AllItemsOfAKind">All Items of a Kind</ComboBoxItem>
+						<ComboBoxItem Tag="Spread">Spread</ComboBoxItem>
+						<ComboBoxItem Tag="Chaos">Unequal</ComboBoxItem>
+						<ComboBoxItem Tag="Random">Random</ComboBoxItem>
+					</ComboBox>
+
+					<ComboBox SelectedValue="{Binding Flags.ShopKillMode_White}" MaxHeight="26" Grid.Row="5" Grid.Column="1" SelectedValuePath="Tag">
+						<ComboBoxItem Tag="None">None</ComboBoxItem>
+						<ComboBoxItem Tag="WholeShops">Whole Shops</ComboBoxItem>
+						<ComboBoxItem Tag="AllItemsOfAKind">All Items of a Kind</ComboBoxItem>
+						<ComboBoxItem Tag="Spread">Spread</ComboBoxItem>
+						<ComboBoxItem Tag="Chaos">Unequal</ComboBoxItem>
+						<ComboBoxItem Tag="Random">Random</ComboBoxItem>
+					</ComboBox>
+
+					<ComboBox SelectedValue="{Binding Flags.ShopKillFactor_Weapons}" MaxHeight="26" Grid.Row="1" Grid.Column="2" SelectedValuePath="Tag">
+						<ComboBoxItem Tag="Kill20Percent">Remove 20%</ComboBoxItem>
+						<ComboBoxItem Tag="Kill40Percent">Remove 40%</ComboBoxItem>
+						<ComboBoxItem Tag="Kill60Percent">Remove 60%</ComboBoxItem>
+						<ComboBoxItem Tag="Kill80Percent">Remove 80%</ComboBoxItem>
+						<ComboBoxItem Tag="KillAll">Remove All</ComboBoxItem>
+						<ComboBoxItem Tag="KillRandom">Random</ComboBoxItem>
+					</ComboBox>
+
+					<ComboBox SelectedValue="{Binding Flags.ShopKillFactor_Armor}" MaxHeight="26" Grid.Row="2" Grid.Column="2" SelectedValuePath="Tag">
+						<ComboBoxItem Tag="Kill20Percent">Remove 20%</ComboBoxItem>
+						<ComboBoxItem Tag="Kill40Percent">Remove 40%</ComboBoxItem>
+						<ComboBoxItem Tag="Kill60Percent">Remove 60%</ComboBoxItem>
+						<ComboBoxItem Tag="Kill80Percent">Remove 80%</ComboBoxItem>
+						<ComboBoxItem Tag="KillAll">Remove All</ComboBoxItem>
+						<ComboBoxItem Tag="KillRandom">Random</ComboBoxItem>
+					</ComboBox>
+
+					<ComboBox SelectedValue="{Binding Flags.ShopKillFactor_Item}" MaxHeight="26" Grid.Row="3" Grid.Column="2" SelectedValuePath="Tag">
+						<ComboBoxItem Tag="Kill20Percent">Remove 20%</ComboBoxItem>
+						<ComboBoxItem Tag="Kill40Percent">Remove 40%</ComboBoxItem>
+						<ComboBoxItem Tag="Kill60Percent">Remove 60%</ComboBoxItem>
+						<ComboBoxItem Tag="Kill80Percent">Remove 80%</ComboBoxItem>
+						<ComboBoxItem Tag="KillAll">Remove All</ComboBoxItem>
+						<ComboBoxItem Tag="KillRandom">Random</ComboBoxItem>
+					</ComboBox>
+
+					<ComboBox SelectedValue="{Binding Flags.ShopKillFactor_Black}" MaxHeight="26" Grid.Row="4" Grid.Column="2" SelectedValuePath="Tag">
+						<ComboBoxItem Tag="Kill20Percent">Remove 20%</ComboBoxItem>
+						<ComboBoxItem Tag="Kill40Percent">Remove 40%</ComboBoxItem>
+						<ComboBoxItem Tag="Kill60Percent">Remove 60%</ComboBoxItem>
+						<ComboBoxItem Tag="Kill80Percent">Remove 80%</ComboBoxItem>
+						<ComboBoxItem Tag="KillAll">Remove All</ComboBoxItem>
+						<ComboBoxItem Tag="KillRandom">Random</ComboBoxItem>
+					</ComboBox>
+
+					<ComboBox SelectedValue="{Binding Flags.ShopKillFactor_White}" MaxHeight="26" Grid.Row="5" Grid.Column="2" SelectedValuePath="Tag">
+						<ComboBoxItem Tag="Kill20Percent">Remove 20%</ComboBoxItem>
+						<ComboBoxItem Tag="Kill40Percent">Remove 40%</ComboBoxItem>
+						<ComboBoxItem Tag="Kill60Percent">Remove 60%</ComboBoxItem>
+						<ComboBoxItem Tag="Kill80Percent">Remove 80%</ComboBoxItem>
+						<ComboBoxItem Tag="KillAll">Remove All</ComboBoxItem>
+						<ComboBoxItem Tag="KillRandom">Random</ComboBoxItem>
+					</ComboBox>
+
+					<CheckBox IsChecked="{Binding Flags.ShopKillExcludeConeria_Weapons}" Content="Exclude Coneria" Grid.Row="1" Grid.Column="3" VerticalAlignment="Center"/>
+					<CheckBox IsChecked="{Binding Flags.ShopKillExcludeConeria_Armor}" Content="Exclude Coneria" Grid.Row="2" Grid.Column="3" VerticalAlignment="Center"/>
+					<CheckBox IsChecked="{Binding Flags.ShopKillExcludeConeria_Item}" Content="Exclude Coneria" Grid.Row="3" Grid.Column="3" VerticalAlignment="Center"/>
+					<CheckBox IsChecked="{Binding Flags.ShopKillExcludeConeria_Black}" Content="Exclude Coneria" Grid.Row="4" Grid.Column="3" VerticalAlignment="Center"/>
+					<CheckBox IsChecked="{Binding Flags.ShopKillExcludeConeria_White}" Content="Exclude Coneria" Grid.Row="5" Grid.Column="3" VerticalAlignment="Center"/>
+				</Grid>
+			</TabItem>          
+
+			<TabItem Header="Hints">
+
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="1*"/>
+						<ColumnDefinition Width="1*"/>
+						<ColumnDefinition Width="1*"/>          
+						<ColumnDefinition Width="3*"/>
+					</Grid.ColumnDefinitions>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="26" />
+						<RowDefinition Height="1"/>
+						<RowDefinition Height="26"/>
+						<RowDefinition Height="26"/>
+						<RowDefinition Height="26"/>
+						<RowDefinition Height="26"/>
+						<RowDefinition Height="26"/>
+						<RowDefinition Height="26"/>
+						<RowDefinition Height="26"/>
+					</Grid.RowDefinitions>
+
+					<CheckBox IsChecked="{Binding Flags.ExtensiveHints_Enable}" Content="Enable Extensive Hints" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="6"/>
+
+					<Label MinHeight="26" Content="Hint Coverage" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center"/>
+					<Label MinHeight="26" Content="Hint Placement" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Center"/>
+
+					<Label MinHeight="26" Content="Loose Floor" Grid.Row="3" Grid.Column="0"/>
+					<Label MinHeight="26" Content="Loose Name" Grid.Row="4" Grid.Column="0"/>
+					<Label MinHeight="26" Content="Incentive Name" Grid.Row="5" Grid.Column="0"/>
+					<Label MinHeight="26" Content="Floor Hints" Grid.Row="6" Grid.Column="0"/>
+					<Label MinHeight="26" Content="Equipment Floor" Grid.Row="7" Grid.Column="0"/>
+					<Label MinHeight="26" Content="Equipment Name" Grid.Row="8" Grid.Column="0"/>
+					
+					<ComboBox SelectedValue="{Binding Flags.ExtensiveHints_LooseItemFloorCoverage}" MaxHeight="26" Grid.Row="3" Grid.Column="1" SelectedValuePath="Tag">
+						<ComboBoxItem Tag="HintCategoryCoverageNone">None - Guaranteed</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage20">20% - Best Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage40">40% - Best Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage60">60% - Best Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage80">80% - Best Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverageFill">All - Least Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverageAll">All - Best Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoveragePrioritized">All - Prioritized</ComboBoxItem>
+					</ComboBox>
+
+					<ComboBox SelectedValue="{Binding Flags.ExtensiveHints_LooseItemFloorPlacement}" MaxHeight="26" Grid.Row="3" Grid.Column="2" SelectedValuePath="Tag">
+						<ComboBoxItem Tag="InnerSea">Coneria - DwarfCave</ComboBoxItem>
+						<ComboBoxItem Tag="ConeriaToCrescent">Coneria - CrescentLake</ComboBoxItem>
+						<ComboBoxItem Tag="ElflandToCrescent">Elfland - CrescentLake</ComboBoxItem>
+						<ComboBoxItem Tag="ElflandPlus">Elfland - Gaia</ComboBoxItem>
+						<ComboBoxItem Tag="MelmondOnrac">Melmond - Onrac</ComboBoxItem>
+						<ComboBoxItem Tag="MelmondMermaids">Melmond - Mermaids</ComboBoxItem>
+						<ComboBoxItem Tag="MelmondPlus">Melmond - Gaia</ComboBoxItem>
+						<ComboBoxItem Tag="FloaterRequired">Cardia, Lefane, Gaia</ComboBoxItem>
+						<ComboBoxItem Tag="Everywhere">Everywhere</ComboBoxItem>
+						<ComboBoxItem Tag="Tiered">Depending on Dungeon</ComboBoxItem>
+						<ComboBoxItem Tag="InnerSeaTownsAndDwarfCave">Inner Sea Towns and Dwarf Cave</ComboBoxItem>
+					</ComboBox>
+
+					<ComboBox SelectedValue="{Binding Flags.ExtensiveHints_LooseItemNameCoverage}" MaxHeight="26" Grid.Row="4" Grid.Column="1" SelectedValuePath="Tag">
+						<ComboBoxItem Tag="HintCategoryCoverageNone">None - Guaranteed</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage20">20% - Best Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage40">40% - Best Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage60">60% - Best Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage80">80% - Best Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverageFill">All - Least Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverageAll">All - Best Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoveragePrioritized">All - Prioritized</ComboBoxItem>
+					</ComboBox>
+
+					<ComboBox SelectedValue="{Binding Flags.ExtensiveHints_LooseItemNamePlacement}" MaxHeight="26" Grid.Row="4" Grid.Column="2" SelectedValuePath="Tag">
+						<ComboBoxItem Tag="InnerSea">Coneria - DwarfCave</ComboBoxItem>
+						<ComboBoxItem Tag="ConeriaToCrescent">Coneria - CrescentLake</ComboBoxItem>
+						<ComboBoxItem Tag="ElflandToCrescent">Elfland - CrescentLake</ComboBoxItem>
+						<ComboBoxItem Tag="ElflandPlus">Elfland - Gaia</ComboBoxItem>
+						<ComboBoxItem Tag="MelmondOnrac">Melmond - Onrac</ComboBoxItem>
+						<ComboBoxItem Tag="MelmondMermaids">Melmond - Mermaids</ComboBoxItem>
+						<ComboBoxItem Tag="MelmondPlus">Melmond - Gaia</ComboBoxItem>
+						<ComboBoxItem Tag="FloaterRequired">Cardia, Lefane, Gaia</ComboBoxItem>
+						<ComboBoxItem Tag="Everywhere">Everywhere</ComboBoxItem>
+						<ComboBoxItem Tag="Tiered">Depending on Dungeon</ComboBoxItem>
+						<ComboBoxItem Tag="InnerSeaTownsAndDwarfCave">Inner Sea Towns and Dwarf Cave</ComboBoxItem>
+					</ComboBox>
+
+					<ComboBox SelectedValue="{Binding Flags.ExtensiveHints_IncentiveItemNameCoverage}" MaxHeight="26" Grid.Row="5" Grid.Column="1" SelectedValuePath="Tag">
+						<ComboBoxItem Tag="HintCategoryCoverageNone">None - Guaranteed</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage20">20% - Best Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage40">40% - Best Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage60">60% - Best Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage80">80% - Best Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverageFill">All - Least Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverageAll">All - Best Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoveragePrioritized">All - Prioritized</ComboBoxItem>
+					</ComboBox>
+
+					<ComboBox SelectedValue="{Binding Flags.ExtensiveHints_IncentiveItemNamePlacement}" MaxHeight="26" Grid.Row="5" Grid.Column="2" SelectedValuePath="Tag">
+						<ComboBoxItem Tag="InnerSea">Coneria - DwarfCave</ComboBoxItem>
+						<ComboBoxItem Tag="ConeriaToCrescent">Coneria - CrescentLake</ComboBoxItem>
+						<ComboBoxItem Tag="ElflandToCrescent">Elfland - CrescentLake</ComboBoxItem>
+						<ComboBoxItem Tag="ElflandPlus">Elfland - Gaia</ComboBoxItem>
+						<ComboBoxItem Tag="MelmondOnrac">Melmond - Onrac</ComboBoxItem>
+						<ComboBoxItem Tag="MelmondMermaids">Melmond - Mermaids</ComboBoxItem>
+						<ComboBoxItem Tag="MelmondPlus">Melmond - Gaia</ComboBoxItem>
+						<ComboBoxItem Tag="FloaterRequired">Cardia, Lefane, Gaia</ComboBoxItem>
+						<ComboBoxItem Tag="Everywhere">Everywhere</ComboBoxItem>
+						<ComboBoxItem Tag="Tiered">Depending on Dungeon</ComboBoxItem>
+						<ComboBoxItem Tag="InnerSeaTownsAndDwarfCave">Inner Sea Towns and Dwarf Cave</ComboBoxItem>
+					</ComboBox>
+
+					<ComboBox SelectedValue="{Binding Flags.ExtensiveHints_FloorHintCoverage}" MaxHeight="26" Grid.Row="6" Grid.Column="1" SelectedValuePath="Tag">
+						<ComboBoxItem Tag="HintCategoryCoverageNone">None - Guaranteed</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage20">20% - Best Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage40">40% - Best Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage60">60% - Best Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage80">80% - Best Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverageFill">All - Least Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverageAll">All - Best Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoveragePrioritized">All - Prioritized</ComboBoxItem>
+					</ComboBox>
+
+					<ComboBox SelectedValue="{Binding Flags.ExtensiveHints_FloorHintPlacement}" MaxHeight="26" Grid.Row="6" Grid.Column="2" SelectedValuePath="Tag">
+						<ComboBoxItem Tag="InnerSea">Coneria - DwarfCave</ComboBoxItem>
+						<ComboBoxItem Tag="ConeriaToCrescent">Coneria - CrescentLake</ComboBoxItem>
+						<ComboBoxItem Tag="ElflandToCrescent">Elfland - CrescentLake</ComboBoxItem>
+						<ComboBoxItem Tag="ElflandPlus">Elfland - Gaia</ComboBoxItem>
+						<ComboBoxItem Tag="MelmondOnrac">Melmond - Onrac</ComboBoxItem>
+						<ComboBoxItem Tag="MelmondMermaids">Melmond - Mermaids</ComboBoxItem>
+						<ComboBoxItem Tag="MelmondPlus">Melmond - Gaia</ComboBoxItem>
+						<ComboBoxItem Tag="FloaterRequired">Cardia, Lefane, Gaia</ComboBoxItem>
+						<ComboBoxItem Tag="Everywhere">Everywhere</ComboBoxItem>
+						<ComboBoxItem Tag="Tiered">Depending on Dungeon</ComboBoxItem>
+						<ComboBoxItem Tag="InnerSeaTownsAndDwarfCave">Inner Sea Towns and Dwarf Cave</ComboBoxItem>
+					</ComboBox>
+
+					<ComboBox SelectedValue="{Binding Flags.ExtensiveHints_EquipmentFloorCoverage}" MaxHeight="26" Grid.Row="7" Grid.Column="1" SelectedValuePath="Tag">
+						<ComboBoxItem Tag="HintCategoryCoverageNone">None - Guaranteed</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage20">20% - Best Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage40">40% - Best Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage60">60% - Best Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage80">80% - Best Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverageFill">All - Least Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverageAll">All - Best Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoveragePrioritized">All - Prioritized</ComboBoxItem>
+					</ComboBox>
+
+					<ComboBox SelectedValue="{Binding Flags.ExtensiveHints_EquipmentFloorPlacement}" MaxHeight="26" Grid.Row="7" Grid.Column="2" SelectedValuePath="Tag">
+						<ComboBoxItem Tag="InnerSea">Coneria - DwarfCave</ComboBoxItem>
+						<ComboBoxItem Tag="ConeriaToCrescent">Coneria - CrescentLake</ComboBoxItem>
+						<ComboBoxItem Tag="ElflandToCrescent">Elfland - CrescentLake</ComboBoxItem>
+						<ComboBoxItem Tag="ElflandPlus">Elfland - Gaia</ComboBoxItem>
+						<ComboBoxItem Tag="MelmondOnrac">Melmond - Onrac</ComboBoxItem>
+						<ComboBoxItem Tag="MelmondMermaids">Melmond - Mermaids</ComboBoxItem>
+						<ComboBoxItem Tag="MelmondPlus">Melmond - Gaia</ComboBoxItem>
+						<ComboBoxItem Tag="FloaterRequired">Cardia, Lefane, Gaia</ComboBoxItem>
+						<ComboBoxItem Tag="Everywhere">Everywhere</ComboBoxItem>
+						<ComboBoxItem Tag="Tiered">Depending on Dungeon</ComboBoxItem>
+						<ComboBoxItem Tag="InnerSeaTownsAndDwarfCave">Inner Sea Towns and Dwarf Cave</ComboBoxItem>
+					</ComboBox>
+
+					<ComboBox SelectedValue="{Binding Flags.ExtensiveHints_EquipmentNameCoverage}" MaxHeight="26" Grid.Row="8" Grid.Column="1" SelectedValuePath="Tag">
+						<ComboBoxItem Tag="HintCategoryCoverageNone">None - Guaranteed</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage20">20% - Best Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage40">40% - Best Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage60">60% - Best Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverage80">80% - Best Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverageFill">All - Least Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoverageAll">All - Best Effort</ComboBoxItem>
+						<ComboBoxItem Tag="HintCategoryCoveragePrioritized">All - Prioritized</ComboBoxItem>
+					</ComboBox>
+
+					<ComboBox SelectedValue="{Binding Flags.ExtensiveHints_EquipmentNamePlacement}" MaxHeight="26" Grid.Row="8" Grid.Column="2" SelectedValuePath="Tag">
+						<ComboBoxItem Tag="InnerSea">Coneria - DwarfCave</ComboBoxItem>
+						<ComboBoxItem Tag="ConeriaToCrescent">Coneria - CrescentLake</ComboBoxItem>
+						<ComboBoxItem Tag="ElflandToCrescent">Elfland - CrescentLake</ComboBoxItem>
+						<ComboBoxItem Tag="ElflandPlus">Elfland - Gaia</ComboBoxItem>
+						<ComboBoxItem Tag="MelmondOnrac">Melmond - Onrac</ComboBoxItem>
+						<ComboBoxItem Tag="MelmondMermaids">Melmond - Mermaids</ComboBoxItem>
+						<ComboBoxItem Tag="MelmondPlus">Melmond - Gaia</ComboBoxItem>
+						<ComboBoxItem Tag="FloaterRequired">Cardia, Lefane, Gaia</ComboBoxItem>
+						<ComboBoxItem Tag="Everywhere">Everywhere</ComboBoxItem>
+						<ComboBoxItem Tag="Tiered">Depending on Dungeon</ComboBoxItem>
+						<ComboBoxItem Tag="InnerSeaTownsAndDwarfCave">Inner Sea Towns and Dwarf Cave</ComboBoxItem>
+					</ComboBox>
 				</Grid>
 			</TabItem>
 		</TabControl>

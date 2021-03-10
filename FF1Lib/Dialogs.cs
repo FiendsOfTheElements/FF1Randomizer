@@ -323,24 +323,42 @@ namespace FF1Lib
 		}
 		public void AddNewChars()
 		{
-			// New characters, frees up 5 characters at 0xCA, 0xCE, 0xE6, 0xE8, 0xE9
-			// STATUS, use normal S and draw AT closer
-			// Put(0x385A1, Blob.FromHex("9CCBCCCD9C"));
-			// Put(0x24CC0, Blob.FromHex("00DFC66666E63636"));
-			// Put(0x24CD0, Blob.FromHex("00B333333333331E"));
+			const int statusCharOffset = 0x37000;
+			const int tilesetOffset = 0x0C000;
+			const int tilesetSize = 0x800;
+			const int tilesetCount = 8;
+			const int battleTilesetOffset = 0x1C000;
+			const int battleTilesetSize = 0x800;
+			const int battleTilesetCount = 16;
+			const int shopTilesetOffset = 0x24000;
 
-			// Stone ailment, use normal S and e, use Poison's "on"
-			Put(0x6C360, Blob.FromHex("9CE7E5A8")); // Stone
+			// There's 5 unused characters available on every tileset, 0x7B to 0x7F
+			//  new chars must be added to the BytesByText list in FF1Text.cs
+			var newChars = new List<(byte, string)>
+			{
+				(0x7B, "000008083E080800") // + sign
+			};
 
-			// White out free chars
-			//Put(0x24CA0, Blob.FromHex("FFFFFFFFFFFFFFFF"));
-			//Put(0x24CE0, Blob.FromHex("FFFFFFFFFFFFFFFF"));
-			Put(0x24E60, Blob.FromHex("FFFFFFFFFFFFFFFF"));
-			Put(0x24E80, Blob.FromHex("FFFFFFFFFFFFFFFF"));
-			Put(0x24E90, Blob.FromHex("FFFFFFFFFFFFFFFF"));
 
-			// Add plus sign at 0xC1
-			Put(0x24C10, Blob.FromHex("000008083E080800"));
+			foreach (var newchar in newChars)
+			{
+				// Menu screen tilset
+				Put(statusCharOffset + newchar.Item1 * 0x10, Blob.FromHex(newchar.Item2));
+				// Shop tileset
+				Put(shopTilesetOffset + newchar.Item1 * 0x10, Blob.FromHex(newchar.Item2));
+
+				// Map tilesets
+				for (int i = 0; i < tilesetCount; i++)
+				{
+					Put(tilesetOffset + tilesetSize * i + newchar.Item1 * 0x10, Blob.FromHex(newchar.Item2));
+				}
+
+				// Battle tilesets
+				for (int i = 0; i < battleTilesetCount; i++)
+				{
+					Put(battleTilesetOffset + battleTilesetSize * i + newchar.Item1 * 0x10, Blob.FromHex(newchar.Item2));
+				}
+			}
 		}
 
 		public void TransferDialogs()
@@ -445,7 +463,7 @@ namespace FF1Lib
 			Data[0x7C9F7] = 0x1B;
 
 			// LoadPrice fix
-			PutInBank(newTalkRoutinesBank, 0x9F10, Blob.FromHex("A9118558A5734C93DD"));
+			PutInBank(newTalkRoutinesBank, 0x9F10, Blob.FromHex("A9118558A5734C06B0"));
 
 			// Update bank
 			Data[0x7C9F2] = newTalkRoutinesBank;
@@ -608,7 +626,6 @@ namespace FF1Lib
 			Dictionary<int, string> newDialogs = new Dictionary<int, string>();
 
 			//CleanupNPCRoutines(); - Deprecated 2020-12-12
-			SplitOpenTreasureRoutine();
 			TransferDialogs();
 			TransferTalkRoutines();
 			AddNewChars();
@@ -903,102 +920,7 @@ namespace FF1Lib
 
 		public string LocationText(MapLocation location, OverworldMap overworldmap)
 		{
-			Dictionary<MapLocation, OverworldTeleportIndex> StandardOverworldLocations =
-			new Dictionary<MapLocation, OverworldTeleportIndex>
-			{
-				{MapLocation.Coneria,OverworldTeleportIndex.Coneria},
-				{MapLocation.Caravan,(OverworldTeleportIndex)36},
-				{MapLocation.Pravoka, OverworldTeleportIndex.Pravoka},
-				{MapLocation.Elfland, OverworldTeleportIndex.Elfland},
-				{MapLocation.Melmond, OverworldTeleportIndex.Melmond},
-				{MapLocation.CrescentLake, OverworldTeleportIndex.CrescentLake},
-				{MapLocation.Gaia,OverworldTeleportIndex.Gaia},
-				{MapLocation.Onrac,OverworldTeleportIndex.Onrac},
-				{MapLocation.Lefein,OverworldTeleportIndex.Lefein},
-				{MapLocation.ConeriaCastle1,OverworldTeleportIndex.ConeriaCastle1},
-				{MapLocation.ConeriaCastle2,OverworldTeleportIndex.ConeriaCastle1},
-				{MapLocation.ConeriaCastleRoom1,OverworldTeleportIndex.ConeriaCastle1},
-				{MapLocation.ConeriaCastleRoom2,OverworldTeleportIndex.ConeriaCastle1},
-				{MapLocation.ElflandCastle,OverworldTeleportIndex.ElflandCastle},
-				{MapLocation.ElflandCastleRoom1,OverworldTeleportIndex.ElflandCastle},
-				{MapLocation.NorthwestCastle,OverworldTeleportIndex.NorthwestCastle},
-				{MapLocation.NorthwestCastleRoom2,OverworldTeleportIndex.NorthwestCastle},
-				{MapLocation.CastleOrdeals1,OverworldTeleportIndex.CastleOrdeals1},
-				{MapLocation.CastleOrdealsMaze,OverworldTeleportIndex.CastleOrdeals1},
-				{MapLocation.CastleOrdealsTop,OverworldTeleportIndex.CastleOrdeals1},
-				{MapLocation.TempleOfFiends1,OverworldTeleportIndex.TempleOfFiends1},
-				{MapLocation.TempleOfFiends1Room1,OverworldTeleportIndex.TempleOfFiends1},
-				{MapLocation.TempleOfFiends1Room2,OverworldTeleportIndex.TempleOfFiends1},
-				{MapLocation.TempleOfFiends1Room3,OverworldTeleportIndex.TempleOfFiends1},
-				{MapLocation.TempleOfFiends1Room4,OverworldTeleportIndex.TempleOfFiends1},
-				{MapLocation.TempleOfFiends2,OverworldTeleportIndex.TempleOfFiends1},
-				{MapLocation.TempleOfFiends3,OverworldTeleportIndex.TempleOfFiends1},
-				{MapLocation.TempleOfFiendsChaos,OverworldTeleportIndex.TempleOfFiends1},
-				{MapLocation.TempleOfFiendsAir,OverworldTeleportIndex.TempleOfFiends1},
-				{MapLocation.TempleOfFiendsEarth,OverworldTeleportIndex.TempleOfFiends1},
-				{MapLocation.TempleOfFiendsFire,OverworldTeleportIndex.TempleOfFiends1},
-				{MapLocation.TempleOfFiendsWater,OverworldTeleportIndex.TempleOfFiends1},
-				{MapLocation.TempleOfFiendsPhantom,OverworldTeleportIndex.TempleOfFiends1},
-				{MapLocation.EarthCave1,OverworldTeleportIndex.EarthCave1},
-				{MapLocation.EarthCave2,OverworldTeleportIndex.EarthCave1},
-				{MapLocation.EarthCaveVampire,OverworldTeleportIndex.EarthCave1},
-				{MapLocation.EarthCave4,OverworldTeleportIndex.EarthCave1},
-				{MapLocation.EarthCaveLich,OverworldTeleportIndex.EarthCave1},
-				{MapLocation.GurguVolcano1,OverworldTeleportIndex.GurguVolcano1},
-				{MapLocation.GurguVolcano2,OverworldTeleportIndex.GurguVolcano1},
-				{MapLocation.GurguVolcano3,OverworldTeleportIndex.GurguVolcano1},
-				{MapLocation.GurguVolcano4,OverworldTeleportIndex.GurguVolcano1},
-				{MapLocation.GurguVolcano5,OverworldTeleportIndex.GurguVolcano1},
-				{MapLocation.GurguVolcano6,OverworldTeleportIndex.GurguVolcano1},
-				{MapLocation.GurguVolcanoKary,OverworldTeleportIndex.GurguVolcano1},
-				{MapLocation.IceCave1,OverworldTeleportIndex.IceCave1},
-				{MapLocation.IceCave2,OverworldTeleportIndex.IceCave1},
-				{MapLocation.IceCave3,OverworldTeleportIndex.IceCave1},
-				{MapLocation.IceCave5,OverworldTeleportIndex.IceCave1},
-				{MapLocation.IceCaveBackExit,OverworldTeleportIndex.IceCave1},
-				{MapLocation.IceCaveFloater,OverworldTeleportIndex.IceCave1},
-				{MapLocation.IceCavePitRoom,OverworldTeleportIndex.IceCave1},
-				{MapLocation.SeaShrine1, (OverworldTeleportIndex)35},
-				{MapLocation.SeaShrine2, (OverworldTeleportIndex)35},
-				{MapLocation.SeaShrine2Room2, (OverworldTeleportIndex)35},
-				{MapLocation.SeaShrine4, (OverworldTeleportIndex)35},
-				{MapLocation.SeaShrine5, (OverworldTeleportIndex)35},
-				{MapLocation.SeaShrine6, (OverworldTeleportIndex)35},
-				{MapLocation.SeaShrine7, (OverworldTeleportIndex)35},
-				{MapLocation.SeaShrine8, (OverworldTeleportIndex)35},
-				{MapLocation.SeaShrineKraken, (OverworldTeleportIndex)35},
-				{MapLocation.SeaShrineMermaids, (OverworldTeleportIndex)35},
-				{MapLocation.Cardia1,OverworldTeleportIndex.Cardia1},
-				{MapLocation.Cardia2,OverworldTeleportIndex.Cardia2},
-				{MapLocation.BahamutCave1,OverworldTeleportIndex.BahamutCave1},
-				{MapLocation.BahamutCave2,OverworldTeleportIndex.BahamutCave1},
-				{MapLocation.Cardia4,OverworldTeleportIndex.Cardia4},
-				{MapLocation.Cardia5,OverworldTeleportIndex.Cardia5},
-				{MapLocation.Cardia6,OverworldTeleportIndex.Cardia6},
-				{MapLocation.Waterfall,OverworldTeleportIndex.Waterfall},
-				{MapLocation.DwarfCave,OverworldTeleportIndex.DwarfCave},
-				{MapLocation.DwarfCaveRoom3,OverworldTeleportIndex.DwarfCave},
-				{MapLocation.MatoyasCave,OverworldTeleportIndex.MatoyasCave},
-				{MapLocation.SardasCave,OverworldTeleportIndex.SardasCave},
-				{MapLocation.MarshCave1,OverworldTeleportIndex.MarshCave1},
-				{MapLocation.MarshCave3,OverworldTeleportIndex.MarshCave1},
-				{MapLocation.MarshCaveBottom,OverworldTeleportIndex.MarshCave1},
-				{MapLocation.MarshCaveBottomRoom13,OverworldTeleportIndex.MarshCave1},
-				{MapLocation.MarshCaveBottomRoom14,OverworldTeleportIndex.MarshCave1},
-				{MapLocation.MarshCaveBottomRoom16,OverworldTeleportIndex.MarshCave1},
-				{MapLocation.MarshCaveTop,OverworldTeleportIndex.MarshCave1},
-				{MapLocation.MirageTower1,OverworldTeleportIndex.MirageTower1},
-				{MapLocation.MirageTower2,OverworldTeleportIndex.MirageTower1},
-				{MapLocation.MirageTower3,OverworldTeleportIndex.MirageTower1},
-				{MapLocation.SkyPalace1,(OverworldTeleportIndex)37},
-				{MapLocation.SkyPalace2,(OverworldTeleportIndex)37},
-				{MapLocation.SkyPalace3,(OverworldTeleportIndex)37},
-				{MapLocation.SkyPalaceMaze,(OverworldTeleportIndex)37},
-				{MapLocation.SkyPalaceTiamat,(OverworldTeleportIndex)37},
-				{MapLocation.TitansTunnelEast,OverworldTeleportIndex.TitansTunnelEast},
-				{MapLocation.TitansTunnelWest,OverworldTeleportIndex.TitansTunnelWest},
-				{MapLocation.TitansTunnelRoom,OverworldTeleportIndex.TitansTunnelWest},
-			};
+			Dictionary<MapLocation, OverworldTeleportIndex> StandardOverworldLocations = ItemLocations.MapLocationToStandardOverworldLocations;
 
 			Dictionary<OverworldTeleportIndex, string> LocationNames = new Dictionary<OverworldTeleportIndex, string>
 			{
@@ -1297,7 +1219,7 @@ namespace FF1Lib
 			// Het all game dialogs, get all item names, set dialog templates
 			var itemnames = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
 			var hintschests = new List<string>() { "The $ is #.", "The $? It's # I believe.", "Did you know that the $ is #?", "My grandpa used to say 'The $ is #'.", "Did you hear? The $ is #!", "Wanna hear a secret? The $ is #!", "I've read somewhere that the $ is #.", "I used to have the $. I lost it #!", "I've hidden the $ #, can you find it?", "Interesting! This book says the $ is #!", "Duh, everyone knows that the $ is #!", "I saw the $ while I was #." };
-			var hintsnpc = new List<string>() { "& has the $.", "The $? Did you try asking &?", "The $? & will never part with it!", "& stole the $ from ME! I swear!", "& told me not to reveal he has the $.", "& is hiding something. I bet it's the $!" };
+			var hintsnpc = new List<string>() { "& has the $.", "The $? Did you try asking &?", "The $? & will never part with it!", "& stole the $ from ME! I swear!", "& told me not to reveal they have the $.", "& is hiding something. I bet it's the $!" };
 			var hintsvendormed = new List<string>() { "The $ is for sale #.", "I used to have the $. I sold it #!", "There's a fire sale for the $ #.", "I almost bought the $ for sale #." };
 			var uselesshints = new List<string>() { "GET A SILK BAG FROM THE\nGRAVEYARD DUCK TO LIVE\nLONGER.", "You spoony bard!", "Press A to talk\nto NPCs!", "A crooked trader is\noffering bum deals in\nthis town.", "The game doesn't start\nuntil you say 'yes'.", "Thieves run away\nreally fast.", "No, I won't move quit\npushing me.", "Dr. Unnes instant\ntranslation services,\njust send one slab\nand 299 GP for\nprocessing.", "I am error.", "Kraken has a good chance\nto one-shot your knight.", "If NPC guillotine is on,\npress reset now or your\nemulator will crash!", "GET EQUIPPED WITH\nTED WOOLSEY.", "8 and palm trees.\nGet it?" };
 

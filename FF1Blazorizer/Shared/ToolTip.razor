@@ -1,4 +1,5 @@
 @using System.Net.Http.Json
+@using System.Text.RegularExpressions
 @inject HttpClient  Http
 
 <div class="ffr-tooltip" style="@css">
@@ -8,7 +9,52 @@
 		<div class="ffr-tooltip-screenshot" style="@(ScreenshotStyle())"></div>
 		@foreach (var paragraph in Description.Split("\n"))
 		{
-<p class="ffr-tooltip-text">@paragraph</p>}
+			@if (paragraph.Length >= 6 && paragraph.Trim().Substring(0, 6).Equals("[grid]"))
+			{
+				/* [grid] Markup Example
+
+				1) Start with this basic grid template:
+
+				[grid]
+				[r]header|header|header|header
+				[r] stuff| stuff| stuff| stuff
+
+				2) Condense into single line for the JSON tooltip:
+
+				[grid][r]header|header|header|header[r]stuff|stuff|stuff|stuff
+
+				Optional) Add {b} to a cell for *Bold*, Add {i} to a cell for /Italic/, Add {l} to left align in the cell, Add {r} to right align in the cell
+
+				[grid]
+				[r]{i}header|{i}header|{i}header|{i}header
+				[r]{r}right |  center |{l}left  |{b}bold
+
+				*/
+				<div style="overflow: auto">
+					<table border="1">
+						<tbody>
+							@foreach (var rowData in paragraph.Substring(6).Split("[r]"))
+							{
+								@if (rowData.Length > 0)
+								{
+									<tr>
+										@foreach (var cellData in rowData.Split("|"))
+										{
+											<td style="@(CellStyle(cellData))">@Regex.Replace(cellData, "{.}", "")</td>
+										}
+									</tr>
+								}
+							}
+						</tbody>
+					</table>
+				</div>
+			}
+			else
+			{
+				// handle regular tooltip text
+				<p class="ffr-tooltip-text">@paragraph</p>
+			}
+		}
 		<p style="clear: both; margin: 0px"></p>
 	</div>
 </div>
@@ -52,6 +98,35 @@
 			return "display: none;";
 
 		return $"background-image: url(/images/tooltips/{TTip.screenshot})";
+	}
+
+	private string CellStyle(string cellData)
+	{
+		string styling;
+		// alignment
+		if (cellData.Trim().ToLower().Contains("{l}"))
+		{
+			styling = "text-align: left;";
+		} else if (cellData.Trim().ToLower().Contains("{r}"))
+		{
+			styling = "text-align: right;";
+		} else
+		{
+			// default to center alignment
+			styling = "text-align: center;";
+		}
+		// formatting
+		if (cellData.Trim().ToLower().Contains("{b}"))
+		{
+			styling += " font-weight: bold;";
+		}
+		if (cellData.Trim().ToLower().Contains("{i}"))
+		{
+			styling += " font-style: italic;";
+		}
+		// general table data properties for everything
+		styling += " white-space: nowrap; max-width: unset; padding: 3px;";
+		return styling;
 	}
 
 	private void ShowToolTip()

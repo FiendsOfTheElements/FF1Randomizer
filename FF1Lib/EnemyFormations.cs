@@ -2,6 +2,7 @@
 using System.Linq;
 using RomUtilities;
 using System.ComponentModel;
+using System;
 
 namespace FF1Lib
 {
@@ -22,10 +23,12 @@ namespace FF1Lib
 	{
 		public enum FinalFormation
 		{
+			None,
 			WarMECHsAndFriends,
 			KaryAndTiamat,
 			TheFundead,
 			TimeLoop,
+			Random,
 		};
 
 		private const int FormationsOffset = 0x2C400;
@@ -55,7 +58,7 @@ namespace FF1Lib
 			// Load a list of formations from ROM
 			List<Blob> formations = Get(FormationsOffset, FormationSize * FormationCount).Chunk(FormationSize);
 			int unrunnableAcount = 0, unrunnableBcount = 0; // number of formations marked as unrunnable on both sides
-			// First we mark all formations as runnable except for fiends/chaos (both sides) or the other boss fights (on a-side only)
+															// First we mark all formations as runnable except for fiends/chaos (both sides) or the other boss fights (on a-side only)
 			for (int i = 0; i < FormationCount; ++i)
 			{
 				if (i >= NormalFormationCount && i <= ChaosFormationIndex)
@@ -111,7 +114,7 @@ namespace FF1Lib
 			//Shuffle the four Fiend1 fights.
 			//Specifically, shuffle what fight triggers during dialog with each of the Elemental Orbs
 			int Fiend1Offset = 119;
-			List<Blob> fiendFormations = Get(FormationsOffset + FormationSize*Fiend1Offset, FormationSize * 4).Chunk(FormationSize);
+			List<Blob> fiendFormations = Get(FormationsOffset + FormationSize * Fiend1Offset, FormationSize * 4).Chunk(FormationSize);
 			fiendFormations.Shuffle(rng);
 			Put(FormationsOffset + FormationSize * Fiend1Offset, fiendFormations.SelectMany(formation => formation.ToBytes()).ToArray());
 		}
@@ -145,9 +148,20 @@ namespace FF1Lib
 			Put(FormationsOffset + FormationSize * WarMECHFormationIndex, warMECHFormation);
 		}
 
-		public void TransformFinalFormation(FinalFormation formation, EvadeCapValues evadeClampFlag)
+		public void TransformFinalFormation(FinalFormation formation, EvadeCapValues evadeClampFlag, MT19337 rng)
 		{
+			if (formation == FinalFormation.None) // This shouldnt be possible, but we are still checking anyways to be safe.
+			{
+				return;
+			}
+
 			Blob finalBattle = Get(FormationsOffset + ChaosFormationIndex * FormationSize, FormationSize);
+			if (formation == FinalFormation.Random)
+			{
+				formation = (FinalFormation)rng.Between(1, Enum.GetValues(typeof(FinalFormation)).Length - 2); // First is None, last is Random
+				System.Diagnostics.Debug.Assert(formation != FinalFormation.None);
+				System.Diagnostics.Debug.Assert(formation != FinalFormation.Random);
+			}
 
 			switch (formation)
 			{
@@ -214,7 +228,7 @@ namespace FF1Lib
 			{
 				if (IsBossTrapTile(tile))
 				{
-					tile[1] = extendedtraptiles ? 0x00 : 0x80;
+					tile[1] = (byte)(extendedtraptiles ? 0x00 : 0x80);
 				}
 			});
 			Put(TilesetDataOffset, tilesets.SelectMany(tileset => tileset.ToBytes()).ToArray());
@@ -343,7 +357,7 @@ namespace FF1Lib
 					formationdata[TypeOffset] = (byte)((int)pattern * 0x10 + (int)spriteSheet);
 					formationdata[GFXOffset] = (byte)(gfxOffset1 + gfxOffset2 * 0x04 + gfxOffset3 * 0x10 + gfxOffset4 * 0x40);
 
-					formationdata[IDsOffset + 0] = (byte)enemy1; 
+					formationdata[IDsOffset + 0] = (byte)enemy1;
 					formationdata[IDsOffset + 1] = (byte)enemy2;
 					formationdata[IDsOffset + 2] = (byte)enemy3;
 					formationdata[IDsOffset + 3] = (byte)enemy4;
