@@ -661,6 +661,7 @@ namespace FF1Lib
 			}
 
 			new TreasureStacks(this, flags).SetTreasureStacks();
+			new StartingLevels(this, flags).SetStartingLevels();
 
 			if ((bool)flags.TrappedChests || (bool)flags.TCMasaGuardian || (bool)flags.TrappedShards)
 			{

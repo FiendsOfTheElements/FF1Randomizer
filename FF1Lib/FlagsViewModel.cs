@@ -3971,7 +3971,15 @@ namespace FF1Lib
 				RaisePropertyChanged();
 			}
 		}
-		
+		public StartingLevel StartingLevel
+		{
+			get => Flags.StartingLevel;
+			set
+			{
+				Flags.StartingLevel = value;
+				RaisePropertyChanged();
+			}
+		}        
 		public ConsumableChestSet MoreConsumableChests
 		{
 			get => Flags.MoreConsumableChests;
