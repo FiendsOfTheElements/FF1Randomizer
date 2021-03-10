@@ -1500,5 +1500,11 @@
 		"title": "Bahamut Cardia dock",
 		"screenshot": "bahamutCardiaDock.png",
 		"description": "Adds a dock to Bahamut's island so that the Airship is not required for class change."
-	}
+	},
+        {
+                "Id": "thiefAgilityBuffCheckBox",
+                "title": "Thief Agility Buff",
+                "screenshot": "thiefAgilityBuff.png",
+                "description": "Buff the thief starting agility to 120 and starting evade to 168, and make it so that the thief gains agility and evade on every level.\nThis makes the thief more likely to evade melee attacks from monsters. When the thief is in the lead slot, this also increases the chance of getting first strike and reduces the chance of being suprised."
+        }
 ]
