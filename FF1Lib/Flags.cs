@@ -69,6 +69,9 @@ namespace FF1Lib
 		public bool? ExcludeGoldFromScaling { get; set; } = false;
 		public bool CheapVendorItem { get; set; } = true;
 		public bool ApplyExpBoostToGold { get; set; } = false;
+		
+		public StartingLevel StartingLevel { get; set; }
+
 		public bool Spoilers { get; set; } = false;
 		public bool TournamentSafe { get; set; } = false;
 		public bool BlindSeed { get; set; } = false;
@@ -132,6 +135,7 @@ namespace FF1Lib
 		public bool? TitansTrove { get; set; } = false;
 		public bool? LefeinShops { get; set; } = false;
 		public bool? RandomVampAttack { get; set; } = false;
+		public bool? RandomVampAttackIncludesConeria { get; set; } = false;
 		public bool? FightBahamut { get; set; } = false;
 		public bool? ConfusedOldMen { get; set; } = false;
 		public bool? GaiaShortcut { get; set; } = false;
@@ -149,6 +153,7 @@ namespace FF1Lib
 		public bool? MapOpenProgressionExtended { get; set; } = false;
 		public bool? MapDwarvesNorthwest { get; set; } = false;
 		public bool? MapAirshipDock { get; set; } = false;
+		public bool? MapBahamutCardiaDock  { get; set; } = false;
 		public bool? EntrancesIncludesDeadEnds { get; set; } = false;
 		public bool? EntrancesMixedWithTowns { get; set; } = false;
 
@@ -231,6 +236,7 @@ namespace FF1Lib
 		public bool BBCritRate { get; set; } = false;
 		public bool WeaponCritRate { get; set; } = false;
 		public bool WeaponBonuses { get; set; } = false;
+		public bool ThiefAgilityBuff { get; set; } = false;
 
 		[IntegerFlag(0, 50)]
 		public int WeaponTypeBonusValue { get; set; } = 10;
@@ -724,7 +730,6 @@ namespace FF1Lib
 		public bool? DeepTownsPossible => Towns & Entrances & Floors & EntrancesMixedWithTowns;
 		public bool EnemizerEnabled => (bool)RandomizeFormationEnemizer | (bool)RandomizeEnemizer;
 		public bool EnemizerDontMakeNewScripts => (bool)EnemySkillsSpells & !((bool)BossSkillsOnly | (bool)EnemySkillsSpellsTiered);
-
 
 		public static string EncodeFlagsText(Flags flags)
 		{

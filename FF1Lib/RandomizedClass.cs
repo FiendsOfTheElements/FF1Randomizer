@@ -703,7 +703,7 @@ namespace FF1Lib
 				new BonusMalus(BonusMalusAction.VitMod, "+40 Vit.", mod: 40),
 				new BonusMalus(BonusMalusAction.LckMod, "+15 Luck", mod: 15),
 				new BonusMalus(BonusMalusAction.HpMod, "+80 HP", mod: 80),
-				new BonusMalus(BonusMalusAction.MDefGrowth, "+2 MDef/Lv", mod: 2),
+				new BonusMalus(BonusMalusAction.MDefGrowth, "+2 MDef/Lv", mod: 2, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief, AuthClass.RedMage, AuthClass.WhiteMage, AuthClass.BlackMage }),
 				new BonusMalus(BonusMalusAction.WeaponAdd, "+Fighter @S", equipment: equipFighterWeapon, authclass: new List<AuthClass> { AuthClass.Thief, AuthClass.BlackBelt, AuthClass.WhiteMage, AuthClass.BlackMage } ),
 				new BonusMalus(BonusMalusAction.ArmorAdd, "+Fighter @A", equipment: equipFighterArmor, authclass: new List<AuthClass> { AuthClass.Thief, AuthClass.BlackBelt, AuthClass.WhiteMage, AuthClass.BlackMage, AuthClass.RedMage } ),
 				new BonusMalus(BonusMalusAction.SpcGrowth, "Improved MP", bytelist: improvedMPlist, authclass: new List<AuthClass> { AuthClass.RedMage, AuthClass.WhiteMage, AuthClass.BlackMage } ),
