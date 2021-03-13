@@ -1,9 +1,11 @@
-;; 2020-11-16 
+;; 2020-11-16
 ;; Show characters in a victory pose in shop if the can equip/learn something
 ;; Pressing Select in shops will show a description of current select item
- 
+;; Pressing Select in equip menu will show a description of current item
+
 tmp             = $10
 joy_select      = $22
+joy_b           = $25
 cursor          = $62
 shopcurs_x      = $64 ; $28 = lower menu, $A8 right menu
 shop_type       = $66
@@ -12,7 +14,7 @@ item_box        = $0300
 
 unsram          = $6000  ; $400 bytes
 sram            = $6400  ; $400 bytes
-ch_stats        = unsram + $0100 
+ch_stats        = unsram + $0100
 ch_ailments     = ch_stats + $01
 ch_class        = ch_stats + $00
 
@@ -34,8 +36,19 @@ lut_ArmorPermissions = $BFA0 ;Bank 0E
 lutClassBatSprPalette = $ECA4
 
 
- .ORG $9500
- 
+;;; Patch the "equip" loop, replacing
+;;;
+;;;  0E:BB8F   LDA joy_b
+;;;  0E:BB91   BNE @B_Pressed
+
+.ORG $BB8F
+
+JMP UpgradedEquipMenu
+NOP
+OriginalEquipMenuLoop:
+
+.ORG $9500
+
 BeforeShopFrame:
   LDA shopcurs_x            ; Check if cursor is in the right shop menu
   CMP #LEFT_MENU            ;  can't get the info screen when selecting Buy/Sell or Character
@@ -44,7 +57,7 @@ BeforeShopFrame:
     CMP #$04                ; 0-1 Weapon/Armor shop, 2-3 spell shops
     BCS GoToFrame
     CMP #$02
-    BCS SpellShop           
+    BCS SpellShop
       LDX #$00              ; Check for each character if they can equip current select item
       JSR IsEquipLegal
       LDX #$40
@@ -66,7 +79,7 @@ SpellShop:
       JMP GoToFrame
 InLeftMenu:
     JSR ZeroOutVictory      ; If we're in left menu, have everyone lower their arms
-GoToFrame:                 
+GoToFrame:
   JSR ShopFrame             ; Do ShopFrame as normal
   JMP DrawInfo              ; Check if we need to draw an info box
 
@@ -76,7 +89,7 @@ ZeroOutVictory:             ; Write 00 for the base standing pose for each chara
   STA btl_chardraw_pose+4
   STA btl_chardraw_pose+8
   STA btl_chardraw_pose+12
-  RTS  
+  RTS
 
 DrawOBSprite_Exit:          ; Reproduce DrawOBSprite for shops only
     RTS
@@ -102,7 +115,7 @@ DrawOBSprite:
 Crouched:                  ; to draw sprite as crouched... at #$14 to the
     LDA #$14               ;   tile number to draw.
     JMP GoToDraw
-Standing:                  ; to really draw sprite as standing, A must be 0 here 
+Standing:                  ; to really draw sprite as standing, A must be 0 here
     LDA tmp                ;  set to $0E for Victory pose
     LSR
     LSR
@@ -139,8 +152,8 @@ CanLearnSpell:             ; Check if a character can learn current select spell
 
     LDA tmp+2           ; get the magic ID
     LSR                 ; divide by 8 (gets the level of the spell)
-    LSR 
-    LSR 
+    LSR
+    LSR
     TAY                 ; put spell level in Y
     LDA (tmp), Y        ; use it as index to get the desired permissions byte
     STA tmp+4           ; store permissions byte in tmp+4 for future use
@@ -150,10 +163,10 @@ CanLearnSpell:             ; Check if a character can learn current select spell
     AND tmp+4           ; AND with permissions byte
     BEQ HasPermission   ; if result is zero, they have permission to learn
       LDA #$00          ; if not, write $00 for standing pose
-      JMP StorePose     
+      JMP StorePose
 HasPermission:          ; write $0E for victory pose
     LDA #$0E
-StorePose:               
+StorePose:
     STA tmp             ; get back char ID
     LDA tmp+5           ; divide by $10
     LSR
@@ -171,18 +184,18 @@ IsEquipLegal:                ; Check if a character can equip current select pie
     LDA ch_class, X          ; use it to get his class
     ASL                      ; double it (2 bytes per pointer)
     TAX                      ; and put in X for indexing
-    
+
     LDA lut_ClassEquipBit, X        ; get the class permissions bit position word
     STA tmp+2                       ;  and put in tmp+4,5
     LDA lut_ClassEquipBit+1, X
     STA tmp+3
-    
+
     LDX cursor         ; use the cursor position
     LDA item_box, X    ; to get the item ID of the equipment
     SEC                ; $1c for nunchuk + $28 = $44 for cloth
-    
+
     CMP #$44           ; check if it's an armor or a weapon
-    BCS IsArmor        
+    BCS IsArmor
       SEC              ; substract weapon ID offset to get
       SBC #$1C         ; the index in the permissions lut
       ASL
@@ -192,7 +205,7 @@ IsEquipLegal:                ; Check if a character can equip current select pie
       STA tmp                        ;  temporarily store result
       LDA lut_WeaponPermissions+1, X ; then do the same with the high byte of the permissions word
       AND tmp+3                      ;  mask with high byte of class permissions
-      ORA tmp                        ; then combine with results of low mask    
+      ORA tmp                        ; then combine with results of low mask
       JMP CompareResult
 IsArmor:
     SBC #$44                      ; substract armor ID offset to get
@@ -207,20 +220,20 @@ IsArmor:
                           ;  armor cannot be equipped
 CompareResult:
     CMP #$01              ; compare with 1 (any nonzero value will set C)
-    BCC CanEquip          
+    BCC CanEquip
       LDA #$00            ; if not, write $00 for standing pose
       JMP StorePose
 CanEquip:
     LDA #$0E              ; write $0E for victory pose
-    JMP StorePose    
-    
+    JMP StorePose
+
 
 DrawComplexString = $DE36
 DrawBox = $E063
 EraseBox = $E146
 
 joy             = $20
-menustall       = $37 
+menustall       = $37
 box_x           = $38
 box_y           = $39
 dest_x          = $3A
@@ -242,44 +255,10 @@ DrawInfo:
     LDA shopcurs_x         ; If so, check if the cursor is in the right menu
     CMP #LEFT_MENU
     BEQ NoInput
-      JSR LoadDimensions   ; Set the dimensions of the box
-      LDA #$0E             
-      STA cur_bank         ; Set current bank
-      JSR DrawBox          ;  and draw the box
-      LDA text_ptr         ; Back up text_ptr as it's storing the cursor possible position
-      STA tmp+2
-      LDA text_ptr+1
-      STA tmp+3
-      
-      LDX cursor           ; get the cursor to
-      LDA item_box, X      ; get the item ID of the item/spell
-      SEC
-      ASL                  ; double it (2 bytes per pointer)
-      TAX                  ; and put in X for indexing
-      BCS HiTbl            ; if string ID was >= $80 use 2nd half of table, otherwise use first half
-LoTbl:
-      LDA lut_itemDescriptions, X     ; load up the pointer into text_ptr
-      STA text_ptr
-      LDA lut_itemDescriptions+1, X
-      STA text_ptr+1
-      JMP PtrLoaded                   ; then jump ahead
-HiTbl:
-      LDA lut_itemDescriptions+$100, X   ; same, but read from 2nd half of pointer table
-      STA text_ptr
-      LDA lut_itemDescriptions+$101, X
-      STA text_ptr+1
-PtrLoaded:                  
-      LDA #$11              
-      STA cur_bank          ; set data bank (string to draw is on this bank -- or is in RAM)
-      LDA #$0E
-      STA ret_bank          ; set return bank (we want it to RTS to this bank when complete)
-      JSR DrawComplexString ;  Draw Complex String, then exit!
-      LDA tmp+2             ; restore backed up cursor positions
-      STA text_ptr
-      LDA tmp+3
-      STA text_ptr+1
-      LDA #$00
-      STA joy_select        ; reinit select button
+    LDX cursor           ; get the cursor to
+    LDA item_box, X      ; get the item ID of the item/spell
+    TAX
+    JSR SharedDrawInfo
 Loop:                       ; show the box until a button is pressed
     JSR ShopFrame           ; do a frame
 
@@ -300,7 +279,63 @@ LoadDimensions:
   STA box_wd
   LDA #$0A
   STA box_ht
-NoInput:    
+NoInput:
   RTS
 
- 
+;;; expect the item id in X
+SharedDrawInfo:
+      JSR LoadDimensions   ; Set the dimensions of the box
+      LDA #$0E
+      STA cur_bank         ; Set current bank
+      JSR DrawBox          ;  and draw the box
+      LDA text_ptr         ; Back up text_ptr as it's storing the cursor possible position
+      STA tmp+2
+      LDA text_ptr+1
+      STA tmp+3
+
+      TXA                  ; get the item ID from X
+      SEC
+      ASL                  ; double it (2 bytes per pointer)
+      TAX                  ; and put back into X for indexing
+      BCS HiTbl            ; if string ID was >= $80 use 2nd half of table, otherwise use first half
+LoTbl:
+      LDA lut_itemDescriptions, X     ; load up the pointer into text_ptr
+      STA text_ptr
+      LDA lut_itemDescriptions+1, X
+      STA text_ptr+1
+      JMP PtrLoaded                   ; then jump ahead
+HiTbl:
+      LDA lut_itemDescriptions+$100, X   ; same, but read from 2nd half of pointer table
+      STA text_ptr
+      LDA lut_itemDescriptions+$101, X
+      STA text_ptr+1
+PtrLoaded:
+      LDA #$11
+      STA cur_bank          ; set data bank (string to draw is on this bank -- or is in RAM)
+      LDA #$0E
+      STA ret_bank          ; set return bank (we want it to RTS to this bank when complete)
+      JSR DrawComplexString ;  Draw Complex String, then exit!
+      LDA tmp+2             ; restore backed up cursor positions
+      STA text_ptr
+      LDA tmp+3
+      STA text_ptr+1
+      LDA #$00
+      STA joy_select        ; reinit select button
+      RTS
+
+UpgradedEquipMenu:
+	LDA joy_b
+	BNE @B_Pressed
+	LDA joy_select
+	BNE @select_Pressed
+	JMP OriginalEquipMenuLoop    ; return to original loop
+
+;;; if B pressed, return out of the equip loop
+@B_Pressed:
+	RTS
+
+@select_Pressed:
+      LDA #$00
+      TAX
+      JSR SharedDrawInfo
+      JMP OriginalEquipMenuLoop    ; return to original loop
