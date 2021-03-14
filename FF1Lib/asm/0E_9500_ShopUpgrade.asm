@@ -5,10 +5,12 @@
 
 tmp             = $10
 joy_select      = $22
+joy_a           = $24
 joy_b           = $25
 cursor          = $62
 shopcurs_x      = $64 ; $28 = lower menu, $A8 right menu
 shop_type       = $66
+equipoffset     = shop_type  ; MUST be shared with shop_type
 
 item_box        = $0300
 
@@ -17,13 +19,19 @@ sram            = $6400  ; $400 bytes
 ch_stats        = unsram + $0100
 ch_ailments     = ch_stats + $01
 ch_class        = ch_stats + $00
-
+ch_weapons      = ch_stats + $18  ; 4
 
 btl_chardrawinfo = $6AD3        ;$10 bytes, 4 bytes for each character
 btl_chardraw_pose   = btl_chardrawinfo+3
 
 ShopFrame            = $A727
 DrawSimple2x3Sprite  = $EC24
+EquipMenuFrame       = $BCF9
+EnterEquipMenu       = $BACA
+DrawEquipMenu        = $BDF3
+DrawEquipMenuStrings = $ECDA
+TurnMenuScreenOn     = $B783
+ClearOAM             = $C43C
 
 LEFT_MENU = $28
 RIGHT_MENU = $A8
@@ -260,8 +268,7 @@ DrawInfo:
     STA tmp+4		 ; put the item ID in tmp+4
     JSR SharedDrawInfo
 Loop:                       ; show the box until a button is pressed
-    JSR ShopFrame           ; do a frame
-
+    JSR ShopFrame      ; do a frame
     LDA joy                ; get joy
     CMP joy_prevdir        ; compare to previous buttons to see if button state has changed
     BEQ Loop               ; if no change.. do nothing, and continue loop
@@ -335,7 +342,36 @@ UpgradedEquipMenu:
 	RTS
 
 @select_Pressed:
-      LDA #$00
-      TAX
-      JSR SharedDrawInfo
-      JMP OriginalEquipMenuLoop    ; return to original loop
+    LDX cursor               ; get the cursor in X
+    LDA item_box, X          ; use it to index and get the selected item
+    BEQ NothingThere         ; if this item is zero, nothing to do
+    AND #$7F		     ; mask out the "equipped" flag
+    LDY equipoffset	     ; distinguish between weapon/armor menu
+    CPY #ch_weapons-ch_stats
+    BNE ArmorMenu
+    ADC #$1A                 ; add to convert to shop ID for weapon
+    JMP	DrawInfoForGear
+ArmorMenu:
+    ADC #$42                 ; add to convert to shop ID for armor
+DrawInfoForGear:
+    STA tmp+4
+    JSR ClearOAM             ; clear OAM to hide cursor
+    JSR SharedDrawInfo
+
+EquipInfoLoop:             ; show the box until a button is pressed
+    JSR EquipMenuFrame     ; do a frame
+    LDA joy                ; get joy
+    CMP joy_prevdir        ; compare to previous buttons to see if button state has changed
+    BEQ EquipInfoLoop      ; if no change.. do nothing, and continue loop
+
+;;; User pressed a button, so now redraw the screen
+    LDA #0
+    STA $2001             ; turn off the PPU
+    STA menustall         ; and turn off menu stalling (since the PPU is off)
+
+    JSR DrawEquipMenu               ; draw the equip menu (but not the item text)
+    JSR TurnMenuScreenOn            ; then clear OAM and turn the screen on  (even though item names have not been drawn)
+    JSR DrawEquipMenuStrings        ; draw the menu strings (item names)
+
+NothingThere:
+    JMP OriginalEquipMenuLoop    ; return to original loop
