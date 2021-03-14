@@ -32,6 +32,7 @@ namespace FF1Lib
 			MelmondRegion = 3,
 			SardaRegion = 4,
 			BahamutRegion = 5,
+			LefeinRegion = 6    // when MapGaiaMountainPass
 		}
 
 		private enum CanoeableRegion
@@ -96,9 +97,18 @@ namespace FF1Lib
 				MapEditsToApply.Add(BahamutCardiaDock);
 				mapLocationRequirements[MapLocation.BahamutCave1].Add(MapChange.Ship | MapChange.Canal);
 				mapLocationRequirements[MapLocation.Cardia1].Add(MapChange.Ship | MapChange.Canal);
-
-				MapEditsToApply.Add(LefienRiverDock);
-				MapEditsToApply.Add(GaiaMountainPass);
+			}
+			if ((bool)flags.MapLefeinRiver) {
+			    MapEditsToApply.Add(LefeinRiverDock);
+			    mapLocationRequirements[MapLocation.Lefein].Add(MapChange.Ship | MapChange.Canal | MapChange.Canoe);
+		        }
+			if ((bool)flags.MapGaiaMountainPass) {
+			    MapEditsToApply.Add(GaiaMountainPass);
+			    if ((bool)flags.MapLefeinRiver) {
+				// If Lefein river dock is on, then Gaia also becomes ship-accessible
+			        mapLocationRequirements[MapLocation.Gaia].Add(MapChange.Ship | MapChange.Canal | MapChange.Canoe);
+			    }
+			    _walkableNodes[WalkableRegion.LefeinRegion] = new List<OverworldTeleportIndex>{OverworldTeleportIndex.Gaia, OverworldTeleportIndex.Lefein };
 			}
 			if ((bool)flags.MapVolcanoIceRiver)
 			{
@@ -851,7 +861,7 @@ namespace FF1Lib
 			    new MapEdit{X = 0x62, Y = 0x35, Tile = DockBottomMid},
 			    new MapEdit{X = 0x63, Y = 0x35, Tile = GrassTile},
 			};
-		public static List<MapEdit> LefienRiverDock =
+		public static List<MapEdit> LefeinRiverDock =
 			new List<MapEdit>
 			{
 			    new MapEdit{X = 0xE0, Y = 0x3A, Tile = RiverTile},
