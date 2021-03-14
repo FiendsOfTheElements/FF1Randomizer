@@ -11,6 +11,7 @@ cursor          = $62
 shopcurs_x      = $64 ; $28 = lower menu, $A8 right menu
 shop_type       = $66
 equipoffset     = shop_type  ; MUST be shared with shop_type
+submenu_targ    = $66  ; shared with shop_type
 
 item_box        = $0300
 
@@ -30,8 +31,20 @@ EquipMenuFrame       = $BCF9
 EnterEquipMenu       = $BACA
 DrawEquipMenu        = $BDF3
 DrawEquipMenuStrings = $ECDA
+TurnMenuScreenOn_ClearOAM = $B780
 TurnMenuScreenOn     = $B783
 ClearOAM             = $C43C
+DrawMagicMenuMainBox = $BA6D
+MenuFrame            = $B65D
+MG_START             = $B0
+ch_magicdata         = unsram + $0300  ; must be on page bound
+ch_spells            = ch_magicdata
+DrawCharMenuString   = $B959
+DrawMainItemBox      = $B8EF
+ClearNT              = $9C02
+descboxopen          = $7F
+MenuWaitForBtn_SFX   = $B613
+MenuWaitForBtn   = $B625
 
 LEFT_MENU = $28
 RIGHT_MENU = $A8
@@ -43,17 +56,37 @@ lut_WeaponPermissions = $BF50 ;Bank 0E
 lut_ArmorPermissions = $BFA0 ;Bank 0E
 lutClassBatSprPalette = $ECA4
 
-
-;;; Patch the "equip" loop, replacing
+.ORG $BB8F
+;;; Patch loop in EquipMenu_EQUIP, replacing
 ;;;
 ;;;  0E:BB8F   LDA joy_b
 ;;;  0E:BB91   BNE @B_Pressed
-
-.ORG $BB8F
-
+;;;
+;;; With the following jump to the extended equip menu
 JMP UpgradedEquipMenu
 NOP
-OriginalEquipMenuLoop:
+OriginalEquipMenuLoop: 		; Gives us a target to jump back to
+	;; the only purpose these serve is to generate 0000 in the
+	;; machine code hex dump so it is easier to separate the different code patches
+	;; we actually _don't_ want to include them in the patch
+  	BRK
+	BRK
+
+.ORG $AECD
+;;; Patch MagicMenu_Loop, replacing
+;;;
+;;;  0E:AECD   LDA joy_b
+;;;  0E:AECF   BNE @B_Pressed
+;;;
+;;; With the following jump to the extended magic menu
+JMP UpgradedMagicMenu
+NOP
+OriginalMagicMenuLoop: ; Gives us a target to jump back to
+	;; the only purpose these serve is to generate 0000 in the
+	;; machine code hex dump so it is easier to separate the different code patches
+	;; we actually _don't_ want to include them in the patch
+  	BRK
+	BRK
 
 .ORG $9500
 
@@ -330,6 +363,8 @@ PtrLoaded:
       STA joy_select        ; reinit select button
       RTS
 
+;; This adds item stats when the player presses select in EQUIP mode
+;; of the weapon/armor menus
 UpgradedEquipMenu:
 	LDA joy_b
 	BNE @B_Pressed
@@ -375,3 +410,61 @@ EquipInfoLoop:             ; show the box until a button is pressed
 
 NothingThere:
     JMP OriginalEquipMenuLoop    ; return to original loop
+
+
+;; This adds spell info when the player presses select in the magic menu
+UpgradedMagicMenu:
+	LDA joy_b
+	BNE @B_Pressed
+	LDA joy_select
+	BNE @select_Pressed
+	JMP OriginalMagicMenuLoop    ; return to original loop
+
+;;; if B pressed, return out of the equip loop
+@B_Pressed:
+	RTS
+
+@select_Pressed:
+    LDA #0
+    STA $2001                      ; turn off PPU
+    STA menustall                  ; clear menustall
+
+    LDA submenu_targ       ; get character ID
+    LSR A
+    ROR A
+    ROR A                  ; shift to get usable character index
+    ORA cursor             ; ORA with cursor to get index to spell
+    TAX                    ; and put in X for indexing
+
+    ASL A                  ; double A and mask out the level bits
+    AND #$38               ;  this effectively makes A the spell level * 8
+
+    ORA ch_spells, X       ; then ORA with the selected spell on this level
+    CLC                    ; and add the spell start constant - 1 (-1 because 0 is not a spell)
+    ADC #MG_START-1        ;  A is now the ID number of the selected spell
+    STA tmp+4
+    JSR SharedDrawInfo
+    JSR TurnMenuScreenOn_ClearOAM  ; clear OAM and turn the screen on
+
+    JSR MenuWaitForBtn
+
+;;; User pressed a button, so now redraw the screen
+    LDA #0
+    STA $2001             ; turn off the PPU
+    STA menustall         ; and turn off menu stalling (since the PPU is off)
+    STA descboxopen                ; and mark description box as closed
+
+    JSR ClearNT                    ; clear the nametable
+    LDA cursor
+    PHA			           ; save cursor position because DrawMagicMenuMainBox resets it
+    JSR DrawMagicMenuMainBox       ; draw the big box containing all the spells
+    PLA
+    STA cursor			   ; put the cursor position back
+
+    LDA #$07
+    JSR DrawMainItemBox            ; draw the title box
+    LDA #$29
+    JSR DrawCharMenuString         ; and draw the "MAGIC" title text
+    JSR TurnMenuScreenOn_ClearOAM  ; clear OAM and turn the screen on
+
+    JMP OriginalMagicMenuLoop    ; return to original loop
