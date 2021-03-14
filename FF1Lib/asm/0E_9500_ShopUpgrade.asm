@@ -257,7 +257,7 @@ DrawInfo:
     BEQ NoInput
     LDX cursor           ; get the cursor to
     LDA item_box, X      ; get the item ID of the item/spell
-    TAX
+    STA tmp+4		 ; put the item ID in tmp+4
     JSR SharedDrawInfo
 Loop:                       ; show the box until a button is pressed
     JSR ShopFrame           ; do a frame
@@ -282,7 +282,7 @@ LoadDimensions:
 NoInput:
   RTS
 
-;;; expect the item id in X
+;;; expect the item id in tmp+4
 SharedDrawInfo:
       JSR LoadDimensions   ; Set the dimensions of the box
       LDA #$0E
@@ -293,7 +293,7 @@ SharedDrawInfo:
       LDA text_ptr+1
       STA tmp+3
 
-      TXA                  ; get the item ID from X
+      LDA tmp+4            ; get the item ID from tmp+4
       SEC
       ASL                  ; double it (2 bytes per pointer)
       TAX                  ; and put back into X for indexing
