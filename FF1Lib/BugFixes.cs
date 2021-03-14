@@ -181,7 +181,7 @@ namespace FF1Lib
 		    // viable as a first-slot character.
 		    // See git commit message for details.
 		    var classData = ReadClassData();
-		    classData[(int)AuthClass.Thief].AgiStarting = 120;
+		    classData[(int)AuthClass.Thief].AgiStarting = 100;
 		    classData[(int)AuthClass.Thief].AgiGrowth = Enumerable.Repeat(true, 49).ToList();
 		    classData[(int)AuthClass.Thief].EvaStarting = (byte)Math.Min(classData[(int)AuthClass.Thief].AgiStarting + 48, 255);
 		    WriteClassData(classData);
