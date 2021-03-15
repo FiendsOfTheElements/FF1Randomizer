@@ -23,11 +23,17 @@ namespace FF1Lib
 	{
 		public enum FinalFormation
 		{
+			[Description("None")]
 			None,
+			[Description("WarMech and Friends")]
 			WarMECHsAndFriends,
+			[Description("Double Dragons")]
 			KaryAndTiamat,
+			[Description("The Fundead")]
 			TheFundead,
+			[Description("Whack-a-Garland")]
 			TimeLoop,
+			[Description("Random")]
 			Random,
 		};
 

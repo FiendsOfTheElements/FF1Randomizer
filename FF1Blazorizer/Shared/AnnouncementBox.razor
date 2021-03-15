@@ -11,16 +11,16 @@
 
 <div id="announcement" class="framed-content ffr-tooltip-content">
 	<a class="styled-button ffr-tooltip-close-announcement" @onclick="@onclick"> X </a>
-	<h3 class="centered">Winter DAB Tournament 2021</h3>
+	<h3 class="centered">Spring Tournament 2021</h3>
 	<p>
-		Registrations are closed for the Winter DAB Tournament 2021, but you can still follow along the brackets and cheer for our participants!
+		Registrations are now open for the FFR Spring Tournament 2021, "Chaos Comedy Tour". Come join the discord and get in on the antics in this year's big event.
 	</p>
 	<p>
-		Tournament starts Monday, February 15.
+		Tournament starts April 5, 2021. We hope to see you there!
 	</p>
 	<div class="row">&nbsp;</div>
 	<div class="centered" style="margin: auto; max-width: 80%">
-		<a class="styled-button announcement" href="https://challonge.com/ffrdab2021">TOURNAMENT BRACKETS</a>
+		<a class="styled-button announcement" href="https://docs.google.com/forms/d/e/1FAIpQLSc-AYoULR6ynhA3QmmRG85MftxEeSMicsVkbj_3Mz3YjJPKJQ/viewform">REGISTRATION FORM</a>
 		<a class="styled-button announcement" href="https://discord.gg/95gbpFd">COMMUNITY DISCORD</a>
 	</div>
 </div>
@@ -34,7 +34,7 @@
 	{
 		// Announcement ID needs to be changed for each new events, also need to be changed in Randomizer.razor
 		//  both need to match
-		await LocalStorage.SetItemAsync("announcement_dab2021", true);
+		await LocalStorage.SetItemAsync("announcement_st2021", true);
 		SetHideAnnouncement(true);
 	}
 
