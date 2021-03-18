@@ -66,10 +66,13 @@ lutClassBatSprPalette = $ECA4
 JMP UpgradedEquipMenu
 NOP
 OriginalEquipMenuLoop: 		; Gives us a target to jump back to
-	;; the only purpose these serve is to generate 0000 in the
-	;; machine code hex dump so it is easier to separate the different code patches
-	;; we actually _don't_ want to include them in the patch
-  	BRK
+
+;; the only purpose these serve is to generate 00EA00 in the
+;; machine code hex dump so it is possible separate the code patches
+;; by hand when we copy them into Hacks.cs
+;; however they _should not_ be included in the actual patch
+	BRK
+	NOP
 	BRK
 
 .ORG $AECD
@@ -82,10 +85,13 @@ OriginalEquipMenuLoop: 		; Gives us a target to jump back to
 JMP UpgradedMagicMenu
 NOP
 OriginalMagicMenuLoop: ; Gives us a target to jump back to
-	;; the only purpose these serve is to generate 0000 in the
-	;; machine code hex dump so it is easier to separate the different code patches
-	;; we actually _don't_ want to include them in the patch
-  	BRK
+
+;; the only purpose these serve is to generate 00EA00 in the
+;; machine code hex dump so it is possible separate the code patches
+;; by hand when we copy them into Hacks.cs
+;; however they _should not_ be included in the actual patch
+	BRK
+	NOP
 	BRK
 
 .ORG $9500
@@ -363,6 +369,16 @@ PtrLoaded:
       STA joy_select        ; reinit select button
       RTS
 
+;; the only purpose these serve is to generate 00EA00 in the
+;; machine code hex dump so it is possible separate the code patches
+;; by hand when we copy them into Hacks.cs
+;; however they _should not_ be included in the actual patch
+	BRK
+	NOP
+	BRK
+
+.ORG $90E0
+
 ;; This adds item stats when the player presses select in EQUIP mode
 ;; of the weapon/armor menus
 UpgradedEquipMenu:
@@ -410,7 +426,6 @@ EquipInfoLoop:             ; show the box until a button is pressed
 
 NothingThere:
     JMP OriginalEquipMenuLoop    ; return to original loop
-
 
 ;; This adds spell info when the player presses select in the magic menu
 UpgradedMagicMenu:
@@ -468,3 +483,10 @@ UpgradedMagicMenu:
     JSR TurnMenuScreenOn_ClearOAM  ; clear OAM and turn the screen on
 
     JMP OriginalMagicMenuLoop    ; return to original loop
+
+	;; the only purpose these serve is to generate 0000 in the
+	;; machine code hex dump so it is easier to separate the different code patches
+	;; we actually _don't_ want to include them in the patch
+  	BRK
+	NOP
+	BRK
