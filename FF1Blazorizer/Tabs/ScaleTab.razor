@@ -7,7 +7,7 @@
 		@if (IsOpen)
 		{ 
 		<div class="col1 full">
-			<DoubleSlider ShowMedian DoubleCol Id="clampMinimumPriceScaleLable" UpdateToolTip="@UpdateToolTipID" MinValue="20" MaxValue="500" @bind-ValueHigh="Flags.PriceScaleFactorHigh" @bind-ValueLow="Flags.PriceScaleFactorLow">Prices:</DoubleSlider>
+			<DoubleSlider ShowMedian DoubleCol Id="clampMinimumPriceScaleLable" UpdateToolTip="@UpdateToolTipID" MinValue="0" MaxValue="500" @bind-ValueHigh="Flags.PriceScaleFactorHigh" @bind-ValueLow="Flags.PriceScaleFactorLow">Prices:</DoubleSlider>
 			<div class="row-seperator"></div>
 			<DoubleSlider ShowMedian DoubleCol Id="enemyStatsDoubleSlider" MinValue="20" MaxValue="500" @bind-ValueHigh="Flags.EnemyScaleStatsHigh" @bind-ValueLow="Flags.EnemyScaleStatsLow" DisableTooltip>Enemy Stats:</DoubleSlider>
 			<DoubleSlider ShowMedian DoubleCol Id="enemyHpDoubleSlider" Indent IsEnabled="Flags.SeparateEnemyHPScaling" MinValue="20" MaxValue="500" @bind-ValueHigh="Flags.EnemyScaleHpHigh" @bind-ValueLow="Flags.EnemyScaleHpLow" DisableTooltip>

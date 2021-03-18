@@ -79,7 +79,7 @@ namespace FF1Lib
 		{
 			IEnumerable<Item> tmpExcludedItems = Array.Empty<Item>() ;
 			if (flags.ExcludeGoldFromScaling ?? false) tmpExcludedItems = tmpExcludedItems.Concat(ItemLists.AllGoldTreasure);
-			if (flags.CheapVendorItem) tmpExcludedItems = tmpExcludedItems.Concat(ItemLists.AllQuestItems);
+			if ((flags.ExcludeGoldFromScaling ?? false) && flags.CheapVendorItem) tmpExcludedItems = tmpExcludedItems.Concat(ItemLists.AllQuestItems);
 
 			HashSet<Item> excludedItems = new HashSet<Item>(tmpExcludedItems);
 			HashSet<Item> questItems = new HashSet<Item>(ItemLists.AllQuestItems);
