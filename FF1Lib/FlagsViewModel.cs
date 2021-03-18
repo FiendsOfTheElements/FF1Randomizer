@@ -4043,5 +4043,35 @@ namespace FF1Lib
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BugfixRender3DigitStats"));
 		    }
 		}
+
+		public bool? ExcludeGoldFromScaling
+		{
+			get => Flags.ExcludeGoldFromScaling;
+			set
+			{
+				Flags.ExcludeGoldFromScaling = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool CheapVendorItem
+		{
+			get => Flags.CheapVendorItem;
+			set
+			{
+				Flags.CheapVendorItem = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool ApplyExpBoostToGold
+		{
+			get => Flags.ApplyExpBoostToGold;
+			set
+			{
+				Flags.ApplyExpBoostToGold = value;
+				RaisePropertyChanged();
+			}
+		}
 	}
 }

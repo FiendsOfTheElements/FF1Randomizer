@@ -23,7 +23,24 @@
 		"screenshot": "blindseed.png",
 		"description": "Hides all flags to create a mystery flagset that can then be distributed. Useful for tournament and challenge race settings.\n This flag cannot be disabled once clicked; you will need to hit the Reset button to restore functionality to the site (and this will, in turn, wipe the blind flags selected). Make sure to save your flagset before you use this flag."
 	},
-
+	{
+		"Id": "excludeGoldFromScalingCheckBox",
+		"title": "Exclude Gold from scaling",
+		"screenshot": null,
+		"description": "Gold treasures will only roll to +-10% of their vanilla value instead of scaling with prices. Removes the flat gold boost from 'Exp. Gold Boost' to enemy rewards. Also removes the inverse 'Exp. & Gold Boost' multiplier to prices."
+	},
+	{
+		"Id": "cheapVendorItemCheckBox",
+		"title": "Cheap Vendor Item",
+		"screenshot": null,
+		"description": "Makes the vendor item roll to 20000 +-10%"
+	},
+	{
+		"Id": "applyExpBoostToGoldCheckBox",
+		"title": "Apply flat Gold Boost to Enemies",
+		"screenshot": null,
+		"description": "Applies the flat gold boost from 'Exp & Gold Boost' to enemy rewards. Makes early gold grinds more satisfying."
+	},
 	{
 		"Id": "consumableChestSetDropDown",
 		"title": "Consumable Chests",

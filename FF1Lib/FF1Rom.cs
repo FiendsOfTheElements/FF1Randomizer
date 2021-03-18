@@ -779,7 +779,7 @@ namespace FF1Lib
 				NPCHints(rng, npcdata, flags, overworldMap);
 			}
 
-			ExpGoldBoost(flags.ExpBonus, flags.ExpMultiplier);
+			ExpGoldBoost(flags);
 			ScalePrices(flags, itemText, rng, ((bool)flags.ClampMinimumPriceScale), shopItemLocation);
 			ScaleEncounterRate(flags.EncounterRate / 30.0, flags.DungeonEncounterRate / 30.0);
 
