@@ -1512,5 +1512,17 @@
 		"title": "Starting Level",
 		"screenshot": "startingLevelDropDown.gif",
 		"description": "Allows you to change the level your party members will be when you start the game."
+	},
+	{
+		"Id": "lefeinRiverDockCheckBox",
+		"title": "Lefein river dock",
+		"screenshot": "lefeinRiverDock.png",
+		"description": "Add a river dock to the Lefein region, making is accessible without the Airship."
+	},
+	{
+		"Id": "gaiaMountainPassCheckBox",
+		"title": "Gaia mountain pass",
+		"screenshot": "gaiaMountainPass.png",
+		"description": "Add a mountain pass to Gaia, making is accessible without the Airship."
 	}
 ]
