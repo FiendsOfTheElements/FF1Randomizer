@@ -172,7 +172,7 @@ namespace FF1Lib
 			{ "'", 0xBE },
 			{ ",", 0xBF },
 			{ ".", 0xC0 },
-			// { " ", 0xC1 }, should never be used as a space character
+			{ ";", 0xC1 }, //should never be used as a space character
 			{ "-", 0xC2 },
 			// this is a duplicate { "..", 0xC3 },
 			{ "!", 0xC4 },
