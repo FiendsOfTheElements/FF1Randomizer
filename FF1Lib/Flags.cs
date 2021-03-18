@@ -133,6 +133,7 @@ namespace FF1Lib
 		public bool? OrdealsPillars { get; set; } = false;
 		public SkyCastle4FMazeMode SkyCastle4FMazeMode { get; set; } = SkyCastle4FMazeMode.Normal;
 		public bool? TitansTrove { get; set; } = false;
+		public bool? LefeinSuperStore { get; set; } = false;
 		public bool? LefeinShops { get; set; } = false;
 		public bool? RandomVampAttack { get; set; } = false;
 		public bool? RandomVampAttackIncludesConeria { get; set; } = false;
@@ -154,6 +155,8 @@ namespace FF1Lib
 		public bool? MapDwarvesNorthwest { get; set; } = false;
 		public bool? MapAirshipDock { get; set; } = false;
 		public bool? MapBahamutCardiaDock  { get; set; } = false;
+		public bool? MapLefeinRiver  { get; set; } = false;
+		public bool? MapGaiaMountainPass  { get; set; } = false;
 		public bool? EntrancesIncludesDeadEnds { get; set; } = false;
 		public bool? EntrancesMixedWithTowns { get; set; } = false;
 
@@ -237,6 +240,7 @@ namespace FF1Lib
 		public bool WeaponCritRate { get; set; } = false;
 		public bool WeaponBonuses { get; set; } = false;
 		public bool ThiefAgilityBuff { get; set; } = false;
+		public bool BugfixRender3DigitStats { get; set; } = false;
 
 		[IntegerFlag(0, 50)]
 		public int WeaponTypeBonusValue { get; set; } = 10;

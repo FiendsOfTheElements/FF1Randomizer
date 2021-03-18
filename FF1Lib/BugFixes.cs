@@ -225,5 +225,12 @@ namespace FF1Lib
 		{
 			Data[0x2E382] = 0xEA; // remove an extraneous LSR A when drawing monsters in a Large-Small mixed formation, so that the enemy in the third monster slot in such formations uses the correct palette
 		}
+
+	    public void Fix3DigitStats() {
+		// Fix character stat rendering so basic stats are
+		// rendered properly for values over 99
+		// See 0E_8DE4_FixPrintCharStat.asm
+		PutInBank(0x0E, 0x8DE4, Blob.FromHex("A910D010A911D00CA925D008A913D004A914D000186567AABD00618510A90085114C708EEAEAEAEAEAEAEAEA"));
+	    }
 	}
 }

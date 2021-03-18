@@ -966,6 +966,16 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TitansTrove"));
 			}
 		}
+		public bool? LefeinSuperStore
+		{
+			get => Flags.LefeinSuperStore;
+			set
+			{
+				Flags.LefeinSuperStore = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("LefeinSuperStore"));
+			}
+		}
+		public bool LefeinSuperStoreEnabled => (ShopKillMode_White.Equals(ShopKillMode.None) && ShopKillMode_Black.Equals(ShopKillMode.None));
 		public bool? LefeinShops
 		{
 			get => Flags.LefeinShops;
@@ -1161,6 +1171,24 @@ namespace FF1Lib
 			{
 				Flags.MapBahamutCardiaDock = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MapBahamutCardiaDock"));
+			}
+		}
+		public bool? MapLefeinRiver
+		{
+			get => Flags.MapLefeinRiver;
+			set
+			{
+				Flags.MapLefeinRiver = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MapLefeinRiver"));
+			}
+		}
+		public bool? MapGaiaMountainPass
+		{
+			get => Flags.MapGaiaMountainPass;
+			set
+			{
+				Flags.MapGaiaMountainPass = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("GaiaMountainPass"));
 			}
 		}
 
@@ -1696,16 +1724,16 @@ namespace FF1Lib
 		public bool FreeOrbsEnabled => !ShardHunt;
 
 		public bool? MelmondClinic
-		{
-			get => Flags.MelmondClinic;
-			set
-			{
-				Flags.MelmondClinic = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MelmondClinic"));
-			}
-		}
+        {
+            get => Flags.MelmondClinic;
+            set
+            {
+                Flags.MelmondClinic = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MelmondClinic"));
+            }
+        }
 
-		public bool DeepDungeon
+        public bool DeepDungeon
 		{
 			get => Flags.DeepDungeon;
 			set
@@ -4006,6 +4034,14 @@ namespace FF1Lib
 				Flags.ThiefAgilityBuff = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ThiefAgilityBuff"));
 			}
+		}
+		public bool BugfixRender3DigitStats {
+		    get => Flags.BugfixRender3DigitStats;
+		    set
+		    {
+			Flags.BugfixRender3DigitStats = value;
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BugfixRender3DigitStats"));
+		    }
 		}
 
 		public bool? ExcludeGoldFromScaling

@@ -228,7 +228,7 @@ namespace FF1Lib
 			{
 				EnableLefeinShops(maps);
 			}
-            
+
             if ((bool)flags.MelmondClinic)
             {
                 EnableMelmondClinic(maps);
@@ -246,6 +246,11 @@ namespace FF1Lib
 				{
 					MoveGaiaItemShop(maps, rng);
 				}
+			}
+
+			if ((bool)flags.LefeinSuperStore && (flags.ShopKillMode_White == ShopKillMode.None && flags.ShopKillMode_Black == ShopKillMode.None))
+			{
+				EnableLefeinSuperStore(maps);
 			}
 
 			// This has to be done before we shuffle spell levels.
@@ -867,6 +872,10 @@ namespace FF1Lib
 				ShopUpgrade();
 			}
 
+			if (flags.BugfixRender3DigitStats) {
+			    Fix3DigitStats();
+			}
+
 			if ((bool)flags.FightBahamut && !flags.SpookyFlag && !(bool)flags.RandomizeFormationEnemizer)
 			{
 				FightBahamut(talkroutines, npcdata, (bool)flags.NoTail, flags.EvadeCap);
@@ -1158,7 +1167,7 @@ namespace FF1Lib
 			// This removes the code for the minigame on the ship, and moves the prior code around too
 			PutInBank(0x1F, 0xC244, Blob.FromHex("F003C6476020C2D7A520290FD049A524F00EA9008524A542C908F074C901F0B160EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
 			// 15 bytes starting at 0xC8A4 in bank 1F, ROM offset: 7C8B4
-			// This removes the routine that give a reward for beating the minigame, no need for a reward without the minigame 
+			// This removes the routine that give a reward for beating the minigame, no need for a reward without the minigame
 			PutInBank(0x1F, 0xC8A4, Blob.FromHex("EAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
 			// 28 byte starting at 0xCFCB in bank 1F, ROM offset: 7CFE1
 			// This removes the AssertNasirCRC routine, which we were skipping anyways, no point in keeping uncalled routines
