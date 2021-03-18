@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -966,6 +966,16 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TitansTrove"));
 			}
 		}
+		public bool? LefeinSuperStore
+		{
+			get => Flags.LefeinSuperStore;
+			set
+			{
+				Flags.LefeinSuperStore = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("LefeinSuperStore"));
+			}
+		}
+		public bool LefeinSuperStoreEnabled => (ShopKillMode_White.Equals(ShopKillMode.None) && ShopKillMode_Black.Equals(ShopKillMode.None));
 		public bool? LefeinShops
 		{
 			get => Flags.LefeinShops;
@@ -4016,14 +4026,14 @@ namespace FF1Lib
 				RaisePropertyChanged();
 			}
 		}
-    public  bool ThiefAgilityBuff
+		public bool ThiefAgilityBuff
 		{
-		    get => Flags.ThiefAgilityBuff;
-		    set
-		    {
-			Flags.ThiefAgilityBuff = value;
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ThiefAgilityBuff"));
-		    }
+			get => Flags.ThiefAgilityBuff;
+			set
+			{
+				Flags.ThiefAgilityBuff = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ThiefAgilityBuff"));
+			}
 		}
 	}
 }

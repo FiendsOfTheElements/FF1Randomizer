@@ -130,6 +130,7 @@ namespace FF1Lib
 		public bool? OrdealsPillars { get; set; } = false;
 		public SkyCastle4FMazeMode SkyCastle4FMazeMode { get; set; } = SkyCastle4FMazeMode.Normal;
 		public bool? TitansTrove { get; set; } = false;
+		public bool? LefeinSuperStore { get; set; } = false;
 		public bool? LefeinShops { get; set; } = false;
 		public bool? RandomVampAttack { get; set; } = false;
 		public bool? RandomVampAttackIncludesConeria { get; set; } = false;

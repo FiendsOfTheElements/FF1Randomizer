@@ -642,6 +642,22 @@ namespace FF1Lib
 			}
 		}
 
+		public void EnableLefeinSuperStore(List<Map> maps)
+		{
+			// define
+			List<Blob> superStore = new List<Blob>
+			{
+				//              1 2 3 4 WM 5 6 7 8  XX  1 2 3 4 BM 5 6 7 8
+				Blob.FromHex("171717171717171717171700171717171717171717171700"),
+				Blob.FromHex("181818181823181818181801181818181824181818181801"),
+				Blob.FromHex("1D4F5051541D525357581D021D595A5B5E1D5C5D61621D02"),
+			};
+			// place
+			maps[(int)MapId.Lefein].Put((0x28, 0x01), superStore.ToArray());
+			// cleanup (removes single tree)
+			maps[(int)MapId.Lefein][0x00, 0x34] = (byte)Tile.TownGrass;
+		}
+
 		public void EnableLefeinShops(List<Map> maps)
 		{
 			var lefein = maps[(byte)MapId.Lefein];
