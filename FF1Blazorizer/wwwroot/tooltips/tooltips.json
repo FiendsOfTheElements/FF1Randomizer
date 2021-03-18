@@ -1530,5 +1530,11 @@
 		"title": "Gaia mountain pass",
 		"screenshot": "gaiaMountainPass.png",
 		"description": "Add a mountain pass to Gaia, making is accessible without the Airship."
+	},
+	{
+		"Id": "fix3DigitStatsCheckBox",
+		"title": "Correctly render character stats over 99",
+		"screenshot": "statsOver99.png",
+		"description": "Character stats over 99 will be displayed correctly on the status screen."
 	}
 ]
