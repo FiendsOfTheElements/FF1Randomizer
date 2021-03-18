@@ -1173,6 +1173,24 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MapBahamutCardiaDock"));
 			}
 		}
+		public bool? MapLefeinRiver
+		{
+			get => Flags.MapLefeinRiver;
+			set
+			{
+				Flags.MapLefeinRiver = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MapLefeinRiver"));
+			}
+		}
+		public bool? MapGaiaMountainPass
+		{
+			get => Flags.MapGaiaMountainPass;
+			set
+			{
+				Flags.MapGaiaMountainPass = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("GaiaMountainPass"));
+			}
+		}
 
 		public bool? Entrances
 		{
@@ -1706,16 +1724,16 @@ namespace FF1Lib
 		public bool FreeOrbsEnabled => !ShardHunt;
 
 		public bool? MelmondClinic
-		{
-			get => Flags.MelmondClinic;
-			set
-			{
-				Flags.MelmondClinic = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MelmondClinic"));
-			}
-		}
+        {
+            get => Flags.MelmondClinic;
+            set
+            {
+                Flags.MelmondClinic = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MelmondClinic"));
+            }
+        }
 
-		public bool DeepDungeon
+        public bool DeepDungeon
 		{
 			get => Flags.DeepDungeon;
 			set

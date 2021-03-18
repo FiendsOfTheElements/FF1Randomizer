@@ -244,9 +244,9 @@
 	},
 	{
 		"Id": "generateNewSpellbook",
-		"title": "Generate New Spellbook (Spellcrafter)",
+		"title": "Generate New Spellbooks (Spellcrafter)",
 		"screenshot": "generateNewSpellbook.png",
-		"description": "Randomly generates completely new white and black magic spell books, replacing all magic in the game with this new selection of spells. Some spells may have the same names (i.e., FIRE, ICE, WARP, TMPR) while others will be completly new spells not seen before in the vanilla version of Final Fantasy (i.e., ROCK, SNOW, VOLT, etc.).\n Note: Spellcrafter will also change the default slots characters can learn spells, in effect reducing the number of spells, and spell slots, the Knight, Ninja, and Red Mage can learn."
+		"description": "Randomly generates completely new white and black magic spell books, replacing all magic in the game with this new selection of spells. Some spells may have the same names (i.e., FIRE, ICE, WARP, TMPR) while others will be completely new spells not seen before in the vanilla version of Final Fantasy (i.e., ROCK, SNOW, VOLT, etc.).\n Note: Spellcrafter will also change the default slots characters can learn spells, in effect reducing the number of spells, and spell slots, the Knight, Ninja, and Red Mage can learn."
 	},
 	{
 		"Id": "spellcrafterRetainPermissions",
@@ -552,7 +552,7 @@
 		"Id": "fightBahamutCheckBox",
 		"title": "Fight Bahamut",
 		"screenshot": "fightBahamutCheckBox.gif",
-		"description": "Turning in the TAIL is not the only requirement for class change. You must also defeat Bahamut to prove your courage.\nIf Remove Tail is enabled, the only requirement for class change is to defeat Bahamut."
+		"description": "Turning in the TAIL is not the only requirement for class change. You must also defeat Bahamut to prove your courage.\nIf Remove Tail is enabled, the only requirement for class change is to defeat Bahamut.\nNote: This flag is ignored when Enemizer or Lich's Revenge is enabled."
 	},
 	{
 		"Id": "NoMasamuneCheckBox",
@@ -1318,10 +1318,10 @@
 		"description": "Fixes applying elemental and 'type' bonuses to weapons. These bonuses did not work as intended in the vanilla game, but function properly here for all relevant gear."
 	},
 	{
-		"Id": "chanceToRunCheckBox",
+		"Id": "chanceToRunDropDown",
 		"title": "Chance to Run",
-		"screenshot": "chanceToRunCheckBox.png",
-		"description": "Fixes a bug in the way the chance to run is calculated, using the actual intended stat -- Luck -- instead of the glitched stat from the original NES release. This greatly improves the effectiveness of the RUN command, as well as those classes, such as the Thief, with high Luck stats."
+		"screenshot": "chanceToRunDropDown.png",
+		"description": "Changes the way the chance to run is calculated.\nVanilla: Run chance is calculated from a glitched stat, as it was programmed in the original NES release.\nFixed: Run chance is calculated from the intended stat, Luck. This greatly improves the effectiveness of the RUN command, as well as classes with high Luck stats, such as the Thief.\n Percentages: Run chance is a static value for all classes. This causes no specific class to be any better or worse at running away, because their chance to run is the same."
 	},
 	{
 		"Id": "spellBugsCheckBox",
@@ -1491,13 +1491,13 @@
 	},
 	{
 		"Id": "randomVampAttackCheckBox",
-		"title": "Vampire attacks a random town",
+		"title": "Vampire Attacks Random Town",
 		"screenshot": "vampAttack.png",
 		"description": "Causes the Vampire to attack a random town.\nThe attacked town will not have an Item Shop or Clinic.\nNote: The Vampire will not attack the starting town, Coneria."
 	},
 	{
 		"Id": "randomVampAttackIncludesConeriaCheckBox",
-		"title": "Vampire attacks a random town - Include Coneria",
+		"title": "Vampire Attacks Random Town - Include Coneria",
 		"screenshot": "vampAttackIncludesConeria.png",
 		"description": "Allows the Vampire to attack Coneria."
 	},
@@ -1507,10 +1507,28 @@
 		"screenshot": "bahamutCardiaDock.png",
 		"description": "Adds a dock to Bahamut's island so that the Airship is not required for class change."
 	},
-    {
-         "Id": "thiefAgilityBuffCheckBox",
-         "title": "Thief Agility Buff",
-         "screenshot": "thiefAgilityBuff.png",
-         "description": "Buff the thief starting agility to 120 and starting evade to 168, and make it so that the thief gains agility and evade on every level.\nThis makes the thief more likely to evade melee attacks from monsters. When the thief is in the lead slot, this also increases the chance of getting first strike and reduces the chance of being suprised."
-    }
+	{
+		"Id": "thiefAgilityBuffCheckBox",
+		"title": "Thief Agility Buff",
+		"screenshot": "thiefAgilityBuff.png",
+		"description": "Buff the thief starting agility to 120 and starting evade to 168, and make it so that the thief gains agility and evade on every level.\nThis makes the thief more likely to evade melee attacks from monsters. When the thief is in the lead slot, this also increases the chance of getting first strike and reduces the chance of being suprised."
+	},
+	{
+		"Id": "startingLevelDropDown",
+		"title": "Starting Level",
+		"screenshot": "startingLevelDropDown.gif",
+		"description": "Allows you to change the level your party members will be when you start the game."
+	},
+	{
+		"Id": "lefeinRiverDockCheckBox",
+		"title": "Lefein river dock",
+		"screenshot": "lefeinRiverDock.png",
+		"description": "Add a river dock to the Lefein region, making is accessible without the Airship."
+	},
+	{
+		"Id": "gaiaMountainPassCheckBox",
+		"title": "Gaia mountain pass",
+		"screenshot": "gaiaMountainPass.png",
+		"description": "Add a mountain pass to Gaia, making is accessible without the Airship."
+	}
 ]

@@ -165,9 +165,10 @@
 
 
 		noTabLayout = await LocalStorage.GetItemAsync<bool>("tablayout");
-		// Announcement ID needs to be changed for each new events, also need to be changed in Randomizer.razor
+
+		// Announcement ID needs to be changed for each new events, also need to be changed in AnnouncementBox.razor
 		//  both need to match
-		hideAnnouncement = await LocalStorage.GetItemAsync<bool>("announcement_dab2021");
+		hideAnnouncement = await LocalStorage.GetItemAsync<bool>("announcement_st2021");
 		Flags.PropertyChanged += (sender, args) => StateHasChanged();
 		StateHasChanged();
 	}
