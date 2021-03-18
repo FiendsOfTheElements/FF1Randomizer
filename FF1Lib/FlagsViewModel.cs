@@ -992,7 +992,7 @@ namespace FF1Lib
 				Flags.RandomVampAttackIncludesConeria = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomVampAttackIncludesConeria"));
 			}
-		}    
+		}
 		public bool? FightBahamut
 		{
 			get => Flags.FightBahamut;
@@ -1161,6 +1161,24 @@ namespace FF1Lib
 			{
 				Flags.MapBahamutCardiaDock = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MapBahamutCardiaDock"));
+			}
+		}
+		public bool? MapLefeinRiver
+		{
+			get => Flags.MapLefeinRiver;
+			set
+			{
+				Flags.MapLefeinRiver = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MapLefeinRiver"));
+			}
+		}
+		public bool? MapGaiaMountainPass
+		{
+			get => Flags.MapGaiaMountainPass;
+			set
+			{
+				Flags.MapGaiaMountainPass = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("GaiaMountainPass"));
 			}
 		}
 
@@ -1704,7 +1722,7 @@ namespace FF1Lib
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MelmondClinic"));
             }
         }
-        
+
         public bool DeepDungeon
 		{
 			get => Flags.DeepDungeon;
@@ -3970,7 +3988,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Etherizer"));
 			}
 		}
-		
+
 		public TreasureStackSize ConsumableTreasureStackSize
 		{
 			get => Flags.ConsumableTreasureStackSize;
@@ -3988,7 +4006,7 @@ namespace FF1Lib
 				Flags.StartingLevel = value;
 				RaisePropertyChanged();
 			}
-		}        
+		}
 		public ConsumableChestSet MoreConsumableChests
 		{
 			get => Flags.MoreConsumableChests;
