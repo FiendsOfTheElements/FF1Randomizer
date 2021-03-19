@@ -359,6 +359,11 @@ namespace FF1Lib
 							excludeItemsFromRandomShops.Add(Item.Masamune);
 						}
 
+						if ((bool)flags.NoXcalbur)
+						{
+							excludeItemsFromRandomShops.Add(Item.Xcalber);
+						}
+
 						shopItemLocation = ShuffleShops(rng, (bool)flags.ImmediatePureAndSoftRequired, ((bool)flags.RandomWares), excludeItemsFromRandomShops, flags.WorldWealth, overworldMap.ConeriaTownEntranceItemShopIndex);
 						incentivesData = new IncentiveData(rng, flags, overworldMap, shopItemLocation);
 					}

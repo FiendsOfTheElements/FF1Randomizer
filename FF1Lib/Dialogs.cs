@@ -1269,8 +1269,12 @@ namespace FF1Lib
 				incentivePool.Add(Item.Canal);
 				incentivePool.Add(Item.Herb);
 				incentivePool.Add(Item.Chime);
-				incentivePool.Add(Item.Xcalber);
+				if(flags.NoXcalbur ?? false)
+				{
+					incentivePool.Add(Item.Xcalber);
+				}
 			}
+
 
 			if (flags.FreeAirship ?? false) incentivePool.Remove(Item.Floater);
 			if (flags.FreeCanoe ?? false) incentivePool.Remove(Item.Canoe);
