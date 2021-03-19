@@ -66,6 +66,8 @@ namespace FF1Lib
 
 		#endregion
 
+		public StartingEquipmentSet StartingEquipment { get; set; } = StartingEquipmentSet.None;
+
 		public bool? ExcludeGoldFromScaling { get; set; } = false;
 		public bool CheapVendorItem { get; set; } = true;
 		public bool ApplyExpBoostToGold { get; set; } = false;
