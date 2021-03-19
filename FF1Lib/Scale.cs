@@ -105,7 +105,7 @@ namespace FF1Lib
 				}
 				else
 				{
-					var newPrice = RangeScale(prices[i] / multiplier, scaleLow, scaleHigh, 1, rng);
+					var newPrice = RangeScaleWithZero(prices[i] / multiplier, scaleLow, scaleHigh, 1e-5 * multiplier, 1, rng);
 					prices[i] = (ushort)(flags.WrapPriceOverflow ? ((newPrice - 1) % 0xFFFF) + 1 : Min(newPrice, 0xFFFF));
 				}
 			}
@@ -266,6 +266,41 @@ namespace FF1Lib
 			enemy[13] = (byte)Min(newCrit, 0xFF); // critical%
 
 			Put(EnemyOffset + index * EnemySize, enemy);
+		}
+
+		private int RangeScaleWithZero(double value, double lowPercent, double highPercent, double lowScalelowPercent, double adjustment, MT19337 rng)
+		{
+			var internalLowPercent = lowPercent;
+			var lowScaleThreshold = 0.0;
+
+			if (lowPercent == 0 && highPercent == 0) return 0;
+
+			if (lowPercent == 0 && highPercent >= 0.2)
+			{
+				internalLowPercent = 0.1;
+				lowScaleThreshold = 0.14;
+			}
+			else if (lowPercent == 0 && highPercent == 0.1)
+			{
+				var ret = RangeScale(value, lowScalelowPercent, highPercent, adjustment, rng);
+				return ret > 3 ? ret : 0;
+			}
+
+			double exponent = (rng != null) ? (double)rng.Next() / uint.MaxValue : 1.0; // A number from 0 - 1
+			double logLowPercent = Log(internalLowPercent);
+			double logDifference = Log(highPercent) - logLowPercent;
+			exponent = exponent * logDifference + logLowPercent; // For example for 50-200% a number from -0.69 to 0.69, for 200-400% a number from 0.69 to 1.38
+
+			double scaleValue = Exp(exponent); // A number from 0.5 to 2, or 2 to 4
+
+			if (lowScaleThreshold > 0 && scaleValue < lowScaleThreshold)
+			{
+				var ret = RangeScale(value, lowScalelowPercent, lowScaleThreshold, adjustment, rng);
+				return ret > 3 ? ret : 0;
+			}
+
+			double adjustedScale = scaleValue > 1 ? (scaleValue - 1) * adjustment + 1 : 1 - ((1 - scaleValue) * adjustment); // Tightens the scale so some stats are not changed by as much. For example for strength (adjustment of 0.25) this becomes 0.875 to 1.25, 1.25 to 1.75 while for hp (adjustment of 1) this stays 0.5 to 2, 2 to 4
+			return (int)Round(value * adjustedScale);
 		}
 
 		private int RangeScale(double value, double lowPercent, double highPercent, double adjustment, MT19337 rng)
