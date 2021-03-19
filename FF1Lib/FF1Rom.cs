@@ -412,7 +412,7 @@ namespace FF1Lib
 
 			new ShopKiller(rng, flags, maps, this).KillShops();
 
-			new LegendaryShops(rng, flags, maps, this).PlaceShops();
+			new LegendaryShops(rng, flags, maps, flippedMaps, this).PlaceShops();
 
 			/*
 			if (flags.WeaponPermissions)
