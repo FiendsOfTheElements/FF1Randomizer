@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -25,20 +24,36 @@ namespace FF1Lib
 			LoadTable();
 		}
 
-		public void LoadTable()
+		public unsafe void LoadTable()
 		{
 			Data = new T[count];
 
-			byte[] buffer = rom.Get(address, count * Marshal.SizeOf<T>());
+			byte[] buffer = rom.Get(address, count * sizeof(T));
 
-			Buffer.BlockCopy(buffer, 0, Data, 0, buffer.Length);
+			fixed (byte* p = buffer)
+			{
+				T* pBuffer = (T*)p;
+
+				for (int i = 0; i < count; i++)
+				{
+					Data[i] = pBuffer[i];
+				}
+			}
 		}
 
-		public void StoreTable()
+		public unsafe void StoreTable()
 		{
-			byte[] buffer = new byte[count * Marshal.SizeOf<T>()];
+			byte[] buffer = new byte[count * sizeof(T)];
 
-			Buffer.BlockCopy(Data, 0, buffer, 0, buffer.Length);
+			fixed (byte* p = buffer)
+			{
+				T* pBuffer = (T*)p;
+
+				for (int i = 0; i < count; i++)
+				{
+					pBuffer[i] = Data[i];
+				}
+			}
 
 			rom.Put(address, buffer);
 		}
