@@ -24,6 +24,7 @@ namespace FF1Lib.Sanity
 		Canal =		0x0600,
 		Canoe =		0x0800,
 
+		Impassable =0x2000,
 		Blocked =	0x4000,
 		Done =		0x8000,
 

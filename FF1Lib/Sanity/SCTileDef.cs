@@ -56,15 +56,18 @@ namespace FF1Lib.Sanity
 			}
 			else if ((TileProp.TilePropFunc & TilePropFunc.TP_TELE_MASK) == TilePropFunc.TP_TELE_WARP)
 			{
+				BitFlags |= SCBitFlags.Impassable;
 				SpBitFlags = SCBitFlags.Warp;
 			}
 			else if ((TileProp.TilePropFunc & TilePropFunc.TP_TELE_MASK) == TilePropFunc.TP_TELE_NORM)
 			{
+				BitFlags |= SCBitFlags.Impassable;
 				SpBitFlags = SCBitFlags.Teleport;
 			}
 			else if ((TileProp.TilePropFunc & TilePropFunc.TP_TELE_MASK) == TilePropFunc.TP_TELE_EXIT)
 			{
 				//they share the same code
+				BitFlags |= SCBitFlags.Impassable;
 				SpBitFlags = SCBitFlags.Exit;
 				SpBitFlags |= SCBitFlags.UseFloater;
 			}

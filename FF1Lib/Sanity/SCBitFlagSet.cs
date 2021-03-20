@@ -152,6 +152,11 @@ namespace FF1Lib.Sanity
 			return (left & SCBitFlags.Blocked) > 0;
 		}
 
+		public static bool IsImpassable(this SCBitFlags left)
+		{
+			return (left & SCBitFlags.Impassable) > 0;
+		}
+
 		public static AccessRequirement ToRequirements(this SCBitFlags left)
 		{
 			AccessRequirement flags = AccessRequirement.None;

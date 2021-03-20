@@ -65,7 +65,7 @@ namespace FF1Lib.Sanity
 
 			requirements |= tile.Tile;
 
-			if (!tile.Tile.IsBlocked() && Tiles[coords.X, coords.Y].MergeFlag(requirements))
+			if (!tile.Tile.IsBlocked() && Tiles[coords.X, coords.Y].MergeFlag(requirements) && !tile.Tile.IsImpassable())
 			{
 				todoset.Enqueue(new SCTileQueueEntry { BitFlags = requirements, Coords = coords });
 			}			
@@ -88,10 +88,15 @@ namespace FF1Lib.Sanity
 
 		private void SetPoiAccessFromNeighbors(SCPointOfInterest poi)
 		{
-			poi.BitFlagSet = GetBitFlagSetFromTile(poi.Coords.SmLeft);
-			poi.BitFlagSet.Merge(GetBitFlagSetFromTile(poi.Coords.SmRight));
-			poi.BitFlagSet.Merge(GetBitFlagSetFromTile(poi.Coords.SmUp));
-			poi.BitFlagSet.Merge(GetBitFlagSetFromTile(poi.Coords.SmDown));
+			poi.BitFlagSet = GetPassableBitFlagSetFromTile(poi.Coords.SmLeft);
+			poi.BitFlagSet.Merge(GetPassableBitFlagSetFromTile(poi.Coords.SmRight));
+			poi.BitFlagSet.Merge(GetPassableBitFlagSetFromTile(poi.Coords.SmUp));
+			poi.BitFlagSet.Merge(GetPassableBitFlagSetFromTile(poi.Coords.SmDown));
+		}
+
+		private SCBitFlagSet GetPassableBitFlagSetFromTile(SCCoords coords)
+		{
+			return Tiles[coords.X, coords.Y].GetPassableBitFlagSet();
 		}
 
 		private void SetPoiAccess(SCPointOfInterest poi)

@@ -120,6 +120,20 @@ namespace FF1Lib.Sanity
 			return result;
 		}
 
+		public SCBitFlagSet GetPassableBitFlagSet()
+		{
+			CompactFlags();
+
+			SCBitFlagSet result = new SCBitFlagSet();
+			for (int i = 0; i < ExtFlagCount; i++)
+			{
+				if (ExtFlags[i] == (ushort)SCBitFlags.None) break;
+				if (!((SCBitFlags)ExtFlags[i]).IsImpassable()) result.Add((SCBitFlags)ExtFlags[i]);
+			}
+
+			return result;
+		}
+
 		public bool IsOrthogonalTo(SCBitFlags req)
 		{
 			for (int i = 1; i < ExtFlagCount; i++)
