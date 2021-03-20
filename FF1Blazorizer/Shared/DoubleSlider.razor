@@ -107,7 +107,20 @@ else
 
 	[Parameter]
 	public RenderFragment ChildContent { get; set; }
-	private string DisplayText => !ShowMedian ? ((_valueLow > 0) ? ("+" + _valueLow) : _valueLow) + " - " + ((_valueHigh > 0) ? ("+" + _valueHigh) : _valueHigh) : (_valueLow + "% - " + _valueHigh + "%" + " (" + (int)Math.Sqrt(_valueLow * _valueHigh) + "%)");
+	private string DisplayText => !ShowMedian ? ((_valueLow > 0) ? ("+" + _valueLow) : _valueLow) + " - " + ((_valueHigh > 0) ? ("+" + _valueHigh) : _valueHigh) : (_valueLow + "% - " + _valueHigh + "%" + " (" + Median + "%)");
+
+	private int Median
+	{
+		get
+		{
+			if (_valueLow == 0 && _valueHigh == 0) return 0;
+
+			if (_valueLow == 0 && _valueHigh == 10) return 1;
+			if (_valueLow == 0) return (int)Math.Sqrt(10 * _valueHigh);
+
+			return (int)Math.Sqrt(_valueLow * _valueHigh);
+		}
+	}
 
 	//slider fields
 	int _valueLow = 0;
