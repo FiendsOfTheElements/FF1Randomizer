@@ -429,8 +429,6 @@ namespace FF1Lib
 
 				exp += (ushort)(flags.ExpBonus / flags.ExpMultiplier);
 
-				var expBytes = BitConverter.GetBytes(exp);
-				var goldBytes = BitConverter.GetBytes(gold);
 
 				if (!(flags.ExcludeGoldFromScaling ?? false))
 				{
@@ -440,6 +438,9 @@ namespace FF1Lib
 				{
 					gold += (ushort)(flags.ExpBonus);
 				}
+
+				var expBytes = BitConverter.GetBytes(exp);
+				var goldBytes = BitConverter.GetBytes(gold);
 
 				Array.Copy(goldBytes, 0, enemy, 2, 2);
 				Array.Copy(expBytes, 0, enemy, 0, 2);
