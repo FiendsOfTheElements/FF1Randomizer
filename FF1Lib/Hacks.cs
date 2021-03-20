@@ -494,6 +494,11 @@ namespace FF1Lib
 			ObjectId.Fairy, ObjectId.King, ObjectId.Matoya, ObjectId.Nerrick, ObjectId.Princess2, ObjectId.Smith,
 			ObjectId.Titan, ObjectId.Unne, ObjectId.Sarda, ObjectId.ElfPrince, ObjectId.Lefein };
 
+			if ((bool)flags.FightBahamut)
+			{
+				npcpool.Remove(ObjectId.Bahamut);
+			}
+
 			// Select random npc
 			ObjectId newastos = npcpool.PickRandom(rng);
 
@@ -547,7 +552,7 @@ namespace FF1Lib
 			}
 			else if (talkscript == newTalkRoutines.Talk_GiveItemOnFlag)
 			{
-				// Check for a flag instead of an item                          
+				// Check for a flag instead of an item
 				talkroutines.ReplaceChunk(newTalkRoutines.Talk_Astos, Blob.FromHex("A674F005BD2060F0"), Blob.FromHex("A474F00520799090"));
 				npcdata.SetRoutine(newastos, newTalkRoutines.Talk_Astos);
 			}
@@ -689,7 +694,7 @@ namespace FF1Lib
 			// We then update the unrunnable branch to point here instead of the generic Can't Run handler
 			// See Disch's comments here: Battle_PlayerTryRun  [$A3D8 :: 0x323E8]
 			Put(0x32409, Blob.FromHex("189005A94E4C07AAEAEAEAEAEAEAEA"));
-			// new delta to special unrunnable message handler done in 
+			// new delta to special unrunnable message handler done in
 		}
 
 		public void SeparateUnrunnables()
@@ -1044,7 +1049,7 @@ namespace FF1Lib
 			PutInBank(0x1F, 0xDD78, Blob.FromHex("A9002003FEA645BD00B18561A9112003FE20B08E8A60"));
 
 			// Check for trapped monster routine, see 11_8EC0_CheckTrap.asm
-			PutInBank(0x11, 0x8EB0, Blob.FromHex("A561202096B030A645BD008FF025856AA9C0203D96A56A200096A903CD866BD00820189668684C43961820E98E201896A2F06020E98E60AA60A911855818A5612093DDA445B90062090499006260"));
+			PutInBank(0x11, 0x8EB0, Blob.FromHex("A561202096B030A645BD008FF025856AA9C0203D96A56A200096A903CD866BD00820189668684C43961820E98E201896A2F06020E98E60AA60A911855818A5612006B0A445B90062090499006260"));
 
 			InsertDialogs(0x110, "Monster-in-a-box!"); // 0xC0
 
@@ -1057,7 +1062,7 @@ namespace FF1Lib
 			List<byte> encounters;
 			encounters = Enumerable.Range(128, FirstBossEncounterIndex).Select(value => (byte)value).ToList();
 			encounters.Add(0xFF); // IronGOL
-			
+
 			if ((bool)flags.TrappedChests)
 			{
 				for (int i = 1; i < 0x100; i++)
@@ -1125,7 +1130,7 @@ namespace FF1Lib
 				new TargetNpc(ObjectId.Astos, MapId.NorthwestCastle, (0x11,0x07), true, true, "While the Crown is\nmissing, I can attest\nthat this is indeed\nthe REAL King of\nNorthwest Castle."),
 				new TargetNpc(ObjectId.Unne, MapId.Melmond, (0x1D, 0x02), false, true, "I'm also trying\nto discover the secret\nof Lefeinish!"),
 				new TargetNpc(ObjectId.Unne, MapId.Lefein, (0,0), false, false, "Lu..pa..?\nLu..pa..?"),
-				new TargetNpc(ObjectId.Vampire, MapId.SardasCave, (0x14, 0x01), true, false, "Sarda told me to sort\nthese garlic pots and\nvases until the Vampire\nis killed."),
+				new TargetNpc(ObjectId.Vampire, MapId.SardasCave, (0x04, 0x02), true, true, "The Vampire put a curse\non me, it will only be\nlifted on his death.\nAnd I can't do anything\nwhile you fight.\nIt's a shame."),
 				new TargetNpc(ObjectId.CanoeSage, MapId.CrescentLake, (0,0), false, true, "I came here to learn\neverything about the\nFiend of Earth. You got\nto respect such a\ndangerous adversary."),
 				new TargetNpc(ObjectId.Fairy, MapId.Gaia, (0x2F, 0x14), false, true, "I'm trying to get\nwhat's at the bottom\nof the pond.\n\nMaybe if I drained it.."),
 				new TargetNpc(ObjectId.Smith, MapId.DwarfCave, (0x08, 0x02), true, false, "I'm sure it will be a\nbadass sword! Like with\na huge blade, and a gun\nas the hilt, and you can\ntrigger it..\nI can't wait!"),
@@ -1390,11 +1395,17 @@ namespace FF1Lib
 			PutInBank(0x0E, 0xAA16, Blob.FromHex("205795"));
 			PutInBank(0x0E, 0xAA23, Blob.FromHex("4C5795"));
 
-			// Insert new routines in Common Shop Loop 
+			// Extra routines for Shops, plus equip and magic info, see 0E_9500_ShopUpgrade.asm
+			// Insert new routines in Common Shop Loop
 			PutInBank(0x0E, 0xA931, Blob.FromHex("200095"));
+			PutInBank(0x0E, 0x9500, Blob.FromHex("A564C928F038A566C904B035C902B017A20020D495A24020D495A28020D495A2C020D4954C4195A200208B95A240208B95A280208B95A2C0208B954C41952047952027A74C2696A9008DD66A8DDA6A8DDE6A8DE26A6060AA4A8510BD0061A8B9A4EC8511BD0161F011C901F0E9C903F004A9038511A9144C8395A5104A4A4AAABDD66A18651085104C24EC8A8515BD00610AAABD00AD8510BD01AD8511A662BD000338E9B0851229078513A5124A4A4AA8B1108514A613BD38AC2514F005A9004CC595A90E8510A5154A4A4A4AAAA5109DD66A608A8515BD00610AAABDB9BC8512BDBABC8513A662BD000338C944B01638E91C0AAABD50BF25128510BD51BF251305104C1896E9440AAABDA0BF25128510BDA1BF25130510C9019005A9004CC595A90E4CC595A522F033A564C928F02DA662BD00038514205E962027A7A520C561F0F7A9008522204D964C46E1A9018538A9128539A90E853CA90A853D60204D96A90E85572063E0A53E8512A53F8513A514380AAAB00DBD0093853EBD0193853F4C8E96BD0094853EBD0194853FA9118557A90E85582036DEA512853EA513853FA900852260"));
 
-			// Extra routines for Shops info, see 0E_9500_ShopUpgrade.asm
-			PutInBank(0x0E, 0x9500, Blob.FromHex("A564C928F038A566C904B035C902B017A20020D495A24020D495A28020D495A2C020D4954C4195A200208B95A240208B95A280208B95A2C0208B954C41952047952027A74C2696A9008DD66A8DDA6A8DDE6A8DE26A6060AA4A8510BD0061A8B9A4EC8511BD0161F011C901F0E9C903F004A9038511A9144C8395A5104A4A4AAABDD66A18651085104C24EC8A8515BD00610AAABD00AD8510BD01AD8511A662BD000338E9B0851229078513A5124A4A4AA8B1108514A613BD38AC2514F005A9004CC595A90E8510A5154A4A4A4AAAA5109DD66A608A8515BD00610AAABDB9BC8512BDBABC8513A662BD000338C944B01638E91C0AAABD50BF25128510BD51BF251305104C1896E9440AAABDA0BF25128510BDA1BF25130510C9019005A9004CC595A90E4CC595A522F073A564C928F06D208D96A90E85572063E0A53E8512A53F8513A662BD0003380AAAB00DBD0093853EBD0193853F4C6396BD0094853EBD0194853FA9118557A90E85582036DEA512853EA513853FA90085222027A7A520C561F0F7A9008522208D964C46E1A9018538A9128539A90E853CA90A853D60"));
+			// Patch in the equip menu loop to add gear info
+			PutInBank(0x0E, 0xBB8F, Blob.FromHex("4CE090EA"));
+			// Patch in the magic menu loop to add spell info
+			PutInBank(0x0E, 0xAECD, Blob.FromHex("4C2691EA"));
+			// the UpgradedEquipMenu and UpgradedMagicMenu code that the above patches jump to
+			PutInBank(0x0E, 0x90E0, Blob.FromHex("A525D007A522D0044C93BB60A662BD0003F030297FA466C018D005691A4C029169428514203CC4205E9620F9BCA520C561F0F7A9008D0120853720F3BD2083B720DAEC4C93BBA525D007A522D0044CD1AE60A9008D01208537A5664A6A6A0562AA0A29381D00631869AF8514205E962080B72025B6A9008D01208537857F20029CA56248206DBA688562A90720EFB8A9292059B92080B74CD1AE"));
 
 			// Modify DrawComplexString, this sets control code 14-19 to use a new words table in bank 11
 			//  could be used to move some stuff in items name table and make some space
@@ -2077,7 +2088,7 @@ namespace FF1Lib
 			Put(0x2F00 + 0x12, Blob.FromHex("01"));
 			Put(0x2F00 + 0x03, Blob.FromHex("02"));
 
-			// Change NPC's color 
+			// Change NPC's color
 			Data[0x2000 + ((byte)MapId.Coneria * 0x30) + 0x18 + 0x03] = 0x3A;
 			Data[0x2000 + ((byte)MapId.Coneria * 0x30) + 0x18 + 0x07] = 0x3A;
 
@@ -2131,6 +2142,71 @@ namespace FF1Lib
 				}
 			}
 		}
+
+		public void FightBahamut(TalkRoutines talkroutines, NPCdata npcdata, bool removeTail, EvadeCapValues evadeClampFlag)
+		{
+			const byte offsetAtoB = 0x80; // diff between A side and B side
+
+			const byte encAnkylo = 0x71; // ANKYLO
+			const byte encCerbWzOgre = 0x22; // CEREBUS + WzOGRE
+			const byte encTyroWyvern = 0x3D + offsetAtoB; // TYRO + WYVERN
+
+			// Turn Ankylo into Bahamut
+			var encountersData = new Encounters(this);
+			encountersData.formations[encAnkylo].pattern = FormationPattern.Large4;
+			encountersData.formations[encAnkylo].spriteSheet = FormationSpriteSheet.WizardGarlandDragon2Golem;
+			encountersData.formations[encAnkylo].gfxOffset1 = (int)FormationGFX.Sprite3;
+			encountersData.formations[encAnkylo].palette1 = 0x1C;
+			encountersData.formations[encAnkylo].paletteAssign1 = 0;
+			encountersData.formations[encAnkylo].minmax1 = (1, 1);
+			encountersData.formations[encAnkylo].unrunnableA = true;
+			encountersData.Write(this);
+
+			// Update name
+			var enemyText = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
+			enemyText[78] = "BAHAMUT"; // +1 byte compared to ANKYLO, is this an issue?
+			WriteText(enemyText, EnemyTextPointerOffset, EnemyTextPointerBase, EnemyTextOffset);
+
+			// Remove Ankylo from the Overworld, with appropriate substitutions
+			SubstituteFormationTableEncounter(oldEncounter: encAnkylo, newEncounter: encCerbWzOgre); // handle Ankylo A side (single Ankylo)
+			SubstituteFormationTableEncounter(oldEncounter: encAnkylo + offsetAtoB, newEncounter: encTyroWyvern); // handle Ankylo B side (two Ankylos)
+
+			// Update Bahamut behavior
+			String asmNoTailPromote = "EE7D00AD7200203D96AD7500200096AC7600207F9020739220AE952018964C439660"; // 11_820 LichsRevenge ASM : ClassChange_bB
+			String asmTailRequiredPromote = "AD2D60D003A57160E67DA572203D96A575200096A476207F9020739220AE952018964C439660"; // 11_820 LichsRevenge ASM : Talk_battleBahamut
+			String asm = "";
+			String bahamutDialogue = "";
+			if (removeTail)
+			{
+				asm = asmNoTailPromote;
+				bahamutDialogue = "To prove your worth..\nYou must show me your\nstrength..\n\nCome at me WARRIORS,\nor die by my claws!";
+			}
+			else
+			{
+				asm = asmTailRequiredPromote;
+				bahamutDialogue = "The TAIL! Impressive..\nNow show me your true\nstrength..\n\nCome at me WARRIORS,\nor die by my claws!";
+			}
+			var fightBahamut = talkroutines.Add(Blob.FromHex(asm));
+			npcdata.GetTalkArray(ObjectId.Bahamut)[(int)TalkArrayPos.battle_id] = encAnkylo;
+			npcdata.SetRoutine(ObjectId.Bahamut, (newTalkRoutines)fightBahamut);
+
+			// Update Dragon dialogs
+			Dictionary<int, string> dialogs = new Dictionary<int, string>();
+			dialogs.Add(0x20, bahamutDialogue);
+			dialogs.Add(0xE9, "Have you met BAHAMUT,\nthe Dragon King? He\nfights those with\ncourage as true\nwarriors."); // Cardia Tiny
+			dialogs.Add(0xE5, "You are not afraid of\nBAHAMUT??\nYou will be!"); // Cardia Forest
+			dialogs.Add(0xAB, "Many have searched\nfor BAHAMUT, but,\nnone that found him\nsurvived."); // Onrac Pre-Promo
+			dialogs.Add(0xAC, "Well, well..\nI see you have\nslayed the dragon."); // Onrac Post-Promo
+			InsertDialogs(dialogs);
+
+			// Change Bahamut Dragon NPCs to the "Onrac Dragon" so they will change what they say post promotion
+			SetNpc(MapId.BahamutsRoomB2, mapNpcIndex: 1, ObjectId.OnracDragon, 19, 7, inRoom: true, stationary: true);
+			SetNpc(MapId.BahamutsRoomB2, mapNpcIndex: 2, ObjectId.OnracDragon, 23, 7, inRoom: true, stationary: true);
+
+			// Scale Difficulty Up, approx 700hp
+			ScaleSingleEnemyStats(78, 120, 120, wrapOverflow: false, includeMorale: false, rng: null, separateHPScale: true, lowPercentHp: 200, highPercentHp: 200, GetEvadeIntFromFlag(evadeClampFlag));
+		}
+
+
 	}
 }
-

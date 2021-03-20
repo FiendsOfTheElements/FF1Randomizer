@@ -558,6 +558,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ExitToFR"));
 			}
 		}
+		public bool? LutePlateInShortToFR
+		{
+			get => Flags.LutePlateInShortToFR;
+			set
+			{
+				Flags.LutePlateInShortToFR = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("LutePlateInShortToFR"));
+			}
+		}
 		public bool? PreserveFiendRefights
 		{
 			get => Flags.PreserveFiendRefights;
@@ -957,6 +966,16 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TitansTrove"));
 			}
 		}
+		public bool? LefeinSuperStore
+		{
+			get => Flags.LefeinSuperStore;
+			set
+			{
+				Flags.LefeinSuperStore = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("LefeinSuperStore"));
+			}
+		}
+		public bool LefeinSuperStoreEnabled => (ShopKillMode_White.Equals(ShopKillMode.None) && ShopKillMode_Black.Equals(ShopKillMode.None));
 		public bool? LefeinShops
 		{
 			get => Flags.LefeinShops;
@@ -973,6 +992,24 @@ namespace FF1Lib
 			{
 				Flags.RandomVampAttack = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomVampAttack"));
+			}
+		}
+		public bool? RandomVampAttackIncludesConeria
+		{
+			get => Flags.RandomVampAttackIncludesConeria;
+			set
+			{
+				Flags.RandomVampAttackIncludesConeria = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomVampAttackIncludesConeria"));
+			}
+		}
+		public bool? FightBahamut
+		{
+			get => Flags.FightBahamut;
+			set
+			{
+				Flags.FightBahamut = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FightBahamut"));
 			}
 		}
 		public bool? ConfusedOldMen
@@ -1127,6 +1164,34 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MapAirshipDock"));
 			}
 		}
+		public bool? MapBahamutCardiaDock
+		{
+			get => Flags.MapBahamutCardiaDock;
+			set
+			{
+				Flags.MapBahamutCardiaDock = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MapBahamutCardiaDock"));
+			}
+		}
+		public bool? MapLefeinRiver
+		{
+			get => Flags.MapLefeinRiver;
+			set
+			{
+				Flags.MapLefeinRiver = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MapLefeinRiver"));
+			}
+		}
+		public bool? MapGaiaMountainPass
+		{
+			get => Flags.MapGaiaMountainPass;
+			set
+			{
+				Flags.MapGaiaMountainPass = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("GaiaMountainPass"));
+			}
+		}
+
 		public bool? Entrances
 		{
 			get => Flags.Entrances;
@@ -1646,17 +1711,15 @@ namespace FF1Lib
 			}
 		}
 
-		public bool? FreeLuteFlag
+		public bool? FreeLute
 		{
-			get => Flags.FreeLuteFlag;
+			get => Flags.FreeLute;
 			set
 			{
-				Flags.FreeLuteFlag = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeLuteFlag"));
+				Flags.FreeLute = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeLute"));
 			}
 		}
-
-		public bool? FreeLute => FreeLuteFlag | ShortToFR;
 
 		public bool FreeOrbsEnabled => !ShardHunt;
 
@@ -1669,7 +1732,7 @@ namespace FF1Lib
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MelmondClinic"));
             }
         }
-        
+
         public bool DeepDungeon
 		{
 			get => Flags.DeepDungeon;
@@ -1677,6 +1740,15 @@ namespace FF1Lib
 			{
 				Flags.DeepDungeon = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DeepDungeon"));
+			}
+		}
+		public bool DDEvenTreasureDistribution
+		{
+			get => Flags.DDEvenTreasureDistribution;
+			set
+			{
+				Flags.DDEvenTreasureDistribution = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DDEvenTreasureDistribution"));
 			}
 		}
 		public bool StartingGold
@@ -1855,13 +1927,13 @@ namespace FF1Lib
 			}
 		}
 
-		public bool ChanceToRun
+		public ChanceToRunMode ChanceToRun
 		{
 			get => Flags.ChanceToRun;
 			set
 			{
 				Flags.ChanceToRun = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ChanceToRun"));
+				RaisePropertyChanged();
 			}
 		}
 		public bool SpellBugs
@@ -2339,6 +2411,15 @@ namespace FF1Lib
 			{
 				Preferences.NoTabLayout = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NoTabLayout"));
+			}
+		}
+		public TitanSnack TitanSnack
+		{
+			get => Preferences.TitanSnack;
+			set
+			{
+				Preferences.TitanSnack = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TitanSnack"));
 			}
 		}
 		public Fate HurrayDwarfFate
@@ -3917,6 +3998,81 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Etherizer"));
 			}
 		}
+
+		public TreasureStackSize ConsumableTreasureStackSize
+		{
+			get => Flags.ConsumableTreasureStackSize;
+			set
+			{
+				Flags.ConsumableTreasureStackSize = value;
+				RaisePropertyChanged();
+			}
+		}
+		public StartingLevel StartingLevel
+		{
+			get => Flags.StartingLevel;
+			set
+			{
+				Flags.StartingLevel = value;
+				RaisePropertyChanged();
+			}
+		}
+		public ConsumableChestSet MoreConsumableChests
+		{
+			get => Flags.MoreConsumableChests;
+			set
+			{
+				Flags.MoreConsumableChests = value;
+				RaisePropertyChanged();
+			}
+		}
+		public bool ThiefAgilityBuff
+		{
+			get => Flags.ThiefAgilityBuff;
+			set
+			{
+				Flags.ThiefAgilityBuff = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ThiefAgilityBuff"));
+			}
+		}
+		public bool BugfixRender3DigitStats {
+		    get => Flags.BugfixRender3DigitStats;
+		    set
+		    {
+			Flags.BugfixRender3DigitStats = value;
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BugfixRender3DigitStats"));
+		    }
+		}
+
+		public bool? ExcludeGoldFromScaling
+		{
+			get => Flags.ExcludeGoldFromScaling;
+			set
+			{
+				Flags.ExcludeGoldFromScaling = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool CheapVendorItem
+		{
+			get => Flags.CheapVendorItem;
+			set
+			{
+				Flags.CheapVendorItem = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool ApplyExpBoostToGold
+		{
+			get => Flags.ApplyExpBoostToGold;
+			set
+			{
+				Flags.ApplyExpBoostToGold = value;
+				RaisePropertyChanged();
+			}
+		}
 		
 		public OwMapExchanges OwMapExchange
 		{
@@ -3940,4 +4096,3 @@ namespace FF1Lib
 		}
 	}
 }
-

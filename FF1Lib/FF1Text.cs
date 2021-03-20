@@ -106,6 +106,7 @@ namespace FF1Lib
 			{ "li", 0x68 },
 			{ "..", 0x69 },
 			{ "/", 0x7A },
+			{ "+", 0x7B },
 			{ "0", 0x80 },
 			{ "1", 0x81 },
 			{ "2", 0x82 },
@@ -171,7 +172,7 @@ namespace FF1Lib
 			{ "'", 0xBE },
 			{ ",", 0xBF },
 			{ ".", 0xC0 },
-			{ "+", 0xC1 },
+			{ ";", 0xC1 }, //should never be used as a space character
 			{ "-", 0xC2 },
 			// this is a duplicate { "..", 0xC3 },
 			{ "!", 0xC4 },

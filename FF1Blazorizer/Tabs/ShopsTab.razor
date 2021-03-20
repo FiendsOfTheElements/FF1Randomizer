@@ -16,6 +16,8 @@
 		<div class="checkbox-cell"></div>
 		<h4>Consumables</h4>
 		<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="startingItemsDropDown" TItem="StartingItemSet" @bind-Value="Flags.StartingItemSet">Starting Inventory:</EnumDropDown>
+		<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="consumableTreasureStackSizeDropDown" TItem="TreasureStackSize" @bind-Value="Flags.ConsumableTreasureStackSize">Treasure Chest Stacks:</EnumDropDown>
+		<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="consumableChestSetDropDown" TItem="ConsumableChestSet" @bind-Value="Flags.MoreConsumableChests">Consumable Chests:</EnumDropDown>
 		<div class="checkbox-cell"></div>
 		<h4>RNG</h4>
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="rngCheckBox" @bind-Value="Flags.Rng">RNG Tables</TriStateCheckBox>

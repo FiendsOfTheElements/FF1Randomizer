@@ -1,6 +1,7 @@
 ﻿using RomUtilities;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 
@@ -182,6 +183,8 @@ namespace FF1Lib
 			// 8. Place all remaining unincentivized treasures or incentivized non-quest items that weren't placed
 			var itemLocationPool = _incentivesData.AllValidItemLocations.ToList();
 			itemLocationPool = itemLocationPool.Where(x => !x.IsUnused && !placedItems.Any(y => y.Address == x.Address)).ToList();
+
+			MoreConsumableChests.Work(_flags, treasurePool, rng);
 
 			if ((bool)_flags.NoMasamune)
 			{

@@ -77,18 +77,37 @@ namespace FF1Lib
 		// instead of enemies giving more gold, so we don't overflow.
 		public void ScalePrices(IScaleFlags flags, string[] text, MT19337 rng, bool increaseOnly, ItemShopSlot shopItemLocation)
 		{
+			IEnumerable<Item> tmpExcludedItems = Array.Empty<Item>() ;
+			if (flags.ExcludeGoldFromScaling ?? false) tmpExcludedItems = tmpExcludedItems.Concat(ItemLists.AllGoldTreasure);
+			if ((flags.ExcludeGoldFromScaling ?? false) && flags.CheapVendorItem) tmpExcludedItems = tmpExcludedItems.Concat(ItemLists.AllQuestItems);
+
+			HashSet<Item> excludedItems = new HashSet<Item>(tmpExcludedItems);
+			HashSet<Item> questItems = new HashSet<Item>(ItemLists.AllQuestItems);
+
 			int rawScaleLow = increaseOnly ? 100 : flags.PriceScaleFactorLow;
 			int rawScaleHigh = increaseOnly ? Math.Max(100, flags.PriceScaleFactorHigh) : flags.PriceScaleFactorHigh;
 
 			double scaleLow = (double)rawScaleLow / 100.0;
 			double scaleHigh = (double)rawScaleHigh / 100.0;
 
-			var multiplier = flags.ExpMultiplier;
+			var multiplier = flags.ExcludeGoldFromScaling ?? false ? 1.0 : flags.ExpMultiplier;
 			var prices = Get(PriceOffset, PriceSize * PriceCount).ToUShorts();
 			for (int i = 0; i < prices.Length; i++)
 			{
-				var newPrice = RangeScale(prices[i] / multiplier, scaleLow, scaleHigh, 1, rng);
-				prices[i] = (ushort)(flags.WrapPriceOverflow ? ((newPrice - 1) % 0xFFFF) + 1 : Min(newPrice, 0xFFFF));
+				if (excludedItems.Contains((Item)i))
+				{
+					var price = (int)prices[i];
+
+					if (flags.CheapVendorItem && questItems.Contains((Item)i)) price = 20000;
+
+					var newPrice = price + rng.Between(-price / 10, price / 10);
+					prices[i] = (ushort)Math.Min(Math.Max(newPrice, 1), 65535);
+				}
+				else
+				{
+					var newPrice = RangeScale(prices[i] / multiplier, scaleLow, scaleHigh, 1, rng);
+					prices[i] = (ushort)(flags.WrapPriceOverflow ? ((newPrice - 1) % 0xFFFF) + 1 : Min(newPrice, 0xFFFF));
+				}
 			}
 			var questItemPrice = prices[(int)Item.Bottle];
 			// If we don't do this before checking for the item shop location factor, Ribbons and Shirts will end up being really cheap
@@ -363,7 +382,7 @@ namespace FF1Lib
 			}
 		}
 
-		public void ExpGoldBoost(double bonus, double multiplier)
+		public void ExpGoldBoost(Flags flags)
 		{
 			var enemyBlob = Get(EnemyOffset, EnemySize * EnemyCount);
 			var enemies = enemyBlob.Chunk(EnemySize);
@@ -373,13 +392,22 @@ namespace FF1Lib
 				var exp = BitConverter.ToUInt16(enemy, 0);
 				var gold = BitConverter.ToUInt16(enemy, 2);
 
-				exp += (ushort)(bonus / multiplier);
-				gold += (ushort)(bonus / multiplier);
+				exp += (ushort)(flags.ExpBonus / flags.ExpMultiplier);
 
 				var expBytes = BitConverter.GetBytes(exp);
 				var goldBytes = BitConverter.GetBytes(gold);
-				Array.Copy(expBytes, 0, enemy, 0, 2);
+
+				if (!(flags.ExcludeGoldFromScaling ?? false))
+				{
+					gold += (ushort)(flags.ExpBonus / flags.ExpMultiplier);
+				}
+				else if (flags.ApplyExpBoostToGold)
+				{
+					gold += (ushort)(flags.ExpBonus);
+				}
+
 				Array.Copy(goldBytes, 0, enemy, 2, 2);
+				Array.Copy(expBytes, 0, enemy, 0, 2);
 			}
 
 			enemyBlob = Blob.Concat(enemies);
@@ -390,7 +418,7 @@ namespace FF1Lib
 			var levelRequirementsBytes = levelRequirementsBlob.Chunk(3).Select(threeBytes => new byte[] { threeBytes[0], threeBytes[1], threeBytes[2], 0 }).ToList();
 			for (int i = 0; i < LevelRequirementsCount; i++)
 			{
-				uint levelRequirement = (uint)(BitConverter.ToUInt32(levelRequirementsBytes[i], 0) / multiplier);
+				uint levelRequirement = (uint)(BitConverter.ToUInt32(levelRequirementsBytes[i], 0) / flags.ExpMultiplier);
 				levelRequirementsBytes[i] = BitConverter.GetBytes(levelRequirement);
 			}
 
@@ -398,7 +426,7 @@ namespace FF1Lib
 
 			// A dirty, ugly, evil piece of code that sets the level requirement for level 2, even though that's already defined in the above table.
 			byte firstLevelRequirement = Data[0x7C04B];
-			firstLevelRequirement = (byte)(firstLevelRequirement / multiplier);
+			firstLevelRequirement = (byte)(firstLevelRequirement / flags.ExpMultiplier);
 			Data[0x7C04B] = firstLevelRequirement;
 		}
 

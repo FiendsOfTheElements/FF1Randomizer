@@ -209,15 +209,15 @@ namespace FF1Lib
 				flippedMaps = HorizontalFlipDungeons(rng, maps, teleporters, overworldMap);
 			}
 
+			if ((bool)flags.RandomizeFormationEnemizer)
+			{
+				DoEnemizer(rng, (bool)flags.RandomizeEnemizer, (bool)flags.RandomizeFormationEnemizer, flags.EnemizerDontMakeNewScripts);
+			}
+
 			if (flags.DeepDungeon)
 			{
 				DeepDungeon(rng, overworldMap, maps, flags);
 				UnusedGoldItems = new List<int> { };
-			}
-
-			if ((bool)flags.RandomizeFormationEnemizer)
-			{
-				DoEnemizer(rng, (bool)flags.RandomizeEnemizer, (bool)flags.RandomizeFormationEnemizer, flags.EnemizerDontMakeNewScripts);
 			}
 
 			if (preferences.ModernBattlefield)
@@ -234,7 +234,7 @@ namespace FF1Lib
 			{
 				EnableLefeinShops(maps);
 			}
-            
+
             if ((bool)flags.MelmondClinic)
             {
                 EnableMelmondClinic(maps);
@@ -242,7 +242,7 @@ namespace FF1Lib
 
 			if ((bool)flags.RandomVampAttack)
 			{
-				RandomVampireAttack(maps, rng);
+				RandomVampireAttack(maps, (bool)flags.LefeinShops, (bool)flags.RandomVampAttackIncludesConeria, rng);
 			}
 
 			if ((bool)flags.GaiaShortcut)
@@ -252,6 +252,11 @@ namespace FF1Lib
 				{
 					MoveGaiaItemShop(maps, rng);
 				}
+			}
+
+			if ((bool)flags.LefeinSuperStore && (flags.ShopKillMode_White == ShopKillMode.None && flags.ShopKillMode_Black == ShopKillMode.None))
+			{
+				EnableLefeinSuperStore(maps);
 			}
 
 			// This has to be done before we shuffle spell levels.
@@ -305,7 +310,12 @@ namespace FF1Lib
 
 			if ((bool)flags.ShortToFR)
 			{
-				ShortenToFR(maps, (bool)flags.PreserveFiendRefights, (bool)flags.PreserveAllFiendRefights, (bool)flags.ExitToFR, rng);
+				ShortenToFR(maps, (bool)flags.PreserveFiendRefights, (bool)flags.PreserveAllFiendRefights, (bool)flags.ExitToFR, (bool)flags.LutePlateInShortToFR, rng);
+			}
+
+			if ((bool)flags.ExitToFR)
+			{
+				EnableToFRExit(maps);
 			}
 
 			if (((bool)flags.Treasures) && flags.ShardHunt && !flags.FreeOrbs)
@@ -492,7 +502,7 @@ namespace FF1Lib
 
 			new ShopKiller(rng, flags, maps, this).KillShops();
 
-			new LegendaryShops(rng, flags, maps, this).PlaceShops();
+			new LegendaryShops(rng, flags, maps, flippedMaps, this).PlaceShops();
 			/*
 			if (flags.WeaponPermissions)
 			{
@@ -608,7 +618,7 @@ namespace FF1Lib
 
 			if (((bool)flags.EnemyTrapTiles) && !flags.EnemizerEnabled)
 			{
-				ShuffleTrapTiles(rng, ((bool)flags.RandomTrapFormations));
+				ShuffleTrapTiles(rng, (bool)flags.RandomTrapFormations, (bool)flags.FightBahamut);
 			}
 
 			if ((bool)flags.ConfusedOldMen)
@@ -666,6 +676,9 @@ namespace FF1Lib
 				EnableEasyMode();
 			}
 
+			new TreasureStacks(this, flags).SetTreasureStacks();
+			new StartingLevels(this, flags).SetStartingLevels();
+
 			if ((bool)flags.TrappedChests || (bool)flags.TCMasaGuardian || (bool)flags.TrappedShards)
 			{
 				MonsterInABox(rng, flags);
@@ -707,10 +720,7 @@ namespace FF1Lib
 				FixWeaponStats();
 			}
 
-			if (flags.ChanceToRun)
-			{
-				FixChanceToRun();
-			}
+			new ChanceToRun(this, flags).FixChanceToRun();
 
 			if (flags.EnemyStatusAttackBug)
 			{
@@ -730,6 +740,11 @@ namespace FF1Lib
 			if (flags.ThiefHitRate)
 			{
 				ThiefHitRate();
+			}
+
+			if (flags.ThiefAgilityBuff)
+			{
+			        BuffThiefAGI();
 			}
 
 			if (flags.ImproveTurnOrderRandomization)
@@ -775,7 +790,7 @@ namespace FF1Lib
 				NPCHints(rng, npcdata, flags, overworldMap);
 			}
 
-			ExpGoldBoost(flags.ExpBonus, flags.ExpMultiplier);
+			ExpGoldBoost(flags);
 			ScalePrices(flags, itemText, rng, ((bool)flags.ClampMinimumPriceScale), shopItemLocation);
 			ScaleEncounterRate(flags.EncounterRate / 30.0, flags.DungeonEncounterRate / 30.0);
 
@@ -866,7 +881,16 @@ namespace FF1Lib
 				ShopUpgrade();
 			}
 
-			if (flags.SpookyFlag)
+			if (flags.BugfixRender3DigitStats) {
+			    Fix3DigitStats();
+			}
+
+			if ((bool)flags.FightBahamut && !flags.SpookyFlag && !(bool)flags.RandomizeFormationEnemizer)
+			{
+				FightBahamut(talkroutines, npcdata, (bool)flags.NoTail, flags.EvadeCap);
+			}
+
+			if (flags.SpookyFlag && !(bool)flags.RandomizeFormationEnemizer)
 			{
 				Spooky(talkroutines, npcdata, rng, flags);
 			}
@@ -908,6 +932,10 @@ namespace FF1Lib
 				rng = new MT19337(funRngSeed);
 				ChangeLute(rng);
 			}
+
+			rng = new MT19337(funRngSeed);
+
+			TitanSnack(preferences.TitanSnack, npcdata, rng);
 
 			rng = new MT19337(funRngSeed);
 
@@ -1150,7 +1178,7 @@ namespace FF1Lib
 			// This removes the code for the minigame on the ship, and moves the prior code around too
 			PutInBank(0x1F, 0xC244, Blob.FromHex("F003C6476020C2D7A520290FD049A524F00EA9008524A542C908F074C901F0B160EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
 			// 15 bytes starting at 0xC8A4 in bank 1F, ROM offset: 7C8B4
-			// This removes the routine that give a reward for beating the minigame, no need for a reward without the minigame 
+			// This removes the routine that give a reward for beating the minigame, no need for a reward without the minigame
 			PutInBank(0x1F, 0xC8A4, Blob.FromHex("EAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
 			// 28 byte starting at 0xCFCB in bank 1F, ROM offset: 7CFE1
 			// This removes the AssertNasirCRC routine, which we were skipping anyways, no point in keeping uncalled routines

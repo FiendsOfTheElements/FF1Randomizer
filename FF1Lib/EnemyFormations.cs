@@ -23,11 +23,17 @@ namespace FF1Lib
 	{
 		public enum FinalFormation
 		{
+			[Description("None")]
 			None,
+			[Description("WarMech and Friends")]
 			WarMECHsAndFriends,
+			[Description("Double Dragons")]
 			KaryAndTiamat,
+			[Description("The Fundead")]
 			TheFundead,
+			[Description("Whack-a-Garland")]
 			TimeLoop,
+			[Description("Random")]
 			Random,
 		};
 
@@ -228,7 +234,7 @@ namespace FF1Lib
 			{
 				if (IsBossTrapTile(tile))
 				{
-					tile[1] = extendedtraptiles ? 0x00 : 0x80;
+					tile[1] = (byte)(extendedtraptiles ? 0x00 : 0x80);
 				}
 			});
 			Put(TilesetDataOffset, tilesets.SelectMany(tileset => tileset.ToBytes()).ToArray());
