@@ -1,0 +1,106 @@
+{
+	"StartingLocation": {
+		"X": 218,
+		"Y": 220
+	},
+	"ShipLocations": [
+		{
+			"TeleporterIndex": 255,
+			"X": 246,
+			"Y": 208
+		},
+		{
+			"TeleporterIndex": 1,
+			"X": 246,
+			"Y": 208
+		},
+		{
+			"TeleporterIndex": 2,
+			"X": 210,
+			"Y": 153
+		},
+		{
+			"TeleporterIndex": 3,
+			"X": 136,
+			"Y": 227
+		},
+		{
+			"TeleporterIndex": 5,
+			"X": 210,
+			"Y": 153
+		},
+		{
+			"TeleporterIndex": 9,
+			"X": 246,
+			"Y": 208
+		},
+		{
+			"TeleporterIndex": 10,
+			"X": 136,
+			"Y": 227
+		},
+		{
+			"TeleporterIndex": 11,
+			"X": 136,
+			"Y": 227
+		},
+		{
+			"TeleporterIndex": 23,
+			"X": 246,
+			"Y": 208
+		},
+		{
+			"TeleporterIndex": 13,
+			"X": 246,
+			"Y": 208
+		},
+		{
+			"TeleporterIndex": 20,
+			"X": 121,
+			"Y": 139
+		},
+		{
+			"TeleporterIndex": 21,
+			"X": 210,
+			"Y": 153
+		},
+		{
+			"TeleporterIndex": 15,
+			"X": 246,
+			"Y": 208
+		},
+		{
+			"TeleporterIndex": 16,
+			"X": 242,
+			"Y": 176
+		}
+	],
+	"TeleporterFixups": [
+		{
+			"Type": 1,
+			"Index": 4,
+			"To": {
+				"X": 219,
+				"Y": 215
+			}
+		}
+	],
+	"DomainFixups": [
+		{
+			"From": 44,
+			"To": 54
+		},
+		{
+			"From": 36,
+			"To": 55
+		},
+		{
+			"From": 28,
+			"To": 62
+		},
+		{
+			"From": 27,
+			"To": 63
+		}
+	]
+}

@@ -4073,5 +4073,26 @@ namespace FF1Lib
 				RaisePropertyChanged();
 			}
 		}
+		
+		public OwMapExchanges OwMapExchange
+		{
+			get => Flags.OwMapExchange;
+			set
+			{
+				Flags.OwMapExchange = value;
+				RaisePropertyChanged();
+			}
+		}
+
+
+		public bool SanityCheckerV2
+		{
+			get => Flags.SanityCheckerV2;
+			set
+			{
+				Flags.SanityCheckerV2 = value;
+				RaisePropertyChanged();
+			}
+		}
 	}
 }
