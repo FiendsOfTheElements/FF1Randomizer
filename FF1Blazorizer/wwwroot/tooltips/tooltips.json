@@ -23,7 +23,24 @@
 		"screenshot": "blindseed.png",
 		"description": "Hides all flags to create a mystery flagset that can then be distributed. Useful for tournament and challenge race settings.\n This flag cannot be disabled once clicked; you will need to hit the Reset button to restore functionality to the site (and this will, in turn, wipe the blind flags selected). Make sure to save your flagset before you use this flag."
 	},
-
+	{
+		"Id": "excludeGoldFromScalingCheckBox",
+		"title": "Exclude Gold from scaling",
+		"screenshot": null,
+		"description": "Gold treasures will only roll to +-10% of their vanilla value instead of scaling with prices. Removes the flat gold boost from 'Exp. Gold Boost' to enemy rewards. Also removes the inverse 'Exp. & Gold Boost' multiplier to prices."
+	},
+	{
+		"Id": "cheapVendorItemCheckBox",
+		"title": "Cheap Vendor Item",
+		"screenshot": null,
+		"description": "Makes the vendor item roll to 20000 +-10%"
+	},
+	{
+		"Id": "applyExpBoostToGoldCheckBox",
+		"title": "Apply flat Gold Boost to Enemies",
+		"screenshot": null,
+		"description": "Applies the flat gold boost from 'Exp & Gold Boost' to enemy rewards. Makes early gold grinds more satisfying."
+	},
 	{
 		"Id": "consumableChestSetDropDown",
 		"title": "Consumable Chests",
@@ -909,6 +926,12 @@
 		"description": "Adds a Plate obstacle in Short ToFR.\nWhen enabled, LUTE is required to enter the boss room."
 	},
 	{
+		"Id": "lefeinSuperStoreCheckBox",
+		"title": "Add Lefein SuperStore",
+		"screenshot": "lefeinSuperStore.gif",
+		"description": "Upgrades the L8 Magic Shops in Lefein to include additional L1-L8 Magic Shops from around the world.\nDoes not include L7 and L8 Magic Shops from the neighboring town Gaia.\nNote: This flag is ignored if Shop Reduction for Magic Shops is enabled."
+	},
+	{
 		"Id": "procGenWaterfall",
 		"title": "Generated Waterfall Cave",
 		"screenshot": "procGenWaterfall.png",
@@ -1515,5 +1538,23 @@
 		"title": "Starting Level",
 		"screenshot": "startingLevelDropDown.gif",
 		"description": "Allows you to change the level your party members will be when you start the game."
+	},
+	{
+		"Id": "lefeinRiverDockCheckBox",
+		"title": "Lefein river dock",
+		"screenshot": "lefeinRiverDock.png",
+		"description": "Add a river dock to the Lefein region, making is accessible without the Airship."
+	},
+	{
+		"Id": "gaiaMountainPassCheckBox",
+		"title": "Gaia mountain pass",
+		"screenshot": "gaiaMountainPass.png",
+		"description": "Add a mountain pass to Gaia, making is accessible without the Airship."
+	},
+	{
+		"Id": "fix3DigitStatsCheckBox",
+		"title": "Correctly render character stats over 99",
+		"screenshot": "statsOver99.png",
+		"description": "Character stats over 99 will be displayed correctly on the status screen."
 	}
 ]

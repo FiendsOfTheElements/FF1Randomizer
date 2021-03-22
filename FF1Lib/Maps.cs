@@ -255,6 +255,7 @@ namespace FF1Lib
 
 	public struct NPC
 	{
+		public ObjectId ObjectId;
 		public int Index;
 		public (int x, int y) Coord;
 		public bool InRoom;
@@ -642,6 +643,22 @@ namespace FF1Lib
 			}
 		}
 
+		public void EnableLefeinSuperStore(List<Map> maps)
+		{
+			// define
+			List<Blob> superStore = new List<Blob>
+			{
+				//              1 2 3 4 WM 5 6 7 8  XX  1 2 3 4 BM 5 6 7 8
+				Blob.FromHex("171717171717171717171700171717171717171717171700"),
+				Blob.FromHex("181818181823181818181801181818181824181818181801"),
+				Blob.FromHex("1D4F5051541D525357581D021D595A5B5E1D5C5D61621D02"),
+			};
+			// place
+			maps[(int)MapId.Lefein].Put((0x28, 0x01), superStore.ToArray());
+			// cleanup (removes single tree)
+			maps[(int)MapId.Lefein][0x00, 0x34] = (byte)Tile.TownGrass;
+		}
+
 		public void EnableLefeinShops(List<Map> maps)
 		{
 			var lefein = maps[(byte)MapId.Lefein];
@@ -975,6 +992,7 @@ namespace FF1Lib
 
 				if (Data[offset] == (byte)mapObjId)
 				{
+					tempNPC.ObjectId = (ObjectId)Data[offset];
 					tempNPC.Index = i;
 					tempNPC.Coord = (Data[offset + 1] & 0x3F, Data[offset + 2]);
 					tempNPC.InRoom = (Data[offset + 1] & 0x80) > 0;
@@ -1016,6 +1034,7 @@ namespace FF1Lib
 
 			int offset = MapSpriteOffset + ((byte)mapId * MapSpriteCount + position) * MapSpriteSize;
 
+			tempNPC.ObjectId = (ObjectId)Data[offset];
 			tempNPC.Index = position;
 			tempNPC.Coord = (Data[offset + 1] & 0x3F, Data[offset + 2]);
 			tempNPC.InRoom = (Data[offset + 1] & 0x80) > 0;

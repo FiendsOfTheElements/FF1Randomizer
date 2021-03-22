@@ -1,0 +1,64 @@
+{
+	"ShipLocations": [
+		{
+			"TeleporterIndex": 255,
+			"X": 152,
+			"Y": 197
+		},
+		{
+			"TeleporterIndex": 20,
+			"X": 121,
+			"Y": 139
+		},
+		{
+			"TeleporterIndex": 21,
+			"X": 158,
+			"Y": 142
+		},
+		{
+			"TeleporterIndex": 2,
+			"X": 210,
+			"Y": 153
+		},
+		{
+			"TeleporterIndex": 16,
+			"X": 210,
+			"Y": 153
+		},
+		{
+			"TeleporterIndex": 3,
+			"X": 141,
+			"Y": 211
+		},
+		{
+			"TeleporterIndex": 3,
+			"X": 141,
+			"Y": 211
+		},
+		{
+			"TeleporterIndex": 10,
+			"X": 141,
+			"Y": 211
+		},
+		{
+			"TeleporterIndex": 23,
+			"X": 141,
+			"Y": 211
+		},
+		{
+			"TeleporterIndex": 11,
+			"X": 141,
+			"Y": 211
+		},
+		{
+			"TeleporterIndex": 5,
+			"X": 246,
+			"Y": 208
+		},
+		{
+			"TeleporterIndex": 15,
+			"X": 246,
+			"Y": 208
+		}
+	]
+}

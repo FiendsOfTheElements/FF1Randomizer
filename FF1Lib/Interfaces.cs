@@ -81,6 +81,8 @@
 		bool? MapOnracDock { get; }
 		bool? MapMirageDock { get; }
 		bool? MapBahamutCardiaDock { get; }
+		bool? MapLefeinRiver { get; }
+		bool? MapGaiaMountainPass { get; }
 		bool? TitansTrove { get; }
 		bool? GaiaShortcut { get; }
 		bool? MoveGaiaItemShop { get; }
@@ -122,6 +124,8 @@
 		double ExpMultiplier { get; }
 		int PriceScaleFactorLow { get; }
 		int PriceScaleFactorHigh { get; }
+		bool? ExcludeGoldFromScaling { get; }
+		bool CheapVendorItem { get; }
 	}
 	public interface IFloorShuffleFlags
 	{
