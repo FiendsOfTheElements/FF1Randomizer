@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -412,7 +412,7 @@ namespace FF1Lib
 			dialogs[0xF8] = "";
 			dialogs[0x149] = dialogs[0xF9]; // See the world
 			dialogs[0xF9] = "";
-			dialogs[0xDB] = dialogs[0x50];
+			dialogs[0xDB] = dialogs[0x50]; // One of the sky warriors (ToF bat)
 			dialogs[0x50] = dialogs[0];    // Nothing here
 
 			// Reinsert updated dialogs with updated pointers
@@ -440,7 +440,7 @@ namespace FF1Lib
 		{
 			// Get Talk Routines from Bank E and put them in bank 11
 			PutInBank(newTalkRoutinesBank, 0x902B, Get(0x3902B, 0x8EA));
-			
+
 			// Backup npc manpulation routines and showMapObject as various other routines use them
 			var npcManipulationRoutines = GetFromBank(0x0E, 0x9079, 0x60);
 			var hideMapObject = GetFromBank(0x0E, 0x9273, 0x30);
@@ -490,7 +490,7 @@ namespace FF1Lib
 			temp = Data[ItemLocations.Lefein.Address];
 			Data[ItemLocations.Lefein.Address] = Data[ItemLocations.Lefein.Address - 1];
 			Data[ItemLocations.Lefein.Address - 1] = temp;
-			
+
 			// And do the same swap in the vanilla routines so those still work if needed
 			Data[0x392A7] = 0x12;
 			Data[0x392AA] = 0x13;
@@ -519,7 +519,7 @@ namespace FF1Lib
 			var formatted = itemnames[(byte)item].TrimEnd(' ');
 
 			if(specialItem)
-			{ 
+			{
 				switch (item)
 				{
 					case Item.Ship:
@@ -1042,7 +1042,7 @@ namespace FF1Lib
 
 			// Check if floor shuffle is on
 			if (overworldmap.OverriddenOverworldLocations != null && overworldmap.OverriddenOverworldLocations.Where(x => x.Key == location).Any())
-			{ 
+			{
 				var parentlocation = parentfloor.Find(x => x.Item1 == location).Item2;
 				var validlocation = location;
 
@@ -1279,7 +1279,7 @@ namespace FF1Lib
 			if (flags.FreeLute ?? false) incentivePool.Remove(Item.Lute);
 			if (flags.FreeShip ?? false) incentivePool.Remove(Item.Ship);
 			if ((flags.FreeTail ?? false) || (flags.NoTail ?? false)) incentivePool.Remove(Item.Tail);
-			
+
 			if (incentivePool.Count == 0)
 				incentivePool.Add(Item.Cabin);
 
@@ -1420,5 +1420,59 @@ namespace FF1Lib
 			}
 			throw new Exception("Couldn't generate hints in 50 tries.");
 		}
+
+	    public void SkyWarriorsSpoilToFR(List<MagicSpell> spellList) {
+		var enemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
+		var scriptBytes = Get(ScriptOffset, ScriptSize * ScriptCount).Chunk(ScriptSize);
+		var bosses = new[] { new { name = "Lich", index = Enemy.Lich2, dialog=0x4D },
+				     new { name = "Kary", index = Enemy.Kary2, dialog=0x4E },
+				     new { name = "Kraken", index = Enemy.Kraken2, dialog=0x4F },
+				     new { name = "Tiamat", index = Enemy.Tiamat2, dialog=0xDB },
+				     new { name = "Chaos", index = Enemy.Chaos, dialog=0x51 },
+		};
+
+		var skillNames = ReadText(EnemySkillTextPointerOffset, EnemySkillTextPointerBase, EnemySkillCount);
+
+		foreach (var ms in spellList) {
+		    Console.WriteLine(FF1Text.BytesToText(ms.Name));
+		}
+
+		foreach (var b in bosses) {
+		    var hp = BitConverter.ToUInt16(enemies[b.index], EnemyStat.HP);
+		    var enemy = enemies[b.index];
+		    var scriptIndex = enemy[EnemyStat.Scripts];
+		    var spells = scriptBytes[scriptIndex].SubBlob(2, 8).ToBytes().Where(b => b != 0xFF).ToList();
+		    var skills = scriptBytes[scriptIndex].SubBlob(11, 4).ToBytes().Where(b => b != 0xFF).ToList();
+
+		    string spellscript = "";
+		    foreach (var s in spells) {
+			if (spellscript != "") {
+			    if (spellscript.Length+skillNames[s].Length > 24 && spellscript.IndexOf("\n") == -1) {
+				spellscript += "\n";
+			    }
+			    spellscript += "-";
+			}
+			spellscript += FF1Text.BytesToText(spellList[s].Name);
+		    }
+		    string skillscript = "";
+		    foreach (var s in skills) {
+			if (skillscript != "") {
+			    if (skillscript.Length+skillNames[s].Length > 24 && skillscript.IndexOf("\n") == -1) {
+				skillscript += "\n";
+			    }
+			    skillscript += "-";
+			}
+			skillscript += skillNames[s];
+		    }
+		    var dialogtext = $"{b.name} {hp,4} HP\n"+
+			$"Def  {enemy[EnemyStat.Defense],3}   Evade {enemy[EnemyStat.Evade],3}\n"+
+			$"Str  {enemy[EnemyStat.Strength],3}   Hits  {enemy[EnemyStat.Hits],3}\n"+
+			$"Hit% {enemy[EnemyStat.HitPercent],3}   Crit% {enemy[EnemyStat.CriticalPercent],3}\n"+
+			$"{spellscript}\n"+
+			$"{skillscript}";
+		    Console.WriteLine(dialogtext);
+		    InsertDialogs(b.dialog, dialogtext);
+		}
+	    }
 	}
 }
