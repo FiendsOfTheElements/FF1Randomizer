@@ -313,8 +313,8 @@ namespace FF1Lib
 			var magicPermissions = Get(MagicPermissionsOffset, 8 * 12).Chunk(8);
 			var magicArray = new List<byte> { 0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01 };
 
-			var firstLifeIndex = itemnames.ToList().FindIndex(x => x.ToLower().Contains("lif")) - 176;
-			var secondLifeIndex = itemnames.ToList().FindIndex(firstLifeIndex + 177, x => x.ToLower().Contains("lif")) - 176;
+			var firstLifeIndex = itemnames.ToList().FindIndex(x => x.ToLower().Contains("lif")) - MagicNamesIndexInItemText;
+			var secondLifeIndex = itemnames.ToList().FindIndex(firstLifeIndex + MagicNamesIndexInItemText + 1, x => x.ToLower().Contains("lif")) - MagicNamesIndexInItemText;
 
 			var firstlife = firstLifeIndex >= 0 ? (((~magicPermissions[3][firstLifeIndex / 8] & magicArray[firstLifeIndex % 8]) > 0) ? true : false) : false;
 			var secondlife = secondLifeIndex >= 0 ? (((~magicPermissions[3][secondLifeIndex / 8] & magicArray[secondLifeIndex % 8]) > 0) ? true : false) : false;
@@ -1421,7 +1421,8 @@ namespace FF1Lib
 			throw new Exception("Couldn't generate hints in 50 tries.");
 		}
 
-	    public void SkyWarriorsSpoilToFR(List<MagicSpell> spellList) {
+	    public void SkyWarriorsSpoilToFR() {
+		List<MagicSpell> spellList = GetSpells();
 		var enemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
 		var scriptBytes = Get(ScriptOffset, ScriptSize * ScriptCount).Chunk(ScriptSize);
 		var bosses = new[] { new { name = "Lich", index = Enemy.Lich2, dialog=0x4D },
@@ -1433,10 +1434,6 @@ namespace FF1Lib
 
 		var skillNames = ReadText(EnemySkillTextPointerOffset, EnemySkillTextPointerBase, EnemySkillCount);
 
-		foreach (var ms in spellList) {
-		    Console.WriteLine(FF1Text.BytesToText(ms.Name));
-		}
-
 		foreach (var b in bosses) {
 		    var hp = BitConverter.ToUInt16(enemies[b.index], EnemyStat.HP);
 		    var enemy = enemies[b.index];
@@ -1446,13 +1443,14 @@ namespace FF1Lib
 
 		    string spellscript = "";
 		    foreach (var s in spells) {
+			var spellname = FF1Text.BytesToText(spellList[s].Name);
 			if (spellscript != "") {
-			    if (spellscript.Length+skillNames[s].Length > 24 && spellscript.IndexOf("\n") == -1) {
+			    if (spellscript.Length+spellname.Length > 24 && spellscript.IndexOf("\n") == -1) {
 				spellscript += "\n";
 			    }
 			    spellscript += "-";
 			}
-			spellscript += FF1Text.BytesToText(spellList[s].Name);
+			spellscript += spellname;
 		    }
 		    string skillscript = "";
 		    foreach (var s in skills) {
@@ -1464,10 +1462,12 @@ namespace FF1Lib
 			}
 			skillscript += skillNames[s];
 		    }
+		    //$"Str {enemy[EnemyStat.Strength],3}  Def {enemy[EnemyStat.Defense],3}  Eva {enemy[EnemyStat.Evade],3}\n"+
+		    //$"Hts {enemy[EnemyStat.Hits],3}  Ht% {enemy[EnemyStat.HitPercent],3}  Cr% {enemy[EnemyStat.CriticalPercent],3}\n"+
+		    //$"   Crit% {enemy[EnemyStat.CriticalPercent],3}\n"+
 		    var dialogtext = $"{b.name} {hp,4} HP\n"+
-			$"Def  {enemy[EnemyStat.Defense],3}   Evade {enemy[EnemyStat.Evade],3}\n"+
-			$"Str  {enemy[EnemyStat.Strength],3}   Hits  {enemy[EnemyStat.Hits],3}\n"+
-			$"Hit% {enemy[EnemyStat.HitPercent],3}   Crit% {enemy[EnemyStat.CriticalPercent],3}\n"+
+			$"Attack  {enemy[EnemyStat.HitPercent],3}% +{enemy[EnemyStat.Strength],3} x{enemy[EnemyStat.Hits],2} \n"+
+			$"Defense {enemy[EnemyStat.Evade],3     }% -{enemy[EnemyStat.Defense],3}\n"+
 			$"{spellscript}\n"+
 			$"{skillscript}";
 		    Console.WriteLine(dialogtext);

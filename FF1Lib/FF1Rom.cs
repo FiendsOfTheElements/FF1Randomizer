@@ -499,8 +499,6 @@ namespace FF1Lib
 				ShuffleMagicLevels(rng, ((bool)flags.MagicPermissions), (bool)flags.MagicLevelsTiered, (bool)flags.MagicLevelsMixed, (bool)!flags.GenerateNewSpellbook);
 			}
 
-			List<MagicSpell> spellList = GetSpells();
-
 			new StartingInventory(rng, flags, this).SetStartingInventory();
 
 			new ShopKiller(rng, flags, maps, this).KillShops();
@@ -815,7 +813,7 @@ namespace FF1Lib
 			{
 				ScaleBossStats(rng, flags);
 			}
-			SkyWarriorsSpoilToFR(spellList);
+			SkyWarriorsSpoilToFR();
 
 			PartyComposition(rng, flags, preferences);
 
