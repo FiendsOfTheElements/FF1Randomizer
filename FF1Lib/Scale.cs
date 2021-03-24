@@ -495,5 +495,9 @@ namespace FF1Lib
 			newPirate.agility = 24;
 			Put(EnemyOffset + EnemySize * Enemy.Pirate, newPirate.compressData());
 		}
+
+		public List<Blob> GetAllEnemyStats() {
+		    return Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
+		}
 	}
 }

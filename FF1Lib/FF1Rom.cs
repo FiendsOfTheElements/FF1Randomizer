@@ -799,6 +799,8 @@ namespace FF1Lib
 
 			WriteText(itemText, ItemTextPointerOffset, ItemTextPointerBase, ItemTextOffset, UnusedGoldItems);
 
+			var originalBossStats = GetAllEnemyStats();
+
 			if ((bool)flags.SwolePirates)
 			{
 				EnableSwolePirates();
@@ -813,7 +815,10 @@ namespace FF1Lib
 			{
 				ScaleBossStats(rng, flags);
 			}
-			SkyWarriorsSpoilToFR();
+
+			if (flags.SkyWarriorSpoilerBats != SpoilerBatHints.Vanilla) {
+			    SkyWarriorSpoilerBats(flags, originalBossStats);
+			}
 
 			PartyComposition(rng, flags, preferences);
 

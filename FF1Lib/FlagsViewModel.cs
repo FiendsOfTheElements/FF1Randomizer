@@ -4073,7 +4073,7 @@ namespace FF1Lib
 				RaisePropertyChanged();
 			}
 		}
-		
+
 		public OwMapExchanges OwMapExchange
 		{
 			get => Flags.OwMapExchange;
@@ -4093,6 +4093,16 @@ namespace FF1Lib
 				Flags.SanityCheckerV2 = value;
 				RaisePropertyChanged();
 			}
+		}
+
+		public SpoilerBatHints SkyWarriorSpoilerBats
+		{
+		    get => Flags.SkyWarriorSpoilerBats;
+		    set
+		    {
+			Flags.SkyWarriorSpoilerBats = value;
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SkyWarriorSpoilerBats"));
+		    }
 		}
 	}
 }

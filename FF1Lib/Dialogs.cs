@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -7,6 +8,15 @@ using RomUtilities;
 
 namespace FF1Lib
 {
+    public enum SpoilerBatHints {
+	[Description("Vanilla")]
+	Vanilla = 0,
+	[Description("Hints")]
+	Hints,
+	[Description("Full stats")]
+	FullStats,
+    };
+
 	public partial class FF1Rom
 	{
 		public const int dialogsOffset = 0x402A0;
@@ -1421,9 +1431,9 @@ namespace FF1Lib
 			throw new Exception("Couldn't generate hints in 50 tries.");
 		}
 
-	    public void SkyWarriorsSpoilToFR() {
+	    public void SkyWarriorSpoilerBats(Flags flags, List<Blob> originalEnemyStats) {
 		List<MagicSpell> spellList = GetSpells();
-		var enemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
+		var enemies = GetAllEnemyStats();
 		var scriptBytes = Get(ScriptOffset, ScriptSize * ScriptCount).Chunk(ScriptSize);
 		var bosses = new[] { new { name = "Lich", index = Enemy.Lich2, dialog=0x4D },
 				     new { name = "Kary", index = Enemy.Kary2, dialog=0x4E },
@@ -1435,41 +1445,48 @@ namespace FF1Lib
 		var skillNames = ReadText(EnemySkillTextPointerOffset, EnemySkillTextPointerBase, EnemySkillCount);
 
 		foreach (var b in bosses) {
+		    var originalhp = BitConverter.ToUInt16(originalEnemyStats[b.index], EnemyStat.HP);
 		    var hp = BitConverter.ToUInt16(enemies[b.index], EnemyStat.HP);
 		    var enemy = enemies[b.index];
 		    var scriptIndex = enemy[EnemyStat.Scripts];
 		    var spells = scriptBytes[scriptIndex].SubBlob(2, 8).ToBytes().Where(b => b != 0xFF).ToList();
 		    var skills = scriptBytes[scriptIndex].SubBlob(11, 4).ToBytes().Where(b => b != 0xFF).ToList();
 
-		    string spellscript = "";
-		    foreach (var s in spells) {
-			var spellname = FF1Text.BytesToText(spellList[s].Name);
-			if (spellscript != "") {
-			    if (spellscript.Length+spellname.Length > 24 && spellscript.IndexOf("\n") == -1) {
-				spellscript += "\n";
+		    string dialogtext = "";
+		    if (flags.SkyWarriorSpoilerBats == SpoilerBatHints.FullStats) {
+			string spellscript = "";
+			foreach (var s in spells) {
+			    var spellname = FF1Text.BytesToText(spellList[s].Name);
+			    if (spellscript != "") {
+				if (spellscript.Length+spellname.Length > 23 && spellscript.IndexOf("\n") == -1) {
+				    spellscript += "\n";
+				}
+				spellscript += "-";
 			    }
-			    spellscript += "-";
+			    spellscript += spellname;
 			}
-			spellscript += spellname;
-		    }
-		    string skillscript = "";
-		    foreach (var s in skills) {
-			if (skillscript != "") {
-			    if (skillscript.Length+skillNames[s].Length > 24 && skillscript.IndexOf("\n") == -1) {
-				skillscript += "\n";
+			string skillscript = "";
+			foreach (var s in skills) {
+			    if (skillscript != "") {
+				if (skillscript.Length+skillNames[s].Length > 23 && skillscript.IndexOf("\n") == -1) {
+				    skillscript += "\n";
+				}
+				skillscript += "-";
 			    }
-			    skillscript += "-";
+			    skillscript += skillNames[s];
 			}
-			skillscript += skillNames[s];
+			dialogtext = $"{b.name} {hp,4} HP\n"+
+			    $"Attack  {enemy[EnemyStat.HitPercent],3}% +{enemy[EnemyStat.Strength],3} x{enemy[EnemyStat.Hits],2}\n"+
+			    $"Defense {enemy[EnemyStat.Evade],3     }% -{enemy[EnemyStat.Defense],3}\n"+
+			    $"{spellscript}\n"+
+			    $"{skillscript}";
 		    }
-		    //$"Str {enemy[EnemyStat.Strength],3}  Def {enemy[EnemyStat.Defense],3}  Eva {enemy[EnemyStat.Evade],3}\n"+
-		    //$"Hts {enemy[EnemyStat.Hits],3}  Ht% {enemy[EnemyStat.HitPercent],3}  Cr% {enemy[EnemyStat.CriticalPercent],3}\n"+
-		    //$"   Crit% {enemy[EnemyStat.CriticalPercent],3}\n"+
-		    var dialogtext = $"{b.name} {hp,4} HP\n"+
-			$"Attack  {enemy[EnemyStat.HitPercent],3}% +{enemy[EnemyStat.Strength],3} x{enemy[EnemyStat.Hits],2} \n"+
-			$"Defense {enemy[EnemyStat.Evade],3     }% -{enemy[EnemyStat.Defense],3}\n"+
-			$"{spellscript}\n"+
-			$"{skillscript}";
+		    else if (flags.SkyWarriorSpoilerBats == SpoilerBatHints.Hints) {
+			float scaled = (float)hp/(float)originalhp;
+
+
+			dialogtext = $"Legend has it that {b.name} scaled {scaled}";
+		    }
 		    Console.WriteLine(dialogtext);
 		    InsertDialogs(b.dialog, dialogtext);
 		}

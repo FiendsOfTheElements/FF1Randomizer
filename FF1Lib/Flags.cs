@@ -74,7 +74,7 @@ namespace FF1Lib
 		public bool? ExcludeGoldFromScaling { get; set; } = false;
 		public bool CheapVendorItem { get; set; } = true;
 		public bool ApplyExpBoostToGold { get; set; } = false;
-		
+
 		public StartingLevel StartingLevel { get; set; }
 
 		public bool Spoilers { get; set; } = false;
@@ -246,6 +246,7 @@ namespace FF1Lib
 		public bool WeaponBonuses { get; set; } = false;
 		public bool ThiefAgilityBuff { get; set; } = false;
 		public bool BugfixRender3DigitStats { get; set; } = false;
+		public SpoilerBatHints SkyWarriorSpoilerBats { get; set; } = SpoilerBatHints.Vanilla;
 
 		[IntegerFlag(0, 50)]
 		public int WeaponTypeBonusValue { get; set; } = 10;

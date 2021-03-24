@@ -97,6 +97,10 @@
 			</div>
 			<div class="checkbox-cell"></div>
 			<h4>Extensive Hints</h4>
+			<div class="row">
+                                <EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="spoilerBatsDropDown" TItem="SpoilerBatHints" @bind-Value="Flags.SkyWarriorSpoilerBats">ToF Spoiler bats:</EnumDropDown>
+			</div>
+
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="extendedHintsCheckBox" @bind-Value="Flags.ExtensiveHints_Enable">Enable Extensive Hints</CheckBox>
 			<div class="row">
 				<div class="col-lg-3 tighter noleftpadding">Loose on Floor:</div>
