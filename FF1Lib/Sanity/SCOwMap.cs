@@ -105,7 +105,7 @@ namespace FF1Lib.Sanity
 			else if ((tileDef.OWBitFlags & SCBitFlags.Caravan) > 0)
 			{
 				poi.Type = SCPointOfInterestType.Shop;
-				poi.ShopId = 70;
+				poi.ShopId = 69;
 				PointsOfInterest.Add(poi);
 			}
 		}
