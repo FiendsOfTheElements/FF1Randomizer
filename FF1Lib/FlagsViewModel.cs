@@ -2297,10 +2297,10 @@ namespace FF1Lib
 
 		public double ExpMultiplier
 		{
-			get => Flags.ExpMultiplier;
+			get => Flags.ExpMultiplier * 10.0;
 			set
 			{
-				Flags.ExpMultiplier = value;
+				Flags.ExpMultiplier = value * 0.1;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ExpMultiplier"));
 			}
 		}
