@@ -269,8 +269,8 @@ namespace FF1Lib
 		public const int MapCount = 61;
 		public const int MapDataOffset = 0x10080;
 
-		public const int TeleportOffset = 0x02D00;
-		public const int TeleportCount = 64;
+		public const int TeleportOffset = 0x3F000;
+		public const int TeleportCount = 256;
 
 		public const int TilesetDataOffset = 0x00800;
 		public const int TilesetDataSize = 2;
@@ -1065,6 +1065,35 @@ namespace FF1Lib
 			{
 				Put(MapPointerOffset + pointers[i], data[i]);
 			}
+		}
+
+		public void ExpandNormalTeleporters()
+		{
+			// Code for extension is included in ExtraTrackingAndInitCode() in FF1Rom.cs
+
+			var BANK_TELEPORTINFO = 0x00;
+			var BANK_EXTTELEPORTINFO = 0x0F;
+
+			var lut_NormTele_X = 0xAD00;
+			var lut_NormTele_Y = 0xAD40;
+			var lut_NormTele_Map = 0xAD80;
+			var NormTele_qty = 0x40;
+
+			var lut_NormTele_X_ext = 0xB000;
+			var lut_NormTele_Y_ext = 0xB100;
+			var lut_NormTele_Map_ext = 0xB200;
+			//var NormTele_ext_qty = 0x100;
+
+			var NormTele_X = GetFromBank(BANK_TELEPORTINFO, lut_NormTele_X, NormTele_qty);
+			var NormTele_Y = GetFromBank(BANK_TELEPORTINFO, lut_NormTele_Y, NormTele_qty);
+			var NormTele_Map = GetFromBank(BANK_TELEPORTINFO, lut_NormTele_Map, NormTele_qty);
+
+			PutInBank(BANK_EXTTELEPORTINFO, lut_NormTele_X_ext, NormTele_X);
+			PutInBank(BANK_EXTTELEPORTINFO, lut_NormTele_Y_ext, NormTele_Y);
+			PutInBank(BANK_EXTTELEPORTINFO, lut_NormTele_Map_ext, NormTele_Map);
+
+
+
 		}
 
 	}
