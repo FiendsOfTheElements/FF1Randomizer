@@ -897,10 +897,13 @@ namespace FF1Lib
 				FightBahamut(talkroutines, npcdata, (bool)flags.NoTail, flags.EvadeCap);
 			}
 
+			
 			if (flags.SpookyFlag && !(bool)flags.RandomizeFormationEnemizer)
 			{
 				Spooky(talkroutines, npcdata, rng, flags);
 			}
+
+			LoadInTown(overworldMap);
 
 			if (flags.InventoryAutosort && !(preferences.RenounceAutosort))
 			{
