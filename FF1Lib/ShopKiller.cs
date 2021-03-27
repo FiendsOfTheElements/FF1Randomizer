@@ -71,7 +71,7 @@ namespace FF1Lib
 			maps = _maps;
 
 			ShopData = new ShopData(rom);
-			QuestItems = new HashSet<Item>(ItemLists.AllQuestItems);
+			QuestItems = new HashSet<Item>(ItemLists.AllQuestItems.Where(i => i <= Item.Gold65000));
 		}
 
 		public void KillShops()
