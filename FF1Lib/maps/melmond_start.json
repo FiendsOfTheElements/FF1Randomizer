@@ -1,0 +1,120 @@
+{
+	"StartingLocation": {
+		"X": 81,
+		"Y": 160
+	},
+	"AirShipLocation": {
+		"X": 221,
+		"Y": 237
+	},
+	"ShipLocations": [
+		{
+			"TeleporterIndex": 255,
+			"X": 79,
+			"Y": 160
+		},
+		{
+			"TeleporterIndex": 3,
+			"X": 136,
+			"Y": 227
+		},
+		{
+			"TeleporterIndex": 10,
+			"X": 136,
+			"Y": 227
+		},
+		{
+			"TeleporterIndex": 11,
+			"X": 136,
+			"Y": 227
+		},
+		{
+			"TeleporterIndex": 23,
+			"X": 136,
+			"Y": 227
+		},
+		{
+			"TeleporterIndex": 1,
+			"X": 79,
+			"Y": 160
+		},
+		{
+			"TeleporterIndex": 9,
+			"X": 79,
+			"Y": 160
+		},
+		{
+			"TeleporterIndex": 13,
+			"X": 79,
+			"Y": 160
+		},
+		{
+			"TeleporterIndex": 14,
+			"X": 79,
+			"Y": 160
+		},
+		{
+			"TeleporterIndex": 20,
+			"X": 79,
+			"Y": 160
+		},
+		{
+			"TeleporterIndex": 1,
+			"X": 79,
+			"Y": 160
+		},
+		{
+			"TeleporterIndex": 22,
+			"X": 79,
+			"Y": 160
+		},
+		{
+			"TeleporterIndex": 25,
+			"X": 79,
+			"Y": 160
+		},
+		{
+			"TeleporterIndex": 26,
+			"X": 79,
+			"Y": 160
+		},
+		{
+			"TeleporterIndex": 5,
+			"X": 246,
+			"Y": 208
+		},
+		{
+			"TeleporterIndex": 15,
+			"X": 246,
+			"Y": 208
+		}
+	],
+	"TeleporterFixups": [
+		{
+			"Type": 1,
+			"Index": 4,
+			"To": {
+				"X": 79,
+				"Y": 154
+			}
+		}
+	],
+	"DomainFixups": [
+		{
+			"From": 44,
+			"To": 34
+		},
+		{
+			"From": 36,
+			"To": 42
+		},
+		{
+			"From": 28,
+			"To": 33
+		},
+		{
+			"From": 27,
+			"To": 41
+		}
+	]
+}

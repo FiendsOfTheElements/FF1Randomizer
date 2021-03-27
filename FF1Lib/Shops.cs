@@ -229,7 +229,8 @@ namespace FF1Lib
                         result = new ItemShopSlot(ShopPointerBase + pointer + bottle.index,
                                                   $"{Enum.GetName(typeof(MapLocation), location)}Shop{bottle.index + 1}",
                                                   location,
-                                                  Item.Bottle);
+                                                  Item.Bottle,
+												  (byte)(61 + i));
                     }
 					Put(ShopPointerBase + pointer, newShops[i].ToArray());
 

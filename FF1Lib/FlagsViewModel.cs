@@ -2297,10 +2297,10 @@ namespace FF1Lib
 
 		public double ExpMultiplier
 		{
-			get => Flags.ExpMultiplier;
+			get => Flags.ExpMultiplier * 10.0;
 			set
 			{
-				Flags.ExpMultiplier = value;
+				Flags.ExpMultiplier = value * 0.1;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ExpMultiplier"));
 			}
 		}
@@ -4070,6 +4070,27 @@ namespace FF1Lib
 			set
 			{
 				Flags.ApplyExpBoostToGold = value;
+				RaisePropertyChanged();
+			}
+		}
+		
+		public OwMapExchanges OwMapExchange
+		{
+			get => Flags.OwMapExchange;
+			set
+			{
+				Flags.OwMapExchange = value;
+				RaisePropertyChanged();
+			}
+		}
+
+
+		public bool SanityCheckerV2
+		{
+			get => Flags.SanityCheckerV2;
+			set
+			{
+				Flags.SanityCheckerV2 = value;
 				RaisePropertyChanged();
 			}
 		}

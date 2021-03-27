@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using RomUtilities;
 
@@ -196,9 +197,9 @@ namespace FF1Lib
 
 		const int teleportTilesetOffset = 0x2CC0;
 
-		const int teleportXOffset = 0x2D00;
-		const int teleportYOffset = 0x2D40;
-		const int teleportMapIndexOffset = 0x2D80;
+		const int teleportXOffset = 0x3F000;
+		const int teleportYOffset = 0x3F100;
+		const int teleportMapIndexOffset = 0x3F200;
 
 		public static Dictionary<Palette, Blob> GeneratePalettes(List<Blob> vanillaPalettes)
 		{
@@ -1146,6 +1147,27 @@ namespace FF1Lib
 				}
 				Debug.Write("\n");
 			}
+		}
+
+		public void SwapMap(string fileName)
+		{
+			List<List<byte>> decompressedRows = new List<List<byte>>();
+
+			var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+			var resourcePath = assembly.GetManifestResourceNames().First(str => str.EndsWith(fileName));
+
+			using (Stream stream = assembly.GetManifestResourceStream(resourcePath))
+			using (BinaryReader rd = new BinaryReader(stream))
+			{
+				for (int i = 0; i < 256; i++)
+				{
+					var row = rd.ReadBytes(256);
+					decompressedRows.Add(new List<byte>(row));
+				}
+			}
+
+			var recompressedMap = CompressMapRows(decompressedRows);
+			PutCompressedMapRows(recompressedMap);
 		}
 
 		public void ApplyMapEdits()

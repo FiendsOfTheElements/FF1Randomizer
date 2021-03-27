@@ -29,7 +29,8 @@ namespace FF1Lib
 													IncentiveData incentivesData,
 													ItemShopSlot caravanItemLocation,
 													OverworldMap overworldMap,
-													TeleportShuffle teleporters)
+													TeleportShuffle teleporters,
+													ISanityChecker checker)
 		{
 			Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullFloorRequirements = overworldMap.FullLocationRequirements;
 			Dictionary<MapLocation, OverworldTeleportIndex> overridenOverworld = overworldMap.OverriddenOverworldLocations;
@@ -51,7 +52,7 @@ namespace FF1Lib
 				Debug.Assert(shardsAdded == TotalOrbsToInsert);
 			}
 
-			ItemPlacement placement = ItemPlacement.Create(flags, incentivesData, treasurePool, caravanItemLocation, overworldMap);
+			ItemPlacement placement = ItemPlacement.Create(flags, incentivesData, treasurePool, caravanItemLocation, overworldMap, checker);
 			var placedItems = placement.PlaceSaneItems(rng);
 			
 			// Output the results to the ROM
