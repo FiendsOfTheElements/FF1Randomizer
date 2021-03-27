@@ -102,7 +102,7 @@ namespace FF1Lib
 			return rom;
 		}
 
-		public void Randomize(Blob seed, Flags flags, Preferences preferences)
+		public void Randomize(Blob seed, Flags flags, Preferences preferences, string music)
 		{
 			MT19337 rng;
 			using (SHA256 hasher = SHA256.Create())
@@ -130,6 +130,9 @@ namespace FF1Lib
 			var talkroutines = new TalkRoutines();
 			var npcdata = new NPCdata(this);
 			UpdateDialogs(npcdata);
+
+			// fix this
+			MusicSample(music);
 
 			if (flags.TournamentSafe) Put(0x3FFE3, Blob.FromHex("66696E616C2066616E74617379"));
 
