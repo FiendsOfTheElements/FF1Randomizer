@@ -197,9 +197,9 @@ namespace FF1Lib
 
 		const int teleportTilesetOffset = 0x2CC0;
 
-		const int teleportXOffset = 0x2D00;
-		const int teleportYOffset = 0x2D40;
-		const int teleportMapIndexOffset = 0x2D80;
+		const int teleportXOffset = 0x3F000;
+		const int teleportYOffset = 0x3F100;
+		const int teleportMapIndexOffset = 0x3F200;
 
 		public static Dictionary<Palette, Blob> GeneratePalettes(List<Blob> vanillaPalettes)
 		{

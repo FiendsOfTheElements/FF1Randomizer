@@ -690,18 +690,18 @@ namespace FF1Lib
 			Put(0x800 + 0x100 + 2 * skipentrance1, Blob.FromHex("8001"));
 			Put(0x800 + 0x100 + 2 * skipentrance2, Blob.FromHex("8002"));
 			Put(0x800 + 0x100 + 2 * skipentrance3, Blob.FromHex("8003"));
-			Put(0x2D00 + 0, Blob.FromHex("20"));
-			Put(0x2D40 + 0, Blob.FromHex("A0"));
-			Put(0x2D80 + 0, Blob.FromHex("08")); // Floor 1
-			Put(0x2D00 + 1, Blob.FromHex("20"));
-			Put(0x2D40 + 1, Blob.FromHex("A0"));
-			Put(0x2D80 + 1, Blob.FromHex("0F")); // Floor 8
-			Put(0x2D00 + 2, Blob.FromHex("20"));
-			Put(0x2D40 + 2, Blob.FromHex("A0"));
-			Put(0x2D80 + 2, Blob.FromHex("1D")); // Floor 22
-			Put(0x2D00 + 3, Blob.FromHex("20"));
-			Put(0x2D40 + 3, Blob.FromHex("A0"));
-			Put(0x2D80 + 3, Blob.FromHex("2B")); // Floor 36
+			Put(0x3F000 + 0, Blob.FromHex("20"));
+			Put(0x3F100 + 0, Blob.FromHex("A0"));
+			Put(0x3F200 + 0, Blob.FromHex("08")); // Floor 1
+			Put(0x3F000 + 1, Blob.FromHex("20"));
+			Put(0x3F100 + 1, Blob.FromHex("A0"));
+			Put(0x3F200 + 1, Blob.FromHex("0F")); // Floor 8
+			Put(0x3F000 + 2, Blob.FromHex("20"));
+			Put(0x3F100 + 2, Blob.FromHex("A0"));
+			Put(0x3F200 + 2, Blob.FromHex("1D")); // Floor 22
+			Put(0x3F000 + 3, Blob.FromHex("20"));
+			Put(0x3F100 + 3, Blob.FromHex("A0"));
+			Put(0x3F200 + 3, Blob.FromHex("2B")); // Floor 36
 
 			// Put some guards in front of the other entrances
 			// The "ordeals man" will be in front of 1, explaining what's going on and then vanishing
@@ -761,15 +761,15 @@ namespace FF1Lib
 				if (i < 59)
 				{
 					Put(0x800 + tilesetmappings[i] * 0x100 + 2 * PlaceExit(rng, maps[i], tilesets[tilesetmappings[i]]), Blob.FromHex("80" + Convert.ToHexString(new byte[] { (byte)(i - 4) })));
-					Put(0x2D00 + i - 4, Blob.FromHex("20"));
-					Put(0x2D40 + i - 4, Blob.FromHex("A0"));
-					Put(0x2D80 + i - 4, Blob.FromHex(Convert.ToHexString(new byte[] { (byte)(i + 1) })));
+					Put(0x3F000 + i - 4, Blob.FromHex("20"));
+					Put(0x3F100 + i - 4, Blob.FromHex("A0"));
+					Put(0x3F200 + i - 4, Blob.FromHex(Convert.ToHexString(new byte[] { (byte)(i + 1) })));
 					if (townfloors[nexttown] == i)
 					{
 						Put(0x800 + tilesetmappings[i] * 0x100 + 2 * PlaceExit(rng, maps[i], tilesets[tilesetmappings[i]]), Blob.FromHex("80" + Convert.ToHexString(new byte[] { (byte)(nexttown + 57) })));
-						Put(0x2D00 + nexttown + 57, Blob.FromHex(Convert.ToHexString(new byte[] { (byte)towndestinations[nexttown].x })));
-						Put(0x2D40 + nexttown + 57, Blob.FromHex(Convert.ToHexString(new byte[] { (byte)(towndestinations[nexttown].y + 0x80) })));
-						Put(0x2D80 + nexttown + 57, Blob.FromHex(Convert.ToHexString(new byte[] { (byte)(nexttown + 1) })));
+						Put(0x3F000 + nexttown + 57, Blob.FromHex(Convert.ToHexString(new byte[] { (byte)towndestinations[nexttown].x })));
+						Put(0x3F100 + nexttown + 57, Blob.FromHex(Convert.ToHexString(new byte[] { (byte)(towndestinations[nexttown].y + 0x80) })));
+						Put(0x3F200 + nexttown + 57, Blob.FromHex(Convert.ToHexString(new byte[] { (byte)(nexttown + 1) })));
 						if (nexttown < 6) nexttown++;
 					}
 				}
