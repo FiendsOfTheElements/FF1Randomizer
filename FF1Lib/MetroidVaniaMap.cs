@@ -46,10 +46,11 @@ namespace FF1Lib
 			PutInBank(0x0E, 0x9DC0, townPosList.Select(x => x.Item1).ToArray());
 			PutInBank(0x0E, 0x9DD0, townPosList.Select(x => x.Item2).ToArray());
 
+			/*
 			// Copy Tileset in bank 0x0F
 			var lut_Tilesets = GetFromBank(0x00, 0xACC0, 0x40);
 			PutInBank(0x0F, 0x9500, lut_Tilesets);
-
+			
 			// Turn Exit teleports to entrance teleports, expand to 64
 			PutInBank(0x1F, 0xC9AA, Blob.FromHex("A90F2003FE2000964C8EC9"));
 			PutInBank(0x0F, 0x9600, Blob.FromHex("A645BD40958510BD80958511BDC0958548AABD00958549200092688510688511A52948A52A48A50D48A54848A54948A51148A5104860"));
@@ -58,7 +59,7 @@ namespace FF1Lib
 			PutInBank(0x0F, 0x9540, Blob.FromHex("02020202020202020202"));
 			PutInBank(0x0F, 0x9580, Blob.FromHex("09090909090909090909"));
 			PutInBank(0x0F, 0x95C0, Blob.FromHex("08080808080808080808"));
-
+			*/
 
 			// Coneria
 			var northwall = new List<Blob> { Blob.FromHex("0404040404") };
@@ -72,6 +73,10 @@ namespace FF1Lib
 			PutInBank(0x00, 0x9000 + 0x80 + 0x7E, Blob.FromHex("05"));
 			PutInBank(0x00, 0x9000 + 0x100 + 0x7E, Blob.FromHex("14"));
 			PutInBank(0x00, 0x9000 + 0x180 + 0x7E, Blob.FromHex("15"));
+
+			var test = new smTile();
+
+			test.Palette = TilePalette.RoomPalette1;
 
 			/*
 
@@ -100,6 +105,51 @@ namespace FF1Lib
 						};
 				maps[(int)MapId.Lefein].Put((0x10, 0x04), restoredInn.ToArray());
 			*/
+		}
+
+		public class smTile
+		{
+			private byte _attribute;
+			private byte _TSAul;
+			private byte _TSAur;
+			private byte _TSAdl;
+			private byte _TSAdr;
+			//private byte _property1;
+			//private byte _property2;
+			//private int _tileSetOrigin;
+
+			const int BANK_SMINFO = 0x00;
+			const int lut_SMTilesetAttr = 0x8400; // BANK_SMINFO - must be on $400 byte bound  - 0x80 x8
+			const int lut_SMTilesetProp = 0x8800; // BANK_SMINFO - page                        - 0x100 bytes x 8  (2 bytes per)
+			const int lut_SMTilesetTSA = 0x9000;  // BANK_SMINFO - page                        - 0x80 bytes x4 x8 => ul, ur, dl, dr
+			const int lut_SMPalettes = 0xA000;    // BANK_SMINFO - $1000 byte bound            - 0x30 bytes x8?
+
+			public TilePalette Palette
+			{
+				get { return (TilePalette)_attribute; }
+				set { _attribute = (byte)value; }
+			}
+
+			public List<byte> TileGraphic
+			{
+				get { return new List<byte> { _TSAul, _TSAur, _TSAdl, _TSAdr }; }
+				set
+				{
+					_TSAul = value[0];
+					_TSAur = value[1];
+					_TSAdl = value[2];
+					_TSAdr = value[3];
+				}
+			}
+
+		}
+
+		public enum TilePalette : byte
+		{
+			RoomPalette1 = 0x00,
+			RoomPalette2 = 0x55,
+			OutPalette1 = 0xAA,
+			OutPalette2 = 0xFF,
 		}
 
 	}

@@ -903,7 +903,7 @@ namespace FF1Lib
 				Spooky(talkroutines, npcdata, rng, flags);
 			}
 
-			LoadInTown(overworldMap);
+			//LoadInTown(overworldMap);
 
 			if (flags.InventoryAutosort && !(preferences.RenounceAutosort))
 			{
