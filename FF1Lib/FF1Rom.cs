@@ -799,8 +799,6 @@ namespace FF1Lib
 
 			WriteText(itemText, ItemTextPointerOffset, ItemTextPointerBase, ItemTextOffset, UnusedGoldItems);
 
-			var originalBossStats = GetAllEnemyStats();
-
 			if ((bool)flags.SwolePirates)
 			{
 				EnableSwolePirates();
@@ -814,10 +812,6 @@ namespace FF1Lib
 			if (flags.BossScaleStatsHigh != 100 || flags.BossScaleStatsLow != 100 || ((bool)flags.SeparateBossHPScaling && (flags.BossScaleHpLow != 100 || flags.BossScaleHpHigh != 100)))
 			{
 				ScaleBossStats(rng, flags);
-			}
-
-			if (flags.SkyWarriorSpoilerBats != SpoilerBatHints.Vanilla) {
-			    SkyWarriorSpoilerBats(flags, originalBossStats);
 			}
 
 			PartyComposition(rng, flags, preferences);
@@ -905,6 +899,10 @@ namespace FF1Lib
 			if (flags.InventoryAutosort && !(preferences.RenounceAutosort))
 			{
 				EnableInventoryAutosort();
+			}
+
+			if (flags.SkyWarriorSpoilerBats != SpoilerBatHints.Vanilla) {
+			    SkyWarriorSpoilerBats(rng, flags);
 			}
 
 			// We have to do "fun" stuff last because it alters the RNG state.
