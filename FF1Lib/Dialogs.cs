@@ -1165,7 +1165,6 @@ namespace FF1Lib
 		int start = 0;
 		int end = 0;
 		int lineno = 0;
-		Console.WriteLine($"Wrapping '{st}' {st.Length}");
 		while (end < st.Length) {
 		    lineno++;
 		    if (lineno > maxlines) {
@@ -1174,20 +1173,17 @@ namespace FF1Lib
 
 		    start = end;
 		    while (st[start] == ' ') {
-			Console.WriteLine($"adjusting start {start} '{st[start]}'");
 			start++;
 		    }
 
 		    end = Math.Min(end+width, st.Length);
 		    while (end != st.Length && st[end] != ' ') {
-			Console.WriteLine($"adjusting end {end} '{st[end]}'");
 			end--;
 		    }
 
 		    if (start > 0) {
 			wrapped += "\n";
 		    }
-		    Console.WriteLine($"{end} {start} {end-start}");
 		    wrapped += st.Substring(start, end-start);
 		}
 		return wrapped;
@@ -1460,7 +1456,6 @@ namespace FF1Lib
 		var skillNames = ReadText(EnemySkillTextPointerOffset, EnemySkillTextPointerBase, EnemySkillCount);
 
 		foreach (var b in bosses) {
-		    var originalhp = BitConverter.ToUInt16(originalEnemyStats[b.index], EnemyStat.HP);
 		    int hp = (int)BitConverter.ToUInt16(enemies[b.index], EnemyStat.HP);
 		    var enemy = enemies[b.index];
 		    var scriptIndex = enemy[EnemyStat.Scripts];
@@ -1499,7 +1494,7 @@ namespace FF1Lib
 		    else if (flags.SkyWarriorSpoilerBats == SpoilerBatHints.Hints) {
 			var hpRanges = new List<int> {0, 600, 900, 1200, 1500, 2000, 2500, 3000, 3500, 4000};
 			var hpDescriptions = new List<string> {
-				"is a speed bump",           // 0-600
+				"is a speed bump",           // 0-599
 				    "is not very tough",     // 600-899
 				    "",                   // 900-1199
 				    "is pretty tough",       // 1200-1499
@@ -1525,7 +1520,7 @@ namespace FF1Lib
 			var hitCountRanges = new List<int> {0, 2, 3, 5, 7, 9, 11, 13, 16};
 			var hitCountDescriptions = new List<string> {
 				"", // 1
-				    "can hit you a couple times", // 2
+				    "can hit you a couple of times", // 2
 				    "can hit you a few times", // 3-4
 				    "can hit you half a dozen times", // 5-6
 				    "can hit you an incredible number of times", // 7-9
@@ -1558,7 +1553,7 @@ namespace FF1Lib
 				    };
 
 			var intros = new List<string> {
-			    "Legend has it",
+			    "Legend has it that",
 			    "The sages say that",
 			    "I heard that",
 			    "The inscriptions say that",
@@ -1620,17 +1615,13 @@ namespace FF1Lib
 			    }
 			}
 			if (hasEarlyNukeOrNuclear) {
-			    lines.Add("might try to nuke you");
+			    lines.Add("will probably nuke you");
 			}
 			if (hasCUR4) {
 			    lines.Add("can heal");
 			}
-
-			if (spells.Count == 0) {
-			    lines.Add("doesn't like to cast spells");
-			}
-			if (skills.Count == 0) {
-			    lines.Add("doesn't have any skills");
+			if (spells.Count == 0 && skills.Count == 0) {
+			    lines.Add("doesn't like to use magic");
 			}
 
 			int countlines = 0;
@@ -1653,13 +1644,11 @@ namespace FF1Lib
 				dialogtext += $"and {lines[lines.Count-1]}";
 			    }
 			    dialogtext = $"{intros[chooseIntro]} {b.name} {dialogtext}.";
-			    dialogtext = FormatText(dialogtext, 25, 99);
+			    dialogtext = FormatText(dialogtext, 24, 99);
 			    countlines = dialogtext.Count(f => f == '\n');
 			} while(countlines > 6);
 		    }
 
-		    Console.WriteLine(dialogtext);
-		    Console.WriteLine($"character count {dialogtext.Length}");
 		    InsertDialogs(b.dialog, dialogtext);
 		}
 	    }

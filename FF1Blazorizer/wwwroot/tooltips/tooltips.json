@@ -1553,5 +1553,11 @@
 		"title": "Correctly render character stats over 99",
 		"screenshot": "statsOver99.png",
 		"description": "Character stats over 99 will be displayed correctly on the status screen."
+	},
+	{
+	"Id": "spoilerBatsDropDown",
+	"title": "Sky Warriors give ToFR Boss Hints",
+	"screenshot": "spoilerBats.png",
+	"description": "After all four orbs are lit, the sky warrior bat dialog will be replaced with spoilers about the stats of the fiend refights and Chaos.\n\nWith the 'hint' option, the adjectives used give an approximation of the stat value.  Some of the adjectives used, in increasing order severity:\n\npretty, extra, very, super, incredibly, insanely\n\nThe greatest severity hints correspond to 250% or greater scaling."
 	}
 ]
