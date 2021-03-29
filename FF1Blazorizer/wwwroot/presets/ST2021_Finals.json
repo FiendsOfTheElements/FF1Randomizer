@@ -348,7 +348,7 @@
     "LegendaryBlackShop": false,
     "LegendaryWhiteShop": false,
     "LegendaryItemShop": false,
-    "RandomizeClassMaxBonus": 1,
+    "RandomizeClassMaxBonus": 2,
     "RandomizeClassMaxMalus": 3,
     "ChangeMaxMP": false,
     "RedMageMaxMP": 9,
