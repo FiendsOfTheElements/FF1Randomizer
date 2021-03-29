@@ -4104,5 +4104,14 @@ namespace FF1Lib
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SkyWarriorSpoilerBats"));
 		    }
 		}
+		public bool? SpoilerBatsDontCheckOrbs
+		{
+		    get => Flags.SpoilerBatsDontCheckOrbs;
+		    set
+		    {
+			Flags.SpoilerBatsDontCheckOrbs = value;
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SpoilerBatsDontCheckOrbs"));
+		    }
+		}
 	}
 }

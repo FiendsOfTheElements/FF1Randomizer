@@ -902,7 +902,7 @@ namespace FF1Lib
 			}
 
 			if (flags.SkyWarriorSpoilerBats != SpoilerBatHints.Vanilla) {
-			    SkyWarriorSpoilerBats(rng, flags);
+			    SkyWarriorSpoilerBats(rng, flags, npcdata);
 			}
 
 			// We have to do "fun" stuff last because it alters the RNG state.

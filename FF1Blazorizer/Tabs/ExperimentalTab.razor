@@ -96,9 +96,10 @@
 				<div class="col-lg-4 tighter"><CheckBox DisableTooltip @bind-Value="Flags.ShopKillExcludeConeria_White">Exclude Coneria</CheckBox></div>
 			</div>
 			<div class="checkbox-cell"></div>
-			<h4>Extensive Hints</h4>
+			<h4>Hints</h4>
 			<div class="row">
-                                <EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="spoilerBatsDropDown" TItem="SpoilerBatHints" @bind-Value="Flags.SkyWarriorSpoilerBats">ToF Spoiler bats:</EnumDropDown>
+                                <EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="spoilerBatsDropDown" TItem="SpoilerBatHints" @bind-Value="Flags.SkyWarriorSpoilerBats">Temple of Fiends bats text:</EnumDropDown>
+				<TriStateCheckBox DisableTooltip Indent UpdateToolTip="@UpdateToolTipID" Id="spoilerBatsDontCheckOrbsCheckbox" @bind-Value="Flags.SpoilerBatsDontCheckOrbs">Spoilers are available at the beginning of the game</TriStateCheckBox>
 			</div>
 
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="extendedHintsCheckBox" @bind-Value="Flags.ExtensiveHints_Enable">Enable Extensive Hints</CheckBox>

@@ -13,6 +13,8 @@ namespace FF1Lib
 	Vanilla = 0,
 	[Description("Hints")]
 	Hints,
+	[Description("Stars")]
+	Stars,
 	[Description("Full stats")]
 	FullStats,
     };
@@ -1432,17 +1434,21 @@ namespace FF1Lib
 			throw new Exception("Couldn't generate hints in 50 tries.");
 		}
 
-	    string ChooseDescription(List<int> ranges, List<string> descriptions, int value) {
-		string rval = "";
-		for (int i = 0; i < ranges.Count; i++) {
-		    if (value >= ranges[i]) {
-			rval = descriptions[i];
-		    } else { break; }
+	    int ThreatRating(List<int> ranges, int value) {
+		int i = 0;
+		for (; i < ranges.Count; i++) {
+		    if (value < ranges[i]) {
+			return i-1;
+		    }
 		}
-		return rval;
+		return i-1;
 	    }
 
-	    public void SkyWarriorSpoilerBats(MT19337 rng, Flags flags) {
+	    string ChooseDescription(List<int> ranges, List<string> descriptions, int value) {
+		return descriptions[ThreatRating(ranges, value)];
+	    }
+
+	    public void SkyWarriorSpoilerBats(MT19337 rng, Flags flags, NPCdata npcdata) {
 		List<MagicSpell> spellList = GetSpells();
 		var enemies = GetAllEnemyStats();
 		var scriptBytes = Get(ScriptOffset, ScriptSize * ScriptCount).Chunk(ScriptSize);
@@ -1455,12 +1461,124 @@ namespace FF1Lib
 
 		var skillNames = ReadText(EnemySkillTextPointerOffset, EnemySkillTextPointerBase, EnemySkillCount);
 
+		var hpRanges = new List<int> {0, 600, 900, 1200, 1500, 2000, 2500, 3000, 3500, 4000};
+		var hpDescriptions = new List<string> {
+		    "is a speed bump",           // 0-599
+		    "is not very tough",     // 600-899
+		    "",                   // 900-1199
+		    "is pretty tough",       // 1200-1499
+		    "is extra tough",        // 1500-1999
+		    "is very tough",         // 2000-2499
+		    "is super tough",        // 2500-2999
+		    "is incredibly tough",   // 3000-3499
+		    "is insanely tough",     // 3500-3999
+		    "is like a brick wall",  // 4000+
+		};
+		var dmgRanges = new List<int> {0, 50, 75, 100, 125, 150, 175, 200, 250};
+		var dmgDescriptions = new List<string> {
+		    "has a pathetic attack",     // 0-49
+		    "has a weak attack",     // 50-74
+		    "",                      // 75-99
+		    "has a pretty powerful attack",   // 100-124
+		    "has an extra powerful attack",    // 125-149
+		    "has a very powerful attack",     // 150-174
+		    "has an incredibly powerful attack",         // 175-199
+		    "has a insanely powerful attack",           // 200-249
+		    "can destroy you with one finger", // 250+
+		};
+		var hitCountRanges = new List<int> {0, 2, 3, 5, 7, 9, 11, 13, 16};
+		var hitCountDescriptions = new List<string> {
+		    "", // 1
+		    "can hit you a couple of times", // 2
+		    "can hit you a few times", // 3-4
+		    "can hit you half a dozen times", // 5-6
+		    "can hit you an incredible number of times", // 7-9
+		    "can hit you an insane number of times", // 10-14
+		    "will punch you until you are dead, then punch you some more", // 15+
+		};
+		var evadeRanges = new List<int> {0, 50, 75, 100, 125, 150, 175, 200, 240};
+		var evadeDescriptions = new List<string> {
+		    "is a sitting duck",             // 0-49
+		    "is easy to hit",            // 50-74
+		    "",                       // 75-99,
+		    "is extra hard to hit",      // 100-124
+		    "is very hard to hit",       // 125-149
+		    "is super hard to hit",      // 150-174
+		    "is incredibly hard to hit", // 175-199
+		    "is insanely hard to hit",  // 200-239
+		    "is nearly impossible to hit", // 240+
+		};
+		var defRanges = new List<int> {0, 50, 75, 100, 125, 150, 175, 200, 250};
+		var defDescriptions = new List<string> {
+		    "has pathetic armor",           // 0-49
+		    "has weak armor",           // 50-74
+		    "",                         // 75-99
+		    "has pretty thick armor",       // 100-124
+		    "has extra thick armor",        // 125-149
+		    "has very thick armor",         // 150-174
+		    "has incredibly thick armor",   // 175-199
+		    "has insanely thick armor",     // 200-249
+		    "can't be hurt with your puny weapons", // 250+
+		};
+
+		var intros = new List<string> {
+		    "Legend has it that",
+		    "The Sages say that",
+		    "The inscriptions say that",
+		    "Uncle Caleb says that",
+		    "The ancient scrolls say that",
+		    "Analyzing the ROM, I discovered that",
+		    "Kee.. Kee..",
+		    "In Sky Warrior school, I learned that",
+		    "Time 4 Lern!",
+		    "Listen up!",
+		    "Dude,",
+		    "I overhead Garland saying that",
+		    "Captain, sensors indicate that",
+		    "Hear this, Light Warrior!",
+		    "Tetron wants you to know that",
+		    "Good news, everyone!"
+		};
+
+
+
 		foreach (var b in bosses) {
 		    int hp = (int)BitConverter.ToUInt16(enemies[b.index], EnemyStat.HP);
 		    var enemy = enemies[b.index];
 		    var scriptIndex = enemy[EnemyStat.Scripts];
 		    var spells = scriptBytes[scriptIndex].SubBlob(2, 8).ToBytes().Where(b => b != 0xFF).ToList();
 		    var skills = scriptBytes[scriptIndex].SubBlob(11, 4).ToBytes().Where(b => b != 0xFF).ToList();
+
+		    var bossStats = new[] {
+			new { name="HP", ranges=hpRanges, descriptions=hpDescriptions, bossvalue=hp },
+			new { name="Attack", ranges=dmgRanges, descriptions=dmgDescriptions, bossvalue=(int)enemy[EnemyStat.Strength] },
+			new { name="Hits", ranges=hitCountRanges, descriptions=hitCountDescriptions, bossvalue=(int)enemy[EnemyStat.Hits] },
+			new { name="Evade",ranges=evadeRanges, descriptions=evadeDescriptions, bossvalue=(int)enemy[EnemyStat.Evade] },
+			new { name="Defense",ranges=defRanges, descriptions=defDescriptions, bossvalue=(int)enemy[EnemyStat.Defense] },
+		    };
+
+		    bool hasEarlyNukeOrNuclear = false;
+		    bool hasCUR4 = false;
+		    bool hasCRACK = false;
+		    for (int i = 0; i < spells.Count; i++) {
+			var s = spells[i];
+			var spellname = FF1Text.BytesToText(spellList[s].Name);
+			if (spellname == "NUKE" && i<4) {
+			    hasEarlyNukeOrNuclear = true;
+			}
+			if (spellname == "CUR4") {
+			    hasCUR4 = true;
+			}
+		    }
+		    for (int i = 0; i < skills.Count; i++) {
+			var s = skills[i];
+			if (skillNames[s] == "NUCLEAR" && i<2) {
+			    hasEarlyNukeOrNuclear = true;
+			}
+			if (skillNames[s] == "CRACK") {
+			    hasCRACK = true;
+			}
+		    }
 
 		    string dialogtext = "";
 		    if (flags.SkyWarriorSpoilerBats == SpoilerBatHints.FullStats) {
@@ -1492,90 +1610,8 @@ namespace FF1Lib
 			    $"{skillscript}";
 		    }
 		    else if (flags.SkyWarriorSpoilerBats == SpoilerBatHints.Hints) {
-			var hpRanges = new List<int> {0, 600, 900, 1200, 1500, 2000, 2500, 3000, 3500, 4000};
-			var hpDescriptions = new List<string> {
-				"is a speed bump",           // 0-599
-				    "is not very tough",     // 600-899
-				    "",                   // 900-1199
-				    "is pretty tough",       // 1200-1499
-				    "is extra tough",        // 1500-1999
-				    "is very tough",         // 2000-2499
-				    "is super tough",        // 2500-2999
-				    "is incredibly tough",   // 3000-3499
-				    "is insanely tough",     // 3500-3999
-				    "is like a brick wall",  // 4000+
-				    };
-			var dmgRanges = new List<int> {0, 50, 75, 100, 125, 150, 175, 200, 250};
-			var dmgDescriptions = new List<string> {
-			    "has a pathetic attack",     // 0-49
-				"has a weak attack",     // 50-74
-				"",                      // 75-99
-				"has a pretty powerful attack",   // 100-124
-				"has an extra powerful attack",    // 125-149
-				"has a very powerful attack",     // 150-174
-				"has an incredibly powerful attack",         // 175-199
-				"has a insanely powerful attack",           // 200-249
-				"can destroy you with one finger", // 250+
-			};
-			var hitCountRanges = new List<int> {0, 2, 3, 5, 7, 9, 11, 13, 16};
-			var hitCountDescriptions = new List<string> {
-				"", // 1
-				    "can hit you a couple of times", // 2
-				    "can hit you a few times", // 3-4
-				    "can hit you half a dozen times", // 5-6
-				    "can hit you an incredible number of times", // 7-9
-				    "can hit you an insane number of times", // 10-14
-				    "will punch you until you are dead, then punch you some more", // 15+
-				    };
-			var evadeRanges = new List<int> {0, 50, 75, 100, 125, 150, 175, 200, 240};
-			var evadeDescriptions = new List<string> {
-				"is a sitting duck",             // 0-49
-				    "is easy to hit",            // 50-74
-				    "",                       // 75-99,
-				    "is extra hard to hit",      // 100-124
-				    "is very hard to hit",       // 125-149
-				    "is super hard to hit",      // 150-174
-				    "is incredibly hard to hit", // 175-199
-				    "is insanely hard to hit",  // 200-239
-				    "is nearly impossible to hit", // 240+
-				    };
-			var defRanges = new List<int> {0, 50, 75, 100, 125, 150, 175, 200, 250};
-			var defDescriptions = new List<string> {
-				"has pathetic armor",           // 0-49
-				    "has weak armor",           // 50-74
-				    "",                         // 75-99
-				    "has pretty thick armor",       // 100-124
-				    "has extra thick armor",        // 125-149
-				    "has very thick armor",         // 150-174
-				    "has incredibly thick armor",   // 175-199
-				    "has insanely thick armor",     // 200-249
-				    "can't be hurt with your puny weapons", // 250+
-				    };
-
-			var intros = new List<string> {
-			    "Legend has it that",
-			    "The sages say that",
-			    "I heard that",
-			    "The inscriptions say that",
-			    "Uncle Caleb says that",
-			    "The ancient scrolls say that",
-			    "Analyzing the ROM, I discovered that",
-			    "Kee.. Kee..",
-			    "In Sky Warrior school, I learned that",
-			    "Time 4 Lern!",
-			    "Listen up!",
-			    "Dude,",
-			};
 
 			var chooseIntro = rng.Between(0, intros.Count-1);
-
-			var bossStats = new[] {
-			    new { ranges=hpRanges, descriptions=hpDescriptions, bossvalue=hp },
-			    new { ranges=dmgRanges, descriptions=dmgDescriptions, bossvalue=(int)enemy[EnemyStat.Strength] },
-			    new { ranges=hitCountRanges, descriptions=hitCountDescriptions, bossvalue=(int)enemy[EnemyStat.Hits] },
-			    new { ranges=evadeRanges, descriptions=evadeDescriptions, bossvalue=(int)enemy[EnemyStat.Evade] },
-			    new { ranges=defRanges, descriptions=defDescriptions, bossvalue=(int)enemy[EnemyStat.Defense] },
-			};
 
 			var lines = new List<string>();
 
@@ -1596,26 +1632,11 @@ namespace FF1Lib
 			    }
 			}
 
-			bool hasEarlyNukeOrNuclear = false;
-			bool hasCUR4 = false;
-			for (int i = 0; i < spells.Count; i++) {
-			    var s = spells[i];
-			    var spellname = FF1Text.BytesToText(spellList[s].Name);
-			    if (spellname == "NUKE" && i<4) {
-				hasEarlyNukeOrNuclear = true;
-			    }
-			    if (spellname == "CUR4") {
-				hasCUR4 = true;
-			    }
-			}
-			for (int i = 0; i < skills.Count; i++) {
-			    var s = skills[i];
-			    if (skillNames[s] == "NUCLEAR" && i<2) {
-				hasEarlyNukeOrNuclear = true;
-			    }
-			}
 			if (hasEarlyNukeOrNuclear) {
 			    lines.Add("will probably nuke you");
+			}
+			if (hasCRACK) {
+			    lines.Add("can crack you like an egg");
 			}
 			if (hasCUR4) {
 			    lines.Add("can heal");
@@ -1647,9 +1668,50 @@ namespace FF1Lib
 			    dialogtext = FormatText(dialogtext, 24, 99);
 			    countlines = dialogtext.Count(f => f == '\n');
 			} while(countlines > 6);
+
+			intros.RemoveAt(chooseIntro); // so each bat will get a different intro.
+		    }
+		    else if (flags.SkyWarriorSpoilerBats == SpoilerBatHints.Stars) {
+			dialogtext = $"Scouting report, {b.name}";
+			for (int i = 0; i < bossStats.Length; i++) {
+			    var bs = bossStats[i];
+			    int threat;
+			    if (i == 0 && b.name == "Chaos") {
+				// Chaos has a lot more HP than the
+				// other fiends adjust it down a bit
+				// so the hints make more sense.
+				threat = ThreatRating(bs.ranges, bs.bossvalue-1000);
+			    }
+			    else {
+				threat = ThreatRating(bs.ranges, bs.bossvalue);
+			    }
+			    var normalized = (float)threat/(float)bs.ranges.Count;
+			    string stars = new String('+', (int)Math.Round(normalized*9)+1);
+			    dialogtext += $"\n{bs.name,7} {stars}";
+			}
+
+			dialogtext += $"\nMagic";
+			if (hasEarlyNukeOrNuclear) {
+			    dialogtext += " NUKE";
+			}
+			if (hasCRACK) {
+			    dialogtext += " CRACK";
+			}
+			if (hasCUR4) {
+			    dialogtext += " CUR4";
+			}
 		    }
 
 		    InsertDialogs(b.dialog, dialogtext);
+		}
+
+		if ((bool)flags.SpoilerBatsDontCheckOrbs) {
+		    // Tweak the bat's dialog script
+		    npcdata.SetRoutine(ObjectId.SkyWarrior1, newTalkRoutines.Talk_norm);
+		    npcdata.SetRoutine(ObjectId.SkyWarrior2, newTalkRoutines.Talk_norm);
+		    npcdata.SetRoutine(ObjectId.SkyWarrior3, newTalkRoutines.Talk_norm);
+		    npcdata.SetRoutine(ObjectId.SkyWarrior4, newTalkRoutines.Talk_norm);
+		    npcdata.SetRoutine(ObjectId.SkyWarrior5, newTalkRoutines.Talk_norm);
 		}
 	    }
 	}
