@@ -1685,8 +1685,8 @@ namespace FF1Lib
 			    else {
 				threat = ThreatRating(bs.ranges, bs.bossvalue);
 			    }
-			    var normalized = (float)threat/(float)bs.ranges.Count;
-			    string stars = new String('+', (int)Math.Round(normalized*9)+1);
+			    var normalized = (float)(threat+1)/(float)bs.ranges.Count;
+			    string stars = new String('+', (int)Math.Max(Math.Round(normalized*10), 1));
 			    dialogtext += $"\n{bs.name,7} {stars}";
 			}
 
