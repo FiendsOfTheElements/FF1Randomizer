@@ -155,6 +155,7 @@
 		bool? FreeLute { get; }
 		bool? FreeTail { get; }
 		bool? NoTail { get; }
+		bool? NoFloater { get; }
 		bool? LooseExcludePlacedDungeons { get; }
 	}
 }

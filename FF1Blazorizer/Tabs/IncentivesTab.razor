@@ -4,7 +4,7 @@
 	<div id="Incentives" class="tabcontent framed-content clearfix @(noTabLayout ? "no-tab" : "") @(IsOpen ? "" : "collapsed")">
 		<h3 class="@(IsOpen ? "" : "h3-collapsed")"><a class="@(noTabLayout ? "collapsible-header" : "")" @onclick="(() => IsOpen = (!noTabLayout || !IsOpen))">Incentivized Locations and Items</a></h3>
 		@if (IsOpen)
-		{ 
+		{
 	<div class="col1">
 		<h4>Locations: @(Flags.Flags.IncentivizedLocationCountMin) @((Flags.Flags.IncentivizedLocationCountMin != Flags.Flags.IncentivizedLocationCountMax) ? "- " + Flags.Flags.IncentivizedLocationCountMax : "") </h4>
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeFreeNPCsCheckBox" IsEnabled="@Flags.IncentivizeFreeNPCsEnabled" @bind-Value="Flags.IncentivizeFreeNPCs">Main NPCs</TriStateCheckBox>
@@ -114,7 +114,7 @@
 		<p>@Flags.Flags.IncentivizedItems</p>
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeMainItemsCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeMainItems">Main Progression Items</TriStateCheckBox>
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeFetchItemsCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeFetchItems">Other Quest Items</TriStateCheckBox>
-		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeAirshipCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeAirship">Floater</TriStateCheckBox>
+		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeAirshipCheckBox" IsEnabled="@((Flags.Treasures != false) && (Flags.NoFloater == false))" @bind-Value="Flags.IncentivizeAirship">Floater</TriStateCheckBox>
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeCanoeItemCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeCanoeItem">Canoe</TriStateCheckBox>
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeShipAndCanalCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeShipAndCanal">Ship &amp; Canal</TriStateCheckBox>
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeTailCheckBox" IsEnabled="@((Flags.Treasures != false) && (Flags.NoTail != true))" @bind-Value="Flags.IncentivizeTail">Tail</TriStateCheckBox>
@@ -140,4 +140,3 @@
 			[Parameter] public bool noTabLayout { get; set; }
 			[Parameter] public bool IsOpen { get; set; } = true;
 	}
-

@@ -127,7 +127,7 @@ namespace FF1Lib
 			{
 				placedItems = placedItems.Select(x => x.Item != Item.Bridge ? x : NewItemPlacement(x, ReplacementItem)).ToList();
 			}
-			if ((bool)_flags.FreeAirship)
+			if ((bool)_flags.FreeAirship || (bool)_flags.NoFloater)
 			{
 				placedItems = placedItems.Select(x => x.Item != Item.Floater ? x : NewItemPlacement(x, ReplacementItem)).ToList();
 			}
@@ -324,7 +324,7 @@ namespace FF1Lib
 			{
 				return new TreasureChest(copyFromSource, newItem);
 			}
-		}		
+		}
 	}
 
 	public class RandomItemPlacement : ItemPlacement
@@ -585,7 +585,7 @@ namespace FF1Lib
 
 				if ((bool)_flags.LooseExcludePlacedDungeons)
 					leftoverItemLocations = preBlackOrbUnincentivizedLocationPool.Where(x => !placedItems.Any(y => y.Address == x.Address)).ToList();
-				
+
 				foreach (var leftoverItem in leftoverItems)
 				{
 					placedItems.Add(NewItemPlacement(leftoverItemLocations.SpliceRandom(rng), leftoverItem));

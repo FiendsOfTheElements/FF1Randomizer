@@ -2158,6 +2158,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NoTail"));
 			}
 		}
+		public bool? NoFloater
+		{
+			get => Flags.NoFloater;
+			set
+			{
+				Flags.NoFloater = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NoFloater"));
+			}
+		}
 		public bool? GuaranteedMasamune
 		{
 			get => Flags.GuaranteedMasamune;
@@ -2186,7 +2195,7 @@ namespace FF1Lib
 			}
 		}
 
-    public bool? NoXcalbur
+		public bool? NoXcalbur
 		{
 			get => Flags.NoXcalbur;
 			set

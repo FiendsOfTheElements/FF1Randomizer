@@ -1572,5 +1572,16 @@
 		"title": "Extensive Hints",
 		"screenshot": "extendedHintsCheckBox.png",
 		"description": "Replace NPCs' dialogues with hints. There a 6 Hint Categories:\nLoose Floor - Provides the floor where a loose item is located\nLoose Name - Provides the name of the loose item and the dungeon\nIncentivized Name - Provides the name of the incentivized item and the dungeon, NPC, or town\nFloor Hints - Wow: Quest or legendary; Meh: Rare equipment; Sparkle: More than 5k gold treasure; Dud: None of the above\nEquipment Floor - States on what floor legendary items are located\nEquipment Name - Gives the name of the equipment and the dungeon name\nThe hint categories are placed in the order specified. If there are no valid places left, remaining hints are not placed anymore."
+	},
+	"Id": "spoilerBatsDropDown",
+	"title": "Sky Warriors give ToFR Boss Hints",
+	"screenshot": "spoilerBats.png",
+	"description": "The dialogue for the sky warrior bats in Garland's room will be replaced with spoilers about the fiend refights and Chaos.\n\nWith the 'Hints' option, describes the approximate stats in text.  Adjectives used represent increasing order of difficulty: pretty, extra, very, super, incredibly, insanely.\n\nWith the 'Stars' option, gives a rating for each boss stat on a scale of 1-10.\n\nWith the 'Full stats' option, gives the numerical stats and full spell and skill scripts."
+	},
+        {
+		"Id": "noFloaterCheckBox",
+		"title": "Remove Floater",
+		"screenshot": "",
+		"description": "Removes the Floater from the incentive pool, making it impossible to get the Airship.  Requires Nothern Docks to be enabled.  Enabling Bahamut Cardia dock, Lefein river dock, and Gaia mountain pass is recommended to make those areas accessible by Ship."
 	}
 ]
