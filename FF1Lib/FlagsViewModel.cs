@@ -4073,6 +4073,16 @@ namespace FF1Lib
 				RaisePropertyChanged();
 			}
 		}
+
+public StartingEquipmentSet StartingEquipment
+		{
+			get => Flags.StartingEquipment;
+			set
+			{
+				Flags.StartingEquipment = value;
+        RaisePropertyChanged();
+			}
+		}      
 		
 		public OwMapExchanges OwMapExchange
 		{
