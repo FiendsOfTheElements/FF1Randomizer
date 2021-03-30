@@ -25,9 +25,9 @@ namespace FF1Lib
 		{
 			rom = _rom;
 
-			TeleX = new MemTable<byte>(rom, 0x2D00, 64);
-			TeleY = new MemTable<byte>(rom, 0x2D40, 64);
-			TeleMap = new MemTable<MapId>(rom, 0x2D80, 64);
+			TeleX = new MemTable<byte>(rom, 0x3F000, 256);
+			TeleY = new MemTable<byte>(rom, 0x3F100, 256);
+			TeleMap = new MemTable<MapId>(rom, 0x3F200, 256);
 		}
 
 		public void LoadData()

@@ -125,6 +125,7 @@ namespace FF1Lib
 			CastableItemTargeting();
 			FixEnemyPalettes(); // fixes a bug in the original game's programming that causes third enemy slot's palette to render incorrectly
 			FixWarpBug(); // The warp bug must be fixed for magic level shuffle and spellcrafter
+			ExpandNormalTeleporters();
 			SeparateUnrunnables();
 			var talkroutines = new TalkRoutines();
 			var npcdata = new NPCdata(this);
@@ -504,6 +505,7 @@ namespace FF1Lib
 			}
 
 			new StartingInventory(rng, flags, this).SetStartingInventory();
+			new StartingEquipment(rng, flags, this).SetStartingEquipment();
 
 			new ShopKiller(rng, flags, maps, this).KillShops();
 
@@ -689,7 +691,7 @@ namespace FF1Lib
 				MonsterInABox(rng, flags);
 			}
 
-			if (flags.HouseMPRestoration || flags.HousesFillHp)
+			if (!flags.Etherizer && (flags.HouseMPRestoration || flags.HousesFillHp))
 			{
 				FixHouse(flags.HouseMPRestoration, flags.HousesFillHp);
 			}
@@ -775,7 +777,7 @@ namespace FF1Lib
 			var itemText = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
 			itemText[(int)Item.Ribbon] = itemText[(int)Item.Ribbon].Remove(7);
 
-			if (flags.Etherizer && !flags.HouseMPRestoration && !flags.HousesFillHp)
+			if (flags.Etherizer)
 			{
 				Etherizer();
 				itemText[(int)Item.Tent] = "ETHR@p";
@@ -1164,7 +1166,7 @@ namespace FF1Lib
 
 			// Replace Overworld to Floor and Floor to Floor teleport code to JSR out to 0x9200 to set X / Y AND inroom from unused high bit of X.
 			PutInBank(0x1F, 0xC1E2, Blob.FromHex("A9002003FEA545293FAABD00AC8510BD20AC8511BD40AC8548AABDC0AC8549A90F2003FE200092EAEAEAEAEAEA"));
-			PutInBank(0x1F, 0xC968, Blob.FromHex("A9002003FEA645BD00AD8510BD40AD8511BD80AD8548AABDC0AC8549A90F2003FE200092EAEA"));
+			PutInBank(0x1F, 0xC968, Blob.FromHex("A90F2003FEA645BD00B08510BD00B18511BD00B28548200092A9002003FEA548AABDC0AC8549"));
 			PutInBank(0x0F, 0x9200, Blob.FromHex("A200A5100A9002A2814A38E907293F8529A5110A9002860D4A38E907293F852A60"));
 
 			// Critical hit display for number of hits

@@ -271,6 +271,46 @@ loop:
 exit:
 	RTS ;60
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;;  Copy_StartingEquipment  [$8520]
+;;
+;;
+;; StartingEquipment Table 32 bytes
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;;  Copy_StartingEquipment  [$8540]
+;;
+;;
+;; Copies the Starting Equipment into sram
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+Copy_StartingEquipment: ;0x8540
+    LDX #$00			; A200
+    LDY #$00			; A000
+    JSR copy_8			; 205785
+    LDY #$40			; A040
+    JSR copy_8			; 205785
+    LDY #$80			; A080
+    JSR copy_8			; 205785
+    LDY #$C0			; A0C0
+    JSR copy_8			; 205785
+    RTS					; 60
+
+
+copy_8:				    ; 0x8557
+    LDA source, X		; BD2085
+    STA ch_weapons, Y	; 991861
+    INX					; E8
+    INY					; C8
+    TYA					; 98
+    AND #$0F			; 290F
+    CMP #$08			; C908
+    BNE copy_8			; D0F3
+    RTS					; 60
+
 .advance $874A
 ; extra room for future level up changes
 
