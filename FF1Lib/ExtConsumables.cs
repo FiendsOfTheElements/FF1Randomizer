@@ -1,4 +1,5 @@
-﻿using RomUtilities;
+﻿using FF1Lib.Data;
+using RomUtilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,13 +18,18 @@ namespace FF1Lib
 
 		List<SpellInfo> SpellInfos;
 
-		public ExtConsumables(FF1Rom _rom, Flags _flags)
+		TreasureData TreasureData;
+		ShopData ShopData;
+
+		public ExtConsumables(FF1Rom _rom, Flags _flags, ShopData _shopData)
 		{
 			rom = _rom;
 			flags = _flags;
+			ShopData = _shopData;
 
 			SpellInfos = rom.LoadSpells().ToList();
 			Spells = rom.GetSpells().ToDictionary(s => FF1Text.BytesToText(s.Name));
+			TreasureData = new TreasureData(rom);
 		}
 
 		public void AddExtConsumables()
@@ -60,6 +66,11 @@ namespace FF1Lib
 
 			CreateLifeSpell();
 			CreateSmokeSpell();
+
+			ClearTreasureChests();
+			ClearShops();
+
+			WriteInTalkBattleFix();
 		}
 
 		private void ChangeItemJumpTable()
@@ -176,7 +187,14 @@ namespace FF1Lib
 		{
 			rom.PutInBank(0x0C, 0x9455, Blob.FromHex("20C6A3"));
 		}
-		
+
+		private void WriteInTalkBattleFix()
+		{
+			var InTalkBattle = rom.GetFromBank(0x11, 0x9600, 25);
+			rom.PutInBank(0x11, 0xB080, InTalkBattle);
+
+			rom.PutInBank(0x11, 0x9600, Blob.FromHex("2080B0A903CD866BD00820189668684C439660"));
+		}
 
 		private void ChangeItemNames()
 		{
@@ -265,6 +283,46 @@ namespace FF1Lib
 			};
 
 			rom.Put(MagicOffset + 0x41 * MagicSize, spell.compressData());
+		}
+
+		private void ClearTreasureChests()
+		{
+			TreasureData.LoadTable();
+
+			for (int i = 0; i < TreasureData.Data.Length; i++)
+			{
+				if (TreasureData[i] == Item.WoodenNunchucks ||
+					TreasureData[i] == Item.SmallKnife ||
+					TreasureData[i] == Item.WoodenRod ||
+					TreasureData[i] == Item.Rapier)
+				{
+					TreasureData[i] += 4;
+				}
+			}
+
+			TreasureData.StoreTable();
+		}
+
+		private void ClearShops()
+		{
+			foreach (var shop in ShopData.Shops)
+			{
+				if (shop.Type == ShopType.Weapon)
+				{
+					for (int i = 0; i < shop.Entries.Count; i++)
+					{
+						if (shop.Entries[i] == Item.WoodenNunchucks ||
+							shop.Entries[i] == Item.SmallKnife ||
+							shop.Entries[i] == Item.WoodenRod ||
+							shop.Entries[i] == Item.Rapier)
+						{
+							shop.Entries[i] += 4;
+						}
+					}
+				}
+			}
+
+			ShopData.StoreData();
 		}
 	}
 }

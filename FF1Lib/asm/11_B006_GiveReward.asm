@@ -2,7 +2,7 @@
 BANK_TALKROUTINE	= $11
 ret_bank        = $58
 
-;; Bank 11 $B006
+;; Bank 11 $B010
 ;; New jump point for NPC-only items:
 ;; IN:
 ;;       'A' should be set to the item ID, 224-255 are special values for variables

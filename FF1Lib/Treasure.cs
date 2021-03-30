@@ -14,7 +14,7 @@ namespace FF1Lib
 		public const int TreasureCount = 256;
 
 		public const int lut_MapObjTalkJumpTblAddress = 0x390D3;
-		public const string giveRewardRoutineAddress = "06B0";
+		public const string giveRewardRoutineAddress = "10B0";
 		public static readonly List<int> UnusedTreasureIndices =
 			Enumerable.Range(0, 1).Concat(
 			Enumerable.Range(145, 4)).Concat(

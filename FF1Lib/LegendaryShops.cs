@@ -36,7 +36,7 @@ namespace FF1Lib
 			(MapId.SeaShrineB4, 27, 40, 0x22, 0x23, 0x32, 0x33, 0xAA)
 		};
 
-		public LegendaryShops(MT19337 _rng, Flags _flags, List<Map> _maps, List<MapId> _flippedMaps, FF1Rom _rom)
+		public LegendaryShops(MT19337 _rng, Flags _flags, List<Map> _maps, List<MapId> _flippedMaps, ShopData _shopdata, FF1Rom _rom)
 		{
 			rng = _rng;
 			flags = _flags;
@@ -45,7 +45,7 @@ namespace FF1Lib
 			flippedMaps = _flippedMaps;
 
 			MapTileSets = new MapTileSets(rom);
-			ShopData = new ShopData(rom);
+			ShopData = _shopdata;
 			SpellInfos = rom.LoadSpells().ToList();
 		}
 
@@ -70,7 +70,6 @@ namespace FF1Lib
 			PrepareMaps();
 
 			Spells = rom.GetSpells().ToDictionary(s => FF1Text.BytesToText(s.Name));
-			ShopData.LoadData();
 			MapTileSets.LoadTable();
 
 			for (int i = 0; i < 8; i++)
