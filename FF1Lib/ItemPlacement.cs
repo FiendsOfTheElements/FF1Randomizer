@@ -186,6 +186,16 @@ namespace FF1Lib
 
 			MoreConsumableChests.Work(_flags, treasurePool, rng);
 
+			if((bool)_flags.NoXcalbur)
+			{
+				//xcal can not be in the treasure pool due to forced item placements of fetch quest npc
+				if(treasurePool.Contains(Item.Xcalber))
+				{
+					treasurePool.Remove(Item.Xcalber);
+					treasurePool.Add(Item.Cabin);
+				}
+			}
+
 			if ((bool)_flags.NoMasamune)
 			{
 				// Remove Masamune chest from shuffle

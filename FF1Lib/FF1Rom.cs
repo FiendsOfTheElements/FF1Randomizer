@@ -454,6 +454,11 @@ namespace FF1Lib
 							excludeItemsFromRandomShops.Add(Item.Masamune);
 						}
 
+						if ((bool)flags.NoXcalbur)
+						{
+							excludeItemsFromRandomShops.Add(Item.Xcalber);
+						}
+
 						shopItemLocation = ShuffleShops(rng, (bool)flags.ImmediatePureAndSoftRequired, ((bool)flags.RandomWares), excludeItemsFromRandomShops, flags.WorldWealth, overworldMap.ConeriaTownEntranceItemShopIndex);
 						incentivesData = new IncentiveData(rng, flags, overworldMap, shopItemLocation, checker);
 					}
@@ -500,6 +505,7 @@ namespace FF1Lib
 			}
 
 			new StartingInventory(rng, flags, this).SetStartingInventory();
+			new StartingEquipment(rng, flags, this).SetStartingEquipment();
 
 			new ShopKiller(rng, flags, maps, this).KillShops();
 
@@ -685,7 +691,7 @@ namespace FF1Lib
 				MonsterInABox(rng, flags);
 			}
 
-			if (flags.HouseMPRestoration || flags.HousesFillHp)
+			if (!flags.Etherizer && (flags.HouseMPRestoration || flags.HousesFillHp))
 			{
 				FixHouse(flags.HouseMPRestoration, flags.HousesFillHp);
 			}
@@ -771,7 +777,7 @@ namespace FF1Lib
 			var itemText = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
 			itemText[(int)Item.Ribbon] = itemText[(int)Item.Ribbon].Remove(7);
 
-			if (flags.Etherizer && !flags.HouseMPRestoration && !flags.HousesFillHp)
+			if (flags.Etherizer)
 			{
 				Etherizer();
 				itemText[(int)Item.Tent] = "ETHR@p";

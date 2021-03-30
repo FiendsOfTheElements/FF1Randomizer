@@ -446,7 +446,7 @@ namespace FF1Lib
 
 			// Chaos Mode enabled?
 			if ((bool)flags.RandomizeClassChaos)
-				DoRandomizeClassChaosMode(ref classData, ((bool)flags.MagicLevelsMixed && (bool)flags.MagicPermissions) || ((bool)flags.SpellcrafterMixSpells && !(bool)flags.SpellcrafterRetainPermissions), rng);
+				DoRandomizeClassChaosMode(ref classData, ((bool)flags.MagicLevelsMixed && (bool)flags.MagicPermissions) || ((bool)flags.SpellcrafterMixSpells && !(bool)flags.SpellcrafterRetainPermissions), (bool)flags.ThiefAgilityBuff, rng);
 			else
 				bonusmalusDescription = DoRandomizeClassNormalMode(ref classData, rng, itemnames, flags.RandomizeClassMaxBonus, flags.RandomizeClassMaxMalus, (bool)flags.RandomizeClassNoCasting);
 
@@ -973,7 +973,7 @@ namespace FF1Lib
 			return descriptionList;
 		}
 
-		public void DoRandomizeClassChaosMode(ref List<ClassData> classData, bool mixSpellsAndKeepPerm, MT19337 rng)
+		public void DoRandomizeClassChaosMode(ref List<ClassData> classData, bool mixSpellsAndKeepPerm, bool buffedthief, MT19337 rng)
 		{
 			// Ranked list of equipment
 			List<List<Item>> arArmor = new List<List<Item>>();
@@ -1114,6 +1114,10 @@ namespace FF1Lib
 
 			// Generate Ranks
 			int maxStats = shuffleStartingStats.Max();
+			if (buffedthief)
+			{
+				maxStats = shuffleStartingStats.Where(x => x < maxStats).Max();
+			}
 			int minStats = shuffleStartingStats.Min();
 			int maxLvStats = shuffleLevelUp.Select(x => x.GetRange(0, 24).Where(y => y == true).Count()).Max();
 			int minLvStats = shuffleLevelUp.Select(x => x.GetRange(0, 24).Where(y => y == true).Count()).Min();
@@ -1128,20 +1132,23 @@ namespace FF1Lib
 			var hpRanks = new List<Rank>();
 			var magicRanks = Enumerable.Repeat(Rank.F, 24).ToArray();
 
-			for (int i = 0; i < shuffleLevelUp.Count(); i++)
+			for (int i = 0; i < 6; i++)
 			{
-				if (shuffleStartingStats[i] + shuffleLevelUp[i].GetRange(0, 24).Where(x => x == true).Count() > (maxLvStats + maxStats - spreadStats))
+				for (int j = 0; j < 5; j++)
+				{ 
+				if (shuffleStartingStats[i * 7 + j] + shuffleLevelUp[i * 5 + j].GetRange(0, 24).Where(x => x == true).Count() > (maxLvStats + maxStats - spreadStats))
 					statsRanks.Add(Rank.S);
-				else if (shuffleStartingStats[i] + shuffleLevelUp[i].GetRange(0, 24).Where(x => x == true).Count() > (maxLvStats + maxStats - spreadStats * 2))
+				else if (shuffleStartingStats[i * 7 + j] + shuffleLevelUp[i * 5 + j].GetRange(0, 24).Where(x => x == true).Count() > (maxLvStats + maxStats - spreadStats * 2))
 					statsRanks.Add(Rank.A);
-				else if (shuffleStartingStats[i] + shuffleLevelUp[i].GetRange(0, 24).Where(x => x == true).Count() > (maxLvStats + maxStats - spreadStats * 3))
+				else if (shuffleStartingStats[i * 7 + j] + shuffleLevelUp[i * 5 + j].GetRange(0, 24).Where(x => x == true).Count() > (maxLvStats + maxStats - spreadStats * 3))
 					statsRanks.Add(Rank.B);
-				else if (shuffleStartingStats[i] + shuffleLevelUp[i].GetRange(0, 24).Where(x => x == true).Count() > (maxLvStats + maxStats - spreadStats * 4))
+				else if (shuffleStartingStats[i * 7 + j] + shuffleLevelUp[i * 5 + j].GetRange(0, 24).Where(x => x == true).Count() > (maxLvStats + maxStats - spreadStats * 4))
 					statsRanks.Add(Rank.C);
-				else if (shuffleStartingStats[i] + shuffleLevelUp[i].GetRange(0, 24).Where(x => x == true).Count() > (maxLvStats + maxStats - spreadStats * 5))
+				else if (shuffleStartingStats[i * 7 + j] + shuffleLevelUp[i * 5 + j].GetRange(0, 24).Where(x => x == true).Count() > (maxLvStats + maxStats - spreadStats * 5))
 					statsRanks.Add(Rank.D);
 				else
 					statsRanks.Add(Rank.E);
+				}
 			}
 
 			for (int i = 0; i < shuffleHP.Count(); i++)

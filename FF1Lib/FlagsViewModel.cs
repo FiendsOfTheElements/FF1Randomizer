@@ -2185,6 +2185,17 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NoMasamune"));
 			}
 		}
+
+    public bool? NoXcalbur
+		{
+			get => Flags.NoXcalbur;
+			set
+			{
+				Flags.NoXcalbur = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NoXcalbur"));
+			}
+		}
+    
 		public bool? ClassAsNpcFiends
 		{
 			get => Flags.ClassAsNpcFiends;
@@ -4074,23 +4085,22 @@ namespace FF1Lib
 			}
 		}
 
+  public StartingEquipmentSet StartingEquipment
+		{
+			get => Flags.StartingEquipment;
+			set
+			{
+				Flags.StartingEquipment = value;
+        RaisePropertyChanged();
+			}
+		}      
+		
 		public OwMapExchanges OwMapExchange
 		{
 			get => Flags.OwMapExchange;
 			set
 			{
 				Flags.OwMapExchange = value;
-				RaisePropertyChanged();
-			}
-		}
-
-
-		public bool SanityCheckerV2
-		{
-			get => Flags.SanityCheckerV2;
-			set
-			{
-				Flags.SanityCheckerV2 = value;
 				RaisePropertyChanged();
 			}
 		}
@@ -4112,6 +4122,16 @@ namespace FF1Lib
 			Flags.SpoilerBatsDontCheckOrbs = value;
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SpoilerBatsDontCheckOrbs"));
 		    }
+		}
+    
+		public bool SanityCheckerV2
+		{
+			get => Flags.SanityCheckerV2;
+			set
+			{
+				Flags.SanityCheckerV2 = value;
+				RaisePropertyChanged();
+			}
 		}
 	}
 }

@@ -71,6 +71,8 @@ namespace FF1Lib
 
 		#endregion
 
+		public StartingEquipmentSet StartingEquipment { get; set; } = StartingEquipmentSet.None;
+
 		public bool? ExcludeGoldFromScaling { get; set; } = false;
 		public bool CheapVendorItem { get; set; } = true;
 		public bool ApplyExpBoostToGold { get; set; } = false;
@@ -281,6 +283,7 @@ namespace FF1Lib
 		public ConsumableChestSet MoreConsumableChests { get; set; } = ConsumableChestSet.Vanilla;
 
 		public bool? NoMasamune { get; set; } = false;
+		public bool? NoXcalbur { get; set; } = false;
 		public bool? ClassAsNpcFiends { get; set; } = false;
 		public bool? ClassAsNpcKeyNPC { get; set; } = false;
 

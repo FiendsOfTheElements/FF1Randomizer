@@ -24,6 +24,12 @@
 		"description": "Hides all flags to create a mystery flagset that can then be distributed. Useful for tournament and challenge race settings.\n This flag cannot be disabled once clicked; you will need to hit the Reset button to restore functionality to the site (and this will, in turn, wipe the blind flags selected). Make sure to save your flagset before you use this flag."
 	},
 	{
+		"Id": "startingEquipmentDropDown",
+		"title": "Starting Equipment",
+		"screenshot": null,
+		"description": "Gives the player Weapons and Armor at the start of the game."
+	},
+	{
 		"Id": "excludeGoldFromScalingCheckBox",
 		"title": "Exclude Gold from scaling",
 		"screenshot": null,
@@ -577,9 +583,12 @@
 		"screenshot": "NoMasamuneCheckBox.gif",
 		"description": "Removes the legendary sword, the Masamune, from the items pool, from shops if elite gear is turned on, and from incentive locations if the Masamune is incentivized."
 	},
-
-
-
+	{
+		"Id": "NoXCalburCheckBox",
+		"title": "Remove XCalbur",
+		"screenshot": "",
+		"description": "Removes the XCalbur from the items pool, from shops if elite gear is turned on, and from the adamant turn in if fetch quests are vanilla."
+	},
 	{
 		"Id": "incentivizeFreeNPCsCheckBox",
 		"title": "Free NPCs",
@@ -1311,7 +1320,7 @@
 		"Id": "etherizerCheckBox",
 		"title": "Turn shelters into ethers",
 		"screenshot": "etherizerCheckBox.png",
-		"description": "Tents, Cabins, and Houses become ethers. Instead of restoring HP and saving on the overworld, they restore MP and can be used anywhere.\nEthers (ETHR) restore a charge for L1-L2. Dry Ethers (DRY) restore a charge for L1-L4. X Ethers (XETH) restore a charge for L1-L8.\nIncompatible with the House bug fix flags."
+		"description": "Tents, Cabins, and Houses become ethers. Instead of restoring HP and saving on the overworld, they restore MP and can be used anywhere.\nEthers (ETHR) restore a charge for L1-L2. Dry Ethers (DRY) restore a charge for L1-L4. X Ethers (XETH) restore a charge for L1-L8."
 	},
 	{
 		"Id": "shopInfoCheckBox",
