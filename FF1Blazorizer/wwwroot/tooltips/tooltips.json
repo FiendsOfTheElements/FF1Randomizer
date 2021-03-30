@@ -1317,7 +1317,7 @@
 		"Id": "etherizerCheckBox",
 		"title": "Turn shelters into ethers",
 		"screenshot": "etherizerCheckBox.png",
-		"description": "Tents, Cabins, and Houses become ethers. Instead of restoring HP and saving on the overworld, they restore MP and can be used anywhere.\nEthers (ETHR) restore a charge for L1-L2. Dry Ethers (DRY) restore a charge for L1-L4. X Ethers (XETH) restore a charge for L1-L8.\nIncompatible with the House bug fix flags."
+		"description": "Tents, Cabins, and Houses become ethers. Instead of restoring HP and saving on the overworld, they restore MP and can be used anywhere.\nEthers (ETHR) restore a charge for L1-L2. Dry Ethers (DRY) restore a charge for L1-L4. X Ethers (XETH) restore a charge for L1-L8."
 	},
 	{
 		"Id": "shopInfoCheckBox",

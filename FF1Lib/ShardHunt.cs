@@ -73,9 +73,9 @@ namespace FF1Lib
 		{
 			// Black Orb tile Warp destination change straight to an edit Chaos floor with all the ToFR Chests.
 			Data[0x00D80] = 0x80; // Map edits
-			Data[0x02D01] = 0x0F;
-			Data[0x02D41] = 0x03;
-			Data[0x02D81] = 0x3B;
+			Data[0x3F001] = 0x0F;
+			Data[0x3F101] = 0x03;
+			Data[0x3F201] = 0x3B;
 
 			// ToFR Map Hack
 			List<Blob> landingArea = new List<Blob>

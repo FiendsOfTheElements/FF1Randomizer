@@ -14,6 +14,11 @@ namespace FF1Lib
 {
 	public class Flags : IIncentiveFlags, IMapEditFlags, IScaleFlags, IFloorShuffleFlags
 	{
+		public bool SanityCheckerV2 { get; set; } = false;
+
+		public OwMapExchanges OwMapExchange { get; set; } = OwMapExchanges.None;
+
+		
 		#region ShopKiller
 
 		public ShopKillMode ShopKillMode_Weapons { get; set; } = ShopKillMode.None;
