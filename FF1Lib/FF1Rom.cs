@@ -685,7 +685,7 @@ namespace FF1Lib
 				MonsterInABox(rng, flags);
 			}
 
-			if (flags.HouseMPRestoration || flags.HousesFillHp)
+			if (!flags.Etherizer && (flags.HouseMPRestoration || flags.HousesFillHp))
 			{
 				FixHouse(flags.HouseMPRestoration, flags.HousesFillHp);
 			}
@@ -771,7 +771,7 @@ namespace FF1Lib
 			var itemText = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
 			itemText[(int)Item.Ribbon] = itemText[(int)Item.Ribbon].Remove(7);
 
-			if (flags.Etherizer && !flags.HouseMPRestoration && !flags.HousesFillHp)
+			if (flags.Etherizer)
 			{
 				Etherizer();
 				itemText[(int)Item.Tent] = "ETHR@p";

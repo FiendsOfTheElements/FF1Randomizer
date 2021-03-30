@@ -44,7 +44,7 @@
 		</div>
 		<div class="col2">
 			<h4>Other</h4>
-			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="etherizerCheckBox" IsEnabled="@(Flags.HouseMPRestoration != true && Flags.HousesFillHP != true)" @bind-Value="Flags.Etherizer">Turn Shelters into Ethers</CheckBox>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="etherizerCheckBox" @bind-Value="Flags.Etherizer">Turn Shelters into Ethers</CheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="LooseExcludePlacedDungeonsCheckBox" IsEnabled="@(Flags.Treasures != false)" @bind-Value="Flags.LooseExcludePlacedDungeons">No Loose Items in Incentivized Dungeons</TriStateCheckBox>
 			<div class="checkbox-cell"></div>
 			<h4>Legendary Shops</h4>
