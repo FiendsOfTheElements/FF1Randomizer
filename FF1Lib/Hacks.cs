@@ -1610,7 +1610,7 @@ namespace FF1Lib
 					routineDesc = oobroutine.Find(x => x.Item1 == oobSpells.FindIndex(x => x == spellid)).Item2;
 					break;
 				case int n when (n >= 0x01 && n <= 0x02):
-					routineDesc = routine.Find(x => x.Item1 == spelldata[(int)spellDataBytes.Routine]).Item2 + "\n " + spelldata[(int)spellDataBytes.Effect] * 2 + "-" + spelldata[(int)spellDataBytes.Effect] * 4 + " DMG";
+					routineDesc = routine.Find(x => x.Item1 == spelldata[(int)spellDataBytes.Routine]).Item2 + "\n " + spelldata[(int)spellDataBytes.Effect] * 2 + "-" + spelldata[(int)spellDataBytes.Effect] * 4 + " DMG\nResist  " + spelldata[(int)spellDataBytes.Effect] + "\nWeak    " + spelldata[(int)spellDataBytes.Effect] * 1.5 * 4;
 					break;
 				case int n when (n == 0x03 || n == 0x08 || n == 0x12):
 					var tempStatus = "";
