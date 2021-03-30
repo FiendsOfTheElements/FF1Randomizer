@@ -2185,6 +2185,17 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NoMasamune"));
 			}
 		}
+
+    public bool? NoXcalbur
+		{
+			get => Flags.NoXcalbur;
+			set
+			{
+				Flags.NoXcalbur = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NoXcalbur"));
+			}
+		}
+    
 		public bool? ClassAsNpcFiends
 		{
 			get => Flags.ClassAsNpcFiends;
@@ -4074,7 +4085,7 @@ namespace FF1Lib
 			}
 		}
 
-public StartingEquipmentSet StartingEquipment
+  public StartingEquipmentSet StartingEquipment
 		{
 			get => Flags.StartingEquipment;
 			set

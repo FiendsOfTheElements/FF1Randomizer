@@ -583,9 +583,12 @@
 		"screenshot": "NoMasamuneCheckBox.gif",
 		"description": "Removes the legendary sword, the Masamune, from the items pool, from shops if elite gear is turned on, and from incentive locations if the Masamune is incentivized."
 	},
-
-
-
+	{
+		"Id": "NoXCalburCheckBox",
+		"title": "Remove XCalbur",
+		"screenshot": "",
+		"description": "Removes the XCalbur from the items pool, from shops if elite gear is turned on, and from the adamant turn in if fetch quests are vanilla."
+	},
 	{
 		"Id": "incentivizeFreeNPCsCheckBox",
 		"title": "Free NPCs",

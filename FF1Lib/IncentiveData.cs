@@ -45,7 +45,14 @@ namespace FF1Lib
 				forcedItemPlacements.AddRange(ItemLocations.AllNPCFreeItemLocationsExcludingVendor);
 				forcedItemPlacements.Add(shopSlot);
 			}
-			if (!(flags.NPCFetchItems ?? false)) forcedItemPlacements.AddRange(ItemLocations.AllNPCFetchItemLocations);
+			if (!(flags.NPCFetchItems ?? false))
+			{
+				forcedItemPlacements.AddRange(ItemLocations.AllNPCFetchItemLocations);
+				if((bool)flags.NoXcalbur)
+				{
+					forcedItemPlacements.Remove(ItemLocations.Smith);
+				}
+			}
 			if ((!flags.Treasures ?? false)) forcedItemPlacements.AddRange(ItemLocations.AllTreasures);
 			var incentivePool = new List<Item>();
 			if (flags.IncentivizeBridge)

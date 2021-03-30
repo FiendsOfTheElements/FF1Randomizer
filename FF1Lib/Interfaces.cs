@@ -73,6 +73,7 @@
 		bool Incentivize65K { get; }
 		bool IncentivizeBad { get; }
 		bool? NoMasamune { get; }
+		bool? NoXcalbur { get; }
 	}
 	public interface IMapEditFlags : IItemPlacementFlags
 	{
@@ -101,6 +102,7 @@
 		bool? GuaranteedMasamune { get; }
 		bool? SendMasamuneHome { get; }
 		bool? NoMasamune { get; }
+		bool? NoXcalbur { get; }
 		WorldWealthMode WorldWealth { get; }
 		ConsumableChestSet MoreConsumableChests { get; }
 	}
