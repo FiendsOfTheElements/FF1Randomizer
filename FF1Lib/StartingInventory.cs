@@ -113,9 +113,23 @@ namespace FF1Lib
 			public int? RMax { get; set; }
 		}
 
-		private static Dictionary<StartingItemSet, StartingItem[]> StartingItemSetDic = new System.Collections.Generic.Dictionary<StartingItemSet, StartingItem[]>
+		private static Dictionary<StartingItemSet, StartingItem[]> StartingItemSetDic = new Dictionary<StartingItemSet, StartingItem[]>
 		{
-			{ StartingItemSet.None, Array.Empty<StartingItem>() },
+			//{ StartingItemSet.None, Array.Empty<StartingItem>() },
+			{ StartingItemSet.None, new StartingItem[]
+				{
+					new StartingItem { Item = Item.Tent, Min = 1, Max = 9, RMin = -30, RMax = 114 },
+					new StartingItem { Item = Item.Cabin, Min = 10, Max = 99, RMin = -30, RMax = 114 },
+					new StartingItem { Item = Item.House, Min = 15, Max = 99, RMin = -30, RMax = 114 },
+					new StartingItem { Item = Item.Heal, Min = 100, Max = 140, RMin = 100, RMax = 140 },
+					new StartingItem { Item = Item.Pure, Min = 1, Max = 20, RMin = -3, RMax = 23 },
+					new StartingItem { Item = Item.Soft, Min = 1, Max = 10, RMin = -2, RMax = 12 },
+					new StartingItem { Item = Item.WoodenNunchucks, Cnt = 10 },
+					new StartingItem { Item = Item.SmallKnife, Cnt = 11 },
+					new StartingItem { Item = Item.WoodenRod, Cnt = 12 },
+					new StartingItem { Item = Item.Rapier, Cnt = 13 },
+				}
+			},
 			{ StartingItemSet.SafetyBit, new StartingItem[]
 				{
 					new StartingItem { Item = Item.Tent, Cnt = 1 },
@@ -179,6 +193,10 @@ namespace FF1Lib
 					new StartingItem { Item = Item.Heal, Cnt = 99 },
 					new StartingItem { Item = Item.Pure, Cnt = 99 },
 					new StartingItem { Item = Item.Soft, Cnt = 99 },
+					new StartingItem { Item = Item.WoodenNunchucks, Cnt = 99 },
+					new StartingItem { Item = Item.SmallKnife, Cnt = 99 },
+					new StartingItem { Item = Item.WoodenRod, Cnt = 99 },
+					new StartingItem { Item = Item.Rapier, Cnt = 99 },
 				}
 			},
 			{ StartingItemSet.RandomizedBeggarsChoice, new StartingItem[]

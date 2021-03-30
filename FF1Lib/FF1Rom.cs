@@ -409,6 +409,8 @@ namespace FF1Lib
 
 			new LegendaryShops(rng, flags, maps, this).PlaceShops();
 
+			new ExtConsumables(this, flags).AddExtConsumables();
+
 			/*
 			if (flags.WeaponPermissions)
 			{

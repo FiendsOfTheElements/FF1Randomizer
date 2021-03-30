@@ -301,11 +301,11 @@ namespace FF1Lib
 
 		private List<Item> GetCraftedSpellInventory(int slots, bool black)
 		{
-			var stDamSpells = SpellInfos.Where(s => s.routine == 0x01 && s.targeting == 0x01).Where(s => s.tier >= 3).OrderBy(s => -s.tier).Take(3);
-			var aoeDamSpells = SpellInfos.Where(s => s.routine == 0x01 && s.targeting != 0x01).OrderBy(s => -s.tier).Take(6);
+			var stDamSpells = SpellInfos.Where(s => s.routine == 0x01 && s.targeting != 0x01).Where(s => s.tier >= 3).OrderBy(s => -s.tier).Take(3);
+			var aoeDamSpells = SpellInfos.Where(s => s.routine == 0x01 && s.targeting == 0x01).OrderBy(s => -s.tier).Take(6);
 
-			var stHarmSpells = SpellInfos.Where(s => s.routine == 0x02 && s.targeting == 0x01).OrderBy(s => -s.tier).Take(1);
-			var aoeHarmSpells = SpellInfos.Where(s => s.routine == 0x02 && s.targeting != 0x01).OrderBy(s => -s.tier).Take(1);
+			var stHarmSpells = SpellInfos.Where(s => s.routine == 0x02 && s.targeting != 0x01).OrderBy(s => -s.tier).Take(1);
+			var aoeHarmSpells = SpellInfos.Where(s => s.routine == 0x02 && s.targeting == 0x01).OrderBy(s => -s.tier).Take(1);
 
 			var stHealSpells = SpellInfos.Where(s => (s.routine == 0x07 || s.routine == 0x0F) && s.targeting != 0x08).OrderBy(s => -s.tier).Take(2);
 			var aoeHealSpells = SpellInfos.Where(s => (s.routine == 0x07 || s.routine == 0x0F) && s.targeting != 0x08).OrderBy(s => -s.tier).Take(2);
