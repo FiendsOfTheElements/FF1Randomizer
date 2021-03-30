@@ -181,7 +181,7 @@ namespace FF1Lib
 		{
 			var oldEnemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
 			var newEnemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
-			
+
 			if(doNormals)
 			{
 				var normalOldEnemies = oldEnemies.Take(EnemyCount - 10).ToList(); // all but WarMECH, fiends, fiends revisited, and CHAOS
@@ -193,12 +193,12 @@ namespace FF1Lib
 
 				for (int i = 0; i < EnemyCount - 10; i++)
 				{
-					newEnemies[i][7] = normalOldEnemies[i][7];
+					newEnemies[i][EnemyStat.Scripts] = normalOldEnemies[i][EnemyStat.Scripts];
 				}
 			}
 
 			if(doBosses)
-			{ 
+			{
 				var oldBosses = new List<Blob>
 				{
 					oldEnemies[Enemy.Lich],
@@ -208,10 +208,10 @@ namespace FF1Lib
 				};
 				oldBosses.Shuffle(rng);
 
-				newEnemies[Enemy.Lich][7] = oldBosses[0][7];
-				newEnemies[Enemy.Kary][7] = oldBosses[1][7];
-				newEnemies[Enemy.Kraken][7] = oldBosses[2][7];
-				newEnemies[Enemy.Tiamat][7] = oldBosses[3][7];
+				newEnemies[Enemy.Lich][EnemyStat.Scripts] = oldBosses[0][EnemyStat.Scripts];
+				newEnemies[Enemy.Kary][EnemyStat.Scripts] = oldBosses[1][EnemyStat.Scripts];
+				newEnemies[Enemy.Kraken][EnemyStat.Scripts] = oldBosses[2][EnemyStat.Scripts];
+				newEnemies[Enemy.Tiamat][EnemyStat.Scripts] = oldBosses[3][EnemyStat.Scripts];
 
 				var oldBigBosses = new List<Blob>
 				{
@@ -225,13 +225,13 @@ namespace FF1Lib
 				if (scaryImps) oldBigBosses.Add(oldEnemies[Enemy.Imp]);
 				oldBigBosses.Shuffle(rng);
 
-				newEnemies[Enemy.WarMech][7] = oldBigBosses[0][7];
-				newEnemies[Enemy.Lich2][7] = oldBigBosses[1][7];
-				newEnemies[Enemy.Kary2][7] = oldBigBosses[2][7];
-				newEnemies[Enemy.Kraken2][7] = oldBigBosses[3][7];
-				newEnemies[Enemy.Tiamat2][7] = oldBigBosses[4][7];
-				newEnemies[Enemy.Chaos][7] = oldBigBosses[5][7];
-				if (scaryImps) newEnemies[Enemy.Imp][7] = oldBigBosses[6][7];
+				newEnemies[Enemy.WarMech][EnemyStat.Scripts] = oldBigBosses[0][EnemyStat.Scripts];
+				newEnemies[Enemy.Lich2][EnemyStat.Scripts] = oldBigBosses[1][EnemyStat.Scripts];
+				newEnemies[Enemy.Kary2][EnemyStat.Scripts] = oldBigBosses[2][EnemyStat.Scripts];
+				newEnemies[Enemy.Kraken2][EnemyStat.Scripts] = oldBigBosses[3][EnemyStat.Scripts];
+				newEnemies[Enemy.Tiamat2][EnemyStat.Scripts] = oldBigBosses[4][EnemyStat.Scripts];
+				newEnemies[Enemy.Chaos][EnemyStat.Scripts] = oldBigBosses[5][EnemyStat.Scripts];
+				if (scaryImps) newEnemies[Enemy.Imp][EnemyStat.Scripts] = oldBigBosses[6][EnemyStat.Scripts];
 			}
 
 			Put(EnemyOffset, newEnemies.SelectMany(enemy => enemy.ToBytes()).ToArray());
@@ -257,7 +257,7 @@ namespace FF1Lib
 				ShuffleIndexedSkillsSpells(scriptBytes, normalIndices, rng);
 
 			if(doBosses)
-			{ 
+			{
 				ShuffleIndexedSkillsSpells(scriptBytes, bossIndices, rng);
 				ShuffleIndexedSkillsSpells(scriptBytes, bigBossIndices, rng);
 			}
@@ -394,7 +394,7 @@ namespace FF1Lib
 				{
 					//Death Touch
 					var (touch, element) = deathElement;
-					
+
 				}
 				else if (roll < 2) //1 vanilla stone toucher
 				{

@@ -18,7 +18,7 @@ namespace FF1Lib
 
 		public OwMapExchanges OwMapExchange { get; set; } = OwMapExchanges.None;
 
-		
+
 		#region ShopKiller
 
 		public ShopKillMode ShopKillMode_Weapons { get; set; } = ShopKillMode.None;
@@ -76,7 +76,7 @@ namespace FF1Lib
 		public bool? ExcludeGoldFromScaling { get; set; } = false;
 		public bool CheapVendorItem { get; set; } = true;
 		public bool ApplyExpBoostToGold { get; set; } = false;
-		
+
 		public StartingLevel StartingLevel { get; set; }
 
 		public bool Spoilers { get; set; } = false;
@@ -248,6 +248,8 @@ namespace FF1Lib
 		public bool WeaponBonuses { get; set; } = false;
 		public bool ThiefAgilityBuff { get; set; } = false;
 		public bool BugfixRender3DigitStats { get; set; } = false;
+		public SpoilerBatHints SkyWarriorSpoilerBats { get; set; } = SpoilerBatHints.Vanilla;
+		public bool? SpoilerBatsDontCheckOrbs { get; set; } = false;
 
 		[IntegerFlag(0, 50)]
 		public int WeaponTypeBonusValue { get; set; } = 10;

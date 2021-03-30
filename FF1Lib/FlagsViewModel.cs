@@ -4105,7 +4105,25 @@ namespace FF1Lib
 			}
 		}
 
-
+		public SpoilerBatHints SkyWarriorSpoilerBats
+		{
+		    get => Flags.SkyWarriorSpoilerBats;
+		    set
+		    {
+			Flags.SkyWarriorSpoilerBats = value;
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SkyWarriorSpoilerBats"));
+		    }
+		}
+		public bool? SpoilerBatsDontCheckOrbs
+		{
+		    get => Flags.SpoilerBatsDontCheckOrbs;
+		    set
+		    {
+			Flags.SpoilerBatsDontCheckOrbs = value;
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SpoilerBatsDontCheckOrbs"));
+		    }
+		}
+    
 		public bool SanityCheckerV2
 		{
 			get => Flags.SanityCheckerV2;

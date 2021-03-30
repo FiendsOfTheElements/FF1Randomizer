@@ -907,6 +907,10 @@ namespace FF1Lib
 				EnableInventoryAutosort();
 			}
 
+			if (flags.SkyWarriorSpoilerBats != SpoilerBatHints.Vanilla) {
+			    SkyWarriorSpoilerBats(rng, flags, npcdata);
+			}
+
 			// We have to do "fun" stuff last because it alters the RNG state.
 			// Back up Rng so that fun flags are uniform when different ones are selected
 			uint funRngSeed = rng.Next();
