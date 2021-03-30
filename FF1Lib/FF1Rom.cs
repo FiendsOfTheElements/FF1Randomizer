@@ -801,6 +801,8 @@ namespace FF1Lib
 			ScalePrices(flags, itemText, rng, ((bool)flags.ClampMinimumPriceScale), shopItemLocation);
 			ScaleEncounterRate(flags.EncounterRate / 30.0, flags.DungeonEncounterRate / 30.0);
 
+			LoadInTown(overworldMap, maps);
+
 			WriteMaps(maps);
 
 			WriteText(itemText, ItemTextPointerOffset, ItemTextPointerBase, ItemTextOffset, UnusedGoldItems);
@@ -902,8 +904,6 @@ namespace FF1Lib
 			{
 				Spooky(talkroutines, npcdata, rng, flags);
 			}
-
-			//LoadInTown(overworldMap);
 
 			if (flags.InventoryAutosort && !(preferences.RenounceAutosort))
 			{
