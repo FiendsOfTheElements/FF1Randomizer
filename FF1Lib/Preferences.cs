@@ -12,10 +12,10 @@ namespace FF1Lib
 		public bool ThirdBattlePalette { get; set; }
 		public bool TeamSteak { get; set; }
 		public MusicShuffle Music { get; set; }
-		public bool DisableDamageTileFlicker { get; set; }
+		public bool DisableDamageTileFlicker { get; set; } = true;
 		public MenuColor MenuColor { get; set; } = MenuColor.Blue;
 		public MapmanSlot MapmanSlot { get; set; } = MapmanSlot.Leader;
-		public bool DisableSpellCastFlash { get; set; } = false;
+		public bool DisableSpellCastFlash { get; set; } = true;
 		public bool ChangeLute { get; set; } = false;
 		public TitanSnack TitanSnack { get; set; } = TitanSnack.Ruby;
 		public Fate HurrayDwarfFate { get; set; } = Fate.Spare;
