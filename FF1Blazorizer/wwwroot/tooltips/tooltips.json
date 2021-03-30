@@ -23,12 +23,29 @@
 		"screenshot": "blindseed.png",
 		"description": "Hides all flags to create a mystery flagset that can then be distributed. Useful for tournament and challenge race settings.\n This flag cannot be disabled once clicked; you will need to hit the Reset button to restore functionality to the site (and this will, in turn, wipe the blind flags selected). Make sure to save your flagset before you use this flag."
 	},
-
+	{
+		"Id": "excludeGoldFromScalingCheckBox",
+		"title": "Exclude Gold from scaling",
+		"screenshot": null,
+		"description": "Gold treasures will only roll to +-10% of their vanilla value instead of scaling with prices. Removes the flat gold boost from 'Exp. Gold Boost' to enemy rewards. Also removes the inverse 'Exp. & Gold Boost' multiplier to prices."
+	},
+	{
+		"Id": "cheapVendorItemCheckBox",
+		"title": "Cheap Vendor Item",
+		"screenshot": null,
+		"description": "Makes the vendor item roll to 20000 +-10%"
+	},
+	{
+		"Id": "applyExpBoostToGoldCheckBox",
+		"title": "Apply flat Gold Boost to Enemies",
+		"screenshot": null,
+		"description": "Applies the flat gold boost from 'Exp & Gold Boost' to enemy rewards. Makes early gold grinds more satisfying."
+	},
 	{
 		"Id": "consumableChestSetDropDown",
 		"title": "Consumable Chests",
 		"screenshot": null,
-		"description": "Changes the amount of chests that contain consumable items. May remove a lot of gold and eats into gear at one point.\n[grid][r]{i}Option|{i}Tent|{i}Cabin|{i}House|{i}Heal|{i}Pure|{i}Soft[r]{l}Vanilla|2|7|7|10|5|5[r]{l}Low|4|3|3|10|10|10[r]{l}Medium|7|4|4|15|15|15[r]{l}High|8|6|6|20|20|20[r]{l}Extreme|10|10|10|30|30|30[r]{l}The ..... Party Pack|||||99|99[r]{l}Random Low|0-10|0-10|0-10|0-30|0-30|0-30[r]{l}Random|0-33|0-33|0-33|0-99|0-99|0-99\n"
+		"description": "Changes the amount of chests that contain consumable items, removing gold rewards and gear.\n[grid][r]{i}Option|{i}Tent|{i}Cabin|{i}House|{i}Heal|{i}Pure|{i}Soft[r]{l}Vanilla|2|7|7|10|5|5[r]{l}Low|4|3|3|10|10|10[r]{l}Medium|7|4|4|15|15|15[r]{l}High|8|6|6|20|20|20[r]{l}Extreme|10|10|10|30|30|30[r]{l}The ..... Party Pack|||||99|99[r]{l}Random Low|0-10|0-10|0-10|0-30|0-30|0-30[r]{l}Random|0-33|0-33|0-33|0-99|0-99|0-99\n"
 	},
 
 
@@ -165,7 +182,7 @@
 		"Id": "consumableTreasureStackSizeDropDown",
 		"title": "Consumable Treasure Stack Size",
 		"screenshot": null,
-		"description": "Every consumable rewart(chest, npc) may give you more that one item.\n[grid][r]{i}Option|{i}Tent|{i}Cabin|{i}House|{i}Heal|{i}Pure|{i}Soft[r]{l}Stingy|2|||5||[r]{l}Adequat|3|2||10|2|2[r]{l}Generous|5|3|2|20|3|2[r]{l}Ridiculous|10|5|3|50|5|5\n"
+		"description": "Consumable rewards from chests and npcs may give you more than one item.\n[grid][r]{i}Option|{i}Tent|{i}Cabin|{i}House|{i}Heal|{i}Pure|{i}Soft[r]{l}Stingy|2|||5||[r]{l}Adequate|3|2||10|2|2[r]{l}Generous|5|3|2|20|3|2[r]{l}Ridiculous|10|5|3|50|5|5\n"
 	},
 
 	{
@@ -244,9 +261,9 @@
 	},
 	{
 		"Id": "generateNewSpellbook",
-		"title": "Generate New Spellbook (Spellcrafter)",
+		"title": "Generate New Spellbooks (Spellcrafter)",
 		"screenshot": "generateNewSpellbook.png",
-		"description": "Randomly generates completely new white and black magic spell books, replacing all magic in the game with this new selection of spells. Some spells may have the same names (i.e., FIRE, ICE, WARP, TMPR) while others will be completly new spells not seen before in the vanilla version of Final Fantasy (i.e., ROCK, SNOW, VOLT, etc.).\n Note: Spellcrafter will also change the default slots characters can learn spells, in effect reducing the number of spells, and spell slots, the Knight, Ninja, and Red Mage can learn."
+		"description": "Randomly generates completely new white and black magic spell books, replacing all magic in the game with this new selection of spells. Some spells may have the same names (i.e., FIRE, ICE, WARP, TMPR) while others will be completely new spells not seen before in the vanilla version of Final Fantasy (i.e., ROCK, SNOW, VOLT, etc.).\n Note: Spellcrafter will also change the default slots characters can learn spells, in effect reducing the number of spells, and spell slots, the Knight, Ninja, and Red Mage can learn."
 	},
 	{
 		"Id": "spellcrafterRetainPermissions",
@@ -552,7 +569,7 @@
 		"Id": "fightBahamutCheckBox",
 		"title": "Fight Bahamut",
 		"screenshot": "fightBahamutCheckBox.gif",
-		"description": "Turning in the TAIL is not the only requirement for class change. You must also defeat Bahamut to prove your courage.\nIf Remove Tail is enabled, the only requirement for class change is to defeat Bahamut."
+		"description": "Turning in the TAIL is not the only requirement for class change. You must also defeat Bahamut to prove your courage.\nIf Remove Tail is enabled, the only requirement for class change is to defeat Bahamut.\nNote: This flag is ignored when Enemizer or Lich's Revenge is enabled."
 	},
 	{
 		"Id": "NoMasamuneCheckBox",
@@ -904,6 +921,12 @@
 		"title": "Include Lute Plate",
 		"screenshot": "LutePlateInShortToFR.png",
 		"description": "Adds a Plate obstacle in Short ToFR.\nWhen enabled, LUTE is required to enter the boss room."
+	},
+	{
+		"Id": "lefeinSuperStoreCheckBox",
+		"title": "Add Lefein SuperStore",
+		"screenshot": "lefeinSuperStore.gif",
+		"description": "Upgrades the L8 Magic Shops in Lefein to include additional L1-L8 Magic Shops from around the world.\nDoes not include L7 and L8 Magic Shops from the neighboring town Gaia.\nNote: This flag is ignored if Shop Reduction for Magic Shops is enabled."
 	},
 	{
 		"Id": "procGenWaterfall",
@@ -1312,10 +1335,10 @@
 		"description": "Fixes applying elemental and 'type' bonuses to weapons. These bonuses did not work as intended in the vanilla game, but function properly here for all relevant gear."
 	},
 	{
-		"Id": "chanceToRunCheckBox",
+		"Id": "chanceToRunDropDown",
 		"title": "Chance to Run",
-		"screenshot": "chanceToRunCheckBox.png",
-		"description": "Fixes a bug in the way the chance to run is calculated, using the actual intended stat -- Luck -- instead of the glitched stat from the original NES release. This greatly improves the effectiveness of the RUN command, as well as those classes, such as the Thief, with high Luck stats."
+		"screenshot": "chanceToRunDropDown.png",
+		"description": "Changes the way the chance to run is calculated.\nVanilla: Run chance is calculated from a glitched stat, as it was programmed in the original NES release.\nFixed: Run chance is calculated from the intended stat, Luck. This greatly improves the effectiveness of the RUN command, as well as classes with high Luck stats, such as the Thief.\n Percentages: Run chance is a static value for all classes. This causes no specific class to be any better or worse at running away, because their chance to run is the same."
 	},
 	{
 		"Id": "spellBugsCheckBox",
@@ -1439,7 +1462,7 @@
 		"Id": "noBossSkillScriptShuffleCheckBox",
 		"title": "Don't Shuffle Bosses' Scripts, Skills & Spells",
 		"screenshot": "NoBossScriptSkillShuffle.png",
-		"description": "When shuffling ennemies' scripts or spells/skills, exclude the four Fiends, WarMech and Chaos."
+		"description": "When shuffling enemies' scripts or spells/skills, exclude the four Fiends, WarMech and Chaos."
 	},
 	{
 		"Id": "LooseExcludePlacedDungeonsCheckBox",
@@ -1484,9 +1507,51 @@
 		"description": "Adds a clinic to Melmond."
 	},
 	{
+		"Id": "randomVampAttackCheckBox",
+		"title": "Vampire Attacks Random Town",
+		"screenshot": "vampAttack.png",
+		"description": "Causes the Vampire to attack a random town.\nThe attacked town will not have an Item Shop or Clinic.\nNote: The Vampire will not attack the starting town, Coneria."
+	},
+	{
+		"Id": "randomVampAttackIncludesConeriaCheckBox",
+		"title": "Vampire Attacks Random Town - Include Coneria",
+		"screenshot": "vampAttackIncludesConeria.png",
+		"description": "Allows the Vampire to attack Coneria."
+	},
+	{
 		"Id": "bahamutCardiaDockCheckBox",
 		"title": "Bahamut Cardia dock",
 		"screenshot": "bahamutCardiaDock.png",
 		"description": "Adds a dock to Bahamut's island so that the Airship is not required for class change."
+	},
+	{
+		"Id": "thiefAgilityBuffCheckBox",
+		"title": "Thief Agility Buff",
+		"screenshot": "thiefAgilityBuff.png",
+		"description": "Buff the thief starting agility to 120 and starting evade to 168, and make it so that the thief gains agility and evade on every level.\nThis makes the thief more likely to evade melee attacks from monsters. When the thief is in the lead slot, this also increases the chance of getting first strike and reduces the chance of being suprised."
+	},
+	{
+		"Id": "startingLevelDropDown",
+		"title": "Starting Level",
+		"screenshot": "startingLevelDropDown.gif",
+		"description": "Allows you to change the level your party members will be when you start the game."
+	},
+	{
+		"Id": "lefeinRiverDockCheckBox",
+		"title": "Lefein river dock",
+		"screenshot": "lefeinRiverDock.png",
+		"description": "Add a river dock to the Lefein region, making is accessible without the Airship."
+	},
+	{
+		"Id": "gaiaMountainPassCheckBox",
+		"title": "Gaia mountain pass",
+		"screenshot": "gaiaMountainPass.png",
+		"description": "Add a mountain pass to Gaia, making is accessible without the Airship."
+	},
+	{
+		"Id": "fix3DigitStatsCheckBox",
+		"title": "Correctly render character stats over 99",
+		"screenshot": "statsOver99.png",
+		"description": "Character stats over 99 will be displayed correctly on the status screen."
 	}
 ]

@@ -33,6 +33,27 @@ The general project structure is as follows:
 2. `cd FF1Blazorizer && dotnet publish -c Debug -o output`
 3. `cd output/wwwroot && python3 -m http.server 8000`
 
+## ROM hacking
+
+### Using ca65 to assemble code
+
+For example, if you need to assemble `0E_9500_ShopUpgrade.asm` and get a hex string (the listing is optional but incredibly helpful):
+
+```
+ca65  0E_9500_ShopUpgrade.asm --listing 0E_9500_ShopUpgrade.lst
+ld65 -t nes -o 0E_9500_ShopUpgrade 0E_9500_ShopUpgrade.o
+hexdump -s 0x10 -v -e '/1 "%02X"' 0E_9500_ShopUpgrade
+```
+
+### Hot-patch in the fceux debugger for testing
+
+1. Run the game in fceux, find what you care about in the debugger
+1. Click "ROM offsets" to ensure it is on,
+1. Open the Hex Editor, then view -> Rom file
+1. Ctrl + a to goto an address, input the rom offset
+1. Input the assembled hex
+1. It will update live
+
 ## Git workflow
 
 The randomizer is hosted on github and therefore some level of git knowledge is required in order to contribute. In order to help get anyone ready to contribute, this will assume no prior git knowledge. Please skip past any steps you have already done, or this entire section if you are already familiar with git and able to rebase, merge, deal with multiple repos, bisect, and handle PRs on github.

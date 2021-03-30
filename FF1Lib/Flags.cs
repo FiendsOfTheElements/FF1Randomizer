@@ -14,6 +14,11 @@ namespace FF1Lib
 {
 	public class Flags : IIncentiveFlags, IMapEditFlags, IScaleFlags, IFloorShuffleFlags
 	{
+		public bool SanityCheckerV2 { get; set; } = false;
+
+		public OwMapExchanges OwMapExchange { get; set; } = OwMapExchanges.None;
+
+		
 		#region ShopKiller
 
 		public ShopKillMode ShopKillMode_Weapons { get; set; } = ShopKillMode.None;
@@ -65,6 +70,12 @@ namespace FF1Lib
 		public HintPlacementStrategy ExtensiveHints_EquipmentNamePlacement { get; set; } = HintPlacementStrategy.ConeriaToCrescent;
 
 		#endregion
+
+		public bool? ExcludeGoldFromScaling { get; set; } = false;
+		public bool CheapVendorItem { get; set; } = true;
+		public bool ApplyExpBoostToGold { get; set; } = false;
+		
+		public StartingLevel StartingLevel { get; set; }
 
 		public bool Spoilers { get; set; } = false;
 		public bool TournamentSafe { get; set; } = false;
@@ -127,8 +138,10 @@ namespace FF1Lib
 		public bool? OrdealsPillars { get; set; } = false;
 		public SkyCastle4FMazeMode SkyCastle4FMazeMode { get; set; } = SkyCastle4FMazeMode.Normal;
 		public bool? TitansTrove { get; set; } = false;
+		public bool? LefeinSuperStore { get; set; } = false;
 		public bool? LefeinShops { get; set; } = false;
 		public bool? RandomVampAttack { get; set; } = false;
+		public bool? RandomVampAttackIncludesConeria { get; set; } = false;
 		public bool? FightBahamut { get; set; } = false;
 		public bool? ConfusedOldMen { get; set; } = false;
 		public bool? GaiaShortcut { get; set; } = false;
@@ -147,6 +160,8 @@ namespace FF1Lib
 		public bool? MapDwarvesNorthwest { get; set; } = false;
 		public bool? MapAirshipDock { get; set; } = false;
 		public bool? MapBahamutCardiaDock  { get; set; } = false;
+		public bool? MapLefeinRiver  { get; set; } = false;
+		public bool? MapGaiaMountainPass  { get; set; } = false;
 		public bool? EntrancesIncludesDeadEnds { get; set; } = false;
 		public bool? EntrancesMixedWithTowns { get; set; } = false;
 
@@ -229,6 +244,8 @@ namespace FF1Lib
 		public bool BBCritRate { get; set; } = false;
 		public bool WeaponCritRate { get; set; } = false;
 		public bool WeaponBonuses { get; set; } = false;
+		public bool ThiefAgilityBuff { get; set; } = false;
+		public bool BugfixRender3DigitStats { get; set; } = false;
 
 		[IntegerFlag(0, 50)]
 		public int WeaponTypeBonusValue { get; set; } = 10;
@@ -722,7 +739,6 @@ namespace FF1Lib
 		public bool? DeepTownsPossible => Towns & Entrances & Floors & EntrancesMixedWithTowns;
 		public bool EnemizerEnabled => (bool)RandomizeFormationEnemizer | (bool)RandomizeEnemizer;
 		public bool EnemizerDontMakeNewScripts => (bool)EnemySkillsSpells & !((bool)BossSkillsOnly | (bool)EnemySkillsSpellsTiered);
-
 
 		public static string EncodeFlagsText(Flags flags)
 		{
