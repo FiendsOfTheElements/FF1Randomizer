@@ -62,11 +62,8 @@ namespace FF1Lib
 
 			int townFreeTiles = 0;
 			int castleFreeTiles = 0;
-			
 			int iceFreeTiles = 0;
-			
 			int marshFreeTiles = 0;
-			
 			int seaFreeTiles = 0;
 			/*int earthFreeTiles = 0;
 			int skyFreeTiles = 0;
@@ -74,11 +71,8 @@ namespace FF1Lib
 			*/
 			int townUsedTiles = 0;
 			int castleUsedTiles = 0;
-			
 			int iceUsedTiles = 0;
-			
 			int marshUsedTiles = 0;
-			
 			int seaUsedTiles = 0;
 			/*int earthUsedTiles = 0;
 			int skyUsedTiles = 0;
@@ -102,6 +96,60 @@ namespace FF1Lib
 
 			maps[(int)MapId.Pravoka].Put((0x0E, 0x1F), pravokaSouthwall.ToArray());
 			maps[(int)MapId.Pravoka][0x1E, 0x13] = availableTiles[(int)TileSets.Town][townUsedTiles++];
+
+			// Elfland
+			var elflandEastwall = new List<Blob> {
+				Blob.FromHex("101031"),
+				Blob.FromHex("0F0E0E"),
+				Blob.FromHex("0F4747"),
+				Blob.FromHex("0F4747"),
+				Blob.FromHex("0F4747"),
+				Blob.FromHex("0F4747"),
+				Blob.FromHex("0F4747"),
+				Blob.FromHex("0F4747"),
+				Blob.FromHex("0F4747"),
+				Blob.FromHex("0F4747"),
+				Blob.FromHex("0E4747"),
+			};
+
+			var elflandWestwall = new List<Blob> {
+				Blob.FromHex("0F"),
+				Blob.FromHex("0F"),
+				Blob.FromHex("0F"),
+			};
+
+			var elflandNorthwall = new List<Blob> {
+				Blob.FromHex("0E0E0E0E0E0E0E0E0E0E0E0E0E0E0E0E0E0E0E0E0E0E0E0E0E"),
+			};
+
+			var elflandEastwall2 = new List<Blob> {
+				Blob.FromHex("0F"),
+				Blob.FromHex("0F"),
+				Blob.FromHex("0F"),
+				Blob.FromHex("0F"),
+				Blob.FromHex("0F"),
+				Blob.FromHex("0F"),
+				Blob.FromHex("0F"),
+				Blob.FromHex("0F"),
+				Blob.FromHex("0F"),
+				Blob.FromHex("0F"),
+				Blob.FromHex("0F"),
+				Blob.FromHex("0F"),
+				Blob.FromHex("0F"),
+				Blob.FromHex("0F"),
+				Blob.FromHex("0F"),
+				Blob.FromHex("0F"),
+			};
+
+			maps[(int)MapId.Elfland].Put((0x27, 0x16), elflandEastwall.ToArray());
+			maps[(int)MapId.Elfland].Put((0x29, 0x00), elflandEastwall2.ToArray());
+			maps[(int)MapId.Elfland].Put((0x10, 0x00), elflandNorthwall.ToArray());
+			maps[(int)MapId.Elfland].Put((0x00, 0x04), elflandWestwall.ToArray());
+			maps[(int)MapId.Elfland][0x05, 0x04] = 0x00;
+
+			maps[(int)MapId.Elfland][0x16, 0x28] = availableTiles[(int)TileSets.Town][townUsedTiles++];
+			
+
 
 			// Coneria Castle
 			var coneriacastleMarshBox = new List<Blob> {
@@ -130,15 +178,95 @@ namespace FF1Lib
 			maps[(int)MapId.ConeriaCastle1F][0x22, 0x0C] = availableTiles[(int)TileSets.Castle][castleUsedTiles++]; // To Coneria
 			maps[(int)MapId.ConeriaCastle1F][0x1D, 0x17] = availableTiles[(int)TileSets.Castle][castleUsedTiles++]; // To Marsh
 			maps[(int)MapId.ConeriaCastle1F][0x1D, 0x02] = availableTiles[(int)TileSets.Castle][castleUsedTiles++]; // To ToF
-			maps[(int)MapId.ConeriaCastle1F][0x09, 0x02] = availableTiles[(int)TileSets.Castle][castleUsedTiles++]; // To Waterfall
+			//maps[(int)MapId.ConeriaCastle1F][0x09, 0x02] = availableTiles[(int)TileSets.Castle][castleUsedTiles++]; // To Waterfall
+
+			// Elfland Castle
+			var elflandcastleSouthwall = new List<Blob> {
+				Blob.FromHex("3031313130"),
+				Blob.FromHex("3131313131"),
+				Blob.FromHex("3030303030"),
+				Blob.FromHex("2121212121"),
+				Blob.FromHex("2121212121"),
+			};
+
+			var elflandcastleNorthbox = new List<Blob> {
+				Blob.FromHex("30300001"),
+				Blob.FromHex("21310304"),
+				Blob.FromHex("21310607"),
+				Blob.FromHex("21313030"),
+			};
+
+			var elflandcastleEastwall = new List<Blob> {
+				Blob.FromHex("35"),
+				Blob.FromHex("33"),
+				Blob.FromHex("33"),
+				Blob.FromHex("33"),
+			};
+
+			maps[(int)MapId.ElflandCastle][0x07, 0x17] = 0x31;
+			maps[(int)MapId.ElflandCastle][0x10, 0x02] = 0x30;
+			maps[(int)MapId.ElflandCastle].Put((0x0E, 0x1B), elflandcastleSouthwall.ToArray());
+			maps[(int)MapId.ElflandCastle].Put((0x11, 0x00), elflandcastleNorthbox.ToArray());
+			maps[(int)MapId.ElflandCastle].Put((0x19, 0x03), elflandcastleEastwall.ToArray());
+
+			maps[(int)MapId.ElflandCastle][0x17, 0x10] = availableTiles[(int)TileSets.Castle][castleUsedTiles++]; // To Elfland
+			maps[(int)MapId.ElflandCastle][0x01, 0x14] = availableTiles[(int)TileSets.Castle][castleUsedTiles++]; // To Marsh B1
+			maps[(int)MapId.ElflandCastle][0x02, 0x02] = availableTiles[(int)TileSets.Castle][castleUsedTiles++]; // To NW Castle
+			maps[(int)MapId.ElflandCastle][0x11, 0x0C] = availableTiles[(int)TileSets.Castle][castleUsedTiles++]; // To Ice Cave
+
+			// Northwest Castle
+			var northwestcastleEastwall = new List<Blob> {
+				Blob.FromHex("33"),
+				Blob.FromHex("33"),
+				Blob.FromHex("33"),
+				Blob.FromHex("33"),
+				Blob.FromHex("33"),
+				Blob.FromHex("33"),
+				Blob.FromHex("33"),
+			};
+
+			maps[(int)MapId.NorthwestCastle][0x18, 0x16] = 0x30;
+			maps[(int)MapId.NorthwestCastle][0x17, 0x1C] = 0x30;
+			maps[(int)MapId.NorthwestCastle][0x0A, 0x07] = 0x30;
+			maps[(int)MapId.NorthwestCastle].Put((0x09, 0x15), coneriacastleNorthwall.ToArray());
+			maps[(int)MapId.NorthwestCastle].Put((0x1D, 0x0A), northwestcastleEastwall.ToArray());
+
+			maps[(int)MapId.NorthwestCastle][0x17, 0x16] = availableTiles[(int)TileSets.Castle][castleUsedTiles++]; // To Marsh
+			maps[(int)MapId.NorthwestCastle][0x14, 0x0A] = availableTiles[(int)TileSets.Castle][castleUsedTiles++]; // To Elfland
+			maps[(int)MapId.NorthwestCastle][0x03, 0x1C] = availableTiles[(int)TileSets.Castle][castleUsedTiles++]; // To Ordeals
+
+			// Ordeals
+			var ordealsRoom = new List<Blob> {
+				Blob.FromHex("19041A"),
+			};
+
+			var ordealsSouthwall = new List<Blob> {
+				Blob.FromHex("303030"),
+				Blob.FromHex("212121"),
+			};
+
+			maps[(int)MapId.CastleOfOrdeals1F][0x05, 0x14] = 0x36;
+			maps[(int)MapId.CastleOfOrdeals1F].Put((0x15, 0x02), ordealsRoom.ToArray());
+			maps[(int)MapId.CastleOfOrdeals1F].Put((0x0B, 0x15), ordealsSouthwall.ToArray());
+
+			maps[(int)MapId.CastleOfOrdeals1F][0x02, 0x16] = availableTiles[(int)TileSets.Castle][castleUsedTiles++]; // To Gaia
+			maps[(int)MapId.CastleOfOrdeals1F][0x13, 0x11] = availableTiles[(int)TileSets.Castle][castleUsedTiles++]; // To Titan's East
+			maps[(int)MapId.CastleOfOrdeals1F][0x13, 0x07] = availableTiles[(int)TileSets.Castle][castleUsedTiles++]; // To NW Castle
 
 			// Temple of Fiend
 			maps[(int)MapId.TempleOfFiends][0x1E, 0x14] = availableTiles[(int)TileSets.ToFSeaShrine][seaUsedTiles++]; // To Coneria
+			maps[(int)MapId.TempleOfFiends][0x06, 0x14] = availableTiles[(int)TileSets.ToFSeaShrine][seaUsedTiles++]; // To Dwarf
+			maps[(int)MapId.TempleOfFiends][0x1B, 0x08] = availableTiles[(int)TileSets.ToFSeaShrine][seaUsedTiles++]; // To Matoya
 
 			// Matoya's Cave
-			maps[(int)MapId.MatoyasCave][0x0B, 0x01] = availableTiles[(int)TileSets.MatoyaDwarfCardiaIceWaterfall][iceUsedTiles++];
+			var matoyaTileReclaim = new List<Blob> { Blob.FromHex("3C3C3C3C") };
+			maps[(int)MapId.MatoyasCave].Put((0x14, 0x0D), matoyaTileReclaim.ToArray());
 
-			// Marsh Cave
+			maps[(int)MapId.MatoyasCave][0x0B, 0x01] = availableTiles[(int)TileSets.MatoyaDwarfCardiaIceWaterfall][iceUsedTiles++]; // To ToF
+			maps[(int)MapId.MatoyasCave][0x0B, 0x0F] = availableTiles[(int)TileSets.MatoyaDwarfCardiaIceWaterfall][iceUsedTiles++]; // To Pravoka
+			maps[(int)MapId.MatoyasCave][0x02, 0x0E] = availableTiles[(int)TileSets.MatoyaDwarfCardiaIceWaterfall][iceUsedTiles++]; // To Marsh B2
+
+			// Marsh Cave B1
 			var marshConeriaBox = new List<Blob> {
 				Blob.FromHex("000102"),
 				Blob.FromHex("030405"),
@@ -150,8 +278,17 @@ namespace FF1Lib
 			maps[(int)MapId.MarshCaveB1].Put((0x14, 0x18), marshConeriaBox.ToArray());
 			maps[(int)MapId.MarshCaveB1].Put((0x2A, 0x16), marshConeriaBox.ToArray());
 
-			maps[(int)MapId.MarshCaveB1][0x19, 0x15] = availableTiles[(int)TileSets.MarshMirage][marshUsedTiles++];
-			maps[(int)MapId.MarshCaveB1][0x17, 0x2B] = availableTiles[(int)TileSets.MarshMirage][marshUsedTiles++];
+			maps[(int)MapId.MarshCaveB1][0x19, 0x15] = availableTiles[(int)TileSets.MarshMirage][marshUsedTiles++]; // To Coneria Castle
+			maps[(int)MapId.MarshCaveB1][0x17, 0x2B] = availableTiles[(int)TileSets.MarshMirage][marshUsedTiles++]; // To Elfland Castle
+
+			// Marsh Cave B2
+			maps[(int)MapId.MarshCaveB2][0x07, 0x07] = availableTiles[(int)TileSets.MarshMirage][marshUsedTiles++];
+			maps[(int)MapId.MarshCaveB2][0x10, 0x12] = availableTiles[(int)TileSets.MarshMirage][marshUsedTiles++];
+			maps[(int)MapId.MarshCaveB2][0x25, 0x22] = availableTiles[(int)TileSets.MarshMirage][marshUsedTiles++];
+
+			// Marsh Cave B3
+			maps[(int)MapId.MarshCaveB3][0x06, 0x05] = availableTiles[(int)TileSets.MarshMirage][marshUsedTiles++];
+			maps[(int)MapId.MarshCaveB3][0x30, 0x2D] = availableTiles[(int)TileSets.MarshMirage][marshUsedTiles++];
 
 			List<smTile> newTiles = new();
 			List<smTeleporter> newTeleporters = new();
@@ -160,44 +297,100 @@ namespace FF1Lib
 
 			byte teleportIDtracker = 0x41;
 
+
+			// Add the new teleporters, this must in the exact order as newTiles
 			newTeleporters.AddRange(new List<smTeleporter>
 			{
 				// Coneria
 				new smTeleporter(teleportIDtracker++, 0x0C, 0x22, (byte)MapId.ConeriaCastle1F, false),
 				// Pravoka
 				new smTeleporter(teleportIDtracker++, 0x01, 0x0B, (byte)MapId.MatoyasCave, false),
+				// Elfland
+				new smTeleporter(teleportIDtracker++, 0x10, 0x17, (byte)MapId.ElflandCastle, false),
 				// Coneria Castle
 				new smTeleporter(teleportIDtracker++, 0x10, 0x16, (byte)MapId.Coneria, false),
 				new smTeleporter(teleportIDtracker++, 0x15, 0x19, (byte)MapId.MarshCaveB1, true),
 				new smTeleporter(teleportIDtracker++, 0x14, 0x1E, (byte)MapId.TempleOfFiends, false),
+				// Elfland Castle
+				new smTeleporter(teleportIDtracker++, 0x28, 0x16, (byte)MapId.Elfland, false),
+				new smTeleporter(teleportIDtracker++, 0x2B, 0x17, (byte)MapId.MarshCaveB1, true),
+				new smTeleporter(teleportIDtracker++, 0x0A, 0x14, (byte)MapId.NorthwestCastle, false),
+				new smTeleporter(teleportIDtracker++, 0x07, 0x01, (byte)MapId.IceCaveB1, false),
+				// Northwest Castle
+				new smTeleporter(teleportIDtracker++, 0x2D, 0x30, (byte)MapId.MarshCaveB3, false),
+				new smTeleporter(teleportIDtracker++, 0x02, 0x02, (byte)MapId.ElflandCastle, false),
+				new smTeleporter(teleportIDtracker++, 0x07, 0x13, (byte)MapId.CastleOfOrdeals1F, false),
+				// Ordeals
+				new smTeleporter(teleportIDtracker++, 0x10, 0x10, (byte)MapId.Gaia, false), // wip
+				new smTeleporter(teleportIDtracker++, 0x0B, 0x0E, (byte)MapId.TitansTunnel, false),
+				new smTeleporter(teleportIDtracker++, 0x1C, 0x03, (byte)MapId.NorthwestCastle, false),
 				// Temple of Fiends
 				new smTeleporter(teleportIDtracker++, 0x02, 0x1D, (byte)MapId.ConeriaCastle1F, false),
+				new smTeleporter(teleportIDtracker++, 0x16, 0x0B, (byte)MapId.DwarfCave, false),
+				new smTeleporter(teleportIDtracker++, 0x0F, 0x0B, (byte)MapId.MatoyasCave, false),
 				// Matoya
 				new smTeleporter(teleportIDtracker++, 0x13, 0x1E, (byte)MapId.Pravoka, false),
-				// Marsh Cave
+				new smTeleporter(teleportIDtracker++, 0x08, 0x1B, (byte)MapId.TempleOfFiends, false),
+				new smTeleporter(teleportIDtracker++, 0x07, 0x07, (byte)MapId.MarshCaveB2, true),
+				// Marsh Cave B1
 				new smTeleporter(teleportIDtracker++, 0x17, 0x1D, (byte)MapId.ConeriaCastle1F, true),
+				new smTeleporter(teleportIDtracker++, 0x14, 0x01, (byte)MapId.ElflandCastle, true),
+				// Marsh Cave B2
+				new smTeleporter(teleportIDtracker++, 0x0E, 0x02, (byte)MapId.MatoyasCave, true),
+				new smTeleporter(teleportIDtracker++, 0x01, 0x07, (byte)MapId.MarshCaveB1, false),
+				new smTeleporter(teleportIDtracker++, 0x20, 0x34, (byte)MapId.MarshCaveB1, true),
+				// Marsh Cave B3
+				new smTeleporter(teleportIDtracker++, 0x3A, 0x3A, (byte)MapId.MarshCaveB2, false),
+				new smTeleporter(teleportIDtracker++, 0x16, 0x17, (byte)MapId.NorthwestCastle, false),
 
 			});
 
 			teleportIDtracker = 0x41;
 
+			// Add the new tiles, this must in the exact order as newTeleporters
 			newTiles.AddRange(new List<smTile>
 			{
 				// Coneria
 				new smTile(availableTiles[(int)TileSets.Town][townFreeTiles++], (int)TileSets.Town, TilePalette.OutPalette2, tilegraphics.Downstairs((int)TileSets.Town), (byte)TilePropFunc.TP_TELE_NORM, teleportIDtracker++),
 				// Pravoka
 				new smTile(availableTiles[(int)TileSets.Town][townFreeTiles++], (int)TileSets.Town, TilePalette.OutPalette2, tilegraphics.Downstairs((int)TileSets.Town), (byte)TilePropFunc.TP_TELE_NORM, teleportIDtracker++),
+				// Elfland
+				new smTile(availableTiles[(int)TileSets.Town][townFreeTiles++], (int)TileSets.Town, TilePalette.OutPalette2, tilegraphics.Downstairs((int)TileSets.Town), (byte)TilePropFunc.TP_TELE_NORM, teleportIDtracker++),
 				// Coneria Castle
 				new smTile(availableTiles[(int)TileSets.Castle][castleFreeTiles++], (int)TileSets.Castle, TilePalette.OutPalette2, tilegraphics.Upstairs((int)TileSets.Castle), (byte)TilePropFunc.TP_TELE_NORM, teleportIDtracker++),
 				new smTile(availableTiles[(int)TileSets.Castle][castleFreeTiles++], (int)TileSets.Castle, TilePalette.RoomPalette1, tilegraphics.LadderDown((int)TileSets.Castle), (byte)TilePropFunc.TP_TELE_NORM, teleportIDtracker++),
 				new smTile(availableTiles[(int)TileSets.Castle][castleFreeTiles++], (int)TileSets.Castle, TilePalette.OutPalette2, tilegraphics.Downstairs((int)TileSets.Castle), (byte)TilePropFunc.TP_TELE_NORM, teleportIDtracker++),
+				// Elfland Castle
+				new smTile(availableTiles[(int)TileSets.Castle][castleFreeTiles++], (int)TileSets.Castle, TilePalette.OutPalette2, tilegraphics.Upstairs((int)TileSets.Castle), (byte)TilePropFunc.TP_TELE_NORM, teleportIDtracker++),
+				new smTile(availableTiles[(int)TileSets.Castle][castleFreeTiles++], (int)TileSets.Castle, TilePalette.RoomPalette1, tilegraphics.LadderDown((int)TileSets.Castle), (byte)TilePropFunc.TP_TELE_NORM, teleportIDtracker++),
+				new smTile(availableTiles[(int)TileSets.Castle][castleFreeTiles++], (int)TileSets.Castle, TilePalette.OutPalette2, tilegraphics.Downstairs((int)TileSets.Castle), (byte)TilePropFunc.TP_TELE_NORM, teleportIDtracker++),
+				new smTile(availableTiles[(int)TileSets.Castle][castleFreeTiles++], (int)TileSets.Castle, TilePalette.OutPalette2, tilegraphics.Downstairs((int)TileSets.Castle), (byte)TilePropFunc.TP_TELE_NORM, teleportIDtracker++),
+				// Northwest Castle
+				new smTile(availableTiles[(int)TileSets.Castle][castleFreeTiles++], (int)TileSets.Castle, TilePalette.OutPalette2, tilegraphics.Downstairs((int)TileSets.Castle), (byte)TilePropFunc.TP_TELE_NORM, teleportIDtracker++),
+				new smTile(availableTiles[(int)TileSets.Castle][castleFreeTiles++], (int)TileSets.Castle, TilePalette.OutPalette2, tilegraphics.Upstairs((int)TileSets.Castle), (byte)TilePropFunc.TP_TELE_NORM, teleportIDtracker++),
+				new smTile(availableTiles[(int)TileSets.Castle][castleFreeTiles++], (int)TileSets.Castle, TilePalette.OutPalette2, tilegraphics.Downstairs((int)TileSets.Castle), (byte)TilePropFunc.TP_TELE_NORM, teleportIDtracker++),
+				// Ordeals
+				new smTile(availableTiles[(int)TileSets.Castle][castleFreeTiles++], (int)TileSets.Castle, TilePalette.OutPalette2, tilegraphics.LadderDown((int)TileSets.Castle), (byte)TilePropFunc.TP_TELE_NORM, teleportIDtracker++),
+				new smTile(availableTiles[(int)TileSets.Castle][castleFreeTiles++], (int)TileSets.Castle, TilePalette.OutPalette2, tilegraphics.Downstairs((int)TileSets.Castle), (byte)TilePropFunc.TP_TELE_NORM, teleportIDtracker++),
+				new smTile(availableTiles[(int)TileSets.Castle][castleFreeTiles++], (int)TileSets.Castle, TilePalette.OutPalette2, tilegraphics.Upstairs((int)TileSets.Castle), (byte)TilePropFunc.TP_TELE_NORM, teleportIDtracker++),
 				// Temple of Fiends
 				new smTile(availableTiles[(int)TileSets.ToFSeaShrine][seaFreeTiles++], (int)TileSets.ToFSeaShrine, TilePalette.OutPalette1, tilegraphics.Upstairs((int)TileSets.ToFSeaShrine), (byte)TilePropFunc.TP_TELE_NORM, teleportIDtracker++),
+				new smTile(availableTiles[(int)TileSets.ToFSeaShrine][seaFreeTiles++], (int)TileSets.ToFSeaShrine, TilePalette.OutPalette1, tilegraphics.Downstairs((int)TileSets.ToFSeaShrine), (byte)TilePropFunc.TP_TELE_NORM, teleportIDtracker++),
+				new smTile(availableTiles[(int)TileSets.ToFSeaShrine][seaFreeTiles++], (int)TileSets.ToFSeaShrine, TilePalette.OutPalette1, tilegraphics.Downstairs((int)TileSets.ToFSeaShrine), (byte)TilePropFunc.TP_TELE_NORM, teleportIDtracker++),
 				// Matoya
 				new smTile(availableTiles[(int)TileSets.MatoyaDwarfCardiaIceWaterfall][iceFreeTiles++], (int)TileSets.MatoyaDwarfCardiaIceWaterfall, TilePalette.OutPalette2, tilegraphics.Upstairs((int)TileSets.MatoyaDwarfCardiaIceWaterfall), (byte)TilePropFunc.TP_TELE_NORM, teleportIDtracker++),
-				// Marsh Cave
+				new smTile(availableTiles[(int)TileSets.MatoyaDwarfCardiaIceWaterfall][iceFreeTiles++], (int)TileSets.MatoyaDwarfCardiaIceWaterfall, TilePalette.OutPalette2, tilegraphics.Upstairs((int)TileSets.MatoyaDwarfCardiaIceWaterfall), (byte)TilePropFunc.TP_TELE_NORM, teleportIDtracker++),
+				new smTile(availableTiles[(int)TileSets.MatoyaDwarfCardiaIceWaterfall][iceFreeTiles++], (int)TileSets.MatoyaDwarfCardiaIceWaterfall, TilePalette.RoomPalette1, tilegraphics.LadderDown((int)TileSets.MatoyaDwarfCardiaIceWaterfall), (byte)TilePropFunc.TP_TELE_NORM, teleportIDtracker++),
+				// Marsh Cave B1
 				new smTile(availableTiles[(int)TileSets.MarshMirage][marshFreeTiles++], (int)TileSets.MarshMirage, TilePalette.RoomPalette1, tilegraphics.LadderUp((int)TileSets.MarshMirage), (byte)TilePropFunc.TP_TELE_NORM, teleportIDtracker++),
-
+				new smTile(availableTiles[(int)TileSets.MarshMirage][marshFreeTiles++], (int)TileSets.MarshMirage, TilePalette.RoomPalette1, tilegraphics.LadderUp((int)TileSets.MarshMirage), (byte)TilePropFunc.TP_TELE_NORM, teleportIDtracker++),
+				// Marsh Cave B2
+				new smTile(availableTiles[(int)TileSets.MarshMirage][marshFreeTiles++], (int)TileSets.MarshMirage, TilePalette.RoomPalette1, tilegraphics.LadderUp((int)TileSets.MarshMirage), (byte)TilePropFunc.TP_TELE_NORM, teleportIDtracker++),
+				new smTile(availableTiles[(int)TileSets.MarshMirage][marshFreeTiles++], (int)TileSets.MarshMirage, TilePalette.OutPalette1, tilegraphics.Upstairs((int)TileSets.MarshMirage), (byte)TilePropFunc.TP_TELE_NORM, teleportIDtracker++),
+				new smTile(availableTiles[(int)TileSets.MarshMirage][marshFreeTiles++], (int)TileSets.MarshMirage, TilePalette.RoomPalette1, tilegraphics.LadderUp((int)TileSets.MarshMirage), (byte)TilePropFunc.TP_TELE_NORM, teleportIDtracker++),
+				// Marsh Cave B3
+				new smTile(availableTiles[(int)TileSets.MarshMirage][marshFreeTiles++], (int)TileSets.MarshMirage, TilePalette.OutPalette1, tilegraphics.Upstairs((int)TileSets.MarshMirage), (byte)TilePropFunc.TP_TELE_NORM, teleportIDtracker++),
+				new smTile(availableTiles[(int)TileSets.MarshMirage][marshFreeTiles++], (int)TileSets.MarshMirage, TilePalette.OutPalette1, tilegraphics.Upstairs((int)TileSets.MarshMirage), (byte)TilePropFunc.TP_TELE_NORM, teleportIDtracker++),
 			});
 
 			foreach (var teleport in newTeleporters)
