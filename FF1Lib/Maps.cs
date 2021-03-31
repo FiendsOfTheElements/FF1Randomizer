@@ -236,6 +236,23 @@ namespace FF1Lib
 		TownDoor67 = 0x7D, // item shop, empty #1
 		TownDoor68 = 0x7E, // item shop, empty #2
 		TownTomb2 = 0x7F, // easter egg tomb
+
+		// Cardia tiles
+		CardiaFloor = 0x04,
+		CardiaCandles = 0x0D,
+		CardiaChest1 = 0x68,
+		CardiaChest2 = 0x69,
+		CardiaChest3 = 0x6A,
+		CardiaChest4 = 0x6B,
+		CardiaChest5 = 0x6C,
+		CardiaChest6 = 0x6D,
+		CardiaChest7 = 0x6E,
+		CardiaChest8 = 0x6F,
+		CardiaChest9 = 0x70,
+		CardiaChest10 = 0x71,
+		CardiaChest11 = 0x72,
+		CardiaChest12 = 0x73,
+		CardiaChest13 = 0x74,
 	}
 
 	public enum WarMECHMode
@@ -534,7 +551,7 @@ namespace FF1Lib
 
 		public void ShuffleSkyCastle4F(MT19337 rng, List<Map> maps)
 		{
-			// Don't shuffle the return teleporter as Floor and Entrance shuffle might want to edit it.	
+			// Don't shuffle the return teleporter as Floor and Entrance shuffle might want to edit it.
 			var map = maps[(byte)MapId.SkyPalace4F];
 			var upTeleporter = (x: 0x23, y: 0x23);
 			var dest = GetSkyCastleFloorTile(rng, map);
@@ -667,7 +684,7 @@ namespace FF1Lib
 			lefein[0x05, 0x15] = 0x1A; // Clinic Sign
 			lefein[0x06, 0x15] = 0x65; // Crescent Lake Clinic
 		}
-        
+
     public void EnableMelmondClinic(List<Map> maps)
     {
         var melmond = maps[(byte)MapId.Melmond];
@@ -680,10 +697,10 @@ namespace FF1Lib
         melmond[0x0A, 0x1D] = 0x01; // Full shadow
         melmond[0x0B, 0x1A] = 0x1D; // Building front, two windows
         melmond[0x0B, 0x1B] = 0x65; // Crescent Lake clinic
-        melmond[0x0B, 0x1C] = 0x1D; 
+        melmond[0x0B, 0x1C] = 0x1D;
         melmond[0x0B, 0x1D] = 0x02; // Corner shadow
     }
-        
+
 		public void EnableToFRExit(List<Map> maps)
 		{
 			// add warp portal to ToFR 1st floor
@@ -780,7 +797,7 @@ namespace FF1Lib
 
 			//var mapsToFlip = validMaps;
 
-			
+
 			foreach (MapId map in mapsToFlip)
 			{
 				maps[(int)map].FlipHorizontal();
@@ -1096,5 +1113,46 @@ namespace FF1Lib
 
 		}
 
+		public void DragonsHoard(List<Map> maps) {
+		    maps[(byte)MapId.BahamutsRoomB2][1, 17] = (byte)Tile.CardiaCandles;
+		    maps[(byte)MapId.BahamutsRoomB2][1, 18] = (byte)Tile.CardiaChest1;
+		    maps[(byte)MapId.BahamutsRoomB2][1, 19] = (byte)Tile.CardiaChest2;
+		    maps[(byte)MapId.BahamutsRoomB2][1, 20] = (byte)Tile.CardiaChest3;
+		    maps[(byte)MapId.BahamutsRoomB2][1, 21] = (byte)Tile.CardiaChest4;
+		    maps[(byte)MapId.BahamutsRoomB2][1, 22] = (byte)Tile.CardiaChest5;
+		    maps[(byte)MapId.BahamutsRoomB2][1, 23] = (byte)Tile.CardiaChest6;
+		    maps[(byte)MapId.BahamutsRoomB2][1, 24] = (byte)Tile.CardiaChest7;
+		    maps[(byte)MapId.BahamutsRoomB2][1, 25] = (byte)Tile.CardiaCandles;
+
+		    maps[(byte)MapId.BahamutsRoomB2][2, 17] = (byte)Tile.CardiaChest8;
+		    maps[(byte)MapId.BahamutsRoomB2][2, 18] = (byte)Tile.CardiaFloor;
+		    maps[(byte)MapId.BahamutsRoomB2][2, 19] = (byte)Tile.CardiaFloor;
+		    maps[(byte)MapId.BahamutsRoomB2][2, 20] = (byte)Tile.CardiaFloor;
+		    maps[(byte)MapId.BahamutsRoomB2][2, 21] = (byte)Tile.CardiaFloor;
+		    maps[(byte)MapId.BahamutsRoomB2][2, 22] = (byte)Tile.CardiaFloor;
+		    maps[(byte)MapId.BahamutsRoomB2][2, 23] = (byte)Tile.CardiaFloor;
+		    maps[(byte)MapId.BahamutsRoomB2][2, 24] = (byte)Tile.CardiaFloor;
+		    maps[(byte)MapId.BahamutsRoomB2][2, 25] = (byte)Tile.CardiaChest9;
+
+		    maps[(byte)MapId.BahamutsRoomB2][3, 17] = (byte)Tile.CardiaCandles;
+		    maps[(byte)MapId.BahamutsRoomB2][3, 18] = (byte)Tile.CardiaChest10;
+		    maps[(byte)MapId.BahamutsRoomB2][3, 19] = (byte)Tile.CardiaFloor;
+		    maps[(byte)MapId.BahamutsRoomB2][3, 20] = (byte)Tile.CardiaFloor;
+		    maps[(byte)MapId.BahamutsRoomB2][3, 21] = (byte)Tile.CardiaFloor;
+		    maps[(byte)MapId.BahamutsRoomB2][3, 22] = (byte)Tile.CardiaFloor;
+		    maps[(byte)MapId.BahamutsRoomB2][3, 23] = (byte)Tile.CardiaFloor;
+		    maps[(byte)MapId.BahamutsRoomB2][3, 24] = (byte)Tile.CardiaChest11;
+		    maps[(byte)MapId.BahamutsRoomB2][3, 25] = (byte)Tile.CardiaCandles;
+
+		    maps[(byte)MapId.BahamutsRoomB2][4, 17] = (byte)Tile.CardiaFloor;
+		    maps[(byte)MapId.BahamutsRoomB2][4, 18] = (byte)Tile.CardiaCandles;
+		    maps[(byte)MapId.BahamutsRoomB2][4, 19] = (byte)Tile.CardiaChest12;
+		    maps[(byte)MapId.BahamutsRoomB2][4, 20] = (byte)Tile.CardiaFloor;
+		    maps[(byte)MapId.BahamutsRoomB2][4, 21] = (byte)Tile.CardiaFloor;
+		    maps[(byte)MapId.BahamutsRoomB2][4, 22] = (byte)Tile.CardiaFloor;
+		    maps[(byte)MapId.BahamutsRoomB2][4, 23] = (byte)Tile.CardiaChest13;
+		    maps[(byte)MapId.BahamutsRoomB2][4, 24] = (byte)Tile.CardiaCandles;
+		    maps[(byte)MapId.BahamutsRoomB2][4, 25] = (byte)Tile.CardiaFloor;
+		}
 	}
 }

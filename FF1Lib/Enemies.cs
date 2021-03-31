@@ -1024,5 +1024,19 @@ namespace FF1Lib
 			}
 			Put(ZoneFormationsOffset, newFormations.SelectMany(formation => formation.ToBytes()).ToArray());
 		}
+
+		public void BahaumutB1Encounters() {
+		    var bahaumutB1ZoneOffset = ZoneFormationsOffset + (ZoneFormationsSize * (64 + (int)MapId.BahamutsRoomB1));
+		    var formation = Get(bahaumutB1ZoneOffset, ZoneFormationsSize);
+		    formation[0] = 0x2A; // Red D
+		    formation[1] = 0x30; // Ice D
+		    formation[2] = 0x4B; // Zombie D
+		    formation[3] = 0x4E; // Blue D
+		    formation[4] = 0x59; // Gas D
+		    formation[5] = 0x3D; // Tyro
+		    formation[6] = 0x3E; // T-Rex
+		    formation[7] = 0x76; // Tiamat (!)
+		    Put(bahaumutB1ZoneOffset, formation);
+		}
 	}
 }

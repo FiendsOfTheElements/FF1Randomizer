@@ -801,6 +801,14 @@ namespace FF1Lib
 			ScalePrices(flags, itemText, rng, ((bool)flags.ClampMinimumPriceScale), shopItemLocation);
 			ScaleEncounterRate(flags.EncounterRate / 30.0, flags.DungeonEncounterRate / 30.0);
 
+			//if ((bool)flags.BahamutHallwayEncounters) {
+			    BahaumutB1Encounters();
+			    //}
+
+			//if ((bool)flags.MapDragonsHoard) {
+			    DragonsHoard(maps);
+			    //}
+
 			WriteMaps(maps);
 
 			WriteText(itemText, ItemTextPointerOffset, ItemTextPointerBase, ItemTextOffset, UnusedGoldItems);

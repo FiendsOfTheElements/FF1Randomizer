@@ -145,6 +145,7 @@ namespace FF1Lib
 		public bool? RandomVampAttack { get; set; } = false;
 		public bool? RandomVampAttackIncludesConeria { get; set; } = false;
 		public bool? FightBahamut { get; set; } = false;
+		public bool? BahamutHallwayEncounters { get; set; } = false;
 		public bool? ConfusedOldMen { get; set; } = false;
 		public bool? GaiaShortcut { get; set; } = false;
 		public bool? MoveGaiaItemShop { get; set; } = false;
@@ -164,6 +165,7 @@ namespace FF1Lib
 		public bool? MapBahamutCardiaDock  { get; set; } = false;
 		public bool? MapLefeinRiver  { get; set; } = false;
 		public bool? MapGaiaMountainPass  { get; set; } = false;
+		public bool? MapDragonsHoard { get; set; } = false;
 		public bool? EntrancesIncludesDeadEnds { get; set; } = false;
 		public bool? EntrancesMixedWithTowns { get; set; } = false;
 
