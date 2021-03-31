@@ -802,7 +802,7 @@ namespace FF1Lib
 			ScaleEncounterRate(flags.EncounterRate / 30.0, flags.DungeonEncounterRate / 30.0);
 
 			//if ((bool)flags.BahamutHallwayEncounters) {
-			    BahaumutB1Encounters();
+			    BahaumutB1Encounters(maps);
 			    //}
 
 			//if ((bool)flags.MapDragonsHoard) {

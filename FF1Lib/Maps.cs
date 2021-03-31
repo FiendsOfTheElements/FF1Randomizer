@@ -253,6 +253,7 @@ namespace FF1Lib
 		CardiaChest11 = 0x72,
 		CardiaChest12 = 0x73,
 		CardiaChest13 = 0x74,
+		CardiaEncounters = 0x49,
 	}
 
 	public enum WarMECHMode
@@ -1111,6 +1112,43 @@ namespace FF1Lib
 
 
 
+		}
+
+		public void BahaumutB1Encounters(List<Map> maps) {
+		    var bahaumutB1ZoneOffset = ZoneFormationsOffset + (ZoneFormationsSize * (64 + (int)MapId.BahamutsRoomB1));
+		    var formation = Get(bahaumutB1ZoneOffset, ZoneFormationsSize);
+		    formation[0] = 0x2A; // Red D
+		    formation[1] = 0x30; // Ice D
+		    formation[2] = 0x4B; // Zombie D
+		    formation[3] = 0x4E; // Blue D
+		    formation[4] = 0x59; // Gas D
+		    formation[5] = 0x3D; // Tyro
+		    formation[6] = 0x3E; // T-Rex
+		    formation[7] = 0x76; // Tiamat (!)
+		    Put(bahaumutB1ZoneOffset, formation);
+
+		    maps[(byte)MapId.BahamutsRoomB1][1, 1] = (byte)Tile.CardiaEncounters;
+		    maps[(byte)MapId.BahamutsRoomB1][1, 2] = (byte)Tile.CardiaEncounters;
+		    maps[(byte)MapId.BahamutsRoomB1][1, 3] = (byte)Tile.CardiaEncounters;
+		    maps[(byte)MapId.BahamutsRoomB1][2, 1] = (byte)Tile.CardiaEncounters;
+		    maps[(byte)MapId.BahamutsRoomB1][2, 3] = (byte)Tile.CardiaEncounters;
+		    maps[(byte)MapId.BahamutsRoomB1][3, 1] = (byte)Tile.CardiaEncounters;
+		    maps[(byte)MapId.BahamutsRoomB1][3, 2] = (byte)Tile.CardiaEncounters;
+		    maps[(byte)MapId.BahamutsRoomB1][3, 3] = (byte)Tile.CardiaEncounters;
+		    for (int i = 4; i <= 0x32; i++) {
+			maps[(byte)MapId.BahamutsRoomB1][i, 2] = (byte)Tile.CardiaEncounters;
+		    }
+		    maps[(byte)MapId.BahamutsRoomB1][0x33, 1] = (byte)Tile.CardiaEncounters;
+		    maps[(byte)MapId.BahamutsRoomB1][0x33, 2] = (byte)Tile.CardiaEncounters;
+		    maps[(byte)MapId.BahamutsRoomB1][0x33, 3] = (byte)Tile.CardiaEncounters;
+		    maps[(byte)MapId.BahamutsRoomB1][0x34, 1] = (byte)Tile.CardiaEncounters;
+		    maps[(byte)MapId.BahamutsRoomB1][0x34, 2] = (byte)Tile.CardiaEncounters;
+		    maps[(byte)MapId.BahamutsRoomB1][0x34, 3] = (byte)Tile.CardiaEncounters;
+		    maps[(byte)MapId.BahamutsRoomB1][0x35, 1] = (byte)Tile.CardiaEncounters;
+		    maps[(byte)MapId.BahamutsRoomB1][0x35, 3] = (byte)Tile.CardiaEncounters;
+		    maps[(byte)MapId.BahamutsRoomB1][0x36, 1] = (byte)Tile.CardiaEncounters;
+		    maps[(byte)MapId.BahamutsRoomB1][0x36, 2] = (byte)Tile.CardiaEncounters;
+		    maps[(byte)MapId.BahamutsRoomB1][0x36, 3] = (byte)Tile.CardiaEncounters;
 		}
 
 		public void DragonsHoard(List<Map> maps) {
