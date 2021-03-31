@@ -709,7 +709,7 @@ namespace FF1Lib
 
 			// Roll 1d8 to see which town was destroyed.
 			int start = includeConeria ? 1 : 2;
-			switch (RollDice(rng, start, 8))
+			switch (Rng.Between(rng, start, 8))
 			{
 				case 1:
 					maps[(byte)MapId.Melmond] = new Map(Blob.FromHex(repaired_melmond).ToBytes());
