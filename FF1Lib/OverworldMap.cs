@@ -99,6 +99,22 @@ namespace FF1Lib
 				mapLocationRequirements[MapLocation.BahamutCave1].Add(MapChange.Ship | MapChange.Canal);
 				mapLocationRequirements[MapLocation.Cardia1].Add(MapChange.Ship | MapChange.Canal);
 			}
+			if ((bool)flags.MapDragonsHoard)
+			{
+			    ItemLocations.Cardia1.ChangeMapLocation(MapLocation.Cardia1);
+			    ItemLocations.Cardia2.ChangeMapLocation(MapLocation.Cardia1);
+			    ItemLocations.Cardia3.ChangeMapLocation(MapLocation.Cardia1);
+			    ItemLocations.Cardia4.ChangeMapLocation(MapLocation.Cardia1);
+			    ItemLocations.Cardia5.ChangeMapLocation(MapLocation.Cardia1);
+			    ItemLocations.Cardia6.ChangeMapLocation(MapLocation.Cardia1);
+			    ItemLocations.Cardia7.ChangeMapLocation(MapLocation.Cardia1);
+			    ItemLocations.Cardia8.ChangeMapLocation(MapLocation.Cardia1);
+			    ItemLocations.Cardia9.ChangeMapLocation(MapLocation.Cardia1);
+			    ItemLocations.Cardia10.ChangeMapLocation(MapLocation.Cardia1);
+			    ItemLocations.Cardia11.ChangeMapLocation(MapLocation.Cardia1);
+			    ItemLocations.Cardia12.ChangeMapLocation(MapLocation.Cardia1);
+			    ItemLocations.Cardia13.ChangeMapLocation(MapLocation.Cardia1);
+			}
 			if ((bool)flags.MapLefeinRiver) {
 			    MapEditsToApply.Add(LefeinRiverDock);
 			    mapLocationRequirements[MapLocation.Lefein].Add(MapChange.Ship | MapChange.Canal | MapChange.Canoe);

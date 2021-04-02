@@ -1114,18 +1114,21 @@ namespace FF1Lib
 
 		}
 
-		public void BahaumutB1Encounters(List<Map> maps) {
-		    var bahaumutB1ZoneOffset = ZoneFormationsOffset + (ZoneFormationsSize * (64 + (int)MapId.BahamutsRoomB1));
+		public void BahamutB1Encounters(List<Map> maps) {
+		    // Adds dragon-themed encounters to the long
+		    // hallway to Bahamut's room
+
+		    var bahamutB1ZoneOffset = ZoneFormationsOffset + (ZoneFormationsSize * (64 + (int)MapId.BahamutsRoomB1));
 		    var formation = Get(bahaumutB1ZoneOffset, ZoneFormationsSize);
-		    formation[0] = 0x2A; // Red D
-		    formation[1] = 0x30; // Ice D
-		    formation[2] = 0x4B; // Zombie D
-		    formation[3] = 0x4E; // Blue D
-		    formation[4] = 0x59; // Gas D
+		    formation[0] = 0x2A + 0x80; // 2-4 Red D
+		    formation[1] = 0x30 + 0x80; // 3-4 Ice D
+		    formation[2] = 0x4B + 0x80; // 2-4 Zombie D
+		    formation[3] = 0x4E + 0x80; // 2-3 Blue D
+		    formation[4] = 0x59 + 0x80; // 2-4 Gas D
 		    formation[5] = 0x3D; // Tyro
 		    formation[6] = 0x3E; // T-Rex
 		    formation[7] = 0x76; // Tiamat (!)
-		    Put(bahaumutB1ZoneOffset, formation);
+		    Put(bahamutB1ZoneOffset, formation);
 
 		    maps[(byte)MapId.BahamutsRoomB1][1, 1] = (byte)Tile.CardiaEncounters;
 		    maps[(byte)MapId.BahamutsRoomB1][1, 2] = (byte)Tile.CardiaEncounters;
@@ -1152,6 +1155,10 @@ namespace FF1Lib
 		}
 
 		public void DragonsHoard(List<Map> maps) {
+		    // Replaces the area around/behind Bahamut with
+		    // all the Cardia chests.  (Does not delete the
+		    // original tests, they will be linked)
+
 		    maps[(byte)MapId.BahamutsRoomB2][1, 17] = (byte)Tile.CardiaCandles;
 		    maps[(byte)MapId.BahamutsRoomB2][1, 18] = (byte)Tile.CardiaChest1;
 		    maps[(byte)MapId.BahamutsRoomB2][1, 19] = (byte)Tile.CardiaChest2;

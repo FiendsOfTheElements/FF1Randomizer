@@ -166,6 +166,7 @@ namespace FF1Lib
 		public bool? MapLefeinRiver  { get; set; } = false;
 		public bool? MapGaiaMountainPass  { get; set; } = false;
 		public bool? MapDragonsHoard { get; set; } = false;
+		public bool? MapHallOfDragons { get; set; } = false;
 		public bool? EntrancesIncludesDeadEnds { get; set; } = false;
 		public bool? EntrancesMixedWithTowns { get; set; } = false;
 
@@ -188,6 +189,8 @@ namespace FF1Lib
 		public bool? IncentivizeMarshKeyLocked { get; set; } = false;
 		public bool? IncentivizeSkyPalace { get; set; } = false;
 		public bool? IncentivizeTitansTrove { get; set; } = false;
+		public bool? IncentivizeCardia { get; set; } = false;
+
 		public IncentivePlacementType IceCaveIncentivePlacementType { get; set; } = IncentivePlacementType.Vanilla;
 		public IncentivePlacementType OrdealsIncentivePlacementType { get; set; } = IncentivePlacementType.Vanilla;
 		public IncentivePlacementType MarshIncentivePlacementType { get; set; } = IncentivePlacementType.Vanilla;
@@ -198,6 +201,7 @@ namespace FF1Lib
 		public IncentivePlacementTypeGated SkyPalaceIncentivePlacementType { get; set; } = IncentivePlacementTypeGated.Vanilla;
 		public IncentivePlacementType CorneriaIncentivePlacementType { get; set; } = IncentivePlacementType.Vanilla;
 		public IncentivePlacementType MarshLockedIncentivePlacementType { get; set; } = IncentivePlacementType.Vanilla;
+		public IncentivePlacementType CardiaIncentivePlacementType { get; set; } = IncentivePlacementType.Vanilla;
 
 		public bool? BetterTrapChests { get; set; } = false;
 		public bool? IncentivizeMasamune { get; set; } = false;
