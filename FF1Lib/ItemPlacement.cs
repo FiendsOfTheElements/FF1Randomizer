@@ -522,6 +522,9 @@ namespace FF1Lib
 						nextPlacements.Add(Item.Ruby);
 						lastPlacements.Remove(Item.Ruby);
 					}
+					if ((bool)_flags.NoFloater) {
+					    lastPlacements.Remove(Item.Floater);
+					}
 
 					nextPlacements.Shuffle(rng);
 					lastPlacements.Shuffle(rng);
