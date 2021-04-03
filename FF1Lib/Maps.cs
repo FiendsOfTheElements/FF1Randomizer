@@ -1119,7 +1119,7 @@ namespace FF1Lib
 		    // hallway to Bahamut's room
 
 		    var bahamutB1ZoneOffset = ZoneFormationsOffset + (ZoneFormationsSize * (64 + (int)MapId.BahamutsRoomB1));
-		    var formation = Get(bahaumutB1ZoneOffset, ZoneFormationsSize);
+		    var formation = Get(bahamutB1ZoneOffset, ZoneFormationsSize);
 		    formation[0] = 0x2A + 0x80; // 2-4 Red D
 		    formation[1] = 0x30 + 0x80; // 3-4 Ice D
 		    formation[2] = 0x4B + 0x80; // 2-4 Zombie D
@@ -1198,6 +1198,20 @@ namespace FF1Lib
 		    maps[(byte)MapId.BahamutsRoomB2][4, 23] = (byte)Tile.CardiaChest13;
 		    maps[(byte)MapId.BahamutsRoomB2][4, 24] = (byte)Tile.CardiaCandles;
 		    maps[(byte)MapId.BahamutsRoomB2][4, 25] = (byte)Tile.CardiaFloor;
+
+		    ItemLocations.Cardia1.ChangeMapLocation(MapLocation.Cardia1);
+		    ItemLocations.Cardia2.ChangeMapLocation(MapLocation.Cardia1);
+		    ItemLocations.Cardia3.ChangeMapLocation(MapLocation.Cardia1);
+		    ItemLocations.Cardia4.ChangeMapLocation(MapLocation.Cardia1);
+		    ItemLocations.Cardia5.ChangeMapLocation(MapLocation.Cardia1);
+		    ItemLocations.Cardia6.ChangeMapLocation(MapLocation.Cardia1);
+		    ItemLocations.Cardia7.ChangeMapLocation(MapLocation.Cardia1);
+		    ItemLocations.Cardia8.ChangeMapLocation(MapLocation.Cardia1);
+		    ItemLocations.Cardia9.ChangeMapLocation(MapLocation.Cardia1);
+		    ItemLocations.Cardia10.ChangeMapLocation(MapLocation.Cardia1);
+		    ItemLocations.Cardia11.ChangeMapLocation(MapLocation.Cardia1);
+		    ItemLocations.Cardia12.ChangeMapLocation(MapLocation.Cardia1);
+		    ItemLocations.Cardia13.ChangeMapLocation(MapLocation.Cardia1);
 		}
 	}
 }

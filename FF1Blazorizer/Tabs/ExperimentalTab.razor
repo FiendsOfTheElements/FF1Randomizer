@@ -25,10 +25,9 @@
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="lefeinRiverDockCheckBox" @bind-Value="Flags.MapLefeinRiver">Lefein river dock</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="gaiaMountainPassCheckBox" @bind-Value="Flags.MapGaiaMountainPass">Gaia mountain pass</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="dragonsHoardCheckBox" @bind-Value="Flags.MapDragonsHoard">Dragon's Hoard</TriStateCheckBox>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="hallOfDragonsCheckBox" @bind-Value="Flags.MapHallOfDragons">Hall of Dragons</TriStateCheckBox>
 			<div class="row">
 			     <div class="col-sm-6 noleftpadding">
-				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeCardiaBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeCardia">Incentivize Cardia Islands</TriStateCheckBox>
+				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeCardiaCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeCardia">Cardia Islands incentive </TriStateCheckBox>
 			     </div>
 			     <div class="col-sm-6">
 				<EnumDropDown DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="incentiveCardiaDropDown" TItem="IncentivePlacementType" @bind-Value="Flags.CardiaIncentivePlacementType"></EnumDropDown>
@@ -51,6 +50,7 @@
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="noBossSkillScriptShuffleCheckBox" IsEnabled="@(Flags.EnemyScripts != false || Flags.EnemySkillsSpells != false)" @bind-Value="Flags.NoBossSkillScriptShuffle">Don't Shuffle Bosses' Scripts, Skills & Spells</TriStateCheckBox>
 			<div class="checkbox-cell"></div>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="fightBahamutCheckBox" IsEnabled="@(Flags.SpookyFlag != true && Flags.RandomizeFormationEnemizer != true)" @bind-Value="Flags.FightBahamut">Fight Bahamut</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="hallOfDragonsCheckBox" @bind-Value="Flags.MapHallOfDragons">Hall of Dragons</TriStateCheckBox>
 			<div class="checkbox-cell"></div>
 		</div>
 		<div class="col2">

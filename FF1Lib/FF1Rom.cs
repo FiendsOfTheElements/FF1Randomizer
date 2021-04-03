@@ -408,6 +408,14 @@ namespace FF1Lib
 				EnableFreeTail();
 			}
 
+			if ((bool)flags.MapHallOfDragons) {
+			    BahamutB1Encounters(maps);
+			}
+
+			if ((bool)flags.MapDragonsHoard) {
+			    DragonsHoard(maps);
+			}
+
 			overworldMap.ApplyMapEdits();
 
 			var maxRetries = 8;
@@ -800,14 +808,6 @@ namespace FF1Lib
 			ExpGoldBoost(flags);
 			ScalePrices(flags, itemText, rng, ((bool)flags.ClampMinimumPriceScale), shopItemLocation);
 			ScaleEncounterRate(flags.EncounterRate / 30.0, flags.DungeonEncounterRate / 30.0);
-
-			if ((bool)flags.MapHallOfDragons) {
-			    BahamutB1Encounters(maps);
-			}
-
-			if ((bool)flags.MapDragonsHoard) {
-			    DragonsHoard(maps);
-			}
 
 			WriteMaps(maps);
 
