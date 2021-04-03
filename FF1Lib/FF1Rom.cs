@@ -801,7 +801,7 @@ namespace FF1Lib
 			ScalePrices(flags, itemText, rng, ((bool)flags.ClampMinimumPriceScale), shopItemLocation);
 			ScaleEncounterRate(flags.EncounterRate / 30.0, flags.DungeonEncounterRate / 30.0);
 
-			LoadInTown(overworldMap, maps);
+			LoadInTown(overworldMap, maps, rng);
 
 			WriteMaps(maps);
 
