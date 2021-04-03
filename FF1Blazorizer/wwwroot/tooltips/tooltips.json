@@ -1581,7 +1581,7 @@
         {
 		"Id": "noFloaterCheckBox",
 		"title": "Remove Floater",
-		"screenshot": "",
-		"description": "Removes the Floater from the incentive pool, making it impossible to get the Airship.  Requires Nothern Docks to be enabled.  Enabling Bahamut Cardia dock, Lefein river dock, and Gaia mountain pass is recommended to make those areas accessible by Ship."
+		"screenshot": "noFloater.png",
+		"description": "Removes the Floater from the incentive pool, making it impossible to get the Airship.\n\nCan only be enabled if Nothern Docks is enabled.\n\nEnable Bahamut Cardia dock, Lefein river dock, and Gaia mountain pass map edits to make those areas accessible by Ship."
 	}
 ]
