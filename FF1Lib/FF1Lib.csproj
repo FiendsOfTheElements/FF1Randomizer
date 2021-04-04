@@ -22,6 +22,8 @@
     <None Remove="maps\elfland_start.json" />
     <None Remove="maps\melmond_start.ffm" />
     <None Remove="maps\melmond_start.json" />
+    <None Remove="maps\nooverworld.ffm" />
+    <None Remove="maps\nooverworld.json" />
   </ItemGroup>
 
   <ItemGroup>
@@ -36,6 +38,8 @@
     <EmbeddedResource Include="maps\melmond_start.json">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="maps\nooverworld.ffm" />
+    <EmbeddedResource Include="maps\nooverworld.json" />
   </ItemGroup>
 
   <ItemGroup>
