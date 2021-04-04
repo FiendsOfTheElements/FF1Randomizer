@@ -145,7 +145,6 @@ namespace FF1Lib
 		public bool? RandomVampAttack { get; set; } = false;
 		public bool? RandomVampAttackIncludesConeria { get; set; } = false;
 		public bool? FightBahamut { get; set; } = false;
-		public bool? BahamutHallwayEncounters { get; set; } = false;
 		public bool? ConfusedOldMen { get; set; } = false;
 		public bool? GaiaShortcut { get; set; } = false;
 		public bool? MoveGaiaItemShop { get; set; } = false;
