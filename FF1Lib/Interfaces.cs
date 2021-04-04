@@ -108,6 +108,7 @@
 		bool? NoXcalbur { get; }
 		WorldWealthMode WorldWealth { get; }
 		ConsumableChestSet MoreConsumableChests { get; }
+
 	}
 	public interface IItemShuffleFlags
 	{
@@ -118,6 +119,7 @@
 		bool? EarlySarda { get; }
 		bool? EarlySage { get; }
 		bool? EarlyOrdeals { get; }
+		bool NoOverworld { get; }
 	}
 	public interface IScaleFlags
 	{
@@ -159,5 +161,6 @@
 		bool? FreeTail { get; }
 		bool? NoTail { get; }
 		bool? LooseExcludePlacedDungeons { get; }
+		bool NoOverworld { get; }
 	}
 }

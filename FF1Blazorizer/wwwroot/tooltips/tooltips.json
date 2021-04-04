@@ -693,6 +693,12 @@
 		"description": "Adds the Katana to the incentive pool to be distributed in the selected incentive locations."
 	},
 	{
+		"Id": "incentivizeXcalCheckBox",
+		"title": "Xcalber",
+		"screenshot": "incentivizeXcalCheckBox.png",
+		"description": "Adds the Xcalber to the incentive pool to be distributed in the selected incentive locations."
+	},
+	{
 		"Id": "incentivizeVorpalCheckBox",
 		"title": "Vorpal",
 		"screenshot": "incentivizeVorpalCheckBox.png",

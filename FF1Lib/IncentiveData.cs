@@ -53,6 +53,10 @@ namespace FF1Lib
 					forcedItemPlacements.Remove(ItemLocations.Smith);
 				}
 			}
+			else if (flags.NoOverworld)
+			{
+				forcedItemPlacements.Add(ItemLocations.Nerrick);
+			}
 			if ((!flags.Treasures ?? false)) forcedItemPlacements.AddRange(ItemLocations.AllTreasures);
 			var incentivePool = new List<Item>();
 			if (flags.IncentivizeBridge)
