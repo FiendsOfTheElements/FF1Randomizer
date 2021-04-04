@@ -408,6 +408,14 @@ namespace FF1Lib
 				EnableFreeTail();
 			}
 
+			if ((bool)flags.MapHallOfDragons) {
+			    BahamutB1Encounters(maps);
+			}
+
+			if ((bool)flags.MapDragonsHoard) {
+			    DragonsHoard(maps);
+			}
+
 			overworldMap.ApplyMapEdits();
 
 			var maxRetries = 8;
@@ -484,6 +492,11 @@ namespace FF1Lib
 				talkroutines.Replace(newTalkRoutines.Talk_Astos, Blob.FromHex("A674F005BD2060F027A5738561202096B020A572203D96A575200096A476207F90207392A5611820109F201896A9F060A57060"));
 
 			npcdata.UpdateItemPlacement(generatedPlacement);
+
+			if (flags.NoOverworld & (bool)!flags.Entrances & (bool)!flags.Floors & (bool)!flags.FlipDungeons & (bool)!flags.SaveGameWhenGameOver)
+			{
+				NoOverworld(overworldMap, maps, talkroutines, npcdata, flags, rng);
+			}
 
 			if ((bool)flags.AlternateFiends && !flags.SpookyFlag)
 			{
@@ -897,6 +910,7 @@ namespace FF1Lib
 				FightBahamut(talkroutines, npcdata, (bool)flags.NoTail, flags.EvadeCap);
 			}
 
+			
 			if (flags.SpookyFlag && !(bool)flags.RandomizeFormationEnemizer)
 			{
 				Spooky(talkroutines, npcdata, rng, flags);

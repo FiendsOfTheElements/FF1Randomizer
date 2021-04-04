@@ -120,6 +120,7 @@
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeTailCheckBox" IsEnabled="@((Flags.Treasures != false) && (Flags.NoTail != true))" @bind-Value="Flags.IncentivizeTail">Tail</TriStateCheckBox>
 		<div class="checkbox-cell"></div>
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeMasamuneCheckBox" IsEnabled="@((Flags.Treasures != false) && (Flags.NoMasamune != true))" @bind-Value="Flags.IncentivizeMasamune">Masamune</TriStateCheckBox>
+		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeXcalCheckBox" IsEnabled="@((Flags.Treasures != false) && (Flags.NoXcalbur != true))" @bind-Value="Flags.IncentivizeXcalber">Xcalber</TriStateCheckBox>
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeKatanaCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeKatana">Katana</TriStateCheckBox>
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeVorpalCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeVorpal">Vorpal</TriStateCheckBox>
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeDefCastWeaponCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeDefCastWeapon">Defense</TriStateCheckBox>

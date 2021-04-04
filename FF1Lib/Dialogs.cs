@@ -1489,15 +1489,15 @@ namespace FF1Lib
 		    "has a insanely powerful attack",           // 200-249
 		    "can destroy you with one finger", // 250+
 		};
-		var hitCountRanges = new List<int> {0, 2, 3, 5, 7, 9, 11, 13, 16};
+		var hitCountRanges = new List<int> {0, 2, 3, 5, 7, 9, 14};
 		var hitCountDescriptions = new List<string> {
 		    "", // 1
 		    "can hit you a couple of times", // 2
 		    "can hit you a few times", // 3-4
 		    "can hit you half a dozen times", // 5-6
-		    "can hit you an incredible number of times", // 7-9
-		    "can hit you an insane number of times", // 10-14
-		    "will punch you until you are dead, then punch you some more", // 15+
+		    "can hit you an incredible number of times", // 7-8
+		    "can hit you an insane number of times", // 9-13
+		    "will punch you until you are dead, then punch you some more", // 14+
 		};
 		var evadeRanges = new List<int> {0, 50, 75, 100, 125, 150, 175, 200, 240};
 		var evadeDescriptions = new List<string> {

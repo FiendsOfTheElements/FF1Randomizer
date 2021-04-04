@@ -145,6 +145,7 @@ namespace FF1Lib
 		public bool? RandomVampAttack { get; set; } = false;
 		public bool? RandomVampAttackIncludesConeria { get; set; } = false;
 		public bool? FightBahamut { get; set; } = false;
+		public bool? BahamutHallwayEncounters { get; set; } = false;
 		public bool? ConfusedOldMen { get; set; } = false;
 		public bool? GaiaShortcut { get; set; } = false;
 		public bool? MoveGaiaItemShop { get; set; } = false;
@@ -164,6 +165,8 @@ namespace FF1Lib
 		public bool? MapBahamutCardiaDock  { get; set; } = false;
 		public bool? MapLefeinRiver  { get; set; } = false;
 		public bool? MapGaiaMountainPass  { get; set; } = false;
+		public bool? MapDragonsHoard { get; set; } = false;
+		public bool? MapHallOfDragons { get; set; } = false;
 		public bool? EntrancesIncludesDeadEnds { get; set; } = false;
 		public bool? EntrancesMixedWithTowns { get; set; } = false;
 
@@ -186,6 +189,8 @@ namespace FF1Lib
 		public bool? IncentivizeMarshKeyLocked { get; set; } = false;
 		public bool? IncentivizeSkyPalace { get; set; } = false;
 		public bool? IncentivizeTitansTrove { get; set; } = false;
+		public bool? IncentivizeCardia { get; set; } = false;
+
 		public IncentivePlacementType IceCaveIncentivePlacementType { get; set; } = IncentivePlacementType.Vanilla;
 		public IncentivePlacementType OrdealsIncentivePlacementType { get; set; } = IncentivePlacementType.Vanilla;
 		public IncentivePlacementType MarshIncentivePlacementType { get; set; } = IncentivePlacementType.Vanilla;
@@ -196,10 +201,12 @@ namespace FF1Lib
 		public IncentivePlacementTypeGated SkyPalaceIncentivePlacementType { get; set; } = IncentivePlacementTypeGated.Vanilla;
 		public IncentivePlacementType CorneriaIncentivePlacementType { get; set; } = IncentivePlacementType.Vanilla;
 		public IncentivePlacementType MarshLockedIncentivePlacementType { get; set; } = IncentivePlacementType.Vanilla;
+		public IncentivePlacementType CardiaIncentivePlacementType { get; set; } = IncentivePlacementType.Vanilla;
 
 		public bool? BetterTrapChests { get; set; } = false;
 		public bool? IncentivizeMasamune { get; set; } = false;
 		public bool? IncentivizeKatana { get; set; } = false;
+		public bool? IncentivizeXcalber { get; set; } = false;
 		public bool? IncentivizeVorpal { get; set; } = false;
 		public bool? IncentivizeOpal { get; set; } = false;
 		public bool? IncentivizeRibbon { get; set; } = false;
@@ -220,14 +227,14 @@ namespace FF1Lib
 		public bool? EarlyOrdeals { get; set; } = false;
 		public bool? ShuffleObjectiveNPCs { get; set; } = false;
 		public bool OnlyRequireGameIsBeatable { get; set; } = true;
-
+		//public bool NoOverworld { get; set; } = false;
 		public bool? FreeBridge { get; set; } = false;
-		public bool? FreeShip { get; set; } = false;
-		public bool? FreeAirship { get; set; } = false;
+		public bool? FreeShipFlag { get; set; } = false;
+		public bool? FreeAirshipFlag { get; set; } = false;
 		public bool? FreeLute { get; set; } = false;
 		public bool FreeOrbs { get; set; } = false;
 		public bool EnableCritNumberDisplay { get; set; } = false;
-		public bool? FreeCanal { get; set; } = false;
+		public bool? FreeCanalFlag { get; set; } = false;
 		public bool? FreeCanoe { get; set; } = false;
 		public bool EasyMode { get; set; } = false;
 
@@ -542,17 +549,20 @@ namespace FF1Lib
 		public bool? IncentivizeCrown => (!(NPCFetchItems ?? false) && (IncentivizeMainItems ?? false)) || ((NPCFetchItems ?? false) && (IncentivizeFetchItems ?? false));
 		public bool? IncentivizeSlab => (!(NPCFetchItems ?? false) && (IncentivizeMainItems ?? false)) || ((NPCFetchItems ?? false) && (IncentivizeFetchItems ?? false));
 		public bool? IncentivizeBottle => (!(NPCFetchItems ?? false) && (IncentivizeMainItems ?? false)) || ((NPCFetchItems ?? false) && (IncentivizeFetchItems ?? false));
-
+		public bool NoOverworld => (SanityCheckerV2 & OwMapExchange == OwMapExchanges.NoOverworld);
+		public bool? FreeShip => FreeShipFlag | NoOverworld;
+		public bool? FreeAirship => FreeAirshipFlag & !NoOverworld;
+		public bool? FreeCanal => FreeCanalFlag & !NoOverworld;
 		public bool IncentivizeBridge => false;
 		public bool? IncentivizeCanoe => NPCItems & IncentivizeCanoeItem & !FreeCanoe;
 		public bool? IncentivizeLute => NPCItems & !FreeLute & IncentivizeMainItems;
-		public bool? IncentivizeShip => NPCItems & IncentivizeShipAndCanal & !FreeShip;
+		public bool? IncentivizeShip => NPCItems & IncentivizeShipAndCanal & !FreeShip & !NoOverworld;
 		public bool? IncentivizeRod => NPCItems & IncentivizeMainItems;
 		public bool? IncentivizeCube => NPCItems & IncentivizeMainItems;
 		public bool? IncentivizeFloater => !FreeAirship & !NoFloater & IncentivizeAirship;
 		public bool? IncentivizePromotion => !FreeTail & !NoTail & IncentivizeTail;
 
-		public bool? IncentivizeCanal => NPCFetchItems & IncentivizeShipAndCanal & !FreeCanal;
+		public bool? IncentivizeCanal => NPCFetchItems & IncentivizeShipAndCanal & !FreeCanal & !NoOverworld;
 		public bool? IncentivizeCrystal => NPCFetchItems & IncentivizeFetchItems;
 		public bool? IncentivizeHerb => NPCFetchItems & IncentivizeFetchItems;
 		public bool? IncentivizeKey => NPCFetchItems & IncentivizeMainItems;
@@ -560,7 +570,6 @@ namespace FF1Lib
 		public bool? IncentivizeOxyale => NPCFetchItems & IncentivizeMainItems;
 
 		public bool? IncentivizeAdamant => IncentivizeFetchItems;
-		public bool? IncentivizeXcalber => false;
 
 		public int IncentivizedItemCountMin => 0
 			+ ((IncentivizePromotion ?? false) ? 1 : 0)
@@ -679,13 +688,13 @@ namespace FF1Lib
 		public bool IncentivizeAstos => (NPCFetchItems ?? false) && (IncentivizeFetchNPCs ?? false);
 		public bool IncentivizeMatoya => (NPCFetchItems ?? false) && (IncentivizeFetchNPCs ?? false);
 		public bool IncentivizeElfPrince => (NPCFetchItems ?? false) && (IncentivizeFetchNPCs ?? false);
-		public bool IncentivizeNerrick => (NPCFetchItems ?? false) && (IncentivizeFetchNPCs ?? false);
+		public bool IncentivizeNerrick => (NPCFetchItems ?? false) && (IncentivizeFetchNPCs ?? false) && !NoOverworld;
 		public bool IncentivizeLefein => (NPCFetchItems ?? false) && (IncentivizeFetchNPCs ?? false);
 		public bool IncentivizeSmith => (NPCFetchItems ?? false) && (IncentivizeFetchNPCs ?? false);
 
 		public int IncentivizedLocationCountMin => 0
 			+ ((NPCItems ?? false) && (IncentivizeFreeNPCs ?? false) ? 7 : 0)
-			+ ((NPCFetchItems ?? false) && (IncentivizeFetchNPCs ?? false) ? 7 : 0)
+			+ ((NPCFetchItems ?? false) && (IncentivizeFetchNPCs ?? false) ? (!NoOverworld ? 7 : 6) : 0)
 			+ ((IncentivizeMarsh ?? false) ? 1 : 0)
 			+ ((IncentivizeEarth ?? false) ? 1 : 0)
 			+ ((IncentivizeVolcano ?? false) ? 1 : 0)
@@ -700,7 +709,7 @@ namespace FF1Lib
 
 		public int IncentivizedLocationCountMax => 0
 			+ ((NPCItems ?? true) && (IncentivizeFreeNPCs ?? true) ? 7 : 0)
-			+ ((NPCFetchItems ?? true) && (IncentivizeFetchNPCs ?? true) ? 7 : 0)
+			+ ((NPCFetchItems ?? true) && (IncentivizeFetchNPCs ?? true) ? (!NoOverworld ? 7 : 6) : 0)
 			+ ((IncentivizeMarsh ?? true) ? 1 : 0)
 			+ ((IncentivizeEarth ?? true) ? 1 : 0)
 			+ ((IncentivizeVolcano ?? true) ? 1 : 0)
