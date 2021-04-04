@@ -95,9 +95,10 @@ namespace FF1Lib
 		{
 			// Coneria
 			var coneriaNorthwall = new List<Blob> { Blob.FromHex("0404040404") };
+			var coneriaSouthwall = new List<Blob> { Blob.FromHex("0E0E0E0E0E") };
 
 			maps[(int)MapId.Coneria].Put((0x0E, 0x00), coneriaNorthwall.ToArray());
-			maps[(int)MapId.Coneria][0x17, 0x10] = 0x0E;
+			maps[(int)MapId.Coneria].Put((0x0E, 0x17), coneriaSouthwall.ToArray());
 			maps[(int)MapId.Coneria][0x0C, 0x1F] = 0x0E;
 
 			// Pravoka
@@ -621,7 +622,7 @@ namespace FF1Lib
 			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x12, 0x03, (byte)MapId.SeaShrineB4, false, (int)TileSets.ToFSeaShrine, TilePalette.OutPalette1, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles));
 			maps[(int)MapId.SeaShrineB5][0x30, 0x32] = newTeleporterTiles.Last().TileID;
 
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x3A, 0x37, (byte)MapId.Cardia, false, (int)TileSets.ToFSeaShrine, TilePalette.RoomPalette1, TeleporterGraphic.Teleporter, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, 0x0F));
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x1E, 0x12, (byte)MapId.Cardia, false, (int)TileSets.ToFSeaShrine, TilePalette.RoomPalette1, TeleporterGraphic.Teleporter, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, 0x0F));
 
 			// Titan
 			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x11, 0x13, (byte)MapId.CastleOfOrdeals1F, false, (int)TileSets.EarthTitanVolcano, TilePalette.OutPalette1, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, 0x15));
@@ -631,7 +632,7 @@ namespace FF1Lib
 			// Random Cardia
 			List<TeleporterSM> cardiaTeleporters = new();
 			List<(byte, byte, byte)> cardiaCoordList = new() {
-				(0x1E, 0x12, (byte)MapId.Cardia),
+				(0x3A, 0x37, (byte)MapId.Cardia),
 				(0x2B, 0x1D, (byte)MapId.Cardia),
 				(0x02, 0x02, (byte)MapId.BahamutsRoomB1),
 			};
@@ -656,14 +657,19 @@ namespace FF1Lib
 			// Caravan Door
 			TileSM CaravanDoor = new TileSM(availableTiles[(byte)TileSets.MatoyaDwarfCardiaIceWaterfall].First(), (int)TileSets.MatoyaDwarfCardiaIceWaterfall, TilePalette.OutPalette2, TeleportTilesGraphics[TeleporterGraphic.Door][(int)TileSets.MatoyaDwarfCardiaIceWaterfall], (byte)(TilePropFunc.TP_SPEC_DOOR), 0x46);
 			maps[(int)MapId.Cardia][0x1C, 0x28] = CaravanDoor.ID;
+
 			CaravanDoor.Write(this);
 
-			// ToFR Chest in Sky as a reward
+			// ToFR Chest in Sky and Sea as a reward 
 			List<byte> ToFRchestsList = new() { 0xF8, 0xF9, 0xFA, 0xFB, 0xFC, 0xFD, 0xFE };
-			TileSM ExtraChest = new TileSM(availableTiles[(byte)TileSets.SkyCastle].First(), (int)TileSets.SkyCastle, TilePalette.RoomPalette1, new List<byte> { 0x2A, 0x2B, 0x3A, 0x3B }, (byte)(TilePropFunc.TP_SPEC_TREASURE | TilePropFunc.TP_NOMOVE), ToFRchestsList.PickRandom(rng));
+			TileSM ExtraChest = new TileSM(availableTiles[(byte)TileSets.SkyCastle].First(), (int)TileSets.SkyCastle, TilePalette.RoomPalette1, new List<byte> { 0x2A, 0x2B, 0x3A, 0x3B }, (byte)(TilePropFunc.TP_SPEC_TREASURE | TilePropFunc.TP_NOMOVE), ToFRchestsList.SpliceRandom(rng));
 			maps[(int)MapId.SkyPalace5F][0x01, 0x07] = ExtraChest.ID;
 
+			TileSM ExtraChest2 = new TileSM(availableTiles[(byte)TileSets.ToFSeaShrine].First(), (int)TileSets.ToFSeaShrine, TilePalette.RoomPalette1, new List<byte> { 0x2A, 0x2B, 0x3A, 0x3B }, (byte)(TilePropFunc.TP_SPEC_TREASURE | TilePropFunc.TP_NOMOVE), ToFRchestsList.SpliceRandom(rng));
+			maps[(int)MapId.Cardia][0x14, 0x2A] = ExtraChest2.ID;
+
 			ExtraChest.Write(this);
+			ExtraChest2.Write(this);
 
 			// Reset spawning position for Coneria Castle and towns
 			Data[0x02C01 + (int)MapId.ConeriaCastle1F] = 0x0C;
@@ -695,7 +701,7 @@ namespace FF1Lib
 
 		}
 
-		public void PrepNPCs(TalkRoutines talkroutines, NPCdata npcdata, MT19337 rng)
+		public void PrepNPCs(TalkRoutines talkroutines, NPCdata npcdata, Flags flags, MT19337 rng)
 		{
 			// New Talk routines
 			var talk_Floater = talkroutines.Add(Blob.FromHex("AD2B60D003A57160A476207392A57260"));
@@ -723,53 +729,74 @@ namespace FF1Lib
 			npcdata.GetTalkArray(ObjectId.LefeinMan6)[(int)TalkArrayPos.dialogue_2] = 0x37;
 			npcdata.GetTalkArray(ObjectId.LefeinMan6)[(int)TalkArrayPos.dialogue_3] = 0x36;
 
-
-			SetNpc(MapId.ConeriaCastle1F, 0x04, ObjectId.ConeriaCastle1FGuard2, 0x15, 0x1F, false, true); // Dialog+Routine
-
+			// Canoe people
 			SetNpc(MapId.CrescentLake, 0x0D, ObjectId.CrescentWoman, 0x25, 0x02, false, true); // Dialog+Routine
 			npcdata.SetRoutine(ObjectId.CrescentWoman, (newTalkRoutines)talk_Canoe);
-
-			SetNpc(MapId.Cardia, 0x09, ObjectId.ConeriaCastle1FScholar, 0x26, 0x1B, true, true); // No check
+			npcdata.GetTalkArray(ObjectId.CrescentWoman)[(int)TalkArrayPos.dialogue_2] = 0x5C;
+			npcdata.GetTalkArray(ObjectId.CrescentWoman)[(int)TalkArrayPos.dialogue_3] = 0xC2;
 
 			SetNpc(MapId.ElflandCastle, 0x03, ObjectId.ElflandCastleElf2, 0x0E, 0x11, false, true); // Dialog+Routine
 			npcdata.SetRoutine(ObjectId.ElflandCastleElf2, (newTalkRoutines)talk_Canoe);
+			npcdata.GetTalkArray(ObjectId.ElflandCastleElf2)[(int)TalkArrayPos.dialogue_2] = 0x5C;
+			npcdata.GetTalkArray(ObjectId.ElflandCastleElf2)[(int)TalkArrayPos.dialogue_3] = 0xC2;
 
 			SetNpc(MapId.CastleOfOrdeals1F, 0x00, ObjectId.CastleOrdealsOldMan, 0x02, 0x02, true, true); //Dialog+Routine.
 			npcdata.SetRoutine(ObjectId.CastleOrdealsOldMan, (newTalkRoutines)talk_Canoe);
+			npcdata.GetTalkArray(ObjectId.CastleOrdealsOldMan)[(int)TalkArrayPos.dialogue_2] = 0x5C;
+			if ((bool)flags.EarlyOrdeals)
+			{
+				npcdata.GetTalkArray(ObjectId.CastleOrdealsOldMan)[(int)TalkArrayPos.dialogue_3] = 0xC2;
+			}
+			else
+			{
+				npcdata.GetTalkArray(ObjectId.CastleOrdealsOldMan)[(int)TalkArrayPos.dialogue_3] = 0x2D;
+			}
 
+			// Coneria Castle
+			SetNpc(MapId.ConeriaCastle1F, 0x04, ObjectId.ConeriaCastle1FGuard2, 0x15, 0x1F, false, true); // Dialog+Routine
+			npcdata.SetRoutine(ObjectId.ConeriaCastle1FGuard2, newTalkRoutines.Talk_norm);
+			npcdata.GetTalkArray(ObjectId.ConeriaCastle1FGuard2)[(int)TalkArrayPos.dialogue_2] = 0x35;
 
+			SetNpc(MapId.Cardia, 0x09, ObjectId.ConeriaCastle1FScholar, 0x26, 0x1B, true, true); // No check
+			npcdata.SetRoutine(ObjectId.ConeriaCastle1FScholar, newTalkRoutines.Talk_norm);
+			npcdata.GetTalkArray(ObjectId.ConeriaCastle1FScholar)[(int)TalkArrayPos.dialogue_2] = 0xA1;
 
+			// Chime bot
 			SetNpc(MapId.Gaia, 0x03, ObjectId.GaiaScholar2, 0x35, 0x1A, false, true); //Dialog+Routine
 			Data[MapObjGfxOffset + (byte)ObjectId.GaiaScholar2] = 0x15;
 			npcdata.SetRoutine(ObjectId.GaiaScholar2, (newTalkRoutines)talk_Chime);
+			npcdata.GetTalkArray(ObjectId.GaiaScholar2)[(int)TalkArrayPos.dialogue_2] = 0xD5;
+			npcdata.GetTalkArray(ObjectId.GaiaScholar2)[(int)TalkArrayPos.dialogue_3] = 0xD9;
 
 			MoveNpc(MapId.DwarfCave, 0x00, 0x0F, 0x2F, false, true);
 			MoveNpc(MapId.NorthwestCastle, 0x02, 0x1C, 0x01, false, false);
-			MoveNpc(MapId.Elfland, 0x00, 0x25, 0x17, false, true);
+			MoveNpc(MapId.Onrac, 0x09, 0x11, 0x23, false, false);
 
-			// Xorb x2 
-			// Xchime robot
-			// mark x2 + 1
-			// by marsh
-			// by waterfall
+			var itemnames = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
+			itemnames[(int)Item.Floater] = "SIGIL";
+			WriteText(itemnames, ItemTextPointerOffset, ItemTextPointerBase, ItemTextOffset);
 
-			// update nerrick
-
-
+			Put(0x2B5F4, FF1Text.TextToBytes("MARK", useDTE: false));
 
 			Dictionary<int, string> newDialogues = new() {
-				{ 0x35, "What says you!" },
+				{ 0x35,	"A foul smell seeps in\nfrom this door, as if\nsome rotting bog stews\non the other side." },
 				{ 0x36, "The SIGIL unlocks the\nmagic barrier and a new\npath is revealed." },
 				{ 0x37,	"The force field emits\na wintry glow as arcane\nsymbols swirl inside it.\nWhat runes could make\nit vanish?" },
-				{ 0xA1, "What says you!" },
+				{ 0xA1,	"Can you hear this sound?\nThis is the rumblings of\nan ancient waterfall\nhidden below the castle." },
 				
-				
-				{ 0x5C, "What says you!" },
+				{ 0x5C,	"Only those who received\nLukahn's blessing may\ngo beyond this point." },
 				{ 0xD5,	"Only the owner of the\nCHIME can rightfully\nenter Mirage." }, // Lefein
 				{ 0xD9,	"That sound...\nEXECUTE STEP ASIDE\nROUTINE." }, // Lefein
-				{ 0xC2, "What says you!" }, // Lefein
+				{ 0xC2,	"You wear Lukahn's mark,\nLIGHT WARRIORS. May it\nprotect you as you enter\nthese vile premises." }, // Lefein
 
-				{ 0x2D, "What says you!" }, // Ordeals
+				{ 0x2D,	"So you have Lukahn's\nfavor, but know that\nyou won't go far\nwithout the CROWN!" }, // Ordeals
+
+				{ 0x13,	"A rock blocks\nconstruction of my\ntunnel.\nIf I only had TNT." }, // Nerrick
+				{ 0x14,	"Oh, wonderful!\nNice work! Yes, yes\nindeed, this TNT is just\nwhat I need to finish my\ntunnel. Now excuse me\nwhile I get to work!" }, // Nerrick
+
+				{ 0x2B,	"Great job vanquishing\nthe Earth FIEND. Now,\nthe Fire FIEND wakes.\nWith my blessing; go to\nthe VOLCANO, and defeat\nthat FIEND also!" }, // Lukkanh
+				{ 0x2C,	"I am Lukahn.\nNow all legends and\nprophecy will be\nfulfilled. Our path has\nbeen decided.\nCome back to me once the\nEarth FIEND is vanquised." }, // Lukkanh
+				{ 0x8C,	"400 years ago, we lost\ncontrol of the Wind.\n200 years later we lost\nthe Water,\nthen Earth,\nand Fire followed. The\nPowers that bind this\nworld are gone." }, // Lukkanh
 
 			};
 

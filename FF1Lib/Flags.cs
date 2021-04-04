@@ -220,14 +220,14 @@ namespace FF1Lib
 		public bool? EarlyOrdeals { get; set; } = false;
 		public bool? ShuffleObjectiveNPCs { get; set; } = false;
 		public bool OnlyRequireGameIsBeatable { get; set; } = true;
-		public bool NoOverworld { get; set; } = false;
+		//public bool NoOverworld { get; set; } = false;
 		public bool? FreeBridge { get; set; } = false;
 		public bool? FreeShipFlag { get; set; } = false;
-		public bool? FreeAirship { get; set; } = false;
+		public bool? FreeAirshipFlag { get; set; } = false;
 		public bool? FreeLute { get; set; } = false;
 		public bool FreeOrbs { get; set; } = false;
 		public bool EnableCritNumberDisplay { get; set; } = false;
-		public bool? FreeCanal { get; set; } = false;
+		public bool? FreeCanalFlag { get; set; } = false;
 		public bool? FreeCanoe { get; set; } = false;
 		public bool EasyMode { get; set; } = false;
 
@@ -541,7 +541,10 @@ namespace FF1Lib
 		public bool? IncentivizeCrown => (!(NPCFetchItems ?? false) && (IncentivizeMainItems ?? false)) || ((NPCFetchItems ?? false) && (IncentivizeFetchItems ?? false));
 		public bool? IncentivizeSlab => (!(NPCFetchItems ?? false) && (IncentivizeMainItems ?? false)) || ((NPCFetchItems ?? false) && (IncentivizeFetchItems ?? false));
 		public bool? IncentivizeBottle => (!(NPCFetchItems ?? false) && (IncentivizeMainItems ?? false)) || ((NPCFetchItems ?? false) && (IncentivizeFetchItems ?? false));
+		public bool NoOverworld => (SanityCheckerV2 & OwMapExchange == OwMapExchanges.NoOverworld);
 		public bool? FreeShip => FreeShipFlag | NoOverworld;
+		public bool? FreeAirship => FreeAirshipFlag & !NoOverworld;
+		public bool? FreeCanal => FreeCanalFlag & !NoOverworld;
 		public bool IncentivizeBridge => false;
 		public bool? IncentivizeCanoe => NPCItems & IncentivizeCanoeItem & !FreeCanoe;
 		public bool? IncentivizeLute => NPCItems & !FreeLute & IncentivizeMainItems;

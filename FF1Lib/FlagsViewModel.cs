@@ -1683,22 +1683,22 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeShipFlag"));
 			}
 		}
-		public bool? FreeAirship
+		public bool? FreeAirshipFlag
 		{
-			get => Flags.FreeAirship;
+			get => Flags.FreeAirshipFlag;
 			set
 			{
-				Flags.FreeAirship = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeAirship"));
+				Flags.FreeAirshipFlag = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeAirshipFlag"));
 			}
 		}
-		public bool? FreeCanal
+		public bool? FreeCanalFlag
 		{
-			get => Flags.FreeCanal;
+			get => Flags.FreeCanalFlag;
 			set
 			{
-				Flags.FreeCanal = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeCanal"));
+				Flags.FreeCanalFlag = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeCanalFlag"));
 			}
 		}
 		public bool? FreeCanoe
@@ -4133,15 +4133,6 @@ namespace FF1Lib
 		    }
 		}
 
-		public bool NoOverworld
-		{
-			get => Flags.NoOverworld;
-			set
-			{
-				Flags.NoOverworld = value;
-				RaisePropertyChanged();
-			}
-		}
 		public bool SanityCheckerV2
 		{
 			get => Flags.SanityCheckerV2;
