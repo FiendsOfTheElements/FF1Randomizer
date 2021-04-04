@@ -26,6 +26,7 @@
 		bool? IncentivizeTitansTrove { get; }
 		bool? IncentivizeEarth { get; }
 		bool? IncentivizeSeaShrine { get; }
+		bool? IncentivizeCardia { get; }
 		IncentivePlacementType IceCaveIncentivePlacementType { get; }
 		IncentivePlacementType OrdealsIncentivePlacementType { get; }
 		IncentivePlacementType MarshIncentivePlacementType { get; }
@@ -36,6 +37,7 @@
 		IncentivePlacementTypeGated SkyPalaceIncentivePlacementType { get; }
 		IncentivePlacementType CorneriaIncentivePlacementType { get; }
 		IncentivePlacementType MarshLockedIncentivePlacementType { get; }
+		IncentivePlacementType CardiaIncentivePlacementType { get; }
 
 		bool? IncentivizeXcalber { get; }
 		bool? IncentivizeMasamune { get; }
@@ -81,6 +83,7 @@
 		bool? MapOnracDock { get; }
 		bool? MapMirageDock { get; }
 		bool? MapBahamutCardiaDock { get; }
+		bool? MapDragonsHoard { get; }
 		bool? MapLefeinRiver { get; }
 		bool? MapGaiaMountainPass { get; }
 		bool? TitansTrove { get; }

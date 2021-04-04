@@ -1191,6 +1191,24 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("GaiaMountainPass"));
 			}
 		}
+		public bool? MapDragonsHoard
+		{
+			get => Flags.MapDragonsHoard;
+			set
+			{
+				Flags.MapDragonsHoard = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MapDragonsHoard"));
+			}
+		}
+		public bool? MapHallOfDragons
+		{
+			get => Flags.MapHallOfDragons;
+			set
+			{
+				Flags.MapHallOfDragons = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MapHallOfDragons"));
+			}
+		}
 
 		public bool? Entrances
 		{
@@ -1400,6 +1418,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeSkyPalace"));
 			}
 		}
+		public bool? IncentivizeCardia
+		{
+			get => Flags.IncentivizeCardia;
+			set
+			{
+				Flags.IncentivizeCardia = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeCardia"));
+			}
+		}
 
 		public IncentivePlacementType IceCaveIncentivePlacementType
 		{
@@ -1498,6 +1525,16 @@ namespace FF1Lib
 			{
 				Flags.MarshLockedIncentivePlacementType = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MarshLockedIncentivePlacementType"));
+			}
+		}
+
+		public IncentivePlacementType CardiaIncentivePlacementType
+		{
+			get => Flags.CardiaIncentivePlacementType;
+			set
+			{
+				Flags.CardiaIncentivePlacementType = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CardiaIncentivePlacementType"));
 			}
 		}
 

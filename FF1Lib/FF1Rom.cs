@@ -408,6 +408,14 @@ namespace FF1Lib
 				EnableFreeTail();
 			}
 
+			if ((bool)flags.MapHallOfDragons) {
+			    BahamutB1Encounters(maps);
+			}
+
+			if ((bool)flags.MapDragonsHoard) {
+			    DragonsHoard(maps);
+			}
+
 			overworldMap.ApplyMapEdits();
 
 			var maxRetries = 8;
