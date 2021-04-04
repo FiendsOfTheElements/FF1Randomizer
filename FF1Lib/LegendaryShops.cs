@@ -54,6 +54,9 @@ namespace FF1Lib
 			byte[] possibleTileIds = new byte[128];
 			for (byte i = 0; i < 128; i++) possibleTileIds[i] = i;
 
+			// Remove Closed door tile, since it's not used in the map, but still needed
+			possibleTileIds[0x37] = 0;
+
 			UnusedTilesbyTileSet = Enum.GetValues<MapId>()
 				.GroupBy(m => MapTileSets[m])
 				.Select(t => (t.Key, t.Select(m => maps[(int)m]

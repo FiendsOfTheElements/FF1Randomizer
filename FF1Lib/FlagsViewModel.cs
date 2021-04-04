@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -1528,6 +1528,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeVorpal"));
 			}
 		}
+		public bool? IncentivizeXcalber
+		{
+			get => Flags.IncentivizeXcalber;
+			set
+			{
+				Flags.IncentivizeXcalber = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeXcalber"));
+			}
+		}
 
 		public bool? IncentivizeOpal
 		{
@@ -1664,32 +1673,41 @@ namespace FF1Lib
 				Flags.FreeBridge = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeBridge"));
 			}
-		}
+		}/*
 		public bool? FreeShip
 		{
 			get => Flags.FreeShip;
 			set
 			{
 				Flags.FreeShip = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeAirship"));
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeShip"));
 			}
-		}
-		public bool? FreeAirship
+		}*/
+		public bool? FreeShipFlag
 		{
-			get => Flags.FreeAirship;
+			get => Flags.FreeShipFlag;
 			set
 			{
-				Flags.FreeAirship = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeAirship"));
+				Flags.FreeShipFlag = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeShipFlag"));
 			}
 		}
-		public bool? FreeCanal
+		public bool? FreeAirshipFlag
 		{
-			get => Flags.FreeCanal;
+			get => Flags.FreeAirshipFlag;
 			set
 			{
-				Flags.FreeCanal = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeCanal"));
+				Flags.FreeAirshipFlag = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeAirshipFlag"));
+			}
+		}
+		public bool? FreeCanalFlag
+		{
+			get => Flags.FreeCanalFlag;
+			set
+			{
+				Flags.FreeCanalFlag = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeCanalFlag"));
 			}
 		}
 		public bool? FreeCanoe
@@ -2195,7 +2213,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NoXcalbur"));
 			}
 		}
-    
+
 		public bool? ClassAsNpcFiends
 		{
 			get => Flags.ClassAsNpcFiends;
@@ -4093,8 +4111,8 @@ namespace FF1Lib
 				Flags.StartingEquipment = value;
         RaisePropertyChanged();
 			}
-		}      
-		
+		}
+
 		public OwMapExchanges OwMapExchange
 		{
 			get => Flags.OwMapExchange;
@@ -4123,7 +4141,7 @@ namespace FF1Lib
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SpoilerBatsDontCheckOrbs"));
 		    }
 		}
-    
+
 		public bool SanityCheckerV2
 		{
 			get => Flags.SanityCheckerV2;
