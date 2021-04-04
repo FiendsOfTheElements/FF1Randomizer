@@ -44,12 +44,12 @@ namespace FF1Lib
 			return UnusedTilesbyTileSet;
 		}
 
-		public void NoOverworld(OverworldMap overworldmap, List<Map> maps, TalkRoutines talkroutines, NPCdata npcdata, MT19337 rng)
+		public void NoOverworld(OverworldMap overworldmap, List<Map> maps, TalkRoutines talkroutines, NPCdata npcdata, Flags flags, MT19337 rng)
 		{
 			LoadInTown(overworldmap);
 			ApplyMapMods(maps);
 			CreateTeleporters(maps, rng);
-			PrepNPCs(talkroutines, npcdata, rng);
+			PrepNPCs(talkroutines, npcdata, flags, rng);
 		}
 
 		public void LoadInTown(OverworldMap overworldmap)
@@ -773,7 +773,7 @@ namespace FF1Lib
 			MoveNpc(MapId.Onrac, 0x09, 0x11, 0x23, false, false);
 
 			var itemnames = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
-			itemnames[(int)Item.Floater] = "SIGIL";
+			itemnames[(int)Item.Floater] = "SIGIL  ";
 			WriteText(itemnames, ItemTextPointerOffset, ItemTextPointerBase, ItemTextOffset);
 
 			Put(0x2B5F4, FF1Text.TextToBytes("MARK", useDTE: false));

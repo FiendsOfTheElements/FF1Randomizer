@@ -135,9 +135,6 @@ namespace FF1Lib
 
 			flags = Flags.ConvertAllTriState(flags, rng);
 
-			//flags.OwMapExchange = OwMapExchanges.NoOverworld;
-			//flags.SanityCheckerV2 = true;
-
 			TeleportShuffle teleporters = new TeleportShuffle();
 			var palettes = OverworldMap.GeneratePalettes(Get(OverworldMap.MapPaletteOffset, MapCount * OverworldMap.MapPaletteSize).Chunk(OverworldMap.MapPaletteSize));
 			var overworldMap = new OverworldMap(this, flags, palettes, teleporters);
@@ -490,7 +487,7 @@ namespace FF1Lib
 
 			if (flags.NoOverworld & (bool)!flags.Entrances & (bool)!flags.Floors & (bool)!flags.FlipDungeons & (bool)!flags.SaveGameWhenGameOver)
 			{
-				NoOverworld(overworldMap, maps, talkroutines, npcdata, rng);
+				NoOverworld(overworldMap, maps, talkroutines, npcdata, flags, rng);
 			}
 
 			if ((bool)flags.AlternateFiends && !flags.SpookyFlag)
