@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -1528,6 +1528,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeVorpal"));
 			}
 		}
+		public bool? IncentivizeXcalber
+		{
+			get => Flags.IncentivizeXcalber;
+			set
+			{
+				Flags.IncentivizeXcalber = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeXcalber"));
+			}
+		}
 
 		public bool? IncentivizeOpal
 		{
@@ -2204,7 +2213,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NoXcalbur"));
 			}
 		}
-    
+
 		public bool? ClassAsNpcFiends
 		{
 			get => Flags.ClassAsNpcFiends;
@@ -4102,8 +4111,8 @@ namespace FF1Lib
 				Flags.StartingEquipment = value;
         RaisePropertyChanged();
 			}
-		}      
-		
+		}
+
 		public OwMapExchanges OwMapExchange
 		{
 			get => Flags.OwMapExchange;

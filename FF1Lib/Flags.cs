@@ -200,6 +200,7 @@ namespace FF1Lib
 		public bool? BetterTrapChests { get; set; } = false;
 		public bool? IncentivizeMasamune { get; set; } = false;
 		public bool? IncentivizeKatana { get; set; } = false;
+		public bool? IncentivizeXcalber { get; set; } = false;
 		public bool? IncentivizeVorpal { get; set; } = false;
 		public bool? IncentivizeOpal { get; set; } = false;
 		public bool? IncentivizeRibbon { get; set; } = false;
@@ -562,7 +563,6 @@ namespace FF1Lib
 		public bool? IncentivizeOxyale => NPCFetchItems & IncentivizeMainItems;
 
 		public bool? IncentivizeAdamant => IncentivizeFetchItems;
-		public bool? IncentivizeXcalber => false;
 
 		public int IncentivizedItemCountMin => 0
 			+ ((IncentivizePromotion ?? false) ? 1 : 0)
