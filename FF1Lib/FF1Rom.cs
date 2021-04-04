@@ -485,6 +485,8 @@ namespace FF1Lib
 
 			npcdata.UpdateItemPlacement(generatedPlacement);
 
+			NoOverworld(overworldMap, maps, talkroutines, npcdata, rng);
+
 			if ((bool)flags.AlternateFiends && !flags.SpookyFlag)
 			{
 				AlternativeFiends(rng);
@@ -800,8 +802,6 @@ namespace FF1Lib
 			ExpGoldBoost(flags);
 			ScalePrices(flags, itemText, rng, ((bool)flags.ClampMinimumPriceScale), shopItemLocation);
 			ScaleEncounterRate(flags.EncounterRate / 30.0, flags.DungeonEncounterRate / 30.0);
-
-			LoadInTown(overworldMap, maps, rng);
 
 			WriteMaps(maps);
 

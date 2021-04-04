@@ -41,6 +41,8 @@
 			<div class="checkbox-cell"></div>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="fightBahamutCheckBox" IsEnabled="@(Flags.SpookyFlag != true && Flags.RandomizeFormationEnemizer != true)" @bind-Value="Flags.FightBahamut">Fight Bahamut</TriStateCheckBox>
 			<div class="checkbox-cell"></div>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="noOverworldCheckBox" @bind-Value="Flags.NoOverworld">No Overworld</CheckBox>
+			<div class="checkbox-cell"></div>
 		</div>
 		<div class="col2">
 			<h4>Other</h4>

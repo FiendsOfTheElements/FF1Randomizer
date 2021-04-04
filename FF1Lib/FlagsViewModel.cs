@@ -1664,14 +1664,23 @@ namespace FF1Lib
 				Flags.FreeBridge = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeBridge"));
 			}
-		}
+		}/*
 		public bool? FreeShip
 		{
 			get => Flags.FreeShip;
 			set
 			{
 				Flags.FreeShip = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeAirship"));
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeShip"));
+			}
+		}*/
+		public bool? FreeShipFlag
+		{
+			get => Flags.FreeShipFlag;
+			set
+			{
+				Flags.FreeShipFlag = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeShipFlag"));
 			}
 		}
 		public bool? FreeAirship
@@ -4123,7 +4132,16 @@ namespace FF1Lib
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SpoilerBatsDontCheckOrbs"));
 		    }
 		}
-    
+
+		public bool NoOverworld
+		{
+			get => Flags.NoOverworld;
+			set
+			{
+				Flags.NoOverworld = value;
+				RaisePropertyChanged();
+			}
+		}
 		public bool SanityCheckerV2
 		{
 			get => Flags.SanityCheckerV2;
