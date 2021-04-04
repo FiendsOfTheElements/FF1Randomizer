@@ -485,6 +485,11 @@ namespace FF1Lib
 
 			npcdata.UpdateItemPlacement(generatedPlacement);
 
+			if (flags.NoOverworld & (bool)!flags.Entrances & (bool)!flags.Floors & (bool)!flags.FlipDungeons & (bool)!flags.SaveGameWhenGameOver)
+			{
+				NoOverworld(overworldMap, maps, talkroutines, npcdata, flags, rng);
+			}
+
 			if ((bool)flags.AlternateFiends && !flags.SpookyFlag)
 			{
 				AlternativeFiends(rng);
@@ -897,6 +902,7 @@ namespace FF1Lib
 				FightBahamut(talkroutines, npcdata, (bool)flags.NoTail, flags.EvadeCap);
 			}
 
+			
 			if (flags.SpookyFlag && !(bool)flags.RandomizeFormationEnemizer)
 			{
 				Spooky(talkroutines, npcdata, rng, flags);

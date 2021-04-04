@@ -1673,32 +1673,41 @@ namespace FF1Lib
 				Flags.FreeBridge = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeBridge"));
 			}
-		}
+		}/*
 		public bool? FreeShip
 		{
 			get => Flags.FreeShip;
 			set
 			{
 				Flags.FreeShip = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeAirship"));
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeShip"));
 			}
-		}
-		public bool? FreeAirship
+		}*/
+		public bool? FreeShipFlag
 		{
-			get => Flags.FreeAirship;
+			get => Flags.FreeShipFlag;
 			set
 			{
-				Flags.FreeAirship = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeAirship"));
+				Flags.FreeShipFlag = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeShipFlag"));
 			}
 		}
-		public bool? FreeCanal
+		public bool? FreeAirshipFlag
 		{
-			get => Flags.FreeCanal;
+			get => Flags.FreeAirshipFlag;
 			set
 			{
-				Flags.FreeCanal = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeCanal"));
+				Flags.FreeAirshipFlag = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeAirshipFlag"));
+			}
+		}
+		public bool? FreeCanalFlag
+		{
+			get => Flags.FreeCanalFlag;
+			set
+			{
+				Flags.FreeCanalFlag = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeCanalFlag"));
 			}
 		}
 		public bool? FreeCanoe
