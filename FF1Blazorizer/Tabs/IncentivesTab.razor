@@ -114,7 +114,7 @@
 		<p>@Flags.Flags.IncentivizedItems</p>
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeMainItemsCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeMainItems">Main Progression Items</TriStateCheckBox>
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeFetchItemsCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeFetchItems">Other Quest Items</TriStateCheckBox>
-		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeAirshipCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeAirship">Floater</TriStateCheckBox>
+		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeAirshipCheckBox" IsEnabled="@((Flags.Treasures != false) && (Flags.NoFloater == false))" @bind-Value="Flags.IncentivizeAirship">Floater</TriStateCheckBox>
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeCanoeItemCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeCanoeItem">Canoe</TriStateCheckBox>
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeShipAndCanalCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeShipAndCanal">Ship &amp; Canal</TriStateCheckBox>
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeTailCheckBox" IsEnabled="@((Flags.Treasures != false) && (Flags.NoTail != true))" @bind-Value="Flags.IncentivizeTail">Tail</TriStateCheckBox>

@@ -72,11 +72,15 @@ namespace FF1Lib
 			}
 
 			var requiredAccess = AccessRequirement.All;
-			var requiredMapChanges = new List<MapChange> { MapChange.All };
+			var requiredMapChanges = MapChange.All;
+
+			if ((bool)victoryConditions.NoFloater) {
+			    requiredMapChanges &= ~MapChange.Airship;
+			}
 
 			var accessibleLocationCount = 0;
 			while (!currentAccess.HasFlag(requiredAccess) ||
-				   !requiredMapChanges.Any(x => currentMapChanges.HasFlag(x)))
+				   !currentMapChanges.HasFlag(requiredMapChanges))
 			{
 				if (currentIteration > maxIterations)
 				{

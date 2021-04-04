@@ -284,6 +284,7 @@ namespace FF1Lib
 		public bool NoDanMode { get; set; } = false;
 		public bool NonesGainXP { get; set; } = false;
 		public bool? NoTail { get; set; } = false;
+		public bool? NoFloater { get; set; } = false;
 		public bool? GuaranteedMasamune { get; set; } = false;
 		public bool? SendMasamuneHome { get; set; } = false;
 
@@ -558,7 +559,7 @@ namespace FF1Lib
 		public bool? IncentivizeShip => NPCItems & IncentivizeShipAndCanal & !FreeShip & !NoOverworld;
 		public bool? IncentivizeRod => NPCItems & IncentivizeMainItems;
 		public bool? IncentivizeCube => NPCItems & IncentivizeMainItems;
-		public bool? IncentivizeFloater => !FreeAirship & IncentivizeAirship;
+		public bool? IncentivizeFloater => !FreeAirship & !NoFloater & IncentivizeAirship;
 		public bool? IncentivizePromotion => !FreeTail & !NoTail & IncentivizeTail;
 
 		public bool? IncentivizeCanal => NPCFetchItems & IncentivizeShipAndCanal & !FreeCanal & !NoOverworld;
