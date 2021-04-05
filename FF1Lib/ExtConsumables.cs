@@ -13,40 +13,46 @@ namespace FF1Lib
 	{
 		FF1Rom rom;
 		Flags flags;
+		MT19337 rng;
 
 		Dictionary<string, MagicSpell> Spells;
 
 		List<SpellInfo> SpellInfos;
 
-		TreasureData TreasureData;
 		ShopData ShopData;
 
-		public ExtConsumables(FF1Rom _rom, Flags _flags, ShopData _shopData)
+		public ExtConsumables(FF1Rom _rom, Flags _flags, MT19337 _rng, ShopData _shopData)
 		{
 			rom = _rom;
 			flags = _flags;
+			rng = _rng;
 			ShopData = _shopData;
+		}
 
+		public void LoadSpells()
+		{
 			SpellInfos = rom.LoadSpells().ToList();
 			Spells = rom.GetSpells().ToDictionary(s => FF1Text.BytesToText(s.Name));
-			TreasureData = new TreasureData(rom);
+
 		}
 
 		public void AddExtConsumables()
 		{
+			if (!flags.EnableExtConsumables) return;
+
 			ChangeItemJumpTable();
 
 			WriteOutOfBattleFCureRoutine();
 			WriteOutOfBattlePhnixRoutine();
 			WriteOutOfBattleSmokeRoutine();
 			WriteOutOfBattleBlastRoutine();
-
+			
 			//DrawItemBox EndOfItemIndex
 			rom.PutInBank(0x1F, 0xEF4D, new byte[] { 0x20 });
-
+			
 			ChangeItemNames();
 			ChangeMenuTexts();
-
+			
 			WriteDrawDrinkBoxBreakoutRoutine();
 			WriteDrawDrinkBoxRoutine();
 			WriteLutDrinkBoxOrder();
@@ -67,7 +73,6 @@ namespace FF1Lib
 			CreateLifeSpell();
 			CreateSmokeSpell();
 
-			ClearTreasureChests();
 			ClearShops();
 
 			WriteInTalkBattleFix();
@@ -285,24 +290,6 @@ namespace FF1Lib
 			rom.Put(MagicOffset + 0x41 * MagicSize, spell.compressData());
 		}
 
-		private void ClearTreasureChests()
-		{
-			TreasureData.LoadTable();
-
-			for (int i = 0; i < TreasureData.Data.Length; i++)
-			{
-				if (TreasureData[i] == Item.WoodenNunchucks ||
-					TreasureData[i] == Item.SmallKnife ||
-					TreasureData[i] == Item.WoodenRod ||
-					TreasureData[i] == Item.Rapier)
-				{
-					TreasureData[i] += 4;
-				}
-			}
-
-			TreasureData.StoreTable();
-		}
-
 		private void ClearShops()
 		{
 			foreach (var shop in ShopData.Shops)
@@ -323,6 +310,36 @@ namespace FF1Lib
 			}
 
 			ShopData.StoreData();
+		}
+
+		public void AddNormalShopEntries()
+		{
+			if (!flags.EnableExtConsumables || !(flags.NormalShopsHaveExtConsumables ?? false)) return;
+
+			ReplaceShopEntry(Item.Heal, Item.WoodenNunchucks);
+			ReplaceShopEntry(Item.Heal, Item.SmallKnife);
+			ReplaceShopEntry(Item.Pure, Item.WoodenRod);
+			ReplaceShopEntry(Item.Soft, Item.Rapier);
+		}
+
+		private void ReplaceShopEntry(Item item1, Item item2)
+		{
+			var shop = ShopData.Shops.Where(s => s.Type == ShopType.Item && s.Entries.Contains(item1)).ToList().PickRandom(rng);
+			shop.Entries.Remove(item1);
+			shop.Entries.Add(item2);
+		}
+
+		public static double ExtConsumablePriceFix(Item item, double value, IScaleFlags flags)
+		{
+			if (flags.EnableExtConsumables)
+			{
+				if (item == Item.WoodenNunchucks) return 49152.0;
+				if (item == Item.SmallKnife) return 262144.0;
+				if (item == Item.WoodenRod) return 16384.0;
+				if (item == Item.Rapier) return 12288.0;
+			}
+
+			return value;
 		}
 	}
 }

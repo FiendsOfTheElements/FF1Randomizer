@@ -105,7 +105,8 @@ namespace FF1Lib
 				}
 				else
 				{
-					var newPrice = RangeScaleWithZero(prices[i] / multiplier, scaleLow, scaleHigh, 1e-5 * multiplier, 1, rng);
+					var price = ExtConsumables.ExtConsumablePriceFix((Item)i, prices[i], flags);
+					var newPrice = RangeScaleWithZero(price / multiplier, scaleLow, scaleHigh, 1e-5 * multiplier, 1, rng);
 					prices[i] = (ushort)(flags.WrapPriceOverflow ? ((newPrice - 1) % 0xFFFF) + 1 : Min(newPrice, 0xFFFF));
 				}
 			}

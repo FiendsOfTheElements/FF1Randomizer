@@ -4094,5 +4094,65 @@ namespace FF1Lib
 				RaisePropertyChanged();
 			}
 		}
+
+		public bool EnableExtConsumables
+		{
+			get => Flags.EnableExtConsumables;
+			set
+			{
+				Flags.EnableExtConsumables = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool? NormalShopsHaveExtConsumables
+		{
+			get => Flags.NormalShopsHaveExtConsumables;
+			set
+			{
+				Flags.NormalShopsHaveExtConsumables = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool? LegendaryShopHasExtConsumables
+		{
+			get => Flags.LegendaryShopHasExtConsumables;
+			set
+			{
+				Flags.LegendaryShopHasExtConsumables = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public TreasureStackSize ExtConsumableTreasureStackSize
+		{
+			get => Flags.ExtConsumableTreasureStackSize;
+			set
+			{
+				Flags.ExtConsumableTreasureStackSize = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public ExtStartingItemSet ExtStartingItemSet
+		{
+			get => Flags.ExtStartingItemSet;
+			set
+			{
+				Flags.ExtStartingItemSet = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public ExtConsumableChestSet ExtConsumableChests
+		{
+			get => Flags.ExtConsumableChests;
+			set
+			{
+				Flags.ExtConsumableChests = value;
+				RaisePropertyChanged();
+			}
+		}
 	}
 }

@@ -408,6 +408,12 @@ namespace FF1Lib
 				EnableFreeTail();
 			}
 
+			var shopData = new ShopData(this);
+			shopData.LoadData();
+
+			var extConsumables = new ExtConsumables(this, flags, rng, shopData);
+			extConsumables.AddNormalShopEntries();
+
 			overworldMap.ApplyMapEdits();
 
 			var maxRetries = 8;
@@ -503,11 +509,11 @@ namespace FF1Lib
 
 			new ShopKiller(rng, flags, maps, this).KillShops();
 
-			var shopData = new ShopData(this);
-			shopData.LoadData();
-
 			new LegendaryShops(rng, flags, maps, flippedMaps, shopData, this).PlaceShops();
-			new ExtConsumables(this, flags, shopData).AddExtConsumables();
+
+			//has to be done before modifying itemnames and after modifying spellnames...
+			extConsumables.LoadSpells();
+
 			/*
 			if (flags.WeaponPermissions)
 			{
@@ -802,6 +808,8 @@ namespace FF1Lib
 			WriteMaps(maps);
 
 			WriteText(itemText, ItemTextPointerOffset, ItemTextPointerBase, ItemTextOffset, UnusedGoldItems);
+
+			extConsumables.AddExtConsumables();
 
 			if ((bool)flags.SwolePirates)
 			{

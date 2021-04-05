@@ -103,6 +103,8 @@
 		bool? NoMasamune { get; }
 		WorldWealthMode WorldWealth { get; }
 		ConsumableChestSet MoreConsumableChests { get; }
+		bool EnableExtConsumables { get; }
+		ExtConsumableChestSet ExtConsumableChests { get; }
 	}
 	public interface IItemShuffleFlags
 	{
@@ -124,6 +126,7 @@
 		int PriceScaleFactorHigh { get; }
 		bool? ExcludeGoldFromScaling { get; }
 		bool CheapVendorItem { get; }
+		bool EnableExtConsumables { get; }		
 	}
 	public interface IFloorShuffleFlags
 	{

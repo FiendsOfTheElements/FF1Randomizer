@@ -56,6 +56,48 @@ namespace FF1Lib
 		Randomized,
 	}
 
+	public enum ExtStartingItemSet
+	{
+		[Description("None")]
+		None,
+
+		[Description("Lifeline")]
+		Lifeline,
+
+		[Description("Just Smokes")]
+		JustSmokes,
+
+		[Description("Bangs and Smokes")]
+		BangsAndSmokes,
+
+		[Description("Jester's Secret")]
+		JestersSecret,
+
+		[Description("Adventurer's Fortune")]
+		AdventurersFortune,
+
+		[Description("Blackbelt's Favorite")]
+		BlackbeltsFavorite,
+
+		[Description("Illegal Advantage")]
+		IllegalAdvantage,
+
+		[Description("R. Beggar's Choice")]
+		RandomizedJestersSecret,
+
+		[Description("R. Explorer Starting Pack")]
+		RandomizedAdventurersFortune,
+
+		[Description("R. Warrior's Standard")]
+		RandomizedBlackbeltsFavorite,
+
+		[Description("R. High Rolling")]
+		RandomizedHighRolling,
+
+		[Description("Randomized")]
+		Randomized,
+	}
+
 	public class StartingInventory
 	{
 		MT19337 rng;
@@ -91,6 +133,26 @@ namespace FF1Lib
 					var rmax = e.RMax ?? max;
 
 					ItemData[e.Item] = (byte)Math.Min(Math.Max(rng.Between(rmin, rmax), min), max);
+				}
+			}
+
+			if (flags.EnableExtConsumables)
+			{
+				foreach (var e in ExtStartingItemSetDic[flags.ExtStartingItemSet])
+				{
+					if (e.Cnt.HasValue)
+					{
+						ItemData[e.Item] = (byte)e.Cnt;
+					}
+					else
+					{
+						var min = e.Min;
+						var max = e.Max;
+						var rmin = e.RMin ?? min;
+						var rmax = e.RMax ?? max;
+
+						ItemData[e.Item] = (byte)Math.Min(Math.Max(rng.Between(rmin, rmax), min), max);
+					}
 				}
 			}
 
@@ -183,10 +245,6 @@ namespace FF1Lib
 					new StartingItem { Item = Item.Heal, Cnt = 99 },
 					new StartingItem { Item = Item.Pure, Cnt = 99 },
 					new StartingItem { Item = Item.Soft, Cnt = 99 },
-					new StartingItem { Item = Item.WoodenNunchucks, Cnt = 99 },
-					new StartingItem { Item = Item.SmallKnife, Cnt = 99 },
-					new StartingItem { Item = Item.WoodenRod, Cnt = 99 },
-					new StartingItem { Item = Item.Rapier, Cnt = 99 },
 				}
 			},
 			{ StartingItemSet.RandomizedBeggarsChoice, new StartingItem[]
@@ -243,6 +301,104 @@ namespace FF1Lib
 					new StartingItem { Item = Item.Heal, Min = 0, Max = 99, RMin = -15, RMax = 114 },
 					new StartingItem { Item = Item.Pure, Min = 0, Max = 20, RMin = -3, RMax = 23 },
 					new StartingItem { Item = Item.Soft, Min = 0, Max = 10, RMin = -2, RMax = 12 },
+				}
+			},
+		};
+
+		private static Dictionary<ExtStartingItemSet, StartingItem[]> ExtStartingItemSetDic = new Dictionary<ExtStartingItemSet, StartingItem[]>
+		{
+			//{ StartingItemSet.None, Array.Empty<StartingItem>() },
+			{ ExtStartingItemSet.None, new StartingItem[]
+				{
+				}
+			},
+			{ ExtStartingItemSet.Lifeline, new StartingItem[]
+				{
+					new StartingItem { Item = Item.WoodenNunchucks, Cnt = 1 },
+					new StartingItem { Item = Item.SmallKnife, Cnt = 1 },
+				}
+			},
+			{ ExtStartingItemSet.JustSmokes, new StartingItem[]
+				{
+					new StartingItem { Item = Item.WoodenRod, Cnt = 5 },
+				}
+			},
+			{ ExtStartingItemSet.BangsAndSmokes, new StartingItem[]
+				{
+					new StartingItem { Item = Item.Rapier, Cnt = 10 },
+					new StartingItem { Item = Item.WoodenRod, Cnt = 10 },
+				}
+			},
+			{ ExtStartingItemSet.JestersSecret, new StartingItem[]
+				{
+					new StartingItem { Item = Item.WoodenNunchucks, Cnt = 2 },
+					new StartingItem { Item = Item.SmallKnife, Cnt = 1 },
+					new StartingItem { Item = Item.Rapier, Cnt = 5 },
+					new StartingItem { Item = Item.WoodenRod, Cnt = 5 },
+				}
+			},
+			{ ExtStartingItemSet.AdventurersFortune, new StartingItem[]
+				{
+					new StartingItem { Item = Item.WoodenNunchucks, Cnt = 3 },
+					new StartingItem { Item = Item.SmallKnife, Cnt = 2 },
+					new StartingItem { Item = Item.Rapier, Cnt = 10 },
+					new StartingItem { Item = Item.WoodenRod, Cnt = 10 },
+				}
+			},
+			{ ExtStartingItemSet.BlackbeltsFavorite, new StartingItem[]
+				{
+					new StartingItem { Item = Item.WoodenNunchucks, Cnt = 5 },
+					new StartingItem { Item = Item.SmallKnife, Cnt = 3 },
+					new StartingItem { Item = Item.Rapier, Cnt = 20 },
+					new StartingItem { Item = Item.WoodenRod, Cnt = 20 },
+				}
+			},
+			{ ExtStartingItemSet.IllegalAdvantage, new StartingItem[]
+				{
+					new StartingItem { Item = Item.WoodenNunchucks, Cnt = 99 },
+					new StartingItem { Item = Item.SmallKnife, Cnt = 99 },
+					new StartingItem { Item = Item.Rapier, Cnt = 99 },
+					new StartingItem { Item = Item.WoodenRod, Cnt = 99 },
+				}
+			},
+			{ ExtStartingItemSet.RandomizedJestersSecret, new StartingItem[]
+				{
+					new StartingItem { Item = Item.WoodenNunchucks, Min = 0, Max = 2 },
+					new StartingItem { Item = Item.SmallKnife, Min = 0, Max = 1 },
+					new StartingItem { Item = Item.Rapier, Min = 0, Max = 5 },
+					new StartingItem { Item = Item.WoodenRod, Min = 0, Max = 5 },
+				}
+			},
+			{ ExtStartingItemSet.RandomizedAdventurersFortune, new StartingItem[]
+				{
+					new StartingItem { Item = Item.WoodenNunchucks, Min = 0, Max = 3 },
+					new StartingItem { Item = Item.SmallKnife, Min = 0, Max = 2 },
+					new StartingItem { Item = Item.Rapier, Min = 0, Max = 10 },
+					new StartingItem { Item = Item.WoodenRod, Min = 0, Max = 10 },
+				}
+			},
+			{ ExtStartingItemSet.RandomizedBlackbeltsFavorite, new StartingItem[]
+				{
+					new StartingItem { Item = Item.WoodenNunchucks, Min = 0, Max = 5 },
+					new StartingItem { Item = Item.SmallKnife, Min = 1, Max = 3 },
+					new StartingItem { Item = Item.Rapier, Min = 0, Max = 20 },
+					new StartingItem { Item = Item.WoodenRod, Min = 0, Max = 20 },
+				}
+			},
+			{ ExtStartingItemSet.RandomizedHighRolling, new StartingItem[]
+				{
+					new StartingItem { Item = Item.WoodenNunchucks, Min = 2, Max = 5 },
+					new StartingItem { Item = Item.SmallKnife, Min = 2, Max = 5 },
+					new StartingItem { Item = Item.Rapier, Min = 5, Max = 30 },
+					new StartingItem { Item = Item.WoodenRod, Min = 5, Max = 30 },
+				}
+			},
+			{ ExtStartingItemSet.Randomized, new StartingItem[]
+				{
+					new StartingItem { Item = Item.WoodenNunchucks, Min = 0, Max = 15, RMin = -3, RMax = 15 },
+					new StartingItem { Item = Item.SmallKnife, Min = 0, Max = 10, RMin = -3, RMax = 10 },
+					new StartingItem { Item = Item.Rapier, Min = 0, Max = 50 },
+					new StartingItem { Item = Item.WoodenRod, Min = 0, Max = 50 },
 				}
 			},
 		};
