@@ -1489,39 +1489,37 @@ namespace FF1Lib
 		    "has a insanely powerful attack",           // 200-249
 		    "can destroy you with one finger", // 250+
 		};
-		var hitCountRanges = new List<int> {0, 2, 3, 5, 7, 9, 14};
+		var hitCountRanges = new List<int> {0, 6, 10, 15};
 		var hitCountDescriptions = new List<string> {
-		    "", // 1
-		    "can hit you a couple of times", // 2
-		    "can hit you a few times", // 3-4
-		    "can hit you half a dozen times", // 5-6
-		    "can hit you an incredible number of times", // 7-8
-		    "can hit you an insane number of times", // 9-13
-		    "will punch you until you are dead, then punch you some more", // 14+
+		    "", // 1-5
+		    "can hit you half a dozen times", // 6
+		    "can hit you an incredible number of times", // 7-9
+		    "can hit you an insane number of times", // 10-14
+		    "will punch you until you are dead, then punch you some more", // 15+
 		};
-		var evadeRanges = new List<int> {0, 50, 75, 100, 125, 150, 175, 200, 240};
+		var evadeRanges = new List<int> {0, 50, 75, 125, 150, 175, 200, 220, 240};
 		var evadeDescriptions = new List<string> {
-		    "is a sitting duck",             // 0-49
+		    "is a sitting duck",         // 0-49
 		    "is easy to hit",            // 50-74
-		    "",                       // 75-99,
-		    "is extra hard to hit",      // 100-124
-		    "is very hard to hit",       // 125-149
-		    "is super hard to hit",      // 150-174
-		    "is incredibly hard to hit", // 175-199
-		    "is insanely hard to hit",  // 200-239
+		    "",                          // 75-124,
+		    "is extra hard to hit",      // 125-149
+		    "is very hard to hit",       // 150-174
+		    "is super hard to hit",      // 175-199
+		    "is incredibly hard to hit", // 200-219
+		    "is insanely hard to hit",   // 220-239
 		    "is nearly impossible to hit", // 240+
 		};
-		var defRanges = new List<int> {0, 50, 75, 100, 125, 150, 175, 200, 250};
+		var defRanges = new List<int> {0, 40, 70, 100, 125, 150, 175, 200, 225};
 		var defDescriptions = new List<string> {
-		    "has pathetic armor",           // 0-49
-		    "has weak armor",           // 50-74
-		    "",                         // 75-99
+		    "has pathetic armor",           // 0-39
+		    "has weak armor",               // 40-69
+		    "",                             // 70-99
 		    "has pretty thick armor",       // 100-124
 		    "has extra thick armor",        // 125-149
 		    "has very thick armor",         // 150-174
 		    "has incredibly thick armor",   // 175-199
-		    "has insanely thick armor",     // 200-249
-		    "can't be hurt with your puny weapons", // 250+
+		    "has insanely thick armor",     // 200-224
+		    "can't be hurt with your puny weapons", // 225+
 		};
 
 		var intros = new List<string> {
