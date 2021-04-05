@@ -159,7 +159,6 @@ namespace FF1Lib
 			ItemData.StoreTable();
 		}
 
-
 		private class StartingItem
 		{
 			public Item Item { get; set; }

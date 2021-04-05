@@ -26,6 +26,9 @@ namespace FF1Lib
 		[Description("Crescent Start")]
 		CrecsentStart,
 
+		[Description("No Overworld")]
+		NoOverworld,
+
 		[Description("Random")]
 		Random
 	}
@@ -113,6 +116,8 @@ namespace FF1Lib
 					return new OwMapExchange(_rom, _overworldMap, "elfland_start");
 				case OwMapExchanges.CrecsentStart:
 					return new OwMapExchange(_rom, _overworldMap, "crescent_start");
+				case OwMapExchanges.NoOverworld:
+					return new OwMapExchange(_rom, _overworldMap, "nooverworld");
 			}
 
 			throw new Exception("oops");

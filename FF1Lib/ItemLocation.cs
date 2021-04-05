@@ -100,6 +100,10 @@ namespace FF1Lib
 			AccessRequirement = access;
 		}
 
+		public void ChangeMapLocation(MapLocation mapLocation) {
+		    MapLocation = mapLocation;
+		}
+
 	}
 	public class MapObject : RewardSourceBase
 	{

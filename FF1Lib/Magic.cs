@@ -356,7 +356,7 @@ namespace FF1Lib
 							blackSpellFinalList[0].Add(spell);
 						}
 					}
-				}		
+				}
 				// shuffle each of the final lists
 				foreach(List<MagicSpell> spellList in whiteSpellFinalList)
 				{
@@ -578,14 +578,14 @@ namespace FF1Lib
 
 		public List<MagicSpell> GetSpells() {
 			var spells = Get(MagicOffset, MagicSize * MagicCount).Chunk(MagicSize);
-			var names = Get(MagicNamesOffset, MagicNameSize * MagicCount).Chunk(MagicNameSize);
+			var namepointers = Get(ItemTextPointerOffset, 2 * ItemTextPointerCount).ToUShorts().ToList();
 			var pointers = Get(MagicTextPointersOffset, MagicCount);
 
 			return spells.Select((spell, i) => new MagicSpell
 			{
 				Index = (byte)i,
 				Data = spell,
-				Name = names[i],
+				Name = ReadUntil(ItemTextPointerBase + namepointers[MagicNamesIndexInItemText+i], 0x00),
 				TextPointer = pointers[i]
 			})
 			.ToList();

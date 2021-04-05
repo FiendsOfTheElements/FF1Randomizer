@@ -221,6 +221,19 @@ namespace FF1Lib
 				(bool)flags.SeparateBossHPScaling, minHp, highHp, GetEvadeIntFromFlag(flags.EvadeCap)));
 		}
 
+		public abstract class EnemyStat
+		{
+		    public const int HP = 4;
+		    public const int Morale = 6;
+		    public const int Scripts = 7;
+		    public const int Evade = 8;
+		    public const int Defense = 9;
+		    public const int Hits = 10;
+		    public const int HitPercent = 11;
+		    public const int Strength = 12;
+		    public const int CriticalPercent = 13;
+		}
+
 		public void ScaleSingleEnemyStats(int index, int lowPercentStats, int highPercentStats, bool wrapOverflow, bool includeMorale, MT19337 rng,
 			bool separateHPScale, int lowPercentHp, int highPercentHp, int evadeClamp)
 		{
@@ -231,7 +244,7 @@ namespace FF1Lib
 
 			var enemy = Get(EnemyOffset + index * EnemySize, EnemySize);
 
-			var hp = BitConverter.ToUInt16(enemy, 4);
+			var hp = BitConverter.ToUInt16(enemy, EnemyStat.HP);
 			if(separateHPScale)
 			{
 				hp = (ushort)Min(RangeScale(hp, lowDecimalHp, highDecimalHp, 1.0, rng), 0x7FFF);
@@ -240,15 +253,15 @@ namespace FF1Lib
 				hp = (ushort)Min(RangeScale(hp, lowDecimalStats, highDecimalStats, 1.0, rng), 0x7FFF);
 			}
 			var hpBytes = BitConverter.GetBytes(hp);
-			Array.Copy(hpBytes, 0, enemy, 4, 2);
+			Array.Copy(hpBytes, 0, enemy, EnemyStat.HP, 2);
 
-			var newMorale = includeMorale ? RangeScale(enemy[6], lowDecimalStats, highDecimalStats, 0.25, rng) : enemy[6];
-			var newEvade = RangeScale(enemy[8], lowDecimalStats, highDecimalStats, 1.0, rng);
-			var newDefense = RangeScale(enemy[9], lowDecimalStats, highDecimalStats, 0.5, rng);
-			var newHits = RangeScale(enemy[10], lowDecimalStats, highDecimalStats, 0.5, rng);
-			var newHitPercent = RangeScale(enemy[11], lowDecimalStats, highDecimalStats, 1.0, rng);
-			var newStrength = RangeScale(enemy[12], lowDecimalStats, highDecimalStats, 0.25, rng);
-			var newCrit = RangeScale(enemy[13], lowDecimalStats, highDecimalStats, 0.5, rng);
+			var newMorale = includeMorale ? RangeScale(enemy[EnemyStat.Morale], lowDecimalStats, highDecimalStats, 0.25, rng) : enemy[6];
+			var newEvade = RangeScale(enemy[EnemyStat.Evade], lowDecimalStats, highDecimalStats, 1.0, rng);
+			var newDefense = RangeScale(enemy[EnemyStat.Defense], lowDecimalStats, highDecimalStats, 0.5, rng);
+			var newHits = RangeScale(enemy[EnemyStat.Hits], lowDecimalStats, highDecimalStats, 0.5, rng);
+			var newHitPercent = RangeScale(enemy[EnemyStat.HitPercent], lowDecimalStats, highDecimalStats, 1.0, rng);
+			var newStrength = RangeScale(enemy[EnemyStat.Strength], lowDecimalStats, highDecimalStats, 0.25, rng);
+			var newCrit = RangeScale(enemy[EnemyStat.CriticalPercent], lowDecimalStats, highDecimalStats, 0.5, rng);
 			if (wrapOverflow)
 			{
 				newEvade = ((newEvade - 1) % 0xFF) + 1;
@@ -258,13 +271,13 @@ namespace FF1Lib
 				newStrength = ((newStrength - 1) % 0xFF) + 1;
 				newCrit = ((newCrit - 1) % 0xFF) + 1;
 			}
-			enemy[6] = (byte)Min(newMorale, 0xFF); // morale
-			enemy[8] = (byte)Min(newEvade, evadeClamp); // evade
-			enemy[9] = (byte)Min(newDefense, 0xFF); // defense
-			enemy[10] = (byte)Max(Min(newHits, 0xFF), 1); // hits
-			enemy[11] = (byte)Min(newHitPercent, 0xFF); // hit%
-			enemy[12] = (byte)Min(newStrength, 0xFF); // strength
-			enemy[13] = (byte)Min(newCrit, 0xFF); // critical%
+			enemy[EnemyStat.Morale] = (byte)Min(newMorale, 0xFF); // morale
+			enemy[EnemyStat.Evade] = (byte)Min(newEvade, evadeClamp); // evade
+			enemy[EnemyStat.Defense] = (byte)Min(newDefense, 0xFF); // defense
+			enemy[EnemyStat.Hits] = (byte)Max(Min(newHits, 0xFF), 1); // hits
+			enemy[EnemyStat.HitPercent] = (byte)Min(newHitPercent, 0xFF); // hit%
+			enemy[EnemyStat.Strength] = (byte)Min(newStrength, 0xFF); // strength
+			enemy[EnemyStat.CriticalPercent] = (byte)Min(newCrit, 0xFF); // critical%
 
 			Put(EnemyOffset + index * EnemySize, enemy);
 		}
@@ -310,7 +323,7 @@ namespace FF1Lib
 			double logLowPercent = Log(lowPercent);
 			double logDifference = Log(highPercent) - logLowPercent;
 			exponent = exponent * logDifference + logLowPercent; // For example for 50-200% a number from -0.69 to 0.69, for 200-400% a number from 0.69 to 1.38
-	
+
 			double scaleValue = Exp(exponent); // A number from 0.5 to 2, or 2 to 4
 			double adjustedScale = scaleValue > 1 ? (scaleValue - 1) * adjustment + 1 : 1 - ((1 - scaleValue) * adjustment); // Tightens the scale so some stats are not changed by as much. For example for strength (adjustment of 0.25) this becomes 0.875 to 1.25, 1.25 to 1.75 while for hp (adjustment of 1) this stays 0.5 to 2, 2 to 4
 			return (int)Round(value * adjustedScale);
@@ -482,6 +495,10 @@ namespace FF1Lib
 			newPirate.critrate = 5;
 			newPirate.agility = 24;
 			Put(EnemyOffset + EnemySize * Enemy.Pirate, newPirate.compressData());
+		}
+
+		public List<Blob> GetAllEnemyStats() {
+		    return Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
 		}
 	}
 }

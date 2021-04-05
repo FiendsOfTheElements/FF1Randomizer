@@ -26,6 +26,7 @@
 		bool? IncentivizeTitansTrove { get; }
 		bool? IncentivizeEarth { get; }
 		bool? IncentivizeSeaShrine { get; }
+		bool? IncentivizeCardia { get; }
 		IncentivePlacementType IceCaveIncentivePlacementType { get; }
 		IncentivePlacementType OrdealsIncentivePlacementType { get; }
 		IncentivePlacementType MarshIncentivePlacementType { get; }
@@ -36,6 +37,7 @@
 		IncentivePlacementTypeGated SkyPalaceIncentivePlacementType { get; }
 		IncentivePlacementType CorneriaIncentivePlacementType { get; }
 		IncentivePlacementType MarshLockedIncentivePlacementType { get; }
+		IncentivePlacementType CardiaIncentivePlacementType { get; }
 
 		bool? IncentivizeXcalber { get; }
 		bool? IncentivizeMasamune { get; }
@@ -73,6 +75,7 @@
 		bool Incentivize65K { get; }
 		bool IncentivizeBad { get; }
 		bool? NoMasamune { get; }
+		bool? NoXcalbur { get; }
 	}
 	public interface IMapEditFlags : IItemPlacementFlags
 	{
@@ -80,6 +83,7 @@
 		bool? MapOnracDock { get; }
 		bool? MapMirageDock { get; }
 		bool? MapBahamutCardiaDock { get; }
+		bool? MapDragonsHoard { get; }
 		bool? MapLefeinRiver { get; }
 		bool? MapGaiaMountainPass { get; }
 		bool? TitansTrove { get; }
@@ -101,6 +105,7 @@
 		bool? GuaranteedMasamune { get; }
 		bool? SendMasamuneHome { get; }
 		bool? NoMasamune { get; }
+		bool? NoXcalbur { get; }
 		WorldWealthMode WorldWealth { get; }
 		ConsumableChestSet MoreConsumableChests { get; }
 		bool EnableExtConsumables { get; }
@@ -115,6 +120,7 @@
 		bool? EarlySarda { get; }
 		bool? EarlySage { get; }
 		bool? EarlyOrdeals { get; }
+		bool NoOverworld { get; }
 	}
 	public interface IScaleFlags
 	{
@@ -156,6 +162,8 @@
 		bool? FreeLute { get; }
 		bool? FreeTail { get; }
 		bool? NoTail { get; }
+		bool? NoFloater { get; }
 		bool? LooseExcludePlacedDungeons { get; }
+		bool NoOverworld { get; }
 	}
 }

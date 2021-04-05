@@ -205,11 +205,11 @@ namespace FF1Lib
 				"",
 				"artea, pinkpuff",
 				"drcat, MadMartin",
+				"Darkmoon, tetron",
+				"ofd, lifereboot",
 				" leggystarscream",
 				" nic0lette",
 				" splitpunched",
-				" onefineday",
-				" Darkmoon",
 			},
 			new []
 			{

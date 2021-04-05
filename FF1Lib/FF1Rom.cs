@@ -408,6 +408,14 @@ namespace FF1Lib
 				EnableFreeTail();
 			}
 
+			if ((bool)flags.MapHallOfDragons) {
+			    BahamutB1Encounters(maps);
+			}
+
+			if ((bool)flags.MapDragonsHoard) {
+			    DragonsHoard(maps);
+			}
+
 			var shopData = new ShopData(this);
 			shopData.LoadData();
 
@@ -460,6 +468,11 @@ namespace FF1Lib
 							excludeItemsFromRandomShops.Add(Item.Masamune);
 						}
 
+						if ((bool)flags.NoXcalbur)
+						{
+							excludeItemsFromRandomShops.Add(Item.Xcalber);
+						}
+
 						shopItemLocation = ShuffleShops(rng, (bool)flags.ImmediatePureAndSoftRequired, ((bool)flags.RandomWares), excludeItemsFromRandomShops, flags.WorldWealth, overworldMap.ConeriaTownEntranceItemShopIndex);
 						incentivesData = new IncentiveData(rng, flags, overworldMap, shopItemLocation, checker);
 					}
@@ -486,6 +499,11 @@ namespace FF1Lib
 
 			npcdata.UpdateItemPlacement(generatedPlacement);
 
+			if (flags.NoOverworld & (bool)!flags.Entrances & (bool)!flags.Floors & (bool)!flags.FlipDungeons & (bool)!flags.SaveGameWhenGameOver)
+			{
+				NoOverworld(overworldMap, maps, talkroutines, npcdata, flags, rng);
+			}
+
 			if ((bool)flags.AlternateFiends && !flags.SpookyFlag)
 			{
 				AlternativeFiends(rng);
@@ -506,6 +524,7 @@ namespace FF1Lib
 			}
 
 			new StartingInventory(rng, flags, this).SetStartingInventory();
+			new StartingEquipment(rng, flags, this).SetStartingEquipment();
 
 			new ShopKiller(rng, flags, maps, this).KillShops();
 
@@ -695,7 +714,7 @@ namespace FF1Lib
 				MonsterInABox(rng, flags);
 			}
 
-			if (flags.HouseMPRestoration || flags.HousesFillHp)
+			if (!flags.Etherizer && (flags.HouseMPRestoration || flags.HousesFillHp))
 			{
 				FixHouse(flags.HouseMPRestoration, flags.HousesFillHp);
 			}
@@ -781,7 +800,7 @@ namespace FF1Lib
 			var itemText = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
 			itemText[(int)Item.Ribbon] = itemText[(int)Item.Ribbon].Remove(7);
 
-			if (flags.Etherizer && !flags.HouseMPRestoration && !flags.HousesFillHp)
+			if (flags.Etherizer)
 			{
 				Etherizer();
 				itemText[(int)Item.Tent] = "ETHR@p";
@@ -903,6 +922,7 @@ namespace FF1Lib
 				FightBahamut(talkroutines, npcdata, (bool)flags.NoTail, flags.EvadeCap);
 			}
 
+			
 			if (flags.SpookyFlag && !(bool)flags.RandomizeFormationEnemizer)
 			{
 				Spooky(talkroutines, npcdata, rng, flags);
@@ -911,6 +931,10 @@ namespace FF1Lib
 			if (flags.InventoryAutosort && !(preferences.RenounceAutosort))
 			{
 				EnableInventoryAutosort();
+			}
+
+			if (flags.SkyWarriorSpoilerBats != SpoilerBatHints.Vanilla) {
+			    SkyWarriorSpoilerBats(rng, flags, npcdata);
 			}
 
 			// We have to do "fun" stuff last because it alters the RNG state.

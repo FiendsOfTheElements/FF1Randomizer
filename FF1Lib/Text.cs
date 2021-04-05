@@ -12,6 +12,7 @@ namespace FF1Lib
 	    public const int ItemTextPointerCount = 252;
 	    public const int ItemTextPointerBase = 0x20000;
 	    public const int ItemTextOffset = 0x2B900;
+	    public const int MagicNamesIndexInItemText = 176;
 
 	    public const int EnemyTextPointerOffset = 0x2D4E0;
 	    public const int EnemyTextPointerBase = 0x24000;

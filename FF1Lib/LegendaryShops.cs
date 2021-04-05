@@ -54,6 +54,9 @@ namespace FF1Lib
 			byte[] possibleTileIds = new byte[128];
 			for (byte i = 0; i < 128; i++) possibleTileIds[i] = i;
 
+			// Remove Closed door tile, since it's not used in the map, but still needed
+			possibleTileIds[0x37] = 0;
+
 			UnusedTilesbyTileSet = Enum.GetValues<MapId>()
 				.GroupBy(m => MapTileSets[m])
 				.Select(t => (t.Key, t.Select(m => maps[(int)m]
@@ -287,7 +290,7 @@ namespace FF1Lib
 			else
 			{
 				var spells = new List<Spell> { Spell.RUSE, Spell.INVS, Spell.PURE, Spell.CUR3, Spell.LIFE, Spell.HRM3, Spell.SOFT, Spell.EXIT, Spell.INV2, Spell.CUR4, Spell.HRM4, Spell.HEL3, Spell.LIF2, Spell.FADE, Spell.WALL };
-				var items = spells.Where(s => Spells.ContainsKey(s.ToString())).Select(s => Convert.ToByte(Spells[s.ToString()].Index + 176)).Cast<Item>().ToList();
+				var items = spells.Where(s => Spells.ContainsKey(s.ToString())).Select(s => Convert.ToByte(Spells[s.ToString()].Index + MagicNamesIndexInItemText)).Cast<Item>().ToList();
 
 				List<Item> result = new List<Item>();
 
@@ -307,7 +310,7 @@ namespace FF1Lib
 			else
 			{
 				var spells = new List<Spell> { Spell.LOCK, Spell.TMPR, Spell.FIR2, Spell.LIT2, Spell.LOK2, Spell.FAST, Spell.ICE2, Spell.FIR3, Spell.BANE, Spell.WARP, Spell.LIT3, Spell.QAKE, Spell.ICE3, Spell.BRAK, Spell.SABR, Spell.NUKE, Spell.ZAP, Spell.XXXX };
-				var items = spells.Where(s => Spells.ContainsKey(s.ToString())).Select(s => Convert.ToByte(Spells[s.ToString()].Index + 176)).Cast<Item>().ToList();
+				var items = spells.Where(s => Spells.ContainsKey(s.ToString())).Select(s => Convert.ToByte(Spells[s.ToString()].Index + MagicNamesIndexInItemText)).Cast<Item>().ToList();
 
 				List<Item> result = new List<Item>();
 

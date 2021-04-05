@@ -45,7 +45,18 @@ namespace FF1Lib
 				forcedItemPlacements.AddRange(ItemLocations.AllNPCFreeItemLocationsExcludingVendor);
 				forcedItemPlacements.Add(shopSlot);
 			}
-			if (!(flags.NPCFetchItems ?? false)) forcedItemPlacements.AddRange(ItemLocations.AllNPCFetchItemLocations);
+			if (!(flags.NPCFetchItems ?? false))
+			{
+				forcedItemPlacements.AddRange(ItemLocations.AllNPCFetchItemLocations);
+				if((bool)flags.NoXcalbur)
+				{
+					forcedItemPlacements.Remove(ItemLocations.Smith);
+				}
+			}
+			else if (flags.NoOverworld)
+			{
+				forcedItemPlacements.Add(ItemLocations.Nerrick);
+			}
 			if ((!flags.Treasures ?? false)) forcedItemPlacements.AddRange(ItemLocations.AllTreasures);
 			var incentivePool = new List<Item>();
 			if (flags.IncentivizeBridge)
@@ -248,7 +259,7 @@ namespace FF1Lib
 					incentiveLocationPool.Add(ItemLocations.Volcano.ToList().SpliceRandom(rng));
 				} else {
 					incentiveLocationPool.Add(ItemLocations.VolcanoMajor);
-				}				
+				}
 			}
 			if (flags.IncentivizeEarth ?? false)
 			{
@@ -265,7 +276,7 @@ namespace FF1Lib
 					incentiveLocationPool.Add(ItemLocations.EarthCavePreRod.ToList().SpliceRandom(rng));
 				} else {
 					incentiveLocationPool.Add(ItemLocations.EarthCaveMajor);
-				}	
+				}
 			}
 			if (flags.IncentivizeMarsh ?? false)
 			{
@@ -276,12 +287,12 @@ namespace FF1Lib
 				else
 				{
 					incentiveLocationPool.Add(ItemLocations.MarshCaveMajor);
-				}				
+				}
 			}
 			if (flags.IncentivizeMarshKeyLocked ?? false)
 			{
 				if (flags.MarshLockedIncentivePlacementType == IncentivePlacementType.RandomAtLocation)
-				{ 
+				{
 					incentiveLocationPool.Add(ItemLocations.MarshCaveLocked.ToList().SpliceRandom(rng));
 				}
 				else
@@ -330,13 +341,13 @@ namespace FF1Lib
 			if (flags.IncentivizeConeria ?? false)
 			{
 				if (flags.CorneriaIncentivePlacementType == IncentivePlacementType.RandomAtLocation)
-				{ 
+				{
 					incentiveLocationPool.Add(ItemLocations.Coneria.ToList().SpliceRandom(rng));
 				}
 				else
 				{
 					incentiveLocationPool.Add(ItemLocations.ConeriaMajor);
-				}				
+				}
 			}
 			if (flags.IncentivizeIceCave ?? false)
 			{
@@ -347,9 +358,9 @@ namespace FF1Lib
 				else
 				{
 					incentiveLocationPool.Add(ItemLocations.IceCaveMajor);
-				}				
+				}
 			}
-			
+
 			if (flags.IncentivizeOrdeals ?? false)
 			{
 				if (flags.OrdealsIncentivePlacementType == IncentivePlacementType.RandomAtLocation)
@@ -374,8 +385,20 @@ namespace FF1Lib
 				else
 				{
 					incentiveLocationPool.Add(ItemLocations.TitansTunnel1);
-				}				
+				}
 			}
+			if (flags.IncentivizeCardia ?? false)
+			{
+				if (flags.CardiaIncentivePlacementType == IncentivePlacementType.RandomAtLocation)
+				{
+					incentiveLocationPool.Add(ItemLocations.Cardia.ToList().SpliceRandom(rng));
+				}
+				else
+				{
+					incentiveLocationPool.Add(ItemLocations.Cardia4);
+				}
+			}
+
 			var itemLocationPool =
 				ItemLocations.AllTreasures.Concat(ItemLocations.AllNPCItemLocations)
 						  .Where(x => !x.IsUnused && !forcedItemPlacements.Any(y => y.Address == x.Address))
