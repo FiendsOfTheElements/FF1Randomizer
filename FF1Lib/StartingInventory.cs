@@ -82,13 +82,13 @@ namespace FF1Lib
 		[Description("Illegal Advantage")]
 		IllegalAdvantage,
 
-		[Description("R. Beggar's Choice")]
+		[Description("R. Jester's Secret")]
 		RandomizedJestersSecret,
 
-		[Description("R. Explorer Starting Pack")]
+		[Description("R. Adventurer's Fortune")]
 		RandomizedAdventurersFortune,
 
-		[Description("R. Warrior's Standard")]
+		[Description("R. Blackbelt's Favorite")]
 		RandomizedBlackbeltsFavorite,
 
 		[Description("R. High Rolling")]
