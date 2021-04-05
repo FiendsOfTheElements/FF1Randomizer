@@ -1489,7 +1489,7 @@ namespace FF1Lib
 		    "has a insanely powerful attack",           // 200-249
 		    "can destroy you with one finger", // 250+
 		};
-		var hitCountRanges = new List<int> {0, 6, 10, 15};
+		var hitCountRanges = new List<int> {0, 6, 7, 10, 15};
 		var hitCountDescriptions = new List<string> {
 		    "", // 1-5
 		    "can hit you half a dozen times", // 6
