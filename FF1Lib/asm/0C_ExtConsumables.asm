@@ -50,6 +50,7 @@ BattleSubMenu_Drink:
     LDA #$01
     JSR UndrawNBattleBlocks_L   ; undraw the drink menu
     PLA
+	CMP #$02
 	BEQ Cancel                  ; was B pressed to get out of the drink menu?	
 	
     LDA btlcurs_y               ; assemble cursor index
@@ -102,7 +103,7 @@ Cancel:
 	  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;  Battle_PlMag_IsPlayerValid  [$9650]
+;;  Battle_PlMag_IsPlayerValid  [$9652]
 ;;
 ;;    Used by Battle_PlMag_XXX routines to see if a player target is valid.
 ;;    Player targets are invalid if they are dead/stone.
