@@ -528,6 +528,8 @@ namespace FF1Lib
 
 			new ShopKiller(rng, flags, maps, this).KillShops();
 
+			shopData.LoadData();
+
 			new LegendaryShops(rng, flags, maps, flippedMaps, shopData, this).PlaceShops();
 
 			//has to be done before modifying itemnames and after modifying spellnames...

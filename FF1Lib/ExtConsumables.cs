@@ -33,7 +33,6 @@ namespace FF1Lib
 		{
 			SpellInfos = rom.LoadSpells().ToList();
 			Spells = rom.GetSpells().ToDictionary(s => FF1Text.BytesToText(s.Name));
-
 		}
 
 		public void AddExtConsumables()
@@ -320,6 +319,8 @@ namespace FF1Lib
 			ReplaceShopEntry(Item.Heal, Item.SmallKnife);
 			ReplaceShopEntry(Item.Pure, Item.WoodenRod);
 			ReplaceShopEntry(Item.Soft, Item.Rapier);
+
+			ShopData.StoreData();
 		}
 
 		private void ReplaceShopEntry(Item item1, Item item2)
