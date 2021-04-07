@@ -107,6 +107,7 @@ namespace FF1Lib
 			enemyText[56] = "EXPEDE"; // +2
 			enemyText[66] = "White D";
 			enemyText[72] = "MtlSLIME"; // +3
+			enemyText[83] = "Y BURN";
 			if (teamSteak)
 			{
 				enemyText[85] = "STEAK"; // +1
