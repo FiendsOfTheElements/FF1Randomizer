@@ -20,8 +20,8 @@
 	{
 		"Id": "downloadSpoilersCheckBox",
 		"title": "Download Spoilers to Text File",
-		"screenshot": null,
-		"description":  "Downloads the spoiler log as a text file rather than displaying in your browser's console. So convenient!"
+		"screenshot": "downloadSpoilersCheckBox.png",
+		"description": "Downloads the spoiler log as a text file rather than displaying in your browser's console.\nSo convenient!\nNote: You may be asked by your browser to allow multiple files to be downloaded when using this option."
 	},
 	{
 		"Id": "blindseedCheckBox",
