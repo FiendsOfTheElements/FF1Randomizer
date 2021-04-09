@@ -50,6 +50,7 @@
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="noBossSkillScriptShuffleCheckBox" IsEnabled="@(Flags.EnemyScripts != false || Flags.EnemySkillsSpells != false)" @bind-Value="Flags.NoBossSkillScriptShuffle">Don't Shuffle Bosses' Scripts, Skills & Spells</TriStateCheckBox>
 			<div class="checkbox-cell"></div>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="fightBahamutCheckBox" IsEnabled="@(Flags.SpookyFlag != true && Flags.RandomizeFormationEnemizer != true)" @bind-Value="Flags.FightBahamut">Fight Bahamut</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="swoleBahamutCheckBox" IsEnabled="@(Flags.FightBahamut != false)" @bind-Value="Flags.SwoleBahamut">Buffed Bahamut</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="hallOfDragonsCheckBox" @bind-Value="Flags.MapHallOfDragons">Hall of Dragons</TriStateCheckBox>
 			<div class="checkbox-cell"></div>
 		</div>

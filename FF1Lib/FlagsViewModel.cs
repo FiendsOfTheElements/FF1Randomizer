@@ -1012,6 +1012,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FightBahamut"));
 			}
 		}
+		public bool? SwoleBahamut
+		{
+			get => Flags.SwoleBahamut;
+			set
+			{
+				Flags.SwoleBahamut = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SwoleBahamut"));
+			}
+		}
 		public bool? ConfusedOldMen
 		{
 			get => Flags.ConfusedOldMen;
