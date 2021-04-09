@@ -2479,6 +2479,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ChangeLute"));
 			}
 		}
+		public bool AccessibleSpellNames
+		{
+			get => Preferences.AccessibleSpellNames;
+			set
+			{
+				Preferences.AccessibleSpellNames = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ModernizeSpellNames"));
+			}
+		}
 		public bool NoTabLayout
 		{
 			get => Preferences.NoTabLayout;

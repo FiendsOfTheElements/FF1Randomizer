@@ -266,6 +266,12 @@
 		"screenshot": "spellcrafterMixSpells.png",
 		"description": "Mixes the randomly generated spells created by Spellcrafter. Spells that would typically be considered White Magic may be classed as Black Magic and vice-versa, allowing those casters a greater variety of spells, potentially."
 	},
+	{
+		"Id": "accessibleSpellNamesCheckBox",
+		"title": "Accessible Spell Names",
+		"screenshot": null,
+		"description": "Updates spell names to make them more accessible. The table below shows what the new names are when this flag is checked:\n[grid][r]{i}BM - New|{i}BM - Original|{i}WM - New|{i}WM - Original[r]{l}THUN|{l}LIT|{l}PROT|{l}FOG[r]{l}THN2|{l}LIT2|{l}DIA|{l}HARM[r]{l}HAST|{l}FAST|{l}DIA2|{l}HRM2[r]{l}THN3|{l}LIT3|{l}DIA3|{l}HRM3[r]||{l}PRO2|{l}FOG2[r]||{l}DIA4|{l}HRM4[r]||{l}HOLY|{l}FADE\nNote: This setting is disabled when \"Generate New Spellbooks\" is on"
+	},
 
 
 
