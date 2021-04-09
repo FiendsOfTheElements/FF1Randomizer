@@ -617,15 +617,19 @@ namespace FF1Lib
 					case "LIT2":
 						newSpell.Name = FF1Text.TextToBytes("THN2");
 						break;
-					case "FAST":
-						newSpell.Name = FF1Text.TextToBytes("HAST");
-						break;
 					case "LIT3":
 						newSpell.Name = FF1Text.TextToBytes("THN3");
 						break;
-					case "FOG ":
-						newSpell.Name = FF1Text.TextToBytes("PROT");
+					case "FAST":
+						newSpell.Name = FF1Text.TextToBytes("HAST");
 						break;
+					case "SLEP":
+						newSpell.Name = FF1Text.TextToBytes("DOZE");
+						break;
+					case "SLP2":
+						newSpell.Name = FF1Text.TextToBytes("DOZ2");
+						break;
+
 					case "HARM":
 						newSpell.Name = FF1Text.TextToBytes("DIA ");
 						break;
@@ -635,11 +639,20 @@ namespace FF1Lib
 					case "HRM3":
 						newSpell.Name = FF1Text.TextToBytes("DIA3");
 						break;
-					case "FOG2":
-						newSpell.Name = FF1Text.TextToBytes("PRO2");
-						break;
 					case "HRM4":
 						newSpell.Name = FF1Text.TextToBytes("DIA4");
+						break;
+					case "ALIT":
+						newSpell.Name = FF1Text.TextToBytes("ATHN");
+						break;
+					case "AMUT":
+						newSpell.Name = FF1Text.TextToBytes("VOX ");
+						break;
+					case "FOG ":
+						newSpell.Name = FF1Text.TextToBytes("PROT");
+						break;
+					case "FOG2":
+						newSpell.Name = FF1Text.TextToBytes("PRO2");
 						break;
 					case "FADE":
 						newSpell.Name = FF1Text.TextToBytes("HOLY");
