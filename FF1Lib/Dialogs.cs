@@ -1441,14 +1441,19 @@ namespace FF1Lib
 		int i = 0;
 		for (; i < ranges.Count; i++) {
 		    if (value < ranges[i]) {
-			return i-1;
+			return i > 0 ? i-1 : 0;
 		    }
 		}
-		return i-1;
+		return i > 0 ? i-1 : 0;
 	    }
 
 	    string ChooseDescription(List<int> ranges, List<string> descriptions, int value) {
-		return descriptions[ThreatRating(ranges, value)];
+		var tr = ThreatRating(ranges, value);
+		if (tr >= descriptions.Count) {
+		    tr = descriptions.Count-1;
+		    Console.WriteLine($"WARNING value {value} doesn't have a corresponding description, using {descriptions[tr]}");
+		}
+		return descriptions[tr];
 	    }
 
 	    public void SkyWarriorSpoilerBats(MT19337 rng, Flags flags, NPCdata npcdata) {
