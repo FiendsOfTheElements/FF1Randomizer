@@ -661,9 +661,9 @@ namespace FF1Lib
 				EnableIdentifyTreasures();
 			}
 
-			if (flags.Dash)
+			if (flags.Dash || flags.SpeedBoat)
 			{
-				EnableDash();
+				EnableDash(flags.SpeedBoat);
 			}
 
 			if (flags.BuyTen)
@@ -910,7 +910,7 @@ namespace FF1Lib
 				FightBahamut(talkroutines, npcdata, (bool)flags.NoTail, flags.EvadeCap);
 			}
 
-			
+
 			if (flags.SpookyFlag && !(bool)flags.RandomizeFormationEnemizer)
 			{
 				Spooky(talkroutines, npcdata, rng, flags);
