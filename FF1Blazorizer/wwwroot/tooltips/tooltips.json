@@ -1560,7 +1560,12 @@
 		"screenshot": "fightBahamutCheckBox.gif",
 		"description": "Turning in the TAIL is not the only requirement for class change. You must also defeat Bahamut to prove your courage.\nIf \"Remove Tail\" is enabled, the only requirement for class change is to defeat Bahamut.\nNote: This flag is ignored when \"Enemizer\" or \"Lich's Revenge\" is enabled."
 	},
-
+	{
+		"Id": "swoleBahamutCheckBox",
+		"title": "Fight Bahamut - Buffed Bahamut",
+		"screenshot": "buffedBahamutCheckBox.png",
+		"description": "Increases the stats of Bahamut, roughly to the equivalent of Tiamat. Buffed Bahamut may be given skills, increased critical hit rate, and/or increased number of hits.\nAlso grants a larger XP yield, roughly half that of WarMECH."
+	},
 	{
 		"Id": "etherizerCheckBox",
 		"title": "Turn Shelters into Ethers",

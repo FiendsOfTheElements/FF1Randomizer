@@ -921,9 +921,8 @@ namespace FF1Lib
 
 			if ((bool)flags.FightBahamut && !flags.SpookyFlag && !(bool)flags.RandomizeFormationEnemizer)
 			{
-				FightBahamut(talkroutines, npcdata, (bool)flags.NoTail, flags.EvadeCap);
+				FightBahamut(talkroutines, npcdata, (bool)flags.NoTail, (bool)flags.SwoleBahamut, flags.EvadeCap, rng);
 			}
-
 
 			if (flags.SpookyFlag && !(bool)flags.RandomizeFormationEnemizer)
 			{

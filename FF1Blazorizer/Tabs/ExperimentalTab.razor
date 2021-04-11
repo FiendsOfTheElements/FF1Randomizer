@@ -12,7 +12,7 @@
 			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="owMapExchange" TItem="OwMapExchanges" IsEnabled="Flags.SanityCheckerV2" @bind-Value="Flags.OwMapExchange">Overworld Map:</EnumDropDown>
 			<div class="checkbox-cell"></div>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="gaiaShortcutCheckBox" @bind-Value="Flags.GaiaShortcut">Add Gaia Shortcut</TriStateCheckBox>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="moveGaiaItemShopCheckBox" IsEnabled="@(Flags.GaiaShortcut == true)" @bind-Value="Flags.MoveGaiaItemShop">Move Gaia Item Shop</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="moveGaiaItemShopCheckBox" IsEnabled="@(Flags.GaiaShortcut != false)" @bind-Value="Flags.MoveGaiaItemShop">Move Gaia Item Shop</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="melmondClinicCheckBox" @bind-Value="Flags.MelmondClinic">Melmondish Hospitality</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="lefeinSuperStoreCheckBox" IsEnabled="@Flags.LefeinSuperStoreEnabled" @bind-Value="Flags.LefeinSuperStore">Add Lefein SuperStore</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="randomVampAttackCheckBox" @bind-Value="Flags.RandomVampAttack">Vampire Attacks Random Town</TriStateCheckBox>
@@ -50,6 +50,7 @@
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="noBossSkillScriptShuffleCheckBox" IsEnabled="@(Flags.EnemyScripts != false || Flags.EnemySkillsSpells != false)" @bind-Value="Flags.NoBossSkillScriptShuffle">Don't Shuffle Bosses' Scripts, Skills & Spells</TriStateCheckBox>
 			<div class="checkbox-cell"></div>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="fightBahamutCheckBox" IsEnabled="@(Flags.SpookyFlag != true && Flags.RandomizeFormationEnemizer != true)" @bind-Value="Flags.FightBahamut">Fight Bahamut</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="swoleBahamutCheckBox" IsEnabled="@(Flags.FightBahamut != false)" @bind-Value="Flags.SwoleBahamut">Buffed Bahamut</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="hallOfDragonsCheckBox" @bind-Value="Flags.MapHallOfDragons">Hall of Dragons</TriStateCheckBox>
 			<div class="checkbox-cell"></div>
 		</div>
