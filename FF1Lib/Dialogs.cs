@@ -15,7 +15,7 @@ namespace FF1Lib
 	Hints,
 	[Description("Stars")]
 	Stars,
-	[Description("Full stats")]
+	[Description("Full Stats")]
 	FullStats,
     };
 

@@ -4224,6 +4224,8 @@ namespace FF1Lib
 		    }
 		}
 
+		public bool SpoilerBatsDontCheckOrbsEnabled => !SkyWarriorSpoilerBats.Equals(SpoilerBatHints.Vanilla);
+
 		public bool SanityCheckerV2
 		{
 			get => Flags.SanityCheckerV2;
