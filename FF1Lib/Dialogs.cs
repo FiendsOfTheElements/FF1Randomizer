@@ -475,7 +475,7 @@ namespace FF1Lib
 			Data[0x7C9F7] = 0x1B;
 
 			// LoadPrice fix
-			PutInBank(newTalkRoutinesBank, 0x9F10, Blob.FromHex("A9118558A5734C06B0"));
+			PutInBank(newTalkRoutinesBank, 0x9F10, Blob.FromHex("A9118558A5734C10B0"));
 
 			// Update bank
 			Data[0x7C9F2] = newTalkRoutinesBank;

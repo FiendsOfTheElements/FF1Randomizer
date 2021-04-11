@@ -14,6 +14,18 @@ namespace FF1Lib
 {
 	public class Flags : IIncentiveFlags, IMapEditFlags, IScaleFlags, IFloorShuffleFlags
 	{
+		public bool EnableExtConsumables { get; set; } = false;
+
+		public bool? NormalShopsHaveExtConsumables { get; set; } = false;
+
+		public bool? LegendaryShopHasExtConsumables { get; set; } = false;
+
+		public TreasureStackSize ExtConsumableTreasureStackSize { get; set; } = TreasureStackSize.Default;
+
+		public ExtStartingItemSet ExtStartingItemSet { get; set; } = ExtStartingItemSet.None;
+
+		public ExtConsumableChestSet ExtConsumableChests { get; set; } = ExtConsumableChestSet.None;
+
 		public bool SanityCheckerV2 { get; set; } = false;
 
 		public OwMapExchanges OwMapExchange { get; set; } = OwMapExchanges.None;

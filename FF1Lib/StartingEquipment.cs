@@ -77,6 +77,8 @@ namespace FF1Lib
 		{
 			var items = GetEquipment();
 
+			ExtConsumables.ExtConsumableStartingEquipmentFix(items.Weapons, flags);
+
 			for (int i = 0; i < 16; i++)
 			{
 				if (items.Weapons[i] > 0) items.Weapons[i] -= Item.Soft;
@@ -97,6 +99,8 @@ namespace FF1Lib
 
 			rom.PutInBank(0x1B, 0x8540, Blob.FromHex("A200A000205785A040205785A080205785A0C020578560BD2085991861E8C898290FC908D0F160"));
 		}
+
+		
 
 		private (Item[] Weapons, Item[] Armor) GetEquipment()
 		{

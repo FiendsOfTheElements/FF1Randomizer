@@ -416,6 +416,12 @@ namespace FF1Lib
 			    DragonsHoard(maps);
 			}
 
+			var shopData = new ShopData(this);
+			shopData.LoadData();
+
+			var extConsumables = new ExtConsumables(this, flags, rng, shopData);
+			extConsumables.AddNormalShopEntries();
+
 			overworldMap.ApplyMapEdits();
 
 			var maxRetries = 8;
@@ -522,7 +528,13 @@ namespace FF1Lib
 
 			new ShopKiller(rng, flags, maps, this).KillShops();
 
-			new LegendaryShops(rng, flags, maps, flippedMaps, this).PlaceShops();
+			shopData.LoadData();
+
+			new LegendaryShops(rng, flags, maps, flippedMaps, shopData, this).PlaceShops();
+
+			//has to be done before modifying itemnames and after modifying spellnames...
+			extConsumables.LoadSpells();
+
 			/*
 			if (flags.WeaponPermissions)
 			{
@@ -817,6 +829,8 @@ namespace FF1Lib
 			WriteMaps(maps);
 
 			WriteText(itemText, ItemTextPointerOffset, ItemTextPointerBase, ItemTextOffset, UnusedGoldItems);
+
+			extConsumables.AddExtConsumables();
 
 			if ((bool)flags.SwolePirates)
 			{
