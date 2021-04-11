@@ -1,8 +1,17 @@
+.include "Constants.inc"
+.include "variables.inc"
 
 BANK_TALKROUTINE	= $11
-ret_bank        = $58
 
-;; Bank 11 $B006
+FindEmptyArmorSlot = $DD46
+FindEmptyWeaponSlot = $DD34
+AddGPToParty = $DDEA
+LoadPrice = $ECB9
+lut_ConsStack = $B000
+
+.org $B010
+
+;; Bank 11 $B010
 ;; New jump point for NPC-only items:
 ;; IN:
 ;;       'A' should be set to the item ID, 224-255 are special values for variables
@@ -51,7 +60,7 @@ GiveReward:                    ; (8 bytes)
       BCS @TooFull             ; if there are no available slots, jump to 'Too Full' message B007
       LDA #$E5                 ; convert to index where 1 is first weapon A9E5
       BCC @EquipmentGet        ; 9007
-    JSR FindEmptyArmorSlot     ; Find an empty slot to put this armor 2046DD
+:   JSR FindEmptyArmorSlot     ; Find an empty slot to put this armor 2046DD
     BCS @TooFull               ;  if there are no available slots, jump to 'Too Full' message B00C
     LDA #$BD                   ; convert to index where 1 is first weapon/armor A9BD
   @EquipmentGet:               ; 'A' should hold the equipment ID and 'X' the item slot

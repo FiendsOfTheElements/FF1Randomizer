@@ -59,6 +59,7 @@
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="etherizerCheckBox" @bind-Value="Flags.Etherizer">Turn Shelters into Ethers</CheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="LooseExcludePlacedDungeonsCheckBox" IsEnabled="@(Flags.Treasures != false)" @bind-Value="Flags.LooseExcludePlacedDungeons">No Loose Items in Incentivized Dungeons</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="noFloaterCheckBox" IsEnabled="@(Flags.MapOpenProgressionDocks == true)" @bind-Value="Flags.NoFloater">Remove Floater</TriStateCheckBox>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="speedboatCheckBox" @bind-Value="Flags.SpeedBoat">Faster ship</CheckBox>
 			<div class="checkbox-cell"></div>
 			<h4>Legendary Shops</h4>
 			<ToolTipBox UpdateToolTip="@UpdateToolTipID" Id="legendaryShopsGroup">Create legendary shops in dungeons</ToolTipBox>
@@ -74,6 +75,14 @@
 			<p>Please try it out and provide feedback!</p>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="deepdungeon" @bind-Value="Flags.DeepDungeon">Deep Dungeon</CheckBox>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="DDEvenTreasureDistribution" @bind-Value="Flags.DDEvenTreasureDistribution">Distribute treasure evenly</CheckBox>
+			<div class="checkbox-cell"></div>
+			<h4>New Consumables</h4>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="enableExtConsumables" @bind-Value="Flags.EnableExtConsumables">Enable</CheckBox>
+			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="extStartingItemSet" IsEnabled="Flags.EnableExtConsumables" TItem="ExtStartingItemSet" @bind-Value="Flags.ExtStartingItemSet">Starting Inventory:</EnumDropDown>
+			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="extConsumableChests" IsEnabled="Flags.EnableExtConsumables" TItem="ExtConsumableChestSet" @bind-Value="Flags.ExtConsumableChests">Chests:</EnumDropDown>
+			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="extConsumableTreasureStackSize" IsEnabled="Flags.EnableExtConsumables" TItem="TreasureStackSize" @bind-Value="Flags.ExtConsumableTreasureStackSize">Chest Stacks:</EnumDropDown>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="normalShopsHaveExtConsumables" IsEnabled="Flags.EnableExtConsumables" @bind-Value="Flags.NormalShopsHaveExtConsumables">Normal Shops</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="legendaryShopHasExtConsumables" IsEnabled="Flags.EnableExtConsumables" @bind-Value="Flags.LegendaryShopHasExtConsumables">Legendary Shops</TriStateCheckBox>
 		</div>
 		<div class="col1 full">
 			<h4>Shop Reduction</h4>

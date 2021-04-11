@@ -3735,10 +3735,10 @@ namespace FF1Lib
 			}
 		}
 
-		public SpellInfo[] LoadSpells()
+		public SpellInfo[] LoadSpells(int count = MagicCount)
 		{
-			var spell = new SpellInfo[MagicCount];
-			for (int i = 0; i < MagicCount; ++i)
+			var spell = new SpellInfo[count];
+			for (int i = 0; i < count; ++i)
 			{
 				spell[i] = new SpellInfo();
 				spell[i].decompressData(Get(MagicOffset + i * MagicSize, MagicSize));

@@ -23,8 +23,42 @@
 		"screenshot": "blindseed.png",
 		"description": "Hides all flags to create a mystery flagset that can then be distributed. Useful for tournament and challenge race settings.\n This flag cannot be disabled once clicked; you will need to hit the Reset button to restore functionality to the site (and this will, in turn, wipe the blind flags selected). Make sure to save your flagset before you use this flag."
 	},
-
-
+	{
+		"Id": "enableExtConsumables",
+		"title": "New Consumables",
+		"screenshot": null,
+		"description": "Enables new Consumables."
+	},
+	{
+		"Id": "normalShopsHaveExtConsumables",
+		"title": "New Consumables in Shops",
+		"screenshot": null,
+		"description": "The new Consumables appear in item shops. Replaces 2 Heals, a Pure and a Soft with the new consumables."
+	},
+	{
+		"Id": "legendaryShopHasExtConsumables",
+		"title": "New Consumables in Legendary Shop",
+		"screenshot": null,
+		"description": "The new Consumables appear in legendary item shop. The legendary item shop will have 1-2 random new consumables."
+	},
+	{
+		"Id": "extConsumableTreasureStackSize",
+		"title": "New Consumable Treasure Stack Size",
+		"screenshot": null,
+		"description": "New Consumable rewards from chests and NPCs may give you more than one item.\n[grid][r]{i}Option|{i}FCure|{i}Phnix|{i}Blast|{i}Smoke[r]{l}Stingy|||2|2[r]{l}Adequate|2||3|3[r]{l}Generous|3|2|5|5[r]{l}Ridiculous|5|3|10|10\n"
+	},
+	{
+		"Id": "extConsumableChests",
+		"title": "New Consumable Chests",
+		"screenshot": null,
+		"description": "Changes the amount of chests that contain the new consumable items, removing gold rewards and gear.\n[grid][r]{i}Option|{i}FCure|{i}Phnix|{i}Blast|{i}Smoke[r]{l}None||||[r]{l}Low|1|1|1|1[r]{l}Medium|3|3|3|3[r]{l}High|5|5|5|5[r]{l}Extreme|10|10|10|10[r]{l}Random Low|0-5|0-5|0-5|0-5[r]{l}Random|0-15|0-15|0-15|0-15\n"
+	},
+	{
+		"Id": "extStartingItemSet",
+		"title": "New Consumables Starting Inventory",
+		"screenshot": null,
+		"description": "Starts the game with a set of the new consumable items.\n[grid][r]{i}Option|{i}FCure|{i}Phnix|{i}Blast|{i}Smoke[r]{l}None||||[r]{l}Lifeline|1|1||[r]{l}Just Smokes||||10[r]{l}Bangs and Smokes|||5|5[r]{l}Jester's Secret|2|1|5|5[r]{l}Adventurer's Fortune|3|2|10|10[r]{l}Blackbelt's Favorite|5|3|20|20[r]{l}Illegal Advantage|99|99|99|99[r]{l}R. Jester's Secret|0-2|0-1|0-5|0-5[r]{l}R. Adventurer's Fortune|0-3|0-2|0-10|0-10[r]{l}R. Blackbelt's Favorite|0-5|1-3|0-20|0-20[r]{l}R. High Rolling|2-5|2-5|5-30|5-30[r]{l}Randomized|0-15|0-10|0-50|0-50\n"
+	},
 
 	{
 		"Id": "funEnemyNamesCheckBox",
@@ -1613,5 +1647,11 @@
 		"title": "Cardia Incentive Chest",
 		"screenshot": "cardiaIncentive.png",
 		"description": "Incentivizes the chest shown in tooltip, or any chest in Cardia if 'random' is selected.  Will require Airship to access, unless combined with the 'Bahamut Cardia dock' and 'Dragon's Hoard' flags.\nOne random item from your incentive item pool will be guaranteed in this chest, provided the number of incentive items matches or is less than the number of incentive locations."
+	},
+	{
+		"Id": "speedboatCheckBox",
+		"title": "Faster Ship",
+		"screenshot": "noFloater.png",
+		"description": "Double the speed of the Ship, so it is the same speed as the Airship."
 	}
 ]

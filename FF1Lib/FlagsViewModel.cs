@@ -1879,6 +1879,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Dash"));
 			}
 		}
+		public bool SpeedBoat
+		{
+			get => Flags.SpeedBoat;
+			set
+			{
+				Flags.SpeedBoat = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SpeedBoat"));
+			}
+		}
 		public bool BuyTen
 		{
 			get => Flags.BuyTen;
@@ -4203,6 +4212,66 @@ namespace FF1Lib
 			set
 			{
 				Flags.SanityCheckerV2 = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool EnableExtConsumables
+		{
+			get => Flags.EnableExtConsumables;
+			set
+			{
+				Flags.EnableExtConsumables = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool? NormalShopsHaveExtConsumables
+		{
+			get => Flags.NormalShopsHaveExtConsumables;
+			set
+			{
+				Flags.NormalShopsHaveExtConsumables = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool? LegendaryShopHasExtConsumables
+		{
+			get => Flags.LegendaryShopHasExtConsumables;
+			set
+			{
+				Flags.LegendaryShopHasExtConsumables = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public TreasureStackSize ExtConsumableTreasureStackSize
+		{
+			get => Flags.ExtConsumableTreasureStackSize;
+			set
+			{
+				Flags.ExtConsumableTreasureStackSize = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public ExtStartingItemSet ExtStartingItemSet
+		{
+			get => Flags.ExtStartingItemSet;
+			set
+			{
+				Flags.ExtStartingItemSet = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public ExtConsumableChestSet ExtConsumableChests
+		{
+			get => Flags.ExtConsumableChests;
+			set
+			{
+				Flags.ExtConsumableChests = value;
 				RaisePropertyChanged();
 			}
 		}

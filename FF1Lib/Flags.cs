@@ -14,6 +14,18 @@ namespace FF1Lib
 {
 	public class Flags : IIncentiveFlags, IMapEditFlags, IScaleFlags, IFloorShuffleFlags
 	{
+		public bool EnableExtConsumables { get; set; } = false;
+
+		public bool? NormalShopsHaveExtConsumables { get; set; } = false;
+
+		public bool? LegendaryShopHasExtConsumables { get; set; } = false;
+
+		public TreasureStackSize ExtConsumableTreasureStackSize { get; set; } = TreasureStackSize.Default;
+
+		public ExtStartingItemSet ExtStartingItemSet { get; set; } = ExtStartingItemSet.None;
+
+		public ExtConsumableChestSet ExtConsumableChests { get; set; } = ExtConsumableChestSet.None;
+
 		public bool SanityCheckerV2 { get; set; } = false;
 
 		public OwMapExchanges OwMapExchange { get; set; } = OwMapExchanges.None;
@@ -146,7 +158,6 @@ namespace FF1Lib
 		public bool? RandomVampAttackIncludesConeria { get; set; } = false;
 		public bool? FightBahamut { get; set; } = false;
 		public bool? SwoleBahamut { get; set; } = false;
-		public bool? BahamutHallwayEncounters { get; set; } = false;
 		public bool? ConfusedOldMen { get; set; } = false;
 		public bool? GaiaShortcut { get; set; } = false;
 		public bool? MoveGaiaItemShop { get; set; } = false;
@@ -244,6 +255,7 @@ namespace FF1Lib
 		public bool SpeedHacks { get; set; } = false;
 		public bool NoPartyShuffle { get; set; } = false;
 		public bool Dash { get; set; } = false;
+		public bool SpeedBoat { get; set; } = false;
 		public bool BuyTen { get; set; } = false;
 		public bool IdentifyTreasures { get; set; } = false;
 		public bool ShopInfo { get; set; } = false;

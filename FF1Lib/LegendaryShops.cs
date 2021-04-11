@@ -36,7 +36,7 @@ namespace FF1Lib
 			(MapId.SeaShrineB4, 27, 40, 0x22, 0x23, 0x32, 0x33, 0xAA)
 		};
 
-		public LegendaryShops(MT19337 _rng, Flags _flags, List<Map> _maps, List<MapId> _flippedMaps, FF1Rom _rom)
+		public LegendaryShops(MT19337 _rng, Flags _flags, List<Map> _maps, List<MapId> _flippedMaps, ShopData _shopdata, FF1Rom _rom)
 		{
 			rng = _rng;
 			flags = _flags;
@@ -45,7 +45,7 @@ namespace FF1Lib
 			flippedMaps = _flippedMaps;
 
 			MapTileSets = new MapTileSets(rom);
-			ShopData = new ShopData(rom);
+			ShopData = _shopdata;
 			SpellInfos = rom.LoadSpells().ToList();
 		}
 
@@ -73,7 +73,6 @@ namespace FF1Lib
 			PrepareMaps();
 
 			Spells = rom.GetSpells().ToDictionary(s => FF1Text.BytesToText(s.Name));
-			ShopData.LoadData();
 			MapTileSets.LoadTable();
 
 			for (int i = 0; i < 8; i++)
@@ -227,12 +226,28 @@ namespace FF1Lib
 		{
 			var items = new List<Item> { Item.Cabin, Item.House, Item.Heal, Item.Pure, Item.Soft };
 
+			if (flags.EnableExtConsumables && (flags.LegendaryShopHasExtConsumables ?? false))
+			{
+				items.Add(Item.WoodenNunchucks);
+				items.Add(Item.SmallKnife);
+				items.Add(Item.WoodenRod);
+				items.Add(Item.Rapier);
+			}
+
 			List<Item> result = new List<Item>();
 			if (slots > 0)
 			{
 				Item save = (Item)rng.Between((int)Item.Cabin, (int)Item.House);
 				result.Add(save);
 				items.Remove(save);
+				slots--;
+			}
+
+			if (slots > 0 && flags.EnableExtConsumables && (flags.LegendaryShopHasExtConsumables ?? false))
+			{
+				Item ext = (Item)rng.Between((int)Item.WoodenNunchucks, (int)Item.Rapier);
+				result.Add(ext);
+				items.Remove(ext);
 				slots--;
 			}
 
@@ -308,11 +323,11 @@ namespace FF1Lib
 
 		private List<Item> GetCraftedSpellInventory(int slots, bool black)
 		{
-			var stDamSpells = SpellInfos.Where(s => s.routine == 0x01 && s.targeting == 0x01).Where(s => s.tier >= 3).OrderBy(s => -s.tier).Take(3);
-			var aoeDamSpells = SpellInfos.Where(s => s.routine == 0x01 && s.targeting != 0x01).OrderBy(s => -s.tier).Take(6);
+			var stDamSpells = SpellInfos.Where(s => s.routine == 0x01 && s.targeting != 0x01).Where(s => s.tier >= 3).OrderBy(s => -s.tier).Take(3);
+			var aoeDamSpells = SpellInfos.Where(s => s.routine == 0x01 && s.targeting == 0x01).OrderBy(s => -s.tier).Take(6);
 
-			var stHarmSpells = SpellInfos.Where(s => s.routine == 0x02 && s.targeting == 0x01).OrderBy(s => -s.tier).Take(1);
-			var aoeHarmSpells = SpellInfos.Where(s => s.routine == 0x02 && s.targeting != 0x01).OrderBy(s => -s.tier).Take(1);
+			var stHarmSpells = SpellInfos.Where(s => s.routine == 0x02 && s.targeting != 0x01).OrderBy(s => -s.tier).Take(1);
+			var aoeHarmSpells = SpellInfos.Where(s => s.routine == 0x02 && s.targeting == 0x01).OrderBy(s => -s.tier).Take(1);
 
 			var stHealSpells = SpellInfos.Where(s => (s.routine == 0x07 || s.routine == 0x0F) && s.targeting != 0x08).OrderBy(s => -s.tier).Take(2);
 			var aoeHealSpells = SpellInfos.Where(s => (s.routine == 0x07 || s.routine == 0x0F) && s.targeting != 0x08).OrderBy(s => -s.tier).Take(2);

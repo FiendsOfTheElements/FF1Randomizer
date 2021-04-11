@@ -443,9 +443,39 @@ namespace FF1Lib
 			InsertDialogs(0xF1, "Can't hold\n#");
 		}
 
-		public void EnableDash()
+		public void EnableDash(bool speedboat)
 		{
-			Put(0x7D077, Blob.FromHex("A5424A69004A69000A242050014A853460"));
+		    if (speedboat) {
+			// walking, canoe are speed 2
+			// ship, airship are speed 4
+			//
+			// See asm/1F_D077_Speedboat.asm
+			//
+			PutInBank(0x1F, 0xD077, Blob.FromHex(
+				      "A5424AB0014AA902B0010A242050014A853460"));
+		    }
+		    else {
+			// walking, canoe, and boat are speed 2
+			// airship is speed 4
+			//
+			// disassembly
+			//
+			// D077   A5 42      LDA $42     ; load vehicle
+			// D079   4A         LSR A       ; shift right, if on foot (A=$01), this sets Zero, oVerflow and Carry, and set A=$00
+			// D07A   69 00      ADC #$00    ; add zero, if Carry is set, this sets A=$01 and clears Z, V, and C
+			// D07C   4A         LSR A       ; shift right again, if on foot (A=$01), this sets Zero and Carry, and sets A=$00
+			// D07D   69 00      ADC #$00    ; add zero, if Carry is set, this sets A=$01 and clears Z, V, and C
+			// D07F   0A         ASL A       ; shift left, this turns A=$01 to A=$02
+			// D080   24 20      BIT $20     ; check joystick state: set Z if bit 5 is not set, V if bit 6 is set, N if bit 7 is set
+			// D082   50 01      BVC $D085   ; branch if V is clear (I guess that means bit 6 is B button)
+			// D084   4A         LSR A       ; V was set, which means B was pressed, so shift right (this cuts the speed in half)
+			// D085   85 34      STA $34     ; store movement speed; walking/canoe/ship is 2 and airship is 4
+			// D087   60         RTS         ; return
+			// D088   34                     ; leftover garbage
+			// D089   60                     ; leftover garbage
+
+			PutInBank(0x1F, 0xD077, Blob.FromHex("A5424A69004A69000A242050014A853460"));
+		    }
 		}
 
 		public void EnableBuyTen()
@@ -1049,7 +1079,7 @@ namespace FF1Lib
 			PutInBank(0x1F, 0xDD78, Blob.FromHex("A9002003FEA645BD00B18561A9112003FE20B08E8A60"));
 
 			// Check for trapped monster routine, see 11_8EC0_CheckTrap.asm
-			PutInBank(0x11, 0x8EB0, Blob.FromHex("A561202096B030A645BD008FF025856AA9C0203D96A56A200096A903CD866BD00820189668684C43961820E98E201896A2F06020E98E60AA60A911855818A5612006B0A445B90062090499006260"));
+			PutInBank(0x11, 0x8EB0, Blob.FromHex("A561202096B030A645BD008FF025856AA9C0203D96A56A200096A903CD866BD00820189668684C43961820E98E201896A2F06020E98E60AA60A911855818A5612010B0A445B90062090499006260"));
 
 			InsertDialogs(0x110, "Monster-in-a-box!"); // 0xC0
 
