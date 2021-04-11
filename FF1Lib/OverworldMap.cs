@@ -540,7 +540,8 @@ namespace FF1Lib
 
 			if (flags.Spoilers || Debugger.IsAttached)
 			{
-				Console.WriteLine($"OverworldMap::ShuffleEntrancesAndFloors() required {sanity} iterations.");
+				bool writeToConsole = (Debugger.IsAttached || flags.Spoilers) && !flags.DownloadSpoilers;
+				Utilities.WriteSpoilerLine($"OverworldMap::ShuffleEntrancesAndFloors() required {sanity} iterations.", writeToConsole);
 			}
 
 			// Pretty print map data

@@ -18,6 +18,12 @@
 		"description": "Creates a spoiler log for the current seed that can be accessed from the console window of the browser. The resulting ROM's randomization will be different than if the log had not been generated in order to prevent cheating in races."
 	},
 	{
+		"Id": "downloadSpoilersCheckBox",
+		"title": "Download Spoilers to Text File",
+		"screenshot": "downloadSpoilersCheckBox.png",
+		"description": "Downloads the spoiler log as a text file rather than displaying in your browser's console.\nSo convenient!\nNote: You may be asked by your browser to allow multiple files to be downloaded when using this option."
+	},
+	{
 		"Id": "blindseedCheckBox",
 		"title": "Make Blind Seed",
 		"screenshot": "blindseed.png",

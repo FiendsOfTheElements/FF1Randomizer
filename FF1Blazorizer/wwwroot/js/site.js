@@ -85,7 +85,7 @@ async function computePreset(preset) {
 	return JSON.stringify(overrides);
 }
 
-async function downloadROM(filename, encoded) {
+async function downloadFile(filename, encoded) {
 	const url = "data:application/octet-stream;base64," + encoded;
 	const result = await fetch(url);
 	const blob = await result.blob();
