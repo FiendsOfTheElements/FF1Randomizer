@@ -158,10 +158,8 @@ namespace FF1Lib
 				Utilities.WriteSpoilerLine($"ItemPlacement::PlaceSaneItems required {_sanityCounter} iterations.", true);
 
 				// Start of the item spoiler log output.
-				bool writeToConsole = (Debugger.IsAttached || _flags.Spoilers) && !_flags.DownloadSpoilers;
-				Utilities.WriteSpoilerLine("", writeToConsole);
-				Utilities.WriteSpoilerLine("Item     Entrance  ->  Floor  ->  Source                             Requirements", writeToConsole);
-				Utilities.WriteSpoilerLine("----------------------------------------------------------------------------------------------------", writeToConsole);
+				Utilities.WriteSpoilerLine("Item     Entrance  ->  Floor  ->  Source                             Requirements");
+				Utilities.WriteSpoilerLine("----------------------------------------------------------------------------------------------------");
 
 				var sorted = placedItems.Where(item => item.Item != Item.Shard).ToList();
 				sorted.Sort((IRewardSource lhs, IRewardSource rhs) => lhs.Item.ToString().CompareTo(rhs.Item.ToString()));
@@ -179,7 +177,7 @@ namespace FF1Lib
 						var locStr = $"{overworldLocation} -> {item.MapLocation} -> {item.Name} ".PadRight(60);
 						var changes = $"({String.Join(" OR ", flr.Item1.Select(mapChange => mapChange.ToString()).ToArray())})";
 						var reqs = flr.Item2.ToString().CompareTo("None") == 0 ? "" : $" AND {flr.Item2.ToString()}";
-						Utilities.WriteSpoilerLine($"{itemStr}{locStr}{changes}{reqs}", writeToConsole);
+						Utilities.WriteSpoilerLine($"{itemStr}{locStr}{changes}{reqs}");
 					}
 				});
 			}

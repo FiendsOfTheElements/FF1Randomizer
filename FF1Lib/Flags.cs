@@ -92,7 +92,6 @@ namespace FF1Lib
 		public StartingLevel StartingLevel { get; set; }
 
 		public bool Spoilers { get; set; } = false;
-		public bool DownloadSpoilers { get; set; } = false;
 		public bool TournamentSafe { get; set; } = false;
 		public bool BlindSeed { get; set; } = false;
 		public bool? Shops { get; set; } = false;

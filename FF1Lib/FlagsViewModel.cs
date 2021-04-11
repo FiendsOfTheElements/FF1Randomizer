@@ -395,15 +395,6 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Spoilers"));
 			}
 		}
-		public bool DownloadSpoilers
-		{
-			get => Flags.DownloadSpoilers;
-			set
-			{
-				Flags.DownloadSpoilers = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DownloadSpoilers"));
-			}
-		}
 		public bool BlindSeed
 		{
 			get => Flags.BlindSeed;
