@@ -93,7 +93,6 @@
 	public interface IItemPlacementFlags : IItemShuffleFlags, IVictoryConditionFlags
 	{
 		bool Spoilers { get; }
-		bool DownloadSpoilers { get; }
 		bool? MapCanalBridge { get; }
 		bool? MapConeriaDwarves { get; }
 		bool? MapVolcanoIceRiver { get; }
@@ -138,7 +137,6 @@
 	public interface IFloorShuffleFlags
 	{
 		bool Spoilers { get; }
-		bool DownloadSpoilers { get; }
 		bool? Entrances { get; }
 		bool? EntrancesIncludesDeadEnds { get; }
 		bool? EntrancesMixedWithTowns { get; }
