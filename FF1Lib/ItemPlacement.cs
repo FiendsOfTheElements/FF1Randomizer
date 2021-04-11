@@ -154,8 +154,11 @@ namespace FF1Lib
 
 			if (_flags.Spoilers || Debugger.IsAttached)
 			{
+				// Output to the console only.
+				Utilities.WriteSpoilerLine($"ItemPlacement::PlaceSaneItems required {_sanityCounter} iterations.", true);
+
+				// Start of the item spoiler log output.
 				bool writeToConsole = (Debugger.IsAttached || _flags.Spoilers) && !_flags.DownloadSpoilers;
-				Utilities.WriteSpoilerLine($"ItemPlacement::PlaceSaneItems required {_sanityCounter} iterations.", writeToConsole);
 				Utilities.WriteSpoilerLine("", writeToConsole);
 				Utilities.WriteSpoilerLine("Item     Entrance  ->  Floor  ->  Source                             Requirements", writeToConsole);
 				Utilities.WriteSpoilerLine("----------------------------------------------------------------------------------------------------", writeToConsole);
