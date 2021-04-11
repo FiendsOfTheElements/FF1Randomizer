@@ -32,7 +32,7 @@ namespace FF1Lib
 		public void LoadSpells()
 		{
 			SpellInfos = rom.LoadSpells().ToList();
-			Spells = rom.GetSpells().ToDictionary(s => FF1Text.BytesToText(s.Name));
+			Spells = rom.GetSpells().ToDictionary(s => FF1Text.BytesToText(s.Name).ToLowerInvariant());
 		}
 
 		public void AddExtConsumables()
@@ -235,6 +235,9 @@ namespace FF1Lib
 
 		private byte FindLowSpell(string name, string altname)
 		{
+			name = name.ToLowerInvariant();
+			altname = altname.ToLowerInvariant();
+
 			if (Spells.TryGetValue(name, out var spl1))
 			{
 				return (byte)(spl1.Index);
@@ -248,6 +251,9 @@ namespace FF1Lib
 
 		private byte FindHighSpell(string name, string altname)
 		{
+			name = name.ToLowerInvariant();
+			altname = altname.ToLowerInvariant();
+
 			if (Spells.TryGetValue(name, out var spl1))
 			{
 				return (byte)(spl1.Index);

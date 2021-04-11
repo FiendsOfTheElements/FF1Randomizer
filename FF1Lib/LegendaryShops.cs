@@ -72,7 +72,7 @@ namespace FF1Lib
 		{
 			PrepareMaps();
 
-			Spells = rom.GetSpells().ToDictionary(s => FF1Text.BytesToText(s.Name));
+			Spells = rom.GetSpells().ToDictionary(s => FF1Text.BytesToText(s.Name).ToLowerInvariant());
 			MapTileSets.LoadTable();
 
 			for (int i = 0; i < 8; i++)
@@ -290,7 +290,7 @@ namespace FF1Lib
 			else
 			{
 				var spells = new List<Spell> { Spell.RUSE, Spell.INVS, Spell.PURE, Spell.CUR3, Spell.LIFE, Spell.HRM3, Spell.SOFT, Spell.EXIT, Spell.INV2, Spell.CUR4, Spell.HRM4, Spell.HEL3, Spell.LIF2, Spell.FADE, Spell.WALL };
-				var items = spells.Where(s => Spells.ContainsKey(s.ToString())).Select(s => Convert.ToByte(Spells[s.ToString()].Index + MagicNamesIndexInItemText)).Cast<Item>().ToList();
+				var items = spells.Where(s => Spells.ContainsKey(s.ToString().ToLowerInvariant())).Select(s => Convert.ToByte(Spells[s.ToString().ToLowerInvariant()].Index + MagicNamesIndexInItemText)).Cast<Item>().ToList();
 
 				List<Item> result = new List<Item>();
 
@@ -310,7 +310,7 @@ namespace FF1Lib
 			else
 			{
 				var spells = new List<Spell> { Spell.LOCK, Spell.TMPR, Spell.FIR2, Spell.LIT2, Spell.LOK2, Spell.FAST, Spell.ICE2, Spell.FIR3, Spell.BANE, Spell.WARP, Spell.LIT3, Spell.QAKE, Spell.ICE3, Spell.BRAK, Spell.SABR, Spell.NUKE, Spell.ZAP, Spell.XXXX };
-				var items = spells.Where(s => Spells.ContainsKey(s.ToString())).Select(s => Convert.ToByte(Spells[s.ToString()].Index + MagicNamesIndexInItemText)).Cast<Item>().ToList();
+				var items = spells.Where(s => Spells.ContainsKey(s.ToString().ToLowerInvariant())).Select(s => Convert.ToByte(Spells[s.ToString().ToLowerInvariant()].Index + MagicNamesIndexInItemText)).Cast<Item>().ToList();
 
 				List<Item> result = new List<Item>();
 
@@ -355,15 +355,15 @@ namespace FF1Lib
 				.Select(s => Convert.ToByte(SpellInfos.IndexOf(s)));
 
 
-			var specialSpells = Spells.Where(s => s.Key.StartsWith("LIF"))
-			.Concat(Spells.Where(s => s.Key.StartsWith("WARP")))
-			.Concat(Spells.Where(s => s.Key.StartsWith("WRP")))
-			.Concat(Spells.Where(s => s.Key.StartsWith("EXIT")))
-			.Concat(Spells.Where(s => s.Key.StartsWith("EXT")))
-			.Concat(Spells.Where(s => s.Key.StartsWith("SOFT")))
-			.Concat(Spells.Where(s => s.Key.StartsWith("SFT")))
-			.Concat(Spells.Where(s => s.Key.StartsWith("PURE")))
-			.Concat(Spells.Where(s => s.Key.StartsWith("PUR")))
+			var specialSpells = Spells.Where(s => s.Key.StartsWith("lif"))
+			.Concat(Spells.Where(s => s.Key.StartsWith("warp")))
+			.Concat(Spells.Where(s => s.Key.StartsWith("wrp")))
+			.Concat(Spells.Where(s => s.Key.StartsWith("exit")))
+			.Concat(Spells.Where(s => s.Key.StartsWith("ext")))
+			.Concat(Spells.Where(s => s.Key.StartsWith("soft")))
+			.Concat(Spells.Where(s => s.Key.StartsWith("sft")))
+			.Concat(Spells.Where(s => s.Key.StartsWith("pure")))
+			.Concat(Spells.Where(s => s.Key.StartsWith("pur")))
 			.Select(s => Convert.ToByte(s.Value.Index));
 
 
