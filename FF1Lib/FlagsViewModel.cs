@@ -1870,6 +1870,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Dash"));
 			}
 		}
+		public bool SpeedBoat
+		{
+			get => Flags.SpeedBoat;
+			set
+			{
+				Flags.SpeedBoat = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SpeedBoat"));
+			}
+		}
 		public bool BuyTen
 		{
 			get => Flags.BuyTen;

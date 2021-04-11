@@ -157,7 +157,6 @@ namespace FF1Lib
 		public bool? RandomVampAttack { get; set; } = false;
 		public bool? RandomVampAttackIncludesConeria { get; set; } = false;
 		public bool? FightBahamut { get; set; } = false;
-		public bool? BahamutHallwayEncounters { get; set; } = false;
 		public bool? ConfusedOldMen { get; set; } = false;
 		public bool? GaiaShortcut { get; set; } = false;
 		public bool? MoveGaiaItemShop { get; set; } = false;
@@ -255,6 +254,7 @@ namespace FF1Lib
 		public bool SpeedHacks { get; set; } = false;
 		public bool NoPartyShuffle { get; set; } = false;
 		public bool Dash { get; set; } = false;
+		public bool SpeedBoat { get; set; } = false;
 		public bool BuyTen { get; set; } = false;
 		public bool IdentifyTreasures { get; set; } = false;
 		public bool ShopInfo { get; set; } = false;

@@ -1642,5 +1642,11 @@
 		"title": "Cardia Incentive Chest",
 		"screenshot": "cardiaIncentive.png",
 		"description": "Incentivizes the chest shown in tooltip, or any chest in Cardia if 'random' is selected.  Will require Airship to access, unless combined with the 'Bahamut Cardia dock' and 'Dragon's Hoard' flags.\nOne random item from your incentive item pool will be guaranteed in this chest, provided the number of incentive items matches or is less than the number of incentive locations."
+	},
+	{
+		"Id": "speedboatCheckBox",
+		"title": "Faster Ship",
+		"screenshot": "noFloater.png",
+		"description": "Double the speed of the Ship, so it is the same speed as the Airship."
 	}
 ]
