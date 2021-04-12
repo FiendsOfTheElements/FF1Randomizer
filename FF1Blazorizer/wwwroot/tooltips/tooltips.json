@@ -867,7 +867,7 @@
 		"Id": "allowDeepCastlesCheckBox",
 		"title": "Deep ToFR",
 		"screenshot": "allowDeepCastlesCheckBox.gif",
-		"description": "Enables the game to place the first floor of the Temple of Fiends at any level of a dungeon, such that multiple floors may have to be crossed to enter the Temple of FIends.\nIf this flag is active, the whole of the Temple of Fiends will be shuffled as a single unit, so once you find the Temple of Fiends you don't have to search elsewhere for each floor; it's all right there."
+		"description": "Enables the game to place the first floor of the Temple of Fiends at any level of a dungeon, such that multiple floors may have to be crossed to enter the Temple of Fiends.\nIf this flag is active, the whole of the Temple of Fiends will be shuffled as a single unit, so once you find the Temple of Fiends you don't have to search elsewhere for each floor; it's all right there."
 	},
 	{
 		"Id": "townsCheckBox",
@@ -1558,7 +1558,7 @@
 		"Id": "noBossSkillScriptShuffleCheckBox",
 		"title": "Don't Shuffle Bosses' Scripts, Skills & Spells",
 		"screenshot": "NoBossScriptSkillShuffle.png",
-		"description": "When shuffling enemies' scripts or spells/skills, excluding the four Fiends, WarMech, and Chaos."
+		"description": "When shuffling enemies' scripts or spells/skills, exclude the four Fiends, WarMech, and Chaos."
 	},
 	{
 		"Id": "fightBahamutCheckBox",
@@ -1614,9 +1614,15 @@
 
 	{
 		"Id": "spoilerBatsDropDown",
-		"title": "Temple of Fiends Bats Boss Hints",
+		"title": "Temple of Fiends Bats Text",
 		"screenshot": "spoilerBats.png",
-		"description": "The dialogue for the Sky Warrior bats in Garland's room will be replaced with spoilers about the Fiend refights and Chaos.\nHints - Describes the approximate stats in text. Adjectives used represent increasing order of difficulty: pretty, extra, very, super, incredibly, insanely.\nStars - Gives a rating for each boss stat on a scale of 1-10.\nFull stats - Gives the numerical stats and full spell and skill scripts."
+		"description": "The dialogue for the Sky Warrior bats in Garland's room can be replaced with spoilers about Chaos and the Fiend refights that will appear in the Temple of Fiends Revisited.\nVanilla - Bats have story dialogue after all four Orbs are lit, as it is in the original game.\nHints - Describes the ToFR boss stats using text. Adjectives used represent increasing order of difficulty: pretty, extra, very, super, incredibly, insanely.\nStars - Rates each ToFR boss stat on a scale of 1-10.\nFull Stats - Gives the numerical stats and full spell and skill scripts for each ToFR boss."
+	},
+	{
+		"Id": "spoilerBatsDontCheckOrbsCheckbox",
+		"title": "Temple of Fiends Bats Text - Early Spoilers",
+		"screenshot": "spoilerBatsEarly.gif",
+		"description": "Spoiler information can be obtained from the Sky Warrior bats at any time, without needing to light the four Orbs first."
 	},
 	{
 		"Id": "extendedHintsCheckBox",

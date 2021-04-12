@@ -120,9 +120,14 @@
 			<div class="checkbox-cell"></div>
 			<h4>Hints</h4>
 			<div class="row">
-                                <EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="spoilerBatsDropDown" TItem="SpoilerBatHints" @bind-Value="Flags.SkyWarriorSpoilerBats">Temple of Fiends bats text:</EnumDropDown>
-				<TriStateCheckBox DisableTooltip Indent UpdateToolTip="@UpdateToolTipID" Id="spoilerBatsDontCheckOrbsCheckbox" @bind-Value="Flags.SpoilerBatsDontCheckOrbs">Spoilers are available at the beginning of the game</TriStateCheckBox>
+					<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="spoilerBatsDropDown" TItem="SpoilerBatHints" @bind-Value="Flags.SkyWarriorSpoilerBats">Temple of Fiends Bats Text:</EnumDropDown>
 			</div>
+			<div class="row">
+				<div class="col-lg-4 tighter noleftpadding">
+					<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="spoilerBatsDontCheckOrbsCheckbox" IsEnabled="@Flags.SpoilerBatsDontCheckOrbsEnabled" @bind-Value="Flags.SpoilerBatsDontCheckOrbs">Early Spoilers</TriStateCheckBox>
+				</div>
+			</div>
+			<div class="checkbox-cell"></div>
 
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="extendedHintsCheckBox" @bind-Value="Flags.ExtensiveHints_Enable">Enable Extensive Hints</CheckBox>
 			<div class="row">
