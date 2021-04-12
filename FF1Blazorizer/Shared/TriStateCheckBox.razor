@@ -71,6 +71,8 @@
 		return ValueChanged.InvokeAsync(Value);
 	}
 
+	// For some reason, using just `@oncontextmenu:preventDefault` or just handling `oncontextmenu` events did nothing to prevent the context menu from appearing!
+	// I needed both `preventDefault` AND this handler to prevent the context menu from showing up. Ugh...
 	Task onContext()
 	{
 		return Task.CompletedTask;
