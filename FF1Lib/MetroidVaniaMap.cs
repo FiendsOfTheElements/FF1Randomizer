@@ -877,8 +877,7 @@ namespace FF1Lib
 				(MapId.TitansTunnel, Backdrop.Cave),
 			};
 
-
-			PutInBank(0x1F, 0xEA2D, Blob.FromHex("A648")); // Use current map as ID for loading backgroung, instead of ow tile
+			PutInBank(0x1F, 0xEA2D, Blob.FromHex("A648")); // Use current map as ID for loading background, instead of ow tile
 			PutInBank(0x1F, 0xEB81, Blob.FromHex("A648"));
 			PutInBank(lut_BtlBackdrops_Bank, lut_BtlBackdrops, backgroundList.Select(x => (byte)x.Item2).ToArray());
 		}
