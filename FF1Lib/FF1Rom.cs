@@ -499,7 +499,7 @@ namespace FF1Lib
 
 			npcdata.UpdateItemPlacement(generatedPlacement);
 
-			if (flags.NoOverworld & (bool)!flags.Entrances & (bool)!flags.Floors & (bool)!flags.FlipDungeons & (bool)!flags.SaveGameWhenGameOver)
+			if (flags.NoOverworld & (bool)!flags.Entrances & (bool)!flags.Floors & (bool)!flags.FlipDungeons)
 			{
 				NoOverworld(overworldMap, maps, talkroutines, npcdata, flags, rng);
 			}
