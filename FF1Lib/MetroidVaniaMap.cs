@@ -47,7 +47,7 @@ namespace FF1Lib
 		public void NoOverworld(OverworldMap overworldmap, List<Map> maps, TalkRoutines talkroutines, NPCdata npcdata, List<MapId> flippedmaps, Flags flags, MT19337 rng)
 		{
 			LoadInTown(overworldmap);
-			ApplyMapMods(maps, flippedmaps);
+			ApplyMapMods(maps, flippedmaps, (bool)flags.LefeinSuperStore);
 			CreateTeleporters(maps, flippedmaps, rng);
 			PrepNPCs(talkroutines, npcdata, flippedmaps, flags, rng);
 			UpdateBackgrounds();
@@ -92,7 +92,7 @@ namespace FF1Lib
 			PutInBank(0x0E, 0x9DC0, townPosList.Select(x => x.Item1).ToArray());
 			PutInBank(0x0E, 0x9DD0, townPosList.Select(x => x.Item2).ToArray());
 		}
-		public void ApplyMapMods(List<Map> maps, List<MapId> flippedmaps)
+		public void ApplyMapMods(List<Map> maps, List<MapId> flippedmaps, bool lefeinmart)
 		{
 			// Coneria
 			var coneriaNorthwall = new List<Blob> { Blob.FromHex("0404040404") };
@@ -235,13 +235,29 @@ namespace FF1Lib
 				Blob.FromHex("0E0E0E0E"),
 			};
 
+			var lefeinNonteleport = new List<Blob> {
+				Blob.FromHex("0000"),
+			};
+
 			maps[(int)MapId.Lefein].Put((0x0F, 0x17), lefeinSouthwall.ToArray());
 			maps[(int)MapId.Lefein].Put((0x27, 0x09), lefeinSouthedge.ToArray());
 			maps[(int)MapId.Lefein].Put((0x00, 0x09), lefeinSouthedge2.ToArray());
-			maps[(int)MapId.Lefein].Put((0x26, 0x02), lefeinNorthedge.ToArray());
-			maps[(int)MapId.Lefein].Put((0x3C, 0x02), lefeinNorthedge2.ToArray());
-			maps[(int)MapId.Lefein].Put((0x00, 0x02), lefeinSouthedge2.ToArray());
-			maps[(int)MapId.Lefein][0x01, 0x39] = 0x0E;
+			if (lefeinmart)
+			{
+				maps[(int)MapId.Lefein].Put((0x24, 0x02), lefeinNorthedge2.ToArray());
+				maps[(int)MapId.Lefein].Put((0x00, 0x01), lefeinSouthedge2.ToArray());
+				maps[(int)MapId.Lefein].Put((0x00, 0x02), lefeinNonteleport.ToArray());
+				maps[(int)MapId.Lefein][0x01, 0x33] = 0x0E;
+				maps[(int)MapId.Lefein][0x01, 0x3F] = 0x0E;
+			}
+			else
+			{
+				maps[(int)MapId.Lefein].Put((0x26, 0x02), lefeinNorthedge.ToArray());
+				maps[(int)MapId.Lefein].Put((0x3C, 0x02), lefeinNorthedge2.ToArray());
+				maps[(int)MapId.Lefein].Put((0x00, 0x02), lefeinSouthedge2.ToArray());
+				maps[(int)MapId.Lefein][0x01, 0x39] = 0x0E;
+			}
+
 			maps[(int)MapId.Lefein][0x03, 0x00] = 0x00;
 			maps[(int)MapId.Lefein][0x04, 0x00] = 0x00;
 
@@ -683,6 +699,7 @@ namespace FF1Lib
 			// Caravan Door
 			TileSM CaravanDoor = new TileSM(availableTiles[(byte)TileSets.MatoyaDwarfCardiaIceWaterfall].First(), (int)TileSets.MatoyaDwarfCardiaIceWaterfall, TilePalette.OutPalette2, TeleportTilesGraphics[TeleporterGraphic.Door][(int)TileSets.MatoyaDwarfCardiaIceWaterfall], (byte)(TilePropFunc.TP_SPEC_DOOR), 0x46);
 			UpdateMapTile(MapId.Cardia, 0x28, 0x1C, CaravanDoor.ID);
+			availableTiles[(byte)TileSets.MatoyaDwarfCardiaIceWaterfall].RemoveRange(0, 1);
 
 			CaravanDoor.Write(this);
 
@@ -690,9 +707,11 @@ namespace FF1Lib
 			List<byte> ToFRchestsList = new() { 0xF8, 0xF9, 0xFA, 0xFB, 0xFC, 0xFD, 0xFE };
 			TileSM ExtraChest = new TileSM(availableTiles[(byte)TileSets.SkyCastle].First(), (int)TileSets.SkyCastle, TilePalette.RoomPalette1, new List<byte> { 0x2A, 0x2B, 0x3A, 0x3B }, (byte)(TilePropFunc.TP_SPEC_TREASURE | TilePropFunc.TP_NOMOVE), ToFRchestsList.SpliceRandom(rng));
 			UpdateMapTile(MapId.SkyPalace5F, 0x07, 0x01, ExtraChest.ID);
+			availableTiles[(byte)TileSets.SkyCastle].RemoveRange(0, 1);
 
 			TileSM ExtraChest2 = new TileSM(availableTiles[(byte)TileSets.MatoyaDwarfCardiaIceWaterfall].First(), (int)TileSets.MatoyaDwarfCardiaIceWaterfall, TilePalette.OutPalette2, TeleportTilesGraphics[TeleporterGraphic.Well][(int)TileSets.MatoyaDwarfCardiaIceWaterfall], (byte)(TilePropFunc.TP_SPEC_TREASURE | TilePropFunc.TP_NOMOVE), ToFRchestsList.SpliceRandom(rng));
 			UpdateMapTile(MapId.Cardia, 0x2A, 0x14, ExtraChest2.ID);
+			availableTiles[(byte)TileSets.MatoyaDwarfCardiaIceWaterfall].RemoveRange(0, 1);
 
 			ExtraChest.Write(this);
 			ExtraChest2.Write(this);
