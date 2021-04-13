@@ -24,6 +24,42 @@
 		"description": "Hides all flags to create a mystery flagset that can then be distributed. Useful for tournament and challenge race settings.\n This flag cannot be disabled once clicked; you will need to hit the Reset button to restore functionality to the site (and this will, in turn, wipe the blind flags selected). Make sure to save your flagset before you use this flag."
 	},
 	{
+		"Id": "startingEquipmentDragonslayer",
+		"title": "Starting Equipment Dragonslayer",
+		"screenshot": null,
+		"description": "Dragon Armor, Dragon Sword"
+	},
+	{
+		"Id": "startingEquipmentLegendKit",
+		"title": "Starting Equipment Legendary Kit",
+		"screenshot": null,
+		"description": "Xcalibur, Opal Armor, Opal Gautlents, Opal Helm, Opal Shield"
+	},
+	{
+		"Id": "startingEquipmentGrandpasSecretStash",
+		"title": "Starting Equipment Grandpas Secret Stash",
+		"screenshot": null,
+		"description": "3 Good Items, 5 Crappy Ones"
+	},
+	{
+		"Id": "startingEquipmentRandomCrap",
+		"title": "Starting Equipment Random Crap",
+		"screenshot": null,
+		"description": "Fills up the entire Inventory with equipment. Small chance to roll rare and legendary items as well."
+	},
+	{
+		"Id": "startingEquipmentNoDuplicates",
+		"title": "Starting Equipment No Legendary Duplicates",
+		"screenshot": null,
+		"description": "Disallowes duplicate Rare/Legendary Items from appearing."
+	},
+	{
+		"Id": "startingEquipmentRemoveFromPool",
+		"title": "Starting Equipment Remove Items from Treasure Chests",
+		"screenshot": null,
+		"description": "Replaces rare and legendary crap in treasure chests with common crap."
+	},
+	{
 		"Id": "enableExtConsumables",
 		"title": "New Consumables",
 		"screenshot": null,
