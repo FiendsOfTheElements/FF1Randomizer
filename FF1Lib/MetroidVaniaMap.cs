@@ -563,7 +563,7 @@ namespace FF1Lib
 			maps[(int)MapId.MarshCaveB3][0x30, 0x2D] = newTeleporterTiles.Last().TileID;
 
 			// Earth B5
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x13, 0x24, (byte)MapId.Cardia, false, (int)TileSets.EarthTitanVolcano, TilePalette.RoomPalette1, TeleporterGraphic.Hole, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, 0x0F));
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x13, 0x24, (byte)MapId.Cardia, false, (int)TileSets.EarthTitanVolcano, TilePalette.RoomPalette1, TeleporterGraphic.LadderDown, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, 0x0F));
 
 			// Volcano B2
 			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x0C, 0x08, (byte)MapId.GurguVolcanoB1, false, (int)TileSets.EarthTitanVolcano, TilePalette.OutPalette1, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles));
@@ -573,7 +573,7 @@ namespace FF1Lib
 			maps[(int)MapId.GurguVolcanoB2][0x02, 0x05] = newTeleporterTiles.Last().TileID;
 
 			// Volcano B5
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x0C, 0x0F, (byte)MapId.Cardia, false, (int)TileSets.EarthTitanVolcano, TilePalette.RoomPalette1, TeleporterGraphic.Hole, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, 0x1F));
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x0C, 0x0F, (byte)MapId.Cardia, false, (int)TileSets.EarthTitanVolcano, TilePalette.RoomPalette1, TeleporterGraphic.LadderDown, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, 0x1F));
 
 			// Ice Cave B2
 			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x1E, 0x0B, (byte)MapId.IceCaveB1, false, (int)TileSets.MatoyaDwarfCardiaIceWaterfall, TilePalette.OutPalette2, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles));
