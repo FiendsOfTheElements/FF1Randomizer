@@ -117,7 +117,13 @@ namespace FF1Lib
 				case OwMapExchanges.CrecsentStart:
 					return new OwMapExchange(_rom, _overworldMap, "crescent_start");
 				case OwMapExchanges.NoOverworld:
-					return new OwMapExchange(_rom, _overworldMap, "nooverworld");
+					if ((bool)!flags.Entrances & (bool)!flags.Floors & (bool)!flags.FlipDungeons & (bool)!flags.SaveGameWhenGameOver)
+					{
+						return new OwMapExchange(_rom, _overworldMap, "nooverworld");
+					}
+					else
+						return null;
+					
 			}
 
 			throw new Exception("oops");
