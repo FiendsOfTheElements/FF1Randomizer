@@ -522,10 +522,6 @@ namespace FF1Lib
 			{
 				ShuffleMagicLevels(rng, ((bool)flags.MagicPermissions), (bool)flags.MagicLevelsTiered, (bool)flags.MagicLevelsMixed, (bool)!flags.GenerateNewSpellbook);
 			}
-			if (preferences.AccessibleSpellNames)
-			{
-				AccessibleSpellNames(flags);
-			}
 
 			new StartingInventory(rng, flags, this).SetStartingInventory();
 			new StartingEquipment(rng, flags, this).SetStartingEquipment();
@@ -538,6 +534,11 @@ namespace FF1Lib
 
 			//has to be done before modifying itemnames and after modifying spellnames...
 			extConsumables.LoadSpells();
+
+			if (preferences.AccessibleSpellNames)
+			{
+				AccessibleSpellNames(flags);
+			}
 
 			/*
 			if (flags.WeaponPermissions)
