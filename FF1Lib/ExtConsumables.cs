@@ -365,5 +365,18 @@ namespace FF1Lib
 				}
 			}
 		}
+
+		public static Item ExtConsumableStartingEquipmentFix(Item item, Flags flags)
+		{
+			if (item == Item.WoodenNunchucks ||
+						item == Item.SmallKnife ||
+						item == Item.WoodenRod ||
+						item == Item.Rapier)
+			{
+				return item + 4;
+			}
+
+			return item;
+		}
 	}
 }

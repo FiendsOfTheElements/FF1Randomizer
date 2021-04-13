@@ -14,6 +14,43 @@ namespace FF1Lib
 {
 	public class Flags : IIncentiveFlags, IMapEditFlags, IScaleFlags, IFloorShuffleFlags
 	{
+		#region StartingEquipment
+
+		public bool? StartingEquipmentMasamune { get; set; } = false;
+
+		public bool? StartingEquipmentKatana { get; set; } = false;
+
+		public bool? StartingEquipmentHealStaff { get; set; } = false;
+
+		public bool? StartingEquipmentZeusGauntlet { get; set; } = false;
+
+		public bool? StartingEquipmentWhiteShirt { get; set; } = false;
+
+		public bool? StartingEquipmentRibbon { get; set; } = false;
+
+		public bool? StartingEquipmentDragonslayer { get; set; } = false;
+
+		public bool? StartingEquipmentLegendKit { get; set; } = false;
+
+		public bool? StartingEquipmentRandomEndgameWeapon { get; set; } = false;
+
+		public bool? StartingEquipmentRandomAoe { get; set; } = false;
+
+		public bool? StartingEquipmentRandomCasterItem { get; set; } = false;
+
+		public bool? StartingEquipmentGrandpasSecretStash { get; set; } = false;
+
+		public bool? StartingEquipmentOneItem { get; set; } = false;
+
+		public bool? StartingEquipmentRandomCrap { get; set; } = false;
+
+		public bool StartingEquipmentRemoveFromPool { get; set; } = false;
+
+		public bool StartingEquipmentNoDuplicates { get; set; } = false;
+
+		#endregion
+
+
 		public bool EnableExtConsumables { get; set; } = false;
 
 		public bool? NormalShopsHaveExtConsumables { get; set; } = false;
@@ -82,8 +119,6 @@ namespace FF1Lib
 		public HintPlacementStrategy ExtensiveHints_EquipmentNamePlacement { get; set; } = HintPlacementStrategy.ConeriaToCrescent;
 
 		#endregion
-
-		public StartingEquipmentSet StartingEquipment { get; set; } = StartingEquipmentSet.None;
 
 		public bool? ExcludeGoldFromScaling { get; set; } = false;
 		public bool CheapVendorItem { get; set; } = true;

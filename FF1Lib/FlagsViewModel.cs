@@ -4176,16 +4176,6 @@ namespace FF1Lib
 			}
 		}
 
-  public StartingEquipmentSet StartingEquipment
-		{
-			get => Flags.StartingEquipment;
-			set
-			{
-				Flags.StartingEquipment = value;
-        RaisePropertyChanged();
-			}
-		}
-
 		public OwMapExchanges OwMapExchange
 		{
 			get => Flags.OwMapExchange;
@@ -4286,5 +4276,169 @@ namespace FF1Lib
 				RaisePropertyChanged();
 			}
 		}
+
+		#region StartingEquipment
+
+		public bool? StartingEquipmentMasamune
+		{
+			get => Flags.StartingEquipmentMasamune;
+			set
+			{
+				Flags.StartingEquipmentMasamune = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool? StartingEquipmentKatana
+		{
+			get => Flags.StartingEquipmentKatana;
+			set
+			{
+				Flags.StartingEquipmentKatana = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool? StartingEquipmentHealStaff
+		{
+			get => Flags.StartingEquipmentHealStaff;
+			set
+			{
+				Flags.StartingEquipmentHealStaff = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool? StartingEquipmentZeusGauntlet
+		{
+			get => Flags.StartingEquipmentZeusGauntlet;
+			set
+			{
+				Flags.StartingEquipmentZeusGauntlet = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool? StartingEquipmentWhiteShirt
+		{
+			get => Flags.StartingEquipmentWhiteShirt;
+			set
+			{
+				Flags.StartingEquipmentWhiteShirt = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool? StartingEquipmentRibbon
+		{
+			get => Flags.StartingEquipmentRibbon;
+			set
+			{
+				Flags.StartingEquipmentRibbon = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool? StartingEquipmentDragonslayer
+		{
+			get => Flags.StartingEquipmentDragonslayer;
+			set
+			{
+				Flags.StartingEquipmentDragonslayer = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool? StartingEquipmentLegendKit
+		{
+			get => Flags.StartingEquipmentLegendKit;
+			set
+			{
+				Flags.StartingEquipmentLegendKit = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool? StartingEquipmentRandomEndgameWeapon
+		{
+			get => Flags.StartingEquipmentRandomEndgameWeapon;
+			set
+			{
+				Flags.StartingEquipmentRandomEndgameWeapon = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool? StartingEquipmentRandomAoe
+		{
+			get => Flags.StartingEquipmentRandomAoe;
+			set
+			{
+				Flags.StartingEquipmentRandomAoe = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool? StartingEquipmentRandomCasterItem
+		{
+			get => Flags.StartingEquipmentRandomCasterItem;
+			set
+			{
+				Flags.StartingEquipmentRandomCasterItem = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool? StartingEquipmentGrandpasSecretStash
+		{
+			get => Flags.StartingEquipmentGrandpasSecretStash;
+			set
+			{
+				Flags.StartingEquipmentGrandpasSecretStash = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool? StartingEquipmentOneItem
+		{
+			get => Flags.StartingEquipmentOneItem;
+			set
+			{
+				Flags.StartingEquipmentOneItem = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool? StartingEquipmentRandomCrap
+		{
+			get => Flags.StartingEquipmentRandomCrap;
+			set
+			{
+				Flags.StartingEquipmentRandomCrap = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool StartingEquipmentRemoveFromPool
+		{
+			get => Flags.StartingEquipmentRemoveFromPool;
+			set
+			{
+				Flags.StartingEquipmentRemoveFromPool = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool StartingEquipmentNoDuplicates
+		{
+			get => Flags.StartingEquipmentNoDuplicates;
+			set
+			{
+				Flags.StartingEquipmentNoDuplicates = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		#endregion
 	}
 }
