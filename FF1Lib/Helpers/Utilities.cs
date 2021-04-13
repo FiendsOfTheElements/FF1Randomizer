@@ -4,7 +4,7 @@ namespace FF1Lib
 {
 	public static class Utilities
 	{
-		public static string SpoilerCache { get; set; }
+		public static string SpoilerCache { get; set; } = "";
 
 		/// <summary>
 		/// Outputs the spoiler log entry to a text file or to the console
