@@ -1106,12 +1106,6 @@
 		"description": "Includes enemy morale in the stat scaling, as opposed to keeping morale separate (fixed at their vanilla values)."
 	},
 	{
-		"Id": "noDanModeCheckBox",
-		"title": "Static EXP Distribution",
-		"screenshot": "noDanModeCheckBox.png",
-		"description": "When enabled, all experience received by enemies is always distributed as if there were 4 Light Warriors (thus all the heroes will get one quarter of the total EXP), rather than dividing the total EXP between those Light Warriors alive at the end of battle."
-	},
-	{
 		"Id": "startingGoldCheckBox",
 		"title": "Scale Starting Gold",
 		"screenshot": "startingGoldCheckBox.png",
@@ -1533,6 +1527,12 @@
 		"title": "Nones Gain XP",
 		"screenshot": "nonesGainXPcheckBox.png",
 		"description": "When enabled, \"None\" characters will count as live characters for XP calculation and gain their share of XP. If \"Tavern Recruitment Mode\" is also enabled, characters hired over these \"None\" characters will gain all the EXP (and levels) of the None at that point."
+	},
+	{
+		"Id": "deadsGainXPcheckBox",
+		"title": "Deads Gain XP",
+		"screenshot": "deadsGainXPcheckBox.png",
+		"description": "When enabled, dead characters will count as live characters for XP calculation and gain their share of XP."
 	},
 	{
 		"Id": "thiefAgilityBuffCheckBox",

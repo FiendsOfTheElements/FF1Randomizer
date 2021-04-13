@@ -800,10 +800,21 @@ namespace FF1Lib
 
 		}
 
-		public void NonesGainXP()
+		public void XpAdmissibility(bool nonesGainXp, bool deadsGainXp)
 		{
 			// New routine to see if character can get XP LvlUp_AwardExp
-			PutInBank(0x1B, 0x8710, Blob.FromHex("A000B186C9FFF010A001B1862903F006C903F00218603860AD78688588AD7968858920608820A08A1860"));
+			if (nonesGainXp && !deadsGainXp)
+			{
+				PutInBank(0x1B, 0x8710, Blob.FromHex("A000B186C9FFF010A001B1862903F006C903F00218603860AD78688588AD7968858920608820A08A1860"));
+			}
+			else if (!nonesGainXp && deadsGainXp)
+			{
+				PutInBank(0x1B, 0x8710, Blob.FromHex("A000B186C9FFF010A001B1862903F006C903F00238603860EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA1860"));
+			}
+			else if (nonesGainXp && deadsGainXp)
+			{
+				PutInBank(0x1B, 0x8710, Blob.FromHex("A000B186C9FFF010A001B1862903F006C903F00238603860AD78688588AD7968858920608820A08A1860"));
+			}
 
 			// Have LvlUp_AwardExp reroute to new routine
 			PutInBank(0x1B, 0x8826, Blob.FromHex("201087B00860"));
@@ -812,7 +823,18 @@ namespace FF1Lib
 			PutInBank(0x1B, 0x8D20, Blob.FromHex("A000AD0168C9FFD001C8AD1368C9FFD001C8AD2568C9FFD001C8AD3768C9FFD001C8A20460"));
 
 			// Have DivideRewardBySurvivors reroute to new routine to count nones
-			PutInBank(0x1B, 0x8B43, Blob.FromHex("20208DEA"));
+			if (nonesGainXp && !deadsGainXp)
+			{
+				PutInBank(0x1B, 0x8B43, Blob.FromHex("20208DEA"));
+			}
+			else if (!nonesGainXp && deadsGainXp)
+			{
+				PutInBank(0x1B, 0x8B43, Blob.FromHex("20208DA9048CB36838EDB368A8EAEAEAEA"));
+			}
+			else if (nonesGainXp && deadsGainXp)
+			{
+				PutInBank(0x1B, 0x8B43, Blob.FromHex("A204A004EAEAEAEAEAEAEAEAEAEAEAEAEA")); // NoDanMode legacy code
+			}
 		}
 
 		public void ShuffleWeaponPermissions(MT19337 rng)
