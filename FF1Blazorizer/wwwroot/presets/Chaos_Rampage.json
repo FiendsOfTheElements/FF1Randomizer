@@ -140,7 +140,7 @@
     "WrapStatOverflow": false,
     "WrapPriceOverflow": false,
     "IncludeMorale": false,
-    "NoDanMode": false,
+    "DeadsGainXP": false,
     "NoTail": false,
     "ClassAsNpcFiends": false,
     "ClassAsNpcKeyNPC": false,

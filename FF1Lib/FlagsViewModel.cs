@@ -2213,13 +2213,13 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncludeMorale"));
 			}
 		}
-		public bool NoDanMode
+		public bool DeadsGainXP
 		{
-			get => Flags.NoDanMode;
+			get => Flags.DeadsGainXP;
 			set
 			{
-				Flags.NoDanMode = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NoDanMode"));
+				Flags.DeadsGainXP = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DeadsGainXP"));
 			}
 		}
 		public bool? NoTail

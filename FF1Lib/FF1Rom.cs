@@ -878,13 +878,9 @@ namespace FF1Lib
 				EnableCanalBridge();
 			}
 
-			if (flags.NonesGainXP)
+			if (flags.NonesGainXP || flags.DeadsGainXP)
 			{
-				NonesGainXP();
-			}
-			if (flags.NoDanMode)
-			{
-				NoDanMode();
+				XpAdmissibility((bool)flags.NonesGainXP, flags.DeadsGainXP);
 			}
 
 			SetProgressiveScaleMode(flags);
