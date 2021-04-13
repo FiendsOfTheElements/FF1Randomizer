@@ -3,7 +3,7 @@
 		<input type="radio" name="@Name" value="2" checked="@checked2" hidden>
 		<input type="radio" name="@Name" value="1" checked="@checked1" hidden>
 		<input type="radio" name="@Name" value="0" checked="@checked0" hidden>
-		<input type="image" src="@image" id="@Id" class="tri-state" disabled="@(!IsEnabled)" @onclick="@onclick" /> <label for="@Id" hidden="@(ChildContent is null)">@ChildContent</label> 
+		<input type="image" src="@image" id="@Id" class="tri-state" disabled="@(!IsEnabled)" @oncontextmenu="@onContext" @oncontextmenu:preventDefault @onmouseup="@onClick" /> <label for="@Id" hidden="@(ChildContent is null)">@ChildContent</label> 
 	@if (!DisableTooltip)
 	{
 		<input type="image" src="/images/help.png" class="btn-group-help" title="Show Help" @onclick="@ShowToolTip" id="@Id" />
@@ -28,27 +28,54 @@
 	[Parameter]
 	public bool Name { get; set; }
 
-	Task onclick()
+	Task onClick(MouseEventArgs args)
 	{
 		if (Disabled)
 		{
 			return Task.CompletedTask;
 		}
 
-		if (Value == false)
+		// Which button was pressed?
+		if (args.Button == 0)
 		{
-			Value = true;
+			if (Value == false)
+			{
+				Value = true;
+			}
+			else if (Value == true)
+			{
+				Value = null;
+			}
+			else
+			{
+				Value = false;
+			}
 		}
-		else if (Value == true)
+		else if (args.Button == 2)
 		{
-			Value = null;
+			// Go the opposite direction in the cycle
+			if (Value == false)
+			{
+				Value = null;
+			}
+			else if (Value == true)
+			{
+				Value = false;
+			}
+			else
+			{
+				Value = true;
+			}
 		}
-		else
-		{
-			Value = false;
-		}
-		return ValueChanged.InvokeAsync(Value);
 
+		return ValueChanged.InvokeAsync(Value);
+	}
+
+	// For some reason, using just `@oncontextmenu:preventDefault` or just handling `oncontextmenu` events did nothing to prevent the context menu from appearing!
+	// I needed both `preventDefault` AND this handler to prevent the context menu from showing up. Ugh...
+	Task onContext()
+	{
+		return Task.CompletedTask;
 	}
 
 	private void ShowToolTip(MouseEventArgs e)
