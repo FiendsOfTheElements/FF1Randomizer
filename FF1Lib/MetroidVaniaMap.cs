@@ -50,6 +50,7 @@ namespace FF1Lib
 			ApplyMapMods(maps);
 			CreateTeleporters(maps, rng);
 			PrepNPCs(talkroutines, npcdata, flags, rng);
+			UpdateBackgrounds();
 		}
 
 		public void LoadInTown(OverworldMap overworldmap)
@@ -804,6 +805,82 @@ namespace FF1Lib
 
 			// Palettes changes
 			PutInBank(0x00, 0xA000 + ((byte)MapId.IceCaveB1 * 0x30) + 0x18, Blob.FromHex("0031000100003101"));
+		}
+
+		public void UpdateBackgrounds()
+		{
+			var lut_BtlBackdrops = 0xB300;
+			var lut_BtlBackdrops_Bank = 0x00;
+
+			List<(MapId, Backdrop)> backgroundList = new()
+			{
+				(MapId.Coneria, Backdrop.Grass),
+				(MapId.Pravoka, Backdrop.Water),
+				(MapId.Elfland, Backdrop.Grass),
+				(MapId.Melmond, Backdrop.Grass),
+				(MapId.CrescentLake, Backdrop.Grass),
+				(MapId.Gaia, Backdrop.Grass),
+				(MapId.Onrac, Backdrop.Forest),
+				(MapId.Lefein, Backdrop.Forest),
+				(MapId.ConeriaCastle1F, Backdrop.Castle),
+				(MapId.ElflandCastle, Backdrop.Castle),
+				(MapId.NorthwestCastle, Backdrop.Castle),
+				(MapId.CastleOfOrdeals1F, Backdrop.Castle),
+				(MapId.TempleOfFiends, Backdrop.TempleOfFiends),
+				(MapId.EarthCaveB1, Backdrop.EarthCave),
+				(MapId.GurguVolcanoB1, Backdrop.Volcano),
+				(MapId.IceCaveB1, Backdrop.IceCave),
+				(MapId.Cardia, Backdrop.Cave),
+				(MapId.BahamutsRoomB1, Backdrop.Cave),
+				(MapId.Waterfall, Backdrop.Waterfall),
+				(MapId.DwarfCave, Backdrop.MarshCave),
+				(MapId.MatoyasCave, Backdrop.Cave),
+				(MapId.SardasCave, Backdrop.Cave),
+				(MapId.MarshCaveB1, Backdrop.MarshCave),
+				(MapId.MirageTower1F, Backdrop.Tower),
+				(MapId.ConeriaCastle2F, Backdrop.Castle),
+				(MapId.CastleOfOrdeals2F, Backdrop.Castle),
+				(MapId.CastleOfOrdeals3F, Backdrop.Castle),
+				(MapId.MarshCaveB2, Backdrop.MarshCave),
+				(MapId.MarshCaveB3, Backdrop.MarshCave),
+				(MapId.EarthCaveB2, Backdrop.EarthCave),
+				(MapId.EarthCaveB3, Backdrop.EarthCave),
+				(MapId.EarthCaveB4, Backdrop.EarthCave),
+				(MapId.EarthCaveB5, Backdrop.EarthCave),
+				(MapId.GurguVolcanoB2, Backdrop.Volcano),
+				(MapId.GurguVolcanoB3, Backdrop.Volcano),
+				(MapId.GurguVolcanoB4, Backdrop.Volcano),
+				(MapId.GurguVolcanoB5, Backdrop.Volcano),
+				(MapId.IceCaveB2, Backdrop.IceCave),
+				(MapId.IceCaveB3, Backdrop.IceCave),
+				(MapId.BahamutsRoomB2, Backdrop.Cave),
+				(MapId.MirageTower2F, Backdrop.Tower),
+				(MapId.MirageTower3F, Backdrop.Tower),
+				(MapId.SeaShrineB5, Backdrop.SeaShrine),
+				(MapId.SeaShrineB4, Backdrop.SeaShrine),
+				(MapId.SeaShrineB3, Backdrop.SeaShrine),
+				(MapId.SeaShrineB2, Backdrop.SeaShrine),
+				(MapId.SeaShrineB1, Backdrop.SeaShrine),
+				(MapId.SkyPalace1F, Backdrop.Tower),
+				(MapId.SkyPalace2F, Backdrop.Tower),
+				(MapId.SkyPalace3F, Backdrop.Tower),
+				(MapId.SkyPalace4F, Backdrop.Tower),
+				(MapId.SkyPalace5F, Backdrop.Tower),
+				(MapId.TempleOfFiendsRevisited1F, Backdrop.TempleOfFiends),
+				(MapId.TempleOfFiendsRevisited2F, Backdrop.TempleOfFiends),
+				(MapId.TempleOfFiendsRevisited3F, Backdrop.TempleOfFiends),
+				(MapId.TempleOfFiendsRevisitedEarth, Backdrop.TempleOfFiends),
+				(MapId.TempleOfFiendsRevisitedFire, Backdrop.TempleOfFiends),
+				(MapId.TempleOfFiendsRevisitedWater, Backdrop.TempleOfFiends),
+				(MapId.TempleOfFiendsRevisitedAir, Backdrop.TempleOfFiends),
+				(MapId.TempleOfFiendsRevisitedChaos, Backdrop.TempleOfFiends),
+				(MapId.TitansTunnel, Backdrop.Cave),
+			};
+
+
+			PutInBank(0x1F, 0xEA2D, Blob.FromHex("A648")); // Use current map as ID for loading backgroung, instead of ow tile
+			PutInBank(0x1F, 0xEB81, Blob.FromHex("A648"));
+			PutInBank(lut_BtlBackdrops_Bank, lut_BtlBackdrops, backgroundList.Select(x => (byte)x.Item2).ToArray());
 		}
 
 		public class TileSM
