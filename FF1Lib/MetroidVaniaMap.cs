@@ -426,7 +426,6 @@ namespace FF1Lib
 
 			// Coneria
 			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x0C, 0x22, (byte)MapId.ConeriaCastle1F, false, (int)TileSets.Town, TilePalette.OutPalette2, TeleporterGraphic.Downstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			//maps[(int)MapId.Coneria][0x16, FlippedX(MapId.Coneria, 0x10)] = newTeleporterTiles.Last().TileID;
 			UpdateMapTile(MapId.Coneria, 0x10, 0x16, newTeleporterTiles.Last().TileID);
 
 			// Pravoka
@@ -476,7 +475,6 @@ namespace FF1Lib
 
 			// Elfland Castle
 			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x28, 0x16, (byte)MapId.Elfland, false, (int)TileSets.Castle, TilePalette.OutPalette2, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			maps[(int)MapId.ElflandCastle][0x17, 0x10] = newTeleporterTiles.Last().TileID;
 			UpdateMapTile(MapId.ElflandCastle, 0x10, 0x17, newTeleporterTiles.Last().TileID);
 
 			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x2B, 0x17, (byte)MapId.MarshCaveB1, true, (int)TileSets.Castle, TilePalette.RoomPalette1, TeleporterGraphic.LadderDown, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
@@ -541,11 +539,9 @@ namespace FF1Lib
 
 			// Dwarf's Cave
 			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x14, 0x06, (byte)MapId.TempleOfFiends, false, (int)TileSets.MatoyaDwarfCardiaIceWaterfall, TilePalette.OutPalette2, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			maps[(int)MapId.DwarfCave][0x0B, 0x16] = newTeleporterTiles.Last().TileID;
 			UpdateMapTile(MapId.DwarfCave, 0x16, 0x0B, newTeleporterTiles.Last().TileID);
 
 			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x12, 0x0D, (byte)MapId.SardasCave, false, (int)TileSets.MatoyaDwarfCardiaIceWaterfall, TilePalette.OutPalette2, TeleporterGraphic.Downstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			maps[(int)MapId.DwarfCave][0x30, 0x0C] = newTeleporterTiles.Last().TileID;
 			UpdateMapTile(MapId.DwarfCave, 0x0C, 0x30, newTeleporterTiles.Last().TileID);
 
 			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x0B, 0x16, (byte)MapId.CrescentLake, false, (int)TileSets.MatoyaDwarfCardiaIceWaterfall, TilePalette.OutPalette2, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
@@ -553,7 +549,6 @@ namespace FF1Lib
 
 			// Matoya
 			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x13, 0x1E, (byte)MapId.Pravoka, false, (int)TileSets.MatoyaDwarfCardiaIceWaterfall, TilePalette.OutPalette2, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			maps[(int)MapId.MatoyasCave][0x0B, 0x01] = newTeleporterTiles.Last().TileID;
 			UpdateMapTile(MapId.MatoyasCave, 0x01, 0x0B, newTeleporterTiles.Last().TileID);
 
 			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x08, 0x1B, (byte)MapId.TempleOfFiends, false, (int)TileSets.MatoyaDwarfCardiaIceWaterfall, TilePalette.OutPalette2, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
@@ -1047,7 +1042,6 @@ namespace FF1Lib
 				get { return (byte)(_y & 0b01111111); }
 				set
 				{
-					// _y = (byte)(value | (_inroom ? 0b1000000 : 0b00000000));
 					_y = (byte)(value | 0b10000000);
 				}
 			}
@@ -1072,7 +1066,6 @@ namespace FF1Lib
 				_id = id;
 				_inroom = inroom;
 				_x = (byte)(x | (_inroom ? 0b10000000 : 0b00000000));
-				// _y = (byte)(y | (_inroom ? 0b1000000 : 0b00000000));
 				_y = (byte)(y | 0b10000000);
 				_target = destination;
 			}
