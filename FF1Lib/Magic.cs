@@ -590,5 +590,81 @@ namespace FF1Lib
 			})
 			.ToList();
 		}
+
+		public void AccessibleSpellNames(Flags flags)
+		{
+			// If Spellcrafter mode is on, abort. We need a check here as the setting on the site can be in a random state.
+			if ((bool)flags.GenerateNewSpellbook)
+			{
+				return;
+			}
+
+			var magicSpells = GetSpells();
+
+			// Since this can be performed independent of the magic shuffling, we can't assume the location of spell names.
+			// We will loop through the spell list and replace the appropriate names as we find them.
+			for (int i = 0; i < magicSpells.Count; i++)
+			{
+				MagicSpell newSpell = magicSpells[i];
+				string spellName = FF1Text.BytesToText(magicSpells[i].Name);
+
+				switch (spellName)
+				{
+					// Note that 3 letter spell names actually have a trailing space
+					case "LIT ":
+						newSpell.Name = FF1Text.TextToBytes("THUN");
+						break;
+					case "LIT2":
+						newSpell.Name = FF1Text.TextToBytes("THN2");
+						break;
+					case "LIT3":
+						newSpell.Name = FF1Text.TextToBytes("THN3");
+						break;
+					case "FAST":
+						newSpell.Name = FF1Text.TextToBytes("HAST");
+						break;
+					case "SLEP":
+						newSpell.Name = FF1Text.TextToBytes("DOZE");
+						break;
+					case "SLP2":
+						newSpell.Name = FF1Text.TextToBytes("DOZ2");
+						break;
+
+					case "HARM":
+						newSpell.Name = FF1Text.TextToBytes("DIA ");
+						break;
+					case "HRM2":
+						newSpell.Name = FF1Text.TextToBytes("DIA2");
+						break;
+					case "HRM3":
+						newSpell.Name = FF1Text.TextToBytes("DIA3");
+						break;
+					case "HRM4":
+						newSpell.Name = FF1Text.TextToBytes("DIA4");
+						break;
+					case "ALIT":
+						newSpell.Name = FF1Text.TextToBytes("ATHN");
+						break;
+					case "AMUT":
+						newSpell.Name = FF1Text.TextToBytes("VOX ");
+						break;
+					case "FOG ":
+						newSpell.Name = FF1Text.TextToBytes("PROT");
+						break;
+					case "FOG2":
+						newSpell.Name = FF1Text.TextToBytes("PRO2");
+						break;
+					case "FADE":
+						newSpell.Name = FF1Text.TextToBytes("HOLY");
+						break;
+				}
+
+				// Update the entry in the list
+				magicSpells[i] = newSpell;
+			}
+
+			// Now update the spell names!
+			Put(MagicNamesOffset, magicSpells.Select(spell => spell.Name).Aggregate((seed, next) => seed + next));
+		}
 	}
 }

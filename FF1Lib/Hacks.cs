@@ -792,18 +792,21 @@ namespace FF1Lib
 				Put(0x2C218, Blob.FromHex("0F0F8F2CACAC7E7C"));
 		}
 
-		public void NoDanMode()
-		{
-			// Instead of looping through the 'check to see if characters are alive' thing, just set it to 4 and then remove the loop.
-			// EA EA EA EA EA EA (sports)
-			Put(0x6CB43, Blob.FromHex("A204A004EAEAEAEAEAEAEAEAEAEAEAEAEA"));
-
-		}
-
-		public void NonesGainXP()
+		public void XpAdmissibility(bool nonesGainXp, bool deadsGainXp)
 		{
 			// New routine to see if character can get XP LvlUp_AwardExp
-			PutInBank(0x1B, 0x8710, Blob.FromHex("A000B186C9FFF010A001B1862903F006C903F00218603860AD78688588AD7968858920608820A08A1860"));
+			if (nonesGainXp && !deadsGainXp)
+			{
+				PutInBank(0x1B, 0x8710, Blob.FromHex("A000B186C9FFF010A001B1862903F006C903F00218603860AD78688588AD7968858920608820A08A1860"));
+			}
+			else if (!nonesGainXp && deadsGainXp)
+			{
+				PutInBank(0x1B, 0x8710, Blob.FromHex("A000B186C9FFF010A001B1862903F006C903F00238603860EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA1860"));
+			}
+			else if (nonesGainXp && deadsGainXp)
+			{
+				PutInBank(0x1B, 0x8710, Blob.FromHex("A000B186C9FFF010A001B1862903F006C903F00238603860AD78688588AD7968858920608820A08A1860"));
+			}
 
 			// Have LvlUp_AwardExp reroute to new routine
 			PutInBank(0x1B, 0x8826, Blob.FromHex("201087B00860"));
@@ -812,7 +815,18 @@ namespace FF1Lib
 			PutInBank(0x1B, 0x8D20, Blob.FromHex("A000AD0168C9FFD001C8AD1368C9FFD001C8AD2568C9FFD001C8AD3768C9FFD001C8A20460"));
 
 			// Have DivideRewardBySurvivors reroute to new routine to count nones
-			PutInBank(0x1B, 0x8B43, Blob.FromHex("20208DEA"));
+			if (nonesGainXp && !deadsGainXp)
+			{
+				PutInBank(0x1B, 0x8B43, Blob.FromHex("20208DEA"));
+			}
+			else if (!nonesGainXp && deadsGainXp)
+			{
+				PutInBank(0x1B, 0x8B43, Blob.FromHex("20208DA9048CB36838EDB368A8EAEAEAEA"));
+			}
+			else if (nonesGainXp && deadsGainXp)
+			{
+				PutInBank(0x1B, 0x8B43, Blob.FromHex("A204A004EAEAEAEAEAEAEAEAEAEAEAEAEA")); // NoDanMode legacy code
+			}
 		}
 
 		public void ShuffleWeaponPermissions(MT19337 rng)
@@ -2173,11 +2187,12 @@ namespace FF1Lib
 			}
 		}
 
-		public void FightBahamut(TalkRoutines talkroutines, NPCdata npcdata, bool removeTail, EvadeCapValues evadeClampFlag)
+		public void FightBahamut(TalkRoutines talkroutines, NPCdata npcdata, bool removeTail, bool swoleBahamut, EvadeCapValues evadeClampFlag, MT19337 rng)
 		{
 			const byte offsetAtoB = 0x80; // diff between A side and B side
 
-			const byte encAnkylo = 0x71; // ANKYLO
+			const byte encAnkylo = 0x71; // ANKYLO FORMATION
+			const byte idAnkylo = 0x4E; // ANKYLO ENEMY #
 			const byte encCerbWzOgre = 0x22; // CEREBUS + WzOGRE
 			const byte encTyroWyvern = 0x3D + offsetAtoB; // TYRO + WYVERN
 
@@ -2191,6 +2206,48 @@ namespace FF1Lib
 			encountersData.formations[encAnkylo].minmax1 = (1, 1);
 			encountersData.formations[encAnkylo].unrunnableA = true;
 			encountersData.Write(this);
+
+			EnemyInfo bahamutInfo = new EnemyInfo();
+			bahamutInfo.decompressData(Get(EnemyOffset + (idAnkylo * EnemySize), EnemySize));
+			bahamutInfo.morale = 255; // always prevent running away, whether swole or not
+			bahamutInfo.monster_type = (byte)MonsterType.DRAGON;
+			if (swoleBahamut)
+			{
+				int availableScript = searchForNoSpellNoAbilityEnemyScript();
+				bahamutInfo.exp = 16000; // increase exp for swole bahamut, either mode
+				bahamutInfo.hp = 475; // increase HP (note: this will increase by 2x below)
+				bahamutInfo.elem_resist = (byte)Element.POISON; // no longer susceptible to BANE
+				if (availableScript >= 0 && Rng.Between(rng, 0, 3) > 0) // because spells and skills shuffle is common, allow RNG to also make physical bahamut (1 in 4)
+				{
+					// spells and skills were shuffled in a way that a script exists with NONES for all magic and skills
+					// find and borrow that script to make a bahamut AI
+					// (magical bahamut mode)
+
+					// assign any enemies using the availabe script to use true NONE script
+					setAIScriptToNoneForEnemiesUsing(availableScript);
+
+					// pick skills from this list
+					List<byte> potentialSkills = new List<byte> { (byte)EnemySkills.Heat, (byte)EnemySkills.Scorch, (byte)EnemySkills.Glare, (byte)EnemySkills.Blaze, (byte)EnemySkills.Inferno, (byte)EnemySkills.Cremate, (byte)EnemySkills.Snorting, (byte)EnemySkills.Trance, (byte)EnemySkills.Nuclear };
+					potentialSkills.Shuffle(rng);
+
+					// create and assign script
+					defineNewAI(availableScript,
+						spellChance: 0x00,
+						skillChance: 0x40,
+						spells: new List<byte> { (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE },
+						skills: new List<byte> { potentialSkills[0], potentialSkills[1], potentialSkills[2], potentialSkills[3] }
+						);
+					bahamutInfo.AIscript = (byte)availableScript;
+					bahamutInfo.mdef = 0xB4; // swole magical bahamut has increased MDEF
+				} else
+				{
+					// no script is available: spells and skills aren't shuffled or we got unlucky
+					// (physical bahamut mode)
+					bahamutInfo.critrate = 20;
+					bahamutInfo.num_hits = 2;
+				}
+			}
+			Put(EnemyOffset + (idAnkylo * EnemySize), bahamutInfo.compressData());
 
 			// Update name
 			var enemyText = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
@@ -2233,10 +2290,66 @@ namespace FF1Lib
 			SetNpc(MapId.BahamutsRoomB2, mapNpcIndex: 1, ObjectId.OnracDragon, 19, 7, inRoom: true, stationary: true);
 			SetNpc(MapId.BahamutsRoomB2, mapNpcIndex: 2, ObjectId.OnracDragon, 23, 7, inRoom: true, stationary: true);
 
-			// Scale Difficulty Up, approx 700hp
+			// Scale Difficulty Up, approx 700hp (normal) or 950hp (buffed)
 			ScaleSingleEnemyStats(78, 120, 120, wrapOverflow: false, includeMorale: false, rng: null, separateHPScale: true, lowPercentHp: 200, highPercentHp: 200, GetEvadeIntFromFlag(evadeClampFlag));
 		}
 
+		private void defineNewAI(int availableScript, byte spellChance, byte skillChance, List<byte> spells, List<byte> skills)
+		{
+			EnemyScriptInfo newAI = new EnemyScriptInfo();
+			newAI.spell_chance = spellChance;
+			newAI.skill_chance = skillChance;
+			newAI.spell_list = spells.ToArray();
+			newAI.skill_list = skills.ToArray();
+			Put(ScriptOffset + (availableScript * ScriptSize), newAI.compressData());
+		}
 
+		private void setAIScriptToNoneForEnemiesUsing(int availableScript)
+		{
+			for (int i = 0; i < EnemyCount; i++)
+			{
+				EnemyInfo enemyInfo = new EnemyInfo();
+				enemyInfo.decompressData(Get(EnemyOffset + (i * EnemySize), EnemySize));
+				if (enemyInfo.AIscript == availableScript)
+				{
+					enemyInfo.AIscript = 0xFF;
+					Put(EnemyOffset + (i * EnemySize), enemyInfo.compressData());
+				}
+			}
+		}
+
+		/// <summary>
+		/// Returns index of first occurrence where an enemy AI script has NONE for all spells and skills
+		/// Returns -1 if none exist
+		/// </summary>
+		/// <returns>int</returns>
+		private int searchForNoSpellNoAbilityEnemyScript()
+		{
+			int firstResult = -1;
+
+			for (int i = 0; i < ScriptCount; i++)
+			{
+				EnemyScriptInfo enemyScriptInfo = new EnemyScriptInfo();
+				enemyScriptInfo.decompressData(Get(ScriptOffset + (i * ScriptSize), ScriptSize));
+				if (enemyScriptInfo.skill_list[0] == 255 &&
+					enemyScriptInfo.skill_list[1] == 255 &&
+					enemyScriptInfo.skill_list[2] == 255 &&
+					enemyScriptInfo.skill_list[3] == 255 &&
+
+					enemyScriptInfo.spell_list[0] == 255 &&
+					enemyScriptInfo.spell_list[1] == 255 &&
+					enemyScriptInfo.spell_list[2] == 255 &&
+					enemyScriptInfo.spell_list[3] == 255 &&
+					enemyScriptInfo.spell_list[4] == 255 &&
+					enemyScriptInfo.spell_list[5] == 255 &&
+					enemyScriptInfo.spell_list[6] == 255 &&
+					enemyScriptInfo.spell_list[7] == 255)
+				{
+					firstResult = i;
+					break;
+				}
+			}
+			return firstResult;
+		}
 	}
 }

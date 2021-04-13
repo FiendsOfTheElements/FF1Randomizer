@@ -14,8 +14,8 @@
 	{
 		"Id": "spoilersCheckBox",
 		"title": "Generate Spoiler Log!",
-		"screenshot": "spoilerCheckBox.png",
-		"description": "Creates a spoiler log for the current seed that can be accessed from the console window of the browser. The resulting ROM's randomization will be different than if the log had not been generated in order to prevent cheating in races."
+		"screenshot": "downloadSpoilersCheckBox.png",
+		"description": "Download a spoiler log for the current seed. The resulting ROM's randomization will be different than if the log had not been generated in order to prevent cheating in races.\nNote: You may be asked by your browser to allow downloading multiple files when using this option."
 	},
 	{
 		"Id": "blindseedCheckBox",
@@ -299,6 +299,12 @@
 		"title": "Mix Spellbooks (Spellcrafter)",
 		"screenshot": "spellcrafterMixSpells.png",
 		"description": "Mixes the randomly generated spells created by Spellcrafter. Spells that would typically be considered White Magic may be classed as Black Magic and vice-versa, allowing those casters a greater variety of spells, potentially."
+	},
+	{
+		"Id": "accessibleSpellNamesCheckBox",
+		"title": "Accessible Spell Names",
+		"screenshot": "accessibleSpellNamesCheckBox.png",
+		"description": "Updates spell names to make them more accessible. The table below shows what the new names are when this flag is checked:\n[grid][r]{i}BM - New|{i}BM - Original|{i}WM - New|{i}WM - Original[r]{l}THUN|{l}LIT|{l}PROT|{l}FOG[r]{l}DOZE|{l}SLEP|{l}DIA|{l}HARM[r]{l}THN2|{l}LIT2|{l}ATHN|{l}ALIT[r]{l}HAST|{l}FAST|{l}DIA2|{l}HRM2[r]{l}DOZ2|{l}SLP2|{l}VOX|{l}AMUT[r]{l}THN3|{l}LIT3|{l}DIA3|{l}HRM3[r]||{l}PRO2|{l}FOG2[r]||{l}DIA4|{l}HRM4[r]||{l}HOLY|{l}FADE\n\nNote: This setting is disabled when \"Generate New Spellbooks\" is on"
 	},
 
 
@@ -861,7 +867,7 @@
 		"Id": "allowDeepCastlesCheckBox",
 		"title": "Deep ToFR",
 		"screenshot": "allowDeepCastlesCheckBox.gif",
-		"description": "Enables the game to place the first floor of the Temple of Fiends at any level of a dungeon, such that multiple floors may have to be crossed to enter the Temple of FIends.\nIf this flag is active, the whole of the Temple of Fiends will be shuffled as a single unit, so once you find the Temple of Fiends you don't have to search elsewhere for each floor; it's all right there."
+		"description": "Enables the game to place the first floor of the Temple of Fiends at any level of a dungeon, such that multiple floors may have to be crossed to enter the Temple of Fiends.\nIf this flag is active, the whole of the Temple of Fiends will be shuffled as a single unit, so once you find the Temple of Fiends you don't have to search elsewhere for each floor; it's all right there."
 	},
 	{
 		"Id": "townsCheckBox",
@@ -1098,12 +1104,6 @@
 		"title": "Scaled Stats Includes Morale",
 		"screenshot": "includeMoraleCheckBox.png",
 		"description": "Includes enemy morale in the stat scaling, as opposed to keeping morale separate (fixed at their vanilla values)."
-	},
-	{
-		"Id": "noDanModeCheckBox",
-		"title": "Static EXP Distribution",
-		"screenshot": "noDanModeCheckBox.png",
-		"description": "When enabled, all experience received by enemies is always distributed as if there were 4 Light Warriors (thus all the heroes will get one quarter of the total EXP), rather than dividing the total EXP between those Light Warriors alive at the end of battle."
 	},
 	{
 		"Id": "startingGoldCheckBox",
@@ -1529,6 +1529,12 @@
 		"description": "When enabled, \"None\" characters will count as live characters for XP calculation and gain their share of XP. If \"Tavern Recruitment Mode\" is also enabled, characters hired over these \"None\" characters will gain all the EXP (and levels) of the None at that point."
 	},
 	{
+		"Id": "deadsGainXPcheckBox",
+		"title": "Deads Gain XP",
+		"screenshot": "deadsGainXPcheckBox.png",
+		"description": "When enabled, dead characters will count as live characters for XP calculation and gain their share of XP."
+	},
+	{
 		"Id": "thiefAgilityBuffCheckBox",
 		"title": "Thief Agility Buff",
 		"screenshot": "thiefAgilityBuff.png",
@@ -1552,7 +1558,7 @@
 		"Id": "noBossSkillScriptShuffleCheckBox",
 		"title": "Don't Shuffle Bosses' Scripts, Skills & Spells",
 		"screenshot": "NoBossScriptSkillShuffle.png",
-		"description": "When shuffling enemies' scripts or spells/skills, excluding the four Fiends, WarMech, and Chaos."
+		"description": "When shuffling enemies' scripts or spells/skills, exclude the four Fiends, WarMech, and Chaos."
 	},
 	{
 		"Id": "fightBahamutCheckBox",
@@ -1560,7 +1566,12 @@
 		"screenshot": "fightBahamutCheckBox.gif",
 		"description": "Turning in the TAIL is not the only requirement for class change. You must also defeat Bahamut to prove your courage.\nIf \"Remove Tail\" is enabled, the only requirement for class change is to defeat Bahamut.\nNote: This flag is ignored when \"Enemizer\" or \"Lich's Revenge\" is enabled."
 	},
-
+	{
+		"Id": "swoleBahamutCheckBox",
+		"title": "Fight Bahamut - Buffed Bahamut",
+		"screenshot": "buffedBahamutCheckBox.png",
+		"description": "Increases the stats of Bahamut, roughly to the equivalent of Tiamat. Buffed Bahamut may be given skills, increased critical hit rate, and/or increased number of hits.\nAlso grants a larger XP yield, roughly half that of WarMECH."
+	},
 	{
 		"Id": "etherizerCheckBox",
 		"title": "Turn Shelters into Ethers",
@@ -1603,9 +1614,15 @@
 
 	{
 		"Id": "spoilerBatsDropDown",
-		"title": "Temple of Fiends Bats Boss Hints",
+		"title": "Temple of Fiends Bats Text",
 		"screenshot": "spoilerBats.png",
-		"description": "The dialogue for the Sky Warrior bats in Garland's room will be replaced with spoilers about the Fiend refights and Chaos.\nHints - Describes the approximate stats in text. Adjectives used represent increasing order of difficulty: pretty, extra, very, super, incredibly, insanely.\nStars - Gives a rating for each boss stat on a scale of 1-10.\nFull stats - Gives the numerical stats and full spell and skill scripts."
+		"description": "The dialogue for the Sky Warrior bats in Garland's room can be replaced with spoilers about Chaos and the Fiend refights that will appear in the Temple of Fiends Revisited.\nVanilla - Bats have story dialogue after all four Orbs are lit, as it is in the original game.\nHints - Describes the ToFR boss stats using text. Adjectives used represent increasing order of difficulty: pretty, extra, very, super, incredibly, insanely.\nStars - Rates each ToFR boss stat on a scale of 1-10.\nFull Stats - Gives the numerical stats and full spell and skill scripts for each ToFR boss."
+	},
+	{
+		"Id": "spoilerBatsDontCheckOrbsCheckbox",
+		"title": "Temple of Fiends Bats Text - Early Spoilers",
+		"screenshot": "spoilerBatsEarly.gif",
+		"description": "Spoiler information can be obtained from the Sky Warrior bats at any time, without needing to light the four Orbs first."
 	},
 	{
 		"Id": "extendedHintsCheckBox",

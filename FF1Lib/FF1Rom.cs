@@ -522,6 +522,10 @@ namespace FF1Lib
 			{
 				ShuffleMagicLevels(rng, ((bool)flags.MagicPermissions), (bool)flags.MagicLevelsTiered, (bool)flags.MagicLevelsMixed, (bool)!flags.GenerateNewSpellbook);
 			}
+			if (preferences.AccessibleSpellNames)
+			{
+				AccessibleSpellNames(flags);
+			}
 
 			new StartingInventory(rng, flags, this).SetStartingInventory();
 			new StartingEquipment(rng, flags, this).SetStartingEquipment();
@@ -874,13 +878,9 @@ namespace FF1Lib
 				EnableCanalBridge();
 			}
 
-			if (flags.NonesGainXP)
+			if (flags.NonesGainXP || flags.DeadsGainXP)
 			{
-				NonesGainXP();
-			}
-			if (flags.NoDanMode)
-			{
-				NoDanMode();
+				XpAdmissibility((bool)flags.NonesGainXP, flags.DeadsGainXP);
 			}
 
 			SetProgressiveScaleMode(flags);
@@ -921,9 +921,8 @@ namespace FF1Lib
 
 			if ((bool)flags.FightBahamut && !flags.SpookyFlag && !(bool)flags.RandomizeFormationEnemizer)
 			{
-				FightBahamut(talkroutines, npcdata, (bool)flags.NoTail, flags.EvadeCap);
+				FightBahamut(talkroutines, npcdata, (bool)flags.NoTail, (bool)flags.SwoleBahamut, flags.EvadeCap, rng);
 			}
-
 
 			if (flags.SpookyFlag && !(bool)flags.RandomizeFormationEnemizer)
 			{

@@ -1012,6 +1012,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FightBahamut"));
 			}
 		}
+		public bool? SwoleBahamut
+		{
+			get => Flags.SwoleBahamut;
+			set
+			{
+				Flags.SwoleBahamut = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SwoleBahamut"));
+			}
+		}
 		public bool? ConfusedOldMen
 		{
 			get => Flags.ConfusedOldMen;
@@ -2204,13 +2213,13 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncludeMorale"));
 			}
 		}
-		public bool NoDanMode
+		public bool DeadsGainXP
 		{
-			get => Flags.NoDanMode;
+			get => Flags.DeadsGainXP;
 			set
 			{
-				Flags.NoDanMode = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NoDanMode"));
+				Flags.DeadsGainXP = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DeadsGainXP"));
 			}
 		}
 		public bool? NoTail
@@ -2486,6 +2495,15 @@ namespace FF1Lib
 			{
 				Preferences.ChangeLute = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ChangeLute"));
+			}
+		}
+		public bool AccessibleSpellNames
+		{
+			get => Preferences.AccessibleSpellNames;
+			set
+			{
+				Preferences.AccessibleSpellNames = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ModernizeSpellNames"));
 			}
 		}
 		public bool NoTabLayout
@@ -4196,6 +4214,8 @@ namespace FF1Lib
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SpoilerBatsDontCheckOrbs"));
 		    }
 		}
+
+		public bool SpoilerBatsDontCheckOrbsEnabled => !SkyWarriorSpoilerBats.Equals(SpoilerBatHints.Vanilla);
 
 		public bool SanityCheckerV2
 		{

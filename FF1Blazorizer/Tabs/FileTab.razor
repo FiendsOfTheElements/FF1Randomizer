@@ -1,5 +1,6 @@
 ﻿@using System.ComponentModel;
 @using System.IO;
+@using System.Web;
 @using RomUtilities;
 @using FF1Lib;
 @using System.Text.Json;
@@ -265,14 +266,24 @@
 
 				SetStatusMessage(StatusMessage + "SUCCESS!");
 
-				if (Flags.Spoilers)
+				if (Flags.Spoilers && Utilities.SpoilerCache.Length > 0)
 				{
-					SetStatusMessage(StatusMessage + " SPOILER LOG IN BROWSER CONSOLE!");
+					SetStatusMessage(StatusMessage + " Downloading ROM and spoiler log.");
+				}
+				else if (Flags.Spoilers && Utilities.SpoilerCache.Length == 0)
+				{
+					SetStatusMessage(StatusMessage + " No spoilers have been generated to download.");
 				}
 
 				StateHasChanged();
 
-				await JSRuntime.InvokeAsync<object>("downloadROM", $"FFR_{_seed}_{Flags.Encoded}.nes", encoded);
+				await JSRuntime.InvokeAsync<object>("downloadFile", $"FFR_{_seed}_{Flags.Encoded}.nes", encoded);
+
+				if (Flags.Spoilers && Utilities.SpoilerCache.Length > 0)
+				{
+					var encodedSpoiler = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(Utilities.SpoilerCache));
+					await JSRuntime.InvokeVoidAsync("downloadFile", $"Spoiler_{_seed}_{Flags.Encoded}.txt", encodedSpoiler);
+				}
 			}
 			catch (Exception e)
 			{

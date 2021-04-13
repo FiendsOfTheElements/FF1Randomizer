@@ -12,7 +12,7 @@
 			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="owMapExchange" TItem="OwMapExchanges" IsEnabled="Flags.SanityCheckerV2" @bind-Value="Flags.OwMapExchange">Overworld Map:</EnumDropDown>
 			<div class="checkbox-cell"></div>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="gaiaShortcutCheckBox" @bind-Value="Flags.GaiaShortcut">Add Gaia Shortcut</TriStateCheckBox>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="moveGaiaItemShopCheckBox" IsEnabled="@(Flags.GaiaShortcut == true)" @bind-Value="Flags.MoveGaiaItemShop">Move Gaia Item Shop</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="moveGaiaItemShopCheckBox" IsEnabled="@(Flags.GaiaShortcut != false)" @bind-Value="Flags.MoveGaiaItemShop">Move Gaia Item Shop</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="melmondClinicCheckBox" @bind-Value="Flags.MelmondClinic">Melmondish Hospitality</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="lefeinSuperStoreCheckBox" IsEnabled="@Flags.LefeinSuperStoreEnabled" @bind-Value="Flags.LefeinSuperStore">Add Lefein SuperStore</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="randomVampAttackCheckBox" @bind-Value="Flags.RandomVampAttack">Vampire Attacks Random Town</TriStateCheckBox>
@@ -26,13 +26,13 @@
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="gaiaMountainPassCheckBox" @bind-Value="Flags.MapGaiaMountainPass">Gaia mountain pass</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="dragonsHoardCheckBox" @bind-Value="Flags.MapDragonsHoard">Dragon's Hoard</TriStateCheckBox>
 			<div class="row">
-			     <div class="col-sm-6 noleftpadding">
-				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeCardiaCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeCardia">Cardia Islands incentive </TriStateCheckBox>
-			     </div>
-			     <div class="col-sm-6">
-				<EnumDropDown DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="incentiveCardiaDropDown" TItem="IncentivePlacementType" @bind-Value="Flags.CardiaIncentivePlacementType"></EnumDropDown>
-			     </div>
-		        </div>
+				<div class="col-sm-6 noleftpadding">
+					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeCardiaCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeCardia">Cardia Islands incentive </TriStateCheckBox>
+				</div>
+				<div class="col-sm-6">
+					<EnumDropDown DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="incentiveCardiaDropDown" TItem="IncentivePlacementType" @bind-Value="Flags.CardiaIncentivePlacementType"></EnumDropDown>
+				</div>
+			</div>
 			<div class="checkbox-cell"></div>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="procGenEarth1" @bind-Value="Flags.EFGEarth1">Generated Earth Cave B1</CheckBox>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="procGenEarth2" @bind-Value="Flags.EFGEarth2">Generated Earth Cave B2</CheckBox>
@@ -40,6 +40,7 @@
 			<h4>Balance</h4>
 			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="startingLevelDropDown" TItem="StartingLevel" @bind-Value="Flags.StartingLevel">Starting Level:</EnumDropDown>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="nonesGainXPcheckBox" @bind-Value="Flags.NonesGainXP">Nones Gain XP</CheckBox>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="deadsGainXPcheckBox" @bind-Value="Flags.DeadsGainXP">Deads Gain XP</CheckBox>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="thiefAgilityBuffCheckBox" @bind-Value="Flags.ThiefAgilityBuff">Thief Agility Buff</CheckBox>
 			<div class="checkbox-cell"></div>
 			<h4>Bugfixes</h4>
@@ -50,6 +51,7 @@
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="noBossSkillScriptShuffleCheckBox" IsEnabled="@(Flags.EnemyScripts != false || Flags.EnemySkillsSpells != false)" @bind-Value="Flags.NoBossSkillScriptShuffle">Don't Shuffle Bosses' Scripts, Skills & Spells</TriStateCheckBox>
 			<div class="checkbox-cell"></div>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="fightBahamutCheckBox" IsEnabled="@(Flags.SpookyFlag != true && Flags.RandomizeFormationEnemizer != true)" @bind-Value="Flags.FightBahamut">Fight Bahamut</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="swoleBahamutCheckBox" IsEnabled="@(Flags.FightBahamut != false)" @bind-Value="Flags.SwoleBahamut">Buffed Bahamut</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="hallOfDragonsCheckBox" @bind-Value="Flags.MapHallOfDragons">Hall of Dragons</TriStateCheckBox>
 			<div class="checkbox-cell"></div>
 		</div>
@@ -119,9 +121,14 @@
 			<div class="checkbox-cell"></div>
 			<h4>Hints</h4>
 			<div class="row">
-                                <EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="spoilerBatsDropDown" TItem="SpoilerBatHints" @bind-Value="Flags.SkyWarriorSpoilerBats">Temple of Fiends bats text:</EnumDropDown>
-				<TriStateCheckBox DisableTooltip Indent UpdateToolTip="@UpdateToolTipID" Id="spoilerBatsDontCheckOrbsCheckbox" @bind-Value="Flags.SpoilerBatsDontCheckOrbs">Spoilers are available at the beginning of the game</TriStateCheckBox>
+					<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="spoilerBatsDropDown" TItem="SpoilerBatHints" @bind-Value="Flags.SkyWarriorSpoilerBats">Temple of Fiends Bats Text:</EnumDropDown>
 			</div>
+			<div class="row">
+				<div class="col-lg-4 tighter noleftpadding">
+					<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="spoilerBatsDontCheckOrbsCheckbox" IsEnabled="@Flags.SpoilerBatsDontCheckOrbsEnabled" @bind-Value="Flags.SpoilerBatsDontCheckOrbs">Early Spoilers</TriStateCheckBox>
+				</div>
+			</div>
+			<div class="checkbox-cell"></div>
 
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="extendedHintsCheckBox" @bind-Value="Flags.ExtensiveHints_Enable">Enable Extensive Hints</CheckBox>
 			<div class="row">

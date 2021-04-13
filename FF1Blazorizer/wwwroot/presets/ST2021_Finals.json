@@ -199,7 +199,7 @@
     "WrapStatOverflow": false,
     "WrapPriceOverflow": false,
     "IncludeMorale": false,
-    "NoDanMode": false,
+    "DeadsGainXP": false,
     "NonesGainXP": false,
     "NoTail": false,
     "GuaranteedMasamune": false,
