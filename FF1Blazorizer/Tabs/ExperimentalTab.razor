@@ -127,10 +127,9 @@
 	[Parameter] public bool noTabLayout { get; set; }
 	[Parameter] public bool IsOpen { get; set; } = true;
 
-		[Parameter] public byte[] _spriteSheet { get; set; }
-
 		async Task OnSpriteSheetChanged(ChangeEventArgs e)
 		{
+		      Console.WriteLine("OnSpriteSheetChanged");
 			var encoded = await JSRuntime.InvokeAsync<string>("handleFileSelect", "spriteSheetInput");
 			SetSpriteSheetData(encoded);
 
@@ -142,7 +141,7 @@
 
 		void SetSpriteSheetData(string encoded)
 		{
-			_spriteSheet = Convert.FromBase64String(encoded);
+			Flags.SpriteSheet = Convert.FromBase64String(encoded);
 		}
 
 }

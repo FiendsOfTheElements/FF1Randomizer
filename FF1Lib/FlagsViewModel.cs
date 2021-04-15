@@ -4450,5 +4450,7 @@ namespace FF1Lib
 		}
 
 		#endregion
+
+		public byte[] SpriteSheet { get; set; }
 	}
 }

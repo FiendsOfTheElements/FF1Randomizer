@@ -55,7 +55,6 @@
 		[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
 		[Parameter] public bool IsOpen { get; set; } = true;
 		[Parameter] public bool showChaos { get; set; }
-		[Parameter] public byte[] _spriteSheet { get; set; }
 
 		private string RomMessage = "Upload Rom:";
 		private bool RememberROM = false;
@@ -253,14 +252,13 @@
 				return;
 			}
 
-			//if (_spriteSheet != null) {
-			Console.WriteLine("Using sprite sheet");
-			//using (var stream = new MemoryStream(_spriteSheet))
-			//{
-				//_rom.SetCustomPlayerSprites(stream);
-				_rom.SetCustomPlayerSprites(null);
-			//}
-			//}
+			if (Flags.SpriteSheet != null) {
+			  Console.WriteLine("Using sprite sheet");
+			  using (var stream = new MemoryStream(Flags.SpriteSheet))
+			  {
+				_rom.SetCustomPlayerSprites(stream);
+			  }
+			}
 
 			try
 			{
