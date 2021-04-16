@@ -57,6 +57,7 @@ namespace FF1Lib
 			public List<IRewardSource> Forced;
 			public List<Item> Incentivized;
 			public List<Item> Unincentivized;
+			public List<Item> Shards;
 			public IReadOnlyCollection<Item> AllTreasures;
 		}
 
@@ -87,6 +88,7 @@ namespace FF1Lib
 								_allTreasures.Contains(x) &&
 								!forcedItems.Any(y => y.Item == x))
 								.ToList();
+			var shards = new List<Item>();
 
 			var treasurePool = _allTreasures.ToList();
 
@@ -108,7 +110,7 @@ namespace FF1Lib
 			}
 			while (treasurePool.Remove(Item.Shard))
 			{
-				unincentivizedQuestItems.Add(Item.Shard);
+				shards.Add(Item.Shard);
 			}
 
 			ItemPlacementContext ctx = new ItemPlacementContext
@@ -116,6 +118,7 @@ namespace FF1Lib
 				Forced = forcedItems,
 				Incentivized = incentivePool,
 				Unincentivized = unincentivizedQuestItems,
+				Shards = shards,
 				AllTreasures = treasurePool.ToList(),
 			};
 
@@ -497,6 +500,7 @@ namespace FF1Lib
 				placedItems = ctx.Forced.ToList();
 				var incentives = ctx.Incentivized.ToList();
 				var nonincentives = ctx.Unincentivized.ToList();
+				var shards = ctx.Shards.ToList();
 				treasurePool = ctx.AllTreasures.ToList();
 				incentives.Shuffle(rng);
 				nonincentives.Shuffle(rng);
@@ -582,7 +586,7 @@ namespace FF1Lib
 					placedItems.Add(NewItemPlacement(incentiveLocation, incentives.SpliceRandom(rng)));
 				}
 
-				// 6. Then place remanining incentive items and unincentivized quest items in any other chest before ToFR
+				// 6. Then place remanining incentive items, unincentivized quest items, and shards in any other chest before ToFR
 				var leftoverItems = incentives.Concat(nonincentives).ToList();
 				leftoverItems.Shuffle(rng);
 
@@ -591,9 +595,19 @@ namespace FF1Lib
 				if ((bool)_flags.LooseExcludePlacedDungeons)
 					leftoverItemLocations = preBlackOrbUnincentivizedLocationPool.Where(x => !placedItems.Any(y => y.Address == x.Address)).ToList();
 
+				// Place leftover items before placing shards, because if LooseExcludePlacedDungeons is set,
+				// and there are lots of incentive locations, leftoverItemLocations pool may be small.
 				foreach (var leftoverItem in leftoverItems)
 				{
 					placedItems.Add(NewItemPlacement(leftoverItemLocations.SpliceRandom(rng), leftoverItem));
+				}
+
+				if (shards.Count > 0) {
+				    leftoverItemLocations = preBlackOrbLocationPool.Where(x => !placedItems.Any(y => y.Address == x.Address)).ToList();
+				    foreach (var shard in shards)
+				    {
+					placedItems.Add(NewItemPlacement(leftoverItemLocations.SpliceRandom(rng), shard));
+				    }
 				}
 
 				// 7. Check sanity and loop if needed
