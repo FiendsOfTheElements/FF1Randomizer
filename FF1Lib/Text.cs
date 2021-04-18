@@ -65,6 +65,13 @@ namespace FF1Lib
 			Put(pointerOffset, Blob.FromUShorts(pointers));
 	    }
 
+		public void UpdateItemName(Item targetitem, string newname)
+		{
+			var pointers = Get(ItemTextPointerOffset, 2 * 256).ToUShorts().ToList();
+
+			var blob = FF1Text.TextToBytes(newname, useDTE: false);
+			Put(ItemTextPointerBase + pointers[(int)targetitem], blob);
+		}
 	    public Blob ReadUntil(int offset, byte delimiter)
 	    {
 			var bytes = new List<byte>();

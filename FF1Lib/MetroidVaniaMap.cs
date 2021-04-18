@@ -815,9 +815,7 @@ namespace FF1Lib
 			MoveNpc(MapId.NorthwestCastle, 0x02, 0x1C, 0x01, false, false);
 			MoveNpc(MapId.Onrac, 0x09, 0x11, 0x23, false, false);
 
-			var itemnames = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
-			itemnames[(int)Item.Floater] = "SIGIL  ";
-			WriteText(itemnames, ItemTextPointerOffset, ItemTextPointerBase, ItemTextOffset);
+			UpdateItemName(Item.Floater, "SIGIL  ");
 
 			Put(0x2B5F4, FF1Text.TextToBytes("MARK", useDTE: false));
 
