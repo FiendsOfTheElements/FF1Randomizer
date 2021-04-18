@@ -74,7 +74,7 @@ namespace FF1Lib
 			var requiredAccess = AccessRequirement.All;
 			var requiredMapChanges = MapChange.All;
 
-			if ((bool)victoryConditions.NoFloater) {
+			if ((bool)victoryConditions.NoFloater && !victoryConditions.NoOverworld) {
 			    requiredMapChanges &= ~MapChange.Airship;
 			}
 

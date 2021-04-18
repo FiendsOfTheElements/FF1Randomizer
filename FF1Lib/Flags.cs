@@ -607,7 +607,7 @@ namespace FF1Lib
 		public bool? IncentivizeShip => NPCItems & IncentivizeShipAndCanal & !FreeShip & !NoOverworld;
 		public bool? IncentivizeRod => NPCItems & IncentivizeMainItems;
 		public bool? IncentivizeCube => NPCItems & IncentivizeMainItems;
-		public bool? IncentivizeFloater => !FreeAirship & !NoFloater & IncentivizeAirship;
+		public bool? IncentivizeFloater => ((!FreeAirship & !NoFloater) | NoOverworld) & IncentivizeAirship;
 		public bool? IncentivizePromotion => !FreeTail & !NoTail & IncentivizeTail;
 
 		public bool? IncentivizeCanal => NPCFetchItems & IncentivizeShipAndCanal & !FreeCanal & !NoOverworld;

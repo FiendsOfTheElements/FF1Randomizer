@@ -130,7 +130,7 @@ namespace FF1Lib
 			{
 				placedItems = placedItems.Select(x => x.Item != Item.Bridge ? x : NewItemPlacement(x, ReplacementItem)).ToList();
 			}
-			if ((bool)_flags.FreeAirship || (bool)_flags.NoFloater)
+			if (((bool)_flags.FreeAirship || (bool)_flags.NoFloater) && !((IItemShuffleFlags)_flags).NoOverworld)
 			{
 				placedItems = placedItems.Select(x => x.Item != Item.Floater ? x : NewItemPlacement(x, ReplacementItem)).ToList();
 			}
@@ -528,7 +528,7 @@ namespace FF1Lib
 						nextPlacements.Add(Item.Ruby);
 						lastPlacements.Remove(Item.Ruby);
 					}
-					if ((bool)_flags.NoFloater) {
+					if ((bool)_flags.NoFloater && !((IItemShuffleFlags)_flags).NoOverworld) {
 					    lastPlacements.Remove(Item.Floater);
 					}
 
