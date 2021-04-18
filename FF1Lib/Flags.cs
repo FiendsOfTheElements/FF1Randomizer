@@ -121,7 +121,7 @@ namespace FF1Lib
 		#endregion
 
 		public bool? ExcludeGoldFromScaling { get; set; } = false;
-		public bool CheapVendorItem { get; set; } = true;
+		public bool CheapVendorItem { get; set; } = false;
 		public bool ApplyExpBoostToGold { get; set; } = false;
 
 		public StartingLevel StartingLevel { get; set; }

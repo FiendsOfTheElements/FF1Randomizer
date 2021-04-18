@@ -6,16 +6,18 @@
 	<h3 class="@(IsOpen ? "" : "h3-collapsed")"><a class="@(noTabLayout ? "collapsible-header" : "")" @onclick="(() => IsOpen = (!noTabLayout || !IsOpen))">Goal</a></h3>
 	@if (IsOpen)
 	{
-		<div class="col1">
-			<h4>Temple of Fiends</h4>
-			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="transformFinalFormationCheckBox" TItem="FinalFormation" IsEnabled="@(Flags.SpookyFlag != true)" @bind-Value="Flags.TransformFinalFormation">Alternate Final Boss</EnumDropDown>
-			<div class="checkbox-cell"></div>
-			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="chaosRushCheckBox" @bind-Value="Flags.ChaosRush">Unlocked ToFR</CheckBox>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="shortToFRCheckBox" @bind-Value="Flags.ShortToFR">Shorten ToFR</TriStateCheckBox>
-			<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="preserveFiendRefightsCheckBox" IsEnabled="@Flags.ShortToFR" @bind-Value="Flags.PreserveFiendRefights">Include Fiend Tiles</TriStateCheckBox>
-			<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="preserveAllFiendRefightsCheckBox" IsEnabled="@Flags.CanPreserveAllFiendRefights" @bind-Value="Flags.PreserveAllFiendRefights">Refight All Fiends</TriStateCheckBox>
-			<div class="checkbox-cell"></div>
-		</div>
+<div class="col1">
+	<h4>Temple of Fiends</h4>
+	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="transformFinalFormationCheckBox" TItem="FinalFormation" IsEnabled="@(Flags.SpookyFlag != true)" @bind-Value="Flags.TransformFinalFormation">Alternate Final Boss</EnumDropDown>
+	<div class="checkbox-cell"></div>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="chaosRushCheckBox" @bind-Value="Flags.ChaosRush">Unlocked ToFR</CheckBox>
+	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="exitToFRCheckBox" @bind-Value="Flags.ExitToFR">Add ToFR Exit</TriStateCheckBox>
+	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="shortToFRCheckBox" @bind-Value="Flags.ShortToFR">Shorten ToFR</TriStateCheckBox>
+	<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="preserveFiendRefightsCheckBox" IsEnabled="@Flags.ShortToFR" @bind-Value="Flags.PreserveFiendRefights">Include Fiend Tiles</TriStateCheckBox>
+	<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="preserveAllFiendRefightsCheckBox" IsEnabled="@Flags.CanPreserveAllFiendRefights" @bind-Value="Flags.PreserveAllFiendRefights">Refight All Fiends</TriStateCheckBox>
+	<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="lutePlateInShortToFRCheckBox" IsEnabled="@(Flags.ShortToFR != false)" @bind-Value="Flags.LutePlateInShortToFR">Include Lute Plate in Short ToFR</TriStateCheckBox>
+	<div class="checkbox-cell"></div>
+</div>
 		<div class="col2">
 			<h4>Treasure Hunt</h4>
 			<p>A new adventure! Instead of lighting the four orbs to activate the BLACK ORB, the Light Warriors must seek out and collect several of a random treasure item.</p>
