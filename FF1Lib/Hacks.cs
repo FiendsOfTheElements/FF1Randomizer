@@ -160,64 +160,34 @@ namespace FF1Lib
 			// Zero out allowed classes lut since we're going to bitwise OR it
 			PutInBank(0x1E, 0x8114, Blob.FromHex("00000000000000000000000000"));
 
-			// Do each slot - so ugly!
-			if ((flags.FIGHTER1 ?? false)) options.Add(FF1Class.Fighter);
-			if ((flags.THIEF1 ?? false)) options.Add(FF1Class.Thief);
-			if ((flags.BLACK_BELT1 ?? false)) options.Add(FF1Class.BlackBelt);
-			if ((flags.RED_MAGE1 ?? false)) options.Add(FF1Class.RedMage);
-			if ((flags.WHITE_MAGE1 ?? false)) options.Add(FF1Class.WhiteMage);
-			if ((flags.BLACK_MAGE1 ?? false)) options.Add(FF1Class.BlackMage);
-			if ((flags.KNIGHT1 ?? false)) options.Add(FF1Class.Knight);
-			if ((flags.NINJA1 ?? false)) options.Add(FF1Class.Ninja);
-			if ((flags.MASTER1 ?? false)) options.Add(FF1Class.Master);
-			if ((flags.RED_WIZ1 ?? false)) options.Add(FF1Class.RedWiz);
-			if ((flags.WHITE_WIZ1 ?? false)) options.Add(FF1Class.WhiteWiz);
-			if ((flags.BLACK_WIZ1 ?? false)) options.Add(FF1Class.BlackWiz);
+			// Link flags and classes
+			var classSelection = new List<(bool, bool, bool, bool, FF1Class)> {
+				((bool)flags.FIGHTER1, (bool)flags.FIGHTER2, (bool)flags.FIGHTER3, (bool)flags.FIGHTER4, FF1Class.Fighter ),
+				((bool)flags.THIEF1, (bool)flags.THIEF2, (bool)flags.THIEF3, (bool)flags.THIEF4, FF1Class.Thief ),
+				((bool)flags.BLACK_BELT1, (bool)flags.BLACK_BELT2, (bool)flags.BLACK_BELT3, (bool)flags.BLACK_BELT4, FF1Class.BlackBelt ),
+				((bool)flags.RED_MAGE1, (bool)flags.RED_MAGE2, (bool)flags.RED_MAGE3, (bool)flags.RED_MAGE4, FF1Class.RedMage ),
+				((bool)flags.WHITE_MAGE1, (bool)flags.WHITE_MAGE2, (bool)flags.WHITE_MAGE3, (bool)flags.WHITE_MAGE4, FF1Class.WhiteMage ),
+				((bool)flags.BLACK_MAGE1, (bool)flags.BLACK_MAGE2, (bool)flags.BLACK_MAGE3, (bool)flags.BLACK_MAGE4, FF1Class.BlackMage ),
+				(false, (bool)flags.NONE_CLASS2, (bool)flags.NONE_CLASS3, (bool)flags.NONE_CLASS4, FF1Class.None ),
+				((bool)flags.KNIGHT1, (bool)flags.KNIGHT2, (bool)flags.KNIGHT3, (bool)flags.KNIGHT4, FF1Class.Knight ),
+				((bool)flags.NINJA1, (bool)flags.NINJA2, (bool)flags.NINJA3, (bool)flags.NINJA4, FF1Class.Ninja ),
+				((bool)flags.MASTER1, (bool)flags.MASTER2, (bool)flags.MASTER3, (bool)flags.MASTER4, FF1Class.Master ),
+				((bool)flags.RED_WIZ1, (bool)flags.RED_WIZ2, (bool)flags.RED_WIZ3, (bool)flags.RED_WIZ4, FF1Class.RedWiz ),
+				((bool)flags.WHITE_WIZ1, (bool)flags.WHITE_WIZ2, (bool)flags.WHITE_WIZ3, (bool)flags.WHITE_WIZ4, FF1Class.WhiteWiz ),
+				((bool)flags.BLACK_WIZ1, (bool)flags.BLACK_WIZ2, (bool)flags.BLACK_WIZ3, (bool)flags.BLACK_WIZ4, FF1Class.BlackWiz ),
+			};
+
+			// Do each slot
+			options = classSelection.Where(x => x.Item1 == true).Select(x => x.Item5).ToList();
 			UpdateCharacterFromOptions(1, (flags.FORCED1 ?? false), options, rng);
 
-			if ((flags.FIGHTER2 ?? false)) options.Add(FF1Class.Fighter);
-			if ((flags.THIEF2 ?? false)) options.Add(FF1Class.Thief);
-			if ((flags.BLACK_BELT2 ?? false)) options.Add(FF1Class.BlackBelt);
-			if ((flags.RED_MAGE2 ?? false)) options.Add(FF1Class.RedMage);
-			if ((flags.WHITE_MAGE2 ?? false)) options.Add(FF1Class.WhiteMage);
-			if ((flags.BLACK_MAGE2 ?? false)) options.Add(FF1Class.BlackMage);
-			if ((flags.NONE_CLASS2 ?? false)) options.Add(FF1Class.None);
-			if ((flags.KNIGHT2 ?? false)) options.Add(FF1Class.Knight);
-			if ((flags.NINJA2 ?? false)) options.Add(FF1Class.Ninja);
-			if ((flags.MASTER2 ?? false)) options.Add(FF1Class.Master);
-			if ((flags.RED_WIZ2 ?? false)) options.Add(FF1Class.RedWiz);
-			if ((flags.WHITE_WIZ2 ?? false)) options.Add(FF1Class.WhiteWiz);
-			if ((flags.BLACK_WIZ2 ?? false)) options.Add(FF1Class.BlackWiz);
+			options = classSelection.Where(x => x.Item2 == true).Select(x => x.Item5).ToList();
 			UpdateCharacterFromOptions(2, (flags.FORCED2 ?? false), options, rng);
 
-			if ((flags.FIGHTER3 ?? false)) options.Add(FF1Class.Fighter);
-			if ((flags.THIEF3 ?? false)) options.Add(FF1Class.Thief);
-			if ((flags.BLACK_BELT3 ?? false)) options.Add(FF1Class.BlackBelt);
-			if ((flags.RED_MAGE3 ?? false)) options.Add(FF1Class.RedMage);
-			if ((flags.WHITE_MAGE3 ?? false)) options.Add(FF1Class.WhiteMage);
-			if ((flags.BLACK_MAGE3 ?? false)) options.Add(FF1Class.BlackMage);
-			if ((flags.NONE_CLASS3 ?? false)) options.Add(FF1Class.None);
-			if ((flags.KNIGHT3 ?? false)) options.Add(FF1Class.Knight);
-			if ((flags.NINJA3 ?? false)) options.Add(FF1Class.Ninja);
-			if ((flags.MASTER3 ?? false)) options.Add(FF1Class.Master);
-			if ((flags.RED_WIZ3 ?? false)) options.Add(FF1Class.RedWiz);
-			if ((flags.WHITE_WIZ3 ?? false)) options.Add(FF1Class.WhiteWiz);
-			if ((flags.BLACK_WIZ3 ?? false)) options.Add(FF1Class.BlackWiz);
+			options = classSelection.Where(x => x.Item3 == true).Select(x => x.Item5).ToList();
 			UpdateCharacterFromOptions(3, (flags.FORCED3 ?? false), options, rng);
 
-			if ((flags.FIGHTER4 ?? false)) options.Add(FF1Class.Fighter);
-			if ((flags.THIEF4 ?? false)) options.Add(FF1Class.Thief);
-			if ((flags.BLACK_BELT4 ?? false)) options.Add(FF1Class.BlackBelt);
-			if ((flags.RED_MAGE4 ?? false)) options.Add(FF1Class.RedMage);
-			if ((flags.WHITE_MAGE4 ?? false)) options.Add(FF1Class.WhiteMage);
-			if ((flags.BLACK_MAGE4 ?? false)) options.Add(FF1Class.BlackMage);
-			if ((flags.NONE_CLASS4 ?? false)) options.Add(FF1Class.None);
-			if ((flags.KNIGHT4 ?? false)) options.Add(FF1Class.Knight);
-			if ((flags.NINJA4 ?? false)) options.Add(FF1Class.Ninja);
-			if ((flags.MASTER4 ?? false)) options.Add(FF1Class.Master);
-			if ((flags.RED_WIZ4 ?? false)) options.Add(FF1Class.RedWiz);
-			if ((flags.WHITE_WIZ4 ?? false)) options.Add(FF1Class.WhiteWiz);
-			if ((flags.BLACK_WIZ4 ?? false)) options.Add(FF1Class.BlackWiz);
+			options = classSelection.Where(x => x.Item4 == true).Select(x => x.Item5).ToList();
 			UpdateCharacterFromOptions(4, (flags.FORCED4 ?? false), options, rng);
 
 			// Load stats for None
@@ -1192,8 +1162,25 @@ namespace FF1Lib
 			var classNames = new List<string> { "Fighter", "Thief", "Black Belt", "Red Mage", "White Mage", "Black Mage", "Knight", "Ninja", "Master", "Red Wizard", "White Wizard", "Black Wizard" };
 			var readyString = new List<string> { "Well, that's that.\nLet's go.", "Onward to new\nadventures!", "I knew you'd come back\nfor me!", "......", "I'm the leader now,\nright?", "The Reaper is always\njust a step behind me..", "O.. Okay.. I hope it's\nnot too scary out there.", "Yes!\nI made it on the team!", "A bold choice, let's\nsee if it pays off.", "Alright, let's do this!", "I obey, master.", "They say I'm the best.", "I see, we have the same\ngoal. Let's join forces.", "My.. name? Huh..", "Just don't put me first\nagainst Kraken.", "I'm taking care of the\nGPs from now on!", "It's Saturday night.\nI've got no date, a\nbottle of Shasta, and\nmy all Rush mixtape.\nLet's rock.", "Life insurance?\nNo, I don't have any.\nWhy?", "Let's put an end to\nthis madness.", "Finally, some action!", "You convinced me. I will\njoin your noble cause.", "Evil never rests. I will\nfight by your side.", "Edward wants to join\nthe party." };
 
-			var baseClassList = new List<FF1Class> { FF1Class.Fighter, FF1Class.Thief, FF1Class.BlackBelt, FF1Class.RedMage, FF1Class.WhiteMage, FF1Class.BlackMage };
-			var promoClassList = new List<FF1Class> { FF1Class.Knight, FF1Class.Ninja, FF1Class.Master, FF1Class.RedWiz, FF1Class.WhiteWiz, FF1Class.BlackWiz };
+			var classSelection = new List<(bool, FF1Class, FF1Class)> {
+				((bool)flags.TAVERN1, FF1Class.Fighter, FF1Class.Knight ),
+				((bool)flags.TAVERN2, FF1Class.Thief, FF1Class.Ninja ),
+				((bool)flags.TAVERN3, FF1Class.BlackBelt, FF1Class.Master ),
+				((bool)flags.TAVERN4, FF1Class.RedMage, FF1Class.RedWiz ),
+				((bool)flags.TAVERN5, FF1Class.WhiteMage, FF1Class.WhiteWiz ),
+				((bool)flags.TAVERN6, FF1Class.BlackMage, FF1Class.BlackWiz ),
+			};
+
+			var baseClassList = classSelection.Where(x => x.Item1 == true).Select(x => x.Item2).ToList();
+			if (!baseClassList.Any())
+			{
+				baseClassList = classSelection.Select(x => x.Item2).ToList();
+			}
+			var promoClassList = classSelection.Where(x => x.Item1 == true).Select(x => x.Item3).ToList();
+			if (!promoClassList.Any())
+			{
+				promoClassList = classSelection.Select(x => x.Item3).ToList();
+			}
 			var selectList = new List<FF1Class>();
 			var classList = new List<FF1Class>();
 
@@ -1226,7 +1213,7 @@ namespace FF1Lib
 			// Populate random classes list
 			for (int i = 0; i < totalAllNPC; i++)
 			{
-				if (i < 6 && !(bool)flags.ClassAsNpcDuplicate)
+				if (i < selectList.Count && !(bool)flags.ClassAsNpcDuplicate)
 					classList.Add(selectList[i]);
 				else
 					classList.Add(selectList.PickRandom(rng));
