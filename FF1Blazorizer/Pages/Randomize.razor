@@ -25,6 +25,7 @@
 		{
 			<PresetsTab Flags="@Flags" SetStatusMessage="@SetStatusMessage" loadDefault="@loadDefault" SetDefaultLoaded="@SetDefaultLoaded" noTabLayout="@noTabLayout" presetName="@presetName" SetPresetName="@SetPresetName" />
 			<ShopsTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
+			<ItemEquipmentTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
 			<EnemiesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
 			<TreasuresTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
 			<IncentivesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
@@ -33,8 +34,7 @@
 			<ScaleTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
 			<PartyTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
 			<ClassesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
-			<ConveniencesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
-			<BugFixesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
+			<AdjustmentsTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
 			<ExperimentalTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
 			<ExpandArrow noTabLayout="@noTabLayout" SetTabLayout="@SetTabLayout" />
 		}
@@ -53,6 +53,12 @@
 							<BSTabLabel>Shops</BSTabLabel>
 							<BSTabContent>
 								<ShopsTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
+							</BSTabContent>
+						</BSTab>
+						<BSTab>
+							<BSTabLabel>Inventory</BSTabLabel>
+							<BSTabContent>
+								<ItemEquipmentTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
 							</BSTabContent>
 						</BSTab>
 						<BSTab>
@@ -104,15 +110,9 @@
 							</BSTabContent>
 						</BSTab>
 						<BSTab>
-							<BSTabLabel>Conveniences</BSTabLabel>
+							<BSTabLabel>Adjustments</BSTabLabel>
 							<BSTabContent>
-								<ConveniencesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
-							</BSTabContent>
-						</BSTab>
-						<BSTab>
-							<BSTabLabel>Bugs Fixes</BSTabLabel>
-							<BSTabContent>
-								<BugFixesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
+								<AdjustmentsTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
 							</BSTabContent>
 						</BSTab>
 						<BSTab>

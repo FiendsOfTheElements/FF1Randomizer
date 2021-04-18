@@ -1,80 +1,83 @@
 ﻿@using FF1Lib;
 
 
-	<div id="Shops" class="tabcontent framed-content clearfix @(noTabLayout ? "no-tab" : "") @(IsOpen ? "" : "collapsed")">
-		<h3 class="@(IsOpen ? "" : "h3-collapsed")"><a class="@(noTabLayout ? "collapsible-header" : "")" @onclick="(() => IsOpen = (!noTabLayout || !IsOpen))">Shops, Magic, and RNG</a></h3>
-		@if(IsOpen)
-		{ 
-	<div class="col1">
-		<h4>Shops</h4>
-		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="shopsCheckBox" @bind-Value="Flags.Shops">Shops</TriStateCheckBox>
-		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.Shops" Id="randomWaresCheckBox" @bind-Value="Flags.RandomWares">Random Weapons and Armor</TriStateCheckBox>
-		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@((Flags.Shops ?? true) && (Flags.RandomWares ?? true))" Id="randomWaresIncludesCheckBox" @bind-Value="Flags.RandomWaresIncludesSpecialGear">Include Caster &amp; Elite Gear</TriStateCheckBox>
-		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="magicShopsCheckBox" @bind-Value="Flags.MagicShops">Magic Shops</TriStateCheckBox>
-		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="magicShopLocsCheckBox" @bind-Value="Flags.MagicShopLocs">Magic Shop Locations</TriStateCheckBox>
-		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.MagicShopLocs" Id="magicShopLocationPairsCheckBox" @bind-Value="Flags.MagicShopLocationPairs">Paired Shuffle</TriStateCheckBox>
-		<div class="checkbox-cell"></div>
-		<h4>Consumables</h4>
-		<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="startingItemsDropDown" TItem="StartingItemSet" @bind-Value="Flags.StartingItemSet">Starting Inventory:</EnumDropDown>
-		<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="consumableTreasureStackSizeDropDown" TItem="TreasureStackSize" @bind-Value="Flags.ConsumableTreasureStackSize">Treasure Chest Stacks:</EnumDropDown>
-		<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="consumableChestSetDropDown" TItem="ConsumableChestSet" @bind-Value="Flags.MoreConsumableChests">Consumable Chests:</EnumDropDown>
-		<div class="checkbox-cell"></div>
-		<h4>Starting Equipment</h4>
-		<TriStateCheckBox DisableTooltip="true" @bind-Value="Flags.StartingEquipmentMasamune">Masamune</TriStateCheckBox>
-		<TriStateCheckBox DisableTooltip="true" @bind-Value="Flags.StartingEquipmentKatana">Katana</TriStateCheckBox>
-		<TriStateCheckBox DisableTooltip="true" @bind-Value="Flags.StartingEquipmentHealStaff">Heal Staff</TriStateCheckBox>
-		<TriStateCheckBox DisableTooltip="true" @bind-Value="Flags.StartingEquipmentZeusGauntlet">Zeus Gauntlet</TriStateCheckBox>
-		<TriStateCheckBox DisableTooltip="true" @bind-Value="Flags.StartingEquipmentWhiteShirt">White Shirt</TriStateCheckBox>
-		<TriStateCheckBox DisableTooltip="true" @bind-Value="Flags.StartingEquipmentRibbon">Ribbon</TriStateCheckBox>
-		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="startingEquipmentDragonslayer" @bind-Value="Flags.StartingEquipmentDragonslayer">Dragonslayer</TriStateCheckBox>
-		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="startingEquipmentLegendKit" @bind-Value="Flags.StartingEquipmentLegendKit">Legendary Kit</TriStateCheckBox>
-		<TriStateCheckBox DisableTooltip="true" @bind-Value="Flags.StartingEquipmentRandomEndgameWeapon">Random Endgame Weapon</TriStateCheckBox>
-		<TriStateCheckBox DisableTooltip="true" @bind-Value="Flags.StartingEquipmentRandomAoe">Random Aoe Caster Item</TriStateCheckBox>
-		<TriStateCheckBox DisableTooltip="true" @bind-Value="Flags.StartingEquipmentRandomCasterItem">Random Caster Item</TriStateCheckBox>
-		<TriStateCheckBox DisableTooltip="true" @bind-Value="Flags.StartingEquipmentOneItem">One Helpful Item</TriStateCheckBox>
-		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="startingEquipmentGrandpasSecretStash" @bind-Value="Flags.StartingEquipmentGrandpasSecretStash">Grandpas Secret Stash</TriStateCheckBox>
-		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="startingEquipmentRandomCrap" @bind-Value="Flags.StartingEquipmentRandomCrap">Random Crap</TriStateCheckBox>
-		<div class="checkbox-cell"></div>
-		<CheckBox UpdateToolTip="@UpdateToolTipID" Id="startingEquipmentNoDuplicates" @bind-Value="Flags.StartingEquipmentNoDuplicates">No Legendary Duplicates</CheckBox>
-		<CheckBox UpdateToolTip="@UpdateToolTipID" Id="startingEquipmentRemoveFromPool" @bind-Value="Flags.StartingEquipmentRemoveFromPool">Remove Items from Treasure Chests</CheckBox>
-		<div class="checkbox-cell"></div>
-		<h4>RNG</h4>
-		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="rngCheckBox" @bind-Value="Flags.Rng">RNG Tables</TriStateCheckBox>
-		<CheckBox UpdateToolTip="@UpdateToolTipID" Id="fixMissingBattleRngEntry" @bind-Value="Flags.FixMissingBattleRngEntry">Fix Missing Battle RNG Entry</CheckBox>
-		<div class="checkbox-cell"></div>
-	</div>
-	<div class="col2">
-		<h4>Spellcasting Items</h4>
-		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="ruseItemCheckBox" @bind-Value="Flags.GuaranteedRuseItem">Insert Ruse Item</TriStateCheckBox>
-		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="itemMagicCheckBox" @bind-Value="Flags.ItemMagic">Item Magic</TriStateCheckBox>
-		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.ItemMagic" Id="balancedItemMagicCheckBox" @bind-Value="Flags.BalancedItemMagicShuffle">Balanced Shuffle</TriStateCheckBox>
+<div id="Shops" class="tabcontent framed-content clearfix @(noTabLayout ? "no-tab" : "") @(IsOpen ? "" : "collapsed")">
+	<h3 class="@(IsOpen ? "" : "h3-collapsed")"><a class="@(noTabLayout ? "collapsible-header" : "")" @onclick="(() => IsOpen = (!noTabLayout || !IsOpen))">Shops and Magic</a></h3>
+	@if (IsOpen)
+	{
+		<div class="col1">
+			<h4>Shops</h4>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="shopsCheckBox" @bind-Value="Flags.Shops">Shops</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.Shops" Id="randomWaresCheckBox" @bind-Value="Flags.RandomWares">Random Weapons and Armor</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@((Flags.Shops ?? true) && (Flags.RandomWares ?? true))" Id="randomWaresIncludesCheckBox" @bind-Value="Flags.RandomWaresIncludesSpecialGear">Include Caster &amp; Elite Gear</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="magicShopsCheckBox" @bind-Value="Flags.MagicShops">Magic Shops</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="magicShopLocsCheckBox" @bind-Value="Flags.MagicShopLocs">Magic Shop Locations</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.MagicShopLocs" Id="magicShopLocationPairsCheckBox" @bind-Value="Flags.MagicShopLocationPairs">Paired Shuffle</TriStateCheckBox>
+			<div class="checkbox-cell"></div>
+			<h4>Legendary Shops</h4>
+			<ToolTipBox UpdateToolTip="@UpdateToolTipID" Id="legendaryShopsGroup">Create legendary shops in dungeons</ToolTipBox>
+			<TriStateCheckBox DisableTooltip Id="legendaryWeaponShopCheckBox" @bind-Value="Flags.LegendaryWeaponShop">Legendary Weapon Shop</TriStateCheckBox>
+			<TriStateCheckBox DisableTooltip Id="legendaryArmorShopCheckBox" @bind-Value="Flags.LegendaryArmorShop">Legendary Armor Shop</TriStateCheckBox>
+			<TriStateCheckBox DisableTooltip Id="legendaryBlackShopCheckBox" @bind-Value="Flags.LegendaryBlackShop">Legendary Black Shop</TriStateCheckBox>
+			<TriStateCheckBox DisableTooltip Id="legendaryWhiteShopCheckBox" @bind-Value="Flags.LegendaryWhiteShop">Legendary White Shop</TriStateCheckBox>
+			<TriStateCheckBox DisableTooltip Id="legendaryItemShopCheckBox" @bind-Value="Flags.LegendaryItemShop">Legendary Item Shop</TriStateCheckBox>
+			<div class="checkbox-cell"></div>
+		</div>
+		<div class="col2">
+			<h4>Spells</h4>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="magicLevelsCheckBox" @bind-Value="Flags.MagicLevels">Magic Levels</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.MagicLevels" Id="magicLevelsTieredCheckBox" @bind-Value="Flags.MagicLevelsTiered">Tiered Shuffle</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.MagicLevels" Id="magicLevelsMixed" @bind-Value="Flags.MagicLevelsMixed">Mix Spellbooks</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.MagicLevels" Id="magicPermissionsCheckBox" @bind-Value="Flags.MagicPermissions">Keep Permissions</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="generateNewSpellbook" @bind-Value="Flags.GenerateNewSpellbook">Generate New Spellbooks</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="spellcrafterRetainPermissions" Indent IsEnabled="@Flags.GenerateNewSpellbook" @bind-Value="Flags.SpellcrafterRetainPermissions">Retain Old Permissions</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="spellcrafterMixSpells" Indent IsEnabled="@Flags.GenerateNewSpellbook" @bind-Value="Flags.SpellcrafterMixSpells">Mix Spellbooks</TriStateCheckBox>
+			<div class="checkbox-cell"></div>
+		</div>
+		<div class="col1 full">
+			<h4>Shop Reduction</h4>
+			<ToolTipBox UpdateToolTip="@UpdateToolTipID" Id="shopReductionTable">Remove shops from towns</ToolTipBox>
+			<div class="row">
+				<div class="col-lg-2 tighter noleftpadding">Weapon Shops:</div>
+				<div class="col-lg-4 tighter"><EnumDropDown DisableTooltip TItem="ShopKillMode" @bind-Value="Flags.ShopKillMode_Weapons"></EnumDropDown></div>
+				<div class="col-lg-2 tighter"><EnumDropDown DisableTooltip TItem="ShopKillFactor" @bind-Value="Flags.ShopKillFactor_Weapons"></EnumDropDown></div>
+				<div class="col-lg-4 tighter"><CheckBox DisableTooltip @bind-Value="Flags.ShopKillExcludeConeria_Weapons">Exclude Coneria</CheckBox></div>
+			</div>
+			<div class="row">
+				<div class="col-lg-2 tighter noleftpadding">Armor Shops:</div>
+				<div class="col-lg-4 tighter"><EnumDropDown DisableTooltip TItem="ShopKillMode" @bind-Value="Flags.ShopKillMode_Armor"></EnumDropDown></div>
+				<div class="col-lg-2 tighter"><EnumDropDown DisableTooltip TItem="ShopKillFactor" @bind-Value="Flags.ShopKillFactor_Armor"></EnumDropDown></div>
+				<div class="col-lg-4 tighter"><CheckBox DisableTooltip @bind-Value="Flags.ShopKillExcludeConeria_Armor">Exclude Coneria</CheckBox></div>
+			</div>
+			<div class="row">
+				<div class="col-lg-2 tighter noleftpadding">Item Shops:</div>
+				<div class="col-lg-4 tighter"><EnumDropDown DisableTooltip TItem="ShopKillMode" @bind-Value="Flags.ShopKillMode_Item"></EnumDropDown></div>
+				<div class="col-lg-2 tighter"><EnumDropDown DisableTooltip TItem="ShopKillFactor" @bind-Value="Flags.ShopKillFactor_Item"></EnumDropDown></div>
+				<div class="col-lg-4 tighter"><CheckBox DisableTooltip @bind-Value="Flags.ShopKillExcludeConeria_Item">Exclude Coneria</CheckBox></div>
+			</div>
+			<div class="row">
+				<div class="col-lg-2 tighter noleftpadding">Black Magic:</div>
+				<div class="col-lg-4 tighter"><EnumDropDown DisableTooltip TItem="ShopKillMode" @bind-Value="Flags.ShopKillMode_Black"></EnumDropDown></div>
+				<div class="col-lg-2 tighter"><EnumDropDown DisableTooltip TItem="ShopKillFactor" @bind-Value="Flags.ShopKillFactor_Black"></EnumDropDown></div>
+				<div class="col-lg-4 tighter"><CheckBox DisableTooltip @bind-Value="Flags.ShopKillExcludeConeria_Black">Exclude Coneria</CheckBox></div>
+			</div>
+			<div class="row">
+				<div class="col-lg-2 tighter noleftpadding">White Magic:</div>
+				<div class="col-lg-4 tighter"><EnumDropDown DisableTooltip TItem="ShopKillMode" @bind-Value="Flags.ShopKillMode_White"></EnumDropDown></div>
+				<div class="col-lg-2 tighter"><EnumDropDown DisableTooltip TItem="ShopKillFactor" @bind-Value="Flags.ShopKillFactor_White"></EnumDropDown></div>
+				<div class="col-lg-4 tighter"><CheckBox DisableTooltip @bind-Value="Flags.ShopKillExcludeConeria_White">Exclude Coneria</CheckBox></div>
+			</div>
+			<div class="checkbox-cell"></div>
+		</div>
+			<div class="clear-it"></div>
+			}
+		</div>
 
-		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="magisizeWeaponsCheckBox" @bind-Value="Flags.MagisizeWeapons">All Weapons Cast Spells</TriStateCheckBox>
-		<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="magisizeWeaponsBalancedCheckBox" IsEnabled="@Flags.MagisizeWeapons" @bind-Value="Flags.MagisizeWeaponsBalanced">Balanced Spells</TriStateCheckBox>
 
-		<div class="checkbox-cell"></div>
-
-		<h4>Spells</h4>
-		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="magicLevelsCheckBox" @bind-Value="Flags.MagicLevels">Magic Levels</TriStateCheckBox>
-		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.MagicLevels" Id="magicLevelsTieredCheckBox" @bind-Value="Flags.MagicLevelsTiered">Tiered Shuffle</TriStateCheckBox>
-		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.MagicLevels" Id="magicLevelsMixed" @bind-Value="Flags.MagicLevelsMixed">Mix Spellbooks</TriStateCheckBox>
-		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.MagicLevels" Id="magicPermissionsCheckBox" @bind-Value="Flags.MagicPermissions">Keep Permissions</TriStateCheckBox>
-		<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="magicAutohitThresholdDropDown" TItem="AutohitThreshold" @bind-Value="Flags.MagicAutohitThreshold">Power Word Threshold:</EnumDropDown>
-		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="generateNewSpellbook" @bind-Value="Flags.GenerateNewSpellbook">Generate New Spellbooks</TriStateCheckBox>
-		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="spellcrafterRetainPermissions" Indent IsEnabled="@Flags.GenerateNewSpellbook" @bind-Value="Flags.SpellcrafterRetainPermissions">Retain Old Permissions</TriStateCheckBox>
-		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="spellcrafterMixSpells" Indent IsEnabled="@Flags.GenerateNewSpellbook" @bind-Value="Flags.SpellcrafterMixSpells">Mix Spellbooks</TriStateCheckBox>
-		<div class="checkbox-cell"></div>
-
-	</div>
-		<div class="clear-it"></div>
-		}
-	</div>
-
-
-@code
+		@code
 {
-	[Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }
-	[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
-	[Parameter] public bool noTabLayout { get; set; }
-	[Parameter] public bool IsOpen { get; set; } = true;
-}
+			[Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }
+			[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
+			[Parameter] public bool noTabLayout { get; set; }
+			[Parameter] public bool IsOpen { get; set; } = true;
+		}
