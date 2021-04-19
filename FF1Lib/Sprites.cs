@@ -50,6 +50,59 @@ namespace FF1Lib
 		return ppuformat;
 	    }
 
+	    byte selectColor(Rgba32 px, Rgba32[] table ) {
+		int min_dif = 1000;
+		byte idx = 0;
+		for (int i = 0; i < table.Length; i++) {
+		    int dif = Math.Abs(px.R - table[i].R);
+		    dif += Math.Abs(px.G - table[i].G);
+		    dif += Math.Abs(px.B - table[i].B);
+		    if (dif < min_dif) {
+			min_dif = dif;
+			idx = (byte)i;
+		    }
+		}
+		if (idx == 0x0D) {
+		    idx = 0x0F;
+		}
+		return idx;
+	    }
+
+	    void makePalette(List<Rgba32> colors, Rgba32 transparent, Rgba32[] table,
+			     out List<byte> pal,
+			     out Dictionary<Rgba32,byte> toIndex) {
+		pal = new List<byte>();
+		toIndex = new Dictionary<Rgba32,byte>();
+		toIndex[transparent] = 0;
+		for (int i = 0; i < colors.Count; i++) {
+		    if (colors[i] == transparent) {
+			continue;
+		    }
+		    byte selected = selectColor(colors[i], table);
+		    int idx = pal.IndexOf(selected);
+		    if (idx == -1) {
+			pal.Add(selected);
+			idx = pal.Count;
+		    }
+		    toIndex[colors[i]] = (byte)idx;
+		}
+		if (pal.Count > 3) {
+		    throw new Exception("Too many colors");
+		}
+	    }
+
+	    byte[] makeTile(Image<Rgba32> image, int top, int left, Dictionary<Rgba32,byte> toIndex) {
+		var newtile = new byte[64];
+		int px = 0;
+		for (int y = top; y < (top+8); y++) {
+		    for (int x = left; x < (left+8); x++) {
+			newtile[px] = toIndex[image[x,y]];
+			px++;
+		    }
+		}
+		return newtile;
+	    }
+
 	    public void SetCustomPlayerSprites(Stream readStream) {
 		//dlg.graphicoffset = MAPMANGRAPHIC_OFFSET + (cur_class << 8);
 		//dlg.paletteoffset = -cur_class - 1;
@@ -57,107 +110,118 @@ namespace FF1Lib
 		IImageFormat format;
 		Image<Rgba32> image = Image.Load<Rgba32>(readStream, out format);
 
+		var NESpalette = new Rgba32[]{
+		    new Rgba32(0x7f, 0x7f, 0x7f),
+		    new Rgba32(0x00, 0x00, 0xff),
+		    new Rgba32(0x00, 0x00, 0xbf),
+		    new Rgba32(0x47, 0x2b, 0xbf),
+		    new Rgba32(0x97, 0x00, 0x87),
+		    new Rgba32(0xab, 0x00, 0x23),
+		    new Rgba32(0xab, 0x13, 0x00),
+		    new Rgba32(0x8b, 0x17, 0x00),
+		    new Rgba32(0x53, 0x30, 0x00),
+		    new Rgba32(0x00, 0x78, 0x00),
+		    new Rgba32(0x00, 0x6b, 0x00),
+		    new Rgba32(0x00, 0x5b, 0x00),
+		    new Rgba32(0x00, 0x43, 0x58),
+		    new Rgba32(0x00, 0x00, 0x00),
+		    new Rgba32(0x00, 0x00, 0x00),
+		    new Rgba32(0x00, 0x00, 0x00),
+
+		    new Rgba32(0xbf, 0xbf, 0xbf),
+		    new Rgba32(0x00, 0x78, 0xf8),
+		    new Rgba32(0x00, 0x58, 0xf8),
+		    new Rgba32(0x6b, 0x47, 0xff),
+		    new Rgba32(0xdb, 0x00, 0xcd),
+		    new Rgba32(0xe7, 0x00, 0x5b),
+		    new Rgba32(0xf8, 0x38, 0x00),
+		    new Rgba32(0xe7, 0x5f, 0x13),
+		    new Rgba32(0xaf, 0x7f, 0x00),
+		    new Rgba32(0x00, 0xb8, 0x00),
+		    new Rgba32(0x00, 0xab, 0x00),
+		    new Rgba32(0x00, 0xab, 0x47),
+		    new Rgba32(0x00, 0x8b, 0x8b),
+		    new Rgba32(0x00, 0x00, 0x00),
+		    new Rgba32(0x00, 0x00, 0x00),
+		    new Rgba32(0x00, 0x00, 0x00),
+
+		    new Rgba32(0xf8, 0xf8, 0xf8),
+		    new Rgba32(0x3f, 0xbf, 0xff),
+		    new Rgba32(0x6b, 0x88, 0xff),
+		    new Rgba32(0x98, 0x78, 0xf8),
+		    new Rgba32(0xf8, 0x78, 0xf8),
+		    new Rgba32(0xf8, 0x58, 0x98),
+		    new Rgba32(0xf8, 0x78, 0x58),
+		    new Rgba32(0xff, 0xa3, 0x47),
+		    new Rgba32(0xf8, 0xb8, 0x00),
+		    new Rgba32(0xb8, 0xf8, 0x18),
+		    new Rgba32(0x5b, 0xdb, 0x57),
+		    new Rgba32(0x58, 0xf8, 0x98),
+		    new Rgba32(0x00, 0xeb, 0xdb),
+		    new Rgba32(0x78, 0x78, 0x78),
+		    new Rgba32(0x00, 0x00, 0x00),
+		    new Rgba32(0x00, 0x00, 0x00),
+
+		    new Rgba32(0xff, 0xff, 0xff),
+		    new Rgba32(0xa7, 0xe7, 0xff),
+		    new Rgba32(0xb8, 0xb8, 0xf8),
+		    new Rgba32(0xd8, 0xb8, 0xf8),
+		    new Rgba32(0xf8, 0xb8, 0xf8),
+		    new Rgba32(0xfb, 0xa7, 0xc3),
+		    new Rgba32(0xf0, 0xd0, 0xb0),
+		    new Rgba32(0xff, 0xe3, 0xab),
+		    new Rgba32(0xfb, 0xdb, 0x7b),
+		    new Rgba32(0xd8, 0xf8, 0x78),
+		    new Rgba32(0xb8, 0xf8, 0xb8),
+		    new Rgba32(0xb8, 0xf8, 0xd8),
+		    new Rgba32(0x00, 0xff, 0xff),
+		    new Rgba32(0xf8, 0xd8, 0xf8),
+		    new Rgba32(0x00, 0x00, 0x00),
+		    new Rgba32(0x00, 0x00, 0x00)
+		};
+
 		// Unpromoted classes
 		for (int cur_class = 0; cur_class < 12; cur_class++) {
-		    int top = 24 + (40*(cur_class >= 6 ? cur_class-6 : cur_class));
-		    int left = (cur_class >= 6) ? 104 : 0;
+		    for (int mapmanPos = 0; mapmanPos < 4; mapmanPos++) {
+			int top = 24 + (40*(cur_class >= 6 ? cur_class-6 : cur_class));
+			int left = ((cur_class >= 6) ? 104 : 0) + (mapmanPos*16);
 
-		    Console.WriteLine($"top {top} left {left}");
-		    // top two tiles can have a different palette than
-		    // the bottom two tiles
-		    var colors = new List<Rgba32>();
-		    for (int y = top; y < (top+8); y++) {
-			for (int x = left; x < (left+64); x++) {
-			    if (!colors.Contains(image[x,y])) {
-				colors.Add(image[x,y]);
+			// the head tiles have a different palette
+			// than the body tiles.
+			var headColors = new List<Rgba32>();
+			for (int y = top; y < (top+8); y++) {
+			    for (int x = left; x < (left+64); x++) {
+				if (!headColors.Contains(image[x,y])) {
+				    headColors.Add(image[x,y]);
+				}
 			    }
 			}
-		    }
-		    Console.WriteLine("Found top colors:");
-		    for (int i = 0; i < colors.Count; i++) {
-			Console.WriteLine(colors[i]);
-		    }
-		    colors = new List<Rgba32>();
-		    for (int y = top+8; y < (top+16); y++) {
-			for (int x = left; x < (left+64); x++) {
-			    if (!colors.Contains(image[x,y])) {
-				colors.Add(image[x,y]);
+			List<byte> headPal;
+			Dictionary<Rgba32,byte> headIndex;
+			makePalette(headColors, new Rgba32(0xFF, 0x00, 0xFF), NESpalette, out headPal, out headIndex);
+			var headTileLeft = makeTile(image, top, left, headIndex);
+			var headTileRight = makeTile(image, top, left+8, headIndex);
+
+			var bodyColors = new List<Rgba32>();
+			for (int y = top+8; y < (top+16); y++) {
+			    for (int x = left; x < (left+64); x++) {
+				if (!bodyColors.Contains(image[x,y])) {
+				    bodyColors.Add(image[x,y]);
+				}
 			    }
 			}
-		    }
-		    Console.WriteLine("Found bottom colors:");
-		    for (int i = 0; i < colors.Count; i++) {
-			Console.WriteLine(colors[i]);
+			List<byte> bodyPal;
+			Dictionary<Rgba32,byte> bodyIndex;
+			makePalette(bodyColors, new Rgba32(0xFF, 0x00, 0xFF), NESpalette, out bodyPal, out bodyIndex);
+			var bodyTileLeft = makeTile(image, top+8, left, bodyIndex);
+			var bodyTileRight = makeTile(image, top+8, left+8, bodyIndex);
+
+			Put(MAPMANGRAPHIC_OFFSET + (cur_class << 8) + (mapmanPos * 16*4) + (16*0),  EncodeForPPU(headTileLeft));
+			Put(MAPMANGRAPHIC_OFFSET + (cur_class << 8) + (mapmanPos * 16*4) + (16*1),  EncodeForPPU(headTileRight));
+			Put(MAPMANGRAPHIC_OFFSET + (cur_class << 8) + (mapmanPos * 16*4) + (16*2),  EncodeForPPU(bodyTileLeft));
+			Put(MAPMANGRAPHIC_OFFSET + (cur_class << 8) + (mapmanPos * 16*4) + (16*3),  EncodeForPPU(bodyTileRight));
 		    }
 		}
-
-		var NESpalette = new Rgba32[]{
-		    new Rgba32(84, 84, 84),
-		    new Rgba32(0, 30, 116),
-		};
-
-		/*		        8  16 144   48   0 136   68   0 100   92   0  48   84   4   0   60  24   0   32  42   0    8  58   0    0  64   0    0  60   0    0  50  60    0   0   0
-152 150 152    8  76 196   48  50 236   92  30 228  136  20 176  160  20 100  152  34  32  120  60   0   84  90   0   40 114   0    8 124   0    0 118  40    0 102 120    0   0   0
-236 238 236   76 154 236  120 124 236  176  98 236  228  84 236  236  88 180  236 106 100  212 136  32  160 170   0  116 196   0   76 208  32   56 204 108   56 180 204   60  60  60
-236 238 236  168 204 236  188 188 236  212 178 236  236 174 236  236 174 212  236 180 176  228 196 144  204 210 120  180 222 120  168 226 144  152 226 180  160 214 228  160 162 160 */
-
-		// to do:
-		// 1) loop through unpromoted class
-		// 2) loop through pixels
-		// 3)
-
-		/*var newtile1 = new byte[] {
-		    0x00, 0x00, 0x00, 0x01, 0x01, 0x01, 0x01, 0x01,
-		    0x00, 0x00, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01,
-		    0x00, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01,
-		    0x00, 0x01, 0x01, 0x01, 0x02, 0x01, 0x01, 0x01,
-		    0x00, 0x01, 0x01, 0x01, 0x02, 0x01, 0x01, 0x01,
-		    0x00, 0x01, 0x01, 0x01, 0x02, 0x01, 0x01, 0x01,
-		    0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01,
-		    0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01,
-		};
-		var newtile2 = new byte[] {
-		    0x01, 0x01, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00,
-		    0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x00, 0x00,
-		    0x01, 0x01, 0x01, 0x02, 0x01, 0x01, 0x00, 0x00,
-		    0x01, 0x01, 0x01, 0x02, 0x01, 0x01, 0x01, 0x00,
-		    0x01, 0x01, 0x01, 0x02, 0x01, 0x01, 0x01, 0x00,
-		    0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x00, 0x00,
-		    0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x00, 0x00,
-		    0x01, 0x01, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00,
-		};
-		var newtile3 = new byte[] {
-		    0x00, 0x00, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00,
-		    0x00, 0x00, 0x01, 0x01, 0x01, 0x01, 0x00, 0x00,
-		    0x00, 0x01, 0x00, 0x01, 0x02, 0x01, 0x00, 0x00,
-		    0x00, 0x01, 0x00, 0x01, 0x02, 0x01, 0x01, 0x00,
-		    0x00, 0x01, 0x01, 0x00, 0x01, 0x01, 0x01, 0x00,
-		    0x00, 0x01, 0x01, 0x01, 0x01, 0x01, 0x00, 0x00,
-		    0x00, 0x01, 0x01, 0x01, 0x01, 0x01, 0x00, 0x00,
-		    0x00, 0x00, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00,
-		};
-		var newtile4 = new byte[] {
-		    0x00, 0x00, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00,
-		    0x00, 0x00, 0x01, 0x01, 0x01, 0x01, 0x00, 0x00,
-		    0x00, 0x01, 0x01, 0x01, 0x01, 0x01, 0x00, 0x00,
-		    0x00, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x00,
-		    0x00, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x00,
-		    0x00, 0x01, 0x01, 0x01, 0x01, 0x01, 0x00, 0x00,
-		    0x00, 0x01, 0x01, 0x01, 0x01, 0x01, 0x00, 0x00,
-		    0x00, 0x00, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00,
-		};
-
-		var tile1 = EncodeForPPU(newtile1);
-		var tile2 = EncodeForPPU(newtile2);
-		var tile3 = EncodeForPPU(newtile3);
-		var tile4 = EncodeForPPU(newtile4);
-
-		int cur_class = 0;
-		Put(MAPMANGRAPHIC_OFFSET + (cur_class << 8) + (MAPMAN_DOWN * 16*4) + (16*0),  tile1);
-		Put(MAPMANGRAPHIC_OFFSET + (cur_class << 8) + (MAPMAN_DOWN * 16*4) + (16*1),  tile2);
-		Put(MAPMANGRAPHIC_OFFSET + (cur_class << 8) + (MAPMAN_DOWN * 16*4) + (16*2),  tile3);
-		Put(MAPMANGRAPHIC_OFFSET + (cur_class << 8) + (MAPMAN_DOWN * 16*4) + (16*3),  tile4);
-		*/
 	    }
 	}
 }
