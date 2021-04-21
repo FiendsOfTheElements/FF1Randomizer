@@ -993,9 +993,12 @@ namespace FF1Lib
 
 			owMapExchange?.ExecuteStep2();
 
+
 			npcdata.WriteNPCdata(this);
 			talkroutines.WriteRoutines(this);
 			talkroutines.UpdateNPCRoutines(this, npcdata);
+
+			new ExpChests(this, flags).SetExpChests();
 
 			WriteSeedAndFlags(seed.ToHex(), Flags.EncodeFlagsText(flags));
 			ExtraTrackingAndInitCode(flags);
