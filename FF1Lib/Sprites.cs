@@ -13,14 +13,12 @@ namespace FF1Lib
 {
 	public partial class FF1Rom : NesRom
 	{
-	    // Copied from FFHackster.  The Hackster offsets included
-	    // the ROM header, but FFR doesn't, so subtract that out.
-	    //
-	    const int CHARBATTLEPIC_OFFSET =			0x25010 - 0x10;
-	    const int CHARBATTLEPALETTE_OFFSET =		0x3EBB5;
-	    const int CHARBATTLEPALETTE_ASSIGNMENT1 =		0x3204C;
-	    const int CHARBATTLEPALETTE_ASSIGNMENT2 =		0x3ECB4;
-	    const int MAPMANGRAPHIC_OFFSET =			0x9010 - 0x10;
+	    // Copied from FFHackster.
+	    const int CHARBATTLEPIC_OFFSET =			0x25000;
+	    const int CHARBATTLEPALETTE_OFFSET =		0x3EBA5;
+	    const int CHARBATTLEPALETTE_ASSIGNMENT1 =		0x3203C;
+	    const int CHARBATTLEPALETTE_ASSIGNMENT2 =		0x3ECA4;
+	    const int MAPMANGRAPHIC_OFFSET =			0x9000;
 
 	    const int MAPMAN_DOWN = 0;
 	    const int MAPMAN_UP = 1;
@@ -85,6 +83,10 @@ namespace FF1Lib
 		    }
 		    toIndex[colors[i]] = (byte)idx;
 		}
+		// Need to sort the palette & update the mapping
+		// (argh) because it is reused for battle sprites and
+		// needs to have a consistent order.
+
 		pal.Insert(0, 0x0F);
 		if (pal.Count > 4) {
 		    return false;
@@ -105,6 +107,145 @@ namespace FF1Lib
 		    }
 		}
 		return newtile;
+	    }
+
+	    void ImportMapman(Image<Rgba32> image, int cur_class, Rgba32[] NESpalette) {
+		int top = 24 + (40*(cur_class >= 6 ? cur_class-6 : cur_class));
+		int left = ((cur_class >= 6) ? 104 : 0);
+
+		// the mapman head tiles have a different palette
+		// than the body tiles.
+		var headColors = new List<Rgba32>();
+		for (int y = top; y < (top+8); y++) {
+		    for (int x = left; x < (left+64); x++) {
+			if (!headColors.Contains(image[x,y])) {
+			    headColors.Add(image[x,y]);
+			}
+		    }
+		}
+		List<byte> headPal;
+		Dictionary<Rgba32,byte> headIndex;
+		if (!makePalette(headColors, new Rgba32(0xFF, 0x00, 0xFF), NESpalette, out headPal, out headIndex)) {
+		    Console.WriteLine($"Failed importing top half of mapman for {ClassNames[cur_class]}, too many unique colors (limit 3 unique colors + magenta for transparent):");
+		    for (int i = 0; i < headPal.Count; i++) {
+			Console.WriteLine($"NES palette {i}: {headPal[i]}");
+		    }
+		    foreach (var i in headIndex) {
+			Console.WriteLine($"RGB to index {i.Key}: {i.Value}");
+		    }
+		    return;
+		}
+
+		var bodyColors = new List<Rgba32>();
+		for (int y = top+8; y < (top+16); y++) {
+		    for (int x = left; x < (left+64); x++) {
+			if (!bodyColors.Contains(image[x,y])) {
+			    bodyColors.Add(image[x,y]);
+			}
+		    }
+		}
+		List<byte> bodyPal;
+		Dictionary<Rgba32,byte> bodyIndex;
+		if (!makePalette(bodyColors, new Rgba32(0xFF, 0x00, 0xFF), NESpalette, out bodyPal, out bodyIndex)) {
+		    Console.WriteLine($"Failed importing bottom half of mapman for {ClassNames[cur_class]}, too many unique colors (limit 3 unique colors + magenta for transparent):");
+		    for (int i = 0; i < bodyPal.Count; i++) {
+			Console.WriteLine($"NES palette {i}: {bodyPal[i]}");
+		    }
+		    foreach (var i in bodyIndex) {
+			Console.WriteLine($"RGB to index {i.Key}: {i.Value}");
+		    }
+		    return;
+		}
+
+		for (int mapmanPos = 0; mapmanPos < 4; mapmanPos++) {
+		    top = 24 + (40*(cur_class >= 6 ? cur_class-6 : cur_class));
+		    left = ((cur_class >= 6) ? 104 : 0) + (mapmanPos*16);
+
+		    var headTileLeft = makeTile(image, top, left, headIndex);
+		    var headTileRight = makeTile(image, top, left+8, headIndex);
+
+		    var bodyTileLeft = makeTile(image, top+8, left, bodyIndex);
+		    var bodyTileRight = makeTile(image, top+8, left+8, bodyIndex);
+
+		    Put(MAPMANGRAPHIC_OFFSET + (cur_class << 8) + (mapmanPos * 16*4) + (16*0),  EncodeForPPU(headTileLeft));
+		    Put(MAPMANGRAPHIC_OFFSET + (cur_class << 8) + (mapmanPos * 16*4) + (16*1),  EncodeForPPU(headTileRight));
+		    Put(MAPMANGRAPHIC_OFFSET + (cur_class << 8) + (mapmanPos * 16*4) + (16*2),  EncodeForPPU(bodyTileLeft));
+		    Put(MAPMANGRAPHIC_OFFSET + (cur_class << 8) + (mapmanPos * 16*4) + (16*3),  EncodeForPPU(bodyTileRight));
+		}
+
+		int lut_MapmanPalettes = 0x8150;
+		int offsetIntoLut = cur_class << 3;
+		// Write the palettes into a new LUT in bank $0F
+		// Will be read using the code below.
+		Console.WriteLine($"writing to {lut_MapmanPalettes + offsetIntoLut} {lut_MapmanPalettes + offsetIntoLut + 4}");
+		PutInBank(0x0F, lut_MapmanPalettes + offsetIntoLut,       headPal.ToArray());
+		PutInBank(0x0F, lut_MapmanPalettes + offsetIntoLut + 4,   bodyPal.ToArray());
+	    }
+
+	    int ImportBattleSprites(Image<Rgba32> image, int cur_class, Rgba32[] NESpalette, List<byte> pal1, List<byte> pal2) {
+		int top = (40*(cur_class >= 6 ? cur_class-6 : cur_class));
+		int left = ((cur_class >= 6) ? 104 : 0);
+
+		var colors = new List<Rgba32>();
+		for (int y = top; y < (top+24); y++) {
+		    for (int x = left; x < (left+104); x++) {
+			if (!colors.Contains(image[x,y])) {
+			    colors.Add(image[x,y]);
+			}
+		    }
+		}
+		List<byte> pal;
+		Dictionary<Rgba32,byte> index;
+		if (!makePalette(colors, new Rgba32(0x00, 0x00, 0x00), NESpalette, out pal, out index)) {
+		    Console.WriteLine($"Failed importing battle sprites for {ClassNames[cur_class]}, too many unique colors (limit 3 unique colors + black):");
+		    for (int i = 0; i < pal.Count; i++) {
+			Console.WriteLine($"NES palette {i}: {pal[i]}");
+		    }
+		    foreach (var i in index) {
+			Console.WriteLine($"RGB to index {i.Key}: {i.Value}");
+		    }
+		    return -1;
+		}
+
+		int usepal = -1;
+		if (pal1.Count == 0) {
+		    for (int i = 0; i < 4; i++) { pal1.Add(pal[i]); }
+		    usepal = 0;
+		} else if (pal1.Equals(pal)) {
+		    usepal = 0;
+		} else if (pal2.Count == 0) {
+		    for (int i = 0; i < 4; i++) { pal2.Add(pal[i]); }
+		    usepal = 1;
+		} else if (pal2.Equals(pal)) {
+		    usepal = 1;
+		} else {
+		    Console.WriteLine($"Failed importing battle sprites for {ClassNames[cur_class]}, has a different palette from other classes");
+		    for (int i = 0; i < pal.Count; i++) {
+			Console.WriteLine($"NES palette {i}: {pal[i]}");
+		    }
+		    foreach (var i in index) {
+			Console.WriteLine($"RGB to index {i.Key}: {i.Value}");
+		    }
+		    return -1;
+		}
+
+		const byte ConstPicFormation[39] = {	//3 x 13 pic formation
+		    0, 1, 0, 1, 8, 9,14,15,20,21,255,255,255,
+		    2, 3, 2, 3,10,11,16,17,22,23,26,27,28,
+		    4, 5, 6, 7,12,13,18,19,24,25,29,30,31};
+
+		// int offset = 0;
+		// for (int pos = 0; pos < 5; pos++) {
+		//     for (int y = 0; y < 3; y++) {
+		// 	for (int x = 0; x < 2; x++) {
+		// 	    var tile = makeTile(image, top + (y*8), left + (x*8), index);
+		// 	    Put(CHARBATTLEPIC_OFFSET + (cur_class << 9) + offset, EncodeForPPU(tile));
+		// 	    offset += 16;
+		// 	}
+		//     }
+		// }
+
+		return usepal;
 	    }
 
 	    public void SetCustomPlayerSprites(Stream readStream) {
@@ -181,79 +322,19 @@ namespace FF1Lib
 		    new Rgba32(0x00, 0x00, 0x00)
 		};
 
-		// Unpromoted classes
+		List<byte> battlePal1 = new List<byte>();
+		List<byte> battlePal2 = new List<byte>();
 		for (int cur_class = 0; cur_class < 12; cur_class++) {
-		    int top = 24 + (40*(cur_class >= 6 ? cur_class-6 : cur_class));
-		    int left = ((cur_class >= 6) ? 104 : 0);
-
-		    // the mapman head tiles have a different palette
-		    // than the body tiles.
-		    var headColors = new List<Rgba32>();
-		    for (int y = top; y < (top+8); y++) {
-			for (int x = left; x < (left+64); x++) {
-			    if (!headColors.Contains(image[x,y])) {
-				headColors.Add(image[x,y]);
-			    }
-			}
+		    ImportMapman(image, cur_class, NESpalette);
+		    var palAssign = ImportBattleSprites(image, cur_class, NESpalette, battlePal1, battlePal2);
+		    if (palAssign != -1) {
+			Put(CHARBATTLEPALETTE_ASSIGNMENT1 + cur_class, new byte[] {(byte)palAssign});
+			Put(CHARBATTLEPALETTE_ASSIGNMENT2 + cur_class, new byte[] {(byte)palAssign});
 		    }
-		    List<byte> headPal;
-		    Dictionary<Rgba32,byte> headIndex;
-		    if (!makePalette(headColors, new Rgba32(0xFF, 0x00, 0xFF), NESpalette, out headPal, out headIndex)) {
-			Console.WriteLine($"Failed importing top half of mapman for {ClassNames[cur_class]}, too many unique colors (limit 3 unique colors + magenta for transparent):");
-			for (int i = 0; i < headPal.Count; i++) {
-			    Console.WriteLine($"NES palette {i}: {headPal[i]}");
-			}
-			foreach (var i in headIndex) {
-			    Console.WriteLine($"RGB to index {i.Key}: {i.Value}");
-			}
-			continue;
-		    }
-
-		    var bodyColors = new List<Rgba32>();
-		    for (int y = top+8; y < (top+16); y++) {
-			for (int x = left; x < (left+64); x++) {
-			    if (!bodyColors.Contains(image[x,y])) {
-				bodyColors.Add(image[x,y]);
-			    }
-			}
-		    }
-		    List<byte> bodyPal;
-		    Dictionary<Rgba32,byte> bodyIndex;
-		    if (!makePalette(bodyColors, new Rgba32(0xFF, 0x00, 0xFF), NESpalette, out bodyPal, out bodyIndex)) {
-			Console.WriteLine($"Failed importing bottom half of mapman for {ClassNames[cur_class]}, too many unique colors (limit 3 unique colors + magenta for transparent):");
-			for (int i = 0; i < bodyPal.Count; i++) {
-			    Console.WriteLine($"NES palette {i}: {bodyPal[i]}");
-			}
-			foreach (var i in bodyIndex) {
-			    Console.WriteLine($"RGB to index {i.Key}: {i.Value}");
-			}
-			continue;
-		    }
-
-		    for (int mapmanPos = 0; mapmanPos < 4; mapmanPos++) {
-			top = 24 + (40*(cur_class >= 6 ? cur_class-6 : cur_class));
-			left = ((cur_class >= 6) ? 104 : 0) + (mapmanPos*16);
-
-			var headTileLeft = makeTile(image, top, left, headIndex);
-			var headTileRight = makeTile(image, top, left+8, headIndex);
-
-			var bodyTileLeft = makeTile(image, top+8, left, bodyIndex);
-			var bodyTileRight = makeTile(image, top+8, left+8, bodyIndex);
-
-			Put(MAPMANGRAPHIC_OFFSET + (cur_class << 8) + (mapmanPos * 16*4) + (16*0),  EncodeForPPU(headTileLeft));
-			Put(MAPMANGRAPHIC_OFFSET + (cur_class << 8) + (mapmanPos * 16*4) + (16*1),  EncodeForPPU(headTileRight));
-			Put(MAPMANGRAPHIC_OFFSET + (cur_class << 8) + (mapmanPos * 16*4) + (16*2),  EncodeForPPU(bodyTileLeft));
-			Put(MAPMANGRAPHIC_OFFSET + (cur_class << 8) + (mapmanPos * 16*4) + (16*3),  EncodeForPPU(bodyTileRight));
-		    }
-
-		    int lut_MapmanPalettes = 0x8150;
-		    int offsetIntoLut = cur_class << 3;
-		    // Write the palettes into a new LUT in bank $0F
-		    // Will be read using the code below.
-		    Console.WriteLine($"writing to {lut_MapmanPalettes + offsetIntoLut} {lut_MapmanPalettes + offsetIntoLut + 4}");
-		    PutInBank(0x0F, lut_MapmanPalettes + offsetIntoLut,       headPal.ToArray());
-		    PutInBank(0x0F, lut_MapmanPalettes + offsetIntoLut + 4,   bodyPal.ToArray());
 		}
+
+		Put(CHARBATTLEPALETTE_OFFSET + 1, battlePal1.ToArray());
+		Put(CHARBATTLEPALETTE_OFFSET + 5, battlePal2.ToArray());
 
 		// code in asm/0F_8150_MapmanPalette.asm
 
