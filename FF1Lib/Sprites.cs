@@ -20,7 +20,6 @@ namespace FF1Lib
 	    const int CHARBATTLEPALETTE_OFFSET =		0x3EBB5;
 	    const int CHARBATTLEPALETTE_ASSIGNMENT1 =		0x3204C;
 	    const int CHARBATTLEPALETTE_ASSIGNMENT2 =		0x3ECB4;
-	    const int MAPMANPALETTE_OFFSET =			0x3B0;
 	    const int MAPMANGRAPHIC_OFFSET =			0x9010 - 0x10;
 
 	    const int MAPMAN_DOWN = 0;
@@ -68,7 +67,7 @@ namespace FF1Lib
 		return idx;
 	    }
 
-	    void makePalette(List<Rgba32> colors, Rgba32 transparent, Rgba32[] table,
+	    bool makePalette(List<Rgba32> colors, Rgba32 transparent, Rgba32[] table,
 			     out List<byte> pal,
 			     out Dictionary<Rgba32,byte> toIndex) {
 		pal = new List<byte>();
@@ -86,9 +85,14 @@ namespace FF1Lib
 		    }
 		    toIndex[colors[i]] = (byte)idx;
 		}
-		if (pal.Count > 3) {
-		    throw new Exception("Too many colors");
+		pal.Insert(0, 0x0F);
+		if (pal.Count > 4) {
+		    return false;
 		}
+		while (pal.Count < 4) {
+		    pal.Add(0x0F);
+		}
+		return true;
 	    }
 
 	    byte[] makeTile(Image<Rgba32> image, int top, int left, Dictionary<Rgba32,byte> toIndex) {
@@ -104,9 +108,6 @@ namespace FF1Lib
 	    }
 
 	    public void SetCustomPlayerSprites(Stream readStream) {
-		//dlg.graphicoffset = MAPMANGRAPHIC_OFFSET + (cur_class << 8);
-		//dlg.paletteoffset = -cur_class - 1;
-
 		IImageFormat format;
 		Image<Rgba32> image = Image.Load<Rgba32>(readStream, out format);
 
@@ -145,7 +146,7 @@ namespace FF1Lib
 		    new Rgba32(0x00, 0x00, 0x00),
 		    new Rgba32(0x00, 0x00, 0x00),
 
-		    new Rgba32(0xf8, 0xf8, 0xf8),
+		    new Rgba32(0xff, 0xff, 0xff),
 		    new Rgba32(0x3f, 0xbf, 0xff),
 		    new Rgba32(0x6b, 0x88, 0xff),
 		    new Rgba32(0x98, 0x78, 0xf8),
@@ -182,37 +183,60 @@ namespace FF1Lib
 
 		// Unpromoted classes
 		for (int cur_class = 0; cur_class < 12; cur_class++) {
-		    for (int mapmanPos = 0; mapmanPos < 4; mapmanPos++) {
-			int top = 24 + (40*(cur_class >= 6 ? cur_class-6 : cur_class));
-			int left = ((cur_class >= 6) ? 104 : 0) + (mapmanPos*16);
+		    int top = 24 + (40*(cur_class >= 6 ? cur_class-6 : cur_class));
+		    int left = ((cur_class >= 6) ? 104 : 0);
 
-			// the head tiles have a different palette
-			// than the body tiles.
-			var headColors = new List<Rgba32>();
-			for (int y = top; y < (top+8); y++) {
-			    for (int x = left; x < (left+64); x++) {
-				if (!headColors.Contains(image[x,y])) {
-				    headColors.Add(image[x,y]);
-				}
+		    // the mapman head tiles have a different palette
+		    // than the body tiles.
+		    var headColors = new List<Rgba32>();
+		    for (int y = top; y < (top+8); y++) {
+			for (int x = left; x < (left+64); x++) {
+			    if (!headColors.Contains(image[x,y])) {
+				headColors.Add(image[x,y]);
 			    }
 			}
-			List<byte> headPal;
-			Dictionary<Rgba32,byte> headIndex;
-			makePalette(headColors, new Rgba32(0xFF, 0x00, 0xFF), NESpalette, out headPal, out headIndex);
+		    }
+		    List<byte> headPal;
+		    Dictionary<Rgba32,byte> headIndex;
+		    if (!makePalette(headColors, new Rgba32(0xFF, 0x00, 0xFF), NESpalette, out headPal, out headIndex)) {
+			Console.WriteLine($"Failed importing top half of mapman for {ClassNames[cur_class]}, too many unique colors (limit 3 unique colors + magenta for transparent):");
+			for (int i = 0; i < headPal.Count; i++) {
+			    Console.WriteLine($"NES palette {i}: {headPal[i]}");
+			}
+			foreach (var i in headIndex) {
+			    Console.WriteLine($"RGB to index {i.Key}: {i.Value}");
+			}
+			continue;
+		    }
+
+		    var bodyColors = new List<Rgba32>();
+		    for (int y = top+8; y < (top+16); y++) {
+			for (int x = left; x < (left+64); x++) {
+			    if (!bodyColors.Contains(image[x,y])) {
+				bodyColors.Add(image[x,y]);
+			    }
+			}
+		    }
+		    List<byte> bodyPal;
+		    Dictionary<Rgba32,byte> bodyIndex;
+		    if (!makePalette(bodyColors, new Rgba32(0xFF, 0x00, 0xFF), NESpalette, out bodyPal, out bodyIndex)) {
+			Console.WriteLine($"Failed importing bottom half of mapman for {ClassNames[cur_class]}, too many unique colors (limit 3 unique colors + magenta for transparent):");
+			for (int i = 0; i < bodyPal.Count; i++) {
+			    Console.WriteLine($"NES palette {i}: {bodyPal[i]}");
+			}
+			foreach (var i in bodyIndex) {
+			    Console.WriteLine($"RGB to index {i.Key}: {i.Value}");
+			}
+			continue;
+		    }
+
+		    for (int mapmanPos = 0; mapmanPos < 4; mapmanPos++) {
+			top = 24 + (40*(cur_class >= 6 ? cur_class-6 : cur_class));
+			left = ((cur_class >= 6) ? 104 : 0) + (mapmanPos*16);
+
 			var headTileLeft = makeTile(image, top, left, headIndex);
 			var headTileRight = makeTile(image, top, left+8, headIndex);
 
-			var bodyColors = new List<Rgba32>();
-			for (int y = top+8; y < (top+16); y++) {
-			    for (int x = left; x < (left+64); x++) {
-				if (!bodyColors.Contains(image[x,y])) {
-				    bodyColors.Add(image[x,y]);
-				}
-			    }
-			}
-			List<byte> bodyPal;
-			Dictionary<Rgba32,byte> bodyIndex;
-			makePalette(bodyColors, new Rgba32(0xFF, 0x00, 0xFF), NESpalette, out bodyPal, out bodyIndex);
 			var bodyTileLeft = makeTile(image, top+8, left, bodyIndex);
 			var bodyTileRight = makeTile(image, top+8, left+8, bodyIndex);
 
@@ -221,7 +245,25 @@ namespace FF1Lib
 			Put(MAPMANGRAPHIC_OFFSET + (cur_class << 8) + (mapmanPos * 16*4) + (16*2),  EncodeForPPU(bodyTileLeft));
 			Put(MAPMANGRAPHIC_OFFSET + (cur_class << 8) + (mapmanPos * 16*4) + (16*3),  EncodeForPPU(bodyTileRight));
 		    }
+
+		    int lut_MapmanPalettes = 0x8150;
+		    int offsetIntoLut = cur_class << 3;
+		    // Write the palettes into a new LUT in bank $0F
+		    // Will be read using the code below.
+		    Console.WriteLine($"writing to {lut_MapmanPalettes + offsetIntoLut} {lut_MapmanPalettes + offsetIntoLut + 4}");
+		    PutInBank(0x0F, lut_MapmanPalettes + offsetIntoLut,       headPal.ToArray());
+		    PutInBank(0x0F, lut_MapmanPalettes + offsetIntoLut + 4,   bodyPal.ToArray());
 		}
+
+		// code in asm/0F_8150_MapmanPalette.asm
+
+		// Replace the original code which loads the mapman
+		// "palette" (it actually only changes 2 colors and
+		// leaves the blank and "skin tone" alone)
+		// With a jump to a new routine in bank 0F which loads
+		// two complete 4 color palettes.
+		PutInBank(0x1F, 0xD8B6, Blob.FromHex("A90F2003FE4CB081EAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
+		PutInBank(0x0F, 0x81B0, Blob.FromHex("AD00610A0A0A6908AAA008BD508199D003CA8810F660"));
 	    }
 	}
 }

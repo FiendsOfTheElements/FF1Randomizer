@@ -252,19 +252,18 @@
 				return;
 			}
 
-			if (Flags.SpriteSheet != null) {
-			  Console.WriteLine("Using sprite sheet");
-			  using (var stream = new MemoryStream(Flags.SpriteSheet))
-			  {
-				_rom.SetCustomPlayerSprites(stream);
-			  }
-			}
-
 			try
 			{
 				Utilities.SpoilerCache = string.Empty;
 
 				_rom.Randomize(seed, Flags.Flags, Flags.Preferences);
+
+				if (Flags.SpriteSheet != null) {
+			  	using (var stream = new MemoryStream(Flags.SpriteSheet))
+			 	 {
+				 _rom.SetCustomPlayerSprites(stream);
+			  	 }
+				}
 
 				var data = new byte[512 * 1024 + 16];
 				using (var stream = new MemoryStream(data, true))
