@@ -40,15 +40,15 @@ namespace FF1Lib
 			{
 				currentMapChanges |= MapChange.Bridge;
 			}
-			if (victoryConditions.FreeShip ?? false)
+			if (victoryConditions.IsShipFree ?? false)
 			{
 				currentMapChanges |= MapChange.Ship;
 			}
-			if (victoryConditions.FreeAirship ?? false)
+			if (victoryConditions.IsAirshipFree ?? false)
 			{
 				currentMapChanges |= MapChange.Airship;
 			}
-			if (victoryConditions.FreeCanal ?? false)
+			if (victoryConditions.IsCanalFree ?? false)
 			{
 				currentMapChanges |= MapChange.Canal;
 			}
@@ -74,7 +74,7 @@ namespace FF1Lib
 			var requiredAccess = AccessRequirement.All;
 			var requiredMapChanges = MapChange.All;
 
-			if ((bool)victoryConditions.NoFloater && !victoryConditions.NoOverworld) {
+			if ((bool)victoryConditions.IsFloaterRemoved) {
 			    requiredMapChanges &= ~MapChange.Airship;
 			}
 

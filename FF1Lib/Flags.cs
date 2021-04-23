@@ -276,12 +276,12 @@ namespace FF1Lib
 		public bool OnlyRequireGameIsBeatable { get; set; } = true;
 		//public bool NoOverworld { get; set; } = false;
 		public bool? FreeBridge { get; set; } = false;
-		public bool? FreeShipFlag { get; set; } = false;
-		public bool? FreeAirshipFlag { get; set; } = false;
+		public bool? FreeShip { get; set; } = false;
+		public bool? FreeAirship { get; set; } = false;
 		public bool? FreeLute { get; set; } = false;
 		public bool FreeOrbs { get; set; } = false;
 		public bool EnableCritNumberDisplay { get; set; } = false;
-		public bool? FreeCanalFlag { get; set; } = false;
+		public bool? FreeCanal { get; set; } = false;
 		public bool? FreeCanoe { get; set; } = false;
 		public bool EasyMode { get; set; } = false;
 
@@ -584,33 +584,34 @@ namespace FF1Lib
 		// 4. The vehicles now have their own incentivization flags apart from other progression items.
 
 		// Ruby is required if Sarda is Required for the ROD
-		public bool? RequiredRuby => !EarlySage & !NPCItems & !FreeAirship;
-		public bool? UselessRuby => FreeAirship & !TitansTrove;
+		public bool? RequiredRuby => !EarlySage & !NPCItems & !IsAirshipFree;
+		public bool? UselessRuby => IsAirshipFree & !TitansTrove;
 		public bool? IncentivizeRuby => (RequiredRuby & IncentivizeMainItems) | (!RequiredRuby & IncentivizeFetchItems & !UselessRuby);
 
 		// If Canoe and Fetch Quests are unshuffled and there is no free canal or airship then TNT is required
-		public bool? RequiredTnt => !NPCFetchItems & !NPCItems & !(FreeCanal | FreeAirship);
+		public bool? RequiredTnt => !NPCFetchItems & !NPCItems & !(IsCanalFree | IsAirshipFree);
 		// If Fetch Items are vanilla and the player has a free Canal, do not incentivize TNT even if Other Quest Items are in the pool since there would be absolutely nothing to gain from TNT
-		public bool? UselessTnt => !NPCFetchItems & (FreeCanal | (FreeAirship & !MapOpenProgression));
+		public bool? UselessTnt => !NPCFetchItems & (IsCanalFree | (IsAirshipFree & !MapOpenProgression));
 		public bool? IncentivizeTnt => (RequiredTnt & IncentivizeMainItems) | (!RequiredTnt & IncentivizeFetchItems & !UselessTnt);
 
 		public bool? IncentivizeCrown => (!(NPCFetchItems ?? false) && (IncentivizeMainItems ?? false)) || ((NPCFetchItems ?? false) && (IncentivizeFetchItems ?? false));
 		public bool? IncentivizeSlab => (!(NPCFetchItems ?? false) && (IncentivizeMainItems ?? false)) || ((NPCFetchItems ?? false) && (IncentivizeFetchItems ?? false));
 		public bool? IncentivizeBottle => (!(NPCFetchItems ?? false) && (IncentivizeMainItems ?? false)) || ((NPCFetchItems ?? false) && (IncentivizeFetchItems ?? false));
 		public bool NoOverworld => (SanityCheckerV2 & OwMapExchange == OwMapExchanges.NoOverworld);
-		public bool? FreeShip => FreeShipFlag | NoOverworld;
-		public bool? FreeAirship => FreeAirshipFlag & !NoOverworld;
-		public bool? FreeCanal => FreeCanalFlag & !NoOverworld;
+		public bool? IsShipFree => FreeShip | NoOverworld;
+		public bool? IsAirshipFree => FreeAirship & !NoOverworld;
+		public bool? IsCanalFree => FreeCanal & !NoOverworld;
+		public bool? IsFloaterRemoved => NoFloater & !NoOverworld;
 		public bool IncentivizeBridge => false;
 		public bool? IncentivizeCanoe => NPCItems & IncentivizeCanoeItem & !FreeCanoe;
 		public bool? IncentivizeLute => NPCItems & !FreeLute & IncentivizeMainItems;
-		public bool? IncentivizeShip => NPCItems & IncentivizeShipAndCanal & !FreeShip & !NoOverworld;
+		public bool? IncentivizeShip => NPCItems & IncentivizeShipAndCanal & !IsShipFree & !NoOverworld;
 		public bool? IncentivizeRod => NPCItems & IncentivizeMainItems;
 		public bool? IncentivizeCube => NPCItems & IncentivizeMainItems;
-		public bool? IncentivizeFloater => ((!FreeAirship & !NoFloater) | NoOverworld) & IncentivizeAirship;
+		public bool? IncentivizeFloater => !IsAirshipFree & !IsFloaterRemoved & IncentivizeAirship;
 		public bool? IncentivizePromotion => !FreeTail & !NoTail & IncentivizeTail;
 
-		public bool? IncentivizeCanal => NPCFetchItems & IncentivizeShipAndCanal & !FreeCanal & !NoOverworld;
+		public bool? IncentivizeCanal => NPCFetchItems & IncentivizeShipAndCanal & !IsCanalFree & !NoOverworld;
 		public bool? IncentivizeCrystal => NPCFetchItems & IncentivizeFetchItems;
 		public bool? IncentivizeHerb => NPCFetchItems & IncentivizeFetchItems;
 		public bool? IncentivizeKey => NPCFetchItems & IncentivizeMainItems;

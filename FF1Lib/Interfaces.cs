@@ -155,14 +155,14 @@
 		bool ShardHunt { get; }
 		bool? ShortToFR { get; }
 		bool? FreeBridge { get; }
-		bool? FreeAirship { get; }
-		bool? FreeShip { get; }
-		bool? FreeCanal { get; }
+		bool? IsAirshipFree { get; }
+		bool? IsShipFree { get; }
+		bool? IsCanalFree { get; }
 		bool? FreeCanoe { get; }
 		bool? FreeLute { get; }
 		bool? FreeTail { get; }
 		bool? NoTail { get; }
-		bool? NoFloater { get; }
+		bool? IsFloaterRemoved { get; }
 		bool? LooseExcludePlacedDungeons { get; }
 		bool NoOverworld { get; }
 	}

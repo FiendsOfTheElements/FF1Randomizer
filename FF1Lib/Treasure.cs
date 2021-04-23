@@ -62,7 +62,7 @@ namespace FF1Lib
 				item.Put(this);
 			}
 			// Move the ship someplace closer to where it really ends up.
-			if (!(flags.FreeShip ?? false))
+			if (!(flags.IsShipFree ?? false))
 			{
 				MapLocation shipLocation = placedItems.Find(reward => reward.Item == Item.Ship).MapLocation;
 				if (overridenOverworld != null && overridenOverworld.TryGetValue(shipLocation, out var overworldIndex))

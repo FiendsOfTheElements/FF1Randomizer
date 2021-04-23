@@ -378,7 +378,7 @@ namespace FF1Lib
 				EnableFreeAirship();
 			}
 
-			if ((bool)flags.FreeShip)
+			if ((bool)flags.IsShipFree)
 			{
 				EnableFreeShip();
 			}
@@ -388,7 +388,7 @@ namespace FF1Lib
 				EnableFreeOrbs();
 			}
 
-			if ((bool)flags.FreeCanal)
+			if ((bool)flags.IsCanalFree)
 			{
 				EnableFreeCanal((bool)flags.NPCItems, npcdata);
 			}

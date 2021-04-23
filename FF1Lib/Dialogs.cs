@@ -1288,12 +1288,12 @@ namespace FF1Lib
 				}
 			}
 
-			if ((flags.FreeAirship ?? false) || (flags.NoFloater ?? false)) incentivePool.Remove(Item.Floater);
+			if ((flags.IsAirshipFree ?? false) || (flags.IsFloaterRemoved ?? false)) incentivePool.Remove(Item.Floater);
 			if (flags.FreeCanoe ?? false) incentivePool.Remove(Item.Canoe);
 			if (flags.FreeBridge ?? false) incentivePool.Remove(Item.Bridge);
-			if (flags.FreeCanal ?? false) incentivePool.Remove(Item.Canal);
+			if (flags.IsCanalFree ?? false) incentivePool.Remove(Item.Canal);
 			if (flags.FreeLute ?? false) incentivePool.Remove(Item.Lute);
-			if (flags.FreeShip ?? false) incentivePool.Remove(Item.Ship);
+			if (flags.IsShipFree ?? false) incentivePool.Remove(Item.Ship);
 			if ((flags.FreeTail ?? false) || (flags.NoTail ?? false)) incentivePool.Remove(Item.Tail);
 
 			if (incentivePool.Count == 0)
