@@ -373,7 +373,7 @@ namespace FF1Lib
 				EnableFreeBridge();
 			}
 
-			if ((bool)flags.FreeAirship)
+			if ((bool)flags.IsAirshipFree)
 			{
 				EnableFreeAirship();
 			}
