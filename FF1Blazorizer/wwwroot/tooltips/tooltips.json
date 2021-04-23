@@ -1559,6 +1559,12 @@
 		"description": "Allows you to change the level your party members will be when you start the game."
 	},
 	{
+		"Id": "MaximumLevelDoubleSilder",
+		"title": "Max Level Cap",
+		"screenshot": null,
+		"description": "Allows you to lower the maximum level, increasing the challenge of the given flagset.\nIf a range is selected, a random number is choosen from the range.\nIf starting levels are higher than the maximum level, players will start at that level but will be unable to gain levels.\nFor beginners it is not recommended to go below level 20."
+	},
+	{
 		"Id": "nonesGainXPcheckBox",
 		"title": "Nones Gain XP",
 		"screenshot": "nonesGainXPcheckBox.png",
