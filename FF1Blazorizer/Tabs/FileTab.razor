@@ -254,6 +254,8 @@
 
 			try
 			{
+				Utilities.SpoilerCache = string.Empty;
+
 				_rom.Randomize(seed, Flags.Flags, Flags.Preferences);
 
 				var data = new byte[512 * 1024 + 16];

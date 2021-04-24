@@ -552,6 +552,7 @@ public static class UnsramIndex
 				case Item.Slab: return AccessRequirement.Slab;
 				case Item.Ruby: return AccessRequirement.Ruby;
 				case Item.Bottle: return AccessRequirement.Bottle;
+				case Item.EarthOrb: return AccessRequirement.EarthOrb;
 				default: return AccessRequirement.None;
 			}
 		}
