@@ -27,6 +27,7 @@
 			<div class="checkbox-cell"></div>
 			<h4>Balance</h4>
 			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="startingLevelDropDown" TItem="StartingLevel" @bind-Value="Flags.StartingLevel">Starting Level:</EnumDropDown>
+			<DoubleSlider UpdateToolTip="@UpdateToolTipID" DoubleCol Id="MaximumLevelDoubleSilder" MinValue="1" MaxValue="50" Step="1" @bind-ValueHigh="Flags.MaxLevelHigh" @bind-ValueLow="Flags.MaxLevelLow">Max Level:</DoubleSlider>
 
 			<div class="checkbox-cell"></div>
 			<h4>Bugfixes</h4>

@@ -716,6 +716,11 @@ namespace FF1Lib
 			new TreasureStacks(this, flags).SetTreasureStacks();
 			new StartingLevels(this, flags).SetStartingLevels();
 
+			if (flags.MaxLevelLow < 50)
+			{
+				SetMaxLevel(flags, rng);
+			}
+
 			if ((bool)flags.TrappedChests || (bool)flags.TCMasaGuardian || (bool)flags.TrappedShards)
 			{
 				MonsterInABox(rng, flags);

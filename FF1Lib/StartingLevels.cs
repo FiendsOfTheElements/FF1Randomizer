@@ -99,5 +99,31 @@ namespace FF1Lib
 
 			return 0;
 		}
+
+		//RFM: couldnt get byte, type casted enum to work, brute force method instead. The flag auto encoder had a problem with startinglevel being a byte type.
+		public static int GetLevelNumber(StartingLevel startingLevel)
+		{
+			switch (startingLevel)
+			{
+				case StartingLevel.Level01:
+					return 1;
+				case StartingLevel.Level03:
+					return 3;
+				case StartingLevel.Level05:
+					return 5;
+				case StartingLevel.Level10:
+					return 10;
+				case StartingLevel.Level16:
+					return 16;
+				case StartingLevel.Level25:
+					return 25;
+				case StartingLevel.Level36:
+					return 36;
+				case StartingLevel.Level50:
+					return 50;
+			}
+
+			return 1;
+		}
 	}
 }

@@ -4111,6 +4111,24 @@ namespace FF1Lib
 				RaisePropertyChanged();
 			}
 		}
+		public int MaxLevelLow
+		{
+			get => Flags.MaxLevelLow;
+			set
+			{
+				Flags.MaxLevelLow = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MaxLevelLow"));
+			}
+		}
+		public int MaxLevelHigh
+		{
+			get => Flags.MaxLevelHigh;
+			set
+			{
+				Flags.MaxLevelHigh = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MaxLevelHigh"));
+			}
+		}
 		public ConsumableChestSet MoreConsumableChests
 		{
 			get => Flags.MoreConsumableChests;
