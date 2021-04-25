@@ -16,23 +16,6 @@ namespace FF1Lib
 	    // Copied from FFHackster.
 	    const int CHARBATTLEPIC_OFFSET =			0x25000;
 
-	    // all the battle palettes?
-	    const int BattlePalettes =                          0x30F20; // bank $0
-
-	    // hmm.
-	    const int CHARBATTLEPALETTE_OFFSET =		0x3EBA5;
-
-	    // InBattleCharPaletteAssign bank $0C
-	    // ROM offset 0x3204C
-	    // used to set palettes in battle
-	    const int CHARBATTLEPALETTE_ASSIGNMENT1 =		0x3203C;
-
-	    // lutClassBatSprPalette
-	    // this one is used determine which palette for the
-	    // characters on the subscreen,
-	    // but since this one is located in bank $1F the
-	    // copy in bank $0C is redundant
-	    const int CHARBATTLEPALETTE_ASSIGNMENT2 =		0x3ECA4; // bank $1F ROM offset
 	    const int MAPMANGRAPHIC_OFFSET =			0x9000;
 
 	    const int MAPMAN_DOWN = 0;
@@ -452,7 +435,13 @@ namespace FF1Lib
 		    ImportMapman(image, cur_class, NESpalette);
 		    var palAssign = ImportBattleSprites(image, cur_class, NESpalette, battlePal1, battlePal2);
 		    if (palAssign != -1) {
+			// Set the palette to use for each class, this
+			// one is used for character selection and
+			// subscreen
 			PutInBank(0x1F, 0xECA4 + cur_class, new byte[] {(byte)palAssign});
+
+			// it loads this one in battle, it is redundant with the one
+			// in 1F but we have to set it anyway
 			PutInBank(0x0C, 0xA03C + cur_class, new byte[] {(byte)palAssign});
 		    }
 		}
