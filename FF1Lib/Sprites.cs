@@ -15,9 +15,24 @@ namespace FF1Lib
 	{
 	    // Copied from FFHackster.
 	    const int CHARBATTLEPIC_OFFSET =			0x25000;
+
+	    // all the battle palettes?
+	    const int BattlePalettes =                          0x30F20; // bank $0
+
+	    // hmm.
 	    const int CHARBATTLEPALETTE_OFFSET =		0x3EBA5;
+
+	    // InBattleCharPaletteAssign bank $0C
+	    // ROM offset 0x3204C
+	    // used to set palettes in battle
 	    const int CHARBATTLEPALETTE_ASSIGNMENT1 =		0x3203C;
-	    const int CHARBATTLEPALETTE_ASSIGNMENT2 =		0x3ECA4;
+
+	    // lutClassBatSprPalette
+	    // this one is used determine which palette for the
+	    // characters on the subscreen,
+	    // but since this one is located in bank $1F the
+	    // copy in bank $0C is redundant
+	    const int CHARBATTLEPALETTE_ASSIGNMENT2 =		0x3ECA4; // bank $1F ROM offset
 	    const int MAPMANGRAPHIC_OFFSET =			0x9000;
 
 	    const int MAPMAN_DOWN = 0;
@@ -47,53 +62,140 @@ namespace FF1Lib
 		return ppuformat;
 	    }
 
-	    byte selectColor(Rgba32 px, Rgba32[] table ) {
-		int min_dif = 1000;
+	    Dictionary<byte, byte> colorReduction = new Dictionary<byte, byte>() {
+		{ 0x0D, 0x0F },
+		{ 0x1D, 0x0F },
+		{ 0x1E, 0x0F },
+		{ 0x1F, 0x0F },
+		{ 0x2E, 0x0F },
+		{ 0x2F, 0x0F },
+		{ 0x3E, 0x0F },
+		{ 0x3F, 0x0F },
+		{ 0x20, 0x30 }
+	    };
+
+	    //
+	    byte selectColor(Rgba32 px, Rgba32[] NESpalette) {
+		int min_dif = 1000000000;;
 		byte idx = 0;
-		for (int i = 0; i < table.Length; i++) {
-		    int dif = Math.Abs(px.R - table[i].R);
-		    dif += Math.Abs(px.G - table[i].G);
-		    dif += Math.Abs(px.B - table[i].B);
+
+		/*
+		var converted = new HSLColor(px);
+		if (converted.L > .9) {
+		    idx = 0x30; // white
+		} else if (converted.L < .1) {
+		    idx = 0x0F; // black
+		} else {
+		    for (int i = 0; i < table.Length; i++) {
+			var dif = converted.WeightedDistance(table[i]);
+			if (dif < min_dif) {
+			    min_dif = dif;
+			    idx = (byte)i;
+			}
+		    }
+		    }*/
+
+		for (int i = 0; i < NESpalette.Length; i++) {
+		    int dif = (NESpalette[i].R - px.R)*(NESpalette[i].R - px.R);
+		    dif += (NESpalette[i].G - px.G)*(NESpalette[i].G - px.G);
+		    dif += (NESpalette[i].B - px.B)*(NESpalette[i].B - px.B);
 		    if (dif < min_dif) {
 			min_dif = dif;
 			idx = (byte)i;
 		    }
 		}
-		if (idx == 0x0D) {
-		    idx = 0x0F;
+
+		if (colorReduction.ContainsKey(idx)) {
+		    idx = colorReduction[idx];
 		}
 		return idx;
 	    }
 
-	    bool makePalette(List<Rgba32> colors, Rgba32 transparent, Rgba32[] table,
+	    bool makeMapmanPalette(List<Rgba32> colors, Rgba32[] NESpalette,
 			     out List<byte> pal,
 			     out Dictionary<Rgba32,byte> toIndex) {
 		pal = new List<byte>();
 		toIndex = new Dictionary<Rgba32,byte>();
-		toIndex[transparent] = 0;
+
 		for (int i = 0; i < colors.Count; i++) {
-		    if (colors[i] == transparent) {
+		    if (colors[i].R >= 250 && colors[i].G <= 5 && colors[i].B >= 250) {
+			// treat magenta as transparent
+			toIndex[colors[i]] = 0;
 			continue;
 		    }
-		    byte selected = selectColor(colors[i], table);
+
+		    byte selected = selectColor(colors[i], NESpalette);
 		    int idx = pal.IndexOf(selected);
 		    if (idx == -1) {
+			// add 1 everything is going to get shifted
+			// when the tranparent entry is added
+			idx = pal.Count + 1;
 			pal.Add(selected);
-			idx = pal.Count;
 		    }
 		    toIndex[colors[i]] = (byte)idx;
 		}
-		// Need to sort the palette & update the mapping
-		// (argh) because it is reused for battle sprites and
-		// needs to have a consistent order.
 
+		// insert the transparent entry.
 		pal.Insert(0, 0x0F);
+
 		if (pal.Count > 4) {
 		    return false;
 		}
 		while (pal.Count < 4) {
 		    pal.Add(0x0F);
 		}
+
+		return true;
+	    }
+
+
+	    bool makeBattlePalette(List<Rgba32> colors, Rgba32[] NESpalette,
+			     out List<byte> pal,
+			     out Dictionary<Rgba32,byte> toIndex) {
+		var paltmp = new List<byte>();
+		var toIndexTmp = new Dictionary<Rgba32,byte>();
+
+		// transparent is black (because battle sprites
+		// have a black background), it can be used as a
+		// "color" in palette entry 0
+		paltmp.Insert(0, 0x0F);
+
+		for (int i = 0; i < colors.Count; i++) {
+		    if (colors[i].R <= 5 && colors[i].G <= 5 && colors[i].B <= 5) {
+			// treat black as transparent
+			toIndexTmp[colors[i]] = 0;
+			continue;
+		    }
+
+		    byte selected = selectColor(colors[i], NESpalette);
+		    int idx = paltmp.IndexOf(selected);
+		    if (idx == -1) {
+			idx = paltmp.Count;
+			paltmp.Add(selected);
+		    }
+		    toIndexTmp[colors[i]] = (byte)idx;
+		}
+
+		if (paltmp.Count > 4) {
+		    pal = paltmp;
+		    toIndex = toIndexTmp;
+		    return false;
+		}
+		while (paltmp.Count < 4) {
+		    paltmp.Add(0x0F);
+		}
+
+		// Need to sort the palette & update the mapping
+		// (argh) because it is reused for battle sprites and
+		// needs to have a consistent order
+
+		toIndex = new Dictionary<Rgba32,byte>();
+		pal = new List<byte>(paltmp);
+		pal.Sort();
+		foreach (var kv in toIndexTmp) {
+		    toIndex[kv.Key] = (byte)pal.IndexOf(paltmp[kv.Value]);
+		}
+
 		return true;
 	    }
 
@@ -116,43 +218,49 @@ namespace FF1Lib
 		// the mapman head tiles have a different palette
 		// than the body tiles.
 		var headColors = new List<Rgba32>();
+		var firstUnique = new Dictionary<Rgba32, int>();
 		for (int y = top; y < (top+8); y++) {
 		    for (int x = left; x < (left+64); x++) {
 			if (!headColors.Contains(image[x,y])) {
+			    firstUnique[image[x,y]] = (x<<16 | y);
 			    headColors.Add(image[x,y]);
 			}
 		    }
 		}
 		List<byte> headPal;
 		Dictionary<Rgba32,byte> headIndex;
-		if (!makePalette(headColors, new Rgba32(0xFF, 0x00, 0xFF), NESpalette, out headPal, out headIndex)) {
+		if (!makeMapmanPalette(headColors, NESpalette, out headPal, out headIndex)) {
 		    Console.WriteLine($"Failed importing top half of mapman for {ClassNames[cur_class]}, too many unique colors (limit 3 unique colors + magenta for transparent):");
 		    for (int i = 0; i < headPal.Count; i++) {
-			Console.WriteLine($"NES palette {i}: {headPal[i]}");
+			Console.WriteLine($"NES palette {i}: ${headPal[i],2:X}");
 		    }
 		    foreach (var i in headIndex) {
-			Console.WriteLine($"RGB to index {i.Key}: {i.Value}");
+			int c = firstUnique[i.Key];
+			Console.WriteLine($"RGB to index {i.Key}: {i.Value}  first appears at {c>>16}, {c & 0xFFFF}");
 		    }
 		    return;
 		}
 
 		var bodyColors = new List<Rgba32>();
+		firstUnique = new Dictionary<Rgba32, int>();
 		for (int y = top+8; y < (top+16); y++) {
 		    for (int x = left; x < (left+64); x++) {
 			if (!bodyColors.Contains(image[x,y])) {
+			    firstUnique[image[x,y]] = (x<<16 | y);
 			    bodyColors.Add(image[x,y]);
 			}
 		    }
 		}
 		List<byte> bodyPal;
 		Dictionary<Rgba32,byte> bodyIndex;
-		if (!makePalette(bodyColors, new Rgba32(0xFF, 0x00, 0xFF), NESpalette, out bodyPal, out bodyIndex)) {
+		if (!makeMapmanPalette(bodyColors, NESpalette, out bodyPal, out bodyIndex)) {
 		    Console.WriteLine($"Failed importing bottom half of mapman for {ClassNames[cur_class]}, too many unique colors (limit 3 unique colors + magenta for transparent):");
 		    for (int i = 0; i < bodyPal.Count; i++) {
-			Console.WriteLine($"NES palette {i}: {bodyPal[i]}");
+			Console.WriteLine($"NES palette {i}: ${bodyPal[i],2:X}");
 		    }
 		    foreach (var i in bodyIndex) {
-			Console.WriteLine($"RGB to index {i.Key}: {i.Value}");
+			int c = firstUnique[i.Key];
+			Console.WriteLine($"RGB to index {i.Key}: {i.Value}  first appears at {c>>16}, {c & 0xFFFF}");
 		    }
 		    return;
 		}
@@ -177,7 +285,7 @@ namespace FF1Lib
 		int offsetIntoLut = cur_class << 3;
 		// Write the palettes into a new LUT in bank $0F
 		// Will be read using the code below.
-		Console.WriteLine($"writing to {lut_MapmanPalettes + offsetIntoLut} {lut_MapmanPalettes + offsetIntoLut + 4}");
+		//Console.WriteLine($"writing to {lut_MapmanPalettes + offsetIntoLut} {lut_MapmanPalettes + offsetIntoLut + 4}");
 		PutInBank(0x0F, lut_MapmanPalettes + offsetIntoLut,       headPal.ToArray());
 		PutInBank(0x0F, lut_MapmanPalettes + offsetIntoLut + 4,   bodyPal.ToArray());
 	    }
@@ -186,23 +294,26 @@ namespace FF1Lib
 		int top = (40*(cur_class >= 6 ? cur_class-6 : cur_class));
 		int left = ((cur_class >= 6) ? 104 : 0);
 
+		var firstUnique = new Dictionary<Rgba32, int>();
 		var colors = new List<Rgba32>();
 		for (int y = top; y < (top+24); y++) {
 		    for (int x = left; x < (left+104); x++) {
 			if (!colors.Contains(image[x,y])) {
+			    firstUnique[image[x,y]] = (x<<16 | y);
 			    colors.Add(image[x,y]);
 			}
 		    }
 		}
 		List<byte> pal;
 		Dictionary<Rgba32,byte> index;
-		if (!makePalette(colors, new Rgba32(0x00, 0x00, 0x00), NESpalette, out pal, out index)) {
+		if (!makeBattlePalette(colors, NESpalette, out pal, out index)) {
 		    Console.WriteLine($"Failed importing battle sprites for {ClassNames[cur_class]}, too many unique colors (limit 3 unique colors + black):");
 		    for (int i = 0; i < pal.Count; i++) {
-			Console.WriteLine($"NES palette {i}: {pal[i]}");
+			Console.WriteLine($"NES palette {i}: ${pal[i],2:X}");
 		    }
 		    foreach (var i in index) {
-			Console.WriteLine($"RGB to index {i.Key}: {i.Value}");
+			int c = firstUnique[i.Key];
+			Console.WriteLine($"RGB to index {i.Key}: {i.Value}  first appears at {c>>16}, {c & 0xFFFF}");
 		    }
 		    return -1;
 		}
@@ -211,39 +322,52 @@ namespace FF1Lib
 		if (pal1.Count == 0) {
 		    for (int i = 0; i < 4; i++) { pal1.Add(pal[i]); }
 		    usepal = 0;
-		} else if (pal1.Equals(pal)) {
+		} else if (Enumerable.SequenceEqual(pal, pal1)) {
 		    usepal = 0;
 		} else if (pal2.Count == 0) {
 		    for (int i = 0; i < 4; i++) { pal2.Add(pal[i]); }
 		    usepal = 1;
-		} else if (pal2.Equals(pal)) {
+		} else if (Enumerable.SequenceEqual(pal, pal2)) {
 		    usepal = 1;
 		} else {
 		    Console.WriteLine($"Failed importing battle sprites for {ClassNames[cur_class]}, has a different palette from other classes");
+
 		    for (int i = 0; i < pal.Count; i++) {
-			Console.WriteLine($"NES palette {i}: {pal[i]}");
+			Console.WriteLine($"palette for class, idx {i}: ${pal[i],2:X}");
 		    }
+		    for (int i = 0; i < pal1.Count; i++) {
+			Console.WriteLine($"palette 1, idx {i}: ${pal1[i],2:X}");
+		    }
+		    for (int i = 0; i < pal2.Count; i++) {
+			Console.WriteLine($"palette 2, idx {i}: ${pal2[i],2:X}");
+		    }
+
 		    foreach (var i in index) {
 			Console.WriteLine($"RGB to index {i.Key}: {i.Value}");
 		    }
-		    return -1;
+		    usepal = 0; // whatever
 		}
 
-		const byte ConstPicFormation[39] = {	//3 x 13 pic formation
-		    0, 1, 0, 1, 8, 9,14,15,20,21,255,255,255,
-		    2, 3, 2, 3,10,11,16,17,22,23,26,27,28,
-		    4, 5, 6, 7,12,13,18,19,24,25,29,30,31};
+		// const byte ConstPicFormation[39] = {	//3 x 13 pic formation
+		//     0, 1, 0, 1, 8, 9,14,15,20,21,255,255,255,
+		//     2, 3, 2, 3,10,11,16,17,22,23,26,27,28,
+		//     4, 5, 6, 7,12,13,18,19,24,25,29,30,31};
 
-		// int offset = 0;
-		// for (int pos = 0; pos < 5; pos++) {
-		//     for (int y = 0; y < 3; y++) {
-		// 	for (int x = 0; x < 2; x++) {
-		// 	    var tile = makeTile(image, top + (y*8), left + (x*8), index);
-		// 	    Put(CHARBATTLEPIC_OFFSET + (cur_class << 9) + offset, EncodeForPPU(tile));
-		// 	    offset += 16;
-		// 	}
-		//     }
-		// }
+		var ConstPicFormationNoDup = new byte[39] {	//3 x 13 pic formation
+		    0, 1, 255, 255,  8, 9,14,15,20,21,255,255,255,
+		    2, 3, 255, 255, 10,11,16,17,22,23,26,27,28,
+		    4, 5,   6,   7, 12,13,18,19,24,25,29,30,31};
+
+		for (int y = 0; y < 3; y++) {
+		    for (int x = 0; x < 13; x++) {
+			var tileidx = ConstPicFormationNoDup[(y*13) + x];
+			if (tileidx == 255) {
+			    continue;
+			}
+			var tile = makeTile(image, top + (y*8), left + (x*8), index);
+			Put(CHARBATTLEPIC_OFFSET + (cur_class << 9) + (tileidx*16), EncodeForPPU(tile));
+		    }
+		}
 
 		return usepal;
 	    }
@@ -287,7 +411,7 @@ namespace FF1Lib
 		    new Rgba32(0x00, 0x00, 0x00),
 		    new Rgba32(0x00, 0x00, 0x00),
 
-		    new Rgba32(0xff, 0xff, 0xff),
+		    new Rgba32(0xf8, 0xf8, 0xf8),
 		    new Rgba32(0x3f, 0xbf, 0xff),
 		    new Rgba32(0x6b, 0x88, 0xff),
 		    new Rgba32(0x98, 0x78, 0xf8),
@@ -328,13 +452,13 @@ namespace FF1Lib
 		    ImportMapman(image, cur_class, NESpalette);
 		    var palAssign = ImportBattleSprites(image, cur_class, NESpalette, battlePal1, battlePal2);
 		    if (palAssign != -1) {
-			Put(CHARBATTLEPALETTE_ASSIGNMENT1 + cur_class, new byte[] {(byte)palAssign});
-			Put(CHARBATTLEPALETTE_ASSIGNMENT2 + cur_class, new byte[] {(byte)palAssign});
+			PutInBank(0x1F, 0xECA4 + cur_class, new byte[] {(byte)palAssign});
+			PutInBank(0x0C, 0xA03C + cur_class, new byte[] {(byte)palAssign});
 		    }
 		}
 
-		Put(CHARBATTLEPALETTE_OFFSET + 1, battlePal1.ToArray());
-		Put(CHARBATTLEPALETTE_OFFSET + 5, battlePal2.ToArray());
+		PutInBank(0x1F, 0xEBA5, battlePal1.ToArray());
+		PutInBank(0x1F, 0xEBA5+4, battlePal2.ToArray());
 
 		// code in asm/0F_8150_MapmanPalette.asm
 
