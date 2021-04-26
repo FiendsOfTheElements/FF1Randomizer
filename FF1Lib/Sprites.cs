@@ -54,6 +54,8 @@ namespace FF1Lib
 		{ 0x2F, 0x0F },
 		{ 0x3E, 0x0F },
 		{ 0x3F, 0x0F },
+		{ 0x2D, 0x00 },
+		{ 0x3D, 0x10 },
 		{ 0x20, 0x30 }
 	    };
 
@@ -168,13 +170,16 @@ namespace FF1Lib
 		    paltmp.Add(0x0F);
 		}
 
-		// Need to sort the palette & update the mapping
-		// (argh) because it is reused for battle sprites and
-		// needs to have a consistent order
-
 		toIndex = new Dictionary<Rgba32,byte>();
 		pal = new List<byte>(paltmp);
+		// Need to keep black at position 0
+		pal.RemoveAt(0);
+
+		// Need to sort the palette & update the mapping so
+		// that battle sprites that need to share palettes all
+		// have the colors in the same order.
 		pal.Sort();
+		pal.Insert(0, 0x0F);
 		foreach (var kv in toIndexTmp) {
 		    toIndex[kv.Key] = (byte)pal.IndexOf(paltmp[kv.Value]);
 		}
@@ -273,7 +278,7 @@ namespace FF1Lib
 		PutInBank(0x0F, lut_MapmanPalettes + offsetIntoLut + 4,   bodyPal.ToArray());
 	    }
 
-	    int ImportBattleSprites(Image<Rgba32> image, int cur_class, Rgba32[] NESpalette, List<byte> pal1, List<byte> pal2) {
+	    int ImportBattleSprites(Image<Rgba32> image, int cur_class, Rgba32[] NESpalette, List<List<byte>> battlePals) {
 		int top = (40*(cur_class >= 6 ? cur_class-6 : cur_class));
 		int left = ((cur_class >= 6) ? 104 : 0);
 
@@ -281,6 +286,11 @@ namespace FF1Lib
 		var colors = new List<Rgba32>();
 		for (int y = top; y < (top+24); y++) {
 		    for (int x = left; x < (left+104); x++) {
+			if (x >= (left+80) && y < (top+8)) {
+			    // This is the space above the dead character,
+			    // ignore it
+			    continue;
+			}
 			if (!colors.Contains(image[x,y])) {
 			    firstUnique[image[x,y]] = (x<<16 | y);
 			    colors.Add(image[x,y]);
@@ -302,29 +312,28 @@ namespace FF1Lib
 		}
 
 		int usepal = -1;
-		if (pal1.Count == 0) {
-		    for (int i = 0; i < 4; i++) { pal1.Add(pal[i]); }
-		    usepal = 0;
-		} else if (Enumerable.SequenceEqual(pal, pal1)) {
-		    usepal = 0;
-		} else if (pal2.Count == 0) {
-		    for (int i = 0; i < 4; i++) { pal2.Add(pal[i]); }
-		    usepal = 1;
-		} else if (Enumerable.SequenceEqual(pal, pal2)) {
-		    usepal = 1;
-		} else {
+		int b;
+		for (b = 0; b < battlePals.Count; b++) {
+		    if (battlePals[b].Count == 0) {
+			for (int j = 0; j < 4; j++) { battlePals[b].Add(pal[j]); }
+			usepal = b;
+			break;
+		    } else if (Enumerable.SequenceEqual(pal, battlePals[b])) {
+			usepal = b;
+			break;
+		    }
+		}
+		if (b == battlePals.Count) {
 		    Console.WriteLine($"Failed importing battle sprites for {ClassNames[cur_class]}, has a different palette from other classes");
 
 		    for (int i = 0; i < pal.Count; i++) {
 			Console.WriteLine($"palette for class, idx {i}: ${pal[i],2:X}");
 		    }
-		    for (int i = 0; i < pal1.Count; i++) {
-			Console.WriteLine($"palette 1, idx {i}: ${pal1[i],2:X}");
+		    for (b = 0; b < battlePals.Count; b++) {
+			for (int i = 0; i < battlePals[b].Count; i++) {
+			    Console.WriteLine($"palette {b}, idx {i}: ${battlePals[b][i],2:X}");
+			}
 		    }
-		    for (int i = 0; i < pal2.Count; i++) {
-			Console.WriteLine($"palette 2, idx {i}: ${pal2[i],2:X}");
-		    }
-
 		    foreach (var i in index) {
 			Console.WriteLine($"RGB to index {i.Key}: {i.Value}");
 		    }
@@ -355,7 +364,7 @@ namespace FF1Lib
 		return usepal;
 	    }
 
-	    public void SetCustomPlayerSprites(Stream readStream) {
+	    public void SetCustomPlayerSprites(Stream readStream, bool threePalettes) {
 		IImageFormat format;
 		Image<Rgba32> image = Image.Load<Rgba32>(readStream, out format);
 
@@ -429,11 +438,16 @@ namespace FF1Lib
 		    new Rgba32(0x00, 0x00, 0x00)
 		};
 
-		List<byte> battlePal1 = new List<byte>();
-		List<byte> battlePal2 = new List<byte>();
+		var battlePals = new List<List<byte>>();
+		battlePals.Add(new List<byte>());
+		battlePals.Add(new List<byte>());
+		if (threePalettes) {
+		    battlePals.Add(new List<byte>());
+		}
+
 		for (int cur_class = 0; cur_class < 12; cur_class++) {
 		    ImportMapman(image, cur_class, NESpalette);
-		    var palAssign = ImportBattleSprites(image, cur_class, NESpalette, battlePal1, battlePal2);
+		    var palAssign = ImportBattleSprites(image, cur_class, NESpalette, battlePals);
 		    if (palAssign != -1) {
 			// Set the palette to use for each class, this
 			// one is used for character selection and
@@ -446,8 +460,9 @@ namespace FF1Lib
 		    }
 		}
 
-		PutInBank(0x1F, 0xEBA5, battlePal1.ToArray());
-		PutInBank(0x1F, 0xEBA5+4, battlePal2.ToArray());
+		for (int i = 0; i < battlePals.Count; i++) {
+		    PutInBank(0x1F, 0xEBA5+(i*4), battlePals[i].ToArray());
+		}
 
 		// code in asm/0F_8150_MapmanPalette.asm
 

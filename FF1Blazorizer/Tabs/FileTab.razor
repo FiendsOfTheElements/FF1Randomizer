@@ -261,7 +261,7 @@
 				if (Flags.SpriteSheet != null) {
 			  	using (var stream = new MemoryStream(Flags.SpriteSheet))
 			 	 {
-				 _rom.SetCustomPlayerSprites(stream);
+				 _rom.SetCustomPlayerSprites(stream, Flags.ThirdBattlePalette);
 			  	 }
 				}
 
