@@ -162,40 +162,38 @@ else
 	public int ValueLow
 	{
 		get => _valueLow;
+
 		set
 		{
-			if (_valueLow.Equals(value))
-				return;
-
-			if (value >= _valueHigh)
+			if (value > _valueHigh)
 			{
 				_valueLow = _valueHigh;
+				_valueHigh = value;
 			}
 			else
 			{
 				_valueLow = value;
 			}
-			ValueLowChanged.InvokeAsync(_valueLow);
 		}
 	}
 	[Parameter]
 	public int ValueHigh
 	{
+
 		get => _valueHigh;
+
 		set
 		{
-			if (_valueHigh.Equals(value))
-				return;
 
-			if (value <= _valueLow)
+			if (value < _valueLow)
 			{
 				_valueHigh = _valueLow;
+				_valueLow = value;
 			}
 			else
 			{
 				_valueHigh = value;
 			}
-			ValueHighChanged.InvokeAsync(_valueHigh);
 		}
 	}
 	[Parameter] public EventCallback<int> ValueLowChanged { get; set; }
