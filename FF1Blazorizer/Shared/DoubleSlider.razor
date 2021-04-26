@@ -165,6 +165,9 @@ else
 
 		set
 		{
+			if (_valueLow.Equals(value))
+				return;
+
 			if (value > _valueHigh)
 			{
 				_valueLow = _valueHigh;
@@ -174,6 +177,8 @@ else
 			{
 				_valueLow = value;
 			}
+			ValueLowChanged.InvokeAsync(_valueLow);
+			ValueHighChanged.InvokeAsync(_valueHigh);
 		}
 	}
 	[Parameter]
@@ -184,6 +189,8 @@ else
 
 		set
 		{
+			if (_valueHigh.Equals(value))
+				return;
 
 			if (value < _valueLow)
 			{
@@ -194,7 +201,11 @@ else
 			{
 				_valueHigh = value;
 			}
+
+			ValueLowChanged.InvokeAsync(_valueLow);
+			ValueHighChanged.InvokeAsync(_valueHigh);
 		}
+
 	}
 	[Parameter] public EventCallback<int> ValueLowChanged { get; set; }
 	[Parameter] public EventCallback<int> ValueHighChanged { get; set; }
