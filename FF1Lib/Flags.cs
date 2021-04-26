@@ -126,6 +126,11 @@ namespace FF1Lib
 
 		public StartingLevel StartingLevel { get; set; }
 
+		[IntegerFlag(1, 50)]
+		public int MaxLevelLow { get; set; } = 50;
+		[IntegerFlag(1, 50)]
+		public int MaxLevelHigh { get; set; } = 50;
+
 		public bool Spoilers { get; set; } = false;
 		public bool TournamentSafe { get; set; } = false;
 		public bool BlindSeed { get; set; } = false;
