@@ -1568,7 +1568,7 @@ namespace FF1Lib
 		    bool hasCRACK = false;
 		    for (int i = 0; i < spells.Count; i++) {
 			var s = spells[i];
-			var spellname = FF1Text.BytesToText(spellList[s].Name);
+			var spellname = spellList[s].Name;
 			if (spellname == "NUKE" && i<4) {
 			    hasEarlyNukeOrNuclear = true;
 			}
@@ -1590,7 +1590,7 @@ namespace FF1Lib
 		    if (flags.SkyWarriorSpoilerBats == SpoilerBatHints.FullStats) {
 			string spellscript = "";
 			foreach (var s in spells) {
-			    var spellname = FF1Text.BytesToText(spellList[s].Name);
+			    var spellname = spellList[s].Name;
 			    if (spellscript != "") {
 				if (spellscript.Length+spellname.Length > 23 && spellscript.IndexOf("\n") == -1) {
 				    spellscript += "\n";

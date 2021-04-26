@@ -2,6 +2,7 @@
 using System.Linq;
 using RomUtilities;
 using System.ComponentModel;
+using System;
 
 namespace FF1Lib
 {
@@ -43,8 +44,12 @@ namespace FF1Lib
 	{
 		public byte Index;
 		public Blob Data;
-		public Blob Name;
-		public byte TextPointer;
+		public string Name;
+
+		public override string ToString()
+		{
+			return Index.ToString() + ": " + Name;
+		}
 	}
 
 	public partial class FF1Rom : NesRom
@@ -409,8 +414,7 @@ namespace FF1Lib
 			}
 
 			Put(MagicOffset, shuffledSpells.Select(spell => spell.Data).Aggregate((seed, next) => seed + next));
-			Put(MagicNamesOffset, shuffledSpells.Select(spell => spell.Name).Aggregate((seed, next) => seed + next));
-			Put(MagicTextPointersOffset, shuffledSpells.Select(spell => spell.TextPointer).ToArray());
+			PutSpellNames(shuffledSpells);
 
 			if (keepPermissions)
 			{
@@ -578,17 +582,27 @@ namespace FF1Lib
 
 		public List<MagicSpell> GetSpells() {
 			var spells = Get(MagicOffset, MagicSize * MagicCount).Chunk(MagicSize);
-			var namepointers = Get(ItemTextPointerOffset, 2 * ItemTextPointerCount).ToUShorts().ToList();
-			var pointers = Get(MagicTextPointersOffset, MagicCount);
+			var itemnames = ReadText(FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextPointerCount);
 
 			return spells.Select((spell, i) => new MagicSpell
 			{
 				Index = (byte)i,
 				Data = spell,
-				Name = ReadUntil(ItemTextPointerBase + namepointers[MagicNamesIndexInItemText+i], 0x00),
-				TextPointer = pointers[i]
+				Name = itemnames[176 + i]
 			})
 			.ToList();
+		}
+
+		public void PutSpellNames(List<MagicSpell> spells)
+		{
+			var itemnames = ReadText(FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextPointerCount);
+
+			foreach (var spell in spells)
+			{
+				itemnames[176 + spell.Index] = spell.Name;
+			}
+
+			WriteText(itemnames, FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextOffset);
 		}
 
 		public void AccessibleSpellNames(Flags flags)
@@ -606,56 +620,56 @@ namespace FF1Lib
 			for (int i = 0; i < magicSpells.Count; i++)
 			{
 				MagicSpell newSpell = magicSpells[i];
-				string spellName = FF1Text.BytesToText(magicSpells[i].Name);
+				string spellName = magicSpells[i].Name;
 
 				switch (spellName)
 				{
 					// Note that 3 letter spell names actually have a trailing space
 					case "LIT ":
-						newSpell.Name = FF1Text.TextToBytes("THUN");
+						newSpell.Name = "THUN";
 						break;
 					case "LIT2":
-						newSpell.Name = FF1Text.TextToBytes("THN2");
+						newSpell.Name = "THN2";
 						break;
 					case "LIT3":
-						newSpell.Name = FF1Text.TextToBytes("THN3");
+						newSpell.Name = "THN3";
 						break;
 					case "FAST":
-						newSpell.Name = FF1Text.TextToBytes("HAST");
+						newSpell.Name = "HAST";
 						break;
 					case "SLEP":
-						newSpell.Name = FF1Text.TextToBytes("DOZE");
+						newSpell.Name = "DOZE";
 						break;
 					case "SLP2":
-						newSpell.Name = FF1Text.TextToBytes("DOZ2");
+						newSpell.Name = "DOZ2";
 						break;
 
 					case "HARM":
-						newSpell.Name = FF1Text.TextToBytes("DIA ");
+						newSpell.Name = "DIA ";
 						break;
 					case "HRM2":
-						newSpell.Name = FF1Text.TextToBytes("DIA2");
+						newSpell.Name = "DIA2";
 						break;
 					case "HRM3":
-						newSpell.Name = FF1Text.TextToBytes("DIA3");
+						newSpell.Name = "DIA3";
 						break;
 					case "HRM4":
-						newSpell.Name = FF1Text.TextToBytes("DIA4");
+						newSpell.Name = "DIA4";
 						break;
 					case "ALIT":
-						newSpell.Name = FF1Text.TextToBytes("ATHN");
+						newSpell.Name = "ATHN";
 						break;
 					case "AMUT":
-						newSpell.Name = FF1Text.TextToBytes("VOX ");
+						newSpell.Name = "VOX ";
 						break;
 					case "FOG ":
-						newSpell.Name = FF1Text.TextToBytes("PROT");
+						newSpell.Name = "PROT";
 						break;
 					case "FOG2":
-						newSpell.Name = FF1Text.TextToBytes("PRO2");
+						newSpell.Name = "PRO2";
 						break;
 					case "FADE":
-						newSpell.Name = FF1Text.TextToBytes("HOLY");
+						newSpell.Name = "HOLY";
 						break;
 				}
 
@@ -664,7 +678,7 @@ namespace FF1Lib
 			}
 
 			// Now update the spell names!
-			Put(MagicNamesOffset, magicSpells.Select(spell => spell.Name).Aggregate((seed, next) => seed + next));
+			PutSpellNames(magicSpells);
 		}
 	}
 }

@@ -118,11 +118,15 @@ namespace FF1Lib
 						string bonusString = string.Format((bonus > 0) ? "+{0}" : "{0}", bonus.ToString());
 						byte[] bonusBytes = FF1Text.TextToBytes(bonusString);
 
-						int iconIndex = currentWeapon.NameBytes[6] > 200 && currentWeapon.NameBytes[6] != 255 ? 5 : 6;
+						var nameBytes = FF1Text.TextToBytes(currentWeapon.Name, false);
+
+						int iconIndex = nameBytes[6] > 200 && nameBytes[6] != 255 ? 5 : 6;
 						for (int j = 0; j < bonusBytes.Length - 1; j++)
 						{
-							currentWeapon.NameBytes[iconIndex - j] = bonusBytes[bonusBytes.Length - 2 - j];
+							nameBytes[iconIndex - j] = bonusBytes[bonusBytes.Length - 2 - j];
 						}
+
+						currentWeapon.Name = FF1Text.BytesToText(nameBytes);
 
 						currentWeapon.writeWeaponMemory(this);
 					}
@@ -133,7 +137,7 @@ namespace FF1Lib
 		//sample function for creating new weapons
 		public void ExpandWeapon()
 		{
-			Weapon flameChucks = new Weapon(0, FF1Text.TextToBytes("Flame"), WeaponIcon.CHUCK, 20, 26, 10, 0, (byte)Element.FIRE, 0, WeaponSprite.CHUCK, 0x25);
+			Weapon flameChucks = new Weapon(0, "Flame@N", WeaponIcon.CHUCK, 20, 26, 10, 0, (byte)Element.FIRE, 0, WeaponSprite.CHUCK, 0x25);
 			flameChucks.setClassUsability((ushort)(EquipPermission.BlackBelt | EquipPermission.Master | EquipPermission.Ninja));
 			flameChucks.writeWeaponMemory(this);
 		}
@@ -205,7 +209,7 @@ namespace FF1Lib
 
 		//writen to separate area
 		public WeaponIcon Icon;
-		public byte[] NameBytes;
+		public string Name;
 
 		//written to weapon data area
 		public byte HitBonus;
@@ -220,7 +224,7 @@ namespace FF1Lib
 		//written to class permission area
 		ushort ClassUsability;
 
-		public Weapon(int weaponIndex, NesRom rom)
+		public Weapon(int weaponIndex, FF1Rom rom)
 		{
 
 			WeaponIndex = weaponIndex;
@@ -248,35 +252,27 @@ namespace FF1Lib
 
 			//get name stuff
 			Icon = WeaponIcon.NONE;
-			//hold over from armor, doesnt really need this check
-			int weaponBaseNameOffset = FF1Rom.GearTextOffset + (WeaponIndex * FF1Rom.GearTextSize) + (weaponIndex > (byte)Item.Ribbon ? 1 : 0);
-			//TODO figure out if treasure hunt is enabled, if so add 6 to this offset
-			byte currentValue;
-			NameBytes = rom.Get(weaponBaseNameOffset, 8).ToBytes();
 
-			//find icon
-			for (int i = 0; i < 8; i++)
+			var itemnames = rom.ReadText(FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextPointerCount);
+
+			Name = itemnames[(int)Item.WoodenNunchucks + WeaponIndex];
+
+			foreach (var kv in IconCodes)
 			{
-				currentValue = NameBytes[i];
-				//icon range > 200
-				if (currentValue > 200)
+				if (Name.Contains(kv.Value))
 				{
-					//check for icon
-					Icon = getWeaponIconFromByte(currentValue);
+					Icon = kv.Key;
+					break;
 				}
 			}
 		}
 
 		//pre-load values, could be used to create new weapons in the future
-		public Weapon(int weaponIndex, byte[] nameBytes, WeaponIcon icon, byte hitBonus, byte damage, byte crit, byte spellIndex, byte elementalWeakness, byte typeWeakeness, WeaponSprite weaponTypeSprite, byte weaponSpritePaletteColor)
+		public Weapon(int weaponIndex, string name, WeaponIcon icon, byte hitBonus, byte damage, byte crit, byte spellIndex, byte elementalWeakness, byte typeWeakeness, WeaponSprite weaponTypeSprite, byte weaponSpritePaletteColor)
 		{
 			WeaponIndex = weaponIndex;
-			NameBytes = nameBytes;
+			Name = name;
 			Icon = icon;
-			if (icon != WeaponIcon.NONE)
-			{
-				NameBytes[6] = (byte)icon;
-			}
 			HitBonus = hitBonus;
 			Damage = damage;
 			Crit = crit;
@@ -292,7 +288,7 @@ namespace FF1Lib
 			ClassUsability = classUsability;
 		}
 
-		public void writeWeaponMemory(NesRom rom)
+		public void writeWeaponMemory(FF1Rom rom)
 		{
 			//weapon stats
 			int weaponBaseOffset = FF1Rom.WeaponOffset + (WeaponIndex * FF1Rom.WeaponSize);
@@ -303,9 +299,7 @@ namespace FF1Lib
 			ushort convertedClassPermissions = (ushort)(ClassUsability ^ 0xFFF);
 			rom.Put(weaponUsabilityOffset, BitConverter.GetBytes(convertedClassPermissions));
 
-			//weapon name
-			int weaponBaseNameOffset = FF1Rom.GearTextOffset + (WeaponIndex * FF1Rom.GearTextSize);
-			rom.Put(weaponBaseNameOffset, NameBytes);
+			rom.UpdateItemName((Item)((int)Item.WoodenNunchucks + WeaponIndex), Name);
 		}
 
 		private WeaponIcon getWeaponIconFromByte(byte icon)
@@ -335,6 +329,15 @@ namespace FF1Lib
 
 			return matchedType;
 		}
-	}
 
+		public static Dictionary<WeaponIcon, string> IconCodes = new Dictionary<WeaponIcon, string>
+		{
+			{ WeaponIcon.SWORD, "@S" },
+			{ WeaponIcon.HAMMER, "@H" },
+			{ WeaponIcon.KNIFE, "@K" },
+			{ WeaponIcon.AXE, "@X" },
+			{ WeaponIcon.STAFF, "@F" },
+			{ WeaponIcon.CHUCK, "@N" }
+		};
+	}
 }
