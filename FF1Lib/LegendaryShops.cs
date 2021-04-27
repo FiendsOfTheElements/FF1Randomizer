@@ -72,7 +72,7 @@ namespace FF1Lib
 		{
 			PrepareMaps();
 
-			Spells = rom.GetSpells().ToDictionary(s => FF1Text.BytesToText(s.Name).ToLowerInvariant());
+			Spells = rom.GetSpells().ToDictionary(s => s.Name.ToLowerInvariant());
 			MapTileSets.LoadTable();
 
 			for (int i = 0; i < 8; i++)

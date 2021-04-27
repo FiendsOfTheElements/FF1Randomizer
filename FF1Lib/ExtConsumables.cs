@@ -32,7 +32,7 @@ namespace FF1Lib
 		public void LoadSpells()
 		{
 			SpellInfos = rom.LoadSpells().ToList();
-			Spells = rom.GetSpells().ToDictionary(s => FF1Text.BytesToText(s.Name).ToLowerInvariant());
+			Spells = rom.GetSpells().ToDictionary(s => s.Name.ToLowerInvariant());
 		}
 
 		public void AddExtConsumables()
