@@ -1064,6 +1064,8 @@ namespace FF1Lib
 		public void MonsterInABox(MT19337 rng, Flags flags)
 		{
 			const int lut_TreasureOffset = 0x3100;
+			const int BANK_SMINFO = 0x00;
+			const int lut_TileSMsetProp = 0x8800; // BANK_SMINFO - page                        - 0x100 bytes x 8  (2 bytes per)
 
 			// Replace OpenTreasureChest routine, see 11_8EC0_CheckTrap.asm
 			PutInBank(0x1F, 0xDD78, Blob.FromHex("A9002003FEA645BD00B18561A9112003FE20B08E8A60"));
@@ -1116,6 +1118,25 @@ namespace FF1Lib
 				}
 			}
 
+			if ((bool)flags.TCIndicator)
+			{ 
+				for (int i = 0; i < 8; i++)
+				{
+					for (int j = 0; j < 0x80; j++)
+					{
+						var tempTileProperties = GetFromBank(BANK_SMINFO, lut_TileSMsetProp + (i * 0x100) + (j * 2), 2);
+						if ((tempTileProperties[0] & (byte)TilePropFunc.TP_SPEC_TREASURE) > 0 && (tempTileProperties[0] & (byte)TilePropFunc.TP_NOMOVE) > 0)
+						{
+							if (chestMonsterList[(int)tempTileProperties[1]] > 0)
+							{
+								TileSM temptile = new((byte)j, i, this);
+								temptile.TileGraphic = new List<byte> { 0x2A, 0x7C, 0x3A, 0x3B };
+								temptile.Write(this);
+							}
+						}
+					}
+				}
+			}
 			// Insert trapped chest list
 			PutInBank(0x11, 0x8F00, chestMonsterList);
 		}
