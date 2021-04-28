@@ -1137,6 +1137,7 @@ namespace FF1Lib
 					}
 				}
 			}
+
 			// Insert trapped chest list
 			PutInBank(0x11, 0x8F00, chestMonsterList);
 		}

@@ -561,6 +561,12 @@
 		"screenshot": "trappedShardsCheckBox.gif",
 		"description": "In Shard Hunt mode, all shard chests are trapped, triggering a battle before the party can access the shard."
 	},
+	{
+		"Id": "trappedMarkCheckBox",
+		"title": "Trapped Chests are Marked",
+		"screenshot": "TCmarkedChests.png",
+		"description": "Puts an X on chests to warn that they're trapped."
+	},
 
 	{
 		"Id": "GuaranteedMasamuneCheckBox",
