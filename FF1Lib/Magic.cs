@@ -597,9 +597,9 @@ namespace FF1Lib
 		{
 			var itemnames = ReadText(FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextPointerCount);
 
-			foreach (var spell in spells)
+			for(int i = 0; i < spells.Count; i++)
 			{
-				itemnames[176 + spell.Index] = spell.Name;
+				itemnames[176 + i] = spells[i].Name;
 			}
 
 			WriteText(itemnames, FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextOffset);
@@ -680,5 +680,52 @@ namespace FF1Lib
 			// Now update the spell names!
 			PutSpellNames(magicSpells);
 		}
+
+		public void MixUpSpellNames(SpellNameMadness mode, MT19337 rng)
+		{
+			if (mode == SpellNameMadness.MixedUp)
+			{
+				var itemnames = ReadText(FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextPointerCount);
+
+				string[] spellnames = new string[64];
+				Array.Copy(itemnames, 176, spellnames, 0, 64);
+
+				var spellnamelist = new List<string>(spellnames);
+				spellnamelist.Shuffle(rng);
+
+				for (int i = 0; i < spellnamelist.Count; i++)
+				{
+					itemnames[176 + i] = spellnamelist[i];
+				}
+
+				WriteText(itemnames, FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextOffset);
+			}
+			else if (mode == SpellNameMadness.Madness)
+			{
+				List<string> alphabet = new List<string> { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" };
+				List<string> numbers = new List<string> { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0" };
+
+				var itemnames = ReadText(FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextPointerCount);
+
+				for (int i = 176; i < 176 + 64; i++)
+				{
+					itemnames[i] = alphabet.PickRandom(rng) + alphabet.PickRandom(rng) + numbers.PickRandom(rng) + alphabet.PickRandom(rng);
+				}
+
+				WriteText(itemnames, FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextOffset);
+			}
+		}
+	}
+
+	public enum SpellNameMadness
+	{
+		[Description("None")]
+		None,
+
+		[Description("MixedUp")]
+		MixedUp,
+
+		[Description("Madness")]
+		Madness
 	}
 }

@@ -4287,6 +4287,17 @@ namespace FF1Lib
 			}
 		}
 
+
+		public SpellNameMadness SpellNameMadness
+		{
+			get => Flags.SpellNameMadness;
+			set
+			{
+				Flags.SpellNameMadness = value;
+				RaisePropertyChanged();
+			}
+		}
+
 		#region StartingEquipment
 
 		public bool? StartingEquipmentMasamune

@@ -50,6 +50,7 @@ namespace FF1Lib
 
 		#endregion
 
+		public SpellNameMadness SpellNameMadness { get; set; } = SpellNameMadness.None;
 
 		public bool EnableExtConsumables { get; set; } = false;
 
