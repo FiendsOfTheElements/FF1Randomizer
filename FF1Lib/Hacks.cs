@@ -1064,6 +1064,8 @@ namespace FF1Lib
 		public void MonsterInABox(MT19337 rng, Flags flags)
 		{
 			const int lut_TreasureOffset = 0x3100;
+			const int BANK_SMINFO = 0x00;
+			const int lut_TileSMsetProp = 0x8800; // BANK_SMINFO - page                        - 0x100 bytes x 8  (2 bytes per)
 
 			// Replace OpenTreasureChest routine, see 11_8EC0_CheckTrap.asm
 			PutInBank(0x1F, 0xDD78, Blob.FromHex("A9002003FEA645BD00B18561A9112003FE20B08E8A60"));
@@ -1116,6 +1118,26 @@ namespace FF1Lib
 				}
 			}
 
+			if ((bool)flags.TCIndicator)
+			{ 
+				for (int i = 0; i < 8; i++)
+				{
+					for (int j = 0; j < 0x80; j++)
+					{
+						var tempTileProperties = GetFromBank(BANK_SMINFO, lut_TileSMsetProp + (i * 0x100) + (j * 2), 2);
+						if ((tempTileProperties[0] & (byte)TilePropFunc.TP_SPEC_TREASURE) > 0 && (tempTileProperties[0] & (byte)TilePropFunc.TP_NOMOVE) > 0)
+						{
+							if (chestMonsterList[(int)tempTileProperties[1]] > 0)
+							{
+								TileSM temptile = new((byte)j, i, this);
+								temptile.TileGraphic = new List<byte> { 0x2A, 0x7C, 0x3A, 0x3B };
+								temptile.Write(this);
+							}
+						}
+					}
+				}
+			}
+
 			// Insert trapped chest list
 			PutInBank(0x11, 0x8F00, chestMonsterList);
 		}
@@ -1139,6 +1161,8 @@ namespace FF1Lib
 			}
 		}
 
+		public readonly List<string> ClassNames = new List<string> { "Fighter", "Thief", "Black Belt", "Red Mage", "White Mage", "Black Mage", "Knight", "Ninja", "Master", "Red Wizard", "White Wizard", "Black Wizard" };
+
 		public void ClassAsNPC(Flags flags, TalkRoutines talkroutines, NPCdata npcdata, List<MapId> flippedmaps, MT19337 rng)
 		{
 			var crescentSages = new List<ObjectId> { ObjectId.CrescentSage2, ObjectId.CrescentSage3, ObjectId.CrescentSage4, ObjectId.CrescentSage5, ObjectId.CrescentSage6, ObjectId.CrescentSage7, ObjectId.CrescentSage8, ObjectId.CrescentSage9, ObjectId.CrescentSage10 };
@@ -1159,7 +1183,7 @@ namespace FF1Lib
 
 			var eventNpc = new List<(ObjectId, MapId)> { (ObjectId.ElflandCastleElf3, MapId.ElflandCastle), (ObjectId.MelmondMan1, MapId.Melmond), (ObjectId.MelmondMan3, MapId.Melmond), (ObjectId.MelmondMan4, MapId.Melmond), (ObjectId.MelmondMan8, MapId.Melmond), (ObjectId.DwarfcaveDwarf6, MapId.DwarfCave), (ObjectId.ConeriaCastle1FWoman2, MapId.ConeriaCastle1F), (ObjectId.ElflandElf2, MapId.Elfland), (ObjectId.ElflandElf5, MapId.Elfland) };
 			var classSprite = new List<byte> { 0xEE, 0xEF, 0xF0, 0xF1, 0xF2, 0xF3, 0xF4, 0xF5, 0xF6, 0xF7, 0xF8, 0xF9 };
-			var classNames = new List<string> { "Fighter", "Thief", "Black Belt", "Red Mage", "White Mage", "Black Mage", "Knight", "Ninja", "Master", "Red Wizard", "White Wizard", "Black Wizard" };
+
 			var readyString = new List<string> { "Well, that's that.\nLet's go.", "Onward to new\nadventures!", "I knew you'd come back\nfor me!", "......", "I'm the leader now,\nright?", "The Reaper is always\njust a step behind me..", "O.. Okay.. I hope it's\nnot too scary out there.", "Yes!\nI made it on the team!", "A bold choice, let's\nsee if it pays off.", "Alright, let's do this!", "I obey, master.", "They say I'm the best.", "I see, we have the same\ngoal. Let's join forces.", "My.. name? Huh..", "Just don't put me first\nagainst Kraken.", "I'm taking care of the\nGPs from now on!", "It's Saturday night.\nI've got no date, a\nbottle of Shasta, and\nmy all Rush mixtape.\nLet's rock.", "Life insurance?\nNo, I don't have any.\nWhy?", "Let's put an end to\nthis madness.", "Finally, some action!", "You convinced me. I will\njoin your noble cause.", "Evil never rests. I will\nfight by your side.", "Edward wants to join\nthe party." };
 
 			var classSelection = new List<(bool, FF1Class, FF1Class)> {
@@ -1291,7 +1315,7 @@ namespace FF1Lib
 					npcdata.SetRoutine(targetNpc, (newTalkRoutines)talk_class);
 					Data[MapObjGfxOffset + (byte)targetNpc] = classSprite[(int)classList.First()];
 
-					newDialogs.Add(npcdata.GetTalkArray(targetNpc)[1], readyString.SpliceRandom(rng) + "\n\n" + classNames[(int)classList.First()] + " joined.");
+					newDialogs.Add(npcdata.GetTalkArray(targetNpc)[1], readyString.SpliceRandom(rng) + "\n\n" + ClassNames[(int)classList.First()] + " joined.");
 					newDialogs.Add(npcdata.GetTalkArray(targetNpc)[2], npc.newDialogue);
 
 					classList.RemoveRange(0, 1);
@@ -1326,7 +1350,7 @@ namespace FF1Lib
 
 				for (int i = 0; i < 4; i++)
 				{
-					newDialogs.Add(npcdata.GetTalkArray(dungeonNpc[i])[1], readyString.SpliceRandom(rng) + "\n\n" + classNames[(int)classList[i]] + " joined.");
+					newDialogs.Add(npcdata.GetTalkArray(dungeonNpc[i])[1], readyString.SpliceRandom(rng) + "\n\n" + ClassNames[(int)classList[i]] + " joined.");
 					npcdata.GetTalkArray(dungeonNpc[i])[0] = 0x00;
 					npcdata.GetTalkArray(dungeonNpc[i])[3] = (byte)(classList[i]);
 					npcdata.SetRoutine(dungeonNpc[i], (newTalkRoutines)talk_class);

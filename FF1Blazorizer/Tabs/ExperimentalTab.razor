@@ -1,5 +1,5 @@
 @using FF1Lib;
-
+@inject IJSRuntime JSRuntime
 
 <div id="Beta" class="tabcontent framed-content clearfix @(noTabLayout ? "no-tab" : "") @(IsOpen ? "" : "collapsed")">
 	<h3 class="@(IsOpen ? "" : "h3-collapsed")"><a class="@(noTabLayout ? "collapsible-header" : "")" @onclick="(() => IsOpen = (!noTabLayout || !IsOpen))">Experimental Beta Flags</a></h3>
@@ -62,6 +62,11 @@
 			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="extConsumableTreasureStackSize" IsEnabled="Flags.EnableExtConsumables" TItem="TreasureStackSize" @bind-Value="Flags.ExtConsumableTreasureStackSize">Chest Stacks:</EnumDropDown>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="normalShopsHaveExtConsumables" IsEnabled="Flags.EnableExtConsumables" @bind-Value="Flags.NormalShopsHaveExtConsumables">Normal Shops</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="legendaryShopHasExtConsumables" IsEnabled="Flags.EnableExtConsumables" @bind-Value="Flags.LegendaryShopHasExtConsumables">Legendary Shops</TriStateCheckBox>
+
+			<div class="checkbox-cell"></div>
+			<h4>Custom player sprites</h4>
+			<ToolTipBox id="spriteSheetToolTipBox" UpdateToolTip="@UpdateToolTipID" />
+			<input type="file" id="spriteSheetInput" accept="image/*" @onchange="@OnSpriteSheetChanged" />
 		</div>
 		<div class="col1 full">
 			<h4>Hints</h4>
@@ -121,4 +126,22 @@
 	[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
 	[Parameter] public bool noTabLayout { get; set; }
 	[Parameter] public bool IsOpen { get; set; } = true;
+
+		async Task OnSpriteSheetChanged(ChangeEventArgs e)
+		{
+		      Console.WriteLine("OnSpriteSheetChanged");
+			var encoded = await JSRuntime.InvokeAsync<string>("handleFileSelect", "spriteSheetInput");
+			SetSpriteSheetData(encoded);
+
+			/*if (RememberSprites)
+			{
+				await LocalStorage.SetItemAsync("spriteSheet", encoded);
+			}*/
+		}
+
+		void SetSpriteSheetData(string encoded)
+		{
+			Flags.SpriteSheet = Convert.FromBase64String(encoded);
+		}
+
 }

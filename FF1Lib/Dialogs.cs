@@ -348,9 +348,9 @@ namespace FF1Lib
 			//  new chars must be added to the BytesByText list in FF1Text.cs
 			var newChars = new List<(byte, string)>
 			{
-				(0x7B, "000008083E080800") // + sign
+				(0x7B, "000008083E080800FFFFFFFFFFFFFFFF"), // + sign
+				(0x7C, "FFFF994325C399FFFFFFFFFEFEFEFFFE")  // Trapped chest (standard)
 			};
-
 
 			foreach (var newchar in newChars)
 			{
@@ -371,6 +371,10 @@ namespace FF1Lib
 					Put(battleTilesetOffset + battleTilesetSize * i + newchar.Item1 * 0x10, Blob.FromHex(newchar.Item2));
 				}
 			}
+
+			// Hack this one in, because chests in sky have different graphics from other chests
+			var trappedChestSky = "FFFF994325C3997FFF66FFFEFE7EFFEE";
+			Put(tilesetOffset + tilesetSize * (int)TileSets.SkyCastle + 0x7C * 0x10, Blob.FromHex(trappedChestSky));
 		}
 
 		public void TransferDialogs()

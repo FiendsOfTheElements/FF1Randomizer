@@ -1002,6 +1002,10 @@ namespace FF1Lib
 				_TSAdl = tilegraphics[2];
 				_TSAdr = tilegraphics[3];
 			}
+			public TileSM(byte id, int tileset, FF1Rom rom)
+			{
+				Read(id, tileset, rom);
+			}
 			public void Write(FF1Rom rom)
 			{
 				rom.PutInBank(BANK_SMINFO, lut_TileSMsetAttr + (_tileSetOrigin * 0x80) + _tileSetID, new byte[] { _attribute });
@@ -1010,6 +1014,18 @@ namespace FF1Lib
 				rom.PutInBank(BANK_SMINFO, lut_TileSMsetTSA + (_tileSetOrigin * 0x200) + 0x80 + _tileSetID, new byte[] { _TSAur });
 				rom.PutInBank(BANK_SMINFO, lut_TileSMsetTSA + (_tileSetOrigin * 0x200) + 0x100 + _tileSetID, new byte[] { _TSAdl });
 				rom.PutInBank(BANK_SMINFO, lut_TileSMsetTSA + (_tileSetOrigin * 0x200) + 0x180 + _tileSetID, new byte[] { _TSAdr });
+			}
+			public void Read(byte id, int tileset, FF1Rom rom)
+			{
+				_tileSetID = id;
+				_tileSetOrigin = tileset;
+				_attribute = rom.GetFromBank(BANK_SMINFO, lut_TileSMsetAttr + (_tileSetOrigin * 0x80) + _tileSetID, 1)[0];
+				_property1 = rom.GetFromBank(BANK_SMINFO, lut_TileSMsetProp + (_tileSetOrigin * 0x100) + (_tileSetID * 2), 2)[0];
+				_property2 = rom.GetFromBank(BANK_SMINFO, lut_TileSMsetProp + (_tileSetOrigin * 0x100) + (_tileSetID * 2), 2)[1];
+				_TSAul = rom.GetFromBank(BANK_SMINFO, lut_TileSMsetTSA + (_tileSetOrigin * 0x200) + _tileSetID, 1)[0];
+				_TSAur = rom.GetFromBank(BANK_SMINFO, lut_TileSMsetTSA + (_tileSetOrigin * 0x200) + 0x80 + _tileSetID, 1)[0];
+				_TSAdl = rom.GetFromBank(BANK_SMINFO, lut_TileSMsetTSA + (_tileSetOrigin * 0x200) + 0x100 + _tileSetID, 1)[0];
+				_TSAdr = rom.GetFromBank(BANK_SMINFO, lut_TileSMsetTSA + (_tileSetOrigin * 0x200) + 0x180 + _tileSetID, 1)[0];
 			}
 		}
 

@@ -258,6 +258,13 @@
 
 				_rom.Randomize(seed, Flags.Flags, Flags.Preferences);
 
+				if (Flags.SpriteSheet != null) {
+			  	using (var stream = new MemoryStream(Flags.SpriteSheet))
+			 	 {
+				 _rom.SetCustomPlayerSprites(stream, Flags.ThirdBattlePalette);
+			  	 }
+				}
+
 				var data = new byte[512 * 1024 + 16];
 				using (var stream = new MemoryStream(data, true))
 				{
