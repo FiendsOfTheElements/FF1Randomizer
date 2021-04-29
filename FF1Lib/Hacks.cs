@@ -1764,7 +1764,7 @@ namespace FF1Lib
 			const byte bossZombieD = 0xCB;
 			const byte bossDracolich = 0x58;
 			const byte bossSentinel = 0xFD;
-			const byte bossLichMech = 0x7A;
+			byte bossLichMech = 0x7A;
 
 			const byte encVampire = 0x7C;
 			const byte encChaos = 0x7B;
@@ -1789,6 +1789,8 @@ namespace FF1Lib
 				if (encountersData.formations[FiendsEncounter + i].enemy1 == 0x77)
 					encLich1 = (byte)(FiendsEncounter + i);
 			}
+
+			bossLichMech = encLich1;
 
 			// Phantom is Lich, and put Lich1 as Lich2 b-side
 			encountersData.formations[encLich2].pattern = FormationPattern.Mixed;
