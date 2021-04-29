@@ -540,6 +540,11 @@ namespace FF1Lib
 				AccessibleSpellNames(flags);
 			}
 
+			if (flags.SpellNameMadness != SpellNameMadness.None)
+			{
+				MixUpSpellNames(flags.SpellNameMadness, rng);
+			}
+
 			/*
 			if (flags.WeaponPermissions)
 			{

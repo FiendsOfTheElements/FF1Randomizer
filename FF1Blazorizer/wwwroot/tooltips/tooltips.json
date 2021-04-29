@@ -24,6 +24,12 @@
 		"description": "Hides all flags to create a mystery flagset that can then be distributed. Useful for tournament and challenge race settings.\n This flag cannot be disabled once clicked; you will need to hit the Reset button to restore functionality to the site (and this will, in turn, wipe the blind flags selected). Make sure to save your flagset before you use this flag."
 	},
 	{
+		"Id": "spellNameMadness",
+		"title": "Spell Name Obfuscation",
+		"screenshot": null,
+		"description": "Mixed Up shuffles spell names. Madness creates random codewords. Go and pull your hairs out."
+	},
+	{
 		"Id": "startingEquipmentDragonslayer",
 		"title": "Starting Equipment Dragonslayer",
 		"screenshot": null,
