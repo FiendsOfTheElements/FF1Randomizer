@@ -153,7 +153,7 @@ namespace FF1Lib
 					WriteItemSpellData(Spells.SpliceRandom(rng), weapon);
 			}
 			else
-			{ 
+			{
 				var tieredSpells = new List<List<MagicSpell>> { Spells.GetRange(0, 16), Spells.GetRange(16, 16), Spells.GetRange(32, 16), Spells.GetRange(48, 16) };
 
 				var commonOdds = new List<int> { 0, 0, 0, 0, 1, 1, 1, 1, 2, 2 };
@@ -200,6 +200,124 @@ namespace FF1Lib
 				}
 			}
 		}
+
+		public void Weaponizer(MT19337 rng) {
+		    var tierSizes = new int[] { 19, 16, 3, 1};
+		    var damageBases = new int[] { 10, 15, 20, 30, 45 };
+		    var critPercentBases = new int[] { 10, 15, 20, 30, 45 };
+		    var hitPercentBases = new int[] { 10, 15, 20, 30, 45 };
+
+		    var weaponTypeAdjust = new int[,] {
+			// damage, crit%, hit%
+			{  0,  0,  0 }, // sword
+			{  1,  0, -1 }, // axe
+			{ -1,  0,  1 }, // knife
+			{ -1,  1,  0 }, // chucks
+			{  0, -1,  0 }, // hammer
+			{  0,  0, -1 }, // staff
+		    };
+
+		    var powers = new int[] {
+			(int)Element.POISON,
+			((int)Element.FIRE | ((int)MonsterType.UNDEAD<<8) | ((int)MonsterType.REGENERATIVE<<8)),
+			(int)Element.ICE,
+			(int)Element.LIGHTNING,
+			((int)MonsterType.MAGICAL<<8),
+			((int)MonsterType.DRAGON<<8),
+			((int)MonsterType.GIANT<<8),
+			((int)MonsterType.UNDEAD<<8),
+			((int)MonsterType.WERE<<8),
+			((int)MonsterType.AQUATIC<<8),
+			((int)MonsterType.MAGE<<8)
+		    };
+
+		    var powerNames = new string[][] {
+			new string[] { "Poison" },
+			new string[] { "Fire" },
+			new string[] { "Ice" },
+			new string[] { "Shock" },
+			new string[] { "Rune" },
+			new string[] { "Dragon" },
+			new string[] { "Giant" },
+			new string[] { "Holy" },
+			new string[] { "Were" },
+			new string[] { "Coral" },
+			new string[] { "Mage" }
+		    };
+
+		    var tierNames = new string[][] {
+			new string[] { },
+			new string[] { "Small", "Short", "Wooden" },
+			new string[] { "Iron", "Steel", "Great" },
+			new string[] { "Gold", "Silver", "Mithrl" },
+			new string[] { "Maxmune" },
+		    };
+
+		    var weaponIcons = new string[] {
+			"@S",
+			"@X",
+			"@K",
+			"@N",
+			"@H",
+			"@F"
+		    };
+
+		    var Spells = GetSpells();
+		    var tieredSpells = new List<List<MagicSpell>> { Spells.GetRange(0, 16), Spells.GetRange(16, 16), Spells.GetRange(32, 16), Spells.GetRange(48, 16) };
+
+		    var weaponIndex = 0;
+		    for (int tier = 1; tier < 5; tier++) {
+			for (int count = 0; count < tierSizes[tier-1]; ) {
+			    string name;
+			    //WeaponIcon icon;
+			    byte hitBonus;
+			    byte damage;
+			    byte crit;
+			    byte spellIndex = 0xFF;
+			    //byte elementalWeakness;
+			    //byte typeWeakeness;
+			    //WeaponSprite weaponTypeSprite;
+			    //byte weaponSpritePaletteColor;
+
+			    var weaponType = rng.Between(0, 5);
+
+			    int damageTier = Math.Min(tier + weaponTypeAdjust[weaponType, 0], 4);
+			    int critTier =   Math.Min(tier + weaponTypeAdjust[weaponType, 1], 4);
+			    int hitpctTier = Math.Min(tier + weaponTypeAdjust[weaponType, 2], 4);
+
+			    damage = (byte)RangeScale(damageBases[damageTier], .5, 1.5, 1.0, rng);
+			    crit = (byte)RangeScale(critPercentBases[critTier], .5, 1.5, 1.0, rng);
+			    hitBonus = (byte)RangeScale(hitPercentBases[hitpctTier], .5, 1.5, 1.0, rng);
+
+			    int specialPower = -1;
+			    if (rng.Between(1, 100) <= 25) {
+				specialPower = rng.Between(0, powers.Length-1);
+			    }
+
+			    int spellChance = rng.Between(1, 100);
+			    if ((weaponType < 4 && spellChance <= 20)
+				|| (weaponType >= 4 && spellChance <= 50))
+			    {
+				//spellIndex = tieredSpells[tier].SpliceRandom(rng);
+			    }
+
+			    if (specialPower != -1) {
+				name = powerNames[specialPower][0];
+			    } else if (spellIndex != 0xFF) {
+				name = "Magic";
+			    } else {
+				name = tierNames[tier][rng.Between(0, tierNames[tier].Length-1)];
+			    }
+			    name += weaponIcons[weaponType];
+
+			    Console.WriteLine($"{weaponIndex}: [{tier}]  {name}  {damage}  {crit}  {hitBonus}");
+
+			    count++;
+			    weaponIndex++;
+			}
+		    }
+		}
+
 	}
 
 	public class Weapon
