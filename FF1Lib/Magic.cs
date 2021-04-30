@@ -45,6 +45,7 @@ namespace FF1Lib
 		public byte Index;
 		public Blob Data;
 		public string Name;
+		public byte TextPointer;
 
 		public override string ToString()
 		{
@@ -415,6 +416,7 @@ namespace FF1Lib
 
 			Put(MagicOffset, shuffledSpells.Select(spell => spell.Data).Aggregate((seed, next) => seed + next));
 			PutSpellNames(shuffledSpells);
+			Put(MagicTextPointersOffset, shuffledSpells.Select(spell => spell.TextPointer).ToArray());
 
 			if (keepPermissions)
 			{
@@ -583,12 +585,14 @@ namespace FF1Lib
 		public List<MagicSpell> GetSpells() {
 			var spells = Get(MagicOffset, MagicSize * MagicCount).Chunk(MagicSize);
 			var itemnames = ReadText(FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextPointerCount);
+			var pointers = Get(MagicTextPointersOffset, MagicCount);
 
 			return spells.Select((spell, i) => new MagicSpell
 			{
 				Index = (byte)i,
 				Data = spell,
-				Name = itemnames[176 + i]
+				Name = itemnames[176 + i],
+				TextPointer = pointers[i]
 			})
 			.ToList();
 		}
