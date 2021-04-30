@@ -1444,7 +1444,7 @@ namespace FF1Lib
 			"All Allies", "One Ally", "None", "None", "Status", "Stat", "Poison", "Pois", "Time", "Time", "Death", "Deat", "Fire", "Fire",
 			"Ice", "Ice", "Lightng", "Lit.", "Earth", "Eart", "Dead", "Dead", "Petrified", "Ptr.", "Poisoned", "Pois", "Blind", "Blnd",
 			"Paralyzed", "Para", "Asleep", "Slep", "Silenced", "Mute", "Confused", "Conf", "Null", "Damage", "Dmg Undead", "Inflict Stat",
-			"Halve Hits", "Reduce Moral", "Recover HP", "Reduce Stat", "Raise Def.", "Resist Elem.", "Double Hits", "Raise Attack", "Reduce Evade",
+			"Halve Hits", "Reduce Moral", "Recover HP", "Heal Stat", "Raise Def.", "Resist Elem.", "Double Hits", "Raise Attack", "Reduce Evade",
 			"Full Recover", "Raise Evade", "Void Resist.", "PW Status", "Heal Poison", "Revive", "Full Revive", "Go one floor\n back",
 			"Heal Stoned", "Teleport out\n of dungeons", "Magical", "Dragon", "Giant", "Undead", "Were", "Water", "Mage", "Regen"
 		};
@@ -1764,7 +1764,7 @@ namespace FF1Lib
 			const byte bossZombieD = 0xCB;
 			const byte bossDracolich = 0x58;
 			const byte bossSentinel = 0xFD;
-			const byte bossLichMech = 0x7A;
+			byte bossLichMech = 0x7A;
 
 			const byte encVampire = 0x7C;
 			const byte encChaos = 0x7B;
@@ -1789,6 +1789,8 @@ namespace FF1Lib
 				if (encountersData.formations[FiendsEncounter + i].enemy1 == 0x77)
 					encLich1 = (byte)(FiendsEncounter + i);
 			}
+
+			bossLichMech = encLich1;
 
 			// Phantom is Lich, and put Lich1 as Lich2 b-side
 			encountersData.formations[encLich2].pattern = FormationPattern.Mixed;
