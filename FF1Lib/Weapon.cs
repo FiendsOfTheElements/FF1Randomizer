@@ -463,7 +463,9 @@ namespace FF1Lib
 
 			    Console.WriteLine($"{weaponIndex}: [{tier}]  {name,8}  +{damage,2} {crit,2}% {hitBonus,2}% {goldvalue,5}g ({score}) {permissions} gfx {weaponSpritePaletteColor:X} {weaponTypeSprite}");
 
-			    var newWeapon = new Weapon(weaponIndex, name, icon, hitBonus, damage, crit, spellIndex, elementalWeakness, typeWeakeness, weaponTypeSprite, weaponSpritePaletteColor);
+			    var newWeapon = new Weapon(weaponIndex, name, icon, hitBonus, damage, crit,
+						       (byte)(spellIndex == 0xFF ? 0 : spellIndex+1), elementalWeakness,
+						       typeWeakeness, weaponTypeSprite, weaponSpritePaletteColor);
 			    newWeapon.setClassUsability((ushort)permissions);
 			    newWeapon.writeWeaponMemory(this);
 
