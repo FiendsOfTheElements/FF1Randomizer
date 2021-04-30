@@ -201,11 +201,12 @@ namespace FF1Lib
 			}
 		}
 
-		public void Weaponizer(MT19337 rng) {
-		    var tierSizes = new int[] { 19, 16, 3, 1};
-		    var damageBases = new int[] { 10, 15, 20, 30, 45 };
-		    var critPercentBases = new int[] { 10, 15, 20, 30, 45 };
-		    var hitPercentBases = new int[] { 10, 15, 20, 30, 45 };
+		public void Weaponizer(MT19337 rng, int priceScaleLow, int priceScaleHigh) {
+		    var tierList = new List<IReadOnlyList<Item>> { ItemLists.CommonWeaponTier, ItemLists.RareWeaponTier,
+							  ItemLists.LegendaryWeaponTier, ItemLists.UberTier};
+		    var damageBases = new int[]      { 10, 18, 26, 32, 45 };
+		    var critPercentBases = new int[] {  5, 10, 20, 40, 50 };
+		    var hitPercentBases = new int[]  {  5, 10, 20, 40, 50 };
 
 		    var weaponTypeAdjust = new int[,] {
 			// damage, crit%, hit%
@@ -219,101 +220,259 @@ namespace FF1Lib
 
 		    var powers = new int[] {
 			(int)Element.POISON,
-			((int)Element.FIRE | ((int)MonsterType.UNDEAD<<8) | ((int)MonsterType.REGENERATIVE<<8)),
+			(int)Element.FIRE | ((int)MonsterType.UNDEAD<<8) | ((int)MonsterType.REGENERATIVE<<8),
 			(int)Element.ICE,
 			(int)Element.LIGHTNING,
-			((int)MonsterType.MAGICAL<<8),
-			((int)MonsterType.DRAGON<<8),
-			((int)MonsterType.GIANT<<8),
-			((int)MonsterType.UNDEAD<<8),
-			((int)MonsterType.WERE<<8),
-			((int)MonsterType.AQUATIC<<8),
-			((int)MonsterType.MAGE<<8)
+			(int)(MonsterType.MAGICAL|MonsterType.MAGE)<<8,
+			(int)MonsterType.DRAGON<<8,
+			(int)MonsterType.GIANT<<8,
+			(int)MonsterType.UNDEAD<<8,
+			//(int)MonsterType.WERE<<8,
+			(int)MonsterType.AQUATIC<<8,
+			//(int)MonsterType.MAGE<<8,
+			(int)Element.FIRE | (int)Element.ICE,
+			(int)MonsterType.MAGICAL<<8|(int)MonsterType.DRAGON<<8|(int)MonsterType.GIANT<<8|(int)MonsterType.UNDEAD<<8
+			    |(int)MonsterType.WERE<<8|(int)MonsterType.AQUATIC<<8|(int)MonsterType.MAGE<<8,
+			(int)Element.POISON | (int)Element.FIRE | (int)Element.ICE | (int)Element.LIGHTNING,
 		    };
 
 		    var powerNames = new string[][] {
 			new string[] { "Poison" },
-			new string[] { "Fire" },
-			new string[] { "Ice" },
-			new string[] { "Shock" },
-			new string[] { "Rune" },
+			new string[] { "Flame", "Burn" },
+			new string[] { "Ice", "Freeze" },
+			new string[] { "Shock", "Bolt" },
+			new string[] { "Rune", "Ritual" },
 			new string[] { "Dragon" },
-			new string[] { "Giant" },
-			new string[] { "Holy" },
-			new string[] { "Were" },
-			new string[] { "Coral" },
-			new string[] { "Mage" }
+			new string[] { "Giant", "Imp", "Troll" },
+			new string[] { "Holy", "Smite", "Banish" },
+			//new string[] { "Were" },
+			new string[] { "Coral", "Aqua", "Water", "Splash" },
+			//new string[] { "Mage" },
+			new string[] { "IceHot" },
+			new string[] { "Slayer" },
+			new string[] { "Elmntl" }
 		    };
 
-		    var tierNames = new string[][] {
-			new string[] { },
-			new string[] { "Small", "Short", "Wooden" },
-			new string[] { "Iron", "Steel", "Great" },
-			new string[] { "Gold", "Silver", "Mithrl" },
-			new string[] { "Maxmune" },
+		    var weaponIcons = new WeaponIcon[] {
+			WeaponIcon.SWORD,
+			WeaponIcon.AXE,
+			WeaponIcon.KNIFE,
+			WeaponIcon.CHUCK,
+			WeaponIcon.HAMMER,
+			WeaponIcon.STAFF
 		    };
 
-		    var weaponIcons = new string[] {
-			"@S",
-			"@X",
-			"@K",
-			"@N",
-			"@H",
-			"@F"
+		    var unpromotedPermissions = new Dictionary<WeaponIcon, EquipPermission>
+		    {
+			{ WeaponIcon.SWORD,  EquipPermission.Fighter|EquipPermission.Thief|EquipPermission.RedMage },
+			{ WeaponIcon.AXE,    EquipPermission.Fighter },
+			{ WeaponIcon.KNIFE,  EquipPermission.Fighter|EquipPermission.Thief|EquipPermission.RedMage|EquipPermission.BlackMage },
+			{ WeaponIcon.CHUCK,  EquipPermission.Thief|EquipPermission.BlackBelt },
+			{ WeaponIcon.HAMMER, EquipPermission.Fighter|EquipPermission.WhiteMage },
+			{ WeaponIcon.STAFF,  EquipPermission.RedMage|EquipPermission.BlackMage }
 		    };
+
+		    var promotedPermissions = new Dictionary<WeaponIcon, EquipPermission>
+		    {
+			{ WeaponIcon.SWORD,  EquipPermission.Knight|EquipPermission.Ninja|EquipPermission.RedWizard },
+			{ WeaponIcon.AXE,    EquipPermission.Knight|EquipPermission.Ninja },
+			{ WeaponIcon.KNIFE,  EquipPermission.Knight|EquipPermission.Ninja|EquipPermission.RedWizard|EquipPermission.BlackWizard },
+			{ WeaponIcon.CHUCK,  EquipPermission.Ninja|EquipPermission.Master },
+			{ WeaponIcon.HAMMER, EquipPermission.Knight|EquipPermission.WhiteWizard|EquipPermission.Ninja },
+			{ WeaponIcon.STAFF,  EquipPermission.RedWizard|EquipPermission.BlackWizard|EquipPermission.Ninja },
+		    };
+
+		    var weaponSprites = new WeaponSprite[][] {
+			new WeaponSprite[] { WeaponSprite.SHORTSWORD, WeaponSprite.SCIMITAR, WeaponSprite.FALCHION,
+					     WeaponSprite.LONGSWORD, WeaponSprite.RAPIER },
+			new WeaponSprite[] { WeaponSprite.AXE },
+			new WeaponSprite[] { WeaponSprite.KNIFE },
+			new WeaponSprite[] { WeaponSprite.CHUCK },
+			new WeaponSprite[] { WeaponSprite.HAMMER, WeaponSprite.IRONSTAFF },
+			new WeaponSprite[] { WeaponSprite.STAFF, WeaponSprite.IRONSTAFF },
+		    };
+
+		    var badgear = new string[] { "Small", "Short", "Wooden", "Copper", "Bronze", "Iron" };
+		    var bettergear = new string[] { "Steel", "Silver", "Mithrl", "Great", "Heavy", "Sharp", "Wicked" };
 
 		    var Spells = GetSpells();
-		    var tieredSpells = new List<List<MagicSpell>> { Spells.GetRange(0, 16), Spells.GetRange(16, 16), Spells.GetRange(32, 16), Spells.GetRange(48, 16) };
 
-		    var weaponIndex = 0;
+		    var weaponNames = new List<string>();
+		    var weaponGfx = new List<int>();
+
 		    for (int tier = 1; tier < 5; tier++) {
-			for (int count = 0; count < tierSizes[tier-1]; ) {
+			var requireTypes = new List<int> { 0, 0 };
+			for (int count = 0; count < tierList[tier-1].Count; ) {
+			    int weaponIndex = tierList[tier-1][count] - tierList[0][0];
 			    string name;
-			    //WeaponIcon icon;
+			    WeaponIcon icon;
 			    byte hitBonus;
 			    byte damage;
 			    byte crit;
 			    byte spellIndex = 0xFF;
-			    //byte elementalWeakness;
-			    //byte typeWeakeness;
-			    //WeaponSprite weaponTypeSprite;
-			    //byte weaponSpritePaletteColor;
+			    byte elementalWeakness = 0;
+			    byte typeWeakeness = 0;
+			    WeaponSprite weaponTypeSprite;
+			    byte weaponSpritePaletteColor;
 
-			    var weaponType = rng.Between(0, 5);
+			    int weaponType;
+			    if (requireTypes.Count > 0) {
+				weaponType = requireTypes[0];
+			    } else {
+				weaponType = rng.Between(0, 5);
+			    }
 
-			    int damageTier = Math.Min(tier + weaponTypeAdjust[weaponType, 0], 4);
-			    int critTier =   Math.Min(tier + weaponTypeAdjust[weaponType, 1], 4);
-			    int hitpctTier = Math.Min(tier + weaponTypeAdjust[weaponType, 2], 4);
+			    //Console.WriteLine($"weaponType {weaponType}");
+			    icon = weaponIcons[weaponType];
+
+			    int damageTier = tier + weaponTypeAdjust[weaponType, 0];
+			    int critTier =   tier + weaponTypeAdjust[weaponType, 1];
+			    int hitpctTier = tier + weaponTypeAdjust[weaponType, 2];
+
+			    if (tier == 4) {
+				var penalizeTier = rng.Between(0, 2);
+				switch (penalizeTier) {
+				    case 0:
+					damageTier -= 1;
+					break;
+				    case 1:
+					critTier -= 1;
+					break;
+				    case 2:
+					hitpctTier -= 1;
+					break;
+				}
+			    }
+
+			    damageTier = Math.Min(Math.Max(damageTier, 0), 4);
+			    critTier   = Math.Min(Math.Max(critTier,   0), 4);
+			    hitpctTier = Math.Min(Math.Max(hitpctTier, 0), 4);
+
+			    //Console.WriteLine($"{weaponIndex}: [{tier}]  {damageTier} {critTier} {hitpctTier}");
 
 			    damage = (byte)RangeScale(damageBases[damageTier], .5, 1.5, 1.0, rng);
 			    crit = (byte)RangeScale(critPercentBases[critTier], .5, 1.5, 1.0, rng);
 			    hitBonus = (byte)RangeScale(hitPercentBases[hitpctTier], .5, 1.5, 1.0, rng);
 
-			    int specialPower = -1;
-			    if (rng.Between(1, 100) <= 25) {
-				specialPower = rng.Between(0, powers.Length-1);
-			    }
+			    double ddamage = damage;
+			    double dcrit = crit;
+			    double dhitBonus = hitBonus;
+
+			    double score = (ddamage + (ddamage * (dcrit / 200.0))) * (1+Math.Floor((dhitBonus+4)/32));
 
 			    int spellChance = rng.Between(1, 100);
 			    if ((weaponType < 4 && spellChance <= 20)
 				|| (weaponType >= 4 && spellChance <= 50))
 			    {
-				//spellIndex = tieredSpells[tier].SpliceRandom(rng);
+				var spelltier = Math.Min(tier, 3);
+				do {
+				    spellIndex = (byte)rng.Between(spelltier*16, (spelltier+1)*16-1);
+				    //Console.WriteLine($"spellIndex {spellIndex} {Spells.Count}");
+				} while(Spells[spellIndex].Data[4] == 0); // must be combat castable
+			    }
+
+			    int specialPower = -1;
+			    if (spellIndex == 0xFF) {
+				int powerChance = rng.Between(1, 100);
+				if (tier == 1 && powerChance <= 20) {
+				    specialPower = rng.Between(0, powers.Length-1);
+				} else if (tier > 1 && powerChance <= 80) {
+				    specialPower = rng.Between(0, powers.Length-1);
+				}
 			    }
 
 			    if (specialPower != -1) {
-				name = powerNames[specialPower][0];
-			    } else if (spellIndex != 0xFF) {
-				name = "Magic";
-			    } else {
-				name = tierNames[tier][rng.Between(0, tierNames[tier].Length-1)];
+				elementalWeakness = (byte)(powers[specialPower] & 0xFF);
+				typeWeakeness = (byte)((powers[specialPower]>>8) & 0xFF);
 			    }
-			    name += weaponIcons[weaponType];
 
-			    Console.WriteLine($"{weaponIndex}: [{tier}]  {name}  {damage}  {crit}  {hitBonus}");
+			    if (spellIndex != 0xFF) {
+				name = Spells[spellIndex].Name;
+			    } else if (specialPower != -1) {
+				var powername = rng.Between(0, powerNames[specialPower].Length-1);
+				name = powerNames[specialPower][powername];
+			    } else {
+				string[] gear;
+				if (score <= 15) {
+				    gear = badgear;
+				} else {
+				    gear = bettergear;
+				}
+				var gearname = rng.Between(0, gear.Length-1);
+				//Console.WriteLine($"gear {gearname} {gear.Length}");
+				name = gear[gearname];
+			    }
+			    name += Weapon.IconCodes[icon];
 
+			    if (weaponNames.Contains(name)) {
+				continue;
+			    }
+
+			    var tries = 10;
+			    do {
+				tries--;
+				weaponTypeSprite = weaponSprites[weaponType][rng.Between(0, weaponSprites[weaponType].Length-1)];
+				weaponSpritePaletteColor = (byte)rng.Between(0x20, 0x2C);
+			    } while(weaponGfx.Contains((weaponSpritePaletteColor<<8) | (int)weaponTypeSprite) && tries > 0);
+
+			    if (tries == 0) {
+				continue;
+			    }
+
+			    double goldvalue = score;
+			    if (specialPower != -1) {
+				goldvalue += 20;
+			    }
+			    if (spellIndex != 0xFF) {
+				goldvalue += 20;
+			    }
+			    switch (tier) {
+				case 1:
+				    goldvalue *= (goldvalue/2);
+				    break;
+				case 2:
+				    goldvalue *= goldvalue;
+				    break;
+				case 3:
+				    goldvalue *= goldvalue*1.5;
+				    break;
+				case 4:
+				    goldvalue *= goldvalue*2;
+				    break;
+			    }
+			    // use price scaling from flags
+			    goldvalue = Math.Min(RangeScale(goldvalue, priceScaleLow / 100.0,
+							    priceScaleHigh / 100.0, 1.0, rng),
+						 65535);
+
+			    var permissions = promotedPermissions[icon];
+			    switch (tier) {
+				case 1:
+				    permissions |= unpromotedPermissions[icon];
+				    break;
+				case 2:
+				    if (rng.Between(1, 100) < 50) {
+					permissions |= unpromotedPermissions[icon];
+				    }
+				    break;
+				case 3:
+				    break;
+				case 4:
+				    break;
+			    }
+
+			    Console.WriteLine($"{weaponIndex}: [{tier}]  {name,8}  +{damage,2} {crit,2}% {hitBonus,2}% {goldvalue,5}g ({score}) {permissions} gfx {weaponSpritePaletteColor:X} {weaponTypeSprite}");
+
+			    var newWeapon = new Weapon(weaponIndex, name, icon, hitBonus, damage, crit, spellIndex, elementalWeakness, typeWeakeness, weaponTypeSprite, weaponSpritePaletteColor);
+			    newWeapon.setClassUsability((ushort)permissions);
+			    newWeapon.writeWeaponMemory(this);
+
+			    weaponGfx.Add((weaponSpritePaletteColor<<8) | (int)weaponTypeSprite);
+			    weaponNames.Add(name);
+			    if (requireTypes.Count > 0) {
+				requireTypes.RemoveAt(0);
+			    }
 			    count++;
-			    weaponIndex++;
 			}
 		    }
 		}

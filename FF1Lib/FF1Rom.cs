@@ -523,6 +523,8 @@ namespace FF1Lib
 				ShuffleMagicLevels(rng, ((bool)flags.MagicPermissions), (bool)flags.MagicLevelsTiered, (bool)flags.MagicLevelsMixed, (bool)!flags.GenerateNewSpellbook);
 			}
 
+			Weaponizer(rng, flags.PriceScaleFactorLow, flags.PriceScaleFactorHigh);
+
 			new StartingInventory(rng, flags, this).SetStartingInventory();
 			new StartingEquipment(rng, flags, this).SetStartingEquipment();
 
