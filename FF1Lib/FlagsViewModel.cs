@@ -668,6 +668,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MagisizeWeaponsBalanced"));
 			}
 		}
+		public bool? Weaponizer
+		{
+			get => Flags.Weaponizer;
+			set
+			{
+				Flags.Weaponizer = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Weaponizer"));
+			}
+		}
 		public bool? MagicLevelsTiered
 		{
 			get => Flags.MagicLevelsTiered;

@@ -201,12 +201,12 @@ namespace FF1Lib
 			}
 		}
 
-		public void Weaponizer(MT19337 rng, int priceScaleLow, int priceScaleHigh) {
+		public void Weaponizer(MT19337 rng) {
 		    var tierList = new List<IReadOnlyList<Item>> { ItemLists.CommonWeaponTier, ItemLists.RareWeaponTier,
 							  ItemLists.LegendaryWeaponTier, ItemLists.UberTier};
-		    var damageBases = new int[]      { 10, 18, 26, 32, 45 };
-		    var critPercentBases = new int[] {  5, 10, 20, 40, 50 };
-		    var hitPercentBases = new int[]  {  5, 10, 20, 40, 50 };
+		    var damageBases = new int[]      { 10, 18, 26, 32, 48 };
+		    var critPercentBases = new int[] {  5, 10, 20, 30, 45 };
+		    var hitPercentBases = new int[]  {  5, 10, 20, 40, 60 };
 
 		    var weaponTypeAdjust = new int[,] {
 			// damage, crit%, hit%
@@ -244,12 +244,12 @@ namespace FF1Lib
 			new string[] { "Rune", "Ritual" },
 			new string[] { "Dragon" },
 			new string[] { "Giant", "Imp", "Troll" },
-			new string[] { "Holy", "Smite", "Banish" },
+			new string[] { "Holy", "Smite", "Banish", "Slayer" },
 			//new string[] { "Were" },
 			new string[] { "Coral", "Aqua", "Water", "Splash" },
 			//new string[] { "Mage" },
 			new string[] { "IceHot" },
-			new string[] { "Slayer" },
+			new string[] { "Xcalbr" },
 			new string[] { "Elmntl" }
 		    };
 
@@ -293,7 +293,38 @@ namespace FF1Lib
 		    };
 
 		    var badgear = new string[] { "Small", "Short", "Wooden", "Copper", "Bronze", "Iron" };
-		    var bettergear = new string[] { "Steel", "Silver", "Mithrl", "Great", "Heavy", "Sharp", "Wicked" };
+		    var bettergear = new string[] { "Steel", "Silver", "Mithrl", "Great", "Heavy", "Sharp", "Wicked", "Long" };
+
+		    var preferredSprites = new Dictionary<string, WeaponSprite> {
+			{"Short@S", WeaponSprite.SHORTSWORD},
+			{"Small@S", WeaponSprite.SHORTSWORD},
+			{"Long@S", WeaponSprite.LONGSWORD}
+		    };
+		    var preferredColors = new Dictionary<string, byte> {
+			{"Wooden", 0x28},
+			{"Copper", 0x27},
+			{"Bronze", 0x27},
+			{"Iron", 0x20},
+			{"Steel", 0x20},
+			{"Silver", 0x2C},
+			{"Mithrl", 0x2C},
+			{"Ice", 0x22},
+			{"Freeze", 0x22},
+			{"ICE ", 0x22},
+			{"ICE2", 0x22},
+			{"ICE3", 0x22},
+			{"Flame", 0x26},
+			{"Burn", 0x26},
+			{"FIRE", 0x26},
+			{"FIR2", 0x26},
+			{"FIR3", 0x26},
+			{"Shock", 0x28},
+			{"Bolt", 0x28},
+			{"LIT ", 0x28},
+			{"LIT2", 0x28},
+			{"LIT3", 0x28},
+			{"Dragon", 0x2A},
+		    };
 
 		    var Spells = GetSpells();
 
@@ -312,8 +343,8 @@ namespace FF1Lib
 			    byte spellIndex = 0xFF;
 			    byte elementalWeakness = 0;
 			    byte typeWeakeness = 0;
-			    WeaponSprite weaponTypeSprite;
-			    byte weaponSpritePaletteColor;
+			    WeaponSprite weaponTypeSprite = WeaponSprite.NONE;
+			    byte weaponSpritePaletteColor = 0;
 
 			    int weaponType;
 			    if (requireTypes.Count > 0) {
@@ -358,15 +389,19 @@ namespace FF1Lib
 			    double dcrit = crit;
 			    double dhitBonus = hitBonus;
 
-			    double score = (ddamage + (ddamage * (dcrit / 200.0))) * (1+Math.Floor((dhitBonus+4)/32));
+			    // "score" is a first approximation of DPS
+			    // used to assign "good"/"bad" gear names
+			    // and set the base price.
+			    double score = ((ddamage*1.5) + ((ddamage*1.5) * (dcrit / 200.0))) * (1+Math.Floor((dhitBonus+4)/32));
 
 			    int spellChance = rng.Between(1, 100);
 			    if ((weaponType < 4 && spellChance <= 20)
 				|| (weaponType >= 4 && spellChance <= 50))
 			    {
-				var spelltier = Math.Min(tier, 3);
+				var spelllevelLow = (tier-1)*2; // 0, 2, 4, 6
+				var spelllevelHigh = Math.Min(spelllevelLow+4, 8); // 4, 6, 8, 8
 				do {
-				    spellIndex = (byte)rng.Between(spelltier*16, (spelltier+1)*16-1);
+				    spellIndex = (byte)rng.Between(spelllevelLow*8, spelllevelHigh*8-1);
 				    //Console.WriteLine($"spellIndex {spellIndex} {Spells.Count}");
 				} while(Spells[spellIndex].Data[4] == 0); // must be combat castable
 			    }
@@ -393,7 +428,7 @@ namespace FF1Lib
 				name = powerNames[specialPower][powername];
 			    } else {
 				string[] gear;
-				if (score <= 15) {
+				if (score <= 20) {
 				    gear = badgear;
 				} else {
 				    gear = bettergear;
@@ -402,18 +437,58 @@ namespace FF1Lib
 				//Console.WriteLine($"gear {gearname} {gear.Length}");
 				name = gear[gearname];
 			    }
-			    name += Weapon.IconCodes[icon];
 
-			    if (weaponNames.Contains(name)) {
+			    var nameWithIcon = name + Weapon.IconCodes[icon];
+
+			    if (weaponNames.Contains(nameWithIcon)) {
 				continue;
 			    }
 
+			    if (nameWithIcon == "Wooden@K") {
+				// Wooden stake slays vampires
+				typeWeakeness = (byte)MonsterType.UNDEAD;
+			    }
+
+			    // Weapons casting elemental magic also
+			    // get elemental bonus
+			    if (name.StartsWith("ICE")) {
+				elementalWeakness = (byte)Element.ICE;
+			    }
+			    if (name.StartsWith("FIR")) {
+				elementalWeakness = (byte)Element.FIRE;
+			    }
+			    if (name.StartsWith("LIT")) {
+				elementalWeakness = (byte)Element.LIGHTNING;
+			    }
+			    if (name == "BANE") {
+				elementalWeakness = (byte)Element.POISON;
+			    }
+			    if (name == "HARM" || name.StartsWith("HRM")) {
+				typeWeakeness = (byte)MonsterType.UNDEAD;
+			    }
+
+			    if (preferredColors.ContainsKey(name)) {
+				weaponSpritePaletteColor = preferredColors[name];
+			    }
+			    if (preferredSprites.ContainsKey(nameWithIcon)) {
+				weaponTypeSprite = preferredSprites[nameWithIcon];
+			    }
+
 			    var tries = 10;
-			    do {
+			    while(tries > 0) {
+				if (weaponTypeSprite == WeaponSprite.NONE) {
+				    weaponTypeSprite = weaponSprites[weaponType][rng.Between(0, weaponSprites[weaponType].Length-1)];
+				}
+				if (weaponSpritePaletteColor == 0) {
+				    weaponSpritePaletteColor = (byte)rng.Between(0x20, 0x2C);
+				}
+				if (!weaponGfx.Contains((weaponSpritePaletteColor<<8) | (int)weaponTypeSprite)) {
+				    break;
+				}
+				weaponTypeSprite = WeaponSprite.NONE;
+				weaponSpritePaletteColor = 0;
 				tries--;
-				weaponTypeSprite = weaponSprites[weaponType][rng.Between(0, weaponSprites[weaponType].Length-1)];
-				weaponSpritePaletteColor = (byte)rng.Between(0x20, 0x2C);
-			    } while(weaponGfx.Contains((weaponSpritePaletteColor<<8) | (int)weaponTypeSprite) && tries > 0);
+			    }
 
 			    if (tries == 0) {
 				continue;
@@ -440,10 +515,6 @@ namespace FF1Lib
 				    goldvalue *= goldvalue*2;
 				    break;
 			    }
-			    // use price scaling from flags
-			    goldvalue = Math.Min(RangeScale(goldvalue, priceScaleLow / 100.0,
-							    priceScaleHigh / 100.0, 1.0, rng),
-						 65535);
 
 			    var permissions = promotedPermissions[icon];
 			    switch (tier) {
@@ -461,16 +532,16 @@ namespace FF1Lib
 				    break;
 			    }
 
-			    Console.WriteLine($"{weaponIndex}: [{tier}]  {name,8}  +{damage,2} {crit,2}% {hitBonus,2}% {goldvalue,5}g ({score}) {permissions} gfx {weaponSpritePaletteColor:X} {weaponTypeSprite}");
+			    Console.WriteLine($"{weaponIndex}: [{tier}]  {nameWithIcon,8}  +{damage,2} {crit,2}% {hitBonus,2}% {goldvalue,5}g ({score}) {permissions} gfx {weaponSpritePaletteColor:X} {weaponTypeSprite}");
 
-			    var newWeapon = new Weapon(weaponIndex, name, icon, hitBonus, damage, crit,
+			    var newWeapon = new Weapon(weaponIndex, nameWithIcon, icon, hitBonus, damage, crit,
 						       (byte)(spellIndex == 0xFF ? 0 : spellIndex+1), elementalWeakness,
 						       typeWeakeness, weaponTypeSprite, weaponSpritePaletteColor);
 			    newWeapon.setClassUsability((ushort)permissions);
 			    newWeapon.writeWeaponMemory(this);
 
 			    weaponGfx.Add((weaponSpritePaletteColor<<8) | (int)weaponTypeSprite);
-			    weaponNames.Add(name);
+			    weaponNames.Add(nameWithIcon);
 			    if (requireTypes.Count > 0) {
 				requireTypes.RemoveAt(0);
 			    }

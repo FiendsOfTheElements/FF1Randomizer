@@ -294,6 +294,10 @@ namespace FF1Lib
 				CraftNewSpellbook(rng, (bool)flags.SpellcrafterMixSpells, flags.LockMode, (bool)flags.MagicLevels, (bool)flags.SpellcrafterRetainPermissions);
 			}
 
+			if ((bool)flags.Weaponizer) {
+			    Weaponizer(rng);
+			}
+
 			if ((bool)flags.MagisizeWeapons)
 			{
 				MagisizeWeapons(rng, (bool)flags.MagisizeWeaponsBalanced);
@@ -522,8 +526,6 @@ namespace FF1Lib
 			{
 				ShuffleMagicLevels(rng, ((bool)flags.MagicPermissions), (bool)flags.MagicLevelsTiered, (bool)flags.MagicLevelsMixed, (bool)!flags.GenerateNewSpellbook);
 			}
-
-			Weaponizer(rng, flags.PriceScaleFactorLow, flags.PriceScaleFactorHigh);
 
 			new StartingInventory(rng, flags, this).SetStartingInventory();
 			new StartingEquipment(rng, flags, this).SetStartingEquipment();

@@ -161,6 +161,7 @@ namespace FF1Lib
 		public bool? ItemMagic { get; set; } = false;
 		public bool? MagisizeWeapons { get; set; } = false;
 		public bool? MagisizeWeaponsBalanced { get; set; } = false;
+		public bool? Weaponizer { get; set; } = false;
 		public bool? MagicLevelsTiered { get; set; } = false;
 		public bool? MagicLevelsMixed { get; set; } = false;
 

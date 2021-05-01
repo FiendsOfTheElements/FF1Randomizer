@@ -69,6 +69,9 @@
 			<ToolTipBox id="spriteSheetToolTipBox" UpdateToolTip="@UpdateToolTipID" />
 			<input type="file" id="spriteSheetInput" accept="image/*" @onchange="@OnSpriteSheetChanged" />
 			<a class="styled-button" @onclick="@ClearCustomSprites">Clear saved sprites</a>
+			<div class="checkbox-cell"></div>
+			<h4>Weapon randomization</h4>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="weaponizer" @bind-Value="Flags.Weaponizer">Use Weaponizer</TriStateCheckBox>
 		</div>
 		<div class="col1 full">
 			<h4>Hints</h4>
