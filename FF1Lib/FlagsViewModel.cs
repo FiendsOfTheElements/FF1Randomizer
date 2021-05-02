@@ -677,6 +677,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Weaponizer"));
 			}
 		}
+		public bool WeaponizerNamesUseQualityOnly
+		{
+			get => Flags.WeaponizerNamesUseQualityOnly;
+			set
+			{
+				Flags.WeaponizerNamesUseQualityOnly = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("WeaponizerNamesUseQualityOnly"));
+			}
+		}
 		public bool? MagicLevelsTiered
 		{
 			get => Flags.MagicLevelsTiered;

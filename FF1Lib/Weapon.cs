@@ -201,7 +201,7 @@ namespace FF1Lib
 			}
 		}
 
-		public void Weaponizer(MT19337 rng) {
+		public void Weaponizer(MT19337 rng, bool useQualityNamesOnly) {
 		    var tierList = new List<IReadOnlyList<Item>> { ItemLists.CommonWeaponTier, ItemLists.RareWeaponTier,
 							  ItemLists.LegendaryWeaponTier, ItemLists.UberTier};
 		    var damageBases = new int[]      { 10, 18, 26, 32, 48 };
@@ -292,8 +292,23 @@ namespace FF1Lib
 			new WeaponSprite[] { WeaponSprite.STAFF, WeaponSprite.IRONSTAFF },
 		    };
 
-		    var badgear = new string[] { "Small", "Short", "Wooden", "Copper", "Bronze", "Iron" };
-		    var bettergear = new string[] { "Steel", "Silver", "Mithrl", "Great", "Heavy", "Sharp", "Wicked", "Long" };
+		    var qualityLevels = new int[] {
+			18,
+			26,
+			32,
+			40,
+			50,
+			60
+		    };
+		    var gearQuality = new string[][] {
+			new string[] { "Wooden", "Small", "Short" }, // <= 18
+			new string[] { "Copper", "Long"},            // <= 26
+			new string[] { "Iron",   "Heavy" },          // <= 32
+			new string[] { "Steel",  "Great" },          // <= 40
+			new string[] { "Silver", "Shiny" },          // <= 50
+			new string[] { "Mithrl", "Sharp" },          // <= 60
+			new string[] { "Opal", "Diamnd", "Wicked" }  // > 60
+		    };
 
 		    var preferredSprites = new Dictionary<string, WeaponSprite> {
 			{"Short@S", WeaponSprite.SHORTSWORD},
@@ -392,7 +407,7 @@ namespace FF1Lib
 			    // "score" is a first approximation of DPS
 			    // used to assign "good"/"bad" gear names
 			    // and set the base price.
-			    double score = ((ddamage*1.5) + ((ddamage*1.5) * (dcrit / 200.0))) * (1+Math.Floor((dhitBonus+4)/32));
+			    double score = ((ddamage*1.5) + ((ddamage*2.0) * (dcrit / 200.0))) * (1+Math.Floor((dhitBonus+4)/32));
 
 			    int spellChance = rng.Between(1, 100);
 			    if ((weaponType < 4 && spellChance <= 20)
@@ -423,22 +438,22 @@ namespace FF1Lib
 
 			    if (spellIndex != 0xFF) {
 				name = Spells[spellIndex].Name;
-			    } else if (specialPower != -1) {
+			    } else if (specialPower != -1 && !useQualityNamesOnly) {
 				var powername = rng.Between(0, powerNames[specialPower].Length-1);
 				name = powerNames[specialPower][powername];
 			    } else {
-				string[] gear;
-				if (score <= 20) {
-				    gear = badgear;
-				} else {
-				    gear = bettergear;
+				string[] gear = gearQuality[gearQuality.Length-1];
+				for (int i = 0; i < qualityLevels.Length; i++) {
+				    if (score <= qualityLevels[i]) {
+					gear = gearQuality[i];
+					break;
+				    }
 				}
 				var gearname = rng.Between(0, gear.Length-1);
-				//Console.WriteLine($"gear {gearname} {gear.Length}");
 				name = gear[gearname];
 			    }
 
-			    var nameWithIcon = name + Weapon.IconCodes[icon];
+			    var nameWithIcon = $"{name,-6}{Weapon.IconCodes[icon]}";
 
 			    if (weaponNames.Contains(nameWithIcon)) {
 				continue;
@@ -503,7 +518,7 @@ namespace FF1Lib
 			    }
 			    switch (tier) {
 				case 1:
-				    goldvalue *= (goldvalue/2);
+				    goldvalue *= (goldvalue/4);
 				    break;
 				case 2:
 				    goldvalue *= goldvalue;
@@ -515,6 +530,8 @@ namespace FF1Lib
 				    goldvalue *= goldvalue*2;
 				    break;
 			    }
+
+			    goldvalue = Math.Min(goldvalue, 65000);
 
 			    var permissions = promotedPermissions[icon];
 			    switch (tier) {
@@ -539,6 +556,9 @@ namespace FF1Lib
 						       typeWeakeness, weaponTypeSprite, weaponSpritePaletteColor);
 			    newWeapon.setClassUsability((ushort)permissions);
 			    newWeapon.writeWeaponMemory(this);
+
+			    // XXX update prices
+
 
 			    weaponGfx.Add((weaponSpritePaletteColor<<8) | (int)weaponTypeSprite);
 			    weaponNames.Add(nameWithIcon);

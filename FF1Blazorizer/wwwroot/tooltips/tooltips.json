@@ -1731,5 +1731,17 @@
 		"title": "Custom Player Sprites",
 		"screenshot": "customHeroSprites.png",
 		"description": "Import custom player sprites.  Must use sprite sheet from\nhttp://www.groggy.dog/ffr_sprites/Images/sprites.bmp\nCompatible with Fun % flag Three Battle Palettes.\nNotes for custom sprites:\n1) Use NES colors http://www.groggy.dog/ffr_sprites/Images/NESpalette.png\n2) Maximum of three colors per sprite, plus black (for battle sprites) or transparent (magenta, for mapman sprites)\n3) Mapman can have separate palettes for head and body\n4) All battle sprite postures for a given class must have the same palette\n5) Maximum of two (or three with 'Three Battle Palettes' flag) distinct battle palettes across all classes, classes will need to share palettes, and sprites intended to share a palette need to use exactly same colors in the import image.\n\nImport problems (usually palette problems) will be reported on the Javascript console, use your browser's Web Developer Tools to view the messages.\nSaved when you click Fun% 'Save Preferences'."
+	},
+	{
+		"Id": "weaponizerCheckBox",
+		"title": "Use Weaponizer",
+		"screenshot": "",
+		"description": "Generate random weapons.  Names are assigned based on casting, bonus vs certain monster types or elemental weaknesses, or quality.  Use 'select' button on the equip or shop screen to view exact stats.  Weapon quality tiers are:\n1: Wooden, Small, Short\n2: Copper, Long\n3: Iron, Heavy\n4: Steel, Great\n5: Silver, Shiny\n6: Mithrl, Sharp\n7: Opal, Diamnd, Wicked\n"
+	},
+	{
+		"Id": "weaponizerNamingCheckBox",
+		"title": "Weaponizer Names Use Quality Only",
+		"screenshot": "",
+		"description": "Weaponizer does not name weapons for their bonuses vs monster types or elemental weaknesses, only casting and quality."
 	}
 ]
