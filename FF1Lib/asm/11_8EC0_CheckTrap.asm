@@ -33,6 +33,7 @@ CheckCanTake		= $9620
 InTalkDialogueBox	= $963D
 SkipDialogueBox		= $9643
 GiveReward 		= $B010
+VictoryLoop             = $C938
 SwapPRG_L 		= $FE03
 
  .ORG $DD78
@@ -50,7 +51,7 @@ SwapPRG_L 		= $FE03
   TXA                      ; X has the dialog ID, either Can't hold or In this chest you found
   RTS
 
- .ORG $8EB0
+ .ORG $8EA0
   
 CheckTrap:
   LDA dlg_itemid              ; Load item and check if we have
@@ -67,16 +68,22 @@ CheckTrap:
       LDA #$03
       CMP btl_result          ; Check if we ran from battle
       BNE WonBattle           ; If we did
+DontGiveItem:      
         JSR InTalkReenterMap  ; Skip giving the item
         PLA                   ; Clear an extra address in the stack
         PLA                   ;  since we're one routine deeper
         JMP SkipDialogueBox   
-WonBattle:      
+WonBattle:
+      LDA #$7B
+      CMP btlformation          ; Check if we killed Chaos
+      BEQ KilledChaos                 
       CLC
       JSR GiveItem            ; Give the item
       JSR InTalkReenterMap    ; And reenter the map
       LDX #$F0                ; Load "In this chest you've found..."
       RTS
+KilledChaos:
+  JMP VictoryLoop
 NoTrap:
   JSR GiveItem                ; GiveItem only
   RTS

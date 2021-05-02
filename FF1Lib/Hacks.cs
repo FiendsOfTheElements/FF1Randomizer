@@ -1068,10 +1068,10 @@ namespace FF1Lib
 			const int lut_TileSMsetProp = 0x8800; // BANK_SMINFO - page                        - 0x100 bytes x 8  (2 bytes per)
 
 			// Replace OpenTreasureChest routine, see 11_8EC0_CheckTrap.asm
-			PutInBank(0x1F, 0xDD78, Blob.FromHex("A9002003FEA645BD00B18561A9112003FE20B08E8A60"));
+			PutInBank(0x1F, 0xDD78, Blob.FromHex("A9002003FEA645BD00B18561A9112003FE20A08E8A60"));
 
 			// Check for trapped monster routine, see 11_8EC0_CheckTrap.asm
-			PutInBank(0x11, 0x8EB0, Blob.FromHex("A561202096B030A645BD008FF025856AA9C0203D96A56A200096A903CD866BD00820189668684C43961820E98E201896A2F06020E98E60AA60A911855818A5612010B0A445B90062090499006260"));
+			PutInBank(0x11, 0x8EA0, Blob.FromHex("A561202096B039A645BD008FF02E856AA9C0203D96A56A200096A903CD866BD00820189668684C4396A97BC56AF00A1820E28E201896A2F0604C38C920E28E60AA60A911855818A5612010B0A445B9006209049900626000"));
 
 			InsertDialogs(0x110, "Monster-in-a-box!"); // 0xC0
 
@@ -1116,6 +1116,17 @@ namespace FF1Lib
 					if (treasureList[i] == (byte)Item.Shard)
 						chestMonsterList[i] = encounters.SpliceRandom(rng);
 				}
+			}
+
+			if ((bool)flags.TrappedChaos)
+			{
+				List<MapLocation> disallowedLocations = new() { MapLocation.TempleOfFiends1Room1, MapLocation.TempleOfFiends1Room2, MapLocation.TempleOfFiends2, MapLocation.TempleOfFiends3, MapLocation.TempleOfFiendsAir, MapLocation.TempleOfFiendsChaos, MapLocation.TempleOfFiendsEarth, MapLocation.TempleOfFiendsFire, MapLocation.TempleOfFiendsPhantom, MapLocation.TempleOfFiendsWater, MapLocation.MatoyasCave, MapLocation.DwarfCave };
+
+				chestList = ItemLocations.AllTreasures.ToList();
+				chestList.RemoveAll(x => disallowedLocations.Contains(x.MapLocation) || x.IsUnused == true || chestMonsterList[x.Address - lut_TreasureOffset] > 0);
+				chestMonsterList[chestList.SpliceRandom(rng).Address - lut_TreasureOffset] = ChaosFormationIndex;
+
+				SetNpc(MapId.TempleOfFiendsRevisitedChaos, 0, ObjectId.None, 0, 0, true, true);
 			}
 
 			if ((bool)flags.TCIndicator)

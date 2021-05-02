@@ -568,6 +568,12 @@
 		"description": "In Shard Hunt mode, all shard chests are trapped, triggering a battle before the party can access the shard."
 	},
 	{
+		"Id": "trappedChaosCheckBox",
+		"title": "Hidden Chaos",
+		"screenshot": "hiddenChaos.png",
+		"description": "Chaos is hidden in a random chest and must be found to be defeated."
+	},
+	{
 		"Id": "trappedMarkCheckBox",
 		"title": "Trapped Chests are Marked",
 		"screenshot": "TCmarkedChests.png",

@@ -177,6 +177,7 @@ namespace FF1Lib
 		public bool? TrappedChests { get; set; } = false;
 		public bool? TCMasaGuardian { get; set; } = false;
 		public bool? TrappedShards { get; set; } = false;
+		public bool? TrappedChaos { get; set; } = false;
 		public bool? TCIndicator { get; set; } = false;
 		public bool? SwolePirates { get; set; } = false;
 		public bool? ScaryImps { get; set; } = false;

@@ -918,6 +918,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TrappedShards"));
 			}
 		}
+		public bool? TrappedChaos
+		{
+			get => Flags.TrappedChaos;
+			set
+			{
+				Flags.TrappedChaos = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TrappedChaos"));
+			}
+		}
 		public bool? TCIndicator
 		{
 			get => Flags.TCIndicator;
