@@ -2278,13 +2278,13 @@ namespace FF1Lib
 			}
 		}
 
-		public bool? NoXcalbur
+		public bool? NoXcalber
 		{
-			get => Flags.NoXcalbur;
+			get => Flags.NoXcalber;
 			set
 			{
-				Flags.NoXcalbur = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NoXcalbur"));
+				Flags.NoXcalber = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NoXcalber"));
 			}
 		}
 

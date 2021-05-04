@@ -1286,7 +1286,7 @@ namespace FF1Lib
 				incentivePool.Add(Item.Canal);
 				incentivePool.Add(Item.Herb);
 				incentivePool.Add(Item.Chime);
-				if(flags.NoXcalbur ?? false)
+				if(flags.NoXcalber ?? false)
 				{
 					incentivePool.Add(Item.Xcalber);
 				}
