@@ -204,7 +204,7 @@ namespace FF1Lib
 		public void Weaponizer(MT19337 rng, bool useQualityNamesOnly) {
 		    var tierList = new List<IReadOnlyList<Item>> { ItemLists.CommonWeaponTier, ItemLists.RareWeaponTier,
 							  ItemLists.LegendaryWeaponTier, ItemLists.UberTier};
-		    var damageBases = new int[]      { 10, 18, 26, 32, 48 };
+		    var damageBases = new int[]      { 10, 18, 26, 36, 52 };
 		    var critPercentBases = new int[] {  5, 10, 20, 30, 45 };
 		    var hitPercentBases = new int[]  {  5, 10, 20, 40, 60 };
 
@@ -249,7 +249,7 @@ namespace FF1Lib
 			new string[] { "Coral", "Aqua", "Water", "Splash" },
 			//new string[] { "Mage" },
 			new string[] { "IceHot" },
-			new string[] { "Xcalbr" },
+			new string[] { "Chroma" },
 			new string[] { "Elmntl" }
 		    };
 
@@ -311,9 +311,10 @@ namespace FF1Lib
 		    };
 
 		    var preferredSprites = new Dictionary<string, WeaponSprite> {
-			{"Short@S", WeaponSprite.SHORTSWORD},
-			{"Small@S", WeaponSprite.SHORTSWORD},
-			{"Long@S", WeaponSprite.LONGSWORD}
+			{"Short @S", WeaponSprite.RAPIER},
+			{"Small @S", WeaponSprite.RAPIER},
+			{"Long  @S", WeaponSprite.LONGSWORD},
+			{"Katana ", WeaponSprite.SCIMITAR},
 		    };
 		    var preferredColors = new Dictionary<string, byte> {
 			{"Wooden", 0x28},
@@ -342,14 +343,16 @@ namespace FF1Lib
 		    };
 
 		    var Spells = GetSpells();
+		    var defenseSwordSpells = new string[] { "RUSE", "INV2", "FOG2", "WALL" };
 
 		    var weaponNames = new List<string>();
 		    var weaponGfx = new List<int>();
 
-		    for (int tier = 1; tier < 5; tier++) {
-			var requireTypes = new List<int> { 0, 0 };
+		    for (int tier = 4; tier > 0; tier--) {
+			var requireTypes = new List<int> { 0, 1, 2, 3, 5 };
 			for (int count = 0; count < tierList[tier-1].Count; ) {
-			    int weaponIndex = tierList[tier-1][count] - tierList[0][0];
+			    var weaponItemId = tierList[tier-1][count];
+			    int weaponIndex = weaponItemId - tierList[0][0];
 			    string name;
 			    WeaponIcon icon;
 			    byte hitBonus;
@@ -362,10 +365,25 @@ namespace FF1Lib
 			    byte weaponSpritePaletteColor = 0;
 
 			    int weaponType;
-			    if (requireTypes.Count > 0) {
-				weaponType = requireTypes[0];
-			    } else {
-				weaponType = rng.Between(0, 5);
+			    switch (weaponItemId) {
+				case Item.Masamune:
+				case Item.Xcalber:
+				    // 0 (sword) or 1 (axe)
+				    weaponType = rng.Between(0, 1);
+				    break;
+				case Item.Katana:
+				case Item.Vorpal:
+				case Item.Defense:
+				    // 0 (sword) or 2 (knife)
+				    weaponType = rng.Between(0, 1) * 2;
+				    break;
+				default:
+				    if (requireTypes.Count > 0) {
+					weaponType = requireTypes[0];
+				    } else {
+					weaponType = rng.Between(0, 5);
+				    }
+				    break;
 			    }
 
 			    //Console.WriteLine($"weaponType {weaponType}");
@@ -375,19 +393,12 @@ namespace FF1Lib
 			    int critTier =   tier + weaponTypeAdjust[weaponType, 1];
 			    int hitpctTier = tier + weaponTypeAdjust[weaponType, 2];
 
-			    if (tier == 4) {
-				var penalizeTier = rng.Between(0, 2);
-				switch (penalizeTier) {
-				    case 0:
-					damageTier -= 1;
-					break;
-				    case 1:
-					critTier -= 1;
-					break;
-				    case 2:
-					hitpctTier -= 1;
-					break;
-				}
+			    if (weaponItemId == Item.Katana || weaponItemId == Item.Vorpal) {
+				critTier += 1;
+			    }
+
+			    if (weaponItemId == Item.Masamune) {
+				critTier -= 1;
 			    }
 
 			    damageTier = Math.Min(Math.Max(damageTier, 0), 4);
@@ -396,9 +407,12 @@ namespace FF1Lib
 
 			    //Console.WriteLine($"{weaponIndex}: [{tier}]  {damageTier} {critTier} {hitpctTier}");
 
-			    damage = (byte)RangeScale(damageBases[damageTier], .5, 1.5, 1.0, rng);
-			    crit = (byte)RangeScale(critPercentBases[critTier], .5, 1.5, 1.0, rng);
-			    hitBonus = (byte)RangeScale(hitPercentBases[hitpctTier], .5, 1.5, 1.0, rng);
+			    damage = (byte)RangeScale(damageBases[damageTier], .7, 1.4, 1.0, rng);
+			    crit = (byte)RangeScale(critPercentBases[critTier], .7, 1.4, 1.0, rng);
+			    hitBonus = (byte)RangeScale(hitPercentBases[hitpctTier], .7, 1.4, 1.0, rng);
+
+			    // need to clamp this to prevent overflow
+			    hitBonus = Math.Min(hitBonus, (byte)50);
 
 			    double ddamage = damage;
 			    double dcrit = crit;
@@ -409,17 +423,29 @@ namespace FF1Lib
 			    // and set the base price.
 			    double score = ((ddamage*1.5) + ((ddamage*2.0) * (dcrit / 200.0))) * (1+Math.Floor((dhitBonus+4)/32));
 
-			    int spellChance = rng.Between(1, 100);
-			    if ((weaponType < 4 && spellChance <= 20)
-				|| (weaponType >= 4 && spellChance <= 50))
-			    {
-				var spelllevelLow = (tier-1)*2; // 0, 2, 4, 6
-				var spelllevelHigh = Math.Min(spelllevelLow+4, 8); // 4, 6, 8, 8
-				do {
-				    spellIndex = (byte)rng.Between(spelllevelLow*8, spelllevelHigh*8-1);
-				    //Console.WriteLine($"spellIndex {spellIndex} {Spells.Count}");
-				} while(Spells[spellIndex].Data[4] == 0); // must be combat castable
+			    if (weaponItemId == Item.Defense) {
+				var defMagic = defenseSwordSpells[rng.Between(0, defenseSwordSpells.Length-1)];
+				for (int i = 0; i < Spells.Count; i++) {
+				    if (Spells[i].Name == defMagic) {
+					spellIndex = (byte)i;
+					break;
+				    }
+				}
+			    } else {
+				int spellChance = rng.Between(1, 100);
+				if ((weaponType < 4 && spellChance <= 20)
+				    || (weaponType >= 4 && spellChance <= 50))
+				{
+				    var spelllevelLow = Math.Min(tier*2, 6); // 2, 4, 6, 6
+				    var spelllevelHigh = Math.Min(spelllevelLow+4, 8); // 6, 8, 8, 8
+				    do {
+					spellIndex = (byte)rng.Between(spelllevelLow*8, spelllevelHigh*8-1);
+					//Console.WriteLine($"spellIndex {spellIndex} {Spells.Count}");
+				    } while(Spells[spellIndex].Data[4] == 0); // must be combat castable
+				}
 			    }
+
+			    // Need to special case: Defense, Katana, Xcal, Vorpal, Masa
 
 			    int specialPower = -1;
 			    if (spellIndex == 0xFF) {
@@ -436,24 +462,36 @@ namespace FF1Lib
 				typeWeakeness = (byte)((powers[specialPower]>>8) & 0xFF);
 			    }
 
-			    if (spellIndex != 0xFF) {
-				name = Spells[spellIndex].Name;
-			    } else if (specialPower != -1 && !useQualityNamesOnly) {
-				var powername = rng.Between(0, powerNames[specialPower].Length-1);
-				name = powerNames[specialPower][powername];
+			    string nameWithIcon;
+			    if (weaponItemId == Item.Masamune) {
+				name = nameWithIcon = (weaponType == 0 ? "Masmune" : "Maxmune");
+			    } else if (weaponItemId == Item.Xcalber) {
+				name = nameWithIcon = (weaponType == 0 ? "Xcalber" : "Axcalbr");
+			    } else if (weaponItemId == Item.Katana) {
+				name = nameWithIcon = "Katana ";
+			    } else if (weaponItemId == Item.Vorpal) {
+				name = nameWithIcon = "Vorpal ";
+			    } else if (weaponItemId == Item.Defense) {
+				name = nameWithIcon = "Defense";
 			    } else {
-				string[] gear = gearQuality[gearQuality.Length-1];
-				for (int i = 0; i < qualityLevels.Length; i++) {
-				    if (score <= qualityLevels[i]) {
-					gear = gearQuality[i];
-					break;
+				if (spellIndex != 0xFF) {
+				    name = Spells[spellIndex].Name;
+				} else if (specialPower != -1 && !useQualityNamesOnly) {
+				    var powername = rng.Between(0, powerNames[specialPower].Length-1);
+				    name = powerNames[specialPower][powername];
+				} else {
+				    string[] gear = gearQuality[gearQuality.Length-1];
+				    for (int i = 0; i < qualityLevels.Length; i++) {
+					if (score <= qualityLevels[i]) {
+					    gear = gearQuality[i];
+					    break;
+					}
 				    }
+				    var gearname = rng.Between(0, gear.Length-1);
+				    name = gear[gearname];
 				}
-				var gearname = rng.Between(0, gear.Length-1);
-				name = gear[gearname];
+				nameWithIcon = $"{name,-6}{Weapon.IconCodes[icon]}";
 			    }
-
-			    var nameWithIcon = $"{name,-6}{Weapon.IconCodes[icon]}";
 
 			    if (weaponNames.Contains(nameWithIcon)) {
 				continue;
@@ -533,20 +571,29 @@ namespace FF1Lib
 
 			    goldvalue = Math.Min(goldvalue, 65000);
 
-			    var permissions = promotedPermissions[icon];
-			    switch (tier) {
-				case 1:
-				    permissions |= unpromotedPermissions[icon];
-				    break;
-				case 2:
-				    if (rng.Between(1, 100) < 50) {
+			    EquipPermission permissions;
+			    if (weaponItemId == Item.Masamune) {
+				permissions = (EquipPermission)0xFFF;
+			    } else if (weaponItemId == Item.Xcalber) {
+				permissions = EquipPermission.Knight;
+			    } else if (weaponItemId == Item.Katana) {
+				permissions = EquipPermission.Ninja;
+			    } else {
+				permissions = promotedPermissions[icon];
+				switch (tier) {
+				    case 1:
 					permissions |= unpromotedPermissions[icon];
-				    }
-				    break;
-				case 3:
-				    break;
-				case 4:
-				    break;
+					break;
+				    case 2:
+					if (rng.Between(1, 100) < 50) {
+					    permissions |= unpromotedPermissions[icon];
+					}
+					break;
+				    case 3:
+					break;
+				    case 4:
+					break;
+				}
 			    }
 
 			    Console.WriteLine($"{weaponIndex}: [{tier}]  {nameWithIcon,8}  +{damage,2} {crit,2}% {hitBonus,2}% {goldvalue,5}g ({score}) {permissions} gfx {weaponSpritePaletteColor:X} {weaponTypeSprite}");
@@ -557,8 +604,7 @@ namespace FF1Lib
 			    newWeapon.setClassUsability((ushort)permissions);
 			    newWeapon.writeWeaponMemory(this);
 
-			    // XXX update prices
-
+			    Put(PriceOffset + (PriceSize*(int)weaponItemId), Blob.FromUShorts(new ushort[] {(ushort)goldvalue}));
 
 			    weaponGfx.Add((weaponSpritePaletteColor<<8) | (int)weaponTypeSprite);
 			    weaponNames.Add(nameWithIcon);
