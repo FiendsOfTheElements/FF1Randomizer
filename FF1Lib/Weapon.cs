@@ -374,8 +374,7 @@ namespace FF1Lib
 				case Item.Katana:
 				case Item.Vorpal:
 				case Item.Defense:
-				    // 0 (sword) or 2 (knife)
-				    weaponType = rng.Between(0, 1) * 2;
+				    weaponType = 0;
 				    break;
 				default:
 				    if (requireTypes.Count > 0) {
@@ -386,7 +385,6 @@ namespace FF1Lib
 				    break;
 			    }
 
-			    //Console.WriteLine($"weaponType {weaponType}");
 			    icon = weaponIcons[weaponType];
 
 			    int damageTier = tier + weaponTypeAdjust[weaponType, 0];
@@ -401,11 +399,13 @@ namespace FF1Lib
 				critTier -= 1;
 			    }
 
+			    if (weaponItemId == Item.Vorpal) {
+				damageTier -= 1;
+			    }
+
 			    damageTier = Math.Min(Math.Max(damageTier, 0), 4);
 			    critTier   = Math.Min(Math.Max(critTier,   0), 4);
 			    hitpctTier = Math.Min(Math.Max(hitpctTier, 0), 4);
-
-			    //Console.WriteLine($"{weaponIndex}: [{tier}]  {damageTier} {critTier} {hitpctTier}");
 
 			    damage = (byte)RangeScale(damageBases[damageTier], .7, 1.4, 1.0, rng);
 			    crit = (byte)RangeScale(critPercentBases[critTier], .7, 1.4, 1.0, rng);
@@ -418,9 +418,9 @@ namespace FF1Lib
 			    double dcrit = crit;
 			    double dhitBonus = hitBonus;
 
-			    // "score" is a first approximation of DPS
-			    // used to assign "good"/"bad" gear names
-			    // and set the base price.
+			    // "score" is a rough approximation of DPS
+			    // used to assign name based on gear
+			    // quality and set the base price.
 			    double score = ((ddamage*1.5) + ((ddamage*2.0) * (dcrit / 200.0))) * (1+Math.Floor((dhitBonus+4)/32));
 
 			    if (weaponItemId == Item.Defense) {
@@ -440,7 +440,6 @@ namespace FF1Lib
 				    var spelllevelHigh = Math.Min(spelllevelLow+4, 8); // 6, 8, 8, 8
 				    do {
 					spellIndex = (byte)rng.Between(spelllevelLow*8, spelllevelHigh*8-1);
-					//Console.WriteLine($"spellIndex {spellIndex} {Spells.Count}");
 				    } while(Spells[spellIndex].Data[4] == 0); // must be combat castable
 				}
 			    }
@@ -549,10 +548,10 @@ namespace FF1Lib
 
 			    double goldvalue = score;
 			    if (specialPower != -1) {
-				goldvalue += 20;
+				goldvalue += 15;
 			    }
 			    if (spellIndex != 0xFF) {
-				goldvalue += 20;
+				goldvalue += 25;
 			    }
 			    switch (tier) {
 				case 1:
@@ -589,14 +588,13 @@ namespace FF1Lib
 					    permissions |= unpromotedPermissions[icon];
 					}
 					break;
-				    case 3:
-					break;
-				    case 4:
+				    default:
+					// promoted only
 					break;
 				}
 			    }
 
-			    Console.WriteLine($"{weaponIndex}: [{tier}]  {nameWithIcon,8}  +{damage,2} {crit,2}% {hitBonus,2}% {goldvalue,5}g ({score}) {permissions} gfx {weaponSpritePaletteColor:X} {weaponTypeSprite}");
+			    Utilities.WriteSpoilerLine($"{weaponIndex}: [{tier}]  {nameWithIcon,8}  +{damage,2} {crit,2}% {hitBonus,2}% {goldvalue,5}g ({score}) {permissions} gfx {weaponSpritePaletteColor:X} {weaponTypeSprite}");
 
 			    var newWeapon = new Weapon(weaponIndex, nameWithIcon, icon, hitBonus, damage, crit,
 						       (byte)(spellIndex == 0xFF ? 0 : spellIndex+1), elementalWeakness,
