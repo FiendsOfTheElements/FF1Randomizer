@@ -4316,6 +4316,16 @@ namespace FF1Lib
 			}
 		}
 
+		public EnemyObfuscation EnemyObfuscation
+		{
+			get => Flags.EnemyObfuscation;
+			set
+			{
+				Flags.EnemyObfuscation = value;
+				RaisePropertyChanged();
+			}
+		}
+
 		#region StartingEquipment
 
 		public bool? StartingEquipmentMasamune

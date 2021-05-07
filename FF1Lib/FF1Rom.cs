@@ -949,6 +949,8 @@ namespace FF1Lib
 			    SkyWarriorSpoilerBats(rng, flags, npcdata);
 			}
 
+			ObfuscateEnemies(rng, flags);
+
 			// We have to do "fun" stuff last because it alters the RNG state.
 			// Back up Rng so that fun flags are uniform when different ones are selected
 			uint funRngSeed = rng.Next();

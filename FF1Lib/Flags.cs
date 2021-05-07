@@ -52,6 +52,8 @@ namespace FF1Lib
 
 		public SpellNameMadness SpellNameMadness { get; set; } = SpellNameMadness.None;
 
+		public EnemyObfuscation EnemyObfuscation { get; set; } = EnemyObfuscation.None;
+
 		public bool EnableExtConsumables { get; set; } = false;
 
 		public bool? NormalShopsHaveExtConsumables { get; set; } = false;
