@@ -967,13 +967,13 @@ namespace FF1Lib
 				UseVariablePaletteForCursorAndStone();
 			}
 
-			if (preferences.PaletteSwap && !flags.EnemizerEnabled)
+			if (preferences.PaletteSwap && !flags.EnemizerEnabled && flags.EnemyObfuscation == EnemyObfuscation.None)
 			{
 				rng = new MT19337(funRngSeed);
 				PaletteSwap(rng);
 			}
 
-			if (preferences.TeamSteak && !(bool)flags.RandomizeEnemizer)
+			if (preferences.TeamSteak && !(bool)flags.RandomizeEnemizer && flags.EnemyObfuscation == EnemyObfuscation.None)
 			{
 				TeamSteak();
 			}

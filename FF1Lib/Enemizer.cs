@@ -3759,14 +3759,12 @@ namespace FF1Lib
 
 				List<string> alphabet = new List<string> { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" };
 
+				var names = alphabet.Join(alphabet, x => true, x => true, (a, b) => a + b.ToLower() + "IMP").ToList();
+
 				List<(string name, byte pal)> variants = new List<(string, byte)>();
-				HashSet<string> names = new HashSet<string>();
 				for (int i = 0; i < 256; i++)
 				{
-					var name = alphabet.PickRandom(rng) + alphabet.PickRandom(rng).ToLower() + "IMP";
-					if (names.Contains(name)) continue;
-
-					names.Add(name);
+					var name = names.SpliceRandom(rng);
 					variants.Add((name, (byte)rng.Between(0, 128)));
 				}
 
