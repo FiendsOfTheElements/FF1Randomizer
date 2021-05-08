@@ -269,7 +269,7 @@ namespace FF1Lib
 			{ WeaponIcon.KNIFE,  EquipPermission.Fighter|EquipPermission.Thief|EquipPermission.RedMage|EquipPermission.BlackMage },
 			{ WeaponIcon.CHUCK,  EquipPermission.Thief|EquipPermission.BlackBelt },
 			{ WeaponIcon.HAMMER, EquipPermission.Fighter|EquipPermission.WhiteMage },
-			{ WeaponIcon.STAFF,  EquipPermission.RedMage|EquipPermission.BlackMage }
+			{ WeaponIcon.STAFF,  EquipPermission.RedMage|EquipPermission.BlackMage|EquipPermission.WhiteMage }
 		    };
 
 		    var promotedPermissions = new Dictionary<WeaponIcon, EquipPermission>
