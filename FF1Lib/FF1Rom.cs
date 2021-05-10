@@ -468,7 +468,7 @@ namespace FF1Lib
 							excludeItemsFromRandomShops.Add(Item.Masamune);
 						}
 
-						if ((bool)flags.NoXcalbur)
+						if ((bool)flags.NoXcalber)
 						{
 							excludeItemsFromRandomShops.Add(Item.Xcalber);
 						}

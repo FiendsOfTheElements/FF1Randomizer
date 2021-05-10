@@ -347,7 +347,7 @@ namespace FF1Lib
 		public ConsumableChestSet MoreConsumableChests { get; set; } = ConsumableChestSet.Vanilla;
 
 		public bool? NoMasamune { get; set; } = false;
-		public bool? NoXcalbur { get; set; } = false;
+		public bool? NoXcalber { get; set; } = false;
 		public bool? ClassAsNpcFiends { get; set; } = false;
 		public bool? ClassAsNpcKeyNPC { get; set; } = false;
 

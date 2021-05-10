@@ -191,7 +191,7 @@ namespace FF1Lib
 
 			MoreConsumableChests.Work(_flags, treasurePool, rng);
 
-			if((bool)_flags.NoXcalbur)
+			if((bool)_flags.NoXcalber)
 			{
 				//xcal can not be in the treasure pool due to forced item placements of fetch quest npc
 				if(treasurePool.Contains(Item.Xcalber))
