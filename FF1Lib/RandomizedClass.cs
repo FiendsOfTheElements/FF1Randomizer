@@ -835,6 +835,15 @@ namespace FF1Lib
 				// Reverse the list so that maluses are applied first and don't cancel out bonuses
 				assignedBonusMalus[i].Reverse();
 
+				// But put back Max Mp mod add the end so it doesn't get overwritten by spellcasting bonuses
+				int spcMaxIndex = assignedBonusMalus[i].FindIndex(x => x.Action == BonusMalusAction.SpcMax);
+				if (spcMaxIndex > -1)
+				{
+					BonusMalus tempSpcMax = assignedBonusMalus[i][spcMaxIndex];
+					assignedBonusMalus[i].RemoveAt(spcMaxIndex);
+					assignedBonusMalus[i].Add(tempSpcMax);
+				}
+
 				foreach (var bonusmalus in assignedBonusMalus[i])
 				{
 					switch (bonusmalus.Action)
@@ -922,7 +931,9 @@ namespace FF1Lib
 								classData[i].SpCStarting = (byte)bonusmalus.StatMod;
 							if (classData[i].MaxSpC < (byte)bonusmalus.StatMod2)
 								classData[i].MaxSpC = (byte)bonusmalus.StatMod2;
-							if (classData[i].SpCGrowth.Select(x => (int)x).ToList().Sum() < bonusmalus.SpcGrowth.Select(x => (int)x).ToList().Sum())
+							if (i == (int)AuthClass.Thief && bonusmalus.SpcGrowth.Select(x => (int)x).ToList().Sum() == exKnightMPlist.Select(x => (int)x).ToList().Sum())
+								classData[i].SpCGrowth = exNinjaMPlist; // Edge case for thief getting Knight Sp
+							else if (classData[i].SpCGrowth.Select(x => (int)x).ToList().Sum() < bonusmalus.SpcGrowth.Select(x => (int)x).ToList().Sum())
 								classData[i].SpCGrowth = bonusmalus.SpcGrowth;
 
 							if (classData[i + 6].SpCStarting < (byte)bonusmalus.StatMod)
