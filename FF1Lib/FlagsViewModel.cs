@@ -2563,6 +2563,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DisableSpellCastFlash"));
 			}
 		}
+		public string SpriteSheet
+		{
+			get => Preferences.SpriteSheet;
+			set
+			{
+				Preferences.SpriteSheet = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SpriteSheet"));
+			}
+		}
 
 		public bool? RecruitmentMode
 		{
@@ -4479,7 +4488,5 @@ namespace FF1Lib
 		}
 
 		#endregion
-
-		public byte[] SpriteSheet { get; set; }
 	}
 }

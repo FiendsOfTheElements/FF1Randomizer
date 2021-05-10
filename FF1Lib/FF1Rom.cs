@@ -1001,6 +1001,13 @@ namespace FF1Lib
 				DisableSpellCastScreenFlash();
 			}
 
+			if (preferences.SpriteSheet != null) {
+			    using (var stream = new MemoryStream(Convert.FromBase64String(preferences.SpriteSheet)))
+			    {
+				SetCustomPlayerSprites(stream, preferences.ThirdBattlePalette);
+			    }
+			}
+
 			owMapExchange?.ExecuteStep2();
 
 			npcdata.WriteNPCdata(this);

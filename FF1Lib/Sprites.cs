@@ -199,6 +199,8 @@ namespace FF1Lib
 		return newtile;
 	    }
 
+	    const int lut_MapmanPalettes = 0x8150;
+
 	    void ImportMapman(Image<Rgba32> image, int cur_class, Rgba32[] NESpalette) {
 		int top = 24 + (40*(cur_class >= 6 ? cur_class-6 : cur_class));
 		int left = ((cur_class >= 6) ? 104 : 0);
@@ -269,7 +271,6 @@ namespace FF1Lib
 		    Put(MAPMANGRAPHIC_OFFSET + (cur_class << 8) + (mapmanPos * 16*4) + (16*3),  EncodeForPPU(bodyTileRight));
 		}
 
-		int lut_MapmanPalettes = 0x8150;
 		int offsetIntoLut = cur_class << 3;
 		// Write the palettes into a new LUT in bank $0F
 		// Will be read using the code below.
@@ -464,6 +465,10 @@ namespace FF1Lib
 		    PutInBank(0x1F, 0xEBA5+(i*4), battlePals[i].ToArray());
 		}
 
+		// add palette for "none" mapman
+		PutInBank(0x0F, lut_MapmanPalettes + (13 << 3), new byte[] {0x0F, 0x0F, 0x12, 0x36,
+									    0x0F, 0x0F, 0x21, 0x36});
+
 		// code in asm/0F_8150_MapmanPalette.asm
 
 		// Replace the original code which loads the mapman
@@ -471,8 +476,8 @@ namespace FF1Lib
 		// leaves the blank and "skin tone" alone)
 		// With a jump to a new routine in bank 0F which loads
 		// two complete 4 color palettes.
-		PutInBank(0x1F, 0xD8B6, Blob.FromHex("A90F2003FE4CB081EAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
-		PutInBank(0x0F, 0x81B0, Blob.FromHex("AD00610A0A0A6908AAA008BD508199D003CA8810F660"));
+		PutInBank(0x1F, 0xD8B6, Blob.FromHex("A90F2003FE4CC081EAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
+		PutInBank(0x0F, 0x81C0, Blob.FromHex("AD0061C9FFD002A90D0A0A0A6908AAA008BD508199D003CA8810F660"));
 	    }
 	}
 }

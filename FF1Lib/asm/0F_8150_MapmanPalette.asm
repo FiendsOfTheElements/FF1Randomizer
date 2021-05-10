@@ -25,10 +25,15 @@ lut_MapmanPalettes:
 	;;  12 classes
 	;;   2 mapman palettes each (top/bottom)
 	;;   4 bytes per palette
+	;; + 1 extra pair of palettes for the "none" mapman
 
-.ORG $81B0
+.ORG $81C0
 LoadMapmanPalette:
 	LDA ch_class            ; get lead party member's class
+	CMP #$FF
+	BNE PaletteLoad
+	LDA #13
+PaletteLoad:
 	ASL A                   ; multiply by 8
 	ASL A
 	ASL A
