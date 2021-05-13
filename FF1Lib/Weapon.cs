@@ -352,7 +352,7 @@ namespace FF1Lib
 			var requireTypes = new List<int> { 0, 1, 2, 3, 5 };
 			for (int count = 0; count < tierList[tier-1].Count; ) {
 			    var weaponItemId = tierList[tier-1][count];
-			    int weaponIndex = weaponItemId - tierList[0][0];
+			    int weaponIndex = (int)weaponItemId - (int)Item.WoodenNunchucks;
 			    string name;
 			    WeaponIcon icon;
 			    byte hitBonus;
@@ -568,7 +568,7 @@ namespace FF1Lib
 				    break;
 			    }
 
-			    goldvalue = Math.Min(goldvalue, 65000);
+			    goldvalue = Math.Min(goldvalue, 65535);
 
 			    EquipPermission permissions;
 			    if (weaponItemId == Item.Masamune) {
