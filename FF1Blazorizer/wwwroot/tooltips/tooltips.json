@@ -19,9 +19,9 @@
 	},
 	{
 		"Id": "blindseedCheckBox",
-		"title": "Make Blind Seed",
+		"title": "Hide Flags",
 		"screenshot": "blindseed.png",
-		"description": "Hides all flags to create a mystery flagset that can then be distributed. Useful for tournament and challenge race settings.\n This flag cannot be disabled once clicked; you will need to hit the Reset button to restore functionality to the site (and this will, in turn, wipe the blind flags selected). Make sure to save your flagset before you use this flag."
+		"description": "Hides all flags to create a mystery flagset that can then be distributed. Useful for tournament and challenge race settings.\n This flag cannot be disabled once clicked; you will need to hit the Reset button to restore functionality to the site (and this will, in turn, wipe the hidden flags selected). Make sure to save your flagset before you use this flag."
 	},
 	{
 		"Id": "spellNameMadness",
