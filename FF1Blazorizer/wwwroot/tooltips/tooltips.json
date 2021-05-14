@@ -1731,5 +1731,24 @@
 		"title": "Custom Player Sprites",
 		"screenshot": "customHeroSprites.png",
 		"description": "Import custom player sprites.  Must use sprite sheet from\nhttp://www.groggy.dog/ffr_sprites/Images/sprites.bmp\nCompatible with Fun % flag Three Battle Palettes.\nNotes for custom sprites:\n1) Use NES colors http://www.groggy.dog/ffr_sprites/Images/NESpalette.png\n2) Maximum of three colors per sprite, plus black (for battle sprites) or transparent (magenta, for mapman sprites)\n3) Mapman can have separate palettes for head and body\n4) All battle sprite postures for a given class must have the same palette\n5) Maximum of two (or three with 'Three Battle Palettes' flag) distinct battle palettes across all classes, classes will need to share palettes, and sprites intended to share a palette need to use exactly same colors in the import image.\n\nImport problems (usually palette problems) will be reported on the Javascript console, use your browser's Web Developer Tools to view the messages.\nSaved when you click Fun% 'Save Preferences'."
+	},
+	{
+		"Id": "weaponizerCheckBox",
+		"title": "Use Weaponizer",
+		"screenshot": "weaponizer.png",
+		"description": "Generate random weapons.  Names are assigned based on casting, bonus vs certain monster types or elemental weaknesses, or quality.  Use 'select' button on the equip or shop screen to view exact stats.  There is a 50% chance of a rare weapon being promotion locked.  Legendary weapons have vanilla class restrictions.\n[grid][r]|Class permissions[r]Fighter|Swords, Axes, Knives, Hammers[r]Thief|Swords, Knives, Nunchucks[r]Black Belt|Nunchucks[r]Red Mage|Swords, Knives, Staves[r]White Mage|Hammers, Staves[r]Black Mage|Knives, Staves\n\n[grid][r]Name|Quality/power[r]Wooden, Small, Short|tier 1[r]Copper, Long|tier 2[r]Iron, Heavy|tier 3[r]Steel, Great|tier 4[r]Silver, Shiny|tier 5[r]Mithrl, Sharp|tier 6[r]Opal, Diamnd, Wicked|tier 7[r]Shock, Bolt|Bonus vs weakness to lightning[r]IceHot|Bonus vs weakness to fire or ice[r]Elmntl|Bonus vs weakness to fire, ice, lightning, and poision[r]Chroma|Bonus vs all special enemy types (same as vanilla Xcalber)"
+	},
+	{
+		"Id": "weaponizerNamingCheckBox",
+		"title": "Weaponizer Names Use Quality Only",
+		"screenshot": "weaponizerNaming.png",
+		"description": "Weaponizer does not name weapons for their bonuses vs monster types or elemental weaknesses, only quality or spell casting."
+	},
+	{
+		"Id": "weaponizerPowersCheckBox",
+		"title": "Common weapons can have powers",
+		"screenshot": "weaponizerCommonPower.png",
+		"description": "Common (shop) weapons can have spells or bonuses vs monster types or elemental weaknesses."
 	}
+
 ]

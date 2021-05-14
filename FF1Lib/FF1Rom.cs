@@ -294,6 +294,10 @@ namespace FF1Lib
 				CraftNewSpellbook(rng, (bool)flags.SpellcrafterMixSpells, flags.LockMode, (bool)flags.MagicLevels, (bool)flags.SpellcrafterRetainPermissions);
 			}
 
+			if ((bool)flags.Weaponizer) {
+			    Weaponizer(rng, (bool)flags.WeaponizerNamesUseQualityOnly, (bool)flags.WeaponizerCommonWeaponsHavePowers);
+			}
+
 			if ((bool)flags.MagisizeWeapons)
 			{
 				MagisizeWeapons(rng, (bool)flags.MagisizeWeaponsBalanced);
