@@ -4192,7 +4192,7 @@ namespace FF1Lib
 				RaisePropertyChanged();
 			}
 		}
-		public bool ThiefAgilityBuff
+		public ThiefAGI ThiefAgilityBuff
 		{
 			get => Flags.ThiefAgilityBuff;
 			set
@@ -4200,14 +4200,6 @@ namespace FF1Lib
 				Flags.ThiefAgilityBuff = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ThiefAgilityBuff"));
 			}
-		}
-		public bool BugfixRender3DigitStats {
-		    get => Flags.BugfixRender3DigitStats;
-		    set
-		    {
-			Flags.BugfixRender3DigitStats = value;
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BugfixRender3DigitStats"));
-		    }
 		}
 
 		public bool? ExcludeGoldFromScaling

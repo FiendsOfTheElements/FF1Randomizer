@@ -18,6 +18,21 @@ namespace FF1Lib
 		Invert
 	}
 
+	public enum ThiefAGI
+	{
+	    [Description("Vanilla")]
+	    Vanilla,
+
+	    [Description("80")]
+	    Agi80,
+
+	    [Description("100")]
+	    Agi100,
+
+	    [Description("120")]
+	    Agi120
+	}
+
 	public partial class FF1Rom
 	{
 		public void FixHouse(bool MPfix, bool HPfix)
@@ -175,13 +190,30 @@ namespace FF1Lib
 		    WriteClassData(classData);
 		}
 
-	    public void BuffThiefAGI() {
+	        public void BuffThiefAGI(ThiefAGI agi) {
+		    if (agi == ThiefAGI.Vanilla) return;
+
 		    // Increase thief starting agility, agility
 		    // growth, and starting evade to make it more
 		    // viable as a first-slot character.
 		    // See git commit message for details.
+
 		    var classData = ReadClassData();
-		    classData[(int)AuthClass.Thief].AgiStarting = 120;
+		    switch (agi)
+		    {
+			case ThiefAGI.Agi80:
+			    classData[(int)AuthClass.Thief].AgiStarting = 80;
+			    break;
+			case ThiefAGI.Agi100:
+			    classData[(int)AuthClass.Thief].AgiStarting = 100;
+			    break;
+			case ThiefAGI.Agi120:
+			    classData[(int)AuthClass.Thief].AgiStarting = 120;
+			    break;
+			default:
+			    break;
+		    }
+
 		    classData[(int)AuthClass.Thief].AgiGrowth = Enumerable.Repeat(true, 49).ToList();
 		    classData[(int)AuthClass.Thief].EvaStarting = (byte)Math.Min(classData[(int)AuthClass.Thief].AgiStarting + 48, 255);
 		    WriteClassData(classData);

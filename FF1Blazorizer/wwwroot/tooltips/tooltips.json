@@ -1595,17 +1595,10 @@
 		"description": "When enabled, dead characters will count as live characters for XP calculation and gain their share of XP."
 	},
 	{
-		"Id": "thiefAgilityBuffCheckBox",
+		"Id": "thiefAgilityBuffDropDown",
 		"title": "Thief Agility Buff",
 		"screenshot": "thiefAgilityBuff.png",
-		"description": "Buff the Thief's starting agility to 120 and starting evade to 168, and make it so that they gain agility and evade on every level. This makes the Thief more likely to evade melee attacks from monsters.\nWhen the Thief is in the lead slot, this also increases the chance of getting first strike and reduces the chance of being surprised."
-	},
-
-	{
-		"Id": "fix3DigitStatsCheckBox",
-		"title": "Correctly Render Character Stats Over 99",
-		"screenshot": "statsOver99.png",
-		"description": "Character stats over 99 will be displayed correctly on the status screen."
+		"description": "Improve the thief/ninja starting agility and starting evade, and make it so that they gain agility and evade on every level. This makes the Thief more likely to evade melee attacks from monsters.\nWhen the Thief is in the lead slot, this also increases the chance of getting first strike and reduces the chance of being surprised."
 	},
 
 	{
