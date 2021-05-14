@@ -1,6 +1,6 @@
 ﻿@using BlazorStrap
 @using Microsoft.AspNetCore.Components.Web
-@using FF1Lib 
+@using FF1Lib
 
 <div id="Adjustments" class="tabcontent framed-content clearfix @(noTabLayout ? "no-tab" : "") @(IsOpen ? "" : "collapsed")">
 
@@ -40,7 +40,7 @@
 	<h5>Classes</h5>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="doubleBBCritCheckBox" @bind-Value="Flags.BBCritRate">Halve BB Crit Rate</CheckBox>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="thiefHitCheckBox" @bind-Value="Flags.ThiefHitRate">Double Thief &amp; Ninja Hit% growth</CheckBox>
-	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="thiefAgilityBuffCheckBox" @bind-Value="Flags.ThiefAgilityBuff">Thief Agility Buff</CheckBox>
+	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="thiefAgilityBuffDropDown" TItem="ThiefAGI" @bind-Value="Flags.ThiefAgilityBuff">Better Thief Agility</EnumDropDown>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="fixHitChanceCapCheckBox" @bind-Value="Flags.FixHitChanceCap">Raise Hit % Cap</CheckBox>
 	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="MDefModeDropDown" TItem="MDEFGrowthMode" @bind-Value="Flags.MDefMode">MDEF Growth:</EnumDropDown>
 	<div class="checkbox-cell"></div>

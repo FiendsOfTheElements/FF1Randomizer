@@ -793,9 +793,9 @@ namespace FF1Lib
 				ThiefHitRate();
 			}
 
-			if (flags.ThiefAgilityBuff)
+			if (flags.ThiefAgilityBuff != ThiefAGI.Vanilla)
 			{
-			        BuffThiefAGI();
+			        BuffThiefAGI(flags.ThiefAgilityBuff);
 			}
 
 			if (flags.ImproveTurnOrderRandomization)

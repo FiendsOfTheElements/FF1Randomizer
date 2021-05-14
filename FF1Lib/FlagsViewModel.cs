@@ -4192,7 +4192,7 @@ namespace FF1Lib
 				RaisePropertyChanged();
 			}
 		}
-		public bool ThiefAgilityBuff
+		public ThiefAGI ThiefAgilityBuff
 		{
 			get => Flags.ThiefAgilityBuff;
 			set

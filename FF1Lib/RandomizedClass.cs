@@ -446,7 +446,7 @@ namespace FF1Lib
 
 			// Chaos Mode enabled?
 			if ((bool)flags.RandomizeClassChaos)
-				DoRandomizeClassChaosMode(ref classData, ((bool)flags.MagicLevelsMixed && (bool)flags.MagicPermissions) || ((bool)flags.SpellcrafterMixSpells && !(bool)flags.SpellcrafterRetainPermissions), (bool)flags.ThiefAgilityBuff, rng);
+			    DoRandomizeClassChaosMode(ref classData, ((bool)flags.MagicLevelsMixed && (bool)flags.MagicPermissions) || ((bool)flags.SpellcrafterMixSpells && !(bool)flags.SpellcrafterRetainPermissions), (flags.ThiefAgilityBuff != ThiefAGI.Vanilla), rng);
 			else
 				bonusmalusDescription = DoRandomizeClassNormalMode(ref classData, rng, itemnames, flags.RandomizeClassMaxBonus, flags.RandomizeClassMaxMalus, (bool)flags.RandomizeClassNoCasting);
 
@@ -630,7 +630,7 @@ namespace FF1Lib
 				if (classData[i].HitGrowth < 4)
 					hitBonusClass.Add((AuthClass)i);
 			}
-			
+
 			// Spells lists
 			var nullSpells = Enumerable.Repeat(false, 4 * 8).ToList();
 
@@ -732,7 +732,7 @@ namespace FF1Lib
 				new BonusMalus(BonusMalusAction.AgiMod, "-10 Agi.", mod: -10),
 				new BonusMalus(BonusMalusAction.AgiMod, "-10 Agi.", mod: -10),
 				new BonusMalus(BonusMalusAction.AgiMod, "-15 Agi.", mod: -15),
-				new BonusMalus(BonusMalusAction.AgiGrowth, "BlackM Agi.", binarylist: classData[(int)AuthClass.BlackMage].AgiGrowth, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief, AuthClass.BlackBelt }),				
+				new BonusMalus(BonusMalusAction.AgiGrowth, "BlackM Agi.", binarylist: classData[(int)AuthClass.BlackMage].AgiGrowth, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief, AuthClass.BlackBelt }),
 				new BonusMalus(BonusMalusAction.VitMod, "-10 Vit.", mod: -10),
 				new BonusMalus(BonusMalusAction.VitMod, "-10 Vit.", mod: -10),
 				new BonusMalus(BonusMalusAction.VitMod, "-15 Vit.", mod: -15),
@@ -1078,7 +1078,7 @@ namespace FF1Lib
 			var newChargeList = new List<List<byte>>();
 			var newMaxChargeList = Enumerable.Repeat((byte)0x00, 12).ToArray();
 
-			// Get shuffle data 
+			// Get shuffle data
 			var shuffleStartingStats = new List<byte>();
 			var shuffleLevelUp = new List<List<bool>>();
 			var shuffleHP = new List<List<bool>>();
@@ -1146,7 +1146,7 @@ namespace FF1Lib
 			for (int i = 0; i < 6; i++)
 			{
 				for (int j = 0; j < 5; j++)
-				{ 
+				{
 				if (shuffleStartingStats[i * 7 + j] + shuffleLevelUp[i * 5 + j].GetRange(0, 24).Where(x => x == true).Count() > (maxLvStats + maxStats - spreadStats))
 					statsRanks.Add(Rank.S);
 				else if (shuffleStartingStats[i * 7 + j] + shuffleLevelUp[i * 5 + j].GetRange(0, 24).Where(x => x == true).Count() > (maxLvStats + maxStats - spreadStats * 2))
@@ -1259,7 +1259,7 @@ namespace FF1Lib
 			promoSpellcharges.Shuffle(rng);
 			var chargeList = classData.GetRange(0, 12).Select(x => x.SpCGrowth).ToList();
 			var maxCharges = classData.GetRange(0, 12).Select(x => x.MaxSpC).ToList();
-			
+
 			for (int i = 0; i < 6; i++)
 			{
 				if (classData[i].Ranks[(int)RankedType.White] > Rank.F || classData[i].Ranks[(int)RankedType.Black] > Rank.F)
