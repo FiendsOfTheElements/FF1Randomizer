@@ -295,7 +295,7 @@ namespace FF1Lib
 			}
 
 			if ((bool)flags.Weaponizer) {
-			    Weaponizer(rng, flags.WeaponizerNamesUseQualityOnly);
+			    Weaponizer(rng, (bool)flags.WeaponizerNamesUseQualityOnly, (bool)flags.WeaponizerCommonWeaponsHavePowers);
 			}
 
 			if ((bool)flags.MagisizeWeapons)

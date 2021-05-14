@@ -201,7 +201,7 @@ namespace FF1Lib
 			}
 		}
 
-		public void Weaponizer(MT19337 rng, bool useQualityNamesOnly) {
+		public void Weaponizer(MT19337 rng, bool useQualityNamesOnly, bool commonWeaponsHavePowers) {
 		    var tierList = new List<IReadOnlyList<Item>> { ItemLists.CommonWeaponTier, ItemLists.RareWeaponTier,
 							  ItemLists.LegendaryWeaponTier, ItemLists.UberTier};
 		    var damageBases = new int[]      { 10, 18, 26, 36, 52 };
@@ -433,8 +433,9 @@ namespace FF1Lib
 				}
 			    } else {
 				int spellChance = rng.Between(1, 100);
-				if ((weaponType < 4 && spellChance <= 20)
-				    || (weaponType >= 4 && spellChance <= 50))
+				if ((commonWeaponsHavePowers || tier >= 2)
+				    && ((weaponType < 4 && spellChance <= Math.Min(10*tier, 20))
+					|| (weaponType >= 4 && spellChance <= Math.Min(30*tier, 60))))
 				{
 				    var spelllevelLow = Math.Min(tier*2, 6); // 2, 4, 6, 6
 				    var spelllevelHigh = Math.Min(spelllevelLow+4, 8); // 6, 8, 8, 8
@@ -444,14 +445,12 @@ namespace FF1Lib
 				}
 			    }
 
-			    // Need to special case: Defense, Katana, Xcal, Vorpal, Masa
-
 			    int specialPower = -1;
 			    if (spellIndex == 0xFF) {
 				int powerChance = rng.Between(1, 100);
-				if (tier == 1 && powerChance <= 20) {
+				if (tier == 1 && commonWeaponsHavePowers && powerChance <= 20) {
 				    specialPower = rng.Between(0, powers.Length-1);
-				} else if (tier > 1 && powerChance <= 80) {
+				} else if (tier > 1) {
 				    specialPower = rng.Between(0, powers.Length-1);
 				}
 			    }
@@ -612,6 +611,7 @@ namespace FF1Lib
 			    count++;
 			}
 		    }
+		    Utilities.WriteSpoilerLine("\n");
 		}
 
 	}
