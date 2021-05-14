@@ -77,7 +77,7 @@ namespace FF1Lib
 
 		protected abstract ItemPlacementResult DoSanePlacement(MT19337 rng, ItemPlacementContext ctx);
 
-		public List<IRewardSource> PlaceSaneItems(MT19337 rng)
+		public List<IRewardSource> PlaceSaneItems(MT19337 rng, FF1Rom rom)
 		{
 			var incentivePool = _incentivesData.IncentiveItems.Where(x => _allTreasures.Contains(x)).ToList();
 			var forcedItems = _incentivesData.ForcedItemPlacements.ToList();
@@ -123,7 +123,20 @@ namespace FF1Lib
 			};
 
 			ItemPlacementResult result = DoSanePlacement(rng, ctx);
-			var placedItems = result.PlacedItems;
+			List<IRewardSource> placedItems = result.PlacedItems;
+			//setup jingle for "incentive treasures", the placed items should just be key items, loose incentive items
+			if(_flags.IncentiveChestItemsFanfare)
+			{
+				foreach (var placedItem in placedItems)
+				{
+					//dont make shards jingle that'd be annoying
+					if (placedItem is TreasureChest && placedItem.Item != Item.Shard)
+					{
+						rom.Put(placedItem.Address - FF1Rom.TreasureOffset + FF1Rom.TreasureJingleOffset, new byte[] { 0x01 });
+					}
+				}
+			}
+			
 			treasurePool = result.RemainingTreasures;
 
 			if ((bool)_flags.FreeBridge)

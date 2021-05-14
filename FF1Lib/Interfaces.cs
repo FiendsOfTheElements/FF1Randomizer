@@ -110,6 +110,7 @@
 		ConsumableChestSet MoreConsumableChests { get; }
 		bool EnableExtConsumables { get; }
 		ExtConsumableChestSet ExtConsumableChests { get; }
+		bool IncentiveChestItemsFanfare { get; }
 	}
 	public interface IItemShuffleFlags
 	{
