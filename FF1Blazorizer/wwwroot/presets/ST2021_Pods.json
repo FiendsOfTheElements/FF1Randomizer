@@ -179,7 +179,7 @@
     "BBCritRate": true,
     "WeaponCritRate": true,
     "WeaponBonuses": true,
-    "ThiefAgilityBuff": false,
+    "ThiefAgilityBuff": 0,
     "WeaponTypeBonusValue": 20,
     "ChanceToRun": 1,
     "SpellBugs": true,
