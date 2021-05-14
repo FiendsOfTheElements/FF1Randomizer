@@ -30,9 +30,6 @@
 			<DoubleSlider UpdateToolTip="@UpdateToolTipID" DoubleCol Id="MaximumLevelDoubleSilder" MinValue="1" MaxValue="50" Step="1" @bind-ValueHigh="Flags.MaxLevelHigh" @bind-ValueLow="Flags.MaxLevelLow">Max Level:</DoubleSlider>
 
 			<div class="checkbox-cell"></div>
-			<h4>Bugfixes</h4>
-			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="fix3DigitStatsCheckBox" @bind-Value="Flags.BugfixRender3DigitStats">Correctly render character stats over 99</CheckBox>
-			<div class="checkbox-cell"></div>
 			<h4>Enemies</h4>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="alternateFiendsCheckBox" IsEnabled="@(!Flags.SpookyFlag)" @bind-Value="Flags.AlternateFiends">Alternate Fiends</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="noBossSkillScriptShuffleCheckBox" IsEnabled="@(Flags.EnemyScripts != false || Flags.EnemySkillsSpells != false)" @bind-Value="Flags.NoBossSkillScriptShuffle">Don't Shuffle Bosses' Scripts, Skills & Spells</TriStateCheckBox>

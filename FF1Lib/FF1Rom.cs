@@ -930,9 +930,7 @@ namespace FF1Lib
 				ShopUpgrade();
 			}
 
-			if (flags.BugfixRender3DigitStats) {
-			    Fix3DigitStats();
-			}
+			Fix3DigitStats();
 
 			if ((bool)flags.FightBahamut && !flags.SpookyFlag && !(bool)flags.RandomizeFormationEnemizer)
 			{

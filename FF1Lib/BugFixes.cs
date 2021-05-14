@@ -18,19 +18,19 @@ namespace FF1Lib
 		Invert
 	}
 
-	public enum ThiefAGI : byte
+	public enum ThiefAGI
 	{
 	    [Description("Vanilla")]
-	    Vanilla = 0,
+	    Vanilla,
 
 	    [Description("80")]
-	    Agi80 = 80,
+	    Agi80,
 
 	    [Description("100")]
-	    Agi100 = 100,
+	    Agi100,
 
 	    [Description("120")]
-	    Agi120 = 120
+	    Agi120
 	}
 
 	public partial class FF1Rom
@@ -199,7 +199,21 @@ namespace FF1Lib
 		    // See git commit message for details.
 
 		    var classData = ReadClassData();
-		    classData[(int)AuthClass.Thief].AgiStarting = (byte)agi;
+		    switch (agi)
+		    {
+			case ThiefAGI.Agi80:
+			    classData[(int)AuthClass.Thief].AgiStarting = 80;
+			    break;
+			case ThiefAGI.Agi100:
+			    classData[(int)AuthClass.Thief].AgiStarting = 100;
+			    break;
+			case ThiefAGI.Agi120:
+			    classData[(int)AuthClass.Thief].AgiStarting = 120;
+			    break;
+			default:
+			    break;
+		    }
+
 		    classData[(int)AuthClass.Thief].AgiGrowth = Enumerable.Repeat(true, 49).ToList();
 		    classData[(int)AuthClass.Thief].EvaStarting = (byte)Math.Min(classData[(int)AuthClass.Thief].AgiStarting + 48, 255);
 		    WriteClassData(classData);

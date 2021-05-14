@@ -4201,14 +4201,6 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ThiefAgilityBuff"));
 			}
 		}
-		public bool BugfixRender3DigitStats {
-		    get => Flags.BugfixRender3DigitStats;
-		    set
-		    {
-			Flags.BugfixRender3DigitStats = value;
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BugfixRender3DigitStats"));
-		    }
-		}
 
 		public bool? ExcludeGoldFromScaling
 		{

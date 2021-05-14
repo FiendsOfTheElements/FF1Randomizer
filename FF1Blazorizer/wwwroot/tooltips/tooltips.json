@@ -1602,13 +1602,6 @@
 	},
 
 	{
-		"Id": "fix3DigitStatsCheckBox",
-		"title": "Correctly Render Character Stats Over 99",
-		"screenshot": "statsOver99.png",
-		"description": "Character stats over 99 will be displayed correctly on the status screen."
-	},
-
-	{
 		"Id": "alternateFiendsCheckBox",
 		"title": "Alternate Fiends",
 		"screenshot": "AlternateFiends.png",
