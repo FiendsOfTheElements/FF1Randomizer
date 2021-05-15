@@ -951,6 +951,8 @@ namespace FF1Lib
 			    SkyWarriorSpoilerBats(rng, flags, npcdata);
 			}
 
+			ObfuscateEnemies(rng, flags);
+
 			// We have to do "fun" stuff last because it alters the RNG state.
 			// Back up Rng so that fun flags are uniform when different ones are selected
 			uint funRngSeed = rng.Next();
@@ -967,13 +969,13 @@ namespace FF1Lib
 				UseVariablePaletteForCursorAndStone();
 			}
 
-			if (preferences.PaletteSwap && !flags.EnemizerEnabled)
+			if (preferences.PaletteSwap && !flags.EnemizerEnabled && flags.EnemyObfuscation == EnemyObfuscation.None)
 			{
 				rng = new MT19337(funRngSeed);
 				PaletteSwap(rng);
 			}
 
-			if (preferences.TeamSteak && !(bool)flags.RandomizeEnemizer)
+			if (preferences.TeamSteak && !(bool)flags.RandomizeEnemizer && flags.EnemyObfuscation == EnemyObfuscation.None)
 			{
 				TeamSteak();
 			}
