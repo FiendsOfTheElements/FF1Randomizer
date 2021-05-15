@@ -195,9 +195,9 @@ namespace FF1Lib
 		private void WriteInTalkBattleFix()
 		{
 			var InTalkBattle = rom.GetFromBank(0x11, 0x9600, 25);
-			rom.PutInBank(0x11, 0xB080, InTalkBattle);
+			rom.PutInBank(0x11, 0xB100, InTalkBattle);
 
-			rom.PutInBank(0x11, 0x9600, Blob.FromHex("2080B0A903CD866BD00820189668684C439660"));
+			rom.PutInBank(0x11, 0x9600, Blob.FromHex("2000B1A903CD866BD00820189668684C439660"));
 		}
 
 		private void ChangeItemNames()
