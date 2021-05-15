@@ -602,25 +602,13 @@ namespace FF1Lib
 		public List<string> DoRandomizeClassNormalMode(ref List<ClassData> classData, MT19337 rng, string[] itemnames, int maxbonus, int maxmalus, bool noCastingBonus)
 		{
 			// Equipment lists
-			var equipFighterArmor = new List<Item> { Item.WoodenArmor, Item.ChainArmor, Item.SilverArmor, Item.IronArmor,
-				Item.FlameArmor, Item.IceArmor, Item.SteelArmor, Item.Buckler, Item.WoodenShield, Item.IronShield, Item.ProCape,
-				Item.SilverShield, Item.FlameShield, Item.IceShield, Item.WoodenHelm, Item.IronHelm, Item.SilverHelm,
-				Item.CopperGauntlets, Item.IronGauntlets, Item.SilverGauntlets, Item.PowerGauntlets };
+			var equipFighterArmor = classData[(int)AuthClass.Fighter].arPermissions;
 
-			var equipRedMageArmor = new List<Item> { Item.WoodenArmor, Item.ChainArmor, Item.SilverArmor, Item.Buckler, Item.ProCape };
+			var equipRedMageArmor = classData[(int)AuthClass.RedMage].arPermissions;
 
-			var equipKnightArmor = new List<Item>(equipFighterArmor) { Item.DragonArmor, Item.OpalArmor, Item.AegisShield, Item.OpalShield,
-				Item.HealHelm, Item.OpalHelm, Item.PowerGauntlets, Item.ZeusGauntlets, Item.OpalGauntlets };
+			var equipFighterWeapon = classData[(int)AuthClass.Fighter].wpPermissions;
 
-			var equipFighterWeapon = new List<Item> { Item.Rapier, Item.Scimitar, Item.ShortSword, Item.LongSword, Item.Falchon, Item.Sabre, Item.SilverSword,
-				Item.WereSword, Item.RuneSword, Item.DragonSword, Item.CoralSword, Item.GiantSword, Item.FlameSword, Item.IceSword, Item.SunSword,
-				Item.SmallKnife, Item.WoodenRod, Item.IronHammer, Item.HandAxe, Item.LargeKnife, Item.IronStaff, Item.GreatAxe, Item.SilverAxe, Item.SilverKnife,
-				Item.SilverHammer, Item.PowerRod, Item.LightAxe	};
-
-			var equipKnightWeapon = new List<Item>(equipFighterWeapon) { Item.Defense, Item.Vorpal, Item.CatClaw, Item.ThorHammer, Item.BaneSword, Item.Xcalber };
-
-			var equipThiefWeapon = new List<Item> { Item.SmallKnife, Item.Rapier, Item.Scimitar, Item.LargeKnife, Item.Sabre, Item.Falchon, Item.SilverKnife, Item.DragonSword,
-				Item.CoralSword, Item.RuneSword, Item.Masamune };
+			var equipThiefWeapon = classData[(int)AuthClass.Thief].wpPermissions;
 
 			// Create exceptions for hit bonus
 			var hitBonusClass = new List<AuthClass>();
@@ -710,7 +698,6 @@ namespace FF1Lib
 				new BonusMalus(BonusMalusAction.PowerRW, "Sage Class", binarylist: wmWhiteSpells.Concat(bmBlackSpells).Concat(wwWhiteSpells).Concat(bwBlackSpells).ToList(), authclass: new List<AuthClass> { AuthClass.RedMage }),
 				new BonusMalus(BonusMalusAction.WhiteSpellcaster, "White W. Sp", binarylist: wwWhiteSpells, authclass: new List<AuthClass> { AuthClass.WhiteMage }),
 				new BonusMalus(BonusMalusAction.BlackSpellcaster, "Black W. Sp", binarylist: bwBlackSpells, authclass: new List<AuthClass> { AuthClass.BlackMage }),
-				//new BonusMalus(BonusMalusAction.EquipmentAdd, "+Knight\n Weapons", equipment: equipKnightWeapon, authclass: new List<AuthClass> { AuthClass.Thief, AuthClass.BlackBelt, AuthClass.WhiteMage, AuthClass.BlackMage } ),
 			};
 
 			if (!noCastingBonus)
@@ -754,7 +741,6 @@ namespace FF1Lib
 				new BonusMalus(BonusMalusAction.WeaponReplace, "Thief @S", equipment: equipThiefWeapon, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.RedMage } ),
 				new BonusMalus(BonusMalusAction.SpcMax, "-4 Max MP", mod: -4, authclass: new List<AuthClass> {  AuthClass.RedMage, AuthClass.WhiteMage, AuthClass.BlackMage }),
 				new BonusMalus(BonusMalusAction.NoPromoMagic, "No Promo Sp", mod: 0, mod2: 0, binarylist: nullSpells, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief }),
-				//new BonusMalus(BonusMalusAction.BlackNewSpellcaster, "Black Mage\n Spells", mod: 2, mod2: 9, binarylist: bmBlackSpells, bytelist: rmMPlist, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief, AuthClass.BlackBelt }),
 			};
 
 			if(Rng.Between(rng, 0, 10) == 0)
