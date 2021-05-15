@@ -550,10 +550,46 @@
 	},
 
 	{
-		"Id": "trappedChestsCheckBox",
-		"title": "Trapped Chests",
+		"Id": "tcFormationPoolDropDown",
+		"title": "Trapped Chests Formations",
+		"screenshot": "tcFormations.png",
+		"description": "Selects what formations are inside trapped chests.\n\n Allocated Formations: All alternate formations (116) are allocated to a random chest. If there's still trapped chests without a formation, a new batch of alternate formations is distributed.\n\n Random Formations: An alternate formation is randomly selected for each chest, without regard to frequency of a given formation.\n\n Random Fiends: Chests are guarded by a random Fiend.\n\n Phantom: Chests are guarded by Phantom.\n\n Random: Select one of the previous options randomly."
+	},
+	{
+		"Id": "tcChestPoolDropDown",
+		"title": "Trapped Chests Pool Size",
+		"screenshot": "tcChestsPool.png",
+		"description": "Selects the number of trapped chests for pooled chests. Chests types not included in the pool won't count toward it."
+	},
+	{
+		"Id": "tcRandomDropDown",
+		"title": "Random Chests",
 		"screenshot": "trappedChestsCheckBox.gif",
-		"description": "Selects 40 chests at random that will trigger a battle before the party can access their contents."
+		"description": "Includes all chests in the pool except chests containing Key Items or Shards."
+	},
+	{
+		"Id": "tcRandomDropDown",
+		"title": "Random Chests",
+		"screenshot": "trappedChestsCheckBox.gif",
+		"description": "Includes all chests in the pool except chests containing Key Items or Shards."
+	},
+	{
+		"Id": "tcBetterTreasuresDropDown",
+		"title": "Bettre Treastures",
+		"screenshot": "tcBestTreasures.png",
+		"description": "Pool: Includes all chests containing Legendary or Rare gears in the pool.\n\nAll: Traps all chests containing Legendary or Rare gears, ignoring pool size."
+	},
+	{
+		"Id": "tcKeyItemsDropDown",
+		"title": "Key Items",
+		"screenshot": "tcKeyItems.png",
+		"description": "Pool: Includes all chests containing a Key Item in the pool.\n\nAll: Traps all chests containing a Key Item, ignoring pool size."
+	},
+	{
+		"Id": "tcShardsDropDown",
+		"title": "Shards",
+		"screenshot": "trappedShardsCheckBox.gif",
+		"description": "Pool: Includes all chests containing a Shard in the pool.\n\nAll: Traps all chests containing a Shard, ignoring pool size."
 	},
 	{
 		"Id": "masaGuardianCheckBox",
@@ -562,16 +598,16 @@
 		"description": "Any chest containing a Masamune is protected by a forced WarMech encounter."
 	},
 	{
-		"Id": "trappedShardsCheckBox",
-		"title": "Trapped Shards",
-		"screenshot": "trappedShardsCheckBox.gif",
-		"description": "In Shard Hunt mode, all shard chests are trapped, triggering a battle before the party can access the shard."
-	},
-	{
 		"Id": "trappedChaosCheckBox",
 		"title": "Hidden Chaos",
 		"screenshot": "hiddenChaos.png",
 		"description": "Chaos is hidden in a random chest and must be found to be defeated."
+	},
+	{
+		"Id": "tcProtectIncentivesCheckBox",
+		"title": "Protect Incentivized Items",
+		"screenshot": "tcProtectIncentive.png",
+		"description": "Chests containing Incentivized Items (including Incentivized Gear) will never be trapped."
 	},
 	{
 		"Id": "trappedMarkCheckBox",

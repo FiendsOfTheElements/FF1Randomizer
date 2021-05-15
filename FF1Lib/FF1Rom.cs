@@ -730,7 +730,7 @@ namespace FF1Lib
 				SetMaxLevel(flags, rng);
 			}
 
-			if ((bool)flags.TrappedChests || (bool)flags.TCMasaGuardian || (bool)flags.TrappedShards || (bool)flags.TrappedChaos)
+			if ((bool)flags.TrappedChestsEnabled)
 			{
 				MonsterInABox(rng, flags);
 			}
