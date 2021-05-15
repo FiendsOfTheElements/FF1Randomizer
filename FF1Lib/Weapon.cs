@@ -344,6 +344,8 @@ namespace FF1Lib
 
 		    var Spells = GetSpells();
 		    var defenseSwordSpells = new string[] { "RUSE", "INV2", "FOG2", "WALL" };
+		    var thorHammerSpells = new string[] { "NUKE", "FADE", "ICE3", "LIT3", "FIR3", "ICE2", "LIT2", "FIR2" };
+		    var thorHammerBins = new int[]      {     1,      2,     12,     24,     34,     56,     80,    100  };
 
 		    var weaponNames = new List<string>();
 		    var weaponGfx = new List<int>();
@@ -376,6 +378,9 @@ namespace FF1Lib
 				case Item.Defense:
 				    weaponType = 0;
 				    break;
+				case Item.ThorHammer:
+				    weaponType = 4;
+				    break;
 				default:
 				    if (requireTypes.Count > 0) {
 					weaponType = requireTypes[0];
@@ -401,6 +406,10 @@ namespace FF1Lib
 
 			    if (weaponItemId == Item.Vorpal) {
 				damageTier -= 1;
+			    }
+
+			    if (weaponItemId == Item.ThorHammer) {
+				damageTier += 1;
 			    }
 
 			    damageTier = Math.Min(Math.Max(damageTier, 0), 4);
@@ -431,14 +440,28 @@ namespace FF1Lib
 					break;
 				    }
 				}
+			    } else if (weaponItemId == Item.ThorHammer) {
+				var pick = rng.Between(1, 100);
+				string thorMagic = "";
+				for (int i = 0; i < thorHammerBins.Length; i++) {
+				    if (pick <= thorHammerBins[i]) {
+					thorMagic = thorHammerSpells[i];
+				    }
+				}
+				for (int i = 0; i < Spells.Count; i++) {
+				    if (Spells[i].Name == thorMagic) {
+					spellIndex = (byte)i;
+					break;
+				    }
+				}
 			    } else {
 				int spellChance = rng.Between(1, 100);
 				if ((commonWeaponsHavePowers || tier >= 2)
 				    && ((weaponType < 4 && spellChance <= Math.Min(10*tier, 20))
 					|| (weaponType >= 4 && spellChance <= Math.Min(30*tier, 60))))
 				{
-				    var spelllevelLow = Math.Min(tier*2, 6); // 2, 4, 6, 6
-				    var spelllevelHigh = Math.Min(spelllevelLow+4, 8); // 6, 8, 8, 8
+				    var spelllevelLow = Math.Min(1+tier, 5);           // 2, 3, 4, 5
+				    var spelllevelHigh = Math.Min(spelllevelLow+3, 8); // 5, 6, 7, 8
 				    do {
 					spellIndex = (byte)rng.Between(spelllevelLow*8, spelllevelHigh*8-1);
 				    } while(Spells[spellIndex].Data[4] == 0); // must be combat castable
@@ -471,6 +494,9 @@ namespace FF1Lib
 				name = nameWithIcon = "Vorpal ";
 			    } else if (weaponItemId == Item.Defense) {
 				name = nameWithIcon = "Defense";
+			    } else if (weaponItemId == Item.ThorHammer) {
+				name = nameWithIcon = "Thor  @H";
+				elementalWeakness = (byte)(Element.ICE|Element.FIRE|Element.LIGHTNING);
 			    } else {
 				if (spellIndex != 0xFF) {
 				    name = Spells[spellIndex].Name;
@@ -576,6 +602,8 @@ namespace FF1Lib
 				permissions = EquipPermission.Knight;
 			    } else if (weaponItemId == Item.Katana) {
 				permissions = EquipPermission.Ninja;
+			    } else if (weaponItemId == Item.ThorHammer) {
+				permissions = EquipPermission.WhiteWizard;
 			    } else {
 				permissions = promotedPermissions[icon];
 				switch (tier) {
