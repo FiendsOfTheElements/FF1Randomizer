@@ -446,6 +446,7 @@ namespace FF1Lib
 				for (int i = 0; i < thorHammerBins.Length; i++) {
 				    if (pick <= thorHammerBins[i]) {
 					thorMagic = thorHammerSpells[i];
+					break;
 				    }
 				}
 				for (int i = 0; i < Spells.Count; i++) {
