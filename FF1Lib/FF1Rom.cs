@@ -294,6 +294,10 @@ namespace FF1Lib
 				CraftNewSpellbook(rng, (bool)flags.SpellcrafterMixSpells, flags.LockMode, (bool)flags.MagicLevels, (bool)flags.SpellcrafterRetainPermissions);
 			}
 
+			if ((bool)flags.Weaponizer) {
+			    Weaponizer(rng, (bool)flags.WeaponizerNamesUseQualityOnly, (bool)flags.WeaponizerCommonWeaponsHavePowers);
+			}
+
 			if ((bool)flags.MagisizeWeapons)
 			{
 				MagisizeWeapons(rng, (bool)flags.MagisizeWeaponsBalanced);
@@ -789,9 +793,9 @@ namespace FF1Lib
 				ThiefHitRate();
 			}
 
-			if (flags.ThiefAgilityBuff)
+			if (flags.ThiefAgilityBuff != ThiefAGI.Vanilla)
 			{
-			        BuffThiefAGI();
+			        BuffThiefAGI(flags.ThiefAgilityBuff);
 			}
 
 			if (flags.ImproveTurnOrderRandomization)
@@ -926,9 +930,7 @@ namespace FF1Lib
 				ShopUpgrade();
 			}
 
-			if (flags.BugfixRender3DigitStats) {
-			    Fix3DigitStats();
-			}
+			Fix3DigitStats();
 
 			if ((bool)flags.FightBahamut && !flags.SpookyFlag && !(bool)flags.RandomizeFormationEnemizer)
 			{

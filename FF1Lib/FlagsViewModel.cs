@@ -668,6 +668,33 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MagisizeWeaponsBalanced"));
 			}
 		}
+		public bool? Weaponizer
+		{
+			get => Flags.Weaponizer;
+			set
+			{
+				Flags.Weaponizer = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Weaponizer"));
+			}
+		}
+		public bool? WeaponizerNamesUseQualityOnly
+		{
+			get => Flags.WeaponizerNamesUseQualityOnly;
+			set
+			{
+				Flags.WeaponizerNamesUseQualityOnly = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("WeaponizerNamesUseQualityOnly"));
+			}
+		}
+		public bool? WeaponizerCommonWeaponsHavePowers
+		{
+			get => Flags.WeaponizerCommonWeaponsHavePowers;
+			set
+			{
+				Flags.WeaponizerCommonWeaponsHavePowers = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("WeaponizerCommonWeaponsHavePowers"));
+			}
+		}
 		public bool? MagicLevelsTiered
 		{
 			get => Flags.MagicLevelsTiered;
@@ -4210,7 +4237,7 @@ namespace FF1Lib
 				RaisePropertyChanged();
 			}
 		}
-		public bool ThiefAgilityBuff
+		public ThiefAGI ThiefAgilityBuff
 		{
 			get => Flags.ThiefAgilityBuff;
 			set
@@ -4218,14 +4245,6 @@ namespace FF1Lib
 				Flags.ThiefAgilityBuff = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ThiefAgilityBuff"));
 			}
-		}
-		public bool BugfixRender3DigitStats {
-		    get => Flags.BugfixRender3DigitStats;
-		    set
-		    {
-			Flags.BugfixRender3DigitStats = value;
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BugfixRender3DigitStats"));
-		    }
 		}
 
 		public bool? ExcludeGoldFromScaling
