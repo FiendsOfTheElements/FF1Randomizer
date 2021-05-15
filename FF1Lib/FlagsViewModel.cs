@@ -1998,6 +1998,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ShopInfo"));
 			}
 		}
+		public bool IncentiveChestItemsFanfare
+		{
+			get => Flags.IncentiveChestItemsFanfare;
+			set
+			{
+				Flags.IncentiveChestItemsFanfare = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentiveChestItemsFanfare"));
+			}
+		}
 		public bool WaitWhenUnrunnable
 		{
 			get => Flags.WaitWhenUnrunnable;

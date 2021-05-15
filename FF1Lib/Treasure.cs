@@ -8,6 +8,7 @@ namespace FF1Lib
 {
 	public partial class FF1Rom : NesRom
 	{
+		public const int TreasureJingleOffset = 0x47200;
 		public const int TreasureOffset = 0x03100;
 		public const int TreasureSize = 1;
 		public const int TreasurePoolCount = 256;
@@ -53,7 +54,7 @@ namespace FF1Lib
 			}
 
 			ItemPlacement placement = ItemPlacement.Create(flags, incentivesData, treasurePool, caravanItemLocation, overworldMap, checker);
-			var placedItems = placement.PlaceSaneItems(rng);
+			var placedItems = placement.PlaceSaneItems(rng, this);
 			
 			// Output the results to the ROM
 			foreach (var item in placedItems.Where(x => !x.IsUnused && x.Address < 0x80000 && (!vanillaNPCs || x is TreasureChest)))
