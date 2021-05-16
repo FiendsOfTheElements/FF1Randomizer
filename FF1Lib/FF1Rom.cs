@@ -927,7 +927,7 @@ namespace FF1Lib
 
 			if (flags.ShopInfo)
 			{
-				ShopUpgrade();
+				ShopUpgrade(flags);
 			}
 
 			Fix3DigitStats();
