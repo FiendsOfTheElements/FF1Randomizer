@@ -1371,8 +1371,8 @@ namespace FF1Lib
 		public void ShopUpgrade(Flags flags)
 		{
 			// Shorten TreasureChest Dialog
-			InsertDialogs(241, "Can't hold.. #");
 			InsertDialogs(320, "You found.. #");
+			InsertDialogs(321, "Can't hold.. #");
 
 			// Modify DrawShopPartySprites to use new DrawOBSprite routines, see 0E_9500_ShopUpgrade.asm
 			PutInBank(0x0E, 0xAA04, Blob.FromHex("205795"));
