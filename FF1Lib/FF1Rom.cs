@@ -148,6 +148,11 @@ namespace FF1Lib
 			var shopItemLocation = ItemLocations.CaravanItemShop1;
 			var oldItemNames = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
 
+			if ((bool)flags.NPCItems || (bool)flags.NPCFetchItems)
+			{
+				NPCShuffleDialogs();
+			}
+
 			if (flags.EFGWaterfall || flags.EFGEarth1 || flags.EFGEarth2)
 			{
 				MapRequirements reqs;
