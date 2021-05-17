@@ -918,13 +918,67 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomTrapFormations"));
 			}
 		}
-		public bool? TrappedChests
+		public ChestsPool TCPoolSize
 		{
-			get => Flags.TrappedChests;
+			get => Flags.TCPoolSize;
 			set
 			{
-				Flags.TrappedChests = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TrappedChests"));
+				Flags.TCPoolSize = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TCPoolSize"));
+			}
+		}
+		public FormationPool TCFormations
+		{
+			get => Flags.TCFormations;
+			set
+			{
+				Flags.TCFormations = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TCFormations"));
+			}
+		}
+		public TCOptions TCBetterTreasure
+		{
+			get => Flags.TCBetterTreasure;
+			set
+			{
+				Flags.TCBetterTreasure = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TCBetterTreasure"));
+			}
+		}
+		public TCOptions TCKeyItems
+		{
+			get => Flags.TCKeyItems;
+			set
+			{
+				Flags.TCKeyItems = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TCKeyItems"));
+			}
+		}
+		public TCOptions TCShards
+		{
+			get => Flags.TCShards;
+			set
+			{
+				Flags.TCShards = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TCShards"));
+			}
+		}
+		public TCRngOptions TCRandom
+		{
+			get => Flags.TCRandom;
+			set
+			{
+				Flags.TCRandom = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TCRandom"));
+			}
+		}
+		public bool TCProtectIncentives
+		{
+			get => Flags.TCProtectIncentives;
+			set
+			{
+				Flags.TCProtectIncentives = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TCProtectIncentives"));
 			}
 		}
 		public bool? TCMasaGuardian
@@ -934,15 +988,6 @@ namespace FF1Lib
 			{
 				Flags.TCMasaGuardian = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TCMasaGuardian"));
-			}
-		}
-		public bool? TrappedShards
-		{
-			get => Flags.TrappedShards;
-			set
-			{
-				Flags.TrappedShards = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TrappedShards"));
 			}
 		}
 		public bool? TrappedChaos
@@ -4349,6 +4394,16 @@ namespace FF1Lib
 			set
 			{
 				Flags.SpellNameMadness = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public EnemyObfuscation EnemyObfuscation
+		{
+			get => Flags.EnemyObfuscation;
+			set
+			{
+				Flags.EnemyObfuscation = value;
 				RaisePropertyChanged();
 			}
 		}

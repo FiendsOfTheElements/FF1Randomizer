@@ -52,6 +52,8 @@ namespace FF1Lib
 
 		public SpellNameMadness SpellNameMadness { get; set; } = SpellNameMadness.None;
 
+		public EnemyObfuscation EnemyObfuscation { get; set; } = EnemyObfuscation.None;
+
 		public bool EnableExtConsumables { get; set; } = false;
 
 		public bool? NormalShopsHaveExtConsumables { get; set; } = false;
@@ -177,9 +179,14 @@ namespace FF1Lib
 		public bool? EnemyTrapTiles { get; set; } = false;
 		public bool? RemoveTrapTiles { get; set; } = false;
 		public bool? RandomTrapFormations { get; set; } = false;
-		public bool? TrappedChests { get; set; } = false;
+		public ChestsPool TCPoolSize { get; set; } = ChestsPool.None;
+		public FormationPool TCFormations { get; set; } = FormationPool.AltFormationDist;
+		public TCOptions TCBetterTreasure { get; set; } = TCOptions.None;
+		public TCOptions TCKeyItems { get; set; } = TCOptions.None;
+		public TCOptions TCShards { get; set; } = TCOptions.None;
+		public TCRngOptions TCRandom { get; set; } = TCRngOptions.None;
+		public bool TCProtectIncentives { get; set; } = false;
 		public bool? TCMasaGuardian { get; set; } = false;
-		public bool? TrappedShards { get; set; } = false;
 		public bool? TrappedChaos { get; set; } = false;
 		public bool? TCIndicator { get; set; } = false;
 		public bool? SwolePirates { get; set; } = false;
@@ -814,6 +821,8 @@ namespace FF1Lib
 		public bool? DeepTownsPossible => Towns & Entrances & Floors & EntrancesMixedWithTowns;
 		public bool EnemizerEnabled => (bool)RandomizeFormationEnemizer | (bool)RandomizeEnemizer;
 		public bool EnemizerDontMakeNewScripts => (bool)EnemySkillsSpells & !((bool)BossSkillsOnly | (bool)EnemySkillsSpellsTiered);
+
+		public bool? TrappedChestsEnabled => (bool)TrappedChaos | (bool)TCMasaGuardian | (TCBetterTreasure == TCOptions.All | TCKeyItems == TCOptions.All | TCShards == TCOptions.All) | ((TCBetterTreasure == TCOptions.Pooled | TCKeyItems == TCOptions.Pooled | TCShards == TCOptions.Pooled | TCRandom == TCRngOptions.Pooled) & TCPoolSize != ChestsPool.None);
 
 		public static string EncodeFlagsText(Flags flags)
 		{

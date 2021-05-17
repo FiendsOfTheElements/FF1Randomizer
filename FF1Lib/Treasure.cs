@@ -37,10 +37,6 @@ namespace FF1Lib
 			Dictionary<MapLocation, OverworldTeleportIndex> overridenOverworld = overworldMap.OverriddenOverworldLocations;
 
 			var vanillaNPCs = !(flags.NPCItems ?? false) && !(flags.NPCFetchItems ?? false);
-			if (!vanillaNPCs)
-			{
-				NPCShuffleDialogs();
-			}
 
 			var treasureBlob = Get(TreasureOffset, TreasureSize * TreasureCount);
 			var treasurePool = UsedTreasureIndices.Select(x => (Item)treasureBlob[x])
