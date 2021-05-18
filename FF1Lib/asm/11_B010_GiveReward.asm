@@ -10,15 +10,9 @@ LoadPrice = $ECB9
 lut_ConsStack = $B000
 lut_TreasureJingle = $B200
 
-DrawDialogueBox = $D4B1
-DialogueBox_Sfx = $D6C7
-DialogueBox_Frame = $D6A1
-UpdateJoy = $D7C2
-
-
-DLGID_TCGET_GOLD_OR_EXP = $FD
-DLGID_TCGET_EXP = $FE
-DLGID_TCGET_GOLD = $FF
+LvlUp_AwardAndUpdateExp = $87DA
+DivideRewardBySurvivors = $8B43
+SwapPRG = $FE03
 
 .org $B010
 
@@ -60,7 +54,12 @@ GiveReward:                    ; (8 bytes)
     BCC @OpenChest             ; 902B
   @NotItem:                    ; (6 + 9 + 4 + 9 + 7 + 5 = 40 bytes)
     LDA dlg_itemid             ; restore item id A561
-    CMP #$6C                   ; check if gold C96C
+    CMP #$B0                   ; check if exp
+    BCC :+                     ; Continue if gold 9009
+     JSR LoadPrice             ; get the price of the item (the amount of gold in the chest) 20B9EC
+     JSR AddExpToParty         ; add that exp to the party
+     JMP @ClearChest           ; then mark the chest as
+  : CMP #$6C                   ; check if gold C96C
     BCC :+                     ; Continue if gold 9009
      JSR LoadPrice             ; get the price of the item (the amount of gold in the chest) 20B9EC
      JSR AddGPToParty          ; add that price to the party's GP 20EADD
@@ -93,120 +92,101 @@ GiveReward:                    ; (8 bytes)
       INX                      ; E8
 :   TXA                        ; 8A
     RTS                        ; 60
-	
-	
-NOP
-BRK
-NOP
-BRK
-NOP
-	
-.org $B0A0
-
-	LDA #DLGID_TCGET_GOLD_OR_EXP
-	JSR DrawDialogueBox
-	JSR ShowDialogueBox_AB
-	BCS TakeGold
-TakeExp:	
-	JSR AddExpToParty
-	CLC
-	INC dlgsfx
-	INC dlgsfx
-	LDA #DLGID_TCGET_EXP
-	RTS
-TakeGold:
-    JSR AddGPToParty          ; add that price to the party's GP 20EADD	 
-	CLC
-	INC dlgsfx
-	INC dlgsfx
-	LDA #DLGID_TCGET_GOLD
-	RTS
 
 AddExpToParty:
+	LDA game_flags ; set bit 7 of gameflag 0 here
+	ORA #$80
+	STA game_flags
 
+	LDA tmp
+	STA battlereward
+	LDA tmp+1
+	STA battlereward+1
+	
+	LDA #$00				;Clear DrawFlags
+	STA btl_drawflagsA
+	STA btl_drawflagsB
+
+	LDX #$C0				;Set DrawFlags for char 3
+	JSR SetDrawFlags	
+	
+	LDX #$80				;Set DrawFlags for char 2
+	JSR SetDrawFlags	
+	
+	LDX #$40				;Set DrawFlags for char 1
+	JSR SetDrawFlags
+	
+	LDX #$00				;Set DrawFlags for char 0
+	JSR SetDrawFlags
+	
+	JSR DivideRewardBySurvivors_L
+
+	LDA battlereward
+    STA eob_exp_reward
+    LDA battlereward+1          ; store reward in eob_exp_reward
+    STA eob_exp_reward+1
+
+	LDA #$00                    ; award XP to all 4 party members
+    JSR LvlUp_AwardAndUpdateExp_L
+    LDA #$01
+    JSR LvlUp_AwardAndUpdateExp_L
+    LDA #$02
+    JSR LvlUp_AwardAndUpdateExp_L
+    LDA #$03
+    JSR LvlUp_AwardAndUpdateExp_L
+
+	LDA game_flags ; clear bit 7 of gameflag 0 here
+	AND #$7F
+	STA game_flags
 	RTS
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;;  Show Dialogue Box [$D602 :: 0x3D612]
-;;
-;;    This makes the dialogue box and contained text visible (but doesn't draw it to NT,
-;;  that must've already been done -- see DrawDialogueBox).  Once the box is fully visible,
-;;  it plays any special TC sound effect or fanfare music associated with the box and waits
-;;  for player input to close the box -- and returns once the box is no longer visible.
-;;
-;;  IN:  dlgsfx = 0 if no special sound effect needed.  1 if special fanfare, else do treasure chest ditty.
-;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+SetDrawFlags:
+	LDA ch_ailments, X
+	LSR A
+	ROL btl_drawflagsA
+	LSR A
+	ROL btl_drawflagsB
+	RTS
 
-ShowDialogueBox_AB:
-	LDA #0
-    STA joy_a              ; clear A button marker
-    STA joy_b              ; clear B button marker
-
-    LDA #3
-    STA tmp+2              ; reset the 3-step counter for WaitScanline
-
-	LDA #53
-    STA sq2_sfx            ; indicate sq2 is going to be playing a sound effect for the next 53 frames
-    LDA #$8E
-    JSR DialogueBox_Sfx    ; and play the "upward sweep" sound effect that plays when the dialogue box opened.
-
-    LDA soft2000           ; get the onscreen NT
-    EOR #$01               ; toggle the NT bit to make it the offscreen NT (where the dialogue box is drawn)
-    STA tmp+10             ; store "offscreen" NT in tmp+10
-
-    LDA #$08               ; start the visibility scanline at 8(+8).  This means the first scanline of the box
-    STA tmp+11             ;  that's visible will be on scanline 16 -- which is the start of where the box is drawn
-
-OpenLoop:
-    JSR DialogueBox_Frame; do a frame
-
-    LDA tmp+11
-    CLC
-    ADC #2
-    STA tmp+11           ; increment the visible scanlines by 2 (box grows 2 pixels/frame)
-
-    CMP #$60             ; see if visiblity lines >= $60 (bottom row of dialogue box)
-    BCC OpenLoop        ; keep looping until the entire box is visible
-
-WaitForButton:           	
-    JSR DialogueBox_Frame   ; Do a frame
-    JSR UpdateJoy           ; update joypad data
-    LDA joy_a               ; check A button
-	SEC
-    BNE ExitDialogue      	; and exit if A pressed
-    LDA joy_b               ; check B button
-	CLC						;
-    BEQ WaitForButton       ; and exit if A pressed
+DivideRewardBySurvivors_L:
+	LDA #>(ReturnToBank11-1)
+	PHA
+	LDA #<(ReturnToBank11-1)
+	PHA
+	LDA #>(DivideRewardBySurvivors-1)
+	PHA
+	LDA #<(DivideRewardBySurvivors-1)
+	PHA
+	LDA #$1B
+	JMP SwapPRG
 	
-ExitDialogue:
-	PHP
-
-    LDA #37
-    STA sq2_sfx            ; indicate that sq2 is to be playing a sfx for the next 37 frames
-    LDA #$95
-    JSR DialogueBox_Sfx    ; and start the downward sweep sound effect you hear when you close the dialogue box
+LvlUp_AwardAndUpdateExp_L:
+	TAX
+	LDA #>(ReturnToBank11-1)
+	PHA
+	LDA #<(ReturnToBank11-1)
+	PHA
+	LDA #>(LvlUp_AwardAndUpdateExp_L2-1)
+	PHA
+	LDA #<(LvlUp_AwardAndUpdateExp_L2-1)
+	PHA
+	LDA #$1B
+	JMP SwapPRG
 	
-CloseLoop:
-    JSR DialogueBox_Frame; do a frame
+NOP
+BRK
+NOP
+BRK
+NOP
 
-    LDA tmp+11        		; subtract 3 from the dialogue visibility scanline (move it 3 lines up
-    SEC               ;    retracting box visibility)
-    SBC #3
-    STA tmp+11        ; box closes 3 pixels/frame.
-
-    CMP #$12          ; and keep looping until line is below $12
-    BCS CloseLoop
+.org $DDD6
 	
-    LDA #0
-    STA joy_a              ; clear A button marker
-    STA joy_b              ; clear B button marker
+ReturnToBank11:
+	LDA #$11
+	JMP SwapPRG
+
+LvlUp_AwardAndUpdateExp_L2:
+	TXA
+	JSR LvlUp_AwardAndUpdateExp
+	RTS
 	
-	PLP
-    RTS          			; then the dialogue box is done!
-
-
-
-
-

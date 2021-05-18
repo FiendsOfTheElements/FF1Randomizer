@@ -3,7 +3,7 @@
 
 InTalkReenterMap = $9618
 SkipDialogueBox = $9643
-InTalkBattle = $B080
+InTalkBattle = $B120
 
 .org $9600
 

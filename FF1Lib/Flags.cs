@@ -50,6 +50,18 @@ namespace FF1Lib
 
 		#endregion
 
+		[IntegerFlag(0, 100, 10)]
+		public int ExpChestConversionMin { get; set; } = 0;
+
+		[IntegerFlag(0, 100, 10)]
+		public int ExpChestConversionMax { get; set; } = 0;
+
+		[IntegerFlag(0, 20000, 500)]
+		public int ExpChestMinReward { get; set; } = 2000;
+
+		[IntegerFlag(0, 20000, 500)]
+		public int ExpChestMaxReward { get; set; } = 8000;
+
 		public SpellNameMadness SpellNameMadness { get; set; } = SpellNameMadness.None;
 
 		public EnemyObfuscation EnemyObfuscation { get; set; } = EnemyObfuscation.None;
