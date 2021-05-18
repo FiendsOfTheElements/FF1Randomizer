@@ -611,7 +611,7 @@
 	},
 	{
 		"Id": "tcProtectIncentivesCheckBox",
-		"title": "Protect Incentivized Items",
+		"title": "Exclude Incentivized Items",
 		"screenshot": "tcProtectIncentive.png",
 		"description": "Chests containing Incentivized Items (including Incentivized Gear) will never be trapped."
 	},
