@@ -43,7 +43,9 @@ namespace FF1Lib
 
 			if (expChestCount == 0) return;
 
-			LoadData();			
+			LoadData();
+
+			var unusedGoldDic = new HashSet<int>(FF1Rom.UnusedGoldItems.Cast<int>());
 
 			// construct a dictionary and get a shuffled index into it.
 			var goldItems = ItemLists.AllGoldTreasure.Select(g => (item: g, price: itemPrices[g], name: itemNames[(int)g])).ToList();
@@ -51,17 +53,19 @@ namespace FF1Lib
 			var goldItemsDic = goldItems.Select((g, i) => (shuffleindex: i, item: g.item, price: g.price, name: g.name)).ToDictionary(g => g.item);
 
 			var expItems = new HashSet<Item>(treasureData.Data
-				.Where(g => goldItemsDic.ContainsKey(g))
+				.Where(g => goldItemsDic.ContainsKey(g) &&  !unusedGoldDic.Contains((int)g))
 				.Select(g => (item: g, shuffleindex: goldItemsDic[g].shuffleindex))
 				.OrderBy(g => g.shuffleindex)
 				.Take(expChestCount)
 				.Select(g => g.item)
 				.Distinct());
 
-			var firstExpItem = RepackGoldExpItems(goldItemsDic, expItems);
+			var firstExpItem = RepackGoldExpItems(goldItemsDic, expItems, unusedGoldDic);
 
 			for (int i = (int)firstExpItem; i < 176; i++)
 			{
+				if (unusedGoldDic.Contains(i)) continue;
+
 				var e = (Item)i;
 
 				var exp = (ushort)Math.Min(Math.Max(FF1Rom.RangeScale(BaseExp, lowScale, highScale, 1.0, rng), 0), 65535);
@@ -71,20 +75,44 @@ namespace FF1Lib
 
 			rom.PutInBank(0x11, 0xB047, new byte[] { (byte)firstExpItem });
 
-			var result = treasureData.Data.OrderBy(x => x).Select(x => itemNames[(int)x]).ToList();
+
+			var result = treasureData.Data.Where(x => x > Item.Gold10).OrderBy(x => x).Select(x => itemNames[(int)x]).ToList();
 
 			StoreData();
 		}
 
 
 		//For simplicity only chests are corrected. Npc rewards will be collateral damage.
-		private Item RepackGoldExpItems(Dictionary<Item, (int shuffleindex, Item item, ushort price, string name)> goldItemsDic, HashSet<Item> expItems)
+		private Item RepackGoldExpItems(Dictionary<Item, (int shuffleindex, Item item, ushort price, string name)> goldItemsDic, HashSet<Item> expItems, HashSet<int> unusedGoldDic)
 		{
+			var repackDic = new Dictionary<Item, Item>();
+
+			var goldItems = ItemLists.AllGoldTreasure.Where(g => !expItems.Contains(g) && !unusedGoldDic.Contains((int)g));
+
+			var goldItemsEnumerator = goldItems.GetEnumerator();
+			var expItemsEnumerator = expItems.GetEnumerator();
+			for (int i = (int)Item.Gold10; i < 176; i++)
+			{
+				if (!unusedGoldDic.Contains(i))
+				{
+					if (goldItemsEnumerator.MoveNext())
+					{
+						repackDic.Add(goldItemsEnumerator.Current, (Item)i);
+					}
+					else if (expItemsEnumerator.MoveNext())
+					{
+						repackDic.Add(expItemsEnumerator.Current, (Item)i);
+					}
+				}
+			}
+
+			/*
 			var repackDic = ItemLists.AllGoldTreasure
 							.Where(g => !expItems.Contains(g))
 							.Concat(expItems)
 							.Select((g, i) => (oldId: g, newId: (Item)((int)Item.Gold10 + i)))
 							.ToDictionary(x => x.oldId, x => x.newId);
+			*/
 
 			for (int i = 0; i < treasureData.Data.Length; i++)
 			{
@@ -114,7 +142,7 @@ namespace FF1Lib
 		{
 			itemPrices.StoreTable();
 			treasureData.StoreTable();
-			rom.WriteText(itemNames, FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextOffset);
+			rom.WriteText(itemNames, FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextOffset, FF1Rom.UnusedGoldItems);
 		}
 	}
 }
