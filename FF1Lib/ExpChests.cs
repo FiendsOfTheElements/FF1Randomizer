@@ -51,6 +51,9 @@ namespace FF1Lib
 
 		public void BuildExpChests()
 		{
+			rom.PutInBank(0x1F, 0xDDD0, Blob.FromHex("A9B248A9FF48A9114C03FE8A20DA8760"));
+
+
 			LoadData();
 
 			var result1 = treasureData.Data.Where(x => x >= Item.Gold10 && x <= Item.Gold65000).OrderBy(x => x).Select(x => itemNames[(int)x]).ToList();

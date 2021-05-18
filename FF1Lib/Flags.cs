@@ -50,6 +50,10 @@ namespace FF1Lib
 
 		#endregion
 
+		public SpellNameMadness SpellNameMadness { get; set; } = SpellNameMadness.None;
+
+		public EnemyObfuscation EnemyObfuscation { get; set; } = EnemyObfuscation.None;
+
 		public bool EnableExtConsumables { get; set; } = false;
 
 		public bool? NormalShopsHaveExtConsumables { get; set; } = false;
@@ -125,6 +129,11 @@ namespace FF1Lib
 
 		public StartingLevel StartingLevel { get; set; }
 
+		[IntegerFlag(1, 50)]
+		public int MaxLevelLow { get; set; } = 50;
+		[IntegerFlag(1, 50)]
+		public int MaxLevelHigh { get; set; } = 50;
+
 		public bool Spoilers { get; set; } = false;
 		public bool TournamentSafe { get; set; } = false;
 		public bool BlindSeed { get; set; } = false;
@@ -154,6 +163,9 @@ namespace FF1Lib
 		public bool? ItemMagic { get; set; } = false;
 		public bool? MagisizeWeapons { get; set; } = false;
 		public bool? MagisizeWeaponsBalanced { get; set; } = false;
+		public bool? Weaponizer { get; set; } = false;
+		public bool? WeaponizerNamesUseQualityOnly { get; set; } = false;
+		public bool? WeaponizerCommonWeaponsHavePowers { get; set; } = false;
 		public bool? MagicLevelsTiered { get; set; } = false;
 		public bool? MagicLevelsMixed { get; set; } = false;
 
@@ -167,9 +179,16 @@ namespace FF1Lib
 		public bool? EnemyTrapTiles { get; set; } = false;
 		public bool? RemoveTrapTiles { get; set; } = false;
 		public bool? RandomTrapFormations { get; set; } = false;
-		public bool? TrappedChests { get; set; } = false;
+		public ChestsPool TCPoolSize { get; set; } = ChestsPool.None;
+		public FormationPool TCFormations { get; set; } = FormationPool.AltFormationDist;
+		public TCOptions TCBetterTreasure { get; set; } = TCOptions.None;
+		public TCOptions TCKeyItems { get; set; } = TCOptions.None;
+		public TCOptions TCShards { get; set; } = TCOptions.None;
+		public TCRngOptions TCRandom { get; set; } = TCRngOptions.None;
+		public bool TCProtectIncentives { get; set; } = false;
 		public bool? TCMasaGuardian { get; set; } = false;
-		public bool? TrappedShards { get; set; } = false;
+		public bool? TrappedChaos { get; set; } = false;
+		public bool? TCIndicator { get; set; } = false;
 		public bool? SwolePirates { get; set; } = false;
 		public bool? ScaryImps { get; set; } = false;
 		public bool? EnemyScripts { get; set; } = false;
@@ -275,12 +294,12 @@ namespace FF1Lib
 		public bool OnlyRequireGameIsBeatable { get; set; } = true;
 		//public bool NoOverworld { get; set; } = false;
 		public bool? FreeBridge { get; set; } = false;
-		public bool? FreeShipFlag { get; set; } = false;
-		public bool? FreeAirshipFlag { get; set; } = false;
+		public bool? FreeShip { get; set; } = false;
+		public bool? FreeAirship { get; set; } = false;
 		public bool? FreeLute { get; set; } = false;
 		public bool FreeOrbs { get; set; } = false;
 		public bool EnableCritNumberDisplay { get; set; } = false;
-		public bool? FreeCanalFlag { get; set; } = false;
+		public bool? FreeCanal { get; set; } = false;
 		public bool? FreeCanoe { get; set; } = false;
 		public bool EasyMode { get; set; } = false;
 
@@ -293,6 +312,7 @@ namespace FF1Lib
 		public bool BuyTen { get; set; } = false;
 		public bool IdentifyTreasures { get; set; } = false;
 		public bool ShopInfo { get; set; } = false;
+		public bool IncentiveChestItemsFanfare { get; set; } = false;
 		public bool WaitWhenUnrunnable { get; set; } = false;
 		public bool Etherizer { get; set; } = false;
 		public bool HouseMPRestoration { get; set; } = false;
@@ -300,8 +320,7 @@ namespace FF1Lib
 		public bool BBCritRate { get; set; } = false;
 		public bool WeaponCritRate { get; set; } = false;
 		public bool WeaponBonuses { get; set; } = false;
-		public bool ThiefAgilityBuff { get; set; } = false;
-		public bool BugfixRender3DigitStats { get; set; } = false;
+		public ThiefAGI ThiefAgilityBuff { get; set; } = ThiefAGI.Vanilla;
 		public SpoilerBatHints SkyWarriorSpoilerBats { get; set; } = SpoilerBatHints.Vanilla;
 		public bool? SpoilerBatsDontCheckOrbs { get; set; } = false;
 
@@ -338,7 +357,7 @@ namespace FF1Lib
 		public ConsumableChestSet MoreConsumableChests { get; set; } = ConsumableChestSet.Vanilla;
 
 		public bool? NoMasamune { get; set; } = false;
-		public bool? NoXcalbur { get; set; } = false;
+		public bool? NoXcalber { get; set; } = false;
 		public bool? ClassAsNpcFiends { get; set; } = false;
 		public bool? ClassAsNpcKeyNPC { get; set; } = false;
 
@@ -583,33 +602,34 @@ namespace FF1Lib
 		// 4. The vehicles now have their own incentivization flags apart from other progression items.
 
 		// Ruby is required if Sarda is Required for the ROD
-		public bool? RequiredRuby => !EarlySage & !NPCItems & !FreeAirship;
-		public bool? UselessRuby => FreeAirship & !TitansTrove;
+		public bool? RequiredRuby => !EarlySage & !NPCItems & !IsAirshipFree;
+		public bool? UselessRuby => IsAirshipFree & !TitansTrove;
 		public bool? IncentivizeRuby => (RequiredRuby & IncentivizeMainItems) | (!RequiredRuby & IncentivizeFetchItems & !UselessRuby);
 
 		// If Canoe and Fetch Quests are unshuffled and there is no free canal or airship then TNT is required
-		public bool? RequiredTnt => !NPCFetchItems & !NPCItems & !(FreeCanal | FreeAirship);
+		public bool? RequiredTnt => !NPCFetchItems & !NPCItems & !(IsCanalFree | IsAirshipFree);
 		// If Fetch Items are vanilla and the player has a free Canal, do not incentivize TNT even if Other Quest Items are in the pool since there would be absolutely nothing to gain from TNT
-		public bool? UselessTnt => !NPCFetchItems & (FreeCanal | (FreeAirship & !MapOpenProgression));
+		public bool? UselessTnt => !NPCFetchItems & (IsCanalFree | (IsAirshipFree & !MapOpenProgression));
 		public bool? IncentivizeTnt => (RequiredTnt & IncentivizeMainItems) | (!RequiredTnt & IncentivizeFetchItems & !UselessTnt);
 
 		public bool? IncentivizeCrown => (!(NPCFetchItems ?? false) && (IncentivizeMainItems ?? false)) || ((NPCFetchItems ?? false) && (IncentivizeFetchItems ?? false));
 		public bool? IncentivizeSlab => (!(NPCFetchItems ?? false) && (IncentivizeMainItems ?? false)) || ((NPCFetchItems ?? false) && (IncentivizeFetchItems ?? false));
 		public bool? IncentivizeBottle => (!(NPCFetchItems ?? false) && (IncentivizeMainItems ?? false)) || ((NPCFetchItems ?? false) && (IncentivizeFetchItems ?? false));
 		public bool NoOverworld => (SanityCheckerV2 & OwMapExchange == OwMapExchanges.NoOverworld);
-		public bool? FreeShip => FreeShipFlag | NoOverworld;
-		public bool? FreeAirship => FreeAirshipFlag & !NoOverworld;
-		public bool? FreeCanal => FreeCanalFlag & !NoOverworld;
+		public bool? IsShipFree => FreeShip | NoOverworld;
+		public bool? IsAirshipFree => FreeAirship & !NoOverworld;
+		public bool? IsCanalFree => FreeCanal & !NoOverworld;
+		public bool? IsFloaterRemoved => NoFloater & !NoOverworld;
 		public bool IncentivizeBridge => false;
 		public bool? IncentivizeCanoe => NPCItems & IncentivizeCanoeItem & !FreeCanoe;
 		public bool? IncentivizeLute => NPCItems & !FreeLute & IncentivizeMainItems;
-		public bool? IncentivizeShip => NPCItems & IncentivizeShipAndCanal & !FreeShip & !NoOverworld;
+		public bool? IncentivizeShip => NPCItems & IncentivizeShipAndCanal & !IsShipFree & !NoOverworld;
 		public bool? IncentivizeRod => NPCItems & IncentivizeMainItems;
 		public bool? IncentivizeCube => NPCItems & IncentivizeMainItems;
-		public bool? IncentivizeFloater => ((!FreeAirship & !NoFloater) | NoOverworld) & IncentivizeAirship;
+		public bool? IncentivizeFloater => !IsAirshipFree & !IsFloaterRemoved & IncentivizeAirship;
 		public bool? IncentivizePromotion => !FreeTail & !NoTail & IncentivizeTail;
 
-		public bool? IncentivizeCanal => NPCFetchItems & IncentivizeShipAndCanal & !FreeCanal & !NoOverworld;
+		public bool? IncentivizeCanal => NPCFetchItems & IncentivizeShipAndCanal & !IsCanalFree & !NoOverworld;
 		public bool? IncentivizeCrystal => NPCFetchItems & IncentivizeFetchItems;
 		public bool? IncentivizeHerb => NPCFetchItems & IncentivizeFetchItems;
 		public bool? IncentivizeKey => NPCFetchItems & IncentivizeMainItems;
@@ -801,6 +821,8 @@ namespace FF1Lib
 		public bool? DeepTownsPossible => Towns & Entrances & Floors & EntrancesMixedWithTowns;
 		public bool EnemizerEnabled => (bool)RandomizeFormationEnemizer | (bool)RandomizeEnemizer;
 		public bool EnemizerDontMakeNewScripts => (bool)EnemySkillsSpells & !((bool)BossSkillsOnly | (bool)EnemySkillsSpellsTiered);
+
+		public bool? TrappedChestsEnabled => (bool)TrappedChaos | (bool)TCMasaGuardian | (TCBetterTreasure == TCOptions.All | TCKeyItems == TCOptions.All | TCShards == TCOptions.All) | ((TCBetterTreasure == TCOptions.Pooled | TCKeyItems == TCOptions.Pooled | TCShards == TCOptions.Pooled | TCRandom == TCRngOptions.Pooled) & TCPoolSize != ChestsPool.None);
 
 		public static string EncodeFlagsText(Flags flags)
 		{

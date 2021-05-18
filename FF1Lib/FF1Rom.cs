@@ -148,6 +148,11 @@ namespace FF1Lib
 			var shopItemLocation = ItemLocations.CaravanItemShop1;
 			var oldItemNames = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
 
+			if ((bool)flags.NPCItems || (bool)flags.NPCFetchItems)
+			{
+				NPCShuffleDialogs();
+			}
+
 			if (flags.EFGWaterfall || flags.EFGEarth1 || flags.EFGEarth2)
 			{
 				MapRequirements reqs;
@@ -294,6 +299,10 @@ namespace FF1Lib
 				CraftNewSpellbook(rng, (bool)flags.SpellcrafterMixSpells, flags.LockMode, (bool)flags.MagicLevels, (bool)flags.SpellcrafterRetainPermissions);
 			}
 
+			if ((bool)flags.Weaponizer) {
+			    Weaponizer(rng, (bool)flags.WeaponizerNamesUseQualityOnly, (bool)flags.WeaponizerCommonWeaponsHavePowers);
+			}
+
 			if ((bool)flags.MagisizeWeapons)
 			{
 				MagisizeWeapons(rng, (bool)flags.MagisizeWeaponsBalanced);
@@ -373,12 +382,12 @@ namespace FF1Lib
 				EnableFreeBridge();
 			}
 
-			if ((bool)flags.FreeAirship)
+			if ((bool)flags.IsAirshipFree)
 			{
 				EnableFreeAirship();
 			}
 
-			if ((bool)flags.FreeShip)
+			if ((bool)flags.IsShipFree)
 			{
 				EnableFreeShip();
 			}
@@ -388,7 +397,7 @@ namespace FF1Lib
 				EnableFreeOrbs();
 			}
 
-			if ((bool)flags.FreeCanal)
+			if ((bool)flags.IsCanalFree)
 			{
 				EnableFreeCanal((bool)flags.NPCItems, npcdata);
 			}
@@ -468,7 +477,7 @@ namespace FF1Lib
 							excludeItemsFromRandomShops.Add(Item.Masamune);
 						}
 
-						if ((bool)flags.NoXcalbur)
+						if ((bool)flags.NoXcalber)
 						{
 							excludeItemsFromRandomShops.Add(Item.Xcalber);
 						}
@@ -538,6 +547,11 @@ namespace FF1Lib
 			if (preferences.AccessibleSpellNames)
 			{
 				AccessibleSpellNames(flags);
+			}
+
+			if (flags.SpellNameMadness != SpellNameMadness.None)
+			{
+				MixUpSpellNames(flags.SpellNameMadness, rng);
 			}
 
 			/*
@@ -716,7 +730,12 @@ namespace FF1Lib
 			new TreasureStacks(this, flags).SetTreasureStacks();
 			new StartingLevels(this, flags).SetStartingLevels();
 
-			if ((bool)flags.TrappedChests || (bool)flags.TCMasaGuardian || (bool)flags.TrappedShards)
+			if (flags.MaxLevelLow < 50)
+			{
+				SetMaxLevel(flags, rng);
+			}
+
+			if ((bool)flags.TrappedChestsEnabled)
 			{
 				MonsterInABox(rng, flags);
 			}
@@ -779,9 +798,9 @@ namespace FF1Lib
 				ThiefHitRate();
 			}
 
-			if (flags.ThiefAgilityBuff)
+			if (flags.ThiefAgilityBuff != ThiefAGI.Vanilla)
 			{
-			        BuffThiefAGI();
+			        BuffThiefAGI(flags.ThiefAgilityBuff);
 			}
 
 			if (flags.ImproveTurnOrderRandomization)
@@ -916,9 +935,7 @@ namespace FF1Lib
 				ShopUpgrade();
 			}
 
-			if (flags.BugfixRender3DigitStats) {
-			    Fix3DigitStats();
-			}
+			Fix3DigitStats();
 
 			if ((bool)flags.FightBahamut && !flags.SpookyFlag && !(bool)flags.RandomizeFormationEnemizer)
 			{
@@ -939,6 +956,8 @@ namespace FF1Lib
 			    SkyWarriorSpoilerBats(rng, flags, npcdata);
 			}
 
+			ObfuscateEnemies(rng, flags);
+
 			// We have to do "fun" stuff last because it alters the RNG state.
 			// Back up Rng so that fun flags are uniform when different ones are selected
 			uint funRngSeed = rng.Next();
@@ -955,13 +974,13 @@ namespace FF1Lib
 				UseVariablePaletteForCursorAndStone();
 			}
 
-			if (preferences.PaletteSwap && !flags.EnemizerEnabled)
+			if (preferences.PaletteSwap && !flags.EnemizerEnabled && flags.EnemyObfuscation == EnemyObfuscation.None)
 			{
 				rng = new MT19337(funRngSeed);
 				PaletteSwap(rng);
 			}
 
-			if (preferences.TeamSteak && !(bool)flags.RandomizeEnemizer)
+			if (preferences.TeamSteak && !(bool)flags.RandomizeEnemizer && flags.EnemyObfuscation == EnemyObfuscation.None)
 			{
 				TeamSteak();
 			}
@@ -989,6 +1008,13 @@ namespace FF1Lib
 			if (preferences.DisableSpellCastFlash)
 			{
 				DisableSpellCastScreenFlash();
+			}
+
+			if (preferences.SpriteSheet != null) {
+			    using (var stream = new MemoryStream(Convert.FromBase64String(preferences.SpriteSheet)))
+			    {
+				SetCustomPlayerSprites(stream, preferences.ThirdBattlePalette);
+			    }
 			}
 
 			owMapExchange?.ExecuteStep2();

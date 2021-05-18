@@ -348,9 +348,9 @@ namespace FF1Lib
 			//  new chars must be added to the BytesByText list in FF1Text.cs
 			var newChars = new List<(byte, string)>
 			{
-				(0x7B, "000008083E080800") // + sign
+				(0x7B, "000008083E080800FFFFFFFFFFFFFFFF"), // + sign
+				(0x7C, "FFFFFF7F3DFFFFFFFFFF99C2E6C299FE")  // Trapped chest (standard)
 			};
-
 
 			foreach (var newchar in newChars)
 			{
@@ -371,6 +371,10 @@ namespace FF1Lib
 					Put(battleTilesetOffset + battleTilesetSize * i + newchar.Item1 * 0x10, Blob.FromHex(newchar.Item2));
 				}
 			}
+
+			// Hack this one in, because chests in sky have different graphics from other chests
+			var trappedChestSky = "FFFFFF7F3DFFFF7FFF6699C2E64299EE";
+			Put(tilesetOffset + tilesetSize * (int)TileSets.SkyCastle + 0x7C * 0x10, Blob.FromHex(trappedChestSky));
 		}
 
 		public void TransferDialogs()
@@ -1282,18 +1286,18 @@ namespace FF1Lib
 				incentivePool.Add(Item.Canal);
 				incentivePool.Add(Item.Herb);
 				incentivePool.Add(Item.Chime);
-				if(flags.NoXcalbur ?? false)
+				if(flags.NoXcalber ?? false)
 				{
 					incentivePool.Add(Item.Xcalber);
 				}
 			}
 
-			if ((flags.FreeAirship ?? false) || (flags.NoFloater ?? false)) incentivePool.Remove(Item.Floater);
+			if ((flags.IsAirshipFree ?? false) || (flags.IsFloaterRemoved ?? false)) incentivePool.Remove(Item.Floater);
 			if (flags.FreeCanoe ?? false) incentivePool.Remove(Item.Canoe);
 			if (flags.FreeBridge ?? false) incentivePool.Remove(Item.Bridge);
-			if (flags.FreeCanal ?? false) incentivePool.Remove(Item.Canal);
+			if (flags.IsCanalFree ?? false) incentivePool.Remove(Item.Canal);
 			if (flags.FreeLute ?? false) incentivePool.Remove(Item.Lute);
-			if (flags.FreeShip ?? false) incentivePool.Remove(Item.Ship);
+			if (flags.IsShipFree ?? false) incentivePool.Remove(Item.Ship);
 			if ((flags.FreeTail ?? false) || (flags.NoTail ?? false)) incentivePool.Remove(Item.Tail);
 
 			if (incentivePool.Count == 0)
@@ -1568,7 +1572,7 @@ namespace FF1Lib
 		    bool hasCRACK = false;
 		    for (int i = 0; i < spells.Count; i++) {
 			var s = spells[i];
-			var spellname = FF1Text.BytesToText(spellList[s].Name);
+			var spellname = spellList[s].Name;
 			if (spellname == "NUKE" && i<4) {
 			    hasEarlyNukeOrNuclear = true;
 			}
@@ -1590,7 +1594,7 @@ namespace FF1Lib
 		    if (flags.SkyWarriorSpoilerBats == SpoilerBatHints.FullStats) {
 			string spellscript = "";
 			foreach (var s in spells) {
-			    var spellname = FF1Text.BytesToText(spellList[s].Name);
+			    var spellname = spellList[s].Name;
 			    if (spellscript != "") {
 				if (spellscript.Length+spellname.Length > 23 && spellscript.IndexOf("\n") == -1) {
 				    spellscript += "\n";

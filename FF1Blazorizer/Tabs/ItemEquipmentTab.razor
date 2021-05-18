@@ -38,8 +38,8 @@
 			<TriStateCheckBox DisableTooltip="true" @bind-Value="Flags.StartingEquipmentRandomAoe">Random Aoe Caster Item</TriStateCheckBox>
 			<TriStateCheckBox DisableTooltip="true" @bind-Value="Flags.StartingEquipmentRandomCasterItem">Random Caster Item</TriStateCheckBox>
 			<TriStateCheckBox DisableTooltip="true" @bind-Value="Flags.StartingEquipmentOneItem">One Helpful Item</TriStateCheckBox>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="startingEquipmentGrandpasSecretStash" @bind-Value="Flags.StartingEquipmentGrandpasSecretStash">Grandpas Secret Stash</TriStateCheckBox>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="startingEquipmentRandomCrap" @bind-Value="Flags.StartingEquipmentRandomCrap">Random Crap</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="startingEquipmentGrandpasSecretStash" @bind-Value="Flags.StartingEquipmentGrandpasSecretStash">Grandpa's Secret Stash</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="startingEquipmentRandomCommons" @bind-Value="Flags.StartingEquipmentRandomCrap">Random Commons</TriStateCheckBox>
 			<div class="checkbox-cell"></div>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="startingEquipmentNoDuplicates" @bind-Value="Flags.StartingEquipmentNoDuplicates">No Legendary Duplicates</CheckBox>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="startingEquipmentRemoveFromPool" @bind-Value="Flags.StartingEquipmentRemoveFromPool">Remove Items from Treasure Chests</CheckBox>
@@ -47,12 +47,12 @@
 		</div>
 		<div class="col1 full">
 			<h4>Equipment Blursing</h4>
-			<DoubleSlider DisableTooltip DoubleCol Id="RandomWeaponBonusSlider" IsEnabled="Flags.RandomWeaponBonus" MinValue="-9" MaxValue="9" Step="1" @bind-ValueHigh="Flags.RandomWeaponBonusHigh" @bind-ValueLow="Flags.RandomWeaponBonusLow">
+			<DoubleSlider ShowPositiveSign DisableTooltip DoubleCol Id="RandomWeaponBonusSlider" IsEnabled="Flags.RandomWeaponBonus" MinValue="-9" MaxValue="9" Step="1" @bind-ValueHigh="Flags.RandomWeaponBonusHigh" @bind-ValueLow="Flags.RandomWeaponBonusLow">
 				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="RandomWeaponBonus" @bind-Value="Flags.RandomWeaponBonus">Blursed Weapons:</TriStateCheckBox>
 			</DoubleSlider>
 			<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" IsEnabled="Flags.RandomWeaponBonus" Id="RandomWeaponBonusExcludeMasa" @bind-Value="Flags.RandomWeaponBonusExcludeMasa">Exclude Masmune</TriStateCheckBox>
 			<div class="row-seperator"></div>
-			<DoubleSlider DisableTooltip DoubleCol Id="RandomArmorBonusSlider" IsEnabled="Flags.RandomArmorBonus" MinValue="-9" MaxValue="9" Step="1" @bind-ValueHigh="Flags.RandomArmorBonusHigh" @bind-ValueLow="Flags.RandomArmorBonusLow">
+			<DoubleSlider ShowPositiveSign DisableTooltip DoubleCol Id="RandomArmorBonusSlider" IsEnabled="Flags.RandomArmorBonus" MinValue="-9" MaxValue="9" Step="1" @bind-ValueHigh="Flags.RandomArmorBonusHigh" @bind-ValueLow="Flags.RandomArmorBonusLow">
 				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="RandomArmorBonus" @bind-Value="Flags.RandomArmorBonus">Blursed Armor:</TriStateCheckBox>
 			</DoubleSlider>
 		</div>

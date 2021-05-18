@@ -1061,64 +1061,6 @@ namespace FF1Lib
 			PutInBank(0x1E, 0x84CA, Blob.FromHex("FF"));
 			PutInBank(0x1E, 0x84DA, Blob.FromHex("FF"));
 		}
-		public void MonsterInABox(MT19337 rng, Flags flags)
-		{
-			const int lut_TreasureOffset = 0x3100;
-
-			// Replace OpenTreasureChest routine, see 11_8EC0_CheckTrap.asm
-			PutInBank(0x1F, 0xDD78, Blob.FromHex("A9002003FEA645BD00B18561A9112003FE20B08E8A60"));
-
-			// Check for trapped monster routine, see 11_8EC0_CheckTrap.asm
-			PutInBank(0x11, 0x8EB0, Blob.FromHex("A561202096B030A645BD008FF025856AA9C0203D96A56A200096A903CD866BD00820189668684C43961820E98E201896A2F06020E98E60AA60A911855818A5612010B0A445B90062090499006260"));
-
-			InsertDialogs(0x110, "Monster-in-a-box!"); // 0xC0
-
-			// Select treasure
-			var chestList = ItemLocations.AllTreasures.ToList();
-			var chestMonsterList = new byte[0x100];
-			var treasureList = Get(lut_TreasureOffset, 0x100);
-
-			// Get encounters
-			List<byte> encounters;
-			encounters = Enumerable.Range(128, FirstBossEncounterIndex).Select(value => (byte)value).ToList();
-			encounters.Add(0xFF); // IronGOL
-
-			if ((bool)flags.TrappedChests)
-			{
-				for (int i = 1; i < 0x100; i++)
-				{
-					if (treasureList[i] < (int)Item.Tent || treasureList[i] > (int)Item.Gold65000)
-						chestList.Remove(chestList.Where(x => x.Address == lut_TreasureOffset + i).First());
-				}
-
-				chestList.Shuffle(rng);
-				chestList.RemoveRange(0, chestList.Count() - 40);
-
-				foreach (var chest in chestList)
-					chestMonsterList[(chest.Address - lut_TreasureOffset)] = encounters.SpliceRandom(rng);
-			}
-
-			if ((bool)flags.TCMasaGuardian)
-			{
-				for (int i = 0; i < 0x100; i++)
-				{
-					if (treasureList[i] == (byte)Item.Masamune)
-						chestMonsterList[i] = (byte)WarMECHFormationIndex;
-				}
-			}
-
-			if ((bool)flags.TrappedShards)
-			{
-				for (int i = 0; i < 0x100; i++)
-				{
-					if (treasureList[i] == (byte)Item.Shard)
-						chestMonsterList[i] = encounters.SpliceRandom(rng);
-				}
-			}
-
-			// Insert trapped chest list
-			PutInBank(0x11, 0x8F00, chestMonsterList);
-		}
 		public class TargetNpc
 		{
 			public ObjectId linkedNPC { get; set; }
@@ -1138,6 +1080,8 @@ namespace FF1Lib
 				newDialogue = dialog;
 			}
 		}
+
+		public readonly List<string> ClassNames = new List<string> { "Fighter", "Thief", "Black Belt", "Red Mage", "White Mage", "Black Mage", "Knight", "Ninja", "Master", "Red Wizard", "White Wizard", "Black Wizard" };
 
 		public void ClassAsNPC(Flags flags, TalkRoutines talkroutines, NPCdata npcdata, List<MapId> flippedmaps, MT19337 rng)
 		{
@@ -1159,7 +1103,7 @@ namespace FF1Lib
 
 			var eventNpc = new List<(ObjectId, MapId)> { (ObjectId.ElflandCastleElf3, MapId.ElflandCastle), (ObjectId.MelmondMan1, MapId.Melmond), (ObjectId.MelmondMan3, MapId.Melmond), (ObjectId.MelmondMan4, MapId.Melmond), (ObjectId.MelmondMan8, MapId.Melmond), (ObjectId.DwarfcaveDwarf6, MapId.DwarfCave), (ObjectId.ConeriaCastle1FWoman2, MapId.ConeriaCastle1F), (ObjectId.ElflandElf2, MapId.Elfland), (ObjectId.ElflandElf5, MapId.Elfland) };
 			var classSprite = new List<byte> { 0xEE, 0xEF, 0xF0, 0xF1, 0xF2, 0xF3, 0xF4, 0xF5, 0xF6, 0xF7, 0xF8, 0xF9 };
-			var classNames = new List<string> { "Fighter", "Thief", "Black Belt", "Red Mage", "White Mage", "Black Mage", "Knight", "Ninja", "Master", "Red Wizard", "White Wizard", "Black Wizard" };
+
 			var readyString = new List<string> { "Well, that's that.\nLet's go.", "Onward to new\nadventures!", "I knew you'd come back\nfor me!", "......", "I'm the leader now,\nright?", "The Reaper is always\njust a step behind me..", "O.. Okay.. I hope it's\nnot too scary out there.", "Yes!\nI made it on the team!", "A bold choice, let's\nsee if it pays off.", "Alright, let's do this!", "I obey, master.", "They say I'm the best.", "I see, we have the same\ngoal. Let's join forces.", "My.. name? Huh..", "Just don't put me first\nagainst Kraken.", "I'm taking care of the\nGPs from now on!", "It's Saturday night.\nI've got no date, a\nbottle of Shasta, and\nmy all Rush mixtape.\nLet's rock.", "Life insurance?\nNo, I don't have any.\nWhy?", "Let's put an end to\nthis madness.", "Finally, some action!", "You convinced me. I will\njoin your noble cause.", "Evil never rests. I will\nfight by your side.", "Edward wants to join\nthe party." };
 
 			var classSelection = new List<(bool, FF1Class, FF1Class)> {
@@ -1291,7 +1235,7 @@ namespace FF1Lib
 					npcdata.SetRoutine(targetNpc, (newTalkRoutines)talk_class);
 					Data[MapObjGfxOffset + (byte)targetNpc] = classSprite[(int)classList.First()];
 
-					newDialogs.Add(npcdata.GetTalkArray(targetNpc)[1], readyString.SpliceRandom(rng) + "\n\n" + classNames[(int)classList.First()] + " joined.");
+					newDialogs.Add(npcdata.GetTalkArray(targetNpc)[1], readyString.SpliceRandom(rng) + "\n\n" + ClassNames[(int)classList.First()] + " joined.");
 					newDialogs.Add(npcdata.GetTalkArray(targetNpc)[2], npc.newDialogue);
 
 					classList.RemoveRange(0, 1);
@@ -1326,7 +1270,7 @@ namespace FF1Lib
 
 				for (int i = 0; i < 4; i++)
 				{
-					newDialogs.Add(npcdata.GetTalkArray(dungeonNpc[i])[1], readyString.SpliceRandom(rng) + "\n\n" + classNames[(int)classList[i]] + " joined.");
+					newDialogs.Add(npcdata.GetTalkArray(dungeonNpc[i])[1], readyString.SpliceRandom(rng) + "\n\n" + ClassNames[(int)classList[i]] + " joined.");
 					npcdata.GetTalkArray(dungeonNpc[i])[0] = 0x00;
 					npcdata.GetTalkArray(dungeonNpc[i])[3] = (byte)(classList[i]);
 					npcdata.SetRoutine(dungeonNpc[i], (newTalkRoutines)talk_class);
@@ -1420,7 +1364,7 @@ namespace FF1Lib
 			"All Allies", "One Ally", "None", "None", "Status", "Stat", "Poison", "Pois", "Time", "Time", "Death", "Deat", "Fire", "Fire",
 			"Ice", "Ice", "Lightng", "Lit.", "Earth", "Eart", "Dead", "Dead", "Petrified", "Ptr.", "Poisoned", "Pois", "Blind", "Blnd",
 			"Paralyzed", "Para", "Asleep", "Slep", "Silenced", "Mute", "Confused", "Conf", "Null", "Damage", "Dmg Undead", "Inflict Stat",
-			"Halve Hits", "Reduce Moral", "Recover HP", "Reduce Stat", "Raise Def.", "Resist Elem.", "Double Hits", "Raise Attack", "Reduce Evade",
+			"Halve Hits", "Reduce Moral", "Recover HP", "Heal Stat", "Raise Def.", "Resist Elem.", "Double Hits", "Raise Attack", "Reduce Evade",
 			"Full Recover", "Raise Evade", "Void Resist.", "PW Status", "Heal Poison", "Revive", "Full Revive", "Go one floor\n back",
 			"Heal Stoned", "Teleport out\n of dungeons", "Magical", "Dragon", "Giant", "Undead", "Were", "Water", "Mage", "Regen"
 		};
@@ -1740,7 +1684,7 @@ namespace FF1Lib
 			const byte bossZombieD = 0xCB;
 			const byte bossDracolich = 0x58;
 			const byte bossSentinel = 0xFD;
-			const byte bossLichMech = 0x7A;
+			byte bossLichMech = 0x7A;
 
 			const byte encVampire = 0x7C;
 			const byte encChaos = 0x7B;
@@ -1765,6 +1709,8 @@ namespace FF1Lib
 				if (encountersData.formations[FiendsEncounter + i].enemy1 == 0x77)
 					encLich1 = (byte)(FiendsEncounter + i);
 			}
+
+			bossLichMech = encLich1;
 
 			// Phantom is Lich, and put Lich1 as Lich2 b-side
 			encountersData.formations[encLich2].pattern = FormationPattern.Mixed;
@@ -2343,6 +2289,20 @@ namespace FF1Lib
 				}
 			}
 			return firstResult;
+		}
+
+		public void SetMaxLevel(Flags flags, MT19337 rng)
+		{
+			int maxLevel = flags.MaxLevelLow;
+			if (flags.MaxLevelLow < flags.MaxLevelHigh) maxLevel = rng.Between(flags.MaxLevelLow, flags.MaxLevelHigh);
+			//This seems to be needed because if you're above the level cap it seems to continue giving xp.
+			//Thus  the fix for starter levels > max levels is to just set max levels = starter levels so it doesnt increase xp further after those levels.
+			if (maxLevel < StartingLevels.GetLevelNumber(flags.StartingLevel)) maxLevel = StartingLevels.GetLevelNumber(flags.StartingLevel);
+			maxLevel = Math.Min(maxLevel, 50);
+			maxLevel = Math.Max(maxLevel, 1);
+			maxLevel = maxLevel - 1;
+			//new level up check is at 0x6C46F
+			Put(0x6C46F, new byte[] { (byte)maxLevel });
 		}
 	}
 }

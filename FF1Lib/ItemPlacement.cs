@@ -77,7 +77,7 @@ namespace FF1Lib
 
 		protected abstract ItemPlacementResult DoSanePlacement(MT19337 rng, ItemPlacementContext ctx);
 
-		public List<IRewardSource> PlaceSaneItems(MT19337 rng)
+		public List<IRewardSource> PlaceSaneItems(MT19337 rng, FF1Rom rom)
 		{
 			var incentivePool = _incentivesData.IncentiveItems.Where(x => _allTreasures.Contains(x)).ToList();
 			var forcedItems = _incentivesData.ForcedItemPlacements.ToList();
@@ -123,22 +123,22 @@ namespace FF1Lib
 			};
 
 			ItemPlacementResult result = DoSanePlacement(rng, ctx);
-			var placedItems = result.PlacedItems;
+			List<IRewardSource> placedItems = result.PlacedItems;			
 			treasurePool = result.RemainingTreasures;
 
 			if ((bool)_flags.FreeBridge)
 			{
 				placedItems = placedItems.Select(x => x.Item != Item.Bridge ? x : NewItemPlacement(x, ReplacementItem)).ToList();
 			}
-			if (((bool)_flags.FreeAirship || (bool)_flags.NoFloater) && !((IItemShuffleFlags)_flags).NoOverworld)
+			if (((bool)_flags.IsAirshipFree || (bool)_flags.IsFloaterRemoved))
 			{
 				placedItems = placedItems.Select(x => x.Item != Item.Floater ? x : NewItemPlacement(x, ReplacementItem)).ToList();
 			}
-			if ((bool)_flags.FreeShip)
+			if ((bool)_flags.IsShipFree)
 			{
 				placedItems = placedItems.Select(x => x.Item != Item.Ship ? x : NewItemPlacement(x, ReplacementItem)).ToList();
 			}
-			if ((bool)_flags.FreeCanal)
+			if ((bool)_flags.IsCanalFree)
 			{
 				placedItems = placedItems.Select(x => x.Item != Item.Canal ? x : NewItemPlacement(x, ReplacementItem)).ToList();
 			}
@@ -153,6 +153,20 @@ namespace FF1Lib
 			if ((bool)_flags.FreeTail || (bool)_flags.NoTail)
 			{
 				placedItems = placedItems.Select(x => x.Item != Item.Tail ? x : NewItemPlacement(x, ReplacementItem)).ToList();
+			}
+
+			//setup jingle for "incentive treasures", the placed items should just be key items, loose incentive items
+			if (_flags.IncentiveChestItemsFanfare)
+			{
+				foreach (var placedItem in placedItems)
+				{
+					//dont make shards jingle that'd be annoying
+					//dont make free items that get replaced, aka cabins, jingle
+					if (placedItem is TreasureChest && placedItem.Item != Item.Shard && placedItem.Item != ReplacementItem)
+					{
+						rom.Put(placedItem.Address - FF1Rom.TreasureOffset + FF1Rom.TreasureJingleOffset, new byte[] { 0x01 });
+					}
+				}
 			}
 
 			if (_flags.Spoilers || Debugger.IsAttached)
@@ -191,7 +205,7 @@ namespace FF1Lib
 
 			MoreConsumableChests.Work(_flags, treasurePool, rng);
 
-			if((bool)_flags.NoXcalbur)
+			if((bool)_flags.NoXcalber)
 			{
 				//xcal can not be in the treasure pool due to forced item placements of fetch quest npc
 				if(treasurePool.Contains(Item.Xcalber))
@@ -528,7 +542,7 @@ namespace FF1Lib
 						nextPlacements.Add(Item.Ruby);
 						lastPlacements.Remove(Item.Ruby);
 					}
-					if ((bool)_flags.NoFloater && !((IItemShuffleFlags)_flags).NoOverworld) {
+					if ((bool)_flags.IsFloaterRemoved) {
 					    lastPlacements.Remove(Item.Floater);
 					}
 

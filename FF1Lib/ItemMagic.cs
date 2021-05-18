@@ -85,7 +85,7 @@ namespace FF1Lib
 			}
 
 			// Fix up the name of the spell so it works as part of an item name.
-			var fixedSpellName = FF1Text.TextToBytes(FF1Text.BytesToText(Spell.Name).PadRight(6), false, FF1Text.Delimiter.Empty);
+			var fixedSpellName = FF1Text.TextToBytes(Spell.Name.PadRight(6), false, FF1Text.Delimiter.Empty);
 			Debug.Assert(fixedSpellName.Length == 6);
 			Put(offset, fixedSpellName);
 		}

@@ -668,6 +668,33 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MagisizeWeaponsBalanced"));
 			}
 		}
+		public bool? Weaponizer
+		{
+			get => Flags.Weaponizer;
+			set
+			{
+				Flags.Weaponizer = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Weaponizer"));
+			}
+		}
+		public bool? WeaponizerNamesUseQualityOnly
+		{
+			get => Flags.WeaponizerNamesUseQualityOnly;
+			set
+			{
+				Flags.WeaponizerNamesUseQualityOnly = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("WeaponizerNamesUseQualityOnly"));
+			}
+		}
+		public bool? WeaponizerCommonWeaponsHavePowers
+		{
+			get => Flags.WeaponizerCommonWeaponsHavePowers;
+			set
+			{
+				Flags.WeaponizerCommonWeaponsHavePowers = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("WeaponizerCommonWeaponsHavePowers"));
+			}
+		}
 		public bool? MagicLevelsTiered
 		{
 			get => Flags.MagicLevelsTiered;
@@ -891,13 +918,67 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomTrapFormations"));
 			}
 		}
-		public bool? TrappedChests
+		public ChestsPool TCPoolSize
 		{
-			get => Flags.TrappedChests;
+			get => Flags.TCPoolSize;
 			set
 			{
-				Flags.TrappedChests = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TrappedChests"));
+				Flags.TCPoolSize = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TCPoolSize"));
+			}
+		}
+		public FormationPool TCFormations
+		{
+			get => Flags.TCFormations;
+			set
+			{
+				Flags.TCFormations = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TCFormations"));
+			}
+		}
+		public TCOptions TCBetterTreasure
+		{
+			get => Flags.TCBetterTreasure;
+			set
+			{
+				Flags.TCBetterTreasure = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TCBetterTreasure"));
+			}
+		}
+		public TCOptions TCKeyItems
+		{
+			get => Flags.TCKeyItems;
+			set
+			{
+				Flags.TCKeyItems = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TCKeyItems"));
+			}
+		}
+		public TCOptions TCShards
+		{
+			get => Flags.TCShards;
+			set
+			{
+				Flags.TCShards = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TCShards"));
+			}
+		}
+		public TCRngOptions TCRandom
+		{
+			get => Flags.TCRandom;
+			set
+			{
+				Flags.TCRandom = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TCRandom"));
+			}
+		}
+		public bool TCProtectIncentives
+		{
+			get => Flags.TCProtectIncentives;
+			set
+			{
+				Flags.TCProtectIncentives = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TCProtectIncentives"));
 			}
 		}
 		public bool? TCMasaGuardian
@@ -909,13 +990,22 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TCMasaGuardian"));
 			}
 		}
-		public bool? TrappedShards
+		public bool? TrappedChaos
 		{
-			get => Flags.TrappedShards;
+			get => Flags.TrappedChaos;
 			set
 			{
-				Flags.TrappedShards = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TrappedShards"));
+				Flags.TrappedChaos = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TrappedChaos"));
+			}
+		}
+		public bool? TCIndicator
+		{
+			get => Flags.TCIndicator;
+			set
+			{
+				Flags.TCIndicator = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TCIndicator"));
 			}
 		}
 		public bool? RemoveTrapTiles
@@ -1719,7 +1809,7 @@ namespace FF1Lib
 				Flags.FreeBridge = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeBridge"));
 			}
-		}/*
+		}
 		public bool? FreeShip
 		{
 			get => Flags.FreeShip;
@@ -1728,32 +1818,24 @@ namespace FF1Lib
 				Flags.FreeShip = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeShip"));
 			}
-		}*/
-		public bool? FreeShipFlag
+		}
+
+		public bool? FreeAirship
 		{
-			get => Flags.FreeShipFlag;
+			get => Flags.FreeAirship;
 			set
 			{
-				Flags.FreeShipFlag = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeShipFlag"));
+				Flags.FreeAirship = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeAirship"));
 			}
 		}
-		public bool? FreeAirshipFlag
+		public bool? FreeCanal
 		{
-			get => Flags.FreeAirshipFlag;
+			get => Flags.FreeCanal;
 			set
 			{
-				Flags.FreeAirshipFlag = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeAirshipFlag"));
-			}
-		}
-		public bool? FreeCanalFlag
-		{
-			get => Flags.FreeCanalFlag;
-			set
-			{
-				Flags.FreeCanalFlag = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeCanalFlag"));
+				Flags.FreeCanal = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeCanal"));
 			}
 		}
 		public bool? FreeCanoe
@@ -1914,6 +1996,15 @@ namespace FF1Lib
 			{
 				Flags.ShopInfo = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ShopInfo"));
+			}
+		}
+		public bool IncentiveChestItemsFanfare
+		{
+			get => Flags.IncentiveChestItemsFanfare;
+			set
+			{
+				Flags.IncentiveChestItemsFanfare = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentiveChestItemsFanfare"));
 			}
 		}
 		public bool WaitWhenUnrunnable
@@ -2268,13 +2359,13 @@ namespace FF1Lib
 			}
 		}
 
-		public bool? NoXcalbur
+		public bool? NoXcalber
 		{
-			get => Flags.NoXcalbur;
+			get => Flags.NoXcalber;
 			set
 			{
-				Flags.NoXcalbur = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NoXcalbur"));
+				Flags.NoXcalber = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NoXcalber"));
 			}
 		}
 
@@ -2551,6 +2642,15 @@ namespace FF1Lib
 			{
 				Preferences.DisableSpellCastFlash = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DisableSpellCastFlash"));
+			}
+		}
+		public string SpriteSheet
+		{
+			get => Preferences.SpriteSheet;
+			set
+			{
+				Preferences.SpriteSheet = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SpriteSheet"));
 			}
 		}
 
@@ -4119,6 +4219,24 @@ namespace FF1Lib
 				RaisePropertyChanged();
 			}
 		}
+		public int MaxLevelLow
+		{
+			get => Flags.MaxLevelLow;
+			set
+			{
+				Flags.MaxLevelLow = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MaxLevelLow"));
+			}
+		}
+		public int MaxLevelHigh
+		{
+			get => Flags.MaxLevelHigh;
+			set
+			{
+				Flags.MaxLevelHigh = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MaxLevelHigh"));
+			}
+		}
 		public ConsumableChestSet MoreConsumableChests
 		{
 			get => Flags.MoreConsumableChests;
@@ -4128,7 +4246,7 @@ namespace FF1Lib
 				RaisePropertyChanged();
 			}
 		}
-		public bool ThiefAgilityBuff
+		public ThiefAGI ThiefAgilityBuff
 		{
 			get => Flags.ThiefAgilityBuff;
 			set
@@ -4136,14 +4254,6 @@ namespace FF1Lib
 				Flags.ThiefAgilityBuff = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ThiefAgilityBuff"));
 			}
-		}
-		public bool BugfixRender3DigitStats {
-		    get => Flags.BugfixRender3DigitStats;
-		    set
-		    {
-			Flags.BugfixRender3DigitStats = value;
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BugfixRender3DigitStats"));
-		    }
 		}
 
 		public bool? ExcludeGoldFromScaling
@@ -4273,6 +4383,27 @@ namespace FF1Lib
 			set
 			{
 				Flags.ExtConsumableChests = value;
+				RaisePropertyChanged();
+			}
+		}
+
+
+		public SpellNameMadness SpellNameMadness
+		{
+			get => Flags.SpellNameMadness;
+			set
+			{
+				Flags.SpellNameMadness = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public EnemyObfuscation EnemyObfuscation
+		{
+			get => Flags.EnemyObfuscation;
+			set
+			{
+				Flags.EnemyObfuscation = value;
 				RaisePropertyChanged();
 			}
 		}

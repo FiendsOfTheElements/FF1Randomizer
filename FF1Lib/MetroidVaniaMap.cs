@@ -837,11 +837,15 @@ namespace FF1Lib
 				{ 0x13,	"A rock blocks\nconstruction of my\ntunnel.\nIf I only had TNT." }, // Nerrick
 				{ 0x14,	"Oh, wonderful!\nNice work! Yes, yes\nindeed, this TNT is just\nwhat I need to finish my\ntunnel. Now excuse me\nwhile I get to work!" }, // Nerrick
 
-				{ 0x2B,	"Great job vanquishing\nthe Earth FIEND. Now,\nthe Fire FIEND wakes.\nWith my blessing; go to\nthe VOLCANO, and defeat\nthat FIEND also!" }, // Lukkanh
 				{ 0x2C,	"I am Lukahn.\nNow all legends and\nprophecy will be\nfulfilled. Our path has\nbeen decided.\nCome back to me once the\nEarth FIEND is vanquised." }, // Lukkanh
 				{ 0x8C,	"400 years ago, we lost\ncontrol of the Wind.\n200 years later we lost\nthe Water,\nthen Earth,\nand Fire followed. The\nPowers that bind this\nworld are gone." }, // Lukkanh
 
 			};
+
+			if ((bool)!flags.NPCItems)
+			{
+				newDialogues.Add(0x2B, "Great job vanquishing\nthe Earth FIEND. Now,\nthe Fire FIEND wakes.\nWith my blessing; go to\nthe VOLCANO, and defeat\nthat FIEND also!");
+			}
 
 			InsertDialogs(newDialogues);
 
@@ -1002,6 +1006,10 @@ namespace FF1Lib
 				_TSAdl = tilegraphics[2];
 				_TSAdr = tilegraphics[3];
 			}
+			public TileSM(byte id, int tileset, FF1Rom rom)
+			{
+				Read(id, tileset, rom);
+			}
 			public void Write(FF1Rom rom)
 			{
 				rom.PutInBank(BANK_SMINFO, lut_TileSMsetAttr + (_tileSetOrigin * 0x80) + _tileSetID, new byte[] { _attribute });
@@ -1010,6 +1018,18 @@ namespace FF1Lib
 				rom.PutInBank(BANK_SMINFO, lut_TileSMsetTSA + (_tileSetOrigin * 0x200) + 0x80 + _tileSetID, new byte[] { _TSAur });
 				rom.PutInBank(BANK_SMINFO, lut_TileSMsetTSA + (_tileSetOrigin * 0x200) + 0x100 + _tileSetID, new byte[] { _TSAdl });
 				rom.PutInBank(BANK_SMINFO, lut_TileSMsetTSA + (_tileSetOrigin * 0x200) + 0x180 + _tileSetID, new byte[] { _TSAdr });
+			}
+			public void Read(byte id, int tileset, FF1Rom rom)
+			{
+				_tileSetID = id;
+				_tileSetOrigin = tileset;
+				_attribute = rom.GetFromBank(BANK_SMINFO, lut_TileSMsetAttr + (_tileSetOrigin * 0x80) + _tileSetID, 1)[0];
+				_property1 = rom.GetFromBank(BANK_SMINFO, lut_TileSMsetProp + (_tileSetOrigin * 0x100) + (_tileSetID * 2), 2)[0];
+				_property2 = rom.GetFromBank(BANK_SMINFO, lut_TileSMsetProp + (_tileSetOrigin * 0x100) + (_tileSetID * 2), 2)[1];
+				_TSAul = rom.GetFromBank(BANK_SMINFO, lut_TileSMsetTSA + (_tileSetOrigin * 0x200) + _tileSetID, 1)[0];
+				_TSAur = rom.GetFromBank(BANK_SMINFO, lut_TileSMsetTSA + (_tileSetOrigin * 0x200) + 0x80 + _tileSetID, 1)[0];
+				_TSAdl = rom.GetFromBank(BANK_SMINFO, lut_TileSMsetTSA + (_tileSetOrigin * 0x200) + 0x100 + _tileSetID, 1)[0];
+				_TSAdr = rom.GetFromBank(BANK_SMINFO, lut_TileSMsetTSA + (_tileSetOrigin * 0x200) + 0x180 + _tileSetID, 1)[0];
 			}
 		}
 

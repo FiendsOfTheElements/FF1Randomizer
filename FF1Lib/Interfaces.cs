@@ -75,7 +75,7 @@
 		bool Incentivize65K { get; }
 		bool IncentivizeBad { get; }
 		bool? NoMasamune { get; }
-		bool? NoXcalbur { get; }
+		bool? NoXcalber { get; }
 	}
 	public interface IMapEditFlags : IItemPlacementFlags
 	{
@@ -105,11 +105,12 @@
 		bool? GuaranteedMasamune { get; }
 		bool? SendMasamuneHome { get; }
 		bool? NoMasamune { get; }
-		bool? NoXcalbur { get; }
+		bool? NoXcalber { get; }
 		WorldWealthMode WorldWealth { get; }
 		ConsumableChestSet MoreConsumableChests { get; }
 		bool EnableExtConsumables { get; }
 		ExtConsumableChestSet ExtConsumableChests { get; }
+		bool IncentiveChestItemsFanfare { get; }
 	}
 	public interface IItemShuffleFlags
 	{
@@ -155,14 +156,14 @@
 		bool ShardHunt { get; }
 		bool? ShortToFR { get; }
 		bool? FreeBridge { get; }
-		bool? FreeAirship { get; }
-		bool? FreeShip { get; }
-		bool? FreeCanal { get; }
+		bool? IsAirshipFree { get; }
+		bool? IsShipFree { get; }
+		bool? IsCanalFree { get; }
 		bool? FreeCanoe { get; }
 		bool? FreeLute { get; }
 		bool? FreeTail { get; }
 		bool? NoTail { get; }
-		bool? NoFloater { get; }
+		bool? IsFloaterRemoved { get; }
 		bool? LooseExcludePlacedDungeons { get; }
 		bool NoOverworld { get; }
 	}

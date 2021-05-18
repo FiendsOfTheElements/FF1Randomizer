@@ -743,16 +743,16 @@ namespace FF1Lib
 			{
 				changes |= MapChange.Bridge;
 			}
-			if (victoryConditions.FreeShip ?? false)
+			if (victoryConditions.IsShipFree ?? false)
 			{
 				changes |= MapChange.Ship;
 			}
-			if (victoryConditions.FreeAirship ?? false)
+			if (victoryConditions.IsAirshipFree ?? false)
 			{
 				changes |= MapChange.Airship;
 				airShipLocationAccessible = true;
 			}
-			if (victoryConditions.FreeCanal ?? false)
+			if (victoryConditions.IsCanalFree ?? false)
 			{
 				changes |= MapChange.Canal;
 			}

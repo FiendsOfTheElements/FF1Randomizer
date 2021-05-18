@@ -16,8 +16,8 @@
 			<BSCol LG="4">
 				<div class="@DisabledClass alloneline">@DisplayText</div>
 			</BSCol>
-				<div class="col-slider" id="rc-@Id">
-					@(new MarkupString($@"<style>
+			<div class="col-slider" id="rc-@Id">
+				@(new MarkupString($@"<style>
 				#rc-{Id} > input[type='range'] {{
 					background: var(--track-background);
 					pointer-events: none;
@@ -37,9 +37,9 @@
 					background: var(--track-background);
 				}}
 			</style>"))
-					<input name="low-range" type="range" min="@MinValue" max="@MaxValue" step="@Step" @bind="@ValueLow" @bind:event="onchange" />
-					<input name="high-range" type="range" min="@MinValue" max="@MaxValue" step="@Step" @bind="@ValueHigh" @bind:event="onchange" />
-				</div>
+				<input name="low-range" type="range" min="@MinValue" max="@MaxValue" step="@Step" @bind="@ValueLow" @bind:event="onchange" />
+				<input name="high-range" type="range" min="@MinValue" max="@MaxValue" step="@Step" @bind="@ValueHigh" @bind:event="onchange" />
+			</div>
 		</BSRow>
 	</BSContainer>
 }
@@ -104,10 +104,40 @@ else
 	public bool DoubleCol { get; set; }
 	[Parameter]
 	public bool ShowMedian { get; set; }
+	[Parameter]
+	public bool ShowPositiveSign { get; set; }
 
 	[Parameter]
 	public RenderFragment ChildContent { get; set; }
-	private string DisplayText => !ShowMedian ? ((_valueLow > 0) ? ("+" + _valueLow) : _valueLow) + " - " + ((_valueHigh > 0) ? ("+" + _valueHigh) : _valueHigh) : (_valueLow + "% - " + _valueHigh + "%" + " (" + Median + "%)");
+	private string DisplayText => BuildDisplayString();
+
+	private string BuildDisplayString()
+	{
+		string displayString = "";
+		if (_valueLow > 0 && ShowPositiveSign)
+		{
+			displayString += "+";
+		}
+		displayString += _valueLow;
+		if (ShowMedian)
+		{
+			displayString += "%";
+		}
+
+		displayString += " - ";
+
+		if (_valueHigh > 0 && ShowPositiveSign)
+		{
+			displayString += "+";
+		}
+		displayString += _valueHigh;
+		if (ShowMedian)
+		{
+			displayString += "% (" + Median + "%)";
+		}
+
+		return displayString;
+	}
 
 	private int Median
 	{
@@ -132,41 +162,50 @@ else
 	public int ValueLow
 	{
 		get => _valueLow;
+
 		set
 		{
 			if (_valueLow.Equals(value))
 				return;
 
-			if (value >= _valueHigh)
+			if (value > _valueHigh)
 			{
 				_valueLow = _valueHigh;
+				_valueHigh = value;
 			}
 			else
 			{
 				_valueLow = value;
 			}
 			ValueLowChanged.InvokeAsync(_valueLow);
+			ValueHighChanged.InvokeAsync(_valueHigh);
 		}
 	}
 	[Parameter]
 	public int ValueHigh
 	{
+
 		get => _valueHigh;
+
 		set
 		{
 			if (_valueHigh.Equals(value))
 				return;
 
-			if (value <= _valueLow)
+			if (value < _valueLow)
 			{
 				_valueHigh = _valueLow;
+				_valueLow = value;
 			}
 			else
 			{
 				_valueHigh = value;
 			}
+
+			ValueLowChanged.InvokeAsync(_valueLow);
 			ValueHighChanged.InvokeAsync(_valueHigh);
 		}
+
 	}
 	[Parameter] public EventCallback<int> ValueLowChanged { get; set; }
 	[Parameter] public EventCallback<int> ValueHighChanged { get; set; }
@@ -190,4 +229,4 @@ else
 
 	[Parameter]
 	public Action<string, MouseEventArgs> UpdateToolTip { get; set; }
-	}
+}

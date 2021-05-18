@@ -9,7 +9,7 @@ namespace FF1Lib
     public partial class FF1Rom
     {
 	    public const int ItemTextPointerOffset = 0x2B700;
-	    public const int ItemTextPointerCount = 252;
+	    public const int ItemTextPointerCount = 256;
 	    public const int ItemTextPointerBase = 0x20000;
 	    public const int ItemTextOffset = 0x2B900;
 	    public const int MagicNamesIndexInItemText = 176;
@@ -67,10 +67,11 @@ namespace FF1Lib
 
 		public void UpdateItemName(Item targetitem, string newname)
 		{
-			var pointers = Get(ItemTextPointerOffset, 2 * 256).ToUShorts().ToList();
+			var itemnames = ReadText(FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextPointerCount);
 
-			var blob = FF1Text.TextToBytes(newname, useDTE: false);
-			Put(ItemTextPointerBase + pointers[(int)targetitem], blob);
+			itemnames[(int)targetitem] = newname;
+
+			WriteText(itemnames, FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextOffset, FF1Rom.UnusedGoldItems);
 		}
 	    public Blob ReadUntil(int offset, byte delimiter)
 	    {

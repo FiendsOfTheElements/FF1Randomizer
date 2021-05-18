@@ -105,7 +105,8 @@
     "OnlyRequireGameIsBeatable": true,
     "FreeBridge": true,
     "FreeShip": true,
-    "FreeAirship": true,
+	"FreeAirship": true,
+	"FreeLute": true,
     "FreeOrbs": false,
     "EnableCritNumberDisplay": true,
     "FreeCanal": true,
@@ -291,6 +292,7 @@
     "AllowUnsafeStartArea": false,
     "EarlierRuby": false,
     "GuaranteedRuseItem": true,
-    "DisableStunTouch": false
+	"DisableStunTouch": false,
+	"ThiefAgilityBuff": 0
   }
 }
