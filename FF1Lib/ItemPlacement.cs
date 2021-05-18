@@ -123,20 +123,7 @@ namespace FF1Lib
 			};
 
 			ItemPlacementResult result = DoSanePlacement(rng, ctx);
-			List<IRewardSource> placedItems = result.PlacedItems;
-			//setup jingle for "incentive treasures", the placed items should just be key items, loose incentive items
-			if(_flags.IncentiveChestItemsFanfare)
-			{
-				foreach (var placedItem in placedItems)
-				{
-					//dont make shards jingle that'd be annoying
-					if (placedItem is TreasureChest && placedItem.Item != Item.Shard)
-					{
-						rom.Put(placedItem.Address - FF1Rom.TreasureOffset + FF1Rom.TreasureJingleOffset, new byte[] { 0x01 });
-					}
-				}
-			}
-			
+			List<IRewardSource> placedItems = result.PlacedItems;			
 			treasurePool = result.RemainingTreasures;
 
 			if ((bool)_flags.FreeBridge)
@@ -166,6 +153,20 @@ namespace FF1Lib
 			if ((bool)_flags.FreeTail || (bool)_flags.NoTail)
 			{
 				placedItems = placedItems.Select(x => x.Item != Item.Tail ? x : NewItemPlacement(x, ReplacementItem)).ToList();
+			}
+
+			//setup jingle for "incentive treasures", the placed items should just be key items, loose incentive items
+			if (_flags.IncentiveChestItemsFanfare)
+			{
+				foreach (var placedItem in placedItems)
+				{
+					//dont make shards jingle that'd be annoying
+					//dont make free items that get replaced, aka cabins, jingle
+					if (placedItem is TreasureChest && placedItem.Item != Item.Shard && placedItem.Item != ReplacementItem)
+					{
+						rom.Put(placedItem.Address - FF1Rom.TreasureOffset + FF1Rom.TreasureJingleOffset, new byte[] { 0x01 });
+					}
+				}
 			}
 
 			if (_flags.Spoilers || Debugger.IsAttached)
