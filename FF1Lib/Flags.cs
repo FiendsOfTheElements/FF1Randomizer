@@ -50,7 +50,6 @@ namespace FF1Lib
 
 		#endregion
 
-
 		public bool EnableExtConsumables { get; set; } = false;
 
 		public bool? NormalShopsHaveExtConsumables { get; set; } = false;

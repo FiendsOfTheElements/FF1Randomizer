@@ -998,7 +998,7 @@ namespace FF1Lib
 			talkroutines.WriteRoutines(this);
 			talkroutines.UpdateNPCRoutines(this, npcdata);
 
-			new ExpChests(this, flags).SetExpChests();
+			new ExpChests(this, flags, rng).BuildExpChests();
 
 			WriteSeedAndFlags(seed.ToHex(), Flags.EncodeFlagsText(flags));
 			ExtraTrackingAndInitCode(flags);

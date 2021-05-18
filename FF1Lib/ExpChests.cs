@@ -1,4 +1,5 @@
-﻿using RomUtilities;
+﻿using FF1Lib.Data;
+using RomUtilities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -10,13 +11,24 @@ namespace FF1Lib
 {
 	public class ExpChests
 	{
+		public const int BaseExp = 4000;
+
 		FF1Rom rom;
 		Flags flags;
+		MT19337 rng;
 
-		public ExpChests(FF1Rom _rom, Flags _flags)
+		TreasureData treasureData;
+		ItemPrices itemPrices;
+		string[] itemNames;
+
+		public ExpChests(FF1Rom _rom, Flags _flags, MT19337 _rng)
 		{
 			rom = _rom;
 			flags = _flags;
+			rng = _rng;
+
+			treasureData = new TreasureData(rom);
+			itemPrices = new ItemPrices(rom);
 		}
 
 		public void SetExpChests()
@@ -35,6 +47,86 @@ namespace FF1Lib
 			dialogs.Add(0x14C, "The greed has\noverwhelmed you!\n\nGold taken.");
 
 			rom.InsertDialogs(dialogs);
+		}
+
+		public void BuildExpChests()
+		{
+			LoadData();
+
+			var result1 = treasureData.Data.Where(x => x >= Item.Gold10 && x <= Item.Gold65000).OrderBy(x => x).Select(x => itemNames[(int)x]).ToList();
+
+			int expChestCount = 50;
+			double lowScale = 0.5;
+			double highScale = 2.0;
+
+			// construct a dictionary and get a shuffled index into it.
+			var goldItems = ItemLists.AllGoldTreasure.Select(g => (item: g, price: itemPrices[g], name: itemNames[(int)g])).ToList();
+			goldItems.Shuffle(rng);
+			var goldItemsDic = goldItems.Select((g, i) => (shuffleindex: i, item: g.item, price: g.price, name: g.name)).ToDictionary(g => g.item);
+
+			var expItems = new HashSet<Item>(treasureData.Data
+				.Where(g => goldItemsDic.ContainsKey(g))
+				.Select(g => (item: g, shuffleindex: goldItemsDic[g].shuffleindex))
+				.OrderBy(g => g.shuffleindex)
+				.Take(expChestCount)
+				.Select(g => g.item)
+				.Distinct());
+
+			var firstExpItem = RepackGoldExpItems(goldItemsDic, expItems);
+
+			for (int i = (int)firstExpItem; i < 176; i++)
+			{
+				var e = (Item)i;
+
+				var exp = (ushort)Math.Min(Math.Max(FF1Rom.RangeScale(BaseExp, lowScale, highScale, 1.0, rng), 0), 65535);
+				itemPrices[e] = exp;
+				itemNames[(int)e] = exp.ToString() + " EXP";
+			}
+
+			var result = treasureData.Data.Where(x => x >= Item.Gold10 && x <= Item.Gold65000).OrderBy(x => x).Select(x => itemNames[(int)x]).ToList();
+
+			StoreData();
+		}
+
+
+		//For simplicity only chests are corrected. Npc rewards will be collateral damage.
+		private Item RepackGoldExpItems(Dictionary<Item, (int shuffleindex, Item item, ushort price, string name)> goldItemsDic, HashSet<Item> expItems)
+		{
+			var repackDic = ItemLists.AllGoldTreasure
+							.Where(g => !expItems.Contains(g))
+							.Concat(expItems)
+							.Select((g, i) => (oldId: g, newId: (Item)((int)Item.Gold10 + i)))
+							.ToDictionary(x => x.oldId, x => x.newId);
+
+			for (int i = 0; i < treasureData.Data.Length; i++)
+			{
+				if (repackDic.TryGetValue(treasureData[i], out var newId)) treasureData[i] = newId;
+			}
+
+			var firstExpItem = (Item)176;
+			foreach (var kv in repackDic)
+			{
+				itemPrices[kv.Value] = goldItemsDic[kv.Key].price;
+				itemNames[(int)kv.Value] = goldItemsDic[kv.Key].price.ToString() + " G";
+
+				if (expItems.Contains(kv.Key) && kv.Value < firstExpItem) firstExpItem = kv.Value;
+			}
+
+			return firstExpItem;
+		}
+
+		private void LoadData()
+		{
+			itemPrices.LoadTable();
+			treasureData.LoadTable();
+			itemNames = rom.ReadText(FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextPointerCount);
+		}
+
+		private void StoreData()
+		{
+			itemPrices.StoreTable();
+			treasureData.StoreTable();
+			rom.WriteText(itemNames, FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextOffset);
 		}
 	}
 }
