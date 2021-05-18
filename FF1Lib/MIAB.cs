@@ -114,6 +114,24 @@ namespace FF1Lib
 			int maxChests = (flags.TCPoolSize == ChestsPool.Random) ? Rng.Between(rng, 20, 240) : (int)flags.TCPoolSize;
 
 			// Get encounters
+			const byte spookyZomBull = 0xB2;
+			const byte spookyZombieD = 0xCB;
+			const byte fightBahamut = 0xF1;
+
+			List<byte> altEncountersList = Enumerable.Range(128, FirstBossEncounterIndex).Select(value => (byte)value).ToList();
+			altEncountersList.Add(0xFF); // IronGol
+
+			if ((bool)flags.SpookyFlag)
+			{
+				altEncountersList.Remove(spookyZomBull);
+				altEncountersList.Remove(spookyZombieD);
+			}
+
+			if ((bool)flags.FightBahamut)
+			{
+				altEncountersList.Remove(fightBahamut);
+			}
+
 			List<byte> encounters = new();
 			switch (flags.TCFormations)
 			{
@@ -121,15 +139,13 @@ namespace FF1Lib
 					List<List<byte>> baseEncounterList = new();
 					for (int i = 0; i < 3; i++)
 					{
-						baseEncounterList.Add(Enumerable.Range(128, FirstBossEncounterIndex).Select(value => (byte)value).ToList());
-						baseEncounterList.Last().Add(0xFF); // IronGOL
+						baseEncounterList.Add(new List<byte>(altEncountersList));
 						baseEncounterList.Last().Shuffle(rng);
 					}
 					encounters = baseEncounterList.SelectMany(x => x).ToList();
 					break;
 				case FormationPool.AltFormationRng:
-					encounters = Enumerable.Range(128, FirstBossEncounterIndex).Select(value => (byte)value).ToList();
-					encounters.Add(0xFF); // IronGOL
+					encounters = altEncountersList;
 					break;
 				case FormationPool.Fiends:
 					encounters = Enumerable.Range(0x77, 4).Select(value => (byte)value).ToList();
