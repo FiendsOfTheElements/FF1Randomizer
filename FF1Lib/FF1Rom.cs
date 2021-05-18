@@ -421,9 +421,7 @@ namespace FF1Lib
 			    BahamutB1Encounters(maps);
 			}
 
-			if ((bool)flags.MapDragonsHoard) {
-			    DragonsHoard(maps);
-			}
+			DragonsHoard(maps, (bool)flags.MapDragonsHoard);
 
 			var shopData = new ShopData(this);
 			shopData.LoadData();
