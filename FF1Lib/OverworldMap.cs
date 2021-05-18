@@ -367,6 +367,18 @@ namespace FF1Lib
 					keepers.Add(OverworldTeleportIndex.Cardia5);
 				}
 
+				if ((bool)flags.NoFloater)
+				{
+				    if (!(bool)flags.MapBahamutCardiaDock) {
+					keepers.Add(OverworldTeleportIndex.Cardia1);
+					keepers.Add(OverworldTeleportIndex.BahamutCave1);
+				    }
+				    keepers.Add(OverworldTeleportIndex.Cardia2);
+				    keepers.Add(OverworldTeleportIndex.Cardia4);
+				    keepers.Add(OverworldTeleportIndex.Cardia5);
+				    keepers.Add(OverworldTeleportIndex.Cardia6);
+				}
+
 				placedMaps = placedMaps .Where(x => keepers.Contains(x.Key)) .ToDictionary(x => x.Key, x => x.Value);
 				placedFloors.Remove(TeleportIndex.SeaShrine1);
 				FixUnusedDefaultBackdrops();
