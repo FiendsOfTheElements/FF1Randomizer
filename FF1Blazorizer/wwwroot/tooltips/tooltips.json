@@ -27,7 +27,7 @@
 		"Id": "expChestConversion",
 		"title": "Experience Chest Conversion",
 		"screenshot": null,
-		"description": "How much percent of the gold chest should be converted to experience chests."
+		"description": "How many percent of the gold chest should be converted to experience chests."
 	},
 	{
 		"Id": "expChestReward",
