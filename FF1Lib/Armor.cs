@@ -85,6 +85,9 @@ namespace FF1Lib
 
 	class Armor
 	{
+		public Item Id => (Item)(ArmorIndex + (int)Item.Cloth);
+		public Spell Spell => SpellIndex == 0xFF ? 0 : (Spell)(SpellIndex - 1 + (int)Spell.CURE);
+
 
 		//offset lookups
 		//0 - weight
@@ -151,6 +154,14 @@ namespace FF1Lib
 					Icon = kv.Key;
 					break;
 				}
+			}
+		}
+
+		public static IEnumerable<Armor> LoadAllArmors(FF1Rom rom, Flags flags)
+		{
+			for (int i = 0; i < 40; i++)
+			{
+				yield return new Armor(i, rom);
 			}
 		}
 

@@ -28,12 +28,12 @@
 			<h4>Starting Equipment</h4>
 			<TriStateCheckBox DisableTooltip="true" @bind-Value="Flags.StartingEquipmentMasamune">Masamune</TriStateCheckBox>
 			<TriStateCheckBox DisableTooltip="true" @bind-Value="Flags.StartingEquipmentKatana">Katana</TriStateCheckBox>
-			<TriStateCheckBox DisableTooltip="true" @bind-Value="Flags.StartingEquipmentHealStaff">Heal Staff</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="startingEquipmentHealStaff" @bind-Value="Flags.StartingEquipmentHealStaff">Heal Staff</TriStateCheckBox>
 			<TriStateCheckBox DisableTooltip="true" @bind-Value="Flags.StartingEquipmentZeusGauntlet">Zeus Gauntlet</TriStateCheckBox>
 			<TriStateCheckBox DisableTooltip="true" @bind-Value="Flags.StartingEquipmentWhiteShirt">White Shirt</TriStateCheckBox>
 			<TriStateCheckBox DisableTooltip="true" @bind-Value="Flags.StartingEquipmentRibbon">Ribbon</TriStateCheckBox>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="startingEquipmentDragonslayer" @bind-Value="Flags.StartingEquipmentDragonslayer">Dragonslayer</TriStateCheckBox>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="startingEquipmentLegendKit" @bind-Value="Flags.StartingEquipmentLegendKit">Legendary Kit</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="startingEquipmentDragonslayer" IsEnabled="!Flags.Weaponizer" @bind-Value="Flags.StartingEquipmentDragonslayer">Dragonslayer</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="startingEquipmentLegendKit" IsEnabled="!Flags.Weaponizer" @bind-Value="Flags.StartingEquipmentLegendKit">Legendary Kit</TriStateCheckBox>
 			<TriStateCheckBox DisableTooltip="true" @bind-Value="Flags.StartingEquipmentRandomEndgameWeapon">Random Endgame Weapon</TriStateCheckBox>
 			<TriStateCheckBox DisableTooltip="true" @bind-Value="Flags.StartingEquipmentRandomAoe">Random Aoe Caster Item</TriStateCheckBox>
 			<TriStateCheckBox DisableTooltip="true" @bind-Value="Flags.StartingEquipmentRandomCasterItem">Random Caster Item</TriStateCheckBox>
