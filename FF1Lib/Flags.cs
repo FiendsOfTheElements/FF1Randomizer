@@ -312,6 +312,7 @@ namespace FF1Lib
 		public bool BuyTen { get; set; } = false;
 		public bool IdentifyTreasures { get; set; } = false;
 		public bool ShopInfo { get; set; } = false;
+		public bool ChestInfo { get; set; } = false;
 		public bool IncentiveChestItemsFanfare { get; set; } = false;
 		public bool WaitWhenUnrunnable { get; set; } = false;
 		public bool Etherizer { get; set; } = false;
