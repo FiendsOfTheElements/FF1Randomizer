@@ -3752,7 +3752,7 @@ namespace FF1Lib
 		public void ObfuscateEnemies(MT19337 rng, Flags flags)
 		{
 
-			if (flags.EnemyObfuscation == EnemyObfuscation.Imp)
+			if (flags.EnemyObfuscation == EnemyObfuscation.Imp || flags.EnemyObfuscation == EnemyObfuscation.ImpAll)
 			{
 				List<FormationInfo> formations = LoadFormations();
 				string[] enemyNames = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
@@ -3768,11 +3768,13 @@ namespace FF1Lib
 					variants.Add((name, (byte)rng.Between(0, 128)));
 				}
 
-				for (int i = 0; i < 119; i++) enemyNames[i] = variants[i].name;
+				int limit = flags.EnemyObfuscation == EnemyObfuscation.ImpAll ? 128 : 119;
+
+				for (int i = 0; i < limit; i++) enemyNames[i] = variants[i].name;
 
 				for (int i = 0; i < FormationCount; ++i)
 				{
-					if (formations[i].id.Any(id => id >= 119)) continue;
+					if (formations[i].id.Any(id => id >= limit)) continue;
 
 					formations[i].pics = 0;
 					formations[i].shape = 0;
@@ -3824,6 +3826,9 @@ namespace FF1Lib
 		None,
 
 		[Description("Imp")]
-		Imp
+		Imp,
+
+		[Description("Imp (inc. Fiends and Chaos)")]
+		ImpAll
 	}
 }
