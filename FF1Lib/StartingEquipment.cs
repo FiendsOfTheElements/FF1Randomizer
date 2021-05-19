@@ -150,7 +150,7 @@ namespace FF1Lib
 
 				if (flags.StartingEquipmentNoDuplicates) pool.RemoveAll(i => items.Contains(i));
 
-				items.Add(pool.PickRandom(rng));
+				if (pool.Count > 0) items.Add(pool.PickRandom(rng));
 			}
 			else
 			{
@@ -167,7 +167,7 @@ namespace FF1Lib
 
 				var names = weapons.Where(w => spells.Contains(w.Spell)).Select(w => w.Name).Concat(armors.Where(w => spells.Contains(w.Spell)).Select(a => a.Name)).ToList();
 
-				items.Add(pool.PickRandom(rng));
+				if (pool.Count > 0) items.Add(pool.PickRandom(rng));
 			}
 		}
 
@@ -179,13 +179,13 @@ namespace FF1Lib
 
 				if (flags.StartingEquipmentNoDuplicates) pool.RemoveAll(i => items.Contains(i));
 
-				items.Add(pool.PickRandom(rng));
+				if (pool.Count > 0) items.Add(pool.PickRandom(rng));
 			}
 			else
 			{
 				var pool = GetCasterItemPool();
 
-				items.Add(pool.PickRandom(rng));
+				if (pool.Count > 0) items.Add(pool.PickRandom(rng));
 			}
 		}
 
