@@ -367,7 +367,7 @@ namespace FF1Lib
 					keepers.Add(OverworldTeleportIndex.Cardia5);
 				}
 
-				if ((bool)flags.NoFloater)
+				if ((bool)flags.IsFloaterRemoved)
 				{
 				    if (!(bool)flags.MapBahamutCardiaDock) {
 					keepers.Add(OverworldTeleportIndex.Cardia1);

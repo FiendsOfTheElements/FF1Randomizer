@@ -149,7 +149,7 @@
 		bool? DeepTownsPossible { get; }
 		bool? AllowDeepTowns { get; }
 		bool? AllowUnsafeStartArea { get; }
-		bool? NoFloater { get; }
+		bool? IsFloaterRemoved { get; }
 		bool? MapBahamutCardiaDock { get; }
 	}
 	public interface IVictoryConditionFlags
