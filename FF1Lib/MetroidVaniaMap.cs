@@ -837,11 +837,15 @@ namespace FF1Lib
 				{ 0x13,	"A rock blocks\nconstruction of my\ntunnel.\nIf I only had TNT." }, // Nerrick
 				{ 0x14,	"Oh, wonderful!\nNice work! Yes, yes\nindeed, this TNT is just\nwhat I need to finish my\ntunnel. Now excuse me\nwhile I get to work!" }, // Nerrick
 
-				{ 0x2B,	"Great job vanquishing\nthe Earth FIEND. Now,\nthe Fire FIEND wakes.\nWith my blessing; go to\nthe VOLCANO, and defeat\nthat FIEND also!" }, // Lukkanh
 				{ 0x2C,	"I am Lukahn.\nNow all legends and\nprophecy will be\nfulfilled. Our path has\nbeen decided.\nCome back to me once the\nEarth FIEND is vanquised." }, // Lukkanh
 				{ 0x8C,	"400 years ago, we lost\ncontrol of the Wind.\n200 years later we lost\nthe Water,\nthen Earth,\nand Fire followed. The\nPowers that bind this\nworld are gone." }, // Lukkanh
 
 			};
+
+			if ((bool)!flags.NPCItems)
+			{
+				newDialogues.Add(0x2B, "Great job vanquishing\nthe Earth FIEND. Now,\nthe Fire FIEND wakes.\nWith my blessing; go to\nthe VOLCANO, and defeat\nthat FIEND also!");
+			}
 
 			InsertDialogs(newDialogues);
 

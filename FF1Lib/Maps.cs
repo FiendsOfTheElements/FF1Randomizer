@@ -1154,64 +1154,83 @@ namespace FF1Lib
 		    maps[(byte)MapId.BahamutsRoomB1][0x36, 3] = (byte)Tile.CardiaEncounters;
 		}
 
-		public void DragonsHoard(List<Map> maps) {
+		public void DragonsHoard(List<Map> maps, bool enable) {
 		    // Replaces the area around/behind Bahamut with
 		    // all the Cardia chests.  (Does not delete the
-		    // original tests, they will be linked)
+		    // original chests, they will be linked)
 
-		    maps[(byte)MapId.BahamutsRoomB2][1, 17] = (byte)Tile.CardiaCandles;
-		    maps[(byte)MapId.BahamutsRoomB2][1, 18] = (byte)Tile.CardiaChest1;
-		    maps[(byte)MapId.BahamutsRoomB2][1, 19] = (byte)Tile.CardiaChest2;
-		    maps[(byte)MapId.BahamutsRoomB2][1, 20] = (byte)Tile.CardiaChest3;
-		    maps[(byte)MapId.BahamutsRoomB2][1, 21] = (byte)Tile.CardiaChest4;
-		    maps[(byte)MapId.BahamutsRoomB2][1, 22] = (byte)Tile.CardiaChest5;
-		    maps[(byte)MapId.BahamutsRoomB2][1, 23] = (byte)Tile.CardiaChest6;
-		    maps[(byte)MapId.BahamutsRoomB2][1, 24] = (byte)Tile.CardiaChest7;
-		    maps[(byte)MapId.BahamutsRoomB2][1, 25] = (byte)Tile.CardiaCandles;
+		    if (enable) {
+			maps[(byte)MapId.BahamutsRoomB2][1, 17] = (byte)Tile.CardiaCandles;
+			maps[(byte)MapId.BahamutsRoomB2][1, 18] = (byte)Tile.CardiaChest1;
+			maps[(byte)MapId.BahamutsRoomB2][1, 19] = (byte)Tile.CardiaChest2;
+			maps[(byte)MapId.BahamutsRoomB2][1, 20] = (byte)Tile.CardiaChest3;
+			maps[(byte)MapId.BahamutsRoomB2][1, 21] = (byte)Tile.CardiaChest4;
+			maps[(byte)MapId.BahamutsRoomB2][1, 22] = (byte)Tile.CardiaChest5;
+			maps[(byte)MapId.BahamutsRoomB2][1, 23] = (byte)Tile.CardiaChest6;
+			maps[(byte)MapId.BahamutsRoomB2][1, 24] = (byte)Tile.CardiaChest7;
+			maps[(byte)MapId.BahamutsRoomB2][1, 25] = (byte)Tile.CardiaCandles;
 
-		    maps[(byte)MapId.BahamutsRoomB2][2, 17] = (byte)Tile.CardiaChest8;
-		    maps[(byte)MapId.BahamutsRoomB2][2, 18] = (byte)Tile.CardiaFloor;
-		    maps[(byte)MapId.BahamutsRoomB2][2, 19] = (byte)Tile.CardiaFloor;
-		    maps[(byte)MapId.BahamutsRoomB2][2, 20] = (byte)Tile.CardiaFloor;
-		    maps[(byte)MapId.BahamutsRoomB2][2, 21] = (byte)Tile.CardiaFloor;
-		    maps[(byte)MapId.BahamutsRoomB2][2, 22] = (byte)Tile.CardiaFloor;
-		    maps[(byte)MapId.BahamutsRoomB2][2, 23] = (byte)Tile.CardiaFloor;
-		    maps[(byte)MapId.BahamutsRoomB2][2, 24] = (byte)Tile.CardiaFloor;
-		    maps[(byte)MapId.BahamutsRoomB2][2, 25] = (byte)Tile.CardiaChest9;
+			maps[(byte)MapId.BahamutsRoomB2][2, 17] = (byte)Tile.CardiaChest8;
+			maps[(byte)MapId.BahamutsRoomB2][2, 18] = (byte)Tile.CardiaFloor;
+			maps[(byte)MapId.BahamutsRoomB2][2, 19] = (byte)Tile.CardiaFloor;
+			maps[(byte)MapId.BahamutsRoomB2][2, 20] = (byte)Tile.CardiaFloor;
+			maps[(byte)MapId.BahamutsRoomB2][2, 21] = (byte)Tile.CardiaFloor;
+			maps[(byte)MapId.BahamutsRoomB2][2, 22] = (byte)Tile.CardiaFloor;
+			maps[(byte)MapId.BahamutsRoomB2][2, 23] = (byte)Tile.CardiaFloor;
+			maps[(byte)MapId.BahamutsRoomB2][2, 24] = (byte)Tile.CardiaFloor;
+			maps[(byte)MapId.BahamutsRoomB2][2, 25] = (byte)Tile.CardiaChest9;
 
-		    maps[(byte)MapId.BahamutsRoomB2][3, 17] = (byte)Tile.CardiaCandles;
-		    maps[(byte)MapId.BahamutsRoomB2][3, 18] = (byte)Tile.CardiaChest10;
-		    maps[(byte)MapId.BahamutsRoomB2][3, 19] = (byte)Tile.CardiaFloor;
-		    maps[(byte)MapId.BahamutsRoomB2][3, 20] = (byte)Tile.CardiaFloor;
-		    maps[(byte)MapId.BahamutsRoomB2][3, 21] = (byte)Tile.CardiaFloor;
-		    maps[(byte)MapId.BahamutsRoomB2][3, 22] = (byte)Tile.CardiaFloor;
-		    maps[(byte)MapId.BahamutsRoomB2][3, 23] = (byte)Tile.CardiaFloor;
-		    maps[(byte)MapId.BahamutsRoomB2][3, 24] = (byte)Tile.CardiaChest11;
-		    maps[(byte)MapId.BahamutsRoomB2][3, 25] = (byte)Tile.CardiaCandles;
+			maps[(byte)MapId.BahamutsRoomB2][3, 17] = (byte)Tile.CardiaCandles;
+			maps[(byte)MapId.BahamutsRoomB2][3, 18] = (byte)Tile.CardiaChest10;
+			maps[(byte)MapId.BahamutsRoomB2][3, 19] = (byte)Tile.CardiaFloor;
+			maps[(byte)MapId.BahamutsRoomB2][3, 20] = (byte)Tile.CardiaFloor;
+			maps[(byte)MapId.BahamutsRoomB2][3, 21] = (byte)Tile.CardiaFloor;
+			maps[(byte)MapId.BahamutsRoomB2][3, 22] = (byte)Tile.CardiaFloor;
+			maps[(byte)MapId.BahamutsRoomB2][3, 23] = (byte)Tile.CardiaFloor;
+			maps[(byte)MapId.BahamutsRoomB2][3, 24] = (byte)Tile.CardiaChest11;
+			maps[(byte)MapId.BahamutsRoomB2][3, 25] = (byte)Tile.CardiaCandles;
 
-		    maps[(byte)MapId.BahamutsRoomB2][4, 17] = (byte)Tile.CardiaFloor;
-		    maps[(byte)MapId.BahamutsRoomB2][4, 18] = (byte)Tile.CardiaCandles;
-		    maps[(byte)MapId.BahamutsRoomB2][4, 19] = (byte)Tile.CardiaChest12;
-		    maps[(byte)MapId.BahamutsRoomB2][4, 20] = (byte)Tile.CardiaFloor;
-		    maps[(byte)MapId.BahamutsRoomB2][4, 21] = (byte)Tile.CardiaFloor;
-		    maps[(byte)MapId.BahamutsRoomB2][4, 22] = (byte)Tile.CardiaFloor;
-		    maps[(byte)MapId.BahamutsRoomB2][4, 23] = (byte)Tile.CardiaChest13;
-		    maps[(byte)MapId.BahamutsRoomB2][4, 24] = (byte)Tile.CardiaCandles;
-		    maps[(byte)MapId.BahamutsRoomB2][4, 25] = (byte)Tile.CardiaFloor;
+			maps[(byte)MapId.BahamutsRoomB2][4, 17] = (byte)Tile.CardiaFloor;
+			maps[(byte)MapId.BahamutsRoomB2][4, 18] = (byte)Tile.CardiaCandles;
+			maps[(byte)MapId.BahamutsRoomB2][4, 19] = (byte)Tile.CardiaChest12;
+			maps[(byte)MapId.BahamutsRoomB2][4, 20] = (byte)Tile.CardiaFloor;
+			maps[(byte)MapId.BahamutsRoomB2][4, 21] = (byte)Tile.CardiaFloor;
+			maps[(byte)MapId.BahamutsRoomB2][4, 22] = (byte)Tile.CardiaFloor;
+			maps[(byte)MapId.BahamutsRoomB2][4, 23] = (byte)Tile.CardiaChest13;
+			maps[(byte)MapId.BahamutsRoomB2][4, 24] = (byte)Tile.CardiaCandles;
+			maps[(byte)MapId.BahamutsRoomB2][4, 25] = (byte)Tile.CardiaFloor;
 
-		    ItemLocations.Cardia1.ChangeMapLocation(MapLocation.Cardia1);
-		    ItemLocations.Cardia2.ChangeMapLocation(MapLocation.Cardia1);
-		    ItemLocations.Cardia3.ChangeMapLocation(MapLocation.Cardia1);
-		    ItemLocations.Cardia4.ChangeMapLocation(MapLocation.Cardia1);
-		    ItemLocations.Cardia5.ChangeMapLocation(MapLocation.Cardia1);
-		    ItemLocations.Cardia6.ChangeMapLocation(MapLocation.Cardia1);
-		    ItemLocations.Cardia7.ChangeMapLocation(MapLocation.Cardia1);
-		    ItemLocations.Cardia8.ChangeMapLocation(MapLocation.Cardia1);
-		    ItemLocations.Cardia9.ChangeMapLocation(MapLocation.Cardia1);
-		    ItemLocations.Cardia10.ChangeMapLocation(MapLocation.Cardia1);
-		    ItemLocations.Cardia11.ChangeMapLocation(MapLocation.Cardia1);
-		    ItemLocations.Cardia12.ChangeMapLocation(MapLocation.Cardia1);
-		    ItemLocations.Cardia13.ChangeMapLocation(MapLocation.Cardia1);
+			ItemLocations.Cardia1.ChangeMapLocation(MapLocation.Cardia1);
+			ItemLocations.Cardia2.ChangeMapLocation(MapLocation.Cardia1);
+			ItemLocations.Cardia3.ChangeMapLocation(MapLocation.Cardia1);
+			ItemLocations.Cardia4.ChangeMapLocation(MapLocation.Cardia1);
+			ItemLocations.Cardia5.ChangeMapLocation(MapLocation.Cardia1);
+			ItemLocations.Cardia6.ChangeMapLocation(MapLocation.Cardia1);
+			ItemLocations.Cardia7.ChangeMapLocation(MapLocation.Cardia1);
+			ItemLocations.Cardia8.ChangeMapLocation(MapLocation.Cardia1);
+			ItemLocations.Cardia9.ChangeMapLocation(MapLocation.Cardia1);
+			ItemLocations.Cardia10.ChangeMapLocation(MapLocation.Cardia1);
+			ItemLocations.Cardia11.ChangeMapLocation(MapLocation.Cardia1);
+			ItemLocations.Cardia12.ChangeMapLocation(MapLocation.Cardia1);
+			ItemLocations.Cardia13.ChangeMapLocation(MapLocation.Cardia1);
+		    } else {
+			// If the user enabled Dragon's hoard,
+			// generated a seed, and then turned it off
+			// again, the locations will remain changed.
+			ItemLocations.Cardia1.ChangeMapLocation(MapLocation.Cardia6);
+			ItemLocations.Cardia2.ChangeMapLocation(MapLocation.Cardia6);
+			ItemLocations.Cardia3.ChangeMapLocation(MapLocation.Cardia6);
+			ItemLocations.Cardia4.ChangeMapLocation(MapLocation.Cardia6);
+			ItemLocations.Cardia5.ChangeMapLocation(MapLocation.Cardia6);
+			ItemLocations.Cardia6.ChangeMapLocation(MapLocation.Cardia4);
+			ItemLocations.Cardia7.ChangeMapLocation(MapLocation.Cardia4);
+			ItemLocations.Cardia8.ChangeMapLocation(MapLocation.Cardia4);
+			ItemLocations.Cardia9.ChangeMapLocation(MapLocation.Cardia2);
+			ItemLocations.Cardia10.ChangeMapLocation(MapLocation.Cardia2);
+			ItemLocations.Cardia11.ChangeMapLocation(MapLocation.Cardia2);
+			ItemLocations.Cardia12.ChangeMapLocation(MapLocation.Cardia6);
+			ItemLocations.Cardia13.ChangeMapLocation(MapLocation.Cardia6);
+		    }
 		}
 	}
 }

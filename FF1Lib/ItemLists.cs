@@ -18,12 +18,12 @@ namespace FF1Lib
 			Item.Slab, Item.Chime, Item.Bottle, Item.Ruby
 		};
 
-		public static readonly IReadOnlyCollection<Item> UberTier =
+		public static readonly IReadOnlyList<Item> UberTier =
 		new List<Item> {
 			Item.Masamune,
 		};
 
-		public static readonly IReadOnlyCollection<Item> LegendaryWeaponTier =
+		public static readonly IReadOnlyList<Item> LegendaryWeaponTier =
 		new List<Item> {
 			Item.Vorpal, Item.Katana, Item.Xcalber,
 		};
@@ -35,11 +35,11 @@ namespace FF1Lib
 			Item.Ribbon, Item.Ribbon, Item.OpalGauntlets, Item.OpalGauntlets,
 		};
 
-		public static readonly IReadOnlyCollection<Item> RareWeaponTier =
+		public static readonly IReadOnlyList<Item> RareWeaponTier =
 		new List<Item> {
 			Item.FlameSword, Item.IceSword, Item.DragonSword, Item.GiantSword,
 			Item.SunSword, Item.CoralSword, Item.WereSword, Item.RuneSword,
-			Item.LightAxe, Item.HealRod, Item.MageRod, Item.Defense, 
+			Item.LightAxe, Item.HealRod, Item.MageRod, Item.Defense,
 			Item.WizardRod, Item.CatClaw, Item.ThorHammer, Item.BaneSword,
 		};
 
@@ -51,7 +51,7 @@ namespace FF1Lib
 			Item.ZeusGauntlets, Item.PowerGauntlets, Item.ProRing, Item.ProRing,
 		};
 
-		public static readonly IReadOnlyCollection<Item> CommonWeaponTier =
+		public static readonly IReadOnlyList<Item> CommonWeaponTier =
 		new List<Item>
 		{
 			Item.WoodenNunchucks, Item.SmallKnife, Item.WoodenRod,

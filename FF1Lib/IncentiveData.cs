@@ -48,7 +48,7 @@ namespace FF1Lib
 			if (!(flags.NPCFetchItems ?? false))
 			{
 				forcedItemPlacements.AddRange(ItemLocations.AllNPCFetchItemLocations);
-				if((bool)flags.NoXcalbur)
+				if((bool)flags.NoXcalber)
 				{
 					forcedItemPlacements.Remove(ItemLocations.Smith);
 				}

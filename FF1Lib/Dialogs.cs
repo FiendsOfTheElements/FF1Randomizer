@@ -349,7 +349,7 @@ namespace FF1Lib
 			var newChars = new List<(byte, string)>
 			{
 				(0x7B, "000008083E080800FFFFFFFFFFFFFFFF"), // + sign
-				(0x7C, "FFFF994325C399FFFFFFFFFEFEFEFFFE")  // Trapped chest (standard)
+				(0x7C, "FFFFFF7F3DFFFFFFFFFF99C2E6C299FE")  // Trapped chest (standard)
 			};
 
 			foreach (var newchar in newChars)
@@ -373,7 +373,7 @@ namespace FF1Lib
 			}
 
 			// Hack this one in, because chests in sky have different graphics from other chests
-			var trappedChestSky = "FFFF994325C3997FFF66FFFEFE7EFFEE";
+			var trappedChestSky = "FFFFFF7F3DFFFF7FFF6699C2E64299EE";
 			Put(tilesetOffset + tilesetSize * (int)TileSets.SkyCastle + 0x7C * 0x10, Blob.FromHex(trappedChestSky));
 		}
 
@@ -1286,7 +1286,7 @@ namespace FF1Lib
 				incentivePool.Add(Item.Canal);
 				incentivePool.Add(Item.Herb);
 				incentivePool.Add(Item.Chime);
-				if(flags.NoXcalbur ?? false)
+				if(flags.NoXcalber ?? false)
 				{
 					incentivePool.Add(Item.Xcalber);
 				}

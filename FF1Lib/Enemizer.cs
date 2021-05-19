@@ -2344,7 +2344,7 @@ namespace FF1Lib
 					switch (i)
 					{
 						case Enemy.Imp:
-							enemyNames[i] = "BUM";
+							enemyNames[i] = "CHAMP";
 							enemy[i].elem_weakness = 0b11111111;
 							enemy[i].monster_type = 0b01111111;
 							break;

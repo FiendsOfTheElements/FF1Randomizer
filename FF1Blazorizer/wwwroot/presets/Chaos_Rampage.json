@@ -292,6 +292,7 @@
     "AllowUnsafeStartArea": false,
     "EarlierRuby": false,
     "GuaranteedRuseItem": true,
-    "DisableStunTouch": false
+	"DisableStunTouch": false,
+	"ThiefAgilityBuff": 0
   }
 }

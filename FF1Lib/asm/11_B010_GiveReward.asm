@@ -8,6 +8,7 @@ FindEmptyWeaponSlot = $DD34
 AddGPToParty = $DDEA
 LoadPrice = $ECB9
 lut_ConsStack = $B000
+lut_TreasureJingle = $B200
 
 .org $B010
 
@@ -69,7 +70,10 @@ GiveReward:                    ; (8 bytes)
   @ClearChest:                 ; Cleanup, set jingle and dialog id (12 bytes)
     CLC                        ; 18
   @OpenRegularChest:           ;  then continue on to mark the chest as open
-    INC dlgsfx                 ; set dlgsfx to play the TC jingle E67D
+    LDX tileprop+1             ; look at the chest id, key items and npcs will skip this check anyway
+    LDA lut_TreasureJingle, X  ; look at the list of chests that were marked as incentive holding by the randomizer
+    BNE @OpenChest             ; if it was > 0
+        INC dlgsfx             ; set dlgsfx to play the TC jingle E67D
   @OpenChest:                  ;
     INC dlgsfx                 ; set dlgsfx to play the TC jingle E67D
   @TooFull:                    ; jump here with C set to show "Can't Hold" text and no jingle

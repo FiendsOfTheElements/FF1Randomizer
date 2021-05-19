@@ -30,9 +30,6 @@
 			<DoubleSlider UpdateToolTip="@UpdateToolTipID" DoubleCol Id="MaximumLevelDoubleSilder" MinValue="1" MaxValue="50" Step="1" @bind-ValueHigh="Flags.MaxLevelHigh" @bind-ValueLow="Flags.MaxLevelLow">Max Level:</DoubleSlider>
 
 			<div class="checkbox-cell"></div>
-			<h4>Bugfixes</h4>
-			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="fix3DigitStatsCheckBox" @bind-Value="Flags.BugfixRender3DigitStats">Correctly render character stats over 99</CheckBox>
-			<div class="checkbox-cell"></div>
 			<h4>Enemies</h4>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="alternateFiendsCheckBox" IsEnabled="@(!Flags.SpookyFlag)" @bind-Value="Flags.AlternateFiends">Alternate Fiends</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="noBossSkillScriptShuffleCheckBox" IsEnabled="@(Flags.EnemyScripts != false || Flags.EnemySkillsSpells != false)" @bind-Value="Flags.NoBossSkillScriptShuffle">Don't Shuffle Bosses' Scripts, Skills & Spells</TriStateCheckBox>
@@ -65,8 +62,16 @@
 
 			<div class="checkbox-cell"></div>
 			<h4>Custom player sprites</h4>
+			<p>@SpriteSheetMessage</p>
 			<ToolTipBox id="spriteSheetToolTipBox" UpdateToolTip="@UpdateToolTipID" />
 			<input type="file" id="spriteSheetInput" accept="image/*" @onchange="@OnSpriteSheetChanged" />
+			<a class="styled-button" @onclick="@ClearCustomSprites">Clear saved sprites</a>
+			<div class="checkbox-cell"></div>
+			<h4>Weapon randomization</h4>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="weaponizerCheckBox" @bind-Value="Flags.Weaponizer">Use Weaponizer</TriStateCheckBox>
+			<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="weaponizerPowersCheckBox" @bind-Value="Flags.WeaponizerCommonWeaponsHavePowers">Common weapons can have powers</TriStateCheckBox>
+			<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="weaponizerNamingCheckBox" @bind-Value="Flags.WeaponizerNamesUseQualityOnly">Using casting and quality names only</TriStateCheckBox>
+
 		</div>
 		<div class="col1 full">
 			<h4>Hints</h4>
@@ -127,21 +132,24 @@
 	[Parameter] public bool noTabLayout { get; set; }
 	[Parameter] public bool IsOpen { get; set; } = true;
 
+	private string SpriteSheetMessage = "No custom sprites loaded";
+
+	protected override void OnInitialized()
+	{
+		if (Flags.Preferences.SpriteSheet != null) {
+		  SpriteSheetMessage = "Using custom sprites.";
+		}
+	}
+
 		async Task OnSpriteSheetChanged(ChangeEventArgs e)
 		{
 		      Console.WriteLine("OnSpriteSheetChanged");
-			var encoded = await JSRuntime.InvokeAsync<string>("handleFileSelect", "spriteSheetInput");
-			SetSpriteSheetData(encoded);
-
-			/*if (RememberSprites)
-			{
-				await LocalStorage.SetItemAsync("spriteSheet", encoded);
-			}*/
+	              Flags.SpriteSheet = await JSRuntime.InvokeAsync<string>("handleFileSelect", "spriteSheetInput");
+		      SpriteSheetMessage = "Using custom sprites.";
 		}
 
-		void SetSpriteSheetData(string encoded)
-		{
-			Flags.SpriteSheet = Convert.FromBase64String(encoded);
+		void ClearCustomSprites() {
+		     Flags.SpriteSheet = null;
+		     SpriteSheetMessage = "No custom sprites.";
 		}
-
 }

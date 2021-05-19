@@ -148,6 +148,11 @@ namespace FF1Lib
 			var shopItemLocation = ItemLocations.CaravanItemShop1;
 			var oldItemNames = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
 
+			if ((bool)flags.NPCItems || (bool)flags.NPCFetchItems)
+			{
+				NPCShuffleDialogs();
+			}
+
 			if (flags.EFGWaterfall || flags.EFGEarth1 || flags.EFGEarth2)
 			{
 				MapRequirements reqs;
@@ -294,6 +299,10 @@ namespace FF1Lib
 				CraftNewSpellbook(rng, (bool)flags.SpellcrafterMixSpells, flags.LockMode, (bool)flags.MagicLevels, (bool)flags.SpellcrafterRetainPermissions);
 			}
 
+			if ((bool)flags.Weaponizer) {
+			    Weaponizer(rng, (bool)flags.WeaponizerNamesUseQualityOnly, (bool)flags.WeaponizerCommonWeaponsHavePowers);
+			}
+
 			if ((bool)flags.MagisizeWeapons)
 			{
 				MagisizeWeapons(rng, (bool)flags.MagisizeWeaponsBalanced);
@@ -412,9 +421,7 @@ namespace FF1Lib
 			    BahamutB1Encounters(maps);
 			}
 
-			if ((bool)flags.MapDragonsHoard) {
-			    DragonsHoard(maps);
-			}
+			DragonsHoard(maps, (bool)flags.MapDragonsHoard);
 
 			var shopData = new ShopData(this);
 			shopData.LoadData();
@@ -468,7 +475,7 @@ namespace FF1Lib
 							excludeItemsFromRandomShops.Add(Item.Masamune);
 						}
 
-						if ((bool)flags.NoXcalbur)
+						if ((bool)flags.NoXcalber)
 						{
 							excludeItemsFromRandomShops.Add(Item.Xcalber);
 						}
@@ -726,7 +733,7 @@ namespace FF1Lib
 				SetMaxLevel(flags, rng);
 			}
 
-			if ((bool)flags.TrappedChests || (bool)flags.TCMasaGuardian || (bool)flags.TrappedShards || (bool)flags.TrappedChaos)
+			if ((bool)flags.TrappedChestsEnabled)
 			{
 				MonsterInABox(rng, flags);
 			}
@@ -789,9 +796,9 @@ namespace FF1Lib
 				ThiefHitRate();
 			}
 
-			if (flags.ThiefAgilityBuff)
+			if (flags.ThiefAgilityBuff != ThiefAGI.Vanilla)
 			{
-			        BuffThiefAGI();
+			        BuffThiefAGI(flags.ThiefAgilityBuff);
 			}
 
 			if (flags.ImproveTurnOrderRandomization)
@@ -926,9 +933,7 @@ namespace FF1Lib
 				ShopUpgrade();
 			}
 
-			if (flags.BugfixRender3DigitStats) {
-			    Fix3DigitStats();
-			}
+			Fix3DigitStats();
 
 			if ((bool)flags.FightBahamut && !flags.SpookyFlag && !(bool)flags.RandomizeFormationEnemizer)
 			{
@@ -1001,6 +1006,13 @@ namespace FF1Lib
 			if (preferences.DisableSpellCastFlash)
 			{
 				DisableSpellCastScreenFlash();
+			}
+
+			if (preferences.SpriteSheet != null) {
+			    using (var stream = new MemoryStream(Convert.FromBase64String(preferences.SpriteSheet)))
+			    {
+				SetCustomPlayerSprites(stream, preferences.ThirdBattlePalette);
+			    }
 			}
 
 			owMapExchange?.ExecuteStep2();

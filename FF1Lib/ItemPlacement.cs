@@ -77,7 +77,7 @@ namespace FF1Lib
 
 		protected abstract ItemPlacementResult DoSanePlacement(MT19337 rng, ItemPlacementContext ctx);
 
-		public List<IRewardSource> PlaceSaneItems(MT19337 rng)
+		public List<IRewardSource> PlaceSaneItems(MT19337 rng, FF1Rom rom)
 		{
 			var incentivePool = _incentivesData.IncentiveItems.Where(x => _allTreasures.Contains(x)).ToList();
 			var forcedItems = _incentivesData.ForcedItemPlacements.ToList();
@@ -123,7 +123,8 @@ namespace FF1Lib
 			};
 
 			ItemPlacementResult result = DoSanePlacement(rng, ctx);
-			var placedItems = result.PlacedItems;
+			List<IRewardSource> placedItems = result.PlacedItems;
+
 			treasurePool = result.RemainingTreasures;
 
 			if ((bool)_flags.FreeBridge)
@@ -153,6 +154,20 @@ namespace FF1Lib
 			if ((bool)_flags.FreeTail || (bool)_flags.NoTail)
 			{
 				placedItems = placedItems.Select(x => x.Item != Item.Tail ? x : NewItemPlacement(x, ReplacementItem)).ToList();
+			}
+
+			//setup jingle for "incentive treasures", the placed items should just be key items, loose incentive items
+			if (_flags.IncentiveChestItemsFanfare)
+			{
+				foreach (var placedItem in placedItems)
+				{
+					//dont make shards jingle that'd be annoying
+					//dont make free items that get replaced, aka cabins, jingle
+					if (placedItem is TreasureChest && placedItem.Item != Item.Shard && placedItem.Item != ReplacementItem)
+					{
+						rom.Put(placedItem.Address - FF1Rom.TreasureOffset + FF1Rom.TreasureJingleOffset, new byte[] { 0x01 });
+					}
+				}
 			}
 
 			if (_flags.Spoilers || Debugger.IsAttached)
@@ -191,7 +206,7 @@ namespace FF1Lib
 
 			MoreConsumableChests.Work(_flags, treasurePool, rng);
 
-			if((bool)_flags.NoXcalbur)
+			if((bool)_flags.NoXcalber)
 			{
 				//xcal can not be in the treasure pool due to forced item placements of fetch quest npc
 				if(treasurePool.Contains(Item.Xcalber))
@@ -590,10 +605,17 @@ namespace FF1Lib
 				var leftoverItems = incentives.Concat(nonincentives).ToList();
 				leftoverItems.Shuffle(rng);
 
-				var leftoverItemLocations = preBlackOrbLocationPool.Where(x => !placedItems.Any(y => y.Address == x.Address)).ToList();
+				var (_, accessibleMapLocations, fulfilledRequirements) = _checker.CheckSanity(placedItems, fullLocationRequirements, _flags);
 
-				if ((bool)_flags.LooseExcludePlacedDungeons)
-					leftoverItemLocations = preBlackOrbUnincentivizedLocationPool.Where(x => !placedItems.Any(y => y.Address == x.Address)).ToList();
+				IEnumerable<IRewardSource> looseLocationPool;
+				if ((bool)_flags.LooseExcludePlacedDungeons) {
+				    looseLocationPool = preBlackOrbUnincentivizedLocationPool;
+				} else {
+				    looseLocationPool = preBlackOrbLocationPool;
+				}
+				var leftoverItemLocations = looseLocationPool.Where(x => !placedItems.Any(y => y.Address == x.Address)
+									       && _checker.IsRewardSourceAccessible(x, fulfilledRequirements, accessibleMapLocations)).ToList();
+
 
 				// Place leftover items before placing shards, because if LooseExcludePlacedDungeons is set,
 				// and there are lots of incentive locations, leftoverItemLocations pool may be small.
@@ -603,7 +625,9 @@ namespace FF1Lib
 				}
 
 				if (shards.Count > 0) {
-				    leftoverItemLocations = preBlackOrbLocationPool.Where(x => !placedItems.Any(y => y.Address == x.Address)).ToList();
+				    // Place shards.  These are not affected by the LooseExcludePlacedDungeons flag.
+				    leftoverItemLocations = preBlackOrbLocationPool.Where(x => !placedItems.Any(y => y.Address == x.Address)
+											  && _checker.IsRewardSourceAccessible(x, fulfilledRequirements, accessibleMapLocations)).ToList();
 				    foreach (var shard in shards)
 				    {
 					placedItems.Add(NewItemPlacement(leftoverItemLocations.SpliceRandom(rng), shard));
