@@ -549,6 +549,12 @@ namespace FF1Lib
 		public bool? LegendaryWhiteShop { get; set; } = false;
 		public bool? LegendaryItemShop { get; set; } = false;
 
+		public bool ExclusiveLegendaryWeaponShop { get; set; } = false;
+		public bool ExclusiveLegendaryArmorShop { get; set; } = false;
+		public bool ExclusiveLegendaryBlackShop { get; set; } = false;
+		public bool ExclusiveLegendaryWhiteShop { get; set; } = false;
+		public bool ExclusiveLegendaryItemShop { get; set; } = false;
+
 		[IntegerFlag(0, 4)]
 		public int RandomizeClassMaxBonus { get; set; } = 2;
 

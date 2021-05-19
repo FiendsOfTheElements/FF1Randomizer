@@ -36,6 +36,36 @@
 		"description": "Mixed Up shuffles spell names. Madness creates random codewords. Go and pull your hairs out."
 	},
 	{
+		"Id": "exlegendaryWeaponShopCheckBox",
+		"title": "Exclusive Legendary Weapon Shop",
+		"screenshot": null,
+		"description": "Removes legendary shop entries from all other shops and treasure chest."
+	},
+	{
+		"Id": "exlegendaryArmorShopCheckBox",
+		"title": "Exclusive Legendary Armor Shop",
+		"screenshot": null,
+		"description": "Removes legendary shop entries from all other shops and treasure chest."
+	},
+	{
+		"Id": "exlegendaryBlackShopCheckBox",
+		"title": "Exclusive Legendary Black Shop",
+		"screenshot": null,
+		"description": "Removes legendary shop entries from all other shops."
+	},
+	{
+		"Id": "exlegendaryWhiteShopCheckBox",
+		"title": "Exclusive Legendary White Shop",
+		"screenshot": null,
+		"description": "Removes legendary shop entries from all other shops."
+	},
+	{
+		"Id": "exlegendaryItemShopCheckBox",
+		"title": "Exclusive Legendary Item Shop",
+		"screenshot": null,
+		"description": "Removes legendary shop entries from all other shops."
+	},
+	{
 		"Id": "startingEquipmentDragonslayer",
 		"title": "Starting Equipment - Dragonslayer",
 		"screenshot": null,
