@@ -36,16 +36,22 @@
 		"description": "Mixed Up shuffles spell names. Madness creates random codewords. Go and pull your hairs out."
 	},
 	{
+		"Id": "startingEquipmentHealStaff",
+		"title": "Hide Flags",
+		"screenshot": null,
+		"description": "HealStaff, or any low level Heal casting weapon, or Heal Helment if nothing else found."
+	},
+	{
 		"Id": "startingEquipmentDragonslayer",
 		"title": "Starting Equipment - Dragonslayer",
 		"screenshot": null,
-		"description": "Dragon Armor, Dragon Sword"
+		"description": "Dragon Armor, Dragon Sword\nIncompatible with Weaponizer."
 	},
 	{
 		"Id": "startingEquipmentLegendKit",
 		"title": "Starting Equipment - Legendary Kit",
 		"screenshot": null,
-		"description": "Xcalibur, Opal Armor, Opal Gautlents, Opal Helm, Opal Shield"
+		"description": "Xcalibur, Opal Armor, Opal Gautlents, Opal Helm, Opal Shield\nIncompatible with Weaponizer."
 	},
 	{
 		"Id": "startingEquipmentGrandpasSecretStash",
