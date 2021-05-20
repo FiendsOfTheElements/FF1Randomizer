@@ -1425,6 +1425,12 @@
 		"description": "In shops, characters will strike their victory pose if they can equip a piece of equipment or learn a spell.\nPress Select to show a description of an item or a spell."
 	},
 	{
+		"Id": "chestInfoCheckBox",
+		"title": "Chest Information",
+		"screenshot": null,
+		"description": "Shows the Shop Information when opening treasure chests."
+	},
+	{
 		"Id": "incentiveChestItemsFanfareCheckBox",
 		"title": "Gear Incentive Chest Items Fanfare",
 		"screenshot": null,
