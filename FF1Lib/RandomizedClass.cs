@@ -979,7 +979,7 @@ namespace FF1Lib
 				weaponsList.Add(new Weapon(i, this));
 				if(weaponsList.Last().Icon == WeaponIcon.NONE)
 				{
-					weaponsList.Last().Icon = classData[(int)AuthClass.BlackWizard].wpPermissions.Contains((Item)(weaponsList.Last().WeaponIndex + (int)Item.WoodenNunchucks)) ? WeaponIcon.KNIFE : WeaponIcon.SWORD;
+					weaponsList.Last().Icon = classData[(int)AuthClass.BlackWizard].wpPermissions.Contains(weaponsList.Last().Id) ? WeaponIcon.KNIFE : WeaponIcon.SWORD;
 				}
 			}
 
@@ -1014,28 +1014,28 @@ namespace FF1Lib
 
 			List<List<Item>> wpHammer = new List<List<Item>>();
 			wpHammer.AddRange(new List<List<Item>> { new List<Item>(), new List<Item>(), new List<Item>(), new List<Item>(), new List<Item>(), new List<Item>() });
-			wpHammer.Add(weaponsList.Where(x => x.Icon == WeaponIcon.HAMMER).Select(x => (Item)(x.WeaponIndex + (int)Item.WoodenNunchucks)).ToList());
+			wpHammer.Add(weaponsList.Where(x => x.Icon == WeaponIcon.HAMMER).Select(x => x.Id).ToList());
 
 			List<List<Item>> wpStaff = new List<List<Item>>();
 			wpStaff.AddRange(new List<List<Item>> { new List<Item>(), new List<Item>(), new List<Item>(), new List<Item>(), new List<Item>(), new List<Item>() });
-			wpStaff.Add(weaponsList.Where(x => x.Icon == WeaponIcon.STAFF).Select(x => (Item)(x.WeaponIndex + (int)Item.WoodenNunchucks)).ToList());
+			wpStaff.Add(weaponsList.Where(x => x.Icon == WeaponIcon.STAFF).Select(x => x.Id).ToList());
 
 			List<List<Item>> wpKnife = new List<List<Item>>();
 			wpKnife.AddRange(new List<List<Item>> { new List<Item>(), new List<Item>(), new List<Item>(), new List<Item>(), new List<Item>(), new List<Item>() });
-			wpKnife.Add(weaponsList.Where(x => x.Icon == WeaponIcon.KNIFE).Select(x => (Item)(x.WeaponIndex + (int)Item.WoodenNunchucks)).ToList());
+			wpKnife.Add(weaponsList.Where(x => x.Icon == WeaponIcon.KNIFE).Select(x => x.Id).ToList());
 			
 			List<List<Item>> wpNunchuck = new List<List<Item>>();
 			wpNunchuck.AddRange(new List<List<Item>> { new List<Item>(), new List<Item>(), new List<Item>(), new List<Item>(), new List<Item>(), new List<Item>() });
-			wpNunchuck.Add(weaponsList.Where(x => x.Icon == WeaponIcon.CHUCK).Select(x => (Item)(x.WeaponIndex + (int)Item.WoodenNunchucks)).ToList());
+			wpNunchuck.Add(weaponsList.Where(x => x.Icon == WeaponIcon.CHUCK).Select(x => x.Id).ToList());
 
 			List<List<Item>> wpAxe = new List<List<Item>>();
 			wpAxe.AddRange(new List<List<Item>> { new List<Item>(), new List<Item>(), new List<Item>(), new List<Item>(), new List<Item>(), new List<Item>() });
-			wpAxe.Add(weaponsList.Where(x => x.Icon == WeaponIcon.AXE).Select(x => (Item)(x.WeaponIndex + (int)Item.WoodenNunchucks)).ToList());
+			wpAxe.Add(weaponsList.Where(x => x.Icon == WeaponIcon.AXE).Select(x => x.Id).ToList());
 
 			List<List<Item>> wpSword = new List<List<Item>>();
 			wpSword.AddRange(new List<List<Item>> { new List<Item>(), new List<Item>(), new List<Item>(), new List<Item>() });
 
-			var swordsList = weaponsList.Where(x => x.Icon == WeaponIcon.SWORD).Select(x => (Item)(x.WeaponIndex + (int)Item.WoodenNunchucks)).ToList();
+			var swordsList = weaponsList.Where(x => x.Icon == WeaponIcon.SWORD).Select(x => x.Id).ToList();
 			var figherPermissions = classData[(int)AuthClass.Fighter].wpPermissions.Where(x => swordsList.Contains(x)).ToList();
 			var thiefPermissions = classData[(int)AuthClass.Thief].wpPermissions.Where(x => swordsList.Contains(x)).ToList();
 			var knightPermissions = classData[(int)AuthClass.Knight].wpPermissions.Where(x => x != Item.Xcalber).ToList();
