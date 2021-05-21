@@ -150,6 +150,7 @@
 		bool? AllowDeepTowns { get; }
 		bool? AllowUnsafeStartArea { get; }
 		bool? IsFloaterRemoved { get; }
+	        bool? IsAirshipFree { get; }
 		bool? MapBahamutCardiaDock { get; }
 	}
 	public interface IVictoryConditionFlags

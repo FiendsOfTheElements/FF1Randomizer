@@ -620,7 +620,7 @@ namespace FF1Lib
 		public bool? IsShipFree => FreeShip | NoOverworld;
 		public bool? IsAirshipFree => FreeAirship & !NoOverworld;
 		public bool? IsCanalFree => FreeCanal & !NoOverworld;
-		public bool? IsFloaterRemoved => NoFloater & !NoOverworld;
+		public bool? IsFloaterRemoved => (NoFloater|IsAirshipFree) & !NoOverworld;
 		public bool IncentivizeBridge => false;
 		public bool? IncentivizeCanoe => NPCItems & IncentivizeCanoeItem & !FreeCanoe;
 		public bool? IncentivizeLute => NPCItems & !FreeLute & IncentivizeMainItems;
