@@ -131,7 +131,7 @@ namespace FF1Lib
 			{
 				placedItems = placedItems.Select(x => x.Item != Item.Bridge ? x : NewItemPlacement(x, ReplacementItem)).ToList();
 			}
-			if (((bool)_flags.IsAirshipFree || (bool)_flags.IsFloaterRemoved))
+			if ((bool)_flags.IsFloaterRemoved)
 			{
 				placedItems = placedItems.Select(x => x.Item != Item.Floater ? x : NewItemPlacement(x, ReplacementItem)).ToList();
 			}
