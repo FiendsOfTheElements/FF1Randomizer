@@ -653,20 +653,6 @@ namespace FF1Lib
 			// Titan's Tunnel adjustments. The Titan Fed requirement implies access to one side of the tunnel,
 			// so it is sufficient to say feeding the titan will grant access to all walkable and canoeable nodes
 			// from either entrance.
-
-			//if ((bool)flags.IsFloaterRemoved && !(bool)flags.IsAirshipFree) {
-			    // Floater is removed.  The west end of
-			    // Titan's tunnel is pinned, so the Titan
-			    // has to be fed to access these
-			    // locations.
-			//MapLocationRequirements[MapLocation.SardasCave] = new List<MapChange> { MapChange.TitanFed };
-			//MapLocationRequirements[MapLocation.TitansTunnelWest] = new List<MapChange> { MapChange.TitanFed };
-
-			    /*MapLocationRequirements[MapLocation.TitansTunnelWest].Clear();
-			    foreach (var loc in defaultRequirements[ItemLocations.OverworldToMapLocation[titanEast.Key]].MapChanges) {
-				MapLocationRequirements[MapLocation.TitansTunnelWest].Add(loc | MapChange.TitanFed);
-				}*/
-			//}
 			foreach (var key in titanWalkLocations)
 			{
 				MapLocationRequirements[key].Add(MapChange.TitanFed);
