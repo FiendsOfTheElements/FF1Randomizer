@@ -3781,6 +3781,12 @@ namespace FF1Lib
 					formations[i].tileset = 0;
 					formations[i].pal1 = variants[formations[i].id[0]].pal;
 					formations[i].pal1 = variants[formations[i].id[1]].pal;
+
+					if((flags.TrappedChaos ?? false) && formations[i].id.Any(id => id == 127))
+					{
+						formations[i].unrunnable_a = false;
+						formations[i].unrunnable_b = false;
+					}
 				}
 
 				StoreEnemyNames(enemyNames);
