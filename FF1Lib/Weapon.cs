@@ -647,6 +647,9 @@ namespace FF1Lib
 
 	public class Weapon
 	{
+		public Item Id => (Item)(WeaponIndex + (int)Item.WoodenNunchucks);
+		public Spell Spell => SpellIndex == 0xFF ? 0 : (Spell)(SpellIndex - 1 + (int)Spell.CURE);
+
 		//index
 		public int WeaponIndex;
 
@@ -724,6 +727,15 @@ namespace FF1Lib
 			TypeWeakness = typeWeakeness;
 			WeaponTypeSprite = weaponTypeSprite;
 			WeaponSpritePaletteColor = weaponSpritePaletteColor;
+		}
+
+		public static IEnumerable<Weapon> LoadAllWeapons(FF1Rom rom, Flags flags)
+		{
+			int i = flags.EnableExtConsumables ? 4 : 0;
+			for (; i < 40; i++)
+			{
+				yield return new Weapon(i, rom);
+			}
 		}
 
 		public void setClassUsability(ushort classUsability)

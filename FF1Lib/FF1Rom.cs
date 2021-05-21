@@ -148,6 +148,11 @@ namespace FF1Lib
 			var shopItemLocation = ItemLocations.CaravanItemShop1;
 			var oldItemNames = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
 
+			if ((bool)flags.NPCItems || (bool)flags.NPCFetchItems)
+			{
+				NPCShuffleDialogs();
+			}
+
 			if (flags.EFGWaterfall || flags.EFGEarth1 || flags.EFGEarth2)
 			{
 				MapRequirements reqs;
@@ -313,17 +318,17 @@ namespace FF1Lib
 				CraftRuseItem();
 			}
 
-			if ((bool)flags.ShortToFR)
+			if ((bool)flags.ShortToFR && !flags.DeepDungeon)
 			{
 				ShortenToFR(maps, (bool)flags.PreserveFiendRefights, (bool)flags.PreserveAllFiendRefights, (bool)flags.ExitToFR, (bool)flags.LutePlateInShortToFR, rng);
 			}
 
-			if ((bool)flags.ExitToFR)
+			if ((bool)flags.ExitToFR && !flags.DeepDungeon)
 			{
 				EnableToFRExit(maps);
 			}
 
-			if (((bool)flags.Treasures) && flags.ShardHunt && !flags.FreeOrbs)
+			if (((bool)flags.Treasures) && flags.ShardHunt && !flags.FreeOrbs && !flags.DeepDungeon)
 			{
 				EnableShardHunt(rng, talkroutines, flags.ShardCount);
 			}
@@ -416,9 +421,7 @@ namespace FF1Lib
 			    BahamutB1Encounters(maps);
 			}
 
-			if ((bool)flags.MapDragonsHoard) {
-			    DragonsHoard(maps);
-			}
+			DragonsHoard(maps, (bool)flags.MapDragonsHoard);
 
 			var shopData = new ShopData(this);
 			shopData.LoadData();
@@ -434,7 +437,7 @@ namespace FF1Lib
 				try
 				{
 					overworldMap = new OverworldMap(this, flags, palettes, teleporters);
-					if (((bool)flags.Entrances || (bool)flags.Floors || (bool)flags.Towns) && ((bool)flags.Treasures) && ((bool)flags.NPCItems))
+					if (((bool)flags.Entrances || (bool)flags.Floors || (bool)flags.Towns) && ((bool)flags.Treasures) && ((bool)flags.NPCItems) && !flags.DeepDungeon)
 					{
 						overworldMap.ShuffleEntrancesAndFloors(rng, flags);
 
@@ -443,7 +446,7 @@ namespace FF1Lib
 							talkroutines.ReplaceChunk(newTalkRoutines.Talk_Princess1, Blob.FromHex("20CC90"), Blob.FromHex("EAEAEA"));
 					}
 
-					if ((bool)flags.Treasures && (bool)flags.ShuffleObjectiveNPCs)
+					if ((bool)flags.Treasures && (bool)flags.ShuffleObjectiveNPCs && !flags.DeepDungeon)
 					{
 						overworldMap.ShuffleObjectiveNPCs(rng);
 					}
@@ -478,10 +481,11 @@ namespace FF1Lib
 						}
 
 						shopItemLocation = ShuffleShops(rng, (bool)flags.ImmediatePureAndSoftRequired, ((bool)flags.RandomWares), excludeItemsFromRandomShops, flags.WorldWealth, overworldMap.ConeriaTownEntranceItemShopIndex);
+
 						incentivesData = new IncentiveData(rng, flags, overworldMap, shopItemLocation, checker);
 					}
 
-					if ((bool)flags.Treasures)
+					if ((bool)flags.Treasures && !flags.DeepDungeon)
 					{
 						if(flags.SanityCheckerV2) checker = new SanityCheckerV2(maps, overworldMap, npcdata, this, shopItemLocation, shipLocations);
 						generatedPlacement = ShuffleTreasures(rng, flags, incentivesData, shopItemLocation, overworldMap, teleporters, checker);
@@ -535,6 +539,12 @@ namespace FF1Lib
 			shopData.LoadData();
 
 			new LegendaryShops(rng, flags, maps, flippedMaps, shopData, this).PlaceShops();
+
+			if (flags.DeepDungeon)
+			{
+				shopData.Shops.Find(x => x.Type == FF1Lib.ShopType.Item && x.Entries.Contains(Item.Bottle)).Entries.Remove(Item.Bottle);
+				shopData.StoreData();
+			}		
 
 			//has to be done before modifying itemnames and after modifying spellnames...
 			extConsumables.LoadSpells();

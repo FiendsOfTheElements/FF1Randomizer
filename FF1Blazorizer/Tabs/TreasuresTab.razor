@@ -6,7 +6,7 @@
 	{
 <div class="col1">
 	<h4>Item Shuffle</h4>
-	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="treasuresCheckBox" @bind-Value="Flags.Treasures">Treasures</TriStateCheckBox>
+	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="treasuresCheckBox" IsEnabled="@(!Flags.DeepDungeon)" @bind-Value="Flags.Treasures">Treasures</TriStateCheckBox>
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="randomLootCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.RandomLoot">Randomize Treasures</TriStateCheckBox>
 	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Indent Id="worldWealthDropDown" TItem="WorldWealthMode" IsEnabled="@Flags.Treasures" @bind-Value="Flags.WorldWealth">Random Wealth:</EnumDropDown>
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="betterTrapTreasureCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.BetterTrapTreasure">Better Trap Treasure</TriStateCheckBox>
@@ -26,7 +26,7 @@
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="masaGuardianCheckBox" @bind-Value="Flags.TCMasaGuardian">WarMech, Guardian of Masamune</TriStateCheckBox>
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="trappedChaosCheckBox" @bind-Value="Flags.TrappedChaos">Hidden Chaos</TriStateCheckBox>
 	<div class="checkbox-cell"></div>
-	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="tcProtectIncentivesCheckBox" @bind-Value="Flags.TCProtectIncentives">Protect Incentivized Items</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="tcProtectIncentivesCheckBox" @bind-Value="Flags.TCProtectIncentives">Exclude Incentivized Items</CheckBox>
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="trappedMarkCheckBox" @bind-Value="Flags.TCIndicator">Trapped Chests are Marked</TriStateCheckBox>
 	<div class="checkbox-cell"></div>
 </div>
