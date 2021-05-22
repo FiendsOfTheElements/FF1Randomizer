@@ -743,6 +743,11 @@ namespace FF1Lib
 			if ((bool)flags.TrappedChestsEnabled)
 			{
 				MonsterInABox(rng, flags);
+
+				if((bool)flags.TrappedChaos)
+				{
+					SetChaosForMIAB(npcdata);
+				}
 			}
 
 			if (!flags.Etherizer && (flags.HouseMPRestoration || flags.HousesFillHp))

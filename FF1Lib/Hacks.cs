@@ -1933,7 +1933,7 @@ namespace FF1Lib
 			Put(0x37F20, intro);
 
 			var validTalk = new List<newTalkRoutines> { newTalkRoutines.Talk_norm, newTalkRoutines.Talk_GoBridge, newTalkRoutines.Talk_ifearthfire, newTalkRoutines.Talk_ifearthvamp, newTalkRoutines.Talk_ifevent, newTalkRoutines.Talk_ifitem, newTalkRoutines.Talk_ifkeytnt, newTalkRoutines.Talk_ifvis, newTalkRoutines.Talk_Invis, newTalkRoutines.Talk_4Orb, newTalkRoutines.Talk_kill };
-			var invalidZombie = new List<ObjectId> { ObjectId.Bat, ObjectId.GaiaBroom, ObjectId.MatoyaBroom1, ObjectId.MatoyaBroom2, ObjectId.MatoyaBroom3, ObjectId.MatoyaBroom4, ObjectId.MirageRobot1, ObjectId.MirageRobot2, ObjectId.MirageRobot3, ObjectId.SkyRobot, ObjectId.LutePlate, ObjectId.RodPlate, ObjectId.SkyWarrior1, ObjectId.SkyWarrior2, ObjectId.SkyWarrior3, ObjectId.SkyWarrior4, ObjectId.SkyWarrior5 };
+			var invalidZombie = new List<ObjectId> { ObjectId.Bat, ObjectId.GaiaBroom, ObjectId.MatoyaBroom1, ObjectId.MatoyaBroom2, ObjectId.MatoyaBroom3, ObjectId.MatoyaBroom4, ObjectId.MirageRobot1, ObjectId.MirageRobot2, ObjectId.MirageRobot3, ObjectId.SkyRobot, ObjectId.LutePlate, ObjectId.RodPlate, ObjectId.SkyWarrior1, ObjectId.SkyWarrior2, ObjectId.SkyWarrior3, ObjectId.SkyWarrior4, ObjectId.SkyWarrior5, (ObjectId)0x18, (ObjectId)0x19, (ObjectId)0x1A };
 			var validZombie = new List<ObjectId>();
 
 			if (flags.HintsVillage ?? false)
@@ -1975,7 +1975,6 @@ namespace FF1Lib
 			evilDialogs.Add(0x33, "Barf!");
 			evilDialogs.Add(0x34, "Uaaaaaargh!");
 			evilDialogs.Add(0x36, "Groaaarn!");
-
 
 			evilDialogs.Add(0x04, "What the hell!?\nThat princess is crazy,\nshe tried to bite me!\n\nThat's it. Screw that.\nI'm going home.");
 
@@ -2052,32 +2051,42 @@ namespace FF1Lib
 			npcdata.SetRoutine(ObjectId.Lefein, (newTalkRoutines)battleGiveOnFlag);
 
 			evilDialogs.Add(0xFA, "Sorry, LIGHT WARRIORS,\nbut your LICH is in\nanother castle!\n\nMwahahahaha!");
-			evilDialogs.Add(0x2F, "You did well fighting\nmy Army of Darkness,\nLIGHT WARRIORS! But it\nis for naught!\nI am UNSTOPPABLE!\nThis time, YOU are\nthe SPEEDBUMP!");
-			evilDialogs.Add(0x30, "HAHA! Alright, enough\nplaying around.");
+
+			if(!(bool)flags.TrappedChaos)
+			{
+				// Add new Chaos dialogues
+				evilDialogs.Add(0x2F, "You did well fighting\nmy Army of Darkness,\nLIGHT WARRIORS! But it\nis for naught!\nI am UNSTOPPABLE!\nThis time, YOU are\nthe SPEEDBUMP!");
+				evilDialogs.Add(0x30, "HAHA! Alright, enough\nplaying around.");
+
+				// Update Chaos NPC
+				Put(0x2F00 + 0x18, Blob.FromHex("00"));
+				Put(0x2F00 + 0x19, Blob.FromHex("01"));
+				Put(0x2F00 + 0x1A, Blob.FromHex("00"));
+
+				// Update Chaos' Sprite
+				Data[MapObjGfxOffset + 0x1A] = 0x0F;
+				Data[MapObjGfxOffset + 0x19] = 0x0F;
+
+				// Update Chaos' Palette
+				PutInBank(0x00, 0xA000 + ((byte)MapId.TempleOfFiendsRevisitedChaos * 0x30) + 0x18, Blob.FromHex("0F0F13300F0F1530"));
+
+				// Add Lich? fight
+				npcdata.GetTalkArray((ObjectId)0x19)[0] = 0x2F;
+				npcdata.GetTalkArray((ObjectId)0x19)[(int)TalkArrayPos.battle_id] = bossLichMech;
+				npcdata.GetTalkArray((ObjectId)0x19)[2] = 0x2F;
+				npcdata.GetTalkArray((ObjectId)0x19)[3] = 0x1A;
+
+				// Real Lich fight
+				npcdata.SetRoutine((ObjectId)0x19, (newTalkRoutines)lichReplace);
+			}
 
 			InsertDialogs(evilDialogs);
-
-			// Update Chaos sprite
-			Put(0x2F00 + 0x18, Blob.FromHex("00"));
-			Put(0x2F00 + 0x19, Blob.FromHex("01"));
-			Put(0x2F00 + 0x1A, Blob.FromHex("00"));
-			Data[MapObjGfxOffset + 0x1A] = 0x0F;
-			Data[MapObjGfxOffset + 0x19] = 0x0F;
-			PutInBank(0x00, 0xA000 + ((byte)MapId.TempleOfFiendsRevisitedChaos * 0x30) + 0x18, Blob.FromHex("0F0F13300F0F1530"));
-
-			npcdata.SetRoutine((ObjectId)0x19, (newTalkRoutines)lichReplace);
 
 			for (int i = 0; i < 4; i++)
 			{
 				if (npcdata.GetTalkArray((ObjectId)(0x1B + i))[(int)TalkArrayPos.battle_id] == encLich1)
 					npcdata.GetTalkArray((ObjectId)(0x1B + i))[(int)TalkArrayPos.battle_id] = encLich2 + 0x80;
 			}
-
-			npcdata.GetTalkArray((ObjectId)0x19)[0] = 0x2F;
-			npcdata.GetTalkArray((ObjectId)0x19)[(int)TalkArrayPos.battle_id] = bossLichMech;
-			npcdata.GetTalkArray((ObjectId)0x19)[2] = 0x2F;
-			npcdata.GetTalkArray((ObjectId)0x19)[3] = 0x1A;
-
 			npcdata.GetTalkArray(ObjectId.WarMECH)[(int)TalkArrayPos.battle_id] = bossLichMech;
 
 			// Switch princess
@@ -2125,7 +2134,6 @@ namespace FF1Lib
 
 			Data[0x2000 + ((byte)MapId.Lefein * 0x30) + 0x18 + 0x03] = 0x3A;
 			Data[0x2000 + ((byte)MapId.Lefein * 0x30) + 0x18 + 0x07] = 0x3A;
-
 
 			// Let zombies roam free
 			var npcMap = new List<MapId> { MapId.Cardia, MapId.BahamutsRoomB2, MapId.Coneria, MapId.ConeriaCastle1F, MapId.ConeriaCastle2F, MapId.CrescentLake, MapId.DwarfCave, MapId.Elfland, MapId.ElflandCastle, MapId.Gaia, MapId.Lefein, MapId.Melmond, MapId.Onrac, MapId.Pravoka };
