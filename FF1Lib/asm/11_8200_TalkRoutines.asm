@@ -1,4 +1,4 @@
-;;  TalkRoutines - 2020-12-24
+;;  TalkRoutines - 2021-05-23
 ;;
 ;;  This create 3 new talk routines and modify others
 ;;   - Talk_GiveItemOnFlag : Allow a NPC to give any item if the required flag is enabled
@@ -51,6 +51,8 @@ object_id = talkarray+6
 
 dlg_itemid = $61
 dlgsfx = $7D
+
+btl_result      = $6B86
 
 CheckGameEventFlag = $9079
 SetGameEventFlag = $907F
@@ -710,7 +712,7 @@ FindEmptyWeaponSlot = $DD34
 FindEmptyArmorSlot = $DD46
 
 ; Trigger a battle inside the talk routine
-InTalkBattle:
+InTalkBattleNoRun:
   STA btlformation         ; store battle formation
   JSR BattleTransition     ; Do transition
   LDA #$00
@@ -787,6 +789,29 @@ lut_TargetJump_Lo:
  .BYTE <DialogueBox-1, <EnterBattle_R, <LoadBattleCHRPal_R, <ReenterStandardMap-1
 
 
+  .ORG $B100
+
+InTalkBattle:
+  STA btlformation         ; store battle formation
+  JSR BattleTransition     ; Do transition
+  LDA #$00
+  STA $2001
+  STA $4015
+  LDY #$02
+  JSR JumpThenSwapPRG      ; LoadBattleCHRPal
+  LDY #$01
+  JSR JumpThenSwapPRG      ; EnterBattle
+  LDA #$03
+  CMP btl_result          ; Check if we ran from battle
+  BNE WonBattle           ; If we did
+  JSR InTalkReenterMap  ; Skip giving the item
+  PLA
+  PLA
+  JMP SkipDialogueBox
+WonBattle:  
+  RTS
+
+
  .ORG $0000
  
 ; Alternative routine when Shuffle Astos select Bahamut 
@@ -837,3 +862,34 @@ Default_As6:
   LDA dialogue_1		; Show default dialog
 End_As6:
   RTS
+
+  ; Extra routines for No Overworld
+has_canoe            = unsram + $12 ; 
+
+Talk_Canoe:
+  LDA has_canoe              ; see if the player has the Oxyale
+  BNE HaveCanoe              ; if they don't...
+    LDA talkarray+1           ; ...print [1]
+    RTS
+HaveCanoe:      
+  LDY talkarray+6             ; otherwise (they do)
+  JSR HideMapObject           ; hide the sub engineer object (this object)
+  LDA talkarray+2             ; and print [2]
+  RTS
+
+  NOP
+  NOP
+  
+Talk_Floater:
+  LDA item_floater            ; see if the player has the Oxyale
+  BNE HaveFloater             ; if they don't...
+    LDA talkarray+1           ; ...print [1]
+    RTS
+HaveFloater:      
+  LDY talkarray+6             ; otherwise (they do)
+  JSR HideMapObject           ; hide the sub engineer object (this object)
+  LDA talkarray+2             ; and print [2]
+  RTS
+
+  NOP
+  NOP

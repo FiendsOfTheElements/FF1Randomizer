@@ -1,5 +1,5 @@
 ; 
-; TrappedChests - 2021-01-31
+; TrappedChests - 2021-05-23
 ;
 ; Modify OpenTreasureChest to check for traps
 ;  and trigger a battle if there's one for a
@@ -27,7 +27,7 @@ GMFLG_TCOPEN		= $04
 lut_TrappedChest	= $8F00
 lut_Treasure		= $B100   ; BANK_TREASURE
 
-InTalkBattle		= $9600 
+InTalkBattleNoRun   = $9600 
 InTalkReenterMap 	= $9618
 CheckCanTake		= $9620
 InTalkDialogueBox	= $963D
@@ -64,7 +64,7 @@ CheckTrap:
       LDA #$C0                ; Show "Monster-in-a-box!"
       JSR InTalkDialogueBox   
       LDA btlformation        ; Get back battle formation
-      JSR InTalkBattle        ; Trigger the battle
+      JSR InTalkBattleNoRun   ; Trigger the battle
       LDA #$03
       CMP btl_result          ; Check if we ran from battle
       BNE WonBattle           ; If we did

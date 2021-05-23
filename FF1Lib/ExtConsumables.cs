@@ -73,8 +73,6 @@ namespace FF1Lib
 			CreateSmokeSpell();
 
 			ClearShops();
-
-			WriteInTalkBattleFix();
 		}
 
 		private void ChangeItemJumpTable()
@@ -190,14 +188,6 @@ namespace FF1Lib
 		private void ModifyBattleLogicLoop()
 		{
 			rom.PutInBank(0x0C, 0x9455, Blob.FromHex("20C6A3"));
-		}
-
-		private void WriteInTalkBattleFix()
-		{
-			var InTalkBattle = rom.GetFromBank(0x11, 0x9600, 25);
-			rom.PutInBank(0x11, 0xB100, InTalkBattle);
-
-			rom.PutInBank(0x11, 0x9600, Blob.FromHex("2000B1A903CD866BD00820189668684C439660"));
 		}
 
 		private void ChangeItemNames()
