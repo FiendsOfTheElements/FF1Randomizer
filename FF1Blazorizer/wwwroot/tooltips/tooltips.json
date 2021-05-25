@@ -27,6 +27,12 @@
 		"Id": "enemyObfuscation",
 		"title": "Enemy Obfuscation",
 		"screenshot": null,
+		"description": "Imp disguises all enemies as various IMPs.\nImp (inc. Fiends and Chaos) also disguised Fiends and Chaos."
+	},
+	{
+		"Id": "enemyObfuscation",
+		"title": "Enemy Obfuscation",
+		"screenshot": null,
 		"description": "Imp disguises all enemies as various IMPs."
 	},
 	{

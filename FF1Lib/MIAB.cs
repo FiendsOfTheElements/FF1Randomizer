@@ -225,8 +225,6 @@ namespace FF1Lib
 				}
 
 				chestMonsterList[validChests.SpliceRandom(rng).Address - lut_TreasureOffset] = ChaosFormationIndex;
-
-				SetNpc(MapId.TempleOfFiendsRevisitedChaos, 0, ObjectId.None, 0, 0, true, true);
 			}
 
 
@@ -267,7 +265,25 @@ namespace FF1Lib
 			// Insert trapped chest list
 			PutInBank(0x11, 0x8F00, chestMonsterList);
 		}
+		public void SetChaosForMIAB(NPCdata npcdata)
+		{
+			npcdata.SetRoutine((ObjectId)0x1A, newTalkRoutines.Talk_4Orb);
+			npcdata.GetTalkArray((ObjectId)0x1A)[(int)TalkArrayPos.dialogue_1] = 0x30;
+			npcdata.GetTalkArray((ObjectId)0x1A)[(int)TalkArrayPos.dialogue_2] = 0x30;
+			npcdata.GetTalkArray((ObjectId)0x1A)[(int)TalkArrayPos.dialogue_3] = 0x30;
+			Data[MapObjGfxOffset + 0x18] = 0xF4;
+			Data[MapObjGfxOffset + 0x19] = 0xF4;
+			Data[MapObjGfxOffset + 0x1A] = 0xF4;
+			PutInBank(0x00, 0xA000 + ((byte)MapId.TempleOfFiendsRevisitedChaos * 0x30) + 0x18, Blob.FromHex("000F1636000F1636"));
 
+			Dictionary<int, string> newgarlanddialogue = new Dictionary<int, string>();
+
+			newgarlanddialogue.Add(0x2E, "That's right, it's me,\nBurtReynoldz. Didn't\nexpect to see me, right?");
+			newgarlanddialogue.Add(0x2F, "Many moons ago I managed\nto run away from Chaos.\nAnd lo and behold,\nI BECAME Chaos. I took\nhis place.");
+			newgarlanddialogue.Add(0x30, "Okay, I won't fight you.\nSome say you can find\nthe other Chaos hidden\nsomewhere in a chest.\nGood luck!");
+
+			InsertDialogs(newgarlanddialogue);
+		}
 		public static List<Item> GetIncentiveList(Flags flags)
 		{
 			var incentivePool = new List<Item>();
