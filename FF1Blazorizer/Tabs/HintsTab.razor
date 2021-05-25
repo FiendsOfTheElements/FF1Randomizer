@@ -1,0 +1,71 @@
+@using FF1Lib;
+@using static FF1Lib.FF1Rom;
+
+
+<div id="Hints" class="tabcontent framed-content clearfix @(noTabLayout ? "no-tab" : "") @(IsOpen ? "" : "collapsed")">
+	<h3 class="@(IsOpen ? "" : "h3-collapsed")"><a class="@(noTabLayout ? "collapsible-header" : "")" @onclick="(() => IsOpen = (!noTabLayout || !IsOpen))">Hints</a></h3>
+	@if (IsOpen)
+	{
+		<div class="col1 full">
+			<h4>Hints</h4>
+		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.Treasures" Id="hintsVillage" @bind-Value="Flags.HintsVillage">Hint givers in villages</TriStateCheckBox>
+		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.Treasures" Id="hintsDungeon" @bind-Value="Flags.HintsDungeon">Hint givers in dungeons</TriStateCheckBox>
+		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.HintsVillage != false || Flags.HintsDungeon != false)" Id="hintsUselessCheckBox" @bind-Value="Flags.HintsUseless">Useless Hints</TriStateCheckBox>
+			<div class="row">
+					<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="spoilerBatsDropDown" TItem="SpoilerBatHints" @bind-Value="Flags.SkyWarriorSpoilerBats">Temple of Fiends Bats Text:</EnumDropDown>
+			</div>
+			<div class="row">
+				<div class="col-lg-4 tighter noleftpadding">
+					<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="spoilerBatsDontCheckOrbsCheckbox" IsEnabled="@Flags.SpoilerBatsDontCheckOrbsEnabled" @bind-Value="Flags.SpoilerBatsDontCheckOrbs">Early Spoilers</TriStateCheckBox>
+				</div>
+			</div>
+			<div class="checkbox-cell"></div>
+
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="extendedHintsCheckBox" @bind-Value="Flags.ExtensiveHints_Enable">Enable Extensive Hints</CheckBox>
+			<div class="row">
+				<div class="col-lg-3 tighter noleftpadding">Loose on Floor:</div>
+				<div class="col-lg-4 tighter"><EnumDropDown DisableTooltip TItem="HintCategoryCoverage" @bind-Value="Flags.ExtensiveHints_LooseItemFloorCoverage" /></div>
+				<div class="col-lg-5 tighter"><EnumDropDown DisableTooltip TItem="HintPlacementStrategy" @bind-Value="Flags.ExtensiveHints_LooseItemFloorPlacement" /></div>
+			</div>
+			<div class="checkbox-cell"></div>
+			<div class="row">
+				<div class="col-lg-3 tighter noleftpadding">Loose Name in Location:</div>
+				<div class="col-lg-4 tighter"><EnumDropDown DisableTooltip TItem="HintCategoryCoverage" @bind-Value="Flags.ExtensiveHints_LooseItemNameCoverage" /></div>
+				<div class="col-lg-5 tighter"><EnumDropDown DisableTooltip TItem="HintPlacementStrategy" @bind-Value="Flags.ExtensiveHints_LooseItemNamePlacement" /></div>
+			</div>
+			<div class="checkbox-cell"></div>
+			<div class="row">
+				<div class="col-lg-3 tighter noleftpadding">Incentivized Name in Location:</div>
+				<div class="col-lg-4 tighter"><EnumDropDown DisableTooltip TItem="HintCategoryCoverage" @bind-Value="Flags.ExtensiveHints_IncentiveItemNameCoverage" /></div>
+				<div class="col-lg-5 tighter"><EnumDropDown DisableTooltip TItem="HintPlacementStrategy" @bind-Value="Flags.ExtensiveHints_IncentiveItemNamePlacement" /></div>
+			</div>
+			<div class="checkbox-cell"></div>
+			<div class="row">
+				<div class="col-lg-3 tighter noleftpadding">Floor Hints:</div>
+				<div class="col-lg-4 tighter"><EnumDropDown DisableTooltip TItem="HintCategoryCoverage" @bind-Value="Flags.ExtensiveHints_FloorHintCoverage" /></div>
+				<div class="col-lg-5 tighter"><EnumDropDown DisableTooltip TItem="HintPlacementStrategy" @bind-Value="Flags.ExtensiveHints_FloorHintPlacement" /></div>
+			</div>
+			<div class="checkbox-cell"></div>
+			<div class="row">
+				<div class="col-lg-3 tighter noleftpadding">Equipment on Floor:</div>
+				<div class="col-lg-4 tighter"><EnumDropDown DisableTooltip TItem="HintCategoryCoverage" @bind-Value="Flags.ExtensiveHints_EquipmentFloorCoverage" /></div>
+				<div class="col-lg-5 tighter"><EnumDropDown DisableTooltip TItem="HintPlacementStrategy" @bind-Value="Flags.ExtensiveHints_EquipmentFloorPlacement" /></div>
+			</div>
+			<div class="checkbox-cell"></div>
+			<div class="row">
+				<div class="col-lg-3 tighter noleftpadding">Equipment Name in Location:</div>
+				<div class="col-lg-4 tighter"><EnumDropDown DisableTooltip TItem="HintCategoryCoverage" @bind-Value="Flags.ExtensiveHints_EquipmentNameCoverage" /></div>
+				<div class="col-lg-5 tighter"><EnumDropDown DisableTooltip TItem="HintPlacementStrategy" @bind-Value="Flags.ExtensiveHints_EquipmentNamePlacement" /></div>
+			</div>
+		</div>
+
+	}
+</div>
+
+
+@code {
+	[Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }
+	[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
+	[Parameter] public bool noTabLayout { get; set; }
+	[Parameter] public bool IsOpen { get; set; } = true;
+}
