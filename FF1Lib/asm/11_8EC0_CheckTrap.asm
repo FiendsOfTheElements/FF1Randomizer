@@ -59,8 +59,10 @@ CheckTrap:
   BCS CantTake                ; If not branch
     LDX tileprop+1            ; Get tile property (chest ID)
     LDA lut_TrappedChest, X   ; Check if that chest is trapped
-    BEQ NoTrap                ; If $00, no trap, branch and gve the item
+    BEQ NoTrap                ; If $00, no trap, branch and gve the item		
       STA btlformation        ; If it is, store the battle formation
+	  LDA dlg_itemid		  ; save dlg_itemid
+	  PHA					  ; save dlg_itemid
       LDA #$C0                ; Show "Monster-in-a-box!"
       JSR InTalkDialogueBox   
       LDA btlformation        ; Get back battle formation
@@ -68,12 +70,15 @@ CheckTrap:
       LDA #$03
       CMP btl_result          ; Check if we ran from battle
       BNE WonBattle           ; If we did
-DontGiveItem:      
+DontGiveItem:    
+		PLA					  ; remove dlg_itemid from stack
         JSR InTalkReenterMap  ; Skip giving the item
         PLA                   ; Clear an extra address in the stack
         PLA                   ;  since we're one routine deeper
         JMP SkipDialogueBox   
 WonBattle:
+	  PLA					  ; restore dlg_itemid
+	  STA dlg_itemid 	      ; restore dlg_itemid
       LDA #$7B
       CMP btlformation          ; Check if we killed Chaos
       BEQ KilledChaos                 
