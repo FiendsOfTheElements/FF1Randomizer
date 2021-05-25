@@ -87,7 +87,7 @@
 		"Id": "enableExtConsumables",
 		"title": "New Consumables",
 		"screenshot": null,
-		"description": "Enables new Consumables."
+		"description": "Enables new Consumables\n[grid][r]{i}Item|{i}Effect[r]FCure|Full cure[r]Phnix|Raise dead light warrior (usable in battle!)[r]Smoke|Automatic run from battle[r]Blast|Cast FIR3"
 	},
 	{
 		"Id": "normalShopsHaveExtConsumables",

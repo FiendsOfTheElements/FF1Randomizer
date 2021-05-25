@@ -56,7 +56,7 @@
 							</BSTabContent>
 						</BSTab>
 						<BSTab>
-							<BSTabLabel>Inventory</BSTabLabel>
+							<BSTabLabel>Equipment</BSTabLabel>
 							<BSTabContent>
 								<ItemEquipmentTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
 							</BSTabContent>
@@ -115,6 +115,13 @@
 								<AdjustmentsTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
 							</BSTabContent>
 						</BSTab>
+						<BSTab>
+							<BSTabLabel>Hints</BSTabLabel>
+							<BSTabContent>
+								<HintsTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
+							</BSTabContent>
+						</BSTab>
+
 						<BSTab>
 							<BSTabLabel>Beta</BSTabLabel>
 							<BSTabContent>
@@ -224,4 +231,3 @@
 	{
 		//Console.WriteLine($"Hidden -> Activated: {e.Activated?.Id.ToString()} , Deactivated: {e.Deactivated?.Id.ToString()}");
 	} }
-

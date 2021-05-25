@@ -104,8 +104,18 @@
 				<EnumDropDown DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="shardCountDropDown" TItem="IncentivePlacementType" @bind-Value="Flags.MarshLockedIncentivePlacementType"></EnumDropDown>
 			</div>
 		</div>
-		<div class="checkbox-cell"></div>
-		<div class="checkbox-cell"></div>
+
+			<div class="row">
+				<div class="col-sm-6 noleftpadding">
+					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeCardiaCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeCardia">Cardia Islands incentive </TriStateCheckBox>
+				</div>
+				<div class="col-sm-6">
+					<EnumDropDown DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="incentiveCardiaDropDown" TItem="IncentivePlacementType" @bind-Value="Flags.CardiaIncentivePlacementType"></EnumDropDown>
+				</div>
+			</div>
+
+<h4>Placement</h4>
+<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="LooseExcludePlacedDungeonsCheckBox" IsEnabled="@(Flags.Treasures != false)" @bind-Value="Flags.LooseExcludePlacedDungeons">No Loose Items in Incentivized Dungeons</TriStateCheckBox>
 		<div class="checkbox-cell"></div>
 	</div>
 	<div class="col2">
@@ -130,6 +140,8 @@
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeDefCastArmorCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeDefCastArmor">White Shirt</TriStateCheckBox>
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeOffCastArmorCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeOffCastArmor">Black Shirt</TriStateCheckBox>
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeRibbonCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeRibbon">Ribbon</TriStateCheckBox>
+
+
 	</div>
 	<div class="clear-it"></div>
 	}

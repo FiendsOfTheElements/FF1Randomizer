@@ -3,7 +3,22 @@
 	<div id="Enemies" class="tabcontent framed-content clearfix @(noTabLayout ? "no-tab" : "") @(IsOpen ? "" : "collapsed")">
 		<h3 class="@(IsOpen ? "" : "h3-collapsed")"><a class="@(noTabLayout ? "collapsible-header" : "")" @onclick="(() => IsOpen = (!noTabLayout || !IsOpen))">Enemies, Formations, and Bosses</a></h3>
 		@if(IsOpen)
-		{ 
+		{
+		<div class="col1 full">
+		<h4>Scaling</h4>
+		<DoubleSlider ShowMedian DoubleCol Id="enemyStatsDoubleSlider" MinValue="20" MaxValue="500" Step="10" @bind-ValueHigh="Flags.EnemyScaleStatsHigh" @bind-ValueLow="Flags.EnemyScaleStatsLow" DisableTooltip>Enemy Stats:</DoubleSlider>
+		<DoubleSlider ShowMedian DoubleCol Id="enemyHpDoubleSlider" Indent IsEnabled="Flags.SeparateEnemyHPScaling" MinValue="20" MaxValue="500" Step="10" @bind-ValueHigh="Flags.EnemyScaleHpHigh" @bind-ValueLow="Flags.EnemyScaleHpLow" DisableTooltip>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="separateEnemyHPScalingCheckBox" @bind-Value="Flags.SeparateEnemyHPScaling">Separate HP&nbspScaling:</TriStateCheckBox>
+		</DoubleSlider>
+		<DoubleSlider ShowMedian DoubleCol Id="bossStatsDoubleSlider" MinValue="20" MaxValue="500" Step="10" @bind-ValueHigh="Flags.BossScaleStatsHigh" @bind-ValueLow="Flags.BossScaleStatsLow" DisableTooltip>Boss Stats:</DoubleSlider>
+		<DoubleSlider ShowMedian DoubleCol Id="bossHpDoubleSlider" Indent IsEnabled="Flags.SeparateBossHPScaling" MinValue="20" MaxValue="500" Step="10" @bind-ValueHigh="Flags.BossScaleHpHigh" @bind-ValueLow="Flags.BossScaleHpLow" DisableTooltip>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="separateBossHPScalingCheckBox" @bind-Value="Flags.SeparateBossHPScaling">Separate HP&nbspScaling:</TriStateCheckBox>
+		</DoubleSlider>
+		<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="evadeCapDropDown" TItem="EvadeCapValues" @bind-Value="Flags.EvadeCap">Evade Cap Value:</EnumDropDown>
+		<CheckBox UpdateToolTip="@UpdateToolTipID" Id="wrapStatOverflowCheckBox" @bind-Value="Flags.WrapStatOverflow">Wrap Overflowing Scaled Stats</CheckBox>
+		<CheckBox UpdateToolTip="@UpdateToolTipID" Id="includeMoraleCheckBox" @bind-Value="Flags.IncludeMorale">Scaled Stats Includes Morale</CheckBox>
+		</div>
+
 	<div class="col1">
 		<h4>Formations</h4>
 		<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="runnabilityDropDown" TItem="Runnability" @bind-Value="Flags.Runnability">Unrunnable Formations:</EnumDropDown>
@@ -15,7 +30,7 @@
 		<div class="checkbox-cell"></div>
 		<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="enemyObfuscation" TItem="EnemyObfuscation" @bind-Value="Flags.EnemyObfuscation">Enemy Obfuscation:</EnumDropDown>
 		<div class="checkbox-cell"></div>
-		<h4>Enemies</h4>
+		<h4>Magic, Skills and Attacks</h4>
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyScriptsCheckBox" @bind-Value="Flags.EnemyScripts">Shuffle Scripts</TriStateCheckBox>
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnemyScripts" Id="allowUnsafePiratesCheckBox" @bind-Value="Flags.AllowUnsafePirates">Allow Unsafe Pirates</TriStateCheckBox>
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnemyScripts" Id="onlyShuffleBossScriptsCheckBox" @bind-Value="Flags.BossScriptsOnly">Only Shuffle Bosses</TriStateCheckBox>
@@ -27,7 +42,8 @@
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnemyStatusAttacks" Id="enemyRandomAttacksCheckBox" @bind-Value="Flags.RandomStatusAttacks">Randomize Status Attacks</TriStateCheckBox>
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="disableStunTouchCheckBox" IsEnabled="@Flags.RandomStatusAttacks" @bind-Value="Flags.DisableStunTouch">Remove Stun Touch</TriStateCheckBox>
 		<div class="checkbox-cell"></div>
-		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="randomizeEnemizer" IsEnabled="@Flags.RandomizeFormationEnemizer" @bind-Value="Flags.RandomizeEnemizer">Enemizer - Generate Enemies</TriStateCheckBox>
+		<h4>Generate new enemies</h4>
+		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="randomizeEnemizer" IsEnabled="@Flags.RandomizeFormationEnemizer" @bind-Value="Flags.RandomizeEnemizer">Use Enemizer</TriStateCheckBox>
 		<div class="checkbox-cell"></div>
 	</div>
 		<div class="col2">
@@ -44,7 +60,15 @@
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="removeTrapTilesCheckBox" @bind-Value="Flags.RemoveTrapTiles">Remove Trap Tiles</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyTrapTilesCheckBox" IsEnabled="@Flags.CanShuffleTrapTiles" @bind-Value="Flags.EnemyTrapTiles">Shuffle Trap Tiles</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="randomTrapFormationsCheckBox" IsEnabled="@Flags.EnemyTrapTiles" @bind-Value="Flags.RandomTrapFormations">Use Alternate Formations</TriStateCheckBox>
+
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="alternateFiendsCheckBox" IsEnabled="@(!Flags.SpookyFlag)" @bind-Value="Flags.AlternateFiends">Alternate Fiends</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="noBossSkillScriptShuffleCheckBox" IsEnabled="@(Flags.EnemyScripts != false || Flags.EnemySkillsSpells != false)" @bind-Value="Flags.NoBossSkillScriptShuffle">Don't Shuffle Bosses' Scripts, Skills & Spells</TriStateCheckBox>
+			<div class="checkbox-cell"></div>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="fightBahamutCheckBox" IsEnabled="@(Flags.SpookyFlag != true && Flags.RandomizeFormationEnemizer != true)" @bind-Value="Flags.FightBahamut">Fight Bahamut</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="swoleBahamutCheckBox" IsEnabled="@(Flags.FightBahamut != false)" @bind-Value="Flags.SwoleBahamut">Buffed Bahamut</TriStateCheckBox>
+
 		</div>
+
 		<div class="clear-it"></div>
 		}
 	</div>

@@ -35,26 +35,24 @@
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="shopInfoCheckBox" @bind-Value="Flags.ShopInfo">Shop Information</CheckBox>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="chestInfoCheckBox" Indent IsEnabled="Flags.ShopInfo" @bind-Value="Flags.ChestInfo">Chest Information</CheckBox>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="incentiveChestItemsFanfareCheckBox" @bind-Value="Flags.IncentiveChestItemsFanfare">All Incentive Chest Items Fanfare</CheckBox>
+        <CheckBox UpdateToolTip="@UpdateToolTipID" Id="speedboatCheckBox" @bind-Value="Flags.SpeedBoat">Faster ship</CheckBox>
 	<div class="checkbox-cell"></div>
 </div>
 <div class="col2">
-	<h4>Balance</h4>
-	<h5>Classes</h5>
-	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="doubleBBCritCheckBox" @bind-Value="Flags.BBCritRate">Halve BB Crit Rate</CheckBox>
-	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="thiefHitCheckBox" @bind-Value="Flags.ThiefHitRate">Double Thief &amp; Ninja Hit% growth</CheckBox>
-	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="thiefAgilityBuffDropDown" TItem="ThiefAGI" @bind-Value="Flags.ThiefAgilityBuff">Better Thief Agility</EnumDropDown>
-	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="fixHitChanceCapCheckBox" @bind-Value="Flags.FixHitChanceCap">Raise Hit % Cap</CheckBox>
-	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="MDefModeDropDown" TItem="MDEFGrowthMode" @bind-Value="Flags.MDefMode">MDEF Growth:</EnumDropDown>
-	<div class="checkbox-cell"></div>
-	<h5>Spells</h5>
+		<h4>Saving</h4>
+		<CheckBox UpdateToolTip="@UpdateToolTipID" Id="disableTentSaving" @bind-Value="Flags.DisableTentSaving">Disable Tent/Cabin/House Saving on Overworld</CheckBox>
+		<CheckBox UpdateToolTip="@UpdateToolTipID" Id="disableInnSaving" @bind-Value="Flags.DisableInnSaving">Disable Inn Saving</CheckBox>
+		<CheckBox UpdateToolTip="@UpdateToolTipID" Id="saveGameWhenGameOverCheckBox" @bind-Value="Flags.SaveGameWhenGameOver">Save Game When Game Over</CheckBox>
+		<CheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="saveGameDWModeCheckBox" IsEnabled="@Flags.SaveGameWhenGameOver" @bind-Value="Flags.SaveGameDWMode">Dragon Warrior Mode</CheckBox>
+		<div class="checkbox-cell"></div>
+	<h4>Spells</h4>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="cureHealBuffCheckBox" @bind-Value="Flags.BuffHealingSpells">Improve CURE, HEAL, LAMP, and AMUT spells</CheckBox>
 	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="LockMode" TItem="LockHitMode" @bind-Value="Flags.LockMode">LOCK and LOK2 Mode:</EnumDropDown>
 	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="magicAutohitThresholdDropDown" TItem="AutohitThreshold" @bind-Value="Flags.MagicAutohitThreshold">Power Word Threshold:</EnumDropDown>
+
 	<div class="checkbox-cell"></div>
-	<h5>Items</h5>
-	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="doubleWeaponCritCheckBox" @bind-Value="Flags.WeaponCritRate">Double Weapon Crit Rate</CheckBox>
-	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="increaseWepBonusesCheckBox" @bind-Value="Flags.WeaponBonuses">Increase Weapon Elemental and Type Bonuses</CheckBox>
-	<IntSlider Indent Min="1" Max="50" Step="1" DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.WeaponBonuses" Id="WeaponTypeBonusValue" @bind-Value="@Flags.WeaponTypeBonusValue">Weapon Elemental/Type Damage Bonus:</IntSlider>
+	<h4>Items</h4>
+
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="housesFillHpCheckBox" @bind-Value="Flags.HousesFillHP">House Full HP Restoration</CheckBox>
 	<div class="checkbox-cell"></div>
 	<h4>RNG</h4>
