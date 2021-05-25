@@ -29,7 +29,7 @@ lut_Treasure		= $B100   ; BANK_TREASURE
 
 InTalkBattleNoRun   = $9600 
 InTalkReenterMap 	= $9618
-CheckCanTake		= $9620
+CheckCanTake        = $B180
 InTalkDialogueBox	= $963D
 SkipDialogueBox		= $9643
 GiveReward 		= $B010
