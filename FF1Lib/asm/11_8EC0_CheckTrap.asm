@@ -63,6 +63,8 @@ CheckTrap:
       STA btlformation        ; If it is, store the battle formation
 	  LDA dlg_itemid		  ; save dlg_itemid
 	  PHA					  ; save dlg_itemid
+	  LDA #$0
+	  STA dlg_itemid		  ; clear dlg_itemid
       LDA #$C0                ; Show "Monster-in-a-box!"
       JSR InTalkDialogueBox   
       LDA btlformation        ; Get back battle formation
@@ -82,10 +84,10 @@ WonBattle:
       LDA #$7B
       CMP btlformation          ; Check if we killed Chaos
       BEQ KilledChaos                 
-      CLC
       JSR GiveItem            ; Give the item
       JSR InTalkReenterMap    ; And reenter the map
       LDX #$F0                ; Load "In this chest you've found..."
+	  STX tileprop+1		  ; Fake a TileProp(must be non zero)
       RTS
 KilledChaos:
   JMP VictoryLoop
@@ -97,8 +99,6 @@ CantTake:
   RTS
 
 GiveItem:
-  LDA #BANK_TALKROUTINE    ; Get return bank
-  STA ret_bank             ;  for LoadPrice
   CLC
   LDA dlg_itemid           ; Get item
   JSR GiveReward           ; Give item as normal
