@@ -129,7 +129,7 @@ namespace FF1Lib
 			SeparateUnrunnables();
 			var talkroutines = new TalkRoutines();
 			var npcdata = new NPCdata(this);
-			UpdateDialogs(npcdata);
+			UpdateDialogs(npcdata, flags);
 
 			if (flags.TournamentSafe) Put(0x3FFE3, Blob.FromHex("66696E616C2066616E74617379"));
 
@@ -503,7 +503,7 @@ namespace FF1Lib
 
 			// Change Astos routine so item isn't lost in wall of text
 			if ((bool)flags.NPCItems || (bool)flags.NPCFetchItems || (bool)flags.ShuffleAstos)
-				talkroutines.Replace(newTalkRoutines.Talk_Astos, Blob.FromHex("A674F005BD2060F027A5738561202096B020A572203D96A5752000B1A476207F90207392A5611820109F201896A9F060A57060"));
+				talkroutines.Replace(newTalkRoutines.Talk_Astos, Blob.FromHex("A674F005BD2060F027A57385612080B1B020A572203D96A5752000B1A476207F90207392A5611820109F201896A9F060A57060"));
 
 			npcdata.UpdateItemPlacement(generatedPlacement);
 

@@ -29,7 +29,7 @@ lut_Treasure		= $B100   ; BANK_TREASURE
 
 InTalkBattleNoRun   = $9600 
 InTalkReenterMap 	= $9618
-CheckCanTake		= $9620
+CheckCanTake        = $B180
 InTalkDialogueBox	= $963D
 SkipDialogueBox		= $9643
 GiveReward 		= $B010
@@ -59,8 +59,12 @@ CheckTrap:
   BCS CantTake                ; If not branch
     LDX tileprop+1            ; Get tile property (chest ID)
     LDA lut_TrappedChest, X   ; Check if that chest is trapped
-    BEQ NoTrap                ; If $00, no trap, branch and gve the item
+    BEQ NoTrap                ; If $00, no trap, branch and gve the item		
       STA btlformation        ; If it is, store the battle formation
+	  LDA dlg_itemid		  ; save dlg_itemid
+	  PHA					  ; save dlg_itemid
+	  LDA #$0
+	  STA dlg_itemid		  ; clear dlg_itemid
       LDA #$C0                ; Show "Monster-in-a-box!"
       JSR InTalkDialogueBox   
       LDA btlformation        ; Get back battle formation
@@ -68,19 +72,22 @@ CheckTrap:
       LDA #$03
       CMP btl_result          ; Check if we ran from battle
       BNE WonBattle           ; If we did
-DontGiveItem:      
+DontGiveItem:    
+		PLA					  ; remove dlg_itemid from stack
         JSR InTalkReenterMap  ; Skip giving the item
         PLA                   ; Clear an extra address in the stack
         PLA                   ;  since we're one routine deeper
         JMP SkipDialogueBox   
 WonBattle:
+	  PLA					  ; restore dlg_itemid
+	  STA dlg_itemid 	      ; restore dlg_itemid
       LDA #$7B
       CMP btlformation          ; Check if we killed Chaos
       BEQ KilledChaos                 
-      CLC
       JSR GiveItem            ; Give the item
       JSR InTalkReenterMap    ; And reenter the map
       LDX #$F0                ; Load "In this chest you've found..."
+	  STX tileprop+1		  ; Fake a TileProp(must be non zero)
       RTS
 KilledChaos:
   JMP VictoryLoop
@@ -92,8 +99,6 @@ CantTake:
   RTS
 
 GiveItem:
-  LDA #BANK_TALKROUTINE    ; Get return bank
-  STA ret_bank             ;  for LoadPrice
   CLC
   LDA dlg_itemid           ; Get item
   JSR GiveReward           ; Give item as normal
