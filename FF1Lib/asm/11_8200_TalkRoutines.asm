@@ -771,7 +771,7 @@ lut_TargetJump_Lo:
  .BYTE <DialogueBox-1, <EnterBattle_R, <LoadBattleCHRPal_R, <ReenterStandardMap-1
 
 
-  .ORG $B120
+  .ORG $B100
 
 InTalkBattle:
   STA btlformation         ; store battle formation
