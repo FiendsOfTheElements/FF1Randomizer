@@ -5,6 +5,26 @@
 		<h3 class="@(IsOpen ? "" : "h3-collapsed")"><a class="@(noTabLayout ? "collapsible-header" : "")" @onclick="(() => IsOpen = (!noTabLayout || !IsOpen))">Maps and Routing</a></h3>
 		@if (IsOpen)
 		{
+		<div class="col1 full">
+		<div class="row-seperator"></div>
+		<h4>Encounter Rates</h4>
+		<div class="row">
+			<div class="col-lg-4 noleftpadding">Overworld Encounter Rate:</div>
+			<div class="col-lg-4">@Math.Round(Flags.EncounterRate / 30.0, 2).ToString("F2")x</div>
+			<div class="col-slider">
+				<Slider @bind-Value="Flags.EncounterRate" Min="0" Max="45" Step="1"></Slider>
+			</div>
+		</div>
+		<div class="row-seperator"></div>
+		<div class="row">
+			<div class="col-lg-4 noleftpadding">Dungeon Encounter Rate:</div>
+			<div class="col-lg-4">@Math.Round(Flags.DungeonEncounterRate / 30.0, 2).ToString("F2")x</div>
+			<div class="col-slider">
+				<Slider @bind-Value="Flags.DungeonEncounterRate" Min="0" Max="45" Step="1"></Slider>
+			</div>
+		</div>
+		<div class="checkbox-cell"></div>
+		</div>
 	<div class="col1">
 		<h4>Entrance Shuffle</h4>
 		<p>Try shuffling dungeon entrances, floors, and towns to create a completely new world to explore!</p>

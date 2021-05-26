@@ -11,17 +11,28 @@
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="sanityCheckerV2" @bind-Value="Flags.SanityCheckerV2">Use SanityChecker V2</CheckBox>
 			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="owMapExchange" TItem="OwMapExchanges" IsEnabled="Flags.SanityCheckerV2" @bind-Value="Flags.OwMapExchange">Overworld Map:</EnumDropDown>
 			<div class="checkbox-cell"></div>
-
-
-
-			<div class="checkbox-cell"></div>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="procGenEarth1" @bind-Value="Flags.EFGEarth1">Generated Earth Cave B1</CheckBox>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="procGenEarth2" @bind-Value="Flags.EFGEarth2">Generated Earth Cave B2</CheckBox>
+			<div class="checkbox-cell"></div>
+			<h4>Levels</h4>
+			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="startingLevelDropDown" TItem="StartingLevel" @bind-Value="Flags.StartingLevel">Starting Level:</EnumDropDown>
+			<DoubleSlider UpdateToolTip="@UpdateToolTipID" DoubleCol Id="MaximumLevelDoubleSilder" MinValue="1" MaxValue="50" Step="1" @bind-ValueHigh="Flags.MaxLevelHigh" @bind-ValueLow="Flags.MaxLevelLow">Max Level:</DoubleSlider>
+
+			<div class="checkbox-cell"></div>
+
+			<h4>New Consumables</h4>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="enableExtConsumables" @bind-Value="Flags.EnableExtConsumables">Enable</CheckBox>
+			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="extStartingItemSet" IsEnabled="Flags.EnableExtConsumables" TItem="ExtStartingItemSet" @bind-Value="Flags.ExtStartingItemSet">Starting Inventory:</EnumDropDown>
+			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="extConsumableChests" IsEnabled="Flags.EnableExtConsumables" TItem="ExtConsumableChestSet" @bind-Value="Flags.ExtConsumableChests">Chests:</EnumDropDown>
+			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="extConsumableTreasureStackSize" IsEnabled="Flags.EnableExtConsumables" TItem="TreasureStackSize" @bind-Value="Flags.ExtConsumableTreasureStackSize">Chest Stacks:</EnumDropDown>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="normalShopsHaveExtConsumables" IsEnabled="Flags.EnableExtConsumables" @bind-Value="Flags.NormalShopsHaveExtConsumables">Normal Shops</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="legendaryShopHasExtConsumables" IsEnabled="Flags.EnableExtConsumables" @bind-Value="Flags.LegendaryShopHasExtConsumables">Legendary Shops</TriStateCheckBox>
+		<div class="checkbox-cell"></div>
 		</div>
 		<div class="col2">
-			<h4>Other</h4>
+			<h4>Treasures</h4>
 
-
+                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="noFloaterCheckBox" IsEnabled="@(Flags.MapOpenProgressionDocks == true)" @bind-Value="Flags.NoFloater">Remove Floater</TriStateCheckBox>
 
 			<div class="checkbox-cell"></div>
 			<h4>Deep Dungeon</h4>
@@ -30,10 +41,46 @@
 			<p>Please try it out and provide feedback!</p>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="deepdungeon" @bind-Value="Flags.DeepDungeon">Deep Dungeon</CheckBox>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="DDEvenTreasureDistribution" @bind-Value="Flags.DDEvenTreasureDistribution">Distribute treasure evenly</CheckBox>
-			<div class="checkbox-cell"></div>
-			<div class="checkbox-cell"></div>
-			<div class="checkbox-cell"></div>
+		</div>
 
+		<div class="col1 full">
+			<h4>Hints</h4>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="extendedHintsCheckBox" @bind-Value="Flags.ExtensiveHints_Enable">Enable Extensive Hints</CheckBox>
+			<div class="row">
+				<div class="col-lg-3 tighter noleftpadding">Loose on Floor:</div>
+				<div class="col-lg-4 tighter"><EnumDropDown DisableTooltip TItem="HintCategoryCoverage" @bind-Value="Flags.ExtensiveHints_LooseItemFloorCoverage" /></div>
+				<div class="col-lg-5 tighter"><EnumDropDown DisableTooltip TItem="HintPlacementStrategy" @bind-Value="Flags.ExtensiveHints_LooseItemFloorPlacement" /></div>
+			</div>
+			<div class="checkbox-cell"></div>
+			<div class="row">
+				<div class="col-lg-3 tighter noleftpadding">Loose Name in Location:</div>
+				<div class="col-lg-4 tighter"><EnumDropDown DisableTooltip TItem="HintCategoryCoverage" @bind-Value="Flags.ExtensiveHints_LooseItemNameCoverage" /></div>
+				<div class="col-lg-5 tighter"><EnumDropDown DisableTooltip TItem="HintPlacementStrategy" @bind-Value="Flags.ExtensiveHints_LooseItemNamePlacement" /></div>
+			</div>
+			<div class="checkbox-cell"></div>
+			<div class="row">
+				<div class="col-lg-3 tighter noleftpadding">Incentivized Name in Location:</div>
+				<div class="col-lg-4 tighter"><EnumDropDown DisableTooltip TItem="HintCategoryCoverage" @bind-Value="Flags.ExtensiveHints_IncentiveItemNameCoverage" /></div>
+				<div class="col-lg-5 tighter"><EnumDropDown DisableTooltip TItem="HintPlacementStrategy" @bind-Value="Flags.ExtensiveHints_IncentiveItemNamePlacement" /></div>
+			</div>
+			<div class="checkbox-cell"></div>
+			<div class="row">
+				<div class="col-lg-3 tighter noleftpadding">Floor Hints:</div>
+				<div class="col-lg-4 tighter"><EnumDropDown DisableTooltip TItem="HintCategoryCoverage" @bind-Value="Flags.ExtensiveHints_FloorHintCoverage" /></div>
+				<div class="col-lg-5 tighter"><EnumDropDown DisableTooltip TItem="HintPlacementStrategy" @bind-Value="Flags.ExtensiveHints_FloorHintPlacement" /></div>
+			</div>
+			<div class="checkbox-cell"></div>
+			<div class="row">
+				<div class="col-lg-3 tighter noleftpadding">Equipment on Floor:</div>
+				<div class="col-lg-4 tighter"><EnumDropDown DisableTooltip TItem="HintCategoryCoverage" @bind-Value="Flags.ExtensiveHints_EquipmentFloorCoverage" /></div>
+				<div class="col-lg-5 tighter"><EnumDropDown DisableTooltip TItem="HintPlacementStrategy" @bind-Value="Flags.ExtensiveHints_EquipmentFloorPlacement" /></div>
+			</div>
+			<div class="checkbox-cell"></div>
+			<div class="row">
+				<div class="col-lg-3 tighter noleftpadding">Equipment Name in Location:</div>
+				<div class="col-lg-4 tighter"><EnumDropDown DisableTooltip TItem="HintCategoryCoverage" @bind-Value="Flags.ExtensiveHints_EquipmentNameCoverage" /></div>
+				<div class="col-lg-5 tighter"><EnumDropDown DisableTooltip TItem="HintPlacementStrategy" @bind-Value="Flags.ExtensiveHints_EquipmentNamePlacement" /></div>
+			</div>
 		</div>
 		<div class="clear-it"></div>
 	}

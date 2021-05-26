@@ -5,6 +5,16 @@
 	<h3 class="@(IsOpen ? "" : "h3-collapsed")"><a class="@(noTabLayout ? "collapsible-header" : "")" @onclick="(() => IsOpen = (!noTabLayout || !IsOpen))">Shops and Magic</a></h3>
 	@if (IsOpen)
 	{
+	<div class="col1 full">
+		<h4>Gold</h4>
+		<DoubleSlider ShowMedian DoubleCol Id="clampMinimumPriceScaleLable" UpdateToolTip="@UpdateToolTipID" MinValue="0" MaxValue="500" Step="10" @bind-ValueHigh="Flags.PriceScaleFactorHigh" @bind-ValueLow="Flags.PriceScaleFactorLow">Prices:</DoubleSlider>
+		<CheckBox UpdateToolTip="@UpdateToolTipID" Id="wrapPriceOverflowCheckBox" @bind-Value="Flags.WrapPriceOverflow">Wrap Overflowing Prices</CheckBox>
+		<CheckBox UpdateToolTip="@UpdateToolTipID" Id="startingGoldCheckBox" @bind-Value="Flags.StartingGold">Scale Starting Gold</CheckBox>
+		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="excludeGoldFromScalingCheckBox" @bind-Value="Flags.ExcludeGoldFromScaling">Exclude Gold from scaling</TriStateCheckBox>
+		<CheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="cheapVendorItemCheckBox" @bind-Value="Flags.CheapVendorItem" IsEnabled="Flags.ExcludeGoldFromScaling">Cheap Vendor Item</CheckBox>
+		<CheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="applyExpBoostToGoldCheckBox" @bind-Value="Flags.ApplyExpBoostToGold" IsEnabled="Flags.ExcludeGoldFromScaling">Apply Flat Gold Boost to Enemies</CheckBox>
+		<div class="checkbox-cell"></div>
+		</div>
 		<div class="col1">
 			<h4>Shops</h4>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="shopsCheckBox" @bind-Value="Flags.Shops">Shops</TriStateCheckBox>
