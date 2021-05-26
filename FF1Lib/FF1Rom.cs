@@ -974,7 +974,7 @@ namespace FF1Lib
 
 			RollCredits(rng);
 
-			if (preferences.DisableDamageTileFlicker)
+			if (preferences.DisableDamageTileFlicker || flags.TournamentSafe)
 			{
 				DisableDamageTileFlicker();
 			}
@@ -1015,7 +1015,7 @@ namespace FF1Lib
 				ShuffleMusic(preferences.Music, rng);
 			}
 
-			if (preferences.DisableSpellCastFlash)
+			if (preferences.DisableSpellCastFlash || flags.TournamentSafe)
 			{
 				DisableSpellCastScreenFlash();
 			}
@@ -1064,7 +1064,7 @@ namespace FF1Lib
 				}
 
 				//zero out character mapman graphics
-				for (int i = 0x9000; i < 0xB000; i++)
+				for (int i = 0x9000; i < 0xA200; i++)
 				{
 					hashable[i] = 0;
 				}
@@ -1093,7 +1093,7 @@ namespace FF1Lib
 				}
 
 				var Hash = hasher.ComputeHash(hashable);
-				if (ByteArrayToString(Hash) != "b56d671b82ec8aff52a459bfa123ca8c15ae082d22980670c60f318349c978ff")
+				if (ByteArrayToString(Hash) != "7ea7f20bcb93b9d3c5f951f59b9cc3a42b347dbf0323b98d74b06bc81309d77a")
 				{
 					Console.WriteLine($"Rom hash: {ByteArrayToString(Hash)}");
 					throw new TournamentSafeException("File has been modified");
