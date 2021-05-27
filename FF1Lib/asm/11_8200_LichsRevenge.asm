@@ -31,7 +31,7 @@ DoClassChange = $95AE
 
 InTalkBattle = $9600
 InTalkReenterMap = $9618
-CheckCanTake = $9620
+CheckCanTake = $B180
 InTalkDialogueBox = $963D
 SkipDialogueBox = $9643
 

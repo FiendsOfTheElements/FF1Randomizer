@@ -244,7 +244,7 @@ namespace FF1Lib
 			npcdata.SetRoutine((ObjectId)0x1A, (newTalkRoutines)Talk_Ending);
 
 			//Update Fiends, Garland, Vampire, Astos and Bikke
-			var battleJump = Blob.FromHex("200096");
+			var battleJump = Blob.FromHex("2000B1");
 			var mapreload = Blob.FromHex("201896");
 			talkroutines.ReplaceChunk(newTalkRoutines.Talk_fight, battleJump, Blob.FromHex("EAEAEA"));
 			talkroutines.ReplaceChunk(newTalkRoutines.Talk_fight, mapreload, Blob.FromHex("EAEAEA"));

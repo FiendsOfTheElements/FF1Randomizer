@@ -9,7 +9,7 @@
 		"Id": "tournamentSafeCheckBox",
 		"title": "Tournament Safe ROM",
 		"screenshot": "tournamentSafeCheckBox.png",
-		"description": "Verifies that the ROM provided is an original Final Fantasy 1 ROM. If the ROM has been modified beyond certain allowances (the sprites for the main heroes may be changed, for example), a randomized ROM will fail to generate and the site will spit out the following error: -- FAILURE: file has been modified --"
+		"description": "Verifies that the ROM provided is an original Final Fantasy 1 ROM. If the ROM has been modified beyond certain allowances (the sprites for the main heroes on the map and in battle may be changed, as well as the vehicles), a randomized ROM will fail to generate and the site will spit out the following error: -- FAILURE: file has been modified --\n\nThe Damage Tile Flicker and Spellcasting Flash are also disabled, regardless of the preferences selected."
 	},
 	{
 		"Id": "spoilersCheckBox",
@@ -22,6 +22,12 @@
 		"title": "Hide Flags",
 		"screenshot": "blindseed.png",
 		"description": "Hides all flags to create a mystery flagset that can then be distributed. Useful for tournament and challenge race settings.\n This flag cannot be disabled once clicked; you will need to hit the Reset button to restore functionality to the site (and this will, in turn, wipe the hidden flags selected). Make sure to save your flagset before you use this flag."
+	},
+	{
+		"Id": "enemyObfuscation",
+		"title": "Enemy Obfuscation",
+		"screenshot": null,
+		"description": "Imp disguises all enemies as various IMPs.\nImp (inc. Fiends and Chaos) also disguised Fiends and Chaos."
 	},
 	{
 		"Id": "enemyObfuscation",
@@ -64,18 +70,23 @@
 		"title": "Exclusive Legendary Item Shop",
 		"screenshot": null,
 		"description": "Removes legendary shop entries from all other shops."
+
+		"Id": "startingEquipmentHealStaff",
+		"title": "Hide Flags",
+		"screenshot": null,
+		"description": "HealStaff, or any low level Heal casting weapon, or Heal Helment if nothing else found."
 	},
 	{
 		"Id": "startingEquipmentDragonslayer",
 		"title": "Starting Equipment - Dragonslayer",
 		"screenshot": null,
-		"description": "Dragon Armor, Dragon Sword"
+		"description": "Dragon Armor, Dragon Sword\nIncompatible with Weaponizer."
 	},
 	{
 		"Id": "startingEquipmentLegendKit",
 		"title": "Starting Equipment - Legendary Kit",
 		"screenshot": null,
-		"description": "Xcalibur, Opal Armor, Opal Gautlents, Opal Helm, Opal Shield"
+		"description": "Xcalibur, Opal Armor, Opal Gautlents, Opal Helm, Opal Shield\nIncompatible with Weaponizer."
 	},
 	{
 		"Id": "startingEquipmentGrandpasSecretStash",
@@ -1447,6 +1458,12 @@
 		"title": "Shop Information",
 		"screenshot": "ShopInfoFlag.png",
 		"description": "In shops, characters will strike their victory pose if they can equip a piece of equipment or learn a spell.\nPress Select to show a description of an item or a spell."
+	},
+	{
+		"Id": "chestInfoCheckBox",
+		"title": "Chest Information",
+		"screenshot": null,
+		"description": "Shows the Shop Information when opening treasure chests."
 	},
 	{
 		"Id": "incentiveChestItemsFanfareCheckBox",

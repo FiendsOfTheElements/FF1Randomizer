@@ -65,7 +65,7 @@ namespace FF1Lib
 			PutInBank(0x1F, 0xDD78, Blob.FromHex("A9002003FEA645BD00B18561A9112003FE20A08E8A60"));
 
 			// Check for trapped monster routine, see 11_8EC0_CheckTrap.asm
-			PutInBank(0x11, 0x8EA0, Blob.FromHex("A561202096B039A645BD008FF02E856AA9C0203D96A56A200096A903CD866BD00820189668684C4396A97BC56AF00A1820E28E201896A2F0604C38C920E28E60AA60A911855818A5612010B0A445B9006209049900626000"));
+			PutInBank(0x11,0x8EA0,Blob.FromHex("A5612080B1B045A645BD008FF03A856AA56148A9008561A9C0203D96A56A200096A903CD866BD0096820189668684C4396688561A97BC56AF00B20EE8E201896A2F08645604C38C920EE8E60AA6018A5612010B0A445B90062090499006260"));
 
 			InsertDialogs(0x110, "Monster-in-a-box!"); // 0xC0
 
@@ -225,8 +225,6 @@ namespace FF1Lib
 				}
 
 				chestMonsterList[validChests.SpliceRandom(rng).Address - lut_TreasureOffset] = ChaosFormationIndex;
-
-				SetNpc(MapId.TempleOfFiendsRevisitedChaos, 0, ObjectId.None, 0, 0, true, true);
 			}
 
 
@@ -267,7 +265,25 @@ namespace FF1Lib
 			// Insert trapped chest list
 			PutInBank(0x11, 0x8F00, chestMonsterList);
 		}
+		public void SetChaosForMIAB(NPCdata npcdata)
+		{
+			npcdata.SetRoutine((ObjectId)0x1A, newTalkRoutines.Talk_4Orb);
+			npcdata.GetTalkArray((ObjectId)0x1A)[(int)TalkArrayPos.dialogue_1] = 0x30;
+			npcdata.GetTalkArray((ObjectId)0x1A)[(int)TalkArrayPos.dialogue_2] = 0x30;
+			npcdata.GetTalkArray((ObjectId)0x1A)[(int)TalkArrayPos.dialogue_3] = 0x30;
+			Data[MapObjGfxOffset + 0x18] = 0xF4;
+			Data[MapObjGfxOffset + 0x19] = 0xF4;
+			Data[MapObjGfxOffset + 0x1A] = 0xF4;
+			PutInBank(0x00, 0xA000 + ((byte)MapId.TempleOfFiendsRevisitedChaos * 0x30) + 0x18, Blob.FromHex("000F1636000F1636"));
 
+			Dictionary<int, string> newgarlanddialogue = new Dictionary<int, string>();
+
+			newgarlanddialogue.Add(0x2E, "That's right, it's me,\nBurtReynoldz. Didn't\nexpect to see me, right?");
+			newgarlanddialogue.Add(0x2F, "Many moons ago I managed\nto run away from Chaos.\nAnd lo and behold,\nI BECAME Chaos. I took\nhis place.");
+			newgarlanddialogue.Add(0x30, "Okay, I won't fight you.\nSome say you can find\nthe other Chaos hidden\nsomewhere in a chest.\nGood luck!");
+
+			InsertDialogs(newgarlanddialogue);
+		}
 		public static List<Item> GetIncentiveList(Flags flags)
 		{
 			var incentivePool = new List<Item>();

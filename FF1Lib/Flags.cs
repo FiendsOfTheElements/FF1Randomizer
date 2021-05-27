@@ -312,6 +312,7 @@ namespace FF1Lib
 		public bool BuyTen { get; set; } = false;
 		public bool IdentifyTreasures { get; set; } = false;
 		public bool ShopInfo { get; set; } = false;
+		public bool ChestInfo { get; set; } = false;
 		public bool IncentiveChestItemsFanfare { get; set; } = false;
 		public bool WaitWhenUnrunnable { get; set; } = false;
 		public bool Etherizer { get; set; } = false;
@@ -625,7 +626,7 @@ namespace FF1Lib
 		public bool? IsShipFree => FreeShip | NoOverworld;
 		public bool? IsAirshipFree => FreeAirship & !NoOverworld;
 		public bool? IsCanalFree => FreeCanal & !NoOverworld;
-		public bool? IsFloaterRemoved => NoFloater & !NoOverworld;
+		public bool? IsFloaterRemoved => (NoFloater|IsAirshipFree) & !NoOverworld;
 		public bool IncentivizeBridge => false;
 		public bool? IncentivizeCanoe => NPCItems & IncentivizeCanoeItem & !FreeCanoe;
 		public bool? IncentivizeLute => NPCItems & !FreeLute & IncentivizeMainItems;

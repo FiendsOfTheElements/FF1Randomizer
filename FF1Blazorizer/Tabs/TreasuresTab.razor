@@ -6,7 +6,7 @@
 	{
 <div class="col1">
 	<h4>Item Shuffle</h4>
-	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="treasuresCheckBox" @bind-Value="Flags.Treasures">Treasures</TriStateCheckBox>
+	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="treasuresCheckBox" IsEnabled="@(!Flags.DeepDungeon)" @bind-Value="Flags.Treasures">Treasures</TriStateCheckBox>
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="randomLootCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.RandomLoot">Randomize Treasures</TriStateCheckBox>
 	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Indent Id="worldWealthDropDown" TItem="WorldWealthMode" IsEnabled="@Flags.Treasures" @bind-Value="Flags.WorldWealth">Random Wealth:</EnumDropDown>
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="betterTrapTreasureCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.BetterTrapTreasure">Better Trap Treasure</TriStateCheckBox>
