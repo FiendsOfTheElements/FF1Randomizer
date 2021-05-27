@@ -133,7 +133,7 @@
 		int PriceScaleFactorHigh { get; }
 		bool? ExcludeGoldFromScaling { get; }
 		bool CheapVendorItem { get; }
-		bool EnableExtConsumables { get; }		
+		bool EnableExtConsumables { get; }
 	}
 	public interface IFloorShuffleFlags
 	{
@@ -149,6 +149,9 @@
 		bool? DeepTownsPossible { get; }
 		bool? AllowDeepTowns { get; }
 		bool? AllowUnsafeStartArea { get; }
+		bool? IsFloaterRemoved { get; }
+	        bool? IsAirshipFree { get; }
+		bool? MapBahamutCardiaDock { get; }
 	}
 	public interface IVictoryConditionFlags
 	{

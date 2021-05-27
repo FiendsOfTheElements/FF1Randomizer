@@ -1,4 +1,5 @@
 ﻿using FF1Lib.Data;
+using FF1Lib.Helpers;
 using RomUtilities;
 using System;
 using System.Collections.Generic;
@@ -6,6 +7,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static FF1Lib.FF1Rom;
 
 namespace FF1Lib
 {
@@ -15,11 +17,19 @@ namespace FF1Lib
 		Flags flags;
 		FF1Rom rom;
 
+		SpellHelper spellHelper;
+		List<Weapon> weapons;
+		List<Armor> armors;
+
 		public StartingEquipment(MT19337 _rng, Flags _flags, FF1Rom _rom)
 		{
 			rng = _rng;
 			flags = _flags;
 			rom = _rom;
+
+			spellHelper = new SpellHelper(rom);
+			weapons = Weapon.LoadAllWeapons(rom, flags).ToList();
+			armors = Armor.LoadAllArmors(rom, flags).ToList();
 		}
 
 		public void SetStartingEquipment()
@@ -58,18 +68,18 @@ namespace FF1Lib
 
 			if (flags.StartingEquipmentMasamune ?? false) items.Add(Item.Masamune);
 			if (flags.StartingEquipmentKatana ?? false) items.Add(Item.Katana);
-			if (flags.StartingEquipmentHealStaff ?? false) items.Add(Item.HealRod);
+			if (flags.StartingEquipmentHealStaff ?? false) GetHealRod(items);
 			if (flags.StartingEquipmentZeusGauntlet ?? false) items.Add(Item.ZeusGauntlets);
 			if (flags.StartingEquipmentWhiteShirt ?? false) items.Add(Item.WhiteShirt);
 			if (flags.StartingEquipmentRibbon ?? false) items.Add(Item.Ribbon);
 
-			if (flags.StartingEquipmentDragonslayer ?? false)
+			if ((flags.StartingEquipmentDragonslayer ?? false) && !(flags.Weaponizer ?? false))
 			{
 				items.Add(Item.DragonArmor);
 				items.Add(Item.DragonSword);
 			}
 
-			if (flags.StartingEquipmentLegendKit ?? false)
+			if ((flags.StartingEquipmentLegendKit ?? false) && !(flags.Weaponizer ?? false))
 			{
 				items.Add(Item.Xcalber);
 				items.Add(Item.OpalArmor);
@@ -101,9 +111,31 @@ namespace FF1Lib
 			return (weapons, armor);
 		}
 
+		private void GetHealRod(List<Item> items)
+		{
+			if (!(flags.Weaponizer ?? false))
+			{
+				items.Add(Item.HealRod);
+			}
+			else
+			{
+				var spells = new HashSet<Spell>(spellHelper.FindSpells(SpellRoutine.Heal, SpellTargeting.AllCharacters).Where(s => s.Info.effect <= 32).Select(s => s.Id));
+				var weapon = weapons.FirstOrDefault(w => w.Damage < 20 && spells.Contains(w.Spell));
+
+				if (weapon != null)
+				{
+					items.Add(weapon.Id);
+				}
+				else
+				{
+					items.Add(Item.HealHelm);
+				}
+			}
+		}
+
 		private void GetRandomEndgameWeapon(List<Item> items)
 		{
-			var pool = ItemLists.UberTier.Concat(ItemLists.LegendaryWeaponTier).Concat(new Item[] { Item.FlameSword, Item.IceSword, Item.DragonSword }).Concat(new Item[] { Item.Katana, Item.Katana }).ToList();
+			var pool = ItemLists.UberTier.Concat(ItemLists.LegendaryWeaponTier).Concat(new Item[] { Item.FlameSword, Item.IceSword, Item.SunSword, Item.CoralSword }).Concat(new Item[] { Item.Katana, Item.Katana }).ToList();
 
 			if (flags.StartingEquipmentNoDuplicates) pool.RemoveAll(i => items.Contains(i));
 
@@ -112,20 +144,76 @@ namespace FF1Lib
 
 		private void GetRandomAoe(List<Item> items)
 		{
-			var pool = new Item[] { Item.BaneSword, Item.BlackShirt, Item.ZeusGauntlets, Item.ThorHammer, Item.MageRod }.ToList();
+			if (!(flags.Weaponizer ?? false) && !(flags.MagisizeWeapons ?? false))
+			{
+				var pool = new Item[] { Item.BaneSword, Item.BlackShirt, Item.ZeusGauntlets, Item.ThorHammer, Item.MageRod }.ToList();
 
-			if (flags.StartingEquipmentNoDuplicates) pool.RemoveAll(i => items.Contains(i));
+				if (flags.StartingEquipmentNoDuplicates) pool.RemoveAll(i => items.Contains(i));
 
-			items.Add(pool.PickRandom(rng));
+				if (pool.Count > 0) items.Add(pool.PickRandom(rng));
+			}
+			else
+			{
+				var damageAoes = spellHelper.FindSpells(SpellRoutine.Damage, SpellTargeting.AllEnemies).Select(s => s.Id);
+				var instaAoes = spellHelper.FindSpells(SpellRoutine.InflictStatus, SpellTargeting.AllEnemies, SpellElement.Any, SpellStatus.Death).Select(s => s.Id);
+				var powerWordAoes = spellHelper.FindSpells(SpellRoutine.PowerWord, SpellTargeting.AllEnemies, SpellElement.Any, SpellStatus.Death).Select(s => s.Id);
+
+				var spells = new HashSet<Spell>(damageAoes.Concat(instaAoes).Concat(powerWordAoes));
+
+				var weaps = weapons.Where(w => spells.Contains(w.Spell)).Select(w => w.Id);
+				var arms = armors.Where(w => spells.Contains(w.Spell)).Select(w => w.Id);
+
+				var pool = weaps.Concat(arms).ToList();
+
+				var names = weapons.Where(w => spells.Contains(w.Spell)).Select(w => w.Name).Concat(armors.Where(w => spells.Contains(w.Spell)).Select(a => a.Name)).ToList();
+
+				if (pool.Count > 0) items.Add(pool.PickRandom(rng));
+			}
 		}
 
 		private void GetRandomCasterItem(List<Item> items)
 		{
-			var pool = new Item[] { Item.BaneSword, Item.BlackShirt, Item.ZeusGauntlets, Item.ThorHammer, Item.MageRod, Item.Defense, Item.WhiteShirt, Item.HealRod, Item.PowerGauntlets }.ToList();
+			if (!(flags.Weaponizer ?? false) && !(flags.MagisizeWeapons ?? false))
+			{
+				var pool = new Item[] { Item.BaneSword, Item.BlackShirt, Item.ZeusGauntlets, Item.ThorHammer, Item.MageRod, Item.Defense, Item.WhiteShirt, Item.HealRod, Item.PowerGauntlets }.ToList();
 
-			if (flags.StartingEquipmentNoDuplicates) pool.RemoveAll(i => items.Contains(i));
+				if (flags.StartingEquipmentNoDuplicates) pool.RemoveAll(i => items.Contains(i));
 
-			items.Add(pool.PickRandom(rng));
+				if (pool.Count > 0) items.Add(pool.PickRandom(rng));
+			}
+			else
+			{
+				var pool = GetCasterItemPool();
+
+				if (pool.Count > 0) items.Add(pool.PickRandom(rng));
+			}
+		}
+
+		private List<Item> GetCasterItemPool()
+		{
+			var spells = new HashSet<Spell>(spellHelper.GetAllSpells().Where(s =>
+				s.Info.routine == (byte)SpellRoutine.Damage ||
+				s.Info.routine == (byte)SpellRoutine.DamageUndead ||
+				s.Info.routine == (byte)SpellRoutine.Fast ||
+				s.Info.routine == (byte)SpellRoutine.FullHeal ||
+				s.Info.routine == (byte)SpellRoutine.Heal ||
+				s.Info.routine == (byte)SpellRoutine.InflictStatus &&
+					(
+						s.Info.effect == (byte)SpellStatus.Death ||
+						s.Info.effect == (byte)SpellStatus.Confuse ||
+						s.Info.effect == (byte)SpellStatus.Stone
+					) ||
+				s.Info.routine == (byte)SpellRoutine.Lock ||
+				s.Info.routine == (byte)SpellRoutine.PowerWord ||
+				s.Info.routine == (byte)SpellRoutine.Ruse ||
+				s.Info.routine == (byte)SpellRoutine.Sabr).Select(s => s.Id));
+
+			var weaps = weapons.Where(w => spells.Contains(w.Spell)).Select(w => w.Id);
+			var arms = armors.Where(w => spells.Contains(w.Spell)).Select(w => w.Id);
+
+			var names = weapons.Where(w => spells.Contains(w.Spell)).Select(w => w.Name).Concat(armors.Where(w => spells.Contains(w.Spell)).Select(a => a.Name)).ToList();
+
+			return weaps.Concat(arms).ToList();
 		}
 
 		private void GetOneItem(List<Item> items)
@@ -137,13 +225,24 @@ namespace FF1Lib
 			items.Add(pool.PickRandom(rng));
 		}
 
-		private static List<Item> GetLegendaryPool()
+		private List<Item> GetLegendaryPool()
 		{
-			return ItemLists.UberTier
+			if (!(flags.Weaponizer ?? false) && !(flags.MagisizeWeapons ?? false))
+			{
+				return ItemLists.UberTier
 				.Concat(ItemLists.LegendaryWeaponTier)
 				.Concat(ItemLists.LegendaryArmorTier.Distinct())
 				.Concat(new Item[] { Item.Katana, Item.Katana, Item.Katana })
 				.Concat(new Item[] { Item.BaneSword, Item.BlackShirt, Item.ZeusGauntlets, Item.ThorHammer, Item.MageRod, Item.Defense, Item.WhiteShirt, Item.HealRod, Item.PowerGauntlets }).ToList();
+			}
+			else
+			{
+				return ItemLists.UberTier
+				.Concat(ItemLists.LegendaryWeaponTier)
+				.Concat(ItemLists.LegendaryArmorTier)
+				.Concat(GetCasterItemPool()).Distinct()
+				.Concat(new Item[] { Item.Katana, Item.Katana, Item.Katana }).ToList();
+			}
 		}
 
 		private void GetGrandpasSecretStash(List<Item> items)

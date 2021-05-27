@@ -973,6 +973,16 @@ namespace FF1Lib
 		public void DoRandomizeClassChaosMode(ref List<ClassData> classData, bool mixSpellsAndKeepPerm, bool buffedthief, MT19337 rng)
 		{
 			// Ranked list of equipment
+			List<Weapon> weaponsList = new();
+			for (int i = 0; i < WeaponCount; i++)
+			{
+				weaponsList.Add(new Weapon(i, this));
+				if(weaponsList.Last().Icon == WeaponIcon.NONE)
+				{
+					weaponsList.Last().Icon = classData[(int)AuthClass.BlackWizard].wpPermissions.Contains(weaponsList.Last().Id) ? WeaponIcon.KNIFE : WeaponIcon.SWORD;
+				}
+			}
+
 			List<List<Item>> arArmor = new List<List<Item>>();
 			arArmor.AddRange(new List<List<Item>> { new List<Item>(), new List<Item>() });
 			arArmor.Add(new List<Item> { Item.Cloth, Item.Copper, Item.Silver, Item.Gold, Item.Opal });
@@ -1004,36 +1014,52 @@ namespace FF1Lib
 
 			List<List<Item>> wpHammer = new List<List<Item>>();
 			wpHammer.AddRange(new List<List<Item>> { new List<Item>(), new List<Item>(), new List<Item>(), new List<Item>(), new List<Item>(), new List<Item>() });
-			wpHammer.Add(new List<Item> { Item.IronHammer, Item.SilverHammer, Item.ThorHammer });
+			wpHammer.Add(weaponsList.Where(x => x.Icon == WeaponIcon.HAMMER).Select(x => x.Id).ToList());
 
 			List<List<Item>> wpStaff = new List<List<Item>>();
 			wpStaff.AddRange(new List<List<Item>> { new List<Item>(), new List<Item>(), new List<Item>(), new List<Item>(), new List<Item>(), new List<Item>() });
-			wpStaff.Add(new List<Item> { Item.WoodenRod, Item.IronStaff, Item.PowerRod, Item.MageRod, Item.WizardRod, Item.HealRod });
+			wpStaff.Add(weaponsList.Where(x => x.Icon == WeaponIcon.STAFF).Select(x => x.Id).ToList());
 
 			List<List<Item>> wpKnife = new List<List<Item>>();
 			wpKnife.AddRange(new List<List<Item>> { new List<Item>(), new List<Item>(), new List<Item>(), new List<Item>(), new List<Item>(), new List<Item>() });
-			wpKnife.Add(new List<Item> { Item.SmallKnife, Item.LargeKnife, Item.SilverKnife, Item.CatClaw });
-
+			wpKnife.Add(weaponsList.Where(x => x.Icon == WeaponIcon.KNIFE).Select(x => x.Id).ToList());
+			
 			List<List<Item>> wpNunchuck = new List<List<Item>>();
 			wpNunchuck.AddRange(new List<List<Item>> { new List<Item>(), new List<Item>(), new List<Item>(), new List<Item>(), new List<Item>(), new List<Item>() });
-			wpNunchuck.Add(new List<Item> { Item.WoodenNunchucks, Item.IronNunchucks });
+			wpNunchuck.Add(weaponsList.Where(x => x.Icon == WeaponIcon.CHUCK).Select(x => x.Id).ToList());
 
 			List<List<Item>> wpAxe = new List<List<Item>>();
 			wpAxe.AddRange(new List<List<Item>> { new List<Item>(), new List<Item>(), new List<Item>(), new List<Item>(), new List<Item>(), new List<Item>() });
-			wpAxe.Add(new List<Item> { Item.GreatAxe, Item.HandAxe, Item.LightAxe, Item.SilverAxe });
+			wpAxe.Add(weaponsList.Where(x => x.Icon == WeaponIcon.AXE).Select(x => x.Id).ToList());
 
 			List<List<Item>> wpSword = new List<List<Item>>();
 			wpSword.AddRange(new List<List<Item>> { new List<Item>(), new List<Item>(), new List<Item>(), new List<Item>() });
-			wpSword.Add(new List<Item> { Item.Rapier, Item.Scimitar, Item.Sabre, Item.Falchon, Item.RuneSword, Item.DragonSword, Item.CoralSword });
-			wpSword.Add(new List<Item>(wpSword[4]) { Item.ShortSword, Item.LongSword, Item.SilverSword, Item.WereSword, Item.GiantSword, Item.FlameSword, Item.IceSword, Item.SunSword });
-			wpSword.Add(new List<Item>(wpSword[5]) { Item.Vorpal, Item.BaneSword, Item.Defense });
+
+			var swordsList = weaponsList.Where(x => x.Icon == WeaponIcon.SWORD).Select(x => x.Id).ToList();
+			var figherPermissions = classData[(int)AuthClass.Fighter].wpPermissions.Where(x => swordsList.Contains(x)).ToList();
+			var thiefPermissions = classData[(int)AuthClass.Thief].wpPermissions.Where(x => swordsList.Contains(x)).ToList();
+			var knightPermissions = classData[(int)AuthClass.Knight].wpPermissions.Where(x => x != Item.Xcalber).ToList();
+
+			bool noBSwords = (figherPermissions.Count == thiefPermissions.Count);
+
+			if (noBSwords)
+			{
+				wpSword.Add(new List<Item>());
+			}
+			else
+			{
+				wpSword.Add(swordsList.Where(x => thiefPermissions.Contains(x)).ToList());
+			}
+
+			wpSword.Add(swordsList.Where(x => figherPermissions.Contains(x)).ToList());
+			wpSword.Add(swordsList.Where(x => knightPermissions.Contains(x)).ToList());
 
 			// Spell charge ranks to distribute
 			var startSpellcharges = new List<Rank> { Rank.A, Rank.A, Rank.S, Rank.S, Rank.S, Rank.A };
 			var promoSpellcharges = new List<Rank> { Rank.B, Rank.C, Rank.B, Rank.C, Rank.B, Rank.C };
 
 			// Equipment ranks to distribute
-			var startWeapons = new List<(RankedType, Rank)> { (RankedType.Swords, Rank.A), (RankedType.Swords, Rank.A), (RankedType.Swords, Rank.B), (RankedType.Nunchucks, Rank.S), (RankedType.Axes, Rank.S), (RankedType.Axes, Rank.S), (RankedType.Hammers, Rank.S), (RankedType.Hammers, Rank.S), (RankedType.Knives, Rank.S), (RankedType.Knives, Rank.S), (RankedType.Staves, Rank.S), (RankedType.Staves, Rank.S) };
+			var startWeapons = new List<(RankedType, Rank)> { (RankedType.Swords, Rank.A), (RankedType.Swords, Rank.A), noBSwords ? (RankedType.Swords, Rank.A) : (RankedType.Swords, Rank.B), (RankedType.Nunchucks, Rank.S), (RankedType.Axes, Rank.S), (RankedType.Axes, Rank.S), (RankedType.Hammers, Rank.S), (RankedType.Hammers, Rank.S), (RankedType.Knives, Rank.S), (RankedType.Knives, Rank.S), (RankedType.Staves, Rank.S), (RankedType.Staves, Rank.S) };
 			var promoWeapons = new List<(RankedType, Rank)> { (RankedType.Swords, Rank.S), (RankedType.Swords, Rank.S), (RankedType.Swords, Rank.S), (RankedType.Nunchucks, Rank.S), (RankedType.Axes, Rank.S), (RankedType.Hammers, Rank.S), (RankedType.Knives, Rank.S), (RankedType.Staves, Rank.S) };
 
 			var startArmors = new List<(RankedType, Rank)> { (RankedType.Armors, Rank.A), (RankedType.Armors, Rank.B), (RankedType.Armors, Rank.C), (RankedType.Armors, Rank.C), (RankedType.Armors, Rank.D), (RankedType.Armors, Rank.D) };

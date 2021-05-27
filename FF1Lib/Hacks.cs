@@ -570,7 +570,7 @@ namespace FF1Lib
 			else if (talkscript == newTalkRoutines.Talk_Bahamut)
 			{
 				// Change routine to check for Tail, give promotion and trigger the battle at the same time, see 11_8200_TalkRoutines.asm
-				talkroutines.Replace(newTalkRoutines.Talk_Bahamut, Blob.FromHex("AD2D60D003A57160E67DA572203D96A575200096A476207F9020739220AE952018964C439660"));
+				talkroutines.Replace(newTalkRoutines.Talk_Bahamut, Blob.FromHex("AD2D60D003A57160E67DA572203D96A5752020B1A476207F9020739220AE952018964C439660"));
 			}
 
 			// Set battle
@@ -1368,8 +1368,10 @@ namespace FF1Lib
 			"Full Recover", "Raise Evade", "Void Resist.", "PW Status", "Heal Poison", "Revive", "Full Revive", "Go one floor\n back",
 			"Heal Stoned", "Teleport out\n of dungeons", "Magical", "Dragon", "Giant", "Undead", "Were", "Water", "Mage", "Regen"
 		};
-		public void ShopUpgrade()
+		public void ShopUpgrade(Flags flags)
 		{
+
+
 			// Modify DrawShopPartySprites to use new DrawOBSprite routines, see 0E_9500_ShopUpgrade.asm
 			PutInBank(0x0E, 0xAA04, Blob.FromHex("205795"));
 			PutInBank(0x0E, 0xAA0D, Blob.FromHex("205795"));
@@ -1381,12 +1383,25 @@ namespace FF1Lib
 			PutInBank(0x0E, 0xA931, Blob.FromHex("200095"));
 			PutInBank(0x0E, 0x9500, Blob.FromHex("A564C928F038A566C904B035C902B017A20020D495A24020D495A28020D495A2C020D4954C4195A200208B95A240208B95A280208B95A2C0208B954C41952047952027A74C2696A9008DD66A8DDA6A8DDE6A8DE26A6060AA4A8510BD0061A8B9A4EC8511BD0161F011C901F0E9C903F004A9038511A9144C8395A5104A4A4AAABDD66A18651085104C24EC8A8515BD00610AAABD00AD8510BD01AD8511A662BD000338E9B0851229078513A5124A4A4AA8B1108514A613BD38AC2514F005A9004CC595A90E8510A5154A4A4A4AAAA5109DD66A608A8515BD00610AAABDB9BC8512BDBABC8513A662BD000338C944B01638E91C0AAABD50BF25128510BD51BF251305104C1896E9440AAABDA0BF25128510BDA1BF25130510C9019005A9004CC595A90E4CC595A522F033A564C928F02DA662BD00038514205E962027A7A520C561F0F7A9008522204D964C46E1A9018538A9128539A90E853CA90A853D60204D96A90E85572063E0A53E8512A53F8513A514380AAAB00DBD0093853EBD0193853F4C8E96BD0094853EBD0194853FA9118557A90E85582036DEA512853EA513853FA900852260"));
 
+			if (flags.ChestInfo)
+			{
+				// Shorten TreasureChest Dialog
+				InsertDialogs(320, "You found.. #");
+				InsertDialogs(321, "Can't hold.. #");
+
+				// Insert TreasureChest Info
+				PutInBank(0x1F, 0xD536, Blob.FromHex("682064DB4CD0DD"));
+				PutInBank(0x1F, 0xDDD0, Blob.FromHex("A9B248A9FF48A9114C03FE8A20DA8760"));
+				PutInBank(0x11, 0xB300, Blob.FromHex("A9118557A545D00160A561C91CB00160C96C900160482089C6A9008561A639E88AC91E9002E91E8539A9068D0080A91C8D0180680AAAB00DBD0093853EBD0193853F4C4FB3BD0094853EBD0194853FA9068D0080A9228D0180A200A003B13EC8C902F05AC914F00B9D006BE8C900D0ED4CF6B3A53E48A53F489848B13E0AA8B00DB9009A853EB9019A853F4C98B3B9009B853EB9019B853FA000B13EC8C900F0079D006BE84C9AB3A9068D0080A9228D018068A8C868853F68853E4C5DB3A53E48A53F489848B13E0AA8A9068D0080A9158D0180B010B90097853EB9019738E920853F4C98B3B90098853EB9019838E920853F4C98B3A900853EA96B853F4C8ADB"));
+				if (flags.EnableExtConsumables) PutInBank(0x11, 0xB30C, Blob.FromHex("20"));
+			}
+
 			// Patch in the equip menu loop to add gear info
 			PutInBank(0x0E, 0xBB8F, Blob.FromHex("4CE090EA"));
 			// Patch in the magic menu loop to add spell info
 			PutInBank(0x0E, 0xAECD, Blob.FromHex("4C2691EA"));
 			// the UpgradedEquipMenu and UpgradedMagicMenu code that the above patches jump to
-			PutInBank(0x0E, 0x90E0, Blob.FromHex("A525D007A522D0044C93BB60A662BD0003F030297FA466C018D005691A4C029169428514203CC4205E9620F9BCA520C561F0F7A9008D0120853720F3BD2083B720DAEC4C93BBA525D007A522D0044CD1AE60A9008D01208537A5664A6A6A0562AA0A29381D00631869AF8514205E962080B72025B6A9008D01208537857F20029CA56248206DBA688562A90720EFB8A9292059B92080B74CD1AE"));
+			PutInBank(0x0E, 0x90E0, Blob.FromHex("A525D007A522D0044C93BB60A662BD0003F030297FA466C018D005691A4C029169428514203CC4205E9620F9BCA520C561F0F7A9008D0120853720F3BD2083B720DAEC4C93BBA525D007A522D0044CD1AE60A9018537A5664A6A6A0562AA0A29387D00631869AF8514205E962080B72025B6A9008D01208537857F20029CA56248206DBA688562A90720EFB8A9292059B92080B74CD1AE"));
 
 			// Modify DrawComplexString, this sets control code 14-19 to use a new words table in bank 11
 			//  could be used to move some stuff in items name table and make some space
@@ -1918,7 +1933,7 @@ namespace FF1Lib
 			Put(0x37F20, intro);
 
 			var validTalk = new List<newTalkRoutines> { newTalkRoutines.Talk_norm, newTalkRoutines.Talk_GoBridge, newTalkRoutines.Talk_ifearthfire, newTalkRoutines.Talk_ifearthvamp, newTalkRoutines.Talk_ifevent, newTalkRoutines.Talk_ifitem, newTalkRoutines.Talk_ifkeytnt, newTalkRoutines.Talk_ifvis, newTalkRoutines.Talk_Invis, newTalkRoutines.Talk_4Orb, newTalkRoutines.Talk_kill };
-			var invalidZombie = new List<ObjectId> { ObjectId.Bat, ObjectId.GaiaBroom, ObjectId.MatoyaBroom1, ObjectId.MatoyaBroom2, ObjectId.MatoyaBroom3, ObjectId.MatoyaBroom4, ObjectId.MirageRobot1, ObjectId.MirageRobot2, ObjectId.MirageRobot3, ObjectId.SkyRobot, ObjectId.LutePlate, ObjectId.RodPlate, ObjectId.SkyWarrior1, ObjectId.SkyWarrior2, ObjectId.SkyWarrior3, ObjectId.SkyWarrior4, ObjectId.SkyWarrior5 };
+			var invalidZombie = new List<ObjectId> { ObjectId.Bat, ObjectId.GaiaBroom, ObjectId.MatoyaBroom1, ObjectId.MatoyaBroom2, ObjectId.MatoyaBroom3, ObjectId.MatoyaBroom4, ObjectId.MirageRobot1, ObjectId.MirageRobot2, ObjectId.MirageRobot3, ObjectId.SkyRobot, ObjectId.LutePlate, ObjectId.RodPlate, ObjectId.SkyWarrior1, ObjectId.SkyWarrior2, ObjectId.SkyWarrior3, ObjectId.SkyWarrior4, ObjectId.SkyWarrior5, (ObjectId)0x18, (ObjectId)0x19, (ObjectId)0x1A };
 			var validZombie = new List<ObjectId>();
 
 			if (flags.HintsVillage ?? false)
@@ -1944,13 +1959,13 @@ namespace FF1Lib
 			}
 
 			// New routines to fight and give item
-			var battleUnne = talkroutines.Add(Blob.FromHex("A674F005BD2060F01AE67DA572203D96A575200096A476207F902073922018964C4396A57060"));
-			var battleGiveOnFlag = talkroutines.Add(Blob.FromHex("A474F0052079909029A5738561202096B022E67DA572203D96A575200096A476207F90207392A5611820109F2018964C4396A57060"));
-			var battleGiveOnItem = talkroutines.Add(Blob.FromHex("A674F005BD2060F029A5738561202096B022E67DA572203D96A575200096A476207F90207392A5611820109F2018964C4396A57060"));
-			var battleBahamut = talkroutines.Add(Blob.FromHex("AD2D60D003A57160E67DA572203D96A575200096A476207F9020739220AE952018964C439660"));
+			var battleUnne = talkroutines.Add(Blob.FromHex("A674F005BD2060F01AE67DA572203D96A5752020B1A476207F902073922018964C4396A57060"));
+			var battleGiveOnFlag = talkroutines.Add(Blob.FromHex("A474F0052079909029A57385612080B1B022E67DA572203D96A5752020B1A476207F90207392A5611820109F2018964C4396A57060"));
+			var battleGiveOnItem = talkroutines.Add(Blob.FromHex("A674F005BD2060F029A57385612080B1B022E67DA572203D96A5752020B1A476207F90207392A5611820109F2018964C4396A57060"));
+			var battleBahamut = talkroutines.Add(Blob.FromHex("AD2D60D003A57160E67DA572203D96A5752020B1A476207F9020739220AE952018964C439660"));
 			talkroutines.ReplaceChunk(newTalkRoutines.Talk_Bikke, Blob.FromHex("A57260A57060"), Blob.FromHex("207392A57260"));
 
-			var lichReplace = talkroutines.Add(Blob.FromHex("A572203D96A575200096A476207F90207392A47320A4902018964C4396"));
+			var lichReplace = talkroutines.Add(Blob.FromHex("A572203D96A5752020B1A476207F90207392A47320A4902018964C4396"));
 
 			// Update Garland's script
 			npcdata.SetRoutine(ObjectId.Garland, newTalkRoutines.Talk_CoOGuy);
@@ -1960,7 +1975,6 @@ namespace FF1Lib
 			evilDialogs.Add(0x33, "Barf!");
 			evilDialogs.Add(0x34, "Uaaaaaargh!");
 			evilDialogs.Add(0x36, "Groaaarn!");
-
 
 			evilDialogs.Add(0x04, "What the hell!?\nThat princess is crazy,\nshe tried to bite me!\n\nThat's it. Screw that.\nI'm going home.");
 
@@ -2037,32 +2051,42 @@ namespace FF1Lib
 			npcdata.SetRoutine(ObjectId.Lefein, (newTalkRoutines)battleGiveOnFlag);
 
 			evilDialogs.Add(0xFA, "Sorry, LIGHT WARRIORS,\nbut your LICH is in\nanother castle!\n\nMwahahahaha!");
-			evilDialogs.Add(0x2F, "You did well fighting\nmy Army of Darkness,\nLIGHT WARRIORS! But it\nis for naught!\nI am UNSTOPPABLE!\nThis time, YOU are\nthe SPEEDBUMP!");
-			evilDialogs.Add(0x30, "HAHA! Alright, enough\nplaying around.");
+
+			if(!(bool)flags.TrappedChaos)
+			{
+				// Add new Chaos dialogues
+				evilDialogs.Add(0x2F, "You did well fighting\nmy Army of Darkness,\nLIGHT WARRIORS! But it\nis for naught!\nI am UNSTOPPABLE!\nThis time, YOU are\nthe SPEEDBUMP!");
+				evilDialogs.Add(0x30, "HAHA! Alright, enough\nplaying around.");
+
+				// Update Chaos NPC
+				Put(0x2F00 + 0x18, Blob.FromHex("00"));
+				Put(0x2F00 + 0x19, Blob.FromHex("01"));
+				Put(0x2F00 + 0x1A, Blob.FromHex("00"));
+
+				// Update Chaos' Sprite
+				Data[MapObjGfxOffset + 0x1A] = 0x0F;
+				Data[MapObjGfxOffset + 0x19] = 0x0F;
+
+				// Update Chaos' Palette
+				PutInBank(0x00, 0xA000 + ((byte)MapId.TempleOfFiendsRevisitedChaos * 0x30) + 0x18, Blob.FromHex("0F0F13300F0F1530"));
+
+				// Add Lich? fight
+				npcdata.GetTalkArray((ObjectId)0x19)[0] = 0x2F;
+				npcdata.GetTalkArray((ObjectId)0x19)[(int)TalkArrayPos.battle_id] = bossLichMech;
+				npcdata.GetTalkArray((ObjectId)0x19)[2] = 0x2F;
+				npcdata.GetTalkArray((ObjectId)0x19)[3] = 0x1A;
+
+				// Real Lich fight
+				npcdata.SetRoutine((ObjectId)0x19, (newTalkRoutines)lichReplace);
+			}
 
 			InsertDialogs(evilDialogs);
-
-			// Update Chaos sprite
-			Put(0x2F00 + 0x18, Blob.FromHex("00"));
-			Put(0x2F00 + 0x19, Blob.FromHex("01"));
-			Put(0x2F00 + 0x1A, Blob.FromHex("00"));
-			Data[MapObjGfxOffset + 0x1A] = 0x0F;
-			Data[MapObjGfxOffset + 0x19] = 0x0F;
-			PutInBank(0x00, 0xA000 + ((byte)MapId.TempleOfFiendsRevisitedChaos * 0x30) + 0x18, Blob.FromHex("0F0F13300F0F1530"));
-
-			npcdata.SetRoutine((ObjectId)0x19, (newTalkRoutines)lichReplace);
 
 			for (int i = 0; i < 4; i++)
 			{
 				if (npcdata.GetTalkArray((ObjectId)(0x1B + i))[(int)TalkArrayPos.battle_id] == encLich1)
 					npcdata.GetTalkArray((ObjectId)(0x1B + i))[(int)TalkArrayPos.battle_id] = encLich2 + 0x80;
 			}
-
-			npcdata.GetTalkArray((ObjectId)0x19)[0] = 0x2F;
-			npcdata.GetTalkArray((ObjectId)0x19)[(int)TalkArrayPos.battle_id] = bossLichMech;
-			npcdata.GetTalkArray((ObjectId)0x19)[2] = 0x2F;
-			npcdata.GetTalkArray((ObjectId)0x19)[3] = 0x1A;
-
 			npcdata.GetTalkArray(ObjectId.WarMECH)[(int)TalkArrayPos.battle_id] = bossLichMech;
 
 			// Switch princess
@@ -2110,7 +2134,6 @@ namespace FF1Lib
 
 			Data[0x2000 + ((byte)MapId.Lefein * 0x30) + 0x18 + 0x03] = 0x3A;
 			Data[0x2000 + ((byte)MapId.Lefein * 0x30) + 0x18 + 0x07] = 0x3A;
-
 
 			// Let zombies roam free
 			var npcMap = new List<MapId> { MapId.Cardia, MapId.BahamutsRoomB2, MapId.Coneria, MapId.ConeriaCastle1F, MapId.ConeriaCastle2F, MapId.CrescentLake, MapId.DwarfCave, MapId.Elfland, MapId.ElflandCastle, MapId.Gaia, MapId.Lefein, MapId.Melmond, MapId.Onrac, MapId.Pravoka };
@@ -2198,8 +2221,8 @@ namespace FF1Lib
 			SubstituteFormationTableEncounter(oldEncounter: encAnkylo + offsetAtoB, newEncounter: encTyroWyvern); // handle Ankylo B side (two Ankylos)
 
 			// Update Bahamut behavior
-			String asmNoTailPromote = "EE7D00AD7200203D96AD7500200096AC7600207F9020739220AE952018964C439660"; // 11_820 LichsRevenge ASM : ClassChange_bB
-			String asmTailRequiredPromote = "AD2D60D003A57160E67DA572203D96A575200096A476207F9020739220AE952018964C439660"; // 11_820 LichsRevenge ASM : Talk_battleBahamut
+			String asmNoTailPromote = "EE7D00AD7200203D96AD75002020B1AC7600207F9020739220AE952018964C439660"; // 11_820 LichsRevenge ASM : ClassChange_bB
+			String asmTailRequiredPromote = "AD2D60D003A57160E67DA572203D96A5752020B1A476207F9020739220AE952018964C439660"; // 11_820 LichsRevenge ASM : Talk_battleBahamut
 			String asm = "";
 			String bahamutDialogue = "";
 			if (removeTail)

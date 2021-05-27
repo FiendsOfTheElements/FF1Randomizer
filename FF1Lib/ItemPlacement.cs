@@ -123,14 +123,15 @@ namespace FF1Lib
 			};
 
 			ItemPlacementResult result = DoSanePlacement(rng, ctx);
-			List<IRewardSource> placedItems = result.PlacedItems;			
+			List<IRewardSource> placedItems = result.PlacedItems;
+
 			treasurePool = result.RemainingTreasures;
 
 			if ((bool)_flags.FreeBridge)
 			{
 				placedItems = placedItems.Select(x => x.Item != Item.Bridge ? x : NewItemPlacement(x, ReplacementItem)).ToList();
 			}
-			if (((bool)_flags.IsAirshipFree || (bool)_flags.IsFloaterRemoved))
+			if ((bool)_flags.IsFloaterRemoved)
 			{
 				placedItems = placedItems.Select(x => x.Item != Item.Floater ? x : NewItemPlacement(x, ReplacementItem)).ToList();
 			}
@@ -604,10 +605,17 @@ namespace FF1Lib
 				var leftoverItems = incentives.Concat(nonincentives).ToList();
 				leftoverItems.Shuffle(rng);
 
-				var leftoverItemLocations = preBlackOrbLocationPool.Where(x => !placedItems.Any(y => y.Address == x.Address)).ToList();
+				var (_, accessibleMapLocations, fulfilledRequirements) = _checker.CheckSanity(placedItems, fullLocationRequirements, _flags);
 
-				if ((bool)_flags.LooseExcludePlacedDungeons)
-					leftoverItemLocations = preBlackOrbUnincentivizedLocationPool.Where(x => !placedItems.Any(y => y.Address == x.Address)).ToList();
+				IEnumerable<IRewardSource> looseLocationPool;
+				if ((bool)_flags.LooseExcludePlacedDungeons) {
+				    looseLocationPool = preBlackOrbUnincentivizedLocationPool;
+				} else {
+				    looseLocationPool = preBlackOrbLocationPool;
+				}
+				var leftoverItemLocations = looseLocationPool.Where(x => !placedItems.Any(y => y.Address == x.Address)
+									       && _checker.IsRewardSourceAccessible(x, fulfilledRequirements, accessibleMapLocations)).ToList();
+
 
 				// Place leftover items before placing shards, because if LooseExcludePlacedDungeons is set,
 				// and there are lots of incentive locations, leftoverItemLocations pool may be small.
@@ -617,7 +625,9 @@ namespace FF1Lib
 				}
 
 				if (shards.Count > 0) {
-				    leftoverItemLocations = preBlackOrbLocationPool.Where(x => !placedItems.Any(y => y.Address == x.Address)).ToList();
+				    // Place shards.  These are not affected by the LooseExcludePlacedDungeons flag.
+				    leftoverItemLocations = preBlackOrbLocationPool.Where(x => !placedItems.Any(y => y.Address == x.Address)
+											  && _checker.IsRewardSourceAccessible(x, fulfilledRequirements, accessibleMapLocations)).ToList();
 				    foreach (var shard in shards)
 				    {
 					placedItems.Add(NewItemPlacement(leftoverItemLocations.SpliceRandom(rng), shard));
