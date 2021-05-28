@@ -24,16 +24,16 @@
 		else if (noTabLayout)
 		{
 			<PresetsTab Flags="@Flags" SetStatusMessage="@SetStatusMessage" loadDefault="@loadDefault" SetDefaultLoaded="@SetDefaultLoaded" noTabLayout="@noTabLayout" presetName="@presetName" SetPresetName="@SetPresetName" />
-			<ShopsTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
-			<ItemEquipmentTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
-			<EnemiesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
-			<TreasuresTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
-			<IncentivesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
 			<GoalTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
-			<MapsTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
 			<ScaleTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
-			<PartyTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
+			<IncentivesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
+			<TreasuresTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
+			<MapsTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
+			<EnemiesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
 			<ClassesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
+			<PartyTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
+			<ItemEquipmentTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
+			<ShopsTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
 			<AdjustmentsTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
 			<ExperimentalTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
 			<ExpandArrow noTabLayout="@noTabLayout" SetTabLayout="@SetTabLayout" />
@@ -50,45 +50,9 @@
 							</BSTabContent>
 						</BSTab>
 						<BSTab>
-							<BSTabLabel>Shops</BSTabLabel>
-							<BSTabContent>
-								<ShopsTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
-							</BSTabContent>
-						</BSTab>
-						<BSTab>
-							<BSTabLabel>Equipment</BSTabLabel>
-							<BSTabContent>
-								<ItemEquipmentTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
-							</BSTabContent>
-						</BSTab>
-						<BSTab>
-							<BSTabLabel>Enemies</BSTabLabel>
-							<BSTabContent>
-								<EnemiesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
-							</BSTabContent>
-						</BSTab>
-						<BSTab>
-							<BSTabLabel>Treasures</BSTabLabel>
-							<BSTabContent>
-								<TreasuresTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
-							</BSTabContent>
-						</BSTab>
-						<BSTab>
-							<BSTabLabel>Incentives</BSTabLabel>
-							<BSTabContent>
-								<IncentivesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
-							</BSTabContent>
-						</BSTab>
-						<BSTab>
 							<BSTabLabel>Goal</BSTabLabel>
 							<BSTabContent>
 								<GoalTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
-							</BSTabContent>
-						</BSTab>
-						<BSTab>
-							<BSTabLabel>Maps</BSTabLabel>
-							<BSTabContent>
-								<MapsTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
 							</BSTabContent>
 						</BSTab>
 						<BSTab>
@@ -98,15 +62,51 @@
 							</BSTabContent>
 						</BSTab>
 						<BSTab>
-							<BSTabLabel>Party</BSTabLabel>
+							<BSTabLabel>Incentives</BSTabLabel>
 							<BSTabContent>
-								<PartyTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
+								<IncentivesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
+							</BSTabContent>
+						</BSTab>
+						<BSTab>
+							<BSTabLabel>Treasures</BSTabLabel>
+							<BSTabContent>
+								<TreasuresTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
+							</BSTabContent>
+						</BSTab>
+						<BSTab>
+							<BSTabLabel>Maps</BSTabLabel>
+							<BSTabContent>
+								<MapsTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
+							</BSTabContent>
+						</BSTab>
+						<BSTab>
+							<BSTabLabel>Enemies</BSTabLabel>
+							<BSTabContent>
+								<EnemiesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
 							</BSTabContent>
 						</BSTab>
 						<BSTab>
 							<BSTabLabel>Classes</BSTabLabel>
 							<BSTabContent>
 								<ClassesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
+							</BSTabContent>
+						</BSTab>
+						<BSTab>
+							<BSTabLabel>Party</BSTabLabel>
+							<BSTabContent>
+								<PartyTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
+							</BSTabContent>
+						</BSTab>
+						<BSTab>
+							<BSTabLabel>Equipment</BSTabLabel>
+							<BSTabContent>
+								<ItemEquipmentTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
+							</BSTabContent>
+						</BSTab>
+						<BSTab>
+							<BSTabLabel>Shops</BSTabLabel>
+							<BSTabContent>
+								<ShopsTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
 							</BSTabContent>
 						</BSTab>
 						<BSTab>
