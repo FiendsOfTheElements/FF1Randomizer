@@ -141,7 +141,11 @@
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeOffCastArmorCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeOffCastArmor">Black Shirt</TriStateCheckBox>
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeRibbonCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeRibbon">Ribbon</TriStateCheckBox>
 
-
+		<div class="checkbox-cell"></div>
+		<h4>Hints</h4>
+		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.Treasures" Id="hintsVillage" @bind-Value="Flags.HintsVillage">Hint givers in villages</TriStateCheckBox>
+		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.Treasures" Id="hintsDungeon" @bind-Value="Flags.HintsDungeon">Hint givers in dungeons</TriStateCheckBox>
+		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.HintsVillage != false || Flags.HintsDungeon != false)" Id="hintsUselessCheckBox" @bind-Value="Flags.HintsUseless">Useless Hints</TriStateCheckBox>
 	</div>
 	<div class="clear-it"></div>
 	}
