@@ -166,7 +166,7 @@
 		"Id": "thirdBattlePaletteCheckBox",
 		"title": "Three Battle Palettes",
 		"screenshot": "thirdBattlePaletteCheckBox.png",
-		"description": "Changes the behavior of in-battle color palettes to allow spite edits to use three different palettes instead of the normal two. This is an advanced option that requires the use of external tools such as FFHackster for importing sprites in order to have a noticeable effect.\n Note: While using the \"Three Battle Palettes\" option, some effects on screen maybe cause unintended side effects during play. These are minor, such as characters struck by Stone changing color in battle as spells are cast, but could be confusing if you're not used to these side effects."
+		"description": "Changes the behavior of in-battle color palettes to allow sprite edits to use three different palettes instead of the normal two. This is an advanced option that requires the use of external tools such as FFHackster for importing sprites in order to have a noticeable effect.\n Note: While using the \"Three Battle Palettes\" option, some effects on screen maybe cause unintended side effects during play. These are minor, such as characters struck by Stone changing color in battle as spells are cast, but could be confusing if you're not used to these side effects."
 	},
 	{
 		"Id": "partyMapmanSlot",
