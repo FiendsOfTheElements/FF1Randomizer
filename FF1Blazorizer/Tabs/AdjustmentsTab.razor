@@ -20,10 +20,25 @@
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyElementalResistancesCheckBox" @bind-Value="Flags.EnemyElementalResistancesBug">Enemy Elemental Resistances</CheckBox>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="enemySpellsTargetingAlliesCheckBox" @bind-Value="Flags.EnemySpellsTargetingAllies">Enemy Spells Targeting Allies</CheckBox>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="improveTurnOrderRandomizationCheckBox" @bind-Value="Flags.ImproveTurnOrderRandomization">Improve Turn Order Randomization</CheckBox>
+
 	<div class="checkbox-cell"></div>
+	<h4>RNG</h4>
+	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="rngCheckBox" @bind-Value="Flags.Rng">RNG Tables</TriStateCheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="fixMissingBattleRngEntry" @bind-Value="Flags.FixMissingBattleRngEntry">Fix Missing Battle RNG Entry</CheckBox>
+
+	<div class="checkbox-cell"></div>
+	<h4>Saving</h4>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="disableTentSaving" @bind-Value="Flags.DisableTentSaving">Disable Tent/Cabin/House Saving on Overworld</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="disableInnSaving" @bind-Value="Flags.DisableInnSaving">Disable Inn Saving</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="saveGameWhenGameOverCheckBox" @bind-Value="Flags.SaveGameWhenGameOver">Save Game When Game Over</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="saveGameDWModeCheckBox" IsEnabled="@Flags.SaveGameWhenGameOver" @bind-Value="Flags.SaveGameDWMode">Dragon Warrior Mode</CheckBox>
+</div>
+
+<div class="col2">
 	<h4>Conveniences</h4>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="noPartyShuffleCheckBox" @bind-Value="Flags.NoPartyShuffle">No Party Shuffle</CheckBox>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="speedHacksCheckBox" @bind-Value="Flags.SpeedHacks">Speed Hacks</CheckBox>
+        <CheckBox UpdateToolTip="@UpdateToolTipID" Id="speedboatCheckBox" @bind-Value="Flags.SpeedBoat">Faster ship</CheckBox>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="identifyTreasuresCheckBox" @bind-Value="Flags.IdentifyTreasures">Identify Treasures</CheckBox>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="dashCheckBox" @bind-Value="Flags.Dash">Enable Dash</CheckBox>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="buyTenCheckBox" @bind-Value="Flags.BuyTen">Buy Quantity</CheckBox>
@@ -35,26 +50,6 @@
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="shopInfoCheckBox" @bind-Value="Flags.ShopInfo">Shop Information</CheckBox>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="chestInfoCheckBox" Indent IsEnabled="Flags.ShopInfo" @bind-Value="Flags.ChestInfo">Chest Information</CheckBox>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="incentiveChestItemsFanfareCheckBox" @bind-Value="Flags.IncentiveChestItemsFanfare">All Incentive Chest Items Fanfare</CheckBox>
-        <CheckBox UpdateToolTip="@UpdateToolTipID" Id="speedboatCheckBox" @bind-Value="Flags.SpeedBoat">Faster ship</CheckBox>
-	<div class="checkbox-cell"></div>
-</div>
-<div class="col2">
-		<h4>Saving</h4>
-		<CheckBox UpdateToolTip="@UpdateToolTipID" Id="disableTentSaving" @bind-Value="Flags.DisableTentSaving">Disable Tent/Cabin/House Saving on Overworld</CheckBox>
-		<CheckBox UpdateToolTip="@UpdateToolTipID" Id="disableInnSaving" @bind-Value="Flags.DisableInnSaving">Disable Inn Saving</CheckBox>
-		<CheckBox UpdateToolTip="@UpdateToolTipID" Id="saveGameWhenGameOverCheckBox" @bind-Value="Flags.SaveGameWhenGameOver">Save Game When Game Over</CheckBox>
-		<CheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="saveGameDWModeCheckBox" IsEnabled="@Flags.SaveGameWhenGameOver" @bind-Value="Flags.SaveGameDWMode">Dragon Warrior Mode</CheckBox>
-		<div class="checkbox-cell"></div>
-	<h4>Spells</h4>
-	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="cureHealBuffCheckBox" @bind-Value="Flags.BuffHealingSpells">Improve CURE, HEAL, LAMP, and AMUT spells</CheckBox>
-	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="LockMode" TItem="LockHitMode" @bind-Value="Flags.LockMode">LOCK and LOK2 Mode:</EnumDropDown>
-	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="magicAutohitThresholdDropDown" TItem="AutohitThreshold" @bind-Value="Flags.MagicAutohitThreshold">Power Word Threshold:</EnumDropDown>
-
-	<div class="checkbox-cell"></div>
-	<h4>RNG</h4>
-	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="rngCheckBox" @bind-Value="Flags.Rng">RNG Tables</TriStateCheckBox>
-	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="fixMissingBattleRngEntry" @bind-Value="Flags.FixMissingBattleRngEntry">Fix Missing Battle RNG Entry</CheckBox>
-	<div class="checkbox-cell"></div>
 </div>
 		<div class="clear-it"></div>
 	}
