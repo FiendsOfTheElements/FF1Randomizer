@@ -20,11 +20,11 @@
 	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="menuColorDropDown" TItem="MenuColor" @bind-Value="Flags.MenuColor">Menu Color:</EnumDropDown>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="accessibleSpellNamesCheckBox" IsEnabled="@(!Flags.GenerateNewSpellbook)" @bind-Value="Flags.AccessibleSpellNames">Accessible Spell Names</CheckBox>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="renounceAutosortCheckBox" @bind-Value="Flags.RenounceAutosort">Renounce Autosort</CheckBox>
-			<h4>Custom player sprites</h4>
-			<p>@SpriteSheetMessage</p>
-			<ToolTipBox id="spriteSheetToolTipBox" UpdateToolTip="@UpdateToolTipID" />
-			<input type="file" id="spriteSheetInput" accept="image/*" @onchange="@OnSpriteSheetChanged" />
-			<a class="styled-button" @onclick="@ClearCustomSprites">Clear saved sprites</a>
+
+	<ToolTipBox id="spriteSheetToolTipBox" UpdateToolTip="@UpdateToolTipID">@SpriteSheetMessage</ToolTipBox>
+	<input type="file" id="spriteSheetInput" accept="image/*" @onchange="@OnSpriteSheetChanged" />
+	<a class="styled-button" @onclick="@ClearCustomSprites">Clear saved sprites</a>
+	<div class="checkbox-cell"></div>
 
 	<a class="styled-button" @onclick="@SavePreferences">Save Preferences</a>
 </div>
@@ -49,7 +49,7 @@
 		SetStatusMessage.Invoke("Preferences saved.");
 	}
 
-	private string SpriteSheetMessage = "No custom sprites loaded";
+	private string SpriteSheetMessage = "Load custom player sprites:";
 
 		async Task OnSpriteSheetChanged(ChangeEventArgs e)
 		{
@@ -60,7 +60,7 @@
 
 		void ClearCustomSprites() {
 		     Flags.SpriteSheet = null;
-		     SpriteSheetMessage = "No custom sprites.";
+		     SpriteSheetMessage = "Load custom player sprites:";
 		}
 
 }
