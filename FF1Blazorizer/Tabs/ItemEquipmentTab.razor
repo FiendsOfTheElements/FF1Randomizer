@@ -28,7 +28,7 @@
 		</div>
 
 		<div class="col2">
-	<h4>Consumables</h4>
+	<h4>Consumable Items</h4>
 	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="startingItemsDropDown" TItem="StartingItemSet" @bind-Value="Flags.StartingItemSet">Starting Inventory:</EnumDropDown>
 	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="consumableTreasureStackSizeDropDown" TItem="TreasureStackSize" @bind-Value="Flags.ConsumableTreasureStackSize">Treasure Chest Stacks:</EnumDropDown>
 	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="consumableChestSetDropDown" TItem="ConsumableChestSet" @bind-Value="Flags.MoreConsumableChests">Consumable Chests:</EnumDropDown>
@@ -36,7 +36,7 @@
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="etherizerCheckBox" IsEnabled="!Flags.HousesFillHP" @bind-Value="Flags.Etherizer">Turn Shelters into Ethers</CheckBox>
 
 	<div class="checkbox-cell"></div>
-	<h4>Spellcasting Items</h4>
+	<h4>Spellcasting Gear</h4>
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="ruseItemCheckBox" @bind-Value="Flags.GuaranteedRuseItem">Insert Ruse Item</TriStateCheckBox>
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="itemMagicCheckBox" @bind-Value="Flags.ItemMagic">Item Magic</TriStateCheckBox>
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.ItemMagic" Id="balancedItemMagicCheckBox" @bind-Value="Flags.BalancedItemMagicShuffle">Balanced Shuffle</TriStateCheckBox>
