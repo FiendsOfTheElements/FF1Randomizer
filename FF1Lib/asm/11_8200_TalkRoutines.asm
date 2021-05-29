@@ -731,25 +731,7 @@ InTalkReenterMap:
   JSR JumpThenSwapPRG      ; ReenterStandardMap
   JMP DrawSMSprites        ; and draw all sprites 
 
-; Check inventory if there's space for an item
-CheckCanTake:
- CMP #$6C               ; We can always take money
- BCS CanTake             
- CMP #$44               ; Otherwise, check space for armor or weapon
- BCS Armor
-  CMP #$1C
-  BCC CanTake
-  JSR FindEmptyWeaponSlot
-  BCS TooFull
-  JMP CanTake
-Armor:
- JSR FindEmptyArmorSlot 
- BCS TooFull
-CanTake:                ; Clear carry if we can take, otherwise, carry was set
- CLC
-TooFull:
- LDA #$F1 ; Can't hold
- RTS
+ .org $963D
 
 ; Show a dialogue box inside the talk routine
 InTalkDialogueBox:
@@ -811,6 +793,38 @@ InTalkBattle:
 WonBattle:  
   RTS
 
+.org $B180
+
+; Check inventory if there's space for an item
+CheckCanTake:
+ CMP #$16				; We can always take key items/shards
+ BCC CanTake
+ CMP #$1C
+ BCC CheckItem
+ CMP #$44
+ BCC CheckWeapon
+ CMP #$6C
+ BCC CheckArmor           
+ JMP CanTake        	; We can always take money/exp     
+CheckItem:
+ TAX
+ LDA items, X
+ CMP #$63
+ BCS TooFull
+ JMP CanTake
+CheckWeapon:
+ JSR FindEmptyWeaponSlot
+ BCS TooFull
+ JMP CanTake
+CheckArmor:
+ JSR FindEmptyArmorSlot 
+ BCS TooFull
+;JMP CanTake
+CanTake:                ; Clear carry if we can take, otherwise, carry was set
+ CLC
+TooFull:
+ LDA #$F1 ; Can't hold
+ RTS
 
  .ORG $0000
  

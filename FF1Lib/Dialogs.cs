@@ -148,7 +148,7 @@ namespace FF1Lib
 				_talkroutines.Add(Blob.FromHex("A476207990B01BA474F0052079909015A573F0111820109FB00DA476207F90A57260A57160A57060"));
 				_talkroutines.Add(Blob.FromHex("A476207990B01EA674BD2060F01AA573F0161820109FB012A674DE2060A476207F90A57260A57160A57060"));
 				_talkroutines.Add(Blob.FromHex("A476207990B01BA674F005BD2060F015A573F0111820109FB00DA476207F90A57260A57160A57060"));
-				_talkroutines.Add(Blob.FromHex("A674F005BD2060F029A5738561202096F022E67DA572203D96A5752000B1A476207F90207392A5611820109F2018964C4396A57060")); // Talk_Astos
+				_talkroutines.Add(Blob.FromHex("A674F005BD2060F029A57385612080B1F022E67DA572203D96A5752000B1A476207F90207392A5611820109F2018964C4396A57060")); // Talk_Astos
 				_talkroutines.Add(Blob.FromHex("A000209690A57160")); // Talk_Kill
 				_talkroutines.Add(Blob.FromHex("A57520C590A57160")); // Talk_Chaos
 			}
@@ -452,7 +452,7 @@ namespace FF1Lib
 			// Insert dialogs
 			Put(dialogsPointerOffset, Blob.FromUShorts(pointers) + generatedText);
 		}
-		public void TransferTalkRoutines()
+		public void TransferTalkRoutines(Flags flags)
 		{
 			// Get Talk Routines from Bank E and put them in bank 11
 			PutInBank(newTalkRoutinesBank, 0x902B, Get(0x3902B, 0x8EA));
@@ -483,6 +483,17 @@ namespace FF1Lib
 
 			// LoadPrice fix
 			PutInBank(newTalkRoutinesBank, 0x9F10, Blob.FromHex("A9118558A5734C10B0"));
+
+			//CheckCanTake
+			if (flags.EnableExtConsumables)
+			{
+				//C920 instead of C916
+				PutInBank(newTalkRoutinesBank, 0xB180, Blob.FromHex("C9169027C920900BC9449012C96C90164CABB1AABD2060C963B0114CABB12034DDB0094CABB12046DDB00118A9F160"));
+			}
+			else
+			{
+				PutInBank(newTalkRoutinesBank, 0xB180, Blob.FromHex("C9169027C91C900BC9449012C96C90164CABB1AABD2060C963B0114CABB12034DDB0094CABB12046DDB00118A9F160"));
+			}
 
 			// Update bank
 			Data[0x7C9F2] = newTalkRoutinesBank;
@@ -640,13 +651,13 @@ namespace FF1Lib
 
 			InsertDialogs(NPCShuffleDialogs);
 		}
-		public void UpdateDialogs(NPCdata npcdata)
+		public void UpdateDialogs(NPCdata npcdata, Flags flags)
 		{
 			Dictionary<int, string> newDialogs = new Dictionary<int, string>();
 
 			//CleanupNPCRoutines(); - Deprecated 2020-12-12
 			TransferDialogs();
-			TransferTalkRoutines();
+			TransferTalkRoutines(flags);
 			AddNewChars();
 
 			// Update all NPC's dialogs script, default behaviours are maintained
