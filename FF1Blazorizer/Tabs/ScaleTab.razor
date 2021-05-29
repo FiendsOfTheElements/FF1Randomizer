@@ -3,9 +3,9 @@
 
 	<div id="Scale" class="tabcontent framed-content clearfix @(noTabLayout ? "no-tab" : "") @(IsOpen ? "" : "collapsed")">
 
-		<h3 class="@(IsOpen ? "" : "h3-collapsed")"><a class="@(noTabLayout ? "collapsible-header" : "")" @onclick="(() => IsOpen = (!noTabLayout || !IsOpen))">Scale</a></h3>
+		<h3 class="@(IsOpen ? "" : "h3-collapsed")"><a class="@(noTabLayout ? "collapsible-header" : "")" @onclick="(() => IsOpen = (!noTabLayout || !IsOpen))">Difficulty Scaling</a></h3>
 		@if (IsOpen)
-		{ 
+		{
 	<div class="col1 full">
 		<h4>Gold</h4>
 		<DoubleSlider ShowMedian DoubleCol Id="clampMinimumPriceScaleLable" UpdateToolTip="@UpdateToolTipID" MinValue="0" MaxValue="500" Step="10" @bind-ValueHigh="Flags.PriceScaleFactorHigh" @bind-ValueLow="Flags.PriceScaleFactorLow">Prices:</DoubleSlider>

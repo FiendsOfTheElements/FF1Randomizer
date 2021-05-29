@@ -1,5 +1,6 @@
 ﻿@using FF1Lib;
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+@inject IJSRuntime JSRuntime
 
 <div id="fun" class="framed-content">
 	<h3 class="centered">Fun %</h3>
@@ -19,6 +20,12 @@
 	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="menuColorDropDown" TItem="MenuColor" @bind-Value="Flags.MenuColor">Menu Color:</EnumDropDown>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="accessibleSpellNamesCheckBox" IsEnabled="@(!Flags.GenerateNewSpellbook)" @bind-Value="Flags.AccessibleSpellNames">Accessible Spell Names</CheckBox>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="renounceAutosortCheckBox" @bind-Value="Flags.RenounceAutosort">Renounce Autosort</CheckBox>
+
+	<ToolTipBox id="spriteSheetToolTipBox" UpdateToolTip="@UpdateToolTipID">@SpriteSheetMessage</ToolTipBox>
+	<input type="file" id="spriteSheetInput" accept="image/*" @onchange="@OnSpriteSheetChanged" />
+	<a class="styled-button" @onclick="@ClearCustomSprites">Clear saved sprites</a>
+	<div class="checkbox-cell"></div>
+
 	<a class="styled-button" @onclick="@SavePreferences">Save Preferences</a>
 </div>
 
@@ -31,6 +38,9 @@
 	protected override async void OnInitialized()
 	{
 		Flags.Preferences = await LocalStorage.GetItemAsync<Preferences>("preferences") ?? new Preferences();
+		if (Flags.Preferences.SpriteSheet != null) {
+		  SpriteSheetMessage = "Using custom sprites.";
+		}
 	}
 
 	async Task SavePreferences()
@@ -38,4 +48,19 @@
 		await LocalStorage.SetItemAsync("preferences", Flags.Preferences);
 		SetStatusMessage.Invoke("Preferences saved.");
 	}
+
+	private string SpriteSheetMessage = "Load custom player sprites:";
+
+		async Task OnSpriteSheetChanged(ChangeEventArgs e)
+		{
+		      Console.WriteLine("OnSpriteSheetChanged");
+	              Flags.SpriteSheet = await JSRuntime.InvokeAsync<string>("handleFileSelect", "spriteSheetInput");
+		      SpriteSheetMessage = "Using custom sprites.";
+		}
+
+		void ClearCustomSprites() {
+		     Flags.SpriteSheet = null;
+		     SpriteSheetMessage = "Load custom player sprites:";
+		}
+
 }

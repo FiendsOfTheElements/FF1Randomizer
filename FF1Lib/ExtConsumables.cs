@@ -45,13 +45,13 @@ namespace FF1Lib
 			WriteOutOfBattlePhnixRoutine();
 			WriteOutOfBattleSmokeRoutine();
 			WriteOutOfBattleBlastRoutine();
-			
+
 			//DrawItemBox EndOfItemIndex
 			rom.PutInBank(0x1F, 0xEF4D, new byte[] { 0x20 });
-			
+
 			ChangeItemNames();
 			ChangeMenuTexts();
-			
+
 			WriteDrawDrinkBoxBreakoutRoutine();
 			WriteDrawDrinkBoxRoutine();
 			WriteLutDrinkBoxOrder();

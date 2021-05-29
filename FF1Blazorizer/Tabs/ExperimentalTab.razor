@@ -11,47 +11,15 @@
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="sanityCheckerV2" @bind-Value="Flags.SanityCheckerV2">Use SanityChecker V2</CheckBox>
 			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="owMapExchange" TItem="OwMapExchanges" IsEnabled="Flags.SanityCheckerV2" @bind-Value="Flags.OwMapExchange">Overworld Map:</EnumDropDown>
 			<div class="checkbox-cell"></div>
-
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="dragonsHoardCheckBox" @bind-Value="Flags.MapDragonsHoard">Dragon's Hoard</TriStateCheckBox>
-			<div class="row">
-				<div class="col-sm-6 noleftpadding">
-					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeCardiaCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeCardia">Cardia Islands incentive </TriStateCheckBox>
-				</div>
-				<div class="col-sm-6">
-					<EnumDropDown DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="incentiveCardiaDropDown" TItem="IncentivePlacementType" @bind-Value="Flags.CardiaIncentivePlacementType"></EnumDropDown>
-				</div>
-			</div>
-			<div class="checkbox-cell"></div>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="procGenEarth1" @bind-Value="Flags.EFGEarth1">Generated Earth Cave B1</CheckBox>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="procGenEarth2" @bind-Value="Flags.EFGEarth2">Generated Earth Cave B2</CheckBox>
 			<div class="checkbox-cell"></div>
-			<h4>Balance</h4>
+			<h4>Levels</h4>
 			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="startingLevelDropDown" TItem="StartingLevel" @bind-Value="Flags.StartingLevel">Starting Level:</EnumDropDown>
 			<DoubleSlider UpdateToolTip="@UpdateToolTipID" DoubleCol Id="MaximumLevelDoubleSilder" MinValue="1" MaxValue="50" Step="1" @bind-ValueHigh="Flags.MaxLevelHigh" @bind-ValueLow="Flags.MaxLevelLow">Max Level:</DoubleSlider>
 
 			<div class="checkbox-cell"></div>
-			<h4>Enemies</h4>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="alternateFiendsCheckBox" IsEnabled="@(!Flags.SpookyFlag)" @bind-Value="Flags.AlternateFiends">Alternate Fiends</TriStateCheckBox>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="noBossSkillScriptShuffleCheckBox" IsEnabled="@(Flags.EnemyScripts != false || Flags.EnemySkillsSpells != false)" @bind-Value="Flags.NoBossSkillScriptShuffle">Don't Shuffle Bosses' Scripts, Skills & Spells</TriStateCheckBox>
-			<div class="checkbox-cell"></div>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="fightBahamutCheckBox" IsEnabled="@(Flags.SpookyFlag != true && Flags.RandomizeFormationEnemizer != true)" @bind-Value="Flags.FightBahamut">Fight Bahamut</TriStateCheckBox>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="swoleBahamutCheckBox" IsEnabled="@(Flags.FightBahamut != false)" @bind-Value="Flags.SwoleBahamut">Buffed Bahamut</TriStateCheckBox>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="hallOfDragonsCheckBox" @bind-Value="Flags.MapHallOfDragons">Hall of Dragons</TriStateCheckBox>
-			<div class="checkbox-cell"></div>
-		</div>
-		<div class="col2">
-			<h4>Other</h4>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="LooseExcludePlacedDungeonsCheckBox" IsEnabled="@(Flags.Treasures != false)" @bind-Value="Flags.LooseExcludePlacedDungeons">No Loose Items in Incentivized Dungeons</TriStateCheckBox>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="noFloaterCheckBox" IsEnabled="@(Flags.MapOpenProgressionDocks == true)" @bind-Value="Flags.NoFloater">Remove Floater</TriStateCheckBox>
-			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="speedboatCheckBox" @bind-Value="Flags.SpeedBoat">Faster ship</CheckBox>
-			<div class="checkbox-cell"></div>
-			<h4>Deep Dungeon</h4>
-			<p>Deep Dungeon should be considered extremely experimental at this time. The rest of the flags and tooltips are not properly adjusted to play nicely with it yet.</p>
-			<p>While it should work with many flags, such as scaling and Blursed items, map edits and Floor shuffle will either fail to generate a ROM, or create an unpleasant experience.</p>
-			<p>Please try it out and provide feedback!</p>
-			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="deepdungeon" @bind-Value="Flags.DeepDungeon">Deep Dungeon</CheckBox>
-			<CheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="DDEvenTreasureDistribution" @bind-Value="Flags.DDEvenTreasureDistribution">Distribute treasure evenly</CheckBox>
-			<div class="checkbox-cell"></div>
+
 			<h4>New Consumables</h4>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="enableExtConsumables" @bind-Value="Flags.EnableExtConsumables">Enable</CheckBox>
 			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="extStartingItemSet" IsEnabled="Flags.EnableExtConsumables" TItem="ExtStartingItemSet" @bind-Value="Flags.ExtStartingItemSet">Starting Inventory:</EnumDropDown>
@@ -59,32 +27,24 @@
 			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="extConsumableTreasureStackSize" IsEnabled="Flags.EnableExtConsumables" TItem="TreasureStackSize" @bind-Value="Flags.ExtConsumableTreasureStackSize">Chest Stacks:</EnumDropDown>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="normalShopsHaveExtConsumables" IsEnabled="Flags.EnableExtConsumables" @bind-Value="Flags.NormalShopsHaveExtConsumables">Normal Shops</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="legendaryShopHasExtConsumables" IsEnabled="Flags.EnableExtConsumables" @bind-Value="Flags.LegendaryShopHasExtConsumables">Legendary Shops</TriStateCheckBox>
-
-			<div class="checkbox-cell"></div>
-			<h4>Custom player sprites</h4>
-			<p>@SpriteSheetMessage</p>
-			<ToolTipBox id="spriteSheetToolTipBox" UpdateToolTip="@UpdateToolTipID" />
-			<input type="file" id="spriteSheetInput" accept="image/*" @onchange="@OnSpriteSheetChanged" />
-			<a class="styled-button" @onclick="@ClearCustomSprites">Clear saved sprites</a>
-			<div class="checkbox-cell"></div>
-			<h4>Weapon randomization</h4>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="weaponizerCheckBox" @bind-Value="Flags.Weaponizer">Use Weaponizer</TriStateCheckBox>
-			<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="weaponizerPowersCheckBox" @bind-Value="Flags.WeaponizerCommonWeaponsHavePowers">Common weapons can have powers</TriStateCheckBox>
-			<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="weaponizerNamingCheckBox" @bind-Value="Flags.WeaponizerNamesUseQualityOnly">Using casting and quality names only</TriStateCheckBox>
-
+		<div class="checkbox-cell"></div>
 		</div>
+		<div class="col2">
+			<h4>Treasures</h4>
+
+                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="noFloaterCheckBox" IsEnabled="@(Flags.MapOpenProgressionDocks == true)" @bind-Value="Flags.NoFloater">Remove Floater</TriStateCheckBox>
+
+			<div class="checkbox-cell"></div>
+			<h4>Deep Dungeon</h4>
+			<p>Deep Dungeon should be considered extremely experimental at this time. The rest of the flags and tooltips are not properly adjusted to play nicely with it yet.</p>
+			<p>While it should work with many flags, such as scaling and Blursed items, map edits and Floor shuffle will either fail to generate a ROM, or create an unpleasant experience.</p>
+			<p>Please try it out and provide feedback!</p>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="deepdungeon" @bind-Value="Flags.DeepDungeon">Deep Dungeon</CheckBox>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="DDEvenTreasureDistribution" @bind-Value="Flags.DDEvenTreasureDistribution">Distribute treasure evenly</CheckBox>
+		</div>
+
 		<div class="col1 full">
 			<h4>Hints</h4>
-			<div class="row">
-					<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="spoilerBatsDropDown" TItem="SpoilerBatHints" @bind-Value="Flags.SkyWarriorSpoilerBats">Temple of Fiends Bats Text:</EnumDropDown>
-			</div>
-			<div class="row">
-				<div class="col-lg-4 tighter noleftpadding">
-					<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="spoilerBatsDontCheckOrbsCheckbox" IsEnabled="@Flags.SpoilerBatsDontCheckOrbsEnabled" @bind-Value="Flags.SpoilerBatsDontCheckOrbs">Early Spoilers</TriStateCheckBox>
-				</div>
-			</div>
-			<div class="checkbox-cell"></div>
-
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="extendedHintsCheckBox" @bind-Value="Flags.ExtensiveHints_Enable">Enable Extensive Hints</CheckBox>
 			<div class="row">
 				<div class="col-lg-3 tighter noleftpadding">Loose on Floor:</div>
@@ -132,24 +92,4 @@
 	[Parameter] public bool noTabLayout { get; set; }
 	[Parameter] public bool IsOpen { get; set; } = true;
 
-	private string SpriteSheetMessage = "No custom sprites loaded";
-
-	protected override void OnInitialized()
-	{
-		if (Flags.Preferences.SpriteSheet != null) {
-		  SpriteSheetMessage = "Using custom sprites.";
-		}
-	}
-
-		async Task OnSpriteSheetChanged(ChangeEventArgs e)
-		{
-		      Console.WriteLine("OnSpriteSheetChanged");
-	              Flags.SpriteSheet = await JSRuntime.InvokeAsync<string>("handleFileSelect", "spriteSheetInput");
-		      SpriteSheetMessage = "Using custom sprites.";
-		}
-
-		void ClearCustomSprites() {
-		     Flags.SpriteSheet = null;
-		     SpriteSheetMessage = "No custom sprites.";
-		}
 }

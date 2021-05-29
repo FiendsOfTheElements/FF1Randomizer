@@ -4,7 +4,7 @@
 	<div id="Maps" class="tabcontent framed-content clearfix @(noTabLayout ? "no-tab" : "") @(IsOpen ? "" : "collapsed")">
 		<h3 class="@(IsOpen ? "" : "h3-collapsed")"><a class="@(noTabLayout ? "collapsible-header" : "")" @onclick="(() => IsOpen = (!noTabLayout || !IsOpen))">Maps and Routing</a></h3>
 		@if (IsOpen)
-		{ 
+		{
 	<div class="col1">
 		<h4>Entrance Shuffle</h4>
 		<p>Try shuffling dungeon entrances, floors, and towns to create a completely new world to explore!</p>
@@ -18,26 +18,15 @@
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="mixEntrancesCheckBox" IsEnabled="@(Flags.Towns & Flags.Entrances)" @bind-Value="Flags.EntrancesMixedWithTowns">Mix All Entrances Together</TriStateCheckBox>
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="deepTownsCheckBox" IsEnabled="@(Flags.DeepTownsPossible)" @bind-Value="Flags.AllowDeepTowns">Deep Towns</TriStateCheckBox>
 		<div class="checkbox-cell"></div>
-		<h4>Map Edits</h4>
-		<h5>Dungeons</h5>
+		<h4>Dungeons</h4>
 		<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="skyCastle4FMazeModeDropDown" TItem="SkyCastle4FMazeMode" @bind-Value="Flags.SkyCastle4FMazeMode">Sky Castle 4F: </EnumDropDown>
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="ordealsPillarsCheckBox" @bind-Value="Flags.OrdealsPillars">Castle Ordeals Pillars</TriStateCheckBox>
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="titansTroveCheckBox" @bind-Value="Flags.TitansTrove">Titan's Trove</TriStateCheckBox>
+		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="dragonsHoardCheckBox" @bind-Value="Flags.MapDragonsHoard">Dragon's Hoard</TriStateCheckBox>
+		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="hallOfDragonsCheckBox" @bind-Value="Flags.MapHallOfDragons">Hall of Dragons</TriStateCheckBox>
 		<CheckBox UpdateToolTip="@UpdateToolTipID" Id="procGenWaterfall" @bind-Value="Flags.EFGWaterfall">Generated Waterfall Cave</CheckBox>
 		<div class="checkbox-cell"></div>
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="flipDungeonsCheckBox" @bind-Value="Flags.FlipDungeons">Flip Dungeons Horizontally</TriStateCheckBox>
-		<div class="checkbox-cell"></div>
-		<h5>Towns</h5>
-		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="zozoMelmondCheckBox" @bind-Value="Flags.AllowUnsafeMelmond">Zozo Melmond</TriStateCheckBox>
-		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="melmondClinicCheckBox" @bind-Value="Flags.MelmondClinic">Melmondish Hospitality</TriStateCheckBox>
-		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="confusedOldMenCheckBox" @bind-Value="Flags.ConfusedOldMen">Confused Old Men</TriStateCheckBox>
-		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="gaiaShortcutCheckBox" @bind-Value="Flags.GaiaShortcut">Add Gaia Shortcut</TriStateCheckBox>
-		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="moveGaiaItemShopCheckBox" IsEnabled="@(Flags.GaiaShortcut != false)" @bind-Value="Flags.MoveGaiaItemShop">Move Gaia Item Shop</TriStateCheckBox>
-		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="lefeinShopsCheckBox" @bind-Value="Flags.LefeinShops">Lefeinish Hospitality</TriStateCheckBox>
-		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="lefeinSuperStoreCheckBox" IsEnabled="@Flags.LefeinSuperStoreEnabled" @bind-Value="Flags.LefeinSuperStore">Add Lefein SuperStore</TriStateCheckBox>
-		<div class="checkbox-cell"></div>
-		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="randomVampAttackCheckBox" @bind-Value="Flags.RandomVampAttack">Vampire Attacks Random Town</TriStateCheckBox>
-		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="randomVampAttackIncludesConeriaCheckBox" IsEnabled="@(Flags.RandomVampAttack != false)" @bind-Value="Flags.RandomVampAttackIncludesConeria">Include Coneria</TriStateCheckBox>
 		<div class="checkbox-cell"></div>
 	</div>
 	<div class="col2">
@@ -56,15 +45,17 @@
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="earlySageCheckBox" @bind-Value="Flags.EarlySage">Early Sage Item</TriStateCheckBox>
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="earlyOrdealsCheckBox" @bind-Value="Flags.EarlyOrdeals">Early Ordeals</TriStateCheckBox>
 		<div class="checkbox-cell"></div>
-		<h4>Saving and Hinting</h4>
-		<CheckBox UpdateToolTip="@UpdateToolTipID" Id="disableTentSaving" @bind-Value="Flags.DisableTentSaving">Disable Tent/Cabin/House Saving on Overworld</CheckBox>
-		<CheckBox UpdateToolTip="@UpdateToolTipID" Id="disableInnSaving" @bind-Value="Flags.DisableInnSaving">Disable Inn Saving</CheckBox>
-		<CheckBox UpdateToolTip="@UpdateToolTipID" Id="saveGameWhenGameOverCheckBox" @bind-Value="Flags.SaveGameWhenGameOver">Save Game When Game Over</CheckBox>
-		<CheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="saveGameDWModeCheckBox" IsEnabled="@Flags.SaveGameWhenGameOver" @bind-Value="Flags.SaveGameDWMode">Dragon Warrior Mode</CheckBox>
+		<h4>Towns</h4>
+		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="zozoMelmondCheckBox" @bind-Value="Flags.AllowUnsafeMelmond">Zozo Melmond</TriStateCheckBox>
+		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="melmondClinicCheckBox" @bind-Value="Flags.MelmondClinic">Melmondish Hospitality</TriStateCheckBox>
+		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="confusedOldMenCheckBox" @bind-Value="Flags.ConfusedOldMen">Confused Old Men</TriStateCheckBox>
+		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="gaiaShortcutCheckBox" @bind-Value="Flags.GaiaShortcut">Add Gaia Shortcut</TriStateCheckBox>
+		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="moveGaiaItemShopCheckBox" IsEnabled="@(Flags.GaiaShortcut != false)" @bind-Value="Flags.MoveGaiaItemShop">Move Gaia Item Shop</TriStateCheckBox>
+		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="lefeinShopsCheckBox" @bind-Value="Flags.LefeinShops">Lefeinish Hospitality</TriStateCheckBox>
+		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="lefeinSuperStoreCheckBox" IsEnabled="@Flags.LefeinSuperStoreEnabled" @bind-Value="Flags.LefeinSuperStore">Add Lefein SuperStore</TriStateCheckBox>
 		<div class="checkbox-cell"></div>
-		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.Treasures" Id="hintsVillage" @bind-Value="Flags.HintsVillage">Hint givers in villages</TriStateCheckBox>
-		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.Treasures" Id="hintsDungeon" @bind-Value="Flags.HintsDungeon">Hint givers in dungeons</TriStateCheckBox>
-		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.HintsVillage != false || Flags.HintsDungeon != false)" Id="hintsUselessCheckBox" @bind-Value="Flags.HintsUseless">Useless Hints</TriStateCheckBox>
+		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="randomVampAttackCheckBox" @bind-Value="Flags.RandomVampAttack">Vampire Attacks Random Town</TriStateCheckBox>
+		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="randomVampAttackIncludesConeriaCheckBox" IsEnabled="@(Flags.RandomVampAttack != false)" @bind-Value="Flags.RandomVampAttackIncludesConeria">Include Coneria</TriStateCheckBox>
 		<div class="checkbox-cell"></div>
 	</div>
 		<div class="clear-it"></div>

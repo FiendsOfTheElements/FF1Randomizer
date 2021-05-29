@@ -23,9 +23,8 @@
 	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="tcBetterTreasuresDropDown" TItem="TCOptions" @bind-Value="Flags.TCBetterTreasure">Better Treasures:</EnumDropDown>
 	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="tcKeyItemsDropDown" TItem="TCOptions" @bind-Value="Flags.TCKeyItems">Key Items:</EnumDropDown>
 	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="tcShardsDropDown" TItem="TCOptions" IsEnabled="@Flags.ShardHunt" @bind-Value="Flags.TCShards">Shards:</EnumDropDown>
-	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="masaGuardianCheckBox" @bind-Value="Flags.TCMasaGuardian">WarMech, Guardian of Masamune</TriStateCheckBox>
-	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="trappedChaosCheckBox" @bind-Value="Flags.TrappedChaos">Hidden Chaos</TriStateCheckBox>
-	<div class="checkbox-cell"></div>
+
+
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="tcProtectIncentivesCheckBox" @bind-Value="Flags.TCProtectIncentives">Exclude Incentivized Items</CheckBox>
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="trappedMarkCheckBox" @bind-Value="Flags.TCIndicator">Trapped Chests are Marked</TriStateCheckBox>
 	<div class="checkbox-cell"></div>
@@ -40,7 +39,7 @@
 	<div class="checkbox-cell"></div>
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="FreeLute" @bind-Value="Flags.FreeLute">Free Lute</TriStateCheckBox>
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="FreeTail" IsEnabled="@(Flags.NoTail != true)" @bind-Value="Flags.FreeTail">Free Tail</TriStateCheckBox>
-	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="freeOrbsCheckBox" IsEnabled="@Flags.FreeOrbsEnabled" @bind-Value="Flags.FreeOrbs">Free Orbs</CheckBox>
+
 	<div class="checkbox-cell"></div>
 	<h4>Bans</h4>
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(!Flags.FreeTail)" Id="NoTailCheckBox" @bind-Value="Flags.NoTail">Remove Tail</TriStateCheckBox>
@@ -50,7 +49,8 @@
 	<h4>Masamune</h4>
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="GuaranteedMasamuneCheckBox" IsEnabled="@(Flags.NoMasamune != true)" @bind-Value="Flags.GuaranteedMasamune">Guaranteed Endgame Masamune</TriStateCheckBox>
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="SendMasamuneHomeCheckBox" IsEnabled="@((Flags.NoMasamune != true) && Flags.GuaranteedMasamune != false && Flags.IncentivizeMasamune == false)" @bind-Value="Flags.SendMasamuneHome">Send Masamune Home</TriStateCheckBox>
-	<div class="checkbox-cell"></div>
+	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="masaGuardianCheckBox" @bind-Value="Flags.TCMasaGuardian">WarMech, Guardian of Masamune</TriStateCheckBox>
+
 </div>
 	<div class="clear-it"></div>
 	}
@@ -62,5 +62,3 @@
 	[Parameter] public bool noTabLayout { get; set; }
 	[Parameter] public bool IsOpen { get; set; } = true;
 }
-
-
