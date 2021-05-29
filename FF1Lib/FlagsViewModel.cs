@@ -4190,6 +4190,56 @@ namespace FF1Lib
 			}
 		}
 
+		public bool ExclusiveLegendaryWeaponShop
+		{
+			get => Flags.ExclusiveLegendaryWeaponShop;
+			set
+			{
+				Flags.ExclusiveLegendaryWeaponShop = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool ExclusiveLegendaryArmorShop
+		{
+			get => Flags.ExclusiveLegendaryArmorShop;
+			set
+			{
+				Flags.ExclusiveLegendaryArmorShop = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool ExclusiveLegendaryWhiteShop
+		{
+			get => Flags.ExclusiveLegendaryWhiteShop;
+			set
+			{
+				Flags.ExclusiveLegendaryWhiteShop = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool ExclusiveLegendaryBlackShop
+		{
+			get => Flags.ExclusiveLegendaryBlackShop;
+			set
+			{
+				Flags.ExclusiveLegendaryBlackShop = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool ExclusiveLegendaryItemShop
+		{
+			get => Flags.ExclusiveLegendaryItemShop;
+			set
+			{
+				Flags.ExclusiveLegendaryItemShop = value;
+				RaisePropertyChanged();
+			}
+		}
+
 		public bool NonesGainXP
 		{
 			get => Flags.NonesGainXP;

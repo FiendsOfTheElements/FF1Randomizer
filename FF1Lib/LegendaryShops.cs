@@ -1,4 +1,5 @@
-﻿using RomUtilities;
+﻿using FF1Lib.Data;
+using RomUtilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +25,7 @@ namespace FF1Lib
 		Dictionary<string, MagicSpell> Spells;
 
 		List<SpellInfo> SpellInfos;
+		TreasureData treasureData;
 
 		//MapId, X, Y, UL Tile, UR Tile, BL Tile, BR Tile, Pallette
 		private List<(MapId, int, int, byte, byte, byte, byte, byte)> Locations = new List<(MapId, int, int, byte, byte, byte, byte, byte)>
@@ -47,6 +49,7 @@ namespace FF1Lib
 			MapTileSets = new MapTileSets(rom);
 			ShopData = _shopdata;
 			SpellInfos = rom.LoadSpells().ToList();
+			treasureData = new TreasureData(rom);
 		}
 
 		private void LoadUnusedTileIds()
@@ -87,6 +90,8 @@ namespace FF1Lib
 			var pool = Locations.Take(allocatedslots.Where(s => s > 0).Count() + 1).ToList();
 			pool.Shuffle(rng);
 
+			treasureData.LoadTable();
+
 			CreateWeaponShop(allocatedslots[0], pool);
 			CreateArmorShop(allocatedslots[1], pool);
 			CreateBlackShop(allocatedslots[2], pool);
@@ -94,6 +99,7 @@ namespace FF1Lib
 			CreateItemShop(allocatedslots[4], pool);
 
 			ShopData.StoreData();
+			treasureData.StoreTable();
 
 			for (int i = 0; i < 8; i++) TileSets[i].StoreData();
 
@@ -112,11 +118,17 @@ namespace FF1Lib
 
 			Shop shop = new Shop(6, ShopType.Weapon, MapLocation.Coneria, MapId.Coneria, 0, string.Empty, GetWeaponShopInventory(slots));
 
+			if (flags.ExclusiveLegendaryWeaponShop)
+			{
+				RemoveFromShops(shop.Entries, Item.IronNunchucks);
+				RemoveFromChests(shop.Entries, Item.Gold10);
+			}
+
 			if (shop.Entries.Count > 0)
 			{
 				ShopData.Shops.Add(shop);
 				PlaceShop(shop.Index, pool);
-			}
+			}			
 		}
 
 		private void CreateArmorShop(int slots, List<(MapId, int, int, byte, byte, byte, byte, byte)> pool)
@@ -124,6 +136,12 @@ namespace FF1Lib
 			if (slots <= 0) return;
 
 			Shop shop = new Shop(16, ShopType.Armor, MapLocation.Coneria, MapId.Coneria, 0, string.Empty, GetArmorShopInventory(slots));
+
+			if (flags.ExclusiveLegendaryArmorShop)
+			{
+				RemoveFromShops(shop.Entries, Item.Cloth);
+				RemoveFromChests(shop.Entries, Item.Gold10);
+			}
 
 			if (shop.Entries.Count > 0)
 			{
@@ -138,6 +156,11 @@ namespace FF1Lib
 
 			Shop shop = new Shop(7, ShopType.Black, MapLocation.Coneria, MapId.Coneria, 0, string.Empty, GetBlackShopInventory(slots));
 
+			if (flags.ExclusiveLegendaryBlackShop)
+			{
+				RemoveFromShops(shop.Entries, GetBadBlackSpell());
+			}
+
 			if (shop.Entries.Count > 0)
 			{
 				ShopData.Shops.Add(shop);
@@ -151,6 +174,11 @@ namespace FF1Lib
 
 			Shop shop = new Shop(17, ShopType.White, MapLocation.Coneria, MapId.Coneria, 0, string.Empty, GetWhiteShopInventory(slots));
 
+			if (flags.ExclusiveLegendaryWhiteShop)
+			{
+				RemoveFromShops(shop.Entries, GetBadWhiteSpell());
+			}
+
 			if (shop.Entries.Count > 0)
 			{
 				ShopData.Shops.Add(shop);
@@ -163,6 +191,11 @@ namespace FF1Lib
 			if (slots <= 0) return;
 
 			Shop shop = new Shop(66, ShopType.Item, MapLocation.Coneria, MapId.Coneria, 0, string.Empty, GetItemShopInventory(slots));
+
+			if (flags.ExclusiveLegendaryItemShop)
+			{
+				RemoveFromShops(shop.Entries, Item.Soft);
+			}
 
 			if (shop.Entries.Count > 0)
 			{
@@ -383,5 +416,42 @@ namespace FF1Lib
 		}
 
 		bool BlackSpell(int id) => id % 8 > 3;
+
+		private Item GetBadBlackSpell()
+		{
+			var spell = SpellInfos.Where((s, i) => BlackSpell(i) && s.routine == 0x01).OrderBy(s => s.tier).First();
+			return (Item)Convert.ToByte(SpellInfos.IndexOf(spell) + 0xB0);
+		}
+
+		private Item GetBadWhiteSpell()
+		{
+			var spell = SpellInfos.Where((s, i) => !BlackSpell(i) && s.routine == 0x07).OrderBy(s => s.tier).First();
+			return (Item)Convert.ToByte(SpellInfos.IndexOf(spell) + 0xB0);
+		}
+
+		private void RemoveFromShops(IEnumerable<Item> entries, Item replacement)
+		{
+			foreach (var entry in entries)
+			{
+				foreach (var shop in ShopData.Shops)
+				{
+					if (shop.Entries == null) continue;
+
+					shop.Entries.RemoveAll(e => e == entry);
+					if (shop.Entries.Count == 0) shop.Entries.Add(replacement);
+				}
+			}
+		}
+
+		private void RemoveFromChests(List<Item> entries, Item replacement)
+		{
+			foreach (var entry in entries)
+			{
+				for (int i = 0; i < treasureData.Data.Length; i++)
+				{
+					if (treasureData[i] == entry) treasureData[i] = replacement;
+				}
+			}
+		}
 	}
 }
