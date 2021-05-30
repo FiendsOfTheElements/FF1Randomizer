@@ -70,7 +70,8 @@
 		"title": "Exclusive Legendary Item Shop",
 		"screenshot": null,
 		"description": "Removes legendary shop entries from all other shops."
-
+	},
+	{
 		"Id": "startingEquipmentHealStaff",
 		"title": "Hide Flags",
 		"screenshot": null,
