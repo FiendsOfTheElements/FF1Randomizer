@@ -112,6 +112,11 @@ namespace FF1Lib
 			{
 				shards.Add(Item.Shard);
 			}
+			if ((bool)_flags.IsFloaterRemoved)
+			{
+			    unincentivizedQuestItems.Remove(Item.Floater);
+			    unincentivizedQuestItems.Add(ReplacementItem);
+			}
 
 			ItemPlacementContext ctx = new ItemPlacementContext
 			{
@@ -130,10 +135,6 @@ namespace FF1Lib
 			if ((bool)_flags.FreeBridge)
 			{
 				placedItems = placedItems.Select(x => x.Item != Item.Bridge ? x : NewItemPlacement(x, ReplacementItem)).ToList();
-			}
-			if ((bool)_flags.IsFloaterRemoved)
-			{
-				placedItems = placedItems.Select(x => x.Item != Item.Floater ? x : NewItemPlacement(x, ReplacementItem)).ToList();
 			}
 			if ((bool)_flags.IsShipFree)
 			{
