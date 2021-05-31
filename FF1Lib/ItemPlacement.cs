@@ -509,6 +509,8 @@ namespace FF1Lib
 
 			do
 			{
+				var balancedPicker = new RewardSourcePicker( 0.7, _flags.BalancedLooseNpc ? 8.5 : 1.0, _checker);
+
 				_sanityCounter++;
 				if (_sanityCounter > 20) throw new InsaneException("Item Placement could not meet incentivization requirements!");
 				// 1. (Re)Initialize lists inside of loop
@@ -581,7 +583,9 @@ namespace FF1Lib
 						if (rewardSources.Any())
 						{
 							itemPool.Remove(item);
-							placedItems.Add(NewItemPlacement(rewardSources.PickRandom(rng), item));
+							var rewardSource = balancedPicker.Pick(rewardSources, _flags.BalancedLooseChest && !isIncentive, rng);
+							placedItems.Add(NewItemPlacement(rewardSource, item));
+
 						}
 					}
 				}
