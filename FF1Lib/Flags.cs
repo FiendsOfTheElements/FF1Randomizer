@@ -50,9 +50,9 @@ namespace FF1Lib
 
 		#endregion
 
-		public bool BalancedLooseChest { get; set; } = true;
+		public bool LooseItemsForwardPlacement { get; set; } = true;
 
-		public bool BalancedLooseNpc { get; set; } = true;
+		public bool LooseItemsSpreadPlacement { get; set; } = true;
 
 		public SpellNameMadness SpellNameMadness { get; set; } = SpellNameMadness.None;
 

@@ -23,11 +23,11 @@ namespace FF1Lib
 			checker = _checker;
 		}
 
-		public IRewardSource Pick(List<IRewardSource> sources, bool balanced, MT19337 rng)
+		public IRewardSource Pick(List<IRewardSource> sources, bool forward, bool spread, MT19337 rng)
 		{
 			if (!sources.Any()) return null;
 
-			if (!balanced) return sources.PickRandom(rng);
+			if (!forward) return sources.PickRandom(rng);
 
 			IRewardSource result = null;
 
@@ -64,11 +64,14 @@ namespace FF1Lib
 
 			if (result == null) result = sources.PickRandom(rng);
 
-			foreach (var s in checker.GetNearRewardSources(sources, result))
+			if (spread)
 			{
-				if (weights.TryGetValue(s.Address, out var v))
+				foreach (var s in checker.GetNearRewardSources(sources, result))
 				{
-					weights[s.Address] = v * reduction * reduction;
+					if (weights.TryGetValue(s.Address, out var v))
+					{
+						weights[s.Address] = v * reduction * reduction;
+					}
 				}
 			}
 
