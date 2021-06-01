@@ -27,8 +27,6 @@ namespace FF1Lib
 		{
 			if (!sources.Any()) return null;
 
-			if (!forward) return sources.PickRandom(rng);
-
 			IRewardSource result = null;
 
 			double sum = 0.0;
@@ -56,7 +54,7 @@ namespace FF1Lib
 			foreach (var s in sources)
 			{
 				var v = weights[s.Address];
-				weights[s.Address] = v * reduction;
+				if (forward) weights[s.Address] = v * reduction;
 
 				sum += v;
 				if (result == null && r <= sum) result = s;
