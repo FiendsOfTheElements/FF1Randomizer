@@ -87,8 +87,8 @@ namespace FF1Lib
 			PutInBank(0x0E, 0xA53D, Blob.FromHex("20E09D"));
 
 			// Exit/Warp teleport you to Coneria
-			PutInBank(0x0E, 0x9DA0, Blob.FromHex($"A2FF9AA9{coneria_x:X2}8527A9{coneria_y:X2}8528A9C048A9BE48A99048A91348A91E4C03FE"));
-			PutInBank(0x0E, 0xB0FF, Blob.FromHex("4CA09D"));
+			PutInBank(0x0E, 0x9F70, Blob.FromHex($"A2FF9AA9{coneria_x:X2}8527A9{coneria_y:X2}8528A9C048A9BE48A99048A91348A91E4C03FE"));
+			PutInBank(0x0E, 0xB0FF, Blob.FromHex("4C709F"));
 
 			// Put positions
 			PutInBank(0x0E, 0x9DC0, townPosList.Select(x => x.Item1).ToArray());
