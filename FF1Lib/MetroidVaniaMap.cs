@@ -52,7 +52,10 @@ namespace FF1Lib
 			PrepNPCs(talkroutines, npcdata, flippedmaps, flags, rng);
 			UpdateBackgrounds();
 		}
-
+		public void MoveCanal()
+		{
+			Put(0x300D, Blob.FromHex("97A3"));
+		}
 		public void LoadInTown(OverworldMap overworldmap)
 		{
 			// If saved at Inn, spawn directly in the town
@@ -647,7 +650,7 @@ namespace FF1Lib
 
 			// Sea Shrine B4
 			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x2F, 0x1D, (byte)MapId.SeaShrineB3, false, (int)TileSets.ToFSeaShrine, TilePalette.OutPalette1, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.SeaShrineB3, 0x2D, 0x14, newTeleporterTiles.Last().TileID);
+			UpdateMapTile(MapId.SeaShrineB4, 0x2D, 0x14, newTeleporterTiles.Last().TileID);
 
 			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x02, 0x02, (byte)MapId.SeaShrineB3, false, (int)TileSets.ToFSeaShrine, TilePalette.OutPalette1, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
 			UpdateMapTile(MapId.SeaShrineB4, 0x3D, 0x31, newTeleporterTiles.Last().TileID);
