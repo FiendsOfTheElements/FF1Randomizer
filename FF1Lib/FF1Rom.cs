@@ -429,12 +429,6 @@ namespace FF1Lib
 			var extConsumables = new ExtConsumables(this, flags, rng, shopData);
 			extConsumables.AddNormalShopEntries();
 
-			if (flags.NoOverworld && (bool)!flags.Entrances && (bool)!flags.Floors && (bool)!flags.Towns)
-			{
-				// Got to do this here, because new maps can't load a new canal position
-				MoveCanal();
-			}
-
 			overworldMap.ApplyMapEdits();
 
 			var maxRetries = 8;

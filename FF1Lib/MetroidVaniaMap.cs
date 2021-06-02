@@ -52,28 +52,9 @@ namespace FF1Lib
 			PrepNPCs(talkroutines, npcdata, flippedmaps, flags, rng);
 			UpdateBackgrounds();
 		}
-		public void MoveCanal()
-		{
-			Put(0x300D, Blob.FromHex("97A3"));
-		}
 		public void LoadInTown(OverworldMap overworldmap)
 		{
-			// If saved at Inn, spawn directly in the town
-			PutInBank(0x1E, 0x9000, Blob.FromHex("2054C4AD10608527AD11608528AD1460854685422025902096C6BD00048544BD0104854560A91E48A9FE48A906484CFDC6"));
-			PutInBank(0x1F, 0xC0B7, Blob.FromHex("A91E2003FE200090244510034CE2C1EAEAEAEAEA"));
-
-			// Spawn at coneria castle with new game
-			PutInBank(0x00, 0xB010, Blob.FromHex("9298"));
-
-			// Hijack SaveGame to reset scrolls if we didn't come from overworld
-			PutInBank(0x0E, 0x9DC0, Blob.FromHex("0000000000000000000000000000000000000000000000000000000000000000A648BDC09D8527BDD09D85284C69AB"));
-			PutInBank(0x0E, 0xA53D, Blob.FromHex("20E09D"));
-
-			// Exit/Warp teleport you to Coneria
-			PutInBank(0x0E, 0x9DA0, Blob.FromHex("A2FF9AA9928527A9988528A9C048A9BE48A99048A91348A91E4C03FE"));
-			PutInBank(0x0E, 0xB0FF, Blob.FromHex("4CA09D"));
-
-			var townTileList = new List<byte> { 0x49, 0x4A, 0x4C, 0x4D, 0x4E, 0x5A, 0x5D, 0x6D };
+			var townTileList = new List<byte> { 0x49, 0x4A, 0x4C, 0x4D, 0x4E, 0x5A, 0x5D, 0x6D, 0x02 };
 			var townPosList = new List<(byte, byte)> { (0x00, 0x00), (0x00, 0x00), (0x00, 0x00), (0x00, 0x00), (0x00, 0x00), (0x00, 0x00), (0x00, 0x00), (0x00, 0x00), (0x00, 0x00), (0x00, 0x00), (0x00, 0x00), (0x00, 0x00), (0x00, 0x00), (0x00, 0x00), (0x00, 0x00), (0x00, 0x00) };
 
 			var compresedMap = overworldmap.GetCompressedMapRows();
@@ -90,6 +71,24 @@ namespace FF1Lib
 					}
 				}
 			}
+
+			var coneria_x = townPosList[8].Item1;
+			var coneria_y = townPosList[8].Item2;
+
+			// If saved at Inn, spawn directly in the town
+			PutInBank(0x1E, 0x9000, Blob.FromHex("2054C4AD10608527AD11608528AD1460854685422025902096C6BD00048544BD0104854560A91E48A9FE48A906484CFDC6"));
+			PutInBank(0x1F, 0xC0B7, Blob.FromHex("A91E2003FE200090244510034CE2C1EAEAEAEAEA"));
+
+			// Spawn at coneria castle with new game
+			PutInBank(0x00, 0xB010, Blob.FromHex($"{coneria_x:X2}{coneria_y:X2}"));
+
+			// Hijack SaveGame to reset scrolls if we didn't come from overworld
+			PutInBank(0x0E, 0x9DC0, Blob.FromHex("0000000000000000000000000000000000000000000000000000000000000000A648BDC09D8527BDD09D85284C69AB"));
+			PutInBank(0x0E, 0xA53D, Blob.FromHex("20E09D"));
+
+			// Exit/Warp teleport you to Coneria
+			PutInBank(0x0E, 0x9DA0, Blob.FromHex($"A2FF9AA9{coneria_x:X2}8527A9{coneria_y:X2}8528A9C048A9BE48A99048A91348A91E4C03FE"));
+			PutInBank(0x0E, 0xB0FF, Blob.FromHex("4CA09D"));
 
 			// Put positions
 			PutInBank(0x0E, 0x9DC0, townPosList.Select(x => x.Item1).ToArray());
