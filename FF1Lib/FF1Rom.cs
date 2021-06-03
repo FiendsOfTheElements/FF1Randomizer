@@ -431,6 +431,11 @@ namespace FF1Lib
 
 			overworldMap.ApplyMapEdits();
 
+			if (flags.NoOverworld && (bool)!flags.Entrances && (bool)!flags.Floors && (bool)!flags.Towns)
+			{
+				NoOverworldCaravanTile();
+			}
+
 			var maxRetries = 8;
 			for (var i = 0; i < maxRetries; i++)
 			{
