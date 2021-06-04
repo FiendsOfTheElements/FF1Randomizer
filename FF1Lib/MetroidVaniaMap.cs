@@ -46,6 +46,9 @@ namespace FF1Lib
 
 		public void NoOverworld(OverworldMap overworldmap, List<Map> maps, TalkRoutines talkroutines, NPCdata npcdata, List<MapId> flippedmaps, Flags flags, MT19337 rng)
 		{
+			// Exclude Waterfall, since it doesn't matter if it's flipped or not
+			flippedmaps = flippedmaps.Where(x => x != MapId.Waterfall).ToList();
+
 			LoadInTown(overworldmap);
 			ApplyMapMods(maps, flippedmaps, (bool)flags.LefeinSuperStore);
 			CreateTeleporters(maps, flippedmaps, rng);
@@ -407,7 +410,7 @@ namespace FF1Lib
 			// Cardia - Caravan
 			var cardiaCaravan = new List<Blob> {
 				Blob.FromHex("000101010102"),
-				Blob.FromHex("034F04100708"),
+				Blob.FromHex("034F04101208"),
 				Blob.FromHex("060707083630"),
 				Blob.FromHex("343030303A31"),
 			};
