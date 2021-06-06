@@ -107,6 +107,8 @@ namespace FF1Lib
 		WaterfallSpikeTile = 0x48,
 		WaterfallRandomEncounters = 0x49,
 		PortalWarp = 0x40,
+		ToFRNoEncounter = 0x31,
+		ToFREncounter = 0x5C,
 		// Begin Town Tiles
 		TownGrass = 0x00,
 		TownGrassShadow = 0x01,
@@ -701,6 +703,22 @@ namespace FF1Lib
         melmond[0x0B, 0x1C] = 0x1D;
         melmond[0x0B, 0x1D] = 0x02; // Corner shadow
     }
+
+		public void EnableChaosFloorEncounters(List<Map> maps)
+		{
+			for (int x = 0; x < 32; x++)
+			{
+				for (int y = 0; y < 32; y++)
+				{
+					if (maps[(byte)MapId.TempleOfFiendsRevisitedChaos][x, y] == (byte)Tile.ToFRNoEncounter) {
+						maps[(byte)MapId.TempleOfFiendsRevisitedChaos][x, y] = (byte)Tile.ToFREncounter;
+					}
+					// safe tile = 31
+					// encounter tile = 5C
+				}
+			}
+			
+		}
 
 		public void EnableToFRExit(List<Map> maps)
 		{
