@@ -54,6 +54,7 @@ namespace FF1Lib
 			CreateTeleporters(maps, flippedmaps, rng);
 			PrepNPCs(talkroutines, npcdata, flippedmaps, flags, rng);
 			UpdateBackgrounds();
+			ShuffleFloor(maps, rng);
 		}
 		public void NoOverworldCaravanTile()
 		{
@@ -938,6 +939,157 @@ namespace FF1Lib
 			PutInBank(lut_BtlBackdrops_Bank, lut_BtlBackdrops, backgroundList.Select(x => (byte)x.Item2).ToArray());
 		}
 
+		public bool CheckForTile(Map map, byte warptile)
+		{
+			for (int x = 0; x < 64; x++)
+			{
+				for (int y = 0; y < 64; y++)
+				{
+					if (map[x, y] == warptile)
+					{
+						return true;
+					}
+				}
+			}
+
+			return false;
+		}
+
+		public void ShuffleFloor(List<Map> maps, MT19337 rng)
+		{
+
+			var TilesetWarp = new List<List<byte>>() {
+				new List<byte>() { },
+				new List<byte>() { 0x48 },
+				new List<byte>() { 0x3D },
+				new List<byte>() { 0x18, 0x2D },
+				new List<byte>() { 0x18, 0x28 },
+				new List<byte>() { 0x09, 0x23, 0x26 },
+				new List<byte>() { 0x41, 0x42, 0x4D },
+				new List<byte>() { 0x40, 0x45 },
+				new List<byte>() { 0x09, 0x40, 0x41, 0x4F },
+			};
+
+			List<(MapId, TileSets)> tilesetList = new()
+			{
+				(MapId.Coneria, TileSets.Town),
+				(MapId.Pravoka, TileSets.Town),
+				(MapId.Elfland, TileSets.Town),
+				(MapId.Melmond, TileSets.Town),
+				(MapId.CrescentLake, TileSets.Town),
+				(MapId.Gaia, TileSets.Town),
+				(MapId.Onrac, TileSets.Town),
+				(MapId.Lefein, TileSets.Town),
+				(MapId.ConeriaCastle1F, TileSets.Castle),
+				(MapId.ElflandCastle, TileSets.Castle),
+				(MapId.NorthwestCastle, TileSets.Castle),
+				(MapId.CastleOfOrdeals1F, TileSets.Castle),
+				(MapId.TempleOfFiends, TileSets.ToFSeaShrine),
+				(MapId.EarthCaveB1, TileSets.EarthTitanVolcano),
+				(MapId.GurguVolcanoB1, TileSets.EarthTitanVolcano),
+				(MapId.IceCaveB1, TileSets.MatoyaDwarfCardiaIceWaterfall),
+				(MapId.Cardia, TileSets.MatoyaDwarfCardiaIceWaterfall),
+				(MapId.BahamutsRoomB1, TileSets.MatoyaDwarfCardiaIceWaterfall),
+				(MapId.Waterfall, TileSets.MatoyaDwarfCardiaIceWaterfall),
+				(MapId.DwarfCave, TileSets.MatoyaDwarfCardiaIceWaterfall),
+				(MapId.MatoyasCave, TileSets.MatoyaDwarfCardiaIceWaterfall),
+				(MapId.SardasCave, TileSets.MatoyaDwarfCardiaIceWaterfall),
+				(MapId.MarshCaveB1, TileSets.MarshMirage),
+				(MapId.MirageTower1F, TileSets.MarshMirage),
+				(MapId.ConeriaCastle2F, TileSets.Castle),
+				(MapId.CastleOfOrdeals2F, TileSets.Castle),
+				(MapId.CastleOfOrdeals3F, TileSets.Castle),
+				(MapId.MarshCaveB2, TileSets.MarshMirage),
+				(MapId.MarshCaveB3, TileSets.MarshMirage),
+				(MapId.EarthCaveB2, TileSets.EarthTitanVolcano),
+				(MapId.EarthCaveB3, TileSets.EarthTitanVolcano),
+				(MapId.EarthCaveB4, TileSets.EarthTitanVolcano),
+				(MapId.EarthCaveB5, TileSets.EarthTitanVolcano),
+				(MapId.GurguVolcanoB2, TileSets.EarthTitanVolcano),
+				(MapId.GurguVolcanoB3, TileSets.EarthTitanVolcano),
+				(MapId.GurguVolcanoB4, TileSets.EarthTitanVolcano),
+				(MapId.GurguVolcanoB5, TileSets.EarthTitanVolcano),
+				(MapId.IceCaveB2, TileSets.MatoyaDwarfCardiaIceWaterfall),
+				(MapId.IceCaveB3, TileSets.MatoyaDwarfCardiaIceWaterfall),
+				(MapId.BahamutsRoomB2, TileSets.MatoyaDwarfCardiaIceWaterfall),
+				(MapId.MirageTower2F, TileSets.MarshMirage),
+				(MapId.MirageTower3F, TileSets.MarshMirage),
+				(MapId.SeaShrineB5, TileSets.ToFSeaShrine),
+				(MapId.SeaShrineB4, TileSets.ToFSeaShrine),
+				(MapId.SeaShrineB3, TileSets.ToFSeaShrine),
+				(MapId.SeaShrineB2, TileSets.ToFSeaShrine),
+				(MapId.SeaShrineB1, TileSets.ToFSeaShrine),
+				(MapId.SkyPalace1F, TileSets.SkyCastle),
+				(MapId.SkyPalace2F, TileSets.SkyCastle),
+				(MapId.SkyPalace3F, TileSets.SkyCastle),
+				(MapId.SkyPalace4F, TileSets.SkyCastle),
+				(MapId.SkyPalace5F, TileSets.SkyCastle),
+				(MapId.TempleOfFiendsRevisited1F, TileSets.ToFR),
+				(MapId.TempleOfFiendsRevisited2F, TileSets.ToFR),
+				(MapId.TempleOfFiendsRevisited3F, TileSets.ToFR),
+				(MapId.TempleOfFiendsRevisitedEarth, TileSets.ToFR),
+				(MapId.TempleOfFiendsRevisitedFire, TileSets.ToFR),
+				(MapId.TempleOfFiendsRevisitedWater, TileSets.ToFR),
+				(MapId.TempleOfFiendsRevisitedAir, TileSets.ToFR),
+				(MapId.TempleOfFiendsRevisitedChaos, TileSets.ToFR),
+				(MapId.TitansTunnel, TileSets.EarthTitanVolcano),
+			};
+
+			int mapsnumber = Enum.GetNames(typeof(MapId)).Length;
+
+			List<MapId> warpmaps = new();
+			List<MapId> nonwarpmaps = new();
+
+
+			for (int i = 0; i < mapsnumber; i++)
+			{
+				foreach (var warptile in TilesetWarp[(int)tilesetList[i].Item2])
+				{
+					if (CheckForTile(maps[i], warptile))
+					{
+						warpmaps.Add((MapId)i);
+						break;
+					}
+				}
+			}
+
+			warpmaps.RemoveAll(x => x == MapId.Coneria);
+
+			var allmaps = Enum.GetValues(typeof(MapId)).Cast<MapId>().ToList();
+
+			nonwarpmaps = allmaps.Except(warpmaps).ToList();
+
+			List<TeleporterSM> teleporters = new();
+
+			for (int i = 0; i < 256; i++)
+			{
+				teleporters.Add(new TeleporterSM(this, i));
+			}
+
+			List<TeleporterSM> toWarpTeleports = new();
+
+
+			foreach (var teleport in teleporters)
+			{
+				if (warpmaps.Contains((MapId)teleport.Destination))
+				{
+					toWarpTeleports.Add(teleport);
+				}
+			}
+
+			//warpmaps.Shuffle(rng);
+			Console.WriteLine("Teleporter/WarpMap ratio: " + toWarpTeleports.Count + "/" + warpmaps.Count);
+
+			var teleportId = toWarpTeleports.Select(x => x.ID).ToList();
+
+
+			foreach (var teleport in toWarpTeleports)
+			{
+				teleport.ID = (byte)teleportId.SpliceRandom(rng);
+				teleport.Write(this);
+			}
+		}
+
 		public class TileSM
 		{
 			private byte _attribute;
@@ -1096,6 +1248,18 @@ namespace FF1Lib
 				_x = (byte)(x | (_inroom ? 0b10000000 : 0b00000000));
 				_y = (byte)(y | 0b10000000);
 				_target = destination;
+			}
+			public TeleporterSM(FF1Rom rom, int id)
+			{
+				var byte0 = rom.GetFromBank(BANK_TELEPORTINFO, lut_NormTele_X_ext + id, 1);
+				var byte1 = rom.GetFromBank(BANK_TELEPORTINFO, lut_NormTele_Y_ext + id, 1);
+				var byte2 = rom.GetFromBank(BANK_TELEPORTINFO, lut_NormTele_Map_ext + id, 1);
+
+				_id = id;
+				_inroom = (byte0[0] & 0b10000000) > 0;
+				_x = (byte)(byte0[0] & 0b0111_1111);
+				_y = (byte)(byte1[0] & 0b0111_1111);
+				_target = byte2[0];
 			}
 			public void Write(FF1Rom rom)
 			{
