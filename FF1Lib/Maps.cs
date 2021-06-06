@@ -706,6 +706,7 @@ namespace FF1Lib
 
 		public void EnableChaosFloorEncounters(List<Map> maps)
 		{
+			// Replace floor tiles with encounter tiles
 			for (int x = 0; x < 32; x++)
 			{
 				for (int y = 0; y < 32; y++)
@@ -715,7 +716,10 @@ namespace FF1Lib
 					}
 				}
 			}
-			
+
+			// Change base rate for encounters
+			Put(ThreatLevelsOffset + 60, Blob.FromHex("0D"));
+			// threat level reference for comparison: 08 = most dungeon floors; 18 = sky bridge; 09 = ToFR earth; 0A = ToFR fire; 0B = ToFR water; 0C = ToFR air; 01 = ToFR chaos
 		}
 
 		public void EnableToFRExit(List<Map> maps)
