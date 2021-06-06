@@ -713,8 +713,6 @@ namespace FF1Lib
 					if (maps[(byte)MapId.TempleOfFiendsRevisitedChaos][x, y] == (byte)Tile.ToFRNoEncounter) {
 						maps[(byte)MapId.TempleOfFiendsRevisitedChaos][x, y] = (byte)Tile.ToFREncounter;
 					}
-					// safe tile = 31
-					// encounter tile = 5C
 				}
 			}
 			
