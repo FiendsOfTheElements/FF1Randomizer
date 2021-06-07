@@ -958,17 +958,26 @@ namespace FF1Lib
 		public void ShuffleFloor(List<Map> maps, MT19337 rng)
 		{
 
-			var TilesetWarp = new List<List<byte>>() {
-				new List<byte>() { },
-				new List<byte>() { 0x48 },
-				new List<byte>() { 0x3D },
-				new List<byte>() { 0x18, 0x2D },
-				new List<byte>() { 0x18, 0x28 },
-				new List<byte>() { 0x09, 0x23, 0x26 },
-				new List<byte>() { 0x41, 0x42, 0x4D },
-				new List<byte>() { 0x40, 0x45 },
-				new List<byte>() { 0x09, 0x40, 0x41, 0x4F },
-			};
+
+			var TilesetWarp = new List<List<byte>>();
+
+			var Tilesets = new List<List<TileSM>>();
+
+			for (int i = 0; i < 8; i++)
+			{
+				TilesetWarp.Add(new List<byte>());
+				Tilesets.Add(new List<TileSM>());
+
+				for (int j = 0; j < 128; j++)
+				{
+					Tilesets.Last().Add(new TileSM((byte)j, i, this));
+
+					if ((Tilesets.Last().Last().PropertyType & 0b1100_0000) == 0b0100_0000)
+					{
+						TilesetWarp.Last().Add((byte)j);
+					}
+				}
+			}
 
 			List<(MapId, TileSets)> tilesetList = new()
 			{
@@ -1040,6 +1049,69 @@ namespace FF1Lib
 			List<MapId> warpmaps = new();
 			List<MapId> nonwarpmaps = new();
 
+			List<TeleporterSM> teleporters = new();
+
+			for (int i = 0; i < 256; i++)
+			{
+				teleporters.Add(new TeleporterSM(this, i));
+			}
+
+			List<(byte, byte)> TeleportersPair = new();
+			List<byte> PairedTeleporters = new();
+			List<byte> OrphanTeleporters = new();
+
+			var TeleportTiles = Tilesets.SelectMany(x => x.Where(y => (y.PropertyType & 0b1100_0000) == 0b1000_0000));
+
+			List<(TileSM, TeleporterSM)> TeleportersTiles = TeleportTiles.Select(x => (x, teleporters.Find(y => y.ID == x.PropertyValue))).ToList();
+
+			foreach (var teleport in teleporters)
+			{
+				if (!PairedTeleporters.Contains((byte)teleport.ID))
+				{
+					var targettile = Tilesets[(int)tilesetList[teleport.Destination].Item2][maps[teleport.Destination][teleport.Y, teleport.X]];
+
+					if ((targettile.PropertyType & 0b1100_0000) == 0b1000_0000)
+					{
+						TeleportersPair.Add(((byte)teleport.ID, targettile.PropertyValue));
+						PairedTeleporters.Add((byte)teleport.ID);
+						PairedTeleporters.Add(targettile.PropertyValue);
+					}
+					else
+					{
+						OrphanTeleporters.Add((byte)teleport.ID);
+					}
+				}
+			}
+
+			while (TeleportersPair.Count > 1)
+			{
+
+				var pairA = TeleportersPair.SpliceRandom(rng);
+				var pairB = TeleportersPair.SpliceRandom(rng);
+
+				var teleporterPair1 = TeleportersTiles.Find(x => x.Item2.ID == pairA.Item1);
+				var teleporterPair2 = TeleportersTiles.Find(x => x.Item2.ID == pairA.Item2);
+				var teleporterPair3 = TeleportersTiles.Find(x => x.Item2.ID == pairB.Item1);
+				var teleporterPair4 = TeleportersTiles.Find(x => x.Item2.ID == pairB.Item2);
+
+				var tempTeleporter1 = teleporterPair1.Item2;
+				var tempTeleporter2 = teleporterPair2.Item2;
+
+				teleporterPair1.Item2 = teleporterPair3.Item2;
+				teleporterPair2.Item2 = teleporterPair4.Item2;
+				teleporterPair3.Item2 = tempTeleporter1;
+				teleporterPair4.Item2 = tempTeleporter2;
+
+				teleporterPair1.Item1.PropertyValue = (byte)teleporterPair1.Item2.ID;
+				teleporterPair2.Item1.PropertyValue = (byte)teleporterPair2.Item2.ID;
+				teleporterPair3.Item1.PropertyValue = (byte)teleporterPair3.Item2.ID;
+				teleporterPair4.Item1.PropertyValue = (byte)teleporterPair4.Item2.ID;
+			}
+
+			foreach (var tile in TeleportTiles)
+			{
+				tile.Write(this);
+			}
 
 			for (int i = 0; i < mapsnumber; i++)
 			{
@@ -1053,18 +1125,15 @@ namespace FF1Lib
 				}
 			}
 
-			warpmaps.RemoveAll(x => x == MapId.Coneria);
+			List<MapId> barredMaps = new() { MapId.Coneria, MapId.Pravoka, MapId.Elfland, MapId.CrescentLake, MapId.Melmond, MapId.Onrac, MapId.Gaia, MapId.ConeriaCastle1F, MapId.ConeriaCastle2F, MapId.ElflandCastle, MapId.NorthwestCastle, MapId.CastleOfOrdeals1F, MapId.CastleOfOrdeals3F, MapId.TempleOfFiendsRevisited1F, MapId.TempleOfFiendsRevisited2F, MapId.TempleOfFiendsRevisited3F, MapId.TempleOfFiendsRevisitedAir, MapId.TempleOfFiendsRevisitedEarth, MapId.TempleOfFiendsRevisitedFire, MapId.TempleOfFiendsRevisitedWater, MapId.TempleOfFiendsRevisitedChaos };
+
+			warpmaps.RemoveAll(x => barredMaps.Contains(x));
 
 			var allmaps = Enum.GetValues(typeof(MapId)).Cast<MapId>().ToList();
 
 			nonwarpmaps = allmaps.Except(warpmaps).ToList();
 
-			List<TeleporterSM> teleporters = new();
 
-			for (int i = 0; i < 256; i++)
-			{
-				teleporters.Add(new TeleporterSM(this, i));
-			}
 
 			List<TeleporterSM> toWarpTeleports = new();
 
