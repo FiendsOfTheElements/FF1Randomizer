@@ -20,7 +20,6 @@
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="shortToFRCheckBox" @bind-Value="Flags.ShortToFR">Shorten ToFR</TriStateCheckBox>
 	<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="preserveFiendRefightsCheckBox" IsEnabled="@Flags.ShortToFR" @bind-Value="Flags.PreserveFiendRefights">Include Fiend Tiles</TriStateCheckBox>
 	<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="preserveAllFiendRefightsCheckBox" IsEnabled="@Flags.CanPreserveAllFiendRefights" @bind-Value="Flags.PreserveAllFiendRefights">Refight All Fiends</TriStateCheckBox>
-	<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="lutePlateInShortToFRCheckBox" IsEnabled="@(Flags.ShortToFR != false)" @bind-Value="Flags.LutePlateInShortToFR">Include Lute Plate in Short ToFR</TriStateCheckBox>
 </div>
 
 	<div class="col2">
