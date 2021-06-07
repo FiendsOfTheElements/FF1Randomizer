@@ -455,6 +455,12 @@ namespace FF1Lib
 					break;
 				    }
 				}
+			    } else if (weaponItemId == Item.Xcalber) {
+				 // Give xcal the same type weakness
+				 // bonus (all of them) as vanilla
+				 // xcal because based on player
+				 // feedback, that's what they expect.
+				specialPower = 10;
 			    } else {
 				int spellChance = rng.Between(1, 100);
 				if ((commonWeaponsHavePowers || tier >= 2)
