@@ -377,7 +377,7 @@ namespace FF1Lib
 				EnableEarlySage(npcdata);
 			}
 
-			if (flags.ChaosRush)
+			if ((bool)flags.ChaosRush)
 			{
 				EnableChaosRush();
 			}

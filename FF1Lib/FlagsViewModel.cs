@@ -1174,7 +1174,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EarlyOrdeals"));
 			}
 		}
-		public bool ChaosRush
+		public bool? ChaosRush
 		{
 			get => Flags.ChaosRush;
 			set
