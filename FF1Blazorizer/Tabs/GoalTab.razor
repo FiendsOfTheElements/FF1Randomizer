@@ -15,11 +15,11 @@
 	<div class="checkbox-cell"></div>
 	<h4>Temple of Fiends</h4>
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="chaosRushCheckBox" @bind-Value="Flags.ChaosRush">Unlocked ToFR</TriStateCheckBox>
-	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="exitToFRCheckBox" @bind-Value="Flags.ExitToFR">Add ToFR Exit</TriStateCheckBox>
-	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="chaosFloorEncountersCheckBox" @bind-Value="Flags.ChaosFloorEncounters">Chaos Floor Encounters</TriStateCheckBox>
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="shortToFRCheckBox" @bind-Value="Flags.ShortToFR">Shorten ToFR</TriStateCheckBox>
 	<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="preserveFiendRefightsCheckBox" IsEnabled="@Flags.ShortToFR" @bind-Value="Flags.PreserveFiendRefights">Include Fiend Tiles</TriStateCheckBox>
 	<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="preserveAllFiendRefightsCheckBox" IsEnabled="@Flags.CanPreserveAllFiendRefights" @bind-Value="Flags.PreserveAllFiendRefights">Refight All Fiends</TriStateCheckBox>
+	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="exitToFRCheckBox" @bind-Value="Flags.ExitToFR">Add ToFR Exit</TriStateCheckBox>
+	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="chaosFloorEncountersCheckBox" @bind-Value="Flags.ChaosFloorEncounters">Add Chaos Floor Encounters</TriStateCheckBox>
 </div>
 
 	<div class="col2">
