@@ -323,6 +323,11 @@ namespace FF1Lib
 				ShortenToFR(maps, (bool)flags.PreserveFiendRefights, (bool)flags.PreserveAllFiendRefights, (bool)flags.ExitToFR, (bool)flags.LutePlateInShortToFR, rng);
 			}
 
+			if ((bool)flags.ChaosFloorEncounters && !flags.DeepDungeon)
+			{
+				EnableChaosFloorEncounters(maps);
+			}
+
 			if ((bool)flags.ExitToFR && !flags.DeepDungeon)
 			{
 				EnableToFRExit(maps);

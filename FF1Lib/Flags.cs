@@ -151,6 +151,7 @@ namespace FF1Lib
 		public bool ChaosRush { get; set; } = false;
 		public bool? ShortToFR { get; set; } = false;
 		public bool? ExitToFR { get; set; } = false;
+		public bool? ChaosFloorEncounters { get; set; } = false;
 		public bool? LutePlateInShortToFR { get; set; } = false;
 		public bool? PreserveFiendRefights { get; set; } = false;
 		public bool? PreserveAllFiendRefights { get; set; } = false;

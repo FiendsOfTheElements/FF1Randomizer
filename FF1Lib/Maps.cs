@@ -107,6 +107,8 @@ namespace FF1Lib
 		WaterfallSpikeTile = 0x48,
 		WaterfallRandomEncounters = 0x49,
 		PortalWarp = 0x40,
+		ToFRNoEncounter = 0x31,
+		ToFREncounter = 0x5C,
 		// Begin Town Tiles
 		TownGrass = 0x00,
 		TownGrassShadow = 0x01,
@@ -701,6 +703,24 @@ namespace FF1Lib
         melmond[0x0B, 0x1C] = 0x1D;
         melmond[0x0B, 0x1D] = 0x02; // Corner shadow
     }
+
+		public void EnableChaosFloorEncounters(List<Map> maps)
+		{
+			// Replace floor tiles with encounter tiles
+			for (int x = 0; x < 32; x++)
+			{
+				for (int y = 0; y < 32; y++)
+				{
+					if (maps[(byte)MapId.TempleOfFiendsRevisitedChaos][x, y] == (byte)Tile.ToFRNoEncounter) {
+						maps[(byte)MapId.TempleOfFiendsRevisitedChaos][x, y] = (byte)Tile.ToFREncounter;
+					}
+				}
+			}
+
+			// Change base rate for encounters
+			Put(ThreatLevelsOffset + 60, Blob.FromHex("0D"));
+			// threat level reference for comparison: 08 = most dungeon floors; 18 = sky bridge; 09 = ToFR earth; 0A = ToFR fire; 0B = ToFR water; 0C = ToFR air; 01 = ToFR chaos
+		}
 
 		public void EnableToFRExit(List<Map> maps)
 		{

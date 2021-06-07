@@ -943,6 +943,12 @@
 		"description": "Shortens the Temple of Fiends Revisited to lead straight to Chaos' Floor. By default, the four Orbs are still required to enter the dungeon and neither the KEY nor the LUTE will be required if this box is checked, unless using other settings that change these requirements."
 	},
 	{
+		"Id": "chaosFloorEncountersCheckBox",
+		"title": "Chaos Floor Encounters",
+		"screenshot": "chaosFloorEncounters.gif",
+		"description": "Allows enemy encounters to appear on the Chaos floor in the Temple of Fiends Revisited."
+	},
+	{
 		"Id": "preserveFiendRefightsCheckBox",
 		"title": "Include Fiend Tiles",
 		"screenshot": "preserveFiendRefightsCheckBox.gif",

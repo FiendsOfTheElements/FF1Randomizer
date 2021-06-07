@@ -549,6 +549,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ShortToFR"));
 			}
 		}
+		public bool? ChaosFloorEncounters
+		{
+			get => Flags.ChaosFloorEncounters;
+			set
+			{
+				Flags.ChaosFloorEncounters = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ChaosFloorEncounters"));
+			}
+		}
 		public bool? ExitToFR
 		{
 			get => Flags.ExitToFR;
