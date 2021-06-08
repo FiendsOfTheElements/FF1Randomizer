@@ -28,7 +28,7 @@ else
     if [ "$branch" = "master" ]; then
 	version=$(grep " Version.*" /root/ff1randomizer/FF1Lib/FFRVersion.cs | grep -Eo "[0-9\.]+" | tr '.' '-')
     elif [ "$branch" = "dev" ]; then
-	version=beta-$(echo $CIRCLE_SHA1 | cut -c1-8)
+	version=beta-$(echo "$CIRCLE_SHA1" | cut -c1-8)
     else
     	echo "Don't know what to do to deploy branch '$branch' expected 'master' or 'dev'"
     	exit 1
