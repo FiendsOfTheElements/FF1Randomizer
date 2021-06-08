@@ -957,25 +957,15 @@ namespace FF1Lib
 
 		public void ShuffleFloor(List<Map> maps, MT19337 rng)
 		{
-
-
-			var TilesetWarp = new List<List<byte>>();
-
 			var Tilesets = new List<List<TileSM>>();
 
 			for (int i = 0; i < 8; i++)
 			{
-				TilesetWarp.Add(new List<byte>());
 				Tilesets.Add(new List<TileSM>());
 
 				for (int j = 0; j < 128; j++)
 				{
 					Tilesets.Last().Add(new TileSM((byte)j, i, this));
-
-					if ((Tilesets.Last().Last().PropertyType & 0b1100_0000) == 0b0100_0000)
-					{
-						TilesetWarp.Last().Add((byte)j);
-					}
 				}
 			}
 
@@ -1044,17 +1034,16 @@ namespace FF1Lib
 				(MapId.TitansTunnel, TileSets.EarthTitanVolcano),
 			};
 
-			int mapsnumber = Enum.GetNames(typeof(MapId)).Length;
-
-			List<MapId> warpmaps = new();
-			List<MapId> nonwarpmaps = new();
-
 			List<TeleporterSM> teleporters = new();
 
 			for (int i = 0; i < 256; i++)
 			{
 				teleporters.Add(new TeleporterSM(this, i));
 			}
+
+			List<MapId> originalOrphanGateway = new() { MapId.EarthCaveB1, MapId.BahamutsRoomB1, MapId.GurguVolcanoB3, MapId.MirageTower3F, MapId.SeaShrineB2 };
+			List<(byte, byte)> CardiaCoord = new() { (0x3A, 0x37), (0x2B, 0x1D) };
+			List<byte> OrphanGateways = new();
 
 			List<(byte, byte)> TeleportersPair = new();
 			List<byte> PairedTeleporters = new();
@@ -1076,16 +1065,37 @@ namespace FF1Lib
 						PairedTeleporters.Add((byte)teleport.ID);
 						PairedTeleporters.Add(targettile.PropertyValue);
 					}
-					else
+					else if ((targettile.PropertyType & 0b1100_0000) == 0b0100_0000)
 					{
 						OrphanTeleporters.Add((byte)teleport.ID);
+						if (originalOrphanGateway.Contains((MapId)teleport.Destination) || (teleport.Destination == (byte)MapId.Cardia && CardiaCoord.Contains((teleport.X, teleport.Y))))
+						{
+							OrphanGateways.Add((byte)teleport.ID);
+						}
 					}
 				}
 			}
 
+			List<MapId> barredPairs = new() { MapId.ConeriaCastle2F, MapId.CastleOfOrdeals2F, MapId.CastleOfOrdeals3F };
+
+			List<MapId> barredOrphans = new() { MapId.CastleOfOrdeals1F, MapId.CastleOfOrdeals2F, MapId.CastleOfOrdeals3F, MapId.IceCaveB1, MapId.IceCaveB2, MapId.IceCaveB3, MapId.TempleOfFiendsRevisited1F, MapId.TempleOfFiendsRevisited2F, MapId.TempleOfFiendsRevisited3F, MapId.TempleOfFiendsRevisitedAir, MapId.TempleOfFiendsRevisitedEarth, MapId.TempleOfFiendsRevisitedFire, MapId.TempleOfFiendsRevisitedWater, MapId.TempleOfFiendsRevisitedChaos };
+
+			foreach (var teleport in teleporters)
+			{
+				if (barredPairs.Contains((MapId)teleport.Destination))
+				{
+					TeleportersPair = TeleportersPair.Where(x => x.Item1 != teleport.ID && x.Item2 != teleport.ID).ToList();
+				}
+				else if (barredOrphans.Contains((MapId)teleport.Destination))
+				{
+					OrphanTeleporters = OrphanTeleporters.Where(x => x != teleport.ID).ToList();
+				}
+			}
+
+			// Remove Ice cave B3<->B1 teleporter pair
+
 			while (TeleportersPair.Count > 1)
 			{
-
 				var pairA = TeleportersPair.SpliceRandom(rng);
 				var pairB = TeleportersPair.SpliceRandom(rng);
 
@@ -1108,53 +1118,36 @@ namespace FF1Lib
 				teleporterPair4.Item1.PropertyValue = (byte)teleporterPair4.Item2.ID;
 			}
 
+			while (OrphanTeleporters.Count > 1)
+			{
+				var orphanA = OrphanTeleporters.SpliceRandom(rng);
+				var orphanB = OrphanTeleporters.SpliceRandom(rng);
+
+				var teleporterPair1 = TeleportersTiles.Find(x => x.Item2.ID == orphanA);
+				var teleporterPair2 = TeleportersTiles.Find(x => x.Item2.ID == orphanB);
+
+				var tempTeleporter1 = teleporterPair1.Item2;
+
+				teleporterPair1.Item2 = teleporterPair2.Item2;
+				teleporterPair2.Item2 = tempTeleporter1;
+
+				teleporterPair1.Item1.PropertyValue = (byte)teleporterPair1.Item2.ID;
+				teleporterPair2.Item1.PropertyValue = (byte)teleporterPair2.Item2.ID;
+			}
+
+			foreach (var gateway in OrphanGateways)
+			{
+
+			}
+
+
 			foreach (var tile in TeleportTiles)
 			{
 				tile.Write(this);
 			}
 
-			for (int i = 0; i < mapsnumber; i++)
-			{
-				foreach (var warptile in TilesetWarp[(int)tilesetList[i].Item2])
-				{
-					if (CheckForTile(maps[i], warptile))
-					{
-						warpmaps.Add((MapId)i);
-						break;
-					}
-				}
-			}
-
-			List<MapId> barredMaps = new() { MapId.Coneria, MapId.Pravoka, MapId.Elfland, MapId.CrescentLake, MapId.Melmond, MapId.Onrac, MapId.Gaia, MapId.ConeriaCastle1F, MapId.ConeriaCastle2F, MapId.ElflandCastle, MapId.NorthwestCastle, MapId.CastleOfOrdeals1F, MapId.CastleOfOrdeals3F, MapId.TempleOfFiendsRevisited1F, MapId.TempleOfFiendsRevisited2F, MapId.TempleOfFiendsRevisited3F, MapId.TempleOfFiendsRevisitedAir, MapId.TempleOfFiendsRevisitedEarth, MapId.TempleOfFiendsRevisitedFire, MapId.TempleOfFiendsRevisitedWater, MapId.TempleOfFiendsRevisitedChaos };
-
-			warpmaps.RemoveAll(x => barredMaps.Contains(x));
-
-			var allmaps = Enum.GetValues(typeof(MapId)).Cast<MapId>().ToList();
-
-			nonwarpmaps = allmaps.Except(warpmaps).ToList();
-
-
-
-			List<TeleporterSM> toWarpTeleports = new();
-
-
 			foreach (var teleport in teleporters)
 			{
-				if (warpmaps.Contains((MapId)teleport.Destination))
-				{
-					toWarpTeleports.Add(teleport);
-				}
-			}
-
-			//warpmaps.Shuffle(rng);
-			Console.WriteLine("Teleporter/WarpMap ratio: " + toWarpTeleports.Count + "/" + warpmaps.Count);
-
-			var teleportId = toWarpTeleports.Select(x => x.ID).ToList();
-
-
-			foreach (var teleport in toWarpTeleports)
-			{
-				teleport.ID = (byte)teleportId.SpliceRandom(rng);
 				teleport.Write(this);
 			}
 		}
@@ -1280,18 +1273,26 @@ namespace FF1Lib
 
 			public byte X
 			{
-				get { return (byte)(_x & 0b01111111); }
+				get { return _x; }
 				set
 				{
-					_x = (byte)(value | (_inroom ? 0b10000000 : 0b00000000));
+					_x = value;
 				}
 			}
 			public byte Y
 			{
-				get { return (byte)(_y & 0b01111111); }
+				get { return _y; }
 				set
 				{
-					_y = (byte)(value | 0b10000000);
+					_y = value;
+				}
+			}
+			public bool InRoom
+			{
+				get { return _inroom; }
+				set
+				{
+					_inroom = value;
 				}
 			}
 			public byte Destination
@@ -1314,8 +1315,8 @@ namespace FF1Lib
 			{
 				_id = id;
 				_inroom = inroom;
-				_x = (byte)(x | (_inroom ? 0b10000000 : 0b00000000));
-				_y = (byte)(y | 0b10000000);
+				_x = x;
+				_y = y;
 				_target = destination;
 			}
 			public TeleporterSM(FF1Rom rom, int id)
@@ -1332,6 +1333,9 @@ namespace FF1Lib
 			}
 			public void Write(FF1Rom rom)
 			{
+				_x = (byte)(_x | (_inroom ? 0b1000_0000 : 0b0000_0000));
+				_y = (byte)(_y | 0b1000_0000);
+
 				rom.PutInBank(BANK_TELEPORTINFO, lut_NormTele_X_ext + _id, new byte[] { _x });
 				rom.PutInBank(BANK_TELEPORTINFO, lut_NormTele_Y_ext + _id, new byte[] { _y });
 				rom.PutInBank(BANK_TELEPORTINFO, lut_NormTele_Map_ext + _id, new byte[] { _target });
