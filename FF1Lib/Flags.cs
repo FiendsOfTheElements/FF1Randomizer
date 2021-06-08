@@ -148,11 +148,10 @@ namespace FF1Lib
 		public bool ShardHunt { get; set; } = false;
 		public ShardCount ShardCount { get; set; } = ShardCount.Count16;
 		public FinalFormation TransformFinalFormation { get; set; } = FinalFormation.None;
-		public bool ChaosRush { get; set; } = false;
+		public bool? ChaosRush { get; set; } = false;
 		public bool? ShortToFR { get; set; } = false;
 		public bool? ExitToFR { get; set; } = false;
 		public bool? ChaosFloorEncounters { get; set; } = false;
-		public bool? LutePlateInShortToFR { get; set; } = false;
 		public bool? PreserveFiendRefights { get; set; } = false;
 		public bool? PreserveAllFiendRefights { get; set; } = false;
 

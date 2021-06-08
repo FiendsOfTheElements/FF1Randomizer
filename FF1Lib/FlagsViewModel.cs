@@ -567,15 +567,6 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ExitToFR"));
 			}
 		}
-		public bool? LutePlateInShortToFR
-		{
-			get => Flags.LutePlateInShortToFR;
-			set
-			{
-				Flags.LutePlateInShortToFR = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("LutePlateInShortToFR"));
-			}
-		}
 		public bool? PreserveFiendRefights
 		{
 			get => Flags.PreserveFiendRefights;
@@ -1183,7 +1174,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EarlyOrdeals"));
 			}
 		}
-		public bool ChaosRush
+		public bool? ChaosRush
 		{
 			get => Flags.ChaosRush;
 			set

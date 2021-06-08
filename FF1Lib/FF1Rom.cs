@@ -320,7 +320,7 @@ namespace FF1Lib
 
 			if ((bool)flags.ShortToFR && !flags.DeepDungeon)
 			{
-				ShortenToFR(maps, (bool)flags.PreserveFiendRefights, (bool)flags.PreserveAllFiendRefights, (bool)flags.ExitToFR, (bool)flags.LutePlateInShortToFR, rng);
+				ShortenToFR(maps, (bool)flags.PreserveFiendRefights, (bool)flags.PreserveAllFiendRefights, (bool)flags.ExitToFR, rng);
 			}
 
 			if ((bool)flags.ChaosFloorEncounters && !flags.DeepDungeon)
@@ -377,7 +377,7 @@ namespace FF1Lib
 				EnableEarlySage(npcdata);
 			}
 
-			if (flags.ChaosRush)
+			if ((bool)flags.ChaosRush)
 			{
 				EnableChaosRush();
 			}
