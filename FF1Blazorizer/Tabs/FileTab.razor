@@ -42,7 +42,7 @@
 		<input style="width: calc(100% - 80px);" type="text" class="nes-input" value="@Flags.Encoded" @onchange="@OnFlagsInputChanged" />
 		<a class="styled-button" @onclick="@OnCopyToClipboard">Export</a>
 	</p>
-	<p>@StatusMessage</p>
+	<p>@((MarkupString)StatusMessage)</p>
 	<div class="row">&nbsp;</div>
 	<a class="styled-button generate-button" @onclick="@OnRandomize">Generate ROM</a>
 </div>

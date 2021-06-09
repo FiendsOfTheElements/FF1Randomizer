@@ -1102,21 +1102,15 @@ namespace FF1Lib
 					IntegerFlagAttribute ia = p.GetCustomAttribute<IntegerFlagAttribute>();
 					var v3 = Convert.ToInt32(obj);
 
+					p.SetValue(flags, v3);
+
 					if (v3 > ia.Max)
 					{
-						p.SetValue(flags, ia.Max);
-
-						return $"\"{p.Name}\" with value \"{obj}\" exceeded the maximum and was clamped to \"{p.GetValue(flags)}\".";
+						return $"\"{p.Name}\" with value \"{obj}\" exceeds the maximum but will be kept.";
 					}
 					else if (v3 < ia.Min)
 					{
-						p.SetValue(flags, ia.Min);
-
-						return $"\"{p.Name}\" with value \"{obj}\" deceeded the minimum and was clamped to \"{p.GetValue(flags)}\".";
-					}
-					else
-					{
-						p.SetValue(flags, v3);
+						return $"\"{p.Name}\" with value \"{obj}\" deceedes the minimum but will be kept.";
 					}
 				}
 				else if (p.PropertyType == typeof(double))
@@ -1124,21 +1118,15 @@ namespace FF1Lib
 					DoubleFlagAttribute da = p.GetCustomAttribute<DoubleFlagAttribute>();
 					var v3 = Convert.ToDouble(obj);
 
+					p.SetValue(flags, v3);
+
 					if (v3 > da.Max)
 					{
-						p.SetValue(flags, da.Max);
-
-						return $"\"{p.Name}\" with value \"{obj}\" exceeded the maximum and was clamped to \"{p.GetValue(flags)}\".";
+						return $"\"{p.Name}\" with value \"{obj}\" exceeds the maximum but will be kept.";
 					}
 					else if (v3 < da.Min)
 					{
-						p.SetValue(flags, da.Min);
-
-						return $"\"{p.Name}\" with value \"{obj}\" deceeded the minimum and was clamped to \"{p.GetValue(flags)}\".";
-					}
-					else
-					{
-						p.SetValue(flags, v3);
+						return $"\"{p.Name}\" with value \"{obj}\" deceedes the minimum but will be kept.";
 					}
 				}
 			}

@@ -133,7 +133,7 @@
 
 		if (preset.log.Any())
 		{
-			SetStatusMessage.Invoke(string.Join("\n", preset.log));
+			SetStatusMessage.Invoke("<p>" + preset.name + " was loaded with errors:</p>" + "<p>" + string.Join("</p><p>", preset.log) + "</p>");
 		}
 		else
 		{
@@ -197,7 +197,7 @@
 
 			if (preset.log.Any())
 			{
-				SetStatusMessage.Invoke(string.Join("\n", preset.log));
+				SetStatusMessage.Invoke("<p>" + preset.name + " was loaded from json with errors:</p>" + "<p>" + string.Join("</p><p>", preset.log) + "</p>");
 			}
 			else
 			{
