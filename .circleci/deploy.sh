@@ -71,5 +71,5 @@ else
     sed -i "s/VERSION/${version}/" /root/finalfantasyrandomizer.com/index.html
 
     # Deploy index.html
-    netlify deploy --dir=/root/finalfantastyrandomizer.com --prod --site="$netlifyID"
+    netlify deploy --dir=/root/finalfantasyrandomizer.com --prod --site="$netlifyID"
 fi
