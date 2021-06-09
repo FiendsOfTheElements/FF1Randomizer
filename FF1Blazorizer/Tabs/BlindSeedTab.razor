@@ -29,9 +29,19 @@
 
 	public void LoadFromJson(string json)
 	{
-		Flags.Preset preset = System.Text.Json.JsonSerializer.Deserialize<Flags.Preset>(json);
-		Flags.Flags = preset.Flags;
-		SetStatusMessage.Invoke(preset.Name + " preset successfully loaded.");
+		var preset = Flags.FromJson(json);
+
+		Flags.Flags = preset.flags;
+
+		if (preset.log.Any())
+		{
+			SetStatusMessage.Invoke(string.Join("\n", preset.log));
+		}
+		else
+		{
+			SetStatusMessage.Invoke(preset.name + " preset successfully loaded.");
+		}
+
 		StateHasChanged();
 	}
 }

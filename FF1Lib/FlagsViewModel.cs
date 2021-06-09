@@ -44,6 +44,8 @@ namespace FF1Lib
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
 		}
 
+		public (string name, Flags flags, IEnumerable<string> log) FromJson(string json) => Flags.FromJson(json);
+
 		// At least this trick saves us from having to declare backing fields, and having to write a conversion from FlagsViewModel to Flags.
 		private Flags _flags;
 		public Flags Flags
