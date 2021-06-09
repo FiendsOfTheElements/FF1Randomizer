@@ -1842,6 +1842,11 @@
 		"title": "Common weapons can have powers",
 		"screenshot": "weaponizerCommonPower.png",
 		"description": "Common (shop) weapons can have spells or bonuses vs monster types or elemental weaknesses."
+	},
+	{
+		"Id": "Lockpicking",
+		"title": "Thief Lockpicking",
+		"screenshot": null,
+		"description": "Having a thief in the party, when they reach the required level, allows players to open all locked doors. (Selecting level 1 will allow opening of locked doors always.)\n\n Enabling this flag also adds a -10 level requirement bonus and a +10 level requirement malus to blursed classes."
 	}
-
 ]

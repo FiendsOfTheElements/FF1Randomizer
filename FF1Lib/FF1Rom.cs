@@ -823,6 +823,12 @@ namespace FF1Lib
 			        BuffThiefAGI(flags.ThiefAgilityBuff);
 			}
 
+			if ((bool)flags.Lockpicking)
+			{
+				EnableLockpicking();
+				SetLockpickingLevel(flags.LockpickingLevelRequirement);
+			}
+
 			if (flags.ImproveTurnOrderRandomization)
 			{
 				ImproveTurnOrderRandomization(rng);
