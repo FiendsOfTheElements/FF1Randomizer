@@ -20,7 +20,7 @@ namespace FF1Randomizer
 			InitializeComponent();
 
 			_model = new MainWindowViewModel();
-			_model.Flags.Flags = Flags.FromJson(File.ReadAllText("presets/default.json"));
+			_model.Flags.Flags = Flags.FromJson(File.ReadAllText("presets/default.json")).flags;
 			DataContext = _model;
 
 			TryOpenSavedFilename();
@@ -199,7 +199,7 @@ namespace FF1Randomizer
 			var result = openFileDialog.ShowDialog(this);
 			if (result == true)
 			{
-				_model.Flags.Flags = Flags.FromJson(File.ReadAllText(openFileDialog.FileName));
+				_model.Flags.Flags = Flags.FromJson(File.ReadAllText(openFileDialog.FileName)).flags;
 			}
 		}
 
