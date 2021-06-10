@@ -66,10 +66,9 @@ else
     # Copy over index.redirect.html, this will make the front page of
     # either the main site or the beta site to redirect to the
     # instanced site that we just deployed.
-    mkdir -p /root/finalfantasyrandomizer.com
-    cp /root/ff1randomizer/FF1Blazorizer/output/wwwroot/index.redirect.html /root/finalfantasyrandomizer.com/index.html
-    sed -i "s/VERSION/${version}/" /root/finalfantasyrandomizer.com/index.html
+    cp /root/ff1randomizer/FF1Blazorizer/output/wwwroot/index.redirect.html /root/ff1randomizer/FF1Blazorizer/output/wwwroot/index.html
+    sed -i "s/VERSION/${version}/" /root/ff1randomizer/FF1Blazorizer/output/wwwroot/index.html
 
-    # Deploy index.html
-    netlify deploy --dir=/root/finalfantasyrandomizer.com --prod --site="$netlifyID"
+    # Deploy with the redirect version of index.html
+    netlify deploy --dir=/root/ff1randomizer/FF1Blazorizer/output/wwwroot --prod --site="$netlifyID"
 fi
