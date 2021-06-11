@@ -32,7 +32,7 @@
 		<div class="col2">
 			<h4>Treasures</h4>
 
-                        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="noFloaterCheckBox" IsEnabled="@(Flags.MapOpenProgressionDocks == true)" @bind-Value="Flags.NoFloater">Remove Floater</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="noFloaterCheckBox" IsEnabled="@(Flags.MapOpenProgressionDocks == true)" @bind-Value="Flags.NoFloater">Remove Floater</TriStateCheckBox>
 
 			<div class="checkbox-cell"></div>
 			<h4>Deep Dungeon</h4>
@@ -41,6 +41,12 @@
 			<p>Please try it out and provide feedback!</p>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="deepdungeon" @bind-Value="Flags.DeepDungeon">Deep Dungeon</CheckBox>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="DDEvenTreasureDistribution" @bind-Value="Flags.DDEvenTreasureDistribution">Distribute treasure evenly</CheckBox>
+
+			<div class="checkbox-cell"></div>
+			<h4>Classes</h4>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="Lockpicking" @bind-Value="Flags.Lockpicking">Thief Lockpicking</TriStateCheckBox>
+			<IntSlider Indent Min="1" Max="50" Step="1" DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="Flags.Lockpicking" Id="LockpickingLevelRequirement" @bind-Value="@Flags.LockpickingLevelRequirement">Lockpicking Level Requirement:</IntSlider>
+
 		</div>
 
 		<div class="col1 full">

@@ -4468,6 +4468,26 @@ namespace FF1Lib
 				RaisePropertyChanged();
 			}
 		}
+		
+		public bool? Lockpicking
+		{
+			get => Flags.Lockpicking;
+			set
+			{
+				Flags.Lockpicking = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public int LockpickingLevelRequirement
+		{
+			get => Flags.LockpickingLevelRequirement;
+			set
+			{
+				Flags.LockpickingLevelRequirement = value;
+				RaisePropertyChanged();
+			}
+		}
 
 		#region StartingEquipment
 

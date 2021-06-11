@@ -84,7 +84,7 @@ namespace FF1Lib
 			Put(0x39D25, Enumerable.Repeat((byte)0xEA, 14).ToArray());
 		}
 
-		private enum FF1Class
+		public enum FF1Class
 		{
 			Fighter = 0,
 			Thief = 1,

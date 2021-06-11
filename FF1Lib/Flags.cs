@@ -590,6 +590,11 @@ namespace FF1Lib
 
 		public bool? AllowUnsafeStartArea { get; set; } = false;
 
+		public bool? Lockpicking { get; set; } = false;
+
+		[IntegerFlag(1, 50)]
+		public int LockpickingLevelRequirement { get; set; } = 10;
+
 		public bool? EarlierRuby { get; set; } = false;
 		public bool? GuaranteedRuseItem { get; set; } = false;
 		public bool? DisableStunTouch { get; set; } = false;
