@@ -1,4 +1,5 @@
 ﻿@using FF1Lib;
+@using System.Text.Json;
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 @inject IJSRuntime JSRuntime
 
@@ -35,32 +36,46 @@
 	[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
 	[Parameter] public Action<string> SetStatusMessage { get; set; }
 
-	protected override async void OnInitialized()
+	protected override void OnInitialized()
 	{
-		Flags.Preferences = await LocalStorage.GetItemAsync<Preferences>("preferences") ?? new Preferences();
-		if (Flags.Preferences.SpriteSheet != null) {
-		  SpriteSheetMessage = "Using custom sprites.";
-		}
+		Flags.Preferences = new Preferences();
+		JSRuntime.InvokeVoidAsync("getFFRPreferences",
+		                          "preferences",
+					  DotNetObjectReference.Create(this),
+		                          "LoadPreferences");
 	}
 
-	async Task SavePreferences()
+	void SavePreferences()
 	{
-		await LocalStorage.SetItemAsync("preferences", Flags.Preferences);
+	        string jsonprefs = JsonSerializer.Serialize(Flags.Preferences);
+		JSRuntime.InvokeVoidAsync("setFFRPreferences", "preferences", jsonprefs);
 		SetStatusMessage.Invoke("Preferences saved.");
 	}
 
-	private string SpriteSheetMessage = "Load custom player sprites:";
+	[JSInvokable]
+	public void LoadPreferences(string prefs) {
+	        if (prefs == null || prefs == "") return;
 
-		async Task OnSpriteSheetChanged(ChangeEventArgs e)
-		{
-		      Console.WriteLine("OnSpriteSheetChanged");
-	              Flags.SpriteSheet = await JSRuntime.InvokeAsync<string>("handleFileSelect", "spriteSheetInput");
-		      SpriteSheetMessage = "Using custom sprites.";
+		Flags.Preferences = JsonSerializer.Deserialize<FF1Lib.Preferences>(prefs);
+		if (Flags.Preferences.SpriteSheet != null) {
+		  SpriteSheetMessage = "Using custom sprites.";
 		}
+		StateHasChanged();
+	}
 
-		void ClearCustomSprites() {
-		     Flags.SpriteSheet = null;
-		     SpriteSheetMessage = "Load custom player sprites:";
-		}
+	private string SpriteSheetMessage { get; set; } = "Load custom player sprites:";
 
+	async Task OnSpriteSheetChanged(ChangeEventArgs e)
+	{
+		Console.WriteLine("OnSpriteSheetChanged");
+		Flags.SpriteSheet = await JSRuntime.InvokeAsync<string>("handleFileSelect", "spriteSheetInput");
+		SpriteSheetMessage = "Using custom sprites.";
+		StateHasChanged();
+	}
+
+	void ClearCustomSprites() {
+	     Flags.SpriteSheet = null;
+	     SpriteSheetMessage = "Load custom player sprites:";
+	     StateHasChanged();
+	}
 }

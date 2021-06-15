@@ -1,168 +1,215 @@
 ﻿function handleFileSelect(inputId) {
-	const input = document.getElementById(inputId);
-	const file = input.files[0];
-	const reader = new FileReader();
+        const input = document.getElementById(inputId);
+        const file = input.files[0];
+        const reader = new FileReader();
 
-	return new Promise((resolve, reject) => {
-		reader.onload = e => {
-			const encoded = e.target.result.split(',')[1];
-			resolve(encoded);
-		};
-		reader.onerror = () => {
-			reader.abort();
-			reject(new DOMException("Error reading file"));
-		};
-		reader.readAsDataURL(file);
-	});
+        return new Promise((resolve, reject) => {
+                reader.onload = e => {
+                        const encoded = e.target.result.split(',')[1];
+                        resolve(encoded);
+                };
+                reader.onerror = () => {
+                        reader.abort();
+                        reject(new DOMException("Error reading file"));
+                };
+                reader.readAsDataURL(file);
+        });
 }
 
 function handlePresetSelect(inputId) {
-	const input = document.getElementById(inputId);
-	const file = input.files[0];
-	const reader = new FileReader();
+        const input = document.getElementById(inputId);
+        const file = input.files[0];
+        const reader = new FileReader();
 
-	return new Promise((resolve, reject) => {
-		reader.onload = e => {
-			document.querySelector('#presetNameInput').value = JSON.parse(e.target.result).Name;
-			resolve(e.target.result);
-			input.value = null;
-		};
-		reader.onerror = () => {
-			reader.abort();
-			reject(new DOMException("Error reading file"));
-			input.value = null;
-		};
-		reader.readAsText(file);
-	});
+        return new Promise((resolve, reject) => {
+                reader.onload = e => {
+                        document.querySelector('#presetNameInput').value = JSON.parse(e.target.result).Name;
+                        resolve(e.target.result);
+                        input.value = null;
+                };
+                reader.onerror = () => {
+                        reader.abort();
+                        reject(new DOMException("Error reading file"));
+                        input.value = null;
+                };
+                reader.readAsText(file);
+        });
 }
 
 async function storePreset(name, json) {
-	let presets;
-	try {
-		presets = JSON.parse(localStorage.getItem('presets')) ?? {};
-	} catch {
-		presets = {};
-	}
-	presets[name] = json;
-	localStorage.setItem('presets', JSON.stringify(presets));
+        let presets;
+        try {
+                presets = JSON.parse(localStorage.getItem('presets')) ?? {};
+        } catch {
+                presets = {};
+        }
+        presets[name] = json;
+        localStorage.setItem('presets', JSON.stringify(presets));
 }
 
 async function listLocalPresets() {
-	let presets;
-	try {
-		presets = JSON.parse(localStorage.getItem('presets')) ?? {};
-	} catch {
-		presets = {};
-	}
+        let presets;
+        try {
+                presets = JSON.parse(localStorage.getItem('presets')) ?? {};
+        } catch {
+                presets = {};
+        }
 
-	return Object.keys(presets);
+        return Object.keys(presets);
 }
 
 async function loadLocalPreset(preset) {
-	document.querySelector('#presetNameInput').value = preset;
-	return JSON.parse(localStorage.getItem('presets'))[preset];
+        document.querySelector('#presetNameInput').value = preset;
+        return JSON.parse(localStorage.getItem('presets'))[preset];
 }
 
 async function deleteLocalPreset(preset) {
-	try {
-		const presets = JSON.parse(localStorage.getItem('presets'));
-		delete presets[preset];
-		localStorage.setItem('presets', JSON.stringify(presets));
-	} catch {
-	}
+        try {
+                const presets = JSON.parse(localStorage.getItem('presets'));
+                delete presets[preset];
+                localStorage.setItem('presets', JSON.stringify(presets));
+        } catch {
+        }
 }
 
 async function computePreset(preset) {
-	const result = await fetch('presets/' + preset + '.json');
-	const overrides = await result.json();
+        const result = await fetch('presets/' + preset + '.json');
+        const overrides = await result.json();
 
-	if (preset !== 'default') {
-		const defaultResult = await fetch('presets/default.json');
-		const basic = await defaultResult.json();
-		overrides.Flags = Object.assign(basic.Flags, overrides.Flags);
-	}
-	document.querySelector('#presetNameInput').value = overrides.Name;
-	return JSON.stringify(overrides);
+        if (preset !== 'default') {
+                const defaultResult = await fetch('presets/default.json');
+                const basic = await defaultResult.json();
+                overrides.Flags = Object.assign(basic.Flags, overrides.Flags);
+        }
+        document.querySelector('#presetNameInput').value = overrides.Name;
+        return JSON.stringify(overrides);
 }
 
 async function downloadFile(filename, encoded) {
-	const url = "data:application/octet-stream;base64," + encoded;
-	const result = await fetch(url);
-	const blob = await result.blob();
+        const url = "data:application/octet-stream;base64," + encoded;
+        const result = await fetch(url);
+        const blob = await result.blob();
 
-	const anchor = document.createElement('a');
-	anchor.download = filename;
-	anchor.href = window.URL.createObjectURL(blob);
-	anchor.dispatchEvent(new MouseEvent('click'));
+        const anchor = document.createElement('a');
+        anchor.download = filename;
+        anchor.href = window.URL.createObjectURL(blob);
+        anchor.dispatchEvent(new MouseEvent('click'));
 }
 
 function updateHistory(seedString, flagString) {
-	let href = document.location.href;
-	if (href.indexOf('?') > 0) {
-		href = href.substr(0, href.indexOf('?'));
-	}
+        let href = document.location.href;
+        if (href.indexOf('?') > 0) {
+                href = href.substr(0, href.indexOf('?'));
+        }
 
-	history.replaceState({}, '', href + '?' + 's=' + seedString + '&' + 'f=' + flagString);
+        history.replaceState({}, '', href + '?' + 's=' + seedString + '&' + 'f=' + flagString);
 }
 
 function copyLocation() {
-	const textarea = document.createElement('textarea');
-	textarea.value = location.href;
-	document.body.appendChild(textarea);
-	textarea.select();
-	document.execCommand('copy');
-	document.body.removeChild(textarea);
+        const textarea = document.createElement('textarea');
+        textarea.value = location.href;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
 }
 
 function getScreenRightEdge() {
-	return window.innerWidth;
+        return window.innerWidth;
 }
 
 let newWorker;
 Blazor.start({}).then(() => {
-	if ('serviceWorker' in navigator) {
-		navigator.serviceWorker.register('/service-worker.js').then(reg => {
-			console.debug('service worker registered');
-			reg.addEventListener('updatefound', () => {
-				console.debug('New update found');
-				newWorker = reg.installing;
-				newWorker.addEventListener('statechange', () => {
-					if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-						console.debug('Showing update notification');
-						DotNet.invokeMethod('FF1Blazorizer', 'ShowUpdateNotification');
-					}
-				});
-			});
-		});
+        if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/service-worker.js').then(reg => {
+                        console.debug('service worker registered');
+                        reg.addEventListener('updatefound', () => {
+                                console.debug('New update found');
+                                newWorker = reg.installing;
+                                newWorker.addEventListener('statechange', () => {
+                                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                                console.debug('Showing update notification');
+                                                DotNet.invokeMethod('FF1Blazorizer', 'ShowUpdateNotification');
+                                        }
+                                });
+                        });
+                });
 
-		let refreshing;
-		navigator.serviceWorker.addEventListener('controllerchange', function () {
-			if (refreshing) return;
-			window.location.reload();
-			refreshing = true;
-		});
-	}
+                let refreshing;
+                navigator.serviceWorker.addEventListener('controllerchange', function () {
+                        if (refreshing) return;
+                        window.location.reload();
+                        refreshing = true;
+                });
+        }
 })
 
 
 /**
- * Call from Blazor to register the new service worker 
+ * Call from Blazor to register the new service worker
  */
 function updateServiceWorkerNow() {
-	if (newWorker) {
-		newWorker.postMessage({ action: 'skipWaiting' });
-	} else {
-		window.location.reload();
-	}
+        if (newWorker) {
+                newWorker.postMessage({ action: 'skipWaiting' });
+        } else {
+                window.location.reload();
+        }
 }
 
 let pwa;
-window.addEventListener('beforeinstallprompt', (e) => {	
-	e.preventDefault();
-	pwa = e;
+window.addEventListener('beforeinstallprompt', (e) => { 
+        e.preventDefault();
+        pwa = e;
 });
 
 function showPWAInstall() {
-	pwa?.prompt();
-	pwa = null;
+        pwa?.prompt();
+        pwa = null;
 }
+
+window.FFRPreferencesCallbacks = {};
+window.onmessage = function(e) {
+    //if (e.origin != "http://other.example.com") {
+    //    return;
+    //}
+    var response = JSON.parse(e.data);
+    if (window.FFRPreferencesCallbacks[response.key]) {
+        if (response.data[0] == '"') {
+            window.FFRPreferencesCallbacks[response.key](JSON.parse(response.data));
+        } else {
+            window.FFRPreferencesCallbacks[response.key](response.data);
+        }
+    }
+};
+
+function setFFRPreferences(keyname, prefdata) {
+    var iframe = document.getElementsByTagName('iframe')[0];
+    var win;
+    // some browser (don't remember which one) throw exception when you try to access
+    // contentWindow for the first time, it work when you do that second time
+    try {
+        win = iframe.contentWindow;
+    } catch(e) {
+        win = iframe.contentWindow;
+    }
+    // save obj in subdomain localStorage
+    win.postMessage(JSON.stringify({key: keyname, method: "set", data: prefdata}), "*");
+};
+
+function getFFRPreferences(keyname, obj, callback) {
+    var iframe = document.getElementsByTagName('iframe')[0];
+    var win;
+    // some browser (don't remember which one) throw exception when you try to access
+    // contentWindow for the first time, it work when you do that second time
+    try {
+        win = iframe.contentWindow;
+    } catch(e) {
+        win = iframe.contentWindow;
+    }
+    window.FFRPreferencesCallbacks[keyname] = function(data) {
+        obj.invokeMethodAsync(callback, data);
+    }
+    // save obj in subdomain localStorage
+    // fetch previously saved data
+    win.postMessage(JSON.stringify({key: keyname, method: "get"}), "*");
+};
