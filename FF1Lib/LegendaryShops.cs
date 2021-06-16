@@ -74,6 +74,7 @@ namespace FF1Lib
 		public void PlaceShops()
 		{
 			PrepareMaps();
+
 			Spells = rom.GetSpells().ToDictionary(s => s.Name.ToLowerInvariant());
 			MapTileSets.LoadTable();
 
