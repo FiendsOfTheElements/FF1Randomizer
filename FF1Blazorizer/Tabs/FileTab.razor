@@ -84,14 +84,13 @@
 				TrySetFlags(flags.First());
 			}
 
-			await JSRuntime.InvokeVoidAsync("getFFRPreferences",
-		                          "file",
-					  DotNetObjectReference.Create(this),
-					  "LoadLastROM");
+			var romfile = await JSRuntime.InvokeAsync<string>("getFFRPreferences", "file");
+			if (romfile != null) {
+			    LoadLastROM(romfile);
+			}
 		}
 
-		[JSInvokable]
-		public void LoadLastROM(string encoded)
+		void LoadLastROM(string encoded)
 		{
 			RememberROM = encoded != null && encoded.Length > 0;
 			if (RememberROM)

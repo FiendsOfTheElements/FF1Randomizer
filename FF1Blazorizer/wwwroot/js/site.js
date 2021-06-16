@@ -36,40 +36,36 @@ function handlePresetSelect(inputId) {
         });
 }
 
+async function getPresets(name) {
+    var presets = await getFFRPreferences("presets");
+    if (presets === null) {
+        return {};
+    } else {
+        return JSON.parse(presets);
+    }
+}
+
 async function storePreset(name, json) {
-        let presets;
-        try {
-                presets = JSON.parse(localStorage.getItem('presets')) ?? {};
-        } catch {
-                presets = {};
-        }
-        presets[name] = json;
-        localStorage.setItem('presets', JSON.stringify(presets));
-}
-
-async function listLocalPresets() {
-        let presets;
-        try {
-                presets = JSON.parse(localStorage.getItem('presets')) ?? {};
-        } catch {
-                presets = {};
-        }
-
-        return Object.keys(presets);
-}
-
-async function loadLocalPreset(preset) {
-        document.querySelector('#presetNameInput').value = preset;
-        return JSON.parse(localStorage.getItem('presets'))[preset];
+    var presets = await getPresets(name);
+    presets[name] = json;
+    setFFRPreferences("presets", presets);
 }
 
 async function deleteLocalPreset(preset) {
-        try {
-                const presets = JSON.parse(localStorage.getItem('presets'));
-                delete presets[preset];
-                localStorage.setItem('presets', JSON.stringify(presets));
-        } catch {
-        }
+    var presets = await getPresets(name);
+    delete presets[preset];
+    setFFRPreferences("presets", presets);
+}
+
+async function listLocalPresets() {
+    var presets = await getPresets(name);
+    return Object.keys(presets);
+}
+
+async function loadLocalPreset(preset) {
+    document.querySelector('#presetNameInput').value = preset;
+    var presets = await getPresets(name);
+    return presets[preset];
 }
 
 async function computePreset(preset) {
@@ -167,21 +163,6 @@ function showPWAInstall() {
         pwa = null;
 }
 
-window.FFRPreferencesCallbacks = {};
-window.onmessage = function(e) {
-    //if (e.origin != "http://other.example.com") {
-    //    return;
-    //}
-    var response = JSON.parse(e.data);
-    if (window.FFRPreferencesCallbacks[response.key]) {
-        if (response.data[0] == '"') {
-            window.FFRPreferencesCallbacks[response.key](JSON.parse(response.data));
-        } else {
-            window.FFRPreferencesCallbacks[response.key](response.data);
-        }
-    }
-};
-
 function setFFRPreferences(keyname, prefdata) {
     var iframe = document.getElementsByTagName('iframe')[0];
     var win;
@@ -196,7 +177,19 @@ function setFFRPreferences(keyname, prefdata) {
     win.postMessage(JSON.stringify({key: keyname, method: "set", data: prefdata}), "*");
 };
 
-function getFFRPreferences(keyname, obj, callback) {
+window.FFRPreferencesCallbacks = {};
+window.onmessage = function(e) {
+    //if (e.origin != "http://other.example.com") {
+    //    return;
+    //}
+    var response = JSON.parse(e.data);
+    if (window.FFRPreferencesCallbacks[response.key]) {
+        var resolve = window.FFRPreferencesCallbacks[response.key];
+        resolve(response.data);
+    }
+};
+
+async function getFFRPreferences(keyname) {
     var iframe = document.getElementsByTagName('iframe')[0];
     var win;
     // some browser (don't remember which one) throw exception when you try to access
@@ -206,10 +199,9 @@ function getFFRPreferences(keyname, obj, callback) {
     } catch(e) {
         win = iframe.contentWindow;
     }
-    window.FFRPreferencesCallbacks[keyname] = function(data) {
-        obj.invokeMethodAsync(callback, data);
-    }
-    // save obj in subdomain localStorage
-    // fetch previously saved data
-    win.postMessage(JSON.stringify({key: keyname, method: "get"}), "*");
+
+    return new Promise((resolve, reject) => {
+        window.FFRPreferencesCallbacks[keyname] = resolve;
+        win.postMessage(JSON.stringify({key: keyname, method: "get"}), "*");
+    });
 };

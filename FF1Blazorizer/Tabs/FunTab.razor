@@ -36,13 +36,10 @@
 	[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
 	[Parameter] public Action<string> SetStatusMessage { get; set; }
 
-	protected override void OnInitialized()
+	protected override async void OnInitialized()
 	{
 		Flags.Preferences = new Preferences();
-		JSRuntime.InvokeVoidAsync("getFFRPreferences",
-		                          "preferences",
-					  DotNetObjectReference.Create(this),
-		                          "LoadPreferences");
+		await LoadPreferences();
 	}
 
 	void SavePreferences()
@@ -52,10 +49,9 @@
 		SetStatusMessage.Invoke("Preferences saved.");
 	}
 
-	[JSInvokable]
-	public void LoadPreferences(string prefs) {
-	        if (prefs == null || prefs == "") return;
-
+	async Task LoadPreferences() {
+		string prefs = await JSRuntime.InvokeAsync<string>("getFFRPreferences", "preferences");
+		if (prefs == "" || prefs == null) return;
 		Flags.Preferences = JsonSerializer.Deserialize<FF1Lib.Preferences>(prefs);
 		if (Flags.Preferences.SpriteSheet != null) {
 		  SpriteSheetMessage = "Using custom sprites.";
