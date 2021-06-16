@@ -69,6 +69,9 @@ else
     cp /root/ff1randomizer/FF1Blazorizer/output/wwwroot/index.redirect.html /root/ff1randomizer/FF1Blazorizer/output/wwwroot/index.html
     sed -i "s/VERSION/${version}/" /root/ff1randomizer/FF1Blazorizer/output/wwwroot/index.html
 
+    # Also record version into a simple file that we can fetch to find out the latest version.
+    echo "${version}" > /root/ff1randomizer/FF1Blazorizer/output/wwwroot/version
+
     # Deploy with the redirect version of index.html
     netlify deploy --dir=/root/ff1randomizer/FF1Blazorizer/output/wwwroot --prod --site="$netlifyID"
 fi
