@@ -4489,6 +4489,16 @@ namespace FF1Lib
 			}
 		}
 
+		public bool CropScreen
+		{
+			get => Flags.CropScreen;
+			set
+			{
+				Flags.CropScreen = value;
+				RaisePropertyChanged();
+			}
+		}
+
 		#region StartingEquipment
 
 		public bool? StartingEquipmentMasamune

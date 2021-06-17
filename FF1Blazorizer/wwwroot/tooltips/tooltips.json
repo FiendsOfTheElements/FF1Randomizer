@@ -30,6 +30,12 @@
 		"description": "Imp disguises all enemies as various IMPs.\nImp (inc. Fiends and Chaos) also disguised Fiends and Chaos."
 	},
 	{
+		"Id": "cropScreen",
+		"title": "Crop Screen",
+		"screenshot": null,
+		"description": "Gives the Intro, Load/New Game and Party Selection a discernible background color to make life easier for restreamers."
+	},
+	{
 		"Id": "enemyObfuscation",
 		"title": "Enemy Obfuscation",
 		"screenshot": null,
