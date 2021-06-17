@@ -330,23 +330,26 @@ namespace FF1Lib
 			Put(0x39A74, nops);
 		}
 
-		public void EnableSpeedHacks()
+		public void EnableSpeedHacks(Preferences preferences)
 		{
-			// Screen wipe
-			Data[0x7D6EE] = 0x08; // These two values must evenly divide 224 (0xE0), default are 2 and 4
-			Data[0x7D6F5] = 0x10;
-			Data[0x7D713] = 0x0A; // These two values must evenly divide 220 (0xDC), default are 2 and 4
-			Data[0x7D71A] = 0x14; // Don't ask me why they aren't the same, it's the number of scanlines to stop the loop at
+			if (!preferences.OptOutSpeedHackWipes)
+			{
+				// Screen wipe
+				Data[0x7D6EE] = 0x08; // These two values must evenly divide 224 (0xE0), default are 2 and 4
+				Data[0x7D6F5] = 0x10;
+				Data[0x7D713] = 0x0A; // These two values must evenly divide 220 (0xDC), default are 2 and 4
+				Data[0x7D71A] = 0x14; // Don't ask me why they aren't the same, it's the number of scanlines to stop the loop at
 
-			// Dialogue boxes
-			Data[0x7D620] = 0x0B; // These two values must evenly divide 88 (0x58), the size of the dialogue box
-			Data[0x7D699] = 0x0B;
+				// Dialogue boxes
+				Data[0x7D620] = 0x0B; // These two values must evenly divide 88 (0x58), the size of the dialogue box
+				Data[0x7D699] = 0x0B;
 
-			// Battle entry
-			Data[0x7D90A] = 0x11; // This can be just about anything, default is 0x41, sfx lasts for 0x20
+				// Battle entry
+				Data[0x7D90A] = 0x11; // This can be just about anything, default is 0x41, sfx lasts for 0x20
 
-			// All kinds of palette cycling
-			Data[0x7D955] = 0x00; // This value is ANDed with a counter, 0x03 is default, 0x01 is double speed, 0x00 is quadruple
+				// All kinds of palette cycling
+				Data[0x7D955] = 0x00; // This value is ANDed with a counter, 0x03 is default, 0x01 is double speed, 0x00 is quadruple
+			}
 
 			// Battle
 			Data[0x31ECE] = 0x60; // Double character animation speed
@@ -356,10 +359,13 @@ namespace FF1Lib
 			Data[0x33CCD] = 0x04; // Explosion effect count (small enemies), default 8
 			Data[0x33DAA] = 0x04; // Explosion effect count (mixed enemies), default 15
 
-			// Draw and Undraw Battle Boxes faster
-			Put(0x2DA12, Blob.FromHex("3020181008040201")); // More practical Respond Rates
-			Put(0x7F4AA, Blob.FromHex($"ADFC6048A90F2003FE20008AA9{BattleBoxDrawInFrames}8517A90F2003FE20208A2085F4C617D0F1682003FE60"));
-			Put(0x7F4FF, Blob.FromHex($"ADFC6048A90F2003FE20808AA9{BattleBoxUndrawFrames}8517A90F2003FE20A08A2085F4C617D0F1682003FE60"));
+			if (!preferences.OptOutSpeedHackMessages)
+			{
+				// Draw and Undraw Battle Boxes faster
+				Put(0x2DA12, Blob.FromHex("3020181008040201")); // More practical Respond Rates
+				Put(0x7F4AA, Blob.FromHex($"ADFC6048A90F2003FE20008AA9{BattleBoxDrawInFrames}8517A90F2003FE20208A2085F4C617D0F1682003FE60"));
+				Put(0x7F4FF, Blob.FromHex($"ADFC6048A90F2003FE20808AA9{BattleBoxUndrawFrames}8517A90F2003FE20A08A2085F4C617D0F1682003FE60"));
+			}
 
 			// Gain multiple levels at once.
 			//Put(0x2DD82, Blob.FromHex("20789f20579f48a5802907c907f008a58029f0690785806820019c4ce89b")); old

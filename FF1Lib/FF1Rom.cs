@@ -699,8 +699,8 @@ namespace FF1Lib
 			}
 
 			if (flags.SpeedHacks)
-			{
-				EnableSpeedHacks();
+			{				
+				EnableSpeedHacks(preferences);
 			}
 
 			if (flags.IdentifyTreasures)
@@ -708,7 +708,7 @@ namespace FF1Lib
 				EnableIdentifyTreasures();
 			}
 
-			if (flags.Dash || flags.SpeedBoat)
+			if ((flags.Dash || flags.SpeedBoat) && !preferences.OptOutSpeedHackDash)
 			{
 				EnableDash(flags.SpeedBoat);
 			}

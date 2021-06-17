@@ -21,6 +21,10 @@
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="accessibleSpellNamesCheckBox" IsEnabled="@(!Flags.GenerateNewSpellbook)" @bind-Value="Flags.AccessibleSpellNames">Accessible Spell Names</CheckBox>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="renounceAutosortCheckBox" @bind-Value="Flags.RenounceAutosort">Renounce Autosort</CheckBox>
 
+	<CheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="renounceSpeedHackWipes" @bind-Value="Flags.OptOutSpeedHackWipes">Slow Screen Wipes</CheckBox>
+	<CheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="renounceSpeedHackMessages" @bind-Value="Flags.OptOutSpeedHackMessages">Slow Battle Messages</CheckBox>
+	<CheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="renounceSpeedHackDash" @bind-Value="Flags.OptOutSpeedHackDash">Slow Map Move</CheckBox>
+
 	<ToolTipBox id="spriteSheetToolTipBox" UpdateToolTip="@UpdateToolTipID">@SpriteSheetMessage</ToolTipBox>
 	<input type="file" id="spriteSheetInput" accept="image/*" @onchange="@OnSpriteSheetChanged" />
 	<a class="styled-button" @onclick="@ClearCustomSprites">Clear saved sprites</a>
