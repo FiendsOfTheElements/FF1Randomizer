@@ -4491,10 +4491,10 @@ namespace FF1Lib
 
 		public bool CropScreen
 		{
-			get => Flags.CropScreen;
+			get => Preferences.CropScreen;
 			set
 			{
-				Flags.CropScreen = value;
+				Preferences.CropScreen = value;
 				RaisePropertyChanged();
 			}
 		}

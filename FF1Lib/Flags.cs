@@ -14,8 +14,6 @@ namespace FF1Lib
 {
 	public class Flags : IIncentiveFlags, IMapEditFlags, IScaleFlags, IFloorShuffleFlags
 	{
-		public bool CropScreen { get; set; } = false;
-
 		#region StartingEquipment
 
 		public bool? StartingEquipmentMasamune { get; set; } = false;

@@ -22,6 +22,7 @@ namespace FF1Lib
 		public bool RenounceAutosort { get; set; } = false;
 		public bool AccessibleSpellNames { get; set; } = false;
 		public bool NoTabLayout { get; set; } = false;
-	        public string SpriteSheet { get; set; } = null;
+	    public string SpriteSheet { get; set; } = null;
+		public bool CropScreen { get; set; } = false;
 	}
 }
