@@ -447,7 +447,8 @@ namespace FF1Lib
 				try
 				{
 					overworldMap = new OverworldMap(this, flags, palettes, teleporters);
-					if (((bool)flags.Entrances || (bool)flags.Floors || (bool)flags.Towns) && ((bool)flags.Treasures) && ((bool)flags.NPCItems) && !flags.DeepDungeon)
+					if (((bool)flags.Entrances || (bool)flags.Floors || (bool)flags.Towns) && ((bool)flags.Treasures) && ((bool)flags.NPCItems) && !flags.DeepDungeon &&
+						(!flags.SanityCheckerV2 || flags.OwMapExchange == OwMapExchanges.None))
 					{
 						overworldMap.ShuffleEntrancesAndFloors(rng, flags);
 
