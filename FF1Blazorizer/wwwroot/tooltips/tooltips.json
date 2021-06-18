@@ -9,7 +9,7 @@
 		"Id": "tournamentSafeCheckBox",
 		"title": "Tournament Safe ROM",
 		"screenshot": "tournamentSafeCheckBox.png",
-		"description": "Verifies that the ROM provided is an original Final Fantasy 1 ROM. If the ROM has been modified beyond certain allowances (the sprites for the main heroes on the map and in battle may be changed, as well as the vehicles), a randomized ROM will fail to generate and the site will spit out the following error: -- FAILURE: file has been modified --\n\nThe Damage Tile Flicker and Spellcasting Flash are also disabled, regardless of the preferences selected."
+		"description": "Verifies that the ROM provided is an original Final Fantasy 1 ROM. If the ROM has been modified beyond certain allowances (the sprites for the main heroes on the map and in battle may be changed, as well as the vehicles), a randomized ROM will fail to generate and the site will spit out the following error: -- FAILURE: file has been modified --\n\nThe Damage Tile Flicker and Spellcasting Flash are also disabled, regardless of the preferences selected.\nCrop Fiendly is enabled, regardless of the preferences selected."
 	},
 	{
 		"Id": "spoilersCheckBox",
@@ -33,7 +33,7 @@
 		"Id": "cropScreen",
 		"title": "Crop Screen",
 		"screenshot": null,
-		"description": "Gives the Intro, Load/New Game and Party Selection a discernible background color to make life easier for restreamers."
+		"description": "Gives the Load/New Game and Party Selection a discernible background color to make life easier for restreamers."
 	},
 	{
 		"Id": "enemyObfuscation",
