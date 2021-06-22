@@ -4662,5 +4662,34 @@ namespace FF1Lib
 		}
 
 		#endregion
+
+		public bool OptOutSpeedHackWipes
+		{
+			get => Preferences.OptOutSpeedHackWipes;
+			set
+			{
+				Preferences.OptOutSpeedHackWipes = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool OptOutSpeedHackMessages
+		{
+			get => Preferences.OptOutSpeedHackMessages;
+			set
+			{
+				Preferences.OptOutSpeedHackMessages = value;
+				RaisePropertyChanged();
+			}
+		}
+		public bool OptOutSpeedHackDash
+		{
+			get => Preferences.OptOutSpeedHackDash;
+			set
+			{
+				Preferences.OptOutSpeedHackDash = value;
+				RaisePropertyChanged();
+			}
+		}
 	}
 }
