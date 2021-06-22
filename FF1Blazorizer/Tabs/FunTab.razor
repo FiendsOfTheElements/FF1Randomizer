@@ -22,6 +22,7 @@
 	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="menuColorDropDown" TItem="MenuColor" @bind-Value="Flags.MenuColor">Menu Color:</EnumDropDown>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="accessibleSpellNamesCheckBox" IsEnabled="@(!Flags.GenerateNewSpellbook)" @bind-Value="Flags.AccessibleSpellNames">Accessible Spell Names</CheckBox>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="renounceAutosortCheckBox" @bind-Value="Flags.RenounceAutosort">Renounce Autosort</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="cropScreen" @bind-Value="Flags.CropScreen">Crop Friendly</CheckBox>
 
 	<CheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="renounceSpeedHackWipes" @bind-Value="Flags.OptOutSpeedHackWipes">Slow Screen Wipes</CheckBox>
 	<CheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="renounceSpeedHackMessages" @bind-Value="Flags.OptOutSpeedHackMessages">Slow Battle Messages</CheckBox>

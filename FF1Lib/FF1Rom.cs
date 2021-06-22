@@ -1050,6 +1050,8 @@ namespace FF1Lib
 			talkroutines.WriteRoutines(this);
 			talkroutines.UpdateNPCRoutines(this, npcdata);
 
+			if (flags.TournamentSafe || preferences.CropScreen) ActivateCropScreen();
+
 			WriteSeedAndFlags(seed.ToHex(), Flags.EncodeFlagsText(flags));
 			ExtraTrackingAndInitCode(flags, preferences);
 		}
