@@ -1,4 +1,6 @@
 ﻿@using FF1Lib;
+@using Newtonsoft.Json;
+@using System.Reflection;
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 @inject IJSRuntime JSRuntime
 
@@ -41,30 +43,57 @@
 
 	protected override async void OnInitialized()
 	{
-		Flags.Preferences = await LocalStorage.GetItemAsync<Preferences>("preferences") ?? new Preferences();
-		if (Flags.Preferences.SpriteSheet != null) {
-		  SpriteSheetMessage = "Using custom sprites.";
-		}
+		Flags.Preferences = new Preferences();
+		await LoadPreferences();
 	}
 
 	async Task SavePreferences()
 	{
-		await LocalStorage.SetItemAsync("preferences", Flags.Preferences);
+	        // For forwards compatability, load the existing preferences, then copy the new preferences on top.
+		// This ensures that new keys introduced in future versions don't get lost.
+
+                string prefs = await JSRuntime.InvokeAsync<string>("getFFRPreferences", "preferences");
+		Dictionary<string, object> existingPrefs;
+		if (prefs == "" || prefs == null) {
+		  existingPrefs = new Dictionary<string, object>();
+		} else {
+                  existingPrefs = JsonConvert.DeserializeObject<Dictionary<string, object>>(prefs);
+		}
+		var properties = typeof(FF1Lib.Preferences).GetProperties(BindingFlags.Instance | BindingFlags.Public);
+		foreach (var pi in properties) {
+                  existingPrefs[pi.Name] = pi.GetValue(Flags.Preferences);
+		}
+	        string jsonprefs = JsonConvert.SerializeObject(existingPrefs);
+		await JSRuntime.InvokeVoidAsync("setFFRPreferences", "preferences", jsonprefs);
 		SetStatusMessage.Invoke("Preferences saved.");
 	}
 
-	private string SpriteSheetMessage = "Load custom player sprites:";
-
-		async Task OnSpriteSheetChanged(ChangeEventArgs e)
-		{
-		      Console.WriteLine("OnSpriteSheetChanged");
-	              Flags.SpriteSheet = await JSRuntime.InvokeAsync<string>("handleFileSelect", "spriteSheetInput");
-		      SpriteSheetMessage = "Using custom sprites.";
+	async Task LoadPreferences() {
+		string prefs = await JSRuntime.InvokeAsync<string>("getFFRPreferences", "preferences");
+		if (prefs == "" || prefs == null) return;
+		Flags.Preferences = JsonConvert.DeserializeObject<FF1Lib.Preferences>(prefs, new JsonSerializerSettings
+		    {
+		            Error = (se, ev) => { ev.ErrorContext.Handled = true; }
+	            });
+		if (Flags.Preferences.SpriteSheet != null) {
+		  SpriteSheetMessage = "Using custom sprites.";
 		}
+		StateHasChanged();
+	}
 
-		void ClearCustomSprites() {
-		     Flags.SpriteSheet = null;
-		     SpriteSheetMessage = "Load custom player sprites:";
-		}
+	private string SpriteSheetMessage { get; set; } = "Load custom player sprites:";
 
+	async Task OnSpriteSheetChanged(ChangeEventArgs e)
+	{
+		Console.WriteLine("OnSpriteSheetChanged");
+		Flags.SpriteSheet = await JSRuntime.InvokeAsync<string>("handleFileSelect", "spriteSheetInput");
+		SpriteSheetMessage = "Using custom sprites.";
+		StateHasChanged();
+	}
+
+	void ClearCustomSprites() {
+	     Flags.SpriteSheet = null;
+	     SpriteSheetMessage = "Load custom player sprites:";
+	     StateHasChanged();
+	}
 }

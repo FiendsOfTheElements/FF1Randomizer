@@ -84,13 +84,14 @@
 				TrySetFlags(flags.First());
 			}
 
-			await LoadLastROM();
-			StateHasChanged();
+			var romfile = await JSRuntime.InvokeAsync<string>("getFFRPreferences", "file");
+			if (romfile != null) {
+			    LoadLastROM(romfile);
+			}
 		}
 
-		async Task LoadLastROM()
+		void LoadLastROM(string encoded)
 		{
-			string encoded = await LocalStorage.GetItemAsync<string>("file");
 			RememberROM = encoded != null && encoded.Length > 0;
 			if (RememberROM)
 			{
@@ -108,7 +109,9 @@
 
 			if (RememberROM)
 			{
-				await LocalStorage.SetItemAsync("file", encoded);
+				await JSRuntime.InvokeVoidAsync("setFFRPreferences",
+		                          "file",
+		                          encoded);
 			}
 		}
 
