@@ -52,8 +52,9 @@
 	    <script>
 	    // Past versions of the site's front page installed a
 	    // service worker that would return cached versions of the
-	    // app.  This causes all kinds of caching issues, we need
-	    // to make sure to uninstall it.
+	    // app.  This causes all kinds of issues with loading
+	    // stale versions of the app now that the main page isn't
+	    // the real site, we need to make sure to uninstall it.
             navigator.serviceWorker.getRegistrations().then(function(registrations) {
               for(let registration of registrations) {
                 registration.unregister()

@@ -1,5 +1,6 @@
 ﻿@using FF1Lib;
-@using System.Text.Json;
+@using Newtonsoft.Json;
+@using System.Reflection;
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 @inject IJSRuntime JSRuntime
 
@@ -42,17 +43,34 @@
 		await LoadPreferences();
 	}
 
-	void SavePreferences()
+	async Task SavePreferences()
 	{
-	        string jsonprefs = JsonSerializer.Serialize(Flags.Preferences);
-		JSRuntime.InvokeVoidAsync("setFFRPreferences", "preferences", jsonprefs);
+	        // For forwards compatability, load the existing preferences, then copy the new preferences on top.
+		// This ensures that new keys introduced in future versions don't get lost.
+
+                string prefs = await JSRuntime.InvokeAsync<string>("getFFRPreferences", "preferences");
+		Dictionary<string, object> existingPrefs;
+		if (prefs == "" || prefs == null) {
+		  existingPrefs = new Dictionary<string, object>();
+		} else {
+                  existingPrefs = JsonConvert.DeserializeObject<Dictionary<string, object>>(prefs);
+		}
+		var properties = typeof(FF1Lib.Preferences).GetProperties(BindingFlags.Instance | BindingFlags.Public);
+		foreach (var pi in properties) {
+                  existingPrefs[pi.Name] = pi.GetValue(Flags.Preferences);
+		}
+	        string jsonprefs = JsonConvert.SerializeObject(existingPrefs);
+		await JSRuntime.InvokeVoidAsync("setFFRPreferences", "preferences", jsonprefs);
 		SetStatusMessage.Invoke("Preferences saved.");
 	}
 
 	async Task LoadPreferences() {
 		string prefs = await JSRuntime.InvokeAsync<string>("getFFRPreferences", "preferences");
 		if (prefs == "" || prefs == null) return;
-		Flags.Preferences = JsonSerializer.Deserialize<FF1Lib.Preferences>(prefs);
+		Flags.Preferences = JsonConvert.DeserializeObject<FF1Lib.Preferences>(prefs, new JsonSerializerSettings
+		    {
+		            Error = (se, ev) => { ev.ErrorContext.Handled = true; }
+	            });
 		if (Flags.Preferences.SpriteSheet != null) {
 		  SpriteSheetMessage = "Using custom sprites.";
 		}

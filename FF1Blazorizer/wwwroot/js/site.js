@@ -163,7 +163,7 @@ function showPWAInstall() {
         pwa = null;
 }
 
-function setFFRPreferences(keyname, prefdata) {
+async function setFFRPreferences(keyname, prefdata) {
     var iframe = document.getElementsByTagName('iframe')[0];
     var win;
     // some browser (don't remember which one) throw exception when you try to access
@@ -175,13 +175,11 @@ function setFFRPreferences(keyname, prefdata) {
     }
     // save obj in subdomain localStorage
     win.postMessage(JSON.stringify({key: keyname, method: "set", data: prefdata}), "*");
+    return Promise.resolve();
 };
 
 window.FFRPreferencesCallbacks = {};
 window.onmessage = function(e) {
-    //if (e.origin != "http://other.example.com") {
-    //    return;
-    //}
     var response = JSON.parse(e.data);
     if (window.FFRPreferencesCallbacks[response.key]) {
         var resolve = window.FFRPreferencesCallbacks[response.key];
@@ -190,7 +188,7 @@ window.onmessage = function(e) {
 };
 
 async function getFFRPreferences(keyname) {
-    var iframe = document.getElementsByTagName('iframe')[0];
+    var iframe = document.getElementById('preferences-iframe');
     var win;
     // some browser (don't remember which one) throw exception when you try to access
     // contentWindow for the first time, it work when you do that second time

@@ -1,7 +1,4 @@
 window.onmessage = function(e) {
-    /*if (e.origin !== "http://example.com") {
-        return;
-    }*/
     var payload = JSON.parse(e.data);
     switch(payload.method) {
     case 'set':
