@@ -759,6 +759,11 @@ namespace FF1Lib
 
 			var assignedBonusMalus = new List<List<BonusMalus>> { new List<BonusMalus>(), new List<BonusMalus>(), new List<BonusMalus>(), new List<BonusMalus>(), new List<BonusMalus>(), new List<BonusMalus>() };
 
+			// Shuffle bonuses and maluses
+			bonusNormal.Shuffle(rng);
+			bonusStrong.Shuffle(rng);
+			malusNormal.Shuffle(rng);
+
 			// Select one incentivized class that will received a strong bonus
 			var luckyDude = Rng.Between(rng, 0, 5);
 
