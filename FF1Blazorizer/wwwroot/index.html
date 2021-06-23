@@ -49,5 +49,10 @@
     </app>
     <script src="_framework/blazor.webassembly.js" autostart="false"></script>
     <script src="js/site.js"></script>
+
+    <!-- This iframe is a hidden stub page that we will interact with to store preferences at
+         a single domain, to avoid having separate preferences/saved ROM/presets on every
+         instanced site version.  Where we load this from determines that domain. -->
+    <iframe src="https://beta.finalfantasyrandomizer.com/preferences.html" height="0" width="0" id="preferences-iframe"></iframe>
 </body>
 </html>

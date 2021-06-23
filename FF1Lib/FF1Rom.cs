@@ -708,9 +708,9 @@ namespace FF1Lib
 				EnableIdentifyTreasures();
 			}
 
-			if ((flags.Dash || flags.SpeedBoat) && !preferences.OptOutSpeedHackDash)
+			if ((flags.Dash || flags.SpeedBoat))
 			{
-				EnableDash(flags.SpeedBoat);
+				EnableDash(flags.SpeedBoat, preferences.OptOutSpeedHackDash);
 			}
 
 			if (flags.BuyTen)
@@ -1050,8 +1050,10 @@ namespace FF1Lib
 			talkroutines.WriteRoutines(this);
 			talkroutines.UpdateNPCRoutines(this, npcdata);
 
+			if (flags.TournamentSafe || preferences.CropScreen) ActivateCropScreen();
+
 			WriteSeedAndFlags(seed.ToHex(), Flags.EncodeFlagsText(flags));
-			ExtraTrackingAndInitCode(flags);
+			ExtraTrackingAndInitCode(flags, preferences);
 		}
 
 		private void EnableNPCSwatter(NPCdata npcdata)
@@ -1132,7 +1134,7 @@ namespace FF1Lib
 			return hex.ToString();
 		}
 
-		private void ExtraTrackingAndInitCode(Flags flags)
+		private void ExtraTrackingAndInitCode(Flags flags, Preferences preferences)
 		{
 			// Expanded game init code, does several things:
 			//	- Encounter table emu/hardware fix
@@ -1212,13 +1214,17 @@ namespace FF1Lib
 			// Copyright overhaul, see 0F_8960_DrawSeedAndFlags.asm
 			PutInBank(0x0F, 0x8980, Blob.FromHex("A9238D0620A9208D0620A200BD00898D0720E8E060D0F560"));
 
+
+			var drawinrows = preferences.OptOutSpeedHackMessages ? "01" : BattleBoxDrawInRows;
+			var undrawrows = preferences.OptOutSpeedHackMessages ? "02" : BattleBoxUndrawRows;
+
 			// Fast Battle Boxes
 			PutInBank(0x0F, 0x8A00, Blob.FromHex("A940858AA922858BA91E8588A969858960"));
-			PutInBank(0x0F, 0x8A20, Blob.FromHex($"A9{BattleBoxDrawInRows}8DB96820A1F420E8F4A5881869208588A58969008589A58A186920858AA58B6900858BCEB968D0DE60"));
+			PutInBank(0x0F, 0x8A20, Blob.FromHex($"A9{drawinrows}8DB96820A1F420E8F4A5881869208588A58969008589A58A186920858AA58B6900858BCEB968D0DE60"));
 
 			// Fast Battle Boxes Undraw (Similar... yet different!)
 			PutInBank(0x0F, 0x8A80, Blob.FromHex("A9A0858AA923858BA97E8588A96A858960"));
-			PutInBank(0x0F, 0x8AA0, Blob.FromHex($"A9{BattleBoxUndrawRows}8DB96820A1F420E8F4A58838E9208588A589E9008589A58A38E920858AA58BE900858BCEB968D0DE60"));
+			PutInBank(0x0F, 0x8AA0, Blob.FromHex($"A9{undrawrows}8DB96820A1F420E8F4A58838E9208588A589E9008589A58A38E920858AA58BE900858BCEB968D0DE60"));
 
 			// Softlock fix
 			Put(0x7C956, Blob.FromHex("A90F2003FE4C008B"));

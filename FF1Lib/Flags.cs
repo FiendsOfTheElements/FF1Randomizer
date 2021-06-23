@@ -783,7 +783,8 @@ namespace FF1Lib
 			+ ((IncentivizeConeria ?? false) ? 1 : 0)
 			+ ((IncentivizeMarshKeyLocked ?? false) ? 1 : 0)
 			+ ((IncentivizeTitansTrove ?? false) ? 1 : 0)
-			+ ((IncentivizeSkyPalace ?? false) ? 1 : 0);
+			+ ((IncentivizeSkyPalace ?? false) ? 1 : 0)
+			+ ((IncentivizeCardia ?? false) ? 1 : 0);
 
 
 		public int IncentivizedLocationCountMax => 0
@@ -798,7 +799,8 @@ namespace FF1Lib
 			+ ((IncentivizeConeria ?? true) ? 1 : 0)
 			+ ((IncentivizeMarshKeyLocked ?? true) ? 1 : 0)
 			+ ((IncentivizeTitansTrove ?? true) ? 1 : 0)
-			+ ((IncentivizeSkyPalace ?? true) ? 1 : 0);
+			+ ((IncentivizeSkyPalace ?? true) ? 1 : 0)
+			+ ((IncentivizeCardia ?? true) ? 1 : 0);
 
 
 		private static bool ConvertTriState(bool? tristate, MT19337 rng)
