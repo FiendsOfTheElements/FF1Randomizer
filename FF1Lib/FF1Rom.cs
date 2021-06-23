@@ -1044,6 +1044,19 @@ namespace FF1Lib
 			    }
 			}
 
+			if (flags.SanityCheckerV2)
+			{
+				if ((bool)flags.IsAirshipFree)
+				{
+					owMapExchange?.SetAirshipLocation(owMapExchange.StartingLocation);
+				}
+
+				if ((bool)flags.IsShipFree)
+				{
+					shipLocations.SetShipLocation(255);
+				}
+			}
+
 			owMapExchange?.ExecuteStep2();
 
 			npcdata.WriteNPCdata(this);
