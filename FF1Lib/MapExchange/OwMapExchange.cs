@@ -46,6 +46,8 @@ namespace FF1Lib
 
 		public ShipLocations ShipLocations { get; private set; }
 
+		public SCCoords StartingLocation => locations.StartingLocation;
+
 		public OwMapExchange(FF1Rom _rom, OverworldMap _overworldMap, string _name)
 		{
 			rom = _rom;
@@ -134,6 +136,15 @@ namespace FF1Lib
 			var data = LoadJson("default");
 
 			return new ShipLocations(new OwLocationData(_rom), data.ShipLocations);
+		}
+
+		public void SetAirshipLocation(SCCoords coords)
+		{
+			locations.LoadData();
+
+			locations.AirShipLocation = coords;
+
+			locations.StoreData();
 		}
 	}
 }
