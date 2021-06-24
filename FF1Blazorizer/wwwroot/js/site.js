@@ -116,28 +116,25 @@ function getScreenRightEdge() {
 
 let newWorker;
 Blazor.start({}).then(() => {
-        if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('/service-worker.js').then(reg => {
-                        console.debug('service worker registered');
-                        reg.addEventListener('updatefound', () => {
-                                console.debug('New update found');
-                                newWorker = reg.installing;
-                                newWorker.addEventListener('statechange', () => {
-                                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                                                console.debug('Showing update notification');
-                                                DotNet.invokeMethod('FF1Blazorizer', 'ShowUpdateNotification');
-                                        }
-                                });
-                        });
-                });
+    var oReq = new XMLHttpRequest();
+    oReq.responseType = 'text';
 
-                let refreshing;
-                navigator.serviceWorker.addEventListener('controllerchange', function () {
-                        if (refreshing) return;
-                        window.location.reload();
-                        refreshing = true;
-                });
+    oReq.onload = function () {
+    if (oReq.readyState === oReq.DONE) {
+        if (oReq.status === 200) {
+            var version = oReq.responseText;
+            if (!document.location.hostname.startsWith(version + ".")) {
+                DotNet.invokeMethod('FF1Blazorizer', 'ShowUpdateNotification', 'https://'+version+'.finalfantasyrandomizer.com');
+            }
         }
+    }
+    };
+    if (document.location.hostname.startsWith("beta-")) {
+        oReq.open("GET", "https://beta.finalfantasyrandomizer.com/version");
+    } else {
+        oReq.open("GET", "https://finalfantasyrandomizer.com/version");
+    }
+    oReq.send();
 })
 
 
