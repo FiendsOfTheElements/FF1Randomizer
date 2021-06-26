@@ -1,5 +1,5 @@
 ﻿@inject IJSRuntime JSRuntime;
-<a class="update-notification" style=@css href="@newlink">New Version Available, Click Here</a>
+<a class="update-notification" style=@css href="@newlink" @onclick=@UpdateServiceWorkerNow>New Version Available, Click Here</a>
 
 @code {
     private static Action<string> action;
@@ -9,8 +9,17 @@
     private void showNotification(string url)
     {
         css = "visibility: visible";
-	newlink = url;
+	if (url != "reload") {
+	  newlink = url;
+	}
         StateHasChanged();
+    }
+
+    private async Task UpdateServiceWorkerNow()
+    {
+        if (newlink == "") {
+          await JSRuntime.InvokeVoidAsync("updateServiceWorkerNow");
+	}
     }
 
     protected override void OnInitialized()

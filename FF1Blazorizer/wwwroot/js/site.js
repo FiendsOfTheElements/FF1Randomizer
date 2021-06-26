@@ -116,6 +116,23 @@ function getScreenRightEdge() {
 
 let newWorker;
 Blazor.start({}).then(() => {
+        if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/service-worker.js').then(reg => {
+                        console.debug('service worker registered');
+                        reg.addEventListener('updatefound', () => {
+                                console.debug('New update found');
+                                newWorker = reg.installing;
+                                newWorker.addEventListener('statechange', () => {
+                                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                                console.debug('Showing update notification');
+                                            DotNet.invokeMethod('FF1Blazorizer', 'ShowUpdateNotification', 'reload');
+                                        }
+                                });
+                        });
+                });
+        }
+
+
     var oReq = new XMLHttpRequest();
     oReq.responseType = 'text';
 
