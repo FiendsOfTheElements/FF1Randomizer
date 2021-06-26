@@ -7,7 +7,7 @@ sed -i "s|BRANCH|${CIRCLE_BRANCH}|" FF1Lib/FFRVersion.cs
 
 cd FF1Blazorizer
 
-if [ "$branch" = "master" ]; then
+if [ "${CIRCLE_BRANCH}" = "master" ]; then
     version=$(grep " Version.*" /root/ff1randomizer/FF1Lib/FFRVersion.cs | grep -Eo "[0-9\.]+" | tr '.' '-')
 else
     version=beta-$(echo "$CIRCLE_SHA1" | cut -c1-8)
