@@ -139,17 +139,17 @@ Blazor.start({}).then(() => {
     oReq.onload = function () {
     if (oReq.readyState === oReq.DONE) {
         if (oReq.status === 200) {
-            var version = oReq.responseText;
+            var version = oReq.responseText.trim();
             if (!document.location.hostname.startsWith(version + ".")) {
                 DotNet.invokeMethod('FF1Blazorizer', 'ShowUpdateNotification', 'https://'+version+'.finalfantasyrandomizer.com');
             }
         }
     }
     };
-    if (document.location.hostname.startsWith("beta-")) {
-        oReq.open("GET", "https://beta.finalfantasyrandomizer.com/version");
-    } else {
+    if (document.location.hostname.match(/\d+-\d+-\d+\.finalfantasyrandomizer\.com/)) {
         oReq.open("GET", "https://finalfantasyrandomizer.com/version");
+    } else {
+        oReq.open("GET", "https://beta.finalfantasyrandomizer.com/version");
     }
     oReq.send();
 })
