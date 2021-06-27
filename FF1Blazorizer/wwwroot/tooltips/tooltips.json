@@ -26,8 +26,8 @@
 	{
 		"Id": "enemyObfuscation",
 		"title": "Enemy Obfuscation",
-		"screenshot": null,
-		"description": "Imp disguises all enemies as various IMPs.\nImp (inc. Fiends and Chaos) also disguised Fiends and Chaos."
+		"screenshot": "enemyObfuscation.png",
+		"description": "Obfuscates enemies' identity.\n\nImp: Disguises all enemies as various IMPs.\n\nImp (inc. Fiends and Chaos): Disguises all enemies, including the Fiends and Chaos, as IMPs."
 	},
 	{
 		"Id": "cropScreen",
@@ -36,16 +36,10 @@
 		"description": "Gives the Load/New Game and Party Selection a discernible background color to make life easier for restreamers."
 	},
 	{
-		"Id": "enemyObfuscation",
-		"title": "Enemy Obfuscation",
-		"screenshot": null,
-		"description": "Imp disguises all enemies as various IMPs."
-	},
-	{
 		"Id": "spellNameMadness",
 		"title": "Spell Name Obfuscation",
-		"screenshot": null,
-		"description": "Mixed Up shuffles spell names. Madness creates random codewords. Go and pull your hairs out."
+		"screenshot": "spellNameMadness.png",
+		"description": "Obfuscates spells.\n\nMixed Up: Shuffles spell names.\n\nMadness: Creates random codewords."
 	},
 	{
 		"Id": "exlegendaryWeaponShopCheckBox",
@@ -1475,8 +1469,8 @@
 	{
 		"Id": "chestInfoCheckBox",
 		"title": "Chest Information",
-		"screenshot": null,
-		"description": "Shows the Shop Information when opening treasure chests."
+		"screenshot": "chestInfoCheckBox.png",
+		"description": "Shows a description of weapons and armors when opening chests."
 	},
 	{
 		"Id": "incentiveChestItemsFanfareCheckBox",
@@ -1854,5 +1848,16 @@
 		"title": "Thief Lockpicking",
 		"screenshot": null,
 		"description": "Having a thief in the party, when they reach the required level, allows players to open all locked doors. (Selecting level 1 will allow opening of locked doors always.)\n\n Enabling this flag also adds a -10 level requirement bonus and a +10 level requirement malus to blursed classes."
+	},
+	{
+		"Id": "sanityCheckerV2",
+		"title": "Sanity Checker V2",
+		"description": "Alternative item placement engine that allows the randomizer to accept more complex map changes."
+	},
+	{
+		"Id": "owMapExchange",
+		"title": "Overworld Map",
+		"screenshot": "owMapExchange.png",
+		"description": "Alternative Overworld Maps.\n\nMelmond Start: Coneria Castle, Coneria and the Temple of Fiends are on the Melmond continent and a river links it to the Dwarf's Cave region.\n\nElfland Start: Coneria Castle, Coneria and the Temple of Fiends are at Elfland's location and the Dwarf's Cave is cut off from the Coneria region.\n\nCrescent Start: Coneria Castle, Coneria, the Temple of Fiends and the Marsh Cave are at Crescent Lake's location.\n\nNo Overworld: Removes the Overworld completely and connects all locations in a single dungeon.\n\nRandom: Selects at random one of the alternative start maps (exclude No Overworld)."
 	}
 ]
