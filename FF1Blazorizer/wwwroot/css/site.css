@@ -4,7 +4,7 @@
 /* @import url('main.css');*/
 @import url('slider.css');
 @import url('mainmenu.css');
-    
+
 
 html, body {
     all: unset;
@@ -51,6 +51,7 @@ input {
 }
 */
 .update-notification {
+    color: #FFFFFF;
     background-color: #30bb6b;
     border-radius: 15px;
     position: fixed;
@@ -61,6 +62,11 @@ input {
     font-size: 1rem;
     font-weight: bold;
     z-index: 101;
+    text-decoration-line: none;
+}
+
+a.update-notification:visited {
+    color: #FFFFFF;
 }
 
 .update-notification:hover {
@@ -156,7 +162,7 @@ h1 {
     .main .top-row {
         display: none;
     }
-     
+
 }
 
 
@@ -429,7 +435,7 @@ tr.bottom-borderd {
 }
 
 .job.fighter {
-    background-image: url("/images/classes/fighter.png");   
+    background-image: url("/images/classes/fighter.png");
 }
 
 .job.thief {
@@ -453,7 +459,7 @@ tr.bottom-borderd {
 }
 
 .job.knight {
-    background-image: url("/images/classes/knight.png");   
+    background-image: url("/images/classes/knight.png");
 }
 
 .job.ninja {

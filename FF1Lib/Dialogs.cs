@@ -1478,11 +1478,12 @@ namespace FF1Lib
 		List<MagicSpell> spellList = GetSpells();
 		var enemies = GetAllEnemyStats();
 		var scriptBytes = Get(ScriptOffset, ScriptSize * ScriptCount).Chunk(ScriptSize);
-		var bosses = new[] { new { name = "Lich", index = Enemy.Lich2, dialog=0x4D },
-				     new { name = "Kary", index = Enemy.Kary2, dialog=0x4E },
-				     new { name = "Kraken", index = Enemy.Kraken2, dialog=0x4F },
-				     new { name = "Tiamat", index = Enemy.Tiamat2, dialog=0xDB },
-				     new { name = "Chaos", index = Enemy.Chaos, dialog=0x51 },
+		var enemyText = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
+		var bosses = new[] { new { index = Enemy.Lich2, dialog=0x4D },
+				     new { index = Enemy.Kary2, dialog=0x4E },
+				     new { index = Enemy.Kraken2, dialog=0x4F },
+				     new { index = Enemy.Tiamat2, dialog=0xDB },
+				     new { index = Enemy.Chaos, dialog=0x51 },
 		};
 
 		var skillNames = ReadText(EnemySkillTextPointerOffset, EnemySkillTextPointerBase, EnemySkillCount);
@@ -1572,6 +1573,15 @@ namespace FF1Lib
 		    var scriptIndex = enemy[EnemyStat.Scripts];
 		    var spells = scriptBytes[scriptIndex].SubBlob(2, 8).ToBytes().Where(b => b != 0xFF).ToList();
 		    var skills = scriptBytes[scriptIndex].SubBlob(11, 4).ToBytes().Where(b => b != 0xFF).ToList();
+		    string enemyName;
+		    if (b.index == Enemy.Chaos) {
+			enemyName = enemyText[b.index];
+		    } else {
+			// alt fiends puts the name in the fiend1 spot
+			// but does not duplicate it in the fiend2
+			// spot.
+			enemyName = enemyText[b.index-1];
+		    }
 
 		    var bossStats = new[] {
 			new { name="HP", ranges=hpRanges, descriptions=hpDescriptions, bossvalue=hp },
@@ -1627,7 +1637,7 @@ namespace FF1Lib
 			    }
 			    skillscript += skillNames[s];
 			}
-			dialogtext = $"{b.name} {hp,4} HP\n"+
+			dialogtext = $"{enemyName} {hp,4} HP\n"+
 			    $"Attack  {enemy[EnemyStat.HitPercent],3}% +{enemy[EnemyStat.Strength],3} x{enemy[EnemyStat.Hits],2}\n"+
 			    $"Defense {enemy[EnemyStat.Evade],3     }% -{enemy[EnemyStat.Defense],3}\n"+
 			    $"{spellscript}\n"+
@@ -1642,7 +1652,7 @@ namespace FF1Lib
 			for (int i = 0; i < bossStats.Length; i++) {
 			    var bs = bossStats[i];
 			    string desc;
-			    if (i == 0 && b.name == "Chaos") {
+			    if (i == 0 && b.index == Enemy.Chaos) {
 				// Chaos has a lot more HP than the
 				// other fiends adjust it down a bit
 				// so the hints make more sense.
@@ -1688,7 +1698,7 @@ namespace FF1Lib
 				}
 				dialogtext += $"and {lines[lines.Count-1]}";
 			    }
-			    dialogtext = $"{intros[chooseIntro]} {b.name} {dialogtext}.";
+			    dialogtext = $"{intros[chooseIntro]} {enemyName} {dialogtext}.";
 			    dialogtext = FormatText(dialogtext, 24, 99);
 			    countlines = dialogtext.Count(f => f == '\n');
 			} while(countlines > 6);
@@ -1696,11 +1706,11 @@ namespace FF1Lib
 			intros.RemoveAt(chooseIntro); // so each bat will get a different intro.
 		    }
 		    else if (flags.SkyWarriorSpoilerBats == SpoilerBatHints.Stars) {
-			dialogtext = $"Scouting report, {b.name}";
+			dialogtext = $"Scouting report, {enemyName}";
 			for (int i = 0; i < bossStats.Length; i++) {
 			    var bs = bossStats[i];
 			    int threat;
-			    if (i == 0 && b.name == "Chaos") {
+			    if (i == 0 && b.index == Enemy.Chaos) {
 				// Chaos has a lot more HP than the
 				// other fiends adjust it down a bit
 				// so the hints make more sense.

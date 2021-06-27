@@ -84,7 +84,7 @@ namespace FF1Lib
 			Put(0x39D25, Enumerable.Repeat((byte)0xEA, 14).ToArray());
 		}
 
-		private enum FF1Class
+		public enum FF1Class
 		{
 			Fighter = 0,
 			Thief = 1,
@@ -330,23 +330,26 @@ namespace FF1Lib
 			Put(0x39A74, nops);
 		}
 
-		public void EnableSpeedHacks()
+		public void EnableSpeedHacks(Preferences preferences)
 		{
-			// Screen wipe
-			Data[0x7D6EE] = 0x08; // These two values must evenly divide 224 (0xE0), default are 2 and 4
-			Data[0x7D6F5] = 0x10;
-			Data[0x7D713] = 0x0A; // These two values must evenly divide 220 (0xDC), default are 2 and 4
-			Data[0x7D71A] = 0x14; // Don't ask me why they aren't the same, it's the number of scanlines to stop the loop at
+			if (!preferences.OptOutSpeedHackWipes)
+			{
+				// Screen wipe
+				Data[0x7D6EE] = 0x08; // These two values must evenly divide 224 (0xE0), default are 2 and 4
+				Data[0x7D6F5] = 0x10;
+				Data[0x7D713] = 0x0A; // These two values must evenly divide 220 (0xDC), default are 2 and 4
+				Data[0x7D71A] = 0x14; // Don't ask me why they aren't the same, it's the number of scanlines to stop the loop at
 
-			// Dialogue boxes
-			Data[0x7D620] = 0x0B; // These two values must evenly divide 88 (0x58), the size of the dialogue box
-			Data[0x7D699] = 0x0B;
+				// Dialogue boxes
+				Data[0x7D620] = 0x0B; // These two values must evenly divide 88 (0x58), the size of the dialogue box
+				Data[0x7D699] = 0x0B;
 
-			// Battle entry
-			Data[0x7D90A] = 0x11; // This can be just about anything, default is 0x41, sfx lasts for 0x20
+				// Battle entry
+				Data[0x7D90A] = 0x11; // This can be just about anything, default is 0x41, sfx lasts for 0x20
 
-			// All kinds of palette cycling
-			Data[0x7D955] = 0x00; // This value is ANDed with a counter, 0x03 is default, 0x01 is double speed, 0x00 is quadruple
+				// All kinds of palette cycling
+				Data[0x7D955] = 0x00; // This value is ANDed with a counter, 0x03 is default, 0x01 is double speed, 0x00 is quadruple
+			}
 
 			// Battle
 			Data[0x31ECE] = 0x60; // Double character animation speed
@@ -356,10 +359,13 @@ namespace FF1Lib
 			Data[0x33CCD] = 0x04; // Explosion effect count (small enemies), default 8
 			Data[0x33DAA] = 0x04; // Explosion effect count (mixed enemies), default 15
 
+			var drawinframes = preferences.OptOutSpeedHackMessages ? "0C" : BattleBoxDrawInFrames;
+			var undrawframes = preferences.OptOutSpeedHackMessages ? "06" : BattleBoxUndrawFrames;
+
 			// Draw and Undraw Battle Boxes faster
 			Put(0x2DA12, Blob.FromHex("3020181008040201")); // More practical Respond Rates
-			Put(0x7F4AA, Blob.FromHex($"ADFC6048A90F2003FE20008AA9{BattleBoxDrawInFrames}8517A90F2003FE20208A2085F4C617D0F1682003FE60"));
-			Put(0x7F4FF, Blob.FromHex($"ADFC6048A90F2003FE20808AA9{BattleBoxUndrawFrames}8517A90F2003FE20A08A2085F4C617D0F1682003FE60"));
+			Put(0x7F4AA, Blob.FromHex($"ADFC6048A90F2003FE20008AA9{drawinframes}8517A90F2003FE20208A2085F4C617D0F1682003FE60"));
+			Put(0x7F4FF, Blob.FromHex($"ADFC6048A90F2003FE20808AA9{undrawframes}8517A90F2003FE20A08A2085F4C617D0F1682003FE60"));
 
 			// Gain multiple levels at once.
 			//Put(0x2DD82, Blob.FromHex("20789f20579f48a5802907c907f008a58029f0690785806820019c4ce89b")); old
@@ -367,10 +373,12 @@ namespace FF1Lib
 			// Skip stat up messages
 			PutInBank(0x1B, 0x89F0, Blob.FromHex("4CE38B"));
 
+			var responserate = preferences.OptOutSpeedHackMessages ? (byte)0x04 : (byte)0x07;
+
 			// Default Response Rate 8 (0-based)
-			Data[0x384CB] = 0x07; // Initialize respondrate to 7
+			Data[0x384CB] = responserate; // Initialize respondrate to 7
 			Put(0x3A153, Blob.FromHex("4CF0BF")); // Replace reset respond rate with a JMP to...
-			Put(0x3BFF0, Blob.FromHex("A90785FA60")); // Set respondrate to 7
+			Put(0x3BFF0, Blob.FromHex($"A9{responserate.ToString("00")}85FA60")); // Set respondrate to 7
 
 			// Faster Lineup Modifications
 			var animationOffsets = new List<int> { 0x39AA0, 0x39AB4, 0x39B10, 0x39B17, 0x39B20, 0x39B27 };
@@ -413,39 +421,46 @@ namespace FF1Lib
 			InsertDialogs(0xF1, "Can't hold\n#");
 		}
 
-		public void EnableDash(bool speedboat)
+		public void EnableDash(bool speedboat,  bool slowMapMove)
 		{
-		    if (speedboat) {
-			// walking, canoe are speed 2
-			// ship, airship are speed 4
-			//
-			// See asm/1F_D077_Speedboat.asm
-			//
-			PutInBank(0x1F, 0xD077, Blob.FromHex(
-				      "A5424AB0014AA902B0010A242050014A853460"));
-		    }
-		    else {
-			// walking, canoe, and boat are speed 2
-			// airship is speed 4
-			//
-			// disassembly
-			//
-			// D077   A5 42      LDA $42     ; load vehicle
-			// D079   4A         LSR A       ; shift right, if on foot (A=$01), this sets Zero, oVerflow and Carry, and set A=$00
-			// D07A   69 00      ADC #$00    ; add zero, if Carry is set, this sets A=$01 and clears Z, V, and C
-			// D07C   4A         LSR A       ; shift right again, if on foot (A=$01), this sets Zero and Carry, and sets A=$00
-			// D07D   69 00      ADC #$00    ; add zero, if Carry is set, this sets A=$01 and clears Z, V, and C
-			// D07F   0A         ASL A       ; shift left, this turns A=$01 to A=$02
-			// D080   24 20      BIT $20     ; check joystick state: set Z if bit 5 is not set, V if bit 6 is set, N if bit 7 is set
-			// D082   50 01      BVC $D085   ; branch if V is clear (I guess that means bit 6 is B button)
-			// D084   4A         LSR A       ; V was set, which means B was pressed, so shift right (this cuts the speed in half)
-			// D085   85 34      STA $34     ; store movement speed; walking/canoe/ship is 2 and airship is 4
-			// D087   60         RTS         ; return
-			// D088   34                     ; leftover garbage
-			// D089   60                     ; leftover garbage
+			if (slowMapMove)
+			{
+				//same as dash, but BVS instead of BVC
+				PutInBank(0x1F, 0xD077, Blob.FromHex("A5424A69004A69000A242070014A853460"));
+			}
+			else if (speedboat)
+			{
+				// walking, canoe are speed 2
+				// ship, airship are speed 4
+				//
+				// See asm/1F_D077_Speedboat.asm
+				//
+				PutInBank(0x1F, 0xD077, Blob.FromHex(
+						  "A5424AB0014AA902B0010A242050014A853460"));
+			}
+			else
+			{
+				// walking, canoe, and boat are speed 2
+				// airship is speed 4
+				//
+				// disassembly
+				//
+				// D077   A5 42      LDA $42     ; load vehicle
+				// D079   4A         LSR A       ; shift right, if on foot (A=$01), this sets Zero, oVerflow and Carry, and set A=$00
+				// D07A   69 00      ADC #$00    ; add zero, if Carry is set, this sets A=$01 and clears Z, V, and C
+				// D07C   4A         LSR A       ; shift right again, if on foot (A=$01), this sets Zero and Carry, and sets A=$00
+				// D07D   69 00      ADC #$00    ; add zero, if Carry is set, this sets A=$01 and clears Z, V, and C
+				// D07F   0A         ASL A       ; shift left, this turns A=$01 to A=$02
+				// D080   24 20      BIT $20     ; check joystick state: set Z if bit 5 is not set, V if bit 6 is set, N if bit 7 is set
+				// D082   50 01      BVC $D085   ; branch if V is clear (I guess that means bit 6 is B button)
+				// D084   4A         LSR A       ; V was set, which means B was pressed, so shift right (this cuts the speed in half)
+				// D085   85 34      STA $34     ; store movement speed; walking/canoe/ship is 2 and airship is 4
+				// D087   60         RTS         ; return
+				// D088   34                     ; leftover garbage
+				// D089   60                     ; leftover garbage
 
-			PutInBank(0x1F, 0xD077, Blob.FromHex("A5424A69004A69000A242050014A853460"));
-		    }
+				PutInBank(0x1F, 0xD077, Blob.FromHex("A5424A69004A69000A242050014A853460"));
+			}
 		}
 
 		public void EnableBuyTen()
@@ -485,8 +500,11 @@ namespace FF1Lib
 			// Since we want to spawn inside with No Overworld and not at transport, update coordinate to Coneria Castle
 			if (flags.OwMapExchange == OwMapExchanges.NoOverworld)
 			{
-				saveondeath_standardmid = "AD0460F00AA9998D0560A9A58D0660AD0060F00AA9988D0160A9A98D0260A9928D1060A9988D1160EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA";
-				saveondeath_dwmodemid = "AD0460F00AA9998D0560A9A58D0660AD0060F00AA9988D0160A9A98D0260A9928D1060A9988D11604E1E606E1D606E1C60EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA";
+				var coneria_x = GetFromBank(0x0E, 0x9DC0+0x08, 1)[0];
+				var coneria_y = GetFromBank(0x0E, 0x9DD0+0x08, 1)[0];
+
+				saveondeath_standardmid = "EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA";
+				saveondeath_dwmodemid = $"AD0460F00AA9998D0560A9A58D0660AD0060F00AA9988D0160A9A98D0260A9{coneria_x:X2}8D1060A9{coneria_y:X2}8D11604E1E606E1D606E1C60EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA";
 			}
 			var saveondeath = saveondeath_part1 + (flags.SaveGameDWMode ? saveondeath_dwmodemid : saveondeath_standardmid) + saveondeath_part2;
 
@@ -1401,7 +1419,7 @@ namespace FF1Lib
 			// Patch in the magic menu loop to add spell info
 			PutInBank(0x0E, 0xAECD, Blob.FromHex("4C2691EA"));
 			// the UpgradedEquipMenu and UpgradedMagicMenu code that the above patches jump to
-			PutInBank(0x0E, 0x90E0, Blob.FromHex("A525D007A522D0044C93BB60A662BD0003F030297FA466C018D005691A4C029169428514203CC4205E9620F9BCA520C561F0F7A9008D0120853720F3BD2083B720DAEC4C93BBA525D007A522D0044CD1AE60A9018537A5664A6A6A0562AA0A29387D00631869AF8514205E962080B72025B6A9008D01208537857F20029CA56248206DBA688562A90720EFB8A9292059B92080B74CD1AE"));
+			PutInBank(0x0E, 0x90E0, Blob.FromHex("A525D007A522D0044C93BB60A662BD0003F030297FA466C018D005691A4C029169428514203CC4205E9620F9BCA520C561F0F7A9008D0120853720F3BD2083B720DAEC4C93BBA525D007A522D0044CD1AE60A9018537A5664A6A6A0562AA0A2938187D00631869AF8514205E962080B72025B6A9008D01208537857F20029CA56248206DBA688562A90720EFB8A9292059B92080B74CD1AE"));
 
 			// Modify DrawComplexString, this sets control code 14-19 to use a new words table in bank 11
 			//  could be used to move some stuff in items name table and make some space
@@ -2326,6 +2344,15 @@ namespace FF1Lib
 			maxLevel = maxLevel - 1;
 			//new level up check is at 0x6C46F
 			Put(0x6C46F, new byte[] { (byte)maxLevel });
+		}
+
+		public void ActivateCropScreen()
+		{
+			PutInBank(0x0E, 0xA222, Blob.FromHex("20D0A0"));
+			PutInBank(0x0E, 0xA0D0, Blob.FromHex("2006E9A9038DD00360"));
+
+			PutInBank(0x1F, 0xE8FD, Blob.FromHex("4CE0DD"));
+			PutInBank(0x1F, 0xDDE0, Blob.FromHex("20B9EAA9038DD00360"));
 		}
 	}
 }

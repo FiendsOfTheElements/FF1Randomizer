@@ -54,7 +54,7 @@ namespace FF1Lib
 		{
 			StoreCoords(0x3000 + UnsramIndex.OverworldScrollX, StartingLocation);
 			StoreCoords2(0x3000 + UnsramIndex.ShipX, ShipLocation);
-			//StoreCoords2(0x3000 + UnsramIndex.AirshipX, AirShipLocation);
+			StoreCoords2(0x3000 + UnsramIndex.AirshipX, AirShipLocation);
 			//StoreCoords2(0x3000 + UnsramIndex.BridgeX, BridgeLocation);
 			//StoreCoords2(0x3000 + UnsramIndex.CanalX, CanalLocation);
 		}

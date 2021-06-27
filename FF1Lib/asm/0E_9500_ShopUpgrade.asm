@@ -457,6 +457,7 @@ UpgradedMagicMenu:
 
     ASL A                  ; double A and mask out the level bits
     AND #$38               ;  this effectively makes A the spell level * 8
+    CLC                    ; clear carry (necessary because characters 3 and 4 will have bit 7 shifted into carry)
 
     ADC ch_spells, X       ; then add the selected spell on this level
     CLC                    ; and add the spell start constant - 1 (-1 because 0 is not a spell)

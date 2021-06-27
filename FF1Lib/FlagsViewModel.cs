@@ -44,6 +44,8 @@ namespace FF1Lib
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
 		}
 
+		public (string name, Flags flags, IEnumerable<string> log) FromJson(string json) => Flags.FromJson(json);
+
 		// At least this trick saves us from having to declare backing fields, and having to write a conversion from FlagsViewModel to Flags.
 		private Flags _flags;
 		public Flags Flags
@@ -549,6 +551,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ShortToFR"));
 			}
 		}
+		public bool? ChaosFloorEncounters
+		{
+			get => Flags.ChaosFloorEncounters;
+			set
+			{
+				Flags.ChaosFloorEncounters = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ChaosFloorEncounters"));
+			}
+		}
 		public bool? ExitToFR
 		{
 			get => Flags.ExitToFR;
@@ -556,15 +567,6 @@ namespace FF1Lib
 			{
 				Flags.ExitToFR = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ExitToFR"));
-			}
-		}
-		public bool? LutePlateInShortToFR
-		{
-			get => Flags.LutePlateInShortToFR;
-			set
-			{
-				Flags.LutePlateInShortToFR = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("LutePlateInShortToFR"));
 			}
 		}
 		public bool? PreserveFiendRefights
@@ -1174,7 +1176,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EarlyOrdeals"));
 			}
 		}
-		public bool ChaosRush
+		public bool? ChaosRush
 		{
 			get => Flags.ChaosRush;
 			set
@@ -4190,6 +4192,56 @@ namespace FF1Lib
 			}
 		}
 
+		public bool ExclusiveLegendaryWeaponShop
+		{
+			get => Flags.ExclusiveLegendaryWeaponShop;
+			set
+			{
+				Flags.ExclusiveLegendaryWeaponShop = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool ExclusiveLegendaryArmorShop
+		{
+			get => Flags.ExclusiveLegendaryArmorShop;
+			set
+			{
+				Flags.ExclusiveLegendaryArmorShop = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool ExclusiveLegendaryWhiteShop
+		{
+			get => Flags.ExclusiveLegendaryWhiteShop;
+			set
+			{
+				Flags.ExclusiveLegendaryWhiteShop = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool ExclusiveLegendaryBlackShop
+		{
+			get => Flags.ExclusiveLegendaryBlackShop;
+			set
+			{
+				Flags.ExclusiveLegendaryBlackShop = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool ExclusiveLegendaryItemShop
+		{
+			get => Flags.ExclusiveLegendaryItemShop;
+			set
+			{
+				Flags.ExclusiveLegendaryItemShop = value;
+				RaisePropertyChanged();
+			}
+		}
+
 		public bool NonesGainXP
 		{
 			get => Flags.NonesGainXP;
@@ -4416,6 +4468,36 @@ namespace FF1Lib
 				RaisePropertyChanged();
 			}
 		}
+		
+		public bool? Lockpicking
+		{
+			get => Flags.Lockpicking;
+			set
+			{
+				Flags.Lockpicking = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public int LockpickingLevelRequirement
+		{
+			get => Flags.LockpickingLevelRequirement;
+			set
+			{
+				Flags.LockpickingLevelRequirement = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool CropScreen
+		{
+			get => Preferences.CropScreen;
+			set
+			{
+				Preferences.CropScreen = value;
+				RaisePropertyChanged();
+			}
+		}
 
 		public int ExpChestConversionMin
 		{
@@ -4620,5 +4702,34 @@ namespace FF1Lib
 		}
 
 		#endregion
+
+		public bool OptOutSpeedHackWipes
+		{
+			get => Preferences.OptOutSpeedHackWipes;
+			set
+			{
+				Preferences.OptOutSpeedHackWipes = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool OptOutSpeedHackMessages
+		{
+			get => Preferences.OptOutSpeedHackMessages;
+			set
+			{
+				Preferences.OptOutSpeedHackMessages = value;
+				RaisePropertyChanged();
+			}
+		}
+		public bool OptOutSpeedHackDash
+		{
+			get => Preferences.OptOutSpeedHackDash;
+			set
+			{
+				Preferences.OptOutSpeedHackDash = value;
+				RaisePropertyChanged();
+			}
+		}
 	}
 }

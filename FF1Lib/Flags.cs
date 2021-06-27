@@ -160,10 +160,10 @@ namespace FF1Lib
 		public bool ShardHunt { get; set; } = false;
 		public ShardCount ShardCount { get; set; } = ShardCount.Count16;
 		public FinalFormation TransformFinalFormation { get; set; } = FinalFormation.None;
-		public bool ChaosRush { get; set; } = false;
+		public bool? ChaosRush { get; set; } = false;
 		public bool? ShortToFR { get; set; } = false;
 		public bool? ExitToFR { get; set; } = false;
-		public bool? LutePlateInShortToFR { get; set; } = false;
+		public bool? ChaosFloorEncounters { get; set; } = false;
 		public bool? PreserveFiendRefights { get; set; } = false;
 		public bool? PreserveAllFiendRefights { get; set; } = false;
 
@@ -562,6 +562,12 @@ namespace FF1Lib
 		public bool? LegendaryWhiteShop { get; set; } = false;
 		public bool? LegendaryItemShop { get; set; } = false;
 
+		public bool ExclusiveLegendaryWeaponShop { get; set; } = false;
+		public bool ExclusiveLegendaryArmorShop { get; set; } = false;
+		public bool ExclusiveLegendaryBlackShop { get; set; } = false;
+		public bool ExclusiveLegendaryWhiteShop { get; set; } = false;
+		public bool ExclusiveLegendaryItemShop { get; set; } = false;
+
 		[IntegerFlag(0, 4)]
 		public int RandomizeClassMaxBonus { get; set; } = 2;
 
@@ -595,6 +601,11 @@ namespace FF1Lib
 		public EvadeCapValues EvadeCap { get; set; } = EvadeCapValues.medium;
 
 		public bool? AllowUnsafeStartArea { get; set; } = false;
+
+		public bool? Lockpicking { get; set; } = false;
+
+		[IntegerFlag(1, 50)]
+		public int LockpickingLevelRequirement { get; set; } = 10;
 
 		public bool? EarlierRuby { get; set; } = false;
 		public bool? GuaranteedRuseItem { get; set; } = false;
@@ -784,7 +795,8 @@ namespace FF1Lib
 			+ ((IncentivizeConeria ?? false) ? 1 : 0)
 			+ ((IncentivizeMarshKeyLocked ?? false) ? 1 : 0)
 			+ ((IncentivizeTitansTrove ?? false) ? 1 : 0)
-			+ ((IncentivizeSkyPalace ?? false) ? 1 : 0);
+			+ ((IncentivizeSkyPalace ?? false) ? 1 : 0)
+			+ ((IncentivizeCardia ?? false) ? 1 : 0);
 
 
 		public int IncentivizedLocationCountMax => 0
@@ -799,7 +811,8 @@ namespace FF1Lib
 			+ ((IncentivizeConeria ?? true) ? 1 : 0)
 			+ ((IncentivizeMarshKeyLocked ?? true) ? 1 : 0)
 			+ ((IncentivizeTitansTrove ?? true) ? 1 : 0)
-			+ ((IncentivizeSkyPalace ?? true) ? 1 : 0);
+			+ ((IncentivizeSkyPalace ?? true) ? 1 : 0)
+			+ ((IncentivizeCardia ?? true) ? 1 : 0);
 
 
 		private static bool ConvertTriState(bool? tristate, MT19337 rng)
@@ -998,12 +1011,150 @@ namespace FF1Lib
 			return sum;
 		}
 
+		
 		public class Preset
 		{
 			public string Name { get; set; }
 			public Flags Flags { get; set; }
 		}
 
-		public static Flags FromJson(string json) => JsonConvert.DeserializeObject<Preset>(json).Flags;
+		//public static Flags FromJson(string json) => JsonConvert.DeserializeObject<Preset>(json).Flags;
+
+		public class Preset2
+		{
+			public string Name { get; set; }
+			public Dictionary<string, object> Flags { get; set; }
+		}
+
+		public static (string name, Flags flags, IEnumerable<string> log) FromJson(string json)
+		{
+			var w = new System.Diagnostics.Stopwatch();
+			w.Restart();
+
+			var preset = JsonConvert.DeserializeObject<Preset2>(json);
+			var preset_dic = preset.Flags.ToDictionary(kv => kv.Key.ToLower());
+
+
+			var properties = typeof(Flags).GetProperties(BindingFlags.Instance | BindingFlags.Public);
+			var flagproperties = properties.Where(p => p.CanWrite).OrderBy(p => p.Name).Reverse().ToList();
+
+			List<string> warnings = new List<string>();
+
+			Flags flags = new Flags();
+
+			foreach (var pi in flagproperties)
+			{
+				if (preset_dic.TryGetValue(pi.Name.ToLower(), out var obj))
+				{
+					var result = SetValue(pi, flags, obj.Value);
+
+					if (result != null) warnings.Add(result);
+
+					preset.Flags.Remove(obj.Key);
+				}
+				else
+				{
+					//warnings.Add($"\"{pi.Name}\" was missing in preset and set to default \"{pi.GetValue(flags)}\".");
+				}
+			}
+
+			foreach (var flag in preset.Flags)
+			{
+				warnings.Add($"\"{flag.Key}\" with value \"{flag.Value}\" does not exist and has been discarded.");
+			}
+
+			warnings.Sort();
+
+			w.Stop();
+			return (preset.Name, flags, warnings);
+		}
+
+		private static string SetValue(PropertyInfo p, Flags flags, object obj)
+		{
+			try
+			{
+				if (Nullable.GetUnderlyingType(p.PropertyType) == typeof(bool))
+				{
+					var t = obj == null ? (bool?)null : (bool?)(bool)obj;
+					p.SetValue(flags, t);
+				}
+				else if (p.PropertyType == typeof(bool))
+				{
+					if (obj == null) throw new ArgumentNullException();
+					p.SetValue(flags, obj);
+				}
+				else if (p.PropertyType.IsEnum)
+				{
+					if (obj == null) throw new ArgumentNullException();
+
+					var values = Enum.GetValues(p.PropertyType);
+
+					if (obj is string v)
+					{
+						foreach (var e in values)
+						{
+							if (v.ToLower() == e.ToString().ToLower())
+							{
+								p.SetValue(flags, e);
+								return null;
+							}
+						}
+					}
+					else if (obj is IConvertible)
+					{
+						int v2 = Convert.ToInt32(obj);
+
+						foreach (var e in values)
+						{
+							if (v2 == Convert.ToInt32(e))
+							{
+								p.SetValue(flags, e);
+								return null;
+							}
+						}
+					}
+
+					throw new ArgumentException();
+				}
+				else if (p.PropertyType == typeof(int))
+				{
+					IntegerFlagAttribute ia = p.GetCustomAttribute<IntegerFlagAttribute>();
+					var v3 = Convert.ToInt32(obj);
+
+					p.SetValue(flags, v3);
+
+					if (v3 > ia.Max)
+					{
+						return $"\"{p.Name}\" with value \"{obj}\" exceeds the maximum but will be kept.";
+					}
+					else if (v3 < ia.Min)
+					{
+						return $"\"{p.Name}\" with value \"{obj}\" deceedes the minimum but will be kept.";
+					}
+				}
+				else if (p.PropertyType == typeof(double))
+				{
+					DoubleFlagAttribute da = p.GetCustomAttribute<DoubleFlagAttribute>();
+					var v3 = Convert.ToDouble(obj);
+
+					p.SetValue(flags, v3);
+
+					if (v3 > da.Max)
+					{
+						return $"\"{p.Name}\" with value \"{obj}\" exceeds the maximum but will be kept.";
+					}
+					else if (v3 < da.Min)
+					{
+						return $"\"{p.Name}\" with value \"{obj}\" deceedes the minimum but will be kept.";
+					}
+				}
+			}
+			catch
+			{
+				return $"\"{p.Name}\" with value \"{obj}\" was invalid and set to default \"{p.GetValue(flags)}\".";
+			}
+
+			return null;
+		}
 	}
 }

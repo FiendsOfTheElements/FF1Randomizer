@@ -349,7 +349,17 @@ namespace FF1Lib
 				{
 					if(validroutines.Count == 0)
 					{
-						spellNames[index] = "NULL";
+						var nulls = spellNames.Where(s => s != null && s.StartsWith("NUL")).Count();
+
+						if (nulls == 0)
+						{
+							spellNames[index] = "NULL";
+						}
+						else
+						{
+							spellNames[index] = $"NUL{nulls + 1}";
+						}
+
 						spellMessages[index] = 0x4A;
 						spell[index].routine = 0x00;
 						// if there are no valid routines, the NULL spell is created which does absolutely nothing.  all classes can learn it assuming it fits normal criteria.

@@ -133,6 +133,12 @@ namespace FF1Lib
 			}
 
 			List<byte> encounters = new();
+
+			if (flags.TCFormations == FormationPool.Random)
+			{
+				flags.TCFormations = (FormationPool)Rng.Between(rng, 0, 3);
+			}
+
 			switch (flags.TCFormations)
 			{
 				case FormationPool.AltFormationDist:

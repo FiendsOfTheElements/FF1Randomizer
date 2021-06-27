@@ -9,7 +9,7 @@
 		"Id": "tournamentSafeCheckBox",
 		"title": "Tournament Safe ROM",
 		"screenshot": "tournamentSafeCheckBox.png",
-		"description": "Verifies that the ROM provided is an original Final Fantasy 1 ROM. If the ROM has been modified beyond certain allowances (the sprites for the main heroes on the map and in battle may be changed, as well as the vehicles), a randomized ROM will fail to generate and the site will spit out the following error: -- FAILURE: file has been modified --\n\nThe Damage Tile Flicker and Spellcasting Flash are also disabled, regardless of the preferences selected."
+		"description": "Verifies that the ROM provided is an original Final Fantasy 1 ROM. If the ROM has been modified beyond certain allowances (the sprites for the main heroes on the map and in battle may be changed, as well as the vehicles), a randomized ROM will fail to generate and the site will spit out the following error: -- FAILURE: file has been modified --\n\nThe Damage Tile Flicker and Spellcasting Flash are also disabled, regardless of the preferences selected.\nCrop Fiendly is enabled, regardless of the preferences selected."
 	},
 	{
 		"Id": "spoilersCheckBox",
@@ -38,20 +38,50 @@
 	{
 		"Id": "enemyObfuscation",
 		"title": "Enemy Obfuscation",
-		"screenshot": null,
-		"description": "Imp disguises all enemies as various IMPs.\nImp (inc. Fiends and Chaos) also disguised Fiends and Chaos."
+		"screenshot": "enemyObfuscation.png",
+		"description": "Obfuscates enemies' identity.\n\nImp: Disguises all enemies as various IMPs.\n\nImp (inc. Fiends and Chaos): Disguises all enemies, including the Fiends and Chaos, as IMPs."
 	},
 	{
-		"Id": "enemyObfuscation",
-		"title": "Enemy Obfuscation",
+		"Id": "cropScreen",
+		"title": "Crop Screen",
 		"screenshot": null,
-		"description": "Imp disguises all enemies as various IMPs."
+		"description": "Gives the Load/New Game and Party Selection a discernible background color to make life easier for restreamers."
 	},
 	{
 		"Id": "spellNameMadness",
 		"title": "Spell Name Obfuscation",
+		"screenshot": "spellNameMadness.png",
+		"description": "Obfuscates spells.\n\nMixed Up: Shuffles spell names.\n\nMadness: Creates random codewords."
+	},
+	{
+		"Id": "exlegendaryWeaponShopCheckBox",
+		"title": "Exclusive Legendary Weapon Shop",
 		"screenshot": null,
-		"description": "Mixed Up shuffles spell names. Madness creates random codewords. Go and pull your hairs out."
+		"description": "Removes legendary shop entries from all other shops and treasure chest."
+	},
+	{
+		"Id": "exlegendaryArmorShopCheckBox",
+		"title": "Exclusive Legendary Armor Shop",
+		"screenshot": null,
+		"description": "Removes legendary shop entries from all other shops and treasure chest."
+	},
+	{
+		"Id": "exlegendaryBlackShopCheckBox",
+		"title": "Exclusive Legendary Black Shop",
+		"screenshot": null,
+		"description": "Removes legendary shop entries from all other shops."
+	},
+	{
+		"Id": "exlegendaryWhiteShopCheckBox",
+		"title": "Exclusive Legendary White Shop",
+		"screenshot": null,
+		"description": "Removes legendary shop entries from all other shops."
+	},
+	{
+		"Id": "exlegendaryItemShopCheckBox",
+		"title": "Exclusive Legendary Item Shop",
+		"screenshot": null,
+		"description": "Removes legendary shop entries from all other shops."
 	},
 	{
 		"Id": "startingEquipmentHealStaff",
@@ -98,8 +128,8 @@
 	{
 		"Id": "enableExtConsumables",
 		"title": "New Consumables",
-		"screenshot": null,
-		"description": "Enables new Consumables."
+		"screenshot": "newConsumables.png",
+		"description": "Enables new Consumables\n[grid][r]{i}Item|{i}Effect[r]FCure|Full cure[r]Phnix|Raise dead light warrior (usable in battle!)[r]Smoke|Automatic run from battle[r]Blast|Cast FIR3"
 	},
 	{
 		"Id": "normalShopsHaveExtConsumables",
@@ -178,7 +208,7 @@
 		"Id": "thirdBattlePaletteCheckBox",
 		"title": "Three Battle Palettes",
 		"screenshot": "thirdBattlePaletteCheckBox.png",
-		"description": "Changes the behavior of in-battle color palettes to allow spite edits to use three different palettes instead of the normal two. This is an advanced option that requires the use of external tools such as FFHackster for importing sprites in order to have a noticeable effect.\n Note: While using the \"Three Battle Palettes\" option, some effects on screen maybe cause unintended side effects during play. These are minor, such as characters struck by Stone changing color in battle as spells are cast, but could be confusing if you're not used to these side effects."
+		"description": "Changes the behavior of in-battle color palettes to allow sprite edits to use three different palettes instead of the normal two. This is an advanced option that requires the use of external tools such as FFHackster for importing sprites in order to have a noticeable effect.\n Note: While using the \"Three Battle Palettes\" option, some effects on screen maybe cause unintended side effects during play. These are minor, such as characters struck by Stone changing color in battle as spells are cast, but could be confusing if you're not used to these side effects."
 	},
 	{
 		"Id": "partyMapmanSlot",
@@ -922,7 +952,13 @@
 		"Id": "shortToFRCheckBox",
 		"title": "Shorten ToFR",
 		"screenshot": "shortToFRCheckBox.png",
-		"description": "Shortens the Temple of Fiends Revisited to lead straight to Chaos' Floor. By default, the four Orbs are still required to enter the dungeon and neither the KEY nor the LUTE will be required if this box is checked, unless using other settings that change these requirements."
+		"description": "Shortens the Temple of Fiends Revisited to lead straight to Chaos' Floor. By default, the four Orbs are still required to enter the dungeon.\n Note: Both the KEY and the LUTE will be required if this box is checked, unless using other settings that change these requirements."
+	},
+	{
+		"Id": "chaosFloorEncountersCheckBox",
+		"title": "Chaos Floor Encounters",
+		"screenshot": "chaosFloorEncounters.gif",
+		"description": "Allows enemy encounters to appear on the Chaos floor in the Temple of Fiends Revisited."
 	},
 	{
 		"Id": "preserveFiendRefightsCheckBox",
@@ -1445,8 +1481,8 @@
 	{
 		"Id": "chestInfoCheckBox",
 		"title": "Chest Information",
-		"screenshot": null,
-		"description": "Shows the Shop Information when opening treasure chests."
+		"screenshot": "chestInfoCheckBox.png",
+		"description": "Shows a description of weapons and armors when opening chests."
 	},
 	{
 		"Id": "incentiveChestItemsFanfareCheckBox",
@@ -1818,6 +1854,22 @@
 		"title": "Common weapons can have powers",
 		"screenshot": "weaponizerCommonPower.png",
 		"description": "Common (shop) weapons can have spells or bonuses vs monster types or elemental weaknesses."
+	},
+	{
+		"Id": "Lockpicking",
+		"title": "Thief Lockpicking",
+		"screenshot": null,
+		"description": "Having a thief in the party, when they reach the required level, allows players to open all locked doors. (Selecting level 1 will allow opening of locked doors always.)\n\n Enabling this flag also adds a -10 level requirement bonus and a +10 level requirement malus to blursed classes."
+	},
+	{
+		"Id": "sanityCheckerV2",
+		"title": "Sanity Checker V2",
+		"description": "Alternative item placement engine that allows the randomizer to accept more complex map changes."
+	},
+	{
+		"Id": "owMapExchange",
+		"title": "Overworld Map",
+		"screenshot": "owMapExchange.png",
+		"description": "Alternative Overworld Maps.\n\nMelmond Start: Coneria Castle, Coneria and the Temple of Fiends are on the Melmond continent and a river links it to the Dwarf's Cave region.\n\nElfland Start: Coneria Castle, Coneria and the Temple of Fiends are at Elfland's location and the Dwarf's Cave is cut off from the Coneria region.\n\nCrescent Start: Coneria Castle, Coneria, the Temple of Fiends and the Marsh Cave are at Crescent Lake's location.\n\nNo Overworld: Removes the Overworld completely and connects all locations in a single dungeon.\n\nRandom: Selects at random one of the alternative start maps (exclude No Overworld)."
 	}
-
 ]
