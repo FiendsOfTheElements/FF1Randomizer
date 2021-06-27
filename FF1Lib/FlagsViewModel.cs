@@ -4499,6 +4499,46 @@ namespace FF1Lib
 			}
 		}
 
+		public int ExpChestConversionMin
+		{
+			get => Flags.ExpChestConversionMin;
+			set
+			{
+				Flags.ExpChestConversionMin = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public int ExpChestConversionMax
+		{
+			get => Flags.ExpChestConversionMax;
+			set
+			{
+				Flags.ExpChestConversionMax = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public int ExpChestMinReward
+		{
+			get => Flags.ExpChestMinReward;
+			set
+			{
+				Flags.ExpChestMinReward = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public int ExpChestMaxReward
+		{
+			get => Flags.ExpChestMaxReward;
+			set
+			{
+				Flags.ExpChestMaxReward = value;
+				RaisePropertyChanged();
+			}
+		}
+
 		#region StartingEquipment
 
 		public bool? StartingEquipmentMasamune

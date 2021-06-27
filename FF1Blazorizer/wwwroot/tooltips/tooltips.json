@@ -24,6 +24,18 @@
 		"description": "Hides all flags to create a mystery flagset that can then be distributed. Useful for tournament and challenge race settings.\n This flag cannot be disabled once clicked; you will need to hit the Reset button to restore functionality to the site (and this will, in turn, wipe the hidden flags selected). Make sure to save your flagset before you use this flag."
 	},
 	{
+		"Id": "expChestConversion",
+		"title": "Experience Chest Conversion",
+		"screenshot": null,
+		"description": "How many percent of the gold chest should be converted to experience chests."
+	},
+	{
+		"Id": "expChestReward",
+		"title": "Experience Chest Reward",
+		"screenshot": null,
+		"description": "How much experience an experience chest can give."
+	},
+	{
 		"Id": "enemyObfuscation",
 		"title": "Enemy Obfuscation",
 		"screenshot": "enemyObfuscation.png",
