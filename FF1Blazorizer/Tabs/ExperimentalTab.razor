@@ -1,5 +1,5 @@
 @using FF1Lib;
-
+@inject IJSRuntime JSRuntime
 
 <div id="Beta" class="tabcontent framed-content clearfix @(noTabLayout ? "no-tab" : "") @(IsOpen ? "" : "collapsed")">
 	<h3 class="@(IsOpen ? "" : "h3-collapsed")"><a class="@(noTabLayout ? "collapsible-header" : "")" @onclick="(() => IsOpen = (!noTabLayout || !IsOpen))">Experimental Beta Flags</a></h3>
@@ -8,87 +8,37 @@
 		<p>Test out features from 2000 years in the future - at your own risk!</p>
 		<div class="col1">
 			<h4>Maps</h4>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="gaiaShortcutCheckBox" @bind-Value="Flags.GaiaShortcut">Add Gaia Shortcut</TriStateCheckBox>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="moveGaiaItemShopCheckBox" IsEnabled="@(Flags.GaiaShortcut == true)" @bind-Value="Flags.MoveGaiaItemShop">Move Gaia Item Shop</TriStateCheckBox>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="melmondClinicCheckBox" @bind-Value="Flags.MelmondClinic">Melmondish Hospitality</TriStateCheckBox>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="randomVampAttackCheckBox" @bind-Value="Flags.RandomVampAttack">Vampire Attacks Random Town</TriStateCheckBox>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="randomVampAttackIncludesConeriaCheckBox" IsEnabled="@(Flags.RandomVampAttack != false)" @bind-Value="Flags.RandomVampAttackIncludesConeria">Include Coneria</TriStateCheckBox>
-			<div class="checkbox-cell"></div>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="exitToFRCheckBox" @bind-Value="Flags.ExitToFR">Add ToFR Exit</TriStateCheckBox>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="lutePlateInShortToFRCheckBox" IsEnabled="@(Flags.ShortToFR != false)" @bind-Value="Flags.LutePlateInShortToFR">Include Lute Plate in Short ToFR</TriStateCheckBox>
-			<div class="checkbox-cell"></div>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="bahamutCardiaDockCheckBox" @bind-Value="Flags.MapBahamutCardiaDock">Bahamut Cardia Dock</TriStateCheckBox>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="sanityCheckerV2" @bind-Value="Flags.SanityCheckerV2">Use SanityChecker V2</CheckBox>
+			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="owMapExchange" TItem="OwMapExchanges" IsEnabled="Flags.SanityCheckerV2" @bind-Value="Flags.OwMapExchange">Overworld Map:</EnumDropDown>
 			<div class="checkbox-cell"></div>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="procGenEarth1" @bind-Value="Flags.EFGEarth1">Generated Earth Cave B1</CheckBox>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="procGenEarth2" @bind-Value="Flags.EFGEarth2">Generated Earth Cave B2</CheckBox>
 			<div class="checkbox-cell"></div>
-			<h4>Balance</h4>
-			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="nonesGainXPcheckBox" @bind-Value="Flags.NonesGainXP">Nones Gain XP</CheckBox>
-			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="thiefAgilityBuffCheckBox" @bind-Value="Flags.ThiefAgilityBuff">Thief Agility Buff</CheckBox>
+			<h4>Levels</h4>
 			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="startingLevelDropDown" TItem="StartingLevel" @bind-Value="Flags.StartingLevel">Starting Level:</EnumDropDown>
+			<DoubleSlider UpdateToolTip="@UpdateToolTipID" DoubleCol Id="MaximumLevelDoubleSilder" MinValue="1" MaxValue="50" Step="1" @bind-ValueHigh="Flags.MaxLevelHigh" @bind-ValueLow="Flags.MaxLevelLow">Max Level:</DoubleSlider>
+
 			<div class="checkbox-cell"></div>
-			<h4>Enemies</h4>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="alternateFiendsCheckBox" IsEnabled="@(!Flags.SpookyFlag)" @bind-Value="Flags.AlternateFiends">Alternate Fiends</TriStateCheckBox>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="noBossSkillScriptShuffleCheckBox" IsEnabled="@(Flags.EnemyScripts != false || Flags.EnemySkillsSpells != false)" @bind-Value="Flags.NoBossSkillScriptShuffle">Don't Shuffle Bosses' Scripts, Skills & Spells</TriStateCheckBox>
-			<div class="checkbox-cell"></div>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="fightBahamutCheckBox" IsEnabled="@(Flags.SpookyFlag != true && Flags.RandomizeFormationEnemizer != true)" @bind-Value="Flags.FightBahamut">Fight Bahamut</TriStateCheckBox>
-			<div class="checkbox-cell"></div>
+
+
 		</div>
 		<div class="col2">
-			<h4>Other</h4>
-			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="etherizerCheckBox" IsEnabled="@(Flags.HouseMPRestoration != true && Flags.HousesFillHP != true)" @bind-Value="Flags.Etherizer">Turn Shelters into Ethers</CheckBox>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="LooseExcludePlacedDungeonsCheckBox" IsEnabled="@(Flags.Treasures != false)" @bind-Value="Flags.LooseExcludePlacedDungeons">No Loose Items in Incentivized Dungeons</TriStateCheckBox>
-			<div class="checkbox-cell"></div>
-			<h4>Legendary Shops</h4>
-			<ToolTipBox UpdateToolTip="@UpdateToolTipID" Id="legendaryShopsGroup">Create legendary shops in dungeons</ToolTipBox>
-			<TriStateCheckBox DisableTooltip Id="legendaryWeaponShopCheckBox" @bind-Value="Flags.LegendaryWeaponShop">Legendary Weapon Shop</TriStateCheckBox>
-			<TriStateCheckBox DisableTooltip Id="legendaryArmorShopCheckBox" @bind-Value="Flags.LegendaryArmorShop">Legendary Armor Shop</TriStateCheckBox>
-			<TriStateCheckBox DisableTooltip Id="legendaryBlackShopCheckBox" @bind-Value="Flags.LegendaryBlackShop">Legendary Black Shop</TriStateCheckBox>
-			<TriStateCheckBox DisableTooltip Id="legendaryWhiteShopCheckBox" @bind-Value="Flags.LegendaryWhiteShop">Legendary White Shop</TriStateCheckBox>
-			<TriStateCheckBox DisableTooltip Id="legendaryItemShopCheckBox" @bind-Value="Flags.LegendaryItemShop">Legendary Item Shop</TriStateCheckBox>
-			<div class="checkbox-cell"></div>
 			<h4>Deep Dungeon</h4>
 			<p>Deep Dungeon should be considered extremely experimental at this time. The rest of the flags and tooltips are not properly adjusted to play nicely with it yet.</p>
 			<p>While it should work with many flags, such as scaling and Blursed items, map edits and Floor shuffle will either fail to generate a ROM, or create an unpleasant experience.</p>
 			<p>Please try it out and provide feedback!</p>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="deepdungeon" @bind-Value="Flags.DeepDungeon">Deep Dungeon</CheckBox>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="DDEvenTreasureDistribution" @bind-Value="Flags.DDEvenTreasureDistribution">Distribute treasure evenly</CheckBox>
-		</div>
-		<div class="col1 full">
-			<h4>Shop Reduction</h4>
-			<ToolTipBox UpdateToolTip="@UpdateToolTipID" Id="shopReductionTable">Remove shops from towns</ToolTipBox>
-			<div class="row">
-				<div class="col-lg-2 tighter noleftpadding">Weapon Shops:</div>
-				<div class="col-lg-4 tighter"><EnumDropDown DisableTooltip TItem="ShopKillMode" @bind-Value="Flags.ShopKillMode_Weapons"></EnumDropDown></div>
-				<div class="col-lg-2 tighter"><EnumDropDown DisableTooltip TItem="ShopKillFactor" @bind-Value="Flags.ShopKillFactor_Weapons"></EnumDropDown></div>
-				<div class="col-lg-4 tighter"><CheckBox DisableTooltip @bind-Value="Flags.ShopKillExcludeConeria_Weapons">Exclude Coneria</CheckBox></div>
-			</div>
-			<div class="row">
-				<div class="col-lg-2 tighter noleftpadding">Armor Shops:</div>
-				<div class="col-lg-4 tighter"><EnumDropDown DisableTooltip TItem="ShopKillMode" @bind-Value="Flags.ShopKillMode_Armor"></EnumDropDown></div>
-				<div class="col-lg-2 tighter"><EnumDropDown DisableTooltip TItem="ShopKillFactor" @bind-Value="Flags.ShopKillFactor_Armor"></EnumDropDown></div>
-				<div class="col-lg-4 tighter"><CheckBox DisableTooltip @bind-Value="Flags.ShopKillExcludeConeria_Armor">Exclude Coneria</CheckBox></div>
-			</div>
-			<div class="row">
-				<div class="col-lg-2 tighter noleftpadding">Item Shops:</div>
-				<div class="col-lg-4 tighter"><EnumDropDown DisableTooltip TItem="ShopKillMode" @bind-Value="Flags.ShopKillMode_Item"></EnumDropDown></div>
-				<div class="col-lg-2 tighter"><EnumDropDown DisableTooltip TItem="ShopKillFactor" @bind-Value="Flags.ShopKillFactor_Item"></EnumDropDown></div>
-				<div class="col-lg-4 tighter"><CheckBox DisableTooltip @bind-Value="Flags.ShopKillExcludeConeria_Item">Exclude Coneria</CheckBox></div>
-			</div>
-			<div class="row">
-				<div class="col-lg-2 tighter noleftpadding">Black Magic:</div>
-				<div class="col-lg-4 tighter"><EnumDropDown DisableTooltip TItem="ShopKillMode" @bind-Value="Flags.ShopKillMode_Black"></EnumDropDown></div>
-				<div class="col-lg-2 tighter"><EnumDropDown DisableTooltip TItem="ShopKillFactor" @bind-Value="Flags.ShopKillFactor_Black"></EnumDropDown></div>
-				<div class="col-lg-4 tighter"><CheckBox DisableTooltip @bind-Value="Flags.ShopKillExcludeConeria_Black">Exclude Coneria</CheckBox></div>
-			</div>
-			<div class="row">
-				<div class="col-lg-2 tighter noleftpadding">White Magic:</div>
-				<div class="col-lg-4 tighter"><EnumDropDown DisableTooltip TItem="ShopKillMode" @bind-Value="Flags.ShopKillMode_White"></EnumDropDown></div>
-				<div class="col-lg-2 tighter"><EnumDropDown DisableTooltip TItem="ShopKillFactor" @bind-Value="Flags.ShopKillFactor_White"></EnumDropDown></div>
-				<div class="col-lg-4 tighter"><CheckBox DisableTooltip @bind-Value="Flags.ShopKillExcludeConeria_White">Exclude Coneria</CheckBox></div>
-			</div>
+
 			<div class="checkbox-cell"></div>
-			<h4>Extensive Hints</h4>
+			<h4>Classes</h4>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="Lockpicking" @bind-Value="Flags.Lockpicking">Thief Lockpicking</TriStateCheckBox>
+			<IntSlider Indent Min="1" Max="50" Step="1" DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="Flags.Lockpicking" Id="LockpickingLevelRequirement" @bind-Value="@Flags.LockpickingLevelRequirement">Lockpicking Level Requirement:</IntSlider>
+
+		</div>
+
+		<div class="col1 full">
+			<h4>Hints</h4>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="extendedHintsCheckBox" @bind-Value="Flags.ExtensiveHints_Enable">Enable Extensive Hints</CheckBox>
 			<div class="row">
 				<div class="col-lg-3 tighter noleftpadding">Loose on Floor:</div>
@@ -135,4 +85,5 @@
 	[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
 	[Parameter] public bool noTabLayout { get; set; }
 	[Parameter] public bool IsOpen { get; set; } = true;
+
 }

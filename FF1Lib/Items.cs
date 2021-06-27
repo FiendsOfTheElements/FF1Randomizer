@@ -276,7 +276,7 @@ public static class UnsramIndex
 		public const byte CanalVis = 12;
 		public const byte CanalX = 13;
 		public const byte CanalY = 14;
-		//OverworldScrollX = 16
+		public const byte OverworldScrollX = 16;
 		//OverworldScrollY = 17
 		//HasCanoe = 18 // Replaced by Items.Canoe
 		//Vehicle = 20
@@ -529,10 +529,32 @@ public static class UnsramIndex
 
 	public static class Dock
 	{
-		public static byte[] Coneria = new byte[] { 0x98, 0xA9 };
-		public static byte[] DwarfCave = new byte[] { 0x79, 0x8B };
-		public static byte[] MatoyasCave = new byte[] { 0x9E, 0x8E };
-		public static byte[] Pravoka = new byte[] { 0xD2, 0x99 };
-		public static byte[] Elfland = new byte[] { 0x8D, 0xD3 };
+		public static byte[] Coneria = new byte[] { 0x98, 0xA9 }; //152, 196
+		public static byte[] DwarfCave = new byte[] { 0x79, 0x8B }; //121, 139
+		public static byte[] MatoyasCave = new byte[] { 0x9E, 0x8E }; //158, 142
+		public static byte[] Pravoka = new byte[] { 0xD2, 0x99 }; //210, 153
+		public static byte[] Elfland = new byte[] { 0x8D, 0xD3 }; //141, 211
 	};
+
+	public static class ItemExtensions
+	{
+		public static AccessRequirement ToAccessRequirement(this Item item)
+		{
+			switch (item)
+			{
+				case Item.None: return AccessRequirement.None;
+				case Item.Crown: return AccessRequirement.Crown;
+				case Item.Crystal: return AccessRequirement.Crystal;
+				case Item.Herb: return AccessRequirement.Herb;
+				case Item.Key: return AccessRequirement.Key;
+				case Item.Tnt: return AccessRequirement.Tnt;
+				case Item.Adamant: return AccessRequirement.Adamant;
+				case Item.Slab: return AccessRequirement.Slab;
+				case Item.Ruby: return AccessRequirement.Ruby;
+				case Item.Bottle: return AccessRequirement.Bottle;
+				case Item.EarthOrb: return AccessRequirement.EarthOrb;
+				default: return AccessRequirement.None;
+			}
+		}
+	}
 }

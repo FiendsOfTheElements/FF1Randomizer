@@ -1,4 +1,5 @@
-﻿using RomUtilities;
+﻿using FF1Lib.Data;
+using RomUtilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,7 @@ namespace FF1Lib
 		Flags flags;
 		FF1Rom rom;
 		List<Map> maps;
+		List<MapId> flippedMaps;
 
 		MapTileSets MapTileSets;
 		ShopData ShopData;
@@ -23,6 +25,7 @@ namespace FF1Lib
 		Dictionary<string, MagicSpell> Spells;
 
 		List<SpellInfo> SpellInfos;
+		TreasureData treasureData;
 
 		//MapId, X, Y, UL Tile, UR Tile, BL Tile, BR Tile, Pallette
 		private List<(MapId, int, int, byte, byte, byte, byte, byte)> Locations = new List<(MapId, int, int, byte, byte, byte, byte, byte)>
@@ -35,22 +38,27 @@ namespace FF1Lib
 			(MapId.SeaShrineB4, 27, 40, 0x22, 0x23, 0x32, 0x33, 0xAA)
 		};
 
-		public LegendaryShops(MT19337 _rng, Flags _flags, List<Map> _maps, FF1Rom _rom)
+		public LegendaryShops(MT19337 _rng, Flags _flags, List<Map> _maps, List<MapId> _flippedMaps, ShopData _shopdata, FF1Rom _rom)
 		{
 			rng = _rng;
 			flags = _flags;
 			rom = _rom;
 			maps = _maps;
+			flippedMaps = _flippedMaps;
 
 			MapTileSets = new MapTileSets(rom);
-			ShopData = new ShopData(rom);
+			ShopData = _shopdata;
 			SpellInfos = rom.LoadSpells().ToList();
+			treasureData = new TreasureData(rom);
 		}
 
 		private void LoadUnusedTileIds()
 		{
 			byte[] possibleTileIds = new byte[128];
 			for (byte i = 0; i < 128; i++) possibleTileIds[i] = i;
+
+			// Remove Closed door tile, since it's not used in the map, but still needed
+			possibleTileIds[0x37] = 0;
 
 			UnusedTilesbyTileSet = Enum.GetValues<MapId>()
 				.GroupBy(m => MapTileSets[m])
@@ -67,8 +75,7 @@ namespace FF1Lib
 		{
 			PrepareMaps();
 
-			Spells = rom.GetSpells().ToDictionary(s => FF1Text.BytesToText(s.Name));
-			ShopData.LoadData();
+			Spells = rom.GetSpells().ToDictionary(s => s.Name.ToLowerInvariant());
 			MapTileSets.LoadTable();
 
 			for (int i = 0; i < 8; i++)
@@ -83,6 +90,8 @@ namespace FF1Lib
 			var pool = Locations.Take(allocatedslots.Where(s => s > 0).Count() + 1).ToList();
 			pool.Shuffle(rng);
 
+			treasureData.LoadTable();
+
 			CreateWeaponShop(allocatedslots[0], pool);
 			CreateArmorShop(allocatedslots[1], pool);
 			CreateBlackShop(allocatedslots[2], pool);
@@ -90,6 +99,7 @@ namespace FF1Lib
 			CreateItemShop(allocatedslots[4], pool);
 
 			ShopData.StoreData();
+			treasureData.StoreTable();
 
 			for (int i = 0; i < 8; i++) TileSets[i].StoreData();
 
@@ -108,11 +118,17 @@ namespace FF1Lib
 
 			Shop shop = new Shop(6, ShopType.Weapon, MapLocation.Coneria, MapId.Coneria, 0, string.Empty, GetWeaponShopInventory(slots));
 
+			if (flags.ExclusiveLegendaryWeaponShop)
+			{
+				RemoveFromShops(shop.Entries, Item.IronNunchucks);
+				RemoveFromChests(shop.Entries, Item.Gold10);
+			}
+
 			if (shop.Entries.Count > 0)
 			{
 				ShopData.Shops.Add(shop);
 				PlaceShop(shop.Index, pool);
-			}
+			}			
 		}
 
 		private void CreateArmorShop(int slots, List<(MapId, int, int, byte, byte, byte, byte, byte)> pool)
@@ -120,6 +136,12 @@ namespace FF1Lib
 			if (slots <= 0) return;
 
 			Shop shop = new Shop(16, ShopType.Armor, MapLocation.Coneria, MapId.Coneria, 0, string.Empty, GetArmorShopInventory(slots));
+
+			if (flags.ExclusiveLegendaryArmorShop)
+			{
+				RemoveFromShops(shop.Entries, Item.Cloth);
+				RemoveFromChests(shop.Entries, Item.Gold10);
+			}
 
 			if (shop.Entries.Count > 0)
 			{
@@ -134,6 +156,11 @@ namespace FF1Lib
 
 			Shop shop = new Shop(7, ShopType.Black, MapLocation.Coneria, MapId.Coneria, 0, string.Empty, GetBlackShopInventory(slots));
 
+			if (flags.ExclusiveLegendaryBlackShop)
+			{
+				RemoveFromShops(shop.Entries, GetBadBlackSpell());
+			}
+
 			if (shop.Entries.Count > 0)
 			{
 				ShopData.Shops.Add(shop);
@@ -147,6 +174,11 @@ namespace FF1Lib
 
 			Shop shop = new Shop(17, ShopType.White, MapLocation.Coneria, MapId.Coneria, 0, string.Empty, GetWhiteShopInventory(slots));
 
+			if (flags.ExclusiveLegendaryWhiteShop)
+			{
+				RemoveFromShops(shop.Entries, GetBadWhiteSpell());
+			}
+
 			if (shop.Entries.Count > 0)
 			{
 				ShopData.Shops.Add(shop);
@@ -159,6 +191,11 @@ namespace FF1Lib
 			if (slots <= 0) return;
 
 			Shop shop = new Shop(66, ShopType.Item, MapLocation.Coneria, MapId.Coneria, 0, string.Empty, GetItemShopInventory(slots));
+
+			if (flags.ExclusiveLegendaryItemShop)
+			{
+				RemoveFromShops(shop.Entries, Item.Soft);
+			}
 
 			if (shop.Entries.Count > 0)
 			{
@@ -174,6 +211,8 @@ namespace FF1Lib
 			pool.RemoveAt(locidx);
 
 			var tile = CreateTile(loc.Item1, index + 1, loc.Item4, loc.Item5, loc.Item6, loc.Item7, loc.Item8);
+
+			if (flippedMaps.Contains(loc.Item1)) loc.Item2 = Map.RowLength - loc.Item2 - 1;
 
 			maps[(int)loc.Item1][loc.Item3, loc.Item2] = tile;
 		}
@@ -220,12 +259,28 @@ namespace FF1Lib
 		{
 			var items = new List<Item> { Item.Cabin, Item.House, Item.Heal, Item.Pure, Item.Soft };
 
+			if (flags.EnableExtConsumables && (flags.LegendaryShopHasExtConsumables ?? false))
+			{
+				items.Add(Item.WoodenNunchucks);
+				items.Add(Item.SmallKnife);
+				items.Add(Item.WoodenRod);
+				items.Add(Item.Rapier);
+			}
+
 			List<Item> result = new List<Item>();
 			if (slots > 0)
 			{
 				Item save = (Item)rng.Between((int)Item.Cabin, (int)Item.House);
 				result.Add(save);
 				items.Remove(save);
+				slots--;
+			}
+
+			if (slots > 0 && flags.EnableExtConsumables && (flags.LegendaryShopHasExtConsumables ?? false))
+			{
+				Item ext = (Item)rng.Between((int)Item.WoodenNunchucks, (int)Item.Rapier);
+				result.Add(ext);
+				items.Remove(ext);
 				slots--;
 			}
 
@@ -268,7 +323,7 @@ namespace FF1Lib
 			else
 			{
 				var spells = new List<Spell> { Spell.RUSE, Spell.INVS, Spell.PURE, Spell.CUR3, Spell.LIFE, Spell.HRM3, Spell.SOFT, Spell.EXIT, Spell.INV2, Spell.CUR4, Spell.HRM4, Spell.HEL3, Spell.LIF2, Spell.FADE, Spell.WALL };
-				var items = spells.Where(s => Spells.ContainsKey(s.ToString())).Select(s => Convert.ToByte(Spells[s.ToString()].Index + 176)).Cast<Item>().ToList();
+				var items = spells.Where(s => Spells.ContainsKey(s.ToString().ToLowerInvariant())).Select(s => Convert.ToByte(Spells[s.ToString().ToLowerInvariant()].Index + MagicNamesIndexInItemText)).Cast<Item>().ToList();
 
 				List<Item> result = new List<Item>();
 
@@ -288,7 +343,7 @@ namespace FF1Lib
 			else
 			{
 				var spells = new List<Spell> { Spell.LOCK, Spell.TMPR, Spell.FIR2, Spell.LIT2, Spell.LOK2, Spell.FAST, Spell.ICE2, Spell.FIR3, Spell.BANE, Spell.WARP, Spell.LIT3, Spell.QAKE, Spell.ICE3, Spell.BRAK, Spell.SABR, Spell.NUKE, Spell.ZAP, Spell.XXXX };
-				var items = spells.Where(s => Spells.ContainsKey(s.ToString())).Select(s => Convert.ToByte(Spells[s.ToString()].Index + 176)).Cast<Item>().ToList();
+				var items = spells.Where(s => Spells.ContainsKey(s.ToString().ToLowerInvariant())).Select(s => Convert.ToByte(Spells[s.ToString().ToLowerInvariant()].Index + MagicNamesIndexInItemText)).Cast<Item>().ToList();
 
 				List<Item> result = new List<Item>();
 
@@ -301,11 +356,11 @@ namespace FF1Lib
 
 		private List<Item> GetCraftedSpellInventory(int slots, bool black)
 		{
-			var stDamSpells = SpellInfos.Where(s => s.routine == 0x01 && s.targeting == 0x01).Where(s => s.tier >= 3).OrderBy(s => -s.tier).Take(3);
-			var aoeDamSpells = SpellInfos.Where(s => s.routine == 0x01 && s.targeting != 0x01).OrderBy(s => -s.tier).Take(6);
+			var stDamSpells = SpellInfos.Where(s => s.routine == 0x01 && s.targeting != 0x01).Where(s => s.tier >= 3).OrderBy(s => -s.tier).Take(3);
+			var aoeDamSpells = SpellInfos.Where(s => s.routine == 0x01 && s.targeting == 0x01).OrderBy(s => -s.tier).Take(6);
 
-			var stHarmSpells = SpellInfos.Where(s => s.routine == 0x02 && s.targeting == 0x01).OrderBy(s => -s.tier).Take(1);
-			var aoeHarmSpells = SpellInfos.Where(s => s.routine == 0x02 && s.targeting != 0x01).OrderBy(s => -s.tier).Take(1);
+			var stHarmSpells = SpellInfos.Where(s => s.routine == 0x02 && s.targeting != 0x01).OrderBy(s => -s.tier).Take(1);
+			var aoeHarmSpells = SpellInfos.Where(s => s.routine == 0x02 && s.targeting == 0x01).OrderBy(s => -s.tier).Take(1);
 
 			var stHealSpells = SpellInfos.Where(s => (s.routine == 0x07 || s.routine == 0x0F) && s.targeting != 0x08).OrderBy(s => -s.tier).Take(2);
 			var aoeHealSpells = SpellInfos.Where(s => (s.routine == 0x07 || s.routine == 0x0F) && s.targeting != 0x08).OrderBy(s => -s.tier).Take(2);
@@ -333,15 +388,15 @@ namespace FF1Lib
 				.Select(s => Convert.ToByte(SpellInfos.IndexOf(s)));
 
 
-			var specialSpells = Spells.Where(s => s.Key.StartsWith("LIF"))
-			.Concat(Spells.Where(s => s.Key.StartsWith("WARP")))
-			.Concat(Spells.Where(s => s.Key.StartsWith("WRP")))
-			.Concat(Spells.Where(s => s.Key.StartsWith("EXIT")))
-			.Concat(Spells.Where(s => s.Key.StartsWith("EXT")))
-			.Concat(Spells.Where(s => s.Key.StartsWith("SOFT")))
-			.Concat(Spells.Where(s => s.Key.StartsWith("SFT")))
-			.Concat(Spells.Where(s => s.Key.StartsWith("PURE")))
-			.Concat(Spells.Where(s => s.Key.StartsWith("PUR")))
+			var specialSpells = Spells.Where(s => s.Key.StartsWith("lif"))
+			.Concat(Spells.Where(s => s.Key.StartsWith("warp")))
+			.Concat(Spells.Where(s => s.Key.StartsWith("wrp")))
+			.Concat(Spells.Where(s => s.Key.StartsWith("exit")))
+			.Concat(Spells.Where(s => s.Key.StartsWith("ext")))
+			.Concat(Spells.Where(s => s.Key.StartsWith("soft")))
+			.Concat(Spells.Where(s => s.Key.StartsWith("sft")))
+			.Concat(Spells.Where(s => s.Key.StartsWith("pure")))
+			.Concat(Spells.Where(s => s.Key.StartsWith("pur")))
 			.Select(s => Convert.ToByte(s.Value.Index));
 
 
@@ -361,5 +416,42 @@ namespace FF1Lib
 		}
 
 		bool BlackSpell(int id) => id % 8 > 3;
+
+		private Item GetBadBlackSpell()
+		{
+			var spell = SpellInfos.Where((s, i) => BlackSpell(i) && s.routine == 0x01).OrderBy(s => s.tier).First();
+			return (Item)Convert.ToByte(SpellInfos.IndexOf(spell) + 0xB0);
+		}
+
+		private Item GetBadWhiteSpell()
+		{
+			var spell = SpellInfos.Where((s, i) => !BlackSpell(i) && s.routine == 0x07).OrderBy(s => s.tier).First();
+			return (Item)Convert.ToByte(SpellInfos.IndexOf(spell) + 0xB0);
+		}
+
+		private void RemoveFromShops(IEnumerable<Item> entries, Item replacement)
+		{
+			foreach (var entry in entries)
+			{
+				foreach (var shop in ShopData.Shops)
+				{
+					if (shop.Entries == null) continue;
+
+					shop.Entries.RemoveAll(e => e == entry);
+					if (shop.Entries.Count == 0) shop.Entries.Add(replacement);
+				}
+			}
+		}
+
+		private void RemoveFromChests(List<Item> entries, Item replacement)
+		{
+			foreach (var entry in entries)
+			{
+				for (int i = 0; i < treasureData.Data.Length; i++)
+				{
+					if (treasureData[i] == entry) treasureData[i] = replacement;
+				}
+			}
+		}
 	}
 }

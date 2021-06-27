@@ -1,5 +1,6 @@
 ﻿@using System.ComponentModel;
 @using System.IO;
+@using System.Web;
 @using RomUtilities;
 @using FF1Lib;
 @using System.Text.Json;
@@ -11,11 +12,11 @@
 
 
 <div id="generate" class="framed-content">
-	@if(showChaos)
+	@if (showChaos)
 	{
 		<h3 class="centered">You spawned Chaos!</h3>
 		<p>You REALLY love clicking orbs...</p>
-		<img style="width: 100%" src="/images/orbs-easter-egg.png"/>
+		<img style="width: 100%" src="/images/orbs-easter-egg.png" />
 	}
 
 
@@ -27,7 +28,7 @@
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="rememberCheckBox" @bind-Value="RememberROM">Remember ROM</CheckBox>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="tournamentSafeCheckBox" @bind-Value="Flags.TournamentSafe">Tournament Safe ROM</CheckBox>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="spoilersCheckBox" @bind-Value="Flags.Spoilers">Generate Spoiler Log!</CheckBox>
-	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="blindseedCheckBox" IsEnabled="@(!Flags.BlindSeed)" @bind-Value="Flags.BlindSeed">Make Blind Seed</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="blindseedCheckBox" IsEnabled="@(!Flags.BlindSeed)" @bind-Value="Flags.BlindSeed">Hide Flags</CheckBox>
 	<p>
 		Seed:
 		<br>
@@ -41,7 +42,7 @@
 		<input style="width: calc(100% - 80px);" type="text" class="nes-input" value="@Flags.Encoded" @onchange="@OnFlagsInputChanged" />
 		<a class="styled-button" @onclick="@OnCopyToClipboard">Export</a>
 	</p>
-	<p>@StatusMessage</p>
+	<p>@((MarkupString)StatusMessage)</p>
 	<div class="row">&nbsp;</div>
 	<a class="styled-button generate-button" @onclick="@OnRandomize">Generate ROM</a>
 </div>
@@ -83,13 +84,14 @@
 				TrySetFlags(flags.First());
 			}
 
-			await LoadLastROM();
-			StateHasChanged();
+			var romfile = await JSRuntime.InvokeAsync<string>("getFFRPreferences", "file");
+			if (romfile != null) {
+			    LoadLastROM(romfile);
+			}
 		}
 
-		async Task LoadLastROM()
+		void LoadLastROM(string encoded)
 		{
-			string encoded = await LocalStorage.GetItemAsync<string>("file");
 			RememberROM = encoded != null && encoded.Length > 0;
 			if (RememberROM)
 			{
@@ -107,7 +109,9 @@
 
 			if (RememberROM)
 			{
-				await LocalStorage.SetItemAsync("file", encoded);
+				await JSRuntime.InvokeVoidAsync("setFFRPreferences",
+		                          "file",
+		                          encoded);
 			}
 		}
 
@@ -253,6 +257,8 @@
 
 			try
 			{
+				Utilities.SpoilerCache = string.Empty;
+
 				_rom.Randomize(seed, Flags.Flags, Flags.Preferences);
 
 				var data = new byte[512 * 1024 + 16];
@@ -265,18 +271,29 @@
 
 				SetStatusMessage(StatusMessage + "SUCCESS!");
 
-				if (Flags.Spoilers)
+				if (Flags.Spoilers && Utilities.SpoilerCache.Length > 0)
 				{
-					SetStatusMessage(StatusMessage + " SPOILER LOG IN BROWSER CONSOLE!");
+					SetStatusMessage(StatusMessage + " Downloading ROM and spoiler log.");
+				}
+				else if (Flags.Spoilers && Utilities.SpoilerCache.Length == 0)
+				{
+					SetStatusMessage(StatusMessage + " No spoilers have been generated to download.");
 				}
 
 				StateHasChanged();
 
-				await JSRuntime.InvokeAsync<object>("downloadROM", $"FFR_{_seed}_{Flags.Encoded}.nes", encoded);
+				await JSRuntime.InvokeAsync<object>("downloadFile", $"FFR_{_seed}_{Flags.Encoded}.nes", encoded);
+
+				if (Flags.Spoilers && Utilities.SpoilerCache.Length > 0)
+				{
+					var encodedSpoiler = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(Utilities.SpoilerCache));
+					await JSRuntime.InvokeVoidAsync("downloadFile", $"Spoiler_{_seed}_{Flags.Encoded}.txt", encodedSpoiler);
+				}
 			}
 			catch (Exception e)
 			{
 				SetStatusMessage(StatusMessage + "FAILURE: " + e.Message);
+				Console.WriteLine(e.ToString());
 				StateHasChanged();
 			}
 		}

@@ -24,17 +24,17 @@
 		else if (noTabLayout)
 		{
 			<PresetsTab Flags="@Flags" SetStatusMessage="@SetStatusMessage" loadDefault="@loadDefault" SetDefaultLoaded="@SetDefaultLoaded" noTabLayout="@noTabLayout" presetName="@presetName" SetPresetName="@SetPresetName" />
+			<GoalTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
+			<ScaleTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
+			<IncentivesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
+			<MapsTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
+			<TreasuresTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
 			<ShopsTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
 			<EnemiesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
-			<TreasuresTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
-			<IncentivesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
-			<GoalTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
-			<MapsTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
-			<ScaleTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
 			<PartyTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
 			<ClassesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
-			<ConveniencesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
-			<BugFixesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
+			<ItemEquipmentTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
+			<AdjustmentsTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
 			<ExperimentalTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
 			<ExpandArrow noTabLayout="@noTabLayout" SetTabLayout="@SetTabLayout" />
 		}
@@ -50,21 +50,15 @@
 							</BSTabContent>
 						</BSTab>
 						<BSTab>
-							<BSTabLabel>Shops</BSTabLabel>
+							<BSTabLabel>Goal</BSTabLabel>
 							<BSTabContent>
-								<ShopsTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
+								<GoalTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
 							</BSTabContent>
 						</BSTab>
 						<BSTab>
-							<BSTabLabel>Enemies</BSTabLabel>
+							<BSTabLabel>Scale</BSTabLabel>
 							<BSTabContent>
-								<EnemiesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
-							</BSTabContent>
-						</BSTab>
-						<BSTab>
-							<BSTabLabel>Treasures</BSTabLabel>
-							<BSTabContent>
-								<TreasuresTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
+								<ScaleTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
 							</BSTabContent>
 						</BSTab>
 						<BSTab>
@@ -74,21 +68,27 @@
 							</BSTabContent>
 						</BSTab>
 						<BSTab>
-							<BSTabLabel>Goal</BSTabLabel>
-							<BSTabContent>
-								<GoalTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
-							</BSTabContent>
-						</BSTab>
-						<BSTab>
 							<BSTabLabel>Maps</BSTabLabel>
 							<BSTabContent>
 								<MapsTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
 							</BSTabContent>
 						</BSTab>
 						<BSTab>
-							<BSTabLabel>Scale</BSTabLabel>
+							<BSTabLabel>Treasures</BSTabLabel>
 							<BSTabContent>
-								<ScaleTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
+								<TreasuresTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
+							</BSTabContent>
+						</BSTab>
+						<BSTab>
+							<BSTabLabel>Shops &amp; Magic</BSTabLabel>
+							<BSTabContent>
+								<ShopsTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
+							</BSTabContent>
+						</BSTab>
+						<BSTab>
+							<BSTabLabel>Enemies</BSTabLabel>
+							<BSTabContent>
+								<EnemiesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
 							</BSTabContent>
 						</BSTab>
 						<BSTab>
@@ -104,15 +104,15 @@
 							</BSTabContent>
 						</BSTab>
 						<BSTab>
-							<BSTabLabel>Conveniences</BSTabLabel>
+							<BSTabLabel>Gear &amp; Items</BSTabLabel>
 							<BSTabContent>
-								<ConveniencesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
+								<ItemEquipmentTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
 							</BSTabContent>
 						</BSTab>
 						<BSTab>
-							<BSTabLabel>Bugs Fixes</BSTabLabel>
+							<BSTabLabel>Adjustments</BSTabLabel>
 							<BSTabContent>
-								<BugFixesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
+								<AdjustmentsTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
 							</BSTabContent>
 						</BSTab>
 						<BSTab>
@@ -150,6 +150,7 @@
 	private string StatusMessage = "";
 	private bool loadDefault = true;
 	private bool noTabLayout = false;
+	private bool noAnnoucement = true;  // set to false if there's an announcement
 	private bool hideAnnouncement = false;
 	private string presetName = "Untitled";
 
@@ -166,9 +167,16 @@
 
 		noTabLayout = await LocalStorage.GetItemAsync<bool>("tablayout");
 
-		// Announcement ID needs to be changed for each new events, also need to be changed in AnnouncementBox.razor
-		//  both need to match
-		hideAnnouncement = await LocalStorage.GetItemAsync<bool>("announcement_st2021f");
+		if (noAnnoucement)
+		{
+			hideAnnouncement = true;
+		}
+		else
+		{
+			// Announcement ID needs to be changed for each new events, also need to be changed in AnnouncementBox.razor
+			//  both need to match, comment out for no announcement
+			hideAnnouncement = await LocalStorage.GetItemAsync<bool>("announcement_st2021f");
+		}
 		Flags.PropertyChanged += (sender, args) => StateHasChanged();
 		StateHasChanged();
 	}
@@ -224,4 +232,3 @@
 	{
 		//Console.WriteLine($"Hidden -> Activated: {e.Activated?.Id.ToString()} , Deactivated: {e.Deactivated?.Id.ToString()}");
 	} }
-

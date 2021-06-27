@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -2343,7 +2344,7 @@ namespace FF1Lib
 					switch (i)
 					{
 						case Enemy.Imp:
-							enemyNames[i] = "BUM";
+							enemyNames[i] = "CHAMP";
 							enemy[i].elem_weakness = 0b11111111;
 							enemy[i].monster_type = 0b01111111;
 							break;
@@ -3735,10 +3736,10 @@ namespace FF1Lib
 			}
 		}
 
-		public SpellInfo[] LoadSpells()
+		public SpellInfo[] LoadSpells(int count = MagicCount)
 		{
-			var spell = new SpellInfo[MagicCount];
-			for (int i = 0; i < MagicCount; ++i)
+			var spell = new SpellInfo[count];
+			for (int i = 0; i < count; ++i)
 			{
 				spell[i] = new SpellInfo();
 				spell[i].decompressData(Get(MagicOffset + i * MagicSize, MagicSize));
@@ -3747,5 +3748,93 @@ namespace FF1Lib
 
 			return spell;
 		}
+
+		public void ObfuscateEnemies(MT19337 rng, Flags flags)
+		{
+
+			if (flags.EnemyObfuscation == EnemyObfuscation.Imp || flags.EnemyObfuscation == EnemyObfuscation.ImpAll)
+			{
+				List<FormationInfo> formations = LoadFormations();
+				string[] enemyNames = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
+
+				List<string> alphabet = new List<string> { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" };
+
+				var names = alphabet.Join(alphabet, x => true, x => true, (a, b) => a + b.ToLower() + "IMP").ToList();
+
+				List<(string name, byte pal)> variants = new List<(string, byte)>();
+				for (int i = 0; i < 256; i++)
+				{
+					var name = names.SpliceRandom(rng);
+					variants.Add((name, (byte)rng.Between(0, 128)));
+				}
+
+				int limit = flags.EnemyObfuscation == EnemyObfuscation.ImpAll ? 128 : 119;
+
+				for (int i = 0; i < limit; i++) enemyNames[i] = variants[i].name;
+
+				for (int i = 0; i < FormationCount; ++i)
+				{
+					if (formations[i].id.Any(id => id >= limit)) continue;
+
+					formations[i].pics = 0;
+					formations[i].shape = 0;
+					formations[i].tileset = 0;
+					formations[i].pal1 = variants[formations[i].id[0]].pal;
+					formations[i].pal1 = variants[formations[i].id[1]].pal;
+
+					if(flags.EnemyObfuscation == EnemyObfuscation.ImpAll && (flags.TrappedChaos ?? false) && formations[i].id.Any(id => id == 127))
+					{
+						formations[i].unrunnable_a = false;
+						formations[i].unrunnable_b = false;
+					}
+				}
+
+				StoreEnemyNames(enemyNames);
+				StoreFormations(formations);
+			}
+		}
+
+		private void StoreEnemyNames(string[] enemyNames)
+		{
+			var enemyTextPart1 = enemyNames.Take(2).ToArray();
+			var enemyTextPart2 = enemyNames.Skip(2).ToArray();
+			WriteText(enemyTextPart1, EnemyTextPointerOffset, EnemyTextPointerBase, 0x2CFEC);
+			WriteText(enemyTextPart2, EnemyTextPointerOffset + 4, EnemyTextPointerBase, EnemyTextOffset);
+		}
+
+		private void StoreFormations(List<FormationInfo> formations)
+		{
+			for (int i = 0; i < FormationCount; ++i)
+			{
+				Put(FormationDataOffset + i * FormationSize, formations[i].compressData());
+			}
+		}
+
+		private List<FormationInfo> LoadFormations()
+		{
+			List<FormationInfo> formations = new List<FormationInfo>();
+
+			for (int i = 0; i < FormationCount; ++i)
+			{
+				FormationInfo f = new FormationInfo();
+				f.decompressData(Get(FormationDataOffset + i * FormationSize, FormationSize));
+				formations.Add(f);
+			}
+
+			return formations;
+		}
+	}
+
+
+	public enum EnemyObfuscation
+	{
+		[Description("None")]
+		None,
+
+		[Description("Imp")]
+		Imp,
+
+		[Description("Imp (inc. Fiends and Chaos)")]
+		ImpAll
 	}
 }

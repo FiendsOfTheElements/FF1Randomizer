@@ -36,9 +36,7 @@
     "EnemyTrapTiles": false,
     "RemoveTrapTiles": false,
     "RandomTrapFormations": false,
-    "TrappedChests": false,
     "TCMasaGuardian": false,
-    "TrappedShards": false,
     "SwolePirates": false,
     "ScaryImps": false,
     "EnemyScripts": false,
@@ -109,7 +107,7 @@
     "FreeBridge": false,
     "FreeShip": false,
     "FreeAirship": false,
-    "FreeLuteFlag": false,
+    "FreeLute": false,
     "FreeOrbs": false,
     "EnableCritNumberDisplay": true,
     "FreeCanal": false,
@@ -144,7 +142,7 @@
     "WrapStatOverflow": false,
     "WrapPriceOverflow": false,
     "IncludeMorale": false,
-    "NoDanMode": false,
+    "DeadsGainXP": false,
     "NoTail": false,
     "GuaranteedMasamune": false,
     "SendMasamuneHome": false,
@@ -299,6 +297,7 @@
     "AllowUnsafeStartArea": false,
     "EarlierRuby": false,
     "GuaranteedRuseItem": false,
-    "DisableStunTouch": false
+	"DisableStunTouch": false,
+	"ThiefAgilityBuff": 0
   }
 }

@@ -107,6 +107,7 @@ namespace FF1Lib
 			enemyText[56] = "EXPEDE"; // +2
 			enemyText[66] = "White D";
 			enemyText[72] = "MtlSLIME"; // +3
+			enemyText[83] = "Y BURN";
 			if (teamSteak)
 			{
 				enemyText[85] = "STEAK"; // +1
@@ -689,7 +690,7 @@ namespace FF1Lib
 			var dialogsUpdate = new Dictionary<int, string>();
 			// Add extra dialogues that might contain the {original} if the NPChints flag is enabled or if Astos Shuffle is enabled
 			var otherNPCs = new List<byte> {
-				0x45, 0x53, 0x69, 0x82, 0x8C, 0xAA, 0xCB, 0xDC, 0x9D, 0x70, 0xE3, 0xE1, 0xB6, // NPChints
+				0x45, 0x53, 0x69, 0x82, 0xA0, 0xAA, 0xCB, 0xDC, 0x9D, 0x70, 0xE3, 0xE1, 0xB6, // NPChints
 				0x02, 0x0E, 0x12, 0x14, 0x16, 0x19, 0x1E, 0xCD, 0x27, 0x23, 0x2B // ShuffleAstos
 			};
 

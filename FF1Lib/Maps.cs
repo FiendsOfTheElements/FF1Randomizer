@@ -107,6 +107,8 @@ namespace FF1Lib
 		WaterfallSpikeTile = 0x48,
 		WaterfallRandomEncounters = 0x49,
 		PortalWarp = 0x40,
+		ToFRNoEncounter = 0x31,
+		ToFREncounter = 0x5C,
 		// Begin Town Tiles
 		TownGrass = 0x00,
 		TownGrassShadow = 0x01,
@@ -236,6 +238,24 @@ namespace FF1Lib
 		TownDoor67 = 0x7D, // item shop, empty #1
 		TownDoor68 = 0x7E, // item shop, empty #2
 		TownTomb2 = 0x7F, // easter egg tomb
+
+		// Cardia tiles
+		CardiaFloor = 0x04,
+		CardiaCandles = 0x0D,
+		CardiaChest1 = 0x68,
+		CardiaChest2 = 0x69,
+		CardiaChest3 = 0x6A,
+		CardiaChest4 = 0x6B,
+		CardiaChest5 = 0x6C,
+		CardiaChest6 = 0x6D,
+		CardiaChest7 = 0x6E,
+		CardiaChest8 = 0x6F,
+		CardiaChest9 = 0x70,
+		CardiaChest10 = 0x71,
+		CardiaChest11 = 0x72,
+		CardiaChest12 = 0x73,
+		CardiaChest13 = 0x74,
+		CardiaEncounters = 0x49,
 	}
 
 	public enum WarMECHMode
@@ -255,6 +275,7 @@ namespace FF1Lib
 
 	public struct NPC
 	{
+		public ObjectId ObjectId;
 		public int Index;
 		public (int x, int y) Coord;
 		public bool InRoom;
@@ -268,8 +289,8 @@ namespace FF1Lib
 		public const int MapCount = 61;
 		public const int MapDataOffset = 0x10080;
 
-		public const int TeleportOffset = 0x02D00;
-		public const int TeleportCount = 64;
+		public const int TeleportOffset = 0x3F000;
+		public const int TeleportCount = 256;
 
 		public const int TilesetDataOffset = 0x00800;
 		public const int TilesetDataSize = 2;
@@ -533,7 +554,7 @@ namespace FF1Lib
 
 		public void ShuffleSkyCastle4F(MT19337 rng, List<Map> maps)
 		{
-			// Don't shuffle the return teleporter as Floor and Entrance shuffle might want to edit it.	
+			// Don't shuffle the return teleporter as Floor and Entrance shuffle might want to edit it.
 			var map = maps[(byte)MapId.SkyPalace4F];
 			var upTeleporter = (x: 0x23, y: 0x23);
 			var dest = GetSkyCastleFloorTile(rng, map);
@@ -642,6 +663,22 @@ namespace FF1Lib
 			}
 		}
 
+		public void EnableLefeinSuperStore(List<Map> maps)
+		{
+			// define
+			List<Blob> superStore = new List<Blob>
+			{
+				//              1 2 3 4 WM 5 6 7 8  XX  1 2 3 4 BM 5 6 7 8
+				Blob.FromHex("171717171717171717171700171717171717171717171700"),
+				Blob.FromHex("181818181823181818181801181818181824181818181801"),
+				Blob.FromHex("1D4F5051541D525357581D021D595A5B5E1D5C5D61621D02"),
+			};
+			// place
+			maps[(int)MapId.Lefein].Put((0x28, 0x01), superStore.ToArray());
+			// cleanup (removes single tree)
+			maps[(int)MapId.Lefein][0x00, 0x34] = (byte)Tile.TownGrass;
+		}
+
 		public void EnableLefeinShops(List<Map> maps)
 		{
 			var lefein = maps[(byte)MapId.Lefein];
@@ -650,7 +687,7 @@ namespace FF1Lib
 			lefein[0x05, 0x15] = 0x1A; // Clinic Sign
 			lefein[0x06, 0x15] = 0x65; // Crescent Lake Clinic
 		}
-        
+
     public void EnableMelmondClinic(List<Map> maps)
     {
         var melmond = maps[(byte)MapId.Melmond];
@@ -663,10 +700,28 @@ namespace FF1Lib
         melmond[0x0A, 0x1D] = 0x01; // Full shadow
         melmond[0x0B, 0x1A] = 0x1D; // Building front, two windows
         melmond[0x0B, 0x1B] = 0x65; // Crescent Lake clinic
-        melmond[0x0B, 0x1C] = 0x1D; 
+        melmond[0x0B, 0x1C] = 0x1D;
         melmond[0x0B, 0x1D] = 0x02; // Corner shadow
     }
-        
+
+		public void EnableChaosFloorEncounters(List<Map> maps)
+		{
+			// Replace floor tiles with encounter tiles
+			for (int x = 0; x < 32; x++)
+			{
+				for (int y = 0; y < 32; y++)
+				{
+					if (maps[(byte)MapId.TempleOfFiendsRevisitedChaos][x, y] == (byte)Tile.ToFRNoEncounter) {
+						maps[(byte)MapId.TempleOfFiendsRevisitedChaos][x, y] = (byte)Tile.ToFREncounter;
+					}
+				}
+			}
+
+			// Change base rate for encounters
+			Put(ThreatLevelsOffset + 60, Blob.FromHex("0D"));
+			// threat level reference for comparison: 08 = most dungeon floors; 18 = sky bridge; 09 = ToFR earth; 0A = ToFR fire; 0B = ToFR water; 0C = ToFR air; 01 = ToFR chaos
+		}
+
 		public void EnableToFRExit(List<Map> maps)
 		{
 			// add warp portal to ToFR 1st floor
@@ -692,7 +747,7 @@ namespace FF1Lib
 
 			// Roll 1d8 to see which town was destroyed.
 			int start = includeConeria ? 1 : 2;
-			switch (RollDice(rng, start, 8))
+			switch (Rng.Between(rng, start, 8))
 			{
 				case 1:
 					maps[(byte)MapId.Melmond] = new Map(Blob.FromHex(repaired_melmond).ToBytes());
@@ -763,7 +818,7 @@ namespace FF1Lib
 
 			//var mapsToFlip = validMaps;
 
-			
+
 			foreach (MapId map in mapsToFlip)
 			{
 				maps[(int)map].FlipHorizontal();
@@ -975,6 +1030,7 @@ namespace FF1Lib
 
 				if (Data[offset] == (byte)mapObjId)
 				{
+					tempNPC.ObjectId = (ObjectId)Data[offset];
 					tempNPC.Index = i;
 					tempNPC.Coord = (Data[offset + 1] & 0x3F, Data[offset + 2]);
 					tempNPC.InRoom = (Data[offset + 1] & 0x80) > 0;
@@ -1016,6 +1072,7 @@ namespace FF1Lib
 
 			int offset = MapSpriteOffset + ((byte)mapId * MapSpriteCount + position) * MapSpriteSize;
 
+			tempNPC.ObjectId = (ObjectId)Data[offset];
 			tempNPC.Index = position;
 			tempNPC.Coord = (Data[offset + 1] & 0x3F, Data[offset + 2]);
 			tempNPC.InRoom = (Data[offset + 1] & 0x80) > 0;
@@ -1048,5 +1105,154 @@ namespace FF1Lib
 			}
 		}
 
+		public void ExpandNormalTeleporters()
+		{
+			// Code for extension is included in ExtraTrackingAndInitCode() in FF1Rom.cs
+			//  see 0F_9200_TeleportXYInroom.asm
+			const int BANK_TELEPORTINFO = 0x00;
+			const int BANK_EXTTELEPORTINFO = 0x0F;
+
+			const int lut_NormTele_X = 0xAD00;
+			const int lut_NormTele_Y = 0xAD40;
+			const int lut_NormTele_Map = 0xAD80;
+			const int NormTele_qty = 0x40;
+
+			const int lut_NormTele_X_ext = 0xB000;
+			const int lut_NormTele_Y_ext = 0xB100;
+			const int lut_NormTele_Map_ext = 0xB200;
+			//const int NormTele_ext_qty = 0x100;
+
+			var NormTele_X = GetFromBank(BANK_TELEPORTINFO, lut_NormTele_X, NormTele_qty);
+			var NormTele_Y = GetFromBank(BANK_TELEPORTINFO, lut_NormTele_Y, NormTele_qty);
+			var NormTele_Map = GetFromBank(BANK_TELEPORTINFO, lut_NormTele_Map, NormTele_qty);
+
+			PutInBank(BANK_EXTTELEPORTINFO, lut_NormTele_X_ext, NormTele_X);
+			PutInBank(BANK_EXTTELEPORTINFO, lut_NormTele_Y_ext, NormTele_Y);
+			PutInBank(BANK_EXTTELEPORTINFO, lut_NormTele_Map_ext, NormTele_Map);
+
+
+
+		}
+
+		public void BahamutB1Encounters(List<Map> maps) {
+		    // Adds dragon-themed encounters to the long
+		    // hallway to Bahamut's room
+
+		    var bahamutB1ZoneOffset = ZoneFormationsOffset + (ZoneFormationsSize * (64 + (int)MapId.BahamutsRoomB1));
+		    var formation = Get(bahamutB1ZoneOffset, ZoneFormationsSize);
+		    formation[0] = 0x2A + 0x80; // 2-4 Red D
+		    formation[1] = 0x30 + 0x80; // 3-4 Ice D
+		    formation[2] = 0x4B + 0x80; // 2-4 Zombie D
+		    formation[3] = 0x4E + 0x80; // 2-3 Blue D
+		    formation[4] = 0x59 + 0x80; // 2-4 Gas D
+		    formation[5] = 0x4E + 0x80; // 2-3 Blue D
+		    formation[6] = 0x59 + 0x80; // 2-4 Gas D
+		    formation[7] = 0x76; // Tiamat (!)
+		    Put(bahamutB1ZoneOffset, formation);
+
+		    Put(ThreatLevelsOffset + (int)MapId.BahamutsRoomB1 + 1, Blob.FromHex("18"));
+
+		    maps[(byte)MapId.BahamutsRoomB1][1, 1] = (byte)Tile.CardiaEncounters;
+		    maps[(byte)MapId.BahamutsRoomB1][1, 2] = (byte)Tile.CardiaEncounters;
+		    maps[(byte)MapId.BahamutsRoomB1][1, 3] = (byte)Tile.CardiaEncounters;
+		    maps[(byte)MapId.BahamutsRoomB1][2, 1] = (byte)Tile.CardiaEncounters;
+		    maps[(byte)MapId.BahamutsRoomB1][2, 3] = (byte)Tile.CardiaEncounters;
+		    maps[(byte)MapId.BahamutsRoomB1][3, 1] = (byte)Tile.CardiaEncounters;
+		    maps[(byte)MapId.BahamutsRoomB1][3, 2] = (byte)Tile.CardiaEncounters;
+		    maps[(byte)MapId.BahamutsRoomB1][3, 3] = (byte)Tile.CardiaEncounters;
+		    for (int i = 4; i <= 0x32; i++) {
+			maps[(byte)MapId.BahamutsRoomB1][i, 2] = (byte)Tile.CardiaEncounters;
+		    }
+		    maps[(byte)MapId.BahamutsRoomB1][0x33, 1] = (byte)Tile.CardiaEncounters;
+		    maps[(byte)MapId.BahamutsRoomB1][0x33, 2] = (byte)Tile.CardiaEncounters;
+		    maps[(byte)MapId.BahamutsRoomB1][0x33, 3] = (byte)Tile.CardiaEncounters;
+		    maps[(byte)MapId.BahamutsRoomB1][0x34, 1] = (byte)Tile.CardiaEncounters;
+		    maps[(byte)MapId.BahamutsRoomB1][0x34, 2] = (byte)Tile.CardiaEncounters;
+		    maps[(byte)MapId.BahamutsRoomB1][0x34, 3] = (byte)Tile.CardiaEncounters;
+		    maps[(byte)MapId.BahamutsRoomB1][0x35, 1] = (byte)Tile.CardiaEncounters;
+		    maps[(byte)MapId.BahamutsRoomB1][0x35, 3] = (byte)Tile.CardiaEncounters;
+		    maps[(byte)MapId.BahamutsRoomB1][0x36, 1] = (byte)Tile.CardiaEncounters;
+		    maps[(byte)MapId.BahamutsRoomB1][0x36, 2] = (byte)Tile.CardiaEncounters;
+		    maps[(byte)MapId.BahamutsRoomB1][0x36, 3] = (byte)Tile.CardiaEncounters;
+		}
+
+		public void DragonsHoard(List<Map> maps, bool enable) {
+		    // Replaces the area around/behind Bahamut with
+		    // all the Cardia chests.  (Does not delete the
+		    // original chests, they will be linked)
+
+		    if (enable) {
+			maps[(byte)MapId.BahamutsRoomB2][1, 17] = (byte)Tile.CardiaCandles;
+			maps[(byte)MapId.BahamutsRoomB2][1, 18] = (byte)Tile.CardiaChest1;
+			maps[(byte)MapId.BahamutsRoomB2][1, 19] = (byte)Tile.CardiaChest2;
+			maps[(byte)MapId.BahamutsRoomB2][1, 20] = (byte)Tile.CardiaChest3;
+			maps[(byte)MapId.BahamutsRoomB2][1, 21] = (byte)Tile.CardiaChest4;
+			maps[(byte)MapId.BahamutsRoomB2][1, 22] = (byte)Tile.CardiaChest5;
+			maps[(byte)MapId.BahamutsRoomB2][1, 23] = (byte)Tile.CardiaChest6;
+			maps[(byte)MapId.BahamutsRoomB2][1, 24] = (byte)Tile.CardiaChest7;
+			maps[(byte)MapId.BahamutsRoomB2][1, 25] = (byte)Tile.CardiaCandles;
+
+			maps[(byte)MapId.BahamutsRoomB2][2, 17] = (byte)Tile.CardiaChest8;
+			maps[(byte)MapId.BahamutsRoomB2][2, 18] = (byte)Tile.CardiaFloor;
+			maps[(byte)MapId.BahamutsRoomB2][2, 19] = (byte)Tile.CardiaFloor;
+			maps[(byte)MapId.BahamutsRoomB2][2, 20] = (byte)Tile.CardiaFloor;
+			maps[(byte)MapId.BahamutsRoomB2][2, 21] = (byte)Tile.CardiaFloor;
+			maps[(byte)MapId.BahamutsRoomB2][2, 22] = (byte)Tile.CardiaFloor;
+			maps[(byte)MapId.BahamutsRoomB2][2, 23] = (byte)Tile.CardiaFloor;
+			maps[(byte)MapId.BahamutsRoomB2][2, 24] = (byte)Tile.CardiaFloor;
+			maps[(byte)MapId.BahamutsRoomB2][2, 25] = (byte)Tile.CardiaChest9;
+
+			maps[(byte)MapId.BahamutsRoomB2][3, 17] = (byte)Tile.CardiaCandles;
+			maps[(byte)MapId.BahamutsRoomB2][3, 18] = (byte)Tile.CardiaChest10;
+			maps[(byte)MapId.BahamutsRoomB2][3, 19] = (byte)Tile.CardiaFloor;
+			maps[(byte)MapId.BahamutsRoomB2][3, 20] = (byte)Tile.CardiaFloor;
+			maps[(byte)MapId.BahamutsRoomB2][3, 21] = (byte)Tile.CardiaFloor;
+			maps[(byte)MapId.BahamutsRoomB2][3, 22] = (byte)Tile.CardiaFloor;
+			maps[(byte)MapId.BahamutsRoomB2][3, 23] = (byte)Tile.CardiaFloor;
+			maps[(byte)MapId.BahamutsRoomB2][3, 24] = (byte)Tile.CardiaChest11;
+			maps[(byte)MapId.BahamutsRoomB2][3, 25] = (byte)Tile.CardiaCandles;
+
+			maps[(byte)MapId.BahamutsRoomB2][4, 17] = (byte)Tile.CardiaFloor;
+			maps[(byte)MapId.BahamutsRoomB2][4, 18] = (byte)Tile.CardiaCandles;
+			maps[(byte)MapId.BahamutsRoomB2][4, 19] = (byte)Tile.CardiaChest12;
+			maps[(byte)MapId.BahamutsRoomB2][4, 20] = (byte)Tile.CardiaFloor;
+			maps[(byte)MapId.BahamutsRoomB2][4, 21] = (byte)Tile.CardiaFloor;
+			maps[(byte)MapId.BahamutsRoomB2][4, 22] = (byte)Tile.CardiaFloor;
+			maps[(byte)MapId.BahamutsRoomB2][4, 23] = (byte)Tile.CardiaChest13;
+			maps[(byte)MapId.BahamutsRoomB2][4, 24] = (byte)Tile.CardiaCandles;
+			maps[(byte)MapId.BahamutsRoomB2][4, 25] = (byte)Tile.CardiaFloor;
+
+			ItemLocations.Cardia1.ChangeMapLocation(MapLocation.Cardia1);
+			ItemLocations.Cardia2.ChangeMapLocation(MapLocation.Cardia1);
+			ItemLocations.Cardia3.ChangeMapLocation(MapLocation.Cardia1);
+			ItemLocations.Cardia4.ChangeMapLocation(MapLocation.Cardia1);
+			ItemLocations.Cardia5.ChangeMapLocation(MapLocation.Cardia1);
+			ItemLocations.Cardia6.ChangeMapLocation(MapLocation.Cardia1);
+			ItemLocations.Cardia7.ChangeMapLocation(MapLocation.Cardia1);
+			ItemLocations.Cardia8.ChangeMapLocation(MapLocation.Cardia1);
+			ItemLocations.Cardia9.ChangeMapLocation(MapLocation.Cardia1);
+			ItemLocations.Cardia10.ChangeMapLocation(MapLocation.Cardia1);
+			ItemLocations.Cardia11.ChangeMapLocation(MapLocation.Cardia1);
+			ItemLocations.Cardia12.ChangeMapLocation(MapLocation.Cardia1);
+			ItemLocations.Cardia13.ChangeMapLocation(MapLocation.Cardia1);
+		    } else {
+			// If the user enabled Dragon's hoard,
+			// generated a seed, and then turned it off
+			// again, the locations will remain changed.
+			ItemLocations.Cardia1.ChangeMapLocation(MapLocation.Cardia6);
+			ItemLocations.Cardia2.ChangeMapLocation(MapLocation.Cardia6);
+			ItemLocations.Cardia3.ChangeMapLocation(MapLocation.Cardia6);
+			ItemLocations.Cardia4.ChangeMapLocation(MapLocation.Cardia6);
+			ItemLocations.Cardia5.ChangeMapLocation(MapLocation.Cardia6);
+			ItemLocations.Cardia6.ChangeMapLocation(MapLocation.Cardia4);
+			ItemLocations.Cardia7.ChangeMapLocation(MapLocation.Cardia4);
+			ItemLocations.Cardia8.ChangeMapLocation(MapLocation.Cardia4);
+			ItemLocations.Cardia9.ChangeMapLocation(MapLocation.Cardia2);
+			ItemLocations.Cardia10.ChangeMapLocation(MapLocation.Cardia2);
+			ItemLocations.Cardia11.ChangeMapLocation(MapLocation.Cardia2);
+			ItemLocations.Cardia12.ChangeMapLocation(MapLocation.Cardia6);
+			ItemLocations.Cardia13.ChangeMapLocation(MapLocation.Cardia6);
+		    }
+		}
 	}
 }

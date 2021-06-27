@@ -77,18 +77,38 @@ namespace FF1Lib
 		// instead of enemies giving more gold, so we don't overflow.
 		public void ScalePrices(IScaleFlags flags, string[] text, MT19337 rng, bool increaseOnly, ItemShopSlot shopItemLocation)
 		{
+			IEnumerable<Item> tmpExcludedItems = Array.Empty<Item>() ;
+			if (flags.ExcludeGoldFromScaling ?? false) tmpExcludedItems = tmpExcludedItems.Concat(ItemLists.AllGoldTreasure);
+			if ((flags.ExcludeGoldFromScaling ?? false) && flags.CheapVendorItem) tmpExcludedItems = tmpExcludedItems.Concat(ItemLists.AllQuestItems);
+
+			HashSet<Item> excludedItems = new HashSet<Item>(tmpExcludedItems);
+			HashSet<Item> questItems = new HashSet<Item>(ItemLists.AllQuestItems);
+
 			int rawScaleLow = increaseOnly ? 100 : flags.PriceScaleFactorLow;
 			int rawScaleHigh = increaseOnly ? Math.Max(100, flags.PriceScaleFactorHigh) : flags.PriceScaleFactorHigh;
 
 			double scaleLow = (double)rawScaleLow / 100.0;
 			double scaleHigh = (double)rawScaleHigh / 100.0;
 
-			var multiplier = flags.ExpMultiplier;
+			var multiplier = flags.ExcludeGoldFromScaling ?? false ? 1.0 : flags.ExpMultiplier;
 			var prices = Get(PriceOffset, PriceSize * PriceCount).ToUShorts();
 			for (int i = 0; i < prices.Length; i++)
 			{
-				var newPrice = RangeScale(prices[i] / multiplier, scaleLow, scaleHigh, 1, rng);
-				prices[i] = (ushort)(flags.WrapPriceOverflow ? ((newPrice - 1) % 0xFFFF) + 1 : Min(newPrice, 0xFFFF));
+				if (excludedItems.Contains((Item)i))
+				{
+					var price = (int)prices[i];
+
+					if (flags.CheapVendorItem && questItems.Contains((Item)i)) price = 20000;
+
+					var newPrice = price + rng.Between(-price / 10, price / 10);
+					prices[i] = (ushort)Math.Min(Math.Max(newPrice, 1), 65535);
+				}
+				else
+				{
+					var price = ExtConsumables.ExtConsumablePriceFix((Item)i, prices[i], flags);
+					var newPrice = RangeScaleWithZero(price / multiplier, scaleLow, scaleHigh, 1e-5 * multiplier, 1, rng);
+					prices[i] = (ushort)(flags.WrapPriceOverflow ? ((newPrice - 1) % 0xFFFF) + 1 : Min(newPrice, 0xFFFF));
+				}
 			}
 			var questItemPrice = prices[(int)Item.Bottle];
 			// If we don't do this before checking for the item shop location factor, Ribbons and Shirts will end up being really cheap
@@ -201,6 +221,19 @@ namespace FF1Lib
 				(bool)flags.SeparateBossHPScaling, minHp, highHp, GetEvadeIntFromFlag(flags.EvadeCap)));
 		}
 
+		public abstract class EnemyStat
+		{
+		    public const int HP = 4;
+		    public const int Morale = 6;
+		    public const int Scripts = 7;
+		    public const int Evade = 8;
+		    public const int Defense = 9;
+		    public const int Hits = 10;
+		    public const int HitPercent = 11;
+		    public const int Strength = 12;
+		    public const int CriticalPercent = 13;
+		}
+
 		public void ScaleSingleEnemyStats(int index, int lowPercentStats, int highPercentStats, bool wrapOverflow, bool includeMorale, MT19337 rng,
 			bool separateHPScale, int lowPercentHp, int highPercentHp, int evadeClamp)
 		{
@@ -211,7 +244,7 @@ namespace FF1Lib
 
 			var enemy = Get(EnemyOffset + index * EnemySize, EnemySize);
 
-			var hp = BitConverter.ToUInt16(enemy, 4);
+			var hp = BitConverter.ToUInt16(enemy, EnemyStat.HP);
 			if(separateHPScale)
 			{
 				hp = (ushort)Min(RangeScale(hp, lowDecimalHp, highDecimalHp, 1.0, rng), 0x7FFF);
@@ -220,15 +253,15 @@ namespace FF1Lib
 				hp = (ushort)Min(RangeScale(hp, lowDecimalStats, highDecimalStats, 1.0, rng), 0x7FFF);
 			}
 			var hpBytes = BitConverter.GetBytes(hp);
-			Array.Copy(hpBytes, 0, enemy, 4, 2);
+			Array.Copy(hpBytes, 0, enemy, EnemyStat.HP, 2);
 
-			var newMorale = includeMorale ? RangeScale(enemy[6], lowDecimalStats, highDecimalStats, 0.25, rng) : enemy[6];
-			var newEvade = RangeScale(enemy[8], lowDecimalStats, highDecimalStats, 1.0, rng);
-			var newDefense = RangeScale(enemy[9], lowDecimalStats, highDecimalStats, 0.5, rng);
-			var newHits = RangeScale(enemy[10], lowDecimalStats, highDecimalStats, 0.5, rng);
-			var newHitPercent = RangeScale(enemy[11], lowDecimalStats, highDecimalStats, 1.0, rng);
-			var newStrength = RangeScale(enemy[12], lowDecimalStats, highDecimalStats, 0.25, rng);
-			var newCrit = RangeScale(enemy[13], lowDecimalStats, highDecimalStats, 0.5, rng);
+			var newMorale = includeMorale ? RangeScale(enemy[EnemyStat.Morale], lowDecimalStats, highDecimalStats, 0.25, rng) : enemy[6];
+			var newEvade = RangeScale(enemy[EnemyStat.Evade], lowDecimalStats, highDecimalStats, 1.0, rng);
+			var newDefense = RangeScale(enemy[EnemyStat.Defense], lowDecimalStats, highDecimalStats, 0.5, rng);
+			var newHits = RangeScale(enemy[EnemyStat.Hits], lowDecimalStats, highDecimalStats, 0.5, rng);
+			var newHitPercent = RangeScale(enemy[EnemyStat.HitPercent], lowDecimalStats, highDecimalStats, 1.0, rng);
+			var newStrength = RangeScale(enemy[EnemyStat.Strength], lowDecimalStats, highDecimalStats, 0.25, rng);
+			var newCrit = RangeScale(enemy[EnemyStat.CriticalPercent], lowDecimalStats, highDecimalStats, 0.5, rng);
 			if (wrapOverflow)
 			{
 				newEvade = ((newEvade - 1) % 0xFF) + 1;
@@ -238,15 +271,50 @@ namespace FF1Lib
 				newStrength = ((newStrength - 1) % 0xFF) + 1;
 				newCrit = ((newCrit - 1) % 0xFF) + 1;
 			}
-			enemy[6] = (byte)Min(newMorale, 0xFF); // morale
-			enemy[8] = (byte)Min(newEvade, evadeClamp); // evade
-			enemy[9] = (byte)Min(newDefense, 0xFF); // defense
-			enemy[10] = (byte)Max(Min(newHits, 0xFF), 1); // hits
-			enemy[11] = (byte)Min(newHitPercent, 0xFF); // hit%
-			enemy[12] = (byte)Min(newStrength, 0xFF); // strength
-			enemy[13] = (byte)Min(newCrit, 0xFF); // critical%
+			enemy[EnemyStat.Morale] = (byte)Min(newMorale, 0xFF); // morale
+			enemy[EnemyStat.Evade] = (byte)Min(newEvade, evadeClamp); // evade
+			enemy[EnemyStat.Defense] = (byte)Min(newDefense, 0xFF); // defense
+			enemy[EnemyStat.Hits] = (byte)Max(Min(newHits, 0xFF), 1); // hits
+			enemy[EnemyStat.HitPercent] = (byte)Min(newHitPercent, 0xFF); // hit%
+			enemy[EnemyStat.Strength] = (byte)Min(newStrength, 0xFF); // strength
+			enemy[EnemyStat.CriticalPercent] = (byte)Min(newCrit, 0xFF); // critical%
 
 			Put(EnemyOffset + index * EnemySize, enemy);
+		}
+
+		private int RangeScaleWithZero(double value, double lowPercent, double highPercent, double lowScalelowPercent, double adjustment, MT19337 rng)
+		{
+			var internalLowPercent = lowPercent;
+			var lowScaleThreshold = 0.0;
+
+			if (lowPercent == 0 && highPercent == 0) return 0;
+
+			if (lowPercent == 0 && highPercent >= 0.2)
+			{
+				internalLowPercent = 0.1;
+				lowScaleThreshold = 0.14;
+			}
+			else if (lowPercent == 0 && highPercent == 0.1)
+			{
+				var ret = RangeScale(value, lowScalelowPercent, highPercent, adjustment, rng);
+				return ret > 3 ? ret : 0;
+			}
+
+			double exponent = (rng != null) ? (double)rng.Next() / uint.MaxValue : 1.0; // A number from 0 - 1
+			double logLowPercent = Log(internalLowPercent);
+			double logDifference = Log(highPercent) - logLowPercent;
+			exponent = exponent * logDifference + logLowPercent; // For example for 50-200% a number from -0.69 to 0.69, for 200-400% a number from 0.69 to 1.38
+
+			double scaleValue = Exp(exponent); // A number from 0.5 to 2, or 2 to 4
+
+			if (lowScaleThreshold > 0 && scaleValue < lowScaleThreshold)
+			{
+				var ret = RangeScale(value, lowScalelowPercent, lowScaleThreshold, adjustment, rng);
+				return ret > 3 ? ret : 0;
+			}
+
+			double adjustedScale = scaleValue > 1 ? (scaleValue - 1) * adjustment + 1 : 1 - ((1 - scaleValue) * adjustment); // Tightens the scale so some stats are not changed by as much. For example for strength (adjustment of 0.25) this becomes 0.875 to 1.25, 1.25 to 1.75 while for hp (adjustment of 1) this stays 0.5 to 2, 2 to 4
+			return (int)Round(value * adjustedScale);
 		}
 
 		private int RangeScale(double value, double lowPercent, double highPercent, double adjustment, MT19337 rng)
@@ -255,7 +323,7 @@ namespace FF1Lib
 			double logLowPercent = Log(lowPercent);
 			double logDifference = Log(highPercent) - logLowPercent;
 			exponent = exponent * logDifference + logLowPercent; // For example for 50-200% a number from -0.69 to 0.69, for 200-400% a number from 0.69 to 1.38
-	
+
 			double scaleValue = Exp(exponent); // A number from 0.5 to 2, or 2 to 4
 			double adjustedScale = scaleValue > 1 ? (scaleValue - 1) * adjustment + 1 : 1 - ((1 - scaleValue) * adjustment); // Tightens the scale so some stats are not changed by as much. For example for strength (adjustment of 0.25) this becomes 0.875 to 1.25, 1.25 to 1.75 while for hp (adjustment of 1) this stays 0.5 to 2, 2 to 4
 			return (int)Round(value * adjustedScale);
@@ -363,7 +431,7 @@ namespace FF1Lib
 			}
 		}
 
-		public void ExpGoldBoost(double bonus, double multiplier)
+		public void ExpGoldBoost(Flags flags)
 		{
 			var enemyBlob = Get(EnemyOffset, EnemySize * EnemyCount);
 			var enemies = enemyBlob.Chunk(EnemySize);
@@ -373,13 +441,23 @@ namespace FF1Lib
 				var exp = BitConverter.ToUInt16(enemy, 0);
 				var gold = BitConverter.ToUInt16(enemy, 2);
 
-				exp += (ushort)(bonus / multiplier);
-				gold += (ushort)(bonus / multiplier);
+				exp += (ushort)(flags.ExpBonus / flags.ExpMultiplier);
+
+
+				if (!(flags.ExcludeGoldFromScaling ?? false))
+				{
+					gold += (ushort)(flags.ExpBonus / flags.ExpMultiplier);
+				}
+				else if (flags.ApplyExpBoostToGold)
+				{
+					gold += (ushort)(flags.ExpBonus);
+				}
 
 				var expBytes = BitConverter.GetBytes(exp);
 				var goldBytes = BitConverter.GetBytes(gold);
-				Array.Copy(expBytes, 0, enemy, 0, 2);
+
 				Array.Copy(goldBytes, 0, enemy, 2, 2);
+				Array.Copy(expBytes, 0, enemy, 0, 2);
 			}
 
 			enemyBlob = Blob.Concat(enemies);
@@ -390,7 +468,7 @@ namespace FF1Lib
 			var levelRequirementsBytes = levelRequirementsBlob.Chunk(3).Select(threeBytes => new byte[] { threeBytes[0], threeBytes[1], threeBytes[2], 0 }).ToList();
 			for (int i = 0; i < LevelRequirementsCount; i++)
 			{
-				uint levelRequirement = (uint)(BitConverter.ToUInt32(levelRequirementsBytes[i], 0) / multiplier);
+				uint levelRequirement = (uint)(BitConverter.ToUInt32(levelRequirementsBytes[i], 0) / flags.ExpMultiplier);
 				levelRequirementsBytes[i] = BitConverter.GetBytes(levelRequirement);
 			}
 
@@ -398,7 +476,7 @@ namespace FF1Lib
 
 			// A dirty, ugly, evil piece of code that sets the level requirement for level 2, even though that's already defined in the above table.
 			byte firstLevelRequirement = Data[0x7C04B];
-			firstLevelRequirement = (byte)(firstLevelRequirement / multiplier);
+			firstLevelRequirement = (byte)(firstLevelRequirement / flags.ExpMultiplier);
 			Data[0x7C04B] = firstLevelRequirement;
 		}
 
@@ -417,6 +495,10 @@ namespace FF1Lib
 			newPirate.critrate = 5;
 			newPirate.agility = 24;
 			Put(EnemyOffset + EnemySize * Enemy.Pirate, newPirate.compressData());
+		}
+
+		public List<Blob> GetAllEnemyStats() {
+		    return Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
 		}
 	}
 }

@@ -47,11 +47,15 @@ namespace FF1Lib
 					string bonusString = string.Format((bonus > 0) ? "+{0}" : "{0}", bonus.ToString());
 					byte[] bonusBytes = FF1Text.TextToBytes(bonusString);
 
-					int iconIndex = currentArmor.NameBytes[6] > 200 && currentArmor.NameBytes[6] != 255 ? 5 : 6;
+					var nameBytes = FF1Text.TextToBytes(currentArmor.Name, false);
+
+					int iconIndex = nameBytes[6] > 200 && nameBytes[6] != 255 ? 5 : 6;
 					for (int j = 0; j < bonusBytes.Length - 1; j++)
 					{
-						currentArmor.NameBytes[iconIndex - j] = bonusBytes[bonusBytes.Length - 2 - j];
+						nameBytes[iconIndex - j] = bonusBytes[bonusBytes.Length - 2 - j];
 					}
+
+					currentArmor.Name = FF1Text.BytesToText(nameBytes);
 
 					currentArmor.writeArmorMemory(this);
 				}
@@ -61,7 +65,7 @@ namespace FF1Lib
 		//sample function for creating new armor
 		public void ExpandArmor()
 		{
-			Armor platinumBracelet = new Armor(12, FF1Text.TextToBytes("Plat"), ArmorIcon.BRACELET, 1, 42, 0, 0);
+			Armor platinumBracelet = new Armor(12, "Plat@B", ArmorIcon.BRACELET, 1, 42, 0, 0);
 			platinumBracelet.setClassUsability((ushort)(
 				EquipPermission.BlackBelt |
 				EquipPermission.BlackMage |
@@ -81,6 +85,9 @@ namespace FF1Lib
 
 	class Armor
 	{
+		public Item Id => (Item)(ArmorIndex + (int)Item.Cloth);
+		public Spell Spell => SpellIndex == 0xFF ? 0 : (Spell)(SpellIndex - 1 + (int)Spell.CURE);
+
 
 		//offset lookups
 		//0 - weight
@@ -90,7 +97,7 @@ namespace FF1Lib
 
 		public int ArmorIndex;
 
-		public byte[] NameBytes;
+		public string Name;
 		public ArmorIcon Icon;
 
 		public byte Weight;
@@ -101,22 +108,18 @@ namespace FF1Lib
 		//written to armor permission area
 		public ushort ClassUsability;
 
-		public Armor(int armorIndex, byte[] nameBytes, ArmorIcon icon, byte weight, byte absorb, byte elementalResist, byte spellIndex)
+		public Armor(int armorIndex, string name, ArmorIcon icon, byte weight, byte absorb, byte elementalResist, byte spellIndex)
 		{
 			ArmorIndex = armorIndex;
-			NameBytes = nameBytes;
+			Name = name;
 			Icon = icon;
-			if (icon != ArmorIcon.NONE)
-			{
-				NameBytes[6] = (byte)icon;
-			}
 			Weight = weight;
 			Absorb = absorb;
 			ElementalResist = elementalResist;
 			SpellIndex = spellIndex;
 		}
 
-		public Armor(int armorIndex, NesRom rom)
+		public Armor(int armorIndex, FF1Rom rom)
 		{
 
 			ArmorIndex = armorIndex;
@@ -139,21 +142,26 @@ namespace FF1Lib
 
 			//get name stuff
 			Icon = ArmorIcon.NONE;
-			int armorBaseNameOffset = FF1Rom.GearTextOffset + ((ArmorIndex + 40) * FF1Rom.GearTextSize) + (ArmorIndex > 31 ? 1 : 0);
-			//TODO figure out if treasure hunt is enabled, if so add 6 to this offset
-			byte currentValue;
-			NameBytes = rom.Get(armorBaseNameOffset, 8).ToBytes();
 
-			//find icon
-			for (int i = 0; i < 8; i++)
+			var itemnames = rom.ReadText(FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextPointerCount);
+
+			Name = itemnames[(int)Item.Cloth + ArmorIndex];
+
+			foreach (var kv in IconCodes)
 			{
-				currentValue = NameBytes[i];
-				//icon range > 200
-				if (currentValue > 200)
+				if (Name.Contains(kv.Value))
 				{
-					//check for icon
-					Icon = getArmorIconFromByte(currentValue);
+					Icon = kv.Key;
+					break;
 				}
+			}
+		}
+
+		public static IEnumerable<Armor> LoadAllArmors(FF1Rom rom, Flags flags)
+		{
+			for (int i = 0; i < 40; i++)
+			{
+				yield return new Armor(i, rom);
 			}
 		}
 
@@ -162,7 +170,7 @@ namespace FF1Lib
 			ClassUsability = classUsability;
 		}
 
-		public void writeArmorMemory(NesRom rom)
+		public void writeArmorMemory(FF1Rom rom)
 		{
 			//armor stats
 			int armorBaseOffset = FF1Rom.ArmorOffset + (ArmorIndex * FF1Rom.ArmorSize);
@@ -173,9 +181,8 @@ namespace FF1Lib
 			ushort convertedClassPermissions = (ushort)(ClassUsability ^ 0xFFF);
 			rom.Put(armorPermissionOffset, BitConverter.GetBytes(convertedClassPermissions));
 
-			//armor name
-			int armorBaseNameOffset = FF1Rom.GearTextOffset + ((ArmorIndex + 40) * FF1Rom.GearTextSize) + (ArmorIndex > 31 ? 1 : 0);
-			rom.Put(armorBaseNameOffset, NameBytes);
+
+			rom.UpdateItemName((Item)((int)Item.Cloth + ArmorIndex), Name);
 		}
 
 		private ArmorIcon getArmorIconFromByte(byte icon)
@@ -192,5 +199,14 @@ namespace FF1Lib
 			return matchedType;
 		}
 
+		public static Dictionary<ArmorIcon, string> IconCodes = new Dictionary<ArmorIcon, string>
+		{
+			{ ArmorIcon.ARMOR, "@A" },
+			{ ArmorIcon.SHIELD, "@s" },
+			{ ArmorIcon.HELM, "@h" },
+			{ ArmorIcon.GAUNTLET, "@G" },
+			{ ArmorIcon.BRACELET, "@B" },
+			{ ArmorIcon.SHIRT, "@T" }
+		};
 	}
 }

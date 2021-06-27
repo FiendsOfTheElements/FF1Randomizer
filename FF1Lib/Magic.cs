@@ -2,6 +2,7 @@
 using System.Linq;
 using RomUtilities;
 using System.ComponentModel;
+using System;
 
 namespace FF1Lib
 {
@@ -43,8 +44,13 @@ namespace FF1Lib
 	{
 		public byte Index;
 		public Blob Data;
-		public Blob Name;
+		public string Name;
 		public byte TextPointer;
+
+		public override string ToString()
+		{
+			return Index.ToString() + ": " + Name;
+		}
 	}
 
 	public partial class FF1Rom : NesRom
@@ -356,7 +362,7 @@ namespace FF1Lib
 							blackSpellFinalList[0].Add(spell);
 						}
 					}
-				}		
+				}
 				// shuffle each of the final lists
 				foreach(List<MagicSpell> spellList in whiteSpellFinalList)
 				{
@@ -409,7 +415,7 @@ namespace FF1Lib
 			}
 
 			Put(MagicOffset, shuffledSpells.Select(spell => spell.Data).Aggregate((seed, next) => seed + next));
-			Put(MagicNamesOffset, shuffledSpells.Select(spell => spell.Name).Aggregate((seed, next) => seed + next));
+			PutSpellNames(shuffledSpells);
 			Put(MagicTextPointersOffset, shuffledSpells.Select(spell => spell.TextPointer).ToArray());
 
 			if (keepPermissions)
@@ -578,17 +584,152 @@ namespace FF1Lib
 
 		public List<MagicSpell> GetSpells() {
 			var spells = Get(MagicOffset, MagicSize * MagicCount).Chunk(MagicSize);
-			var names = Get(MagicNamesOffset, MagicNameSize * MagicCount).Chunk(MagicNameSize);
+			var itemnames = ReadText(FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextPointerCount);
 			var pointers = Get(MagicTextPointersOffset, MagicCount);
 
 			return spells.Select((spell, i) => new MagicSpell
 			{
 				Index = (byte)i,
 				Data = spell,
-				Name = names[i],
+				Name = itemnames[176 + i],
 				TextPointer = pointers[i]
 			})
 			.ToList();
 		}
+
+		public void PutSpellNames(List<MagicSpell> spells)
+		{
+			var itemnames = ReadText(FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextPointerCount);
+
+			for(int i = 0; i < spells.Count; i++)
+			{
+				itemnames[176 + i] = spells[i].Name;
+			}
+
+			WriteText(itemnames, FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextOffset);
+		}
+
+		public void AccessibleSpellNames(Flags flags)
+		{
+			// If Spellcrafter mode is on, abort. We need a check here as the setting on the site can be in a random state.
+			if ((bool)flags.GenerateNewSpellbook)
+			{
+				return;
+			}
+
+			var magicSpells = GetSpells();
+
+			// Since this can be performed independent of the magic shuffling, we can't assume the location of spell names.
+			// We will loop through the spell list and replace the appropriate names as we find them.
+			for (int i = 0; i < magicSpells.Count; i++)
+			{
+				MagicSpell newSpell = magicSpells[i];
+				string spellName = magicSpells[i].Name;
+
+				switch (spellName)
+				{
+					// Note that 3 letter spell names actually have a trailing space
+					case "LIT ":
+						newSpell.Name = "THUN";
+						break;
+					case "LIT2":
+						newSpell.Name = "THN2";
+						break;
+					case "LIT3":
+						newSpell.Name = "THN3";
+						break;
+					case "FAST":
+						newSpell.Name = "HAST";
+						break;
+					case "SLEP":
+						newSpell.Name = "DOZE";
+						break;
+					case "SLP2":
+						newSpell.Name = "DOZ2";
+						break;
+
+					case "HARM":
+						newSpell.Name = "DIA ";
+						break;
+					case "HRM2":
+						newSpell.Name = "DIA2";
+						break;
+					case "HRM3":
+						newSpell.Name = "DIA3";
+						break;
+					case "HRM4":
+						newSpell.Name = "DIA4";
+						break;
+					case "ALIT":
+						newSpell.Name = "ATHN";
+						break;
+					case "AMUT":
+						newSpell.Name = "VOX ";
+						break;
+					case "FOG ":
+						newSpell.Name = "PROT";
+						break;
+					case "FOG2":
+						newSpell.Name = "PRO2";
+						break;
+					case "FADE":
+						newSpell.Name = "HOLY";
+						break;
+				}
+
+				// Update the entry in the list
+				magicSpells[i] = newSpell;
+			}
+
+			// Now update the spell names!
+			PutSpellNames(magicSpells);
+		}
+
+		public void MixUpSpellNames(SpellNameMadness mode, MT19337 rng)
+		{
+			if (mode == SpellNameMadness.MixedUp)
+			{
+				var itemnames = ReadText(FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextPointerCount);
+
+				string[] spellnames = new string[64];
+				Array.Copy(itemnames, 176, spellnames, 0, 64);
+
+				var spellnamelist = new List<string>(spellnames);
+				spellnamelist.Shuffle(rng);
+
+				for (int i = 0; i < spellnamelist.Count; i++)
+				{
+					itemnames[176 + i] = spellnamelist[i];
+				}
+
+				WriteText(itemnames, FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextOffset);
+			}
+			else if (mode == SpellNameMadness.Madness)
+			{
+				List<string> alphabet = new List<string> { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" };
+				List<string> numbers = new List<string> { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0" };
+
+				var itemnames = ReadText(FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextPointerCount);
+
+				for (int i = 176; i < 176 + 64; i++)
+				{
+					itemnames[i] = alphabet.PickRandom(rng) + alphabet.PickRandom(rng) + numbers.PickRandom(rng) + alphabet.PickRandom(rng);
+				}
+
+				WriteText(itemnames, FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextOffset);
+			}
+		}
+	}
+
+	public enum SpellNameMadness
+	{
+		[Description("None")]
+		None,
+
+		[Description("MixedUp")]
+		MixedUp,
+
+		[Description("Madness")]
+		Madness
 	}
 }

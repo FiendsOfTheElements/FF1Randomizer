@@ -69,25 +69,25 @@ namespace FF1Lib
 			Data[0x7EF45] = 0x11; // Skip over orbs and shards when printing the item menu
 		}
 
-		public void ShortenToFR(List<Map> maps, bool includeRefightTiles, bool refightAll, bool addExitTile, bool addLutePlate, MT19337 rng)
+		public void ShortenToFR(List<Map> maps, bool includeRefightTiles, bool refightAll, bool addExitTile, MT19337 rng)
 		{
 			// Black Orb tile Warp destination change straight to an edit Chaos floor with all the ToFR Chests.
 			Data[0x00D80] = 0x80; // Map edits
-			Data[0x02D01] = 0x0F;
-			Data[0x02D41] = 0x03;
-			Data[0x02D81] = 0x3B;
+			Data[0x3F001] = 0x0F;
+			Data[0x3F101] = 0x03;
+			Data[0x3F201] = 0x3B;
 
 			// ToFR Map Hack
 			List<Blob> landingArea = new List<Blob>
 			{
 				Blob.FromHex("3F3F000101010101023F3F"),
 				Blob.FromHex("3F00045D5E5F606104023F"),
-				Blob.FromHex("0004620404040404630402"),
-				Blob.FromHex("0304040404040404040405"),
-				Blob.FromHex("0604040404040404040408"),
+				Blob.FromHex("0004622020202020630402"),
+				Blob.FromHex("0304042020202020040405"),
+				Blob.FromHex("0604042020202020040408"),
 				Blob.FromHex("3006040410041104040830"),
-				Blob.FromHex("3130060707070707083031"),
-				Blob.FromHex("3131303030363030303131"),
+				Blob.FromHex("3130060710071107083031"),
+				Blob.FromHex("31313030303B3030303131"),
 				Blob.FromHex("31383831383A3831383831"),
 			};
 
@@ -112,35 +112,7 @@ namespace FF1Lib
 				maps[(byte)MapId.TempleOfFiendsRevisitedChaos][3, 15] = (byte)Tile.PortalWarp;
 			}
 
-			if (addLutePlate)
-			{
-				// add lute plate (can't use mapNpcIndex 0-2, those belong to Garland)
-				SetNpc(MapId.TempleOfFiendsRevisitedChaos, mapNpcIndex: 3, ObjectId.LutePlate, 15, 5, inRoom: true, stationary: true);
-
-				// set walkable black tiles near lute plate to "lute usable" tiles
-				for (int y = 2; y <= 4; y++)
-				{
-					for (int x = 13; x <= 17; x++)
-					{
-						if (maps[(byte)MapId.TempleOfFiendsRevisitedChaos][y, x].Equals((byte)0x04))
-						{
-							maps[(byte)MapId.TempleOfFiendsRevisitedChaos][y, x] = (byte)0x20;
-						}
-					}
-
-				}
-
-				// add statue decorations
-				maps[(byte)MapId.TempleOfFiendsRevisitedChaos][6, 14] = (byte)0x10;
-				maps[(byte)MapId.TempleOfFiendsRevisitedChaos][6, 16] = (byte)0x11;
-
-				// replace "The tune plays,\nrevealing a stairway." text (0x385BA) originally "9DAB1AB7B8B11AB3AFA4BCB6BF05B5A8B92BAF1FAA2024B7A4ACB55DBCC000"
-				Put(0x385BA, FF1Text.TextToBytes("The tune plays,\nopening the pathway.", useDTE: true));
-
-				// make lute plate a single color
-				MakeGarlandsBorderTransparent(); // so lute plate change doesn't conflict with Garland, he'll look the same on a black background
-				Put(0x02B2D, Blob.FromHex("27")); // change bottom lute plate palette
-			}
+			AddLutePlateToChaosFloor(maps);
 		}
 
 		private static readonly List<string> ShardNames = new List<string>
@@ -215,6 +187,19 @@ namespace FF1Lib
 				Item.WoodenRod, Item.Cloth, Item.WoodenShield, Item.Cap, Item.WoodenHelm, Item.Gloves };
 
 			return (trash.Contains(item) || item >= Item.Gold20 && item <= Item.Gold350) ? Item.Shard : item;
+		}
+
+		private void AddLutePlateToChaosFloor(List<Map> maps)
+		{
+			// add lute plate (can't use mapNpcIndex 0-2, those belong to Garland)
+			SetNpc(MapId.TempleOfFiendsRevisitedChaos, mapNpcIndex: 3, ObjectId.LutePlate, 15, 5, inRoom: true, stationary: true);
+
+			// replace "The tune plays,\nrevealing a stairway." text (0x385BA) originally "9DAB1AB7B8B11AB3AFA4BCB6BF05B5A8B92BAF1FAA2024B7A4ACB55DBCC000"
+			Put(0x385BA, FF1Text.TextToBytes("The tune plays,\nopening the pathway.", useDTE: true));
+
+			// make lute plate a single color
+			MakeGarlandsBorderTransparent(); // so lute plate change doesn't conflict with Garland, he'll look the same on a black background
+			Put(0x02B2D, Blob.FromHex("27")); // change bottom lute plate palette
 		}
 
 		private void MakeGarlandsBorderTransparent()

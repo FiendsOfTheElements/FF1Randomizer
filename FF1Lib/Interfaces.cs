@@ -26,6 +26,7 @@
 		bool? IncentivizeTitansTrove { get; }
 		bool? IncentivizeEarth { get; }
 		bool? IncentivizeSeaShrine { get; }
+		bool? IncentivizeCardia { get; }
 		IncentivePlacementType IceCaveIncentivePlacementType { get; }
 		IncentivePlacementType OrdealsIncentivePlacementType { get; }
 		IncentivePlacementType MarshIncentivePlacementType { get; }
@@ -36,6 +37,7 @@
 		IncentivePlacementTypeGated SkyPalaceIncentivePlacementType { get; }
 		IncentivePlacementType CorneriaIncentivePlacementType { get; }
 		IncentivePlacementType MarshLockedIncentivePlacementType { get; }
+		IncentivePlacementType CardiaIncentivePlacementType { get; }
 
 		bool? IncentivizeXcalber { get; }
 		bool? IncentivizeMasamune { get; }
@@ -73,6 +75,7 @@
 		bool Incentivize65K { get; }
 		bool IncentivizeBad { get; }
 		bool? NoMasamune { get; }
+		bool? NoXcalber { get; }
 	}
 	public interface IMapEditFlags : IItemPlacementFlags
 	{
@@ -80,6 +83,9 @@
 		bool? MapOnracDock { get; }
 		bool? MapMirageDock { get; }
 		bool? MapBahamutCardiaDock { get; }
+		bool? MapDragonsHoard { get; }
+		bool? MapLefeinRiver { get; }
+		bool? MapGaiaMountainPass { get; }
 		bool? TitansTrove { get; }
 		bool? GaiaShortcut { get; }
 		bool? MoveGaiaItemShop { get; }
@@ -99,8 +105,12 @@
 		bool? GuaranteedMasamune { get; }
 		bool? SendMasamuneHome { get; }
 		bool? NoMasamune { get; }
+		bool? NoXcalber { get; }
 		WorldWealthMode WorldWealth { get; }
 		ConsumableChestSet MoreConsumableChests { get; }
+		bool EnableExtConsumables { get; }
+		ExtConsumableChestSet ExtConsumableChests { get; }
+		bool IncentiveChestItemsFanfare { get; }
 	}
 	public interface IItemShuffleFlags
 	{
@@ -111,6 +121,7 @@
 		bool? EarlySarda { get; }
 		bool? EarlySage { get; }
 		bool? EarlyOrdeals { get; }
+		bool NoOverworld { get; }
 	}
 	public interface IScaleFlags
 	{
@@ -120,6 +131,9 @@
 		double ExpMultiplier { get; }
 		int PriceScaleFactorLow { get; }
 		int PriceScaleFactorHigh { get; }
+		bool? ExcludeGoldFromScaling { get; }
+		bool CheapVendorItem { get; }
+		bool EnableExtConsumables { get; }
 	}
 	public interface IFloorShuffleFlags
 	{
@@ -135,6 +149,9 @@
 		bool? DeepTownsPossible { get; }
 		bool? AllowDeepTowns { get; }
 		bool? AllowUnsafeStartArea { get; }
+		bool? IsFloaterRemoved { get; }
+	        bool? IsAirshipFree { get; }
+		bool? MapBahamutCardiaDock { get; }
 	}
 	public interface IVictoryConditionFlags
 	{
@@ -142,13 +159,15 @@
 		bool ShardHunt { get; }
 		bool? ShortToFR { get; }
 		bool? FreeBridge { get; }
-		bool? FreeAirship { get; }
-		bool? FreeShip { get; }
-		bool? FreeCanal { get; }
+		bool? IsAirshipFree { get; }
+		bool? IsShipFree { get; }
+		bool? IsCanalFree { get; }
 		bool? FreeCanoe { get; }
 		bool? FreeLute { get; }
 		bool? FreeTail { get; }
 		bool? NoTail { get; }
+		bool? IsFloaterRemoved { get; }
 		bool? LooseExcludePlacedDungeons { get; }
+		bool NoOverworld { get; }
 	}
 }

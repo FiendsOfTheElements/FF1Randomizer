@@ -349,7 +349,17 @@ namespace FF1Lib
 				{
 					if(validroutines.Count == 0)
 					{
-						spellNames[index] = "NULL";
+						var nulls = spellNames.Where(s => s != null && s.StartsWith("NUL")).Count();
+
+						if (nulls == 0)
+						{
+							spellNames[index] = "NULL";
+						}
+						else
+						{
+							spellNames[index] = $"NUL{nulls + 1}";
+						}
+
 						spellMessages[index] = 0x4A;
 						spell[index].routine = 0x00;
 						// if there are no valid routines, the NULL spell is created which does absolutely nothing.  all classes can learn it assuming it fits normal criteria.
@@ -1644,16 +1654,23 @@ namespace FF1Lib
 					}
 				}
 			}
+
+			var itemnames = ReadText(FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextPointerCount);
+
 			// write all spell data to the ROM
 			for (int i = 0; i < MagicCount; ++i)
 			{
 				Put(MagicOffset + MagicSize * i, spell[i].compressData());
 				while (spellNames[i].Length < 4)
 					spellNames[i] += " ";
-				Put(MagicNamesOffset + MagicNameSize * i, FF1Text.TextToBytes(spellNames[i]));
+
+				itemnames[176 + i] = spellNames[i];
 				spell[i].calc_Enemy_SpellTier();
 			}
-			if(!keepPermissions)
+
+			WriteText(itemnames, FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextOffset, FF1Rom.UnusedGoldItems);
+
+			if (!keepPermissions)
 				Put(MagicPermissionsOffset, spellPermissions); // write the permissions as one giant chunk
 			Put(MagicTextPointersOffset, spellMessages); // write the spell messages as one giant chunk
 

@@ -8,13 +8,14 @@ namespace FF1Lib
 {
 	public partial class FF1Rom : NesRom
 	{
+		public const int TreasureJingleOffset = 0x47200;
 		public const int TreasureOffset = 0x03100;
 		public const int TreasureSize = 1;
 		public const int TreasurePoolCount = 256;
 		public const int TreasureCount = 256;
 
 		public const int lut_MapObjTalkJumpTblAddress = 0x390D3;
-		public const string giveRewardRoutineAddress = "06B0";
+		public const string giveRewardRoutineAddress = "10B0";
 		public static readonly List<int> UnusedTreasureIndices =
 			Enumerable.Range(0, 1).Concat(
 			Enumerable.Range(145, 4)).Concat(
@@ -29,16 +30,13 @@ namespace FF1Lib
 													IncentiveData incentivesData,
 													ItemShopSlot caravanItemLocation,
 													OverworldMap overworldMap,
-													TeleportShuffle teleporters)
+													TeleportShuffle teleporters,
+													ISanityChecker checker)
 		{
 			Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullFloorRequirements = overworldMap.FullLocationRequirements;
 			Dictionary<MapLocation, OverworldTeleportIndex> overridenOverworld = overworldMap.OverriddenOverworldLocations;
 
 			var vanillaNPCs = !(flags.NPCItems ?? false) && !(flags.NPCFetchItems ?? false);
-			if (!vanillaNPCs)
-			{
-				NPCShuffleDialogs();
-			}
 
 			var treasureBlob = Get(TreasureOffset, TreasureSize * TreasureCount);
 			var treasurePool = UsedTreasureIndices.Select(x => (Item)treasureBlob[x])
@@ -51,8 +49,8 @@ namespace FF1Lib
 				Debug.Assert(shardsAdded == TotalOrbsToInsert);
 			}
 
-			ItemPlacement placement = ItemPlacement.Create(flags, incentivesData, treasurePool, caravanItemLocation, overworldMap);
-			var placedItems = placement.PlaceSaneItems(rng);
+			ItemPlacement placement = ItemPlacement.Create(flags, incentivesData, treasurePool, caravanItemLocation, overworldMap, checker);
+			var placedItems = placement.PlaceSaneItems(rng, this);
 			
 			// Output the results to the ROM
 			foreach (var item in placedItems.Where(x => !x.IsUnused && x.Address < 0x80000 && (!vanillaNPCs || x is TreasureChest)))
@@ -61,7 +59,7 @@ namespace FF1Lib
 				item.Put(this);
 			}
 			// Move the ship someplace closer to where it really ends up.
-			if (!(flags.FreeShip ?? false))
+			if (!(flags.IsShipFree ?? false))
 			{
 				MapLocation shipLocation = placedItems.Find(reward => reward.Item == Item.Ship).MapLocation;
 				if (overridenOverworld != null && overridenOverworld.TryGetValue(shipLocation, out var overworldIndex))

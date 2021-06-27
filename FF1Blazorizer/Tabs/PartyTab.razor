@@ -132,7 +132,8 @@
 					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.RecruitmentMode" Id="tavernModeReplaceOnlyNone" @bind-Value="Flags.RecruitmentModeReplaceOnlyNone">Only Replace Nones at Taverns</TriStateCheckBox>
 				</div>
 				<div class="checkbox-cell"></div>
-				<strong>Hireable Adventurers</strong>
+				<strong>Recruitable Adventurers</strong>
+				<p>Apply to both Tavern Recruitement and NPC Recruits</p>
 				<div class="table-wrapper">
 					<table>
 						<tr class="jobs">
@@ -146,12 +147,12 @@
 						</tr>
 						<tr class="odd">
 							<td class="td-party">Select to allow</td>
-							<td class="td-party"><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.RecruitmentMode" Id="TavernFighter" @bind-Value="Flags.TAVERN1"></TriStateCheckBox></td>
-							<td class="td-party"><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.RecruitmentMode" Id="TavernThief" @bind-Value="Flags.TAVERN2"></TriStateCheckBox></td>
-							<td class="td-party"><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.RecruitmentMode" Id="TavernBlackBelt" @bind-Value="Flags.TAVERN3"></TriStateCheckBox></td>
-							<td class="td-party"><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.RecruitmentMode" Id="TavernRedMage" @bind-Value="Flags.TAVERN4"></TriStateCheckBox></td>
-							<td class="td-party"><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.RecruitmentMode" Id="TavernWhiteMage" @bind-Value="Flags.TAVERN5"></TriStateCheckBox></td>
-							<td class="td-party"><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.RecruitmentMode" Id="TavernBlackMage" @bind-Value="Flags.TAVERN6"></TriStateCheckBox></td>
+							<td class="td-party"><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="TavernFighter" @bind-Value="Flags.TAVERN1"></TriStateCheckBox></td>
+							<td class="td-party"><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="TavernThief" @bind-Value="Flags.TAVERN2"></TriStateCheckBox></td>
+							<td class="td-party"><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="TavernBlackBelt" @bind-Value="Flags.TAVERN3"></TriStateCheckBox></td>
+							<td class="td-party"><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="TavernRedMage" @bind-Value="Flags.TAVERN4"></TriStateCheckBox></td>
+							<td class="td-party"><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="TavernWhiteMage" @bind-Value="Flags.TAVERN5"></TriStateCheckBox></td>
+							<td class="td-party"><TriStateCheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="TavernBlackMage" @bind-Value="Flags.TAVERN6"></TriStateCheckBox></td>
 						</tr>
 					</table>
 				</div>
