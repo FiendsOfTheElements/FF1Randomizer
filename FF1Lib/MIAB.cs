@@ -38,12 +38,12 @@ namespace FF1Lib
 	}
 	public enum TCOptions
 	{
-		[Description("None")]
+		[Description("Never")]
 		None,
-		[Description("All")]
-		All,
-		[Description("Pooled")]
+		[Description("Random")]
 		Pooled,
+		[Description("Always")]
+		All,
 	}
 	public enum TCRngOptions
 	{

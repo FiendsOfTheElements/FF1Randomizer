@@ -15,16 +15,14 @@
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="npcFetchItemsCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.NPCFetchItems">Fetch Quest Rewards</TriStateCheckBox>
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="shuffleObjectiveNPCsCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.ShuffleObjectiveNPCs">Objective NPCs</TriStateCheckBox>
 	<div class="checkbox-cell"></div>
-	<h4>Trapped Chests</h4>
+	<h4>Trapped Chests: @(Flags.Flags.TrappedChestsCount)</h4>
 	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="tcFormationPoolDropDown" TItem="FormationPool" @bind-Value="Flags.TCFormations">Formations:</EnumDropDown>
-	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="tcChestPoolDropDown" TItem="ChestsPool" @bind-Value="Flags.TCPoolSize">Trapped Chests Pool Size:</EnumDropDown>
-	<div class="checkbox-cell"></div>
-	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="tcRandomDropDown" TItem="TCRngOptions" @bind-Value="Flags.TCRandom">Random Chests:</EnumDropDown>
-	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="tcBetterTreasuresDropDown" TItem="TCOptions" @bind-Value="Flags.TCBetterTreasure">Better Treasures:</EnumDropDown>
-	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="tcKeyItemsDropDown" TItem="TCOptions" @bind-Value="Flags.TCKeyItems">Key Items:</EnumDropDown>
-	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="tcShardsDropDown" TItem="TCOptions" IsEnabled="@Flags.ShardHunt" @bind-Value="Flags.TCShards">Shards:</EnumDropDown>
+	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="tcChestPoolDropDown" TItem="ChestsPool" @bind-Value="Flags.TCPoolSize">Random Trapped Chests:</EnumDropDown>
+	<EnumDropDown Indent UpdateToolTip="@UpdateToolTipID" Id="tcBetterTreasuresDropDown" TItem="TCOptions" @bind-Value="Flags.TCBetterTreasure">Better Treasures:</EnumDropDown>
+	<EnumDropDown Indent UpdateToolTip="@UpdateToolTipID" Id="tcKeyItemsDropDown" TItem="TCOptions" @bind-Value="Flags.TCKeyItems">Key Items:</EnumDropDown>
+	<EnumDropDown Indent UpdateToolTip="@UpdateToolTipID" Id="tcShardsDropDown" TItem="TCOptions" IsEnabled="@Flags.ShardHunt" @bind-Value="Flags.TCShards">Shards:</EnumDropDown>
 
-
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="tcProtectIncentivesCheckBox" @bind-Value="Flags.TCProtectIncentives">Exclude Common Treasures</CheckBox>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="tcProtectIncentivesCheckBox" @bind-Value="Flags.TCProtectIncentives">Exclude Incentivized Items</CheckBox>
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="trappedMarkCheckBox" @bind-Value="Flags.TCIndicator">Trapped Chests are Marked</TriStateCheckBox>
 	<div class="checkbox-cell"></div>

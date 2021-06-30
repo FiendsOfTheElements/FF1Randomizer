@@ -814,6 +814,8 @@ namespace FF1Lib
 			+ ((IncentivizeSkyPalace ?? true) ? 1 : 0)
 			+ ((IncentivizeCardia ?? true) ? 1 : 0);
 
+		//public int TrappedChestsCount => Math.Max((0 + ((TCShards == TCOptions.All) ? 32 : 0) + ((TCKeyItems == TCOptions.All) ? 16 : 0)), (int)TCPoolSize);
+		public int TrappedChestsCount => (0 + ((TCShards == TCOptions.All) ? 32 : 0) + ((TCKeyItems == TCOptions.All) ? 16 : 0) + (int)TCPoolSize);
 
 		private static bool ConvertTriState(bool? tristate, MT19337 rng)
 		{
