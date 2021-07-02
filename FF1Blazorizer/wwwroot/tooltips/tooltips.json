@@ -114,6 +114,18 @@
 		"description": "Fills up the entire Inventory with equipment. Small chance to roll rare and legendary items as well."
 	},
 	{
+		"Id": "startingEquipmentRandomTypeWeapon",
+		"title": "Starting Equipment - Random Type Weapon",
+		"screenshot": null,
+		"description": "Adds a random weapon that will have a bonus vs some weakness (e.g. Rune Sword, Flame Sword, Light Axe, etc). Xcal is not in this pool.\nIncompatible with Weaponizer."
+	},
+	{
+		"Id": "startingEquipmentStarterPack",
+		"title": "Starting Equipment - Random Starter Pack",
+		"screenshot": null,
+		"description": "Adds four random shop purchasable body armors and four random common tier weapons.\n\nOne Armor will be added from a pool of armor that a fighter can wear, one armor from the red mage pool, then the last 2 armors will be equippable by mages. Armor selection is weighted and will tend more towards cheaper armors."
+	},
+	{
 		"Id": "startingEquipmentNoDuplicates",
 		"title": "Starting Equipment - No Legendary Duplicates",
 		"screenshot": null,

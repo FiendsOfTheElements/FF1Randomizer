@@ -35,6 +35,13 @@ namespace FF1Lib
 			Item.Ribbon, Item.Ribbon, Item.OpalGauntlets, Item.OpalGauntlets,
 		};
 
+		public static readonly IReadOnlyList<Item> TypeWeaknessWeapon =
+		new List<Item> {
+			Item.FlameSword, Item.IceSword, Item.DragonSword, Item.GiantSword,
+			Item.SunSword, Item.CoralSword, Item.WereSword, Item.RuneSword,
+			Item.LightAxe
+		};
+
 		public static readonly IReadOnlyList<Item> RareWeaponTier =
 		new List<Item> {
 			Item.FlameSword, Item.IceSword, Item.DragonSword, Item.GiantSword,

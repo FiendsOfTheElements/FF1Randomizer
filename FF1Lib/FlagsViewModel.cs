@@ -4681,6 +4681,26 @@ namespace FF1Lib
 			}
 		}
 
+		public bool? StartingEquipmentStarterPack
+		{
+			get => Flags.StartingEquipmentStarterPack;
+			set
+			{
+				Flags.StartingEquipmentStarterPack = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool? StartingEquipmentRandomTypeWeapon
+		{
+			get => Flags.StartingEquipmentRandomTypeWeapon;
+			set
+			{
+				Flags.StartingEquipmentRandomTypeWeapon = value;
+				RaisePropertyChanged();
+			}
+		}
+
 		public bool StartingEquipmentRemoveFromPool
 		{
 			get => Flags.StartingEquipmentRemoveFromPool;
