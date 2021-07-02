@@ -117,7 +117,7 @@
 		"Id": "startingEquipmentRandomTypeWeapon",
 		"title": "Starting Equipment - Random Type Weapon",
 		"screenshot": null,
-		"description": "Adds a random weapon that will have a bonus vs some weakness (e.g. Rune Sword, Flame Sword, Light Axe, etc). Xcal is not in this pool.\nIncompatible with Weaponizer."
+		"description": "Adds a random weapon that will have a bonus vs some weakness (e.g. Rune Sword, Flame Sword, Light Axe, etc). Xcal is not in this pool."
 	},
 	{
 		"Id": "startingEquipmentStarterPack",

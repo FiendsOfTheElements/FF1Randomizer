@@ -348,8 +348,22 @@ namespace FF1Lib
 
 		private void GetRandomTypeWeaknessWeapon(List<Item> items)
 		{
-			var weaponPool = ItemLists.TypeWeaknessWeapon.ToList();
-			items.Add(weaponPool.PickRandom(rng));
+			//testing each weapon to see if it has a weakness, lets this flag work with weaponizer
+			List<Item> weaponPool = new List<Item>();
+			for(int i = 0; i < 40; i++)
+			{
+				Weapon weapon = new Weapon(i, rom);
+				if((weapon.ElementalWeakness > 0x00 && weapon.ElementalWeakness < 0xff) || (weapon.TypeWeakness > 0x00 && weapon.TypeWeakness < 0xff)) //exclude xcal type weapons
+				{
+					//weapons start at item 28
+					weaponPool.Add((Item)weapon.WeaponIndex + 28);
+				}
+			}
+
+			if(weaponPool.Count > 0)
+			{
+				items.Add(weaponPool.PickRandom(rng));
+			}
 		}
 
 
