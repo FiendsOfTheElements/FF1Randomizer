@@ -92,9 +92,10 @@ namespace FF1Lib
 			if (flags.StartingEquipmentRandomAoe ?? false) GetRandomAoe(items);
 			if (flags.StartingEquipmentRandomCasterItem ?? false) GetRandomCasterItem(items);
 			if (flags.StartingEquipmentOneItem ?? false) GetOneItem(items);
+			if (flags.StartingEquipmentRandomTypeWeapon ?? false) GetRandomTypeWeaknessWeapon(items);
 			if (flags.StartingEquipmentGrandpasSecretStash ?? false) GetGrandpasSecretStash(items);
+			if (flags.StartingEquipmentStarterPack ?? false) GetRandomStarterPack(items);
 			if (flags.StartingEquipmentRandomCrap ?? false) GetRandomCrap(items);
-
 
 			var weaponsList = items.Where(i => i < Item.Cloth).Take(16).ToList();
 			var armorList = items.Where(i => i >= Item.Cloth).Take(16).ToList();
@@ -307,6 +308,61 @@ namespace FF1Lib
 
 				items.Add(item);
 				itemSet.Add(item);
+			}
+		}
+
+		private void GetRandomStarterPack(List<Item> items)
+		{
+			List<(Item, int)> weightedFighterBodyArmorPool = new List<(Item, int)>();
+			weightedFighterBodyArmorPool.Add((Item.WoodenArmor, 64)); //25%
+			weightedFighterBodyArmorPool.Add((Item.ChainArmor, 90)); //~35%
+			weightedFighterBodyArmorPool.Add((Item.SilverArmor, 69)); //~27%
+			weightedFighterBodyArmorPool.Add((Item.IronArmor, 30)); //~11%
+			weightedFighterBodyArmorPool.Add((Item.SteelArmor, 3)); //~1% made the weights out of 256 so you can get 3/256'd (in a good way) before the seed even starts
+
+			List<(Item, int)> weightedMediumBodyArmorPool = new List<(Item, int)>();
+			weightedMediumBodyArmorPool.Add((Item.WoodenArmor, 20)); //20%
+			weightedMediumBodyArmorPool.Add((Item.Copper, 25)); //25%
+			weightedMediumBodyArmorPool.Add((Item.ChainArmor, 25)); //25%
+			weightedMediumBodyArmorPool.Add((Item.Silver, 20)); //20%
+			weightedMediumBodyArmorPool.Add((Item.SilverArmor, 10)); //10%
+
+			List<(Item, int)> weightedMageBodyArmorPool = new List<(Item, int)>();
+			weightedMageBodyArmorPool.Add((Item.Cloth, 80)); //40%
+			weightedMageBodyArmorPool.Add((Item.Copper, 90)); //45%
+			weightedMageBodyArmorPool.Add((Item.Silver, 29)); //14.5%
+			weightedMageBodyArmorPool.Add((Item.Gold, 1)); //.5%
+
+			items.Add(weightedFighterBodyArmorPool.PickRandomItemWeighted(rng));
+			items.Add(weightedMediumBodyArmorPool.PickRandomItemWeighted(rng));
+			items.Add(weightedMageBodyArmorPool.PickRandomItemWeighted(rng));
+			items.Add(weightedMageBodyArmorPool.PickRandomItemWeighted(rng));
+
+			var WeaponPool = ItemLists.CommonWeaponTier.ToList();
+
+			items.Add(WeaponPool.SpliceRandom(rng));
+			items.Add(WeaponPool.SpliceRandom(rng));
+			items.Add(WeaponPool.SpliceRandom(rng));
+			items.Add(WeaponPool.SpliceRandom(rng));
+		}
+
+		private void GetRandomTypeWeaknessWeapon(List<Item> items)
+		{
+			//testing each weapon to see if it has a weakness, lets this flag work with weaponizer
+			List<Item> weaponPool = new List<Item>();
+			for(int i = 0; i < 40; i++)
+			{
+				Weapon weapon = new Weapon(i, rom);
+				if((weapon.ElementalWeakness > 0x00 && weapon.ElementalWeakness < 0xff) || (weapon.TypeWeakness > 0x00 && weapon.TypeWeakness < 0xff)) //exclude xcal type weapons
+				{
+					//weapons start at item 28
+					weaponPool.Add((Item)weapon.WeaponIndex + 28);
+				}
+			}
+
+			if(weaponPool.Count > 0)
+			{
+				items.Add(weaponPool.PickRandom(rng));
 			}
 		}
 

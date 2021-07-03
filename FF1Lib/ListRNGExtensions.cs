@@ -31,6 +31,19 @@ namespace FF1Lib
             fromSet.Remove(splice);
             return splice;
         }
-    }
+
+		[DebuggerStepThrough]
+		public static T PickRandomItemWeighted<T>(this IList<(T Item, int Weight)> weightedList, MT19337 rng)
+		{
+			int offset = 0;
+			(T Item, int RangeTo)[] rangedItems = weightedList
+				.OrderBy(item => item.Weight)
+				.Select(entry => (entry.Item, RangeTo: offset += entry.Weight))
+				.ToArray();
+
+			int randomNumber = rng.Between(1, weightedList.Sum(item => item.Weight));
+			return rangedItems.First(item => randomNumber <= item.RangeTo).Item;
+		}
+	}
 
 }

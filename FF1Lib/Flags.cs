@@ -44,6 +44,10 @@ namespace FF1Lib
 
 		public bool? StartingEquipmentRandomCrap { get; set; } = false;
 
+		public bool? StartingEquipmentStarterPack { get; set; } = false;
+
+		public bool? StartingEquipmentRandomTypeWeapon { get; set; } = false;
+
 		public bool StartingEquipmentRemoveFromPool { get; set; } = false;
 
 		public bool StartingEquipmentNoDuplicates { get; set; } = false;
