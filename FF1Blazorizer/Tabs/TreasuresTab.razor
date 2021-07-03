@@ -17,14 +17,12 @@
 	<div class="checkbox-cell"></div>
 	<h4>Trapped Chests</h4>
 	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="tcFormationPoolDropDown" TItem="FormationPool" @bind-Value="Flags.TCFormations">Formations:</EnumDropDown>
-	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="tcChestPoolDropDown" TItem="ChestsPool" @bind-Value="Flags.TCPoolSize">Trapped Chests Pool Size:</EnumDropDown>
-	<div class="checkbox-cell"></div>
-	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="tcRandomDropDown" TItem="TCRngOptions" @bind-Value="Flags.TCRandom">Random Chests:</EnumDropDown>
-	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="tcBetterTreasuresDropDown" TItem="TCOptions" @bind-Value="Flags.TCBetterTreasure">Better Treasures:</EnumDropDown>
-	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="tcKeyItemsDropDown" TItem="TCOptions" @bind-Value="Flags.TCKeyItems">Key Items:</EnumDropDown>
-	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="tcShardsDropDown" TItem="TCOptions" IsEnabled="@Flags.ShardHunt" @bind-Value="Flags.TCShards">Shards:</EnumDropDown>
+	<IntSliderRng Min="0" Max="260" Step="20" UpdateToolTip="@UpdateToolTipID" Id="tcChestCountSlider" @bind-Value="@Flags.TCChestCount">Trapped Chests:</IntSliderRng>
+	<EnumDropDown Indent UpdateToolTip="@UpdateToolTipID" Id="tcBetterTreasuresDropDown" TItem="TCOptions" @bind-Value="Flags.TCBetterTreasure">Rare Treasures:</EnumDropDown>
+	<EnumDropDown Indent UpdateToolTip="@UpdateToolTipID" Id="tcKeyItemsDropDown" TItem="TCOptions" @bind-Value="Flags.TCKeyItems">Key Items:</EnumDropDown>
+	<EnumDropDown Indent UpdateToolTip="@UpdateToolTipID" Id="tcShardsDropDown" TItem="TCOptions" IsEnabled="@Flags.ShardHunt" @bind-Value="Flags.TCShards">Shards:</EnumDropDown>
 
-
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="tcExcludeCommonCheckBox" @bind-Value="Flags.TCExcludeCommons">Exclude Common Treasures</CheckBox>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="tcProtectIncentivesCheckBox" @bind-Value="Flags.TCProtectIncentives">Exclude Incentivized Items</CheckBox>
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="trappedMarkCheckBox" @bind-Value="Flags.TCIndicator">Trapped Chests are Marked</TriStateCheckBox>
 	<div class="checkbox-cell"></div>

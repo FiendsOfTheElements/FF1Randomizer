@@ -38,19 +38,12 @@ namespace FF1Lib
 	}
 	public enum TCOptions
 	{
-		[Description("None")]
+		[Description("Never")]
 		None,
-		[Description("All")]
+		[Description("Random")]
+		Pooled,
+		[Description("Always")]
 		All,
-		[Description("Pooled")]
-		Pooled,
-	}
-	public enum TCRngOptions
-	{
-		[Description("None")]
-		None,
-		[Description("Pooled")]
-		Pooled,
 	}
 
 	public partial class FF1Rom : NesRom
@@ -79,7 +72,8 @@ namespace FF1Lib
 			var RangeKeyItems = ItemLocations.AllTreasures.Where(x => !x.IsUnused && ItemLists.AllQuestItems.Contains((Item)treasureList[x.Address - lut_TreasureOffset]));
 			var RangeShards = ItemLocations.AllTreasures.Where(x => !x.IsUnused && treasureList[x.Address - lut_TreasureOffset] == (int)Item.Shard);
 			var RangeBetterTreasure = ItemLocations.AllTreasures.Where(x => !x.IsUnused && betterEquipmentList.Contains((Item)treasureList[x.Address - lut_TreasureOffset]));
-			var RangeRandom = ItemLocations.AllTreasures.Where(x => !x.IsUnused && (!RangeKeyItems.Contains(x) || !RangeShards.Contains(x) || (flags.TCBetterTreasure == TCOptions.None && RangeBetterTreasure.Contains(x))));
+			var RangeRandom = ItemLocations.AllTreasures.Where(x => !x.IsUnused && !RangeKeyItems.Contains(x) && !RangeShards.Contains(x) && !RangeBetterTreasure.Contains(x));
+			var RangeMasamune = ItemLocations.AllTreasures.Where(x => !x.IsUnused && treasureList[x.Address - lut_TreasureOffset] == (int)Item.Masamune);
 
 			if (flags.TCKeyItems == TCOptions.Pooled)
 			{
@@ -96,7 +90,7 @@ namespace FF1Lib
 				validChests.AddRange(RangeBetterTreasure);
 			}
 
-			if (flags.TCRandom == TCRngOptions.Pooled)
+			if (flags.TCExcludeCommons == false)
 			{
 				validChests.AddRange(RangeRandom);
 			}
@@ -111,7 +105,21 @@ namespace FF1Lib
 				validChests.RemoveAll(x => GetIncentiveList(flags).Contains((Item)treasureList[x.Address - lut_TreasureOffset]));
 			}
 
-			int maxChests = (flags.TCPoolSize == ChestsPool.Random) ? Rng.Between(rng, 20, 240) : (int)flags.TCPoolSize;
+			int maxChests = 0;
+			int guaranteedChests = ((flags.TCKeyItems == TCOptions.All) ? RangeKeyItems.Count() : 0) + ((flags.TCShards == TCOptions.All) ? RangeShards.Count() : 0) + ((flags.TCBetterTreasure == TCOptions.All) ? RangeBetterTreasure.Count() : 0) + (((bool)flags.TCMasaGuardian) ? RangeMasamune.Count() : 0) + (((bool)flags.TrappedChaos) ? 1 : 0);
+
+			if (flags.TCChestCount == 13)
+			{
+				maxChests = Rng.Between(rng, 20, (240 - guaranteedChests));
+			}
+			else if (flags.TCChestCount > 0)
+			{
+				maxChests = Math.Max(0, (flags.TCChestCount * 20) - guaranteedChests);
+			}
+			else
+			{
+				maxChests = 0;
+			}
 
 			// Get encounters
 			const byte spookyZomBull = 0xB2;
@@ -166,7 +174,7 @@ namespace FF1Lib
 			byte GetEncounter() => (flags.TCFormations == FormationPool.AltFormationDist) ? encounters[altFormationPosition++] : encounters.PickRandom(rng);
 
 			// Process pool first
-			if (flags.TCPoolSize != ChestsPool.None)
+			if (maxChests > 0)
 			{
 				maxChests = Math.Min(maxChests, validChests.Count);
 
@@ -234,7 +242,7 @@ namespace FF1Lib
 			}
 
 
-			// Spoilers
+			//Spoilers
 			/*
 			int count = 0;
 			for (int i = 0; i < 0x100; i++)

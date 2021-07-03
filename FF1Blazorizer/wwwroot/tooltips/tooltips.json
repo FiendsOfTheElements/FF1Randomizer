@@ -628,40 +628,34 @@
 		"description": "Selects what formations are inside trapped chests.\n\n Allocated Formations: All alternate formations (116) are allocated to a random chest. If there's still trapped chests without a formation, a new batch of alternate formations is distributed.\n\n Random Formations: An alternate formation is randomly selected for each chest, without regard to frequency of a given formation.\n\n Random Fiends: Chests are guarded by a random Fiend.\n\n Phantom: Chests are guarded by Phantom.\n\n Random: Select one of the previous options randomly."
 	},
 	{
-		"Id": "tcChestPoolDropDown",
-		"title": "Trapped Chests Pool Size",
+		"Id": "tcChestCountSlider",
+		"title": "Trapped Chests Count",
 		"screenshot": "tcChestsPool.png",
-		"description": "Selects the number of trapped chests for pooled chests. Chests types not included in the pool won't count toward it."
-	},
-	{
-		"Id": "tcRandomDropDown",
-		"title": "Random Chests",
-		"screenshot": "trappedChestsCheckBox.gif",
-		"description": "Includes all chests in the pool except chests containing Key Items or Shards."
-	},
-	{
-		"Id": "tcRandomDropDown",
-		"title": "Random Chests",
-		"screenshot": "trappedChestsCheckBox.gif",
-		"description": "Includes all chests in the pool except chests containing Key Items or Shards."
+		"description": "Selects the number of trapped chests. Setting the slider to the rightmost position will select a random number of trapped chests.\n\nIn game count may slightly differ for some flags combinations."
 	},
 	{
 		"Id": "tcBetterTreasuresDropDown",
-		"title": "Bettre Treastures",
+		"title": "Rare Treasures",
 		"screenshot": "tcBestTreasures.png",
-		"description": "Pool: Includes all chests containing Legendary or Rare gears in the pool.\n\nAll: Traps all chests containing Legendary or Rare gears, ignoring pool size."
+		"description": "Never: Rare and Legendary items are never trapped.\n\nRandom: Rare and Legendary items may be trapped.\n\nAlways: All chests containing Legendary or Rare gears are trapped."
 	},
 	{
 		"Id": "tcKeyItemsDropDown",
 		"title": "Key Items",
 		"screenshot": "tcKeyItems.png",
-		"description": "Pool: Includes all chests containing a Key Item in the pool.\n\nAll: Traps all chests containing a Key Item, ignoring pool size."
+		"description": "Never: Key Items are never trapped.\n\nRandom: Key Items may be trapped.\n\nAlways: All chests containing Key Items are trapped."
 	},
 	{
 		"Id": "tcShardsDropDown",
 		"title": "Shards",
 		"screenshot": "trappedShardsCheckBox.gif",
-		"description": "Pool: Includes all chests containing a Shard in the pool.\n\nAll: Traps all chests containing a Shard, ignoring pool size."
+		"description": "Never: Shards are never trapped.\n\nRandom: Shards may be trapped.\n\nAlways: All chests containing Shards are trapped."
+	},
+	{
+		"Id": "tcExcludeCommonCheckBox",
+		"title": "Exclude Common Treasures",
+		"screenshot": "trappedChestsCheckBox.gif",
+		"description": "Common treasures (common equipment, consumables and GP chests) are never trapped."
 	},
 	{
 		"Id": "masaGuardianCheckBox",
