@@ -920,15 +920,6 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomTrapFormations"));
 			}
 		}
-		public ChestsPool TCPoolSize
-		{
-			get => Flags.TCPoolSize;
-			set
-			{
-				Flags.TCPoolSize = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TCPoolSize"));
-			}
-		}
 		public FormationPool TCFormations
 		{
 			get => Flags.TCFormations;
@@ -965,13 +956,32 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TCShards"));
 			}
 		}
-		public TCRngOptions TCRandom
+		public bool TCExcludeCommons
 		{
-			get => Flags.TCRandom;
+			get => Flags.TCExcludeCommons;
 			set
 			{
-				Flags.TCRandom = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TCRandom"));
+				Flags.TCExcludeCommons = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TCExcludeCommons"));
+			}
+		}
+		public int TCChestCount
+		{
+			get
+			{
+				if ((Flags.TCChestCount * 20) < Flags.TrappedChestsFloor)
+				{
+					return Flags.TrappedChestsFloor;
+				}
+				else
+				{
+					return Flags.TCChestCount * 20;
+				}
+			}
+			set
+			{
+				Flags.TCChestCount = (value / 20);
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TCInteger"));
 			}
 		}
 		public bool TCProtectIncentives
