@@ -1,6 +1,3 @@
-window.onload = function(e) {
-  window.parent.postMessage("prefs-ready");
-}
 window.onmessage = function(e) {
     var payload = JSON.parse(e.data);
     switch(payload.method) {

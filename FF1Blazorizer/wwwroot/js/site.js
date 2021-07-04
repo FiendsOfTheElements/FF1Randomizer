@@ -208,13 +208,8 @@ function getPrefsWin() {
 window.FFRPreferencesCallbacks = {};
 window.onmessage = function(e) {
     if (e.data == "prefs-ready") {
-        Object.keys(window.FFRPreferencesCallbacks).forEach(keyname => {
-            console.log("resending request for "+keyname);
-            getPrefsWin().postMessage(JSON.stringify({key: keyname, method: "get"}), "*");
-        });
         return;
     }
-
     var response = JSON.parse(e.data);
     if (window.FFRPreferencesCallbacks[response.key]) {
         var resolve = window.FFRPreferencesCallbacks[response.key];
