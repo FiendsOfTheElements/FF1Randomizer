@@ -45,7 +45,7 @@
 		"Id": "cropScreen",
 		"title": "Crop Screen",
 		"screenshot": null,
-		"description": "Gives the Load/New Game and Party Selection a discernible background color to make life easier for restreamers."
+		"description": "Gives the Party Selection screen a discernible background color to make life easier for restreamers."
 	},
 	{
 		"Id": "spellNameMadness",

@@ -2348,8 +2348,8 @@ namespace FF1Lib
 
 		public void ActivateCropScreen()
 		{
-			PutInBank(0x0E, 0xA222, Blob.FromHex("20D0A0"));
-			PutInBank(0x0E, 0xA0D0, Blob.FromHex("2006E9A9038DD00360"));
+			//PutInBank(0x0E, 0xA222, Blob.FromHex("20D0A0"));
+			//PutInBank(0x0E, 0xA0D0, Blob.FromHex("2006E9A9038DD00360"));
 
 			PutInBank(0x1F, 0xE8FD, Blob.FromHex("4CE0DD"));
 			PutInBank(0x1F, 0xDDE0, Blob.FromHex("20B9EAA9038DD00360"));
