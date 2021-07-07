@@ -1511,12 +1511,61 @@ namespace FF1Lib
 			PutInBank(0x0E, 0x9300, Blob.FromUShorts(pointers));
 
 		}
+
+		ushort[] InfoClassEquipPerms = new ushort[] {
+		    (ushort)EquipPermission.Fighter,
+		    (ushort)EquipPermission.Knight,
+		    (ushort)EquipPermission.Thief,
+		    (ushort)EquipPermission.Ninja,
+		    (ushort)EquipPermission.BlackBelt,
+		    (ushort)EquipPermission.Master,
+		    (ushort)EquipPermission.RedMage,
+		    (ushort)EquipPermission.RedWizard,
+		    (ushort)EquipPermission.WhiteMage,
+		    (ushort)EquipPermission.WhiteWizard,
+		    (ushort)EquipPermission.BlackMage,
+		    (ushort)EquipPermission.BlackWizard,
+		};
+		string[] InfoClassAbbrev = new string[] {
+		    "Fi",
+		    "Kn",
+		    "Th",
+		    "Ni",
+		    "Bb",
+		    "Ma",
+		    "Rm",
+		    "Rw",
+		    "Wm",
+		    "Ww",
+		    "Bm",
+		    "Bw"
+		};
+
 		public string GenerateWeaponDescription(int weaponid)
 		{
 			const int spellOffset = 0xB0; // $40 entries
 
-			var element = new List<(int, string, string)> { (0x00, "¤" + ((int)shopInfoWordsIndex.elementNone).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementNoneShort).ToString("X2")), (0x01, "¤" + ((int)shopInfoWordsIndex.elementStatus).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementStatusShort).ToString("X2")), (0x02, "¤" + ((int)shopInfoWordsIndex.elementPoison).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementPoisonShort).ToString("X2")), (0x04, "¤" + ((int)shopInfoWordsIndex.elementTime).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementTimeShort).ToString("X2")), (0x08, "¤" + ((int)shopInfoWordsIndex.elementDeath).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementDeathShort).ToString("X2")), (0x10, "¤" + ((int)shopInfoWordsIndex.elementFire).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementFireShort).ToString("X2")), (0x20, "¤" + ((int)shopInfoWordsIndex.elementIce).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementIceShort).ToString("X2")), (0x40, "¤" + ((int)shopInfoWordsIndex.elementLit).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementLitShort).ToString("X2")), (0x80, "¤" + ((int)shopInfoWordsIndex.elementEarth).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementEarthShort).ToString("X2")) };
-			var hurt = new List<(int, string)> { (0x00, "¤" + ((int)shopInfoWordsIndex.elementNone).ToString("X2")), (0x01, "¤" + ((int)shopInfoWordsIndex.hurtSpecial).ToString("X2")), (0x02, "¤" + ((int)shopInfoWordsIndex.hurtDragon).ToString("X2")), (0x04, "¤" + ((int)shopInfoWordsIndex.hurtGiant).ToString("X2")), (0x08, "¤" + ((int)shopInfoWordsIndex.hurtUndead).ToString("X2")), (0x10, "¤" + ((int)shopInfoWordsIndex.hurtWere).ToString("X2")), (0x20, "¤" + ((int)shopInfoWordsIndex.hurtWater).ToString("X2")), (0x40, "¤" + ((int)shopInfoWordsIndex.hurtMage).ToString("X2")), (0x80, "¤" + ((int)shopInfoWordsIndex.hurtRegen).ToString("X2")) };
+			var element = new List<(int, string, string)> {
+			    (0x00, "¤" + ((int)shopInfoWordsIndex.elementNone).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementNoneShort).ToString("X2")),
+			    (0x01, "¤" + ((int)shopInfoWordsIndex.elementStatus).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementStatusShort).ToString("X2")),
+			    (0x02, "¤" + ((int)shopInfoWordsIndex.elementPoison).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementPoisonShort).ToString("X2")),
+			    (0x04, "¤" + ((int)shopInfoWordsIndex.elementTime).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementTimeShort).ToString("X2")),
+			    (0x08, "¤" + ((int)shopInfoWordsIndex.elementDeath).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementDeathShort).ToString("X2")),
+			    (0x10, "¤" + ((int)shopInfoWordsIndex.elementFire).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementFireShort).ToString("X2")),
+			    (0x20, "¤" + ((int)shopInfoWordsIndex.elementIce).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementIceShort).ToString("X2")),
+			    (0x40, "¤" + ((int)shopInfoWordsIndex.elementLit).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementLitShort).ToString("X2")),
+			    (0x80, "¤" + ((int)shopInfoWordsIndex.elementEarth).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementEarthShort).ToString("X2"))
+			};
+			var hurt = new List<(int, string)> {
+			    (0x00, "¤" + ((int)shopInfoWordsIndex.elementNone).ToString("X2")),
+			    (0x01, "¤" + ((int)shopInfoWordsIndex.hurtSpecial).ToString("X2")),
+			    (0x02, "¤" + ((int)shopInfoWordsIndex.hurtDragon).ToString("X2")),
+			    (0x04, "¤" + ((int)shopInfoWordsIndex.hurtGiant).ToString("X2")),
+			    (0x08, "¤" + ((int)shopInfoWordsIndex.hurtUndead).ToString("X2")),
+			    (0x10, "¤" + ((int)shopInfoWordsIndex.hurtWere).ToString("X2")),
+			    (0x20, "¤" + ((int)shopInfoWordsIndex.hurtWater).ToString("X2")),
+			    (0x40, "¤" + ((int)shopInfoWordsIndex.hurtMage).ToString("X2")),
+			    (0x80, "¤" + ((int)shopInfoWordsIndex.hurtRegen).ToString("X2")) };
 			var shortDelimiter = new List<string> { "\n ", ", ", "\n ", ", ", "\n ", ", " };
 
 			var weapondata = new Weapon(weaponid, this);
@@ -1536,12 +1585,21 @@ namespace FF1Lib
 
 			bool showElement = (weapondata.SpellIndex == 0x00) || (activeHurt.Count == 0);
 
-			if (activeHurt.Count == 0)
-				description += "\n";
-			else if (activeHurt.Count >= 1 && activeHurt.Count <= 7)
-				description += "\n\nHurt " + activeHurt.First().Item2;
+			description += "\n";
+			for (int i = 0; i < 6; i++) {
+			    if ((weapondata.ClassUsability & InfoClassEquipPerms[i*2]) != 0)  {
+				description += InfoClassAbbrev[i*2];
+			    } else if ((weapondata.ClassUsability & InfoClassEquipPerms[i*2+1]) != 0) {
+				description += InfoClassAbbrev[i*2+1];
+			    } else {
+				description += "  ";
+			    }
+			}
+
+			if (activeHurt.Count >= 1 && activeHurt.Count <= 7)
+				description += "\nHurt " + activeHurt.First().Item2;
 			else if (activeHurt.Count == 8)
-				description += "\n\nHurt All";
+				description += "\nHurt All";
 
 			if (activeElement.Count == 0)
 				description += "";
@@ -1559,13 +1617,43 @@ namespace FF1Lib
 		{
 			const int spellOffset = 0xB0; // $40 entries
 
-			var element = new List<(int, string, string)> { (0x00, "¤" + ((int)shopInfoWordsIndex.elementNone).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementNoneShort).ToString("X2")), (0x01, "¤" + ((int)shopInfoWordsIndex.elementStatus).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementStatusShort).ToString("X2")), (0x02, "¤" + ((int)shopInfoWordsIndex.elementPoison).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementPoisonShort).ToString("X2")), (0x04, "¤" + ((int)shopInfoWordsIndex.elementTime).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementTimeShort).ToString("X2")), (0x08, "¤" + ((int)shopInfoWordsIndex.elementDeath).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementDeathShort).ToString("X2")), (0x10, "¤" + ((int)shopInfoWordsIndex.elementFire).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementFireShort).ToString("X2")), (0x20, "¤" + ((int)shopInfoWordsIndex.elementIce).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementIceShort).ToString("X2")), (0x40, "¤" + ((int)shopInfoWordsIndex.elementLit).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementLitShort).ToString("X2")), (0x80, "¤" + ((int)shopInfoWordsIndex.elementEarth).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementEarthShort).ToString("X2")) };
-			var status = new List<(int, string, string)> { (0x01, "¤" + ((int)shopInfoWordsIndex.statusDead).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusDeadShort).ToString("X2")), (0x02, "¤" + ((int)shopInfoWordsIndex.statusStone).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusStoneShort).ToString("X2")), (0x04, "¤" + ((int)shopInfoWordsIndex.statusPoison).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusPoisonShort).ToString("X2")), (0x08, "¤" + ((int)shopInfoWordsIndex.statusBlind).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusBlindShort).ToString("X2")), (0x10, "¤" + ((int)shopInfoWordsIndex.statusStun).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusStunShort).ToString("X2")), (0x20, "¤" + ((int)shopInfoWordsIndex.statusSleep).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusSleepShort).ToString("X2")), (0x40, "¤" + ((int)shopInfoWordsIndex.statusMute).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusMuteShort).ToString("X2")), (0x80, "¤" + ((int)shopInfoWordsIndex.statusConfuse).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusConfuseShort).ToString("X2")) };
+			var element = new List<(int, string, string)> {
+			    (0x00, "¤" + ((int)shopInfoWordsIndex.elementNone).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementNoneShort).ToString("X2")),
+			    (0x01, "¤" + ((int)shopInfoWordsIndex.elementStatus).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementStatusShort).ToString("X2")),
+			    (0x02, "¤" + ((int)shopInfoWordsIndex.elementPoison).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementPoisonShort).ToString("X2")),
+			    (0x04, "¤" + ((int)shopInfoWordsIndex.elementTime).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementTimeShort).ToString("X2")),
+			    (0x08, "¤" + ((int)shopInfoWordsIndex.elementDeath).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementDeathShort).ToString("X2")),
+			    (0x10, "¤" + ((int)shopInfoWordsIndex.elementFire).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementFireShort).ToString("X2")),
+			    (0x20, "¤" + ((int)shopInfoWordsIndex.elementIce).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementIceShort).ToString("X2")),
+			    (0x40, "¤" + ((int)shopInfoWordsIndex.elementLit).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementLitShort).ToString("X2")),
+			    (0x80, "¤" + ((int)shopInfoWordsIndex.elementEarth).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementEarthShort).ToString("X2"))
+			};
+			var status = new List<(int, string, string)> {
+			    (0x01, "¤" + ((int)shopInfoWordsIndex.statusDead).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusDeadShort).ToString("X2")),
+			    (0x02, "¤" + ((int)shopInfoWordsIndex.statusStone).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusStoneShort).ToString("X2")),
+			    (0x04, "¤" + ((int)shopInfoWordsIndex.statusPoison).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusPoisonShort).ToString("X2")),
+			    (0x08, "¤" + ((int)shopInfoWordsIndex.statusBlind).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusBlindShort).ToString("X2")),
+			    (0x10, "¤" + ((int)shopInfoWordsIndex.statusStun).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusStunShort).ToString("X2")),
+			    (0x20, "¤" + ((int)shopInfoWordsIndex.statusSleep).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusSleepShort).ToString("X2")),
+			    (0x40, "¤" + ((int)shopInfoWordsIndex.statusMute).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusMuteShort).ToString("X2")),
+			    (0x80, "¤" + ((int)shopInfoWordsIndex.statusConfuse).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusConfuseShort).ToString("X2"))
+			};
 			var shortDelimiter = new List<string> { "\n ", ", ", "\n ", ", ", "\n ", ", " };
 
 			var armordata = new Armor(armorid, this);
 
 			var description = "¤" + ((int)shopInfoWordsIndex.arDef).ToString("X2") + armordata.Absorb + "\n¤" + ((int)shopInfoWordsIndex.arEva).ToString("X2") + armordata.Weight;
+
+			description += "\n";
+			for (int i = 0; i < 6; i++) {
+			    if ((armordata.ClassUsability & InfoClassEquipPerms[i*2]) != 0)  {
+				description += InfoClassAbbrev[i*2];
+			    } else if ((armordata.ClassUsability & InfoClassEquipPerms[i*2+1]) != 0) {
+				description += InfoClassAbbrev[i*2+1];
+			    } else {
+				description += "  ";
+			    }
+			}
 
 			var activeElementStatus = new List<(int, string, string)>();
 
@@ -1573,29 +1661,32 @@ namespace FF1Lib
 				if ((effect.Item1 & armordata.ElementalResist) > 0)
 					activeElementStatus.Add(effect);
 
-			if (activeElementStatus.Count == 0)
-				description += "\n";
+			if (activeElementStatus.Count == 0) {
+			}
 			else if (activeElementStatus.Count == 1)
-				description += "\n\nResistance\n " + activeElementStatus[0].Item2;
+			{
+				description += "\nResistance\n " + activeElementStatus[0].Item2;
+			}
 			else if (activeElementStatus.Count <= 3)
 			{
-				description += "\n\nResist " + activeElementStatus[0].Item3;
+				description += "\nResist " + activeElementStatus[0].Item3;
 
 				for (int i = 1; i < activeElementStatus.Count; i++)
 					description += shortDelimiter[i - 1] + activeElementStatus[i].Item3;
 			}
 			else if (activeElementStatus.Count <= 6)
 			{
-				description += "\n\nResist " + activeElementStatus[0].Item3 + "\n " + activeElementStatus[1].Item3 + "and " + (activeElementStatus.Count - 2) + "+";
+				description += "\nResist " + activeElementStatus[0].Item3 + "\n " + activeElementStatus[1].Item3 + "and " + (activeElementStatus.Count - 2) + "+";
 			}
 			else if (activeElementStatus.Count == 7)
 			{
-				description += "\n\nResist all\n except ";
+				description += "\nResist all\n except ";
 				foreach ((int, string, string) effect in status)
 					description += (effect.Item1 & armordata.ElementalResist) == 0 ? (effect.Item3) : "";
 			}
-			else
-				description += "\n\nResist all";
+			else {
+			    description += "\nResist all";
+			}
 
 			if (armordata.SpellIndex != 0x00)
 				description += "\n" + "Cast $" + ((int)armordata.SpellIndex + spellOffset - 1).ToString("X2");
@@ -1604,11 +1695,69 @@ namespace FF1Lib
 		}
 		public string GenerateSpellDescription(int spellid, Blob spelldata)
 		{
-			var target = new List<(int, string)> { (0x01, "¤" + ((int)shopInfoWordsIndex.targetAllEnemies).ToString("X2")), (0x02, "¤" + ((int)shopInfoWordsIndex.targetSingleEnemy).ToString("X2")), (0x04, "¤" + ((int)shopInfoWordsIndex.targetCaster).ToString("X2")), (0x08, "¤" + ((int)shopInfoWordsIndex.targetAllAllies).ToString("X2")), (0x10, "¤" + ((int)shopInfoWordsIndex.targetOneAlly).ToString("X2")) };
-			var element = new List<(int, string, string)> { (0x00, "¤" + ((int)shopInfoWordsIndex.elementNone).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementNoneShort).ToString("X2")), (0x01, "¤" + ((int)shopInfoWordsIndex.elementStatus).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementStatusShort).ToString("X2")), (0x02, "¤" + ((int)shopInfoWordsIndex.elementPoison).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementPoisonShort).ToString("X2")), (0x04, "¤" + ((int)shopInfoWordsIndex.elementTime).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementTimeShort).ToString("X2")), (0x08, "¤" + ((int)shopInfoWordsIndex.elementDeath).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementDeathShort).ToString("X2")), (0x10, "¤" + ((int)shopInfoWordsIndex.elementFire).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementFireShort).ToString("X2")), (0x20, "¤" + ((int)shopInfoWordsIndex.elementIce).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementIceShort).ToString("X2")), (0x40, "¤" + ((int)shopInfoWordsIndex.elementLit).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementLitShort).ToString("X2")), (0x80, "¤" + ((int)shopInfoWordsIndex.elementEarth).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementEarthShort).ToString("X2")) };
-			var status = new List<(int, string, string)> { (0x01, "¤" + ((int)shopInfoWordsIndex.statusDead).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusDeadShort).ToString("X2")), (0x02, "¤" + ((int)shopInfoWordsIndex.statusStone).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusStoneShort).ToString("X2")), (0x04, "¤" + ((int)shopInfoWordsIndex.statusPoison).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusPoisonShort).ToString("X2")), (0x08, "¤" + ((int)shopInfoWordsIndex.statusBlind).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusBlindShort).ToString("X2")), (0x10, "¤" + ((int)shopInfoWordsIndex.statusStun).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusStunShort).ToString("X2")), (0x20, "¤" + ((int)shopInfoWordsIndex.statusSleep).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusSleepShort).ToString("X2")), (0x40, "¤" + ((int)shopInfoWordsIndex.statusMute).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusMuteShort).ToString("X2")), (0x80, "¤" + ((int)shopInfoWordsIndex.statusConfuse).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusConfuseShort).ToString("X2")) };
-			var routine = new List<(int, string)> { (0x00, "¤" + ((int)shopInfoWordsIndex.routineNull).ToString("X2")), (0x01, "¤" + ((int)shopInfoWordsIndex.routineDamage).ToString("X2")), (0x02, "¤" + ((int)shopInfoWordsIndex.routineDmgUndead).ToString("X2")), (0x03, "¤" + ((int)shopInfoWordsIndex.routineStats).ToString("X2")), (0x04, "¤" + ((int)shopInfoWordsIndex.routineSlow).ToString("X2")), (0x05, "¤" + ((int)shopInfoWordsIndex.routineFear).ToString("X2")), (0x06, "¤" + ((int)shopInfoWordsIndex.routineCure).ToString("X2")), (0x07, "¤" + ((int)shopInfoWordsIndex.routineCure).ToString("X2")), (0x08, "¤" + ((int)shopInfoWordsIndex.routineHealStats).ToString("X2")), (0x09, "¤" + ((int)shopInfoWordsIndex.routineDefense).ToString("X2")), (0x0A, "¤" + ((int)shopInfoWordsIndex.routineResistElement).ToString("X2")), (0x0C, "¤" + ((int)shopInfoWordsIndex.routineFast).ToString("X2")), (0x0D, "¤" + ((int)shopInfoWordsIndex.routineRaiseAttack).ToString("X2")), (0x0E, "¤" + ((int)shopInfoWordsIndex.routineReduceEvade).ToString("X2")), (0x0F, "¤" + ((int)shopInfoWordsIndex.routineFullCure).ToString("X2")), (0x10, "¤" + ((int)shopInfoWordsIndex.routineRaiseEvade).ToString("X2")), (0x11, "¤" + ((int)shopInfoWordsIndex.routineVoidResist).ToString("X2")), (0x12, "¤" + ((int)shopInfoWordsIndex.routinePowerWord).ToString("X2")) };
-			var oobroutine = new List<(int, string)> { (0x00, "¤" + ((int)shopInfoWordsIndex.routineCure).ToString("X2")), (0x01, "¤" + ((int)shopInfoWordsIndex.routineCure).ToString("X2")), (0x02, "¤" + ((int)shopInfoWordsIndex.routineCure).ToString("X2")), (0x03, "¤" + ((int)shopInfoWordsIndex.routineFullCure).ToString("X2")), (0x04, "¤" + ((int)shopInfoWordsIndex.routineCure).ToString("X2")), (0x05, "¤" + ((int)shopInfoWordsIndex.routineCure).ToString("X2")), (0x06, "¤" + ((int)shopInfoWordsIndex.routineCure).ToString("X2")), (0x07, "¤" + ((int)shopInfoWordsIndex.routineHealPoison).ToString("X2")), (0x08, "¤" + ((int)shopInfoWordsIndex.routineRevive).ToString("X2")), (0x09, "¤" + ((int)shopInfoWordsIndex.routineFullRevive).ToString("X2")), (0x0A, "¤" + ((int)shopInfoWordsIndex.routineWarp).ToString("X2")), (0x0B, "¤" + ((int)shopInfoWordsIndex.routineHealStone).ToString("X2")), (0x0C, "¤" + ((int)shopInfoWordsIndex.routineTeleport).ToString("X2")) };
+			var target = new List<(int, string)> {
+			    (0x01, "¤" + ((int)shopInfoWordsIndex.targetAllEnemies).ToString("X2")),
+			    (0x02, "¤" + ((int)shopInfoWordsIndex.targetSingleEnemy).ToString("X2")),
+			    (0x04, "¤" + ((int)shopInfoWordsIndex.targetCaster).ToString("X2")),
+			    (0x08, "¤" + ((int)shopInfoWordsIndex.targetAllAllies).ToString("X2")),
+			    (0x10, "¤" + ((int)shopInfoWordsIndex.targetOneAlly).ToString("X2"))
+			};
+			var element = new List<(int, string, string)> {
+			    (0x00, "¤" + ((int)shopInfoWordsIndex.elementNone).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementNoneShort).ToString("X2")),
+			    (0x01, "¤" + ((int)shopInfoWordsIndex.elementStatus).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementStatusShort).ToString("X2")),
+			    (0x02, "¤" + ((int)shopInfoWordsIndex.elementPoison).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementPoisonShort).ToString("X2")),
+			    (0x04, "¤" + ((int)shopInfoWordsIndex.elementTime).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementTimeShort).ToString("X2")),
+			    (0x08, "¤" + ((int)shopInfoWordsIndex.elementDeath).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementDeathShort).ToString("X2")),
+			    (0x10, "¤" + ((int)shopInfoWordsIndex.elementFire).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementFireShort).ToString("X2")),
+			    (0x20, "¤" + ((int)shopInfoWordsIndex.elementIce).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementIceShort).ToString("X2")),
+			    (0x40, "¤" + ((int)shopInfoWordsIndex.elementLit).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementLitShort).ToString("X2")),
+			    (0x80, "¤" + ((int)shopInfoWordsIndex.elementEarth).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementEarthShort).ToString("X2"))
+			};
+			var status = new List<(int, string, string)> {
+			    (0x01, "¤" + ((int)shopInfoWordsIndex.statusDead).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusDeadShort).ToString("X2")),
+			    (0x02, "¤" + ((int)shopInfoWordsIndex.statusStone).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusStoneShort).ToString("X2")),
+			    (0x04, "¤" + ((int)shopInfoWordsIndex.statusPoison).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusPoisonShort).ToString("X2")),
+			    (0x08, "¤" + ((int)shopInfoWordsIndex.statusBlind).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusBlindShort).ToString("X2")),
+			    (0x10, "¤" + ((int)shopInfoWordsIndex.statusStun).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusStunShort).ToString("X2")),
+			    (0x20, "¤" + ((int)shopInfoWordsIndex.statusSleep).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusSleepShort).ToString("X2")),
+			    (0x40, "¤" + ((int)shopInfoWordsIndex.statusMute).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusMuteShort).ToString("X2")),
+			    (0x80, "¤" + ((int)shopInfoWordsIndex.statusConfuse).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusConfuseShort).ToString("X2"))
+			};
+			var routine = new List<(int, string)> {
+			    (0x00, "¤" + ((int)shopInfoWordsIndex.routineNull).ToString("X2")),
+			    (0x01, "¤" + ((int)shopInfoWordsIndex.routineDamage).ToString("X2")),
+			    (0x02, "¤" + ((int)shopInfoWordsIndex.routineDmgUndead).ToString("X2")),
+			    (0x03, "¤" + ((int)shopInfoWordsIndex.routineStats).ToString("X2")),
+			    (0x04, "¤" + ((int)shopInfoWordsIndex.routineSlow).ToString("X2")),
+			    (0x05, "¤" + ((int)shopInfoWordsIndex.routineFear).ToString("X2")),
+			    (0x06, "¤" + ((int)shopInfoWordsIndex.routineCure).ToString("X2")),
+			    (0x07, "¤" + ((int)shopInfoWordsIndex.routineCure).ToString("X2")),
+			    (0x08, "¤" + ((int)shopInfoWordsIndex.routineHealStats).ToString("X2")),
+			    (0x09, "¤" + ((int)shopInfoWordsIndex.routineDefense).ToString("X2")),
+			    (0x0A, "¤" + ((int)shopInfoWordsIndex.routineResistElement).ToString("X2")),
+			    (0x0C, "¤" + ((int)shopInfoWordsIndex.routineFast).ToString("X2")),
+			    (0x0D, "¤" + ((int)shopInfoWordsIndex.routineRaiseAttack).ToString("X2")),
+			    (0x0E, "¤" + ((int)shopInfoWordsIndex.routineReduceEvade).ToString("X2")),
+			    (0x0F, "¤" + ((int)shopInfoWordsIndex.routineFullCure).ToString("X2")),
+			    (0x10, "¤" + ((int)shopInfoWordsIndex.routineRaiseEvade).ToString("X2")),
+			    (0x11, "¤" + ((int)shopInfoWordsIndex.routineVoidResist).ToString("X2")),
+			    (0x12, "¤" + ((int)shopInfoWordsIndex.routinePowerWord).ToString("X2"))
+			};
+			var oobroutine = new List<(int, string)> {
+			    (0x00, "¤" + ((int)shopInfoWordsIndex.routineCure).ToString("X2")),
+			    (0x01, "¤" + ((int)shopInfoWordsIndex.routineCure).ToString("X2")),
+			    (0x02, "¤" + ((int)shopInfoWordsIndex.routineCure).ToString("X2")),
+			    (0x03, "¤" + ((int)shopInfoWordsIndex.routineFullCure).ToString("X2")),
+			    (0x04, "¤" + ((int)shopInfoWordsIndex.routineCure).ToString("X2")),
+			    (0x05, "¤" + ((int)shopInfoWordsIndex.routineCure).ToString("X2")),
+			    (0x06, "¤" + ((int)shopInfoWordsIndex.routineCure).ToString("X2")),
+			    (0x07, "¤" + ((int)shopInfoWordsIndex.routineHealPoison).ToString("X2")),
+			    (0x08, "¤" + ((int)shopInfoWordsIndex.routineRevive).ToString("X2")),
+			    (0x09, "¤" + ((int)shopInfoWordsIndex.routineFullRevive).ToString("X2")),
+			    (0x0A, "¤" + ((int)shopInfoWordsIndex.routineWarp).ToString("X2")),
+			    (0x0B, "¤" + ((int)shopInfoWordsIndex.routineHealStone).ToString("X2")),
+			    (0x0C, "¤" + ((int)shopInfoWordsIndex.routineTeleport).ToString("X2"))
+			};
 			var shortDelimiter = new List<string> { "\n ", ", ", "\n ", ", ", "\n ", ", " };
 			var oobSpells = new List<int>();
 
