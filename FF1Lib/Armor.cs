@@ -18,7 +18,7 @@ namespace FF1Lib
 
 	public partial class FF1Rom : NesRom
 	{
-		public const int ArmorPermissionsOffset = 0x3BFB0;
+		public const int ArmorPermissionsOffset = 0x3BFA0;
 		public const int ArmorPermissionsCount = 40;
 
 		public void RandomArmorBonus(MT19337 rng, int min, int max)
