@@ -946,7 +946,7 @@
 		"Id": "transformFinalFormationCheckBox",
 		"title": "Alternate Final Boss",
 		"screenshot": "transformFinalFormationCheckBox.png",
-		"description": "Changes the Chaos fight to involve one of several enemy formations instead of just Chaos. These formations are:\n Double Dragons: Kary2 and Tiamat2\n FunDead: 2 buffed Lich2s and 4 buffed Phantoms\n WarMECH and Friends: 2 WarMECHs and 6 Evilmen\n Whack-a-Garland: Chaos and 8 Garlands"
+		"description": "Changes the Chaos fight to involve one of several enemy formations instead of just Chaos. These formations are:\n Double Dragons: Kary2 and Tiamat2\n FunDead: 2 buffed Lich2s and 4 buffed Phantoms\n WarMECH and Friends: 2 WarMECHs and 6 Evilmen\n Whack-a-Garland: Chaos and 8 Garlands\n The Sahagin Wagon: Kraken1, Kraken2, 2-4 R.Sahags, 2-4 WzSahags\n Snake Pit: Tiamat1 and Tiamat2 amongst Asps and Cobras"
 	},
 	{
 		"Id": "chaosRushCheckBox",

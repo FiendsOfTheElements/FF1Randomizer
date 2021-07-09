@@ -25,6 +25,8 @@ namespace FF1Lib
 		{
 			[Description("None")]
 			None,
+			[Description("Random")]
+			Random,
 			[Description("WarMech and Friends")]
 			WarMECHsAndFriends,
 			[Description("Double Dragons")]
@@ -33,8 +35,10 @@ namespace FF1Lib
 			TheFundead,
 			[Description("Whack-a-Garland")]
 			TimeLoop,
-			[Description("Random")]
-			Random,
+			[Description("The Sahagin Wagon")]
+			KrakensAndSahags,
+			[Description("Snake Pit")]
+			SnakePit,
 		};
 
 		private const int FormationsOffset = 0x2C400;
@@ -164,7 +168,7 @@ namespace FF1Lib
 			Blob finalBattle = Get(FormationsOffset + ChaosFormationIndex * FormationSize, FormationSize);
 			if (formation == FinalFormation.Random)
 			{
-				formation = (FinalFormation)rng.Between(1, Enum.GetValues(typeof(FinalFormation)).Length - 2); // First is None, last is Random
+				formation = (FinalFormation)rng.Between(2, Enum.GetValues(typeof(FinalFormation)).Length - 1); // First two are None and Random
 				System.Diagnostics.Debug.Assert(formation != FinalFormation.None);
 				System.Diagnostics.Debug.Assert(formation != FinalFormation.Random);
 			}
@@ -219,6 +223,35 @@ namespace FF1Lib
 					finalBattle[QuantityOffset + 2] = 0x88;
 					finalBattle[PalettesOffset + 0] = 0x00;
 					finalBattle[PalettesOffset + 1] = 0x00;
+					finalBattle[PaletteAsignmentOffset] = 0x01; // Palette Assignment in top nibble, 1 in bottom for unrunnable.
+					break;
+				case FinalFormation.KrakensAndSahags:
+					finalBattle[TypeOffset] = 0x21;         // 2/4 + Sahag Pattern
+					finalBattle[GFXOffset] = 0x0F;          // BigEye BigEye Sahag Sahag
+					finalBattle[IDsOffset + 0] = 0x7B;      // Kraken 1
+					finalBattle[IDsOffset + 1] = 0x7C;      // Kraken 2
+					finalBattle[IDsOffset + 2] = 0x0D;      // R.Sahag
+					finalBattle[IDsOffset + 3] = 0x0E;      // WzSahag
+					finalBattle[QuantityOffset + 0] = 0x11;
+					finalBattle[QuantityOffset + 1] = 0x11;
+					finalBattle[QuantityOffset + 2] = 0x24;
+					finalBattle[QuantityOffset + 3] = 0x44;
+					finalBattle[PalettesOffset + 0] = 0x08;
+					finalBattle[PalettesOffset + 1] = 0x0B;
+					finalBattle[PaletteAsignmentOffset] = 0x51; // Palette Assignment in top nibble, 1 in bottom for unrunnable.
+					break;
+				case FinalFormation.SnakePit:
+					finalBattle[TypeOffset] = 0x03;         // 9 Small + Asp pattern
+					finalBattle[GFXOffset] = 0x00;          // Asp Asp Asp Asp
+					finalBattle[IDsOffset + 0] = 0x1E;      // Asp
+					finalBattle[IDsOffset + 1] = 0x7D;      // Tiamat 1
+					finalBattle[IDsOffset + 2] = 0x7E;      // Tiamat 2
+					finalBattle[IDsOffset + 3] = 0x1F;      // Cobra
+					finalBattle[QuantityOffset + 0] = 0x16;
+					finalBattle[QuantityOffset + 1] = 0x11;
+					finalBattle[QuantityOffset + 2] = 0x11;
+					finalBattle[QuantityOffset + 3] = 0x66;
+					finalBattle[PalettesOffset + 0] = 0x3C;
 					finalBattle[PaletteAsignmentOffset] = 0x01; // Palette Assignment in top nibble, 1 in bottom for unrunnable.
 					break;
 			}
