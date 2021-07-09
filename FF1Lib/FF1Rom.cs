@@ -305,6 +305,8 @@ namespace FF1Lib
 			    Weaponizer(rng, (bool)flags.WeaponizerNamesUseQualityOnly, (bool)flags.WeaponizerCommonWeaponsHavePowers);
 			}
 
+			ArmorCrafter(rng);
+
 			if ((bool)flags.MagisizeWeapons)
 			{
 				MagisizeWeapons(rng, (bool)flags.MagisizeWeaponsBalanced);
@@ -559,7 +561,7 @@ namespace FF1Lib
 			{
 				shopData.Shops.Find(x => x.Type == FF1Lib.ShopType.Item && x.Entries.Contains(Item.Bottle)).Entries.Remove(Item.Bottle);
 				shopData.StoreData();
-			}		
+			}
 
 			//has to be done before modifying itemnames and after modifying spellnames...
 			extConsumables.LoadSpells();
@@ -703,7 +705,7 @@ namespace FF1Lib
 			}
 
 			if (flags.SpeedHacks)
-			{				
+			{
 				EnableSpeedHacks(preferences);
 			}
 
