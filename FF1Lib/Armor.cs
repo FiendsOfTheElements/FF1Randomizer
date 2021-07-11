@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 using RomUtilities;
+using FF1Lib.Helpers;
+using System.Linq;
 
 namespace FF1Lib
 {
@@ -93,6 +95,10 @@ namespace FF1Lib
 
 	public void ArmorCrafter(MT19337 rng) {
 
+	    var tierList = new List<IReadOnlyList<Item>> { ItemLists.CommonArmorTier,
+							   ItemLists.RareArmorTier,
+							   ItemLists.LegendaryArmorTier };
+
 	    // armor classes, determines who can equip
 	    // cloth -- everyone
 	    // light -- fi/th/bb/rm
@@ -136,153 +142,276 @@ namespace FF1Lib
 		{ 40,     10,    3,        3,        1,     2,    2,    1 },  // knight
 	    };
 
-	    // Determines what kind of powers to assign.
-	    const int COMMON = 0;
-	    const int RARE = 1;
-	    const int LEGENDARY = 2;
-	    const int WHITE_CASTING = 3;
-	    const int BLACK_CASTING = 4;
-	    const int BUFF_CASTING = 5;
-	    const int RIBBON = 6;
-
-	    // type, class
-	    var allArmors = new int[,] {
-		{ ARMOR, CLOTH, COMMON }, // cloth
-		{ ARMOR, LIGHT, COMMON }, // wooden armor
-		{ ARMOR, MEDIUM, COMMON }, // chain armor
-		{ ARMOR, HEAVY, COMMON }, // iron armor
-		{ ARMOR, HEAVY, COMMON }, // steel armor
-		{ ARMOR, MEDIUM, COMMON }, // silver armor
-		{ ARMOR, HEAVY, RARE }, // flame armor
-		{ ARMOR, HEAVY, RARE }, // ice armor
-		{ ARMOR, KNIGHT, LEGENDARY }, // opal armor
-		{ ARMOR, KNIGHT, LEGENDARY }, // dragon armor
-		{ BRACELET, CLOTH, COMMON }, // copper bracelet
-		{ BRACELET, LIGHT, COMMON }, // silver bracelet
-		{ BRACELET, MEDIUM, RARE }, // gold bracelet
-		{ BRACELET, HEAVY, RARE }, // opal bracelet
-		{ SHIRT, CLOTH, WHITE_CASTING }, // white shirt
-		{ SHIRT, CLOTH, BLACK_CASTING }, // black shirt
-		{ SHIELD, LIGHT, COMMON }, // wooden shield
-		{ SHIELD, HEAVY, COMMON }, // iron shield
-		{ SHIELD, MEDIUM, COMMON }, // silver shield
-		{ SHIELD, HEAVY, RARE }, // flame shield
-		{ SHIELD, HEAVY, RARE }, // ice shield
-		{ SHIELD, KNIGHT, LEGENDARY }, // opal shield
-		{ SHIELD, KNIGHT, LEGENDARY }, // aegis shield
-		{ SHIELD, LIGHT, COMMON }, // buckler
-		{ CAPE,  CLOTH, RARE }, // procape
-		{ HELM,  CLOTH, COMMON }, // cap
-		{ HELM,  LIGHT, COMMON }, // wooden helm
-		{ HELM,  HEAVY, COMMON }, // iron helm
-		{ HELM,  MEDIUM, COMMON }, // silver helm
-		{ HELM,  KNIGHT, LEGENDARY }, // opal helm
-		{ HELM,  HEAVY,  WHITE_CASTING }, // heal helm
-		{ HELM,  CLOTH,  RIBBON }, // ribbon
-		{ GAUNTLET,  CLOTH,  COMMON }, // gloves
-		{ GAUNTLET,  LIGHT,  COMMON }, // copper gauntlet
-		{ GAUNTLET,  HEAVY,  COMMON }, // iron gauntlet
-		{ GAUNTLET,  MEDIUM,  COMMON }, // silver gauntlet
-		{ GAUNTLET,  MEDIUM,  BLACK_CASTING }, // zeus gauntlet
-		{ GAUNTLET,  MEDIUM,  BUFF_CASTING }, // power gauntlet
-		{ GAUNTLET,  KNIGHT,  LEGENDARY }, // opal gauntlet
-		{ RING,       CLOTH,  RARE }, // proring
+	    var resists = new byte[] {
+		(byte)Element.STATUS,
+		(byte)Element.POISON,
+		(byte)Element.TIME,
+		(byte)Element.DEATH,
+		(byte)Element.FIRE,
+		(byte)Element.ICE,
+		(byte)Element.LIGHTNING,
+		(byte)Element.EARTH,
+	    };
+	    var resistNames = new Dictionary<int, string> {
+		{ (int)Element.STATUS, "Active" }, // resist status attacks
+		{ (int)Element.POISON, "Aegis" },  // resist stone/poison
+		{ (int)Element.TIME, "Time" },   // resis time
+		{ (int)Element.DEATH, "Prot" },   // resist death
+		{ (int)Element.FIRE, "Ice" },    // resist fire
+		{ (int)Element.ICE, "Flame" },   // resist ice
+		{ (int)Element.LIGHTNING, "Thundr" }, // resist lightning
+		{ (int)Element.EARTH, "Earth" },  // resist earth
+	    };
+	    var classNames = new string[][] {
+		new string[] { "Cloth",  "Velvet", "Silk" },
+		new string[] { "Leathr", "Copper" },
+		new string[] { "Silver", "Mithrl" },
+		new string[] { "Iron",   "Steel", "Gold" },
+		new string[] { "Opal",   "Dragon" },
 	    };
 
-	    for (int i = 0; i < 40; i++) {
-		var armorType = allArmors[i, 0];
-		var armorClass = allArmors[i, 1];
-		var armorPower = allArmors[i, 2];
-
-		var name = "armor";
-		byte weight = 0;
-		byte absorb = 0;
-		byte elementalResist = 0;
-		byte spellIndex = 0;
-		ArmorType type = ArmorType.ARMOR;
-		ushort permissions = 0;
-
-		absorb = (byte)RangeScale(armorDefenseBase[armorClass, armorType], .7, 1.4, 1.0, rng);
-		weight = (byte)RangeScale(armorEvadePenaltyBase[armorClass, armorType], .7, 1.4, 1.0, rng);
-
-		switch (armorClass) {
-		    case CLOTH:
-			name = "Cloth";
-			permissions = 0xFFF;
+	    var spellHelper = new SpellHelper(this);
+	    var allSpells = GetSpells();
+	    var generatedItems = new HashSet<FF1Lib.Item>();
+	    var generatedNames = new HashSet<string>();
+	    for (int tier = 2; tier >= 0; tier--) {
+		List<int> requireType;
+		List<int> requireClasses;
+		switch(tier) {
+		    case 2:
+			requireType = new List<int> {ARMOR, SHIELD, HELM, GAUNTLET};
+			requireClasses = new List<int> {KNIGHT, KNIGHT, KNIGHT, KNIGHT};
 			break;
-		    case LIGHT:
-			permissions = (ushort)(EquipPermission.Fighter|EquipPermission.Knight|
-					       EquipPermission.Thief|EquipPermission.Ninja|
-					       EquipPermission.BlackBelt|EquipPermission.Master|
-					       EquipPermission.RedMage|EquipPermission.RedWizard);
-			name = "Light";
+		    case 0:
+			requireType = new List<int> {BRACELET, BRACELET, BRACELET};
+			requireClasses = new List<int> {CLOTH, LIGHT, MEDIUM};
 			break;
-		    case MEDIUM:
-			name = "Medium";
-			permissions = (ushort)(EquipPermission.Fighter|EquipPermission.Knight|
-					       EquipPermission.Ninja|
-					       EquipPermission.RedMage|EquipPermission.RedWizard);
-			break;
-		    case HEAVY:
-			name = "Heavy";
-			permissions = (ushort)(EquipPermission.Fighter|EquipPermission.Knight|
-					       EquipPermission.Ninja);
-			break;
-		    case KNIGHT:
-			name = "Knight";
-			permissions = (ushort)EquipPermission.Knight;
+		    default:
+			requireType = new List<int>();
+			requireClasses = new List<int>();
 			break;
 		}
+		for (int count = 0; count < tierList[tier].Count; ) {
+		    var itemId = tierList[tier][count];
 
-		switch (armorType) {
-		    case ARMOR:
-			name = $"{name,-6}{Armor.IconCodes[ArmorIcon.ARMOR]}";
-			type = ArmorType.ARMOR;
-			break;
-		    case SHIELD:
-			name = $"{name,-6}{Armor.IconCodes[ArmorIcon.SHIELD]}";
-			type = ArmorType.SHIELD;
-			break;
-		    case HELM:
-			name = $"{name,-6}{Armor.IconCodes[ArmorIcon.HELM]}";
-			type = ArmorType.HELM;
-			break;
-		    case GAUNTLET:
-			name = $"{name,-6}{Armor.IconCodes[ArmorIcon.GAUNTLET]}";
-			type = ArmorType.GAUNTLET;
-			break;
-		    case BRACELET:
-			name = $"{name,-6}{Armor.IconCodes[ArmorIcon.BRACELET]}";
-			type = ArmorType.ARMOR;
-			break;
-		    case SHIRT:
-			name = $"{name,-6}{Armor.IconCodes[ArmorIcon.SHIRT]}";
-			type = ArmorType.ARMOR;
-			break;
-		    case CAPE:
-			name = "ProCape ";
-			type = ArmorType.SHIELD;
-			break;
-		    case RING:
-			name = "ProRing ";
-			type = ArmorType.GAUNTLET;
-			break;
+		    if (generatedItems.Contains(itemId)) {
+			count++;
+			continue;
+		    }
+
+		    int armorType;
+		    int armorClass;
+
+		    // incentive armor that needs to be re-created:
+		    //
+		    // opal bracelet
+		    // power bonk
+		    // white shirt
+		    // black shirt
+		    // ribbon
+
+		    var accessories = new List<int> {HELM, CAPE, RING};
+
+		    armorType = rng.Between(0, 7);
+		    armorClass = rng.Between(0, 3);
+		    if (requireType.Count > 0) {
+			armorType = requireType[0];
+			armorClass = requireClasses[0];
+			requireType.RemoveAt(0);
+			requireClasses.RemoveAt(0);
+		    } else if (itemId == Item.Opal) {
+			armorType = BRACELET;
+			armorClass = HEAVY;
+		    } else if (itemId == Item.PowerGauntlets) {
+			armorType = GAUNTLET;
+		    } else if (itemId == Item.WhiteShirt) {
+			armorType = SHIRT;
+			armorClass = HEAVY;
+		    } else if (itemId == Item.BlackShirt) {
+			armorType = SHIRT;
+			armorClass = HEAVY;
+		    } else if (itemId == Item.Ribbon) {
+			armorType = accessories[rng.Between(0, accessories.Count-1)];
+			armorClass = CLOTH;
+		    }
+
+		    var name = "";
+		    byte weight = 0;
+		    byte absorb = 0;
+		    byte elementalResist = 0;
+		    byte spellIndex = 0xFF;
+		    ArmorType type = ArmorType.ARMOR;
+		    ushort permissions = 0;
+
+		    absorb = (byte)RangeScale(armorDefenseBase[armorClass, armorType], .7, 1.4, 1.0, rng);
+		    weight = (byte)RangeScale(armorEvadePenaltyBase[armorClass, armorType], .7, 1.4, 1.0, rng);
+
+		    int nameClass = armorClass;
+		    name = classNames[nameClass][rng.Between(0, classNames[nameClass].Length-1)];
+		    switch (armorClass) {
+			case CLOTH:
+			    permissions = 0xFFF;
+			    break;
+			case LIGHT:
+			    permissions = (ushort)(EquipPermission.Fighter|EquipPermission.Knight|
+						   EquipPermission.Thief|EquipPermission.Ninja|
+						   EquipPermission.BlackBelt|EquipPermission.Master|
+						   EquipPermission.RedMage|EquipPermission.RedWizard);
+			    break;
+			case MEDIUM:
+			    permissions = (ushort)(EquipPermission.Fighter|EquipPermission.Knight|
+						   EquipPermission.Ninja|
+						   EquipPermission.RedMage|EquipPermission.RedWizard);
+			    break;
+			case HEAVY:
+			    permissions = (ushort)(EquipPermission.Fighter|EquipPermission.Knight|
+						   EquipPermission.Ninja);
+			    break;
+			case KNIGHT:
+			    permissions = (ushort)EquipPermission.Knight;
+			    break;
+		    }
+
+		    var spells = new List<FF1Lib.Spell>();
+		    if (itemId == Item.PowerGauntlets) {
+			// cast FAST, SABR or TMPR
+			spells = new List<FF1Lib.Spell>(spellHelper.FindSpells(SpellRoutine.Fast, SpellTargeting.Any).
+					       Concat(spellHelper.FindSpells(SpellRoutine.Fast, SpellTargeting.Any)).
+					       Select(s => s.Id));
+
+		    } else if (itemId == Item.WhiteShirt) {
+			// cast INV2, FOG2, or WALL
+			spells = new List<FF1Lib.Spell>(spellHelper.FindSpells(SpellRoutine.Ruse, SpellTargeting.AllCharacters).
+					       Concat(spellHelper.FindSpells(SpellRoutine.ArmorUp, SpellTargeting.AllCharacters)).
+					       Concat(spellHelper.FindSpells(SpellRoutine.DefElement, SpellTargeting.Any, (SpellElement)0xFF)).
+					       Select(s => s.Id));
+		    } else if (itemId == Item.BlackShirt) {
+			// Any AOE damage
+			spells = new List<FF1Lib.Spell>(spellHelper.FindSpells(SpellRoutine.Damage, SpellTargeting.AllEnemies).
+					       Select(s => s.Id));
+		    } else if (itemId == Item.Ribbon) {
+		    } else if (tier >= 1 && (armorType == HELM || armorType == GAUNTLET
+					     || armorType == SHIRT || armorType == CAPE || armorType == RING))
+		    {
+			var roll = rng.Between(0, 100);
+			if (roll < 50) {
+			    spells = new List<FF1Lib.Spell>(spellHelper.FindSpells(SpellRoutine.Damage, SpellTargeting.AllEnemies).
+						   Concat(spellHelper.FindSpells(SpellRoutine.DamageUndead, SpellTargeting.AllEnemies)).
+						   Concat(spellHelper.FindSpells(SpellRoutine.Heal, SpellTargeting.AllCharacters)).
+						   Concat(spellHelper.FindSpells(SpellRoutine.ArmorUp, SpellTargeting.AllCharacters)).
+						   Concat(spellHelper.FindSpells(SpellRoutine.Lock, SpellTargeting.OneEnemy)).
+						   Concat(spellHelper.FindSpells(SpellRoutine.Lock, SpellTargeting.AllEnemies)).
+						   Concat(spellHelper.FindSpells(SpellRoutine.Ruse, SpellTargeting.Any)).
+						   Select(s => s.Id));
+			}
+		    }
+		    if (spells.Count > 0) {
+			spellIndex = (byte)(spells.SpliceRandom(rng));
+			spellIndex = (byte)(spellIndex-(byte)Spell.CURE);
+			name = allSpells[spellIndex].Name;
+		    }
+
+		    var chooseResist = new List<byte>(resists);
+		    if (itemId == Item.Ribbon) {
+			elementalResist |= 0xFF;
+			name = "Ribo";
+		    } else if (tier == 2 && (armorType == ARMOR || armorType == SHIRT)) {
+			elementalResist |= chooseResist.SpliceRandom(rng);
+			name = resistNames[elementalResist];
+			elementalResist |= chooseResist.SpliceRandom(rng);
+			elementalResist |= chooseResist.SpliceRandom(rng);
+		    } else if (tier == 1 && (armorType == SHIRT)) {
+			elementalResist |= chooseResist.SpliceRandom(rng);
+			name = resistNames[elementalResist];
+			elementalResist |= chooseResist.SpliceRandom(rng);
+		    } else if (tier >= 1 && armorType != BRACELET && spellIndex == 0xFF) {
+			elementalResist |= chooseResist.SpliceRandom(rng);
+			name = resistNames[elementalResist];
+		    }
+
+		    switch (armorType) {
+			case ARMOR:
+			    name = $"{name,-6}{Armor.IconCodes[ArmorIcon.ARMOR]}";
+			    type = ArmorType.ARMOR;
+			    break;
+			case SHIELD:
+			    name = $"{name,-6}{Armor.IconCodes[ArmorIcon.SHIELD]}";
+			    type = ArmorType.SHIELD;
+			    break;
+			case HELM:
+			    name = $"{name,-6}{Armor.IconCodes[ArmorIcon.HELM]}";
+			    type = ArmorType.HELM;
+			    break;
+			case GAUNTLET:
+			    name = $"{name,-6}{Armor.IconCodes[ArmorIcon.GAUNTLET]}";
+			    type = ArmorType.GAUNTLET;
+			    break;
+			case BRACELET:
+			    name = $"{name,-6}{Armor.IconCodes[ArmorIcon.BRACELET]}";
+			    type = ArmorType.ARMOR;
+			    permissions = 0xFFF;
+			    break;
+			case SHIRT:
+			    type = ArmorType.ARMOR;
+			    if (itemId == Item.WhiteShirt) {
+				name = "White";
+				permissions = (ushort)(EquipPermission.WhiteWizard);
+			    } else if (itemId == Item.BlackShirt) {
+				name = "Black";
+				permissions = (ushort)(EquipPermission.BlackWizard);
+			    } else {
+				permissions = (ushort)(EquipPermission.WhiteWizard | EquipPermission.BlackWizard);
+			    }
+			    name = $"{name,-6}{Armor.IconCodes[ArmorIcon.SHIRT]}";
+			    break;
+			case CAPE:
+			    name = name.Substring(0, Math.Min(4, name.Length));
+			    name = $"{name,-4}Cape";
+			    type = ArmorType.SHIELD;
+			    permissions = 0xFFF;
+			    break;
+			case RING:
+			    name = name.Substring(0, Math.Min(4, name.Length));
+			    name = $"{name,-4}Ring";
+			    type = ArmorType.GAUNTLET;
+			    permissions = 0xFFF;
+			    break;
+		    }
+
+		    if (generatedNames.Contains(name)) {
+			continue;
+		    }
+		    generatedNames.Add(name);
+
+		    var armor = new Armor(itemId-Item.Cloth, name, ArmorIcon.NONE, weight, absorb,
+					  elementalResist, (byte)(spellIndex == 0xFF ? 0 : spellIndex+1), type);
+		    armor.setClassUsability(permissions);
+		    armor.writeArmorMemory(this);
+
+		    generatedItems.Add(itemId);
+		    count++;
 		}
-
-		var armor = new Armor(i, name, ArmorIcon.NONE, weight, absorb, elementalResist, spellIndex, type);
-		armor.setClassUsability(permissions);
-		armor.writeArmorMemory(this);
 	    }
+		for (int i = 0; i < 40; i++) {
+		    var a = new Armor(i, this);
+		    var casting = "";
+		    if (a.SpellIndex != 0) {
+			casting = allSpells[a.SpellIndex-1].Name;
+		    }
 
-	    for (int i = 0; i < 40; i++) {
-		var a = new Armor(i, this);
-		Console.WriteLine($"{i}: [] {a.Name,8} {a.Icon} weight: {a.Weight} absorb: {a.Absorb} resist: {a.ElementalResist:X} casting: {a.SpellIndex} type: {a.Type} permissions: {a.ClassUsability:X}");
-		Utilities.WriteSpoilerLine($"{i}: [] {a.Name,8} {a.Icon} {a.Weight} {a.Absorb} {a.ElementalResist} {a.SpellIndex} {a.Type} {a.ClassUsability}");
-	    }
+		    var resistName = "";
+		    for (int j = 0; j < resists.Length; j++) {
+			if ((a.ElementalResist & resists[j]) != 0) {
+			    resistName += " " + (Element)resists[j];
+			}
+		    }
 
+		    var logLine = $"{i}: {a.Name,8} absorb: {a.Absorb} weight: {a.Weight} resist:{resistName} casting: {casting} type: {a.Type} permissions: {a.ClassUsability:X}";
+		    Console.WriteLine(logLine);
+		    Utilities.WriteSpoilerLine(logLine);
+		}
 
 	}
-
 	}
 
 	class Armor

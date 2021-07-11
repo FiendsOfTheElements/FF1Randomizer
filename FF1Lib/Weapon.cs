@@ -343,6 +343,7 @@ namespace FF1Lib
 		    };
 
 		    var Spells = GetSpells();
+
 		    var defenseSwordSpells = new string[] { "RUSE", "INV2", "FOG2", "WALL" };
 		    var thorHammerSpells = new string[] { "NUKE", "FADE", "ICE3", "LIT3", "FIR3", "ICE2", "LIT2", "FIR2" };
 		    var thorHammerBins = new int[]      {     1,      2,     12,     24,     34,     56,     80,    100  };
