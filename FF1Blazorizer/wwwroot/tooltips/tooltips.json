@@ -1848,7 +1848,7 @@
 		"title": "Overworld Map",
 		"screenshot": "owMapExchange.png",
 		"description": "Alternative Overworld Maps that can be used in place of the Vanilla overworld.\n\nMelmond Start: Coneria Castle, Coneria, and the Temple of Fiends are on the Melmond continent and a river links it to the Dwarf's Cave region.\n\nElfland Start: Coneria Castle, Coneria, and the Temple of Fiends are at Elfland's location and the Dwarf's Cave is cut off from the Coneria region.\n\nCrescent Start: Coneria Castle, Coneria, the Temple of Fiends, and the Marsh Cave are at Crescent Lake's location.\n\nNo Overworld: Removes the Overworld completely and connects all locations in a single dungeon.\n\nRandom: Selects at random one of the alternative start maps (excludes No Overworld)."
-	}
+	},
 
 	{
 		"Id": "procGenEarth1",
@@ -1901,5 +1901,5 @@
 		"title": "Extensive Hints",
 		"screenshot": "extendedHintsCheckBox.png",
 		"description": "Replace NPCs' dialogues with hints. There a 6 Hint Categories:\nLoose Floor - Provides the floor where a loose item is located\nLoose Name - Provides the name of the loose item and the dungeon\nIncentivized Name - Provides the name of the incentivized item and the dungeon, NPC, or town\nFloor Hints - Wow: Quest or legendary; Meh: Rare equipment; Sparkle: More than 5k gold treasure; Dud: None of the above\nEquipment Floor - States on what floor legendary items are located\nEquipment Name - Gives the name of the equipment and the dungeon name\nThe hint categories are placed in the order specified. If there are no valid places left, remaining hints are not placed anymore."
-	},
+	}
 ]
