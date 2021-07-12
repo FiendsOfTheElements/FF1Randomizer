@@ -23,156 +23,6 @@
 		"screenshot": "blindseed.png",
 		"description": "Hides all flags to create a mystery flagset that can then be distributed. Useful for tournament and challenge race settings.\n This flag cannot be disabled once clicked; you will need to hit the Reset button to restore functionality to the site (and this will, in turn, wipe the hidden flags selected). Make sure to save your flagset before you use this flag."
 	},
-	{
-		"Id": "expChestConversion",
-		"title": "Experience Chest Conversion",
-		"screenshot": null,
-		"description": "How many percent of the gold chest should be converted to experience chests."
-	},
-	{
-		"Id": "expChestReward",
-		"title": "Experience Chest Reward",
-		"screenshot": null,
-		"description": "How much experience an experience chest can give."
-	},
-	{
-		"Id": "enemyObfuscation",
-		"title": "Enemy Obfuscation",
-		"screenshot": "enemyObfuscation.png",
-		"description": "Obfuscates enemies' identity.\n\nImp: Disguises all enemies as various IMPs.\n\nImp (inc. Fiends and Chaos): Disguises all enemies, including the Fiends and Chaos, as IMPs."
-	},
-	{
-		"Id": "cropScreen",
-		"title": "Crop Screen",
-		"screenshot": null,
-		"description": "Gives the Load/New Game and Party Selection a discernible background color to make life easier for restreamers."
-	},
-	{
-		"Id": "spellNameMadness",
-		"title": "Spell Name Obfuscation",
-		"screenshot": "spellNameMadness.png",
-		"description": "Obfuscates spells.\n\nMixed Up: Shuffles spell names.\n\nMadness: Creates random codewords."
-	},
-	{
-		"Id": "exlegendaryWeaponShopCheckBox",
-		"title": "Exclusive Legendary Weapon Shop",
-		"screenshot": null,
-		"description": "Removes legendary shop entries from all other shops and treasure chest."
-	},
-	{
-		"Id": "exlegendaryArmorShopCheckBox",
-		"title": "Exclusive Legendary Armor Shop",
-		"screenshot": null,
-		"description": "Removes legendary shop entries from all other shops and treasure chest."
-	},
-	{
-		"Id": "exlegendaryBlackShopCheckBox",
-		"title": "Exclusive Legendary Black Shop",
-		"screenshot": null,
-		"description": "Removes legendary shop entries from all other shops."
-	},
-	{
-		"Id": "exlegendaryWhiteShopCheckBox",
-		"title": "Exclusive Legendary White Shop",
-		"screenshot": null,
-		"description": "Removes legendary shop entries from all other shops."
-	},
-	{
-		"Id": "exlegendaryItemShopCheckBox",
-		"title": "Exclusive Legendary Item Shop",
-		"screenshot": null,
-		"description": "Removes legendary shop entries from all other shops."
-	},
-	{
-		"Id": "startingEquipmentHealStaff",
-		"title": "Hide Flags",
-		"screenshot": null,
-		"description": "HealStaff, or any low level Heal casting weapon, or Heal Helment if nothing else found."
-	},
-	{
-		"Id": "startingEquipmentDragonslayer",
-		"title": "Starting Equipment - Dragonslayer",
-		"screenshot": null,
-		"description": "Dragon Armor, Dragon Sword\nIncompatible with Weaponizer."
-	},
-	{
-		"Id": "startingEquipmentLegendKit",
-		"title": "Starting Equipment - Legendary Kit",
-		"screenshot": null,
-		"description": "Xcalibur, Opal Armor, Opal Gautlents, Opal Helm, Opal Shield\nIncompatible with Weaponizer."
-	},
-	{
-		"Id": "startingEquipmentGrandpasSecretStash",
-		"title": "Starting Equipment - Grandpa's Secret Stash",
-		"screenshot": null,
-		"description": "3 Good Items, 5 Common Ones"
-	},
-	{
-		"Id": "startingEquipmentRandomCommons",
-		"title": "Starting Equipment - Random Commons",
-		"screenshot": null,
-		"description": "Fills up the entire Inventory with equipment. Small chance to roll rare and legendary items as well."
-	},
-	{
-		"Id": "startingEquipmentRandomTypeWeapon",
-		"title": "Starting Equipment - Random Type Weapon",
-		"screenshot": null,
-		"description": "Adds a random weapon that will have a bonus vs some weakness (e.g. Rune Sword, Flame Sword, Light Axe, etc). Xcal is not in this pool."
-	},
-	{
-		"Id": "startingEquipmentStarterPack",
-		"title": "Starting Equipment - Random Starter Pack",
-		"screenshot": null,
-		"description": "Adds four random shop purchasable body armors and four random common tier weapons.\n\nOne Armor will be added from a pool of armor that a fighter can wear, one armor from the red mage pool, then the last 2 armors will be equippable by mages. Armor selection is weighted and will tend more towards cheaper armors."
-	},
-	{
-		"Id": "startingEquipmentNoDuplicates",
-		"title": "Starting Equipment - No Legendary Duplicates",
-		"screenshot": null,
-		"description": "Prevents receiving more than one of the same Rare/Legendary item in your starting equipment, when selecting options that have potential for duplicates."
-	},
-	{
-		"Id": "startingEquipmentRemoveFromPool",
-		"title": "Starting Equipment - Remove Items from Treasure Chests",
-		"screenshot": null,
-		"description": "For every rare or legendary starting equipment received, an identical item potentially found in a chest will be replaced with something worse.\nExample: Starting the game with a Zeus Gauntlet means a Zeus Gauntlet chest in the world is altered to contain a Silver Gauntlet."
-	},
-	{
-		"Id": "enableExtConsumables",
-		"title": "New Consumables",
-		"screenshot": "newConsumables.png",
-		"description": "Enables new Consumables\n[grid][r]{i}Item|{i}Effect[r]FCure|Full cure[r]Phnix|Raise dead light warrior (usable in battle!)[r]Smoke|Automatic run from battle[r]Blast|Cast FIR3"
-	},
-	{
-		"Id": "normalShopsHaveExtConsumables",
-		"title": "New Consumables in Shops",
-		"screenshot": null,
-		"description": "The new Consumables appear in item shops. Replaces 2 Heals, a Pure and a Soft with the new consumables."
-	},
-	{
-		"Id": "legendaryShopHasExtConsumables",
-		"title": "New Consumables in Legendary Shop",
-		"screenshot": null,
-		"description": "The new Consumables appear in legendary item shop. The legendary item shop will have 1-2 random new consumables."
-	},
-	{
-		"Id": "extConsumableTreasureStackSize",
-		"title": "New Consumable Treasure Stack Size",
-		"screenshot": null,
-		"description": "New Consumable rewards from chests and NPCs may give you more than one item.\n[grid][r]{i}Option|{i}FCure|{i}Phnix|{i}Blast|{i}Smoke[r]{l}Stingy|||2|2[r]{l}Adequate|2||3|3[r]{l}Generous|3|2|5|5[r]{l}Ridiculous|5|3|10|10\n"
-	},
-	{
-		"Id": "extConsumableChests",
-		"title": "New Consumable Chests",
-		"screenshot": null,
-		"description": "Changes the amount of chests that contain the new consumable items, removing gold rewards and gear.\n[grid][r]{i}Option|{i}FCure|{i}Phnix|{i}Blast|{i}Smoke[r]{l}None||||[r]{l}Low|1|1|1|1[r]{l}Medium|3|3|3|3[r]{l}High|5|5|5|5[r]{l}Extreme|10|10|10|10[r]{l}Random Low|0-5|0-5|0-5|0-5[r]{l}Random|0-15|0-15|0-15|0-15\n"
-	},
-	{
-		"Id": "extStartingItemSet",
-		"title": "New Consumables Starting Inventory",
-		"screenshot": null,
-		"description": "Starts the game with a set of the new consumable items.\n[grid][r]{i}Option|{i}FCure|{i}Phnix|{i}Blast|{i}Smoke[r]{l}None||||[r]{l}Lifeline|1|1||[r]{l}Just Smokes||||10[r]{l}Bangs and Smokes|||5|5[r]{l}Jester's Secret|2|1|5|5[r]{l}Adventurer's Fortune|3|2|10|10[r]{l}Blackbelt's Favorite|5|3|20|20[r]{l}Illegal Advantage|99|99|99|99[r]{l}R. Jester's Secret|0-2|0-1|0-5|0-5[r]{l}R. Adventurer's Fortune|0-3|0-2|0-10|0-10[r]{l}R. Blackbelt's Favorite|0-5|1-3|0-20|0-20[r]{l}R. High Rolling|2-5|2-5|5-30|5-30[r]{l}Randomized|0-15|0-10|0-50|0-50\n"
-	},
 
 
 
@@ -467,7 +317,7 @@
 		"Id": "expChestConversion",
 		"title": "Experience Chest Conversion",
 		"screenshot": "expChestConversion.png",
-		"description": "Chests and be converted from Gold into EXP. The slider indicates how much of the Gold will be covnerted into EXP when the chest is opened."
+		"description": "Chests and be converted from Gold into EXP. The slider indicates how much of the Gold will be converted into EXP when the chest is opened."
 	},
 	{
 		"Id": "expChestReward",
@@ -671,50 +521,14 @@
 		"Id": "incentivizeRibbonCheckBox",
 		"title": "Ribbon",
 		"screenshot": "incentivizeRibbonCheckBox.png",
-		"description": "Adds ONE Ribbon to the incentive pool to be distributed in the selected incentive locations."
-	},
-	{
-		"Id": "transformFinalFormationCheckBox",
-		"title": "Alternate Final Boss",
-		"screenshot": "transformFinalFormationCheckBox.png",
-		"description": "Changes the Chaos fight to involve one of several enemy formations instead of just Chaos. These formations are:\n Double Dragons: Kary2 and Tiamat2\n FunDead: 2 buffed Lich2s and 4 buffed Phantoms\n WarMECH and Friends: 2 WarMECHs and 6 Evilmen\n Whack-a-Garland: Chaos and 8 Garlands"
-	},
-	{
-		"Id": "chaosRushCheckBox",
-		"title": "Unlocked ToFR",
-		"screenshot": "chaosRushCheckBox.gif",
-		"description": "Unlocks all locked doors in the Temple of Fiends Revisited, allowing access to Chaos without the need for the KEY."
-	},
-	{
-		"Id": "shortToFRCheckBox",
-		"title": "Shorten ToFR",
-		"screenshot": "shortToFRCheckBox.png",
-		"description": "Shortens the Temple of Fiends Revisited to lead straight to Chaos' Floor. By default, the four Orbs are still required to enter the dungeon.\n Note: Both the KEY and the LUTE will be required if this box is checked, unless using other settings that change these requirements."
-	},
-	{
-		"Id": "chaosFloorEncountersCheckBox",
-		"title": "Chaos Floor Encounters",
-		"screenshot": "chaosFloorEncounters.gif",
-		"description": "Allows enemy encounters to appear on the Chaos floor in the Temple of Fiends Revisited."
-	},
-	{
-		"Id": "preserveFiendRefightsCheckBox",
-		"title": "Include Fiend Tiles",
-		"screenshot": "preserveFiendRefightsCheckBox.gif",
-		"description": "Adds the four Fiend refights to the Chaos floor. Two trap tiles will be found on either side south of the entrance, with the boss in each tile randomized for each seed."
-	},
-	{
-		"Id": "preserveAllFiendRefightsCheckBox",
-		"title": "Refight All Fiends",
-		"screenshot": "preserveAllFiendRefightsCheckBox.png",
-		"description": "Now all four Fiends are in both directions and they must all be defeated to reach CHAOS."
+		"description": "Adds one (1) Ribbon to the incentive pool to be distributed in the selected incentive locations."
 	},
 
 	{
 		"Id": "hintsVillage",
 		"title": "Hints from villagers",
 		"screenshot": "hintsVillage.png",
-		"description": "In each town, a villager reveals the location of an item:\n- The old men in Coneria, Pravoka, Melmond, and Onrac\n- An Elf scholar in Elfland\n- Lukahn in Crescent Lake\n- The Witch in Gaia\n- The villager on the left side of Lufein (no SLAB translation required)"
+		"description": "In each town, a villager reveals the location of an item:\n- The old men in Coneria, Pravoka, Melmond, and Onrac\n- An Elf scholar in Elfland\n- Lukahn in Crescent Lake\n- The Witch in Gaia\n- The villager on the left side of Lefein (no SLAB translation required)"
 	},
 	{
 		"Id": "hintsDungeon",
@@ -771,7 +585,7 @@
 		"Id": "includeConeriaCheckBox",
 		"title": "Include Coneria",
 		"screenshot": "includeConeriaCheckBox.png",
-		"description": "Include Coneria in Town Shuffle.\nOnly towns with item shops and clinics are permitted, thus excluding Melmond and Lefein.\nUnless \"Allow Unsafe Start\" is enabled, the Coneria entrance will always lead to a town.\nIf other flags guaranteed Coneria's item shop to have PURE and SOFT and the Coneria entrance leads immediately to a town, that town's item shop will have these instead.\nDo note that if you turn on \"Vampire Attacks Random Town\" there's a chance the new town at the Coneria location could be vampire-attacked and, thus, not have a working Item Shop or Clinic."
+		"description": "This will include Coneria in Town Shuffle. This will make for a potentially more difficult start to the seed.\nUnless \"Allow Unsafe Start\" is enabled, the Coneria entrance will always lead to a town.\nNote: only certain towns (those with Clinics and Item Shops) can appear at the Coneria location; this means only Pravoka, Elfland, Crescent Lake, Onrac, and Gaia. The flag does not take into account Melmondish or Lefeinish Hospitality flags.\nDo note that if you turn on \"Vampire Attacks Random Town\" there's a chance the new town at the Coneria location could be vampire-attacked and, thus, not have a working Item Shop or Clinic."
 	},
 	{
 		"Id": "mixEntrancesCheckBox",
@@ -783,7 +597,7 @@
 		"Id": "deepTownsCheckBox",
 		"title": "Deep Towns",
 		"screenshot": "deepTownsCheckBox.gif",
-		"description": "Towns are generally found at the top entrances of the world. When this flag is enabled, towns (other than Coneria) may be hidden behind dungeon floors, such that Earth B1's staircase may lead to Elfland."
+		"description": "Towns are generally found at the top entrances of the world. When this flag is enabled, towns (other than Coneria, unless \"Include Coneria\" is enabled) may be hidden behind dungeon floors, such that Earth B1's staircase may lead to Elfland."
 	},
 
 	{
@@ -814,7 +628,7 @@
 		"Id": "hallOfDragonsCheckBox",
 		"title": "Hall of Dragons",
 		"screenshot": "hallOfDragons.png",
-		"description": "Adds encounters to Bahamut B1 hallway normally leading to Bahamut's room."
+		"description": "Adds encounters to Bahamut B1 hallway normally leading to Bahamut's room. All encounters will be various forms of dragons."
 	},
 	{
 		"Id": "procGenWaterfall",
@@ -1011,25 +825,25 @@
 		"Id": "tcChestCountSlider",
 		"title": "Trapped Chests Count",
 		"screenshot": "tcChestsPool.png",
-		"description": "Selects the number of trapped chests. Setting the slider to the rightmost position will select a random number of trapped chests.\n\nIn game count may slightly differ for some flags combinations."
+		"description": "Set the number of chests that will have traps (monsters) in them. Setting the slider to the rightmost position will select a random number of trapped chests.\n\nIn game count may slightly differ for some flags combinations.\nFor best results, use in combination with the sub-flags included in this section."
 	},
 	{
 		"Id": "tcBetterTreasuresDropDown",
 		"title": "Rare Treasures",
 		"screenshot": "tcBestTreasures.png",
-		"description": "Sets whether or not chests containing Rare and Legendary items can be in the Trapped Chest pool:\n\nNever: Rare and Legendary items are never trapped.\n\nRandom: Rare and Legendary items may be trapped.\n\nAlways: All chests containing Legendary or Rare gears are trapped."
+		"description": "Sets whether or not chests containing Rare and Legendary items can be in Trapped Chests:\n\nNever: Rare and Legendary items are never trapped.\n\nRandom: Rare and Legendary items may be trapped.\n\nAlways: All chests containing Legendary or Rare gears are trapped."
 	},
 	{
 		"Id": "tcKeyItemsDropDown",
 		"title": "Key Items",
 		"screenshot": "tcKeyItems.png",
-		"description": "Sets whether or not chests containing Key Items can be in the Trapped Chest pool:\n\nNever: Key Items are never trapped.\n\nRandom: Key Items may be trapped.\n\nAlways: All chests containing Key Items are trapped."
+		"description": "Sets whether or not chests containing Key Items can be in Trapped Chests:\n\nNever: Key Items are never trapped.\n\nRandom: Key Items may be trapped.\n\nAlways: All chests containing Key Items are trapped."
 	},
 	{
 		"Id": "tcShardsDropDown",
 		"title": "Shards",
 		"screenshot": "trappedShardsCheckBox.gif",
-		"description": "Sets whether or not chests containing Shards can be in the Trapped Chest pool:\n\nNever: Shards are never trapped.\n\nRandom: Shards may be trapped.\n\nAlways: All chests containing Shards are trapped."
+		"description": "Sets whether or not chests containing Shards can be in Trapped Chests:\n\nNever: Shards are never trapped.\n\nRandom: Shards may be trapped.\n\nAlways: All chests containing Shards are trapped."
 	},
 	{
 		"Id": "tcExcludeCommonCheckBox",
@@ -1097,25 +911,25 @@
 		"Id": "NoTailCheckBox",
 		"title": "Remove Tail",
 		"screenshot": "NoTailCheckBox.png",
-		"description": "Remove the TAIL from the item pool, disallowing class change. Bahamut wants nothing to do with you."
+		"description": "Remove the rat TAIL from the game. Bahamut is no longer interested in that mummified bit of rodent.\nIf the \"Fight Bahamut\" flag is on, removing the TAIL will not prevent class change; it actually makes it easier. By removing the TAIL the only requirement for class change will be fighting Bahamut, no TAIL required."
 	},
 	{
 		"Id": "NoMasamuneCheckBox",
 		"title": "Remove Masamune",
 		"screenshot": "NoMasamuneCheckBox.gif",
-		"description": "Removes the legendary sword, the Masamune, from the item pool, from shops if elite gear is turned on, and from incentive locations if the Masamune is incentivized."
+		"description": "Removes the legendary sword, the Masamune, from chests, from shops (if elite gear is turned on), and from incentive locations (if the Masamune is incentivized)."
 	},
 	{
 		"Id": "NoXcalberCheckBox",
 		"title": "Remove Xcalber",
 		"screenshot": "NoXcalberCheckBox.gif",
-		"description": "Removes the Xcalber from the item pool, from shops if elite gear is turned on, and from the ADAMANT turn in if fetch quests are vanilla."
+		"description": "Removes the Xcalber from chests, from shops (if elite gear is turned on), and from the ADAMANT turn in (if fetch quests are vanilla)."
 	},
 	{
 		"Id": "noFloaterCheckBox",
 		"title": "Remove Floater",
 		"screenshot": "noFloater.png",
-		"description": "Removes the Floater from the incentive pool, making it impossible to get the Airship.\n\nCan only be enabled if Nothern Docks is enabled.\n\nEnable Bahamut Cardia dock, Lefein river dock, and Gaia mountain pass map edits to make those areas accessible by Ship."
+		"description": "Removes the Floater from the game, making it impossible to get the Airship.\n\nCan only be enabled if Nothern Docks is enabled.\n\nEnable Bahamut Cardia dock, Lefein river dock, and Gaia mountain pass map edits to make those areas accessible by Ship."
 	},
 
 	{
@@ -1652,7 +1466,7 @@
 		"Id": "startingEquipmentLegendKit",
 		"title": "Starting Equipment - Legendary Kit",
 		"screenshot": "startingEquipmentLegendKit.png",
-		"description": "Playes the Xcalibur, Opal Armor, Opal Gauntlets, Opal Helm, and Opal Shield into the party's starting inventory.\nIncompatible with Weaponizer."
+		"description": "Places the Xcalber, Opal Armor, Opal Gauntlets, Opal Helm, and Opal Shield into the party's starting inventory.\nIncompatible with Weaponizer."
 	},
 	{
 		"Id": "startingEquipmentGrandpasSecretStash",
@@ -1759,7 +1573,7 @@
 		"Id": "enableExtConsumables",
 		"title": "New Consumables",
 		"screenshot": "newConsumables.png",
-		"description": "Enables new Consumables\n[grid][r]{i}Item|{i}Effect[r]FCure|Full cure[r]Phnix|Raise dead light warrior (usable in battle!)[r]Smoke|Automatic run from battle[r]Blast|Cast FIR3"
+		"description": "Enables new Consumables\n[grid][r]{i}Item|{i}Effect[r]FCure|Full cure[r]Phnix|Raise dead light warrior (usable in battle!)[r]Smoke|Automatic run from battle[r]Blast|Cast FIR3\nNote: Smoke will allow you to run from any fight, including bosses. However, in boss fights you will be set back one-step before the boss tile (or just in front of the boss) and will still have to fight them."
 	},
 	{
 		"Id": "extStartingItemSet",
@@ -1971,7 +1785,7 @@
 		"Id": "buyTenCheckBox",
 		"title": "Buy Quantity",
 		"screenshot": "buyTenCheckBox.png",
-		"description": "If enabled, the player has the option to select the quantity of items bought in the item shop.\nPress left to reduce quantity by 1, right to increase quantity by 1, up to increase quantity by 10, and down to decrease quantity by 10.\nReplaces the old \"Buy Ten\" flag."
+		"description": "If enabled, the player has the option to select the quantity of items bought in the item shop.\nPress left to reduce quantity by 1, right to increase quantity by 1, up to increase quantity by 10, and down to decrease quantity by 10."
 	},
 	{
 		"Id": "waitWhenUnrunnableCheckBox",
@@ -2001,7 +1815,7 @@
 		"Id": "inventoryAutosortCheckBox",
 		"title": "Autosort Inventory",
 		"screenshot": "inventoryAutosortCheckBox.png",
-		"description": "If enabled, HEAL, PURE, and SOFT potions are automatically moved to the first row of the item menu, followed by saving items (TENTs, CABINs, and HOUSEs) on the second row, then all other key items in your inventory."
+		"description": "If enabled, HEAL, PURE, and SOFT potions are automatically moved to the first row of the item menu, followed by saving items (TENTs, CABINs, and HOUSEs) on the second row, then all other key items in your inventory.\nNote: if \"Extended Consumables\" is on, these consumable items will be placed in the third row, with Key Items flowing after."
 	},
 	{
 		"Id": "shopInfoCheckBox",
