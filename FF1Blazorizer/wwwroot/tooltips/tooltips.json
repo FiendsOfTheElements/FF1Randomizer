@@ -125,19 +125,19 @@
 	{
 		"Id": "renounceSpeedHackWipes",
 		"title": "Slow Down Screen Wipes",
-		"screenshot": "OptOutSpeedHackWipes.png",
+		"screenshot": "OptOutSpeedHackWipes.gif",
 		"description": "Opt out of the Convenience flag that speeds up the screen transitions of the game. Reverts screen transitions back a near-vanilla, slow speed."
 	},
 	{
 		"Id": "renounceSpeedHackMessages",
 		"title": "Slow Down Battle Messages",
-		"screenshot": "OptOutSpeedMessages.png",
+		"screenshot": "OptOutSpeedMessages.gif",
 		"description": "Opt out of the Convenience flag that speeds up the message text in battle. Reverts these message windows back to a near-vanilla, slow speed."
 	},
 	{
 		"Id": "renounceSpeedHackDash",
 		"title": "Slow Down Movement Speed",
-		"screenshot": "OptOutSpeedHackDash.png",
+		"screenshot": "OptOutSpeedHackDash.gif",
 		"description": "Opt out of the Convenience flag that speeds up characters on maps, both on the overworld and in dungeons. Reverts movement speed back to a near-vanilla, slow speed, although players can still dash if they hold down the B button."
 	},
 	{
@@ -317,13 +317,13 @@
 		"Id": "expChestConversion",
 		"title": "Experience Chest Conversion",
 		"screenshot": "expChestConversion.png",
-		"description": "Chests and be converted from Gold into EXP. The slider indicates how much of the Gold will be converted into EXP when the chest is opened."
+		"description": "Chests typically containing Gold can be converted into chests that grant EXP.\nThe slider determines how many Gold chests in the game will be converted into EXP chests."
 	},
 	{
 		"Id": "expChestReward",
 		"title": "Experience Chest Reward",
-		"screenshot": "expChestReward.png",
-		"description": "Sets the minimum and maximum amounts of EXP that an EXP Chest can dole out when opened."
+		"screenshot": "expChestReward.gif",
+		"description": "Sets the minimum and maximum amounts of EXP that an EXP Chest can grant when opened."
 	},
 
 
@@ -527,13 +527,13 @@
 	{
 		"Id": "hintsVillage",
 		"title": "Hints from villagers",
-		"screenshot": "hintsVillage.png",
+		"screenshot": "hintsVillage.gif",
 		"description": "In each town, a villager reveals the location of an item:\n- The old men in Coneria, Pravoka, Melmond, and Onrac\n- An Elf scholar in Elfland\n- Lukahn in Crescent Lake\n- The Witch in Gaia\n- The villager on the left side of Lefein (no SLAB translation required)"
 	},
 	{
 		"Id": "hintsDungeon",
 		"title": "Hints from dungeon explorers",
-		"screenshot": "hintsDungeon.png",
+		"screenshot": "hintsDungeon.gif",
 		"description": "Five NPCs in dungeons each reveal the location of an item. The locations of the NPCs are:\n- Down the dead end of Marsh Cave B1\n- Lich's floor in Earth Cave\n- The hallway of Gurgu Volcano B3\n- One of the mermaids in Sea Shrine\n- The south room of Sky Palace 3F"
 	},
 	{
@@ -922,7 +922,7 @@
 	{
 		"Id": "NoXcalberCheckBox",
 		"title": "Remove Xcalber",
-		"screenshot": "NoXcalberCheckBox.gif",
+		"screenshot": "NoXcalberCheckBox.png",
 		"description": "Removes the Xcalber from chests, from shops (if elite gear is turned on), and from the ADAMANT turn in (if fetch quests are vanilla)."
 	},
 	{
