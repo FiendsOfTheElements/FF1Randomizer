@@ -123,19 +123,19 @@
 		"description": "Gives the Load/New Game and Party Selection a discernible background color to make life easier for restreamers."
 	},
 	{
-		"Id": "OptOutSpeedHackWipes",
+		"Id": "renounceSpeedHackWipes",
 		"title": "Slow Down Screen Wipes",
 		"screenshot": "OptOutSpeedHackWipes.png",
 		"description": "Opt out of the Convenience flag that speeds up the screen transitions of the game. Reverts screen transitions back a near-vanilla, slow speed."
 	},
 	{
-		"Id": "OptOutSpeedHackMessages",
+		"Id": "renounceSpeedHackMessages",
 		"title": "Slow Down Battle Messages",
 		"screenshot": "OptOutSpeedMessages.png",
 		"description": "Opt out of the Convenience flag that speeds up the message text in battle. Reverts these message windows back to a near-vanilla, slow speed."
 	},
 	{
-		"Id": "OptOutSpeedHackDash",
+		"Id": "renounceSpeedHackDash",
 		"title": "Slow Down Movement Speed",
 		"screenshot": "OptOutSpeedHackDash.png",
 		"description": "Opt out of the Convenience flag that speeds up characters on maps, both on the overworld and in dungeons. Reverts movement speed back to a near-vanilla, slow speed, although players can still dash if they hold down the B button."
