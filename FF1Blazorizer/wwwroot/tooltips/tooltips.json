@@ -317,7 +317,7 @@
 		"Id": "expChestConversion",
 		"title": "Experience Chest Conversion",
 		"screenshot": "expChestConversion.png",
-		"description": "Chests and be converted from Gold into EXP. The slider indicates how much of the Gold will be covnerted into EXP when the chest is opened."
+		"description": "Chests and be converted from Gold into EXP. The slider indicates how much of the Gold will be converted into EXP when the chest is opened."
 	},
 	{
 		"Id": "expChestReward",
@@ -528,7 +528,7 @@
 		"Id": "hintsVillage",
 		"title": "Hints from villagers",
 		"screenshot": "hintsVillage.png",
-		"description": "In each town, a villager reveals the location of an item:\n- The old men in Coneria, Pravoka, Melmond, and Onrac\n- An Elf scholar in Elfland\n- Lukahn in Crescent Lake\n- The Witch in Gaia\n- The villager on the left side of Lufein (no SLAB translation required)"
+		"description": "In each town, a villager reveals the location of an item:\n- The old men in Coneria, Pravoka, Melmond, and Onrac\n- An Elf scholar in Elfland\n- Lukahn in Crescent Lake\n- The Witch in Gaia\n- The villager on the left side of Lefein (no SLAB translation required)"
 	},
 	{
 		"Id": "hintsDungeon",
@@ -585,7 +585,7 @@
 		"Id": "includeConeriaCheckBox",
 		"title": "Include Coneria",
 		"screenshot": "includeConeriaCheckBox.png",
-		"description": "Include Coneria in Town Shuffle.\nOnly towns with item shops and clinics are permitted, thus excluding Melmond and Lefein.\nUnless \"Allow Unsafe Start\" is enabled, the Coneria entrance will always lead to a town.\nIf other flags guaranteed Coneria's item shop to have PURE and SOFT and the Coneria entrance leads immediately to a town, that town's item shop will have these instead.\nDo note that if you turn on \"Vampire Attacks Random Town\" there's a chance the new town at the Coneria location could be vampire-attacked and, thus, not have a working Item Shop or Clinic."
+		"description": "This will include Coneria in Town Shuffle. This will make for a potentially more difficult start to the seed.\nUnless \"Allow Unsafe Start\" is enabled, the Coneria entrance will always lead to a town.\nNote: only certain towns (those with Clinics and Item Shops) can appear at the Coneria location; this means only Pravoka, Elfland, Crescent Lake, Onrac, and Gaia. The flag does not take into account Melmondish or Lefeinish Hospitality flags.\nDo note that if you turn on \"Vampire Attacks Random Town\" there's a chance the new town at the Coneria location could be vampire-attacked and, thus, not have a working Item Shop or Clinic."
 	},
 	{
 		"Id": "mixEntrancesCheckBox",
@@ -597,7 +597,7 @@
 		"Id": "deepTownsCheckBox",
 		"title": "Deep Towns",
 		"screenshot": "deepTownsCheckBox.gif",
-		"description": "Towns are generally found at the top entrances of the world. When this flag is enabled, towns (other than Coneria) may be hidden behind dungeon floors, such that Earth B1's staircase may lead to Elfland."
+		"description": "Towns are generally found at the top entrances of the world. When this flag is enabled, towns (other than Coneria, unless \"Include Coneria\" is enabled) may be hidden behind dungeon floors, such that Earth B1's staircase may lead to Elfland."
 	},
 
 	{
@@ -628,7 +628,7 @@
 		"Id": "hallOfDragonsCheckBox",
 		"title": "Hall of Dragons",
 		"screenshot": "hallOfDragons.png",
-		"description": "Adds encounters to Bahamut B1 hallway normally leading to Bahamut's room."
+		"description": "Adds encounters to Bahamut B1 hallway normally leading to Bahamut's room. All encounters will be various forms of dragons."
 	},
 	{
 		"Id": "procGenWaterfall",
@@ -825,25 +825,25 @@
 		"Id": "tcChestCountSlider",
 		"title": "Trapped Chests Count",
 		"screenshot": "tcChestsPool.png",
-		"description": "Selects the number of trapped chests. Setting the slider to the rightmost position will select a random number of trapped chests.\n\nIn game count may slightly differ for some flags combinations."
+		"description": "Set the number of chests that will have traps (monsters) in them. Setting the slider to the rightmost position will select a random number of trapped chests.\n\nIn game count may slightly differ for some flags combinations.\nFor best results, use in combination with the sub-flags included in this section."
 	},
 	{
 		"Id": "tcBetterTreasuresDropDown",
 		"title": "Rare Treasures",
 		"screenshot": "tcBestTreasures.png",
-		"description": "Sets whether or not chests containing Rare and Legendary items can be in the Trapped Chest pool:\n\nNever: Rare and Legendary items are never trapped.\n\nRandom: Rare and Legendary items may be trapped.\n\nAlways: All chests containing Legendary or Rare gears are trapped."
+		"description": "Sets whether or not chests containing Rare and Legendary items can be in Trapped Chests:\n\nNever: Rare and Legendary items are never trapped.\n\nRandom: Rare and Legendary items may be trapped.\n\nAlways: All chests containing Legendary or Rare gears are trapped."
 	},
 	{
 		"Id": "tcKeyItemsDropDown",
 		"title": "Key Items",
 		"screenshot": "tcKeyItems.png",
-		"description": "Sets whether or not chests containing Key Items can be in the Trapped Chest pool:\n\nNever: Key Items are never trapped.\n\nRandom: Key Items may be trapped.\n\nAlways: All chests containing Key Items are trapped."
+		"description": "Sets whether or not chests containing Key Items can be in Trapped Chests:\n\nNever: Key Items are never trapped.\n\nRandom: Key Items may be trapped.\n\nAlways: All chests containing Key Items are trapped."
 	},
 	{
 		"Id": "tcShardsDropDown",
 		"title": "Shards",
 		"screenshot": "trappedShardsCheckBox.gif",
-		"description": "Sets whether or not chests containing Shards can be in the Trapped Chest pool:\n\nNever: Shards are never trapped.\n\nRandom: Shards may be trapped.\n\nAlways: All chests containing Shards are trapped."
+		"description": "Sets whether or not chests containing Shards can be in Trapped Chests:\n\nNever: Shards are never trapped.\n\nRandom: Shards may be trapped.\n\nAlways: All chests containing Shards are trapped."
 	},
 	{
 		"Id": "tcExcludeCommonCheckBox",
@@ -911,25 +911,25 @@
 		"Id": "NoTailCheckBox",
 		"title": "Remove Tail",
 		"screenshot": "NoTailCheckBox.png",
-		"description": "Remove the TAIL from the item pool, disallowing class change. Bahamut wants nothing to do with you."
+		"description": "Remove the rat TAIL from the game. Bahamut is no longer interested in that mummified bit of rodent.\nIf the \"Fight Bahamut\" flag is on, removing the TAIL will not prevent class change; it actually makes it easier. By removing the TAIL the only requirement for class change will be fighting Bahamut, no TAIL required."
 	},
 	{
 		"Id": "NoMasamuneCheckBox",
 		"title": "Remove Masamune",
 		"screenshot": "NoMasamuneCheckBox.gif",
-		"description": "Removes the legendary sword, the Masamune, from the item pool, from shops if elite gear is turned on, and from incentive locations if the Masamune is incentivized."
+		"description": "Removes the legendary sword, the Masamune, from chests, from shops (if elite gear is turned on), and from incentive locations (if the Masamune is incentivized)."
 	},
 	{
 		"Id": "NoXcalberCheckBox",
 		"title": "Remove Xcalber",
 		"screenshot": "NoXcalberCheckBox.gif",
-		"description": "Removes the Xcalber from the item pool, from shops if elite gear is turned on, and from the ADAMANT turn in if fetch quests are vanilla."
+		"description": "Removes the Xcalber from chests, from shops (if elite gear is turned on), and from the ADAMANT turn in (if fetch quests are vanilla)."
 	},
 	{
 		"Id": "noFloaterCheckBox",
 		"title": "Remove Floater",
 		"screenshot": "noFloater.png",
-		"description": "Removes the Floater from the incentive pool, making it impossible to get the Airship.\n\nCan only be enabled if Nothern Docks is enabled.\n\nEnable Bahamut Cardia dock, Lefein river dock, and Gaia mountain pass map edits to make those areas accessible by Ship."
+		"description": "Removes the Floater from the game, making it impossible to get the Airship.\n\nCan only be enabled if Nothern Docks is enabled.\n\nEnable Bahamut Cardia dock, Lefein river dock, and Gaia mountain pass map edits to make those areas accessible by Ship."
 	},
 
 	{
@@ -1466,7 +1466,7 @@
 		"Id": "startingEquipmentLegendKit",
 		"title": "Starting Equipment - Legendary Kit",
 		"screenshot": "startingEquipmentLegendKit.png",
-		"description": "Playes the Xcalibur, Opal Armor, Opal Gauntlets, Opal Helm, and Opal Shield into the party's starting inventory.\nIncompatible with Weaponizer."
+		"description": "Places the Xcalber, Opal Armor, Opal Gauntlets, Opal Helm, and Opal Shield into the party's starting inventory.\nIncompatible with Weaponizer."
 	},
 	{
 		"Id": "startingEquipmentGrandpasSecretStash",
@@ -1573,7 +1573,7 @@
 		"Id": "enableExtConsumables",
 		"title": "New Consumables",
 		"screenshot": "newConsumables.png",
-		"description": "Enables new Consumables\n[grid][r]{i}Item|{i}Effect[r]FCure|Full cure[r]Phnix|Raise dead light warrior (usable in battle!)[r]Smoke|Automatic run from battle[r]Blast|Cast FIR3"
+		"description": "Enables new Consumables\n[grid][r]{i}Item|{i}Effect[r]FCure|Full cure[r]Phnix|Raise dead light warrior (usable in battle!)[r]Smoke|Automatic run from battle[r]Blast|Cast FIR3\nNote: Smoke will allow you to run from any fight, including bosses. However, in boss fights you will be set back one-step before the boss tile (or just in front of the boss) and will still have to fight them."
 	},
 	{
 		"Id": "extStartingItemSet",
@@ -1785,7 +1785,7 @@
 		"Id": "buyTenCheckBox",
 		"title": "Buy Quantity",
 		"screenshot": "buyTenCheckBox.png",
-		"description": "If enabled, the player has the option to select the quantity of items bought in the item shop.\nPress left to reduce quantity by 1, right to increase quantity by 1, up to increase quantity by 10, and down to decrease quantity by 10.\nReplaces the old \"Buy Ten\" flag."
+		"description": "If enabled, the player has the option to select the quantity of items bought in the item shop.\nPress left to reduce quantity by 1, right to increase quantity by 1, up to increase quantity by 10, and down to decrease quantity by 10."
 	},
 	{
 		"Id": "waitWhenUnrunnableCheckBox",
@@ -1815,7 +1815,7 @@
 		"Id": "inventoryAutosortCheckBox",
 		"title": "Autosort Inventory",
 		"screenshot": "inventoryAutosortCheckBox.png",
-		"description": "If enabled, HEAL, PURE, and SOFT potions are automatically moved to the first row of the item menu, followed by saving items (TENTs, CABINs, and HOUSEs) on the second row, then all other key items in your inventory."
+		"description": "If enabled, HEAL, PURE, and SOFT potions are automatically moved to the first row of the item menu, followed by saving items (TENTs, CABINs, and HOUSEs) on the second row, then all other key items in your inventory.\nNote: if \"Extended Consumables\" is on, these consumable items will be placed in the third row, with Key Items flowing after."
 	},
 	{
 		"Id": "shopInfoCheckBox",
