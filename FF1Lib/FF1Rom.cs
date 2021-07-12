@@ -1363,6 +1363,10 @@ namespace FF1Lib
 				FF1Text.TextToCopyrightLine("Final Fantasy Randomizer " + FFRVersion.Version),
 				FF1Text.TextToCopyrightLine((FFRVersion.Branch == "master" ? "Seed " : rgx.Replace(FFRVersion.Branch, "") + " BUILD ") + seed),
 				hash));
+
+			// Write Flagstring + Version for reference
+			var urlpart = (FFRVersion.Branch == "master") ? FFRVersion.Version.Replace('.','-') : "beta-" + FFRVersion.Sha.PadRight(7).Substring(0, 7);
+			PutInBank(0x1E, 0xBE00, Encoding.ASCII.GetBytes($"FFRInfo|Seed: {seed}|Flags: {flags}|Version: {urlpart}"));
 		}
 
 		public void FixMissingBattleRngEntry()

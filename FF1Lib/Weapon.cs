@@ -674,7 +674,7 @@ namespace FF1Lib
 		public byte WeaponSpritePaletteColor;
 
 		//written to class permission area
-		ushort ClassUsability;
+		public ushort ClassUsability;
 
 		public Weapon(int weaponIndex, FF1Rom rom)
 		{
