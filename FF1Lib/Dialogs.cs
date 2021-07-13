@@ -1206,7 +1206,10 @@ namespace FF1Lib
 		    }
 		    wrapped += st.Substring(start, end-start);
 		}
-		return wrapped;
+		
+		wrapped = wrapped.Substring(0, 1).ToUpper() + wrapped.Substring(1);
+
+			return wrapped;
 	    }
 
 		public void SetDungeonNPC(List<MapId> flippedmaps, MT19337 rng)
