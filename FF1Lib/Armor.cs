@@ -167,7 +167,7 @@ namespace FF1Lib
 		new string[] { "Leathr", "Copper" },
 		new string[] { "Silver", "Mithrl" },
 		new string[] { "Iron",   "Steel", "Gold" },
-		new string[] { "Opal",   "Dragon" },
+		new string[] { "Opal",   "Dragon", "Diamnd" },
 	    };
 
 	    var spellHelper = new SpellHelper(this);
@@ -178,13 +178,13 @@ namespace FF1Lib
 		List<int> requireType;
 		List<int> requireClasses;
 		switch(tier) {
+		    case 0:
+			requireType = new List<int> {BRACELET, BRACELET, BRACELET};
+			requireClasses = new List<int> {LIGHT, MEDIUM, HEAVY};
+			break;
 		    case 2:
 			requireType = new List<int> {ARMOR, SHIELD, HELM, GAUNTLET};
 			requireClasses = new List<int> {KNIGHT, KNIGHT, KNIGHT, KNIGHT};
-			break;
-		    case 0:
-			requireType = new List<int> {BRACELET, BRACELET, BRACELET};
-			requireClasses = new List<int> {CLOTH, LIGHT, MEDIUM};
 			break;
 		    default:
 			requireType = new List<int>();
@@ -221,7 +221,7 @@ namespace FF1Lib
 			requireClasses.RemoveAt(0);
 		    } else if (itemId == Item.Opal) {
 			armorType = BRACELET;
-			armorClass = HEAVY;
+			armorClass = KNIGHT;
 		    } else if (itemId == Item.PowerGauntlets) {
 			armorType = GAUNTLET;
 		    } else if (itemId == Item.WhiteShirt) {
