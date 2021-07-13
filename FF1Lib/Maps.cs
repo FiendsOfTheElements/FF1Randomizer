@@ -1141,13 +1141,13 @@ namespace FF1Lib
 		    var bahamutB1ZoneOffset = ZoneFormationsOffset + (ZoneFormationsSize * (64 + (int)MapId.BahamutsRoomB1));
 		    var formation = Get(bahamutB1ZoneOffset, ZoneFormationsSize);
 		    formation[0] = 0x2A + 0x80; // 2-4 Red D
-		    formation[1] = 0x30 + 0x80; // 3-4 Ice D
+		    formation[1] = 0x30 + 0x80; // 3-4 Frost D
 		    formation[2] = 0x4B + 0x80; // 2-4 Zombie D
 		    formation[3] = 0x4E + 0x80; // 2-3 Blue D
 		    formation[4] = 0x59 + 0x80; // 2-4 Gas D
 		    formation[5] = 0x4E + 0x80; // 2-3 Blue D
 		    formation[6] = 0x59 + 0x80; // 2-4 Gas D
-		    formation[7] = 0x76; // Tiamat (!)
+		    formation[7] = 0x77; // Tiamat 1 (!)
 		    Put(bahamutB1ZoneOffset, formation);
 
 		    Put(ThreatLevelsOffset + (int)MapId.BahamutsRoomB1 + 1, Blob.FromHex("18"));
