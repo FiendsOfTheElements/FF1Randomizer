@@ -1511,7 +1511,7 @@ namespace FF1Lib
 			}
 
 			// Check if dialogs are too long
-			if (generatedText.Length > 0x2000)
+			if (generatedText.Length > 0x1000)
 				throw new Exception("Dialogs maximum length exceeded.");
 
 			// Insert dialogs
@@ -1548,6 +1548,25 @@ namespace FF1Lib
 		    "Bm",
 		    "Bw"
 		};
+
+		public string GenerateEquipPermission(int classUsability) {
+		    var description = "";
+		    for (int i = 0; i < 6; i++) {
+			if ((classUsability & InfoClassEquipPerms[i*2]) != 0)  {
+			    description += " " + InfoClassAbbrev[i*2];
+			} else if ((classUsability & InfoClassEquipPerms[i*2+1]) != 0) {
+			    description += " " + InfoClassAbbrev[i*2+1];
+			}
+		    }
+		    description = description.Trim();
+		    if (description.Length > 12) {
+			description = description.Replace(" ", "");
+		    }
+		    if (description == "FiThBbRmWmBm") {
+			description =  "all classes";
+		    }
+		    return description;
+		}
 
 		public string GenerateWeaponDescription(int weaponid)
 		{
@@ -1594,15 +1613,7 @@ namespace FF1Lib
 			bool showElement = (weapondata.SpellIndex == 0x00) || (activeHurt.Count == 0);
 
 			description += "\n";
-			for (int i = 0; i < 6; i++) {
-			    if ((weapondata.ClassUsability & InfoClassEquipPerms[i*2]) != 0)  {
-				description += InfoClassAbbrev[i*2];
-			    } else if ((weapondata.ClassUsability & InfoClassEquipPerms[i*2+1]) != 0) {
-				description += InfoClassAbbrev[i*2+1];
-			    } else {
-				description += "  ";
-			    }
-			}
+			description += GenerateEquipPermission(weapondata.ClassUsability);
 
 			if (activeHurt.Count >= 1 && activeHurt.Count <= 7)
 				description += "\nHurt " + activeHurt.First().Item2;
@@ -1653,15 +1664,7 @@ namespace FF1Lib
 			var description = "¤" + ((int)shopInfoWordsIndex.arDef).ToString("X2") + armordata.Absorb + "\n¤" + ((int)shopInfoWordsIndex.arEva).ToString("X2") + armordata.Weight;
 
 			description += "\n";
-			for (int i = 0; i < 6; i++) {
-			    if ((armordata.ClassUsability & InfoClassEquipPerms[i*2]) != 0)  {
-				description += InfoClassAbbrev[i*2];
-			    } else if ((armordata.ClassUsability & InfoClassEquipPerms[i*2+1]) != 0) {
-				description += InfoClassAbbrev[i*2+1];
-			    } else {
-				description += "  ";
-			    }
-			}
+			description += GenerateEquipPermission(armordata.ClassUsability);
 
 			var activeElementStatus = new List<(int, string, string)>();
 
