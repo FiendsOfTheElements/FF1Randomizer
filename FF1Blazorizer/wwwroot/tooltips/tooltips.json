@@ -993,7 +993,7 @@
 	{
 		"Id": "legendaryShopsGroup",
 		"title": "Legendary Shops",
-		"screenshot": "legendaryShopsGroup.png",
+		"screenshot": "legendaryShopsGroup.gif",
 		"description": "Creates up to five legendary shops in dungeons, one of each type.\nThe potential locations are: Earth Cave B2, Marsh Cave B2, Dwarves' Cave, Mirage Tower F1, Ice Cave B1, Left Sea Shrine 2"
 	},
 	{
@@ -1766,7 +1766,7 @@
 	{
 		"Id": "speedboatCheckBox",
 		"title": "Faster Ship",
-		"screenshot": "noFloater.png",
+		"screenshot": "speedboatCheckBox.gif",
 		"description": "Double the speed of the Ship, so it is the same speed as the Airship."
 	},
 	{
