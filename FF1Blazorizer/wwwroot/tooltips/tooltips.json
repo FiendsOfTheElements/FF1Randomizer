@@ -1596,13 +1596,13 @@
 	{
 		"Id": "normalShopsHaveExtConsumables",
 		"title": "New Consumables in Shops",
-		"screenshot": "normalShopsHaveExtConsumables.png",
+		"screenshot": "newConsumables.png",
 		"description": "The new Consumables appear in item shops. Replaces two (2) HEAL pot location, a PURE pot location, and a SOFT pot location with the new consumables."
 	},
 	{
 		"Id": "legendaryShopHasExtConsumables",
 		"title": "New Consumables in Legendary Shop",
-		"screenshot": "legendaryShopHasExtConsumables.png",
+		"screenshot": "newConsumables.png",
 		"description": "The new Consumables can appear in legendary item shop. The legendary item shop will have 1-2 random new consumables."
 	},
 	
