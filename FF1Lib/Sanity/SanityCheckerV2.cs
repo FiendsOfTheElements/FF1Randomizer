@@ -166,7 +166,15 @@ namespace FF1Lib
 
 			w.Stop();
 
-			bool complete = changes == MapChange.All && requirements == AccessRequirement.All;
+			var requiredAccess = AccessRequirement.All;
+			var requiredMapChanges = MapChange.All;
+
+			if ((bool)victoryConditions.IsFloaterRemoved)
+			{
+				requiredMapChanges &= ~MapChange.Airship;
+			}
+
+			bool complete = changes == requiredMapChanges && requirements == requiredAccess;
 
 			return (complete, rewardSources, requirements, changes);
 		}
