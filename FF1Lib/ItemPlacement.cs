@@ -661,8 +661,6 @@ namespace FF1Lib
 						}
 
 						placedItems.Add(NewItemPlacement(leftoverItemLocations.SpliceRandom(rng), shard));
-
-			} while (placementFailed || !_checker.CheckSanity(placedItems, fullLocationRequirements, _flags).Complete);
 				    }
 				}
 
