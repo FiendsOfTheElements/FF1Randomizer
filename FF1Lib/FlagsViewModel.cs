@@ -44,6 +44,8 @@ namespace FF1Lib
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
 		}
 
+		public (string name, Flags flags, IEnumerable<string> log) FromJson(string json) => Flags.FromJson(json);
+
 		// At least this trick saves us from having to declare backing fields, and having to write a conversion from FlagsViewModel to Flags.
 		private Flags _flags;
 		public Flags Flags
@@ -549,6 +551,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ShortToFR"));
 			}
 		}
+		public bool? ChaosFloorEncounters
+		{
+			get => Flags.ChaosFloorEncounters;
+			set
+			{
+				Flags.ChaosFloorEncounters = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ChaosFloorEncounters"));
+			}
+		}
 		public bool? ExitToFR
 		{
 			get => Flags.ExitToFR;
@@ -556,15 +567,6 @@ namespace FF1Lib
 			{
 				Flags.ExitToFR = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ExitToFR"));
-			}
-		}
-		public bool? LutePlateInShortToFR
-		{
-			get => Flags.LutePlateInShortToFR;
-			set
-			{
-				Flags.LutePlateInShortToFR = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("LutePlateInShortToFR"));
 			}
 		}
 		public bool? PreserveFiendRefights
@@ -918,15 +920,6 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomTrapFormations"));
 			}
 		}
-		public ChestsPool TCPoolSize
-		{
-			get => Flags.TCPoolSize;
-			set
-			{
-				Flags.TCPoolSize = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TCPoolSize"));
-			}
-		}
 		public FormationPool TCFormations
 		{
 			get => Flags.TCFormations;
@@ -963,13 +956,32 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TCShards"));
 			}
 		}
-		public TCRngOptions TCRandom
+		public bool TCExcludeCommons
 		{
-			get => Flags.TCRandom;
+			get => Flags.TCExcludeCommons;
 			set
 			{
-				Flags.TCRandom = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TCRandom"));
+				Flags.TCExcludeCommons = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TCExcludeCommons"));
+			}
+		}
+		public int TCChestCount
+		{
+			get
+			{
+				if ((Flags.TCChestCount * 20) < Flags.TrappedChestsFloor)
+				{
+					return Flags.TrappedChestsFloor;
+				}
+				else
+				{
+					return Flags.TCChestCount * 20;
+				}
+			}
+			set
+			{
+				Flags.TCChestCount = (value / 20);
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TCInteger"));
 			}
 		}
 		public bool TCProtectIncentives
@@ -1174,7 +1186,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EarlyOrdeals"));
 			}
 		}
-		public bool ChaosRush
+		public bool? ChaosRush
 		{
 			get => Flags.ChaosRush;
 			set
@@ -4466,6 +4478,76 @@ namespace FF1Lib
 				RaisePropertyChanged();
 			}
 		}
+		
+		public bool? Lockpicking
+		{
+			get => Flags.Lockpicking;
+			set
+			{
+				Flags.Lockpicking = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public int LockpickingLevelRequirement
+		{
+			get => Flags.LockpickingLevelRequirement;
+			set
+			{
+				Flags.LockpickingLevelRequirement = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool CropScreen
+		{
+			get => Preferences.CropScreen;
+			set
+			{
+				Preferences.CropScreen = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public int ExpChestConversionMin
+		{
+			get => Flags.ExpChestConversionMin;
+			set
+			{
+				Flags.ExpChestConversionMin = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public int ExpChestConversionMax
+		{
+			get => Flags.ExpChestConversionMax;
+			set
+			{
+				Flags.ExpChestConversionMax = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public int ExpChestMinReward
+		{
+			get => Flags.ExpChestMinReward;
+			set
+			{
+				Flags.ExpChestMinReward = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public int ExpChestMaxReward
+		{
+			get => Flags.ExpChestMaxReward;
+			set
+			{
+				Flags.ExpChestMaxReward = value;
+				RaisePropertyChanged();
+			}
+		}
 
 
 		public bool LooseItemsForwardPlacement
@@ -4631,6 +4713,26 @@ namespace FF1Lib
 			}
 		}
 
+		public bool? StartingEquipmentStarterPack
+		{
+			get => Flags.StartingEquipmentStarterPack;
+			set
+			{
+				Flags.StartingEquipmentStarterPack = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool? StartingEquipmentRandomTypeWeapon
+		{
+			get => Flags.StartingEquipmentRandomTypeWeapon;
+			set
+			{
+				Flags.StartingEquipmentRandomTypeWeapon = value;
+				RaisePropertyChanged();
+			}
+		}
+
 		public bool StartingEquipmentRemoveFromPool
 		{
 			get => Flags.StartingEquipmentRemoveFromPool;
@@ -4652,5 +4754,34 @@ namespace FF1Lib
 		}
 
 		#endregion
+
+		public bool OptOutSpeedHackWipes
+		{
+			get => Preferences.OptOutSpeedHackWipes;
+			set
+			{
+				Preferences.OptOutSpeedHackWipes = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool OptOutSpeedHackMessages
+		{
+			get => Preferences.OptOutSpeedHackMessages;
+			set
+			{
+				Preferences.OptOutSpeedHackMessages = value;
+				RaisePropertyChanged();
+			}
+		}
+		public bool OptOutSpeedHackDash
+		{
+			get => Preferences.OptOutSpeedHackDash;
+			set
+			{
+				Preferences.OptOutSpeedHackDash = value;
+				RaisePropertyChanged();
+			}
+		}
 	}
 }

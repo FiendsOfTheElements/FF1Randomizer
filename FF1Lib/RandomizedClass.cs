@@ -51,6 +51,7 @@ namespace FF1Lib
 			SpcMax = 29,
 			PowerRW = 30,
 			NoPromoMagic = 31,
+			LockpickingLevel = 32
 		}
 		public enum AuthClass
 		{
@@ -448,7 +449,7 @@ namespace FF1Lib
 			if ((bool)flags.RandomizeClassChaos)
 			    DoRandomizeClassChaosMode(ref classData, ((bool)flags.MagicLevelsMixed && (bool)flags.MagicPermissions) || ((bool)flags.SpellcrafterMixSpells && !(bool)flags.SpellcrafterRetainPermissions), (flags.ThiefAgilityBuff != ThiefAGI.Vanilla), rng);
 			else
-				bonusmalusDescription = DoRandomizeClassNormalMode(ref classData, rng, itemnames, flags.RandomizeClassMaxBonus, flags.RandomizeClassMaxMalus, (bool)flags.RandomizeClassNoCasting);
+				bonusmalusDescription = DoRandomizeClassNormalMode(ref classData, rng, itemnames, flags);
 
 			// Update equipment permissions
 			for (int i = 0; i < 40; i++)
@@ -599,7 +600,7 @@ namespace FF1Lib
 			PutInBank(0x1E, 0x8950 + 24, new byte[] { (byte)(noneAddress % 0x100), (byte)(noneAddress / 0x100) });
 		}
 
-		public List<string> DoRandomizeClassNormalMode(ref List<ClassData> classData, MT19337 rng, string[] itemnames, int maxbonus, int maxmalus, bool noCastingBonus)
+		public List<string> DoRandomizeClassNormalMode(ref List<ClassData> classData, MT19337 rng, string[] itemnames, Flags flags)
 		{
 			// Equipment lists
 			var equipFighterArmor = classData[(int)AuthClass.Fighter].arPermissions;
@@ -700,7 +701,7 @@ namespace FF1Lib
 				new BonusMalus(BonusMalusAction.BlackSpellcaster, "Black W. Sp", binarylist: bwBlackSpells, authclass: new List<AuthClass> { AuthClass.BlackMage }),
 			};
 
-			if (!noCastingBonus)
+			if (!(bool)flags.RandomizeClassNoCasting)
 			{
 				bonusNormal.Add(new BonusMalus(BonusMalusAction.WhiteSpellcaster, "L1 White Sp", mod: 2, mod2: 0, binarylist: lv1WhiteSpells, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief, AuthClass.BlackBelt, AuthClass.RedMage, AuthClass.BlackMage }));
 				bonusNormal.Add(new BonusMalus(BonusMalusAction.BlackSpellcaster, "L1 Black Sp", mod: 2, mod2: 0, binarylist: lv1BlackSpells, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief, AuthClass.BlackBelt, AuthClass.WhiteMage }));
@@ -746,6 +747,16 @@ namespace FF1Lib
 			if(Rng.Between(rng, 0, 10) == 0)
 				malusNormal.Add(new BonusMalus(BonusMalusAction.IntMod, "+80 Int.", mod: 80));
 
+			if((bool)flags.Lockpicking && flags.LockpickingLevelRequirement < 50)
+			{
+				malusNormal.Add(new BonusMalus(BonusMalusAction.LockpickingLevel, "+10 Lp Lv", mod: 10, authclass: new List<AuthClass> {AuthClass.Thief}));
+			}
+
+			if ((bool)flags.Lockpicking && flags.LockpickingLevelRequirement > 1)
+			{
+				bonusNormal.Add(new BonusMalus(BonusMalusAction.LockpickingLevel, "-10 Lp Lv", mod: -10, authclass: new List<AuthClass> { AuthClass.Thief }));
+			}
+
 			var assignedBonusMalus = new List<List<BonusMalus>> { new List<BonusMalus>(), new List<BonusMalus>(), new List<BonusMalus>(), new List<BonusMalus>(), new List<BonusMalus>(), new List<BonusMalus>() };
 
 			// Shuffle bonuses and maluses
@@ -759,6 +770,8 @@ namespace FF1Lib
 			var descriptionList = new List<string>();
 
 			// Distribute bonuses and maluses, we go backward (from BM to Fi) so we have enough malus for BM
+			int maxbonus = flags.RandomizeClassMaxBonus;
+			int maxmalus = flags.RandomizeClassMaxMalus;
 			for (int i = 5; i >= 0; i--)
 			{
 				var tempstring = new List<(int, string)>();
@@ -814,7 +827,6 @@ namespace FF1Lib
 
 			// Reverse description list so it's not backward
 			descriptionList.Reverse();
-
 			// Apply bonuses and maluses to stats
 			for (int i = 0; i < 6; i++)
 			{
@@ -964,9 +976,20 @@ namespace FF1Lib
 							classData[i + 6].MaxSpC = 0;
 							classData[i + 6].SpCStarting = 0;
 							break;
+						case BonusMalusAction.LockpickingLevel:
+							int newLockPickingLevel = flags.LockpickingLevelRequirement + bonusmalus.StatMod;
+							if ((bool)flags.Lockpicking)
+							{
+								//constrain lp level to 1-50
+								newLockPickingLevel = Math.Max(1, newLockPickingLevel);
+								newLockPickingLevel = Math.Min(50, newLockPickingLevel);
+								SetLockpickingLevel(newLockPickingLevel);
+							}
+							break;
 					}
 				}
-			}
+			}		
+
 			return descriptionList;
 		}
 

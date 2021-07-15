@@ -112,6 +112,11 @@ namespace FF1Lib
 			{
 				shards.Add(Item.Shard);
 			}
+			if ((bool)_flags.IsFloaterRemoved)
+			{
+			    unincentivizedQuestItems.Remove(Item.Floater);
+			    unincentivizedQuestItems.Add(ReplacementItem);
+			}
 
 			ItemPlacementContext ctx = new ItemPlacementContext
 			{
@@ -130,10 +135,6 @@ namespace FF1Lib
 			if ((bool)_flags.FreeBridge)
 			{
 				placedItems = placedItems.Select(x => x.Item != Item.Bridge ? x : NewItemPlacement(x, ReplacementItem)).ToList();
-			}
-			if ((bool)_flags.IsFloaterRemoved)
-			{
-				placedItems = placedItems.Select(x => x.Item != Item.Floater ? x : NewItemPlacement(x, ReplacementItem)).ToList();
 			}
 			if ((bool)_flags.IsShipFree)
 			{
@@ -163,7 +164,7 @@ namespace FF1Lib
 				{
 					//dont make shards jingle that'd be annoying
 					//dont make free items that get replaced, aka cabins, jingle
-					if (placedItem is TreasureChest && placedItem.Item != Item.Shard && placedItem.Item != ReplacementItem)
+					if (placedItem is TreasureChest && placedItem.Item != Item.Shard && placedItem.Item != ReplacementItem && !((bool)_flags.GuaranteedRuseItem && placedItem.Item == Item.PowerRod))
 					{
 						rom.Put(placedItem.Address - FF1Rom.TreasureOffset + FF1Rom.TreasureJingleOffset, new byte[] { 0x01 });
 					}
@@ -507,8 +508,11 @@ namespace FF1Lib
 			List<Item> treasurePool = null;
 			var itemShopItem = Item.Bottle;
 
+			bool placementFailed;
 			do
 			{
+				placementFailed = false;
+
 				var balancedPicker = new RewardSourcePicker( 0.5, 8.5, _checker);
 
 				_sanityCounter++;
@@ -585,7 +589,6 @@ namespace FF1Lib
 							itemPool.Remove(item);
 							var rewardSource = balancedPicker.Pick(rewardSources, _flags.LooseItemsForwardPlacement && !isIncentive, _flags.LooseItemsSpreadPlacement, rng);
 							placedItems.Add(NewItemPlacement(rewardSource, item));
-
 						}
 					}
 				}
@@ -625,24 +628,46 @@ namespace FF1Lib
 				// and there are lots of incentive locations, leftoverItemLocations pool may be small.
 				foreach (var leftoverItem in leftoverItems)
 				{
-					if (!leftoverItemLocations.Any()) continue;
+					if (!leftoverItemLocations.Any())
+					{
+						placementFailed = true;
+						break;
+					}
 
 					placedItems.Add(NewItemPlacement(leftoverItemLocations.SpliceRandom(rng), leftoverItem));
+
+					//If the placed item is a KI, update the accessible locations
+					if (ItemLists.AllQuestItems.Contains(leftoverItem))
+					{
+						(_, accessibleMapLocations, fulfilledRequirements) = _checker.CheckSanity(placedItems, fullLocationRequirements, _flags);
+
+						leftoverItemLocations = looseLocationPool.Where(x => !placedItems.Any(y => y.Address == x.Address)
+						   && _checker.IsRewardSourceAccessible(x, fulfilledRequirements, accessibleMapLocations)).ToList();
+					}
 				}
 
-				if (shards.Count > 0) {
+				if (!placementFailed && shards.Count > 0)
+				{
 				    // Place shards.  These are not affected by the LooseExcludePlacedDungeons flag.
 				    leftoverItemLocations = preBlackOrbLocationPool.Where(x => !placedItems.Any(y => y.Address == x.Address)
 											  && _checker.IsRewardSourceAccessible(x, fulfilledRequirements, accessibleMapLocations)).ToList();
+
 				    foreach (var shard in shards)
-					{
-						if (!leftoverItemLocations.Any()) continue;
+				    {
+						if (!leftoverItemLocations.Any())
+						{
+							placementFailed = true;
+							break;
+						}
+
 						placedItems.Add(NewItemPlacement(leftoverItemLocations.SpliceRandom(rng), shard));
+
+			} while (placementFailed || !_checker.CheckSanity(placedItems, fullLocationRequirements, _flags).Complete);
 				    }
 				}
 
 				// 7. Check sanity and loop if needed
-			} while (!_checker.CheckSanity(placedItems, fullLocationRequirements, _flags).Complete);
+			} while (placementFailed || !_checker.CheckSanity(placedItems, fullLocationRequirements, _flags).Complete);
 
 			return new ItemPlacementResult { PlacedItems = placedItems, RemainingTreasures = treasurePool };
 		}

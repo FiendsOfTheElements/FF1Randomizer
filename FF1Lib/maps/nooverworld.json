@@ -1,92 +1,92 @@
 {
 	"StartingLocation": {
-		"X": 153,
-		"Y": 159
+		"X": 104,
+		"Y": 160
 	},
 	"AirShipLocation": {
-		"X": 153,
-		"Y": 165
+		"X": 113,
+		"Y": 164
 	},
 	"ShipLocations": [
 		{
 			"TeleporterIndex": 255,
-			"X": 154,
-			"Y": 163
+			"X": 106,
+			"Y": 164
 		},
 		{
 			"TeleporterIndex": 3,
-			"X": 154,
-			"Y": 163
+			"X": 106,
+			"Y": 164
 		},
 		{
 			"TeleporterIndex": 10,
-			"X": 154,
-			"Y": 163
+			"X": 106,
+			"Y": 164
 		},
 		{
 			"TeleporterIndex": 11,
-			"X": 154,
-			"Y": 163
+			"X": 106,
+			"Y": 164
 		},
 		{
 			"TeleporterIndex": 23,
-			"X": 154,
-			"Y": 163
+			"X": 106,
+			"Y": 164
 		},
 		{
 			"TeleporterIndex": 1,
-			"X": 154,
-			"Y": 163
+			"X": 106,
+			"Y": 164
 		},
 		{
 			"TeleporterIndex": 9,
-			"X": 154,
-			"Y": 163
+			"X": 106,
+			"Y": 164
 		},
 		{
 			"TeleporterIndex": 13,
-			"X": 154,
-			"Y": 163
+			"X": 106,
+			"Y": 164
 		},
 		{
 			"TeleporterIndex": 14,
-			"X": 154,
-			"Y": 163
+			"X": 106,
+			"Y": 164
 		},
 		{
 			"TeleporterIndex": 20,
-			"X": 154,
-			"Y": 163
+			"X": 106,
+			"Y": 164
 		},
 		{
 			"TeleporterIndex": 1,
-			"X": 154,
-			"Y": 163
+			"X": 106,
+			"Y": 164
 		},
 		{
 			"TeleporterIndex": 22,
-			"X": 154,
-			"Y": 163
+			"X": 106,
+			"Y": 164
 		},
 		{
 			"TeleporterIndex": 25,
-			"X": 154,
-			"Y": 163
+			"X": 106,
+			"Y": 164
 		},
 		{
 			"TeleporterIndex": 26,
-			"X": 154,
-			"Y": 163
+			"X": 106,
+			"Y": 164
 		},
 		{
 			"TeleporterIndex": 5,
-			"X": 154,
-			"Y": 163
+			"X": 106,
+			"Y": 164
 		},
 		{
 			"TeleporterIndex": 15,
-			"X": 154,
-			"Y": 163
+			"X": 106,
+			"Y": 164
 		}
 	],
 	"TeleporterFixups": [
@@ -94,72 +94,72 @@
 			"Type": 1,
 			"Index": 0,
 			"To": {
-				"X": 159,
-				"Y": 159
+				"X": 111,
+				"Y": 160
 			}
 		},
 		{
 			"Type": 1,
 			"Index": 1,
 			"To": {
-				"X": 144,
-				"Y": 159
+				"X": 94,
+				"Y": 160
 			}
 		},
 		{
 			"Type": 1,
 			"Index": 2,
 			"To": {
-				"X": 147,
-				"Y": 167
+				"X": 98,
+				"Y": 169
 			}
 		},
 		{
 			"Type": 1,
 			"Index": 3,
 			"To": {
-				"X": 143,
-				"Y": 167
+				"X": 94,
+				"Y": 169
 			}
 		},
 		{
 			"Type": 1,
 			"Index": 4,
 			"To": {
-				"X": 153,
-				"Y": 159
+				"X": 104,
+				"Y": 160
 			}
 		},
 		{
 			"Type": 1,
 			"Index": 5,
 			"To": {
-				"X": 146,
-				"Y": 159
+				"X": 96,
+				"Y": 160
 			}
 		},
 		{
 			"Type": 1,
 			"Index": 6,
 			"To": {
-				"X": 145,
-				"Y": 167
+				"X": 96,
+				"Y": 169
 			}
 		},
 		{
 			"Type": 1,
 			"Index": 7,
 			"To": {
-				"X": 152,
-				"Y": 153
+				"X": 104,
+				"Y": 154
 			}
 		},
 		{
 			"Type": 1,
 			"Index": 8,
 			"To": {
-				"X": 156,
-				"Y": 155
+				"X": 108,
+				"Y": 156
 			}
 		},
 

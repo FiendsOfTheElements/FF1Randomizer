@@ -136,19 +136,19 @@ namespace FF1Lib
 				_talkroutines.Add(Blob.FromHex("AD3160F008AD3260D003A57160A57260"));
 				_talkroutines.Add(Blob.FromHex("A476209690A47320A490A57160"));
 				_talkroutines.Add(Blob.FromHex("A476209690A57160"));
-				_talkroutines.Add(Blob.FromHex("A571203D96A5752000B1A476207F902073922018964C439660"));
+				_talkroutines.Add(Blob.FromHex("A571203D96A5752020B1A476207F902073922018964C439660"));
 				_talkroutines.Add(Blob.FromHex("AD32602D33602D34602D3160F00CA0CA209690E67DE67DA57160A57260"));
 				_talkroutines.Add(Blob.FromHex("A476207F90209690A01220A490A93F20CC90A57160"));
 				_talkroutines.Add(Blob.FromHex("AD3060D003A57160A476209690A57260"));
 				_talkroutines.Add(Blob.FromHex("AD2960D003A57160CE2960A476209690A572E67D60"));
-				_talkroutines.Add(Blob.FromHex("A03F209190B01FA571203D96A5752000B1A03F20A490A04020A490A04120A4902018964C4396A476207990B012A573F00E1820109FB00AA476207F90A57260A57060")); // Talk_Bikke
+				_talkroutines.Add(Blob.FromHex("A03F209190B01FA571203D96A5752020B1A03F20A490A04020A490A04120A4902018964C4396A476207990B012A573F00E1820109FB00AA476207F90A57260A57060")); // Talk_Bikke
 				_talkroutines.Add(Blob.FromHex("AD2660F018A573F0141820109FB010CE2660A476207F90207392A57260A57060")); // Talk_Nerrick
 				_talkroutines.Add(Blob.FromHex("A00E2079909003A57360AD2D60D003A57160CE2D60207F9020AE95E67DA57260"));
 				_talkroutines.Add(Blob.FromHex("A476207990B012A674BD2060F00EDE2060207F90E67DA57260A57160A57060"));
 				_talkroutines.Add(Blob.FromHex("A476207990B01BA474F0052079909015A573F0111820109FB00DA476207F90A57260A57160A57060"));
 				_talkroutines.Add(Blob.FromHex("A476207990B01EA674BD2060F01AA573F0161820109FB012A674DE2060A476207F90A57260A57160A57060"));
 				_talkroutines.Add(Blob.FromHex("A476207990B01BA674F005BD2060F015A573F0111820109FB00DA476207F90A57260A57160A57060"));
-				_talkroutines.Add(Blob.FromHex("A674F005BD2060F029A57385612080B1F022E67DA572203D96A5752000B1A476207F90207392A5611820109F2018964C4396A57060")); // Talk_Astos
+				_talkroutines.Add(Blob.FromHex("A674F005BD2060F029A57385612080B1F022E67DA572203D96A5752020B1A476207F90207392A5611820109F2018964C4396A57060")); // Talk_Astos
 				_talkroutines.Add(Blob.FromHex("A000209690A57160")); // Talk_Kill
 				_talkroutines.Add(Blob.FromHex("A57520C590A57160")); // Talk_Chaos
 			}
@@ -479,7 +479,7 @@ namespace FF1Lib
 			Data[0x7C9F7] = 0x1B;
 
 			// TalkInBattle, compatible with ext items
-			PutInBank(newTalkRoutinesBank, 0xB100, Blob.FromHex("856A20CDD8A9008D01208D1540A002204A96A001204A96A903CD866BD00820189668684C439660"));
+			PutInBank(newTalkRoutinesBank, 0xB120, Blob.FromHex("856A20CDD8A9008D01208D1540A002204A96A001204A96A903CD866BD00820189668684C439660"));
 
 			// LoadPrice fix
 			PutInBank(newTalkRoutinesBank, 0x9F10, Blob.FromHex("A9118558A5734C10B0"));
@@ -1206,7 +1206,10 @@ namespace FF1Lib
 		    }
 		    wrapped += st.Substring(start, end-start);
 		}
-		return wrapped;
+		
+		wrapped = wrapped.Substring(0, 1).ToUpper() + wrapped.Substring(1);
+
+			return wrapped;
 	    }
 
 		public void SetDungeonNPC(List<MapId> flippedmaps, MT19337 rng)
@@ -1478,11 +1481,12 @@ namespace FF1Lib
 		List<MagicSpell> spellList = GetSpells();
 		var enemies = GetAllEnemyStats();
 		var scriptBytes = Get(ScriptOffset, ScriptSize * ScriptCount).Chunk(ScriptSize);
-		var bosses = new[] { new { name = "Lich", index = Enemy.Lich2, dialog=0x4D },
-				     new { name = "Kary", index = Enemy.Kary2, dialog=0x4E },
-				     new { name = "Kraken", index = Enemy.Kraken2, dialog=0x4F },
-				     new { name = "Tiamat", index = Enemy.Tiamat2, dialog=0xDB },
-				     new { name = "Chaos", index = Enemy.Chaos, dialog=0x51 },
+		var enemyText = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
+		var bosses = new[] { new { index = Enemy.Lich2, dialog=0x4D },
+				     new { index = Enemy.Kary2, dialog=0x4E },
+				     new { index = Enemy.Kraken2, dialog=0x4F },
+				     new { index = Enemy.Tiamat2, dialog=0xDB },
+				     new { index = Enemy.Chaos, dialog=0x51 },
 		};
 
 		var skillNames = ReadText(EnemySkillTextPointerOffset, EnemySkillTextPointerBase, EnemySkillCount);
@@ -1572,6 +1576,15 @@ namespace FF1Lib
 		    var scriptIndex = enemy[EnemyStat.Scripts];
 		    var spells = scriptBytes[scriptIndex].SubBlob(2, 8).ToBytes().Where(b => b != 0xFF).ToList();
 		    var skills = scriptBytes[scriptIndex].SubBlob(11, 4).ToBytes().Where(b => b != 0xFF).ToList();
+		    string enemyName;
+		    if (b.index == Enemy.Chaos) {
+			enemyName = enemyText[b.index];
+		    } else {
+			// alt fiends puts the name in the fiend1 spot
+			// but does not duplicate it in the fiend2
+			// spot.
+			enemyName = enemyText[b.index-1];
+		    }
 
 		    var bossStats = new[] {
 			new { name="HP", ranges=hpRanges, descriptions=hpDescriptions, bossvalue=hp },
@@ -1627,7 +1640,7 @@ namespace FF1Lib
 			    }
 			    skillscript += skillNames[s];
 			}
-			dialogtext = $"{b.name} {hp,4} HP\n"+
+			dialogtext = $"{enemyName} {hp,4} HP\n"+
 			    $"Attack  {enemy[EnemyStat.HitPercent],3}% +{enemy[EnemyStat.Strength],3} x{enemy[EnemyStat.Hits],2}\n"+
 			    $"Defense {enemy[EnemyStat.Evade],3     }% -{enemy[EnemyStat.Defense],3}\n"+
 			    $"{spellscript}\n"+
@@ -1642,7 +1655,7 @@ namespace FF1Lib
 			for (int i = 0; i < bossStats.Length; i++) {
 			    var bs = bossStats[i];
 			    string desc;
-			    if (i == 0 && b.name == "Chaos") {
+			    if (i == 0 && b.index == Enemy.Chaos) {
 				// Chaos has a lot more HP than the
 				// other fiends adjust it down a bit
 				// so the hints make more sense.
@@ -1688,7 +1701,7 @@ namespace FF1Lib
 				}
 				dialogtext += $"and {lines[lines.Count-1]}";
 			    }
-			    dialogtext = $"{intros[chooseIntro]} {b.name} {dialogtext}.";
+			    dialogtext = $"{intros[chooseIntro]} {enemyName} {dialogtext}.";
 			    dialogtext = FormatText(dialogtext, 24, 99);
 			    countlines = dialogtext.Count(f => f == '\n');
 			} while(countlines > 6);
@@ -1696,11 +1709,11 @@ namespace FF1Lib
 			intros.RemoveAt(chooseIntro); // so each bat will get a different intro.
 		    }
 		    else if (flags.SkyWarriorSpoilerBats == SpoilerBatHints.Stars) {
-			dialogtext = $"Scouting report, {b.name}";
+			dialogtext = $"Scouting report, {enemyName}";
 			for (int i = 0; i < bossStats.Length; i++) {
 			    var bs = bossStats[i];
 			    int threat;
-			    if (i == 0 && b.name == "Chaos") {
+			    if (i == 0 && b.index == Enemy.Chaos) {
 				// Chaos has a lot more HP than the
 				// other fiends adjust it down a bit
 				// so the hints make more sense.

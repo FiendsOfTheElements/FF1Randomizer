@@ -84,7 +84,7 @@ namespace FF1Lib
 			Put(0x39D25, Enumerable.Repeat((byte)0xEA, 14).ToArray());
 		}
 
-		private enum FF1Class
+		public enum FF1Class
 		{
 			Fighter = 0,
 			Thief = 1,
@@ -330,23 +330,26 @@ namespace FF1Lib
 			Put(0x39A74, nops);
 		}
 
-		public void EnableSpeedHacks()
+		public void EnableSpeedHacks(Preferences preferences)
 		{
-			// Screen wipe
-			Data[0x7D6EE] = 0x08; // These two values must evenly divide 224 (0xE0), default are 2 and 4
-			Data[0x7D6F5] = 0x10;
-			Data[0x7D713] = 0x0A; // These two values must evenly divide 220 (0xDC), default are 2 and 4
-			Data[0x7D71A] = 0x14; // Don't ask me why they aren't the same, it's the number of scanlines to stop the loop at
+			if (!preferences.OptOutSpeedHackWipes)
+			{
+				// Screen wipe
+				Data[0x7D6EE] = 0x08; // These two values must evenly divide 224 (0xE0), default are 2 and 4
+				Data[0x7D6F5] = 0x10;
+				Data[0x7D713] = 0x0A; // These two values must evenly divide 220 (0xDC), default are 2 and 4
+				Data[0x7D71A] = 0x14; // Don't ask me why they aren't the same, it's the number of scanlines to stop the loop at
 
-			// Dialogue boxes
-			Data[0x7D620] = 0x0B; // These two values must evenly divide 88 (0x58), the size of the dialogue box
-			Data[0x7D699] = 0x0B;
+				// Dialogue boxes
+				Data[0x7D620] = 0x0B; // These two values must evenly divide 88 (0x58), the size of the dialogue box
+				Data[0x7D699] = 0x0B;
 
-			// Battle entry
-			Data[0x7D90A] = 0x11; // This can be just about anything, default is 0x41, sfx lasts for 0x20
+				// Battle entry
+				Data[0x7D90A] = 0x11; // This can be just about anything, default is 0x41, sfx lasts for 0x20
 
-			// All kinds of palette cycling
-			Data[0x7D955] = 0x00; // This value is ANDed with a counter, 0x03 is default, 0x01 is double speed, 0x00 is quadruple
+				// All kinds of palette cycling
+				Data[0x7D955] = 0x00; // This value is ANDed with a counter, 0x03 is default, 0x01 is double speed, 0x00 is quadruple
+			}
 
 			// Battle
 			Data[0x31ECE] = 0x60; // Double character animation speed
@@ -356,10 +359,13 @@ namespace FF1Lib
 			Data[0x33CCD] = 0x04; // Explosion effect count (small enemies), default 8
 			Data[0x33DAA] = 0x04; // Explosion effect count (mixed enemies), default 15
 
+			var drawinframes = preferences.OptOutSpeedHackMessages ? "0C" : BattleBoxDrawInFrames;
+			var undrawframes = preferences.OptOutSpeedHackMessages ? "06" : BattleBoxUndrawFrames;
+
 			// Draw and Undraw Battle Boxes faster
 			Put(0x2DA12, Blob.FromHex("3020181008040201")); // More practical Respond Rates
-			Put(0x7F4AA, Blob.FromHex($"ADFC6048A90F2003FE20008AA9{BattleBoxDrawInFrames}8517A90F2003FE20208A2085F4C617D0F1682003FE60"));
-			Put(0x7F4FF, Blob.FromHex($"ADFC6048A90F2003FE20808AA9{BattleBoxUndrawFrames}8517A90F2003FE20A08A2085F4C617D0F1682003FE60"));
+			Put(0x7F4AA, Blob.FromHex($"ADFC6048A90F2003FE20008AA9{drawinframes}8517A90F2003FE20208A2085F4C617D0F1682003FE60"));
+			Put(0x7F4FF, Blob.FromHex($"ADFC6048A90F2003FE20808AA9{undrawframes}8517A90F2003FE20A08A2085F4C617D0F1682003FE60"));
 
 			// Gain multiple levels at once.
 			//Put(0x2DD82, Blob.FromHex("20789f20579f48a5802907c907f008a58029f0690785806820019c4ce89b")); old
@@ -367,10 +373,12 @@ namespace FF1Lib
 			// Skip stat up messages
 			PutInBank(0x1B, 0x89F0, Blob.FromHex("4CE38B"));
 
+			var responserate = preferences.OptOutSpeedHackMessages ? (byte)0x04 : (byte)0x07;
+
 			// Default Response Rate 8 (0-based)
-			Data[0x384CB] = 0x07; // Initialize respondrate to 7
+			Data[0x384CB] = responserate; // Initialize respondrate to 7
 			Put(0x3A153, Blob.FromHex("4CF0BF")); // Replace reset respond rate with a JMP to...
-			Put(0x3BFF0, Blob.FromHex("A90785FA60")); // Set respondrate to 7
+			Put(0x3BFF0, Blob.FromHex($"A9{responserate.ToString("00")}85FA60")); // Set respondrate to 7
 
 			// Faster Lineup Modifications
 			var animationOffsets = new List<int> { 0x39AA0, 0x39AB4, 0x39B10, 0x39B17, 0x39B20, 0x39B27 };
@@ -413,39 +421,46 @@ namespace FF1Lib
 			InsertDialogs(0xF1, "Can't hold\n#");
 		}
 
-		public void EnableDash(bool speedboat)
+		public void EnableDash(bool speedboat,  bool slowMapMove)
 		{
-		    if (speedboat) {
-			// walking, canoe are speed 2
-			// ship, airship are speed 4
-			//
-			// See asm/1F_D077_Speedboat.asm
-			//
-			PutInBank(0x1F, 0xD077, Blob.FromHex(
-				      "A5424AB0014AA902B0010A242050014A853460"));
-		    }
-		    else {
-			// walking, canoe, and boat are speed 2
-			// airship is speed 4
-			//
-			// disassembly
-			//
-			// D077   A5 42      LDA $42     ; load vehicle
-			// D079   4A         LSR A       ; shift right, if on foot (A=$01), this sets Zero, oVerflow and Carry, and set A=$00
-			// D07A   69 00      ADC #$00    ; add zero, if Carry is set, this sets A=$01 and clears Z, V, and C
-			// D07C   4A         LSR A       ; shift right again, if on foot (A=$01), this sets Zero and Carry, and sets A=$00
-			// D07D   69 00      ADC #$00    ; add zero, if Carry is set, this sets A=$01 and clears Z, V, and C
-			// D07F   0A         ASL A       ; shift left, this turns A=$01 to A=$02
-			// D080   24 20      BIT $20     ; check joystick state: set Z if bit 5 is not set, V if bit 6 is set, N if bit 7 is set
-			// D082   50 01      BVC $D085   ; branch if V is clear (I guess that means bit 6 is B button)
-			// D084   4A         LSR A       ; V was set, which means B was pressed, so shift right (this cuts the speed in half)
-			// D085   85 34      STA $34     ; store movement speed; walking/canoe/ship is 2 and airship is 4
-			// D087   60         RTS         ; return
-			// D088   34                     ; leftover garbage
-			// D089   60                     ; leftover garbage
+			if (slowMapMove)
+			{
+				//same as dash, but BVS instead of BVC
+				PutInBank(0x1F, 0xD077, Blob.FromHex("A5424A69004A69000A242070014A853460"));
+			}
+			else if (speedboat)
+			{
+				// walking, canoe are speed 2
+				// ship, airship are speed 4
+				//
+				// See asm/1F_D077_Speedboat.asm
+				//
+				PutInBank(0x1F, 0xD077, Blob.FromHex(
+						  "A5424AB0014AA902B0010A242050014A853460"));
+			}
+			else
+			{
+				// walking, canoe, and boat are speed 2
+				// airship is speed 4
+				//
+				// disassembly
+				//
+				// D077   A5 42      LDA $42     ; load vehicle
+				// D079   4A         LSR A       ; shift right, if on foot (A=$01), this sets Zero, oVerflow and Carry, and set A=$00
+				// D07A   69 00      ADC #$00    ; add zero, if Carry is set, this sets A=$01 and clears Z, V, and C
+				// D07C   4A         LSR A       ; shift right again, if on foot (A=$01), this sets Zero and Carry, and sets A=$00
+				// D07D   69 00      ADC #$00    ; add zero, if Carry is set, this sets A=$01 and clears Z, V, and C
+				// D07F   0A         ASL A       ; shift left, this turns A=$01 to A=$02
+				// D080   24 20      BIT $20     ; check joystick state: set Z if bit 5 is not set, V if bit 6 is set, N if bit 7 is set
+				// D082   50 01      BVC $D085   ; branch if V is clear (I guess that means bit 6 is B button)
+				// D084   4A         LSR A       ; V was set, which means B was pressed, so shift right (this cuts the speed in half)
+				// D085   85 34      STA $34     ; store movement speed; walking/canoe/ship is 2 and airship is 4
+				// D087   60         RTS         ; return
+				// D088   34                     ; leftover garbage
+				// D089   60                     ; leftover garbage
 
-			PutInBank(0x1F, 0xD077, Blob.FromHex("A5424A69004A69000A242050014A853460"));
-		    }
+				PutInBank(0x1F, 0xD077, Blob.FromHex("A5424A69004A69000A242050014A853460"));
+			}
 		}
 
 		public void EnableBuyTen()
@@ -476,17 +491,28 @@ namespace FF1Lib
 			// rewrite rando's GameOver routine to jump to a new section that will save the game data
 			PutInBank(0x1B, 0x801A, Blob.FromHex("4CF58F"));
 
+			byte coneria_x = 0x92;
+			byte coneria_y = 0x9E;
+
+			if (flags.DeepDungeon)
+			{
+				coneria_y = 0x9B;
+			}
+
 			// write new routine to save data at game over (the game will save when you clear the final textbox and not before), see 1B_8FF5_GameOverAndRestart.asm
 			var saveondeath_standardmid = "AD0460D02EAD0060F04FAD0160CD0164D008AD0260CD0264F03FAD016038E9078D1060AD026038E9078D1160A9048D1460D026AD056038E9078D1060AD066038E9078D1160A9018D1460AD0060F00AA9988D0160A9A98D0260";
-			var saveondeath_dwmodemid = "AD0460F00AA9998D0560A9A58D0660AD0060F00AA9988D0160A9A98D0260A9928D1060A99E8D11604E1E606E1D606E1C60EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA";
+			var saveondeath_dwmodemid = $"AD0460F00AA9998D0560A9A58D0660AD0060F00AA9988D0160A9A98D0260A9{coneria_x:X2}8D1060A9{coneria_y:X2}8D11604E1E606E1D606E1C60EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA";
 			var saveondeath_part1 = "20E38BA200BD0061C9FFF041BD0C619D0A61BD0D619D0B61BD28639D2063BD29639D2163BD2A639D2263BD2B639D2363BD2C639D2463BD2D639D2563BD2E639D2663BD2F639D2763A9009D01618A186940AAD0B1";
 			var saveondeath_part2 = "A200BD00609D0064BD00619D0065BD00629D0066BD00639D0067E8D0E5A9558DFE64A9AA8DFF64A9008DFD64A200187D00647D00657D00667D0067E8D0F149FF8DFD644C1D80";
 
 			// Since we want to spawn inside with No Overworld and not at transport, update coordinate to Coneria Castle
 			if (flags.OwMapExchange == OwMapExchanges.NoOverworld)
 			{
-				saveondeath_standardmid = "AD0460F00AA9998D0560A9A58D0660AD0060F00AA9988D0160A9A98D0260A9928D1060A9988D1160EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA";
-				saveondeath_dwmodemid = "AD0460F00AA9998D0560A9A58D0660AD0060F00AA9988D0160A9A98D0260A9928D1060A9988D11604E1E606E1D606E1C60EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA";
+				coneria_x = GetFromBank(0x0E, 0x9DC0+0x08, 1)[0];
+				coneria_y = GetFromBank(0x0E, 0x9DD0+0x08, 1)[0];
+
+				saveondeath_standardmid = "EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA";
+				saveondeath_dwmodemid = $"AD0460F00AA9998D0560A9A58D0660AD0060F00AA9988D0160A9A98D0260A9{coneria_x:X2}8D1060A9{coneria_y:X2}8D11604E1E606E1D606E1C60EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA";
 			}
 			var saveondeath = saveondeath_part1 + (flags.SaveGameDWMode ? saveondeath_dwmodemid : saveondeath_standardmid) + saveondeath_part2;
 
@@ -570,7 +596,7 @@ namespace FF1Lib
 			else if (talkscript == newTalkRoutines.Talk_Bahamut)
 			{
 				// Change routine to check for Tail, give promotion and trigger the battle at the same time, see 11_8200_TalkRoutines.asm
-				talkroutines.Replace(newTalkRoutines.Talk_Bahamut, Blob.FromHex("AD2D60D003A57160E67DA572203D96A5752000B1A476207F9020739220AE952018964C439660"));
+				talkroutines.Replace(newTalkRoutines.Talk_Bahamut, Blob.FromHex("AD2D60D003A57160E67DA572203D96A5752020B1A476207F9020739220AE952018964C439660"));
 			}
 
 			// Set battle
@@ -1401,7 +1427,7 @@ namespace FF1Lib
 			// Patch in the magic menu loop to add spell info
 			PutInBank(0x0E, 0xAECD, Blob.FromHex("4C2691EA"));
 			// the UpgradedEquipMenu and UpgradedMagicMenu code that the above patches jump to
-			PutInBank(0x0E, 0x90E0, Blob.FromHex("A525D007A522D0044C93BB60A662BD0003F030297FA466C018D005691A4C029169428514203CC4205E9620F9BCA520C561F0F7A9008D0120853720F3BD2083B720DAEC4C93BBA525D007A522D0044CD1AE60A9018537A5664A6A6A0562AA0A29387D00631869AF8514205E962080B72025B6A9008D01208537857F20029CA56248206DBA688562A90720EFB8A9292059B92080B74CD1AE"));
+			PutInBank(0x0E, 0x90E0, Blob.FromHex("A525D007A522D0044C93BB60A662BD0003F030297FA466C018D005691A4C029169428514203CC4205E9620F9BCA520C561F0F7A9008D0120853720F3BD2083B720DAEC4C93BBA525D007A522D0044CD1AE60A9018537A5664A6A6A0562AA0A2938187D00631869AF8514205E962080B72025B6A9008D01208537857F20029CA56248206DBA688562A90720EFB8A9292059B92080B74CD1AE"));
 
 			// Modify DrawComplexString, this sets control code 14-19 to use a new words table in bank 11
 			//  could be used to move some stuff in items name table and make some space
@@ -1485,7 +1511,7 @@ namespace FF1Lib
 			}
 
 			// Check if dialogs are too long
-			if (generatedText.Length > 0x2000)
+			if (generatedText.Length > 0x1000)
 				throw new Exception("Dialogs maximum length exceeded.");
 
 			// Insert dialogs
@@ -1493,12 +1519,80 @@ namespace FF1Lib
 			PutInBank(0x0E, 0x9300, Blob.FromUShorts(pointers));
 
 		}
+
+		ushort[] InfoClassEquipPerms = new ushort[] {
+		    (ushort)EquipPermission.Fighter,
+		    (ushort)EquipPermission.Knight,
+		    (ushort)EquipPermission.Thief,
+		    (ushort)EquipPermission.Ninja,
+		    (ushort)EquipPermission.BlackBelt,
+		    (ushort)EquipPermission.Master,
+		    (ushort)EquipPermission.RedMage,
+		    (ushort)EquipPermission.RedWizard,
+		    (ushort)EquipPermission.WhiteMage,
+		    (ushort)EquipPermission.WhiteWizard,
+		    (ushort)EquipPermission.BlackMage,
+		    (ushort)EquipPermission.BlackWizard,
+		};
+		string[] InfoClassAbbrev = new string[] {
+		    "Fi",
+		    "Kn",
+		    "Th",
+		    "Ni",
+		    "Bb",
+		    "Ma",
+		    "Rm",
+		    "Rw",
+		    "Wm",
+		    "Ww",
+		    "Bm",
+		    "Bw"
+		};
+
+		public string GenerateEquipPermission(int classUsability) {
+		    var description = "";
+		    for (int i = 0; i < 6; i++) {
+			if ((classUsability & InfoClassEquipPerms[i*2]) != 0)  {
+			    description += " " + InfoClassAbbrev[i*2];
+			} else if ((classUsability & InfoClassEquipPerms[i*2+1]) != 0) {
+			    description += " " + InfoClassAbbrev[i*2+1];
+			}
+		    }
+		    description = description.Trim();
+		    if (description.Length > 12) {
+			description = description.Replace(" ", "");
+		    }
+		    if (description == "FiThBbRmWmBm") {
+			description =  "all classes";
+		    }
+		    return description;
+		}
+
 		public string GenerateWeaponDescription(int weaponid)
 		{
 			const int spellOffset = 0xB0; // $40 entries
 
-			var element = new List<(int, string, string)> { (0x00, "¤" + ((int)shopInfoWordsIndex.elementNone).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementNoneShort).ToString("X2")), (0x01, "¤" + ((int)shopInfoWordsIndex.elementStatus).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementStatusShort).ToString("X2")), (0x02, "¤" + ((int)shopInfoWordsIndex.elementPoison).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementPoisonShort).ToString("X2")), (0x04, "¤" + ((int)shopInfoWordsIndex.elementTime).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementTimeShort).ToString("X2")), (0x08, "¤" + ((int)shopInfoWordsIndex.elementDeath).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementDeathShort).ToString("X2")), (0x10, "¤" + ((int)shopInfoWordsIndex.elementFire).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementFireShort).ToString("X2")), (0x20, "¤" + ((int)shopInfoWordsIndex.elementIce).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementIceShort).ToString("X2")), (0x40, "¤" + ((int)shopInfoWordsIndex.elementLit).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementLitShort).ToString("X2")), (0x80, "¤" + ((int)shopInfoWordsIndex.elementEarth).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementEarthShort).ToString("X2")) };
-			var hurt = new List<(int, string)> { (0x00, "¤" + ((int)shopInfoWordsIndex.elementNone).ToString("X2")), (0x01, "¤" + ((int)shopInfoWordsIndex.hurtSpecial).ToString("X2")), (0x02, "¤" + ((int)shopInfoWordsIndex.hurtDragon).ToString("X2")), (0x04, "¤" + ((int)shopInfoWordsIndex.hurtGiant).ToString("X2")), (0x08, "¤" + ((int)shopInfoWordsIndex.hurtUndead).ToString("X2")), (0x10, "¤" + ((int)shopInfoWordsIndex.hurtWere).ToString("X2")), (0x20, "¤" + ((int)shopInfoWordsIndex.hurtWater).ToString("X2")), (0x40, "¤" + ((int)shopInfoWordsIndex.hurtMage).ToString("X2")), (0x80, "¤" + ((int)shopInfoWordsIndex.hurtRegen).ToString("X2")) };
+			var element = new List<(int, string, string)> {
+			    (0x00, "¤" + ((int)shopInfoWordsIndex.elementNone).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementNoneShort).ToString("X2")),
+			    (0x01, "¤" + ((int)shopInfoWordsIndex.elementStatus).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementStatusShort).ToString("X2")),
+			    (0x02, "¤" + ((int)shopInfoWordsIndex.elementPoison).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementPoisonShort).ToString("X2")),
+			    (0x04, "¤" + ((int)shopInfoWordsIndex.elementTime).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementTimeShort).ToString("X2")),
+			    (0x08, "¤" + ((int)shopInfoWordsIndex.elementDeath).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementDeathShort).ToString("X2")),
+			    (0x10, "¤" + ((int)shopInfoWordsIndex.elementFire).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementFireShort).ToString("X2")),
+			    (0x20, "¤" + ((int)shopInfoWordsIndex.elementIce).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementIceShort).ToString("X2")),
+			    (0x40, "¤" + ((int)shopInfoWordsIndex.elementLit).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementLitShort).ToString("X2")),
+			    (0x80, "¤" + ((int)shopInfoWordsIndex.elementEarth).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementEarthShort).ToString("X2"))
+			};
+			var hurt = new List<(int, string)> {
+			    (0x00, "¤" + ((int)shopInfoWordsIndex.elementNone).ToString("X2")),
+			    (0x01, "¤" + ((int)shopInfoWordsIndex.hurtSpecial).ToString("X2")),
+			    (0x02, "¤" + ((int)shopInfoWordsIndex.hurtDragon).ToString("X2")),
+			    (0x04, "¤" + ((int)shopInfoWordsIndex.hurtGiant).ToString("X2")),
+			    (0x08, "¤" + ((int)shopInfoWordsIndex.hurtUndead).ToString("X2")),
+			    (0x10, "¤" + ((int)shopInfoWordsIndex.hurtWere).ToString("X2")),
+			    (0x20, "¤" + ((int)shopInfoWordsIndex.hurtWater).ToString("X2")),
+			    (0x40, "¤" + ((int)shopInfoWordsIndex.hurtMage).ToString("X2")),
+			    (0x80, "¤" + ((int)shopInfoWordsIndex.hurtRegen).ToString("X2")) };
 			var shortDelimiter = new List<string> { "\n ", ", ", "\n ", ", ", "\n ", ", " };
 
 			var weapondata = new Weapon(weaponid, this);
@@ -1518,12 +1612,13 @@ namespace FF1Lib
 
 			bool showElement = (weapondata.SpellIndex == 0x00) || (activeHurt.Count == 0);
 
-			if (activeHurt.Count == 0)
-				description += "\n";
-			else if (activeHurt.Count >= 1 && activeHurt.Count <= 7)
-				description += "\n\nHurt " + activeHurt.First().Item2;
+			description += "\n";
+			description += GenerateEquipPermission(weapondata.ClassUsability);
+
+			if (activeHurt.Count >= 1 && activeHurt.Count <= 7)
+				description += "\nHurt " + activeHurt.First().Item2;
 			else if (activeHurt.Count == 8)
-				description += "\n\nHurt All";
+				description += "\nHurt All";
 
 			if (activeElement.Count == 0)
 				description += "";
@@ -1541,13 +1636,35 @@ namespace FF1Lib
 		{
 			const int spellOffset = 0xB0; // $40 entries
 
-			var element = new List<(int, string, string)> { (0x00, "¤" + ((int)shopInfoWordsIndex.elementNone).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementNoneShort).ToString("X2")), (0x01, "¤" + ((int)shopInfoWordsIndex.elementStatus).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementStatusShort).ToString("X2")), (0x02, "¤" + ((int)shopInfoWordsIndex.elementPoison).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementPoisonShort).ToString("X2")), (0x04, "¤" + ((int)shopInfoWordsIndex.elementTime).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementTimeShort).ToString("X2")), (0x08, "¤" + ((int)shopInfoWordsIndex.elementDeath).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementDeathShort).ToString("X2")), (0x10, "¤" + ((int)shopInfoWordsIndex.elementFire).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementFireShort).ToString("X2")), (0x20, "¤" + ((int)shopInfoWordsIndex.elementIce).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementIceShort).ToString("X2")), (0x40, "¤" + ((int)shopInfoWordsIndex.elementLit).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementLitShort).ToString("X2")), (0x80, "¤" + ((int)shopInfoWordsIndex.elementEarth).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementEarthShort).ToString("X2")) };
-			var status = new List<(int, string, string)> { (0x01, "¤" + ((int)shopInfoWordsIndex.statusDead).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusDeadShort).ToString("X2")), (0x02, "¤" + ((int)shopInfoWordsIndex.statusStone).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusStoneShort).ToString("X2")), (0x04, "¤" + ((int)shopInfoWordsIndex.statusPoison).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusPoisonShort).ToString("X2")), (0x08, "¤" + ((int)shopInfoWordsIndex.statusBlind).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusBlindShort).ToString("X2")), (0x10, "¤" + ((int)shopInfoWordsIndex.statusStun).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusStunShort).ToString("X2")), (0x20, "¤" + ((int)shopInfoWordsIndex.statusSleep).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusSleepShort).ToString("X2")), (0x40, "¤" + ((int)shopInfoWordsIndex.statusMute).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusMuteShort).ToString("X2")), (0x80, "¤" + ((int)shopInfoWordsIndex.statusConfuse).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusConfuseShort).ToString("X2")) };
+			var element = new List<(int, string, string)> {
+			    (0x00, "¤" + ((int)shopInfoWordsIndex.elementNone).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementNoneShort).ToString("X2")),
+			    (0x01, "¤" + ((int)shopInfoWordsIndex.elementStatus).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementStatusShort).ToString("X2")),
+			    (0x02, "¤" + ((int)shopInfoWordsIndex.elementPoison).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementPoisonShort).ToString("X2")),
+			    (0x04, "¤" + ((int)shopInfoWordsIndex.elementTime).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementTimeShort).ToString("X2")),
+			    (0x08, "¤" + ((int)shopInfoWordsIndex.elementDeath).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementDeathShort).ToString("X2")),
+			    (0x10, "¤" + ((int)shopInfoWordsIndex.elementFire).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementFireShort).ToString("X2")),
+			    (0x20, "¤" + ((int)shopInfoWordsIndex.elementIce).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementIceShort).ToString("X2")),
+			    (0x40, "¤" + ((int)shopInfoWordsIndex.elementLit).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementLitShort).ToString("X2")),
+			    (0x80, "¤" + ((int)shopInfoWordsIndex.elementEarth).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementEarthShort).ToString("X2"))
+			};
+			var status = new List<(int, string, string)> {
+			    (0x01, "¤" + ((int)shopInfoWordsIndex.statusDead).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusDeadShort).ToString("X2")),
+			    (0x02, "¤" + ((int)shopInfoWordsIndex.statusStone).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusStoneShort).ToString("X2")),
+			    (0x04, "¤" + ((int)shopInfoWordsIndex.statusPoison).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusPoisonShort).ToString("X2")),
+			    (0x08, "¤" + ((int)shopInfoWordsIndex.statusBlind).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusBlindShort).ToString("X2")),
+			    (0x10, "¤" + ((int)shopInfoWordsIndex.statusStun).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusStunShort).ToString("X2")),
+			    (0x20, "¤" + ((int)shopInfoWordsIndex.statusSleep).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusSleepShort).ToString("X2")),
+			    (0x40, "¤" + ((int)shopInfoWordsIndex.statusMute).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusMuteShort).ToString("X2")),
+			    (0x80, "¤" + ((int)shopInfoWordsIndex.statusConfuse).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusConfuseShort).ToString("X2"))
+			};
 			var shortDelimiter = new List<string> { "\n ", ", ", "\n ", ", ", "\n ", ", " };
 
 			var armordata = new Armor(armorid, this);
 
 			var description = "¤" + ((int)shopInfoWordsIndex.arDef).ToString("X2") + armordata.Absorb + "\n¤" + ((int)shopInfoWordsIndex.arEva).ToString("X2") + armordata.Weight;
+
+			description += "\n";
+			description += GenerateEquipPermission(armordata.ClassUsability);
 
 			var activeElementStatus = new List<(int, string, string)>();
 
@@ -1555,29 +1672,32 @@ namespace FF1Lib
 				if ((effect.Item1 & armordata.ElementalResist) > 0)
 					activeElementStatus.Add(effect);
 
-			if (activeElementStatus.Count == 0)
-				description += "\n";
+			if (activeElementStatus.Count == 0) {
+			}
 			else if (activeElementStatus.Count == 1)
-				description += "\n\nResistance\n " + activeElementStatus[0].Item2;
+			{
+				description += "\nResistance\n " + activeElementStatus[0].Item2;
+			}
 			else if (activeElementStatus.Count <= 3)
 			{
-				description += "\n\nResist " + activeElementStatus[0].Item3;
+				description += "\nResist " + activeElementStatus[0].Item3;
 
 				for (int i = 1; i < activeElementStatus.Count; i++)
 					description += shortDelimiter[i - 1] + activeElementStatus[i].Item3;
 			}
 			else if (activeElementStatus.Count <= 6)
 			{
-				description += "\n\nResist " + activeElementStatus[0].Item3 + "\n " + activeElementStatus[1].Item3 + "and " + (activeElementStatus.Count - 2) + "+";
+				description += "\nResist " + activeElementStatus[0].Item3 + "\n " + activeElementStatus[1].Item3 + "and " + (activeElementStatus.Count - 2) + "+";
 			}
 			else if (activeElementStatus.Count == 7)
 			{
-				description += "\n\nResist all\n except ";
+				description += "\nResist all\n except ";
 				foreach ((int, string, string) effect in status)
 					description += (effect.Item1 & armordata.ElementalResist) == 0 ? (effect.Item3) : "";
 			}
-			else
-				description += "\n\nResist all";
+			else {
+			    description += "\nResist all";
+			}
 
 			if (armordata.SpellIndex != 0x00)
 				description += "\n" + "Cast $" + ((int)armordata.SpellIndex + spellOffset - 1).ToString("X2");
@@ -1586,11 +1706,69 @@ namespace FF1Lib
 		}
 		public string GenerateSpellDescription(int spellid, Blob spelldata)
 		{
-			var target = new List<(int, string)> { (0x01, "¤" + ((int)shopInfoWordsIndex.targetAllEnemies).ToString("X2")), (0x02, "¤" + ((int)shopInfoWordsIndex.targetSingleEnemy).ToString("X2")), (0x04, "¤" + ((int)shopInfoWordsIndex.targetCaster).ToString("X2")), (0x08, "¤" + ((int)shopInfoWordsIndex.targetAllAllies).ToString("X2")), (0x10, "¤" + ((int)shopInfoWordsIndex.targetOneAlly).ToString("X2")) };
-			var element = new List<(int, string, string)> { (0x00, "¤" + ((int)shopInfoWordsIndex.elementNone).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementNoneShort).ToString("X2")), (0x01, "¤" + ((int)shopInfoWordsIndex.elementStatus).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementStatusShort).ToString("X2")), (0x02, "¤" + ((int)shopInfoWordsIndex.elementPoison).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementPoisonShort).ToString("X2")), (0x04, "¤" + ((int)shopInfoWordsIndex.elementTime).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementTimeShort).ToString("X2")), (0x08, "¤" + ((int)shopInfoWordsIndex.elementDeath).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementDeathShort).ToString("X2")), (0x10, "¤" + ((int)shopInfoWordsIndex.elementFire).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementFireShort).ToString("X2")), (0x20, "¤" + ((int)shopInfoWordsIndex.elementIce).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementIceShort).ToString("X2")), (0x40, "¤" + ((int)shopInfoWordsIndex.elementLit).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementLitShort).ToString("X2")), (0x80, "¤" + ((int)shopInfoWordsIndex.elementEarth).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementEarthShort).ToString("X2")) };
-			var status = new List<(int, string, string)> { (0x01, "¤" + ((int)shopInfoWordsIndex.statusDead).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusDeadShort).ToString("X2")), (0x02, "¤" + ((int)shopInfoWordsIndex.statusStone).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusStoneShort).ToString("X2")), (0x04, "¤" + ((int)shopInfoWordsIndex.statusPoison).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusPoisonShort).ToString("X2")), (0x08, "¤" + ((int)shopInfoWordsIndex.statusBlind).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusBlindShort).ToString("X2")), (0x10, "¤" + ((int)shopInfoWordsIndex.statusStun).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusStunShort).ToString("X2")), (0x20, "¤" + ((int)shopInfoWordsIndex.statusSleep).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusSleepShort).ToString("X2")), (0x40, "¤" + ((int)shopInfoWordsIndex.statusMute).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusMuteShort).ToString("X2")), (0x80, "¤" + ((int)shopInfoWordsIndex.statusConfuse).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusConfuseShort).ToString("X2")) };
-			var routine = new List<(int, string)> { (0x00, "¤" + ((int)shopInfoWordsIndex.routineNull).ToString("X2")), (0x01, "¤" + ((int)shopInfoWordsIndex.routineDamage).ToString("X2")), (0x02, "¤" + ((int)shopInfoWordsIndex.routineDmgUndead).ToString("X2")), (0x03, "¤" + ((int)shopInfoWordsIndex.routineStats).ToString("X2")), (0x04, "¤" + ((int)shopInfoWordsIndex.routineSlow).ToString("X2")), (0x05, "¤" + ((int)shopInfoWordsIndex.routineFear).ToString("X2")), (0x06, "¤" + ((int)shopInfoWordsIndex.routineCure).ToString("X2")), (0x07, "¤" + ((int)shopInfoWordsIndex.routineCure).ToString("X2")), (0x08, "¤" + ((int)shopInfoWordsIndex.routineHealStats).ToString("X2")), (0x09, "¤" + ((int)shopInfoWordsIndex.routineDefense).ToString("X2")), (0x0A, "¤" + ((int)shopInfoWordsIndex.routineResistElement).ToString("X2")), (0x0C, "¤" + ((int)shopInfoWordsIndex.routineFast).ToString("X2")), (0x0D, "¤" + ((int)shopInfoWordsIndex.routineRaiseAttack).ToString("X2")), (0x0E, "¤" + ((int)shopInfoWordsIndex.routineReduceEvade).ToString("X2")), (0x0F, "¤" + ((int)shopInfoWordsIndex.routineFullCure).ToString("X2")), (0x10, "¤" + ((int)shopInfoWordsIndex.routineRaiseEvade).ToString("X2")), (0x11, "¤" + ((int)shopInfoWordsIndex.routineVoidResist).ToString("X2")), (0x12, "¤" + ((int)shopInfoWordsIndex.routinePowerWord).ToString("X2")) };
-			var oobroutine = new List<(int, string)> { (0x00, "¤" + ((int)shopInfoWordsIndex.routineCure).ToString("X2")), (0x01, "¤" + ((int)shopInfoWordsIndex.routineCure).ToString("X2")), (0x02, "¤" + ((int)shopInfoWordsIndex.routineCure).ToString("X2")), (0x03, "¤" + ((int)shopInfoWordsIndex.routineFullCure).ToString("X2")), (0x04, "¤" + ((int)shopInfoWordsIndex.routineCure).ToString("X2")), (0x05, "¤" + ((int)shopInfoWordsIndex.routineCure).ToString("X2")), (0x06, "¤" + ((int)shopInfoWordsIndex.routineCure).ToString("X2")), (0x07, "¤" + ((int)shopInfoWordsIndex.routineHealPoison).ToString("X2")), (0x08, "¤" + ((int)shopInfoWordsIndex.routineRevive).ToString("X2")), (0x09, "¤" + ((int)shopInfoWordsIndex.routineFullRevive).ToString("X2")), (0x0A, "¤" + ((int)shopInfoWordsIndex.routineWarp).ToString("X2")), (0x0B, "¤" + ((int)shopInfoWordsIndex.routineHealStone).ToString("X2")), (0x0C, "¤" + ((int)shopInfoWordsIndex.routineTeleport).ToString("X2")) };
+			var target = new List<(int, string)> {
+			    (0x01, "¤" + ((int)shopInfoWordsIndex.targetAllEnemies).ToString("X2")),
+			    (0x02, "¤" + ((int)shopInfoWordsIndex.targetSingleEnemy).ToString("X2")),
+			    (0x04, "¤" + ((int)shopInfoWordsIndex.targetCaster).ToString("X2")),
+			    (0x08, "¤" + ((int)shopInfoWordsIndex.targetAllAllies).ToString("X2")),
+			    (0x10, "¤" + ((int)shopInfoWordsIndex.targetOneAlly).ToString("X2"))
+			};
+			var element = new List<(int, string, string)> {
+			    (0x00, "¤" + ((int)shopInfoWordsIndex.elementNone).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementNoneShort).ToString("X2")),
+			    (0x01, "¤" + ((int)shopInfoWordsIndex.elementStatus).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementStatusShort).ToString("X2")),
+			    (0x02, "¤" + ((int)shopInfoWordsIndex.elementPoison).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementPoisonShort).ToString("X2")),
+			    (0x04, "¤" + ((int)shopInfoWordsIndex.elementTime).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementTimeShort).ToString("X2")),
+			    (0x08, "¤" + ((int)shopInfoWordsIndex.elementDeath).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementDeathShort).ToString("X2")),
+			    (0x10, "¤" + ((int)shopInfoWordsIndex.elementFire).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementFireShort).ToString("X2")),
+			    (0x20, "¤" + ((int)shopInfoWordsIndex.elementIce).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementIceShort).ToString("X2")),
+			    (0x40, "¤" + ((int)shopInfoWordsIndex.elementLit).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementLitShort).ToString("X2")),
+			    (0x80, "¤" + ((int)shopInfoWordsIndex.elementEarth).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementEarthShort).ToString("X2"))
+			};
+			var status = new List<(int, string, string)> {
+			    (0x01, "¤" + ((int)shopInfoWordsIndex.statusDead).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusDeadShort).ToString("X2")),
+			    (0x02, "¤" + ((int)shopInfoWordsIndex.statusStone).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusStoneShort).ToString("X2")),
+			    (0x04, "¤" + ((int)shopInfoWordsIndex.statusPoison).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusPoisonShort).ToString("X2")),
+			    (0x08, "¤" + ((int)shopInfoWordsIndex.statusBlind).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusBlindShort).ToString("X2")),
+			    (0x10, "¤" + ((int)shopInfoWordsIndex.statusStun).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusStunShort).ToString("X2")),
+			    (0x20, "¤" + ((int)shopInfoWordsIndex.statusSleep).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusSleepShort).ToString("X2")),
+			    (0x40, "¤" + ((int)shopInfoWordsIndex.statusMute).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusMuteShort).ToString("X2")),
+			    (0x80, "¤" + ((int)shopInfoWordsIndex.statusConfuse).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusConfuseShort).ToString("X2"))
+			};
+			var routine = new List<(int, string)> {
+			    (0x00, "¤" + ((int)shopInfoWordsIndex.routineNull).ToString("X2")),
+			    (0x01, "¤" + ((int)shopInfoWordsIndex.routineDamage).ToString("X2")),
+			    (0x02, "¤" + ((int)shopInfoWordsIndex.routineDmgUndead).ToString("X2")),
+			    (0x03, "¤" + ((int)shopInfoWordsIndex.routineStats).ToString("X2")),
+			    (0x04, "¤" + ((int)shopInfoWordsIndex.routineSlow).ToString("X2")),
+			    (0x05, "¤" + ((int)shopInfoWordsIndex.routineFear).ToString("X2")),
+			    (0x06, "¤" + ((int)shopInfoWordsIndex.routineCure).ToString("X2")),
+			    (0x07, "¤" + ((int)shopInfoWordsIndex.routineCure).ToString("X2")),
+			    (0x08, "¤" + ((int)shopInfoWordsIndex.routineHealStats).ToString("X2")),
+			    (0x09, "¤" + ((int)shopInfoWordsIndex.routineDefense).ToString("X2")),
+			    (0x0A, "¤" + ((int)shopInfoWordsIndex.routineResistElement).ToString("X2")),
+			    (0x0C, "¤" + ((int)shopInfoWordsIndex.routineFast).ToString("X2")),
+			    (0x0D, "¤" + ((int)shopInfoWordsIndex.routineRaiseAttack).ToString("X2")),
+			    (0x0E, "¤" + ((int)shopInfoWordsIndex.routineReduceEvade).ToString("X2")),
+			    (0x0F, "¤" + ((int)shopInfoWordsIndex.routineFullCure).ToString("X2")),
+			    (0x10, "¤" + ((int)shopInfoWordsIndex.routineRaiseEvade).ToString("X2")),
+			    (0x11, "¤" + ((int)shopInfoWordsIndex.routineVoidResist).ToString("X2")),
+			    (0x12, "¤" + ((int)shopInfoWordsIndex.routinePowerWord).ToString("X2"))
+			};
+			var oobroutine = new List<(int, string)> {
+			    (0x00, "¤" + ((int)shopInfoWordsIndex.routineCure).ToString("X2")),
+			    (0x01, "¤" + ((int)shopInfoWordsIndex.routineCure).ToString("X2")),
+			    (0x02, "¤" + ((int)shopInfoWordsIndex.routineCure).ToString("X2")),
+			    (0x03, "¤" + ((int)shopInfoWordsIndex.routineFullCure).ToString("X2")),
+			    (0x04, "¤" + ((int)shopInfoWordsIndex.routineCure).ToString("X2")),
+			    (0x05, "¤" + ((int)shopInfoWordsIndex.routineCure).ToString("X2")),
+			    (0x06, "¤" + ((int)shopInfoWordsIndex.routineCure).ToString("X2")),
+			    (0x07, "¤" + ((int)shopInfoWordsIndex.routineHealPoison).ToString("X2")),
+			    (0x08, "¤" + ((int)shopInfoWordsIndex.routineRevive).ToString("X2")),
+			    (0x09, "¤" + ((int)shopInfoWordsIndex.routineFullRevive).ToString("X2")),
+			    (0x0A, "¤" + ((int)shopInfoWordsIndex.routineWarp).ToString("X2")),
+			    (0x0B, "¤" + ((int)shopInfoWordsIndex.routineHealStone).ToString("X2")),
+			    (0x0C, "¤" + ((int)shopInfoWordsIndex.routineTeleport).ToString("X2"))
+			};
 			var shortDelimiter = new List<string> { "\n ", ", ", "\n ", ", ", "\n ", ", " };
 			var oobSpells = new List<int>();
 
@@ -1959,13 +2137,13 @@ namespace FF1Lib
 			}
 
 			// New routines to fight and give item
-			var battleUnne = talkroutines.Add(Blob.FromHex("A674F005BD2060F01AE67DA572203D96A5752000B1A476207F902073922018964C4396A57060"));
-			var battleGiveOnFlag = talkroutines.Add(Blob.FromHex("A474F0052079909029A57385612080B1B022E67DA572203D96A5752000B1A476207F90207392A5611820109F2018964C4396A57060"));
-			var battleGiveOnItem = talkroutines.Add(Blob.FromHex("A674F005BD2060F029A57385612080B1B022E67DA572203D96A5752000B1A476207F90207392A5611820109F2018964C4396A57060"));
-			var battleBahamut = talkroutines.Add(Blob.FromHex("AD2D60D003A57160E67DA572203D96A5752000B1A476207F9020739220AE952018964C439660"));
+			var battleUnne = talkroutines.Add(Blob.FromHex("A674F005BD2060F01AE67DA572203D96A5752020B1A476207F902073922018964C4396A57060"));
+			var battleGiveOnFlag = talkroutines.Add(Blob.FromHex("A474F0052079909029A57385612080B1B022E67DA572203D96A5752020B1A476207F90207392A5611820109F2018964C4396A57060"));
+			var battleGiveOnItem = talkroutines.Add(Blob.FromHex("A674F005BD2060F029A57385612080B1B022E67DA572203D96A5752020B1A476207F90207392A5611820109F2018964C4396A57060"));
+			var battleBahamut = talkroutines.Add(Blob.FromHex("AD2D60D003A57160E67DA572203D96A5752020B1A476207F9020739220AE952018964C439660"));
 			talkroutines.ReplaceChunk(newTalkRoutines.Talk_Bikke, Blob.FromHex("A57260A57060"), Blob.FromHex("207392A57260"));
 
-			var lichReplace = talkroutines.Add(Blob.FromHex("A572203D96A5752000B1A476207F90207392A47320A4902018964C4396"));
+			var lichReplace = talkroutines.Add(Blob.FromHex("A572203D96A5752020B1A476207F90207392A47320A4902018964C4396"));
 
 			// Update Garland's script
 			npcdata.SetRoutine(ObjectId.Garland, newTalkRoutines.Talk_CoOGuy);
@@ -2221,8 +2399,8 @@ namespace FF1Lib
 			SubstituteFormationTableEncounter(oldEncounter: encAnkylo + offsetAtoB, newEncounter: encTyroWyvern); // handle Ankylo B side (two Ankylos)
 
 			// Update Bahamut behavior
-			String asmNoTailPromote = "EE7D00AD7200203D96AD75002000B1AC7600207F9020739220AE952018964C439660"; // 11_820 LichsRevenge ASM : ClassChange_bB
-			String asmTailRequiredPromote = "AD2D60D003A57160E67DA572203D96A5752000B1A476207F9020739220AE952018964C439660"; // 11_820 LichsRevenge ASM : Talk_battleBahamut
+			String asmNoTailPromote = "EE7D00AD7200203D96AD75002020B1AC7600207F9020739220AE952018964C439660"; // 11_820 LichsRevenge ASM : ClassChange_bB
+			String asmTailRequiredPromote = "AD2D60D003A57160E67DA572203D96A5752020B1A476207F9020739220AE952018964C439660"; // 11_820 LichsRevenge ASM : Talk_battleBahamut
 			String asm = "";
 			String bahamutDialogue = "";
 			if (removeTail)
@@ -2326,6 +2504,15 @@ namespace FF1Lib
 			maxLevel = maxLevel - 1;
 			//new level up check is at 0x6C46F
 			Put(0x6C46F, new byte[] { (byte)maxLevel });
+		}
+
+		public void ActivateCropScreen()
+		{
+			//PutInBank(0x0E, 0xA222, Blob.FromHex("20D0A0"));
+			//PutInBank(0x0E, 0xA0D0, Blob.FromHex("2006E9A9038DD00360"));
+
+			PutInBank(0x1F, 0xE8FD, Blob.FromHex("4CE0DD"));
+			PutInBank(0x1F, 0xDDE0, Blob.FromHex("20B9EAA9038DD00360"));
 		}
 	}
 }
