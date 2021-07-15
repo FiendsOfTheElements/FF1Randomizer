@@ -6,26 +6,28 @@
 
 	@if (IsOpen)
 	{
-		<div class="col1">
-			<h4>Starting Equipment</h4>
-			<TriStateCheckBox DisableTooltip="true" @bind-Value="Flags.StartingEquipmentMasamune">Masamune</TriStateCheckBox>
-			<TriStateCheckBox DisableTooltip="true" @bind-Value="Flags.StartingEquipmentKatana">Katana</TriStateCheckBox>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="startingEquipmentHealStaff" @bind-Value="Flags.StartingEquipmentHealStaff">Heal Staff</TriStateCheckBox>
-			<TriStateCheckBox DisableTooltip="true" @bind-Value="Flags.StartingEquipmentZeusGauntlet">Zeus Gauntlet</TriStateCheckBox>
-			<TriStateCheckBox DisableTooltip="true" @bind-Value="Flags.StartingEquipmentWhiteShirt">White Shirt</TriStateCheckBox>
-			<TriStateCheckBox DisableTooltip="true" @bind-Value="Flags.StartingEquipmentRibbon">Ribbon</TriStateCheckBox>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="startingEquipmentDragonslayer" IsEnabled="!Flags.Weaponizer" @bind-Value="Flags.StartingEquipmentDragonslayer">Dragonslayer</TriStateCheckBox>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="startingEquipmentLegendKit" IsEnabled="!Flags.Weaponizer" @bind-Value="Flags.StartingEquipmentLegendKit">Legendary Kit</TriStateCheckBox>
-			<TriStateCheckBox DisableTooltip="true" @bind-Value="Flags.StartingEquipmentRandomEndgameWeapon">Random Endgame Weapon</TriStateCheckBox>
-			<TriStateCheckBox DisableTooltip="true" @bind-Value="Flags.StartingEquipmentRandomAoe">Random Aoe Caster Item</TriStateCheckBox>
-			<TriStateCheckBox DisableTooltip="true" @bind-Value="Flags.StartingEquipmentRandomCasterItem">Random Caster Item</TriStateCheckBox>
-			<TriStateCheckBox DisableTooltip="true" @bind-Value="Flags.StartingEquipmentOneItem">One Helpful Item</TriStateCheckBox>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="startingEquipmentGrandpasSecretStash" @bind-Value="Flags.StartingEquipmentGrandpasSecretStash">Grandpa's Secret Stash</TriStateCheckBox>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="startingEquipmentRandomCommons" @bind-Value="Flags.StartingEquipmentRandomCrap">Random Commons</TriStateCheckBox>
-			<div class="checkbox-cell"></div>
-			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="startingEquipmentNoDuplicates" @bind-Value="Flags.StartingEquipmentNoDuplicates">No Legendary Duplicates</CheckBox>
-			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="startingEquipmentRemoveFromPool" @bind-Value="Flags.StartingEquipmentRemoveFromPool">Remove Items from Treasure Chests</CheckBox>
-		</div>
+<div class="col1">
+	<h4>Starting Equipment</h4>
+	<TriStateCheckBox DisableTooltip="true" @bind-Value="Flags.StartingEquipmentMasamune">Masamune</TriStateCheckBox>
+	<TriStateCheckBox DisableTooltip="true" @bind-Value="Flags.StartingEquipmentKatana">Katana</TriStateCheckBox>
+	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="startingEquipmentHealStaff" @bind-Value="Flags.StartingEquipmentHealStaff">Heal Staff</TriStateCheckBox>
+	<TriStateCheckBox DisableTooltip="true" @bind-Value="Flags.StartingEquipmentZeusGauntlet">Zeus Gauntlet</TriStateCheckBox>
+	<TriStateCheckBox DisableTooltip="true" @bind-Value="Flags.StartingEquipmentWhiteShirt">White Shirt</TriStateCheckBox>
+	<TriStateCheckBox DisableTooltip="true" @bind-Value="Flags.StartingEquipmentRibbon">Ribbon</TriStateCheckBox>
+	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="startingEquipmentDragonslayer" IsEnabled="!Flags.Weaponizer" @bind-Value="Flags.StartingEquipmentDragonslayer">Dragonslayer</TriStateCheckBox>
+	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="startingEquipmentLegendKit" IsEnabled="!Flags.Weaponizer" @bind-Value="Flags.StartingEquipmentLegendKit">Legendary Kit</TriStateCheckBox>
+	<TriStateCheckBox DisableTooltip="true" @bind-Value="Flags.StartingEquipmentRandomEndgameWeapon">Random Endgame Weapon</TriStateCheckBox>
+	<TriStateCheckBox DisableTooltip="true" @bind-Value="Flags.StartingEquipmentRandomAoe">Random Aoe Caster Item</TriStateCheckBox>
+	<TriStateCheckBox DisableTooltip="true" @bind-Value="Flags.StartingEquipmentRandomCasterItem">Random Caster Item</TriStateCheckBox>
+	<TriStateCheckBox DisableTooltip="true" @bind-Value="Flags.StartingEquipmentOneItem">One Helpful Item</TriStateCheckBox>
+	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="startingEquipmentRandomTypeWeapon" @bind-Value="Flags.StartingEquipmentRandomTypeWeapon">Random Typed Weapon</TriStateCheckBox>
+	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="startingEquipmentGrandpasSecretStash" @bind-Value="Flags.StartingEquipmentGrandpasSecretStash">Grandpa's Secret Stash</TriStateCheckBox>
+	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="startingEquipmentRandomCommons" @bind-Value="Flags.StartingEquipmentRandomCrap">Random Commons</TriStateCheckBox>
+	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="startingEquipmentStarterPack" @bind-Value="Flags.StartingEquipmentStarterPack">Starter Pack</TriStateCheckBox>
+	<div class="checkbox-cell"></div>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="startingEquipmentNoDuplicates" @bind-Value="Flags.StartingEquipmentNoDuplicates">No Legendary Duplicates</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="startingEquipmentRemoveFromPool" @bind-Value="Flags.StartingEquipmentRemoveFromPool">Remove Items from Treasure Chests</CheckBox>
+</div>
 
 		<div class="col2">
 			<h4>Consumable Items</h4>

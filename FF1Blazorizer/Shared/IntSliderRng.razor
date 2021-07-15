@@ -1,0 +1,91 @@
+﻿@using Microsoft.AspNetCore.Components.Web
+
+@if(DoubleCol)
+{
+<BSContainer>
+	<BSRow>
+		<BSCol LG="6">
+			<span class="@DisabledClass @IndentClass">@ChildContent @RngCompatibleValue</span>
+		</BSCol>
+		<div class="col-slider">
+			<input class="@DisabledClass" type="range" value="@Value" @onchange="@onchange" min="@Min" max="@Max" step="@Step" />
+			@if (!DisableTooltip)
+			{
+				<input type="image" src="/images/help.png" class="btn-group-help" title="Show Help" @onclick="@ShowToolTip" id="@Id" />
+			}
+		</div>
+	</BSRow>
+</BSContainer>
+}
+else
+{
+<BSContainer>
+	<BSRow>
+		<span class="@DisabledClass @IndentClass">@ChildContent @RngCompatibleValue</span>
+	</BSRow>
+	<BSRow>
+		<input class="@DisabledClass indent" type="range" value="@Value" @onchange="@onchange" min="@Min" max="@Max" step="@Step" />
+		@if (!DisableTooltip)
+		{
+			<input type="image" src="/images/help.png" class="btn-group-help" title="Show Help" @onclick="@ShowToolTip" id="@Id" />
+		}
+	</BSRow>
+</BSContainer>
+}
+
+
+@code
+{
+	private void ShowToolTip(MouseEventArgs e)
+	{
+		UpdateToolTip?.Invoke(Id, e);
+	}
+
+	private void HideToolTip(MouseEventArgs e)
+	{
+		UpdateToolTip?.Invoke("", e);
+	}
+
+	public string RngCompatibleValue => (Value < Max) ? Value.ToString() : "Random";
+
+	[Parameter]
+	public Action<string, MouseEventArgs> UpdateToolTip { get; set; }
+
+	[Parameter]
+	public bool Indent { get; set; }
+	public string IndentClass => Indent ? "indent" : "";
+
+	[Parameter]
+	public bool DoubleCol { get; set; }
+
+	[Parameter]
+	public bool? IsEnabled { get; set; } = true;
+	public bool Disabled => !(IsEnabled ?? true);
+	private string DisabledClass => (IsEnabled ?? true) ? "" : "disabled";
+
+	[Parameter]
+	public string Id { get; set; }
+
+	[Parameter]
+	public int Value { get; set; }
+	[Parameter]
+	public EventCallback<int> ValueChanged { get; set; }
+	void onchange(ChangeEventArgs e)
+	{
+		Value = int.Parse((string)e.Value);
+		ValueChanged.InvokeAsync(Value);
+	}
+
+	[Parameter]
+	public int Min { get; set; }
+	[Parameter]
+	public int Max { get; set; }
+	[Parameter]
+	public int Step { get; set; }
+
+	[Parameter]
+	public RenderFragment ChildContent { get; set; }
+
+	[Parameter]
+	public bool DisableTooltip { get; set; }
+}

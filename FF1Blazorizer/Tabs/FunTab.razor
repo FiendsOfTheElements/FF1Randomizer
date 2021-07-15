@@ -24,9 +24,9 @@
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="renounceAutosortCheckBox" @bind-Value="Flags.RenounceAutosort">Renounce Autosort</CheckBox>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="cropScreen" @bind-Value="Flags.CropScreen">Crop Friendly</CheckBox>
 
-	<CheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="renounceSpeedHackWipes" @bind-Value="Flags.OptOutSpeedHackWipes">Slow Screen Wipes</CheckBox>
-	<CheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="renounceSpeedHackMessages" @bind-Value="Flags.OptOutSpeedHackMessages">Slow Battle Messages</CheckBox>
-	<CheckBox DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="renounceSpeedHackDash" @bind-Value="Flags.OptOutSpeedHackDash">Slow Map Move</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="renounceSpeedHackWipes" @bind-Value="Flags.OptOutSpeedHackWipes">Slow Screen Wipes</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="renounceSpeedHackMessages" @bind-Value="Flags.OptOutSpeedHackMessages">Slow Battle Messages</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="renounceSpeedHackDash" @bind-Value="Flags.OptOutSpeedHackDash">Slow Map Move</CheckBox>
 
 	<ToolTipBox id="spriteSheetToolTipBox" UpdateToolTip="@UpdateToolTipID">@SpriteSheetMessage</ToolTipBox>
 	<input type="file" id="spriteSheetInput" accept="image/*" @onchange="@OnSpriteSheetChanged" />

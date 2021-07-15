@@ -514,7 +514,7 @@ namespace FF1Lib
 
 			// Change Astos routine so item isn't lost in wall of text
 			if ((bool)flags.NPCItems || (bool)flags.NPCFetchItems || (bool)flags.ShuffleAstos)
-				talkroutines.Replace(newTalkRoutines.Talk_Astos, Blob.FromHex("A674F005BD2060F027A57385612080B1B020A572203D96A5752000B1A476207F90207392A5611820109F201896A9F060A57060"));
+				talkroutines.Replace(newTalkRoutines.Talk_Astos, Blob.FromHex("A674F005BD2060F027A57385612080B1B020A572203D96A5752020B1A476207F90207392A5611820109F201896A9F060A57060"));
 
 			npcdata.UpdateItemPlacement(generatedPlacement);
 
@@ -1059,9 +1059,12 @@ namespace FF1Lib
 
 			owMapExchange?.ExecuteStep2();
 
+
 			npcdata.WriteNPCdata(this);
 			talkroutines.WriteRoutines(this);
 			talkroutines.UpdateNPCRoutines(this, npcdata);
+
+			new ExpChests(this, flags, rng).BuildExpChests();
 
 			if (flags.TournamentSafe || preferences.CropScreen) ActivateCropScreen();
 
@@ -1360,6 +1363,10 @@ namespace FF1Lib
 				FF1Text.TextToCopyrightLine("Final Fantasy Randomizer " + FFRVersion.Version),
 				FF1Text.TextToCopyrightLine((FFRVersion.Branch == "master" ? "Seed " : rgx.Replace(FFRVersion.Branch, "") + " BUILD ") + seed),
 				hash));
+
+			// Write Flagstring + Version for reference
+			var urlpart = (FFRVersion.Branch == "master") ? FFRVersion.Version.Replace('.','-') : "beta-" + FFRVersion.Sha.PadRight(7).Substring(0, 7);
+			PutInBank(0x1E, 0xBE00, Encoding.ASCII.GetBytes($"FFRInfo|Seed: {seed}|Flags: {flags}|Version: {urlpart}"));
 		}
 
 		public void FixMissingBattleRngEntry()

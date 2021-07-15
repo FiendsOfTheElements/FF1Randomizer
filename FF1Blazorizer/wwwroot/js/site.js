@@ -192,16 +192,7 @@ async function setFFRPreferences(keyname, prefdata) {
     return Promise.resolve();
 };
 
-window.FFRPreferencesCallbacks = {};
-window.onmessage = function(e) {
-    var response = JSON.parse(e.data);
-    if (window.FFRPreferencesCallbacks[response.key]) {
-        var resolve = window.FFRPreferencesCallbacks[response.key];
-        resolve(response.data);
-    }
-};
-
-async function getFFRPreferences(keyname) {
+function getPrefsWin() {
     var iframe = document.getElementById('preferences-iframe');
     var win;
     // some browser (don't remember which one) throw exception when you try to access
@@ -211,9 +202,33 @@ async function getFFRPreferences(keyname) {
     } catch(e) {
         win = iframe.contentWindow;
     }
+    return win;
+}
 
+window.FFRPreferencesCallbacks = {};
+window.onmessage = function(e) {
+    if (e.data == "prefs-ready") {
+        return;
+    }
+    var response = JSON.parse(e.data);
+    if (window.FFRPreferencesCallbacks[response.key]) {
+        var resolve = window.FFRPreferencesCallbacks[response.key];
+        delete window.FFRPreferencesCallbacks[response.key];
+        resolve(response.data);
+    }
+};
+
+async function getFFRPreferences(keyname) {
+    var win = getPrefsWin();
     return new Promise((resolve, reject) => {
         window.FFRPreferencesCallbacks[keyname] = resolve;
-        win.postMessage(JSON.stringify({key: keyname, method: "get"}), "*");
+        var pm = () => {
+            if (window.FFRPreferencesCallbacks[keyname]) {
+                console.log("sending request for "+keyname);
+                win.postMessage(JSON.stringify({key: keyname, method: "get"}), "*");
+                setTimeout(pm, 300);
+            }
+        };
+        pm();
     });
 };

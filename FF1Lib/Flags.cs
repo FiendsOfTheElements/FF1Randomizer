@@ -44,11 +44,27 @@ namespace FF1Lib
 
 		public bool? StartingEquipmentRandomCrap { get; set; } = false;
 
+		public bool? StartingEquipmentStarterPack { get; set; } = false;
+
+		public bool? StartingEquipmentRandomTypeWeapon { get; set; } = false;
+
 		public bool StartingEquipmentRemoveFromPool { get; set; } = false;
 
 		public bool StartingEquipmentNoDuplicates { get; set; } = false;
 
 		#endregion
+
+		[IntegerFlag(0, 100, 10)]
+		public int ExpChestConversionMin { get; set; } = 0;
+
+		[IntegerFlag(0, 100, 10)]
+		public int ExpChestConversionMax { get; set; } = 0;
+
+		[IntegerFlag(0, 20000, 500)]
+		public int ExpChestMinReward { get; set; } = 2000;
+
+		[IntegerFlag(0, 20000, 500)]
+		public int ExpChestMaxReward { get; set; } = 8000;
 
 		public SpellNameMadness SpellNameMadness { get; set; } = SpellNameMadness.None;
 
@@ -179,12 +195,14 @@ namespace FF1Lib
 		public bool? EnemyTrapTiles { get; set; } = false;
 		public bool? RemoveTrapTiles { get; set; } = false;
 		public bool? RandomTrapFormations { get; set; } = false;
-		public ChestsPool TCPoolSize { get; set; } = ChestsPool.None;
 		public FormationPool TCFormations { get; set; } = FormationPool.AltFormationDist;
 		public TCOptions TCBetterTreasure { get; set; } = TCOptions.None;
 		public TCOptions TCKeyItems { get; set; } = TCOptions.None;
 		public TCOptions TCShards { get; set; } = TCOptions.None;
-		public TCRngOptions TCRandom { get; set; } = TCRngOptions.None;
+		public bool TCExcludeCommons { get; set; } = false;
+
+		[IntegerFlag(0, 13)]
+		public int TCChestCount { get; set; } = 0;
 		public bool TCProtectIncentives { get; set; } = false;
 		public bool? TCMasaGuardian { get; set; } = false;
 		public bool? TrappedChaos { get; set; } = false;
@@ -802,6 +820,12 @@ namespace FF1Lib
 			+ ((IncentivizeSkyPalace ?? true) ? 1 : 0)
 			+ ((IncentivizeCardia ?? true) ? 1 : 0);
 
+		public int TrappedChestsFloor => 0
+			+ ((TCShards == TCOptions.All) ? 32 : 0)
+			+ ((TCKeyItems == TCOptions.All) ? 16 : 0)
+		    + ((TCBetterTreasure == TCOptions.All) ? 50 : 0)
+		    + ((TCMasaGuardian == true && TCBetterTreasure != TCOptions.All) ? 1 : 0)
+			+ ((TrappedChaos == true) ? 1 : 0);
 
 		private static bool ConvertTriState(bool? tristate, MT19337 rng)
 		{
@@ -836,7 +860,7 @@ namespace FF1Lib
 		public bool EnemizerEnabled => (bool)RandomizeFormationEnemizer | (bool)RandomizeEnemizer;
 		public bool EnemizerDontMakeNewScripts => (bool)EnemySkillsSpells & !((bool)BossSkillsOnly | (bool)EnemySkillsSpellsTiered);
 
-		public bool? TrappedChestsEnabled => (bool)TrappedChaos | (bool)TCMasaGuardian | (TCBetterTreasure == TCOptions.All | TCKeyItems == TCOptions.All | TCShards == TCOptions.All) | ((TCBetterTreasure == TCOptions.Pooled | TCKeyItems == TCOptions.Pooled | TCShards == TCOptions.Pooled | TCRandom == TCRngOptions.Pooled) & TCPoolSize != ChestsPool.None);
+		public bool? TrappedChestsEnabled => (bool)TrappedChaos | (bool)TCMasaGuardian | (TCBetterTreasure == TCOptions.All | TCKeyItems == TCOptions.All | TCShards == TCOptions.All) | ((TCBetterTreasure == TCOptions.Pooled | TCKeyItems == TCOptions.Pooled | TCShards == TCOptions.Pooled) & TCChestCount > 0);
 
 		public static string EncodeFlagsText(Flags flags)
 		{
