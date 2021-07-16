@@ -25,6 +25,8 @@ namespace FF1Lib
 
 		private TeleportShuffle _teleporters;
 
+		public TeleportShuffle Teleporters { get { return _teleporters; } set { _teleporters = value; } }
+
 		private enum WalkableRegion
 		{
 			ConeriaRegion = 0,
@@ -49,12 +51,11 @@ namespace FF1Lib
 		public const int MapPaletteSize = 48;
 		public const int MapCount = 64;
 
-		public OverworldMap(FF1Rom rom, IMapEditFlags flags, Dictionary<Palette, Blob> palettes, TeleportShuffle teleporters)
+		public OverworldMap(FF1Rom rom, IMapEditFlags flags, Dictionary<Palette, Blob> palettes)
 		{
 			_rom = rom;
 			_palettes = palettes;
 			_log = new List<string>();
-			_teleporters = teleporters;
 
 			var mapLocationRequirements = ItemLocations.MapLocationRequirements.ToDictionary(x => x.Key, x => x.Value.ToList());
 			var floorLocationRequirements = ItemLocations.MapLocationFloorRequirements.ToDictionary(x => x.Key, x => x.Value);
