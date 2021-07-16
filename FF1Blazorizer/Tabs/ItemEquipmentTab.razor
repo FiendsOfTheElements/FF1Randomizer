@@ -52,6 +52,8 @@
 
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="magisizeWeaponsCheckBox" @bind-Value="Flags.MagisizeWeapons">All Weapons Cast Spells</TriStateCheckBox>
 			<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="magisizeWeaponsBalancedCheckBox" IsEnabled="@Flags.MagisizeWeapons" @bind-Value="Flags.MagisizeWeaponsBalanced">Balanced Spells</TriStateCheckBox>
+		
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="noItemMagicCheckBox" @bind-Value="Flags.NoItemMagic">No Item Magic</TriStateCheckBox>
 		</div>
 
 		<div class="col1 full">

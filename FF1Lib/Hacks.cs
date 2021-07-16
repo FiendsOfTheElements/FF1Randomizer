@@ -2514,5 +2514,23 @@ namespace FF1Lib
 			PutInBank(0x1F, 0xE8FD, Blob.FromHex("4CE0DD"));
 			PutInBank(0x1F, 0xDDE0, Blob.FromHex("20B9EAA9038DD00360"));
 		}
+
+		public void NoItemMagic(Flags flags)
+		{
+			var weapons = Weapon.LoadAllWeapons(this, flags).ToList();
+			var armors = Armor.LoadAllArmors(this, flags).ToList();
+
+			foreach (var w in weapons)
+			{
+				w.SpellIndex = 0;
+				w.writeWeaponMemory(this);
+			}
+
+			foreach (var a in armors)
+			{
+				a.SpellIndex = 0;
+				a.writeArmorMemory(this);
+			}
+		}
 	}
 }

@@ -25,6 +25,12 @@
 	},
 
 
+	{
+		"Id": "noItemMagicCheckBox",
+		"title": "No Item Magic",
+		"screenshot": null,
+		"description": "Enabling this, removes the magic from weapons and armor. The names will still suggest that the items have spells and you can still use them in battle, but they will do nothing."
+	},
 
 	{
 		"Id": "funEnemyNamesCheckBox",
@@ -261,7 +267,7 @@
 		"screenshot": "applyExpBoostToGoldCheckBox.png",
 		"description": "Applies the flat gold boost from \"Exp. & Gold Boost\" to enemy rewards. This, ideally, makes early gold grinds more satisfying."
 	},
-	
+
 	{
 		"Id": "separateEnemyHPScalingCheckBox",
 		"title": "Separate Enemy HP Scaling",
@@ -292,14 +298,14 @@
 		"screenshot": "includeMoraleCheckBox.png",
 		"description": "Includes enemy morale in the stat scaling, as opposed to keeping morale separate (fixed at their vanilla values)."
 	},
-	
+
 	{
 		"Id": "progressiveScaleModeDropDown",
 		"title": "Exp/Gold Progressive Scaling",
 		"screenshot": "progressiveScaleModeDropDown.png",
 		"description": "Increases the bonus provided by Exp/Gold boost based on the number of Key Items collected."
 	},
-	
+
 	{
 		"Id": "nonesGainXPcheckBox",
 		"title": "Nones Gain XP",
@@ -312,7 +318,7 @@
 		"screenshot": "deadsGainXPcheckBox.png",
 		"description": "When enabled, dead characters will count as live characters for XP calculation and gain their share of XP."
 	},
-	
+
 	{
 		"Id": "expChestConversion",
 		"title": "Experience Chest Conversion",
@@ -406,14 +412,14 @@
 		"screenshot": "cardiaIncentive.png",
 		"description": "Incentivizes top-right chest in the left-most room of the forest island of the Cardia Islands. The AIRSHIP is required to access, unless combined with the 'Bahamut Cardia dock' and 'Dragon's Hoard' flags.\nNote that if incentive placement is set to \"random\" this item can appear in any of the chests among the populated Cardia islands.\nOne random item from your incentive item pool will be guaranteed in this chest, provided the number of incentive items matches or is less than the number of incentive locations."
 	},
-	
+
 	{
 		"Id": "incentivePlacementType",
 		"title": "Incentive Placement Types",
 		"screenshot": "incentivizeRandomChestInLocationCheckBox.gif",
 		"description": "Vanilla - Sets the incentive chest to be the default chest and room (the one shown in the tooltip) for a given location.\nRandom - Chooses a random chest at the selected location to act as an incentive chest.\nBefore Gating - Chooses a chest on a floor that comes before gating; e.g. Earth Cave floors 1-3 before the ROD block, Mirage Tower before the CUBE plate, all of Sea Shrine minus the crescent-shaped \"TFC\" room.\nBehind Gating - Chooses a chest on a floor that comes after gating; e.g. Earth Cave Floor 4 after ROD block, Sky Palace after the CUBE plate, Sea Shrine in the crescent-shaped \"TFC\" chest."
 	},
-	
+
 	{
 		"Id": "LooseExcludePlacedDungeonsCheckBox",
 		"title": "No Loose Items in Incentivized Dungeons",
@@ -1130,7 +1136,7 @@
 		"screenshot": "enemyFormationsSurpriseCheckBox.png",
 		"description": "Shuffles the surprise bonus for enemy formations, changing which groups will (almost) always ambush you."
 	},
-	
+
 	{
 		"Id": "enemyScriptsCheckBox",
 		"title": "Enemy Scripts",
@@ -1605,7 +1611,7 @@
 		"screenshot": "newConsumables.png",
 		"description": "The new Consumables can appear in legendary item shop. The legendary item shop will have 1-2 random new consumables."
 	},
-	
+
 	{
 		"Id": "ruseItemCheckBox",
 		"title": "Guaranteed Ruse Item",
@@ -1636,7 +1642,7 @@
 		"screenshot": "magisizeWeaponsBalancedCheckBox.gif",
 		"description": "When all weapons can cast magic, spells are assigned based on the strength of the spell and the relative rarity of the weapons. The rarer a weapon is, the stronger the spell assigned to it will be."
 	},
-	
+
 	{
 		"Id": "weaponizerCheckBox",
 		"title": "Use Weaponizer",
@@ -1655,8 +1661,8 @@
 		"screenshot": "weaponizerNaming.png",
 		"description": "Weaponizer does not name weapons for their bonuses vs monster types or elemental weaknesses, only quality or spell casting."
 	},
-	
-	
+
+
 
 	{
 		"Id": "houseMPRestorationCheckBox",

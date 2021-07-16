@@ -957,6 +957,11 @@ namespace FF1Lib
 				PacifistEnd(talkroutines, npcdata, (bool)flags.EnemyTrapTiles || flags.EnemizerEnabled);
 			}
 
+			if (flags.NoItemMagic ?? false)
+			{
+				NoItemMagic(flags);
+			}
+
 			if (flags.ShopInfo)
 			{
 				ShopUpgrade(flags);
