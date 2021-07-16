@@ -135,12 +135,14 @@ namespace FF1Lib
 
 			flags = Flags.ConvertAllTriState(flags, rng);
 
-			TeleportShuffle teleporters = new TeleportShuffle();
 			var palettes = OverworldMap.GeneratePalettes(Get(OverworldMap.MapPaletteOffset, MapCount * OverworldMap.MapPaletteSize).Chunk(OverworldMap.MapPaletteSize));
-			var overworldMap = new OverworldMap(this, flags, palettes, teleporters);
+			var overworldMap = new OverworldMap(this, flags, palettes);
 
 			var owMapExchange = OwMapExchange.FromFlags(this, overworldMap, flags, rng);
 			owMapExchange?.ExecuteStep1();
+
+			TeleportShuffle teleporters = new TeleportShuffle(owMapExchange.Data);
+			overworldMap.Teleporters = teleporters;
 
 			var shipLocations = owMapExchange?.ShipLocations ?? OwMapExchange.GetDefaultShipLocations(this);
 
@@ -446,9 +448,11 @@ namespace FF1Lib
 			{
 				try
 				{
-					overworldMap = new OverworldMap(this, flags, palettes, teleporters);
-					if (((bool)flags.Entrances || (bool)flags.Floors || (bool)flags.Towns) && ((bool)flags.Treasures) && ((bool)flags.NPCItems) && !flags.DeepDungeon &&
-						(!flags.SanityCheckerV2 || flags.OwMapExchange == OwMapExchanges.None))
+					overworldMap = new OverworldMap(this, flags, palettes);
+					overworldMap.Teleporters = teleporters;
+
+					if (((bool)flags.Entrances || (bool)flags.Floors || (bool)flags.Towns) && ((bool)flags.Treasures) && ((bool)flags.NPCItems) && !flags.DeepDungeon
+						&& !(flags.SanityCheckerV2 && flags.OwMapExchange == OwMapExchanges.NoOverworld))
 					{
 						overworldMap.ShuffleEntrancesAndFloors(rng, flags);
 

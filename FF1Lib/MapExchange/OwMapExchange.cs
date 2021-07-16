@@ -44,6 +44,8 @@ namespace FF1Lib
 		OwLocationData locations;
 		DomainData domains;
 
+		public OwMapExchangeData Data => data;
+
 		public ShipLocations ShipLocations { get; private set; }
 
 		public SCCoords StartingLocation => locations.StartingLocation;

@@ -19,5 +19,6 @@ namespace FF1Lib
 
 		public DomainFixup[] DomainFixups { get; set; }
 
+		public Dictionary<string, SCCoords> OverworldCoordinates { get; set; }
 	}
 }
