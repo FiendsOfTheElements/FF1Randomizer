@@ -67,6 +67,9 @@ namespace FF1Lib
 		{
 			overworldMap.SwapMap(name + ".ffm");
 
+			//load default locations first, doh
+			locations.LoadData();
+
 			if (data.StartingLocation.HasValue) locations.StartingLocation = data.StartingLocation.Value;
 			if (data.AirShipLocation.HasValue) locations.AirShipLocation = data.AirShipLocation.Value;
 
