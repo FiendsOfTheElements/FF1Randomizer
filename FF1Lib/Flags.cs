@@ -54,9 +54,9 @@ namespace FF1Lib
 
 		#endregion
 
-		public bool LooseItemsForwardPlacement { get; set; } = true;
+		public bool LooseItemsForwardPlacement { get; set; } = false;
 
-		public bool LooseItemsSpreadPlacement { get; set; } = true;
+		public bool LooseItemsSpreadPlacement { get; set; } = false;
 
 
 		[IntegerFlag(0, 100, 10)]
