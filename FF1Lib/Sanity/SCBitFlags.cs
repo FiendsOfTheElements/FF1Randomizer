@@ -9,20 +9,21 @@ namespace FF1Lib.Sanity
 	public enum SCBitFlags : ushort
 	{
 		None =		0x0000,
-		Lute =		0x0001,
-		Crown =		0x0002,
-		Key =		0x0004,
-		Ruby =		0x0008,
-		Rod =		0x0010,
+		Lute =		0x0001,//
+		Crown =		0x0002,//
+		Key =		0x0004,//
+		Ruby =		0x0008,//
+		Rod =		0x0010,//
 		Chime =		0x0020,
-		Cube =		0x0040,
-		Oxyale =	0x0080,
-		Orbs =		0x0100,
+		Cube =		0x0040,//
+		Oxyale =	0x0080,//
+		Orbs =		0x0100,//
 
 		Ship =		0x0200,
 		Bridge =	0x0400,
 		Canal =		0x0600,
 		Canoe =		0x0800,
+		Floater =	0x1000,
 
 		Impassable =0x2000,
 		Blocked =	0x4000,

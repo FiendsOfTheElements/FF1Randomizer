@@ -55,11 +55,7 @@ namespace FF1Lib
 			PrepNPCs(talkroutines, npcdata, flippedmaps, flags, rng);
 			UpdateBackgrounds();
 		}
-		public void NoOverworldCaravanTile()
-		{
-			// Set Caravan tile unlandable for logic
-			Data[0x006C] |= 0x08;
-		}
+
 		public void LoadInTown(OverworldMap overworldmap)
 		{
 			var townTileList = new List<byte> { 0x49, 0x4A, 0x4C, 0x4D, 0x4E, 0x5A, 0x5D, 0x6D, 0x02 };

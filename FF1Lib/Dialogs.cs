@@ -112,8 +112,12 @@ namespace FF1Lib
 			Talk_GiveItemOnItem,
 			Talk_Astos,
 			Talk_kill,
-			Talk_Chaos
+			Talk_Chaos,
+			Talk_Floater,
+			Talk_Chime,
+			Talk_Canoe
 		}
+
 		public class TalkRoutines
 		{
 			private List<Blob> _talkroutines = new List<Blob>();

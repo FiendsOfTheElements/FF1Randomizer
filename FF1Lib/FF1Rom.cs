@@ -440,7 +440,7 @@ namespace FF1Lib
 
 			if (flags.NoOverworld && (bool)!flags.Entrances && (bool)!flags.Floors && (bool)!flags.Towns)
 			{
-				NoOverworldCaravanTile();
+				NoOverworld(overworldMap, maps, talkroutines, npcdata, flippedMaps, flags, rng);
 			}
 
 			var maxRetries = 8;
@@ -521,11 +521,6 @@ namespace FF1Lib
 				talkroutines.Replace(newTalkRoutines.Talk_Astos, Blob.FromHex("A674F005BD2060F027A57385612080B1B020A572203D96A5752020B1A476207F90207392A5611820109F201896A9F060A57060"));
 
 			npcdata.UpdateItemPlacement(generatedPlacement);
-
-			if (flags.NoOverworld && (bool)!flags.Entrances && (bool)!flags.Floors && (bool)!flags.Towns)
-			{
-				NoOverworld(overworldMap, maps, talkroutines, npcdata, flippedMaps, flags, rng);
-			}
 
 			if ((bool)flags.AlternateFiends && !flags.SpookyFlag)
 			{
