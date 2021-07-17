@@ -23,7 +23,7 @@ namespace FF1Lib
 			checker = _checker;
 		}
 
-		public IRewardSource Pick(List<IRewardSource> sources, bool forward, bool spread, MT19337 rng)
+		public IRewardSource Pick(List<IRewardSource> sources, bool forward, bool spread, bool incentive, MT19337 rng)
 		{
 			if (!sources.Any()) return null;
 
@@ -39,16 +39,21 @@ namespace FF1Lib
 					sum += v;
 				}
 				//If it doesn't have a weight and it's a chest, give it the weight 1
-				else if(s is TreasureChest)
+				else if (s is TreasureChest)
 				{
 					sum += 1.0;
 					weights.Add(s.Address, 1.0);
 				}
 				//If it's not a chest, give it a significantly higher weight. There are way more chests than nonchet rewards.
 				//That way there is a reasonable chance, that some loose key items land on npcs.
-				else
+				else if (!incentive)
 				{
 					sum += nonchest;
+					weights.Add(s.Address, nonchest);
+				}
+				else
+				{
+					sum += 1.0;
 					weights.Add(s.Address, nonchest);
 				}
 			}

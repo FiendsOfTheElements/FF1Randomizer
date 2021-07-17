@@ -513,7 +513,7 @@ namespace FF1Lib
 			{
 				placementFailed = false;
 
-				var balancedPicker = new RewardSourcePicker( 0.5, 8.5, _checker);
+				var balancedPicker = new RewardSourcePicker(0.5, 8.5, _checker);
 
 				_sanityCounter++;
 				if (_sanityCounter > 20) throw new InsaneException("Item Placement could not meet incentivization requirements!");
@@ -587,7 +587,7 @@ namespace FF1Lib
 						if (rewardSources.Any())
 						{
 							itemPool.Remove(item);
-							var rewardSource = balancedPicker.Pick(rewardSources, _flags.LooseItemsForwardPlacement && !isIncentive, _flags.LooseItemsSpreadPlacement, rng);
+							var rewardSource = balancedPicker.Pick(rewardSources, _flags.LooseItemsForwardPlacement && !isIncentive, _flags.LooseItemsSpreadPlacement, isIncentive, rng);
 							placedItems.Add(NewItemPlacement(rewardSource, item));
 						}
 					}
