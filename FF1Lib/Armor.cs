@@ -405,10 +405,10 @@ namespace FF1Lib
 			    }
 			    switch (tier) {
 				case 0:
-				    goldvalue *= 20;
+				    goldvalue *= goldvalue;
 				    break;
 				case 1:
-				    goldvalue *= goldvalue;
+				    goldvalue *= goldvalue * 1.5;
 				    break;
 				case 2:
 				    goldvalue *= goldvalue * 2;
