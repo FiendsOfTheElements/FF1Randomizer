@@ -513,6 +513,7 @@ namespace FF1Lib
 			{
 				placementFailed = false;
 
+				//That number(7.0) is a "tuned" parameter. I divided the number of chests by the number of npcs. Took half of that and looked through some spoiler logs to see if it was too high or too low.
 				var balancedPicker = new RewardSourcePicker(0.5, 7.0, _checker);
 
 				_sanityCounter++;
