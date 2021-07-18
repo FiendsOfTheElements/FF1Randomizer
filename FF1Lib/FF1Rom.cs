@@ -857,7 +857,11 @@ namespace FF1Lib
 			}
 
 			var itemText = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
-			itemText[(int)Item.Ribbon] = itemText[(int)Item.Ribbon].Remove(7);
+			if (itemText[(int)Item.Ribbon].Length > 7
+			    && itemText[(int)Item.Ribbon][7] == ' ')
+			    {
+				itemText[(int)Item.Ribbon] = itemText[(int)Item.Ribbon].Remove(7);
+			    }
 
 			if (flags.Etherizer)
 			{

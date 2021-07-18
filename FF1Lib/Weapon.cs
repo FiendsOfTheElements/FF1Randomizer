@@ -600,7 +600,7 @@ namespace FF1Lib
 				    goldvalue *= goldvalue*2;
 				    break;
 			    }
-
+			    goldvalue = Math.Ceiling(goldvalue);
 			    goldvalue = Math.Min(goldvalue, 65535);
 
 			    EquipPermission permissions;
@@ -629,7 +629,7 @@ namespace FF1Lib
 				}
 			    }
 
-			    Utilities.WriteSpoilerLine($"{weaponIndex}: [{tier}]  {nameWithIcon,8}  +{damage,2} {crit,2}% {hitBonus,2}% {goldvalue,5}g ({score}) {permissions} gfx {weaponSpritePaletteColor:X} {weaponTypeSprite}");
+			    Utilities.WriteSpoilerLine($"{weaponIndex,-2}: [{tier}]  {nameWithIcon,8}  +{damage,2} {crit,2}% {hitBonus,2}% {goldvalue,5}g ({score,6}) |{GenerateEquipPermission((int)permissions),12}| gfx {weaponSpritePaletteColor:X} {weaponTypeSprite}");
 
 			    var newWeapon = new Weapon(weaponIndex, nameWithIcon, icon, hitBonus, damage, crit,
 						       (byte)(spellIndex == 0xFF ? 0 : spellIndex+1), elementalWeakness,
