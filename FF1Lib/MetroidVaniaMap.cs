@@ -749,45 +749,40 @@ namespace FF1Lib
 
 		public void PrepNPCs(TalkRoutines talkroutines, NPCdata npcdata, List<MapId> flippedmaps, Flags flags, MT19337 rng)
 		{
-			// New Talk routines
-			var talk_Floater = talkroutines.Add(Blob.FromHex("AD2B60D003A57160A476207392A57260"));
-			var talk_Chime = talkroutines.Add(Blob.FromHex("AD2C60D003A57160A476207392A57260"));
-			var talk_Canoe = talkroutines.Add(Blob.FromHex("AD1260D003A57160A476207392A57260"));
-
 			// Orbs
 			SetNpc(MapId.ConeriaCastle1F, 0x02, ObjectId.ConeriaCastle1FWoman1, 0x02, 0x09, true, true); // Dialog+Routine
 			Data[MapObjGfxOffset + (byte)ObjectId.ConeriaCastle1FWoman1] = 0x04;
-			npcdata.SetRoutine(ObjectId.ConeriaCastle1FWoman1, (newTalkRoutines)talk_Floater);
+			npcdata.SetRoutine(ObjectId.ConeriaCastle1FWoman1, newTalkRoutines.Talk_Floater);
 			npcdata.GetTalkArray(ObjectId.ConeriaCastle1FWoman1)[(int)TalkArrayPos.dialogue_2] = 0x37;
 			npcdata.GetTalkArray(ObjectId.ConeriaCastle1FWoman1)[(int)TalkArrayPos.dialogue_3] = 0x36;
 
 			SetNpc(MapId.CastleOfOrdeals1F, 0x01, ObjectId.LefeinMan10, 0x16, 0x02, true, true); //Dialog+Routine
 			SetNpc(MapId.Lefein, 0x0A, 0x00, 0x16, 0x02, true, true);
 			Data[MapObjGfxOffset + (byte)ObjectId.LefeinMan10] = 0x04;
-			npcdata.SetRoutine(ObjectId.LefeinMan10, (newTalkRoutines)talk_Floater);
+			npcdata.SetRoutine(ObjectId.LefeinMan10, newTalkRoutines.Talk_Floater);
 			npcdata.GetTalkArray(ObjectId.LefeinMan10)[(int)TalkArrayPos.dialogue_2] = 0x37;
 			npcdata.GetTalkArray(ObjectId.LefeinMan10)[(int)TalkArrayPos.dialogue_3] = 0x36;
 
 			SetNpc(MapId.IceCaveB1, 0x01, ObjectId.LefeinMan6, flippedmaps.Contains(MapId.IceCaveB1) ? 0x3F - 0x02 : 0x02, 0x01, true, true); //Dialog+Routine
 			SetNpc(MapId.Lefein, 0x06, 0x00, 0x16, 0x02, true, true);
 			Data[MapObjGfxOffset + (byte)ObjectId.LefeinMan6] = 0x04;
-			npcdata.SetRoutine(ObjectId.LefeinMan6, (newTalkRoutines)talk_Floater);
+			npcdata.SetRoutine(ObjectId.LefeinMan6, newTalkRoutines.Talk_Floater);
 			npcdata.GetTalkArray(ObjectId.LefeinMan6)[(int)TalkArrayPos.dialogue_2] = 0x37;
 			npcdata.GetTalkArray(ObjectId.LefeinMan6)[(int)TalkArrayPos.dialogue_3] = 0x36;
 
 			// Canoe people
 			SetNpc(MapId.CrescentLake, 0x0D, ObjectId.CrescentWoman, 0x25, 0x02, false, true); // Dialog+Routine
-			npcdata.SetRoutine(ObjectId.CrescentWoman, (newTalkRoutines)talk_Canoe);
+			npcdata.SetRoutine(ObjectId.CrescentWoman, newTalkRoutines.Talk_Canoe);
 			npcdata.GetTalkArray(ObjectId.CrescentWoman)[(int)TalkArrayPos.dialogue_2] = 0x5C;
 			npcdata.GetTalkArray(ObjectId.CrescentWoman)[(int)TalkArrayPos.dialogue_3] = 0xC2;
 
 			SetNpc(MapId.ElflandCastle, 0x03, ObjectId.ElflandCastleElf2, 0x0E, 0x11, false, true); // Dialog+Routine
-			npcdata.SetRoutine(ObjectId.ElflandCastleElf2, (newTalkRoutines)talk_Canoe);
+			npcdata.SetRoutine(ObjectId.ElflandCastleElf2, newTalkRoutines.Talk_Canoe);
 			npcdata.GetTalkArray(ObjectId.ElflandCastleElf2)[(int)TalkArrayPos.dialogue_2] = 0x5C;
 			npcdata.GetTalkArray(ObjectId.ElflandCastleElf2)[(int)TalkArrayPos.dialogue_3] = 0xC2;
 
 			SetNpc(MapId.CastleOfOrdeals1F, 0x00, ObjectId.CastleOrdealsOldMan, 0x02, 0x02, true, true); //Dialog+Routine.
-			npcdata.SetRoutine(ObjectId.CastleOrdealsOldMan, (newTalkRoutines)talk_Canoe);
+			npcdata.SetRoutine(ObjectId.CastleOrdealsOldMan, newTalkRoutines.Talk_Canoe);
 			npcdata.GetTalkArray(ObjectId.CastleOrdealsOldMan)[(int)TalkArrayPos.dialogue_2] = 0x5C;
 			if ((bool)flags.EarlyOrdeals)
 			{
@@ -810,7 +805,7 @@ namespace FF1Lib
 			// Chime bot
 			SetNpc(MapId.Gaia, 0x03, ObjectId.GaiaScholar2, 0x35, 0x1A, false, true); //Dialog+Routine
 			Data[MapObjGfxOffset + (byte)ObjectId.GaiaScholar2] = 0x15;
-			npcdata.SetRoutine(ObjectId.GaiaScholar2, (newTalkRoutines)talk_Chime);
+			npcdata.SetRoutine(ObjectId.GaiaScholar2, newTalkRoutines.Talk_Chime);
 			npcdata.GetTalkArray(ObjectId.GaiaScholar2)[(int)TalkArrayPos.dialogue_2] = 0xD5;
 			npcdata.GetTalkArray(ObjectId.GaiaScholar2)[(int)TalkArrayPos.dialogue_3] = 0xD9;
 
