@@ -162,7 +162,7 @@ namespace FF1Lib
 			{ (int)Element.EARTH, "Earth" },      // resist earth
 		    };
 		    var classNames = new string[][] {
-			new string[] { "Velvet", "Silk", "Linen" },
+			new string[] { "Velvet", "Silk", "Burlap" },
 			new string[] { "Leathr", "Copper", "Bronze" },
 			new string[] { "Silver", "Chain", "Mithrl"  },
 			new string[] { "Iron",   "Steel",  "Gold"   },
