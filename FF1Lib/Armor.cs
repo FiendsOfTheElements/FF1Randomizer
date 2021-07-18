@@ -168,9 +168,9 @@ namespace FF1Lib
 			{ (int)Element.EARTH, "Earth" },      // resist earth
 		    };
 		    var classNames = new string[][] {
-			new string[] { "Velvet", "Silk", "Burlap" },
+			new string[] { "Velvet", "Silk",   "Burlap" },
 			new string[] { "Leathr", "Copper", "Bronze" },
-			new string[] { "Silver", "Chain", "Mithrl"  },
+			new string[] { "Silver", "Chain",  "Mithrl"  },
 			new string[] { "Iron",   "Steel",  "Gold"   },
 			new string[] { "Opal",   "Dragon", "Diamnd" },
 		    };
@@ -277,7 +277,7 @@ namespace FF1Lib
 			    weight = (byte)RangeScale(armorEvadePenaltyBase[armorClass, armorType], .7, 1.4, 1.0, rng);
 
 			    string[] nameClass;
-			    if (armorType == RING || armorType == BRACELET) {
+			    if (armorType == RING || armorType == BRACELET || armorType == SHIELD) {
 				nameClass = ringNames[armorClass];
 			    } else {
 				nameClass = classNames[armorClass];
