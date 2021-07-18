@@ -46,7 +46,8 @@ namespace FF1Lib
 				}
 				//If it's not a chest, give it a significantly higher weight. There are way more chests than nonchet rewards.
 				//That way there is a reasonable chance, that some loose key items land on npcs.
-				else if (!incentive)
+				//changed nonchest weight is tied to the spread placement flag.
+				else if (!incentive && spread)
 				{
 					sum += nonchest;
 					weights.Add(s.Address, nonchest);
@@ -54,7 +55,7 @@ namespace FF1Lib
 				else
 				{
 					sum += 1.0;
-					weights.Add(s.Address, nonchest);
+					weights.Add(s.Address, 1.0);
 				}
 			}
 
@@ -67,11 +68,12 @@ namespace FF1Lib
 			//TFC is accessible way later so is used in way less rolls.
 			//By reducing the weight on chests, that already had a chance, it's more likely to select a chest or npc from a newly opened up area(hence forward placement).
 			//The forward placement is deactivated for incentive items, so it doesn't skew the placement.
+			//Forward placement alone produces ..... results.
 			sum = 0.0;
 			foreach (var s in sources)
 			{
 				var v = weights[s.Address];
-				if (forward) weights[s.Address] = v * reduction;
+				if (spread && forward) weights[s.Address] = v * reduction;
 
 				sum += v;
 				if (result == null && r <= sum) result = s;

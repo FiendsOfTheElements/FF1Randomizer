@@ -513,7 +513,7 @@ namespace FF1Lib
 			{
 				placementFailed = false;
 
-				var balancedPicker = new RewardSourcePicker(0.5, 8.5, _checker);
+				var balancedPicker = new RewardSourcePicker(0.5, 7.0, _checker);
 
 				_sanityCounter++;
 				if (_sanityCounter > 20) throw new InsaneException("Item Placement could not meet incentivization requirements!");
