@@ -697,6 +697,16 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("WeaponizerCommonWeaponsHavePowers"));
 			}
 		}
+		public bool? ArmorCrafter
+		{
+			get => Flags.ArmorCrafter;
+			set
+			{
+				Flags.ArmorCrafter = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ArmorCrafter"));
+			}
+		}
+
 		public bool? MagicLevelsTiered
 		{
 			get => Flags.MagicLevelsTiered;
@@ -4478,7 +4488,7 @@ namespace FF1Lib
 				RaisePropertyChanged();
 			}
 		}
-		
+
 		public bool? Lockpicking
 		{
 			get => Flags.Lockpicking;

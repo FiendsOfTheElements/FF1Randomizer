@@ -305,7 +305,9 @@ namespace FF1Lib
 			    Weaponizer(rng, (bool)flags.WeaponizerNamesUseQualityOnly, (bool)flags.WeaponizerCommonWeaponsHavePowers);
 			}
 
-			ArmorCrafter(rng);
+			if ((bool)flags.ArmorCrafter) {
+			    ArmorCrafter(rng);
+			}
 
 			if ((bool)flags.MagisizeWeapons)
 			{

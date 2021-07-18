@@ -135,8 +135,8 @@ namespace FF1Lib
 		    var armorEvadePenaltyBase = new int[,] {
 			// armor, shield, helm, gauntlet, bracelet, shirt, cape, ring
 			{ 4,       1,    1,        1,        1,     2,    2,    1 },  // cloth
-			{ 10,      8,    3,        3,        1,     2,    2,    1 },  // light
-			{ 20,      8,    3,        3,        1,     2,    2,    1 },  // medium
+			{ 8,       8,    3,        3,        1,     2,    2,    1 },  // light
+			{ 16,      8,    3,        3,        1,     2,    2,    1 },  // medium
 			{ 30,     10,    6,        3,        1,     2,    2,    1 },  // heavy
 			{ 30,     10,    3,        3,        1,     2,    2,    1 },  // knight
 		    };
@@ -236,6 +236,13 @@ namespace FF1Lib
 				armorClass = requireClasses[0];
 				requireType.RemoveAt(0);
 				requireClasses.RemoveAt(0);
+			    } else if (armorType == SHIRT || armorType == BRACELET) {
+				// Don't roll tier 0 shirts or any extra bracelets
+				if (tier == 0 || armorType == BRACELET) {
+				    while (armorType == SHIRT || armorType == BRACELET) {
+					armorType = rng.Between(0, 7);
+				    }
+				}
 			    }
 
 			    var name = "";
@@ -330,7 +337,7 @@ namespace FF1Lib
 				elementalResist |= chooseResist.SpliceRandom(rng);
 				name = resistNames[elementalResist];
 				elementalResist |= chooseResist.SpliceRandom(rng);
-			    } else if (tier >= 1 && spellIndex == 0xFF) {
+			    } else if (tier >= 1 && (armorType != BRACELET) && spellIndex == 0xFF) {
 				elementalResist |= chooseResist.SpliceRandom(rng);
 				name = resistNames[elementalResist];
 			    }
@@ -392,6 +399,9 @@ namespace FF1Lib
 			    double goldvalue = score;
 			    if (spellIndex != 0xFF) {
 				goldvalue += 25;
+			    }
+			    if (armorType == BRACELET) {
+				goldvalue *= 4;
 			    }
 			    switch (tier) {
 				case 0:
