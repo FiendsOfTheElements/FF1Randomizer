@@ -94,9 +94,15 @@ namespace FF1Lib
 		}
 
 		public void ArmorCrafter(MT19337 rng) {
-		    var tierList = new List<IReadOnlyList<Item>> { ItemLists.CommonArmorTier,
-								   ItemLists.RareArmorTier,
-								   ItemLists.LegendaryArmorTier };
+		    var commonArmor = new List<Item>(ItemLists.CommonArmorTier);
+		    var rareArmor = new List<Item>(ItemLists.RareArmorTier);
+		    var legendaryArmor = new List<Item>(ItemLists.LegendaryArmorTier);
+
+		    commonArmor.Shuffle(rng);
+		    rareArmor.Shuffle(rng);
+		    legendaryArmor.Shuffle(rng);
+
+		    var tierList = new List<List<Item>> { commonArmor, rareArmor, legendaryArmor };
 
 		    // armor classes, determines who can equip
 		    // cloth -- everyone
@@ -124,11 +130,11 @@ namespace FF1Lib
 		    // class x type -> defense base
 		    var armorDefenseBase = new int[,] {
 			// armor, shield, helm, gauntlet, bracelet, shirt, cape, ring
-			{  4,       2,    1,        1,        4,     6,    8,    8 },  // cloth
-			{ 10,       4,    3,        2,        8,    12,    8,    8 },  // light
-			{ 20,       8,    6,        4,       16,    16,    8,    8 },  // medium
+			{  4,       2,    1,        1,        4,     6,    2,    2 },  // cloth
+			{ 10,       4,    3,        2,        8,    12,    4,    4 },  // light
+			{ 20,       8,    6,        4,       16,    16,    6,    6 },  // medium
 			{ 30,      12,    6,        6,       24,    24,    8,    8 },  // heavy
-			{ 42,      16,    8,        8,       32,    24,    8,    8 },  // knight
+			{ 42,      16,    8,        8,       32,    24,   10,   10 },  // knight
 		    };
 
 		    // class x type -> evade penalty base
@@ -168,6 +174,13 @@ namespace FF1Lib
 			new string[] { "Iron",   "Steel",  "Gold"   },
 			new string[] { "Opal",   "Dragon", "Diamnd" },
 		    };
+		    var ringNames = new string[][] {
+			new string[] { "Brass",  "Tin" },
+			new string[] { "Copper", "Bronze" },
+			new string[] { "Silver", "Mithrl"  },
+			new string[] { "Gold",   "Emerld" },
+			new string[] { "Opal",   "Diamnd" },
+		    };
 
 		    var spellHelper = new SpellHelper(this);
 		    var allSpells = GetSpells();
@@ -178,12 +191,12 @@ namespace FF1Lib
 			List<int> requireClasses;
 			switch(tier) {
 			    case 0:
-				requireType = new List<int>    {BRACELET, BRACELET, BRACELET, ARMOR, ARMOR};
+				requireType = new List<int>    {BRACELET, BRACELET, BRACELET,  ARMOR, ARMOR};
 				requireClasses = new List<int> {   LIGHT,   MEDIUM,    HEAVY, MEDIUM, HEAVY};
 				break;
 			    case 1:
-				requireType = new List<int>();
-				requireClasses = new List<int>();
+				requireType = new List<int>    {ARMOR};
+				requireClasses = new List<int> {HEAVY};
 				break;
 			    case 2:
 				requireType = new List<int>    { ARMOR, SHIELD,   HELM, GAUNTLET};
@@ -217,32 +230,39 @@ namespace FF1Lib
 
 			    armorType = rng.Between(0, 7);
 			    armorClass = rng.Between(0, 3);
-			    if (itemId == Item.Opal) {
-				armorType = BRACELET;
-				armorClass = KNIGHT;
-			    } else if (itemId == Item.PowerGauntlets) {
-				armorType = GAUNTLET;
-			    } else if (itemId == Item.WhiteShirt) {
-				armorType = SHIRT;
-				armorClass = HEAVY;
-			    } else if (itemId == Item.BlackShirt) {
-				armorType = SHIRT;
-				armorClass = HEAVY;
-			    } else if (itemId == Item.Ribbon) {
-				armorType = accessories[rng.Between(0, accessories.Count-1)];
-				armorClass = CLOTH;
-			    } else if (requireType.Count > 0) {
-				armorType = requireType[0];
-				armorClass = requireClasses[0];
-				requireType.RemoveAt(0);
-				requireClasses.RemoveAt(0);
-			    } else if (armorType == SHIRT || armorType == BRACELET) {
-				// Don't roll tier 0 shirts or any extra bracelets
-				if (tier == 0 || armorType == BRACELET) {
-				    while (armorType == SHIRT || armorType == BRACELET) {
-					armorType = rng.Between(0, 7);
+			    switch(itemId) {
+				case Item.Opal:
+				    armorType = BRACELET;
+				    armorClass = KNIGHT;
+				    break;
+				case Item.PowerGauntlets:
+				    armorType = GAUNTLET;
+				    break;
+				case Item.WhiteShirt:
+				    armorType = SHIRT;
+				    armorClass = HEAVY;
+				    break;
+				case Item.BlackShirt:
+				    armorType = SHIRT;
+				    armorClass = HEAVY;
+				    break;
+				case Item.Ribbon:
+				    armorType = accessories[rng.Between(0, accessories.Count-1)];
+				    armorClass = CLOTH;
+				    break;
+				default:
+				    if (requireType.Count > 0) {
+					armorType = requireType[0];
+					armorClass = requireClasses[0];
+					requireType.RemoveAt(0);
+					requireClasses.RemoveAt(0);
+				    } else if (armorType == BRACELET) {
+					// Don't roll any extra bracelets
+					while (armorType == BRACELET) {
+					    armorType = rng.Between(0, 7);
+					}
 				    }
-				}
+				    break;
 			    }
 
 			    var name = "";
@@ -256,8 +276,14 @@ namespace FF1Lib
 			    absorb = (byte)RangeScale(armorDefenseBase[armorClass, armorType], .7, 1.4, 1.0, rng);
 			    weight = (byte)RangeScale(armorEvadePenaltyBase[armorClass, armorType], .7, 1.4, 1.0, rng);
 
-			    int nameClass = armorClass;
-			    name = classNames[nameClass][rng.Between(0, classNames[nameClass].Length-1)];
+			    string[] nameClass;
+			    if (armorType == RING || armorType == BRACELET) {
+				nameClass = ringNames[armorClass];
+			    } else {
+				nameClass = classNames[armorClass];
+			    }
+			    name = nameClass[rng.Between(0, nameClass.Length-1)];
+
 			    switch (armorClass) {
 				case CLOTH:
 				    permissions = 0xFFF;
@@ -293,11 +319,12 @@ namespace FF1Lib
 				// cast INV2, FOG2, or WALL
 				spells = new List<FF1Lib.Spell>(spellHelper.FindSpells(SpellRoutine.Ruse, SpellTargeting.AllCharacters).
 								Concat(spellHelper.FindSpells(SpellRoutine.ArmorUp, SpellTargeting.AllCharacters)).
-								Concat(spellHelper.FindSpells(SpellRoutine.DefElement, SpellTargeting.Any, (SpellElement)0xFF)).
+								Concat(spellHelper.FindSpells(SpellRoutine.DefElement, SpellTargeting.Any, SpellElement.All)).
 								Select(s => s.Id));
 			    } else if (itemId == Item.BlackShirt) {
-				// Any AOE damage
+				// Any elemental AOE damage, excludes NUKE/FADE
 				spells = new List<FF1Lib.Spell>(spellHelper.FindSpells(SpellRoutine.Damage, SpellTargeting.AllEnemies).
+								Where(s => s.Info.elem != (byte)SpellElement.None).
 								Select(s => s.Id));
 			    } else if (itemId == Item.Ribbon) {
 			    } else if (tier >= 1 &&
@@ -308,6 +335,7 @@ namespace FF1Lib
 				var roll = rng.Between(0, 100);
 				if (roll < 50) {
 				    spells = new List<FF1Lib.Spell>(spellHelper.FindSpells(SpellRoutine.Damage, SpellTargeting.AllEnemies).
+								    Where(s => s.Info.elem != (byte)SpellElement.None).
 								    Concat(spellHelper.FindSpells(SpellRoutine.DamageUndead, SpellTargeting.AllEnemies)).
 								    Concat(spellHelper.FindSpells(SpellRoutine.Heal, SpellTargeting.AllCharacters)).
 								    Concat(spellHelper.FindSpells(SpellRoutine.ArmorUp, SpellTargeting.AllCharacters)).
@@ -434,7 +462,6 @@ namespace FF1Lib
 			    }
 
 			    var logLine = $"{(int)itemId-(int)Item.Cloth,2}: [{tier+1}]  {name,8}  {absorb,2}  {-weight,3}% {goldvalue,5}g ({score,6}) |{GenerateEquipPermission(permissions),12}| {resistName} {casting} {type}";
-			    Console.WriteLine(logLine);
 			    Utilities.WriteSpoilerLine(logLine);
 
 			    var armor = new Armor(itemId-Item.Cloth, name, ArmorIcon.NONE, weight, absorb,
