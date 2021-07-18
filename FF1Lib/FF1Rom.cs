@@ -289,6 +289,11 @@ namespace FF1Lib
 				KnightNinjaChargesForAllLevels();
 			}
 
+			if ((bool)flags.AlternateFiends && !flags.SpookyFlag)
+			{
+				AlternativeFiends(rng);
+			}
+
 			if (flags.BuffHealingSpells)
 			{
 				BuffHealingSpells();
@@ -527,10 +532,6 @@ namespace FF1Lib
 				NoOverworld(overworldMap, maps, talkroutines, npcdata, flippedMaps, flags, rng);
 			}
 
-			if ((bool)flags.AlternateFiends && !flags.SpookyFlag)
-			{
-				AlternativeFiends(rng);
-			}
 			if ((bool)flags.MagicShopLocs)
 			{
 				ShuffleMagicLocations(rng, (bool)flags.MagicShopLocationPairs);
