@@ -4571,6 +4571,16 @@ namespace FF1Lib
 			}
 		}
 
+		public bool LooseItemsNpcBalance
+		{
+			get => Flags.LooseItemsNpcBalance;
+			set
+			{
+				Flags.LooseItemsNpcBalance = value;
+				RaisePropertyChanged();
+			}
+		}
+
 		#region StartingEquipment
 
 		public bool? StartingEquipmentMasamune

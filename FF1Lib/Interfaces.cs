@@ -113,6 +113,7 @@
 		bool IncentiveChestItemsFanfare { get; }
 		bool LooseItemsForwardPlacement { get; }
 		bool LooseItemsSpreadPlacement { get; }
+		bool LooseItemsNpcBalance { get; }
 	}
 	public interface IItemShuffleFlags
 	{

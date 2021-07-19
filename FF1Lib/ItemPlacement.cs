@@ -514,7 +514,7 @@ namespace FF1Lib
 				placementFailed = false;
 
 				//That number(7.0) is a "tuned" parameter. I divided the number of chests by the number of npcs. Took half of that and looked through some spoiler logs to see if it was too high or too low.
-				var balancedPicker = new RewardSourcePicker(0.5, 7.0, _checker);
+				var balancedPicker = new RewardSourcePicker(0.5, _flags.LooseItemsNpcBalance ? 7.0 : 1.0, _checker);
 
 				_sanityCounter++;
 				if (_sanityCounter > 20) throw new InsaneException("Item Placement could not meet incentivization requirements!");

@@ -47,7 +47,7 @@ namespace FF1Lib
 				//If it's not a chest, give it a significantly higher weight. There are way more chests than nonchet rewards.
 				//That way there is a reasonable chance, that some loose key items land on npcs.
 				//changed nonchest weight is tied to the spread placement flag.
-				else if (!incentive && spread)
+				else if (!incentive)
 				{
 					sum += nonchest;
 					weights.Add(s.Address, nonchest);
