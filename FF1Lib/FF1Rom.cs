@@ -141,7 +141,7 @@ namespace FF1Lib
 			var owMapExchange = OwMapExchange.FromFlags(this, overworldMap, flags, rng);
 			owMapExchange?.ExecuteStep1();
 
-			TeleportShuffle teleporters = new TeleportShuffle(owMapExchange.Data);
+			TeleportShuffle teleporters = new TeleportShuffle(owMapExchange?.Data);
 			overworldMap.Teleporters = teleporters;
 
 			var shipLocations = owMapExchange?.ShipLocations ?? OwMapExchange.GetDefaultShipLocations(this);
@@ -287,6 +287,11 @@ namespace FF1Lib
 			if (flags.AllSpellLevelsForKnightNinja)
 			{
 				KnightNinjaChargesForAllLevels();
+			}
+
+			if ((bool)flags.AlternateFiends && !flags.SpookyFlag)
+			{
+				AlternativeFiends(rng);
 			}
 
 			if (flags.BuffHealingSpells)
@@ -522,10 +527,6 @@ namespace FF1Lib
 
 			npcdata.UpdateItemPlacement(generatedPlacement);
 
-			if ((bool)flags.AlternateFiends && !flags.SpookyFlag)
-			{
-				AlternativeFiends(rng);
-			}
 			if ((bool)flags.MagicShopLocs)
 			{
 				ShuffleMagicLocations(rng, (bool)flags.MagicShopLocationPairs);
