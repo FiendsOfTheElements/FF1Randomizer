@@ -39,9 +39,9 @@
 	},
 	{
 		"Id": "looseNpcBalance",
-		"title": "Loose Npc Balance",
+		"title": "Loose NPC Balance",
 		"screenshot": null,
-		"description": "Makes it more likely loose items land on Npcs."
+		"description": "Makes it more likely loose items land on NPCs."
 	},
 
 	{
