@@ -300,20 +300,20 @@ namespace FF1Lib
 			}
 
 			if ((bool)flags.Weaponizer) {
-			    Weaponizer(rng, (bool)flags.WeaponizerNamesUseQualityOnly, (bool)flags.WeaponizerCommonWeaponsHavePowers);
+			    Weaponizer(rng, (bool)flags.WeaponizerNamesUseQualityOnly, (bool)flags.WeaponizerCommonWeaponsHavePowers,  flags.NoItemMagic ?? false);
 			}
 
-			if ((bool)flags.MagisizeWeapons)
+			if ((bool)flags.MagisizeWeapons && !(flags.NoItemMagic ?? false))
 			{
 				MagisizeWeapons(rng, (bool)flags.MagisizeWeaponsBalanced);
 			}
 
-			if ((bool)flags.ItemMagic)
+			if ((bool)flags.ItemMagic && !(flags.NoItemMagic ?? false))
 			{
-				ShuffleItemMagic(rng, (bool)flags.BalancedItemMagicShuffle);
+				ShuffleItemMagic(rng, (bool)flags.BalancedItemMagicShuffle && !(flags.NoItemMagic ?? false));
 			}
 
-			if ((bool)flags.GuaranteedRuseItem)
+			if ((bool)flags.GuaranteedRuseItem && !(flags.NoItemMagic ?? false))
 			{
 				CraftRuseItem();
 			}
@@ -477,7 +477,7 @@ namespace FF1Lib
 						if (!((bool)flags.RandomWaresIncludesSpecialGear))
 						{
 							excludeItemsFromRandomShops.AddRange(ItemLists.SpecialGear);
-							if ((bool)flags.GuaranteedRuseItem)
+							if ((bool)flags.GuaranteedRuseItem && !(flags.NoItemMagic ?? false))
 								excludeItemsFromRandomShops.Add(Item.PowerRod);
 						}
 
