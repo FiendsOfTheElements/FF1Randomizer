@@ -2537,10 +2537,9 @@ namespace FF1Lib
 			if (!(flags.Weaponizer ?? false))
 			{
 				itemnames[(int)Item.BaneSword] = "Lame  @s";
-				itemnames[(int)Item.Defense] = "3Pence@s";
+				itemnames[(int)Item.Defense] = "Dunce @s";
 				itemnames[(int)Item.HealRod] = "Deal  @F";
 				itemnames[(int)Item.MageRod] = "Page  @F";
-				itemnames[(int)Item.PowerRod] = "Sower @F";
 				itemnames[(int)Item.ThorHammer] = "Lore  @H";
 				itemnames[(int)Item.WizardRod] = "Lizard@F";
 				itemnames[(int)Item.LightAxe] = "Right @X";
@@ -2550,7 +2549,7 @@ namespace FF1Lib
 			itemnames[(int)Item.HealHelm] = "Deal  @h";
 			itemnames[(int)Item.PowerGauntlets] = "Sower @G";
 			itemnames[(int)Item.WhiteShirt] = "Right @T";
-			itemnames[(int)Item.ZeusGauntlets] = "Moose @G";
+			itemnames[(int)Item.ZeusGauntlets] = "Zilch @G";
 
 			WriteText(itemnames, FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextOffset, FF1Rom.UnusedGoldItems);
 		}
