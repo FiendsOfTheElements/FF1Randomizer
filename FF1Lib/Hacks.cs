@@ -2539,17 +2539,17 @@ namespace FF1Lib
 				itemnames[(int)Item.BaneSword] = "Lame  @s";
 				itemnames[(int)Item.Defense] = "Dunce @s";
 				itemnames[(int)Item.HealRod] = "Deal  @F";
-				itemnames[(int)Item.MageRod] = "Page  @F";
-				itemnames[(int)Item.ThorHammer] = "Lore  @H";
+				itemnames[(int)Item.MageRod] = "Aged  @F";
+				itemnames[(int)Item.ThorHammer] = "Bore  @H";
 				itemnames[(int)Item.WizardRod] = "Lizard@F";
-				itemnames[(int)Item.LightAxe] = "Right @X";
+				itemnames[(int)Item.LightAxe] = "Slight@X";
 			}
 
 			itemnames[(int)Item.BlackShirt] = "Whack @T";
 			itemnames[(int)Item.HealHelm] = "Deal  @h";
-			itemnames[(int)Item.PowerGauntlets] = "Sower @G";
+			itemnames[(int)Item.PowerGauntlets] = "Sour  @G";
 			itemnames[(int)Item.WhiteShirt] = "Right @T";
-			itemnames[(int)Item.ZeusGauntlets] = "Zilch @G";
+			itemnames[(int)Item.ZeusGauntlets] = "Moose @G";
 
 			WriteText(itemnames, FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextOffset, FF1Rom.UnusedGoldItems);
 		}
