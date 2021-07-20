@@ -317,7 +317,7 @@ namespace FF1Lib
 			return (int)Round(value * adjustedScale);
 		}
 
-		private int RangeScale(double value, double lowPercent, double highPercent, double adjustment, MT19337 rng)
+		public static int RangeScale(double value, double lowPercent, double highPercent, double adjustment, MT19337 rng)
 		{
 			double exponent = (rng != null) ? (double)rng.Next() / uint.MaxValue : 1.0; // A number from 0 - 1
 			double logLowPercent = Log(lowPercent);

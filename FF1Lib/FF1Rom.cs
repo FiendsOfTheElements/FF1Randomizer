@@ -135,12 +135,14 @@ namespace FF1Lib
 
 			flags = Flags.ConvertAllTriState(flags, rng);
 
-			TeleportShuffle teleporters = new TeleportShuffle();
 			var palettes = OverworldMap.GeneratePalettes(Get(OverworldMap.MapPaletteOffset, MapCount * OverworldMap.MapPaletteSize).Chunk(OverworldMap.MapPaletteSize));
-			var overworldMap = new OverworldMap(this, flags, palettes, teleporters);
+			var overworldMap = new OverworldMap(this, flags, palettes);
 
 			var owMapExchange = OwMapExchange.FromFlags(this, overworldMap, flags, rng);
 			owMapExchange?.ExecuteStep1();
+
+			TeleportShuffle teleporters = new TeleportShuffle(owMapExchange?.Data);
+			overworldMap.Teleporters = teleporters;
 
 			var shipLocations = owMapExchange?.ShipLocations ?? OwMapExchange.GetDefaultShipLocations(this);
 
@@ -287,6 +289,11 @@ namespace FF1Lib
 				KnightNinjaChargesForAllLevels();
 			}
 
+			if ((bool)flags.AlternateFiends && !flags.SpookyFlag)
+			{
+				AlternativeFiends(rng);
+			}
+
 			if (flags.BuffHealingSpells)
 			{
 				BuffHealingSpells();
@@ -320,7 +327,12 @@ namespace FF1Lib
 
 			if ((bool)flags.ShortToFR && !flags.DeepDungeon)
 			{
-				ShortenToFR(maps, (bool)flags.PreserveFiendRefights, (bool)flags.PreserveAllFiendRefights, (bool)flags.ExitToFR, (bool)flags.LutePlateInShortToFR, rng);
+				ShortenToFR(maps, (bool)flags.PreserveFiendRefights, (bool)flags.PreserveAllFiendRefights, (bool)flags.ExitToFR, rng);
+			}
+
+			if ((bool)flags.ChaosFloorEncounters && !flags.DeepDungeon)
+			{
+				EnableChaosFloorEncounters(maps);
 			}
 
 			if ((bool)flags.ExitToFR && !flags.DeepDungeon)
@@ -372,7 +384,7 @@ namespace FF1Lib
 				EnableEarlySage(npcdata);
 			}
 
-			if (flags.ChaosRush)
+			if ((bool)flags.ChaosRush)
 			{
 				EnableChaosRush();
 			}
@@ -433,7 +445,7 @@ namespace FF1Lib
 
 			if (flags.NoOverworld && (bool)!flags.Entrances && (bool)!flags.Floors && (bool)!flags.Towns)
 			{
-				NoOverworldCaravanTile();
+				NoOverworld(overworldMap, maps, talkroutines, npcdata, flippedMaps, flags, rng);
 			}
 
 			var maxRetries = 8;
@@ -441,8 +453,11 @@ namespace FF1Lib
 			{
 				try
 				{
-					overworldMap = new OverworldMap(this, flags, palettes, teleporters);
-					if (((bool)flags.Entrances || (bool)flags.Floors || (bool)flags.Towns) && ((bool)flags.Treasures) && ((bool)flags.NPCItems) && !flags.DeepDungeon)
+					overworldMap = new OverworldMap(this, flags, palettes);
+					overworldMap.Teleporters = teleporters;
+
+					if (((bool)flags.Entrances || (bool)flags.Floors || (bool)flags.Towns) && ((bool)flags.Treasures) && ((bool)flags.NPCItems) && !flags.DeepDungeon
+						&& !(flags.SanityCheckerV2 && flags.OwMapExchange == OwMapExchanges.NoOverworld))
 					{
 						overworldMap.ShuffleEntrancesAndFloors(rng, flags);
 
@@ -508,19 +523,10 @@ namespace FF1Lib
 
 			// Change Astos routine so item isn't lost in wall of text
 			if ((bool)flags.NPCItems || (bool)flags.NPCFetchItems || (bool)flags.ShuffleAstos)
-				talkroutines.Replace(newTalkRoutines.Talk_Astos, Blob.FromHex("A674F005BD2060F027A57385612080B1B020A572203D96A5752000B1A476207F90207392A5611820109F201896A9F060A57060"));
+				talkroutines.Replace(newTalkRoutines.Talk_Astos, Blob.FromHex("A674F005BD2060F027A57385612080B1B020A572203D96A5752020B1A476207F90207392A5611820109F201896A9F060A57060"));
 
 			npcdata.UpdateItemPlacement(generatedPlacement);
 
-			if (flags.NoOverworld && (bool)!flags.Entrances && (bool)!flags.Floors && (bool)!flags.Towns)
-			{
-				NoOverworld(overworldMap, maps, talkroutines, npcdata, flippedMaps, flags, rng);
-			}
-
-			if ((bool)flags.AlternateFiends && !flags.SpookyFlag)
-			{
-				AlternativeFiends(rng);
-			}
 			if ((bool)flags.MagicShopLocs)
 			{
 				ShuffleMagicLocations(rng, (bool)flags.MagicShopLocationPairs);
@@ -693,8 +699,8 @@ namespace FF1Lib
 			}
 
 			if (flags.SpeedHacks)
-			{
-				EnableSpeedHacks();
+			{				
+				EnableSpeedHacks(preferences);
 			}
 
 			if (flags.IdentifyTreasures)
@@ -702,9 +708,9 @@ namespace FF1Lib
 				EnableIdentifyTreasures();
 			}
 
-			if (flags.Dash || flags.SpeedBoat)
+			if ((flags.Dash || flags.SpeedBoat))
 			{
-				EnableDash(flags.SpeedBoat);
+				EnableDash(flags.SpeedBoat, preferences.OptOutSpeedHackDash);
 			}
 
 			if (flags.BuyTen)
@@ -816,6 +822,12 @@ namespace FF1Lib
 			if (flags.ThiefAgilityBuff != ThiefAGI.Vanilla)
 			{
 			        BuffThiefAGI(flags.ThiefAgilityBuff);
+			}
+
+			if ((bool)flags.Lockpicking)
+			{
+				EnableLockpicking();
+				SetLockpickingLevel(flags.LockpickingLevelRequirement);
 			}
 
 			if (flags.ImproveTurnOrderRandomization)
@@ -1032,14 +1044,32 @@ namespace FF1Lib
 			    }
 			}
 
+			if (flags.SanityCheckerV2)
+			{
+				if ((bool)flags.IsAirshipFree)
+				{
+					owMapExchange?.SetAirshipLocation(owMapExchange.StartingLocation);
+				}
+
+				if ((bool)flags.IsShipFree)
+				{
+					shipLocations.SetShipLocation(255);
+				}
+			}
+
 			owMapExchange?.ExecuteStep2();
+
 
 			npcdata.WriteNPCdata(this);
 			talkroutines.WriteRoutines(this);
 			talkroutines.UpdateNPCRoutines(this, npcdata);
 
+			new ExpChests(this, flags, rng).BuildExpChests();
+
+			if (flags.TournamentSafe || preferences.CropScreen) ActivateCropScreen();
+
 			WriteSeedAndFlags(seed.ToHex(), Flags.EncodeFlagsText(flags));
-			ExtraTrackingAndInitCode(flags);
+			ExtraTrackingAndInitCode(flags, preferences);
 		}
 
 		private void EnableNPCSwatter(NPCdata npcdata)
@@ -1120,7 +1150,7 @@ namespace FF1Lib
 			return hex.ToString();
 		}
 
-		private void ExtraTrackingAndInitCode(Flags flags)
+		private void ExtraTrackingAndInitCode(Flags flags, Preferences preferences)
 		{
 			// Expanded game init code, does several things:
 			//	- Encounter table emu/hardware fix
@@ -1200,13 +1230,17 @@ namespace FF1Lib
 			// Copyright overhaul, see 0F_8960_DrawSeedAndFlags.asm
 			PutInBank(0x0F, 0x8980, Blob.FromHex("A9238D0620A9208D0620A200BD00898D0720E8E060D0F560"));
 
+
+			var drawinrows = preferences.OptOutSpeedHackMessages ? "01" : BattleBoxDrawInRows;
+			var undrawrows = preferences.OptOutSpeedHackMessages ? "02" : BattleBoxUndrawRows;
+
 			// Fast Battle Boxes
 			PutInBank(0x0F, 0x8A00, Blob.FromHex("A940858AA922858BA91E8588A969858960"));
-			PutInBank(0x0F, 0x8A20, Blob.FromHex($"A9{BattleBoxDrawInRows}8DB96820A1F420E8F4A5881869208588A58969008589A58A186920858AA58B6900858BCEB968D0DE60"));
+			PutInBank(0x0F, 0x8A20, Blob.FromHex($"A9{drawinrows}8DB96820A1F420E8F4A5881869208588A58969008589A58A186920858AA58B6900858BCEB968D0DE60"));
 
 			// Fast Battle Boxes Undraw (Similar... yet different!)
 			PutInBank(0x0F, 0x8A80, Blob.FromHex("A9A0858AA923858BA97E8588A96A858960"));
-			PutInBank(0x0F, 0x8AA0, Blob.FromHex($"A9{BattleBoxUndrawRows}8DB96820A1F420E8F4A58838E9208588A589E9008589A58A38E920858AA58BE900858BCEB968D0DE60"));
+			PutInBank(0x0F, 0x8AA0, Blob.FromHex($"A9{undrawrows}8DB96820A1F420E8F4A58838E9208588A589E9008589A58A38E920858AA58BE900858BCEB968D0DE60"));
 
 			// Softlock fix
 			Put(0x7C956, Blob.FromHex("A90F2003FE4C008B"));
@@ -1329,6 +1363,10 @@ namespace FF1Lib
 				FF1Text.TextToCopyrightLine("Final Fantasy Randomizer " + FFRVersion.Version),
 				FF1Text.TextToCopyrightLine((FFRVersion.Branch == "master" ? "Seed " : rgx.Replace(FFRVersion.Branch, "") + " BUILD ") + seed),
 				hash));
+
+			// Write Flagstring + Version for reference
+			var urlpart = (FFRVersion.Branch == "master") ? FFRVersion.Version.Replace('.','-') : "beta-" + FFRVersion.Sha.PadRight(7).Substring(0, 7);
+			PutInBank(0x1E, 0xBE00, Encoding.ASCII.GetBytes($"FFRInfo|Seed: {seed}|Flags: {flags}|Version: {urlpart}"));
 		}
 
 		public void FixMissingBattleRngEntry()

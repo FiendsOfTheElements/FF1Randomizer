@@ -12,11 +12,11 @@
 
 
 <div id="generate" class="framed-content">
-	@if(showChaos)
+	@if (showChaos)
 	{
 		<h3 class="centered">You spawned Chaos!</h3>
 		<p>You REALLY love clicking orbs...</p>
-		<img style="width: 100%" src="/images/orbs-easter-egg.png"/>
+		<img style="width: 100%" src="/images/orbs-easter-egg.png" />
 	}
 
 
@@ -42,7 +42,7 @@
 		<input style="width: calc(100% - 80px);" type="text" class="nes-input" value="@Flags.Encoded" @onchange="@OnFlagsInputChanged" />
 		<a class="styled-button" @onclick="@OnCopyToClipboard">Export</a>
 	</p>
-	<p>@StatusMessage</p>
+	<p>@((MarkupString)StatusMessage)</p>
 	<div class="row">&nbsp;</div>
 	<a class="styled-button generate-button" @onclick="@OnRandomize">Generate ROM</a>
 </div>
@@ -84,13 +84,14 @@
 				TrySetFlags(flags.First());
 			}
 
-			await LoadLastROM();
-			StateHasChanged();
+			var romfile = await JSRuntime.InvokeAsync<string>("getFFRPreferences", "file");
+			if (romfile != null) {
+			    LoadLastROM(romfile);
+			}
 		}
 
-		async Task LoadLastROM()
+		void LoadLastROM(string encoded)
 		{
-			string encoded = await LocalStorage.GetItemAsync<string>("file");
 			RememberROM = encoded != null && encoded.Length > 0;
 			if (RememberROM)
 			{
@@ -108,7 +109,9 @@
 
 			if (RememberROM)
 			{
-				await LocalStorage.SetItemAsync("file", encoded);
+				await JSRuntime.InvokeVoidAsync("setFFRPreferences",
+		                          "file",
+		                          encoded);
 			}
 		}
 

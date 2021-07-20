@@ -432,6 +432,7 @@ namespace FF1Lib
 			    // quality and set the base price.
 			    double score = ((ddamage*1.5) + ((ddamage*2.0) * (dcrit / 200.0))) * (1+Math.Floor((dhitBonus+4)/32));
 
+			    int specialPower = -1;
 			    if (weaponItemId == Item.Defense) {
 				var defMagic = defenseSwordSpells[rng.Between(0, defenseSwordSpells.Length-1)];
 				for (int i = 0; i < Spells.Count; i++) {
@@ -455,6 +456,12 @@ namespace FF1Lib
 					break;
 				    }
 				}
+			    } else if (weaponItemId == Item.Xcalber) {
+				 // Give xcal the same type weakness
+				 // bonus (all of them) as vanilla
+				 // xcal because based on player
+				 // feedback, that's what they expect.
+				specialPower = 10;
 			    } else {
 				int spellChance = rng.Between(1, 100);
 				if ((commonWeaponsHavePowers || tier >= 2)
@@ -469,8 +476,7 @@ namespace FF1Lib
 				}
 			    }
 
-			    int specialPower = -1;
-			    if (spellIndex == 0xFF) {
+			    if (spellIndex == 0xFF && specialPower == -1) {
 				int powerChance = rng.Between(1, 100);
 				if (tier == 1 && commonWeaponsHavePowers && powerChance <= 20) {
 				    specialPower = rng.Between(0, powers.Length-1);
@@ -668,7 +674,7 @@ namespace FF1Lib
 		public byte WeaponSpritePaletteColor;
 
 		//written to class permission area
-		ushort ClassUsability;
+		public ushort ClassUsability;
 
 		public Weapon(int weaponIndex, FF1Rom rom)
 		{

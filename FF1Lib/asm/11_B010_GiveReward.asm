@@ -10,6 +10,10 @@ LoadPrice = $ECB9
 lut_ConsStack = $B000
 lut_TreasureJingle = $B200
 
+LvlUp_AwardAndUpdateExp = $87DA
+DivideRewardBySurvivors = $8B43
+SwapPRG = $FE03
+
 .org $B010
 
 ;; Bank 11 $B010
@@ -50,7 +54,12 @@ GiveReward:                    ; (8 bytes)
     BCC @OpenChest             ; 902B
   @NotItem:                    ; (6 + 9 + 4 + 9 + 7 + 5 = 40 bytes)
     LDA dlg_itemid             ; restore item id A561
-    CMP #$6C                   ; check if gold C96C
+    CMP #$B0                   ; check if exp
+    BCC :+                     ; Continue if gold 9009
+     JSR LoadPrice             ; get the price of the item (the amount of gold in the chest) 20B9EC
+     JSR AddExpToParty         ; add that exp to the party
+     JMP @ClearChest           ; then mark the chest as
+  : CMP #$6C                   ; check if gold C96C
     BCC :+                     ; Continue if gold 9009
      JSR LoadPrice             ; get the price of the item (the amount of gold in the chest) 20B9EC
      JSR AddGPToParty          ; add that price to the party's GP 20EADD
@@ -83,3 +92,101 @@ GiveReward:                    ; (8 bytes)
       INX                      ; E8
 :   TXA                        ; 8A
     RTS                        ; 60
+
+AddExpToParty:
+	LDA game_flags ; set bit 7 of gameflag 0 here
+	ORA #$80
+	STA game_flags
+
+	LDA tmp
+	STA battlereward
+	LDA tmp+1
+	STA battlereward+1
+	
+	LDA #$00				;Clear DrawFlags
+	STA btl_drawflagsA
+	STA btl_drawflagsB
+
+	LDX #$C0				;Set DrawFlags for char 3
+	JSR SetDrawFlags	
+	
+	LDX #$80				;Set DrawFlags for char 2
+	JSR SetDrawFlags	
+	
+	LDX #$40				;Set DrawFlags for char 1
+	JSR SetDrawFlags
+	
+	LDX #$00				;Set DrawFlags for char 0
+	JSR SetDrawFlags
+	
+	JSR DivideRewardBySurvivors_L
+
+	LDA battlereward
+    STA eob_exp_reward
+    LDA battlereward+1          ; store reward in eob_exp_reward
+    STA eob_exp_reward+1
+
+	LDA #$00                    ; award XP to all 4 party members
+    JSR LvlUp_AwardAndUpdateExp_L
+    LDA #$01
+    JSR LvlUp_AwardAndUpdateExp_L
+    LDA #$02
+    JSR LvlUp_AwardAndUpdateExp_L
+    LDA #$03
+    JSR LvlUp_AwardAndUpdateExp_L
+
+	LDA game_flags ; clear bit 7 of gameflag 0 here
+	AND #$7F
+	STA game_flags
+	RTS
+
+SetDrawFlags:
+	LDA ch_ailments, X
+	LSR A
+	ROL btl_drawflagsA
+	LSR A
+	ROL btl_drawflagsB
+	RTS
+
+DivideRewardBySurvivors_L:
+	LDA #>(ReturnToBank11-1)
+	PHA
+	LDA #<(ReturnToBank11-1)
+	PHA
+	LDA #>(DivideRewardBySurvivors-1)
+	PHA
+	LDA #<(DivideRewardBySurvivors-1)
+	PHA
+	LDA #$1B
+	JMP SwapPRG
+	
+LvlUp_AwardAndUpdateExp_L:
+	TAX
+	LDA #>(ReturnToBank11-1)
+	PHA
+	LDA #<(ReturnToBank11-1)
+	PHA
+	LDA #>(LvlUp_AwardAndUpdateExp_L2-1)
+	PHA
+	LDA #<(LvlUp_AwardAndUpdateExp_L2-1)
+	PHA
+	LDA #$1B
+	JMP SwapPRG
+	
+NOP
+BRK
+NOP
+BRK
+NOP
+
+.org $DDD6
+	
+ReturnToBank11:
+	LDA #$11
+	JMP SwapPRG
+
+LvlUp_AwardAndUpdateExp_L2:
+	TXA
+	JSR LvlUp_AwardAndUpdateExp
+	RTS
+	

@@ -44,11 +44,27 @@ namespace FF1Lib
 
 		public bool? StartingEquipmentRandomCrap { get; set; } = false;
 
+		public bool? StartingEquipmentStarterPack { get; set; } = false;
+
+		public bool? StartingEquipmentRandomTypeWeapon { get; set; } = false;
+
 		public bool StartingEquipmentRemoveFromPool { get; set; } = false;
 
 		public bool StartingEquipmentNoDuplicates { get; set; } = false;
 
 		#endregion
+
+		[IntegerFlag(0, 100, 10)]
+		public int ExpChestConversionMin { get; set; } = 0;
+
+		[IntegerFlag(0, 100, 10)]
+		public int ExpChestConversionMax { get; set; } = 0;
+
+		[IntegerFlag(0, 20000, 500)]
+		public int ExpChestMinReward { get; set; } = 2000;
+
+		[IntegerFlag(0, 20000, 500)]
+		public int ExpChestMaxReward { get; set; } = 8000;
 
 		public SpellNameMadness SpellNameMadness { get; set; } = SpellNameMadness.None;
 
@@ -148,10 +164,10 @@ namespace FF1Lib
 		public bool ShardHunt { get; set; } = false;
 		public ShardCount ShardCount { get; set; } = ShardCount.Count16;
 		public FinalFormation TransformFinalFormation { get; set; } = FinalFormation.None;
-		public bool ChaosRush { get; set; } = false;
+		public bool? ChaosRush { get; set; } = false;
 		public bool? ShortToFR { get; set; } = false;
 		public bool? ExitToFR { get; set; } = false;
-		public bool? LutePlateInShortToFR { get; set; } = false;
+		public bool? ChaosFloorEncounters { get; set; } = false;
 		public bool? PreserveFiendRefights { get; set; } = false;
 		public bool? PreserveAllFiendRefights { get; set; } = false;
 
@@ -179,12 +195,14 @@ namespace FF1Lib
 		public bool? EnemyTrapTiles { get; set; } = false;
 		public bool? RemoveTrapTiles { get; set; } = false;
 		public bool? RandomTrapFormations { get; set; } = false;
-		public ChestsPool TCPoolSize { get; set; } = ChestsPool.None;
 		public FormationPool TCFormations { get; set; } = FormationPool.AltFormationDist;
 		public TCOptions TCBetterTreasure { get; set; } = TCOptions.None;
 		public TCOptions TCKeyItems { get; set; } = TCOptions.None;
 		public TCOptions TCShards { get; set; } = TCOptions.None;
-		public TCRngOptions TCRandom { get; set; } = TCRngOptions.None;
+		public bool TCExcludeCommons { get; set; } = false;
+
+		[IntegerFlag(0, 13)]
+		public int TCChestCount { get; set; } = 0;
 		public bool TCProtectIncentives { get; set; } = false;
 		public bool? TCMasaGuardian { get; set; } = false;
 		public bool? TrappedChaos { get; set; } = false;
@@ -590,6 +608,11 @@ namespace FF1Lib
 
 		public bool? AllowUnsafeStartArea { get; set; } = false;
 
+		public bool? Lockpicking { get; set; } = false;
+
+		[IntegerFlag(1, 50)]
+		public int LockpickingLevelRequirement { get; set; } = 10;
+
 		public bool? EarlierRuby { get; set; } = false;
 		public bool? GuaranteedRuseItem { get; set; } = false;
 		public bool? DisableStunTouch { get; set; } = false;
@@ -778,7 +801,8 @@ namespace FF1Lib
 			+ ((IncentivizeConeria ?? false) ? 1 : 0)
 			+ ((IncentivizeMarshKeyLocked ?? false) ? 1 : 0)
 			+ ((IncentivizeTitansTrove ?? false) ? 1 : 0)
-			+ ((IncentivizeSkyPalace ?? false) ? 1 : 0);
+			+ ((IncentivizeSkyPalace ?? false) ? 1 : 0)
+			+ ((IncentivizeCardia ?? false) ? 1 : 0);
 
 
 		public int IncentivizedLocationCountMax => 0
@@ -793,8 +817,15 @@ namespace FF1Lib
 			+ ((IncentivizeConeria ?? true) ? 1 : 0)
 			+ ((IncentivizeMarshKeyLocked ?? true) ? 1 : 0)
 			+ ((IncentivizeTitansTrove ?? true) ? 1 : 0)
-			+ ((IncentivizeSkyPalace ?? true) ? 1 : 0);
+			+ ((IncentivizeSkyPalace ?? true) ? 1 : 0)
+			+ ((IncentivizeCardia ?? true) ? 1 : 0);
 
+		public int TrappedChestsFloor => 0
+			+ ((TCShards == TCOptions.All) ? 32 : 0)
+			+ ((TCKeyItems == TCOptions.All) ? 16 : 0)
+		    + ((TCBetterTreasure == TCOptions.All) ? 50 : 0)
+		    + ((TCMasaGuardian == true && TCBetterTreasure != TCOptions.All) ? 1 : 0)
+			+ ((TrappedChaos == true) ? 1 : 0);
 
 		private static bool ConvertTriState(bool? tristate, MT19337 rng)
 		{
@@ -829,7 +860,7 @@ namespace FF1Lib
 		public bool EnemizerEnabled => (bool)RandomizeFormationEnemizer | (bool)RandomizeEnemizer;
 		public bool EnemizerDontMakeNewScripts => (bool)EnemySkillsSpells & !((bool)BossSkillsOnly | (bool)EnemySkillsSpellsTiered);
 
-		public bool? TrappedChestsEnabled => (bool)TrappedChaos | (bool)TCMasaGuardian | (TCBetterTreasure == TCOptions.All | TCKeyItems == TCOptions.All | TCShards == TCOptions.All) | ((TCBetterTreasure == TCOptions.Pooled | TCKeyItems == TCOptions.Pooled | TCShards == TCOptions.Pooled | TCRandom == TCRngOptions.Pooled) & TCPoolSize != ChestsPool.None);
+		public bool? TrappedChestsEnabled => (bool)TrappedChaos | (bool)TCMasaGuardian | (TCBetterTreasure == TCOptions.All | TCKeyItems == TCOptions.All | TCShards == TCOptions.All) | ((TCBetterTreasure == TCOptions.Pooled | TCKeyItems == TCOptions.Pooled | TCShards == TCOptions.Pooled) & TCChestCount > 0);
 
 		public static string EncodeFlagsText(Flags flags)
 		{
@@ -992,12 +1023,150 @@ namespace FF1Lib
 			return sum;
 		}
 
+		
 		public class Preset
 		{
 			public string Name { get; set; }
 			public Flags Flags { get; set; }
 		}
 
-		public static Flags FromJson(string json) => JsonConvert.DeserializeObject<Preset>(json).Flags;
+		//public static Flags FromJson(string json) => JsonConvert.DeserializeObject<Preset>(json).Flags;
+
+		public class Preset2
+		{
+			public string Name { get; set; }
+			public Dictionary<string, object> Flags { get; set; }
+		}
+
+		public static (string name, Flags flags, IEnumerable<string> log) FromJson(string json)
+		{
+			var w = new System.Diagnostics.Stopwatch();
+			w.Restart();
+
+			var preset = JsonConvert.DeserializeObject<Preset2>(json);
+			var preset_dic = preset.Flags.ToDictionary(kv => kv.Key.ToLower());
+
+
+			var properties = typeof(Flags).GetProperties(BindingFlags.Instance | BindingFlags.Public);
+			var flagproperties = properties.Where(p => p.CanWrite).OrderBy(p => p.Name).Reverse().ToList();
+
+			List<string> warnings = new List<string>();
+
+			Flags flags = new Flags();
+
+			foreach (var pi in flagproperties)
+			{
+				if (preset_dic.TryGetValue(pi.Name.ToLower(), out var obj))
+				{
+					var result = SetValue(pi, flags, obj.Value);
+
+					if (result != null) warnings.Add(result);
+
+					preset.Flags.Remove(obj.Key);
+				}
+				else
+				{
+					//warnings.Add($"\"{pi.Name}\" was missing in preset and set to default \"{pi.GetValue(flags)}\".");
+				}
+			}
+
+			foreach (var flag in preset.Flags)
+			{
+				warnings.Add($"\"{flag.Key}\" with value \"{flag.Value}\" does not exist and has been discarded.");
+			}
+
+			warnings.Sort();
+
+			w.Stop();
+			return (preset.Name, flags, warnings);
+		}
+
+		private static string SetValue(PropertyInfo p, Flags flags, object obj)
+		{
+			try
+			{
+				if (Nullable.GetUnderlyingType(p.PropertyType) == typeof(bool))
+				{
+					var t = obj == null ? (bool?)null : (bool?)(bool)obj;
+					p.SetValue(flags, t);
+				}
+				else if (p.PropertyType == typeof(bool))
+				{
+					if (obj == null) throw new ArgumentNullException();
+					p.SetValue(flags, obj);
+				}
+				else if (p.PropertyType.IsEnum)
+				{
+					if (obj == null) throw new ArgumentNullException();
+
+					var values = Enum.GetValues(p.PropertyType);
+
+					if (obj is string v)
+					{
+						foreach (var e in values)
+						{
+							if (v.ToLower() == e.ToString().ToLower())
+							{
+								p.SetValue(flags, e);
+								return null;
+							}
+						}
+					}
+					else if (obj is IConvertible)
+					{
+						int v2 = Convert.ToInt32(obj);
+
+						foreach (var e in values)
+						{
+							if (v2 == Convert.ToInt32(e))
+							{
+								p.SetValue(flags, e);
+								return null;
+							}
+						}
+					}
+
+					throw new ArgumentException();
+				}
+				else if (p.PropertyType == typeof(int))
+				{
+					IntegerFlagAttribute ia = p.GetCustomAttribute<IntegerFlagAttribute>();
+					var v3 = Convert.ToInt32(obj);
+
+					p.SetValue(flags, v3);
+
+					if (v3 > ia.Max)
+					{
+						return $"\"{p.Name}\" with value \"{obj}\" exceeds the maximum but will be kept.";
+					}
+					else if (v3 < ia.Min)
+					{
+						return $"\"{p.Name}\" with value \"{obj}\" deceedes the minimum but will be kept.";
+					}
+				}
+				else if (p.PropertyType == typeof(double))
+				{
+					DoubleFlagAttribute da = p.GetCustomAttribute<DoubleFlagAttribute>();
+					var v3 = Convert.ToDouble(obj);
+
+					p.SetValue(flags, v3);
+
+					if (v3 > da.Max)
+					{
+						return $"\"{p.Name}\" with value \"{obj}\" exceeds the maximum but will be kept.";
+					}
+					else if (v3 < da.Min)
+					{
+						return $"\"{p.Name}\" with value \"{obj}\" deceedes the minimum but will be kept.";
+					}
+				}
+			}
+			catch
+			{
+				return $"\"{p.Name}\" with value \"{obj}\" was invalid and set to default \"{p.GetValue(flags)}\".";
+			}
+
+			return null;
+		}
 	}
 }

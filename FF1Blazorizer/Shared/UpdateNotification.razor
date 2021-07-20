@@ -1,19 +1,25 @@
 ﻿@inject IJSRuntime JSRuntime;
-<div class="update-notification" style=@css @onclick=@UpdateServiceWorkerNow>New Version Available, Click Here</div>
+<a class="update-notification" style=@css href="@newlink" @onclick=@UpdateServiceWorkerNow>New Version Available, Click Here</a>
 
 @code {
-    private static Action action;
+    private static Action<string> action;
     private string css = "visibility: hidden";
+    private string newlink = "";
+
+    private void showNotification(string url)
+    {
+        css = "visibility: visible";
+	if (url != "reload") {
+	  newlink = url;
+	}
+        StateHasChanged();
+    }
 
     private async Task UpdateServiceWorkerNow()
     {
-        await JSRuntime.InvokeVoidAsync("updateServiceWorkerNow");
-    }
-
-    private void showNotification()
-    {
-        css = "visibility: visible";
-        StateHasChanged();
+        if (newlink == "") {
+          await JSRuntime.InvokeVoidAsync("updateServiceWorkerNow");
+	}
     }
 
     protected override void OnInitialized()
@@ -22,9 +28,9 @@
     }
 
     [JSInvokable]
-    public static void ShowUpdateNotification()
+    public static void ShowUpdateNotification(string url)
     {
-        action.Invoke();
+        action.Invoke(url);
     }
 
 }

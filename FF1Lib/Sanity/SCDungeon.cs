@@ -69,7 +69,6 @@ namespace FF1Lib.Sanity
 				}
 
 				bool changed = dungeonpoi.BitFlagSet.Merge(poi.BitFlagSet, requirements);
-				dungeonpoi.Requirements = dungeonpoi.BitFlagSet.ToRequirements();
 
 				if (changed)
 				{

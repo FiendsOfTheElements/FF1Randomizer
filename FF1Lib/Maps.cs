@@ -107,6 +107,8 @@ namespace FF1Lib
 		WaterfallSpikeTile = 0x48,
 		WaterfallRandomEncounters = 0x49,
 		PortalWarp = 0x40,
+		ToFRNoEncounter = 0x31,
+		ToFREncounter = 0x5C,
 		// Begin Town Tiles
 		TownGrass = 0x00,
 		TownGrassShadow = 0x01,
@@ -702,6 +704,24 @@ namespace FF1Lib
         melmond[0x0B, 0x1D] = 0x02; // Corner shadow
     }
 
+		public void EnableChaosFloorEncounters(List<Map> maps)
+		{
+			// Replace floor tiles with encounter tiles
+			for (int x = 0; x < 32; x++)
+			{
+				for (int y = 0; y < 32; y++)
+				{
+					if (maps[(byte)MapId.TempleOfFiendsRevisitedChaos][x, y] == (byte)Tile.ToFRNoEncounter) {
+						maps[(byte)MapId.TempleOfFiendsRevisitedChaos][x, y] = (byte)Tile.ToFREncounter;
+					}
+				}
+			}
+
+			// Change base rate for encounters
+			Put(ThreatLevelsOffset + 60, Blob.FromHex("0D"));
+			// threat level reference for comparison: 08 = most dungeon floors; 18 = sky bridge; 09 = ToFR earth; 0A = ToFR fire; 0B = ToFR water; 0C = ToFR air; 01 = ToFR chaos
+		}
+
 		public void EnableToFRExit(List<Map> maps)
 		{
 			// add warp portal to ToFR 1st floor
@@ -1121,14 +1141,16 @@ namespace FF1Lib
 		    var bahamutB1ZoneOffset = ZoneFormationsOffset + (ZoneFormationsSize * (64 + (int)MapId.BahamutsRoomB1));
 		    var formation = Get(bahamutB1ZoneOffset, ZoneFormationsSize);
 		    formation[0] = 0x2A + 0x80; // 2-4 Red D
-		    formation[1] = 0x30 + 0x80; // 3-4 Ice D
+		    formation[1] = 0x30 + 0x80; // 3-4 Frost D
 		    formation[2] = 0x4B + 0x80; // 2-4 Zombie D
 		    formation[3] = 0x4E + 0x80; // 2-3 Blue D
 		    formation[4] = 0x59 + 0x80; // 2-4 Gas D
-		    formation[5] = 0x3D; // Tyro
-		    formation[6] = 0x3E; // T-Rex
-		    formation[7] = 0x76; // Tiamat (!)
+		    formation[5] = 0x4E + 0x80; // 2-3 Blue D
+		    formation[6] = 0x59 + 0x80; // 2-4 Gas D
+		    formation[7] = 0x77; // Tiamat 1 (!)
 		    Put(bahamutB1ZoneOffset, formation);
+
+		    Put(ThreatLevelsOffset + (int)MapId.BahamutsRoomB1 + 1, Blob.FromHex("18"));
 
 		    maps[(byte)MapId.BahamutsRoomB1][1, 1] = (byte)Tile.CardiaEncounters;
 		    maps[(byte)MapId.BahamutsRoomB1][1, 2] = (byte)Tile.CardiaEncounters;
@@ -1200,19 +1222,19 @@ namespace FF1Lib
 			maps[(byte)MapId.BahamutsRoomB2][4, 24] = (byte)Tile.CardiaCandles;
 			maps[(byte)MapId.BahamutsRoomB2][4, 25] = (byte)Tile.CardiaFloor;
 
-			ItemLocations.Cardia1.ChangeMapLocation(MapLocation.Cardia1);
-			ItemLocations.Cardia2.ChangeMapLocation(MapLocation.Cardia1);
-			ItemLocations.Cardia3.ChangeMapLocation(MapLocation.Cardia1);
-			ItemLocations.Cardia4.ChangeMapLocation(MapLocation.Cardia1);
-			ItemLocations.Cardia5.ChangeMapLocation(MapLocation.Cardia1);
-			ItemLocations.Cardia6.ChangeMapLocation(MapLocation.Cardia1);
-			ItemLocations.Cardia7.ChangeMapLocation(MapLocation.Cardia1);
-			ItemLocations.Cardia8.ChangeMapLocation(MapLocation.Cardia1);
-			ItemLocations.Cardia9.ChangeMapLocation(MapLocation.Cardia1);
-			ItemLocations.Cardia10.ChangeMapLocation(MapLocation.Cardia1);
-			ItemLocations.Cardia11.ChangeMapLocation(MapLocation.Cardia1);
-			ItemLocations.Cardia12.ChangeMapLocation(MapLocation.Cardia1);
-			ItemLocations.Cardia13.ChangeMapLocation(MapLocation.Cardia1);
+			ItemLocations.Cardia1.ChangeMapLocation(MapLocation.BahamutCave2);
+			ItemLocations.Cardia2.ChangeMapLocation(MapLocation.BahamutCave2);
+			ItemLocations.Cardia3.ChangeMapLocation(MapLocation.BahamutCave2);
+			ItemLocations.Cardia4.ChangeMapLocation(MapLocation.BahamutCave2);
+			ItemLocations.Cardia5.ChangeMapLocation(MapLocation.BahamutCave2);
+			ItemLocations.Cardia6.ChangeMapLocation(MapLocation.BahamutCave2);
+			ItemLocations.Cardia7.ChangeMapLocation(MapLocation.BahamutCave2);
+			ItemLocations.Cardia8.ChangeMapLocation(MapLocation.BahamutCave2);
+			ItemLocations.Cardia9.ChangeMapLocation(MapLocation.BahamutCave2);
+			ItemLocations.Cardia10.ChangeMapLocation(MapLocation.BahamutCave2);
+			ItemLocations.Cardia11.ChangeMapLocation(MapLocation.BahamutCave2);
+			ItemLocations.Cardia12.ChangeMapLocation(MapLocation.BahamutCave2);
+			ItemLocations.Cardia13.ChangeMapLocation(MapLocation.BahamutCave2);
 		    } else {
 			// If the user enabled Dragon's hoard,
 			// generated a seed, and then turned it off

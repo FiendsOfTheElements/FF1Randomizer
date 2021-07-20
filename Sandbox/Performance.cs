@@ -22,7 +22,7 @@ namespace Sandbox
 
 			var seeds = Enumerable.Range(0, 1000).Select(x => Blob.Random(4)).ToList();
 
-			var flags = Flags.FromJson(json);
+			var flags = Flags.FromJson(json).flags;
 			flags.Entrances = true;
 			flags.Towns = true;
 			flags.Floors = true;

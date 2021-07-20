@@ -6,7 +6,7 @@
 	<h3 class="@(IsOpen ? "" : "h3-collapsed")"><a class="@(noTabLayout ? "collapsible-header" : "")" @onclick="(() => IsOpen = (!noTabLayout || !IsOpen))">Goal</a></h3>
 	@if (IsOpen)
 	{
-	<div class="col1">
+<div class="col1">
 	<h4>Final Boss</h4>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="freeOrbsCheckBox" IsEnabled="@Flags.FreeOrbsEnabled" @bind-Value="Flags.FreeOrbs">Free Orbs</CheckBox>
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="trappedChaosCheckBox" @bind-Value="Flags.TrappedChaos">Hidden Chaos</TriStateCheckBox>
@@ -14,13 +14,13 @@
 
 	<div class="checkbox-cell"></div>
 	<h4>Temple of Fiends</h4>
-	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="chaosRushCheckBox" @bind-Value="Flags.ChaosRush">Unlocked ToFR</CheckBox>
-	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="exitToFRCheckBox" @bind-Value="Flags.ExitToFR">Add ToFR Exit</TriStateCheckBox>
+	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="chaosRushCheckBox" @bind-Value="Flags.ChaosRush">Unlocked ToFR</TriStateCheckBox>
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="shortToFRCheckBox" @bind-Value="Flags.ShortToFR">Shorten ToFR</TriStateCheckBox>
 	<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="preserveFiendRefightsCheckBox" IsEnabled="@Flags.ShortToFR" @bind-Value="Flags.PreserveFiendRefights">Include Fiend Tiles</TriStateCheckBox>
 	<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="preserveAllFiendRefightsCheckBox" IsEnabled="@Flags.CanPreserveAllFiendRefights" @bind-Value="Flags.PreserveAllFiendRefights">Refight All Fiends</TriStateCheckBox>
-	<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="lutePlateInShortToFRCheckBox" IsEnabled="@(Flags.ShortToFR != false)" @bind-Value="Flags.LutePlateInShortToFR">Include Lute Plate in Short ToFR</TriStateCheckBox>
-	</div>
+	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="exitToFRCheckBox" @bind-Value="Flags.ExitToFR">Add ToFR Exit</TriStateCheckBox>
+	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="chaosFloorEncountersCheckBox" @bind-Value="Flags.ChaosFloorEncounters">Add Chaos Floor Encounters</TriStateCheckBox>
+</div>
 
 	<div class="col2">
 	     <h4>Treasure Hunt</h4>

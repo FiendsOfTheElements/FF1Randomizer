@@ -106,6 +106,10 @@ else
 	public bool ShowMedian { get; set; }
 	[Parameter]
 	public bool ShowPositiveSign { get; set; }
+	[Parameter]
+	public bool ShowPercent { get; set; }
+	[Parameter]
+	public bool DontShowPercent { get; set; }
 
 	[Parameter]
 	public RenderFragment ChildContent { get; set; }
@@ -119,7 +123,7 @@ else
 			displayString += "+";
 		}
 		displayString += _valueLow;
-		if (ShowMedian)
+		if (ShowMedian && !DontShowPercent || ShowPercent)
 		{
 			displayString += "%";
 		}
@@ -131,9 +135,17 @@ else
 			displayString += "+";
 		}
 		displayString += _valueHigh;
-		if (ShowMedian)
+		if (ShowMedian && !DontShowPercent)
 		{
 			displayString += "% (" + Median + "%)";
+		}
+		else if (ShowMedian && DontShowPercent)
+		{
+			displayString += " (" + Median + ")";
+		}
+		else if (ShowPercent)
+		{
+			displayString += "%";
 		}
 
 		return displayString;
