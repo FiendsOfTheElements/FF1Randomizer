@@ -378,6 +378,9 @@ namespace FF1Lib
 				case SHIELD:
 				    name = $"{name,-6}{Armor.IconCodes[ArmorIcon.SHIELD]}";
 				    type = ArmorType.SHIELD;
+				    if (armorClass <= HEAVY) {
+					permissions = (ushort)(EquipPermission.Fighter|EquipPermission.Knight|EquipPermission.Ninja);
+				    }
 				    break;
 				case HELM:
 				    name = $"{name,-6}{Armor.IconCodes[ArmorIcon.HELM]}";
