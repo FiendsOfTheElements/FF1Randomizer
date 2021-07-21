@@ -26,6 +26,12 @@
 
 
 	{
+		"Id": "noItemMagicCheckBox",
+		"title": "No Item Magic",
+		"screenshot": null,
+		"description": "Enabling this, removes the magic from weapons and armor."
+	},
+	{
 		"Id": "spreadLoose",
 		"title": "Spread Loose Placement",
 		"screenshot": null,

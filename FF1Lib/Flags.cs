@@ -93,6 +93,7 @@ namespace FF1Lib
 
 		public OwMapExchanges OwMapExchange { get; set; } = OwMapExchanges.None;
 
+		public bool? NoItemMagic { get; set; } = false;
 
 		#region ShopKiller
 

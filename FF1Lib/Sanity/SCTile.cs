@@ -10,7 +10,7 @@ namespace FF1Lib.Sanity
 	[StructLayout(LayoutKind.Sequential, Pack = 1)]
 	public unsafe struct SCTile
 	{
-		private const int ExtFlagCount = 5;
+		private const int ExtFlagCount = 3;
 
 		public SCBitFlags Tile;
 

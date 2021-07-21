@@ -204,7 +204,7 @@ namespace FF1Lib
 			{
 				var poi = deferredPointOfInterests.Dequeue();
 
-				if (poi.Requirements.IsAccessible(requirements))
+				if (poi.BitFlagSet.IsAccessible(requirements, changes))
 				{
 					ProcessSmPointOfInterest(poi, (byte)poi.DungeonIndex);
 				}
@@ -324,7 +324,7 @@ namespace FF1Lib
 
 			foreach (var dpoi in dungeon.PointsOfInterest)
 			{
-				if (dpoi.Requirements.IsAccessible(requirements))
+				if (dpoi.BitFlagSet.IsAccessible(requirements, changes))
 				{
 					ProcessSmPointOfInterest(dpoi, (byte)poi.Teleport.OverworldTeleport);
 				}

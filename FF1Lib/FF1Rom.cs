@@ -135,12 +135,14 @@ namespace FF1Lib
 
 			flags = Flags.ConvertAllTriState(flags, rng);
 
-			TeleportShuffle teleporters = new TeleportShuffle();
 			var palettes = OverworldMap.GeneratePalettes(Get(OverworldMap.MapPaletteOffset, MapCount * OverworldMap.MapPaletteSize).Chunk(OverworldMap.MapPaletteSize));
-			var overworldMap = new OverworldMap(this, flags, palettes, teleporters);
+			var overworldMap = new OverworldMap(this, flags, palettes);
 
 			var owMapExchange = OwMapExchange.FromFlags(this, overworldMap, flags, rng);
 			owMapExchange?.ExecuteStep1();
+
+			TeleportShuffle teleporters = new TeleportShuffle(owMapExchange?.Data);
+			overworldMap.Teleporters = teleporters;
 
 			var shipLocations = owMapExchange?.ShipLocations ?? OwMapExchange.GetDefaultShipLocations(this);
 
@@ -287,6 +289,11 @@ namespace FF1Lib
 				KnightNinjaChargesForAllLevels();
 			}
 
+			if ((bool)flags.AlternateFiends && !flags.SpookyFlag)
+			{
+				AlternativeFiends(rng);
+			}
+
 			if (flags.BuffHealingSpells)
 			{
 				BuffHealingSpells();
@@ -300,20 +307,20 @@ namespace FF1Lib
 			}
 
 			if ((bool)flags.Weaponizer) {
-			    Weaponizer(rng, (bool)flags.WeaponizerNamesUseQualityOnly, (bool)flags.WeaponizerCommonWeaponsHavePowers);
+			    Weaponizer(rng, (bool)flags.WeaponizerNamesUseQualityOnly, (bool)flags.WeaponizerCommonWeaponsHavePowers,  flags.NoItemMagic ?? false);
 			}
 
-			if ((bool)flags.MagisizeWeapons)
+			if ((bool)flags.MagisizeWeapons && !(flags.NoItemMagic ?? false))
 			{
 				MagisizeWeapons(rng, (bool)flags.MagisizeWeaponsBalanced);
 			}
 
-			if ((bool)flags.ItemMagic)
+			if ((bool)flags.ItemMagic && !(flags.NoItemMagic ?? false))
 			{
-				ShuffleItemMagic(rng, (bool)flags.BalancedItemMagicShuffle);
+				ShuffleItemMagic(rng, (bool)flags.BalancedItemMagicShuffle && !(flags.NoItemMagic ?? false));
 			}
 
-			if ((bool)flags.GuaranteedRuseItem)
+			if ((bool)flags.GuaranteedRuseItem && !(flags.NoItemMagic ?? false))
 			{
 				CraftRuseItem();
 			}
@@ -438,7 +445,7 @@ namespace FF1Lib
 
 			if (flags.NoOverworld && (bool)!flags.Entrances && (bool)!flags.Floors && (bool)!flags.Towns)
 			{
-				NoOverworldCaravanTile();
+				NoOverworld(overworldMap, maps, talkroutines, npcdata, flippedMaps, flags, rng);
 			}
 
 			var maxRetries = 8;
@@ -446,9 +453,11 @@ namespace FF1Lib
 			{
 				try
 				{
-					overworldMap = new OverworldMap(this, flags, palettes, teleporters);
-					if (((bool)flags.Entrances || (bool)flags.Floors || (bool)flags.Towns) && ((bool)flags.Treasures) && ((bool)flags.NPCItems) && !flags.DeepDungeon &&
-						(!flags.SanityCheckerV2 || flags.OwMapExchange == OwMapExchanges.None))
+					overworldMap = new OverworldMap(this, flags, palettes);
+					overworldMap.Teleporters = teleporters;
+
+					if (((bool)flags.Entrances || (bool)flags.Floors || (bool)flags.Towns) && ((bool)flags.Treasures) && ((bool)flags.NPCItems) && !flags.DeepDungeon
+						&& !(flags.SanityCheckerV2 && flags.OwMapExchange == OwMapExchanges.NoOverworld))
 					{
 						overworldMap.ShuffleEntrancesAndFloors(rng, flags);
 
@@ -477,7 +486,7 @@ namespace FF1Lib
 						if (!((bool)flags.RandomWaresIncludesSpecialGear))
 						{
 							excludeItemsFromRandomShops.AddRange(ItemLists.SpecialGear);
-							if ((bool)flags.GuaranteedRuseItem)
+							if ((bool)flags.GuaranteedRuseItem && !(flags.NoItemMagic ?? false))
 								excludeItemsFromRandomShops.Add(Item.PowerRod);
 						}
 
@@ -518,15 +527,6 @@ namespace FF1Lib
 
 			npcdata.UpdateItemPlacement(generatedPlacement);
 
-			if (flags.NoOverworld && (bool)!flags.Entrances && (bool)!flags.Floors && (bool)!flags.Towns)
-			{
-				NoOverworld(overworldMap, maps, talkroutines, npcdata, flippedMaps, flags, rng);
-			}
-
-			if ((bool)flags.AlternateFiends && !flags.SpookyFlag)
-			{
-				AlternativeFiends(rng);
-			}
 			if ((bool)flags.MagicShopLocs)
 			{
 				ShuffleMagicLocations(rng, (bool)flags.MagicShopLocationPairs);
@@ -955,6 +955,11 @@ namespace FF1Lib
 			if (flags.PacifistMode && !flags.SpookyFlag)
 			{
 				PacifistEnd(talkroutines, npcdata, (bool)flags.EnemyTrapTiles || flags.EnemizerEnabled);
+			}
+
+			if (flags.NoItemMagic ?? false)
+			{
+				NoItemMagic(flags);
 			}
 
 			if (flags.ShopInfo)

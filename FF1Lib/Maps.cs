@@ -1222,19 +1222,19 @@ namespace FF1Lib
 			maps[(byte)MapId.BahamutsRoomB2][4, 24] = (byte)Tile.CardiaCandles;
 			maps[(byte)MapId.BahamutsRoomB2][4, 25] = (byte)Tile.CardiaFloor;
 
-			ItemLocations.Cardia1.ChangeMapLocation(MapLocation.Cardia1);
-			ItemLocations.Cardia2.ChangeMapLocation(MapLocation.Cardia1);
-			ItemLocations.Cardia3.ChangeMapLocation(MapLocation.Cardia1);
-			ItemLocations.Cardia4.ChangeMapLocation(MapLocation.Cardia1);
-			ItemLocations.Cardia5.ChangeMapLocation(MapLocation.Cardia1);
-			ItemLocations.Cardia6.ChangeMapLocation(MapLocation.Cardia1);
-			ItemLocations.Cardia7.ChangeMapLocation(MapLocation.Cardia1);
-			ItemLocations.Cardia8.ChangeMapLocation(MapLocation.Cardia1);
-			ItemLocations.Cardia9.ChangeMapLocation(MapLocation.Cardia1);
-			ItemLocations.Cardia10.ChangeMapLocation(MapLocation.Cardia1);
-			ItemLocations.Cardia11.ChangeMapLocation(MapLocation.Cardia1);
-			ItemLocations.Cardia12.ChangeMapLocation(MapLocation.Cardia1);
-			ItemLocations.Cardia13.ChangeMapLocation(MapLocation.Cardia1);
+			ItemLocations.Cardia1.ChangeMapLocation(MapLocation.BahamutCave2);
+			ItemLocations.Cardia2.ChangeMapLocation(MapLocation.BahamutCave2);
+			ItemLocations.Cardia3.ChangeMapLocation(MapLocation.BahamutCave2);
+			ItemLocations.Cardia4.ChangeMapLocation(MapLocation.BahamutCave2);
+			ItemLocations.Cardia5.ChangeMapLocation(MapLocation.BahamutCave2);
+			ItemLocations.Cardia6.ChangeMapLocation(MapLocation.BahamutCave2);
+			ItemLocations.Cardia7.ChangeMapLocation(MapLocation.BahamutCave2);
+			ItemLocations.Cardia8.ChangeMapLocation(MapLocation.BahamutCave2);
+			ItemLocations.Cardia9.ChangeMapLocation(MapLocation.BahamutCave2);
+			ItemLocations.Cardia10.ChangeMapLocation(MapLocation.BahamutCave2);
+			ItemLocations.Cardia11.ChangeMapLocation(MapLocation.BahamutCave2);
+			ItemLocations.Cardia12.ChangeMapLocation(MapLocation.BahamutCave2);
+			ItemLocations.Cardia13.ChangeMapLocation(MapLocation.BahamutCave2);
 		    } else {
 			// If the user enabled Dragon's hoard,
 			// generated a seed, and then turned it off
