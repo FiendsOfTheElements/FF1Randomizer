@@ -4549,6 +4549,38 @@ namespace FF1Lib
 			}
 		}
 
+
+		public bool LooseItemsForwardPlacement
+		{
+			get => Flags.LooseItemsForwardPlacement;
+			set
+			{
+				Flags.LooseItemsForwardPlacement = value;
+				RaisePropertyChanged();
+			}
+		}
+
+
+		public bool LooseItemsSpreadPlacement
+		{
+			get => Flags.LooseItemsSpreadPlacement;
+			set
+			{
+				Flags.LooseItemsSpreadPlacement = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool LooseItemsNpcBalance
+		{
+			get => Flags.LooseItemsNpcBalance;
+			set
+			{
+				Flags.LooseItemsNpcBalance = value;
+				RaisePropertyChanged();
+			}
+		}
+
 		#region StartingEquipment
 
 		public bool? StartingEquipmentMasamune

@@ -18,5 +18,7 @@ namespace FF1Lib
 		(bool Complete, List<MapLocation> MapLocations, AccessRequirement Requirements) CheckSanity(List<IRewardSource> treasurePlacements,
 										Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullLocationRequirements,
 										IVictoryConditionFlags victoryConditions);
+
+		IEnumerable<IRewardSource> GetNearRewardSources(IEnumerable<IRewardSource> sources, IRewardSource source);
 	}
 }

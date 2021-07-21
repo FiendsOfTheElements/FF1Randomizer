@@ -31,6 +31,24 @@
 		"screenshot": null,
 		"description": "Enabling this, removes the magic from weapons and armor."
 	},
+	{
+		"Id": "spreadLoose",
+		"title": "Spread Loose Placement",
+		"screenshot": null,
+		"description": "Tries to spread out the loose items into different dungeons and gatings. With F/E it tries to spread out the items to different entrances/gatings."
+	},
+	{
+		"Id": "forwardLoose",
+		"title": "Forward Loose Placement",
+		"screenshot": null,
+		"description": "Tries to place loose items into newly opened up areas. It creates key item chains where one key item leads to the next, drives items out into the last corners of the world and can create some really nice fetch quest chains."
+	},
+	{
+		"Id": "looseNpcBalance",
+		"title": "Loose NPC Balance",
+		"screenshot": null,
+		"description": "Makes it more likely loose items land on NPCs."
+	},
 
 	{
 		"Id": "funEnemyNamesCheckBox",
