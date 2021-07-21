@@ -443,7 +443,7 @@ namespace FF1Lib
 
 			overworldMap.ApplyMapEdits();
 
-			if (flags.NoOverworld && (bool)!flags.Entrances && (bool)!flags.Floors && (bool)!flags.Towns)
+			if (flags.NoOverworld)
 			{
 				NoOverworld(overworldMap, maps, talkroutines, npcdata, flippedMaps, flags, rng);
 			}
@@ -460,11 +460,11 @@ namespace FF1Lib
 						&& !(flags.SanityCheckerV2 && flags.OwMapExchange == OwMapExchanges.NoOverworld))
 					{
 						overworldMap.ShuffleEntrancesAndFloors(rng, flags);
-
-						// Disable the Princess Warp back to Castle Coneria
-						if ((bool)flags.Entrances || (bool)flags.Floors)
-							talkroutines.ReplaceChunk(newTalkRoutines.Talk_Princess1, Blob.FromHex("20CC90"), Blob.FromHex("EAEAEA"));
 					}
+
+					// Disable the Princess Warp back to Castle Coneria
+					if ((bool)flags.Entrances || (bool)flags.Floors)
+						talkroutines.ReplaceChunk(newTalkRoutines.Talk_Princess1, Blob.FromHex("20CC90"), Blob.FromHex("EAEAEA"));
 
 					if ((bool)flags.Treasures && (bool)flags.ShuffleObjectiveNPCs && !flags.DeepDungeon)
 					{
