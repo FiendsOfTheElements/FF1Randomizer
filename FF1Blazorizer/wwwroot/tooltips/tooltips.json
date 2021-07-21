@@ -29,7 +29,7 @@
 		"Id": "noItemMagicCheckBox",
 		"title": "No Item Magic",
 		"screenshot": null,
-		"description": "Enabling this, removes the magic from weapons and armor. The names will still suggest that the items have spells and you can still use them in battle, but they will do nothing."
+		"description": "Enabling this, removes the magic from weapons and armor."
 	},
 
 	{
