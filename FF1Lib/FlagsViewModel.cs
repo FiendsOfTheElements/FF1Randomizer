@@ -4761,5 +4761,15 @@ namespace FF1Lib
 				RaisePropertyChanged();
 			}
 		}
+
+		public bool? NoItemMagic
+		{
+			get => Flags.NoItemMagic;
+			set
+			{
+				Flags.NoItemMagic = value;
+				RaisePropertyChanged();
+			}
+		}
 	}
 }

@@ -111,6 +111,7 @@
 		bool EnableExtConsumables { get; }
 		ExtConsumableChestSet ExtConsumableChests { get; }
 		bool IncentiveChestItemsFanfare { get; }
+		bool? NoItemMagic { get; }
 	}
 	public interface IItemShuffleFlags
 	{

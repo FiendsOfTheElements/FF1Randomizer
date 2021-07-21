@@ -2514,5 +2514,46 @@ namespace FF1Lib
 			PutInBank(0x1F, 0xE8FD, Blob.FromHex("4CE0DD"));
 			PutInBank(0x1F, 0xDDE0, Blob.FromHex("20B9EAA9038DD00360"));
 		}
+
+		public void NoItemMagic(Flags flags)
+		{
+			var weapons = Weapon.LoadAllWeapons(this, flags).ToList();
+			var armors = Armor.LoadAllArmors(this, flags).ToList();
+
+			foreach (var w in weapons)
+			{
+				w.SpellIndex = 0;
+				w.writeWeaponMemory(this);
+			}
+
+			foreach (var a in armors)
+			{
+				a.SpellIndex = 0;
+				a.writeArmorMemory(this);
+			}
+
+			var itemnames = ReadText(FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextPointerCount);
+
+			if (!(flags.Weaponizer ?? false))
+			{
+				itemnames[(int)Item.BaneSword] = "Lame  @s";
+				itemnames[(int)Item.HealRod] = "Eel   @F";
+				itemnames[(int)Item.MageRod] = "Age   @F";
+				itemnames[(int)Item.WizardRod] = "Lizard@F";
+				itemnames[(int)Item.LightAxe] = "Slight@X";
+			}
+
+			//possible incentive items
+			itemnames[(int)Item.Defense] = "Dunce @s";
+			itemnames[(int)Item.ThorHammer] = "Bore  @H";
+			itemnames[(int)Item.PowerGauntlets] = "Sour  @G";
+			itemnames[(int)Item.WhiteShirt] = "Right @T";
+			itemnames[(int)Item.BlackShirt] = "Whack @T";
+
+			itemnames[(int)Item.HealHelm] = "Deal  @h";
+			itemnames[(int)Item.ZeusGauntlets] = "Moose @G";
+
+			WriteText(itemnames, FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextOffset, FF1Rom.UnusedGoldItems);
+		}
 	}
 }
