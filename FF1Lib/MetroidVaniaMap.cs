@@ -1084,6 +1084,11 @@ namespace FF1Lib
 			if ((bool)flags.Entrances)
 			{
 				LocationEntrances = new() { (MapId.ConeriaCastle1F, MapId.Waterfall), (MapId.MatoyasCave, MapId.MarshCaveB1), (MapId.SardasCave, MapId.EarthCaveB1), (MapId.TempleOfFiends, MapId.MatoyasCave), (MapId.TempleOfFiends, MapId.DwarfCave), (MapId.SardasCave, MapId.TitansTunnel), (MapId.ElflandCastle, MapId.NorthwestCastle), (MapId.NorthwestCastle, MapId.MarshCaveB3), (MapId.NorthwestCastle, MapId.CastleOfOrdeals1F), (MapId.CastleOfOrdeals1F, MapId.TitansTunnel), (MapId.ElflandCastle, MapId.IceCaveB1), (MapId.Gaia, MapId.MirageTower1F), (MapId.Onrac, MapId.SeaShrineB1), (MapId.CrescentLake, MapId.GurguVolcanoB1) };
+
+				if ((bool)flags.AllowDeepCastles)
+				{
+					LocationEntrances.Add((MapId.ConeriaCastle1F, MapId.TempleOfFiends));
+				}
 			}
 
 			if ((bool)flags.Towns)
@@ -1106,6 +1111,12 @@ namespace FF1Lib
 				/*
 				barredLocations = new() { MapId.ConeriaCastle2F, MapId.CastleOfOrdeals2F, MapId.CastleOfOrdeals3F, MapId.TempleOfFiendsRevisited1F, MapId.TempleOfFiendsRevisited2F, MapId.TempleOfFiendsRevisited3F, MapId.TempleOfFiendsRevisitedAir, MapId.TempleOfFiendsRevisitedEarth, MapId.TempleOfFiendsRevisitedFire, MapId.TempleOfFiendsRevisitedWater, MapId.TempleOfFiendsRevisitedChaos };
 				*/
+
+				if ((bool)!flags.AllowDeepCastles)
+				{
+					BarredLocations.Add((MapId.ConeriaCastle1F, MapId.TempleOfFiends));
+				}
+
 				if ((bool)!flags.IncludeConeria || ((bool)flags.IncludeConeria && (bool)!flags.EntrancesMixedWithTowns))
 				{
 					BarredLocations.Add((MapId.ConeriaCastle1F, MapId.Coneria));
@@ -1154,7 +1165,7 @@ namespace FF1Lib
 			}
 
 			List<(byte, byte)> TownTeleporterPairs = new();
-			List<byte> TownTeleporterOrphans = new();
+			//List<byte> TownTeleporterOrphans = new();
 
 			List<(byte, byte)> LocationTeleporterPairs = new();
 			List<byte> LocationTeleporterOrphans = new();
@@ -1163,16 +1174,8 @@ namespace FF1Lib
 			{
 				TownTeleporterPairs = TeleportersPair.Where(x => TownEntrances.Contains(((MapId)teleporters[x.Item1].Destination, (MapId)teleporters[x.Item2].Destination)) || TownEntrances.Contains(((MapId)teleporters[x.Item2].Destination, (MapId)teleporters[x.Item1].Destination))).ToList();
 
-				TownTeleporterOrphans = OrphanTeleporters.Where(x => TownEntrances.Select(x => x.Item2).Contains((MapId)teleporters[x].Destination)).ToList();
-
-				foreach (var pair in TownTeleporterPairs)
-				{
-					Console.WriteLine((MapId)teleporters[pair.Item1].Destination + "..." + (MapId)teleporters[pair.Item2].Destination);
-				}
-
+				//TownTeleporterOrphans = OrphanTeleporters.Where(x => TownEntrances.Select(x => x.Item2).Contains((MapId)teleporters[x].Destination)).ToList();
 			}
-
-			Console.WriteLine("----------------");
 
 			if (LocationEntrances.Any())
 			{
@@ -1278,7 +1281,7 @@ namespace FF1Lib
 				teleporterPair3.Item1.PropertyValue = (byte)teleporterPair3.Item2.ID;
 				teleporterPair4.Item1.PropertyValue = (byte)teleporterPair4.Item2.ID;
 			}
-
+			/*
 			while (TownTeleporterOrphans.Count > 1)
 			{
 				var orphanA = TownTeleporterOrphans.SpliceRandom(rng);
@@ -1294,7 +1297,7 @@ namespace FF1Lib
 
 				teleporterPair1.Item1.PropertyValue = (byte)teleporterPair1.Item2.ID;
 				teleporterPair2.Item1.PropertyValue = (byte)teleporterPair2.Item2.ID;
-			}
+			}*/
 
 			foreach (var tile in TeleportTiles)
 			{
