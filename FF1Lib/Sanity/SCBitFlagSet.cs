@@ -74,6 +74,7 @@ namespace FF1Lib.Sanity
 			if (req.HasFlag(AccessRequirement.Crown)) v2req |= SCBitFlags.Crown;
 			if (req.HasFlag(AccessRequirement.Ruby)) v2req |= SCBitFlags.Ruby;
 			if (req.HasFlag(AccessRequirement.BlackOrb)) v2req |= SCBitFlags.Orbs;
+			if (req.HasFlag(AccessRequirement.Tnt)) v2req |= SCBitFlags.Tnt;
 
 			if (chg.HasFlag(MapChange.Chime)) v2req |= SCBitFlags.Chime;
 			if (chg.HasFlag(MapChange.Canoe)) v2req |= SCBitFlags.Canoe;
