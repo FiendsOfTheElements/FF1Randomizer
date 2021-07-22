@@ -208,13 +208,13 @@ namespace FF1Lib.Sanity
 				case newTalkRoutines.Talk_Chaos:
 					ProcessQuestNpc(ref npc);
 					break;
-				case newTalkRoutines.Talk_Floater:
+				case newTalkRoutines.NoOW_Floater:
 					Tiles[npc.Coord.x, npc.Coord.y].Tile = SCBitFlags.Floater;
 					break;
-				case newTalkRoutines.Talk_Chime:
+				case newTalkRoutines.NoOW_Chime:
 					Tiles[npc.Coord.x, npc.Coord.y].Tile = SCBitFlags.Chime;
 					break;
-				case newTalkRoutines.Talk_Canoe:
+				case newTalkRoutines.NoOW_Canoe:
 					Tiles[npc.Coord.x, npc.Coord.y].Tile = SCBitFlags.Canoe;
 					break;
 				default:

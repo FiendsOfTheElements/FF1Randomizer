@@ -558,7 +558,7 @@ namespace FF1Lib
 			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x01, 0x0C, (byte)MapId.Onrac, false, (int)TileSets.MatoyaDwarfCardiaIceWaterfall, TilePalette.RoomPalette1, TeleporterGraphic.Hole, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
 			UpdateMapTile(MapId.IceCaveB1, 0x02, 0x01, newTeleporterTiles.Last().TileID);
 
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x06, 0x1D, (byte)MapId.IceCaveB2, false, (int)TileSets.MatoyaDwarfCardiaIceWaterfall, TilePalette.RoomPalette1, TeleporterGraphic.Hole, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x34, 0x01, (byte)MapId.IceCaveB2, false, (int)TileSets.MatoyaDwarfCardiaIceWaterfall, TilePalette.RoomPalette1, TeleporterGraphic.Hole, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
 			UpdateMapTile(MapId.IceCaveB1, 0x06, 0x1B, newTeleporterTiles.Last().TileID);
 
 			// Waterfall
@@ -777,37 +777,37 @@ namespace FF1Lib
 			// Orbs
 			SetNpc(MapId.ConeriaCastle1F, 0x02, ObjectId.ConeriaCastle1FWoman1, 0x02, 0x09, true, true); // Dialog+Routine
 			Data[MapObjGfxOffset + (byte)ObjectId.ConeriaCastle1FWoman1] = 0x04;
-			npcdata.SetRoutine(ObjectId.ConeriaCastle1FWoman1, newTalkRoutines.Talk_Floater);
+			npcdata.SetRoutine(ObjectId.ConeriaCastle1FWoman1, newTalkRoutines.NoOW_Floater);
 			npcdata.GetTalkArray(ObjectId.ConeriaCastle1FWoman1)[(int)TalkArrayPos.dialogue_2] = 0x37;
 			npcdata.GetTalkArray(ObjectId.ConeriaCastle1FWoman1)[(int)TalkArrayPos.dialogue_3] = 0x36;
 
 			SetNpc(MapId.CastleOfOrdeals1F, 0x01, ObjectId.LefeinMan10, 0x16, 0x02, true, true); //Dialog+Routine
 			SetNpc(MapId.Lefein, 0x0A, 0x00, 0x16, 0x02, true, true);
 			Data[MapObjGfxOffset + (byte)ObjectId.LefeinMan10] = 0x04;
-			npcdata.SetRoutine(ObjectId.LefeinMan10, newTalkRoutines.Talk_Floater);
+			npcdata.SetRoutine(ObjectId.LefeinMan10, newTalkRoutines.NoOW_Floater);
 			npcdata.GetTalkArray(ObjectId.LefeinMan10)[(int)TalkArrayPos.dialogue_2] = 0x37;
 			npcdata.GetTalkArray(ObjectId.LefeinMan10)[(int)TalkArrayPos.dialogue_3] = 0x36;
 
 			SetNpc(MapId.IceCaveB1, 0x01, ObjectId.LefeinMan6, flippedmaps.Contains(MapId.IceCaveB1) ? 0x3F - 0x02 : 0x02, 0x01, true, true); //Dialog+Routine
 			SetNpc(MapId.Lefein, 0x06, 0x00, 0x16, 0x02, true, true);
 			Data[MapObjGfxOffset + (byte)ObjectId.LefeinMan6] = 0x04;
-			npcdata.SetRoutine(ObjectId.LefeinMan6, newTalkRoutines.Talk_Floater);
+			npcdata.SetRoutine(ObjectId.LefeinMan6, newTalkRoutines.NoOW_Floater);
 			npcdata.GetTalkArray(ObjectId.LefeinMan6)[(int)TalkArrayPos.dialogue_2] = 0x37;
 			npcdata.GetTalkArray(ObjectId.LefeinMan6)[(int)TalkArrayPos.dialogue_3] = 0x36;
 
 			// Canoe people
 			SetNpc(MapId.CrescentLake, 0x0D, ObjectId.CrescentWoman, 0x25, 0x02, false, true); // Dialog+Routine
-			npcdata.SetRoutine(ObjectId.CrescentWoman, newTalkRoutines.Talk_Canoe);
+			npcdata.SetRoutine(ObjectId.CrescentWoman, newTalkRoutines.NoOW_Canoe);
 			npcdata.GetTalkArray(ObjectId.CrescentWoman)[(int)TalkArrayPos.dialogue_2] = 0x5C;
 			npcdata.GetTalkArray(ObjectId.CrescentWoman)[(int)TalkArrayPos.dialogue_3] = 0xC2;
 
 			SetNpc(MapId.ElflandCastle, 0x03, ObjectId.ElflandCastleElf2, 0x0E, 0x11, false, true); // Dialog+Routine
-			npcdata.SetRoutine(ObjectId.ElflandCastleElf2, newTalkRoutines.Talk_Canoe);
+			npcdata.SetRoutine(ObjectId.ElflandCastleElf2, newTalkRoutines.NoOW_Canoe);
 			npcdata.GetTalkArray(ObjectId.ElflandCastleElf2)[(int)TalkArrayPos.dialogue_2] = 0x5C;
 			npcdata.GetTalkArray(ObjectId.ElflandCastleElf2)[(int)TalkArrayPos.dialogue_3] = 0xC2;
 
 			SetNpc(MapId.CastleOfOrdeals1F, 0x00, ObjectId.CastleOrdealsOldMan, 0x02, 0x02, true, true); //Dialog+Routine.
-			npcdata.SetRoutine(ObjectId.CastleOrdealsOldMan, newTalkRoutines.Talk_Canoe);
+			npcdata.SetRoutine(ObjectId.CastleOrdealsOldMan, newTalkRoutines.NoOW_Canoe);
 			npcdata.GetTalkArray(ObjectId.CastleOrdealsOldMan)[(int)TalkArrayPos.dialogue_2] = 0x5C;
 			if ((bool)flags.EarlyOrdeals)
 			{
@@ -830,9 +830,12 @@ namespace FF1Lib
 			// Chime bot
 			SetNpc(MapId.Gaia, 0x03, ObjectId.GaiaScholar2, 0x35, 0x1A, false, true); //Dialog+Routine
 			Data[MapObjGfxOffset + (byte)ObjectId.GaiaScholar2] = 0x15;
-			npcdata.SetRoutine(ObjectId.GaiaScholar2, newTalkRoutines.Talk_Chime);
+			npcdata.SetRoutine(ObjectId.GaiaScholar2, newTalkRoutines.NoOW_Chime);
 			npcdata.GetTalkArray(ObjectId.GaiaScholar2)[(int)TalkArrayPos.dialogue_2] = 0xD5;
 			npcdata.GetTalkArray(ObjectId.GaiaScholar2)[(int)TalkArrayPos.dialogue_3] = 0xD9;
+
+			// Nerrick
+			//npcdata.SetRoutine(ObjectId.Nerrick, newTalkRoutines.NoOW_Nerrick);
 
 			// Switch Key dialogue
 			npcdata.GetTalkArray(ObjectId.ConeriaCastle1FOldMan2)[(int)TalkArrayPos.dialogue_2] = 0x40;
@@ -1073,7 +1076,10 @@ namespace FF1Lib
 
 			List<(MapId, MapId)> TownEntrances = new() { };
 			List<(MapId, MapId)> LocationEntrances = new() { };
-			List<MapId> barredLocations = new() { };
+			List<(MapId, MapId)> BarredLocations = new() { };
+			//List<MapId> barredLocations = new() { };
+
+			List<(MapId, byte, byte)> IceTeleporters = new() { (MapId.IceCaveB2, 0x33, 0x0B), (MapId.IceCaveB3, 0x27, 0x03), (MapId.IceCaveB3, 0x3B, 0x21), (MapId.IceCaveB1, 0x06, 0x14), (MapId.IceCaveB2, 0x34, 0x01) };
 
 			if ((bool)flags.Entrances)
 			{
@@ -1093,16 +1099,21 @@ namespace FF1Lib
 
 			if ((bool)flags.Floors)
 			{
-				barredLocations = new() { MapId.ConeriaCastle2F, MapId.CastleOfOrdeals2F, MapId.CastleOfOrdeals3F, MapId.TempleOfFiendsRevisited1F, MapId.TempleOfFiendsRevisited2F, MapId.TempleOfFiendsRevisited3F, MapId.TempleOfFiendsRevisitedAir, MapId.TempleOfFiendsRevisitedEarth, MapId.TempleOfFiendsRevisitedFire, MapId.TempleOfFiendsRevisitedWater, MapId.TempleOfFiendsRevisitedChaos };
+				BarredLocations = new() { (MapId.ConeriaCastle1F, MapId.ConeriaCastle2F), (MapId.CastleOfOrdeals1F, MapId.CastleOfOrdeals2F), (MapId.CastleOfOrdeals2F, MapId.CastleOfOrdeals2F), (MapId.CastleOfOrdeals2F, MapId.CastleOfOrdeals3F), (MapId.CastleOfOrdeals3F, MapId.CastleOfOrdeals1F), (MapId.TempleOfFiends, MapId.TempleOfFiendsRevisited1F), (MapId.TempleOfFiendsRevisited1F, MapId.TempleOfFiendsRevisited2F), (MapId.TempleOfFiendsRevisited2F, MapId.TempleOfFiendsRevisited3F), (MapId.TempleOfFiendsRevisited1F, MapId.TempleOfFiendsRevisitedEarth), (MapId.TempleOfFiendsRevisitedEarth, MapId.TempleOfFiendsRevisitedFire), (MapId.TempleOfFiendsRevisitedFire, MapId.TempleOfFiendsRevisitedWater), (MapId.TempleOfFiendsRevisitedWater, MapId.TempleOfFiendsRevisitedAir), (MapId.TempleOfFiendsRevisitedAir, MapId.TempleOfFiendsRevisitedChaos), (MapId.TempleOfFiends, MapId.TempleOfFiendsRevisitedChaos) };
 
-				if ((bool)!flags.IncludeConeria)
+
+
+				/*
+				barredLocations = new() { MapId.ConeriaCastle2F, MapId.CastleOfOrdeals2F, MapId.CastleOfOrdeals3F, MapId.TempleOfFiendsRevisited1F, MapId.TempleOfFiendsRevisited2F, MapId.TempleOfFiendsRevisited3F, MapId.TempleOfFiendsRevisitedAir, MapId.TempleOfFiendsRevisitedEarth, MapId.TempleOfFiendsRevisitedFire, MapId.TempleOfFiendsRevisitedWater, MapId.TempleOfFiendsRevisitedChaos };
+				*/
+				if ((bool)!flags.IncludeConeria || ((bool)flags.IncludeConeria && (bool)!flags.EntrancesMixedWithTowns))
 				{
-					barredLocations.Add(MapId.Coneria);
+					BarredLocations.Add((MapId.ConeriaCastle1F, MapId.Coneria));
 				}
 
 				if ((bool)!flags.EntrancesMixedWithTowns)
 				{
-					barredLocations.AddRange(new List<MapId> { MapId.Pravoka, MapId.Elfland, MapId.Melmond, MapId.CrescentLake, MapId.Onrac, MapId.Gaia, MapId.Lefein });
+					BarredLocations.AddRange(new List<(MapId, MapId)> { (MapId.MatoyasCave, MapId.Pravoka), (MapId.ElflandCastle, MapId.Elfland), (MapId.SardasCave, MapId.Melmond), (MapId.DwarfCave, MapId.CrescentLake), (MapId.IceCaveB1, MapId.Onrac), (MapId.CastleOfOrdeals1F, MapId.Gaia), (MapId.Waterfall, MapId.Lefein) });
 				}
 			}
 
@@ -1121,7 +1132,7 @@ namespace FF1Lib
 
 			foreach (var teleport in teleporters)
 			{
-				if (!PairedTeleporters.Contains((byte)teleport.ID))
+				if (!PairedTeleporters.Contains((byte)teleport.ID) && !IceTeleporters.Contains(((MapId)teleport.Destination, teleport.X, teleport.Y)))
 				{
 					var targettile = Tilesets[(int)tilesetList[teleport.Destination].Item2][maps[teleport.Destination][teleport.Y, teleport.X]];
 
@@ -1161,19 +1172,39 @@ namespace FF1Lib
 
 			}
 
+			Console.WriteLine("----------------");
+
 			if (LocationEntrances.Any())
 			{
 				LocationTeleporterPairs = TeleportersPair.Where(x => LocationEntrances.Contains(((MapId)teleporters[x.Item1].Destination, (MapId)teleporters[x.Item2].Destination)) || LocationEntrances.Contains(((MapId)teleporters[x.Item2].Destination, (MapId)teleporters[x.Item1].Destination))).ToList();
 
 				LocationTeleporterOrphans = OrphanTeleporters.Where(x => LocationEntrances.Select(x => x.Item2).Contains((MapId)teleporters[x].Destination)).ToList();
+
+				foreach (var pair in LocationTeleporterPairs)
+				{
+					Console.WriteLine((MapId)teleporters[pair.Item1].Destination + "..." + (MapId)teleporters[pair.Item2].Destination);
+				}
 			}
 
-			if ((bool)flags.Floors && barredLocations.Any())
+			Console.WriteLine("----------------");
+
+
+			if ((bool)flags.Floors && BarredLocations.Any())
 			{
+				LocationTeleporterPairs = TeleportersPair.Where(x => !BarredLocations.Contains(((MapId)teleporters[x.Item1].Destination, (MapId)teleporters[x.Item2].Destination)) && !BarredLocations.Contains(((MapId)teleporters[x.Item2].Destination, (MapId)teleporters[x.Item1].Destination))).ToList();
+
+				LocationTeleporterOrphans = OrphanTeleporters.Where(x => !BarredLocations.Select(x => x.Item2).Contains((MapId)teleporters[x].Destination)).ToList();
+
+				/*
 				LocationTeleporterPairs = TeleportersPair.Where(x => !barredLocations.Contains((MapId)teleporters.Find(y => y.ID == x.Item1).Destination) && !barredLocations.Contains((MapId)teleporters.Find(y => y.ID == x.Item2).Destination)).ToList();
 
 
 				LocationTeleporterOrphans = OrphanTeleporters.Where(x => !barredLocations.Contains((MapId)teleporters.Find(y => y.ID == x).Destination)).ToList();
+				*/
+				foreach (var pair in LocationTeleporterPairs)
+				{
+					Console.WriteLine((MapId)teleporters[pair.Item1].Destination + "..." + (MapId)teleporters[pair.Item2].Destination);
+				}
 			}
 
 
