@@ -2543,15 +2543,17 @@ namespace FF1Lib
 				itemnames[(int)Item.LightAxe] = "Slight@X";
 			}
 
+			if (!(flags.ArmorCrafter ?? false)) {
+			    itemnames[(int)Item.HealHelm] = "Deal  @h";
+			    itemnames[(int)Item.ZeusGauntlets] = "Moose @G";
+			}
+
 			//possible incentive items
 			itemnames[(int)Item.Defense] = "Dunce @s";
 			itemnames[(int)Item.ThorHammer] = "Bore  @H";
 			itemnames[(int)Item.PowerGauntlets] = "Sour  @G";
 			itemnames[(int)Item.WhiteShirt] = "Right @T";
 			itemnames[(int)Item.BlackShirt] = "Whack @T";
-
-			itemnames[(int)Item.HealHelm] = "Deal  @h";
-			itemnames[(int)Item.ZeusGauntlets] = "Moose @G";
 
 			WriteText(itemnames, FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextOffset, FF1Rom.UnusedGoldItems);
 		}

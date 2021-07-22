@@ -310,6 +310,10 @@ namespace FF1Lib
 			    Weaponizer(rng, (bool)flags.WeaponizerNamesUseQualityOnly, (bool)flags.WeaponizerCommonWeaponsHavePowers,  flags.NoItemMagic ?? false);
 			}
 
+			if ((bool)flags.ArmorCrafter) {
+			    ArmorCrafter(rng, flags.NoItemMagic ?? false);
+			}
+
 			if ((bool)flags.MagisizeWeapons && !(flags.NoItemMagic ?? false))
 			{
 				MagisizeWeapons(rng, (bool)flags.MagisizeWeaponsBalanced);
@@ -555,7 +559,7 @@ namespace FF1Lib
 			{
 				shopData.Shops.Find(x => x.Type == FF1Lib.ShopType.Item && x.Entries.Contains(Item.Bottle)).Entries.Remove(Item.Bottle);
 				shopData.StoreData();
-			}		
+			}
 
 			//has to be done before modifying itemnames and after modifying spellnames...
 			extConsumables.LoadSpells();
@@ -699,7 +703,7 @@ namespace FF1Lib
 			}
 
 			if (flags.SpeedHacks)
-			{				
+			{
 				EnableSpeedHacks(preferences);
 			}
 
@@ -851,7 +855,11 @@ namespace FF1Lib
 			}
 
 			var itemText = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
-			itemText[(int)Item.Ribbon] = itemText[(int)Item.Ribbon].Remove(7);
+			if (itemText[(int)Item.Ribbon].Length > 7
+			    && itemText[(int)Item.Ribbon][7] == ' ')
+			    {
+				itemText[(int)Item.Ribbon] = itemText[(int)Item.Ribbon].Remove(7);
+			    }
 
 			if (flags.Etherizer)
 			{

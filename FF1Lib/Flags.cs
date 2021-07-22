@@ -190,6 +190,7 @@ namespace FF1Lib
 		public bool? Weaponizer { get; set; } = false;
 		public bool? WeaponizerNamesUseQualityOnly { get; set; } = false;
 		public bool? WeaponizerCommonWeaponsHavePowers { get; set; } = false;
+		public bool? ArmorCrafter { get; set; } = false;
 		public bool? MagicLevelsTiered { get; set; } = false;
 		public bool? MagicLevelsMixed { get; set; } = false;
 
@@ -1031,7 +1032,7 @@ namespace FF1Lib
 			return sum;
 		}
 
-		
+
 		public class Preset
 		{
 			public string Name { get; set; }
