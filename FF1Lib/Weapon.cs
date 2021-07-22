@@ -201,7 +201,7 @@ namespace FF1Lib
 			}
 		}
 
-		public void Weaponizer(MT19337 rng, bool useQualityNamesOnly, bool commonWeaponsHavePowers) {
+		public void Weaponizer(MT19337 rng, bool useQualityNamesOnly, bool commonWeaponsHavePowers, bool noItemMagic) {
 		    var tierList = new List<IReadOnlyList<Item>> { ItemLists.CommonWeaponTier, ItemLists.RareWeaponTier,
 							  ItemLists.LegendaryWeaponTier, ItemLists.UberTier};
 		    var damageBases = new int[]      { 10, 18, 26, 36, 52 };
@@ -491,6 +491,8 @@ namespace FF1Lib
 				typeWeakeness = (byte)((powers[specialPower]>>8) & 0xFF);
 			    }
 
+				if (noItemMagic) spellIndex = 0xFF;
+
 			    string nameWithIcon;
 			    if (weaponItemId == Item.Masamune) {
 				name = nameWithIcon = (weaponType == 0 ? "Masmune" : "Maxmune");
@@ -500,9 +502,9 @@ namespace FF1Lib
 				name = nameWithIcon = "Katana ";
 			    } else if (weaponItemId == Item.Vorpal) {
 				name = nameWithIcon = "Vorpal ";
-			    } else if (weaponItemId == Item.Defense) {
-				name = nameWithIcon = "Defense";
-			    } else if (weaponItemId == Item.ThorHammer) {
+			    } else if (weaponItemId == Item.Defense && !noItemMagic) {
+				name = nameWithIcon =  "Defense";
+			    } else if (weaponItemId == Item.ThorHammer && !noItemMagic) {
 				name = nameWithIcon = "Thor  @H";
 				elementalWeakness = (byte)(Element.ICE|Element.FIRE|Element.LIGHTNING);
 			    } else {

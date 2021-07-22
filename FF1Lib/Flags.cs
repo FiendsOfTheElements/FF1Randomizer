@@ -54,6 +54,13 @@ namespace FF1Lib
 
 		#endregion
 
+		public bool LooseItemsForwardPlacement { get; set; } = false;
+
+		public bool LooseItemsSpreadPlacement { get; set; } = false;
+
+		public bool LooseItemsNpcBalance { get; set; } = false;
+
+
 		[IntegerFlag(0, 100, 10)]
 		public int ExpChestConversionMin { get; set; } = 0;
 
@@ -86,6 +93,7 @@ namespace FF1Lib
 
 		public OwMapExchanges OwMapExchange { get; set; } = OwMapExchanges.None;
 
+		public bool? NoItemMagic { get; set; } = false;
 
 		#region ShopKiller
 

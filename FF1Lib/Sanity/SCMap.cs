@@ -208,6 +208,15 @@ namespace FF1Lib.Sanity
 				case newTalkRoutines.Talk_Chaos:
 					ProcessQuestNpc(ref npc);
 					break;
+				case newTalkRoutines.Talk_Floater:
+					Tiles[npc.Coord.x, npc.Coord.y].Tile = SCBitFlags.Floater;
+					break;
+				case newTalkRoutines.Talk_Chime:
+					Tiles[npc.Coord.x, npc.Coord.y].Tile = SCBitFlags.Chime;
+					break;
+				case newTalkRoutines.Talk_Canoe:
+					Tiles[npc.Coord.x, npc.Coord.y].Tile = SCBitFlags.Canoe;
+					break;
 				default:
 					if (npc.ObjectId == ObjectId.Princess1 || npc.ObjectId == ObjectId.Vampire || npc.ObjectId == ObjectId.ElfDoc || npc.ObjectId == ObjectId.Unne)
 					{
@@ -278,7 +287,7 @@ namespace FF1Lib.Sanity
 
 		private void ProcessPointsOfInterest()
 		{
-			if (PointsOfInterest.Count > 100) throw new NoYouDon_LowerCaseT_Exception(MapId, "Excess PointsOfInterest found.");
+			if (PointsOfInterest.Count > 250) throw new NoYouDon_LowerCaseT_Exception(MapId, "Excess PointsOfInterest found.");
 
 			var conflicts = PointsOfInterest.Where(p => p.Type < SCPointOfInterestType.OwEntrance).GroupBy(p => p.Coords, new SCCoordsEqualityComparer()).Where(g => g.Count() > 1);
 			if (conflicts.Any()) throw new NopeException(MapId, "There is a PointOfInterest conflict.");

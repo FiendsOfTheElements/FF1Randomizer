@@ -112,8 +112,12 @@ namespace FF1Lib
 			Talk_GiveItemOnItem,
 			Talk_Astos,
 			Talk_kill,
-			Talk_Chaos
+			Talk_Chaos,
+			Talk_Floater,
+			Talk_Chime,
+			Talk_Canoe
 		}
+
 		public class TalkRoutines
 		{
 			private List<Blob> _talkroutines = new List<Blob>();
@@ -151,6 +155,10 @@ namespace FF1Lib
 				_talkroutines.Add(Blob.FromHex("A674F005BD2060F029A57385612080B1F022E67DA572203D96A5752020B1A476207F90207392A5611820109F2018964C4396A57060")); // Talk_Astos
 				_talkroutines.Add(Blob.FromHex("A000209690A57160")); // Talk_Kill
 				_talkroutines.Add(Blob.FromHex("A57520C590A57160")); // Talk_Chaos
+
+				_talkroutines.Add(Blob.FromHex("AD2B60D003A57160A476207392A57260"));
+				_talkroutines.Add(Blob.FromHex("AD2C60D003A57160A476207392A57260"));
+				_talkroutines.Add(Blob.FromHex("AD1260D003A57160A476207392A57260"));
 			}
 			public Blob this[int talkid]
 			{

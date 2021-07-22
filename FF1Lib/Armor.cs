@@ -93,7 +93,7 @@ namespace FF1Lib
 			platinumBracelet.writeArmorMemory(this);
 		}
 
-		public void ArmorCrafter(MT19337 rng) {
+		public void ArmorCrafter(MT19337 rng, bool noItemMagic) {
 		    var commonArmor = new List<Item>(ItemLists.CommonArmorTier);
 		    var rareArmor = new List<Item>(ItemLists.RareArmorTier);
 		    var legendaryArmor = new List<Item>(ItemLists.LegendaryArmorTier);
@@ -345,7 +345,7 @@ namespace FF1Lib
 								    Select(s => s.Id));
 				}
 			    }
-			    if (spells.Count > 0) {
+			    if (spells.Count > 0 && !noItemMagic) {
 				spellIndex = (byte)(spells.SpliceRandom(rng));
 				spellIndex = (byte)(spellIndex-(byte)Spell.CURE);
 				name = allSpells[spellIndex].Name;
