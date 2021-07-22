@@ -47,7 +47,8 @@ namespace FF1Lib.Helpers
 		Death =	0b00001000,
 		Time = 0b00000100,
 		Poison = 0b00000010,
-		Elem01 = 0b00000001
+		Elem01 = 0b00000001,
+		All = 0xFF
 	}
 
 	public enum SpellStatus : byte

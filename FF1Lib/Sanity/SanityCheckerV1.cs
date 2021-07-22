@@ -177,5 +177,10 @@ namespace FF1Lib
 
 			return (true, currentMapLocations().ToList(), currentAccess);
 		}
+
+		public IEnumerable<IRewardSource> GetNearRewardSources(IEnumerable<IRewardSource> sources, IRewardSource source)
+		{
+			return Array.Empty<IRewardSource>();
+		}
 	}
 }

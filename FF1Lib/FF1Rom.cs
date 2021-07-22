@@ -307,20 +307,24 @@ namespace FF1Lib
 			}
 
 			if ((bool)flags.Weaponizer) {
-			    Weaponizer(rng, (bool)flags.WeaponizerNamesUseQualityOnly, (bool)flags.WeaponizerCommonWeaponsHavePowers);
+			    Weaponizer(rng, (bool)flags.WeaponizerNamesUseQualityOnly, (bool)flags.WeaponizerCommonWeaponsHavePowers,  flags.NoItemMagic ?? false);
 			}
 
-			if ((bool)flags.MagisizeWeapons)
+			if ((bool)flags.ArmorCrafter) {
+			    ArmorCrafter(rng, flags.NoItemMagic ?? false);
+			}
+
+			if ((bool)flags.MagisizeWeapons && !(flags.NoItemMagic ?? false))
 			{
 				MagisizeWeapons(rng, (bool)flags.MagisizeWeaponsBalanced);
 			}
 
-			if ((bool)flags.ItemMagic)
+			if ((bool)flags.ItemMagic && !(flags.NoItemMagic ?? false))
 			{
-				ShuffleItemMagic(rng, (bool)flags.BalancedItemMagicShuffle);
+				ShuffleItemMagic(rng, (bool)flags.BalancedItemMagicShuffle && !(flags.NoItemMagic ?? false));
 			}
 
-			if ((bool)flags.GuaranteedRuseItem)
+			if ((bool)flags.GuaranteedRuseItem && !(flags.NoItemMagic ?? false))
 			{
 				CraftRuseItem();
 			}
@@ -486,7 +490,7 @@ namespace FF1Lib
 						if (!((bool)flags.RandomWaresIncludesSpecialGear))
 						{
 							excludeItemsFromRandomShops.AddRange(ItemLists.SpecialGear);
-							if ((bool)flags.GuaranteedRuseItem)
+							if ((bool)flags.GuaranteedRuseItem && !(flags.NoItemMagic ?? false))
 								excludeItemsFromRandomShops.Add(Item.PowerRod);
 						}
 
@@ -555,7 +559,7 @@ namespace FF1Lib
 			{
 				shopData.Shops.Find(x => x.Type == FF1Lib.ShopType.Item && x.Entries.Contains(Item.Bottle)).Entries.Remove(Item.Bottle);
 				shopData.StoreData();
-			}		
+			}
 
 			//has to be done before modifying itemnames and after modifying spellnames...
 			extConsumables.LoadSpells();
@@ -699,7 +703,7 @@ namespace FF1Lib
 			}
 
 			if (flags.SpeedHacks)
-			{				
+			{
 				EnableSpeedHacks(preferences);
 			}
 
@@ -851,7 +855,11 @@ namespace FF1Lib
 			}
 
 			var itemText = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
-			itemText[(int)Item.Ribbon] = itemText[(int)Item.Ribbon].Remove(7);
+			if (itemText[(int)Item.Ribbon].Length > 7
+			    && itemText[(int)Item.Ribbon][7] == ' ')
+			    {
+				itemText[(int)Item.Ribbon] = itemText[(int)Item.Ribbon].Remove(7);
+			    }
 
 			if (flags.Etherizer)
 			{
@@ -955,6 +963,11 @@ namespace FF1Lib
 			if (flags.PacifistMode && !flags.SpookyFlag)
 			{
 				PacifistEnd(talkroutines, npcdata, (bool)flags.EnemyTrapTiles || flags.EnemizerEnabled);
+			}
+
+			if (flags.NoItemMagic ?? false)
+			{
+				NoItemMagic(flags);
 			}
 
 			if (flags.ShopInfo)

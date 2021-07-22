@@ -697,6 +697,16 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("WeaponizerCommonWeaponsHavePowers"));
 			}
 		}
+		public bool? ArmorCrafter
+		{
+			get => Flags.ArmorCrafter;
+			set
+			{
+				Flags.ArmorCrafter = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ArmorCrafter"));
+			}
+		}
+
 		public bool? MagicLevelsTiered
 		{
 			get => Flags.MagicLevelsTiered;
@@ -4478,7 +4488,7 @@ namespace FF1Lib
 				RaisePropertyChanged();
 			}
 		}
-		
+
 		public bool? Lockpicking
 		{
 			get => Flags.Lockpicking;
@@ -4545,6 +4555,38 @@ namespace FF1Lib
 			set
 			{
 				Flags.ExpChestMaxReward = value;
+				RaisePropertyChanged();
+			}
+		}
+
+
+		public bool LooseItemsForwardPlacement
+		{
+			get => Flags.LooseItemsForwardPlacement;
+			set
+			{
+				Flags.LooseItemsForwardPlacement = value;
+				RaisePropertyChanged();
+			}
+		}
+
+
+		public bool LooseItemsSpreadPlacement
+		{
+			get => Flags.LooseItemsSpreadPlacement;
+			set
+			{
+				Flags.LooseItemsSpreadPlacement = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool LooseItemsNpcBalance
+		{
+			get => Flags.LooseItemsNpcBalance;
+			set
+			{
+				Flags.LooseItemsNpcBalance = value;
 				RaisePropertyChanged();
 			}
 		}
@@ -4758,6 +4800,16 @@ namespace FF1Lib
 			set
 			{
 				Preferences.OptOutSpeedHackDash = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool? NoItemMagic
+		{
+			get => Flags.NoItemMagic;
+			set
+			{
+				Flags.NoItemMagic = value;
 				RaisePropertyChanged();
 			}
 		}

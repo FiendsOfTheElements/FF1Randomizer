@@ -28,7 +28,7 @@ namespace FF1Lib
 			Item.Vorpal, Item.Katana, Item.Xcalber,
 		};
 
-		public static readonly IReadOnlyCollection<Item> LegendaryArmorTier =
+		public static readonly IReadOnlyList<Item> LegendaryArmorTier =
 		new List<Item> {
 			Item.OpalArmor, Item.DragonArmor, Item.Opal, Item.OpalShield,
 			Item.OpalShield, Item.AegisShield, Item.OpalHelm, Item.Ribbon,
@@ -43,7 +43,7 @@ namespace FF1Lib
 			Item.WizardRod, Item.CatClaw, Item.ThorHammer, Item.BaneSword,
 		};
 
-		public static readonly IReadOnlyCollection<Item> RareArmorTier =
+		public static readonly IReadOnlyList<Item> RareArmorTier =
 		new List<Item> {
 			Item.SteelArmor, Item.FlameArmor, Item.IceArmor, Item.Gold,
 			Item.WhiteShirt, Item.BlackShirt, Item.FlameShield, Item.IceShield,
@@ -61,7 +61,7 @@ namespace FF1Lib
 			Item.SilverSword, Item.SilverHammer, Item.SilverAxe, Item.PowerRod,
 		};
 
-		public static readonly IReadOnlyCollection<Item> CommonArmorTier =
+		public static readonly IReadOnlyList<Item> CommonArmorTier =
 		new List<Item>
 		{
 			Item.Cloth, Item.WoodenArmor, Item.ChainArmor, Item.IronArmor, Item.SilverArmor,

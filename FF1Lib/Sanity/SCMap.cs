@@ -198,7 +198,6 @@ namespace FF1Lib.Sanity
 			{
 				case newTalkRoutines.Talk_Princess1:
 				case newTalkRoutines.Talk_Bikke:
-				case newTalkRoutines.Talk_Nerrick:
 				case newTalkRoutines.Talk_Bahamut:
 				case newTalkRoutines.Talk_ElfDocUnne:
 				case newTalkRoutines.Talk_GiveItemOnFlag:
@@ -206,6 +205,10 @@ namespace FF1Lib.Sanity
 				case newTalkRoutines.Talk_GiveItemOnItem:
 				case newTalkRoutines.Talk_Astos:
 				case newTalkRoutines.Talk_Chaos:
+					ProcessQuestNpc(ref npc);
+					break;
+				case newTalkRoutines.Talk_Nerrick:
+					Tiles[npc.Coord.x, npc.Coord.y].Tile = SCBitFlags.Tnt;
 					ProcessQuestNpc(ref npc);
 					break;
 				case newTalkRoutines.NoOW_Floater:

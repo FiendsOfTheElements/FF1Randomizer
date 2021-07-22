@@ -166,7 +166,15 @@ namespace FF1Lib
 
 			w.Stop();
 
-			bool complete = changes == MapChange.All && requirements == AccessRequirement.All;
+			var requiredAccess = AccessRequirement.All;
+			var requiredMapChanges = MapChange.All;
+
+			if ((bool)victoryConditions.IsFloaterRemoved)
+			{
+				requiredMapChanges &= ~MapChange.Airship;
+			}
+
+			bool complete = changes == requiredMapChanges && requirements == requiredAccess;
 
 			return (complete, rewardSources, requirements, changes);
 		}
@@ -760,6 +768,30 @@ namespace FF1Lib
 			{
 				changes |= MapChange.Canoe;
 			}
+		}
+
+		public IEnumerable<IRewardSource> GetNearRewardSources(IEnumerable<IRewardSource> sources, IRewardSource current)
+		{
+			if (current is TreasureChest c)
+			{
+				var chests = sources.Select(r => r as TreasureChest).Where(r => r != null).ToDictionary(r => (byte)(r.Address - 0x3100));
+				var chest = (byte)(c.Address - 0x3100);
+
+				foreach (var dungeon in main.Dungeons)
+				{
+					var poi = dungeon.PointsOfInterest.Where(p => p.Type == SCPointOfInterestType.Treasure).FirstOrDefault(p => p.TreasureId == chest);
+
+					if (poi != null)
+					{
+						return dungeon.PointsOfInterest.Where(p => p.Type == SCPointOfInterestType.Treasure)
+							.Where(p => p.BitFlagSet.ToString() == poi.BitFlagSet.ToString())
+							.Where(p=> chests.ContainsKey(p.TreasureId))
+							.Select(p => chests[p.TreasureId]).ToList();
+					}
+				}
+			}
+
+			return Array.Empty<IRewardSource>();
 		}
 	}
 }

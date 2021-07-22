@@ -201,7 +201,7 @@ namespace FF1Lib
 			}
 		}
 
-		public void Weaponizer(MT19337 rng, bool useQualityNamesOnly, bool commonWeaponsHavePowers) {
+		public void Weaponizer(MT19337 rng, bool useQualityNamesOnly, bool commonWeaponsHavePowers, bool noItemMagic) {
 		    var tierList = new List<IReadOnlyList<Item>> { ItemLists.CommonWeaponTier, ItemLists.RareWeaponTier,
 							  ItemLists.LegendaryWeaponTier, ItemLists.UberTier};
 		    var damageBases = new int[]      { 10, 18, 26, 36, 52 };
@@ -343,6 +343,7 @@ namespace FF1Lib
 		    };
 
 		    var Spells = GetSpells();
+
 		    var defenseSwordSpells = new string[] { "RUSE", "INV2", "FOG2", "WALL" };
 		    var thorHammerSpells = new string[] { "NUKE", "FADE", "ICE3", "LIT3", "FIR3", "ICE2", "LIT2", "FIR2" };
 		    var thorHammerBins = new int[]      {     1,      2,     12,     24,     34,     56,     80,    100  };
@@ -490,6 +491,8 @@ namespace FF1Lib
 				typeWeakeness = (byte)((powers[specialPower]>>8) & 0xFF);
 			    }
 
+				if (noItemMagic) spellIndex = 0xFF;
+
 			    string nameWithIcon;
 			    if (weaponItemId == Item.Masamune) {
 				name = nameWithIcon = (weaponType == 0 ? "Masmune" : "Maxmune");
@@ -499,9 +502,9 @@ namespace FF1Lib
 				name = nameWithIcon = "Katana ";
 			    } else if (weaponItemId == Item.Vorpal) {
 				name = nameWithIcon = "Vorpal ";
-			    } else if (weaponItemId == Item.Defense) {
-				name = nameWithIcon = "Defense";
-			    } else if (weaponItemId == Item.ThorHammer) {
+			    } else if (weaponItemId == Item.Defense && !noItemMagic) {
+				name = nameWithIcon =  "Defense";
+			    } else if (weaponItemId == Item.ThorHammer && !noItemMagic) {
 				name = nameWithIcon = "Thor  @H";
 				elementalWeakness = (byte)(Element.ICE|Element.FIRE|Element.LIGHTNING);
 			    } else {
@@ -599,7 +602,7 @@ namespace FF1Lib
 				    goldvalue *= goldvalue*2;
 				    break;
 			    }
-
+			    goldvalue = Math.Ceiling(goldvalue);
 			    goldvalue = Math.Min(goldvalue, 65535);
 
 			    EquipPermission permissions;
@@ -628,7 +631,7 @@ namespace FF1Lib
 				}
 			    }
 
-			    Utilities.WriteSpoilerLine($"{weaponIndex}: [{tier}]  {nameWithIcon,8}  +{damage,2} {crit,2}% {hitBonus,2}% {goldvalue,5}g ({score}) {permissions} gfx {weaponSpritePaletteColor:X} {weaponTypeSprite}");
+			    Utilities.WriteSpoilerLine($"{weaponIndex,-2}: [{tier}]  {nameWithIcon,8}  +{damage,2} {crit,2}% {hitBonus,2}% {goldvalue,5}g ({score,6}) |{GenerateEquipPermission((int)permissions),12}| gfx {weaponSpritePaletteColor:X} {weaponTypeSprite}");
 
 			    var newWeapon = new Weapon(weaponIndex, nameWithIcon, icon, hitBonus, damage, crit,
 						       (byte)(spellIndex == 0xFF ? 0 : spellIndex+1), elementalWeakness,
