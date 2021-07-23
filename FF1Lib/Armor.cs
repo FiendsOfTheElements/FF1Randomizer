@@ -144,7 +144,7 @@ namespace FF1Lib
 			{ 8,       8,    3,        3,        1,     2,    2,    1 },  // light
 			{ 16,      8,    3,        3,        1,     2,    2,    1 },  // medium
 			{ 30,     10,    6,        3,        1,     2,    2,    1 },  // heavy
-			{ 30,     10,    3,        3,        1,     2,    2,    1 },  // knight
+			{ 20,     10,    3,        3,        1,     2,    2,    1 },  // knight
 		    };
 
 		    var resists = new byte[] {
