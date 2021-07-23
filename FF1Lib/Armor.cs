@@ -144,7 +144,7 @@ namespace FF1Lib
 			{ 8,       8,    3,        3,        1,     2,    2,    1 },  // light
 			{ 16,      8,    3,        3,        1,     2,    2,    1 },  // medium
 			{ 30,     10,    6,        3,        1,     2,    2,    1 },  // heavy
-			{ 30,     10,    3,        3,        1,     2,    2,    1 },  // knight
+			{ 20,     10,    3,        3,        1,     2,    2,    1 },  // knight
 		    };
 
 		    var resists = new byte[] {
@@ -183,7 +183,32 @@ namespace FF1Lib
 		    };
 
 		    var spellHelper = new SpellHelper(this);
+		    // Someone should really combine these
 		    var allSpells = GetSpells();
+
+		    // cast FAST, SABR or TMPR
+		    var powerGauntletSpells = new List<FF1Lib.Spell>(spellHelper.FindSpells(SpellRoutine.Fast, SpellTargeting.Any).
+								     Concat(spellHelper.FindSpells(SpellRoutine.Fast, SpellTargeting.Any)).
+								     Select(s => s.Id));
+		    // cast INV2, FOG2, or WALL
+		    var whiteShirtSpells = new List<FF1Lib.Spell>(spellHelper.FindSpells(SpellRoutine.Ruse, SpellTargeting.AllCharacters).
+								Concat(spellHelper.FindSpells(SpellRoutine.ArmorUp, SpellTargeting.AllCharacters)).
+								Concat(spellHelper.FindSpells(SpellRoutine.DefElement, SpellTargeting.Any, SpellElement.All)).
+								Select(s => s.Id));
+		    // Any elemental AOE damage, excludes NUKE/FADE
+		    var blackShirtSpells = new List<FF1Lib.Spell>(spellHelper.FindSpells(SpellRoutine.Damage, SpellTargeting.AllEnemies).
+								Where(s => s.Info.elem != (byte)SpellElement.None).
+								Select(s => s.Id));
+		    var otherSpells = new List<FF1Lib.Spell>(spellHelper.FindSpells(SpellRoutine.Damage, SpellTargeting.AllEnemies).
+							     Where(s => s.Info.elem != (byte)SpellElement.None).
+							     Concat(spellHelper.FindSpells(SpellRoutine.DamageUndead, SpellTargeting.AllEnemies)).
+							     Concat(spellHelper.FindSpells(SpellRoutine.Heal, SpellTargeting.AllCharacters)).
+							     Concat(spellHelper.FindSpells(SpellRoutine.ArmorUp, SpellTargeting.AllCharacters)).
+							     Concat(spellHelper.FindSpells(SpellRoutine.Lock, SpellTargeting.OneEnemy)).
+							     Concat(spellHelper.FindSpells(SpellRoutine.Lock, SpellTargeting.AllEnemies)).
+							     Concat(spellHelper.FindSpells(SpellRoutine.Ruse, SpellTargeting.Any)).
+							     Select(s => s.Id));
+
 		    var generatedItems = new HashSet<FF1Lib.Item>();
 		    var generatedNames = new HashSet<string>();
 		    for (int tier = 2; tier >= 0; tier--) {
@@ -310,22 +335,11 @@ namespace FF1Lib
 
 			    var spells = new List<FF1Lib.Spell>();
 			    if (itemId == Item.PowerGauntlets) {
-				// cast FAST, SABR or TMPR
-				spells = new List<FF1Lib.Spell>(spellHelper.FindSpells(SpellRoutine.Fast, SpellTargeting.Any).
-								Concat(spellHelper.FindSpells(SpellRoutine.Fast, SpellTargeting.Any)).
-								Select(s => s.Id));
-
+				spells = powerGauntletSpells;
 			    } else if (itemId == Item.WhiteShirt) {
-				// cast INV2, FOG2, or WALL
-				spells = new List<FF1Lib.Spell>(spellHelper.FindSpells(SpellRoutine.Ruse, SpellTargeting.AllCharacters).
-								Concat(spellHelper.FindSpells(SpellRoutine.ArmorUp, SpellTargeting.AllCharacters)).
-								Concat(spellHelper.FindSpells(SpellRoutine.DefElement, SpellTargeting.Any, SpellElement.All)).
-								Select(s => s.Id));
+				spells = whiteShirtSpells;
 			    } else if (itemId == Item.BlackShirt) {
-				// Any elemental AOE damage, excludes NUKE/FADE
-				spells = new List<FF1Lib.Spell>(spellHelper.FindSpells(SpellRoutine.Damage, SpellTargeting.AllEnemies).
-								Where(s => s.Info.elem != (byte)SpellElement.None).
-								Select(s => s.Id));
+				spells = whiteShirtSpells;
 			    } else if (itemId == Item.Ribbon) {
 			    } else if (tier >= 1 &&
 				       (armorType == HELM || armorType == GAUNTLET ||
@@ -334,20 +348,11 @@ namespace FF1Lib
 			    {
 				var roll = rng.Between(0, 100);
 				if (roll < 50) {
-				    spells = new List<FF1Lib.Spell>(spellHelper.FindSpells(SpellRoutine.Damage, SpellTargeting.AllEnemies).
-								    Where(s => s.Info.elem != (byte)SpellElement.None).
-								    Concat(spellHelper.FindSpells(SpellRoutine.DamageUndead, SpellTargeting.AllEnemies)).
-								    Concat(spellHelper.FindSpells(SpellRoutine.Heal, SpellTargeting.AllCharacters)).
-								    Concat(spellHelper.FindSpells(SpellRoutine.ArmorUp, SpellTargeting.AllCharacters)).
-								    Concat(spellHelper.FindSpells(SpellRoutine.Lock, SpellTargeting.OneEnemy)).
-								    Concat(spellHelper.FindSpells(SpellRoutine.Lock, SpellTargeting.AllEnemies)).
-								    Concat(spellHelper.FindSpells(SpellRoutine.Ruse, SpellTargeting.Any)).
-								    Select(s => s.Id));
+				    spells = otherSpells;
 				}
 			    }
 			    if (spells.Count > 0 && !noItemMagic) {
-				spellIndex = (byte)(spells.SpliceRandom(rng));
-				spellIndex = (byte)(spellIndex-(byte)Spell.CURE);
+				spellIndex = (byte)(spells[rng.Between(0, spells.Count-1)]-Spell.CURE);
 				name = allSpells[spellIndex].Name;
 			    }
 
@@ -426,28 +431,28 @@ namespace FF1Lib
 			    generatedNames.Add(name);
 
 			    int resistCount = resists.Length - chooseResist.Count;
-			    double score = Math.Max(absorb - (weight*.25), 1) + (resistCount*30);
+			    double score = Math.Max(absorb - (weight*.20), 1) + (Math.Min(resistCount, 4)*45);
 			    double goldvalue = score;
 			    if (spellIndex != 0xFF) {
-				goldvalue += 25;
+				goldvalue += 30;
 			    }
 			    if (armorType == BRACELET) {
 				goldvalue *= 4;
 			    }
 			    switch (tier) {
 				case 0:
-				    goldvalue *= goldvalue;
+				    goldvalue *= (goldvalue + 5) * 2;
 				    break;
 				case 1:
-				    goldvalue *= goldvalue * 1.5;
+				    goldvalue *= (goldvalue + 25);
 				    break;
 				case 2:
-				    goldvalue *= goldvalue * 2;
+				    goldvalue *= (goldvalue + 40);
 				    break;
 			    }
 
 			    goldvalue = Math.Ceiling(goldvalue);
-			    goldvalue = Math.Min(goldvalue, 65535);
+			    goldvalue = Math.Min(Math.Max(goldvalue, 1), 65535);
 
 			    var casting = "";
 			    if (spellIndex != 0xFF) {
@@ -464,7 +469,7 @@ namespace FF1Lib
 				resistName = "resist:" + resistName;
 			    }
 
-			    var logLine = $"{(int)itemId-(int)Item.Cloth,2}: [{tier+1}]  {name,8}  {absorb,2}  {-weight,3}% {goldvalue,5}g ({score,6}) |{GenerateEquipPermission(permissions),12}| {resistName} {casting} {type}";
+			    var logLine = $"{(int)itemId-(int)Item.Cloth,2}: [{tier+1}]  {name,8}  {absorb,2}  {-weight,3}% {goldvalue,5}g ({score,6}) |{GenerateEquipPermission(permissions),12}| {resistName} {casting} *{type}";
 			    Utilities.WriteSpoilerLine(logLine);
 
 			    var armor = new Armor(itemId-Item.Cloth, name, ArmorIcon.NONE, weight, absorb,
