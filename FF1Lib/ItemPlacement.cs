@@ -554,6 +554,42 @@ namespace FF1Lib
 					    lastPlacements.Remove(Item.Floater);
 					}
 
+					// Different placement priorities for NoOverworld
+					if (((IItemShuffleFlags)_flags).NoOverworld)
+					{
+						List<Item> nodeItems = new() { Item.Floater, Item.Canoe };
+						List<Item> corridorItems = new() { Item.Tnt, Item.Ruby };
+						List<Item> fetchItems = new() { Item.Crown, Item.Herb, Item.Crystal };
+
+						if ((bool)_flags.Entrances)
+						{
+							nodeItems.Add(Item.Key);
+							corridorItems.Add(Item.Oxyale);
+							corridorItems.Add(Item.Chime);
+
+							unrestricted = new List<Item> { };
+							fixedPlacements = new List<Item> { nodeItems.SpliceRandom(rng), corridorItems.SpliceRandom(rng) };
+							nextPlacements = new List<Item> { nodeItems.SpliceRandom(rng), corridorItems.SpliceRandom(rng) };
+							lastPlacements = new List<Item> { Item.Lute, Item.Crown, Item.Crystal, Item.Herb, Item.Adamant,
+							Item.Slab, Item.Tail, Item.Cube, Item.Bottle, Item.Rod, Item.Chime, Item.Bridge, Item.Ship, Item.Canal };
+
+							lastPlacements.AddRange(nodeItems);
+							lastPlacements.AddRange(corridorItems);
+						}
+						else
+						{
+							unrestricted = new List<Item> { Item.Key };
+							fixedPlacements = new List<Item> { Item.Key, fetchItems.SpliceRandom(rng), fetchItems.SpliceRandom(rng), corridorItems.SpliceRandom(rng) };
+							nextPlacements = new List<Item> { nodeItems.SpliceRandom(rng), corridorItems.SpliceRandom(rng) };
+							lastPlacements = new List<Item> { Item.Lute, Item.Adamant,
+						Item.Slab, Item.Tail, Item.Cube, Item.Bottle, Item.Oxyale, Item.Rod, Item.Chime, Item.Bridge, Item.Ship, Item.Canal };
+
+							lastPlacements.AddRange(nodeItems);
+							lastPlacements.AddRange(corridorItems);
+							lastPlacements.AddRange(fetchItems);
+						}
+					}
+
 					nextPlacements.Shuffle(rng);
 					lastPlacements.Shuffle(rng);
 					var allPlacements = fixedPlacements.Concat(nextPlacements).Concat(lastPlacements);

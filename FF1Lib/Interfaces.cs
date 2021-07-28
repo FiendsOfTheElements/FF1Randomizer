@@ -115,6 +115,7 @@
 		bool LooseItemsForwardPlacement { get; }
 		bool LooseItemsSpreadPlacement { get; }
 		bool LooseItemsNpcBalance { get; }
+		bool? Entrances { get; }
 	}
 	public interface IItemShuffleFlags
 	{
