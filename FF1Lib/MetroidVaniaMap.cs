@@ -1548,7 +1548,7 @@ namespace FF1Lib
 
 				if (freenpc.Index > 0 || (freenpc.Index == 0 && freenpc.Coord == (0, 0)))
 				{
-					SetNpc((MapId)originTeleporter.Destination, freenpc.Index, source.Item4, originTeleporter.X & 0x3F, originTeleporter.Y & 0x3F, originTeleporter.InRoom, true);
+					SetNpc((MapId)originTeleporter.Destination, freenpc.Index, source.Item4, originTeleporter.X, originTeleporter.Y, originTeleporter.InRoom, true);
 				}
 			}
 		}
@@ -1687,18 +1687,18 @@ namespace FF1Lib
 
 			public byte X
 			{
-				get { return _x; }
+				get { return (byte)(_x & 0b01111111); }
 				set
 				{
-					_x = value;
+					_x = (byte)(value | (_inroom ? 0b10000000 : 0b00000000));
 				}
 			}
 			public byte Y
 			{
-				get { return _y; }
+				get { return (byte)(_y & 0b01111111); }
 				set
 				{
-					_y = value;
+					_y = (byte)(value | 0b10000000);
 				}
 			}
 			public bool InRoom
@@ -1733,8 +1733,8 @@ namespace FF1Lib
 			{
 				_id = id;
 				_inroom = inroom;
-				_x = x;
-				_y = y;
+				_x = (byte)(x | (_inroom ? 0b10000000 : 0b00000000));
+				_y = (byte)(y | 0b10000000);
 				_target = destination;
 			}
 			public TeleporterSM(FF1Rom rom, int id)
