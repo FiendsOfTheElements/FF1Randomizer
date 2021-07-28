@@ -140,7 +140,7 @@ Blazor.start({}).then(() => {
     if (oReq.readyState === oReq.DONE) {
         if (oReq.status === 200) {
             var version = oReq.responseText.trim();
-            if (!document.location.hostname.startsWith(version + ".")) {
+            if (!document.location.hostname.startsWith(version + ".") && document.location.hostname.endsWith("finalfantasyrandomizer.com")) {
                 DotNet.invokeMethod('FF1Blazorizer', 'ShowUpdateNotification', 'https://'+version+'.finalfantasyrandomizer.com');
             }
         }

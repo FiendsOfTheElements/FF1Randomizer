@@ -4,6 +4,7 @@ using System.Text;
 using System.Linq;
 using RomUtilities;
 using FF1Lib;
+using FF1Lib.Helpers;
 
 namespace FF1Lib
 {
@@ -342,11 +343,26 @@ namespace FF1Lib
 			{"Dragon", 0x2A},
 		    };
 
+		    var spellHelper = new SpellHelper(this);
 		    var Spells = GetSpells();
+		    var allSpells = LoadSpells();
 
-		    var defenseSwordSpells = new string[] { "RUSE", "INV2", "FOG2", "WALL" };
-		    var thorHammerSpells = new string[] { "NUKE", "FADE", "ICE3", "LIT3", "FIR3", "ICE2", "LIT2", "FIR2" };
-		    var thorHammerBins = new int[]      {     1,      2,     12,     24,     34,     56,     80,    100  };
+		    var defenseSwordSpells = new List<FF1Lib.Spell>(spellHelper.FindSpells(SpellRoutine.Ruse, SpellTargeting.Any).
+								Concat(spellHelper.FindSpells(SpellRoutine.ArmorUp, SpellTargeting.AllCharacters)).
+								Concat(spellHelper.FindSpells(SpellRoutine.DefElement, SpellTargeting.Any, SpellElement.All)).
+								Select(s => s.Id));
+		    var thorHammerSpells =  new List<FF1Lib.Spell>(spellHelper.FindSpells(SpellRoutine.Damage, SpellTargeting.AllEnemies).
+								   Where(s => s.Info.elem != (byte)SpellElement.None).
+								   Select(s => s.Id));
+		    var otherSpells = new List<FF1Lib.Spell>(spellHelper.FindSpells(SpellRoutine.Damage, SpellTargeting.AllEnemies).
+							     Where(s => s.Info.elem != (byte)SpellElement.None).
+							     Concat(spellHelper.FindSpells(SpellRoutine.DamageUndead, SpellTargeting.AllEnemies)).
+							     Concat(spellHelper.FindSpells(SpellRoutine.Heal, SpellTargeting.AllCharacters)).
+							     Concat(spellHelper.FindSpells(SpellRoutine.ArmorUp, SpellTargeting.AllCharacters)).
+							     Concat(spellHelper.FindSpells(SpellRoutine.Lock, SpellTargeting.OneEnemy)).
+							     Concat(spellHelper.FindSpells(SpellRoutine.Lock, SpellTargeting.AllEnemies)).
+							     Concat(spellHelper.FindSpells(SpellRoutine.Ruse, SpellTargeting.Any)).
+							     Select(s => s.Id));
 
 		    var weaponNames = new List<string>();
 		    var weaponGfx = new List<int>();
@@ -434,29 +450,11 @@ namespace FF1Lib
 			    double score = ((ddamage*1.5) + ((ddamage*2.0) * (dcrit / 200.0))) * (1+Math.Floor((dhitBonus+4)/32));
 
 			    int specialPower = -1;
+			    var spells = new List<FF1Lib.Spell>();
 			    if (weaponItemId == Item.Defense) {
-				var defMagic = defenseSwordSpells[rng.Between(0, defenseSwordSpells.Length-1)];
-				for (int i = 0; i < Spells.Count; i++) {
-				    if (Spells[i].Name == defMagic) {
-					spellIndex = (byte)i;
-					break;
-				    }
-				}
+				spells = defenseSwordSpells;
 			    } else if (weaponItemId == Item.ThorHammer) {
-				var pick = rng.Between(1, 100);
-				string thorMagic = "";
-				for (int i = 0; i < thorHammerBins.Length; i++) {
-				    if (pick <= thorHammerBins[i]) {
-					thorMagic = thorHammerSpells[i];
-					break;
-				    }
-				}
-				for (int i = 0; i < Spells.Count; i++) {
-				    if (Spells[i].Name == thorMagic) {
-					spellIndex = (byte)i;
-					break;
-				    }
-				}
+				spells = thorHammerSpells;
 			    } else if (weaponItemId == Item.Xcalber) {
 				 // Give xcal the same type weakness
 				 // bonus (all of them) as vanilla
@@ -465,16 +463,15 @@ namespace FF1Lib
 				specialPower = 10;
 			    } else {
 				int spellChance = rng.Between(1, 100);
-				if ((commonWeaponsHavePowers || tier >= 2)
+				if ((commonWeaponsHavePowers || tier == 2)
 				    && ((weaponType < 4 && spellChance <= Math.Min(10*tier, 20))
 					|| (weaponType >= 4 && spellChance <= Math.Min(30*tier, 60))))
 				{
-				    var spelllevelLow = Math.Min(1+tier, 5);           // 2, 3, 4, 5
-				    var spelllevelHigh = Math.Min(spelllevelLow+3, 8); // 5, 6, 7, 8
-				    do {
-					spellIndex = (byte)rng.Between(spelllevelLow*8, spelllevelHigh*8-1);
-				    } while(Spells[spellIndex].Data[4] == 0); // must be combat castable
+				    spells = otherSpells;
 				}
+			    }
+			    if (spells.Count > 0 && !noItemMagic) {
+				spellIndex = (byte)(spells[rng.Between(0, spells.Count-1)]-Spell.CURE);
 			    }
 
 			    if (spellIndex == 0xFF && specialPower == -1) {
@@ -490,8 +487,6 @@ namespace FF1Lib
 				elementalWeakness = (byte)(powers[specialPower] & 0xFF);
 				typeWeakeness = (byte)((powers[specialPower]>>8) & 0xFF);
 			    }
-
-				if (noItemMagic) spellIndex = 0xFF;
 
 			    string nameWithIcon;
 			    if (weaponItemId == Item.Masamune) {
@@ -536,22 +531,25 @@ namespace FF1Lib
 				typeWeakeness = (byte)MonsterType.UNDEAD;
 			    }
 
-			    // Weapons casting elemental magic also
-			    // get elemental bonus
-			    if (name.StartsWith("ICE")) {
-				elementalWeakness = (byte)Element.ICE;
-			    }
-			    if (name.StartsWith("FIR")) {
-				elementalWeakness = (byte)Element.FIRE;
-			    }
-			    if (name.StartsWith("LIT")) {
-				elementalWeakness = (byte)Element.LIGHTNING;
-			    }
-			    if (name == "BANE") {
-				elementalWeakness = (byte)Element.POISON;
-			    }
-			    if (name == "HARM" || name.StartsWith("HRM")) {
-				typeWeakeness = (byte)MonsterType.UNDEAD;
+			    if (spellIndex != 0xFF) {
+				var spellInfo = allSpells[spellIndex];
+				// Weapons casting elemental magic also
+				// get elemental bonus
+				if ((spellInfo.elem & (byte)SpellElement.Ice) != 0) {
+				    elementalWeakness = (byte)Element.ICE;
+				}
+				if ((spellInfo.elem & (byte)SpellElement.Fire) != 0) {
+				    elementalWeakness = (byte)Element.FIRE;
+				}
+				if ((spellInfo.elem & (byte)SpellElement.Lightning) != 0) {
+				    elementalWeakness = (byte)Element.LIGHTNING;
+				}
+				if ((spellInfo.elem & (byte)SpellElement.Poison) != 0) {
+				    elementalWeakness = (byte)Element.POISON;
+				}
+				if (spellInfo.routine == (byte)SpellRoutine.DamageUndead) {
+				    typeWeakeness = (byte)MonsterType.UNDEAD;
+				}
 			    }
 
 			    if (preferredColors.ContainsKey(name)) {
@@ -586,24 +584,25 @@ namespace FF1Lib
 				goldvalue += 15;
 			    }
 			    if (spellIndex != 0xFF) {
-				goldvalue += 25;
+				goldvalue += 30;
 			    }
+			    goldvalue = Math.Max(goldvalue, 9);
 			    switch (tier) {
 				case 1:
-				    goldvalue *= (goldvalue/4);
+				    goldvalue *= (goldvalue-8);
 				    break;
 				case 2:
-				    goldvalue *= goldvalue;
+				    goldvalue *= (goldvalue + 25);
 				    break;
 				case 3:
-				    goldvalue *= goldvalue*1.5;
+				    goldvalue *= (goldvalue + 45);
 				    break;
 				case 4:
-				    goldvalue *= goldvalue*2;
+				    goldvalue *= (goldvalue + 45);
 				    break;
 			    }
 			    goldvalue = Math.Ceiling(goldvalue);
-			    goldvalue = Math.Min(goldvalue, 65535);
+			    goldvalue = Math.Min(Math.Max(goldvalue, 1), 65535);
 
 			    EquipPermission permissions;
 			    if (weaponItemId == Item.Masamune) {
@@ -631,7 +630,12 @@ namespace FF1Lib
 				}
 			    }
 
-			    Utilities.WriteSpoilerLine($"{weaponIndex,-2}: [{tier}]  {nameWithIcon,8}  +{damage,2} {crit,2}% {hitBonus,2}% {goldvalue,5}g ({score,6}) |{GenerateEquipPermission((int)permissions),12}| gfx {weaponSpritePaletteColor:X} {weaponTypeSprite}");
+			    var casting = "";
+			    if (spellIndex != 0xFF) {
+				casting = "casting: " + Spells[spellIndex].Name;
+			    }
+
+			    Utilities.WriteSpoilerLine($"{weaponIndex,-2}: [{tier}]  {nameWithIcon,8}  +{damage,2} {crit,2}% {hitBonus,2}% {goldvalue,5}g ({score,6}) |{GenerateEquipPermission((int)permissions),12}| {casting} gfx {weaponSpritePaletteColor:X} {weaponTypeSprite}");
 
 			    var newWeapon = new Weapon(weaponIndex, nameWithIcon, icon, hitBonus, damage, crit,
 						       (byte)(spellIndex == 0xFF ? 0 : spellIndex+1), elementalWeakness,

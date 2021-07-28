@@ -2536,7 +2536,7 @@ namespace FF1Lib
 
 			if (!(flags.Weaponizer ?? false))
 			{
-				itemnames[(int)Item.BaneSword] = "Lame  @s";
+				itemnames[(int)Item.BaneSword] = "Lame  @S";
 				itemnames[(int)Item.HealRod] = "Eel   @F";
 				itemnames[(int)Item.MageRod] = "Age   @F";
 				itemnames[(int)Item.WizardRod] = "Lizard@F";
@@ -2549,7 +2549,7 @@ namespace FF1Lib
 			}
 
 			//possible incentive items
-			itemnames[(int)Item.Defense] = "Dunce @s";
+			itemnames[(int)Item.Defense] = "Dunce @S";
 			itemnames[(int)Item.ThorHammer] = "Bore  @H";
 			itemnames[(int)Item.PowerGauntlets] = "Sour  @G";
 			itemnames[(int)Item.WhiteShirt] = "Right @T";
