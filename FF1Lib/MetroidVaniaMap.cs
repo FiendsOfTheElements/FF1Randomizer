@@ -967,22 +967,6 @@ namespace FF1Lib
 			PutInBank(lut_BtlBackdrops_Bank, lut_BtlBackdrops, backgroundList.Select(x => (byte)x.Item2).ToArray());
 		}
 
-		public bool CheckForTile(Map map, byte warptile)
-		{
-			for (int x = 0; x < 64; x++)
-			{
-				for (int y = 0; y < 64; y++)
-				{
-					if (map[x, y] == warptile)
-					{
-						return true;
-					}
-				}
-			}
-
-			return false;
-		}
-
 		public void ShuffleFloor(List<Map> maps, Flags flags, OverworldMap overworldmap, NPCdata npcdata, List<MapId> flippedmaps, MT19337 rng)
 		{
 			int FlippedX(MapId map, int pos) => flippedmaps.Contains(map) ? 0x3F - pos : pos;
@@ -1419,18 +1403,17 @@ namespace FF1Lib
 
 				// Output unreachable locations for debugging
 				unreachableLocations = newteleportersInOut.Where(x => !usedteleporters.Contains(x.Item1)).ToList();
-					
+				/*	
 				foreach (var loc in unreachableLocations)
 				{
 					Console.WriteLine(loc.Item2 + " > " + loc.Item3);
 				}
 				Console.WriteLine("-------------");
+				*/
 
 			} while (unreachableLocations.Any());
 
-			Console.WriteLine("Locations succefully suffled after " + _shuffleCounter + " iteration(s).");
-
-
+			Console.WriteLine("Locations successfully suffled after " + _shuffleCounter + " iteration(s).");
 
 
 			List<(TileSM, TeleporterSM)> TeleportersTiles = TeleportTiles.Select(x => (x, teleporters.Find(y => y.ID == x.PropertyValue))).ToList();
