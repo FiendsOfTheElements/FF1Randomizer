@@ -12,7 +12,7 @@
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="allowUnsafeStartAreaCheckBox" IsEnabled="@(Flags.Entrances & !(Flags.SanityCheckerV2 & Flags.OwMapExchange == OwMapExchanges.NoOverworld))" @bind-Value="Flags.AllowUnsafeStartArea">Allow Unsafe Start</TriStateCheckBox>
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="deadEndsCheckBox" IsEnabled="@(Flags.Entrances & !(Flags.SanityCheckerV2 & Flags.OwMapExchange == OwMapExchanges.NoOverworld))" @bind-Value="Flags.EntrancesIncludesDeadEnds">Include Dead Ends</TriStateCheckBox>
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="floorsCheckBox" IsEnabled="@(Flags.Entrances)" @bind-Value="Flags.Floors">Floors</TriStateCheckBox>
-		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="allowDeepCastlesCheckBox" IsEnabled="@(Flags.DeepCastlesPossible & !(Flags.SanityCheckerV2 & Flags.OwMapExchange == OwMapExchanges.NoOverworld))" @bind-Value="Flags.AllowDeepCastles">Deep ToFR</TriStateCheckBox>
+		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="allowDeepCastlesCheckBox" IsEnabled="@(Flags.DeepCastlesPossible)" @bind-Value="Flags.AllowDeepCastles">Deep ToFR</TriStateCheckBox>
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="townsCheckBox" IsEnabled="@(Flags.Treasures & Flags.NPCItems)" @bind-Value="Flags.Towns">Towns</TriStateCheckBox>
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="includeConeriaCheckBox" IsEnabled="@(Flags.Towns)" @bind-Value="Flags.IncludeConeria">Include Coneria</TriStateCheckBox>
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="mixEntrancesCheckBox" IsEnabled="@(Flags.Towns & Flags.Entrances)" @bind-Value="Flags.EntrancesMixedWithTowns">Mix All Entrances Together</TriStateCheckBox>
