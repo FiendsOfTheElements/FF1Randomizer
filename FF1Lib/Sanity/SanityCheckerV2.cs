@@ -174,7 +174,7 @@ namespace FF1Lib
 				requiredMapChanges &= ~MapChange.Airship;
 			}
 
-			bool complete = changes == requiredMapChanges && requirements == requiredAccess;
+			bool complete = changes.HasFlag(requiredMapChanges) && requirements.HasFlag(requiredAccess);
 
 			return (complete, rewardSources, requirements, changes);
 		}
