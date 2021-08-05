@@ -419,7 +419,7 @@ namespace FF1Lib
 			// Cardia - Caravan
 			var cardiaKrakenChest = new List<Blob> {
 				Blob.FromHex("00010102"),
-				Blob.FromHex("03130408"),
+				Blob.FromHex("03130405"),
 				Blob.FromHex("06070708"),
 				Blob.FromHex("30363030"),
 				Blob.FromHex("313A3131"),
