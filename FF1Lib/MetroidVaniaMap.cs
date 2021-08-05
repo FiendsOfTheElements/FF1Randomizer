@@ -415,6 +415,15 @@ namespace FF1Lib
 				maps[(int)MapId.MarshCaveB1].Put((0x2A, 0x16), marshConeriaBox.ToArray());
 			}
 
+			// Cardia - Kraken Chest
+			// Cardia - Caravan
+			var cardiaKrakenChest = new List<Blob> {
+				Blob.FromHex("00010102"),
+				Blob.FromHex("03130408"),
+				Blob.FromHex("06070708"),
+				Blob.FromHex("30363030"),
+				Blob.FromHex("313A3131"),
+			};
 			// Cardia - Caravan
 			var cardiaCaravan = new List<Blob> {
 				Blob.FromHex("000101010102"),
@@ -424,6 +433,7 @@ namespace FF1Lib
 			};
 
 			maps[(int)MapId.Cardia].Put((0x24, 0x1A), cardiaCaravan.ToArray());
+			maps[(int)MapId.Cardia].Put((0x2A, 0x07), cardiaKrakenChest.ToArray());
 		}
 		public void UpdateInRoomTeleporters()
 		{
@@ -745,8 +755,8 @@ namespace FF1Lib
 			UpdateMapTile(MapId.SkyPalace5F, 0x07, 0x01, ExtraChest.ID);
 			availableTiles[(byte)TileSets.SkyCastle].RemoveRange(0, 1);
 
-			TileSM ExtraChest2 = new TileSM(availableTiles[(byte)TileSets.MatoyaDwarfCardiaIceWaterfall].First(), (int)TileSets.MatoyaDwarfCardiaIceWaterfall, TilePalette.OutPalette2, TeleportTilesGraphics[TeleporterGraphic.Well][(int)TileSets.MatoyaDwarfCardiaIceWaterfall], (byte)(TilePropFunc.TP_SPEC_TREASURE | TilePropFunc.TP_NOMOVE), ToFRchestsList.SpliceRandom(rng));
-			UpdateMapTile(MapId.Cardia, 0x2A, 0x14, ExtraChest2.ID);
+			TileSM ExtraChest2 = new TileSM(availableTiles[(byte)TileSets.MatoyaDwarfCardiaIceWaterfall].First(), (int)TileSets.MatoyaDwarfCardiaIceWaterfall, TilePalette.RoomPalette1, new List<byte> { 0x2A, 0x2B, 0x3A, 0x3B }, (byte)(TilePropFunc.TP_SPEC_TREASURE | TilePropFunc.TP_NOMOVE), ToFRchestsList.SpliceRandom(rng));
+			UpdateMapTile(MapId.Cardia, 0x2C, 0x08, ExtraChest2.ID);
 			availableTiles[(byte)TileSets.MatoyaDwarfCardiaIceWaterfall].RemoveRange(0, 1);
 
 			ExtraChest.Write(this);
@@ -1134,16 +1144,6 @@ namespace FF1Lib
 
 			InvalidLocations = new() { (MapLocation.IceCavePitRoom, MapLocation.IceCave5), (MapLocation.IceCave5, MapLocation.IceCaveBackExit), (MapLocation.IceCaveBackExit, MapLocation.IceCave5), (MapLocation.IceCaveBackExit, MapLocation.IceCavePitRoom), (MapLocation.CastleOrdeals1, MapLocation.CastleOrdealsMaze), (MapLocation.CastleOrdealsMaze, MapLocation.CastleOrdealsMaze), (MapLocation.CastleOrdealsMaze, MapLocation.CastleOrdealsTop), (MapLocation.CastleOrdealsTop, MapLocation.CastleOrdeals1), (MapLocation.ConeriaCastle1, MapLocation.ConeriaCastle2), (MapLocation.ConeriaCastle2, MapLocation.ConeriaCastle1) };
 
-			if ((bool)flags.Entrances && (bool)!flags.Floors)
-			{
-				LocationEntrances = new() { (MapLocation.ConeriaCastle1, MapLocation.Waterfall), (MapLocation.Waterfall, MapLocation.ConeriaCastle1), (MapLocation.MatoyasCave, MapLocation.MarshCave1), (MapLocation.MarshCave1, MapLocation.MatoyasCave), (MapLocation.SardasCave, MapLocation.EarthCave1), (MapLocation.TempleOfFiends1, MapLocation.MatoyasCave), (MapLocation.MatoyasCave, MapLocation.TempleOfFiends1), (MapLocation.TempleOfFiends1, MapLocation.DwarfCave), (MapLocation.DwarfCave, MapLocation.TempleOfFiends1), (MapLocation.SardasCave, MapLocation.TitansTunnelEast), (MapLocation.TitansTunnelEast, MapLocation.SardasCave), (MapLocation.ElflandCastle, MapLocation.NorthwestCastle), (MapLocation.NorthwestCastle, MapLocation.ElflandCastle), (MapLocation.NorthwestCastle, MapLocation.MarshCaveBottom), (MapLocation.MarshCaveBottom, MapLocation.NorthwestCastle), (MapLocation.NorthwestCastle, MapLocation.CastleOrdeals1), (MapLocation.CastleOrdeals1, MapLocation.NorthwestCastle), (MapLocation.CastleOrdeals1, MapLocation.TitansTunnelEast), (MapLocation.TitansTunnelEast, MapLocation.CastleOrdeals1), (MapLocation.ElflandCastle, MapLocation.IceCave1), (MapLocation.IceCave1, MapLocation.ElflandCastle), (MapLocation.Gaia, MapLocation.MirageTower1), (MapLocation.MirageTower1, MapLocation.Gaia), (MapLocation.Onrac, MapLocation.SeaShrine1), (MapLocation.SeaShrine1, MapLocation.Onrac), (MapLocation.CrescentLake, MapLocation.GurguVolcano1), (MapLocation.GurguVolcano1, MapLocation.CrescentLake) };
-
-				if ((bool)flags.AllowDeepCastles)
-				{
-					LocationEntrances.AddRange(new List<(MapLocation, MapLocation)> { (MapLocation.ConeriaCastle1, MapLocation.TempleOfFiends1), (MapLocation.TempleOfFiends1, MapLocation.ConeriaCastle1) });
-				}
-			}
-
 			if ((bool)flags.Towns)
 			{
 				TownEntrances = new() { (MapLocation.MatoyasCave, MapLocation.Pravoka), (MapLocation.Pravoka, MapLocation.MatoyasCave), (MapLocation.ElflandCastle, MapLocation.Elfland), (MapLocation.Elfland, MapLocation.ElflandCastle), (MapLocation.SardasCave, MapLocation.Melmond), (MapLocation.Melmond, MapLocation.SardasCave), (MapLocation.DwarfCave, MapLocation.CrescentLake), (MapLocation.CrescentLake, MapLocation.DwarfCave), (MapLocation.IceCave1, MapLocation.Onrac), (MapLocation.Onrac, MapLocation.IceCave1), (MapLocation.CastleOrdeals1, MapLocation.Gaia), (MapLocation.Gaia, MapLocation.CastleOrdeals1), (MapLocation.Waterfall, MapLocation.Lefein), (MapLocation.Lefein, MapLocation.Waterfall) };
@@ -1154,10 +1154,14 @@ namespace FF1Lib
 				}
 			}
 
-			if ((bool)flags.EntrancesMixedWithTowns && (bool)flags.Towns && (bool)flags.Entrances && (bool)!flags.Floors)
+			if ((bool)flags.Entrances && (bool)!flags.Floors)
 			{
-				LocationEntrances.AddRange(TownEntrances);
-				TownEntrances.Clear();
+				LocationEntrances = new() { (MapLocation.ConeriaCastle1, MapLocation.Waterfall), (MapLocation.Waterfall, MapLocation.ConeriaCastle1), (MapLocation.MatoyasCave, MapLocation.MarshCave1), (MapLocation.MarshCave1, MapLocation.MatoyasCave), (MapLocation.SardasCave, MapLocation.EarthCave1), (MapLocation.TempleOfFiends1, MapLocation.MatoyasCave), (MapLocation.MatoyasCave, MapLocation.TempleOfFiends1), (MapLocation.TempleOfFiends1, MapLocation.DwarfCave), (MapLocation.DwarfCave, MapLocation.TempleOfFiends1), (MapLocation.SardasCave, MapLocation.TitansTunnelEast), (MapLocation.TitansTunnelEast, MapLocation.SardasCave), (MapLocation.ElflandCastle, MapLocation.NorthwestCastle), (MapLocation.NorthwestCastle, MapLocation.ElflandCastle), (MapLocation.NorthwestCastle, MapLocation.MarshCaveBottom), (MapLocation.MarshCaveBottom, MapLocation.NorthwestCastle), (MapLocation.NorthwestCastle, MapLocation.CastleOrdeals1), (MapLocation.CastleOrdeals1, MapLocation.NorthwestCastle), (MapLocation.CastleOrdeals1, MapLocation.TitansTunnelEast), (MapLocation.TitansTunnelEast, MapLocation.CastleOrdeals1), (MapLocation.ElflandCastle, MapLocation.IceCave1), (MapLocation.IceCave1, MapLocation.ElflandCastle), (MapLocation.Gaia, MapLocation.MirageTower1), (MapLocation.MirageTower1, MapLocation.Gaia), (MapLocation.Onrac, MapLocation.SeaShrine1), (MapLocation.SeaShrine1, MapLocation.Onrac), (MapLocation.CrescentLake, MapLocation.GurguVolcano1), (MapLocation.GurguVolcano1, MapLocation.CrescentLake) };
+
+				if ((bool)flags.AllowDeepCastles)
+				{
+					LocationEntrances.AddRange(new List<(MapLocation, MapLocation)> { (MapLocation.ConeriaCastle1, MapLocation.TempleOfFiends1), (MapLocation.TempleOfFiends1, MapLocation.ConeriaCastle1) });
+				}
 			}
 
 			if ((bool)flags.Floors)
@@ -1167,19 +1171,14 @@ namespace FF1Lib
 					InvalidLocations.AddRange(new List<(MapLocation, MapLocation)> { (MapLocation.ConeriaCastle1, MapLocation.TempleOfFiends1), (MapLocation.TempleOfFiends1, MapLocation.ConeriaCastle1) });
 				}
 
-				if ((bool)!flags.IncludeConeria || ((bool)flags.IncludeConeria && (bool)!flags.EntrancesMixedWithTowns))
+				if ((bool)!flags.IncludeConeria)
 				{
 					InvalidLocations.AddRange(new List<(MapLocation, MapLocation)> { (MapLocation.ConeriaCastle1, MapLocation.Coneria), (MapLocation.Coneria, MapLocation.ConeriaCastle1) });
 				}
 
-				if ((bool)!flags.EntrancesMixedWithTowns)
+				if ((bool)!flags.Towns)
 				{
 					InvalidLocations.AddRange(new List<(MapLocation, MapLocation)> { (MapLocation.MatoyasCave, MapLocation.Pravoka), (MapLocation.Pravoka, MapLocation.MatoyasCave), (MapLocation.ElflandCastle, MapLocation.Elfland), (MapLocation.Elfland, MapLocation.ElflandCastle), (MapLocation.SardasCave, MapLocation.Melmond), (MapLocation.Melmond, MapLocation.SardasCave), (MapLocation.DwarfCave, MapLocation.CrescentLake), (MapLocation.CrescentLake, MapLocation.DwarfCave), (MapLocation.IceCave1, MapLocation.Onrac), (MapLocation.Onrac, MapLocation.IceCave1), (MapLocation.CastleOrdeals1, MapLocation.Gaia), (MapLocation.Gaia, MapLocation.CastleOrdeals1), (MapLocation.Waterfall, MapLocation.Lefein), (MapLocation.Lefein, MapLocation.Waterfall) });
-				}
-
-				if ((bool)flags.EntrancesMixedWithTowns)
-				{
-					TownEntrances.Clear();
 				}
 			}
 
@@ -1197,12 +1196,10 @@ namespace FF1Lib
 					{
 						var targetteleporter = teleporters[teleporttile.PropertyValue];
 
-						x = FlippedX((MapId)i, x);
-
 						teleportersLocDest.Add((
 							teleporttile.PropertyValue,
-							maparea.Find(area => area.map == (MapId)i && area.ul_corner.Item1 < x && area.lr_corner.Item1 > x && area.ul_corner.Item2 < y && area.lr_corner.Item2 > y).location,
-							maparea.Find(area => area.map == (MapId)targetteleporter.Destination && area.ul_corner.Item1 < targetteleporter.X && area.lr_corner.Item1 > targetteleporter.X && area.ul_corner.Item2 < targetteleporter.Y && area.lr_corner.Item2 > targetteleporter.Y).location));
+							maparea.Find(area => area.map == (MapId)i && area.ul_corner.Item1 < FlippedX((MapId)i, x) && area.lr_corner.Item1 > FlippedX((MapId)i, x) && area.ul_corner.Item2 < y && area.lr_corner.Item2 > y).location,
+							maparea.Find(area => area.map == (MapId)targetteleporter.Destination && area.ul_corner.Item1 < FlippedX((MapId)targetteleporter.Destination, targetteleporter.X) && area.lr_corner.Item1 > FlippedX((MapId)targetteleporter.Destination, targetteleporter.X) && area.ul_corner.Item2 < targetteleporter.Y && area.lr_corner.Item2 > targetteleporter.Y).location));
 					}
 				}
 			}
@@ -1252,9 +1249,12 @@ namespace FF1Lib
 			}
 
 			List<(byte, MapLocation, MapLocation)> newteleportersInOut = new();
+			List<(byte, byte)> ComboTeleporters = new();
+			List<int> ComboArray = new();
 			List<int> PairsArray = new();
 			List<int> OrphansArray = new();
 			List<int> TownsArray = new();
+
 			
 			List<(ShuffleOperation, List<byte>)> operationsList = new();
 
@@ -1272,8 +1272,15 @@ namespace FF1Lib
 
 				operationsList.Clear();
 				newteleportersInOut.Clear();
-				newteleportersInOut.AddRange(teleportersLocDest.Where(x => InvalidLocations.Contains((x.Item2, x.Item3))).ToList());
-
+				if ((bool)flags.Floors)
+				{
+					newteleportersInOut.AddRange(teleportersLocDest.Where(x => InvalidLocations.Contains((x.Item2, x.Item3))).ToList());
+				}
+				else
+				{
+					newteleportersInOut.AddRange(teleportersLocDest.Where(x => !LocationEntrances.Contains((x.Item2, x.Item3)) && !TownEntrances.Contains((x.Item2, x.Item3))).ToList());
+				}
+				
 				PairsArray = Enumerable.Range(0, PairedTeleporters.Count).ToList();
 				OrphansArray = Enumerable.Range(0, OrphanTeleporters.Count).ToList();
 				TownsArray = Enumerable.Range(0, TownTeleporters.Count).ToList();
@@ -1285,7 +1292,7 @@ namespace FF1Lib
 				{
 					var result = Rng.Between(rng, 0, maxteleporterpairs + GatewaysTeleporters.Count);
 
-					if (result < maxteleporterpairs)
+					if (result < maxteleporterpairs || OrphansArray.Count == 1)
 					{
 						var selectedpair = PairsArray.SpliceRandom(rng);
 						var pairA = PairedTeleporters[selectedpair];
@@ -1299,6 +1306,18 @@ namespace FF1Lib
 
 						OrphansArray.Remove(index);
 					}
+				}
+
+				if ((bool)flags.EntrancesMixedWithTowns)
+				{
+					ComboTeleporters = PairedTeleporters.Concat(TownTeleporters).ToList();
+					ComboArray = PairsArray.Concat(TownsArray.Select(x => x + maxteleporterpairs)).ToList();
+					TownsArray.Clear();
+				}
+				else
+				{
+					ComboTeleporters = PairedTeleporters;
+					ComboArray = PairsArray;
 				}
 
 				// Shuffle Towns amongst themselves, only if entrances aren't mixed
@@ -1334,11 +1353,11 @@ namespace FF1Lib
 
 				// Shuffle pairs amongst themselves
 				// If impair number, do a 3 way shuffle first, then switch pairs for the rest
-				if (PairsArray.Count % 2 != 0)
+				if (ComboArray.Count % 2 != 0)
 				{
-					var pairA = PairedTeleporters[PairsArray.SpliceRandom(rng)];
-					var pairB = PairedTeleporters[PairsArray.SpliceRandom(rng)];
-					var pairC = PairedTeleporters[PairsArray.SpliceRandom(rng)];
+					var pairA = ComboTeleporters[ComboArray.SpliceRandom(rng)];
+					var pairB = ComboTeleporters[ComboArray.SpliceRandom(rng)];
+					var pairC = ComboTeleporters[ComboArray.SpliceRandom(rng)];
 
 					newteleportersInOut.Add((pairA.Item1, teleportersLocDest.Find(x => x.Item1 == pairC.Item1).Item2, teleportersLocDest.Find(x => x.Item1 == pairA.Item1).Item3));
 					newteleportersInOut.Add((pairB.Item1, teleportersLocDest.Find(x => x.Item1 == pairA.Item1).Item2, teleportersLocDest.Find(x => x.Item1 == pairB.Item1).Item3));
@@ -1350,10 +1369,10 @@ namespace FF1Lib
 					operationsList.Add((ShuffleOperation.Rotate3Pairs, new List<byte> { pairA.Item1, pairA.Item2, pairB.Item1, pairB.Item2, pairC.Item1, pairC.Item2 }));
 				}
 
-				while (PairsArray.Count > 0)
+				while (ComboArray.Count > 0)
 				{
-					var pairA = PairedTeleporters[PairsArray.SpliceRandom(rng)];
-					var pairB = PairedTeleporters[PairsArray.SpliceRandom(rng)];
+					var pairA = ComboTeleporters[ComboArray.SpliceRandom(rng)];
+					var pairB = ComboTeleporters[ComboArray.SpliceRandom(rng)];
 
 					newteleportersInOut.Add((pairA.Item1, teleportersLocDest.Find(x => x.Item1 == pairB.Item1).Item2, teleportersLocDest.Find(x => x.Item1 == pairA.Item1).Item3));
 					newteleportersInOut.Add((pairB.Item1, teleportersLocDest.Find(x => x.Item1 == pairA.Item1).Item2, teleportersLocDest.Find(x => x.Item1 == pairB.Item1).Item3));
@@ -1414,7 +1433,6 @@ namespace FF1Lib
 			} while (unreachableLocations.Any());
 
 			Console.WriteLine("Locations successfully suffled after " + _shuffleCounter + " iteration(s).");
-
 
 			List<(TileSM, TeleporterSM)> TeleportersTiles = TeleportTiles.Select(x => (x, teleporters.Find(y => y.ID == x.PropertyValue))).ToList();
 
@@ -1549,6 +1567,11 @@ namespace FF1Lib
 				if (freenpc.Index > 0 || (freenpc.Index == 0 && freenpc.Coord == (0, 0)))
 				{
 					SetNpc((MapId)originTeleporter.Destination, freenpc.Index, source.Item4, originTeleporter.X, originTeleporter.Y, originTeleporter.InRoom, true);
+					var sprite_palette = GetFromBank(0x00, 0xA000 + (originTeleporter.Destination * 0x30) + 0x18, 8);
+					if (sprite_palette == Blob.FromHex("0F0000000F000000"))
+					{
+						PutInBank(0x00, 0xA000 + (originTeleporter.Destination * 0x30) + 0x18, GetFromBank(0x00, 0xA000 + ((byte)source.Item1 * 0x30) + 0x18, 8));
+					}
 				}
 			}
 		}
