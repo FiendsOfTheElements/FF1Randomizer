@@ -1,5 +1,11 @@
 ﻿;; IsOnAnyBridge
 ;; A replacement to IsOnBridge that also allows walking on the canal / canal bridge
+;; Last revision: 2021-08-05
+
+canal_vis = $600C
+canal_x = $600D
+canal_y = $600E
+
 IsOnAnyBridge:
     LDA $6008
     BEQ IsOnOtherBridge; if no bridge, canal?
@@ -54,18 +60,19 @@ FillerCodeToMakeBranchToExitWork:
 	JSR $6000
 	BCS Exit
 	LDA #$08
-	JSR Exit
+	JSR Draw
 
 DrawOWObj_BridgeCanal:
-	LDX #$66      ; canal x hardcoded
-	LDY #$A4      ; canal y hardcoded
+    LDX canal_x  
+    LDY canal_y
 	JSR $E3DF     ; ConvertOWToSprite
 	BCS Exit      ; oo bounds, exit
 
 	LDA #$08      ; Isthmus/Bridge is on screen. Start by assuming bridge
-	LDX $600C     ; Check canal_vis
-	BEQ Cont
-	LDA #$10      ; Switch table to offset $10 (canal) if necessary
+	LDX canal_vis ; Check canal_vis
+	BEQ Draw
+	ASL           ; Switch table to offset $10 (canal) if necessary (ASL saves 1 byte from LDA #$10)
 
-Cont:
+Draw:
 ; This is where the sprite is drawn.
+; We take over one byte (CLC) since C is always clear if this part is reached.

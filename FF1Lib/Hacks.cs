@@ -670,7 +670,7 @@ namespace FF1Lib
 		{
 			// Inline edit to draw the isthmus or the bridge, but never the open canal anymore.
 			// See 0F_8780_IsOnEitherBridge for this and the IsOnBridge replacement called from below.
-			Put(0x7E3BB, Blob.FromHex("A266A0A420DFE3B0E1A908AE0C60F002A910"));
+			Put(0x7E3B8, Blob.FromHex("20CEE3AE0D60AC0E6020DFE3B0DFA908AE0C60F0010A"));
 
 			/**
 			 *  A slight wrinkle from normal cross page jump in that we need to preserve the status register,
