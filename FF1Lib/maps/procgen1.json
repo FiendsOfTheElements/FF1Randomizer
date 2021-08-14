@@ -10,11 +10,84 @@
     "ShipLocations": [
         {
             "TeleporterIndex": 255,
-            "X": 240,
-            "Y": 94
+            "X": 238,
+            "Y": 91
         }
     ],
-    "TeleporterFixups": [],
+    "TeleporterFixups": [
+        {
+            "Type": 1,
+            "Index": 0,
+            "To": {
+                "X": 125,
+                "Y": 196
+            }
+        },
+        {
+            "Type": 1,
+            "Index": 1,
+            "To": {
+                "X": 218,
+                "Y": 229
+            }
+        },
+        {
+            "Type": 1,
+            "Index": 2,
+            "To": {
+                "X": 88,
+                "Y": 180
+            }
+        },
+        {
+            "Type": 1,
+            "Index": 3,
+            "To": {
+                "X": 63,
+                "Y": 196
+            }
+        },
+        {
+            "Type": 1,
+            "Index": 4,
+            "To": {
+                "X": 206,
+                "Y": 158
+            }
+        },
+        {
+            "Type": 1,
+            "Index": 5,
+            "To": {
+                "X": 127,
+                "Y": 101
+            }
+        },
+        {
+            "Type": 1,
+            "Index": 6,
+            "To": {
+                "X": 117,
+                "Y": 190
+            }
+        },
+        {
+            "Type": 1,
+            "Index": 7,
+            "To": {
+                "X": 131,
+                "Y": 77
+            }
+        },
+        {
+            "Type": 1,
+            "Index": 8,
+            "To": {
+                "X": 67,
+                "Y": 169
+            }
+        }
+    ],
     "DomainFixups": [],
     "OverworldCoordinates": {
         "Coneria": {
@@ -56,6 +129,10 @@
         "Onrac": {
             "X": 131,
             "Y": 77
+        },
+        "EarthCave1": {
+            "X": 127,
+            "Y": 101
         },
         "TitansTunnelEast": {
             "X": 125,
