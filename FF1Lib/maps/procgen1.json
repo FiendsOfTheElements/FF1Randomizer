@@ -1,0 +1,137 @@
+{
+    "StartingLocation": {
+        "X": 206,
+        "Y": 163
+    },
+    "AirShipLocation": {
+        "X": 130,
+        "Y": 68
+    },
+    "ShipLocations": [
+        {
+            "TeleporterIndex": 255,
+            "X": 240,
+            "Y": 94
+        }
+    ],
+    "TeleporterFixups": [],
+    "DomainFixups": [],
+    "OverworldCoordinates": {
+        "Coneria": {
+            "X": 205,
+            "Y": 159
+        },
+        "ConeriaCastle1": {
+            "X": 206,
+            "Y": 158
+        },
+        "TempleOfFiends1": {
+            "X": 185,
+            "Y": 160
+        },
+        "Pravoka": {
+            "X": 237,
+            "Y": 88
+        },
+        "Gaia": {
+            "X": 238,
+            "Y": 51
+        },
+        "CastleOrdeals1": {
+            "X": 63,
+            "Y": 196
+        },
+        "TitansTunnelWest": {
+            "X": 218,
+            "Y": 229
+        },
+        "SardasCave": {
+            "X": 217,
+            "Y": 207
+        },
+        "MirageTower1": {
+            "X": 67,
+            "Y": 169
+        },
+        "Onrac": {
+            "X": 131,
+            "Y": 77
+        },
+        "TitansTunnelEast": {
+            "X": 125,
+            "Y": 196
+        },
+        "MatoyasCave": {
+            "X": 68,
+            "Y": 112
+        },
+        "DwarfCave": {
+            "X": 110,
+            "Y": 146
+        },
+        "Elfland": {
+            "X": 31,
+            "Y": 44
+        },
+        "ElflandCastle": {
+            "X": 32,
+            "Y": 43
+        },
+        "MarshCave1": {
+            "X": 151,
+            "Y": 209
+        },
+        "NorthwestCastle": {
+            "X": 114,
+            "Y": 206
+        },
+        "Melmond": {
+            "X": 26,
+            "Y": 116
+        },
+        "CrescentLake": {
+            "X": 40,
+            "Y": 125
+        },
+        "Lefein": {
+            "X": 211,
+            "Y": 90
+        },
+        "BahamutCave1": {
+            "X": 181,
+            "Y": 117
+        },
+        "Cardia1": {
+            "X": 118,
+            "Y": 165
+        },
+        "Cardia2": {
+            "X": 76,
+            "Y": 84
+        },
+        "Cardia4": {
+            "X": 85,
+            "Y": 102
+        },
+        "Cardia5": {
+            "X": 216,
+            "Y": 133
+        },
+        "Cardia6": {
+            "X": 58,
+            "Y": 125
+        },
+        "Waterfall": {
+            "X": 118,
+            "Y": 199
+        },
+        "GurguVolcano1": {
+            "X": 117,
+            "Y": 190
+        },
+        "IceCave1": {
+            "X": 88,
+            "Y": 180
+        }
+    }
+}

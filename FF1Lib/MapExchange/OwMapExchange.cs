@@ -26,6 +26,9 @@ namespace FF1Lib
 		[Description("Crescent Start")]
 		CrecsentStart,
 
+		[Description("ProcGen1")]
+		ProcGen1,
+
 		[Description("No Overworld")]
 		NoOverworld,
 
@@ -127,6 +130,8 @@ namespace FF1Lib
 					return new OwMapExchange(_rom, _overworldMap, "crescent_start");
 				case OwMapExchanges.NoOverworld:
 					return new OwMapExchange(_rom, _overworldMap, "nooverworld");
+				case OwMapExchanges.ProcGen1:
+					return new OwMapExchange(_rom, _overworldMap, "procgen1");
 			}
 
 			throw new Exception("oops");
