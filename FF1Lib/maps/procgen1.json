@@ -1,17 +1,25 @@
 {
     "StartingLocation": {
-        "X": 206,
-        "Y": 163
+        "X": 182,
+        "Y": 120
     },
     "AirShipLocation": {
-        "X": 130,
-        "Y": 68
+        "X": 237,
+        "Y": 230
+    },
+    "BridgeLocation": {
+        "X": 220,
+        "Y": 132
+    },
+    "CanalLocation": {
+        "X": 58,
+        "Y": 58
     },
     "ShipLocations": [
         {
             "TeleporterIndex": 255,
-            "X": 238,
-            "Y": 91
+            "X": 237,
+            "Y": 101
         }
     ],
     "TeleporterFixups": [
@@ -19,15 +27,15 @@
             "Type": 1,
             "Index": 0,
             "To": {
-                "X": 125,
-                "Y": 196
+                "X": 116,
+                "Y": 201
             }
         },
         {
             "Type": 1,
             "Index": 1,
             "To": {
-                "X": 218,
+                "X": 217,
                 "Y": 229
             }
         },
@@ -35,87 +43,87 @@
             "Type": 1,
             "Index": 2,
             "To": {
-                "X": 88,
-                "Y": 180
+                "X": 93,
+                "Y": 194
             }
         },
         {
             "Type": 1,
             "Index": 3,
             "To": {
-                "X": 63,
-                "Y": 196
+                "X": 79,
+                "Y": 208
             }
         },
         {
             "Type": 1,
             "Index": 4,
             "To": {
-                "X": 206,
-                "Y": 158
+                "X": 182,
+                "Y": 115
             }
         },
         {
             "Type": 1,
             "Index": 5,
             "To": {
-                "X": 127,
-                "Y": 101
+                "X": 63,
+                "Y": 176
             }
         },
         {
             "Type": 1,
             "Index": 6,
             "To": {
-                "X": 117,
-                "Y": 190
+                "X": 85,
+                "Y": 180
             }
         },
         {
             "Type": 1,
             "Index": 7,
             "To": {
-                "X": 131,
-                "Y": 77
+                "X": 212,
+                "Y": 151
             }
         },
         {
             "Type": 1,
             "Index": 8,
             "To": {
-                "X": 67,
-                "Y": 169
+                "X": 222,
+                "Y": 95
             }
         }
     ],
     "DomainFixups": [],
     "OverworldCoordinates": {
         "Coneria": {
-            "X": 205,
-            "Y": 159
+            "X": 181,
+            "Y": 116
         },
         "ConeriaCastle1": {
-            "X": 206,
-            "Y": 158
+            "X": 182,
+            "Y": 115
         },
         "TempleOfFiends1": {
-            "X": 185,
-            "Y": 160
+            "X": 158,
+            "Y": 123
         },
         "Pravoka": {
-            "X": 237,
-            "Y": 88
+            "X": 236,
+            "Y": 98
         },
         "Gaia": {
-            "X": 238,
-            "Y": 51
+            "X": 233,
+            "Y": 29
         },
         "CastleOrdeals1": {
-            "X": 63,
-            "Y": 196
+            "X": 79,
+            "Y": 208
         },
         "TitansTunnelWest": {
-            "X": 218,
+            "X": 217,
             "Y": 229
         },
         "SardasCave": {
@@ -123,92 +131,92 @@
             "Y": 207
         },
         "MirageTower1": {
-            "X": 67,
-            "Y": 169
+            "X": 222,
+            "Y": 95
         },
         "Onrac": {
-            "X": 131,
-            "Y": 77
+            "X": 212,
+            "Y": 151
         },
         "EarthCave1": {
+            "X": 63,
+            "Y": 176
+        },
+        "TitansTunnelEast": {
+            "X": 116,
+            "Y": 201
+        },
+        "MatoyasCave": {
+            "X": 81,
+            "Y": 162
+        },
+        "DwarfCave": {
             "X": 127,
             "Y": 101
         },
-        "TitansTunnelEast": {
-            "X": 125,
-            "Y": 196
-        },
-        "MatoyasCave": {
-            "X": 68,
-            "Y": 112
-        },
-        "DwarfCave": {
-            "X": 110,
-            "Y": 146
-        },
         "Elfland": {
-            "X": 31,
-            "Y": 44
+            "X": 32,
+            "Y": 45
         },
         "ElflandCastle": {
-            "X": 32,
-            "Y": 43
+            "X": 33,
+            "Y": 44
         },
         "MarshCave1": {
             "X": 151,
             "Y": 209
         },
         "NorthwestCastle": {
-            "X": 114,
-            "Y": 206
+            "X": 15,
+            "Y": 28
         },
         "Melmond": {
-            "X": 26,
-            "Y": 116
+            "X": 118,
+            "Y": 170
         },
         "CrescentLake": {
-            "X": 40,
-            "Y": 125
+            "X": 22,
+            "Y": 116
         },
         "Lefein": {
-            "X": 211,
-            "Y": 90
+            "X": 114,
+            "Y": 234
         },
         "BahamutCave1": {
-            "X": 181,
-            "Y": 117
+            "X": 46,
+            "Y": 82
         },
         "Cardia1": {
-            "X": 118,
-            "Y": 165
+            "X": 227,
+            "Y": 181
         },
         "Cardia2": {
-            "X": 76,
-            "Y": 84
+            "X": 171,
+            "Y": 152
         },
         "Cardia4": {
-            "X": 85,
-            "Y": 102
+            "X": 40,
+            "Y": 145
         },
         "Cardia5": {
-            "X": 216,
-            "Y": 133
+            "X": 192,
+            "Y": 158
         },
         "Cardia6": {
-            "X": 58,
-            "Y": 125
+            "X": 42,
+            "Y": 123
         },
         "Waterfall": {
             "X": 118,
             "Y": 199
         },
         "GurguVolcano1": {
-            "X": 117,
-            "Y": 190
+            "X": 85,
+            "Y": 180
         },
         "IceCave1": {
-            "X": 88,
-            "Y": 180
+            "X": 93,
+            "Y": 194
         }
     }
 }
