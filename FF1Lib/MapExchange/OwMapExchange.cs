@@ -91,9 +91,12 @@ namespace FF1Lib
 
 		public void ExecuteStep2()
 		{
+		        DomainData originalDomains = new DomainData(rom);
+			originalDomains.LoadTable();
 			domains.LoadTable();
 
 			foreach (var df in data.DomainFixups) domains.SwapDomains(df.From, df.To);
+			foreach (var df in data.DomainUpdates) domains.Data[df.To] = originalDomains.Data[df.From];
 
 			domains.StoreTable();
 			locations.StoreData();
