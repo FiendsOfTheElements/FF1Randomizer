@@ -31,7 +31,7 @@ namespace FF1Lib.Sanity
 
 		public SCOwMap Overworld { get; private set; }
 
-		public SCMain(List<Map> _maps, OverworldMap _overworldMap, NPCdata _npcdata, FF1Rom _rom)
+		public SCMain(List<Map> _maps, OverworldMap _overworldMap, NPCdata _npcdata, OwLocationData locations, FF1Rom _rom)
 		{
 			maps = _maps;
 			overworldMap = _overworldMap;
@@ -63,9 +63,9 @@ namespace FF1Lib.Sanity
 
 			ComposeDungeons();
 
-			SCCoords bridge = new SCCoords(0x98, 0x98);
-			SCCoords canal = new SCCoords(0x66, 0xA4);
-			Overworld = new SCOwMap(overworldMap, SCMapCheckFlags.None, _rom, owtileset, enter, exit, bridge, canal);
+			//SCCoords bridge = new SCCoords(0x98, 0x98);
+			//SCCoords canal = new SCCoords(0x66, 0xA4);
+			Overworld = new SCOwMap(overworldMap, SCMapCheckFlags.None, _rom, owtileset, enter, exit, locations.BridgeLocation, locations.CanalLocation);
 
 			w.Stop();
 		}
