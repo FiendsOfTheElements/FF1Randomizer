@@ -74,6 +74,8 @@ namespace FF1Lib
 
 			if (data.StartingLocation.HasValue) locations.StartingLocation = data.StartingLocation.Value;
 			if (data.AirShipLocation.HasValue) locations.AirShipLocation = data.AirShipLocation.Value;
+			if (data.BridgeLocation.HasValue) locations.BridgeLocation = data.BridgeLocation.Value;
+			if (data.CanalLocation.HasValue) locations.CanalLocation = data.CanalLocation.Value;
 
 			locations.StoreData();
 

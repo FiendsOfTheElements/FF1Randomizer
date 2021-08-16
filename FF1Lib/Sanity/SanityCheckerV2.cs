@@ -57,6 +57,8 @@ namespace FF1Lib
 			npcdata = _npcdata;
 
 			locations = new OwLocationData(rom);
+			locations.LoadData();
+
 			shiplocations = _shiplocations;
 
 			allTreasures = ItemLocations.AllTreasures.Select(r => r as TreasureChest).Where(r => r != null).ToDictionary(r => (byte)(r.Address - 0x3100));
@@ -65,7 +67,7 @@ namespace FF1Lib
 
 			UpdateNpcRequirements();
 
-			main = new SCMain(_maps, _overworldMap, _npcdata, _rom);
+			main = new SCMain(_maps, _overworldMap, _npcdata, locations, _rom);
 		}
 
 		private void UpdateNpcRequirements()
@@ -104,8 +106,6 @@ namespace FF1Lib
 
 		public (bool Complete, List<MapLocation> MapLocations, AccessRequirement Requirements) CheckSanity(List<IRewardSource> _treasurePlacements, Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullLocationRequirements, IVictoryConditionFlags victoryConditions)
 		{
-			locations.LoadData();
-
 			treasurePlacements = _treasurePlacements;
 
 			//kids, don't try this at home. Calculating an index from an address is usually not the way to go.
