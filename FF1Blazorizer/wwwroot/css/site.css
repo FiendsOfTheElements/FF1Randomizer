@@ -493,3 +493,13 @@ tr.bottom-borderd {
 .nes-btn.is-tiny {
     font-size: 0.5em;
 }
+
+.fun-inactivated {
+    color: #999999;
+    cursor: pointer;
+}
+
+.fun-activated {
+    color: #ffffff;
+    cursor: default;
+}

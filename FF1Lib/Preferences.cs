@@ -20,6 +20,7 @@ namespace FF1Lib
 		public TitanSnack TitanSnack { get; set; } = TitanSnack.Ruby;
 		public Fate HurrayDwarfFate { get; set; } = Fate.Spare;
 		public bool RenounceAutosort { get; set; } = false;
+		public bool RenounceChestInfo { get; set; } = false;
 		public bool AccessibleSpellNames { get; set; } = false;
 		public bool NoTabLayout { get; set; } = false;
 	  public string SpriteSheet { get; set; } = null;

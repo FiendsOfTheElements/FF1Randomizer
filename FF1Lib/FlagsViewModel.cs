@@ -1965,6 +1965,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RenouceAutosort"));
 			}
 		}
+		public bool RenounceChestInfo
+		{
+			get => Preferences.RenounceChestInfo;
+			set
+			{
+				Preferences.RenounceChestInfo = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RenounceChestInfo"));
+			}
+		}
 		public bool NoPartyShuffle
 		{
 			get => Flags.NoPartyShuffle;
