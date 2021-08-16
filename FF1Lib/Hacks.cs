@@ -2557,5 +2557,40 @@ namespace FF1Lib
 
 			WriteText(itemnames, FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextOffset, FF1Rom.UnusedGoldItems);
 		}
+
+		public void HackMinimap(OverworldMap map) {
+		    var compresedMap = map.GetCompressedMapRows();
+		    var decompressedMap = map.DecompressMapRows(compresedMap);
+		    byte emptyTile = 0xff;
+		    for (int i = 1; emptyTile == 0xff && i < 31; i++) {
+			for (int j = 1; emptyTile == 0xff && j < 31; j++) {
+			    bool isEmpty = true;
+			    for (int x = 0; isEmpty && x < 8; x++) {
+				for (int y = 0; isEmpty && y < 8; y++) {
+				    if (decompressedMap[i*8+y][j*8+x] != OverworldMap.OceanTile) {
+					isEmpty = false;
+				    }
+				}
+			    }
+			    if (isEmpty) {
+				emptyTile = (byte)(i*8 + j);
+			    }
+			}
+		    }
+
+		    PutInBank(0x09, 0xBC45, Blob.FromHex("EAEAEAEAEAEA"));
+
+		    var nametable = new byte[960];
+		    for (int i = 0; i < 960; i++) {
+			nametable[i] = emptyTile;
+		    }
+		    for (int i = 0; i < 16; i++) {
+			for (int j = 0; j < 16; j++) {
+			    nametable[(i+6)*32 + (j+8)] = (byte)(i*16 + j);
+			}
+		    }
+
+		    PutInBank(0x09, 0xB000, nametable);
+		}
 	}
 }

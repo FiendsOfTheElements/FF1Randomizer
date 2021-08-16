@@ -1072,6 +1072,7 @@ namespace FF1Lib
 
 			owMapExchange?.ExecuteStep2();
 
+			HackMinimap(overworldMap);
 
 			npcdata.WriteNPCdata(this);
 			talkroutines.WriteRoutines(this);
