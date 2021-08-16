@@ -499,7 +499,7 @@ namespace FF1Lib
 			var preBlackOrbLocationPool = _incentivesData.AllValidPreBlackOrbItemLocations.ToList();
 			var preBlackOrbUnincentivizedLocationPool = preBlackOrbLocationPool.Where(x => !incentiveLocationPool.Any(y => y.Address == x.Address)).ToList();
 			if ((bool)_flags.LooseExcludePlacedDungeons)
-				preBlackOrbUnincentivizedLocationPool = IncentivizedDungeons();
+				preBlackOrbUnincentivizedLocationPool = IncentivizedDungeons(preBlackOrbUnincentivizedLocationPool);
 
 			Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullLocationRequirements = _overworldMap.FullLocationRequirements;
 			Dictionary<MapLocation, OverworldTeleportIndex> overridenOverworld = _overworldMap.OverriddenOverworldLocations;
@@ -707,7 +707,7 @@ namespace FF1Lib
 			return new ItemPlacementResult { PlacedItems = placedItems, RemainingTreasures = treasurePool };
 		}
 
-		private List<IRewardSource> IncentivizedDungeons()
+		private List<IRewardSource> IncentivizedDungeons(List<IRewardSource> preBlackOrbUnincentivizedLocationPool)
 		{
 			var placedDungeons = new List<IRewardSource>();
 
@@ -717,7 +717,7 @@ namespace FF1Lib
 					placedDungeons.AddRange(_incentivesData.AllValidPreBlackOrbItemLocations.Where(x => ItemLocations.MapLocationToOverworldLocations[x.MapLocation] == ItemLocations.MapLocationToOverworldLocations[incentiveLocation.MapLocation] && x.GetType().Equals(typeof(TreasureChest))));
 			}
 
-			return _incentivesData.AllValidPreBlackOrbItemLocations.Where(x => !placedDungeons.Contains(x)).ToList();
+			return preBlackOrbUnincentivizedLocationPool.Where(x => !placedDungeons.Contains(x)).ToList();
 		}
 	}
 }
