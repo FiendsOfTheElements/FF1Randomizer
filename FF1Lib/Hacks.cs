@@ -689,7 +689,12 @@ namespace FF1Lib
 			**/
 			Put(0x7C64D, Blob.FromHex("ADFC6048A90F2003FE20808768082003FE2860"));
 		}
-
+		public void DrawCanoeUnderBridge()
+		{
+			// Draw canoe under bridge if bridge is placed over a river, see 1F_E26A_DrawCanoeUnderBridge.asm
+			PutInBank(0x1F, 0xE231, Blob.FromHex("F037"));
+			PutInBank(0x1F, 0xE26A, Blob.FromHex("20A6E3A4422081E2A442C004F0032073E34C8CE3"));
+		}
 		public void EnableChaosRush()
 		{
 			// Overwrite Keylocked door in ToFR tileset with normal door.

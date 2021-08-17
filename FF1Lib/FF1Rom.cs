@@ -127,6 +127,7 @@ namespace FF1Lib
 			FixWarpBug(); // The warp bug must be fixed for magic level shuffle and spellcrafter
 			ExpandNormalTeleporters();
 			SeparateUnrunnables();
+			DrawCanoeUnderBridge();
 			var talkroutines = new TalkRoutines();
 			var npcdata = new NPCdata(this);
 			UpdateDialogs(npcdata, flags);
