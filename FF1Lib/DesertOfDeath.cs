@@ -34,6 +34,9 @@ namespace FF1Lib
 		}
 		public void GenerateDesert(MT19337 rng)
 		{
+
+			int LoopedValue(int value, int max) => (value < 0) ? (max + value) % max : (value % max);
+
 			List<List<MapLocation>> MapGrid = new();
 
 			for (int i = 0; i < 16; i++)
@@ -91,57 +94,154 @@ namespace FF1Lib
 
 
 			List<(MapLocation, int, int)> nodePositions = new();
+			List<(MapLocation, MapDirection)> nodeDirection = new();
 
+			List<(int, int)> placedSquares = new();
 			nodePositions.Add((MapLocation.ConeriaCastle1, Rng.Between(rng, 7, 9), Rng.Between(rng, 7, 9)));
-
+			MapGrid[nodePositions[0].Item2][nodePositions[0].Item3] = nodePositions[0].Item1;
 
 			foreach (var node in distance)
 			{
-				var loctoplace = nodepairs.Where(x => x.Item1 == node.Item1);
-				var origin = (nodePositions.Find(x => x.Item1 == node.Item1).Item2, nodePositions.Find(x => x.Item1 == node.Item1).Item3);
-				foreach (var loc in loctoplace)
+				bool validnode = false;
+				bool placementerror = false;
+				int node_check = 0;
+
+				while (!validnode)
 				{
-					MapDirection direction = MapDirection.North;
-					bool validSquare = false;
-					List<MapDirection> validDirections = Enum.GetValues(typeof(MapDirection)).Cast<MapDirection>().ToList();
-					List<MapDirection> invalidDirections = new();
-					(int, int) newOrigin = (0, 0);
+					node_check++;
 
-					while (!validSquare)
+					var loctoplace = nodepairs.Where(x => x.Item1 == node.Item1).ToList();
+					var origin = (nodePositions.Find(x => x.Item1 == node.Item1).Item2, nodePositions.Find(x => x.Item1 == node.Item1).Item3);
+					var originDirection = nodeDirection.Find(x => x.Item1 == node.Item1).Item2;
+
+					foreach (var loc in loctoplace)
 					{
-						direction = (MapDirection)Rng.Between(rng, 0, 7);
-						if (MapGrid[origin.Item1 + DirectionCoordinates[(int)direction].Item1][origin.Item2 + DirectionCoordinates[(int)direction].Item2] == 0)
+						MapDirection direction = MapDirection.North;
+						bool validSquare = false;
+						List<MapDirection> validDirections = Enum.GetValues(typeof(MapDirection)).Cast<MapDirection>().ToList();
+						if (loc.Item1 != MapLocation.ConeriaCastle1)
 						{
-							validDirections = validDirections.Where(x => !InvalidDirections(direction).Contains(x)).ToList();
-							newOrigin = (origin.Item1 + DirectionCoordinates[(int)direction].Item1, origin.Item2 + DirectionCoordinates[(int)direction].Item2);
-							//invalidDirections.AddRange(InvalidDirections(direction));
-							validSquare = true;
+							validDirections = validDirections.Where(x => !InvalidDirections(originDirection).Contains(x)).ToList();
 						}
-					}
 
-					for (int i = 0; i < node.Item2; i++)
-					{
-						MapGrid[newOrigin.Item1 + DirectionCoordinates[(int)direction].Item1][newOrigin.Item2 + DirectionCoordinates[(int)direction].Item2] = MapLocation.AirshipLocation;
-						validSquare = false;
+						List<MapDirection> invalidDirections = new();
+						(int, int) newOrigin = (0, 0);
+						int loop_check = 0;
+
 						while (!validSquare)
 						{
-							direction = validDirections.PickRandom(rng);
-							if (MapGrid[newOrigin.Item1 + DirectionCoordinates[(int)direction].Item1][newOrigin.Item2 + DirectionCoordinates[(int)direction].Item2] == 0)
+							loop_check++;
+							if (loop_check > 20)
+							{
+								placementerror = true;
+								break;
+							}
+							direction = (MapDirection)Rng.Between(rng, 0, 7);
+							int target_x = LoopedValue(origin.Item1 + DirectionCoordinates[(int)direction].Item1, 16);
+							int target_y = LoopedValue(origin.Item2 + DirectionCoordinates[(int)direction].Item2, 16);
+
+							if (MapGrid[target_x][target_y] == 0)
 							{
 								validDirections = validDirections.Where(x => !InvalidDirections(direction).Contains(x)).ToList();
-								newOrigin = (newOrigin.Item1 + DirectionCoordinates[(int)direction].Item1, newOrigin.Item2 + DirectionCoordinates[(int)direction].Item2);
-								validSquare = true;
+
+								Console.WriteLine(loc.Item2);
+
+								foreach (var dir in validDirections)
+								{
+									Console.WriteLine(dir);
+								}
+							
+							newOrigin = (target_x, target_y);
+							//invalidDirections.AddRange(InvalidDirections(direction));
+							validSquare = true;
 							}
 						}
+
+				
+						for (int i = 0; i < node.Item2; i++)
+						{
+							MapGrid[newOrigin.Item1][newOrigin.Item2] = MapLocation.AirshipLocation;
+							placedSquares.Add((newOrigin.Item1, newOrigin.Item2));
+							validSquare = false;
+							loop_check = 0;
+
+							while (!validSquare)
+							{
+								loop_check++;
+								if (loop_check > 20)
+								{
+									placementerror = true;
+									break;
+								}
+
+								direction = validDirections.PickRandom(rng);
+								int target_x = LoopedValue(newOrigin.Item1 + DirectionCoordinates[(int)direction].Item1, 16);
+								int target_y = LoopedValue(newOrigin.Item2 + DirectionCoordinates[(int)direction].Item2, 16);
+
+								if (MapGrid[target_x][target_y] == 0)
+								{
+									validDirections = validDirections.Where(x => !InvalidDirections(direction).Contains(x)).ToList();
+
+									Console.WriteLine(loc.Item2);
+
+									foreach (var dir in validDirections)
+									{
+										Console.WriteLine(dir);
+									}
+									newOrigin = (target_x, target_y);
+									validSquare = true;
+								}
+							}
+						}
+
+						MapGrid[newOrigin.Item1][newOrigin.Item2] = loc.Item2;
+						placedSquares.Add((newOrigin.Item1, newOrigin.Item2));
+
+						if (distance.Select(x => x.Item1).Contains(loc.Item2))
+						{
+							nodePositions.Add((loc.Item2, newOrigin.Item1, newOrigin.Item2));
+							nodeDirection.Add((loc.Item2, direction));
+						}
+
+						if (placementerror)
+						{
+							if (node_check > 20)
+							{
+								for (int i = 0; i < 16; i++)
+								{
+									var rowvalues = string.Join(";", MapGrid.Select(x => ((int)x[i]).ToString("X2")));
+									Console.WriteLine(rowvalues);
+								}
+
+								throw new InsaneException("Bzzz!");
+							}
+
+							foreach (var square in placedSquares)
+							{
+								MapGrid[square.Item1][square.Item2] = 0;
+							}
+
+							placedSquares.Clear();
+							validnode = false;
+							Console.WriteLine("Error at: " + node.Item1);
+
+
+						}
+						else
+						{
+							validnode = true;
+						}
 					}
-
-
 				}
-
-
 			}
 
 
+			for (int i = 0; i < 16; i++)
+			{
+				var rowvalues = string.Join(";", MapGrid.Select(x => ((int)x[i]).ToString("X2")));
+				Console.WriteLine(rowvalues);
+
+			}
 			// Palette
 
 

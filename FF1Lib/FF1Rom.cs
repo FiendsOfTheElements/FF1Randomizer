@@ -131,6 +131,8 @@ namespace FF1Lib
 			var npcdata = new NPCdata(this);
 			UpdateDialogs(npcdata, flags);
 
+
+
 			if (flags.TournamentSafe) Put(0x3FFE3, Blob.FromHex("66696E616C2066616E74617379"));
 
 			flags = Flags.ConvertAllTriState(flags, rng);
@@ -149,6 +151,8 @@ namespace FF1Lib
 			var maps = ReadMaps();
 			var shopItemLocation = ItemLocations.CaravanItemShop1;
 			var oldItemNames = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
+
+			GenerateDesert(rng);
 
 			if ((bool)flags.NPCItems || (bool)flags.NPCFetchItems)
 			{
