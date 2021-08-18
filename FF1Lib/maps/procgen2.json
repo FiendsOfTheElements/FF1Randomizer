@@ -1,0 +1,480 @@
+{
+    "StartingLocation": {
+        "X": 91,
+        "Y": 181
+    },
+    "AirShipLocation": {
+        "X": 73,
+        "Y": 188
+    },
+    "BridgeLocation": {
+        "X": 89,
+        "Y": 172
+    },
+    "CanalLocation": {
+        "X": 42,
+        "Y": 120
+    },
+    "ShipLocations": [
+        {
+            "TeleporterIndex": 255,
+            "X": 100,
+            "Y": 142
+        }
+    ],
+    "TeleporterFixups": [
+        {
+            "Type": 1,
+            "Index": 0,
+            "To": {
+                "X": 60,
+                "Y": 149
+            }
+        },
+        {
+            "Type": 1,
+            "Index": 1,
+            "To": {
+                "X": 160,
+                "Y": 76
+            }
+        },
+        {
+            "Type": 1,
+            "Index": 2,
+            "To": {
+                "X": 79,
+                "Y": 160
+            }
+        },
+        {
+            "Type": 1,
+            "Index": 3,
+            "To": {
+                "X": 88,
+                "Y": 121
+            }
+        },
+        {
+            "Type": 1,
+            "Index": 4,
+            "To": {
+                "X": 91,
+                "Y": 176
+            }
+        },
+        {
+            "Type": 1,
+            "Index": 5,
+            "To": {
+                "X": 49,
+                "Y": 114
+            }
+        },
+        {
+            "Type": 1,
+            "Index": 6,
+            "To": {
+                "X": 74,
+                "Y": 112
+            }
+        },
+        {
+            "Type": 1,
+            "Index": 7,
+            "To": {
+                "X": 187,
+                "Y": 95
+            }
+        },
+        {
+            "Type": 1,
+            "Index": 8,
+            "To": {
+                "X": 172,
+                "Y": 118
+            }
+        }
+    ],
+    "DomainFixups": [],
+    "DomainUpdates": [
+        {
+            "From": 0,
+            "To": 0
+        },
+        {
+            "From": 0,
+            "To": 1
+        },
+        {
+            "From": 0,
+            "To": 2
+        },
+        {
+            "From": 0,
+            "To": 3
+        },
+        {
+            "From": 10,
+            "To": 4
+        },
+        {
+            "From": 10,
+            "To": 5
+        },
+        {
+            "From": 43,
+            "To": 6
+        },
+        {
+            "From": 0,
+            "To": 7
+        },
+        {
+            "From": 34,
+            "To": 8
+        },
+        {
+            "From": 34,
+            "To": 9
+        },
+        {
+            "From": 29,
+            "To": 10
+        },
+        {
+            "From": 10,
+            "To": 11
+        },
+        {
+            "From": 10,
+            "To": 12
+        },
+        {
+            "From": 10,
+            "To": 13
+        },
+        {
+            "From": 40,
+            "To": 14
+        },
+        {
+            "From": 0,
+            "To": 15
+        },
+        {
+            "From": 35,
+            "To": 16
+        },
+        {
+            "From": 35,
+            "To": 17
+        },
+        {
+            "From": 37,
+            "To": 18
+        },
+        {
+            "From": 11,
+            "To": 19
+        },
+        {
+            "From": 10,
+            "To": 20
+        },
+        {
+            "From": 40,
+            "To": 21
+        },
+        {
+            "From": 40,
+            "To": 22
+        },
+        {
+            "From": 6,
+            "To": 23
+        },
+        {
+            "From": 35,
+            "To": 24
+        },
+        {
+            "From": 35,
+            "To": 25
+        },
+        {
+            "From": 12,
+            "To": 26
+        },
+        {
+            "From": 11,
+            "To": 27
+        },
+        {
+            "From": 40,
+            "To": 28
+        },
+        {
+            "From": 14,
+            "To": 29
+        },
+        {
+            "From": 0,
+            "To": 30
+        },
+        {
+            "From": 6,
+            "To": 31
+        },
+        {
+            "From": 0,
+            "To": 32
+        },
+        {
+            "From": 40,
+            "To": 33
+        },
+        {
+            "From": 10,
+            "To": 34
+        },
+        {
+            "From": 12,
+            "To": 35
+        },
+        {
+            "From": 14,
+            "To": 36
+        },
+        {
+            "From": 14,
+            "To": 37
+        },
+        {
+            "From": 0,
+            "To": 38
+        },
+        {
+            "From": 59,
+            "To": 39
+        },
+        {
+            "From": 0,
+            "To": 40
+        },
+        {
+            "From": 40,
+            "To": 41
+        },
+        {
+            "From": 44,
+            "To": 42
+        },
+        {
+            "From": 28,
+            "To": 43
+        },
+        {
+            "From": 0,
+            "To": 44
+        },
+        {
+            "From": 0,
+            "To": 45
+        },
+        {
+            "From": 0,
+            "To": 46
+        },
+        {
+            "From": 59,
+            "To": 47
+        },
+        {
+            "From": 0,
+            "To": 48
+        },
+        {
+            "From": 28,
+            "To": 49
+        },
+        {
+            "From": 28,
+            "To": 50
+        },
+        {
+            "From": 28,
+            "To": 51
+        },
+        {
+            "From": 0,
+            "To": 52
+        },
+        {
+            "From": 0,
+            "To": 53
+        },
+        {
+            "From": 0,
+            "To": 54
+        },
+        {
+            "From": 0,
+            "To": 55
+        },
+        {
+            "From": 0,
+            "To": 56
+        },
+        {
+            "From": 0,
+            "To": 57
+        },
+        {
+            "From": 54,
+            "To": 58
+        },
+        {
+            "From": 54,
+            "To": 59
+        },
+        {
+            "From": 0,
+            "To": 60
+        },
+        {
+            "From": 0,
+            "To": 61
+        },
+        {
+            "From": 52,
+            "To": 62
+        },
+        {
+            "From": 52,
+            "To": 63
+        }
+    ],
+    "OverworldCoordinates": {
+        "Coneria": {
+            "X": 90,
+            "Y": 177
+        },
+        "ConeriaCastle1": {
+            "X": 91,
+            "Y": 176
+        },
+        "TempleOfFiends1": {
+            "X": 104,
+            "Y": 193
+        },
+        "Pravoka": {
+            "X": 99,
+            "Y": 139
+        },
+        "Gaia": {
+            "X": 229,
+            "Y": 91
+        },
+        "CastleOrdeals1": {
+            "X": 88,
+            "Y": 121
+        },
+        "TitansTunnelWest": {
+            "X": 160,
+            "Y": 76
+        },
+        "SardasCave": {
+            "X": 147,
+            "Y": 105
+        },
+        "MirageTower1": {
+            "X": 172,
+            "Y": 118
+        },
+        "Onrac": {
+            "X": 187,
+            "Y": 95
+        },
+        "EarthCave1": {
+            "X": 49,
+            "Y": 114
+        },
+        "TitansTunnelEast": {
+            "X": 60,
+            "Y": 149
+        },
+        "MatoyasCave": {
+            "X": 76,
+            "Y": 79
+        },
+        "DwarfCave": {
+            "X": 60,
+            "Y": 91
+        },
+        "Elfland": {
+            "X": 229,
+            "Y": 235
+        },
+        "ElflandCastle": {
+            "X": 230,
+            "Y": 234
+        },
+        "MarshCave1": {
+            "X": 230,
+            "Y": 162
+        },
+        "NorthwestCastle": {
+            "X": 219,
+            "Y": 32
+        },
+        "Melmond": {
+            "X": 36,
+            "Y": 40
+        },
+        "CrescentLake": {
+            "X": 92,
+            "Y": 232
+        },
+        "Lefein": {
+            "X": 178,
+            "Y": 88
+        },
+        "BahamutCave1": {
+            "X": 112,
+            "Y": 112
+        },
+        "Cardia1": {
+            "X": 100,
+            "Y": 90
+        },
+        "Cardia2": {
+            "X": 150,
+            "Y": 53
+        },
+        "Cardia4": {
+            "X": 81,
+            "Y": 147
+        },
+        "Cardia5": {
+            "X": 84,
+            "Y": 96
+        },
+        "Cardia6": {
+            "X": 124,
+            "Y": 96
+        },
+        "Waterfall": {
+            "X": 68,
+            "Y": 100
+        },
+        "GurguVolcano1": {
+            "X": 74,
+            "Y": 112
+        },
+        "IceCave1": {
+            "X": 79,
+            "Y": 160
+        }
+    }
+}
