@@ -77,6 +77,12 @@ namespace FF1Lib
 				{ CanoeableRegion.OnracRegion, new List<OverworldTeleportIndex>{OverworldTeleportIndex.Onrac, OverworldTeleportIndex.Waterfall} }
 			};
 
+			if (flags.OwMapExchange == OwMapExchanges.None ||
+			    flags.OwMapExchange == OwMapExchanges.MelmondStart ||
+			    flags.OwMapExchange == OwMapExchanges.ElflandStart ||
+			    flags.OwMapExchange == OwMapExchanges.CrecsentStart) {
+			    // Can only apply map edits to vanilla-ish maps
+
 			if ((bool)flags.MapOnracDock)
 			{
 				MapEditsToApply.Add(OnracDock);
@@ -165,6 +171,7 @@ namespace FF1Lib
 					}
 				}
 			}
+			}
 
 			if ((bool)flags.TitansTrove)
 			{
@@ -241,7 +248,7 @@ namespace FF1Lib
 				// Caravan Island
 				mapLocationRequirements[MapLocation.Caravan].Clear();
 				mapLocationRequirements[MapLocation.Caravan].Add(MapChange.Airship | MapChange.Canoe);
-				
+
 				mapLocationRequirements[MapLocation.Onrac].Clear();
 				mapLocationRequirements[MapLocation.Onrac].Add(MapChange.Airship | MapChange.Canoe);
 				_walkableNodes[WalkableRegion.PravokaRegion].Add(OverworldTeleportIndex.Onrac);
