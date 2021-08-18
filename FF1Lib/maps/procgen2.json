@@ -8,8 +8,8 @@
         "Y": 76
     },
     "BridgeLocation": {
-        "X": 146,
-        "Y": 43
+        "X": 147,
+        "Y": 44
     },
     "CanalLocation": {
         "X": 123,
@@ -18,8 +18,8 @@
     "ShipLocations": [
         {
             "TeleporterIndex": 255,
-            "X": 145,
-            "Y": 49
+            "X": 147,
+            "Y": 51
         }
     ],
     "TeleporterFixups": [
