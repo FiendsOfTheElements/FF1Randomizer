@@ -14,7 +14,7 @@ namespace FF1Lib
 {
 	public enum OwMapExchanges
 	{
-		[Description("None(Default)")]
+		[Description("Vanilla (Default)")]
 		None,
 
 		[Description("Melmond Start")]
@@ -29,13 +29,13 @@ namespace FF1Lib
 		[Description("No Overworld")]
 		NoOverworld,
 
-		[Description("ProcGen1")]
+		[Description("Chanel #125")]
 		ProcGen1,
 
-		[Description("ProcGen2")]
+		[Description("Epic Quest")]
 		ProcGen2,
 
-		[Description("ProcGen3")]
+		[Description("Archipelago")]
 		ProcGen3,
 
 		[Description("Random")]

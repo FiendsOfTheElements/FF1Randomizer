@@ -2558,12 +2558,9 @@ namespace FF1Lib
 			WriteText(itemnames, FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextOffset, FF1Rom.UnusedGoldItems);
 		}
 
-		public void HackMinimap(OverworldMap map) {
-		    var compresedMap = map.GetCompressedMapRows();
-		    var decompressedMap = map.DecompressMapRows(compresedMap);
-		    byte emptyTile = 0xff;
-		    for (int i = 1; emptyTile == 0xff && i < 31; i++) {
-			for (int j = 1; emptyTile == 0xff && j < 31; j++) {
+		public byte findEmptyTile(List<List<byte>> decompressedMap) {
+		    for (int i = 1; i < 31; i++) {
+			for (int j = 1; j < 31; j++) {
 			    bool isEmpty = true;
 			    for (int x = 0; isEmpty && x < 8; x++) {
 				for (int y = 0; isEmpty && y < 8; y++) {
@@ -2573,12 +2570,37 @@ namespace FF1Lib
 				}
 			    }
 			    if (isEmpty) {
-				emptyTile = (byte)(i*8 + j);
+				return (byte)(i*8 + j);
 			    }
 			}
 		    }
+		    return 0;
+		}
 
+		public void HackMinimap(OverworldMap map) {
+		    // Correctly render arbitrary replacement maps.
+
+		    // The original vanilla minimap has a Final
+		    // Fantasy logo and dragon-sword-crest thing,
+		    // which are crammed into the tiles that are
+		    // normally empty ocean on the vanilla map.  It's
+		    // very clever.
+
+		    // It's way too much work to try and re-pack that
+		    // data (and not guaranteed to work because we
+		    // want to support arbitrary replacement maps) so
+		    // instead get rid of the clever bits, don't
+		    // render the logos and provide a replacement
+		    // nametable that only contains the plain map
+		    // tiles.
+
+		    // NOP out the calls to draw the logo and the
+		    // dragon crest things
 		    PutInBank(0x09, 0xBC45, Blob.FromHex("EAEAEAEAEAEA"));
+
+		    // Need to find 1 empty ocean square for the
+		    // background.
+		    byte emptyTile = findEmptyTile(map.DecompressMapRows(map.GetCompressedMapRows()));
 
 		    var nametable = new byte[960];
 		    for (int i = 0; i < 960; i++) {

@@ -42,6 +42,10 @@
     <EmbeddedResource Include="maps\nooverworld.json" />
     <EmbeddedResource Include="maps\procgen1.ffm" />
     <EmbeddedResource Include="maps\procgen1.json" />
+    <EmbeddedResource Include="maps\procgen2.ffm" />
+    <EmbeddedResource Include="maps\procgen2.json" />
+    <EmbeddedResource Include="maps\procgen3.ffm" />
+    <EmbeddedResource Include="maps\procgen3.json" />
   </ItemGroup>
 
   <ItemGroup>
