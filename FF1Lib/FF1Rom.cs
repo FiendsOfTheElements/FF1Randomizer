@@ -152,7 +152,7 @@ namespace FF1Lib
 			var shopItemLocation = ItemLocations.CaravanItemShop1;
 			var oldItemNames = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
 
-			GenerateDesert(rng);
+			GenerateDesert(overworldMap, rng);
 
 			if ((bool)flags.NPCItems || (bool)flags.NPCFetchItems)
 			{

@@ -1,9 +1,58 @@
 {
+	"StartingLocation": {
+		"X": 218,
+		"Y": 220
+	},
 	"ShipLocations": [
 		{
 			"TeleporterIndex": 255,
-			"X": 152,
-			"Y": 169
+			"X": 246,
+			"Y": 208
+		},
+		{
+			"TeleporterIndex": 1,
+			"X": 246,
+			"Y": 208
+		},
+		{
+			"TeleporterIndex": 2,
+			"X": 210,
+			"Y": 153
+		},
+		{
+			"TeleporterIndex": 3,
+			"X": 136,
+			"Y": 227
+		},
+		{
+			"TeleporterIndex": 5,
+			"X": 210,
+			"Y": 153
+		},
+		{
+			"TeleporterIndex": 9,
+			"X": 246,
+			"Y": 208
+		},
+		{
+			"TeleporterIndex": 10,
+			"X": 136,
+			"Y": 227
+		},
+		{
+			"TeleporterIndex": 11,
+			"X": 136,
+			"Y": 227
+		},
+		{
+			"TeleporterIndex": 23,
+			"X": 246,
+			"Y": 208
+		},
+		{
+			"TeleporterIndex": 13,
+			"X": 246,
+			"Y": 208
 		},
 		{
 			"TeleporterIndex": 20,
@@ -12,59 +61,52 @@
 		},
 		{
 			"TeleporterIndex": 21,
-			"X": 158,
-			"Y": 142
-		},
-		{
-			"TeleporterIndex": 2,
 			"X": 210,
 			"Y": 153
-		},
-		{
-			"TeleporterIndex": 16,
-			"X": 210,
-			"Y": 153
-		},
-		{
-			"TeleporterIndex": 3,
-			"X": 141,
-			"Y": 211
-		},
-		{
-			"TeleporterIndex": 3,
-			"X": 141,
-			"Y": 211
-		},
-		{
-			"TeleporterIndex": 10,
-			"X": 141,
-			"Y": 211
-		},
-		{
-			"TeleporterIndex": 23,
-			"X": 141,
-			"Y": 211
-		},
-		{
-			"TeleporterIndex": 11,
-			"X": 141,
-			"Y": 211
-		},
-		{
-			"TeleporterIndex": 5,
-			"X": 246,
-			"Y": 208
 		},
 		{
 			"TeleporterIndex": 15,
 			"X": 246,
 			"Y": 208
+		},
+		{
+			"TeleporterIndex": 16,
+			"X": 242,
+			"Y": 176
+		}
+	],
+	"TeleporterFixups": [
+		{
+			"Type": 1,
+			"Index": 4,
+			"To": {
+				"X": 219,
+				"Y": 215
+			}
+		}
+	],
+	"DomainFixups": [
+		{
+			"From": 44,
+			"To": 54
+		},
+		{
+			"From": 36,
+			"To": 55
+		},
+		{
+			"From": 28,
+			"To": 62
+		},
+		{
+			"From": 27,
+			"To": 63
 		}
 	],
 	"OverworldCoordinates": {
 		"Coneria": {
-			"X": 152,
-			"Y": 162
+			"X": 218,
+			"Y": 218
 		},
 		"Pravoka": {
 			"X": 210,
@@ -79,8 +121,8 @@
 			"Y": 160
 		},
 		"CrescentLake": {
-			"X": 219,
-			"Y": 218
+			"X": 152,
+			"Y": 162
 		},
 		"Gaia": {
 			"X": 221,
@@ -95,8 +137,8 @@
 			"Y": 99
 		},
 		"ConeriaCastle1": {
-			"X": 153,
-			"Y": 159
+			"X": 218,
+			"Y": 215
 		},
 		"ElflandCastle": {
 			"X": 136,
@@ -111,8 +153,8 @@
 			"Y": 45
 		},
 		"TempleOfFiends1": {
-			"X": 130,
-			"Y": 123
+			"X": 233,
+			"Y": 206
 		},
 		"EarthCave1": {
 			"X": 65,
@@ -127,20 +169,20 @@
 			"Y": 183
 		},
 		"Cardia1": {
-			"X": 92,
-			"Y": 48
+			"X": 149,
+			"Y": 173
 		},
 		"Cardia2": {
 			"X": 79,
 			"Y": 49
 		},
 		"BahamutCave1": {
-			"X": 96,
-			"Y": 51
+			"X": 125,
+			"Y": 122
 		},
 		"Cardia4": {
-			"X": 93,
-			"Y": 58
+			"X": 102,
+			"Y": 236
 		},
 		"Cardia5": {
 			"X": 105,
@@ -167,8 +209,8 @@
 			"Y": 190
 		},
 		"MarshCave1": {
-			"X": 102,
-			"Y": 236
+			"X": 192,
+			"Y": 225
 		},
 		"MirageTower1": {
 			"X": 194,
