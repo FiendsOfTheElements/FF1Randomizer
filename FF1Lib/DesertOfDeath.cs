@@ -116,7 +116,7 @@ namespace FF1Lib
 					new List<byte> { 0x45, 0x45, 0x10, 0x11, 0x12 },
 					new List<byte> { 0x10, 0x11, 0x21, 0x21, 0x33 },
 					new List<byte> { 0x20, 0x21, 0x0E, 0x21, 0x12 },
-					new List<byte> { 0x31, 0x33, 0x45, 0x31, 0x33 },
+					new List<byte> { 0x30, 0x33, 0x45, 0x30, 0x33 },
 			}),
 			(MapLocation.SardasCave, new List<List<byte>>() {
 					new List<byte> { 0x45, 0x10, 0x11, 0x11, 0x11, 0x12, 0x45 },
@@ -125,7 +125,73 @@ namespace FF1Lib
 					new List<byte> { 0x30, 0x21, 0x11, 0x11, 0x11, 0x11, 0x12 },
 					new List<byte> { 0x45, 0x30, 0x31, 0x31, 0x31, 0x34, 0x33 },
 			}),
-
+			(MapLocation.CrescentLake, new List<List<byte>>() {
+					new List<byte> { 0x45, 0x2C, 0x2D, 0x2E, 0x45 },
+					new List<byte> { 0x3B, 0x3C, 0x3D, 0x3E, 0x3F },
+					new List<byte> { 0x4B, 0x3D, 0x4E, 0x4E, 0x4F },
+					new List<byte> { 0x5B, 0x4E, 0x3D, 0x4E, 0x5F },
+					new List<byte> { 0x6B, 0x4E, 0x3D, 0x3D, 0x6F },
+					new List<byte> { 0x7B, 0x7D, 0x3D, 0x7E, 0x7F },
+			}),
+			(MapLocation.GurguVolcano1, new List<List<byte>>() {
+					new List<byte> { 0x64, 0x65 },
+					new List<byte> { 0x74, 0x75 },
+			}),
+			(MapLocation.IceCave1, new List<List<byte>>() {
+					new List<byte> { 0x10, 0x11, 0x11, 0x11, 0x12 },
+					new List<byte> { 0x30, 0x31, 0x2B, 0x21, 0x22 },
+					new List<byte> { 0x45, 0x45, 0x45, 0x30, 0x33 },
+					new List<byte> { 0x10, 0x11, 0x11, 0x11, 0x12 },
+					new List<byte> { 0x30, 0x31, 0x31, 0x31, 0x33 },
+			}),
+			(MapLocation.Caravan, new List<List<byte>>() {
+					new List<byte> { 0x45, 0x13, 0x13, 0x45 }, // palm tree
+					new List<byte> { 0x45, 0x36, 0x40, 0x41 }, // change caravan tile to tent
+					new List<byte> { 0x13, 0x45, 0x50, 0x51 },
+			}),
+			(MapLocation.Onrac, new List<List<byte>>() {
+					new List<byte> { 0x5D, 0x5D },
+					new List<byte> { 0x5D, 0x5D }, 
+			}),
+			(MapLocation.Waterfall, new List<List<byte>>() {
+					new List<byte> { 0x46 }, // Find something for waterfall
+			}),
+			(MapLocation.Cardia1, new List<List<byte>>() {
+					new List<byte> { 0x6A },
+			}),
+			(MapLocation.Cardia2, new List<List<byte>>() {
+					new List<byte> { 0x66 },
+			}),
+			(MapLocation.Cardia4, new List<List<byte>>() {
+					new List<byte> { 0x67 },
+			}),
+			(MapLocation.Cardia5, new List<List<byte>>() {
+					new List<byte> { 0x68 },
+			}),
+			(MapLocation.Cardia6, new List<List<byte>>() {
+					new List<byte> { 0x69 },
+			}),
+			(MapLocation.BahamutCave1, new List<List<byte>>() {
+					new List<byte> { 0x6C },
+			}),
+			(MapLocation.CastleOrdeals1, new List<List<byte>>() {
+					new List<byte> { 0x0B, 0x0C },
+					new List<byte> { 0x38, 0x39 },
+			}),
+			(MapLocation.MirageTower1, new List<List<byte>>() {
+					new List<byte> { 0x0D, 0x45 },
+					new List<byte> { 0x1D, 0x1E },
+			}),
+			(MapLocation.Gaia, new List<List<byte>>() {
+					new List<byte> { 0x45, 0x5A, 0x5A },
+					new List<byte> { 0x5A, 0x5A, 0x45 },
+			}),
+			(MapLocation.Lefein, new List<List<byte>>() {
+					new List<byte> { 0x45, 0x2C, 0x2D, 0x2E, 0x45 },
+					new List<byte> { 0x3B, 0x3C, 0x6D, 0x3E, 0x3F },
+					new List<byte> { 0x4B, 0x6D, 0x6D, 0x6D, 0x4F },
+					new List<byte> { 0x5C, 0x7D, 0x3D, 0x7E, 0x5E },
+			}),
 		};
 
 		public List<MapEdit> ConvertTileArrayToMapEdit(List<List<byte>> mapedit, int target_x, int target_y)
@@ -375,6 +441,8 @@ namespace FF1Lib
 
 			}
 
+
+			List<byte> newTileList = new() { 0x03, 0x04, 0x05, 0x13, 0x14, 0x15 };
 			for (int x = 0; x < 16; x++)
 			{
 
@@ -386,7 +454,7 @@ namespace FF1Lib
 						{
 							overworldmap.MapEditsToApply.Add(new List<MapEdit>
 								{
-								new MapEdit{X = (byte)((x * 16) + Rng.Between(rng, 0,15)), Y = (byte)((y * 16) + Rng.Between(rng, 0,15)), Tile = (byte)OWTile.MountainCenter},
+								new MapEdit{X = (byte)((x * 16) + Rng.Between(rng, 0,15)), Y = (byte)((y * 16) + Rng.Between(rng, 0,15)), Tile = newTileList.PickRandom(rng)},
 								});
 						}
 						else
@@ -413,12 +481,74 @@ namespace FF1Lib
 				}
 
 			}
+
+
+
 			// Palette
+			for(int i = 1; i<16; i+=4)
+			{
+				Put(0x0380+i, Blob.FromHex("37"));
+			}
 
+			List<byte> holes = new List<byte> { 0x66, 0x67, 0x68, 0x69, 0x6A, 0x6C, 0x6E };
 
-				// Placement
+			foreach (var hole in holes)
+			{
+				Put(0x0300 + hole, Blob.FromHex("55"));
+			}
 
-				// Ship
+			List<byte> newTilesPalette = new List<byte> { 0x14, 0x15 };
+
+			foreach (var newtile in newTilesPalette)
+			{
+				Put(0x0300 + newtile, Blob.FromHex("55"));
+			}
+
+			// New graphic tiles
+			var newGraphicTiles =
+				"FFFFFFFFFFF7E36300000000000C1EDE" +
+				"FFFF7F7F7FFFFF9F0080C0C0C0008080" +
+				"E36382E3E3D3B9A0CAFF77161E3E6763" +
+				"FFFFFFFFFFFFFBEB0000000000000C1E" +
+				"FFBFFFBF7FFF3F1F00C0C0C080000000" +
+				"7BEB6F8BEAEBFAEADEDEFE7F1F1E1E1E" +
+				"FFFFEFE7ADA7EFE90000181A5E781818" +
+				"C680051DF0E2C2CC397DE6870E5A310B" +
+				"F926A3091209000006D9509EF1FC9FB1" +
+				"FCFDFDFFFFF6E0FC0A0A0A480C040000" +
+				"66E2FBFFFF60233F3844404040602030" +
+				"E181C0808080C0BFE3D9DCBCBEBEC0FF" +
+				"EDBFFBDF767F0BBFFFFFFFFF7F7F1FFF" +
+				"EDBFFBC7820100BFFFFFFFC7B37900FF" +
+				"F6BFFBDFF6FFE8B9FFFFFFFFFFFFFCFB" +
+				"EDBFFBDFF6FF2BDFFFFFFFFFFFFF3FDF" +
+				"E1A0C28505A0A0BFF5EAD7AD0DA8A0FF" +
+				"EDF743BD808701BFEFF77BBD80B701FF";
+
+			Put(0x8210, Blob.FromHex(newGraphicTiles));
+
+			List<(byte, byte, byte, byte, byte)> tilesToUpdate = new()
+			{
+				(0x03, 0x21, 0x20, 0x23, 0x22), // Cactuar
+				(0x04, 0x24, 0x20, 0x26, 0x25), // Cactus1
+				(0x05, 0x24, 0x27, 0x26, 0x25), // Cactus2
+				(0x13, 0x28, 0x29, 0x2A, 0x2B), // Palm
+				(0x14, 0x54, 0x2E, 0x2C, 0x2D), // Rock1
+				(0x15, 0x54, 0x54, 0x2C, 0x2D), // Rock2
+				(0x36, 0x2F, 0x30, 0x31, 0x32), // Caravan
+			};
+
+			foreach (var tile in tilesToUpdate)
+			{
+				Put(0x0100 + tile.Item1, new byte[] { tile.Item2 });
+				Put(0x0180 + tile.Item1, new byte[] { tile.Item3 });
+				Put(0x0200 + tile.Item1, new byte[] { tile.Item4 });
+				Put(0x0280 + tile.Item1, new byte[] { tile.Item5 });
+			}
+
+			// Placement
+
+			// Ship
 
 		}
 
