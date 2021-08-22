@@ -4822,5 +4822,15 @@ namespace FF1Lib
 				RaisePropertyChanged();
 			}
 		}
+
+		public bool QuickMinimapLoad
+		{
+			get => Flags.QuickMinimapLoad;
+			set
+			{
+				Flags.QuickMinimapLoad = value;
+				RaisePropertyChanged();
+			}
+		}
 	}
 }
