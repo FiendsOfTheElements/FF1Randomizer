@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System;
+using System.Reflection;
 using RomUtilities;
+using FF1Lib.Sanity;
 
 namespace FF1Lib.Procgen
 {
@@ -13,49 +15,49 @@ namespace FF1Lib.Procgen
         }
     }
 
-        
-    struct Point { int X; int Y; }
+     
     class OwRegion {
         byte Tile;
         int RegionId;
-        List<Point> Points;
+        List<SCCoords> SCCoordss;
         List<int> Adjacent;
-        Point NWCorner;
-        Point SECorner;
+        SCCoords NWCorner;
+        SCCoords SECorner;
 
         OwRegion(byte tile, int regionid) {
             this.Tile = tile;
             this.RegionId = regionid;
-            this.Points = new List<Point>();
+            this.SCCoordss = new List<SCCoords>();
             this.Adjacent = new List<int>();
             }
         }
 
-    class OverworldState {
-        const int MAPSIZE = 256;
+    public class OverworldState {
+        public const int MAPSIZE = 256;
         double[,] Basemap;
-        byte[,] Tilemap;
+        public byte[,] Tilemap;
         int[,] Biome_regionmap;
         List<OwRegion> Biome_regionlist;
         int[,] Traversable_regionmap;
         List<OwRegion> Traversable_regionlist;
         int[,] Feature_weightmap;
         int[,] Dock_weightmap;
-        Dictionary<string, Point> FeatureCoordinates;
-        Point Airship;
-        Point Bridge;
-        Point Canal;
-        Point Ship;
+        public Dictionary<string, SCCoords> FeatureCoordinates;
+        public SCCoords Airship;
+        public SCCoords Bridge;
+        public SCCoords Canal;
+        public SCCoords Ship;
         List<int> Reachable_regions;
         List<int> Exclude_docks;
         private bool ownBasemap;
         private bool ownTilemap;
         private bool ownRegions;
         private bool ownPlacements;
+        Queue<GenerationStep> StepQueue;
 
         private MT19337 rng;
 
-        OverworldState(MT19337 rng) {
+        public OverworldState(MT19337 rng, GenerationStep[] steps) {
             this.rng = rng;
             this.ownBasemap = true;
             this.ownTilemap = true;
@@ -69,13 +71,13 @@ namespace FF1Lib.Procgen
             this.Traversable_regionlist = new List<OwRegion>();
             this.Feature_weightmap  = new int[MAPSIZE,MAPSIZE];
             this.Dock_weightmap = new int[MAPSIZE,MAPSIZE];
-            this.FeatureCoordinates = new Dictionary<string, Point>();
+            this.FeatureCoordinates = new Dictionary<string, SCCoords>();
             this.Reachable_regions = new List<int>();
             this.Exclude_docks = new List<int>();
-            //this.features_todo = features_todo;
+            this.StepQueue = new Queue<GenerationStep>(steps);
         }
 
-        OverworldState(OverworldState copy) {
+        public OverworldState(OverworldState copy) {
             this.ownBasemap = false;
             this.ownTilemap = false;
             this.ownRegions = false;
@@ -96,6 +98,7 @@ namespace FF1Lib.Procgen
             this.Canal = copy.Canal;
             this.Ship = copy.Ship;
             this.rng = copy.rng;
+            this.StepQueue = copy.StepQueue;
         }
 
         void OwnBasemap() {
@@ -137,7 +140,7 @@ namespace FF1Lib.Procgen
             this.Dock_weightmap = new int[MAPSIZE,MAPSIZE];
             Array.Copy(fromDock_weightmap, this.Tilemap, fromDock_weightmap.Length);
 
-            this.FeatureCoordinates = new Dictionary<string, Point>(this.FeatureCoordinates);
+            this.FeatureCoordinates = new Dictionary<string, SCCoords>(this.FeatureCoordinates);
             this.Reachable_regions = new List<int>(this.Reachable_regions);
             this.Exclude_docks = new List<int>(this.Exclude_docks);
         }
@@ -145,7 +148,7 @@ namespace FF1Lib.Procgen
         const double UNSET = -1000000;
         const double perturb_reduction = .63;
 
-        void PerturbPoint(int x0, int y0, int x1, int y1, double r0) {
+        void PerturbSCCoords(int x0, int y0, int x1, int y1, double r0) {
             if (Math.Abs(x0 - x1) <= 1 && Math.Abs(y0 - y1) <= 1) {
                 return;
             }
@@ -205,13 +208,13 @@ namespace FF1Lib.Procgen
 
             r0 *= perturb_reduction;
  
-            this.PerturbPoint(x0, y0, x2, y2, r0);
-            this.PerturbPoint(x2, y0, x1, y2, r0);
-            this.PerturbPoint(x0, y2, x2, y1, r0);
-            this.PerturbPoint(x2, y2, x1, y1, r0);
+            this.PerturbSCCoords(x0, y0, x2, y2, r0);
+            this.PerturbSCCoords(x2, y0, x1, y2, r0);
+            this.PerturbSCCoords(x0, y2, x2, y1, r0);
+            this.PerturbSCCoords(x2, y2, x1, y1, r0);
         }
 
-        bool CreateInitialMap() {
+        Result CreateInitialMap() {
             this.OwnBasemap();
             this.OwnTilemap();
 
@@ -232,7 +235,7 @@ namespace FF1Lib.Procgen
             }
             this.Basemap[MAPSIZE/2-1, MAPSIZE/2-1] = 0;
 
-            this.PerturbPoint(border, border, MAPSIZE-1-border, MAPSIZE-1-border, 1);
+            this.PerturbSCCoords(border, border, MAPSIZE-1-border, MAPSIZE-1-border, 1);
 
             const double land_pct = .26;
             const double mountain_pct = 0.055;
@@ -268,7 +271,7 @@ namespace FF1Lib.Procgen
                     mountain_elevation -= .005;
                 }
                 if (sea_elevation <= 0) {
-                    return false;
+                    return new Result(false);
                 }
             }
 
@@ -286,11 +289,114 @@ namespace FF1Lib.Procgen
                     }
                 }
             }
+
+            return this.NextStep();
+        }
+
+        public Result NextStep() {
+            if (this.StepQueue.Count == 0) {
+                return new Result(this);
+            }
+            this.StepQueue = new Queue<GenerationStep>(this.StepQueue);
+            var nextStep = this.StepQueue.Dequeue();
+            return nextStep.RunStep(new OverworldState(this));
         }
     }
 
+    public class Result {
+        public OverworldState final;
+        public List<GenerationTask> additionalTasks;
+
+         public Result(bool f) {
+             this.final = null;
+             this.additionalTasks = null;
+         }
+
+        public Result(OverworldState f) {
+            this.final = f;
+            this.additionalTasks = null;
+        }
+
+        public Result(List<GenerationTask> tasks) {
+            this.final = null;
+            this.additionalTasks = tasks;
+        }
+    }
+
+    public delegate Result GenerationTask();
+
+    public class GenerationStep {
+        MethodInfo method;
+        object[] parameters;
+        public GenerationStep(string methodName, object[] parameters) {
+            Type magicType = Type.GetType("FF1Lib.Procgen.OverworldState");
+            this.method = magicType.GetMethod(methodName);
+            this.parameters = parameters;
+        }
+
+        public Result RunStep(OverworldState st) {
+            return (Result)method.Invoke(st, this.parameters);
+        }
+    }
+
+    public class ReplacementMap {
+
+        public ReplacementMap(OverworldState st) {
+            Tiles = new List<List<byte>>();
+            for (int y = 0; y < OverworldState.MAPSIZE; y++) {
+                Tiles.Add(new List<byte>());
+                for (int x = 0; x < OverworldState.MAPSIZE; x++) {
+                    Tiles[y].Add(st.Tilemap[y,x]);
+                }
+            }
+            ExchangeData = new OwMapExchangeData();
+            ExchangeData.StartingLocation = new SCCoords(st.FeatureCoordinates["ConeriaCastle1"].X, st.FeatureCoordinates["ConeriaCastle1"].Y+5);
+            ExchangeData.AirShipLocation = st.Airship;
+            ExchangeData.BridgeLocation = st.Bridge;
+            ExchangeData.CanalLocation = st.Canal;
+            ExchangeData.ShipLocations = new ShipLocation[] {
+                new ShipLocation(st.Ship.X, st.Ship.Y, 255)
+            };
+            ExchangeData.TeleporterFixups = new TeleportFixup[] {
+                new TeleportFixup(FF1Lib.TeleportType.Exit, 0, new TeleData((MapId)0xFF, st.FeatureCoordinates["TitansTunnelEast"].X, st.FeatureCoordinates["TitansTunnelEast"].Y))
+            };
+            ExchangeData.OverworldCoordinates = st.FeatureCoordinates;
+        }
+        public List<List<byte>> Tiles;
+        public OwMapExchangeData ExchangeData;
+    }
+
     public class NewOverworld {
-        
+
+        public static ReplacementMap GenerateNewOverworld(MT19337 rng) {
+            GenerationStep[] steps = new GenerationStep[] {
+                new GenerationStep("CreateInitialMap", new object[]{}),
+            };
+
+            Stack<GenerationTask> workStack = new Stack<GenerationTask>();
+
+            workStack.Push(new OverworldState(rng, steps).NextStep);
+
+            OverworldState final = null;
+            int taskCount = 0;
+            while (workStack.Count > 0) {
+                taskCount += 1;
+                var p = workStack.Pop();
+                var r = p();
+                if (r.final != null) {
+                    final = r.final;
+                    break;
+                }
+                if (r.additionalTasks != null) {
+                    foreach (var v in r.additionalTasks) {
+                        workStack.Push(v);
+                    }
+                }
+
+            }
+
+            return new ReplacementMap(final);
+        }
     }
 
 }
