@@ -1,6 +1,7 @@
+using System.Collections.Generic;
 namespace FF1Lib.Procgen
 {
-    public static class MapTiles {
+    public class OverworldTiles {
         public const byte LAND = 0x00;
 	public const byte CONERIA_CASTLE_ENTRANCE_W = 0x01;
 	public const byte CONERIA_CASTLE_ENTRANCE_E = 0x02;
@@ -129,5 +130,118 @@ namespace FF1Lib.Procgen
 	public const byte CITY_WALL_GATE_W = 0x7D;
 	public const byte CITY_WALL_GATE_E = 0x7E;
 	public const byte CITY_WALL_SE2 = 0x7F;
+
+    public const byte STAR = 0x80;
+    public const byte _ = 0x81;
+    public const byte CAVE = 0x82;
+
+    public OwTileFilter expand_mountains;
+    public OwTileFilter expand_oceans;
+
+    public OverworldTiles() {
+    this.expand_mountains = new OwTileFilter(
+        new Rule[] {
+            new Rule(new byte[3,3] {
+                {MOUNTAIN, _, _},
+                {_,        _, _},
+                {_,        _, _}
+            }, MOUNTAIN),
+            new Rule(new byte[3,3] {
+                {_, MOUNTAIN, _},
+                {_,        _, _},
+                {_,        _, _},
+            }, MOUNTAIN),
+            new Rule(new byte[3,3] {
+                {_, _, MOUNTAIN},
+                {_,        _, _},
+                {_,        _, _},
+            }, MOUNTAIN),
+            new Rule(new byte[3,3] {
+                {_,        _, _},
+                {MOUNTAIN, _, _},
+                {_,        _, _}
+            }, MOUNTAIN),
+            new Rule(new byte[3,3] {
+                {_,        _, _},
+                {_, MOUNTAIN, _},
+                {_,        _, _},
+            }, MOUNTAIN),
+            new Rule(new byte[3,3] {
+                {_,        _, _},
+                {_, _, MOUNTAIN},
+                {_,        _, _},
+            }, MOUNTAIN),
+            new Rule(new byte[3,3] {
+                {_,        _, _},
+                {_,        _, _},
+                {MOUNTAIN, _, _},
+            }, MOUNTAIN),
+            new Rule(new byte[3,3] {
+                {_,        _, _},
+                {_,        _, _},
+                {_, MOUNTAIN, _},
+            }, MOUNTAIN),
+            new Rule(new byte[3,3] {
+                {_,        _, _},
+                {_,        _, _},
+                {_, _, MOUNTAIN},
+            }, MOUNTAIN),
+        },
+        null, new HashSet<byte>(new byte[] {LAND, OCEAN, MOUNTAIN}), null);
+
+    this.expand_oceans = new OwTileFilter(
+        new Rule[] {
+            new Rule(new byte[3,3] {
+                {OCEAN, _, _},
+                {_,        _, _},
+                {_,        _, _}
+            }, OCEAN),
+            new Rule(new byte[3,3] {
+                {_, OCEAN, _},
+                {_,        _, _},
+                {_,        _, _},
+            }, OCEAN),
+            new Rule(new byte[3,3] {
+                {_, _, OCEAN},
+                {_,        _, _},
+                {_,        _, _},
+            }, OCEAN),
+            new Rule(new byte[3,3] {
+                {_,        _, _},
+                {OCEAN, _, _},
+                {_,        _, _}
+            }, OCEAN),
+            new Rule(new byte[3,3] {
+                {_,        _, _},
+                {_, OCEAN, _},
+                {_,        _, _},
+            }, OCEAN),
+            new Rule(new byte[3,3] {
+                {_,        _, _},
+                {_, _, OCEAN},
+                {_,        _, _},
+            }, OCEAN),
+            new Rule(new byte[3,3] {
+                {_,        _, _},
+                {_,        _, _},
+                {OCEAN, _, _},
+            }, OCEAN),
+            new Rule(new byte[3,3] {
+                {_,        _, _},
+                {_,        _, _},
+                {_, OCEAN, _},
+            }, OCEAN),
+            new Rule(new byte[3,3] {
+                {_,        _, _},
+                {_,        _, _},
+                {_, _, OCEAN},
+            }, OCEAN),
+        },
+        null, new HashSet<byte>(new byte[] {LAND, OCEAN, MOUNTAIN}), null);
+
+    }
+
+
+//]
     }
 }
