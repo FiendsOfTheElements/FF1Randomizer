@@ -3,6 +3,7 @@ using System;
 using System.Reflection;
 using RomUtilities;
 using FF1Lib.Sanity;
+using System.Diagnostics;
 
 namespace FF1Lib.Procgen
 {
@@ -15,7 +16,7 @@ namespace FF1Lib.Procgen
         }
     }
 
-     
+
     class OwRegion {
         byte Tile;
         int RegionId;
@@ -54,6 +55,9 @@ namespace FF1Lib.Procgen
         private bool ownRegions;
         private bool ownPlacements;
         Queue<GenerationStep> StepQueue;
+        double heightmax;
+        double mountain_elevation;
+        double sea_elevation;
 
         private MT19337 rng;
 
@@ -99,6 +103,9 @@ namespace FF1Lib.Procgen
             this.Ship = copy.Ship;
             this.rng = copy.rng;
             this.StepQueue = copy.StepQueue;
+            this.heightmax = copy.heightmax;
+            this.mountain_elevation = copy.mountain_elevation;
+            this.sea_elevation = copy.sea_elevation;
         }
 
         void OwnBasemap() {
@@ -153,6 +160,14 @@ namespace FF1Lib.Procgen
             this.Reachable_regions = new List<int>(this.Reachable_regions);
             this.Exclude_docks = new List<int>(this.Exclude_docks);
             this.ownPlacements = true;
+        }
+        public Result NextStep() {
+            if (this.StepQueue.Count == 0) {
+                return new Result(this);
+            }
+            this.StepQueue = new Queue<GenerationStep>(this.StepQueue);
+            var nextStep = this.StepQueue.Dequeue();
+            return nextStep.RunStep(new OverworldState(this));
         }
 
         const double UNSET = -1000000;
@@ -217,7 +232,7 @@ namespace FF1Lib.Procgen
             }
 
             r0 *= perturb_reduction;
- 
+
             this.PerturbSCCoords(x0, y0, x2, y2, r0);
             this.PerturbSCCoords(x2, y0, x1, y2, r0);
             this.PerturbSCCoords(x0, y2, x2, y1, r0);
@@ -249,8 +264,9 @@ namespace FF1Lib.Procgen
 
             const double land_pct = .26;
             const double mountain_pct = 0.055;
-            double mountain_elevation = 1-mountain_pct;
-            double sea_elevation = 1-land_pct;
+            this.heightmax = -100;
+            this.mountain_elevation = 1-mountain_pct;
+            this.sea_elevation = 1-land_pct;
 
             int mountain_count = 0;
             int land_count = 0;
@@ -265,6 +281,9 @@ namespace FF1Lib.Procgen
                 for (int y = 0; y < MAPSIZE; y++) {
                     for (int x = 0; x < MAPSIZE; x++) {
                         var height = this.Basemap[y,x];
+                        if (height > heightmax) {
+                            this.heightmax = height;
+                        }
                         if (height > mountain_elevation) {
                             mountain_count += 1;
                         }
@@ -289,13 +308,13 @@ namespace FF1Lib.Procgen
                 for (int x = 0; x < MAPSIZE; x++) {
                     var height = this.Basemap[y,x];
                     if (height > mountain_elevation) {
-                        this.Tilemap[y,x] = MapTiles.MOUNTAIN;
+                        this.Tilemap[y,x] = OverworldTiles.MOUNTAIN;
                     }
                     else if (height > sea_elevation) {
-                        this.Tilemap[y,x] = MapTiles.LAND;
+                        this.Tilemap[y,x] = OverworldTiles.LAND;
                     }
                     else {
-                        this.Tilemap[y,x] = MapTiles.OCEAN;
+                        this.Tilemap[y,x] = OverworldTiles.OCEAN;
                     }
                 }
             }
@@ -303,13 +322,72 @@ namespace FF1Lib.Procgen
             return this.NextStep();
         }
 
-        public Result NextStep() {
-            if (this.StepQueue.Count == 0) {
-                return new Result(this);
+        public Result ApplyFilter(OwTileFilter filter) {
+            this.OwnTilemap();
+            this.Tilemap = filter.ApplyFilter(this.Tilemap);
+            return this.NextStep();
+        }
+
+        public void FlowRiver(SCCoords p) {
+            this.OwnTilemap();
+
+            int volume = 256;
+            var pending = new SortedList<double, SCCoords>();
+            pending[-this.Basemap[p.Y,p.X]] = p;
+            while (volume > 0 && pending.Count > 0) {
+                p = pending.Values[pending.Count-1];
+                pending.RemoveAt(pending.Count-1);
+
+                if (this.Tilemap[p.Y,p.X] == OverworldTiles.OCEAN) {
+                    return;
+                }
+
+                volume -= 1;
+
+                if (this.Tilemap[p.Y,p.X] == OverworldTiles.RIVER) {
+                    continue;
+                }
+
+               this.Tilemap[p.Y,p.X] = OverworldTiles.RIVER;
+            
+               pending[-this.Basemap[p.Y,p.X+1]] = p.OwRight;
+               pending[-this.Basemap[p.Y+1,p.X]] = p.OwDown;
+               pending[-this.Basemap[p.Y,p.X-1]] = p.OwLeft;
+               pending[-this.Basemap[p.Y-1,p.X]] = p.OwUp;
             }
-            this.StepQueue = new Queue<GenerationStep>(this.StepQueue);
-            var nextStep = this.StepQueue.Dequeue();
-            return nextStep.RunStep(new OverworldState(this));
+
+        }
+
+        public void FlowRivers(double lower_elev, double upper_elev, int count) {
+            var points = new List<SCCoords>();
+            for (int y = 0; y < MAPSIZE; y++) {
+                for (int x = 0; x < MAPSIZE; x++) {
+                    double height = this.Basemap[y,x];
+                    if (height >= lower_elev && height <= upper_elev) {
+                        points.Add(new SCCoords(x, y));
+                    }
+                }
+            }
+
+            points.Shuffle(this.rng);
+
+            if (count > points.Count) {
+                count = points.Count;
+            }
+
+            for (int i = 0; i < count; i++) {
+                this.FlowRiver(points[i]);
+            }
+        }
+
+        public Result FlowMountainRivers() {
+            this.FlowRivers(this.mountain_elevation + (this.heightmax-this.mountain_elevation)*.5, this.heightmax, 10);
+            return this.NextStep();            
+        }
+
+        public Result FlowPlainsRivers() {
+            this.FlowRivers(this.sea_elevation + (this.mountain_elevation-this.sea_elevation)*.5, this.mountain_elevation, 10);
+            return this.NextStep();
         }
     }
 
@@ -341,6 +419,7 @@ namespace FF1Lib.Procgen
         public GenerationStep(string methodName, object[] parameters) {
             Type magicType = Type.GetType("FF1Lib.Procgen.OverworldState");
             this.method = magicType.GetMethod(methodName);
+            Debug.Assert(method != null);
             this.parameters = parameters;
         }
 
@@ -379,8 +458,13 @@ namespace FF1Lib.Procgen
     public static class NewOverworld {
 
         public static ReplacementMap GenerateNewOverworld(MT19337 rng) {
+            var mt = new OverworldTiles();
             GenerationStep[] steps = new GenerationStep[] {
                 new GenerationStep("CreateInitialMap", new object[]{}),
+                new GenerationStep("ApplyFilter", new object[] {mt.expand_mountains}),
+                new GenerationStep("ApplyFilter", new object[] {mt.expand_oceans}),
+                new GenerationStep("FlowMountainRivers", new object[] {}),
+                new GenerationStep("FlowPlainsRivers", new object[] {}),
             };
 
             Stack<GenerationTask> workStack = new Stack<GenerationTask>();
