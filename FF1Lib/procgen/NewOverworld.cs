@@ -465,6 +465,7 @@ namespace FF1Lib.Procgen
                 new GenerationStep("ApplyFilter", new object[] {mt.expand_oceans}),
                 new GenerationStep("FlowMountainRivers", new object[] {}),
                 new GenerationStep("FlowPlainsRivers", new object[] {}),
+                new GenerationStep("ApplyFilter", new object[] {mt.connect_diagonals}),
             };
 
             Stack<GenerationTask> workStack = new Stack<GenerationTask>();
