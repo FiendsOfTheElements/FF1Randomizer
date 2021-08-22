@@ -16,6 +16,8 @@ namespace FF1Lib
 
 	public class TeleportFixup
 	{
+	    public TeleportFixup(TeleportType tp, int idx, TeleData to);
+
 		public TeleportType Type { get; set; }
 
 		public int? Index { get; set; }
