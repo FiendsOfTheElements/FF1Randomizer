@@ -109,7 +109,7 @@
 		bool? NoXcalber { get; }
 		WorldWealthMode WorldWealth { get; }
 		ConsumableChestSet MoreConsumableChests { get; }
-		bool EnableExtConsumables { get; }
+		ExtConsumableSet ExtConsumableSet { get; }
 		ExtConsumableChestSet ExtConsumableChests { get; }
 		bool IncentiveChestItemsFanfare { get; }
 		bool? NoItemMagic { get; }
@@ -139,7 +139,7 @@
 		int PriceScaleFactorHigh { get; }
 		bool? ExcludeGoldFromScaling { get; }
 		bool CheapVendorItem { get; }
-		bool EnableExtConsumables { get; }
+		ExtConsumableSet ExtConsumableSet { get; }
 	}
 	public interface IFloorShuffleFlags
 	{

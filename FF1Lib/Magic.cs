@@ -719,6 +719,54 @@ namespace FF1Lib
 				WriteText(itemnames, FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextOffset);
 			}
 		}
+
+		public void EnableSoftInBattle()
+		{
+			var spellInfos = LoadSpells().ToList();
+			var spells = GetSpells().ToDictionary(s => s.Name.ToLowerInvariant());
+
+
+			foreach (var spl in spells.Where(s => s.Key.StartsWith("soft") || s.Key.StartsWith("sft")).Select(s => s.Value))
+			{
+				SpellInfo spell = new SpellInfo
+				{
+					routine = 0x08, //cure ailment
+					effect = 0x02, //earth element
+					targeting = 0x10, //single target
+					accuracy = 00,
+					elem = 0,
+					gfx = 184,
+					palette = 40
+				};
+
+				Put(MagicOffset + spl.Index * MagicSize, spell.compressData());
+			}
+		}
+
+
+
+		public void EnableLifeInBattle()
+		{
+			var spellInfos = LoadSpells().ToList();
+			var spells = GetSpells().ToDictionary(s => s.Name.ToLowerInvariant());
+
+
+			foreach (var spl in spells.Where(s => s.Key.StartsWith("life") || s.Key.StartsWith("lif")).Select(s => s.Value))
+			{
+				SpellInfo spell = new SpellInfo
+				{
+					routine = 0x08, //cure ailment
+					effect = spl.Name == "LIF2" ? (byte)0x81 : (byte)0x01, //death element
+					targeting = 0x10, //single target
+					accuracy = 00,
+					elem = 0,
+					gfx = 224,
+					palette = spl.Name == "LIF2" ? (byte)44 : (byte)43,
+				};
+
+				Put(MagicOffset + spl.Index * MagicSize, spell.compressData());
+			}
+		}
 	}
 
 	public enum SpellNameMadness

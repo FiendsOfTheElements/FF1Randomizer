@@ -744,7 +744,7 @@ namespace FF1Lib
 
 		public static IEnumerable<Weapon> LoadAllWeapons(FF1Rom rom, Flags flags)
 		{
-			int i = flags.EnableExtConsumables ? 4 : 0;
+			int i = flags.ExtConsumableSet != ExtConsumableSet.None ? 4 : 0;
 			for (; i < 40; i++)
 			{
 				yield return new Weapon(i, rom);

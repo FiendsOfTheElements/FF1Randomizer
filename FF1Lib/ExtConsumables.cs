@@ -2,6 +2,7 @@
 using RomUtilities;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,6 +10,21 @@ using static FF1Lib.FF1Rom;
 
 namespace FF1Lib
 {
+	public enum ExtConsumableSet
+	{
+		[Description("None")]
+		None,
+
+		[Description("FCURE, PHNIX, BLAST, SMOKE")]
+		SetA,
+
+		[Description("RFRSH, FLARE, BLACK, GUARD")]
+		SetB,
+
+		[Description("QUICK, HIGH, WIZRD, CLOAK")]
+		SetC
+	}
+
 	public class ExtConsumables
 	{
 		FF1Rom rom;
@@ -37,17 +53,11 @@ namespace FF1Lib
 
 		public void AddExtConsumables()
 		{
-			if (!flags.EnableExtConsumables) return;
-
 			ChangeItemJumpTable();
 
-			WriteOutOfBattleFCureRoutine();
-			WriteOutOfBattlePhnixRoutine();
-			WriteOutOfBattleSmokeRoutine();
-			WriteOutOfBattleBlastRoutine();
+			WriteOutOfBattleRoutines();
 
-			//DrawItemBox EndOfItemIndex
-			rom.PutInBank(0x1F, 0xEF4D, new byte[] { 0x20 });
+			WriteDrawItemBoxEndOfItemIndex();
 
 			ChangeItemNames();
 			ChangeMenuTexts();
@@ -69,11 +79,22 @@ namespace FF1Lib
 			WriteBattleDoTurn();
 			ModifyBattleLogicLoop();
 
-			CreateLifeSpell();
-			CreateSmokeSpell();
+			if (flags.ExtConsumableSet == ExtConsumableSet.SetA)
+			{
+				CreateLifeSpell();
+				CreateSmokeSpell();
+			}
+			else if (flags.ExtConsumableSet == ExtConsumableSet.SetB)
+			{
+				CreateBlackPotionSpell();
+			}
+			else if (flags.ExtConsumableSet == ExtConsumableSet.SetC)
+			{
+				CreateHighPotionSpell();
+			}
 
 			ClearShops();
-		}
+		}		
 
 		private void ChangeItemJumpTable()
 		{
@@ -87,10 +108,20 @@ namespace FF1Lib
 			table[(int)Item.Key] = useitem_bad;
 			table[(int)Item.Tnt] = useitem_bad;
 
-			table[(int)Item.WoodenNunchucks] = 0x96F8;
-			table[(int)Item.SmallKnife] = 0x9748;
-			table[(int)Item.WoodenRod] = 0x9790;
-			table[(int)Item.Rapier] = 0x9795;
+			if (flags.ExtConsumableSet == ExtConsumableSet.SetB)
+			{
+				table[(int)Item.WoodenNunchucks] = 0x96F8;
+				table[(int)Item.SmallKnife] = 0x9790;
+				table[(int)Item.WoodenRod] = 0x9748;
+				table[(int)Item.Rapier] = 0x9795;
+			}
+			else
+			{
+				table[(int)Item.WoodenNunchucks] = 0x96F8;
+				table[(int)Item.SmallKnife] = 0x9748;
+				table[(int)Item.WoodenRod] = 0x9790;
+				table[(int)Item.Rapier] = 0x9795;
+			}
 
 			rom.PutInBank(0x0E, 0x96B0, Blob.FromUShorts(table));
 
@@ -99,22 +130,77 @@ namespace FF1Lib
 			rom.PutInBank(0x0E, 0xB16F, Blob.FromHex("BDB196"));
 		}
 
+		private void WriteOutOfBattleRoutines()
+		{
+			if (flags.ExtConsumableSet == ExtConsumableSet.SetA)
+			{
+				WriteOutOfBattleFCureRoutine();
+				WriteOutOfBattlePhnixRoutine();
+				WriteOutOfBattleGeneric3Routine();
+				WriteOutOfBattleGeneric4Routine();
+			}
+			else if (flags.ExtConsumableSet == ExtConsumableSet.SetB)
+			{
+				WriteOutOfBattleRefreshRoutine();
+				WriteOutOfBattleFlareRoutine();
+				WriteOutOfBattleBlackRoutine();
+				WriteOutOfBattleGeneric4Routine();
+			}
+			else if (flags.ExtConsumableSet == ExtConsumableSet.SetC)
+			{
+				WriteOutOfBattleGeneric1Routine();
+				WriteOutOfBattleHighRoutine();
+				WriteOutOfBattleGeneric3Routine();
+				WriteOutOfBattleGeneric4Routine();
+			}
+		}
+
 		private void WriteOutOfBattleFCureRoutine()
 		{
-			rom.PutInBank(0x0E, 0x96F8, Blob.FromHex("2000B4A908202BB920A0B3B028A5626A6A6A29C0AABD0161C901F01CC902F018BD0C619D0A61BD0D619D0B612000B42013B6CE3C604C1DB12026DB4C0097"));
+			rom.PutInBank(0x0E,0x96F8,Blob.FromHex("2000B4A908202BB920A0B3B028A5626A6A6A29C0AABD0161C901F01CC902F018BD0C619D0A61BD0D619D0B612000B42013B6CE3C604C1DB12026DB4C0097"));
 		}
 
 		private void WriteOutOfBattlePhnixRoutine()
 		{
-			rom.PutInBank(0x0E, 0x9748, Blob.FromHex("2000B4A909202BB920A0B3B01FA5626A6A6A29C0AAA90185102088B3B011A9642061B52000B42013B6CE3D604C1DB12026DB4C5097"));
+			rom.PutInBank(0x0E,0x9748,Blob.FromHex("2000B4A909202BB920A0B3B01FA5626A6A6A29C0AAA90185102088B3B011A9642061B52000B42013B6CE3D604C1DB12026DB4C5097"));
 		}
 
-		private void WriteOutOfBattleSmokeRoutine()
+		private void WriteOutOfBattleRefreshRoutine()
+		{
+			rom.PutInBank(0x0E,0x96F8,Blob.FromHex("2000B4A908202BB9203CC42025B6A5202980F022A200BD0161C901F009C902F005A9402061B58A186940AA90E92000B42013B6CE3C604C1DB1"));
+		}
+
+		private void WriteOutOfBattleBlackRoutine()
+		{
+			rom.PutInBank(0x0E,0x9748,Blob.FromHex("2000B4A908202BB920A0B3B01EA5626A6A6A29C0AAA9019D0161A9009D0A619D0B612000B42013B6CE3E604C1DB12026DB4C5097"));
+		}
+
+		private void WriteOutOfBattleHighRoutine()
+		{
+			rom.PutInBank(0x0E,0x9748,Blob.FromHex("2000B4A908202BB920A0B3B021A5626A6A6A29C0AABD0161C901F015C902F011A9A02061B52000B42013B6CE3D604C1DB12026DB4C5097"));
+		}
+
+		private void WriteOutOfBattleFlareRoutine()
+		{
+			rom.PutInBank(0x0E, 0x9790, Blob.FromHex("A9094CB8B1"));
+		}
+
+		private void WriteOutOfBattleGeneric1Routine()
+		{
+			rom.PutInBank(0x0E, 0x96F8, Blob.FromHex("A9084CB8B1"));
+		}
+
+		private void WriteOutOfBattleGeneric2Routine()
+		{
+			rom.PutInBank(0x0E, 0x9748, Blob.FromHex("A9094CB8B1"));
+		}
+
+		private void WriteOutOfBattleGeneric3Routine()
 		{
 			rom.PutInBank(0x0E, 0x9790, Blob.FromHex("A90A4CB8B1"));
 		}
 
-		private void WriteOutOfBattleBlastRoutine()
+		private void WriteOutOfBattleGeneric4Routine()
 		{
 			rom.PutInBank(0x0E, 0x9795, Blob.FromHex("A90B4CB8B1"));
 		}
@@ -124,25 +210,89 @@ namespace FF1Lib
 			rom.PutInBank(0x1F, 0xF921, Blob.FromHex("A91C2003FE2020A0A90C2003FE60"));
 		}
 
+		private void WriteDrawItemBoxEndOfItemIndex()
+		{
+			if (flags.ExtConsumableSet != ExtConsumableSet.None)
+			{
+				//DrawItemBox EndOfItemIndex
+				rom.PutInBank(0x1F, 0xEF4D, new byte[] { 0x20 });
+			}
+		}
+
 		private void WriteDrawDrinkBoxRoutine()
 		{
-			rom.PutInBank(0x1C,0xA020,Blob.FromHex("A005B90FA0999D6A88D0F72090F62057F7EE9E6AEE9F6AEEA06AA200A0002053A0A0182053A0A0302053A0A0482053A04C48F69848207AA0E8207AA0E8A900991A6B1868691A8DA16AA96B69008DA26A2090F6EEA06AEEA06A608A48BD30F948F034AABD2060F02EAAC8C8A90E991A6BC868991A6B8AC964B001C88AC90AB001C8C8A911991A6BC88A991A6BC8A900991A6BC868AA60A910991A6BC8A90A991A6BC86868AA60AD7468F02FAD6D682D7468F01CAD746849FF2D6D688D6D68AD74684AF039A9B948A9D548A90C4C03FEA9B948A9D848A90C4C03FE686868686868A9A448A92348A56AC973F021C974F01DC975F019C976F015A90C4C03FEA9108D7468A9B948A99848A90C4C03FEA5334AB00C4AB00E4AB0104AB0124C18A1C6294C18A1E6294C18A1C62A4C18A1E62A4C18A1"));
+			rom.PutInBank(0x1C,0xA020,Blob.FromHex("A005B90FA0999D6A88D0F72090F62057F7EE9E6AEE9F6AEEA06AA200A0002053A0A0182053A0A0302053A0A0482053A04C48F69848207AA0E8207AA0E8A900991A6B1868691A8DA16AA96B69008DA26A2090F6EEA06AEEA06A608A48BD30F948F034AABD2060F02EAAC8C8A90E991A6BC868991A6B8AC964B001C88AC90AB001C8C8A911991A6BC88A991A6BC8A900991A6BC868AA60A910991A6BC8A90A991A6BC86868AA60AD7468F037AD6D682D7468F024AD746849FF2D6D688D6D68AD7468C901F040AD7468C981F049A9B948A9D548A90C4C03FEA9B948A9D848A90C4C03FE686868686868A9A448A92348A56AC973F02CC974F028C975F024C976F020A90C4C03FEA9108D7468A9B948A99848A90C4C03FEA9B948A9C548A90C4C03FEA5334AB00C4AB00E4AB0104AB0124C20A1C6294C20A1E6294C20A1C62A4C20A1E62A4C20A1"));
 		}
 
 		private void WriteLutDrinkBoxOrder()
 		{
-			rom.PutInBank(0x1F, 0xF930, Blob.FromHex("191A1B001C1D1F1E"));
+			string blob = "191A";
+			blob += flags.EnableSoftInBattle ? "1B" : "00";
+			blob += "00";
+			if (flags.ExtConsumableSet == ExtConsumableSet.SetA)
+			{
+				blob += "1C";
+				blob += flags.EnableLifeInBattle ? "1D" : "00";
+				blob += "1E1F";
+			}
+			else if (flags.ExtConsumableSet == ExtConsumableSet.SetB)
+			{
+				blob += "1C1D1E1F";
+			}
+			else if (flags.ExtConsumableSet == ExtConsumableSet.SetC)
+			{
+				blob += "1C1D1E1F";
+			}
+			else
+			{
+				blob += "00000000";
+			}
+
+			rom.PutInBank(0x1F, 0xF930, Blob.FromHex(blob));
 		}
 
 		private void WriteLutDrinkBoxEffect()
 		{
-			var data = new byte[] { FindLowSpell("CURE", "CUR"), FindLowSpell("PURE", "PUR"), FindLowSpell("SOFT", "SFT"), 0x00, FindHighSpell("CUR4", "CUR"), 0x40, FindBlastSpell(), 0x41 };
-			rom.PutInBank(0x1F, 0xF938, data);
+			if (flags.ExtConsumableSet == ExtConsumableSet.None)
+			{
+				var data = new byte[] { FindLowSpell("CURE", "CUR"), FindLowSpell("PURE", "PUR"), FindLowSpell("SOFT", "SFT"), 0x00, 0x00, 0x00, 0x00, 0x00 };
+				rom.PutInBank(0x1F, 0xF938, data);
+			}
+			else if (flags.ExtConsumableSet == ExtConsumableSet.SetA)
+			{
+				var data = new byte[] { FindLowSpell("CURE", "CUR"), FindLowSpell("PURE", "PUR"), FindLowSpell("SOFT", "SFT"), 0x00, FindHighSpell("CUR4", "CUR"), 0x40, FindBlastSpell(), 0x41 };
+				rom.PutInBank(0x1F, 0xF938, data);
+			}
+			else if (flags.ExtConsumableSet == ExtConsumableSet.SetB)
+			{
+				var data = new byte[] { FindLowSpell("CURE", "CUR"), FindLowSpell("PURE", "PUR"), FindLowSpell("SOFT", "SFT"), 0x00, FindHighSpell("HEL3", "HEL"), 0x56, 0x40, FindGuardSpell() };
+				rom.PutInBank(0x1F, 0xF938, data);
+			}
+			else if (flags.ExtConsumableSet == ExtConsumableSet.SetC)
+			{
+				var data = new byte[] { FindLowSpell("CURE", "CUR"), FindLowSpell("PURE", "PUR"), FindLowSpell("SOFT", "SFT"), 0x00, FindHighSpell("FAST", "FST"), 0x40, FindConfSpell(), FindRuseSpell() };
+				rom.PutInBank(0x1F, 0xF938, data);
+			}
 		}
 
 		private void WriteLutDrinkBoxTarget()
 		{
-			rom.PutInBank(0x1F, 0xF940, Blob.FromHex("0101010001010000"));
+			if (flags.ExtConsumableSet == ExtConsumableSet.None)
+			{
+				rom.PutInBank(0x1F, 0xF940, Blob.FromHex("0101010000000000"));
+			}
+			else if (flags.ExtConsumableSet == ExtConsumableSet.SetA)
+			{
+				rom.PutInBank(0x1F, 0xF940, Blob.FromHex("0101010001010000"));
+			}
+			else if (flags.ExtConsumableSet == ExtConsumableSet.SetB)
+			{
+				rom.PutInBank(0x1F, 0xF940, Blob.FromHex("0101010000000000"));
+			}
+			else if (flags.ExtConsumableSet == ExtConsumableSet.SetC)
+			{
+				rom.PutInBank(0x1F, 0xF940, Blob.FromHex("0101010001010001"));
+			}
 		}
 
 		private void WriteLutDrinkBox()
@@ -152,7 +302,7 @@ namespace FF1Lib
 
 		private void WriteCursorPositions()
 		{
-			rom.PutInBank(0x0C, 0x9FE7, Blob.FromHex("18A618B618C618D668A668B668C668D6"));
+			rom.PutInBank(0x0C, 0x9FE7, Blob.FromHex("18A618B618C618D668A668B668C668D6"));			
 		}
 		private void WriteDrinkBoxMenuRoutine()
 		{
@@ -194,11 +344,34 @@ namespace FF1Lib
 		{
 			var itemnames = rom.ReadText(FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextPointerCount);
 
-			itemnames[(int)Item.Soft] = "SOFT@p"; // the original name contains trailing spaces
-			itemnames[(int)Item.WoodenNunchucks] = "FCURE";
-			itemnames[(int)Item.SmallKnife] = "PHNIX";
-			itemnames[(int)Item.WoodenRod] = "SMOKE";
-			itemnames[(int)Item.Rapier] = "BLAST";
+			if (flags.ExtConsumableSet == ExtConsumableSet.SetA)
+			{
+				itemnames[(int)Item.Soft] = "SOFT@p"; // the original name contains trailing spaces
+				itemnames[(int)Item.WoodenNunchucks] = "FCURE";
+				itemnames[(int)Item.SmallKnife] = "PHNIX";
+				itemnames[(int)Item.WoodenRod] = "BLAST";
+				itemnames[(int)Item.Rapier] = "SMOKE";
+			}
+			else if (flags.ExtConsumableSet == ExtConsumableSet.SetB)
+			{
+				itemnames[(int)Item.Soft] = "SOFT@p"; // the original name contains trailing spaces
+				itemnames[(int)Item.WoodenNunchucks] = "RFRSH";
+				itemnames[(int)Item.SmallKnife] = "FLARE";
+				itemnames[(int)Item.WoodenRod] = "BLACK";
+				itemnames[(int)Item.Rapier] = "GUARD";
+			}
+			else if (flags.ExtConsumableSet == ExtConsumableSet.SetC)
+			{
+				itemnames[(int)Item.Soft] = "SOFT@p"; // the original name contains trailing spaces
+				itemnames[(int)Item.WoodenNunchucks] = "QUICK";
+				itemnames[(int)Item.SmallKnife] = "HIGH@p";
+				itemnames[(int)Item.WoodenRod] = "WIZRD";
+				itemnames[(int)Item.Rapier] = "CLOAK";
+			}
+			else
+			{
+				itemnames[(int)Item.Soft] = "SOFT@p"; // the original name contains trailing spaces
+			}
 
 			rom.WriteText(itemnames, FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextOffset, FF1Rom.UnusedGoldItems);
 		}
@@ -207,10 +380,27 @@ namespace FF1Lib
 		{
 			var pointers = rom.GetFromBank(0x0E, 0x8500, 128).ToUShorts();
 
-			pointers[0x09] = ChangeMenuText(pointers[0x08], "Who needs a full cure?");
-			pointers[0x0A] = ChangeMenuText(pointers[0x09], "Who needs a new life?");
-			pointers[0x0B] = ChangeMenuText(pointers[0x0A], "Useful when you need to run.");
-			ChangeMenuText(pointers[0x0B], "Take a sip and blast away.");
+			if (flags.ExtConsumableSet == ExtConsumableSet.SetA)
+			{
+				pointers[0x09] = ChangeMenuText(pointers[0x08], "Who needs a full cure?");
+				pointers[0x0A] = ChangeMenuText(pointers[0x09], "Who needs a new life?");
+				pointers[0x0B] = ChangeMenuText(pointers[0x0A], "Take a sip and blast away.");
+				ChangeMenuText(pointers[0x0B], "Useful when you need to run.");
+			}
+			else if (flags.ExtConsumableSet == ExtConsumableSet.SetB)
+			{
+				pointers[0x09] = ChangeMenuText(pointers[0x08], "Need a party heal?");
+				pointers[0x0A] = ChangeMenuText(pointers[0x09], "The nuclear option.");
+				pointers[0x0B] = ChangeMenuText(pointers[0x0A], "Who needs a little love?");
+				ChangeMenuText(pointers[0x0B], "Not enough armor?");
+			}
+			else if (flags.ExtConsumableSet == ExtConsumableSet.SetC)
+			{
+				pointers[0x09] = ChangeMenuText(pointers[0x08], "Too slow?");
+				pointers[0x0A] = ChangeMenuText(pointers[0x09], "Who needs to recover?");
+				pointers[0x0B] = ChangeMenuText(pointers[0x0A], "The original stuff.");
+				ChangeMenuText(pointers[0x0B], "Need to hide?");
+			}
 
 			rom.PutInBank(0x0E, 0x8500, Blob.FromUShorts(pointers));
 		}
@@ -261,6 +451,24 @@ namespace FF1Lib
 			return (byte)(SpellInfos.IndexOf(spl));
 		}
 
+		private byte FindGuardSpell()
+		{
+			var spl = SpellInfos.Where(s => s.routine == 0x09 && s.targeting == 0x08).OrderBy(s => -s.tier).First();
+			return (byte)(SpellInfos.IndexOf(spl));
+		}
+
+		private byte FindConfSpell()
+		{
+			var spl = SpellInfos.Where(s => s.routine == 0x03 && s.effect == 0b10000000 && s.targeting == 0x01).OrderBy(s => -s.tier).First();
+			return (byte)(SpellInfos.IndexOf(spl));
+		}
+
+		private byte FindRuseSpell()
+		{
+			var spl = SpellInfos.Where(s => s.routine == 0x10 && s.targeting == 0x04).OrderBy(s => -s.tier).First();
+			return (byte)(SpellInfos.IndexOf(spl));
+		}
+
 		private void CreateLifeSpell()
 		{
 			SpellInfo spell = new SpellInfo
@@ -285,8 +493,36 @@ namespace FF1Lib
 			rom.Put(MagicOffset + 0x41 * MagicSize, spell.compressData());
 		}
 
+		private void CreateHighPotionSpell()
+		{
+			SpellInfo spell = new SpellInfo
+			{
+				routine = 0x07,
+				effect = 0x60,
+				targeting = 0x10
+			};
+
+			rom.Put(MagicOffset + 0x40 * MagicSize, spell.compressData());
+		}
+
+		private void CreateBlackPotionSpell()
+		{
+			SpellInfo spell = new SpellInfo
+			{
+				routine = 0x03,
+				effect = 0b00000001,
+				elem = 0b00000010,
+				accuracy = 0x12,
+				targeting = 0x01
+			};
+
+			rom.Put(MagicOffset + 0x40 * MagicSize, spell.compressData());
+		}
+
 		private void ClearShops()
 		{
+			if (flags.ExtConsumableSet == ExtConsumableSet.None) return;
+
 			foreach (var shop in ShopData.Shops)
 			{
 				if (shop.Type == ShopType.Weapon)
@@ -309,7 +545,7 @@ namespace FF1Lib
 
 		public void AddNormalShopEntries()
 		{
-			if (!flags.EnableExtConsumables || !(flags.NormalShopsHaveExtConsumables ?? false)) return;
+			if (flags.ExtConsumableSet == ExtConsumableSet.None || !(flags.NormalShopsHaveExtConsumables ?? false)) return;
 
 			ReplaceShopEntry(Item.Heal, Item.WoodenNunchucks);
 			ReplaceShopEntry(Item.Heal, Item.SmallKnife);
@@ -328,11 +564,25 @@ namespace FF1Lib
 
 		public static double ExtConsumablePriceFix(Item item, double value, IScaleFlags flags)
 		{
-			if (flags.EnableExtConsumables)
+			if (flags.ExtConsumableSet == ExtConsumableSet.SetA)
 			{
 				if (item == Item.WoodenNunchucks) return 49152.0;
 				if (item == Item.SmallKnife) return 262144.0;
 				if (item == Item.WoodenRod) return 16384.0;
+				if (item == Item.Rapier) return 12288.0;
+			}
+			else if (flags.ExtConsumableSet == ExtConsumableSet.SetB)
+			{
+				if (item == Item.WoodenNunchucks) return 49152.0;
+				if (item == Item.SmallKnife) return 32768.0;
+				if (item == Item.WoodenRod) return 16384.0;
+				if (item == Item.Rapier) return 16384.0;
+			}
+			else if (flags.ExtConsumableSet == ExtConsumableSet.SetC)
+			{
+				if (item == Item.WoodenNunchucks) return 49152.0;
+				if (item == Item.SmallKnife) return 32768.0;
+				if (item == Item.WoodenRod) return 8192.0;
 				if (item == Item.Rapier) return 12288.0;
 			}
 
@@ -341,7 +591,7 @@ namespace FF1Lib
 
 		public static void ExtConsumableStartingEquipmentFix(Item[] weapons, Flags flags)
 		{
-			if (flags.EnableExtConsumables)
+			if (flags.ExtConsumableSet != ExtConsumableSet.None)
 			{
 				for (int i = 0; i < weapons.Length; i++)
 				{
@@ -358,12 +608,15 @@ namespace FF1Lib
 
 		public static Item ExtConsumableStartingEquipmentFix(Item item, Flags flags)
 		{
-			if (item == Item.WoodenNunchucks ||
+			if (flags.ExtConsumableSet != ExtConsumableSet.None)
+			{
+				if (item == Item.WoodenNunchucks ||
 						item == Item.SmallKnife ||
 						item == Item.WoodenRod ||
 						item == Item.Rapier)
-			{
-				return item + 4;
+				{
+					return item + 4;
+				}
 			}
 
 			return item;

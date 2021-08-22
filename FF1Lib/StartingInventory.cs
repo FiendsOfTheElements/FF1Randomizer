@@ -136,7 +136,7 @@ namespace FF1Lib
 				}
 			}
 
-			if (flags.EnableExtConsumables)
+			if (flags.ExtConsumableSet != ExtConsumableSet.None)
 			{
 				foreach (var e in ExtStartingItemSetDic[flags.ExtStartingItemSet])
 				{
@@ -319,7 +319,7 @@ namespace FF1Lib
 			},
 			{ ExtStartingItemSet.JustSmokes, new StartingItem[]
 				{
-					new StartingItem { Item = Item.WoodenRod, Cnt = 5 },
+					new StartingItem { Item = Item.Rapier, Cnt = 5 },
 				}
 			},
 			{ ExtStartingItemSet.BangsAndSmokes, new StartingItem[]

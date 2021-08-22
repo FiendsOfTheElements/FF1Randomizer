@@ -66,7 +66,7 @@ namespace FF1Lib
 			int count = treasurePool.Count;
 
 			var consumableChestSet = ConsumableChestSets[flags.MoreConsumableChests];
-			var extConsumableChestSet =  flags.EnableExtConsumables ? ExtConsumableChestSets[flags.ExtConsumableChests] : ExtConsumableChestSets[ExtConsumableChestSet.None];
+			var extConsumableChestSet = flags.ExtConsumableSet != ExtConsumableSet.None ? ExtConsumableChestSets[flags.ExtConsumableChests] : ExtConsumableChestSets[ExtConsumableChestSet.None];
 
 			if (flags.MoreConsumableChests == ConsumableChestSet.Random || flags.MoreConsumableChests == ConsumableChestSet.RandomLow)
 			{
@@ -81,7 +81,7 @@ namespace FF1Lib
 				);
 			}
 
-			if (flags.EnableExtConsumables && (flags.ExtConsumableChests == ExtConsumableChestSet.Random || flags.ExtConsumableChests == ExtConsumableChestSet.RandomLow))
+			if (flags.ExtConsumableSet != ExtConsumableSet.None && (flags.ExtConsumableChests == ExtConsumableChestSet.Random || flags.ExtConsumableChests == ExtConsumableChestSet.RandomLow))
 			{
 				extConsumableChestSet =
 				(
@@ -99,7 +99,7 @@ namespace FF1Lib
 			RemoveConsumableChests(flags, treasurePool, ref removedchests);
 			RemoveGoldChests(treasurePool, requestedchests, ref removedchests);
 
-			if (flags.EnableExtConsumables)
+			if (flags.ExtConsumableSet != ExtConsumableSet.None)
 			{
 				AddConsumableChests(treasurePool, extConsumableChestSet.WoodenNunchucks, Item.WoodenNunchucks, ref removedchests);
 				AddConsumableChests(treasurePool, extConsumableChestSet.SmallKnives, Item.SmallKnife, ref removedchests);
@@ -137,7 +137,7 @@ namespace FF1Lib
 		{
 			var consumableChests = treasurePool.Where(i => i == Item.Tent || i == Item.Cabin || i == Item.House || i == Item.Heal || i == Item.Pure || i == Item.Soft).ToList();
 
-			if (flags.EnableExtConsumables)
+			if (flags.ExtConsumableSet != ExtConsumableSet.None)
 			{
 				consumableChests.Add(Item.WoodenNunchucks);
 				consumableChests.Add(Item.SmallKnife);
