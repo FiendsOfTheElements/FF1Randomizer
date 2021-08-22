@@ -21,8 +21,8 @@ namespace FF1Lib.Procgen
         int RegionId;
         List<SCCoords> SCCoordss;
         List<int> Adjacent;
-        SCCoords NWCorner;
-        SCCoords SECorner;
+        //SCCoords NWCorner;
+        //SCCoords SECorner;
 
         OwRegion(byte tile, int regionid) {
             this.Tile = tile;
@@ -108,6 +108,7 @@ namespace FF1Lib.Procgen
             var fromBasemap = this.Basemap;
             this.Basemap = new double[MAPSIZE,MAPSIZE];
             Array.Copy(fromBasemap, this.Basemap, fromBasemap.Length);
+            this.ownBasemap = true;
         }
 
         void OwnTilemap() {
@@ -117,9 +118,13 @@ namespace FF1Lib.Procgen
             var fromTilemap = this.Tilemap;
             this.Tilemap = new byte[MAPSIZE,MAPSIZE];
             Array.Copy(fromTilemap, this.Tilemap, fromTilemap.Length);
+            this.ownTilemap = true;
         }
 
         void OwnRegions() {
+                if (this.ownRegions) {
+                    return;
+                }
                 var fromBiome_regionmap = this.Biome_regionmap;
                 this.Biome_regionmap = new int[MAPSIZE,MAPSIZE];
                 Array.Copy(fromBiome_regionmap, this.Tilemap, fromBiome_regionmap.Length);
@@ -129,9 +134,13 @@ namespace FF1Lib.Procgen
                 this.Traversable_regionmap = new int[MAPSIZE,MAPSIZE];
                 Array.Copy(fromTraversable_regionmap, this.Tilemap, fromTraversable_regionmap.Length);
                 this.Traversable_regionlist = new List<OwRegion>(this.Traversable_regionlist);
+                this.ownRegions = true;
         }
 
         void OwnPlacements() {
+            if (this.ownPlacements) {
+                return;
+            }
             var fromFeature_weightmap = this.Feature_weightmap;
             this.Feature_weightmap = new int[MAPSIZE,MAPSIZE];
             Array.Copy(fromFeature_weightmap, this.Tilemap, fromFeature_weightmap.Length);
@@ -143,6 +152,7 @@ namespace FF1Lib.Procgen
             this.FeatureCoordinates = new Dictionary<string, SCCoords>(this.FeatureCoordinates);
             this.Reachable_regions = new List<int>(this.Reachable_regions);
             this.Exclude_docks = new List<int>(this.Exclude_docks);
+            this.ownPlacements = true;
         }
 
         const double UNSET = -1000000;
@@ -185,19 +195,19 @@ namespace FF1Lib.Procgen
             // Left middle
             if (this.Basemap[y2,x0] == UNSET) {
                 midp = (this.Basemap[y0,x0]+this.Basemap[y1,x0])/2.0;
-                this.Basemap[y2,x0] = midp + rng.Uniform(-r0, r0)
+                this.Basemap[y2,x0] = midp + rng.Uniform(-r0, r0);
             }
 
             // Right middle
             if (this.Basemap[y2,x1] == UNSET) {
-                midp = (this.Basemap[y0,x1]+this.Basemap[y1,x1])/2.0
-                this.Basemap[y2,x1] = midp + rng.Uniform(-r0, r0)
+                midp = (this.Basemap[y0,x1]+this.Basemap[y1,x1])/2.0;
+                this.Basemap[y2,x1] = midp + rng.Uniform(-r0, r0);
             }
 
             // top middle
             if (this.Basemap[y0,x2] == UNSET) {
                 midp = (this.Basemap[y0,x0]+this.Basemap[y0,x1])/2.0;
-                this.Basemap[y0,x2] = midp + rng.Uniform(-r0, r0)
+                this.Basemap[y0,x2] = midp + rng.Uniform(-r0, r0);
             }
 
             // bottom middle
@@ -214,12 +224,12 @@ namespace FF1Lib.Procgen
             this.PerturbSCCoords(x2, y2, x1, y1, r0);
         }
 
-        Result CreateInitialMap() {
+        public Result CreateInitialMap() {
             this.OwnBasemap();
             this.OwnTilemap();
 
             for (int y = 0; y < MAPSIZE; y++) {
-                for (int x = 0; x < MAPSIZE; y++) {
+                for (int x = 0; x < MAPSIZE; x++) {
                     this.Basemap[y,x] = UNSET;
                 }
             }
@@ -350,23 +360,23 @@ namespace FF1Lib.Procgen
                 }
             }
             ExchangeData = new OwMapExchangeData();
-            ExchangeData.StartingLocation = new SCCoords(st.FeatureCoordinates["ConeriaCastle1"].X, st.FeatureCoordinates["ConeriaCastle1"].Y+5);
+            //ExchangeData.StartingLocation = new SCCoords(st.FeatureCoordinates["ConeriaCastle1"].X, st.FeatureCoordinates["ConeriaCastle1"].Y+5);
             ExchangeData.AirShipLocation = st.Airship;
             ExchangeData.BridgeLocation = st.Bridge;
             ExchangeData.CanalLocation = st.Canal;
             ExchangeData.ShipLocations = new ShipLocation[] {
                 new ShipLocation(st.Ship.X, st.Ship.Y, 255)
             };
-            ExchangeData.TeleporterFixups = new TeleportFixup[] {
-                new TeleportFixup(FF1Lib.TeleportType.Exit, 0, new TeleData((MapId)0xFF, st.FeatureCoordinates["TitansTunnelEast"].X, st.FeatureCoordinates["TitansTunnelEast"].Y))
-            };
+            //ExchangeData.TeleporterFixups = new TeleportFixup[] {
+            //    new TeleportFixup(FF1Lib.TeleportType.Exit, 0, new TeleData((MapId)0xFF, st.FeatureCoordinates["TitansTunnelEast"].X, st.FeatureCoordinates["TitansTunnelEast"].Y))
+            //};
             ExchangeData.OverworldCoordinates = st.FeatureCoordinates;
         }
         public List<List<byte>> Tiles;
         public OwMapExchangeData ExchangeData;
     }
 
-    public class NewOverworld {
+    public static class NewOverworld {
 
         public static ReplacementMap GenerateNewOverworld(MT19337 rng) {
             GenerationStep[] steps = new GenerationStep[] {

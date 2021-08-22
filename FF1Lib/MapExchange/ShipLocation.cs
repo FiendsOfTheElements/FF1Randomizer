@@ -8,7 +8,9 @@ namespace FF1Lib
 {
 	public class ShipLocation
 	{
-	    public ShipLocation(int x, int y, int teleporterIndex) {
+	    public ShipLocation() { }
+
+	    public ShipLocation(byte x, byte y, byte teleporterIndex) {
 		X = x;
 		Y = y;
 		TeleporterIndex = teleporterIndex;
