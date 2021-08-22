@@ -468,8 +468,24 @@ namespace FF1Lib
 
 			}
 
+			var cactusRow = MapGrid.Select((x, i) => new { x, i }).Where(y => y.x.Contains((MapLocation)(DoodadsType.CactusField + 0x100))).Select(x => x.i).ToList();
+			if (cactusRow.Any())
+			{
+				int selectedRow = cactusRow.PickRandom(rng);
+				var cactusColumn = MapGrid[selectedRow].Select((x, i) => new { x, i }).Where(y => y.x == (MapLocation)(DoodadsType.CactusField + 0x100)).Select(x => x.i).ToList();
+				int selectedColum = cactusColumn.PickRandom(rng);
+
+				var generatedDoodads = GenerateDoodads(DoodadsType.CactuarField, rng);
+				overworldmap.MapEditsToApply.Add(ConvertTileArrayToMapEdit(generatedDoodads,
+					(selectedColum * 16) + Rng.Between(rng, 0, 15 - (generatedDoodads[0].Count)),
+					(selectedRow * 16) + Rng.Between(rng, 0, 15 - (generatedDoodads.Count))));
+
+				MapGrid[selectedColum][selectedRow] = 0x00;
+				Console.WriteLine(selectedColum + "/" + selectedRow);
+			}
 
 			List<byte> newTileList = new() { 0x03, 0x04, 0x05, 0x13, 0x14, 0x15 };
+
 			for (int x = 0; x < 16; x++)
 			{
 				for (int y = 0; y < 16; y++)
@@ -611,8 +627,8 @@ namespace FF1Lib
 			int height = 0;
 			if (type == DoodadsType.CactusField || type == DoodadsType.CactuarField)
 			{
-				width = Rng.Between(rng, 3, 4);
-				height = Rng.Between(rng, 3, 4);
+				width = Rng.Between(rng, 4, 6);
+				height = Rng.Between(rng, 4, 6);
 				var cactusCount = Rng.Between(rng, 4, 7);
 				List<OWTile> validTiles = new() { OWTile.DesertCacti, OWTile.DesertCactus };
 
@@ -631,8 +647,8 @@ namespace FF1Lib
 			}
 			else if (type == DoodadsType.RockField)
 			{
-				width = Rng.Between(rng, 3, 4);
-				height = Rng.Between(rng, 3, 4);
+				width = Rng.Between(rng, 4, 6);
+				height = Rng.Between(rng, 4, 6);
 				var rockCount = Rng.Between(rng, 4, 7);
 				List<OWTile> validTiles = new() { OWTile.DesertRock, OWTile.DesertRocks };
 
@@ -691,11 +707,84 @@ namespace FF1Lib
 					doodadsTilemap[availableTiles.SpliceRandom(rng)] = (byte)OWTile.DesertPalmTree;
 				}
 			}
+			else if (type == DoodadsType.Mountains)
+			{
+
+
+
+				int blob1Width = Rng.Between(rng, 2, 4);
+				int blob1Height = Rng.Between(rng, 2, 4);
+				int blob2Width = Rng.Between(rng, 2, 4);
+				int blob2Height = Rng.Between(rng, 2, 4);
+
+				int blob2X = Rng.Between(rng, 0, 3);
+				int blob2Y = Rng.Between(rng, 0, 3);
+
+				width = Math.Max(blob2X + blob2Width, blob1Width);
+				height = Math.Max(blob2Y + blob2Height, blob1Height);
+
+				List<List<byte>> mountainMap = new();
+
+				for (int i = 0; i < height; i++)
+				{
+					mountainMap.Add(Enumerable.Repeat((byte)OWTile.Desert, width).ToList());
+				}
+
+
+
+				//List<OWTile> validTiles = new() { OWTile.DesertRock, OWTile.DesertRocks };
+
+				List<int> availableTiles = Enumerable.Range(0, width * height).ToList();
+				doodadsTilemap = Enumerable.Repeat((byte)OWTile.Desert, width * height).ToList();
+
+				doodadsTilemap[0] = (byte)OWTile.MountainUpperLeft;
+				for (int i = 1; i < (blob1Width - 1); i++)
+				{
+					doodadsTilemap[i] = (byte)OWTile.MountainUpperMiddle;
+				}
+
+				if ((blob1Width > blob2X + blob2Width) && blob2X != 0)
+				{
+					doodadsTilemap[(blob1Width-1)] = (byte)OWTile.MountainUpperRight;
+				}
+
+
+				for (int i = 1; i < (blob1Width - 1); i++)
+				{
+					doodadsTilemap[i] = (byte)OWTile.MountainUpperMiddle;
+				}
+
+				doodadsTilemap[] = (byte)OWTile.RiverUpperRight;
+				availableTiles.Remove(waterX + (waterWidth - 1) + (waterY * width));
+
+				doodadsTilemap[waterX + ((waterY + (waterHeight - 1)) * width)] = (byte)OWTile.RiverLowerLeft;
+				availableTiles.Remove(waterX + ((waterY + (waterHeight - 1)) * width));
+				doodadsTilemap[waterX + (waterWidth - 1) + ((waterY + (waterHeight - 1)) * width)] = (byte)OWTile.RiverLowerRight;
+				availableTiles.Remove(waterX + (waterWidth - 1) + ((waterY + (waterHeight - 1)) * width));
+
+				for (int i = waterX + 1; i < waterX + waterWidth - 1; i++)
+				{
+					for (int j = waterY; j < waterY + waterHeight; j++)
+					{
+						doodadsTilemap[i + (j * width)] = (byte)OWTile.RiverCenter;
+						availableTiles.Remove(i + (j * width));
+					}
+				}
+
+				for (int j = waterY + 1; j < waterY + waterHeight - 1; j++)
+				{
+					for (int i = waterX; i < waterX + waterWidth; i++)
+					{
+						doodadsTilemap[i + (j * width)] = (byte)OWTile.RiverCenter;
+						availableTiles.Remove(i + (j * width));
+					}
+				}
+			}
 			else
 			{
 				width = 1;
 				height = 1;
-				doodadsTilemap = Enumerable.Repeat((byte)OWTile.MountainCenter, 1).ToList();
+				doodadsTilemap = Enumerable.Repeat((byte)OWTile.DesertCactus, 1).ToList();
 			}
 
 			List<List<byte>> finalFoodadsTilemap = new();
