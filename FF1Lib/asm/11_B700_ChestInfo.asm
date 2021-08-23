@@ -40,7 +40,7 @@ LvlUp_AwardAndUpdateExp_L2:
 	JSR LvlUp_AwardAndUpdateExp
 	RTS
 
-.org $B300
+.org $B700
 
 DrawDialogueItemInfo:
 	LDA #$11
