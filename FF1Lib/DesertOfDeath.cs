@@ -101,6 +101,7 @@ namespace FF1Lib
 					new List<byte> { 0x5B, 0x49, 0x3D, 0x3D, 0x49, 0x5F },
 					new List<byte> { 0x6B, 0x49, 0x3D, 0x3D, 0x49, 0x6F },
 					new List<byte> { 0x7B, 0x7D, 0x3D, 0x3D, 0x7E, 0x7F },
+					new List<byte> { 0x45, 0x45, 0x45, 0x45, 0x45, 0x45 },
 			}),
 			(MapLocation.TempleOfFiends1, new List<List<byte>>() {
 					new List<byte> { 0x45, 0x47, 0x48, 0x45 },
@@ -110,17 +111,20 @@ namespace FF1Lib
 					new List<byte> { 0x45, 0x10, 0x11, 0x12 },
 					new List<byte> { 0x10, 0x21, 0x21, 0x22 },
 					new List<byte> { 0x30, 0x31, 0x32, 0x33 },
+					new List<byte> { 0x45, 0x45, 0x45, 0x45 },
 			}),
 			(MapLocation.Pravoka, new List<List<byte>>() {
 					new List<byte> { 0x45, 0x2C, 0x2D, 0x2E, 0x45 },
 					new List<byte> { 0x3B, 0x3C, 0x4A, 0x3E, 0x3F },
 					new List<byte> { 0x4B, 0x4A, 0x3D, 0x4A, 0x4F },
 					new List<byte> { 0x5C, 0x7D, 0x3D, 0x7E, 0x5E },
+					new List<byte> { 0x45, 0x45, 0x45, 0x45, 0x45 },
 			}),
 			(MapLocation.DwarfCave, new List<List<byte>>() {
 					new List<byte> { 0x10, 0x11, 0x11, 0x11, 0x12 },
 					new List<byte> { 0x20, 0x21, 0x22, 0x30, 0x33 },
 					new List<byte> { 0x30, 0x2F, 0x33, 0x45, 0x45 },
+					new List<byte> { 0x45, 0x45, 0x45, 0x45, 0x45 },
 			}),
 			(MapLocation.NorthwestCastle, new List<List<byte>>() {
 					new List<byte> { 0x09, 0x0A },
@@ -143,6 +147,7 @@ namespace FF1Lib
 					new List<byte> { 0x10, 0x11, 0x21, 0x21, 0x33 },
 					new List<byte> { 0x20, 0x21, 0x0E, 0x21, 0x12 },
 					new List<byte> { 0x30, 0x33, 0x45, 0x30, 0x33 },
+					new List<byte> { 0x45, 0x45, 0x45, 0x45, 0x45 },
 			}),
 			(MapLocation.SardasCave, new List<List<byte>>() {
 					new List<byte> { 0x45, 0x10, 0x11, 0x11, 0x11, 0x12, 0x45 },
@@ -150,6 +155,7 @@ namespace FF1Lib
 					new List<byte> { 0x10, 0x12, 0x45, 0x45, 0x45, 0x30, 0x33 },
 					new List<byte> { 0x30, 0x21, 0x11, 0x11, 0x11, 0x11, 0x12 },
 					new List<byte> { 0x45, 0x30, 0x31, 0x31, 0x31, 0x34, 0x33 },
+					new List<byte> { 0x45, 0x45, 0x45, 0x45, 0x45, 0x45, 0x45 },
 			}),
 			(MapLocation.CrescentLake, new List<List<byte>>() {
 					new List<byte> { 0x45, 0x2C, 0x2D, 0x2E, 0x45 },
@@ -158,17 +164,18 @@ namespace FF1Lib
 					new List<byte> { 0x5B, 0x4E, 0x3D, 0x4E, 0x5F },
 					new List<byte> { 0x6B, 0x4E, 0x3D, 0x3D, 0x6F },
 					new List<byte> { 0x7B, 0x7D, 0x3D, 0x7E, 0x7F },
+					new List<byte> { 0x45, 0x45, 0x45, 0x45, 0x45 },
 			}),
 			(MapLocation.GurguVolcano1, new List<List<byte>>() {
 					new List<byte> { 0x64, 0x65 },
 					new List<byte> { 0x74, 0x75 },
 			}),
 			(MapLocation.IceCave1, new List<List<byte>>() {
-					new List<byte> { 0x10, 0x11, 0x11, 0x11, 0x12 },
-					new List<byte> { 0x30, 0x31, 0x2B, 0x21, 0x22 },
-					new List<byte> { 0x45, 0x45, 0x45, 0x30, 0x33 },
-					new List<byte> { 0x10, 0x11, 0x11, 0x11, 0x12 },
-					new List<byte> { 0x30, 0x31, 0x31, 0x31, 0x33 },
+					new List<byte> { 0x45, 0x10, 0x11, 0x11, 0x11, 0x12 },
+					new List<byte> { 0x45, 0x30, 0x31, 0x2B, 0x21, 0x22 },
+					new List<byte> { 0x45, 0x45, 0x45, 0x45, 0x30, 0x33 },
+					new List<byte> { 0x45, 0x10, 0x11, 0x11, 0x11, 0x12 },
+					new List<byte> { 0x45, 0x30, 0x31, 0x31, 0x31, 0x33 },
 			}),
 			(MapLocation.Caravan, new List<List<byte>>() {
 					new List<byte> { 0x45, 0x13, 0x13, 0x45 }, // palm tree
@@ -217,6 +224,7 @@ namespace FF1Lib
 					new List<byte> { 0x3B, 0x3C, 0x6D, 0x3E, 0x3F },
 					new List<byte> { 0x4B, 0x6D, 0x6D, 0x6D, 0x4F },
 					new List<byte> { 0x5C, 0x7D, 0x3D, 0x7E, 0x5E },
+					new List<byte> { 0x45, 0x45, 0x45, 0x45, 0x45 },
 			}),
 		};
 
@@ -435,6 +443,18 @@ namespace FF1Lib
 							nodeDirection.Add((loc.Item2, direction));
 						}
 					}
+				}
+
+				List<MapLocation> cardias = new() { MapLocation.Cardia1, MapLocation.Cardia2, MapLocation.Cardia4, MapLocation.Cardia5, MapLocation.Cardia6 };
+
+				foreach (var cardia in cardias)
+				{
+					var emptyRow = MapGrid.Select((x, i) => new { x, i }).Where(y => y.x.Contains(MapLocation.StartingLocation)).Select(x => x.i).ToList();
+					int selectedRow = emptyRow.PickRandom(rng);
+					var emptyColumn = MapGrid[selectedRow].Select((x, i) => new { x, i }).Where(y => y.x == MapLocation.StartingLocation).Select(x => x.i).ToList();
+					int selectedColumn = emptyColumn.PickRandom(rng);
+
+					MapGrid[selectedRow][selectedColumn] = cardia;
 				}
 
 				if (placementerror)
@@ -710,8 +730,6 @@ namespace FF1Lib
 			else if (type == DoodadsType.Mountains)
 			{
 
-
-
 				int blob1Width = Rng.Between(rng, 2, 4);
 				int blob1Height = Rng.Between(rng, 2, 4);
 				int blob2Width = Rng.Between(rng, 2, 4);
@@ -730,55 +748,79 @@ namespace FF1Lib
 					mountainMap.Add(Enumerable.Repeat((byte)OWTile.Desert, width).ToList());
 				}
 
-
-
-				//List<OWTile> validTiles = new() { OWTile.DesertRock, OWTile.DesertRocks };
-
-				List<int> availableTiles = Enumerable.Range(0, width * height).ToList();
-				doodadsTilemap = Enumerable.Repeat((byte)OWTile.Desert, width * height).ToList();
-
-				doodadsTilemap[0] = (byte)OWTile.MountainUpperLeft;
-				for (int i = 1; i < (blob1Width - 1); i++)
+				for (int x = 0; x < blob1Width; x++)
 				{
-					doodadsTilemap[i] = (byte)OWTile.MountainUpperMiddle;
-				}
-
-				if ((blob1Width > blob2X + blob2Width) && blob2X != 0)
-				{
-					doodadsTilemap[(blob1Width-1)] = (byte)OWTile.MountainUpperRight;
-				}
-
-
-				for (int i = 1; i < (blob1Width - 1); i++)
-				{
-					doodadsTilemap[i] = (byte)OWTile.MountainUpperMiddle;
-				}
-
-				doodadsTilemap[] = (byte)OWTile.RiverUpperRight;
-				availableTiles.Remove(waterX + (waterWidth - 1) + (waterY * width));
-
-				doodadsTilemap[waterX + ((waterY + (waterHeight - 1)) * width)] = (byte)OWTile.RiverLowerLeft;
-				availableTiles.Remove(waterX + ((waterY + (waterHeight - 1)) * width));
-				doodadsTilemap[waterX + (waterWidth - 1) + ((waterY + (waterHeight - 1)) * width)] = (byte)OWTile.RiverLowerRight;
-				availableTiles.Remove(waterX + (waterWidth - 1) + ((waterY + (waterHeight - 1)) * width));
-
-				for (int i = waterX + 1; i < waterX + waterWidth - 1; i++)
-				{
-					for (int j = waterY; j < waterY + waterHeight; j++)
+					for (int y = 0; y < blob1Height; y++)
 					{
-						doodadsTilemap[i + (j * width)] = (byte)OWTile.RiverCenter;
-						availableTiles.Remove(i + (j * width));
+						mountainMap[y][x] = (byte)OWTile.MountainCenter;
 					}
 				}
 
-				for (int j = waterY + 1; j < waterY + waterHeight - 1; j++)
+				for (int x = blob2X; x < (blob2X + blob2Width); x++)
 				{
-					for (int i = waterX; i < waterX + waterWidth; i++)
+					for (int y = blob2Y; y < (blob2Y + blob2Height); y++)
 					{
-						doodadsTilemap[i + (j * width)] = (byte)OWTile.RiverCenter;
-						availableTiles.Remove(i + (j * width));
+						mountainMap[y][x] = (byte)OWTile.MountainCenter;
 					}
 				}
+
+				// Do borders
+				for (int x = 0; x < width; x++)
+				{
+					for (int y = 0; y < height; y++)
+					{
+						if (mountainMap[y][x] == (byte)OWTile.Desert)
+						{
+							continue;
+						}
+						else if ((y - 1 < 0) || mountainMap[y - 1][x] == (byte)OWTile.Desert)
+						{
+							mountainMap[y][x] = (byte)OWTile.MountainUpperMiddle;
+						}
+						else if ((y + 1 >= height) || mountainMap[y + 1][x] == (byte)OWTile.Desert)
+						{
+							mountainMap[y][x] = (byte)OWTile.MountainLowerMiddle;
+						}
+						else if ((x - 1 < 0) || mountainMap[y][x - 1] == (byte)OWTile.Desert)
+						{
+							mountainMap[y][x] = (byte)OWTile.MountainMiddleLeft;
+						}
+						else if ((x + 1 >= width) || mountainMap[y][x + 1] == (byte)OWTile.Desert)
+						{
+							mountainMap[y][x] = (byte)OWTile.MountainMiddleRight;
+						}
+					}
+				}
+
+				// Do corners
+				for (int x = 0; x < width; x++)
+				{
+					for (int y = 0; y < height; y++)
+					{
+						if (mountainMap[y][x] == (byte)OWTile.Desert)
+						{
+							continue;
+						}
+						else if (((y - 1 < 0) || mountainMap[y - 1][x] == (byte)OWTile.Desert) && ((x - 1 < 0) || mountainMap[y][x - 1] == (byte)OWTile.Desert))
+						{
+							mountainMap[y][x] = (byte)OWTile.MountainUpperLeft;
+						}
+						else if (((y + 1 >= height) || mountainMap[y + 1][x] == (byte)OWTile.Desert) && ((x - 1 < 0) || mountainMap[y][x - 1] == (byte)OWTile.Desert))
+						{
+							mountainMap[y][x] = (byte)OWTile.MountainLowerLeft;
+						}
+						else if (((y - 1 < 0) || mountainMap[y - 1][x] == (byte)OWTile.Desert) && ((x + 1 >= width) || mountainMap[y][x + 1] == (byte)OWTile.Desert))
+						{
+							mountainMap[y][x] = (byte)OWTile.MountainUpperRight;
+						}
+						else if (((y + 1 >= height) || mountainMap[y + 1][x] == (byte)OWTile.Desert) && ((x + 1 >= width) || mountainMap[y][x + 1] == (byte)OWTile.Desert))
+						{
+							mountainMap[y][x] = (byte)OWTile.MountainLowerRight;
+						}
+					}
+				}
+
+				doodadsTilemap = mountainMap.SelectMany(x => x).ToList();
 			}
 			else
 			{
@@ -788,7 +830,6 @@ namespace FF1Lib
 			}
 
 			List<List<byte>> finalFoodadsTilemap = new();
-
 			for (int i = 0; i < height; i++)
 			{
 				finalFoodadsTilemap.Add(doodadsTilemap.GetRange(i * width, width).ToList());
