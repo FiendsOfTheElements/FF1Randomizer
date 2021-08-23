@@ -1516,7 +1516,7 @@ namespace FF1Lib
 			}
 
 			// Check if dialogs are too long
-			if (generatedText.Length > 0x1000)
+			if (generatedText.Length > 0x1400)
 				throw new Exception("ShopInfo text size maximum exceeded.");
 
 			// Insert dialogs
