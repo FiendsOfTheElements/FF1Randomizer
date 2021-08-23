@@ -131,6 +131,7 @@ namespace FF1Lib
 			var talkroutines = new TalkRoutines();
 			var npcdata = new NPCdata(this);
 			UpdateDialogs(npcdata, flags);
+			AddElementIcons();
 
 			if (flags.TournamentSafe) Put(0x3FFE3, Blob.FromHex("66696E616C2066616E74617379"));
 

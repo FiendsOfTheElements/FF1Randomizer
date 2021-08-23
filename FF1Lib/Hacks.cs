@@ -1311,6 +1311,20 @@ namespace FF1Lib
 
 			InsertDialogs(newDialogs);
 		}
+
+		public void AddElementIcons()
+		{
+			// Need to be called after UpdateDialogs since we use some of the space freed by it in bank 1F
+
+			var tileset = GetFromBank(0x09, 0x8800, 0x0800);     // Get font tileset
+
+			PutInBank(0x12, 0x8800, tileset);                    // Put it in bank 12
+			PutInBank(0x1F, 0xDC40, Blob.FromHex("A9124C90E9")); // Load bank 12, then jump to LoadMenuCHR (skipping normal bank loading)
+			PutInBank(0x1F, 0xEA74, Blob.FromHex("2040DC"));     // LoadBattleBGCHRAndPalettes now jump to $DC40 instead of directly to LoadMenuCHR
+			PutInBank(0x1F, 0xEA9F, Blob.FromHex("2002EA"));     // Change LoadMenuBGCHRAndPalettes to use LoadShopBGCHRPalettes instead of LoadBattleBGCHRAndPalettes
+
+			// Add new element icons!
+		}
 		public enum shopInfoWordsIndex
 		{
 			wpAtk = 0,
