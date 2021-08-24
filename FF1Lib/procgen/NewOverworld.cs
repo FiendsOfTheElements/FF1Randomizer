@@ -16,22 +16,88 @@ namespace FF1Lib.Procgen
         }
     }
 
-
-    class OwRegion {
-        byte Tile;
+    public class OwRegion {
+        int RegionType;
         int RegionId;
-        List<SCCoords> SCCoordss;
-        List<int> Adjacent;
+        List<SCCoords> Points;
+        List<OwRegion> Adjacent;
         //SCCoords NWCorner;
         //SCCoords SECorner;
 
-        OwRegion(byte tile, int regionid) {
-            this.Tile = tile;
+        public OwRegion(int regionType, int regionid) {
+            this.RegionType = regionType;
             this.RegionId = regionid;
-            this.SCCoordss = new List<SCCoords>();
-            this.Adjacent = new List<int>();
-            }
+            this.Points = new List<SCCoords>();
+            this.Adjacent = new List<OwRegion>();
         }
+
+        public void AddPoint(SCCoords p) {
+            this.Points.Add(p);
+        }
+
+        public static Tuple<OwRegion[,], List<OwRegion>> FindRegions(byte[,] tilemap, Dictionary<byte, int> tileRegionTypeMap) {
+            var regionMap = new OwRegion[OverworldState.MAPSIZE,OverworldState.MAPSIZE];
+            var regionList = new List<OwRegion>();
+
+            regionList.Add(new OwRegion(tileRegionTypeMap[OverworldTiles.OCEAN], 0));
+
+            var workingStack = new Stack<ValueTuple<SCCoords, OwRegion>>();
+            var workingQueue = new Queue<ValueTuple<SCCoords, OwRegion>>();
+
+            workingStack.Push(ValueTuple.Create(new SCCoords(0, 0), regionList[0]));
+
+            while (workingStack.Count > 0) {
+                while (workingStack.Count > 0) {
+                    var tp = workingStack.Pop();
+                    var p = tp.Item1;
+                    var rg = tp.Item2;
+                    if (regionMap[p.Y,p.X] != null) {
+                        continue;
+                    }
+
+                    regionMap[p.Y,p.X] = rg;
+                    rg.AddPoint(p);
+
+                    var curRegionType = tileRegionTypeMap[tilemap[p.Y,p.X]];
+
+                    var adjacent = new SCCoords[] {
+                        new SCCoords(p.X+1, p.Y), 
+                        new SCCoords(p.X, p.Y+1),
+                        new SCCoords(p.X-1, p.Y),
+                        new SCCoords(p.X, p.Y-1)};
+                    foreach (var adj in adjacent) {
+                        var adjRegionType = tileRegionTypeMap[tilemap[adj.Y,adj.X]];
+                        if (adjRegionType == curRegionType) {
+                            workingStack.Push(ValueTuple.Create(adj, rg));
+                        } else {
+                            workingQueue.Enqueue(ValueTuple.Create(adj, rg));
+                        }
+                    }
+                }
+                while (workingQueue.Count > 0 && workingStack.Count == 0) {
+                    var tp = workingQueue.Dequeue();
+                    var p = tp.Item1;
+                    var rg = tp.Item2;
+                    OwRegion nextRegion;
+                    if (regionMap[p.Y,p.X] == null) {
+                        nextRegion = new OwRegion(tileRegionTypeMap[tilemap[p.Y,p.X]], regionList.Count);
+                        regionList.Add(nextRegion);
+                        workingStack.Push(ValueTuple.Create(p, nextRegion));
+                    } else {
+                        nextRegion = regionMap[p.Y,p.X];
+                    }
+                    if (!regionList[rg.RegionId].Adjacent.Contains(nextRegion)) {
+                        regionList[rg.RegionId].Adjacent.Add(nextRegion);
+                    }
+                    if (!regionList[nextRegion.RegionId].Adjacent.Contains(rg)) {
+                        regionList[nextRegion.RegionId].Adjacent.Add(rg);
+                    }
+                }
+            }
+
+            return Tuple.Create(regionMap, regionList);
+        }
+    }
 
     public class OverworldState {
         public const int MAPSIZE = 256;
@@ -173,7 +239,7 @@ namespace FF1Lib.Procgen
         const double UNSET = -1000000;
         const double perturb_reduction = .63;
 
-        void PerturbSCCoords(int x0, int y0, int x1, int y1, double r0) {
+        void PerturbPoints(int x0, int y0, int x1, int y1, double r0) {
             if (Math.Abs(x0 - x1) <= 1 && Math.Abs(y0 - y1) <= 1) {
                 return;
             }
@@ -233,10 +299,10 @@ namespace FF1Lib.Procgen
 
             r0 *= perturb_reduction;
 
-            this.PerturbSCCoords(x0, y0, x2, y2, r0);
-            this.PerturbSCCoords(x2, y0, x1, y2, r0);
-            this.PerturbSCCoords(x0, y2, x2, y1, r0);
-            this.PerturbSCCoords(x2, y2, x1, y1, r0);
+            this.PerturbPoints(x0, y0, x2, y2, r0);
+            this.PerturbPoints(x2, y0, x1, y2, r0);
+            this.PerturbPoints(x0, y2, x2, y1, r0);
+            this.PerturbPoints(x2, y2, x1, y1, r0);
         }
 
         public Result CreateInitialMap() {
@@ -260,7 +326,7 @@ namespace FF1Lib.Procgen
             }
             this.Basemap[MAPSIZE/2-1, MAPSIZE/2-1] = 0;
 
-            this.PerturbSCCoords(border, border, MAPSIZE-1-border, MAPSIZE-1-border, 1);
+            this.PerturbPoints(border, border, MAPSIZE-1-border, MAPSIZE-1-border, 1);
 
             const double land_pct = .26;
             const double mountain_pct = 0.055;
