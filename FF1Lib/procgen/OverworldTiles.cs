@@ -168,149 +168,150 @@ namespace FF1Lib.Procgen
     public OwTileFilter connect_diagonals;
 
     public OverworldTiles() {
-	this.expand_mountains = new OwTileFilter(
-	    new Rule[] {
-		new Rule(new byte[3,3] {
-		    {MOUNTAIN, _, _},
-		    {_,        _, _},
-		    {_,        _, _}
-		    }, MOUNTAIN),
-		new Rule(new byte[3,3] {
-		    {_, MOUNTAIN, _},
-		    {_,        _, _},
-		    {_,        _, _},
-		    }, MOUNTAIN),
-		new Rule(new byte[3,3] {
-		    {_, _, MOUNTAIN},
-		    {_,        _, _},
-		    {_,        _, _},
-		    }, MOUNTAIN),
-		new Rule(new byte[3,3] {
-		    {_,        _, _},
-		    {MOUNTAIN, _, _},
-		    {_,        _, _}
-		    }, MOUNTAIN),
-		new Rule(new byte[3,3] {
-		    {_,        _, _},
-		    {_, MOUNTAIN, _},
-		    {_,        _, _},
-		    }, MOUNTAIN),
-		new Rule(new byte[3,3] {
-		    {_,        _, _},
-		    {_, _, MOUNTAIN},
-		    {_,        _, _},
-		    }, MOUNTAIN),
-		new Rule(new byte[3,3] {
-		    {_,        _, _},
-		    {_,        _, _},
-		    {MOUNTAIN, _, _},
-		    }, MOUNTAIN),
-		new Rule(new byte[3,3] {
-		    {_,        _, _},
-		    {_,        _, _},
-		    {_, MOUNTAIN, _},
-		    }, MOUNTAIN),
-		new Rule(new byte[3,3] {
-		    {_,        _, _},
-		    {_,        _, _},
-		    {_, _, MOUNTAIN},
-		    }, MOUNTAIN),
-	    },
-	    null, new HashSet<byte>(new byte[] {LAND, OCEAN, MOUNTAIN}), null);
+        this.expand_mountains = new OwTileFilter(
+            new Rule[] {
+            new Rule(new byte[3,3] {
+                {MOUNTAIN, _, _},
+                {_,        _, _},
+                {_,        _, _}
+                }, MOUNTAIN),
+            new Rule(new byte[3,3] {
+                {_, MOUNTAIN, _},
+                {_,        _, _},
+                {_,        _, _},
+                }, MOUNTAIN),
+            new Rule(new byte[3,3] {
+                {_, _, MOUNTAIN},
+                {_,        _, _},
+                {_,        _, _},
+                }, MOUNTAIN),
+            new Rule(new byte[3,3] {
+                {_,        _, _},
+                {MOUNTAIN, _, _},
+                {_,        _, _}
+                }, MOUNTAIN),
+            new Rule(new byte[3,3] {
+                {_,        _, _},
+                {_, MOUNTAIN, _},
+                {_,        _, _},
+                }, MOUNTAIN),
+            new Rule(new byte[3,3] {
+                {_,        _, _},
+                {_, _, MOUNTAIN},
+                {_,        _, _},
+                }, MOUNTAIN),
+            new Rule(new byte[3,3] {
+                {_,        _, _},
+                {_,        _, _},
+                {MOUNTAIN, _, _},
+                }, MOUNTAIN),
+            new Rule(new byte[3,3] {
+                {_,        _, _},
+                {_,        _, _},
+                {_, MOUNTAIN, _},
+                }, MOUNTAIN),
+            new Rule(new byte[3,3] {
+                {_,        _, _},
+                {_,        _, _},
+                {_, _, MOUNTAIN},
+                }, MOUNTAIN),
+            },
+            null, new HashSet<byte>(new byte[] {LAND, OCEAN, MOUNTAIN}), null);
 
-	this.expand_oceans = new OwTileFilter(
-	    new Rule[] {
-		new Rule(new byte[3,3] {
-		    {OCEAN, _, _},
-		    {_,        _, _},
-		    {_,        _, _}
-		    }, OCEAN),
-		new Rule(new byte[3,3] {
-		    {_, OCEAN, _},
-		    {_,        _, _},
-		    {_,        _, _},
-		    }, OCEAN),
-		new Rule(new byte[3,3] {
-		    {_, _, OCEAN},
-		    {_,        _, _},
-		    {_,        _, _},
-		    }, OCEAN),
-		new Rule(new byte[3,3] {
-		    {_,        _, _},
-		    {OCEAN, _, _},
-		    {_,        _, _}
-		    }, OCEAN),
-		new Rule(new byte[3,3] {
-		    {_,        _, _},
-		    {_, OCEAN, _},
-		    {_,        _, _},
-		    }, OCEAN),
-		new Rule(new byte[3,3] {
-		    {_,        _, _},
-		    {_, _, OCEAN},
-		    {_,        _, _},
-		    }, OCEAN),
-		new Rule(new byte[3,3] {
-		    {_,        _, _},
-		    {_,        _, _},
-		    {OCEAN, _, _},
-		    }, OCEAN),
-		new Rule(new byte[3,3] {
-		    {_,        _, _},
-		    {_,        _, _},
-		    {_, OCEAN, _},
-		    }, OCEAN),
-		new Rule(new byte[3,3] {
-		    {_,        _, _},
-		    {_,        _, _},
-		    {_, _, OCEAN},
-		    }, OCEAN),
-	    },
-	    null, new HashSet<byte>(new byte[] {LAND, OCEAN, MOUNTAIN}), null);
+        this.expand_oceans = new OwTileFilter(
+            new Rule[] {
+            new Rule(new byte[3,3] {
+                {OCEAN, _, _},
+                {_,        _, _},
+                {_,        _, _}
+                }, OCEAN),
+            new Rule(new byte[3,3] {
+                {_, OCEAN, _},
+                {_,        _, _},
+                {_,        _, _},
+                }, OCEAN),
+            new Rule(new byte[3,3] {
+                {_, _, OCEAN},
+                {_,        _, _},
+                {_,        _, _},
+                }, OCEAN),
+            new Rule(new byte[3,3] {
+                {_,        _, _},
+                {OCEAN, _, _},
+                {_,        _, _}
+                }, OCEAN),
+            new Rule(new byte[3,3] {
+                {_,        _, _},
+                {_, OCEAN, _},
+                {_,        _, _},
+                }, OCEAN),
+            new Rule(new byte[3,3] {
+                {_,        _, _},
+                {_, _, OCEAN},
+                {_,        _, _},
+                }, OCEAN),
+            new Rule(new byte[3,3] {
+                {_,        _, _},
+                {_,        _, _},
+                {OCEAN, _, _},
+                }, OCEAN),
+            new Rule(new byte[3,3] {
+                {_,        _, _},
+                {_,        _, _},
+                {_, OCEAN, _},
+                }, OCEAN),
+            new Rule(new byte[3,3] {
+                {_,        _, _},
+                {_,        _, _},
+                {_, _, OCEAN},
+                }, OCEAN),
+            },
+            null, new HashSet<byte>(new byte[] {LAND, OCEAN, MOUNTAIN}), null);
 
-	this.connect_diagonals = new OwTileFilter(
-	    new Rule[] {
-		new Rule(new byte[3,3] {
-		    {STAR, RIVER, _},
-		    {STAR, _, RIVER},
-		    {STAR, STAR, STAR}},
-		    RIVER),
-		new Rule(new byte[3,3] {
-		    {_, RIVER, STAR},
-		    {RIVER, _, STAR},
-		    {STAR, STAR, STAR}},
-		    RIVER),
-		new Rule(new byte[3,3] {
-		    {STAR, OCEAN, _},
-		    {STAR, _, OCEAN},
-		    {STAR, STAR, STAR}},
-		    OCEAN),
-		new Rule(new byte[3,3] {
-		    {_, OCEAN, STAR},
-		    {OCEAN, _, STAR},
-		    {STAR, STAR, STAR}},
-		    OCEAN),
-		new Rule(new byte[3,3] {
-		    {STAR, MOUNTAIN, _},
-		    {STAR, _, MOUNTAIN},
-		    {STAR, STAR, STAR}},
-		    MOUNTAIN),
-		new Rule(new byte[3,3] {
-		    {_, MOUNTAIN, STAR},
-		    {MOUNTAIN, _, STAR},
-		    {STAR, STAR, STAR}},
-		    MOUNTAIN),
-	    },
-	    new HashSet<byte>(new byte[] {LAND, MOUNTAIN, OCEAN, RIVER}),
-	    new HashSet<byte>(new byte[] {MOUNTAIN, LAND}),
-	    null);
+        this.connect_diagonals = new OwTileFilter(
+            new Rule[] {
+            new Rule(new byte[3,3] {
+                {STAR, RIVER, _},
+                {STAR, _, RIVER},
+                {STAR, STAR, STAR}},
+                RIVER),
+            new Rule(new byte[3,3] {
+                {_, RIVER, STAR},
+                {RIVER, _, STAR},
+                {STAR, STAR, STAR}},
+                RIVER),
+            new Rule(new byte[3,3] {
+                {STAR, OCEAN, _},
+                {STAR, _, OCEAN},
+                {STAR, STAR, STAR}},
+                OCEAN),
+            new Rule(new byte[3,3] {
+                {_, OCEAN, STAR},
+                {OCEAN, _, STAR},
+                {STAR, STAR, STAR}},
+                OCEAN),
+            new Rule(new byte[3,3] {
+                {STAR, MOUNTAIN, _},
+                {STAR, _, MOUNTAIN},
+                {STAR, STAR, STAR}},
+                MOUNTAIN),
+            new Rule(new byte[3,3] {
+                {_, MOUNTAIN, STAR},
+                {MOUNTAIN, _, STAR},
+                {STAR, STAR, STAR}},
+                MOUNTAIN),
+            },
+            new HashSet<byte>(new byte[] {LAND, MOUNTAIN, OCEAN, RIVER}),
+            new HashSet<byte>(new byte[] {MOUNTAIN, LAND}),
+            null);
 
-	this.PreShoreRegionTypeMap = new Dictionary<byte, int>();
-	for (int i = 0; i < PreShoreRegionTypes.Length; i++) {
-	    for (int j = 0; j < PreShoreRegionTypes[i].Length; j++) {
-		this.PreShoreRegionTypeMap[(byte)j] = i;
-	    }
-	}
+        this.PreShoreRegionTypeMap = new Dictionary<byte, int>();
+        for (int i = 0; i < PreShoreRegionTypes.Length; i++) {
+            for (int j = 0; j < PreShoreRegionTypes[i].Length; j++) {
+                this.PreShoreRegionTypeMap[(byte)j] = i;
+            }
+        }
+
     }
 
 
