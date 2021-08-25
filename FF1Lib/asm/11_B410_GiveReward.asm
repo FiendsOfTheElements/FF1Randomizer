@@ -7,16 +7,16 @@ FindEmptyArmorSlot = $DD46
 FindEmptyWeaponSlot = $DD34
 AddGPToParty = $DDEA
 LoadPrice = $ECB9
-lut_ConsStack = $B000
-lut_TreasureJingle = $B200
+lut_ConsStack = $B400
+lut_TreasureJingle = $B600
 
 LvlUp_AwardAndUpdateExp = $87DA
 DivideRewardBySurvivors = $8B43
 SwapPRG = $FE03
 
-.org $B010
+.org $B410
 
-;; Bank 11 $B010
+;; Bank 11 $B410
 ;; New jump point for NPC-only items:
 ;; IN:
 ;;       'A' should be set to the item ID, 224-255 are special values for variables
