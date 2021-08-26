@@ -17,10 +17,10 @@ namespace FF1Lib.Procgen
     }
 
     public class OwRegion {
-        int RegionType;
-        int RegionId;
-        List<SCCoords> Points;
-        List<OwRegion> Adjacent;
+        public int RegionType;
+        public int RegionId;
+        public List<SCCoords> Points;
+        public List<OwRegion> Adjacent;
         //SCCoords NWCorner;
         //SCCoords SECorner;
 
@@ -61,14 +61,14 @@ namespace FF1Lib.Procgen
                     var curRegionType = tileRegionTypeMap[tilemap[p.Y,p.X]];
 
                     var adjacent = new SCCoords[] {
-                        new SCCoords(p.X+1, p.Y), 
-                        new SCCoords(p.X, p.Y+1),
-                        new SCCoords(p.X-1, p.Y),
-                        new SCCoords(p.X, p.Y-1)};
+                        p.OwUp, p.OwRight, p.OwDown, p.OwLeft
+                    };
                     foreach (var adj in adjacent) {
                         var adjRegionType = tileRegionTypeMap[tilemap[adj.Y,adj.X]];
                         if (adjRegionType == curRegionType) {
-                            workingStack.Push(ValueTuple.Create(adj, rg));
+                            if (regionMap[adj.Y,adj.X] == null) {
+                                workingStack.Push(ValueTuple.Create(adj, rg));
+                            }
                         } else {
                             workingQueue.Enqueue(ValueTuple.Create(adj, rg));
                         }
@@ -86,11 +86,13 @@ namespace FF1Lib.Procgen
                     } else {
                         nextRegion = regionMap[p.Y,p.X];
                     }
-                    if (!regionList[rg.RegionId].Adjacent.Contains(nextRegion)) {
-                        regionList[rg.RegionId].Adjacent.Add(nextRegion);
-                    }
-                    if (!regionList[nextRegion.RegionId].Adjacent.Contains(rg)) {
-                        regionList[nextRegion.RegionId].Adjacent.Add(rg);
+                    if (rg != nextRegion) {
+                        if (!regionList[rg.RegionId].Adjacent.Contains(nextRegion)) {
+                            regionList[rg.RegionId].Adjacent.Add(nextRegion);
+                        }
+                        if (!regionList[nextRegion.RegionId].Adjacent.Contains(rg)) {
+                            regionList[nextRegion.RegionId].Adjacent.Add(rg);
+                        }
                     }
                 }
             }
@@ -103,9 +105,9 @@ namespace FF1Lib.Procgen
         public const int MAPSIZE = 256;
         double[,] Basemap;
         public byte[,] Tilemap;
-        int[,] Biome_regionmap;
+        OwRegion[,] Biome_regionmap;
         List<OwRegion> Biome_regionlist;
-        int[,] Traversable_regionmap;
+        OwRegion[,] Traversable_regionmap;
         List<OwRegion> Traversable_regionlist;
         int[,] Feature_weightmap;
         int[,] Dock_weightmap;
@@ -127,7 +129,9 @@ namespace FF1Lib.Procgen
 
         private MT19337 rng;
 
-        public OverworldState(MT19337 rng, GenerationStep[] steps) {
+        private OverworldTiles overworldTiles;
+
+        public OverworldState(MT19337 rng, GenerationStep[] steps, OverworldTiles overworldTiles) {
             this.rng = rng;
             this.ownBasemap = true;
             this.ownTilemap = true;
@@ -135,9 +139,9 @@ namespace FF1Lib.Procgen
             this.ownPlacements = true;
             this.Basemap = new double[MAPSIZE,MAPSIZE];
             this.Tilemap = new byte[MAPSIZE,MAPSIZE];
-            this.Biome_regionmap = new int[MAPSIZE,MAPSIZE];
+            this.Biome_regionmap = new OwRegion[MAPSIZE,MAPSIZE];
             this.Biome_regionlist = new List<OwRegion>();
-            this.Traversable_regionmap = new int[MAPSIZE,MAPSIZE];
+            this.Traversable_regionmap = new OwRegion[MAPSIZE,MAPSIZE];
             this.Traversable_regionlist = new List<OwRegion>();
             this.Feature_weightmap  = new int[MAPSIZE,MAPSIZE];
             this.Dock_weightmap = new int[MAPSIZE,MAPSIZE];
@@ -145,6 +149,7 @@ namespace FF1Lib.Procgen
             this.Reachable_regions = new List<int>();
             this.Exclude_docks = new List<int>();
             this.StepQueue = new Queue<GenerationStep>(steps);
+            this.overworldTiles = overworldTiles;
         }
 
         public OverworldState(OverworldState copy) {
@@ -172,6 +177,7 @@ namespace FF1Lib.Procgen
             this.heightmax = copy.heightmax;
             this.mountain_elevation = copy.mountain_elevation;
             this.sea_elevation = copy.sea_elevation;
+            this.overworldTiles = copy.overworldTiles;
         }
 
         void OwnBasemap() {
@@ -199,12 +205,12 @@ namespace FF1Lib.Procgen
                     return;
                 }
                 var fromBiome_regionmap = this.Biome_regionmap;
-                this.Biome_regionmap = new int[MAPSIZE,MAPSIZE];
+                this.Biome_regionmap = new OwRegion[MAPSIZE,MAPSIZE];
                 Array.Copy(fromBiome_regionmap, this.Tilemap, fromBiome_regionmap.Length);
                 this.Biome_regionlist = new List<OwRegion>(this.Biome_regionlist);
 
                 var fromTraversable_regionmap = this.Traversable_regionmap;
-                this.Traversable_regionmap = new int[MAPSIZE,MAPSIZE];
+                this.Traversable_regionmap = new OwRegion[MAPSIZE,MAPSIZE];
                 Array.Copy(fromTraversable_regionmap, this.Tilemap, fromTraversable_regionmap.Length);
                 this.Traversable_regionlist = new List<OwRegion>(this.Traversable_regionlist);
                 this.ownRegions = true;
@@ -233,7 +239,7 @@ namespace FF1Lib.Procgen
             }
             this.StepQueue = new Queue<GenerationStep>(this.StepQueue);
             var nextStep = this.StepQueue.Dequeue();
-            return nextStep.RunStep(new OverworldState(this));
+            return nextStep.RunStep(this);
         }
 
         const double UNSET = -1000000;
@@ -455,6 +461,121 @@ namespace FF1Lib.Procgen
             this.FlowRivers(this.sea_elevation + (this.mountain_elevation-this.sea_elevation)*.5, this.mountain_elevation, 10);
             return this.NextStep();
         }
+
+        public void UpdateBiomeRegions() {
+            var biome = OwRegion.FindRegions(this.Tilemap, overworldTiles.PreShoreRegionTypeMap);
+            this.Biome_regionmap = biome.Item1;
+            this.Biome_regionlist = biome.Item2;
+        }
+
+        public void UpdateTraversableRegions() {
+            var traversable = OwRegion.FindRegions(this.Tilemap, overworldTiles.TraversableRegionTypeMap);
+            this.Traversable_regionmap = traversable.Item1;
+            this.Traversable_regionlist = traversable.Item2;
+        }
+
+        public Result UpdateRegions() {
+            this.UpdateBiomeRegions();
+            this.UpdateTraversableRegions();
+            return this.NextStep();
+        }
+
+        public Result RemoveSmallIslands() {
+            this.OwnTilemap();
+
+            const int tiny_island_size = 5;
+            const int small_island_size = 12;
+            const int keep_small_islands = 6;
+
+            var tiny = new List<OwRegion>();
+            var small = new List<OwRegion>();
+            foreach (var r in this.Traversable_regionlist) {
+                if (r.Adjacent.Count == 1 && r.Adjacent[0].RegionType == OverworldTiles.OCEAN_REGION) {
+                    if (r.Points.Count <= tiny_island_size) {
+                        tiny.Add(r);
+                    } else if (r.Points.Count <= small_island_size) { 
+                        small.Add(r);
+                    }
+                }
+            }
+                
+            small.Shuffle(this.rng);
+            var keep_small = Math.Min(keep_small_islands, small.Count);
+
+            for (int i = keep_small; i < small.Count; i++) {
+                var r = small[i];
+                foreach (var p in r.Points) {
+                    this.Tilemap[p.Y,p.X] = OverworldTiles.OCEAN;
+                }
+            }
+            foreach (var r in tiny) {
+                foreach (var p in r.Points) {
+                    this.Tilemap[p.Y,p.X] = OverworldTiles.OCEAN;
+                }
+            }
+
+            return this.UpdateRegions();
+        }
+
+       public Result RemoveTinyRegions() {
+            this.OwnTilemap();
+
+            const int tiny_region_size = 5;
+
+            foreach (var r in this.Biome_regionlist) {
+                if (r.Points.Count <= tiny_region_size) {
+                    var mergeWith = r.Adjacent[rng.Between(0, r.Adjacent.Count-1)];
+                    byte tile = this.overworldTiles.PreShoreRegionTypes[mergeWith.RegionType][0];
+                    foreach (var p in r.Points) {
+                        this.Tilemap[p.Y,p.X] = tile;
+                    }
+                }
+            }
+            return this.UpdateRegions();
+        }
+
+
+        public void Splat(SCCoords p, byte biome) {
+            var sz = this.rng.Between(200, 400);
+
+            var pending = new List<SCCoords>();
+            pending.Add(p);
+
+            while (sz > 0 && pending.Count > 0) {
+                p = pending.SpliceRandom(this.rng);
+                if (this.Tilemap[p.Y,p.X] != OverworldTiles.LAND && 
+                    this.Tilemap[p.Y,p.X] != OverworldTiles.RIVER) {
+                    continue;
+                }
+                if (this.Tilemap[p.Y,p.X] == OverworldTiles.LAND) {
+                    this.Tilemap[p.Y,p.X] = (byte)biome;
+                }
+                sz -= 1;
+
+                pending.Add(p.OwUp);
+                pending.Add(p.OwRight);
+                pending.Add(p.OwDown);
+                pending.Add(p.OwLeft);
+            }
+        }
+
+        public Result AddBiomes() {
+            this.OwnTilemap();
+
+            var biome_types = new byte[] { OverworldTiles.FOREST, OverworldTiles.FOREST, OverworldTiles.GRASS, OverworldTiles.MARSH, OverworldTiles.DESERT };
+            foreach (var r in this.Biome_regionlist) {
+                if (r.RegionType != OverworldTiles.LAND_REGION) {
+                    continue;
+                }
+                for (int i = 0; i < r.Points.Count/100+1; i++) {
+                    var b = biome_types[rng.Between(0, biome_types.Length-1)];
+                    var p = r.Points[rng.Between(0, r.Points.Count-1)];
+                    this.Splat(p, b);
+                }
+            }
+
+            return this.UpdateRegions();
+        }
     }
 
     public class Result {
@@ -532,11 +653,26 @@ namespace FF1Lib.Procgen
                 new GenerationStep("FlowMountainRivers", new object[] {}),
                 new GenerationStep("FlowPlainsRivers", new object[] {}),
                 new GenerationStep("ApplyFilter", new object[] {mt.connect_diagonals}),
+                new GenerationStep("UpdateRegions", new object[]{}),
+                new GenerationStep("RemoveSmallIslands", new object[]{}),
+                new GenerationStep("AddBiomes", new object[]{}),
+
+                new GenerationStep("ApplyFilter", new object[]{mt.remove_salients}),
+                new GenerationStep("ApplyFilter", new object[]{mt.remove_salients}),
+                new GenerationStep("ApplyFilter", new object[]{mt.remove_salients}),
+                new GenerationStep("UpdateRegions", new object[]{}),
+                new GenerationStep("RemoveTinyRegions", new object[]{}),
+
+                new GenerationStep("ApplyFilter", new object[]{mt.remove_salients}),
+                new GenerationStep("ApplyFilter", new object[]{mt.remove_salients}),
+                new GenerationStep("ApplyFilter", new object[]{mt.remove_salients}),
+                new GenerationStep("UpdateRegions", new object[]{}),
+                new GenerationStep("RemoveTinyRegions", new object[]{}),
             };
 
             Stack<GenerationTask> workStack = new Stack<GenerationTask>();
 
-            workStack.Push(new OverworldState(rng, steps).NextStep);
+            workStack.Push(new OverworldState(rng, steps, mt).NextStep);
 
             OverworldState final = null;
             int taskCount = 0;
