@@ -576,6 +576,23 @@ namespace FF1Lib.Procgen
 
             return this.UpdateRegions();
         }
+
+        public Result SmallSeasBecomeLakes() {
+            this.OwnTilemap();
+            foreach (var r in this.Biome_regionlist) {
+                if (r.RegionType != OverworldTiles.OCEAN_REGION) {
+                    continue;
+                }
+                if (r.Points.Count > 40) {
+                    continue;
+                }
+                foreach (var p in r.Points) {
+                    this.Tilemap[p.Y,p.X] = OverworldTiles.RIVER;
+                }
+            }
+            return this.UpdateRegions();
+        }
+
     }
 
     public class Result {
@@ -668,6 +685,8 @@ namespace FF1Lib.Procgen
                 new GenerationStep("ApplyFilter", new object[]{mt.remove_salients}),
                 new GenerationStep("UpdateRegions", new object[]{}),
                 new GenerationStep("RemoveTinyRegions", new object[]{}),
+
+                new GenerationStep("SmallSeasBecomeLakes", new object[]{}),
             };
 
             Stack<GenerationTask> workStack = new Stack<GenerationTask>();
