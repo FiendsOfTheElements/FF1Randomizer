@@ -140,32 +140,51 @@ namespace FF1Lib.Procgen
 	public const int LAND_REGION = 0;
 	public const int OCEAN_REGION = 1;
 	public const int RIVER_REGION = 2;
-	public const int GRASS_REGION = 3;
-	public const int MARSH_REGION = 4;
-	public const int MOUNTAIN_REGION = 5;
+    public const int MOUNTAIN_REGION = 3;
+	public const int GRASS_REGION = 4;
+	public const int MARSH_REGION = 5;
 	public const int FOREST_REGION = 6;
 	public const int DESERT_REGION = 7;
 	public const int OTHER_REGION = 8;
 
-	public object[][] PreShoreRegionTypes = new object[][] {
-	    new object[] { LAND, SHORE_NW, SHORE_NE, SHORE_SW, SHORE_SE },
-	    new object[] { OCEAN, SHORE_W, SHORE_N, SHORE_E, SHORE_S },
-	    new object[] { RIVER, RIVER_NW, RIVER_NE, RIVER_SW, RIVER_SE },
-	    new object[] { GRASS, GRASS_NW, GRASS_NE, GRASS_SW, GRASS_SE },
-	    new object[] { MARSH, MARSH_NW, MARSH_NE, MARSH_SW, MARSH_SE },
-	    new object[] { MOUNTAIN, MOUNTAIN_NW, MOUNTAIN_N, MOUNTAIN_NE ,
+	public byte[][] PreShoreRegionTypes = new byte[][] {
+	    new byte[] { LAND, SHORE_NW, SHORE_NE, SHORE_SW, SHORE_SE },
+	    new byte[] { OCEAN, SHORE_W, SHORE_N, SHORE_E, SHORE_S },
+	    new byte[] { RIVER, RIVER_NW, RIVER_NE, RIVER_SW, RIVER_SE },
+	    new byte[] { MOUNTAIN, MOUNTAIN_NW, MOUNTAIN_N, MOUNTAIN_NE ,
 			   MOUNTAIN_W, MOUNTAIN_E,
 			   MOUNTAIN_SW, MOUNTAIN_S, MOUNTAIN_SE},
-	    new object[] {FOREST, FOREST_NW, FOREST_N, FOREST_NE,
+	    new byte[] { GRASS, GRASS_NW, GRASS_NE, GRASS_SW, GRASS_SE },
+	    new byte[] { MARSH, MARSH_NW, MARSH_NE, MARSH_SW, MARSH_SE },
+	    new byte[] {FOREST, FOREST_NW, FOREST_N, FOREST_NE,
 			  FOREST_W, FOREST_E,
 			  FOREST_SW, FOREST_S, FOREST_SE},
-	    new object[] {DESERT, DESERT_NW, DESERT_NE, DESERT_SW, DESERT_SE}
+	    new byte[] {DESERT, DESERT_NW, DESERT_NE, DESERT_SW, DESERT_SE}
 	};
-	Dictionary<byte, int> PreShoreRegionTypeMap;
+	public Dictionary<byte, int> PreShoreRegionTypeMap;
+
+    public byte[][] TraversableRegionTypes = new byte[][] {
+	    new byte[] {
+            LAND, GRASS, GRASS_NW, GRASS_NE, GRASS_SW, GRASS_SE,
+     MARSH, MARSH_NW, MARSH_NE, MARSH_SW, MARSH_SE,
+     FOREST, FOREST_NW, FOREST_N, FOREST_NE,
+     FOREST_W, FOREST_E,
+     FOREST_SW, FOREST_S, FOREST_SE,
+     SHORE_NW, SHORE_NE, SHORE_SW, SHORE_SE,
+     DESERT, DESERT_NW, DESERT_NE, DESERT_SW, DESERT_SE,
+     CITY_PAVED},
+        new byte[] {OCEAN, SHORE_W, SHORE_N, SHORE_E, SHORE_S},
+        new byte[] {RIVER, RIVER_NW, RIVER_NE, RIVER_SW, RIVER_SE},
+	    new byte[] { MOUNTAIN, MOUNTAIN_NW, MOUNTAIN_N, MOUNTAIN_NE ,
+			   MOUNTAIN_W, MOUNTAIN_E,
+			   MOUNTAIN_SW, MOUNTAIN_S, MOUNTAIN_SE},
+    };
+	public Dictionary<byte, int> TraversableRegionTypeMap;
 
     public OwTileFilter expand_mountains;
     public OwTileFilter expand_oceans;
     public OwTileFilter connect_diagonals;
+    public OwTileFilter remove_salients;
 
     public OverworldTiles() {
         this.expand_mountains = new OwTileFilter(
@@ -308,10 +327,18 @@ namespace FF1Lib.Procgen
         this.PreShoreRegionTypeMap = new Dictionary<byte, int>();
         for (int i = 0; i < PreShoreRegionTypes.Length; i++) {
             for (int j = 0; j < PreShoreRegionTypes[i].Length; j++) {
-                this.PreShoreRegionTypeMap[(byte)j] = i;
+                this.PreShoreRegionTypeMap[(byte)PreShoreRegionTypes[i][j]] = i;
             }
         }
 
+        this.TraversableRegionTypeMap = new Dictionary<byte, int>();
+        for (int i = 0; i < TraversableRegionTypes.Length; i++) {
+            for (int j = 0; j < TraversableRegionTypes[i].Length; j++) {
+                this.TraversableRegionTypeMap[(byte)TraversableRegionTypes[i][j]] = i;
+            }
+        }
+
+        this.remove_salients = new OwTileFilter(PreShoreRegionTypes, PreShoreRegionTypeMap);
     }
 
 
