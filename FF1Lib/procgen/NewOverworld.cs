@@ -687,6 +687,8 @@ namespace FF1Lib.Procgen
                 new GenerationStep("RemoveTinyRegions", new object[]{}),
 
                 new GenerationStep("SmallSeasBecomeLakes", new object[]{}),
+
+                 new GenerationStep("ApplyFilter", new object[]{mt.apply_shores1}),
             };
 
             Stack<GenerationTask> workStack = new Stack<GenerationTask>();

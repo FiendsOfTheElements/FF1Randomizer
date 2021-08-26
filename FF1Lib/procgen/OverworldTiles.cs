@@ -186,6 +186,8 @@ namespace FF1Lib.Procgen
     public OwTileFilter connect_diagonals;
     public OwTileFilter remove_salients;
 
+    public OwTileFilter apply_shores1;
+
     public OverworldTiles() {
         this.expand_mountains = new OwTileFilter(
             new Rule[] {
@@ -323,6 +325,76 @@ namespace FF1Lib.Procgen
             new HashSet<byte>(new byte[] {LAND, MOUNTAIN, OCEAN, RIVER}),
             new HashSet<byte>(new byte[] {MOUNTAIN, LAND}),
             null);
+
+        var allTiles = new HashSet<byte>();
+        for (byte i = 0; i < 0x80; i++) {
+            allTiles.Add(i);
+        }
+        var non_water_tiles = new HashSet<byte>(allTiles);
+        non_water_tiles.Remove(OCEAN);
+        non_water_tiles.Remove(RIVER);
+        non_water_tiles.Remove(SHORE_N);
+        non_water_tiles.Remove(SHORE_E);
+        non_water_tiles.Remove(SHORE_S);
+        non_water_tiles.Remove(SHORE_W);
+        non_water_tiles.Remove(DOCK_W);
+        non_water_tiles.Remove(DOCK_E);
+        non_water_tiles.Remove(DOCK_SE);
+        non_water_tiles.Remove(DOCK_S);
+        non_water_tiles.Remove(DOCK_SW);
+        non_water_tiles.Remove(DOCK_SQ);
+
+        this.apply_shores1 = new OwTileFilter(
+            new Rule[] {
+            new Rule(new byte[3,3] {
+    { STAR, STAR,   STAR},
+    {  STAR, OCEAN, _ },
+    { STAR, _,  MOUNTAIN}},
+     OCEAN), 
+
+    new Rule(new byte[3,3] {
+        { STAR, STAR,    STAR },
+      {_, OCEAN, STAR },
+      { MOUNTAIN, _,   STAR}},
+     OCEAN),
+
+    new Rule(new byte[3,3] {
+        { MOUNTAIN,  _,  STAR },
+      { _, OCEAN, STAR },
+      { STAR,  STAR,   STAR }},
+     OCEAN),
+
+    new Rule(new byte[3,3] {
+        {STAR, _,    MOUNTAIN},
+        {STAR, OCEAN,  _},
+        {STAR,  STAR,   STAR}},
+     OCEAN),
+
+    new Rule(new byte[3,3] {
+        {STAR,   OCEAN,   STAR},
+        {OCEAN, OCEAN, _},
+        {STAR,      _,  STAR}},
+     SHORE_NW),
+
+    new Rule(new byte[3,3] {
+        {STAR, OCEAN,    STAR},
+      {_, OCEAN, OCEAN},
+      {STAR, _,   STAR}},
+     SHORE_NE),
+
+    new Rule(new byte[3,3] {
+        {STAR,  _,  STAR},
+      {_, OCEAN, OCEAN},
+      {STAR, OCEAN,   STAR}},
+     SHORE_SE),
+
+    new Rule(new byte[3,3] {
+        {STAR,     _,  STAR},
+      {OCEAN, OCEAN,  _},
+      {STAR,   OCEAN,  STAR}},
+     SHORE_SW),
+            }, allTiles, non_water_tiles, null);
+
 
         this.PreShoreRegionTypeMap = new Dictionary<byte, int>();
         for (int i = 0; i < PreShoreRegionTypes.Length; i++) {
