@@ -228,6 +228,41 @@ namespace FF1Lib
 			}),
 		};
 
+		public List<(MapLocation, byte, byte)> EntrancesCoords = new()
+		{
+			(MapLocation.ConeriaCastle1, 0x02, 0x03),
+			(MapLocation.Coneria, 0x02, 0x03),
+			(MapLocation.TempleOfFiends1, 0x01, 0x02),
+			(MapLocation.MatoyasCave, 0x02, 0x03),
+			(MapLocation.Pravoka, 0x02, 0x02),
+			(MapLocation.DwarfCave, 0x01, 0x03),
+			(MapLocation.NorthwestCastle, 0x00, 0x02),
+			(MapLocation.ElflandCastle, 0x01, 0x02),
+			(MapLocation.Elfland, 0x01, 0x02),
+			(MapLocation.MarshCave1, 0x00, 0x01),
+			(MapLocation.Melmond, 0x00, 0x02),
+			(MapLocation.EarthCave1, 0x02, 0x03),
+			(MapLocation.TitansTunnelEast, 0x05, 0x05),
+			(MapLocation.TitansTunnelWest, 0x04, 0x02),
+			(MapLocation.SardasCave, 0x02, 0x02),
+			(MapLocation.CrescentLake, 0x02, 0x04),
+			(MapLocation.GurguVolcano1, 0x00, 0x02),
+			(MapLocation.IceCave1, 0x03, 0x02),
+			(MapLocation.Onrac, 0x00, 0x02),
+			(MapLocation.Caravan, 0x01, 0x02),
+			(MapLocation.Waterfall, 0x00, 0x01),
+			(MapLocation.Cardia1, 0x00, 0x01),
+			(MapLocation.Cardia2, 0x00, 0x01),
+			(MapLocation.Cardia4, 0x00, 0x01),
+			(MapLocation.Cardia5, 0x00, 0x01),
+			(MapLocation.Cardia6, 0x00, 0x01),
+			(MapLocation.BahamutCave1, 0x00, 0x01),
+			(MapLocation.CastleOrdeals1, 0x00, 0x02),
+			(MapLocation.MirageTower1, 0x00, 0x02),
+			(MapLocation.Gaia, 0x00, 0x02),
+			(MapLocation.Lefein, 0x02, 0x03),
+		};
+
 		public List<MapEdit> ConvertTileArrayToMapEdit(List<List<byte>> mapedit, int target_x, int target_y)
 		{
 			List<MapEdit> convertedMapEdit = new();
@@ -524,11 +559,14 @@ namespace FF1Lib
 							if (MapModifications.Where(z => z.Item1 == MapGrid[x][y]).Any())
 							{
 								var targetmod = MapModifications.Find(z => z.Item1 == MapGrid[x][y]);
-
+								int xPosition = (x * 16) + Rng.Between(rng, 0, 15 - targetmod.Item2[0].Count);
+								int yPosition = (y * 16) + Rng.Between(rng, 0, 15 - targetmod.Item2.Count);
 								overworldmap.MapEditsToApply.Add(ConvertTileArrayToMapEdit(targetmod.Item2,
-									(x * 16) + Rng.Between(rng, 0, 15 - targetmod.Item2[0].Count),
-									(y * 16) + Rng.Between(rng, 0, 15 - targetmod.Item2.Count)));
+									xPosition,
+									yPosition));
 
+								var locationToUpdate = EntrancesCoords.FindIndex(z => z.Item1 == MapGrid[x][y]);
+								EntrancesCoords[locationToUpdate] = (EntrancesCoords[locationToUpdate].Item1, (byte)(EntrancesCoords[locationToUpdate].Item2 + xPosition), (byte)(EntrancesCoords[locationToUpdate].Item3 + yPosition));
 							}
 							else
 							{ 
@@ -543,11 +581,31 @@ namespace FF1Lib
 				}
 
 			}
+			/*
+			var desertRow = MapGrid.Select((x, i) => new { x, i }).Where(y => y.x.Contains(MapLocation.StartingLocation)).Select(x => x.i).ToList();
+			if (desertRow.Any())
+			{
+				int selectedRow = desertRow.PickRandom(rng);
+				var desertColumn = MapGrid[selectedRow].Select((x, i) => new { x, i }).Where(y => y.x == MapLocation.StartingLocation).Select(x => x.i).ToList();
+				int selectedColum = desertColumn.PickRandom(rng);
 
+				overworldmap.MapEditsToApply.Add(new List<MapEdit>
+								{
+								new MapEdit{X = (byte)(selectedColum * 16 + 1), Y = (byte)(selectedRow * 16 + 1), Tile = 0x37},
+								});
+			}*/
 
+			const int teleportExitXOffset = 0x2C60;
+			const int teleportExitYOffset = 0x2C70;
+
+			foreach (var exit in shuffledExits)
+			{
+				_rom[teleportExitXOffset + (byte)exit.Key] = exit.Value.X;
+				_rom[teleportExitYOffset + (byte)exit.Key] = exit.Value.Y;
+			}
 
 			// Palette
-			for(int i = 1; i<16; i+=4)
+			for (int i = 1; i<16; i+=4)
 			{
 				Put(0x0380+i, Blob.FromHex("37"));
 			}
@@ -606,7 +664,17 @@ namespace FF1Lib
 				Put(0x0180 + tile.Item1, new byte[] { tile.Item3 });
 				Put(0x0200 + tile.Item1, new byte[] { tile.Item4 });
 				Put(0x0280 + tile.Item1, new byte[] { tile.Item5 });
+
+				if (tile.Item1 == 0x36)
+				{
+					continue;
+				}
+
+				byte tileprop = 0x0F;	                             // can't walk over
+				Put(0x0000 + tile.Item1 * 2, new byte[] { tileprop });
 			}
+
+			Put(0x0000 + (int)OWTile.Desert * 2, new byte[] { 0x0A }); // Update desert tile to allow ship
 
 			// Placement
 
@@ -762,6 +830,13 @@ namespace FF1Lib
 					{
 						mountainMap[y][x] = (byte)OWTile.MountainCenter;
 					}
+				}
+
+				int reverseMountain = Rng.Between(rng, 0, 1);
+
+				if (reverseMountain == 1)
+				{
+					mountainMap.ForEach(x => x.Reverse());
 				}
 
 				// Do borders
