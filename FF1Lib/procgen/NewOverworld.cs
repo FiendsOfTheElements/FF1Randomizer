@@ -400,10 +400,10 @@ namespace FF1Lib.Procgen
             return this.NextStep();
         }
 
-        public void FlowRiver(SCCoords p) {
+        public int FlowRiver(SCCoords p, int volume) {
             this.OwnTilemap();
 
-            int volume = 256;
+	    int size = 0;
             var pending = new SortedList<double, SCCoords>();
             pending[-this.Basemap[p.Y,p.X]] = p;
             while (volume > 0 && pending.Count > 0) {
@@ -411,7 +411,7 @@ namespace FF1Lib.Procgen
                 pending.RemoveAt(pending.Count-1);
 
                 if (this.Tilemap[p.Y,p.X] == OverworldTiles.OCEAN) {
-                    return;
+                    return size;
                 }
 
                 volume -= 1;
@@ -420,14 +420,16 @@ namespace FF1Lib.Procgen
                     continue;
                 }
 
-               this.Tilemap[p.Y,p.X] = OverworldTiles.RIVER;
-            
+		this.Tilemap[p.Y,p.X] = OverworldTiles.RIVER;
+		size += 1;
+
                pending[-this.Basemap[p.Y,p.X+1]] = p.OwRight;
                pending[-this.Basemap[p.Y+1,p.X]] = p.OwDown;
                pending[-this.Basemap[p.Y,p.X-1]] = p.OwLeft;
                pending[-this.Basemap[p.Y-1,p.X]] = p.OwUp;
             }
 
+	    return size;
         }
 
         public void FlowRivers(double lower_elev, double upper_elev, int count) {
@@ -448,13 +450,76 @@ namespace FF1Lib.Procgen
             }
 
             for (int i = 0; i < count; i++) {
-                this.FlowRiver(points[i]);
+                this.FlowRiver(points[i], 256);
             }
+        }
+
+        public int MakeValley(SCCoords p, double lower_elev) {
+            this.OwnTilemap();
+
+	    int volume = 150;
+	    int size = 0;
+            var pending = new Queue<SCCoords>();
+            pending.Enqueue(p);
+	    double height = this.Basemap[p.Y,p.X];
+            while (volume > 0 && pending.Count > 0) {
+                p = pending.Dequeue();
+
+                volume -= 1;
+
+                if (this.Basemap[p.Y,p.X] > height ||
+		    this.Basemap[p.Y,p.X] < lower_elev ||
+		    this.Tilemap[p.Y,p.X] != OverworldTiles.MOUNTAIN) {
+                    continue;
+                }
+
+		this.Tilemap[p.Y,p.X] = OverworldTiles.LAND;
+		size += 1;
+
+		pending.Enqueue(p.OwRight);
+		pending.Enqueue(p.OwDown);
+		pending.Enqueue(p.OwLeft);
+		pending.Enqueue(p.OwUp);
+            }
+	    return size;
+	}
+
+        public Result MakeValleys(int count) {
+	    //double lower_elev = this.mountain_elevation + (this.heightmax-this.mountain_elevation)*.5;
+	    double lower_elev = this.mountain_elevation;
+	    double upper_elev = this.heightmax;
+
+            var points = new List<SCCoords>();
+            for (int y = 0; y < MAPSIZE; y++) {
+                for (int x = 0; x < MAPSIZE; x++) {
+                    double height = this.Basemap[y,x];
+                    if (height >= lower_elev && height <= upper_elev) {
+                        points.Add(new SCCoords(x, y));
+                    }
+                }
+            }
+
+            points.Shuffle(this.rng);
+
+            if (count > points.Count) {
+                count = points.Count;
+            }
+
+	    int pt = 0;
+            for (int i = 0; pt < count && i < points.Count; i++) {
+                int sz = this.MakeValley(points[i], lower_elev);
+		if (sz >= 5) {
+		    pt++;
+		}
+		Console.WriteLine($"size {sz}");
+            }
+
+	    return this.NextStep();
         }
 
         public Result FlowMountainRivers() {
             this.FlowRivers(this.mountain_elevation + (this.heightmax-this.mountain_elevation)*.5, this.heightmax, 10);
-            return this.NextStep();            
+            return this.NextStep();
         }
 
         public Result FlowPlainsRivers() {
@@ -493,12 +558,12 @@ namespace FF1Lib.Procgen
                 if (r.Adjacent.Count == 1 && r.Adjacent[0].RegionType == OverworldTiles.OCEAN_REGION) {
                     if (r.Points.Count <= tiny_island_size) {
                         tiny.Add(r);
-                    } else if (r.Points.Count <= small_island_size) { 
+                    } else if (r.Points.Count <= small_island_size) {
                         small.Add(r);
                     }
                 }
             }
-                
+
             small.Shuffle(this.rng);
             var keep_small = Math.Min(keep_small_islands, small.Count);
 
@@ -543,7 +608,7 @@ namespace FF1Lib.Procgen
 
             while (sz > 0 && pending.Count > 0) {
                 p = pending.SpliceRandom(this.rng);
-                if (this.Tilemap[p.Y,p.X] != OverworldTiles.LAND && 
+                if (this.Tilemap[p.Y,p.X] != OverworldTiles.LAND &&
                     this.Tilemap[p.Y,p.X] != OverworldTiles.RIVER) {
                     continue;
                 }
@@ -669,6 +734,7 @@ namespace FF1Lib.Procgen
                 new GenerationStep("ApplyFilter", new object[] {mt.expand_oceans}),
                 new GenerationStep("FlowMountainRivers", new object[] {}),
                 new GenerationStep("FlowPlainsRivers", new object[] {}),
+		//new GenerationStep("MakeValleys", new object[] {5}),
                 new GenerationStep("ApplyFilter", new object[] {mt.connect_diagonals}),
                 new GenerationStep("UpdateRegions", new object[]{}),
                 new GenerationStep("RemoveSmallIslands", new object[]{}),
