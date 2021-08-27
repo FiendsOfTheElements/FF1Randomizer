@@ -688,7 +688,16 @@ namespace FF1Lib.Procgen
 
                 new GenerationStep("SmallSeasBecomeLakes", new object[]{}),
 
-                 new GenerationStep("ApplyFilter", new object[]{mt.apply_shores1}),
+                new GenerationStep("ApplyFilter", new object[]{mt.apply_shores1}),
+                new GenerationStep("ApplyFilter", new object[]{mt.apply_shores2}),
+                new GenerationStep("ApplyFilter", new object[]{mt.apply_shores3}),
+                new GenerationStep("ApplyFilter", new object[]{mt.apply_shores4}),
+                new GenerationStep("ApplyFilter", new object[]{mt.mountain_borders}),
+                new GenerationStep("ApplyFilter", new object[]{mt.river_borders}),
+                new GenerationStep("ApplyFilter", new object[]{mt.desert_borders}),
+                new GenerationStep("ApplyFilter", new object[]{mt.marsh_borders}),
+                new GenerationStep("ApplyFilter", new object[]{mt.grass_borders}),
+                new GenerationStep("ApplyFilter", new object[]{mt.forest_borders}),
             };
 
             Stack<GenerationTask> workStack = new Stack<GenerationTask>();

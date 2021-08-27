@@ -187,6 +187,16 @@ namespace FF1Lib.Procgen
     public OwTileFilter remove_salients;
 
     public OwTileFilter apply_shores1;
+    public OwTileFilter apply_shores2;
+    public OwTileFilter apply_shores3;
+    public OwTileFilter apply_shores4;
+
+	public OwTileFilter mountain_borders;
+	public OwTileFilter river_borders;
+	public OwTileFilter desert_borders;
+	public OwTileFilter marsh_borders;
+	public OwTileFilter grass_borders;
+	public OwTileFilter forest_borders;
 
     public OverworldTiles() {
         this.expand_mountains = new OwTileFilter(
@@ -344,56 +354,459 @@ namespace FF1Lib.Procgen
         non_water_tiles.Remove(DOCK_SW);
         non_water_tiles.Remove(DOCK_SQ);
 
+        var non_shore_tiles = new HashSet<byte>(allTiles);
+        non_shore_tiles.Remove(OCEAN);
+        non_shore_tiles.Remove(RIVER);
+        non_shore_tiles.Remove(SHORE_NW);
+        non_shore_tiles.Remove(SHORE_NE);
+        non_shore_tiles.Remove(SHORE_SW);
+        non_shore_tiles.Remove(SHORE_SE);
+        non_shore_tiles.Remove(DOCK_W);
+        non_shore_tiles.Remove(DOCK_E);
+        non_shore_tiles.Remove(DOCK_SE);
+        non_shore_tiles.Remove(DOCK_S);
+        non_shore_tiles.Remove(DOCK_SW);
+        non_shore_tiles.Remove(DOCK_SQ);
+
+        var non_desert_tiles = new HashSet<byte>(allTiles);
+	non_desert_tiles.Remove(DESERT);
+	non_desert_tiles.Remove(DESERT_NW);
+	non_desert_tiles.Remove(DESERT_NE);
+	non_desert_tiles.Remove(DESERT_SW);
+	non_desert_tiles.Remove(DESERT_SE);
+	non_desert_tiles.Remove(MIRAGE_TOP);
+	non_desert_tiles.Remove(MIRAGE_BOTTOM);
+	non_desert_tiles.Remove(MIRAGE_SHADOW);
+
+        var non_marsh_tiles = new HashSet<byte>(allTiles);
+	non_marsh_tiles.Remove(MARSH);
+	non_marsh_tiles.Remove(MARSH_NW);
+	non_marsh_tiles.Remove(MARSH_NE);
+	non_marsh_tiles.Remove(MARSH_SW);
+	non_marsh_tiles.Remove(MARSH_SE);
+
+        var non_grass_tiles = new HashSet<byte>(allTiles);
+	non_grass_tiles.Remove(GRASS);
+	non_grass_tiles.Remove(GRASS_NW);
+	non_grass_tiles.Remove(GRASS_NE);
+	non_grass_tiles.Remove(GRASS_SW);
+	non_grass_tiles.Remove(GRASS_SE);
+
+        var non_forest_tiles = new HashSet<byte>(allTiles);
+	non_forest_tiles.Remove(FOREST);
+	non_forest_tiles.Remove(FOREST_N);
+	non_forest_tiles.Remove(FOREST_E);
+	non_forest_tiles.Remove(FOREST_S);
+	non_forest_tiles.Remove(FOREST_W);
+	non_forest_tiles.Remove(FOREST_NW);
+	non_forest_tiles.Remove(FOREST_NE);
+	non_forest_tiles.Remove(FOREST_SW);
+	non_forest_tiles.Remove(FOREST_SE);
+
+        var non_mountain_tiles = new HashSet<byte>(allTiles);
+	non_mountain_tiles.Remove(MOUNTAIN);
+	non_mountain_tiles.Remove(MOUNTAIN_N);
+	non_mountain_tiles.Remove(MOUNTAIN_E);
+	non_mountain_tiles.Remove(MOUNTAIN_S);
+	non_mountain_tiles.Remove(MOUNTAIN_W);
+	non_mountain_tiles.Remove(MOUNTAIN_NW);
+	non_mountain_tiles.Remove(MOUNTAIN_NE);
+	non_mountain_tiles.Remove(MOUNTAIN_SW);
+	non_mountain_tiles.Remove(MOUNTAIN_SE);
+
+        var pit_caves = new HashSet<byte>();
+	pit_caves.Add(MARSH_CAVE);
+	pit_caves.Add(BAHAMUTS_CAVE);
+	pit_caves.Add(CARDIA_1);
+	pit_caves.Add(CARDIA_2);
+	pit_caves.Add(CARDIA_3);
+	pit_caves.Add(CARDIA_4);
+	pit_caves.Add(CARDIA_5);
+
         this.apply_shores1 = new OwTileFilter(
             new Rule[] {
-            new Rule(new byte[3,3] {
-    { STAR, STAR,   STAR},
-    {  STAR, OCEAN, _ },
-    { STAR, _,  MOUNTAIN}},
-     OCEAN), 
+		new Rule(new byte[3,3] {
+		    { STAR, STAR,   STAR},
+		    {  STAR, OCEAN, _ },
+		    { STAR, _,  MOUNTAIN}},
+		    OCEAN),
 
-    new Rule(new byte[3,3] {
-        { STAR, STAR,    STAR },
-      {_, OCEAN, STAR },
-      { MOUNTAIN, _,   STAR}},
-     OCEAN),
+		new Rule(new byte[3,3] {
+		    { STAR, STAR,    STAR },
+		    {_, OCEAN, STAR },
+		    { MOUNTAIN, _,   STAR}},
+		    OCEAN),
 
-    new Rule(new byte[3,3] {
-        { MOUNTAIN,  _,  STAR },
-      { _, OCEAN, STAR },
-      { STAR,  STAR,   STAR }},
-     OCEAN),
+		new Rule(new byte[3,3] {
+		    { MOUNTAIN,  _,  STAR },
+		    { _, OCEAN, STAR },
+		    { STAR,  STAR,   STAR }},
+		    OCEAN),
 
-    new Rule(new byte[3,3] {
-        {STAR, _,    MOUNTAIN},
-        {STAR, OCEAN,  _},
-        {STAR,  STAR,   STAR}},
-     OCEAN),
+		new Rule(new byte[3,3] {
+		    {STAR, _,    MOUNTAIN},
+		    {STAR, OCEAN,  _},
+		    {STAR,  STAR,   STAR}},
+		    OCEAN),
 
-    new Rule(new byte[3,3] {
-        {STAR,   OCEAN,   STAR},
-        {OCEAN, OCEAN, _},
-        {STAR,      _,  STAR}},
-     SHORE_NW),
+		new Rule(new byte[3,3] {
+		    {STAR,   OCEAN,   STAR},
+		    {OCEAN, OCEAN, _},
+		    {STAR,      _,  STAR}},
+		    SHORE_NW),
 
-    new Rule(new byte[3,3] {
-        {STAR, OCEAN,    STAR},
-      {_, OCEAN, OCEAN},
-      {STAR, _,   STAR}},
-     SHORE_NE),
+		new Rule(new byte[3,3] {
+		    {STAR, OCEAN,    STAR},
+		    {_, OCEAN, OCEAN},
+		    {STAR, _,   STAR}},
+		    SHORE_NE),
 
-    new Rule(new byte[3,3] {
-        {STAR,  _,  STAR},
-      {_, OCEAN, OCEAN},
-      {STAR, OCEAN,   STAR}},
-     SHORE_SE),
+		new Rule(new byte[3,3] {
+		    {STAR,  _,  STAR},
+		    {_, OCEAN, OCEAN},
+		    {STAR, OCEAN,   STAR}},
+		    SHORE_SE),
 
-    new Rule(new byte[3,3] {
-        {STAR,     _,  STAR},
-      {OCEAN, OCEAN,  _},
-      {STAR,   OCEAN,  STAR}},
-     SHORE_SW),
+		new Rule(new byte[3,3] {
+		    {STAR,     _,  STAR},
+		    {OCEAN, OCEAN,  _},
+		    {STAR,   OCEAN,  STAR}},
+		    SHORE_SW),
             }, allTiles, non_water_tiles, null);
+
+	this.apply_shores2 = new OwTileFilter(
+	    new Rule[] {
+		new Rule(new byte[3,3] {
+		    {STAR, STAR,   STAR},
+		    {STAR, _,  OCEAN},
+		    {STAR, OCEAN, STAR}},
+		    SHORE_SE),
+
+		new Rule(new byte[3,3] {
+		    {STAR, STAR,    STAR},
+		    {OCEAN, _, STAR},
+		    {STAR, OCEAN,  STAR}},
+		    SHORE_SW),
+
+		new Rule(new byte[3,3] {
+		    {STAR, OCEAN,  STAR},
+		    {OCEAN, _, STAR},
+		    {STAR, STAR,    STAR}},
+		    SHORE_NW),
+
+		new Rule(new byte[3,3] {
+		    {STAR, OCEAN,  STAR},
+		    {STAR, _,   OCEAN},
+		    {STAR, STAR,    STAR}},
+		    SHORE_NE)
+	    }, allTiles, non_water_tiles, null);
+
+	this.apply_shores3 = new OwTileFilter(
+	    new Rule[] {
+		new Rule(new byte[3,3] {
+		    {STAR, STAR,   STAR},
+		    {STAR, OCEAN, _},
+		    {STAR, STAR,   STAR}},
+		    SHORE_W),
+		new Rule(new byte[3,3] {
+		    {STAR,  STAR,   STAR},
+		    {_, OCEAN, STAR},
+		    {STAR,  STAR,   STAR}},
+		    SHORE_E),
+		new Rule(new byte[3,3] {
+		    {STAR, STAR,   STAR},
+		    {STAR, OCEAN, STAR},
+		    {STAR, _,  STAR}},
+		    SHORE_N),
+		new Rule(new byte[3,3] {
+		    {STAR, _,   STAR},
+		    {STAR, OCEAN,  STAR},
+		    {STAR, STAR,    STAR,}},
+		    SHORE_S),
+	    }, allTiles, non_shore_tiles, null);
+
+	this.apply_shores4 = new OwTileFilter(
+	    new Rule[] {
+		new Rule(new byte[3,3] {
+		    {STAR, STAR,   STAR},
+		    {STAR, OCEAN, STAR},
+		    {STAR, DOCK_S,  STAR}},
+		    SHORE_N),
+		new Rule(new byte[3,3] {
+		    {STAR, STAR,   STAR},
+		    {STAR, OCEAN, STAR},
+		    {STAR, DOCK_SE,  STAR}},
+		    SHORE_N),
+		new Rule(new byte[3,3] {
+		    {STAR, STAR,   STAR},
+		    {STAR, OCEAN, DOCK_E},
+		    {STAR, STAR,   STAR}},
+		    SHORE_W),
+		new Rule(new byte[3,3] {
+		    {STAR,  STAR,   STAR},
+		    {DOCK_W, OCEAN, STAR},
+		    {STAR,  STAR,   STAR}},
+		    SHORE_E),
+	    }, allTiles, non_shore_tiles, null);
+
+	this.mountain_borders = new OwTileFilter(
+	    new Rule[] {
+		new Rule(new byte[3,3] {
+		    {STAR, STAR,       STAR},
+		    {STAR, MOUNTAIN,  _},
+		    {STAR,       _, STAR}},
+		    MOUNTAIN_SE),
+		new Rule(new byte[3,3] {
+		    {STAR, STAR,       STAR},
+		    {_, MOUNTAIN,  STAR},
+		    {STAR,       _, STAR}},
+		    MOUNTAIN_SW),
+		new Rule(new byte[3,3] {
+		    {STAR, _,       STAR},
+		    {_, MOUNTAIN,  STAR},
+		    {STAR,       STAR, STAR}},
+		    MOUNTAIN_NW),
+		new Rule(new byte[3,3] {
+		    {STAR, _,       STAR},
+		    {STAR, MOUNTAIN,  _},
+		    {STAR,       STAR, STAR}},
+		    MOUNTAIN_NE),
+		new Rule(new byte[3,3] {
+		    {STAR, STAR,       STAR},
+		    {STAR, MOUNTAIN,  _},
+		    {STAR,       STAR, STAR}},
+		    MOUNTAIN_E),
+		new Rule(new byte[3,3] {
+		    {STAR, STAR,       STAR},
+		    {_, MOUNTAIN,  STAR},
+		    {STAR,       STAR, STAR}},
+		    MOUNTAIN_W),
+		new Rule(new byte[3,3] {
+		    {STAR, _,       STAR},
+		    {STAR, MOUNTAIN,  STAR},
+		    {STAR,       STAR, STAR}},
+		    MOUNTAIN_N),
+		new Rule(new byte[3,3] {
+		    {STAR, STAR,       STAR},
+		    {STAR, MOUNTAIN,  STAR},
+		    {STAR,       _, STAR}},
+		    MOUNTAIN_S),
+	    }, allTiles, non_mountain_tiles, null);
+
+	this.river_borders = new OwTileFilter(
+	    new Rule[] {
+		new Rule(new byte[3,3] {
+		    {STAR, _,   STAR},
+		    {_, RIVER, RIVER},
+		    {STAR, RIVER,   STAR}},
+		    RIVER_NW),
+		new Rule(new byte[3,3] {
+		    {STAR, _,   STAR},
+		    {RIVER, RIVER, _},
+		    {STAR, RIVER,   STAR}},
+		    RIVER_NE),
+		new Rule(new byte[3,3] {
+		    {STAR,  RIVER,   STAR},
+		    {RIVER, RIVER, _},
+		    {STAR, _,   STAR}},
+		    RIVER_SE),
+		new Rule(new byte[3,3] {
+		    {STAR,  RIVER,   STAR},
+		    {_,  RIVER, RIVER},
+		    {STAR, _,   STAR}},
+		    RIVER_SW),
+	    }, allTiles, non_water_tiles, null);
+
+	this.desert_borders = new OwTileFilter(
+	    new Rule[] {
+		new Rule(new byte[3,3] {
+		    {   STAR, STAR, STAR},
+		    {STAR, DESERT, DESERT},
+		    {STAR, DESERT, CAVE}},
+		    DESERT_SE),
+		new Rule(new byte[3,3] {
+		    {STAR,    STAR, STAR},
+		    {DESERT, DESERT, DESERT},
+		    {STAR,     CAVE, STAR}},
+		    DESERT_SW),
+		new Rule(new byte[3,3] {
+		    {STAR,    DESERT, STAR},
+		    {STAR,    DESERT, CAVE},
+		    {STAR,    DESERT, STAR}},
+		    DESERT_NE),
+		new Rule(new byte[3,3] {
+		    {STAR,    DESERT, STAR},
+		    {CAVE,    DESERT, STAR},
+		    {STAR,    DESERT, STAR}},
+		    DESERT_SW),
+		new Rule(new byte[3,3] {
+		    {STAR,    DESERT, STAR},
+		    {CAVE,    DESERT, STAR},
+		    {STAR,    DESERT, STAR}},
+		    DESERT_NW),
+		new Rule(new byte[3,3] {
+		    {STAR,    CAVE,    STAR},
+		    {DESERT, DESERT, DESERT},
+		    {STAR,    STAR, STAR}},
+		    DESERT_NE),
+		new Rule(new byte[3,3] {
+		    {CAVE,    DESERT, STAR},
+		    {DESERT, DESERT, STAR},
+		    {STAR,    STAR, STAR}},
+		    DESERT_NW),
+		new Rule(new byte[3,3] {
+		    {STAR,   _,  STAR},
+		    {_, DESERT,  _},
+		    {STAR, DESERT,  STAR}},
+		    LAND),
+		new Rule(new byte[3,3] {
+		    {STAR,  _,   STAR},
+		    {_, DESERT, DESERT},
+		    {STAR,  _,   STAR}},
+		    LAND),
+		new Rule(new byte[3,3] {
+		    {STAR, DESERT, STAR},
+		    {_, DESERT, _},
+		    {STAR,  _,  STAR}},
+		    LAND),
+		new Rule(new byte[3,3] {
+		    {STAR,   _,   STAR},
+		    {DESERT, DESERT, _},
+		    {STAR,   _,   STAR}},
+		    LAND),
+		new Rule(new byte[3,3] {
+		    {STAR, _,   STAR},
+		    {_, DESERT, DESERT},
+		    {STAR, DESERT,   STAR}},
+		    DESERT_NW),
+		new Rule(new byte[3,3] {
+		    {STAR, _,   STAR},
+		    {DESERT, DESERT, _},
+		    {STAR, DESERT,   STAR}},
+		    DESERT_NE),
+		new Rule(new byte[3,3] {
+		    {STAR,  DESERT,   STAR},
+		    {DESERT, DESERT, _},
+		    {STAR, _,   STAR}},
+		    DESERT_SE),
+		new Rule(new byte[3,3] {
+		    {STAR,  DESERT,   STAR},
+		    {_,  DESERT, DESERT},
+		    {STAR, _,   STAR}},
+		    DESERT_SW),
+	    }, allTiles, non_desert_tiles, pit_caves);
+
+	this.marsh_borders = new OwTileFilter(
+	    new Rule[] {
+		new Rule(new byte[3,3] {
+		    {STAR, _,   STAR},
+		    {_, MARSH, MARSH},
+		    {STAR, MARSH,   STAR}},
+		    MARSH_NW),
+		new Rule(new byte[3,3] {
+		    {STAR, _,   STAR},
+		    {MARSH, MARSH, _},
+		    {STAR, MARSH,   STAR}},
+		    MARSH_NE),
+		new Rule(new byte[3,3] {
+		    {STAR,  MARSH,   STAR},
+		    {MARSH, MARSH, _},
+		    {STAR, _,   STAR}},
+		    MARSH_SE),
+		new Rule(new byte[3,3] {
+		    {STAR,  MARSH,   STAR},
+		    {_,  MARSH, MARSH},
+		    {STAR, _,   STAR}},
+		    MARSH_SW),
+	    }, allTiles, non_marsh_tiles, null);
+
+	this.grass_borders = new OwTileFilter(
+	    new Rule[] {
+		new Rule(new byte[3,3] {
+		    {STAR,   _,  STAR},
+		    {_, GRASS,  _},
+		    {STAR, GRASS,  STAR}},
+		    LAND),
+		new Rule(new byte[3,3] {
+		    {STAR,  _,   STAR},
+		    {_, GRASS, GRASS},
+		    {STAR,  _,   STAR}},
+		    LAND),
+		new Rule(new byte[3,3] {
+		    {STAR, GRASS, STAR},
+		    {_, GRASS, _},
+		    {STAR,  _,  STAR}},
+		    LAND),
+		new Rule(new byte[3,3] {
+		    {STAR,   _,   STAR},
+		    {GRASS, GRASS, _},
+		    {STAR,   _,   STAR}},
+		    LAND),
+		new Rule(new byte[3,3] {
+		    {STAR, _,   STAR},
+		    {_, GRASS, GRASS},
+		    {STAR, GRASS,   STAR}},
+		    GRASS_NW),
+		new Rule(new byte[3,3] {
+		    {STAR, _,   STAR},
+		    {GRASS, GRASS, _},
+		    {STAR, GRASS,   STAR}},
+		    GRASS_NE),
+		new Rule(new byte[3,3] {
+		    {STAR,  GRASS,   STAR},
+		    {GRASS, GRASS, _},
+		    {STAR, _,   STAR}},
+		    GRASS_SE),
+		new Rule(new byte[3,3] {
+		    {STAR,  GRASS,   STAR},
+		    {_,  GRASS, GRASS},
+		    {STAR, _,   STAR}},
+		    GRASS_SW),
+	    }, allTiles, non_grass_tiles, null);
+
+	this.forest_borders = new OwTileFilter(
+	    new Rule[] {
+		new Rule(new byte[3,3] {
+		    {STAR, STAR,       STAR},
+		    {STAR, FOREST,  _},
+		    {STAR,       _, STAR}},
+		    FOREST_SE),
+		new Rule(new byte[3,3] {
+		    {STAR, STAR,       STAR},
+		    {_, FOREST,  STAR},
+		    {STAR,       _, STAR}},
+		    FOREST_SW),
+		new Rule(new byte[3,3] {
+		    {STAR, _,       STAR},
+		    {_, FOREST,  STAR},
+		    {STAR,       STAR, STAR}},
+		    FOREST_NW),
+		new Rule(new byte[3,3] {
+		    {STAR, _,       STAR},
+		    {STAR, FOREST,  _},
+		    {STAR,       STAR, STAR}},
+		    FOREST_NE),
+		new Rule(new byte[3,3] {
+		    {STAR, STAR,       STAR},
+		    {STAR, FOREST,  _},
+		    {STAR,       STAR, STAR}},
+		    FOREST_E),
+		new Rule(new byte[3,3] {
+		    {STAR, STAR,       STAR},
+		    {_, FOREST,  STAR},
+		    {STAR,       STAR, STAR}},
+		    FOREST_W),
+		new Rule(new byte[3,3] {
+		    {STAR, _,       STAR},
+		    {STAR, FOREST,  STAR},
+		    {STAR,       STAR, STAR}},
+		    FOREST_N),
+		new Rule(new byte[3,3] {
+		    {STAR, STAR,       STAR},
+		    {STAR, FOREST,  STAR},
+		    {STAR,       _, STAR}},
+		    FOREST_S),
+	    }, allTiles, non_forest_tiles, null);
 
 
         this.PreShoreRegionTypeMap = new Dictionary<byte, int>();
