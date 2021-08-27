@@ -4,11 +4,9 @@
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 @inject IJSRuntime JSRuntime
 
+
 <div id="fun" class="framed-content">
-	<h3 class="centered"><span class="@(FunEnabled ? "fun-activated" : "fun-inactivated")" @onclick="(() => FunEnabled = true)">Fun %</span> / <span class="@(!FunEnabled ? "fun-activated" : "fun-inactivated")" @onclick="(() => FunEnabled = false)">Quality of Life</span></h3>
-	<p>Fun flags are not part of the standard flags string since they do not impact gameplay. The buttons at the bottom can be used to store your preferred fun % settings within your browser so that they will be automatically restored each time you visit the site.</p>
-	@if (FunEnabled)
-	{
+	<p>Fun flags are not part of the standard flags string since they do not impact gameplay. Click on Save Preferences to store your settings.</p>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="funEnemyNamesCheckBox" @bind-Value="Flags.FunEnemyNames">Fun Enemy Names</CheckBox>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="teamSteakCheckBox" @bind-Value="Flags.TeamSteak">Team STEAK</CheckBox>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="changeLuteCheckBox" @bind-Value="Flags.ChangeLute">Multi-instrumentalist Sara</CheckBox>
@@ -22,23 +20,10 @@
 
 	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="menuColorDropDown" TItem="MenuColor" @bind-Value="Flags.MenuColor">Menu Color:</EnumDropDown>
 
-	<ToolTipBox id="spriteSheetToolTipBox" UpdateToolTip="@UpdateToolTipID">@SpriteSheetMessage</ToolTipBox>
+	<ToolTipBox id="spriteSheetToolTipBox" UpdateToolTip="@UpdateToolTipID">@SpriteMessage</ToolTipBox>
 	<input type="file" id="spriteSheetInput" accept="image/*" @onchange="@OnSpriteSheetChanged" />
 	<a class="styled-button" @onclick="@ClearCustomSprites">Clear saved sprites</a>
-}
-else
-{
-	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="disableDamageTileFlickerCheckBox" @bind-Value="Flags.DisableDamageTileFlicker">Disable Damage Tile Flicker</CheckBox>
-	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="disableSpellCastFlashCheckBox" @bind-Value="Flags.DisableSpellCastFlash">Disable Spell Cast Flash</CheckBox>
-	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="accessibleSpellNamesCheckBox" IsEnabled="@(!Flags.GenerateNewSpellbook)" @bind-Value="Flags.AccessibleSpellNames">Accessible Spell Names</CheckBox>
-	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="shopInfoIconsCheckBox" @bind-Value="Flags.ShopInfoIcons">Shop Information Icons</CheckBox>
-	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="renounceAutosortCheckBox" @bind-Value="Flags.RenounceAutosort">Renounce Autosort</CheckBox>
-	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="renounceChestInfoCheckBox" @bind-Value="Flags.RenounceChestInfo">Renounce Chest Info</CheckBox>
-	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="cropScreen" @bind-Value="Flags.CropScreen">Crop Friendly</CheckBox>
-	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="renounceSpeedHackWipes" @bind-Value="Flags.OptOutSpeedHackWipes">Slow Screen Wipes</CheckBox>
-	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="renounceSpeedHackMessages" @bind-Value="Flags.OptOutSpeedHackMessages">Slow Battle Messages</CheckBox>
-	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="renounceSpeedHackDash" @bind-Value="Flags.OptOutSpeedHackDash">Slow Map Move</CheckBox>
-}
+
 	<div class="checkbox-cell"></div>
 
 	<a class="styled-button" @onclick="@SavePreferences">Save Preferences</a>
@@ -49,14 +34,8 @@ else
 	[Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }
 	[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
 	[Parameter] public Action<string> SetStatusMessage { get; set; }
-
-	private bool FunEnabled = true;
-
-	protected override async void OnInitialized()
-	{
-		Flags.Preferences = new Preferences();
-		await LoadPreferences();
-	}
+	[Parameter] public Action<string> SetSpriteMessage { get; set; }
+	[Parameter] public string SpriteMessage { get; set; }
 
 	async Task SavePreferences()
 	{
@@ -83,35 +62,18 @@ else
 		SetStatusMessage.Invoke("Preferences saved.");
 	}
 
-	async Task LoadPreferences()
-	{
-		string prefs = await JSRuntime.InvokeAsync<string>("getFFRPreferences", "preferences");
-		if (prefs == "" || prefs == null) return;
-		Flags.Preferences = JsonConvert.DeserializeObject<FF1Lib.Preferences>(prefs, new JsonSerializerSettings
-		{
-			Error = (se, ev) => { ev.ErrorContext.Handled = true; }
-		});
-		if (Flags.Preferences.SpriteSheet != null)
-		{
-			SpriteSheetMessage = "Using custom sprites.";
-		}
-		StateHasChanged();
-	}
-
-	private string SpriteSheetMessage { get; set; } = "Load custom player sprites:";
-
 	async Task OnSpriteSheetChanged(ChangeEventArgs e)
 	{
 		Console.WriteLine("OnSpriteSheetChanged");
 		Flags.SpriteSheet = await JSRuntime.InvokeAsync<string>("handleFileSelect", "spriteSheetInput");
-		SpriteSheetMessage = "Using custom sprites.";
+		SetSpriteMessage("Using custom sprites.");
 		StateHasChanged();
 	}
 
 	void ClearCustomSprites()
 	{
 		Flags.SpriteSheet = null;
-		SpriteSheetMessage = "Load custom player sprites:";
+		SetSpriteMessage("Load custom player sprites:");
 		StateHasChanged();
 	}
 }
