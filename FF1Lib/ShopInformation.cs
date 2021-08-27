@@ -30,7 +30,8 @@ namespace FF1Lib
 			PutInBank(0x1F, 0xEA74, Blob.FromHex("2040DC"));     // LoadBattleBGCHRAndPalettes now jump to $DC40 instead of directly to LoadMenuCHR
 			PutInBank(0x1F, 0xEA9F, Blob.FromHex("2002EA"));     // Change LoadMenuBGCHRAndPalettes to use LoadShopBGCHRPalettes instead of LoadBattleBGCHRAndPalettes
 
-			var newIcons = "00183C3C18180018FFFFFFFFFFFFFFFF" + // E2 to
+			// Insert graphics
+			var newIcons = "00183C3C18180018FFFFFFFFFFFFFFFF" + // E2 to F1
 				"001812446036381CFFFFFFFFFFFFFFFF" +
 				"0044BA6CE6FE7C38FFFFFFFFFFFFFFFF" +
 				"00386CC66C7C3838FFFFFFFFFFFFFFFF" +
@@ -47,10 +48,7 @@ namespace FF1Lib
 				"003C7EFFD57E3C0EFFFFFFFFFFFFFFFF" +
 				"003C42421C100010FFFFFFFFFFFFFFFF";
 
-
 			PutInBank(0x09, 0x8E20, Blob.FromHex(newIcons));
-
-			// Add new element icons!
 		}
 		public enum shopInfoWordsIndex
 		{
