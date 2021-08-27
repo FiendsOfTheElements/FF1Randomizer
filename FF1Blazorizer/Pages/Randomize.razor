@@ -2,7 +2,9 @@
 @page "/"
 @using FF1Lib;
 @using Microsoft.AspNetCore.Components.Web
+@using Newtonsoft.Json;
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+@inject IJSRuntime JSRuntime
 
 <div id="main-content">
 	<ToolTip @ref="ToolTipElement" ToolTipId="@ToolTipId" />
@@ -12,7 +14,21 @@
 			<AnnouncementBox SetHideAnnouncement="@SetHideAnnouncement" />
 		}
 		<FileTab Flags="@Flags" StatusMessage="@StatusMessage" SetStatusMessage="@SetStatusMessage" UpdateToolTipID="@UpdateToolTipID" showChaos="@showChaos" />
-		<FunTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" SetStatusMessage="@SetStatusMessage" />
+
+		<a class="nav-item nav-link fun @(FunEnabled ? "active" : "")" @onclick="(() => FunEnabled = true)" href="javascript:void(0);">Fun%</a>
+		<a class="nav-item nav-link fun @(FunEnabled ? "" : "active")" @onclick="(() => FunEnabled = false)" href="javascript:void(0);">Quality of Life</a>
+
+		@if (FunEnabled)
+		{
+			<FunTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" SetStatusMessage="@SetStatusMessage" SetSpriteMessage="@SetSpriteMessage" SpriteMessage="@SpriteSheetMessage"/>
+		}
+		else
+		{
+			<QoLTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" SetStatusMessage="@SetStatusMessage" />
+		}
+
+
+
 	</aside>
 
 	<main id="right-column">
@@ -153,7 +169,8 @@
 	private bool noAnnoucement = true;  // set to false if there's an announcement
 	private bool hideAnnouncement = false;
 	private string presetName = "Untitled";
-
+	private bool FunEnabled = true;
+	private string SpriteSheetMessage { get; set; } = "Load custom player sprites:";
 
 	protected override async void OnInitialized()
 	{
@@ -178,6 +195,25 @@
 			hideAnnouncement = await LocalStorage.GetItemAsync<bool>("announcement_st2021f");
 		}
 		Flags.PropertyChanged += (sender, args) => StateHasChanged();
+
+		Flags.Preferences = new Preferences();
+		await LoadPreferences();
+
+		StateHasChanged();
+	}
+
+	async Task LoadPreferences()
+	{
+		string prefs = await JSRuntime.InvokeAsync<string>("getFFRPreferences", "preferences");
+		if (prefs == "" || prefs == null) return;
+		Flags.Preferences = JsonConvert.DeserializeObject<FF1Lib.Preferences>(prefs, new JsonSerializerSettings
+		{
+			Error = (se, ev) => { ev.ErrorContext.Handled = true; }
+		});
+		if (Flags.Preferences.SpriteSheet != null)
+		{
+			SpriteSheetMessage = "Using custom sprites.";
+		}
 		StateHasChanged();
 	}
 
@@ -191,6 +227,12 @@
 	void SetStatusMessage(string message)
 	{
 		StatusMessage = message;
+		StateHasChanged();
+	}
+
+	void SetSpriteMessage(string message)
+	{
+		SpriteSheetMessage = message;
 		StateHasChanged();
 	}
 
