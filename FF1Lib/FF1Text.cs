@@ -191,6 +191,22 @@ namespace FF1Lib
 			{ "@T", 0xDF },
 			{ "%", 0xE0 },
 			{ "@p", 0xE1 },
+			{ "€s", 0xE2 },
+			{ "€p", 0xE3 },
+			{ "€T", 0xE4 },
+			{ "€d", 0xE5 },
+			{ "€f", 0xE6 },
+			{ "€i", 0xE7 },
+			{ "€t", 0xE8 },
+			{ "€e", 0xE9 },
+			{ "§d", 0xEA },
+			{ "§s", 0xEB },
+			{ "§p", 0xEC },
+			{ "§b", 0xED },
+			{ "§P", 0xEE },
+			{ "§Z", 0xEF },
+			{ "§M", 0xF0 },
+			{ "§C", 0xF1 },
 			{ " ", 0xFF }
 		};
 
@@ -223,7 +239,7 @@ namespace FF1Lib
 			while (i < text.Length - 1)
 			{
 				var twoChars = text.Substring(i, 2);
-				if (BytesByText.ContainsKey(twoChars) && (useDTE || twoChars[0] == '@'))
+				if (BytesByText.ContainsKey(twoChars) && (useDTE || twoChars[0] == '@' || twoChars[0] == '€' || twoChars[0] == '§'))
 				{
 					bytes[j++] = BytesByText[twoChars];
 					i += 2;
@@ -266,7 +282,7 @@ namespace FF1Lib
 					bytes[j++] = Blob.FromHex(text.Substring(i + 1, 2))[0];
 					i += 3;
 				}
-				else if (BytesByText.ContainsKey(twoChars) && (useDTE || twoChars[0] == '@'))
+				else if (BytesByText.ContainsKey(twoChars) && (useDTE || twoChars[0] == '@' || twoChars[0] == '€' || twoChars[0] == '§'))
 				{
 					bytes[j++] = BytesByText[twoChars];
 					i += 2;

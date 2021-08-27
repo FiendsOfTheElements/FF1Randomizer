@@ -9,17 +9,17 @@
 	<p>Fun flags are not part of the standard flags string since they do not impact gameplay. The buttons at the bottom can be used to store your preferred fun % settings within your browser so that they will be automatically restored each time you visit the site.</p>
 	@if (FunEnabled)
 	{
-		<CheckBox UpdateToolTip="@UpdateToolTipID" Id="funEnemyNamesCheckBox" @bind-Value="Flags.FunEnemyNames">Fun Enemy Names</CheckBox>
-		<CheckBox UpdateToolTip="@UpdateToolTipID" Id="teamSteakCheckBox" @bind-Value="Flags.TeamSteak">Team STEAK</CheckBox>
-		<CheckBox UpdateToolTip="@UpdateToolTipID" Id="changeLuteCheckBox" @bind-Value="Flags.ChangeLute">Multi-instrumentalist Sara</CheckBox>
-		<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="titanSnack" TItem="TitanSnack" @bind-Value="Flags.TitanSnack">Titan's Favorite Snack:</EnumDropDown>
-		<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="hurrayDwarfFate" TItem="Fate" @bind-Value="Flags.HurrayDwarfFate">Hurray Dwarf's Fate:</EnumDropDown>
-		<CheckBox UpdateToolTip="@UpdateToolTipID" Id="paletteSwapCheckBox" @bind-Value="Flags.PaletteSwap">Palette Swap</CheckBox>
-		<CheckBox UpdateToolTip="@UpdateToolTipID" Id="modernBattlefieldCheckBox" @bind-Value="Flags.ModernBattlefield">Modern Battlefield</CheckBox>
-		<CheckBox UpdateToolTip="@UpdateToolTipID" Id="thirdBattlePaletteCheckBox" @bind-Value="Flags.ThirdBattlePalette">Three Battle Palettes</CheckBox>
-		<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="partyMapmanSlot" TItem="MapmanSlot" @bind-Value="Flags.MapmanSlot">Map Character Slot:</EnumDropDown>
-		<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="musicDropDown" TItem="MusicShuffle" @bind-Value="Flags.Music">Music Shuffle:</EnumDropDown>
-		
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="funEnemyNamesCheckBox" @bind-Value="Flags.FunEnemyNames">Fun Enemy Names</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="teamSteakCheckBox" @bind-Value="Flags.TeamSteak">Team STEAK</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="changeLuteCheckBox" @bind-Value="Flags.ChangeLute">Multi-instrumentalist Sara</CheckBox>
+	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="titanSnack" TItem="TitanSnack" @bind-Value="Flags.TitanSnack">Titan's Favorite Snack:</EnumDropDown>
+	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="hurrayDwarfFate" TItem="Fate" @bind-Value="Flags.HurrayDwarfFate">Hurray Dwarf's Fate:</EnumDropDown>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="paletteSwapCheckBox" @bind-Value="Flags.PaletteSwap">Palette Swap</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="modernBattlefieldCheckBox" @bind-Value="Flags.ModernBattlefield">Modern Battlefield</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="thirdBattlePaletteCheckBox" @bind-Value="Flags.ThirdBattlePalette">Three Battle Palettes</CheckBox>
+	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="partyMapmanSlot" TItem="MapmanSlot" @bind-Value="Flags.MapmanSlot">Map Character Slot:</EnumDropDown>
+	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="musicDropDown" TItem="MusicShuffle" @bind-Value="Flags.Music">Music Shuffle:</EnumDropDown>
+
 	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="menuColorDropDown" TItem="MenuColor" @bind-Value="Flags.MenuColor">Menu Color:</EnumDropDown>
 
 	<ToolTipBox id="spriteSheetToolTipBox" UpdateToolTip="@UpdateToolTipID">@SpriteSheetMessage</ToolTipBox>
@@ -31,6 +31,7 @@ else
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="disableDamageTileFlickerCheckBox" @bind-Value="Flags.DisableDamageTileFlicker">Disable Damage Tile Flicker</CheckBox>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="disableSpellCastFlashCheckBox" @bind-Value="Flags.DisableSpellCastFlash">Disable Spell Cast Flash</CheckBox>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="accessibleSpellNamesCheckBox" IsEnabled="@(!Flags.GenerateNewSpellbook)" @bind-Value="Flags.AccessibleSpellNames">Accessible Spell Names</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="shopInfoIconsCheckBox" @bind-Value="Flags.ShopInfoIcons">Shop Information Icons</CheckBox>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="renounceAutosortCheckBox" @bind-Value="Flags.RenounceAutosort">Renounce Autosort</CheckBox>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="renounceChestInfoCheckBox" @bind-Value="Flags.RenounceChestInfo">Renounce Chest Info</CheckBox>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="cropScreen" @bind-Value="Flags.CropScreen">Crop Friendly</CheckBox>

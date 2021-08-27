@@ -974,7 +974,7 @@ namespace FF1Lib
 
 			if (flags.ShopInfo)
 			{
-				ShopUpgrade(flags, preferences.RenounceChestInfo);
+				ShopUpgrade(flags, preferences);
 			}
 
 			Fix3DigitStats();

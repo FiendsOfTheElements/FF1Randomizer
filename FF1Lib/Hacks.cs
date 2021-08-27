@@ -1323,6 +1323,26 @@ namespace FF1Lib
 			PutInBank(0x1F, 0xEA74, Blob.FromHex("2040DC"));     // LoadBattleBGCHRAndPalettes now jump to $DC40 instead of directly to LoadMenuCHR
 			PutInBank(0x1F, 0xEA9F, Blob.FromHex("2002EA"));     // Change LoadMenuBGCHRAndPalettes to use LoadShopBGCHRPalettes instead of LoadBattleBGCHRAndPalettes
 
+			var newIcons = "00183C3C18180018FFFFFFFFFFFFFFFF" + // E2 to
+				"001812446036381CFFFFFFFFFFFFFFFF" +
+				"0044BA6CE6FE7C38FFFFFFFFFFFFFFFF" +
+				"00386CC66C7C3838FFFFFFFFFFFFFFFF" +
+				"000C3872D88C8448FFFFFFFFFFFFFFFF" +
+				"0010104410441010FFFFFFFFFFFFFFFF" +
+				"00103070FE1C1810FFFFFFFFFFFFFFFF" +
+				"00000000E7F3E7EFFFFFFFFFFFFFFFFF" +
+				"007CFE92FE540038FFFFFFFFFFFFFFFF" +
+				"003C7EBDD9B1523CFFFFFFFFFFFFFFFF" +
+				"0038102828447C38FFFFFFFFFFFFFFFF" +
+				"00006CDA926C0000FFFFFFFFFFFFFFFF" +
+				"0080E82E82E82E02FFFFFFFFFFFFFFFF" +
+				"0070102E4274080EFFFFFFFFFFFFFFFF" +
+				"003C7EFFD57E3C0EFFFFFFFFFFFFFFFF" +
+				"003C42421C100010FFFFFFFFFFFFFFFF";
+
+
+			PutInBank(0x09, 0x8E20, Blob.FromHex(newIcons));
+
 			// Add new element icons!
 		}
 		public enum shopInfoWordsIndex
@@ -1413,10 +1433,8 @@ namespace FF1Lib
 			"Full Recover", "Raise Evade", "Void Resist.", "PW Status", "Heal Poison", "Revive", "Full Revive", "Go one floor\n back",
 			"Heal Stoned", "Teleport out\n of dungeons", "Magical", "Dragon", "Giant", "Undead", "Were", "Water", "Mage", "Regen"
 		};
-		public void ShopUpgrade(Flags flags, bool renounceChestInfo)
+		public void ShopUpgrade(Flags flags, Preferences preferences)
 		{
-
-
 			// Modify DrawShopPartySprites to use new DrawOBSprite routines, see 0E_9500_ShopUpgrade.asm
 			PutInBank(0x0E, 0xAA04, Blob.FromHex("205795"));
 			PutInBank(0x0E, 0xAA0D, Blob.FromHex("205795"));
@@ -1428,7 +1446,7 @@ namespace FF1Lib
 			PutInBank(0x0E, 0xA931, Blob.FromHex("200095"));
 			PutInBank(0x0E, 0x9500, Blob.FromHex("A564C928F038A566C904B035C902B017A20020D495A24020D495A28020D495A2C020D4954C4195A200208B95A240208B95A280208B95A2C0208B954C41952047952027A74C2696A9008DD66A8DDA6A8DDE6A8DE26A6060AA4A8510BD0061A8B9A4EC8511BD0161F011C901F0E9C903F004A9038511A9144C8395A5104A4A4AAABDD66A18651085104C24EC8A8515BD00610AAABD00AD8510BD01AD8511A662BD000338E9B0851229078513A5124A4A4AA8B1108514A613BD38AC2514F005A9004CC595A90E8510A5154A4A4A4AAAA5109DD66A608A8515BD00610AAABDB9BC8512BDBABC8513A662BD000338C944B01638E91C0AAABD50BF25128510BD51BF251305104C1896E9440AAABDA0BF25128510BDA1BF25130510C9019005A9004CC595A90E4CC595A522F033A564C928F02DA662BD00038514205E962027A7A520C561F0F7A9008522204D964C46E1A9018538A9128539A90E853CA90A853D60204D96A90E85572063E0A53E8512A53F8513A514380AAAB00DBD0093853EBD0193853F4C8E96BD0094853EBD0194853FA9118557A90E85582036DEA512853EA513853FA900852260"));
 
-			if (flags.ChestInfo && !renounceChestInfo)
+			if (flags.ChestInfo && !preferences.RenounceChestInfo)
 			{
 				// Shorten TreasureChest Dialog
 				InsertDialogs(320, "You found.. #");
@@ -1498,19 +1516,18 @@ namespace FF1Lib
 			PutInBank(0x11, 0x9B00, generatedWords);
 			PutInBank(0x11, offsetWordsPointers, Blob.FromUShorts(pointersWords));
 
-
 			// Build the info boxes
 			for (int i = weaponOffset; i < armorOffset; i++)
-				descriptionsList.Add("\n" + GenerateWeaponDescription(i - weaponOffset));
+				descriptionsList.Add("\n" + GenerateWeaponDescription(i - weaponOffset, preferences.ShopInfoIcons));
 
 			for (int i = armorOffset; i < (armorOffset + 0x28); i++)
-				descriptionsList.Add("\n" + GenerateArmorDescription(i - armorOffset));
+				descriptionsList.Add("\n" + GenerateArmorDescription(i - armorOffset, preferences.ShopInfoIcons));
 
 			for (int i = (armorOffset + 0x28); i < spellOffset; i++)
 				descriptionsList.Add("");
 
 			for (int i = spellOffset; i < spellOffset + 0x40; i++)
-				descriptionsList.Add(" " + GenerateSpellDescription(i, spellsData[i - spellOffset].Data));
+				descriptionsList.Add("" + GenerateSpellDescription(i, spellsData[i - spellOffset].Data, preferences.ShopInfoIcons));
 
 			// Convert all dialogues to bytes
 			int offset = 0xA000;
@@ -1582,27 +1599,45 @@ namespace FF1Lib
 			description = description.Replace(" ", "");
 		    }
 		    if (description == "FiThBbRmWmBm") {
-			description =  "all classes";
+			description =  "All classes";
 		    }
 		    return description;
 		}
 
-		public string GenerateWeaponDescription(int weaponid)
+		public string GenerateWeaponDescription(int weaponid, bool iconsEnabled)
 		{
 			const int spellOffset = 0xB0; // $40 entries
 
-			var element = new List<(int, string, string)> {
-			    (0x00, "¤" + ((int)shopInfoWordsIndex.elementNone).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementNoneShort).ToString("X2")),
-			    (0x01, "¤" + ((int)shopInfoWordsIndex.elementStatus).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementStatusShort).ToString("X2")),
-			    (0x02, "¤" + ((int)shopInfoWordsIndex.elementPoison).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementPoisonShort).ToString("X2")),
-			    (0x04, "¤" + ((int)shopInfoWordsIndex.elementTime).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementTimeShort).ToString("X2")),
-			    (0x08, "¤" + ((int)shopInfoWordsIndex.elementDeath).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementDeathShort).ToString("X2")),
-			    (0x10, "¤" + ((int)shopInfoWordsIndex.elementFire).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementFireShort).ToString("X2")),
-			    (0x20, "¤" + ((int)shopInfoWordsIndex.elementIce).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementIceShort).ToString("X2")),
-			    (0x40, "¤" + ((int)shopInfoWordsIndex.elementLit).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementLitShort).ToString("X2")),
-			    (0x80, "¤" + ((int)shopInfoWordsIndex.elementEarth).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementEarthShort).ToString("X2"))
-			};
-			var hurt = new List<(int, string)> {
+			List<(int, string, string)> element = new();
+
+			if (iconsEnabled)
+			{
+				element = new List<(int, string, string)> {
+					(0x01, "€s", "€s"),
+					(0x02, "€p", "€p"),
+					(0x04, "€T", "€T"),
+					(0x08, "€d", "€d"),
+					(0x10, "€f", "€f"),
+					(0x20, "€i", "€i"),
+					(0x40, "€t", "€t"),
+					(0x80, "€e", "€e"),
+				};
+			}
+			else
+			{
+				element = new List<(int, string, string)> {
+					(0x01, "¤" + ((int)shopInfoWordsIndex.elementStatus).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementStatusShort).ToString("X2")),
+					(0x02, "¤" + ((int)shopInfoWordsIndex.elementPoison).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementPoisonShort).ToString("X2")),
+					(0x04, "¤" + ((int)shopInfoWordsIndex.elementTime).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementTimeShort).ToString("X2")),
+					(0x08, "¤" + ((int)shopInfoWordsIndex.elementDeath).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementDeathShort).ToString("X2")),
+					(0x10, "¤" + ((int)shopInfoWordsIndex.elementFire).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementFireShort).ToString("X2")),
+					(0x20, "¤" + ((int)shopInfoWordsIndex.elementIce).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementIceShort).ToString("X2")),
+					(0x40, "¤" + ((int)shopInfoWordsIndex.elementLit).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementLitShort).ToString("X2")),
+					(0x80, "¤" + ((int)shopInfoWordsIndex.elementEarth).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementEarthShort).ToString("X2"))
+				};
+			}
+
+			List<(int, string)> hurt = new() {
 			    (0x00, "¤" + ((int)shopInfoWordsIndex.elementNone).ToString("X2")),
 			    (0x01, "¤" + ((int)shopInfoWordsIndex.hurtSpecial).ToString("X2")),
 			    (0x02, "¤" + ((int)shopInfoWordsIndex.hurtDragon).ToString("X2")),
@@ -1612,70 +1647,74 @@ namespace FF1Lib
 			    (0x20, "¤" + ((int)shopInfoWordsIndex.hurtWater).ToString("X2")),
 			    (0x40, "¤" + ((int)shopInfoWordsIndex.hurtMage).ToString("X2")),
 			    (0x80, "¤" + ((int)shopInfoWordsIndex.hurtRegen).ToString("X2")) };
-			var shortDelimiter = new List<string> { "\n ", ", ", "\n ", ", ", "\n ", ", " };
 
 			var weapondata = new Weapon(weaponid, this);
 
 			var description = "¤" + ((int)shopInfoWordsIndex.wpAtk).ToString("X2") + weapondata.Damage + "\n¤" + ((int)shopInfoWordsIndex.wpHit).ToString("X2") + weapondata.HitBonus + "\n¤" + ((int)shopInfoWordsIndex.wpCrt).ToString("X2") + weapondata.Crit;
 
-			var activeElement = new List<(int, string, string)>();
-			var activeHurt = new List<(int, string)>();
-
-			foreach ((int, string, string) effect in element)
-				if ((effect.Item1 & weapondata.ElementalWeakness) > 0)
-					activeElement.Add(effect);
-
-			foreach ((int, string) effect in hurt)
-				if ((effect.Item1 & weapondata.TypeWeakness) > 0)
-					activeHurt.Add(effect);
+			var activeElement = element.Where(x => (x.Item1 & weapondata.ElementalWeakness) > 0).ToList();
+			var activeHurt = hurt.Where(x => (x.Item1 & weapondata.TypeWeakness) > 0).ToList();
 
 			bool showElement = (weapondata.SpellIndex == 0x00) || (activeHurt.Count == 0);
 
 			description += "\n";
 			description += GenerateEquipPermission(weapondata.ClassUsability);
 
-			if (activeHurt.Count >= 1 && activeHurt.Count <= 7)
-				description += "\nHurt " + activeHurt.First().Item2;
-			else if (activeHurt.Count == 8)
-				description += "\nHurt All";
+			if (activeHurt.Count > 0)
+			{
+				description += (activeHurt.Count < 8 ? "\nHurt " + activeHurt.First().Item2 : "\nHurt All");
+			}
 
-			if (activeElement.Count == 0)
-				description += "";
-			else if (activeElement.Count >= 1 && activeElement.Count <= 7 && showElement == true)
-				description += "\n" + activeElement.First().Item3 + " Element";
-			else if (activeElement.Count == 8 && showElement == true)
-				description += "\nAll Elements";
+			if (activeElement.Any() && showElement == true)
+			{
+				if (iconsEnabled)
+				{
+					description += (activeElement.Count > 4 ? "\nEle " : "\nElement ") + string.Join("", activeElement.Select(x => x.Item2));
+				}
+				else
+				{
+					description += (activeElement.Count < 8 ? "\n" + activeElement.First().Item3 + " Element" : "\nAll Elements");
+				}
+			}
 
 			if (weapondata.SpellIndex != 0x00)
 				description += "\n" + "Cast $" + ((int)weapondata.SpellIndex + spellOffset - 1).ToString("X2");
 
 			return description;
 		}
-		public string GenerateArmorDescription(int armorid)
+		public string GenerateArmorDescription(int armorid, bool iconsEnabled)
 		{
 			const int spellOffset = 0xB0; // $40 entries
 
-			var element = new List<(int, string, string)> {
-			    (0x00, "¤" + ((int)shopInfoWordsIndex.elementNone).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementNoneShort).ToString("X2")),
-			    (0x01, "¤" + ((int)shopInfoWordsIndex.elementStatus).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementStatusShort).ToString("X2")),
-			    (0x02, "¤" + ((int)shopInfoWordsIndex.elementPoison).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementPoisonShort).ToString("X2")),
-			    (0x04, "¤" + ((int)shopInfoWordsIndex.elementTime).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementTimeShort).ToString("X2")),
-			    (0x08, "¤" + ((int)shopInfoWordsIndex.elementDeath).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementDeathShort).ToString("X2")),
-			    (0x10, "¤" + ((int)shopInfoWordsIndex.elementFire).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementFireShort).ToString("X2")),
-			    (0x20, "¤" + ((int)shopInfoWordsIndex.elementIce).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementIceShort).ToString("X2")),
-			    (0x40, "¤" + ((int)shopInfoWordsIndex.elementLit).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementLitShort).ToString("X2")),
-			    (0x80, "¤" + ((int)shopInfoWordsIndex.elementEarth).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementEarthShort).ToString("X2"))
-			};
-			var status = new List<(int, string, string)> {
-			    (0x01, "¤" + ((int)shopInfoWordsIndex.statusDead).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusDeadShort).ToString("X2")),
-			    (0x02, "¤" + ((int)shopInfoWordsIndex.statusStone).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusStoneShort).ToString("X2")),
-			    (0x04, "¤" + ((int)shopInfoWordsIndex.statusPoison).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusPoisonShort).ToString("X2")),
-			    (0x08, "¤" + ((int)shopInfoWordsIndex.statusBlind).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusBlindShort).ToString("X2")),
-			    (0x10, "¤" + ((int)shopInfoWordsIndex.statusStun).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusStunShort).ToString("X2")),
-			    (0x20, "¤" + ((int)shopInfoWordsIndex.statusSleep).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusSleepShort).ToString("X2")),
-			    (0x40, "¤" + ((int)shopInfoWordsIndex.statusMute).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusMuteShort).ToString("X2")),
-			    (0x80, "¤" + ((int)shopInfoWordsIndex.statusConfuse).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusConfuseShort).ToString("X2"))
-			};
+			List<(int, string, string)> element = new();
+
+			if (iconsEnabled)
+			{
+				element = new List<(int, string, string)> {
+					(0x01, "€s", "€s"),
+					(0x02, "€p", "€p"),
+					(0x04, "€T", "€T"),
+					(0x08, "€d", "€d"),
+					(0x10, "€f", "€f"),
+					(0x20, "€i", "€i"),
+					(0x40, "€t", "€t"),
+					(0x80, "€e", "€e"),
+				};
+			}
+			else
+			{
+				element = new List<(int, string, string)> {
+					(0x01, "¤" + ((int)shopInfoWordsIndex.elementStatus).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementStatusShort).ToString("X2")),
+					(0x02, "¤" + ((int)shopInfoWordsIndex.elementPoison).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementPoisonShort).ToString("X2")),
+					(0x04, "¤" + ((int)shopInfoWordsIndex.elementTime).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementTimeShort).ToString("X2")),
+					(0x08, "¤" + ((int)shopInfoWordsIndex.elementDeath).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementDeathShort).ToString("X2")),
+					(0x10, "¤" + ((int)shopInfoWordsIndex.elementFire).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementFireShort).ToString("X2")),
+					(0x20, "¤" + ((int)shopInfoWordsIndex.elementIce).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementIceShort).ToString("X2")),
+					(0x40, "¤" + ((int)shopInfoWordsIndex.elementLit).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementLitShort).ToString("X2")),
+					(0x80, "¤" + ((int)shopInfoWordsIndex.elementEarth).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementEarthShort).ToString("X2"))
+				};
+			}
+
 			var shortDelimiter = new List<string> { "\n ", ", ", "\n ", ", ", "\n ", ", " };
 
 			var armordata = new Armor(armorid, this);
@@ -1685,37 +1724,38 @@ namespace FF1Lib
 			description += "\n";
 			description += GenerateEquipPermission(armordata.ClassUsability);
 
-			var activeElementStatus = new List<(int, string, string)>();
+			var activeElement = element.Where(x => (x.Item1 & armordata.ElementalResist) > 0).ToList();
 
-			foreach ((int, string, string) effect in element)
-				if ((effect.Item1 & armordata.ElementalResist) > 0)
-					activeElementStatus.Add(effect);
+			if (activeElement.Any())
+			{
+				if (iconsEnabled)
+				{
+					description += "\nResistance\n " + string.Join("", activeElement.Select(x => x.Item2));
+				}
+				else
+				{
+					if (activeElement.Count == 1)
+					{
+						description += "\nResistance\n " + activeElement[0].Item2;
+					}
+					else if (activeElement.Count <= 3)
+					{
+						description += "\nResist " + activeElement[0].Item3;
 
-			if (activeElementStatus.Count == 0) {
-			}
-			else if (activeElementStatus.Count == 1)
-			{
-				description += "\nResistance\n " + activeElementStatus[0].Item2;
-			}
-			else if (activeElementStatus.Count <= 3)
-			{
-				description += "\nResist " + activeElementStatus[0].Item3;
-
-				for (int i = 1; i < activeElementStatus.Count; i++)
-					description += shortDelimiter[i - 1] + activeElementStatus[i].Item3;
-			}
-			else if (activeElementStatus.Count <= 6)
-			{
-				description += "\nResist " + activeElementStatus[0].Item3 + "\n " + activeElementStatus[1].Item3 + "and " + (activeElementStatus.Count - 2) + "+";
-			}
-			else if (activeElementStatus.Count == 7)
-			{
-				description += "\nResist all\n except ";
-				foreach ((int, string, string) effect in status)
-					description += (effect.Item1 & armordata.ElementalResist) == 0 ? (effect.Item3) : "";
-			}
-			else {
-			    description += "\nResist all";
+						for (int i = 1; i < activeElement.Count; i++)
+						{
+							description += shortDelimiter[i - 1] + activeElement[i].Item3;
+						}
+					}
+					else if (activeElement.Count <= 7)
+					{
+						description += "\nResist " + activeElement[0].Item3 + "\n " + activeElement[1].Item3 + "and " + (activeElement.Count - 2) + "+";
+					}
+					else
+					{
+						description += "\nResist all";
+					}
+				}
 			}
 
 			if (armordata.SpellIndex != 0x00)
@@ -1723,37 +1763,75 @@ namespace FF1Lib
 
 			return description;
 		}
-		public string GenerateSpellDescription(int spellid, Blob spelldata)
+		public string GenerateSpellDescription(int spellid, Blob spelldata, bool iconsEnabled)
 		{
-			var target = new List<(int, string)> {
+			List<(int, string)> target = new()  {
 			    (0x01, "¤" + ((int)shopInfoWordsIndex.targetAllEnemies).ToString("X2")),
 			    (0x02, "¤" + ((int)shopInfoWordsIndex.targetSingleEnemy).ToString("X2")),
 			    (0x04, "¤" + ((int)shopInfoWordsIndex.targetCaster).ToString("X2")),
 			    (0x08, "¤" + ((int)shopInfoWordsIndex.targetAllAllies).ToString("X2")),
 			    (0x10, "¤" + ((int)shopInfoWordsIndex.targetOneAlly).ToString("X2"))
 			};
-			var element = new List<(int, string, string)> {
-			    (0x00, "¤" + ((int)shopInfoWordsIndex.elementNone).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementNoneShort).ToString("X2")),
-			    (0x01, "¤" + ((int)shopInfoWordsIndex.elementStatus).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementStatusShort).ToString("X2")),
-			    (0x02, "¤" + ((int)shopInfoWordsIndex.elementPoison).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementPoisonShort).ToString("X2")),
-			    (0x04, "¤" + ((int)shopInfoWordsIndex.elementTime).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementTimeShort).ToString("X2")),
-			    (0x08, "¤" + ((int)shopInfoWordsIndex.elementDeath).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementDeathShort).ToString("X2")),
-			    (0x10, "¤" + ((int)shopInfoWordsIndex.elementFire).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementFireShort).ToString("X2")),
-			    (0x20, "¤" + ((int)shopInfoWordsIndex.elementIce).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementIceShort).ToString("X2")),
-			    (0x40, "¤" + ((int)shopInfoWordsIndex.elementLit).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementLitShort).ToString("X2")),
-			    (0x80, "¤" + ((int)shopInfoWordsIndex.elementEarth).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementEarthShort).ToString("X2"))
-			};
-			var status = new List<(int, string, string)> {
-			    (0x01, "¤" + ((int)shopInfoWordsIndex.statusDead).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusDeadShort).ToString("X2")),
-			    (0x02, "¤" + ((int)shopInfoWordsIndex.statusStone).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusStoneShort).ToString("X2")),
-			    (0x04, "¤" + ((int)shopInfoWordsIndex.statusPoison).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusPoisonShort).ToString("X2")),
-			    (0x08, "¤" + ((int)shopInfoWordsIndex.statusBlind).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusBlindShort).ToString("X2")),
-			    (0x10, "¤" + ((int)shopInfoWordsIndex.statusStun).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusStunShort).ToString("X2")),
-			    (0x20, "¤" + ((int)shopInfoWordsIndex.statusSleep).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusSleepShort).ToString("X2")),
-			    (0x40, "¤" + ((int)shopInfoWordsIndex.statusMute).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusMuteShort).ToString("X2")),
-			    (0x80, "¤" + ((int)shopInfoWordsIndex.statusConfuse).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusConfuseShort).ToString("X2"))
-			};
-			var routine = new List<(int, string)> {
+
+			List<(int, string, string)> element = new();
+
+			if (iconsEnabled)
+			{
+				element = new List<(int, string, string)> {
+					(0x01, "€s", "€s"),
+					(0x02, "€p", "€p"),
+					(0x04, "€T", "€T"),
+					(0x08, "€d", "€d"),
+					(0x10, "€f", "€f"),
+					(0x20, "€i", "€i"),
+					(0x40, "€t", "€t"),
+					(0x80, "€e", "€e"),
+				};
+			}
+			else
+			{
+				element = new List<(int, string, string)> {
+					(0x01, "¤" + ((int)shopInfoWordsIndex.elementStatus).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementStatusShort).ToString("X2")),
+					(0x02, "¤" + ((int)shopInfoWordsIndex.elementPoison).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementPoisonShort).ToString("X2")),
+					(0x04, "¤" + ((int)shopInfoWordsIndex.elementTime).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementTimeShort).ToString("X2")),
+					(0x08, "¤" + ((int)shopInfoWordsIndex.elementDeath).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementDeathShort).ToString("X2")),
+					(0x10, "¤" + ((int)shopInfoWordsIndex.elementFire).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementFireShort).ToString("X2")),
+					(0x20, "¤" + ((int)shopInfoWordsIndex.elementIce).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementIceShort).ToString("X2")),
+					(0x40, "¤" + ((int)shopInfoWordsIndex.elementLit).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementLitShort).ToString("X2")),
+					(0x80, "¤" + ((int)shopInfoWordsIndex.elementEarth).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementEarthShort).ToString("X2"))
+				};
+			}
+
+			List<(int, string, string)> status = new();
+
+			if (iconsEnabled)
+			{
+				status = new List<(int, string, string)> {
+					(0x01, "§d", "§d"),
+					(0x02, "§s", "§s"),
+					(0x04, "§p", "§p"),
+					(0x08, "§b", "§b"),
+					(0x10, "§P", "§P"),
+					(0x20, "§Z", "§Z"),
+					(0x40, "§M", "§M"),
+					(0x80, "§C", "§C")
+				};
+			}
+			else
+			{
+				status = new List<(int, string, string)> {
+					(0x01, "¤" + ((int)shopInfoWordsIndex.statusDead).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusDeadShort).ToString("X2")),
+					(0x02, "¤" + ((int)shopInfoWordsIndex.statusStone).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusStoneShort).ToString("X2")),
+					(0x04, "¤" + ((int)shopInfoWordsIndex.statusPoison).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusPoisonShort).ToString("X2")),
+					(0x08, "¤" + ((int)shopInfoWordsIndex.statusBlind).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusBlindShort).ToString("X2")),
+					(0x10, "¤" + ((int)shopInfoWordsIndex.statusStun).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusStunShort).ToString("X2")),
+					(0x20, "¤" + ((int)shopInfoWordsIndex.statusSleep).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusSleepShort).ToString("X2")),
+					(0x40, "¤" + ((int)shopInfoWordsIndex.statusMute).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusMuteShort).ToString("X2")),
+					(0x80, "¤" + ((int)shopInfoWordsIndex.statusConfuse).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusConfuseShort).ToString("X2"))
+				};
+			}
+
+			List<(int, string)> routine = new() {
 			    (0x00, "¤" + ((int)shopInfoWordsIndex.routineNull).ToString("X2")),
 			    (0x01, "¤" + ((int)shopInfoWordsIndex.routineDamage).ToString("X2")),
 			    (0x02, "¤" + ((int)shopInfoWordsIndex.routineDmgUndead).ToString("X2")),
@@ -1773,7 +1851,7 @@ namespace FF1Lib
 			    (0x11, "¤" + ((int)shopInfoWordsIndex.routineVoidResist).ToString("X2")),
 			    (0x12, "¤" + ((int)shopInfoWordsIndex.routinePowerWord).ToString("X2"))
 			};
-			var oobroutine = new List<(int, string)> {
+			List<(int, string)> oobroutine = new() {
 			    (0x00, "¤" + ((int)shopInfoWordsIndex.routineCure).ToString("X2")),
 			    (0x01, "¤" + ((int)shopInfoWordsIndex.routineCure).ToString("X2")),
 			    (0x02, "¤" + ((int)shopInfoWordsIndex.routineCure).ToString("X2")),
@@ -1795,7 +1873,6 @@ namespace FF1Lib
 				oobSpells.Add(Get(MagicOutOfBattleOffset + MagicOutOfBattleSize * i, 1)[0]);
 
 			var routineDesc = "";
-			var activeElementStatus = new List<(int, string, string)>();
 
 			switch ((int)spelldata[(int)spellDataBytes.Routine])
 			{
@@ -1806,31 +1883,44 @@ namespace FF1Lib
 					routineDesc = routine.Find(x => x.Item1 == spelldata[(int)spellDataBytes.Routine]).Item2 + "\n " + spelldata[(int)spellDataBytes.Effect] * 2 + "-" + spelldata[(int)spellDataBytes.Effect] * 4 + " DMG\nResist  " + spelldata[(int)spellDataBytes.Effect] + "\nWeak    " + spelldata[(int)spellDataBytes.Effect] * 1.5 * 4;
 					break;
 				case int n when (n == 0x03 || n == 0x08 || n == 0x12):
-					var tempStatus = "";
+					var activeStatus = status.Where(x => (x.Item1 & spelldata[(int)spellDataBytes.Effect]) > 0).ToList();
+					var statusString = "";
 
-					foreach ((int, string, string) effect in status)
-						if ((effect.Item1 & spelldata[(int)spellDataBytes.Effect]) > 0)
-							activeElementStatus.Add(effect);
-
-					if (activeElementStatus.Count == 0)
-						tempStatus = "\n None";
-					else if (activeElementStatus.Count <= 3)
-						tempStatus = string.Join(string.Empty, activeElementStatus.SelectMany(x => "\n " + x.Item2));
-					else if (activeElementStatus.Count <= 6)
+					if (activeStatus.Any())
 					{
-						for (int i = 0; i < activeElementStatus.Count; i++)
-							tempStatus += shortDelimiter[i] + activeElementStatus[i].Item3;
-					}
-					else if (activeElementStatus.Count == 7)
-					{
-						tempStatus = "\n All, except";
-						foreach ((int, string, string) effect in status)
-							tempStatus += (effect.Item1 & spelldata[(int)spellDataBytes.Effect]) == 0 ? ("\n " + effect.Item2) : "";
+						if (iconsEnabled)
+						{
+							statusString = "\n " + string.Join("", activeStatus.Select(x => x.Item2));
+						}
+						else
+						{
+							if (activeStatus.Count <= 3)
+							{
+								statusString = string.Join(string.Empty, activeStatus.SelectMany(x => "\n " + x.Item2));
+							}
+							else if (activeStatus.Count <= 6)
+							{
+								for (int i = 0; i < activeStatus.Count; i++)
+								{
+									statusString += shortDelimiter[i] + activeStatus[i].Item3;
+								}
+							}
+							else if (activeStatus.Count == 7)
+							{
+								statusString = "\n All, except\n " + status.Find(x => (x.Item1 & spelldata[(int)spellDataBytes.Effect]) == 0).Item2;
+							}
+							else
+							{
+								statusString = "\n All";
+							}
+						}
 					}
 					else
-						tempStatus = "\n All";
+					{
+						statusString = "\n None";
+					}
 
-					routineDesc = routine.Find(x => x.Item1 == spelldata[(int)spellDataBytes.Routine]).Item2 + tempStatus;
+					routineDesc = routine.Find(x => x.Item1 == spelldata[(int)spellDataBytes.Routine]).Item2 + statusString;
 					break;
 				case int n when (n == 0x04 || n == 0x0C || n == 0x0F || n == 0x11):
 					routineDesc = routine.Find(x => x.Item1 == spelldata[(int)spellDataBytes.Routine]).Item2;
@@ -1845,39 +1935,73 @@ namespace FF1Lib
 					routineDesc = routine.Find(x => x.Item1 == spelldata[(int)spellDataBytes.Routine]).Item2 + "\n +" + spelldata[(int)spellDataBytes.Effect] + " pts";
 					break;
 				case int n when (n == 0x0A):
-					var temp = "";
+					var activeElement = element.Where(x => (x.Item1 & spelldata[(int)spellDataBytes.Effect]) > 0).ToList();
+					var elementString = "";
 
-					foreach ((int, string, string) elem in element)
-						if ((elem.Item1 & spelldata[(int)spellDataBytes.Effect]) > 0)
-							activeElementStatus.Add(elem);
-
-					if (activeElementStatus.Count == 0)
-						temp = "\n None";
-					else if (activeElementStatus.Count <= 3)
-						temp = string.Join(string.Empty, activeElementStatus.SelectMany(x => "\n " + x.Item2));
-					else if (activeElementStatus.Count <= 6)
+					if (activeElement.Any())
 					{
-						for (int i = 0; i < activeElementStatus.Count; i++)
-							temp += shortDelimiter[i] + activeElementStatus[i].Item3;
-					}
-					else if (activeElementStatus.Count == 7)
-					{
-						temp = "\n All, except";
-						foreach ((int, string, string) elem in element)
-							temp += (elem.Item1 & spelldata[(int)spellDataBytes.Effect]) == 0 ? ("\n " + elem.Item2) : "";
+						if (iconsEnabled)
+						{
+							elementString = "\n " + string.Join("", activeElement.Select(x => x.Item2));
+						}
+						else
+						{
+							if (activeElement.Count <= 3)
+							{
+								elementString = string.Join(string.Empty, activeElement.SelectMany(x => "\n " + x.Item2));
+							}
+							else if (activeElement.Count <= 6)
+							{
+								for (int i = 0; i < activeElement.Count; i++)
+								{
+									elementString += shortDelimiter[i] + activeElement[i].Item3;
+								}
+							}
+							else if (activeElement.Count == 7)
+							{
+								elementString = "\n All, except\n " + element.Find(x => (x.Item1 & spelldata[(int)spellDataBytes.Effect]) == 0).Item2;
+							}
+							else
+							{
+								elementString = "\n All";
+							}
+						}
 					}
 					else
-						temp = "\n All";
+					{
+						elementString = "\n None";
+					}
 
-					routineDesc = routine.Find(x => x.Item1 == spelldata[(int)spellDataBytes.Routine]).Item2 + temp;
+					routineDesc = routine.Find(x => x.Item1 == spelldata[(int)spellDataBytes.Routine]).Item2 + elementString;
 					break;
 				case int n when (n == 0x0D):
 					routineDesc = routine.Find(x => x.Item1 == spelldata[(int)spellDataBytes.Routine]).Item2 + "\n +" + spelldata[(int)spellDataBytes.Effect] + " ATK\n +" + spelldata[(int)spellDataBytes.Accuracy] + " HIT";
 					break;
 			}
 
-			var elementString = (spelldata[(int)spellDataBytes.Element] == 0x40 ? "" : " ") + element.Find(x => x.Item1 == spelldata[(int)spellDataBytes.Element]).Item2;
-			var spellstring = elementString + "\n" + target.Find(x => x.Item1 == spelldata[(int)spellDataBytes.Target]).Item2 + "\n\n" + routineDesc;
+			var spellElement = element.Where(x => (x.Item1 & spelldata[(int)spellDataBytes.Element]) > 0).ToList();
+			var spellElementString = "";
+
+			if (spellElement.Any())
+			{
+				if (iconsEnabled)
+				{
+					if (spellElement.Count < 8)
+					{
+						spellElementString = " " + string.Join("", spellElement.Select(x => x.Item2));
+					}
+					else
+					{
+						spellElementString = string.Join("", spellElement.Select(x => x.Item2));
+					}
+				}
+				else
+				{
+					spellElementString = (spelldata[(int)spellDataBytes.Element] == 0x40 ? " " : "  ") + element.Find(x => x.Item1 == spelldata[(int)spellDataBytes.Element]).Item2;
+				}
+			}
+
+			var spellstring = spellElementString + "\n" + target.Find(x => x.Item1 == spelldata[(int)spellDataBytes.Target]).Item2 + "\n\n" + routineDesc;
 			return spellstring;
 		}
 
