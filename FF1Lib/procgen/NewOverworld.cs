@@ -512,7 +512,6 @@ namespace FF1Lib.Procgen
 		if (sz >= 5) {
 		    pt++;
 		}
-		Console.WriteLine($"size {sz}");
             }
 
 	    return this.NextStep();
@@ -666,11 +665,11 @@ namespace FF1Lib.Procgen
 		    walkable.Add(w);
 		}
 	    }
-	    walkable.Shuffle(this.rng);
 	    var tasks = new List<GenerationTask>();
 	    foreach (var w in walkable) {
 		tasks.Add(() => new OverworldState(this).ConeriaPlacement(w));
 	    }
+	    tasks.Shuffle(this.rng);
 	    return new Result(tasks);
 	}
 
@@ -679,6 +678,7 @@ namespace FF1Lib.Procgen
 	    if (v.Item1) {
 		this.OwnPlacements();
 		this.startingRegion = region;
+		this.Reachable_regions.Add(region);
 		this.FeatureCoordinates["Coneria"] = new SCCoords(v.Item2.X+2, v.Item2.Y+4);
 		this.FeatureCoordinates["ConeriaCastle1"] = new SCCoords(v.Item2.X+3, v.Item2.Y+3);
 		return this.NextStep();
@@ -687,7 +687,7 @@ namespace FF1Lib.Procgen
 	    }
 	}
 
-	public Result TempleOfFiendsPlacement(OwRegion region) {
+	public Result PlaceTempleOfFiends() {
 	    var v = this.PlaceFeature(this.Traversable_regionmap, this.startingRegion, OverworldTiles.TEMPLE_OF_FIENDS);
 	    if (v.Item1) {
 		this.OwnPlacements();
@@ -696,6 +696,52 @@ namespace FF1Lib.Procgen
 	    } else {
 		return new Result(false);
 	    }
+	}
+
+	public Result PlaceBridge() {
+	    var tasks = new List<GenerationTask>();
+	    foreach (var w in this.startingRegion.Adjacent) {
+		if (w.RegionType == OverworldTiles.RIVER_REGION) {
+		    tasks.Add(() => new OverworldState(this).BridgePlacement(w));
+		}
+	    }
+	    tasks.Shuffle(this.rng);
+	    return new Result(tasks);
+	}
+
+	public Result BridgePlacement(OwRegion riverRegion) {
+	    var points = new List<SCCoords>(riverRegion.Points);
+	    points.Shuffle(this.rng);
+	    OwRegion nextRegion = null;
+	    foreach (var p in points) {
+		var c1 = this.Traversable_regionmap[p.Y-1, p.X];
+		var c2 = this.Traversable_regionmap[p.Y+1, p.X];
+
+		if (c1 == this.startingRegion &&
+		    c2 != this.startingRegion &&
+		    c2.RegionType == OverworldTiles.LAND_REGION)
+		{
+		    this.Bridge = p;
+		    nextRegion = c2;
+		    break;
+		}
+
+		if (c1 != this.startingRegion &&
+		    c2 == this.startingRegion &&
+		    c1.RegionType == OverworldTiles.LAND_REGION)
+		{
+		    this.Bridge = p;
+		    nextRegion = c1;
+		    break;
+		}
+	    }
+
+	    if (nextRegion != null) {
+		this.Reachable_regions.Add(nextRegion);
+		this.Tilemap[this.Bridge.Y, this.Bridge.X] = OverworldTiles.DOCK_W;
+		return this.NextStep();
+	    }
+	    return new Result(false);
 	}
 
 	public bool CheckFit(OwRegion[,] regionMap, OwRegion region, SCCoords p, int w, int h) {
@@ -847,6 +893,8 @@ namespace FF1Lib.Procgen
                 new GenerationStep("SmallSeasBecomeLakes", new object[]{}),
 
 		new GenerationStep("PlaceConeria", new object[]{}),
+		new GenerationStep("PlaceTempleOfFiends", new object[]{}),
+		new GenerationStep("PlaceBridge", new object[]{}),
 
                 new GenerationStep("ApplyFilter", new object[]{mt.apply_shores1}),
                 new GenerationStep("ApplyFilter", new object[]{mt.apply_shores2}),
