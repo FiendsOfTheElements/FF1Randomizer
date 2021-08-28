@@ -116,8 +116,8 @@ namespace FF1Lib.Procgen
         public SCCoords Bridge;
         public SCCoords Canal;
         public SCCoords Ship;
-        List<int> Reachable_regions;
-        List<int> Exclude_docks;
+        List<OwRegion> Reachable_regions;
+        List<OwRegion> Exclude_docks;
         private bool ownBasemap;
         private bool ownTilemap;
         private bool ownRegions;
@@ -130,6 +130,8 @@ namespace FF1Lib.Procgen
         private MT19337 rng;
 
         private OverworldTiles overworldTiles;
+
+	OwRegion startingRegion;
 
         public OverworldState(MT19337 rng, GenerationStep[] steps, OverworldTiles overworldTiles) {
             this.rng = rng;
@@ -146,8 +148,8 @@ namespace FF1Lib.Procgen
             this.Feature_weightmap  = new int[MAPSIZE,MAPSIZE];
             this.Dock_weightmap = new int[MAPSIZE,MAPSIZE];
             this.FeatureCoordinates = new Dictionary<string, SCCoords>();
-            this.Reachable_regions = new List<int>();
-            this.Exclude_docks = new List<int>();
+            this.Reachable_regions = new List<OwRegion>();
+            this.Exclude_docks = new List<OwRegion>();
             this.StepQueue = new Queue<GenerationStep>(steps);
             this.overworldTiles = overworldTiles;
         }
@@ -178,6 +180,7 @@ namespace FF1Lib.Procgen
             this.mountain_elevation = copy.mountain_elevation;
             this.sea_elevation = copy.sea_elevation;
             this.overworldTiles = copy.overworldTiles;
+	    this.startingRegion = copy.startingRegion;
         }
 
         void OwnBasemap() {
@@ -222,15 +225,15 @@ namespace FF1Lib.Procgen
             }
             var fromFeature_weightmap = this.Feature_weightmap;
             this.Feature_weightmap = new int[MAPSIZE,MAPSIZE];
-            Array.Copy(fromFeature_weightmap, this.Tilemap, fromFeature_weightmap.Length);
+            Array.Copy(fromFeature_weightmap, this.Feature_weightmap, fromFeature_weightmap.Length);
 
             var fromDock_weightmap = this.Dock_weightmap;
             this.Dock_weightmap = new int[MAPSIZE,MAPSIZE];
-            Array.Copy(fromDock_weightmap, this.Tilemap, fromDock_weightmap.Length);
+            Array.Copy(fromDock_weightmap, this.Dock_weightmap, fromDock_weightmap.Length);
 
             this.FeatureCoordinates = new Dictionary<string, SCCoords>(this.FeatureCoordinates);
-            this.Reachable_regions = new List<int>(this.Reachable_regions);
-            this.Exclude_docks = new List<int>(this.Exclude_docks);
+            this.Reachable_regions = new List<OwRegion>(this.Reachable_regions);
+            this.Exclude_docks = new List<OwRegion>(this.Exclude_docks);
             this.ownPlacements = true;
         }
         public Result NextStep() {
@@ -454,10 +457,10 @@ namespace FF1Lib.Procgen
             }
         }
 
-        public int MakeValley(SCCoords p, double lower_elev) {
+        public int MakeValley(SCCoords p) {
             this.OwnTilemap();
 
-	    int volume = 150;
+	    int volume = 128;
 	    int size = 0;
             var pending = new Queue<SCCoords>();
             pending.Enqueue(p);
@@ -468,7 +471,6 @@ namespace FF1Lib.Procgen
                 volume -= 1;
 
                 if (this.Basemap[p.Y,p.X] > height ||
-		    this.Basemap[p.Y,p.X] < lower_elev ||
 		    this.Tilemap[p.Y,p.X] != OverworldTiles.MOUNTAIN) {
                     continue;
                 }
@@ -485,8 +487,7 @@ namespace FF1Lib.Procgen
 	}
 
         public Result MakeValleys(int count) {
-	    //double lower_elev = this.mountain_elevation + (this.heightmax-this.mountain_elevation)*.5;
-	    double lower_elev = this.mountain_elevation;
+	    double lower_elev = this.mountain_elevation + (this.heightmax-this.mountain_elevation)*.5;
 	    double upper_elev = this.heightmax;
 
             var points = new List<SCCoords>();
@@ -507,7 +508,7 @@ namespace FF1Lib.Procgen
 
 	    int pt = 0;
             for (int i = 0; pt < count && i < points.Count; i++) {
-                int sz = this.MakeValley(points[i], lower_elev);
+                int sz = this.MakeValley(points[i]);
 		if (sz >= 5) {
 		    pt++;
 		}
@@ -658,6 +659,97 @@ namespace FF1Lib.Procgen
             return this.UpdateRegions();
         }
 
+	public Result PlaceConeria() {
+	    var walkable = new List<OwRegion>();
+	    foreach (var w in this.Traversable_regionlist) {
+		if (w.RegionType == OverworldTiles.LAND_REGION) {
+		    walkable.Add(w);
+		}
+	    }
+	    walkable.Shuffle(this.rng);
+	    var tasks = new List<GenerationTask>();
+	    foreach (var w in walkable) {
+		tasks.Add(() => new OverworldState(this).ConeriaPlacement(w));
+	    }
+	    return new Result(tasks);
+	}
+
+	public Result ConeriaPlacement(OwRegion region) {
+	    var v = this.PlaceFeature(this.Traversable_regionmap, region, OverworldTiles.CONERIA_CITY);
+	    if (v.Item1) {
+		this.OwnPlacements();
+		this.startingRegion = region;
+		this.FeatureCoordinates["Coneria"] = new SCCoords(v.Item2.X+2, v.Item2.Y+4);
+		this.FeatureCoordinates["ConeriaCastle1"] = new SCCoords(v.Item2.X+3, v.Item2.Y+3);
+		return this.NextStep();
+	    } else {
+		return new Result(false);
+	    }
+	}
+
+	public Result TempleOfFiendsPlacement(OwRegion region) {
+	    var v = this.PlaceFeature(this.Traversable_regionmap, this.startingRegion, OverworldTiles.TEMPLE_OF_FIENDS);
+	    if (v.Item1) {
+		this.OwnPlacements();
+		this.FeatureCoordinates["TempleOfFiends1"] = new SCCoords(v.Item2.X+2, v.Item2.Y+2);
+		return this.NextStep();
+	    } else {
+		return new Result(false);
+	    }
+	}
+
+	public bool CheckFit(OwRegion[,] regionMap, OwRegion region, SCCoords p, int w, int h) {
+	    if (regionMap[p.Y+h-1, p.X+w-1] != region) {
+		return false;
+	    }
+	    if (regionMap[p.Y, p.X+w-1] != region) {
+		return false;
+	    }
+	    if (regionMap[p.Y+h-1, p.X] != region) {
+		return false;
+	    }
+	    for (int j = 0; j < h; j++) {
+		for (int i = 0; i < w; i++) {
+		    if (regionMap[p.Y+j, p.X+i] != region) {
+			return false;
+		    }
+		}
+	    }
+	    return true;
+	}
+
+	public void RenderFeature(SCCoords point, byte[,] feature) {
+	    this.OwnTilemap();
+	    for (int j = 0; j < feature.GetLength(0); j++) {
+		for (int i = 0; i < feature.GetLength(1); i++) {
+		    if (feature[j,i] != OverworldTiles.None) {
+			this.Tilemap[point.Y+j, point.X+i] = feature[j,i];
+		    }
+		}
+	    }
+	}
+
+	public ValueTuple<bool,SCCoords> PlaceFeature(OwRegion[,] regionMap, OwRegion region, byte[,] feature) {
+	    var h = feature.GetLength(0);
+	    var w = feature.GetLength(1);
+
+	    var points = new List<SCCoords>(region.Points);
+	    points.Shuffle(this.rng);
+	    SCCoords point = new SCCoords(0, 0);
+	    bool found = false;
+	    foreach (var p in points) {
+		if (this.CheckFit(regionMap, region, p, w, h)) {
+		    point = p;
+		    found = true;
+		    break;
+		}
+	    }
+	    if (!found) {
+		return ValueTuple.Create(found, point);
+	    }
+	    this.RenderFeature(point, feature);
+	    return ValueTuple.Create(found, point);
+	}
     }
 
     public class Result {
@@ -730,11 +822,11 @@ namespace FF1Lib.Procgen
             var mt = new OverworldTiles();
             GenerationStep[] steps = new GenerationStep[] {
                 new GenerationStep("CreateInitialMap", new object[]{}),
+		new GenerationStep("MakeValleys", new object[] {5}),
                 new GenerationStep("ApplyFilter", new object[] {mt.expand_mountains}),
                 new GenerationStep("ApplyFilter", new object[] {mt.expand_oceans}),
                 new GenerationStep("FlowMountainRivers", new object[] {}),
                 new GenerationStep("FlowPlainsRivers", new object[] {}),
-		//new GenerationStep("MakeValleys", new object[] {5}),
                 new GenerationStep("ApplyFilter", new object[] {mt.connect_diagonals}),
                 new GenerationStep("UpdateRegions", new object[]{}),
                 new GenerationStep("RemoveSmallIslands", new object[]{}),
@@ -753,6 +845,8 @@ namespace FF1Lib.Procgen
                 new GenerationStep("RemoveTinyRegions", new object[]{}),
 
                 new GenerationStep("SmallSeasBecomeLakes", new object[]{}),
+
+		new GenerationStep("PlaceConeria", new object[]{}),
 
                 new GenerationStep("ApplyFilter", new object[]{mt.apply_shores1}),
                 new GenerationStep("ApplyFilter", new object[]{mt.apply_shores2}),
