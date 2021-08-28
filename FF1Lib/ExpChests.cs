@@ -33,7 +33,7 @@ namespace FF1Lib
 
 		public void BuildExpChests()
 		{
-			rom.PutInBank(0x1F, 0xDDD0, Blob.FromHex("A9B248A9FF48A9114C03FE8A20DA8760"));
+			rom.PutInBank(0x1F, 0xDDD0, Blob.FromHex("A9B648A9FF48A9114C03FE8A20DA8760"));
 
 			int expChestCountPercent = rng.Between(flags.ExpChestConversionMin, flags.ExpChestConversionMax);
 
@@ -73,7 +73,7 @@ namespace FF1Lib
 				itemNames[(int)e] = exp.ToString() + " EXP";
 			}
 
-			rom.PutInBank(0x11, 0xB047, new byte[] { (byte)firstExpItem });
+			rom.PutInBank(0x11, 0xB447, new byte[] { (byte)firstExpItem });
 
 
 			var result = treasureData.Data.Where(x => x > Item.Gold10).OrderBy(x => x).Select(x => itemNames[(int)x]).ToList();

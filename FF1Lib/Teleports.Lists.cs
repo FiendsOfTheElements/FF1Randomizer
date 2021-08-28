@@ -1,10 +1,23 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace FF1Lib
 {
 	public class TeleportShuffle
 	{
+		public TeleportShuffle(OwMapExchangeData data)
+		{		
+			if (data?.OverworldCoordinates != null)
+			{
+				OverworldCoordinates = data.OverworldCoordinates.Select(kv => (Enum.Parse<OverworldTeleportIndex>(kv.Key), new Coordinate(kv.Value.X, kv.Value.Y, CoordinateLocale.Overworld))).ToDictionary(kv => kv.Item1, kv => kv.Item2);
+			}
+			else
+			{
+				OverworldCoordinates = VanillaOverworldCoordinates;
+			}
+		}
+
 		public TeleportDestination Coneria = new TeleportDestination(MapLocation.Coneria, MapIndex.ConeriaTown, new Coordinate(16, 23, CoordinateLocale.Standard));
 		public TeleportDestination Pravoka = new TeleportDestination(MapLocation.Pravoka, MapIndex.Pravoka, new Coordinate(19, 32, CoordinateLocale.Standard));
 		public TeleportDestination Elfland = new TeleportDestination(MapLocation.Elfland, MapIndex.Elfland, new Coordinate(41, 22, CoordinateLocale.Standard));
@@ -115,7 +128,7 @@ namespace FF1Lib
 				OverworldTeleportIndex.Gaia, OverworldTeleportIndex.Lefein
 			};
 
-		public Dictionary<OverworldTeleportIndex, Coordinate> OverworldCoordinates =
+		public Dictionary<OverworldTeleportIndex, Coordinate> VanillaOverworldCoordinates =
 			new Dictionary<OverworldTeleportIndex, Coordinate>
 			{
 				{OverworldTeleportIndex.Coneria,new Coordinate(152, 162, CoordinateLocale.Overworld)},
@@ -149,6 +162,9 @@ namespace FF1Lib
 				{OverworldTeleportIndex.TitansTunnelEast,new Coordinate(42, 174, CoordinateLocale.Overworld)},
 				{OverworldTeleportIndex.TitansTunnelWest,new Coordinate(30, 175, CoordinateLocale.Overworld)}
 			};
+
+		public Dictionary<OverworldTeleportIndex, Coordinate> OverworldCoordinates { get; private set; }
+
 		public Dictionary<OverworldTeleportIndex, MapLocation> OverworldMapLocations =
 			new Dictionary<OverworldTeleportIndex, MapLocation>
 			{

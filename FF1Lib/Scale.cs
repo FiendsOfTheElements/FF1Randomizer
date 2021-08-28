@@ -497,6 +497,14 @@ namespace FF1Lib
 			Put(EnemyOffset + EnemySize * Enemy.Pirate, newPirate.compressData());
 		}
 
+		public void BoostEnemyMorale(byte index)
+		{
+			EnemyInfo enemy = new EnemyInfo();
+			enemy.decompressData(Get(EnemyOffset + EnemySize * index, EnemySize));
+			enemy.morale = 255;
+			Put(EnemyOffset + EnemySize * index, enemy.compressData());
+		}
+
 		public List<Blob> GetAllEnemyStats() {
 		    return Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
 		}

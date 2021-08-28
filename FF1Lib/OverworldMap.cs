@@ -25,6 +25,8 @@ namespace FF1Lib
 
 		private TeleportShuffle _teleporters;
 
+		public TeleportShuffle Teleporters { get { return _teleporters; } set { _teleporters = value; } }
+
 		private enum WalkableRegion
 		{
 			ConeriaRegion = 0,
@@ -49,12 +51,11 @@ namespace FF1Lib
 		public const int MapPaletteSize = 48;
 		public const int MapCount = 64;
 
-		public OverworldMap(FF1Rom rom, IMapEditFlags flags, Dictionary<Palette, Blob> palettes, TeleportShuffle teleporters)
+		public OverworldMap(FF1Rom rom, IMapEditFlags flags, Dictionary<Palette, Blob> palettes)
 		{
 			_rom = rom;
 			_palettes = palettes;
 			_log = new List<string>();
-			_teleporters = teleporters;
 
 			var mapLocationRequirements = ItemLocations.MapLocationRequirements.ToDictionary(x => x.Key, x => x.Value.ToList());
 			var floorLocationRequirements = ItemLocations.MapLocationFloorRequirements.ToDictionary(x => x.Key, x => x.Value);
@@ -76,6 +77,12 @@ namespace FF1Lib
 				{ CanoeableRegion.OnracRegion, new List<OverworldTeleportIndex>{OverworldTeleportIndex.Onrac, OverworldTeleportIndex.Waterfall} }
 			};
 
+			if (flags.OwMapExchange == OwMapExchanges.None ||
+			    flags.OwMapExchange == OwMapExchanges.MelmondStart ||
+			    flags.OwMapExchange == OwMapExchanges.ElflandStart ||
+			    flags.OwMapExchange == OwMapExchanges.CrecsentStart) {
+			    // Can only apply map edits to vanilla-ish maps
+
 			if ((bool)flags.MapOnracDock)
 			{
 				MapEditsToApply.Add(OnracDock);
@@ -88,22 +95,22 @@ namespace FF1Lib
 				MapEditsToApply.Add(MirageDock);
 				mapLocationRequirements[MapLocation.MirageTower1].Add(MapChange.Ship | MapChange.Canal | MapChange.Chime);
 			}
-			if ((bool)flags.MapAirshipDock)
+			if ((bool)flags.MapAirshipDock && !flags.DisableOWMapModifications)
 			{
 				MapEditsToApply.Add(AirshipDock);
 				mapLocationRequirements[MapLocation.AirshipLocation].Add(MapChange.Ship | MapChange.Canal);
 			}
-			if ((bool)flags.MapBahamutCardiaDock)
+			if ((bool)flags.MapBahamutCardiaDock && !flags.DisableOWMapModifications)
 			{
 				MapEditsToApply.Add(BahamutCardiaDock);
 				mapLocationRequirements[MapLocation.BahamutCave1].Add(MapChange.Ship | MapChange.Canal);
 				mapLocationRequirements[MapLocation.Cardia1].Add(MapChange.Ship | MapChange.Canal);
 			}
-			if ((bool)flags.MapLefeinRiver) {
+			if ((bool)flags.MapLefeinRiver && !flags.DisableOWMapModifications) {
 			    MapEditsToApply.Add(LefeinRiverDock);
 			    mapLocationRequirements[MapLocation.Lefein].Add(MapChange.Ship | MapChange.Canal | MapChange.Canoe);
 		        }
-			if ((bool)flags.MapGaiaMountainPass) {
+			if ((bool)flags.MapGaiaMountainPass && !flags.DisableOWMapModifications) {
 			    MapEditsToApply.Add(GaiaMountainPass);
 			    if ((bool)flags.MapLefeinRiver) {
 				// If Lefein river dock is on, then Gaia also becomes ship-accessible
@@ -140,7 +147,7 @@ namespace FF1Lib
 				if ((bool)flags.MapCanalBridge)
 				{
 					MapChange dwarvesToNorthwest = MapChange.Canoe;
-					if ((bool)flags.MapDwarvesNorthwest)
+					if ((bool)flags.MapDwarvesNorthwest && !flags.DisableOWMapModifications)
 					{
 						MapEditsToApply.Add(DwarvesNorthwestGrass);
 						dwarvesToNorthwest = MapChange.None;
@@ -163,6 +170,7 @@ namespace FF1Lib
 						mapLocationRequirements[MapLocation.MatoyasCave].Add(MapChange.Canoe);
 					}
 				}
+			}
 			}
 
 			if ((bool)flags.TitansTrove)
@@ -240,7 +248,7 @@ namespace FF1Lib
 				// Caravan Island
 				mapLocationRequirements[MapLocation.Caravan].Clear();
 				mapLocationRequirements[MapLocation.Caravan].Add(MapChange.Airship | MapChange.Canoe);
-				
+
 				mapLocationRequirements[MapLocation.Onrac].Clear();
 				mapLocationRequirements[MapLocation.Onrac].Add(MapChange.Airship | MapChange.Canoe);
 				_walkableNodes[WalkableRegion.PravokaRegion].Add(OverworldTeleportIndex.Onrac);

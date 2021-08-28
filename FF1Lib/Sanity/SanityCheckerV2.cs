@@ -57,6 +57,8 @@ namespace FF1Lib
 			npcdata = _npcdata;
 
 			locations = new OwLocationData(rom);
+			locations.LoadData();
+
 			shiplocations = _shiplocations;
 
 			allTreasures = ItemLocations.AllTreasures.Select(r => r as TreasureChest).Where(r => r != null).ToDictionary(r => (byte)(r.Address - 0x3100));
@@ -65,7 +67,7 @@ namespace FF1Lib
 
 			UpdateNpcRequirements();
 
-			main = new SCMain(_maps, _overworldMap, _npcdata, _rom);
+			main = new SCMain(_maps, _overworldMap, _npcdata, locations, _rom);
 		}
 
 		private void UpdateNpcRequirements()
@@ -104,8 +106,6 @@ namespace FF1Lib
 
 		public (bool Complete, List<MapLocation> MapLocations, AccessRequirement Requirements) CheckSanity(List<IRewardSource> _treasurePlacements, Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullLocationRequirements, IVictoryConditionFlags victoryConditions)
 		{
-			locations.LoadData();
-
 			treasurePlacements = _treasurePlacements;
 
 			//kids, don't try this at home. Calculating an index from an address is usually not the way to go.
@@ -166,7 +166,15 @@ namespace FF1Lib
 
 			w.Stop();
 
-			bool complete = changes == MapChange.All && requirements == AccessRequirement.All;
+			var requiredAccess = AccessRequirement.All;
+			var requiredMapChanges = MapChange.All;
+
+			if ((bool)victoryConditions.IsFloaterRemoved)
+			{
+				requiredMapChanges &= ~MapChange.Airship;
+			}
+
+			bool complete = changes.HasFlag(requiredMapChanges) && requirements.HasFlag(requiredAccess);
 
 			return (complete, rewardSources, requirements, changes);
 		}
@@ -196,7 +204,7 @@ namespace FF1Lib
 			{
 				var poi = deferredPointOfInterests.Dequeue();
 
-				if (poi.Requirements.IsAccessible(requirements))
+				if (poi.BitFlagSet.IsAccessible(requirements, changes))
 				{
 					ProcessSmPointOfInterest(poi, (byte)poi.DungeonIndex);
 				}
@@ -316,7 +324,7 @@ namespace FF1Lib
 
 			foreach (var dpoi in dungeon.PointsOfInterest)
 			{
-				if (dpoi.Requirements.IsAccessible(requirements))
+				if (dpoi.BitFlagSet.IsAccessible(requirements, changes))
 				{
 					ProcessSmPointOfInterest(dpoi, (byte)poi.Teleport.OverworldTeleport);
 				}
@@ -760,6 +768,30 @@ namespace FF1Lib
 			{
 				changes |= MapChange.Canoe;
 			}
+		}
+
+		public IEnumerable<IRewardSource> GetNearRewardSources(IEnumerable<IRewardSource> sources, IRewardSource current)
+		{
+			if (current is TreasureChest c)
+			{
+				var chests = sources.Select(r => r as TreasureChest).Where(r => r != null).ToDictionary(r => (byte)(r.Address - 0x3100));
+				var chest = (byte)(c.Address - 0x3100);
+
+				foreach (var dungeon in main.Dungeons)
+				{
+					var poi = dungeon.PointsOfInterest.Where(p => p.Type == SCPointOfInterestType.Treasure).FirstOrDefault(p => p.TreasureId == chest);
+
+					if (poi != null)
+					{
+						return dungeon.PointsOfInterest.Where(p => p.Type == SCPointOfInterestType.Treasure)
+							.Where(p => p.BitFlagSet.ToString() == poi.BitFlagSet.ToString())
+							.Where(p=> chests.ContainsKey(p.TreasureId))
+							.Select(p => chests[p.TreasureId]).ToList();
+					}
+				}
+			}
+
+			return Array.Empty<IRewardSource>();
 		}
 	}
 }

@@ -670,7 +670,7 @@ namespace FF1Lib
 		{
 			// Inline edit to draw the isthmus or the bridge, but never the open canal anymore.
 			// See 0F_8780_IsOnEitherBridge for this and the IsOnBridge replacement called from below.
-			Put(0x7E3BB, Blob.FromHex("A266A0A420DFE3B0E1A908AE0C60F002A910"));
+			Put(0x7E3B8, Blob.FromHex("20CEE3AE0D60AC0E6020DFE3B0DFA908AE0C60F0010A"));
 
 			/**
 			 *  A slight wrinkle from normal cross page jump in that we need to preserve the status register,
@@ -689,7 +689,12 @@ namespace FF1Lib
 			**/
 			Put(0x7C64D, Blob.FromHex("ADFC6048A90F2003FE20808768082003FE2860"));
 		}
-
+		public void DrawCanoeUnderBridge()
+		{
+			// Draw canoe under bridge if bridge is placed over a river, see 1F_E26A_DrawCanoeUnderBridge.asm
+			PutInBank(0x1F, 0xE231, Blob.FromHex("F037"));
+			PutInBank(0x1F, 0xE26A, Blob.FromHex("20A6E3A4422081E2A442C004F0032073E34C8CE3"));
+		}
 		public void EnableChaosRush()
 		{
 			// Overwrite Keylocked door in ToFR tileset with normal door.
@@ -1394,7 +1399,7 @@ namespace FF1Lib
 			"Full Recover", "Raise Evade", "Void Resist.", "PW Status", "Heal Poison", "Revive", "Full Revive", "Go one floor\n back",
 			"Heal Stoned", "Teleport out\n of dungeons", "Magical", "Dragon", "Giant", "Undead", "Were", "Water", "Mage", "Regen"
 		};
-		public void ShopUpgrade(Flags flags)
+		public void ShopUpgrade(Flags flags, bool renounceChestInfo)
 		{
 
 
@@ -1409,7 +1414,7 @@ namespace FF1Lib
 			PutInBank(0x0E, 0xA931, Blob.FromHex("200095"));
 			PutInBank(0x0E, 0x9500, Blob.FromHex("A564C928F038A566C904B035C902B017A20020D495A24020D495A28020D495A2C020D4954C4195A200208B95A240208B95A280208B95A2C0208B954C41952047952027A74C2696A9008DD66A8DDA6A8DDE6A8DE26A6060AA4A8510BD0061A8B9A4EC8511BD0161F011C901F0E9C903F004A9038511A9144C8395A5104A4A4AAABDD66A18651085104C24EC8A8515BD00610AAABD00AD8510BD01AD8511A662BD000338E9B0851229078513A5124A4A4AA8B1108514A613BD38AC2514F005A9004CC595A90E8510A5154A4A4A4AAAA5109DD66A608A8515BD00610AAABDB9BC8512BDBABC8513A662BD000338C944B01638E91C0AAABD50BF25128510BD51BF251305104C1896E9440AAABDA0BF25128510BDA1BF25130510C9019005A9004CC595A90E4CC595A522F033A564C928F02DA662BD00038514205E962027A7A520C561F0F7A9008522204D964C46E1A9018538A9128539A90E853CA90A853D60204D96A90E85572063E0A53E8512A53F8513A514380AAAB00DBD0093853EBD0193853F4C8E96BD0094853EBD0194853FA9118557A90E85582036DEA512853EA513853FA900852260"));
 
-			if (flags.ChestInfo)
+			if (flags.ChestInfo && !renounceChestInfo)
 			{
 				// Shorten TreasureChest Dialog
 				InsertDialogs(320, "You found.. #");
@@ -1417,9 +1422,9 @@ namespace FF1Lib
 
 				// Insert TreasureChest Info
 				PutInBank(0x1F, 0xD536, Blob.FromHex("682064DB4CD0DD"));
-				PutInBank(0x1F, 0xDDD0, Blob.FromHex("A9B248A9FF48A9114C03FE8A20DA8760"));
-				PutInBank(0x11, 0xB300, Blob.FromHex("A9118557A545D00160A561C91CB00160C96C900160482089C6A9008561A639E88AC91E9002E91E8539A9068D0080A91C8D0180680AAAB00DBD0093853EBD0193853F4C4FB3BD0094853EBD0194853FA9068D0080A9228D0180A200A003B13EC8C902F05AC914F00B9D006BE8C900D0ED4CF6B3A53E48A53F489848B13E0AA8B00DB9009A853EB9019A853F4C98B3B9009B853EB9019B853FA000B13EC8C900F0079D006BE84C9AB3A9068D0080A9228D018068A8C868853F68853E4C5DB3A53E48A53F489848B13E0AA8A9068D0080A9158D0180B010B90097853EB9019738E920853F4C98B3B90098853EB9019838E920853F4C98B3A900853EA96B853F4C8ADB"));
-				if (flags.EnableExtConsumables) PutInBank(0x11, 0xB30C, Blob.FromHex("20"));
+				PutInBank(0x1F, 0xDDD0, Blob.FromHex("A9B648A9FF48A9114C03FE8A20DA8760"));
+				PutInBank(0x11,0xB700,Blob.FromHex("A9118557A545D00160A561C91CB00160C96C900160482089C6A9008561A639E88AC91E9002E91E8539A9068D0080A91C8D0180680AAAB00DBD0093853EBD0193853F4C4FB7BD0094853EBD0194853FA9068D0080A9228D0180A200A003B13EC8C902F05AC914F00B9D006BE8C900D0ED4CF6B7A53E48A53F489848B13E0AA8B00DB9009A853EB9019A853F4C98B7B9009B853EB9019B853FA000B13EC8C900F0079D006BE84C9AB7A9068D0080A9228D018068A8C868853F68853E4C5DB7A53E48A53F489848B13E0AA8A9068D0080A9158D0180B010B90097853EB9019738E920853F4C98B7B90098853EB9019838E920853F4C98B7A900853EA96B853F4C8ADB"));
+				if (flags.EnableExtConsumables) PutInBank(0x11, 0xB70C, Blob.FromHex("20"));
 			}
 
 			// Patch in the equip menu loop to add gear info
@@ -1511,8 +1516,8 @@ namespace FF1Lib
 			}
 
 			// Check if dialogs are too long
-			if (generatedText.Length > 0x1000)
-				throw new Exception("Dialogs maximum length exceeded.");
+			if (generatedText.Length > 0x1400)
+				throw new Exception("ShopInfo text size maximum exceeded.");
 
 			// Insert dialogs
 			PutInBank(0x11, 0xA000, generatedText);
@@ -2513,6 +2518,123 @@ namespace FF1Lib
 
 			PutInBank(0x1F, 0xE8FD, Blob.FromHex("4CE0DD"));
 			PutInBank(0x1F, 0xDDE0, Blob.FromHex("20B9EAA9038DD00360"));
+		}
+
+		public void NoItemMagic(Flags flags)
+		{
+			var weapons = Weapon.LoadAllWeapons(this, flags).ToList();
+			var armors = Armor.LoadAllArmors(this, flags).ToList();
+
+			foreach (var w in weapons)
+			{
+				w.SpellIndex = 0;
+				w.writeWeaponMemory(this);
+			}
+
+			foreach (var a in armors)
+			{
+				a.SpellIndex = 0;
+				a.writeArmorMemory(this);
+			}
+
+			var itemnames = ReadText(FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextPointerCount);
+
+			if (!(flags.Weaponizer ?? false))
+			{
+				itemnames[(int)Item.BaneSword] = "Lame  @S";
+				itemnames[(int)Item.HealRod] = "Eel   @F";
+				itemnames[(int)Item.MageRod] = "Age   @F";
+				itemnames[(int)Item.WizardRod] = "Lizard@F";
+				itemnames[(int)Item.LightAxe] = "Slight@X";
+			}
+
+			if (!(flags.ArmorCrafter ?? false)) {
+			    itemnames[(int)Item.HealHelm] = "Deal  @h";
+			    itemnames[(int)Item.ZeusGauntlets] = "Moose @G";
+			}
+
+			//possible incentive items
+			itemnames[(int)Item.Defense] = "Dunce @S";
+			itemnames[(int)Item.ThorHammer] = "Bore  @H";
+			itemnames[(int)Item.PowerGauntlets] = "Sour  @G";
+			itemnames[(int)Item.WhiteShirt] = "Right @T";
+			itemnames[(int)Item.BlackShirt] = "Whack @T";
+
+			WriteText(itemnames, FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextOffset, FF1Rom.UnusedGoldItems);
+		}
+
+		public byte findEmptyTile(List<List<byte>> decompressedMap) {
+		    for (int i = 1; i < 31; i++) {
+			for (int j = 1; j < 31; j++) {
+			    bool isEmpty = true;
+			    for (int x = 0; isEmpty && x < 8; x++) {
+				for (int y = 0; isEmpty && y < 8; y++) {
+				    if (decompressedMap[i*8+y][j*8+x] != OverworldMap.OceanTile) {
+					isEmpty = false;
+				    }
+				}
+			    }
+			    if (isEmpty) {
+				return (byte)(i*8 + j);
+			    }
+			}
+		    }
+		    return 0;
+		}
+
+		public void HackMinimap(OverworldMap map) {
+		    // Correctly render arbitrary replacement maps.
+
+		    // The original vanilla minimap has a Final
+		    // Fantasy logo and dragon-sword-crest thing,
+		    // which are crammed into the tiles that are
+		    // normally empty ocean on the vanilla map.  It's
+		    // very clever.
+
+		    // It's way too much work to try and re-pack that
+		    // data (and not guaranteed to work because we
+		    // want to support arbitrary replacement maps) so
+		    // instead get rid of the clever bits, don't
+		    // render the logos and provide a replacement
+		    // nametable that only contains the plain map
+		    // tiles.
+
+		    // NOP out the calls to draw the logo and the
+		    // dragon crest things
+		    PutInBank(0x09, 0xBC45, Blob.FromHex("EAEAEAEAEAEA"));
+
+		    // Need to find 1 empty ocean square for the
+		    // background.
+		    byte emptyTile = findEmptyTile(map.DecompressMapRows(map.GetCompressedMapRows()));
+
+		    var nametable = new byte[960];
+		    for (int i = 0; i < 960; i++) {
+			nametable[i] = emptyTile;
+		    }
+		    for (int i = 0; i < 16; i++) {
+			for (int j = 0; j < 16; j++) {
+			    nametable[(i+6)*32 + (j+8)] = (byte)(i*16 + j);
+			}
+		    }
+
+		    PutInBank(0x09, 0xB000, nametable);
+		}
+
+		public void EnableQuickMinimap()
+		{
+			//Blank PPU
+			PutInBank(0x09, 0xBED6, Blob.FromHex("A900"));
+			PutInBank(0x09, 0xBEDB, Blob.FromHex("A900"));
+
+			//Remove WaitForVBlanks
+			PutInBank(0x09, 0xBB0A, Blob.FromHex("EAEAEA"));
+			PutInBank(0x09, 0xBC5F, Blob.FromHex("EAEAEA"));
+			PutInBank(0x09, 0xBD97, Blob.FromHex("EAEAEA"));
+
+			//Don't play stupid sounds
+			PutInBank(0x09, 0xBB45, Blob.FromHex("EAEAEA"));
+			PutInBank(0x09, 0xBC9A, Blob.FromHex("EAEAEA"));
+			PutInBank(0x09, 0xBDBE, Blob.FromHex("EAEAEA"));
 		}
 	}
 }

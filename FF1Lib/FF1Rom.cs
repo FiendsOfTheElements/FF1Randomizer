@@ -127,6 +127,7 @@ namespace FF1Lib
 			FixWarpBug(); // The warp bug must be fixed for magic level shuffle and spellcrafter
 			ExpandNormalTeleporters();
 			SeparateUnrunnables();
+			DrawCanoeUnderBridge();
 			var talkroutines = new TalkRoutines();
 			var npcdata = new NPCdata(this);
 			UpdateDialogs(npcdata, flags);
@@ -135,12 +136,14 @@ namespace FF1Lib
 
 			flags = Flags.ConvertAllTriState(flags, rng);
 
-			TeleportShuffle teleporters = new TeleportShuffle();
 			var palettes = OverworldMap.GeneratePalettes(Get(OverworldMap.MapPaletteOffset, MapCount * OverworldMap.MapPaletteSize).Chunk(OverworldMap.MapPaletteSize));
-			var overworldMap = new OverworldMap(this, flags, palettes, teleporters);
+			var overworldMap = new OverworldMap(this, flags, palettes);
 
 			var owMapExchange = OwMapExchange.FromFlags(this, overworldMap, flags, rng);
 			owMapExchange?.ExecuteStep1();
+
+			TeleportShuffle teleporters = new TeleportShuffle(owMapExchange?.Data);
+			overworldMap.Teleporters = teleporters;
 
 			var shipLocations = owMapExchange?.ShipLocations ?? OwMapExchange.GetDefaultShipLocations(this);
 
@@ -287,6 +290,11 @@ namespace FF1Lib
 				KnightNinjaChargesForAllLevels();
 			}
 
+			if ((bool)flags.AlternateFiends && !flags.SpookyFlag)
+			{
+				AlternativeFiends(rng);
+			}
+
 			if (flags.BuffHealingSpells)
 			{
 				BuffHealingSpells();
@@ -300,20 +308,24 @@ namespace FF1Lib
 			}
 
 			if ((bool)flags.Weaponizer) {
-			    Weaponizer(rng, (bool)flags.WeaponizerNamesUseQualityOnly, (bool)flags.WeaponizerCommonWeaponsHavePowers);
+			    Weaponizer(rng, (bool)flags.WeaponizerNamesUseQualityOnly, (bool)flags.WeaponizerCommonWeaponsHavePowers,  flags.NoItemMagic ?? false);
 			}
 
-			if ((bool)flags.MagisizeWeapons)
+			if ((bool)flags.ArmorCrafter) {
+			    ArmorCrafter(rng, flags.NoItemMagic ?? false);
+			}
+
+			if ((bool)flags.MagisizeWeapons && !(flags.NoItemMagic ?? false))
 			{
 				MagisizeWeapons(rng, (bool)flags.MagisizeWeaponsBalanced);
 			}
 
-			if ((bool)flags.ItemMagic)
+			if ((bool)flags.ItemMagic && !(flags.NoItemMagic ?? false))
 			{
-				ShuffleItemMagic(rng, (bool)flags.BalancedItemMagicShuffle);
+				ShuffleItemMagic(rng, (bool)flags.BalancedItemMagicShuffle && !(flags.NoItemMagic ?? false));
 			}
 
-			if ((bool)flags.GuaranteedRuseItem)
+			if ((bool)flags.GuaranteedRuseItem && !(flags.NoItemMagic ?? false))
 			{
 				CraftRuseItem();
 			}
@@ -436,9 +448,9 @@ namespace FF1Lib
 
 			overworldMap.ApplyMapEdits();
 
-			if (flags.NoOverworld && (bool)!flags.Entrances && (bool)!flags.Floors && (bool)!flags.Towns)
+			if (flags.NoOverworld)
 			{
-				NoOverworldCaravanTile();
+				NoOverworld(overworldMap, maps, talkroutines, npcdata, flippedMaps, flags, rng);
 			}
 
 			var maxRetries = 8;
@@ -446,16 +458,18 @@ namespace FF1Lib
 			{
 				try
 				{
-					overworldMap = new OverworldMap(this, flags, palettes, teleporters);
-					if (((bool)flags.Entrances || (bool)flags.Floors || (bool)flags.Towns) && ((bool)flags.Treasures) && ((bool)flags.NPCItems) && !flags.DeepDungeon &&
-						(!flags.SanityCheckerV2 || flags.OwMapExchange == OwMapExchanges.None))
+					overworldMap = new OverworldMap(this, flags, palettes);
+					overworldMap.Teleporters = teleporters;
+
+					if (((bool)flags.Entrances || (bool)flags.Floors || (bool)flags.Towns) && ((bool)flags.Treasures) && ((bool)flags.NPCItems) && !flags.DeepDungeon
+						&& !(flags.SanityCheckerV2 && flags.OwMapExchange == OwMapExchanges.NoOverworld))
 					{
 						overworldMap.ShuffleEntrancesAndFloors(rng, flags);
-
-						// Disable the Princess Warp back to Castle Coneria
-						if ((bool)flags.Entrances || (bool)flags.Floors)
-							talkroutines.ReplaceChunk(newTalkRoutines.Talk_Princess1, Blob.FromHex("20CC90"), Blob.FromHex("EAEAEA"));
 					}
+
+					// Disable the Princess Warp back to Castle Coneria
+					if ((bool)flags.Entrances || (bool)flags.Floors)
+						talkroutines.ReplaceChunk(newTalkRoutines.Talk_Princess1, Blob.FromHex("20CC90"), Blob.FromHex("EAEAEA"));
 
 					if ((bool)flags.Treasures && (bool)flags.ShuffleObjectiveNPCs && !flags.DeepDungeon)
 					{
@@ -477,7 +491,7 @@ namespace FF1Lib
 						if (!((bool)flags.RandomWaresIncludesSpecialGear))
 						{
 							excludeItemsFromRandomShops.AddRange(ItemLists.SpecialGear);
-							if ((bool)flags.GuaranteedRuseItem)
+							if ((bool)flags.GuaranteedRuseItem && !(flags.NoItemMagic ?? false))
 								excludeItemsFromRandomShops.Add(Item.PowerRod);
 						}
 
@@ -518,15 +532,6 @@ namespace FF1Lib
 
 			npcdata.UpdateItemPlacement(generatedPlacement);
 
-			if (flags.NoOverworld && (bool)!flags.Entrances && (bool)!flags.Floors && (bool)!flags.Towns)
-			{
-				NoOverworld(overworldMap, maps, talkroutines, npcdata, flippedMaps, flags, rng);
-			}
-
-			if ((bool)flags.AlternateFiends && !flags.SpookyFlag)
-			{
-				AlternativeFiends(rng);
-			}
 			if ((bool)flags.MagicShopLocs)
 			{
 				ShuffleMagicLocations(rng, (bool)flags.MagicShopLocationPairs);
@@ -555,7 +560,7 @@ namespace FF1Lib
 			{
 				shopData.Shops.Find(x => x.Type == FF1Lib.ShopType.Item && x.Entries.Contains(Item.Bottle)).Entries.Remove(Item.Bottle);
 				shopData.StoreData();
-			}		
+			}
 
 			//has to be done before modifying itemnames and after modifying spellnames...
 			extConsumables.LoadSpells();
@@ -699,9 +704,15 @@ namespace FF1Lib
 			}
 
 			if (flags.SpeedHacks)
-			{				
+			{
 				EnableSpeedHacks(preferences);
 			}
+
+			if (flags.QuickMinimapLoad)
+			{
+				EnableQuickMinimap();
+			}
+
 
 			if (flags.IdentifyTreasures)
 			{
@@ -851,7 +862,11 @@ namespace FF1Lib
 			}
 
 			var itemText = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
-			itemText[(int)Item.Ribbon] = itemText[(int)Item.Ribbon].Remove(7);
+			if (itemText[(int)Item.Ribbon].Length > 7
+			    && itemText[(int)Item.Ribbon][7] == ' ')
+			    {
+				itemText[(int)Item.Ribbon] = itemText[(int)Item.Ribbon].Remove(7);
+			    }
 
 			if (flags.Etherizer)
 			{
@@ -957,9 +972,14 @@ namespace FF1Lib
 				PacifistEnd(talkroutines, npcdata, (bool)flags.EnemyTrapTiles || flags.EnemizerEnabled);
 			}
 
+			if (flags.NoItemMagic ?? false)
+			{
+				NoItemMagic(flags);
+			}
+
 			if (flags.ShopInfo)
 			{
-				ShopUpgrade(flags);
+				ShopUpgrade(flags, preferences.RenounceChestInfo);
 			}
 
 			Fix3DigitStats();
@@ -1059,6 +1079,9 @@ namespace FF1Lib
 
 			owMapExchange?.ExecuteStep2();
 
+			if (owMapExchange != null) {
+			    HackMinimap(overworldMap);
+			}
 
 			npcdata.WriteNPCdata(this);
 			talkroutines.WriteRoutines(this);

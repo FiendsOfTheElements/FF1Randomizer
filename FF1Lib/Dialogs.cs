@@ -112,8 +112,13 @@ namespace FF1Lib
 			Talk_GiveItemOnItem,
 			Talk_Astos,
 			Talk_kill,
-			Talk_Chaos
+			Talk_Chaos,
+			NoOW_Floater,
+			NoOW_Chime,
+			NoOW_Canoe,
+			NoOW_Nerrick
 		}
+
 		public class TalkRoutines
 		{
 			private List<Blob> _talkroutines = new List<Blob>();
@@ -151,6 +156,12 @@ namespace FF1Lib
 				_talkroutines.Add(Blob.FromHex("A674F005BD2060F029A57385612080B1F022E67DA572203D96A5752020B1A476207F90207392A5611820109F2018964C4396A57060")); // Talk_Astos
 				_talkroutines.Add(Blob.FromHex("A000209690A57160")); // Talk_Kill
 				_talkroutines.Add(Blob.FromHex("A57520C590A57160")); // Talk_Chaos
+
+				// NoOverworld Routines
+				_talkroutines.Add(Blob.FromHex("AD2B60D003A57160A476207392A57260"));
+				_talkroutines.Add(Blob.FromHex("AD2C60D003A57160A476207392A57260"));
+				_talkroutines.Add(Blob.FromHex("AD1260D003A57160A476207392A57260"));
+				_talkroutines.Add(Blob.FromHex("AD2660F018A573F0141820109FB010CE2660A476207F90207392A57260A57060")); // NoOW_Nerrick
 			}
 			public Blob this[int talkid]
 			{
@@ -482,7 +493,7 @@ namespace FF1Lib
 			PutInBank(newTalkRoutinesBank, 0xB120, Blob.FromHex("856A20CDD8A9008D01208D1540A002204A96A001204A96A903CD866BD00820189668684C439660"));
 
 			// LoadPrice fix
-			PutInBank(newTalkRoutinesBank, 0x9F10, Blob.FromHex("A9118558A5734C10B0"));
+			PutInBank(newTalkRoutinesBank, 0x9F10, Blob.FromHex("A9118558A5734C10B4"));
 
 			//CheckCanTake
 			if (flags.EnableExtConsumables)

@@ -13,11 +13,18 @@ namespace FF1Lib
 
 		public SCCoords? AirShipLocation { get; set; }
 
+	        public SCCoords? BridgeLocation { get; set; }
+
+	        public SCCoords? CanalLocation { get; set; }
+
 		public ShipLocation[] ShipLocations { get; set; }
 
 		public TeleportFixup[] TeleporterFixups { get; set; }
 
 		public DomainFixup[] DomainFixups { get; set; }
 
+	        public DomainFixup[] DomainUpdates { get; set; }
+
+		public Dictionary<string, SCCoords> OverworldCoordinates { get; set; }
 	}
 }

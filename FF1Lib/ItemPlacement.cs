@@ -92,7 +92,7 @@ namespace FF1Lib
 
 			var treasurePool = _allTreasures.ToList();
 
-			if ((bool)_flags.GuaranteedRuseItem)
+			if ((bool)_flags.GuaranteedRuseItem && !(_flags.NoItemMagic ?? false))
 			{
 				unincentivizedQuestItems.Add(Item.PowerRod);
 			}
@@ -164,7 +164,7 @@ namespace FF1Lib
 				{
 					//dont make shards jingle that'd be annoying
 					//dont make free items that get replaced, aka cabins, jingle
-					if (placedItem is TreasureChest && placedItem.Item != Item.Shard && placedItem.Item != ReplacementItem && !((bool)_flags.GuaranteedRuseItem && placedItem.Item == Item.PowerRod))
+					if (placedItem is TreasureChest && placedItem.Item != Item.Shard && placedItem.Item != ReplacementItem && !((bool)_flags.GuaranteedRuseItem && placedItem.Item == Item.PowerRod && !(_flags.NoItemMagic ?? false)))
 					{
 						rom.Put(placedItem.Address - FF1Rom.TreasureOffset + FF1Rom.TreasureJingleOffset, new byte[] { 0x01 });
 					}
@@ -499,7 +499,7 @@ namespace FF1Lib
 			var preBlackOrbLocationPool = _incentivesData.AllValidPreBlackOrbItemLocations.ToList();
 			var preBlackOrbUnincentivizedLocationPool = preBlackOrbLocationPool.Where(x => !incentiveLocationPool.Any(y => y.Address == x.Address)).ToList();
 			if ((bool)_flags.LooseExcludePlacedDungeons)
-				preBlackOrbUnincentivizedLocationPool = IncentivizedDungeons();
+				preBlackOrbUnincentivizedLocationPool = IncentivizedDungeons(preBlackOrbUnincentivizedLocationPool);
 
 			Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullLocationRequirements = _overworldMap.FullLocationRequirements;
 			Dictionary<MapLocation, OverworldTeleportIndex> overridenOverworld = _overworldMap.OverriddenOverworldLocations;
@@ -512,6 +512,9 @@ namespace FF1Lib
 			do
 			{
 				placementFailed = false;
+
+				//That number(7.0) is a "tuned" parameter. I divided the number of chests by the number of npcs. Took half of that and looked through some spoiler logs to see if it was too high or too low.
+				var balancedPicker = new RewardSourcePicker(0.5, _flags.LooseItemsNpcBalance ? 7.0 : 1.0, _checker);
 
 				_sanityCounter++;
 				if (_sanityCounter > 20) throw new InsaneException("Item Placement could not meet incentivization requirements!");
@@ -551,6 +554,42 @@ namespace FF1Lib
 					    lastPlacements.Remove(Item.Floater);
 					}
 
+					// Different placement priorities for NoOverworld
+					if (((IItemShuffleFlags)_flags).NoOverworld)
+					{
+						List<Item> nodeItems = new() { Item.Floater, Item.Canoe };
+						List<Item> corridorItems = new() { Item.Tnt, Item.Ruby };
+						List<Item> fetchItems = new() { Item.Crown, Item.Herb, Item.Crystal };
+
+						if ((bool)_flags.Entrances)
+						{
+							nodeItems.Add(Item.Key);
+							corridorItems.Add(Item.Oxyale);
+							corridorItems.Add(Item.Chime);
+
+							unrestricted = new List<Item> { };
+							fixedPlacements = new List<Item> { nodeItems.SpliceRandom(rng), corridorItems.SpliceRandom(rng) };
+							nextPlacements = new List<Item> { nodeItems.SpliceRandom(rng), corridorItems.SpliceRandom(rng) };
+							lastPlacements = new List<Item> { Item.Lute, Item.Crown, Item.Crystal, Item.Herb, Item.Adamant,
+							Item.Slab, Item.Tail, Item.Cube, Item.Bottle, Item.Rod, Item.Chime, Item.Bridge, Item.Ship, Item.Canal };
+
+							lastPlacements.AddRange(nodeItems);
+							lastPlacements.AddRange(corridorItems);
+						}
+						else
+						{
+							unrestricted = new List<Item> { Item.Key };
+							fixedPlacements = new List<Item> { Item.Key, fetchItems.SpliceRandom(rng), fetchItems.SpliceRandom(rng), corridorItems.SpliceRandom(rng) };
+							nextPlacements = new List<Item> { nodeItems.SpliceRandom(rng), corridorItems.SpliceRandom(rng) };
+							lastPlacements = new List<Item> { Item.Lute, Item.Adamant,
+						Item.Slab, Item.Tail, Item.Cube, Item.Bottle, Item.Oxyale, Item.Rod, Item.Chime, Item.Bridge, Item.Ship, Item.Canal };
+
+							lastPlacements.AddRange(nodeItems);
+							lastPlacements.AddRange(corridorItems);
+							lastPlacements.AddRange(fetchItems);
+						}
+					}
+
 					nextPlacements.Shuffle(rng);
 					lastPlacements.Shuffle(rng);
 					var allPlacements = fixedPlacements.Concat(nextPlacements).Concat(lastPlacements);
@@ -585,7 +624,8 @@ namespace FF1Lib
 						if (rewardSources.Any())
 						{
 							itemPool.Remove(item);
-							placedItems.Add(NewItemPlacement(rewardSources.PickRandom(rng), item));
+							var rewardSource = balancedPicker.Pick(rewardSources, _flags.LooseItemsForwardPlacement && !isIncentive, _flags.LooseItemsSpreadPlacement, isIncentive, rng);
+							placedItems.Add(NewItemPlacement(rewardSource, item));
 						}
 					}
 				}
@@ -667,7 +707,7 @@ namespace FF1Lib
 			return new ItemPlacementResult { PlacedItems = placedItems, RemainingTreasures = treasurePool };
 		}
 
-		private List<IRewardSource> IncentivizedDungeons()
+		private List<IRewardSource> IncentivizedDungeons(List<IRewardSource> preBlackOrbUnincentivizedLocationPool)
 		{
 			var placedDungeons = new List<IRewardSource>();
 
@@ -677,7 +717,7 @@ namespace FF1Lib
 					placedDungeons.AddRange(_incentivesData.AllValidPreBlackOrbItemLocations.Where(x => ItemLocations.MapLocationToOverworldLocations[x.MapLocation] == ItemLocations.MapLocationToOverworldLocations[incentiveLocation.MapLocation] && x.GetType().Equals(typeof(TreasureChest))));
 			}
 
-			return _incentivesData.AllValidPreBlackOrbItemLocations.Where(x => !placedDungeons.Contains(x)).ToList();
+			return preBlackOrbUnincentivizedLocationPool.Where(x => !placedDungeons.Contains(x)).ToList();
 		}
 	}
 }

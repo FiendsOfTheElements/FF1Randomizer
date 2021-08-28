@@ -10,6 +10,10 @@
 			<h4>Maps</h4>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="sanityCheckerV2" @bind-Value="Flags.SanityCheckerV2">Use SanityChecker V2</CheckBox>
 			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="owMapExchange" TItem="OwMapExchanges" IsEnabled="Flags.SanityCheckerV2" @bind-Value="Flags.OwMapExchange">Overworld Map:</EnumDropDown>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="spreadLoose" IsEnabled="Flags.SanityCheckerV2" @bind-Value="Flags.LooseItemsSpreadPlacement">Spread Loose Placement</CheckBox>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="forwardLoose" IsEnabled="@(Flags.SanityCheckerV2 & Flags.LooseItemsSpreadPlacement)" @bind-Value="Flags.LooseItemsForwardPlacement">Forward Loose Placement</CheckBox>
+			<div class="checkbox-cell"></div>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="looseNpcBalance" @bind-Value="Flags.LooseItemsNpcBalance">Loose Npc Balance</CheckBox>
 			<div class="checkbox-cell"></div>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="procGenEarth1" @bind-Value="Flags.EFGEarth1">Generated Earth Cave B1</CheckBox>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="procGenEarth2" @bind-Value="Flags.EFGEarth2">Generated Earth Cave B2</CheckBox>
@@ -20,7 +24,9 @@
 
 			<div class="checkbox-cell"></div>
 
-
+			<h4>Armor randomization</h4>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="armorCrafterCheckBox" @bind-Value="Flags.ArmorCrafter">Use Armor Crafter</TriStateCheckBox>
+			<div class="checkbox-cell"></div>
 		</div>
 		<div class="col2">
 			<h4>Deep Dungeon</h4>

@@ -89,6 +89,8 @@
 		bool? TitansTrove { get; }
 		bool? GaiaShortcut { get; }
 		bool? MoveGaiaItemShop { get; }
+		bool DisableOWMapModifications { get; }
+		OwMapExchanges OwMapExchange { get; }
 	}
 	public interface IItemPlacementFlags : IItemShuffleFlags, IVictoryConditionFlags
 	{
@@ -111,6 +113,11 @@
 		bool EnableExtConsumables { get; }
 		ExtConsumableChestSet ExtConsumableChests { get; }
 		bool IncentiveChestItemsFanfare { get; }
+		bool? NoItemMagic { get; }
+		bool LooseItemsForwardPlacement { get; }
+		bool LooseItemsSpreadPlacement { get; }
+		bool LooseItemsNpcBalance { get; }
+		bool? Entrances { get; }
 	}
 	public interface IItemShuffleFlags
 	{

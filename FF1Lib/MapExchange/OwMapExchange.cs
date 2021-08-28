@@ -14,7 +14,7 @@ namespace FF1Lib
 {
 	public enum OwMapExchanges
 	{
-		[Description("None(Default)")]
+		[Description("Vanilla (Default)")]
 		None,
 
 		[Description("Melmond Start")]
@@ -28,6 +28,15 @@ namespace FF1Lib
 
 		[Description("No Overworld")]
 		NoOverworld,
+
+		[Description("Chanel #125")]
+		ProcGen1,
+
+		[Description("Epic Quest")]
+		ProcGen2,
+
+		[Description("Archipelago")]
+		ProcGen3,
 
 		[Description("Random")]
 		Random
@@ -43,6 +52,8 @@ namespace FF1Lib
 		ExitTeleData exit;
 		OwLocationData locations;
 		DomainData domains;
+
+		public OwMapExchangeData Data => data;
 
 		public ShipLocations ShipLocations { get; private set; }
 
@@ -67,8 +78,13 @@ namespace FF1Lib
 		{
 			overworldMap.SwapMap(name + ".ffm");
 
+			//load default locations first, doh
+			locations.LoadData();
+
 			if (data.StartingLocation.HasValue) locations.StartingLocation = data.StartingLocation.Value;
 			if (data.AirShipLocation.HasValue) locations.AirShipLocation = data.AirShipLocation.Value;
+			if (data.BridgeLocation.HasValue) locations.BridgeLocation = data.BridgeLocation.Value;
+			if (data.CanalLocation.HasValue) locations.CanalLocation = data.CanalLocation.Value;
 
 			locations.StoreData();
 
@@ -81,9 +97,12 @@ namespace FF1Lib
 
 		public void ExecuteStep2()
 		{
+		        DomainData originalDomains = new DomainData(rom);
+			originalDomains.LoadTable();
 			domains.LoadTable();
 
 			foreach (var df in data.DomainFixups) domains.SwapDomains(df.From, df.To);
+			foreach (var df in data.DomainUpdates) domains.Data[df.To] = originalDomains.Data[df.From];
 
 			domains.StoreTable();
 			locations.StoreData();
@@ -119,13 +138,13 @@ namespace FF1Lib
 				case OwMapExchanges.CrecsentStart:
 					return new OwMapExchange(_rom, _overworldMap, "crescent_start");
 				case OwMapExchanges.NoOverworld:
-					if ((bool)!flags.Entrances && (bool)!flags.Floors && (bool)!flags.Towns)
-					{
-						return new OwMapExchange(_rom, _overworldMap, "nooverworld");
-					}
-					else
-						return null;
-					
+					return new OwMapExchange(_rom, _overworldMap, "nooverworld");
+				case OwMapExchanges.ProcGen1:
+					return new OwMapExchange(_rom, _overworldMap, "procgen1");
+				case OwMapExchanges.ProcGen2:
+					return new OwMapExchange(_rom, _overworldMap, "procgen2");
+				case OwMapExchanges.ProcGen3:
+					return new OwMapExchange(_rom, _overworldMap, "procgen3");
 			}
 
 			throw new Exception("oops");

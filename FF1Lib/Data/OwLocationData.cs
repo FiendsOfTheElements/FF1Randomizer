@@ -16,9 +16,9 @@ namespace FF1Lib
 
 		public SCCoords AirShipLocation { get; set; }
 
-		//public SCCoords BridgeLocation { get; set; }
+		public SCCoords BridgeLocation { get; set; }
 
-		//public SCCoords CanalLocation { get; set; }
+		public SCCoords CanalLocation { get; set; }
 
 		FF1Rom rom;
 
@@ -32,8 +32,8 @@ namespace FF1Lib
 			StartingLocation = LoadCoords(0x3000 + UnsramIndex.OverworldScrollX);
 			ShipLocation = LoadCoords2(0x3000 + UnsramIndex.ShipX);
 			AirShipLocation = LoadCoords2(0x3000 + UnsramIndex.AirshipX);
-			//BridgeLocation = LoadCoords(0x3000 + UnsramIndex.BridgeX);
-			//CanalLocation = LoadCoords(0x3000 + UnsramIndex.CanalX);
+			BridgeLocation = LoadCoords2(0x3000 + UnsramIndex.BridgeX);
+			CanalLocation = LoadCoords2(0x3000 + UnsramIndex.CanalX);
 		}
 
 		private SCCoords LoadCoords(int address)
@@ -55,8 +55,8 @@ namespace FF1Lib
 			StoreCoords(0x3000 + UnsramIndex.OverworldScrollX, StartingLocation);
 			StoreCoords2(0x3000 + UnsramIndex.ShipX, ShipLocation);
 			StoreCoords2(0x3000 + UnsramIndex.AirshipX, AirShipLocation);
-			//StoreCoords2(0x3000 + UnsramIndex.BridgeX, BridgeLocation);
-			//StoreCoords2(0x3000 + UnsramIndex.CanalX, CanalLocation);
+			StoreCoords2(0x3000 + UnsramIndex.BridgeX, BridgeLocation);
+			StoreCoords2(0x3000 + UnsramIndex.CanalX, CanalLocation);
 		}
 
 		private void StoreCoords(int address, SCCoords coords)

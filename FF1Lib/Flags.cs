@@ -54,6 +54,15 @@ namespace FF1Lib
 
 		#endregion
 
+		public bool QuickMinimapLoad { get; set; } = false;
+
+		public bool LooseItemsForwardPlacement { get; set; } = false;
+
+		public bool LooseItemsSpreadPlacement { get; set; } = false;
+
+		public bool LooseItemsNpcBalance { get; set; } = false;
+
+
 		[IntegerFlag(0, 100, 10)]
 		public int ExpChestConversionMin { get; set; } = 0;
 
@@ -86,6 +95,7 @@ namespace FF1Lib
 
 		public OwMapExchanges OwMapExchange { get; set; } = OwMapExchanges.None;
 
+		public bool? NoItemMagic { get; set; } = false;
 
 		#region ShopKiller
 
@@ -182,6 +192,7 @@ namespace FF1Lib
 		public bool? Weaponizer { get; set; } = false;
 		public bool? WeaponizerNamesUseQualityOnly { get; set; } = false;
 		public bool? WeaponizerCommonWeaponsHavePowers { get; set; } = false;
+		public bool? ArmorCrafter { get; set; } = false;
 		public bool? MagicLevelsTiered { get; set; } = false;
 		public bool? MagicLevelsMixed { get; set; } = false;
 
@@ -616,11 +627,12 @@ namespace FF1Lib
 		public bool? EarlierRuby { get; set; } = false;
 		public bool? GuaranteedRuseItem { get; set; } = false;
 		public bool? DisableStunTouch { get; set; } = false;
+		public bool DisableOWMapModifications => SanityCheckerV2 & (OwMapExchange != OwMapExchanges.None | OwMapExchange != OwMapExchanges.CrecsentStart | OwMapExchange != OwMapExchanges.ElflandStart | OwMapExchange != OwMapExchanges.MelmondStart | OwMapExchange != OwMapExchanges.Random);
 		public bool? MapCanalBridge => (NPCItems) | (NPCFetchItems) | MapOpenProgression | MapOpenProgressionExtended;
-		public bool? MapOnracDock => MapOpenProgressionDocks;
-		public bool? MapMirageDock => MapOpenProgressionDocks;
-		public bool? MapConeriaDwarves => MapOpenProgression;
-		public bool? MapVolcanoIceRiver => MapOpenProgression;
+		public bool? MapOnracDock => MapOpenProgressionDocks & !DisableOWMapModifications;
+		public bool? MapMirageDock => MapOpenProgressionDocks & !DisableOWMapModifications;
+		public bool? MapConeriaDwarves => MapOpenProgression & !DisableOWMapModifications;
+		public bool? MapVolcanoIceRiver => MapOpenProgression & !DisableOWMapModifications;
 		// public bool? MapDwarvesNorthwest => MapOpenProgression;
 		// public bool? MapAirshipDock => MapOpenProgression;
 
@@ -1023,7 +1035,7 @@ namespace FF1Lib
 			return sum;
 		}
 
-		
+
 		public class Preset
 		{
 			public string Name { get; set; }
