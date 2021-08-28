@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using FF1Lib.Sanity;
+
 namespace FF1Lib.Procgen
 {
     public class OverworldTiles {
@@ -190,6 +192,9 @@ namespace FF1Lib.Procgen
 	public OwTileFilter apply_shores3;
 	public OwTileFilter apply_shores4;
 
+	public OwTileFilter prune_forests;
+	public OwTileFilter polish_mountains;
+
 	public OwTileFilter mountain_borders;
 	public OwTileFilter river_borders;
 	public OwTileFilter desert_borders;
@@ -197,7 +202,7 @@ namespace FF1Lib.Procgen
 	public OwTileFilter grass_borders;
 	public OwTileFilter forest_borders;
 
-	public static byte[,] CONERIA_CITY = new byte[,] {
+	public static OwFeature CONERIA_CITY = new OwFeature(new byte[,] {
 	    {None, None, None,                 None,                None,  None, None, None},
 	    {None, None, None, CONERIA_CASTLE_TOP_W, CONERIA_CASTLE_TOP_E, None, None, None},
 	    {None, None, CITY_WALL_NW, CONERIA_CASTLE_MID_W, CONERIA_CASTLE_MID_E, CITY_WALL_NE, None, None},
@@ -207,16 +212,22 @@ namespace FF1Lib.Procgen
 	    {None, CITY_WALL_W5, CONERIA, CITY_PAVED, CITY_PAVED, CONERIA, CITY_WALL_E5, None},
 	    {None, CITY_WALL_SW2, CITY_WALL_GATE_W, CITY_PAVED, CITY_PAVED, CITY_WALL_GATE_E, CITY_WALL_SE2, None},
 	    {None, None, LAND,                 LAND,                LAND,  LAND, None, None},
-	};
+	    }, new Dictionary<string, SCCoords> {
+		{ "Coneria", new SCCoords(2, 4) },
+		{ "ConeriaCastle1", new SCCoords(3, 3) },
+		{ "StartingLocation", new SCCoords(3, 5) }
+	    });
 
-	public static byte[,] TEMPLE_OF_FIENDS = new byte[,] {
+	public static OwFeature TEMPLE_OF_FIENDS = new OwFeature(new byte[,] {
 	    {None, None,      None,      None, None, None},
 	    {None, None, TOF_TOP_W, TOF_TOP_E, None, None},
 	    {None, TOF_BOTTOM_W, TOF_ENTRANCE_W, TOF_ENTRANCE_E, TOF_BOTTOM_E, None},
 	    {None, None,      LAND,      LAND, None, None},
-	};
+	}, new Dictionary<string, SCCoords> {
+		{ "TempleOfFiends1", new SCCoords(2, 2) },
+	    });
 
-	public static byte[,] PRAVOKA_CITY = new byte[,] {
+	public static OwFeature PRAVOKA_CITY = new OwFeature(new byte[,] {
 	    {None, None, None, None, None, None, None},
 	    {None, None, CITY_WALL_NW, CITY_WALL_N, CITY_WALL_NE, None, None},
 	    {None, CITY_WALL_W1, CITY_WALL_W2, PRAVOKA, CITY_WALL_E2, CITY_WALL_E1, None},
@@ -224,9 +235,12 @@ namespace FF1Lib.Procgen
 	    {None, CITY_WALL_SW1, CITY_WALL_GATE_W, CITY_PAVED, CITY_WALL_GATE_E, CITY_WALL_SE1, None},
 	    {None,          LAND,             DOCK_S,       DOCK_S,             DOCK_S,          LAND, None},
 	    {OCEAN,       OCEAN,              OCEAN,        OCEAN,              OCEAN,           OCEAN, OCEAN}
-	};
+	    }, new Dictionary<string, SCCoords> {
+		{ "Pravoka", new SCCoords(2, 3) },
+		{ "Ship", new SCCoords(3, 6) },
+	    });
 
-	public static byte[,] PRAVOKA_CITY_MOAT = new byte[,] {
+	public static OwFeature PRAVOKA_CITY_MOAT = new OwFeature(new byte[,] {
 	    {None, None, None,         None,        None,         None, None, None, None, None, None},
 	    {None, OCEAN, OCEAN,       OCEAN,              OCEAN,        OCEAN,              OCEAN,           OCEAN, OCEAN, OCEAN, None},
 	    {None, OCEAN, None, None,         None,        None,         None, None, None, OCEAN, None},
@@ -237,7 +251,12 @@ namespace FF1Lib.Procgen
 	    {None, OCEAN, None,          LAND,             DOCK_S,       DOCK_S,             DOCK_S,          LAND, None, OCEAN, None},
 	    {OCEAN, OCEAN, OCEAN,       OCEAN,              OCEAN,        OCEAN,              OCEAN,           OCEAN, OCEAN, OCEAN, OCEAN},
 	    {OCEAN, OCEAN, OCEAN,       OCEAN,              OCEAN,        OCEAN,              OCEAN,           OCEAN, OCEAN, OCEAN, OCEAN}
-	};
+	    }, new Dictionary<string, SCCoords> {
+		{ "Pravoka", new SCCoords(4, 5) },
+		{ "Ship", new SCCoords(3, 6) },
+		{ "Bridge", new SCCoords(4, 1) },
+	    });
+
 
 	public static byte[,] ELFLAND_CASTLE = new byte[,] {
 	    {SMALL_CASTLE_TOP_W, SMALL_CASTLE_TOP_W},
@@ -303,11 +322,13 @@ namespace FF1Lib.Procgen
 	    {None,          None,             LAND,       LAND,             LAND, None, None},
 	};
 
-	public static byte[,] GAIA_TOWN = new byte[,] {
-	    {LAND, GAIA, GAIA},
-	    {GAIA, GAIA, LAND},
-	    {LAND, LAND, None},
-	};
+	public static OwFeature GAIA_TOWN = new OwFeature(new byte[,] {
+	    {None, GAIA, GAIA},
+	    {GAIA, GAIA, None},
+	    {None, None, None},
+	    }, new Dictionary<string, SCCoords> {
+		{ "Gaia", new SCCoords(1, 1) },
+	    });
 
 	public static byte[,] MIRAGE_TOWER = new byte[,] {
 	    {None, None, None, None},
@@ -997,6 +1018,68 @@ namespace FF1Lib.Procgen
 		    {STAR,       _, STAR}},
 		    FOREST_S),
 	    }, allTiles, non_forest_tiles, null);
+
+	this.prune_forests = new OwTileFilter(
+	    new Rule[] {
+		new Rule(new byte[3,3] {
+		    {STAR, STAR,     STAR},
+		    {STAR, FOREST, FOREST},
+		    {STAR, FOREST,  STAR}},
+		    FOREST),
+		new Rule(new byte[3,3] {
+		    {STAR,   STAR,    STAR},
+		    {FOREST, FOREST,  STAR},
+		    {STAR,   FOREST,  STAR}},
+		    FOREST),
+		new Rule(new byte[3,3] {
+		    {STAR,   FOREST, STAR},
+		    {FOREST, FOREST, STAR},
+		    {STAR,    STAR,  STAR}},
+		    FOREST),
+		new Rule(new byte[3,3] {
+		    {STAR, FOREST,   STAR},
+		    {STAR, FOREST, FOREST},
+		    {STAR,   STAR,  STAR}},
+		    FOREST),
+
+		new Rule(new byte[3,3] {
+		    {STAR,   STAR,  STAR},
+		    {STAR, FOREST,  STAR},
+		    {STAR,   STAR,  STAR}},
+		    LAND),
+
+	    }, allTiles, null, null);
+
+	this.polish_mountains = new OwTileFilter(
+	    new Rule[] {
+		new Rule(new byte[3,3] {
+		    {STAR, STAR,     STAR},
+		    {STAR, MOUNTAIN, MOUNTAIN},
+		    {STAR, MOUNTAIN,  STAR}},
+		    MOUNTAIN),
+		new Rule(new byte[3,3] {
+		    {STAR,   STAR,    STAR},
+		    {MOUNTAIN, MOUNTAIN,  STAR},
+		    {STAR,   MOUNTAIN,  STAR}},
+		    MOUNTAIN),
+		new Rule(new byte[3,3] {
+		    {STAR,   MOUNTAIN, STAR},
+		    {MOUNTAIN, MOUNTAIN, STAR},
+		    {STAR,    STAR,  STAR}},
+		    MOUNTAIN),
+		new Rule(new byte[3,3] {
+		    {STAR, MOUNTAIN,   STAR},
+		    {STAR, MOUNTAIN, MOUNTAIN},
+		    {STAR,   STAR,  STAR}},
+		    MOUNTAIN),
+
+		new Rule(new byte[3,3] {
+		    {STAR,   STAR,  STAR},
+		    {STAR, MOUNTAIN,  STAR},
+		    {STAR,   STAR,  STAR}},
+		    LAND),
+
+	    }, allTiles, null, null);
 
 
         this.PreShoreRegionTypeMap = new Dictionary<byte, int>();

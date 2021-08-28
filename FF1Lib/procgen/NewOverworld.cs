@@ -37,11 +37,11 @@ namespace FF1Lib.Procgen
             var regionMap = new int[OverworldState.MAPSIZE,OverworldState.MAPSIZE];
             var regionList = new List<OwRegion>();
 
-	    for (int j = 0; j < OverworldState.MAPSIZE; j++) {
-		for (int i = 0; i < OverworldState.MAPSIZE; i++) {
-		    regionMap[j,i] = -1;
-		}
-	    }
+            for (int j = 0; j < OverworldState.MAPSIZE; j++) {
+                for (int i = 0; i < OverworldState.MAPSIZE; i++) {
+                    regionMap[j,i] = -1;
+                }
+            }
 
             regionList.Add(new OwRegion(tileRegionTypeMap[OverworldTiles.OCEAN], 0));
 
@@ -135,7 +135,18 @@ namespace FF1Lib.Procgen
 	}
     }
 
-    public class OverworldState {
+    public class OwFeature {
+        public byte[,] Tiles;
+        public Dictionary<string, SCCoords> Entrances;
+
+        public OwFeature(byte[,] tiles,
+            Dictionary<string, SCCoords> entrances) {
+                this.Tiles = tiles;
+                this.Entrances = entrances;
+            }
+    }
+
+    public partial class OverworldState {
         public const int MAPSIZE = 256;
         double[,] Basemap;
         public byte[,] Tilemap;
@@ -146,10 +157,6 @@ namespace FF1Lib.Procgen
         int[,] Feature_weightmap;
         int[,] Dock_weightmap;
         public Dictionary<string, SCCoords> FeatureCoordinates;
-        public SCCoords Airship;
-        public SCCoords Bridge;
-        public SCCoords Canal;
-        public SCCoords Ship;
         List<int> Reachable_regions;
         List<int> Exclude_docks;
         private bool ownBasemap;
@@ -166,6 +173,8 @@ namespace FF1Lib.Procgen
         private OverworldTiles overworldTiles;
 
 	int startingRegion;
+	int bridgedRegion;
+	bool shouldPlaceBridge;
 
         public OverworldState(MT19337 rng, GenerationStep[] steps, OverworldTiles overworldTiles) {
             this.rng = rng;
@@ -186,6 +195,9 @@ namespace FF1Lib.Procgen
             this.Exclude_docks = new List<int>();
             this.StepQueue = new Queue<GenerationStep>(steps);
             this.overworldTiles = overworldTiles;
+	    this.startingRegion = -1;
+	    this.bridgedRegion = -1;
+	    this.shouldPlaceBridge = false;
         }
 
         public OverworldState(OverworldState copy) {
@@ -204,10 +216,6 @@ namespace FF1Lib.Procgen
             this.FeatureCoordinates = copy.FeatureCoordinates;
             this.Reachable_regions = copy.Reachable_regions;
             this.Exclude_docks = copy.Exclude_docks;
-            this.Airship = copy.Airship;
-            this.Bridge = copy.Bridge;
-            this.Canal = copy.Canal;
-            this.Ship = copy.Ship;
             this.rng = copy.rng;
             this.StepQueue = copy.StepQueue;
             this.heightmax = copy.heightmax;
@@ -215,6 +223,8 @@ namespace FF1Lib.Procgen
             this.sea_elevation = copy.sea_elevation;
             this.overworldTiles = copy.overworldTiles;
 	    this.startingRegion = copy.startingRegion;
+	    this.bridgedRegion = copy.bridgedRegion;
+	    this.shouldPlaceBridge = false;
         }
 
         void OwnBasemap() {
@@ -692,98 +702,9 @@ namespace FF1Lib.Procgen
             return this.UpdateRegions();
         }
 
-	public Result PlaceConeria() {
-	    var walkable = new List<OwRegion>();
-	    foreach (var w in this.Traversable_regionlist) {
-		if (w.RegionType == OverworldTiles.LAND_REGION) {
-		    walkable.Add(w);
-		}
-	    }
-	    var tasks = new List<GenerationTask>();
-	    foreach (var w in walkable) {
-		tasks.Add(() => new OverworldState(this).ConeriaPlacement(w));
-	    }
-	    tasks.Shuffle(this.rng);
-	    return new Result(tasks);
-	}
-
-	public Result ConeriaPlacement(OwRegion region) {
-	    var v = this.PlaceFeature(this.Traversable_regionmap, region, OverworldTiles.CONERIA_CITY);
-	    if (v.Item1) {
-		this.OwnPlacements();
-		this.startingRegion = region.RegionId;
-		this.Reachable_regions.Add(region.RegionId);
-		this.FeatureCoordinates["Coneria"] = new SCCoords(v.Item2.X+2, v.Item2.Y+4);
-		this.FeatureCoordinates["ConeriaCastle1"] = new SCCoords(v.Item2.X+3, v.Item2.Y+3);
-		return this.NextStep();
-	    } else {
-		return new Result(false);
-	    }
-	}
-
-	public Result PlaceTempleOfFiends() {
-	    var v = this.PlaceFeature(this.Traversable_regionmap,
-				      this.StartingRegion,
-				      OverworldTiles.TEMPLE_OF_FIENDS);
-	    if (v.Item1) {
-		this.OwnPlacements();
-		this.FeatureCoordinates["TempleOfFiends1"] = new SCCoords(v.Item2.X+2, v.Item2.Y+2);
-		return this.NextStep();
-	    } else {
-		return new Result(false);
-	    }
-	}
-
 	public OwRegion StartingRegion {
 	    get { return this.Traversable_regionlist[this.startingRegion]; }
 	    set { this.startingRegion = value.RegionId; }
-	}
-
-	public Result PlaceBridge() {
-	    var tasks = new List<GenerationTask>();
-	    foreach (var adj in this.StartingRegion.Adjacent) {
-		var w = this.Traversable_regionlist[adj];
-		if (w.RegionType == OverworldTiles.RIVER_REGION) {
-		    tasks.Add(() => new OverworldState(this).BridgePlacement(w));
-		}
-	    }
-	    tasks.Shuffle(this.rng);
-	    return new Result(tasks);
-	}
-
-	public Result BridgePlacement(OwRegion riverRegion) {
-	    var points = new List<SCCoords>(riverRegion.Points);
-	    points.Shuffle(this.rng);
-	    int nextRegion = -1;
-	    foreach (var p in points) {
-		var c1 = this.Traversable_regionmap[p.Y-1, p.X];
-		var c2 = this.Traversable_regionmap[p.Y+1, p.X];
-
-		if (c1 == this.startingRegion &&
-		    c2 != this.startingRegion &&
-		    this.Traversable_regionlist[c2].RegionType == OverworldTiles.LAND_REGION)
-		{
-		    this.Bridge = p;
-		    nextRegion = c2;
-		    break;
-		}
-
-		if (c1 != this.startingRegion &&
-		    c2 == this.startingRegion &&
-		    this.Traversable_regionlist[c1].RegionType == OverworldTiles.LAND_REGION)
-		{
-		    this.Bridge = p;
-		    nextRegion = c1;
-		    break;
-		}
-	    }
-
-	    if (nextRegion != -1) {
-		this.Reachable_regions.Add(nextRegion);
-		this.Tilemap[this.Bridge.Y, this.Bridge.X] = OverworldTiles.DOCK_W;
-		return this.NextStep();
-	    }
-	    return new Result(false);
 	}
 
 	public bool CheckFit(int[,] regionMap, OwRegion region, SCCoords p, int w, int h) {
@@ -820,9 +741,9 @@ namespace FF1Lib.Procgen
 	    OwRegion.Cutout(this.Traversable_regionmap, this.Traversable_regionlist, point, feature.GetLength(1), feature.GetLength(0));
 	}
 
-	public ValueTuple<bool,SCCoords> PlaceFeature(int[,] regionMap, OwRegion region, byte[,] feature) {
-	    var h = feature.GetLength(0);
-	    var w = feature.GetLength(1);
+	public ValueTuple<bool,SCCoords> PlaceFeature(int[,] regionMap, OwRegion region, OwFeature feature) {
+	    var h = feature.Tiles.GetLength(0);
+	    var w = feature.Tiles.GetLength(1);
 
 	    var points = new List<SCCoords>(region.Points);
 	    points.Shuffle(this.rng);
@@ -838,8 +759,26 @@ namespace FF1Lib.Procgen
 	    if (!found) {
 		return ValueTuple.Create(found, point);
 	    }
-	    this.RenderFeature(point, feature);
-	    return ValueTuple.Create(found, point);
+
+	    return this.PlaceFeatureAt(regionMap, region, point, feature, false);
+	}
+
+	public ValueTuple<bool,SCCoords> PlaceFeatureAt(int[,] regionMap, OwRegion region, SCCoords point,
+							OwFeature feature, bool checkfit=true) {
+	    var h = feature.Tiles.GetLength(0);
+	    var w = feature.Tiles.GetLength(1);
+
+	    if (checkfit && !this.CheckFit(regionMap, region, point, w, h)) {
+		return ValueTuple.Create(false, point);
+	    }
+
+	    this.RenderFeature(point, feature.Tiles);
+
+	    foreach (var kv in feature.Entrances) {
+		this.FeatureCoordinates[kv.Key] = new SCCoords(point.X+kv.Value.X, point.Y+kv.Value.Y);
+	    }
+
+	    return ValueTuple.Create(true, point);
 	}
     }
 
@@ -891,13 +830,21 @@ namespace FF1Lib.Procgen
                 }
             }
             ExchangeData = new OwMapExchangeData();
-            //ExchangeData.StartingLocation = new SCCoords(st.FeatureCoordinates["ConeriaCastle1"].X, st.FeatureCoordinates["ConeriaCastle1"].Y+5);
-            ExchangeData.AirShipLocation = st.Airship;
-            ExchangeData.BridgeLocation = st.Bridge;
-            ExchangeData.CanalLocation = st.Canal;
+            ExchangeData.StartingLocation = st.FeatureCoordinates["StartingLocation"];
+	    st.FeatureCoordinates.Remove("StartingLocation");
+
+            //ExchangeData.AirShipLocation = st.FeatureCoordinates["Airship"];
+	    //st.FeatureCoordinates.Remove("Airship");
+            ExchangeData.BridgeLocation = st.FeatureCoordinates["Bridge"];
+	    st.FeatureCoordinates.Remove("Bridge");
+
+            //ExchangeData.CanalLocation = st.FeatureCoordinates["Canal"];
+	    //st.FeatureCoordinates.Remove("Canal");
+
             ExchangeData.ShipLocations = new ShipLocation[] {
-                new ShipLocation(st.Ship.X, st.Ship.Y, 255)
+                new ShipLocation(st.FeatureCoordinates["Ship"].X, st.FeatureCoordinates["Ship"].Y, 255)
             };
+	    st.FeatureCoordinates.Remove("Ship");
             //ExchangeData.TeleporterFixups = new TeleportFixup[] {
             //    new TeleportFixup(FF1Lib.TeleportType.Exit, 0, new TeleData((MapId)0xFF, st.FeatureCoordinates["TitansTunnelEast"].X, st.FeatureCoordinates["TitansTunnelEast"].Y))
             //};
@@ -913,7 +860,7 @@ namespace FF1Lib.Procgen
             var mt = new OverworldTiles();
             GenerationStep[] steps = new GenerationStep[] {
                 new GenerationStep("CreateInitialMap", new object[]{}),
-		new GenerationStep("MakeValleys", new object[] {5}),
+		new GenerationStep("MakeValleys", new object[] {6}),
                 new GenerationStep("ApplyFilter", new object[] {mt.expand_mountains}),
                 new GenerationStep("ApplyFilter", new object[] {mt.expand_oceans}),
                 new GenerationStep("FlowMountainRivers", new object[] {}),
@@ -937,14 +884,23 @@ namespace FF1Lib.Procgen
 
                 new GenerationStep("SmallSeasBecomeLakes", new object[]{}),
 
-		new GenerationStep("PlaceConeria", new object[]{}),
-		new GenerationStep("PlaceTempleOfFiends", new object[]{}),
+		new GenerationStep("BridgeAlternatives", new object[]{}),
+		new GenerationStep("PlaceFeatureInStartingArea", new object[]{OverworldTiles.CONERIA_CITY}),
+		new GenerationStep("PlaceFeatureInStartingArea", new object[]{OverworldTiles.TEMPLE_OF_FIENDS}),
 		new GenerationStep("PlaceBridge", new object[]{}),
+		new GenerationStep("PlacePravoka", new object[]{}),
+		new GenerationStep("PlaceIsolated", new object[]{OverworldTiles.GAIA_TOWN}),
 
                 new GenerationStep("ApplyFilter", new object[]{mt.apply_shores1}),
                 new GenerationStep("ApplyFilter", new object[]{mt.apply_shores2}),
                 new GenerationStep("ApplyFilter", new object[]{mt.apply_shores3}),
                 new GenerationStep("ApplyFilter", new object[]{mt.apply_shores4}),
+
+		new GenerationStep("ApplyFilter", new object[]{mt.prune_forests}),
+		new GenerationStep("ApplyFilter", new object[]{mt.prune_forests}),
+		new GenerationStep("ApplyFilter", new object[]{mt.prune_forests}),
+		new GenerationStep("ApplyFilter", new object[]{mt.polish_mountains}),
+
                 new GenerationStep("ApplyFilter", new object[]{mt.mountain_borders}),
                 new GenerationStep("ApplyFilter", new object[]{mt.river_borders}),
                 new GenerationStep("ApplyFilter", new object[]{mt.desert_borders}),
