@@ -131,16 +131,15 @@ namespace FF1Lib.Procgen
 	public const byte CITY_WALL_GATE_E = 0x7E;
 	public const byte CITY_WALL_SE2 = 0x7F;
 
-    public const byte STAR = 0x80;
-    public const byte _ = 0x81;
-    public const byte CAVE = 0x82;
-
-
+	public const byte STAR = 0x80;
+	public const byte _ = 0x81;
+	public const byte CAVE = 0x82;
+	public const byte None = 0xFF;
 
 	public const int LAND_REGION = 0;
 	public const int OCEAN_REGION = 1;
 	public const int RIVER_REGION = 2;
-    public const int MOUNTAIN_REGION = 3;
+	public const int MOUNTAIN_REGION = 3;
 	public const int GRASS_REGION = 4;
 	public const int MARSH_REGION = 5;
 	public const int FOREST_REGION = 6;
@@ -152,44 +151,44 @@ namespace FF1Lib.Procgen
 	    new byte[] { OCEAN, SHORE_W, SHORE_N, SHORE_E, SHORE_S },
 	    new byte[] { RIVER, RIVER_NW, RIVER_NE, RIVER_SW, RIVER_SE },
 	    new byte[] { MOUNTAIN, MOUNTAIN_NW, MOUNTAIN_N, MOUNTAIN_NE ,
-			   MOUNTAIN_W, MOUNTAIN_E,
-			   MOUNTAIN_SW, MOUNTAIN_S, MOUNTAIN_SE},
+			 MOUNTAIN_W, MOUNTAIN_E,
+			 MOUNTAIN_SW, MOUNTAIN_S, MOUNTAIN_SE},
 	    new byte[] { GRASS, GRASS_NW, GRASS_NE, GRASS_SW, GRASS_SE },
 	    new byte[] { MARSH, MARSH_NW, MARSH_NE, MARSH_SW, MARSH_SE },
 	    new byte[] {FOREST, FOREST_NW, FOREST_N, FOREST_NE,
-			  FOREST_W, FOREST_E,
-			  FOREST_SW, FOREST_S, FOREST_SE},
+			FOREST_W, FOREST_E,
+			FOREST_SW, FOREST_S, FOREST_SE},
 	    new byte[] {DESERT, DESERT_NW, DESERT_NE, DESERT_SW, DESERT_SE}
 	};
 	public Dictionary<byte, int> PreShoreRegionTypeMap;
 
-    public byte[][] TraversableRegionTypes = new byte[][] {
+	public byte[][] TraversableRegionTypes = new byte[][] {
 	    new byte[] {
-            LAND, GRASS, GRASS_NW, GRASS_NE, GRASS_SW, GRASS_SE,
-     MARSH, MARSH_NW, MARSH_NE, MARSH_SW, MARSH_SE,
-     FOREST, FOREST_NW, FOREST_N, FOREST_NE,
-     FOREST_W, FOREST_E,
-     FOREST_SW, FOREST_S, FOREST_SE,
-     SHORE_NW, SHORE_NE, SHORE_SW, SHORE_SE,
-     DESERT, DESERT_NW, DESERT_NE, DESERT_SW, DESERT_SE,
-     CITY_PAVED},
-        new byte[] {OCEAN, SHORE_W, SHORE_N, SHORE_E, SHORE_S},
-        new byte[] {RIVER, RIVER_NW, RIVER_NE, RIVER_SW, RIVER_SE},
+		LAND, GRASS, GRASS_NW, GRASS_NE, GRASS_SW, GRASS_SE,
+		MARSH, MARSH_NW, MARSH_NE, MARSH_SW, MARSH_SE,
+		FOREST, FOREST_NW, FOREST_N, FOREST_NE,
+		FOREST_W, FOREST_E,
+		FOREST_SW, FOREST_S, FOREST_SE,
+		SHORE_NW, SHORE_NE, SHORE_SW, SHORE_SE,
+		DESERT, DESERT_NW, DESERT_NE, DESERT_SW, DESERT_SE,
+		CITY_PAVED},
+	    new byte[] {OCEAN, SHORE_W, SHORE_N, SHORE_E, SHORE_S},
+	    new byte[] {RIVER, RIVER_NW, RIVER_NE, RIVER_SW, RIVER_SE},
 	    new byte[] { MOUNTAIN, MOUNTAIN_NW, MOUNTAIN_N, MOUNTAIN_NE ,
-			   MOUNTAIN_W, MOUNTAIN_E,
-			   MOUNTAIN_SW, MOUNTAIN_S, MOUNTAIN_SE},
-    };
+			 MOUNTAIN_W, MOUNTAIN_E,
+			 MOUNTAIN_SW, MOUNTAIN_S, MOUNTAIN_SE},
+	};
 	public Dictionary<byte, int> TraversableRegionTypeMap;
 
-    public OwTileFilter expand_mountains;
-    public OwTileFilter expand_oceans;
-    public OwTileFilter connect_diagonals;
-    public OwTileFilter remove_salients;
+	public OwTileFilter expand_mountains;
+	public OwTileFilter expand_oceans;
+	public OwTileFilter connect_diagonals;
+	public OwTileFilter remove_salients;
 
-    public OwTileFilter apply_shores1;
-    public OwTileFilter apply_shores2;
-    public OwTileFilter apply_shores3;
-    public OwTileFilter apply_shores4;
+	public OwTileFilter apply_shores1;
+	public OwTileFilter apply_shores2;
+	public OwTileFilter apply_shores3;
+	public OwTileFilter apply_shores4;
 
 	public OwTileFilter mountain_borders;
 	public OwTileFilter river_borders;
@@ -197,6 +196,197 @@ namespace FF1Lib.Procgen
 	public OwTileFilter marsh_borders;
 	public OwTileFilter grass_borders;
 	public OwTileFilter forest_borders;
+
+	public static byte[,] CONERIA_CITY = new byte[,] {
+	    {None, None, None,                 None,                None,  None, None, None},
+	    {None, None, None, CONERIA_CASTLE_TOP_W, CONERIA_CASTLE_TOP_E, None, None, None},
+	    {None, None, CITY_WALL_NW, CONERIA_CASTLE_MID_W, CONERIA_CASTLE_MID_E, CITY_WALL_NE, None, None},
+	    {None, CITY_WALL_W1, CITY_WALL_W2, CONERIA_CASTLE_ENTRANCE_W, CONERIA_CASTLE_ENTRANCE_E, CITY_WALL_E2, CITY_WALL_E1, None},
+	    {None, CITY_WALL_W3, CONERIA, CITY_PAVED, CITY_PAVED, CONERIA, CITY_WALL_E3, None},
+	    {None, CITY_WALL_W4, CONERIA, CITY_PAVED, CITY_PAVED, CONERIA, CITY_WALL_E4, None},
+	    {None, CITY_WALL_W5, CONERIA, CITY_PAVED, CITY_PAVED, CONERIA, CITY_WALL_E5, None},
+	    {None, CITY_WALL_SW2, CITY_WALL_GATE_W, CITY_PAVED, CITY_PAVED, CITY_WALL_GATE_E, CITY_WALL_SE2, None},
+	    {None, None, LAND,                 LAND,                LAND,  LAND, None, None},
+	};
+
+	public static byte[,] TEMPLE_OF_FIENDS = new byte[,] {
+	    {None, None,      None,      None, None, None},
+	    {None, None, TOF_TOP_W, TOF_TOP_E, None, None},
+	    {None, TOF_BOTTOM_W, TOF_ENTRANCE_W, TOF_ENTRANCE_E, TOF_BOTTOM_E, None},
+	    {None, None,      LAND,      LAND, None, None},
+	};
+
+	public static byte[,] PRAVOKA_CITY = new byte[,] {
+	    {None, None, None, None, None, None, None},
+	    {None, None, CITY_WALL_NW, CITY_WALL_N, CITY_WALL_NE, None, None},
+	    {None, CITY_WALL_W1, CITY_WALL_W2, PRAVOKA, CITY_WALL_E2, CITY_WALL_E1, None},
+	    {None, CITY_WALL_W3, PRAVOKA, CITY_PAVED, PRAVOKA, CITY_WALL_E3, None},
+	    {None, CITY_WALL_SW1, CITY_WALL_GATE_W, CITY_PAVED, CITY_WALL_GATE_E, CITY_WALL_SE1, None},
+	    {None,          LAND,             DOCK_S,       DOCK_S,             DOCK_S,          LAND, None},
+	    {OCEAN,       OCEAN,              OCEAN,        OCEAN,              OCEAN,           OCEAN, OCEAN}
+	};
+
+	public static byte[,] PRAVOKA_CITY_MOAT = new byte[,] {
+	    {None, None, None,         None,        None,         None, None, None, None, None, None},
+	    {None, OCEAN, OCEAN,       OCEAN,              OCEAN,        OCEAN,              OCEAN,           OCEAN, OCEAN, OCEAN, None},
+	    {None, OCEAN, None, None,         None,        None,         None, None, None, OCEAN, None},
+	    {None, OCEAN, None, None, CITY_WALL_NW, CITY_WALL_N, CITY_WALL_NE, None, None, OCEAN, None},
+	    {None, OCEAN, None, CITY_WALL_W1, CITY_WALL_W2, PRAVOKA, CITY_WALL_E2, CITY_WALL_E1, None, OCEAN, None},
+	    {None, OCEAN, None, CITY_WALL_W3, PRAVOKA, CITY_PAVED, PRAVOKA, CITY_WALL_E3, None, OCEAN, None},
+	    {None, OCEAN, None, CITY_WALL_SW1, CITY_WALL_GATE_W, CITY_PAVED, CITY_WALL_GATE_E, CITY_WALL_SE1, None, OCEAN, None},
+	    {None, OCEAN, None,          LAND,             DOCK_S,       DOCK_S,             DOCK_S,          LAND, None, OCEAN, None},
+	    {OCEAN, OCEAN, OCEAN,       OCEAN,              OCEAN,        OCEAN,              OCEAN,           OCEAN, OCEAN, OCEAN, OCEAN},
+	    {OCEAN, OCEAN, OCEAN,       OCEAN,              OCEAN,        OCEAN,              OCEAN,           OCEAN, OCEAN, OCEAN, OCEAN}
+	};
+
+	public static byte[,] ELFLAND_CASTLE = new byte[,] {
+	    {SMALL_CASTLE_TOP_W, SMALL_CASTLE_TOP_W},
+	    {ELFLAND_CASTLE_W, ELFLAND_CASTLE_E},
+	};
+
+	public static byte[,] ASTOS_CASTLE = new byte[,] {
+	    {None, SMALL_CASTLE_TOP_W, SMALL_CASTLE_TOP_W, None},
+	    {None, ASTOS_CASTLE_W, ASTOS_CASTLE_E, None},
+	    {None, None, None, None},
+	};
+
+	public static byte[,] ORDEALS_CASTLE = new byte[,] {
+	    {None, SMALL_CASTLE_TOP_W, SMALL_CASTLE_TOP_W, None},
+	    {None, ORDEALS_CASTLE_W, ORDEALS_CASTLE_E, None},
+	    {None, None, None, None},
+	};
+
+	public static byte[,] ELFLAND_TOWN = new byte[,] {
+	    {ELFLAND, None, None, ELFLAND},
+	    {ELFLAND, None, None, ELFLAND},
+	};
+
+	public static byte[,] ELFLAND_TOWN_CASTLE = new byte[,] {
+	    {None, LAND, LAND, LAND, LAND, None},
+	    {LAND, LAND, SMALL_CASTLE_TOP_W, SMALL_CASTLE_TOP_W, LAND, LAND},
+	    {LAND, ELFLAND, ELFLAND_CASTLE_W, ELFLAND_CASTLE_E, ELFLAND, LAND},
+	    {LAND, ELFLAND, LAND, LAND, ELFLAND, LAND},
+	    {LAND, LAND, LAND, LAND, LAND, LAND},
+	};
+
+
+	public static byte[,] MELMOND_TOWN = new byte[,] {
+	    {None, MELMOND, None,    None},
+	    {None, MELMOND, MELMOND, None},
+	    {None, None, None,    None},
+	};
+
+	public static byte[,] ONRAC_TOWN = new byte[,] {
+	    {None, None, None},
+	    {None, ONRAC, ONRAC},
+	    {None, ONRAC, ONRAC},
+	    {None, None, None},
+	};
+
+	public static byte[,] LEFEIN_CITY = new byte[,] {
+	    {None,          None,             None,       None,             None,          None, None},
+	    {None, None, CITY_WALL_NW, CITY_WALL_N, CITY_WALL_NE, None, None},
+	    {None, CITY_WALL_W1, CITY_WALL_W2, LEFEIN, CITY_WALL_E2, CITY_WALL_E1, None},
+	    {None, CITY_WALL_W3, LEFEIN, LEFEIN, LEFEIN, CITY_WALL_E3, None},
+	    {None, CITY_WALL_SW1, CITY_WALL_GATE_W, CITY_PAVED, CITY_WALL_GATE_E, CITY_WALL_SE1, None},
+	    {None,          None,             None,       None,             None,          None, None},
+	};
+
+	public static byte[,] CRESCENT_LAKE_CITY = new byte[,] {
+	    {None, None, None,         None,        None,         None, None},
+	    {None, None, CITY_WALL_NW, CITY_WALL_N, CITY_WALL_NE, None, None},
+	    {None, CITY_WALL_W1, CITY_WALL_W2, CITY_PAVED, CITY_WALL_E2, CITY_WALL_E1, None},
+	    {None, CITY_WALL_W3, CITY_PAVED, CRESCENT_LAKE, CRESCENT_LAKE, CITY_WALL_E3, None},
+	    {None, CITY_WALL_W4, CRESCENT_LAKE, CITY_PAVED, CRESCENT_LAKE, CITY_WALL_E4, None},
+	    {None, CITY_WALL_W5, CRESCENT_LAKE, CITY_PAVED, CITY_PAVED, CITY_WALL_E5, None},
+	    {None, CITY_WALL_SW2, CITY_WALL_GATE_W, CITY_PAVED, CITY_WALL_GATE_E, CITY_WALL_SE2, None},
+	    {None,          None,             LAND,       LAND,             LAND, None, None},
+	};
+
+	public static byte[,] GAIA_TOWN = new byte[,] {
+	    {LAND, GAIA, GAIA},
+	    {GAIA, GAIA, LAND},
+	    {LAND, LAND, None},
+	};
+
+	public static byte[,] MIRAGE_TOWER = new byte[,] {
+	    {None, None, None, None},
+	    {None, MIRAGE_TOP, DESERT, None, },
+	    {None, MIRAGE_BOTTOM, MIRAGE_SHADOW, None, },
+	    {None, None, None, None},
+	};
+
+	public static byte[,] VOLCANO = new byte[,] {
+	    {None,  RIVER, RIVER,                   RIVER, RIVER, None},
+	    {RIVER, RIVER, LAND,                     LAND, RIVER, RIVER},
+	    {RIVER, LAND,  VOLCANO_TOP_W,   VOLCANO_TOP_E, LAND,  RIVER},
+	    {RIVER, LAND,  VOLCANO_BASE_W, VOLCANO_BASE_E, LAND,  RIVER},
+	    {RIVER, RIVER, LAND,                     LAND, RIVER, RIVER},
+	    {None,  RIVER, RIVER,                   RIVER, RIVER, None},
+	};
+
+	public static byte[,] OASIS = new byte[,] {
+	    {DESERT_SE, DESERT_NW,      DESERT_NE, FOREST, FOREST},
+	    {DESERT_NW, CARAVAN_DESERT, DESERT_SE, FOREST, FOREST},
+	    {DESERT_SW, DESERT_SE,      FOREST, FOREST, FOREST},
+	    {DESERT_NE,    FOREST,      FOREST, FOREST,   None},
+	    {     None,    FOREST,      FOREST,   None,   None}
+	};
+
+	public static byte[,] N_DOCK_STRUCTURE = new byte[,] {
+	    {None, DOCK_E,  OCEAN, None},
+	    {None, DOCK_E,  OCEAN, None},
+	    {None, DOCK_E,  OCEAN, None},
+	    {None,   None,   None, None},
+	};
+
+	public static byte[,] S_DOCK_STRUCTURE = new byte[,] {
+	    {  None, None,   None,   None,     None},
+	    {  None, DOCK_SE, DOCK_S, DOCK_SW, None},
+	    {  None, OCEAN,   OCEAN,  OCEAN,   None},
+	};
+
+	public static byte[,] W_DOCK_STRUCTURE = new byte[,] {
+	    {   None,   None,   None,  None},
+	    {DOCK_S, DOCK_S,  DOCK_SW, None},
+	    {OCEAN,   OCEAN,  DOCK_W,  None},
+	};
+
+	public static byte[,] E_DOCK_STRUCTURE = new byte[,] {
+	    {   None, None,   None,   None},
+	    {   None, DOCK_SE, DOCK_S, DOCK_S},
+	    {   None, DOCK_E,   OCEAN,  OCEAN},
+	};
+
+	public static byte[,] E_CANAL_STRUCTURE = new byte[,] {
+	    {DOCK_SE, DOCK_S, DOCK_SW, None, None,    None},
+	    {DOCK_E,   OCEAN,  OCEAN, OCEAN, OCEAN, OCEAN},
+	    {None,     None,   None,  None,  None,  None},
+	};
+
+	public static byte[,] W_CANAL_STRUCTURE = new byte[,] {
+	    {None, None,    None, DOCK_S, DOCK_S,  DOCK_SW},
+	    {OCEAN,   OCEAN,  OCEAN, OCEAN, OCEAN, DOCK_W},
+	    {None,     None,   None,  None,  None,  None},
+	};
+
+	public static byte[,] ICE_CAVE_FEATURE = new byte[,] {
+	    {None, None, None, None, None},
+	    {None, None, ICE_CAVE, None, None},
+	    {None, GRASS, GRASS, GRASS, None},
+	    {None, GRASS, GRASS, GRASS, None},
+	};
+
+	public static byte[,] AIRSHIP_FEATURE = new byte[,] {
+	    {None,        None,      None,         None,           None,         None,        None,        None, None},
+	    {None, MOUNTAIN, MOUNTAIN, MOUNTAIN, MOUNTAIN, MOUNTAIN, MOUNTAIN, MOUNTAIN, None},
+	    {None, MOUNTAIN,  MOUNTAIN,   MOUNTAIN, MOUNTAIN, MOUNTAIN, MOUNTAIN, MOUNTAIN, None},
+	    {None, MOUNTAIN, MOUNTAIN,  DESERT_NW,  AIRSHIP_DESERT, DESERT_NE, MOUNTAIN, MOUNTAIN, None},
+	    {None, MOUNTAIN, MOUNTAIN,  DESERT_SW,  AIRSHIP_DESERT, DESERT_SE, MOUNTAIN, MOUNTAIN, None},
+	    {None, MOUNTAIN, MOUNTAIN,  MOUNTAIN,  AIRSHIP_DESERT, MOUNTAIN, MOUNTAIN, MOUNTAIN, None},
+	    {None, MOUNTAIN, MOUNTAIN,  MOUNTAIN,  AIRSHIP_DESERT, MOUNTAIN, MOUNTAIN, MOUNTAIN, None},
+	    {None,     None,     None,      None,            None,     None,     None,     None, None},
+	};
 
     public OverworldTiles() {
         this.expand_mountains = new OwTileFilter(
