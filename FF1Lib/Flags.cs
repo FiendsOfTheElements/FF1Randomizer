@@ -54,6 +54,8 @@ namespace FF1Lib
 
 		#endregion
 
+		public bool QuickMinimapLoad { get; set; } = false;
+
 		public bool LooseItemsForwardPlacement { get; set; } = false;
 
 		public bool LooseItemsSpreadPlacement { get; set; } = false;
