@@ -263,55 +263,67 @@ namespace FF1Lib.Procgen
 	    {ELFLAND_CASTLE_W, ELFLAND_CASTLE_E},
 	};
 
-	public static byte[,] ASTOS_CASTLE = new byte[,] {
+	public static OwFeature ASTOS_CASTLE = new OwFeature(new byte[,] {
 	    {None, SMALL_CASTLE_TOP_W, SMALL_CASTLE_TOP_W, None},
 	    {None, ASTOS_CASTLE_W, ASTOS_CASTLE_E, None},
 	    {None, None, None, None},
-	};
+	}, new Dictionary<string, SCCoords> {
+		{ "NorthwestCastle", new SCCoords(1, 1) },
+	    });
 
-	public static byte[,] ORDEALS_CASTLE = new byte[,] {
+	public static OwFeature ORDEALS_CASTLE = new OwFeature(new byte[,] {
 	    {None, SMALL_CASTLE_TOP_W, SMALL_CASTLE_TOP_W, None},
 	    {None, ORDEALS_CASTLE_W, ORDEALS_CASTLE_E, None},
 	    {None, None, None, None},
-	};
+	}, new Dictionary<string, SCCoords> {
+		{ "CastleOrdeals1", new SCCoords(1, 1) }
+	    });
 
 	public static byte[,] ELFLAND_TOWN = new byte[,] {
 	    {ELFLAND, None, None, ELFLAND},
 	    {ELFLAND, None, None, ELFLAND},
 	};
 
-	public static byte[,] ELFLAND_TOWN_CASTLE = new byte[,] {
+	public static OwFeature ELFLAND_TOWN_CASTLE = new OwFeature(new byte[,] {
 	    {None, LAND, LAND, LAND, LAND, None},
 	    {LAND, LAND, SMALL_CASTLE_TOP_W, SMALL_CASTLE_TOP_W, LAND, LAND},
 	    {LAND, ELFLAND, ELFLAND_CASTLE_W, ELFLAND_CASTLE_E, ELFLAND, LAND},
 	    {LAND, ELFLAND, LAND, LAND, ELFLAND, LAND},
 	    {LAND, LAND, LAND, LAND, LAND, LAND},
-	};
+	}, new Dictionary<string, SCCoords> {
+	    { "Elfland", new SCCoords(1, 3) },
+	    { "ElflandCastle", new SCCoords(2, 2) }
+	    });
 
-
-	public static byte[,] MELMOND_TOWN = new byte[,] {
+	public static OwFeature MELMOND_TOWN = new OwFeature(new byte[,] {
 	    {None, MELMOND, None,    None},
 	    {None, MELMOND, MELMOND, None},
 	    {None, None, None,    None},
-	};
+	}, new Dictionary<string, SCCoords> {
+		{ "Melmond", new SCCoords(1, 1) },
+	    });
 
-	public static byte[,] ONRAC_TOWN = new byte[,] {
+	public static OwFeature ONRAC_TOWN = new OwFeature(new byte[,] {
 	    {None, None, None},
 	    {None, ONRAC, ONRAC},
 	    {None, ONRAC, ONRAC},
 	    {None, None, None},
-	};
+	}, new Dictionary<string, SCCoords> {
+		{ "Onrac", new SCCoords(1, 1) },
+	    });
 
-	public static byte[,] LEFEIN_CITY = new byte[,] {
+	public static OwFeature LEFEIN_CITY = new OwFeature(new byte[,] {
 	    {None,          None,             None,       None,             None,          None, None},
 	    {None, None, CITY_WALL_NW, CITY_WALL_N, CITY_WALL_NE, None, None},
 	    {None, CITY_WALL_W1, CITY_WALL_W2, LEFEIN, CITY_WALL_E2, CITY_WALL_E1, None},
 	    {None, CITY_WALL_W3, LEFEIN, LEFEIN, LEFEIN, CITY_WALL_E3, None},
 	    {None, CITY_WALL_SW1, CITY_WALL_GATE_W, CITY_PAVED, CITY_WALL_GATE_E, CITY_WALL_SE1, None},
 	    {None,          None,             None,       None,             None,          None, None},
-	};
+	}, new Dictionary<string, SCCoords> {
+		{ "Lefein", new SCCoords(3, 2) },
+	    });
 
-	public static byte[,] CRESCENT_LAKE_CITY = new byte[,] {
+	public static OwFeature CRESCENT_LAKE_CITY = new OwFeature(new byte[,] {
 	    {None, None, None,         None,        None,         None, None},
 	    {None, None, CITY_WALL_NW, CITY_WALL_N, CITY_WALL_NE, None, None},
 	    {None, CITY_WALL_W1, CITY_WALL_W2, CITY_PAVED, CITY_WALL_E2, CITY_WALL_E1, None},
@@ -320,7 +332,9 @@ namespace FF1Lib.Procgen
 	    {None, CITY_WALL_W5, CRESCENT_LAKE, CITY_PAVED, CITY_PAVED, CITY_WALL_E5, None},
 	    {None, CITY_WALL_SW2, CITY_WALL_GATE_W, CITY_PAVED, CITY_WALL_GATE_E, CITY_WALL_SE2, None},
 	    {None,          None,             LAND,       LAND,             LAND, None, None},
-	};
+	}, new Dictionary<string, SCCoords> {
+		{ "CrescentLake", new SCCoords(2, 5) },
+	    });
 
 	public static OwFeature GAIA_TOWN = new OwFeature(new byte[,] {
 	    {None, GAIA, GAIA},
@@ -330,75 +344,86 @@ namespace FF1Lib.Procgen
 		{ "Gaia", new SCCoords(1, 1) },
 	    });
 
-	public static byte[,] MIRAGE_TOWER = new byte[,] {
+	public static OwFeature MIRAGE_TOWER = new OwFeature(new byte[,] {
 	    {None, None, None, None},
 	    {None, MIRAGE_TOP, DESERT, None, },
 	    {None, MIRAGE_BOTTOM, MIRAGE_SHADOW, None, },
 	    {None, None, None, None},
-	};
+	}, new Dictionary<string, SCCoords> {
+		{ "MirageTower1", new SCCoords(1, 2) },
+	    });
 
-	public static byte[,] VOLCANO = new byte[,] {
+	public static OwFeature VOLCANO = new OwFeature(new byte[,] {
 	    {None,  RIVER, RIVER,                   RIVER, RIVER, None},
 	    {RIVER, RIVER, LAND,                     LAND, RIVER, RIVER},
 	    {RIVER, LAND,  VOLCANO_TOP_W,   VOLCANO_TOP_E, LAND,  RIVER},
 	    {RIVER, LAND,  VOLCANO_BASE_W, VOLCANO_BASE_E, LAND,  RIVER},
 	    {RIVER, RIVER, LAND,                     LAND, RIVER, RIVER},
 	    {None,  RIVER, RIVER,                   RIVER, RIVER, None},
-	};
+	}, new Dictionary<string, SCCoords> {
+		{ "GurguVolcano1", new SCCoords(3, 2) },
+	    });
 
-	public static byte[,] OASIS = new byte[,] {
+	public static OwFeature OASIS = new OwFeature(new byte[,] {
 	    {DESERT_SE, DESERT_NW,      DESERT_NE, FOREST, FOREST},
 	    {DESERT_NW, CARAVAN_DESERT, DESERT_SE, FOREST, FOREST},
 	    {DESERT_SW, DESERT_SE,      FOREST, FOREST, FOREST},
 	    {DESERT_NE,    FOREST,      FOREST, FOREST,   None},
 	    {     None,    FOREST,      FOREST,   None,   None}
-	};
+	}, new Dictionary<string, SCCoords> {
+	    });
 
-	public static byte[,] N_DOCK_STRUCTURE = new byte[,] {
+	public static OwFeature N_DOCK_STRUCTURE = new OwFeature(new byte[,] {
 	    {None, DOCK_E,  OCEAN, None},
 	    {None, DOCK_E,  OCEAN, None},
 	    {None, DOCK_E,  OCEAN, None},
 	    {None,   None,   None, None},
-	};
+	    }, new Dictionary<string, SCCoords>());
 
-	public static byte[,] S_DOCK_STRUCTURE = new byte[,] {
+	public static OwFeature S_DOCK_STRUCTURE = new OwFeature(new byte[,] {
 	    {  None, None,   None,   None,     None},
 	    {  None, DOCK_SE, DOCK_S, DOCK_SW, None},
 	    {  None, OCEAN,   OCEAN,  OCEAN,   None},
-	};
+	}, new Dictionary<string, SCCoords>());
 
-	public static byte[,] W_DOCK_STRUCTURE = new byte[,] {
+	public static OwFeature W_DOCK_STRUCTURE = new OwFeature(new byte[,] {
 	    {   None,   None,   None,  None},
 	    {DOCK_S, DOCK_S,  DOCK_SW, None},
 	    {OCEAN,   OCEAN,  DOCK_W,  None},
-	};
+	}, new Dictionary<string, SCCoords>());
 
-	public static byte[,] E_DOCK_STRUCTURE = new byte[,] {
+	public static OwFeature E_DOCK_STRUCTURE = new OwFeature(new byte[,] {
 	    {   None, None,   None,   None},
 	    {   None, DOCK_SE, DOCK_S, DOCK_S},
 	    {   None, DOCK_E,   OCEAN,  OCEAN},
-	};
+	    }, new Dictionary<string, SCCoords>());
 
-	public static byte[,] E_CANAL_STRUCTURE = new byte[,] {
+	public static OwFeature E_CANAL_STRUCTURE = new OwFeature(new byte[,] {
 	    {DOCK_SE, DOCK_S, DOCK_SW, None, None,    None},
 	    {DOCK_E,   OCEAN,  OCEAN, OCEAN, OCEAN, OCEAN},
 	    {None,     None,   None,  None,  None,  None},
-	};
+	    }, new Dictionary<string, SCCoords> {
+		{"Canal", new SCCoords(4, 1)}
+	    });
 
-	public static byte[,] W_CANAL_STRUCTURE = new byte[,] {
+	public static OwFeature W_CANAL_STRUCTURE = new OwFeature(new byte[,] {
 	    {None, None,    None, DOCK_S, DOCK_S,  DOCK_SW},
 	    {OCEAN,   OCEAN,  OCEAN, OCEAN, OCEAN, DOCK_W},
 	    {None,     None,   None,  None,  None,  None},
-	};
+	    }, new Dictionary<string, SCCoords> {
+		{"Canal", new SCCoords(1, 1)}
+	    });
 
-	public static byte[,] ICE_CAVE_FEATURE = new byte[,] {
+	public static OwFeature ICE_CAVE_FEATURE = new OwFeature(new byte[,] {
 	    {None, None, None, None, None},
 	    {None, None, ICE_CAVE, None, None},
 	    {None, GRASS, GRASS, GRASS, None},
 	    {None, GRASS, GRASS, GRASS, None},
-	};
+	    }, new Dictionary<string, SCCoords> {
+		{"IceCave1", new SCCoords(2, 1)}
+	    });
 
-	public static byte[,] AIRSHIP_FEATURE = new byte[,] {
+	public static OwFeature AIRSHIP_FEATURE = new OwFeature(new byte[,] {
 	    {None,        None,      None,         None,           None,         None,        None,        None, None},
 	    {None, MOUNTAIN, MOUNTAIN, MOUNTAIN, MOUNTAIN, MOUNTAIN, MOUNTAIN, MOUNTAIN, None},
 	    {None, MOUNTAIN,  MOUNTAIN,   MOUNTAIN, MOUNTAIN, MOUNTAIN, MOUNTAIN, MOUNTAIN, None},
@@ -407,7 +432,12 @@ namespace FF1Lib.Procgen
 	    {None, MOUNTAIN, MOUNTAIN,  MOUNTAIN,  AIRSHIP_DESERT, MOUNTAIN, MOUNTAIN, MOUNTAIN, None},
 	    {None, MOUNTAIN, MOUNTAIN,  MOUNTAIN,  AIRSHIP_DESERT, MOUNTAIN, MOUNTAIN, MOUNTAIN, None},
 	    {None,     None,     None,      None,            None,     None,     None,     None, None},
-	};
+	    }, new Dictionary<string, SCCoords> {
+		{"Airship", new SCCoords(4, 3)}
+	    });
+
+	    public static OwFeature EARTH_CAVE_FEATURE = new OwFeature(EARTH_CAVE, "EarthCave1", true);
+	    public static OwFeature DWARF_CAVE_FEATURE = new OwFeature(DWARF_CAVE, "DwarfCave", true);
 
     public OverworldTiles() {
         this.expand_mountains = new OwTileFilter(

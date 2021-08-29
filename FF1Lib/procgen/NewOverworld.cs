@@ -138,12 +138,33 @@ namespace FF1Lib.Procgen
     public class OwFeature {
         public byte[,] Tiles;
         public Dictionary<string, SCCoords> Entrances;
+	public bool MountainCave;
 
         public OwFeature(byte[,] tiles,
             Dictionary<string, SCCoords> entrances) {
                 this.Tiles = tiles;
                 this.Entrances = entrances;
+		this.MountainCave = false;
             }
+
+        public OwFeature(byte tile, string entrance, bool mountainCave) {
+	    this.MountainCave = mountainCave;
+	    this.Entrances = new Dictionary<string, SCCoords>();
+	    if (this.MountainCave) {
+		this.Tiles = new byte[,] {
+		    { tile, },
+		};
+		    this.Entrances[entrance] = new SCCoords(0, 0);
+	    } else {
+		this.Tiles = new byte[,] {
+		    { OverworldTiles.None, OverworldTiles.None, OverworldTiles.None },
+		    { OverworldTiles.None, tile, OverworldTiles.None },
+		    { OverworldTiles.None, OverworldTiles.None, OverworldTiles.None },
+		};
+		this.Entrances[entrance] = new SCCoords(1, 1);
+	    }
+	}
+
     }
 
     public partial class OverworldState {
@@ -889,7 +910,8 @@ namespace FF1Lib.Procgen
 		new GenerationStep("PlaceFeatureInStartingArea", new object[]{OverworldTiles.TEMPLE_OF_FIENDS}),
 		new GenerationStep("PlaceBridge", new object[]{}),
 		new GenerationStep("PlacePravoka", new object[]{}),
-		new GenerationStep("PlaceIsolated", new object[]{OverworldTiles.GAIA_TOWN}),
+		new GenerationStep("PlaceIsolated", new object[]{OverworldTiles.GAIA_TOWN, true}),
+		new GenerationStep("PlaceRequiringCanoe", new object[]{OverworldTiles.ORDEALS_CASTLE}),
 
                 new GenerationStep("ApplyFilter", new object[]{mt.apply_shores1}),
                 new GenerationStep("ApplyFilter", new object[]{mt.apply_shores2}),
