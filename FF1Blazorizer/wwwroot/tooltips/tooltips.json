@@ -138,17 +138,23 @@
                 "screenshot": "accessibleSpellNamesCheckBox.png",
                 "description": "Updates spell names to make them more accessible. The table below shows what the new names are when this flag is checked:\n[grid][r]{i}BM - New|{i}BM - Original|{i}WM - New|{i}WM - Original[r]{l}THUN|{l}LIT|{l}PROT|{l}FOG[r]{l}DOZE|{l}SLEP|{l}DIA|{l}HARM[r]{l}THN2|{l}LIT2|{l}ATHN|{l}ALIT[r]{l}HAST|{l}FAST|{l}DIA2|{l}HRM2[r]{l}DOZ2|{l}SLP2|{l}VOX|{l}AMUT[r]{l}THN3|{l}LIT3|{l}DIA3|{l}HRM3[r]||{l}PRO2|{l}FOG2[r]||{l}DIA4|{l}HRM4[r]||{l}HOLY|{l}FADE\n\nNote: This setting is disabled when \"Generate New Spellbooks\" is on"
         },
-                {
-                        "Id": "renounceAutosortCheckBox",
-                        "title": "Renounce Autosort",
-                        "screenshot": "renounceAutosortCheckBox.png",
-                        "description": "Forgo the \"Autosort Inventory\" flag (found under the Conveniences tab) if it is enabled. This will revert the game to it's standard item menu behavior (Key Items up top, potions at the bottom) no matter what flags are selected."
-                },
-            {
-                "Id": "renounceChestInfoCheckBox",
-                "title": "Renounce Chest Info",
-                "screenshot": "incentivizeOpalCheckBox.png",
-                "description": "Forgo the \"Chest Information\" subflag (found under Shop Information) if it is enabled. This will revert to showing only the item name when opening chests."
+        {
+                "Id": "shopInfoIconsCheckBox",
+                "title": "Shop Information Icons",
+                "screenshot": "shopInfoIconsCheckBox.png",
+                "description": "When using Shop Information, elements and statuses are shown as icons, allowing for more information to be displayed."
+        },
+		{
+				"Id": "renounceAutosortCheckBox",
+				"title": "Renounce Autosort",
+				"screenshot": "renounceAutosortCheckBox.png",
+				"description": "Forgo the \"Autosort Inventory\" flag (found under the Conveniences tab) if it is enabled. This will revert the game to it's standard item menu behavior (Key Items up top, potions at the bottom) no matter what flags are selected."
+		},
+		{
+				"Id": "renounceChestInfoCheckBox",
+				"title": "Renounce Chest Info",
+				"screenshot": "incentivizeOpalCheckBox.png",
+				"description": "Forgo the \"Chest Information\" subflag (found under Shop Information) if it is enabled. This will revert to showing only the item name when opening chests."
         },
         {
                 "Id": "cropScreen",
