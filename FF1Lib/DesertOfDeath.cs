@@ -56,6 +56,39 @@ namespace FF1Lib
 			DesertRock = 0x15,
 		}
 
+		public List<(MapLocation, OverworldTeleportIndex)> MapLocationToOWTeleporterIndex = new()
+		{
+			(MapLocation.ConeriaCastle1, OverworldTeleportIndex.ConeriaCastle1),
+			(MapLocation.Coneria, OverworldTeleportIndex.Coneria),
+			(MapLocation.EarthCave1, OverworldTeleportIndex.EarthCave1),
+			(MapLocation.ElflandCastle, OverworldTeleportIndex.ElflandCastle),
+			(MapLocation.Elfland, OverworldTeleportIndex.Elfland),
+			(MapLocation.MirageTower1, OverworldTeleportIndex.MirageTower1),
+			(MapLocation.NorthwestCastle, OverworldTeleportIndex.NorthwestCastle),
+			(MapLocation.IceCave1, OverworldTeleportIndex.IceCave1),
+			(MapLocation.DwarfCave, OverworldTeleportIndex.DwarfCave),
+			(MapLocation.MatoyasCave, OverworldTeleportIndex.MatoyasCave),
+			(MapLocation.TitansTunnelEast, OverworldTeleportIndex.TitansTunnelEast),
+			(MapLocation.TitansTunnelWest, OverworldTeleportIndex.TitansTunnelWest),
+			(MapLocation.CastleOrdeals1, OverworldTeleportIndex.CastleOrdeals1),
+			(MapLocation.SardasCave, OverworldTeleportIndex.SardasCave),
+			(MapLocation.Waterfall, OverworldTeleportIndex.Waterfall),
+			(MapLocation.Pravoka, OverworldTeleportIndex.Pravoka),
+			(MapLocation.CrescentLake, OverworldTeleportIndex.CrescentLake),
+			(MapLocation.TempleOfFiends1, OverworldTeleportIndex.TempleOfFiends1),
+			(MapLocation.Gaia, OverworldTeleportIndex.Gaia),
+			(MapLocation.Onrac, OverworldTeleportIndex.Onrac),
+			(MapLocation.GurguVolcano1, OverworldTeleportIndex.GurguVolcano1),
+			(MapLocation.Cardia2, OverworldTeleportIndex.Cardia2),
+			(MapLocation.Cardia4, OverworldTeleportIndex.Cardia4),
+			(MapLocation.Cardia5, OverworldTeleportIndex.Cardia5),
+			(MapLocation.Cardia6, OverworldTeleportIndex.Cardia6),
+			(MapLocation.Cardia1, OverworldTeleportIndex.Cardia1),
+			(MapLocation.BahamutCave1, OverworldTeleportIndex.BahamutCave1),
+			(MapLocation.Lefein, OverworldTeleportIndex.Lefein),
+			(MapLocation.MarshCave1, OverworldTeleportIndex.MarshCave1),
+		};
+
 		public List<(MapLocation, byte)> OWTileLink = new()
 		{
 			(MapLocation.ConeriaCastle1, 0x01),
@@ -290,7 +323,7 @@ namespace FF1Lib
 
 			return invalidDirections;
 		}
-		public void GenerateDesert(OverworldMap overworldmap, MT19337 rng)
+		public void GenerateDesert(OverworldMap overworldmap, ShipLocations shipLocations, MT19337 rng)
 		{
 
 			int LoopedValue(int value, int max) => (value < 0) ? (max + value) % max : (value % max);
@@ -595,14 +628,62 @@ namespace FF1Lib
 								});
 			}*/
 
+
+			//var locationToUpdate = EntrancesCoords.FindIndex(z => z.Item1 == MapGrid[x][y]);
+			var titanEastIndex = EntrancesCoords.FindIndex(z => z.Item1 == MapLocation.TitansTunnelEast);
+			var titanWestIndex = EntrancesCoords.FindIndex(z => z.Item1 == MapLocation.TitansTunnelWest);
+			var sardaIndex = EntrancesCoords.FindIndex(z => z.Item1 == MapLocation.SardasCave);
+
+			EntrancesCoords[titanEastIndex] = (MapLocation.TitansTunnelEast, (byte)(EntrancesCoords[titanEastIndex].Item2 + EntrancesCoords[sardaIndex].Item2 - 2), (byte)(EntrancesCoords[titanEastIndex].Item3 + EntrancesCoords[sardaIndex].Item3 - 2));
+			EntrancesCoords[titanWestIndex] = (MapLocation.TitansTunnelWest, (byte)(EntrancesCoords[titanWestIndex].Item2 + EntrancesCoords[sardaIndex].Item2 - 2), (byte)(EntrancesCoords[titanWestIndex].Item3 + EntrancesCoords[sardaIndex].Item3 - 2));
+
 			const int teleportExitXOffset = 0x2C60;
 			const int teleportExitYOffset = 0x2C70;
+			List<MapLocation> exitToUpdate = new() { MapLocation.TitansTunnelEast, MapLocation.TitansTunnelWest, MapLocation.IceCave1, MapLocation.CastleOrdeals1, MapLocation.ConeriaCastle1, MapLocation.EarthCave1, MapLocation.GurguVolcano1, MapLocation.Onrac, MapLocation.MirageTower1 };
 
-			foreach (var exit in shuffledExits)
+			foreach (var exit in exitToUpdate)
 			{
-				_rom[teleportExitXOffset + (byte)exit.Key] = exit.Value.X;
-				_rom[teleportExitYOffset + (byte)exit.Key] = exit.Value.Y;
+				var newX = EntrancesCoords.Find(z => z.Item1 == exit).Item2;
+				var newY = EntrancesCoords.Find(z => z.Item1 == exit).Item3;
+				var index = exitToUpdate.FindIndex(z => z == exit);
+
+				this[teleportExitXOffset + index] = newX;
+				this[teleportExitYOffset + index] = newY;
 			}
+
+			var coneria_x = EntrancesCoords.Find(z => z.Item1 == MapLocation.ConeriaCastle1).Item2 - 7;
+			var coneria_y = EntrancesCoords.Find(z => z.Item1 == MapLocation.ConeriaCastle1).Item3 - 1;
+
+
+
+			// Set starting location
+			PutInBank(0x00, 0xB010, Blob.FromHex($"{coneria_x:X2}{coneria_y:X2}"));
+
+			//shipLocations
+
+			var locationData = new OwLocationData(this);
+			List<ShipLocation> newShipLocations = new();
+
+			var entranceList = Enum.GetValues(typeof(OverworldTeleportIndex))
+							.Cast<OverworldTeleportIndex>()
+							.ToList();
+
+			foreach (var entrance in entranceList)
+			{
+				var targetMapLocation = MapLocationToOWTeleporterIndex.Find(x => x.Item2 == entrance).Item1;
+				var targetCoord = EntrancesCoords.Find(z => z.Item1 == targetMapLocation);
+				newShipLocations.Add(new ShipLocation { TeleporterIndex = (byte)entrance, X = targetCoord.Item2, Y = targetCoord.Item3 });
+			}
+
+			newShipLocations.Add(new ShipLocation { TeleporterIndex = (byte)255, X = (byte)(coneria_x + 7), Y = (byte)(coneria_y + 7) });
+
+			shipLocations = new ShipLocations(locationData, newShipLocations.ToArray());
+
+			// Set ship location
+			//owmapexchange.Data.ShipLocations = owmapexchange.Data.ShipLocations.Where(x => x.TeleporterIndex != 255).ToArray();
+			//owmapexchange.Data.ShipLocations.Append(new ShipLocation { TeleporterIndex = 255, X = (byte)(coneria_x + 7), Y = (byte)(coneria_y + 7) });
+
+			//PutInBank(0x00, 0xB001, Blob.FromHex($"{(coneria_x+7):X2}{(coneria_y+7):X2}"));
 
 			// Palette
 			for (int i = 1; i<16; i+=4)
@@ -679,7 +760,21 @@ namespace FF1Lib
 			// Placement
 
 			// Ship
+			// FlyAirship - use ship
+			PutInBank(0x1F, 0xC216, Blob.FromHex("00")); // Ship visibility
+			PutInBank(0x1F, 0xC220, Blob.FromHex("01")); // Ship X
+			PutInBank(0x1F, 0xC22A, Blob.FromHex("02")); // Ship Y
+			PutInBank(0x1F, 0xC22F, Blob.FromHex("04"));
+			PutInBank(0x1F, 0xC235, Blob.FromHex("46")); //Music track
+			PutInBank(0x1F, 0xC238, Blob.FromHex("EAEAEA")); // Airship animation
 
+			// ProcessOWInput - check for ship
+			PutInBank(0x1F, 0xC25D, Blob.FromHex("04"));
+
+			// LandAirship
+			PutInBank(0x1F, 0xC6BC, Blob.FromHex("4CE2C6"));
+			PutInBank(0x1F, 0xC6E8, Blob.FromHex("01")); // Ship X
+			PutInBank(0x1F, 0xC6F0, Blob.FromHex("02")); // Ship Y
 		}
 
 		public MapLocation SelectWeightedDoodads(List<int> weight, MT19337 rng)

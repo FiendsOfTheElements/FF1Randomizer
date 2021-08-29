@@ -148,12 +148,12 @@ namespace FF1Lib
 
 			var shipLocations = owMapExchange?.ShipLocations ?? OwMapExchange.GetDefaultShipLocations(this);
 
+			GenerateDesert(overworldMap, shipLocations, rng);
+
 			var maps = ReadMaps();
 			var shopItemLocation = ItemLocations.CaravanItemShop1;
 			var oldItemNames = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
-
-			GenerateDesert(overworldMap, rng);
-
+			
 			if ((bool)flags.NPCItems || (bool)flags.NPCFetchItems)
 			{
 				NPCShuffleDialogs();
@@ -409,7 +409,7 @@ namespace FF1Lib
 
 			if ((bool)flags.IsShipFree)
 			{
-				EnableFreeShip();
+					EnableFreeShip();
 			}
 
 			if (flags.FreeOrbs)
