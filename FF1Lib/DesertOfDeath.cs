@@ -513,9 +513,8 @@ namespace FF1Lib
 
 			return invalidDirections;
 		}
-		public ShipLocations GenerateDesert(OverworldMap overworldmap, OwMapExchange owMapExchange, NPCdata npcdata, MT19337 rng)
+		public void GenerateDesert(OverworldMap overworldmap, OwMapExchange owMapExchange, NPCdata npcdata, MT19337 rng)
 		{
-
 			int LoopedValue(int value, int max) => (value < 0) ? (max + value) % max : (value % max);
 
 			List<List<MapLocation>> MapGrid = new();
@@ -826,9 +825,15 @@ namespace FF1Lib
 
 			newShipLocations.Add(new ShipLocation { TeleporterIndex = (byte)255, X = (byte)(coneria_x + 7), Y = (byte)(coneria_y + 7) });
 
-			var shipLocations = new ShipLocations(locationData, newShipLocations.ToArray());
+			//var shipLocations = new ShipLocations(locationData, newShipLocations.ToArray());
 
-			owMapExchange.SetStartingLocation(new Sanity.SCCoords(coneria_x + 7, coneria_y + 7));
+			owMapExchange.Data.ShipLocations = newShipLocations.ToArray();
+			owMapExchange.Data.StartingLocation = new Sanity.SCCoords(coneria_x + 7, coneria_y + 7);
+			//owMapExchange.Data.
+
+			owMapExchange.RefreshData();
+
+			//owMapExchange.SetStartingLocation(new Sanity.SCCoords(coneria_x + 7, coneria_y + 7));
 
 			// Update tiles and palette
 			for (int i = 1; i<16; i+=4)
@@ -948,7 +953,7 @@ namespace FF1Lib
 			UpdateOWFormations(startDomain.Item1, startDomain.Item2);
 			DoDUpdateDialogues(npcdata);
 
-			return shipLocations;
+			//return shipLocations;
 		}
 
 		public void EnableDamageTile()

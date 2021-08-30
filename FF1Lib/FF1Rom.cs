@@ -216,7 +216,8 @@ namespace FF1Lib
 
 			if (flags.SanityCheckerV2 && flags.OwMapExchange == OwMapExchanges.Desert)
 			{
-				shipLocations = GenerateDesert(overworldMap, owMapExchange, npcdata, rng);
+				GenerateDesert(overworldMap, owMapExchange, npcdata, rng);
+				shipLocations = owMapExchange.ShipLocations;
 			}
 
 			if ((bool)flags.OWDamageTiles || (flags.SanityCheckerV2 && flags.OwMapExchange == OwMapExchanges.Desert))

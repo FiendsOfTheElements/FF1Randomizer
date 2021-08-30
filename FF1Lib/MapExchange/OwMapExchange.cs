@@ -98,9 +98,30 @@ namespace FF1Lib
 			ShipLocations.SetShipLocation(255);
 		}
 
+		public void RefreshData()
+		{
+			//load default locations first, doh
+			locations.LoadData();
+
+			if (data.StartingLocation.HasValue) locations.StartingLocation = data.StartingLocation.Value;
+			if (data.AirShipLocation.HasValue) locations.AirShipLocation = data.AirShipLocation.Value;
+			if (data.BridgeLocation.HasValue) locations.BridgeLocation = data.BridgeLocation.Value;
+			if (data.CanalLocation.HasValue) locations.CanalLocation = data.CanalLocation.Value;
+
+			locations.StoreData();
+
+			foreach (var tf in data.TeleporterFixups) exit[tf.Index.Value] = tf.To;
+
+			exit.StoreData();
+
+			ShipLocations = new ShipLocations(locations, data.ShipLocations);
+
+			ShipLocations.SetShipLocation(255);
+		}
+
 		public void ExecuteStep2()
 		{
-		        DomainData originalDomains = new DomainData(rom);
+		    DomainData originalDomains = new DomainData(rom);
 			originalDomains.LoadTable();
 			domains.LoadTable();
 			locations.LoadData();
