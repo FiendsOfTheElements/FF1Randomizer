@@ -222,12 +222,10 @@ namespace FF1Lib
 				}
 			}
 
-
-			if ((bool)flags.OWDamageTiles || (flags.SanityCheckerV2 && flags.OwMapExchange == OwMapExchanges.Desert))
+			if((bool)flags.OWDamageTiles || (flags.SanityCheckerV2 && flags.OwMapExchange == OwMapExchanges.Desert))
 			{
 				EnableDamageTile();
 			}
-
 
 			var flippedMaps = new List<MapId>();
 
