@@ -227,6 +227,7 @@ namespace FF1Lib
 				EnableDamageTile();
 			}
 
+
 			var flippedMaps = new List<MapId>();
 
 			if ((bool)flags.FlipDungeons)
