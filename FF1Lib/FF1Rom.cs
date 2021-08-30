@@ -222,6 +222,7 @@ namespace FF1Lib
 				}
 			}
 
+
 			if ((bool)flags.OWDamageTiles || (flags.SanityCheckerV2 && flags.OwMapExchange == OwMapExchanges.Desert))
 			{
 				EnableDamageTile();
