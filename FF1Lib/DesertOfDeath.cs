@@ -948,7 +948,7 @@ namespace FF1Lib
 
 		public void EnableDamageTile()
 		{
-			// 
+			// Allow tiles to do Walk Damage, see 1E_B000_DoWalkDamage.asm
 			PutInBank(0x1E, 0xB000, Blob.FromHex("A542C901D00E20FBC7A54429E0C9E0D0034CDEC760"));
 			PutInBank(0x1F, 0xC33C, Blob.FromHex("A91E2003FE4C00B0"));
 
