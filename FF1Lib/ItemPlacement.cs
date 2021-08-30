@@ -132,7 +132,7 @@ namespace FF1Lib
 
 			treasurePool = result.RemainingTreasures;
 
-			if ((bool)_flags.FreeBridge || (_flags.OwMapExchange == OwMapExchanges.Desert))
+			if ((bool)_flags.IsBridgeFree || (_flags.OwMapExchange == OwMapExchanges.Desert))
 			{
 				placedItems = placedItems.Select(x => x.Item != Item.Bridge ? x : NewItemPlacement(x, ReplacementItem)).ToList();
 			}
@@ -437,7 +437,7 @@ namespace FF1Lib
 						placedItems.Any(x => x.Item == Item.Ship && startingMapLocations.Contains(x.MapLocation) &&
 							startingMapLocations.Contains((x as MapObject)?.SecondLocation ?? MapLocation.StartingLocation));
 
-					if (!(startingCanoeAvailable && canoeObsoletesBridge) && !startingShipAvailable && !((bool)_flags.FreeBridge))
+					if (!(startingCanoeAvailable && canoeObsoletesBridge) && !startingShipAvailable && !((bool)_flags.IsBridgeFree))
 					{
 						var startingKeyAvailable =
 							earlyKeyAvailable && placedItems.Any(x => x.Item == Item.Key && startingMapLocations.Contains(x.MapLocation) &&

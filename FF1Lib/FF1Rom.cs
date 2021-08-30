@@ -410,7 +410,7 @@ namespace FF1Lib
 				EnableChaosRush();
 			}
 
-			if ((bool)flags.FreeBridge && (flags.OwMapExchange != OwMapExchanges.Desert))
+			if ((bool)flags.IsBridgeFree && (flags.OwMapExchange != OwMapExchanges.Desert))
 			{
 				EnableFreeBridge();
 			}

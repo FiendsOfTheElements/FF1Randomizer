@@ -747,7 +747,7 @@ namespace FF1Lib
 			}
 
 			changes = MapChange.None;
-			if (victoryConditions.FreeBridge ?? false)
+			if (victoryConditions.IsBridgeFree ?? false)
 			{
 				changes |= MapChange.Bridge;
 			}

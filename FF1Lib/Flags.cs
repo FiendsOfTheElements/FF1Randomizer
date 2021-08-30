@@ -661,6 +661,7 @@ namespace FF1Lib
 		public bool NoOverworld => (SanityCheckerV2 & OwMapExchange == OwMapExchanges.NoOverworld);
 		public bool? IsShipFree => FreeShip | NoOverworld;
 		public bool? IsAirshipFree => FreeAirship & !NoOverworld & !(OwMapExchange == OwMapExchanges.Desert);
+		public bool? IsBridgeFree => FreeBridge | NoOverworld;
 		public bool? IsCanalFree => (FreeCanal & !NoOverworld) | (OwMapExchange == OwMapExchanges.Desert);
 		public bool? IsFloaterRemoved => ((NoFloater|IsAirshipFree) & !NoOverworld) | (OwMapExchange == OwMapExchanges.Desert);
 		public bool IncentivizeBridge => false;

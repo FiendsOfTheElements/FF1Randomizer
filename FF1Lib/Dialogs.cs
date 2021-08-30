@@ -1322,7 +1322,7 @@ namespace FF1Lib
 
 			if (flags.IsFloaterRemoved ?? false) incentivePool.Remove(Item.Floater);
 			if (flags.FreeCanoe ?? false) incentivePool.Remove(Item.Canoe);
-			if (flags.FreeBridge ?? false) incentivePool.Remove(Item.Bridge);
+			if (flags.IsBridgeFree ?? false) incentivePool.Remove(Item.Bridge);
 			if (flags.IsCanalFree ?? false) incentivePool.Remove(Item.Canal);
 			if (flags.FreeLute ?? false) incentivePool.Remove(Item.Lute);
 			if (flags.IsShipFree ?? false) incentivePool.Remove(Item.Ship);
