@@ -26,6 +26,9 @@ namespace FF1Lib
 		[Description("Crescent Start")]
 		CrecsentStart,
 
+		[Description("Desert of Death")]
+		Desert,
+
 		[Description("No Overworld")]
 		NoOverworld,
 
@@ -95,9 +98,30 @@ namespace FF1Lib
 			ShipLocations.SetShipLocation(255);
 		}
 
+		public void RefreshData()
+		{
+			//load default locations first, doh
+			locations.LoadData();
+
+			if (data.StartingLocation.HasValue) locations.StartingLocation = data.StartingLocation.Value;
+			if (data.AirShipLocation.HasValue) locations.AirShipLocation = data.AirShipLocation.Value;
+			if (data.BridgeLocation.HasValue) locations.BridgeLocation = data.BridgeLocation.Value;
+			if (data.CanalLocation.HasValue) locations.CanalLocation = data.CanalLocation.Value;
+
+			locations.StoreData();
+
+			foreach (var tf in data.TeleporterFixups) exit[tf.Index.Value] = tf.To;
+
+			exit.StoreData();
+
+			ShipLocations = new ShipLocations(locations, data.ShipLocations);
+
+			ShipLocations.SetShipLocation(255);
+		}
+
 		public void ExecuteStep2()
 		{
-		        DomainData originalDomains = new DomainData(rom);
+		    DomainData originalDomains = new DomainData(rom);
 			originalDomains.LoadTable();
 			domains.LoadTable();
 
@@ -137,6 +161,8 @@ namespace FF1Lib
 					return new OwMapExchange(_rom, _overworldMap, "elfland_start");
 				case OwMapExchanges.CrecsentStart:
 					return new OwMapExchange(_rom, _overworldMap, "crescent_start");
+				case OwMapExchanges.Desert:
+					return new OwMapExchange(_rom, _overworldMap, "desert");
 				case OwMapExchanges.NoOverworld:
 					return new OwMapExchange(_rom, _overworldMap, "nooverworld");
 				case OwMapExchanges.ProcGen1:
@@ -162,6 +188,14 @@ namespace FF1Lib
 			locations.LoadData();
 
 			locations.AirShipLocation = coords;
+
+			locations.StoreData();
+		}
+		public void SetStartingLocation(SCCoords coords)
+		{
+			locations.LoadData();
+
+			locations.StartingLocation = coords;
 
 			locations.StoreData();
 		}

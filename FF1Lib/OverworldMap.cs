@@ -954,11 +954,11 @@ namespace FF1Lib
 		public const byte Ocean = 0x17;
 		public const byte CoastRight = 0x18;
 		public const byte CoastBottomLeft = 0x26;
-	        public const byte GrassyMid = 0x54;
-	        public const byte GrassTopLeft = 0x60;
-	        public const byte GrassTopRight = 0x61;
-	        public const byte GrassBottomLeft = 0x70;
-	        public const byte GrassBottomRight = 0x71;
+	    public const byte GrassyMid = 0x54;
+	    public const byte GrassTopLeft = 0x60;
+	    public const byte GrassTopRight = 0x61;
+	    public const byte GrassBottomLeft = 0x70;
+	    public const byte GrassBottomRight = 0x71;
 
 		public static List<MapEdit> OnracDock =
 			new List<MapEdit>

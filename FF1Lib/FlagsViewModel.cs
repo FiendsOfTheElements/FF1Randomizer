@@ -1151,6 +1151,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("GaiaShortcut"));
 			}
 		}
+		public bool? OWDamageTiles
+		{
+			get => Flags.OWDamageTiles;
+			set
+			{
+				Flags.OWDamageTiles = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("OWDamageTiles"));
+			}
+		}
 		public bool? MoveGaiaItemShop
 		{
 			get => Flags.MoveGaiaItemShop;
