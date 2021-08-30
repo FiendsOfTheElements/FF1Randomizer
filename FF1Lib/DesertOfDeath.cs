@@ -765,8 +765,8 @@ namespace FF1Lib
 								ShipCoords[locationToUpdate] = (ShipCoords[locationToUpdate].Item1, (byte)(ShipCoords[locationToUpdate].Item2 + xPosition), (byte)(ShipCoords[locationToUpdate].Item3 + yPosition));
 							}
 							else
-							{ 
-							overworldmap.MapEditsToApply.Add(new List<MapEdit>
+							{
+								overworldmap.MapEditsToApply.Add(new List<MapEdit>
 								{
 								new MapEdit{X = (byte)((x * 16) + Rng.Between(rng, 0,15)), Y = (byte)((y * 16) + Rng.Between(rng, 0,15)), Tile = OWTileLink.Find(maploc => maploc.Item1 == MapGrid[x][y]).Item2},
 								});
@@ -786,54 +786,46 @@ namespace FF1Lib
 			EntrancesCoords[titanWestIndex] = (MapLocation.TitansTunnelWest, (byte)(EntrancesCoords[titanWestIndex].Item2 + EntrancesCoords[sardaIndex].Item2 - 2), (byte)(EntrancesCoords[titanWestIndex].Item3 + EntrancesCoords[sardaIndex].Item3 - 2));
 			ShipCoords[titanWestIndex] = (MapLocation.TitansTunnelWest, (byte)ShipCoords[sardaIndex].Item2, (byte)ShipCoords[sardaIndex].Item3);
 
-			// Update Exit teleports
-			const int teleportExitXOffset = 0x2C60;
-			const int teleportExitYOffset = 0x2C70;
-
+			// Update Teleporters and Locations
 			List<MapLocation> exitToUpdate = new() { MapLocation.TitansTunnelEast, MapLocation.TitansTunnelWest, MapLocation.IceCave1, MapLocation.CastleOrdeals1, MapLocation.ConeriaCastle1, MapLocation.EarthCave1, MapLocation.GurguVolcano1, MapLocation.Onrac, MapLocation.MirageTower1 };
-
-			foreach (var exit in exitToUpdate)
-			{
-				var newX = EntrancesCoords.Find(z => z.Item1 == exit).Item2;
-				var newY = EntrancesCoords.Find(z => z.Item1 == exit).Item3;
-				var index = exitToUpdate.FindIndex(z => z == exit);
-
-				this[teleportExitXOffset + index] = newX;
-				this[teleportExitYOffset + index] = newY;
-			}
 
 			// Set starting location
 			var coneria_x = EntrancesCoords.Find(z => z.Item1 == MapLocation.ConeriaCastle1).Item2 - 7;
 			var coneria_y = EntrancesCoords.Find(z => z.Item1 == MapLocation.ConeriaCastle1).Item3 - 1;
-			
-			//PutInBank(0x00, 0xB010, Blob.FromHex($"{coneria_x:X2}{coneria_y:X2}"));
 
-			// Set Ship locations
 			var locationData = new OwLocationData(this);
 			List<ShipLocation> newShipLocations = new();
+			List<TeleportFixup> exitUpdates = new();
+			Dictionary<string, Sanity.SCCoords> coordUpdates = new();
 
 			var entranceList = Enum.GetValues(typeof(OverworldTeleportIndex))
-							.Cast<OverworldTeleportIndex>()
-							.ToList();
+				.Cast<OverworldTeleportIndex>()
+				.ToList();
+
+			foreach (var exit in exitToUpdate)
+			{
+				var targetExitCoord = EntrancesCoords.Find(z => z.Item1 == exit);
+				var index = exitToUpdate.FindIndex(z => z == exit);
+				exitUpdates.Add(new TeleportFixup { Type = TeleportType.Exit, Index = (int)index, To = new TeleData { X = targetExitCoord.Item2, Y = targetExitCoord.Item3 } });
+			}
 
 			foreach (var entrance in entranceList)
 			{
 				var targetMapLocation = MapLocationToOWTeleporterIndex.Find(x => x.Item2 == entrance).Item1;
-				var targetCoord = ShipCoords.Find(z => z.Item1 == targetMapLocation);
-				newShipLocations.Add(new ShipLocation { TeleporterIndex = (byte)entrance, X = targetCoord.Item2, Y = targetCoord.Item3 });
+				var targetShipCoord = ShipCoords.Find(z => z.Item1 == targetMapLocation);
+				var targetEntranceCoord = EntrancesCoords.Find(z => z.Item1 == targetMapLocation);
+				newShipLocations.Add(new ShipLocation { TeleporterIndex = (byte)entrance, X = targetShipCoord.Item2, Y = targetShipCoord.Item3 });
+				coordUpdates.Add(entrance.ToString(), new Sanity.SCCoords(targetEntranceCoord.Item2, targetEntranceCoord.Item3));
 			}
 
 			newShipLocations.Add(new ShipLocation { TeleporterIndex = (byte)255, X = (byte)(coneria_x + 7), Y = (byte)(coneria_y + 7) });
 
-			//var shipLocations = new ShipLocations(locationData, newShipLocations.ToArray());
-
 			owMapExchange.Data.ShipLocations = newShipLocations.ToArray();
 			owMapExchange.Data.StartingLocation = new Sanity.SCCoords(coneria_x + 7, coneria_y + 7);
-			//owMapExchange.Data.
+			owMapExchange.Data.TeleporterFixups = exitUpdates.ToArray();
+			owMapExchange.Data.OverworldCoordinates = coordUpdates;
 
 			owMapExchange.RefreshData();
-
-			//owMapExchange.SetStartingLocation(new Sanity.SCCoords(coneria_x + 7, coneria_y + 7));
 
 			// Update tiles and palette
 			for (int i = 1; i<16; i+=4)
@@ -952,8 +944,6 @@ namespace FF1Lib
 
 			UpdateOWFormations(startDomain.Item1, startDomain.Item2);
 			DoDUpdateDialogues(npcdata);
-
-			//return shipLocations;
 		}
 
 		public void EnableDamageTile()

@@ -124,7 +124,6 @@ namespace FF1Lib
 		    DomainData originalDomains = new DomainData(rom);
 			originalDomains.LoadTable();
 			domains.LoadTable();
-			locations.LoadData();
 
 			foreach (var df in data.DomainFixups) domains.SwapDomains(df.From, df.To);
 			foreach (var df in data.DomainUpdates) domains.Data[df.To] = originalDomains.Data[df.From];

@@ -159,6 +159,14 @@ namespace FF1Lib
 				NPCShuffleDialogs();
 			}
 
+			if (flags.SanityCheckerV2 && flags.OwMapExchange == OwMapExchanges.Desert)
+			{
+				GenerateDesert(overworldMap, owMapExchange, npcdata, rng);
+				teleporters = new TeleportShuffle(owMapExchange?.Data);
+				overworldMap.Teleporters = teleporters;
+				shipLocations = owMapExchange.ShipLocations;
+			}
+
 			if (flags.EFGWaterfall || flags.EFGEarth1 || flags.EFGEarth2)
 			{
 				MapRequirements reqs;
@@ -212,12 +220,6 @@ namespace FF1Lib
 					overworldMap.PutStandardTeleport(TeleportIndex.EarthCave2, teleporters.EarthCave2, OverworldTeleportIndex.EarthCave1);
 					maps[(int)MapId.EarthCaveB2] = earthB2.Map;
 				}
-			}
-
-			if (flags.SanityCheckerV2 && flags.OwMapExchange == OwMapExchanges.Desert)
-			{
-				GenerateDesert(overworldMap, owMapExchange, npcdata, rng);
-				shipLocations = owMapExchange.ShipLocations;
 			}
 
 			if ((bool)flags.OWDamageTiles || (flags.SanityCheckerV2 && flags.OwMapExchange == OwMapExchanges.Desert))
