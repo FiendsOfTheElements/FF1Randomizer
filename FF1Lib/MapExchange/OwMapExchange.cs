@@ -14,7 +14,7 @@ namespace FF1Lib
 {
 	public enum OwMapExchanges
 	{
-		[Description("None(Default)")]
+		[Description("Vanilla (Default)")]
 		None,
 
 		[Description("Melmond Start")]
@@ -31,6 +31,15 @@ namespace FF1Lib
 
 		[Description("No Overworld")]
 		NoOverworld,
+
+		[Description("Chanel #125")]
+		ProcGen1,
+
+		[Description("Epic Quest")]
+		ProcGen2,
+
+		[Description("Archipelago")]
+		ProcGen3,
 
 		[Description("Random")]
 		Random
@@ -91,10 +100,13 @@ namespace FF1Lib
 
 		public void ExecuteStep2()
 		{
+		        DomainData originalDomains = new DomainData(rom);
+			originalDomains.LoadTable();
 			domains.LoadTable();
 			locations.LoadData();
 
 			foreach (var df in data.DomainFixups) domains.SwapDomains(df.From, df.To);
+			foreach (var df in data.DomainUpdates) domains.Data[df.To] = originalDomains.Data[df.From];
 
 			domains.StoreTable();
 			locations.StoreData();
@@ -133,6 +145,12 @@ namespace FF1Lib
 					return new OwMapExchange(_rom, _overworldMap, "desert");
 				case OwMapExchanges.NoOverworld:
 					return new OwMapExchange(_rom, _overworldMap, "nooverworld");
+				case OwMapExchanges.ProcGen1:
+					return new OwMapExchange(_rom, _overworldMap, "procgen1");
+				case OwMapExchanges.ProcGen2:
+					return new OwMapExchange(_rom, _overworldMap, "procgen2");
+				case OwMapExchanges.ProcGen3:
+					return new OwMapExchange(_rom, _overworldMap, "procgen3");
 			}
 
 			throw new Exception("oops");

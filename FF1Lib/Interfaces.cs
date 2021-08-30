@@ -89,6 +89,8 @@
 		bool? TitansTrove { get; }
 		bool? GaiaShortcut { get; }
 		bool? MoveGaiaItemShop { get; }
+		bool DisableOWMapModifications { get; }
+		OwMapExchanges OwMapExchange { get; }
 	}
 	public interface IItemPlacementFlags : IItemShuffleFlags, IVictoryConditionFlags
 	{

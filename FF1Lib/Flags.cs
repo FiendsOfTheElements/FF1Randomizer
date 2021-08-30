@@ -54,6 +54,8 @@ namespace FF1Lib
 
 		#endregion
 
+		public bool QuickMinimapLoad { get; set; } = false;
+
 		public bool LooseItemsForwardPlacement { get; set; } = false;
 
 		public bool LooseItemsSpreadPlacement { get; set; } = false;
@@ -627,10 +629,11 @@ namespace FF1Lib
 		public bool? GuaranteedRuseItem { get; set; } = false;
 		public bool? DisableStunTouch { get; set; } = false;
 		public bool? MapCanalBridge => ((NPCItems) | (NPCFetchItems) | MapOpenProgression | MapOpenProgressionExtended) & (OwMapExchange != OwMapExchanges.Desert);
-		public bool? MapOnracDock => MapOpenProgressionDocks;
-		public bool? MapMirageDock => MapOpenProgressionDocks;
-		public bool? MapConeriaDwarves => MapOpenProgression;
-		public bool? MapVolcanoIceRiver => MapOpenProgression;
+		public bool DisableOWMapModifications => SanityCheckerV2 & (OwMapExchange != OwMapExchanges.None | OwMapExchange != OwMapExchanges.CrecsentStart | OwMapExchange != OwMapExchanges.ElflandStart | OwMapExchange != OwMapExchanges.MelmondStart | OwMapExchange != OwMapExchanges.Random);
+		public bool? MapOnracDock => MapOpenProgressionDocks & !DisableOWMapModifications;
+		public bool? MapMirageDock => MapOpenProgressionDocks & !DisableOWMapModifications;
+		public bool? MapConeriaDwarves => MapOpenProgression & !DisableOWMapModifications;
+		public bool? MapVolcanoIceRiver => MapOpenProgression & !DisableOWMapModifications;
 		// public bool? MapDwarvesNorthwest => MapOpenProgression;
 		// public bool? MapAirshipDock => MapOpenProgression;
 

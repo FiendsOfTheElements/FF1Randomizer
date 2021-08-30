@@ -2646,6 +2646,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ModernizeSpellNames"));
 			}
 		}
+		public bool ShopInfoIcons
+		{
+			get => Preferences.ShopInfoIcons;
+			set
+			{
+				Preferences.ShopInfoIcons = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ShopInfoIcons"));
+			}
+		}
 		public bool NoTabLayout
 		{
 			get => Preferences.NoTabLayout;
@@ -4828,6 +4837,16 @@ namespace FF1Lib
 			set
 			{
 				Flags.NoItemMagic = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool QuickMinimapLoad
+		{
+			get => Flags.QuickMinimapLoad;
+			set
+			{
+				Flags.QuickMinimapLoad = value;
 				RaisePropertyChanged();
 			}
 		}

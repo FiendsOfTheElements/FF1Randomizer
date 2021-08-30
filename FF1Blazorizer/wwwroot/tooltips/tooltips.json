@@ -23,8 +23,12 @@
                 "screenshot": "blindseed.png",
                 "description": "Hides all flags to create a mystery flagset that can then be distributed. Useful for tournament and challenge race settings.\n This flag cannot be disabled once clicked; you will need to hit the Reset button to restore functionality to the site (and this will, in turn, wipe the hidden flags selected). Make sure to save your flagset before you use this flag."
         },
-
-
+		{
+				"Id": "quickMinimapLoad",
+				"title": "Quick Minimap Load",
+				"screenshot": "quickminimapload.gif",
+				"description": "Speeds up loading of the minimap."
+		},
         {
                 "Id": "noItemMagicCheckBox",
                 "title": "No Item Magic",
@@ -134,17 +138,23 @@
                 "screenshot": "accessibleSpellNamesCheckBox.png",
                 "description": "Updates spell names to make them more accessible. The table below shows what the new names are when this flag is checked:\n[grid][r]{i}BM - New|{i}BM - Original|{i}WM - New|{i}WM - Original[r]{l}THUN|{l}LIT|{l}PROT|{l}FOG[r]{l}DOZE|{l}SLEP|{l}DIA|{l}HARM[r]{l}THN2|{l}LIT2|{l}ATHN|{l}ALIT[r]{l}HAST|{l}FAST|{l}DIA2|{l}HRM2[r]{l}DOZ2|{l}SLP2|{l}VOX|{l}AMUT[r]{l}THN3|{l}LIT3|{l}DIA3|{l}HRM3[r]||{l}PRO2|{l}FOG2[r]||{l}DIA4|{l}HRM4[r]||{l}HOLY|{l}FADE\n\nNote: This setting is disabled when \"Generate New Spellbooks\" is on"
         },
+        {
+                "Id": "shopInfoIconsCheckBox",
+                "title": "Shop Information Icons",
+                "screenshot": "shopInfoIconsCheckBox.png",
+                "description": "When using Shop Information, elements and statuses are shown as icons, allowing for more information to be displayed."
+        },
 		{
-			"Id": "renounceAutosortCheckBox",
-			"title": "Renounce Autosort",
-			"screenshot": "renounceAutosortCheckBox.png",
-			"description": "Forgo the \"Autosort Inventory\" flag (found under the Conveniences tab) if it is enabled. This will revert the game to it's standard item menu behavior (Key Items up top, potions at the bottom) no matter what flags are selected."
+				"Id": "renounceAutosortCheckBox",
+				"title": "Renounce Autosort",
+				"screenshot": "renounceAutosortCheckBox.png",
+				"description": "Forgo the \"Autosort Inventory\" flag (found under the Conveniences tab) if it is enabled. This will revert the game to it's standard item menu behavior (Key Items up top, potions at the bottom) no matter what flags are selected."
 		},
-	    {
-                "Id": "renounceChestInfoCheckBox",
-                "title": "Renounce Chest Info",
-                "screenshot": "incentivizeOpalCheckBox.png",
-                "description": "Forgo the \"Chest Information\" subflag (found under Shop Information) if it is enabled. This will revert to showing only the item name when opening chests."
+		{
+				"Id": "renounceChestInfoCheckBox",
+				"title": "Renounce Chest Info",
+				"screenshot": "incentivizeOpalCheckBox.png",
+				"description": "Forgo the \"Chest Information\" subflag (found under Shop Information) if it is enabled. This will revert to showing only the item name when opening chests."
         },
         {
                 "Id": "cropScreen",
@@ -1877,7 +1887,7 @@
                 "Id": "owMapExchange",
                 "title": "Overworld Map",
                 "screenshot": "owMapExchange.png",
-                "description": "Alternative Overworld Maps that can be used in place of the Vanilla overworld.\n\nMelmond Start: Coneria Castle, Coneria, and the Temple of Fiends are on the Melmond continent and a river links it to the Dwarf's Cave region.\n\nElfland Start: Coneria Castle, Coneria, and the Temple of Fiends are at Elfland's location and the Dwarf's Cave is cut off from the Coneria region.\n\nCrescent Start: Coneria Castle, Coneria, the Temple of Fiends, and the Marsh Cave are at Crescent Lake's location.\n\nNo Overworld: Removes the Overworld completely and connects all locations in a single dungeon.\n\nRandom: Selects at random one of the alternative start maps (excludes No Overworld)."
+                "description": "Alternative Overworld Maps that can be used in place of the Vanilla overworld.\n\nMelmond Start: Coneria Castle, Coneria, and the Temple of Fiends are on the Melmond continent and a river links it to the Dwarf's Cave region.\n\nElfland Start: Coneria Castle, Coneria, and the Temple of Fiends are at Elfland's location and the Dwarf's Cave is cut off from the Coneria region.\n\nCrescent Start: Coneria Castle, Coneria, the Temple of Fiends, and the Marsh Cave are at Crescent Lake's location.\n\nNo Overworld: Removes the Overworld completely and connects all locations in a single dungeon.\n\nChanel #125/Epic Quest/Archipelago - pre-generated, procedurally generated alternate maps\n\nRandom: Selects at random one of the alternative start maps (excludes No Overworld)."
         },
 
         {

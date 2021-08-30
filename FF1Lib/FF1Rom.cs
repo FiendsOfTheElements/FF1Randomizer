@@ -127,9 +127,11 @@ namespace FF1Lib
 			FixWarpBug(); // The warp bug must be fixed for magic level shuffle and spellcrafter
 			ExpandNormalTeleporters();
 			SeparateUnrunnables();
+			DrawCanoeUnderBridge();
 			var talkroutines = new TalkRoutines();
 			var npcdata = new NPCdata(this);
 			UpdateDialogs(npcdata, flags);
+			AddElementIcons();
 
 
 
@@ -719,6 +721,12 @@ namespace FF1Lib
 				EnableSpeedHacks(preferences);
 			}
 
+			if (flags.QuickMinimapLoad)
+			{
+				EnableQuickMinimap();
+			}
+
+
 			if (flags.IdentifyTreasures)
 			{
 				EnableIdentifyTreasures();
@@ -984,7 +992,7 @@ namespace FF1Lib
 
 			if (flags.ShopInfo)
 			{
-				ShopUpgrade(flags, preferences.RenounceChestInfo);
+				ShopUpgrade(flags, preferences);
 			}
 
 			Fix3DigitStats();
@@ -1084,6 +1092,9 @@ namespace FF1Lib
 
 			owMapExchange?.ExecuteStep2();
 
+			if (owMapExchange != null) {
+			    HackMinimap(overworldMap);
+			}
 
 			npcdata.WriteNPCdata(this);
 			talkroutines.WriteRoutines(this);
