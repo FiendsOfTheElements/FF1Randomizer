@@ -116,6 +116,7 @@
 		bool LooseItemsSpreadPlacement { get; }
 		bool LooseItemsNpcBalance { get; }
 		bool? Entrances { get; }
+		OwMapExchanges OwMapExchange { get; }
 	}
 	public interface IItemShuffleFlags
 	{

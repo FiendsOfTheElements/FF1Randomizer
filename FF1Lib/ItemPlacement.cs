@@ -132,7 +132,7 @@ namespace FF1Lib
 
 			treasurePool = result.RemainingTreasures;
 
-			if ((bool)_flags.FreeBridge)
+			if ((bool)_flags.FreeBridge || (_flags.OwMapExchange == OwMapExchanges.Desert))
 			{
 				placedItems = placedItems.Select(x => x.Item != Item.Bridge ? x : NewItemPlacement(x, ReplacementItem)).ToList();
 			}
@@ -144,7 +144,7 @@ namespace FF1Lib
 			{
 				placedItems = placedItems.Select(x => x.Item != Item.Canal ? x : NewItemPlacement(x, ReplacementItem)).ToList();
 			}
-			if ((bool)_flags.FreeCanoe)
+			if ((bool)_flags.FreeCanoe || (_flags.OwMapExchange == OwMapExchanges.Desert))
 			{
 				placedItems = placedItems.Select(x => x.Item != Item.Canoe ? x : NewItemPlacement(x, ReplacementItem)).ToList();
 			}
@@ -552,6 +552,13 @@ namespace FF1Lib
 					}
 					if ((bool)_flags.IsFloaterRemoved) {
 					    lastPlacements.Remove(Item.Floater);
+					}
+
+					if (_flags.OwMapExchange == OwMapExchanges.Desert && !(bool)_flags.IsShipFree)
+					{
+						nextPlacements.Remove(Item.Ship);
+						fixedPlacements.Add(Item.Ship);
+						unrestricted.Add(Item.Ship);
 					}
 
 					// Different placement priorities for NoOverworld

@@ -240,6 +240,7 @@ namespace FF1Lib
 		public bool? SwoleBahamut { get; set; } = false;
 		public bool? ConfusedOldMen { get; set; } = false;
 		public bool? GaiaShortcut { get; set; } = false;
+		public bool? OWDamageTiles { get; set; } = false;
 		public bool? MoveGaiaItemShop { get; set; } = false;
 		public bool? FlipDungeons { get; set; } = false;
 		public bool SpookyFlag { get; set; } = false;
@@ -625,7 +626,7 @@ namespace FF1Lib
 		public bool? EarlierRuby { get; set; } = false;
 		public bool? GuaranteedRuseItem { get; set; } = false;
 		public bool? DisableStunTouch { get; set; } = false;
-		public bool? MapCanalBridge => (NPCItems) | (NPCFetchItems) | MapOpenProgression | MapOpenProgressionExtended;
+		public bool? MapCanalBridge => ((NPCItems) | (NPCFetchItems) | MapOpenProgression | MapOpenProgressionExtended) & (OwMapExchange != OwMapExchanges.Desert);
 		public bool? MapOnracDock => MapOpenProgressionDocks;
 		public bool? MapMirageDock => MapOpenProgressionDocks;
 		public bool? MapConeriaDwarves => MapOpenProgression;
@@ -656,11 +657,11 @@ namespace FF1Lib
 		public bool? IncentivizeBottle => (!(NPCFetchItems ?? false) && (IncentivizeMainItems ?? false)) || ((NPCFetchItems ?? false) && (IncentivizeFetchItems ?? false));
 		public bool NoOverworld => (SanityCheckerV2 & OwMapExchange == OwMapExchanges.NoOverworld);
 		public bool? IsShipFree => FreeShip | NoOverworld;
-		public bool? IsAirshipFree => FreeAirship & !NoOverworld;
-		public bool? IsCanalFree => FreeCanal & !NoOverworld;
-		public bool? IsFloaterRemoved => (NoFloater|IsAirshipFree) & !NoOverworld;
+		public bool? IsAirshipFree => FreeAirship & !NoOverworld & !(OwMapExchange == OwMapExchanges.Desert);
+		public bool? IsCanalFree => (FreeCanal & !NoOverworld) | (OwMapExchange == OwMapExchanges.Desert);
+		public bool? IsFloaterRemoved => ((NoFloater|IsAirshipFree) & !NoOverworld) | (OwMapExchange == OwMapExchanges.Desert);
 		public bool IncentivizeBridge => false;
-		public bool? IncentivizeCanoe => NPCItems & IncentivizeCanoeItem & !FreeCanoe;
+		public bool? IncentivizeCanoe => NPCItems & IncentivizeCanoeItem & !FreeCanoe & !(OwMapExchange == OwMapExchanges.Desert);
 		public bool? IncentivizeLute => NPCItems & !FreeLute & IncentivizeMainItems;
 		public bool? IncentivizeShip => NPCItems & IncentivizeShipAndCanal & !IsShipFree & !NoOverworld;
 		public bool? IncentivizeRod => NPCItems & IncentivizeMainItems;

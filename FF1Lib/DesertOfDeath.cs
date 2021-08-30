@@ -220,7 +220,13 @@ namespace FF1Lib
 					new List<byte> { 0x5D, 0x5D }, 
 			}),
 			(MapLocation.Waterfall, new List<List<byte>>() {
-					new List<byte> { 0x46 }, // Find something for waterfall
+					new List<byte> { 0x45, 0x10, 0x11, 0x11, 0x12, 0x45 }, // Find something for waterfall
+					new List<byte> { 0x10, 0x21, 0x31, 0x31, 0x21, 0x12 },
+					new List<byte> { 0x20, 0x22, 0x40, 0x51, 0x20, 0x22 },
+					new List<byte> { 0x20, 0x22, 0x44, 0x10, 0x21, 0x33 },
+					new List<byte> { 0x30, 0x31, 0x46, 0x31, 0x33, 0x13 },
+					new List<byte> { 0x45, 0x45, 0x45, 0x45, 0x13, 0x45 },
+					new List<byte> { 0x45, 0x13, 0x45, 0x45, 0x45, 0x45 },
 			}),
 			(MapLocation.Cardia1, new List<List<byte>>() {
 					new List<byte> { 0x6A },
@@ -283,7 +289,7 @@ namespace FF1Lib
 			(MapLocation.IceCave1, 0x03, 0x02),
 			(MapLocation.Onrac, 0x00, 0x02),
 			(MapLocation.Caravan, 0x01, 0x02),
-			(MapLocation.Waterfall, 0x00, 0x01),
+			(MapLocation.Waterfall, 0x02, 0x05),
 			(MapLocation.Cardia1, 0x00, 0x01),
 			(MapLocation.Cardia2, 0x00, 0x01),
 			(MapLocation.Cardia4, 0x00, 0x01),
@@ -296,6 +302,193 @@ namespace FF1Lib
 			(MapLocation.Lefein, 0x02, 0x03),
 		};
 
+		public List<(MapLocation, byte, byte)> ShipCoords = new()
+		{
+			(MapLocation.ConeriaCastle1, 0x02, 0x07),
+			(MapLocation.Coneria, 0x02, 0x07),
+			(MapLocation.TempleOfFiends1, 0x01, 0x02),
+			(MapLocation.MatoyasCave, 0x02, 0x03),
+			(MapLocation.Pravoka, 0x02, 0x04),
+			(MapLocation.DwarfCave, 0x01, 0x03),
+			(MapLocation.NorthwestCastle, 0x00, 0x02),
+			(MapLocation.ElflandCastle, 0x01, 0x02),
+			(MapLocation.Elfland, 0x01, 0x02),
+			(MapLocation.MarshCave1, 0x00, 0x01),
+			(MapLocation.Melmond, 0x00, 0x02),
+			(MapLocation.EarthCave1, 0x02, 0x03),
+			(MapLocation.TitansTunnelEast, 0x05, 0x05),
+			(MapLocation.TitansTunnelWest, 0x05, 0x05),
+			(MapLocation.SardasCave, 0x05, 0x05),
+			(MapLocation.CrescentLake, 0x02, 0x06),
+			(MapLocation.GurguVolcano1, 0x00, 0x02),
+			(MapLocation.IceCave1, 0x03, 0x02),
+			(MapLocation.Onrac, 0x00, 0x02),
+			(MapLocation.Caravan, 0x01, 0x02),
+			(MapLocation.Waterfall, 0x02, 0x05),
+			(MapLocation.Cardia1, 0x00, 0x01),
+			(MapLocation.Cardia2, 0x00, 0x01),
+			(MapLocation.Cardia4, 0x00, 0x01),
+			(MapLocation.Cardia5, 0x00, 0x01),
+			(MapLocation.Cardia6, 0x00, 0x01),
+			(MapLocation.BahamutCave1, 0x00, 0x01),
+			(MapLocation.CastleOrdeals1, 0x00, 0x02),
+			(MapLocation.MirageTower1, 0x00, 0x02),
+			(MapLocation.Gaia, 0x00, 0x02),
+			(MapLocation.Lefein, 0x02, 0x04),
+		};
+
+		public void UpdateOWFormations(int safeX, int safeY )
+		{
+			var encountersData = new Encounters(this);
+
+			// Imp+Iguana / Imp+Sauria
+			encountersData.formations[0x06].pattern = FormationPattern.Mixed;
+			encountersData.formations[0x06].spriteSheet = FormationSpriteSheet.ImpWolfIguanaGiant;
+			encountersData.formations[0x06].enemy1 = 0x00;
+			encountersData.formations[0x06].enemy2 = 0x08;
+			encountersData.formations[0x06].enemy3 = 0x06;
+			encountersData.formations[0x06].gfxOffset1 = (int)FormationGFX.Sprite1;
+			encountersData.formations[0x06].gfxOffset2 = (int)FormationGFX.Sprite3;
+			encountersData.formations[0x06].gfxOffset3 = (int)FormationGFX.Sprite3;
+			encountersData.formations[0x06].palette1 = 0x1E;
+			encountersData.formations[0x06].palette2 = 0x01;
+			encountersData.formations[0x06].paletteAssign1 = 2;
+			encountersData.formations[0x06].paletteAssign2 = 1;
+			encountersData.formations[0x06].paletteAssign3 = 2;
+			encountersData.formations[0x06].minmax1 = (2, 4);
+			encountersData.formations[0x06].minmax2 = (0, 0);
+			encountersData.formations[0x06].minmax3 = (0, 1);
+			encountersData.formations[0x06].minmax4 = (0, 0);
+			encountersData.formations[0x06].minmaxB1 = (2, 6);
+			encountersData.formations[0x06].minmaxB2 = (1, 2);
+			encountersData.formations[0x06].unrunnableA = false;
+			encountersData.formations[0x06].unrunnableB = false;
+			encountersData.formations[0x06].supriseFactor = 0x04;
+
+			// SandShark / SandShark+Kyzoku
+			encountersData.formations[0x0C].pattern = FormationPattern.Mixed;
+			encountersData.formations[0x0C].spriteSheet = FormationSpriteSheet.SahagPirateSharkBigEye;
+			encountersData.formations[0x0C].enemy1 = 0x10;
+			encountersData.formations[0x0C].enemy2 = 0x11;
+			encountersData.formations[0x0C].gfxOffset1 = (int)FormationGFX.Sprite2;
+			encountersData.formations[0x0C].gfxOffset2 = (int)FormationGFX.Sprite3;
+			encountersData.formations[0x0C].palette1 = 0x30;
+			encountersData.formations[0x0C].palette2 = 0x35;
+			encountersData.formations[0x0C].paletteAssign1 = 2;
+			encountersData.formations[0x0C].paletteAssign2 = 1;
+			encountersData.formations[0x0C].minmax1 = (0, 0);
+			encountersData.formations[0x0C].minmax2 = (1, 1);
+			encountersData.formations[0x0C].minmax3 = (0, 0);
+			encountersData.formations[0x0C].minmax4 = (0, 0);
+			encountersData.formations[0x0C].minmaxB1 = (3, 4);
+			encountersData.formations[0x0C].minmaxB2 = (1, 2);
+			encountersData.formations[0x0C].unrunnableA = false;
+			encountersData.formations[0x0C].unrunnableB = false;
+			encountersData.formations[0x0C].supriseFactor = 0x04;
+
+			// Asp+Scorpion / Cobra+Scorpion
+			encountersData.formations[0x5B].pattern = FormationPattern.Small9;
+			encountersData.formations[0x5B].spriteSheet = FormationSpriteSheet.AspLobsterBullTroll;
+			encountersData.formations[0x5B].enemy1 = 0x21;
+			encountersData.formations[0x5B].enemy2 = 0x1F;
+			encountersData.formations[0x5B].enemy3 = 0x1E;
+			encountersData.formations[0x5B].gfxOffset1 = (int)FormationGFX.Sprite2;
+			encountersData.formations[0x5B].gfxOffset2 = (int)FormationGFX.Sprite1;
+			encountersData.formations[0x5B].gfxOffset3 = (int)FormationGFX.Sprite1;
+			encountersData.formations[0x5B].palette1 = 0x3F;
+			encountersData.formations[0x5B].palette2 = 0x2B;
+			encountersData.formations[0x5B].paletteAssign1 = 1;
+			encountersData.formations[0x5B].paletteAssign2 = 2;
+			encountersData.formations[0x5B].paletteAssign3 = 1;
+			encountersData.formations[0x5B].minmax1 = (0, 4);
+			encountersData.formations[0x5B].minmax2 = (0, 0);
+			encountersData.formations[0x5B].minmax3 = (1, 4);
+			encountersData.formations[0x5B].minmax4 = (0, 0);
+			encountersData.formations[0x5B].minmaxB1 = (2, 4);
+			encountersData.formations[0x5B].minmaxB2 = (2, 4);
+			encountersData.formations[0x5B].unrunnableA = false;
+			encountersData.formations[0x5B].unrunnableB = false;
+			encountersData.formations[0x5B].supriseFactor = 0x04;
+
+			// Sand Worm / Sand Worm
+			encountersData.formations[0x5C].pattern = FormationPattern.Large4;
+			encountersData.formations[0x5C].spriteSheet = FormationSpriteSheet.ImageGeistWormEye;
+			encountersData.formations[0x5C].enemy1 = 0x30;
+			encountersData.formations[0x5C].gfxOffset1 = (int)FormationGFX.Sprite3;
+			encountersData.formations[0x5C].palette1 = 0x30;
+			encountersData.formations[0x5C].palette2 = 0x30;
+			encountersData.formations[0x5C].paletteAssign1 = 1;
+			encountersData.formations[0x5C].paletteAssign2 = 1;
+			encountersData.formations[0x5C].minmax1 = (1, 1);
+			encountersData.formations[0x5C].minmax2 = (0, 0);
+			encountersData.formations[0x5C].minmax3 = (0, 0);
+			encountersData.formations[0x5C].minmax4 = (0, 0);
+			encountersData.formations[0x5C].minmaxB1 = (1, 3);
+			encountersData.formations[0x5C].minmaxB2 = (0, 0);
+			encountersData.formations[0x5C].unrunnableA = false;
+			encountersData.formations[0x5C].unrunnableB = false;
+			encountersData.formations[0x5C].supriseFactor = 0x04;
+
+			encountersData.Write(this);
+
+			// Update overworld domains
+			const int DomainCount = 64;
+
+			List<byte> easyDomain = new() { 0x06, 0x06, 0x06, 0x0C, 0x0C, 0x86, 0x86, 0x8C };
+			List<byte> hardDomain = new() { 0x86, 0x8C, 0x5B, 0xDB, 0x5C, 0x5C, 0xDB, 0xDC };
+			
+			var newFormations = new List<byte>();
+
+			List<int> safeDomain = new() {
+				(safeX + safeY * 8),
+				((safeX + 1) + safeY * 8),
+				((safeX + 2) + safeY * 8),
+				(safeX + (safeY + 1) * 8),
+				((safeX + 1) + (safeY + 1) * 8),
+				((safeX + 2) + (safeY + 1) * 8),
+				(safeX + (safeY + 2) * 8),
+				((safeX + 1) + (safeY + 2) * 8),
+				((safeX + 2) + (safeY + 2) * 8),
+			};
+
+			for (int i = 0; i < DomainCount; i++)
+			{
+				if (safeDomain.Contains(i))
+				{
+					newFormations.AddRange(easyDomain);
+				}
+				else
+				{
+					newFormations.AddRange(hardDomain);
+				}
+			}
+
+			Put(ZoneFormationsOffset, newFormations.ToArray());
+
+			//Update enemies names
+			var enemyText = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
+
+			enemyText[0x10] = "SndMAN"; 
+			enemyText[0x11] = "SndSHARK";
+			enemyText[0x21] = "SCORP";
+
+			WriteText(enemyText, EnemyTextPointerOffset, EnemyTextPointerBase, EnemyTextOffset);
+		}
+		public void DoDUpdateDialogues(NPCdata npcdata)
+		{
+			Dictionary<int, string> coneriaDialogues = new();
+
+			coneriaDialogues.Add(0x49, "I've spent my life\nlooking for\nthe YGGDRASIL, the\nmystical ship that can\nride the dunes!");
+			coneriaDialogues.Add(0x43, "The Desert is a harsh\nenvironment, each step\ntaken will deplete\nyour strength.");
+			coneriaDialogues.Add(0x4B, "The key to not get lost\nin the Desert is to take\nnotes of the landmarks\nthat cross your journey.");
+
+			InsertDialogs(coneriaDialogues);
+
+			npcdata.SetRoutine((ObjectId)0x37, newTalkRoutines.Talk_norm);
+			npcdata.GetTalkArray((ObjectId)0x37)[(int)TalkArrayPos.dialogue_1] = 0x49;
+			npcdata.GetTalkArray((ObjectId)0x37)[(int)TalkArrayPos.dialogue_2] = 0x49;
+			npcdata.GetTalkArray((ObjectId)0x37)[(int)TalkArrayPos.dialogue_3] = 0x49;
+		}
 		public List<MapEdit> ConvertTileArrayToMapEdit(List<List<byte>> mapedit, int target_x, int target_y)
 		{
 			List<MapEdit> convertedMapEdit = new();
@@ -310,11 +503,8 @@ namespace FF1Lib
 
 			return convertedMapEdit;
 		}
-
-
 		public List<MapDirection> InvalidDirections(MapDirection direction)
 		{
-
 			List<MapDirection> invalidDirections = new();
 
 			invalidDirections.Add((MapDirection)(((int)direction + 4) % 8));
@@ -323,19 +513,14 @@ namespace FF1Lib
 
 			return invalidDirections;
 		}
-		public void GenerateDesert(OverworldMap overworldmap, ShipLocations shipLocations, MT19337 rng)
+		public ShipLocations GenerateDesert(OverworldMap overworldmap, OwMapExchange owMapExchange, NPCdata npcdata, MT19337 rng)
 		{
 
 			int LoopedValue(int value, int max) => (value < 0) ? (max + value) % max : (value % max);
 
 			List<List<MapLocation>> MapGrid = new();
 
-			for (int i = 0; i < 16; i++)
-			{
-				MapGrid.Add(new List<MapLocation> { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
-			}
-
-			List<(MapLocation, MapLocation)> nodepairs = new()
+			List<(MapLocation, MapLocation)> NodePairsList = new()
 			{
 				(MapLocation.ConeriaCastle1, MapLocation.TempleOfFiends1),
 				(MapLocation.ConeriaCastle1, MapLocation.MatoyasCave),
@@ -360,7 +545,7 @@ namespace FF1Lib
 				(MapLocation.Gaia, MapLocation.BahamutCave1)
 			};
 
-			List<(MapLocation, int)> distance = new()
+			List<(MapLocation, int)> NodeDistancesList = new()
 			{
 				(MapLocation.ConeriaCastle1, 1),
 				(MapLocation.Pravoka, 1),
@@ -387,45 +572,47 @@ namespace FF1Lib
 			List<(MapLocation, int, int)> nodePositions = new();
 			List<(MapLocation, MapDirection)> nodeDirection = new();
 
-			List<(int, int)> placedSquares = new();
-
 			bool validmap = false;
-			int attempt_count = 0;
+			int attemptCount = 0;
+			(int, int) startDomain = (0, 0);
+
 			while (!validmap)
 			{
-				attempt_count++;
+				attemptCount++;
+
+				// Clear previous attempt
 				nodePositions.Clear();
 				nodeDirection.Clear();
 				MapGrid.Clear();
 
+				// Create empty grid
 				for (int i = 0; i < 16; i++)
 				{
 					MapGrid.Add(new List<MapLocation> { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
 				}
 
+				// Put Coneria Castle
 				nodePositions.Add((MapLocation.ConeriaCastle1, Rng.Between(rng, 7, 9), Rng.Between(rng, 7, 9)));
 
 				MapGrid[nodePositions[0].Item2][nodePositions[0].Item3] = nodePositions[0].Item1;
 
+				startDomain = ((nodePositions[0].Item2 / 2) - 1, (nodePositions[0].Item3 / 2) - 1);
+
 				bool placementerror = false;
 
-				foreach (var node in distance)
+				// Place each nodes
+				foreach (var node in NodeDistancesList)
 				{
-					//bool validnode = false;
-					
-					//int node_check = 0;
-
-					//node_check++;
-
-					var loctoplace = nodepairs.Where(x => x.Item1 == node.Item1).ToList();
+					var locationsToPlace = NodePairsList.Where(x => x.Item1 == node.Item1).ToList();
 					var origin = (nodePositions.Find(x => x.Item1 == node.Item1).Item2, nodePositions.Find(x => x.Item1 == node.Item1).Item3);
 					var originDirection = nodeDirection.Find(x => x.Item1 == node.Item1).Item2;
 
-					foreach (var loc in loctoplace)
+					foreach (var loc in locationsToPlace)
 					{
 						MapDirection direction = MapDirection.North;
 						bool validSquare = false;
 						List<MapDirection> validDirections = Enum.GetValues(typeof(MapDirection)).Cast<MapDirection>().ToList();
+
 						if (loc.Item1 != MapLocation.ConeriaCastle1)
 						{
 							validDirections = validDirections.Where(x => !InvalidDirections(originDirection).Contains(x)).ToList();
@@ -433,12 +620,12 @@ namespace FF1Lib
 
 						List<MapDirection> invalidDirections = new();
 						(int, int) newOrigin = (0, 0);
-						int loop_check = 0;
+						int loopCheck = 0;
 
 						while (!validSquare)
 						{
-							loop_check++;
-							if (loop_check > 20)
+							loopCheck++;
+							if (loopCheck > 20)
 							{
 								placementerror = true;
 								break;
@@ -450,17 +637,8 @@ namespace FF1Lib
 							if (MapGrid[target_x][target_y] == 0)
 							{
 								validDirections = validDirections.Where(x => !InvalidDirections(direction).Contains(x)).ToList();
-
-								Console.WriteLine(loc.Item2);
-
-								foreach (var dir in validDirections)
-								{
-									Console.WriteLine(dir);
-								}
-							
-							newOrigin = (target_x, target_y);
-							//invalidDirections.AddRange(InvalidDirections(direction));
-							validSquare = true;
+								newOrigin = (target_x, target_y);
+								validSquare = true;
 							}
 						}
 
@@ -469,14 +647,13 @@ namespace FF1Lib
 						for (int i = 0; i < node.Item2; i++)
 						{
 							MapGrid[newOrigin.Item1][newOrigin.Item2] = SelectWeightedDoodads(doodadsWeight, rng);
-							placedSquares.Add((newOrigin.Item1, newOrigin.Item2));
 							validSquare = false;
-							loop_check = 0;
+							loopCheck = 0;
 
 							while (!validSquare)
 							{
-								loop_check++;
-								if (loop_check > 20)
+								loopCheck++;
+								if (loopCheck > 20)
 								{
 									placementerror = true;
 									break;
@@ -489,13 +666,6 @@ namespace FF1Lib
 								if (MapGrid[target_x][target_y] == 0)
 								{
 									validDirections = validDirections.Where(x => !InvalidDirections(direction).Contains(x)).ToList();
-
-									Console.WriteLine(loc.Item2);
-
-									foreach (var dir in validDirections)
-									{
-										Console.WriteLine(dir);
-									}
 									newOrigin = (target_x, target_y);
 									validSquare = true;
 								}
@@ -503,9 +673,8 @@ namespace FF1Lib
 						}
 
 						MapGrid[newOrigin.Item1][newOrigin.Item2] = loc.Item2;
-						placedSquares.Add((newOrigin.Item1, newOrigin.Item2));
 
-						if (distance.Select(x => x.Item1).Contains(loc.Item2))
+						if (NodeDistancesList.Select(x => x.Item1).Contains(loc.Item2))
 						{
 							nodePositions.Add((loc.Item2, newOrigin.Item1, newOrigin.Item2));
 							nodeDirection.Add((loc.Item2, direction));
@@ -513,9 +682,9 @@ namespace FF1Lib
 					}
 				}
 
-				List<MapLocation> cardias = new() { MapLocation.Cardia1, MapLocation.Cardia2, MapLocation.Cardia4, MapLocation.Cardia5, MapLocation.Cardia6 };
+				List<MapLocation> Cardias = new() { MapLocation.Cardia1, MapLocation.Cardia2, MapLocation.Cardia4, MapLocation.Cardia5, MapLocation.Cardia6 };
 
-				foreach (var cardia in cardias)
+				foreach (var cardia in Cardias)
 				{
 					var emptyRow = MapGrid.Select((x, i) => new { x, i }).Where(y => y.x.Contains(MapLocation.StartingLocation)).Select(x => x.i).ToList();
 					int selectedRow = emptyRow.PickRandom(rng);
@@ -527,15 +696,18 @@ namespace FF1Lib
 
 				if (placementerror)
 				{
-					if (attempt_count > 20)
+					if (attemptCount > 20)
 					{
+						/* 
+						// Debug
 						for (int i = 0; i < 16; i++)
 						{
 							var rowvalues = string.Join(";", MapGrid.Select(x => ((int)x[i]).ToString("X2")));
 							Console.WriteLine(rowvalues);
 						}
+						*/
 
-						throw new InsaneException("Bzzz!");
+						throw new InsaneException("Failed to generate map.");
 					}
 
 					validmap = false;
@@ -546,16 +718,9 @@ namespace FF1Lib
 				}
 			}
 
+			Console.WriteLine("Desert Generation Attempts: " + attemptCount);
 
-			Console.WriteLine("Attempt: " + attempt_count);
-
-			for (int i = 0; i < 16; i++)
-			{
-				var rowvalues = string.Join(";", MapGrid.Select(x => ((int)x[i]).ToString("X2")));
-				Console.WriteLine(rowvalues);
-
-			}
-
+			// Place Special Doodad
 			var cactusRow = MapGrid.Select((x, i) => new { x, i }).Where(y => y.x.Contains((MapLocation)(DoodadsType.CactusField + 0x100))).Select(x => x.i).ToList();
 			if (cactusRow.Any())
 			{
@@ -569,11 +734,9 @@ namespace FF1Lib
 					(selectedRow * 16) + Rng.Between(rng, 0, 15 - (generatedDoodads.Count))));
 
 				MapGrid[selectedColum][selectedRow] = 0x00;
-				Console.WriteLine(selectedColum + "/" + selectedRow);
 			}
 
-			List<byte> newTileList = new() { 0x03, 0x04, 0x05, 0x13, 0x14, 0x15 };
-
+			// Place Locations and Doodads
 			for (int x = 0; x < 16; x++)
 			{
 				for (int y = 0; y < 16; y++)
@@ -600,6 +763,7 @@ namespace FF1Lib
 
 								var locationToUpdate = EntrancesCoords.FindIndex(z => z.Item1 == MapGrid[x][y]);
 								EntrancesCoords[locationToUpdate] = (EntrancesCoords[locationToUpdate].Item1, (byte)(EntrancesCoords[locationToUpdate].Item2 + xPosition), (byte)(EntrancesCoords[locationToUpdate].Item3 + yPosition));
+								ShipCoords[locationToUpdate] = (ShipCoords[locationToUpdate].Item1, (byte)(ShipCoords[locationToUpdate].Item2 + xPosition), (byte)(ShipCoords[locationToUpdate].Item3 + yPosition));
 							}
 							else
 							{ 
@@ -610,35 +774,23 @@ namespace FF1Lib
 							}
 						}
 					}
-
 				}
-
 			}
-			/*
-			var desertRow = MapGrid.Select((x, i) => new { x, i }).Where(y => y.x.Contains(MapLocation.StartingLocation)).Select(x => x.i).ToList();
-			if (desertRow.Any())
-			{
-				int selectedRow = desertRow.PickRandom(rng);
-				var desertColumn = MapGrid[selectedRow].Select((x, i) => new { x, i }).Where(y => y.x == MapLocation.StartingLocation).Select(x => x.i).ToList();
-				int selectedColum = desertColumn.PickRandom(rng);
 
-				overworldmap.MapEditsToApply.Add(new List<MapEdit>
-								{
-								new MapEdit{X = (byte)(selectedColum * 16 + 1), Y = (byte)(selectedRow * 16 + 1), Tile = 0x37},
-								});
-			}*/
-
-
-			//var locationToUpdate = EntrancesCoords.FindIndex(z => z.Item1 == MapGrid[x][y]);
+			// Update Titan's Tunnel cooords individually
 			var titanEastIndex = EntrancesCoords.FindIndex(z => z.Item1 == MapLocation.TitansTunnelEast);
 			var titanWestIndex = EntrancesCoords.FindIndex(z => z.Item1 == MapLocation.TitansTunnelWest);
 			var sardaIndex = EntrancesCoords.FindIndex(z => z.Item1 == MapLocation.SardasCave);
 
 			EntrancesCoords[titanEastIndex] = (MapLocation.TitansTunnelEast, (byte)(EntrancesCoords[titanEastIndex].Item2 + EntrancesCoords[sardaIndex].Item2 - 2), (byte)(EntrancesCoords[titanEastIndex].Item3 + EntrancesCoords[sardaIndex].Item3 - 2));
+			ShipCoords[titanEastIndex] = (MapLocation.TitansTunnelEast, (byte)ShipCoords[sardaIndex].Item2, (byte)ShipCoords[sardaIndex].Item3);
 			EntrancesCoords[titanWestIndex] = (MapLocation.TitansTunnelWest, (byte)(EntrancesCoords[titanWestIndex].Item2 + EntrancesCoords[sardaIndex].Item2 - 2), (byte)(EntrancesCoords[titanWestIndex].Item3 + EntrancesCoords[sardaIndex].Item3 - 2));
+			ShipCoords[titanWestIndex] = (MapLocation.TitansTunnelWest, (byte)ShipCoords[sardaIndex].Item2, (byte)ShipCoords[sardaIndex].Item3);
 
+			// Update Exit teleports
 			const int teleportExitXOffset = 0x2C60;
 			const int teleportExitYOffset = 0x2C70;
+
 			List<MapLocation> exitToUpdate = new() { MapLocation.TitansTunnelEast, MapLocation.TitansTunnelWest, MapLocation.IceCave1, MapLocation.CastleOrdeals1, MapLocation.ConeriaCastle1, MapLocation.EarthCave1, MapLocation.GurguVolcano1, MapLocation.Onrac, MapLocation.MirageTower1 };
 
 			foreach (var exit in exitToUpdate)
@@ -651,16 +803,13 @@ namespace FF1Lib
 				this[teleportExitYOffset + index] = newY;
 			}
 
+			// Set starting location
 			var coneria_x = EntrancesCoords.Find(z => z.Item1 == MapLocation.ConeriaCastle1).Item2 - 7;
 			var coneria_y = EntrancesCoords.Find(z => z.Item1 == MapLocation.ConeriaCastle1).Item3 - 1;
+			
+			//PutInBank(0x00, 0xB010, Blob.FromHex($"{coneria_x:X2}{coneria_y:X2}"));
 
-
-
-			// Set starting location
-			PutInBank(0x00, 0xB010, Blob.FromHex($"{coneria_x:X2}{coneria_y:X2}"));
-
-			//shipLocations
-
+			// Set Ship locations
 			var locationData = new OwLocationData(this);
 			List<ShipLocation> newShipLocations = new();
 
@@ -671,21 +820,17 @@ namespace FF1Lib
 			foreach (var entrance in entranceList)
 			{
 				var targetMapLocation = MapLocationToOWTeleporterIndex.Find(x => x.Item2 == entrance).Item1;
-				var targetCoord = EntrancesCoords.Find(z => z.Item1 == targetMapLocation);
+				var targetCoord = ShipCoords.Find(z => z.Item1 == targetMapLocation);
 				newShipLocations.Add(new ShipLocation { TeleporterIndex = (byte)entrance, X = targetCoord.Item2, Y = targetCoord.Item3 });
 			}
 
 			newShipLocations.Add(new ShipLocation { TeleporterIndex = (byte)255, X = (byte)(coneria_x + 7), Y = (byte)(coneria_y + 7) });
 
-			shipLocations = new ShipLocations(locationData, newShipLocations.ToArray());
+			var shipLocations = new ShipLocations(locationData, newShipLocations.ToArray());
 
-			// Set ship location
-			//owmapexchange.Data.ShipLocations = owmapexchange.Data.ShipLocations.Where(x => x.TeleporterIndex != 255).ToArray();
-			//owmapexchange.Data.ShipLocations.Append(new ShipLocation { TeleporterIndex = 255, X = (byte)(coneria_x + 7), Y = (byte)(coneria_y + 7) });
+			owMapExchange.SetStartingLocation(new Sanity.SCCoords(coneria_x + 7, coneria_y + 7));
 
-			//PutInBank(0x00, 0xB001, Blob.FromHex($"{(coneria_x+7):X2}{(coneria_y+7):X2}"));
-
-			// Palette
+			// Update tiles and palette
 			for (int i = 1; i<16; i+=4)
 			{
 				Put(0x0380+i, Blob.FromHex("37"));
@@ -751,21 +896,21 @@ namespace FF1Lib
 					continue;
 				}
 
-				byte tileprop = 0x0F;	                             // can't walk over
+				byte tileprop = 0x0F;     // can't walk over                           
 				Put(0x0000 + tile.Item1 * 2, new byte[] { tileprop });
 			}
 
-			Put(0x0000 + (int)OWTile.Desert * 2, new byte[] { 0x0A }); // Update desert tile to allow ship
+			Put(0x0000 + (int)OWTile.Desert * 2, new byte[] { 0xEA }); // Update desert tile to allow ship
+			Put(0x0000 + (int)0x46 * 2, new byte[] { (byte)(Get(0x0000 + 0x46 * 2, 1)[0] & 0b1111_1110) }); // Update Waterfall tile to not require canoe
 
-			// Placement
 
-			// Ship
+			// Turn Ship into the Yggdrasil
 			// FlyAirship - use ship
 			PutInBank(0x1F, 0xC216, Blob.FromHex("00")); // Ship visibility
 			PutInBank(0x1F, 0xC220, Blob.FromHex("01")); // Ship X
 			PutInBank(0x1F, 0xC22A, Blob.FromHex("02")); // Ship Y
 			PutInBank(0x1F, 0xC22F, Blob.FromHex("04"));
-			PutInBank(0x1F, 0xC235, Blob.FromHex("46")); //Music track
+			PutInBank(0x1F, 0xC235, Blob.FromHex("44")); //Music track
 			PutInBank(0x1F, 0xC238, Blob.FromHex("EAEAEA")); // Airship animation
 
 			// ProcessOWInput - check for ship
@@ -775,6 +920,54 @@ namespace FF1Lib
 			PutInBank(0x1F, 0xC6BC, Blob.FromHex("4CE2C6"));
 			PutInBank(0x1F, 0xC6E8, Blob.FromHex("01")); // Ship X
 			PutInBank(0x1F, 0xC6F0, Blob.FromHex("02")); // Ship Y
+			PutInBank(0x1F, 0xC6F9, Blob.FromHex("4E")); // Ship Y
+
+			// OWCanMove
+			PutInBank(0x1F, 0xC506, Blob.FromHex("00")); // No battle in Ship
+
+			//DrawPlayerMapmanSprite
+			PutInBank(0x1F, 0xE289, Blob.FromHex("04")); // Don't animate ship
+			PutInBank(0x1F, 0xE28E, Blob.FromHex("A900"));
+
+			// Update music
+			PutInBank(0x1F, 0xC759, Blob.FromHex("4E4E4E4E4444444444"));
+
+			// Remove Wave sound
+			PutInBank(0x1F, 0xC112, Blob.FromHex("00"));
+
+			var gameVariableText = "A290908D9B8A9C929500"; // SHIP+spill on airship
+	
+			Put(0x2B5D0, Blob.FromHex(gameVariableText));
+
+			// Remove damage tile sound
+			PutInBank(0x1F, 0xC7E7, Blob.FromHex("EAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
+
+			// Disable Minimap
+			PutInBank(0x1F, 0xC1A9, Blob.FromHex("00"));
+
+			UpdateOWFormations(startDomain.Item1, startDomain.Item2);
+			DoDUpdateDialogues(npcdata);
+
+			return shipLocations;
+		}
+
+		public void EnableDamageTile()
+		{
+			// 
+			PutInBank(0x1E, 0xB000, Blob.FromHex("A542C901D00E20FBC7A54429E0C9E0D0034CDEC760"));
+			PutInBank(0x1F, 0xC33C, Blob.FromHex("A91E2003FE4C00B0"));
+
+			PutInBank(0x0E, 0xB267, Blob.FromHex("E0")); // Expand OWTP_SPEC_MASK to 0b1110_0000
+			PutInBank(0x1F, 0xC4DA, Blob.FromHex("E0"));
+			PutInBank(0x1F, 0xC6B4, Blob.FromHex("E0"));
+
+			List<int> owDamageTileList = new() { 0x45, 0x55, 0x62, 0x63, 0x72, 0x73 };
+
+			foreach (var tile in owDamageTileList)
+			{
+				var tileProperty = Get(0x0000 + tile * 2, 1);
+				Put(0x0000 + tile * 2, new byte[] { (byte)(tileProperty[0] | 0b1110_0000) });
+			}
 		}
 
 		public MapLocation SelectWeightedDoodads(List<int> weight, MT19337 rng)
@@ -852,7 +1045,6 @@ namespace FF1Lib
 				int waterX = Rng.Between(rng, 0, width - waterWidth);
 				int waterY = Rng.Between(rng, 0, height - waterHeight);
 				var palmCount = Rng.Between(rng, 3, 5);
-				//List<OWTile> validTiles = new() { OWTile.DesertRock, OWTile.DesertRocks };
 
 				List<int> availableTiles = Enumerable.Range(0, width * height).ToList();
 				doodadsTilemap = Enumerable.Repeat((byte)OWTile.Desert, width * height).ToList();
@@ -892,7 +1084,6 @@ namespace FF1Lib
 			}
 			else if (type == DoodadsType.Mountains)
 			{
-
 				int blob1Width = Rng.Between(rng, 2, 4);
 				int blob1Height = Rng.Between(rng, 2, 4);
 				int blob2Width = Rng.Between(rng, 2, 4);
@@ -999,20 +1190,13 @@ namespace FF1Lib
 				doodadsTilemap = Enumerable.Repeat((byte)OWTile.DesertCactus, 1).ToList();
 			}
 
-			List<List<byte>> finalFoodadsTilemap = new();
+			List<List<byte>> finalDoodadsTilemap = new();
 			for (int i = 0; i < height; i++)
 			{
-				finalFoodadsTilemap.Add(doodadsTilemap.GetRange(i * width, width).ToList());
+				finalDoodadsTilemap.Add(doodadsTilemap.GetRange(i * width, width).ToList());
 			}
 
-			return finalFoodadsTilemap;
+			return finalDoodadsTilemap;
 		}
-
-
-	
-
 	}
-
-		
-	
 }

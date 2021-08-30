@@ -26,7 +26,7 @@ namespace FF1Lib
 		[Description("Crescent Start")]
 		CrecsentStart,
 
-		[Description("Desert")]
+		[Description("Desert of Death")]
 		Desert,
 
 		[Description("No Overworld")]
@@ -92,6 +92,7 @@ namespace FF1Lib
 		public void ExecuteStep2()
 		{
 			domains.LoadTable();
+			locations.LoadData();
 
 			foreach (var df in data.DomainFixups) domains.SwapDomains(df.From, df.To);
 
@@ -149,6 +150,14 @@ namespace FF1Lib
 			locations.LoadData();
 
 			locations.AirShipLocation = coords;
+
+			locations.StoreData();
+		}
+		public void SetStartingLocation(SCCoords coords)
+		{
+			locations.LoadData();
+
+			locations.StartingLocation = coords;
 
 			locations.StoreData();
 		}

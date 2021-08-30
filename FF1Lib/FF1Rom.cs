@@ -148,8 +148,6 @@ namespace FF1Lib
 
 			var shipLocations = owMapExchange?.ShipLocations ?? OwMapExchange.GetDefaultShipLocations(this);
 
-			GenerateDesert(overworldMap, shipLocations, rng);
-
 			var maps = ReadMaps();
 			var shopItemLocation = ItemLocations.CaravanItemShop1;
 			var oldItemNames = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
@@ -212,6 +210,16 @@ namespace FF1Lib
 					overworldMap.PutStandardTeleport(TeleportIndex.EarthCave2, teleporters.EarthCave2, OverworldTeleportIndex.EarthCave1);
 					maps[(int)MapId.EarthCaveB2] = earthB2.Map;
 				}
+			}
+
+			if (flags.SanityCheckerV2 && flags.OwMapExchange == OwMapExchanges.Desert)
+			{
+				shipLocations = GenerateDesert(overworldMap, owMapExchange, npcdata, rng);
+			}
+
+			if ((bool)flags.OWDamageTiles || (flags.SanityCheckerV2 && flags.OwMapExchange == OwMapExchanges.Desert))
+			{
+				EnableDamageTile();
 			}
 
 			var flippedMaps = new List<MapId>();
@@ -397,7 +405,7 @@ namespace FF1Lib
 				EnableChaosRush();
 			}
 
-			if ((bool)flags.FreeBridge)
+			if ((bool)flags.FreeBridge && (flags.OwMapExchange != OwMapExchanges.Desert))
 			{
 				EnableFreeBridge();
 			}
@@ -422,7 +430,7 @@ namespace FF1Lib
 				EnableFreeCanal((bool)flags.NPCItems, npcdata);
 			}
 
-			if ((bool)flags.FreeCanoe)
+			if ((bool)flags.FreeCanoe || (flags.OwMapExchange == OwMapExchanges.Desert))
 			{
 				EnableFreeCanoe();
 			}

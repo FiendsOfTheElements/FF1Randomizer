@@ -21,22 +21,6 @@
 		}
 	],
 	"DomainFixups": [
-		{
-			"From": 44,
-			"To": 54
-		},
-		{
-			"From": 36,
-			"To": 55
-		},
-		{
-			"From": 28,
-			"To": 62
-		},
-		{
-			"From": 27,
-			"To": 63
-		}
 	],
 	"OverworldCoordinates": {
 		"Coneria": {

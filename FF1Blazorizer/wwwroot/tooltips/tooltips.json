@@ -1892,7 +1892,12 @@
                 "screenshot": "procGenEarth2.png",
                 "description": "Randomly generates the map for the second level of Earth Cave, creating an entirely new map with each seed.\nNote: These maps have a chance to generate floors that cannot be completed (stairs set in areas that cannot be reached by the Light Warriors). Use with caution."
         },
-
+        {
+                "Id": "OWDamageTilesCheckBox",
+                "title": "Marsh and Desert Tiles Deal Damage",
+                "screenshot": "",
+                "description": "Marsh and Desert tiles on the overworld deal damage to the party like Lava and Ice tiles in dungeons."
+        },
         {
                 "Id": "startingLevelDropDown",
                 "title": "Starting Level",
