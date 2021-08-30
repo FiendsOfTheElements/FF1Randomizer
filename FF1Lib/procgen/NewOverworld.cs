@@ -759,7 +759,7 @@ namespace FF1Lib.Procgen
 	    }
 	    this.OwnRegions();
 	    OwRegion.Cutout(this.Traversable_regionmap, this.Traversable_regionlist, point, feature.GetLength(1), feature.GetLength(0));
-	    OwRegion.Cutout(this.Traversable_regionmap, this.Traversable_regionlist, point, feature.GetLength(1), feature.GetLength(0));
+	    OwRegion.Cutout(this.Biome_regionmap, this.Biome_regionlist, point, feature.GetLength(1), feature.GetLength(0));
 	}
 
 	public ValueTuple<bool,SCCoords> PlaceFeature(int[,] regionMap, OwRegion region, OwFeature feature) {
@@ -771,10 +771,20 @@ namespace FF1Lib.Procgen
 	    SCCoords point = new SCCoords(0, 0);
 	    bool found = false;
 	    foreach (var p in points) {
-		if (this.CheckFit(regionMap, region, p, w, h)) {
-		    point = p;
-		    found = true;
-		    break;
+		if (feature.MountainCave) {
+		    if (this.Tilemap[p.Y-1, p.X-1] == OverworldTiles.MOUNTAIN &&
+			this.Tilemap[p.Y-1, p.X] == OverworldTiles.MOUNTAIN &&
+			this.Tilemap[p.Y-1, p.X+1] == OverworldTiles.MOUNTAIN)
+		    {
+			point = new SCCoords(p.X, p.Y-1);
+			found = true;
+		    }
+		} else {
+		    if (this.CheckFit(regionMap, region, p, w, h)) {
+			point = p;
+			found = true;
+			break;
+		    }
 		}
 	    }
 	    if (!found) {
@@ -795,8 +805,10 @@ namespace FF1Lib.Procgen
 
 	    this.RenderFeature(point, feature.Tiles);
 
+	    this.OwnPlacements();
 	    foreach (var kv in feature.Entrances) {
 		this.FeatureCoordinates[kv.Key] = new SCCoords(point.X+kv.Value.X, point.Y+kv.Value.Y);
+		Console.WriteLine($"Placed {kv.Key} at {point.X+kv.Value.X}, {point.Y+kv.Value.Y}");
 	    }
 
 	    return ValueTuple.Create(true, point);
@@ -912,6 +924,29 @@ namespace FF1Lib.Procgen
 		new GenerationStep("PlacePravoka", new object[]{}),
 		new GenerationStep("PlaceIsolated", new object[]{OverworldTiles.GAIA_TOWN, true}),
 		new GenerationStep("PlaceRequiringCanoe", new object[]{OverworldTiles.ORDEALS_CASTLE}),
+		new GenerationStep("PlaceIsolated", new object[]{OverworldTiles.TITANS_TUNNEL_WEST, false}),
+
+		new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.MIRAGE_TOWER,
+								new int[]{OverworldTiles.DESERT_REGION}, false, true, true}),
+		new GenerationStep("PlaceOnCoast", new object[]{OverworldTiles.ONRAC_TOWN}),
+		new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.TITANS_TUNNEL_EAST, null, true, false, false}),
+		new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.MATOYAS_CAVE_FEATURE, null, true, false, false}),
+		new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.DWARF_CAVE_FEATURE, null, true, false, false}),
+		new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.ELFLAND_TOWN_CASTLE,
+								      new int[]{OverworldTiles.LAND_REGION,
+										 OverworldTiles.GRASS_REGION,
+										 OverworldTiles.FOREST_REGION},
+										 true, false, false}),
+		new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.MARSH_CAVE_FEATURE,
+								new int[]{OverworldTiles.MARSH_REGION}, true, false, false}),
+		new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.ASTOS_CASTLE, null, true, false, false}),
+		new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.MELMOND_TOWN, null, true, false, false}),
+		new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.CRESCENT_LAKE_CITY,
+								      new int[]{OverworldTiles.LAND_REGION,
+										 OverworldTiles.GRASS_REGION,
+										 OverworldTiles.FOREST_REGION,
+										 OverworldTiles.MARSH_REGION},
+								      true, false, false}),
 
                 new GenerationStep("ApplyFilter", new object[]{mt.apply_shores1}),
                 new GenerationStep("ApplyFilter", new object[]{mt.apply_shores2}),

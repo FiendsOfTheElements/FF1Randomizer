@@ -148,6 +148,8 @@ namespace FF1Lib.Procgen
 	public const int DESERT_REGION = 7;
 	public const int OTHER_REGION = 8;
 
+	public const int MainOceanRegionId = 0;
+
 	public byte[][] PreShoreRegionTypes = new byte[][] {
 	    new byte[] { LAND, SHORE_NW, SHORE_NE, SHORE_SW, SHORE_SE },
 	    new byte[] { OCEAN, SHORE_W, SHORE_N, SHORE_E, SHORE_S },
@@ -436,8 +438,20 @@ namespace FF1Lib.Procgen
 		{"Airship", new SCCoords(4, 3)}
 	    });
 
-	    public static OwFeature EARTH_CAVE_FEATURE = new OwFeature(EARTH_CAVE, "EarthCave1", true);
-	    public static OwFeature DWARF_CAVE_FEATURE = new OwFeature(DWARF_CAVE, "DwarfCave", true);
+	public static OwFeature EARTH_CAVE_FEATURE = new OwFeature(EARTH_CAVE, "EarthCave1", true);
+	public static OwFeature DWARF_CAVE_FEATURE = new OwFeature(DWARF_CAVE, "DwarfCave", true);
+	public static OwFeature TITANS_TUNNEL_WEST = new OwFeature(TITAN_CAVE_W, "TitansTunnelWest", true);
+	public static OwFeature TITANS_TUNNEL_EAST = new OwFeature(TITAN_CAVE_E, "TitansTunnelEast", true);
+	public static OwFeature MATOYAS_CAVE_FEATURE = new OwFeature(MATOYAS_CAVE, "MatoyasCave", true);
+	public static OwFeature SARDAS_CAVE_FEATURE = new OwFeature(SARDAS_CAVE, "SardasCave", true);
+
+	public static OwFeature MARSH_CAVE_FEATURE = new OwFeature(MARSH_CAVE, "MarshCave1", false);
+	public static OwFeature BAHAMUTS_CAVE_FEATURE = new OwFeature(BAHAMUTS_CAVE, "BahamutCave1", false);
+	public static OwFeature CARDIA_1_FEATURE = new OwFeature(CARDIA_1, "Cardia1", false);
+	public static OwFeature CARDIA_2_FEATURE = new OwFeature(CARDIA_2, "Cardia2", false);
+	public static OwFeature CARDIA_3_FEATURE = new OwFeature(CARDIA_3, "Cardia3", false);
+	public static OwFeature CARDIA_4_FEATURE = new OwFeature(CARDIA_4, "Cardia4", false);
+	public static OwFeature CARDIA_5_FEATURE = new OwFeature(CARDIA_5, "Cardia5", false);
 
     public OverworldTiles() {
         this.expand_mountains = new OwTileFilter(
@@ -644,16 +658,28 @@ namespace FF1Lib.Procgen
 	non_forest_tiles.Remove(FOREST_SW);
 	non_forest_tiles.Remove(FOREST_SE);
 
+	var mountain_tiles = new HashSet<byte>();
+	mountain_tiles.Add(MOUNTAIN);
+	mountain_tiles.Add(MOUNTAIN_N);
+	mountain_tiles.Add(MOUNTAIN_E);
+	mountain_tiles.Add(MOUNTAIN_S);
+	mountain_tiles.Add(MOUNTAIN_W);
+	mountain_tiles.Add(MOUNTAIN_NW);
+	mountain_tiles.Add(MOUNTAIN_NE);
+	mountain_tiles.Add(MOUNTAIN_SW);
+	mountain_tiles.Add(MOUNTAIN_SE);
+	mountain_tiles.Add(EARTH_CAVE);
+	mountain_tiles.Add(ICE_CAVE);
+	mountain_tiles.Add(DWARF_CAVE);
+	mountain_tiles.Add(MATOYAS_CAVE);
+	mountain_tiles.Add(TITAN_CAVE_E);
+	mountain_tiles.Add(TITAN_CAVE_W);
+	mountain_tiles.Add(SARDAS_CAVE);
+
         var non_mountain_tiles = new HashSet<byte>(allTiles);
-	non_mountain_tiles.Remove(MOUNTAIN);
-	non_mountain_tiles.Remove(MOUNTAIN_N);
-	non_mountain_tiles.Remove(MOUNTAIN_E);
-	non_mountain_tiles.Remove(MOUNTAIN_S);
-	non_mountain_tiles.Remove(MOUNTAIN_W);
-	non_mountain_tiles.Remove(MOUNTAIN_NW);
-	non_mountain_tiles.Remove(MOUNTAIN_NE);
-	non_mountain_tiles.Remove(MOUNTAIN_SW);
-	non_mountain_tiles.Remove(MOUNTAIN_SE);
+	foreach (var m in mountain_tiles) {
+	    non_mountain_tiles.Remove(m);
+	}
 
         var pit_caves = new HashSet<byte>();
 	pit_caves.Add(MARSH_CAVE);
@@ -1084,32 +1110,32 @@ namespace FF1Lib.Procgen
 	    new Rule[] {
 		new Rule(new byte[3,3] {
 		    {STAR, STAR,     STAR},
-		    {STAR, MOUNTAIN, MOUNTAIN},
+		    {STAR, MOUNTAIN, _},
 		    {STAR, MOUNTAIN,  STAR}},
 		    MOUNTAIN),
 		new Rule(new byte[3,3] {
 		    {STAR,   STAR,    STAR},
-		    {MOUNTAIN, MOUNTAIN,  STAR},
+		    {_,      MOUNTAIN,  STAR},
 		    {STAR,   MOUNTAIN,  STAR}},
 		    MOUNTAIN),
 		new Rule(new byte[3,3] {
 		    {STAR,   MOUNTAIN, STAR},
-		    {MOUNTAIN, MOUNTAIN, STAR},
+		    {_,      MOUNTAIN, STAR},
 		    {STAR,    STAR,  STAR}},
 		    MOUNTAIN),
 		new Rule(new byte[3,3] {
 		    {STAR, MOUNTAIN,   STAR},
-		    {STAR, MOUNTAIN, MOUNTAIN},
-		    {STAR,   STAR,  STAR}},
+		    {STAR, MOUNTAIN, _},
+		    {STAR,     STAR,  STAR}},
 		    MOUNTAIN),
 
 		new Rule(new byte[3,3] {
-		    {STAR,   STAR,  STAR},
-		    {STAR, MOUNTAIN,  STAR},
-		    {STAR,   STAR,  STAR}},
+		    {STAR,   STAR,   STAR},
+		    {STAR, MOUNTAIN, STAR},
+		    {STAR,   STAR,   STAR}},
 		    LAND),
 
-	    }, allTiles, null, null);
+	    }, allTiles, mountain_tiles, null);
 
 
         this.PreShoreRegionTypeMap = new Dictionary<byte, int>();
