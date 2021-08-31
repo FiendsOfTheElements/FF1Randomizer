@@ -733,7 +733,7 @@ namespace FF1Lib.Procgen
 
 	public bool CheckFit(int[,] regionMap, OwRegion region, SCCoords p, int w, int h) {
 
-	    if (this.Feature_weightmap[p.Y+h/2, p.X+h/2] > 0) {
+	    if (this.Feature_weightmap[p.Y+h/2, p.X+w/2] > 15) {
 		return false;
 	    }
 
@@ -822,7 +822,7 @@ namespace FF1Lib.Procgen
 		for (int x2 = Math.Max(point.X-radius, 0); x2 < Math.Min(point.X+radius, 255); x2++) {
 		    int dist = (int)Math.Sqrt((x-x2)*(x-x2) + (y-y2)*(y-y2));
 		    if (dist <= radius) {
-			this.Feature_weightmap[y2, x2] = dist;
+			this.Feature_weightmap[y2, x2] += dist;
 		    }
 		}
 	    }
