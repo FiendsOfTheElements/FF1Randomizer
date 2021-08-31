@@ -1983,6 +1983,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RenounceChestInfo"));
 			}
 		}
+		public bool RenounceCantHoldRed
+		{
+			get => Preferences.RenounceCantHoldRed;
+			set
+			{
+				Preferences.RenounceCantHoldRed = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RenounceCantHoldRed"));
+			}
+		}
 		public bool NoPartyShuffle
 		{
 			get => Flags.NoPartyShuffle;

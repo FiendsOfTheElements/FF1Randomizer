@@ -156,6 +156,12 @@
 				"screenshot": "incentivizeOpalCheckBox.png",
 				"description": "Forgo the \"Chest Information\" subflag (found under Shop Information) if it is enabled. This will revert to showing only the item name when opening chests."
         },
+		{
+			"Id": "renounceCantHoldRed",
+			"title": "Renounce Cant Hold Red",
+			"screenshot": null,
+			"description": "When enabled, displays \"Can't Hold\" screens in default menu color even when \"Chest Information\" subflag is enabled."
+		},
         {
                 "Id": "cropScreen",
                 "title": "Crop Friendly Screen",
