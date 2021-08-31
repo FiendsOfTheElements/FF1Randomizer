@@ -95,22 +95,22 @@ namespace FF1Lib
 				MapEditsToApply.Add(MirageDock);
 				mapLocationRequirements[MapLocation.MirageTower1].Add(MapChange.Ship | MapChange.Canal | MapChange.Chime);
 			}
-			if ((bool)flags.MapAirshipDock)
+			if ((bool)flags.MapAirshipDock && !flags.DisableOWMapModifications)
 			{
 				MapEditsToApply.Add(AirshipDock);
 				mapLocationRequirements[MapLocation.AirshipLocation].Add(MapChange.Ship | MapChange.Canal);
 			}
-			if ((bool)flags.MapBahamutCardiaDock)
+			if ((bool)flags.MapBahamutCardiaDock && !flags.DisableOWMapModifications)
 			{
 				MapEditsToApply.Add(BahamutCardiaDock);
 				mapLocationRequirements[MapLocation.BahamutCave1].Add(MapChange.Ship | MapChange.Canal);
 				mapLocationRequirements[MapLocation.Cardia1].Add(MapChange.Ship | MapChange.Canal);
 			}
-			if ((bool)flags.MapLefeinRiver) {
+			if ((bool)flags.MapLefeinRiver && !flags.DisableOWMapModifications) {
 			    MapEditsToApply.Add(LefeinRiverDock);
 			    mapLocationRequirements[MapLocation.Lefein].Add(MapChange.Ship | MapChange.Canal | MapChange.Canoe);
 		        }
-			if ((bool)flags.MapGaiaMountainPass) {
+			if ((bool)flags.MapGaiaMountainPass && !flags.DisableOWMapModifications) {
 			    MapEditsToApply.Add(GaiaMountainPass);
 			    if ((bool)flags.MapLefeinRiver) {
 				// If Lefein river dock is on, then Gaia also becomes ship-accessible
@@ -147,7 +147,7 @@ namespace FF1Lib
 				if ((bool)flags.MapCanalBridge)
 				{
 					MapChange dwarvesToNorthwest = MapChange.Canoe;
-					if ((bool)flags.MapDwarvesNorthwest)
+					if ((bool)flags.MapDwarvesNorthwest && !flags.DisableOWMapModifications)
 					{
 						MapEditsToApply.Add(DwarvesNorthwestGrass);
 						dwarvesToNorthwest = MapChange.None;
@@ -954,11 +954,11 @@ namespace FF1Lib
 		public const byte Ocean = 0x17;
 		public const byte CoastRight = 0x18;
 		public const byte CoastBottomLeft = 0x26;
-	        public const byte GrassyMid = 0x54;
-	        public const byte GrassTopLeft = 0x60;
-	        public const byte GrassTopRight = 0x61;
-	        public const byte GrassBottomLeft = 0x70;
-	        public const byte GrassBottomRight = 0x71;
+	    public const byte GrassyMid = 0x54;
+	    public const byte GrassTopLeft = 0x60;
+	    public const byte GrassTopRight = 0x61;
+	    public const byte GrassBottomLeft = 0x70;
+	    public const byte GrassBottomRight = 0x71;
 
 		public static List<MapEdit> OnracDock =
 			new List<MapEdit>

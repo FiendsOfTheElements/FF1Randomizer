@@ -54,6 +54,8 @@ namespace FF1Lib
 
 		#endregion
 
+		public bool QuickMinimapLoad { get; set; } = false;
+
 		public bool LooseItemsForwardPlacement { get; set; } = false;
 
 		public bool LooseItemsSpreadPlacement { get; set; } = false;
@@ -246,6 +248,7 @@ namespace FF1Lib
 		public bool? SwoleBahamut { get; set; } = false;
 		public bool? ConfusedOldMen { get; set; } = false;
 		public bool? GaiaShortcut { get; set; } = false;
+		public bool? OWDamageTiles { get; set; } = false;
 		public bool? MoveGaiaItemShop { get; set; } = false;
 		public bool? FlipDungeons { get; set; } = false;
 		public bool SpookyFlag { get; set; } = false;
@@ -631,11 +634,12 @@ namespace FF1Lib
 		public bool? EarlierRuby { get; set; } = false;
 		public bool? GuaranteedRuseItem { get; set; } = false;
 		public bool? DisableStunTouch { get; set; } = false;
-		public bool? MapCanalBridge => (NPCItems) | (NPCFetchItems) | MapOpenProgression | MapOpenProgressionExtended;
-		public bool? MapOnracDock => MapOpenProgressionDocks;
-		public bool? MapMirageDock => MapOpenProgressionDocks;
-		public bool? MapConeriaDwarves => MapOpenProgression;
-		public bool? MapVolcanoIceRiver => MapOpenProgression;
+		public bool? MapCanalBridge => ((NPCItems) | (NPCFetchItems) | MapOpenProgression | MapOpenProgressionExtended) & (OwMapExchange != OwMapExchanges.Desert);
+		public bool DisableOWMapModifications => SanityCheckerV2 & (OwMapExchange != OwMapExchanges.None | OwMapExchange != OwMapExchanges.CrecsentStart | OwMapExchange != OwMapExchanges.ElflandStart | OwMapExchange != OwMapExchanges.MelmondStart | OwMapExchange != OwMapExchanges.Random);
+		public bool? MapOnracDock => MapOpenProgressionDocks & !DisableOWMapModifications;
+		public bool? MapMirageDock => MapOpenProgressionDocks & !DisableOWMapModifications;
+		public bool? MapConeriaDwarves => MapOpenProgression & !DisableOWMapModifications;
+		public bool? MapVolcanoIceRiver => MapOpenProgression & !DisableOWMapModifications;
 		// public bool? MapDwarvesNorthwest => MapOpenProgression;
 		// public bool? MapAirshipDock => MapOpenProgression;
 
@@ -662,11 +666,12 @@ namespace FF1Lib
 		public bool? IncentivizeBottle => (!(NPCFetchItems ?? false) && (IncentivizeMainItems ?? false)) || ((NPCFetchItems ?? false) && (IncentivizeFetchItems ?? false));
 		public bool NoOverworld => (SanityCheckerV2 & OwMapExchange == OwMapExchanges.NoOverworld);
 		public bool? IsShipFree => FreeShip | NoOverworld;
-		public bool? IsAirshipFree => FreeAirship & !NoOverworld;
-		public bool? IsCanalFree => FreeCanal & !NoOverworld;
-		public bool? IsFloaterRemoved => (NoFloater|IsAirshipFree) & !NoOverworld;
+		public bool? IsAirshipFree => FreeAirship & !NoOverworld & !(OwMapExchange == OwMapExchanges.Desert);
+		public bool? IsBridgeFree => FreeBridge | NoOverworld;
+		public bool? IsCanalFree => (FreeCanal & !NoOverworld) | (OwMapExchange == OwMapExchanges.Desert);
+		public bool? IsFloaterRemoved => ((NoFloater|IsAirshipFree) & !NoOverworld) | (OwMapExchange == OwMapExchanges.Desert);
 		public bool IncentivizeBridge => false;
-		public bool? IncentivizeCanoe => NPCItems & IncentivizeCanoeItem & !FreeCanoe;
+		public bool? IncentivizeCanoe => NPCItems & IncentivizeCanoeItem & !FreeCanoe & !(OwMapExchange == OwMapExchanges.Desert);
 		public bool? IncentivizeLute => NPCItems & !FreeLute & IncentivizeMainItems;
 		public bool? IncentivizeShip => NPCItems & IncentivizeShipAndCanal & !IsShipFree & !NoOverworld;
 		public bool? IncentivizeRod => NPCItems & IncentivizeMainItems;

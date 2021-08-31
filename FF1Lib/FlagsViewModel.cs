@@ -1151,6 +1151,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("GaiaShortcut"));
 			}
 		}
+		public bool? OWDamageTiles
+		{
+			get => Flags.OWDamageTiles;
+			set
+			{
+				Flags.OWDamageTiles = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("OWDamageTiles"));
+			}
+		}
 		public bool? MoveGaiaItemShop
 		{
 			get => Flags.MoveGaiaItemShop;
@@ -2635,6 +2644,15 @@ namespace FF1Lib
 			{
 				Preferences.AccessibleSpellNames = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ModernizeSpellNames"));
+			}
+		}
+		public bool ShopInfoIcons
+		{
+			get => Preferences.ShopInfoIcons;
+			set
+			{
+				Preferences.ShopInfoIcons = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ShopInfoIcons"));
 			}
 		}
 		public bool NoTabLayout
@@ -4842,6 +4860,16 @@ namespace FF1Lib
 			set
 			{
 				Flags.NoItemMagic = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool QuickMinimapLoad
+		{
+			get => Flags.QuickMinimapLoad;
+			set
+			{
+				Flags.QuickMinimapLoad = value;
 				RaisePropertyChanged();
 			}
 		}

@@ -1,0 +1,56 @@
+﻿@using FF1Lib;
+@using Newtonsoft.Json;
+@using System.Reflection;
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+@inject IJSRuntime JSRuntime
+
+
+<div id="fun" class="framed-content">
+	<p>Quality of Life flags can help players with epilepsy, motion sickness, dyslexia, color blindness, or muscle memory.</p>
+	<p>Note: Some QoL settings can cause potential speed disadvantages.</p>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="disableDamageTileFlickerCheckBox" @bind-Value="Flags.DisableDamageTileFlicker">Disable Damage Tile Flicker</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="disableSpellCastFlashCheckBox" @bind-Value="Flags.DisableSpellCastFlash">Disable Spell Cast Flash</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="accessibleSpellNamesCheckBox" IsEnabled="@(!Flags.GenerateNewSpellbook)" @bind-Value="Flags.AccessibleSpellNames">Accessible Spell Names</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="shopInfoIconsCheckBox" @bind-Value="Flags.ShopInfoIcons">Shop Information Icons</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="renounceAutosortCheckBox" @bind-Value="Flags.RenounceAutosort">Renounce Autosort</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="renounceChestInfoCheckBox" @bind-Value="Flags.RenounceChestInfo">Renounce Chest Info</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="cropScreen" @bind-Value="Flags.CropScreen">Crop Friendly</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="renounceSpeedHackWipes" @bind-Value="Flags.OptOutSpeedHackWipes">Slow Screen Wipes</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="renounceSpeedHackMessages" @bind-Value="Flags.OptOutSpeedHackMessages">Slow Battle Messages</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="renounceSpeedHackDash" @bind-Value="Flags.OptOutSpeedHackDash">Slow Map Move</CheckBox>
+	<div class="checkbox-cell"></div>
+
+	<a class="styled-button" @onclick="@SavePreferences">Save Preferences</a>
+</div>
+
+
+@code {
+	[Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }
+	[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
+	[Parameter] public Action<string> SetStatusMessage { get; set; }
+
+	async Task SavePreferences()
+	{
+		// For forwards compatability, load the existing preferences, then copy the new preferences on top.
+		// This ensures that new keys introduced in future versions don't get lost.
+
+		string prefs = await JSRuntime.InvokeAsync<string>("getFFRPreferences", "preferences");
+		Dictionary<string, object> existingPrefs;
+		if (prefs == "" || prefs == null)
+		{
+			existingPrefs = new Dictionary<string, object>();
+		}
+		else
+		{
+			existingPrefs = JsonConvert.DeserializeObject<Dictionary<string, object>>(prefs);
+		}
+		var properties = typeof(FF1Lib.Preferences).GetProperties(BindingFlags.Instance | BindingFlags.Public);
+		foreach (var pi in properties)
+		{
+			existingPrefs[pi.Name] = pi.GetValue(Flags.Preferences);
+		}
+		string jsonprefs = JsonConvert.SerializeObject(existingPrefs);
+		await JSRuntime.InvokeVoidAsync("setFFRPreferences", "preferences", jsonprefs);
+		SetStatusMessage.Invoke("Preferences saved.");
+	}
+}

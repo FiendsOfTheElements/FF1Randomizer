@@ -8,14 +8,14 @@ namespace FF1Lib
 {
 	public partial class FF1Rom : NesRom
 	{
-		public const int TreasureJingleOffset = 0x47200;
+		public const int TreasureJingleOffset = 0x47600;
 		public const int TreasureOffset = 0x03100;
 		public const int TreasureSize = 1;
 		public const int TreasurePoolCount = 256;
 		public const int TreasureCount = 256;
 
 		public const int lut_MapObjTalkJumpTblAddress = 0x390D3;
-		public const string giveRewardRoutineAddress = "10B0";
+		public const string giveRewardRoutineAddress = "10B4";
 		public static readonly List<int> UnusedTreasureIndices =
 			Enumerable.Range(0, 1).Concat(
 			Enumerable.Range(145, 4)).Concat(
@@ -59,7 +59,7 @@ namespace FF1Lib
 				item.Put(this);
 			}
 			// Move the ship someplace closer to where it really ends up.
-			if (!(flags.IsShipFree ?? false))
+			if (!(flags.IsShipFree ?? false) && !(flags.OwMapExchange == OwMapExchanges.Desert))
 			{
 				MapLocation shipLocation = placedItems.Find(reward => reward.Item == Item.Ship).MapLocation;
 				if (overridenOverworld != null && overridenOverworld.TryGetValue(shipLocation, out var overworldIndex))

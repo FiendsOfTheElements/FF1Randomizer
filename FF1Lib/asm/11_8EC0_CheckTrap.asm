@@ -32,7 +32,7 @@ InTalkReenterMap 	= $9618
 CheckCanTake        = $B180
 InTalkDialogueBox	= $963D
 SkipDialogueBox		= $9643
-GiveReward 		= $B010
+GiveReward 		= $B410
 VictoryLoop             = $C938
 SwapPRG_L 		= $FE03
 

@@ -70,6 +70,19 @@ a.nav-link.nav-item.active {
         width: 132px;
 }
 
+a.nav-link.nav-item.fun {
+    border-right: 4px solid #ffffff;
+    width: 125px;
+    display: inline-block;
+    margin-bottom: -2px;
+    border-bottom: hidden;
+}
+
+a.nav-link.nav-item.fun.active {
+    border-image: url(../images/site-border-toptabs.png) 4;
+    width: 125px;
+}
+
 .nav.nav-tabs.flex-column {
     display: block;
 }

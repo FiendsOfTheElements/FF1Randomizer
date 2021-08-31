@@ -131,6 +131,9 @@ namespace FF1Lib
 			var talkroutines = new TalkRoutines();
 			var npcdata = new NPCdata(this);
 			UpdateDialogs(npcdata, flags);
+			AddElementIcons();
+
+
 
 			if (flags.TournamentSafe) Put(0x3FFE3, Blob.FromHex("66696E616C2066616E74617379"));
 
@@ -150,10 +153,18 @@ namespace FF1Lib
 			var maps = ReadMaps();
 			var shopItemLocation = ItemLocations.CaravanItemShop1;
 			var oldItemNames = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
-
+			
 			if ((bool)flags.NPCItems || (bool)flags.NPCFetchItems)
 			{
 				NPCShuffleDialogs();
+			}
+
+			if (flags.SanityCheckerV2 && flags.OwMapExchange == OwMapExchanges.Desert)
+			{
+				GenerateDesert(overworldMap, owMapExchange, npcdata, rng);
+				teleporters = new TeleportShuffle(owMapExchange?.Data);
+				overworldMap.Teleporters = teleporters;
+				shipLocations = owMapExchange.ShipLocations;
 			}
 
 			if (flags.EFGWaterfall || flags.EFGEarth1 || flags.EFGEarth2)
@@ -209,6 +220,11 @@ namespace FF1Lib
 					overworldMap.PutStandardTeleport(TeleportIndex.EarthCave2, teleporters.EarthCave2, OverworldTeleportIndex.EarthCave1);
 					maps[(int)MapId.EarthCaveB2] = earthB2.Map;
 				}
+			}
+
+			if((bool)flags.OWDamageTiles || (flags.SanityCheckerV2 && flags.OwMapExchange == OwMapExchanges.Desert))
+			{
+				EnableDamageTile();
 			}
 
 			var flippedMaps = new List<MapId>();
@@ -394,7 +410,7 @@ namespace FF1Lib
 				EnableChaosRush();
 			}
 
-			if ((bool)flags.FreeBridge)
+			if ((bool)flags.IsBridgeFree && (flags.OwMapExchange != OwMapExchanges.Desert))
 			{
 				EnableFreeBridge();
 			}
@@ -406,7 +422,7 @@ namespace FF1Lib
 
 			if ((bool)flags.IsShipFree)
 			{
-				EnableFreeShip();
+					EnableFreeShip();
 			}
 
 			if (flags.FreeOrbs)
@@ -419,7 +435,7 @@ namespace FF1Lib
 				EnableFreeCanal((bool)flags.NPCItems, npcdata);
 			}
 
-			if ((bool)flags.FreeCanoe)
+			if ((bool)flags.FreeCanoe || (flags.OwMapExchange == OwMapExchanges.Desert))
 			{
 				EnableFreeCanoe();
 			}
@@ -718,6 +734,12 @@ namespace FF1Lib
 				EnableSpeedHacks(preferences);
 			}
 
+			if (flags.QuickMinimapLoad)
+			{
+				EnableQuickMinimap();
+			}
+
+
 			if (flags.IdentifyTreasures)
 			{
 				EnableIdentifyTreasures();
@@ -983,7 +1005,7 @@ namespace FF1Lib
 
 			if (flags.ShopInfo)
 			{
-				ShopUpgrade(flags, preferences.RenounceChestInfo);
+				ShopUpgrade(flags, preferences);
 			}
 
 			Fix3DigitStats();

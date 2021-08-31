@@ -493,7 +493,7 @@ namespace FF1Lib
 			PutInBank(newTalkRoutinesBank, 0xB120, Blob.FromHex("856A20CDD8A9008D01208D1540A002204A96A001204A96A903CD866BD00820189668684C439660"));
 
 			// LoadPrice fix
-			PutInBank(newTalkRoutinesBank, 0x9F10, Blob.FromHex("A9118558A5734C10B0"));
+			PutInBank(newTalkRoutinesBank, 0x9F10, Blob.FromHex("A9118558A5734C10B4"));
 
 			//CheckCanTake
 			if (flags.ExtConsumableSet != ExtConsumableSet.None)
@@ -1322,7 +1322,7 @@ namespace FF1Lib
 
 			if (flags.IsFloaterRemoved ?? false) incentivePool.Remove(Item.Floater);
 			if (flags.FreeCanoe ?? false) incentivePool.Remove(Item.Canoe);
-			if (flags.FreeBridge ?? false) incentivePool.Remove(Item.Bridge);
+			if (flags.IsBridgeFree ?? false) incentivePool.Remove(Item.Bridge);
 			if (flags.IsCanalFree ?? false) incentivePool.Remove(Item.Canal);
 			if (flags.FreeLute ?? false) incentivePool.Remove(Item.Lute);
 			if (flags.IsShipFree ?? false) incentivePool.Remove(Item.Ship);

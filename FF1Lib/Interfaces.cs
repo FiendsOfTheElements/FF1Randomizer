@@ -89,7 +89,8 @@
 		bool? TitansTrove { get; }
 		bool? GaiaShortcut { get; }
 		bool? MoveGaiaItemShop { get; }
-		OwMapExchanges OwMapExchange { get; }
+		bool DisableOWMapModifications { get; }
+		//OwMapExchanges OwMapExchange { get; }
 	}
 	public interface IItemPlacementFlags : IItemShuffleFlags, IVictoryConditionFlags
 	{
@@ -117,6 +118,7 @@
 		bool LooseItemsSpreadPlacement { get; }
 		bool LooseItemsNpcBalance { get; }
 		bool? Entrances { get; }
+		OwMapExchanges OwMapExchange { get; }
 	}
 	public interface IItemShuffleFlags
 	{
@@ -164,7 +166,7 @@
 		bool OnlyRequireGameIsBeatable { get; }
 		bool ShardHunt { get; }
 		bool? ShortToFR { get; }
-		bool? FreeBridge { get; }
+		bool? IsBridgeFree { get; }
 		bool? IsAirshipFree { get; }
 		bool? IsShipFree { get; }
 		bool? IsCanalFree { get; }
