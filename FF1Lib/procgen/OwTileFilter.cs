@@ -65,14 +65,14 @@ namespace FF1Lib.Procgen
 	    return rule.replacement;
 	}
 	byte CheckSalient(byte[,] tilemap, int x, int y) {
-		// Salients are single-tile bits that stick out, 
+		// Salients are single-tile bits that stick out,
 		// they don't play well with with border tiles.
 
 		var regionType = this.regionTypeMap[tilemap[y,x]];
 
 		var p = new SCCoords(x, y);
 		var adjacent = new SCCoords[] { p.OwUp, p.OwRight, p.OwDown, p.OwLeft };
-		
+
 		/*if (regionType == OverworldTiles.FOREST_REGION || regionType == OverworldTiles.MOUNTAIN_REGION) {
 			// Check that a forest or mountain tile has two adjacent forest
 			// or mountain tiles at 90 degrees to one another, otherwise
@@ -103,7 +103,7 @@ namespace FF1Lib.Procgen
 			for (int i = 0; i < 4; i++) {
 				if (countedTypes[i] == -1) {
 					countedTypes[i] = adjRegionType;
-				} 
+				}
 				if (countedTypes[i] == adjRegionType) {
 					counts[i] += 1;
 					break;
@@ -121,8 +121,12 @@ namespace FF1Lib.Procgen
 		return 0xFF;
 	}
 
-	public byte[,] ApplyFilter(byte[,] tilemap) {
-		byte[,] newtilemap = new byte[OverworldState.MAPSIZE,OverworldState.MAPSIZE];
+	public byte[,] ApplyFilter(byte[,] tilemap, bool repeat) {
+	    byte[,] newtilemap = new byte[OverworldState.MAPSIZE,OverworldState.MAPSIZE];
+
+	    bool anyChanged;
+	    do {
+		anyChanged = false;
 
 		for (int y = 0; y < OverworldState.MAPSIZE; y++) {
 		    for (int x = 0; x < OverworldState.MAPSIZE; x++) {
@@ -134,24 +138,28 @@ namespace FF1Lib.Procgen
 			}
 
 			if (matcherFunc == 0) {
-				foreach (var r in rules) {
-					byte check = this.CheckRule(tilemap, r, x, y);
-					if (check != 0xFF) {
-						rep = check;
-						break;
-					}
+			    foreach (var r in rules) {
+				byte check = this.CheckRule(tilemap, r, x, y);
+				if (check != 0xFF) {
+				    rep = check;
+				    break;
 				}
+			    }
 			}
 			else if (matcherFunc == 1) {
-				byte check = this.CheckSalient(tilemap, x, y);
-				if (check != 0xFF) {
-					rep = check;
-				}
+			    byte check = this.CheckSalient(tilemap, x, y);
+			    if (check != 0xFF) {
+				rep = check;
+			    }
+			}
+			if (rep != tilemap[y,x]) {
+			    anyChanged = true;
 			}
 			newtilemap[y,x] = rep;
 		    }
 		}
 		tilemap = newtilemap;
+	    } while (repeat && anyChanged);
 
 	    return tilemap;
 	}

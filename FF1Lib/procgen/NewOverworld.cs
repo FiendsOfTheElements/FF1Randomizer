@@ -462,9 +462,9 @@ namespace FF1Lib.Procgen
             return this.NextStep();
         }
 
-        public Result ApplyFilter(OwTileFilter filter) {
+        public Result ApplyFilter(OwTileFilter filter, bool repeat) {
             this.OwnTilemap();
-            this.Tilemap = filter.ApplyFilter(this.Tilemap);
+            this.Tilemap = filter.ApplyFilter(this.Tilemap, repeat);
             return this.NextStep();
         }
 
@@ -894,24 +894,20 @@ namespace FF1Lib.Procgen
             GenerationStep[] steps = new GenerationStep[] {
                 new GenerationStep("CreateInitialMap", new object[]{}),
 		new GenerationStep("MakeValleys", new object[] {6}),
-                new GenerationStep("ApplyFilter", new object[] {mt.expand_mountains}),
-                new GenerationStep("ApplyFilter", new object[] {mt.expand_oceans}),
+                new GenerationStep("ApplyFilter", new object[] {mt.expand_mountains, false}),
+                new GenerationStep("ApplyFilter", new object[] {mt.expand_oceans, false}),
                 new GenerationStep("FlowMountainRivers", new object[] {}),
                 new GenerationStep("FlowPlainsRivers", new object[] {}),
-                new GenerationStep("ApplyFilter", new object[] {mt.connect_diagonals}),
+                new GenerationStep("ApplyFilter", new object[] {mt.connect_diagonals, false}),
                 new GenerationStep("UpdateRegions", new object[]{}),
                 new GenerationStep("RemoveSmallIslands", new object[]{}),
                 new GenerationStep("AddBiomes", new object[]{}),
 
-                new GenerationStep("ApplyFilter", new object[]{mt.remove_salients}),
-                new GenerationStep("ApplyFilter", new object[]{mt.remove_salients}),
-                new GenerationStep("ApplyFilter", new object[]{mt.remove_salients}),
+                new GenerationStep("ApplyFilter", new object[]{mt.remove_salients, true}),
                 new GenerationStep("UpdateRegions", new object[]{}),
                 new GenerationStep("RemoveTinyRegions", new object[]{}),
 
-                new GenerationStep("ApplyFilter", new object[]{mt.remove_salients}),
-                new GenerationStep("ApplyFilter", new object[]{mt.remove_salients}),
-                new GenerationStep("ApplyFilter", new object[]{mt.remove_salients}),
+                new GenerationStep("ApplyFilter", new object[]{mt.remove_salients, true}),
                 new GenerationStep("UpdateRegions", new object[]{}),
                 new GenerationStep("RemoveTinyRegions", new object[]{}),
 
@@ -983,22 +979,20 @@ namespace FF1Lib.Procgen
 		new GenerationStep("PlaceInMountains", new object[]{OverworldTiles.ICE_CAVE_FEATURE}),
 		new GenerationStep("PlaceInMountains", new object[]{OverworldTiles.VOLCANO}),
 
-                new GenerationStep("ApplyFilter", new object[]{mt.apply_shores1}),
-                new GenerationStep("ApplyFilter", new object[]{mt.apply_shores2}),
-                new GenerationStep("ApplyFilter", new object[]{mt.apply_shores3}),
-                new GenerationStep("ApplyFilter", new object[]{mt.apply_shores4}),
+                new GenerationStep("ApplyFilter", new object[]{mt.apply_shores1, false}),
+                new GenerationStep("ApplyFilter", new object[]{mt.apply_shores2, false}),
+                new GenerationStep("ApplyFilter", new object[]{mt.apply_shores3, false}),
+                new GenerationStep("ApplyFilter", new object[]{mt.apply_shores4, false}),
 
-		new GenerationStep("ApplyFilter", new object[]{mt.prune_forests}),
-		new GenerationStep("ApplyFilter", new object[]{mt.prune_forests}),
-		new GenerationStep("ApplyFilter", new object[]{mt.prune_forests}),
-		new GenerationStep("ApplyFilter", new object[]{mt.polish_mountains}),
+		new GenerationStep("ApplyFilter", new object[]{mt.prune_forests, true}),
+		new GenerationStep("ApplyFilter", new object[]{mt.polish_mountains, true}),
 
-                new GenerationStep("ApplyFilter", new object[]{mt.mountain_borders}),
-                new GenerationStep("ApplyFilter", new object[]{mt.river_borders}),
-                new GenerationStep("ApplyFilter", new object[]{mt.desert_borders}),
-                new GenerationStep("ApplyFilter", new object[]{mt.marsh_borders}),
-                new GenerationStep("ApplyFilter", new object[]{mt.grass_borders}),
-                new GenerationStep("ApplyFilter", new object[]{mt.forest_borders}),
+                new GenerationStep("ApplyFilter", new object[]{mt.mountain_borders, false}),
+                new GenerationStep("ApplyFilter", new object[]{mt.river_borders, false}),
+                new GenerationStep("ApplyFilter", new object[]{mt.desert_borders, false}),
+                new GenerationStep("ApplyFilter", new object[]{mt.marsh_borders, false}),
+                new GenerationStep("ApplyFilter", new object[]{mt.grass_borders, false}),
+                new GenerationStep("ApplyFilter", new object[]{mt.forest_borders, false}),
             };
 
             Stack<GenerationTask> workStack = new Stack<GenerationTask>();

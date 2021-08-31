@@ -467,7 +467,6 @@ namespace FF1Lib.Procgen
 		    }
 		}
 	    }
-
 	    tasks.Shuffle(this.rng);
 	    return new Result(tasks);
 	}
