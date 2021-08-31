@@ -127,6 +127,9 @@ namespace FF1Lib.Procgen
 		}
 	    }
 
+	    Debug.Assert(cutout.Points.Count > 0);
+	    Debug.Assert(replacement.Points.Count > 0);
+
 	    foreach (var adj in orig.Adjacent) {
 		replacement.Adjacent.Add(adj);
 	    }
@@ -729,6 +732,11 @@ namespace FF1Lib.Procgen
 	}
 
 	public bool CheckFit(int[,] regionMap, OwRegion region, SCCoords p, int w, int h) {
+
+	    if (this.Feature_weightmap[p.Y+h/2, p.X+h/2] > 0) {
+		return false;
+	    }
+
 	    if (regionMap[p.Y+h-1, p.X+w-1] != region.RegionId) {
 		return false;
 	    }
@@ -806,6 +814,19 @@ namespace FF1Lib.Procgen
 	    this.RenderFeature(point, feature.Tiles);
 
 	    this.OwnPlacements();
+
+	    int radius = 20;
+	    int x = point.X;
+	    int y = point.Y;
+	    for (int y2 = Math.Max(point.Y-radius, 0); y2 < Math.Min(point.Y+radius, 255); y2++) {
+		for (int x2 = Math.Max(point.X-radius, 0); x2 < Math.Min(point.X+radius, 255); x2++) {
+		    int dist = (int)Math.Sqrt((x-x2)*(x-x2) + (y-y2)*(y-y2));
+		    if (dist <= radius) {
+			this.Feature_weightmap[y2, x2] = dist;
+		    }
+		}
+	    }
+
 	    foreach (var kv in feature.Entrances) {
 		this.FeatureCoordinates[kv.Key] = new SCCoords(point.X+kv.Value.X, point.Y+kv.Value.Y);
 		Console.WriteLine($"Placed {kv.Key} at {point.X+kv.Value.X}, {point.Y+kv.Value.Y}");
