@@ -4444,12 +4444,35 @@ namespace FF1Lib
 			}
 		}
 
-		public bool EnableExtConsumables
+		public ExtConsumableSet ExtConsumableSet
 		{
-			get => Flags.EnableExtConsumables;
+			get => Flags.ExtConsumableSet;
 			set
 			{
-				Flags.EnableExtConsumables = value;
+				Flags.ExtConsumableSet = value;
+				RaisePropertyChanged();
+				RaisePropertyChanged(nameof(ExtConsumablesEnabled));
+			}
+		}
+
+		public bool ExtConsumablesEnabled => Flags.ExtConsumablesEnabled;
+
+		public bool EnableLifeInBattle
+		{
+			get => Flags.EnableLifeInBattle;
+			set
+			{
+				Flags.EnableLifeInBattle = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool EnableSoftInBattle
+		{
+			get => Flags.EnableSoftInBattle;
+			set
+			{
+				Flags.EnableSoftInBattle = value;
 				RaisePropertyChanged();
 			}
 		}

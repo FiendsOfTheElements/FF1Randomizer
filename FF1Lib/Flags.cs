@@ -79,7 +79,13 @@ namespace FF1Lib
 
 		public EnemyObfuscation EnemyObfuscation { get; set; } = EnemyObfuscation.None;
 
-		public bool EnableExtConsumables { get; set; } = false;
+		public ExtConsumableSet ExtConsumableSet { get; set; } = ExtConsumableSet.None;
+
+		public bool ExtConsumablesEnabled => ExtConsumableSet != ExtConsumableSet.None;
+
+		public bool EnableSoftInBattle { get; set; } = false;
+
+		public bool EnableLifeInBattle { get; set; } = false;
 
 		public bool? NormalShopsHaveExtConsumables { get; set; } = false;
 

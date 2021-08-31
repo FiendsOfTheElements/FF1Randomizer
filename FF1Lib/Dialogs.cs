@@ -496,7 +496,7 @@ namespace FF1Lib
 			PutInBank(newTalkRoutinesBank, 0x9F10, Blob.FromHex("A9118558A5734C10B4"));
 
 			//CheckCanTake
-			if (flags.EnableExtConsumables)
+			if (flags.ExtConsumableSet != ExtConsumableSet.None)
 			{
 				//C920 instead of C916
 				PutInBank(newTalkRoutinesBank, 0xB180, Blob.FromHex("C9169027C920900BC9449012C96C90164CABB1AABD2060C963B0114CABB12034DDB0094CABB12046DDB00118A9F160"));

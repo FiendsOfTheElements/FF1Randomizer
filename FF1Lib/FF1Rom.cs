@@ -591,6 +591,16 @@ namespace FF1Lib
 				MixUpSpellNames(flags.SpellNameMadness, rng);
 			}
 
+			if (flags.EnableSoftInBattle)
+			{
+				EnableSoftInBattle();
+			}
+
+			if (flags.EnableLifeInBattle)
+			{
+				EnableLifeInBattle();
+			}
+
 			/*
 			if (flags.WeaponPermissions)
 			{

@@ -29,6 +29,18 @@
 				"screenshot": "quickminimapload.gif",
 				"description": "Speeds up loading of the minimap."
 		},
+		{
+				"Id": "enableSoftInBattle",
+				"title": "Enable Soft in Battle",
+				"screenshot": null,
+				"description": "Makes the SOFT spell and the SOFT potion work in battle."
+		},
+		{
+				"Id": "enableLifeInBattle",
+				"title": "Enable Life in Battle",
+				"screenshot": null,
+				"description": "Makes the LIFE spell, the LIF2 spell and the PHNIX potion work in battle."
+		},
         {
                 "Id": "noItemMagicCheckBox",
                 "title": "No Item Magic",
@@ -1615,12 +1627,12 @@
                 "description": "Tents, Cabins, and Houses become ethers. Instead of restoring HP and saving on the overworld, they restore MP and can be used anywhere.\nEthers (ETHR) restore a charge for L1-L2. Dry Ethers (DRY) restore a charge for L1-L4. X Ethers (XETH) restore a charge for L1-L8.\nIncompatible with the \"House MP Restoration\" bug fix flag."
         },
 
-        {
-                "Id": "enableExtConsumables",
-                "title": "New Consumables",
-                "screenshot": "newConsumables.png",
-                "description": "Enables new Consumables\n[grid][r]{i}Item|{i}Effect[r]FCure|Full cure[r]Phnix|Raise dead light warrior (usable in battle!)[r]Smoke|Automatic run from battle[r]Blast|Cast FIR3\nNote: Smoke will allow you to run from any fight, including bosses. However, in boss fights you will be set back one-step before the boss tile (or just in front of the boss) and will still have to fight them."
-        },
+		{
+			"Id": "enableExtConsumables",
+			"title": "New Consumables",
+			"screenshot": "newConsumables.png",
+			"description": "Enables new Consumables\n[grid][r]{i}Item|{i}Effect[r]FCure|Full cure[r]Phnix|Raise dead light warrior (usable in battle!)[r]Smoke|Automatic run from battle[r]Blast|Cast FIR3[r]RFRSH|Cast HEL3[r]FLARE|Cast NUCLEAR[r]BLACK|Cast BANE with lower accuracy(can be used outside of battle)[r]GUARD|Cast FOG2[r]QUICK|Cast FAST[r]HIGH|HiPotion[r]WIZRD|Cast CONF[r]CLOAK|Cast RUSE\nNote: Smoke will allow you to run from any fight, including bosses. However, in boss fights you will be set back one-step before the boss tile (or just in front of the boss) and will still have to fight them."
+		},
         {
                 "Id": "extStartingItemSet",
                 "title": "New Consumables Starting Inventory",
