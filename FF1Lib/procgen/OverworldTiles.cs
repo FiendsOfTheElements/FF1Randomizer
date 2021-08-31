@@ -453,6 +453,8 @@ namespace FF1Lib.Procgen
 	public static OwFeature CARDIA_4_FEATURE = new OwFeature(CARDIA_4, "Cardia4", false);
 	public static OwFeature CARDIA_5_FEATURE = new OwFeature(CARDIA_5, "Cardia5", false);
 
+	public static OwFeature WATERFALL_FEATURE = new OwFeature(WATERFALL, "Waterfall", false);
+
     public OverworldTiles() {
         this.expand_mountains = new OwTileFilter(
             new Rule[] {
