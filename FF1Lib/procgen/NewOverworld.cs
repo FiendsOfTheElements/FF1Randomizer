@@ -307,6 +307,7 @@ namespace FF1Lib.Procgen
             }
             this.StepQueue = new Queue<GenerationStep>(this.StepQueue);
             var nextStep = this.StepQueue.Dequeue();
+	    Console.WriteLine(nextStep.method.Name);
             return nextStep.RunStep(this);
         }
 
@@ -826,7 +827,7 @@ namespace FF1Lib.Procgen
 		weightmap = this.Feature_weightmap;
 	    }
 
-	    int radius = 20;
+	    int radius = 16;
 	    int x = point.X;
 	    int y = point.Y;
 	    for (int y2 = Math.Max(point.Y-radius, 0); y2 < Math.Min(point.Y+radius, 255); y2++) {
@@ -870,7 +871,7 @@ namespace FF1Lib.Procgen
     public delegate Result GenerationTask();
 
     public class GenerationStep {
-        MethodInfo method;
+        public MethodInfo method;
         object[] parameters;
         public GenerationStep(string methodName, object[] parameters) {
             Type magicType = Type.GetType("FF1Lib.Procgen.OverworldState");
@@ -1169,29 +1170,34 @@ namespace FF1Lib.Procgen
 		new GenerationStep("ApplyFilter", new object[]{mt.forest_borders, false}),
 	    };
 
-	    Stack<GenerationTask> workStack = new Stack<GenerationTask>();
+	    int tries = 50;
+	    while (tries > 0) {
+		tries--;
+		Stack<GenerationTask> workStack = new Stack<GenerationTask>();
 
-	    workStack.Push(new OverworldState(rng, steps, mt).NextStep);
+		workStack.Push(new OverworldState(rng, steps, mt).NextStep);
 
-	    OverworldState final = null;
-	    int taskCount = 0;
-	    while (workStack.Count > 0) {
-		taskCount += 1;
-		var p = workStack.Pop();
-		var r = p();
-		if (r.final != null) {
-		    final = r.final;
-		    break;
-		}
-		if (r.additionalTasks != null) {
-		    foreach (var v in r.additionalTasks) {
-			workStack.Push(v);
+		OverworldState final = null;
+		int taskCount = 0;
+		while (workStack.Count > 0 && taskCount < 4000) {
+		    taskCount += 1;
+		    var p = workStack.Pop();
+		    var r = p();
+		    if (r.final != null) {
+			final = r.final;
+			break;
+		    }
+		    if (r.additionalTasks != null) {
+			foreach (var v in r.additionalTasks) {
+			    workStack.Push(v);
+			}
 		    }
 		}
-
+		if (final != null) {
+		    return new ReplacementMap(final, mt);
+		}
 	    }
-
-	    return new ReplacementMap(final, mt);
+	    throw new Exception("Couldn't generate a map after 50 tries");
 	}
     }
 }

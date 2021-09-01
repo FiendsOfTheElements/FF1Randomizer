@@ -128,6 +128,9 @@ namespace FF1Lib.Procgen
 	    int w = feature.Tiles.GetLength(1);
 	    int h = feature.Tiles.GetLength(0);
 	    foreach (var p in points) {
+			if (p.Y+h-1 >= OverworldState.MAPSIZE || p.X+w >= OverworldState.MAPSIZE) {
+				continue;
+			}
 		int makeland = 0;
 		if (!eastOnly && this.Traversable_regionmap[p.Y+h-1, p.X-1] == OverworldTiles.MainOceanRegionId) {
 		    makeland = w-1;
