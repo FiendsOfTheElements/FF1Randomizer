@@ -236,6 +236,7 @@ namespace FF1Lib.Procgen
 	    {None, CITY_WALL_W3, PRAVOKA, CITY_PAVED, PRAVOKA, CITY_WALL_E3, None},
 	    {None, CITY_WALL_SW1, CITY_WALL_GATE_W, CITY_PAVED, CITY_WALL_GATE_E, CITY_WALL_SE1, None},
 	    {None,          LAND,             DOCK_S,       DOCK_S,             DOCK_S,          LAND, None},
+	    {OCEAN,       OCEAN,              OCEAN,        OCEAN,              OCEAN,           OCEAN, OCEAN},
 	    {OCEAN,       OCEAN,              OCEAN,        OCEAN,              OCEAN,           OCEAN, OCEAN}
 	    }, new Dictionary<string, SCCoords> {
 		{ "Pravoka", new SCCoords(2, 3) },

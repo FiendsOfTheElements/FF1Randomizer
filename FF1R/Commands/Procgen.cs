@@ -20,8 +20,7 @@ namespace FF1R.Commands
 
 		int OnExecute(IConsole console)
 		{
-		    //var rng = new MT19337(this.Seed);
-		    var rng = new MT19337(126);
+		    var rng = new MT19337(this.Seed);
 		    var replacement = FF1Lib.Procgen.NewOverworld.GenerateNewOverworld(rng);
 		    using (BinaryWriter writer = new BinaryWriter(File.Open(this.OutputFile +".ffm", FileMode.Create))) {
 			for (int y = 0; y < FF1Lib.Procgen.OverworldState.MAPSIZE; y++) {

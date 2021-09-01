@@ -132,9 +132,9 @@ namespace FF1Lib.Procgen
 				continue;
 			}
 		int makeland = 0;
-		if (!eastOnly && this.Traversable_regionmap[p.Y+h-1, p.X-1] == OverworldTiles.MainOceanRegionId) {
+		if (!eastOnly && this.Traversable_regionmap[p.Y+h-2, p.X-1] == OverworldTiles.MainOceanRegionId) {
 		    makeland = w-1;
-		} else if (this.Traversable_regionmap[p.Y+h-1, p.X+w] == OverworldTiles.MainOceanRegionId) {
+		} else if (this.Traversable_regionmap[p.Y+h-2, p.X+w] == OverworldTiles.MainOceanRegionId) {
 		    makeland = 0;
 		} else {
 		    continue;

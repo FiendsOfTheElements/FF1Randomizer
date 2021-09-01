@@ -403,11 +403,21 @@ namespace FF1Lib.Procgen
 
             this.PerturbPoints(border, border, MAPSIZE-1-border, MAPSIZE-1-border, 1);
 
-            const double land_pct = .26;
-            const double mountain_pct = 0.055;
             this.heightmax = -100;
-            this.mountain_elevation = 1-mountain_pct;
-            this.sea_elevation = 1-land_pct;
+	    for (int y = 0; y < MAPSIZE; y++) {
+		for (int x = 0; x < MAPSIZE; x++) {
+		    var height = this.Basemap[y,x];
+		    if (height > heightmax) {
+			this.heightmax = height;
+		    }
+		}
+	    }
+
+            const double land_pct = .28;
+            const double mountain_pct = 0.045;
+
+            this.mountain_elevation = this.heightmax;
+            this.sea_elevation = this.heightmax;
 
             int mountain_count = 0;
             int land_count = 0;
@@ -435,10 +445,10 @@ namespace FF1Lib.Procgen
                 }
 
                 if (land_count < min_land_tiles) {
-                    sea_elevation -= .005;
+                    sea_elevation -= .002;
                 }
                 if (mountain_count < min_mtn_tiles) {
-                    mountain_elevation -= .005;
+                    mountain_elevation -= .002;
                 }
                 if (sea_elevation <= 0) {
                     return new Result(false);
@@ -583,13 +593,13 @@ namespace FF1Lib.Procgen
 	    return this.NextStep();
         }
 
-        public Result FlowMountainRivers() {
-            this.FlowRivers(this.mountain_elevation + (this.heightmax-this.mountain_elevation)*.5, this.heightmax, 10);
+        public Result FlowMountainRivers(int count) {
+            this.FlowRivers(this.mountain_elevation + (this.heightmax-this.mountain_elevation)*.5, this.heightmax, count);
             return this.NextStep();
         }
 
-        public Result FlowPlainsRivers() {
-            this.FlowRivers(this.sea_elevation + (this.mountain_elevation-this.sea_elevation)*.5, this.mountain_elevation, 10);
+        public Result FlowPlainsRivers(int count) {
+            this.FlowRivers(this.sea_elevation + (this.mountain_elevation-this.sea_elevation)*.5, this.mountain_elevation, count);
             return this.NextStep();
         }
 
@@ -666,8 +676,13 @@ namespace FF1Lib.Procgen
         }
 
 
-        public void Splat(SCCoords p, byte biome) {
-            var sz = this.rng.Between(200, 400);
+        public void Splat(SCCoords p, byte biome, int max) {
+	    int sz = 0;
+	    if (max > 200) {
+		sz = this.rng.Between(200, 400);
+	    } else {
+		sz = this.rng.Between(9, max);
+	    }
 
             var pending = new List<SCCoords>();
             pending.Add(p);
@@ -701,7 +716,13 @@ namespace FF1Lib.Procgen
                 for (int i = 0; i < r.Points.Count/100+1; i++) {
                     var b = biome_types[rng.Between(0, biome_types.Length-1)];
                     var p = r.Points[rng.Between(0, r.Points.Count-1)];
-                    this.Splat(p, b);
+		    int max = 400;
+		    if (r.Adjacent.Count == 1) {
+			max = r.Points.Count-6;
+		    }
+		    if (max > 9) {
+			this.Splat(p, b, max);
+		    }
                 }
             }
 
@@ -1069,8 +1090,8 @@ namespace FF1Lib.Procgen
 		new GenerationStep("MakeValleys", new object[] {6}),
 		new GenerationStep("ApplyFilter", new object[] {mt.expand_mountains, false}),
 		new GenerationStep("ApplyFilter", new object[] {mt.expand_oceans, false}),
-		new GenerationStep("FlowMountainRivers", new object[] {}),
-		new GenerationStep("FlowPlainsRivers", new object[] {}),
+		new GenerationStep("FlowMountainRivers", new object[] {12}),
+		new GenerationStep("FlowPlainsRivers", new object[] {12}),
 		new GenerationStep("ApplyFilter", new object[] {mt.connect_diagonals, false}),
 		new GenerationStep("UpdateRegions", new object[]{}),
 		new GenerationStep("RemoveSmallIslands", new object[]{}),
