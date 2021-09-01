@@ -1160,6 +1160,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("OWDamageTiles"));
 			}
 		}
+		public bool? DamageTilesKill
+		{
+			get => Flags.DamageTilesKill;
+			set
+			{
+				Flags.DamageTilesKill = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DamageTilesKill"));
+			}
+		}
 		public bool? MoveGaiaItemShop
 		{
 			get => Flags.MoveGaiaItemShop;
