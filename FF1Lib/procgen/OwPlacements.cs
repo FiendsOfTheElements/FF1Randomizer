@@ -400,7 +400,7 @@ namespace FF1Lib.Procgen
 	    bool placed = false;
 	    foreach (var p in points) {
 		var np = p.OwUp;
-		if (this.Tilemap[np.Y, np.X] == OverworldTiles.OCEAN) {
+		if (this.Traversable_regionmap[np.Y, np.X] == OverworldTiles.MainOceanRegionId) {
 		    var r = this.PlaceFeatureAt(this.Traversable_regionmap, region,
 						new SCCoords(p.X-2, p.Y),
 						OverworldTiles.N_DOCK_STRUCTURE, true);
@@ -411,7 +411,7 @@ namespace FF1Lib.Procgen
 		}
 
 		var ep = p.OwRight;
-		if (this.Tilemap[ep.Y, ep.X] == OverworldTiles.OCEAN) {
+		if (this.Traversable_regionmap[ep.Y, ep.X] == OverworldTiles.MainOceanRegionId) {
 		    var r = this.PlaceFeatureAt(this.Traversable_regionmap, region,
 						new SCCoords(p.X-3, p.Y-2),
 						OverworldTiles.E_DOCK_STRUCTURE, true);
@@ -422,7 +422,7 @@ namespace FF1Lib.Procgen
 		}
 
 		var sp = p.OwDown;
-		if (this.Tilemap[sp.Y, sp.X] == OverworldTiles.OCEAN) {
+		if (this.Traversable_regionmap[sp.Y, sp.X] == OverworldTiles.MainOceanRegionId) {
 		    var r = this.PlaceFeatureAt(this.Traversable_regionmap, region,
 						new SCCoords(p.X-2, p.Y-2),
 						OverworldTiles.S_DOCK_STRUCTURE, true);
@@ -433,7 +433,7 @@ namespace FF1Lib.Procgen
 		}
 
 		var wp = p.OwLeft;
-		if (this.Tilemap[wp.Y, wp.X] == OverworldTiles.OCEAN) {
+		if (this.Traversable_regionmap[wp.Y, wp.X] == OverworldTiles.MainOceanRegionId) {
 		    var r = this.PlaceFeatureAt(this.Traversable_regionmap, region,
 						new SCCoords(p.X, p.Y-2),
 						OverworldTiles.W_DOCK_STRUCTURE, true);
