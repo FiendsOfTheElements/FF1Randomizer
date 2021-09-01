@@ -127,9 +127,6 @@ namespace FF1Lib.Procgen
 		}
 	    }
 
-	    Debug.Assert(cutout.Points.Count > 0);
-	    Debug.Assert(replacement.Points.Count > 0);
-
 	    foreach (var adj in orig.Adjacent) {
 		replacement.Adjacent.Add(adj);
 	    }
@@ -731,9 +728,9 @@ namespace FF1Lib.Procgen
 	    set { this.startingRegion = value.RegionId; }
 	}
 
-	public bool CheckFit(int[,] regionMap, OwRegion region, SCCoords p, int w, int h) {
+	public bool CheckFit(int[,] regionMap, OwRegion region, SCCoords p, int w, int h, int[,] weightmap) {
 
-	    if (this.Feature_weightmap[p.Y+h/2, p.X+w/2] > 15) {
+	    if (weightmap[p.Y+h/2, p.X+w/2] > 0) {
 		return false;
 	    }
 
@@ -788,7 +785,7 @@ namespace FF1Lib.Procgen
 			found = true;
 		    }
 		} else {
-		    if (this.CheckFit(regionMap, region, p, w, h)) {
+		    if (this.CheckFit(regionMap, region, p, w, h, this.Feature_weightmap)) {
 			point = p;
 			found = true;
 			break;
@@ -803,17 +800,31 @@ namespace FF1Lib.Procgen
 	}
 
 	public ValueTuple<bool,SCCoords> PlaceFeatureAt(int[,] regionMap, OwRegion region, SCCoords point,
-							OwFeature feature, bool checkfit=true) {
+							OwFeature feature, bool checkfit=true,
+							bool useDockWeight=false) {
 	    var h = feature.Tiles.GetLength(0);
 	    var w = feature.Tiles.GetLength(1);
 
-	    if (checkfit && !this.CheckFit(regionMap, region, point, w, h)) {
+	    int[,] weightmap;
+	    if (useDockWeight) {
+		weightmap = this.Dock_weightmap;
+	    } else {
+		weightmap = this.Feature_weightmap;
+	    }
+
+	    if (checkfit && !this.CheckFit(regionMap, region, point, w, h, weightmap)) {
 		return ValueTuple.Create(false, point);
 	    }
 
 	    this.RenderFeature(point, feature.Tiles);
 
 	    this.OwnPlacements();
+
+	    if (useDockWeight) {
+		weightmap = this.Dock_weightmap;
+	    } else {
+		weightmap = this.Feature_weightmap;
+	    }
 
 	    int radius = 20;
 	    int x = point.X;
@@ -822,7 +833,7 @@ namespace FF1Lib.Procgen
 		for (int x2 = Math.Max(point.X-radius, 0); x2 < Math.Min(point.X+radius, 255); x2++) {
 		    int dist = (int)Math.Sqrt((x-x2)*(x-x2) + (y-y2)*(y-y2));
 		    if (dist <= radius) {
-			this.Feature_weightmap[y2, x2] += dist;
+			weightmap[y2, x2] += dist;
 		    }
 		}
 	    }
@@ -935,18 +946,24 @@ namespace FF1Lib.Procgen
                 new GenerationStep("SmallSeasBecomeLakes", new object[]{}),
 
 		new GenerationStep("BridgeAlternatives", new object[]{}),
-		new GenerationStep("PlaceFeatureInStartingArea", new object[]{OverworldTiles.CONERIA_CITY}),
-		new GenerationStep("PlaceFeatureInStartingArea", new object[]{OverworldTiles.TEMPLE_OF_FIENDS}),
+		new GenerationStep("PlaceInStartingArea", new object[]{OverworldTiles.CONERIA_CITY}),
+		new GenerationStep("PlaceInStartingArea", new object[]{OverworldTiles.TEMPLE_OF_FIENDS}),
 		new GenerationStep("PlaceBridge", new object[]{}),
 		new GenerationStep("PlacePravoka", new object[]{}),
 		new GenerationStep("PlaceIsolated", new object[]{OverworldTiles.GAIA_TOWN, true}),
 		new GenerationStep("PlaceRequiringCanoe", new object[]{OverworldTiles.ORDEALS_CASTLE}),
 		new GenerationStep("PlaceIsolated", new object[]{OverworldTiles.TITANS_TUNNEL_WEST, false}),
 		new GenerationStep("PlaceInTitanWestRegion", new object[]{OverworldTiles.SARDAS_CAVE_FEATURE}),
+		new GenerationStep("PlaceCanal", new object[]{}),
+		new GenerationStep("PlaceInCanalRegion", new object[]{OverworldTiles.EARTH_CAVE_FEATURE}),
 
 		new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.MIRAGE_TOWER,
 								new int[]{OverworldTiles.DESERT_REGION},
 								false, true, true, false}),
+		new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.AIRSHIP_FEATURE,
+								new int[]{OverworldTiles.DESERT_REGION},
+								false, true, false, false}),
+
 		new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.OASIS,
 								new int[]{OverworldTiles.DESERT_REGION},
 								false, true, true, false}),
@@ -975,10 +992,6 @@ namespace FF1Lib.Procgen
 										OverworldTiles.FOREST_REGION,
 										OverworldTiles.MARSH_REGION},
 								true, false, false, false}),
-
-		new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.AIRSHIP_FEATURE,
-								new int[]{OverworldTiles.DESERT_REGION},
-								false, true, false, false}),
 
 		new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.LEFEIN_CITY, null,
 								false, true, true, false}),
