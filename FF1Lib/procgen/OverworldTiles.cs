@@ -453,9 +453,9 @@ namespace FF1Lib.Procgen
 	public static OwFeature BAHAMUTS_CAVE_FEATURE = new OwFeature(BAHAMUTS_CAVE, "BahamutCave1", false);
 	public static OwFeature CARDIA_1_FEATURE = new OwFeature(CARDIA_1, "Cardia1", false);
 	public static OwFeature CARDIA_2_FEATURE = new OwFeature(CARDIA_2, "Cardia2", false);
-	public static OwFeature CARDIA_3_FEATURE = new OwFeature(CARDIA_3, "Cardia3", false);
-	public static OwFeature CARDIA_4_FEATURE = new OwFeature(CARDIA_4, "Cardia4", false);
-	public static OwFeature CARDIA_5_FEATURE = new OwFeature(CARDIA_5, "Cardia5", false);
+	public static OwFeature CARDIA_3_FEATURE = new OwFeature(CARDIA_3, "Cardia4", false);
+	public static OwFeature CARDIA_4_FEATURE = new OwFeature(CARDIA_4, "Cardia5", false);
+	public static OwFeature CARDIA_5_FEATURE = new OwFeature(CARDIA_5, "Cardia6", false);
 
 	public static OwFeature WATERFALL_FEATURE = new OwFeature(WATERFALL, "Waterfall", false);
 

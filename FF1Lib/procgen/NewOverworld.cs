@@ -886,7 +886,7 @@ namespace FF1Lib.Procgen
 
     public class ReplacementMap {
 
-        public ReplacementMap(OverworldState st) {
+        public ReplacementMap(OverworldState st, OverworldTiles mt) {
             Tiles = new List<List<byte>>();
             for (int y = 0; y < OverworldState.MAPSIZE; y++) {
                 Tiles.Add(new List<byte>());
@@ -898,52 +898,192 @@ namespace FF1Lib.Procgen
             ExchangeData.StartingLocation = st.FeatureCoordinates["StartingLocation"];
 	    st.FeatureCoordinates.Remove("StartingLocation");
 
-            //ExchangeData.AirShipLocation = st.FeatureCoordinates["Airship"];
-	    //st.FeatureCoordinates.Remove("Airship");
+            ExchangeData.AirShipLocation = st.FeatureCoordinates["Airship"];
+	    st.FeatureCoordinates.Remove("Airship");
+
             ExchangeData.BridgeLocation = st.FeatureCoordinates["Bridge"];
 	    st.FeatureCoordinates.Remove("Bridge");
 
-            //ExchangeData.CanalLocation = st.FeatureCoordinates["Canal"];
-	    //st.FeatureCoordinates.Remove("Canal");
+            ExchangeData.CanalLocation = st.FeatureCoordinates["Canal"];
+	    st.FeatureCoordinates.Remove("Canal");
 
             ExchangeData.ShipLocations = new ShipLocation[] {
                 new ShipLocation(st.FeatureCoordinates["Ship"].X, st.FeatureCoordinates["Ship"].Y, 255)
             };
 	    st.FeatureCoordinates.Remove("Ship");
-            //ExchangeData.TeleporterFixups = new TeleportFixup[] {
-            //    new TeleportFixup(FF1Lib.TeleportType.Exit, 0, new TeleData((MapId)0xFF, st.FeatureCoordinates["TitansTunnelEast"].X, st.FeatureCoordinates["TitansTunnelEast"].Y))
-            //};
+            ExchangeData.TeleporterFixups = new TeleportFixup[] {
+		new TeleportFixup(FF1Lib.TeleportType.Exit, 0,
+				  new TeleData((MapId)0xFF,
+					       st.FeatureCoordinates["TitansTunnelEast"].X,
+					       st.FeatureCoordinates["TitansTunnelEast"].Y)),
+		new TeleportFixup(FF1Lib.TeleportType.Exit, 1,
+				  new TeleData((MapId)0xFF,
+					       st.FeatureCoordinates["TitansTunnelWest"].X,
+					       st.FeatureCoordinates["TitansTunnelWest"].Y)),
+		new TeleportFixup(FF1Lib.TeleportType.Exit, 2,
+				  new TeleData((MapId)0xFF,
+					       st.FeatureCoordinates["IceCave1"].X,
+					       st.FeatureCoordinates["IceCave1"].Y)),
+		new TeleportFixup(FF1Lib.TeleportType.Exit, 3,
+				  new TeleData((MapId)0xFF,
+					       st.FeatureCoordinates["CastleOrdeals1"].X,
+					       st.FeatureCoordinates["CastleOrdeals1"].Y)),
+		new TeleportFixup(FF1Lib.TeleportType.Exit, 4,
+				  new TeleData((MapId)0xFF,
+					       st.FeatureCoordinates["ConeriaCastle1"].X,
+					       st.FeatureCoordinates["ConeriaCastle1"].Y)),
+		new TeleportFixup(FF1Lib.TeleportType.Exit, 5,
+				  new TeleData((MapId)0xFF,
+					       st.FeatureCoordinates["EarthCave1"].X,
+					       st.FeatureCoordinates["EarthCave1"].Y)),
+		new TeleportFixup(FF1Lib.TeleportType.Exit, 6,
+				  new TeleData((MapId)0xFF,
+					       st.FeatureCoordinates["GurguVolcano1"].X,
+					       st.FeatureCoordinates["GurguVolcano1"].Y)),
+		new TeleportFixup(FF1Lib.TeleportType.Exit, 7,
+				  new TeleData((MapId)0xFF,
+					       st.FeatureCoordinates["Onrac"].X,
+					       st.FeatureCoordinates["Onrac"].Y)),
+		new TeleportFixup(FF1Lib.TeleportType.Exit, 8,
+				  new TeleData((MapId)0xFF,
+					       st.FeatureCoordinates["MirageTower1"].X,
+					       st.FeatureCoordinates["MirageTower1"].Y))
+            };
             ExchangeData.OverworldCoordinates = st.FeatureCoordinates;
+
+	    this.AssignEncounterDomains(st, mt);
         }
+
         public List<List<byte>> Tiles;
         public OwMapExchangeData ExchangeData;
+
+	public void AssignEncounterDomains(OverworldState state, OverworldTiles mt) {
+	    var nearest_dungeon = new string[OverworldState.MAPSIZE,OverworldState.MAPSIZE];
+	    var working_list = new Queue<KeyValuePair<string, SCCoords>>();
+
+	    foreach (KeyValuePair<string, SCCoords> kv in state.FeatureCoordinates) {
+		working_list.Enqueue(kv);
+	    }
+
+	    while (working_list.Count > 0) {
+		var kv = working_list.Dequeue();
+
+		if (nearest_dungeon[kv.Value.Y, kv.Value.X] != null) {
+		    continue;
+		}
+
+		nearest_dungeon[kv.Value.Y, kv.Value.X] = kv.Key;
+
+		var adjacent = new SCCoords[] { kv.Value.OwUp, kv.Value.OwRight, kv.Value.OwDown, kv.Value.OwLeft};
+		foreach (var adj in adjacent) {
+            if (mt.TraversableRegionTypeMap.ContainsKey(state.Tilemap[adj.Y, adj.X])) {
+                    var next_tile = mt.TraversableRegionTypeMap[state.Tilemap[adj.Y, adj.X]];
+                    if (next_tile == OverworldTiles.LAND_REGION || next_tile == OverworldTiles.RIVER_REGION) {
+                                working_list.Enqueue(new KeyValuePair<string, SCCoords>(kv.Key, adj));
+                    }
+                }
+		    }
+	    }
+
+	    // Using octal numbers here because they nicely correspond
+	    // to coordinates on the 8x8 source grid of encounter
+	    // zones.
+	    var source_encounter_domains = new Dictionary<string, int>{
+		{"Coneria",         Convert.ToInt32("44", 8)},
+		{"ConeriaCastle1",  Convert.ToInt32("44", 8)},
+		{"TempleOfFiends1", Convert.ToInt32("34", 8)},
+		{"Pravoka",         Convert.ToInt32("46", 8)},
+		{"Gaia",            Convert.ToInt32("06", 8)},
+		{"CastleOrdeals1",  Convert.ToInt32("14", 8)},
+		{"TitansTunnelWest", Convert.ToInt32("50", 8)},
+		{"SardasCave", Convert.ToInt32("50", 8)},
+		{"MirageTower1", Convert.ToInt32("16", 8)},
+		{"Onrac", Convert.ToInt32("11", 8)},
+		{"EarthCave1", Convert.ToInt32("52", 8)},
+		{"TitansTunnelEast", Convert.ToInt32("50", 8)},
+		{"MatoyasCave", Convert.ToInt32("35", 8)},
+		{"DwarfCave", Convert.ToInt32("43", 8)},
+		{"Elfland", Convert.ToInt32("64", 8)},
+		{"ElflandCastle", Convert.ToInt32("64", 8)},
+		{"MarshCave1", Convert.ToInt32("73", 8)},
+		{"NorthwestCastle", Convert.ToInt32("53", 8)},
+		{"Melmond", Convert.ToInt32("52", 8)},
+		{"CrescentLake", Convert.ToInt32("66", 8)},
+		{"Lefein", Convert.ToInt32("37", 8)},
+		{"BahamutCave1", Convert.ToInt32("13", 8)},
+		{"Cardia1", Convert.ToInt32("12", 8)},
+		{"Cardia2", Convert.ToInt32("12", 8)},
+		{"Cardia4", Convert.ToInt32("12", 8)},
+		{"Cardia5", Convert.ToInt32("13", 8)},
+		{"Cardia6", Convert.ToInt32("13", 8)},
+		{"Waterfall", Convert.ToInt32("01", 8)},
+		{"GurguVolcano1", Convert.ToInt32("66", 8)},
+		{"IceCave1", Convert.ToInt32("66", 8)},
+	    };
+
+	    var domains = new DomainFixup[64];
+
+	    for (int j = 0; j < 8; j++) {
+		for (int i = 0; i < 8; i++) {
+		    var counts = new Dictionary<string, int>();
+		    for (int y = 0; y < 32; y++) {
+			for (int x = 0; x < 32; x++) {
+			    var nd = nearest_dungeon[j*32+y, i*32+x];
+			    if (nd != null) {
+				int c = 0;
+				counts.TryGetValue(nd, out c);
+				counts[nd] = c+1;
+			    }
+			}
+
+			int mx = 0;
+			string pick = null;
+			foreach (var kv in counts) {
+			    if (kv.Value > mx) {
+				pick = kv.Key;
+				mx = kv.Value;
+			    }
+			}
+            domains[j*8 + i] = new DomainFixup();
+			domains[j*8 + i].To = (byte)(j*8 + i);
+			if (pick != null) {
+			    domains[j*8 + i].From = (byte)source_encounter_domains[pick];
+			} else {
+			    domains[j*8 + i].From = 0;
+			}
+		    }
+		}
+	    }
+
+	    this.ExchangeData.DomainUpdates = domains;
+	}
     }
 
     public static class NewOverworld {
 
-        public static ReplacementMap GenerateNewOverworld(MT19337 rng) {
-            var mt = new OverworldTiles();
-            GenerationStep[] steps = new GenerationStep[] {
-                new GenerationStep("CreateInitialMap", new object[]{}),
+	public static ReplacementMap GenerateNewOverworld(MT19337 rng) {
+	    var mt = new OverworldTiles();
+	    GenerationStep[] steps = new GenerationStep[] {
+		new GenerationStep("CreateInitialMap", new object[]{}),
 		new GenerationStep("MakeValleys", new object[] {6}),
-                new GenerationStep("ApplyFilter", new object[] {mt.expand_mountains, false}),
-                new GenerationStep("ApplyFilter", new object[] {mt.expand_oceans, false}),
-                new GenerationStep("FlowMountainRivers", new object[] {}),
-                new GenerationStep("FlowPlainsRivers", new object[] {}),
-                new GenerationStep("ApplyFilter", new object[] {mt.connect_diagonals, false}),
-                new GenerationStep("UpdateRegions", new object[]{}),
-                new GenerationStep("RemoveSmallIslands", new object[]{}),
-                new GenerationStep("AddBiomes", new object[]{}),
+		new GenerationStep("ApplyFilter", new object[] {mt.expand_mountains, false}),
+		new GenerationStep("ApplyFilter", new object[] {mt.expand_oceans, false}),
+		new GenerationStep("FlowMountainRivers", new object[] {}),
+		new GenerationStep("FlowPlainsRivers", new object[] {}),
+		new GenerationStep("ApplyFilter", new object[] {mt.connect_diagonals, false}),
+		new GenerationStep("UpdateRegions", new object[]{}),
+		new GenerationStep("RemoveSmallIslands", new object[]{}),
+		new GenerationStep("AddBiomes", new object[]{}),
 
-                new GenerationStep("ApplyFilter", new object[]{mt.remove_salients, true}),
-                new GenerationStep("UpdateRegions", new object[]{}),
-                new GenerationStep("RemoveTinyRegions", new object[]{}),
+		new GenerationStep("ApplyFilter", new object[]{mt.remove_salients, true}),
+		new GenerationStep("UpdateRegions", new object[]{}),
+		new GenerationStep("RemoveTinyRegions", new object[]{}),
 
-                new GenerationStep("ApplyFilter", new object[]{mt.remove_salients, true}),
-                new GenerationStep("UpdateRegions", new object[]{}),
-                new GenerationStep("RemoveTinyRegions", new object[]{}),
+		new GenerationStep("ApplyFilter", new object[]{mt.remove_salients, true}),
+		new GenerationStep("UpdateRegions", new object[]{}),
+		new GenerationStep("RemoveTinyRegions", new object[]{}),
 
-                new GenerationStep("SmallSeasBecomeLakes", new object[]{}),
+		new GenerationStep("SmallSeasBecomeLakes", new object[]{}),
 
 		new GenerationStep("BridgeAlternatives", new object[]{}),
 		new GenerationStep("PlaceInStartingArea", new object[]{OverworldTiles.CONERIA_CITY}),
@@ -975,9 +1115,9 @@ namespace FF1Lib.Procgen
 		new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.DWARF_CAVE_FEATURE, null,
 								true, false, false, false}),
 		new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.ELFLAND_TOWN_CASTLE,
-								      new int[]{OverworldTiles.LAND_REGION,
-										 OverworldTiles.GRASS_REGION,
-										 OverworldTiles.FOREST_REGION},
+								new int[]{OverworldTiles.LAND_REGION,
+									  OverworldTiles.GRASS_REGION,
+									  OverworldTiles.FOREST_REGION},
 								true, false, false, false}),
 		new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.MARSH_CAVE_FEATURE,
 								new int[]{OverworldTiles.MARSH_REGION},
@@ -987,10 +1127,10 @@ namespace FF1Lib.Procgen
 		new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.MELMOND_TOWN, null,
 								true, false, false, false}),
 		new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.CRESCENT_LAKE_CITY,
-								      new int[]{OverworldTiles.LAND_REGION,
-										OverworldTiles.GRASS_REGION,
-										OverworldTiles.FOREST_REGION,
-										OverworldTiles.MARSH_REGION},
+								new int[]{OverworldTiles.LAND_REGION,
+									  OverworldTiles.GRASS_REGION,
+									  OverworldTiles.FOREST_REGION,
+									  OverworldTiles.MARSH_REGION},
 								true, false, false, false}),
 
 		new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.LEFEIN_CITY, null,
@@ -1013,46 +1153,45 @@ namespace FF1Lib.Procgen
 		new GenerationStep("PlaceInMountains", new object[]{OverworldTiles.ICE_CAVE_FEATURE}),
 		new GenerationStep("PlaceInMountains", new object[]{OverworldTiles.VOLCANO}),
 
-                new GenerationStep("ApplyFilter", new object[]{mt.apply_shores1, false}),
-                new GenerationStep("ApplyFilter", new object[]{mt.apply_shores2, false}),
-                new GenerationStep("ApplyFilter", new object[]{mt.apply_shores3, false}),
-                new GenerationStep("ApplyFilter", new object[]{mt.apply_shores4, false}),
+		new GenerationStep("ApplyFilter", new object[]{mt.apply_shores1, false}),
+		new GenerationStep("ApplyFilter", new object[]{mt.apply_shores2, false}),
+		new GenerationStep("ApplyFilter", new object[]{mt.apply_shores3, false}),
+		new GenerationStep("ApplyFilter", new object[]{mt.apply_shores4, false}),
 
 		new GenerationStep("ApplyFilter", new object[]{mt.prune_forests, true}),
 		new GenerationStep("ApplyFilter", new object[]{mt.polish_mountains, true}),
 
-                new GenerationStep("ApplyFilter", new object[]{mt.mountain_borders, false}),
-                new GenerationStep("ApplyFilter", new object[]{mt.river_borders, false}),
-                new GenerationStep("ApplyFilter", new object[]{mt.desert_borders, false}),
-                new GenerationStep("ApplyFilter", new object[]{mt.marsh_borders, false}),
-                new GenerationStep("ApplyFilter", new object[]{mt.grass_borders, false}),
-                new GenerationStep("ApplyFilter", new object[]{mt.forest_borders, false}),
-            };
+		new GenerationStep("ApplyFilter", new object[]{mt.mountain_borders, false}),
+		new GenerationStep("ApplyFilter", new object[]{mt.river_borders, false}),
+		new GenerationStep("ApplyFilter", new object[]{mt.desert_borders, false}),
+		new GenerationStep("ApplyFilter", new object[]{mt.marsh_borders, false}),
+		new GenerationStep("ApplyFilter", new object[]{mt.grass_borders, false}),
+		new GenerationStep("ApplyFilter", new object[]{mt.forest_borders, false}),
+	    };
 
-            Stack<GenerationTask> workStack = new Stack<GenerationTask>();
+	    Stack<GenerationTask> workStack = new Stack<GenerationTask>();
 
-            workStack.Push(new OverworldState(rng, steps, mt).NextStep);
+	    workStack.Push(new OverworldState(rng, steps, mt).NextStep);
 
-            OverworldState final = null;
-            int taskCount = 0;
-            while (workStack.Count > 0) {
-                taskCount += 1;
-                var p = workStack.Pop();
-                var r = p();
-                if (r.final != null) {
-                    final = r.final;
-                    break;
-                }
-                if (r.additionalTasks != null) {
-                    foreach (var v in r.additionalTasks) {
-                        workStack.Push(v);
-                    }
-                }
+	    OverworldState final = null;
+	    int taskCount = 0;
+	    while (workStack.Count > 0) {
+		taskCount += 1;
+		var p = workStack.Pop();
+		var r = p();
+		if (r.final != null) {
+		    final = r.final;
+		    break;
+		}
+		if (r.additionalTasks != null) {
+		    foreach (var v in r.additionalTasks) {
+			workStack.Push(v);
+		    }
+		}
 
-            }
+	    }
 
-            return new ReplacementMap(final);
-        }
+	    return new ReplacementMap(final, mt);
+	}
     }
-
 }
