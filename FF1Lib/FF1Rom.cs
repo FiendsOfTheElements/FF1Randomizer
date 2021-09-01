@@ -226,6 +226,10 @@ namespace FF1Lib
 			{
 				EnableDamageTile();
 			}
+			if ((bool)flags.DamageTilesKill)
+			{
+				DamageTilesKill(flags.SaveGameWhenGameOver);
+			}
 
 			var flippedMaps = new List<MapId>();
 

@@ -1927,6 +1927,12 @@
                 "description": "Marsh and Desert tiles on the overworld deal damage to the party like Lava and Ice tiles in dungeons."
         },
         {
+                "Id": "DamageTilesKillCheckBox",
+                "title": "Damage Tiles Kill",
+                "screenshot": "",
+                "description": "If a character is at 1 HP, stepping on damage tiles will kill them. If all characters are dead, game over will be triggered."
+        },
+        {
                 "Id": "startingLevelDropDown",
                 "title": "Starting Level",
                 "screenshot": "startingLevelDropDown.gif",
