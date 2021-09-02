@@ -150,7 +150,7 @@ namespace FF1Lib.Procgen
 
 	public const int MainOceanRegionId = 0;
 
-	public byte[][] PreShoreRegionTypes = new byte[][] {
+	public byte[][] BiomeRegionTypes = new byte[][] {
 	    new byte[] { LAND, SHORE_NW, SHORE_NE, SHORE_SW, SHORE_SE },
 	    new byte[] { OCEAN, SHORE_W, SHORE_N, SHORE_E, SHORE_S },
 	    new byte[] { RIVER, RIVER_NW, RIVER_NE, RIVER_SW, RIVER_SE },
@@ -164,7 +164,7 @@ namespace FF1Lib.Procgen
 			FOREST_SW, FOREST_S, FOREST_SE},
 	    new byte[] {DESERT, DESERT_NW, DESERT_NE, DESERT_SW, DESERT_SE}
 	};
-	public Dictionary<byte, int> PreShoreRegionTypeMap;
+	public Dictionary<byte, int> BiomeRegionTypeMap;
 
 	public byte[][] TraversableRegionTypes = new byte[][] {
 	    new byte[] {
@@ -1145,10 +1145,10 @@ namespace FF1Lib.Procgen
 	    }, allTiles, mountain_tiles, null);
 
 
-        this.PreShoreRegionTypeMap = new Dictionary<byte, int>();
-        for (int i = 0; i < PreShoreRegionTypes.Length; i++) {
-            for (int j = 0; j < PreShoreRegionTypes[i].Length; j++) {
-                this.PreShoreRegionTypeMap[(byte)PreShoreRegionTypes[i][j]] = i;
+        this.BiomeRegionTypeMap = new Dictionary<byte, int>();
+        for (int i = 0; i < BiomeRegionTypes.Length; i++) {
+            for (int j = 0; j < BiomeRegionTypes[i].Length; j++) {
+                this.BiomeRegionTypeMap[(byte)BiomeRegionTypes[i][j]] = i;
             }
         }
 
@@ -1159,7 +1159,7 @@ namespace FF1Lib.Procgen
             }
         }
 
-        this.remove_salients = new OwTileFilter(PreShoreRegionTypes, PreShoreRegionTypeMap);
+        this.remove_salients = new OwTileFilter(BiomeRegionTypes, BiomeRegionTypeMap);
     }
 
 

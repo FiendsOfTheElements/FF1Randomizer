@@ -16,6 +16,14 @@ namespace FF1Lib.Procgen
         }
     }
 
+    // A contigious region of the map.
+    // There are two types of regions, computed separately.
+    //
+    // - Traversable regions (defined by TraversableRegionTypes)
+    // these are contigous walkable, canoe-able, or sail-able regions
+    //
+    // - Biome regions (defined by BiomeRegionTypes)
+    // this breaks down the walkable regions into forest, marsh, desert, etc.
     public class OwRegion {
         public int RegionType;
         public short RegionId;
@@ -33,6 +41,13 @@ namespace FF1Lib.Procgen
             this.Points.Add(p);
         }
 
+	// Walks the entire map to produce a region list and a region map.
+	// The region list is a list of all regions.
+	// The region map is the assignment of every position on the map to a region,
+	// as in index into the corresponding region list.
+	//
+	// Because we start in the upper left corner, region 0 is
+	// always the main ocean (OverworldTiles.MainOceanRegionId)
         public static Tuple<short[,], List<OwRegion>> FindRegions(byte[,] tilemap, Dictionary<byte, int> tileRegionTypeMap) {
             var regionMap = new short[OverworldState.MAPSIZE,OverworldState.MAPSIZE];
             var regionList = new List<OwRegion>();
@@ -104,6 +119,9 @@ namespace FF1Lib.Procgen
             return Tuple.Create(regionMap, regionList);
         }
 
+	// Cut out a rectangular section of a region, adding a new
+	// region for the cut out, and replacing the entry in the
+	// region list with an updated region.
 	public static void Cutout(short[,] regionMap, List<OwRegion> regionList,
 				  SCCoords cp, int w, int h) {
 	    OwRegion orig = regionList[regionMap[cp.Y, cp.X]];
@@ -135,6 +153,8 @@ namespace FF1Lib.Procgen
 	}
     }
 
+    // Something we're going to place on the map.
+    // A town, castle, dungeon, cave, etc.
     public class OwFeature {
         public byte[,] Tiles;
         public Dictionary<string, SCCoords> Entrances;
@@ -167,9 +187,12 @@ namespace FF1Lib.Procgen
 
     }
 
+    // This is the class that does most of the work.  It holds the
+    // state of the map generation up to this point, and defines all
+    // the methods that apply transformations to the map.
     public partial class OverworldState {
         public const int MAPSIZE = 256;
-        double[,] Basemap;
+        float[,] Basemap;
         public byte[,] Tilemap;
         short[,] Biome_regionmap;
         List<OwRegion> Biome_regionlist;
@@ -185,9 +208,9 @@ namespace FF1Lib.Procgen
         private bool ownRegions;
         private bool ownPlacements;
         Queue<GenerationStep> StepQueue;
-        double heightmax;
-        double mountain_elevation;
-        double sea_elevation;
+        float heightmax;
+        float mountain_elevation;
+        float sea_elevation;
 
         private MT19337 rng;
 
@@ -203,7 +226,7 @@ namespace FF1Lib.Procgen
             this.ownTilemap = true;
             this.ownRegions = true;
             this.ownPlacements = true;
-            this.Basemap = new double[MAPSIZE,MAPSIZE];
+            this.Basemap = new float[MAPSIZE,MAPSIZE];
             this.Tilemap = new byte[MAPSIZE,MAPSIZE];
             this.Biome_regionmap = new short[MAPSIZE,MAPSIZE];
             this.Biome_regionlist = new List<OwRegion>();
@@ -221,6 +244,10 @@ namespace FF1Lib.Procgen
 	    this.shouldPlaceBridge = false;
         }
 
+	// Shallow copy construtor.  To be memory efficient, this uses
+	// a copy-on-write strategy.  The Own* methods below perform
+	// deep copies only when needed to have a local copy on which
+	// to make changes.
         public OverworldState(OverworldState copy) {
             this.ownBasemap = false;
             this.ownTilemap = false;
@@ -253,7 +280,7 @@ namespace FF1Lib.Procgen
                 return;
             }
             var fromBasemap = this.Basemap;
-            this.Basemap = new double[MAPSIZE,MAPSIZE];
+            this.Basemap = new float[MAPSIZE,MAPSIZE];
             Array.Copy(fromBasemap, this.Basemap, fromBasemap.Length);
             this.ownBasemap = true;
         }
@@ -311,10 +338,17 @@ namespace FF1Lib.Procgen
             return nextStep.RunStep(this);
         }
 
-        const double UNSET = -1000000;
-        const double perturb_reduction = .63;
+        const float UNSET = -1000000;
+        const float perturb_reduction = .63f;
 
-        void PerturbPoints(int x0, int y0, int x1, int y1, double r0) {
+	// The heightmap generation function.  It implements the
+	// diamond square algorithm.  The general idea is to start by
+	// generating random heights in the corners and center of the
+	// box, then recursively apply the function to each quadrant,
+	// interpolating heights on the midpoint sides and center of
+	// the box, and applying a random factor, which gets smaller
+	// with each iteration.
+        void PerturbPoints(int x0, int y0, int x1, int y1, float r0) {
             if (Math.Abs(x0 - x1) <= 1 && Math.Abs(y0 - y1) <= 1) {
                 return;
             }
@@ -341,35 +375,35 @@ namespace FF1Lib.Procgen
                 y2 = (y0+y1)/2;
             }
 
-            double midp;
+            float midp;
             // Middle
             if (this.Basemap[y2,x2] == UNSET) {
-                midp = (this.Basemap[y0,x0]+this.Basemap[y1,x0]+this.Basemap[y0,x1]+this.Basemap[y1,x1])/4.0;
-                this.Basemap[y2,x2] = midp + rng.Uniform(-r0, r0);
+                midp = (this.Basemap[y0,x0]+this.Basemap[y1,x0]+this.Basemap[y0,x1]+this.Basemap[y1,x1])/4.0f;
+                this.Basemap[y2,x2] = midp + (float)rng.Uniform(-r0, r0);
             }
 
             // Left middle
             if (this.Basemap[y2,x0] == UNSET) {
-                midp = (this.Basemap[y0,x0]+this.Basemap[y1,x0])/2.0;
-                this.Basemap[y2,x0] = midp + rng.Uniform(-r0, r0);
+                midp = (this.Basemap[y0,x0]+this.Basemap[y1,x0])/2.0f;
+                this.Basemap[y2,x0] = midp + (float)rng.Uniform(-r0, r0);
             }
 
             // Right middle
             if (this.Basemap[y2,x1] == UNSET) {
-                midp = (this.Basemap[y0,x1]+this.Basemap[y1,x1])/2.0;
-                this.Basemap[y2,x1] = midp + rng.Uniform(-r0, r0);
+                midp = (this.Basemap[y0,x1]+this.Basemap[y1,x1])/2.0f;
+                this.Basemap[y2,x1] = midp + (float)rng.Uniform(-r0, r0);
             }
 
             // top middle
             if (this.Basemap[y0,x2] == UNSET) {
-                midp = (this.Basemap[y0,x0]+this.Basemap[y0,x1])/2.0;
-                this.Basemap[y0,x2] = midp + rng.Uniform(-r0, r0);
+                midp = (this.Basemap[y0,x0]+this.Basemap[y0,x1])/2.0f;
+                this.Basemap[y0,x2] = midp + (float)rng.Uniform(-r0, r0);
             }
 
             // bottom middle
             if (this.Basemap[y1,x2] == UNSET) {
-                midp = (this.Basemap[y1,x0]+this.Basemap[y1,x1])/2.0;
-                this.Basemap[y1,x2] = midp + rng.Uniform(-r0, r0);
+                midp = (this.Basemap[y1,x0]+this.Basemap[y1,x1])/2.0f;
+                this.Basemap[y1,x2] = midp + (float)rng.Uniform(-r0, r0);
             }
 
             r0 *= perturb_reduction;
@@ -380,6 +414,12 @@ namespace FF1Lib.Procgen
             this.PerturbPoints(x2, y2, x1, y1, r0);
         }
 
+	// This is the starting point for map generation.  It uses
+	// PeturbPoints to create a height map, then iteratively
+	// determines the elevations that result in a certain minimum
+	// amount of mountains and walkable land.  It then creates the
+	// initial tile map of consisting of just mountain, land, and
+	// ocean.
         public Result CreateInitialMap() {
             this.OwnBasemap();
             this.OwnTilemap();
@@ -445,10 +485,10 @@ namespace FF1Lib.Procgen
                 }
 
                 if (land_count < min_land_tiles) {
-                    sea_elevation -= .002;
+                    sea_elevation -= .002f;
                 }
                 if (mountain_count < min_mtn_tiles) {
-                    mountain_elevation -= .002;
+                    mountain_elevation -= .002f;
                 }
                 if (sea_elevation <= 0) {
                     return new Result(false);
@@ -473,12 +513,18 @@ namespace FF1Lib.Procgen
             return this.NextStep();
         }
 
+	// Apply a 3x3 filter over the entire map.
         public Result ApplyFilter(OwTileFilter filter, bool repeat) {
             this.OwnTilemap();
             this.Tilemap = filter.ApplyFilter(this.Tilemap, repeat);
             return this.NextStep();
         }
 
+	// Use gradient decent to create a river.  Starting from a
+	// certain tile at a certain elevation, it follows the lowest
+	// adjacent tile, then finds the tile adjacent to that tile.
+	// It iteratively follows the next lowest adjacent tile until
+	// reaching the ocean, or running out of "volume".
         public int FlowRiver(SCCoords p, int volume) {
             this.OwnTilemap();
 
@@ -511,6 +557,8 @@ namespace FF1Lib.Procgen
 	    return size;
         }
 
+	// Pick 'count' random points between the lower and upper
+	// elevations and flow rivers from those positions.
         public void FlowRivers(double lower_elev, double upper_elev, int count) {
             var points = new List<SCCoords>();
             for (int y = 0; y < MAPSIZE; y++) {
@@ -533,6 +581,10 @@ namespace FF1Lib.Procgen
             }
         }
 
+	// Try to break up the mountains a bit by introducing valleys.
+	// This is somewhat similar to flowing rivers.  Starting from
+	// a point, find all points in a contigous area that are lower
+	// than that point, and turn them into land.
         public int MakeValley(SCCoords p) {
             this.OwnTilemap();
 
@@ -569,7 +621,7 @@ namespace FF1Lib.Procgen
             var points = new List<SCCoords>();
             for (int y = 0; y < MAPSIZE; y++) {
                 for (int x = 0; x < MAPSIZE; x++) {
-                    double height = this.Basemap[y,x];
+                    float height = this.Basemap[y,x];
                     if (height >= lower_elev && height <= upper_elev) {
                         points.Add(new SCCoords(x, y));
                     }
@@ -604,7 +656,7 @@ namespace FF1Lib.Procgen
         }
 
         public void UpdateBiomeRegions() {
-            var biome = OwRegion.FindRegions(this.Tilemap, overworldTiles.PreShoreRegionTypeMap);
+            var biome = OwRegion.FindRegions(this.Tilemap, overworldTiles.BiomeRegionTypeMap);
             this.Biome_regionmap = biome.Item1;
             this.Biome_regionlist = biome.Item2;
         }
@@ -621,6 +673,10 @@ namespace FF1Lib.Procgen
             return this.NextStep();
         }
 
+	// Go through the region list and delete small islands, which
+	// mostly just clutter up the map and don't look good.  Delete
+	// all the "tiny" islands and keep a handful of "small"
+	// islands.
         public Result RemoveSmallIslands() {
             this.OwnTilemap();
 
@@ -658,7 +714,9 @@ namespace FF1Lib.Procgen
             return this.UpdateRegions();
         }
 
-       public Result RemoveTinyRegions() {
+	// Find tiny regions and merge them into one of the adjacent
+	// regions.
+	public Result RemoveTinyRegions() {
             this.OwnTilemap();
 
             const int tiny_region_size = 5;
@@ -666,7 +724,7 @@ namespace FF1Lib.Procgen
             foreach (var r in this.Biome_regionlist) {
                 if (r.Points.Count <= tiny_region_size) {
                     var mergeWith = r.Adjacent[rng.Between(0, r.Adjacent.Count-1)];
-                    byte tile = this.overworldTiles.PreShoreRegionTypes[this.Biome_regionlist[mergeWith].RegionType][0];
+                    byte tile = this.overworldTiles.BiomeRegionTypes[this.Biome_regionlist[mergeWith].RegionType][0];
                     foreach (var p in r.Points) {
                         this.Tilemap[p.Y,p.X] = tile;
                     }
@@ -675,7 +733,9 @@ namespace FF1Lib.Procgen
             return this.UpdateRegions();
         }
 
-
+	// Fill in an area with a biome type.  This is a flood fill
+	// that expands the frontier at random.  Gaps are fixed by
+	// subsequent steps.
         public void Splat(SCCoords p, byte biome, int max) {
 	    int sz = 0;
 	    if (max > 200) {
@@ -729,6 +789,7 @@ namespace FF1Lib.Procgen
             return this.UpdateRegions();
         }
 
+	// Turn small patches of inland ocean into river tiles.
         public Result SmallSeasBecomeLakes() {
             this.OwnTilemap();
             foreach (var r in this.Biome_regionlist) {
@@ -750,12 +811,18 @@ namespace FF1Lib.Procgen
 	    set { this.startingRegion = value.RegionId; }
 	}
 
+	// Check if a feature fits entirely into given region without
+	// overlapping any other regions.
+
 	public bool CheckFit(short[,] regionMap, OwRegion region, SCCoords p, int w, int h, byte[,] weightmap) {
 
+	    // Checks the weight map, this tells us if we're too close
+	    // to another feature that's already been placed, prevents
+	    // features from bunching up.
 	    if (weightmap[p.Y+h/2, p.X+w/2] > 0) {
 		return false;
 	    }
-
+	    // Check the corners first before checking the entire box.
 	    if (regionMap[p.Y+h-1, p.X+w-1] != region.RegionId) {
 		return false;
 	    }
@@ -775,6 +842,8 @@ namespace FF1Lib.Procgen
 	    return true;
 	}
 
+	// Render a feature onto the tilemap, and updates regions by
+	// cutting out the feature.
 	public void RenderFeature(SCCoords point, byte[,] feature) {
 	    this.OwnTilemap();
 	    for (int j = 0; j < feature.GetLength(0); j++) {
@@ -789,6 +858,7 @@ namespace FF1Lib.Procgen
 	    OwRegion.Cutout(this.Biome_regionmap, this.Biome_regionlist, point, feature.GetLength(1), feature.GetLength(0));
 	}
 
+	// Place a feature somewhere in the region at random.
 	public ValueTuple<bool,SCCoords> PlaceFeature(short[,] regionMap, OwRegion region, OwFeature feature) {
 	    var h = feature.Tiles.GetLength(0);
 	    var w = feature.Tiles.GetLength(1);
@@ -821,12 +891,18 @@ namespace FF1Lib.Procgen
 	    return this.PlaceFeatureAt(regionMap, region, point, feature, false);
 	}
 
+	// Place a feature at a specific position.  Calls
+	// RenderFeature and updates the appropriate weight map.
 	public ValueTuple<bool,SCCoords> PlaceFeatureAt(short[,] regionMap, OwRegion region, SCCoords point,
 							OwFeature feature, bool checkfit=true,
 							bool useDockWeight=false) {
 	    var h = feature.Tiles.GetLength(0);
 	    var w = feature.Tiles.GetLength(1);
 
+	    // We have separate weight maps for docks and other
+	    // features.  We don't want docks to be too close to one
+	    // another, but it is okay if a dock is close to a regular
+	    // feature.
 	    byte[,] weightmap;
 	    if (useDockWeight) {
 		weightmap = this.Dock_weightmap;
