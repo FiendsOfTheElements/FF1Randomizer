@@ -244,7 +244,7 @@ namespace FF1Lib.Procgen
 	    });
 
 	public static OwFeature PRAVOKA_CITY_MOAT = new OwFeature(new byte[,] {
-	    {None, None, None,         None,        None,         None, None, None, None, None, None},
+	    {None, None,  None,         None,        None,         None, None, None, None, None, None},
 	    {None, OCEAN, OCEAN,       OCEAN,              OCEAN,        OCEAN,              OCEAN,           OCEAN, OCEAN, OCEAN, None},
 	    {None, OCEAN, None, None,         None,        None,         None, None, None, OCEAN, None},
 	    {None, OCEAN, None, None, CITY_WALL_NW, CITY_WALL_N, CITY_WALL_NE, None, None, OCEAN, None},
@@ -255,9 +255,9 @@ namespace FF1Lib.Procgen
 	    {OCEAN, OCEAN, OCEAN,       OCEAN,              OCEAN,        OCEAN,              OCEAN,           OCEAN, OCEAN, OCEAN, OCEAN},
 	    {OCEAN, OCEAN, OCEAN,       OCEAN,              OCEAN,        OCEAN,              OCEAN,           OCEAN, OCEAN, OCEAN, OCEAN}
 	    }, new Dictionary<string, SCCoords> {
-		{ "Pravoka", new SCCoords(4, 5) },
-		{ "Ship", new SCCoords(3, 6) },
-		{ "Bridge", new SCCoords(4, 1) },
+		{ "Pravoka", new SCCoords(5, 4) },
+		{ "Ship", new SCCoords(4, 8) },
+		{ "Bridge", new SCCoords(5, 1) },
 	    });
 
 
