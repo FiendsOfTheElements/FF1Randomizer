@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Reflection;
 using System.ComponentModel;
 using RomUtilities;
+using FF1Lib.Procgen;
 
 namespace FF1Lib
 {
@@ -41,7 +42,10 @@ namespace FF1Lib
 		[Description("Archipelago")]
 		ProcGen3,
 
-		[Description("Random")]
+		[Description("Generate New Overworld")]
+		GenerateNewOverworld,
+
+		[Description("Random alternate map")]
 		Random
 	}
 
@@ -55,6 +59,8 @@ namespace FF1Lib
 		ExitTeleData exit;
 		OwLocationData locations;
 		DomainData domains;
+
+	        ReplacementMap procgenReplacementMap;
 
 		public OwMapExchangeData Data => data;
 
@@ -77,9 +83,28 @@ namespace FF1Lib
 			ShipLocations = new ShipLocations(locations, data.ShipLocations);
 		}
 
+		public OwMapExchange(FF1Rom _rom, OverworldMap _overworldMap, ReplacementMap rm)
+		{
+			rom = _rom;
+			overworldMap = _overworldMap;
+
+			exit = new ExitTeleData(rom);
+			locations = new OwLocationData(rom);
+			domains = new DomainData(rom);
+
+			procgenReplacementMap = rm;
+			data = rm.ExchangeData;
+
+			ShipLocations = new ShipLocations(locations, data.ShipLocations);
+		}
+
 		public void ExecuteStep1()
 		{
+		    if (procgenReplacementMap != null) {
+			overworldMap.SwapMap(procgenReplacementMap.Tiles);
+		    } else {
 			overworldMap.SwapMap(name + ".ffm");
+		    }
 
 			//load default locations first, doh
 			locations.LoadData();
@@ -149,7 +174,7 @@ namespace FF1Lib
 			if (!flags.SanityCheckerV2) return null;
 
 			var mx = flags.OwMapExchange;
-			if (mx == OwMapExchanges.Random) mx = (OwMapExchanges)rng.Between(0, 3);
+			if (mx == OwMapExchanges.Random) mx = (OwMapExchanges)rng.Between(1, 7);
 
 			switch (mx)
 			{
@@ -171,6 +196,9 @@ namespace FF1Lib
 					return new OwMapExchange(_rom, _overworldMap, "procgen2");
 				case OwMapExchanges.ProcGen3:
 					return new OwMapExchange(_rom, _overworldMap, "procgen3");
+				case OwMapExchanges.GenerateNewOverworld:
+				    var result = NewOverworld.GenerateNewOverworld(rng);
+				    return new OwMapExchange(_rom, _overworldMap, result);
 			}
 
 			throw new Exception("oops");

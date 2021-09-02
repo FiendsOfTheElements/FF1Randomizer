@@ -66,7 +66,7 @@ namespace FF1Lib.Procgen
 	public Result BridgePlacement(OwRegion riverRegion) {
 	    var points = new List<SCCoords>(riverRegion.Points);
 	    points.Shuffle(this.rng);
-	    int nextRegion = -1;
+	    short nextRegion = -1;
 	    foreach (var p in points) {
 		var c1 = this.Traversable_regionmap[p.Y-1, p.X];
 		var c2 = this.Traversable_regionmap[p.Y+1, p.X];

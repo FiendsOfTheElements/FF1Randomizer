@@ -1350,10 +1350,13 @@ namespace FF1Lib
 					decompressedRows.Add(new List<byte>(row));
 				}
 			}
+			SwapMap(decompressedRows);
+		}
 
+	    public void SwapMap(List<List<byte>> decompressedRows) {
 			var recompressedMap = CompressMapRows(decompressedRows);
 			PutCompressedMapRows(recompressedMap);
-		}
+	    }
 
 		public void ApplyMapEdits()
 		{

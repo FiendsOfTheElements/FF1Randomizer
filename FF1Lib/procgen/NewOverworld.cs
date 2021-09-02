@@ -18,11 +18,11 @@ namespace FF1Lib.Procgen
 
     public class OwRegion {
         public int RegionType;
-        public int RegionId;
+        public short RegionId;
         public List<SCCoords> Points;
         public List<int> Adjacent;
 
-        public OwRegion(int regionType, int regionid) {
+        public OwRegion(int regionType, short regionid) {
             this.RegionType = regionType;
             this.RegionId = regionid;
             this.Points = new List<SCCoords>();
@@ -33,8 +33,8 @@ namespace FF1Lib.Procgen
             this.Points.Add(p);
         }
 
-        public static Tuple<int[,], List<OwRegion>> FindRegions(byte[,] tilemap, Dictionary<byte, int> tileRegionTypeMap) {
-            var regionMap = new int[OverworldState.MAPSIZE,OverworldState.MAPSIZE];
+        public static Tuple<short[,], List<OwRegion>> FindRegions(byte[,] tilemap, Dictionary<byte, int> tileRegionTypeMap) {
+            var regionMap = new short[OverworldState.MAPSIZE,OverworldState.MAPSIZE];
             var regionList = new List<OwRegion>();
 
             for (int j = 0; j < OverworldState.MAPSIZE; j++) {
@@ -84,7 +84,7 @@ namespace FF1Lib.Procgen
                     var rg = tp.Item2;
                     OwRegion nextRegion;
                     if (regionMap[p.Y,p.X] == -1) {
-                        nextRegion = new OwRegion(tileRegionTypeMap[tilemap[p.Y,p.X]], regionList.Count);
+                        nextRegion = new OwRegion(tileRegionTypeMap[tilemap[p.Y,p.X]], (short)regionList.Count);
                         regionList.Add(nextRegion);
                         workingStack.Push(ValueTuple.Create(p, nextRegion));
                     } else {
@@ -104,11 +104,11 @@ namespace FF1Lib.Procgen
             return Tuple.Create(regionMap, regionList);
         }
 
-	public static void Cutout(int[,] regionMap, List<OwRegion> regionList,
+	public static void Cutout(short[,] regionMap, List<OwRegion> regionList,
 				  SCCoords cp, int w, int h) {
 	    OwRegion orig = regionList[regionMap[cp.Y, cp.X]];
 
-	    var cutout = new OwRegion(OverworldTiles.OTHER_REGION, regionList.Count);
+	    var cutout = new OwRegion(OverworldTiles.OTHER_REGION, (short)regionList.Count);
 	    regionList.Add(cutout);
 
 	    var replacement = new OwRegion(orig.RegionType, orig.RegionId);
@@ -171,12 +171,12 @@ namespace FF1Lib.Procgen
         public const int MAPSIZE = 256;
         double[,] Basemap;
         public byte[,] Tilemap;
-        int[,] Biome_regionmap;
+        short[,] Biome_regionmap;
         List<OwRegion> Biome_regionlist;
-        int[,] Traversable_regionmap;
+        short[,] Traversable_regionmap;
         List<OwRegion> Traversable_regionlist;
-        int[,] Feature_weightmap;
-        int[,] Dock_weightmap;
+        byte[,] Feature_weightmap;
+        byte[,] Dock_weightmap;
         public Dictionary<string, SCCoords> FeatureCoordinates;
         List<int> Reachable_regions;
         List<int> Exclude_docks;
@@ -193,8 +193,8 @@ namespace FF1Lib.Procgen
 
         private OverworldTiles overworldTiles;
 
-	int startingRegion;
-	int bridgedRegion;
+	short startingRegion;
+	short bridgedRegion;
 	bool shouldPlaceBridge;
 
         public OverworldState(MT19337 rng, GenerationStep[] steps, OverworldTiles overworldTiles) {
@@ -205,12 +205,12 @@ namespace FF1Lib.Procgen
             this.ownPlacements = true;
             this.Basemap = new double[MAPSIZE,MAPSIZE];
             this.Tilemap = new byte[MAPSIZE,MAPSIZE];
-            this.Biome_regionmap = new int[MAPSIZE,MAPSIZE];
+            this.Biome_regionmap = new short[MAPSIZE,MAPSIZE];
             this.Biome_regionlist = new List<OwRegion>();
-            this.Traversable_regionmap = new int[MAPSIZE,MAPSIZE];
+            this.Traversable_regionmap = new short[MAPSIZE,MAPSIZE];
             this.Traversable_regionlist = new List<OwRegion>();
-            this.Feature_weightmap  = new int[MAPSIZE,MAPSIZE];
-            this.Dock_weightmap = new int[MAPSIZE,MAPSIZE];
+            this.Feature_weightmap  = new byte[MAPSIZE,MAPSIZE];
+            this.Dock_weightmap = new byte[MAPSIZE,MAPSIZE];
             this.FeatureCoordinates = new Dictionary<string, SCCoords>();
             this.Reachable_regions = new List<int>();
             this.Exclude_docks = new List<int>();
@@ -273,12 +273,12 @@ namespace FF1Lib.Procgen
                     return;
                 }
                 var fromBiome_regionmap = this.Biome_regionmap;
-                this.Biome_regionmap = new int[MAPSIZE,MAPSIZE];
+                this.Biome_regionmap = new short[MAPSIZE,MAPSIZE];
                 Array.Copy(fromBiome_regionmap, this.Biome_regionmap, fromBiome_regionmap.Length);
                 this.Biome_regionlist = new List<OwRegion>(this.Biome_regionlist);
 
                 var fromTraversable_regionmap = this.Traversable_regionmap;
-                this.Traversable_regionmap = new int[MAPSIZE,MAPSIZE];
+                this.Traversable_regionmap = new short[MAPSIZE,MAPSIZE];
                 Array.Copy(fromTraversable_regionmap, this.Traversable_regionmap, fromTraversable_regionmap.Length);
                 this.Traversable_regionlist = new List<OwRegion>(this.Traversable_regionlist);
                 this.ownRegions = true;
@@ -289,11 +289,11 @@ namespace FF1Lib.Procgen
                 return;
             }
             var fromFeature_weightmap = this.Feature_weightmap;
-            this.Feature_weightmap = new int[MAPSIZE,MAPSIZE];
+            this.Feature_weightmap = new byte[MAPSIZE,MAPSIZE];
             Array.Copy(fromFeature_weightmap, this.Feature_weightmap, fromFeature_weightmap.Length);
 
             var fromDock_weightmap = this.Dock_weightmap;
-            this.Dock_weightmap = new int[MAPSIZE,MAPSIZE];
+            this.Dock_weightmap = new byte[MAPSIZE,MAPSIZE];
             Array.Copy(fromDock_weightmap, this.Dock_weightmap, fromDock_weightmap.Length);
 
             this.FeatureCoordinates = new Dictionary<string, SCCoords>(this.FeatureCoordinates);
@@ -750,7 +750,7 @@ namespace FF1Lib.Procgen
 	    set { this.startingRegion = value.RegionId; }
 	}
 
-	public bool CheckFit(int[,] regionMap, OwRegion region, SCCoords p, int w, int h, int[,] weightmap) {
+	public bool CheckFit(short[,] regionMap, OwRegion region, SCCoords p, int w, int h, byte[,] weightmap) {
 
 	    if (weightmap[p.Y+h/2, p.X+w/2] > 0) {
 		return false;
@@ -789,7 +789,7 @@ namespace FF1Lib.Procgen
 	    OwRegion.Cutout(this.Biome_regionmap, this.Biome_regionlist, point, feature.GetLength(1), feature.GetLength(0));
 	}
 
-	public ValueTuple<bool,SCCoords> PlaceFeature(int[,] regionMap, OwRegion region, OwFeature feature) {
+	public ValueTuple<bool,SCCoords> PlaceFeature(short[,] regionMap, OwRegion region, OwFeature feature) {
 	    var h = feature.Tiles.GetLength(0);
 	    var w = feature.Tiles.GetLength(1);
 
@@ -821,13 +821,13 @@ namespace FF1Lib.Procgen
 	    return this.PlaceFeatureAt(regionMap, region, point, feature, false);
 	}
 
-	public ValueTuple<bool,SCCoords> PlaceFeatureAt(int[,] regionMap, OwRegion region, SCCoords point,
+	public ValueTuple<bool,SCCoords> PlaceFeatureAt(short[,] regionMap, OwRegion region, SCCoords point,
 							OwFeature feature, bool checkfit=true,
 							bool useDockWeight=false) {
 	    var h = feature.Tiles.GetLength(0);
 	    var w = feature.Tiles.GetLength(1);
 
-	    int[,] weightmap;
+	    byte[,] weightmap;
 	    if (useDockWeight) {
 		weightmap = this.Dock_weightmap;
 	    } else {
@@ -853,7 +853,7 @@ namespace FF1Lib.Procgen
 	    int y = point.Y;
 	    for (int y2 = Math.Max(point.Y-radius, 0); y2 < Math.Min(point.Y+radius, 255); y2++) {
 		for (int x2 = Math.Max(point.X-radius, 0); x2 < Math.Min(point.X+radius, 255); x2++) {
-		    int dist = (int)Math.Sqrt((x-x2)*(x-x2) + (y-y2)*(y-y2));
+		    byte dist = (byte)Math.Sqrt((x-x2)*(x-x2) + (y-y2)*(y-y2));
 		    if (dist <= radius) {
 			weightmap[y2, x2] += dist;
 		    }
@@ -935,39 +935,39 @@ namespace FF1Lib.Procgen
 	    st.FeatureCoordinates.Remove("Ship");
             ExchangeData.TeleporterFixups = new TeleportFixup[] {
 		new TeleportFixup(FF1Lib.TeleportType.Exit, 0,
-				  new TeleData((MapId)0xFF,
+				  new TeleData((MapId)OverworldTiles.None,
 					       st.FeatureCoordinates["TitansTunnelEast"].X,
 					       st.FeatureCoordinates["TitansTunnelEast"].Y)),
 		new TeleportFixup(FF1Lib.TeleportType.Exit, 1,
-				  new TeleData((MapId)0xFF,
+				  new TeleData((MapId)OverworldTiles.None,
 					       st.FeatureCoordinates["TitansTunnelWest"].X,
 					       st.FeatureCoordinates["TitansTunnelWest"].Y)),
 		new TeleportFixup(FF1Lib.TeleportType.Exit, 2,
-				  new TeleData((MapId)0xFF,
+				  new TeleData((MapId)OverworldTiles.None,
 					       st.FeatureCoordinates["IceCave1"].X,
 					       st.FeatureCoordinates["IceCave1"].Y)),
 		new TeleportFixup(FF1Lib.TeleportType.Exit, 3,
-				  new TeleData((MapId)0xFF,
+				  new TeleData((MapId)OverworldTiles.None,
 					       st.FeatureCoordinates["CastleOrdeals1"].X,
 					       st.FeatureCoordinates["CastleOrdeals1"].Y)),
 		new TeleportFixup(FF1Lib.TeleportType.Exit, 4,
-				  new TeleData((MapId)0xFF,
+				  new TeleData((MapId)OverworldTiles.None,
 					       st.FeatureCoordinates["ConeriaCastle1"].X,
 					       st.FeatureCoordinates["ConeriaCastle1"].Y)),
 		new TeleportFixup(FF1Lib.TeleportType.Exit, 5,
-				  new TeleData((MapId)0xFF,
+				  new TeleData((MapId)OverworldTiles.None,
 					       st.FeatureCoordinates["EarthCave1"].X,
 					       st.FeatureCoordinates["EarthCave1"].Y)),
 		new TeleportFixup(FF1Lib.TeleportType.Exit, 6,
-				  new TeleData((MapId)0xFF,
+				  new TeleData((MapId)OverworldTiles.None,
 					       st.FeatureCoordinates["GurguVolcano1"].X,
 					       st.FeatureCoordinates["GurguVolcano1"].Y)),
 		new TeleportFixup(FF1Lib.TeleportType.Exit, 7,
-				  new TeleData((MapId)0xFF,
+				  new TeleData((MapId)OverworldTiles.None,
 					       st.FeatureCoordinates["Onrac"].X,
 					       st.FeatureCoordinates["Onrac"].Y)),
 		new TeleportFixup(FF1Lib.TeleportType.Exit, 8,
-				  new TeleData((MapId)0xFF,
+				  new TeleData((MapId)OverworldTiles.None,
 					       st.FeatureCoordinates["MirageTower1"].X,
 					       st.FeatureCoordinates["MirageTower1"].Y))
             };
@@ -1078,6 +1078,7 @@ namespace FF1Lib.Procgen
 	    }
 
 	    this.ExchangeData.DomainUpdates = domains;
+	    this.ExchangeData.DomainFixups = new DomainFixup[] {};
 	}
     }
 
@@ -1191,16 +1192,18 @@ namespace FF1Lib.Procgen
 		new GenerationStep("ApplyFilter", new object[]{mt.forest_borders, false}),
 	    };
 
-	    int tries = 50;
+	    int tries = 5;
 	    while (tries > 0) {
 		tries--;
 		Stack<GenerationTask> workStack = new Stack<GenerationTask>();
+
+		System.GC.Collect();
 
 		workStack.Push(new OverworldState(rng, steps, mt).NextStep);
 
 		OverworldState final = null;
 		int taskCount = 0;
-		while (workStack.Count > 0 && taskCount < 4000) {
+		while (workStack.Count > 0 && taskCount < 2000) {
 		    taskCount += 1;
 		    var p = workStack.Pop();
 		    var r = p();
@@ -1218,7 +1221,7 @@ namespace FF1Lib.Procgen
 		    return new ReplacementMap(final, mt);
 		}
 	    }
-	    throw new Exception("Couldn't generate a map after 50 tries");
+	    throw new Exception("Couldn't generate a map after 5 tries");
 	}
     }
 }
