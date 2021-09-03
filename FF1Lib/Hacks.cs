@@ -2070,5 +2070,10 @@ namespace FF1Lib
 			PutInBank(0x09, 0xBC9A, Blob.FromHex("EAEAEA"));
 			PutInBank(0x09, 0xBDBE, Blob.FromHex("EAEAEA"));
 		}
+
+		public void DisableMinimap()
+		{
+			PutInBank(0x1F, 0xC1A6, Blob.FromHex("EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
+		}
 	}
 }
