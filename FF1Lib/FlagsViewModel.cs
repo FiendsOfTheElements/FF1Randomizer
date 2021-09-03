@@ -4891,5 +4891,15 @@ namespace FF1Lib
 				RaisePropertyChanged();
 			}
 		}
+
+		public bool DisableMinimap
+		{
+			get => Flags.DisableMinimap;
+			set
+			{
+				Flags.DisableMinimap = value;
+				RaisePropertyChanged();
+			}
+		}
 	}
 }

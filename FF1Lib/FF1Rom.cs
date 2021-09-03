@@ -748,6 +748,10 @@ namespace FF1Lib
 				EnableQuickMinimap();
 			}
 
+			if (flags.DisableMinimap)
+			{
+				DisableMinimap();
+			}
 
 			if (flags.IdentifyTreasures)
 			{
