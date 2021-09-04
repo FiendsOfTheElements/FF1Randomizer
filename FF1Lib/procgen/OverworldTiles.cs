@@ -381,27 +381,35 @@ namespace FF1Lib.Procgen
 	    {None, DOCK_E,  OCEAN, None},
 	    {None, DOCK_E,  OCEAN, None},
 	    {None,   None,   None, None},
-	    }, new Dictionary<string, SCCoords>());
+	    }, new Dictionary<string, SCCoords> {
+		{ "Ship", new SCCoords(2, 2) },
+	    });
 
 	public static OwFeature S_DOCK_STRUCTURE = new OwFeature(new byte[,] {
 	    {  None, None,   None,   None,     None},
 	    {  None, DOCK_SE, DOCK_S, DOCK_SW, None},
 	    {  None, OCEAN,   OCEAN,  OCEAN,   None},
-	}, new Dictionary<string, SCCoords>());
+	}, new Dictionary<string, SCCoords> {
+		{ "Ship", new SCCoords(2, 2) },
+	    });
 
 	public static OwFeature W_DOCK_STRUCTURE = new OwFeature(new byte[,] {
 	    {   None,   None,   None,  None},
 	    {DOCK_S, DOCK_S,  DOCK_SW, None},
 	    {OCEAN,   OCEAN,  DOCK_W,  None},
 	    {   None,   None,   None,  None},
-	}, new Dictionary<string, SCCoords>());
+	}, new Dictionary<string, SCCoords> {
+		{ "Ship", new SCCoords(1, 2) },
+	    });
 
 	public static OwFeature E_DOCK_STRUCTURE = new OwFeature(new byte[,] {
 	    {   None, None,   None,   None},
 	    {   None, DOCK_SE, DOCK_S, DOCK_S},
 	    {   None, DOCK_E,   OCEAN,  OCEAN},
 	    {   None,   None,   None,  None},
-	    }, new Dictionary<string, SCCoords>());
+	    }, new Dictionary<string, SCCoords>  {
+		{ "Ship", new SCCoords(2, 2) },
+	    });
 
 	public static OwFeature E_CANAL_STRUCTURE = new OwFeature(new byte[,] {
 	    {DOCK_SE, DOCK_S, DOCK_SW, None, None,    None},
@@ -459,6 +467,7 @@ namespace FF1Lib.Procgen
 	public static OwFeature CARDIA_5_FEATURE = new OwFeature(CARDIA_5, "Cardia6", false);
 
 	public static OwFeature WATERFALL_FEATURE = new OwFeature(WATERFALL, "Waterfall", false);
+
 
     public OverworldTiles() {
         this.expand_mountains = new OwTileFilter(
@@ -775,7 +784,7 @@ namespace FF1Lib.Procgen
 		    OCEAN),
 
 		new Rule(new byte[3,3] {
-		    {STAR, SHORE_SW,   },
+		    {STAR, SHORE_SW, STAR},
 		    {STAR, SHORE_NE, STAR},
 		    {STAR, STAR, STAR}},
 		    OCEAN),

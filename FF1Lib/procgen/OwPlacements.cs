@@ -147,6 +147,11 @@ namespace FF1Lib.Procgen
 		    this.Tilemap[p.Y+h-1, p.X+makeland] = OverworldTiles.LAND;
 		    this.Tilemap[p.Y+h-2, p.X+makeland] = OverworldTiles.LAND;
 		}
+		if (feature.Entrances.ContainsKey("Ship")) {
+		    this.OwnPlacements();
+		    var s = feature.Entrances["Ship"];
+		    this.DockPlacements.Add(new ValueTuple<short, SCCoords>(region.RegionId, new SCCoords(p.X+s.X, p.Y+s.Y)));
+		}
 		return this.NextStep();
 	    }
 	    return new Result(false);
@@ -157,7 +162,19 @@ namespace FF1Lib.Procgen
 		if (this.Tilemap[p.Y, p.X] == OverworldTiles.LAND ||
 		    this.Tilemap[p.Y, p.X] == OverworldTiles.GRASS)
 		{
-		    return ValueTuple.Create(true, p);
+		    var count = 0;
+		    if (this.Tilemap[p.Y-1, p.X] == OverworldTiles.OCEAN) count++;
+		    if (this.Tilemap[p.Y, p.X+1] == OverworldTiles.OCEAN) count++;
+		    if (this.Tilemap[p.Y+1, p.X] == OverworldTiles.OCEAN) count++;
+		    if (this.Tilemap[p.Y, p.X-1] == OverworldTiles.OCEAN) count++;
+
+		    // Don't consider tiles that are bordered on two
+		    // or more sides by water, there is a possibility
+		    // that they get modified or eliminated by later
+		    // filters.
+		    if (count < 2) {
+			return ValueTuple.Create(true, p);
+		    }
 		}
 	    }
 	    return ValueTuple.Create(false, new SCCoords(0,0));
@@ -397,7 +414,8 @@ namespace FF1Lib.Procgen
 	public bool DockPlacement(OwFeature feature, OwRegion region) {
 	    var points = new List<SCCoords>(region.Points);
 	    points.Shuffle(this.rng);
-	    bool placed = false;
+	    OwFeature placed = null;
+		SCCoords placedAt = new SCCoords(0, 0);
 	    foreach (var p in points) {
 		var np = p.OwUp;
 		if (this.Traversable_regionmap[np.Y, np.X] == OverworldTiles.MainOceanRegionId) {
@@ -405,7 +423,8 @@ namespace FF1Lib.Procgen
 						new SCCoords(p.X-2, p.Y),
 						OverworldTiles.N_DOCK_STRUCTURE, true);
 		    if (r.Item1) {
-			placed = true;
+				placedAt = p;
+			placed = OverworldTiles.N_DOCK_STRUCTURE;
 			break;
 		    }
 		}
@@ -416,7 +435,8 @@ namespace FF1Lib.Procgen
 						new SCCoords(p.X-3, p.Y-2),
 						OverworldTiles.E_DOCK_STRUCTURE, true);
 		    if (r.Item1) {
-			placed = true;
+				placedAt = p;
+			placed = OverworldTiles.E_DOCK_STRUCTURE;
 			break;
 		    }
 		}
@@ -427,7 +447,8 @@ namespace FF1Lib.Procgen
 						new SCCoords(p.X-2, p.Y-2),
 						OverworldTiles.S_DOCK_STRUCTURE, true);
 		    if (r.Item1) {
-			placed = true;
+				placedAt = p;
+			placed = OverworldTiles.S_DOCK_STRUCTURE;
 			break;
 		    }
 		}
@@ -438,15 +459,17 @@ namespace FF1Lib.Procgen
 						new SCCoords(p.X, p.Y-2),
 						OverworldTiles.W_DOCK_STRUCTURE, true);
 		    if (r.Item1) {
-			placed = true;
+				placedAt = p;
+			placed = OverworldTiles.W_DOCK_STRUCTURE;
 			break;
 		    }
 		}
-
 	    }
 
-	    if (placed) {
+	    if (placed != null) {
 		this.OwnPlacements();
+		var s = placed.Entrances["Ship"];
+		this.DockPlacements.Add(new ValueTuple<short, SCCoords>(region.RegionId, new SCCoords(placedAt.X+s.X, placedAt.Y+s.Y)));
 		if (!this.Reachable_regions.Contains(region.RegionId)) {
 		    this.Reachable_regions.Add(region.RegionId);
 		}

@@ -73,28 +73,6 @@ namespace FF1Lib.Procgen
 		var p = new SCCoords(x, y);
 		var adjacent = new SCCoords[] { p.OwUp, p.OwRight, p.OwDown, p.OwLeft };
 
-		/*if (regionType == OverworldTiles.FOREST_REGION || regionType == OverworldTiles.MOUNTAIN_REGION) {
-			// Check that a forest or mountain tile has two adjacent forest
-			// or mountain tiles at 90 degrees to one another, otherwise
-			// turn it into plain land.
-			int streak = 0;
-			foreach (var t in adjacent) {
-				var adjRegionType = this.regionTypeMap[tilemap[t.Y,t.X]];
-				if (adjRegionType == regionType) {
-					streak += 1;
-				} else {
-					streak = 0;
-				}
-				if (streak == 2) {
-					return 0xFF;
-				}
-			}
-			if (streak == 1 && tilemap[p.Y-1,p.X] == regionType) {
-				return 0xFF;
-			}
-			return OverworldTiles.LAND;
-		}*/
-
 		int[] counts = new int[4] { 0, 0, 0, 0};
 		int[] countedTypes = new int[4] {-1, -1, -1, -1};
 

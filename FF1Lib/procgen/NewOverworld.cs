@@ -28,13 +28,13 @@ namespace FF1Lib.Procgen
         public int RegionType;
         public short RegionId;
         public List<SCCoords> Points;
-        public List<int> Adjacent;
+        public List<short> Adjacent;
 
         public OwRegion(int regionType, short regionid) {
             this.RegionType = regionType;
             this.RegionId = regionid;
             this.Points = new List<SCCoords>();
-            this.Adjacent = new List<int>();
+            this.Adjacent = new List<short>();
         }
 
         public void AddPoint(SCCoords p) {
@@ -196,8 +196,8 @@ namespace FF1Lib.Procgen
         public byte[,] Tilemap;
         short[,] Biome_regionmap;
         List<OwRegion> Biome_regionlist;
-        short[,] Traversable_regionmap;
-        List<OwRegion> Traversable_regionlist;
+        public short[,] Traversable_regionmap;
+        public List<OwRegion> Traversable_regionlist;
         byte[,] Feature_weightmap;
         byte[,] Dock_weightmap;
         public Dictionary<string, SCCoords> FeatureCoordinates;
@@ -211,7 +211,7 @@ namespace FF1Lib.Procgen
         float heightmax;
         float mountain_elevation;
         float sea_elevation;
-
+	public List<ValueTuple<short, SCCoords>> DockPlacements;
         private MT19337 rng;
 
         private OverworldTiles overworldTiles;
@@ -238,6 +238,7 @@ namespace FF1Lib.Procgen
             this.Reachable_regions = new List<int>();
             this.Exclude_docks = new List<int>();
             this.StepQueue = new Queue<GenerationStep>(steps);
+	    this.DockPlacements = new List<ValueTuple<short, SCCoords>>();
             this.overworldTiles = overworldTiles;
 	    this.startingRegion = -1;
 	    this.bridgedRegion = -1;
@@ -266,6 +267,7 @@ namespace FF1Lib.Procgen
             this.Exclude_docks = copy.Exclude_docks;
             this.rng = copy.rng;
             this.StepQueue = copy.StepQueue;
+	    this.DockPlacements = copy.DockPlacements;
             this.heightmax = copy.heightmax;
             this.mountain_elevation = copy.mountain_elevation;
             this.sea_elevation = copy.sea_elevation;
@@ -326,6 +328,7 @@ namespace FF1Lib.Procgen
             this.FeatureCoordinates = new Dictionary<string, SCCoords>(this.FeatureCoordinates);
             this.Reachable_regions = new List<int>(this.Reachable_regions);
             this.Exclude_docks = new List<int>(this.Exclude_docks);
+	    this.DockPlacements = new List<ValueTuple<short, SCCoords>>(this.DockPlacements);
             this.ownPlacements = true;
         }
         public Result NextStep() {
@@ -1005,10 +1008,9 @@ namespace FF1Lib.Procgen
             ExchangeData.CanalLocation = st.FeatureCoordinates["Canal"];
 	    st.FeatureCoordinates.Remove("Canal");
 
-            ExchangeData.ShipLocations = new ShipLocation[] {
-                new ShipLocation(st.FeatureCoordinates["Ship"].X, st.FeatureCoordinates["Ship"].Y, 255)
-            };
 	    st.FeatureCoordinates.Remove("Ship");
+            ExchangeData.ShipLocations = this.AssignShipLocations(st);
+
             ExchangeData.TeleporterFixups = new TeleportFixup[] {
 		new TeleportFixup(FF1Lib.TeleportType.Exit, 0,
 				  new TeleData((MapId)OverworldTiles.None,
@@ -1050,6 +1052,7 @@ namespace FF1Lib.Procgen
             ExchangeData.OverworldCoordinates = st.FeatureCoordinates;
 
 	    this.AssignEncounterDomains(st, mt);
+
         }
 
         public List<List<byte>> Tiles;
@@ -1155,6 +1158,90 @@ namespace FF1Lib.Procgen
 
 	    this.ExchangeData.DomainUpdates = domains;
 	    this.ExchangeData.DomainFixups = new DomainFixup[] {};
+	}
+
+	public ShipLocation[] AssignShipLocations(OverworldState state) {
+	    var EntranceToOWTeleporterIndex = new Dictionary<string, OverworldTeleportIndex> {
+		{"ConeriaCastle1", OverworldTeleportIndex.ConeriaCastle1},
+		{"Coneria", OverworldTeleportIndex.Coneria},
+		{"EarthCave1", OverworldTeleportIndex.EarthCave1},
+		{"ElflandCastle", OverworldTeleportIndex.ElflandCastle},
+		{"Elfland", OverworldTeleportIndex.Elfland},
+		{"MirageTower1", OverworldTeleportIndex.MirageTower1},
+		{"NorthwestCastle", OverworldTeleportIndex.NorthwestCastle},
+		{"IceCave1", OverworldTeleportIndex.IceCave1},
+		{"DwarfCave", OverworldTeleportIndex.DwarfCave},
+		{"MatoyasCave", OverworldTeleportIndex.MatoyasCave},
+		{"TitansTunnelEast", OverworldTeleportIndex.TitansTunnelEast},
+		{"TitansTunnelWest", OverworldTeleportIndex.TitansTunnelWest},
+		{"CastleOrdeals1", OverworldTeleportIndex.CastleOrdeals1},
+		{"SardasCave", OverworldTeleportIndex.SardasCave},
+		{"Waterfall", OverworldTeleportIndex.Waterfall},
+		{"Pravoka", OverworldTeleportIndex.Pravoka},
+		{"CrescentLake", OverworldTeleportIndex.CrescentLake},
+		{"TempleOfFiends1", OverworldTeleportIndex.TempleOfFiends1},
+		{"Gaia", OverworldTeleportIndex.Gaia},
+		{"Onrac", OverworldTeleportIndex.Onrac},
+		{"GurguVolcano1", OverworldTeleportIndex.GurguVolcano1},
+		{"Cardia2", OverworldTeleportIndex.Cardia2},
+		{"Cardia4", OverworldTeleportIndex.Cardia4},
+		{"Cardia5", OverworldTeleportIndex.Cardia5},
+		{"Cardia6", OverworldTeleportIndex.Cardia6},
+		{"Cardia1", OverworldTeleportIndex.Cardia1},
+		{"BahamutCave1", OverworldTeleportIndex.BahamutCave1},
+		{"Lefein", OverworldTeleportIndex.Lefein},
+		{"MarshCave1", OverworldTeleportIndex.MarshCave1},
+		{"Melmond", OverworldTeleportIndex.Melmond},
+	    };
+
+	    var locations = new List<ShipLocation>();
+
+	    // Figure out which region each entrance is contained in.
+	    // Take advantage of the fact that entrances are part of
+	    // features which create cutout regions, which are always
+	    // adjacent to the traversable region they were cut out
+	    // from.
+	    var entranceRegions = new Dictionary<string, short>();
+	    foreach (var c in state.FeatureCoordinates) {
+		var featureRegion = state.Traversable_regionmap[c.Value.Y, c.Value.X];
+		var adj = state.Traversable_regionlist[featureRegion].Adjacent[0];
+		entranceRegions[c.Key] = adj;
+	    }
+
+	    foreach (var c in state.FeatureCoordinates) {
+		// For each feature, go through all the docks and find
+		// the ones that are in the same region.  Pick the one
+		// that is closest.
+		float dist = 1000000;
+		var closestDock = new SCCoords(0, 0);
+		var entranceRegion = entranceRegions[c.Key];
+		foreach (var dock in state.DockPlacements) {
+		    if (dock.Item1 != entranceRegion) {
+			continue;
+		    }
+		    var featurePosition = c.Value;
+		    var dockPosition = dock.Item2;
+		    var d2 = (float)Math.Sqrt((featurePosition.X-dockPosition.X)*(featurePosition.X-dockPosition.X) +
+				       (featurePosition.Y-dockPosition.Y)*(featurePosition.Y-dockPosition.Y));
+		    if (d2 < dist) {
+			dist = d2;
+			closestDock = dockPosition;
+		    }
+		    //Console.WriteLine($"Considered {dockPosition.X}, {dockPosition.Y} which is {d2} from {c.Key} at {featurePosition.X} {featurePosition.Y}");
+		}
+		if (dist < 1000000) {
+		    locations.Add(new ShipLocation(closestDock.X,
+						   closestDock.Y,
+						   (byte)EntranceToOWTeleporterIndex[c.Key]));
+		    if (c.Key == "ConeriaCastle1") {
+			locations.Add(new ShipLocation(closestDock.X,
+						       closestDock.Y,
+						       255));
+		    }
+		}
+	    }
+
+	    return locations.ToArray();
 	}
     }
 
