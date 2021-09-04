@@ -624,7 +624,7 @@ namespace FF1Lib
 
 			if (flags.SaveGameWhenGameOver)
 			{
-				EnableSaveOnDeath(flags);
+				EnableSaveOnDeath(flags, owMapExchange);
 			}
 
 			// Ordered before RNG shuffle. In the event that both flags are on, RNG shuffle depends on this.

@@ -10,7 +10,7 @@ ch_stats        = unsram + $0100  ; MUST be on page bound.  Each character allow
 ch_ailments     = ch_stats + $01
 ch_curhp        = ch_stats + $0A  ; 2 bytes
 
-SaveOnDeath = $8FF5
+SaveOnDeath = $8FF8
 GameStart = $C012
 CallMusicPlay = $C689
 GetJoyInput = $D828

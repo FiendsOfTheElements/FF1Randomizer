@@ -37,5 +37,14 @@ namespace FF1Lib
 
 			return locations.ShipLocation;
 		}
+
+		public ShipLocation GetShipLocation(int dungeonIndex)
+		{
+			var shiplocation = data.FirstOrDefault(s => s.TeleporterIndex == dungeonIndex);
+
+			if (shiplocation == null) shiplocation = data.FirstOrDefault(s => s.TeleporterIndex == 255);
+
+			return shiplocation;
+		}
 	}
 }
