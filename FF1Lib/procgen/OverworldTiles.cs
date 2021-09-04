@@ -752,6 +752,79 @@ namespace FF1Lib.Procgen
 	    new Rule[] {
 		new Rule(new byte[3,3] {
 		    {STAR, STAR,   STAR},
+		    {SHORE_NE, SHORE_SW, STAR},
+		    {STAR, STAR, STAR}},
+		    OCEAN),
+
+		new Rule(new byte[3,3] {
+		    {STAR, STAR,   STAR},
+		    {STAR, SHORE_NE, SHORE_SW},
+		    {STAR, STAR, STAR}},
+		    OCEAN),
+
+		new Rule(new byte[3,3] {
+		    {STAR, STAR,   SHORE_SW},
+		    {STAR, SHORE_NE, STAR},
+		    {STAR, STAR, STAR}},
+		    OCEAN),
+
+		new Rule(new byte[3,3] {
+		    {STAR, STAR,     STAR},
+		    {STAR, SHORE_SW, STAR},
+		    {SHORE_NE, STAR, STAR}},
+		    OCEAN),
+
+		new Rule(new byte[3,3] {
+		    {STAR, SHORE_SW,   },
+		    {STAR, SHORE_NE, STAR},
+		    {STAR, STAR, STAR}},
+		    OCEAN),
+
+		new Rule(new byte[3,3] {
+		    {STAR, STAR,     STAR},
+		    {STAR, SHORE_SW, STAR},
+		    {STAR, SHORE_NE, STAR}},
+		    OCEAN),
+
+
+		new Rule(new byte[3,3] {
+		    {STAR, STAR,   STAR},
+		    {SHORE_SE, SHORE_NW, STAR},
+		    {STAR, STAR, STAR}},
+		    OCEAN),
+
+		new Rule(new byte[3,3] {
+		    {STAR, STAR,   STAR},
+		    {STAR, SHORE_SE, SHORE_NW},
+		    {STAR, STAR, STAR}},
+		    OCEAN),
+
+		new Rule(new byte[3,3] {
+		    {SHORE_SE, STAR,   STAR},
+		    {STAR, SHORE_NW, STAR},
+		    {STAR, STAR, STAR}},
+		    OCEAN),
+
+		new Rule(new byte[3,3] {
+		    {STAR, STAR,   STAR},
+		    {STAR, SHORE_SE, STAR},
+		    {STAR, STAR, SHORE_NW}},
+		    OCEAN),
+
+		new Rule(new byte[3,3] {
+		    {STAR, SHORE_SE,   STAR},
+		    {STAR, SHORE_NW, STAR},
+		    {STAR, STAR, STAR}},
+		    OCEAN),
+
+		new Rule(new byte[3,3] {
+		    {STAR, STAR,   STAR},
+		    {STAR, SHORE_SE, STAR},
+		    {STAR, SHORE_NW, STAR}},
+		    OCEAN),
+
+		new Rule(new byte[3,3] {
+		    {STAR, STAR,   STAR},
 		    {STAR, _,  OCEAN},
 		    {STAR, OCEAN, STAR}},
 		    SHORE_SE),
