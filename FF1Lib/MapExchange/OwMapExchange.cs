@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Reflection;
 using System.ComponentModel;
 using RomUtilities;
+using Ionic.Zip;
 
 namespace FF1Lib
 {
@@ -41,6 +42,9 @@ namespace FF1Lib
 		[Description("Archipelago")]
 		ProcGen3,
 
+		[Description("Random Pregenerated 512")]
+		RandomPregenerated,
+
 		[Description("Random")]
 		Random
 	}
@@ -55,6 +59,8 @@ namespace FF1Lib
 		ExitTeleData exit;
 		OwLocationData locations;
 		DomainData domains;
+
+		Stream mapStream;
 
 		public OwMapExchangeData Data => data;
 
@@ -77,9 +83,46 @@ namespace FF1Lib
 			ShipLocations = new ShipLocations(locations, data.ShipLocations);
 		}
 
+		public OwMapExchange(FF1Rom _rom, OverworldMap _overworldMap, MT19337 rng)
+		{	
+			rom = _rom;
+			overworldMap = _overworldMap;
+
+			exit = new ExitTeleData(rom);
+			locations = new OwLocationData(rom);
+			domains = new DomainData(rom);
+
+			var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+			var resourcePath = assembly.GetManifestResourceNames().First(str => str.EndsWith("pregenerated.zip"));
+
+			using Stream stream = assembly.GetManifestResourceStream(resourcePath);
+
+			ZipFile file = ZipFile.Read(stream);
+
+			var maplist = file.Entries.Where(e => e.FileName.EndsWith(".ffm")).Select(e => e.FileName.Replace(".ffm", "")).ToList();
+
+			var map = maplist.PickRandom(rng);
+
+			data = LoadJson(file[map + ".json"]);
+
+			ShipLocations = new ShipLocations(locations, data.ShipLocations);
+
+			using var stream2 = file[map + ".ffm"].OpenReader();
+			using var rd = new BinaryReader(stream2);
+			byte[] mapData = rd.ReadBytes(65536);
+			mapStream = new MemoryStream(mapData);
+		}
+
 		public void ExecuteStep1()
 		{
-			overworldMap.SwapMap(name + ".ffm");
+			if (mapStream != null)
+			{
+				overworldMap.SwapMap(mapStream);
+			}
+			else
+			{
+				overworldMap.SwapMap(name + ".ffm");
+			}
 
 			//load default locations first, doh
 			locations.LoadData();
@@ -125,8 +168,8 @@ namespace FF1Lib
 			originalDomains.LoadTable();
 			domains.LoadTable();
 
-			foreach (var df in data.DomainFixups) domains.SwapDomains(df.From, df.To);
-			foreach (var df in data.DomainUpdates) domains.Data[df.To] = originalDomains.Data[df.From];
+			if (data.DomainFixups != null) foreach (var df in data.DomainFixups) domains.SwapDomains(df.From, df.To);
+			if (data.DomainUpdates != null) foreach (var df in data.DomainUpdates) domains.Data[df.To] = originalDomains.Data[df.From];
 
 			domains.StoreTable();
 			locations.StoreData();
@@ -139,6 +182,14 @@ namespace FF1Lib
 
 			using (Stream stream = assembly.GetManifestResourceStream(resourcePath))
 			using (StreamReader rd = new StreamReader(stream))
+			{
+				return JsonConvert.DeserializeObject<OwMapExchangeData>(rd.ReadToEnd());
+			}
+		}
+
+		private OwMapExchangeData LoadJson(ZipEntry zipEntry)
+		{
+			using (StreamReader rd = new StreamReader(zipEntry.OpenReader()))
 			{
 				return JsonConvert.DeserializeObject<OwMapExchangeData>(rd.ReadToEnd());
 			}
@@ -171,6 +222,8 @@ namespace FF1Lib
 					return new OwMapExchange(_rom, _overworldMap, "procgen2");
 				case OwMapExchanges.ProcGen3:
 					return new OwMapExchange(_rom, _overworldMap, "procgen3");
+				case OwMapExchanges.RandomPregenerated:
+					return new OwMapExchange(_rom, _overworldMap, rng);
 			}
 
 			throw new Exception("oops");

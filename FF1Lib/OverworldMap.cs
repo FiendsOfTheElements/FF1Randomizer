@@ -1334,6 +1334,23 @@ namespace FF1Lib
 			}
 		}
 
+		public void SwapMap(Stream stream)
+		{
+			List<List<byte>> decompressedRows = new List<List<byte>>();
+
+			using (BinaryReader rd = new BinaryReader(stream))
+			{
+				for (int i = 0; i < 256; i++)
+				{
+					var row = rd.ReadBytes(256);
+					decompressedRows.Add(new List<byte>(row));
+				}
+			}
+
+			var recompressedMap = CompressMapRows(decompressedRows);
+			PutCompressedMapRows(recompressedMap);
+		}
+
 		public void SwapMap(string fileName)
 		{
 			List<List<byte>> decompressedRows = new List<List<byte>>();
