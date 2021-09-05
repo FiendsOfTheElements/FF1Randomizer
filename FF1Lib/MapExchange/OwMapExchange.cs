@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Reflection;
 using System.ComponentModel;
 using RomUtilities;
-using Ionic.Zip;
+using System.IO.Compression;
 
 namespace FF1Lib
 {
@@ -97,17 +97,18 @@ namespace FF1Lib
 
 			using Stream stream = assembly.GetManifestResourceStream(resourcePath);
 
-			ZipFile file = ZipFile.Read(stream);
+			var archive = new ZipArchive(stream);
 
-			var maplist = file.Entries.Where(e => e.FileName.EndsWith(".ffm")).Select(e => e.FileName.Replace(".ffm", "")).ToList();
+			var maplist = archive.Entries.Where(e => e.Name.EndsWith(".ffm")).Select(e => e.Name.Replace(".ffm", "")).ToList();
 
 			var map = maplist.PickRandom(rng);
 
-			data = LoadJson(file[map + ".json"]);
+			
+			data = LoadJson(archive.GetEntry(map + ".json").Open());
 
 			ShipLocations = new ShipLocations(locations, data.ShipLocations);
 
-			using var stream2 = file[map + ".ffm"].OpenReader();
+			using var stream2 = archive.GetEntry(map + ".ffm").Open();
 			using var rd = new BinaryReader(stream2);
 			byte[] mapData = rd.ReadBytes(65536);
 			mapStream = new MemoryStream(mapData);
@@ -187,9 +188,9 @@ namespace FF1Lib
 			}
 		}
 
-		private OwMapExchangeData LoadJson(ZipEntry zipEntry)
+		private OwMapExchangeData LoadJson(Stream stream)
 		{
-			using (StreamReader rd = new StreamReader(zipEntry.OpenReader()))
+			using (StreamReader rd = new StreamReader(stream))
 			{
 				return JsonConvert.DeserializeObject<OwMapExchangeData>(rd.ReadToEnd());
 			}
