@@ -956,6 +956,8 @@ namespace FF1Lib
 			PutInBank(0x1F, 0xC4DA, Blob.FromHex("E0"));
 			PutInBank(0x1F, 0xC6B4, Blob.FromHex("E0"));
 
+			PutInBank(0x1F, 0xC2EC, Blob.FromHex("E1")); // Update mask for docking
+
 			List<int> owDamageTileList = new() { 0x45, 0x55, 0x62, 0x63, 0x72, 0x73 };
 
 			foreach (var tile in owDamageTileList)
