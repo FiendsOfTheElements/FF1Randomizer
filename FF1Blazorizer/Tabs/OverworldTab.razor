@@ -8,15 +8,20 @@
 		{
 	<div class="col1">
 		<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="owMapExchange" TItem="OwMapExchanges" IsEnabled="Flags.SanityCheckerV2" @bind-Value="Flags.OwMapExchange">Overworld map to use:</EnumDropDown>
+		<br>
 
 		Map generation seed:
 		<br>
 		<input type="text" style="width: calc(100% - 160px);" class="nes-input @(_mapgenSeedInputClass)" id="mapgenSeedInput"
 		@onchange="@OnSeedInputChanged" value="@(_mapgenSeed)"
 		disabled="@(Flags.OwMapExchange != OwMapExchanges.Desert && Flags.OwMapExchange != OwMapExchanges.GenerateNewOverworld)" />
-		<a class="styled-button" @onclick="@OnNewSeed">New</a>
-		<a class="styled-button" @onclick="@OnClearSeed">Clear</a>
-		<a class="styled-button" @onclick="@OnGenerateMap">Generate Map</a>
+		<a class='styled-button @(Flags.OwMapExchange == OwMapExchanges.GenerateNewOverworld ? "" : "disabled-button")' @onclick="@OnNewSeed">New</a>
+		<a class='styled-button @(Flags.OwMapExchange == OwMapExchanges.GenerateNewOverworld ? "" : "disabled-button")' @onclick="@OnClearSeed">Clear</a>
+		<br>
+		<br>
+		<a class='styled-button @(Flags.OwMapExchange == OwMapExchanges.GenerateNewOverworld ? "" : "disabled-button")' @onclick="@OnGenerateMap">Generate Map</a>
+		<br>
+		<br>
 		<p>@StatusMessage</p>
 	</div>
 
@@ -87,12 +92,18 @@
 
 		void OnNewSeed(MouseEventArgs e)
 		{
+		if (Flags.OwMapExchange != OwMapExchanges.GenerateNewOverworld) {
+		return;
+		}
 			ValidateSeed(Blob.Random(4).ToHex());
 			StateHasChanged();
 		}
 
 		void OnClearSeed(MouseEventArgs e)
 		{
+		if (Flags.OwMapExchange != OwMapExchanges.GenerateNewOverworld) {
+		return;
+		}
 			ValidateSeed("00000000");
 			StateHasChanged();
 		}
@@ -103,6 +114,9 @@
 		}
 
 		void OnGenerateMap(MouseEventArgs e) {
+		if (Flags.OwMapExchange != OwMapExchanges.GenerateNewOverworld) {
+		return;
+		}
 			if (Flags.MapGenSeed == 0) {
 			  ValidateSeed(Blob.Random(4).ToHex());
 			}
