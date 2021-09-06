@@ -138,7 +138,7 @@
 			try
 			{
 				var blb = Blob.FromHex(_mapgenSeed);
-				Flags.MapGenSeed = (blb[0] << 24) | (blb[1] << 16) | (blb[2] << 8) | blb[3];
+				Flags.MapGenSeed = ((blb[0]&0x7F) << 24) | (blb[1] << 16) | (blb[2] << 8) | blb[3];
 				_mapgenSeed = _mapgenSeed = $"{Flags.MapGenSeed,8:X8}";
 				_mapgenSeedInputClass = "";
 			}

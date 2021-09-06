@@ -1132,7 +1132,7 @@ namespace FF1Lib.Procgen
 	    var ExchangeData = new OwMapExchangeData();
 
 	    var tiles = new List<string>();
-	    var onerow = new byte[64];
+	    var onerow = new byte[OverworldState.MAPSIZE];
 	    for (int y = 0; y < OverworldState.MAPSIZE; y++) {
 		for (int x = 0; x < OverworldState.MAPSIZE; x++) {
 		    onerow[x] = st.Tilemap[y,x];
