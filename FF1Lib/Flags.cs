@@ -103,6 +103,11 @@ namespace FF1Lib
 
 		public OwMapExchanges OwMapExchange { get; set; } = OwMapExchanges.None;
 
+		[IntegerFlag(0, Int32.MaxValue, 1)]
+		public int MapGenSeed { get; set; } = 0;
+
+		public OwMapExchangeData ReplacementMap { get; set; } = null;
+
 		public bool? NoItemMagic { get; set; } = false;
 
 		#region ShopKiller

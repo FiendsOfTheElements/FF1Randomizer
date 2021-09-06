@@ -952,10 +952,10 @@ namespace FF1Lib.Procgen
         public OverworldState final;
         public List<GenerationTask> additionalTasks;
 
-         public Result(bool f) {
-             this.final = null;
-             this.additionalTasks = null;
-         }
+	public Result(bool f) {
+	    this.final = null;
+	    this.additionalTasks = null;
+	}
 
         public Result(OverworldState f) {
             this.final = f;
@@ -985,269 +985,10 @@ namespace FF1Lib.Procgen
         }
     }
 
-    public class ReplacementMap {
-
-        public ReplacementMap(OverworldState st, OverworldTiles mt) {
-            Tiles = new List<List<byte>>();
-            for (int y = 0; y < OverworldState.MAPSIZE; y++) {
-                Tiles.Add(new List<byte>());
-                for (int x = 0; x < OverworldState.MAPSIZE; x++) {
-                    Tiles[y].Add(st.Tilemap[y,x]);
-                }
-            }
-            ExchangeData = new OwMapExchangeData();
-            ExchangeData.StartingLocation = st.FeatureCoordinates["StartingLocation"];
-	    st.FeatureCoordinates.Remove("StartingLocation");
-
-            ExchangeData.AirShipLocation = st.FeatureCoordinates["Airship"];
-	    st.FeatureCoordinates.Remove("Airship");
-
-            ExchangeData.BridgeLocation = st.FeatureCoordinates["Bridge"];
-	    st.FeatureCoordinates.Remove("Bridge");
-
-            ExchangeData.CanalLocation = st.FeatureCoordinates["Canal"];
-	    st.FeatureCoordinates.Remove("Canal");
-
-	    st.FeatureCoordinates.Remove("Ship");
-            ExchangeData.ShipLocations = this.AssignShipLocations(st);
-
-            ExchangeData.TeleporterFixups = new TeleportFixup[] {
-		new TeleportFixup(FF1Lib.TeleportType.Exit, 0,
-				  new TeleData((MapId)OverworldTiles.None,
-					       st.FeatureCoordinates["TitansTunnelEast"].X,
-					       st.FeatureCoordinates["TitansTunnelEast"].Y)),
-		new TeleportFixup(FF1Lib.TeleportType.Exit, 1,
-				  new TeleData((MapId)OverworldTiles.None,
-					       st.FeatureCoordinates["TitansTunnelWest"].X,
-					       st.FeatureCoordinates["TitansTunnelWest"].Y)),
-		new TeleportFixup(FF1Lib.TeleportType.Exit, 2,
-				  new TeleData((MapId)OverworldTiles.None,
-					       st.FeatureCoordinates["IceCave1"].X,
-					       st.FeatureCoordinates["IceCave1"].Y)),
-		new TeleportFixup(FF1Lib.TeleportType.Exit, 3,
-				  new TeleData((MapId)OverworldTiles.None,
-					       st.FeatureCoordinates["CastleOrdeals1"].X,
-					       st.FeatureCoordinates["CastleOrdeals1"].Y)),
-		new TeleportFixup(FF1Lib.TeleportType.Exit, 4,
-				  new TeleData((MapId)OverworldTiles.None,
-					       st.FeatureCoordinates["ConeriaCastle1"].X,
-					       st.FeatureCoordinates["ConeriaCastle1"].Y)),
-		new TeleportFixup(FF1Lib.TeleportType.Exit, 5,
-				  new TeleData((MapId)OverworldTiles.None,
-					       st.FeatureCoordinates["EarthCave1"].X,
-					       st.FeatureCoordinates["EarthCave1"].Y)),
-		new TeleportFixup(FF1Lib.TeleportType.Exit, 6,
-				  new TeleData((MapId)OverworldTiles.None,
-					       st.FeatureCoordinates["GurguVolcano1"].X,
-					       st.FeatureCoordinates["GurguVolcano1"].Y)),
-		new TeleportFixup(FF1Lib.TeleportType.Exit, 7,
-				  new TeleData((MapId)OverworldTiles.None,
-					       st.FeatureCoordinates["Onrac"].X,
-					       st.FeatureCoordinates["Onrac"].Y)),
-		new TeleportFixup(FF1Lib.TeleportType.Exit, 8,
-				  new TeleData((MapId)OverworldTiles.None,
-					       st.FeatureCoordinates["MirageTower1"].X,
-					       st.FeatureCoordinates["MirageTower1"].Y))
-            };
-            ExchangeData.OverworldCoordinates = st.FeatureCoordinates;
-
-	    this.AssignEncounterDomains(st, mt);
-
-        }
-
-        public List<List<byte>> Tiles;
-        public OwMapExchangeData ExchangeData;
-
-	public void AssignEncounterDomains(OverworldState state, OverworldTiles mt) {
-	    var nearest_dungeon = new string[OverworldState.MAPSIZE,OverworldState.MAPSIZE];
-	    var working_list = new Queue<KeyValuePair<string, SCCoords>>();
-
-	    foreach (KeyValuePair<string, SCCoords> kv in state.FeatureCoordinates) {
-		working_list.Enqueue(kv);
-	    }
-
-	    while (working_list.Count > 0) {
-		var kv = working_list.Dequeue();
-
-		if (nearest_dungeon[kv.Value.Y, kv.Value.X] != null) {
-		    continue;
-		}
-
-		nearest_dungeon[kv.Value.Y, kv.Value.X] = kv.Key;
-
-		var adjacent = new SCCoords[] { kv.Value.OwUp, kv.Value.OwRight, kv.Value.OwDown, kv.Value.OwLeft};
-		foreach (var adj in adjacent) {
-            if (mt.TraversableRegionTypeMap.ContainsKey(state.Tilemap[adj.Y, adj.X])) {
-                    var next_tile = mt.TraversableRegionTypeMap[state.Tilemap[adj.Y, adj.X]];
-                    if (next_tile == OverworldTiles.LAND_REGION || next_tile == OverworldTiles.RIVER_REGION) {
-                                working_list.Enqueue(new KeyValuePair<string, SCCoords>(kv.Key, adj));
-                    }
-                }
-		    }
-	    }
-
-	    // Using octal numbers here because they nicely correspond
-	    // to coordinates on the 8x8 source grid of encounter
-	    // zones.
-	    var source_encounter_domains = new Dictionary<string, int>{
-		{"Coneria",         Convert.ToInt32("44", 8)},
-		{"ConeriaCastle1",  Convert.ToInt32("44", 8)},
-		{"TempleOfFiends1", Convert.ToInt32("34", 8)},
-		{"Pravoka",         Convert.ToInt32("46", 8)},
-		{"Gaia",            Convert.ToInt32("06", 8)},
-		{"CastleOrdeals1",  Convert.ToInt32("14", 8)},
-		{"TitansTunnelWest", Convert.ToInt32("50", 8)},
-		{"SardasCave", Convert.ToInt32("50", 8)},
-		{"MirageTower1", Convert.ToInt32("16", 8)},
-		{"Onrac", Convert.ToInt32("11", 8)},
-		{"EarthCave1", Convert.ToInt32("52", 8)},
-		{"TitansTunnelEast", Convert.ToInt32("50", 8)},
-		{"MatoyasCave", Convert.ToInt32("35", 8)},
-		{"DwarfCave", Convert.ToInt32("43", 8)},
-		{"Elfland", Convert.ToInt32("64", 8)},
-		{"ElflandCastle", Convert.ToInt32("64", 8)},
-		{"MarshCave1", Convert.ToInt32("73", 8)},
-		{"NorthwestCastle", Convert.ToInt32("53", 8)},
-		{"Melmond", Convert.ToInt32("52", 8)},
-		{"CrescentLake", Convert.ToInt32("66", 8)},
-		{"Lefein", Convert.ToInt32("37", 8)},
-		{"BahamutCave1", Convert.ToInt32("13", 8)},
-		{"Cardia1", Convert.ToInt32("12", 8)},
-		{"Cardia2", Convert.ToInt32("12", 8)},
-		{"Cardia4", Convert.ToInt32("12", 8)},
-		{"Cardia5", Convert.ToInt32("13", 8)},
-		{"Cardia6", Convert.ToInt32("13", 8)},
-		{"Waterfall", Convert.ToInt32("01", 8)},
-		{"GurguVolcano1", Convert.ToInt32("66", 8)},
-		{"IceCave1", Convert.ToInt32("66", 8)},
-	    };
-
-	    var domains = new DomainFixup[64];
-
-	    for (int j = 0; j < 8; j++) {
-		for (int i = 0; i < 8; i++) {
-		    var counts = new Dictionary<string, int>();
-		    for (int y = 0; y < 32; y++) {
-			for (int x = 0; x < 32; x++) {
-			    var nd = nearest_dungeon[j*32+y, i*32+x];
-			    if (nd != null) {
-				int c = 0;
-				counts.TryGetValue(nd, out c);
-				counts[nd] = c+1;
-			    }
-			}
-
-			int mx = 0;
-			string pick = null;
-			foreach (var kv in counts) {
-			    if (kv.Value > mx) {
-				pick = kv.Key;
-				mx = kv.Value;
-			    }
-			}
-            domains[j*8 + i] = new DomainFixup();
-			domains[j*8 + i].To = (byte)(j*8 + i);
-			if (pick != null) {
-			    domains[j*8 + i].From = (byte)source_encounter_domains[pick];
-			} else {
-			    domains[j*8 + i].From = 0;
-			}
-		    }
-		}
-	    }
-
-	    this.ExchangeData.DomainUpdates = domains;
-	    this.ExchangeData.DomainFixups = new DomainFixup[] {};
-	}
-
-	public ShipLocation[] AssignShipLocations(OverworldState state) {
-	    var EntranceToOWTeleporterIndex = new Dictionary<string, OverworldTeleportIndex> {
-		{"ConeriaCastle1", OverworldTeleportIndex.ConeriaCastle1},
-		{"Coneria", OverworldTeleportIndex.Coneria},
-		{"EarthCave1", OverworldTeleportIndex.EarthCave1},
-		{"ElflandCastle", OverworldTeleportIndex.ElflandCastle},
-		{"Elfland", OverworldTeleportIndex.Elfland},
-		{"MirageTower1", OverworldTeleportIndex.MirageTower1},
-		{"NorthwestCastle", OverworldTeleportIndex.NorthwestCastle},
-		{"IceCave1", OverworldTeleportIndex.IceCave1},
-		{"DwarfCave", OverworldTeleportIndex.DwarfCave},
-		{"MatoyasCave", OverworldTeleportIndex.MatoyasCave},
-		{"TitansTunnelEast", OverworldTeleportIndex.TitansTunnelEast},
-		{"TitansTunnelWest", OverworldTeleportIndex.TitansTunnelWest},
-		{"CastleOrdeals1", OverworldTeleportIndex.CastleOrdeals1},
-		{"SardasCave", OverworldTeleportIndex.SardasCave},
-		{"Waterfall", OverworldTeleportIndex.Waterfall},
-		{"Pravoka", OverworldTeleportIndex.Pravoka},
-		{"CrescentLake", OverworldTeleportIndex.CrescentLake},
-		{"TempleOfFiends1", OverworldTeleportIndex.TempleOfFiends1},
-		{"Gaia", OverworldTeleportIndex.Gaia},
-		{"Onrac", OverworldTeleportIndex.Onrac},
-		{"GurguVolcano1", OverworldTeleportIndex.GurguVolcano1},
-		{"Cardia2", OverworldTeleportIndex.Cardia2},
-		{"Cardia4", OverworldTeleportIndex.Cardia4},
-		{"Cardia5", OverworldTeleportIndex.Cardia5},
-		{"Cardia6", OverworldTeleportIndex.Cardia6},
-		{"Cardia1", OverworldTeleportIndex.Cardia1},
-		{"BahamutCave1", OverworldTeleportIndex.BahamutCave1},
-		{"Lefein", OverworldTeleportIndex.Lefein},
-		{"MarshCave1", OverworldTeleportIndex.MarshCave1},
-		{"Melmond", OverworldTeleportIndex.Melmond},
-	    };
-
-	    var locations = new List<ShipLocation>();
-
-	    // Figure out which region each entrance is contained in.
-	    // Take advantage of the fact that entrances are part of
-	    // features which create cutout regions, which are always
-	    // adjacent to the traversable region they were cut out
-	    // from.
-	    var entranceRegions = new Dictionary<string, short>();
-	    foreach (var c in state.FeatureCoordinates) {
-		var featureRegion = state.Traversable_regionmap[c.Value.Y, c.Value.X];
-		var adj = state.Traversable_regionlist[featureRegion].Adjacent[0];
-		entranceRegions[c.Key] = adj;
-	    }
-
-	    foreach (var c in state.FeatureCoordinates) {
-		// For each feature, go through all the docks and find
-		// the ones that are in the same region.  Pick the one
-		// that is closest.
-		float dist = 1000000;
-		var closestDock = new SCCoords(0, 0);
-		var entranceRegion = entranceRegions[c.Key];
-		foreach (var dock in state.DockPlacements) {
-		    if (dock.Item1 != entranceRegion) {
-			continue;
-		    }
-		    var featurePosition = c.Value;
-		    var dockPosition = dock.Item2;
-		    var d2 = (float)Math.Sqrt((featurePosition.X-dockPosition.X)*(featurePosition.X-dockPosition.X) +
-				       (featurePosition.Y-dockPosition.Y)*(featurePosition.Y-dockPosition.Y));
-		    if (d2 < dist) {
-			dist = d2;
-			closestDock = dockPosition;
-		    }
-		    //Console.WriteLine($"Considered {dockPosition.X}, {dockPosition.Y} which is {d2} from {c.Key} at {featurePosition.X} {featurePosition.Y}");
-		}
-		if (dist < 1000000) {
-		    locations.Add(new ShipLocation(closestDock.X,
-						   closestDock.Y,
-						   (byte)EntranceToOWTeleporterIndex[c.Key]));
-		    if (c.Key == "ConeriaCastle1") {
-			locations.Add(new ShipLocation(closestDock.X,
-						       closestDock.Y,
-						       255));
-		    }
-		}
-	    }
-
-	    return locations.ToArray();
-	}
-    }
 
     public static class NewOverworld {
 
-	public static ReplacementMap GenerateNewOverworld(MT19337 rng) {
+	public static OwMapExchangeData GenerateNewOverworld(MT19337 rng) {
 	    var mt = new OverworldTiles();
 	    GenerationStep[] steps = new GenerationStep[] {
 		new GenerationStep("CreateInitialMap", new object[]{}),
@@ -1381,10 +1122,271 @@ namespace FF1Lib.Procgen
 		    }
 		}
 		if (final != null) {
-		    return new ReplacementMap(final, mt);
+		    return ReplacementMap(final, mt);
 		}
 	    }
 	    throw new Exception("Couldn't generate a map after 5 tries");
 	}
+
+	public static OwMapExchangeData ReplacementMap(OverworldState st, OverworldTiles mt) {
+	    var ExchangeData = new OwMapExchangeData();
+
+	    var tiles = new List<string>();
+	    var onerow = new byte[64];
+	    for (int y = 0; y < OverworldState.MAPSIZE; y++) {
+		for (int x = 0; x < OverworldState.MAPSIZE; x++) {
+		    onerow[x] = st.Tilemap[y,x];
+		}
+		tiles.Add(Convert.ToBase64String(onerow));
+	    }
+
+	    ExchangeData.DecompressedMapRows = tiles;
+
+	    ExchangeData.StartingLocation = st.FeatureCoordinates["StartingLocation"];
+	    st.FeatureCoordinates.Remove("StartingLocation");
+
+	    ExchangeData.AirShipLocation = st.FeatureCoordinates["Airship"];
+	    st.FeatureCoordinates.Remove("Airship");
+
+	    ExchangeData.BridgeLocation = st.FeatureCoordinates["Bridge"];
+	    st.FeatureCoordinates.Remove("Bridge");
+
+	    ExchangeData.CanalLocation = st.FeatureCoordinates["Canal"];
+	    st.FeatureCoordinates.Remove("Canal");
+
+	    st.FeatureCoordinates.Remove("Ship");
+	    ExchangeData.ShipLocations = AssignShipLocations(st);
+
+	    ExchangeData.TeleporterFixups = new TeleportFixup[] {
+		new TeleportFixup(FF1Lib.TeleportType.Exit, 0,
+				  new TeleData((MapId)OverworldTiles.None,
+					       st.FeatureCoordinates["TitansTunnelEast"].X,
+					       st.FeatureCoordinates["TitansTunnelEast"].Y)),
+		new TeleportFixup(FF1Lib.TeleportType.Exit, 1,
+				  new TeleData((MapId)OverworldTiles.None,
+					       st.FeatureCoordinates["TitansTunnelWest"].X,
+					       st.FeatureCoordinates["TitansTunnelWest"].Y)),
+		new TeleportFixup(FF1Lib.TeleportType.Exit, 2,
+				  new TeleData((MapId)OverworldTiles.None,
+					       st.FeatureCoordinates["IceCave1"].X,
+					       st.FeatureCoordinates["IceCave1"].Y)),
+		new TeleportFixup(FF1Lib.TeleportType.Exit, 3,
+				  new TeleData((MapId)OverworldTiles.None,
+					       st.FeatureCoordinates["CastleOrdeals1"].X,
+					       st.FeatureCoordinates["CastleOrdeals1"].Y)),
+		new TeleportFixup(FF1Lib.TeleportType.Exit, 4,
+				  new TeleData((MapId)OverworldTiles.None,
+					       st.FeatureCoordinates["ConeriaCastle1"].X,
+					       st.FeatureCoordinates["ConeriaCastle1"].Y)),
+		new TeleportFixup(FF1Lib.TeleportType.Exit, 5,
+				  new TeleData((MapId)OverworldTiles.None,
+					       st.FeatureCoordinates["EarthCave1"].X,
+					       st.FeatureCoordinates["EarthCave1"].Y)),
+		new TeleportFixup(FF1Lib.TeleportType.Exit, 6,
+				  new TeleData((MapId)OverworldTiles.None,
+					       st.FeatureCoordinates["GurguVolcano1"].X,
+					       st.FeatureCoordinates["GurguVolcano1"].Y)),
+		new TeleportFixup(FF1Lib.TeleportType.Exit, 7,
+				  new TeleData((MapId)OverworldTiles.None,
+					       st.FeatureCoordinates["Onrac"].X,
+					       st.FeatureCoordinates["Onrac"].Y)),
+		new TeleportFixup(FF1Lib.TeleportType.Exit, 8,
+				  new TeleData((MapId)OverworldTiles.None,
+					       st.FeatureCoordinates["MirageTower1"].X,
+					       st.FeatureCoordinates["MirageTower1"].Y))
+	    };
+	    ExchangeData.OverworldCoordinates = st.FeatureCoordinates;
+
+	    ExchangeData.DomainUpdates = AssignEncounterDomains(st, mt);
+	    ExchangeData.DomainFixups = new DomainFixup[] {};
+
+	    return ExchangeData;
+	}
+
+	public static DomainFixup[] AssignEncounterDomains(OverworldState state, OverworldTiles mt) {
+	    var nearest_dungeon = new string[OverworldState.MAPSIZE,OverworldState.MAPSIZE];
+	    var working_list = new Queue<KeyValuePair<string, SCCoords>>();
+
+	    foreach (KeyValuePair<string, SCCoords> kv in state.FeatureCoordinates) {
+		working_list.Enqueue(kv);
+	    }
+
+	    while (working_list.Count > 0) {
+		var kv = working_list.Dequeue();
+
+		if (nearest_dungeon[kv.Value.Y, kv.Value.X] != null) {
+		    continue;
+		}
+
+		nearest_dungeon[kv.Value.Y, kv.Value.X] = kv.Key;
+
+		var adjacent = new SCCoords[] { kv.Value.OwUp, kv.Value.OwRight, kv.Value.OwDown, kv.Value.OwLeft};
+		foreach (var adj in adjacent) {
+		    if (mt.TraversableRegionTypeMap.ContainsKey(state.Tilemap[adj.Y, adj.X])) {
+			var next_tile = mt.TraversableRegionTypeMap[state.Tilemap[adj.Y, adj.X]];
+			if (next_tile == OverworldTiles.LAND_REGION || next_tile == OverworldTiles.RIVER_REGION) {
+			    working_list.Enqueue(new KeyValuePair<string, SCCoords>(kv.Key, adj));
+			}
+		    }
+		}
+	    }
+
+	    // Using octal numbers here because they nicely correspond
+	    // to coordinates on the 8x8 source grid of encounter
+	    // zones.
+	    var source_encounter_domains = new Dictionary<string, int>{
+		{"Coneria",         Convert.ToInt32("44", 8)},
+		{"ConeriaCastle1",  Convert.ToInt32("44", 8)},
+		{"TempleOfFiends1", Convert.ToInt32("34", 8)},
+		{"Pravoka",         Convert.ToInt32("46", 8)},
+		{"Gaia",            Convert.ToInt32("06", 8)},
+		{"CastleOrdeals1",  Convert.ToInt32("14", 8)},
+		{"TitansTunnelWest", Convert.ToInt32("50", 8)},
+		{"SardasCave", Convert.ToInt32("50", 8)},
+		{"MirageTower1", Convert.ToInt32("16", 8)},
+		{"Onrac", Convert.ToInt32("11", 8)},
+		{"EarthCave1", Convert.ToInt32("52", 8)},
+		{"TitansTunnelEast", Convert.ToInt32("50", 8)},
+		{"MatoyasCave", Convert.ToInt32("35", 8)},
+		{"DwarfCave", Convert.ToInt32("43", 8)},
+		{"Elfland", Convert.ToInt32("64", 8)},
+		{"ElflandCastle", Convert.ToInt32("64", 8)},
+		{"MarshCave1", Convert.ToInt32("73", 8)},
+		{"NorthwestCastle", Convert.ToInt32("53", 8)},
+		{"Melmond", Convert.ToInt32("52", 8)},
+		{"CrescentLake", Convert.ToInt32("66", 8)},
+		{"Lefein", Convert.ToInt32("37", 8)},
+		{"BahamutCave1", Convert.ToInt32("13", 8)},
+		{"Cardia1", Convert.ToInt32("12", 8)},
+		{"Cardia2", Convert.ToInt32("12", 8)},
+		{"Cardia4", Convert.ToInt32("12", 8)},
+		{"Cardia5", Convert.ToInt32("13", 8)},
+		{"Cardia6", Convert.ToInt32("13", 8)},
+		{"Waterfall", Convert.ToInt32("01", 8)},
+		{"GurguVolcano1", Convert.ToInt32("66", 8)},
+		{"IceCave1", Convert.ToInt32("66", 8)},
+	    };
+
+	    var domains = new DomainFixup[64];
+
+	    for (int j = 0; j < 8; j++) {
+		for (int i = 0; i < 8; i++) {
+		    var counts = new Dictionary<string, int>();
+		    for (int y = 0; y < 32; y++) {
+			for (int x = 0; x < 32; x++) {
+			    var nd = nearest_dungeon[j*32+y, i*32+x];
+			    if (nd != null) {
+				int c = 0;
+				counts.TryGetValue(nd, out c);
+				counts[nd] = c+1;
+			    }
+			}
+
+			int mx = 0;
+			string pick = null;
+			foreach (var kv in counts) {
+			    if (kv.Value > mx) {
+				pick = kv.Key;
+				mx = kv.Value;
+			    }
+			}
+			domains[j*8 + i] = new DomainFixup();
+			domains[j*8 + i].To = (byte)(j*8 + i);
+			if (pick != null) {
+			    domains[j*8 + i].From = (byte)source_encounter_domains[pick];
+			} else {
+			    domains[j*8 + i].From = 0;
+			}
+		    }
+		}
+	    }
+
+	    return domains;
+	}
+
+	public static ShipLocation[] AssignShipLocations(OverworldState state) {
+	    var EntranceToOWTeleporterIndex = new Dictionary<string, OverworldTeleportIndex> {
+		{"ConeriaCastle1", OverworldTeleportIndex.ConeriaCastle1},
+		{"Coneria", OverworldTeleportIndex.Coneria},
+		{"EarthCave1", OverworldTeleportIndex.EarthCave1},
+		{"ElflandCastle", OverworldTeleportIndex.ElflandCastle},
+		{"Elfland", OverworldTeleportIndex.Elfland},
+		{"MirageTower1", OverworldTeleportIndex.MirageTower1},
+		{"NorthwestCastle", OverworldTeleportIndex.NorthwestCastle},
+		{"IceCave1", OverworldTeleportIndex.IceCave1},
+		{"DwarfCave", OverworldTeleportIndex.DwarfCave},
+		{"MatoyasCave", OverworldTeleportIndex.MatoyasCave},
+		{"TitansTunnelEast", OverworldTeleportIndex.TitansTunnelEast},
+		{"TitansTunnelWest", OverworldTeleportIndex.TitansTunnelWest},
+		{"CastleOrdeals1", OverworldTeleportIndex.CastleOrdeals1},
+		{"SardasCave", OverworldTeleportIndex.SardasCave},
+		{"Waterfall", OverworldTeleportIndex.Waterfall},
+		{"Pravoka", OverworldTeleportIndex.Pravoka},
+		{"CrescentLake", OverworldTeleportIndex.CrescentLake},
+		{"TempleOfFiends1", OverworldTeleportIndex.TempleOfFiends1},
+		{"Gaia", OverworldTeleportIndex.Gaia},
+		{"Onrac", OverworldTeleportIndex.Onrac},
+		{"GurguVolcano1", OverworldTeleportIndex.GurguVolcano1},
+		{"Cardia2", OverworldTeleportIndex.Cardia2},
+		{"Cardia4", OverworldTeleportIndex.Cardia4},
+		{"Cardia5", OverworldTeleportIndex.Cardia5},
+		{"Cardia6", OverworldTeleportIndex.Cardia6},
+		{"Cardia1", OverworldTeleportIndex.Cardia1},
+		{"BahamutCave1", OverworldTeleportIndex.BahamutCave1},
+		{"Lefein", OverworldTeleportIndex.Lefein},
+		{"MarshCave1", OverworldTeleportIndex.MarshCave1},
+		{"Melmond", OverworldTeleportIndex.Melmond},
+	    };
+
+	    var locations = new List<ShipLocation>();
+
+	    // Figure out which region each entrance is contained in.
+	    // Take advantage of the fact that entrances are part of
+	    // features which create cutout regions, which are always
+	    // adjacent to the traversable region they were cut out
+	    // from.
+	    var entranceRegions = new Dictionary<string, short>();
+	    foreach (var c in state.FeatureCoordinates) {
+		var featureRegion = state.Traversable_regionmap[c.Value.Y, c.Value.X];
+		var adj = state.Traversable_regionlist[featureRegion].Adjacent[0];
+		entranceRegions[c.Key] = adj;
+	    }
+
+	    foreach (var c in state.FeatureCoordinates) {
+		// For each feature, go through all the docks and find
+		// the ones that are in the same region.  Pick the one
+		// that is closest.
+		float dist = 1000000;
+		var closestDock = new SCCoords(0, 0);
+		var entranceRegion = entranceRegions[c.Key];
+		foreach (var dock in state.DockPlacements) {
+		    if (dock.Item1 != entranceRegion) {
+			continue;
+		    }
+		    var featurePosition = c.Value;
+		    var dockPosition = dock.Item2;
+		    var d2 = (float)Math.Sqrt((featurePosition.X-dockPosition.X)*(featurePosition.X-dockPosition.X) +
+					      (featurePosition.Y-dockPosition.Y)*(featurePosition.Y-dockPosition.Y));
+		    if (d2 < dist) {
+			dist = d2;
+			closestDock = dockPosition;
+		    }
+		    //Console.WriteLine($"Considered {dockPosition.X}, {dockPosition.Y} which is {d2} from {c.Key} at {featurePosition.X} {featurePosition.Y}");
+		}
+		if (dist < 1000000) {
+		    locations.Add(new ShipLocation(closestDock.X,
+						   closestDock.Y,
+						   (byte)EntranceToOWTeleporterIndex[c.Key]));
+		    if (c.Key == "ConeriaCastle1") {
+			locations.Add(new ShipLocation(closestDock.X,
+						       closestDock.Y,
+						       255));
+		    }
+		}
+	    }
+
+	    return locations.ToArray();
+	}
+
     }
 }

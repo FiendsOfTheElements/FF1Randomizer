@@ -1358,6 +1358,15 @@ namespace FF1Lib
 			PutCompressedMapRows(recompressedMap);
 	    }
 
+	    public void SwapMap(List<string> decompressedRows) {
+		var rows = new List<List<byte>>();
+			foreach (var c in decompressedRows) {
+			    rows.Add(new List<byte>(Convert.FromBase64String(c)));
+			}
+			var recompressedMap = CompressMapRows(rows);
+			PutCompressedMapRows(rows);
+	    }
+
 		public void ApplyMapEdits()
 		{
 			var compresedMap = GetCompressedMapRows();

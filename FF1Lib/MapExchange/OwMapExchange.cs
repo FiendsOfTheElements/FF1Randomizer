@@ -60,8 +60,6 @@ namespace FF1Lib
 		OwLocationData locations;
 		DomainData domains;
 
-	        ReplacementMap procgenReplacementMap;
-
 		public OwMapExchangeData Data => data;
 
 		public ShipLocations ShipLocations { get; private set; }
@@ -83,7 +81,7 @@ namespace FF1Lib
 			ShipLocations = new ShipLocations(locations, data.ShipLocations);
 		}
 
-		public OwMapExchange(FF1Rom _rom, OverworldMap _overworldMap, ReplacementMap rm)
+		public OwMapExchange(FF1Rom _rom, OverworldMap _overworldMap, OwMapExchangeData replacement)
 		{
 			rom = _rom;
 			overworldMap = _overworldMap;
@@ -92,16 +90,15 @@ namespace FF1Lib
 			locations = new OwLocationData(rom);
 			domains = new DomainData(rom);
 
-			procgenReplacementMap = rm;
-			data = rm.ExchangeData;
+			data = replacement;
 
 			ShipLocations = new ShipLocations(locations, data.ShipLocations);
 		}
 
 		public void ExecuteStep1()
 		{
-		    if (procgenReplacementMap != null) {
-			overworldMap.SwapMap(procgenReplacementMap.Tiles);
+		    if (Data.DecompressedMapRows != null) {
+			overworldMap.SwapMap(Data.DecompressedMapRows);
 		    } else {
 			overworldMap.SwapMap(name + ".ffm");
 		    }
@@ -197,8 +194,20 @@ namespace FF1Lib
 				case OwMapExchanges.ProcGen3:
 					return new OwMapExchange(_rom, _overworldMap, "procgen3");
 				case OwMapExchanges.GenerateNewOverworld:
-				    var result = NewOverworld.GenerateNewOverworld(rng);
-				    return new OwMapExchange(_rom, _overworldMap, result);
+				    OwMapExchangeData exdata = null;
+				    if (flags.ReplacementMap != null) {
+					exdata = flags.ReplacementMap;
+				    } else {
+					int seed;
+					if (flags.MapGenSeed != 0) {
+					    seed = flags.MapGenSeed;
+					} else {
+					    seed = (int)rng.Next();
+					}
+					var maprng = new MT19337((uint)seed);
+					exdata = NewOverworld.GenerateNewOverworld(maprng);
+				    }
+				    return new OwMapExchange(_rom, _overworldMap, exdata);
 			}
 
 			throw new Exception("oops");
