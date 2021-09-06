@@ -1364,7 +1364,7 @@ namespace FF1Lib
 			    rows.Add(new List<byte>(Convert.FromBase64String(c)));
 			}
 			var recompressedMap = CompressMapRows(rows);
-			PutCompressedMapRows(rows);
+			PutCompressedMapRows(recompressedMap);
 	    }
 
 		public void ApplyMapEdits()
