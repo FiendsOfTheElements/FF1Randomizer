@@ -55,7 +55,7 @@ namespace FF1Lib
 		{
 			if (bank == 0x1F)
 			{
-				if ((address - 0xC000) + length >= 0x4000)
+				if ((address - 0xC000) + length > 0x4000)
 				{
 					throw new Exception("Data is too large to fit within one bank.");
 				}
@@ -64,7 +64,7 @@ namespace FF1Lib
 			}
 			else
 			{
-				if ((address - 0x8000) + length >= 0x4000)
+				if ((address - 0x8000) + length > 0x4000)
 				{
 					throw new Exception("Data is too large to fit within one bank.");
 				}
@@ -1118,9 +1118,16 @@ namespace FF1Lib
 
 			owMapExchange?.ExecuteStep2();
 
-			if (owMapExchange != null) {
+
+			if(flags.QuickMinimapLoad)
+			{
+				new QuickMiniMap(this, overworldMap).EnableQuickMinimap();
+			}
+			else if (owMapExchange != null)
+			{
 			    HackMinimap(overworldMap);
 			}
+
 
 			npcdata.WriteNPCdata(this);
 			talkroutines.WriteRoutines(this);
