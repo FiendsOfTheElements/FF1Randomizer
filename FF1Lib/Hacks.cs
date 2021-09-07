@@ -1959,6 +1959,7 @@ namespace FF1Lib
 			maxLevel = maxLevel - 1;
 			//new level up check is at 0x6C46F
 			Put(0x6C46F, new byte[] { (byte)maxLevel });
+			PutInBank(0x1B, 0x87E8, new byte[] { (byte)maxLevel });
 		}
 
 		public void ActivateCropScreen()
