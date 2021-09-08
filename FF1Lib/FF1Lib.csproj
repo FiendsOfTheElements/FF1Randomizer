@@ -30,6 +30,7 @@
     <None Remove="maps\desert.json" />
     <None Remove="maps\nooverworld.ffm" />
     <None Remove="maps\nooverworld.json" />
+    <None Remove="maps\pregenerated.zip" />
   </ItemGroup>
 
   <ItemGroup>
@@ -48,6 +49,7 @@
     <EmbeddedResource Include="maps\desert.json" />
     <EmbeddedResource Include="maps\nooverworld.ffm" />
     <EmbeddedResource Include="maps\nooverworld.json" />
+    <EmbeddedResource Include="maps\pregenerated.zip" />
     <EmbeddedResource Include="maps\procgen1.ffm" />
     <EmbeddedResource Include="maps\procgen1.json" />
     <EmbeddedResource Include="maps\procgen2.ffm" />
@@ -61,6 +63,7 @@
     <PackageReference Include="Patcher6502" Version="0.3.0" />
     <PackageReference Include="RomUtilities" Version="3.1.0" />
     <PackageReference Include="SixLabors.ImageSharp" Version="1.0.3" />
+    <PackageReference Include="System.IO.Compression" Version="4.3.0" />
   </ItemGroup>
 
   <ItemGroup>

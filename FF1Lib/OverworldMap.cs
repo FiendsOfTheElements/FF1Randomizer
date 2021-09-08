@@ -77,10 +77,7 @@ namespace FF1Lib
 				{ CanoeableRegion.OnracRegion, new List<OverworldTeleportIndex>{OverworldTeleportIndex.Onrac, OverworldTeleportIndex.Waterfall} }
 			};
 
-			if (flags.OwMapExchange == OwMapExchanges.None ||
-			    flags.OwMapExchange == OwMapExchanges.MelmondStart ||
-			    flags.OwMapExchange == OwMapExchanges.ElflandStart ||
-			    flags.OwMapExchange == OwMapExchanges.CrecsentStart) {
+			if (flags.OwMapExchange == OwMapExchanges.None) {
 			    // Can only apply map edits to vanilla-ish maps
 
 			if ((bool)flags.MapOnracDock)
@@ -1332,6 +1329,23 @@ namespace FF1Lib
 				}
 				Debug.Write("\n");
 			}
+		}
+
+		public void SwapMap(Stream stream)
+		{
+			List<List<byte>> decompressedRows = new List<List<byte>>();
+
+			using (BinaryReader rd = new BinaryReader(stream))
+			{
+				for (int i = 0; i < 256; i++)
+				{
+					var row = rd.ReadBytes(256);
+					decompressedRows.Add(new List<byte>(row));
+				}
+			}
+
+			var recompressedMap = CompressMapRows(decompressedRows);
+			PutCompressedMapRows(recompressedMap);
 		}
 
 		public void SwapMap(string fileName)

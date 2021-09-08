@@ -32,44 +32,29 @@
 	<div class="col2">
 		<h4>Overworld</h4>
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="mapOpenProgressionCheckBox"
-		IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.None ||
-		Flags.OwMapExchange == OwMapExchanges.MelmondStart ||
-		Flags.OwMapExchange == OwMapExchanges.ElflandStart ||
-		Flags.OwMapExchange == OwMapExchanges.CrecsentStart)"
+		IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.None)"
 		@bind-Value="Flags.MapOpenProgression">Early Open Progression</TriStateCheckBox>
 
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="mapOpenProgressionDwavesNWCheckBox"
 		IsEnabled="@Flags.MapOpenProgression" Indent @bind-Value="Flags.MapDwarvesNorthwest">Extended Open Progression</TriStateCheckBox>
 
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="mapOpenProgressionDocksCheckBox"
-		IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.None ||
-		Flags.OwMapExchange == OwMapExchanges.MelmondStart ||
-		Flags.OwMapExchange == OwMapExchanges.ElflandStart ||
-		Flags.OwMapExchange == OwMapExchanges.CrecsentStart)"
+		IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.None)"
 		@bind-Value="Flags.MapOpenProgressionDocks">Northern Docks</TriStateCheckBox>
 
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="mapOpenProgressionFloaterDockCheckBox"
 		IsEnabled="@Flags.MapOpenProgression" @bind-Value="Flags.MapAirshipDock">Ryukahn Desert Dock</TriStateCheckBox>
 
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="bahamutCardiaDockCheckBox"
-		IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.None ||
-		Flags.OwMapExchange == OwMapExchanges.MelmondStart ||
-		Flags.OwMapExchange == OwMapExchanges.ElflandStart ||
-		Flags.OwMapExchange == OwMapExchanges.CrecsentStart)"
+		IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.None)"
 		@bind-Value="Flags.MapBahamutCardiaDock">Bahamut Cardia Dock</TriStateCheckBox>
 
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="lefeinRiverDockCheckBox"
-		IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.None ||
-		Flags.OwMapExchange == OwMapExchanges.MelmondStart ||
-		Flags.OwMapExchange == OwMapExchanges.ElflandStart ||
-		Flags.OwMapExchange == OwMapExchanges.CrecsentStart)"
+		IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.None)"
 		@bind-Value="Flags.MapLefeinRiver">Lefein River Dock</TriStateCheckBox>
 
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="gaiaMountainPassCheckBox"
-		IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.None ||
-		Flags.OwMapExchange == OwMapExchanges.MelmondStart ||
-		Flags.OwMapExchange == OwMapExchanges.ElflandStart ||
-		Flags.OwMapExchange == OwMapExchanges.CrecsentStart)"
+		IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.None)"
 		@bind-Value="Flags.MapGaiaMountainPass">Gaia Mountain Pass</TriStateCheckBox>
 		<div class="checkbox-cell"></div>
 
