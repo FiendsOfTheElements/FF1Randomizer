@@ -73,7 +73,7 @@ namespace FF1R.Commands
 			    output.Mutate(d => d.DrawImage(src, new Point(x*16, y*16), 1));
 			}
 		    }
-		    output.Save("map.png");
+		    output.Save(this.Mapfile.Replace(".json", ".png"));
 		}
 
 		return 0;
