@@ -1364,10 +1364,22 @@ namespace FF1Lib
 					decompressedRows.Add(new List<byte>(row));
 				}
 			}
+			SwapMap(decompressedRows);
+		}
 
+	    public void SwapMap(List<List<byte>> decompressedRows) {
 			var recompressedMap = CompressMapRows(decompressedRows);
 			PutCompressedMapRows(recompressedMap);
-		}
+	    }
+
+	    public void SwapMap(List<string> decompressedRows) {
+		var rows = new List<List<byte>>();
+			foreach (var c in decompressedRows) {
+			    rows.Add(new List<byte>(Convert.FromBase64String(c)));
+			}
+			var recompressedMap = CompressMapRows(rows);
+			PutCompressedMapRows(recompressedMap);
+	    }
 
 		public void ApplyMapEdits()
 		{

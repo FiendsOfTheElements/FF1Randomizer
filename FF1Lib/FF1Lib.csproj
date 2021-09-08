@@ -14,6 +14,10 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
+  <PropertyGroup>
+   <ServerGarbageCollection>false</ServerGarbageCollection>
+  </PropertyGroup>
+
   <ItemGroup>
     <None Remove="maps\crescent_start.ffm" />
     <None Remove="maps\crescent_start.json" />
