@@ -147,12 +147,8 @@ namespace FF1Lib
 			originalDomains.LoadTable();
 			domains.LoadTable();
 
-			if (data.DomainFixups != null) {
-			    foreach (var df in data.DomainFixups) domains.SwapDomains(df.From, df.To);
-			}
-			if (data.DomainUpdates != null) {
-			    foreach (var df in data.DomainUpdates) domains.Data[df.To] = originalDomains.Data[df.From];
-			}
+			if (data.DomainFixups != null) foreach (var df in data.DomainFixups) domains.SwapDomains(df.From, df.To);
+			if (data.DomainUpdates != null) foreach (var df in data.DomainUpdates) domains.Data[df.To] = originalDomains.Data[df.From];
 
 			domains.StoreTable();
 			locations.StoreData();
