@@ -29,6 +29,10 @@ namespace FF1Lib
 		AltFormationDist,
 		[Description("Random Formations")]
 		AltFormationRng,
+		[Description("Local Formations")]
+		LocalFormations,
+		[Description("Vanilla Spikes")]
+		VanillaSpikes,
 		[Description("Random Fiends")]
 		Fiends,
 		[Description("Phantom")]
@@ -141,10 +145,29 @@ namespace FF1Lib
 			}
 
 			List<byte> encounters = new();
+			List<List<byte>> encountersGroup = new();
+
+			// Formations List for Vanilla Spikes & Local Formations
+			List<byte> castleEncounters = new() { 0x84, 0x8C, 0x8D, 0x92 };
+			List<byte> caveEncounters = new() { 0x9D, 0x9C, 0x95, 0x97 };
+			List<byte> cardiaEncounters = new() { 0xAA, 0xB0, 0xCB, 0xCE, 0xD9 };
+
+			// Formations List for Vanilla Spikes
+			List<byte> tofEncounters = new() { 0x10 };
+			List<byte> nwcastleEncounters = new() { 0x18, 0x1D };
+			List<byte> marshEncounters = new() { 0x1C, 0x15 };
+			List<byte> earthEncounters = new() { 0x21, 0x1E, 0x1F, 0x6E, 0x6F };
+			List<byte> volcEncounters = new() { 0x27, 0x28, 0x29, 0x2A };
+			List<byte> iceEncounters = new() { 0x2C, 0x2D, 0x2F, 0x30, 0x69, };
+			List<byte> ordealsEncounters = new() { 0x3F, 0x4F, 0x4B };
+			List<byte> waterfallEncounters = new() { 0x4A };
+			List<byte> seaEncounters = new() { 0x44, 0x45, 0x49, 0x4A };
+			List<byte> mirageEncounters = new() { 0x4E };
+			List<byte> tofrEncounters = new() { 0x46 };
 
 			if (flags.TCFormations == FormationPool.Random)
 			{
-				flags.TCFormations = (FormationPool)Rng.Between(rng, 0, 3);
+				flags.TCFormations = (FormationPool)Rng.Between(rng, 0, 4);
 			}
 
 			switch (flags.TCFormations)
@@ -161,6 +184,88 @@ namespace FF1Lib
 				case FormationPool.AltFormationRng:
 					encounters = altEncountersList;
 					break;
+				case FormationPool.LocalFormations:
+					encountersGroup = Get(ZoneFormationsOffset + (8 * 0x40), 8 * 0x40).Chunk(0x08).Select(x => x.ToBytes().Select(y => (byte)(y | 0x80)).ToList()).ToList();
+
+					encountersGroup[(int)MapId.ConeriaCastle1F] = castleEncounters;
+					encountersGroup[(int)MapId.ElflandCastle] = castleEncounters;
+					encountersGroup[(int)MapId.NorthwestCastle] = castleEncounters;
+					encountersGroup[(int)MapId.CastleOfOrdeals1F] = castleEncounters;
+
+					encountersGroup[(int)MapId.Cardia] = cardiaEncounters;
+					encountersGroup[(int)MapId.BahamutsRoomB1] = cardiaEncounters;
+					encountersGroup[(int)MapId.BahamutsRoomB2] = cardiaEncounters;
+
+					encountersGroup[(int)MapId.DwarfCave] = caveEncounters;
+					encountersGroup[(int)MapId.SardasCave] = caveEncounters;
+					encountersGroup[(int)MapId.MatoyasCave] = caveEncounters;
+
+					break;
+				case FormationPool.VanillaSpikes:
+					encountersGroup = new() {
+						castleEncounters,
+						castleEncounters,
+						castleEncounters,
+						castleEncounters,
+						castleEncounters,
+						castleEncounters,
+						castleEncounters,
+						castleEncounters,
+						castleEncounters,
+						castleEncounters,
+						nwcastleEncounters,
+						ordealsEncounters,
+						tofEncounters,
+						earthEncounters,
+						volcEncounters,
+						iceEncounters,
+						cardiaEncounters,
+						cardiaEncounters,
+						waterfallEncounters,
+						caveEncounters,
+						caveEncounters,
+						caveEncounters,
+						marshEncounters,
+						mirageEncounters,
+						castleEncounters,
+						ordealsEncounters,
+						ordealsEncounters,
+						marshEncounters,
+						marshEncounters,
+						earthEncounters,
+						earthEncounters,
+						earthEncounters,
+						earthEncounters,
+						volcEncounters,
+						volcEncounters,
+						volcEncounters,
+						volcEncounters,
+						iceEncounters,
+						iceEncounters,
+						cardiaEncounters,
+						mirageEncounters,
+						mirageEncounters,
+						seaEncounters,
+						seaEncounters,
+						seaEncounters,
+						seaEncounters,
+						seaEncounters,
+						mirageEncounters,
+						mirageEncounters,
+						mirageEncounters,
+						mirageEncounters,
+						mirageEncounters,
+						tofrEncounters,
+						tofrEncounters,
+						tofrEncounters,
+						tofrEncounters,
+						tofrEncounters,
+						tofrEncounters,
+						tofrEncounters,
+						tofrEncounters,
+						caveEncounters,
+					};
+					break;
 				case FormationPool.Fiends:
 					encounters = Enumerable.Range(0x77, 4).Select(value => (byte)value).ToList();
 					break;
@@ -170,8 +275,23 @@ namespace FF1Lib
 			}
 
 			int altFormationPosition = 0;
+			var chestsMapLocations = ItemLocations.GetTreasuresMapLocation().ToDictionary(x => x.Key, x => ItemLocations.MapLocationToMapId[x.Value]);
 
-			byte GetEncounter() => (flags.TCFormations == FormationPool.AltFormationDist) ? encounters[altFormationPosition++] : encounters.PickRandom(rng);
+			byte GetEncounter(int i)
+			{
+				if (flags.TCFormations == FormationPool.LocalFormations || flags.TCFormations == FormationPool.VanillaSpikes)
+				{
+					return encountersGroup[(int)chestsMapLocations[i]].PickRandom(rng);
+				}
+				else if (flags.TCFormations == FormationPool.AltFormationDist)
+				{
+					return encounters[altFormationPosition++];
+				}
+				else
+				{
+					return encounters.PickRandom(rng);
+				}
+			}
 
 			// Process pool first
 			if (maxChests > 0)
@@ -180,7 +300,8 @@ namespace FF1Lib
 
 				for (int i = 0; i < maxChests; i++)
 				{
-					chestMonsterList[(validChests.SpliceRandom(rng).Address - lut_TreasureOffset)] = GetEncounter();
+					var selectedChest = validChests.SpliceRandom(rng).Address - lut_TreasureOffset;
+					chestMonsterList[selectedChest] = GetEncounter(selectedChest);
 				}
 			}
 
@@ -190,7 +311,7 @@ namespace FF1Lib
 				for (int i = 0; i < 0x100; i++)
 				{
 					if (betterEquipmentList.Contains((Item)treasureList[i]))
-						chestMonsterList[i] = GetEncounter();
+						chestMonsterList[i] = GetEncounter(i);
 				}
 			}
 
@@ -200,7 +321,7 @@ namespace FF1Lib
 				for (int i = 0; i < 0x100; i++)
 				{
 					if (ItemLists.AllQuestItems.Contains((Item)treasureList[i]))
-						chestMonsterList[i] = GetEncounter();
+						chestMonsterList[i] = GetEncounter(i);
 				}
 			}
 
@@ -210,7 +331,7 @@ namespace FF1Lib
 				for (int i = 0; i < 0x100; i++)
 				{
 					if (treasureList[i] == (byte)Item.Shard)
-						chestMonsterList[i] = GetEncounter();
+						chestMonsterList[i] = GetEncounter(i);
 				}
 			}
 
