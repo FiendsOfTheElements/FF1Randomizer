@@ -75,7 +75,7 @@ namespace FF1Lib
 			locations = new OwLocationData(rom);
 			domains = new DomainData(rom);
 			
-      var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+			var assembly = System.Reflection.Assembly.GetExecutingAssembly();
 			var resourcePath = assembly.GetManifestResourceNames().First(str => str.EndsWith("pregenerated.zip"));
 
 			using Stream stream = assembly.GetManifestResourceStream(resourcePath);
@@ -203,7 +203,6 @@ namespace FF1Lib
 			if (!flags.SanityCheckerV2) return null;
 
 			var mx = flags.OwMapExchange;
-			if (mx == OwMapExchanges.Random) mx = (OwMapExchanges)rng.Between(1, 7);
 
 			switch (mx)
 			{
