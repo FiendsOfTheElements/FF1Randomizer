@@ -473,7 +473,7 @@ namespace FF1Lib
 				NoOverworld(overworldMap, maps, talkroutines, npcdata, flippedMaps, flags, rng);
 			}
 
-			var maxRetries = 8;
+			var maxRetries = 3;
 			for (var i = 0; i < maxRetries; i++)
 			{
 				try
@@ -532,8 +532,7 @@ namespace FF1Lib
 
 					if ((bool)flags.Treasures && !flags.DeepDungeon)
 					{
-						//if(flags.SanityCheckerV2)
-							checker = new SanityCheckerV2(maps, overworldMap, npcdata, this, shopItemLocation, shipLocations);
+						if(flags.SanityCheckerV2) checker = new SanityCheckerV2(maps, overworldMap, npcdata, this, shopItemLocation, shipLocations);
 						generatedPlacement = ShuffleTreasures(rng, flags, incentivesData, shopItemLocation, overworldMap, teleporters, checker);
 					}
 					else if (owMapExchange != null && !flags.DeepDungeon)

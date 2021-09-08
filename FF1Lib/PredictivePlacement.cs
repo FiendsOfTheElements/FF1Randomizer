@@ -38,8 +38,6 @@ namespace FF1Lib
 
 		Dictionary<Item, int> SafeMinAccessibility = new Dictionary<Item, int>
 		{
-			{ Item.Key, 15 },
-			{ Item.Floater, 100 },
 			{ Item.Chime, 60 },
 			{ Item.Cube, 75 },
 			{ Item.Oxyale, 50 }
@@ -69,8 +67,6 @@ namespace FF1Lib
 
 		Dictionary<Item, int> UnsafeMinAccessibility = new Dictionary<Item, int>
 		{
-			{ Item.Key, 15 },
-			{ Item.Floater, 50 },
 			{ Item.Chime, 5 },
 			{ Item.Cube, 5 },
 			{ Item.Oxyale, 5 }
@@ -114,13 +110,14 @@ namespace FF1Lib
 				var balancedPicker = new RewardSourcePicker(0.5, _flags.LooseItemsNpcBalance ? 7.0 : 1.0, _checker);
 
 				_sanityCounter++;
-				if (_sanityCounter > 20) throw new InsaneException("Item Placement could not meet incentivization requirements!");
+				if (_sanityCounter > 2) throw new InsaneException("Item Placement could not meet incentivization requirements!");
 
 				placedItems = ctx.Forced.ToList();
 				var incentives = new HashSet<Item>(ctx.Incentivized);
 				var nonincentives = ctx.Unincentivized.ToList();
 				var shards = ctx.Shards.ToList();
 				treasurePool = ctx.AllTreasures.ToList();
+				var state = PlacementState.Normal;
 
 				while (incentives.Count() > incentiveLocationPool.Count())
 				{
@@ -172,8 +169,8 @@ namespace FF1Lib
 							var nonCount = accessibleSources2.Count - incCount - nonSourceCount;
 							incCount -= incSourceCount;
 
-							if (incentives.Contains(item) && !incentiveLocationPool.Contains(testSource)) { incCount--; nonCount++; }
-							if (!incentives.Contains(item) && incentiveLocationPool.Contains(testSource)) { incCount++; nonCount--; }
+							if (incentives.Contains(item)) incCount--; 
+							if (!incentives.Contains(item)) nonCount--;
 
 							candidates.Add((item, incCount, nonCount));
 						}
@@ -199,11 +196,11 @@ namespace FF1Lib
 							var nonCount = accessibleSources2.Count - incCount - nonSourceCount;
 							incCount -= incSourceCount;
 
-							if (incentives.Contains(Item.Ship) && !incentiveLocationPool.Contains(testSource)) { incCount--; nonCount++; }
-							if (!incentives.Contains(Item.Ship) && incentiveLocationPool.Contains(testSource)) { incCount++; nonCount--; }
+							if (incentives.Contains(Item.Ship)) incCount--;
+							if (!incentives.Contains(Item.Ship)) nonCount--;
 
-							if (incentives.Contains(Item.Canal) && !incentiveLocationPool.Contains(testSource2)) { incCount--; nonCount++; }
-							if (!incentives.Contains(Item.Canal) && incentiveLocationPool.Contains(testSource2)) { incCount++; nonCount--; }
+							if (incentives.Contains(Item.Canal)) incCount--;
+							if (!incentives.Contains(Item.Canal)) nonCount--;
 
 							var shipCandidate = candidates.FirstOrDefault(c => c.item == Item.Ship);
 							var canalCandidate = candidates.FirstOrDefault(c => c.item == Item.Canal);
@@ -237,9 +234,10 @@ namespace FF1Lib
 
 						var incItemCount = allPlacements.Where(i => incentives.Contains(i)).Count();
 
-						if (rng.Between(1, allPlacements.Count) <= incItemCount)
+						if (state == PlacementState.Incentive || state == PlacementState.Normal && rng.Between(1, allPlacements.Count) <= incItemCount)
 						{
 							candidates = candidates.Where(c => incentives.Contains(c.item)).ToList();
+							var nonKeyCandidates = allPlacements.Where(i => !allKeyItems.Contains(i) && incentives.Contains(i));
 
 							//place incentive
 							if (incSourceCount <= CriticalIncentiveSourceCount)
@@ -250,22 +248,35 @@ namespace FF1Lib
 							else if (incSourceCount <= SafeIncentiveSourceCount)
 							{
 								weightedCandidates = AssignWeights(candidates, 0.5f, 0.5f, 1.0f, 0.5f, 0.25f, cycle, accessibleSources.Count);
-								weightedCandidates.AddRange(allPlacements.Where(i => !allKeyItems.Contains(i) && incentives.Contains(i)).Select(i => (GetItemWeight(i, 0.5f, cycle, accessibleSources.Count), i)));
+								weightedCandidates.AddRange(nonKeyCandidates.Select(i => (GetItemWeight(i, 0.5f, cycle, accessibleSources.Count), i)));
 							}
 							else
 							{
 								weightedCandidates = AssignWeights(candidates, 1.0f, 1.0f, 1.0f, 0.25f, 0.25f, cycle, accessibleSources.Count);
-								weightedCandidates.AddRange(allPlacements.Where(i => !allKeyItems.Contains(i) && incentives.Contains(i)).Select(i => (GetItemWeight(i, 1.0f, cycle, accessibleSources.Count), i)));
+								weightedCandidates.AddRange(nonKeyCandidates.Select(i => (GetItemWeight(i, 1.0f, cycle, accessibleSources.Count), i)));
 							}
 
 							if (weightedCandidates.Sum(i => i.weight) == 0 && incItemCount <= incSourceCount)
 							{
-								weightedCandidates.AddRange(allPlacements.Where(i => incentives.Contains(i) && incentives.Contains(i)).Select(i => (1.0f, i)));
+								weightedCandidates.AddRange(allPlacements.Where(i => incentives.Contains(i)).Select(i => (1.0f, i)));
+							}
+
+							if (weightedCandidates.Sum(i => i.weight) == 0)
+							{
+								if (cycle >= 15 && state != PlacementState.Normal)
+								{
+									placementFailed = true;
+									break;
+								}
+
+								state = PlacementState.NonIncentice;
+								continue;
 							}
 						}
 						else
 						{
 							candidates = candidates.Where(c => !incentives.Contains(c.item)).ToList();
+							var nonKeyCandidates = allPlacements.Where(i => !allKeyItems.Contains(i) && !incentives.Contains(i));
 
 							//place nonincentive
 							if (nonSourceCount <= CriticalNonIncentiveSourceCount)
@@ -275,16 +286,27 @@ namespace FF1Lib
 							else if (nonSourceCount <= SafeNonIncentiveSourceCount)
 							{
 								weightedCandidates = AssignWeights2(candidates, 0.5f, 0.5f, 1.0f, 0.5f, 0.25f, cycle, accessibleSources.Count);
-								weightedCandidates.AddRange(allPlacements.Where(i => !allKeyItems.Contains(i)).Select(i => (GetItemWeight(i, 0.5f, cycle, accessibleSources.Count), i)));
+								weightedCandidates.AddRange(nonKeyCandidates.Select(i => (GetItemWeight(i, 0.5f, cycle, accessibleSources.Count), i)));
 							}
 							else
 							{
 								weightedCandidates = AssignWeights2(candidates, 1.0f, 1.0f, 1.0f, 0.25f, 0.25f, cycle, accessibleSources.Count);
-								weightedCandidates.AddRange(allPlacements.Where(i => !allKeyItems.Contains(i)).Select(i => (GetItemWeight(i, 1.0f, cycle, accessibleSources.Count), i)));
+								weightedCandidates.AddRange(nonKeyCandidates.Select(i => (GetItemWeight(i, 1.0f, cycle, accessibleSources.Count), i)));
+							}
+
+							if (weightedCandidates.Sum(i => i.weight) == 0)
+							{
+								if (cycle >= 15 && state != PlacementState.Normal)
+								{
+									placementFailed = true;
+									break;
+								}
+
+								state = PlacementState.Incentive;
+								continue;
 							}
 						}
 
-						if (weightedCandidates.Sum(i => i.weight) == 0) continue;
 
 						weightedCandidates = weightedCandidates.Where(w => w.weight > 0).ToList();
 						weightedCandidates.Shuffle(rng);
@@ -327,6 +349,8 @@ namespace FF1Lib
 
 						allPlacements.Remove(nextPlacment);
 						allKeyItems.Remove(nextPlacment);
+
+						state = PlacementState.Normal;
 
 						if (allPlacements.Count == 0) break;
 					}
@@ -411,6 +435,13 @@ namespace FF1Lib
 			}
 
 			return weightedCandidates;
+		}
+
+		private enum PlacementState
+		{
+			Normal,
+			Incentive,
+			NonIncentice
 		}
 	}
 }
