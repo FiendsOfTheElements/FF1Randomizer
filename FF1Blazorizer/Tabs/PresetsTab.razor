@@ -3,7 +3,6 @@
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 @using FF1Lib;
 
-
 <div id="presets" class="tabcontent framed-content clearfix @(noTabLayout ? "no-tab" : "") @(IsOpen ? "" : "collapsed")">
 	<h3 class="@(IsOpen ? "" : "h3-collapsed")"><a class="@(noTabLayout ? "collapsible-header" : "")" @onclick="(() => IsOpen = (!noTabLayout || !IsOpen))">Start a Game</a></h3>
 	@if (IsOpen)

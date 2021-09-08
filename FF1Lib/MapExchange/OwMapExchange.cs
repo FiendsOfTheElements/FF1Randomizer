@@ -21,15 +21,18 @@ namespace FF1Lib
 
     [Description("Generate New Overworld")]
 		GenerateNewOverworld,
-    
+
     [Description("Random Pregenerated 512")]
 		RandomPregenerated,
-        
+
     [Description("Desert of Death")]
 		Desert,
 
 		[Description("No Overworld")]
 		NoOverworld,
+
+		[Description("Import Custom Map")]
+		ImportCustomMap,
 	}
 
 	public class OwMapExchange
@@ -67,14 +70,14 @@ namespace FF1Lib
 		}
 
 		public OwMapExchange(FF1Rom _rom, OverworldMap _overworldMap, MT19337 rng)
-		{	
+		{
  			rom = _rom;
 			overworldMap = _overworldMap;
 
 			exit = new ExitTeleData(rom);
 			locations = new OwLocationData(rom);
 			domains = new DomainData(rom);
-			
+
 			var assembly = System.Reflection.Assembly.GetExecutingAssembly();
 			var resourcePath = assembly.GetManifestResourceNames().First(str => str.EndsWith("pregenerated.zip"));
 
@@ -86,7 +89,7 @@ namespace FF1Lib
 
 			var map = maplist.PickRandom(rng);
 
-			
+
 			data = LoadJson(archive.GetEntry(map + ".json").Open());
 
 			ShipLocations = new ShipLocations(locations, data.ShipLocations);

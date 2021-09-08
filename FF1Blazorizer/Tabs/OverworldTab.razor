@@ -1,6 +1,8 @@
 ﻿@using FF1Lib;
 @using RomUtilities;
 @using FF1Lib.Procgen;
+@inject IJSRuntime JSRuntime
+@using Newtonsoft.Json;
 
 	<div id="Overworld" class="tabcontent framed-content clearfix @(noTabLayout ? "no-tab" : "") @(IsOpen ? "" : "collapsed")">
 		<h3 class="@(IsOpen ? "" : "h3-collapsed")"><a class="@(noTabLayout ? "collapsible-header" : "")" @onclick="(() => IsOpen = (!noTabLayout || !IsOpen))">Overworld</a></h3>
@@ -20,6 +22,12 @@
 		<br>
 		<br>
 		<a class='styled-button @((Flags.OwMapExchange == OwMapExchanges.Desert || Flags.OwMapExchange == OwMapExchanges.GenerateNewOverworld) ? "" : "disabled-button")' @onclick="@OnGenerateMap">Generate Map</a>
+		<a class='styled-button @(Flags.ReplacementMap != null && Flags.ReplacementMap.DecompressedMapRows != null ? "" : "disabled-button")' @onclick="@OnExportMap">Export Map</a>
+		<br>
+		<br>
+		Import Map:
+		<br>
+		<input type="file" id="importMapInput" accept="*/*" @onchange="@OnImportMap" />
 		<br>
 		<br>
 		<p>@StatusMessage</p>
@@ -155,4 +163,39 @@
 			}
 		}
 
+		async Task OnImportMap(ChangeEventArgs e) {
+		  try {
+                    Flags.OwMapExchange = OwMapExchanges.ImportCustomMap;
+		    var content = await JSRuntime.InvokeAsync<string>("handleFileSelect", "importMapInput");
+                    var fileData = Convert.FromBase64String(content);
+		    Flags.ReplacementMap = JsonConvert.DeserializeObject<OwMapExchangeData>(System.Text.Encoding.UTF8.GetString(fileData));
+		    Flags.MapGenSeed = Flags.ReplacementMap.Seed;
+		    _mapgenSeed = $"{Flags.MapGenSeed,8:X8}";
+
+		    var checksum = Flags.ReplacementMap.ComputeChecksum();
+		    if (checksum != Flags.ReplacementMap.Checksum) {
+		      throw new Exception("Checksum did not match");
+		    }
+
+		    StatusMessage = $"Successfully imported map, checksum {Flags.ReplacementMap.Checksum}";
+		  } catch (Exception x) {
+			   StatusMessage = x.Message;
+			   Console.WriteLine(x.ToString());
+		  }
+		  StateHasChanged();
+		}
+
+		async Task OnExportMap(MouseEventArgs e) {
+		     if (Flags.ReplacementMap == null || Flags.ReplacementMap.DecompressedMapRows == null) {
+		       return;
+		     }
+
+		     Flags.ReplacementMap.Checksum = Flags.ReplacementMap.ComputeChecksum();
+		     Flags.ReplacementMap.Seed = Flags.MapGenSeed;
+		     Flags.ReplacementMap.FFRVersion = FF1Lib.FFRVersion.Version;
+
+		     var content = JsonConvert.SerializeObject(Flags.ReplacementMap, Formatting.Indented);
+                     var fileData = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(content));
+		     await JSRuntime.InvokeVoidAsync("downloadFile", $"FFR_map_{Flags.ReplacementMap.Checksum}.json", fileData);
+		}
 	}
