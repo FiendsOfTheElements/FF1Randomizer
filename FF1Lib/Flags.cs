@@ -99,9 +99,14 @@ namespace FF1Lib
 
 		public ExtConsumableChestSet ExtConsumableChests { get; set; } = ExtConsumableChestSet.None;
 
-		public bool SanityCheckerV2 { get; set; } = false;
+		public bool SanityCheckerV2 { get; set; } = true;
 
 		public OwMapExchanges OwMapExchange { get; set; } = OwMapExchanges.None;
+
+		[IntegerFlag(0, Int32.MaxValue-1)]
+		public int MapGenSeed { get; set; } = 0;
+
+		public OwMapExchangeData ReplacementMap { get; set; } = null;
 
 		public bool? NoItemMagic { get; set; } = false;
 

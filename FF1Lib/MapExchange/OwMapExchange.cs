@@ -10,6 +10,7 @@ using System.Reflection;
 using System.ComponentModel;
 using RomUtilities;
 using System.IO.Compression;
+using FF1Lib.Procgen;
 
 namespace FF1Lib
 {
@@ -18,35 +19,17 @@ namespace FF1Lib
 		[Description("Vanilla (Default)")]
 		None,
 
-		[Description("Melmond Start")]
-		MelmondStart,
-
-		[Description("Elfland Start")]
-		ElflandStart,
-
-		[Description("Crescent Start")]
-		CrecsentStart,
-
-		[Description("Desert of Death")]
+    [Description("Generate New Overworld")]
+		GenerateNewOverworld,
+    
+    [Description("Random Pregenerated 512")]
+		RandomPregenerated,
+        
+    [Description("Desert of Death")]
 		Desert,
 
 		[Description("No Overworld")]
 		NoOverworld,
-
-		[Description("Chanel #125")]
-		ProcGen1,
-
-		[Description("Epic Quest")]
-		ProcGen2,
-
-		[Description("Archipelago")]
-		ProcGen3,
-
-		[Description("Random Pregenerated 512")]
-		RandomPregenerated,
-
-		[Description("Random")]
-		Random
 	}
 
 	public class OwMapExchange
@@ -85,14 +68,14 @@ namespace FF1Lib
 
 		public OwMapExchange(FF1Rom _rom, OverworldMap _overworldMap, MT19337 rng)
 		{	
-			rom = _rom;
+ 			rom = _rom;
 			overworldMap = _overworldMap;
 
 			exit = new ExitTeleData(rom);
 			locations = new OwLocationData(rom);
 			domains = new DomainData(rom);
-
-			var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+			
+      var assembly = System.Reflection.Assembly.GetExecutingAssembly();
 			var resourcePath = assembly.GetManifestResourceNames().First(str => str.EndsWith("pregenerated.zip"));
 
 			using Stream stream = assembly.GetManifestResourceStream(resourcePath);
@@ -112,6 +95,21 @@ namespace FF1Lib
 			using var rd = new BinaryReader(stream2);
 			byte[] mapData = rd.ReadBytes(65536);
 			mapStream = new MemoryStream(mapData);
+    }
+
+    public OwMapExchange(FF1Rom _rom, OverworldMap _overworldMap, OwMapExchangeData replacement)
+		{
+
+			rom = _rom;
+			overworldMap = _overworldMap;
+
+			exit = new ExitTeleData(rom);
+			locations = new OwLocationData(rom);
+			domains = new DomainData(rom);
+
+      data = replacement;
+
+			ShipLocations = new ShipLocations(locations, data.ShipLocations);
 		}
 
 		public void ExecuteStep1()
@@ -120,6 +118,10 @@ namespace FF1Lib
 			{
 				overworldMap.SwapMap(mapStream);
 			}
+      else if (Data.DecompressedMapRows != null)
+      {
+        overworldMap.SwapMap(Data.DecompressedMapRows);
+      }
 			else
 			{
 				overworldMap.SwapMap(name + ".ffm");
@@ -201,30 +203,33 @@ namespace FF1Lib
 			if (!flags.SanityCheckerV2) return null;
 
 			var mx = flags.OwMapExchange;
-			if (mx == OwMapExchanges.Random) mx = (OwMapExchanges)rng.Between(0, 3);
+			if (mx == OwMapExchanges.Random) mx = (OwMapExchanges)rng.Between(1, 7);
 
 			switch (mx)
 			{
 				case OwMapExchanges.None:
 					return null;
-				case OwMapExchanges.MelmondStart:
-					return new OwMapExchange(_rom, _overworldMap, "melmond_start");
-				case OwMapExchanges.ElflandStart:
-					return new OwMapExchange(_rom, _overworldMap, "elfland_start");
-				case OwMapExchanges.CrecsentStart:
-					return new OwMapExchange(_rom, _overworldMap, "crescent_start");
 				case OwMapExchanges.Desert:
 					return new OwMapExchange(_rom, _overworldMap, "desert");
 				case OwMapExchanges.NoOverworld:
 					return new OwMapExchange(_rom, _overworldMap, "nooverworld");
-				case OwMapExchanges.ProcGen1:
-					return new OwMapExchange(_rom, _overworldMap, "procgen1");
-				case OwMapExchanges.ProcGen2:
-					return new OwMapExchange(_rom, _overworldMap, "procgen2");
-				case OwMapExchanges.ProcGen3:
-					return new OwMapExchange(_rom, _overworldMap, "procgen3");
 				case OwMapExchanges.RandomPregenerated:
 					return new OwMapExchange(_rom, _overworldMap, rng);
+				case OwMapExchanges.GenerateNewOverworld:
+				  OwMapExchangeData exdata = null;
+				  if (flags.ReplacementMap != null) {
+					  exdata = flags.ReplacementMap;
+				  } else {
+					  int seed;
+					  if (flags.MapGenSeed != 0) {
+					    seed = flags.MapGenSeed;
+					  } else {
+					    seed = (int)rng.Next();
+					  }
+					  var maprng = new MT19337((uint)seed);
+					  exdata = NewOverworld.GenerateNewOverworld(maprng);
+				  }
+				  return new OwMapExchange(_rom, _overworldMap, exdata);
 			}
 
 			throw new Exception("oops");

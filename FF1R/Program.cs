@@ -7,7 +7,8 @@
 
 	[Command(Name = "ff1r", Description = "Final Fantasy Randomizer"),
 		Subcommand("presets", typeof(Commands.Presets)),
-		Subcommand("generate", typeof(Commands.Generate))]
+		Subcommand("generate", typeof(Commands.Generate)),
+		Subcommand("procgen", typeof(Commands.Procgen))]
 
 	class Program
 	{

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace FF1Lib.Sanity
 {
@@ -25,22 +26,31 @@ namespace FF1Lib.Sanity
 			return "(" + X.ToString() + ", " + Y.ToString() + ")";
 		}
 
+	    [JsonIgnore()]
 		public SCCoords SmLeft => new SCCoords((0x3F + X) & 0x3F, Y);
 
+	    [JsonIgnore()]
 		public SCCoords SmRight => new SCCoords((X + 1) & 0x3F, Y);
 
+	    [JsonIgnore()]
 		public SCCoords SmUp => new SCCoords(X, (0x3F + Y) & 0x3F);
 
+	    [JsonIgnore()]
 		public SCCoords SmDown => new SCCoords(X, (Y + 1) & 0x3F);
 
+	    [JsonIgnore()]
 		public SCCoords OwLeft => new SCCoords((0xFF + X) & 0xFF, Y);
 
+	    [JsonIgnore()]
 		public SCCoords OwRight => new SCCoords((X + 1) & 0xFF, Y);
 
+	    [JsonIgnore()]
 		public SCCoords OwUp => new SCCoords(X, (0xFF + Y) & 0xFF);
 
+	    [JsonIgnore()]
 		public SCCoords OwDown => new SCCoords(X, (Y + 1) & 0xFF);
 
+	    [JsonIgnore()]
 		public SCCoords SmClamp => new SCCoords(X & 0x3F, Y & 0x3F);
 
 		public static bool operator ==(SCCoords a, SCCoords b)
@@ -53,7 +63,7 @@ namespace FF1Lib.Sanity
 			return a.X != b.X || a.Y != b.Y;
 		}
 
-		static SCCoordsEqualityComparer cec = new SCCoordsEqualityComparer(); 
+		static SCCoordsEqualityComparer cec = new SCCoordsEqualityComparer();
 
 		public override bool Equals(object obj)
 		{
