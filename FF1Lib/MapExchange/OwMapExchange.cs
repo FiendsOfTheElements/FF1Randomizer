@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Reflection;
 using System.ComponentModel;
 using RomUtilities;
+using FF1Lib.Procgen;
 
 namespace FF1Lib
 {
@@ -41,7 +42,10 @@ namespace FF1Lib
 		[Description("Archipelago")]
 		ProcGen3,
 
-		[Description("Random")]
+		[Description("Generate New Overworld")]
+		GenerateNewOverworld,
+
+		[Description("Random alternate map")]
 		Random
 	}
 
@@ -77,9 +81,27 @@ namespace FF1Lib
 			ShipLocations = new ShipLocations(locations, data.ShipLocations);
 		}
 
+		public OwMapExchange(FF1Rom _rom, OverworldMap _overworldMap, OwMapExchangeData replacement)
+		{
+			rom = _rom;
+			overworldMap = _overworldMap;
+
+			exit = new ExitTeleData(rom);
+			locations = new OwLocationData(rom);
+			domains = new DomainData(rom);
+
+			data = replacement;
+
+			ShipLocations = new ShipLocations(locations, data.ShipLocations);
+		}
+
 		public void ExecuteStep1()
 		{
+		    if (Data.DecompressedMapRows != null) {
+			overworldMap.SwapMap(Data.DecompressedMapRows);
+		    } else {
 			overworldMap.SwapMap(name + ".ffm");
+		    }
 
 			//load default locations first, doh
 			locations.LoadData();
@@ -125,8 +147,8 @@ namespace FF1Lib
 			originalDomains.LoadTable();
 			domains.LoadTable();
 
-			foreach (var df in data.DomainFixups) domains.SwapDomains(df.From, df.To);
-			foreach (var df in data.DomainUpdates) domains.Data[df.To] = originalDomains.Data[df.From];
+			if (data.DomainFixups != null) foreach (var df in data.DomainFixups) domains.SwapDomains(df.From, df.To);
+			if (data.DomainUpdates != null) foreach (var df in data.DomainUpdates) domains.Data[df.To] = originalDomains.Data[df.From];
 
 			domains.StoreTable();
 			locations.StoreData();
@@ -149,7 +171,7 @@ namespace FF1Lib
 			if (!flags.SanityCheckerV2) return null;
 
 			var mx = flags.OwMapExchange;
-			if (mx == OwMapExchanges.Random) mx = (OwMapExchanges)rng.Between(0, 3);
+			if (mx == OwMapExchanges.Random) mx = (OwMapExchanges)rng.Between(1, 7);
 
 			switch (mx)
 			{
@@ -171,6 +193,21 @@ namespace FF1Lib
 					return new OwMapExchange(_rom, _overworldMap, "procgen2");
 				case OwMapExchanges.ProcGen3:
 					return new OwMapExchange(_rom, _overworldMap, "procgen3");
+				case OwMapExchanges.GenerateNewOverworld:
+				    OwMapExchangeData exdata = null;
+				    if (flags.ReplacementMap != null) {
+					exdata = flags.ReplacementMap;
+				    } else {
+					int seed;
+					if (flags.MapGenSeed != 0) {
+					    seed = flags.MapGenSeed;
+					} else {
+					    seed = (int)rng.Next();
+					}
+					var maprng = new MT19337((uint)seed);
+					exdata = NewOverworld.GenerateNewOverworld(maprng);
+				    }
+				    return new OwMapExchange(_rom, _overworldMap, exdata);
 			}
 
 			throw new Exception("oops");

@@ -26,5 +26,7 @@ namespace FF1Lib
 	        public DomainFixup[] DomainUpdates { get; set; }
 
 		public Dictionary<string, SCCoords> OverworldCoordinates { get; set; }
+
+	        public List<string> DecompressedMapRows { get; set; }
 	}
 }

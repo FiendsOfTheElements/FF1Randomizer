@@ -4453,6 +4453,26 @@ namespace FF1Lib
 			}
 		}
 
+		public int MapGenSeed
+		{
+			get => Flags.MapGenSeed;
+			set
+			{
+				Flags.MapGenSeed = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public OwMapExchangeData ReplacementMap
+		{
+			get => Flags.ReplacementMap;
+			set
+			{
+				Flags.ReplacementMap = value;
+				RaisePropertyChanged();
+			}
+		}
+
 		public ExtConsumableSet ExtConsumableSet
 		{
 			get => Flags.ExtConsumableSet;
