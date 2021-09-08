@@ -387,10 +387,10 @@ namespace FF1Lib
 		{
 			if (minAccessibility.TryGetValue(item, out var minAccess) && accessibility < minAccess) return 0.0f;
 
-			if (exceptionWeights.TryGetValue(item, out var minCycle) && cycle < minCycle) return 0.0f;
+			if (exceptionMinCycles.TryGetValue(item, out var minCycle) && cycle < minCycle) return 0.0f;
 			if (!KeyItems.Contains(item) && cycle < NonKeyItemMinCycle) return 0.0f;
 
-			if (exceptionMinCycles.TryGetValue(item, out var factor)) return weight * factor;
+			if (exceptionWeights.TryGetValue(item, out var factor)) return weight * factor;
 			if (!KeyItems.Contains(item)) return weight * NonKeyItemWeight;
 			return weight;
 		}
