@@ -1,0 +1,150 @@
+﻿@using FF1Lib;
+@using RomUtilities;
+@using FF1Lib.Procgen;
+
+	<div id="Overworld" class="tabcontent framed-content clearfix @(noTabLayout ? "no-tab" : "") @(IsOpen ? "" : "collapsed")">
+		<h3 class="@(IsOpen ? "" : "h3-collapsed")"><a class="@(noTabLayout ? "collapsible-header" : "")" @onclick="(() => IsOpen = (!noTabLayout || !IsOpen))">Overworld</a></h3>
+		@if (IsOpen)
+		{
+	<div class="col1">
+		<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="owMapExchange" TItem="OwMapExchanges" IsEnabled="Flags.SanityCheckerV2" @bind-Value="Flags.OwMapExchange">Overworld map to use:</EnumDropDown>
+		<br>
+
+		Map generation seed:
+		<br>
+		<input type="text" style="width: calc(100% - 160px);" class="nes-input @(_mapgenSeedInputClass)" id="mapgenSeedInput"
+		@onchange="@OnSeedInputChanged" value="@(_mapgenSeed)"
+		disabled="@(Flags.OwMapExchange != OwMapExchanges.Desert && Flags.OwMapExchange != OwMapExchanges.GenerateNewOverworld)" />
+		<a class='styled-button @(Flags.OwMapExchange == OwMapExchanges.GenerateNewOverworld ? "" : "disabled-button")' @onclick="@OnNewSeed">New</a>
+		<a class='styled-button @(Flags.OwMapExchange == OwMapExchanges.GenerateNewOverworld ? "" : "disabled-button")' @onclick="@OnClearSeed">Clear</a>
+		<br>
+		<br>
+		<a class='styled-button @(Flags.OwMapExchange == OwMapExchanges.GenerateNewOverworld ? "" : "disabled-button")' @onclick="@OnGenerateMap">Generate Map</a>
+		<br>
+		<br>
+		<p>@StatusMessage</p>
+	</div>
+
+	<div class="col2">
+		<h4>Vanilla overworld edits</h4>
+		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="mapOpenProgressionCheckBox"
+		IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.None)"
+		@bind-Value="Flags.MapOpenProgression">Early Open Progression</TriStateCheckBox>
+
+		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="mapOpenProgressionDwavesNWCheckBox"
+		IsEnabled="@Flags.MapOpenProgression" Indent @bind-Value="Flags.MapDwarvesNorthwest">Extended Open Progression</TriStateCheckBox>
+
+		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="mapOpenProgressionDocksCheckBox"
+		IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.None)"
+		@bind-Value="Flags.MapOpenProgressionDocks">Northern Docks</TriStateCheckBox>
+
+		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="mapOpenProgressionFloaterDockCheckBox"
+		IsEnabled="@Flags.MapOpenProgression" @bind-Value="Flags.MapAirshipDock">Ryukahn Desert Dock</TriStateCheckBox>
+
+		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="bahamutCardiaDockCheckBox"
+		IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.None)"
+		@bind-Value="Flags.MapBahamutCardiaDock">Bahamut Cardia Dock</TriStateCheckBox>
+
+		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="lefeinRiverDockCheckBox"
+		IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.None)"
+		@bind-Value="Flags.MapLefeinRiver">Lefein River Dock</TriStateCheckBox>
+
+		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="gaiaMountainPassCheckBox"
+		IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.None)"
+		@bind-Value="Flags.MapGaiaMountainPass">Gaia Mountain Pass</TriStateCheckBox>
+		<div class="checkbox-cell"></div>
+
+		<div class="clear-it"></div>
+		</div>
+		}
+	</div>
+
+
+	@code {
+		[Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }
+		[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
+		[Parameter] public bool noTabLayout { get; set; }
+		[Parameter] public bool IsOpen { get; set; } = true;
+
+		private string _mapgenSeed;
+		private string _mapgenSeedInputClass = "";
+		private string StatusMessage = "";
+
+		protected override void OnInitialized()
+		{
+			_mapgenSeed = $"{Flags.MapGenSeed,8:X8}";
+		}
+
+		void OnNewSeed(MouseEventArgs e)
+		{
+		if (Flags.OwMapExchange != OwMapExchanges.GenerateNewOverworld) {
+		return;
+		}
+			ValidateSeed(Blob.Random(4).ToHex());
+			StateHasChanged();
+		}
+
+		void OnClearSeed(MouseEventArgs e)
+		{
+		if (Flags.OwMapExchange != OwMapExchanges.GenerateNewOverworld) {
+		return;
+		}
+			ValidateSeed("00000000");
+			StateHasChanged();
+		}
+
+		void OnSeedInputChanged(ChangeEventArgs e)
+		{
+			ValidateSeed((string)e.Value);
+		}
+
+		void OnGenerateMap(MouseEventArgs e) {
+		if (Flags.OwMapExchange != OwMapExchanges.GenerateNewOverworld) {
+		return;
+		}
+			if (Flags.MapGenSeed == 0) {
+			  ValidateSeed(Blob.Random(4).ToHex());
+			}
+			StatusMessage = "Generating new map, this may take some time...";
+			StateHasChanged();
+			var maprng = new MT19337((uint)Flags.MapGenSeed);
+			try {
+			  Flags.ReplacementMap = NewOverworld.GenerateNewOverworld(maprng);
+			  StatusMessage = "Success!";
+			} catch (Exception x)
+			{
+			   StatusMessage = x.Message;
+			   Console.WriteLine(x.ToString());
+			}
+			StateHasChanged();
+		}
+
+		void ValidateSeed(string seed)
+		{
+			if (seed == _mapgenSeed)
+				return;
+
+			if (seed.Length > 8)
+			{
+				_mapgenSeedInputClass = "is-error";
+				return;
+			}
+
+			Flags.ReplacementMap = null;
+			StatusMessage = "";
+
+			_mapgenSeed = seed;
+			try
+			{
+				var blb = Blob.FromHex(_mapgenSeed);
+				Flags.MapGenSeed = ((blb[0]&0x7F) << 24) | (blb[1] << 16) | (blb[2] << 8) | blb[3];
+				_mapgenSeed = _mapgenSeed = $"{Flags.MapGenSeed,8:X8}";
+				_mapgenSeedInputClass = "";
+			}
+			catch (Exception)
+			{
+				_mapgenSeedInputClass = "is-error";
+			}
+		}
+
+	}

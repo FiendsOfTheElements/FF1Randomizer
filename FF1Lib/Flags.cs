@@ -102,9 +102,14 @@ namespace FF1Lib
 
 		public ExtConsumableChestSet ExtConsumableChests { get; set; } = ExtConsumableChestSet.None;
 
-		public bool SanityCheckerV2 { get; set; } = false;
+		public bool SanityCheckerV2 { get; set; } = true;
 
 		public OwMapExchanges OwMapExchange { get; set; } = OwMapExchanges.None;
+
+		[IntegerFlag(0, Int32.MaxValue-1)]
+		public int MapGenSeed { get; set; } = 0;
+
+		public OwMapExchangeData ReplacementMap { get; set; } = null;
 
 		public bool? NoItemMagic { get; set; } = false;
 
@@ -641,7 +646,7 @@ namespace FF1Lib
 		public bool? GuaranteedRuseItem { get; set; } = false;
 		public bool? DisableStunTouch { get; set; } = false;
 		public bool? MapCanalBridge => ((NPCItems) | (NPCFetchItems) | MapOpenProgression | MapOpenProgressionExtended) & (OwMapExchange != OwMapExchanges.Desert);
-		public bool DisableOWMapModifications => SanityCheckerV2 & (OwMapExchange != OwMapExchanges.None | OwMapExchange != OwMapExchanges.CrecsentStart | OwMapExchange != OwMapExchanges.ElflandStart | OwMapExchange != OwMapExchanges.MelmondStart | OwMapExchange != OwMapExchanges.Random);
+		public bool DisableOWMapModifications => SanityCheckerV2 & (OwMapExchange != OwMapExchanges.None);
 		public bool? MapOnracDock => MapOpenProgressionDocks & !DisableOWMapModifications;
 		public bool? MapMirageDock => MapOpenProgressionDocks & !DisableOWMapModifications;
 		public bool? MapConeriaDwarves => MapOpenProgression & !DisableOWMapModifications;

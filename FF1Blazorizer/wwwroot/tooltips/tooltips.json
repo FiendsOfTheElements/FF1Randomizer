@@ -895,7 +895,7 @@
                 "Id": "tcFormationPoolDropDown",
                 "title": "Trapped Chests Formations",
                 "screenshot": "tcFormations.png",
-                "description": "Selects what formations are inside trapped chests.\n\n Allocated Formations: All alternate formations (116) are allocated to a random chest. If there's still trapped chests without a formation, a new batch of alternate formations is distributed.\n\n Random Formations: An alternate formation is randomly selected for each chest, without regard to frequency of a given formation.\n\n Random Fiends: Chests are guarded by a random Fiend.\n\n Phantom: Chests are guarded by Phantom.\n\n Random: Select one of the previous options randomly."
+                "description": "Selects what formations are inside trapped chests.\n\n Allocated Formations: All alternate formations (116) are allocated to a random chest. If there's still trapped chests without a formation, a new batch of alternate formations is distributed.\n\n Random Formations: An alternate formation is randomly selected for each chest, without regard to frequency of a given formation.\n\n Local Formations: An alternate formation of the local encounter table is selected at random for each trapped chest.\n\n Vanilla Spikes: A random vanilla spike formation from the current dungeon is selected for each trapped chest.\n\n Random Fiends: Chests are guarded by a random Fiend.\n\n Phantom: Chests are guarded by Phantom.\n\n Random: Select one of the previous options randomly."
         },
         {
                 "Id": "tcChestCountSlider",
