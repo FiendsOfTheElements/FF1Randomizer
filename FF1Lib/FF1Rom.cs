@@ -532,7 +532,8 @@ namespace FF1Lib
 
 					if ((bool)flags.Treasures && !flags.DeepDungeon)
 					{
-						if(flags.SanityCheckerV2) checker = new SanityCheckerV2(maps, overworldMap, npcdata, this, shopItemLocation, shipLocations);
+						//if(flags.SanityCheckerV2)
+							checker = new SanityCheckerV2(maps, overworldMap, npcdata, this, shopItemLocation, shipLocations);
 						generatedPlacement = ShuffleTreasures(rng, flags, incentivesData, shopItemLocation, overworldMap, teleporters, checker);
 					}
 					else if (owMapExchange != null && !flags.DeepDungeon)

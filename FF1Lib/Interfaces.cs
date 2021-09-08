@@ -119,6 +119,8 @@
 		bool LooseItemsNpcBalance { get; }
 		bool? Entrances { get; }
 		OwMapExchanges OwMapExchange { get; }
+		bool PredictivePlacement { get;}
+		bool AllowUnsafePlacement { get; }
 	}
 	public interface IItemShuffleFlags
 	{

@@ -4901,5 +4901,25 @@ namespace FF1Lib
 				RaisePropertyChanged();
 			}
 		}
+
+		public bool PredictivePlacement
+		{
+			get => Flags.PredictivePlacement;
+			set
+			{
+				Flags.PredictivePlacement = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool AllowUnsafePlacement
+		{
+			get => Flags.AllowUnsafePlacement;
+			set
+			{
+				Flags.AllowUnsafePlacement = value;
+				RaisePropertyChanged();
+			}
+		}
 	}
 }

@@ -36,6 +36,18 @@
 				"description": "Speeds up loading of the minimap."
 		},
 		{
+				"Id": "predictivePlacement",
+				"title": "Predictive Placement Algorithm",
+				"screenshot": null,
+				"description": "An alternate KI placement strategy. At each step it predicts what each KI unlocks given the current map. It manages progression depending on the openness of the seed."
+		},
+		{
+				"Id": "allowUnsafePlacement",
+				"title": "Allow Unsafe Placement",
+				"screenshot": null,
+				"description": "Allows early placement of the Oxyale, Chime and Cube. Always on for Entrance Shuffle. Warning it hates you."
+		},
+		{
 				"Id": "enableSoftInBattle",
 				"title": "Enable Soft in Battle",
 				"screenshot": null,

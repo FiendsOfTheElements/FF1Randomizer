@@ -13,6 +13,9 @@
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="spreadLoose" IsEnabled="Flags.SanityCheckerV2" @bind-Value="Flags.LooseItemsSpreadPlacement">Spread Loose Placement</CheckBox>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="forwardLoose" IsEnabled="@(Flags.SanityCheckerV2 & Flags.LooseItemsSpreadPlacement)" @bind-Value="Flags.LooseItemsForwardPlacement">Forward Loose Placement</CheckBox>
 			<div class="checkbox-cell"></div>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="predictivePlacement" IsEnabled="@Flags.SanityCheckerV2" @bind-Value="Flags.PredictivePlacement">Predictive Placement</CheckBox>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="allowUnsafePlacement" IsEnabled="@(Flags.SanityCheckerV2 & Flags.PredictivePlacement & !(Flags.Entrances ?? true))" @bind-Value="Flags.AllowUnsafePlacement">Allow Unsafe Placement</CheckBox>
+			<div class="checkbox-cell"></div>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="looseNpcBalance" @bind-Value="Flags.LooseItemsNpcBalance">Loose Npc Balance</CheckBox>
 			<div class="checkbox-cell"></div>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="procGenEarth1" @bind-Value="Flags.EFGEarth1">Generated Earth Cave B1</CheckBox>

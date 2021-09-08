@@ -122,7 +122,7 @@ namespace FF1Lib
 
 		public bool IsRewardSourceAccessible(IRewardSource source, AccessRequirement currentAccess, List<MapLocation> locations)
 		{
-			if (currentAccess != requirements) throw new InvalidOperationException("no can do");
+			//if (currentAccess != requirements) throw new InvalidOperationException("no can do");
 
 			return rewardSources.Contains(source);
 		}
