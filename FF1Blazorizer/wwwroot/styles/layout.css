@@ -80,7 +80,7 @@ margin-top: 10px;
 
 .tabcontent{
 margin-left: 130px;
-min-height: 520px;
+min-height: 540px;
 }
 
 .tab button{
@@ -170,7 +170,7 @@ margin-top: -44px;
 }
 
 #hidden-nav{
-display: none;	
+display: none;
 }
 
 /* Header */
