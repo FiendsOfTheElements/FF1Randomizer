@@ -77,10 +77,7 @@ namespace FF1Lib
 				{ CanoeableRegion.OnracRegion, new List<OverworldTeleportIndex>{OverworldTeleportIndex.Onrac, OverworldTeleportIndex.Waterfall} }
 			};
 
-			if (flags.OwMapExchange == OwMapExchanges.None ||
-			    flags.OwMapExchange == OwMapExchanges.MelmondStart ||
-			    flags.OwMapExchange == OwMapExchanges.ElflandStart ||
-			    flags.OwMapExchange == OwMapExchanges.CrecsentStart) {
+			if (flags.OwMapExchange == OwMapExchanges.None) {
 			    // Can only apply map edits to vanilla-ish maps
 
 			if ((bool)flags.MapOnracDock)
