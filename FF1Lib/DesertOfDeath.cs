@@ -878,7 +878,7 @@ namespace FF1Lib
 
 		public static void ApplyDesertModifications(FF1Rom rom, OwMapExchange owMapExchange, FF1Rom.NPCdata npcdata)
 		{
-			(int, int) startDomain = (owMapExchange.StartingLocation.X / 16, owMapExchange.StartingLocation.Y / 16);
+			(int, int) startDomain = ((owMapExchange.StartingLocation.X / 32) - 1, (owMapExchange.StartingLocation.Y / 32) - 1);
 
 			// Update tiles and palette
 			for (int i = 1; i < 16; i += 4)

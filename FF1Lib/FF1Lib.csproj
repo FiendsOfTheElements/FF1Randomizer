@@ -26,8 +26,6 @@
     <None Remove="maps\elfland_start.json" />
     <None Remove="maps\melmond_start.ffm" />
     <None Remove="maps\melmond_start.json" />
-    <None Remove="maps\desert.ffm" />
-    <None Remove="maps\desert.json" />
     <None Remove="maps\nooverworld.ffm" />
     <None Remove="maps\nooverworld.json" />
     <None Remove="maps\pregenerated.zip" />
@@ -45,8 +43,6 @@
     <EmbeddedResource Include="maps\melmond_start.json">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="maps\desert.ffm" />
-    <EmbeddedResource Include="maps\desert.json" />
     <EmbeddedResource Include="maps\nooverworld.ffm" />
     <EmbeddedResource Include="maps\nooverworld.json" />
     <EmbeddedResource Include="maps\pregenerated.zip" />
