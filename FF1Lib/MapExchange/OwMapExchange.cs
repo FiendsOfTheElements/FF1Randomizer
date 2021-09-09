@@ -145,6 +145,53 @@ namespace FF1Lib
 			exit.StoreData();
 
 			ShipLocations.SetShipLocation(255);
+
+			if (data.HorizontalBridge) {
+			    // Rotate bridge sprite
+			    // tiles $14 - $17
+			    // CHR for map tiles is bank $02 at $9C00
+
+			    // 0 1  \ \
+			    // 2 3  / /
+
+			    var tile0 = new byte[8*8] {
+				0, 0, 0, 0, 1, 1, 1, 1,
+				0, 0, 1, 1, 2, 2, 2, 2,
+				1, 1, 2, 2, 2, 2, 2, 2,
+				2, 2, 2, 1, 1, 1, 1, 1,
+				2, 1, 1, 2, 2, 2, 2, 2,
+				1, 2, 2, 2, 2, 2, 2, 2,
+				2, 2, 2, 2, 2, 2, 2, 2,
+				2, 2, 2, 2, 2, 2, 2, 2,
+			    };
+
+			    var tile1 = new byte[8*8] {
+				2, 2, 2, 2, 2, 2, 2, 2,
+				2, 2, 2, 2, 2, 2, 2, 2,
+				2, 2, 2, 2, 2, 2, 2, 2,
+				2, 2, 2, 2, 1, 1, 1, 1,
+				2, 2, 1, 1, 2, 2, 2, 2,
+				1, 1, 2, 2, 2, 2, 2, 2,
+				2, 2, 2, 1, 1, 1, 1, 1,
+				1, 1, 1, 0, 0, 0, 0, 0
+			    };
+
+			    var tile2 = new byte[8*8];
+			    var tile3 = new byte[8*8];
+
+			    for (int j = 0; j < 8; j++) {
+				for (int i = 0; i < 8; i++) {
+				    // mirror tiles
+				    tile2[j*8 + i] = tile0[j*8 + (7-i)];
+				    tile3[j*8 + i] = tile1[j*8 + (7-i)];
+				}
+			    }
+
+			    rom.PutInBank(0x2, 0x9C00 + 0x04*16, rom.EncodeForPPU(tile0));
+			    rom.PutInBank(0x2, 0x9C00 + 0x05*16, rom.EncodeForPPU(tile2));
+			    rom.PutInBank(0x2, 0x9C00 + 0x06*16, rom.EncodeForPPU(tile1));
+			    rom.PutInBank(0x2, 0x9C00 + 0x07*16, rom.EncodeForPPU(tile3));
+			}
 		}
 
 		public void RefreshData()
@@ -240,12 +287,23 @@ namespace FF1Lib
 				case OwMapExchanges.RandomPregenerated:
 					return new OwMapExchange(_rom, _overworldMap, rng);
 				case OwMapExchanges.GenerateNewOverworld:
-					if (flags.ReplacementMap != null) {
-						exdata = flags.ReplacementMap;
-					} else {
-						exdata = NewOverworld.GenerateNewOverworld(maprng);
-					}
-					return new OwMapExchange(_rom, _overworldMap, exdata);
+				  OwMapExchangeData exdata = null;
+				  if (flags.ReplacementMap != null) {
+					  exdata = flags.ReplacementMap;
+				  } else {
+					  int seed;
+					  if (flags.MapGenSeed != 0) {
+					    seed = flags.MapGenSeed;
+					  } else {
+					    seed = (int)rng.Next();
+					  }
+					  var maprng = new MT19337((uint)seed);
+					  exdata = NewOverworld.GenerateNewOverworld(maprng);
+				  }
+				  return new OwMapExchange(_rom, _overworldMap, exdata);
+			    case OwMapExchanges.ImportCustomMap:
+				exdata = flags.ReplacementMap;
+				return new OwMapExchange(_rom, _overworldMap, exdata);
 			}
 
 			throw new Exception("oops");

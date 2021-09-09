@@ -48,15 +48,27 @@ namespace FF1Lib.Procgen
 	    }
 	}
 
-	public Result PlaceBridge() {
+	public Result PlaceBridge(bool fromStartingRegion) {
 	    if (!this.shouldPlaceBridge) {
 		return this.NextStep();
 	    }
 	    var tasks = new List<GenerationTask>();
-	    foreach (var adj in this.StartingRegion.Adjacent) {
-		var w = this.Traversable_regionlist[adj];
-		if (w.RegionType == OverworldTiles.RIVER_REGION) {
-		    tasks.Add(() => new OverworldState(this).BridgePlacement(w));
+	    Action<OwRegion> placementTasks = (OwRegion r) => {
+		foreach (var adj in r.Adjacent) {
+		    var w = this.Traversable_regionlist[adj];
+		    if (w.RegionType == OverworldTiles.RIVER_REGION) {
+			tasks.Add(() => new OverworldState(this).BridgePlacement(w));
+		    }
+		}
+	    };
+	    if (fromStartingRegion) {
+		placementTasks(this.StartingRegion);
+	    } else {
+		foreach (var r in this.Traversable_regionlist) {
+		    if (r.RegionType != OverworldTiles.LAND_REGION) {
+			continue;
+		    }
+		    placementTasks(r);
 		}
 	    }
 	    tasks.Shuffle(this.rng);
@@ -68,34 +80,42 @@ namespace FF1Lib.Procgen
 	    points.Shuffle(this.rng);
 	    short nextRegion = -1;
 	    foreach (var p in points) {
-		var c1 = this.Traversable_regionmap[p.Y-1, p.X];
-		var c2 = this.Traversable_regionmap[p.Y+1, p.X];
+		for (int i = 0; i < 2; i++) {
+		    short c1, c2;
+		    if (i == 0) {
+			c1 = this.Traversable_regionmap[p.Y-1, p.X];
+			c2 = this.Traversable_regionmap[p.Y+1, p.X];
+		    } else {
+			c1 = this.Traversable_regionmap[p.Y, p.X-1];
+			c2 = this.Traversable_regionmap[p.Y, p.X+1];
+		    }
 
-		if (c1 == this.startingRegion &&
-		    c2 != this.startingRegion &&
-		    this.Traversable_regionlist[c2].RegionType == OverworldTiles.LAND_REGION)
-		{
-		    this.OwnPlacements();
-		    this.FeatureCoordinates["Bridge"] = p;
-		    nextRegion = c2;
-		    break;
-		}
+		    if (c1 == this.startingRegion &&
+			c2 != this.startingRegion &&
+			this.Traversable_regionlist[c2].RegionType == OverworldTiles.LAND_REGION)
+		    {
+			this.OwnPlacements();
+			this.FeatureCoordinates["Bridge"] = p;
+			nextRegion = c2;
+			break;
+		    }
 
-		if (c1 != this.startingRegion &&
-		    c2 == this.startingRegion &&
-		    this.Traversable_regionlist[c1].RegionType == OverworldTiles.LAND_REGION)
-		{
-		    this.OwnPlacements();
-		    this.FeatureCoordinates["Bridge"] = p;
-		    nextRegion = c1;
-		    break;
+		    if (c1 != this.startingRegion &&
+			c2 == this.startingRegion &&
+			this.Traversable_regionlist[c1].RegionType == OverworldTiles.LAND_REGION)
+		    {
+			this.OwnPlacements();
+			this.FeatureCoordinates["Bridge"] = p;
+			nextRegion = c1;
+			break;
+		    }
 		}
 	    }
 
 	    if (nextRegion != -1) {
 		this.bridgedRegion = nextRegion;
 		this.Reachable_regions.Add(nextRegion);
-		this.Tilemap[this.FeatureCoordinates["Bridge"].Y, this.FeatureCoordinates["Bridge"].X] = OverworldTiles.DOCK_W;
+		//this.Tilemap[this.FeatureCoordinates["Bridge"].Y, this.FeatureCoordinates["Bridge"].X] = OverworldTiles.DOCK_W;
 		return this.NextStep();
 	    }
 	    return new Result(false);
@@ -574,7 +594,7 @@ namespace FF1Lib.Procgen
 	    bool placed = false;
 	    foreach (var p in points) {
 		var ep = p.OwRight;
-		if (this.Tilemap[ep.Y, ep.X] == OverworldTiles.OCEAN) {
+		if (this.Traversable_regionmap[ep.Y, ep.X] == OverworldTiles.MainOceanRegionId) {
 		    var r = this.PlaceFeatureAt(this.Traversable_regionmap, region,
 					new SCCoords(p.X-5, p.Y-1), OverworldTiles.E_CANAL_STRUCTURE);
 		    if (r.Item1) {
@@ -584,7 +604,7 @@ namespace FF1Lib.Procgen
 		}
 
 		var wp = p.OwLeft;
-		if (this.Tilemap[wp.Y, wp.X] == OverworldTiles.OCEAN) {
+		if (this.Traversable_regionmap[wp.Y, wp.X] == OverworldTiles.MainOceanRegionId) {
 		    var r = this.PlaceFeatureAt(this.Traversable_regionmap, region,
 					new SCCoords(p.X, p.Y-1), OverworldTiles.W_CANAL_STRUCTURE);
 		    if (r.Item1) {

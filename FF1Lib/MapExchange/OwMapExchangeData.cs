@@ -60,6 +60,9 @@ namespace FF1Lib
 	    [JsonProperty(Order = 10)]
 	        public List<string> DecompressedMapRows { get; set; }
 
+	    [JsonProperty(Order = 11)]
+	        public bool HorizontalBridge { get; set; }
+
 	    [JsonProperty(Order = -3)]
 	        public string FFRVersion { get; set; }
 
