@@ -161,10 +161,7 @@ namespace FF1Lib
 
 			if (flags.SanityCheckerV2 && flags.OwMapExchange == OwMapExchanges.Desert)
 			{
-				GenerateDesert(overworldMap, owMapExchange, npcdata, rng);
-				teleporters = new TeleportShuffle(owMapExchange?.Data);
-				overworldMap.Teleporters = teleporters;
-				shipLocations = owMapExchange.ShipLocations;
+				DesertOfDeath.ApplyDesertModifications(this, owMapExchange, npcdata);
 			}
 
 			if (flags.EFGWaterfall || flags.EFGEarth1 || flags.EFGEarth2)
