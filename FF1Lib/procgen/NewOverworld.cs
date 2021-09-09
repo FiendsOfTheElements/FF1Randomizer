@@ -870,10 +870,10 @@ namespace FF1Lib.Procgen
 	    points.Shuffle(this.rng);
 	    SCCoords point = new SCCoords(0, 0);
 	    bool found = false;
-	    for (int tryweight = 0; !found && tryweight < (feature.MountainCave ? 20 : 10); tryweight++) {
+	    for (int tryweight = 0; !found && tryweight < (feature.MountainCave ? 20 : 8); tryweight++) {
 		foreach (var p in points) {
 		    if (feature.MountainCave) {
-			if (this.Feature_weightmap[p.Y, p.X] != tryweight) {
+			if (this.Feature_weightmap[p.Y-1, p.X] != tryweight) {
 			    continue;
 			}
 			if (this.Tilemap[p.Y-1, p.X-1] == OverworldTiles.MOUNTAIN &&
