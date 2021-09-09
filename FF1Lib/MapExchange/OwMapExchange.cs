@@ -202,6 +202,20 @@ namespace FF1Lib
 		{
 			if (!flags.SanityCheckerV2) return null;
 
+			int seed;
+
+			if (flags.MapGenSeed != 0)
+			{
+				seed = flags.MapGenSeed;
+			}
+			else
+			{
+				seed = (int)rng.Next();
+			}
+
+			MT19337 maprng = new MT19337((uint)seed);
+			OwMapExchangeData exdata;
+
 			var mx = flags.OwMapExchange;
 
 			switch (mx)
@@ -209,26 +223,26 @@ namespace FF1Lib
 				case OwMapExchanges.None:
 					return null;
 				case OwMapExchanges.Desert:
-					return new OwMapExchange(_rom, _overworldMap, "desert");
+					if (flags.ReplacementMap != null)
+					{
+						exdata = flags.ReplacementMap;
+					}
+					else
+					{
+						exdata = DesertOfDeath.GenerateDesert(maprng);
+					}
+					return new OwMapExchange(_rom, _overworldMap, exdata);
 				case OwMapExchanges.NoOverworld:
 					return new OwMapExchange(_rom, _overworldMap, "nooverworld");
 				case OwMapExchanges.RandomPregenerated:
 					return new OwMapExchange(_rom, _overworldMap, rng);
 				case OwMapExchanges.GenerateNewOverworld:
-				  OwMapExchangeData exdata = null;
-				  if (flags.ReplacementMap != null) {
-					  exdata = flags.ReplacementMap;
-				  } else {
-					  int seed;
-					  if (flags.MapGenSeed != 0) {
-					    seed = flags.MapGenSeed;
-					  } else {
-					    seed = (int)rng.Next();
-					  }
-					  var maprng = new MT19337((uint)seed);
-					  exdata = NewOverworld.GenerateNewOverworld(maprng);
-				  }
-				  return new OwMapExchange(_rom, _overworldMap, exdata);
+					if (flags.ReplacementMap != null) {
+						exdata = flags.ReplacementMap;
+					} else {
+						exdata = NewOverworld.GenerateNewOverworld(maprng);
+					}
+					return new OwMapExchange(_rom, _overworldMap, exdata);
 			}
 
 			throw new Exception("oops");

@@ -15,11 +15,11 @@
 		<input type="text" style="width: calc(100% - 160px);" class="nes-input @(_mapgenSeedInputClass)" id="mapgenSeedInput"
 		@onchange="@OnSeedInputChanged" value="@(_mapgenSeed)"
 		disabled="@(Flags.OwMapExchange != OwMapExchanges.Desert && Flags.OwMapExchange != OwMapExchanges.GenerateNewOverworld)" />
-		<a class='styled-button @(Flags.OwMapExchange == OwMapExchanges.GenerateNewOverworld ? "" : "disabled-button")' @onclick="@OnNewSeed">New</a>
-		<a class='styled-button @(Flags.OwMapExchange == OwMapExchanges.GenerateNewOverworld ? "" : "disabled-button")' @onclick="@OnClearSeed">Clear</a>
+		<a class='styled-button @((Flags.OwMapExchange == OwMapExchanges.Desert || Flags.OwMapExchange == OwMapExchanges.GenerateNewOverworld) ? "" : "disabled-button")' @onclick="@OnNewSeed">New</a>
+		<a class='styled-button @((Flags.OwMapExchange == OwMapExchanges.Desert || Flags.OwMapExchange == OwMapExchanges.GenerateNewOverworld) ? "" : "disabled-button")' @onclick="@OnClearSeed">Clear</a>
 		<br>
 		<br>
-		<a class='styled-button @(Flags.OwMapExchange == OwMapExchanges.GenerateNewOverworld ? "" : "disabled-button")' @onclick="@OnGenerateMap">Generate Map</a>
+		<a class='styled-button @((Flags.OwMapExchange == OwMapExchanges.Desert || Flags.OwMapExchange == OwMapExchanges.GenerateNewOverworld) ? "" : "disabled-button")' @onclick="@OnGenerateMap">Generate Map</a>
 		<br>
 		<br>
 		<p>@StatusMessage</p>
@@ -77,18 +77,18 @@
 
 		void OnNewSeed(MouseEventArgs e)
 		{
-		if (Flags.OwMapExchange != OwMapExchanges.GenerateNewOverworld) {
-		return;
-		}
+			if (Flags.OwMapExchange != OwMapExchanges.GenerateNewOverworld && Flags.OwMapExchange != OwMapExchanges.Desert) {
+				return;
+			}
 			ValidateSeed(Blob.Random(4).ToHex());
 			StateHasChanged();
 		}
 
 		void OnClearSeed(MouseEventArgs e)
 		{
-		if (Flags.OwMapExchange != OwMapExchanges.GenerateNewOverworld) {
-		return;
-		}
+			if (Flags.OwMapExchange != OwMapExchanges.GenerateNewOverworld && Flags.OwMapExchange != OwMapExchanges.Desert) {
+				return;
+			}
 			ValidateSeed("00000000");
 			StateHasChanged();
 		}
@@ -99,22 +99,30 @@
 		}
 
 		void OnGenerateMap(MouseEventArgs e) {
-		if (Flags.OwMapExchange != OwMapExchanges.GenerateNewOverworld) {
-		return;
-		}
+			if (Flags.OwMapExchange != OwMapExchanges.GenerateNewOverworld && Flags.OwMapExchange != OwMapExchanges.Desert) {
+				return;
+			}
 			if (Flags.MapGenSeed == 0) {
-			  ValidateSeed(Blob.Random(4).ToHex());
+				ValidateSeed(Blob.Random(4).ToHex());
 			}
 			StatusMessage = "Generating new map, this may take some time...";
 			StateHasChanged();
 			var maprng = new MT19337((uint)Flags.MapGenSeed);
 			try {
-			  Flags.ReplacementMap = NewOverworld.GenerateNewOverworld(maprng);
-			  StatusMessage = "Success!";
+				if (Flags.OwMapExchange == OwMapExchanges.GenerateNewOverworld)
+				{
+					Flags.ReplacementMap = NewOverworld.GenerateNewOverworld(maprng);
+				}
+				else if (Flags.OwMapExchange == OwMapExchanges.Desert)
+				{
+					Flags.ReplacementMap = DesertOfDeath.GenerateDesert(maprng);
+				}
+
+				StatusMessage = "Success!";
 			} catch (Exception x)
 			{
-			   StatusMessage = x.Message;
-			   Console.WriteLine(x.ToString());
+				StatusMessage = x.Message;
+				Console.WriteLine(x.ToString());
 			}
 			StateHasChanged();
 		}
