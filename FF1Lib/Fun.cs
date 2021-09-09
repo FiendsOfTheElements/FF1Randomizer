@@ -100,13 +100,18 @@ namespace FF1Lib
 			enemyText[2] = "RURURU"; // +2
 			enemyText[3] = "GrrrWOLF"; // +2
 			enemyText[28] = "GeORGE";
+			enemyText[29] = "Grover";
 			enemyText[30] = "R.SNEK"; // +3
 			enemyText[31] = "GrSNEK"; // +1
 			enemyText[32] = "SeaSNEK"; // -1
 			enemyText[40] = "iMAGE";
 			enemyText[56] = "EXPEDE"; // +2
+			enemyText[61] = "EDWARD";
+			enemyText[63] = "Argyle";
 			enemyText[66] = "White D";
 			enemyText[72] = "MtlSLIME"; // +3
+			enemyText[77] = "FunPolic";
+			enemyText[80] = "MOMMY";
 			enemyText[83] = "Y BURN";
 			if (teamSteak)
 			{
@@ -115,7 +120,8 @@ namespace FF1Lib
 			}
 			enemyText[92] = "NACHO"; // -1
 			enemyText[106] = "Green D"; // +2
-			enemyText[111] = "OKAYMAN"; // +1
+			enemyText[111] = "BATMAN";
+			enemyText[112] = "OKAYMAN";
 
 			// Moving IMP and GrIMP gives me another 10 bytes, for a total of 19 extra bytes, of which I'm using 16.
 			var enemyTextPart1 = enemyText.Take(2).ToArray();
@@ -528,7 +534,7 @@ namespace FF1Lib
 			var dialogsUpdate = SubstituteKeyItemInExtraNPCDialogues("LUTE", newLute, dialogs); ;
 			var princessDialogue = dialogs[0x06].Split(new string[] { "LUTE" }, System.StringSplitOptions.RemoveEmptyEntries);
 			var monkDialogue = dialogs[0x35].Split(new string[] { "LUTE" }, System.StringSplitOptions.RemoveEmptyEntries);
-			
+
 			if (princessDialogue.Length > 1)
 				dialogsUpdate.Add(0x06, princessDialogue[0] + newLute + princessDialogue[1]);
 
