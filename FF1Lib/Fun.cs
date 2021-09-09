@@ -106,8 +106,8 @@ namespace FF1Lib
 			enemyText[32] = "SeaSNEK"; // -1
 			enemyText[40] = "iMAGE";
 			enemyText[56] = "EXPEDE"; // +2
-			enemyText[61] = "EDWARD";
-			enemyText[63] = "Argyle";
+			enemyText[61] = "Edward";
+			enemyText[63] = "ARGYLE";
 			enemyText[66] = "White D";
 			enemyText[72] = "MtlSLIME"; // +3
 			enemyText[77] = "FunPolic";
@@ -120,7 +120,7 @@ namespace FF1Lib
 			}
 			enemyText[92] = "NACHO"; // -1
 			enemyText[106] = "Green D"; // +2
-			enemyText[111] = "BATMAN";
+			enemyText[111] = "Batman";
 			enemyText[112] = "OKAYMAN";
 
 			// Moving IMP and GrIMP gives me another 10 bytes, for a total of 19 extra bytes, of which I'm using 16.
