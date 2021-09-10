@@ -287,23 +287,17 @@ namespace FF1Lib
 				case OwMapExchanges.RandomPregenerated:
 					return new OwMapExchange(_rom, _overworldMap, rng);
 				case OwMapExchanges.GenerateNewOverworld:
-				  OwMapExchangeData exdata = null;
 				  if (flags.ReplacementMap != null) {
 					  exdata = flags.ReplacementMap;
 				  } else {
-					  int seed;
-					  if (flags.MapGenSeed != 0) {
-					    seed = flags.MapGenSeed;
-					  } else {
-					    seed = (int)rng.Next();
-					  }
-					  var maprng = new MT19337((uint)seed);
 					  exdata = NewOverworld.GenerateNewOverworld(maprng);
 				  }
 				  return new OwMapExchange(_rom, _overworldMap, exdata);
 			    case OwMapExchanges.ImportCustomMap:
-				exdata = flags.ReplacementMap;
-				return new OwMapExchange(_rom, _overworldMap, exdata);
+				if (flags.ReplacementMap == null) {
+				    throw new Exception("No replacement map was supplied");
+				}
+				return new OwMapExchange(_rom, _overworldMap, flags.ReplacementMap);
 			}
 
 			throw new Exception("oops");
