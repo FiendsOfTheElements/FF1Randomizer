@@ -406,18 +406,30 @@ namespace FF1Lib.Procgen
 	    var tasks = new List<GenerationTask>();
 	    walkable.Shuffle(this.rng);
 	    islands.Shuffle(this.rng);
-	    foreach (var w in walkable) {
-		tasks.Add(() => new OverworldState(this).BiomePlacement(feature, w, shipReachable));
+
+	    int maxweight;
+	    if (feature.MountainCave) {
+		maxweight = 0;
+	    } else {
+		maxweight = 8;
 	    }
-	    foreach (var w in islands) {
-		tasks.Add(() => new OverworldState(this).BiomePlacement(feature, w, shipReachable));
+	    for (int i = 0; i <= maxweight; i++) {
+		foreach (var w in islands) {
+		    var r = new OverworldState(this).BiomePlacement(feature, w, shipReachable, i);
+		    if (r.Success) return r;
+		}
+		foreach (var w in walkable) {
+		    var r = new OverworldState(this).BiomePlacement(feature, w, shipReachable, i);
+		    if (r.Success) return r;
+		}
 	    }
-	    return new Result(tasks);
+
+	    return new Result(false);
 	}
 
-	public Result BiomePlacement(OwFeature feature, OwRegion region, bool shipReachable) {
+	public Result BiomePlacement(OwFeature feature, OwRegion region, bool shipReachable, int maxweight) {
 	    var trav = this.Traversable_regionlist[this.Traversable_regionmap[region.Points[0].Y, region.Points[0].X]];
-	    var v = this.PlaceFeature(this.Biome_regionmap, region, feature);
+	    var v = this.PlaceFeature(this.Biome_regionmap, region, feature, maxweight);
 	    if (!v.Item1) {
 		return new Result(false);
 	    }

@@ -29,11 +29,13 @@ namespace FF1R.Commands
 	    replacementMap.Seed = this.Seed;
 	    replacementMap.FFRVersion = FF1Lib.FFRVersion.Version;
 
-	    using (StreamWriter file = File.CreateText($"FFR_map_{replacementMap.Checksum}.json")) {
+	    var fn = $"FFR_map_{replacementMap.Checksum}.json";
+	    using (StreamWriter file = File.CreateText(fn)) {
 		JsonSerializer serializer = new JsonSerializer();
 		serializer.Formatting = Formatting.Indented;
 		serializer.Serialize(file, replacementMap);
 	    }
+	    Console.WriteLine(fn);
 	    return 0;
 	}
     }
@@ -73,7 +75,9 @@ namespace FF1R.Commands
 			    output.Mutate(d => d.DrawImage(src, new Point(x*16, y*16), 1));
 			}
 		    }
-		    output.Save(this.Mapfile.Replace(".json", ".png"));
+		    var fn = this.Mapfile.Replace(".json", ".png");
+		    output.Save(fn);
+		    Console.WriteLine(fn);
 		}
 
 		return 0;

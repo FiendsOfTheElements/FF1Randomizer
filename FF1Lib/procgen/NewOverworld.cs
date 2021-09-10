@@ -862,7 +862,7 @@ namespace FF1Lib.Procgen
 	}
 
 	// Place a feature somewhere in the region at random.
-	public ValueTuple<bool,SCCoords> PlaceFeature(short[,] regionMap, OwRegion region, OwFeature feature) {
+	public ValueTuple<bool,SCCoords> PlaceFeature(short[,] regionMap, OwRegion region, OwFeature feature, int maxweight=0) {
 	    var h = feature.Tiles.GetLength(0);
 	    var w = feature.Tiles.GetLength(1);
 
@@ -870,7 +870,10 @@ namespace FF1Lib.Procgen
 	    points.Shuffle(this.rng);
 	    SCCoords point = new SCCoords(0, 0);
 	    bool found = false;
-	    for (int tryweight = 0; !found && tryweight < (feature.MountainCave ? 20 : 8); tryweight++) {
+	    if (feature.MountainCave) {
+		maxweight = 15;
+	    }
+	    for (int tryweight = 0; !found && tryweight <= maxweight; tryweight++) {
 		foreach (var p in points) {
 		    if (feature.MountainCave) {
 			if (this.Feature_weightmap[p.Y-1, p.X] != tryweight) {
@@ -882,6 +885,7 @@ namespace FF1Lib.Procgen
 			{
 			    point = new SCCoords(p.X, p.Y-1);
 			    found = true;
+			    break;
 			}
 		    } else {
 			if (this.CheckFit(regionMap, region, p, w, h, this.Feature_weightmap, tryweight)) {
@@ -956,6 +960,8 @@ namespace FF1Lib.Procgen
     public class Result {
         public OverworldState final;
         public List<GenerationTask> additionalTasks;
+
+	public bool Success { get { return this.final != null || this.additionalTasks != null; } }
 
 	public Result(bool f) {
 	    this.final = null;

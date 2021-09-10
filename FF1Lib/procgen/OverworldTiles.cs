@@ -1200,21 +1200,21 @@ namespace FF1Lib.Procgen
 		new Rule(new byte[3,3] {
 		    {STAR, STAR,     STAR},
 		    {STAR, MOUNTAIN, _},
-		    {STAR, MOUNTAIN,  STAR}},
+		    {STAR,        _,  STAR}},
 		    MOUNTAIN),
 		new Rule(new byte[3,3] {
 		    {STAR,   STAR,    STAR},
 		    {_,      MOUNTAIN,  STAR},
-		    {STAR,   MOUNTAIN,  STAR}},
+		    {STAR,          _,  STAR}},
 		    MOUNTAIN),
 		new Rule(new byte[3,3] {
-		    {STAR,   MOUNTAIN, STAR},
+		    {STAR,          _, STAR},
 		    {_,      MOUNTAIN, STAR},
 		    {STAR,    STAR,  STAR}},
 		    MOUNTAIN),
 		new Rule(new byte[3,3] {
-		    {STAR, MOUNTAIN,   STAR},
-		    {STAR, MOUNTAIN, _},
+		    {STAR,        _,   STAR},
+		    {STAR, MOUNTAIN,      _},
 		    {STAR,     STAR,  STAR}},
 		    MOUNTAIN),
 
