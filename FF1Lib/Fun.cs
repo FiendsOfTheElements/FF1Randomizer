@@ -122,6 +122,8 @@ namespace FF1Lib
 			enemyText[106] = "Green D"; // +2
 			enemyText[111] = "Batman";
 			enemyText[112] = "OKAYMAN";
+			enemyText[120] = "BUMP";
+			enemyText[122] = "Kelly";
 
 			// Moving IMP and GrIMP gives me another 10 bytes, for a total of 19 extra bytes, of which I'm using 16.
 			var enemyTextPart1 = enemyText.Take(2).ToArray();
