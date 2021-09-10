@@ -100,7 +100,7 @@ namespace FF1Lib
 			enemyText[2] = "RURURU"; // +2
 			enemyText[3] = "GrrrWOLF"; // +2
 			enemyText[28] = "GeORGE";
-			enemyText[29] = "Grover";
+			enemyText[29] = "GROVER";
 			enemyText[30] = "R.SNEK"; // +3
 			enemyText[31] = "GrSNEK"; // +1
 			enemyText[32] = "SeaSNEK"; // -1
@@ -110,7 +110,7 @@ namespace FF1Lib
 			enemyText[63] = "ARGYLE";
 			enemyText[66] = "White D";
 			enemyText[72] = "MtlSLIME"; // +3
-			enemyText[77] = "FunPolic";
+			enemyText[77] = "FunPOLIC";
 			enemyText[80] = "MOMMY";
 			enemyText[83] = "Y BURN";
 			if (teamSteak)
@@ -120,10 +120,12 @@ namespace FF1Lib
 			}
 			enemyText[92] = "NACHO"; // -1
 			enemyText[106] = "Green D"; // +2
-			enemyText[111] = "Batman";
+			enemyText[111] = "BATMAN";
 			enemyText[112] = "OKAYMAN";
+			enemyText[119] = "BUMP";
 			enemyText[120] = "BUMP";
-			enemyText[122] = "Kelly";
+			enemyText[121] = "KELLY";
+			enemyText[122] = "KELLY";
 
 			// Moving IMP and GrIMP gives me another 10 bytes, for a total of 19 extra bytes, of which I'm using 16.
 			var enemyTextPart1 = enemyText.Take(2).ToArray();
