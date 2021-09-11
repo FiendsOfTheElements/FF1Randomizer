@@ -132,7 +132,13 @@ namespace FF1Lib.Procgen
 	}
 
 	public Result PlaceInBridgedRegion(OwFeature feature) {
-	    return PlaceInBiome(feature, null, this.Traversable_regionlist[this.bridgedRegion], false, false, true, false);
+	    for (int i = 0; i < 8; i++) {
+		var v = this.PlaceFeature(this.Traversable_regionmap, this.Traversable_regionlist[this.bridgedRegion], feature, i);
+		if (v.Item1) {
+		    return this.NextStep();
+		}
+	    }
+	    return new Result(false);
 	}
 
 	public Result PlaceOnCoast(OwFeature feature, bool eastOnly) {
@@ -587,7 +593,11 @@ namespace FF1Lib.Procgen
 	    OwFeature caveFeature = null;
 	    if (feature.MountainCave) {
 		caveFeature = feature;
-		feature = OverworldTiles.MOUNTAIN_CAVE_FEATURE;
+		if (this.rng.Between(0, 1) == 0) {
+		    feature = OverworldTiles.MOUNTAIN_CAVE_FEATURE;
+		} else {
+		    feature = OverworldTiles.FOREST_MOUNTAIN_CAVE_FEATURE;
+		}
 	    }
 	    int w = feature.Tiles.GetLength(1);
 	    int h = feature.Tiles.GetLength(0);
@@ -595,6 +605,9 @@ namespace FF1Lib.Procgen
 		if (this.Traversable_regionmap[p.Y+h, p.X+(w/2)] == riverRegion.RegionId) {
 		    var v = this.PlaceFeatureAt(this.Traversable_regionmap, mtnRegion, p, feature, true);
 		    if (v.Item1) {
+			if (caveFeature != null) {
+			    this.PlaceFeatureAt(this.Traversable_regionmap, mtnRegion, new SCCoords(p.X+2, p.Y+1), caveFeature, false);
+			}
 			return this.NextStep();
 		    }
 		}

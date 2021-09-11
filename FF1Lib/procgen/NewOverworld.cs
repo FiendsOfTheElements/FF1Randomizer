@@ -220,7 +220,7 @@ namespace FF1Lib.Procgen
 	short bridgedRegion;
 	bool shouldPlaceBridge;
 
-        public OverworldState(MT19337 rng, GenerationStep[] steps, OverworldTiles overworldTiles) {
+        public OverworldState(MT19337 rng, List<GenerationStep> steps, OverworldTiles overworldTiles) {
             this.rng = rng;
             this.ownBasemap = true;
             this.ownTilemap = true;
@@ -1026,18 +1026,6 @@ namespace FF1Lib.Procgen
 	    };
 
 	    if (flags.MapGenRandomizedAccessReqs) {
-		// coneria, bridge
-
-		// 1-2 in starting area
-		// 1-3 requiring bridge
-		// 1-3 requiring canoe
-		// 1-3 titan's west region
-		// 1-3 requiring canal
-		// 2-4 in mountains
-		// 1 waterfall
-		// pravoka, onrac, mirage, airship (special but already relatively unrestricted)
-		// 4-8 ships's dock
-		// remaining unrestricted
 
 		var features = new List<OwFeature> {
 		    OverworldTiles.TEMPLE_OF_FIENDS,
@@ -1046,10 +1034,8 @@ namespace FF1Lib.Procgen
 		    OverworldTiles.SARDAS_CAVE_FEATURE,
 		    OverworldTiles.EARTH_CAVE_FEATURE,
 		    OverworldTiles.OASIS,
-		    OverworldTiles.TITANS_TUNNEL_EAST,
 		    OverworldTiles.DWARF_CAVE_FEATURE,
 		    OverworldTiles.ELFLAND_TOWN_CASTLE,
-		    OverworldTiles.MARSH_CAVE_FEATURE,
 		    OverworldTiles.ASTOS_CASTLE,
 		    OverworldTiles.MELMOND_TOWN,
 		    OverworldTiles.CRESCENT_LAKE_CITY,
@@ -1064,16 +1050,63 @@ namespace FF1Lib.Procgen
 		    OverworldTiles.VOLCANO,
 		};
 
+		// coneria, bridge
+
+		// 1-2 in starting area
+		// 1-3 requiring bridge
+		// 1-3 requiring canoe
+		// 1-3 titan's west region
+		// 1-3 requiring canal
+		// 2-4 in mountains
+		// 1 waterfall
+		// pravoka, onrac, mirage, airship (special but already relatively unrestricted)
+		// 4-8 ships's dock
+		// remaining unrestricted
+
 		steps.Add(new GenerationStep("PlaceInStartingArea", new object[]{OverworldTiles.CONERIA_CITY}));
 		steps.Add(new GenerationStep("PlaceBridge", new object[]{false}));
 		steps.Add(new GenerationStep("PlaceIsolated", new object[]{OverworldTiles.TITANS_TUNNEL_WEST, false}));
 
-		// 1-3 random in bridged region
-		int count = rng.Between(1, 3);
-		for (int i = 0; i < count && ; i++) {
-		    var pick = rng.Between(0, 3);
-		    steps.Add(new GenerationStep("PlaceInBridgedRegion", new object[]{}));
-		}
+		// 1-2 random in starting area
+		Action<string, int, int, object[]> AddPlacements = (string op, int min, int max, object[] addl) => {
+		    int count = rng.Between(min, max);
+		    for (int i = 0; i < count && features.Count > 0; i++) {
+			var f = features.SpliceRandom(rng);
+			var parm = new List<object>();
+			parm.Add(f);
+			if (addl != null) {
+			    parm.AddRange(addl);
+			}
+			steps.Add(new GenerationStep(op, parm.ToArray()));
+		    }
+		};
+
+		AddPlacements("PlaceIsolated", 1, 2, new object[]{true});
+		features.Add(OverworldTiles.TITANS_TUNNEL_EAST);
+
+		AddPlacements("PlaceInStartingArea", 1, 2, null);
+		AddPlacements("PlaceInBridgedRegion", 1, 2, null);
+		AddPlacements("PlaceRequiringCanoe", 1, 2, null);
+		AddPlacements("PlaceInTitanWestRegion", 1, 2, null);
+
+		steps.Add(new GenerationStep("PlaceCanal", new object[]{}));
+		AddPlacements("PlaceInCanalRegion", 1, 2, null);
+		AddPlacements("PlaceInMountains", 2, 4, null);
+		steps.Add(new GenerationStep("PlaceWaterfall", new object[]{OverworldTiles.WATERFALL_FEATURE}));
+		steps.Add(new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.MIRAGE_TOWER,
+									  new int[]{OverworldTiles.DESERT_REGION},
+									  false, true, true, false}));
+		steps.Add(new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.AIRSHIP_FEATURE,
+									  new int[]{OverworldTiles.DESERT_REGION},
+									  false, true, false, false}));
+		steps.Add(new GenerationStep("PlaceOnCoast", new object[]{OverworldTiles.ONRAC_TOWN, true}));
+		steps.Add(new GenerationStep("PlaceOnCoast", new object[]{OverworldTiles.PRAVOKA_CITY, false}));
+		steps.Add(new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.MARSH_CAVE_FEATURE,
+									  new int[]{OverworldTiles.MARSH_REGION},
+									  true, true, true, false}));
+		AddPlacements("PlaceInBiome", 4, 8, new object[] { null, true, false, false, false });
+		AddPlacements("PlaceInBiome", 3, 6, new object[] { null, false, true, true, true });
+		AddPlacements("PlaceInBiome", features.Count, features.Count, new object[] { null, false, true, true, false });
 	    } else {
 		steps.AddRange(new GenerationStep[] {
 			new GenerationStep("BridgeAlternatives", new object[]{}),

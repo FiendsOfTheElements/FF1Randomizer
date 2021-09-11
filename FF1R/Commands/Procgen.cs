@@ -24,7 +24,7 @@ namespace FF1R.Commands
 	int OnExecute(IConsole console)
 	{
 	    var rng = new MT19337((uint)this.Seed);
-	    var replacementMap = FF1Lib.Procgen.NewOverworld.GenerateNewOverworld(rng);
+	    var replacementMap = FF1Lib.Procgen.NewOverworld.GenerateNewOverworld(rng, new Flags());
 	    replacementMap.Checksum = replacementMap.ComputeChecksum();
 	    replacementMap.Seed = this.Seed;
 	    replacementMap.FFRVersion = FF1Lib.FFRVersion.Version;

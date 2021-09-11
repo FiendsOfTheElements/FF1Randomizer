@@ -436,6 +436,13 @@ namespace FF1Lib.Procgen
 	    {None, GRASS, GRASS, GRASS, None},
 	    }, new Dictionary<string, SCCoords> { });
 
+	public static OwFeature FOREST_MOUNTAIN_CAVE_FEATURE = new OwFeature(new byte[,] {
+	    {None, None, None, None, None},
+	    {None, None,  None, None, None},
+	    {None, FOREST, FOREST, FOREST, None},
+	    {None, FOREST, FOREST, FOREST, None},
+	    }, new Dictionary<string, SCCoords> { });
+
 	public static OwFeature AIRSHIP_FEATURE = new OwFeature(new byte[,] {
 	    {None,        None,      None,         None,           None,         None,        None,        None, None},
 	    {None, MOUNTAIN, MOUNTAIN, MOUNTAIN, MOUNTAIN, MOUNTAIN, MOUNTAIN, MOUNTAIN, None},
