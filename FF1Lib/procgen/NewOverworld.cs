@@ -274,7 +274,7 @@ namespace FF1Lib.Procgen
             this.overworldTiles = copy.overworldTiles;
 	    this.startingRegion = copy.startingRegion;
 	    this.bridgedRegion = copy.bridgedRegion;
-	    this.shouldPlaceBridge = false;
+	    this.shouldPlaceBridge = copy.shouldPlaceBridge;
         }
 
         void OwnBasemap() {
@@ -817,12 +817,12 @@ namespace FF1Lib.Procgen
 	// Check if a feature fits entirely into given region without
 	// overlapping any other regions.
 
-	public bool CheckFit(short[,] regionMap, OwRegion region, SCCoords p, int w, int h, byte[,] weightmap) {
+	public bool CheckFit(short[,] regionMap, OwRegion region, SCCoords p, int w, int h, byte[,] weightmap, int useweight) {
 
 	    // Checks the weight map, this tells us if we're too close
 	    // to another feature that's already been placed, prevents
 	    // features from bunching up.
-	    if (weightmap[p.Y+h/2, p.X+w/2] > 0) {
+	    if (weightmap[p.Y+h/2, p.X+w/2] != useweight) {
 		return false;
 	    }
 	    // Check the corners first before checking the entire box.
@@ -862,7 +862,7 @@ namespace FF1Lib.Procgen
 	}
 
 	// Place a feature somewhere in the region at random.
-	public ValueTuple<bool,SCCoords> PlaceFeature(short[,] regionMap, OwRegion region, OwFeature feature) {
+	public ValueTuple<bool,SCCoords> PlaceFeature(short[,] regionMap, OwRegion region, OwFeature feature, int maxweight=0) {
 	    var h = feature.Tiles.GetLength(0);
 	    var w = feature.Tiles.GetLength(1);
 
@@ -870,20 +870,29 @@ namespace FF1Lib.Procgen
 	    points.Shuffle(this.rng);
 	    SCCoords point = new SCCoords(0, 0);
 	    bool found = false;
-	    foreach (var p in points) {
-		if (feature.MountainCave) {
-		    if (this.Tilemap[p.Y-1, p.X-1] == OverworldTiles.MOUNTAIN &&
-			this.Tilemap[p.Y-1, p.X] == OverworldTiles.MOUNTAIN &&
-			this.Tilemap[p.Y-1, p.X+1] == OverworldTiles.MOUNTAIN)
-		    {
-			point = new SCCoords(p.X, p.Y-1);
-			found = true;
-		    }
-		} else {
-		    if (this.CheckFit(regionMap, region, p, w, h, this.Feature_weightmap)) {
-			point = p;
-			found = true;
-			break;
+	    if (feature.MountainCave) {
+		maxweight = 15;
+	    }
+	    for (int tryweight = 0; !found && tryweight <= maxweight; tryweight++) {
+		foreach (var p in points) {
+		    if (feature.MountainCave) {
+			if (this.Feature_weightmap[p.Y-1, p.X] != tryweight) {
+			    continue;
+			}
+			if (this.Tilemap[p.Y-1, p.X-1] == OverworldTiles.MOUNTAIN &&
+			    this.Tilemap[p.Y-1, p.X] == OverworldTiles.MOUNTAIN &&
+			    this.Tilemap[p.Y-1, p.X+1] == OverworldTiles.MOUNTAIN)
+			{
+			    point = new SCCoords(p.X, p.Y-1);
+			    found = true;
+			    break;
+			}
+		    } else {
+			if (this.CheckFit(regionMap, region, p, w, h, this.Feature_weightmap, tryweight)) {
+			    point = p;
+			    found = true;
+			    break;
+			}
 		    }
 		}
 	    }
@@ -913,7 +922,7 @@ namespace FF1Lib.Procgen
 		weightmap = this.Feature_weightmap;
 	    }
 
-	    if (checkfit && !this.CheckFit(regionMap, region, point, w, h, weightmap)) {
+	    if (checkfit && !this.CheckFit(regionMap, region, point, w, h, weightmap, 0)) {
 		return ValueTuple.Create(false, point);
 	    }
 
@@ -927,14 +936,14 @@ namespace FF1Lib.Procgen
 		weightmap = this.Feature_weightmap;
 	    }
 
-	    int radius = 16;
+	    byte radius = 16;
 	    int x = point.X;
 	    int y = point.Y;
 	    for (int y2 = Math.Max(point.Y-radius, 0); y2 < Math.Min(point.Y+radius, 255); y2++) {
 		for (int x2 = Math.Max(point.X-radius, 0); x2 < Math.Min(point.X+radius, 255); x2++) {
 		    byte dist = (byte)Math.Sqrt((x-x2)*(x-x2) + (y-y2)*(y-y2));
 		    if (dist <= radius) {
-			weightmap[y2, x2] += dist;
+			weightmap[y2, x2] = (byte)Math.Max(weightmap[y2, x2], radius - dist);
 		    }
 		}
 	    }
@@ -951,6 +960,8 @@ namespace FF1Lib.Procgen
     public class Result {
         public OverworldState final;
         public List<GenerationTask> additionalTasks;
+
+	public bool Success { get { return this.final != null || this.additionalTasks != null; } }
 
 	public Result(bool f) {
 	    this.final = null;
@@ -1015,7 +1026,7 @@ namespace FF1Lib.Procgen
 		new GenerationStep("BridgeAlternatives", new object[]{}),
 		new GenerationStep("PlaceInStartingArea", new object[]{OverworldTiles.CONERIA_CITY}),
 		new GenerationStep("PlaceInStartingArea", new object[]{OverworldTiles.TEMPLE_OF_FIENDS}),
-		new GenerationStep("PlaceBridge", new object[]{}),
+		new GenerationStep("PlaceBridge", new object[]{true}),
 		new GenerationStep("PlacePravoka", new object[]{}),
 		new GenerationStep("PlaceIsolated", new object[]{OverworldTiles.GAIA_TOWN, true}),
 		new GenerationStep("PlaceRequiringCanoe", new object[]{OverworldTiles.ORDEALS_CASTLE}),
@@ -1148,6 +1159,11 @@ namespace FF1Lib.Procgen
 	    ExchangeData.AirShipLocation = st.FeatureCoordinates["Airship"];
 	    st.FeatureCoordinates.Remove("Airship");
 
+	    if (st.Traversable_regionlist[st.Traversable_regionmap[st.FeatureCoordinates["Bridge"].Y, st.FeatureCoordinates["Bridge"].X+1]].RegionType == OverworldTiles.LAND_REGION) {
+		ExchangeData.HorizontalBridge = true;
+	    } else {
+		ExchangeData.HorizontalBridge = false;
+	    }
 	    ExchangeData.BridgeLocation = st.FeatureCoordinates["Bridge"];
 	    st.FeatureCoordinates.Remove("Bridge");
 
