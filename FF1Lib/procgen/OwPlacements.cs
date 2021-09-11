@@ -57,7 +57,7 @@ namespace FF1Lib.Procgen
 		foreach (var adj in r.Adjacent) {
 		    var w = this.Traversable_regionlist[adj];
 		    if (w.RegionType == OverworldTiles.RIVER_REGION) {
-			tasks.Add(() => new OverworldState(this).BridgePlacement(w));
+			tasks.Add(() => new OverworldState(this).BridgePlacement(r, w));
 		    }
 		}
 	    };
@@ -75,7 +75,7 @@ namespace FF1Lib.Procgen
 	    return new Result(tasks);
 	}
 
-	public Result BridgePlacement(OwRegion riverRegion) {
+	public Result BridgePlacement(OwRegion originRegion, OwRegion riverRegion) {
 	    var points = new List<SCCoords>(riverRegion.Points);
 	    points.Shuffle(this.rng);
 	    short nextRegion = -1;
@@ -90,8 +90,8 @@ namespace FF1Lib.Procgen
 			c2 = this.Traversable_regionmap[p.Y, p.X+1];
 		    }
 
-		    if (c1 == this.startingRegion &&
-			c2 != this.startingRegion &&
+		    if (c1 == originRegion.RegionId &&
+			c2 != originRegion.RegionId &&
 			this.Traversable_regionlist[c2].RegionType == OverworldTiles.LAND_REGION)
 		    {
 			this.OwnPlacements();
@@ -100,8 +100,8 @@ namespace FF1Lib.Procgen
 			break;
 		    }
 
-		    if (c1 != this.startingRegion &&
-			c2 == this.startingRegion &&
+		    if (c1 != originRegion.RegionId &&
+			c2 == originRegion.RegionId &&
 			this.Traversable_regionlist[c1].RegionType == OverworldTiles.LAND_REGION)
 		    {
 			this.OwnPlacements();
@@ -115,6 +115,8 @@ namespace FF1Lib.Procgen
 	    if (nextRegion != -1) {
 		this.bridgedRegion = nextRegion;
 		this.Reachable_regions.Add(nextRegion);
+		this.Exclude_docks.Add(nextRegion);
+		this.DockPlacement(originRegion);
 		//this.Tilemap[this.FeatureCoordinates["Bridge"].Y, this.FeatureCoordinates["Bridge"].X] = OverworldTiles.DOCK_W;
 		return this.NextStep();
 	    }
@@ -127,6 +129,10 @@ namespace FF1Lib.Procgen
 	    } else {
 		return this.CoastalPlacement(OverworldTiles.PRAVOKA_CITY_MOAT, this.StartingRegion, true, false);
 	    }
+	}
+
+	public Result PlaceInBridgedRegion(OwFeature feature) {
+	    return PlaceInBiome(feature, null, this.Traversable_regionlist[this.bridgedRegion], false, false, true, false);
 	}
 
 	public Result PlaceOnCoast(OwFeature feature, bool eastOnly) {
@@ -392,6 +398,11 @@ namespace FF1Lib.Procgen
 			found = true;
 		    } else if (canoeReachable && this.CheckReachableByRiver(trav, false)) {
 			found = true;
+		    } else if (airshipReachable == false && shipReachable == false && canoeReachable == false
+			       && this.Reachable_regions.Contains(trav.RegionId))
+		    {
+			// bridge or titan's tunnel access
+			found = true;
 		    }
 		    if (found) {
 			if (preferIslands && trav.Adjacent.Count == 1 && trav.Adjacent[0] == OverworldTiles.MainOceanRegionId) {
@@ -434,7 +445,7 @@ namespace FF1Lib.Procgen
 		return new Result(false);
 	    }
 	    if (shipReachable) {
-		var d = this.DockPlacement(feature, trav);
+		var d = this.DockPlacement(trav);
 		if (!this.Reachable_regions.Contains(trav.RegionId)) {
 		    return new Result(false);
 		}
@@ -443,7 +454,7 @@ namespace FF1Lib.Procgen
 	    return this.NextStep();
 	}
 
-	public bool DockPlacement(OwFeature feature, OwRegion region) {
+	public bool DockPlacement(OwRegion region) {
 	    var points = new List<SCCoords>(region.Points);
 	    points.Shuffle(this.rng);
 	    OwFeature placed = null;
@@ -573,6 +584,11 @@ namespace FF1Lib.Procgen
 	public Result MountainRiverPlacement(OwFeature feature, OwRegion mtnRegion, OwRegion riverRegion) {
 	    var points = new List<SCCoords>(mtnRegion.Points);
 	    points.Shuffle(this.rng);
+	    OwFeature caveFeature = null;
+	    if (feature.MountainCave) {
+		caveFeature = feature;
+		feature = OverworldTiles.MOUNTAIN_CAVE_FEATURE;
+	    }
 	    int w = feature.Tiles.GetLength(1);
 	    int h = feature.Tiles.GetLength(0);
 	    foreach (var p in points) {

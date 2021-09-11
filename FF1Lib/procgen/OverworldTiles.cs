@@ -429,14 +429,12 @@ namespace FF1Lib.Procgen
 		{"Canal", new SCCoords(1, 1)}
 	    });
 
-	public static OwFeature ICE_CAVE_FEATURE = new OwFeature(new byte[,] {
+	public static OwFeature MOUNTAIN_CAVE_FEATURE = new OwFeature(new byte[,] {
 	    {None, None, None, None, None},
-	    {None, None, ICE_CAVE, None, None},
+	    {None, None,  None, None, None},
 	    {None, GRASS, GRASS, GRASS, None},
 	    {None, GRASS, GRASS, GRASS, None},
-	    }, new Dictionary<string, SCCoords> {
-		{"IceCave1", new SCCoords(2, 1)}
-	    });
+	    }, new Dictionary<string, SCCoords> { });
 
 	public static OwFeature AIRSHIP_FEATURE = new OwFeature(new byte[,] {
 	    {None,        None,      None,         None,           None,         None,        None,        None, None},
@@ -457,6 +455,7 @@ namespace FF1Lib.Procgen
 	public static OwFeature TITANS_TUNNEL_EAST = new OwFeature(TITAN_CAVE_E, "TitansTunnelEast", true);
 	public static OwFeature MATOYAS_CAVE_FEATURE = new OwFeature(MATOYAS_CAVE, "MatoyasCave", true);
 	public static OwFeature SARDAS_CAVE_FEATURE = new OwFeature(SARDAS_CAVE, "SardasCave", true);
+	public static OwFeature ICE_CAVE_FEATURE = new OwFeature(ICE_CAVE, "IceCave1", true);
 
 	public static OwFeature MARSH_CAVE_FEATURE = new OwFeature(MARSH_CAVE, "MarshCave1", false);
 	public static OwFeature BAHAMUTS_CAVE_FEATURE = new OwFeature(BAHAMUTS_CAVE, "BahamutCave1", false);
