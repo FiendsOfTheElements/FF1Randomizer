@@ -116,10 +116,25 @@ namespace FF1Lib.Procgen
 	    }
 
 	    if (nextRegion != -1) {
+		this.OwnPlacements();
 		this.bridgedRegion = nextRegion;
 		this.Reachable_regions.Add(nextRegion);
 		this.Exclude_docks.Add(nextRegion);
 		this.DockPlacement(originRegion);
+
+		this.OwnRegions();
+		this.OwnTilemap();
+		// turn bridged region into ocean
+		foreach (var p in riverRegion.Points) {
+		    this.Tilemap[p.Y, p.X] = OverworldTiles.OCEAN;
+		}
+		this.Traversable_regionlist[riverRegion.RegionId] = new OwRegion(riverRegion);
+		this.Traversable_regionlist[riverRegion.RegionId].RegionType = OverworldTiles.OCEAN_REGION;
+
+		riverRegion = this.Biome_regionlist[this.Biome_regionmap[riverRegion.Points[0].Y, riverRegion.Points[0].X]];
+		this.Biome_regionlist[riverRegion.RegionId] = new OwRegion(riverRegion);
+		this.Biome_regionlist[riverRegion.RegionId].RegionType = OverworldTiles.OCEAN_REGION;
+
 		//this.Tilemap[this.FeatureCoordinates["Bridge"].Y, this.FeatureCoordinates["Bridge"].X] = OverworldTiles.DOCK_W;
 		return this.NextStep();
 	    }
