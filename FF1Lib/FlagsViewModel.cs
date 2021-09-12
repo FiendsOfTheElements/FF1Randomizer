@@ -4473,6 +4473,16 @@ namespace FF1Lib
 			}
 		}
 
+		public bool MapGenRandomizedAccessReqs
+		{
+			get => Flags.MapGenRandomizedAccessReqs;
+			set
+			{
+				Flags.MapGenRandomizedAccessReqs = value;
+				RaisePropertyChanged();
+			}
+		}
+
 		public ExtConsumableSet ExtConsumableSet
 		{
 			get => Flags.ExtConsumableSet;

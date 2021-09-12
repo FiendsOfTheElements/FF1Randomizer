@@ -1084,14 +1084,14 @@ namespace FF1Lib.Procgen
 		AddPlacements("PlaceIsolated", 1, 2, new object[]{true});
 		features.Add(OverworldTiles.TITANS_TUNNEL_EAST);
 
-		AddPlacements("PlaceInStartingArea", 1, 2, null);
-		AddPlacements("PlaceInBridgedRegion", 1, 2, null);
+		AddPlacements("PlaceInStartingArea", 1, 3, null);
+		AddPlacements("PlaceInBridgedRegion", 1, 3, null);
 		AddPlacements("PlaceRequiringCanoe", 1, 2, null);
-		AddPlacements("PlaceInTitanWestRegion", 1, 2, null);
+		AddPlacements("PlaceInTitanWestRegion", 1, 3, null);
 
 		steps.Add(new GenerationStep("PlaceCanal", new object[]{}));
-		AddPlacements("PlaceInCanalRegion", 1, 2, null);
-		AddPlacements("PlaceInMountains", 2, 4, null);
+		AddPlacements("PlaceInCanalRegion", 1, 3, null);
+		AddPlacements("PlaceInMountains", 2, 5, null);
 		steps.Add(new GenerationStep("PlaceWaterfall", new object[]{OverworldTiles.WATERFALL_FEATURE}));
 		steps.Add(new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.MIRAGE_TOWER,
 									  new int[]{OverworldTiles.DESERT_REGION},

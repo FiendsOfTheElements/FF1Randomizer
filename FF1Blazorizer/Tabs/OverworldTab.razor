@@ -21,6 +21,9 @@
 		<a class='styled-button @((Flags.OwMapExchange == OwMapExchanges.Desert || Flags.OwMapExchange == OwMapExchanges.GenerateNewOverworld) ? "" : "disabled-button")' @onclick="@OnClearSeed">Clear</a>
 		<br>
 		<br>
+		<CheckBox UpdateToolTip="@UpdateToolTipID" Id="mapgenRNGAccessReqsCheckBox" IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.GenerateNewOverworld)" @bind-Value="Flags.MapGenRandomizedAccessReqs">Randomized Access Requirements</CheckBox>
+		<br>
+		<br>
 		<a class='styled-button @((Flags.OwMapExchange == OwMapExchanges.Desert || Flags.OwMapExchange == OwMapExchanges.GenerateNewOverworld) ? "" : "disabled-button")' @onclick="@OnGenerateMap">Generate Map</a>
 		<a class='styled-button @(Flags.ReplacementMap != null && Flags.ReplacementMap.DecompressedMapRows != null ? "" : "disabled-button")' @onclick="@OnExportMap">Export Map</a>
 		<br>
@@ -119,7 +122,7 @@
 			try {
 				if (Flags.OwMapExchange == OwMapExchanges.GenerateNewOverworld)
 				{
-					Flags.ReplacementMap = NewOverworld.GenerateNewOverworld(maprng);
+					Flags.ReplacementMap = NewOverworld.GenerateNewOverworld(maprng, Flags.Flags);
 				}
 				else if (Flags.OwMapExchange == OwMapExchanges.Desert)
 				{

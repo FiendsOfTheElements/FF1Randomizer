@@ -376,6 +376,15 @@ namespace FF1Lib.Procgen
 	}, new Dictionary<string, SCCoords> {
 	    });
 
+	public static OwFeature OASIS2 = new OwFeature(new byte[,] {
+	    {     None, DESERT_NW,      DESERT_NE, FOREST, FOREST},
+	    {DESERT_NW, CARAVAN_DESERT, DESERT_SE, FOREST, FOREST},
+	    {DESERT_SW, DESERT_SE,      FOREST, FOREST, FOREST},
+	    {     None,    FOREST,      FOREST, FOREST,   None},
+	    {     None,    FOREST,      FOREST,   None,   None}
+	}, new Dictionary<string, SCCoords> {
+	    });
+
 	public static OwFeature N_DOCK_STRUCTURE = new OwFeature(new byte[,] {
 	    {None, DOCK_E,  OCEAN, None},
 	    {None, DOCK_E,  OCEAN, None},

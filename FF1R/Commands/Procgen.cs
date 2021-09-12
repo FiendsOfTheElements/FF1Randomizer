@@ -21,10 +21,24 @@ namespace FF1R.Commands
 	[Argument(0, Description = "The seed")]
 	public int Seed { get; }
 
+	[Option("-f")]
+	public string Flagsfile { get; }
+
+	[Option("-r")]
+	public bool DoRender { get; }
+
 	int OnExecute(IConsole console)
 	{
 	    var rng = new MT19337((uint)this.Seed);
-	    var replacementMap = FF1Lib.Procgen.NewOverworld.GenerateNewOverworld(rng, new Flags());
+
+	    Flags flags;
+	    if (this.Flagsfile != null) {
+		(_, flags, _) = Flags.FromJson(System.IO.File.ReadAllText(this.Flagsfile));
+	    } else {
+		flags = new Flags();
+	    }
+
+	    var replacementMap = FF1Lib.Procgen.NewOverworld.GenerateNewOverworld(rng, flags);
 	    replacementMap.Checksum = replacementMap.ComputeChecksum();
 	    replacementMap.Seed = this.Seed;
 	    replacementMap.FFRVersion = FF1Lib.FFRVersion.Version;
@@ -36,6 +50,10 @@ namespace FF1R.Commands
 		serializer.Serialize(file, replacementMap);
 	    }
 	    Console.WriteLine(fn);
+
+	    if (this.DoRender) {
+		MapRender.RenderMap(fn);
+	    }
 	    return 0;
 	}
     }
@@ -46,9 +64,7 @@ namespace FF1R.Commands
 	[Argument(0, Description = "The map")]
 	public string Mapfile { get; }
 
-	int OnExecute(IConsole console)
-	{
-
+	public static void RenderMap(string mapfile) {
 	    var assembly = System.Reflection.Assembly.GetExecutingAssembly();
 	    var resourcePath = assembly.GetManifestResourceNames().First(str => str.EndsWith("maptiles.png"));
 
@@ -56,7 +72,7 @@ namespace FF1R.Commands
 		IImageFormat format;
 		var tiles = Image.Load(stream, out format);
 
-		using (StreamReader file = new StreamReader(this.Mapfile)) {
+		using (StreamReader file = new StreamReader(mapfile)) {
 		    JsonSerializer serializer = new JsonSerializer();
 
 		    var map = serializer.Deserialize<OwMapExchangeData>(new JsonTextReader(file));
@@ -75,13 +91,17 @@ namespace FF1R.Commands
 			    output.Mutate(d => d.DrawImage(src, new Point(x*16, y*16), 1));
 			}
 		    }
-		    var fn = this.Mapfile.Replace(".json", ".png");
+		    var fn = mapfile.Replace(".json", ".png");
 		    output.Save(fn);
 		    Console.WriteLine(fn);
 		}
-
-		return 0;
 	    }
+	}
+
+	int OnExecute(IConsole console)
+	{
+	    RenderMap(this.Mapfile);
+	    return 0;
 	}
     }
 }

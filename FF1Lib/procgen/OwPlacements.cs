@@ -39,7 +39,10 @@ namespace FF1Lib.Procgen
 	    var v = this.PlaceFeature(this.Traversable_regionmap, region, feature);
 	    if (v.Item1) {
 		this.OwnPlacements();
-		this.startingRegion = region.RegionId;
+		if (this.startingRegion == -1) {
+		    this.startingRegion = region.RegionId;
+		    this.DockPlacement(this.StartingRegion);
+		}
 		this.Reachable_regions.Add(region.RegionId);
 
 		return this.NextStep();
@@ -445,6 +448,9 @@ namespace FF1Lib.Procgen
 	}
 
 	public Result BiomePlacement(OwFeature feature, OwRegion region, bool shipReachable, int maxweight) {
+	    if (feature == OverworldTiles.OASIS && region.RegionType != OverworldTiles.DESERT_REGION) {
+		feature = OverworldTiles.OASIS2;
+	    }
 	    var trav = this.Traversable_regionlist[this.Traversable_regionmap[region.Points[0].Y, region.Points[0].X]];
 	    var v = this.PlaceFeature(this.Biome_regionmap, region, feature, maxweight);
 	    if (!v.Item1) {
