@@ -367,6 +367,15 @@ namespace FF1Lib.Procgen
 		{ "GurguVolcano1", new SCCoords(3, 2) },
 	    });
 
+	public static OwFeature DRY_VOLCANO = new OwFeature(new byte[,] {
+	    {None,   None,              None, None},
+	    {None, VOLCANO_TOP_W,   VOLCANO_TOP_E, None},
+	    {None, VOLCANO_BASE_W, VOLCANO_BASE_E, None},
+	    {None,  None,               None, None},
+	}, new Dictionary<string, SCCoords> {
+		{ "GurguVolcano1", new SCCoords(3, 2) },
+	    });
+
 	public static OwFeature OASIS = new OwFeature(new byte[,] {
 	    {DESERT_SE, DESERT_NW,      DESERT_NE, FOREST, FOREST},
 	    {DESERT_NW, CARAVAN_DESERT, DESERT_SE, FOREST, FOREST},

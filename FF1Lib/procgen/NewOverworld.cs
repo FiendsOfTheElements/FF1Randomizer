@@ -1047,7 +1047,7 @@ namespace FF1Lib.Procgen
 		    OverworldTiles.CARDIA_4_FEATURE,
 		    OverworldTiles.CARDIA_5_FEATURE,
 		    OverworldTiles.ICE_CAVE_FEATURE,
-		    OverworldTiles.VOLCANO,
+		    OverworldTiles.DRY_VOLCANO,
 		};
 
 		// coneria, bridge
