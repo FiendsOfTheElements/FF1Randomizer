@@ -1023,8 +1023,9 @@ namespace FF1Lib.Procgen
 	public static OwMapExchangeData GenerateNewOverworld(MT19337 rng, Flags flags) {
 	    var mt = new OverworldTiles();
 
-	    int tries = 8;
-	    int maxTasksCount = 1600;
+	    int maxtries = 10;
+	    int tries = maxtries;
+	    int maxTasksCount = 1200;
 	    while (tries > 0) {
 		tries--;
 		var steps = new List<GenerationStep> {
@@ -1058,7 +1059,7 @@ namespace FF1Lib.Procgen
 			OverworldTiles.ORDEALS_CASTLE,
 			OverworldTiles.SARDAS_CAVE_FEATURE,
 			OverworldTiles.EARTH_CAVE_FEATURE,
-			OverworldTiles.OASIS,
+			OverworldTiles.OASIS2,
 			OverworldTiles.DWARF_CAVE_FEATURE,
 			OverworldTiles.ELFLAND_TOWN_CASTLE,
 			OverworldTiles.ASTOS_CASTLE,
@@ -1248,7 +1249,7 @@ namespace FF1Lib.Procgen
 		    return ReplacementMap(final, mt);
 		}
 	    }
-	    throw new Exception("Couldn't generate a map after 5 tries");
+	    throw new Exception($"Couldn't generate a map after {maxtries} tries");
 	}
 
 	public static OwMapExchangeData ReplacementMap(OverworldState st, OverworldTiles mt) {

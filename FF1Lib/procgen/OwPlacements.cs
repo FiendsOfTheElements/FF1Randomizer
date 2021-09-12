@@ -23,12 +23,16 @@ namespace FF1Lib.Procgen
 	public Result PlaceInStartingArea(OwFeature feature) {
 	    if (this.startingRegion == -1) {
 		var tasks = new List<GenerationTask>();
+		var sorted = new List<OwRegion>();
 		foreach (var w in this.Traversable_regionlist) {
 		    if (w.RegionType == OverworldTiles.LAND_REGION) {
-			tasks.Add(() => new OverworldState(this).StartingAreaPlacement(feature, w));
+			sorted.Add(w);
 		    }
 		}
-		tasks.Shuffle(this.rng);
+		sorted.Sort((OwRegion x, OwRegion y) => (x.Points.Count - y.Points.Count));
+		foreach (var w in sorted) {
+		    tasks.Add(() => new OverworldState(this).StartingAreaPlacement(feature, w));
+		}
 		return new Result(tasks);
 	    } else {
 		return this.StartingAreaPlacement(feature, this.StartingRegion);
@@ -95,6 +99,7 @@ namespace FF1Lib.Procgen
 
 		    if (c1 == originRegion.RegionId &&
 			c2 != originRegion.RegionId &&
+			c2 != this.startingRegion &&
 			this.Traversable_regionlist[c2].RegionType == OverworldTiles.LAND_REGION)
 		    {
 			this.OwnPlacements();
@@ -105,6 +110,7 @@ namespace FF1Lib.Procgen
 
 		    if (c1 != originRegion.RegionId &&
 			c2 == originRegion.RegionId &&
+			c1 != this.startingRegion &&
 			this.Traversable_regionlist[c1].RegionType == OverworldTiles.LAND_REGION)
 		    {
 			this.OwnPlacements();
@@ -120,7 +126,9 @@ namespace FF1Lib.Procgen
 		this.bridgedRegion = nextRegion;
 		this.Reachable_regions.Add(nextRegion);
 		this.Exclude_docks.Add(nextRegion);
-		this.DockPlacement(originRegion);
+		if (!this.DockPlacement(originRegion)) {
+		    return new Result(false);
+		}
 
 		this.OwnRegions();
 		this.OwnTilemap();
@@ -496,9 +504,6 @@ namespace FF1Lib.Procgen
 	}
 
 	public Result BiomePlacement(OwFeature feature, OwRegion region, bool shipReachable, int maxweight) {
-	    if (feature == OverworldTiles.OASIS && region.RegionType != OverworldTiles.DESERT_REGION) {
-		feature = OverworldTiles.OASIS2;
-	    }
 	    var trav = this.Traversable_regionlist[this.Traversable_regionmap[region.Points[0].Y, region.Points[0].X]];
 	    var v = this.PlaceFeature(this.Biome_regionmap, region, feature, maxweight);
 	    if (!v.Item1) {
