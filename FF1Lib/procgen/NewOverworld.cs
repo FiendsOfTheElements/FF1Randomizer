@@ -1142,17 +1142,6 @@ namespace FF1Lib.Procgen
 	public static OwMapExchangeData ReplacementMap(OverworldState st, OverworldTiles mt) {
 	    var ExchangeData = new OwMapExchangeData();
 
-	    var tiles = new List<string>();
-	    var onerow = new byte[OverworldState.MAPSIZE];
-	    for (int y = 0; y < OverworldState.MAPSIZE; y++) {
-		for (int x = 0; x < OverworldState.MAPSIZE; x++) {
-		    onerow[x] = st.Tilemap[y,x];
-		}
-		tiles.Add(Convert.ToBase64String(onerow));
-	    }
-
-	    ExchangeData.DecompressedMapRows = tiles;
-
 	    ExchangeData.StartingLocation = st.FeatureCoordinates["StartingLocation"];
 	    st.FeatureCoordinates.Remove("StartingLocation");
 
@@ -1215,6 +1204,17 @@ namespace FF1Lib.Procgen
 
 	    ExchangeData.DomainUpdates = AssignEncounterDomains(st, mt);
 	    ExchangeData.DomainFixups = new DomainFixup[] {};
+
+	    var tiles = new List<string>();
+	    var onerow = new byte[OverworldState.MAPSIZE];
+	    for (int y = 0; y < OverworldState.MAPSIZE; y++) {
+		for (int x = 0; x < OverworldState.MAPSIZE; x++) {
+		    onerow[x] = st.Tilemap[y,x];
+		}
+		tiles.Add(Convert.ToBase64String(onerow));
+	    }
+
+	    ExchangeData.DecompressedMapRows = tiles;
 
 	    return ExchangeData;
 	}
@@ -1390,6 +1390,7 @@ namespace FF1Lib.Procgen
 		    //Console.WriteLine($"Considered {dockPosition.X}, {dockPosition.Y} which is {d2} from {c.Key} at {featurePosition.X} {featurePosition.Y}");
 		}
 		if (dist < 1000000) {
+		    //state.Tilemap[closestDock.Y,closestDock.X] = OverworldTiles.CONERIA_CASTLE_TOP_W;
 		    locations.Add(new ShipLocation(closestDock.X,
 						   closestDock.Y,
 						   (byte)EntranceToOWTeleporterIndex[c.Key]));

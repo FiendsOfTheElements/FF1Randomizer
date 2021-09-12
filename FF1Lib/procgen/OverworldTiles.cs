@@ -382,7 +382,7 @@ namespace FF1Lib.Procgen
 	    {None, DOCK_E,  OCEAN, None},
 	    {None,   None,   None, None},
 	    }, new Dictionary<string, SCCoords> {
-		{ "Ship", new SCCoords(2, 2) },
+		{ "Ship", new SCCoords(0, 0) },
 	    });
 
 	public static OwFeature S_DOCK_STRUCTURE = new OwFeature(new byte[,] {
@@ -390,7 +390,7 @@ namespace FF1Lib.Procgen
 	    {  None, DOCK_SE, DOCK_S, DOCK_SW, None},
 	    {  None, OCEAN,   OCEAN,  OCEAN,   None},
 	}, new Dictionary<string, SCCoords> {
-		{ "Ship", new SCCoords(2, 2) },
+		{ "Ship", new SCCoords(0, 0) },
 	    });
 
 	public static OwFeature W_DOCK_STRUCTURE = new OwFeature(new byte[,] {
@@ -399,7 +399,7 @@ namespace FF1Lib.Procgen
 	    {OCEAN,   OCEAN,  DOCK_W,  None},
 	    {   None,   None,   None,  None},
 	}, new Dictionary<string, SCCoords> {
-		{ "Ship", new SCCoords(1, 2) },
+		{ "Ship", new SCCoords(0, 0) },
 	    });
 
 	public static OwFeature E_DOCK_STRUCTURE = new OwFeature(new byte[,] {
@@ -408,7 +408,7 @@ namespace FF1Lib.Procgen
 	    {   None, DOCK_E,   OCEAN,  OCEAN},
 	    {   None,   None,   None,  None},
 	    }, new Dictionary<string, SCCoords>  {
-		{ "Ship", new SCCoords(2, 2) },
+		{ "Ship", new SCCoords(0, 0) },
 	    });
 
 	public static OwFeature E_CANAL_STRUCTURE = new OwFeature(new byte[,] {
