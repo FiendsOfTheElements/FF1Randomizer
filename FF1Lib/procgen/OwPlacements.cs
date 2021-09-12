@@ -141,6 +141,39 @@ namespace FF1Lib.Procgen
 	    return new Result(false);
 	}
 
+	public Result CheckBridgeShores() {
+	    var shore_tiles = new HashSet<byte>();
+	    shore_tiles.Add(OverworldTiles.SHORE_NW);
+	    shore_tiles.Add(OverworldTiles.SHORE_NE);
+	    shore_tiles.Add(OverworldTiles.SHORE_SW);
+	    shore_tiles.Add(OverworldTiles.SHORE_SE);
+
+	    var b = this.FeatureCoordinates["Bridge"];
+
+	    if (this.Traversable_regionlist[this.Traversable_regionmap[this.FeatureCoordinates["Bridge"].Y, this.FeatureCoordinates["Bridge"].X+1]].RegionType == OverworldTiles.LAND_REGION) {
+		// Horizontal bridge
+		if (shore_tiles.Contains(this.Tilemap[b.Y, b.X-1])) {
+		    this.OwnTilemap();
+		    this.Tilemap[b.Y, b.X-1] = OverworldTiles.LAND;
+		}
+		if (shore_tiles.Contains(this.Tilemap[b.Y, b.X+1])) {
+		    this.OwnTilemap();
+		    this.Tilemap[b.Y, b.X+1] = OverworldTiles.LAND;
+		}
+	    } else {
+		// Vertical bridge
+		if (shore_tiles.Contains(this.Tilemap[b.Y-1, b.X])) {
+		    this.OwnTilemap();
+		    this.Tilemap[b.Y-1, b.X] = OverworldTiles.LAND;
+		}
+		if (shore_tiles.Contains(this.Tilemap[b.Y+1, b.X])) {
+		    this.OwnTilemap();
+		    this.Tilemap[b.Y+1, b.X] = OverworldTiles.LAND;
+		}
+	    }
+	    return this.NextStep();
+	}
+
 	public Result PlacePravoka() {
 	    if (this.bridgedRegion != -1) {
 		return this.CoastalPlacement(OverworldTiles.PRAVOKA_CITY, this.Traversable_regionlist[this.bridgedRegion], true, false);

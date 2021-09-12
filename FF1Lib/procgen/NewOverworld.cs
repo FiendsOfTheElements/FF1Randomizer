@@ -1219,6 +1219,7 @@ namespace FF1Lib.Procgen
 			new GenerationStep("ApplyFilter", new object[]{mt.marsh_borders, false}),
 			new GenerationStep("ApplyFilter", new object[]{mt.grass_borders, false}),
 			new GenerationStep("ApplyFilter", new object[]{mt.forest_borders, false}),
+			new GenerationStep("CheckBridgeShores", new object[]{}),
 		    });
 
 		Stack<GenerationTask> workStack = new Stack<GenerationTask>();
