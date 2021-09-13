@@ -430,21 +430,23 @@ namespace FF1Lib.Procgen
 	    });
 
 	public static OwFeature E_CANAL_STRUCTURE = new OwFeature(new byte[,] {
+	    {None,     None,   None,  None,  None,  None},
 	    {DOCK_SE, DOCK_S, DOCK_SW, None, None,    None},
 	    {DOCK_E,   OCEAN,  OCEAN, OCEAN, OCEAN, OCEAN},
 	    {None,     None,   None,  None,  None,  None},
 	    {None,     None,   None,  None,  None,  None},
 	    }, new Dictionary<string, SCCoords> {
-		{"Canal", new SCCoords(4, 1)}
+		{"Canal", new SCCoords(4, 2)}
 	    });
 
 	public static OwFeature W_CANAL_STRUCTURE = new OwFeature(new byte[,] {
+	    {None,     None,   None,  None,  None,  None},
 	    {None, None,    None, DOCK_S, DOCK_S,  DOCK_SW},
 	    {OCEAN,   OCEAN,  OCEAN, OCEAN, OCEAN, DOCK_W},
 	    {None,     None,   None,  None,  None,  None},
 	    {None,     None,   None,  None,  None,  None},
 	    }, new Dictionary<string, SCCoords> {
-		{"Canal", new SCCoords(1, 1)}
+		{"Canal", new SCCoords(1, 2)}
 	    });
 
 	public static OwFeature MOUNTAIN_CAVE_FEATURE = new OwFeature(new byte[,] {
