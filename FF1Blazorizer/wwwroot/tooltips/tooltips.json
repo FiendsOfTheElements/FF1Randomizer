@@ -717,7 +717,7 @@
                 "Id": "mapOpenProgressionDwavesNWCheckBox",
                 "title": "Extended Open Progression",
                 "screenshot": "mapOpenProgressionDwavesNWCheckBox.png",
-                "description": "Remove the river tile between the Dwarf Cave and Northwest Castle so that section of the voerworld can be traversed on foot (without the need for the CANOE)."
+                "description": "Remove the river tile between the Dwarf Cave and Northwest Castle so that section of the overworld can be traversed on foot (without the need for the CANOE)."
         },
         {
                 "Id": "mapOpenProgressionDocksCheckBox",
