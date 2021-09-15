@@ -1076,24 +1076,10 @@ namespace FF1Lib.Procgen
 			OverworldTiles.DRY_VOLCANO,
 		    };
 
-		    // coneria, bridge
-
-		    // 1-2 in starting area
-		    // 1-3 requiring bridge
-		    // 1-3 requiring canoe
-		    // 1-3 titan's west region
-		    // 1-3 requiring canal
-		    // 2-4 in mountains
-		    // 1 waterfall
-		    // pravoka, onrac, mirage, airship (special but already relatively unrestricted)
-		    // 4-8 ships's dock
-		    // remaining unrestricted
-
 		    steps.Add(new GenerationStep("PlaceInStartingArea", new object[]{OverworldTiles.CONERIA_CITY}));
 		    steps.Add(new GenerationStep("PlaceBridge", new object[]{false}));
 		    steps.Add(new GenerationStep("PlaceIsolated", new object[]{OverworldTiles.TITANS_TUNNEL_WEST, false}));
 
-		    // 1-2 random in starting area
 		    Action<string, int, int, object[]> AddPlacements = (string op, int min, int max, object[] addl) => {
 			int count = rng.Between(min, max);
 			for (int i = 0; i < count && features.Count > 0; i++) {
@@ -1363,55 +1349,55 @@ namespace FF1Lib.Procgen
 	    // Using octal numbers here because they nicely correspond
 	    // to coordinates on the 8x8 source grid of encounter
 	    // zones.
-	    var source_encounter_domains = new Dictionary<string, int>{
-		{"Coneria",         Convert.ToInt32("44", 8)},
-		{"ConeriaCastle1",  Convert.ToInt32("44", 8)},
-		{"TempleOfFiends1", Convert.ToInt32("34", 8)},
-		{"Pravoka",         Convert.ToInt32("46", 8)},
-		{"Gaia",            Convert.ToInt32("06", 8)},
-		{"CastleOrdeals1",  Convert.ToInt32("14", 8)},
-		{"TitansTunnelWest", Convert.ToInt32("50", 8)},
-		{"SardasCave", Convert.ToInt32("50", 8)},
-		{"MirageTower1", Convert.ToInt32("16", 8)},
-		{"Onrac", Convert.ToInt32("11", 8)},
-		{"EarthCave1", Convert.ToInt32("52", 8)},
-		{"TitansTunnelEast", Convert.ToInt32("50", 8)},
-		{"MatoyasCave", Convert.ToInt32("35", 8)},
-		{"DwarfCave", Convert.ToInt32("43", 8)},
-		{"Elfland", Convert.ToInt32("64", 8)},
-		{"ElflandCastle", Convert.ToInt32("64", 8)},
-		{"MarshCave1", Convert.ToInt32("73", 8)},
-		{"NorthwestCastle", Convert.ToInt32("53", 8)},
-		{"Melmond", Convert.ToInt32("52", 8)},
-		{"CrescentLake", Convert.ToInt32("66", 8)},
-		{"Lefein", Convert.ToInt32("37", 8)},
-		{"BahamutCave1", Convert.ToInt32("13", 8)},
-		{"Cardia1", Convert.ToInt32("12", 8)},
-		{"Cardia2", Convert.ToInt32("12", 8)},
-		{"Cardia4", Convert.ToInt32("12", 8)},
-		{"Cardia5", Convert.ToInt32("13", 8)},
-		{"Cardia6", Convert.ToInt32("13", 8)},
-		{"Waterfall", Convert.ToInt32("01", 8)},
-		{"GurguVolcano1", Convert.ToInt32("66", 8)},
-		{"IceCave1", Convert.ToInt32("66", 8)},
+	    var source_encounter_domains = new Dictionary<string, (int, double)>{
+		{"Coneria",         (Convert.ToInt32("44", 8), 1)},
+		{"ConeriaCastle1",  (Convert.ToInt32("44", 8), 1)},
+		{"TempleOfFiends1", (Convert.ToInt32("34", 8), 1)},
+		{"Pravoka",         (Convert.ToInt32("46", 8), 1)},
+		{"Gaia",            (Convert.ToInt32("06", 8), .75)},
+		{"CastleOrdeals1",  (Convert.ToInt32("14", 8), .75)},
+		{"TitansTunnelWest", (Convert.ToInt32("50", 8), 1)},
+		{"SardasCave", (Convert.ToInt32("50", 8), 1)},
+		{"MirageTower1", (Convert.ToInt32("16", 8), .75)},
+		{"Onrac", (Convert.ToInt32("11", 8), .75)},
+		{"EarthCave1", (Convert.ToInt32("52", 8), 1)},
+		{"TitansTunnelEast", (Convert.ToInt32("50", 8), 1)},
+		{"MatoyasCave", (Convert.ToInt32("35", 8), 1)},
+		{"DwarfCave", (Convert.ToInt32("43", 8), 1)},
+		{"Elfland", (Convert.ToInt32("64", 8), 1)},
+		{"ElflandCastle", (Convert.ToInt32("64", 8), 1)},
+		{"MarshCave1", (Convert.ToInt32("73", 8), 1)},
+		{"NorthwestCastle", (Convert.ToInt32("53", 8), 1)},
+		{"Melmond", (Convert.ToInt32("52", 8), 1)},
+		{"CrescentLake", (Convert.ToInt32("66", 8), 1)},
+		{"Lefein", (Convert.ToInt32("37", 8), .75)},
+		{"BahamutCave1", (Convert.ToInt32("13", 8), .5)},
+		{"Cardia1", (Convert.ToInt32("12", 8), .5)},
+		{"Cardia2", (Convert.ToInt32("12", 8), .5)},
+		{"Cardia4", (Convert.ToInt32("12", 8), .5)},
+		{"Cardia5", (Convert.ToInt32("13", 8), .5)},
+		{"Cardia6", (Convert.ToInt32("13", 8), .5)},
+		{"Waterfall", (Convert.ToInt32("01", 8), 1)},
+		{"GurguVolcano1", (Convert.ToInt32("66", 8), 1)},
+		{"IceCave1", (Convert.ToInt32("66", 8), 1)},
 	    };
 
 	    var domains = new DomainFixup[64];
 
 	    for (int j = 0; j < 8; j++) {
 		for (int i = 0; i < 8; i++) {
-		    var counts = new Dictionary<string, int>();
+		    var counts = new Dictionary<string, double>();
 		    for (int y = 0; y < 32; y++) {
 			for (int x = 0; x < 32; x++) {
 			    var nd = nearest_dungeon[j*32+y, i*32+x];
 			    if (nd != null) {
-				int c = 0;
+				double c = 0;
 				counts.TryGetValue(nd, out c);
-				counts[nd] = c+1;
+				counts[nd] = c + source_encounter_domains[nd].Item2;
 			    }
 			}
 
-			int mx = 0;
+			double mx = 0;
 			string pick = null;
 			foreach (var kv in counts) {
 			    if (kv.Value > mx) {
@@ -1422,7 +1408,7 @@ namespace FF1Lib.Procgen
 			domains[j*8 + i] = new DomainFixup();
 			domains[j*8 + i].To = (byte)(j*8 + i);
 			if (pick != null) {
-			    domains[j*8 + i].From = (byte)source_encounter_domains[pick];
+			    domains[j*8 + i].From = (byte)source_encounter_domains[pick].Item1;
 			} else {
 			    domains[j*8 + i].From = 0;
 			}
@@ -1481,6 +1467,8 @@ namespace FF1Lib.Procgen
 		entranceRegions[c.Key] = adj;
 	    }
 
+	    SCCoords? coneriaDock = null;
+	    SCCoords? pravokaDock = null;
 	    foreach (var c in state.FeatureCoordinates) {
 		// For each feature, go through all the docks and find
 		// the ones that are in the same region.  Pick the one
@@ -1508,11 +1496,24 @@ namespace FF1Lib.Procgen
 						   closestDock.Y,
 						   (byte)EntranceToOWTeleporterIndex[c.Key]));
 		    if (c.Key == "ConeriaCastle1") {
-			locations.Add(new ShipLocation(closestDock.X,
-						       closestDock.Y,
-						       255));
+			coneriaDock = closestDock;
+		    }
+		    if (c.Key == "Pravoka") {
+			pravokaDock = closestDock;
 		    }
 		}
+	    }
+
+	    if (coneriaDock != null) {
+		locations.Add(new ShipLocation(coneriaDock.Value.X,
+					       coneriaDock.Value.Y,
+					       255));
+	    } else if (pravokaDock != null) {
+		locations.Add(new ShipLocation(pravokaDock.Value.X,
+					       pravokaDock.Value.Y,
+					       255));
+	    } else {
+		throw new Exception("Couldn't choose default ship location");
 	    }
 
 	    return locations.ToArray();
